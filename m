@@ -2,117 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F60E169
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 13:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B002E183
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 13:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728042AbfD2Lgk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Apr 2019 07:36:40 -0400
-Received: from mail-it1-f193.google.com ([209.85.166.193]:39532 "EHLO
-        mail-it1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727943AbfD2Lgj (ORCPT
+        id S1727943AbfD2LnN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Apr 2019 07:43:13 -0400
+Received: from mail-it1-f181.google.com ([209.85.166.181]:39553 "EHLO
+        mail-it1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727933AbfD2LnN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Apr 2019 07:36:39 -0400
-Received: by mail-it1-f193.google.com with SMTP id t200so3071259itf.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 04:36:39 -0700 (PDT)
+        Mon, 29 Apr 2019 07:43:13 -0400
+Received: by mail-it1-f181.google.com with SMTP id t200so3095999itf.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 04:43:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=SfbR/2WWOr0M7sK3cOu6m7ioEvvsGJEmPj29vQ+x4/M=;
-        b=Cfxju/JLKZcuj+lx4nZcmlWOH508Tq+O5iFyiqTAch0CX+xfnEVtfL9iNInyn36Nl0
-         dw2+9xAN1IvMAGKh/5K7iqEfXbwexHOG41h3jp5jssRu0D1PLrUB8hsa1yCUjud6cT1n
-         jIlhgKGp85WZdjh5bS3pmZloLiykGXLBD9bLaZEs7YId1RFnAioe+dnCagdRcmIIrpFg
-         wR6dVd6Yvq0ARtJ9Ks7bWrOGcWiDUu0ULmb8bzWsLGNUw9aL20oylLx6S/5t9NHQdiXC
-         sQYUEnqBx0yq6oSlWo+VnUeE/EDu+o+kIoatexjKnNhq5ESxCio9WzWmGdTNf9ounAL0
-         9OEw==
+        bh=IlFgVHrx0n7diXroXfSqsprU74XmPY1eUh0uSM7orcI=;
+        b=Rh5Gp6ujOaqA8uTiTMO27AeNkEJ+xyVaTJSNaeC8Kbx7CxV/pNDsLzWmtJNZDEfm4H
+         NvCJnelzeQ4ePLqPgJnH+su+Ml4A+ieSuw0NZjh2kOhA8DGC6QKtX6/1EWR5JIktGLz1
+         qMYCQtH0BemF2Ab3S3VqoVVx9jZSaROy0quxbfyh5pJGsgO3visFW2l7U4PW9RFCRXDx
+         YSpJSXohwSp6YNz8Hy0ik6ibGFYxsa8AkZ9kWG6hnGYc0jKVL07TCtDBkiqfgkc0En7L
+         hRF/vUTf6KlzPWAj+5GwCt73S8xE/N30Xyn8toHU8aglqEDXDVNQuO/x8Svc+KUgTcnS
+         AhmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=SfbR/2WWOr0M7sK3cOu6m7ioEvvsGJEmPj29vQ+x4/M=;
-        b=noT/E+XXU1lVYE3qG71ZV5L6zkYXBZgW5WOatBgDBjuoAzgUuMIxcOj1A5LQElccrv
-         NLyH9UYTQ3Qx23ji531kXkCOrxk8pRTyD4rc1wL2uDu6QCd4P2cmvV7cBIxZhPDFuizj
-         r/+dxD0V/mt69by6n+GUABVjTXXx6vRZisFY7Qsxhd76H+22UUS86C90MT3m87xkHDLq
-         Sch1Tcjf+ywhbVjlEf00SrMMg1QLbsUYWdG8m2dpM+uPAWcMXiGn8YIzH/X/DG5sW3/q
-         PBp2HWBkFTxsLOZbTsZFe3N347TWNILgiIDFXrQDpoB5yZ8eXw0+Brv5l45dqh32SpR+
-         65gA==
-X-Gm-Message-State: APjAAAX5109ZQYYcT2csLQV60y24Tc5NYq7hNhjAhgGEaPr3tgV2iGtE
-        tLerWgTbE2dWgR+sMAQ8D5ua3fO3z6I=
-X-Google-Smtp-Source: APXvYqy3khgP+f0KbdeWd8aDji80moCzmTp09YTbHazleyujLk5JBhslHlrDrEuyS/5YNpMAdgxlMA==
-X-Received: by 2002:a02:9685:: with SMTP id w5mr1038072jai.131.1556537798705;
-        Mon, 29 Apr 2019 04:36:38 -0700 (PDT)
+        bh=IlFgVHrx0n7diXroXfSqsprU74XmPY1eUh0uSM7orcI=;
+        b=J1G5gjdchS0D270nRlBuKDgra/1DtL6GLNCVfW9gZmDutAdBpwf0cAy8gisl9/6uKK
+         H8I9hLGUKnCkMn2revsq9NtBYFrkwIAdM6QmDzQPQu0xiSmYRFfveMlQmDRPZaGUvpr7
+         NBq343iKVeTOlm/G86IW3BbVENYgqq8Ub0cfPeXWRVOyX/BT8d88nk9wMUHpFEpiJ/t1
+         G3eGzpmWaOzNxhcmyxjudaPk02UBxKSC58UBS4JbMqhyhH/tkYyumRkAFfZIwDOYLw2k
+         VG6VPNcdO86bRsT9VJ3mUaeLbqrRDRpxX1YQHZj8Ytv3sJjBZDpBjkDzd4dCtzG0mS3R
+         jIwA==
+X-Gm-Message-State: APjAAAWjw989HkQLLrEPua4j0KY9rglgG1aw9l9UCLRnB2Hw+HvK1+Kx
+        58IWlFEjt6wdib7pItOh5FgndNgXFI0=
+X-Google-Smtp-Source: APXvYqztCQ4ubvnlDDOQ2RTGsPNsjPDFa0TC9flJGgNXyUc2SiPKpdBIjqT66Z+rdlUjCpzArr9T+Q==
+X-Received: by 2002:a24:d45:: with SMTP id 66mr19421002itx.9.1556538191813;
+        Mon, 29 Apr 2019 04:43:11 -0700 (PDT)
 Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
-        by smtp.gmail.com with ESMTPSA id h5sm1959521itb.5.2019.04.29.04.36.37
+        by smtp.gmail.com with ESMTPSA id j5sm9031104ita.16.2019.04.29.04.43.10
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Apr 2019 04:36:37 -0700 (PDT)
-Subject: Re: recommended way to allow mounting of degraded array at boot
-To:     Alberto Bursi <alberto.bursi@outlook.it>,
+        Mon, 29 Apr 2019 04:43:11 -0700 (PDT)
+Subject: Re: Migration to BTRFS
+To:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Hendrik Friedel <hendrik@friedels.name>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <AM0PR03MB413128509989947DE4AA7DEF92380@AM0PR03MB4131.eurprd03.prod.outlook.com>
+References: <emb78b630a-c045-4f12-8945-66a237852402@ryzen>
+ <0f1a1f40-c951-05dc-f9fd-d6de5884f782@gmail.com>
 From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Message-ID: <5e02c6d3-9024-10fa-51f0-629ff5e604fe@gmail.com>
-Date:   Mon, 29 Apr 2019 07:36:35 -0400
+Message-ID: <e27cc7ee-4256-0ccc-a9f1-79cd6898e927@gmail.com>
+Date:   Mon, 29 Apr 2019 07:43:08 -0400
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <AM0PR03MB413128509989947DE4AA7DEF92380@AM0PR03MB4131.eurprd03.prod.outlook.com>
+In-Reply-To: <0f1a1f40-c951-05dc-f9fd-d6de5884f782@gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019-04-28 12:18, Alberto Bursi wrote:
-> I am looking for a way to mimic mdadm's behaviour and have btrfs mount
-> a degraded array on boot as long as it's not broken (specific use case:
-> RAID1 with a single disk missing/dead)
+On 2019-04-28 16:14, Andrei Borzenkov wrote:
+> 28.04.2019 22:35, Hendrik Friedel пишет:
+>> Hello,
+>>
+>> I intend to move to BTRFS and of course I have some data already.
+>> I currently have several single 4TB drives and I would like to move the
+>> Data onto new drives (2*8TB). I need no raid, as I prefer a backup.
+>> Nevertheless, having raid nice for availability. So why not in the end.
+>> I currently use ~6TB, so it may work, but I would be able to remove the
+>> redundancy later.
+>>
+>> So, if I understand correctly, today I want
+>> -m raid1 -d raid1
+>>
+>> whereas later, I want
+>> -m raid1 -d single
+>>
+>> What is very important to me is, that with one failing drive, I have no
+>> risk of losing the whole filesystem, but only losing the affected drive.
+>> Is that possible with both of these variants?
+>>
 > 
-> So far the only thing I could think of (and I've seen suggested
-> elsewhere) is to add the "degraded" mount option
-> in kernel command line and in /etc/fstab.
+> With "single" data profile you won't lose filesystem, but you will
+> irretrievably lose any data on the missing drive. Also "single" profile
+> does not support auto-healing (repairing of bad copy from good copy). If
+> this is acceptable to you, then yes, both variants will do what you want.
+Actually, it's a bit worse than this potentially.  You may lose 
+individual files if you lose one disk with the proposed setup, but you 
+may also lose _parts_ of individual files, especially if you have lots 
+of large (>1-5GB in size) files.  And on top of this, finding what data 
+went missing will essentially require trying to read every byte of every 
+file in the volume.
 > 
-> But on the wiki I read that this is a bad idea because of what they call
-> "Incomplete chunk conversion" issue [1]
+>> Is it possible to move between the two (doing a balance, of course?
 > 
-> that says I can only mount it degraded (when it is actually missing a
-> disk) rw ONE TIME and then the filesystem would go ro.
+> Yes as long as you have sufficient free space for target profile.
 > 
-> Is that still a thing? Are there other ways of doing what I want?
-Yes, but it only matters if a couple of specific conditions are met:
+>> Any other thoughts/recommendations?
+>>
+> 
+> As of today there is no provision for automatic mounting of incomplete
+> multi-device btrfs in degraded mode. Actually, with systemd it is flat
+> impossible to mount incomplete btrfs because standard framework only
+> proceeds to mount it after all devices have been seen. As long as you do
+> not use systemd in initramfs you may be able to boot by passing suitable
+> root mount flags on kernel command line.
+> 
 
-* You have exactly two disks in the healthy filesystem.
-* Exactly one of those two disks is missing.
-* The filesystem has to allocate a new chunk when you are writing data 
-to it.
-
-That last condition is almost impossible to be certain about, so you 
-really only need to pay attention to the first two points.
-
-Now, that said, having 'degraded' as part of your standard options is 
-less than ideal for multiple reasons:
-
-* It makes it very easy to not actually notice that one of your storage 
-devices is having issues.  Unless you're paying attention to the kernel 
-logs, or you have _something_ that's validating observed hardware state 
-against known correct state, your only indication that something is 
-wrong will be reduced performance.  MD, LVM, and even ZFS have easy to 
-use notification mechanisms that can trivially be configured to let you 
-know if a disk is missing or misbehaving, but BTRFS just doesn't have 
-any equivalent right now.
-* It indirectly encourages running volumes in degraded mode under 
-otherwise normal system operation, which is risky because it's largely 
-untested (and is also just a bad idea, independent of what your storage 
-stack looks like).
-* If you're doing this on a system using systemd, it actually doesn't do 
-what you are trying to do.  Systemd will refuse to mount the volume if 
-all the constituent devices aren't present, so you're going to fail to 
-mount with or without the 'degraded' mount option if you have a disk 
-missing.
-
-Unfortunately though, there's not really any other option currently to 
-do this with BTRFS unless you script something yourself (not 
-particularly hard with traditional init systems, but somewhat difficult 
-with systemd because of the aforementioned issue).
