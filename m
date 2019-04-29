@@ -2,82 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A97CBE1F7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 14:08:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC320E795
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 18:18:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727956AbfD2MIT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Apr 2019 08:08:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727927AbfD2MIT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Apr 2019 08:08:19 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F28F02075E
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 12:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1556539698;
-        bh=bl+zW6lHWK3VfY18Ld40uvL2O1qL/SovhfMMCBUrytE=;
-        h=From:To:Subject:Date:From;
-        b=p1GCJ+UiR0w65ks9Y+jh/eNLLUCurxdM0xYlHuAaRO9Ju2IyhzAr15w61zhmlIUol
-         f5HpmGkK7Ui1/I7FnsGBCNeEk4zF0uKiRz02z5vF7vd7X2sBsf5OF0yQc6J2ZwjiIL
-         vDyCfwSnsfUblLQVLVw9+XgWx70dj/MZ1rttU6BI=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: do not abort transaction at btrfs_update_root() after failure to COW path
-Date:   Mon, 29 Apr 2019 13:08:14 +0100
-Message-Id: <20190429120814.8638-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1728925AbfD2QSo convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 29 Apr 2019 12:18:44 -0400
+Received: from smtprelay08.ispgateway.de ([134.119.228.109]:10434 "EHLO
+        smtprelay08.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728666AbfD2QSn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Apr 2019 12:18:43 -0400
+Received: from [94.217.144.7] (helo=[192.168.177.20])
+        by smtprelay08.ispgateway.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <hendrik@friedels.name>)
+        id 1hL8zI-0004Lv-GK; Mon, 29 Apr 2019 18:18:40 +0200
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
+        "Andrei Borzenkov" <arvidjaar@gmail.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Fw: Re[2]: Migration to BTRFS
+Date:   Mon, 29 Apr 2019 16:18:39 +0000
+Message-Id: <em8cc4b9a0-902a-4ce3-8fee-a5a3320b6fc4@ryzen>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+User-Agent: eM_Client/7.2.34062.0
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Df-Sender: aGVuZHJpa0BmcmllZGVscy5uYW1l
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Hello,
+>>With "single" data profile you won't lose filesystem, but you will
+>>irretrievably lose any data on the missing drive. Also "single" profile
+>>does not support auto-healing (repairing of bad copy from good copy). If
+>>this is acceptable to you, then yes, both variants will do what you want.
+>Actually, it's a bit worse than this potentially.  You may lose individual files if you lose one disk with the proposed setup, but you may also lose _parts_ of individual files, especially if you have lots of large (>1-5GB in size) files.
+You mean if parts of the files are on the failed drive, or what do you 
+have in mind?
 
-Currently when we fail to COW a path at btrfs_update_root() we end up
-always aborting the transaction. However all the current callers of
-btrfs_update_root() are able to deal with errors returned from it, many do
-end up aborting the transaction themselves (directly or not, such as the
-transaction commit path), other BUG_ON() or just gracefully cancel whatever
-they were doing.
+>   And on top of this, finding what data went missing will essentially require trying to read every byte of every file in the volume.
+Why is that and how would it be done (scrub, I suppose?)
+I am wondering, why the design of 'single' is that way? It seems to me, 
+that this is unneccessarily increasing the failure probability. My 
+thinking: If I have two separate file-systems, I have a FP of Z, with Z 
+the probability of one drive to fail. If I one btrfs-system in single 
+profile, I have a FP of Z^N, wheras it could -with a different design- 
+still be Z, no?
+>>As of today there is no provision for automatic mounting of incomplete
+>>multi-device btrfs in degraded mode. Actually, with systemd it is flat
+>>impossible to mount incomplete btrfs because standard framework only
+>>proceeds to mount it after all devices have been seen.
+Do you talk about the mount during boot or about mounting in general?
 
-When syncing the fsync log, we call btrfs_update_root() through
-tree-log.c:update_log_root(), and if it returns an -ENOSPC error, the log
-sync code does not abort the transaction, instead it gracefully handles
-the error and returns -EAGAIN to the fsync handler, so that it falls back
-to a transaction commit. Any other error different from -ENOSPC, makes the
-log sync code abort the transaction.
+ > If I where you, with your use case I would consider using mhddfs
+ > https://romanrm.net/mhddfs which is filesystem agnostic layer on top of 2x [-m
+ > DUP, -d SINGLE] BTRFS drives. Last time I tested mhddfs (about 5+ years ago) it
+ > was dead slow, but that might not be very important to you. For what it does it
+ > works great!
 
-So remove the transaction abort from btrfs_update_log() when we fail to
-COW a path to update the root item, so that if an -ENOSPC failure happens
-we avoid aborting the current transaction and have a chance of the fsync
-succeeding after falling back to a transaction commit.
+In fact, that is what I am using today. But when using snapshots, this 
+would become a bit messy (having to do the snapshot on each device 
+separately, but identically.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203413
-Fixes: 79787eaab46121 ("btrfs: replace many BUG_ONs with proper error handling")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/root-tree.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ > remember that backup is not a backup unless it has a extra backup
 
-diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
-index 893d12fbfda0..1a92ad546f91 100644
---- a/fs/btrfs/root-tree.c
-+++ b/fs/btrfs/root-tree.c
-@@ -132,10 +132,8 @@ int btrfs_update_root(struct btrfs_trans_handle *trans, struct btrfs_root
- 		return -ENOMEM;
- 
- 	ret = btrfs_search_slot(trans, root, key, path, 0, 1);
--	if (ret < 0) {
--		btrfs_abort_transaction(trans, ret);
-+	if (ret < 0)
- 		goto out;
--	}
- 
- 	if (ret != 0) {
- 		btrfs_print_leaf(path->nodes[0]);
--- 
-2.11.0
+I do have two backups (one offsite) of all data that is irreplacable and 
+one of data that is nice to have (TV-Recordings).
+
+
+Greetings,
+Hendrik
 
