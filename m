@@ -2,79 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8653AE9F6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 20:16:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5904EA0D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 20:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728908AbfD2SQZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Apr 2019 14:16:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37418 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728748AbfD2SQZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Apr 2019 14:16:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 69718ACE3;
-        Mon, 29 Apr 2019 18:16:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2AD3CDA86C; Mon, 29 Apr 2019 20:17:24 +0200 (CEST)
-Date:   Mon, 29 Apr 2019 20:17:24 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH][v2] btrfs: track odirect bytes in flight
-Message-ID: <20190429181724.GX20156@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20190410195610.84110-1-josef@toxicpanda.com>
- <20190425205247.99177-1-josef@toxicpanda.com>
+        id S1728914AbfD2SZK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Apr 2019 14:25:10 -0400
+Received: from mail-it1-f172.google.com ([209.85.166.172]:37297 "EHLO
+        mail-it1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728844AbfD2SZJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Apr 2019 14:25:09 -0400
+Received: by mail-it1-f172.google.com with SMTP id r85so571029itc.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 11:25:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=OkJe2yReH+T/62KRjdGq1BDACxhpspOkyt5iR/Dts4A=;
+        b=fcaK8j9jN2YpghGgpj/tzoYNRXEJAM2U4AijP7KNwDajJeNmTnNmdSMRPwyAeBjtX6
+         sIHsnmtrnY2QNhoThX2tKdQQy5DJSgzjgFYoC5aZ0bVLS1bKdGfUU6arWRe3yJj6iv0x
+         FZHcMPSyEXK+00BYINTgn2aRW5vn81W1pPNVlwvbgqLgf+cv0UiLrlrxp/3MFrpF3hQ9
+         8D5X9j7KQBOw16CJPrpzGarUK1BB5deLCnWvYyZdq0CFlJxUzHQ8nzQOzsQYBY/mYkLb
+         fK27gnkwIgl4qk+kY56JepxfQGMSi9jW6v1j2o8NT3byDstmWuBtG8g8zb7Cxw1HIfmV
+         eKUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=OkJe2yReH+T/62KRjdGq1BDACxhpspOkyt5iR/Dts4A=;
+        b=oTm+lQxKdoR5SCgf6LbWHD4u+2RrrFUTwqPSJGIWyfd5ypVoLwpOKDhSkFw8N38aFk
+         TZ1RtaKa6Z5/5bcZCHWMqwVB8O3FVGWzeb2r6NyQpWrNprqPUk5ybadda2hCw64NccDU
+         mlB25ecyfOiBA2sHAcV7x+q5T9hNrFwEw3S5biLAXRJGcCBrEFPXRzQoaoOJzJtVEjig
+         zw82T9ZfhKYIK8g4sAqQMc2yLe+8Pp3m6J9PzYXX355ZUwGd1R+QQpRYYm0icKSCPeCF
+         4d8ng/BQs6F/GnaX9uM+6lP1XynMER0Kfz902kysmWbTpofKZskR6FzqGmaXewYzsTx1
+         rGPg==
+X-Gm-Message-State: APjAAAWdx0955TOvBJLIaKgJWX9dFdB0omgCPMjBDP2oMKKgGN90tA0e
+        6C9PVrz28zY7is+g3R16ABgM3Nush/k=
+X-Google-Smtp-Source: APXvYqxI/IwcxPvazswpniOew2JXNSK2Zc+YGD/yJuzWBFyTl8UWyoEW9PDyzZBLW4L8jWphXd8oQA==
+X-Received: by 2002:a24:f68a:: with SMTP id u132mr347838ith.45.1556562308379;
+        Mon, 29 Apr 2019 11:25:08 -0700 (PDT)
+Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
+        by smtp.gmail.com with ESMTPSA id i203sm152776iti.7.2019.04.29.11.25.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Apr 2019 11:25:07 -0700 (PDT)
+Subject: Re: Migration to BTRFS
+To:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Hendrik Friedel <hendrik@friedels.name>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <emb78b630a-c045-4f12-8945-66a237852402@ryzen>
+ <0f1a1f40-c951-05dc-f9fd-d6de5884f782@gmail.com>
+ <e27cc7ee-4256-0ccc-a9f1-79cd6898e927@gmail.com>
+ <em12ddda3f-4221-4678-aa1c-0854489007e1@ryzen>
+ <595b60f2-2a93-2078-93f2-e5952aac1fa3@gmail.com>
+ <831d651a-5aa3-e98c-8520-05dd5f55e26d@gmail.com>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <0e500a74-496c-b6c9-6282-9a73e67c7a5c@gmail.com>
+Date:   Mon, 29 Apr 2019 14:25:04 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190425205247.99177-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <831d651a-5aa3-e98c-8520-05dd5f55e26d@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Apr 25, 2019 at 04:52:47PM -0400, Josef Bacik wrote:
-> When diagnosing a slowdown of generic/224 I noticed we were not doing
-> anything when calling into shrink_delalloc().  This is because all
-> writes in 224 are O_DIRECT, not delalloc, and thus our delalloc_bytes
-> counter is 0, which short circuits most of the work inside of
-> shrink_delalloc().  However O_DIRECT writes still consume metadata
-> resources and generate ordered extents, which we can still wait on.
+On 2019-04-29 13:31, Andrei Borzenkov wrote:
+> 29.04.2019 20:20, Austin S. Hemmelgarn пишет:
+>>
+>>>>> As of today there is no provision for automatic mounting of incomplete
+>>>>> multi-device btrfs in degraded mode. Actually, with systemd it is flat
+>>>>> impossible to mount incomplete btrfs because standard framework only
+>>>>> proceeds to mount it after all devices have been seen.
+>>> Do you talk about the mount during boot or about mounting in general?
+>> Both,
 > 
-> Fix this by tracking outstandingn odirect write bytes, and use this as
-> well as the delalloc byts counter to decide if we need to lookup and
-> wait on any ordered extents.  If we have more odirect writes than
-> delalloc bytes we'll go ahead and wait on any ordered extents
-> irregardless of our flush state as flushing delalloc is likely to not
-> gain us anything.
-
-Ok, that helps.
-
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
-> v1->v2:
-> - updated the changelog
+> Sorry for chiming in, but the quoted part was mine, and I was speaking
+> about automatic mount during boot. Manual mount using "mount" command
+> after boot is of course possible (and does not involve systemd in any
+> way). There is systemd-mount tool which will likely have the same issue.
 > 
->  fs/btrfs/ctree.h        |  1 +
->  fs/btrfs/disk-io.c      | 15 ++++++++++++++-
->  fs/btrfs/extent-tree.c  | 17 +++++++++++++++--
->  fs/btrfs/ordered-data.c |  9 ++++++++-
->  4 files changed, 38 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 7e774d48c48c..e293d74b2ead 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -1016,6 +1016,7 @@ struct btrfs_fs_info {
->  	/* used to keep from writing metadata until there is a nice batch */
->  	struct percpu_counter dirty_metadata_bytes;
->  	struct percpu_counter delalloc_bytes;
-> +	struct percpu_counter odirect_bytes;
+Based on my own experience, it still has issues in some cases, even if 
+mounted manually.  In the past, I've had systemd _unmount_ degraded 
+BTRFS volumes I had just manually mounted because it thought they 
+shouldn't be mounted (because devices were missing, therefore the device 
+ready ioctl was returning false).  Only ever seems to happen for volumes 
+in `/etc/fstab` or managed as native mount units, but still an issue.
 
-I've changed odirect to dio everywhere, as this is the common reference
-to direct IO kernel code, O_DIRECT is for userspace.
