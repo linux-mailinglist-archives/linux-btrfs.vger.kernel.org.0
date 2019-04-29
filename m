@@ -2,273 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2379DBC0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 08:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F60E169
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 13:37:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727365AbfD2GDo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Apr 2019 02:03:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46940 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727318AbfD2GDm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Apr 2019 02:03:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DFB6DAF40
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 06:03:40 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: extent-tree: Add trace events for space info numbers update
-Date:   Mon, 29 Apr 2019 14:03:33 +0800
-Message-Id: <20190429060333.24172-2-wqu@suse.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190429060333.24172-1-wqu@suse.com>
-References: <20190429060333.24172-1-wqu@suse.com>
+        id S1728042AbfD2Lgk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Apr 2019 07:36:40 -0400
+Received: from mail-it1-f193.google.com ([209.85.166.193]:39532 "EHLO
+        mail-it1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727943AbfD2Lgj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Apr 2019 07:36:39 -0400
+Received: by mail-it1-f193.google.com with SMTP id t200so3071259itf.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 04:36:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=SfbR/2WWOr0M7sK3cOu6m7ioEvvsGJEmPj29vQ+x4/M=;
+        b=Cfxju/JLKZcuj+lx4nZcmlWOH508Tq+O5iFyiqTAch0CX+xfnEVtfL9iNInyn36Nl0
+         dw2+9xAN1IvMAGKh/5K7iqEfXbwexHOG41h3jp5jssRu0D1PLrUB8hsa1yCUjud6cT1n
+         jIlhgKGp85WZdjh5bS3pmZloLiykGXLBD9bLaZEs7YId1RFnAioe+dnCagdRcmIIrpFg
+         wR6dVd6Yvq0ARtJ9Ks7bWrOGcWiDUu0ULmb8bzWsLGNUw9aL20oylLx6S/5t9NHQdiXC
+         sQYUEnqBx0yq6oSlWo+VnUeE/EDu+o+kIoatexjKnNhq5ESxCio9WzWmGdTNf9ounAL0
+         9OEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SfbR/2WWOr0M7sK3cOu6m7ioEvvsGJEmPj29vQ+x4/M=;
+        b=noT/E+XXU1lVYE3qG71ZV5L6zkYXBZgW5WOatBgDBjuoAzgUuMIxcOj1A5LQElccrv
+         NLyH9UYTQ3Qx23ji531kXkCOrxk8pRTyD4rc1wL2uDu6QCd4P2cmvV7cBIxZhPDFuizj
+         r/+dxD0V/mt69by6n+GUABVjTXXx6vRZisFY7Qsxhd76H+22UUS86C90MT3m87xkHDLq
+         Sch1Tcjf+ywhbVjlEf00SrMMg1QLbsUYWdG8m2dpM+uPAWcMXiGn8YIzH/X/DG5sW3/q
+         PBp2HWBkFTxsLOZbTsZFe3N347TWNILgiIDFXrQDpoB5yZ8eXw0+Brv5l45dqh32SpR+
+         65gA==
+X-Gm-Message-State: APjAAAX5109ZQYYcT2csLQV60y24Tc5NYq7hNhjAhgGEaPr3tgV2iGtE
+        tLerWgTbE2dWgR+sMAQ8D5ua3fO3z6I=
+X-Google-Smtp-Source: APXvYqy3khgP+f0KbdeWd8aDji80moCzmTp09YTbHazleyujLk5JBhslHlrDrEuyS/5YNpMAdgxlMA==
+X-Received: by 2002:a02:9685:: with SMTP id w5mr1038072jai.131.1556537798705;
+        Mon, 29 Apr 2019 04:36:38 -0700 (PDT)
+Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
+        by smtp.gmail.com with ESMTPSA id h5sm1959521itb.5.2019.04.29.04.36.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Apr 2019 04:36:37 -0700 (PDT)
+Subject: Re: recommended way to allow mounting of degraded array at boot
+To:     Alberto Bursi <alberto.bursi@outlook.it>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <AM0PR03MB413128509989947DE4AA7DEF92380@AM0PR03MB4131.eurprd03.prod.outlook.com>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <5e02c6d3-9024-10fa-51f0-629ff5e604fe@gmail.com>
+Date:   Mon, 29 Apr 2019 07:36:35 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <AM0PR03MB413128509989947DE4AA7DEF92380@AM0PR03MB4131.eurprd03.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add trace event for update_bytes_pinned() and update_bytes_may_use() to
-detect underflow better.
+On 2019-04-28 12:18, Alberto Bursi wrote:
+> I am looking for a way to mimic mdadm's behaviour and have btrfs mount
+> a degraded array on boot as long as it's not broken (specific use case:
+> RAID1 with a single disk missing/dead)
+> 
+> So far the only thing I could think of (and I've seen suggested
+> elsewhere) is to add the "degraded" mount option
+> in kernel command line and in /etc/fstab.
+> 
+> But on the wiki I read that this is a bad idea because of what they call
+> "Incomplete chunk conversion" issue [1]
+> 
+> that says I can only mount it degraded (when it is actually missing a
+> disk) rw ONE TIME and then the filesystem would go ro.
+> 
+> Is that still a thing? Are there other ways of doing what I want?
+Yes, but it only matters if a couple of specific conditions are met:
 
-The output would be something like (only showing data part):
+* You have exactly two disks in the healthy filesystem.
+* Exactly one of those two disks is missing.
+* The filesystem has to allocate a new chunk when you are writing data 
+to it.
 
-  ## Buffered write start, 16K total ##
-  2255.954 xfs_io/860 btrfs:update_bytes_may_use:(nil)U: type=DATA old=0 diff=4096
-  2257.169 sudo/860 btrfs:update_bytes_may_use:(nil)U: type=DATA old=4096 diff=4096
-  2257.346 sudo/860 btrfs:update_bytes_may_use:(nil)U: type=DATA old=8192 diff=4096
-  2257.542 sudo/860 btrfs:update_bytes_may_use:(nil)U: type=DATA old=12288 diff=4096
+That last condition is almost impossible to be certain about, so you 
+really only need to pay attention to the first two points.
 
-  ## Delalloc start ##
-  3727.853 kworker/u8:3-e/700 btrfs:update_bytes_may_use:(nil)U: type=DATA old=16384 diff=-16384
+Now, that said, having 'degraded' as part of your standard options is 
+less than ideal for multiple reasons:
 
-  ## Space cache update ##
-  3733.132 sudo/862 btrfs:update_bytes_may_use:(nil)U: type=DATA old=0 diff=65536
-  3733.169 sudo/862 btrfs:update_bytes_may_use:(nil)U: type=DATA old=65536 diff=-65536
-  3739.868 sudo/862 btrfs:update_bytes_may_use:(nil)U: type=DATA old=0 diff=65536
-  3739.891 sudo/862 btrfs:update_bytes_may_use:(nil)U: type=DATA old=65536 diff=-65536
+* It makes it very easy to not actually notice that one of your storage 
+devices is having issues.  Unless you're paying attention to the kernel 
+logs, or you have _something_ that's validating observed hardware state 
+against known correct state, your only indication that something is 
+wrong will be reduced performance.  MD, LVM, and even ZFS have easy to 
+use notification mechanisms that can trivially be configured to let you 
+know if a disk is missing or misbehaving, but BTRFS just doesn't have 
+any equivalent right now.
+* It indirectly encourages running volumes in degraded mode under 
+otherwise normal system operation, which is risky because it's largely 
+untested (and is also just a bad idea, independent of what your storage 
+stack looks like).
+* If you're doing this on a system using systemd, it actually doesn't do 
+what you are trying to do.  Systemd will refuse to mount the volume if 
+all the constituent devices aren't present, so you're going to fail to 
+mount with or without the 'degraded' mount option if you have a disk 
+missing.
 
-These two trace events will allow bcc tool to probe btrfs_space_info
-changes and detect underflow with more details (e.g. backtrace for each
-update).
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent-tree.c       | 36 ++++++++++++++++++---------------
- include/trace/events/btrfs.h | 39 ++++++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+), 16 deletions(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 54c853ea0585..edaecf755bb7 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -55,10 +55,12 @@ enum {
-  * Declare a helper function to detect underflow of various space info members
-  */
- #define DECLARE_SPACE_INFO_UPDATE(name)					\
--static inline void update_##name(struct btrfs_space_info *sinfo,	\
-+static inline void update_##name(struct btrfs_fs_info *fs_info,		\
-+				 struct btrfs_space_info *sinfo,	\
- 				 s64 bytes)				\
- {									\
- 	lockdep_assert_held(&sinfo->lock);				\
-+	trace_update_##name(fs_info, sinfo, sinfo->name, bytes);	\
- 	if (bytes < 0 && sinfo->name < -bytes) {			\
- 		WARN_ON(1);						\
- 		sinfo->name = 0;					\
-@@ -4283,7 +4285,7 @@ int btrfs_alloc_data_chunk_ondemand(struct btrfs_inode *inode, u64 bytes)
- 					      data_sinfo->flags, bytes, 1);
- 		return -ENOSPC;
- 	}
--	update_bytes_may_use(data_sinfo, bytes);
-+	update_bytes_may_use(fs_info, data_sinfo, bytes);
- 	trace_btrfs_space_reservation(fs_info, "space_info",
- 				      data_sinfo->flags, bytes, 1);
- 	spin_unlock(&data_sinfo->lock);
-@@ -4336,7 +4338,7 @@ void btrfs_free_reserved_data_space_noquota(struct inode *inode, u64 start,
- 
- 	data_sinfo = fs_info->data_sinfo;
- 	spin_lock(&data_sinfo->lock);
--	update_bytes_may_use(data_sinfo, -len);
-+	update_bytes_may_use(fs_info, data_sinfo, -len);
- 	trace_btrfs_space_reservation(fs_info, "space_info",
- 				      data_sinfo->flags, len, 0);
- 	spin_unlock(&data_sinfo->lock);
-@@ -5238,13 +5240,13 @@ static int __reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
- 	 * If not things get more complicated.
- 	 */
- 	if (used + orig_bytes <= space_info->total_bytes) {
--		update_bytes_may_use(space_info, orig_bytes);
-+		update_bytes_may_use(fs_info, space_info, orig_bytes);
- 		trace_btrfs_space_reservation(fs_info, "space_info",
- 					      space_info->flags, orig_bytes, 1);
- 		ret = 0;
- 	} else if (can_overcommit(fs_info, space_info, orig_bytes, flush,
- 				  system_chunk)) {
--		update_bytes_may_use(space_info, orig_bytes);
-+		update_bytes_may_use(fs_info, space_info, orig_bytes);
- 		trace_btrfs_space_reservation(fs_info, "space_info",
- 					      space_info->flags, orig_bytes, 1);
- 		ret = 0;
-@@ -5572,7 +5574,7 @@ static void space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
- 		flush = BTRFS_RESERVE_FLUSH_ALL;
- 		goto again;
- 	}
--	update_bytes_may_use(space_info, -num_bytes);
-+	update_bytes_may_use(fs_info, space_info, -num_bytes);
- 	trace_btrfs_space_reservation(fs_info, "space_info",
- 				      space_info->flags, num_bytes, 0);
- 	spin_unlock(&space_info->lock);
-@@ -5600,7 +5602,8 @@ static void space_info_add_new_bytes(struct btrfs_fs_info *fs_info,
- 						      ticket->bytes, 1);
- 			list_del_init(&ticket->list);
- 			num_bytes -= ticket->bytes;
--			update_bytes_may_use(space_info, ticket->bytes);
-+			update_bytes_may_use(fs_info, space_info,
-+					     ticket->bytes);
- 			ticket->bytes = 0;
- 			space_info->tickets_id++;
- 			wake_up(&ticket->wait);
-@@ -5608,7 +5611,7 @@ static void space_info_add_new_bytes(struct btrfs_fs_info *fs_info,
- 			trace_btrfs_space_reservation(fs_info, "space_info",
- 						      space_info->flags,
- 						      num_bytes, 1);
--			update_bytes_may_use(space_info, num_bytes);
-+			update_bytes_may_use(fs_info, space_info, num_bytes);
- 			ticket->bytes -= num_bytes;
- 			num_bytes = 0;
- 		}
-@@ -5980,14 +5983,14 @@ static void update_global_block_rsv(struct btrfs_fs_info *fs_info)
- 			num_bytes = min(num_bytes,
- 					block_rsv->size - block_rsv->reserved);
- 			block_rsv->reserved += num_bytes;
--			update_bytes_may_use(sinfo, num_bytes);
-+			update_bytes_may_use(fs_info, sinfo, num_bytes);
- 			trace_btrfs_space_reservation(fs_info, "space_info",
- 						      sinfo->flags, num_bytes,
- 						      1);
- 		}
- 	} else if (block_rsv->reserved > block_rsv->size) {
- 		num_bytes = block_rsv->reserved - block_rsv->size;
--		update_bytes_may_use(sinfo, -num_bytes);
-+		update_bytes_may_use(fs_info, sinfo, -num_bytes);
- 		trace_btrfs_space_reservation(fs_info, "space_info",
- 				      sinfo->flags, num_bytes, 0);
- 		block_rsv->reserved = block_rsv->size;
-@@ -6411,7 +6414,7 @@ static int update_block_group(struct btrfs_trans_handle *trans,
- 			old_val -= num_bytes;
- 			btrfs_set_block_group_used(&cache->item, old_val);
- 			cache->pinned += num_bytes;
--			update_bytes_pinned(cache->space_info, num_bytes);
-+			update_bytes_pinned(info, cache->space_info, num_bytes);
- 			cache->space_info->bytes_used -= num_bytes;
- 			cache->space_info->disk_used -= num_bytes * factor;
- 			spin_unlock(&cache->lock);
-@@ -6485,7 +6488,7 @@ static int pin_down_extent(struct btrfs_fs_info *fs_info,
- 	spin_lock(&cache->space_info->lock);
- 	spin_lock(&cache->lock);
- 	cache->pinned += num_bytes;
--	update_bytes_pinned(cache->space_info, num_bytes);
-+	update_bytes_pinned(fs_info, cache->space_info, num_bytes);
- 	if (reserved) {
- 		cache->reserved -= num_bytes;
- 		cache->space_info->bytes_reserved -= num_bytes;
-@@ -6694,7 +6697,7 @@ static int btrfs_add_reserved_bytes(struct btrfs_block_group_cache *cache,
- 	} else {
- 		cache->reserved += num_bytes;
- 		space_info->bytes_reserved += num_bytes;
--		update_bytes_may_use(space_info, -ram_bytes);
-+		update_bytes_may_use(cache->fs_info, space_info, -ram_bytes);
- 		if (delalloc)
- 			cache->delalloc_bytes += num_bytes;
- 	}
-@@ -6850,7 +6853,7 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
- 		spin_lock(&space_info->lock);
- 		spin_lock(&cache->lock);
- 		cache->pinned -= len;
--		update_bytes_pinned(space_info, -len);
-+		update_bytes_pinned(fs_info, space_info, -len);
- 
- 		trace_btrfs_space_reservation(fs_info, "pinned",
- 					      space_info->flags, len, 0);
-@@ -6871,7 +6874,8 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
- 				to_add = min(len, global_rsv->size -
- 					     global_rsv->reserved);
- 				global_rsv->reserved += to_add;
--				update_bytes_may_use(space_info, to_add);
-+				update_bytes_may_use(fs_info, space_info,
-+						     to_add);
- 				if (global_rsv->reserved >= global_rsv->size)
- 					global_rsv->full = 1;
- 				trace_btrfs_space_reservation(fs_info,
-@@ -11144,7 +11148,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 		spin_lock(&space_info->lock);
- 		spin_lock(&block_group->lock);
- 
--		update_bytes_pinned(space_info, -block_group->pinned);
-+		update_bytes_pinned(fs_info, space_info, -block_group->pinned);
- 		space_info->bytes_readonly += block_group->pinned;
- 		percpu_counter_add_batch(&space_info->total_bytes_pinned,
- 				   -block_group->pinned,
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 8b12753fee78..81544342f89a 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -29,6 +29,7 @@ struct btrfs_qgroup_extent_record;
- struct btrfs_qgroup;
- struct extent_io_tree;
- struct prelim_ref;
-+struct btrfs_space_info;
- 
- TRACE_DEFINE_ENUM(FLUSH_DELAYED_ITEMS_NR);
- TRACE_DEFINE_ENUM(FLUSH_DELAYED_ITEMS);
-@@ -2005,6 +2006,44 @@ TRACE_EVENT(btrfs_convert_extent_bit,
- 		  __print_flags(__entry->clear_bits, "|", EXTENT_FLAGS))
- );
- 
-+DECLARE_EVENT_CLASS(btrfs__space_info_update,
-+
-+	TP_PROTO(struct btrfs_fs_info *fs_info,
-+		 struct btrfs_space_info *sinfo, u64 old, s64 diff),
-+
-+	TP_ARGS(fs_info, sinfo, old, diff),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	type		)
-+		__field(	u64,	old		)
-+		__field(	s64,	diff		)
-+	),
-+
-+	TP_fast_assign_btrfs(fs_info,
-+		__entry->type	= sinfo->flags;
-+		__entry->old	= old;
-+		__entry->diff	= diff;
-+	),
-+	TP_printk_btrfs("type=%s old=%llu diff=%lld",
-+		__print_flags(__entry->type, "|", BTRFS_GROUP_FLAGS),
-+		__entry->old, __entry->diff)
-+);
-+
-+DEFINE_EVENT(btrfs__space_info_update, update_bytes_may_use,
-+
-+	TP_PROTO(struct btrfs_fs_info *fs_info,
-+		 struct btrfs_space_info *sinfo, u64 old, s64 diff),
-+
-+	TP_ARGS(fs_info, sinfo, old, diff)
-+);
-+
-+DEFINE_EVENT(btrfs__space_info_update, update_bytes_pinned,
-+
-+	TP_PROTO(struct btrfs_fs_info *fs_info,
-+		 struct btrfs_space_info *sinfo, u64 old, s64 diff),
-+
-+	TP_ARGS(fs_info, sinfo, old, diff)
-+);
- #endif /* _TRACE_BTRFS_H */
- 
- /* This part must be outside protection */
--- 
-2.21.0
-
+Unfortunately though, there's not really any other option currently to 
+do this with BTRFS unless you script something yourself (not 
+particularly hard with traditional init systems, but somewhat difficult 
+with systemd because of the aforementioned issue).
