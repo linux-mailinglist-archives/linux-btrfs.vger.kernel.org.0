@@ -2,77 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DEFAE1AE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 13:57:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A97CBE1F7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 14:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbfD2L5K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Apr 2019 07:57:10 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:34402 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727936AbfD2L5K (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Apr 2019 07:57:10 -0400
-Received: by mail-ot1-f50.google.com with SMTP id n15so2263658ota.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 04:57:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=egyOG8vXcyQwSGcV0Us7I89MRRO7tUfY1J9yJF9wPco=;
-        b=m9RfCesujT7Jl6CM0FEyMms0qRtTVAELt1iZmFkTWzZsbnWocDRc3R27YJGO1DAVCQ
-         V3CxV8aYzfDn8RU2o8WlZFvGFYFeeQ1YC9YTzt+fksFHtGZccAjvWu3R6nQDprrjaRJy
-         CxWhFvkOLolhp72BZ+/jXSxI7KEImQepXF71TXK4di5V5vDRc+FiUX8fjfr7KrKoBFqK
-         boDtz/+W1See8tOiE0lidKhchR7/5RSJF7hez9PXOTj7yYpkjwPRzu+YL5+d8vkt2+Ue
-         ZiHvC2k5V/D9mETeEIqGB11kVpxD4Ff1pQlr1v/71lc3DXxtt4zeO+4MtFHDMmDDXDeg
-         V5Dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=egyOG8vXcyQwSGcV0Us7I89MRRO7tUfY1J9yJF9wPco=;
-        b=b08NMejL0tPknu3F3+c0aIPuLLGZdg8wXvsd4b1L51wzn0TIsYLMw11J9dslP36jPT
-         r8Dn26vC1JFJ7hI/p+iMV5+gUC6gvhNkpPrBFpBuqjR878J+0II6s5PNgc+jUtVDyt24
-         nuerUDAcg8AGbQg4/kC0ruBvcBRKKm35hMl2LXYhyKxdjVvczJn+FKmG+FV/Fb+dg4aF
-         tCEC3CHb5HUAm+lS9kgpdn0Cnm4s4i2nDX/F0xhC7B3ryNOThFs/9iv2cGFUcUY5/mdN
-         +2rARPvFnb7jRRDBMG3wDokPi6HECfbns9u8Q+jDG/piM8MZlhIIb1ai9oEqkbWD77Eu
-         NS5w==
-X-Gm-Message-State: APjAAAWt1XEaJc8+iRIbm0NQDbcA1u/5lgHKaBpKu7TJ+j4WeV+9bD8Y
-        EpeZPsNGUKiN/f5iNT7Rof8fXdgYR7VVBJcXaL8=
-X-Google-Smtp-Source: APXvYqzdVteQcVsu4KyXJIriOU1HD/Eui5qQOClY91Nn77ehW1Co3UZc3f3yTWAubvoDdjWEAJQDfjoDJWxg9iHhDlU=
-X-Received: by 2002:a9d:6543:: with SMTP id q3mr14553374otl.370.1556539029527;
- Mon, 29 Apr 2019 04:57:09 -0700 (PDT)
-MIME-Version: 1.0
-References: <AM0PR03MB413128509989947DE4AA7DEF92380@AM0PR03MB4131.eurprd03.prod.outlook.com>
- <5e02c6d3-9024-10fa-51f0-629ff5e604fe@gmail.com>
-In-Reply-To: <5e02c6d3-9024-10fa-51f0-629ff5e604fe@gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Date:   Mon, 29 Apr 2019 14:56:58 +0300
-Message-ID: <CAA91j0UGPKgqu_TYKQdfnAxe5pfLLvkVaaUNgUZmEh10MrWJ+w@mail.gmail.com>
-Subject: Re: recommended way to allow mounting of degraded array at boot
-To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Cc:     Alberto Bursi <alberto.bursi@outlook.it>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727956AbfD2MIT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Apr 2019 08:08:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727927AbfD2MIT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Apr 2019 08:08:19 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F28F02075E
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 12:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1556539698;
+        bh=bl+zW6lHWK3VfY18Ld40uvL2O1qL/SovhfMMCBUrytE=;
+        h=From:To:Subject:Date:From;
+        b=p1GCJ+UiR0w65ks9Y+jh/eNLLUCurxdM0xYlHuAaRO9Ju2IyhzAr15w61zhmlIUol
+         f5HpmGkK7Ui1/I7FnsGBCNeEk4zF0uKiRz02z5vF7vd7X2sBsf5OF0yQc6J2ZwjiIL
+         vDyCfwSnsfUblLQVLVw9+XgWx70dj/MZ1rttU6BI=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] Btrfs: do not abort transaction at btrfs_update_root() after failure to COW path
+Date:   Mon, 29 Apr 2019 13:08:14 +0100
+Message-Id: <20190429120814.8638-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 29, 2019 at 2:38 PM Austin S. Hemmelgarn
-<ahferroin7@gmail.com> wrote:
+From: Filipe Manana <fdmanana@suse.com>
 
-> * If you're doing this on a system using systemd, it actually doesn't do
-> what you are trying to do.  Systemd will refuse to mount the volume if
-> all the constituent devices aren't present,
->
+Currently when we fail to COW a path at btrfs_update_root() we end up
+always aborting the transaction. However all the current callers of
+btrfs_update_root() are able to deal with errors returned from it, many do
+end up aborting the transaction themselves (directly or not, such as the
+transaction commit path), other BUG_ON() or just gracefully cancel whatever
+they were doing.
 
-It is not quite correct. systemd will not even attempt to mount
-incomplete btrfs because it will wait for all devices (including
-missing ones) to appear before proceeding to mount it. And if this
-check is disabled, it will actually just call mount.btrfs, it will
-certainly not "refuse" to do anything. So the following may work
+When syncing the fsync log, we call btrfs_update_root() through
+tree-log.c:update_log_root(), and if it returns an -ENOSPC error, the log
+sync code does not abort the transaction, instead it gracefully handles
+the error and returns -EAGAIN to the fsync handler, so that it falls back
+to a transaction commit. Any other error different from -ENOSPC, makes the
+log sync code abort the transaction.
 
-- disable udev rule calls "btrfs device ready"  (it actually calls
-internal variant, but it does not matter).
-- replace mount.btrfs with your own script that tries to mount btrfs
-and if it fails tries to mount it degraded.
+So remove the transaction abort from btrfs_update_log() when we fail to
+COW a path to update the root item, so that if an -ENOSPC failure happens
+we avoid aborting the current transaction and have a chance of the fsync
+succeeding after falling back to a transaction commit.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203413
+Fixes: 79787eaab46121 ("btrfs: replace many BUG_ONs with proper error handling")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/root-tree.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
+index 893d12fbfda0..1a92ad546f91 100644
+--- a/fs/btrfs/root-tree.c
++++ b/fs/btrfs/root-tree.c
+@@ -132,10 +132,8 @@ int btrfs_update_root(struct btrfs_trans_handle *trans, struct btrfs_root
+ 		return -ENOMEM;
+ 
+ 	ret = btrfs_search_slot(trans, root, key, path, 0, 1);
+-	if (ret < 0) {
+-		btrfs_abort_transaction(trans, ret);
++	if (ret < 0)
+ 		goto out;
+-	}
+ 
+ 	if (ret != 0) {
+ 		btrfs_print_leaf(path->nodes[0]);
+-- 
+2.11.0
+
