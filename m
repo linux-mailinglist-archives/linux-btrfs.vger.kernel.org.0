@@ -2,116 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B002E183
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 13:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEFAE1AE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 13:57:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727943AbfD2LnN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Apr 2019 07:43:13 -0400
-Received: from mail-it1-f181.google.com ([209.85.166.181]:39553 "EHLO
-        mail-it1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727933AbfD2LnN (ORCPT
+        id S1727991AbfD2L5K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Apr 2019 07:57:10 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:34402 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727936AbfD2L5K (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Apr 2019 07:43:13 -0400
-Received: by mail-it1-f181.google.com with SMTP id t200so3095999itf.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 04:43:12 -0700 (PDT)
+        Mon, 29 Apr 2019 07:57:10 -0400
+Received: by mail-ot1-f50.google.com with SMTP id n15so2263658ota.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 04:57:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=IlFgVHrx0n7diXroXfSqsprU74XmPY1eUh0uSM7orcI=;
-        b=Rh5Gp6ujOaqA8uTiTMO27AeNkEJ+xyVaTJSNaeC8Kbx7CxV/pNDsLzWmtJNZDEfm4H
-         NvCJnelzeQ4ePLqPgJnH+su+Ml4A+ieSuw0NZjh2kOhA8DGC6QKtX6/1EWR5JIktGLz1
-         qMYCQtH0BemF2Ab3S3VqoVVx9jZSaROy0quxbfyh5pJGsgO3visFW2l7U4PW9RFCRXDx
-         YSpJSXohwSp6YNz8Hy0ik6ibGFYxsa8AkZ9kWG6hnGYc0jKVL07TCtDBkiqfgkc0En7L
-         hRF/vUTf6KlzPWAj+5GwCt73S8xE/N30Xyn8toHU8aglqEDXDVNQuO/x8Svc+KUgTcnS
-         AhmQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=egyOG8vXcyQwSGcV0Us7I89MRRO7tUfY1J9yJF9wPco=;
+        b=m9RfCesujT7Jl6CM0FEyMms0qRtTVAELt1iZmFkTWzZsbnWocDRc3R27YJGO1DAVCQ
+         V3CxV8aYzfDn8RU2o8WlZFvGFYFeeQ1YC9YTzt+fksFHtGZccAjvWu3R6nQDprrjaRJy
+         CxWhFvkOLolhp72BZ+/jXSxI7KEImQepXF71TXK4di5V5vDRc+FiUX8fjfr7KrKoBFqK
+         boDtz/+W1See8tOiE0lidKhchR7/5RSJF7hez9PXOTj7yYpkjwPRzu+YL5+d8vkt2+Ue
+         ZiHvC2k5V/D9mETeEIqGB11kVpxD4Ff1pQlr1v/71lc3DXxtt4zeO+4MtFHDMmDDXDeg
+         V5Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IlFgVHrx0n7diXroXfSqsprU74XmPY1eUh0uSM7orcI=;
-        b=J1G5gjdchS0D270nRlBuKDgra/1DtL6GLNCVfW9gZmDutAdBpwf0cAy8gisl9/6uKK
-         H8I9hLGUKnCkMn2revsq9NtBYFrkwIAdM6QmDzQPQu0xiSmYRFfveMlQmDRPZaGUvpr7
-         NBq343iKVeTOlm/G86IW3BbVENYgqq8Ub0cfPeXWRVOyX/BT8d88nk9wMUHpFEpiJ/t1
-         G3eGzpmWaOzNxhcmyxjudaPk02UBxKSC58UBS4JbMqhyhH/tkYyumRkAFfZIwDOYLw2k
-         VG6VPNcdO86bRsT9VJ3mUaeLbqrRDRpxX1YQHZj8Ytv3sJjBZDpBjkDzd4dCtzG0mS3R
-         jIwA==
-X-Gm-Message-State: APjAAAWjw989HkQLLrEPua4j0KY9rglgG1aw9l9UCLRnB2Hw+HvK1+Kx
-        58IWlFEjt6wdib7pItOh5FgndNgXFI0=
-X-Google-Smtp-Source: APXvYqztCQ4ubvnlDDOQ2RTGsPNsjPDFa0TC9flJGgNXyUc2SiPKpdBIjqT66Z+rdlUjCpzArr9T+Q==
-X-Received: by 2002:a24:d45:: with SMTP id 66mr19421002itx.9.1556538191813;
-        Mon, 29 Apr 2019 04:43:11 -0700 (PDT)
-Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
-        by smtp.gmail.com with ESMTPSA id j5sm9031104ita.16.2019.04.29.04.43.10
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Apr 2019 04:43:11 -0700 (PDT)
-Subject: Re: Migration to BTRFS
-To:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        Hendrik Friedel <hendrik@friedels.name>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <emb78b630a-c045-4f12-8945-66a237852402@ryzen>
- <0f1a1f40-c951-05dc-f9fd-d6de5884f782@gmail.com>
-From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Message-ID: <e27cc7ee-4256-0ccc-a9f1-79cd6898e927@gmail.com>
-Date:   Mon, 29 Apr 2019 07:43:08 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=egyOG8vXcyQwSGcV0Us7I89MRRO7tUfY1J9yJF9wPco=;
+        b=b08NMejL0tPknu3F3+c0aIPuLLGZdg8wXvsd4b1L51wzn0TIsYLMw11J9dslP36jPT
+         r8Dn26vC1JFJ7hI/p+iMV5+gUC6gvhNkpPrBFpBuqjR878J+0II6s5PNgc+jUtVDyt24
+         nuerUDAcg8AGbQg4/kC0ruBvcBRKKm35hMl2LXYhyKxdjVvczJn+FKmG+FV/Fb+dg4aF
+         tCEC3CHb5HUAm+lS9kgpdn0Cnm4s4i2nDX/F0xhC7B3ryNOThFs/9iv2cGFUcUY5/mdN
+         +2rARPvFnb7jRRDBMG3wDokPi6HECfbns9u8Q+jDG/piM8MZlhIIb1ai9oEqkbWD77Eu
+         NS5w==
+X-Gm-Message-State: APjAAAWt1XEaJc8+iRIbm0NQDbcA1u/5lgHKaBpKu7TJ+j4WeV+9bD8Y
+        EpeZPsNGUKiN/f5iNT7Rof8fXdgYR7VVBJcXaL8=
+X-Google-Smtp-Source: APXvYqzdVteQcVsu4KyXJIriOU1HD/Eui5qQOClY91Nn77ehW1Co3UZc3f3yTWAubvoDdjWEAJQDfjoDJWxg9iHhDlU=
+X-Received: by 2002:a9d:6543:: with SMTP id q3mr14553374otl.370.1556539029527;
+ Mon, 29 Apr 2019 04:57:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0f1a1f40-c951-05dc-f9fd-d6de5884f782@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <AM0PR03MB413128509989947DE4AA7DEF92380@AM0PR03MB4131.eurprd03.prod.outlook.com>
+ <5e02c6d3-9024-10fa-51f0-629ff5e604fe@gmail.com>
+In-Reply-To: <5e02c6d3-9024-10fa-51f0-629ff5e604fe@gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Date:   Mon, 29 Apr 2019 14:56:58 +0300
+Message-ID: <CAA91j0UGPKgqu_TYKQdfnAxe5pfLLvkVaaUNgUZmEh10MrWJ+w@mail.gmail.com>
+Subject: Re: recommended way to allow mounting of degraded array at boot
+To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Cc:     Alberto Bursi <alberto.bursi@outlook.it>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019-04-28 16:14, Andrei Borzenkov wrote:
-> 28.04.2019 22:35, Hendrik Friedel пишет:
->> Hello,
->>
->> I intend to move to BTRFS and of course I have some data already.
->> I currently have several single 4TB drives and I would like to move the
->> Data onto new drives (2*8TB). I need no raid, as I prefer a backup.
->> Nevertheless, having raid nice for availability. So why not in the end.
->> I currently use ~6TB, so it may work, but I would be able to remove the
->> redundancy later.
->>
->> So, if I understand correctly, today I want
->> -m raid1 -d raid1
->>
->> whereas later, I want
->> -m raid1 -d single
->>
->> What is very important to me is, that with one failing drive, I have no
->> risk of losing the whole filesystem, but only losing the affected drive.
->> Is that possible with both of these variants?
->>
-> 
-> With "single" data profile you won't lose filesystem, but you will
-> irretrievably lose any data on the missing drive. Also "single" profile
-> does not support auto-healing (repairing of bad copy from good copy). If
-> this is acceptable to you, then yes, both variants will do what you want.
-Actually, it's a bit worse than this potentially.  You may lose 
-individual files if you lose one disk with the proposed setup, but you 
-may also lose _parts_ of individual files, especially if you have lots 
-of large (>1-5GB in size) files.  And on top of this, finding what data 
-went missing will essentially require trying to read every byte of every 
-file in the volume.
-> 
->> Is it possible to move between the two (doing a balance, of course?
-> 
-> Yes as long as you have sufficient free space for target profile.
-> 
->> Any other thoughts/recommendations?
->>
-> 
-> As of today there is no provision for automatic mounting of incomplete
-> multi-device btrfs in degraded mode. Actually, with systemd it is flat
-> impossible to mount incomplete btrfs because standard framework only
-> proceeds to mount it after all devices have been seen. As long as you do
-> not use systemd in initramfs you may be able to boot by passing suitable
-> root mount flags on kernel command line.
-> 
+On Mon, Apr 29, 2019 at 2:38 PM Austin S. Hemmelgarn
+<ahferroin7@gmail.com> wrote:
 
+> * If you're doing this on a system using systemd, it actually doesn't do
+> what you are trying to do.  Systemd will refuse to mount the volume if
+> all the constituent devices aren't present,
+>
+
+It is not quite correct. systemd will not even attempt to mount
+incomplete btrfs because it will wait for all devices (including
+missing ones) to appear before proceeding to mount it. And if this
+check is disabled, it will actually just call mount.btrfs, it will
+certainly not "refuse" to do anything. So the following may work
+
+- disable udev rule calls "btrfs device ready"  (it actually calls
+internal variant, but it does not matter).
+- replace mount.btrfs with your own script that tries to mount btrfs
+and if it fails tries to mount it degraded.
