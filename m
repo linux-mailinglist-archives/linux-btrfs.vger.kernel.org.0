@@ -2,134 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5F9CE8FE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 19:28:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9A9E918
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Apr 2019 19:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729026AbfD2R1o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Apr 2019 13:27:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58480 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728997AbfD2R1o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Apr 2019 13:27:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D4DE0AEA1;
-        Mon, 29 Apr 2019 17:27:42 +0000 (UTC)
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kilobyte@angband.pl, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-        david@fromorbit.com, willy@infradead.org, hch@lst.de,
-        darrick.wong@oracle.com, dsterba@suse.cz, nborisov@suse.com,
-        linux-nvdimm@lists.01.org, Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: [PATCH 18/18] btrfs: trace functions for btrfs_iomap_begin/end
-Date:   Mon, 29 Apr 2019 12:26:49 -0500
-Message-Id: <20190429172649.8288-19-rgoldwyn@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20190429172649.8288-1-rgoldwyn@suse.de>
-References: <20190429172649.8288-1-rgoldwyn@suse.de>
+        id S1728839AbfD2Rbc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Apr 2019 13:31:32 -0400
+Received: from mail-lj1-f171.google.com ([209.85.208.171]:44727 "EHLO
+        mail-lj1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728807AbfD2Rbc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Apr 2019 13:31:32 -0400
+Received: by mail-lj1-f171.google.com with SMTP id c6so3635762lji.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Apr 2019 10:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NEq5JFCYZruWXi/CMXWijBZNnRHIdGaVPurOkT1qwIQ=;
+        b=GE1QbO+j2O7pJezctXzEs//XI91OfMtSKrweZk/TN2xDJS6TSaAwDflStDC2H7nir9
+         0+cwTNgn4WLEVtC28rhQCbde4n8r2VbeXDcTIPfM9CjP8O2xVg8hokzx966fzobdUXxj
+         Vd9rocHLu89CRnXzCtWMlH2s0FECkYoTYO2wtuHx8/cYZuON1b1NpTWIXBU/6jRzomnL
+         YTufI9ili6o8dMNPEhKQXT7iGC2nLjLvPSA2RWGh5sOlCLmFpD/oWd5yp2J0RfY/Oojo
+         cWRCyhSdO1oFGakAuXVs8igIrYyDFBC5yIOV4qvgOqPF5aUquEEk9rHPdXWVFHOVlTpL
+         JEfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=NEq5JFCYZruWXi/CMXWijBZNnRHIdGaVPurOkT1qwIQ=;
+        b=qXA3eDCTOIaKNeFkb/hbuy5ccRQw/xHvkliZeDB0fhrx6pM2YWuBMNHkt8bc+/yF36
+         89zoE7Loi0dfVf9G8EHTt+F1UNv4VkGFkyX14a96p55MNRgWmgtcFI4H7r6fRWR5mBTg
+         EBsBBpW/pTDLE8SBaS0FqTr6822xQ/wAVlm4BbCRtAbUPaBgiSRty/Bl2XP+1sJCqPwB
+         znsJRtmkC6QwN3zMnJfV3z+nNnLBl4pJicqIOfMhv1xnSDg2dIfrzn6zpwZVqym4+6MR
+         yO2/1dtvzcJnZqeqIhVhEH9s1LwMQ2i20HMTUI3wxofq6mk0fGrdxd7Rp04Kz8kasPMH
+         u/0Q==
+X-Gm-Message-State: APjAAAVQ0GW32tqZblY7YPGtFCP29JTilMErjkPyvLTVaCQvC0TsYbvB
+        dbdGb1H5Q97RTJEzR8Z1gAzVM5AasqA=
+X-Google-Smtp-Source: APXvYqwqBdAMYlsPswwhCppEiLOoGRJZ6pNPgV4YfcU8YWQ1CdgKpj52LDBjzitU96pXZ3kYObVguA==
+X-Received: by 2002:a2e:9b96:: with SMTP id z22mr22564211lji.165.1556559089672;
+        Mon, 29 Apr 2019 10:31:29 -0700 (PDT)
+Received: from [192.168.1.5] ([109.252.90.193])
+        by smtp.gmail.com with ESMTPSA id c24sm345259ljj.46.2019.04.29.10.31.28
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Apr 2019 10:31:28 -0700 (PDT)
+Subject: Re: Migration to BTRFS
+To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
+        Hendrik Friedel <hendrik@friedels.name>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <emb78b630a-c045-4f12-8945-66a237852402@ryzen>
+ <0f1a1f40-c951-05dc-f9fd-d6de5884f782@gmail.com>
+ <e27cc7ee-4256-0ccc-a9f1-79cd6898e927@gmail.com>
+ <em12ddda3f-4221-4678-aa1c-0854489007e1@ryzen>
+ <595b60f2-2a93-2078-93f2-e5952aac1fa3@gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
+ BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
+ 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
+ 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
+ KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
+ nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
+ gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
+ vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
+ AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <831d651a-5aa3-e98c-8520-05dd5f55e26d@gmail.com>
+Date:   Mon, 29 Apr 2019 20:31:27 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <595b60f2-2a93-2078-93f2-e5952aac1fa3@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+29.04.2019 20:20, Austin S. Hemmelgarn пишет:
+> 
+>>>> As of today there is no provision for automatic mounting of incomplete
+>>>> multi-device btrfs in degraded mode. Actually, with systemd it is flat
+>>>> impossible to mount incomplete btrfs because standard framework only
+>>>> proceeds to mount it after all devices have been seen.
+>> Do you talk about the mount during boot or about mounting in general?
+> Both,
 
-This is for debug purposes only and can be skipped.
+Sorry for chiming in, but the quoted part was mine, and I was speaking
+about automatic mount during boot. Manual mount using "mount" command
+after boot is of course possible (and does not involve systemd in any
+way). There is systemd-mount tool which will likely have the same issue.
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
----
- fs/btrfs/dax.c               |  3 +++
- include/trace/events/btrfs.h | 56 ++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 59 insertions(+)
-
-diff --git a/fs/btrfs/dax.c b/fs/btrfs/dax.c
-index 20ec2ec49c68..3fee28f5a199 100644
---- a/fs/btrfs/dax.c
-+++ b/fs/btrfs/dax.c
-@@ -104,6 +104,8 @@ static int btrfs_iomap_begin(struct inode *inode, loff_t pos,
- 	u64 srcblk = 0;
- 	loff_t diff;
- 
-+	trace_btrfs_iomap_begin(inode, pos, length, flags);
-+
- 	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, pos, length, 0);
- 
- 	iomap->type = IOMAP_MAPPED;
-@@ -164,6 +166,7 @@ static int btrfs_iomap_end(struct inode *inode, loff_t pos,
- {
- 	struct btrfs_iomap *bi = iomap->private;
- 	u64 wend;
-+	trace_btrfs_iomap_end(inode, pos, length, written, flags);
- 
- 	if (!bi)
- 		return 0;
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index ab1cc33adbac..8779e5789a7c 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -1850,6 +1850,62 @@ DEFINE_EVENT(btrfs__block_group, btrfs_skip_unused_block_group,
- 	TP_ARGS(bg_cache)
- );
- 
-+TRACE_EVENT(btrfs_iomap_begin,
-+
-+	TP_PROTO(const struct inode *inode, loff_t pos, loff_t length, int flags),
-+
-+	TP_ARGS(inode, pos, length, flags),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	ino		)
-+		__field(	u64,	pos		)
-+		__field(	u64,	length		)
-+		__field(	int,    flags		)
-+	),
-+
-+	TP_fast_assign_btrfs(btrfs_sb(inode->i_sb),
-+		__entry->ino		= btrfs_ino(BTRFS_I(inode));
-+		__entry->pos		= pos;
-+		__entry->length		= length;
-+		__entry->flags		= flags;
-+	),
-+
-+	TP_printk_btrfs("ino=%llu pos=%llu len=%llu flags=0x%x",
-+		  __entry->ino,
-+		  __entry->pos,
-+		  __entry->length,
-+		  __entry->flags)
-+);
-+
-+TRACE_EVENT(btrfs_iomap_end,
-+
-+	TP_PROTO(const struct inode *inode, loff_t pos, loff_t length, loff_t written, int flags),
-+
-+	TP_ARGS(inode, pos, length, written, flags),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	ino		)
-+		__field(	u64,	pos		)
-+		__field(	u64,	length		)
-+		__field(	u64,	written		)
-+		__field(	int,    flags		)
-+	),
-+
-+	TP_fast_assign_btrfs(btrfs_sb(inode->i_sb),
-+		__entry->ino		= btrfs_ino(BTRFS_I(inode));
-+		__entry->pos		= pos;
-+		__entry->length		= length;
-+		__entry->written		= written;
-+		__entry->flags		= flags;
-+	),
-+
-+	TP_printk_btrfs("ino=%llu pos=%llu len=%llu written=%llu flags=0x%x",
-+		  __entry->ino,
-+		  __entry->pos,
-+		  __entry->length,
-+		  __entry->written,
-+		  __entry->flags)
-+);
- #endif /* _TRACE_BTRFS_H */
- 
- /* This part must be outside protection */
--- 
-2.16.4
 
