@@ -2,142 +2,243 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B9BFFA9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Apr 2019 20:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45BE610885
+	for <lists+linux-btrfs@lfdr.de>; Wed,  1 May 2019 15:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726112AbfD3SWx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Apr 2019 14:22:53 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:41118 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbfD3SWx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Apr 2019 14:22:53 -0400
-Received: by mail-lf1-f66.google.com with SMTP id t30so11480670lfd.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Apr 2019 11:22:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=SqsXprMqUoSpGsiqlsHn4DlKSPq+tO84KXMhEk+Q5rU=;
-        b=gMVGMM33TRl4bhaXia9qOYmZbYo7DqEOXwNu1NxiCei+C+LlJhx6aSbQFtTFxjxu4L
-         7Z/ywC4ucGa+5lXeIeFi3AmNiPG55ZI8tdyWMyha4oDLPdCjx557TZRRYgFiH0n8EaX7
-         MDkkWYeuteXf3J1r6XG3n45zIzntNkbbB6Hb7wGWIkUiMVt2y/b1yICIKcp4hFNLQ+Bt
-         ATJGUzMRr5Veyywh0R1jkL8AyZgvfvpDJ81r20EQty9hAcpVNaCr2jHQMTQ9as4a8S+6
-         0vpUfzMsqM2Ktiw28bGQBCo7f5OkAzfcG5/Uvsv2E5HxAX8Pv3p55dQ2Jvm1dMq5CDAD
-         F+6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=SqsXprMqUoSpGsiqlsHn4DlKSPq+tO84KXMhEk+Q5rU=;
-        b=ttfBJZj7Ge2gO7UrclxVJkqMOt7k72MD3J0v2k18AeWCyYNum/lbqt8RZ3z0WWTS3q
-         znoDFEhgBb71aIKiX2CUbte+lILP8fqXEIdXuCnmSv9U4BmZEsk4Ifn4ZQe541l4JFzA
-         J1H0aijitydi2VzSbxIvXoIc7m5/1lw4IKdO8EzPzMazZWF+EI/ho3ZLpAHlqqYgpsgr
-         NH1fmi4dXMbQXyUP+ZO1P1rBKtRfouoLejFCsJSnvE92TdimFMqnuSK5kPPE2VXNA6kB
-         Ku9EePoIP27B6vn0tyMtmw0wKmI58Cs6ooPf5T5iDZo53+ODd772cU6rqbQUbZKk4f/b
-         jGgg==
-X-Gm-Message-State: APjAAAUPQJhhJ3hGk9E4s1BzUiYqJSncThoOuIrPUVue1LUwb87rzFtC
-        YBdYtnr6RWXVLXvjadNPzApJveDYSck=
-X-Google-Smtp-Source: APXvYqz19C2gG0f5bDWAkBfpLdnewLylK2A/ingJCe9sUNblADoE04Ri9qr9VfhwRrVmzjpIZun6Ew==
-X-Received: by 2002:a19:7702:: with SMTP id s2mr357869lfc.102.1556648569835;
-        Tue, 30 Apr 2019 11:22:49 -0700 (PDT)
-Received: from [192.168.1.5] (109-252-90-193.nat.spd-mgts.ru. [109.252.90.193])
-        by smtp.gmail.com with ESMTPSA id z6sm1501459ljb.56.2019.04.30.11.22.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 30 Apr 2019 11:22:48 -0700 (PDT)
-Subject: Re: recommended way to allow mounting of degraded array at boot
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
-        Alberto Bursi <alberto.bursi@outlook.it>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <AM0PR03MB413128509989947DE4AA7DEF92380@AM0PR03MB4131.eurprd03.prod.outlook.com>
- <5e02c6d3-9024-10fa-51f0-629ff5e604fe@gmail.com>
- <CAA91j0UGPKgqu_TYKQdfnAxe5pfLLvkVaaUNgUZmEh10MrWJ+w@mail.gmail.com>
- <CAJCQCtS2tgsV92uqKXExwXr_wc2apVYYCQc8ahep15RKwayzfw@mail.gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
- BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
- 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
- 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
- KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
- nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
- gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
- vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
- AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <4e756e9b-90a0-6ebb-212b-0eafd604380c@gmail.com>
-Date:   Tue, 30 Apr 2019 21:22:47 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <CAJCQCtS2tgsV92uqKXExwXr_wc2apVYYCQc8ahep15RKwayzfw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1726598AbfEANys convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 1 May 2019 09:54:48 -0400
+Received: from smtprelay08.ispgateway.de ([134.119.228.98]:35023 "EHLO
+        smtprelay08.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726165AbfEANyr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 1 May 2019 09:54:47 -0400
+Received: from [94.217.144.7] (helo=[192.168.177.20])
+        by smtprelay08.ispgateway.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <hendrik@friedels.name>)
+        id 1hLph4-00082K-V1
+        for linux-btrfs@vger.kernel.org; Wed, 01 May 2019 15:54:43 +0200
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Rough (re)start with btrfs
+Date:   Wed, 01 May 2019 13:54:39 +0000
+Message-Id: <em6b2fc230-16e7-495d-85b9-e88a08b7bcd3@ryzen>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+User-Agent: eM_Client/7.2.34062.0
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Df-Sender: aGVuZHJpa0BmcmllZGVscy5uYW1l
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-30.04.2019 10:38, Chris Murphy пишет:
-> On Mon, Apr 29, 2019 at 5:57 AM Andrei Borzenkov <arvidjaar@gmail.com> wrote:
->>
->> On Mon, Apr 29, 2019 at 2:38 PM Austin S. Hemmelgarn
->> <ahferroin7@gmail.com> wrote:
->>
->>> * If you're doing this on a system using systemd, it actually doesn't do
->>> what you are trying to do.  Systemd will refuse to mount the volume if
->>> all the constituent devices aren't present,
->>>
->>
->> It is not quite correct. systemd will not even attempt to mount
->> incomplete btrfs because it will wait for all devices (including
->> missing ones) to appear before proceeding to mount it. And if this
->> check is disabled, it will actually just call mount.btrfs, it will
->> certainly not "refuse" to do anything. So the following may work
->>
->> - disable udev rule calls "btrfs device ready"  (it actually calls
->> internal variant, but it does not matter).
->> - replace mount.btrfs with your own script that tries to mount btrfs
->> and if it fails tries to mount it degraded.
-> 
-> Yeah what I don't like about this udev rule is the indefinite hang. I
-> don't know enough about udev, whether it can support a timeout? If the
+Hello,
 
-This has nothing to do with udev. udev simply assigns properties to
-device nodes and announces them to subscribers. One subscriber is
-systemd which implements timeout logic.
+as discussed in the other thread, I am migrating to BTRFS (again).
+Unfortunately, I had a bit of a rough start
+[Mo Apr 29 20:44:47 2019] INFO: task btrfs-transacti:10227 blocked for 
+more than 120 seconds.
+[...]
+This repeated several times while moving data over. Full log of one 
+instance below.
 
-> missing devices haven't appeared in 30 seconds, good chance they won't
-> appear, and then either fail at this rule or continue on with the
-> mount attempt (which then fails). But either way, the user gets to a
-> prompt, and can troubleshoot the problem from there rather than being
-> stuck with force poweroff being the only alternative.
-> 
+I am using btrfs-progs v4.20.2 and debian stretch with 
+4.19.0-0.bpo.2-amd64 (I think, this is the latest Kernel available in 
+stretch. Please correct if I am wrong.
 
-That is exactly what happens for non-root mount points (except default
-timeout is 90 seconds). For root mounts it is really up to initramfs
-implementations. dracut sets infinite timeout indeed with rather terse
-commit message
+I understand that this was a 'timeout'. Is this caused by hardware?
 
-commit 8ee18253644a812184c60e31d7ee3d3f6d8f45c0
-Author: Harald Hoyer <harald@redhat.com>
-Date:   Tue Mar 4 13:46:14 2014 +0100
+In the SMART logs indeed, I see that errors happened (Full log below)
+84 51 20 df 27 81 40  Error: ICRC, ABRT 32 sectors at LBA = 0x008127df = 
+8464351
+But this happened after 44h. I am now at 82h, so that was long before 
+the error -infact during my 'burn-in test'.
 
-    dracut: don't let devices timeout
+Is this a case for an RMA of the drive?
 
-    https://bugzilla.redhat.com/show_bug.cgi?id=949697
+Greetings,
+Hendrik
 
-Current dracut provides rd.timeout to override it.
+
+
+
+
+
+
+
+
+
+
+
+[Mo Apr 29 20:44:47 2019] INFO: task btrfs-transacti:10227 blocked for 
+more than 120 seconds.
+[Mo Apr 29 20:44:47 2019]       Not tainted 4.19.0-0.bpo.2-amd64 #1 
+Debian 4.19.16-1~bpo9+1
+[Mo Apr 29 20:44:47 2019] "echo 0 > 
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[Mo Apr 29 20:44:47 2019] btrfs-transacti D    0 10227      2 0x80000000
+[Mo Apr 29 20:44:47 2019] Call Trace:
+[Mo Apr 29 20:44:47 2019]  ? __schedule+0x3f5/0x880
+[Mo Apr 29 20:44:47 2019]  schedule+0x32/0x80
+[Mo Apr 29 20:44:47 2019]  wait_for_commit+0x41/0x80 [btrfs]
+[Mo Apr 29 20:44:47 2019]  ? remove_wait_queue+0x60/0x60
+[Mo Apr 29 20:44:47 2019]  btrfs_commit_transaction+0x10b/0x8a0 [btrfs]
+[Mo Apr 29 20:44:47 2019]  ? start_transaction+0x8f/0x3e0 [btrfs]
+[Mo Apr 29 20:44:47 2019]  transaction_kthread+0x157/0x180 [btrfs]
+[Mo Apr 29 20:44:47 2019]  kthread+0xf8/0x130
+[Mo Apr 29 20:44:47 2019]  ? btrfs_cleanup_transaction+0x500/0x500 
+[btrfs]
+[Mo Apr 29 20:44:47 2019]  ? kthread_create_worker_on_cpu+0x70/0x70
+[Mo Apr 29 20:44:47 2019]  ret_from_fork+0x35/0x40
+[Mo Apr 29 20:44:47 2019] INFO: task kworker/u4:8:10576 blocked for more 
+than 120 seconds.
+[Mo Apr 29 20:44:47 2019]       Not tainted 4.19.0-0.bpo.2-amd64 #1 
+Debian 4.19.16-1~bpo9+1
+[Mo Apr 29 20:44:47 2019] "echo 0 > 
+/proc/sys/kernel/hung_task_timeout_secs" disables this message.
+[Mo Apr 29 20:44:47 2019] kworker/u4:8    D    0 10576      2 0x80000000
+[Mo Apr 29 20:44:47 2019] Workqueue: events_unbound 
+btrfs_async_reclaim_metadata_space [btrfs]
+[Mo Apr 29 20:44:47 2019] Call Trace:
+[Mo Apr 29 20:44:47 2019]  ? __schedule+0x3f5/0x880
+[Mo Apr 29 20:44:47 2019]  schedule+0x32/0x80
+[Mo Apr 29 20:44:47 2019]  wait_current_trans+0xb9/0xf0 [btrfs]
+[Mo Apr 29 20:44:47 2019]  ? remove_wait_queue+0x60/0x60
+[Mo Apr 29 20:44:47 2019]  start_transaction+0x201/0x3e0 [btrfs]
+[Mo Apr 29 20:44:47 2019]  flush_space+0x14d/0x5e0 [btrfs]
+[Mo Apr 29 20:44:47 2019]  ? __switch_to_asm+0x40/0x70
+[Mo Apr 29 20:44:47 2019]  ? __switch_to_asm+0x34/0x70
+[Mo Apr 29 20:44:47 2019]  ? __switch_to_asm+0x40/0x70
+[Mo Apr 29 20:44:47 2019]  ? __switch_to_asm+0x34/0x70
+[Mo Apr 29 20:44:47 2019]  ? __switch_to_asm+0x34/0x70
+[Mo Apr 29 20:44:47 2019]  ? __switch_to_asm+0x34/0x70
+[Mo Apr 29 20:44:47 2019]  ? __switch_to_asm+0x40/0x70
+[Mo Apr 29 20:44:47 2019]  ? __switch_to_asm+0x34/0x70
+[Mo Apr 29 20:44:47 2019]  ? __switch_to_asm+0x40/0x70
+[Mo Apr 29 20:44:47 2019]  ? get_alloc_profile+0x72/0x180 [btrfs]
+[Mo Apr 29 20:44:47 2019]  ? can_overcommit.part.63+0x55/0xe0 [btrfs]
+[Mo Apr 29 20:44:47 2019]  btrfs_async_reclaim_metadata_space+0xfb/0x4c0 
+[btrfs]
+[Mo Apr 29 20:44:47 2019]  process_one_work+0x191/0x370
+[Mo Apr 29 20:44:47 2019]  worker_thread+0x4f/0x3b0
+[Mo Apr 29 20:44:47 2019]  kthread+0xf8/0x130
+[Mo Apr 29 20:44:47 2019]  ? rescuer_thread+0x340/0x340
+[Mo Apr 29 20:44:47 2019]  ? kthread_create_worker_on_cpu+0x70/0x70
+[Mo Apr 29 20:44:47 2019]  ret_from_fork+0x35/0x40
+
+
+
+
+
+SMART Attributes Data Structure revision number: 16
+Vendor Specific SMART Attributes with Thresholds:
+ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE      
+UPDATED  WHEN_FAILED RAW_VALUE
+   1 Raw_Read_Error_Rate     0x000b   100   100   016    Pre-fail  Always 
+       -       0
+   2 Throughput_Performance  0x0004   128   128   054    Old_age   
+Offline      -       116
+   3 Spin_Up_Time            0x0007   198   198   024    Pre-fail  Always 
+       -       349 (Average 317)
+   4 Start_Stop_Count        0x0012   100   100   000    Old_age   Always 
+       -       26
+   5 Reallocated_Sector_Ct   0x0033   100   100   005    Pre-fail  Always 
+       -       0
+   7 Seek_Error_Rate         0x000a   100   100   067    Old_age   Always 
+       -       0
+   8 Seek_Time_Performance   0x0004   128   128   020    Old_age   
+Offline      -       18
+   9 Power_On_Hours          0x0012   100   100   000    Old_age   Always 
+       -       82
+  10 Spin_Retry_Count        0x0012   100   100   060    Old_age   Always 
+       -       0
+  12 Power_Cycle_Count       0x0032   100   100   000    Old_age   Always 
+       -       26
+  22 Helium_Level            0x0023   100   100   025    Pre-fail  Always 
+       -       100
+192 Power-Off_Retract_Count 0x0032   100   100   000    Old_age   Always 
+       -       27
+193 Load_Cycle_Count        0x0012   100   100   000    Old_age   Always 
+       -       27
+194 Temperature_Celsius     0x0002   250   250   000    Old_age   Always 
+       -       26 (Min/Max 24/55)
+196 Reallocated_Event_Count 0x0032   100   100   000    Old_age   Always 
+       -       0
+197 Current_Pending_Sector  0x0022   100   100   000    Old_age   Always 
+       -       0
+198 Offline_Uncorrectable   0x0008   100   100   000    Old_age   
+Offline      -       0
+199 UDMA_CRC_Error_Count    0x000a   200   200   000    Old_age   Always 
+       -       2
+
+SMART Error Log Version: 1
+ATA Error Count: 2
+         CR = Command Register [HEX]
+         FR = Features Register [HEX]
+         SC = Sector Count Register [HEX]
+         SN = Sector Number Register [HEX]
+         CL = Cylinder Low Register [HEX]
+         CH = Cylinder High Register [HEX]
+         DH = Device/Head Register [HEX]
+         DC = Device Command Register [HEX]
+         ER = Error register [HEX]
+         ST = Status register [HEX]
+Powered_Up_Time is measured from power on, and printed as
+DDd+hh:mm:SS.sss where DD=days, hh=hours, mm=minutes,
+SS=sec, and sss=millisec. It "wraps" after 49.710 days.
+
+Error 2 occurred at disk power-on lifetime: 44 hours (1 days + 20 hours)
+   When the command that caused the error occurred, the device was doing 
+SMART Offline or Self-test.
+
+   After command completion occurred, registers were:
+   ER ST SC SN CL CH DH
+   -- -- -- -- -- -- --
+   84 51 20 df 27 81 40  Error: ICRC, ABRT 32 sectors at LBA = 0x008127df 
+= 8464351
+
+   Commands leading to the command that caused the error were:
+   CR FR SC SN CL CH DH DC   Powered_Up_Time  Command/Feature_Name
+   -- -- -- -- -- -- -- --  ----------------  --------------------
+   35 03 20 df 27 81 40 00      00:00:54.041  WRITE DMA EXT
+   35 03 01 ff 27 81 40 00      00:00:54.040  WRITE DMA EXT
+   25 03 20 02 00 00 40 00      00:00:54.040  READ DMA EXT
+   25 03 20 02 00 00 40 00      00:00:54.040  READ DMA EXT
+   25 03 01 af 2a 81 40 00      00:00:54.011  READ DMA EXT
+
+Error 1 occurred at disk power-on lifetime: 44 hours (1 days + 20 hours)
+   When the command that caused the error occurred, the device was doing 
+SMART Offline or Self-test.
+
+   After command completion occurred, registers were:
+   ER ST SC SN CL CH DH
+   -- -- -- -- -- -- --
+   84 51 00 00 00 00 00
+
+   Commands leading to the command that caused the error were:
+   CR FR SC SN CL CH DH DC   Powered_Up_Time  Command/Feature_Name
+   -- -- -- -- -- -- -- --  ----------------  --------------------
+   47 00 01 00 00 00 a0 08      00:00:37.434  READ LOG DMA EXT
+   47 00 01 13 00 00 a0 08      00:00:37.433  READ LOG DMA EXT
+   47 00 01 00 00 00 a0 08      00:00:37.432  READ LOG DMA EXT
+   ef 10 02 00 00 00 a0 08      00:00:37.430  SET FEATURES [Enable SATA 
+feature]
+   27 00 00 00 00 00 e0 08      00:00:37.427  READ NATIVE MAX ADDRESS EXT 
+[OBS-ACS-3]
+
+SMART Self-test log structure revision number 1
+No self-tests have been logged.  [To run self-tests, use: smartctl -t]
+
+SMART Selective self-test log data structure revision number 1
+  SPAN  MIN_LBA  MAX_LBA  CURRENT_TEST_STATUS
+     1        0        0  Not_testing
+     2        0        0  Not_testing
+     3        0        0  Not_testing
+     4        0        0  Not_testing
+     5        0        0  Not_testing
+Selective self-test flags (0x0):
+   After scanning selected spans, do NOT read-scan remainder of disk.
+If Selective self-test is pending on power-up, resume after 0 minute 
+delay.
 
