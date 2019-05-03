@@ -2,189 +2,283 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B583128EC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2019 09:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D8812A58
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2019 11:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726527AbfECHej (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 May 2019 03:34:39 -0400
-Received: from mout.gmx.net ([212.227.15.19]:43377 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726514AbfECHei (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 May 2019 03:34:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1556868875;
-        bh=FPWo36wnAReSjtFeDnI5+59gVmL0uEVYOC+hVyn4Jbs=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=E3aK80jsmfCNHGDoXhwidlrg8Tcg0Ij7ZVem3rVM5PwoQeZYMvlbGHppWS/tRHWH+
-         /6/pLKbRxxL50M8Yp9gFGhBbzhQLJS6OsQEOod9HVYkJXz1xvzseY+LJzHfDdeaCH1
-         jmjc1r/Kr5M05sk/66mWwklPRf4ECdgeQL7HU3NE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([52.197.165.36]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MYvcA-1hHydG1X84-00UqkM; Fri, 03
- May 2019 09:34:35 +0200
-Subject: Re: Rough (re)start with btrfs
-To:     Hendrik Friedel <hendrik@friedels.name>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <em9eba60a7-2c0d-4399-8712-c134f0f50d4d@ryzen>
- <e6918268-1e3e-6c2d-853c-aa1eaf8e9693@gmx.com>
- <ema5c33b0a-936b-48f6-99ba-4c5a50e8a88a@ryzen>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <655d52b8-596a-2142-9470-8e45d5a0cc8e@gmx.com>
-Date:   Fri, 3 May 2019 15:34:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726549AbfECJVg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 May 2019 05:21:36 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:40211 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725777AbfECJVg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 May 2019 05:21:36 -0400
+Received: by mail-vs1-f67.google.com with SMTP id e207so3162703vsd.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 May 2019 02:21:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=eC1h78dxl34zmZzKCFTMeKVnM9p6DMDkknR7lCudUVc=;
+        b=dZVJSJCia1JZUUVial6AExRjW/FulSdKqT8v54SF3FhTXWYgXKK2jR4FI8+GKlzvkV
+         989+zh0Lle9RhkF6wcORdPbKJdKxaWQHrF3iy/X/t6z1UJXYsYyREWgnm2qC6Y1GdOEw
+         l8RggQbqaJXJuwefBLh4x8rUHxSPod2bw163K5/LyBlbeHm4oMai+My4GZNJteqe+RoT
+         ZvGtj8G6GS8oKzqbX9E6R4qZq+M4gwc7lhgWnAayNc6Dy9s8OvqYfqcd5qWTNNUbIk1R
+         0NIVM/vF/MWzp7kWr7Q69A9ueeEqMrVw4wqAzmkcx8r74cuVga16uQT8LLj5vtnz+bbI
+         VTrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=eC1h78dxl34zmZzKCFTMeKVnM9p6DMDkknR7lCudUVc=;
+        b=qDoJ+GfRi0GBchvGg0oGK+0rtKzg6kzOPrjDnnC4zZfl43HnOMyUUGk7dIJ7g3Cr6n
+         bHWp/YaDomX28mRhOmM3CaeAmOqJHPNGpZsAqlmhCRtrlaEvWBqNUx3zuMCp0b+EKIn6
+         mBDkDbUSL71FOK52fDKCeUtw04quFk4H4HEIGeI3Tx83kBaCzqqPxyLJaHuxht04g7Q3
+         RPuoFd4ySYLsHkAiNDrEZXAkxX1pMHx0kGSeLSqWkRopVJGnt1QdU7VHRg/wxCoU1DRl
+         1GjEBO1PjOHojYo2yrshPK4EIwROJeSz1WU9MwWa+O6GTfFeVivHrecPaImKwTTVyAqi
+         U/oQ==
+X-Gm-Message-State: APjAAAVQ/LvBP9lZ4HW3t92a1QKM7uL0vtxM1WMC1GDD2Wupmdyy/WCc
+        3f1SXFQ/Q8JS8N61+GxIYL046c1xhexKOqckQGK9cA==
+X-Google-Smtp-Source: APXvYqxjYvRmZUFFgdZZ1QlROLwQOtGJX9VtK1fQUstL6GfsMOiyGcGiU3Qb5vEkdiSeNitf6xNaDtCTt84immrwcUM=
+X-Received: by 2002:a67:1582:: with SMTP id 124mr4883340vsv.14.1556875295338;
+ Fri, 03 May 2019 02:21:35 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ema5c33b0a-936b-48f6-99ba-4c5a50e8a88a@ryzen>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="gUYdZIIm3oEGfEKqq2UiMoEsOZZVtdKxx"
-X-Provags-ID: V03:K1:wQu2+9TuwbxNKypRqDrhZZLibSPOANkV02yIyxL5ZmLTheSoxcA
- ZJn7okXGMQOvtafgUQ4BEMtRaFn3vqs2HAdlMIMXmKStTR2MXF1RjO/qei8XcCYZYG+51gD
- CtbgPEfU21cEGvYkV0jnN49s+1e/rBj0EJ2siSPui3WAfEaXDVxeup/VSwPnITqBKEUq7tm
- 6l4sX7xxNJDFP1stkAKDQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:dLLv1P58pW8=:gQM8nd6NG/zp491LkDjJXL
- 3lELE3VCYLPTxiWkeRR70wuB9OsUdlWbzdCEl89nNHaiWQzMbJNlQYkLBFgcFY3CxmkSIAwmC
- Qlz0JVjT1xz0coTWqu7LMLVJJQgIPuQVhZWIVUoT0LJzlrcpHWfIOule19YuQAUqLmU9FbYI4
- qqRSrSHhToHDhidZ9TXOcRIUs2zcRo5yRf3/A8+dBvTF1wNnY3BsfToGBiQrCtn9wIR8TMZhn
- ZfXp6Da9LZxCJtWcD8iDLdqrNwA7hb8fz+s3+urrDTJ9Rk8F2eW86c4/g3lhsUj87uke7Z8gX
- htGoFYkMDBLXiR5q9sYFbXY3hmHnJYrJJ8+OeAm8EYiy+1I1JoUVERQeEojzFB7YjrLciXxAW
- n0hqvj//kWCay/KwBIIZCnw0B18hq68h/pdoAOIYnbkUN+mcbzaptk7nSet9gQivsjgsIdKCu
- rb3SmKW+qmr3BFyVLJCfo2q4AFo7JnW1tGeyc5I63jixcEEPWUktiH7oOQZ9f+svOVIo3cFNa
- uukTCOVoFclfpTDezzbwNrqJ1yRJfCzO7amz5ImAlQhzF9CbF11on+pt4PKpZYYh/9V+mbK2G
- ti++9Lv90Sj4oZWPeUgWvmQS6qQJgDcn46tYhV7eHITCbGPE0h1+APJEsGPBBhcic6mENp3HC
- NDe6I34oyIpY/0WokqUbA5RW6ri+GN9nuDF8Ksyb4lvM6uNAwn5EEk1pQZrN+TfHiw0DFQgdg
- 42hMkO5oa3PqWYAs0hhQrvZafix/AvKqaKKwyHVvdz/PnSnK9ro8Gm5AnUPBAqbae2kpLjL19
- zvNLiU4prSdjqHvcyH3j2zFeg5hSNEkd+N1IPW4MvQm7qqwjnR7PrdhF0Tpcyc0nsL6JXnuJs
- 9DqIiy2ALOCLYxvyt1Tr9+vbPtBfUCGhd0EHfNXhdbTDg8yb7j0e0gJoubvq4z
+References: <20190503010852.10342-1-wqu@suse.com>
+In-Reply-To: <20190503010852.10342-1-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 3 May 2019 10:21:24 +0100
+Message-ID: <CAL3q7H5uLiPzCQpLdM=4yjz+fA-mQAe_XP1=5fHQ83dyBwcK5w@mail.gmail.com>
+Subject: Re: [PATCH RFC] btrfs: reflink: Flush before reflink any extent to
+ prevent NOCOW write falling back to CoW without data reservation
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gUYdZIIm3oEGfEKqq2UiMoEsOZZVtdKxx
-Content-Type: multipart/mixed; boundary="NLBI0fHxupG2Fj0oU6m2FpFKsfJUY1wPN";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Hendrik Friedel <hendrik@friedels.name>,
- Chris Murphy <lists@colorremedies.com>,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <655d52b8-596a-2142-9470-8e45d5a0cc8e@gmx.com>
-Subject: Re: Rough (re)start with btrfs
-References: <em9eba60a7-2c0d-4399-8712-c134f0f50d4d@ryzen>
- <e6918268-1e3e-6c2d-853c-aa1eaf8e9693@gmx.com>
- <ema5c33b0a-936b-48f6-99ba-4c5a50e8a88a@ryzen>
-In-Reply-To: <ema5c33b0a-936b-48f6-99ba-4c5a50e8a88a@ryzen>
+On Fri, May 3, 2019 at 2:46 AM Qu Wenruo <wqu@suse.com> wrote:
 
---NLBI0fHxupG2Fj0oU6m2FpFKsfJUY1wPN
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+What a great subject. The "reflink:" part is unnecessary, since the
+rest of the subject already mentions it, that makes it a bit shorter.
+
+>
+> [BUG]
+> The following command can lead to unexpected data COW:
+>
+>   #!/bin/bash
+>
+>   dev=3D/dev/test/test
+>   mnt=3D/mnt/btrfs
+>
+>   mkfs.btrfs -f $dev -b 1G > /dev/null
+>   mount $dev $mnt -o nospace_cache
+>
+>   xfs_io -f -c "falloc 8k 24k" -c "pwrite 12k 8k" $mnt/file1
+>   xfs_io -c "reflink $mnt/file1 8k 0 4k" $mnt/file1
+>   umount $dev
+>
+> The result extent will be
+>
+>         item 7 key (257 EXTENT_DATA 4096) itemoff 15760 itemsize 53
+>                 generation 6 type 2 (prealloc)
+>                 prealloc data disk byte 13631488 nr 28672
+>         item 8 key (257 EXTENT_DATA 12288) itemoff 15707 itemsize 53
+>                 generation 6 type 1 (regular)
+>                 extent data disk byte 13660160 nr 12288 <<< COW
+>         item 9 key (257 EXTENT_DATA 24576) itemoff 15654 itemsize 53
+>                 generation 6 type 2 (prealloc)
+>                 prealloc data disk byte 13631488 nr 28672
+>
+> Currently we always reserve space even for NOCOW buffered write, thus
+
+I would add 'data' between 'reserve' and 'space', to be clear.
+
+> under most case it shouldn't cause anything wrong even we fall back to
+> COW.
+
+even we ... -> even if we fallback to COW when running delalloc /
+starting writeback.
+
+>
+> However when we're out of data space, we fall back to skip data space if
+> we can do NOCOW write.
+
+we fall back to skip data space ... -> we fallback to NOCOW write
+without reserving data space.
+
+>
+> If such behavior happens under that case, we could hit the following
+> problems:
+
+> - data space bytes_may_use underflow
+>   This will cause kernel warning.
+
+Ok.
+
+>
+> - ENOSPC at delalloc time
+
+at delalloc time - that is an ambiguous term you use through the change log=
+.
+You mean when running/starting delalloc, which happens when starting writeb=
+ack,
+but that could be confused with creating delalloc, which happens
+during the buffered write path.
+
+So I would always replace 'dealloc time' with 'when running delalloc'
+(or when starting writeback).
+
+>   This will lead to transaction abort and fs forced to RO.
+
+Where does that happen exactly?
+I don't recall starting transactions when running dealloc, and failed
+to see where after a quick glance to cow_file_range()
+and run_delalloc_nocow(). I'm assuming that 'at delalloc time' means
+when starting writeback.
+
+>
+> [CAUSE]
+> This is due to the fact that btrfs can only do extent level share check.
+>
+> Btrfs can only tell if an extent is shared, no matter if only part of the
+> extent is shared or not.
+>
+> So for above script we have:
+> - fallocate
+> - buffered write
+>   If we don't have enough data space, we fall back to NOCOW check.
+>   At this timming, the extent is not shared, we can skip data
+>   reservation.
+
+But in the above example we don't fall to nocow mode when doing the
+buffered write, as there's plenty of data space available (1Gb -
+24Kb).
+You need to update the example.
 
 
+> - reflink
+>   Now part of the large preallocated extent is shared.
+> - delalloc kicks in
 
-On 2019/5/3 =E4=B8=8B=E5=8D=881:41, Hendrik Friedel wrote:
-> Hello,
->=20
-> -by the way: I think my mail did not appear in the list, but only
-> reached Chris and Qu directly. I just tried to re-send it. Could this b=
-e
-> caused by
-> 1) me not a subscriber of the list
-> 2) combined with me sending attachments
-> I did *not* get any error message by the server.
->=20
->>> =C2=A0I was tempted to ask, whether this should be fixed. On the othe=
-r
->>> hand, I
->>> =C2=A0am not even sure anything bad happened (except, well, the syste=
-m -at
->>> =C2=A0least the copy- seemed to hang).
->>
->> Definitely needs to be fixed.
->>
->> With full dmesg, it's now clear that is a real dead lock.
->> Something wrong with the free space cache, blocking the whole fs to be=
+writeback kicks in
 
->> committed.
->>
-> So, what's the next step? Shall I open a bug report somewhere, or is it=
+>   For the NOCOW range, as the preallocated extent is shared, we need
+>   to fall back to COW.
+>
+> [WORKAROUND]
+> The workaround is to ensure any buffered write in the related extents
+> (not the reflink source range) get flushed before reflink.
 
-> already on some list?
+not the reflink source range -> not just the reflink source range
 
-Not sure if other is looking into this.
+>
+> However it's pretty expensive to do a comprehensive check.
+> In the reproducer, the reflink source is just a part of a larger
 
-Btrfs bug tracking is somewhat tricky.
-Some prefer bug report in mail list directly like me, some prefer kernel
-bugzilla.
+Again, the reproducer needs to be fixed (yes, I tested it even if it's
+clear by looking at it that it doesn't trigger the nocow case).
 
->=20
->> If you still want to try btrfs, you could try "nosapce_cache" mount
->> option.
->> Free space cache of btrfs is just an optimization, you can completely
->> ignore that with minor performance drop.
->>
-> I will try that, yes.
-> Can you confirm, that it is unlikely, that I lost any data / damaged th=
-e
-> Filesystem?
-
-You lost nothing except the new data which is going be committed in the
-blocked transaction.
-
-Thanks,
-Qu
-
->=20
-> Regards,
-> Hendrik
->=20
+> preallocated extent, we need to flush all buffered write of that extent
+> before reflink.
+> Such backward search can be complex and we may not get much benefit from
+> it.
+>
+> So this patch will just try to flush the whole inode before reflink.
 
 
---NLBI0fHxupG2Fj0oU6m2FpFKsfJUY1wPN--
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Reason for RFC:
+> Flushing an inode just because it's a reflink source is definitely
+> overkilling, but I don't have any better way to handle it.
+>
+> Any comment on this is welcomed.
+> ---
+>  fs/btrfs/ioctl.c | 22 ++++++++++++++++++++++
+>  1 file changed, 22 insertions(+)
+>
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index 7755b503b348..8caa0edb6fbf 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -3930,6 +3930,28 @@ static noinline int btrfs_clone_files(struct file =
+*file, struct file *file_src,
+>                         return ret;
+>         }
+>
+> +       /*
+> +        * Workaround to make sure NOCOW buffered write reach disk as NOC=
+OW.
+> +        *
+> +        * Due to the limit of btrfs extent tree design, we can only have
+> +        * extent level share view. Any part of an extent is shared then =
+the
 
---gUYdZIIm3oEGfEKqq2UiMoEsOZZVtdKxx
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Any -> If any
 
------BEGIN PGP SIGNATURE-----
+> +        * whole extent is shared and any write into that extent needs to=
+ fall
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzL7v0ACgkQwj2R86El
-/qhypQgAkogbQv7Hfz1p6L7pKZQEHObIrXBfu0oqr4Rbw+VKDjaJ4jYXK1AQxgHF
-J7v41Wyet+F8Q/t4Hhaquf4lRCB31dHO0dg6OVOxqAbdV7D8PWr2yQwbnOKlF5sO
-8KLDRiRDN/jZa4btoOut6FSdS+A+68AhMqTrW2JGxzLEgClMt0bWjKOWyui6lv5H
-PMIco4gsA2QR+Ug7YRoQpOwFdWh+8zuw22IKLT6NsefirwgibnzuOb6v4JJDzRiK
-YNJjCJxmaB36+jeoQjYPShYiKi72Y4QuFvp/VlNNPT2c/3p6GxyvP2knhv94TRMd
-T9MoQHROVwuOCAr67bruiojlxcKmfg==
-=AUpJ
------END PGP SIGNATURE-----
+is -> is considered
 
---gUYdZIIm3oEGfEKqq2UiMoEsOZZVtdKxx--
+> +        * back to COW.
+
+I would add, something like:
+
+That is, btrfs' back references do not have a block level granularity,
+they work at the whole extent level.
+
+> +        *
+> +        * NOCOW buffered write without data space reserved could to lead=
+ to
+> +        * either data space bytes_may_use underflow (kernel warning) or =
+ENOSPC
+> +        * at delalloc time (transaction abort).
+
+I would omit the warning and transaction abort parts, that can change
+any time. And we have that information in the changelog, so it's not
+lost.
+
+> +        *
+> +        * Here we take a shortcut by flush the whole inode. We could do =
+better
+> +        * by finding all extents in that range and flush the space refer=
+ring
+> +        * all those extents.
+> +        * But that's too complex for such corner case.
+> +        */
+> +       filemap_flush(src->i_mapping);
+> +       if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
+> +                    &BTRFS_I(src)->runtime_flags))
+> +               filemap_flush(src->i_mapping);
+
+So a few comments here:
+
+- why just in the clone part? The dedupe side has the same problem, doesn't=
+ it?
+
+- I would move such flushing to btrfs_remap_file_range_prep - this is
+where we do the source and target range flush and wait.
+
+Can you turn the reproducer into an fstests case?
+
+Thanks.
+
+> +
+>         /*
+>          * Lock destination range to serialize with concurrent readpages(=
+) and
+>          * source range to serialize with relocation.
+> --
+> 2.21.0
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
