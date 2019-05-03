@@ -2,102 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C615E1311C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2019 17:25:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89B41312D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2019 17:31:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727967AbfECPZ1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 May 2019 11:25:27 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:33902 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726289AbfECPZ1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 May 2019 11:25:27 -0400
-Received: by mail-vs1-f67.google.com with SMTP id b23so3846793vso.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 03 May 2019 08:25:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=crCY0IG33K0YzdJoljasD4u8NX5zRD3dCR4VUkad/nU=;
-        b=JJfAoNzLdTOkvn/3mNEmFhOlpsl1gfZvQDB8tBuzSWg3EG37D8EyM/VB7EiFIO8XUa
-         MyyXIY4tZh9zd2RFuFaxL7nSfHI+f9ZxyepIHaB5Ov4FB+s/f8rrG1McYnJNJVvGOVfm
-         9hvwArVI5/eVDtVDQTlUrX5y/BwWtJor5o5/ntaCyVX0ylSCvbrbKvMPzXfaNfKE86qQ
-         X/+1RLsHPdPv9YMLIdPGTpzULwMoIzuo5XezaQi0N9GEg5inUUum+U9CHFDA5nZSD1Nz
-         Kb01gCQzr7tblZr3Vri3NgY6UnJkyU6/L191Z7OunXOSRHykCI+J/a7ItKAT9eB6/xH5
-         7jTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=crCY0IG33K0YzdJoljasD4u8NX5zRD3dCR4VUkad/nU=;
-        b=PPZuvQ8WQAG1+DtkvPX4uBihkc4hd9NmcjwXEhDUdAbS5lm2dNOQA4+Otx12qF3Mnp
-         TVU6uvLiXl6jWpyn6AZZQVmQnEnumB2al04smF1YyTUYcGB0XBMrfYCQHxAfgOAOI6zV
-         1Os44CsR0FK+N2g+IQNrpmILwE+Tj3Q+5KqpfF1TrO7KK/K2RmRp9EgOihlc97Zoh970
-         h3f4uXm5rM8V4mKpqsCaFEW+Vk9shRb0vrMF4lRdLPuFEI1qew8OrennsHbQK6UeL68G
-         ttiud4VIf+mHCh1ITZRJ37d2yyCw+RaPrSZx+oFyrPA8fQ/D+dS/qqZoUfpltLz9TXQ6
-         e5wA==
-X-Gm-Message-State: APjAAAWDIEHYVmkRH6HIxKwOLAaD6jQhv/zQ1ykyr//VsROPHavzLYbZ
-        LAezHLA9D3gGYA4uUNGja/FgdkMoN4hkzt1EvhQ=
-X-Google-Smtp-Source: APXvYqyPM4hC5up+AFvXjcLvQS6LL8xAtwX2q7x7lUoBewlSvR3/JxyZEg7LLsmKFLp9rMJMUQGnV4AlWYt8yhLowCA=
-X-Received: by 2002:a67:6847:: with SMTP id d68mr5954396vsc.90.1556897126317;
- Fri, 03 May 2019 08:25:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190503151007.75525-1-josef@toxicpanda.com>
-In-Reply-To: <20190503151007.75525-1-josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 3 May 2019 16:25:14 +0100
-Message-ID: <CAL3q7H6aoGNzYoXM7R5T4DsxYtOGZi0iaBEOiKB5GJrsXksaEA@mail.gmail.com>
+        id S1727403AbfECPbj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 May 2019 11:31:39 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:49492 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726267AbfECPbj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 May 2019 11:31:39 -0400
+Received: from pps.filterd (m0044008.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x43FIeau004144;
+        Fri, 3 May 2019 08:31:37 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=7VtPjMkozy/ug4k9Z+oQ8b1A0Qe1rL6oN0lwmvtHPJ4=;
+ b=aqGyQyK1oi5jgp7x5tZEGR8eTiLZw3hClhjcGSCJ2yvCwpkv1wXbf5cqyURg8qeEKHhs
+ Oy7dAT8VZ+zm3X7B7ZKUDQklGLr80PJ005rL/l85lsPH1uz4xmcPS18+qyl71Pv/++d/
+ nELYr+On9I1dXPiWND7JhxkpsiQoQN5jKR4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2s8r2q022j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 03 May 2019 08:31:36 -0700
+Received: from ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) by
+ ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 3 May 2019 08:31:35 -0700
+Received: from NAM05-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Fri, 3 May 2019 08:31:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=7VtPjMkozy/ug4k9Z+oQ8b1A0Qe1rL6oN0lwmvtHPJ4=;
+ b=OXrL7rMXGioiXTeKTfRClvXEDO559d1+nrRhtrLWd9G0QS+WI28d6jKyAU6EXYK11bUPszWzIdBxMVEjHfUfpUYC98T1X/FhTPymq4LGsZ80mYHlLZ0xvzHy9sVuMhma0pgCEOg+pdsSk4TqmBmx47mytmYyIzSXUCdBfIOv8/I=
+Received: from BYAPR15MB3479.namprd15.prod.outlook.com (20.179.60.19) by
+ BYAPR15MB2680.namprd15.prod.outlook.com (20.179.156.205) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1856.12; Fri, 3 May 2019 15:31:34 +0000
+Received: from BYAPR15MB3479.namprd15.prod.outlook.com
+ ([fe80::7857:5261:c8c:5aa3]) by BYAPR15MB3479.namprd15.prod.outlook.com
+ ([fe80::7857:5261:c8c:5aa3%2]) with mapi id 15.20.1856.012; Fri, 3 May 2019
+ 15:31:33 +0000
+From:   Rik van Riel <riel@fb.com>
+To:     "fdmanana@gmail.com" <fdmanana@gmail.com>,
+        Josef Bacik <josef@toxicpanda.com>
+CC:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>
 Subject: Re: [PATCH] btrfs: don't double unlock on error in btrfs_punch_hole
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Thread-Topic: [PATCH] btrfs: don't double unlock on error in btrfs_punch_hole
+Thread-Index: AQHVAcJSNUyu2kOsLUGdNgpRZcZft6ZZhUoAgAABwAA=
+Date:   Fri, 3 May 2019 15:31:33 +0000
+Message-ID: <b50d4c12828e720a965ef8c9c4b436383fa86f36.camel@fb.com>
+References: <20190503151007.75525-1-josef@toxicpanda.com>
+         <CAL3q7H6aoGNzYoXM7R5T4DsxYtOGZi0iaBEOiKB5GJrsXksaEA@mail.gmail.com>
+In-Reply-To: <CAL3q7H6aoGNzYoXM7R5T4DsxYtOGZi0iaBEOiKB5GJrsXksaEA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BN6PR11CA0007.namprd11.prod.outlook.com
+ (2603:10b6:405:2::17) To BYAPR15MB3479.namprd15.prod.outlook.com
+ (2603:10b6:a03:112::19)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c091:480::e8e4]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 290aab03-95e3-4197-7105-08d6cfdc6c37
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR15MB2680;
+x-ms-traffictypediagnostic: BYAPR15MB2680:
+x-microsoft-antispam-prvs: <BYAPR15MB2680FD801EA18AB96CF67169A3350@BYAPR15MB2680.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 0026334A56
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(366004)(39860400002)(136003)(346002)(376002)(199004)(189003)(110136005)(54906003)(118296001)(229853002)(2501003)(14454004)(2906002)(6116002)(316002)(256004)(14444005)(71190400001)(71200400001)(25786009)(4744005)(36756003)(99286004)(5660300002)(73956011)(68736007)(66476007)(66556008)(64756008)(66446008)(66946007)(6512007)(52116002)(53936002)(4326008)(6246003)(6486002)(6436002)(7736002)(478600001)(486006)(2616005)(305945005)(186003)(102836004)(53546011)(6506007)(386003)(76176011)(86362001)(81166006)(8936002)(11346002)(446003)(8676002)(81156014)(46003)(476003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2680;H:BYAPR15MB3479.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: xTu6nATeQs82Vs0OtoP30uodQh829p5L98EEKD/fjEbQfCXg/mEpkoACvZj6cczCIHb1eZyW5LvZB5qLXf087V0uGbGnPqPBFvuxcA/1AkELuXILdvKwhod6ZDFx+JMqcBQR4/rSGOjQI93nixsU3CngoLBuPZH0HHGGlJUPmk1NKdJ8WW4KhlFdAKkKz7qDvSmzFtRb65cJ4BMlhZfP6ocvLERUiRiDS81BTydq+gICMnlqPdsfqrECKZz9HGXLR9lr1LbB+9qaU0WQF8PEhim8MfOJYBmPoEZYbATaSdleo5I++Z6KMJjMTdkMOBt7howqdy9z9+OFFnyhxlWFBuA9vrzwv2HK8UUpZGTzU4rsIQTrplkcN9BcRe3EZirNhi+vS5kV/8YySgDav1wpyxfgat11qXz9bgLQu2q9gPY=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <161FECBBD14FA34D9CA00DE00606F1DC@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 290aab03-95e3-4197-7105-08d6cfdc6c37
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 May 2019 15:31:33.8243
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2680
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-03_08:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=728 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905030098
+X-FB-Internal: deliver
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 3, 2019 at 4:21 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> If we have an error writing out a delalloc range in
-> btrfs_punch_hole_lock_range we'll unlock the inode and then goto
-> out_only_mutex, where we will again unlock the inode.  This is bad,
-> don't do this.
->
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Looks good, I introduced the double unlock accidentally.
-
-> ---
->  fs/btrfs/file.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
->
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 7f7833149cb7..d23ea0b388e0 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -2554,10 +2554,8 @@ static int btrfs_punch_hole(struct inode *inode, l=
-off_t offset, loff_t len)
->
->         ret =3D btrfs_punch_hole_lock_range(inode, lockstart, lockend,
->                                           &cached_state);
-> -       if (ret) {
-> -               inode_unlock(inode);
-> +       if (ret)
->                 goto out_only_mutex;
-> -       }
->
->         path =3D btrfs_alloc_path();
->         if (!path) {
-> --
-> 2.13.5
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+T24gRnJpLCAyMDE5LTA1LTAzIGF0IDE2OjI1ICswMTAwLCBGaWxpcGUgTWFuYW5hIHdyb3RlOg0K
+PiBPbiBGcmksIE1heSAzLCAyMDE5IGF0IDQ6MjEgUE0gSm9zZWYgQmFjaWsgPGpvc2VmQHRveGlj
+cGFuZGEuY29tPg0KPiB3cm90ZToNCj4gPiBJZiB3ZSBoYXZlIGFuIGVycm9yIHdyaXRpbmcgb3V0
+IGEgZGVsYWxsb2MgcmFuZ2UgaW4NCj4gPiBidHJmc19wdW5jaF9ob2xlX2xvY2tfcmFuZ2Ugd2Un
+bGwgdW5sb2NrIHRoZSBpbm9kZSBhbmQgdGhlbiBnb3RvDQo+ID4gb3V0X29ubHlfbXV0ZXgsIHdo
+ZXJlIHdlIHdpbGwgYWdhaW4gdW5sb2NrIHRoZSBpbm9kZS4gIFRoaXMgaXMgYmFkLA0KPiA+IGRv
+bid0IGRvIHRoaXMuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogSm9zZWYgQmFjaWsgPGpvc2Vm
+QHRveGljcGFuZGEuY29tPg0KPiANCj4gUmV2aWV3ZWQtYnk6IEZpbGlwZSBNYW5hbmEgPGZkbWFu
+YW5hQHN1c2UuY29tPg0KPiANCj4gTG9va3MgZ29vZCwgSSBpbnRyb2R1Y2VkIHRoZSBkb3VibGUg
+dW5sb2NrIGFjY2lkZW50YWxseS4NCg0KRG9lcyB0aGUgcGF0Y2ggbmVlZCBhIEZpeGVzOiB0YWcg
+c28gdGhlIC1zdGFibGUNCnBlb3BsZSBrbm93IGhvdyBmYXIgdG8gYmFja3BvcnQgaXQ/DQoNCg==
