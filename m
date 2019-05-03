@@ -2,397 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E1D12B5C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2019 12:18:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9299512B64
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2019 12:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726476AbfECKSn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 May 2019 06:18:43 -0400
-Received: from mout.gmx.net ([212.227.15.19]:51143 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbfECKSm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 May 2019 06:18:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1556878713;
-        bh=yCNppPy4AbE2psqB4jWcfLMAi69zoV79BNOs3j8lFr4=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=E+aJGyiRU4RrScglBoh5sXbLO3fb7TS5Ad3vJPIQ3cszChLvKj1pyxYqR7HVbGST3
-         NupJ7hguQO4oPojtGPtNlJBej1fDymGWKPmjNBFFkEiDDHX3VS35saznOwGzj2S65C
-         t0WXgjNwujenF6GQjDLMjoq++02+Nn7HnadWO4NQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([52.197.165.36]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MhU5R-1gseUn3VHH-00ee5A; Fri, 03
- May 2019 12:18:33 +0200
-Subject: Re: [PATCH RFC] btrfs: reflink: Flush before reflink any extent to
- prevent NOCOW write falling back to CoW without data reservation
-To:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20190503010852.10342-1-wqu@suse.com>
- <CAL3q7H5uLiPzCQpLdM=4yjz+fA-mQAe_XP1=5fHQ83dyBwcK5w@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <1e36e9e2-dbd3-3ab0-b908-25cfdf1d310d@gmx.com>
-Date:   Fri, 3 May 2019 18:18:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1727112AbfECKWD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 May 2019 06:22:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56392 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726289AbfECKWD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 3 May 2019 06:22:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 680A3AD36
+        for <linux-btrfs@vger.kernel.org>; Fri,  3 May 2019 10:22:01 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 8EC01DA885; Fri,  3 May 2019 12:23:02 +0200 (CEST)
+Date:   Fri, 3 May 2019 12:23:02 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v4 02/15] btrfs: combine device update operations during
+ transaction commit
+Message-ID: <20190503102302.GF20156@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190327122418.24027-1-nborisov@suse.com>
+ <20190327122418.24027-3-nborisov@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H5uLiPzCQpLdM=4yjz+fA-mQAe_XP1=5fHQ83dyBwcK5w@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="cfPM0Sp2lVhanyEGh2VJwkQ7XpBOFuhJH"
-X-Provags-ID: V03:K1:YOoE9XYFk23f9HDdidzUI67Y17Geam4diCzJE6DIWbZefGvy8DR
- pq0KZSQGBSk/I72UCe1rkiSP9qoNT88Apotqp3qAZiUPbjRLoaEzxLRRBj7w2NUFKLtmLFY
- T81uNdWXgYe6av5mkO1d/CfbtNWyPGOKPWJ9YXcAhZFgxB1c2egcDUVNh8aVZQw0D4FkSyx
- lAYfoQRnNJBu5VPR8eOLA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:stA0UjbShhc=:ry5BCCKlSvz8PGu2t077Ww
- lZPv0kEAaEG9QEvnIksyrJTM9QgQ9PgxgzxwtHb+iECrW3Y45frUI94MwkRzL2phj+S2kb8jx
- bdFErHcfh4O/kO54RU0cH/x4QZzoCvSCcxvqe9u3F//DYqhbOexaakEojueJKiG1bgawdXdeF
- PM7btPWzx2Pd8WiRzLDbxoXdPP0u1rv4LJf95v1IKZxDCzN3pGps7nXi/0wrL6FyfC1MGEjre
- t5jqMUPh/xXZ2u2zN11YEnrI3fVozgRrpr2yH3rq+xXjayM64tuGkks8azV/AVOYAo71w0/Bc
- C0Zg9vQNJBHZok4rf2Y5ljJZg6KXrsBqEupY4QZml/UsFXSEpqPTpaiefW7zJOQjx4cqBmcLd
- pkuByOXDxDSfj04TTxLKqLpoeQS2bNjq9jolrJFeKnlNEdJzJQQGeJHUca9mDO/I+7DW2w1JE
- 1UhGMa/Bh78ah4ct2xPVcwmZTGDo2z1Gfys0nsFqZS8yZTbT0ygDdjnJmkF4QSigLyIAyDteu
- fnxb2EZTYK820+J3atigx1mzLSwoQsTuY0Hy/xeraQN3C4aGwxZb8wn8etRQLV7JGvpVFDSYX
- epFmEP/F3s86pID1MQYdlaF3X2A5xr0YSyvEcg+g83svNlkcqo4+tkYrxg/MjT2uQtg6wPPhA
- T+F3v6cimGfxBo0eXjynULhjG6kxi9B0k9oTcwMyMwpEcI2AjnphiiRf441N8M6OlE99Unla6
- wzYfnpXjK4npvYFILl9GO+suY/y4DWY3HUI7C5v2vb8u5JvrOqn0IfUWlsuOItFE9vEuCUTNQ
- qfrwgpq4CMKBhU7tQ6YplcEYAJEsNvuR45hiIkyZkB8ZrSaOXTFxi5ck4wsr40IbjMPaOgCR+
- shFUSIGRPBiqQHxGxCBl+CmKdp1UoEQEwAu22JPb1H/VO8N1hi6Q/t1C8/6LOp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190327122418.24027-3-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cfPM0Sp2lVhanyEGh2VJwkQ7XpBOFuhJH
-Content-Type: multipart/mixed; boundary="eDS6y53YNaQPziYvu6xGvs0buDvnEA7P3";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <1e36e9e2-dbd3-3ab0-b908-25cfdf1d310d@gmx.com>
-Subject: Re: [PATCH RFC] btrfs: reflink: Flush before reflink any extent to
- prevent NOCOW write falling back to CoW without data reservation
-References: <20190503010852.10342-1-wqu@suse.com>
- <CAL3q7H5uLiPzCQpLdM=4yjz+fA-mQAe_XP1=5fHQ83dyBwcK5w@mail.gmail.com>
-In-Reply-To: <CAL3q7H5uLiPzCQpLdM=4yjz+fA-mQAe_XP1=5fHQ83dyBwcK5w@mail.gmail.com>
+On Wed, Mar 27, 2019 at 02:24:05PM +0200, Nikolay Borisov wrote:
+> --- a/fs/btrfs/dev-replace.c
+> +++ b/fs/btrfs/dev-replace.c
+> @@ -662,7 +662,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+>  	btrfs_device_set_disk_total_bytes(tgt_device,
+>  					  src_device->disk_total_bytes);
+>  	btrfs_device_set_bytes_used(tgt_device, src_device->bytes_used);
+> -	ASSERT(list_empty(&src_device->resized_list));
+> +	ASSERT(list_empty(&src_device->post_commit_list));
 
---eDS6y53YNaQPziYvu6xGvs0buDvnEA7P3
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I've just caught this assertion to fail at btrfs/071. It's for the first
+time but this could also explain the infrequent failures of umount after
+btrfs/011 test that caused other tests to fail.
 
-
-
-On 2019/5/3 =E4=B8=8B=E5=8D=885:21, Filipe Manana wrote:
-> On Fri, May 3, 2019 at 2:46 AM Qu Wenruo <wqu@suse.com> wrote:
->=20
-> What a great subject. The "reflink:" part is unnecessary, since the
-> rest of the subject already mentions it, that makes it a bit shorter.
->=20
->>
->> [BUG]
->> The following command can lead to unexpected data COW:
->>
->>   #!/bin/bash
->>
->>   dev=3D/dev/test/test
->>   mnt=3D/mnt/btrfs
->>
->>   mkfs.btrfs -f $dev -b 1G > /dev/null
->>   mount $dev $mnt -o nospace_cache
->>
->>   xfs_io -f -c "falloc 8k 24k" -c "pwrite 12k 8k" $mnt/file1
->>   xfs_io -c "reflink $mnt/file1 8k 0 4k" $mnt/file1
->>   umount $dev
->>
->> The result extent will be
->>
->>         item 7 key (257 EXTENT_DATA 4096) itemoff 15760 itemsize 53
->>                 generation 6 type 2 (prealloc)
->>                 prealloc data disk byte 13631488 nr 28672
->>         item 8 key (257 EXTENT_DATA 12288) itemoff 15707 itemsize 53
->>                 generation 6 type 1 (regular)
->>                 extent data disk byte 13660160 nr 12288 <<< COW
->>         item 9 key (257 EXTENT_DATA 24576) itemoff 15654 itemsize 53
->>                 generation 6 type 2 (prealloc)
->>                 prealloc data disk byte 13631488 nr 28672
->>
->> Currently we always reserve space even for NOCOW buffered write, thus
->=20
-> I would add 'data' between 'reserve' and 'space', to be clear.
->=20
->> under most case it shouldn't cause anything wrong even we fall back to=
-
->> COW.
->=20
-> even we ... -> even if we fallback to COW when running delalloc /
-> starting writeback.
->=20
->>
->> However when we're out of data space, we fall back to skip data space =
-if
->> we can do NOCOW write.
->=20
-> we fall back to skip data space ... -> we fallback to NOCOW write
-> without reserving data space.
->=20
->>
->> If such behavior happens under that case, we could hit the following
->> problems:
->=20
->> - data space bytes_may_use underflow
->>   This will cause kernel warning.
->=20
-> Ok.
->=20
->>
->> - ENOSPC at delalloc time
->=20
-> at delalloc time - that is an ambiguous term you use through the change=
- log.
-
-In fact, I have a lot of uncertain terminology through kernel.
-
-Things like flush get referred multiple times in different context (e.g.
-filemap flush, flushoncommit, super block flush).
-
-If we have a terminology list, we can't be more happy to follow.
-
-> You mean when running/starting delalloc, which happens when starting wr=
-iteback,
-> but that could be confused with creating delalloc, which happens
-> during the buffered write path.
-
-Another confusion due to different terminology.
-
-My understanding of the write path is:
-buffered write -> delalloc (start delalloc) -> ordered extent -> finish
-ordered io.
-
-Thus I missed the delalloc creating part.
-
->=20
-> So I would always replace 'dealloc time' with 'when running delalloc'
-> (or when starting writeback).
-
-I will change use running delalloc, with extra comment reference to the
-function name (btrfs_run_delalloc_range()).
-
->=20
->>   This will lead to transaction abort and fs forced to RO.
->=20
-> Where does that happen exactly?
-My bad, I got confused with metadata writeback path.
-
-For data writeback, it should only cause sync related failure.
-
-> I don't recall starting transactions when running dealloc, and failed
-> to see where after a quick glance to cow_file_range()
-> and run_delalloc_nocow(). I'm assuming that 'at delalloc time' means
-> when starting writeback.
->=20
->>
->> [CAUSE]
->> This is due to the fact that btrfs can only do extent level share chec=
-k.
->>
->> Btrfs can only tell if an extent is shared, no matter if only part of =
-the
->> extent is shared or not.
->>
->> So for above script we have:
->> - fallocate
->> - buffered write
->>   If we don't have enough data space, we fall back to NOCOW check.
->>   At this timming, the extent is not shared, we can skip data
->>   reservation.
->=20
-> But in the above example we don't fall to nocow mode when doing the
-> buffered write, as there's plenty of data space available (1Gb -
-> 24Kb).
-> You need to update the example.
-I have to admit that the core part is mostly based on the worst case
-*assumption*.
-
-I'll try to make the case convincing by making it fail directly.
-
->=20
->=20
->> - reflink
->>   Now part of the large preallocated extent is shared.
->> - delalloc kicks in
->=20
-> writeback kicks in
->=20
->>   For the NOCOW range, as the preallocated extent is shared, we need
->>   to fall back to COW.
->>
->> [WORKAROUND]
->> The workaround is to ensure any buffered write in the related extents
->> (not the reflink source range) get flushed before reflink.
->=20
-> not the reflink source range -> not just the reflink source range
->=20
->>
->> However it's pretty expensive to do a comprehensive check.
->> In the reproducer, the reflink source is just a part of a larger
->=20
-> Again, the reproducer needs to be fixed (yes, I tested it even if it's
-> clear by looking at it that it doesn't trigger the nocow case).
->=20
->> preallocated extent, we need to flush all buffered write of that exten=
-t
->> before reflink.
->> Such backward search can be complex and we may not get much benefit fr=
-om
->> it.
->>
->> So this patch will just try to flush the whole inode before reflink.
->=20
->=20
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Reason for RFC:
->> Flushing an inode just because it's a reflink source is definitely
->> overkilling, but I don't have any better way to handle it.
->>
->> Any comment on this is welcomed.
->> ---
->>  fs/btrfs/ioctl.c | 22 ++++++++++++++++++++++
->>  1 file changed, 22 insertions(+)
->>
->> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->> index 7755b503b348..8caa0edb6fbf 100644
->> --- a/fs/btrfs/ioctl.c
->> +++ b/fs/btrfs/ioctl.c
->> @@ -3930,6 +3930,28 @@ static noinline int btrfs_clone_files(struct fi=
-le *file, struct file *file_src,
->>                         return ret;
->>         }
->>
->> +       /*
->> +        * Workaround to make sure NOCOW buffered write reach disk as =
-NOCOW.
->> +        *
->> +        * Due to the limit of btrfs extent tree design, we can only h=
-ave
->> +        * extent level share view. Any part of an extent is shared th=
-en the
->=20
-> Any -> If any
->=20
->> +        * whole extent is shared and any write into that extent needs=
- to fall
->=20
-> is -> is considered
->=20
->> +        * back to COW.
->=20
-> I would add, something like:
->=20
-> That is, btrfs' back references do not have a block level granularity,
-> they work at the whole extent level.
->=20
->> +        *
->> +        * NOCOW buffered write without data space reserved could to l=
-ead to
->> +        * either data space bytes_may_use underflow (kernel warning) =
-or ENOSPC
->> +        * at delalloc time (transaction abort).
->=20
-> I would omit the warning and transaction abort parts, that can change
-> any time. And we have that information in the changelog, so it's not
-> lost.
->=20
->> +        *
->> +        * Here we take a shortcut by flush the whole inode. We could =
-do better
->> +        * by finding all extents in that range and flush the space re=
-ferring
->> +        * all those extents.
->> +        * But that's too complex for such corner case.
->> +        */
->> +       filemap_flush(src->i_mapping);
->> +       if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
->> +                    &BTRFS_I(src)->runtime_flags))
->> +               filemap_flush(src->i_mapping);
->=20
-> So a few comments here:
->=20
-> - why just in the clone part? The dedupe side has the same problem, doe=
-sn't it?
-
-Right.
-
->=20
-> - I would move such flushing to btrfs_remap_file_range_prep - this is
-> where we do the source and target range flush and wait.
->=20
-> Can you turn the reproducer into an fstests case?
-
-Sure.
-
-Thanks for the info and all the comment,
-Qu
-
->=20
-> Thanks.
->=20
->> +
->>         /*
->>          * Lock destination range to serialize with concurrent readpag=
-es() and
->>          * source range to serialize with relocation.
->> --
->> 2.21.0
->>
->=20
->=20
-
-
---eDS6y53YNaQPziYvu6xGvs0buDvnEA7P3--
-
---cfPM0Sp2lVhanyEGh2VJwkQ7XpBOFuhJH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzMFXAACgkQwj2R86El
-/qh9Ygf+IYERu/lQlY8cGG8tLshuzjHtkCYlM9nnKcmdy6O0JwCnUs1B5gHdZFue
-ctlI5LdcLZGUnUYSnpOjlannNo8S1bRhtWVsHRO4LMIRtXLezkcqS+RTQntmVEgq
-HiO4l0ONhaW8jVy2LcGvEdITfwiMzR+IV9G0+cf2CL1gKMDVuJ0+MyuZMh7CqS9m
-+Hw4gm6aurUXPiLaTxKZcP0dypyXCAfmEWdpVK9GAumrEdMgEgSYAgDAeBdc1tVn
-UbdkxXx3wiVyeupeInHL59xlxuK4vqOtAWauvzK3xuUCJwBdcGdVsOeTMacKmVNz
-iVEvSnR9wg8XsxfSKwC0uGpHqjE0Wg==
-=Ui/q
------END PGP SIGNATURE-----
-
---cfPM0Sp2lVhanyEGh2VJwkQ7XpBOFuhJH--
+btrfs/071               [10:10:22][ 2348.888263] run fstests btrfs/071 at 2019-05-03 10:10:22
+[ 2349.018607] BTRFS info (device vda): disk space caching is enabled
+[ 2349.021433] BTRFS info (device vda): has skinny extents
+[ 2349.958749] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 1 transid 5 /dev/vdb
+[ 2349.962961] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 2 transid 5 /dev/vdc
+[ 2349.966961] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 3 transid 5 /dev/vdd
+[ 2349.970983] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 4 transid 5 /dev/vde
+[ 2349.974966] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 5 transid 5 /dev/vdf
+[ 2349.978829] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 6 transid 5 /dev/vdg
+[ 2349.993612] BTRFS info (device vdb): disk space caching is enabled
+[ 2349.996386] BTRFS info (device vdb): has skinny extents
+[ 2349.998780] BTRFS info (device vdb): flagging fs with big metadata feature
+[ 2350.018398] BTRFS info (device vdb): checking UUID tree
+[ 2350.123817] BTRFS info (device vdb): dev_replace from /dev/vdc (devid 2) to /dev/vdh started
+[ 2350.275831] BTRFS info (device vdb): use no compression, level 0
+[ 2350.279478] BTRFS info (device vdb): disk space caching is enabled
+[ 2351.586031] BTRFS info (device vdb): use zlib compression, level 3
+[ 2351.588935] BTRFS info (device vdb): disk space caching is enabled
+[ 2351.757525] BTRFS info (device vdb): dev_replace from /dev/vdc (devid 2) to /dev/vdh finished
+[ 2351.761606] assertion failed: list_empty(&src_device->post_commit_list), file: fs/btrfs/dev-replace.c, line: 665
+[ 2351.766222] ------------[ cut here ]------------
+[ 2351.768904] kernel BUG at fs/btrfs/ctree.h:3518!
+[ 2351.771982] invalid opcode: 0000 [#1] PREEMPT SMP
+[ 2351.774878] CPU: 6 PID: 26220 Comm: btrfs Not tainted 5.1.0-rc7-default+ #16
+[ 2351.778992] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
+[ 2351.785773] RIP: 0010:assfail.constprop.14+0x18/0x1a [btrfs]
+[ 2351.789143] Code: c6 80 1f 37 c0 48 89 d1 48 89 c2 e8 7f e8 ff ff 58 c3 89 f1 48 c7 c2 f0 7d 36 c0 48 89 fe 48 c7 c7 50 23 37 c0 e8 e2 25 d7 d6 <0f> 0b 89 f1 48 c7 c2 61 7e 36 c0 48 89 fe 48 c7 c7 80 28 37 c0 e8
+[ 2351.800167] RSP: 0018:ffffb6af0c07fc58 EFLAGS: 00010282
+[ 2351.803316] RAX: 0000000000000064 RBX: ffff8fbfa065c000 RCX: 0000000000000000
+[ 2351.807407] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffffffff970c9e13
+[ 2351.811676] RBP: ffffb6af0c07fcc0 R08: 0000000000000001 R09: 0000000000000000
+[ 2351.815868] R10: ffff8fbfa1a57c00 R11: 0000000000000000 R12: ffff8fbfa065f658
+[ 2351.820078] R13: ffff8fbfa065f5b8 R14: 0000000000000002 R15: ffff8fbfa1dc7000
+[ 2351.824435] FS:  00007f07984a48c0(0000) GS:ffff8fbfb7800000(0000) knlGS:0000000000000000
+[ 2351.829613] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 2351.833253] CR2: 00007fb27c8e330c CR3: 000000021bfe7000 CR4: 00000000000006e0
+[ 2351.836535] Call Trace:
+[ 2351.837705]  btrfs_dev_replace_finishing+0x585/0x600 [btrfs]
+[ 2351.840662]  ? btrfs_dev_replace_by_ioctl+0x502/0x7f0 [btrfs]
+[ 2351.843173]  btrfs_dev_replace_by_ioctl+0x502/0x7f0 [btrfs]
+[ 2351.846375]  btrfs_ioctl+0x24d9/0x2e40 [btrfs]
+[ 2351.849004]  ? writeback_single_inode+0xbe/0x110
+[ 2351.851664]  ? do_sigaction+0x63/0x250
+[ 2351.853477]  ? do_vfs_ioctl+0xa2/0x6f0
+[ 2351.855295]  do_vfs_ioctl+0xa2/0x6f0
+[ 2351.857691]  ? do_sigaction+0xfc/0x250
+[ 2351.860046]  ksys_ioctl+0x3a/0x70
+[ 2351.862109]  __x64_sys_ioctl+0x16/0x20
+[ 2351.864235]  do_syscall_64+0x54/0x190
+[ 2351.865969]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[ 2351.868919] RIP: 0033:0x7f079859c607
+[ 2351.871253] Code: 00 00 90 48 8b 05 91 88 0c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 61 88 0c 00 f7 d8 64 89 01 48
+[ 2351.882057] RSP: 002b:00007ffe865db768 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[ 2351.886691] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f079859c607
+[ 2351.890792] RDX: 00007ffe865dbba0 RSI: 00000000ca289435 RDI: 0000000000000003
+[ 2351.894822] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+[ 2351.898903] R10: 0000000000000008 R11: 0000000000000246 R12: 00007ffe865df280
+[ 2351.903036] R13: 0000000000000001 R14: 0000000000000004 R15: 00005622c7bc32a0
