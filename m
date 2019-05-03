@@ -2,112 +2,360 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9299512B64
-	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2019 12:22:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC26912BCC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  3 May 2019 12:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbfECKWD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 3 May 2019 06:22:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56392 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726289AbfECKWD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 3 May 2019 06:22:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 680A3AD36
-        for <linux-btrfs@vger.kernel.org>; Fri,  3 May 2019 10:22:01 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8EC01DA885; Fri,  3 May 2019 12:23:02 +0200 (CEST)
-Date:   Fri, 3 May 2019 12:23:02 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 02/15] btrfs: combine device update operations during
- transaction commit
-Message-ID: <20190503102302.GF20156@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190327122418.24027-1-nborisov@suse.com>
- <20190327122418.24027-3-nborisov@suse.com>
+        id S1726495AbfECKp5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 3 May 2019 06:45:57 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:40951 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbfECKp5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 3 May 2019 06:45:57 -0400
+Received: by mail-vs1-f67.google.com with SMTP id e207so3284305vsd.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 03 May 2019 03:45:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=RB2DKwRfzgwPFDp6ZEMkmTQfqHtQ3oCAxUD9+cdtna4=;
+        b=eJpL3zagCSmaRsr1WNRqN6xFEpD2aIWWs5hXEk4lcjjLBMBEkaQ/iz/4wZkOpAB+fQ
+         4TsLmdvyEZT4TzTketzwl/AnDQgpQKgIuhv2CqYSWzCzm8QO0eXU3A1N6Y/9VUvW3XnF
+         FqvId5ti59hnz7Ez09WEqZfrLIdMwp7G3LVcuqoBMPc5nwJnoHDcd2ebbWvogq9lbfar
+         68aW9ZtS4yGfZJprs7sprSY+v/eNA3OOWNv2IYbbbS22yWQs1eT4ClGwMhictHTGQNf6
+         ki3tG2oLCNSCwbTXv3Ysin93fIKgcoyvfotx3oraOi/sI00Bd7gWnwk/gbiQpIq11B8F
+         tLGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=RB2DKwRfzgwPFDp6ZEMkmTQfqHtQ3oCAxUD9+cdtna4=;
+        b=j1CzOABruRfrOvWGjutbn9UZP7jsIc1RkHC7R3ctOe84oHjd8p9f42dhBBCKnYyzJ+
+         tWdiuBOQG/UdL3h1HDSz1tQr6gzvYjKhpt4370Ay/TLDjqYqKHp7wUGwic7RhvSugbP/
+         8sGPvkEthf6uE57iWUV51gNC4tigX+1lYZlfHM2kQCK0mQutLqsnco7mWG+yyLhOUyoW
+         lF35ZNtcOe53k/GrjXtJcY6/u9yQ263LeoeivHgo07m/H6tVjVy2ua4UqRWGbn0FlGW+
+         k4shmbAr8CWvuV/rS3CjT5vDG/zoYb3HHuaeSFFxuO2kVhMdRR2ons8wjGLfDcCDnv60
+         rv7g==
+X-Gm-Message-State: APjAAAWjXK8SujIF5yuz+if4qxD7zawZ/FygizSfNtzxmLNk5MW+kCcX
+        Bn3XzfXuIrnrqjNaY6WLOXRlLyE9h2P6uu3jC/o=
+X-Google-Smtp-Source: APXvYqyCiCWmaqYZ8SM/qbUjRnnJ8EJLKSoTTK0IdgBwoFuO3kp+ciiUUIEUA5JrvRaFQNnYb9MgCIQcMS8/HT0VJt0=
+X-Received: by 2002:a67:7e57:: with SMTP id z84mr4512799vsc.99.1556880355355;
+ Fri, 03 May 2019 03:45:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190327122418.24027-3-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+References: <20190503010852.10342-1-wqu@suse.com> <CAL3q7H5uLiPzCQpLdM=4yjz+fA-mQAe_XP1=5fHQ83dyBwcK5w@mail.gmail.com>
+ <1e36e9e2-dbd3-3ab0-b908-25cfdf1d310d@gmx.com>
+In-Reply-To: <1e36e9e2-dbd3-3ab0-b908-25cfdf1d310d@gmx.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 3 May 2019 11:45:44 +0100
+Message-ID: <CAL3q7H4xp9=Kw3Q1hoDz_2Tbek4NdaULhJX4s7wmUqmku=ex0A@mail.gmail.com>
+Subject: Re: [PATCH RFC] btrfs: reflink: Flush before reflink any extent to
+ prevent NOCOW write falling back to CoW without data reservation
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Mar 27, 2019 at 02:24:05PM +0200, Nikolay Borisov wrote:
-> --- a/fs/btrfs/dev-replace.c
-> +++ b/fs/btrfs/dev-replace.c
-> @@ -662,7 +662,7 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
->  	btrfs_device_set_disk_total_bytes(tgt_device,
->  					  src_device->disk_total_bytes);
->  	btrfs_device_set_bytes_used(tgt_device, src_device->bytes_used);
-> -	ASSERT(list_empty(&src_device->resized_list));
-> +	ASSERT(list_empty(&src_device->post_commit_list));
+On Fri, May 3, 2019 at 11:18 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2019/5/3 =E4=B8=8B=E5=8D=885:21, Filipe Manana wrote:
+> > On Fri, May 3, 2019 at 2:46 AM Qu Wenruo <wqu@suse.com> wrote:
+> >
+> > What a great subject. The "reflink:" part is unnecessary, since the
+> > rest of the subject already mentions it, that makes it a bit shorter.
+> >
+> >>
+> >> [BUG]
+> >> The following command can lead to unexpected data COW:
+> >>
+> >>   #!/bin/bash
+> >>
+> >>   dev=3D/dev/test/test
+> >>   mnt=3D/mnt/btrfs
+> >>
+> >>   mkfs.btrfs -f $dev -b 1G > /dev/null
+> >>   mount $dev $mnt -o nospace_cache
+> >>
+> >>   xfs_io -f -c "falloc 8k 24k" -c "pwrite 12k 8k" $mnt/file1
+> >>   xfs_io -c "reflink $mnt/file1 8k 0 4k" $mnt/file1
+> >>   umount $dev
+> >>
+> >> The result extent will be
+> >>
+> >>         item 7 key (257 EXTENT_DATA 4096) itemoff 15760 itemsize 53
+> >>                 generation 6 type 2 (prealloc)
+> >>                 prealloc data disk byte 13631488 nr 28672
+> >>         item 8 key (257 EXTENT_DATA 12288) itemoff 15707 itemsize 53
+> >>                 generation 6 type 1 (regular)
+> >>                 extent data disk byte 13660160 nr 12288 <<< COW
+> >>         item 9 key (257 EXTENT_DATA 24576) itemoff 15654 itemsize 53
+> >>                 generation 6 type 2 (prealloc)
+> >>                 prealloc data disk byte 13631488 nr 28672
+> >>
+> >> Currently we always reserve space even for NOCOW buffered write, thus
+> >
+> > I would add 'data' between 'reserve' and 'space', to be clear.
+> >
+> >> under most case it shouldn't cause anything wrong even we fall back to
+> >> COW.
+> >
+> > even we ... -> even if we fallback to COW when running delalloc /
+> > starting writeback.
+> >
+> >>
+> >> However when we're out of data space, we fall back to skip data space =
+if
+> >> we can do NOCOW write.
+> >
+> > we fall back to skip data space ... -> we fallback to NOCOW write
+> > without reserving data space.
+> >
+> >>
+> >> If such behavior happens under that case, we could hit the following
+> >> problems:
+> >
+> >> - data space bytes_may_use underflow
+> >>   This will cause kernel warning.
+> >
+> > Ok.
+> >
+> >>
+> >> - ENOSPC at delalloc time
+> >
+> > at delalloc time - that is an ambiguous term you use through the change=
+ log.
+>
+> In fact, I have a lot of uncertain terminology through kernel.
+>
+> Things like flush get referred multiple times in different context (e.g.
+> filemap flush, flushoncommit, super block flush).
+>
+> If we have a terminology list, we can't be more happy to follow.
 
-I've just caught this assertion to fail at btrfs/071. It's for the first
-time but this could also explain the infrequent failures of umount after
-btrfs/011 test that caused other tests to fail.
+So, some is kernel wide while others are btrfs specific.
 
-btrfs/071               [10:10:22][ 2348.888263] run fstests btrfs/071 at 2019-05-03 10:10:22
-[ 2349.018607] BTRFS info (device vda): disk space caching is enabled
-[ 2349.021433] BTRFS info (device vda): has skinny extents
-[ 2349.958749] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 1 transid 5 /dev/vdb
-[ 2349.962961] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 2 transid 5 /dev/vdc
-[ 2349.966961] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 3 transid 5 /dev/vdd
-[ 2349.970983] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 4 transid 5 /dev/vde
-[ 2349.974966] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 5 transid 5 /dev/vdf
-[ 2349.978829] BTRFS: device fsid 1e913c80-9d7f-4e42-95e6-55f207ef0c79 devid 6 transid 5 /dev/vdg
-[ 2349.993612] BTRFS info (device vdb): disk space caching is enabled
-[ 2349.996386] BTRFS info (device vdb): has skinny extents
-[ 2349.998780] BTRFS info (device vdb): flagging fs with big metadata feature
-[ 2350.018398] BTRFS info (device vdb): checking UUID tree
-[ 2350.123817] BTRFS info (device vdb): dev_replace from /dev/vdc (devid 2) to /dev/vdh started
-[ 2350.275831] BTRFS info (device vdb): use no compression, level 0
-[ 2350.279478] BTRFS info (device vdb): disk space caching is enabled
-[ 2351.586031] BTRFS info (device vdb): use zlib compression, level 3
-[ 2351.588935] BTRFS info (device vdb): disk space caching is enabled
-[ 2351.757525] BTRFS info (device vdb): dev_replace from /dev/vdc (devid 2) to /dev/vdh finished
-[ 2351.761606] assertion failed: list_empty(&src_device->post_commit_list), file: fs/btrfs/dev-replace.c, line: 665
-[ 2351.766222] ------------[ cut here ]------------
-[ 2351.768904] kernel BUG at fs/btrfs/ctree.h:3518!
-[ 2351.771982] invalid opcode: 0000 [#1] PREEMPT SMP
-[ 2351.774878] CPU: 6 PID: 26220 Comm: btrfs Not tainted 5.1.0-rc7-default+ #16
-[ 2351.778992] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
-[ 2351.785773] RIP: 0010:assfail.constprop.14+0x18/0x1a [btrfs]
-[ 2351.789143] Code: c6 80 1f 37 c0 48 89 d1 48 89 c2 e8 7f e8 ff ff 58 c3 89 f1 48 c7 c2 f0 7d 36 c0 48 89 fe 48 c7 c7 50 23 37 c0 e8 e2 25 d7 d6 <0f> 0b 89 f1 48 c7 c2 61 7e 36 c0 48 89 fe 48 c7 c7 80 28 37 c0 e8
-[ 2351.800167] RSP: 0018:ffffb6af0c07fc58 EFLAGS: 00010282
-[ 2351.803316] RAX: 0000000000000064 RBX: ffff8fbfa065c000 RCX: 0000000000000000
-[ 2351.807407] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffffffff970c9e13
-[ 2351.811676] RBP: ffffb6af0c07fcc0 R08: 0000000000000001 R09: 0000000000000000
-[ 2351.815868] R10: ffff8fbfa1a57c00 R11: 0000000000000000 R12: ffff8fbfa065f658
-[ 2351.820078] R13: ffff8fbfa065f5b8 R14: 0000000000000002 R15: ffff8fbfa1dc7000
-[ 2351.824435] FS:  00007f07984a48c0(0000) GS:ffff8fbfb7800000(0000) knlGS:0000000000000000
-[ 2351.829613] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 2351.833253] CR2: 00007fb27c8e330c CR3: 000000021bfe7000 CR4: 00000000000006e0
-[ 2351.836535] Call Trace:
-[ 2351.837705]  btrfs_dev_replace_finishing+0x585/0x600 [btrfs]
-[ 2351.840662]  ? btrfs_dev_replace_by_ioctl+0x502/0x7f0 [btrfs]
-[ 2351.843173]  btrfs_dev_replace_by_ioctl+0x502/0x7f0 [btrfs]
-[ 2351.846375]  btrfs_ioctl+0x24d9/0x2e40 [btrfs]
-[ 2351.849004]  ? writeback_single_inode+0xbe/0x110
-[ 2351.851664]  ? do_sigaction+0x63/0x250
-[ 2351.853477]  ? do_vfs_ioctl+0xa2/0x6f0
-[ 2351.855295]  do_vfs_ioctl+0xa2/0x6f0
-[ 2351.857691]  ? do_sigaction+0xfc/0x250
-[ 2351.860046]  ksys_ioctl+0x3a/0x70
-[ 2351.862109]  __x64_sys_ioctl+0x16/0x20
-[ 2351.864235]  do_syscall_64+0x54/0x190
-[ 2351.865969]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[ 2351.868919] RIP: 0033:0x7f079859c607
-[ 2351.871253] Code: 00 00 90 48 8b 05 91 88 0c 00 64 c7 00 26 00 00 00 48 c7 c0 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 b8 10 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 61 88 0c 00 f7 d8 64 89 01 48
-[ 2351.882057] RSP: 002b:00007ffe865db768 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[ 2351.886691] RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00007f079859c607
-[ 2351.890792] RDX: 00007ffe865dbba0 RSI: 00000000ca289435 RDI: 0000000000000003
-[ 2351.894822] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-[ 2351.898903] R10: 0000000000000008 R11: 0000000000000246 R12: 00007ffe865df280
-[ 2351.903036] R13: 0000000000000001 R14: 0000000000000004 R15: 00005622c7bc32a0
+A buffered write creates dealloc - copies data to pages, marks the
+pages as dirty and tags the range in the extent io tree as dellaloc.
+Running delalloc, flushes writeback (starts IO for the dirty pages and
+tags them as under writeback) and does other necessary things (like
+reserving extents).
+When writeback finishes, we add a task to a work queue to run
+btrfs_finish_ordered_io - after that happens we say that the ordered
+extent completed.
+
+It can get ambiguous very often.
+
+>
+> > You mean when running/starting delalloc, which happens when starting wr=
+iteback,
+> > but that could be confused with creating delalloc, which happens
+> > during the buffered write path.
+>
+> Another confusion due to different terminology.
+>
+> My understanding of the write path is:
+> buffered write -> delalloc (start delalloc) -> ordered extent -> finish
+> ordered io.
+>
+> Thus I missed the delalloc creating part.
+>
+> >
+> > So I would always replace 'dealloc time' with 'when running delalloc'
+> > (or when starting writeback).
+>
+> I will change use running delalloc, with extra comment reference to the
+> function name (btrfs_run_delalloc_range()).
+>
+> >
+> >>   This will lead to transaction abort and fs forced to RO.
+> >
+> > Where does that happen exactly?
+> My bad, I got confused with metadata writeback path.
+>
+> For data writeback, it should only cause sync related failure.
+
+Ok, so please remove the transaction abort comments for next iteration.
+By sync related failure, you mean running dealloc fails with ENOSPC,
+since when it tries to reserve a data extent it fails as it can't find
+any free extent.
+
+>
+> > I don't recall starting transactions when running dealloc, and failed
+> > to see where after a quick glance to cow_file_range()
+> > and run_delalloc_nocow(). I'm assuming that 'at delalloc time' means
+> > when starting writeback.
+> >
+> >>
+> >> [CAUSE]
+> >> This is due to the fact that btrfs can only do extent level share chec=
+k.
+> >>
+> >> Btrfs can only tell if an extent is shared, no matter if only part of =
+the
+> >> extent is shared or not.
+> >>
+> >> So for above script we have:
+> >> - fallocate
+> >> - buffered write
+> >>   If we don't have enough data space, we fall back to NOCOW check.
+> >>   At this timming, the extent is not shared, we can skip data
+> >>   reservation.
+> >
+> > But in the above example we don't fall to nocow mode when doing the
+> > buffered write, as there's plenty of data space available (1Gb -
+> > 24Kb).
+> > You need to update the example.
+> I have to admit that the core part is mostly based on the worst case
+> *assumption*.
+>
+> I'll try to make the case convincing by making it fail directly.
+
+Great, thanks.
+
+>
+> >
+> >
+> >> - reflink
+> >>   Now part of the large preallocated extent is shared.
+> >> - delalloc kicks in
+> >
+> > writeback kicks in
+> >
+> >>   For the NOCOW range, as the preallocated extent is shared, we need
+> >>   to fall back to COW.
+> >>
+> >> [WORKAROUND]
+> >> The workaround is to ensure any buffered write in the related extents
+> >> (not the reflink source range) get flushed before reflink.
+> >
+> > not the reflink source range -> not just the reflink source range
+> >
+> >>
+> >> However it's pretty expensive to do a comprehensive check.
+> >> In the reproducer, the reflink source is just a part of a larger
+> >
+> > Again, the reproducer needs to be fixed (yes, I tested it even if it's
+> > clear by looking at it that it doesn't trigger the nocow case).
+> >
+> >> preallocated extent, we need to flush all buffered write of that exten=
+t
+> >> before reflink.
+> >> Such backward search can be complex and we may not get much benefit fr=
+om
+> >> it.
+> >>
+> >> So this patch will just try to flush the whole inode before reflink.
+> >
+> >
+> >>
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >> Reason for RFC:
+> >> Flushing an inode just because it's a reflink source is definitely
+> >> overkilling, but I don't have any better way to handle it.
+> >>
+> >> Any comment on this is welcomed.
+> >> ---
+> >>  fs/btrfs/ioctl.c | 22 ++++++++++++++++++++++
+> >>  1 file changed, 22 insertions(+)
+> >>
+> >> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> >> index 7755b503b348..8caa0edb6fbf 100644
+> >> --- a/fs/btrfs/ioctl.c
+> >> +++ b/fs/btrfs/ioctl.c
+> >> @@ -3930,6 +3930,28 @@ static noinline int btrfs_clone_files(struct fi=
+le *file, struct file *file_src,
+> >>                         return ret;
+> >>         }
+> >>
+> >> +       /*
+> >> +        * Workaround to make sure NOCOW buffered write reach disk as =
+NOCOW.
+> >> +        *
+> >> +        * Due to the limit of btrfs extent tree design, we can only h=
+ave
+> >> +        * extent level share view. Any part of an extent is shared th=
+en the
+> >
+> > Any -> If any
+> >
+> >> +        * whole extent is shared and any write into that extent needs=
+ to fall
+> >
+> > is -> is considered
+> >
+> >> +        * back to COW.
+> >
+> > I would add, something like:
+> >
+> > That is, btrfs' back references do not have a block level granularity,
+> > they work at the whole extent level.
+> >
+> >> +        *
+> >> +        * NOCOW buffered write without data space reserved could to l=
+ead to
+> >> +        * either data space bytes_may_use underflow (kernel warning) =
+or ENOSPC
+> >> +        * at delalloc time (transaction abort).
+> >
+> > I would omit the warning and transaction abort parts, that can change
+> > any time. And we have that information in the changelog, so it's not
+> > lost.
+> >
+> >> +        *
+> >> +        * Here we take a shortcut by flush the whole inode. We could =
+do better
+> >> +        * by finding all extents in that range and flush the space re=
+ferring
+> >> +        * all those extents.
+> >> +        * But that's too complex for such corner case.
+> >> +        */
+> >> +       filemap_flush(src->i_mapping);
+> >> +       if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
+> >> +                    &BTRFS_I(src)->runtime_flags))
+> >> +               filemap_flush(src->i_mapping);
+> >
+> > So a few comments here:
+> >
+> > - why just in the clone part? The dedupe side has the same problem, doe=
+sn't it?
+>
+> Right.
+>
+> >
+> > - I would move such flushing to btrfs_remap_file_range_prep - this is
+> > where we do the source and target range flush and wait.
+> >
+> > Can you turn the reproducer into an fstests case?
+>
+> Sure.
+>
+> Thanks for the info and all the comment,
+> Qu
+>
+> >
+> > Thanks.
+> >
+> >> +
+> >>         /*
+> >>          * Lock destination range to serialize with concurrent readpag=
+es() and
+> >>          * source range to serialize with relocation.
+> >> --
+> >> 2.21.0
+> >>
+> >
+> >
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
