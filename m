@@ -2,133 +2,226 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7518513E8E
-	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2019 11:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A488314082
+	for <lists+linux-btrfs@lfdr.de>; Sun,  5 May 2019 17:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbfEEJJD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 May 2019 05:09:03 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:39939 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbfEEJJC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 5 May 2019 05:09:02 -0400
-Received: by mail-lj1-f196.google.com with SMTP id d15so8598494ljc.7
-        for <linux-btrfs@vger.kernel.org>; Sun, 05 May 2019 02:09:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WDN8RO9jRZIsVbXM35Vp9lXJ9l9NhlZAY8sX+Bgh4qM=;
-        b=izhW7CRpCN7gbvcvb+oMjpZzglT5AhceNLE3x/txeN5iB4AplcFHuEze6dsBOARVg0
-         D8s5pdmFgpp2PWpb5ZTCxWKhgmxM8HiIcuPW9OiS1OWdrgUueHQxBN8GvUjH7zT5lZ+H
-         mP/XjeDJCmvPmOndwQgU19+R2g6KqCtdU8LQyyTkLK5HDLHkenyKb2OuMSfsY23Rsr4Q
-         8c+xgVRqkXhZTvv0xjRFpQ5uxAG+rH2OTVO+Ej/R44XI4dHHSHd1fJuoKH5Ngrh6P4dZ
-         S+a16ChlxuDZ0iQbUZdOom/nKuNYucesLX6keytATy/c0pCKTqhn0XoPzaqjUoRjWERG
-         Wg5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=WDN8RO9jRZIsVbXM35Vp9lXJ9l9NhlZAY8sX+Bgh4qM=;
-        b=Ut0azFN+H3jnXy85HZWHO/ffNCThkt2bYDyis6CzS7ZQ2CCfURA07fso/cPDGI31s7
-         m2VxVNlZJaFVCNYhE2GYH3XgDOiPFoplW3/O0yLVjuzlyMCvo3BL+1F2EIY6ti1/Dyd/
-         dkajIyrZzj72Q0NfM/gDQvEqgKGKxibsIRTcR9n8BXkwZk39PbcongahX0f/iXjT+koz
-         t5aJM4HSaTOd8kQLbudNufe/mNm3yMK7RTcRtvFj1g3nFuqptBQxMd0qKis8jouAEy+O
-         7OueX+wKXDNuV9KTDWN1fFjT1LGar34mD4jXlF+cj+fWwdyio4UN4M745y4H4mdEIzQk
-         e4hg==
-X-Gm-Message-State: APjAAAXpmM05N+vFCzTS/mM++ZcTybGG9TsSbG5Ai21Zg+2EZumDeyZN
-        sO9PGZx+Ds5SSMqpBhGyDkf6tU0Y
-X-Google-Smtp-Source: APXvYqw2PLtXloePi9nzFaI/gaVlKU4NTCuNVdOM60axcKBH6lqBVUZF0Oc85NP0A5qvW383YV7p5Q==
-X-Received: by 2002:a2e:7503:: with SMTP id q3mr10146239ljc.190.1557047339782;
-        Sun, 05 May 2019 02:08:59 -0700 (PDT)
-Received: from [192.168.1.5] (109-252-90-193.nat.spd-mgts.ru. [109.252.90.193])
-        by smtp.gmail.com with ESMTPSA id h24sm1395679ljk.10.2019.05.05.02.08.57
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 05 May 2019 02:08:58 -0700 (PDT)
-Subject: Re: Hibernation into swap file
-To:     Maksim Fomin <maxim@fomin.one>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <aeo6MlQ5-4Bg33XbJZWCvdhKuo0Cgca_eNE4xv7rqzCzgvyxG-cobpf8R3bGdh6VT2LLPcXlZu69EyL_rV8K7gRLQ4HtYIyXnWCWb3zR6UM=@fomin.one>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
- BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
- 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
- 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
- KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
- nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
- gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
- vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
- AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <596643ce-64f8-121f-3319-676e58d700e7@gmail.com>
-Date:   Sun, 5 May 2019 12:08:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1727767AbfEEPHh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 May 2019 11:07:37 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:41940 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726524AbfEEPHh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 5 May 2019 11:07:37 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id C55F22E31C3; Sun,  5 May 2019 11:07:27 -0400 (EDT)
+Date:   Sun, 5 May 2019 11:07:27 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC] btrfs: reflink: Flush before reflink any extent to
+ prevent NOCOW write falling back to CoW without data reservation
+Message-ID: <20190505150724.GD20359@hungrycats.org>
+References: <20190503010852.10342-1-wqu@suse.com>
+ <20190503215622.GC20359@hungrycats.org>
+ <448c9a50-98b0-15aa-cbde-81b294bd74e4@gmx.com>
 MIME-Version: 1.0
-In-Reply-To: <aeo6MlQ5-4Bg33XbJZWCvdhKuo0Cgca_eNE4xv7rqzCzgvyxG-cobpf8R3bGdh6VT2LLPcXlZu69EyL_rV8K7gRLQ4HtYIyXnWCWb3zR6UM=@fomin.one>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="yVhtmJPUSI46BTXb"
+Content-Disposition: inline
+In-Reply-To: <448c9a50-98b0-15aa-cbde-81b294bd74e4@gmx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-05.05.2019 10:50, Maksim Fomin пишет:
-> Good day.
-> 
-> Since 5.0 btrfs supports swap files. Does it support hibernation into
-> a swap file?
-> 
-> With kernel version 5.0.10 (archlinux) and btrfs-progs 4.20.2
-> (unlikely to be relevant, but still) when I try to hibernate with
-> systemctl or by directly manipulating '/sys/power/resume' and
-> '/sys/power/resume_offset', the kernel logs:
-> 
-> PM: Cannot find swap device, try swapon -a PM: Cannot get swap
-> writer
-> 
 
-How exactly do you compute resume_offset? What are exact commands you
-ise to initiate hibernation? systemctl will likely not work anyway as
-systemd is using FIEMAP which returns logical offset of file extents in
-btrfs address space, not physical offset on containing device. You will
-need to jump from extent vaddr to device offset manually.
+--yVhtmJPUSI46BTXb
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> After digging into this issue I suspect that currently btrfs does not
-> support hibernation into swap file (or does it?). Furthermore, I
-> suspect that kernel mechanism of accessing swap file via
-> 'resume_offset' is unreliable in btrfs case because it is more likely
-> (comparing to other fs) to move files across filesystem which
-> invalidates swap file offset, so the whole idea is dubious. So,
-> 
-> 1) does btrfs supports hibernation into swap file? 2) is there
-> mechanism to lock swap file?
-> 
+On Sat, May 04, 2019 at 08:32:11AM +0800, Qu Wenruo wrote:
+>=20
+>=20
+> On 2019/5/4 =E4=B8=8A=E5=8D=885:56, Zygo Blaxell wrote:
+> > On Fri, May 03, 2019 at 09:08:52AM +0800, Qu Wenruo wrote:
+> >> [BUG]
+> >> The following command can lead to unexpected data COW:
+> >>
+> >>   #!/bin/bash
+> >>
+> >>   dev=3D/dev/test/test
+> >>   mnt=3D/mnt/btrfs
+> >>
+> >>   mkfs.btrfs -f $dev -b 1G > /dev/null
+> >>   mount $dev $mnt -o nospace_cache
+> >>
+> >>   xfs_io -f -c "falloc 8k 24k" -c "pwrite 12k 8k" $mnt/file1
+> >>   xfs_io -c "reflink $mnt/file1 8k 0 4k" $mnt/file1
+> >>   umount $dev
+> >>
+> >> The result extent will be
+> >>
+> >> 	item 7 key (257 EXTENT_DATA 4096) itemoff 15760 itemsize 53
+> >> 		generation 6 type 2 (prealloc)
+> >> 		prealloc data disk byte 13631488 nr 28672
+> >> 	item 8 key (257 EXTENT_DATA 12288) itemoff 15707 itemsize 53
+> >> 		generation 6 type 1 (regular)
+> >> 		extent data disk byte 13660160 nr 12288 <<< COW
+> >> 	item 9 key (257 EXTENT_DATA 24576) itemoff 15654 itemsize 53
+> >> 		generation 6 type 2 (prealloc)
+> >> 		prealloc data disk byte 13631488 nr 28672
+> >>
+> >> Currently we always reserve space even for NOCOW buffered write, thus
+> >> under most case it shouldn't cause anything wrong even we fall back to
+> >> COW.
+> >>
+> >> However when we're out of data space, we fall back to skip data space =
+if
+> >> we can do NOCOW write.
+> >>
+> >> If such behavior happens under that case, we could hit the following
+> >> problems:
+> >> - data space bytes_may_use underflow
+> >>   This will cause kernel warning.
+> >>
+> >> - ENOSPC at delalloc time
+> >>   This will lead to transaction abort and fs forced to RO.
+> >>
+> >> [CAUSE]
+> >> This is due to the fact that btrfs can only do extent level share chec=
+k.
+> >>
+> >> Btrfs can only tell if an extent is shared, no matter if only part of =
+the
+> >> extent is shared or not.
+> >>
+> >> So for above script we have:
+> >> - fallocate
+> >> - buffered write
+> >>   If we don't have enough data space, we fall back to NOCOW check.
+> >>   At this timming, the extent is not shared, we can skip data
+> >>   reservation.
+> >> - reflink
+> >>   Now part of the large preallocated extent is shared.
+> >> - delalloc kicks in
+> >>   For the NOCOW range, as the preallocated extent is shared, we need
+> >>   to fall back to COW.
+> >>
+> >> [WORKAROUND]
+> >> The workaround is to ensure any buffered write in the related extents
+> >> (not the reflink source range) get flushed before reflink.
+> >>
+> >> However it's pretty expensive to do a comprehensive check.
+> >> In the reproducer, the reflink source is just a part of a larger
+> >> preallocated extent, we need to flush all buffered write of that extent
+> >> before reflink.
+> >> Such backward search can be complex and we may not get much benefit fr=
+om
+> >> it.
+> >>
+> >> So this patch will just try to flush the whole inode before reflink.
+> >=20
+> > Does that mean that if a large file is being written and deduped
+> > simultaneously, that the dedupes would now trigger flushes over the
+> > entire file?  That seems like it could be slow.
+>=20
+> Yes, also my reason for RFC.
+>=20
+> But it shouldn't be that heavy, as after the first dedupe/reflink, most
+> IO should be flushed back, later dedupe has much less work to do.
 
-btrfs performs some checks before allowing file as swap and it also
-implicitly locks it during swap usage. Note that btrfs will disable
-snapshots of subvolume with swapfile.
+Sure, but if writes are continuously happening (e.g. writes at offset
+10GB, dedupe at 1GB), these will get flushed out on the next dedupe.
+I'm thinking of scenarious where both writes and dedupes are happening
+continuously, e.g. a host with multiple VM images running out of raw
+image files that are deduped on the host filesystem.
 
-File also must be using single allocation profile. There is no way to
-force allocation profile for individual file I am aware of in case
-filesytem defaults to something else. Also for multi-device btrfs I am
-not aware of any way to force allocation of file on specific physical
-device, and this is required to use file as swap on btrfs. So you are
-likely restricted to single device single data profile.
+I'm not sure what all the conditions for this flush are.  From the list
+above, it sounds like this only occurs _after_ the filesystem has found
+there is no free space.  If that's true, then the extra overhead is
+negligible since it rarely happens (assuming that having no free space
+is a rare condition for filesystems).
 
-Finally you are not allowed to mount any filesystem read-write (or
-replay any pending log/journal) before doing resume. Does btrfs support
-"true" read-only mount, which is guaranteed to not change filesystem
-state in any way?
 
+> > e.g. if the file is a big VM image file and it is used src and for dedu=
+pe
+> > (which is quite common in VM image files), we'd be hammering the disk
+> > with writes similar to hitting it with fsync() in a tight loop?
+>=20
+> The original behavior also flush the target and source range, so we're
+> not completely creating some new overhead.
+>=20
+> Thanks,
+> Qu
+>=20
+> >=20
+> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >> ---
+> >> Reason for RFC:
+> >> Flushing an inode just because it's a reflink source is definitely
+> >> overkilling, but I don't have any better way to handle it.
+> >>
+> >> Any comment on this is welcomed.
+> >> ---
+> >>  fs/btrfs/ioctl.c | 22 ++++++++++++++++++++++
+> >>  1 file changed, 22 insertions(+)
+> >>
+> >> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> >> index 7755b503b348..8caa0edb6fbf 100644
+> >> --- a/fs/btrfs/ioctl.c
+> >> +++ b/fs/btrfs/ioctl.c
+> >> @@ -3930,6 +3930,28 @@ static noinline int btrfs_clone_files(struct fi=
+le *file, struct file *file_src,
+> >>  			return ret;
+> >>  	}
+> >> =20
+> >> +	/*
+> >> +	 * Workaround to make sure NOCOW buffered write reach disk as NOCOW.
+> >> +	 *
+> >> +	 * Due to the limit of btrfs extent tree design, we can only have
+> >> +	 * extent level share view. Any part of an extent is shared then the
+> >> +	 * whole extent is shared and any write into that extent needs to fa=
+ll
+> >> +	 * back to COW.
+> >> +	 *
+> >> +	 * NOCOW buffered write without data space reserved could to lead to
+> >> +	 * either data space bytes_may_use underflow (kernel warning) or ENO=
+SPC
+> >> +	 * at delalloc time (transaction abort).
+> >> +	 *
+> >> +	 * Here we take a shortcut by flush the whole inode. We could do bet=
+ter
+> >> +	 * by finding all extents in that range and flush the space referring
+> >> +	 * all those extents.
+> >> +	 * But that's too complex for such corner case.
+> >> +	 */
+> >> +	filemap_flush(src->i_mapping);
+> >> +	if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
+> >> +		     &BTRFS_I(src)->runtime_flags))
+> >> +		filemap_flush(src->i_mapping);
+> >> +
+> >>  	/*
+> >>  	 * Lock destination range to serialize with concurrent readpages() a=
+nd
+> >>  	 * source range to serialize with relocation.
+> >> --=20
+> >> 2.21.0
+> >>
+>=20
+
+
+
+
+--yVhtmJPUSI46BTXb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXM78KQAKCRCB+YsaVrMb
+nKjDAJ9FEXgNvq+IRIiEvFJwa+4yjXg09QCfcKJwZv2H4sNr5W/G2AxRR5MPVmQ=
+=9lUW
+-----END PGP SIGNATURE-----
+
+--yVhtmJPUSI46BTXb--
