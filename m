@@ -2,77 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3279F153C9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2019 20:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B17B153DC
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2019 20:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbfEFSjZ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 6 May 2019 14:39:25 -0400
-Received: from smtprelay01.ispgateway.de ([80.67.18.13]:9082 "EHLO
-        smtprelay01.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726277AbfEFSjZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 May 2019 14:39:25 -0400
-Received: from [94.217.144.7] (helo=[192.168.177.20])
-        by smtprelay01.ispgateway.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.90_1)
-        (envelope-from <hendrik@friedels.name>)
-        id 1hNiWI-0005Dr-ON; Mon, 06 May 2019 20:39:22 +0200
-From:   "Hendrik Friedel" <hendrik@friedels.name>
-To:     "Chris Murphy" <lists@colorremedies.com>
-Subject: Re[6]: Rough (re)start with btrfs
-Cc:     "Chris Murphy" <lists@colorremedies.com>,
-        "Qu Wenruo" <quwenruo.btrfs@gmx.com>,
-        "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
-Date:   Mon, 06 May 2019 18:39:14 +0000
-Message-Id: <em9719915a-4d1f-4ab9-b14f-488b3cccd9f2@ryzen>
-In-Reply-To: <CAJCQCtSdD32h_xTBVOxEZOp0XijqA0j=HsS5YgdePVhpdgtuRg@mail.gmail.com>
-References: <em9eba60a7-2c0d-4399-8712-c134f0f50d4d@ryzen>
- <e6918268-1e3e-6c2d-853c-aa1eaf8e9693@gmx.com>
- <ema5c33b0a-936b-48f6-99ba-4c5a50e8a88a@ryzen>
- <CAJCQCtTHFi8uR1JndoXju0HvfGvBwXK6Pq4oqJiop82FaT_J-A@mail.gmail.com>
- <emebc18462-5243-43f8-be24-79a932d90a57@ryzen>
- <CAJCQCtSdD32h_xTBVOxEZOp0XijqA0j=HsS5YgdePVhpdgtuRg@mail.gmail.com>
-Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
-User-Agent: eM_Client/7.2.34062.0
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-X-Df-Sender: aGVuZHJpa0BmcmllZGVscy5uYW1l
+        id S1726603AbfEFSwL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 May 2019 14:52:11 -0400
+Received: from mail-smail-vm101.daum.net ([211.231.106.176]:15366 "EHLO
+        mail-smail-vm101.hanmail.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726435AbfEFSwL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 May 2019 14:52:11 -0400
+X-Greylist: delayed 308 seconds by postgrey-1.27 at vger.kernel.org; Mon, 06 May 2019 14:52:10 EDT
+Received: from mail-hmail-smtp3 ([10.194.31.36])
+        by mail-smail-vm101.hanmail.net (8.13.8/8.9.1) with SMTP id x46IktTI012224;
+        Tue, 7 May 2019 03:46:55 +0900
+X-Hermes-Message-Id: n473ksXIE857345600
+X-Originating-IP: 92.223.73.173
+Received: from mail-qpsmtp-vm11 ([10.61.241.138]) by hermes of mail-hmail-smtp3 (10.194.31.36) with ESMTP id n473ksXIE857345600 for <linux-btrfs@vger.kernel.org>; Tue, 07 May 2019 03:46:54 +0900 (KST)
+Received: from [92.223.73.173] (HELO DESKTOP-D0OTJLM) (92.223.73.173)
+ by  (8.12.9/8.9.1) with ESMTPA; ??, 07  5?? 2019 03:46:54 +0900
+Authentication-Results: mail-qpsmtp-vm11; auth=pass (login) smtp.auth=jobjames@daum.net
+Message-ID: <0456b30e-43592-17ce0117086921@desktop-d0otjlm>
+Reply-To: "Toner" <briztechnology@gmail.com>
+From:   "Toner" <jobjames@daum.net>
+To:     linux-btrfs@vger.kernel.org
+Subject: WTS. AVAYA IP PHONE CISCP POLYCOME 2200 IP35G S30817-
+Date:   Tue, 7 May 2019 00:15:52 +0530
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+X-HM-UT: GiG4tZ/CwHPO4sJ6F/Rz5Fne9GSwk45lh23lC996beQ=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
 
->v2 is expected to become the default soon
-That is good to hear.
+Hi ,
 
->But from the sound of it Qu has enough
->information to maybe track down the v1 problem and fix it, and
->probably should be fixed as v1 is the default and is still supported
->and will be forever.
-That's good to hear.
+We are Looking for a buyer to move any of the following items below...
 
->>
->>  For me, the question now is, whether we should chase this Bug or not. I
->>  encountered it three times while filling a 8TB drive with 7TB. Now, I
->>  have 1TB left and I am not sure I can reproduce, but I can try.
->
->I don't think it's necessary unless Qu specifically asks.
-Let me know Qu.
+NIB POLYCOM # 2200-30900-025 SoundStation IP Phone.
+QTY : 120
 
->>you wouldn't want to constantly dump
->that amount of information into kernel message buffer and then burden
->the system logger with quite a lot of extraneous information.
-I understand. Still, a a pitty.
+WS-C3850-48P-S Original Cisco Sealed Box
 
->Once you have a reproducer, then you can change the scheduler and see
->if your reproduce steps still reproduce the problem.
-I will try and let you know. It's not persistent.
-
-Greetings,
-Hendrik
+QTY : 5
 
 
->
+WS-C3750X-24P-S  Qty 10
+
+
+Grade A Refurb Apple MacBook Pro Core i5 2.5 13 "2012 model A1278 Part
+number MD101LL / A Specs INTEL CORE I5-3210M 2.5GHz 4GB 500GB DVDRW
+With charger and US Keyboard.
+QTY 27
+
+
+
+Grade A Refurb Apple MacBook Pro A1707-L16-2.7-CI7-16-512-SG-D
+A1707 MLH42LL / A Late 2016 2.7GHz Core i7 i7-6820HQ16GB 512GB ith
+charger and US Keyboard.
+QTY 10
+
+
+Make us an offer on  if you are Interested
+Best regards
+James Toner
++1 709 500 2483\ purchasing@briztechnology.com
+219 Stavanger Dr, St. John's, NL A1A 5E8, Canada
+http://www.briztechnology.com
 
