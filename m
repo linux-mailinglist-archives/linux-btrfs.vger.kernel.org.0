@@ -2,35 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAFFA14322
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2019 02:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 313C31437F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2019 04:04:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbfEFAHR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 5 May 2019 20:07:17 -0400
-Received: from mout.gmx.net ([212.227.17.21]:60321 "EHLO mout.gmx.net"
+        id S1725828AbfEFCEg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 5 May 2019 22:04:36 -0400
+Received: from mout.gmx.net ([212.227.17.22]:56037 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727285AbfEFAHQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 5 May 2019 20:07:16 -0400
+        id S1725813AbfEFCEf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 5 May 2019 22:04:35 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1557101225;
-        bh=8vFrnkZw0G88mxlMW/BpXoT00XOgbOcpnRT/jx8fcCQ=;
+        s=badeba3b8450; t=1557108266;
+        bh=HuRTr1bZQPEkDXW3NuY1pK1lNGT9keC52xKbt72k5QE=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=SaJZtGqJ1HYlCpAlQhSrneIZREuwVyq68Ydx0wtBBM6XyWCVgH3+01JwP19o0mBau
-         ik7SYSiiZjHui8MiBj6cehRnr5BEhossyPcUTcFji4ufQdOii9vmkCosIFleBSRZPT
-         kVOwlpTxFJINzsh7TmEZLHpVfRNhAC0ea8Rv3I8Q=
+        b=P96h6W71D6hLYbIOBi+v/VzuQRYldu5+Jl4arXxf1AxW6BDvidOjToziQCadCqjih
+         zIAmkYuNfBySslUAKKva9UWVHu4hpfZVrweSynz3FRD0nP1n4sP3zRrHDMMIZgYa+P
+         sZKQDbkoJtpJShQ3I/icBTDUZUezMQU49pWdHrJ4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([52.197.165.36]) by mail.gmx.com (mrgmx102
- [212.227.17.174]) with ESMTPSA (Nemesis) id 0LcEPJ-1gvlu939hl-00jaHj; Mon, 06
- May 2019 02:07:05 +0200
+Received: from [0.0.0.0] ([149.28.201.231]) by mail.gmx.com (mrgmx103
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0MJBn4-1hKitx2OBG-002p2R; Mon, 06
+ May 2019 04:04:26 +0200
 Subject: Re: [PATCH RFC] btrfs: reflink: Flush before reflink any extent to
  prevent NOCOW write falling back to CoW without data reservation
-To:     fdmanana@gmail.com, Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     fdmanana@gmail.com
 Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <20190503010852.10342-1-wqu@suse.com>
- <20190503215622.GC20359@hungrycats.org>
- <448c9a50-98b0-15aa-cbde-81b294bd74e4@gmx.com>
- <20190505150724.GD20359@hungrycats.org>
- <CAL3q7H4mQ1MggsxiugFfnCmDaSgNjD==VKg=FsOzRwAbS8cw2g@mail.gmail.com>
+ <CAL3q7H5uLiPzCQpLdM=4yjz+fA-mQAe_XP1=5fHQ83dyBwcK5w@mail.gmail.com>
+ <1e36e9e2-dbd3-3ab0-b908-25cfdf1d310d@gmx.com>
+ <CAL3q7H4xp9=Kw3Q1hoDz_2Tbek4NdaULhJX4s7wmUqmku=ex0A@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -57,236 +56,311 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <8fa2a7b3-b06e-638e-8d10-c46557568a0d@gmx.com>
-Date:   Mon, 6 May 2019 08:06:55 +0800
+Message-ID: <d3e1b3dd-60da-bd6f-24b7-7cda8fde6ac2@gmx.com>
+Date:   Mon, 6 May 2019 10:04:09 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H4mQ1MggsxiugFfnCmDaSgNjD==VKg=FsOzRwAbS8cw2g@mail.gmail.com>
+In-Reply-To: <CAL3q7H4xp9=Kw3Q1hoDz_2Tbek4NdaULhJX4s7wmUqmku=ex0A@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="6Zzb3KA7UCTlPqIHKU8o81HRTcTnGfzhq"
-X-Provags-ID: V03:K1:0Sm8c4PYXQKzKUVU6W5F7eWE/3i0HKY2vI/Fi+oufu9Zg6KK/bf
- hQBn3qbhB43I/wbYyu7Oojj+erCJtCrkdS9CLFztfqBRzx4xwbN8Aw6zjLeViJbY7SBjrSc
- qQWdrvpYlo+nIT3GpDzJgSjb1EuxZdj2+izmdlu+z528jQf5bxroGs5qiBvGCpgIDjgBEpu
- 34rgZeNDwKralwFzSEquA==
+ boundary="EU3AM96Ve3nwePSgwks3nnyn7Lz5yxxwj"
+X-Provags-ID: V03:K1:E3L4qdvV6HBjvCVQNpF6edUkxjnTebJ//8HkYcb8hj4YdHvr2JU
+ 1JhZqoBbc4QloR7BeZFN6JyB5MVhUav449nczMou8AXN7iM4upsyu4BDQWxTl6oT7r2pc/n
+ 48RCUtUFmPSTw2iEWc+jwuyLM31hN6Rqsi5sKkNQXMVnkEXIjo1y+boifq6B9o2J5+xFaMs
+ doqqGAsTd41sFQDSLa7yw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:uC3N7xabuWY=:ojUyXV9+C57Gh39Du6eAdn
- i3KwWfHfFZ1IsgrYHrw2zcpUCWxbnVElseqmSbsE+hFTVkFZX7C493AdFEd2h06DMrD/jbLot
- VNnwm/iV5MtN9TG5umbrn767UEdIGf50H+7Zs40Q2F+G6hOEW6JASsN4hKMyCC5NRi8Z/DP/0
- X4iR0Ptd9qQEISNqSSd2MuIsaIGSvRCrQlZhtNHDG9MR1gn2yGczCxbyy5iLEpkhVp8GLiPZL
- bhSTEd+WAebpHaWxc7yH7rO+NUijenD3/DuA5uz6A0DaP1ELMZs9ZiAwV/8dV0wr7FPIsSYQw
- PSAaBrHfz4GILQheHkF7+Fm0/98wYBdq6lhG/F2OFoVWraLfXPSoB7l9BKO8f7riO0Iiiocpk
- i04JBNwMPIf65Plqlg7mUhdbI58LXaLkTJlLwsay1rKrE0ayjWiY34SGBe3256EsVfAN+hNpN
- ZorvvzLrG24Srg027m9jt4lDqmtq351jub+A0YN7z5lPl1CVteVihdHGd5CfnWicNtKQJpyI/
- RntevmG5yUEt8Fq8JT9kBbWTc9TPcvVV/HpUuiNS5xih8UvPMKa4hqKbQ5Bzd6FhOmbqW0Ytn
- xE1pCh4SSLkAXgWKdZq3vWWpeBSi0yLYTls2IEbbaHzsLmjM+mASbNW0SnV32mcxbA0gPy2dH
- zr326D1iUdXahRs2Er36jKwvBCR7dBs3i98wo4W1WrCqqVh5Hm3oZOgdWmcW8ZsXOjFYaE5b8
- 9u7VvBtqRmkcNe7YqbIQcgqPUID/+o2nDZ2itTs6RPzShWvRWuh2SMB4f6WWu9Zp8UivosIG4
- ErD6lCToiUNVvzDX688FJZ5nQHonPSwr1HeGtlIZ1DRPY+LisrL1B+W8Sb3SUhDqo0eKSxlHk
- Crmb9sep4KNhuFaZLoXjcKY4RE9L94yH27pjuOSY8iyUAFoE9Tlx4ZLu3ogqTP
+X-UI-Out-Filterresults: notjunk:1;V03:K0:D6Bnwzngpjc=:KR72Ckc3IP+ObFH12moPc3
+ QRpTLq+P3ciDhYu6OsCYRpUjm7G02OT4k6zXnlhJJQfKgMrAOcADODzWFLwJlMz0w9sYa7v6s
+ koyZhK3sECBsJMvfzKluzoygelQre2+sMtBg1H7ubH3/w6uU/gIRk3LZb/J4DRh9azCmcfswX
+ guGCZh/e3JuidqWOo2c4zD5ZvVkbUIlChsBwpkTTWAoIHbN1oute0AViKUrxqqhUF5evFNiXR
+ CElRUSfAFLpMc6DPStcKpMPsXvRQArgrSmk4+Sd3uCKimcganT1DdgZxd4/lU1VnuS7EC2Mr5
+ thuh8yquyL3I7zw2IcmvcULtKUUvmL1bGvrEKvQ613NjiseXeumYZg8ybmvTkCj/3R1VjJk2+
+ wBQwiApHRtSQQuPIEnJ85pb7jSpMMrgUhc/ugSoz+0YcOU5xgOpIWRLEeCA8WVpfnmtpdRpLM
+ uIVXoDezQ88t0XaPCmdEJrcnf0aNrVMhMzAWivz1X2tDWmyleVeaSt2p0f4eh/mMiUAQ+EtwW
+ ddyojaZ08qtV3PpWF1zg45l4yAVWbwB8RRabArbGYzHv9k9PKmU+I2WC5EKgTPgDVnCpU7+1C
+ qYt8fSPaUAkmM16FTYEu9fngEWoxDiBTk2X9sjHLIQLTmgP4XahLBY5e6E8cf68hZtl0id9wv
+ f9J2ET6SFtfxKHrcr8x3D+OzgnUykX5rRnhBd3R7zXtt38fHA8kyKsayFJDDidSXoTv+SwX3G
+ gDGpi+wxNWf65qI27WsfSHAX67zYFhnUr1fEY+8B03nDDvYPgYgLheDvbfEoWxcCtyzwuxZYc
+ Cb6y1aNchNW01aBcQpQGAiEYsmlMz17XQOS1g7CD/HMkE0JupvWAw4YjcuFg+NPDi0lHDXfb4
+ zx0Zfsn1KS42XUbJMHcrIlH4hfFqYKzGLMuLfiVd0/tixBlbsOo4PWhdY8I/sC
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---6Zzb3KA7UCTlPqIHKU8o81HRTcTnGfzhq
-Content-Type: multipart/mixed; boundary="XGUPeysCXteHLac6LiddlLNLKmz7ZYJzw";
+--EU3AM96Ve3nwePSgwks3nnyn7Lz5yxxwj
+Content-Type: multipart/mixed; boundary="JDPmTZpyHKp1L742RI6VA9rqOzy4p9xu8";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: fdmanana@gmail.com, Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To: fdmanana@gmail.com
 Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <8fa2a7b3-b06e-638e-8d10-c46557568a0d@gmx.com>
+Message-ID: <d3e1b3dd-60da-bd6f-24b7-7cda8fde6ac2@gmx.com>
 Subject: Re: [PATCH RFC] btrfs: reflink: Flush before reflink any extent to
  prevent NOCOW write falling back to CoW without data reservation
 References: <20190503010852.10342-1-wqu@suse.com>
- <20190503215622.GC20359@hungrycats.org>
- <448c9a50-98b0-15aa-cbde-81b294bd74e4@gmx.com>
- <20190505150724.GD20359@hungrycats.org>
- <CAL3q7H4mQ1MggsxiugFfnCmDaSgNjD==VKg=FsOzRwAbS8cw2g@mail.gmail.com>
-In-Reply-To: <CAL3q7H4mQ1MggsxiugFfnCmDaSgNjD==VKg=FsOzRwAbS8cw2g@mail.gmail.com>
+ <CAL3q7H5uLiPzCQpLdM=4yjz+fA-mQAe_XP1=5fHQ83dyBwcK5w@mail.gmail.com>
+ <1e36e9e2-dbd3-3ab0-b908-25cfdf1d310d@gmx.com>
+ <CAL3q7H4xp9=Kw3Q1hoDz_2Tbek4NdaULhJX4s7wmUqmku=ex0A@mail.gmail.com>
+In-Reply-To: <CAL3q7H4xp9=Kw3Q1hoDz_2Tbek4NdaULhJX4s7wmUqmku=ex0A@mail.gmail.com>
 
---XGUPeysCXteHLac6LiddlLNLKmz7ZYJzw
+--JDPmTZpyHKp1L742RI6VA9rqOzy4p9xu8
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-
-
-On 2019/5/6 =E4=B8=8A=E5=8D=8812:24, Filipe Manana wrote:
 [snip]
->>>
->>> Yes, also my reason for RFC.
->>>
->>> But it shouldn't be that heavy, as after the first dedupe/reflink, mo=
-st
->>> IO should be flushed back, later dedupe has much less work to do.
 >>
->> Sure, but if writes are continuously happening (e.g. writes at offset
->> 10GB, dedupe at 1GB), these will get flushed out on the next dedupe.
->> I'm thinking of scenarious where both writes and dedupes are happening=
-
->> continuously, e.g. a host with multiple VM images running out of raw
->> image files that are deduped on the host filesystem.
->>
->> I'm not sure what all the conditions for this flush are.  From the lis=
-t
->> above, it sounds like this only occurs _after_ the filesystem has foun=
-d
->> there is no free space.  If that's true, then the extra overhead is
->> negligible since it rarely happens (assuming that having no free space=
-
->> is a rare condition for filesystems).
+>> For data writeback, it should only cause sync related failure.
 >=20
-> The problem is not that flush is done only when low on available space.=
+> Ok, so please remove the transaction abort comments for next iteration.=
 
-> The flush would always happen on the entire source file before
-> reflinking, so that buffered writes that happened before the
-> clone/dedupe operation and "entered" nodatacow mode (because at the
-> time there was not enough available data space) will not fail when
-> their writeback starts - which would happen after the reflinking -
-> that's why the entire range is flushed.
->=20
-> Even if btrfs' reference counts are tracked per extent and not per
-> block, here we could maybe do something like check each reference,
-> extract the inode number, root number and offset. Then use that to
-> find the respective file extent items, and using those extract their
-> length and determine exactly which parts (blocks) of an extent are
-> shared. That would be a lot of work to do, and would always be racy
-> for checks for inodes that are not the inode we have locked for the
-> reflink operation. Very impractical.
+> By sync related failure, you mean running dealloc fails with ENOSPC,
+> since when it tries to reserve a data extent it fails as it can't find
+> any free extent.
 
-To add my idea on better backref (block level), it's more impractical
-than I thought.
+Well, btrfs has some hidden way to fix such problem by itself already.
 
-=46rom extent double/triple split, to how to handle old extents in old
-snapshot, it's way too expensive from the developer's respect.
+At buffered write time, we have the following call chain:
+btrfs_buffered_write()
+|- btrfs_check_data_free_space()
+   |- btrfs_alloc_data_chunk_ondemand()
+      |- need_commit =3D 2; /* We have 2 chance to retry, 1 to flush */
+      |- do_chunk_alloc() /* we have no data space available */
+      |- if (ret < 0 && ret =3D=3D -ENOSPC)
+      |-     goto commit_trans;  /* try to free some space */
+      |- commit_trans:
+      |-     need_commit--;
+      |-     if (need_commit > 0) {
+      |-         btrfs_start_delalloc_roots();
+      |-         btrfs_wait_ordered_roots();
+      |-     }
 
->=20
-> So it's one more big inconvenience from the extent based back
-> references, other then the already known space wasting inconvenience
-> (even if only 1 block of an extent is really referenced, the rest of
-> the extent is unavailable for allocation, considered used space).
+This means, as long as we hit ENOSPC for data space, we will start write
+back, thus NODATACOW data will still hit disk as NODATACOW.
 
-Currently this patch is only to be a workaround.
+Such hidden behavior along with always-reserve-data-space solves the
+problem pretty well.
+We either:
+- reserve data space
+  Then no matter how it ends, we're OK, although it may end as CoW.
 
-There is an idea of introducing new extent io tree bit, NODATACOW for
-this case. Buffered write with NODATACOW will set the bit, and for the
-specific problem described here, we only need to flush the range with
-NODATACOW bit set.
+- Failed to reserve data space
+  Writeback will be triggered anyway, no way to screw things around.
 
-And that bit can also be used to detect unexpected COW with no data
-space reserved.
+Thus this workaround has nothing to fix, but only make certain NODATACOW
+reach disk as NODATACOW.
 
-But that need extra work/testing (especially with my special sauce of
-doing NODATACOW at buffered write time).
-At least we have some idea on how to reduce the overhead.
+It makes some NODATACOW behaves more correctly but won't fix any obvious
+bug.
+
+My personal take is to fix any strange behavior even it won't cause any
+problem, but the full inode writeback can be performance heavy.
+
+So my question is, do we really need this anyway?
 
 Thanks,
 Qu
 
 >=20
->=20
->=20
 >>
->>
->>>> e.g. if the file is a big VM image file and it is used src and for d=
-edupe
->>>> (which is quite common in VM image files), we'd be hammering the dis=
-k
->>>> with writes similar to hitting it with fsync() in a tight loop?
->>>
->>> The original behavior also flush the target and source range, so we'r=
-e
->>> not completely creating some new overhead.
->>>
->>> Thanks,
->>> Qu
+>>> I don't recall starting transactions when running dealloc, and failed=
+
+>>> to see where after a quick glance to cow_file_range()
+>>> and run_delalloc_nocow(). I'm assuming that 'at delalloc time' means
+>>> when starting writeback.
 >>>
 >>>>
->>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
->>>>> ---
->>>>> Reason for RFC:
->>>>> Flushing an inode just because it's a reflink source is definitely
->>>>> overkilling, but I don't have any better way to handle it.
->>>>>
->>>>> Any comment on this is welcomed.
->>>>> ---
->>>>>  fs/btrfs/ioctl.c | 22 ++++++++++++++++++++++
->>>>>  1 file changed, 22 insertions(+)
->>>>>
->>>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->>>>> index 7755b503b348..8caa0edb6fbf 100644
->>>>> --- a/fs/btrfs/ioctl.c
->>>>> +++ b/fs/btrfs/ioctl.c
->>>>> @@ -3930,6 +3930,28 @@ static noinline int btrfs_clone_files(struct=
- file *file, struct file *file_src,
->>>>>                    return ret;
->>>>>    }
->>>>>
->>>>> +  /*
->>>>> +   * Workaround to make sure NOCOW buffered write reach disk as NO=
-COW.
->>>>> +   *
->>>>> +   * Due to the limit of btrfs extent tree design, we can only hav=
-e
->>>>> +   * extent level share view. Any part of an extent is shared then=
- the
->>>>> +   * whole extent is shared and any write into that extent needs t=
-o fall
->>>>> +   * back to COW.
->>>>> +   *
->>>>> +   * NOCOW buffered write without data space reserved could to lea=
-d to
->>>>> +   * either data space bytes_may_use underflow (kernel warning) or=
- ENOSPC
->>>>> +   * at delalloc time (transaction abort).
->>>>> +   *
->>>>> +   * Here we take a shortcut by flush the whole inode. We could do=
- better
->>>>> +   * by finding all extents in that range and flush the space refe=
-rring
->>>>> +   * all those extents.
->>>>> +   * But that's too complex for such corner case.
->>>>> +   */
->>>>> +  filemap_flush(src->i_mapping);
->>>>> +  if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
->>>>> +               &BTRFS_I(src)->runtime_flags))
->>>>> +          filemap_flush(src->i_mapping);
->>>>> +
->>>>>    /*
->>>>>     * Lock destination range to serialize with concurrent readpages=
-() and
->>>>>     * source range to serialize with relocation.
->>>>> --
->>>>> 2.21.0
->>>>>
+>>>> [CAUSE]
+>>>> This is due to the fact that btrfs can only do extent level share ch=
+eck.
+>>>>
+>>>> Btrfs can only tell if an extent is shared, no matter if only part o=
+f the
+>>>> extent is shared or not.
+>>>>
+>>>> So for above script we have:
+>>>> - fallocate
+>>>> - buffered write
+>>>>   If we don't have enough data space, we fall back to NOCOW check.
+>>>>   At this timming, the extent is not shared, we can skip data
+>>>>   reservation.
+>>>
+>>> But in the above example we don't fall to nocow mode when doing the
+>>> buffered write, as there's plenty of data space available (1Gb -
+>>> 24Kb).
+>>> You need to update the example.
+>> I have to admit that the core part is mostly based on the worst case
+>> *assumption*.
+>>
+>> I'll try to make the case convincing by making it fail directly.
+>=20
+> Great, thanks.
+>=20
+>>
+>>>
+>>>
+>>>> - reflink
+>>>>   Now part of the large preallocated extent is shared.
+>>>> - delalloc kicks in
+>>>
+>>> writeback kicks in
+>>>
+>>>>   For the NOCOW range, as the preallocated extent is shared, we need=
+
+>>>>   to fall back to COW.
+>>>>
+>>>> [WORKAROUND]
+>>>> The workaround is to ensure any buffered write in the related extent=
+s
+>>>> (not the reflink source range) get flushed before reflink.
+>>>
+>>> not the reflink source range -> not just the reflink source range
+>>>
+>>>>
+>>>> However it's pretty expensive to do a comprehensive check.
+>>>> In the reproducer, the reflink source is just a part of a larger
+>>>
+>>> Again, the reproducer needs to be fixed (yes, I tested it even if it'=
+s
+>>> clear by looking at it that it doesn't trigger the nocow case).
+>>>
+>>>> preallocated extent, we need to flush all buffered write of that ext=
+ent
+>>>> before reflink.
+>>>> Such backward search can be complex and we may not get much benefit =
+from
+>>>> it.
+>>>>
+>>>> So this patch will just try to flush the whole inode before reflink.=
+
+>>>
+>>>
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>>> ---
+>>>> Reason for RFC:
+>>>> Flushing an inode just because it's a reflink source is definitely
+>>>> overkilling, but I don't have any better way to handle it.
+>>>>
+>>>> Any comment on this is welcomed.
+>>>> ---
+>>>>  fs/btrfs/ioctl.c | 22 ++++++++++++++++++++++
+>>>>  1 file changed, 22 insertions(+)
+>>>>
+>>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+>>>> index 7755b503b348..8caa0edb6fbf 100644
+>>>> --- a/fs/btrfs/ioctl.c
+>>>> +++ b/fs/btrfs/ioctl.c
+>>>> @@ -3930,6 +3930,28 @@ static noinline int btrfs_clone_files(struct =
+file *file, struct file *file_src,
+>>>>                         return ret;
+>>>>         }
+>>>>
+>>>> +       /*
+>>>> +        * Workaround to make sure NOCOW buffered write reach disk a=
+s NOCOW.
+>>>> +        *
+>>>> +        * Due to the limit of btrfs extent tree design, we can only=
+ have
+>>>> +        * extent level share view. Any part of an extent is shared =
+then the
+>>>
+>>> Any -> If any
+>>>
+>>>> +        * whole extent is shared and any write into that extent nee=
+ds to fall
+>>>
+>>> is -> is considered
+>>>
+>>>> +        * back to COW.
+>>>
+>>> I would add, something like:
+>>>
+>>> That is, btrfs' back references do not have a block level granularity=
+,
+>>> they work at the whole extent level.
+>>>
+>>>> +        *
+>>>> +        * NOCOW buffered write without data space reserved could to=
+ lead to
+>>>> +        * either data space bytes_may_use underflow (kernel warning=
+) or ENOSPC
+>>>> +        * at delalloc time (transaction abort).
+>>>
+>>> I would omit the warning and transaction abort parts, that can change=
+
+>>> any time. And we have that information in the changelog, so it's not
+>>> lost.
+>>>
+>>>> +        *
+>>>> +        * Here we take a shortcut by flush the whole inode. We coul=
+d do better
+>>>> +        * by finding all extents in that range and flush the space =
+referring
+>>>> +        * all those extents.
+>>>> +        * But that's too complex for such corner case.
+>>>> +        */
+>>>> +       filemap_flush(src->i_mapping);
+>>>> +       if (test_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
+>>>> +                    &BTRFS_I(src)->runtime_flags))
+>>>> +               filemap_flush(src->i_mapping);
+>>>
+>>> So a few comments here:
+>>>
+>>> - why just in the clone part? The dedupe side has the same problem, d=
+oesn't it?
+>>
+>> Right.
+>>
+>>>
+>>> - I would move such flushing to btrfs_remap_file_range_prep - this is=
+
+>>> where we do the source and target range flush and wait.
+>>>
+>>> Can you turn the reproducer into an fstests case?
+>>
+>> Sure.
+>>
+>> Thanks for the info and all the comment,
+>> Qu
+>>
+>>>
+>>> Thanks.
+>>>
+>>>> +
+>>>>         /*
+>>>>          * Lock destination range to serialize with concurrent readp=
+ages() and
+>>>>          * source range to serialize with relocation.
+>>>> --
+>>>> 2.21.0
+>>>>
+>>>
 >>>
 >>
->>
->>
 >=20
 >=20
 
 
---XGUPeysCXteHLac6LiddlLNLKmz7ZYJzw--
+--JDPmTZpyHKp1L742RI6VA9rqOzy4p9xu8--
 
---6Zzb3KA7UCTlPqIHKU8o81HRTcTnGfzhq
+--EU3AM96Ve3nwePSgwks3nnyn7Lz5yxxwj
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzPep8ACgkQwj2R86El
-/qhg8Qf/Wo1m2KC7cu1bF8K9x4t1+llxR4mxk+VYoimnAeG7LS0TDHqzQTJ1qC+i
-V5zh3esuVO7NKUfd2u6ZzDTl/rBABn5Mz2Hlzs3ELCW+dvpAA4TrvNr8o976Qwf4
-KE+U63AddN6UcZrqtC7QDYQ2LcSydldd2fspUcoFv8BeOX90azlkBtOnkkpU+l9K
-zs3EHwevnML5ZDr0RKdZ2tGsheePdASAfTZ44+exwnDaag49zWT58u7cE7Yrz38a
-rxnwXhNj/X5uRWGBoxBQrmjpQRqqSbOztfglgoPfIRkAHWXvfuPNn8cZqwKkJKTW
-gnKQg3GGzr8JbtrgmkJuELNk/hNizw==
-=VsjG
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzPlhkACgkQwj2R86El
+/qjSUQf8CJ2s0lDmRqYdkklUIjCpKDOHLTP2RlB5VXvup4S/Jd9ej/4wqsxIzWST
+c2bjH1FAn+W6ljcCM1dEB5wSdxHiM01ySxLe7Y6eqDmr++AMYsvJz2Kfe1kn3xnr
+fJYKyy0UgdmlBn3F68y3tchTGJOwRNqKD6oflu7BDgikY96qNXbg+0T9fvpcqC39
+dBTQ8HpXy5IGVH7nKuuGc6vciVyDFS4Bz4xwTtsoWzZGUmLeDzpAFcfHT0nAs91Q
+r2M6E2HrlQi9wF6TQ3kHIhE+Wcj1GMB1r1SQAb6phNQq9YSYD1UGtR1FQ0HGT+H3
+Idhtj8nUeIfhrKLkRE6w4kR+bsmQCA==
+=dBlN
 -----END PGP SIGNATURE-----
 
---6Zzb3KA7UCTlPqIHKU8o81HRTcTnGfzhq--
+--EU3AM96Ve3nwePSgwks3nnyn7Lz5yxxwj--
