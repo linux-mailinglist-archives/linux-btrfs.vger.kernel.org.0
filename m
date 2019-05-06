@@ -2,142 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 713A81508C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2019 17:44:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE491511C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2019 18:22:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbfEFPoQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 May 2019 11:44:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56766 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726571AbfEFPoQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 6 May 2019 11:44:16 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 99F0C205C9
-        for <linux-btrfs@vger.kernel.org>; Mon,  6 May 2019 15:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557157455;
-        bh=jLNe08s8mvmSWPPtamMjqkRgYqq4x1YdmhgBQyrDJ7w=;
-        h=From:To:Subject:Date:From;
-        b=Juzfpxd8NEIDY0y+yUEBpnIl4ZB2qDa7zx70BhoRB6iV6gqjBQKqAeoqnA1FdWy1k
-         Ui1oa3EuGbgQxXyrV5dmYM1kwCYqE4XqeM3VHcizcyerIHDjvdv3SH7AzUyLW2NSkZ
-         zTPOO3OgvlMhcbpHjxag8nTMaby1zOAKOQBa0gKE=
-From:   fdmanana@kernel.org
+        id S1726408AbfEFQWG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 May 2019 12:22:06 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:33002 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726270AbfEFQWG (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 May 2019 12:22:06 -0400
+Received: by mail-pg1-f196.google.com with SMTP id h17so722498pgv.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 06 May 2019 09:22:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=seravo.fi; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=VaFNGStwjFK/jFOGjVRgB/rmnPcFJ/L5EQXri8/hT8A=;
+        b=LHrbv6f6KvkwBG3Hd8pP6hbzLegDeGKtMxg8DU2MuM8Jn6KiVfE+IliLiXVLP5m6WA
+         3BudMuG/ePf2Y0/TaCgWMjcwrkqfFkYVnITOnoqhZpKyQVWWZtWdVdI9r39jcAT44y2y
+         LVTW3vObVXfjzW5NLntRN5r7pUvXIeyyBywvI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=VaFNGStwjFK/jFOGjVRgB/rmnPcFJ/L5EQXri8/hT8A=;
+        b=Eiy4lScDiXc4lkqcMh0VgIM3esSsHY2KLUkNFk/owtVjEt4pV5WFaKJ6aSMFfhpaKe
+         xR+zEuSBKijva6+iWnMyZhSi80ovmYnabKnoIyRnYP5e+QJoUj88YVz3FjLrXVBhNggD
+         Pxf5fF7q0fLISdSfM8vgVtpIEtUon3BFpxNHXxO2grDoY/BUrKm8O5gFVd/EWQfUAHOE
+         PugWA4Ng2uy8fia/xT4xZnWA1REXtiVab9owMQk+63NUQN6rnsVRIahO2PFLHmVMiF3x
+         1uk4pBoefl9aSxvhNyJAKKXnRnMzwemcnA3JB1/7JETEGXalF5HxDiqxJvC4ShATjn3u
+         TQAg==
+X-Gm-Message-State: APjAAAVfa+SDC6gyYiETeOtl8BBmahANRNCN+qIbm7uQpsPRbmrOKC6E
+        g4QSeojFz9HtQ5ERkYlLYeLQVFVcufvSevIm10YIAiTFvQ==
+X-Google-Smtp-Source: APXvYqzRINnFca6QM5lXzetJs7Eaxj5WV+B0qC88pSNdaHtjqrkcROpfQvL+fqD+mdac+NfJXci063EomhSdMOUsA0Q=
+X-Received: by 2002:a65:60d7:: with SMTP id r23mr31612567pgv.223.1557159724629;
+ Mon, 06 May 2019 09:22:04 -0700 (PDT)
+MIME-Version: 1.0
+From:   =?UTF-8?B?T3R0byBLZWvDpGzDpGluZW4=?= <otto@seravo.fi>
+Date:   Mon, 6 May 2019 19:21:36 +0300
+Message-ID: <CAHj_TLB=bqYmt6imjS-QU7OUtvGzatcVDZeCeCj1EfJA-3neKQ@mail.gmail.com>
+Subject: Howto read btrfs stack trace?
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] Btrfs: teach tree-checker to detect file extent items with overlapping ranges
-Date:   Mon,  6 May 2019 16:44:12 +0100
-Message-Id: <20190506154412.20147-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Hello!
 
-Having file extent items with ranges that overlap each other is a serious
-issue that leads to all sorts of corruptions and crashes (like a BUG_ON()
-during the course of __btrfs_drop_extents() when it traims file extent
-items). Therefore teach the tree checker to detect such cases. This is
-motivated by a recently fixed bug (race between ranged full fsync and
-writeback or adjacent ranges).
+I attempted to run btrfs balance, but it crashed soon after start.
+Status is stuck on this:
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/tree-checker.c | 51 +++++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 47 insertions(+), 4 deletions(-)
+$ sudo btrfs balance status -v /data
+Balance on '/data' is running
+0 out of about 10436 chunks balanced (1 considered), 100% left
+Dumping filters: flags 0x7, state 0x1, force is off
+  DATA (flags 0x0): balancing
+  METADATA (flags 0x0): balancing
+  SYSTEM (flags 0x0): balancing
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index a62e1e837a89..093cef702a4b 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -104,9 +104,27 @@ static void file_extent_err(const struct btrfs_fs_info *fs_info,
- 	(!IS_ALIGNED(btrfs_file_extent_##name((leaf), (fi)), (alignment)));   \
- })
- 
-+static u64 file_extent_end(struct extent_buffer *leaf,
-+			   struct btrfs_key *key,
-+			   struct btrfs_file_extent_item *extent)
-+{
-+	u64 end;
-+	u64 len;
-+
-+	if (btrfs_file_extent_type(leaf, extent) == BTRFS_FILE_EXTENT_INLINE) {
-+		len = btrfs_file_extent_ram_bytes(leaf, extent);
-+		end = ALIGN(key->offset + len, leaf->fs_info->sectorsize);
-+	} else {
-+		len = btrfs_file_extent_num_bytes(leaf, extent);
-+		end = key->offset + len;
-+	}
-+	return end;
-+}
-+
- static int check_extent_data_item(struct btrfs_fs_info *fs_info,
- 				  struct extent_buffer *leaf,
--				  struct btrfs_key *key, int slot)
-+				  struct btrfs_key *key, int slot,
-+				  struct btrfs_key *prev_key)
- {
- 	struct btrfs_file_extent_item *fi;
- 	u32 sectorsize = fs_info->sectorsize;
-@@ -185,6 +203,28 @@ static int check_extent_data_item(struct btrfs_fs_info *fs_info,
- 	    CHECK_FE_ALIGNED(fs_info, leaf, slot, fi, offset, sectorsize) ||
- 	    CHECK_FE_ALIGNED(fs_info, leaf, slot, fi, num_bytes, sectorsize))
- 		return -EUCLEAN;
-+
-+	/*
-+	 * Check that no two consecutive file extent items, in the same leaf,
-+	 * present ranges that overlap each other.
-+	 */
-+	if (slot > 0 &&
-+	    prev_key->objectid == key->objectid &&
-+	    prev_key->type == BTRFS_EXTENT_DATA_KEY) {
-+		struct btrfs_file_extent_item *prev_fi;
-+		u64 prev_end;
-+
-+		prev_fi = btrfs_item_ptr(leaf, slot - 1,
-+					 struct btrfs_file_extent_item);
-+		prev_end = file_extent_end(leaf, prev_key, prev_fi);
-+		if (prev_end > key->offset) {
-+			file_extent_err(fs_info, leaf, slot - 1,
-+"file extent end range (%llu) goes beyond start offset (%llu) of the next file extent",
-+					prev_end, key->offset);
-+			return -EUCLEAN;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -453,13 +493,15 @@ static int check_block_group_item(struct btrfs_fs_info *fs_info,
-  */
- static int check_leaf_item(struct btrfs_fs_info *fs_info,
- 			   struct extent_buffer *leaf,
--			   struct btrfs_key *key, int slot)
-+			   struct btrfs_key *key, int slot,
-+			   struct btrfs_key *prev_key)
- {
- 	int ret = 0;
- 
- 	switch (key->type) {
- 	case BTRFS_EXTENT_DATA_KEY:
--		ret = check_extent_data_item(fs_info, leaf, key, slot);
-+		ret = check_extent_data_item(fs_info, leaf, key, slot,
-+					     prev_key);
- 		break;
- 	case BTRFS_EXTENT_CSUM_KEY:
- 		ret = check_csum_item(fs_info, leaf, key, slot);
-@@ -620,7 +662,8 @@ static int check_leaf(struct btrfs_fs_info *fs_info, struct extent_buffer *leaf,
- 			 * Check if the item size and content meet other
- 			 * criteria
- 			 */
--			ret = check_leaf_item(fs_info, leaf, &key, slot);
-+			ret = check_leaf_item(fs_info, leaf, &key, slot,
-+					      &prev_key);
- 			if (ret < 0)
- 				return ret;
- 		}
--- 
-2.11.0
 
+Logs have the output below. How shall I read it and debug this situation?
+What are the next steps I could test/debug?
+
+
+kernel: BTRFS info (device dm-9): disk space caching is enabled
+kernel: BTRFS: has skinny extents
+kernel: BTRFS: checking UUID tree
+kernel: BTRFS info (device dm-9): relocating block group 13693423976448 flags 20
+kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
+kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
+kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
+this message.
+kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
+kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44e00
+kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000ffffffff
+kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88710
+kernel: Call Trace:
+kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
+kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
+kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
+kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
+kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
+kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btrfs]
+kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btrfs]
+kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
+kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
+kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
+kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
+kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
+kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/0xa0
+kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
+kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
+kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
+kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
+kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
+kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
+kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
+kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
+this message.
+kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
+kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44e00
+kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000ffffffff
+kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88710
+kernel: Call Trace:
+kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
+kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
+kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
+kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
+kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
+kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btrfs]
+kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btrfs]
+kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
+kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
+kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
+kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
+kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
+kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/0xa0
+kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
+kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
+kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
+kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
+kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
+kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
+kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
+kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
+this message.
+kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
+kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44e00
+kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000ffffffff
+kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88710
+kernel: Call Trace:
+kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
+kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
+kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
+kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
+kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
+kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btrfs]
+kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btrfs]
+kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
+kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
+kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
+kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
+kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
+kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/0xa0
+kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
+kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
+kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
+kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
+kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
