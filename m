@@ -2,274 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D3B14EED
-	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2019 17:06:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436D315089
+	for <lists+linux-btrfs@lfdr.de>; Mon,  6 May 2019 17:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727406AbfEFPGY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 6 May 2019 11:06:24 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:39998 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727477AbfEFOhy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 6 May 2019 10:37:54 -0400
-Received: by mail-lf1-f67.google.com with SMTP id o16so9319066lfl.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 06 May 2019 07:37:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2S6fgj69R/VRdSnhnFwRYzzmd1Z2WC7mAYC1WQ9OsT0=;
-        b=XkAQfEPMWZjt29g5J3MZtUE+cxDyc9CZSKfYj6OvWw8uV+NQRmmNLslQ8SsAwvy6XQ
-         5ygHoCU7UMe7RYf/04hk9/9U4IamhC28qi+uQ7ZsP8hhwLrScOjCICThJQXR30LnXi9f
-         PtE7jSLTBhcIUmKyXRWkZgmfKh9e2/rxZQ6AilS0MKag0q30swu3QslE0vk96331Ww9w
-         kUMGFS+4G6jfpvvTVbxhMlj6Oop14bhokITtSiETphbZJBDZWmcxy2TmL/slhRw9wZOc
-         +R1jZLQ7aqI57BGkrPqxSXw0T/Rw6QG6CVbYWszk+EysS8Gh3RiJJ2WvCg3JFewq2Nnv
-         t0yA==
-X-Gm-Message-State: APjAAAWcr3uPMwXLGn/5iIYULh5uA5dE7R9LtKBiyjUamjKuSCAlWyME
-        Wlo7WnBgM3mywDGgERUin76Cn+ajV+g=
-X-Google-Smtp-Source: APXvYqxQoD+9MfAnoeD9Gevig6dOlyuOwz8gNgi5V+y/s78oZ6dHUzBjQ4/puoSb15Azis8f4+jUxQ==
-X-Received: by 2002:ac2:533c:: with SMTP id f28mr3090747lfh.81.1557153471180;
-        Mon, 06 May 2019 07:37:51 -0700 (PDT)
-Received: from TitovetsT.synesis.local (mm-200-90-122-178.mgts.dynamic.pppoe.byfly.by. [178.122.90.200])
-        by smtp.gmail.com with ESMTPSA id r136sm2456384lff.50.2019.05.06.07.37.48
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 06 May 2019 07:37:49 -0700 (PDT)
-From:   Timofey Titovets <timofey.titovets@synesis.ru>
+        id S1726442AbfEFPn5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 6 May 2019 11:43:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726413AbfEFPn4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 6 May 2019 11:43:56 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 00206205C9
+        for <linux-btrfs@vger.kernel.org>; Mon,  6 May 2019 15:43:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557157435;
+        bh=dVd0sRHWgq3Co/oqaxfa1rQL3O/zsjAUY990mlz1XsU=;
+        h=From:To:Subject:Date:From;
+        b=ytj+yhfXZCAQIIxdiL9hquC9s1sfwsT0npkmIimAsk5tItFJc+l+ta6f/I4vl5vDl
+         foTIHElCVE8ChjSMEkuqNBx+3JOgaT95p+m6uDh8k+w+8+3aXyPVYcpZg+kXrjRmIY
+         JA3o8GFnNTKSR+wuV3otQR0cHtIVMq3Cg2bi80sM=
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Cc:     Timofey Titovets <nefelim4ag@gmail.com>,
-        Dmitrii Tcvetkov <demfloro@demfloro.ru>
-Subject: [PATCH V9] Btrfs: enhance raid1/10 balance heuristic
-Date:   Mon,  6 May 2019 17:37:40 +0300
-Message-Id: <20190506143740.26614-1-timofey.titovets@synesis.ru>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH] Btrfs: avoid fallback to transaction commit during fsync of files with holes
+Date:   Mon,  6 May 2019 16:43:51 +0100
+Message-Id: <20190506154351.20047-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Timofey Titovets <nefelim4ag@gmail.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-Currently btrfs raid1/10 bаlance requests to mirrors,
-based on pid % num of mirrors.
+When we are doing a full fsync (bit BTRFS_INODE_NEEDS_FULL_SYNC set) of a
+file that has holes and has file extent items spanning two or more leafs,
+we can end up falling to back to a full transaction commit due to a logic
+bug that leads to failure to insert a duplicate file extent item that is
+meant to represent a hole between the last file extent item of a leaf and
+the first file extent item in the next leaf. The failure (EEXIST error)
+leads to a transaction commit (as most errors when logging an inode do).
 
-Add logic to consider:
- - If one of devices are non rotational
- - Queue length to devices
+For example, we have the two following leafs:
 
-By default pid % num_mirrors guessing will be used, but:
- - If one of mirrors are non rotational,
-   reroute requests to non rotational
- - If other mirror have less queue length then optimal,
-   repick to that mirror
+Leaf N:
 
-For avoid round-robin request balancing,
-lets use abs diff of queue length,
-and only if diff greater then threshold try rebalance:
- - threshold 8 for rotational devs
- - threshold 2 for all non rotational devs
+  -----------------------------------------------
+  | ..., ..., ..., (257, FILE_EXTENT_ITEM, 64K) |
+  -----------------------------------------------
+  The file extent item at the end of leaf N has a length of 4Kb,
+  representing the file range from 64K to 68K - 1.
 
-Some bench results from mail list
-(Dmitrii Tcvetkov <demfloro@demfloro.ru>):
-Benchmark summary (arithmetic mean of 3 runs):
-         Mainline     Patch
-------------------------------------
-RAID1  | 18.9 MiB/s | 26.5 MiB/s
-RAID10 | 30.7 MiB/s | 30.7 MiB/s
-------------------------------------------------------------------------
-mainline, fio got lucky to read from first HDD (quite slow HDD):
-Jobs: 1 (f=1): [r(1)][100.0%][r=8456KiB/s,w=0KiB/s][r=264,w=0 IOPS]
-  read: IOPS=265, BW=8508KiB/s (8712kB/s)(499MiB/60070msec)
-  lat (msec): min=2, max=825, avg=60.17, stdev=65.06
-------------------------------------------------------------------------
-mainline, fio got lucky to read from second HDD (much more modern):
-Jobs: 1 (f=1): [r(1)][8.7%][r=11.9MiB/s,w=0KiB/s][r=380,w=0 IOPS]
-  read: IOPS=378, BW=11.8MiB/s (12.4MB/s)(710MiB/60051msec)
-  lat (usec): min=416, max=644286, avg=42312.74, stdev=48518.56
-------------------------------------------------------------------------
-mainline, fio got lucky to read from an SSD:
-Jobs: 1 (f=1): [r(1)][100.0%][r=436MiB/s,w=0KiB/s][r=13.9k,w=0 IOPS]
-  read: IOPS=13.9k, BW=433MiB/s (454MB/s)(25.4GiB/60002msec)
-  lat (usec): min=343, max=16319, avg=1152.52, stdev=245.36
-------------------------------------------------------------------------
-With the patch, 2 HDDs:
-Jobs: 1 (f=1): [r(1)][100.0%][r=17.5MiB/s,w=0KiB/s][r=560,w=0 IOPS]
-  read: IOPS=560, BW=17.5MiB/s (18.4MB/s)(1053MiB/60052msec)
-  lat (usec): min=435, max=341037, avg=28511.64, stdev=30000.14
-------------------------------------------------------------------------
-With the patch, HDD(old one)+SSD:
-Jobs: 1 (f=1): [r(1)][100.0%][r=371MiB/s,w=0KiB/s][r=11.9k,w=0 IOPS]
-  read: IOPS=11.6k, BW=361MiB/s (379MB/s)(21.2GiB/60084msec)
-  lat  (usec): min=363, max=346752, avg=1381.73, stdev=6948.32
+Leaf N + 1:
 
-Changes:
-  v1 -> v2:
-    - Use helper part_in_flight() from genhd.c
-      to get queue length
-    - Move guess code to guess_optimal()
-    - Change balancer logic, try use pid % mirror by default
-      Make balancing on spinning rust if one of underline devices
-      are overloaded
-  v2 -> v3:
-    - Fix arg for RAID10 - use sub_stripes, instead of num_stripes
-  v3 -> v4:
-    - Rebase on latest misc-next
-  v4 -> v5:
-    - Rebase on latest misc-next
-  v5 -> v6:
-    - Fix spelling
-    - Include bench results
-  v6 -> v7:
-    - Fixes based on Nikolay Borisov review:
-      * Assume num == 2
-      * Remove "for" loop based on that assumption, where possible
-  v7 -> v8:
-    - Add comment about magic '2' num in guess function
-  v8 -> v9:
-    - Rebase on latest misc-next
-    - Simplify code
-    - Use abs instead of round_down for approximation
-      Abs are more fair
+  -----------------------------------------------
+  | (257, FILE_EXTENT_ITEM, 72K), ..., ..., ... |
+  -----------------------------------------------
+  The file extent item at the first slot of leaf N + 1 has a length of
+  4Kb too, representing the file range from 72K to 76K - 1.
 
-Signed-off-by: Timofey Titovets <nefelim4ag@gmail.com>
-Tested-by: Dmitrii Tcvetkov <demfloro@demfloro.ru>
+During the full fsync path, when we are at tree-log.c:copy_items() with
+leaf N as a parameter, after processing the last file extent item, that
+represents the extent at offset 64K, we take a look at the first file
+extent item at the next leaf (leaf N + 1), and notice there's a 4K hole
+between the two extents, and therefore we insert a file extent item
+representing that hole, starting at file offset 68K and ending at offset
+72K - 1. However we don't update the value of *last_extent, which is used
+to represent the end offset (plus 1, non-inclusive end) of the last file
+extent item inserted in the log, so it stays with a value of 68K and not
+with a value of 72K.
+
+Then, when copy_items() is called for leaf N + 1, because the value of
+*last_extent is smaller then the offset of the first extent item in the
+leaf (68K < 72K), we look at the last file extent item in the previous
+leaf (leaf N) and see it there's a 4K gap between it and our first file
+extent item (again, 68K < 72K), so we decide to insert a file extent item
+representing the hole, starting at file offset 68K and ending at offset
+72K - 1, this insertion will fail with -EEXIST being returned from
+btrfs_insert_file_extent() because we already inserted a file extent item
+representing a hole for this offset (68K) in the previous call to
+copy_items(), when processing leaf N.
+
+The -EEXIST error gets propagated to the fsync callback, btrfs_sync_file(),
+which falls back to a full transaction commit.
+
+Fix this by adjusting *last_extent after inserting a hole when we had to
+look at the next leaf.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- block/genhd.c      |  1 +
- fs/btrfs/volumes.c | 88 +++++++++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 88 insertions(+), 1 deletion(-)
+ fs/btrfs/tree-log.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/block/genhd.c b/block/genhd.c
-index 703267865f14..fb35c85a7f42 100644
---- a/block/genhd.c
-+++ b/block/genhd.c
-@@ -84,6 +84,7 @@ unsigned int part_in_flight(struct request_queue *q, struct hd_struct *part)
- 
- 	return inflight;
- }
-+EXPORT_SYMBOL_GPL(part_in_flight);
- 
- void part_in_flight_rw(struct request_queue *q, struct hd_struct *part,
- 		       unsigned int inflight[2])
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 1c2a6e4b39da..8671c2bdced6 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -13,6 +13,7 @@
- #include <linux/raid/pq.h>
- #include <linux/semaphore.h>
- #include <linux/uuid.h>
-+#include <linux/genhd.h>
- #include <linux/list_sort.h>
- #include "ctree.h"
- #include "extent_map.h"
-@@ -29,6 +30,8 @@
- #include "sysfs.h"
- #include "tree-checker.h"
- 
-+#define BTRFS_RAID_1_10_MAX_MIRRORS 2
-+
- const struct btrfs_raid_attr btrfs_raid_array[BTRFS_NR_RAID_TYPES] = {
- 	[BTRFS_RAID_RAID10] = {
- 		.sub_stripes	= 2,
-@@ -5482,6 +5485,88 @@ int btrfs_is_parity_mirror(struct btrfs_fs_info *fs_info, u64 logical, u64 len)
- 	return ret;
- }
- 
-+/**
-+ * bdev_get_queue_len - return rounded down in flight queue length of bdev
-+ *
-+ * @bdev: target bdev
-+ */
-+static uint32_t bdev_get_queue_len(struct block_device *bdev)
-+{
-+	struct hd_struct *bd_part = bdev->bd_part;
-+	struct request_queue *rq = bdev_get_queue(bdev);
-+
-+	return part_in_flight(rq, bd_part);
-+}
-+
-+/**
-+ * guess_optimal - return guessed optimal mirror
-+ *
-+ * Optimal expected to be pid % num_stripes
-+ *
-+ * That's generally fine for spread load
-+ * That are balancer based on queue length to device
-+ *
-+ * Basic ideas:
-+ *  - Sequential read generate low amount of request
-+ *    so if load of drives are equal, use pid % num_stripes balancing
-+ *  - For mixed rotate/non-rotate mirrors, pick non-rotate as optimal
-+ *    and repick if other dev have "significant" less queue length
-+ *  - Repick optimal if queue length of other mirror are significantly less
-+ */
-+static int guess_optimal(struct map_lookup *map, int num, int optimal)
-+{
-+	int i;
-+	/*
-+	 * Spinning rust not like random request
-+	 * Because of that rebalance are less aggressive
-+	 */
-+	uint32_t rq_len_overload = 8;
-+	uint32_t qlen[2];
-+	bool is_nonrot[2];
-+	struct block_device *bdev;
-+
-+	/* That function supposed to work with up to 2 mirrors */
-+	ASSERT(BTRFS_RAID_1_10_MAX_MIRRORS == 2);
-+	ASSERT(BTRFS_RAID_1_10_MAX_MIRRORS == num);
-+
-+	/* Check accessible bdevs */
-+	for (i = 0; i < 2; i++) {
-+		bdev = map->stripes[i].dev->bdev;
-+		/*
-+		 * Don't bother with further computation
-+		 * if only one of two bdevs are accessible
-+		 */
-+		if (!bdev)
-+			return (i + 1) % 2;
-+
-+		qlen[i] = bdev_get_queue_len(bdev);
-+		is_nonrot[i] = blk_queue_nonrot(bdev_get_queue(bdev));
-+	}
-+
-+	/* For mixed case, pick non rotational dev as optimal */
-+	if (is_nonrot[0] != is_nonrot[1]) {
-+		if (is_nonrot[0])
-+			optimal = 0;
-+		else
-+			optimal = 1;
-+	} else {
-+		/* For nonrot devices balancing can be aggressive */
-+		if (is_nonrot[0])
-+			rq_len_overload = 2;
-+	}
-+
-+	/* Devices load at same level */
-+	if (abs(qlen[0] - qlen[1]) <= rq_len_overload)
-+		return optimal;
-+
-+	if (qlen[0] > qlen[1])
-+		optimal = 1;
-+	else
-+		optimal = 0;
-+
-+	return optimal;
-+}
-+
- static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 			    struct map_lookup *map, int first,
- 			    int dev_replace_is_ongoing)
-@@ -5500,7 +5585,8 @@ static int find_live_mirror(struct btrfs_fs_info *fs_info,
- 	else
- 		num_stripes = map->num_stripes;
- 
--	preferred_mirror = first + current->pid % num_stripes;
-+	preferred_mirror = first + guess_optimal(map, num_stripes,
-+						 current->pid % num_stripes);
- 
- 	if (dev_replace_is_ongoing &&
- 	    fs_info->dev_replace.cont_reading_from_srcdev_mode ==
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index bb7b27a47537..87e3e4e37606 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -4169,6 +4169,7 @@ static noinline int copy_items(struct btrfs_trans_handle *trans,
+ 							       *last_extent, 0,
+ 							       0, len, 0, len,
+ 							       0, 0, 0);
++				*last_extent += len;
+ 			}
+ 		}
+ 	}
 -- 
-2.21.0
+2.11.0
+
