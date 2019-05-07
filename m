@@ -2,190 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B861169F2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 May 2019 20:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B02516AE3
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 May 2019 21:09:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbfEGSL3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 May 2019 14:11:29 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:40858 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726378AbfEGSL3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 May 2019 14:11:29 -0400
-Received: by mail-pl1-f193.google.com with SMTP id b3so8563951plr.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 May 2019 11:11:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=seravo.fi; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=oZzrM3hgJrMkSQ6Nxy2pIHd7u/zqkLLwSfmmn4Vp5xs=;
-        b=QCl2Ir9kk4muvUsa616SrXouzjOhhEhEyAM6HaKQfIjdnLdctn8wXi/+pTBMK05gCm
-         Uca2EmCM5VR+YVTNd0O0aYOLwxG5AL8c/q3q5igOh87r9leL9R5KblQHDldZkr+p1zfb
-         /vFkWd1SiBF4oqXeKT3SNjtTvZBriR3u1pgxI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=oZzrM3hgJrMkSQ6Nxy2pIHd7u/zqkLLwSfmmn4Vp5xs=;
-        b=Yzj66hk9E9Qzd/RQST/ClDM/mKK4zKDCMyFSTSCOjjFnSHcWub6cAHru7bZmpEAQ06
-         PvuQrQBpUnDymuiqNtRvLAJvhoGSUDOpT7YrpxdqepeypvxenvPiHYCoaeyVDg19vF0j
-         YUFIeYvhY7+AesSa+deZ2db7odZrnOHkupOtSWlSJWVxEWhSXpYMjv9pBlNdvVmAnZgF
-         WSGhawqsjP6bf5ohJYA1I78BG0KJKLOLE/2Z7kheVlUqV3V1EreqfuxS1f7s7N+0Pwca
-         78/IaNxNPrpFYAj/xqRbPv8npR/QGUo61Tzb8ml5r+ZuOgpVFk19tK/rshfOSOdn3Pg+
-         91Kg==
-X-Gm-Message-State: APjAAAWXLJK/sdaqOW8RVTMZAee8zRpK6UsK+slpjKWF+R+uhr6UqMUQ
-        4r8vGd5v8Ib2Us/c0gd2ooTPXogj5ORnbgWGI+r2++Q=
-X-Google-Smtp-Source: APXvYqwISlDEKvqIw4/VBa8lzYkMKr1EY0iv/z8sU4ryna6LfDQahkE3Sno+Z750rExmBesUOmvrQ0MRFccuR+rRh08=
-X-Received: by 2002:a17:902:5c5:: with SMTP id f63mr40388443plf.327.1557252687477;
- Tue, 07 May 2019 11:11:27 -0700 (PDT)
+        id S1726801AbfEGTJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 May 2019 15:09:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43048 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726091AbfEGTJQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 7 May 2019 15:09:16 -0400
+Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 275B5206A3
+        for <linux-btrfs@vger.kernel.org>; Tue,  7 May 2019 19:09:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557256155;
+        bh=9bM2xxjbwBqC+O8qWhgEvoVqNxyF7BAHlEQi4gvuCrs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=y+9QidhMrJnUU7zTJV0KqcBz8iJud56fy3z7ado4JiEt32EgQPYPbev2Y3DrhpyBB
+         152oRXY825S5xvnmcw6Wf71O8xavUtEZ865ahtB6FcP2AIoncIVMWz3zIckogDe/xA
+         zxNnndvrYZPSO6aLv6zo+BAJ9JnZNF7ERJD/O+68=
+Received: by mail-vk1-f177.google.com with SMTP id d77so1371657vke.13
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 May 2019 12:09:15 -0700 (PDT)
+X-Gm-Message-State: APjAAAXejHbSSMp6NrQr20Tj0vu8qpMqVlk3URAfSeKDPEuf6gjfPdBz
+        8DG5bnyokqDraFLaIqsfCvDNgMYoRDelq3By7uA=
+X-Google-Smtp-Source: APXvYqzvmsDxVV0y+S/gKHq7Cj6wJpz+mPLHEFUYQU3tdQL3wes6Y+O3GVBguLhHTMP9QuUH4i0nriMeXl4kXnR7rCU=
+X-Received: by 2002:a1f:8dcc:: with SMTP id p195mr17543823vkd.31.1557256154306;
+ Tue, 07 May 2019 12:09:14 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAHj_TLB=bqYmt6imjS-QU7OUtvGzatcVDZeCeCj1EfJA-3neKQ@mail.gmail.com>
-In-Reply-To: <CAHj_TLB=bqYmt6imjS-QU7OUtvGzatcVDZeCeCj1EfJA-3neKQ@mail.gmail.com>
-From:   =?UTF-8?B?T3R0byBLZWvDpGzDpGluZW4=?= <otto@seravo.fi>
-Date:   Tue, 7 May 2019 21:11:01 +0300
-Message-ID: <CAHj_TLAYtermKEKMNLqRTsfJW8r_ospp4sWBcMZZo38ONfShtA@mail.gmail.com>
-Subject: Re: Howto read btrfs stack trace?
-To:     linux-btrfs@vger.kernel.org
+References: <20190506154402.20097-1-fdmanana@kernel.org> <20190507174429.vhyk4lqqvnja4zlx@macbook-pro-91.dhcp.thefacebook.com>
+In-Reply-To: <20190507174429.vhyk4lqqvnja4zlx@macbook-pro-91.dhcp.thefacebook.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Tue, 7 May 2019 20:09:02 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6aHApT3mD4vgKv+iSKjX=nboJpY572w2Pn8LemKA64Cw@mail.gmail.com>
+Message-ID: <CAL3q7H6aHApT3mD4vgKv+iSKjX=nboJpY572w2Pn8LemKA64Cw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] Btrfs: fix race between ranged fsync and writeback of
+ adjacent ranges
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Any advice here please?
+On Tue, May 7, 2019 at 6:44 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> On Mon, May 06, 2019 at 04:44:02PM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > When we do a full fsync (the bit BTRFS_INODE_NEEDS_FULL_SYNC is set in the
+> > inode) that happens to be ranged, which happens during a msync() or writes
+> > for files opened with O_SYNC for example, we can end up with a corrupt log,
+> > due to different file extent items representing ranges that overlap with
+> > each other, or hit some assertion failures.
+> >
+> > When doing a ranged fsync we only flush delalloc and wait for ordered
+> > exents within that range. If while we are logging items from our inode
+> > ordered extents for adjacent ranges complete, we end up in a race that can
+> > make us insert the file extent items that overlap with others we logged
+> > previously and the assertion failures.
+> >
+> > For example, if tree-log.c:copy_items() receives a leaf that has the
+> > following file extents items, all with a length of 4K and therefore there
+> > is an implicit hole in the range 68K to 72K - 1:
+> >
+> >   (257 EXTENT_ITEM 64K), (257 EXTENT_ITEM 72K), (257 EXTENT_ITEM 76K), ...
+> >
+> > It copies them to the log tree. However due to the need to detect implicit
+> > holes, it may release the path, in order to look at the previous leaf to
+> > detect an implicit hole, and then later it will search again in the tree
+> > for the first file extent item key, with the goal of locking again the
+> > leaf (which might have changed due to concurrent changes to other inodes).
+> >
+> > However when it locks again the leaf containing the first key, the key
+> > corresponding to the extent at offset 72K may not be there anymore since
+> > there is an ordered extent for that range that is finishing (that is,
+> > somewhere in the middle of btrfs_finish_ordered_io()), and it just
+> > removed the file extent item but has not yet replaced it with a new file
+> > extent item, so the part of copy_items() that does hole detection will
+> > decide that there is a hole in the range starting from 68K to 76K - 1,
+> > and therefore insert a file extent item to represent that hole, having
+> > a key offset of 68K. After that we now have a log tree with 2 different
+> > extent items that have overlapping ranges:
+> >
+>
+> Well this kind of sucks.  I wonder if we should be locking the extent range
+> while we're doing this in order to keep this problem from happening.  A fix for
+> another day though
 
-ma 6. toukok. 2019 klo 19.21 Otto Kek=C3=A4l=C3=A4inen (otto@seravo.fi) kir=
-joitti:
->
-> Hello!
->
-> I attempted to run btrfs balance, but it crashed soon after start.
-> Status is stuck on this:
->
-> $ sudo btrfs balance status -v /data
-> Balance on '/data' is running
-> 0 out of about 10436 chunks balanced (1 considered), 100% left
-> Dumping filters: flags 0x7, state 0x1, force is off
->   DATA (flags 0x0): balancing
->   METADATA (flags 0x0): balancing
->   SYSTEM (flags 0x0): balancing
->
->
-> Logs have the output below. How shall I read it and debug this situation?
-> What are the next steps I could test/debug?
->
->
-> kernel: BTRFS info (device dm-9): disk space caching is enabled
-> kernel: BTRFS: has skinny extents
-> kernel: BTRFS: checking UUID tree
-> kernel: BTRFS info (device dm-9): relocating block group 13693423976448 f=
-lags 20
-> kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
-> kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
-> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
-> this message.
-> kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
-> kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44=
-e00
-> kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000fffff=
-fff
-> kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88=
-710
-> kernel: Call Trace:
-> kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
-> kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
-> kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
-> kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
-> kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
-> kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btr=
-fs]
-> kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btr=
-fs]
-> kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
-> kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
-> kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
-> kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
-> kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
-> kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/=
-0xa0
-> kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
-> kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
-> kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
-> kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
-> kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
-> kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
-> kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
-> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
-> this message.
-> kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
-> kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44=
-e00
-> kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000fffff=
-fff
-> kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88=
-710
-> kernel: Call Trace:
-> kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
-> kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
-> kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
-> kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
-> kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
-> kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btr=
-fs]
-> kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btr=
-fs]
-> kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
-> kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
-> kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
-> kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
-> kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
-> kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/=
-0xa0
-> kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
-> kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
-> kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
-> kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
-> kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
-> kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
-> kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
-> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
-> this message.
-> kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
-> kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44=
-e00
-> kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000fffff=
-fff
-> kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88=
-710
-> kernel: Call Trace:
-> kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
-> kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
-> kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
-> kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
-> kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
-> kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btr=
-fs]
-> kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btr=
-fs]
-> kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
-> kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
-> kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
-> kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
-> kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
-> kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/=
-0xa0
-> kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
-> kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
-> kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
-> kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
-> kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
+The only reason I have not adopted that, is because it would prevent
+fsync and readpages() / readpage() from running concurrently (more of
+a problem when fsync is full ranged).
+
+Locking the range would avoid any such eventual performance drop on
+fsync alone, but it would also allow to drop the inode's dio_sem?
+Remember it was giving lockdep warnings before and you moved it to
+btrfs_sync_file() from btrfs_log_changed_extents() sometime ago.
+However still not enough, as I still get often (random xfstests,
+brfs/072 and generic/299 for example) similar lockdep warnings due to
+dio_sem:
+
+https://pastebin.com/ar6cLg2Q
+
+Thanks.
 
 
 
---=20
-Otto Kek=C3=A4l=C3=A4inen
-CEO
-Seravo
-+358 44 566 2204
 
-Follow me at @ottokekalainen
+>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+>
+> Thanks,
+>
+> Josef
