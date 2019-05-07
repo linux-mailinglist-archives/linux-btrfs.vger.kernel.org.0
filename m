@@ -2,99 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 030851693B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  7 May 2019 19:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365B11694D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  7 May 2019 19:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbfEGRax (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 7 May 2019 13:30:53 -0400
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:40218 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726256AbfEGRax (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 May 2019 13:30:53 -0400
-Received: by mail-lj1-f175.google.com with SMTP id d15so15073796ljc.7
-        for <linux-btrfs@vger.kernel.org>; Tue, 07 May 2019 10:30:52 -0700 (PDT)
+        id S1727185AbfEGRgZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 7 May 2019 13:36:25 -0400
+Received: from mail-yw1-f66.google.com ([209.85.161.66]:33460 "EHLO
+        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726378AbfEGRgZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 7 May 2019 13:36:25 -0400
+Received: by mail-yw1-f66.google.com with SMTP id q11so13910983ywb.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 07 May 2019 10:36:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eDfcbYcklV7EvVwSK7hsey26gHyLjO1ZT9JrzeGEfHk=;
-        b=VMddX7bp3pDorEaIv+y2lCYgRCBJZX7kShkz5D9mKMH63T6Hd3JXXvBdUbJRsxjIlT
-         BrgZ54tJs6FBa02Uh2dD+Yf7WK4yooi+ouE2LDN4G3EJP04xmXKhzPSV+On5MKf2+8sj
-         8aEu7CceXL1HlfASeHNHXcfOD3+ALHTo7oaPc1hmehj2Hz1ulFDX04oF0TIuLHEQBdg5
-         LtJhroF795DAqWWZ3mQCZUfPZ1ur1RhDnAuc+UE70JhyEezUslARHfwVOxSkLemCO69t
-         +W4evXFAbGVqCDaqR0PH2bcFS+NRue6Y0Db2d3rI3rlMRtTWOXcNE/2AVACj4dT9d6U3
-         lW2g==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=q9FDrJWmw7zbwNIScNRJIcVCNy5Dkk3OCgOIZ8zbVBM=;
+        b=xDxPAhu2gzTbFDSqOvu8eRJpApyAFAK97hzs6gwhitqSIWtEti48rSB6PaqEwvEs+N
+         O4bjNABpxKEibkYy83eaQEL3UO+ZWmKJ6gtrKlTUs3EQ8SP639+gCEWfDDWKvZUCyPZP
+         he3sHsbJ3qzQXA1ThLHlAuQiwNCqqwQW3jAqeKVeZNKuLfFS8wbk2XXU3cyWkFkZSEbV
+         WLaaTmic3te9yDydZUAiHCWF+xh/IjrUdpJa80MJ9PCCo497bRAzuNl1d5EmqbEtj2JT
+         ScdOIHJ9NtN4nHK3ibuFsoPHHhsiYvdPlg9ehxWDeELTF269+etU3pLo/PxnamT0+7ij
+         ookQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eDfcbYcklV7EvVwSK7hsey26gHyLjO1ZT9JrzeGEfHk=;
-        b=I787JdktycTA8zaY9kjryjbhVR0GvuE4sxjbstdSeX1+TjGVyFVk040VvRaPPPoPs4
-         lWOdr5eNVtdPoJ+a0WJpeLUgLqtd7DdzuSlB/iHOm9zEGbsVqCLfnZvGhTGyTx3HfyQq
-         uNrNfpSzV9fGf+n9IjasjXmTRhD8a+s5YNG0eRZ6LCWk2EB0kj+V8MFaGs4iiVAGUuiM
-         97Z950TKuQwu9yRbdh0esmkJJiu4D4yAbl+8NoPkGpOzG/aaXMVwLKdVNk133uOEDl8o
-         ewGwOiuZN/4KmnAIqB6r33FvlFBZ5d8ztNQx2mnTwO34KhJnnXOjzV+g04F9IPrpoe9G
-         lQ3g==
-X-Gm-Message-State: APjAAAVgUe+k9CDUsp4gLRwa7vlXB/RBAqfZ+oCaJtVcdb6dSVBCX7lH
-        fbWBAiZgI7mSGW44KpCYXkq5OLq1ia09rvspXZrxLPKN81k=
-X-Google-Smtp-Source: APXvYqxvhrPHa1FgIoo6V12eO4xBu2zpHUiVISefxmSUEvVDY7P+RuMnFl979KWDpMsyCr2umeHe3Ucj/nfN1e09jmc=
-X-Received: by 2002:a2e:9350:: with SMTP id m16mr17789521ljh.38.1557250251424;
- Tue, 07 May 2019 10:30:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=q9FDrJWmw7zbwNIScNRJIcVCNy5Dkk3OCgOIZ8zbVBM=;
+        b=Stp8sXWSnnFb1OvABDIevdUQrCF6aQFaoRV2sCwTphk2/pMGRlVe7Fi7azsW/+JRD7
+         r7gcIEGo7L04WKHYS1bvlSQEilOsgSonsJVMHX1PNO/iozKRzv8RJQTGbyL5Pc99Xsm6
+         9y70wG416ncPuV3VK9lXtipl0OFElBp/G+vnUAwPgwmlls8Foq4QEjCCyYKl9xdBcubY
+         bAMXrK59huLf+6UZbQU3hxAlk6E036eFV4RszmsLOkZAkco90RLLL4X7YLNnLXZz2yIU
+         shI7o5kQy4JtAm9PD2rqk+vB5gEI1DsMHEKH/w/uUQDPhduQ8s9AefugprqFIzAcGtUa
+         tl8w==
+X-Gm-Message-State: APjAAAWY6hBE3zs/XJOPFSZ63GbQWD3XBEXMLEPBA4De8AP0YAz+UxQE
+        dUS1nXsF8KIKguRkI7tIu8Zd67tL3QRqzm7W
+X-Google-Smtp-Source: APXvYqzYqcXtnCQi6lNLhXArSBL3ZXRXHfmB8jnov3+/9p9kOhS25dZvsE+/AVkTAvukibG4gDl/8g==
+X-Received: by 2002:a81:657:: with SMTP id 84mr12936051ywg.488.1557250584154;
+        Tue, 07 May 2019 10:36:24 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::5c09])
+        by smtp.gmail.com with ESMTPSA id z204sm3928779ywb.28.2019.05.07.10.36.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 07 May 2019 10:36:23 -0700 (PDT)
+Date:   Tue, 7 May 2019 13:36:21 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC] btrfs: reflink: Flush before reflink any extent to
+ prevent NOCOW write falling back to CoW without data reservation
+Message-ID: <20190507173619.u4vjotiv5jxufogo@macbook-pro-91.dhcp.thefacebook.com>
+References: <20190503010852.10342-1-wqu@suse.com>
 MIME-Version: 1.0
-References: <aa81a49a-d5ca-0f1c-fa75-9ed3656cff55@avgustinov.eu>
- <e9720559-eff2-e88b-12b4-81defb8c29c5@avgustinov.eu> <a75981da-86f7-e0fb-d1dc-a2576b09c668@gmx.com>
- <039ec3eb-c44e-35e9-cf1b-f9f75849d873@avgustinov.eu> <c69778f5-a015-8b77-3fab-e41e49a0e0db@gmx.com>
- <51021dd7-b21b-b001-c3f9-9bc31205738b@avgustinov.eu> <00e3ddf1-cbd7-a65a-dee3-ca720cecc77d@gmx.com>
- <a6917f39-eeb4-5548-f346-a78972c7c3fe@avgustinov.eu> <6a592ffa-4a5a-81af-baef-8f1681accc87@gmx.com>
- <2c786019-646a-486f-1306-25a3df36e6b3@avgustinov.eu> <52b23bd7-108b-63f3-b958-2a5959c7ca6e@gmx.com>
- <f2b33d93-aa37-9fd3-6036-44e1e3f065eb@avgustinov.eu> <a9135dba-26fe-777f-048b-87052d5cbd14@gmx.com>
- <21ff2435-af15-573c-e897-05ceb4f42e0b@avgustinov.eu> <CAJCQCtQJkJwEyouCUzcV1MzPkcxhvtqxkWqmrwnB9txV=MUTXA@mail.gmail.com>
- <3f1f66d3-e04e-de16-e9a4-7c8a6238d5b8@gmx.com> <246c2330-acb6-3205-0468-051bacbfaeb5@avgustinov.eu>
- <24ab8eed-a790-bff2-cdad-0b091f7d0fe9@avgustinov.eu> <917e0530-7f68-a801-d87b-d00bb4e10287@gmx.com>
- <00637d5e-b66f-7f87-b13b-7eea5a62fdfa@avgustinov.eu>
-In-Reply-To: <00637d5e-b66f-7f87-b13b-7eea5a62fdfa@avgustinov.eu>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 7 May 2019 11:30:39 -0600
-Message-ID: <CAJCQCtRugbGyr8Nyjo7P_g+VpATdhojOeaY4BPdJFfcOMxDYGg@mail.gmail.com>
-Subject: Re: interest in post-mortem examination of a BTRFS system and
- improving the btrfs-code?
-To:     "Nik." <btrfs@avgustinov.eu>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190503010852.10342-1-wqu@suse.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 7, 2019 at 11:17 AM Nik. <btrfs@avgustinov.eu> wrote:
->
-> It took about 18 hours to compare the mounted volume with the backup
-> (used rsync, without the "--checksum" option, because it was too slow; I
+On Fri, May 03, 2019 at 09:08:52AM +0800, Qu Wenruo wrote:
+> [BUG]
+> The following command can lead to unexpected data COW:
+> 
+>   #!/bin/bash
+> 
+>   dev=/dev/test/test
+>   mnt=/mnt/btrfs
+> 
+>   mkfs.btrfs -f $dev -b 1G > /dev/null
+>   mount $dev $mnt -o nospace_cache
+> 
+>   xfs_io -f -c "falloc 8k 24k" -c "pwrite 12k 8k" $mnt/file1
+>   xfs_io -c "reflink $mnt/file1 8k 0 4k" $mnt/file1
+>   umount $dev
+> 
+> The result extent will be
+> 
+> 	item 7 key (257 EXTENT_DATA 4096) itemoff 15760 itemsize 53
+> 		generation 6 type 2 (prealloc)
+> 		prealloc data disk byte 13631488 nr 28672
+> 	item 8 key (257 EXTENT_DATA 12288) itemoff 15707 itemsize 53
+> 		generation 6 type 1 (regular)
+> 		extent data disk byte 13660160 nr 12288 <<< COW
+> 	item 9 key (257 EXTENT_DATA 24576) itemoff 15654 itemsize 53
+> 		generation 6 type 2 (prealloc)
+> 		prealloc data disk byte 13631488 nr 28672
+> 
+> Currently we always reserve space even for NOCOW buffered write, thus
+> under most case it shouldn't cause anything wrong even we fall back to
+> COW.
+> 
+> However when we're out of data space, we fall back to skip data space if
+> we can do NOCOW write.
+> 
+> If such behavior happens under that case, we could hit the following
+> problems:
+> - data space bytes_may_use underflow
+>   This will cause kernel warning.
+> 
 
-If you're comparing without --checksum, it's just checking file size
-and timestamp. It's not checking file contents.
+This can be fixed, I laid out a few ways it could be fixed.
 
+> - ENOSPC at delalloc time
+>   This will lead to transaction abort and fs forced to RO.
+> 
 
-> can run it again with it, if you wish). Only about 300kB were not in my
-> backup. Given the backup is also on a btrfs system, is there a more
-> "intelligent" way to compare this huge tree with the backup?
+How?  The metadata and data reservations are separate.  If we can't make the
+metadata reservation we fail out, the only thing we allow is skipping the data
+reservation.  So if we fall back to cow_file_range() at run_delalloc_nocow()
+time all we'll do is get an ENOSPC outside of a transaction, so we can just
+mark the inode as having failed its writeout with ENOSPC so fsync() returns the
+appropriate error and carry on.  We shouldn't be aborting a transaction here at
+all.  Thanks,
 
-Not if you have reason to distrust one of them. If you trust them
-both, comparison isn't needed. So you're kinda stuck having to use a
-separate tool to independently verify the files.
-
-
->Optimally
-> the fs would keep the check-sums and compare only them?
-
-No such tool exists. Btrfs doesn't checksum files, it checksums file
-extents in 4KiB increments. And I don't even think there's an ioctl to
-extract only checksums, in order to do a comparison in user space. The
-checksums are, as far as I'm aware, only used internally within Btrfs
-kernel space.
-
-
--- 
-Chris Murphy
+Josef
