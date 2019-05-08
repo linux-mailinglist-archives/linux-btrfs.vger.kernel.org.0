@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B24172CB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2019 09:47:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A3A172CC
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2019 09:47:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbfEHHrX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 May 2019 03:47:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59054 "EHLO mx1.suse.de"
+        id S1727069AbfEHHrk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 May 2019 03:47:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59122 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726131AbfEHHrX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 May 2019 03:47:23 -0400
+        id S1726835AbfEHHrk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 May 2019 03:47:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 41ADAAEEA
-        for <linux-btrfs@vger.kernel.org>; Wed,  8 May 2019 07:47:21 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 338F9AEEA;
+        Wed,  8 May 2019 07:47:38 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: Flush before reflinking any extent to prevent NOCOW write falling back to CoW without data reservation
-Date:   Wed,  8 May 2019 15:47:17 +0800
-Message-Id: <20190508074717.12731-1-wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] fstests: generic: Test if fsync will fail after NOCOW write and reflink
+Date:   Wed,  8 May 2019 15:47:33 +0800
+Message-Id: <20190508074733.12787-1-wqu@suse.com>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -28,111 +28,130 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-The following script can cause unexpected fsync failure:
+This test case is going to check if btrfs will fail fsync after NOCOW
+buffered write and reflink.
 
-  #!/bin/bash
+Btrfs' back reference only has extent level granularity, so if we do
+buffered write which can be done NOCOW, then reflink, that buffered
+write will be forced CoW.
 
-  dev=/dev/test/test
-  mnt=/mnt/btrfs
-
-  mkfs.btrfs -f $dev -b 512M > /dev/null
-  mount $dev $mnt -o nospace_cache
-
-  # Prealloc one extent
-  xfs_io -f -c "falloc 8k 64m" $mnt/file1
-  # Fill the remaining data space
-  xfs_io -f -c "pwrite 0 -b 4k 512M" $mnt/padding
-  sync
-
-  # Write into the prealloc extent
-  xfs_io -c "pwrite 1m 16m" $mnt/file1
-
-  # Reflink then fsync, fsync would fail due to ENOSPC
-  xfs_io -c "reflink $mnt/file1 8k 0 4k" -c "fsync" $mnt/file1
-  umount $dev
-
-The fsync fails with ENOSPC, and the last page of the buffered write is
-lost.
-
-[CAUSE]
-This is caused by two reasons:
-- Btrfs' back reference only has extent level granularity
-  So write into shared extent must be CoWed even only part of the extent
-  is shared.
-
-- Btrfs doesn't reserve data space for NOCOW buffered write if low on
-  data space
-
-So for above script we have:
-- fallocate
-  Create a preallocated extent where we can do NOCOW write.
-
-- padding buffered write to use up all data space
-
-- buffered write into preallocated space
-  As we have no data space remaining, we have to do NOCOW check and
-  reserve no data space.
-
-- reflink
-  Now part of the large preallocated extent is shared, later write
-  into that extent must be CoWed.
-
-- writeback kicks in for fsync
-  buffered write into that preallocated space must be CoWed.
-  However we have no data space left at all, we fail
-  btrfs_run_delalloc_range() with ENOSPC, causing fsync failure.
-
-[WORKAROUND]
-The workaround is to ensure any buffered write in the related extents
-(not just the reflink source range) get flushed before reflink/dedupe,
-so NOCOW write could reach disk as NOCOW before we increase the reference.
-
-The workaround is expensive, we could do it better by only flushing
-NOCOW range, but that needs extra accounting for NOCOW range.
-For now, fix the possible data loss first.
+And if we have no data space left, CoW will fail and cause fsync
+failure.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-changelog:
-RFC->v1:
-- Use better words for commit message and comment.
-- Move the whole inode flushing to btrfs_remap_file_range_prep().
-  This also covers dedupe.
-- Update the reproducer to fail explicitly.
-- Remove false statement on transaction abort.
----
- fs/btrfs/ioctl.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ tests/generic/545     | 82 +++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/545.out |  2 ++
+ tests/generic/group   |  1 +
+ 3 files changed, 85 insertions(+)
+ create mode 100755 tests/generic/545
+ create mode 100644 tests/generic/545.out
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 6dafa857bbb9..87a0ec0591cd 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4001,8 +4001,21 @@ static int btrfs_remap_file_range_prep(struct file *file_in, loff_t pos_in,
- 	if (!same_inode)
- 		inode_dio_wait(inode_out);
- 
--	ret = btrfs_wait_ordered_range(inode_in, ALIGN_DOWN(pos_in, bs),
--				       wb_len);
-+	/*
-+	 * Workaround to make sure NOCOW buffered write reach disk as NOCOW.
-+	 *
-+	 * Btrfs' back references do not have a block level granularity, they
-+	 * work at the whole extent level.
-+	 * NOCOW buffered write without data space reserved may not be able
-+	 * to fall back to CoW due to lack of data space, thus could cause
-+	 * data loss.
-+	 *
-+	 * Here we take a shortcut by flushing the whole inode, so that all
-+	 * nocow write should reach disk as nocow before we increase the
-+	 * reference of the extent. We could do better by only flushing NOCOW
-+	 * data, but that needs extra accounting.
-+	 */
-+	ret = btrfs_wait_ordered_range(inode_in, 0, (u64)-1);
- 	if (ret < 0)
- 		return ret;
- 	ret = btrfs_wait_ordered_range(inode_out, ALIGN_DOWN(pos_out, bs),
+diff --git a/tests/generic/545 b/tests/generic/545
+new file mode 100755
+index 00000000..b6e1a0ae
+--- /dev/null
++++ b/tests/generic/545
+@@ -0,0 +1,82 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 545
++#
++# Test if btrfs fails fsync due to ENOSPC.
++#
++# Btrfs' back reference only has extent level granularity, thus if reflink of
++# an preallocated extent happens, any write into that extent must be CoWed.
++#
++# We could craft a case, where btrfs reserve no data space at buffered write
++# time but are forced to do CoW at writeback, and fail fsync.
++#
++# This is fixed by "btrfs: Flush before reflinking any extent to prevent NOCOW
++# write falling back to CoW without data reservation"
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/reflink
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_supported_os Linux
++_require_scratch
++_require_scratch_reflink
++
++_scratch_mkfs_sized $((512 * 1024 * 1024)) >> $seqres.full 2>&1
++
++# Space cache will use some data space and may cause interference.
++# Disable space cache here.
++_scratch_mount -o nospace_cache
++
++# Create preallocated extent where we can do NOCOW write
++xfs_io -f -c 'falloc 8k 64m' "$SCRATCH_MNT/foobar" >> $seqres.full
++
++# Use up all remaining space, so that later write will go through NOCOW check
++# We ignore the ENOSPC error here
++_pwrite_byte 0x00 0 512m "$SCRATCH_MNT/padding" >> $seqres.full 2>&1
++
++# Now setup is all done.
++sync
++
++# This buffered write will go through and pass NOCOW check thus no
++# data space is reserved.
++_pwrite_byte 0xcd 1m 16m "$SCRATCH_MNT/foobar" >> $seqres.full
++
++# Reflink the the unused part of the preallocated extent to increase
++# its reference, so for btrfs any write into that preallocated extent
++# must be CoWed.
++xfs_io -c "reflink ${SCRATCH_MNT}/foobar 8k 0 4k" "$SCRATCH_MNT/foobar" \
++	>> $seqres.full
++
++# Now fsync will fail due to we must CoW previous NOCOW write, but we have
++# now data space left, it will fail with ENOSPC
++xfs_io -c 'fsync'  "$SCRATCH_MNT/foobar"
++
++echo "Silence is golden"
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/545.out b/tests/generic/545.out
+new file mode 100644
+index 00000000..920d7244
+--- /dev/null
++++ b/tests/generic/545.out
+@@ -0,0 +1,2 @@
++QA output created by 545
++Silence is golden
+diff --git a/tests/generic/group b/tests/generic/group
+index 40deb4d0..f26b91fe 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -547,3 +547,4 @@
+ 542 auto quick clone
+ 543 auto quick clone
+ 544 auto quick clone
++545 auto quick clone enospc
 -- 
 2.21.0
 
