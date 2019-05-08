@@ -2,180 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C9D179F1
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2019 15:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F72217AE0
+	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2019 15:41:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726713AbfEHNJO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 May 2019 09:09:14 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56524 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725910AbfEHNJO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 May 2019 09:09:14 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x48D99rk032050;
-        Wed, 8 May 2019 06:09:09 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=OqzxN0YufFxDvPr91bEkmMd4StKrYOYQmihCAkYyEIc=;
- b=d3LyQqIza1aPkpzmlvokqbFHQr+BS4EddINUqiGSh3XdV5HRo/YWNhMTKEyp703zT/aS
- 6GmVqTjcHEp9oAvivaS/L/0I0kv76BLFl3xYbgjUVBnTsTH3DxL5yfOGFmUWGoTaZakh
- dnpWCjI7cjvs37NVfO2FQhMIu0M+ESPko6c= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sbh8ramuh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 08 May 2019 06:09:09 -0700
-Received: from prn-mbx08.TheFacebook.com (2620:10d:c081:6::22) by
- prn-hub04.TheFacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 8 May 2019 06:09:05 -0700
-Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
- prn-mbx08.TheFacebook.com (2620:10d:c081:6::22) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 8 May 2019 06:09:05 -0700
-Received: from NAM05-DM3-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 8 May 2019 06:09:05 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OqzxN0YufFxDvPr91bEkmMd4StKrYOYQmihCAkYyEIc=;
- b=k7gNm+b4Lam98nP0iNDS41Ovfs7z0W5EiKlrg+wwB6wG5Gj+YORNTOUbwFkmtet5BiApqwdnhS/N3T4rYwmZ1SWB8SEXLxoG6EQw/5r0LzIoCN+3gInLd6ry/DH9y9k/dVKqxbcK7tTVOrlstx9t0xWIkJDmG+u0gLxt/+HI1Bk=
-Received: from DM5PR15MB1290.namprd15.prod.outlook.com (10.173.212.17) by
- DM5PR15MB1419.namprd15.prod.outlook.com (10.173.221.148) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1856.14; Wed, 8 May 2019 13:09:03 +0000
-Received: from DM5PR15MB1290.namprd15.prod.outlook.com
- ([fe80::6182:329:231e:af13]) by DM5PR15MB1290.namprd15.prod.outlook.com
- ([fe80::6182:329:231e:af13%5]) with mapi id 15.20.1878.019; Wed, 8 May 2019
- 13:09:02 +0000
-From:   Chris Mason <clm@fb.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-CC:     Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH] btrfs: run delayed iput at unlink time
-Thread-Topic: [PATCH] btrfs: run delayed iput at unlink time
-Thread-Index: AQHVBPpPr8qxwtiVREyKLOYKgYx1PqZg0Z0AgABiyIA=
-Date:   Wed, 8 May 2019 13:09:02 +0000
-Message-ID: <15561965-3624-468A-9307-169D70B3D5D8@fb.com>
-References: <20190507172734.93994-1-josef@toxicpanda.com>
- <7147863c-dfe0-573c-18cc-f9284fd30f39@suse.com>
-In-Reply-To: <7147863c-dfe0-573c-18cc-f9284fd30f39@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: MailMate (1.12.4r5594)
-x-clientproxiedby: HK0PR01CA0002.apcprd01.prod.exchangelabs.com
- (2603:1096:203:92::14) To DM5PR15MB1290.namprd15.prod.outlook.com
- (2603:10b6:3:b8::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c094:180::1:db0d]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: bea27b7b-232e-4f69-78c6-08d6d3b65761
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:DM5PR15MB1419;
-x-ms-traffictypediagnostic: DM5PR15MB1419:
-x-microsoft-antispam-prvs: <DM5PR15MB141988CB912F846FF72D53FDD3320@DM5PR15MB1419.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:252;
-x-forefront-prvs: 0031A0FFAF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(39860400002)(346002)(366004)(136003)(376002)(199004)(189003)(71190400001)(71200400001)(82746002)(478600001)(6512007)(476003)(386003)(6916009)(6506007)(6486002)(53546011)(2906002)(102836004)(6436002)(14454004)(86362001)(54906003)(76176011)(36756003)(316002)(52116002)(446003)(11346002)(6246003)(2616005)(99286004)(68736007)(53936002)(66476007)(64756008)(66446008)(66556008)(81166006)(6116002)(83716004)(8676002)(305945005)(81156014)(73956011)(66946007)(7736002)(486006)(8936002)(4326008)(46003)(186003)(25786009)(229853002)(256004)(14444005)(33656002)(5660300002)(50226002);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1419;H:DM5PR15MB1290.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: I1u+o2dn0MWCMc4NFpOl0UH6X71RRr8WuahIIjMGVlWU9uXYp6SHXP2dW85t/4kWwKxjyu79WTntOHW3LGgn9VpXaLPuh1P7rNzESq+gox0Gsz8a33mx/oHvKoYW1350eEFKQAN9T34y4YJITPSrWp5m8y5G0y3F7wjnYslHpNoW/me/zrAoCDgMlx42mUsR+b0J5o7XPU0jcAcOfrS3aHKo3wYBbCQuKWfPqPZQRZy/ZNj/QHZzosnMO7YnHJO8OayzOgLjDrjlDHbmlhdKoMoIaFHzJliLybxanmq49Vb06TRRzOkywvdA1N2KEcpGpQ3gSkEZl5IgOw4OapUbqK84gj7lf+tjFjeXbwG/ZVAVXxUnMDLM3EhCfj/+dT7/FPK7lWDFzBPv/4F06A3Mgv3Euocw0aGuVxJfXkdXhwg=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C87B893F411A8B46BFF9A154EABF4B8A@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727646AbfEHNlJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 8 May 2019 09:41:09 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:46319 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727584AbfEHNlI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 May 2019 09:41:08 -0400
+Received: by mail-ua1-f66.google.com with SMTP id a95so2305733uaa.13;
+        Wed, 08 May 2019 06:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=/cA5dHuj/QXB1U9ibshBReemqtnTV9s/Pf6/3KA8/o4=;
+        b=CmnQpGcD+qVLh/EWay6F2EePiBSwzaW6zpl2fy04ZTZJhrN+99zwqVVQG4tufIVGQ/
+         2GSOL2LfixqSxbZF6imwZ0pibI+IPKFCuG97jB/gs+IlrXJU3K2fQl8C37eUxrMYCR+q
+         SJGVZE77wf2APxxQA/q/BYVSXykpd4Na+cMSMTau+ROmsOwfsQhiELjLDO9Sr8aDpoAd
+         Dw0ntmv34nKuEZ6LLpmmixvLOQvyrWHaxmxAqcceFW0UIF2tTaeklbKviIUwIZ/zKA10
+         F6Cj7i57pauP52Ll/Yvsrj7H/jB7qbZEfY+oi+D9CnlwPnHDy87K3semjeeQYWDZjjTD
+         loRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=/cA5dHuj/QXB1U9ibshBReemqtnTV9s/Pf6/3KA8/o4=;
+        b=WVwU8cFa8N9oXAR/ygkd0r5vMxwiQYe/EToZlSpeIR19LJbMfVyINnWU+zBTsb5J0R
+         vsuOdcRIoLe4z3CfxDvtBBHnUuFYV8IX9qVzKBQqK2ltcb13M4tSdasnKcV5wR8RFxII
+         HaE2YlR7Rf0NjhPI/EWB42G6HH2qFDTs7uznUBpIJgeRe1VO2E+09lz5pS5zGPZYD5Sd
+         yRFGgzvY4vwY8z3EbAN9ShX8lp+RZ5Kmndn4lszrV56ENaUBHqD6jGilyDgy7G0/S9OK
+         CeG8dYx5ldoDlF0Xb22Da36eUFYEJpOlR4lk33AoVe65aSmbiVUi40aJWllGkmBHtp1J
+         M2+w==
+X-Gm-Message-State: APjAAAXYM0GFDw/6yoF08eH7k/ponEuwFT4IKmE85mKReqj0ZkVa2++3
+        zayHpH8JtzCVRr1cVN0felw45EI2+S/9jX+/rUsfa7x3
+X-Google-Smtp-Source: APXvYqy67P+JDr/isWh5CoMgC27D/EkNhq3zwf/e7+A13eC+u1TVv5QeuxFHwcWlQHJUsDwUYOm8ShKNtCY484lf1Ak=
+X-Received: by 2002:ab0:1e2:: with SMTP id 89mr20356137ual.0.1557322867285;
+ Wed, 08 May 2019 06:41:07 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: bea27b7b-232e-4f69-78c6-08d6d3b65761
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2019 13:09:02.8062
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1419
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-08_07:,,
- signatures=0
-X-Proofpoint-Spam-Reason: safe
-X-FB-Internal: Safe
+References: <20190508124610.20135-1-wqu@suse.com>
+In-Reply-To: <20190508124610.20135-1-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 8 May 2019 14:40:56 +0100
+Message-ID: <CAL3q7H7E0rf2uxqVKOUOvF5Mq95E06rfcUNoRBKZJTeAcQEDNA@mail.gmail.com>
+Subject: Re: [PATCH v3] fstests: generic: Test if we can still do certain
+ operations which doesn't take data space on full fs
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        fstests <fstests@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gOCBNYXkgMjAxOSwgYXQgMzoxNSwgTmlrb2xheSBCb3Jpc292IHdyb3RlOg0KDQo+IE9uIDcu
-MDUuMTkg0LMuIDIwOjI3INGHLiwgSm9zZWYgQmFjaWsgd3JvdGU6DQo+PiBXZSBoYXZlIGJlZW4g
-c2VlaW5nIGlzc3VlcyBpbiBwcm9kdWN0aW9uIHdoZXJlIGEgY2xlYW5lciBzY3JpcHQgd2lsbCAN
-Cj4+IGVuZA0KPj4gdXAgdW5saW5raW5nIGEgYnVuY2ggb2YgZmlsZXMgdGhhdCBoYXZlIHBlbmRp
-bmcgaXB1dHMuICBUaGlzIG1lYW5zIA0KPj4gdGhleQ0KPj4gd2lsbCBnZXQgdGhlaXIgZmluYWwg
-aXB1dCdzIHJ1biBhdCBidHJmcy1jbGVhbmVyIHRpbWUgYW5kIHRodXMgYXJlIA0KPj4gbm90DQo+
-PiB0aHJvdHRsZWQsIHdoaWNoIGltcGFjdHMgdGhlIHdvcmtsb2FkLg0KPj4NCj4+IFNpbmNlIHdl
-IGFyZSB1bmxpbmtpbmcgdGhlc2UgZmlsZXMgd2UgY2FuIGp1c3QgZHJvcCB0aGUgZGVsYXllZCBp
-cHV0IA0KPj4gYXQNCj4+IHVubGluayB0aW1lLiAgV2UgYXJlIGFscmVhZHkgaG9sZGluZyBhIHJl
-ZmVyZW5jZSB0byB0aGUgaW5vZGUgc28gdGhpcw0KPj4gd2lsbCBub3QgYmUgdGhlIGZpbmFsIGlw
-dXQgYW5kIHRodXMgaXMgY29tcGxldGVseSBzYWZlIHRvIGRvIGF0IHRoaXMNCj4+IHBvaW50LiAg
-RG9pbmcgdGhpcyBtZWFucyB3ZSBhcmUgbW9yZSBsaWtlbHkgdG8gYmUgZG9pbmcgdGhlIGZpbmFs
-IA0KPj4gaXB1dA0KPj4gYXQgdW5saW5rIHRpbWUsIGFuZCB0aHVzIHdpbGwgZ2V0IHRoZSBJTyBj
-aGFyZ2VkIHRvIHRoZSBjYWxsZXIgYW5kIA0KPj4gZ2V0DQo+PiB0aHJvdHRsZWQgYXBwcm9wcmlh
-dGVseSB3aXRob3V0IGFmZmVjdGluZyB0aGUgbWFpbiB3b3JrbG9hZC4NCj4+DQo+PiBTaWduZWQt
-b2ZmLWJ5OiBKb3NlZiBCYWNpayA8am9zZWZAdG94aWNwYW5kYS5jb20+DQo+PiAtLS0NCj4+ICBm
-cy9idHJmcy9pbm9kZS5jIHwgMjIgKysrKysrKysrKysrKysrKysrKysrKw0KPj4gIDEgZmlsZSBj
-aGFuZ2VkLCAyMiBpbnNlcnRpb25zKCspDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2lu
-b2RlLmMgYi9mcy9idHJmcy9pbm9kZS5jDQo+PiBpbmRleCBiNmQ1NDljOTkzZjYuLmU1ODY4NWI1
-ZDM5OCAxMDA2NDQNCj4+IC0tLSBhL2ZzL2J0cmZzL2lub2RlLmMNCj4+ICsrKyBiL2ZzL2J0cmZz
-L2lub2RlLmMNCj4+IEBAIC00MDA5LDYgKzQwMDksMjggQEAgc3RhdGljIGludCBfX2J0cmZzX3Vu
-bGlua19pbm9kZShzdHJ1Y3QgDQo+PiBidHJmc190cmFuc19oYW5kbGUgKnRyYW5zLA0KPj4gIAkJ
-cmV0ID0gMDsNCj4+ICAJZWxzZSBpZiAocmV0KQ0KPj4gIAkJYnRyZnNfYWJvcnRfdHJhbnNhY3Rp
-b24odHJhbnMsIHJldCk7DQo+PiArDQo+PiArCS8qDQo+PiArCSAqIElmIHdlIGhhdmUgYSBwZW5k
-aW5nIGRlbGF5ZWQgaXB1dCB3ZSBjb3VsZCBlbmQgdXAgd2l0aCB0aGUgZmluYWwgDQo+PiBpcHV0
-DQo+PiArCSAqIGJlaW5nIHJ1biBpbiBidHJmcy1jbGVhbmVyIGNvbnRleHQuICBJZiB3ZSBoYXZl
-IGVub3VnaCBvZiB0aGVzZSANCj4+IGJ1aWx0DQo+PiArCSAqIHVwIHdlIGNhbiBlbmQgdXAgYnVy
-bmluZyBhIGxvdCBvZiB0aW1lIGluIGJ0cmZzLWNsZWFuZXIgd2l0aG91dCANCj4+IGFueQ0KPj4g
-KwkgKiB3YXkgdG8gdGhyb3R0bGUgdGhlIHVubGlua3MuICBTaW5jZSB3ZSdyZSBjdXJyZW50bHkg
-aG9sZGluZyBhIA0KPj4gcmVmIG9uDQo+PiArCSAqIHRoZSBpbm9kZSB3ZSBjYW4gcnVuIHRoZSBk
-ZWxheWVkIGlwdXQgaGVyZSB3aXRob3V0IGFueSBpc3N1ZXMgYXMgDQo+PiB0aGUNCj4+ICsJICog
-ZmluYWwgaXB1dCB3b24ndCBiZSBkb25lIHVudGlsIGFmdGVyIHdlIGRyb3AgdGhlIHJlZiB3ZSdy
-ZSANCj4+IGN1cnJlbnRseQ0KPj4gKwkgKiBob2xkaW5nLg0KPj4gKwkgKi8NCj4NCj4gRldJVyB0
-aGUgY2FsbGVyIGlzIG5vdCByZWFsbHkgaG9sZGluZyBhbiBleHBsaWNpdCByZWZlcmVuY2UsIHJh
-dGhlcg0KPiB0aGVyZSBpcyBhIHJlZmVyZW5jZSBoZWxkIGJ5IHRoZSBkZW50cnkgd2hpY2ggaXMg
-Z29pbmcgdG8gYmUgZGlzcG9zZWQgDQo+IG9mDQo+IGJ5IHZmcy4gQ29uc2lkZXJpbmcgdGhpcyBJ
-J2Qgc2F5IHRoaXMgaXMgYSBmYWxzZSBjbGFpbS4gSS5lICJ3ZSIgZG8gDQo+IG5vdA0KPiBob2xk
-IGEgcmVmZXJlbmNlLg0KDQpJdCdzIGltcG9zc2libGUgdG8gY2FsbCB0aGlzIGZ1bmN0aW9uIHdp
-dGhvdXQgYSByZWZlcmVuY2UgaGVsZCBvbiB0aGUgDQppbm9kZSwga2luZCBvZiBuaXQtcGlja2lu
-ZyBvbiAid2UiIHZzICJ0aGUgdmZzIi4NCg0KPg0KPj4gKwlpZiAoIWxpc3RfZW1wdHkoJmlub2Rl
-LT5kZWxheWVkX2lwdXQpKSB7DQo+PiArCQlzcGluX2xvY2soJmZzX2luZm8tPmRlbGF5ZWRfaXB1
-dF9sb2NrKTsNCj4+ICsJCWlmICghbGlzdF9lbXB0eSgmaW5vZGUtPmRlbGF5ZWRfaXB1dCkpIHsN
-Cj4+ICsJCQlsaXN0X2RlbF9pbml0KCZpbm9kZS0+ZGVsYXllZF9pcHV0KTsNCj4+ICsJCQlzcGlu
-X3VubG9jaygmZnNfaW5mby0+ZGVsYXllZF9pcHV0X2xvY2spOw0KPj4gKwkJCWlwdXQoJmlub2Rl
-LT52ZnNfaW5vZGUpOw0KPj4gKwkJCWlmIChhdG9taWNfZGVjX2FuZF90ZXN0KCZmc19pbmZvLT5u
-cl9kZWxheWVkX2lwdXRzKSkNCj4+ICsJCQkJd2FrZV91cCgmZnNfaW5mby0+ZGVsYXllZF9pcHV0
-c193YWl0KTsNCj4+ICsJCX0gZWxzZSB7DQo+PiArCQkJc3Bpbl91bmxvY2soJmZzX2luZm8tPmRl
-bGF5ZWRfaXB1dF9sb2NrKTsNCj4+ICsJCX0NCj4+ICsJfQ0KPg0KPiBPVE9IIHRoaXMgcmVhbGx5
-IGZlZWxzIGxpa2UgYSBoYWNrIGFuZCB0aGlzIHN0ZW1zIGZyb20gdGhlIGZhY3QgdGhhdA0KPiBp
-cHV0IGlzIHJhdGhlciBydWRpbWVudGFyeS4gQWRkaXRpb25hbGx5IHlvdSBhcmUgZXNzZW50aWFs
-bHkgDQo+IG9wZW5jb2RpbmcNCj4gdGhlIGJvZHkgb2YgYnRyZnNfcnVuX2RlbGF5ZWRfaXB1dHMu
-IEkgd2FzIGdvaW5nIHRvIHN1Z2dlc3QgdG8gDQo+IGludHJvZHVjZQ0KPiBhIG5ldyBoZWxwZXIg
-ZmFjdG9yaW5nIG91dCB0aGUgY29tbW9uIGNvZGUgYnV0IGl0IHdpbGwgZ2V0IHVnbHkgZHVlIHRv
-DQo+IHRoZSBzcGluIGxvY2sgYmVpbmcgZHJvcHBlZCBiZWZvcmUgZG9pbmcgdGhlIGlwdXQuDQo+
-DQo+IEJ1dCB0aGVuIEknbSByZWFsbHkgc3RhcnRpbmcgdG8gcXVlc3Rpb24gdGhlIHV0aWxpdHkg
-b2YgZGVsYXllZCBpcHV0cy4NCj4gUHJlc3VtYWJseSBpdCB3YXMgYWRkZWQgdG8gZGVmZXIgdGhl
-IGV4cGVuc2l2ZSBmaW5hbCBpcHV0IGluIHRoZSANCj4gY2xlYW5lcg0KPiBjb250ZXh0IG9yIGF2
-b2lkIHNvbWUgZGVhZGxvY2tzIChidXQgd2UgZG9uJ3Qga25vdyB3aGljaCBleGFjdGx5KS4gDQo+
-IFlldCwNCj4gaGVyZSB3ZSBhcmUgc29tZSB0aW1lIGxhdGVyIHdoZXJlIHlvdSBhcmUgZXNzZW50
-aWFsbHkgc2F5aW5nICJ0aGlzDQo+IG1lY2hhbmlzbSBpcyBzdWJvcHRpbWFsIGJlY2F1c2UgaXQn
-cyBkdW1iIGFuZCBpbnN0ZWFkIG9mIGltcHJvdmluZw0KPiB0aGluZ3MgaXQncyBtYWtpbmcgdGhl
-bSB3b3JzZSBpbiBjZXJ0YWluIGNhc2VzLCBzbyBsZXQncyB1bmxvYWQgaXQgYSANCj4gYml0DQo+
-IGJ5IGRvaW5nIGFuIGlwdXQgaGVyZSIuDQoNClRoZSBmaW5hbCBpcHV0IGlzIHByZXR0eSBleHBl
-bnNpdmUsIHNpbmNlIGl0IHBvdGVudGlhbGx5IGRvZXMgdGhlIGZ1bGwgDQp0cnVuY2F0ZSBvZiBh
-biBhcmJpdHJhcnkgc2l6ZWQgZmlsZS4gIFRoZXJlIGFyZSBhIGxvdCBvZiBjb250ZXh0cyBpdCAN
-CmNhbid0IGJlIGNhbGxlZCBmcm9tLCBzbyB0aGUgZGVsYXllZCBpcHV0IGNvZGUgc2F2ZXMgdXMg
-ZnJvbSBzb21lIA0KaW1wb3NzaWJsZSBzaXR1YXRpb25zLiAgSXQgb3JpZ2luYWxseSBjYW1lIGhl
-cmU6DQoNCmNvbW1pdCAyNGJiY2YwNDQyZWUwNDY2MGE1YTAzMGVmZGJiNmQwM2YxYzI3NWNiDQpB
-dXRob3I6IFlhbiwgWmhlbmcgPHpoZW5nLnlhbkBvcmFjbGUuY29tPg0KRGF0ZTogICBUaHUgTm92
-IDEyIDA5OjM2OjM0IDIwMDkgKzAwMDANCg0KICAgICBCdHJmczogQWRkIGRlbGF5ZWQgaXB1dA0K
-DQpCdXQgd2UndmUgZXhwYW5kZWQgdXNhZ2UgdG8gc29sdmUgYSBmZXcgZGlmZmVyZW50IGRlYWRs
-b2Nrcy4NCg0KLWNocmlzDQo=
+On Wed, May 8, 2019 at 2:27 PM Qu Wenruo <wqu@suse.com> wrote:
+>
+> This test will test if we can still do the following operations when a
+> full is full:
+> - buffered write into unpopulated preallocated extent
+> - clone the untouched preallocated extent
+> - fsync
+> - no data loss if power loss happens after above fsync
+> Above operations should not fail, as they takes no extra data space.
+>
+> Xfs passes the test, while btrfs fails at fsync and has data loss.
+> The fix for btrfs is:
+> "btrfs: Flush before reflinking any extent to prevent NOCOW write falling
+>  back to CoW without data reservation"
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> changelog:
+> v2:
+> - Change the comment and commit message to make it describe the test
+>   itself, not the btrfs specific part.
+> - Use $XFS_IO_PROG to replace xfs_io.
+> v3:
+> - Move the current test result and btrfs fix to commit message
+> - Also test if data is consistent after power loss and log recovery
+> ---
+>  tests/generic/545     | 92 +++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/545.out |  2 +
+>  tests/generic/group   |  1 +
+>  3 files changed, 95 insertions(+)
+>  create mode 100755 tests/generic/545
+>  create mode 100644 tests/generic/545.out
+>
+> diff --git a/tests/generic/545 b/tests/generic/545
+> new file mode 100755
+> index 00000000..e8419585
+> --- /dev/null
+> +++ b/tests/generic/545
+> @@ -0,0 +1,92 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 545
+> +#
+> +# Test when a fs is full we can still:
+> +# - Do buffered write into a unpopulated preallocated extent
+> +# - Clone the untouched part of that preallocated extent
+> +# - Fsync
+> +# - No data loss even power loss happens after fsync
+> +# All operations above should not fail.
+> +#
+> +seq=3D`basename $0`
+> +seqres=3D$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=3D`pwd`
+> +tmp=3D/tmp/$$
+> +status=3D1       # failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +       _cleanup_flakey
+> +       cd /
+> +       rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +. ./common/reflink
+> +. ./common/dmflakey
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs generic
+> +_supported_os Linux
+> +_require_scratch_reflink
+> +_require_dm_target flakey
+> +
+> +_scratch_mkfs_sized $((512 * 1024 * 1024)) >> $seqres.full 2>&1
+
+Missing here:  _require_metadata_journaling $SCRATCH_DEV
+
+> +_init_flakey
+> +_mount_flakey
+> +
+> +# Create preallocated extent where we can write into
+> +$XFS_IO_PROG -f -c 'falloc 8k 64m' "$SCRATCH_MNT/foobar" >> $seqres.full
+> +
+> +# Use up all data space, to test later write-into-preallocate behavior
+> +_pwrite_byte 0x00 0 512m "$SCRATCH_MNT/padding" >> $seqres.full 2>&1
+> +
+> +# Sync to ensure that padding file reach disk so that at log recovery we
+> +# still have no data space
+> +sync
+> +
+> +# This should not fail
+> +_pwrite_byte 0xcd 1m 16m "$SCRATCH_MNT/foobar" >> $seqres.full
+> +
+> +# Do reflink here, we shouldn't use extra data space, thus it should not=
+ fail
+> +$XFS_IO_PROG -c "reflink ${SCRATCH_MNT}/foobar 8k 0 4k" "$SCRATCH_MNT/fo=
+obar" \
+> +       >> $seqres.full
+> +
+> +# Checkpoint before power loss
+
+checkpoint -> checksum
+
+> +c1foobar=3D$(_md5_checksum "$SCRATCH_MNT/foobar")
+> +echo "md5 foobar before:  $c1foobar" >> $seqres.full
+> +c1padding=3D$(_md5_checksum "$SCRATCH_MNT/padding")
+> +echo "md5 padding before: $c1padding" >> $seqres.full
+
+What's the point of verifying the checksum of the padding file?
+We sync'ed before, and we aren't modifying it after the sync.
+Just leave it... Doesn't add any value, and it falls out of the test
+description.
+
+> +
+> +# Fsync to check if writeback is ok
+> +$XFS_IO_PROG -c 'fsync'  "$SCRATCH_MNT/foobar"
+> +
+> +# Now emulate power loss
+> +_flakey_drop_and_remount
+> +
+> +# Checkpoint after power loss
+
+checkpoint -> checksum
+
+> +c2foobar=3D$(_md5_checksum "$SCRATCH_MNT/foobar")
+> +echo "md5 foobar after:  $c2foobar" >> $seqres.full
+> +c2padding=3D$(_md5_checksum "$SCRATCH_MNT/padding")
+> +echo "md5 padding after: $c2padding" >> $seqres.full
+
+Same here.
+
+> +
+> +test $c1foobar =3D $c2foobar || echo "foobar doesn't match after log rec=
+overy"
+> +test $c1padding =3D $c2padding || echo "padding doesn't match after log =
+recovery"
+
+We generally verify things by making output of commands match what we
+have on the golden ouput.
+That is, just echo the checksum (before and after the power loss) and
+have the golden output have the correct checksums.
+
+If there are no complaints, I'm fine with it.
+
+Thanks.
+
+> +
+> +echo "Silence is golden"
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/generic/545.out b/tests/generic/545.out
+> new file mode 100644
+> index 00000000..920d7244
+> --- /dev/null
+> +++ b/tests/generic/545.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 545
+> +Silence is golden
+> diff --git a/tests/generic/group b/tests/generic/group
+> index 40deb4d0..84892a60 100644
+> --- a/tests/generic/group
+> +++ b/tests/generic/group
+> @@ -547,3 +547,4 @@
+>  542 auto quick clone
+>  543 auto quick clone
+>  544 auto quick clone
+> +545 auto quick clone enospc log
+> --
+> 2.21.0
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
