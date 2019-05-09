@@ -2,197 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3879017EC4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  8 May 2019 19:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 486DD183FA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2019 05:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728900AbfEHRDl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 8 May 2019 13:03:41 -0400
-Received: from mail-ua1-f66.google.com ([209.85.222.66]:37060 "EHLO
-        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729090AbfEHRDd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 8 May 2019 13:03:33 -0400
-Received: by mail-ua1-f66.google.com with SMTP id l17so7640180uar.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 08 May 2019 10:03:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=9UQf4nOL6vF/dmn9tKv3GPs05tU12gLKu/Eyx8X/I18=;
-        b=IZ/JNQTSmQ0+Zqcs+EI+5/BkBYZCmBuLJeNc/brI9nd73lyM7Xj4AALNIreCXf4Jre
-         Onk003EIRqk78Aan/TNtgb06rsN2KeTfXpE9DqTPd6V92YUgbqm653uO84dBRXvzvWdJ
-         y7dsEAi/nVQ5Qs6hPxvFe2VJ6449cdkP3choK3/EhgcP5hsE82D6so78EN4pJU/0eYT2
-         gp/03yq1fGnZl35g4XPQjMOR7MWI4RIPZA8sdaOF07rPpIxkwZwUKYUzQvszG7UfGiZa
-         NQf8dOkUesddGkHCetrKdQObvr6CAXs7u3dd4gW7YJBqvGIzh20qRp2dHcp0Ur0oVEEi
-         hMCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=9UQf4nOL6vF/dmn9tKv3GPs05tU12gLKu/Eyx8X/I18=;
-        b=Y834souS0fjlBDSLZ0CRsexVZQEbgHgwIicJp6u+tz/+RybSvbELZhuFeehC+6349Y
-         /WgVAeeHaxLGHNC/bLRzvuX+K9qN8bvLfFfFt1jcV5eFkHqPYsIspLEA2RgYfYtUGYef
-         B3LymW4n5j0tAL72aWpt63YDrEVY5p0SKJb3lBV90kQORU+F8MV3JRdWWkKkJgr0F3Ya
-         ng+os942i4GtSgwYf9pOwouADc9PiNZMaVxxwWvTBvp4N/qBF1gDFq6cezAgWkXsjtRQ
-         RtWGTC2VlU6Gt7MumX9T62Ssuo7Uf+K86sNoK4NcDjPP5HxbIwBUpphMM4On4n9qNSj1
-         94nQ==
-X-Gm-Message-State: APjAAAXzbzwSRz+w1jNOGUbuxrGxajqrEgjdsGvur6DI/4UWdl+evXI+
-        7AJF7xhnJ1fphV+JSOkwBxs/GN2g+p1SouxVV3UQ3Hqz
-X-Google-Smtp-Source: APXvYqzjryaZj/jg7JzkN3BToTGaloZU7ICIc827MmWxoZFjCLGK2hyAjogfYVkbGukLCAtGpHCYbBzYOeLHkakUYYA=
-X-Received: by 2002:ab0:7591:: with SMTP id q17mr404673uap.135.1557335012303;
- Wed, 08 May 2019 10:03:32 -0700 (PDT)
+        id S1726666AbfEIDLI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 8 May 2019 23:11:08 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:36222 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726548AbfEIDLI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 8 May 2019 23:11:08 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 491FF2EC7C4; Wed,  8 May 2019 23:11:07 -0400 (EDT)
+Date:   Wed, 8 May 2019 23:11:07 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Otto =?iso-8859-1?Q?Kek=E4l=E4inen?= <otto@seravo.fi>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Howto read btrfs stack trace?
+Message-ID: <20190509031106.GE20359@hungrycats.org>
+References: <CAHj_TLB=bqYmt6imjS-QU7OUtvGzatcVDZeCeCj1EfJA-3neKQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20190508104958.18363-1-wqu@suse.com>
-In-Reply-To: <20190508104958.18363-1-wqu@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 8 May 2019 18:03:21 +0100
-Message-ID: <CAL3q7H5e342Ee55O+M35jmETjpBBmV+XhX-muum861Zs+Hk7mw@mail.gmail.com>
-Subject: Re: [PATCH v3] btrfs: Flush before reflinking any extent to prevent
- NOCOW write falling back to CoW without data reservation
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAHj_TLB=bqYmt6imjS-QU7OUtvGzatcVDZeCeCj1EfJA-3neKQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 8, 2019 at 1:43 PM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG]
-> The following script can cause unexpected fsync failure:
->
->   #!/bin/bash
->
->   dev=3D/dev/test/test
->   mnt=3D/mnt/btrfs
->
->   mkfs.btrfs -f $dev -b 512M > /dev/null
->   mount $dev $mnt -o nospace_cache
->
->   # Prealloc one extent
->   xfs_io -f -c "falloc 8k 64m" $mnt/file1
->   # Fill the remaining data space
->   xfs_io -f -c "pwrite 0 -b 4k 512M" $mnt/padding
->   sync
->
->   # Write into the prealloc extent
->   xfs_io -c "pwrite 1m 16m" $mnt/file1
->
->   # Reflink then fsync, fsync would fail due to ENOSPC
->   xfs_io -c "reflink $mnt/file1 8k 0 4k" -c "fsync" $mnt/file1
->   umount $dev
->
-> The fsync fails with ENOSPC, and the last page of the buffered write is
-> lost.
->
-> [CAUSE]
-> This is caused by:
-> - Btrfs' back reference only has extent level granularity
->   So write into shared extent must be CoWed even only part of the extent
->   is shared.
->
-> So for above script we have:
-> - fallocate
->   Create a preallocated extent where we can do NOCOW write.
->
-> - fill all the remaining data and unallocated space
->
-> - buffered write into preallocated space
->   As we have not enough space available for data and the extent is not
->   shared (yet) we fall into NOCOW mode.
->
-> - reflink
->   Now part of the large preallocated extent is shared, later write
->   into that extent must be CoWed.
->
-> - fsync triggers writeback
->   But now the extent is shared and therefore we must fallback into COW
->   mode, which fails with ENOSPC since there's not enough space to
->   allocate data extents.
->
-> [WORKAROUND]
-> The workaround is to ensure any buffered write in the related extents
-> (not just the reflink source range) get flushed before reflink/dedupe,
-> so that NOCOW writes succeed that happened before reflinking succeed.
->
-> The workaround is expensive, we could do it better by only flushing
-> NOCOW range, but that needs extra accounting for NOCOW range.
-> For now, fix the possible data loss first.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Mon, May 06, 2019 at 07:21:36PM +0300, Otto Kekäläinen wrote:
+> Hello!
+> 
+> I attempted to run btrfs balance, but it crashed soon after start.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+The stack traces you provided did not occur as the result of a crash.
+Was there a crash after these?
 
-Thanks.
+> Status is stuck on this:
+> 
+> $ sudo btrfs balance status -v /data
+> Balance on '/data' is running
+> 0 out of about 10436 chunks balanced (1 considered), 100% left
+> Dumping filters: flags 0x7, state 0x1, force is off
+>   DATA (flags 0x0): balancing
+>   METADATA (flags 0x0): balancing
+>   SYSTEM (flags 0x0): balancing
 
-> ---
-> changelog:
-> RFC->v1:
-> - Use better words for commit message and comment.
-> - Move the whole inode flushing to btrfs_remap_file_range_prep().
->   This also covers dedupe.
-> - Update the reproducer to fail explicitly.
-> - Remove false statement on transaction abort.
->
-> v1->v2:
-> - Extra comment and commit message refine.
-> - Don't wait ordered extent, only flush (starts delalloc)
->   Single filemap_flush() should be enough. The async extent part will
->   never be NOCOWed, thus no need to worry.
-> ---
->  fs/btrfs/ioctl.c | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
->
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index 6dafa857bbb9..0e35bef2ec59 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -4001,6 +4001,27 @@ static int btrfs_remap_file_range_prep(struct file=
- *file_in, loff_t pos_in,
->         if (!same_inode)
->                 inode_dio_wait(inode_out);
->
-> +       /*
-> +        * Workaround to make sure NOCOW buffered write reach disk as NOC=
-OW.
-> +        *
-> +        * Btrfs' back references do not have a block level granularity, =
-they
-> +        * work at the whole extent level.
-> +        * NOCOW buffered write without data space reserved may not be ab=
-le
-> +        * to fall back to CoW due to lack of data space, thus could caus=
-e
-> +        * data loss.
-> +        *
-> +        * Here we take a shortcut by flushing the whole inode, so that a=
-ll
-> +        * nocow write should reach disk as nocow before we increase the
-> +        * reference of the extent. We could do better by only flushing N=
-OCOW
-> +        * data, but that needs extra accounting.
-> +        *
-> +        * Also we don't need to check ASYNC_EXTENT, as async extent will=
- be
-> +        * CoWed anyway, not affecting nocow part.
-> +        */
-> +       ret =3D filemap_flush(inode_in->i_mapping);
-> +       if (ret < 0)
-> +               return ret;
-> +
->         ret =3D btrfs_wait_ordered_range(inode_in, ALIGN_DOWN(pos_in, bs)=
-,
->                                        wb_len);
->         if (ret < 0)
-> --
-> 2.21.0
->
+This is a full balance, which is rarely (maybe never) useful.  Is this
+just a test you are running?  You should only balance metadata when
+converting between RAID profiles.
 
+> Logs have the output below. How shall I read it and debug this situation?
+> What are the next steps I could test/debug?
+> 
+> 
+> kernel: BTRFS info (device dm-9): disk space caching is enabled
+> kernel: BTRFS: has skinny extents
+> kernel: BTRFS: checking UUID tree
+> kernel: BTRFS info (device dm-9): relocating block group 13693423976448 flags 20
+> kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
 
---=20
-Filipe David Manana,
+This warning indicates that something spent an unexpectedly long time
+(more than 120 seconds) blocked in the kernel.
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+> kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
+> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
+> this message.
+
+This advises you that you can change the timeout for the kernel warning
+(e.g. echo 600 > /proc/sys/kernel/hung_task_timeout_secs, or add
+'kernel.hung_task_timeout_secs=600' to /etc/sysctl.conf), or disable
+the warning entirely.
+
+On spinning disks I would set the timeout to at least 600 seconds
+for btrfs.  More may be required, depending on disk performance and
+filesystem size.  On older kernels, where space_cache=v2 is not available,
+I'd set it to at least an hour.
+
+You should consider upgrading the kernel to at least 4.9 (the first LTS
+kernel with space_cache=v2 support), and switching to space_cache=v2.
+space_cache=v1 does not scale well to large filesystems.
+
+The balance should resume after some time.  There's only 6 minutes of
+delay shown in these logs.  Balance might take anywhere from a few
+minutes to multiple hours to handle each block group, depending on block
+group type, how many snapshots you have, what dedupe tools you've run,
+how full the disk is, whether you have qgroups enabled, whether snapshots
+are being deleted at the same time, and other factors.
+
+If it's really stuck (i.e. no progress after an hour), run 'echo w >
+/proc/sysrq-trigger' and post the resulting dmesg logs.  This will show
+all blocked tasks in the system.  There may be some other process involved
+in a deadlock (note the mutex_lock calls on the stack) but we can't see
+that process in these three traces.
+
+Note that if the balance doesn't resume on its own, the most likely
+outcome of this exercise is that you'll eventually identify a bug in
+4.4 kernels that has been fixed years ago, and you'll need to upgrade
+your kernel to get the fix.  It may save time to start by upgrading to
+at least 4.19 (current LTS) and seeing if the problem still occurs.
+
+> kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
+> kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44e00
+> kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000ffffffff
+> kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88710
+> kernel: Call Trace:
+> kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
+> kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
+> kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
+> kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
+> kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
+> kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btrfs]
+> kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btrfs]
+> kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
+> kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
+> kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
+> kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
+> kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
+> kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/0xa0
+> kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
+> kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
+> kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
+> kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
+> kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
+> kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
+> kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
+> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
+> this message.
+> kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
+> kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44e00
+> kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000ffffffff
+> kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88710
+> kernel: Call Trace:
+> kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
+> kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
+> kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
+> kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
+> kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
+> kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btrfs]
+> kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btrfs]
+> kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
+> kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
+> kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
+> kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
+> kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
+> kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/0xa0
+> kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
+> kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
+> kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
+> kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
+> kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
+> kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
+> kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
+> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
+> this message.
+> kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
+> kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44e00
+> kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000ffffffff
+> kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88710
+> kernel: Call Trace:
+> kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
+> kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
+> kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
+> kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
+> kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
+> kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btrfs]
+> kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btrfs]
+> kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
+> kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
+> kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
+> kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
+> kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
+> kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/0xa0
+> kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
+> kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
+> kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
+> kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
+> kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
