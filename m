@@ -2,182 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 486DD183FA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2019 05:11:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A0111852C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  9 May 2019 08:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726666AbfEIDLI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 8 May 2019 23:11:08 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:36222 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726548AbfEIDLI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 8 May 2019 23:11:08 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 491FF2EC7C4; Wed,  8 May 2019 23:11:07 -0400 (EDT)
-Date:   Wed, 8 May 2019 23:11:07 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Otto =?iso-8859-1?Q?Kek=E4l=E4inen?= <otto@seravo.fi>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Howto read btrfs stack trace?
-Message-ID: <20190509031106.GE20359@hungrycats.org>
-References: <CAHj_TLB=bqYmt6imjS-QU7OUtvGzatcVDZeCeCj1EfJA-3neKQ@mail.gmail.com>
+        id S1726823AbfEIGN1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 9 May 2019 02:13:27 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:34997 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726179AbfEIGN0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 9 May 2019 02:13:26 -0400
+Received: by mail-lj1-f196.google.com with SMTP id m20so967835lji.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 08 May 2019 23:13:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WVgcvXiOiG4swDOuHENNcHXvaeqYZnpwy/us6vg00h0=;
+        b=b8nVkdzczaN2/Z6plrj5tNV6BBkXsIBUKZ7Syt5LUFDypnui7+aK7omgCuyuODOg7J
+         oKS2Z1s6Hqy0j4hRyrUa50QTvqr+Z/PI10OZdP6ygi2fhXBaddk/jSOlrrUZK7TPv18y
+         ElJ66HCHJ90nwxUkrKC/J8Hh0YQshO13xJRTgj9QZxm14mqPxHhaWAhaFoh6O4aXimWe
+         9ZAVVEH01F5MvngCceuOJ4/qn0NBPa6aNoraipkJ52n/7JRMvQ0bq5YhDBgNrp3RpPlG
+         fCoPOBWZYbzMnO3UMpupLFih1MhRerD64yG0WpkK+nWGlXb8MyXwL6OVQxXwmieWIrTm
+         9XfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=WVgcvXiOiG4swDOuHENNcHXvaeqYZnpwy/us6vg00h0=;
+        b=j0lYoyrlt6zNJ+BBkjoa+w2CcTxA8ugfWBmS4FVWQU0XJq/j10cdMunObI16mEQDFG
+         N82xoKquDcdkual73vF2nWHKp1MYrNyXnU8ot9riRLqiZcKWQa8vlSZnU+D5pW2ixCgZ
+         zpmrZj5cODDz2GGeWVDYOfUVgyjflksA8cnd1WZCGbKFUjoZAQgdLblD+7eiwaZFpm1K
+         wFjZUcBUTQP31Ax/4zx5Lf3nD/766+aeT95BfCJpwk6gd4kWMT1GBNRnXSDPVtXl3Mlq
+         hVEmxprXZvSruubY+Z7IPsya6QVlm0LVtwzg7Q8aLtCAfcBBuqY3Smv5EnPTjPGwYMdi
+         PmTg==
+X-Gm-Message-State: APjAAAVaJlBozXTEsAl5KLen/cpSjpOfjjNOZUT465eupgfnHg9N6KAA
+        HUcIDCcdX9ezS2LFD9cwzqjnMGVUSf8=
+X-Google-Smtp-Source: APXvYqzfemGosys3FzlcmHcP2J4zaVgx2ify++KM6I/yErrQm0trfDhpPANfknheWPPQBiPFZYcB2Q==
+X-Received: by 2002:a2e:206:: with SMTP id 6mr975808ljc.59.1557382403516;
+        Wed, 08 May 2019 23:13:23 -0700 (PDT)
+Received: from [192.168.1.5] ([109.252.90.232])
+        by smtp.gmail.com with ESMTPSA id j27sm183930lfk.97.2019.05.08.23.13.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 08 May 2019 23:13:22 -0700 (PDT)
+Subject: Re: Hibernation into swap file
+To:     Maksim Fomin <maxim@fomin.one>,
+        Chris Murphy <lists@colorremedies.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <aeo6MlQ5-4Bg33XbJZWCvdhKuo0Cgca_eNE4xv7rqzCzgvyxG-cobpf8R3bGdh6VT2LLPcXlZu69EyL_rV8K7gRLQ4HtYIyXnWCWb3zR6UM=@fomin.one>
+ <596643ce-64f8-121f-3319-676e58d700e7@gmail.com>
+ <CAJCQCtTsSRAHR-zwPq6GgmiCjDjE2MV-QekNUdQ2mWMAzVU89A@mail.gmail.com>
+ <BbXmRr84cUaKIXCRo64oHylITD5VfRS5r1IeI3r2kNC-6gMrgJTyTU8MriZHfFwCilQBXXUNfQ3G3dcFxLs6FyP1KnjkcCsmVh3xZmAdR9Q=@fomin.one>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
+ BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
+ 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
+ 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
+ KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
+ nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
+ gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
+ vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
+ AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <60258f5c-e78e-da10-fa19-29038803e160@gmail.com>
+Date:   Thu, 9 May 2019 09:13:20 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAHj_TLB=bqYmt6imjS-QU7OUtvGzatcVDZeCeCj1EfJA-3neKQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <BbXmRr84cUaKIXCRo64oHylITD5VfRS5r1IeI3r2kNC-6gMrgJTyTU8MriZHfFwCilQBXXUNfQ3G3dcFxLs6FyP1KnjkcCsmVh3xZmAdR9Q=@fomin.one>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 06, 2019 at 07:21:36PM +0300, Otto Kek�l�inen wrote:
-> Hello!
+06.05.2019 21:25, Maksim Fomin пишет:
+> ‐‐‐‐‐‐‐ Original Message ‐‐‐‐‐‐‐
+> On Monday, 6 May 2019 г., 8:40, Chris Murphy <lists@colorremedies.com> wrote:
 > 
-> I attempted to run btrfs balance, but it crashed soon after start.
-
-The stack traces you provided did not occur as the result of a crash.
-Was there a crash after these?
-
-> Status is stuck on this:
+>> On Sun, May 5, 2019 at 3:09 AM Andrei Borzenkov arvidjaar@gmail.com wrote:
+>>
+>>> 05.05.2019 10:50, Maksim Fomin пишет:
+>>>
+>>>> Good day.
+>>>> Since 5.0 btrfs supports swap files. Does it support hibernation into
+>>>> a swap file?
+>>>> With kernel version 5.0.10 (archlinux) and btrfs-progs 4.20.2
+>>>> (unlikely to be relevant, but still) when I try to hibernate with
+>>>> systemctl or by directly manipulating '/sys/power/resume' and
+>>>> '/sys/power/resume_offset', the kernel logs:
+>>>> PM: Cannot find swap device, try swapon -a PM: Cannot get swap
+>>>> writer
+>>>
+>>> How exactly do you compute resume_offset? What are exact commands you
+>>> ise to initiate hibernation? systemctl will likely not work anyway as
+>>> systemd is using FIEMAP which returns logical offset of file extents in
+>>> btrfs address space, not physical offset on containing device. You will
+>>> need to jump from extent vaddr to device offset manually.
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/Documentation/power/swsusp-and-swap-files.txt?h=v5.0.13
+>>
+>> This says the resume_offset= is an "offset, in <PAGE_SIZE> units,
+>> from the beginning of the partition which holds the swap file"
+>>
+>> Use filefrag (uses FIEMAP) to get the virtual address, multiply by
+>> 4KIB to get bytes, and plug that into
+>>
+>> btrfs-map-logical -l vaddrbyte <dev>
+>>
+>> The physical number returned is also in bytes. Normally to get LBA
+>> you'd divide by 512 (for anything other than a 4Kn drive), but if I
+>> understand the kernel document correctly, it needs to be in x86_64
+>> page size, so divide by 4096 instead.
+>>
+>>
+>>
+>> Chris Murphy
 > 
-> $ sudo btrfs balance status -v /data
-> Balance on '/data' is running
-> 0 out of about 10436 chunks balanced (1 considered), 100% left
-> Dumping filters: flags 0x7, state 0x1, force is off
->   DATA (flags 0x0): balancing
->   METADATA (flags 0x0): balancing
->   SYSTEM (flags 0x0): balancing
+> Thanks everybody for clarification! After several attempts to create 1-extent file it appears that btrfs can do this only for files around 500-600 MiB which is low for my practical needs. If swap file is increased to 1-1.5 GiB, then there is non-contigous extents problem.
 
-This is a full balance, which is rarely (maybe never) useful.  Is this
-just a test you are running?  You should only balance metadata when
-converting between RAID profiles.
+Swap files (also used for hibernation) are not required to be contiguous.
 
-> Logs have the output below. How shall I read it and debug this situation?
-> What are the next steps I could test/debug?
 > 
+> In any case, since swap file can be (with high probability) moved across filesystem, then 1) offset configuration cannot be stored (should be reconfigured for each hibernation) and 2) there is risk that kernel writes directly to disk at wrong place and will corrupt the filesystem. I don't like this feature.
+
+I think we need to allow at least some amount of trust to developers and
+expect that this feature would not be released if it had such an obvious
+problem.
+
+Of course bug happens and it surely needs wider testing.
+
 > 
-> kernel: BTRFS info (device dm-9): disk space caching is enabled
-> kernel: BTRFS: has skinny extents
-> kernel: BTRFS: checking UUID tree
-> kernel: BTRFS info (device dm-9): relocating block group 13693423976448 flags 20
-> kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
+> Best regards,
+> Maksim Fomin
+> 
 
-This warning indicates that something spent an unexpectedly long time
-(more than 120 seconds) blocked in the kernel.
-
-> kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
-> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
-> this message.
-
-This advises you that you can change the timeout for the kernel warning
-(e.g. echo 600 > /proc/sys/kernel/hung_task_timeout_secs, or add
-'kernel.hung_task_timeout_secs=600' to /etc/sysctl.conf), or disable
-the warning entirely.
-
-On spinning disks I would set the timeout to at least 600 seconds
-for btrfs.  More may be required, depending on disk performance and
-filesystem size.  On older kernels, where space_cache=v2 is not available,
-I'd set it to at least an hour.
-
-You should consider upgrading the kernel to at least 4.9 (the first LTS
-kernel with space_cache=v2 support), and switching to space_cache=v2.
-space_cache=v1 does not scale well to large filesystems.
-
-The balance should resume after some time.  There's only 6 minutes of
-delay shown in these logs.  Balance might take anywhere from a few
-minutes to multiple hours to handle each block group, depending on block
-group type, how many snapshots you have, what dedupe tools you've run,
-how full the disk is, whether you have qgroups enabled, whether snapshots
-are being deleted at the same time, and other factors.
-
-If it's really stuck (i.e. no progress after an hour), run 'echo w >
-/proc/sysrq-trigger' and post the resulting dmesg logs.  This will show
-all blocked tasks in the system.  There may be some other process involved
-in a deadlock (note the mutex_lock calls on the stack) but we can't see
-that process in these three traces.
-
-Note that if the balance doesn't resume on its own, the most likely
-outcome of this exercise is that you'll eventually identify a bug in
-4.4 kernels that has been fixed years ago, and you'll need to upgrade
-your kernel to get the fix.  It may save time to start by upgrading to
-at least 4.19 (current LTS) and seeing if the problem still occurs.
-
-> kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
-> kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44e00
-> kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000ffffffff
-> kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88710
-> kernel: Call Trace:
-> kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
-> kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
-> kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
-> kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
-> kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
-> kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btrfs]
-> kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btrfs]
-> kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
-> kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
-> kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
-> kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
-> kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
-> kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/0xa0
-> kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
-> kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
-> kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
-> kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
-> kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
-> kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
-> kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
-> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
-> this message.
-> kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
-> kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44e00
-> kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000ffffffff
-> kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88710
-> kernel: Call Trace:
-> kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
-> kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
-> kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
-> kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
-> kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
-> kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btrfs]
-> kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btrfs]
-> kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
-> kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
-> kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
-> kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
-> kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
-> kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/0xa0
-> kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
-> kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
-> kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
-> kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
-> kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
-> kernel: INFO: task btrfs:2918 blocked for more than 120 seconds.
-> kernel:       Not tainted 4.4.0-146-generic #172-Ubuntu
-> kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables
-> this message.
-> kernel: btrfs           D ffff88030bd07a98     0  2918   2892 0x00000000
-> kernel:  ffff88030bd07a98 ffffffff81197240 ffffffff81e13500 ffff88033fe44e00
-> kernel:  ffff88030bd08000 ffff88035dc88714 ffff88033fe44e00 00000000ffffffff
-> kernel:  ffff88035dc88718 ffff88030bd07ab0 ffffffff8185e0b5 ffff88035dc88710
-> kernel: Call Trace:
-> kernel:  [<ffffffff81197240>] ? printk+0x5a/0x76
-> kernel:  [<ffffffff8185e0b5>] schedule+0x35/0x80
-> kernel:  [<ffffffff8185e40e>] schedule_preempt_disabled+0xe/0x10
-> kernel:  [<ffffffff818602a7>] __mutex_lock_slowpath+0xb7/0x130
-> kernel:  [<ffffffff8186033f>] mutex_lock+0x1f/0x30
-> kernel:  [<ffffffffc047b01b>] btrfs_relocate_block_group+0x1ab/0x290 [btrfs]
-> kernel:  [<ffffffffc044fe47>] btrfs_relocate_chunk.isra.39+0x47/0xd0 [btrfs]
-> kernel:  [<ffffffffc04512fa>] __btrfs_balance+0x5ba/0xb90 [btrfs]
-> kernel:  [<ffffffffc0451b60>] btrfs_balance+0x290/0x5f0 [btrfs]
-> kernel:  [<ffffffffc045d031>] btrfs_ioctl_balance+0x381/0x390 [btrfs]
-> kernel:  [<ffffffffc045fe30>] btrfs_ioctl+0x550/0x28c0 [btrfs]
-> kernel:  [<ffffffff8120f84b>] ? mem_cgroup_try_charge+0x6b/0x1e0
-> kernel:  [<ffffffff811a9ba7>] ? lru_cache_add_active_or_unevictable+0x27/0xa0
-> kernel:  [<ffffffff811cc2ed>] ? handle_mm_fault+0xecd/0x1b80
-> kernel:  [<ffffffff8123016f>] do_vfs_ioctl+0x2af/0x4b0
-> kernel:  [<ffffffff8106dd51>] ? __do_page_fault+0x1c1/0x410
-> kernel:  [<ffffffff812303e9>] SyS_ioctl+0x79/0x90
-> kernel:  [<ffffffff81862a1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
