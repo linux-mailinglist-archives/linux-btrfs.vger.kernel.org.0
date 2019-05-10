@@ -2,99 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C80521A0D9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 17:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F20A51A118
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 18:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727497AbfEJP7z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 May 2019 11:59:55 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:37082 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727346AbfEJP7z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 May 2019 11:59:55 -0400
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id B85A930842D1;
-        Fri, 10 May 2019 15:59:54 +0000 (UTC)
-Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9E5421FC;
-        Fri, 10 May 2019 15:59:54 +0000 (UTC)
-Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
-        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 76BC33FB10;
-        Fri, 10 May 2019 15:59:54 +0000 (UTC)
-Date:   Fri, 10 May 2019 11:59:53 -0400 (EDT)
-From:   Pankaj Gupta <pagupta@redhat.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Adam Borowski <kilobyte@angband.pl>, linux-btrfs@vger.kernel.org,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Jan Kara <jack@suse.cz>, david <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>, dsterba@suse.cz,
-        nborisov@suse.com, linux-nvdimm <linux-nvdimm@lists.01.org>
-Message-ID: <1582528207.27988270.1557503993894.JavaMail.zimbra@redhat.com>
-In-Reply-To: <CAPcyv4jPF70QECzpgDCwzasJT38eOqG9tfQRbo37OWg+YzGu_w@mail.gmail.com>
-References: <20190429172649.8288-13-rgoldwyn@suse.de> <20190510153222.24665-1-kilobyte@angband.pl> <CAPcyv4jPF70QECzpgDCwzasJT38eOqG9tfQRbo37OWg+YzGu_w@mail.gmail.com>
-Subject: Re: [PATCH for-goldwyn] btrfs: disallow MAP_SYNC outside of DAX
- mounts
+        id S1727496AbfEJQQL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 May 2019 12:16:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47184 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727346AbfEJQQL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 May 2019 12:16:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A45E8AC11
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 16:16:09 +0000 (UTC)
+Subject: Re: [PATCH 01/17] btrfs: use btrfs_csum_data() instead of directly
+ calling crc32c
+To:     Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <20190510111547.15310-1-jthumshirn@suse.de>
+ <20190510111547.15310-2-jthumshirn@suse.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <05e9eadd-956d-702e-fe56-6658f6a7d3da@suse.com>
+Date:   Fri, 10 May 2019 19:16:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
+In-Reply-To: <20190510111547.15310-2-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.65.16.148, 10.4.195.16]
-Thread-Topic: btrfs: disallow MAP_SYNC outside of DAX mounts
-Thread-Index: R9x6cQ2xHivFBl+OL2QrtCwDPNR03Q==
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.40]); Fri, 10 May 2019 15:59:54 +0000 (UTC)
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-> >
-> > Even if allocation is done synchronously, data would be lost except on
-> > actual pmem.  Explicit msync()s don't need MAP_SYNC, and don't require
-> > a sync per page.
-> >
-> > Signed-off-by: Adam Borowski <kilobyte@angband.pl>
-> > ---
-> > MAP_SYNC can't be allowed unconditionally, as cacheline flushes don't help
-> > guarantee persistency in page cache.  This fixes an error in my earlier
-> > patch "btrfs: allow MAP_SYNC mmap" -- you'd probably want to amend that.
-> >
-> >
-> >  fs/btrfs/file.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > index 362a9cf9dcb2..0bc5428037ba 100644
-> > --- a/fs/btrfs/file.c
-> > +++ b/fs/btrfs/file.c
-> > @@ -2233,6 +2233,13 @@ static int btrfs_file_mmap(struct file   *filp,
-> > struct vm_area_struct *vma)
-> >         if (!IS_DAX(inode) && !mapping->a_ops->readpage)
-> >                 return -ENOEXEC;
-> >
-> > +       /*
-> > +        * Normal operation of btrfs is pretty much an antithesis of
-> > MAP_SYNC;
-> > +        * supporting it outside DAX is pointless.
-> > +        */
-> > +       if (!IS_DAX(inode) && (vma->vm_flags & VM_SYNC))
-> > +               return -EOPNOTSUPP;
-> > +
-> 
-> If the virtio-pmem patch set goes upstream prior to btrfs-dax support
-> this will need to switch over to the new daxdev_mapping_supported()
-> helper.
 
-I was planning to do changes for virtio pmem & BTRFS. I was waiting for 
-DAX support for BTRFS to merge upstream.
-
-Thank you,
-Pankaj 
- 
+On 10.05.19 г. 14:15 ч., Johannes Thumshirn wrote:
+> btrfsic_test_for_metadata() directly calls the crc32c() library function
+> for calculating the CRC32C checksum, but then uses btrfs_csum_final() to
+> invert the result.
 > 
-> https://lore.kernel.org/lkml/20190426050039.17460-5-pagupta@redhat.com/
+> To ease further refactoring and development around checksumming in BTRFS
+> convert to calling btrfs_csum_data(), which is a wrapper around crc32c().
+> 
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/check-integrity.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
+> index b0c8094528d1..85774e2fa3e5 100644
+> --- a/fs/btrfs/check-integrity.c
+> +++ b/fs/btrfs/check-integrity.c
+> @@ -1728,7 +1728,7 @@ static int btrfsic_test_for_metadata(struct btrfsic_state *state,
+>  		size_t sublen = i ? PAGE_SIZE :
+>  				    (PAGE_SIZE - BTRFS_CSUM_SIZE);
+>  
+> -		crc = crc32c(crc, data, sublen);
+> +		crc = btrfs_csum_data(data, crc, sublen);
+>  	}
+>  	btrfs_csum_final(crc, csum);
+>  	if (memcmp(csum, h->csum, state->csum_size))
 > 
