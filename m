@@ -2,168 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9120919D48
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 14:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2138619D7F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 14:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727344AbfEJMak (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 May 2019 08:30:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34684 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727291AbfEJMak (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 May 2019 08:30:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 895D5AF68
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 12:30:38 +0000 (UTC)
-Subject: Re: [PATCH 17/17] btrfs: add sha256 as another checksum algorithm
-To:     Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+        id S1727476AbfEJM5D (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 May 2019 08:57:03 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:45764 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727391AbfEJM5D (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 May 2019 08:57:03 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4ACqlb1015300;
+        Fri, 10 May 2019 05:56:57 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=facebook;
+ bh=UyZl9/f+/aCY2sNQv3saR+fQJzeIumo6CBS8f9SDI94=;
+ b=h+BlHK1rFg7shDy7MLYtEeek4zJaoL1Vj9XPZX2oqbT3HMKyxN4RgM7gk/MSKC3wJcj7
+ 3N4pYWhFkVu4sWzk3TsJADGgMa3vtT8XjS0SqONCHg/9DXts98E4tzW89XAeAqykgsus
+ Af3huGvFDXrqQ6U8Edb46QFkJI9zvfZW0gw= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2scv04jc6f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Fri, 10 May 2019 05:56:57 -0700
+Received: from prn-mbx03.TheFacebook.com (2620:10d:c081:6::17) by
+ prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Fri, 10 May 2019 05:56:57 -0700
+Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
+ prn-mbx03.TheFacebook.com (2620:10d:c081:6::17) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Fri, 10 May 2019 05:56:56 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Fri, 10 May 2019 05:56:56 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=UyZl9/f+/aCY2sNQv3saR+fQJzeIumo6CBS8f9SDI94=;
+ b=PfQAc0gAtIzss0fqmMJuenGCgEddr84SoI6cLQN6jUYcOxfMqNueJq1ycU21t9HyN7Vef4PUu9SEbAHsn8EaUCWgiKuOhj48I3lM/rLp+TrGED9POpKzuGI5Us+IrVOiIL9adyPhxWiz1lg59vd+nt7sOyIkXCDt9+8j5gh3OGw=
+Received: from DM5PR15MB1290.namprd15.prod.outlook.com (10.173.212.17) by
+ DM5PR15MB1243.namprd15.prod.outlook.com (10.173.209.137) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1878.20; Fri, 10 May 2019 12:56:55 +0000
+Received: from DM5PR15MB1290.namprd15.prod.outlook.com
+ ([fe80::6182:329:231e:af13]) by DM5PR15MB1290.namprd15.prod.outlook.com
+ ([fe80::6182:329:231e:af13%5]) with mapi id 15.20.1878.019; Fri, 10 May 2019
+ 12:56:55 +0000
+From:   Chris Mason <clm@fb.com>
+To:     Johannes Thumshirn <jthumshirn@suse.de>
+CC:     David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 04/17] btrfs: use btrfs_crc32c() instead of
+ btrfs_name_hash()
+Thread-Topic: [PATCH 04/17] btrfs: use btrfs_crc32c() instead of
+ btrfs_name_hash()
+Thread-Index: AQHVByHS2iwS3kT2KEG4xHDiBdnQuqZkUWkA
+Date:   Fri, 10 May 2019 12:56:54 +0000
+Message-ID: <AC9DC8F5-8DE8-4BF1-BC7A-814CC4DA0FED@fb.com>
 References: <20190510111547.15310-1-jthumshirn@suse.de>
- <20190510111547.15310-18-jthumshirn@suse.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <e529d2ee-566c-d9f6-d7ed-77616fee2955@suse.com>
-Date:   Fri, 10 May 2019 15:30:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <20190510111547.15310-18-jthumshirn@suse.de>
-Content-Type: text/plain; charset=utf-8
+ <20190510111547.15310-5-jthumshirn@suse.de>
+In-Reply-To: <20190510111547.15310-5-jthumshirn@suse.de>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: MailMate (1.12.4r5594)
+x-clientproxiedby: MN2PR16CA0007.namprd16.prod.outlook.com
+ (2603:10b6:208:134::20) To DM5PR15MB1290.namprd15.prod.outlook.com
+ (2603:10b6:3:b8::17)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c091:480::8888]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: df6380dc-36c0-4bb0-9d9e-08d6d546fa7a
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:DM5PR15MB1243;
+x-ms-traffictypediagnostic: DM5PR15MB1243:
+x-microsoft-antispam-prvs: <DM5PR15MB124394E2C56964ADAF123894D30C0@DM5PR15MB1243.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0033AAD26D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(346002)(366004)(376002)(136003)(39860400002)(189003)(199004)(46003)(76176011)(81166006)(81156014)(53936002)(2906002)(8936002)(50226002)(33656002)(52116002)(8676002)(99286004)(6512007)(6246003)(386003)(6506007)(53546011)(6916009)(6486002)(6436002)(186003)(102836004)(229853002)(36756003)(82746002)(14454004)(68736007)(305945005)(7736002)(478600001)(11346002)(4326008)(54906003)(446003)(2616005)(25786009)(4744005)(6116002)(486006)(5660300002)(256004)(73956011)(316002)(64756008)(66946007)(66476007)(66556008)(66446008)(86362001)(476003)(83716004)(71200400001)(71190400001);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1243;H:DM5PR15MB1290.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: gfCWH++9ktCDVn2PwLSFbTEDJdnwCUQ8vCXwPzZ/EFrKmTXxHj52IB6F7X5usd8+mBu1+kcsEa1np19R6Sl/Q4DyZ9rqMZOFk1lUuJhgTH7JM5jC+Dso+wtiKUZzucCC8WGodNcEdDhO5gKHSvVQpvBVJ/1ZXuX0cJVn1jiBvN6BPqNOQ7BZWdhnfIDV33K5HHEOZcsJ5tl0FWbzZKkjmUrfgOLy3IjPVtcmBPFZhvi6YrVrrDrab4yLwURbbcoVU75EyTFZ6kAwZAvd8JycCmo0Jpq2qSLAz3wLJr4D3Y/f7g0idlBjSR2hm2at5VJ5C0pas+UyPtXOQkvCXf59BVDLJDBqyYEuS6gaStZYu+qKxrplRDaEXn5CnyjkWnp4+ckwxTJmT6mEzGz8EFYztnHugoWyjQUwi6NHutLzXlY=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: df6380dc-36c0-4bb0-9d9e-08d6d546fa7a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2019 12:56:55.0083
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1243
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-09_02:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
+X-FB-Internal: Safe
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 10.05.19 г. 14:15 ч., Johannes Thumshirn wrote:
-> Now that we everything in place, we can add SHA-256 as another checksum
-> algorithm.
-> 
-> SHA-256 was taken as it was the cryptographically strongest algorithm that
-> can fit into the 32 Bytes we have left.
-> 
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-
-LGTM:
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-> ---
->  fs/btrfs/btrfs_inode.h          | 3 +++
->  fs/btrfs/ctree.h                | 4 ++--
->  fs/btrfs/disk-io.c              | 2 ++
->  include/uapi/linux/btrfs_tree.h | 1 +
->  4 files changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-> index e79fd9129075..fccc372ef719 100644
-> --- a/fs/btrfs/btrfs_inode.h
-> +++ b/fs/btrfs/btrfs_inode.h
-> @@ -346,6 +346,9 @@ static inline void btrfs_csum_format(struct btrfs_super_block *sb,
->  	case BTRFS_CSUM_TYPE_CRC32:
->  		snprintf(cbuf, size, "0x%08x", *(u32 *)csum);
->  		break;
-> +	case BTRFS_CSUM_TYPE_SHA256:
-> +		memcpy(cbuf, csum, size);
-> +		break;
->  	default: /* can't happen -  csum type is validated at mount time */
->  		break;
->  	}
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 8733c55ed686..d60138208dd4 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -72,8 +72,8 @@ struct btrfs_ref;
->  #define BTRFS_LINK_MAX 65535U
->  
->  /* four bytes for CRC32 */
-> -static const int btrfs_csum_sizes[] = { 4 };
-> -static char *btrfs_csum_names[] = { "crc32c" };
-> +static const int btrfs_csum_sizes[] = { 4, 32 };
-> +static char *btrfs_csum_names[] = { "crc32c", "sha256" };
->  
->  #define BTRFS_EMPTY_DIR_SIZE 0
->  
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 2be8f05be1e6..bdcffa0d6b13 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -390,6 +390,8 @@ static bool btrfs_supported_super_csum(struct btrfs_super_block *sb)
->  	switch (btrfs_super_csum_type(sb)) {
->  	case BTRFS_CSUM_TYPE_CRC32:
->  		return true;
-> +	case BTRFS_CSUM_TYPE_SHA256:
-> +		return true;
-
-nit: case BTRFS_CSUM_TYPE_CRC32:
-     CASE BTRFS_CSUM_TYPE_SHA256:
-           return true;
-
-
-
->  	default:
->  		return false;
->  	}
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> index 421239b98db2..3667ab4bc215 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -301,6 +301,7 @@
->  
->  /* csum types */
->  #define BTRFS_CSUM_TYPE_CRC32	0
-> +#define BTRFS_CSUM_TYPE_SHA256	1
-
-nit: Might be a good idea to turn that into an enum for self-documenting
-purposes. Perhaps in a different patch.
-
->  
->  /*
->   * flags definitions for directory entry item type
-> 
+T24gMTAgTWF5IDIwMTksIGF0IDc6MTUsIEpvaGFubmVzIFRodW1zaGlybiB3cm90ZToNCg0KPiBM
+aWtlIGJ0cmZzX2NyYzMyYygpIGJ0cmZzX25hbWVfaGFzaCgpIGlzIG9ubHkgYSBzaGltIHdyYXBw
+ZXIgb3ZlciB0aGUNCj4gY3JjMzJjKCkgbGlicmFyeSBmdW5jdGlvbi4gU28gd2UgY2FuIGp1c3Qg
+dXNlIGJ0cmZzX2NyYzMyYygpIGluc3RlYWQgDQo+IG9mDQo+IGJ0cmZzX25hbWVfaGFzaCgpLg0K
+DQpSZWFkaW5nIHRocm91Z2ggdGhlIHJlc3Qgb2YgdGhlIHNlcmllcywgYnV0IEkgdGhpbmsgdXNp
+bmcgDQpidHJmc19uYW1lX2hhc2goKSBpcyBtb3JlIGNsZWFyIGFuZCBsZXNzIGVycm9yIHByb25l
+Og0KDQo+IC0Ja2V5Lm9mZnNldCA9IGJ0cmZzX25hbWVfaGFzaChuYW1lLCBuYW1lX2xlbik7DQo+
+ICsJa2V5Lm9mZnNldCA9ICh1NjQpIGJ0cmZzX2NyYzMyYygodTMyKX4xLCBuYW1lLCBuYW1lX2xl
+bik7DQoNCkl0IGdyb3VwcyB0b2dldGhlciBldmVyeW9uZSB1c2luZyBjcmMzMmMgYXMgYSBkaXJl
+Y3RvcnkgbmFtZSBoYXNoIChvciANCmV4dHJlZiBoYXNoKSwgc28gdGhhdCBpZiB3ZSBldmVyIHdh
+bnQgdG8gYWRkIGRpZmZlcmVudCBoYXNoZXMgbGF0ZXIgZG93biANCnRoZSBsaW5lLCBpdCdzIHJl
+YWxseSBjbGVhciB3aGF0IG5lZWRzIHRvIGNoYW5nZSBmb3Igd2hhdCBwdXJwb3NlLiAgV2l0aCAN
+CmV2ZXJ5b25lIGNhbGxpbmcgaW50byBidHJmc19jcmMzMmMgZGlyZWN0bHksIHlvdSBoYXZlIHRv
+IHNwZW5kIG1vcmUgdGltZSANCmxvb2tpbmcgdGhyb3VnaCBoaXN0b3J5IHRvIGZpZ3VyZSBvdXQg
+aG93IHRvIGNoYW5nZSBpdC4NCg0KQWxzbywgc3ByaW5rbGluZyAodTMyKX4xIG1ha2VzIHRoZSBj
+b2RlIGxlc3MgcmVhZGFibGUgaW1oby4NCg0KLWNocmlzDQo=
