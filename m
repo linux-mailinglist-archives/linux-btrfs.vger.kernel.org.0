@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DD9A19E5B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 15:37:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E538319E63
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 15:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727745AbfEJNht (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 May 2019 09:37:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46302 "EHLO mx1.suse.de"
+        id S1727808AbfEJNmB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 May 2019 09:42:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46866 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727258AbfEJNhs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 May 2019 09:37:48 -0400
+        id S1727247AbfEJNmB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 May 2019 09:42:01 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E780FAF38
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 13:37:46 +0000 (UTC)
-Subject: Re: [PATCH 10/17] btrfs: check for supported superblock checksum type
- before checksum validation
+        by mx1.suse.de (Postfix) with ESMTP id B6627AF6E
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 13:41:59 +0000 (UTC)
+Subject: Re: [PATCH 11/17] btrfs: Simplify btrfs_check_super_csum() and get
+ rid of size assumptions
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20190510111547.15310-1-jthumshirn@suse.de>
- <20190510111547.15310-11-jthumshirn@suse.de>
+ <20190510111547.15310-12-jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -66,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <f01b0b81-ed97-d093-f3b8-81c47774c49b@suse.com>
-Date:   Fri, 10 May 2019 16:37:45 +0300
+Message-ID: <e09c6f64-e70f-bf82-8d38-54fa4c48e55e@suse.com>
+Date:   Fri, 10 May 2019 16:41:58 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190510111547.15310-11-jthumshirn@suse.de>
+In-Reply-To: <20190510111547.15310-12-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,34 +83,74 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 10.05.19 г. 14:15 ч., Johannes Thumshirn wrote:
-> Check for supported superblock checksum type before doing the actual
-> checksum validation of the superblock read from disk.
-
-This is rather terse, how does it improve the code and what was the
-current status quo (e.g before this patch).
+> Now that we have already checked for a valid checksum type before calling
+> btrfs_check_super_csum(), it can be simplified even further.
+> 
+> While at it get rid of the implicit size assumption of the resulting
+> checksum as well.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com> , albeit one small nit
+below.
+
 > ---
->  fs/btrfs/disk-io.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
+>  fs/btrfs/disk-io.c | 37 +++++++++++++------------------------
+>  1 file changed, 13 insertions(+), 24 deletions(-)
 > 
 > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index ab13282d91d2..74937effaed4 100644
+> index 74937effaed4..21ae9daf52b7 100644
 > --- a/fs/btrfs/disk-io.c
 > +++ b/fs/btrfs/disk-io.c
-> @@ -2822,6 +2822,14 @@ int open_ctree(struct super_block *sb,
->  		goto fail_alloc;
->  	}
+> @@ -375,33 +375,22 @@ static int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
+>  {
+>  	struct btrfs_super_block *disk_sb =
+>  		(struct btrfs_super_block *)raw_disk_sb;
+> -	u16 csum_type = btrfs_super_csum_type(disk_sb);
+> -	int ret = 0;
+> -
+> -	if (!btrfs_supported_super_csum(disk_sb)) {
+> -		btrfs_err(fs_info, "unsupported checksum algorithm %u",
+> -			  csum_type);
+> -		ret = 1;
+> -	}
+> -
+> -	if (csum_type == BTRFS_CSUM_TYPE_CRC32) {
+> -		u32 crc = ~(u32)0;
+> -		char result[sizeof(crc)];
+> +	u32 crc = ~(u32)0;
+> +	char result[BTRFS_CSUM_SIZE];
 >  
-> +	if (!btrfs_supported_super_csum((struct btrfs_super_block *)
-> +					bh->b_data)) {
-> +		btrfs_err(fs_info, "unsupported checksum algorithm");
-> +		err = -EINVAL;
-> +		brelse(bh);
-> +		goto fail_alloc;
-> +	}
-> +
->  	/*
->  	 * We want to check superblock checksum, the type is stored inside.
->  	 * Pass the whole disk block of size BTRFS_SUPER_INFO_SIZE (4k).
+> -		/*
+> -		 * The super_block structure does not span the whole
+> -		 * BTRFS_SUPER_INFO_SIZE range, we expect that the unused space
+> -		 * is filled with zeros and is included in the checksum.
+> -		 */
+> -		crc = btrfs_csum_data(raw_disk_sb + BTRFS_CSUM_SIZE,
+> -				crc, BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
+> -		btrfs_csum_final(crc, result);
+> +	/*
+> +	 * The super_block structure does not span the whole
+> +	 * BTRFS_SUPER_INFO_SIZE range, we expect that the unused space
+> +	 * is filled with zeros and is included in the checksum.
+> +	 */
+> +	crc = btrfs_csum_data(raw_disk_sb + BTRFS_CSUM_SIZE,
+> +			      crc, BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
+> +	btrfs_csum_final(crc, result);
+>  
+> -		if (memcmp(raw_disk_sb, result, sizeof(result)))
+> -			ret = 1;
+> -	}
+> +	if (memcmp(raw_disk_sb, result, btrfs_super_csum_size(disk_sb)))
+
+nit: I'd rather have the on-disk csum be referred to as : disk_sb->csum
+it's more self-documenting.
+
+> +		return 1;
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  int btrfs_verify_level_key(struct extent_buffer *eb, int level,
 > 
