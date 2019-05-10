@@ -2,25 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 861911A121
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 18:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D7D71A178
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 18:28:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727632AbfEJQQp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 May 2019 12:16:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47324 "EHLO mx1.suse.de"
+        id S1727603AbfEJQ2p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 May 2019 12:28:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50622 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727271AbfEJQQp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 May 2019 12:16:45 -0400
+        id S1727534AbfEJQ2p (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 May 2019 12:28:45 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1A25FAC11
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 16:16:44 +0000 (UTC)
-Subject: Re: [PATCH 02/17] btrfs: resurrect btrfs_crc32c()
+        by mx1.suse.de (Postfix) with ESMTP id 0F2A9ABE1
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 16:28:44 +0000 (UTC)
+Subject: Re: [PATCH 12/17] btrfs: add boilerplate code for directly including
+ the crypto framework
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20190510111547.15310-1-jthumshirn@suse.de>
- <20190510111547.15310-3-jthumshirn@suse.de>
+ <20190510111547.15310-13-jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -65,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <2d455d14-7b18-e96e-7978-05725efb84bb@suse.com>
-Date:   Fri, 10 May 2019 19:16:43 +0300
+Message-ID: <a19ac81d-870f-5f78-4976-7733a0d1f7b0@suse.com>
+Date:   Fri, 10 May 2019 19:28:43 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190510111547.15310-3-jthumshirn@suse.de>
+In-Reply-To: <20190510111547.15310-13-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,87 +83,179 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 10.05.19 г. 14:15 ч., Johannes Thumshirn wrote:
-> Commit 9678c54388b6 ("btrfs: Remove custom crc32c init code") removed the
-> btrfs_crc32c() function, because it was a duplicate of the crc32c() library
-> function we already have in the kernel.
+> Add boilerplate code for directly including the crypto framework.
 > 
-> Resurrect it as a shim wrapper over crc32c() to make following
-> transformations of the checksumming code in btrfs easier.
-> 
-> Also provide a btrfs_crc32_final() to ease following transformations.
+> This helps us flipping the switch for new algorithms.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-
-Mechanical patch so :
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
->  fs/btrfs/ctree.h       | 12 ++++++++++++
->  fs/btrfs/extent-tree.c |  6 +++---
->  fs/btrfs/send.c        |  2 +-
->  3 files changed, 16 insertions(+), 4 deletions(-)
+>  fs/btrfs/ctree.h   | 11 +++++++++++
+>  fs/btrfs/disk-io.c | 49 ++++++++++++++++++++++++++++++++++++++++++-------
+>  2 files changed, 53 insertions(+), 7 deletions(-)
 > 
 > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index b81c331b28fa..d85541f13f65 100644
+> index e62934fb8748..8733c55ed686 100644
 > --- a/fs/btrfs/ctree.h
 > +++ b/fs/btrfs/ctree.h
-> @@ -19,6 +19,7 @@
->  #include <linux/kobject.h>
->  #include <trace/events/btrfs.h>
->  #include <asm/kmap_types.h>
-> +#include <asm/unaligned.h>
->  #include <linux/pagemap.h>
->  #include <linux/btrfs.h>
->  #include <linux/btrfs_tree.h>
-> @@ -2642,6 +2643,17 @@ BTRFS_SETGET_STACK_FUNCS(stack_dev_replace_cursor_right,
->  	((unsigned long)(BTRFS_LEAF_DATA_OFFSET + \
->  	btrfs_item_offset_nr(leaf, slot)))
+> @@ -73,6 +73,7 @@ struct btrfs_ref;
 >  
-> +
-> +static inline u32 btrfs_crc32c(u32 crc, const void *address, unsigned length)
-> +{
-> +	return crc32c(crc, address, length);
-> +}
-> +
-> +static inline void btrfs_crc32c_final(u32 crc, u8 *result)
-> +{
-> +	put_unaligned_le32(~crc, result);
-> +}
-> +
->  static inline u64 btrfs_name_hash(const char *name, int len)
->  {
->         return crc32c((u32)~1, name, len);
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index f79e477a378e..06a30f2cd2e0 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -1119,11 +1119,11 @@ static u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
->  	__le64 lenum;
+>  /* four bytes for CRC32 */
+>  static const int btrfs_csum_sizes[] = { 4 };
+> +static char *btrfs_csum_names[] = { "crc32c" };
 >  
->  	lenum = cpu_to_le64(root_objectid);
-> -	high_crc = crc32c(high_crc, &lenum, sizeof(lenum));
-> +	high_crc = btrfs_crc32c(high_crc, &lenum, sizeof(lenum));
->  	lenum = cpu_to_le64(owner);
-> -	low_crc = crc32c(low_crc, &lenum, sizeof(lenum));
-> +	low_crc = btrfs_crc32c(low_crc, &lenum, sizeof(lenum));
->  	lenum = cpu_to_le64(offset);
-> -	low_crc = crc32c(low_crc, &lenum, sizeof(lenum));
-> +	low_crc = btrfs_crc32c(low_crc, &lenum, sizeof(lenum));
+>  #define BTRFS_EMPTY_DIR_SIZE 0
 >  
->  	return ((u64)high_crc << 31) ^ (u64)low_crc;
+> @@ -1165,6 +1166,8 @@ struct btrfs_fs_info {
+>  	spinlock_t ref_verify_lock;
+>  	struct rb_root block_tree;
+>  #endif
+> +
+> +	struct crypto_shash *csum_shash;
+>  };
+>  
+>  static inline struct btrfs_fs_info *btrfs_sb(struct super_block *sb)
+> @@ -2452,6 +2455,14 @@ static inline int btrfs_super_csum_size(const struct btrfs_super_block *s)
+>  	return btrfs_csum_sizes[t];
 >  }
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index dd38dfe174df..c029ca6d5eba 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -686,7 +686,7 @@ static int send_cmd(struct send_ctx *sctx)
->  	hdr->len = cpu_to_le32(sctx->send_size - sizeof(*hdr));
->  	hdr->crc = 0;
 >  
-> -	crc = crc32c(0, (unsigned char *)sctx->send_buf, sctx->send_size);
-> +	crc = btrfs_crc32c(0, (unsigned char *)sctx->send_buf, sctx->send_size);
->  	hdr->crc = cpu_to_le32(crc);
+> +static inline char *btrfs_super_csum_name(const struct btrfs_super_block *s)
+> +{
+> +	u16 t = btrfs_super_csum_type(s);
+> +	/*
+> +	 * csum type is validated at mount time
+> +	 */
+> +	return btrfs_csum_names[t];
+> +}
 >  
->  	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
+>  /*
+>   * The leaf data grows from end-to-front in the node.
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 21ae9daf52b7..d57adf3eaa85 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -19,6 +19,7 @@
+>  #include <linux/crc32c.h>
+>  #include <linux/sched/mm.h>
+>  #include <asm/unaligned.h>
+> +#include <crypto/hash.h>
+>  #include "ctree.h"
+>  #include "disk-io.h"
+>  #include "transaction.h"
+> @@ -2261,6 +2262,30 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+>  	return 0;
+>  }
+>  
+> +static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info,
+> +				struct btrfs_super_block *sb)
+> +{
+> +	struct crypto_shash *csum_shash;
+> +	const char *csum_name = btrfs_super_csum_name(sb);
+> +
+> +	csum_shash = crypto_alloc_shash(csum_name, 0, 0);
+> +
+> +	if (IS_ERR(csum_shash)) {
+> +		btrfs_err(fs_info, "error allocating %s hash for checksum\n",
+> +			  csum_name);
+> +		return PTR_ERR(csum_shash);
+> +	}
+> +
+> +	fs_info->csum_shash = csum_shash;
+> +
+> +	return 0;
+> +}
+> +
+> +static void btrfs_free_csum_hash(struct btrfs_fs_info *fs_info)
+> +{
+> +	crypto_free_shash(fs_info->csum_shash);
+> +}
+> +
+>  static int btrfs_replay_log(struct btrfs_fs_info *fs_info,
+>  			    struct btrfs_fs_devices *fs_devices)
+>  {
+> @@ -2819,6 +2844,14 @@ int open_ctree(struct super_block *sb,
+>  		goto fail_alloc;
+>  	}
+>  
+> +
+> +	ret = btrfs_init_csum_hash(fs_info, (struct btrfs_super_block *)
+> +							   bh->b_data);
+> +	if (ret) {
+> +		err = ret;
+> +		goto fail_alloc;
+> +	}
+> +
+>  	/*
+>  	 * We want to check superblock checksum, the type is stored inside.
+>  	 * Pass the whole disk block of size BTRFS_SUPER_INFO_SIZE (4k).
+> @@ -2827,7 +2860,7 @@ int open_ctree(struct super_block *sb,
+>  		btrfs_err(fs_info, "superblock checksum mismatch");
+>  		err = -EINVAL;
+>  		brelse(bh);
+> -		goto fail_alloc;
+> +		goto fail_csum;
+>  	}
+>  
+>  	/*
+> @@ -2864,11 +2897,11 @@ int open_ctree(struct super_block *sb,
+>  	if (ret) {
+>  		btrfs_err(fs_info, "superblock contains fatal errors");
+>  		err = -EINVAL;
+> -		goto fail_alloc;
+> +		goto fail_csum;
+>  	}
+>  
+>  	if (!btrfs_super_root(disk_super))
+> -		goto fail_alloc;
+> +		goto fail_csum;
+>  
+>  	/* check FS state, whether FS is broken. */
+>  	if (btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_ERROR)
+> @@ -2890,7 +2923,7 @@ int open_ctree(struct super_block *sb,
+>  	ret = btrfs_parse_options(fs_info, options, sb->s_flags);
+>  	if (ret) {
+>  		err = ret;
+> -		goto fail_alloc;
+> +		goto fail_csum;
+>  	}
+>  
+>  	features = btrfs_super_incompat_flags(disk_super) &
+> @@ -2900,7 +2933,7 @@ int open_ctree(struct super_block *sb,
+>  		    "cannot mount because of unsupported optional features (%llx)",
+>  		    features);
+>  		err = -EINVAL;
+> -		goto fail_alloc;
+> +		goto fail_csum;
+>  	}
+>  
+>  	features = btrfs_super_incompat_flags(disk_super);
+> @@ -2944,7 +2977,7 @@ int open_ctree(struct super_block *sb,
+>  		btrfs_err(fs_info,
+>  "unequal nodesize/sectorsize (%u != %u) are not allowed for mixed block groups",
+>  			nodesize, sectorsize);
+> -		goto fail_alloc;
+> +		goto fail_csum;
+>  	}
+>  
+>  	/*
+> @@ -2960,7 +2993,7 @@ int open_ctree(struct super_block *sb,
+>  	"cannot mount read-write because of unsupported optional features (%llx)",
+>  		       features);
+>  		err = -EINVAL;
+> -		goto fail_alloc;
+> +		goto fail_csum;
+>  	}
+>  
+>  	ret = btrfs_init_workqueues(fs_info, fs_devices);
+> @@ -3338,6 +3371,8 @@ int open_ctree(struct super_block *sb,
+>  fail_sb_buffer:
+>  	btrfs_stop_all_workers(fs_info);
+>  	btrfs_free_block_groups(fs_info);
+> +fail_csum:
+> +	btrfs_free_csum_hash(fs_info);
+>  fail_alloc:
+>  fail_iput:
+>  	btrfs_mapping_tree_free(&fs_info->mapping_tree);
 > 
