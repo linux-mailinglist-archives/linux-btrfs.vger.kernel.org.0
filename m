@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA1B519E22
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 15:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA37519E2A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 15:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbfEJN2C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 May 2019 09:28:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44188 "EHLO mx1.suse.de"
+        id S1727523AbfEJN2n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 May 2019 09:28:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44360 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727247AbfEJN2B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 May 2019 09:28:01 -0400
+        id S1727247AbfEJN2n (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 May 2019 09:28:43 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E7432AE1F
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 13:27:59 +0000 (UTC)
-Subject: Re: [PATCH 07/17] btrfs: use btrfs_crc32c{,_final}() in for free
- space cache
+        by mx1.suse.de (Postfix) with ESMTP id A92BFAEC7
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 13:28:41 +0000 (UTC)
+Subject: Re: [PATCH 08/17] btrfs: format checksums according to type for
+ printing
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20190510111547.15310-1-jthumshirn@suse.de>
- <20190510111547.15310-8-jthumshirn@suse.de>
+ <20190510111547.15310-9-jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -66,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <7d9f81ba-c6b1-14c8-7c37-5ceade14fcd1@suse.com>
-Date:   Fri, 10 May 2019 16:27:59 +0300
+Message-ID: <fbf5c76b-edd4-e971-df52-3c395b15f9d6@suse.com>
+Date:   Fri, 10 May 2019 16:28:40 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190510111547.15310-8-jthumshirn@suse.de>
+In-Reply-To: <20190510111547.15310-9-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,46 +83,66 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 10.05.19 г. 14:15 ч., Johannes Thumshirn wrote:
-> The CRC checksum in the free space cache is not dependant on the super
-> block's csum_type field but always a CRC32C.
-> 
-> So use btrfs_crc32c() and btrfs_crc32c_final() instead of btrfs_csum_data()
-> and btrfs_csum_final() for computing these checksums.
+> Add a small helper for btrfs_print_data_csum_error() which formats the
+> checksum according to it's type for pretty printing.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
->  fs/btrfs/free-space-cache.c | 10 ++++------
->  1 file changed, 4 insertions(+), 6 deletions(-)
+>  fs/btrfs/btrfs_inode.h | 28 ++++++++++++++++++++++++----
+>  1 file changed, 24 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> index f74dc259307b..26ed8ed60722 100644
-> --- a/fs/btrfs/free-space-cache.c
-> +++ b/fs/btrfs/free-space-cache.c
-> @@ -465,9 +465,8 @@ static void io_ctl_set_crc(struct btrfs_io_ctl *io_ctl, int index)
->  	if (index == 0)
->  		offset = sizeof(u32) * io_ctl->num_pages;
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index d5b438706b77..f0a757eb5744 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -337,22 +337,42 @@ static inline void btrfs_inode_resume_unlocked_dio(struct btrfs_inode *inode)
+>  	clear_bit(BTRFS_INODE_READDIO_NEED_LOCK, &inode->runtime_flags);
+>  }
 >  
-> -	crc = btrfs_csum_data(io_ctl->orig + offset, crc,
-> -			      PAGE_SIZE - offset);
-> -	btrfs_csum_final(crc, (u8 *)&crc);
-> +	crc = btrfs_crc32c(crc, io_ctl->orig + offset, PAGE_SIZE - offset);
-> +	btrfs_crc32c_final(crc, (u8 *)&crc);
->  	io_ctl_unmap_page(io_ctl);
->  	tmp = page_address(io_ctl->pages[0]);
->  	tmp += index;
-> @@ -493,9 +492,8 @@ static int io_ctl_check_crc(struct btrfs_io_ctl *io_ctl, int index)
->  	val = *tmp;
+> +static inline void btrfs_csum_format(struct btrfs_super_block *sb,
+> +				     u32 csum, u8 *cbuf)
+> +{
+> +	size_t size = btrfs_super_csum_size(sb) * 8;
+> +
+> +	switch (btrfs_super_csum_type(sb)) {
+> +	case BTRFS_CSUM_TYPE_CRC32:
+> +		snprintf(cbuf, size, "0x%08x", csum);
+> +		break;
+> +	default: /* can't happen -  csum type is validated at mount time */
+> +		break;
+> +	}
+> +}
+> +
+>  static inline void btrfs_print_data_csum_error(struct btrfs_inode *inode,
+>  		u64 logical_start, u32 csum, u32 csum_expected, int mirror_num)
+>  {
+>  	struct btrfs_root *root = inode->root;
+> +	struct btrfs_super_block *sb = root->fs_info->super_copy;
+> +	u8 cbuf[BTRFS_CSUM_SIZE];
+> +	u8 ecbuf[BTRFS_CSUM_SIZE];
+> +
+> +	btrfs_csum_format(sb, csum, cbuf);
+> +	btrfs_csum_format(sb, csum_expected, ecbuf);
 >  
->  	io_ctl_map_page(io_ctl, 0);
-> -	crc = btrfs_csum_data(io_ctl->orig + offset, crc,
-> -			      PAGE_SIZE - offset);
-> -	btrfs_csum_final(crc, (u8 *)&crc);
-> +	crc = btrfs_crc32c(crc, io_ctl->orig + offset, PAGE_SIZE - offset);
-> +	btrfs_crc32c_final(crc, (u8 *)&crc);
->  	if (val != crc) {
->  		btrfs_err_rl(io_ctl->fs_info,
->  			"csum mismatch on free space cache");
+>  	/* Output minus objectid, which is more meaningful */
+>  	if (root->root_key.objectid >= BTRFS_LAST_FREE_OBJECTID)
+>  		btrfs_warn_rl(root->fs_info,
+> -	"csum failed root %lld ino %lld off %llu csum 0x%08x expected csum 0x%08x mirror %d",
+> +	"csum failed root %lld ino %lld off %llu csum %s expected csum %s mirror %d",
+>  			root->root_key.objectid, btrfs_ino(inode),
+> -			logical_start, csum, csum_expected, mirror_num);
+> +			logical_start, cbuf, ecbuf, mirror_num);
+>  	else
+>  		btrfs_warn_rl(root->fs_info,
+> -	"csum failed root %llu ino %llu off %llu csum 0x%08x expected csum 0x%08x mirror %d",
+> +	"csum failed root %llu ino %llu off %llu csum %s expected csum %s mirror %d",
+>  			root->root_key.objectid, btrfs_ino(inode),
+> -			logical_start, csum, csum_expected, mirror_num);
+> +			logical_start, cbuf, ecbuf, mirror_num);
+>  }
+>  
+>  #endif
 > 
