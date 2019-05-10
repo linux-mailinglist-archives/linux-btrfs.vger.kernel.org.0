@@ -2,26 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F20A51A118
-	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 18:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 861911A121
+	for <lists+linux-btrfs@lfdr.de>; Fri, 10 May 2019 18:16:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727496AbfEJQQL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 10 May 2019 12:16:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47184 "EHLO mx1.suse.de"
+        id S1727632AbfEJQQp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 10 May 2019 12:16:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47324 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727346AbfEJQQL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 10 May 2019 12:16:11 -0400
+        id S1727271AbfEJQQp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 10 May 2019 12:16:45 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A45E8AC11
-        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 16:16:09 +0000 (UTC)
-Subject: Re: [PATCH 01/17] btrfs: use btrfs_csum_data() instead of directly
- calling crc32c
+        by mx1.suse.de (Postfix) with ESMTP id 1A25FAC11
+        for <linux-btrfs@vger.kernel.org>; Fri, 10 May 2019 16:16:44 +0000 (UTC)
+Subject: Re: [PATCH 02/17] btrfs: resurrect btrfs_crc32c()
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20190510111547.15310-1-jthumshirn@suse.de>
- <20190510111547.15310-2-jthumshirn@suse.de>
+ <20190510111547.15310-3-jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -66,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <05e9eadd-956d-702e-fe56-6658f6a7d3da@suse.com>
-Date:   Fri, 10 May 2019 19:16:08 +0300
+Message-ID: <2d455d14-7b18-e96e-7978-05725efb84bb@suse.com>
+Date:   Fri, 10 May 2019 19:16:43 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190510111547.15310-2-jthumshirn@suse.de>
+In-Reply-To: <20190510111547.15310-3-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,32 +82,87 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 10.05.19 г. 14:15 ч., Johannes Thumshirn wrote:
-> btrfsic_test_for_metadata() directly calls the crc32c() library function
-> for calculating the CRC32C checksum, but then uses btrfs_csum_final() to
-> invert the result.
+> Commit 9678c54388b6 ("btrfs: Remove custom crc32c init code") removed the
+> btrfs_crc32c() function, because it was a duplicate of the crc32c() library
+> function we already have in the kernel.
 > 
-> To ease further refactoring and development around checksumming in BTRFS
-> convert to calling btrfs_csum_data(), which is a wrapper around crc32c().
+> Resurrect it as a shim wrapper over crc32c() to make following
+> transformations of the checksumming code in btrfs easier.
+> 
+> Also provide a btrfs_crc32_final() to ease following transformations.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+
+Mechanical patch so :
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
->  fs/btrfs/check-integrity.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  fs/btrfs/ctree.h       | 12 ++++++++++++
+>  fs/btrfs/extent-tree.c |  6 +++---
+>  fs/btrfs/send.c        |  2 +-
+>  3 files changed, 16 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-> index b0c8094528d1..85774e2fa3e5 100644
-> --- a/fs/btrfs/check-integrity.c
-> +++ b/fs/btrfs/check-integrity.c
-> @@ -1728,7 +1728,7 @@ static int btrfsic_test_for_metadata(struct btrfsic_state *state,
->  		size_t sublen = i ? PAGE_SIZE :
->  				    (PAGE_SIZE - BTRFS_CSUM_SIZE);
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index b81c331b28fa..d85541f13f65 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -19,6 +19,7 @@
+>  #include <linux/kobject.h>
+>  #include <trace/events/btrfs.h>
+>  #include <asm/kmap_types.h>
+> +#include <asm/unaligned.h>
+>  #include <linux/pagemap.h>
+>  #include <linux/btrfs.h>
+>  #include <linux/btrfs_tree.h>
+> @@ -2642,6 +2643,17 @@ BTRFS_SETGET_STACK_FUNCS(stack_dev_replace_cursor_right,
+>  	((unsigned long)(BTRFS_LEAF_DATA_OFFSET + \
+>  	btrfs_item_offset_nr(leaf, slot)))
 >  
-> -		crc = crc32c(crc, data, sublen);
-> +		crc = btrfs_csum_data(data, crc, sublen);
->  	}
->  	btrfs_csum_final(crc, csum);
->  	if (memcmp(csum, h->csum, state->csum_size))
+> +
+> +static inline u32 btrfs_crc32c(u32 crc, const void *address, unsigned length)
+> +{
+> +	return crc32c(crc, address, length);
+> +}
+> +
+> +static inline void btrfs_crc32c_final(u32 crc, u8 *result)
+> +{
+> +	put_unaligned_le32(~crc, result);
+> +}
+> +
+>  static inline u64 btrfs_name_hash(const char *name, int len)
+>  {
+>         return crc32c((u32)~1, name, len);
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index f79e477a378e..06a30f2cd2e0 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -1119,11 +1119,11 @@ static u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
+>  	__le64 lenum;
+>  
+>  	lenum = cpu_to_le64(root_objectid);
+> -	high_crc = crc32c(high_crc, &lenum, sizeof(lenum));
+> +	high_crc = btrfs_crc32c(high_crc, &lenum, sizeof(lenum));
+>  	lenum = cpu_to_le64(owner);
+> -	low_crc = crc32c(low_crc, &lenum, sizeof(lenum));
+> +	low_crc = btrfs_crc32c(low_crc, &lenum, sizeof(lenum));
+>  	lenum = cpu_to_le64(offset);
+> -	low_crc = crc32c(low_crc, &lenum, sizeof(lenum));
+> +	low_crc = btrfs_crc32c(low_crc, &lenum, sizeof(lenum));
+>  
+>  	return ((u64)high_crc << 31) ^ (u64)low_crc;
+>  }
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index dd38dfe174df..c029ca6d5eba 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -686,7 +686,7 @@ static int send_cmd(struct send_ctx *sctx)
+>  	hdr->len = cpu_to_le32(sctx->send_size - sizeof(*hdr));
+>  	hdr->crc = 0;
+>  
+> -	crc = crc32c(0, (unsigned char *)sctx->send_buf, sctx->send_size);
+> +	crc = btrfs_crc32c(0, (unsigned char *)sctx->send_buf, sctx->send_size);
+>  	hdr->crc = cpu_to_le32(crc);
+>  
+>  	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
 > 
