@@ -2,80 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 950E61BD98
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 21:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B221C1BE3F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 21:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729172AbfEMTJD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 May 2019 15:09:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56122 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728856AbfEMTJD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 May 2019 15:09:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 83525AF24;
-        Mon, 13 May 2019 19:09:02 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 95CAFDA851; Mon, 13 May 2019 21:10:03 +0200 (CEST)
-Date:   Mon, 13 May 2019 21:10:03 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2] Btrfs: fix race between send and deduplication that
- lead to failures and crashes
-Message-ID: <20190513191003.GK3138@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20190415083018.2224-1-fdmanana@kernel.org>
- <20190422154342.11873-1-fdmanana@kernel.org>
- <20190513155607.GD3138@twin.jikos.cz>
- <20190513160704.GE3138@twin.jikos.cz>
- <CAL3q7H7SQEr-jm9tvM8LM_tt6xqSNUU6DLnx3Mmg7n86_y6z1A@mail.gmail.com>
- <20190513165853.GG3138@twin.jikos.cz>
- <CAL3q7H5v8+A5X4sLS_O2NGYcZxhBKauw4LgbXp+36iHkRow+cw@mail.gmail.com>
+        id S1726142AbfEMT5u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 May 2019 15:57:50 -0400
+Received: from smtp.domeneshop.no ([194.63.252.55]:49762 "EHLO
+        smtp.domeneshop.no" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726103AbfEMT5t (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 May 2019 15:57:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=dirtcellar.net; s=ds201810;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To; bh=hoXukvvj8Sd45+gMAVc4vgYV2bOYgMY0J74i2N4oE9A=;
+        b=FREoMO4y0bRwaWkxzGeS1Ukmrh/ZQLaSQKUCLBMDyl1rts56ipFXl6uAa/+4cnet+03x2BqvrnQ/PGlDQ55K0aCEcBzDIKldRLdc/jvaATir2lHSfzxpL3yR13w0KywzSE6c7cENT2Hydo10WHWc5QXDH3rjrvXhf0LEhwMYlcqxLMDZk7Y3TAT8wp5B9AgFthpwvY/Jv2MaXvj0B5rYlHz/4ok17GMqharF1r508FBk1vA+apDLOeYeLR9+O3kgEo8cVwPDkK1iWLuffaT9D+RXXdLwwV48dYIR7PF93xIZmAtAmuJmbb1yVwXxcvt8r2AaMICd1uZ0WrH/BAcZSw==;
+Received: from 73.79-160-166.customer.lyse.net ([79.160.166.73]:13105 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1hQH50-0003I3-IE; Mon, 13 May 2019 21:57:46 +0200
+Reply-To: waxhead@dirtcellar.net
+Subject: Re: [PATCH V9] Btrfs: enhance raid1/10 balance heuristic
+To:     dsterba@suse.cz, Timofey Titovets <timofey.titovets@synesis.ru>,
+        linux-btrfs@vger.kernel.org,
+        Timofey Titovets <nefelim4ag@gmail.com>,
+        Dmitrii Tcvetkov <demfloro@demfloro.ru>
+References: <20190506143740.26614-1-timofey.titovets@synesis.ru>
+ <20190513185250.GJ3138@twin.jikos.cz>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <574d214e-0c9c-0f93-1078-d07d183554dd@dirtcellar.net>
+Date:   Mon, 13 May 2019 21:57:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Firefox/52.0 SeaMonkey/2.49.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H5v8+A5X4sLS_O2NGYcZxhBKauw4LgbXp+36iHkRow+cw@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <20190513185250.GJ3138@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 13, 2019 at 06:05:54PM +0100, Filipe Manana wrote:
-> On Mon, May 13, 2019 at 5:57 PM David Sterba <dsterba@suse.cz> wrote:
-> >
-> > On Mon, May 13, 2019 at 05:18:37PM +0100, Filipe Manana wrote:
-> > > I would leave it as it is unless users start to complain. Yes, the
-> > > test does this on purpose.
-> > > Adding such code/state seems weird to me, instead I would change the
-> > > rate limit state so that the messages would repeat much less
-> > > frequently.
-> >
-> > The difference to the state tracking is that the warning would be
-> > printed repeatedly, which I find unnecessary and based on past user
-> > feedback, there will be somebody asking about that.
-> >
-> > The rate limiting can also skip a message that can be for a different
-> > subvolume, so this makes it harder to diagnose problems.
-> >
-> > Current state is not satisfactory at least for me because it hurts
-> > testing, the test runs for about 2 hours now, besides the log bloat. The
+David Sterba wrote:
+> On Mon, May 06, 2019 at 05:37:40PM +0300, Timofey Titovets wrote:
+>> From: Timofey Titovets <nefelim4ag@gmail.com>
+>>
+>> Currently btrfs raid1/10 bаlance requests to mirrors,
+>> based on pid % num of mirrors.
+>>
 > 
-> You mean the test case for fstests (btrfs/187) takes 2 hours for you?
+> Regarding the patches to select mirror policy, that Anand sent, I think
+> we first should provide a sane default policy that addresses most
+> commong workloads before we offer an interface for users that see the
+> need to fiddle with it.
+> 
+As just a regular btrfs user I would just like to add that I earlier 
+made a comment where I think that btrfs should have the ability to 
+assign certain DevID's to groups (storage device groups).
 
-This is on a VM with file-backed devices, that I use for initial tests
-of patches before they go to other branches. It's a slow setup but helps
-me to identify problems early as I can run a few in parallel.  I'd still
-like to have the run time below say 5 hours (currently it's 4). Though I
-can skip some thests I'd rather not due to coverage, but if there's no
-other way I'll have to.
+ From there I think it would be a good idea to "assign" subvolumes to 
+either one (or more) group(s) so that btrfs would prefer (if free space 
+permits) to store data from that subvolume on a certain group of storage 
+devices.
 
-> For me it takes under 8 minutes for an unpatched btrfs, while a
-> patched btrfs takes somewhere between 1 minute and 3 minutes. This is
-> on VMs, with a debug kernel, average/cheap host hardware, etc.
+If you could also set a weight value for read and write separately for a 
+group then you are from a humble users point of view good to go and any 
+PID% optimization (and management) while very interesting sounds less 
+important.
 
-On a another host, VM with physical disks it's closer to that time, it
-took about 13 minutes which is acceptable.
+As BTRFS scales to more than 32 devices (I think there is a limit for 30 
+or 32????) device groups should really be in there from a management 
+point of view and mount options for readmirror policy does not sound 
+good the way I understand it as this would affect the fileystem globally.
+
+Groups could also allow for useful features like making sure metadata 
+stays on fast devices, migrating hot data to faster groups automatically 
+on read, and when (if?) subvolumes support different storage profiles 
+"Raid1/10/5/6" it sounds like an even better idea to assign such 
+subvolumes to faster/slower groups depending on the storage profile.
+
+Anyway... I just felt like airing some ideas since the readmirror topic 
+has come up a few times on the mailing list recently.
