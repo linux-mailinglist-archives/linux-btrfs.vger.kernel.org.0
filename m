@@ -2,20 +2,20 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0BF1B017
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 08:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B01501B024
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 08:05:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727659AbfEMF77 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 May 2019 01:59:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55796 "EHLO mx1.suse.de"
+        id S1727287AbfEMGEx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 May 2019 02:04:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56792 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727647AbfEMF77 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 May 2019 01:59:59 -0400
+        id S1727272AbfEMGEw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 May 2019 02:04:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 80DEDAD55;
-        Mon, 13 May 2019 05:59:57 +0000 (UTC)
-Subject: Re: [PATCH 1/2] fs: btrfs: Fix error path kobject memory leak
+        by mx1.suse.de (Postfix) with ESMTP id E28B7AF51;
+        Mon, 13 May 2019 06:04:50 +0000 (UTC)
+Subject: Re: [PATCH 2/2] fs: btrfs: Don't leak memory when failing add fsid
 To:     "Tobin C. Harding" <tobin@kernel.org>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>
@@ -23,7 +23,7 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20190513033912.3436-1-tobin@kernel.org>
- <20190513033912.3436-2-tobin@kernel.org>
+ <20190513033912.3436-3-tobin@kernel.org>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -68,12 +68,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <132a9723-98c4-24ea-c04d-ec41124aa5f9@suse.com>
-Date:   Mon, 13 May 2019 08:59:56 +0300
+Message-ID: <3473fcfa-88cf-b372-3beb-69d59320d50a@suse.com>
+Date:   Mon, 13 May 2019 09:04:49 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190513033912.3436-2-tobin@kernel.org>
+In-Reply-To: <20190513033912.3436-3-tobin@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -85,39 +85,53 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 13.05.19 г. 6:39 ч., Tobin C. Harding wrote:
-> If a call to kobject_init_and_add() fails we must call kobject_put()
-> otherwise we leak memory.
+> A failed call to kobject_init_and_add() must be followed by a call to
+> kobject_put().  Currently in the error path when adding fs_devices we
+> are missing this call.  This could be fixed by calling
+> btrfs_sysfs_remove_fsid() if btrfs_sysfs_add_fsid() returns an error or
+> by adding a call to kobject_put() directly in btrfs_sysfs_add_fsid().
+> Here we choose the second option because it prevents the slightly
+> unusual error path handling requirements of kobject from leaking out
+> into btrfs functions.
 > 
-> Calling kobject_put() when kobject_init_and_add() fails drops the
-> refcount back to 0 and calls the ktype release method.
-> 
-> Add call to kobject_put() in the error path of call to
-> kobject_init_and_add().
+> Add a call to kobject_put() in the error path of kobject_add_and_init().
+> This causes the release method to be called if kobject_init_and_add()
+> fails.  open_tree() is the function that calls btrfs_sysfs_add_fsid()
+> and the error code in this function is already written with the
+> assumption that the release method is called during the error path of
+> open_tree() (as seen by the call to btrfs_sysfs_remove_fsid() under the
+> fail_fsdev_sysfs label).
+
+I'm not familiar with the internals of kobject but
+btrfs_sysfs_remove_fsid calls __btrfs_sysfs_remove_fsid which in turn
+does kobject_del followed by kobject_put so its sequence is not exactly
+identical with your change. Presumably kobject_del is only required if
+you want to dispose of successfully registered sysfs node. This implies
+that __btrfs_sysfs_remove_fsid is actually broken when it comes to
+handling failed sysfs_add_fsid?
+
 > 
 > Signed-off-by: Tobin C. Harding <tobin@kernel.org>
 > ---
->  fs/btrfs/extent-tree.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  fs/btrfs/sysfs.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index c5880329ae37..5e40c8f1e97a 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -3981,8 +3981,7 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
->  				    info->space_info_kobj, "%s",
->  				    alloc_name(space_info->flags));
->  	if (ret) {
-> -		percpu_counter_destroy(&space_info->total_bytes_pinned);
-> -		kfree(space_info);
-> +		kobject_put(&space_info->kobj);
-
-If you are only fixing kobject-related code then why do you delete
-correct code as well? percpu_counter_Destroy is needed to dispose of the
-percpu state which might have been allocated in percpu_counter_init
-based on whether CONFIG_SMP is enabled or not? Also, the call to kfree
-is required.
-
->  		return ret;
->  	}
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 5a5930e3d32b..2f078b77fe14 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -825,7 +825,12 @@ int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs,
+>  	fs_devs->fsid_kobj.kset = btrfs_kset;
+>  	error = kobject_init_and_add(&fs_devs->fsid_kobj,
+>  				&btrfs_ktype, parent, "%pU", fs_devs->fsid);
+> -	return error;
+> +	if (error) {
+> +		kobject_put(&fs_devs->fsid_kobj);
+> +		return error;
+> +	}
+> +
+> +	return 0;
+>  }
 >  
+>  int btrfs_sysfs_add_mounted(struct btrfs_fs_info *fs_info)
 > 
