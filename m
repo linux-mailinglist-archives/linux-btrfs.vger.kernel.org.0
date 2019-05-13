@@ -2,195 +2,210 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B7FA1AE02
-	for <lists+linux-btrfs@lfdr.de>; Sun, 12 May 2019 21:46:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915BA1AEF7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 04:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726967AbfELTqm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 12 May 2019 15:46:42 -0400
-Received: from gourmet.spamgourmet.com ([216.75.62.102]:40783 "EHLO
-        gourmet8.spamgourmet.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726922AbfELTqm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 12 May 2019 15:46:42 -0400
-Received: from spamgourmet by gourmet7.spamgourmet.com with local (Exim 4.80)
-        (envelope-from <btrfs.5.gumpish@a-bc.net>)
-        id 1hPuQj-0006f4-2r
-        for linux-btrfs@vger.kernel.org; Sun, 12 May 2019 19:46:41 +0000
-Received: from mail-pf1-f174.google.com ([209.85.210.174])
-        by gourmet7.spamgourmet.com with esmtps (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.80)
-        (envelope-from <btrfs.5.gumpish@a-bc.net>)
-        id 1hPuQi-0006eq-O1
-        for linux-btrfs@vger.kernel.org; Sun, 12 May 2019 19:46:40 +0000
-Received: by mail-pf1-f174.google.com with SMTP id g9so5964842pfo.11
-        for <linux-btrfs@vger.kernel.org>; Sun, 12 May 2019 12:46:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=utexas-edu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=8dUZy0e+E2jdvMvDE2xgfZUyN+ceokfCTPy/f08ywPE=;
-        b=QZ3M8+6F2nzbYurABJa9N/A4E8NvOfxDOktpqAKeNqODnk9Fd2Jwgv+2P1QrgmanPn
-         7Nhyojs9GW9uGTpanCS1CC+pvAzjQFKXocjZlWJrkE5y1pRCwnLeOhOBJhRPJxNfkWeV
-         qNU/sDd/6sun9CYbcAnBnIahaa+m/uvcYjylMGFeUiN4fLrw2azgy2q6IWiXeLRaTEpO
-         6qTb3RQtoSxkhcmgRCTfOfSyTvSFyy/qkj2Mg5q2LTc/ighXho9ajXgVsriLnFu1tCl4
-         0BC/GUt6UKOlKwSzA2hM781WrCD9ttjTsuIyJYOM5SQZsnEoLxDU3bBCkDzhUgXHRBm+
-         4xSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=8dUZy0e+E2jdvMvDE2xgfZUyN+ceokfCTPy/f08ywPE=;
-        b=Bii8QE28qc7RXxDnNLZ5u3S/AOIv8SU05D4ivupoQPU63I6Tt+WAXNDipdysGmb7ZR
-         aK1A9yzvyv/Vub92f2TkC4FNAlb67+/+Plw0XJc8Pj6QePXvIWouKeeK6wsCsvhTjWyW
-         e8Rv40TkkqKjebXi5a5yK7xH+mPWOA+GbHP6nlp6nSNFey+i1asuxTO/UA4+brd3K6RK
-         j6blANorY5zT7bOfguWEdP3vGHnU4Oft1/9LTWB37B5xpOhCsTptJfNEj7BBCq9g2Iyj
-         ob3PwB1fhocs8WqNZrVa5LUXUHUbaDNQzGU4DfsCDNYxCO49pLsTTA0pGM8tgrsAWA8/
-         7w2w==
-X-Gm-Message-State: APjAAAVCCdqKgUBAfuIo2s/0269eipHCE11CbGRtzXOcNZwg4s6dGTKm
-        kpDahrin9llXr2sb2k5SZYCyxQIUlPXUSMMr7BqXGWqzg+c=
-X-Google-Smtp-Source: APXvYqz0DGbwGcP8jmbIda+v6xiebZpATPd/Y5SU1cLo+qMW878LAISJDWlCS+rUgzumfcd8tQFUTZ7EgrEsuKUoR68=
-X-Received: by 2002:a65:57ce:: with SMTP id q14mr13181199pgr.109.1557690399611;
- Sun, 12 May 2019 12:46:39 -0700 (PDT)
+        id S1727468AbfEMCiJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 12 May 2019 22:38:09 -0400
+Received: from mout.gmx.net ([212.227.17.22]:40795 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727148AbfEMCiJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 12 May 2019 22:38:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1557715077;
+        bh=R9V9Ny/ZUroYbLRQOSEQBQphNs0gNRtZeIVjYGX8Hfo=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=Gd7L4MJcK+howSnaEjf8/OhiLP2XSJyuEq8RFVuRNmYwVzKWwtseTENvg24LAtEeF
+         XYnsHlKSszjRQWB2wHRJt2IKTidC9k+v0XZ02MerhQLiWrY2BR1uq4fgLv/BIEClHY
+         G94YzKAtIf+AbF/+2rJ+cmXY6x2FZhh3OxQQAttM=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0oG5-1gVyO90tvh-00wjup; Mon, 13
+ May 2019 04:37:57 +0200
+Subject: Re: [PATCH] btrfs: extent-tree: Fix a bug that btrfs is unable to add
+ pinned bytes
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel test robot <rong.a.chen@intel.com>
+References: <20190510044505.17422-1-wqu@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <f5a901f0-640d-3eab-ed1c-5c116645f5c5@gmx.com>
+Date:   Mon, 13 May 2019 10:37:50 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-From:   btrfs.5.gumpish@a-bc.net
-Date:   Sun, 12 May 2019 14:46:13 -0500
-Message-ID: <CAOCS=fOv7dsg2-BfhOrMdapWcWhd_YkHb7mWxUE5DeZsBmptog@mail.gmail.com>
-Subject: Bad tree block start, can't mount but data seems intact
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190510044505.17422-1-wqu@suse.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="e7EFfwQVlMnCOsROL9WFavadPLS3RAGKE"
+X-Provags-ID: V03:K1:fLweJw2mfsCfDGLjE9Llhipc8sBF6VHvg28kSvmRjiec5IHQZ1U
+ wzyQu3rsouez+fPewRUwGtiJH1yQg02rOB599nAzDVuifVPrgXFPEqbCBCSXZmrLuhqXlXo
+ gxKAZUNx86ADsHaA69LdGtrCDFEvYWeABAuT5TVA4mfWwsS/U45NNARCqUurtXDtxQ/WID7
+ sDSdgtd32A2wQp/b6Apfw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MMPswidV/P8=:PSsmU85K/bK+gnylv6AMnP
+ gHpaCTchIJpMd64oYSbFLomPw7CA94dvVtNqX8xi7aN5DDWf/VJix5wmX9q2nNiIagpaKxQXv
+ 5Vs5LwXwzWqJ1lTKXYA0msGs2XviI0V7crW04I5saThurykrCQhFhF0esvByRNwW6C51nKfkA
+ 7RMBmXtf2YDO5aMiXaTLqXRL+tkK5Bjjt4iDJYXhZx1xwpkyIDQKOhraWr9M0QShZrmvnY0Vk
+ eN5vKyVk+EBTxiuWuscSH+zLpKe8pmVuMF2H4pY7K+QdcdhrKVgd6OOjJbZNd0d4ELUlQkkag
+ SL4glui0QIMRMCXCtlqtNgtKfDaaxBEOwhOIOjDL3BpG0Fz40D6RYzIo+rxy5mMil7JsrqB1x
+ tXsqH8jEIYDK17toALpWr7TLV25/RQvFdJQDzUKt1JwaV1gYoVLRhZLXUXbh17U5tCKeyEYU2
+ 5Fr5PPilq+2cJ1SsdiTqkazMK+CSrtKakiRsppdRYvjjh1QTktliFAog5ZG5+9XDeK6dj89Wd
+ j9s88tMGRYsFG7NeXrNsR7eR6whXIh5dlt5miYLaz02BTaGYehwuj57HLSfTybmTQSreJnJFk
+ mYOg5tCN5rrf/vKE5p5GRDTIQ8/glrlR+dB6QiMTx48NnVUmrc606UsKxmxGIeSwiGNhctzQ/
+ df5BFo3XyPCcRdLHOVBf19yyBOMdNAaT2ccKbdt4eJthC2mm/I3ailUSX/XcGWpZ6L610trqw
+ fqWeOKTTp3uezmBMgcC0DuOfK54RqdI+LLH9isxoQrfeIu2NWIASuekm8xQ1Bxe7s+egozMgr
+ In1hO7SoolxX53LTTMBSSDKlOLngwgtl5qriV/KRgGOZSKSd9rYjeKkxjl5UERkTIfMcd9x39
+ 05gih/rAQgS0mkUn21k9Y5qlIrxiPnOsPYSf5oTi6dHENPv4HEYkPxT2c8aFZK
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello. I have a btrfs partition which I'd been using for several
-months with no problems until last week when it suddenly stopped
-mounting.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--e7EFfwQVlMnCOsROL9WFavadPLS3RAGKE
+Content-Type: multipart/mixed; boundary="tjs58isBLlfEjC3kt52AjkG2KdklqwR5u";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc: kernel test robot <rong.a.chen@intel.com>
+Message-ID: <f5a901f0-640d-3eab-ed1c-5c116645f5c5@gmx.com>
+Subject: Re: [PATCH] btrfs: extent-tree: Fix a bug that btrfs is unable to add
+ pinned bytes
+References: <20190510044505.17422-1-wqu@suse.com>
+In-Reply-To: <20190510044505.17422-1-wqu@suse.com>
 
-It would be a pleasant surprise if there was a relatively painless way
-to restore the drive to normal functionality, or at least recover any
-files which might be intact, so I'm hoping someone here might take an
-interest.
-
-It may be worth noting that the partition is an SSD encrypted with
-luks, though I experience no errors when mapping the partition, and I
-have been able to dump the decrypted content of the partition and the
-text of just about every plaintext file I can think of seems to be
-perfectly intact.
-
-Here's the required information for support requests, per the wiki
-page about the mailing list, although these commands are being run in
-a fresh installation of the same OS I had been using on the broken
-partition (Xubuntu 18.04):
-
-$ uname -a
-Linux foo 4.18.0-18-generic #19~18.04.1-Ubuntu SMP Fri Apr 5 10:22:13
-UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
-
-$ btrfs --version
-btrfs-progs v4.15.1
-
-$ sudo btrfs fi show
-Label: none  uuid: cc6d8bac-f4f2-417c-bc59-ef4841617697
-Total devices 1 FS bytes used 21.93GiB
-devid    1 size 137.84GiB used 24.02GiB path /dev/mapper/sdc2_crypt
-
-Label: none  uuid: 1d09eb6e-841e-465d-8c1d-75076b1c4b9a
-Total devices 1 FS bytes used 83.26GiB
-devid    1 size 110.57GiB used 107.57GiB path /dev/mapper/borked
-
-Partition doesn't mount, can't run btrfs fi df /path/to/mount/point
-
-Here's the output from dmesg when attempting to mount:
-
-[ 4985.360439] BTRFS: device fsid 1d09eb6e-841e-465d-8c1d-75076b1c4b9a
-devid 1 transid 344552 /dev/dm-1
-[ 4990.973466] BTRFS info (device dm-1): disk space caching is enabled
-[ 4990.973467] BTRFS info (device dm-1): has skinny extents
-[ 4990.979229] BTRFS error (device dm-1): bad tree block start
-17642829462275766793 120516247552
-[ 4990.979237] BTRFS warning (device dm-1): failed to read tree root
-[ 4991.008004] BTRFS error (device dm-1): open_ctree failed
+--tjs58isBLlfEjC3kt52AjkG2KdklqwR5u
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-/dev/mapper/borked (aka /dev/dm-1) is the drive in question. I'm
-curious about the discrepancy between "FS bytes used" and the bytes
-used on the following line. I don't have extensive experience with CoW
-filesystems or troubleshooting filesystems in general so it's all
-quite mysterious...
 
-Since the drive only has ~110GiB capacity, it's certianly
-understandable that 17642829462275766793 isn't a valid byte address.
+On 2019/5/10 =E4=B8=8B=E5=8D=8812:45, Qu Wenruo wrote:
+> Commit ddf30cf03fb5 ("btrfs: extent-tree: Use btrfs_ref to refactor
+> add_pinned_bytes()") refactored add_pinned_bytes(), but during that
+> refactor, there are two callers which add the pinned bytes instead
+> of subtracting.
+>=20
+> That refactor misses those two caller, causing incorrect pinned bytes
+> calculation and resulting unexpected ENOSPC error.
+>=20
+> Fix it by adding a new parameter @sign to restore the original behavior=
+=2E
+>=20
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> Fixes: ddf30cf03fb5 ("btrfs: extent-tree: Use btrfs_ref to refactor add=
+_pinned_bytes()")
 
-I've followed some guidance from the web but haven't had any luck.
-Here's what I've tried so far:
+Gentle ping.
 
-I tried a 'rescue chunk-recover', which reported 111 recoverable
-blocks (i.e. 100% of the drive, zero unrecoverable chunks) and "Chunk
-tree recovered successfully". Unfortunately the "bad tree block start"
-error during mount did not change at all and the partition still would
-not mount. I ran the chunk-recover process a second time and it
-produced output identical to the first run so it seems to not be doing
-anything. Maybe there's an undocumented flag you have to provide in
-order for the tool to actually write changes to disk?
+This patch is needed to fix generic/108 and should reach current rc.
 
-I tried doing a 'rescue super-recover' just to see what happened and
-it reported 2 superblocks which were already in good condition and it
-didn't take any action.
+Thanks,
+Qu
 
-After dumping the contents of the drive with dd, I tried 'check
---repair', but it immediately terminated with the following output:
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent-tree.c | 12 +++++++-----
+>  1 file changed, 7 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index f79e477a378e..8592d31e321c 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -757,12 +757,14 @@ static struct btrfs_space_info *__find_space_info=
+(struct btrfs_fs_info *info,
+>  }
+> =20
+>  static void add_pinned_bytes(struct btrfs_fs_info *fs_info,
+> -			     struct btrfs_ref *ref)
+> +			     struct btrfs_ref *ref, int sign)
+>  {
+>  	struct btrfs_space_info *space_info;
+> -	s64 num_bytes =3D -ref->len;
+> +	s64 num_bytes;
+>  	u64 flags;
+> =20
+> +	ASSERT(sign =3D=3D 1 || sign =3D=3D -1);
+> +	num_bytes =3D sign * ref->len;
+>  	if (ref->type =3D=3D BTRFS_REF_METADATA) {
+>  		if (ref->tree_ref.root =3D=3D BTRFS_CHUNK_TREE_OBJECTID)
+>  			flags =3D BTRFS_BLOCK_GROUP_SYSTEM;
+> @@ -2063,7 +2065,7 @@ int btrfs_inc_extent_ref(struct btrfs_trans_handl=
+e *trans,
+>  	btrfs_ref_tree_mod(fs_info, generic_ref);
+> =20
+>  	if (ret =3D=3D 0 && old_ref_mod < 0 && new_ref_mod >=3D 0)
+> -		add_pinned_bytes(fs_info, generic_ref);
+> +		add_pinned_bytes(fs_info, generic_ref, -1);
+> =20
+>  	return ret;
+>  }
+> @@ -7190,7 +7192,7 @@ void btrfs_free_tree_block(struct btrfs_trans_han=
+dle *trans,
+>  	}
+>  out:
+>  	if (pin)
+> -		add_pinned_bytes(fs_info, &generic_ref);
+> +		add_pinned_bytes(fs_info, &generic_ref, 1);
+> =20
+>  	if (last_ref) {
+>  		/*
+> @@ -7238,7 +7240,7 @@ int btrfs_free_extent(struct btrfs_trans_handle *=
+trans, struct btrfs_ref *ref)
+>  		btrfs_ref_tree_mod(fs_info, ref);
+> =20
+>  	if (ret =3D=3D 0 && old_ref_mod >=3D 0 && new_ref_mod < 0)
+> -		add_pinned_bytes(fs_info, ref);
+> +		add_pinned_bytes(fs_info, ref, 1);
+> =20
+>  	return ret;
+>  }
+>=20
 
-enabling repair mode
-Opening filesystem to check...
-checksum verify failed on 120516247552 found 4D050B32 wanted 0EB4D74B
-checksum verify failed on 120516247552 found 4D050B32 wanted 0EB4D74B
-bad tree block 120516247552, bytenr mismatch, want=120516247552,
-have=17642829462275766793
-Couldn't read tree root
-ERROR: cannot open file system
 
-I tried using 'inspect-internal dump-tree -b ...' pointing it at
-various locations aligned with the sector size and all of them
-generate a checksum verification failure, similar to what's shown in
-the output above. It seems weird that every single block would be
-generating an invalid checksum when there's so much perfectly intact
-data on the disk.
+--tjs58isBLlfEjC3kt52AjkG2KdklqwR5u--
 
-'restore -v ...' yields the following:
+--e7EFfwQVlMnCOsROL9WFavadPLS3RAGKE
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-checksum verify failed on 120516247552 found 4D050B32 wanted 0EB4D74B
-checksum verify failed on 120516247552 found 4D050B32 wanted 0EB4D74B
-bytenr mismatch, want=120516247552, have=17642829462275766793
-Couldn't read tree root
-Could not open root, trying backup super
-checksum verify failed on 120516247552 found 4D050B32 wanted 0EB4D74B
-checksum verify failed on 120516247552 found 4D050B32 wanted 0EB4D74B
-bytenr mismatch, want=120516247552, have=17642829462275766793
-Couldn't read tree root
-Could not open root, trying backup super
-ERROR: superblock bytenr 274877906944 is larger than device size 118726066176
-Could not open root, trying backup super
+-----BEGIN PGP SIGNATURE-----
 
-'mount -t btrfs -o ro,usebackuproot' produces the following:
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzY2H4ACgkQwj2R86El
+/qiRrAf+I+mo3UVrse7yGcOe6T1nQVW5uFjv57sxdLB/kYo87px3escxZ0fRbTmI
+7ldUFvIjikii3TURcw2M0UCyUPeZnAmQfkyLS5gGA3GqPNefnXVRmDDvOPeuYNf5
+A/fmXp0c/h4fycZJ7giPuP7kwkWYKkDkzgsQE4MthmvMFmIKl+YisMojoiBMJ+Gw
+2wMLmvUc/VbxfpqTpcBa1JTmyrIbc0d0ySLMTTQn6Do2qp3doLg1ZUHv1BBHgjlh
+IOmnvGplEcpd2iZa8mKJ4Xtn+QfNwyel/n7l+NVcWXfON8nBvozUNHPPJSjT8ceo
+5GTypO3d8883wD1rXsqmE2O/suXAoQ==
+=E7WN
+-----END PGP SIGNATURE-----
 
-[ 7808.542029] BTRFS info (device dm-1): trying to use backup root at mount time
-[ 7808.542030] BTRFS info (device dm-1): disk space caching is enabled
-[ 7808.542031] BTRFS info (device dm-1): has skinny extents
-[ 7808.542797] BTRFS error (device dm-1): bad tree block start
-17642829462275766793 120516247552
-[ 7808.542801] BTRFS warning (device dm-1): failed to read tree root
-[ 7808.542933] BTRFS error (device dm-1): bad tree block start
-17642829462275766793 120516247552
-[ 7808.542936] BTRFS warning (device dm-1): failed to read tree root
-[ 7808.547606] BTRFS error (device dm-1): bad tree block start
-16167207305002578331 120515936256
-[ 7808.547610] BTRFS warning (device dm-1): failed to read tree root
-[ 7808.547692] BTRFS error (device dm-1): bad tree block start
-11402994761705913451 120516100096
-[ 7808.547695] BTRFS warning (device dm-1): failed to read tree root
-[ 7808.547777] BTRFS error (device dm-1): bad tree block start
-1442009718635089341 120514871296
-[ 7808.547781] BTRFS warning (device dm-1): failed to read tree root
-[ 7808.556796] BTRFS error (device dm-1): open_ctree failed
-
-Thanks for reading.
-
+--e7EFfwQVlMnCOsROL9WFavadPLS3RAGKE--
