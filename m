@@ -2,119 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44DE21B461
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 12:58:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D3F1B5B6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 14:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729189AbfEMK5y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 May 2019 06:57:54 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:53061 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728114AbfEMK5y (ORCPT
+        id S1729808AbfEMMT4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 May 2019 08:19:56 -0400
+Received: from cloud.avgustinov.eu ([62.73.84.164]:45028 "EHLO
+        cloud.avgustinov.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727414AbfEMMTz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 May 2019 06:57:54 -0400
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id E7996499;
-        Mon, 13 May 2019 06:57:52 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 13 May 2019 06:57:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tobin.cc; h=date
-        :from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=J
-        QftPFBpexu4d8C8fzDQ8C49x4SU+NTGu5TVTjmRWIs=; b=izXUlhxc/wDyXZeMJ
-        uXsrq48nZKVQLheHQMuG6o6KwYivrD1B4zTXtWZbrO/Z3uS789PhaN+Bji3DNWcf
-        iz8uQ95fJnI2dhehT3uE21FOnSNXtJu0CipF4BKZvRXxkNQOBUvmtlYlDJouEE+0
-        k4+b51AQdQuMqlqaaZ6dMCYVgp+C2Gmc/S01unRusmLLaP0XZ2Z0TA+vbVHcTsUr
-        wuKqyNL8EIYjvAPLdxbMn37p4GKhdF3hoNapjg0mI6+DvFhwQ2j8cluMZYdSqLNY
-        rF06PafWjXpcYuOlaKq4wiFgTv251eqZVHSeYFAjItM/TFzbgmTJ/Bs+57hKZhAR
-        oDJpA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=JQftPFBpexu4d8C8fzDQ8C49x4SU+NTGu5TVTjmRW
-        Is=; b=ntAHxh8nfe76KiEWgBX4wGzJrUm7F7uywHiR7PAy0G4uwKzvsYG+RFpYt
-        Qdn/7J4Jnfymns4DY+DNEjnJ6qTTn0hi8YZa5Ey7ESs27oUgNEvZkq8vjoBkivaY
-        ortUfh6wo/SYzSBwjhM4ewm2E9o2gSePzo6PB64qerf9PoXCfZkBKirhQsUz7ACG
-        pOS+LTKrSga+yWFSwoOhs5VRqOHueFgnqWS2oyunEEusvTA9MTh7MIvLXR/fB6cB
-        mahsEevoDY9O6onSGW9B1qovGKWn0+lKngLevih93EhGZWb/WdJNax8X7v3j3nyC
-        keFi7Qj2LgiyHsuzUXnYzHSimxYvg==
-X-ME-Sender: <xms:sE3ZXEkWLei9g1hq4tUp5a1IuAF_M9Nbnv6ZJACogWAgeOB_VnEnNg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduuddrleeggdefgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdeftddmnecujfgurhepfffhvffukfhfgggtugfgjgfofgesthekredt
-    oferjeenucfhrhhomhepfdfvohgsihhnucevrdcujfgrrhguihhnghdfuceomhgvsehtoh
-    gsihhnrdgttgeqnecukfhppeduvdegrdduieelrdduiedrudekheenucfrrghrrghmpehm
-    rghilhhfrhhomhepmhgvsehtohgsihhnrdgttgenucevlhhushhtvghrufhiiigvpedt
-X-ME-Proxy: <xmx:sE3ZXJqqKmb34iqwy9XBdB84uXy1NUcK7049qgh7NkJe79gsKrCb0A>
-    <xmx:sE3ZXEsV28zaBOFqSlO_Pkc026qR5kO1fRE7wPoFeTLzF3ptOjq9xQ>
-    <xmx:sE3ZXJKJLqzAC4byab5ghQda398_GzYYurBQ43BwHaGSp8tflGfZXw>
-    <xmx:sE3ZXDkZt4jg7yQdl0CX6M9oVSkpkS1ZnjleSonWm3gDHLqy2UtFrg>
-Received: from localhost (124-169-16-185.dyn.iinet.net.au [124.169.16.185])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 3E18080061;
-        Mon, 13 May 2019 06:57:50 -0400 (EDT)
-Date:   Mon, 13 May 2019 20:57:20 +1000
-From:   "Tobin C. Harding" <me@tobin.cc>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     "Tobin C. Harding" <tobin@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] fs: btrfs: Don't leak memory when failing add fsid
-Message-ID: <20190513105720.GB15053@eros.localdomain>
-References: <20190513033912.3436-1-tobin@kernel.org>
- <20190513033912.3436-3-tobin@kernel.org>
- <3473fcfa-88cf-b372-3beb-69d59320d50a@suse.com>
+        Mon, 13 May 2019 08:19:55 -0400
+Received: from [172.16.172.96] (unknown [46.183.103.17])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by cloud.avgustinov.eu (Postfix) with ESMTPSA id D498451A351A;
+        Mon, 13 May 2019 15:19:52 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=avgustinov.eu;
+        s=default; t=1557749993;
+        bh=6Tl5lc1hiQ0Eh+QBlebHLX0hZAdKlsxHnAJgB9u4PYQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=GVgK6u33AS+bXKlCY7OgA6dCCQ0jvZLFcAq+fibcdZVu03zu7Wo5AMyjNLtHQycU0
+         mEBBsWEMkDh7GI66V4htdxd36Yo2zgZSoYv8R69SenIX33XkcMDprkWl3ZNRcQO7XZ
+         LzRd5cfXPPe53bOkljEGvpS5/Vi8t1uhlw5jmPqMaCTVGPLFTAu7EPTR2IDIRXrwUC
+         ujzgTEyrQuG0VMcis5jgEcfZutMthKoTWlDmwdRkAvcdjjRwtCxuFJAyIu1jjLNFlc
+         HCbqRXGib6wATLINaIxNUuEduyJSepr2oSru9/da6TLdmnztcGbZ3aJnIqmRxpicT/
+         8S7HVV03alTBA==
+Subject: Re: interest in post-mortem examination of a BTRFS system and
+ improving the btrfs-code?
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <aa81a49a-d5ca-0f1c-fa75-9ed3656cff55@avgustinov.eu>
+ <c69778f5-a015-8b77-3fab-e41e49a0e0db@gmx.com>
+ <51021dd7-b21b-b001-c3f9-9bc31205738b@avgustinov.eu>
+ <00e3ddf1-cbd7-a65a-dee3-ca720cecc77d@gmx.com>
+ <a6917f39-eeb4-5548-f346-a78972c7c3fe@avgustinov.eu>
+ <6a592ffa-4a5a-81af-baef-8f1681accc87@gmx.com>
+ <2c786019-646a-486f-1306-25a3df36e6b3@avgustinov.eu>
+ <52b23bd7-108b-63f3-b958-2a5959c7ca6e@gmx.com>
+ <f2b33d93-aa37-9fd3-6036-44e1e3f065eb@avgustinov.eu>
+ <a9135dba-26fe-777f-048b-87052d5cbd14@gmx.com>
+ <21ff2435-af15-573c-e897-05ceb4f42e0b@avgustinov.eu>
+ <CAJCQCtQJkJwEyouCUzcV1MzPkcxhvtqxkWqmrwnB9txV=MUTXA@mail.gmail.com>
+ <3f1f66d3-e04e-de16-e9a4-7c8a6238d5b8@gmx.com>
+ <246c2330-acb6-3205-0468-051bacbfaeb5@avgustinov.eu>
+ <24ab8eed-a790-bff2-cdad-0b091f7d0fe9@avgustinov.eu>
+ <917e0530-7f68-a801-d87b-d00bb4e10287@gmx.com>
+ <00637d5e-b66f-7f87-b13b-7eea5a62fdfa@avgustinov.eu>
+ <CAJCQCtRugbGyr8Nyjo7P_g+VpATdhojOeaY4BPdJFfcOMxDYGg@mail.gmail.com>
+From:   "Nik." <btrfs@avgustinov.eu>
+Message-ID: <8564ddb0-25c2-acd4-2a5e-16fedaa5e905@avgustinov.eu>
+Date:   Mon, 13 May 2019 14:19:50 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3473fcfa-88cf-b372-3beb-69d59320d50a@suse.com>
-X-Mailer: Mutt 1.11.4 (2019-03-13)
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <CAJCQCtRugbGyr8Nyjo7P_g+VpATdhojOeaY4BPdJFfcOMxDYGg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 13, 2019 at 09:04:49AM +0300, Nikolay Borisov wrote:
-> 
-> 
-> On 13.05.19 г. 6:39 ч., Tobin C. Harding wrote:
-> > A failed call to kobject_init_and_add() must be followed by a call to
-> > kobject_put().  Currently in the error path when adding fs_devices we
-> > are missing this call.  This could be fixed by calling
-> > btrfs_sysfs_remove_fsid() if btrfs_sysfs_add_fsid() returns an error or
-> > by adding a call to kobject_put() directly in btrfs_sysfs_add_fsid().
-> > Here we choose the second option because it prevents the slightly
-> > unusual error path handling requirements of kobject from leaking out
-> > into btrfs functions.
-> > 
-> > Add a call to kobject_put() in the error path of kobject_add_and_init().
-> > This causes the release method to be called if kobject_init_and_add()
-> > fails.  open_tree() is the function that calls btrfs_sysfs_add_fsid()
-> > and the error code in this function is already written with the
-> > assumption that the release method is called during the error path of
-> > open_tree() (as seen by the call to btrfs_sysfs_remove_fsid() under the
-> > fail_fsdev_sysfs label).
-> 
-> I'm not familiar with the internals of kobject but
-> btrfs_sysfs_remove_fsid calls __btrfs_sysfs_remove_fsid which in turn
-> does kobject_del followed by kobject_put so its sequence is not exactly
-> identical with your change. Presumably kobject_del is only required if
-> you want to dispose of successfully registered sysfs node. This implies
-> that __btrfs_sysfs_remove_fsid is actually broken when it comes to
-> handling failed sysfs_add_fsid?
 
-kobject_del() is not technically required in __btrfs_sysfs_remove_fsid()
-since if kobject_put() drops the reference count to 0 and kobject_del()
-has not been called then the kobject infrastructure will call
-kobject_del() for us (and we get a pr_debug() message).  The code
-sequence is correct although not _exactly_ written as the kobject
-authors intended (I am not one of those authors, I'm just learning).
 
-Thanks for looking at this.
+2019-05-07 19:30, Chris Murphy:
+<snip>
 
-	Tobin
+>> Optimally
+>> the fs would keep the check-sums and compare only them?
+> 
+> No such tool exists. Btrfs doesn't checksum files, it checksums file
+> extents in 4KiB increments. And I don't even think there's an ioctl to
+> extract only checksums, in order to do a comparison in user space. The
+> checksums are, as far as I'm aware, only used internally within Btrfs
+> kernel space.
+
+Just in case it is interesting for you: such a tool seems to exist and 
+is not new, have a look at 
+https://stackoverflow.com/questions/32761299/btrfs-ioctl-get-file-checksums-from-userspace. 
+IMHO a rsync (or btrfs-send|receive), capable of utilizing the 
+checksums, could be a great tool. Therefore, I believe that it would be 
+better if this project merges into the main btrfs code.
+
+
+=== Recapitulation ===
+
+Since it seems that there is no more need of experiments with the 
+damaged RAID-fs, I am going to reformat it at about 19 o'clock UCT today.
+
+Many thanks to the developer team for the support and even more for the 
+creation of this smart file system!
+
+ From my point of view this thread can be closed.
+
+Best regards
+
+Nik.
+--
