@@ -2,88 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A05B1B0EC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 09:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 972E01B0F1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 09:12:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbfEMHLe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 May 2019 03:11:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60782 "EHLO mail.kernel.org"
+        id S1727720AbfEMHMY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 May 2019 03:12:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33024 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727281AbfEMHLe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 May 2019 03:11:34 -0400
+        id S1726877AbfEMHMX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 May 2019 03:12:23 -0400
 Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 309E720C01;
-        Mon, 13 May 2019 07:11:33 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF10720578;
+        Mon, 13 May 2019 07:12:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1557731493;
-        bh=JHz55aj1jOXjRyLpFMa6q/x5TIErYcVd6rB/qLKbI+Q=;
+        s=default; t=1557731543;
+        bh=fREUUL8hSLeUSppJuEINaQ1tuE1nAJUXuGDTwpM4ZOQ=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OsTFJpxDlRqld1mSKmfzxVPckOCDOPWTXySJxIYWS6hTv9/JjQvr4L0fksi5bW8Y1
-         6G9WCmHtvK8cRkL08gZ1WGb0DVRxpo+8/w22X+TTk1iI7meSibIGfRfHrvm1ibV4XE
-         OvyfWlKygzA4OSX2WW8YMUMmKjVzxirK5J5ufKYE=
-Date:   Mon, 13 May 2019 09:11:31 +0200
+        b=TXVYBTnfGPjLTUxRLLD8GaPFDbHWpO9D3YC+BAvqCYqdusHffXl6XWKy+O9ntL8B0
+         iMn9KvFcG3RPfUzN87zzkrUIhV2QMKec2gh2OphTyorrl3VSLXFY7GGew9bGC0h4ca
+         YyhsZnscaHYG60ROPIy8cxw4MgmcO2Fb/K0brHf8=
+Date:   Mon, 13 May 2019 09:12:21 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     "Tobin C. Harding" <tobin@kernel.org>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
+To:     "Tobin C. Harding" <tobin@kernel.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
         linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] fs: btrfs: Fix error path kobject memory leak
-Message-ID: <20190513071131.GD2868@kroah.com>
+Subject: Re: [PATCH 2/2] fs: btrfs: Don't leak memory when failing add fsid
+Message-ID: <20190513071221.GE2868@kroah.com>
 References: <20190513033912.3436-1-tobin@kernel.org>
- <20190513033912.3436-2-tobin@kernel.org>
- <132a9723-98c4-24ea-c04d-ec41124aa5f9@suse.com>
+ <20190513033912.3436-3-tobin@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <132a9723-98c4-24ea-c04d-ec41124aa5f9@suse.com>
+In-Reply-To: <20190513033912.3436-3-tobin@kernel.org>
 User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 13, 2019 at 08:59:56AM +0300, Nikolay Borisov wrote:
+On Mon, May 13, 2019 at 01:39:12PM +1000, Tobin C. Harding wrote:
+> A failed call to kobject_init_and_add() must be followed by a call to
+> kobject_put().  Currently in the error path when adding fs_devices we
+> are missing this call.  This could be fixed by calling
+> btrfs_sysfs_remove_fsid() if btrfs_sysfs_add_fsid() returns an error or
+> by adding a call to kobject_put() directly in btrfs_sysfs_add_fsid().
+> Here we choose the second option because it prevents the slightly
+> unusual error path handling requirements of kobject from leaking out
+> into btrfs functions.
 > 
+> Add a call to kobject_put() in the error path of kobject_add_and_init().
+> This causes the release method to be called if kobject_init_and_add()
+> fails.  open_tree() is the function that calls btrfs_sysfs_add_fsid()
+> and the error code in this function is already written with the
+> assumption that the release method is called during the error path of
+> open_tree() (as seen by the call to btrfs_sysfs_remove_fsid() under the
+> fail_fsdev_sysfs label).
 > 
-> On 13.05.19 г. 6:39 ч., Tobin C. Harding wrote:
-> > If a call to kobject_init_and_add() fails we must call kobject_put()
-> > otherwise we leak memory.
-> > 
-> > Calling kobject_put() when kobject_init_and_add() fails drops the
-> > refcount back to 0 and calls the ktype release method.
-> > 
-> > Add call to kobject_put() in the error path of call to
-> > kobject_init_and_add().
-> > 
-> > Signed-off-by: Tobin C. Harding <tobin@kernel.org>
-> > ---
-> >  fs/btrfs/extent-tree.c | 3 +--
-> >  1 file changed, 1 insertion(+), 2 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> > index c5880329ae37..5e40c8f1e97a 100644
-> > --- a/fs/btrfs/extent-tree.c
-> > +++ b/fs/btrfs/extent-tree.c
-> > @@ -3981,8 +3981,7 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
-> >  				    info->space_info_kobj, "%s",
-> >  				    alloc_name(space_info->flags));
-> >  	if (ret) {
-> > -		percpu_counter_destroy(&space_info->total_bytes_pinned);
-> > -		kfree(space_info);
-> > +		kobject_put(&space_info->kobj);
+> Signed-off-by: Tobin C. Harding <tobin@kernel.org>
+> ---
+>  fs/btrfs/sysfs.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 > 
-> If you are only fixing kobject-related code then why do you delete
-> correct code as well? percpu_counter_Destroy is needed to dispose of the
-> percpu state which might have been allocated in percpu_counter_init
-> based on whether CONFIG_SMP is enabled or not? Also, the call to kfree
-> is required.
-
-Both of those will happen in space_info_release() when the kobject is
-properly disposed of with this last put to the kobject reference.
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 5a5930e3d32b..2f078b77fe14 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -825,7 +825,12 @@ int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs,
+>  	fs_devs->fsid_kobj.kset = btrfs_kset;
+>  	error = kobject_init_and_add(&fs_devs->fsid_kobj,
+>  				&btrfs_ktype, parent, "%pU", fs_devs->fsid);
+> -	return error;
+> +	if (error) {
+> +		kobject_put(&fs_devs->fsid_kobj);
+> +		return error;
+> +	}
+> +
+> +	return 0;
+>  }
+>  
+>  int btrfs_sysfs_add_mounted(struct btrfs_fs_info *fs_info)
 
 Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
