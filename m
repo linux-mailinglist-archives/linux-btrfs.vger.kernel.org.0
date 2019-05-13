@@ -2,57 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 468891B0CA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 09:06:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25D11B0E7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 13 May 2019 09:11:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727554AbfEMHGW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 13 May 2019 03:06:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36144 "EHLO mx1.suse.de"
+        id S1727756AbfEMHLQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 13 May 2019 03:11:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36884 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727415AbfEMHGW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 13 May 2019 03:06:22 -0400
+        id S1726841AbfEMHLP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 13 May 2019 03:11:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F3755AE44
-        for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2019 07:06:20 +0000 (UTC)
-Date:   Mon, 13 May 2019 09:06:20 +0200
+        by mx1.suse.de (Postfix) with ESMTP id D5AA2AE63
+        for <linux-btrfs@vger.kernel.org>; Mon, 13 May 2019 07:11:14 +0000 (UTC)
+Date:   Mon, 13 May 2019 09:11:14 +0200
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     David Sterba <dsterba@suse.com>,
         Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 05/17] btrfs: don't assume ordered sums to be 4 bytes
-Message-ID: <20190513070620.GB12653@x250>
+Subject: Re: [PATCH 17/17] btrfs: add sha256 as another checksum algorithm
+Message-ID: <20190513071114.GC12653@x250>
 References: <20190510111547.15310-1-jthumshirn@suse.de>
- <20190510111547.15310-6-jthumshirn@suse.de>
- <9f6864d5-9659-a121-5de1-3e5993eabef8@suse.com>
- <12f8e39d-99e5-3244-a61a-71819ed5586f@suse.com>
+ <20190510111547.15310-18-jthumshirn@suse.de>
+ <e529d2ee-566c-d9f6-d7ed-77616fee2955@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <12f8e39d-99e5-3244-a61a-71819ed5586f@suse.com>
+In-Reply-To: <e529d2ee-566c-d9f6-d7ed-77616fee2955@suse.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 10, 2019 at 04:27:38PM +0300, Nikolay Borisov wrote:
-> >>  			if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
-> >>  				ret = btrfs_lookup_bio_sums(inode, comp_bio,
-> >> -							    sums);
-> >> +							    (u8 *)sums);
-> > 
-> > This cast (and other similar) are plain ugly. Imho we first need to get
-> > the code into shape for later modification. This means postponing sha256
-> > patch and instead focusing on first getting the code to use u8 where
-> > relevant. Otherwise such cleanup is going to be postponed for "some time
-> > in the future" will is unlikely to ever materialize.
+On Fri, May 10, 2019 at 03:30:36PM +0300, Nikolay Borisov wrote:
+[...]
 > 
-> Oh, so you fix that in the next patch. Okay, disregard this then.
+> nit: Might be a good idea to turn that into an enum for self-documenting
+> purposes. Perhaps in a different patch.
 
-Exactly. There are some intermediate temporary hacks in the prep patches of
-the series, but they're not persistent.
+Thought about this as well, but I thought I remembered a patch series from
+David where he turned everything not being an on-disk format to enums.
+
+This discuraged me from actually doing the switch. I'd be more than happy if I
+could just use an enum.
 
 Byte,
 	Johannes
