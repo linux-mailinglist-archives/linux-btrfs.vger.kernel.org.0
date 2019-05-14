@@ -2,33 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ACB11C905
-	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2019 14:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFF6F1C912
+	for <lists+linux-btrfs@lfdr.de>; Tue, 14 May 2019 14:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726107AbfENMum (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 14 May 2019 08:50:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41636 "EHLO mx1.suse.de"
+        id S1726134AbfENM4N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 14 May 2019 08:56:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42638 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725562AbfENMum (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 14 May 2019 08:50:42 -0400
+        id S1725899AbfENM4N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 14 May 2019 08:56:13 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 22C31AE5D
-        for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2019 12:50:41 +0000 (UTC)
-Date:   Tue, 14 May 2019 14:50:40 +0200
+        by mx1.suse.de (Postfix) with ESMTP id 68438AC66
+        for <linux-btrfs@vger.kernel.org>; Tue, 14 May 2019 12:56:12 +0000 (UTC)
+Date:   Tue, 14 May 2019 14:56:11 +0200
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     Nikolay Borisov <nborisov@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 5/8] btrfs: Streamline replace sem unlock in
- btrfs_dev_replace_start
-Message-ID: <20190514125040.GB14840@x250>
+Subject: Re: [PATCH 6/8] btrfs: Explicitly reserve space for devreplace item
+Message-ID: <20190514125611.GC14840@x250>
 References: <20190514105445.23051-1-nborisov@suse.com>
- <20190514105445.23051-6-nborisov@suse.com>
+ <20190514105445.23051-7-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190514105445.23051-6-nborisov@suse.com>
+In-Reply-To: <20190514105445.23051-7-nborisov@suse.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
