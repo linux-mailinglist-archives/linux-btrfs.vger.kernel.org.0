@@ -2,120 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE041F91B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2019 19:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03B81F923
+	for <lists+linux-btrfs@lfdr.de>; Wed, 15 May 2019 19:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727578AbfEORGY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 15 May 2019 13:06:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45204 "EHLO mx1.suse.de"
+        id S1727468AbfEORHO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 15 May 2019 13:07:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45292 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726360AbfEORGY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 15 May 2019 13:06:24 -0400
+        id S1726360AbfEORHO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 15 May 2019 13:07:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id CB7ACAD7F
-        for <linux-btrfs@vger.kernel.org>; Wed, 15 May 2019 17:06:22 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 82287AD7F;
+        Wed, 15 May 2019 17:07:13 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 038EDDA8E5; Wed, 15 May 2019 19:07:20 +0200 (CEST)
-Date:   Wed, 15 May 2019 19:07:19 +0200
+        id DCBDCDA8E5; Wed, 15 May 2019 19:08:13 +0200 (CEST)
+Date:   Wed, 15 May 2019 19:08:13 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        fdmanana@suse.com
-Subject: Re: [PATCH] btrfs: fiemap: preallocate ulists for btrfs_check_shared
-Message-ID: <20190515170718.GV3138@twin.jikos.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] Btrfs: avoid fallback to transaction commit during fsync
+ of files with holes
+Message-ID: <20190515170812.GW3138@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        fdmanana@suse.com
-References: <20190515133104.1364-1-dsterba@suse.com>
- <aa32ffbf-256f-e988-3fb1-f440f18d6909@suse.com>
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20190506154351.20047-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aa32ffbf-256f-e988-3fb1-f440f18d6909@suse.com>
+In-Reply-To: <20190506154351.20047-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 15, 2019 at 04:45:42PM +0300, Nikolay Borisov wrote:
+On Mon, May 06, 2019 at 04:43:51PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
+> When we are doing a full fsync (bit BTRFS_INODE_NEEDS_FULL_SYNC set) of a
+> file that has holes and has file extent items spanning two or more leafs,
+> we can end up falling to back to a full transaction commit due to a logic
+> bug that leads to failure to insert a duplicate file extent item that is
+> meant to represent a hole between the last file extent item of a leaf and
+> the first file extent item in the next leaf. The failure (EEXIST error)
+> leads to a transaction commit (as most errors when logging an inode do).
 > 
-> On 15.05.19 г. 16:31 ч., David Sterba wrote:
-> > btrfs_check_shared looks up parents of a given extent and uses ulists
-> > for that. These are allocated and freed repeatedly. Preallocation in the
-> > caller will avoid the overhead and also allow us to use the GFP_KERNEL
-> > as it is happens before the extent locks are taken.
-> > 
-> > Signed-off-by: David Sterba <dsterba@suse.com>
+> For example, we have the two following leafs:
 > 
-> Looks good, one minor nit worth considering below, otherwise:
+> Leaf N:
 > 
+>   -----------------------------------------------
+>   | ..., ..., ..., (257, FILE_EXTENT_ITEM, 64K) |
+>   -----------------------------------------------
+>   The file extent item at the end of leaf N has a length of 4Kb,
+>   representing the file range from 64K to 68K - 1.
 > 
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> Leaf N + 1:
 > 
+>   -----------------------------------------------
+>   | (257, FILE_EXTENT_ITEM, 72K), ..., ..., ... |
+>   -----------------------------------------------
+>   The file extent item at the first slot of leaf N + 1 has a length of
+>   4Kb too, representing the file range from 72K to 76K - 1.
 > 
-> > ---
-> >  fs/btrfs/backref.c   | 17 ++++++-----------
-> >  fs/btrfs/backref.h   |  3 ++-
-> >  fs/btrfs/extent_io.c | 15 +++++++++++++--
-> >  3 files changed, 21 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> > index 982152d3f920..89116afda7a2 100644
-> > --- a/fs/btrfs/backref.c
-> > +++ b/fs/btrfs/backref.c
-> > @@ -1465,12 +1465,11 @@ int btrfs_find_all_roots(struct btrfs_trans_handle *trans,
-> >   *
-> >   * Return: 0 if extent is not shared, 1 if it is shared, < 0 on error.
-> >   */
-> > -int btrfs_check_shared(struct btrfs_root *root, u64 inum, u64 bytenr)
-> > +int btrfs_check_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
-> > +		struct ulist *roots, struct ulist *tmp)
-> >  {
-> >  	struct btrfs_fs_info *fs_info = root->fs_info;
-> >  	struct btrfs_trans_handle *trans;
-> > -	struct ulist *tmp = NULL;
-> > -	struct ulist *roots = NULL;
-> >  	struct ulist_iterator uiter;
-> >  	struct ulist_node *node;
-> >  	struct seq_list elem = SEQ_LIST_INIT(elem);
-> > @@ -1481,12 +1480,8 @@ int btrfs_check_shared(struct btrfs_root *root, u64 inum, u64 bytenr)
-> >  		.share_count = 0,
-> >  	};
-> >  
-> > -	tmp = ulist_alloc(GFP_NOFS);
-> > -	roots = ulist_alloc(GFP_NOFS);
-> > -	if (!tmp || !roots) {
-> > -		ret = -ENOMEM;
-> > -		goto out;
-> > -	}
-> > +	ulist_init(roots);
-> > +	ulist_init(tmp);
-> >  
-> >  	trans = btrfs_attach_transaction(root);
-> >  	if (IS_ERR(trans)) {
-> > @@ -1527,8 +1522,8 @@ int btrfs_check_shared(struct btrfs_root *root, u64 inum, u64 bytenr)
-> >  		up_read(&fs_info->commit_root_sem);
-> >  	}
-> >  out:
-> > -	ulist_free(tmp);
-> > -	ulist_free(roots);
-> > +	ulist_release(roots);
-> > +	ulist_release(tmp);
+> During the full fsync path, when we are at tree-log.c:copy_items() with
+> leaf N as a parameter, after processing the last file extent item, that
+> represents the extent at offset 64K, we take a look at the first file
+> extent item at the next leaf (leaf N + 1), and notice there's a 4K hole
+> between the two extents, and therefore we insert a file extent item
+> representing that hole, starting at file offset 68K and ending at offset
+> 72K - 1. However we don't update the value of *last_extent, which is used
+> to represent the end offset (plus 1, non-inclusive end) of the last file
+> extent item inserted in the log, so it stays with a value of 68K and not
+> with a value of 72K.
 > 
-> nit: If we turn these into ulist_reinit there is no need to do ulit_init
-> at the beginning. Having said that, the only difference between
-> ulist_release/init is that the latter also does ulist->nnode=0 (apart
-> form the memory freeing). So ulist_release can really boil down to:
+> Then, when copy_items() is called for leaf N + 1, because the value of
+> *last_extent is smaller then the offset of the first extent item in the
+> leaf (68K < 72K), we look at the last file extent item in the previous
+> leaf (leaf N) and see it there's a 4K gap between it and our first file
+> extent item (again, 68K < 72K), so we decide to insert a file extent item
+> representing the hole, starting at file offset 68K and ending at offset
+> 72K - 1, this insertion will fail with -EEXIST being returned from
+> btrfs_insert_file_extent() because we already inserted a file extent item
+> representing a hole for this offset (68K) in the previous call to
+> copy_items(), when processing leaf N.
 > 
-> list_for_each_entry_safe() {
-> kfree}
-> ulist_init(ulist)
+> The -EEXIST error gets propagated to the fsync callback, btrfs_sync_file(),
+> which falls back to a full transaction commit.
+> 
+> Fix this by adjusting *last_extent after inserting a hole when we had to
+> look at the next leaf.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-I think I had the _reinit at the end in one of the versions, but then it
-looked more clear with the explicit _init at the beginning of the
-function so that it does not rely on the caller to initialize.
+Queued for 5.2-rc, thanks.
