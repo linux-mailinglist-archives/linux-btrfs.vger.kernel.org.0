@@ -2,23 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FDAC1FFEA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 09:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B152C1FFF8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 09:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbfEPHD3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 03:03:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43186 "EHLO mx1.suse.de"
+        id S1726447AbfEPHJD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 03:09:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44084 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726319AbfEPHD2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 03:03:28 -0400
+        id S1726393AbfEPHJD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 May 2019 03:09:03 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A5A64AE04;
-        Thu, 16 May 2019 07:03:26 +0000 (UTC)
-Subject: Re: [PATCH 1/3] Btrfs: fix fsync not persisting changed attributes of
- a directory
+        by mx1.suse.de (Postfix) with ESMTP id 7FF22AE04;
+        Thu, 16 May 2019 07:09:01 +0000 (UTC)
+Subject: Re: [PATCH 2/3] Btrfs: fix wrong ctime and mtime of a directory after
+ log replay
 To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20190515150238.21939-1-fdmanana@kernel.org>
+References: <20190515150247.24776-1-fdmanana@kernel.org>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <a995bb3f-58ac-7231-1511-68e61265e217@suse.com>
-Date:   Thu, 16 May 2019 10:03:25 +0300
+Message-ID: <b8fb0cd6-efd1-67e4-7841-ec4d54216eb7@suse.com>
+Date:   Thu, 16 May 2019 10:09:00 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190515150238.21939-1-fdmanana@kernel.org>
+In-Reply-To: <20190515150247.24776-1-fdmanana@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,13 +82,10 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 15.05.19 г. 18:02 ч., fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> While logging an inode we follow its ancestors and for each one we mark
-> it as logged in the current transaction, even if we have not logged it.
-> As a consequence if we change an attribute of an ancestor, such as the
-> UID or GID for example, and then explicitly fsync it, we end up not
-> logging the inode at all despite returning success to user space, which
-> results in the attribute being lost if a power failure happens after
-> the fsync.
+> When replaying a log that contains a new file or directory name that needs
+> to be added to its parent directory, we end up updating the mtime and the
+> ctime of the parent directory to the current time after we have set their
+> values to the correct ones (set at fsync time), efectivelly losing them.
 > 
 > Sample reproducer:
 > 
@@ -96,76 +93,64 @@ On 15.05.19 г. 18:02 ч., fdmanana@kernel.org wrote:
 >   $ mount /dev/sdb /mnt
 > 
 >   $ mkdir /mnt/dir
->   $ chown 6007:6007 /mnt/dir
-> 
->   $ sync
-> 
->   $ chown 9003:9003 /mnt/dir
 >   $ touch /mnt/dir/file
+> 
+>   # fsync of the directory is optional, not needed
+>   $ xfs_io -c fsync /mnt/dir
 >   $ xfs_io -c fsync /mnt/dir/file
 > 
->   # fsync our directory after fsync'ing the new file, should persist the
->   # new values for the uid and gid.
->   $ xfs_io -c fsync /mnt/dir
+>   $ stat -c %Y /mnt/dir
+>   1557856079
 > 
 >   <power failure>
 > 
+>   $ sleep 3
 >   $ mount /dev/sdb /mnt
->   $ stat -c %u:%g /mnt/dir
->   6007:6007
+>   $ stat -c %Y /mnt/dir
+>   1557856082
 > 
->     --> should be 9003:9003, the uid and gid were not persisted, despite
->         the explicit fsync on the directory prior to the power failure
+>     --> should have been 1557856079, the mtime is updated to the current
+>         time when replaying the log
 > 
-> Fix this by not updating the logged_trans field of ancestor inodes when
-> logging an inode, since we have not logged them. Let only future calls to
-> btrfs_log_inode() to mark inodes as logged.
+> Fix this by not updating the mtime and ctime to the current time at
+> btrfs_add_link() when we are replaying a log tree.
 > 
 > This could be triggered by my recent fsync fuzz tester for fstests, for
 > which an fstests patch exists titled "fstests: generic, fsync fuzz tester
 > with fsstress".
 > 
-> Fixes: 12fcfd22fe5b ("Btrfs: tree logging unlink/rename fixes")
+> Fixes: e02119d5a7b43 ("Btrfs: Add a write ahead tree log to optimize synchronous operations")
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
 > ---
->  fs/btrfs/tree-log.c | 11 -----------
->  1 file changed, 11 deletions(-)
+>  fs/btrfs/inode.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> index 87e3e4e37606..7d13533a9620 100644
-> --- a/fs/btrfs/tree-log.c
-> +++ b/fs/btrfs/tree-log.c
-> @@ -5465,7 +5465,6 @@ static noinline int check_parent_dirs_for_sync(struct btrfs_trans_handle *trans,
->  {
->  	int ret = 0;
->  	struct dentry *old_parent = NULL;
-> -	struct btrfs_inode *orig_inode = inode;
->  
->  	/*
->  	 * for regular files, if its inode is already on disk, we don't
-> @@ -5485,16 +5484,6 @@ static noinline int check_parent_dirs_for_sync(struct btrfs_trans_handle *trans,
->  	}
->  
->  	while (1) {
-> -		/*
-> -		 * If we are logging a directory then we start with our inode,
-> -		 * not our parent's inode, so we need to skip setting the
-> -		 * logged_trans so that further down in the log code we don't
-> -		 * think this inode has already been logged.
-> -		 */
-> -		if (inode != orig_inode)
-> -			inode->logged_trans = trans->transid;
-> -		smp_mb();
-> -
-
-By removing this memory barrier don't you also obsolete the one in
-btrfs_record_unlink_dir? Both of these were introduced in 12fcfd22fe5b
-("Btrfs: tree logging unlink/rename fixes") and despite they are missing
-explicit comments about the expected pairing one can only assume they
-both pair against each other.
-
-
->  		if (btrfs_must_commit_transaction(trans, inode)) {
->  			ret = 1;
->  			break;
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index cacde7040329..8e6d7b0bd988 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -6381,8 +6381,18 @@ int btrfs_add_link(struct btrfs_trans_handle *trans,
+>  	btrfs_i_size_write(parent_inode, parent_inode->vfs_inode.i_size +
+>  			   name_len * 2);
+>  	inode_inc_iversion(&parent_inode->vfs_inode);
+> -	parent_inode->vfs_inode.i_mtime = parent_inode->vfs_inode.i_ctime =
+> -		current_time(&parent_inode->vfs_inode);
+> +	/*
+> +	 * If we are replaying a log tree, we do not want to update the mtime
+> +	 * and ctime of the parent directory with the current time, since the
+> +	 * log replay procedure is responsible for setting them to their correct
+> +	 * values (the ones it had when the fsync was done).
+> +	 */
+> +	if (!test_bit(BTRFS_FS_LOG_RECOVERING, &root->fs_info->flags)) {
+> +		struct timespec64 now = current_time(&parent_inode->vfs_inode);
+> +
+> +		parent_inode->vfs_inode.i_mtime = now;
+> +		parent_inode->vfs_inode.i_ctime = now;
+> +	}
+>  	ret = btrfs_update_inode(trans, root, &parent_inode->vfs_inode);
+>  	if (ret)
+>  		btrfs_abort_transaction(trans, ret);
 > 
