@@ -2,155 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B152C1FFF8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 09:09:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B345200F4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 10:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbfEPHJD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 03:09:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44084 "EHLO mx1.suse.de"
+        id S1726525AbfEPIJo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 04:09:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54412 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726393AbfEPHJD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 03:09:03 -0400
+        id S1726272AbfEPIJo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 May 2019 04:09:44 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7FF22AE04;
-        Thu, 16 May 2019 07:09:01 +0000 (UTC)
-Subject: Re: [PATCH 2/3] Btrfs: fix wrong ctime and mtime of a directory after
- log replay
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20190515150247.24776-1-fdmanana@kernel.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <b8fb0cd6-efd1-67e4-7841-ec4d54216eb7@suse.com>
-Date:   Thu, 16 May 2019 10:09:00 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        by mx1.suse.de (Postfix) with ESMTP id 8CA9DABB1;
+        Thu, 16 May 2019 08:09:42 +0000 (UTC)
+Date:   Thu, 16 May 2019 10:09:42 +0200
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jack@suse.cz,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
+Message-ID: <20190516080942.GB3922@x250.microfocus.com>
+References: <20190515150221.16647-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20190515150247.24776-1-fdmanana@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190515150221.16647-1-fdmanana@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 15.05.19 Ð³. 18:02 Ñ‡., fdmanana@kernel.org wrote:
+On Wed, May 15, 2019 at 04:02:21PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
-> 
-> When replaying a log that contains a new file or directory name that needs
-> to be added to its parent directory, we end up updating the mtime and the
-> ctime of the parent directory to the current time after we have set their
-> values to the correct ones (set at fsync time), efectivelly losing them.
-> 
-> Sample reproducer:
-> 
->   $ mkfs.btrfs -f /dev/sdb
->   $ mount /dev/sdb /mnt
-> 
->   $ mkdir /mnt/dir
->   $ touch /mnt/dir/file
-> 
->   # fsync of the directory is optional, not needed
->   $ xfs_io -c fsync /mnt/dir
->   $ xfs_io -c fsync /mnt/dir/file
-> 
->   $ stat -c %Y /mnt/dir
->   1557856079
-> 
->   <power failure>
-> 
->   $ sleep 3
->   $ mount /dev/sdb /mnt
->   $ stat -c %Y /mnt/dir
->   1557856082
-> 
->     --> should have been 1557856079, the mtime is updated to the current
->         time when replaying the log
-> 
-> Fix this by not updating the mtime and ctime to the current time at
-> btrfs_add_link() when we are replaying a log tree.
-> 
-> This could be triggered by my recent fsync fuzz tester for fstests, for
-> which an fstests patch exists titled "fstests: generic, fsync fuzz tester
-> with fsstress".
-> 
-> Fixes: e02119d5a7b43 ("Btrfs: Add a write ahead tree log to optimize synchronous operations")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Nit:
+> This tes has found already 2 bugs in btrfs, that caused mtime and ctime of
+  test? ^
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-> ---
->  fs/btrfs/inode.c | 14 ++++++++++++--
->  1 file changed, 12 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index cacde7040329..8e6d7b0bd988 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -6381,8 +6381,18 @@ int btrfs_add_link(struct btrfs_trans_handle *trans,
->  	btrfs_i_size_write(parent_inode, parent_inode->vfs_inode.i_size +
->  			   name_len * 2);
->  	inode_inc_iversion(&parent_inode->vfs_inode);
-> -	parent_inode->vfs_inode.i_mtime = parent_inode->vfs_inode.i_ctime =
-> -		current_time(&parent_inode->vfs_inode);
-> +	/*
-> +	 * If we are replaying a log tree, we do not want to update the mtime
-> +	 * and ctime of the parent directory with the current time, since the
-> +	 * log replay procedure is responsible for setting them to their correct
-> +	 * values (the ones it had when the fsync was done).
-> +	 */
-> +	if (!test_bit(BTRFS_FS_LOG_RECOVERING, &root->fs_info->flags)) {
-> +		struct timespec64 now = current_time(&parent_inode->vfs_inode);
-> +
-> +		parent_inode->vfs_inode.i_mtime = now;
-> +		parent_inode->vfs_inode.i_ctime = now;
-> +	}
->  	ret = btrfs_update_inode(trans, root, &parent_inode->vfs_inode);
->  	if (ret)
->  		btrfs_abort_transaction(trans, ret);
-> 
+-- 
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
+HRB 21284 (AG Nürnberg)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
