@@ -2,24 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8BDB1FFE2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 08:57:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FDAC1FFEA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 09:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726374AbfEPG5F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 02:57:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42408 "EHLO mx1.suse.de"
+        id S1726374AbfEPHD3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 03:03:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43186 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726319AbfEPG5F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 02:57:05 -0400
+        id S1726319AbfEPHD2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 May 2019 03:03:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5E9FFAA71;
-        Thu, 16 May 2019 06:57:03 +0000 (UTC)
-Subject: Re: storm-of-soft-lockups: spinlocks running on all cores, preventing
- forward progress (4.14- to 5.0+)
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        linux-btrfs@vger.kernel.org
-References: <20190515213650.GG20359@hungrycats.org>
+        by mx1.suse.de (Postfix) with ESMTP id A5A64AE04;
+        Thu, 16 May 2019 07:03:26 +0000 (UTC)
+Subject: Re: [PATCH 1/3] Btrfs: fix fsync not persisting changed attributes of
+ a directory
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20190515150238.21939-1-fdmanana@kernel.org>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,13 +63,13 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <0480104e-db25-4e2f-08e5-0236ffd5c1c2@suse.com>
-Date:   Thu, 16 May 2019 09:57:01 +0300
+Message-ID: <a995bb3f-58ac-7231-1511-68e61265e217@suse.com>
+Date:   Thu, 16 May 2019 10:03:25 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190515213650.GG20359@hungrycats.org>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20190515150238.21939-1-fdmanana@kernel.org>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -80,35 +79,93 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 16.05.19 г. 0:36 ч., Zygo Blaxell wrote:
-> "Storm-of-soft-lockups" is a failure mode where btrfs puts all of the
-> CPU cores in kernel functions that are unable to make forward progress,
-> but also unwilling to release their respective CPU cores.  This is
-> usually accompanied by a lot of CPU usage (detectable as either kvm CPU
-> usage or just a lot of CPU fan noise) though I don't know if all cores
-> are spinning or only some of them.
+On 15.05.19 г. 18:02 ч., fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> The kernel console presents a continual stream of "BUG: soft lockup"
-> warnings for some days.  None of the call traces change during this time.
-> The only way out is to reboot.
+> While logging an inode we follow its ancestors and for each one we mark
+> it as logged in the current transaction, even if we have not logged it.
+> As a consequence if we change an attribute of an ancestor, such as the
+> UID or GID for example, and then explicitly fsync it, we end up not
+> logging the inode at all despite returning success to user space, which
+> results in the attribute being lost if a power failure happens after
+> the fsync.
 > 
-> You can reproduce this by writing a bunch of data to a filesystem while
-> bees is running on all cores.  It takes a few days to occur naturally.
-> It can probably be sped up by just doing a bunch of random LOGICAL_INO
-> ioctls in a tight loop on each core.
+> Sample reproducer:
 > 
-> Here's an instance on a 4-CPU VM where CPU#0 is running btrfs-transaction
-> (btrfs_try_tree_write_lock) and CPU#1-3 are running the LOGICAL_INO
-> ioctl (btrfs_tree_read_lock_atomic):
+>   $ mkfs.btrfs -f /dev/sdb
+>   $ mount /dev/sdb /mnt
+> 
+>   $ mkdir /mnt/dir
+>   $ chown 6007:6007 /mnt/dir
+> 
+>   $ sync
+> 
+>   $ chown 9003:9003 /mnt/dir
+>   $ touch /mnt/dir/file
+>   $ xfs_io -c fsync /mnt/dir/file
+> 
+>   # fsync our directory after fsync'ing the new file, should persist the
+>   # new values for the uid and gid.
+>   $ xfs_io -c fsync /mnt/dir
+> 
+>   <power failure>
+> 
+>   $ mount /dev/sdb /mnt
+>   $ stat -c %u:%g /mnt/dir
+>   6007:6007
+> 
+>     --> should be 9003:9003, the uid and gid were not persisted, despite
+>         the explicit fsync on the directory prior to the power failure
+> 
+> Fix this by not updating the logged_trans field of ancestor inodes when
+> logging an inode, since we have not logged them. Let only future calls to
+> btrfs_log_inode() to mark inodes as logged.
+> 
+> This could be triggered by my recent fsync fuzz tester for fstests, for
+> which an fstests patch exists titled "fstests: generic, fsync fuzz tester
+> with fsstress".
+> 
+> Fixes: 12fcfd22fe5b ("Btrfs: tree logging unlink/rename fixes")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/tree-log.c | 11 -----------
+>  1 file changed, 11 deletions(-)
+> 
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 87e3e4e37606..7d13533a9620 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -5465,7 +5465,6 @@ static noinline int check_parent_dirs_for_sync(struct btrfs_trans_handle *trans,
+>  {
+>  	int ret = 0;
+>  	struct dentry *old_parent = NULL;
+> -	struct btrfs_inode *orig_inode = inode;
+>  
+>  	/*
+>  	 * for regular files, if its inode is already on disk, we don't
+> @@ -5485,16 +5484,6 @@ static noinline int check_parent_dirs_for_sync(struct btrfs_trans_handle *trans,
+>  	}
+>  
+>  	while (1) {
+> -		/*
+> -		 * If we are logging a directory then we start with our inode,
+> -		 * not our parent's inode, so we need to skip setting the
+> -		 * logged_trans so that further down in the log code we don't
+> -		 * think this inode has already been logged.
+> -		 */
+> -		if (inode != orig_inode)
+> -			inode->logged_trans = trans->transid;
+> -		smp_mb();
+> -
+
+By removing this memory barrier don't you also obsolete the one in
+btrfs_record_unlink_dir? Both of these were introduced in 12fcfd22fe5b
+("Btrfs: tree logging unlink/rename fixes") and despite they are missing
+explicit comments about the expected pairing one can only assume they
+both pair against each other.
 
 
-Provide output of all sleeping threads when this occur via
- echo w > /proc/sysrq-trigger.
-
-Also do you have this patch on the affected machine:
-
-38e3eebff643 ("btrfs: honor path->skip_locking in backref code") can you
-try and test with it applied ?
-
-
-<SNIP>
+>  		if (btrfs_must_commit_transaction(trans, inode)) {
+>  			ret = 1;
+>  			break;
+> 
