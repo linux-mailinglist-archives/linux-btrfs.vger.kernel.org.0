@@ -2,50 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7365920251
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 11:13:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27B82028B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 11:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbfEPJNA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 05:13:00 -0400
-Received: from mailgw-02.dd24.net ([193.46.215.43]:54546 "EHLO
-        mailgw-02.dd24.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726336AbfEPJNA (ORCPT
+        id S1726954AbfEPJaY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 05:30:24 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51817 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726374AbfEPJaY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 05:13:00 -0400
-Received: from mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-01.live.igb.homer.key-systems.net [192.168.1.26])
-        by mailgw-02.dd24.net (Postfix) with ESMTP id 831BE5FCA4
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 May 2019 09:12:58 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at
-        mailpolicy-01.live.igb.homer.key-systems.net
-Received: from smtp.dd24.net ([192.168.1.36])
-        by mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-01.live.igb.homer.key-systems.net [192.168.1.25]) (amavisd-new, port 10236)
-        with ESMTP id 5fZM82nUUZLz for <linux-btrfs@vger.kernel.org>;
-        Thu, 16 May 2019 09:12:56 +0000 (UTC)
-Received: from gar-nb-etp23.garching.physik.uni-muenchen.de (unknown [141.84.41.132])
-        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.dd24.net (Postfix) with ESMTPSA
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 May 2019 09:12:56 +0000 (UTC)
-Message-ID: <8d61eae5873f028557942dbb88f4f4cbaee0b891.camel@scientia.net>
-Subject: Re: delayed_refs has NO entry / btrfs_update_root:136: Aborting
- unused transaction(No space left).
-From:   Christoph Anton Mitterer <calestyo@scientia.net>
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Date:   Thu, 16 May 2019 11:12:55 +0200
-In-Reply-To: <b2a668d7124f1d3e410367f587926f622b3f03a4.camel@scientia.net>
-References: <b2a668d7124f1d3e410367f587926f622b3f03a4.camel@scientia.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1 
+        Thu, 16 May 2019 05:30:24 -0400
+Received: from callcc.thunk.org (168-215-239-3.static.ctl.one [168.215.239.3] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4G9U8Rv029692
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 May 2019 05:30:12 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 3F4BD420024; Thu, 16 May 2019 05:28:48 -0400 (EDT)
+Date:   Thu, 16 May 2019 05:28:48 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jack@suse.cz,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
+Message-ID: <20190516092848.GA6975@mit.edu>
+References: <20190515150221.16647-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190515150221.16647-1-fdmanana@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Since no one seems to show any big interest in this issues, I've added
-it for the records in https://bugzilla.kernel.org/show_bug.cgi?id=203621
+On Wed, May 15, 2019 at 04:02:21PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Run fsstress, fsync every file and directory, simulate a power failure and
+> then verify the all files and directories exist, with the same data and
+> metadata they had before the power failure.
+> 
+> This tes has found already 2 bugs in btrfs, that caused mtime and ctime of
+> directories not being preserved after replaying the log/journal and loss
+> of a directory's attributes (such a UID and GID) after replaying the log.
+> The patches that fix the btrfs issues are titled:
+> 
+>   "Btrfs: fix wrong ctime and mtime of a directory after log replay"
+>   "Btrfs: fix fsync not persisting changed attributes of a directory"
+> 
+> Running this test 1000 times:
+> 
+> - on ext4 it has resulted in about a dozen journal checksum errors (on a
+>   5.0 kernel) that resulted in failure to mount the filesystem after the
+>   simulated power failure with dmflakey, which produces the following
+>   error in dmesg/syslog:
+> 
+>     [Mon May 13 12:51:37 2019] JBD2: journal checksum error
+>     [Mon May 13 12:51:37 2019] EXT4-fs (dm-0): error loading journal
 
-Cheers,
-Chris.
+I'm curious what configuration you used when you ran the test.  I
+tried to reproduce it, and had no luck:
 
+TESTRUNID: tytso-20190516042341
+KERNEL:    kernel 5.1.0-rc3-xfstests-00034-g0c72924ef346 #999 SMP Wed May 15 00:56:08 EDT 2019 x86_64
+CMDLINE:   -c 4k -C 1000 generic/547
+CPUS:      2
+MEM:       7680
+
+ext4/4k: 1000 tests, 1855 seconds
+Totals: 1000 tests, 0 skipped, 0 failures, 0 errors, 1855s
+
+FSTESTPRJ: gce-xfstests
+FSTESTVER: blktests baccddc (Wed, 13 Mar 2019 00:06:50 -0700)
+FSTESTVER: fio  fio-3.2 (Fri, 3 Nov 2017 15:23:49 -0600)
+FSTESTVER: fsverity bdebc45 (Wed, 5 Sep 2018 21:32:22 -0700)
+FSTESTVER: ima-evm-utils 0267fa1 (Mon, 3 Dec 2018 06:11:35 -0500)
+FSTESTVER: nvme-cli v1.7-35-g669d759 (Tue, 12 Mar 2019 11:22:16 -0600)
+FSTESTVER: quota  62661bd (Tue, 2 Apr 2019 17:04:37 +0200)
+FSTESTVER: stress-ng 7d0353cf (Sun, 20 Jan 2019 03:30:03 +0000)
+FSTESTVER: syzkaller bab43553 (Fri, 15 Mar 2019 09:08:49 +0100)
+FSTESTVER: xfsprogs v5.0.0 (Fri, 3 May 2019 12:14:36 -0500)
+FSTESTVER: xfstests-bld 9582562 (Sun, 12 May 2019 00:38:51 -0400)
+FSTESTVER: xfstests linux-v3.8-2390-g64233614 (Thu, 16 May 2019 00:12:52 -0400)
+FSTESTCFG: 4k
+FSTESTSET: generic/547
+FSTESTOPT: count 1000 aex
+GCE ID:    8592267165157073108
