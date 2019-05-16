@@ -2,99 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C6820DC9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 19:18:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D34121020
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 23:39:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727294AbfEPRSQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 13:18:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726943AbfEPRSP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 13:18:15 -0400
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DACE420848;
-        Thu, 16 May 2019 17:18:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558027095;
-        bh=E6FuDq4ZEhJ0whJY8iLzeoTQeoYTjcI9Scr+CE+5PMo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=R5U5A1TZYsPm7jp+A9fLeBth7dePmY2mA40hZ4p6q6oDxDJTwTnGsRzVs576dITkh
-         rjxxCCKyG24WKVqpDLdj/MY5iN+MhlTTWmAoGs1UBGETekVWIdg0KNg0PxLJB/uuEw
-         I9Z7+5eKrY8YxjPxOsfoLMZd3SGUKOcbcM6u0uJ4=
-Received: by mail-vs1-f48.google.com with SMTP id j184so2797796vsd.11;
-        Thu, 16 May 2019 10:18:14 -0700 (PDT)
-X-Gm-Message-State: APjAAAWOAPLHPc7BKAAHai+IWzG0wRGA3miI0+pMr0ttIAlHzi+tIV1N
-        tB70iYchrkB0Jmyr0y3JGDhvKW+C75ZwMqz15rA=
-X-Google-Smtp-Source: APXvYqz1RV8s1QJ3CVTGiY2RhVMONNipWOC3z/MEM9S1fmxq3V7rI1IhNzndXEnr4ydOdL4gyK/A2svcT0QbNYoqQw8=
-X-Received: by 2002:a67:f34d:: with SMTP id p13mr22894146vsm.95.1558027094032;
- Thu, 16 May 2019 10:18:14 -0700 (PDT)
+        id S1728728AbfEPVjV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 17:39:21 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:40994 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726812AbfEPVjV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 May 2019 17:39:21 -0400
+Received: by mail-lf1-f46.google.com with SMTP id d8so3770639lfb.8
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 May 2019 14:39:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q9vrZnSp0S/TSaXi62se9wEjsKFSJekv14/1CaCcnBI=;
+        b=tf5hLVSS3M86YeRb6lcfwTbY34iJw9Br8pcO8Nl053NB2qRRNHA9Z4Lt6XKJjZSxJG
+         SJdTa5fwFzE5lKK3KFR4sXm0yjQz9ey6MJsk88rmGFcAXbcZL2HkrpqhiNb5JZhwwED9
+         8byxVhDDobrkJKIsJIsPRJnUwu6lIrJnEDhZ9iQq8Gtlf07kaONRZz05cCy5uMmrs9vm
+         oRAsbHvk9xaeBS7HoEJ2a2UlLcLRFIuvmBJByaKupnBbomk/RLu+H3ZjJZI0Ye3h/ILq
+         wNbdwSIgEoLX9nia/5ElMqNn+2yFwRzVadDpgdd1x6/DA6DGSCK71AUiVGlgud2D1VJD
+         lvIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q9vrZnSp0S/TSaXi62se9wEjsKFSJekv14/1CaCcnBI=;
+        b=rurcVpUgoNCgYT6TyAN47JSC1nfkbT0xyLL20ZpsAcDukrnv51lLq5Ef+sMJWcB1lS
+         T/XqcF4w7XS+3JyieEjqhdgF6QBT2H8s+qk5SAD7yTTP6OLIoasWVfMYgDF7/NKloIKI
+         goQeg8wDcdRgqq2MJZyH83YEhNDk2oo7EpBQ86CEBJjRgi68Used+x4/vd+9NGxmdwl+
+         SqzJ3lDVPqOYbuylF0wpDgoV+xI1NLBbuE+XCv2iMXHQP1y+wJGzKnRQZFUWxDB7ohyD
+         rqCpL20UB1i/rnWlWlIlYE5JQBpgRzCSjZR41tN47TB+1ujI2GTP0MRs5qWVVfvz8b6i
+         UUog==
+X-Gm-Message-State: APjAAAW5I9llErfVafqddeegHupXFrRKoalivMZgF0blNtRoSlCozjHo
+        bc22XCD5yyJqj2nmbKP0hBXJ/9a80D2c/1WI1czuRI9cEHk=
+X-Google-Smtp-Source: APXvYqySqkK+ZbX3SpQLV+8RlWZCP1jIw125HVrSRXHkaVrO+Vf/0D0AZAqDW5IOmsKW4s2CGTMBuEK7Aod2qfIcdwk=
+X-Received: by 2002:ac2:4571:: with SMTP id k17mr26416755lfm.133.1558042759886;
+ Thu, 16 May 2019 14:39:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190515150221.16647-1-fdmanana@kernel.org> <20190516092848.GA6975@mit.edu>
- <CAL3q7H7q5Xphhax3qPdt1fnjaWrekMgMKzKfDyOLm+bbgsw6Aw@mail.gmail.com> <20190516165921.GA4023@mit.edu>
-In-Reply-To: <20190516165921.GA4023@mit.edu>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 16 May 2019 18:18:02 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H6gvdhSweJH1W7dbvOtwu8RmzbMRMb9MsSv0D8g+Cm40g@mail.gmail.com>
-Message-ID: <CAL3q7H6gvdhSweJH1W7dbvOtwu8RmzbMRMb9MsSv0D8g+Cm40g@mail.gmail.com>
-Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        linux-ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        Filipe Manana <fdmanana@suse.com>
+References: <CAKS=YrP=z2+rP5AtFKkf7epi+Dr2Arfsaq3pZ9cR3iKif3gV5g@mail.gmail.com>
+In-Reply-To: <CAKS=YrP=z2+rP5AtFKkf7epi+Dr2Arfsaq3pZ9cR3iKif3gV5g@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Thu, 16 May 2019 15:39:08 -0600
+Message-ID: <CAJCQCtTmZY-UHeNYp=waTV8TWiAKXr8bJq13DQ7KQg=syvQ=tg@mail.gmail.com>
+Subject: Re: Unbootable root btrfs
+To:     Lee Fleming <leeflemingster@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 16, 2019 at 5:59 PM Theodore Ts'o <tytso@mit.edu> wrote:
+On Thu, May 16, 2019 at 4:37 AM Lee Fleming <leeflemingster@gmail.com> wrote:
+
+> And a btrfs check gives the following:
 >
-> On Thu, May 16, 2019 at 10:54:57AM +0100, Filipe Manana wrote:
-> >
-> > Haven't tried ext4 with 1 process only (instead of 4), but I can try
-> > to see if it happens without concurrency as well.
->
-> How many CPU's and how much memory were you using?  And I assume this
-> was using KVM/QEMU?  How was it configured?
+>     % btrfs check --repair /dev/mapper/vg-root
 
-Yep, kvm and qemu (3.0.0). The qemu config:
+Why use repair? From the man page
 
-https://pastebin.com/KNigeXXq
+Warning
+           Do not use --repair unless you are advised to do so by a developer
+           or an experienced user
 
-TEST_DEV is the drive with ID "drive1" and SCRATCH_DEV is the drive
-with ID "drive2".
 
-The host has:
+>     [ 17.429845] BTRFS error (device dm-1): failed to read block groups: -5
+>     [ 17.450035] BTRFS error (device dm-1): open_ctree failed
 
-Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz
-64Gb of ram
-crappy seagate hdd:
+Was there a crash or powerfailure during write before the problem
+started? What precipitated the problem?
 
-Device Model:     ST3000DM008-2DM166
-Serial Number:    Z5053T2R
-LU WWN Device Id: 5 000c50 0a46f7ecb
-Firmware Version: CC26
-User Capacity:    3,000,592,982,016 bytes [3,00 TB]
-Sector Sizes:     512 bytes logical, 4096 bytes physical
-Rotation Rate:    7200 rpm
-Form Factor:      3.5 inches
-Device is:        Not in smartctl database [for details use: -P showall]
-ATA Version is:   ACS-2, ACS-3 T13/2161-D revision 3b
-SATA Version is:  SATA 3.1, 6.0 Gb/s (current: 6.0 Gb/s)
+It might be possible to successfully mount with '-o ro,nologreplay,degraded'
 
-It hosts 3 qemu instances, all with the same configuration.
+If that works, I'd take the opportunity to refresh backups. I'm not
+sure if this can be repaired but also not sure what the problem is.
 
-I left the test running earlier today for about 1 hour on ext4 with
-only 1 fsstress process. Didn't manage to reproduce.
-With 4 or more processes, those journal checksum failures happen sporadically.
-I can leave it running with 1 process during this evening and see what
-we get here, if it happens with 1 process, it should be trivial to
-reproduce anywhere.
+If it doesn't work, then the next step until a developer has an
+opinion on it, is 'btrfs restore' which is a way to scrape data out of
+an unmountable file system. It's better than nothing if the data is
+important, but ideal if at least ro mount can work.
 
->
-> Thanks,
->
->                                         - Ted
+-- 
+Chris Murphy
