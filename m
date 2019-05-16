@@ -2,117 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7141FF92
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 08:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8BDB1FFE2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 08:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbfEPGaQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 02:30:16 -0400
-Received: from mail-eopbgr1370087.outbound.protection.outlook.com ([40.107.137.87]:50784
-        "EHLO AUS01-SY3-obe.outbound.protection.outlook.com"
+        id S1726374AbfEPG5F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 02:57:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42408 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726221AbfEPGaQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 02:30:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oakvillepondscapes.onmicrosoft.com;
- s=selector1-oakvillepondscapes-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SNcYfA2utvY/ck27yRX7DsM5jEhEReqFG12UZdzRxO4=;
- b=X+VjqqL0wn1sHL9/bdYbGCakLroZoyx/gFpkjQQUdWZbR/jyX/Q1l+sDat++wgeagOwK71r9VE1RdkOgBUJCzl9rGNbEFdsWqoyg9eyCIToJ0QNqjzrRbk6zVgdT3ievOC+xYozbE7MYGaKeje1gkKJaSBvXTcb2l7XiWa63mwY=
-Received: from SYCPR01MB5086.ausprd01.prod.outlook.com (20.178.187.213) by
- SYCPR01MB4288.ausprd01.prod.outlook.com (20.178.184.82) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1900.17; Thu, 16 May 2019 06:30:11 +0000
-Received: from SYCPR01MB5086.ausprd01.prod.outlook.com
- ([fe80::6016:fd57:4a00:d6e0]) by SYCPR01MB5086.ausprd01.prod.outlook.com
- ([fe80::6016:fd57:4a00:d6e0%7]) with mapi id 15.20.1900.010; Thu, 16 May 2019
- 06:30:11 +0000
-From:   Paul Jones <paul@pauljones.id.au>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>,
-        Johannes Thumshirn <jthumshirn@suse.de>
-CC:     David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: RE: [PATCH 00/17] Add support for SHA-256 checksums
-Thread-Topic: [PATCH 00/17] Add support for SHA-256 checksums
-Thread-Index: AQHVC0NWkonViNOsnEiQH0Z9AhvybKZtSiBw
-Date:   Thu, 16 May 2019 06:30:11 +0000
-Message-ID: <SYCPR01MB5086D225BE48AD0AD9BBA4B69E0A0@SYCPR01MB5086.ausprd01.prod.outlook.com>
-References: <20190510111547.15310-1-jthumshirn@suse.de>
- <20190515172720.GX3138@twin.jikos.cz>
-In-Reply-To: <20190515172720.GX3138@twin.jikos.cz>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=paul@pauljones.id.au; 
-x-originating-ip: [60.242.218.104]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 931ad0d9-7a41-489a-9052-08d6d9c7f2bf
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(7021145)(8989299)(4534185)(7022145)(4603075)(4627221)(201702281549075)(8990200)(7048125)(7024125)(7027125)(7023125)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:SYCPR01MB4288;
-x-ms-traffictypediagnostic: SYCPR01MB4288:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <SYCPR01MB428842AFEAB905ECC7F650589E0A0@SYCPR01MB4288.ausprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0039C6E5C5
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39830400003)(366004)(376002)(346002)(396003)(136003)(199004)(189003)(13464003)(74316002)(8936002)(5660300002)(966005)(2501003)(52536014)(316002)(66556008)(81156014)(66066001)(66446008)(64756008)(71200400001)(66476007)(81166006)(71190400001)(76116006)(73956011)(66946007)(256004)(86362001)(8676002)(110136005)(54906003)(53936002)(74482002)(186003)(7696005)(229853002)(11346002)(476003)(25786009)(2906002)(99286004)(7736002)(26005)(102836004)(305945005)(55016002)(53546011)(33656002)(6436002)(76176011)(6506007)(14454004)(508600001)(68736007)(486006)(6306002)(446003)(6246003)(4326008)(9686003)(3846002)(6116002);DIR:OUT;SFP:1101;SCL:1;SRVR:SYCPR01MB4288;H:SYCPR01MB5086.ausprd01.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: pauljones.id.au does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: +0POJFV4zG2vL5zJ/FCoUgEK3Ga4rQ2Y3OLHTUbGm78YWRGiqTzkVfid9kEslTW6f1ajD1NZoLYIE/ibhI2ZDQCbs+MOA2FfjqWkqnbGeb6S5wE2zwANgrz8L4sFrVUXWVqagCy+Yya7NQp3Pz3Y8dgLBcOGPnNjZ51cH+oSr5NVx9Qy8/BPCg/LAiwZ9xZQDelZFleHq02mfdyqxavYsx6YYM9DDus5rkDOTPJGw/w2A9fJMcmHstypvO2pwr1ovgEoiPpcLjyNvWVxYaBN/LyF9PCywTdZ8LKzBe8hQUnQ/N+6e6/NXDVPlqXz91NY7tZLm23HKwlS4mi5UGB3hGcO9Nqi7y8loXRexRtAXRMdy6oG6Dp4mWPi+jtLMKcl93A+DdJBgXrwWIukLuosKReZJ3jdnOLbXDPMj4S0/IA=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1726319AbfEPG5F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 May 2019 02:57:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5E9FFAA71;
+        Thu, 16 May 2019 06:57:03 +0000 (UTC)
+Subject: Re: storm-of-soft-lockups: spinlocks running on all cores, preventing
+ forward progress (4.14- to 5.0+)
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        linux-btrfs@vger.kernel.org
+References: <20190515213650.GG20359@hungrycats.org>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <0480104e-db25-4e2f-08e5-0236ffd5c1c2@suse.com>
+Date:   Thu, 16 May 2019 09:57:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-OriginatorOrg: pauljones.id.au
-X-MS-Exchange-CrossTenant-Network-Message-Id: 931ad0d9-7a41-489a-9052-08d6d9c7f2bf
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 May 2019 06:30:11.2664
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYCPR01MB4288
+In-Reply-To: <20190515213650.GG20359@hungrycats.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-> -----Original Message-----
-> From: linux-btrfs-owner@vger.kernel.org <linux-btrfs-
-> owner@vger.kernel.org> On Behalf Of David Sterba
-> Sent: Thursday, 16 May 2019 3:27 AM
-> To: Johannes Thumshirn <jthumshirn@suse.de>
-> Cc: David Sterba <dsterba@suse.com>; Linux BTRFS Mailinglist <linux-
-> btrfs@vger.kernel.org>
-> Subject: Re: [PATCH 00/17] Add support for SHA-256 checksums
->=20
->=20
-> Once the code is ready for more checksum algos, we'll pick candidates and
-> my idea is to select 1 fast (not necessarily strong, but better than crc3=
-2c) and
-> 1 strong (but slow, and sha256 is the candidate at the moment).
->=20
-> The discussion from 2014 on that topic brought a lot of useful informatio=
-n,
-> though some algos have could have evolved since.
->=20
-> https://lore.kernel.org/linux-btrfs/1416806586-18050-1-git-send-email-
-> bo.li.liu@oracle.com/
->=20
-> In about 5 years timeframe we can revisit the algos and potentially add m=
-ore,
-> so I hope we'll be able to agree to add just 2 in this round.
->=20
-> The minimum selection criteria for a digest algorithm:
->=20
-> - is provided by linux kernel crypto subsystem
-> - has a license that will allow to use it in bootloader code (grub at
->   lest)
-> - the implementation is available for btrfs-progs either as some small
->   library or can be used directly as a .c file
+
+On 16.05.19 г. 0:36 ч., Zygo Blaxell wrote:
+> "Storm-of-soft-lockups" is a failure mode where btrfs puts all of the
+> CPU cores in kernel functions that are unable to make forward progress,
+> but also unwilling to release their respective CPU cores.  This is
+> usually accompanied by a lot of CPU usage (detectable as either kvm CPU
+> usage or just a lot of CPU fan noise) though I don't know if all cores
+> are spinning or only some of them.
+> 
+> The kernel console presents a continual stream of "BUG: soft lockup"
+> warnings for some days.  None of the call traces change during this time.
+> The only way out is to reboot.
+> 
+> You can reproduce this by writing a bunch of data to a filesystem while
+> bees is running on all cores.  It takes a few days to occur naturally.
+> It can probably be sped up by just doing a bunch of random LOGICAL_INO
+> ioctls in a tight loop on each core.
+> 
+> Here's an instance on a 4-CPU VM where CPU#0 is running btrfs-transaction
+> (btrfs_try_tree_write_lock) and CPU#1-3 are running the LOGICAL_INO
+> ioctl (btrfs_tree_read_lock_atomic):
 
 
-Xxhash would be a good candidate. It's extremely fast and almost crypto sec=
-ure.  Has been in the kernel for ~2 yeas iirc.
+Provide output of all sleeping threads when this occur via
+ echo w > /proc/sysrq-trigger.
+
+Also do you have this patch on the affected machine:
+
+38e3eebff643 ("btrfs: honor path->skip_locking in backref code") can you
+try and test with it applied ?
 
 
-Paul.
+<SNIP>
