@@ -2,104 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E118020CD4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 18:21:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7C520D93
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 19:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbfEPQVE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 12:21:04 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:40418 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbfEPQVD (ORCPT
+        id S1727323AbfEPQ77 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 12:59:59 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:46828 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726449AbfEPQ77 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 12:21:03 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 67D882FF459; Thu, 16 May 2019 12:21:02 -0400 (EDT)
-Date:   Thu, 16 May 2019 12:20:14 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: storm-of-soft-lockups: spinlocks running on all cores,
- preventing forward progress (4.14- to 5.0+)
-Message-ID: <20190516161850.GC22081@hungrycats.org>
-References: <20190515213650.GG20359@hungrycats.org>
- <0480104e-db25-4e2f-08e5-0236ffd5c1c2@suse.com>
+        Thu, 16 May 2019 12:59:59 -0400
+Received: from callcc.thunk.org (168-215-239-3.static.ctl.one [168.215.239.3] (may be forged))
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4GGxMQ2021387
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 May 2019 12:59:25 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 74866420024; Thu, 16 May 2019 12:59:21 -0400 (EDT)
+Date:   Thu, 16 May 2019 12:59:21 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
+Message-ID: <20190516165921.GA4023@mit.edu>
+References: <20190515150221.16647-1-fdmanana@kernel.org>
+ <20190516092848.GA6975@mit.edu>
+ <CAL3q7H7q5Xphhax3qPdt1fnjaWrekMgMKzKfDyOLm+bbgsw6Aw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="GPJrCs/72TxItFYR"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0480104e-db25-4e2f-08e5-0236ffd5c1c2@suse.com>
+In-Reply-To: <CAL3q7H7q5Xphhax3qPdt1fnjaWrekMgMKzKfDyOLm+bbgsw6Aw@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, May 16, 2019 at 10:54:57AM +0100, Filipe Manana wrote:
+> 
+> Haven't tried ext4 with 1 process only (instead of 4), but I can try
+> to see if it happens without concurrency as well.
 
---GPJrCs/72TxItFYR
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+How many CPU's and how much memory were you using?  And I assume this
+was using KVM/QEMU?  How was it configured?
 
-On Thu, May 16, 2019 at 09:57:01AM +0300, Nikolay Borisov wrote:
->=20
->=20
-> On 16.05.19 =D0=B3. 0:36 =D1=87., Zygo Blaxell wrote:
-> > "Storm-of-soft-lockups" is a failure mode where btrfs puts all of the
-> > CPU cores in kernel functions that are unable to make forward progress,
-> > but also unwilling to release their respective CPU cores.  This is
-> > usually accompanied by a lot of CPU usage (detectable as either kvm CPU
-> > usage or just a lot of CPU fan noise) though I don't know if all cores
-> > are spinning or only some of them.
-> >=20
-> > The kernel console presents a continual stream of "BUG: soft lockup"
-> > warnings for some days.  None of the call traces change during this tim=
-e.
-> > The only way out is to reboot.
-> >=20
-> > You can reproduce this by writing a bunch of data to a filesystem while
-> > bees is running on all cores.  It takes a few days to occur naturally.
-> > It can probably be sped up by just doing a bunch of random LOGICAL_INO
-> > ioctls in a tight loop on each core.
-> >=20
-> > Here's an instance on a 4-CPU VM where CPU#0 is running btrfs-transacti=
-on
-> > (btrfs_try_tree_write_lock) and CPU#1-3 are running the LOGICAL_INO
-> > ioctl (btrfs_tree_read_lock_atomic):
->=20
->=20
-> Provide output of all sleeping threads when this occur via
->  echo w > /proc/sysrq-trigger.
+Thanks,
 
-The machine is dead in this state--it doesn't respond to pings or serial
-port input, and can't run a shell.  The serial console doesn't respond
-to BREAK-w either.  Those per-CPU stack traces every 22 seconds are all
-I get, and also the only indication the system is not completely stopped.
-The per-CPU stack traces do continue for days, and never report any
-processes running other than those four.
-
-> Also do you have this patch on the affected machine:
->=20
-> 38e3eebff643 ("btrfs: honor path->skip_locking in backref code") can you
-> try and test with it applied ?
-
-I have that patch applied already from when I was collecting deadlock
-fixes earlier this year.
-
-I have observations of storm-of-soft-lockups going back to at least
-4.14 (it is #5 out of the 6 most common ways 4.14.y kernels fail).
-So it is not a new bug.
-
-> <SNIP>
->=20
-
---GPJrCs/72TxItFYR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXN2NVgAKCRCB+YsaVrMb
-nEyBAKDXR/8V0ivRfKoOllRrRinBPO8TZACdHVpSxT1kmWrWLa+WdjB8nzXbRrU=
-=iEEC
------END PGP SIGNATURE-----
-
---GPJrCs/72TxItFYR--
+					- Ted
