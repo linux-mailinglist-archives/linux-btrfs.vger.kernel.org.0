@@ -2,131 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C87A20A19
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 16:49:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD4420A92
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 17:02:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726943AbfEPOtA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 10:49:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726736AbfEPOtA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 10:49:00 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        id S1726856AbfEPPCs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 11:02:48 -0400
+Received: from tty0.vserver.softronics.ch ([91.214.169.36]:39732 "EHLO
+        fe1.digint.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726687AbfEPPCr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 May 2019 11:02:47 -0400
+X-Greylist: delayed 469 seconds by postgrey-1.27 at vger.kernel.org; Thu, 16 May 2019 11:02:46 EDT
+Received: from [10.0.1.10] (unknown [81.6.39.165])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B60BC20815
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 May 2019 14:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558018139;
-        bh=o3ZhzmbEcQV1G4PzzWguGrhfpAX6JjOqVx2EYcktREE=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=t1LxpsQyb+wIqODEZkZhv2fLewsq1CYVBMW3DLek3QZ/bdJraUND3ettllW+JMIii
-         Vg8pO0slRUGj/k6ZWb6xlusQ1QcRbuNXAkGYp2SA/CAxYt6DuTFP3K81cyTZG6Tg0y
-         y6ug2a2QZsLiB0BfGpf8/CObV/AI17Y/OFD4NxHk=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 1/3] Btrfs: fix fsync not persisting changed attributes of a directory
-Date:   Thu, 16 May 2019 15:48:55 +0100
-Message-Id: <20190516144855.11945-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20190515150238.21939-1-fdmanana@kernel.org>
-References: <20190515150238.21939-1-fdmanana@kernel.org>
+        by fe1.digint.ch (Postfix) with ESMTPSA id 670FB30C26
+        for <linux-btrfs@vger.kernel.org>; Thu, 16 May 2019 16:54:55 +0200 (CEST)
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Axel Burri <axel@tty0.ch>
+Subject: Used disk size of a received subvolume?
+Openpgp: preference=signencrypt
+Autocrypt: addr=axel@tty0.ch; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <c79df692-cc5d-5a3a-1123-e376e8c94eb3@tty0.ch>
+Date:   Thu, 16 May 2019 16:54:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+Trying to get the size of a subvolume created using "btrfs receive",
+I've come with a cute little script:
 
-While logging an inode we follow its ancestors and for each one we mark
-it as logged in the current transaction, even if we have not logged it.
-As a consequence if we change an attribute of an ancestor, such as the
-UID or GID for example, and then explicitly fsync it, we end up not
-logging the inode at all despite returning success to user space, which
-results in the attribute being lost if a power failure happens after
-the fsync.
+   SUBVOL=/path/to/subvolume
+   CGEN=$(btrfs subvolume show "$SUBVOL" \
+     | sed -n 's/\s*Gen at creation:\s*//p')
+   btrfs subvolume find-new "$SUBVOL" $((CGEN+1)) \
+     | cut -d' ' -f7 \
+     | tr '\n' '+' \
+     | sed 's/\+\+$/\n/' \
+     | bc
 
-Sample reproducer:
+This simply sums up the "len" field from all modified files since the
+creation of the subvolume. Works fine, as btrfs-receive first makes a
+snapshot of the parent subvolume, then adds the files according to the
+send-stream.
 
-  $ mkfs.btrfs -f /dev/sdb
-  $ mount /dev/sdb /mnt
+Now this rises some questions:
 
-  $ mkdir /mnt/dir
-  $ chown 6007:6007 /mnt/dir
+1. How accurate is this? AFAIK "btrfs find-new" prints real length, not
+compressed length.
 
-  $ sync
+2. If there are clone-sources in the send-stream, the cloned files
+probably also appear in the list.
 
-  $ chown 9003:9003 /mnt/dir
-  $ touch /mnt/dir/file
-  $ xfs_io -c fsync /mnt/dir/file
+3. Is there a better way? It would be nice to have a btrfs command for
+this. It would be straight-forward to have a "--summary" option in
+"btrfs find-new", another approach would be to calculate and dump the
+size in either "btrfs send" or "btrfs receive".
 
-  # fsync our directory after fsync'ing the new file, should persist the
-  # new values for the uid and gid.
-  $ xfs_io -c fsync /mnt/dir
+Any thoughts? I'm willing to implement such a feature in btrfs-progs if
+this sounds reasonable to you.
 
-  <power failure>
 
-  $ mount /dev/sdb /mnt
-  $ stat -c %u:%g /mnt/dir
-  6007:6007
+- Axel
 
-    --> should be 9003:9003, the uid and gid were not persisted, despite
-        the explicit fsync on the directory prior to the power failure
 
-Fix this by not updating the logged_trans field of ancestor inodes when
-logging an inode, since we have not logged them. Let only future calls to
-btrfs_log_inode() to mark inodes as logged.
-
-This could be triggered by my recent fsync fuzz tester for fstests, for
-which an fstests patch exists titled "fstests: generic, fsync fuzz tester
-with fsstress".
-
-Fixes: 12fcfd22fe5b ("Btrfs: tree logging unlink/rename fixes")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
-
-V2: Removed no longer needed smp_mb() at btrfs_record_unlink_dir().
-
- fs/btrfs/tree-log.c | 12 ------------
- 1 file changed, 12 deletions(-)
-
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 87e3e4e37606..64b74f0a48d8 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -5465,7 +5465,6 @@ static noinline int check_parent_dirs_for_sync(struct btrfs_trans_handle *trans,
- {
- 	int ret = 0;
- 	struct dentry *old_parent = NULL;
--	struct btrfs_inode *orig_inode = inode;
- 
- 	/*
- 	 * for regular files, if its inode is already on disk, we don't
-@@ -5485,16 +5484,6 @@ static noinline int check_parent_dirs_for_sync(struct btrfs_trans_handle *trans,
- 	}
- 
- 	while (1) {
--		/*
--		 * If we are logging a directory then we start with our inode,
--		 * not our parent's inode, so we need to skip setting the
--		 * logged_trans so that further down in the log code we don't
--		 * think this inode has already been logged.
--		 */
--		if (inode != orig_inode)
--			inode->logged_trans = trans->transid;
--		smp_mb();
--
- 		if (btrfs_must_commit_transaction(trans, inode)) {
- 			ret = 1;
- 			break;
-@@ -6371,7 +6360,6 @@ void btrfs_record_unlink_dir(struct btrfs_trans_handle *trans,
- 	 * if this directory was already logged any new
- 	 * names for this file/dir will get recorded
- 	 */
--	smp_mb();
- 	if (dir->logged_trans == trans->transid)
- 		return;
- 
--- 
-2.11.0
-
+Ref: https://github.com/digint/btrbk/issues/280
