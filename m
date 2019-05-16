@@ -2,70 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D48207BB
+	by mail.lfdr.de (Postfix) with ESMTP id 8BA6F207BC
 	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 15:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726955AbfEPNMx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 09:12:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55088 "EHLO mx1.suse.de"
+        id S1727103AbfEPNMy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 09:12:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55094 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726692AbfEPNMx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1726703AbfEPNMx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Thu, 16 May 2019 09:12:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 439B3AA71
+        by mx1.suse.de (Postfix) with ESMTP id 947FDABF4
         for <linux-btrfs@vger.kernel.org>; Thu, 16 May 2019 13:12:52 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 1/2] btrfs-progs: Correctly open filesystem on image file
-Date:   Thu, 16 May 2019 16:12:49 +0300
-Message-Id: <20190516131250.26621-1-nborisov@suse.com>
+Subject: [PATCH 2/2] btrfs-progs: tests: Test fs on image files is correctly recognised
+Date:   Thu, 16 May 2019 16:12:50 +0300
+Message-Id: <20190516131250.26621-2-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190516131250.26621-1-nborisov@suse.com>
+References: <20190516131250.26621-1-nborisov@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When btrfs' 'filesystem' subcommand is passed path to an image file it
-currently fails since the code expects the image file is going to be
-recognised by libblkid (called from btrfs_scan_devices()). This is not
-the case since libblkid only scan well-known locations under /dev.
-
-Fix this by explicitly calling open_ctree which will correctly open
-the image and add it to the correct btrfs_fs_devices struct. This allows
-subsequent cmd_filesystem_show logic to correctly show requested
-information.
+This ensures that 'btrfs filesystem show' can correctly identify a
+filesystem on a newly created local file.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- cmds-filesystem.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ tests/cli-tests/010-fi-show-on-new-file/test.sh | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+ create mode 100755 tests/cli-tests/010-fi-show-on-new-file/test.sh
 
-diff --git a/cmds-filesystem.c b/cmds-filesystem.c
-index b8beec13f0e5..f55ce9b4ab85 100644
---- a/cmds-filesystem.c
-+++ b/cmds-filesystem.c
-@@ -771,7 +771,18 @@ static int cmd_filesystem_show(int argc, char **argv)
- 		goto out;
- 
- devs_only:
--	ret = btrfs_scan_devices();
-+	if (type == BTRFS_ARG_REG) {
-+		/*
-+		 * We don't close the fs_info because it will free the device,
-+		 * this is not a long-running process so it's fine
-+		 */
-+		if (open_ctree(search, btrfs_sb_offset(0), 0))
-+			ret = 0;
-+		else
-+			ret = 1;
-+	} else {
-+		ret = btrfs_scan_devices();
-+	}
- 
- 	if (ret) {
- 		error("blkid device scan returned %d", ret);
+diff --git a/tests/cli-tests/010-fi-show-on-new-file/test.sh b/tests/cli-tests/010-fi-show-on-new-file/test.sh
+new file mode 100755
+index 000000000000..668f0f9b2cfe
+--- /dev/null
++++ b/tests/cli-tests/010-fi-show-on-new-file/test.sh
+@@ -0,0 +1,16 @@
++#!/bin/bash
++# test for 'filesystem show' on fresh local file
++
++source "$TEST_TOP/common"
++
++check_prereq mkfs.btrfs
++check_prereq btrfs
++
++IMAGE=$(mktemp -u btrfs-XXXXXX.img)
++
++truncate -s3g "$IMAGE"
++run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$IMAGE"
++run_check $SUDO_HELPER "$TOP/btrfs" filesystem show "$IMAGE"
++
++rm -f "$IMAGE"
++
 -- 
 2.7.4
 
