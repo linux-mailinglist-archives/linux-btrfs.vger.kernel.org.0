@@ -2,120 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBFB120DBD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 19:12:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C6820DC9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 16 May 2019 19:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726857AbfEPRM2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 13:12:28 -0400
-Received: from frost.carfax.org.uk ([85.119.82.111]:33235 "EHLO
-        frost.carfax.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726551AbfEPRM2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 13:12:28 -0400
-Received: from hrm by frost.carfax.org.uk with local (Exim 4.80)
-        (envelope-from <hrm@carfax.org.uk>)
-        id 1hRJvd-0001DN-NG; Thu, 16 May 2019 17:12:25 +0000
-Date:   Thu, 16 May 2019 17:12:25 +0000
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     Axel Burri <axel@tty0.ch>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Used disk size of a received subvolume?
-Message-ID: <20190516171225.GH1667@carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
-        Axel Burri <axel@tty0.ch>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <c79df692-cc5d-5a3a-1123-e376e8c94eb3@tty0.ch>
+        id S1727294AbfEPRSQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 13:18:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726943AbfEPRSP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 16 May 2019 13:18:15 -0400
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DACE420848;
+        Thu, 16 May 2019 17:18:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1558027095;
+        bh=E6FuDq4ZEhJ0whJY8iLzeoTQeoYTjcI9Scr+CE+5PMo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=R5U5A1TZYsPm7jp+A9fLeBth7dePmY2mA40hZ4p6q6oDxDJTwTnGsRzVs576dITkh
+         rjxxCCKyG24WKVqpDLdj/MY5iN+MhlTTWmAoGs1UBGETekVWIdg0KNg0PxLJB/uuEw
+         I9Z7+5eKrY8YxjPxOsfoLMZd3SGUKOcbcM6u0uJ4=
+Received: by mail-vs1-f48.google.com with SMTP id j184so2797796vsd.11;
+        Thu, 16 May 2019 10:18:14 -0700 (PDT)
+X-Gm-Message-State: APjAAAWOAPLHPc7BKAAHai+IWzG0wRGA3miI0+pMr0ttIAlHzi+tIV1N
+        tB70iYchrkB0Jmyr0y3JGDhvKW+C75ZwMqz15rA=
+X-Google-Smtp-Source: APXvYqz1RV8s1QJ3CVTGiY2RhVMONNipWOC3z/MEM9S1fmxq3V7rI1IhNzndXEnr4ydOdL4gyK/A2svcT0QbNYoqQw8=
+X-Received: by 2002:a67:f34d:: with SMTP id p13mr22894146vsm.95.1558027094032;
+ Thu, 16 May 2019 10:18:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="2xzXx3ruJf7hsAzo"
-Content-Disposition: inline
-In-Reply-To: <c79df692-cc5d-5a3a-1123-e376e8c94eb3@tty0.ch>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20190515150221.16647-1-fdmanana@kernel.org> <20190516092848.GA6975@mit.edu>
+ <CAL3q7H7q5Xphhax3qPdt1fnjaWrekMgMKzKfDyOLm+bbgsw6Aw@mail.gmail.com> <20190516165921.GA4023@mit.edu>
+In-Reply-To: <20190516165921.GA4023@mit.edu>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 16 May 2019 18:18:02 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6gvdhSweJH1W7dbvOtwu8RmzbMRMb9MsSv0D8g+Cm40g@mail.gmail.com>
+Message-ID: <CAL3q7H6gvdhSweJH1W7dbvOtwu8RmzbMRMb9MsSv0D8g+Cm40g@mail.gmail.com>
+Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-ext4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu, May 16, 2019 at 5:59 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Thu, May 16, 2019 at 10:54:57AM +0100, Filipe Manana wrote:
+> >
+> > Haven't tried ext4 with 1 process only (instead of 4), but I can try
+> > to see if it happens without concurrency as well.
+>
+> How many CPU's and how much memory were you using?  And I assume this
+> was using KVM/QEMU?  How was it configured?
 
---2xzXx3ruJf7hsAzo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yep, kvm and qemu (3.0.0). The qemu config:
 
-On Thu, May 16, 2019 at 04:54:42PM +0200, Axel Burri wrote:
-> Trying to get the size of a subvolume created using "btrfs receive",
-> I've come with a cute little script:
-> 
->    SUBVOL=/path/to/subvolume
->    CGEN=$(btrfs subvolume show "$SUBVOL" \
->      | sed -n 's/\s*Gen at creation:\s*//p')
->    btrfs subvolume find-new "$SUBVOL" $((CGEN+1)) \
->      | cut -d' ' -f7 \
->      | tr '\n' '+' \
->      | sed 's/\+\+$/\n/' \
->      | bc
-> 
-> This simply sums up the "len" field from all modified files since the
-> creation of the subvolume. Works fine, as btrfs-receive first makes a
-> snapshot of the parent subvolume, then adds the files according to the
-> send-stream.
-> 
-> Now this rises some questions:
-> 
-> 1. How accurate is this? AFAIK "btrfs find-new" prints real length, not
-> compressed length.
-> 
-> 2. If there are clone-sources in the send-stream, the cloned files
-> probably also appear in the list.
-> 
-> 3. Is there a better way? It would be nice to have a btrfs command for
-> this. It would be straight-forward to have a "--summary" option in
-> "btrfs find-new", another approach would be to calculate and dump the
-> size in either "btrfs send" or "btrfs receive".
+https://pastebin.com/KNigeXXq
 
-   btrfs find-new also doesn't tell you about deleted files (fairly
-obviously), so if anything's been removed, you'll be overestimating
-the overall change in size.
+TEST_DEV is the drive with ID "drive1" and SCRATCH_DEV is the drive
+with ID "drive2".
 
-> Any thoughts? I'm willing to implement such a feature in btrfs-progs if
-> this sounds reasonable to you.
+The host has:
 
-   If you're looking for the incremental usage of the subvolume, why
-not just use the "exclusive" value from btrfs fi du? That's exactly
-that information. (And note that it changes over time, as other
-subvols it shares with are deleted).
+Intel(R) Core(TM) i7-8700 CPU @ 3.20GHz
+64Gb of ram
+crappy seagate hdd:
 
-   Hugo.
+Device Model:     ST3000DM008-2DM166
+Serial Number:    Z5053T2R
+LU WWN Device Id: 5 000c50 0a46f7ecb
+Firmware Version: CC26
+User Capacity:    3,000,592,982,016 bytes [3,00 TB]
+Sector Sizes:     512 bytes logical, 4096 bytes physical
+Rotation Rate:    7200 rpm
+Form Factor:      3.5 inches
+Device is:        Not in smartctl database [for details use: -P showall]
+ATA Version is:   ACS-2, ACS-3 T13/2161-D revision 3b
+SATA Version is:  SATA 3.1, 6.0 Gb/s (current: 6.0 Gb/s)
 
--- 
-Hugo Mills             | Your problem is that you've got too much taste to be
-hugo@... carfax.org.uk | a web developer.
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |                                          Steve Harris
+It hosts 3 qemu instances, all with the same configuration.
 
---2xzXx3ruJf7hsAzo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+I left the test running earlier today for about 1 hour on ext4 with
+only 1 fsstress process. Didn't manage to reproduce.
+With 4 or more processes, those journal checksum failures happen sporadically.
+I can leave it running with 1 process during this evening and see what
+we get here, if it happens with 1 process, it should be trivial to
+reproduce anywhere.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJc3Zn5AAoJEFheFHXiqx3k8pAP/ikFbUbNmvkHsQH0whRVFnAx
-+OoEDZlN/6EP9qZ2yUQj47yY9+o1A5yz1eoEZJA8OPp5X4+RGRSgkrwoC4OtU6eh
-uL40zyaEQNqbv1i8FlaJ898TI9Pn9cWbxApNILuMqEZBFjvBB9k9oIWVswkPM5cJ
-yF5B8Mvab9VWd43AeH9eqMrQhdMkTR0hqmgfRdTrBFwrIy1B5hYLZaaSQCKGnTPP
-xm4rhuv+ca2hypl144PBHyl0jqQlKS6W7H33bELrUzD70YdjdmK/xaH4H+y0CYJ9
-/bDzPpVmpDLEbUNJ5RcBPkl5FfZSTjfGXjhzuu6iqQwPVAJvjMQ8mNm1ogJX0gbF
-hmlQp+IWjudy5/2mAmKS+Y2C1t/k5qjOTtxKst6OJmXDMYGa4ojo60bz/88v1Mlw
-jOK6oRhMyEivDdKW8gQBIAyfuYP6RG63w88FVDpS44K6An1F4C2WV28OyFnXhFxG
-fSWloLWd97xHiue3p70vavEdYNk1cVYZkeMm4njLNpZHGEooJRIPUAwQWG+DMEmU
-KJWfw2X0yF3O8m7PmAs/hvBVThyR7PNfR57bIQ2N+g795QJkI61QOilf189dN+wH
-mfhltzybmao9sJS7Pno8BruEwfEKaJhpoorqxS14nIJYuBCF7eFEFZ5KgmM7ZUPO
-29H6oUKZglL/ijbDGOw+
-=BL6J
------END PGP SIGNATURE-----
-
---2xzXx3ruJf7hsAzo--
+>
+> Thanks,
+>
+>                                         - Ted
