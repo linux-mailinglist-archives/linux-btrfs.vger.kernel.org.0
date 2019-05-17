@@ -2,54 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA9A21BC0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 18:39:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD3E421C99
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 19:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbfEQQjN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 May 2019 12:39:13 -0400
-Received: from bang.steev.me.uk ([81.2.120.65]:59787 "EHLO smtp.steev.me.uk"
+        id S1728435AbfEQRhw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 17 May 2019 13:37:52 -0400
+Received: from voltaic.bi-co.net ([134.119.3.22]:40329 "EHLO voltaic.bi-co.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725933AbfEQQjN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 May 2019 12:39:13 -0400
-Received: from [2001:8b0:162c:2:b132:85a2:4793:373b]
-        by smtp.steev.me.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.91)
-        id 1hRft2-0007pB-9b
-        for linux-btrfs@vger.kernel.org; Fri, 17 May 2019 17:39:12 +0100
-Subject: Re: Used disk size of a received subvolume?
-References: <c79df692-cc5d-5a3a-1123-e376e8c94eb3@tty0.ch>
- <20190516171225.GH1667@carfax.org.uk>
- <27af7824-f3e9-47a5-7760-d3e30827a081@tty0.ch>
- <811bcd96-5a8e-cb10-7efb-22c1046e0f42@cobb.uk.net>
-To:     linux-btrfs@vger.kernel.org
-From:   Steven Davies <btrfs-list@steev.me.uk>
-Message-ID: <24f44d54-a560-0b6e-5fe0-026626d1d2c5@steev.me.uk>
-Date:   Fri, 17 May 2019 17:39:18 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <811bcd96-5a8e-cb10-7efb-22c1046e0f42@cobb.uk.net>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S1728057AbfEQRhv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 May 2019 13:37:51 -0400
+Received: from lass-mb.fritz.box (aftr-95-222-30-100.unity-media.net [95.222.30.100])
+        by voltaic.bi-co.net (Postfix) with ESMTPSA id 0A06920987;
+        Fri, 17 May 2019 19:37:50 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: Massive filesystem corruption after balance + fstrim on Linux
+ 5.1.2
+From:   =?utf-8?Q?Michael_La=C3=9F?= <bevan@bi-co.net>
+In-Reply-To: <CAJCQCtR-uo9fgs66pBMEoYX_xAye=O-L8kiMwyAdFjPS5T4+CA@mail.gmail.com>
+Date:   Fri, 17 May 2019 19:37:49 +0200
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <8C31D41C-9608-4A65-B543-8ABCC0B907A0@bi-co.net>
+References: <297da4cbe20235080205719805b08810@bi-co.net>
+ <CAJCQCtR-uo9fgs66pBMEoYX_xAye=O-L8kiMwyAdFjPS5T4+CA@mail.gmail.com>
+To:     Chris Murphy <lists@colorremedies.com>
+X-Mailer: Apple Mail (2.3445.104.11)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 17/05/2019 16:28, Graham Cobb wrote:
 
-> That is why I created my "extents-list" stuff. This is a horrible hack
-> (one day I will rewrite it using the python library) which lets me
-> answer questions like: "how much space am I wasting by keeping
-> historical snapshots", "how much data is being shared between two
-> subvolumes", "how much of the data in my latest snapshot is unique to
-> that snapshot" and "how much space would I actually free up if I removed
-> (just) these particular directories". None of which can be answered from
-> the existing btrfs command line tools (unless I have missed something).
+> Am 17.05.2019 um 01:42 schrieb Chris Murphy <lists@colorremedies.com>:
+> 
+> Btrfs balance is supposed to be COW. So a block group is not
+> dereferenced until it is copied successfully and metadata is updated.
+> So it sounds like the fstrim happened before the metadata was updated.
+> But I don't see how that's possible in normal operation even without a
+> sync, let alone with the sync.
 
-I have my own horrible hack to do something like this; if you ever get 
-around to implementing it in Python could you share the code?
+Balance is indeed not to blame here. See below.
 
--- 
-Steven Davies
+> The most reliable way to test it, ideally keep everything the same, do
+> a new mkfs.btrfs, and try to reproduce the problem. And then do a
+> bisect. That for sure will find it, whether it's btrfs or something
+> else that's changed in the kernel. But it's also a bit tedious.
+> 
+> I'm not sure how to test this with any other filesystem on top of your
+> existing storage stack instead of btrfs, to see if it's btrfs or
+> something else. And you'll still have to do a lot of iteration. So it
+> doesn't make things that much easier than doing a kernel bisect.
+> Neither ext4 nor XFS have block group move like Btrfs does. LVM does
+> however, with pvmove. But that makes the testing more complicated,
+> introduces more factors. So...I still vote for bisect.
+> 
+> But even if you can't bisect, if you can reproduce, that might help
+> someone else who can do the bisect.
+
+I tried to reproduce this issue: I recreated the btrfs file system, set up a minimal system and issued fstrim again. It printed the following error message:
+
+fstrim: /: FITRIM ioctl failed: Input/output error
+
+Now it gets iteresting: After this, the btrfs file system was fine. However, two other LVM logical volumes that are partitioned with ext4 were destroyed. I cannot reproduce this issue with an older Linux 4.19 live CD. So I assume that it is not an issue with the SSD itself. I’ll start bisecting now. It could take a while since every “successful” (i.e., destructive) test requires me to recreate the system.
+
+> Your stack looks like this?
+> 
+> Btrfs
+> LUKS/dmcrypt
+> LVM
+> Samsung SSD
+
+To be precise, there’s an MBR partition in the game as well:
+
+Btrfs
+LUKS/dmcrypt
+LVM
+MBR partition
+Samsung SSD
+
+Cheers,
+Michael
