@@ -2,215 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E732129C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 05:43:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45E17214BE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 09:44:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727349AbfEQDm5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 23:42:57 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34998 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726757AbfEQDm5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 23:42:57 -0400
-Received: by mail-pl1-f194.google.com with SMTP id g5so2670681plt.2;
-        Thu, 16 May 2019 20:42:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5iP545AgQCgaGGAv0oOLLIrrv4tC3nnx8nSFIGlTWXk=;
-        b=Fq0PZU4o2CRakOX8822+7+/EctNpG/LAHIOcrh9ww5a/PoAUi7EMlYp/z7fAydyZgl
-         KRRvALvJMWjWMXlHVR2/kwWB5Mi88GZcvfgf04ZdQqdHRaxSLVzBcKkOHUmav0GAWL44
-         EGi2ceQPQUxy6YrNqdHm7P2Sevly+hSVTUDTr7T37IN023VsRzjXHiCPEAvLwamH2cNM
-         tt6Otobz1UizKheYEXUhJ0dMSShrd/X47bOGWhULc4LrNpQAIUNJsm2S/Wcy3a2nYMVZ
-         UBZt5lCH/Lo1r8zNgQDHy5OEmdYyQ4V+pEqOZYDGrxOEwq9/cAMvaJljU2qMT0mwaKQ8
-         QaWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5iP545AgQCgaGGAv0oOLLIrrv4tC3nnx8nSFIGlTWXk=;
-        b=Lc1Y139e100n6jQQP+8D84oHq2IGLMq6qNJDukynSbQJNJifluGXcAO6qGKsp1MERF
-         cP423xrqI5aP2R6ZrYyzvhReFfV6QMTUtpWyt8UHNQjWUoKpZFdb4LITYtCCsNMr5gGz
-         P/hsOdPSUv46x89zKl2QJoKpMOVant3r9FaJsY2SwKQ4TNlIEPJQPEYE3T13QcdegcQT
-         2Q8776Phuyg+7Zxsw2tCNpRB9plBRyk7DtcO1KP8OcB7KbRwy1IZfIfOfZQIUQtje5WY
-         h/UlvXGUc+NoroTAskrtdv4hfVEClVNktW+y3jSwyPnyVWz3Lhz2m6nKWxyzeukWGwcX
-         C4PA==
-X-Gm-Message-State: APjAAAUTo2T/BAA0z6DoxbOlTdBXz/ufA1Aqpkog5Vycnnfe3S9+ff/n
-        b9mUqYzqtUyoMkDkls/Llgw/qOsVrUs=
-X-Google-Smtp-Source: APXvYqwGO/piSeywYWH0CuWYFTmSqmwZJmVdog8uCpID9Enm3pb7XeWq3gJ+4/uiV0nlQKlj4Ah1DA==
-X-Received: by 2002:a17:902:8609:: with SMTP id f9mr52252009plo.32.1558064576099;
-        Thu, 16 May 2019 20:42:56 -0700 (PDT)
-Received: from localhost ([128.199.137.77])
-        by smtp.gmail.com with ESMTPSA id a7sm12685883pgj.42.2019.05.16.20.42.54
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 16 May 2019 20:42:55 -0700 (PDT)
-Date:   Fri, 17 May 2019 11:42:49 +0800
-From:   Eryu Guan <guaneryu@gmail.com>
-To:     fdmanana@kernel.org
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, jack@suse.cz,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
-Message-ID: <20190517034249.GM15846@desktop>
-References: <20190515150221.16647-1-fdmanana@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190515150221.16647-1-fdmanana@kernel.org>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+        id S1728656AbfEQHob (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 May 2019 03:44:31 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43006 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728323AbfEQHob (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 May 2019 03:44:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id CEBD7ABA1
+        for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2019 07:44:29 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     dsterba@suse.cz
+Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH v2] btrfs: Ensure replaced device doesn't have pending chunk allocation
+Date:   Fri, 17 May 2019 10:44:25 +0300
+Message-Id: <20190517074425.30072-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190515165207.GU3138@twin.jikos.cz>
+References: <20190515165207.GU3138@twin.jikos.cz>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 15, 2019 at 04:02:21PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Run fsstress, fsync every file and directory, simulate a power failure and
-> then verify the all files and directories exist, with the same data and
-> metadata they had before the power failure.
-> 
-> This tes has found already 2 bugs in btrfs, that caused mtime and ctime of
-> directories not being preserved after replaying the log/journal and loss
-> of a directory's attributes (such a UID and GID) after replaying the log.
-> The patches that fix the btrfs issues are titled:
-> 
->   "Btrfs: fix wrong ctime and mtime of a directory after log replay"
->   "Btrfs: fix fsync not persisting changed attributes of a directory"
-> 
-> Running this test 1000 times:
-> 
-> - on xfs, no issues were found
-> 
-> - on ext4 it has resulted in about a dozen journal checksum errors (on a
->   5.0 kernel) that resulted in failure to mount the filesystem after the
->   simulated power failure with dmflakey, which produces the following
->   error in dmesg/syslog:
-> 
->     [Mon May 13 12:51:37 2019] JBD2: journal checksum error
->     [Mon May 13 12:51:37 2019] EXT4-fs (dm-0): error loading journal
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  tests/generic/547     | 72 +++++++++++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/547.out |  2 ++
->  tests/generic/group   |  1 +
->  3 files changed, 75 insertions(+)
->  create mode 100755 tests/generic/547
->  create mode 100644 tests/generic/547.out
-> 
-> diff --git a/tests/generic/547 b/tests/generic/547
-> new file mode 100755
-> index 00000000..577b0e9b
-> --- /dev/null
-> +++ b/tests/generic/547
-> @@ -0,0 +1,72 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test No. 547
-> +#
-> +# Run fsstress, fsync every file and directory, simulate a power failure and
-> +# then verify the all files and directories exist, with the same data and
-> +# metadata they had before the power failure.
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	_cleanup_flakey
-> +	cd /
-> +	rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +. ./common/dmflakey
-> +
-> +# real QA test starts here
-> +_supported_fs generic
-> +_supported_os Linux
-> +_require_scratch
+Recent FITRIM work, namely bbbf7243d62d ("btrfs: combine device update
+operations during transaction commit") combined the way certain
+operations are recoded in a transaction. As a result an ASSERT was
+added in dev_replace_finish to ensure the new code works correctly.
+Unfortunately I got reports that it's possible to trigger the assert,
+meaning that during a device replace it's possible to have an unfinished
+chunk allocation on the source device.
 
-As we save fssum file to $TEST_DIR, it'd be better to _require_test too.
+This is supposed to be prevented by the fact that a transaction is
+committed before finishing the replace oepration and alter acquiring
+the chunk mutex. This is not sufficient since by the time the
+transaction is committed and the chunk mutex acquired it's possible to
+allocate a chunk depending on the workload being executed on the
+replaced device. This bug has been present ever since device replace was
+introduced but there was never code which checks for it.
 
-> +_require_fssum
-> +_require_dm_target flakey
-> +
-> +rm -f $seqres.full
-> +
-> +fssum_files_dir=$TEST_DIR/generic-test-$seq
-> +rm -fr $fssum_files_dir
-> +mkdir $fssum_files_dir
-> +
-> +_scratch_mkfs >>$seqres.full 2>&1
-> +_require_metadata_journaling $SCRATCH_DEV
-> +_init_flakey
-> +_mount_flakey
-> +
-> +mkdir $SCRATCH_MNT/test
-> +args=`_scale_fsstress_args -p 4 -n 100 $FSSTRESS_AVOID -d $SCRATCH_MNT/test`
-> +args="$args -f mknod=0 -f symlink=0"
-> +echo "Running fsstress with arguments: $args" >>$seqres.full
-> +$FSSTRESS_PROG $args >>$seqres.full
-> +
-> +# Fsync every file and directory.
-> +find $SCRATCH_MNT/test -type f,d -exec $XFS_IO_PROG -c "fsync" {} \;
+The correct way to fix is to ensure that there is no pending device
+modification operation when the chunk mutex is acquire and if there is
+repeat transaction commit. Unfortunately it's not possible to just
+exclude the source device from btrfs_fs_devices::dev_alloc_list since
+this causes ENOSPC to be hit in transaction commit.
 
-My 'find' on Fedora 29 vm (find (GNU findutils) 4.6.0) doesn't support
-"-type f,d" syntax
+Fixes: 391cd9df81ac ("Btrfs: fix unprotected alloc list insertion during the finishing procedure of replace")
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
 
-find: Arguments to -type should contain only one letter
+Changes since v1: 
+ * Add an explicit comment why loop construct must be used.
 
-I have to change this to
+ fs/btrfs/dev-replace.c | 35 +++++++++++++++++++++++++----------
+ 1 file changed, 25 insertions(+), 10 deletions(-)
 
-find $SCRATCH_MNT/test \( -type f -o -type d \) -exec $XFS_IO_PROG -c "fsync" {} \;
+diff --git a/fs/btrfs/dev-replace.c b/fs/btrfs/dev-replace.c
+index fb2bbc2a53a9..45c5ba7d80ed 100644
+--- a/fs/btrfs/dev-replace.c
++++ b/fs/btrfs/dev-replace.c
+@@ -599,17 +599,33 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 	}
+ 	btrfs_wait_ordered_roots(fs_info, U64_MAX, 0, (u64)-1);
+ 
+-	trans = btrfs_start_transaction(root, 0);
+-	if (IS_ERR(trans)) {
+-		mutex_unlock(&dev_replace->lock_finishing_cancel_unmount);
+-		return PTR_ERR(trans);
++	/*
++	 * We have to use this loop approach because at this point src_device
++	 * has to be available for transaction commit to complete, yet new
++	 * chunks shouldn't be allocated on the device.
++	 */
++	while (1) {
++		trans = btrfs_start_transaction(root, 0);
++		if (IS_ERR(trans)) {
++			mutex_unlock(&dev_replace->lock_finishing_cancel_unmount);
++			return PTR_ERR(trans);
++		}
++		ret = btrfs_commit_transaction(trans);
++		WARN_ON(ret);
++
++		/* Prevent write_all_supers() during the finishing procedure */
++		mutex_lock(&fs_info->fs_devices->device_list_mutex);
++		/* Prevent new chunks being allocated on the source device */
++		mutex_lock(&fs_info->chunk_mutex);
++
++		if (!list_empty(&src_device->post_commit_list)) {
++			mutex_unlock(&fs_info->fs_devices->device_list_mutex);
++			mutex_unlock(&fs_info->chunk_mutex);
++		} else {
++			break;
++		}
+ 	}
+-	ret = btrfs_commit_transaction(trans);
+-	WARN_ON(ret);
+ 
+-	/* keep away write_all_supers() during the finishing procedure */
+-	mutex_lock(&fs_info->fs_devices->device_list_mutex);
+-	mutex_lock(&fs_info->chunk_mutex);
+ 	down_write(&dev_replace->rwsem);
+ 	dev_replace->replace_state =
+ 		scrub_ret ? BTRFS_IOCTL_DEV_REPLACE_STATE_CANCELED
+@@ -658,7 +674,6 @@ static int btrfs_dev_replace_finishing(struct btrfs_fs_info *fs_info,
+ 	btrfs_device_set_disk_total_bytes(tgt_device,
+ 					  src_device->disk_total_bytes);
+ 	btrfs_device_set_bytes_used(tgt_device, src_device->bytes_used);
+-	ASSERT(list_empty(&src_device->post_commit_list));
+ 	tgt_device->commit_total_bytes = src_device->commit_total_bytes;
+ 	tgt_device->commit_bytes_used = src_device->bytes_used;
+ 
+-- 
+2.17.1
 
-Otherwise looks good to me, thanks!
-
-Eryu
-
-> +# Compute a digest of the filesystem (using the test directory only, to skip
-> +# fs specific directories such as "lost+found" on ext4 for example).
-> +$FSSUM_PROG -A -f -w $fssum_files_dir/fs_digest $SCRATCH_MNT/test
-> +
-> +# Simulate a power failure and mount the filesystem to check that all files and
-> +# directories exist and have all data and metadata preserved.
-> +_flakey_drop_and_remount
-> +
-> +# Compute a new digest and compare it to the one we created previously, they
-> +# must match.
-> +$FSSUM_PROG -r $fssum_files_dir/fs_digest $SCRATCH_MNT/test
-> +
-> +_unmount_flakey
-> +
-> +status=0
-> +exit
-> diff --git a/tests/generic/547.out b/tests/generic/547.out
-> new file mode 100644
-> index 00000000..0f6f1131
-> --- /dev/null
-> +++ b/tests/generic/547.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 547
-> +OK
-> diff --git a/tests/generic/group b/tests/generic/group
-> index 47e81d96..49639fc9 100644
-> --- a/tests/generic/group
-> +++ b/tests/generic/group
-> @@ -549,3 +549,4 @@
->  544 auto quick clone
->  545 auto quick cap
->  546 auto quick clone enospc log
-> +547 auto quick log
-> -- 
-> 2.11.0
-> 
