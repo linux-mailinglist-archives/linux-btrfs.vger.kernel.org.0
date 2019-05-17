@@ -2,183 +2,180 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0688621983
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 16:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE3D219A8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 16:14:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728822AbfEQOFS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 May 2019 10:05:18 -0400
-Received: from mout.gmx.net ([212.227.17.20]:50511 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728456AbfEQOFS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 May 2019 10:05:18 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1558101911;
-        bh=I9D7Bo0QK2bKRcAiva0nZ9i6Pbqe8jbq3g431o5mkas=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=fL6KjAojFJIvvswrvoqboQlbhfJc8SrZMq/qChbjjkmxlMXz90lSWtLQcjTGnyetc
-         2otD5tBfqQkxVnaMQnm+7lAeOCitTcuq2VIigIJwlo1B6fkl8AcP+mXg1npiOu4Tn8
-         QdZUmKF6gxtEz2qpnvTaYPtVMdcnNgp+KW+l2OP8=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([52.197.165.36]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWASY-1hBh4J2re6-00Xbd6; Fri, 17
- May 2019 16:05:11 +0200
-Subject: Re: [PATCH 01/15] btrfs: fix minimum number of chunk errors for DUP
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Qu Wenruo <wqu@suse.com>
-References: <cover.1558085801.git.dsterba@suse.com>
- <f238d8b46f4645dd8d402007774a8748499e59f8.1558085801.git.dsterba@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+        id S1728848AbfEQOOd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 May 2019 10:14:33 -0400
+Received: from tty0.vserver.softronics.ch ([91.214.169.36]:40336 "EHLO
+        fe1.digint.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728535AbfEQOOd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 May 2019 10:14:33 -0400
+Received: from [10.0.1.10] (unknown [81.6.39.165])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by fe1.digint.ch (Postfix) with ESMTPSA id B403930C23;
+        Fri, 17 May 2019 16:14:30 +0200 (CEST)
+Subject: Re: Used disk size of a received subvolume?
+To:     Remi Gauvin <remi@georgianit.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <c79df692-cc5d-5a3a-1123-e376e8c94eb3@tty0.ch>
+ <cef97a5e-b19e-fdae-2142-f8757d06c4d4@georgianit.com>
+From:   Axel Burri <axel@tty0.ch>
 Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <cfbc6c78-6475-5da7-6186-07591f4a19a1@gmx.com>
-Date:   Fri, 17 May 2019 22:05:04 +0800
+Autocrypt: addr=axel@tty0.ch; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <aed995de-79d4-9932-397d-bd0d12a51b7a@tty0.ch>
+Date:   Fri, 17 May 2019 16:14:21 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <f238d8b46f4645dd8d402007774a8748499e59f8.1558085801.git.dsterba@suse.com>
+In-Reply-To: <cef97a5e-b19e-fdae-2142-f8757d06c4d4@georgianit.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="vOFoZG2eyv77xE67vwdwra2gyITnulMin"
-X-Provags-ID: V03:K1:rvLzbe1+4RVV6SGV5AOrscrMGu2lm3yIY873yC3DoJ5W4VvVXMT
- mfCicSRnnKtGULCJz4XHrP7KGl6UelNupJ4BLlEmO/7Fp0YThv9CWzq6L6Bo0aHHjpk5UR4
- qVR0e2eU7XKJMlv/NG1dOTu9A6NHX7wb8rJkx/r9FQY+lRoHXdBRzOhfq4sCxGIgtwDa5es
- t0qnhdTfQFk4tX038iyKQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7MxJ4quHmDg=:y8mzt9zINfVp9lj3bwX8+q
- Of3SV/qHMmOSb0yQZWNbKI+i7u+VvtKowWwsqoWdYpmaIZykgl1ylJ4IN30grb/+k3ByOV5m1
- X+mcaFP14oh/zW5EviAObYweCfxjuNC1I/OWZklnt3zKGIhV1UajcEIQRApvk7Et3rlP35/iY
- /1IGMRzMILuXRf+sA1aOZ6Hm4wCodmtXVmUqtg65hw9K/F52J0F0stq7LZQhkk55fclnzvOoc
- 99bfpE00tr3SjXi5nMOuFreFPPqKqfkCZwHoFDUqfmgRys0N5cqL21xXOnhKKprBboCC6HlJy
- pLkbKf1T/CC0HV2oDuFrG1bb5z/iSSbE0fXgwuC6KQ8rbxm4zRhuGR+IPvonOHWTVmeqsZFrZ
- oo7TMQOy4pbeTqpkY6YC/tbxJa3ESH9Jy2yfacmX9z83w9hhBfKeSEQoPFH586Uz2C3n9mzsl
- F1sn/6fzxz+OlAfOpMME0d/ZbaUOwkYILJAxLFhfabL03Aqvs2QbLbeUYcPySYN4upkAY1x8U
- S25nflQe45CHpF7BaGkbska/1ZPFmMkw3kJxsRThI2oJEO7i8ee8z4Cxd1pVyBNYJ51sx7VNB
- 3qMkfWbjgIbHQ3Cox7zLd9CxruLJsjS+ZNu89A8WWX1y4wupVjehP/86az9xKcaSatwNyWf6b
- d4xM6CI5gS2LeArGo+7TAKRVSlvzNMJwRr3Qnb8gO8HsoJh2NLiCg4bhKcTothvc1gGpOYurE
- kuNj/0Ze7ufEBn6FgdaS8Qp8naNSoOrmdMS5YjN3Ec0JKk6+DGugrvd1O/DT6UDpW+Dq71yiQ
- WYFEhTApud/5+U2tW44FEdfbBTVECrZE2iYjoWUfCZggmR/h9V5Uw3YXVvlgM6wkKiCieY86k
- mCqmo9RsdcqyWDHRp40z/fKcwgbL9WKIYaXjLQF9XsPqO3+VYDnFLBRI+ZMIew/fifp4MHPIX
- 2hmw+zthv8eSdzXIvzcTLy6ibiN2E540=
+ boundary="09OxILFhkIDbvmwb5ozIpTyr4w4w35vzE"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vOFoZG2eyv77xE67vwdwra2gyITnulMin
-Content-Type: multipart/mixed; boundary="ccELuoave8Iat6GzMRLcn0WL33eGh0ioK";
+--09OxILFhkIDbvmwb5ozIpTyr4w4w35vzE
+Content-Type: multipart/mixed; boundary="B1JMQRlrJoeDJ3pWg6XslPX9QMzBmX4iD";
  protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc: Qu Wenruo <wqu@suse.com>
-Message-ID: <cfbc6c78-6475-5da7-6186-07591f4a19a1@gmx.com>
-Subject: Re: [PATCH 01/15] btrfs: fix minimum number of chunk errors for DUP
-References: <cover.1558085801.git.dsterba@suse.com>
- <f238d8b46f4645dd8d402007774a8748499e59f8.1558085801.git.dsterba@suse.com>
-In-Reply-To: <f238d8b46f4645dd8d402007774a8748499e59f8.1558085801.git.dsterba@suse.com>
+From: Axel Burri <axel@tty0.ch>
+To: Remi Gauvin <remi@georgianit.com>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <aed995de-79d4-9932-397d-bd0d12a51b7a@tty0.ch>
+Subject: Re: Used disk size of a received subvolume?
+References: <c79df692-cc5d-5a3a-1123-e376e8c94eb3@tty0.ch>
+ <cef97a5e-b19e-fdae-2142-f8757d06c4d4@georgianit.com>
+In-Reply-To: <cef97a5e-b19e-fdae-2142-f8757d06c4d4@georgianit.com>
 
---ccELuoave8Iat6GzMRLcn0WL33eGh0ioK
+--B1JMQRlrJoeDJ3pWg6XslPX9QMzBmX4iD
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-
-
-On 2019/5/17 =E4=B8=8B=E5=8D=885:43, David Sterba wrote:
-> The list of profiles in btrfs_chunk_max_errors lists DUP as a profile
-> DUP able to tolerate 1 device missing. Though this profile is special
-> with 2 copies, it still needs the device, unlike the others.
+On 16/05/2019 19.09, Remi Gauvin wrote:
+> On 2019-05-16 10:54 a.m., Axel Burri wrote:
 >=20
-> Looking at the history of changes, thre's no clear reason why DUP is
-> there, functions were refactored and blocks of code merged to one
-> helper.
+>>
+>> Any thoughts? I'm willing to implement such a feature in btrfs-progs i=
+f
+>> this sounds reasonable to you.
+>>
 >=20
-> d20983b40e828 Btrfs: fix writing data into the seed filesystem
->   - factor code to a helper
 >=20
-> de11cc12df173 Btrfs: don't pre-allocate btrfs bio
->   - unrelated change, DUP still in the list with max errors 1
+> BTRFS qgroups are where this is implemented.  You have to enable quotas=
+,
+> and leaving quotas enabled has lots of problems, (mostly performance
+> related), so I would not suggest leaving them on when there is lots of
+> activity, (ie, multiple send/receive, or deletion of many snapshots.)
 >=20
-> a236aed14ccb0 Btrfs: Deal with failed writes in mirrored configurations=
-
->   - introduced the max errors, leaves DUP and RAID1 in the same group
+> But you can enable quotas as any time (btrfs quota enable /path)
 >=20
-> CC: Qu Wenruo <wqu@suse.com>
-> Signed-off-by: David Sterba <dsterba@suse.com
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Just some extra hint for the tolerance of DUP profile.
-
-In case of DUP, either all stripes are missing, or all stripes exist.
-
-So no matter whether the tolerance is 0 or 1, it will always work.
-But indeed, setting it to 0 is more accurate.
-
-Thanks,
-Qu
-> ---
->  fs/btrfs/volumes.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+> Wait for the rescan to finish
 >=20
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 1c2a6e4b39da..8508f6028c8d 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -5328,8 +5328,7 @@ static inline int btrfs_chunk_max_errors(struct m=
-ap_lookup *map)
-> =20
->  	if (map->type & (BTRFS_BLOCK_GROUP_RAID1 |
->  			 BTRFS_BLOCK_GROUP_RAID10 |
-> -			 BTRFS_BLOCK_GROUP_RAID5 |
-> -			 BTRFS_BLOCK_GROUP_DUP)) {
-> +			 BTRFS_BLOCK_GROUP_RAID5)) {
->  		max_errors =3D 1;
->  	} else if (map->type & BTRFS_BLOCK_GROUP_RAID6) {
->  		max_errors =3D 2;
+> btrfs quota rescan -s /path  (to view status of scan)
 >=20
+> And then:
+>=20
+> btrfs qgroup show /path to list the space usage, (total, and what you'r=
+e
+> looking for: Exclusive)
+>=20
+> Note that the default groups correspond to subvolume ID, not filename,
+> (someone did make a utility somewhere that will display this output wit=
+h
+> corresponding directory names.)
+>=20
+> btrfs sub list /path is used to find the relevant ID's.. (I find the -o=
+
+> option useful, so it only displays the subvolumes that are children to
+> the /path)
+>=20
+> As stated above, I would suggest disabling quotas when you are finished=
+:
+>=20
+> btrfs quota disable /path
 
 
---ccELuoave8Iat6GzMRLcn0WL33eGh0ioK--
+Thanks for the tip, but this does not seem practicable for productive
+systems, as it involves enabling quotas, which had many problems in the
+past (not sure about the current state, but probably still true if I get
+you correctly).
 
---vOFoZG2eyv77xE67vwdwra2gyITnulMin
+Nevertheless I played around with it and it seems to work, I'll keep it
+in mind for the future.
+
+
+- Axel
+
+
+--B1JMQRlrJoeDJ3pWg6XslPX9QMzBmX4iD--
+
+--09OxILFhkIDbvmwb5ozIpTyr4w4w35vzE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzev5AACgkQwj2R86El
-/qgLIAf/ee2JG+XlDzz1qh1C29SOhJdneRswSS2Ci0Fk86/0REq/wwaGaZDEPp67
-3pKhZtGdNJWvLFEDdPw8Ob1DsU2osc+avgEQdtQm5v9d4IB88Ic2im7qdzGIJzxq
-ztjJx9MDUaF49lXV2TcUhxVy9UhYbR7MX7WqjxsnxzvDSJgf2JofJfRKnzW0Rff0
-3JZO8b9Lle1gIDDiEBVaYJoto2OsknZl68ETWy3V7+CjZ+Wn6/0MIsUFEmj33gzX
-b05dAI94a6W2fWHSymncZIGBezTGeUTXFFaDcjgCkF5RtZf+TMOHKsWWgOC15Y97
-ESSJypha/g4HqCqyJzqiynHo/CTFmg==
-=w9ZF
+iQIzBAEBCAAdFiEEGhZyjCOMCiVqHcFZjQOnykvjzX0FAlzewb4ACgkQjQOnykvj
+zX2jvA//Qh0RXfyC0kkQd45lnHR0R2weu4ZJI03qocaTvkYDA2C4fhgU0YMjHDdM
+5Z1sHX0bH0jfyg0tNzKYoZHUGoxtOerSOvuL0M3HzT1yfmGAyYZUZ/sHd/MNjXi8
+26hQxmm0t9xpSbbhjyA7msj/hc7CjUuZlGg6/ICMEsLk+ppSIONJSMmNztJe7k58
+RMMr9FMCit7hq9dFmy09BwXvBtUbA1uq6PyTE01TB6hqHKibXN24x4kK12ljsV3J
+KV9igidaLEJyOL5R0ctBROUP7/jGxtLebJprZna7Lp3muoAtodGZKOrV5NwOlwlj
+YIK+v/iZa/0lYDaj3B8CTVZkcDp9IAWrmsu+XDcX143RxghfF0nj4PiwS1X9711q
+B2+ikJ5Np0Ba/L5WdrlGx02pbgzoUD777+VFsj/age07Krdc0fhQMmZVpQWb2CjT
+QKZ5tNFE5VG3Deetv2QbOmY+VmWS570Xj/cAWaQyNNdKbhu5sc5TRo3gjE44cGEj
+qUIu6P+ltuTyC28SqbO9pQnVbO1H7YVxlQL/NLSq/KC5AvzH8+kYdokayUFOd0h0
+UOdZs+KVGVph0JRFzdsuMJa6OSPwuYhFRJUburtQU1au2UC0dMVY3GVQ7GzSR853
+Sy5J4As6yKKRLsasuXKeN0Rye/WulsOz8Ou0863J8+SYRlC8f2w=
+=s9lF
 -----END PGP SIGNATURE-----
 
---vOFoZG2eyv77xE67vwdwra2gyITnulMin--
+--09OxILFhkIDbvmwb5ozIpTyr4w4w35vzE--
