@@ -2,133 +2,215 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F32421115
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 01:43:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E732129C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 05:43:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727361AbfEPXnI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 16 May 2019 19:43:08 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:45871 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726523AbfEPXnH (ORCPT
+        id S1727349AbfEQDm5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 16 May 2019 23:42:57 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:34998 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726757AbfEQDm5 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 16 May 2019 19:43:07 -0400
-Received: by mail-lj1-f193.google.com with SMTP id r76so4599087lja.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 16 May 2019 16:43:06 -0700 (PDT)
+        Thu, 16 May 2019 23:42:57 -0400
+Received: by mail-pl1-f194.google.com with SMTP id g5so2670681plt.2;
+        Thu, 16 May 2019 20:42:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=leKRpFmZnAXA1v7Ju7nz9vToh6ru7DPSpy2fzBLjFXs=;
-        b=CXtUY8kt/dtjFwAjG3ShENiu8vDysxh8FtOwHVVKXu+CCw2WCubIvy6ON4A4LS1YoU
-         axhZhPceSqc33wK7FUt6rl6efAv6Qm69AXsI6gmhhruV2Pw8L4zwjHAJkzwz11nEQ7rA
-         3WcjwcTjH+P7RtNRJCDBEtJWDJPhxVF0mVrlE2EXIVy11pHDa9W9PSKIUslE4+OtJmcs
-         53/qEHfFzpfgfOawF1KjKOt5WfCxzA7/RlQHWQH1He7kNdSiUYXYF+8we9HixMMD/Woo
-         6UIstr4xSxy/xdQWQqcB+XQM5TAUT3QbHKszv4wRnEa3elI6Y+l38wFkUnSVxmAjO2dU
-         eXqQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5iP545AgQCgaGGAv0oOLLIrrv4tC3nnx8nSFIGlTWXk=;
+        b=Fq0PZU4o2CRakOX8822+7+/EctNpG/LAHIOcrh9ww5a/PoAUi7EMlYp/z7fAydyZgl
+         KRRvALvJMWjWMXlHVR2/kwWB5Mi88GZcvfgf04ZdQqdHRaxSLVzBcKkOHUmav0GAWL44
+         EGi2ceQPQUxy6YrNqdHm7P2Sevly+hSVTUDTr7T37IN023VsRzjXHiCPEAvLwamH2cNM
+         tt6Otobz1UizKheYEXUhJ0dMSShrd/X47bOGWhULc4LrNpQAIUNJsm2S/Wcy3a2nYMVZ
+         UBZt5lCH/Lo1r8zNgQDHy5OEmdYyQ4V+pEqOZYDGrxOEwq9/cAMvaJljU2qMT0mwaKQ8
+         QaWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=leKRpFmZnAXA1v7Ju7nz9vToh6ru7DPSpy2fzBLjFXs=;
-        b=f/mQxXw/C9WBr888ScEWB+BG9vykEdx/oUakCTo31Ys+3d+KmH3RN4UVjr24A5almp
-         wmRVhjb3qb6CqUSfyFz/EkjgdmeO8T3NDhpRvyJpSTliQfggju1ecgqP64GOl5aT2X/Y
-         9hiLqXa8FEkyx8KdedlKk7tYN9LsoxQrpfV0+TBEQk6R0sE/CqJEyU6JK9O4AhsIDMEI
-         2HDFLqiv0XnXFCnut8is2D2fd5c6DTSEE8kKtpliJ6tnb+ggTQ+iocfBVgoO6/sTn95I
-         eB01XIpKFpnBqzT+hzySFSwuw6ari+ByXL0dm/9yDRFkZi5JjBEZTsQfYLN3Q/yLomvN
-         K3Ag==
-X-Gm-Message-State: APjAAAVIWr0bzUg+02543A7oDO2jxPh5jh2/KEWYAAxVnN1OfwDCx+x8
-        5V+UnbXjd0Wr6vh1NvWC3697J5k6tx6xGQHd4vuB+VWrYf4=
-X-Google-Smtp-Source: APXvYqxvzXXy+wUNjJq9rmDldV+rKkqrKthsJeTkNgGdEAUS9VShCULk36KTCoXy4oyI+v2QNO20IFxQJTQKWZotxJo=
-X-Received: by 2002:a2e:93c7:: with SMTP id p7mr13842505ljh.32.1558050185837;
- Thu, 16 May 2019 16:43:05 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5iP545AgQCgaGGAv0oOLLIrrv4tC3nnx8nSFIGlTWXk=;
+        b=Lc1Y139e100n6jQQP+8D84oHq2IGLMq6qNJDukynSbQJNJifluGXcAO6qGKsp1MERF
+         cP423xrqI5aP2R6ZrYyzvhReFfV6QMTUtpWyt8UHNQjWUoKpZFdb4LITYtCCsNMr5gGz
+         P/hsOdPSUv46x89zKl2QJoKpMOVant3r9FaJsY2SwKQ4TNlIEPJQPEYE3T13QcdegcQT
+         2Q8776Phuyg+7Zxsw2tCNpRB9plBRyk7DtcO1KP8OcB7KbRwy1IZfIfOfZQIUQtje5WY
+         h/UlvXGUc+NoroTAskrtdv4hfVEClVNktW+y3jSwyPnyVWz3Lhz2m6nKWxyzeukWGwcX
+         C4PA==
+X-Gm-Message-State: APjAAAUTo2T/BAA0z6DoxbOlTdBXz/ufA1Aqpkog5Vycnnfe3S9+ff/n
+        b9mUqYzqtUyoMkDkls/Llgw/qOsVrUs=
+X-Google-Smtp-Source: APXvYqwGO/piSeywYWH0CuWYFTmSqmwZJmVdog8uCpID9Enm3pb7XeWq3gJ+4/uiV0nlQKlj4Ah1DA==
+X-Received: by 2002:a17:902:8609:: with SMTP id f9mr52252009plo.32.1558064576099;
+        Thu, 16 May 2019 20:42:56 -0700 (PDT)
+Received: from localhost ([128.199.137.77])
+        by smtp.gmail.com with ESMTPSA id a7sm12685883pgj.42.2019.05.16.20.42.54
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 16 May 2019 20:42:55 -0700 (PDT)
+Date:   Fri, 17 May 2019 11:42:49 +0800
+From:   Eryu Guan <guaneryu@gmail.com>
+To:     fdmanana@kernel.org
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-ext4@vger.kernel.org, jack@suse.cz,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH] fstests: generic, fsync fuzz tester with fsstress
+Message-ID: <20190517034249.GM15846@desktop>
+References: <20190515150221.16647-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-References: <297da4cbe20235080205719805b08810@bi-co.net>
-In-Reply-To: <297da4cbe20235080205719805b08810@bi-co.net>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 16 May 2019 17:42:54 -0600
-Message-ID: <CAJCQCtR-uo9fgs66pBMEoYX_xAye=O-L8kiMwyAdFjPS5T4+CA@mail.gmail.com>
-Subject: Re: Massive filesystem corruption after balance + fstrim on Linux 5.1.2
-To:     =?UTF-8?B?TWljaGFlbCBMYcOf?= <bevan@bi-co.net>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190515150221.16647-1-fdmanana@kernel.org>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 16, 2019 at 4:26 PM Michael La=C3=9F <bevan@bi-co.net> wrote:
->
-> Hi.
->
-> Today I managed to destroy my btrfs root filesystem using the following
-> sequence of commands:
->
-> sync
-> btrfs balance start -dusage 75 -musage 75 /
-> sync
-> fstrim -v /
->
-> Shortly after, the kernel spew out lots of messages like the following:
->
-> BTRFS warning (device dm-5): csum failed root 257 ino 16634085 off
-> 21504884736 csum 0xd47cc2a2 expected csum 0xcebd791b mirror 1
->
-> A btrfs scrub shows roughly 27000 unrecoverable csum errors and lots of
-> data on that system is not accessible anymore.
->
-> I'm running Linux 5.1.2 on an Arch Linux. Their kernel pretty much
-> matches upstream with only one non btrfs-related patch on top:
-> https://git.archlinux.org/linux.git/log/?h=3Dv5.1.2-arch1
->
-> The btrfs file system was mounted with compress=3Dlzo. The underlying
-> storage device is a LUKS volume, on top of an LVM logical volume and the
-> underlying physical volume is a Samsung 830 SSD. The LUKS volume is
-> opened with the option "discard" so that trim commands are passed to the
-> device.
->
-> SMART shows no errors on the SSD itself. I never had issues with
-> balancing or trimming the btrfs volume before, even the exact same
-> sequence of commands as above never caused any issues. Until now.
->
-> Does anyone have an idea of what happened here? Could this be a bug in
-> btrfs?
+On Wed, May 15, 2019 at 04:02:21PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Run fsstress, fsync every file and directory, simulate a power failure and
+> then verify the all files and directories exist, with the same data and
+> metadata they had before the power failure.
+> 
+> This tes has found already 2 bugs in btrfs, that caused mtime and ctime of
+> directories not being preserved after replaying the log/journal and loss
+> of a directory's attributes (such a UID and GID) after replaying the log.
+> The patches that fix the btrfs issues are titled:
+> 
+>   "Btrfs: fix wrong ctime and mtime of a directory after log replay"
+>   "Btrfs: fix fsync not persisting changed attributes of a directory"
+> 
+> Running this test 1000 times:
+> 
+> - on xfs, no issues were found
+> 
+> - on ext4 it has resulted in about a dozen journal checksum errors (on a
+>   5.0 kernel) that resulted in failure to mount the filesystem after the
+>   simulated power failure with dmflakey, which produces the following
+>   error in dmesg/syslog:
+> 
+>     [Mon May 13 12:51:37 2019] JBD2: journal checksum error
+>     [Mon May 13 12:51:37 2019] EXT4-fs (dm-0): error loading journal
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  tests/generic/547     | 72 +++++++++++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/547.out |  2 ++
+>  tests/generic/group   |  1 +
+>  3 files changed, 75 insertions(+)
+>  create mode 100755 tests/generic/547
+>  create mode 100644 tests/generic/547.out
+> 
+> diff --git a/tests/generic/547 b/tests/generic/547
+> new file mode 100755
+> index 00000000..577b0e9b
+> --- /dev/null
+> +++ b/tests/generic/547
+> @@ -0,0 +1,72 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test No. 547
+> +#
+> +# Run fsstress, fsync every file and directory, simulate a power failure and
+> +# then verify the all files and directories exist, with the same data and
+> +# metadata they had before the power failure.
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +	_cleanup_flakey
+> +	cd /
+> +	rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +. ./common/dmflakey
+> +
+> +# real QA test starts here
+> +_supported_fs generic
+> +_supported_os Linux
+> +_require_scratch
 
-I suspect there's a regression somewhere, question is where. I've used
-a Samsung 830 SSD extensively with Btrfs and fstrim in the past, but
-without dm-crypt. I'm using Btrfs extensively with dm-crypt but on
-hard drives. So I can't test this.
+As we save fssum file to $TEST_DIR, it'd be better to _require_test too.
 
-Btrfs balance is supposed to be COW. So a block group is not
-dereferenced until it is copied successfully and metadata is updated.
-So it sounds like the fstrim happened before the metadata was updated.
-But I don't see how that's possible in normal operation even without a
-sync, let alone with the sync.
+> +_require_fssum
+> +_require_dm_target flakey
+> +
+> +rm -f $seqres.full
+> +
+> +fssum_files_dir=$TEST_DIR/generic-test-$seq
+> +rm -fr $fssum_files_dir
+> +mkdir $fssum_files_dir
+> +
+> +_scratch_mkfs >>$seqres.full 2>&1
+> +_require_metadata_journaling $SCRATCH_DEV
+> +_init_flakey
+> +_mount_flakey
+> +
+> +mkdir $SCRATCH_MNT/test
+> +args=`_scale_fsstress_args -p 4 -n 100 $FSSTRESS_AVOID -d $SCRATCH_MNT/test`
+> +args="$args -f mknod=0 -f symlink=0"
+> +echo "Running fsstress with arguments: $args" >>$seqres.full
+> +$FSSTRESS_PROG $args >>$seqres.full
+> +
+> +# Fsync every file and directory.
+> +find $SCRATCH_MNT/test -type f,d -exec $XFS_IO_PROG -c "fsync" {} \;
 
-The most reliable way to test it, ideally keep everything the same, do
-a new mkfs.btrfs, and try to reproduce the problem. And then do a
-bisect. That for sure will find it, whether it's btrfs or something
-else that's changed in the kernel. But it's also a bit tedious.
+My 'find' on Fedora 29 vm (find (GNU findutils) 4.6.0) doesn't support
+"-type f,d" syntax
 
-I'm not sure how to test this with any other filesystem on top of your
-existing storage stack instead of btrfs, to see if it's btrfs or
-something else. And you'll still have to do a lot of iteration. So it
-doesn't make things that much easier than doing a kernel bisect.
-Neither ext4 nor XFS have block group move like Btrfs does. LVM does
-however, with pvmove. But that makes the testing more complicated,
-introduces more factors. So...I still vote for bisect.
+find: Arguments to -type should contain only one letter
 
-But even if you can't bisect, if you can reproduce, that might help
-someone else who can do the bisect.
+I have to change this to
 
+find $SCRATCH_MNT/test \( -type f -o -type d \) -exec $XFS_IO_PROG -c "fsync" {} \;
 
-Your stack looks like this?
+Otherwise looks good to me, thanks!
 
-Btrfs
-LUKS/dmcrypt
-LVM
-Samsung SSD
+Eryu
 
-
---=20
-Chris Murphy
+> +# Compute a digest of the filesystem (using the test directory only, to skip
+> +# fs specific directories such as "lost+found" on ext4 for example).
+> +$FSSUM_PROG -A -f -w $fssum_files_dir/fs_digest $SCRATCH_MNT/test
+> +
+> +# Simulate a power failure and mount the filesystem to check that all files and
+> +# directories exist and have all data and metadata preserved.
+> +_flakey_drop_and_remount
+> +
+> +# Compute a new digest and compare it to the one we created previously, they
+> +# must match.
+> +$FSSUM_PROG -r $fssum_files_dir/fs_digest $SCRATCH_MNT/test
+> +
+> +_unmount_flakey
+> +
+> +status=0
+> +exit
+> diff --git a/tests/generic/547.out b/tests/generic/547.out
+> new file mode 100644
+> index 00000000..0f6f1131
+> --- /dev/null
+> +++ b/tests/generic/547.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 547
+> +OK
+> diff --git a/tests/generic/group b/tests/generic/group
+> index 47e81d96..49639fc9 100644
+> --- a/tests/generic/group
+> +++ b/tests/generic/group
+> @@ -549,3 +549,4 @@
+>  544 auto quick clone
+>  545 auto quick cap
+>  546 auto quick clone enospc log
+> +547 auto quick log
+> -- 
+> 2.11.0
+> 
