@@ -2,178 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01DB121AA1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 17:35:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F9021B86
+	for <lists+linux-btrfs@lfdr.de>; Fri, 17 May 2019 18:22:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729299AbfEQPes (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 17 May 2019 11:34:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40706 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728778AbfEQPes (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 17 May 2019 11:34:48 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 924D9217D9;
-        Fri, 17 May 2019 15:34:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558107286;
-        bh=tUrpcFZ4cm6jY7jlLzbUoh2xlB2WOfmda2sLRQ+cipM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DB2jUmfmwX1KIm5grcmjezTBGFKNVrY1WuXCQ3JqktLpxgGjDAHQjhueCm9kTn5Md
-         ngUWgWv6mav+RzJ/uUXyvdOinqasmyKXrTR52odey4EZAOsNNdptDkb+fsP9VnbYvW
-         CXka5rXkxj4g5d3a/+NDpE2Qwva0ajQ1flYeOhYY=
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        jack@suse.sz, guaneryu@gmail.com, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] fstests: generic, fsync fuzz tester with fsstress
-Date:   Fri, 17 May 2019 16:34:31 +0100
-Message-Id: <20190517153431.29521-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20190515150221.16647-1-fdmanana@kernel.org>
-References: <20190515150221.16647-1-fdmanana@kernel.org>
+        id S1728834AbfEQQWs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 17 May 2019 12:22:48 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:52595 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728551AbfEQQWs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 17 May 2019 12:22:48 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 38DAA2361B;
+        Fri, 17 May 2019 12:22:47 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Fri, 17 May 2019 12:22:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:cc:from:message-id:date:mime-version
+        :in-reply-to:content-type; s=fm3; bh=LcXux7tSbQ95RJ+mCcAIZkfEqcd
+        NjKeFO5s3rxayWF0=; b=gHWHHeWcFFHwKaXUdRDgtJG1CHAvGadK45gPths05l/
+        M6AgVcy59CcqEFR28U5+07u1cpYC7WzXtgfcAEnE2XpIEnYbbRhCTuYdFwyKY+xe
+        g6aFCUEULCg/WFocrsZfzaf3in6miqkehrIZnJ+qDFm3f69cOl2csMy34OxWmjcq
+        WPKxyKD17/POtaktpv576yoJAusS+SSv629lfq1+xzZQGcJh53PhvvMKBWTa6i3n
+        DsUQiJtL90tc1o0hkt0UDNyLfGIpVUfwV66F/nDrPSqq2UI3X5LTNgToiFwpD8aJ
+        UobISvAlUSOjkD0itaUrEuYpzd0g5382aCnLSwfHZzA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=LcXux7
+        tSbQ95RJ+mCcAIZkfEqcdNjKeFO5s3rxayWF0=; b=WTDYyT41x/NkAFpByxmaiz
+        gFJN2kBq8sAwcIy2RWWxB1cgEDFOnYLxmZ9pmhFY+xh5Qo5vfRUV17tlyxDlZVKv
+        KBAYaW85UTXYktSzYZQmWssndKG2ftzpaSFiBY/f0qzu5cPO8KnRosHdqJARGr8N
+        hw8kxMdPrS4ERIOGiTaNvQBKW3hRPEAgsOYOI9DxYD0smcMbnIIuokxxpcAPPsbl
+        Z9zMUoxlQFhJVjGQQe+l9OGlte4V1aQG/tndYxLm6fLmQ4i/ddoyCg2fGjStyllj
+        gKlT9fjjwsz7mD7GZIUalvxWRJBxEN0ppRbBLV/Lej9V/wUGkrFR8QVekqmdAvMA
+        ==
+X-ME-Sender: <xms:1t_eXBHx0bMOyJ1xv2-hIwLynIvwLb0TBZOE1tBzpqFehQz2iMjw6g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduuddruddtvddguddtvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefuvfhfhffkffgfgggjtgesghdtrefotdefjeenucfhrhhomheptfgvmhhi
+    ucfirghuvhhinhcuoehrvghmihesghgvohhrghhirghnihhtrdgtohhmqeenucfkphepud
+    efhedrvdefrddvgeeirddufedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehrvghmihes
+    ghgvohhrghhirghnihhtrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:1t_eXAIyEJy86VYaStRErAm2Inny0IdrJiONKdJIpJvBXuAOFw1uWg>
+    <xmx:1t_eXB8CVNtLEVu_e0lTLjAmFeVrJ6R-ouMv7D1a15o33DUnKhg36Q>
+    <xmx:1t_eXCfrpVHmFW-A-D9hFQQTAJIVPOj2fzVJfBMfi2dJG5yezNyz4Q>
+    <xmx:19_eXHUcIbKTxaoCgXcmJ4PRtCP5bPtvcRFwNaprYHRc1e0gB5K1Yg>
+Received: from [10.0.0.6] (135-23-246-131.cpe.pppoe.ca [135.23.246.131])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5C9638005A;
+        Fri, 17 May 2019 12:22:46 -0400 (EDT)
+Subject: Re: Used disk size of a received subvolume?
+To:     Axel Burri <axel@tty0.ch>
+References: <c79df692-cc5d-5a3a-1123-e376e8c94eb3@tty0.ch>
+ <cef97a5e-b19e-fdae-2142-f8757d06c4d4@georgianit.com>
+ <aed995de-79d4-9932-397d-bd0d12a51b7a@tty0.ch>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Remi Gauvin <remi@georgianit.com>
+Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
+Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
+ keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
+ CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
+ sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
+ t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
+ 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
+ AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
+ IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
+ OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
+ 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
+ WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
+ k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
+ Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
+ R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
+ WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
+ QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
+ jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
+ oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
+ BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
+ XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
+ r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
+ phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
+ nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
+ SY9JJa155sI=
+Message-ID: <f380d94d-5588-2c0a-577e-41b5f928c291@georgianit.com>
+Date:   Fri, 17 May 2019 12:22:45 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
+MIME-Version: 1.0
+In-Reply-To: <aed995de-79d4-9932-397d-bd0d12a51b7a@tty0.ch>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Zwa2nC6VCpyZSB7kCmMoU6gfnqaI9IQus"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Zwa2nC6VCpyZSB7kCmMoU6gfnqaI9IQus
+Content-Type: multipart/mixed; boundary="pkiowLHBeIOTJDgP6eXe1182L0LPCiAAT";
+ protected-headers="v1"
+From: Remi Gauvin <remi@georgianit.com>
+To: Axel Burri <axel@tty0.ch>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <f380d94d-5588-2c0a-577e-41b5f928c291@georgianit.com>
+Subject: Re: Used disk size of a received subvolume?
+References: <c79df692-cc5d-5a3a-1123-e376e8c94eb3@tty0.ch>
+ <cef97a5e-b19e-fdae-2142-f8757d06c4d4@georgianit.com>
+ <aed995de-79d4-9932-397d-bd0d12a51b7a@tty0.ch>
+In-Reply-To: <aed995de-79d4-9932-397d-bd0d12a51b7a@tty0.ch>
 
-Run fsstress, fsync every file and directory, simulate a power failure and
-then verify that all files and directories exist, with the same data and
-metadata they had before the power failure.
+--pkiowLHBeIOTJDgP6eXe1182L0LPCiAAT
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-This test has found already 2 bugs in btrfs, that caused mtime and ctime of
-directories not being preserved after replaying the log/journal and loss
-of a directory's attributes (such a UID and GID) after replaying the log.
-The patches that fix the btrfs issues are titled:
+On 2019-05-17 10:14 a.m., Axel Burri wrote:
 
-  "Btrfs: fix wrong ctime and mtime of a directory after log replay"
-  "Btrfs: fix fsync not persisting changed attributes of a directory"
+>=20
+> Nevertheless I played around with it and it seems to work, I'll keep it=
 
-Running this test 1000 times:
+> in mind for the future.
+>=20
 
-- on xfs, no issues were found
 
-- on ext4 it has resulted in about a dozen journal checksum errors (on a
-  5.0 kernel) that resulted in failure to mount the filesystem after the
-  simulated power failure with dmflakey, which produces the following
-  error in dmesg/syslog:
+fi du was not implemented last time I had to do this, so I had
+completely forgotten about it.  It makes much more sense to just use
+that for the Excluisve disk usage of a single subvolume.
 
-    [Mon May 13 12:51:37 2019] JBD2: journal checksum error
-    [Mon May 13 12:51:37 2019] EXT4-fs (dm-0): error loading journal
+However, Qgroups does allow you to group multiple subvolumes,, so, for
+example, you build a query to find out how much disk space is used
+exclusively by the 10 oldest snapshots, which I find to be a more useful
+question..
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
 
-V2: Fixed a few typos in the changelog, add missing _require_test and changed
-    the find command to replace '-type f,d' with '\( -type f -o -type d \)'
-    since not all versions of the find utility accept the former syntax.
+--pkiowLHBeIOTJDgP6eXe1182L0LPCiAAT--
 
- tests/generic/547     | 73 +++++++++++++++++++++++++++++++++++++++++++++++++++
- tests/generic/547.out |  2 ++
- tests/generic/group   |  1 +
- 3 files changed, 76 insertions(+)
- create mode 100755 tests/generic/547
- create mode 100644 tests/generic/547.out
+--Zwa2nC6VCpyZSB7kCmMoU6gfnqaI9IQus
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-diff --git a/tests/generic/547 b/tests/generic/547
-new file mode 100755
-index 00000000..bcce8fe8
---- /dev/null
-+++ b/tests/generic/547
-@@ -0,0 +1,73 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test No. 547
-+#
-+# Run fsstress, fsync every file and directory, simulate a power failure and
-+# then verify that all files and directories exist, with the same data and
-+# metadata they had before the power failure.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	_cleanup_flakey
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/dmflakey
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+_require_test
-+_require_scratch
-+_require_fssum
-+_require_dm_target flakey
-+
-+rm -f $seqres.full
-+
-+fssum_files_dir=$TEST_DIR/generic-test-$seq
-+rm -fr $fssum_files_dir
-+mkdir $fssum_files_dir
-+
-+_scratch_mkfs >>$seqres.full 2>&1
-+_require_metadata_journaling $SCRATCH_DEV
-+_init_flakey
-+_mount_flakey
-+
-+mkdir $SCRATCH_MNT/test
-+args=`_scale_fsstress_args -p 4 -n 100 $FSSTRESS_AVOID -d $SCRATCH_MNT/test`
-+args="$args -f mknod=0 -f symlink=0"
-+echo "Running fsstress with arguments: $args" >>$seqres.full
-+$FSSTRESS_PROG $args >>$seqres.full
-+
-+# Fsync every file and directory.
-+find $SCRATCH_MNT/test \( -type f -o -type d \) -exec $XFS_IO_PROG -c fsync {} \;
-+
-+# Compute a digest of the filesystem (using the test directory only, to skip
-+# fs specific directories such as "lost+found" on ext4 for example).
-+$FSSUM_PROG -A -f -w $fssum_files_dir/fs_digest $SCRATCH_MNT/test
-+
-+# Simulate a power failure and mount the filesystem to check that all files and
-+# directories exist and have all data and metadata preserved.
-+_flakey_drop_and_remount
-+
-+# Compute a new digest and compare it to the one we created previously, they
-+# must match.
-+$FSSUM_PROG -r $fssum_files_dir/fs_digest $SCRATCH_MNT/test
-+
-+_unmount_flakey
-+
-+status=0
-+exit
-diff --git a/tests/generic/547.out b/tests/generic/547.out
-new file mode 100644
-index 00000000..0f6f1131
---- /dev/null
-+++ b/tests/generic/547.out
-@@ -0,0 +1,2 @@
-+QA output created by 547
-+OK
-diff --git a/tests/generic/group b/tests/generic/group
-index 47e81d96..49639fc9 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -549,3 +549,4 @@
- 544 auto quick clone
- 545 auto quick cap
- 546 auto quick clone enospc log
-+547 auto quick log
--- 
-2.11.0
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
+iQEcBAEBCAAGBQJc3t/VAAoJEO9Tn/JHRWptE2sH/3gnl2SQIbnbE9YII2j75uWc
+Q4IffRVZ8oGwrTzy6MifPO8QkS04r3skg6LoDwB5wMzwpjXE9L3+RKeO/wc1ox3U
+mKko1Qcs/z9vM51MeVBaNeHWmKElRzIZllw6B8qb1849g5vW4bzas+Ef2noi9rZe
+XLJQnAyS3QyHRAtdxR/LLtPQu72c0oS8YuRRIgAbiRWiCgkvYvDu/OV0zNarJsMH
+JZwSZLuwZHmtkBVC8tpXMTzjJLQnONq6mE3f4VtUU8uh9avah8YeZIK8RE9R8Jbp
+JKJzXX8DRjYi3R46llaBVq88wFkdLg8qGR0L+q9QCMxh1Uq5vT/EiWLzgxQF+ac=
+=qMC3
+-----END PGP SIGNATURE-----
+
+--Zwa2nC6VCpyZSB7kCmMoU6gfnqaI9IQus--
