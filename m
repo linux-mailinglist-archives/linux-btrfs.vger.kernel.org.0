@@ -2,75 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5077D2216D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 May 2019 06:14:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA488221A5
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 May 2019 06:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725783AbfEREJZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 May 2019 00:09:25 -0400
-Received: from mail-lj1-f178.google.com ([209.85.208.178]:41002 "EHLO
-        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725554AbfEREJZ (ORCPT
+        id S1725790AbfEREj6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 May 2019 00:39:58 -0400
+Received: from resqmta-ch2-01v.sys.comcast.net ([69.252.207.33]:58200 "EHLO
+        resqmta-ch2-01v.sys.comcast.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725268AbfEREj6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 May 2019 00:09:25 -0400
-Received: by mail-lj1-f178.google.com with SMTP id k8so7938689lja.8
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2019 21:09:24 -0700 (PDT)
+        Sat, 18 May 2019 00:39:58 -0400
+Received: from resomta-ch2-20v.sys.comcast.net ([69.252.207.116])
+        by resqmta-ch2-01v.sys.comcast.net with ESMTP
+        id Rr7VhaZ3kLJtxRr8XhkRlB; Sat, 18 May 2019 04:39:57 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=rhTm4DukoVSVojlued0l0dJrdDC4VocEvkMWVztjvWE=;
-        b=zA2yMW/+Icx2lrLg2juqbNLi+Ga9rZXhczJ1KsxypvOzRdbGDeLIivieyhKRGkZywn
-         kJscEfOBaYFJaUAW/9+01r25EG+u0HUuaNk5rLlYG3CrL9Xsr+5dqj4Soxsa8Kbus3Q7
-         WAwDyfICtwKjMig8zwITfSLi7LMlRoBiyyoH09ZwTuAyGiGQ9TbnU6ogENQPj+lj3RP/
-         MHtDJXFnGruHMqkkIPRA5VOeQ0R6fY7J1M0xx6o7RILvrBIV/BFcFv7pHVUNxPLypDBw
-         tq2/UedSFhWNj6KXOqjJDdaSe4aqBr4qteHTghepBi8wObvORlfPyyYDPkpLmXP91EiN
-         gWOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=rhTm4DukoVSVojlued0l0dJrdDC4VocEvkMWVztjvWE=;
-        b=ke3en1tcCpO0fHZ5/0H+Ueitzwll6Tx9CFxJBw1+nN5Erhpp2lJYSUVGLxq904/Q4P
-         qhMczAE08VTrSgYnYPT3Mdh9E7VDvtOzw06eBI89car2ZTW9YhYJPBvomFn373xIZ1pu
-         xhwUnOVoRI1VrCPbXtzuvMvHFnvOCFvDBYdULITfC3KHsJSClEsFFGwWq1mM+aWIgyP1
-         qxWfnKKUxLM22nP/jOt+OUKprp76jXbBy8HgXBd5tAlq2OHpvI3SQKgPyLhvTMYykXl9
-         EX3snXbnC4KAHLyN6xZOlcjd7RijmOLOaXkFwlq591A5IVG2FtLKAy/KeYj75JZanAlh
-         HVwA==
-X-Gm-Message-State: APjAAAU/GA+G4sYGu03R6nm4MusQ4WlEXea3AaApcZvIAIctOSfocnrR
-        ragyqVR2+ojFoTI54RMq7soGzh7T9nWMBHJaNhcBv5e3wyE=
-X-Google-Smtp-Source: APXvYqyExhH76sEfqkjs4Vx9UJBPBrxg1chjSFmnqsO42icKTeKKQhpMy3btI15BsaGdN8oyBt8SRINuaDbJKjJxp0I=
-X-Received: by 2002:a2e:93c7:: with SMTP id p7mr17991311ljh.32.1558152563761;
- Fri, 17 May 2019 21:09:23 -0700 (PDT)
+        d=comcastmailservice.net; s=20180828_2048; t=1558154397;
+        bh=KzeI4xHXXeuf7MKA0OEzusIO3o946CnbG/iEQk+87Ek=;
+        h=Received:Received:Subject:To:From:Message-ID:Date:MIME-Version:
+         Content-Type;
+        b=iFiATA791xSqivAWgA83vf+5Zc/ah0xMAUdmVKYjrpSsG17Amaas4k5NWcWffGQ4I
+         54Klf/gNs9jZYIoVjyu5MCjLAYZkKLY7DREKOWIqIvM9HYHBQhdvJakXyEfaXqZg1h
+         dKhNeQ/INouwFApt5aUsrmE4icqprSpyXzObrfzMmaAuGLK8jsFkI1j3sXtDgCYFa6
+         2J9DI0bjialvB+oROV6PreD5GlU0pP+F/EhIaFtZzbStsybTmJvJTQ/0p9I1sXOj/q
+         KRwU5ffh2gEcB7QiF+goUMzppahvs8kECM5jRqGnAJTzZggHEP6f0cytFlD/wyeCvV
+         JFhxwtW5/GuRw==
+Received: from touchy.whiterc.com ([IPv6:2601:601:1400:69b3:5588:da99:221d:2c69])
+        by resomta-ch2-20v.sys.comcast.net with ESMTPSA
+        id Rr8Vhp5nE5DQoRr8Whr4cC; Sat, 18 May 2019 04:39:57 +0000
+X-Xfinity-VMeta: sc=-100;st=legit
+Subject: Re: Unbootable root btrfs
+To:     Chris Murphy <lists@colorremedies.com>,
+        Lee Fleming <leeflemingster@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAKS=YrP=z2+rP5AtFKkf7epi+Dr2Arfsaq3pZ9cR3iKif3gV5g@mail.gmail.com>
+ <CAJCQCtTmZY-UHeNYp=waTV8TWiAKXr8bJq13DQ7KQg=syvQ=tg@mail.gmail.com>
+ <CAKS=YrMB6SNbCnJsU=rD5gC6cR5yEnSzPDax5eP-VQ-UpzHvAg@mail.gmail.com>
+ <CAJCQCtQhrh8VBKe11gQUt5BSuWCsDQUdt_Q4a4opnAYE5XoEVQ@mail.gmail.com>
+From:   Robert White <rwhite@pobox.com>
+Message-ID: <2571b502-737b-05b5-633b-cf198c0e6764@pobox.com>
+Date:   Sat, 18 May 2019 04:39:55 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <297da4cbe20235080205719805b08810@bi-co.net> <CAJCQCtR-uo9fgs66pBMEoYX_xAye=O-L8kiMwyAdFjPS5T4+CA@mail.gmail.com>
- <8C31D41C-9608-4A65-B543-8ABCC0B907A0@bi-co.net>
-In-Reply-To: <8C31D41C-9608-4A65-B543-8ABCC0B907A0@bi-co.net>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Fri, 17 May 2019 22:09:12 -0600
-Message-ID: <CAJCQCtTZWXUgUDh8vn0BFeEbAdKToDSVYYw4Q0bt0rECQr9nxQ@mail.gmail.com>
-Subject: Re: Massive filesystem corruption after balance + fstrim on Linux 5.1.2
-To:     =?UTF-8?B?TWljaGFlbCBMYcOf?= <bevan@bi-co.net>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJCQCtQhrh8VBKe11gQUt5BSuWCsDQUdt_Q4a4opnAYE5XoEVQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 17, 2019 at 11:37 AM Michael La=C3=9F <bevan@bi-co.net> wrote:
->
->
-> I tried to reproduce this issue: I recreated the btrfs file system, set u=
-p a minimal system and issued fstrim again. It printed the following error =
-message:
->
-> fstrim: /: FITRIM ioctl failed: Input/output error
+On 5/18/19 4:06 AM, Chris Murphy wrote:
+> On Fri, May 17, 2019 at 2:18 AM Lee Fleming <leeflemingster@gmail.com> wrote:
+>>
+>> I didn't see that particular warning. I did see a warning that it could cause damage and should be tried after trying some other things which I did. The data on this drive isn't important. I just wanted to see if it could be recovered before reinstalling.
+>>
+>> There was no crash, just a reboot. I was setting up KVM and I rebooted into a different kernel to see if some performance problems were kernel related. And it just didn't boot.
+> 
+> OK the corrupted Btrfs volume is a guest file system?
 
-Huh. Any kernel message at the same time? I would expect any fstrim
-user space error message to also have a kernel message. Any i/o error
-suggests some kind of storage stack failure - which could be hardware
-or software, you can't know without seeing the kernel messages.
+Was the reboot a reboot of the guest instance or the host? The reboot of 
+the host can be indistinguishable from a crash to the guest file system 
+images if shutdown is taking a long time. That megear fifteen second gap 
+between SIGTERM and SIGKILL can be a real VM killer even in an orderly 
+shutdown. If you don't have a qemu shutdown script in your host 
+environment then every orderly shutdown is a risk to any running VM.
 
---=20
-Chris Murphy
+The question that comes to my mind is to ask what -blockdev and/or 
+-drive parameters you are using? Some of the combinations of features 
+and flags can, in the name of speed, "helpfully violate" the necessary 
+I/O orderings that filesystems depend on.
+
+So if the crash kills qemu before qemu has flushed and completed a 
+guest-system-critical write to the host store you've suffered a 
+corruption that has nothing to do with the filesystem code base.
+
+So, for example, you shutdown your host system. I sends SIGTERM to qemu. 
+The guest system sends SIGTERM to its processes. The guest is still 
+waiting its nominal 15 seconds, when the host evicts it from memory with 
+a SIGKILL because it's 15 second timer started sooner.
+
+(15 seconds is the canonical time from my UNIX days, I don't know what 
+the real times are for every distribution.)
+
+Upping the caching behaviours for writes can be just as deadly in some 
+conditions.
+
+None of this my apply to OP, but it's the thing I'd check before before 
+digging too far.
