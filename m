@@ -2,32 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F379222323
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 May 2019 12:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26EA422330
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 May 2019 12:27:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729395AbfERKVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 May 2019 06:21:01 -0400
-Received: from mout.gmx.net ([212.227.15.18]:60075 "EHLO mout.gmx.net"
+        id S1728783AbfERK1K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 May 2019 06:27:10 -0400
+Received: from mout.gmx.net ([212.227.15.15]:49545 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727286AbfERKVB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 May 2019 06:21:01 -0400
+        id S1727727AbfERK1J (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 18 May 2019 06:27:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1558174858;
-        bh=kClgX/z5S7KFtQ2sH3FHB/o/oj8BW4mQcGsLYD4A1N8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=dL+hNTQDSZPhaDo9yNflaRg9SJT1VS6eHz+yAF+dnPqmEQbscKlf35/1hcvCXjGX2
-         sbwMmHpDPw9SOrKb0uEhHoa8aXIBXg6OTeaHbSrm+aiVc3gjQq+OegH4MTCf1YlrXZ
-         X9/EwpaHuDcPCkFg5HK8ub1+pPD8OtR+Bt0nqjRo=
+        s=badeba3b8450; t=1558175225;
+        bh=iwQp4ugGy5S8OViCOC6rFxddHJZ5IEGxoCzQkk54OyA=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=TF1P8O2e0Etl2afgnuLHFvCdHkU8wzrs6KwGNYQJ+I5KPkgbLD1BXNZvNfj9a4C6q
+         /Y3CA/b0GnJ5dGH7PpTBAW0KGTattAuoWfGERogOjJ0mhUXmFLacqLI6JZSRMBSoRG
+         d5Y+IxWFTBhZHHMoMAGwIyjm5cjALo+ggEsjrlzo=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx002
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0LcT2M-1gzmv83UkY-00jtQB; Sat, 18
- May 2019 12:20:58 +0200
-Subject: Re: [Samba] Fw: Btrfs Samba and Quotas
-To:     Hendrik Friedel <hendrik@friedels.name>,
-        "samba@lists.samba.org" <samba@lists.samba.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <emee6c041c-adec-4106-b8f6-c4665299ea29@ryzen>
- <em20253d9b-ed68-47a7-946b-55c040417fd6@ryzen>
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MpDNl-1gst6e4AiF-00qifn; Sat, 18
+ May 2019 12:27:05 +0200
+Subject: Re: Massive filesystem corruption after balance + fstrim on Linux
+ 5.1.2
+To:     =?UTF-8?Q?Michael_La=c3=9f?= <bevan@bi-co.net>,
+        Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <297da4cbe20235080205719805b08810@bi-co.net>
+ <CAJCQCtR-uo9fgs66pBMEoYX_xAye=O-L8kiMwyAdFjPS5T4+CA@mail.gmail.com>
+ <8C31D41C-9608-4A65-B543-8ABCC0B907A0@bi-co.net>
+ <CAJCQCtTZWXUgUDh8vn0BFeEbAdKToDSVYYw4Q0bt0rECQr9nxQ@mail.gmail.com>
+ <AD966642-1043-468D-BABF-8FC9AF514D36@bi-co.net>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -54,189 +58,203 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <35ddb243-0a2d-42b9-a367-431b5f8bf0e1@gmx.com>
-Date:   Sat, 18 May 2019 18:20:52 +0800
+Message-ID: <158a3491-e4d2-d905-7f58-11a15bddcd70@gmx.com>
+Date:   Sat, 18 May 2019 18:26:58 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <em20253d9b-ed68-47a7-946b-55c040417fd6@ryzen>
+In-Reply-To: <AD966642-1043-468D-BABF-8FC9AF514D36@bi-co.net>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="IoaS6L7vbr6wA0KS9YWiDyZ9MJ7ZvxtSP"
-X-Provags-ID: V03:K1:LZP8UZFJCEOtkBs2+A7jUU0Vy5+zQarI9XcuCKDr1WLMr2sIJgM
- U45lMwd48bofDEGKkignY9N3IPr4ab/xlDJ9Zz3V0MjssrhSr7b8xhuyW9ow1hbanWN1VbS
- lvGMz1OfnrjQnKUa0bJWpp5/xCClMfKF1DWqRE6G8wvXrF7yzpOM7Ga9N+z2rP93yF6o+1E
- 8wyFAKFG53fCtONCrkS3Q==
+ boundary="PUZjnjQPZBENQ83S8VdzxwLhgwZgZ0RSe"
+X-Provags-ID: V03:K1:5CG3itTQQ4nt7WzNNCO/94vC74nIfN9UUSStk1sDqH+3NI78TsY
+ inP+2d0/d14EVXlP6xlsJDy09HBYpL7zHoI/UmgeHzFZj8tdqy5BYDNeX54JACD/exiF2+C
+ uWWj6zMCETTXSWJWlSPS44n4JVc9exVTPSlbi/1+YNvYk20y0i1dWoFsCYwP2LRrT2jph88
+ yV4WWF8yFNiECOPU1H8yA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vkjw3zVhEyY=:VykSErdeU/qc/pK3L9t2xy
- UO/TLvyFOjb0DATJ/5nulqTkLiynY++E3rUmQTL5L4DsseK3hEdUgi0W0axRDAKIgBjl3rhTS
- Re/nLjK7yrB8iy4sa7BhnMyHEZe7RhwgzGY9e+IwgHfTeDNVpARHio6JO71OGqfwZcwLtQFSo
- VLhXGLPNy2yxOAwmbaHESr2puttntgBmZmfqUBps1Y90+pQYqFZnMuTOlYNKxo4WphUj0TQqJ
- mzd6RTcuUzMjy1uVnDNFRVHkob79phP63rAnqA55hChS3b446FoYUD6JId42tWa1xDMrwiX7Y
- 2ya6xUuQcqFH2ARD6HeooWjoUfvjji3DDYveqS3O7JP1vgbDHS9QijRBkbgYmDsKbRI0SRkRq
- 4iMMVOlHkeqwi+wzKarDH8GywfSCnm+kQAL8TWpgN2DlesmAI6pp/R8u1mvMNZ6fWHgQcKOBW
- Y4qP7QbpM7GGbxAqOw/DXpEZV1yqbSDI95bvjFzSyfhXSjKyQ+sWXv54rzvO+zLDGdPZrvy8I
- ap6O8QXd45yGYeC7hz3++uSZRvnVl0CFwLQxeOLk4Vl/uhaUpUv/wgUJ0Y9ZGhJNJQKVIH/8p
- v/azjfGhnmIbM9yIFsJtPIiMD6J1BP2PNagHHd3sQoQ2ktfuLzwQceOp3/UHr0wNAyR3kZHiz
- hyXVDnzQfbbUA/hMoXuWW9NVNCZBjxZmdtSnk1H06LFm76dRU5FWv/QTvJD9RIJu21sJFgYoy
- zQg0RyZXFhOSPg0K+c0ZOk+HeAsIdHyFA3nWd27QY9ErLgIG6WHNasBz+IohX5hH1mx5N04oB
- PxFL0emYgTz8gmOMgWOW/Ahrsnp1Cn4MfqCqjhYnCCPyH8Y1608jYtdYpFYqxe0cIMHU56UG5
- c03aAEDkJ9X9ikWqbZucQnh1I6P4c6MASqZ767uCjY8hXR8fIwYZVOxRPX2bd8llIpFUScm5S
- kgpz1Uli2xo0Eo+SCq3s5Jt8Jq2ZQLZ0=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xDsG+JBZrQQ=:Z8hZeD78sIhGBJjzkCS1Uf
+ i9BW3ajz0S9TBOuxCVnOKbZ7cs4ImDvU1D+SrwDD8czmjrXNORZZjMoKPMuT7nrLIcxHMHYyA
+ iWG377DR+A/pq5PKBDzEudMHm7P3BalEcRRwtbmoGnEzcaYfibMomzo3zkwkCg7h0axdWt7zV
+ fMn1NboqBGQQCoLXEesaTp/KtHAlAMLOJMAXupbAFbdeYjJkfJQ80Sf7K0yYodOzy7JJStFTj
+ 2glBA9QigN1tL0hjGFYy0bAY+mbUNbH9XE6DhJDrGCE/FLuqDCaRi2wo0zgL4nf4Ufzk16xhl
+ fHGh7/DdA2T37wovnKrRHxsbOSt1ttNdj6n62JH662vfzOnKPj7683sJudKQrhHQqxa2WqYP/
+ T9FTODfNUFnbePfX+iYGXk5xZzJoxs2iAUnK9oJ3gSWFm3pRIc4zd0wsAMvVcFYfIABe4XcQY
+ 32+w5IzN7Qa2Bj2/7I8ed6JXZd9YT3LgSW75LYV3Iq/ZFKiwPCNj0ut2NRVVdXydRWR926zwM
+ nBA+6l0OH2X8ypoF76NWfLfr5r5dJI1MRdxFH71fcuxuW++dY3M/KZDPjHNdULrGc9pSwqNcf
+ vCJUSXDnReiLhODxhSQx/spa3btWhCqwen+0NX/NERMmzlWSodI2K7uuWKiO5aStyZI8o7Opp
+ 4ccCM01gOLh0tzbAtLTytFIY1bVTr+GGsyVFrbuWZt7M1MZQgAyv9w0Qbp81AH3Y9cp05hUw1
+ C6Ztz+di6lHwEqATiAhZM5eK3XVW1UwFM7LIDBSI/hD6gwfw0Fi9Y4bTM/mFEILWWImBV5q4m
+ 2aigrMjtPLIfXKywJJ95/Lj4iZnambdw0pzbVT9q1d8ZHFrWI7v5dc+8DPqMJ8nWcBliky4ZV
+ E7WYFrYyQeeW6bMJiCx8oXOgjblcwV1TBorq3M7qFFzmlYo6vppwP+iXySq18LgyidWSUCBF/
+ xshgWthlEkgInopZGgGBPGpclc8A9yTU=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IoaS6L7vbr6wA0KS9YWiDyZ9MJ7ZvxtSP
-Content-Type: multipart/mixed; boundary="2e8ETrFCwGCY3USXoPAa5CrflmvR0XT7T";
+--PUZjnjQPZBENQ83S8VdzxwLhgwZgZ0RSe
+Content-Type: multipart/mixed; boundary="0U9r2ahJEceOP57SsOE9DglOJXYQvz7kO";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Hendrik Friedel <hendrik@friedels.name>,
- "samba@lists.samba.org" <samba@lists.samba.org>,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <35ddb243-0a2d-42b9-a367-431b5f8bf0e1@gmx.com>
-Subject: Re: [Samba] Fw: Btrfs Samba and Quotas
-References: <emee6c041c-adec-4106-b8f6-c4665299ea29@ryzen>
- <em20253d9b-ed68-47a7-946b-55c040417fd6@ryzen>
-In-Reply-To: <em20253d9b-ed68-47a7-946b-55c040417fd6@ryzen>
+To: =?UTF-8?Q?Michael_La=c3=9f?= <bevan@bi-co.net>,
+ Chris Murphy <lists@colorremedies.com>
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <158a3491-e4d2-d905-7f58-11a15bddcd70@gmx.com>
+Subject: Re: Massive filesystem corruption after balance + fstrim on Linux
+ 5.1.2
+References: <297da4cbe20235080205719805b08810@bi-co.net>
+ <CAJCQCtR-uo9fgs66pBMEoYX_xAye=O-L8kiMwyAdFjPS5T4+CA@mail.gmail.com>
+ <8C31D41C-9608-4A65-B543-8ABCC0B907A0@bi-co.net>
+ <CAJCQCtTZWXUgUDh8vn0BFeEbAdKToDSVYYw4Q0bt0rECQr9nxQ@mail.gmail.com>
+ <AD966642-1043-468D-BABF-8FC9AF514D36@bi-co.net>
+In-Reply-To: <AD966642-1043-468D-BABF-8FC9AF514D36@bi-co.net>
 
---2e8ETrFCwGCY3USXoPAa5CrflmvR0XT7T
+--0U9r2ahJEceOP57SsOE9DglOJXYQvz7kO
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/5/18 =E4=B8=8B=E5=8D=885:22, Hendrik Friedel wrote:
-> Hello,
+On 2019/5/18 =E4=B8=8B=E5=8D=885:18, Michael La=C3=9F wrote:
 >=20
-> I a bit surprised to get no replies at all...
+>> Am 18.05.2019 um 06:09 schrieb Chris Murphy <lists@colorremedies.com>:=
 
-Samba mail list needs subscription to send mail, so I'm afraid this mail
-may not reach samba list if you're not subscribing.
+>>
+>> On Fri, May 17, 2019 at 11:37 AM Michael La=C3=9F <bevan@bi-co.net> wr=
+ote:
+>>>
+>>>
+>>> I tried to reproduce this issue: I recreated the btrfs file system, s=
+et up a minimal system and issued fstrim again. It printed the following =
+error message:
+>>>
+>>> fstrim: /: FITRIM ioctl failed: Input/output error
+>>
+>> Huh. Any kernel message at the same time? I would expect any fstrim
+>> user space error message to also have a kernel message. Any i/o error
+>> suggests some kind of storage stack failure - which could be hardware
+>> or software, you can't know without seeing the kernel messages.
+>=20
+> I missed that. The kernel messages are:
+>=20
+> attempt to access beyond end of device
+> sda1: rw=3D16387, want=3D252755893, limit=3D250067632
+> BTRFS warning (device dm-5): failed to trim 1 device(s), last error -5
+>=20
+> Here are some more information on the partitions and LVM physical segme=
+nts:
+>=20
+> fdisk -l /dev/sda:
+>=20
+> Device     Boot Start       End   Sectors   Size Id Type
+> /dev/sda1  *     2048 250069679 250067632 119.2G 8e Linux LVM
+>=20
+> pvdisplay -m:
+>=20
+>   --- Physical volume ---
+>   PV Name               /dev/sda1
+>   VG Name               vg_system
+>   PV Size               119.24 GiB / not usable <22.34 MiB
+>   Allocatable           yes (but full)
+>   PE Size               32.00 MiB
+>   Total PE              3815
+>   Free PE               0
+>   Allocated PE          3815
+>   PV UUID               mqCLFy-iDnt-NfdC-lfSv-Maor-V1Ih-RlG8lP
+>   =20
+>   --- Physical Segments ---
+>   Physical extent 0 to 1248:
+>     Logical volume	/dev/vg_system/btrfs
+>     Logical extents	2231 to 3479
+>   Physical extent 1249 to 1728:
+>     Logical volume	/dev/vg_system/btrfs
+>     Logical extents	640 to 1119
+>   Physical extent 1729 to 1760:
+>     Logical volume	/dev/vg_system/grml-images
+>     Logical extents	0 to 31
+>   Physical extent 1761 to 2016:
+>     Logical volume	/dev/vg_system/swap
+>     Logical extents	0 to 255
+>   Physical extent 2017 to 2047:
+>     Logical volume	/dev/vg_system/btrfs
+>     Logical extents	3480 to 3510
+>   Physical extent 2048 to 2687:
+>     Logical volume	/dev/vg_system/btrfs
+>     Logical extents	0 to 639
+>   Physical extent 2688 to 3007:
+>     Logical volume	/dev/vg_system/btrfs
+>     Logical extents	1911 to 2230
+>   Physical extent 3008 to 3320:
+>     Logical volume	/dev/vg_system/btrfs
+>     Logical extents	1120 to 1432
+>   Physical extent 3321 to 3336:
+>     Logical volume	/dev/vg_system/boot
+>     Logical extents	0 to 15
+>   Physical extent 3337 to 3814:
+>     Logical volume	/dev/vg_system/btrfs
+>     Logical extents	1433 to 1910
+>   =20
+>=20
+> Would btrfs even be able to accidentally trim parts of other LVs or doe=
+s this clearly hint towards a LVM/dm issue?
 
-For btrfs part, I think I have replied before, and it should not be a
-problem for btrfs.
+I can't speak sure, but (at least for latest kernel) btrfs has a lot of
+extra mount time self check, including chunk stripe check against
+underlying device, thus the possibility shouldn't be that high for btrfs.=
+
+
+> Is there an easy way to somehow trace the trim through the different la=
+yers so one can see where it goes wrong?
+
+Sure, you could use dm-log-writes.
+It will record all read/write (including trim) for later replay.
+
+So in your case, you can build the storage stack like:
+
+Btrfs
+<dm-log-writes>
+LUKS/dmcrypt
+LVM
+MBR partition
+Samsung SSD
+
+Then replay the log (using src/log-write/replay-log in fstests) with
+verbose output, you can verify every trim operation against the dmcrypt
+device size.
+
+If all trim are fine, then move the dm-log-writes a layer lower, until
+you find which layer is causing the problem.
 
 Thanks,
 Qu
-
-> How come? Lack of information? Lack of clarity?
 >=20
-> Greetings,
-> Hendrik
+> Cheers,
+> Michael
 >=20
->=20
-> ------ Originalnachricht ------
-> Von: "Hendrik Friedel via samba" <samba@lists.samba.org>
-> An: "samba@lists.samba.org" <samba@lists.samba.org>
-> Gesendet: 14.05.2019 20:01:41
-> Betreff: [Samba] Fw: Btrfs Samba and Quotas
->=20
->> Hello,
->>
->> by suggestion from linux-btrfs I post this to samba@lists.samba.org.
->> I think, thiss is a bug in Samba. Can you confirm and suggest a
->> workaround?
->>
->> Regards,
->> Hendrik
->>
->> ------ Weitergeleitete Nachricht ------
->> Von: "Hendrik Friedel" <hendrik@friedels.name>
->> An: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
->> Gesendet: 12.05.2019 13:27:00
->> Betreff: Btrfs Samba and Quotas
->>
->> Hello,
->>
->> I was wondering, whether anyone of you has experience with this samba
->> in conjunction with BTRFS and quotas.
->>
->> I am using Openmediavault (debian based NAS distribution), which is
->> not actively supporting btrfs. It uses quotas by default, and I think,=
-
->> that me using btrfs is causing troubles...
->>
->> In the logs I find:
->> May 12 09:34:06 homeserver smbd[4116]:=C2=A0=C2=A0 sys_path_to_bdev() =
-failed for
->> path [.]!
->> May 12 09:34:06 homeserver smbd[4116]: [2019/05/12 09:34:06.879166,=C2=
-=A0
->> 0] ../source3/lib/sysquotas.c:461(sys_get_quota)
->> May 12 09:34:06 homeserver smbd[4116]:=C2=A0=C2=A0 sys_path_to_bdev() =
-failed for
->> path [.]!
->> May 12 09:34:06 homeserver smbd[4116]: [2019/05/12 09:34:06.879356,=C2=
-=A0
->> 0] ../source3/lib/sysquotas.c:461(sys_get_quota)
->> May 12 09:34:06 homeserver smbd[4116]:=C2=A0=C2=A0 sys_path_to_bdev() =
-failed for
->> path [.]!
->> May 12 09:34:06 homeserver smbd[4116]: [2019/05/12 09:34:06.879688,=C2=
-=A0
->> 0] ../source3/lib/sysquotas.c:461(sys_get_quota)
->> May 12 09:34:06 homeserver smbd[4116]:=C2=A0=C2=A0 sys_path_to_bdev() =
-failed for
->> path [Hendrik]!
->> May 12 09:34:06 homeserver smbd[4116]: [2019/05/12 09:34:06.879888,=C2=
-=A0
->> 0] ../source3/lib/sysquotas.c:461(sys_get_quota)
->> May 12 09:34:06 homeserver smbd[4116]:=C2=A0=C2=A0 sys_path_to_bdev() =
-failed for
->> path [Hendrik]!
->> May 12 09:34:06 homeserver smbd[4116]: [2019/05/12 09:34:06.880093,=C2=
-=A0
->> 0] ../source3/lib/sysquotas.c:461(sys_get_quota)
->> May 12 09:34:06 homeserver smbd[4116]:=C2=A0=C2=A0 sys_path_to_bdev() =
-failed for
->> path [Hendrik]!
->> May 12 09:34:06 homeserver smbd[4116]: [2019/05/12 09:34:06.880287,=C2=
-=A0
->> 0] ../source3/lib/sysquotas.c:461(sys_get_quota)
->> May 12 09:34:06 homeserver smbd[4116]:=C2=A0=C2=A0 sys_path_to_bdev() =
-failed for
->> path [Hendrik]!
->>
->> As you can see, this is quite frequent.
->>
->> Searching for this, I find some bug-reports:
->> https://bugs.launchpad.net/ubuntu/+source/samba/+bug/1735953
->> https://bugzilla.samba.org/show_bug.cgi?id=3D10541
->>
->> Now, I am sure that I am not the first to use Samba with btrfs. What's=
-
->> special about me? How's your experience?
->>
->> Greetings,
->> Hendrik
->>
->>
->> -- To unsubscribe from this list go to the following URL and read the
->> instructions:=C2=A0 https://lists.samba.org/mailman/options/samba
+> PS: Current state of bisection: It looks like the error was introduced =
+somewhere between b5dd0c658c31b469ccff1b637e5124851e7a4a1c and v5.1.
 >=20
 
 
---2e8ETrFCwGCY3USXoPAa5CrflmvR0XT7T--
+--0U9r2ahJEceOP57SsOE9DglOJXYQvz7kO--
 
---IoaS6L7vbr6wA0KS9YWiDyZ9MJ7ZvxtSP
+--PUZjnjQPZBENQ83S8VdzxwLhgwZgZ0RSe
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzf3IQACgkQwj2R86El
-/qhTAggArygmmHXJtdfj4BBg9h1PoqdtB0MWn4yursgvt3aFU81XR1NfVEgGaS23
-Byzzahq6MxT/5yybQHXkZqhVEcK+OY/NNNJmMPN9hD4uuNZ/kqGK+hxRSppgn5NL
-BBqToI2mQgkT/9r/WKdIIQDtNYr0+8gvfGXUveJybbUoLfjWlItpUL3NQEgNd0XW
-XA8O3UL9VUFRfH6aEWHe01oKoPS4UwrTNjTwl62HanBwhUkXPJrzHGaZUjFZagnk
-7hSxNhq6JvKrYUvYJ0t5JeaNO4WcPx8O9n6uzcfbAc018vjtFhzNUSRbytAZdwxR
-E2mGN8w3gZg2JWStjbO+FqdePYXVbw==
-=sv2A
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzf3fMACgkQwj2R86El
+/qjMqgf+OFifbXIcn9trwnDjXkBHo+89YETFFs7CURgoy+KSfhsVMddcma10kFAb
+Q/kSFB7Q5j6e438WUkIdY9XiUeQ/5hOjMzqTVT+IguS5x9PbX0tm0QMnqDpsdseA
+m/W0DRs0zWoTqa3M1txuuWObZolRgpaVdkBwj/QwllmzwFLvZ1lgllSXuoUVdDDl
+7iXKy7TZVRL1ZT519kFB+n7ggBnq446oXKkTWp4miNTgOBzs+kEn3SEmCFS4Ui81
+7X2DUVEXYBBOmK0Y1sBEw68xAo3rgbuo0yf1mnC/saKuAvECQZXvRIjMqpZ9WdHi
+9x82FZExScBXkWDGIDGy393MG8OIqw==
+=69G2
 -----END PGP SIGNATURE-----
 
---IoaS6L7vbr6wA0KS9YWiDyZ9MJ7ZvxtSP--
+--PUZjnjQPZBENQ83S8VdzxwLhgwZgZ0RSe--
