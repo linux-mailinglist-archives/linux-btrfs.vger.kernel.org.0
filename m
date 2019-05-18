@@ -2,94 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D91362216C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 18 May 2019 06:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E902216F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 18 May 2019 06:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725446AbfEREGb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 18 May 2019 00:06:31 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:44767 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725294AbfEREGb (ORCPT
+        id S1725906AbfEREOw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 18 May 2019 00:14:52 -0400
+Received: from resqmta-ch2-01v.sys.comcast.net ([69.252.207.33]:54274 "EHLO
+        resqmta-ch2-01v.sys.comcast.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725294AbfEREOw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 18 May 2019 00:06:31 -0400
-Received: by mail-lj1-f193.google.com with SMTP id e13so7914599ljl.11
-        for <linux-btrfs@vger.kernel.org>; Fri, 17 May 2019 21:06:29 -0700 (PDT)
+        Sat, 18 May 2019 00:14:52 -0400
+X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Sat, 18 May 2019 00:14:52 EDT
+Received: from resomta-ch2-10v.sys.comcast.net ([69.252.207.106])
+        by resqmta-ch2-01v.sys.comcast.net with ESMTP
+        id RqaDhaY0ALJtxRqcOhkQYw; Sat, 18 May 2019 04:06:44 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9iPBjl2S+UwngaKyMzDlyxJtl4/YsbX0Oet3snxDCtU=;
-        b=Wh3+psFXNTS5E+r8lx/vp4k9azLprxAL9hrKVwQS2fTlHGq9ouYsGQ5GrToT46pilv
-         EidhW89iT6uZr/sSwKi4uzUc7OaYcSQ1kvTtnmF0OqKSRfSmCelvWnnSOy/a8TWrIxge
-         T+NAkCjqNKu4m7PbU/dgpm8yT2AZgHjj8Ho0iLAuBpCvEiYRssa5GBqsiNsArL8lXlgc
-         SqImj3UTT+dlQ+NBvu5QtbXXVKSVPG/5t7fx0DCVvTCpw4kLSzbbFfAJayzxtyq34uGM
-         ps+CwqssYo+UKw0A/PXDnjbdsnjQhF8JkvkBddJwhLtJ7RE9WJ1Z6nFuDY71XXZdL2T5
-         CEQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=9iPBjl2S+UwngaKyMzDlyxJtl4/YsbX0Oet3snxDCtU=;
-        b=bSzdt13LbUW5v6C2QVBtoFUEzUz+wVPFYTyaOkqWco/ldYhC02LYbI9I6mcyYfCGcX
-         zp62i8kI5hSknP1mMcKSdhsTRv8NOYIJ27mixgvZSqvJpKZyrh9Wm0iaeTumOaiY5QB0
-         7sAKBuewjf6mVyucOnce1iVgWu/BqLnn7ncTOSSkPHoPjMtHnXRnDDsQmoX5RtmuiImb
-         zy6J5hXm9p0MEZfogcuCJpluVJsC7ldQ038VgZPfuYNHARArMJejwPu5ptTTPJwMSo5H
-         JOXEeCNEsEr6OvizmdRnwt+EP2p8Ey3G+RDLMaOoyOzoHlb6s69xfdPGh8EtrkDqRw0i
-         4aRA==
-X-Gm-Message-State: APjAAAVRWb0GukTvxgJGoMqRJk8xpT+ErkH0J2xAozP296pvCSrqa1Me
-        kmAazVWv1WYPcUP+aXazehLh85mH5hnspRtQ1q4jrA==
-X-Google-Smtp-Source: APXvYqx1CRS2/bD1MueOPg1CpT9FCJoK3AhW8tmjuvazE348AT0PMUKCtdWTvQCqZEQT591L3YszvqyGpd+s1Qr5o0c=
-X-Received: by 2002:a2e:8041:: with SMTP id p1mr5267211ljg.121.1558152389041;
- Fri, 17 May 2019 21:06:29 -0700 (PDT)
+        d=comcastmailservice.net; s=20180828_2048; t=1558152404;
+        bh=0OcCHr9RkLA3qkco2iBIKV3IQMFeIStU24wDd0okLOE=;
+        h=Received:Received:To:From:Subject:Message-ID:Date:MIME-Version:
+         Content-Type;
+        b=fAGnrP6YbVf0Xl3ISwmY2i/E/COGCd3hV81Ma9hAye+Ah5C0Qygz2mLRmmjQmgCnh
+         lRB9rzBNWjEAmu1wMllEmvOz5pbU4V70MafHOtNjpXCc21PQiUnjHRRAFNUX60RLF9
+         eb8SsyeI8foEwLe+jefEhvCmv+Nso346rTzIPGKB7ls0qJ+gHgQl77/4mFxXPvD2Su
+         +UmM4R58fFqe8fjVWyqsnlmjx1MLO4KcqqjUJZmEF3H3s/Cyr5hVqHFtMzU8miwhkL
+         GjktbR7sr/IF96qHG4aLImMBK/mYdHmRk7SYbx2OZ+4Mt83l2LVuNHo9GvXNMzsyO9
+         lWne7Yjq5n8dA==
+Received: from touchy.whiterc.com ([IPv6:2601:601:1400:69b3:5588:da99:221d:2c69])
+        by resomta-ch2-10v.sys.comcast.net with ESMTPSA
+        id RqcKh68HSjSzwRqcLhSUYF; Sat, 18 May 2019 04:06:44 +0000
+X-Xfinity-VMeta: sc=-100;st=legit
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+From:   Robert White <rwhite@pobox.com>
+Subject: Feature Request: Directory property to upconvert mkdir/rmdir to
+ subvol create/delete
+Message-ID: <a108b077-ff18-7c6d-ac5c-ea666de48084@pobox.com>
+Date:   Sat, 18 May 2019 04:06:40 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-References: <CAKS=YrP=z2+rP5AtFKkf7epi+Dr2Arfsaq3pZ9cR3iKif3gV5g@mail.gmail.com>
- <CAJCQCtTmZY-UHeNYp=waTV8TWiAKXr8bJq13DQ7KQg=syvQ=tg@mail.gmail.com> <CAKS=YrMB6SNbCnJsU=rD5gC6cR5yEnSzPDax5eP-VQ-UpzHvAg@mail.gmail.com>
-In-Reply-To: <CAKS=YrMB6SNbCnJsU=rD5gC6cR5yEnSzPDax5eP-VQ-UpzHvAg@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Fri, 17 May 2019 22:06:17 -0600
-Message-ID: <CAJCQCtQhrh8VBKe11gQUt5BSuWCsDQUdt_Q4a4opnAYE5XoEVQ@mail.gmail.com>
-Subject: Re: Unbootable root btrfs
-To:     Lee Fleming <leeflemingster@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Chris Murphy <lists@colorremedies.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 17, 2019 at 2:18 AM Lee Fleming <leeflemingster@gmail.com> wrot=
-e:
->
-> I didn't see that particular warning. I did see a warning that it could c=
-ause damage and should be tried after trying some other things which I did.=
- The data on this drive isn't important. I just wanted to see if it could b=
-e recovered before reinstalling.
->
-> There was no crash, just a reboot. I was setting up KVM and I rebooted in=
-to a different kernel to see if some performance problems were kernel relat=
-ed. And it just didn't boot.
+Howdy,
 
-OK the corrupted Btrfs volume is a guest file system?
+For several reasons it would be really convenient if there was a way to 
+mark a btrfs directory such that the directories created in the marked 
+directory would actually be automatically converted to subvolume 
+creation and destruction.
 
-That's unexpected. There must be some configuration specific issue
-that's instigating this. I've done quite a lot of Btrfs testing in
-qemu-kvm including the virtioblk devices using unsafe caching, and I
-do vile things with the VM's intentionally trying to blow up Btrfs
-including force quitting the VM while it's writing. And I haven't
-gotten any corruptions.
+NFS4 particularly pivots on file system boundaries, which it seems to 
+include subvolumes-in-place as such boundaries.
 
-All I can recommend is to try to reproduce it again and this next time
-try to keep track of the exact steps such that anyone can try to
-reproduce it. It might be a bug you've found. But we need a
-reproducer. Is it using QCOW2 or RAW file backing, or LVM, or plain
-partition? What is the qemu command for the VM? You can get that with
-'ps -aux | grep qemu' and it should show all the options used
-including the kind of block devices and caching. And then what is the
-workload inside the VM?
+doing this to /home is another opportunity if you have transient 
+accounts created by scripts/programs you cannot easily change.
 
+Other uses include creating virtual machine sets via tarballs and such.
 
+It would also be super useful in apps that create large cache 
+directories that you'll eventually drop in bulk. /usr/src is another 
+place where large directories come and go under installer control.
 
---=20
-Chris Murphy
+The core logic would be to upconvert any legal rmdir to a subvol delete 
+if it's applied to a subvol. Yes, this _would_ remove non-empty subvols, 
+that would be the point. Then any mkdir in that directory would create a 
+subvol instead of a directory.
+
+Normal files in the directory would be unchanged.
+
+And a normal directory moved into the directory would remain a normal 
+directory for obvious reasons.
+
+And a subvol moved out of the directory (can you even do that?) would 
+remain a subvol for equally obvious reasons.
+
+It's implicit that the non-superuser create/remove subvol operation 
+would be legal for such a directory.
+
+Programs could be rewritten to do this explicitly, of course, but that's 
+a heck of a lot of impractical patching.
+
+Anyway, just a thought I've had repeatedly that I finally thought to broach.
