@@ -2,213 +2,277 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E464523901
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2019 15:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A3E23AAB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2019 16:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732296AbfETN6Z convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 20 May 2019 09:58:25 -0400
-Received: from voltaic.bi-co.net ([134.119.3.22]:52185 "EHLO voltaic.bi-co.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732237AbfETN6Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 May 2019 09:58:25 -0400
-Received: from [131.234.247.237] (unknown [131.234.247.237])
-        by voltaic.bi-co.net (Postfix) with ESMTPSA id 00B7120BA8;
-        Mon, 20 May 2019 15:58:20 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: fstrim discarding too many or wrong blocks on Linux 5.1, leading
- to data loss
-From:   =?utf-8?Q?Michael_La=C3=9F?= <bevan@bi-co.net>
-In-Reply-To: <CAK-xaQYPs62v971zm1McXw_FGzDmh_vpz3KLEbxzkmrsSgTfXw@mail.gmail.com>
-Date:   Mon, 20 May 2019 15:58:20 +0200
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>, dm-devel@redhat.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <9D4ECE0B-C9DD-4BAD-A764-9DE2FF2A10C7@bi-co.net>
-References: <297da4cbe20235080205719805b08810@bi-co.net>
- <CAJCQCtR-uo9fgs66pBMEoYX_xAye=O-L8kiMwyAdFjPS5T4+CA@mail.gmail.com>
- <8C31D41C-9608-4A65-B543-8ABCC0B907A0@bi-co.net>
- <CAJCQCtTZWXUgUDh8vn0BFeEbAdKToDSVYYw4Q0bt0rECQr9nxQ@mail.gmail.com>
- <AD966642-1043-468D-BABF-8FC9AF514D36@bi-co.net>
- <158a3491-e4d2-d905-7f58-11a15bddcd70@gmx.com>
- <C1CD4646-E75D-4AAF-9CD6-B3AC32495FD3@bi-co.net>
- <CAK-xaQYPs62v971zm1McXw_FGzDmh_vpz3KLEbxzkmrsSgTfXw@mail.gmail.com>
-To:     Andrea Gelmini <andrea.gelmini@gmail.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S2391937AbfETOnL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 May 2019 10:43:11 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:41880 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732661AbfETOnL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 May 2019 10:43:11 -0400
+Received: by mail-ua1-f68.google.com with SMTP id l14so593958uah.8
+        for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2019 07:43:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=tG+scfQ7GE0P48lAYtnE+hQDP4uaZbd8RaolNvoRTaQ=;
+        b=OKkLhDDmzUa1JzPUz4V8EE33HM1pbx+FiQPEv/n8XxYaPXwGmq6Nv4duUuTC0DO1X6
+         ll150+FTQeeWlWGpAZzy+RL9RhvAJHMy0h3ho8gnD8JHpDdVcP+LRhxi0dNvRJ0Ci/5G
+         g21gbMBYalOs80OoXujOTwU6ttRXb9zatYSFvFMYM/a6mRCcH97NIg49TTex85tXXvwG
+         k1to0Uj0iU6xmVJPrFl0vK+r147OA7jHHD6USrsvyPj7JKMelfbkFeSouN5v8ETpemSN
+         nLmsE0tA98KxNzDfp03gbXmwAxPeOGeXZaoJWXCvnKehkHjaY9MmiTCuXF5yE2VCDJiF
+         YIuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=tG+scfQ7GE0P48lAYtnE+hQDP4uaZbd8RaolNvoRTaQ=;
+        b=A03WlRSO3I9f04OBFxc1a4MIvSN9Smp683sYuUrnTm2k6uEe6F/ydWC6R1xq+ZH+pF
+         RqZusRQSdt1ygd27WzasjpWS5TTAmuEfCk3q3RKXlmH6D1ePX5EAM3C0/GUXxStuCsgI
+         65UGZ3c0lz6zCLjjNaeKa62O+uZslrQMF9e2R9hcPJZk3T1cIYPj91V7vzTstJl3Ifsp
+         rR+7AgmbqamcpOtzifMzAhlBFmowOUr184Bi3lBn9jULVGr/8hVLXvDdNDoHTsRwvWXA
+         n+i17Jb/UJu3hpv6YkuM5eL3M8dqSo4y++oP2x8v+XzJ1oRbTrlv2hAP/VXEmS47Fc8F
+         OUug==
+X-Gm-Message-State: APjAAAVqy6Um5YkGemWe02yyiq462bxkPMzsKi7DgTpPyx9f0A2t+h6o
+        vZzQFKFPRg+wUwKwPLevz4/PnOgGUPfQdw7RH6U=
+X-Google-Smtp-Source: APXvYqy+EiXpWswwKwFNfcnOwhU+mTBjKOmYX5CU69fLDkH2q7Wy7BbK8+K/48y2BYvL/4POj6Mlt82msC9QCN3crRM=
+X-Received: by 2002:ab0:69c6:: with SMTP id u6mr27338186uaq.27.1558363389731;
+ Mon, 20 May 2019 07:43:09 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190520081142.23706-1-nborisov@suse.com> <560224d9-28ec-033f-c7c0-f324576e5e04@suse.com>
+ <CAL3q7H5MHYhrvLnqHagkmLS_cey6Bc-nZh-21ivGjbSPjZ76+Q@mail.gmail.com> <e4c42032-ee2b-1289-3f93-96214c753cc4@suse.com>
+In-Reply-To: <e4c42032-ee2b-1289-3f93-96214c753cc4@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 20 May 2019 15:42:58 +0100
+Message-ID: <CAL3q7H6ftyYNwKRH3Nx+pXd1fTavZZ3-yo=nwaLEhi7E82jodA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: Simplify join_running_log_trans
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe David Borba Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Mon, May 20, 2019 at 10:13 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 20.05.19 =D0=B3. 12:10 =D1=87., Filipe Manana wrote:
+> > On Mon, May 20, 2019 at 9:23 AM Nikolay Borisov <nborisov@suse.com> wro=
+te:
+> >>
+> >>
+> >>
+> >> On 20.05.19 =D0=B3. 11:11 =D1=87., Nikolay Borisov wrote:
+> >>> This patch removes stray smp_mb before root->log_root from join_runni=
+ng_log_trans
+> >>> as well as the unlocked check for root->log_root. log_root is only se=
+t in
+> >>> btrfs_add_log_tree, called from start_log_trans under root->log_mutex=
+.
+> >>> Furthermore, log_root is freed in btrfs_free_log, called from commit_=
+fs_root,
+> >>> which in turn is called from transaction's critical section (TRANS_CO=
+MMIT_DOING).
+> >>> Those 2 locking invariants ensure join_running_log_trans don't see in=
+valid
+> >>> values of ->log_root.
+> >>>
+> >>> Additionally this results in around 26% improvement when deleting 500=
+k files/dir.
+> >>> All values are in seconds.
+> >>>
+> >>>       With Patch (real)       With patch (sys)        Without patch (=
+real)    Without patch (sys)
+> >>>           80                                  78                     =
+                         91                                              90
+> >>>               63                                      62             =
+                                 93                                        =
+      91
+> >>>               65                                      64             =
+                                 92                                        =
+      90
+> >>>               67                                      65             =
+                                 93                                        =
+      90
+> >>>               75                                      73             =
+                                 90                                        =
+      88
+> >>>               75                                      73             =
+                                 91                                        =
+      89
+> >>>               75                                      73             =
+                                 93                                        =
+      90
+> >>>               74                                      73             =
+                                 89                                        =
+      87
+> >>>               76                                      74             =
+                                 91                                        =
+      89
+> >>> stddev        5.76146200581454        5.45690184791497        1.42400=
+062421959        1.22474487139159
+> >>> mean  72.2222222222222        70.5555555555556        91.444444444444=
+4        89.3333333333333
+> >>> median  75                                    73                     =
+                         91                                              90
+> >>>
+> >>     With Patch (real)   With patch (sys)    Without patch (real)    Wi=
+thout patch (sys)
+> >>         80                   78                     91                =
+      90
+> >>         63                   62                     93                =
+      91
+> >>         65                   64                     92                =
+      90
+> >>         67                   65                     93                =
+      90
+> >>         75                   73                     90                =
+      88
+> >>         75                   73                     91                =
+      89
+> >>         75                   73                     93                =
+      90
+> >>         74                   73                     89                =
+      87
+> >>         76                   74                     91                =
+      89
+> >> stddev  5.76146200581454    5.45690184791497    1.42400062421959    1.=
+22474487139159
+> >> mean    72.2222222222222    70.5555555555556    91.4444444444444    89=
+.3333333333333
+> >> median  75                   73                     91                =
+      90
+> >
+> > Great.
+> >
+> > How was that test done?
+> > Simply deleting the files with nothing else running in parallel?
+>
+> Yes
+>
+> >
+> > How does it behave if while the files are being deleted,  there are
+> > concurrent fsyncs on other files of the same subvolume, that is, while
+> > the mutex is held?
+> >
+> > Because that check without holding the mutex, is likely there for
+> > performance reasons.
+>
+> So I will repeat the test when there are concurrent fsyncs running and
+> also with no concurrent fsyncs running but just removing the smp_mb, I
+> think the performance gain should be from removing the smp_mb and not
+> necessarily the check. In the worst case I can leave the check intact
+> and just remove the smp_mb because it doesn't add any value
+> correctness-wise.
 
-> Am 20.05.2019 um 15:53 schrieb Andrea Gelmini <andrea.gelmini@gmail.com>:
-> 
-> Had same issue on a similar (well,  quite exactly same setup), on a machine in production.
-> But It Is more than 4 tera of data, so in the end I re-dd the image and restarted, sticking to 5.0.y branch never had problem.
-> I was able to replicate it. SSD Samsung, more recent version.
-> Not with btrfs but ext4, by the way.
+So the barrier is likely there to make sure we see non-null log_root
+after it was set, concurrently by someone calling start_log_trans().
+It pairs, implicitly, with the mutex_unlock there, at
+start_log_trans(), since that implies a memory barrier.
 
-Thanks for the info, that eliminates one variable. So you also used dm-crypt on top of LVM?
+With your patch, we always end up doing a mutex_lock(), which also
+implies a memory barrier.
 
-Cheers,
-Michael
+Sorry I missed this before, but your test doesn't make any sense. How
+can a memory barrier have such a big impact on a code path (unlink)
+that does lot of much heavier stuff? Like btree searches/deletes,
+deleting  delayed items, etc.
+Your test case is even flawed because join_running_log_trans() can
+never be called.
 
-> I saw the discard of big initial part of lvm partition. I can't find superblocks Copy in the First half, but torwards the end of logical volume.
-> 
-> Sorry, i can't play with It again, but i have the whole (4 tera) dd image with the bug.
-> 
-> 
-> Ciao,
-> Gelma
-> 
-> Il lun 20 mag 2019, 02:38 Michael Laß <bevan@bi-co.net> ha scritto:
-> CC'ing dm-devel, as this seems to be a dm-related issue. Short summary for new readers:
-> 
-> On Linux 5.1 (tested up to 5.1.3), fstrim may discard too many blocks, leading to data loss. I have the following storage stack:
-> 
-> btrfs
-> dm-crypt (LUKS)
-> LVM logical volume
-> LVM single physical volume
-> MBR partition
-> Samsung 830 SSD
-> 
-> The mapping between logical volumes and physical segments is a bit mixed up. See below for the output for “pvdisplay -m”. When I issue fstrim on the mounted btrfs volume, I get the following kernel messages:
-> 
-> attempt to access beyond end of device
-> sda1: rw=16387, want=252755893, limit=250067632
-> BTRFS warning (device dm-5): failed to trim 1 device(s), last error -5
-> 
-> At the same time, other logical volumes on the same physical volume are destroyed. Also the btrfs volume itself may be damaged (this seems to depend on the actual usage).
-> 
-> I can easily reproduce this issue locally and I’m currently bisecting. So far I could narrow down the range of commits to:
-> Good: 92fff53b7191cae566be9ca6752069426c7f8241
-> Bad: 225557446856448039a9e495da37b72c20071ef2
-> 
-> In this range of commits, there are only dm-related changes.
-> 
-> So far, I have not reproduced the issue with other file systems or a simplified stack. I first want to continue bisecting but this may take another day.
-> 
-> 
-> > Am 18.05.2019 um 12:26 schrieb Qu Wenruo <quwenruo.btrfs@gmx.com>:
-> > On 2019/5/18 下午5:18, Michael Laß wrote:
-> >> 
-> >>> Am 18.05.2019 um 06:09 schrieb Chris Murphy <lists@colorremedies.com>:
-> >>> 
-> >>> On Fri, May 17, 2019 at 11:37 AM Michael Laß <bevan@bi-co.net> wrote:
-> >>>> 
-> >>>> 
-> >>>> I tried to reproduce this issue: I recreated the btrfs file system, set up a minimal system and issued fstrim again. It printed the following error message:
-> >>>> 
-> >>>> fstrim: /: FITRIM ioctl failed: Input/output error
-> >>> 
-> >>> Huh. Any kernel message at the same time? I would expect any fstrim
-> >>> user space error message to also have a kernel message. Any i/o error
-> >>> suggests some kind of storage stack failure - which could be hardware
-> >>> or software, you can't know without seeing the kernel messages.
-> >> 
-> >> I missed that. The kernel messages are:
-> >> 
-> >> attempt to access beyond end of device
-> >> sda1: rw=16387, want=252755893, limit=250067632
-> >> BTRFS warning (device dm-5): failed to trim 1 device(s), last error -5
-> >> 
-> >> Here are some more information on the partitions and LVM physical segments:
-> >> 
-> >> fdisk -l /dev/sda:
-> >> 
-> >> Device     Boot Start       End   Sectors   Size Id Type
-> >> /dev/sda1  *     2048 250069679 250067632 119.2G 8e Linux LVM
-> >> 
-> >> pvdisplay -m:
-> >> 
-> >>  --- Physical volume ---
-> >>  PV Name               /dev/sda1
-> >>  VG Name               vg_system
-> >>  PV Size               119.24 GiB / not usable <22.34 MiB
-> >>  Allocatable           yes (but full)
-> >>  PE Size               32.00 MiB
-> >>  Total PE              3815
-> >>  Free PE               0
-> >>  Allocated PE          3815
-> >>  PV UUID               mqCLFy-iDnt-NfdC-lfSv-Maor-V1Ih-RlG8lP
-> >> 
-> >>  --- Physical Segments ---
-> >>  Physical extent 0 to 1248:
-> >>    Logical volume    /dev/vg_system/btrfs
-> >>    Logical extents   2231 to 3479
-> >>  Physical extent 1249 to 1728:
-> >>    Logical volume    /dev/vg_system/btrfs
-> >>    Logical extents   640 to 1119
-> >>  Physical extent 1729 to 1760:
-> >>    Logical volume    /dev/vg_system/grml-images
-> >>    Logical extents   0 to 31
-> >>  Physical extent 1761 to 2016:
-> >>    Logical volume    /dev/vg_system/swap
-> >>    Logical extents   0 to 255
-> >>  Physical extent 2017 to 2047:
-> >>    Logical volume    /dev/vg_system/btrfs
-> >>    Logical extents   3480 to 3510
-> >>  Physical extent 2048 to 2687:
-> >>    Logical volume    /dev/vg_system/btrfs
-> >>    Logical extents   0 to 639
-> >>  Physical extent 2688 to 3007:
-> >>    Logical volume    /dev/vg_system/btrfs
-> >>    Logical extents   1911 to 2230
-> >>  Physical extent 3008 to 3320:
-> >>    Logical volume    /dev/vg_system/btrfs
-> >>    Logical extents   1120 to 1432
-> >>  Physical extent 3321 to 3336:
-> >>    Logical volume    /dev/vg_system/boot
-> >>    Logical extents   0 to 15
-> >>  Physical extent 3337 to 3814:
-> >>    Logical volume    /dev/vg_system/btrfs
-> >>    Logical extents   1433 to 1910
-> >> 
-> >> 
-> >> Would btrfs even be able to accidentally trim parts of other LVs or does this clearly hint towards a LVM/dm issue?
-> > 
-> > I can't speak sure, but (at least for latest kernel) btrfs has a lot of
-> > extra mount time self check, including chunk stripe check against
-> > underlying device, thus the possibility shouldn't be that high for btrfs.
-> 
-> Indeed, bisecting the issue led me to a range of commits that only contains dm-related and no btrfs-related changes. So I assume this is a bug in dm.
-> 
-> >> Is there an easy way to somehow trace the trim through the different layers so one can see where it goes wrong?
-> > 
-> > Sure, you could use dm-log-writes.
-> > It will record all read/write (including trim) for later replay.
-> > 
-> > So in your case, you can build the storage stack like:
-> > 
-> > Btrfs
-> > <dm-log-writes>
-> > LUKS/dmcrypt
-> > LVM
-> > MBR partition
-> > Samsung SSD
-> > 
-> > Then replay the log (using src/log-write/replay-log in fstests) with
-> > verbose output, you can verify every trim operation against the dmcrypt
-> > device size.
-> > 
-> > If all trim are fine, then move the dm-log-writes a layer lower, until
-> > you find which layer is causing the problem.
-> 
-> That sounds like a plan! However, I first want to continue bisecting as I am afraid to lose my reproducer by changing parts of my storage stack.
-> 
-> Cheers,
-> Michael
-> 
-> > 
-> > Thanks,
-> > Qu
-> >> 
-> >> Cheers,
-> >> Michael
-> >> 
-> >> PS: Current state of bisection: It looks like the error was introduced somewhere between b5dd0c658c31b469ccff1b637e5124851e7a4a1c and v5.1.
-> 
+Look at its only two callers, btrfs_del_inode_ref_in_log() and
+btrfs_del_dir_entries_in_log(), they both do:
 
+if (dir->logged_trans < trans->transid)
+return 0;
+
+ret =3D join_running_log_trans(root);
+if (ret)
+return 0;
+
+and
+
+if (inode->logged_trans < trans->transid)
+return 0;
+
+ret =3D join_running_log_trans(root);
+if (ret)
+return 0;
+
+Since you never fsync the files nor the directory containing them in
+that test, we never end up calling join_running_log_trans().
+
+So I don't know where you got the 26%...
+
+Thanks.
+
+>
+> >
+> > Thanks.
+> >
+> >
+> >>
+> >>
+> >> Here's the perf data without being butchered.
+> >>
+> >>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> >>> ---
+> >>>
+> >>> This passed full xfstest run and the performance results were obtaine=
+d with the
+> >>> following testcase:
+> >>>
+> >>> #!/bin/bash
+> >>> for i in {1..10}; do
+> >>>     echo "Testun run : %i"
+> >>>     ./ltp/fsstress -z -d /media/scratch/ -f creat=3D100 -n 500000
+> >>>     sync
+> >>>     time rm -rf /media/scratch/*
+> >>>     sync
+> >>> done
+> >>>
+> >>>  fs/btrfs/tree-log.c | 4 ----
+> >>>  1 file changed, 4 deletions(-)
+> >>>
+> >>> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> >>> index 6adcd8a2c5c7..61744d8af106 100644
+> >>> --- a/fs/btrfs/tree-log.c
+> >>> +++ b/fs/btrfs/tree-log.c
+> >>> @@ -188,10 +188,6 @@ static int join_running_log_trans(struct btrfs_r=
+oot *root)
+> >>>  {
+> >>>       int ret =3D -ENOENT;
+> >>>
+> >>> -     smp_mb();
+> >>> -     if (!root->log_root)
+> >>> -             return -ENOENT;
+> >>> -
+> >>>       mutex_lock(&root->log_mutex);
+> >>>       if (root->log_root) {
+> >>>               ret =3D 0;
+> >>>
+> >
+> >
+> >
+> > --
+> > Filipe David Manana,
+> >
+> > =E2=80=9CWhether you think you can, or you think you can't =E2=80=94 yo=
+u're right.=E2=80=9D
+> >
+
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
