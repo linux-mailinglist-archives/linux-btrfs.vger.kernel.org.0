@@ -2,25 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DB924015
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2019 20:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0730923900
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2019 15:58:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbfETSJe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 May 2019 14:09:34 -0400
-Received: from westpalmbeachmassagegroup.com ([45.35.221.60]:53983 "EHLO
-        wolfgangdigital.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726966AbfETSJe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 May 2019 14:09:34 -0400
+        id S1732278AbfETN6O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 May 2019 09:58:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732237AbfETN6O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 May 2019 09:58:14 -0400
+Received: from localhost (unknown [23.100.24.84])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4D7E9216FD;
+        Mon, 20 May 2019 13:58:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1558360693;
+        bh=ptjQrcM3Ydb3MpRColzNgQu1ETExOjPZ1pDGjOjsfvw=;
+        h=Date:From:To:To:To:Cc:Subject:In-Reply-To:References:From;
+        b=13V35cVmQNS7zJi1vp2CqPdtFOE+GeFVfC93r72Z3lYh/+M5bKL2R/JkPW8ZLybkv
+         1ej/FhFarKjQ0F21daiSiLRWIBDp2QptitDn8OzlIJUtS++M/bN+2jsiKriyXpbdjS
+         4/9Ja45I4RzL5trhQ4+3Tkg/0Z/ipf1qd/UlL7bI=
+Date:   Mon, 20 May 2019 13:58:12 +0000
+From:   Sasha Levin <sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+To:     Filipe Manana <fdmanana@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: Print your logo on USB drive
-Message-ID: <f8e0c29be176eec215a8221ca68efbff@esquire.com>
-Date:   Mon, 20 May 2019 15:50:53 +0200
-From:   "Heather" <heather@usblogo.space>
-Reply-To: flashdrive@aliyun.com
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Cc:     stable@vger.kernel.org
+Subject: Re: [PATCH] Btrfs: incremental send, fix file corruption when no-holes feature is enabled
+In-Reply-To: <20190520085542.29282-1-fdmanana@kernel.org>
+References: <20190520085542.29282-1-fdmanana@kernel.org>
+Message-Id: <20190520135813.4D7E9216FD@mail.kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -28,36 +40,31 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Hi,
 
-I didn’t know if you had received my email from last week?
+[This is an automated email]
 
-We manufacture ALL custom LOGO and branded products – over 300,000 to
-choose from.
+This commit has been processed because it contains a "Fixes:" tag,
+fixing commit: 16e7549f045d Btrfs: incompatible format change to remove hole extents.
 
-The most asked about product that we make, is the custom printed USB flash
-drives!
-We can print your logo on them and load your digital images, videos and
-files!
+The bot has tested the following trees: v5.1.3, v5.0.17, v4.19.44, v4.14.120, v4.9.177, v4.4.180, v3.18.140.
 
-Here is what we include:
--Any size memory you need: 64MB up to 128GB
--We will print your logo on both sides, just ask!
--Very Low Order Minimums
--Need them quickly?  Not a problem, we offer Rush Service
+v5.1.3: Build OK!
+v5.0.17: Build OK!
+v4.19.44: Build OK!
+v4.14.120: Failed to apply! Possible dependencies:
+    22d3151c2c4c ("Btrfs: send, fix incorrect file layout after hole punching beyond eof")
 
-Email over a copy of your logo and we will create a design mock up for you
-at no cost!
+v4.9.177: Failed to apply! Possible dependencies:
+    22d3151c2c4c ("Btrfs: send, fix incorrect file layout after hole punching beyond eof")
 
-Our higher memory sizes are a really good option right now!
+v4.4.180: Failed to apply! Possible dependencies:
+    22d3151c2c4c ("Btrfs: send, fix incorrect file layout after hole punching beyond eof")
 
-Pricing is low right now, so let us know what you need and we will get you
-a quick quote.
+v3.18.140: Failed to apply! Possible dependencies:
+    22d3151c2c4c ("Btrfs: send, fix incorrect file layout after hole punching beyond eof")
 
-We always offer great rates for schools and nonprofits as well.
 
-Let us know what you would like quoted?
+How should we proceed with this patch?
 
-Regards,
-
-Heather Millons
-Custom USB Account Manager
-
+--
+Thanks,
+Sasha
