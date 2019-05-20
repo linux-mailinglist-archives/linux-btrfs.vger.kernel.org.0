@@ -2,93 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 852B0232DD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2019 13:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B37A42331A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2019 13:57:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731409AbfETLnC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 May 2019 07:43:02 -0400
-Received: from mail-it1-f196.google.com ([209.85.166.196]:39969 "EHLO
-        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbfETLnC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 May 2019 07:43:02 -0400
-Received: by mail-it1-f196.google.com with SMTP id h11so927294itf.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 20 May 2019 04:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CO+tQYtSHd5QOSiznEHvgAiuNqd/Ompcatl2cav6JMw=;
-        b=mXCqZJG9IJX1oR6mDd36zAmwr0uSHgnfN75F0gnsmxcf3Oh1z8DgcBMUf1zrx3xp7I
-         lBLd5+BOsGmcFqZ6JDhosgMW1DviCzesNf8NWbUSc5mMIibW4irPofB6jXMWeI0X6tcm
-         ajk/QNFrDpYx9/TLh+dPonFEne6PLZyDAQba+KOwuvrDC5giozvu6gdBWj08+ljaALul
-         YGyvVH8a3NODrXf5Ck548evjlWeG9EoMP3YOVL3aSZ9qf7K8Kz8TlZqBSEZecoqExZq1
-         38t9gRNkMQS9WZ+ZlggNkFwEqyMK+f0PcLZqrgIdqevVtZDlYVWLsDQ2kz3Gi3eBImr5
-         2hxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CO+tQYtSHd5QOSiznEHvgAiuNqd/Ompcatl2cav6JMw=;
-        b=k+pS2B5v8NO4WRRyOhRatVEJ+UyrBpD/fpqlwMLS92M0SDq+eQoMNCzyimw+9mr8k/
-         zsQi3Sl3tTiVUcvMSrr/HA9blTHXsYv6s4PeU6YdjdDfObW2go7fxBTLG/ah7XA8qMPh
-         5I0JpIbqahGK4+55xRzio6NMyx18HfMBbdoNvoQdWHQzLnM/15WZ5nfiYH6QzEf3mvVd
-         z2ESLNkRiSnRoAp5M2VfYNR5w+1AHBw9r7UKhL6vgbKDnUM8Cc6DqTu4sCDTZQqv8h7T
-         x2Q3nz4NIh3JRb81hbJ3OO2/15Kipp39jq9TFN6Zl8jUfPWi3yaJuA46RXRsdUEO3W0y
-         pkJg==
-X-Gm-Message-State: APjAAAW9QkZRvsQSFQ5TV/IAS0GHKwjsvQO8rq1rlb9CL4m6aV35NWKy
-        jLBc5iuhbM///I1xxnbgYhZe+IHcVAQ=
-X-Google-Smtp-Source: APXvYqxbQ3SxTVwQVK5Yuva0PTSXcBhyJkF1Eu1Y/ezO7zOzxw0HZ/5A7gzB4Z7hiQmt+TPpExzSqw==
-X-Received: by 2002:a02:241:: with SMTP id 62mr8450545jau.58.1558352580956;
-        Mon, 20 May 2019 04:43:00 -0700 (PDT)
-Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
-        by smtp.gmail.com with ESMTPSA id d22sm5444270ioc.51.2019.05.20.04.43.00
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 May 2019 04:43:00 -0700 (PDT)
-Subject: Re: [PATCH 00/17] Add support for SHA-256 checksums
-To:     Diego Calleja <diegocg@gmail.com>, dsterba@suse.cz
-Cc:     Johannes Thumshirn <jthumshirn@suse.de>,
+        id S1731180AbfETL5X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 20 May 2019 07:57:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41232 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730679AbfETL5W (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 May 2019 07:57:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id AABE2AE9A;
+        Mon, 20 May 2019 11:57:21 +0000 (UTC)
+Date:   Mon, 20 May 2019 13:57:21 +0200
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Cc:     Adam Borowski <kilobyte@angband.pl>,
+        Diego Calleja <diegocg@gmail.com>, dsterba@suse.cz,
         David Sterba <dsterba@suse.com>,
         Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 00/17] Add support for SHA-256 checksums
+Message-ID: <20190520115721.GD4985@x250>
 References: <20190510111547.15310-1-jthumshirn@suse.de>
- <20190515172720.GX3138@twin.jikos.cz> <2947276.sp5yYTaRCK@archlinux>
-From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Message-ID: <2b38d154-c9c6-6040-bb18-781dd9616752@gmail.com>
-Date:   Mon, 20 May 2019 07:42:57 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ <20190515172720.GX3138@twin.jikos.cz>
+ <2947276.sp5yYTaRCK@archlinux>
+ <20190517190703.GA6723@x250>
+ <20190518003808.GA17312@angband.pl>
+ <20190520074750.GC4985@x250>
+ <6b6f85cd-ec77-a39f-8afa-2c0f093d77ec@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <2947276.sp5yYTaRCK@archlinux>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <6b6f85cd-ec77-a39f-8afa-2c0f093d77ec@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019-05-17 14:36, Diego Calleja wrote:
-> El miÃ©rcoles, 15 de mayo de 2019 19:27:21 (CEST) David Sterba escribiÃ³:
->> Once the code is ready for more checksum algos, we'll pick candidates
->> and my idea is to select 1 fast (not necessarily strong, but better
->> than crc32c) and 1 strong (but slow, and sha256 is the candidate at the
->> moment)
-> 
-> Modern CPUs have SHA256 instructions, it is actually that slow? (not sure how
-> fast these instructions are)
-> 
-> If btrfs needs an algorithm with good performance/security ratio, I would
-> suggest considering BLAKE2 [1]. It is based in the BLAKE algorithm that made
-> to the final round in the SHA3 competition, it is considered pretty secure
-> (above SHA2 at least), and it was designed to take advantage of modern CPU
-> features and be as fast as possible - it even beats SHA1 in that regard. It is
-> not currently in the kernel but Wireguard uses it and will add an
-> implementation when it's merged (but Wireguard doesn't use the crypto layer
-> for some reason...)
-If anything, I'd argue for BLAKE2 instead of SHA256 as the 'slow' hash, 
-as it's got equivalent or better strength but runs significantly faster.
+On Mon, May 20, 2019 at 07:34:34AM -0400, Austin S. Hemmelgarn wrote:
+> Those would also be cryptographic applications, which BTRFS is not.  If
+> you're in one of those situations and need to have cryptographic
+> verification of files on the system, you need to be using either IMA,
+> dm-verity, or dm-integrity.
 
-For the fast hash, we should probably be looking more at stuff like 
-xxhash or murmur3, both of which make CRC32c look slow by comparison (at 
-least, when you don't have hardware acceleration for the CRC calculations).
+This is a system we're aiming at in the followups to this series, but haven't
+ultimately validated the design yet.
+
+-- 
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
+HRB 21284 (AG Nürnberg)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
