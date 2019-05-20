@@ -2,53 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE46923DEF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2019 19:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2807123F8A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 20 May 2019 19:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392146AbfETRAW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 20 May 2019 13:00:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57596 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389465AbfETRAV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 20 May 2019 13:00:21 -0400
-Subject: Re: [GIT PULL] Btrfs fixes for 5.2-rc2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558371621;
-        bh=vWPY5Ul5yjk13DZ/U0D2PZdx4tU1xULCEwnZyr79O+c=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=G2zoIBVgxcNB+dEVqdBm6j1Gw8I9j+cKcW1PNIACLQlOqsc8ZGaM3IuEZglwxyDD1
-         maRVekriYBjGAdSHUy0YsBaz/Bf5ofbv5B4VMH9KzlMs2+5nETYnu1azDGrRS5aHru
-         c8esXE990CXj+A7hWB2nG9R1tZVqL+KtWOxqMh/Q=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1558370339.git.dsterba@suse.com>
-References: <cover.1558370339.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1558370339.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.2-rc1-tag
-X-PR-Tracked-Commit-Id: 4e9845eff5a8027b5181d5bff56a02991fe46d48
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f49aa1de98363b6c5fba4637678d6b0ba3d18065
-Message-Id: <155837162103.7151.17612750682185207342.pr-tracker-bot@kernel.org>
-Date:   Mon, 20 May 2019 17:00:21 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        clm@fb.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1726732AbfETRzD convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 20 May 2019 13:55:03 -0400
+Received: from smtprelay02.ispgateway.de ([80.67.18.14]:11992 "EHLO
+        smtprelay02.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726127AbfETRzC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 20 May 2019 13:55:02 -0400
+Received: from [94.217.151.102] (helo=[192.168.177.20])
+        by smtprelay02.ispgateway.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        (Exim 4.90_1)
+        (envelope-from <hendrik@friedels.name>)
+        id 1hSmV2-00065V-1P
+        for linux-btrfs@vger.kernel.org; Mon, 20 May 2019 19:55:00 +0200
+From:   "Hendrik Friedel" <hendrik@friedels.name>
+To:     "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Subject: Fw: Re[2]: [Samba] Fw: Btrfs Samba and Quotas
+Date:   Mon, 20 May 2019 17:54:58 +0000
+Message-Id: <em6f1e2828-e2f1-4aae-8e1b-18a700d198c0@ryzen>
+Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
+User-Agent: eM_Client/7.2.34062.0
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Df-Sender: aGVuZHJpa0BmcmllZGVscy5uYW1l
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Mon, 20 May 2019 18:52:43 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.2-rc1-tag
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f49aa1de98363b6c5fba4637678d6b0ba3d18065
+------ Weitergeleitete Nachricht ------
+Von: "Hendrik Friedel" <hendrik@friedels.name>
+An: "Rowland penny" <rpenny@samba.org>; "sambalist" 
+<samba@lists.samba.org>; "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Gesendet: 20.05.2019 19:54:13
+Betreff: Re[2]: [Samba] Fw: Btrfs Samba and Quotas
 
-Thank you!
+Hello,
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+>Is btrfs becoming more common ?
+In my impression: Yes. Also, this problem seems to affect also zfs and 
+thus all (?) file systems that support checksums and scrubbing in linux; 
+consequently all filesystems that are the choice of users who need this 
+for ensuring data consistency.
+>You posted this:
+>
+>I am using Openmediavault (debian based NAS distribution), which is not actively supporting btrfs
+>
+>It is this that I was referring to.
+Ah, yes.
+OMV intended to move to btrfs as the only choice with the next version. 
+In order to pave the way, I intended to be an early adopter. The problem 
+I report here, that there is good reason to.
+
+>> > it just a pain in the a.. Never use it together with quotas or CTDB it
+>> > will crash after short time. I only take xfs and have no problem at all.
+>> > I don't know wy, but it's not good idea to user brtfs with samba.
+>>
+>>Well, as long as this is not being reported and being improved, it will remain that way...
+>>
+>Possibly, but it works great with ext4
+Glad to hear that.
+>I suggest you sit down with a copy of 'man smb.conf' and remove all the default
+My intent is not to solve *my* problem, but to make developers aware of 
+this issue and help getting this issue fixed.
+
+I feel a bit helpless though, as I perceive a lack of interest...
+I mean... This Bug is now celebrating its 5th aniversary.
+https://bugzilla.samba.org/show_bug.cgi?id=10541
+
+Greetings,
+Hendrik
+
