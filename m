@@ -2,51 +2,21 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 081C924F11
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 14:42:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4167824F5A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 14:56:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727819AbfEUMmY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 May 2019 08:42:24 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:42155 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727251AbfEUMmY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 May 2019 08:42:24 -0400
-Received: by mail-ed1-f68.google.com with SMTP id l25so29140660eda.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 21 May 2019 05:42:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HclI7gN58qNbzn4rBo7u3LnXW71zmzd3tlN87kkWG6U=;
-        b=GISW9JD4HFWzP1XGweLowzb+EQRxtOONR0ISsyWmX0mQdwtEYKDoZzsbqOK0ChCbiw
-         IqoBoXwsV8EyWuCYlR5DIN6wac62Gr+hIhaSTV9bsS/+yukiRMi/htmPxPNtdEByarcn
-         dV0ORi8au5CyLKGQXZTAKWdzKfVv4GZB8W7on0/UZDUmPVZdXkeOD1OyJkh8nOae6hrk
-         Ok6oFE9bhtSF1qfWS+SUljIZ5QurtG3rgAsoJrecKiP57oZphaqd/0tEH0QrwIfvJ6ZU
-         xrLW5NMoz0mbovRQ5j9cghyvemCuy3QSHRBKan7UN7EV7wtHxDOgEeu1UKykIPjvgwMh
-         xH8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HclI7gN58qNbzn4rBo7u3LnXW71zmzd3tlN87kkWG6U=;
-        b=OcESKAekCZjeGB7R00jZFrCqIp3qO+hJ6H9X4CpoV6YIjJ+BEYQnGvpkXqL/kfK01/
-         ZXtWxtt3dNibu7jw7weSvrDMg5C9OG1+urxeaU0yS5k+Q+6Fe5uVWc+ceYaEGD/IY4te
-         XmeGUFe95Nor3i//0Waawl4zz1Z+YAuorcu4he8Yu5DYnYjbnVqDLRX0NygC3ermJhbh
-         +oe2XMjVIFCCwH6+8WIPhOqYAso8mHNzWEe3+1PH8es2bE4bQb8NFnlgebHseI2OKrFg
-         LAeT2G5jnMA/RWQj/+iiQiRHn2HyGL9Co9VYzjiruXmPEBfe1Te5q7qfWSlBTWkE7Fqg
-         K6Aw==
-X-Gm-Message-State: APjAAAXAqKoFTHoBmr7l0HTxYbdk9K7sc1OPRZkvmR/ZoQXN207wVlea
-        Pd4ZHuWwwxakHN5ws/uQENw=
-X-Google-Smtp-Source: APXvYqwUY/Cgp8N3Kcw57Ilo4wl2sPCiuoYhpPX96A/mEnd/s5EKFBLSyr4DUTn9ghlWDl+SYvUWDA==
-X-Received: by 2002:a50:a535:: with SMTP id y50mr82260935edb.249.1558442542440;
-        Tue, 21 May 2019 05:42:22 -0700 (PDT)
-Received: from [10.20.1.223] (ivokamhome.ddns.nbis.net. [87.120.136.31])
-        by smtp.gmail.com with ESMTPSA id r14sm6286413eda.65.2019.05.21.05.42.21
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 May 2019 05:42:21 -0700 (PDT)
-Subject: Re: [PATCH v2 04/13] btrfs: don't assume ordered sums to be 4 bytes
+        id S1728137AbfEUM4O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 May 2019 08:56:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55424 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726692AbfEUM4N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 May 2019 08:56:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 361DEABD4;
+        Tue, 21 May 2019 12:56:12 +0000 (UTC)
+Subject: Re: [PATCH v2 05/13] btrfs: dont assume compressed_bio sums to be 4
+ bytes
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
@@ -54,14 +24,57 @@ Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
         David Gstir <david@sigma-star.at>,
         Nikolay Borisov <nborisov@suse.com>
 References: <20190516084803.9774-1-jthumshirn@suse.de>
- <20190516084803.9774-5-jthumshirn@suse.de>
-From:   Nikolay Borisov <n.borisov.lkml@gmail.com>
-Message-ID: <2d338f7a-2165-976a-7f51-3557347b32cd@gmail.com>
-Date:   Tue, 21 May 2019 15:42:20 +0300
+ <20190516084803.9774-6-jthumshirn@suse.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <8bb202e9-935d-eed8-f0d5-58f6a44bc991@suse.com>
+Date:   Tue, 21 May 2019 15:56:09 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190516084803.9774-5-jthumshirn@suse.de>
+In-Reply-To: <20190516084803.9774-6-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -73,173 +86,165 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 16.05.19 г. 11:47 ч., Johannes Thumshirn wrote:
-> BTRFS has the implicit assumption that a checksum in btrfs_orderd_sums is 4
+> BTRFS has the implicit assumption that a checksum in compressed_bio is 4
 > bytes. While this is true for CRC32C, it is not for any other checksum.
 > 
 > Change the data type to be a byte array and adjust loop index calculation
 > accordingly.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
->  fs/btrfs/compression.c  |  4 ++--
->  fs/btrfs/ctree.h        |  3 ++-
->  fs/btrfs/file-item.c    | 28 +++++++++++++++-------------
->  fs/btrfs/ordered-data.c | 10 ++++++----
->  fs/btrfs/ordered-data.h |  4 ++--
->  fs/btrfs/scrub.c        |  2 +-
->  6 files changed, 28 insertions(+), 23 deletions(-)
+>  fs/btrfs/compression.c  | 27 +++++++++++++++++----------
+>  fs/btrfs/compression.h  |  2 +-
+>  fs/btrfs/file-item.c    |  2 +-
+>  fs/btrfs/ordered-data.c |  3 ++-
+>  4 files changed, 21 insertions(+), 13 deletions(-)
 > 
 > diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 4ec1df369e47..98d8c2ed367f 100644
+> index 98d8c2ed367f..d5642f3b5c44 100644
 > --- a/fs/btrfs/compression.c
 > +++ b/fs/btrfs/compression.c
-<snip>
-
->  
-> -#define MAX_ORDERED_SUM_BYTES(fs_info) ((PAGE_SIZE - \
-> +#define MAX_ORDERED_SUM_BYTES(fs_info, csum_size) ((PAGE_SIZE - \
->  				   sizeof(struct btrfs_ordered_sum)) / \
-> -				   sizeof(u32) * (fs_info)->sectorsize)
-> +				   (csum_size) * (fs_info)->sectorsize)
->  
-
-nit: As discussed this is fragile and error prone so ideally it shall be
-converted to an inline function.
-
-<snip>
-
-> @@ -904,9 +906,9 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
->  	write_extent_buffer(leaf, sums->sums + index, (unsigned long)item,
->  			    ins_size);
->  
-> +	index += ins_size;
->  	ins_size /= csum_size;
->  	total_bytes += ins_size * fs_info->sectorsize;
-> -	index += ins_size;
-nit:
-
-This is rather tricky, because changing btrfs_ordered_sum::sums to u8
-means that we need to be indexing  inside this array with the raw size
-of the data there i.e the size of the checksums being inserted and after
-that divide it by csum_size to get the actual number of checksums.
-Effectively you are changing the indexing here from "index of particular
-csum" to "index of  particular byte".
-
-I just wanted to state that explicitly.
-
->  
->  	btrfs_mark_buffer_dirty(path->nodes[0]);
->  	if (total_bytes < sums->len) {
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index 52889da69113..6f7a18148dcb 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -924,14 +924,16 @@ int btrfs_ordered_update_i_size(struct inode *inode, u64 offset,
->   * be reclaimed before their checksum is actually put into the btree
->   */
->  int btrfs_find_ordered_sum(struct inode *inode, u64 offset, u64 disk_bytenr,
-> -			   u32 *sum, int len)
-> +			   u8 *sum, int len)
+> @@ -57,12 +57,14 @@ static int check_compressed_csum(struct btrfs_inode *inode,
+>  				 struct compressed_bio *cb,
+>  				 u64 disk_start)
 >  {
-> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	struct btrfs_ordered_sum *ordered_sum;
->  	struct btrfs_ordered_extent *ordered;
->  	struct btrfs_ordered_inode_tree *tree = &BTRFS_I(inode)->ordered_tree;
->  	unsigned long num_sectors;
->  	unsigned long i;> @@ -632,7 +632,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+> +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+> +	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
+>  	int ret;
+>  	struct page *page;
+>  	unsigned long i;
+>  	char *kaddr;
+>  	u32 csum;
+> -	u32 *cb_sum = &cb->sums;
+> +	u8 *cb_sum = cb->sums;
+>  
+>  	if (inode->flags & BTRFS_INODE_NODATASUM)
+>  		return 0;
+> @@ -76,13 +78,13 @@ static int check_compressed_csum(struct btrfs_inode *inode,
+>  		btrfs_csum_final(csum, (u8 *)&csum);
+>  		kunmap_atomic(kaddr);
+>  
+> -		if (csum != *cb_sum) {
+> +		if (memcmp(&csum, cb_sum, csum_size)) {
+>  			btrfs_print_data_csum_error(inode, disk_start, csum,
+> -					*cb_sum, cb->mirror_num);
+> +					*(u32 *)cb_sum, cb->mirror_num);
+>  			ret = -EIO;
+>  			goto fail;
+>  		}
+> -		cb_sum++;
+> +		cb_sum += csum_size;
+>  
+>  	}
+>  	ret = 0;
+> @@ -537,7 +539,8 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  	struct extent_map *em;
+>  	blk_status_t ret = BLK_STS_RESOURCE;
+>  	int faili = 0;
+> -	u32 *sums;
+> +	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
+> +	u8 *sums;
+>  
+>  	em_tree = &BTRFS_I(inode)->extent_tree;
+>  
+> @@ -559,7 +562,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  	cb->errors = 0;
+>  	cb->inode = inode;
+>  	cb->mirror_num = mirror_num;
+> -	sums = &cb->sums;
+> +	sums = cb->sums;
+>  
+>  	cb->start = em->orig_start;
+>  	em_len = em->len;
+> @@ -618,6 +621,8 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  		page->mapping = NULL;
+>  		if (submit || bio_add_page(comp_bio, page, PAGE_SIZE, 0) <
+>  		    PAGE_SIZE) {
+> +			unsigned int nr_sectors;
+> +
+>  			ret = btrfs_bio_wq_end_io(fs_info, comp_bio,
+>  						  BTRFS_WQ_ENDIO_DATA);
+>  			BUG_ON(ret); /* -ENOMEM */
+> @@ -632,11 +637,13 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 >  
 >  			if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
 >  				ret = btrfs_lookup_bio_sums(inode, comp_bio,
-> -							    sums);
-> +							    (u8 *)sums);
+> -							    (u8 *)sums);
+> +							    sums);
 >  				BUG_ON(ret); /* -ENOMEM */
 >  			}
->  			sums += DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
-> @@ -658,7 +658,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+> -			sums += DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
+> -					     fs_info->sectorsize);
+> +
+> +			nr_sectors = DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
+> +						  fs_info->sectorsize);
+> +			sums += csum_size * nr_sectors;
+
+nit: I think nr_sectors is not a good name in this particular case
+because you really care about nr_csums this bio spans. To me at least,
+it feels more intuitive to see :
+
+nr_csums = DIV_ROUND_UP
+sums += csum_size * nr_csums.
+
+
+>  
+>  			ret = btrfs_map_bio(fs_info, comp_bio, mirror_num, 0);
+>  			if (ret) {
+> @@ -658,7 +665,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
 >  	BUG_ON(ret); /* -ENOMEM */
 >  
 >  	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
-> -		ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
-> +		ret = btrfs_lookup_bio_sums(inode, comp_bio, (u8 *) sums);
+> -		ret = btrfs_lookup_bio_sums(inode, comp_bio, (u8 *) sums);
+> +		ret = btrfs_lookup_bio_sums(inode, comp_bio, sums);
 >  		BUG_ON(ret); /* -ENOMEM */
 >  	}
 >  
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index d85541f13f65..2ec742db2001 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3198,7 +3198,8 @@ int btrfs_find_name_in_ext_backref(struct extent_buffer *leaf, int slot,
->  struct btrfs_dio_private;
->  int btrfs_del_csums(struct btrfs_trans_handle *trans,
->  		    struct btrfs_fs_info *fs_info, u64 bytenr, u64 len);
-> -blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio, u32 *dst);
-> +blk_status_t btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio,
-> +				   u8 *dst);
->  blk_status_t btrfs_lookup_bio_sums_dio(struct inode *inode, struct bio *bio,
->  			      u64 logical_offset);
->  int btrfs_insert_file_extent(struct btrfs_trans_handle *trans,
-> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> index d431ea8198e4..210ff69917a0 100644
-> --- a/fs/btrfs/file-item.c
-> +++ b/fs/btrfs/file-item.c
-> @@ -22,9 +22,9 @@
->  #define MAX_CSUM_ITEMS(r, size) (min_t(u32, __MAX_CSUM_ITEMS(r, size), \
->  				       PAGE_SIZE))
->  	u32 sectorsize = btrfs_inode_sectorsize(inode);
-> +	u16 csum_size = btrfs_super_csum_size(fs_info->super_copy);
->  	int index = 0;
->  
->  	ordered = btrfs_lookup_ordered_extent(inode, offset);
-> @@ -947,10 +949,10 @@ int btrfs_find_ordered_sum(struct inode *inode, u64 offset, u64 disk_bytenr,
->  			num_sectors = ordered_sum->len >>
->  				      inode->i_sb->s_blocksize_bits;
->  			num_sectors = min_t(int, len - index, num_sectors - i);
-> -			memcpy(sum + index, ordered_sum->sums + i,
-> -			       num_sectors);
-> +			memcpy(sum + index, ordered_sum->sums + i * csum_size,
-> +			       num_sectors * csum_size);
->  
-> -			index += (int)num_sectors;
-> +			index += (int)num_sectors * csum_size;
->  			if (index == len)
->  				goto out;
->  			disk_bytenr += num_sectors * sectorsize;
-> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-> index 4c5991c3de14..9a9884966343 100644
-> --- a/fs/btrfs/ordered-data.h
-> +++ b/fs/btrfs/ordered-data.h
-> @@ -23,7 +23,7 @@ struct btrfs_ordered_sum {
->  	int len;
->  	struct list_head list;
->  	/* last field is a variable length array of csums */
-> -	u32 sums[];
+> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+> index 9976fe0f7526..191e5f4e3523 100644
+> --- a/fs/btrfs/compression.h
+> +++ b/fs/btrfs/compression.h
+> @@ -61,7 +61,7 @@ struct compressed_bio {
+>  	 * the start of a variable length array of checksums only
+>  	 * used by reads
+>  	 */
+> -	u32 sums;
 > +	u8 sums[];
 >  };
 >  
->  /*
-> @@ -183,7 +183,7 @@ struct btrfs_ordered_extent *btrfs_lookup_ordered_range(
->  int btrfs_ordered_update_i_size(struct inode *inode, u64 offset,
->  				struct btrfs_ordered_extent *ordered);
->  int btrfs_find_ordered_sum(struct inode *inode, u64 offset, u64 disk_bytenr,
-> -			   u32 *sum, int len);
-> +			   u8 *sum, int len);
->  u64 btrfs_wait_ordered_extents(struct btrfs_root *root, u64 nr,
->  			       const u64 range_start, const u64 range_len);
->  u64 btrfs_wait_ordered_roots(struct btrfs_fs_info *fs_info, u64 nr,
-> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-> index f7b29f9db5e2..2cf3cf9e9c9b 100644
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -2448,7 +2448,7 @@ static int scrub_find_csum(struct scrub_ctx *sctx, u64 logical, u8 *csum)
->  	ASSERT(index < UINT_MAX);
+>  static inline unsigned int btrfs_compress_type(unsigned int type_level)
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 210ff69917a0..c551479afa63 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -182,7 +182,7 @@ static blk_status_t __btrfs_lookup_bio_sums(struct inode *inode, struct bio *bio
+>  		}
+>  		csum = btrfs_bio->csum;
+>  	} else {
+> -		csum = (u8 *)dst;
+> +		csum = dst;
+>  	}
 >  
->  	num_sectors = sum->len / sctx->fs_info->sectorsize;
-> -	memcpy(csum, sum->sums + index, sctx->csum_size);
-> +	memcpy(csum, sum->sums + index * sctx->csum_size, sctx->csum_size);
->  	if (index == num_sectors - 1) {
->  		list_del(&sum->list);
->  		kfree(sum);
+>  	if (bio->bi_iter.bi_size > PAGE_SIZE * 8)
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index 6f7a18148dcb..a65e5f32160b 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -927,9 +927,10 @@ int btrfs_find_ordered_sum(struct inode *inode, u64 offset, u64 disk_bytenr,
+>  			   u8 *sum, int len)
+>  {
+>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+> +	struct btrfs_inode *btrfs_inode = BTRFS_I(inode);
+>  	struct btrfs_ordered_sum *ordered_sum;
+>  	struct btrfs_ordered_extent *ordered;
+> -	struct btrfs_ordered_inode_tree *tree = &BTRFS_I(inode)->ordered_tree;
+> +	struct btrfs_ordered_inode_tree *tree = &btrfs_inode->ordered_tree;
+>  	unsigned long num_sectors;
+>  	unsigned long i;
+>  	u32 sectorsize = btrfs_inode_sectorsize(inode);
 > 
+
+Irrelevant change, this hunk could be dropped. Furthermore, I don't see
+how having an explicit variable brings any value apart from increased
+stack usage.
+
