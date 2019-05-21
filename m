@@ -2,28 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F7C24F8C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 15:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B2924F93
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 15:02:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbfEUNBj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 May 2019 09:01:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57334 "EHLO mx1.suse.de"
+        id S1727812AbfEUNCy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 May 2019 09:02:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57536 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727534AbfEUNBj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 May 2019 09:01:39 -0400
+        id S1726900AbfEUNCx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 May 2019 09:02:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C4148AC6E;
-        Tue, 21 May 2019 13:01:37 +0000 (UTC)
-Subject: Re: [PATCH v2 09/13] btrfs: Simplify btrfs_check_super_csum() and get
- rid of size assumptions
+        by mx1.suse.de (Postfix) with ESMTP id 351C0AC6E;
+        Tue, 21 May 2019 13:02:51 +0000 (UTC)
+Subject: Re: [PATCH v2 12/13] btrfs: remove assumption about csum type form
+ btrfs_print_data_csum_error()
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
         Chris Mason <clm@fb.com>, Richard Weinberger <richard@nod.at>,
         David Gstir <david@sigma-star.at>
 References: <20190516084803.9774-1-jthumshirn@suse.de>
- <20190516084803.9774-10-jthumshirn@suse.de>
+ <20190516084803.9774-13-jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -68,12 +68,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <1d61314d-246d-ee95-1643-5c4cc2c5e919@suse.com>
-Date:   Tue, 21 May 2019 16:01:36 +0300
+Message-ID: <bba42e42-4d1b-eba6-f806-30b726f5ee0d@suse.com>
+Date:   Tue, 21 May 2019 16:02:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190516084803.9774-10-jthumshirn@suse.de>
+In-Reply-To: <20190516084803.9774-13-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,81 +84,76 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 16.05.19 г. 11:47 ч., Johannes Thumshirn wrote:
-> Now that we have already checked for a valid checksum type before calling
-> btrfs_check_super_csum(), it can be simplified even further.
+On 16.05.19 г. 11:48 ч., Johannes Thumshirn wrote:
+> btrfs_print_data_csum_error() still assumed checksums to be 32 bit in size.
 > 
-> While at it get rid of the implicit size assumption of the resulting
-> checksum as well.
+> Make it size agnostic.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> 
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
 > ---
-> Changes to v1:
-> - Check for disk_sb->csum instead of raw buffer (Nikolay)
-> ---
->  fs/btrfs/disk-io.c | 37 +++++++++++++------------------------
->  1 file changed, 13 insertions(+), 24 deletions(-)
+>  fs/btrfs/btrfs_inode.h | 6 +++---
+>  fs/btrfs/compression.c | 2 +-
+>  fs/btrfs/inode.c       | 4 ++--
+>  3 files changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 74937effaed4..edb8bc79b01b 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -375,33 +375,22 @@ static int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
->  {
-
-This function no longer requires the btrfs_fs_info argument so it should
-be removed.  While on the topic of refactoring this function - why not
-change it's return type to bool since it can't return anything other
-than 0/1 ?
-
-nit: Will it make more sense if this function was named
-btrfs_validate_super_csum ?
-
->  	struct btrfs_super_block *disk_sb =
->  		(struct btrfs_super_block *)raw_disk_sb;
-> -	u16 csum_type = btrfs_super_csum_type(disk_sb);
-> -	int ret = 0;
-> -
-> -	if (!btrfs_supported_super_csum(disk_sb)) {
-> -		btrfs_err(fs_info, "unsupported checksum algorithm %u",
-> -			  csum_type);
-> -		ret = 1;
-> -	}
-> -
-> -	if (csum_type == BTRFS_CSUM_TYPE_CRC32) {
-> -		u32 crc = ~(u32)0;
-> -		char result[sizeof(crc)];
-> +	u32 crc = ~(u32)0;
-> +	char result[BTRFS_CSUM_SIZE];
->  
-> -		/*
-> -		 * The super_block structure does not span the whole
-> -		 * BTRFS_SUPER_INFO_SIZE range, we expect that the unused space
-> -		 * is filled with zeros and is included in the checksum.
-> -		 */
-> -		crc = btrfs_csum_data(raw_disk_sb + BTRFS_CSUM_SIZE,
-> -				crc, BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
-> -		btrfs_csum_final(crc, result);
-> +	/*
-> +	 * The super_block structure does not span the whole
-> +	 * BTRFS_SUPER_INFO_SIZE range, we expect that the unused space
-> +	 * is filled with zeros and is included in the checksum.
-> +	 */
-> +	crc = btrfs_csum_data(raw_disk_sb + BTRFS_CSUM_SIZE,
-> +			      crc, BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
-> +	btrfs_csum_final(crc, result);
->  
-> -		if (memcmp(raw_disk_sb, result, sizeof(result)))
-> -			ret = 1;
-> -	}
-> +	if (memcmp(disk_sb->csum, result, btrfs_super_csum_size(disk_sb)))
-> +		return 1;
->  
-> -	return ret;
-> +	return 0;
+> diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
+> index f0a757eb5744..e79fd9129075 100644
+> --- a/fs/btrfs/btrfs_inode.h
+> +++ b/fs/btrfs/btrfs_inode.h
+> @@ -338,13 +338,13 @@ static inline void btrfs_inode_resume_unlocked_dio(struct btrfs_inode *inode)
 >  }
 >  
->  int btrfs_verify_level_key(struct extent_buffer *eb, int level,
+>  static inline void btrfs_csum_format(struct btrfs_super_block *sb,
+> -				     u32 csum, u8 *cbuf)
+> +				     u8 *csum, u8 *cbuf)
+>  {
+>  	size_t size = btrfs_super_csum_size(sb) * 8;
+>  
+>  	switch (btrfs_super_csum_type(sb)) {
+>  	case BTRFS_CSUM_TYPE_CRC32:
+> -		snprintf(cbuf, size, "0x%08x", csum);
+> +		snprintf(cbuf, size, "0x%08x", *(u32 *)csum);
+>  		break;
+>  	default: /* can't happen -  csum type is validated at mount time */
+>  		break;
+> @@ -352,7 +352,7 @@ static inline void btrfs_csum_format(struct btrfs_super_block *sb,
+>  }
+>  
+>  static inline void btrfs_print_data_csum_error(struct btrfs_inode *inode,
+> -		u64 logical_start, u32 csum, u32 csum_expected, int mirror_num)
+> +		u64 logical_start, u8 *csum, u8 *csum_expected, int mirror_num)
+>  {
+>  	struct btrfs_root *root = inode->root;
+>  	struct btrfs_super_block *sb = root->fs_info->super_copy;
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index e027e58358be..358a85d77108 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -86,7 +86,7 @@ static int check_compressed_csum(struct btrfs_inode *inode,
+>  
+>  		if (memcmp(&csum, cb_sum, csum_size)) {
+>  			btrfs_print_data_csum_error(inode, disk_start,
+> -						    *(u32 *)csum, *(u32 *)cb_sum,
+> +						    csum, cb_sum,
+>  						    cb->mirror_num);
+>  			ret = -EIO;
+>  			goto fail;
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 402c9ea8239d..af27dddcb05f 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3226,8 +3226,8 @@ static int __readpage_endio_check(struct inode *inode,
+>  	kunmap_atomic(kaddr);
+>  	return 0;
+>  zeroit:
+> -	btrfs_print_data_csum_error(BTRFS_I(inode), start, *(u32 *)csum,
+> -				    *(u32 *)csum_expected, io_bio->mirror_num);
+> +	btrfs_print_data_csum_error(BTRFS_I(inode), start, csum, csum_expected,
+> +				    io_bio->mirror_num);
+>  	memset(kaddr + pgoff, 1, len);
+>  	flush_dcache_page(page);
+>  	kunmap_atomic(kaddr);
 > 
