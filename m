@@ -2,207 +2,233 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 706AF253A0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 17:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B6CC255F5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 18:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728309AbfEUPRb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 May 2019 11:17:31 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58554 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727969AbfEUPRa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 May 2019 11:17:30 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4LF1mgP100602;
-        Tue, 21 May 2019 15:16:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=8AVZkoBPVQWKSHRM3naLkNx4PGQvHgsKDNXXfZ9BJPM=;
- b=uBC3gJC/91gkOFdD6OjPXLEnzTlSyjQGCrmDVXhZL1I5manJ/JcGmIyvwR78kPPUEAMf
- VLuBHjCJq7J6itF1dPh3VhIUoe/s5PdjwsfFNO2HT/JvPp9bhP1Hyotxgv5w8orPU2eI
- rbg5jB9wGKnRCbZCqH2R8aL1sB+iiOPLlvz3Yy9qU13cgrhj0cK7WGE9eUPQ/xFM+W3N
- 4JeH/rBHz9e5qWCYrUqJ5XPlGpADGbRk6Z95xoP93H3QMOG+BR7IOtfdFjtL33ndytTR
- O3eeS/eBqlZ/NAuyAmn+Hj+vGiddEZ3xP0CZaLChLLPcE8ZDPXdV3e6CcKLQaoZ5jc2G iw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2sjapqe15h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 May 2019 15:16:55 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x4LFDeAd052707;
-        Tue, 21 May 2019 15:14:54 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 2sks1jgsqn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 21 May 2019 15:14:54 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x4LFEld2015657;
-        Tue, 21 May 2019 15:14:48 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 21 May 2019 15:14:47 +0000
-Date:   Tue, 21 May 2019 08:14:45 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, kilobyte@angband.pl,
-        linux-fsdevel@vger.kernel.org, jack@suse.cz, david@fromorbit.com,
-        willy@infradead.org, hch@lst.de, dsterba@suse.cz,
-        nborisov@suse.com, linux-nvdimm@lists.01.org,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 03/18] btrfs: basic dax read
-Message-ID: <20190521151445.GA5125@magnolia>
-References: <20190429172649.8288-1-rgoldwyn@suse.de>
- <20190429172649.8288-4-rgoldwyn@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190429172649.8288-4-rgoldwyn@suse.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9264 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905210094
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9264 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905210094
+        id S1728987AbfEUQqZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 21 May 2019 12:46:25 -0400
+Received: from voltaic.bi-co.net ([134.119.3.22]:57261 "EHLO voltaic.bi-co.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727965AbfEUQqZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 May 2019 12:46:25 -0400
+Received: from lass-mb.fritz.box (aftr-95-222-30-100.unity-media.net [95.222.30.100])
+        by voltaic.bi-co.net (Postfix) with ESMTPSA id 9992F20BA8;
+        Tue, 21 May 2019 18:46:21 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [dm-devel] fstrim discarding too many or wrong blocks on Linux
+ 5.1, leading to data loss
+From:   =?utf-8?Q?Michael_La=C3=9F?= <bevan@bi-co.net>
+In-Reply-To: <3142764D-5944-4004-BC57-C89C89AC9ED9@bi-co.net>
+Date:   Tue, 21 May 2019 18:46:20 +0200
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <F170BB63-D9D7-4D08-9097-3C18815BE869@bi-co.net>
+References: <297da4cbe20235080205719805b08810@bi-co.net>
+ <CAJCQCtR-uo9fgs66pBMEoYX_xAye=O-L8kiMwyAdFjPS5T4+CA@mail.gmail.com>
+ <8C31D41C-9608-4A65-B543-8ABCC0B907A0@bi-co.net>
+ <CAJCQCtTZWXUgUDh8vn0BFeEbAdKToDSVYYw4Q0bt0rECQr9nxQ@mail.gmail.com>
+ <AD966642-1043-468D-BABF-8FC9AF514D36@bi-co.net>
+ <158a3491-e4d2-d905-7f58-11a15bddcd70@gmx.com>
+ <C1CD4646-E75D-4AAF-9CD6-B3AC32495FD3@bi-co.net>
+ <3142764D-5944-4004-BC57-C89C89AC9ED9@bi-co.net>
+To:     dm-devel@redhat.com
+X-Mailer: Apple Mail (2.3445.104.11)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Apr 29, 2019 at 12:26:34PM -0500, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> Perform a basic read using iomap support. The btrfs_iomap_begin()
-> finds the extent at the position and fills the iomap data
-> structure with the values.
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> ---
->  fs/btrfs/Makefile |  1 +
->  fs/btrfs/ctree.h  |  5 +++++
->  fs/btrfs/dax.c    | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/file.c   | 11 ++++++++++-
->  4 files changed, 65 insertions(+), 1 deletion(-)
->  create mode 100644 fs/btrfs/dax.c
-> 
-> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-> index ca693dd554e9..1fa77b875ae9 100644
-> --- a/fs/btrfs/Makefile
-> +++ b/fs/btrfs/Makefile
-> @@ -12,6 +12,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
->  	   reada.o backref.o ulist.o qgroup.o send.o dev-replace.o raid56.o \
->  	   uuid-tree.o props.o free-space-tree.o tree-checker.o
->  
-> +btrfs-$(CONFIG_FS_DAX) += dax.o
->  btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
->  btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
->  btrfs-$(CONFIG_BTRFS_FS_REF_VERIFY) += ref-verify.o
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 9512f49262dd..b7bbe5130a3b 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3795,6 +3795,11 @@ int btrfs_reada_wait(void *handle);
->  void btrfs_reada_detach(void *handle);
->  int btree_readahead_hook(struct extent_buffer *eb, int err);
->  
-> +#ifdef CONFIG_FS_DAX
-> +/* dax.c */
-> +ssize_t btrfs_file_dax_read(struct kiocb *iocb, struct iov_iter *to);
-> +#endif /* CONFIG_FS_DAX */
-> +
->  static inline int is_fstree(u64 rootid)
->  {
->  	if (rootid == BTRFS_FS_TREE_OBJECTID ||
-> diff --git a/fs/btrfs/dax.c b/fs/btrfs/dax.c
-> new file mode 100644
-> index 000000000000..bf3d46b0acb6
-> --- /dev/null
-> +++ b/fs/btrfs/dax.c
-> @@ -0,0 +1,49 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * DAX support for BTRFS
-> + *
-> + * Copyright (c) 2019  SUSE Linux
-> + * Author: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> + */
-> +
-> +#ifdef CONFIG_FS_DAX
-> +#include <linux/dax.h>
-> +#include <linux/iomap.h>
-> +#include "ctree.h"
-> +#include "btrfs_inode.h"
-> +
-> +static int btrfs_iomap_begin(struct inode *inode, loff_t pos,
-> +		loff_t length, unsigned flags, struct iomap *iomap)
-> +{
-> +	struct extent_map *em;
-> +	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> +	em = btrfs_get_extent(BTRFS_I(inode), NULL, 0, pos, length, 0);
-> +	if (em->block_start == EXTENT_MAP_HOLE) {
-> +		iomap->type = IOMAP_HOLE;
-> +		return 0;
 
-I'm not doing a rigorous review of the btrfs-specific pieces, but you're
-required to fill out the other iomap fields for a read hole.
-
---D
-
-> +	}
-> +	iomap->type = IOMAP_MAPPED;
-> +	iomap->bdev = em->bdev;
-> +	iomap->dax_dev = fs_info->dax_dev;
-> +	iomap->offset = em->start;
-> +	iomap->length = em->len;
-> +	iomap->addr = em->block_start;
-> +	return 0;
-> +}
-> +
-> +static const struct iomap_ops btrfs_iomap_ops = {
-> +	.iomap_begin		= btrfs_iomap_begin,
-> +};
-> +
-> +ssize_t btrfs_file_dax_read(struct kiocb *iocb, struct iov_iter *to)
-> +{
-> +	ssize_t ret;
-> +	struct inode *inode = file_inode(iocb->ki_filp);
-> +
-> +	inode_lock_shared(inode);
-> +	ret = dax_iomap_rw(iocb, to, &btrfs_iomap_ops);
-> +	inode_unlock_shared(inode);
-> +
-> +	return ret;
-> +}
-> +#endif /* CONFIG_FS_DAX */
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 34fe8a58b0e9..9194591f9eea 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -3288,9 +3288,18 @@ static int btrfs_file_open(struct inode *inode, struct file *filp)
->  	return generic_file_open(inode, filp);
->  }
->  
-> +static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> +{
-> +#ifdef CONFIG_FS_DAX
-> +	if (IS_DAX(file_inode(iocb->ki_filp)))
-> +		return btrfs_file_dax_read(iocb, to);
-> +#endif
-> +	return generic_file_read_iter(iocb, to);
-> +}
-> +
->  const struct file_operations btrfs_file_operations = {
->  	.llseek		= btrfs_file_llseek,
-> -	.read_iter      = generic_file_read_iter,
-> +	.read_iter      = btrfs_file_read_iter,
->  	.splice_read	= generic_file_splice_read,
->  	.write_iter	= btrfs_file_write_iter,
->  	.mmap		= btrfs_file_mmap,
-> -- 
-> 2.16.4
+> Am 20.05.2019 um 13:38 schrieb Michael Laß <bevan@bi-co.net>:
 > 
+>> 
+>> Am 19.05.2019 um 21:55 schrieb Michael Laß <bevan@bi-co.net>:
+>> 
+>> CC'ing dm-devel, as this seems to be a dm-related issue. Short summary for new readers:
+>> 
+>> On Linux 5.1 (tested up to 5.1.3), fstrim may discard too many blocks, leading to data loss. I have the following storage stack:
+>> 
+>> btrfs
+>> dm-crypt (LUKS)
+>> LVM logical volume
+>> LVM single physical volume
+>> MBR partition
+>> Samsung 830 SSD
+>> 
+>> The mapping between logical volumes and physical segments is a bit mixed up. See below for the output for “pvdisplay -m”. When I issue fstrim on the mounted btrfs volume, I get the following kernel messages:
+>> 
+>> attempt to access beyond end of device
+>> sda1: rw=16387, want=252755893, limit=250067632
+>> BTRFS warning (device dm-5): failed to trim 1 device(s), last error -5
+>> 
+>> At the same time, other logical volumes on the same physical volume are destroyed. Also the btrfs volume itself may be damaged (this seems to depend on the actual usage).
+>> 
+>> I can easily reproduce this issue locally and I’m currently bisecting. So far I could narrow down the range of commits to:
+>> Good: 92fff53b7191cae566be9ca6752069426c7f8241
+>> Bad: 225557446856448039a9e495da37b72c20071ef2
+> 
+> I finished bisecting. Here’s the responsible commit:
+> 
+> commit 61697a6abd24acba941359c6268a94f4afe4a53d
+> Author: Mike Snitzer <snitzer@redhat.com>
+> Date:   Fri Jan 18 14:19:26 2019 -0500
+> 
+>    dm: eliminate 'split_discard_bios' flag from DM target interface
+> 
+>    There is no need to have DM core split discards on behalf of a DM target
+>    now that blk_queue_split() handles splitting discards based on the
+>    queue_limits.  A DM target just needs to set max_discard_sectors,
+>    discard_granularity, etc, in queue_limits.
+> 
+>    Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+
+Reverting that commit solves the issue for me on Linux 5.1.3. Would that be an option until the root cause has been identified? I’d rather not let more people run into this issue.
+
+Cheers,
+Michael
+
+
+> Maybe the assumptions taken here ("A DM target just needs to set max_discard_sectors, discard_granularity, etc, in queue_limits.”) isn’t valid in my case? Does anyone have an idea?
+> 
+> 
+>> 
+>> In this range of commits, there are only dm-related changes.
+>> 
+>> So far, I have not reproduced the issue with other file systems or a simplified stack. I first want to continue bisecting but this may take another day.
+>> 
+>> 
+>>> Am 18.05.2019 um 12:26 schrieb Qu Wenruo <quwenruo.btrfs@gmx.com>:
+>>> On 2019/5/18 下午5:18, Michael Laß wrote:
+>>>> 
+>>>>> Am 18.05.2019 um 06:09 schrieb Chris Murphy <lists@colorremedies.com>:
+>>>>> 
+>>>>> On Fri, May 17, 2019 at 11:37 AM Michael Laß <bevan@bi-co.net> wrote:
+>>>>>> 
+>>>>>> 
+>>>>>> I tried to reproduce this issue: I recreated the btrfs file system, set up a minimal system and issued fstrim again. It printed the following error message:
+>>>>>> 
+>>>>>> fstrim: /: FITRIM ioctl failed: Input/output error
+>>>>> 
+>>>>> Huh. Any kernel message at the same time? I would expect any fstrim
+>>>>> user space error message to also have a kernel message. Any i/o error
+>>>>> suggests some kind of storage stack failure - which could be hardware
+>>>>> or software, you can't know without seeing the kernel messages.
+>>>> 
+>>>> I missed that. The kernel messages are:
+>>>> 
+>>>> attempt to access beyond end of device
+>>>> sda1: rw=16387, want=252755893, limit=250067632
+>>>> BTRFS warning (device dm-5): failed to trim 1 device(s), last error -5
+>>>> 
+>>>> Here are some more information on the partitions and LVM physical segments:
+>>>> 
+>>>> fdisk -l /dev/sda:
+>>>> 
+>>>> Device     Boot Start       End   Sectors   Size Id Type
+>>>> /dev/sda1  *     2048 250069679 250067632 119.2G 8e Linux LVM
+>>>> 
+>>>> pvdisplay -m:
+>>>> 
+>>>> --- Physical volume ---
+>>>> PV Name               /dev/sda1
+>>>> VG Name               vg_system
+>>>> PV Size               119.24 GiB / not usable <22.34 MiB
+>>>> Allocatable           yes (but full)
+>>>> PE Size               32.00 MiB
+>>>> Total PE              3815
+>>>> Free PE               0
+>>>> Allocated PE          3815
+>>>> PV UUID               mqCLFy-iDnt-NfdC-lfSv-Maor-V1Ih-RlG8lP
+>>>> 
+>>>> --- Physical Segments ---
+>>>> Physical extent 0 to 1248:
+>>>>  Logical volume	/dev/vg_system/btrfs
+>>>>  Logical extents	2231 to 3479
+>>>> Physical extent 1249 to 1728:
+>>>>  Logical volume	/dev/vg_system/btrfs
+>>>>  Logical extents	640 to 1119
+>>>> Physical extent 1729 to 1760:
+>>>>  Logical volume	/dev/vg_system/grml-images
+>>>>  Logical extents	0 to 31
+>>>> Physical extent 1761 to 2016:
+>>>>  Logical volume	/dev/vg_system/swap
+>>>>  Logical extents	0 to 255
+>>>> Physical extent 2017 to 2047:
+>>>>  Logical volume	/dev/vg_system/btrfs
+>>>>  Logical extents	3480 to 3510
+>>>> Physical extent 2048 to 2687:
+>>>>  Logical volume	/dev/vg_system/btrfs
+>>>>  Logical extents	0 to 639
+>>>> Physical extent 2688 to 3007:
+>>>>  Logical volume	/dev/vg_system/btrfs
+>>>>  Logical extents	1911 to 2230
+>>>> Physical extent 3008 to 3320:
+>>>>  Logical volume	/dev/vg_system/btrfs
+>>>>  Logical extents	1120 to 1432
+>>>> Physical extent 3321 to 3336:
+>>>>  Logical volume	/dev/vg_system/boot
+>>>>  Logical extents	0 to 15
+>>>> Physical extent 3337 to 3814:
+>>>>  Logical volume	/dev/vg_system/btrfs
+>>>>  Logical extents	1433 to 1910
+>>>> 
+>>>> 
+>>>> Would btrfs even be able to accidentally trim parts of other LVs or does this clearly hint towards a LVM/dm issue?
+>>> 
+>>> I can't speak sure, but (at least for latest kernel) btrfs has a lot of
+>>> extra mount time self check, including chunk stripe check against
+>>> underlying device, thus the possibility shouldn't be that high for btrfs.
+>> 
+>> Indeed, bisecting the issue led me to a range of commits that only contains dm-related and no btrfs-related changes. So I assume this is a bug in dm.
+>> 
+>>>> Is there an easy way to somehow trace the trim through the different layers so one can see where it goes wrong?
+>>> 
+>>> Sure, you could use dm-log-writes.
+>>> It will record all read/write (including trim) for later replay.
+>>> 
+>>> So in your case, you can build the storage stack like:
+>>> 
+>>> Btrfs
+>>> <dm-log-writes>
+>>> LUKS/dmcrypt
+>>> LVM
+>>> MBR partition
+>>> Samsung SSD
+>>> 
+>>> Then replay the log (using src/log-write/replay-log in fstests) with
+>>> verbose output, you can verify every trim operation against the dmcrypt
+>>> device size.
+>>> 
+>>> If all trim are fine, then move the dm-log-writes a layer lower, until
+>>> you find which layer is causing the problem.
+>> 
+>> That sounds like a plan! However, I first want to continue bisecting as I am afraid to lose my reproducer by changing parts of my storage stack.
+>> 
+>> Cheers,
+>> Michael
+>> 
+>>> 
+>>> Thanks,
+>>> Qu
+>>>> 
+>>>> Cheers,
+>>>> Michael
+>>>> 
+>>>> PS: Current state of bisection: It looks like the error was introduced somewhere between b5dd0c658c31b469ccff1b637e5124851e7a4a1c and v5.1.
+>> 
+>> 
+>> --
+>> dm-devel mailing list
+>> dm-devel@redhat.com
+>> https://www.redhat.com/mailman/listinfo/dm-devel
+> 
+> 
+> --
+> dm-devel mailing list
+> dm-devel@redhat.com
+> https://www.redhat.com/mailman/listinfo/dm-devel
+
