@@ -2,31 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE1225191
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 16:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E18251CD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 16:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728263AbfEUOKR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 May 2019 10:10:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59632 "EHLO mx1.suse.de"
+        id S1727999AbfEUOWD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 May 2019 10:22:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34360 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727941AbfEUOKR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 May 2019 10:10:17 -0400
+        id S1727534AbfEUOWC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 May 2019 10:22:02 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1DDADAFB6;
-        Tue, 21 May 2019 14:10:16 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id BE0D7AE0C;
+        Tue, 21 May 2019 14:22:01 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D1AB3DA86B; Tue, 21 May 2019 16:11:13 +0200 (CEST)
-Date:   Tue, 21 May 2019 16:11:13 +0200
+        id 6D0C5DA86B; Tue, 21 May 2019 16:22:59 +0200 (CEST)
+Date:   Tue, 21 May 2019 16:22:59 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Johannes Thumshirn <jthumshirn@suse.de>
 Cc:     Chris Mason <clm@fb.com>, Richard Weinberger <richard@nod.at>,
         David Gstir <david@sigma-star.at>,
         Nikolay Borisov <nborisov@suse.com>,
         Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 10/13] btrfs: add boilerplate code for directly
- including the crypto framework
-Message-ID: <20190521141113.GC15290@suse.cz>
+Subject: Re: [PATCH v2 11/13] btrfs: directly call into crypto framework for
+ checsumming
+Message-ID: <20190521142259.GD15290@suse.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
         Chris Mason <clm@fb.com>, Richard Weinberger <richard@nod.at>,
@@ -34,100 +34,60 @@ Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
         Nikolay Borisov <nborisov@suse.com>,
         Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20190516084803.9774-1-jthumshirn@suse.de>
- <20190516084803.9774-11-jthumshirn@suse.de>
+ <20190516084803.9774-12-jthumshirn@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190516084803.9774-11-jthumshirn@suse.de>
+In-Reply-To: <20190516084803.9774-12-jthumshirn@suse.de>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, May 16, 2019 at 10:48:00AM +0200, Johannes Thumshirn wrote:
-> Add boilerplate code for directly including the crypto framework.
+On Thu, May 16, 2019 at 10:48:01AM +0200, Johannes Thumshirn wrote:
+> Currently btrfs_csum_data() relied on the crc32c() wrapper around the crypto
+> framework for calculating the CRCs.
 > 
-> This helps us flipping the switch for new algorithms.
+> As we have our own crypto_shash structure in the fs_info now, we can
+> directly call into the crypto framework without going trough the wrapper.
+> 
+> This way we can even remove the btrfs_csum_data() and btrfs_csum_final()
+> wrappers.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  fs/btrfs/ctree.h   | 11 +++++++++++
->  fs/btrfs/disk-io.c | 49 ++++++++++++++++++++++++++++++++++++++++++-------
->  2 files changed, 53 insertions(+), 7 deletions(-)
 > 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 2ec742db2001..0624057423d4 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -73,6 +73,7 @@ struct btrfs_ref;
+> ---
+> Changes to v1:
+> - merge with 'btrfs: pass in an fs_info to btrfs_csum_{data,final}()'
+> - Remove btrfs_csum_data() and btrfs_csum_final() alltogether
+> - don't use LIBCRC32C but CRYPTO_CRC32C in KConfig
+> ---
+>  fs/btrfs/Kconfig           |  2 +-
+>  fs/btrfs/check-integrity.c | 12 +++++++----
+>  fs/btrfs/compression.c     | 19 +++++++++++------
+>  fs/btrfs/disk-io.c         | 51 +++++++++++++++++++++++++---------------------
+>  fs/btrfs/disk-io.h         |  2 --
+>  fs/btrfs/file-item.c       | 18 ++++++++--------
+>  fs/btrfs/inode.c           | 24 ++++++++++++++--------
+>  fs/btrfs/scrub.c           | 37 +++++++++++++++++++++++++--------
+>  8 files changed, 104 insertions(+), 61 deletions(-)
+> 
+> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> index 23537bc8c827..8f48c3be709e 100644
+> --- a/fs/btrfs/Kconfig
+> +++ b/fs/btrfs/Kconfig
+> @@ -2,7 +2,7 @@
 >  
->  /* four bytes for CRC32 */
->  static const int btrfs_csum_sizes[] = { 4 };
-> +static char *btrfs_csum_names[] = { "crc32c" };
->  
->  #define BTRFS_EMPTY_DIR_SIZE 0
->  
-> @@ -1165,6 +1166,8 @@ struct btrfs_fs_info {
->  	spinlock_t ref_verify_lock;
->  	struct rb_root block_tree;
->  #endif
-> +
-> +	struct crypto_shash *csum_shash;
->  };
->  
->  static inline struct btrfs_fs_info *btrfs_sb(struct super_block *sb)
-> @@ -2452,6 +2455,14 @@ static inline int btrfs_super_csum_size(const struct btrfs_super_block *s)
->  	return btrfs_csum_sizes[t];
->  }
->  
-> +static inline char *btrfs_super_csum_name(const struct btrfs_super_block *s)
-> +{
-> +	u16 t = btrfs_super_csum_type(s);
+>  config BTRFS_FS
+>  	tristate "Btrfs filesystem support"
+> -	select LIBCRC32C
+> +	select CRYPTO_CRC32C
 
-Please don't use single letter variables, 'sb' and 'type' are fine.
+This reverts changed done in 9678c54388b6a6b309ff7ee5c8d23fa9eba7c06f,
+using LIBCRC32C adds the module dependency so this is automatically picked
+when building the initrd. CRYPTO_CRC32C needed workarounds to manually
+pick crc32c when btrfs was detected.
 
-> +static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info,
-> +				struct btrfs_super_block *sb)
-> +{
-> +	struct crypto_shash *csum_shash;
-> +	const char *csum_name = btrfs_super_csum_name(sb);
-> +
-> +	csum_shash = crypto_alloc_shash(csum_name, 0, 0);
-> +
-> +	if (IS_ERR(csum_shash)) {
-> +		btrfs_err(fs_info, "error allocating %s hash for checksum\n",
-
-No newline for the btrfs_* message helpers
-
-> +			  csum_name);
-> +		return PTR_ERR(csum_shash);
-> +	}
-> +
-> +	fs_info->csum_shash = csum_shash;
-> +
-> +	return 0;
-> +}
-> +
-> +static void btrfs_free_csum_hash(struct btrfs_fs_info *fs_info)
-> +{
-> +	crypto_free_shash(fs_info->csum_shash);
-> +}
-> +
->  static int btrfs_replay_log(struct btrfs_fs_info *fs_info,
->  			    struct btrfs_fs_devices *fs_devices)
->  {
-> @@ -2819,6 +2844,14 @@ int open_ctree(struct super_block *sb,
->  		goto fail_alloc;
->  	}
->  
-> +
-
-Extra newline
-
-> +	ret = btrfs_init_csum_hash(fs_info, (struct btrfs_super_block *)
-> +							   bh->b_data);
-
-It would be better to avoid the cast and only pass the type, I don't see
-anything else the init function would need from the sb.
+But we'll need some way to add the dependencies for all the other crypto
+modules, that do not have the lib.
