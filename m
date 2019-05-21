@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4135824DB4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 13:13:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C543B24DDF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 21 May 2019 13:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbfEULNc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 May 2019 07:13:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52320 "EHLO mx1.suse.de"
+        id S1727251AbfEUL2P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 May 2019 07:28:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60318 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726042AbfEULNc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 May 2019 07:13:32 -0400
+        id S1726750AbfEUL2P (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 May 2019 07:28:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F0201AE14;
-        Tue, 21 May 2019 11:13:30 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 81313AD02;
+        Tue, 21 May 2019 11:28:14 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Juan Erbes <jerbes@gmail.com>
-Subject: [PATCH] btrfs: qgroup: Check if @bg is NULL to avoid NULL pointer dereference
-Date:   Tue, 21 May 2019 19:13:23 +0800
-Message-Id: <20190521111323.28154-1-wqu@suse.com>
+Subject: [PATCH v1.1] btrfs: qgroup: Check if @bg is NULL to avoid NULL pointer dereference
+Date:   Tue, 21 May 2019 19:28:08 +0800
+Message-Id: <20190521112808.28728-1-wqu@suse.com>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -30,8 +30,8 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 [BUG]
-When mounting a fs with reloc tree and has qgroup enabled, it can call
-  NULL pointer dereference at mount time:
+When mounting a fs with reloc tree and has qgroup enabled, it can cause
+NULL pointer dereference at mount time:
   BUG: kernel NULL pointer dereference, address: 00000000000000a8
   #PF: supervisor read access in kernel mode
   #PF: error_code(0x0000) - not-present page
@@ -92,6 +92,10 @@ also some other reloc related BUG_ON() even with this patch.
 
 Without the other bug fixed, the test case will fail anyway, so test
 case will be delayed.
+
+Changelog:
+v1.1
+- Fix a grammar and format error in the [BUG] section.
 ---
  fs/btrfs/qgroup.c | 8 +++++++-
  1 file changed, 7 insertions(+), 1 deletion(-)
