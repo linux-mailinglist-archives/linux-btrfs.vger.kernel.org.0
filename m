@@ -2,58 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16F2925F01
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2019 10:06:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4542E25F3B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2019 10:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728662AbfEVIGN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 May 2019 04:06:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58806 "EHLO mx1.suse.de"
+        id S1728406AbfEVITP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 May 2019 04:19:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60400 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727946AbfEVIGN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 May 2019 04:06:13 -0400
+        id S1726514AbfEVITO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 May 2019 04:19:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 65F5CAE13;
-        Wed, 22 May 2019 08:06:11 +0000 (UTC)
-Date:   Wed, 22 May 2019 10:06:10 +0200
+        by mx1.suse.de (Postfix) with ESMTP id D4A33ADE3;
+        Wed, 22 May 2019 08:19:13 +0000 (UTC)
 From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     dsterba@suse.cz, Chris Mason <clm@fb.com>,
-        Richard Weinberger <richard@nod.at>,
+To:     David Sterba <dsterba@suse.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Chris Mason <clm@fb.com>, Richard Weinberger <richard@nod.at>,
         David Gstir <david@sigma-star.at>,
         Nikolay Borisov <nborisov@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 11/13] btrfs: directly call into crypto framework for
- checsumming
-Message-ID: <20190522080610.GA3776@x250>
-References: <20190516084803.9774-1-jthumshirn@suse.de>
- <20190516084803.9774-12-jthumshirn@suse.de>
- <20190521142259.GD15290@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190521142259.GD15290@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: [PATCH v3 00/13] Add support for other checksums
+Date:   Wed, 22 May 2019 10:18:57 +0200
+Message-Id: <20190522081910.7689-1-jthumshirn@suse.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, May 21, 2019 at 04:22:59PM +0200, David Sterba wrote:
-> This reverts changed done in 9678c54388b6a6b309ff7ee5c8d23fa9eba7c06f,
-> using LIBCRC32C adds the module dependency so this is automatically picked
-> when building the initrd. CRYPTO_CRC32C needed workarounds to manually
-> pick crc32c when btrfs was detected.
-> 
-> But we'll need some way to add the dependencies for all the other crypto
-> modules, that do not have the lib.
+This patchset add support for adding new checksum types in BTRFS.
 
-Fixed thanks
+Currently BTRFS only supports CRC32C as data and metadata checksum, which is
+good if you only want to detect errors due to data corruption in hardware.
+
+But CRC32C isn't able cover other use-cases like de-duplication or
+cryptographically save data integrity guarantees.
+
+The following properties made SHA-256 interesting for these use-cases:
+- Still considered cryptographically sound
+- Reasonably well understood by the security industry
+- Result fits into the 32Byte/256Bit we have for the checksum in the on-disk
+  format
+- Small enough collision space to make it feasible for data de-duplication
+- Fast enough to calculate and offloadable to crypto hardware via the kernel's
+  crypto_shash framework.
+
+The patchset also provides mechanisms for plumbing in different hash
+algorithms relatively easy.
+
+Unfortunately this patchset also partially reverts commit: 
+9678c54388b6 ("btrfs: Remove custom crc32c init code")
+
+This is an intermediate submission, as a) mkfs.btrfs support is still missing
+and b) David requested to have three hash algorithms, where 1 is crc32c, one
+cryptographically secure and one in between.
+
+A changelog can be found directly in the patches. The branch is also available
+on a gitweb at
+https://git.kernel.org/pub/scm/linux/kernel/git/jth/linux.git/log/?h=btrfs-csum-rework.v3
+
+Johannes Thumshirn (13):
+  btrfs: use btrfs_csum_data() instead of directly calling crc32c
+  btrfs: resurrect btrfs_crc32c()
+  btrfs: use btrfs_crc32c{,_final}() in for free space cache
+  btrfs: don't assume ordered sums to be 4 bytes
+  btrfs: dont assume compressed_bio sums to be 4 bytes
+  btrfs: format checksums according to type for printing
+  btrfs: add common checksum type validation
+  btrfs: check for supported superblock checksum type before checksum
+    validation
+  btrfs: Simplify btrfs_check_super_csum() and get rid of size
+    assumptions
+  btrfs: add boilerplate code for directly including the crypto
+    framework
+  btrfs: directly call into crypto framework for checsumming
+  btrfs: remove assumption about csum type form
+    btrfs_print_data_csum_error()
+  btrfs: add sha256 as another checksum algorithm
+
+ fs/btrfs/Kconfig                |   4 +-
+ fs/btrfs/btrfs_inode.h          |  33 +++++++--
+ fs/btrfs/check-integrity.c      |  12 ++--
+ fs/btrfs/compression.c          |  40 +++++++----
+ fs/btrfs/compression.h          |   2 +-
+ fs/btrfs/ctree.h                |  27 +++++++-
+ fs/btrfs/disk-io.c              | 146 ++++++++++++++++++++++++++--------------
+ fs/btrfs/disk-io.h              |   2 -
+ fs/btrfs/extent-tree.c          |   6 +-
+ fs/btrfs/file-item.c            |  44 +++++++-----
+ fs/btrfs/free-space-cache.c     |  10 ++-
+ fs/btrfs/inode.c                |  20 ++++--
+ fs/btrfs/ordered-data.c         |  10 +--
+ fs/btrfs/ordered-data.h         |   4 +-
+ fs/btrfs/scrub.c                |  39 ++++++++---
+ fs/btrfs/send.c                 |   2 +-
+ fs/btrfs/super.c                |   2 +
+ include/uapi/linux/btrfs_tree.h |   6 +-
+ 18 files changed, 280 insertions(+), 129 deletions(-)
 
 -- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
-GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
-HRB 21284 (AG Nürnberg)
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+2.16.4
+
