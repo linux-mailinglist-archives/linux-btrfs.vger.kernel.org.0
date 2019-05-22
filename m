@@ -2,70 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC4D625F9E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2019 10:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2DA25FAB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2019 10:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728765AbfEVIfU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 May 2019 04:35:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35022 "EHLO mx1.suse.de"
+        id S1728668AbfEVIjv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 May 2019 04:39:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35708 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728406AbfEVIfU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 May 2019 04:35:20 -0400
+        id S1726552AbfEVIjv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 May 2019 04:39:51 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 865EDAD4F;
-        Wed, 22 May 2019 08:35:19 +0000 (UTC)
-Date:   Wed, 22 May 2019 10:35:18 +0200
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Richard Weinberger <richard@nod.at>,
-        David Gstir <david@sigma-star.at>
-Subject: Re: [PATCH v3 11/13] btrfs: directly call into crypto framework for
- checsumming
-Message-ID: <20190522083518.GB3776@x250>
-References: <20190522081910.7689-1-jthumshirn@suse.de>
- <20190522081910.7689-12-jthumshirn@suse.de>
- <8452a97a-685d-7cb8-7145-3ad37e8aa385@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 103B9AED7;
+        Wed, 22 May 2019 08:39:49 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: [PATCH] fstests: btrfs: Test if btrfs will panic when mounting a partially balanced fs
+Date:   Wed, 22 May 2019 16:39:44 +0800
+Message-Id: <20190522083944.32365-1-wqu@suse.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8452a97a-685d-7cb8-7145-3ad37e8aa385@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 22, 2019 at 11:33:39AM +0300, Nikolay Borisov wrote:
-> 
-> > @@ -1799,16 +1801,22 @@ static int scrub_checksum_data(struct scrub_block *sblock)
-> >  	if (!sblock->pagev[0]->have_csum)
-> >  		return 0;
-> >  
-> > +	shash->tfm = fs_info->csum_shash;
-> > +	shash->flags = 0;
-> > +
-> > +	crypto_shash_init(shash);
-> > +
-> >  	on_disk_csum = sblock->pagev[0]->csum;
-> >  	page = sblock->pagev[0]->page;
-> >  	buffer = kmap_atomic(page);
-> >  
-> > +	memset(csum, 0xff, btrfs_super_csum_size(sctx->fs_info->super_copy));
-> 
-> Is this required? You don't do it in other place like
-> scrub_checksum_tree_block/scrub_checksum_super/__readpage_endio_check.
-> If it's not strictly require just drop it.
+There are two regressions that when mounting a partially balance btrfs
+after v5.1 kernel:
+- Kernel NULL pointer dereference at mount time
+- Kernel BUG_ON() just after mount
 
-I guess this is a leftover, thanks for spotting it.
+The kernel fixes are:
+"btrfs: qgroup: Check if @bg is NULL to avoid NULL pointer
+ dereference"
+"btrfs: reloc: Also queue orphan reloc tree for cleanup to
+ avoid BUG_ON()"
 
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/btrfs/188     | 94 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/188.out |  2 +
+ tests/btrfs/group   |  1 +
+ 3 files changed, 97 insertions(+)
+ create mode 100755 tests/btrfs/188
+ create mode 100644 tests/btrfs/188.out
+
+diff --git a/tests/btrfs/188 b/tests/btrfs/188
+new file mode 100755
+index 00000000..f43be007
+--- /dev/null
++++ b/tests/btrfs/188
+@@ -0,0 +1,94 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2019 SUSE Linux Products GmbH.  All Rights Reserved.
++#
++# FS QA Test 188
++#
++# Test if btrfs mount will hit the following bugs when mounting
++# a fs going through partial balance:
++# - NULL pointer dereference
++# - Kernel BUG_ON()
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/dmlogwrites
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_supported_os Linux
++_require_scratch
++# and we need extra device as log device
++_require_log_writes
++
++nr_files=512				# enough metadata to bump tree height
++file_size=2048				# small enough to be inlined
++
++_log_writes_init $SCRATCH_DEV
++_log_writes_mkfs >> $seqres.full 2>&1
++
++_log_writes_mount
++$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT >> $seqres.full
++$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
++
++# Create enough metadata for later balance
++for ((i = 0; i < $nr_files; i++)); do
++	_pwrite_byte 0xcd 0 $file_size $SCRATCH_MNT/file_$i > /dev/null
++done
++
++# Ensure we write all data/metadata back to disk so that later
++# balance will do real I/O
++sync
++
++# Balance metadata so we will have at least one transaction committed with
++# valid reloc tree, and hopefully an orphan reloc tree.
++$BTRFS_UTIL_PROG balance start -f -m $SCRATCH_MNT >> $seqres.full
++_log_writes_unmount
++_log_writes_remove
++
++cur=$(_log_writes_find_next_fua 0)
++echo "cur=$cur" >> $seqres.full
++while [ ! -z "$cur" ]; do
++	_log_writes_replay_log_range $cur $SCRATCH_DEV >> $seqref.full
++
++	# If the fs contains valid reloc tree and kernel is not patched,
++	# we'll hit a NULL pointer dereference
++	# Or if it contains orphan reloc tree and kernel is unpatched,
++	# we'll hit a BUG_ON()
++	_scratch_mount
++	_scratch_unmount
++
++	# Don't trigger fsck here, as relocation get paused,
++	# at that transistent state, qgroup number may differ
++	# and cause false alert.
++
++	prev=$cur
++	cur=$(_log_writes_find_next_fua $(($cur + 1)))
++	[ -z "$cur" ] && break
++done
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/188.out b/tests/btrfs/188.out
+new file mode 100644
+index 00000000..6f23fda0
+--- /dev/null
++++ b/tests/btrfs/188.out
+@@ -0,0 +1,2 @@
++QA output created by 188
++Silence is golden
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 44ee0dd9..16a7c31e 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -190,3 +190,4 @@
+ 185 volume
+ 186 auto quick send volume
+ 187 auto send dedupe clone balance
++188 auto quick replay
 -- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
-GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
-HRB 21284 (AG Nürnberg)
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+2.21.0
+
