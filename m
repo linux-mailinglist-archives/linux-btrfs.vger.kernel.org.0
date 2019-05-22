@@ -2,18 +2,18 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A95525F40
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2019 10:19:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0FD825F3C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2019 10:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728528AbfEVITP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 May 2019 04:19:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60434 "EHLO mx1.suse.de"
+        id S1728538AbfEVITQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 May 2019 04:19:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60446 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726514AbfEVITP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1728491AbfEVITP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 22 May 2019 04:19:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8A359AF47;
+        by mx1.suse.de (Postfix) with ESMTP id D9311AE16;
         Wed, 22 May 2019 08:19:14 +0000 (UTC)
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     David Sterba <dsterba@suse.com>
@@ -22,9 +22,9 @@ Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
         David Gstir <david@sigma-star.at>,
         Nikolay Borisov <nborisov@suse.com>,
         Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v3 02/13] btrfs: resurrect btrfs_crc32c()
-Date:   Wed, 22 May 2019 10:18:59 +0200
-Message-Id: <20190522081910.7689-3-jthumshirn@suse.de>
+Subject: [PATCH v3 03/13] btrfs: use btrfs_crc32c{,_final}() in for free space cache
+Date:   Wed, 22 May 2019 10:19:00 +0200
+Message-Id: <20190522081910.7689-4-jthumshirn@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20190522081910.7689-1-jthumshirn@suse.de>
 References: <20190522081910.7689-1-jthumshirn@suse.de>
@@ -33,85 +33,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 9678c54388b6 ("btrfs: Remove custom crc32c init code") removed the
-btrfs_crc32c() function, because it was a duplicate of the crc32c() library
-function we already have in the kernel.
+The CRC checksum in the free space cache is not dependant on the super
+block's csum_type field but always a CRC32C.
 
-Resurrect it as a shim wrapper over crc32c() to make following
-transformations of the checksumming code in btrfs easier.
-
-Also provide a btrfs_crc32_final() to ease following transformations.
+So use btrfs_crc32c() and btrfs_crc32c_final() instead of btrfs_csum_data()
+and btrfs_csum_final() for computing these checksums.
 
 Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/ctree.h       | 12 ++++++++++++
- fs/btrfs/extent-tree.c |  6 +++---
- fs/btrfs/send.c        |  2 +-
- 3 files changed, 16 insertions(+), 4 deletions(-)
+ fs/btrfs/free-space-cache.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index b81c331b28fa..d85541f13f65 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -19,6 +19,7 @@
- #include <linux/kobject.h>
- #include <trace/events/btrfs.h>
- #include <asm/kmap_types.h>
-+#include <asm/unaligned.h>
- #include <linux/pagemap.h>
- #include <linux/btrfs.h>
- #include <linux/btrfs_tree.h>
-@@ -2642,6 +2643,17 @@ BTRFS_SETGET_STACK_FUNCS(stack_dev_replace_cursor_right,
- 	((unsigned long)(BTRFS_LEAF_DATA_OFFSET + \
- 	btrfs_item_offset_nr(leaf, slot)))
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index f74dc259307b..26ed8ed60722 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -465,9 +465,8 @@ static void io_ctl_set_crc(struct btrfs_io_ctl *io_ctl, int index)
+ 	if (index == 0)
+ 		offset = sizeof(u32) * io_ctl->num_pages;
  
-+
-+static inline u32 btrfs_crc32c(u32 crc, const void *address, unsigned length)
-+{
-+	return crc32c(crc, address, length);
-+}
-+
-+static inline void btrfs_crc32c_final(u32 crc, u8 *result)
-+{
-+	put_unaligned_le32(~crc, result);
-+}
-+
- static inline u64 btrfs_name_hash(const char *name, int len)
- {
-        return crc32c((u32)~1, name, len);
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index f79e477a378e..06a30f2cd2e0 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1119,11 +1119,11 @@ static u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
- 	__le64 lenum;
+-	crc = btrfs_csum_data(io_ctl->orig + offset, crc,
+-			      PAGE_SIZE - offset);
+-	btrfs_csum_final(crc, (u8 *)&crc);
++	crc = btrfs_crc32c(crc, io_ctl->orig + offset, PAGE_SIZE - offset);
++	btrfs_crc32c_final(crc, (u8 *)&crc);
+ 	io_ctl_unmap_page(io_ctl);
+ 	tmp = page_address(io_ctl->pages[0]);
+ 	tmp += index;
+@@ -493,9 +492,8 @@ static int io_ctl_check_crc(struct btrfs_io_ctl *io_ctl, int index)
+ 	val = *tmp;
  
- 	lenum = cpu_to_le64(root_objectid);
--	high_crc = crc32c(high_crc, &lenum, sizeof(lenum));
-+	high_crc = btrfs_crc32c(high_crc, &lenum, sizeof(lenum));
- 	lenum = cpu_to_le64(owner);
--	low_crc = crc32c(low_crc, &lenum, sizeof(lenum));
-+	low_crc = btrfs_crc32c(low_crc, &lenum, sizeof(lenum));
- 	lenum = cpu_to_le64(offset);
--	low_crc = crc32c(low_crc, &lenum, sizeof(lenum));
-+	low_crc = btrfs_crc32c(low_crc, &lenum, sizeof(lenum));
- 
- 	return ((u64)high_crc << 31) ^ (u64)low_crc;
- }
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index dd38dfe174df..c029ca6d5eba 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -686,7 +686,7 @@ static int send_cmd(struct send_ctx *sctx)
- 	hdr->len = cpu_to_le32(sctx->send_size - sizeof(*hdr));
- 	hdr->crc = 0;
- 
--	crc = crc32c(0, (unsigned char *)sctx->send_buf, sctx->send_size);
-+	crc = btrfs_crc32c(0, (unsigned char *)sctx->send_buf, sctx->send_size);
- 	hdr->crc = cpu_to_le32(crc);
- 
- 	ret = write_buf(sctx->send_filp, sctx->send_buf, sctx->send_size,
+ 	io_ctl_map_page(io_ctl, 0);
+-	crc = btrfs_csum_data(io_ctl->orig + offset, crc,
+-			      PAGE_SIZE - offset);
+-	btrfs_csum_final(crc, (u8 *)&crc);
++	crc = btrfs_crc32c(crc, io_ctl->orig + offset, PAGE_SIZE - offset);
++	btrfs_crc32c_final(crc, (u8 *)&crc);
+ 	if (val != crc) {
+ 		btrfs_err_rl(io_ctl->fs_info,
+ 			"csum mismatch on free space cache");
 -- 
 2.16.4
 
