@@ -2,269 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5361225AEC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2019 01:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5022425BB3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 22 May 2019 03:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727385AbfEUXmw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 21 May 2019 19:42:52 -0400
-Received: from mout.gmx.net ([212.227.15.18]:48205 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725797AbfEUXmv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 21 May 2019 19:42:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1558482169;
-        bh=PR11PJy5lng7qDO33aTP0Hvp8A6zHU3PXv4rq6aWSmU=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ZgZ3TleRDdxmKleImpgkvPMGgYaAywnXEbJ38khhQlW1U/z4H3MBzyEJ7Xfnf82cO
-         u/xFiu9eUbTUwRMI0HIJU27+YXXlhGdOq+CWIxk+B0Ba8iLLuTf3gMhCw2DO2l7OVh
-         yoCAm7CUTsc23QuNeiCbdqSRyEKiplbIobaksoEU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4z6k-1gSUnc1YMG-010w6s; Wed, 22
- May 2019 01:42:49 +0200
-Subject: Re: 5.1.3: kernel BUG at fs/btrfs/relocation.c:1413
- (create_reloc_root)
-To:     "C. Cebtenzzre" <cebtenzzre@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CAHk_K8bjAofDftLuFXB=60wcDchxFhuK79=OETEQDV_f-c0s-A@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <45a89b3a-1ae6-e365-2b92-ab84b184d8c9@gmx.com>
-Date:   Wed, 22 May 2019 07:42:40 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1728184AbfEVBml (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 21 May 2019 21:42:41 -0400
+Received: from mail-eopbgr1370084.outbound.protection.outlook.com ([40.107.137.84]:1888
+        "EHLO AUS01-SY3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726466AbfEVBml (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 21 May 2019 21:42:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oakvillepondscapes.onmicrosoft.com;
+ s=selector1-oakvillepondscapes-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=98PT7Ctsr7xWL9XgVyAxGmMBkug5wrvFpeDaNMvhUl8=;
+ b=GARBRgvvGbdXrC8agUvd815MvmnXvs/Fho5tU7u/IzkXqDwqOS42KT87VbLcS0KDqT+No1By9hKOldqZrHn3XMglcK24cRNj9wEFpVpnGSRnGzw6/sAQQz0CbWasbHXt3vDf0mqBtNY5aMup0+9H4GIiiw+hMK2XfqLOMMixK/I=
+Received: from SYBPR01MB5084.ausprd01.prod.outlook.com (20.178.194.213) by
+ SYBPR01MB4457.ausprd01.prod.outlook.com (20.178.190.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.15; Wed, 22 May 2019 01:42:33 +0000
+Received: from SYBPR01MB5084.ausprd01.prod.outlook.com
+ ([fe80::38f8:5e57:4059:8bf4]) by SYBPR01MB5084.ausprd01.prod.outlook.com
+ ([fe80::38f8:5e57:4059:8bf4%7]) with mapi id 15.20.1922.013; Wed, 22 May 2019
+ 01:42:33 +0000
+From:   Paul Jones <paul@pauljones.id.au>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Stall on 5.1.3
+Thread-Topic: Stall on 5.1.3
+Thread-Index: AdUQPtETssZ4Mv2UQ7mi/viYXay2sg==
+Date:   Wed, 22 May 2019 01:42:33 +0000
+Message-ID: <SYBPR01MB5084AFCC98CC1D9C098DEF499E000@SYBPR01MB5084.ausprd01.prod.outlook.com>
+Accept-Language: en-AU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=paul@pauljones.id.au; 
+x-originating-ip: [110.174.5.23]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6366fe60-ffdc-4bbb-e6eb-08d6de56c2c5
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(7021145)(8989299)(4534185)(7022145)(4603075)(4627221)(201702281549075)(8990200)(7048125)(7024125)(7027125)(7023125)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:SYBPR01MB4457;
+x-ms-traffictypediagnostic: SYBPR01MB4457:
+x-microsoft-antispam-prvs: <SYBPR01MB44579F913F18B5B235E36C8A9E000@SYBPR01MB4457.ausprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0045236D47
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(396003)(136003)(39830400003)(376002)(366004)(51234002)(53754006)(199004)(189003)(5660300002)(2351001)(305945005)(7736002)(52536014)(25786009)(316002)(53936002)(8936002)(486006)(81166006)(81156014)(476003)(2501003)(8676002)(186003)(26005)(86362001)(71200400001)(71190400001)(2906002)(7116003)(64756008)(6506007)(66446008)(66946007)(76116006)(66556008)(73956011)(68736007)(508600001)(66476007)(102836004)(14444005)(256004)(74482002)(6116002)(3846002)(5640700003)(9686003)(6436002)(6916009)(55016002)(66066001)(74316002)(99286004)(14454004)(33656002)(7696005);DIR:OUT;SFP:1101;SCL:1;SRVR:SYBPR01MB4457;H:SYBPR01MB5084.ausprd01.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: pauljones.id.au does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: FXLxoQoPPOmiTqYvy1heeOSNxP3cqIY9M2NKVV2iCIOGmCibvX/ruuLhI4AZotB9MeFoBFXnRqcYtLrLvPCpUdR/SFMT3ZbXppB6SdTPCxM0Z0EjPSV+/n536RkQVYGHcBOYnjIMtQtz5g4hGRFSwtvRQ3YB1mbCi02sc3qXXxMIqFMZdToGm9PQfw2ijsTPSQJoWc2KMzLUbBSVJbML4Lfm/x5oappSkEfy/7LyFGcNQ6l3Qhs9GEJxBc8IY8qdx796Xp7tQqrS/Z9hAYWW8lgZnz5tSoeNm+k7ECqTkIXWZLVydJ0apiuH5BdV8K0V8fq53Mfj3v9odbBu556LpNMSoLe6TG7JyCIkbbjd9br+2dgVogqZTrCbA3v+PP7Llwo8AXmVTaQ3rCAilWYGHclG56t+bA7aJ12rUj2dXko=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <CAHk_K8bjAofDftLuFXB=60wcDchxFhuK79=OETEQDV_f-c0s-A@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="JlIybJ7CB1U5NhbIIASBHXJk3P1xJr0dW"
-X-Provags-ID: V03:K1:B38w3TLrU5qMde4t/nJS+HDdeVMOvcNlVloji0WEfdryqZq7wFW
- QAClvDSmEmoqvRLicnXH4W2NfDff8cBUbvSkxSJCxcbHM6aDYKAni2zpWjJ4a147SMPW8TK
- po2qaaR6cPmC8t1ugSp/3DaCrEhA1SVbk1vJAWCush89azlO/nabSJf5cESAFaIUVLa8xaG
- CQ3FBaSNY9btshKdl8WIw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5Bjf2lxEXnU=:sKerFWydfH0BkF4y3exeE2
- 5T8HcbwHJxjyjsBQdEibMaIE6pRo4W+cwnkiGckvNjVS7pnCFu6dAiz6nGtJAw4JQG1rQY7Xu
- 3SKkkT4AYzIGeGSFvbuIqLqEWIQFK6pu9BInam1EIq8vaNI4P3YztA1wnsP1/ex19vKqGhKb8
- V+zJ6m4jzV1i2BuaGAdg37Pe1cfyPSXPZf4t+3JMu5Hov1xvGAKu3BQNpn0SC/COKr7eL8/lB
- B6CaQ6bE1plPSnO5uS2cuSpDZAE7bIzk2HEI4RwNriL5D580g7YmDjQ6dnMaJs7d/48h1Jg2G
- pXoPN1x2I2G6Zbqm6Bp2vyw5HVVvSpGeGMHrkh2Qb/wWbZP8pKbBSjvGXzkqdk9luneeGBVWr
- dTDBGPsWwjvYsSdGTEycNfCqQhmgZwCO9Al6E/nvCpq/QAXDBqV2IQS9We9kHy5dCiO+64eFA
- JbuRA4kATJKNijTYx3Fs19VZPyADfi7DLETpT6Kty4YrJfL8HhWGP3FWHf3EY/hc5v12LsJZd
- uKR+dBsEj6/82bbbf+ecLBmMK+kapNla1Ng4g+RvJ6JLNP66tEm6IbfNxp/sbybRWGiRdlNbI
- D6dDP180em7CKptdugV+VCVUZNErWVw8ie+DwotDhGwMZfybgeIZq+gCK5c/PGo0EZUhkSMId
- JXOWB2U92t3h1x9oLPy3AlGAsyA3bRoR2DvTDGRNjEfQVaLLxM9zwIC696/jUmuizV1DWhD3c
- ktIm0zq3zWUd/Qpe/jjNOsJaVNwCOucATBKg0ttYJsPwQp7phoETfJziKevGAF1uHr8QnpyYV
- bG4X0rFakyWT2vfnsJ0Jx/i3bu0QAiIuwleTuBIfAyiy4GmE+qbAUjNawNpckZNjZiKMsqyR9
- UAytvHJnpkq+pD8H7MpY5z2M8x1DQNTZoJ4GfVGMmIvqQNcdjqYwz6KYozcddfUNWbduxketl
- jHQij43J3qbMga5mJR+zMqzzdtfmPHzQ=
+X-OriginatorOrg: pauljones.id.au
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6366fe60-ffdc-4bbb-e6eb-08d6de56c2c5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 May 2019 01:42:33.5507
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: paul@pauljones.id.au
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYBPR01MB4457
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JlIybJ7CB1U5NhbIIASBHXJk3P1xJr0dW
-Content-Type: multipart/mixed; boundary="NV8riRAOzHCt9Bp4OqVxiy9zwPpmAOH4f";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: "C. Cebtenzzre" <cebtenzzre@gmail.com>, linux-btrfs@vger.kernel.org
-Message-ID: <45a89b3a-1ae6-e365-2b92-ab84b184d8c9@gmx.com>
-Subject: Re: 5.1.3: kernel BUG at fs/btrfs/relocation.c:1413
- (create_reloc_root)
-References: <CAHk_K8bjAofDftLuFXB=60wcDchxFhuK79=OETEQDV_f-c0s-A@mail.gmail.com>
-In-Reply-To: <CAHk_K8bjAofDftLuFXB=60wcDchxFhuK79=OETEQDV_f-c0s-A@mail.gmail.com>
+Hi All,
 
---NV8riRAOzHCt9Bp4OqVxiy9zwPpmAOH4f
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I was rsyncing some subvolumes last night and at some point it stalled. Sta=
+cktrace is provided in case it is helpful to devs.
 
+Label: 'Backup'  uuid: 21e59d66-3e88-4fc9-806f-69bde58be6a3
+        Total devices 4 FS bytes used 3.19TiB
+        devid    1 size 2.73TiB used 2.71TiB path /dev/mapper/a-backup--a
+        devid    2 size 2.73TiB used 2.71TiB path /dev/mapper/b-backup--b
+        devid    3 size 931.51GiB used 500.00GiB path /dev/sdf1
+        devid    4 size 931.51GiB used 500.00GiB path /dev/sdi1
 
+Data, RAID1: total=3D3.16TiB, used=3D3.16TiB
+System, RAID1: total=3D32.00MiB, used=3D592.00KiB
+Metadata, RAID1: total=3D34.03GiB, used=3D28.49GiB
+GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
 
-On 2019/5/22 =E4=B8=8A=E5=8D=886:28, C. Cebtenzzre wrote:
-> I attempted to start a balance on Linux 5.1.3.  The process crashed
-> and I got this in dmesg:
-
-Just plain balance? And reproducibility?
-
-Although I also hit such BUG_ON() but using dm-log-writes.
-The BUG_ON() I hit is just after mount, triggered by automatic
-background balance.
-
-Thanks,
-Qu
->=20
-> [  600.078204] kernel BUG at fs/btrfs/relocation.c:1413!
-> [  600.078215] invalid opcode: 0000 [#1] PREEMPT SMP PTI
-> [  600.078220] CPU: 5 PID: 4010 Comm: btrfs Tainted: P           OE
->  5.1.3-arch1-1-ARCH #1
-> [  600.078222] Hardware name: To Be Filled By O.E.M. To Be Filled By
-> O.E.M./X99 Extreme4, BIOS P3.80 04/06/2018
-> [  600.078285] RIP: 0010:create_reloc_root+0x1e9/0x200 [btrfs]
-> [  600.078288] Code: 15 5c 12 d4 ea 48 8b 80 98 00 00 00 4c 29 c0 48
-> c1 f8 06 48 c1 e0 0c 48 8b 44 10 50 49 89 86 f0 00 00 00 e9 b6 fe ff
-> ff 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b e8 ea 15 c8 e9 66 2e 0f 1f 84 00 00
-> 00 00
-> [  600.078291] RSP: 0018:ffffa9e9031a7878 EFLAGS: 00010282
-> [  600.078294] RAX: 00000000ffffffef RBX: ffff9065986f6c00 RCX: 0000000=
-000000000
-> [  600.078297] RDX: 000000005aee9205 RSI: ffff90660796cb60 RDI: ffffee0=
-d88144b00
-> [  600.078299] RBP: ffff9065faf47a28 R08: 000000000002cb60 R09: fffffff=
-fc198cd4e
-> [  600.078301] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000=
-000000005
-> [  600.078303] R13: ffff9065eb41a000 R14: ffff9065ce41c000 R15: ffff906=
-40b5b8100
-> [  600.078307] FS:  00007fc6540a68c0(0000) GS:ffff906607940000(0000)
-> knlGS:0000000000000000
-> [  600.078309] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  600.078311] CR2: 00003608585ea008 CR3: 0000000222ff6006 CR4: 0000000=
-0001606e0
-> [  600.078313] Call Trace:
-> [  600.078361]  btrfs_init_reloc_root+0x8f/0xa0 [btrfs]
-> [  600.078398]  record_root_in_trans+0xae/0xd0 [btrfs]
-> [  600.078435]  btrfs_record_root_in_trans+0x4e/0x60 [btrfs]
-> [  600.078476]  select_reloc_root+0x7c/0x230 [btrfs]
-> [  600.078518]  do_relocation+0x9f/0x540 [btrfs]
-> [  600.078560]  ? select_one_root+0x37/0x110 [btrfs]
-> [  600.078565]  ? preempt_count_add+0x79/0xb0
-> [  600.078570]  ? _raw_spin_lock+0x13/0x30
-> [  600.078573]  ? _raw_spin_unlock+0x16/0x30
-> [  600.078614]  relocate_tree_blocks+0x4ce/0x640 [btrfs]
-> [  600.078620]  ? kmem_cache_alloc_trace+0x169/0x1c0
-> [  600.078662]  relocate_block_group+0x433/0x5b0 [btrfs]
-> [  600.078704]  btrfs_relocate_block_group+0x18b/0x210 [btrfs]
-> [  600.078748]  btrfs_relocate_chunk+0x31/0xa0 [btrfs]
-> [  600.078791]  btrfs_balance+0x7bc/0xf00 [btrfs]
-> [  600.078830]  ? btrfs_opendir+0x3e/0x70 [btrfs]
-> [  600.078872]  btrfs_ioctl_balance+0x2d3/0x370 [btrfs]
-> [  600.078916]  btrfs_ioctl+0x13c3/0x2e10 [btrfs]
-> [  600.078923]  ? mem_cgroup_commit_charge+0x7a/0x470
-> [  600.078929]  ? __mod_node_page_state+0x69/0xa0
-> [  600.078936]  ? __lru_cache_add+0x75/0xa0
-> [  600.078939]  ? _raw_spin_unlock+0x16/0x30
-> [  600.078943]  ? __handle_mm_fault+0x947/0x15c0
-> [  600.078948]  ? do_vfs_ioctl+0xa4/0x630
-> [  600.078950]  do_vfs_ioctl+0xa4/0x630
-> [  600.078954]  ? handle_mm_fault+0x10a/0x250
-> [  600.078959]  ? syscall_trace_enter+0x1d3/0x2d0
-> [  600.078962]  ksys_ioctl+0x60/0x90
-> [  600.078966]  __x64_sys_ioctl+0x16/0x20
-> [  600.078970]  do_syscall_64+0x5b/0x180
-> [  600.078974]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  600.078978] RIP: 0033:0x7fc65419acbb
-> [  600.078981] Code: 0f 1e fa 48 8b 05 a5 d1 0c 00 64 c7 00 26 00 00
-> 00 48 c7 c0 ff ff ff ff c3 66 0f 1f 44 00 00 f3 0f 1e fa b8 10 00 00
-> 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 75 d1 0c 00 f7 d8 64 89
-> 01 48
-> [  600.078983] RSP: 002b:00007fffb4681988 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000010
-> [  600.078987] RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007fc=
-65419acbb
-> [  600.078989] RDX: 00007fffb4681a20 RSI: 00000000c4009420 RDI: 0000000=
-000000003
-> [  600.078991] RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000=
-000000003
-> [  600.078993] R10: 000055a6d9248010 R11: 0000000000000246 R12: 00007ff=
-fb46823b8
-> [  600.078994] R13: 0000000000000001 R14: 00007fffb4681a20 R15: 00007ff=
-fb468278f
-> [  600.078998] Modules linked in: cfg80211 xt_recent xt_tcpudp rfkill
-> 8021q xt_state xt_conntrack garp mrp nf_conntrack stp llc
-> nf_defrag_ipv6 vmnet(OE) nf_defrag_ipv4 iptable_filter nct6775
-> hwmon_vid nls_iso8859_1 nls_cp437 vfat fat snd_usb_audio
-> snd_usbmidi_lib snd_rawmidi snd_seq_device intel_rapl
-> snd_hda_codec_hdmi x86_pkg_temp_thermal intel_powerclamp coretemp
-> kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul
-> ghash_clmulni_intel input_leds snd_hda_codec_realtek
-> snd_hda_codec_generic ledtrig_audio snd_hda_intel aesni_intel
-> snd_hda_codec usblp iTCO_wdt joydev aes_x86_64 iTCO_vendor_support
-> mousedev snd_hda_core crypto_simd cryptd snd_hwdep glue_helper snd_pcm
-> intel_cstate snd_timer mei_me snd intel_uncore intel_rapl_perf
-> intel_wmi_thunderbolt pcspkr i2c_i801 mxm_wmi e1000e mei lpc_ich
-> soundcore evdev mac_hid pcc_cpufreq fuse vmmon(OE) vmw_vmci
-> vboxnetflt(OE) vboxnetadp(OE) vboxpci(OE) vboxdrv(OE) sg crypto_user
-> ip_tables x_tables btrfs libcrc32c crc32c_generic xor usbhid uas
-> [  600.079039]  usb_storage raid6_pq sd_mod ahci libahci libata
-> xhci_pci ehci_pci crc32c_intel scsi_mod xhci_hcd ehci_hcd wmi
-> nvidia_drm(POE) drm_kms_helper syscopyarea sysfillrect sysimgblt
-> fb_sys_fops drm agpgart nvidia_uvm(OE) nvidia_modeset(POE) nvidia(POE)
-> ipmi_devintf ipmi_msghandler hid_generic hid
-> [  600.079061] ---[ end trace ccdf8b30014d6c1d ]---
-> [  600.079104] RIP: 0010:create_reloc_root+0x1e9/0x200 [btrfs]
-> [  600.079107] Code: 15 5c 12 d4 ea 48 8b 80 98 00 00 00 4c 29 c0 48
-> c1 f8 06 48 c1 e0 0c 48 8b 44 10 50 49 89 86 f0 00 00 00 e9 b6 fe ff
-> ff 0f 0b <0f> 0b 0f 0b 0f 0b 0f 0b e8 ea 15 c8 e9 66 2e 0f 1f 84 00 00
-> 00 00
-> [  600.079109] RSP: 0018:ffffa9e9031a7878 EFLAGS: 00010282
-> [  600.079112] RAX: 00000000ffffffef RBX: ffff9065986f6c00 RCX: 0000000=
-000000000
-> [  600.079114] RDX: 000000005aee9205 RSI: ffff90660796cb60 RDI: ffffee0=
-d88144b00
-> [  600.079116] RBP: ffff9065faf47a28 R08: 000000000002cb60 R09: fffffff=
-fc198cd4e
-> [  600.079118] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000=
-000000005
-> [  600.079120] R13: ffff9065eb41a000 R14: ffff9065ce41c000 R15: ffff906=
-40b5b8100
-> [  600.079123] FS:  00007fc6540a68c0(0000) GS:ffff906607940000(0000)
-> knlGS:0000000000000000
-> [  600.079125] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  600.079127] CR2: 00003608585ea008 CR3: 0000000222ff6006 CR4: 0000000=
-0001606e0
->=20
-> After downgrading to Linux 5.0.9 and rebooting, btrfs check found these=
- errors:
-> root 1306 inode 712 errors 1040, bad file extent, some csum missing
-> root 1306 inode 725 errors 1040, bad file extent, some csum missing
->=20
-> The only files in root 1306 are some unimportant virtual machines, but
-> how do I deal with these errors?
->=20
+Mount:
+/dev/mapper/a-backup--a on /media/backup type btrfs (rw,noatime,compress=3D=
+zstd:6,nossd,noacl,space_cache=3Dv2,subvolid=3D5,subvol=3D/)
 
 
---NV8riRAOzHCt9Bp4OqVxiy9zwPpmAOH4f--
-
---JlIybJ7CB1U5NhbIIASBHXJk3P1xJr0dW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzkjPAACgkQwj2R86El
-/qhDOAf/UILX0TuCXgSXC2mdpa5fEOUDqiZt3w59MX0cZhcV6psz5664FHW4OUB5
-9PsV+TZhA1O8ySaOstdIjDuHtu4LJlOAUB9c1wOH8C3CBOkEBxLRS9ZC2MN0ClP2
-J33uEAZ31/O7yFrYGJLgDQHa0vPUEsyG0nfJJjJlj3omQt67/bacG1diM8JBUFBQ
-MwK79+4j3oVHi+9fL6MGeQVRpqYBaT6yrZUcFQwVm5aXn2HD8Pmmlla+fmDxy5ZR
-QnysPnO9NNQ8/ZmLBjiW57ei4Y3moQnbr6zcHCplwXen3y8TFyd3osGAF/GO1dlu
-9HUQZfSbJmoVhBaYG5y7eavzqcCObw==
-=pOOo
------END PGP SIGNATURE-----
-
---JlIybJ7CB1U5NhbIIASBHXJk3P1xJr0dW--
+May 22 07:36:16 home kernel: rcu: INFO: rcu_preempt self-detected stall on =
+CPU
+May 22 07:36:16 home kernel: rcu: \x092-....: (18000 ticks this GP) idle=3D=
+862/1/0x4000000000000002 softirq=3D15766895/15766895 fqs=3D4660=20
+May 22 07:36:16 home kernel: rcu: \x09 (t=3D18001 jiffies g=3D59669593 q=3D=
+4556)
+May 22 07:36:16 home kernel: NMI backtrace for cpu 2
+May 22 07:36:16 home kernel: CPU: 2 PID: 28207 Comm: kworker/u16:15 Tainted=
+: G           O      5.1.3-gentoo #2
+May 22 07:36:16 home kernel: Hardware name: Gigabyte Technology Co., Ltd. T=
+o be filled by O.E.M./B75M-D3H, BIOS F15 10/23/2013
+May 22 07:36:16 home kernel: Workqueue: btrfs-delalloc btrfs_delalloc_helpe=
+r
+May 22 07:36:16 home kernel: Call Trace:
+May 22 07:36:16 home kernel:  <IRQ>
+May 22 07:36:16 home kernel:  dump_stack+0x46/0x60
+May 22 07:36:16 home kernel:  nmi_cpu_backtrace.cold+0x14/0x53
+May 22 07:36:16 home kernel:  ? lapic_can_unplug_cpu.cold+0x39/0x39
+May 22 07:36:16 home kernel:  nmi_trigger_cpumask_backtrace+0x99/0xa3
+May 22 07:36:16 home kernel:  rcu_dump_cpu_stacks+0x7b/0xa9
+May 22 07:36:16 home kernel:  rcu_sched_clock_irq.cold+0x190/0x43b
+May 22 07:36:16 home kernel:  ? cpuacct_account_field+0x11/0x60
+May 22 07:36:16 home kernel:  update_process_times+0x24/0x60
+May 22 07:36:16 home kernel:  tick_sched_timer+0x36/0x70
+May 22 07:36:16 home kernel:  ? tick_sched_handle.isra.0+0x40/0x40
+May 22 07:36:16 home kernel:  __hrtimer_run_queues+0xe2/0x170
+May 22 07:36:16 home kernel:  hrtimer_interrupt+0x101/0x220
+May 22 07:36:16 home kernel:  smp_apic_timer_interrupt+0x56/0x90
+May 22 07:36:16 home kernel:  apic_timer_interrupt+0xf/0x20
+May 22 07:36:16 home kernel:  </IRQ>
+May 22 07:36:16 home kernel: RIP: 0010:queued_spin_lock_slowpath+0x3b/0x1a0
+May 22 07:36:16 home kernel: Code: ff 75 41 f0 0f ba 2f 08 0f 92 c0 0f b6 c=
+0 c1 e0 08 89 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 1b 85 c0 74 0e 8b 07 8=
+4 c0 74 08 <f3> 90 8b 07 84 c0 75 f8 b8 01 00 00 00 66 89 07 c3 f6 c4 01 75=
+ 04
+May 22 07:36:16 home kernel: RSP: 0018:ffffc90000613c28 EFLAGS: 00000202 OR=
+IG_RAX: ffffffffffffff13
+May 22 07:36:16 home kernel: RAX: 0000000000000110 RBX: 0000000000001000 RC=
+X: 00000060c68b4000
+May 22 07:36:16 home kernel: RDX: 0000000000000000 RSI: 0000000000000000 RD=
+I: ffff88801b636c40
+May 22 07:36:16 home kernel: RBP: ffff88801b636c00 R08: 0000000000000001 R0=
+9: 0000000000001000
+May 22 07:36:16 home kernel: R10: ffff888106554570 R11: 0000000000000001 R1=
+2: 0000000000000000
+May 22 07:36:16 home kernel: R13: ffff8882c75c2400 R14: ffff88801b636c40 R1=
+5: ffff8882c75c2400
+May 22 07:36:16 home kernel:  find_free_extent+0x75d/0xe60
+May 22 07:36:16 home kernel:  btrfs_reserve_extent+0x9a/0x180
+May 22 07:36:16 home kernel:  submit_compressed_extents+0xff/0x470
+May 22 07:36:16 home kernel:  normal_work_helper+0x140/0x1e0
+May 22 07:36:16 home kernel:  process_one_work+0x19c/0x310
+May 22 07:36:16 home kernel:  worker_thread+0x45/0x3c0
+May 22 07:36:16 home kernel:  kthread+0xf1/0x130
+May 22 07:36:16 home kernel:  ? process_one_work+0x310/0x310
+May 22 07:36:16 home kernel:  ? kthread_park+0x80/0x80
+May 22 07:36:16 home kernel:  ret_from_fork+0x1f/0x40
+May 22 07:39:16 home kernel: rcu: INFO: rcu_preempt self-detected stall on =
+CPU
+May 22 07:39:16 home kernel: rcu: \x092-....: (72003 ticks this GP) idle=3D=
+862/1/0x4000000000000002 softirq=3D15766895/15766895 fqs=3D19438=20
+May 22 07:39:16 home kernel: rcu: \x09 (t=3D72004 jiffies g=3D59669593 q=3D=
+16770)
+May 22 07:39:16 home kernel: NMI backtrace for cpu 2
+May 22 07:39:16 home kernel: CPU: 2 PID: 28207 Comm: kworker/u16:15 Tainted=
+: G           O      5.1.3-gentoo #2
+May 22 07:39:16 home kernel: Hardware name: Gigabyte Technology Co., Ltd. T=
+o be filled by O.E.M./B75M-D3H, BIOS F15 10/23/2013
+May 22 07:39:16 home kernel: Workqueue: btrfs-delalloc btrfs_delalloc_helpe=
+r
+May 22 07:39:16 home kernel: Call Trace:
+May 22 07:39:16 home kernel:  <IRQ>
+May 22 07:39:16 home kernel:  dump_stack+0x46/0x60
+May 22 07:39:16 home kernel:  nmi_cpu_backtrace.cold+0x14/0x53
+May 22 07:39:16 home kernel:  ? lapic_can_unplug_cpu.cold+0x39/0x39
+May 22 07:39:16 home kernel:  nmi_trigger_cpumask_backtrace+0x99/0xa3
+May 22 07:39:16 home kernel:  rcu_dump_cpu_stacks+0x7b/0xa9
+May 22 07:39:16 home kernel:  rcu_sched_clock_irq.cold+0x190/0x43b
+May 22 07:39:16 home kernel:  ? cpuacct_account_field+0x11/0x60
+May 22 07:39:16 home kernel:  update_process_times+0x24/0x60
+May 22 07:39:16 home kernel:  tick_sched_timer+0x36/0x70
+May 22 07:39:16 home kernel:  ? tick_sched_handle.isra.0+0x40/0x40
+May 22 07:39:16 home kernel:  __hrtimer_run_queues+0xe2/0x170
+May 22 07:39:16 home kernel:  hrtimer_interrupt+0x101/0x220
+May 22 07:39:16 home kernel:  smp_apic_timer_interrupt+0x56/0x90
+May 22 07:39:16 home kernel:  apic_timer_interrupt+0xf/0x20
+May 22 07:39:16 home kernel:  </IRQ>
+May 22 07:39:16 home kernel: RIP: 0010:queued_spin_lock_slowpath+0x3f/0x1a0
+May 22 07:39:16 home kernel: Code: 0f ba 2f 08 0f 92 c0 0f b6 c0 c1 e0 08 8=
+9 c2 8b 07 30 e4 09 d0 a9 00 01 ff ff 75 1b 85 c0 74 0e 8b 07 84 c0 74 08 f=
+3 90 8b 07 <84> c0 75 f8 b8 01 00 00 00 66 89 07 c3 f6 c4 01 75 04 c6 47 01=
+ 00
+May 22 07:39:16 home kernel: RSP: 0018:ffffc90000613c28 EFLAGS: 00000202 OR=
+IG_RAX: ffffffffffffff13
+May 22 07:39:16 home kernel: RAX: 0000000000000110 RBX: 0000000000001000 RC=
+X: 00000060c68b4000
+May 22 07:39:16 home kernel: RDX: 0000000000000000 RSI: 0000000000000000 RD=
+I: ffff88801b636c40
+May 22 07:39:16 home kernel: RBP: ffff88801b636c00 R08: 0000000000000001 R0=
+9: 0000000000001000
+May 22 07:39:16 home kernel: R10: ffff888106554570 R11: 0000000000000001 R1=
+2: 0000000000000000
+May 22 07:39:16 home kernel: R13: ffff8882c75c2400 R14: ffff88801b636c40 R1=
+5: ffff8882c75c2400
+May 22 07:39:16 home kernel:  find_free_extent+0x75d/0xe60
+May 22 07:39:16 home kernel:  btrfs_reserve_extent+0x9a/0x180
+May 22 07:39:16 home kernel:  submit_compressed_extents+0xff/0x470
+May 22 07:39:16 home kernel:  normal_work_helper+0x140/0x1e0
+May 22 07:39:16 home kernel:  process_one_work+0x19c/0x310
+May 22 07:39:16 home kernel:  worker_thread+0x45/0x3c0
+May 22 07:39:16 home kernel:  kthread+0xf1/0x130
+May 22 07:39:16 home kernel:  ? process_one_work+0x310/0x310
+May 22 07:39:16 home kernel:  ? kthread_park+0x80/0x80
+May 22 07:39:16 home kernel:  ret_from_fork+0x1f/0x40
