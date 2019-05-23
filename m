@@ -2,237 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C91E12770C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2019 09:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B42227822
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2019 10:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729797AbfEWHfB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 23 May 2019 03:35:01 -0400
-Received: from mout.gmx.net ([212.227.15.19]:51471 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726222AbfEWHfB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 23 May 2019 03:35:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1558596898;
-        bh=LAyuoZNf3AYLlGjJbKwL+sT0IhE5StiLmE4XBpPZtcs=;
-        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
-        b=kLG86q3uqeOEDvLnHZfWVgBMzad/DuqJjrFxS1i5ick4H0ZjrZpzJdiYwcA1llF+U
-         YjzdbreD/K/9grBZ5bl/dIm73EoPoNejSNlH2oIqRby3Wm29kcUOa9sXXy9cD07lwZ
-         41B6qt2QkAwLk6IJgVP93L5V30y7q+23ySxW5o88=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx002
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0MD9NE-1hQS3p0iIm-00GcwP; Thu, 23
- May 2019 09:34:58 +0200
-Subject: Re: btrfs-convert with --no-datasum and --no-inline. How can I enable
- those features now?
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     Daniel Martinez <danielsmartinez@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CAMmfObYRT=WV1OzcjTo7OLXc1yEaTY5dncZj_ARvRrDHDtB=Bg@mail.gmail.com>
- <7c75acac-428e-40b2-ac0e-7f89d6dcd2e9@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <033c6347-edd9-503f-f0df-5628a83d8a2d@gmx.com>
-Date:   Thu, 23 May 2019 15:34:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1727440AbfEWIhu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 23 May 2019 04:37:50 -0400
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:46631 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726230AbfEWIhu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 23 May 2019 04:37:50 -0400
+Received: by mail-vs1-f68.google.com with SMTP id x8so3062045vsx.13;
+        Thu, 23 May 2019 01:37:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=Q5q5My7EPqY8uBoRn2RI4iWIMAL2D3l4ytKOVj+BF+o=;
+        b=G2eHRkX0OJfR4Dl1q1c2L9vmFRZK9fH6btlmautW+q7dJNx5LWxsBiB3LipXrvSypq
+         PQx6wTsjD3uJrjnMJWwI1rypygDaAeqwbPq5z3sS1Qqq4MvEVjrEZgPj20oC4rXLZv5g
+         bU49vfKQ++e+M+vb29wP4Rn1SffFH5x+K/ZtHHgXdTV8DA7FVA/Q23q0hnPpSGs68Z0y
+         vjGB1OCuwW3KUJXqk9FnFDz52VL9dEYFmX4Whe3mcV5zf9ObI7tcvv3GzmJxjwnSaJQu
+         f09oqXHd5qk8P2uhnuuzoyTjRpesABBgtsW4PsW4/57kF+US6j5CYMerSoQclGHI5jSR
+         322w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=Q5q5My7EPqY8uBoRn2RI4iWIMAL2D3l4ytKOVj+BF+o=;
+        b=muliEUJp44feq8jXzBo8ufuSbCxQbpJCuk3RMLkrKolS5nz63/Jw/40qzV95fcCP0g
+         MPMK+uamuhfWRxpXa37eK30aOAPkiHbAzguCeR3V/EQtDJhwo2/hw1jcjW/w/JDDXZmt
+         M8Q2mVz9Pgpt3lC6+vJ56Dpgj7nHNzMNH+qzkQOyXSAhcV99l95R8C0IJtWIbcKMTgSQ
+         JmWYRw/6K1g8GrFbqk2lityj4HWrNVr/tcKtNGeO4DVHY6gFJtSezK75Fz76wKKKCHCE
+         cDGhKh7rb0+fZzQYDjAH6GBenexCWk2MA2alAA88AO7e+OdW06AfecbgSkTegANV/UbF
+         9I3g==
+X-Gm-Message-State: APjAAAV9Nl+EmaeK52UjdGnRx7Lyt7l8xSoKIVgecGurWwKBRgeD9+RY
+        Ywzf4wnw+XFplHh+4Y7tf7cu3roIAzQ/j+XZe06A7g==
+X-Google-Smtp-Source: APXvYqwj6LU15m+Zwsvj82dTziCx2PHWJgvrCC2+R6fR+NSRcNZ9toBvoi0/7+iPRTMP04X1YT66Cr/dtRN3pbemraU=
+X-Received: by 2002:a67:e891:: with SMTP id x17mr33835311vsn.206.1558600668865;
+ Thu, 23 May 2019 01:37:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <7c75acac-428e-40b2-ac0e-7f89d6dcd2e9@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="vjRA0uo9SERxWHNHX5IP30cl0CO7V7PIs"
-X-Provags-ID: V03:K1:a7OZA0cYbQk5pHGWwiIN/fHH60Y7cjXgpefT10MLY4IL+mphSdM
- X6z/eqPImsPoVhToNUTw9lCYrNLrIyoIYGuv1G2mIzf4RX2L95yUIoMwEOEfDVjI7voKVCi
- 3SSYF4EpPwndcix9Q9ZQPavSRxLxEOPVG9ERYOMW6a5sfW9oyzxfiRM+iMSgpA5OLSzqDad
- mtM7FNoxM+yOd+DhQAZug==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DZ6CVgDVkSw=:ntzmKOXLmXPDwqfEuobkSg
- q5fu6tbcCpeP/UDZOa88HKuMiqpiC6phfF0iV4qnFMoMqCCE17WOWcH0QRKhtEFxHnWlBMWYf
- EEN2rNSyvws6FMgDRicjk7ki0G7j9D40A4XwqTo6iiNwW++jCwp0me+ni1Zb4YxehFDkrPVy3
- m6pk0lI5D9z4uMLM4RxHIO2xGpyHw21y8j36EXgfxwVduRCB4rrvjflyKGhqaQI3JSxLyQevw
- zyqxG6A6/z3315GMC1tVpHKtp9AwR3MpavAd50nMf+niPmjQM8/oIlRCvlx8N+WVs3ZssQnkt
- LdVtkGEp2S2N/Ji24sfkZIBg941O3GM5VXXpU8z3p7LCa3/3KyUHA2kwb37Jfg8tp0ytUmxYC
- 7ZxPtqzx0Am5oHHePPVxuHrWJFQCyR+Um/RMuRXc68VaAo1DWQPzMdEWu/tHsfP4H2qXpZ2v9
- svDzSOj07X7Z08JtIrUy5Ey3emajqo5J0oTws05BvlpS7vFNizp3k3JhdWGMit/u4b0NVXpUB
- BngnU4VZ9cMRHJCkWugV/mKf9uZl83JpdUq60DHYXYBiR/newTo41bb7PfuPPLJYSB8sR3KBx
- T/kX5B9agb6uomC6SxSMKKGyXwp+WVBi4oLpbxpqqRpThlCYe1A49nyKNSYmxkF2bDlSVjHe/
- y+P29EFxkGpJPKjP+kY3fp5CzCDwgQrSiydcTnyWUtVm8urtjv53AhawKfXLMp+h+4kZDIt5I
- 5HlD/5qxchnjJIqHrvXkEgla/3GixBEAlxMF4RV724GVVP6V8wVRIM8bcxVuzTFUDxFmUstqx
- 9V9Rt2H0IcyKSl3jKuEnBmVN3nMAyKvoMhcS2W0hoTWS9WV2TmlVeckKPmBBWc5FdBO89gAJS
- /WHRq9bnwhqK2RlRsoF2QIpZ8Czs+i4N8xqyVzbrZH8qdxIhB1C2qH6J1Sbbu7+QrRem0G3JZ
- IQGiBZiKRQmVskjHrNEpMWCKoDvlTmTY=
+References: <20190523011101.4594-1-wqu@suse.com>
+In-Reply-To: <20190523011101.4594-1-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 23 May 2019 09:37:37 +0100
+Message-ID: <CAL3q7H6F7X4Nec1RAqHKhsU-b0WA1JePYLLQuMkKLJGDK3GjEQ@mail.gmail.com>
+Subject: Re: [PATCH v2] fstests: btrfs: Validate that balance and qgroups work
+ correctly when balance needs to be resumed on mount
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        fstests <fstests@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---vjRA0uo9SERxWHNHX5IP30cl0CO7V7PIs
-Content-Type: multipart/mixed; boundary="JQPnlhLmGEa72xwNmoL3PsVez8kh10r8f";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Daniel Martinez <danielsmartinez@gmail.com>, linux-btrfs@vger.kernel.org
-Message-ID: <033c6347-edd9-503f-f0df-5628a83d8a2d@gmx.com>
-Subject: Re: btrfs-convert with --no-datasum and --no-inline. How can I enable
- those features now?
-References: <CAMmfObYRT=WV1OzcjTo7OLXc1yEaTY5dncZj_ARvRrDHDtB=Bg@mail.gmail.com>
- <7c75acac-428e-40b2-ac0e-7f89d6dcd2e9@gmx.com>
-In-Reply-To: <7c75acac-428e-40b2-ac0e-7f89d6dcd2e9@gmx.com>
+On Thu, May 23, 2019 at 2:11 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> There are two regressions related to balance resume:
+> - Kernel NULL pointer dereference at mount time
+>   Introduced in v5.0
+> - Kernel BUG_ON() just after mount
+>   Introduced in v5.1
+>
+> The kernel fixes are:
+> "btrfs: qgroup: Check if @bg is NULL to avoid NULL pointer
+>  dereference"
+> "btrfs: reloc: Also queue orphan reloc tree for cleanup to
+>  avoid BUG_ON()"
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
---JQPnlhLmGEa72xwNmoL3PsVez8kh10r8f
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-The problem is caused by the design of btrfs-progs which doesn't have a
-reliable way to determine whether we should preallocate extents.
+Looks good, thanks.
 
-The problem is mostly exposed by recent delayed-ref patches, as tree
-blocks are not committed to trees immediately, delaying block group used
-space update, and basically screw up chunk preallocator.
+> ---
+> changelog:
+> v2:
+> - Subject change to describe the test case in a more generic way
+> - Update commit message and comment to avoid ambitious/confusing words
+> - Add to 'balance' and 'qgroup' groups
+> ---
+>  tests/btrfs/188     | 92 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/188.out |  2 +
+>  tests/btrfs/group   |  1 +
+>  3 files changed, 95 insertions(+)
+>  create mode 100755 tests/btrfs/188
+>  create mode 100644 tests/btrfs/188.out
+>
+> diff --git a/tests/btrfs/188 b/tests/btrfs/188
+> new file mode 100755
+> index 00000000..e12db87c
+> --- /dev/null
+> +++ b/tests/btrfs/188
+> @@ -0,0 +1,92 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2019 SUSE Linux Products GmbH.  All Rights Reserved.
+> +#
+> +# FS QA Test 188
+> +#
+> +# A general test to validate that balance and qgroups work correctly whe=
+n
+> +# balance needs to be resumed on mount.
+> +#
+> +seq=3D`basename $0`
+> +seqres=3D$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=3D`pwd`
+> +tmp=3D/tmp/$$
+> +status=3D1       # failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +       cd /
+> +       rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +. ./common/dmlogwrites
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_supported_os Linux
+> +_require_scratch
+> +# and we need extra device as log device
+> +_require_log_writes
+> +
+> +nr_files=3D512                           # enough metadata to bump tree =
+height
+> +file_size=3D2048                         # small enough to be inlined
+> +
+> +_log_writes_init $SCRATCH_DEV
+> +_log_writes_mkfs >> $seqres.full 2>&1
+> +
+> +_log_writes_mount
+> +$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT >> $seqres.full
+> +$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
+> +
+> +# Create enough metadata for later balance
+> +for ((i =3D 0; i < $nr_files; i++)); do
+> +       _pwrite_byte 0xcd 0 $file_size $SCRATCH_MNT/file_$i > /dev/null
+> +done
+> +
+> +# Flush delalloc so that balance has work to do.
+> +sync
+> +
+> +# Balance metadata so we will have at least one transaction committed wi=
+th
+> +# valid reloc tree, and hopefully another commit with orphan reloc tree.
+> +$BTRFS_UTIL_PROG balance start -f -m $SCRATCH_MNT >> $seqres.full
+> +_log_writes_unmount
+> +_log_writes_remove
+> +
+> +cur=3D$(_log_writes_find_next_fua 0)
+> +echo "cur=3D$cur" >> $seqres.full
+> +while [ ! -z "$cur" ]; do
+> +       _log_writes_replay_log_range $cur $SCRATCH_DEV >> $seqref.full
+> +
+> +       # Test that no crashes happen or any other kind of failure.
+> +       _scratch_mount
+> +       _scratch_unmount
+> +
+> +       # Don't trigger fsck here, as relocation get paused,
+> +       # at that transistent state, qgroup number may differ
+> +       # and cause false alert.
+> +
+> +       prev=3D$cur
+> +       cur=3D$(_log_writes_find_next_fua $(($cur + 1)))
+> +       [ -z "$cur" ] && break
+> +done
+> +
+> +# Now the fs has finished its balance and qgroup should be consistent.
+> +# Fstest will automatically check the fs and btrfs check will report
+> +# any qgroup inconsistent if something went wrong.
+> +
+> +echo "Silence is golden"
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/188.out b/tests/btrfs/188.out
+> new file mode 100644
+> index 00000000..6f23fda0
+> --- /dev/null
+> +++ b/tests/btrfs/188.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 188
+> +Silence is golden
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index 44ee0dd9..cfad878f 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -190,3 +190,4 @@
+>  185 volume
+>  186 auto quick send volume
+>  187 auto send dedupe clone balance
+> +188 auto quick replay balance qgroup
+> --
+> 2.21.0
+>
 
--d/-n can not fix the problem, as long as our metadata usage exceed one
-block group, we will hit ENOSPC anyway.
-This bug should also affect mkfs.btrfs --rootdir.
 
-We can have a workaround to make transaction commit more frequently thus
-has a higher chance to make chunk preallocator work, but it's not the
-ultimate solution.
+--=20
+Filipe David Manana,
 
-I'll keep you updated on this bug.
-
-Thanks,
-Qu
-
-On 2019/5/23 =E4=B8=8A=E5=8D=886:44, Qu Wenruo wrote:
->=20
->=20
-> On 2019/5/22 =E4=B8=8B=E5=8D=8810:37, Daniel Martinez wrote:
->> Hello,
->>
->> I've converted an ext4 filesystem (after a few attempts, and after
->> rolling back to a system running both the kernel and btrfs-progs 4.12)=
-
->> to a single disk btrfs filesystem, but to do so I needed to disable
->> data checksums and small file inlining, otherwise I would get ENOSPC.
->=20
-> We need extra debugging info and output in btrfs-progs to make it clear=
-
-> what's the root cause of the ENOSPC during convert.
->=20
-> If you have a small enough image, would you please upload the image for=
-
-> us to analyse?
->=20
->>
->> Now that I've defragged everything,
->=20
-> Defrag in ext4 may not help much for btrfs-convert.
->=20
-> The ext4 block group design makes it fragmented in nature, each block
-> group will have some space used in its beginning, which fragments the
-> usable space of btrfs.
->=20
-> IIRC there is a feature for ext4 to make unused block group completely
-> blank, not sure what the feature is.
->=20
->> I want to enable those features
->> back for all the existing files (datasums mainly). How can I go about
->> doing that?
->=20
-> You can manually remove the NOCOW attr by "chattr -C"
-> And then re-write all existing files, you'll get back the csum.
->=20
-> For inlined file, as long as you're not using "max_inline=3D0", any new=
-
-> file smaller than 2K should already be inlined.
->=20
->>
->> I assume `--init-csum-tree` would recreate the checksums, but will it
->> also set the appropriate flags so that all new files in all
->> subdirectories have checksums aswell?
->=20
-> Don't use that, unless you know what you're doing.
->=20
-> It's for heavily corrupted fs to rebuild its csum tree, not for your us=
-e
-> case.
->=20
-> Thanks,
-> Qu
->=20
->>
->> When I tried to run it (back on 4.19 kernel and btrfs-progs 4.20), it
->> ran for a few hours and then gave me this error:
->>
->> Creating a new CRC tree
->> Opening filesystem to check...
->> Checking filesystem on /dev/sdb2
->> UUID: eb930a78-f6f7-4552-8200-6ebdd6c56b93
->> Reinitialize checksum tree
->> Unable to find block group for 0
->> Unable to find block group for 0
->> Unable to find block group for 0
->> ctree.c:2245: split_leaf: BUG_ON `1` triggered, value 1
->> btrfs(+0x141e9)[0x55d3c529d1e9]
->> btrfs(+0x14284)[0x55d3c529d284]
->> btrfs(+0x169ad)[0x55d3c529f9ad]
->> btrfs(btrfs_search_slot+0xf24)[0x55d3c52a0f9f]
->> btrfs(btrfs_csum_file_block+0x25f)[0x55d3c52ae888]
->> btrfs(+0x4aa30)[0x55d3c52d3a30]
->> btrfs(cmd_check+0x10b1)[0x55d3c52dfc9e]
->> btrfs(main+0x1f3)[0x55d3c529ce63]
->> /lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0xeb)[0x7f2eb872309b=
-]
->> btrfs(_start+0x2a)[0x55d3c529ceaa]
->> Aborted
->>
->> Did this actually generate checksums for some files and then stop, or
->> was nothing written at all? How can I verify checksums are calculated
->> and enabled, or otherwise make sure its working as intended?
->>
->=20
-
-
---JQPnlhLmGEa72xwNmoL3PsVez8kh10r8f--
-
---vjRA0uo9SERxWHNHX5IP30cl0CO7V7PIs
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzmTR0ACgkQwj2R86El
-/qgqAgf/Wro7aaKU/UVuZ/E6i2Le+80Py/O6HoJcn33TwWumK+RalCAYEjVxNOEp
-CyaxyLVNCY3vVFWrCZtFLnxIORWif4AY0h0QYI/RNyfOOMlPH1y5E7Ab2uu/arOe
-PMC8veKJqtrGQuaU7R4G6pKex7R8/wHZ9Mv5uXfb+M3Go8ondSvkDBq/ESGxeYpo
-dGZ0QQdS6uQqZ2JKASqgLhjgGFiXax3o1ZBO6lU0APy7M+rg7csEF9+N8dgKaPtb
-3FbKsUAwBh/OmvEZX8Wnw0pDnOlYCkqGaaVgnSgah+Ei631nlHjyCPUVEWJnU2ys
-pDqd/mNwxDmPq0Y04kRQhG2H3QyuXA==
-=EvtI
------END PGP SIGNATURE-----
-
---vjRA0uo9SERxWHNHX5IP30cl0CO7V7PIs--
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
