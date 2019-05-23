@@ -2,174 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61AB6273DA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2019 03:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF7D27480
+	for <lists+linux-btrfs@lfdr.de>; Thu, 23 May 2019 04:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729511AbfEWBLK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 22 May 2019 21:11:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56318 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727365AbfEWBLK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 22 May 2019 21:11:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0AA45AD4E;
-        Thu, 23 May 2019 01:11:09 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: [PATCH v2] fstests: btrfs: Validate that balance and qgroups work correctly when balance needs to be resumed on mount
-Date:   Thu, 23 May 2019 09:11:01 +0800
-Message-Id: <20190523011101.4594-1-wqu@suse.com>
-X-Mailer: git-send-email 2.21.0
+        id S1729616AbfEWCiS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 22 May 2019 22:38:18 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:36472 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727305AbfEWCiS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 22 May 2019 22:38:18 -0400
+X-Greylist: delayed 1673 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 May 2019 22:38:17 EDT
+Received: from dread.disaster.area (pa49-180-144-61.pa.nsw.optusnet.com.au [49.180.144.61])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 94661105FF11;
+        Thu, 23 May 2019 12:10:18 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hTdBR-0005cL-FL; Thu, 23 May 2019 12:10:17 +1000
+Date:   Thu, 23 May 2019 12:10:17 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-btrfs@vger.kernel.org, kilobyte@angband.pl,
+        linux-fsdevel@vger.kernel.org, jack@suse.cz, willy@infradead.org,
+        hch@lst.de, dsterba@suse.cz, nborisov@suse.com,
+        linux-nvdimm@lists.01.org
+Subject: Re: [PATCH 04/18] dax: Introduce IOMAP_DAX_COW to CoW edges during
+ writes
+Message-ID: <20190523021017.GA16786@dread.disaster.area>
+References: <20190429172649.8288-1-rgoldwyn@suse.de>
+ <20190429172649.8288-5-rgoldwyn@suse.de>
+ <20190521165158.GB5125@magnolia>
+ <20190522201446.tc4zbxdevjm5dofe@fiona>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190522201446.tc4zbxdevjm5dofe@fiona>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0 cx=a_idp_d
+        a=8RU0RCro9O0HS2ezTvitPg==:117 a=8RU0RCro9O0HS2ezTvitPg==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=E5NmQfObTbMA:10
+        a=VwQbUJbxAAAA:8 a=7-415B0cAAAA:8 a=PiLuJtFBGQ_lXzUGpukA:9
+        a=CjuIK1q_8ugA:10 a=igBNqPyMv6gA:10 a=AjGcO6oz07-iQ99wixmX:22
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There are two regressions related to balance resume:
-- Kernel NULL pointer dereference at mount time
-  Introduced in v5.0
-- Kernel BUG_ON() just after mount
-  Introduced in v5.1
+On Wed, May 22, 2019 at 03:14:47PM -0500, Goldwyn Rodrigues wrote:
+> On  9:51 21/05, Darrick J. Wong wrote:
+> > On Mon, Apr 29, 2019 at 12:26:35PM -0500, Goldwyn Rodrigues wrote:
+> > We cannot use @inline_data to convey the source address.  @inline_data
+> > (so far) is used to point to the in-memory representation of the storage
+> > described by @addr.  For data writes, @addr is the location of the write
+> > on disk and @inline_data is the location of the write in memory.
+> > 
+> > Reusing @inline_data here to point to the location of the source data in
+> > memory is a totally different thing and will likely result in confusion.
+> > On a practical level, this also means that we cannot support the case of
+> > COW && INLINE because the type codes collide and so would the users of
+> > @inline_data.  This isn't required *right now*, but if you had a pmem
+> > filesystem that stages inode updates in memory and flips a pointer to
+> > commit changes then the ->iomap_begin function will need to convey two
+> > pointers at once.
+> > 
+> > So this brings us back to Dave's suggestion during the V1 patchset
+> > review that instead of adding more iomap flags/types and overloading
+> > fields, we simply pass two struct iomaps into ->iomap_begin:
+> 
+> Actually, Dave is the one who suggested to perform it this way.
+> https://patchwork.kernel.org/comment/22562195/
 
-The kernel fixes are:
-"btrfs: qgroup: Check if @bg is NULL to avoid NULL pointer
- dereference"
-"btrfs: reloc: Also queue orphan reloc tree for cleanup to
- avoid BUG_ON()"
+My first suggestion was to use two iomaps. This suggestion came
+later, as a way of demonstrating that a different type could be used
+to redefine what ->inline_data was used for, if people considered
+that an acceptible solution.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-changelog:
-v2:
-- Subject change to describe the test case in a more generic way
-- Update commit message and comment to avoid ambitious/confusing words
-- Add to 'balance' and 'qgroup' groups
----
- tests/btrfs/188     | 92 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/188.out |  2 +
- tests/btrfs/group   |  1 +
- 3 files changed, 95 insertions(+)
- create mode 100755 tests/btrfs/188
- create mode 100644 tests/btrfs/188.out
+What was apparent from other discussions in the thread you quote was
+that using two iomaps looked to be the better, more general approach
+to solving the iomap read-modify-write issue at hand.
 
-diff --git a/tests/btrfs/188 b/tests/btrfs/188
-new file mode 100755
-index 00000000..e12db87c
---- /dev/null
-+++ b/tests/btrfs/188
-@@ -0,0 +1,92 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2019 SUSE Linux Products GmbH.  All Rights Reserved.
-+#
-+# FS QA Test 188
-+#
-+# A general test to validate that balance and qgroups work correctly when
-+# balance needs to be resumed on mount.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/dmlogwrites
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_supported_os Linux
-+_require_scratch
-+# and we need extra device as log device
-+_require_log_writes
-+
-+nr_files=512				# enough metadata to bump tree height
-+file_size=2048				# small enough to be inlined
-+
-+_log_writes_init $SCRATCH_DEV
-+_log_writes_mkfs >> $seqres.full 2>&1
-+
-+_log_writes_mount
-+$BTRFS_UTIL_PROG quota enable $SCRATCH_MNT >> $seqres.full
-+$BTRFS_UTIL_PROG quota rescan -w $SCRATCH_MNT >> $seqres.full
-+
-+# Create enough metadata for later balance
-+for ((i = 0; i < $nr_files; i++)); do
-+	_pwrite_byte 0xcd 0 $file_size $SCRATCH_MNT/file_$i > /dev/null
-+done
-+
-+# Flush delalloc so that balance has work to do.
-+sync
-+
-+# Balance metadata so we will have at least one transaction committed with
-+# valid reloc tree, and hopefully another commit with orphan reloc tree.
-+$BTRFS_UTIL_PROG balance start -f -m $SCRATCH_MNT >> $seqres.full
-+_log_writes_unmount
-+_log_writes_remove
-+
-+cur=$(_log_writes_find_next_fua 0)
-+echo "cur=$cur" >> $seqres.full
-+while [ ! -z "$cur" ]; do
-+	_log_writes_replay_log_range $cur $SCRATCH_DEV >> $seqref.full
-+
-+	# Test that no crashes happen or any other kind of failure.
-+	_scratch_mount
-+	_scratch_unmount
-+
-+	# Don't trigger fsck here, as relocation get paused,
-+	# at that transistent state, qgroup number may differ
-+	# and cause false alert.
-+
-+	prev=$cur
-+	cur=$(_log_writes_find_next_fua $(($cur + 1)))
-+	[ -z "$cur" ] && break
-+done
-+
-+# Now the fs has finished its balance and qgroup should be consistent.
-+# Fstest will automatically check the fs and btrfs check will report
-+# any qgroup inconsistent if something went wrong.
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/188.out b/tests/btrfs/188.out
-new file mode 100644
-index 00000000..6f23fda0
---- /dev/null
-+++ b/tests/btrfs/188.out
-@@ -0,0 +1,2 @@
-+QA output created by 188
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 44ee0dd9..cfad878f 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -190,3 +190,4 @@
- 185 volume
- 186 auto quick send volume
- 187 auto send dedupe clone balance
-+188 auto quick replay balance qgroup
+Cheers,
+
+Dave.
 -- 
-2.21.0
-
+Dave Chinner
+david@fromorbit.com
