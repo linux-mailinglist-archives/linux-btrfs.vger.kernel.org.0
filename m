@@ -2,141 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C670B29928
-	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2019 15:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1E8A29A7B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 24 May 2019 17:01:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403809AbfEXNmC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 24 May 2019 09:42:02 -0400
-Received: from a4-4.smtp-out.eu-west-1.amazonses.com ([54.240.4.4]:58264 "EHLO
-        a4-4.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391361AbfEXNmB (ORCPT
+        id S2404219AbfEXPBF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 24 May 2019 11:01:05 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:37819 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403917AbfEXPBF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 24 May 2019 09:42:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=ob2ngmaigrjtzxgmrxn2h6b3gszyqty3; d=urbackup.org; t=1558705319;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-        bh=30UkGslChQYKihPC/SDIY6NhAp6CkeV8GeMdXSM5Q6I=;
-        b=ByNgDr+C8QBz95mJBpxP7LrXyrBo5xzrfnK6k8mGWbHZHXkB4TKDnvgIR7ZDyOkT
-        PcCxZ2dxyBmTbECUDGRSyQr1yyzDaydYKEaO0yIeyFB7pPFMa3auffgKe5ADyQHKJ7I
-        VO/jpJTsa7Bpz+35Otsd9zxnvPOedM3tckUGfdvs=
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=ihchhvubuqgjsxyuhssfvqohv7z3u4hn; d=amazonses.com; t=1558705319;
-        h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
-        bh=30UkGslChQYKihPC/SDIY6NhAp6CkeV8GeMdXSM5Q6I=;
-        b=bBDqWDkszRMxmg223uuZ4RVAOMuKTqb7SWZPteWGqix+6ZSfoYQxn2PIPq2uOn3q
-        3ntAxUNjwluWKYx0fuT+y8gEY557KPeRIs5DPRPNr7nM/iO35qgll6IOW7dMW+HjUUd
-        qW3QrarwmlfMZ2XKsJTOVChn3ovn9HUaOA7n26P8=
-Subject: Re: Citation Needed: BTRFS Failure Resistance
-To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
-        Martin Raiber <martin@urbackup.org>,
-        Chris Murphy <lists@colorremedies.com>
-Cc:     Cerem Cem ASLAN <ceremcem@ceremcem.net>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAN4oSBeEU+rmCS8+WwriGz0KoPR=Xa6KvjH=gGriFaxVNZHf6Q@mail.gmail.com>
- <8ccec20a-04b1-4a84-6739-afd35b4ab02e@gmail.com>
- <CAJCQCtTp5d+VxsQmVv68VdmCsxSVpi-_c6LJjS_T=xx3GXz9Fg@mail.gmail.com>
- <979559b5-1fb5-debd-e101-6e4227348426@gmail.com>
- <0102016ae5bf1e51-7cedfda5-aff2-4ecb-801b-ec8c04ce84b5-000000@eu-west-1.amazonses.com>
- <2ef383f2-7d70-406c-eb60-6d45a6f8f86f@gmail.com>
-From:   Martin Raiber <martin@urbackup.org>
-Message-ID: <0102016aea13ad4d-cea4167f-90fe-4b0d-8112-afb187ea8a34-000000@eu-west-1.amazonses.com>
-Date:   Fri, 24 May 2019 13:41:59 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 24 May 2019 11:01:05 -0400
+Received: by mail-qk1-f194.google.com with SMTP id d10so8013486qko.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 24 May 2019 08:01:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6WYsWGoo7KnyaxFuZ/Yh2ndGF4aNWjzfm/GfB52cjhA=;
+        b=ZZ2qlPLWcc5CUhy+K7ocG9UlVpRNLhNZ+t4H9aNBjQEQdFvz7czyo7ncz19JtluwSI
+         0nafPJ4qETagToMQJNcXhamL/YDOzDfMYWAKbupOAtvCoDzaV1xlMT804NTUOEpsC46N
+         SK3LUF6iwp2X6ITRJeGvrfJaUTuiDnbDmLp5fw3uOn8+fiDPuF5PzNF3hXkPMDhYabOA
+         QgB5kC1OcXjhhh+PxQxnGSwxo9xtorcryWFNgnstOBGWKg1DcsNyvjPKHrrnBMMNEbHP
+         25rz9EgeDXKTjN6N4DZ6MK838151f5r1ZCxZpmcs/zgMvdz0rSb6qjJBsLEZDcxC+trt
+         FcFg==
+X-Gm-Message-State: APjAAAUs0wCNJ75lJ4CfCDhxr6GwUjsJTElS9OnNVMfYm6XTdWXaV1Aq
+        mG6e4hRWNj8mjHlm1zoj3+MYoaTx9/xncT7TNrw=
+X-Google-Smtp-Source: APXvYqxu0GSiJR70jmpkuZvq72awef6MIgh4RAEJVL2w0st/e9LariRPqUgkZ6I2jKxVfZfpabIkvvPkY+LLwmahUHY=
+X-Received: by 2002:ac8:51c1:: with SMTP id d1mr578452qtn.204.1558710063995;
+ Fri, 24 May 2019 08:01:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <2ef383f2-7d70-406c-eb60-6d45a6f8f86f@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-X-SES-Outgoing: 2019.05.24-54.240.4.4
-Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
+References: <297da4cbe20235080205719805b08810@bi-co.net> <CAJCQCtR-uo9fgs66pBMEoYX_xAye=O-L8kiMwyAdFjPS5T4+CA@mail.gmail.com>
+ <8C31D41C-9608-4A65-B543-8ABCC0B907A0@bi-co.net> <CAJCQCtTZWXUgUDh8vn0BFeEbAdKToDSVYYw4Q0bt0rECQr9nxQ@mail.gmail.com>
+ <AD966642-1043-468D-BABF-8FC9AF514D36@bi-co.net> <158a3491-e4d2-d905-7f58-11a15bddcd70@gmx.com>
+ <C1CD4646-E75D-4AAF-9CD6-B3AC32495FD3@bi-co.net> <3142764D-5944-4004-BC57-C89C89AC9ED9@bi-co.net>
+ <F170BB63-D9D7-4D08-9097-3C18815BE869@bi-co.net> <20190521190023.GA68070@glet>
+ <20190521201226.GA23332@lobo>
+In-Reply-To: <20190521201226.GA23332@lobo>
+From:   Andrea Gelmini <andrea.gelmini@linux.it>
+Date:   Fri, 24 May 2019 17:00:51 +0200
+Message-ID: <CAK-xaQZ9PCLgzFw0-YJ=Yvou=t0k=Vv-9JY4n3=VD2s=NaYL4w@mail.gmail.com>
+Subject: Re: fstrim discarding too many or wrong blocks on Linux 5.1, leading
+ to data loss
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     =?UTF-8?B?TWljaGFlbCBMYcOf?= <bevan@bi-co.net>,
+        dm-devel@redhat.com, Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        gregkh@linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 23.05.2019 19:41 Austin S. Hemmelgarn wrote:
-> On 2019-05-23 13:31, Martin Raiber wrote:
->> On 23.05.2019 19:13 Austin S. Hemmelgarn wrote:
->>> On 2019-05-23 12:24, Chris Murphy wrote:
->>>> On Thu, May 23, 2019 at 5:19 AM Austin S. Hemmelgarn
->>>> <ahferroin7@gmail.com> wrote:
->>>>>
->>>>> On 2019-05-22 14:46, Cerem Cem ASLAN wrote:
->>>>>> Could you confirm or disclaim the following explanation:
->>>>>> https://unix.stackexchange.com/a/520063/65781
->>>>>>
->>>>> Aside from what Hugo mentioned (which is correct), it's worth
->>>>> mentioning
->>>>> that the example listed in the answer of how hardware issues could
->>>>> screw
->>>>> things up assumes that for some reason write barriers aren't honored.
->>>>> BTRFS explicitly requests write barriers to prevent that type of
->>>>> reordering of writes from happening, and it's actually pretty
->>>>> unusual on
->>>>> modern hardware for those write barriers to not be honored unless the
->>>>> user is doing something stupid (like mounting with 'nobarrier' or
->>>>> using
->>>>> LVM with write barrier support disabled).
->>>>
->>>> 'man xfs'
->>>>
->>>>          barrier|nobarrier
->>>>                 Note: This option has been deprecated as of kernel
->>>> v4.10; in that version, integrity operations are always performed and
->>>> the mount option is ignored.  These mount options will be removed no
->>>> earlier than kernel v4.15.
->>>>
->>>> Since they're getting rid of it, I wonder if it's sane for most any
->>>> sane file system use case.
->>>>
->>> As Adam mentioned, it's mostly volatile storage that benefits from
->>> this.  For example, on the systems where I have /var/cache configured
->>> as a separate filesystem, I mount it with barriers disabled because
->>> the data there just doesn't matter (all of it can be regenerated
->>> easily) and it gives me a few percent better performance.  In essence,
->>> it's the mostly same type of stuff where you might consider running
->>> ext4 without a journal for performance reasons.
->>>
->>> In the case of XFS, it probably got removed to keep people who fancy
->>> themselves to be power users but really have no clue what they're
->>> doing from shooting themselves in the foot to try and get some more
->>> performance.
->>>
->>> IIRC, the option originally got added to both XFS and ext* because
->>> early write barrier support was a bigger performance hit than it is
->>> today, and BTRFS just kind of inherited it.
->>
->> When I google for it I find that flushing the device can also be
->> disabled via
->>
->> echo "write through" > /sys/block/$device/queue/write_cache
-> Disabling write caching (which is what that does) is not really the
-> same as mounting with 'nobarrier'.  Write caching actually improves
-> performance in most cases, it just makes things a bit riskier because
-> of the possibility of write reordering (which barriers prevent).
+Hi Mike,
+   I'm doing setup to replicate and test the condition. I see your
+patch is already in the 5.2 dev kernel.
+   I'm going to try with latest git, and see what happens. Anyway,
+don't you this it would be good
+   to have this patch ( 51b86f9a8d1c4bb4e3862ee4b4c5f46072f7520d )
+anyway in the 5.1 stable branch?
 
-According to documentation it doesn't change any caching. This changes
-how the kernel sees what kind of caching the device does. If the device
-claims it does "write through" caching (e.g. battery backed RAID card)
-the kernel doesn't need to send device cache flushes, otherwise is does.
-If you set a device that has "write back" there to "write through", the
-kernel will think it does not require flushes and not send any, thus
-causing data loss at power loss (because the device obviously still does
-write back caching).
+Thanks a lot for your time,
+Gelma
 
->>
->> I actually used nobarrier recently (albeit with ext4), because a steam
->> download was taking forever (hours), when remounting with nobarrier it
->> went down to minutes (next time I started it with eatmydata). But ext4
->> fsck is probably able to recover nobarrier file systems with unfortunate
->> powerlosses and btrfs fsck... isn't. So combined with the above I'd
->> remove nobarrier.
->>
-> Yeah, Steam is another pathological case actually, though that's
-> mostly because their distribution format is generously described as
-> 'excessively segmented' and they fsync after _every single file_.  If
-> you ever use Steam's game backup feature, you'll see similar results
-> because it actually serializes the data to the same format that is
-> used when downloading the game in the first place.
-
-
+Il giorno mar 21 mag 2019 alle ore 22:12 Mike Snitzer
+<snitzer@redhat.com> ha scritto:
+>
+> On Tue, May 21 2019 at  3:00pm -0400,
+> Andrea Gelmini <andrea.gelmini@linux.it> wrote:
+>
+> > On Tue, May 21, 2019 at 06:46:20PM +0200, Michael Laß wrote:
+> > > > I finished bisecting. Here’s the responsible commit:
+> > > >
+> > > > commit 61697a6abd24acba941359c6268a94f4afe4a53d
+> > > > Author: Mike Snitzer <snitzer@redhat.com>
+> > > > Date:   Fri Jan 18 14:19:26 2019 -0500
+> > > >
+> > > >    dm: eliminate 'split_discard_bios' flag from DM target interface
+> > > >
+> > > >    There is no need to have DM core split discards on behalf of a DM target
+> > > >    now that blk_queue_split() handles splitting discards based on the
+> > > >    queue_limits.  A DM target just needs to set max_discard_sectors,
+> > > >    discard_granularity, etc, in queue_limits.
+> > > >
+> > > >    Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+> > >
+> > > Reverting that commit solves the issue for me on Linux 5.1.3. Would
+> > that be an option until the root cause has been identified? I’d rather
+> > not let more people run into this issue.
+> >
+> > Thanks a lot Michael, for your time/work.
+> >
+> > This kind of bisecting are very boring and time consuming.
+> >
+> > I CC: also the patch author.
+>
+> Thanks for cc'ing me, this thread didn't catch my eye.
+>
+> Sorry for your troubles.  Can you please try this patch?
+>
+> Thanks,
+> Mike
+>
+> diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+> index 1fb1333fefec..997385c1ca54 100644
+> --- a/drivers/md/dm.c
+> +++ b/drivers/md/dm.c
+> @@ -1469,7 +1469,7 @@ static unsigned get_num_write_zeroes_bios(struct dm_target *ti)
+>  static int __send_changing_extent_only(struct clone_info *ci, struct dm_target *ti,
+>                                        unsigned num_bios)
+>  {
+> -       unsigned len = ci->sector_count;
+> +       unsigned len;
+>
+>         /*
+>          * Even though the device advertised support for this type of
+> @@ -1480,6 +1480,8 @@ static int __send_changing_extent_only(struct clone_info *ci, struct dm_target *
+>         if (!num_bios)
+>                 return -EOPNOTSUPP;
+>
+> +       len = min((sector_t)ci->sector_count, max_io_len_target_boundary(ci->sector, ti));
+> +
+>         __send_duplicate_bios(ci, ti, num_bios, &len);
+>
+>         ci->sector += len;
+>
