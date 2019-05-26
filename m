@@ -2,29 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 633962A48C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 25 May 2019 15:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 418B02A919
+	for <lists+linux-btrfs@lfdr.de>; Sun, 26 May 2019 10:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726880AbfEYNVv convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 25 May 2019 09:21:51 -0400
-Received: from smtprelay03.ispgateway.de ([80.67.18.15]:44945 "EHLO
-        smtprelay03.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbfEYNVv (ORCPT
+        id S1727607AbfEZItL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Sun, 26 May 2019 04:49:11 -0400
+Received: from smtprelay01.ispgateway.de ([80.67.18.13]:17673 "EHLO
+        smtprelay01.ispgateway.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727546AbfEZItK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 25 May 2019 09:21:51 -0400
+        Sun, 26 May 2019 04:49:10 -0400
 Received: from [94.217.151.102] (helo=[192.168.177.20])
-        by smtprelay03.ispgateway.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+        by smtprelay01.ispgateway.de with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
         (Exim 4.90_1)
         (envelope-from <hendrik@friedels.name>)
-        id 1hUWcO-0007Gv-LN
-        for linux-btrfs@vger.kernel.org; Sat, 25 May 2019 15:21:48 +0200
+        id 1hUoq4-00009a-4m
+        for linux-btrfs@vger.kernel.org; Sun, 26 May 2019 10:49:08 +0200
 From:   "Hendrik Friedel" <hendrik@friedels.name>
 To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Migration to BTRFS
-Date:   Sat, 25 May 2019 13:21:43 +0000
-Message-Id: <emde57e735-136a-4634-a2b5-95ce756b1f7b@ryzen>
-In-Reply-To: <emb78b630a-c045-4f12-8945-66a237852402@ryzen>
-References: <emb78b630a-c045-4f12-8945-66a237852402@ryzen>
+Subject: Fw: Re: Migration to BTRFS
+Date:   Sun, 26 May 2019 08:49:07 +0000
+Message-Id: <em1b1ea4f5-944a-4bd1-a32f-a41d1199bff1@ryzen>
 Reply-To: "Hendrik Friedel" <hendrik@friedels.name>
 User-Agent: eM_Client/7.2.34062.0
 Mime-Version: 1.0
@@ -36,10 +34,17 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+For some reason, this did not come through...
+
+------ Weitergeleitete Nachricht ------
+Von: "Hendrik Friedel" <hendrik@friedels.name>
+An: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Gesendet: 25.05.2019 15:21:43
+Betreff: Re: Migration to BTRFS
+
 Hello
 
-now after the filesystem worked fine as a single drive for a while, I'd 
-like to add the second device.
+now after the filesystem worked fine as a single drive for a while, I'd like to add the second device.
 
 Status:
 btrfs fi show .
