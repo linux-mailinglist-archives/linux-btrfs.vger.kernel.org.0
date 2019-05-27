@@ -2,177 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FB602BAB7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 May 2019 21:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A91C92BBC5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 May 2019 23:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727333AbfE0TaY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 May 2019 15:30:24 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]:35887 "EHLO
-        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726817AbfE0TaY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 May 2019 15:30:24 -0400
-Received: by mail-wm1-f44.google.com with SMTP id v22so448375wml.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 May 2019 12:30:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=AUfHFHhuWc17hi8N9ozftDsmpGL/w3Yos2bezV89OAM=;
-        b=KIViLi5xa0z8bpXFpMbctCcQXVBw94i2yPdwLao0XhKvdWoU/8Mq1zvz56lv+dgGLs
-         3FoGN7eWuRqkVEZj+BHKdxMgn4KNUeTvJf+FAAOaWttItTpGaarhUo6gVF+vKiDIMxgB
-         6X+0to1kz5qNfDYXkwtzvcd2AePBL0OEQeJyabfjjsFnLX8vcA/dffXl7xFpzrUIlugY
-         8P+qLJKhPOnMpsQP7I5tA30hMDEBtyLgRsqAGLtr8cBZy9PO07JuqJFxjqHZbVORKmL+
-         VePjtVX4ftbhdHFWeZujXWuBFe41pED2h9UQ8JK8jM3gGJvZZK0o8CzCSRq1LIaEOtIc
-         ieOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
-         :mime-version:content-transfer-encoding:content-language;
-        bh=AUfHFHhuWc17hi8N9ozftDsmpGL/w3Yos2bezV89OAM=;
-        b=Sm6EUFZDa2lS7TbzI06iZod68kMGjk8grsym59jaD1TJe8Z/lo9ma0oaF6FNXofse3
-         Ug+eBk9T8/TgXBzsi/l3OThxtBBTZWCWhrcYCDbjGzWdAh3R5QArj1exb5KCuTv9FDTF
-         1dAKMixxWCjRsO4s/+x+K80KB0ODT56x1jP1nlx7kFrARiHEktwLAF+pU7yCpsE0HmBK
-         0g9SGwzUT+fRWHFcZ/bcLA3b529N2VIrJoo81co9mRPuGOtY+zTSgK5F8lYfJ22njt77
-         swWRZ4MuaCDL/QPft7PpEFVUQdq3DoQFI8WICJmp/QGig4n54cYnVzl2fPSn1W/cTCg9
-         356w==
-X-Gm-Message-State: APjAAAWQSb8AXU+xSSTot1AfZmQaLMQS93Vpx3JPbQY01Nr1g8dLJ6Eg
-        e7ZhxtRhOLJWjVxCAqubidQuW8vt
-X-Google-Smtp-Source: APXvYqwJFv3iCCEdM5kD1XQ1koSW7C5/SKa0yj0meTvWk0lXs24n2pnR5JfJit+ugs87OwFXlv39/w==
-X-Received: by 2002:a1c:ab83:: with SMTP id u125mr375173wme.131.1558985421603;
-        Mon, 27 May 2019 12:30:21 -0700 (PDT)
-Received: from ?IPv6:2a01:c22:7a08:2000:8408:3b6c:2702:da2e? ([2a01:c22:7a08:2000:8408:3b6c:2702:da2e])
-        by smtp.gmail.com with ESMTPSA id g5sm2889169wrp.29.2019.05.27.12.30.20
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 May 2019 12:30:21 -0700 (PDT)
+        id S1727320AbfE0VdZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 May 2019 17:33:25 -0400
+Received: from mout.gmx.net ([212.227.15.18]:40301 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726772AbfE0VdZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 27 May 2019 17:33:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1558992804;
+        bh=3aNDVsO9ZmI09TjozsspeS1VIT65hPFn9HfclRRuXHE=;
+        h=X-UI-Sender-Class:From:To:Subject:Date;
+        b=LSP9Ypa8Ude32/taFc96cjy8Nd+OxnslYv/MzESLZ7MzEB8PwJ7mVgKD7px7i1ShL
+         6YiCwngZxZ3orBz87Yn0XgtY2PAzrEj5wj12Nj9/mncxOVliZem8MHNLoMY4+lneLA
+         hfh4NDY6uLZTxu8KP8PMR/R9G+4MpL1A+4t7xj1w=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from monk.localnet ([149.172.254.164]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MLQxN-1hEWoa3kNH-00IVVN for
+ <linux-btrfs@vger.kernel.org>; Mon, 27 May 2019 23:33:23 +0200
+From:   Dennis Schridde <devurandom@gmx.net>
 To:     linux-btrfs@vger.kernel.org
-From:   Fgrauper <fgrauper@gmail.com>
-Subject: How to repair FS with single unrecoverable Chunk?
-Message-ID: <75d2487e-5a4d-7222-3c76-fdd7c4a5a985@gmail.com>
-Date:   Mon, 27 May 2019 21:30:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+Subject: parent transid verify failed on 604602368 wanted 840641 found 840639
+Date:   Mon, 27 May 2019 23:33:19 +0200
+Message-ID: <5406386.pfifcJONdE@monk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: multipart/signed; boundary="nextPart2107368.RUAUMbZgvL"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Provags-ID: V03:K1:2cvovtdPUaJtK3JARp4g1VQn/cnk/QKxxmcP29xVOxCgi7G7YDv
+ Lms4/p3lVl1tYD48cr03iM7YRpNiQ7wQ6oUa8jpz43NXFaeaYlaG6193mqq9uaFBhIlNQ4u
+ GXX6cbEpdrJWrI22NX5sx/vQQkw9R/vW2NyxrtFHEZ/aNrw8ly/p50Xk1OBjQENqJe08uHT
+ tnJktkXeUzEVyK1RdmAoA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:sYWieKPuQKc=:/6WUS2qfjyHmMbxzXyUkK/
+ dGA3wcfg3To1VpE15SehRMx8YvjnMX3ymaEUzoftGveI3A5mmUZTzb8wR0X0DCmbFTIveHHOP
+ sY+JxZDy345TgPMYG542sQxATIN1xUsaT6EuzPgMq/DZqp85Ciw/Cz34xbrB8UiGw2DvKuQ2P
+ T6C6OgctuQpTSbeWHHMR+EeBxTktRJudVfR5GfH6iNBOqHrqWBw1kweJJD7/j0WuvZhBwzrtY
+ ycIuN9HGOOUTaYBi7yj7kTYrkmTQyz+bW2vW1kb0dcMZn8+6YHkZUq0tJevfvC3qEJ6nlOhfQ
+ 1n8xv2zud5evXCAJLWPC/E2R0KZ/9+F0+4/gq9LmHEy2d9/7WZn9d/pUSbSJ6xAj8HxPiHGdR
+ P8rAmb9+byMqe6sD1ZuiM3x/IZAd9GkpGRn742aVC5gsgX9Ic5WLaHTWLycBd/tcog9QZq7Tw
+ kGnJCMjXkAZ5jaQKS3k9mXsmv5uZuxhggqkGEm1pP4Vq+N1INQnJqPqbjtOtjvJLbIcJ9blpF
+ 7oB3JSxqO4MMw9ZCX0+H9k7euJ919qeWiXO6McTe79Ilvh0/cQzjFoDaeL/p4fbxZI7tK6Jjg
+ 5PM0MCPAeZqYd98ut5F9Ej0y8MEq1Ek5RdNMs5GDz0OGxmS0KOGsVtPWAV8m0+Bfc/fORNBye
+ 9wf8tmBdBWHLqNa2QlYi64nd8jCGLPnH5dFQqtlAq1Ty6Q4DSSxZXzlw21yCJjcTkzR3qOTAJ
+ yfh8yzp0N3VtWiIbu2hm2KF8XboMB8sTttiMTfVpwwtnP7WtNvEUd1bj71hq/7ckX+cpFxMKp
+ CHC8JAs/ObLBHoy0XM01Vb7ozgNgu9NYIB7Jfe/t9W+7EuPrrnRicFTHVm7klxPCwtsyDoXAb
+ RwTA7ztwDVaAvmY+1ffsVTb7pbtWYCA4GTaf4xlAnU3hiI9+gpQirFEwnk3gbc7QSy/sqXLPJ
+ QpBUY4bw62mSqyHl0+arIgW3IOPmgbBo=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello. I did a bit of an oopsie while moving/resizing partitions.
+--nextPart2107368.RUAUMbZgvL
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
 
-I currently only have a single HDD in my System which has partitions for 
-system, home and mass storage. During the installation of a second OS 
-(Manjoro) I aborted the installer while it was resizing the mass storage 
-partition after it showed now progress for hours. Now I can't mount it 
-anymore.
+Hi!
 
+Yesterday I upgraded from Linux 5.1.1 (built with GCC 8.3.0) to Linux 5.1.=
+4
+(built with GCC 9.1.0).  The next boot was extremely slow and the desktop
+environment (KDE Plasma) never really started, but got kind of stuck in th=
+e
+startup screen.  So I switched to a VT and pressed ctrl+alt+del.  The next
+boot stopped early with following message:
 
-----------------------------------------------------------------------------------------------------------------------
+[T445] BTRFS: device label <...> devid 1 transid 840641 /dev/bcache0
+[T599] BTRFS info (device bcache0): disk space caching is enabled
+[T599] BTRFS info (device bcache0): has skinny extents
+[T599] BTRFS error (device bcache0): parent transid verify failed on 60460=
+2368
+wanted 840641 found 840639
+[T599] BTRFS error (device bcache0): open_ctree failed
 
-$ mount /dev/sda2
+How can I recover from this?
 
-mount: /mnt/a498076c-d538-41d1-8519-68c9acca0c3f: wrong fs type, bad 
-option, bad superblock on /dev/sda2, missing codepage or helper program, 
-or other error.
+The filesystem should have several snapshots (created by snapper [1], on e=
+very
+boot and hourly).  Will they be of any help recovering my data?
 
-----------------------------------------------------------------------------------------------------------------------
+Best regards,
+Dennis
 
+[1]: http://snapper.io/
 
-The check and restore commands all exit after reporting false checksums 
-and a bad block for each super.
+--nextPart2107368.RUAUMbZgvL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
+-----BEGIN PGP SIGNATURE-----
 
-The output of btrfs rescue chunk-recover -v /dev/sda2 shows this: (last 
-few lines)
+iQGzBAABCAAdFiEE0Ngi/nirHnbsz3NFz+h/M161qdwFAlzsV58ACgkQz+h/M161
+qdxvtQwAjb24L/bcvSTCSZuIN6Ntp2jihyVwzTkdEMPKz4uxN9mocBqUVzuFVku3
+mF2swoFItzIr2lvwFQXtry/Oce9AhKpfOYbCVKMBtw6976cy4RsvdiB/wtIaM4pF
+nz4XxIHyRKZQfH6j4gZgpX/OqUqI0kQeGx9xnBzM1+yqrq25vRDvN7KiaW7FITRK
+OL2ZKtSMur5LTwmQUBqVejgGBhgCXYoQjXsMSL9Amv4HagCH30cA4iOwteqESlHJ
+rvgWU7Foa8IFYBKdVVVvhTJyKkVMpdnMnvy7+++4vfFCtrKt17gPOO058CKhMFbv
+t0Xm/irlRXCUn3Sxi1XUinEvP3RohCyfkUgeTlC26rXQbnhOLKliCHvnVzGTaO2d
+W87mjacMP24nWffXXVOn17ICVSrUD4tGpI+zqdrUSG2e9HNnm40tusNpz4Nxc1uI
+stiWWGIcJLZzF1tvT0TKiFLix1IT6ms2HBSz2/RqRJUROFQh8SDwhUUeAi4zusg+
+k3UbCDAV
+=0vD0
+-----END PGP SIGNATURE-----
 
-----------------------------------------------------------------------------------------------------------------------
-
-   Chunk: start = 977134419968, len = 1073741824, type = 1, num_stripes = 1
-       Stripes list:
-       [ 0] Stripe: devid = 1, offset = 980364034048
-       Block Group: start = 977134419968, len = 1073741824, flag = 1
-       Device extent list:
-           [ 0]Device extent: devid = 1, start = 980364034048, len = 
-1073741824, chunk offset = 977134419968
-Unrecoverable Chunks:
-   Chunk: start = 978208161792, len = 1073741824, type = 1, num_stripes = 1
-       Stripes list:
-       [ 0] Stripe: devid = 1, offset = 981437775872
-       No block group.
-       No device extent.
-
-Total Chunks:        915
-   Recoverable:        914
-   Unrecoverable:    1
-
-Orphan Block Groups:
-
-Orphan Device Extents:
-
-checksum verify failed on 477044244480 found E1255A0B wanted 1DA1E71B
-checksum verify failed on 477044244480 found E1255A0B wanted 1DA1E71B
-checksum verify failed on 477044244480 found 839751B1 wanted FFFFC17D
-checksum verify failed on 477044244480 found 839751B1 wanted FFFFC17D
-bad tree block 477044244480, bytenr mismatch, want=477044244480, 
-have=9079178223823991933
-open with broken chunk error
-Chunk tree recovery failed
-
-----------------------------------------------------------------------------------------------------------------------
-
-I have no backup of this partition as it's all data I that's stil 
-somwhere else (local code repos, Steam libary, ripped CDs, etc.), but it 
-would safe me a good chunk (pun not intended) of time if I could recover 
-at least some of it.
+--nextPart2107368.RUAUMbZgvL--
 
 
-Genaral info as asked for in the wiki:
-
-----------------------------------------------------------------------------------------------------------------------
-
-output of dmesg | grep BTRFS:
-
-----------------------------------------------------------------------------------------------------------------------
-
-[ 4453.292256] BTRFS info (device sda2): disk space caching is enabled
-[ 4453.292259] BTRFS info (device sda2): has skinny extents
-[ 4453.383280] BTRFS error (device sda2): bad tree block start, want 
-477061251072 have 276290951248713
-[ 4453.393647] BTRFS error (device sda2): bad tree block start, want 
-477061251072 have 18374762347131585792
-[ 4453.393665] BTRFS error (device sda2): failed to verify dev extents 
-against chunks: -5
-[ 4453.436276] BTRFS error (device sda2): open_ctree failed
-[ 4457.570646] BTRFS info (device sda2): disk space caching is enabled
-[ 4457.570648] BTRFS info (device sda2): has skinny extents
-[ 4457.574983] BTRFS error (device sda2): bad tree block start, want 
-477061251072 have 276290951248713
-[ 4457.575099] BTRFS error (device sda2): bad tree block start, want 
-477061251072 have 18374762347131585792
-[ 4457.575106] BTRFS error (device sda2): failed to verify dev extents 
-against chunks: -5
-[ 4457.608350] BTRFS error (device sda2): open_ctree failed
-
-----------------------------------------------------------------------------------------------------------------------
-
-output of uname -a:
-
-----------------------------------------------------------------------------------------------------------------------
-
-Linux florian-AX370M-DS3H 5.0.0-15-generic #16-Ubuntu SMP Mon May 6 
-17:41:33 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
-
-----------------------------------------------------------------------------------------------------------------------
-
-output of btrfs --version:
-
-----------------------------------------------------------------------------------------------------------------------
-
-btrfs-progs v4.20.2
-
-----------------------------------------------------------------------------------------------------------------------
 
