@@ -2,165 +2,177 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B4F2B96B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 27 May 2019 19:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB602BAB7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 27 May 2019 21:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726966AbfE0R1H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 May 2019 13:27:07 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:33496 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbfE0R1G (ORCPT
+        id S1727333AbfE0TaY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 27 May 2019 15:30:24 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:35887 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbfE0TaY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 May 2019 13:27:06 -0400
-Received: by mail-wr1-f67.google.com with SMTP id d9so17533707wrx.0;
-        Mon, 27 May 2019 10:27:04 -0700 (PDT)
+        Mon, 27 May 2019 15:30:24 -0400
+Received: by mail-wm1-f44.google.com with SMTP id v22so448375wml.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 May 2019 12:30:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=9WX0VFYO4FVs44DMQ1hkSFUp4e1UxuztItybOtfTqFU=;
-        b=bMFyDjnJWfw3h9h2ZwPS9hOy1AGomYHeXJCK6ClXR89C0wNpY9a/9Wz5NkiPgSSdeq
-         pGwfYJN2uAykqUFZQczPG550z+bac7GaL6d/tDBnk2/L79gM/05lQq1EOp7+XKfGvrtj
-         Ec9mA9u6IM+ZZX0VApXrZAzp2ufvxPIbgv4DfHir/N3qcBN+BaFjA4Za0YwZUqjEsvYw
-         RsbRzJpc4Xb6CHIVWkPRwmGDMuSDdkkimi0c07OjdHheQbHhEMuC2ghyHkimgeiss2BT
-         vbFLIDmjh25v4vZrQAst4l4rYKub7ATLhxPB7P/fLMxTitj1i8VwXDIRyp3DOwe7kmDz
-         lcPg==
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=AUfHFHhuWc17hi8N9ozftDsmpGL/w3Yos2bezV89OAM=;
+        b=KIViLi5xa0z8bpXFpMbctCcQXVBw94i2yPdwLao0XhKvdWoU/8Mq1zvz56lv+dgGLs
+         3FoGN7eWuRqkVEZj+BHKdxMgn4KNUeTvJf+FAAOaWttItTpGaarhUo6gVF+vKiDIMxgB
+         6X+0to1kz5qNfDYXkwtzvcd2AePBL0OEQeJyabfjjsFnLX8vcA/dffXl7xFpzrUIlugY
+         8P+qLJKhPOnMpsQP7I5tA30hMDEBtyLgRsqAGLtr8cBZy9PO07JuqJFxjqHZbVORKmL+
+         VePjtVX4ftbhdHFWeZujXWuBFe41pED2h9UQ8JK8jM3gGJvZZK0o8CzCSRq1LIaEOtIc
+         ieOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=9WX0VFYO4FVs44DMQ1hkSFUp4e1UxuztItybOtfTqFU=;
-        b=AnejTpGUMYFPV7zRSJKp3GHCaJ4+61MEOA6LXMaIBN550piLi+/OKnNF7+d5Oi8IFD
-         bUOJMQew5AcWDgQOekI5XeGQv/J5h9Yl2tD+Mh7qHqj3ypMp9VFdI5/S7ZP3drGm63vy
-         laQiPobS6XLbM7aY+wUBUleU55hrRZc7vC3kf2BjAFsJPBLu3MclyXdTTFDLDZWjUfGy
-         yngQ8BfBNHGZcqo+vgCa8jOFDRYmlthPgh0HsEhsgNUR0ltHifcmsFb6ag3TRiqIJsLP
-         PCJQjmzvUM4OitH8OXJS0rBAfqvqaxfmOvw1kBP3Zu1VpCkFqTXUo/b5a7SKRXzjljv3
-         1pxQ==
-X-Gm-Message-State: APjAAAVem4OsW0jZiT/jgMBfEgzi/K2t4Kp5mhBL23wT0JTqkL1UnciO
-        U+XG/tmzsnaOK9TkhEbpinc=
-X-Google-Smtp-Source: APXvYqzQM7w/ysae6EMfiq7n42CFJmrcBJPXGbTpco9z9Lrr2GCtadH2djq7ALmpAvtHtPns0pJRDA==
-X-Received: by 2002:a5d:488a:: with SMTP id g10mr11069095wrq.344.1558978024064;
-        Mon, 27 May 2019 10:27:04 -0700 (PDT)
-Received: from localhost.localdomain ([5.102.238.208])
-        by smtp.gmail.com with ESMTPSA id o14sm855129wrp.77.2019.05.27.10.27.01
+        h=x-gm-message-state:to:from:subject:message-id:date:user-agent
+         :mime-version:content-transfer-encoding:content-language;
+        bh=AUfHFHhuWc17hi8N9ozftDsmpGL/w3Yos2bezV89OAM=;
+        b=Sm6EUFZDa2lS7TbzI06iZod68kMGjk8grsym59jaD1TJe8Z/lo9ma0oaF6FNXofse3
+         Ug+eBk9T8/TgXBzsi/l3OThxtBBTZWCWhrcYCDbjGzWdAh3R5QArj1exb5KCuTv9FDTF
+         1dAKMixxWCjRsO4s/+x+K80KB0ODT56x1jP1nlx7kFrARiHEktwLAF+pU7yCpsE0HmBK
+         0g9SGwzUT+fRWHFcZ/bcLA3b529N2VIrJoo81co9mRPuGOtY+zTSgK5F8lYfJ22njt77
+         swWRZ4MuaCDL/QPft7PpEFVUQdq3DoQFI8WICJmp/QGig4n54cYnVzl2fPSn1W/cTCg9
+         356w==
+X-Gm-Message-State: APjAAAWQSb8AXU+xSSTot1AfZmQaLMQS93Vpx3JPbQY01Nr1g8dLJ6Eg
+        e7ZhxtRhOLJWjVxCAqubidQuW8vt
+X-Google-Smtp-Source: APXvYqwJFv3iCCEdM5kD1XQ1koSW7C5/SKa0yj0meTvWk0lXs24n2pnR5JfJit+ugs87OwFXlv39/w==
+X-Received: by 2002:a1c:ab83:: with SMTP id u125mr375173wme.131.1558985421603;
+        Mon, 27 May 2019 12:30:21 -0700 (PDT)
+Received: from ?IPv6:2a01:c22:7a08:2000:8408:3b6c:2702:da2e? ([2a01:c22:7a08:2000:8408:3b6c:2702:da2e])
+        by smtp.gmail.com with ESMTPSA id g5sm2889169wrp.29.2019.05.27.12.30.20
+        for <linux-btrfs@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 27 May 2019 10:27:02 -0700 (PDT)
-From:   Amir Goldstein <amir73il@gmail.com>
-To:     Theodore Tso <tytso@mit.edu>, Jan Kara <jack@suse.cz>
-Cc:     "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>, Chris Mason <clm@fb.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-api@vger.kernel.org
-Subject: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
-Date:   Mon, 27 May 2019 20:26:55 +0300
-Message-Id: <20190527172655.9287-1-amir73il@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 27 May 2019 12:30:21 -0700 (PDT)
+To:     linux-btrfs@vger.kernel.org
+From:   Fgrauper <fgrauper@gmail.com>
+Subject: How to repair FS with single unrecoverable Chunk?
+Message-ID: <75d2487e-5a4d-7222-3c76-fdd7c4a5a985@gmail.com>
+Date:   Mon, 27 May 2019 21:30:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-New link flags to request "atomic" link.
+Hello. I did a bit of an oopsie while moving/resizing partitions.
 
-Signed-off-by: Amir Goldstein <amir73il@gmail.com>
----
+I currently only have a single HDD in my System which has partitions for 
+system, home and mass storage. During the installation of a second OS 
+(Manjoro) I aborted the installer while it was resizing the mass storage 
+partition after it showed now progress for hours. Now I can't mount it 
+anymore.
 
-Hi Guys,
 
-Following our discussions on LSF/MM and beyond [1][2], here is
-an RFC documentation patch.
+----------------------------------------------------------------------------------------------------------------------
 
-Ted, I know we discussed limiting the API for linking an O_TMPFILE
-to avert the hardlinks issue, but I decided it would be better to
-document the hardlinks non-guaranty instead. This will allow me to
-replicate the same semantics and documentation to renameat(2).
-Let me know how that works out for you.
+$ mount /dev/sda2
 
-I also decided to try out two separate flags for data and metadata.
-I do not find any of those flags very useful without the other, but
-documenting them seprately was easier, because of the fsync/fdatasync
-reference.  In the end, we are trying to solve a social engineering
-problem, so this is the least confusing way I could think of to describe
-the new API.
+mount: /mnt/a498076c-d538-41d1-8519-68c9acca0c3f: wrong fs type, bad 
+option, bad superblock on /dev/sda2, missing codepage or helper program, 
+or other error.
 
-First implementation of AT_ATOMIC_METADATA is expected to be
-noop for xfs/ext4 and probably fsync for btrfs.
+----------------------------------------------------------------------------------------------------------------------
 
-First implementation of AT_ATOMIC_DATA is expected to be
-filemap_write_and_wait() for xfs/ext4 and probably fdatasync for btrfs.
 
-Thoughts?
+The check and restore commands all exit after reporting false checksums 
+and a bad block for each super.
 
-Amir.
 
-[1] https://lwn.net/Articles/789038/
-[2] https://lore.kernel.org/linux-fsdevel/CAOQ4uxjZm6E2TmCv8JOyQr7f-2VB0uFRy7XEp8HBHQmMdQg+6w@mail.gmail.com/
+The output of btrfs rescue chunk-recover -v /dev/sda2 shows this: (last 
+few lines)
 
- man2/link.2 | 51 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
+----------------------------------------------------------------------------------------------------------------------
 
-diff --git a/man2/link.2 b/man2/link.2
-index 649ba00c7..15c24703e 100644
---- a/man2/link.2
-+++ b/man2/link.2
-@@ -184,6 +184,57 @@ See
- .BR openat (2)
- for an explanation of the need for
- .BR linkat ().
-+.TP
-+.BR AT_ATOMIC_METADATA " (since Linux 5.x)"
-+By default, a link operation followed by a system crash, may result in the
-+new file name being linked with old inode metadata, such as out dated time
-+stamps or missing extended attributes.
-+One way to prevent this is to call
-+.BR fsync (2)
-+before linking the inode, but that involves flushing of volatile disk caches.
-+
-+A filesystem that accepts this flag will guaranty, that old inode metadata
-+will not be exposed in the new linked name.
-+Some filesystems may internally perform
-+.BR fsync (2)
-+before linking the inode to provide this guaranty,
-+but often, filesystems will have a more efficient method to provide this
-+guaranty without flushing volatile disk caches.
-+
-+A filesystem that accepts this flag does
-+.BR NOT
-+guaranty that the new file name will exist after a system crash, nor that the
-+current inode metadata is persisted to disk.
-+Specifically, if a file has hardlinks, the existance of the linked name after
-+a system crash does
-+.BR NOT
-+guaranty that any of the other file names exist, nor that the last observed
-+value of
-+.I st_nlink
-+(see
-+.BR stat (2))
-+has persisted.
-+.TP
-+.BR AT_ATOMIC_DATA " (since Linux 5.x)"
-+By default, a link operation followed by a system crash, may result in the
-+new file name being linked with old data or missing data.
-+One way to prevent this is to call
-+.BR fdatasync (2)
-+before linking the inode, but that involves flushing of volatile disk caches.
-+
-+A filesystem that accepts this flag will guaranty, that old data
-+will not be exposed in the new linked name.
-+Some filesystems may internally perform
-+.BR fsync (2)
-+before linking the inode to provide this guaranty,
-+but often, filesystems will have a more efficient method to provide this
-+guaranty without flushing volatile disk caches.
-+
-+A filesystem that accepts this flag does
-+.BR NOT
-+guaranty that the new file name will exist after a system crash, nor that the
-+current inode data is persisted to disk.
-+.TP
- .SH RETURN VALUE
- On success, zero is returned.
- On error, \-1 is returned, and
--- 
-2.17.1
+   Chunk: start = 977134419968, len = 1073741824, type = 1, num_stripes = 1
+       Stripes list:
+       [ 0] Stripe: devid = 1, offset = 980364034048
+       Block Group: start = 977134419968, len = 1073741824, flag = 1
+       Device extent list:
+           [ 0]Device extent: devid = 1, start = 980364034048, len = 
+1073741824, chunk offset = 977134419968
+Unrecoverable Chunks:
+   Chunk: start = 978208161792, len = 1073741824, type = 1, num_stripes = 1
+       Stripes list:
+       [ 0] Stripe: devid = 1, offset = 981437775872
+       No block group.
+       No device extent.
+
+Total Chunks:        915
+   Recoverable:        914
+   Unrecoverable:    1
+
+Orphan Block Groups:
+
+Orphan Device Extents:
+
+checksum verify failed on 477044244480 found E1255A0B wanted 1DA1E71B
+checksum verify failed on 477044244480 found E1255A0B wanted 1DA1E71B
+checksum verify failed on 477044244480 found 839751B1 wanted FFFFC17D
+checksum verify failed on 477044244480 found 839751B1 wanted FFFFC17D
+bad tree block 477044244480, bytenr mismatch, want=477044244480, 
+have=9079178223823991933
+open with broken chunk error
+Chunk tree recovery failed
+
+----------------------------------------------------------------------------------------------------------------------
+
+I have no backup of this partition as it's all data I that's stil 
+somwhere else (local code repos, Steam libary, ripped CDs, etc.), but it 
+would safe me a good chunk (pun not intended) of time if I could recover 
+at least some of it.
+
+
+Genaral info as asked for in the wiki:
+
+----------------------------------------------------------------------------------------------------------------------
+
+output of dmesg | grep BTRFS:
+
+----------------------------------------------------------------------------------------------------------------------
+
+[ 4453.292256] BTRFS info (device sda2): disk space caching is enabled
+[ 4453.292259] BTRFS info (device sda2): has skinny extents
+[ 4453.383280] BTRFS error (device sda2): bad tree block start, want 
+477061251072 have 276290951248713
+[ 4453.393647] BTRFS error (device sda2): bad tree block start, want 
+477061251072 have 18374762347131585792
+[ 4453.393665] BTRFS error (device sda2): failed to verify dev extents 
+against chunks: -5
+[ 4453.436276] BTRFS error (device sda2): open_ctree failed
+[ 4457.570646] BTRFS info (device sda2): disk space caching is enabled
+[ 4457.570648] BTRFS info (device sda2): has skinny extents
+[ 4457.574983] BTRFS error (device sda2): bad tree block start, want 
+477061251072 have 276290951248713
+[ 4457.575099] BTRFS error (device sda2): bad tree block start, want 
+477061251072 have 18374762347131585792
+[ 4457.575106] BTRFS error (device sda2): failed to verify dev extents 
+against chunks: -5
+[ 4457.608350] BTRFS error (device sda2): open_ctree failed
+
+----------------------------------------------------------------------------------------------------------------------
+
+output of uname -a:
+
+----------------------------------------------------------------------------------------------------------------------
+
+Linux florian-AX370M-DS3H 5.0.0-15-generic #16-Ubuntu SMP Mon May 6 
+17:41:33 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+
+----------------------------------------------------------------------------------------------------------------------
+
+output of btrfs --version:
+
+----------------------------------------------------------------------------------------------------------------------
+
+btrfs-progs v4.20.2
+
+----------------------------------------------------------------------------------------------------------------------
 
