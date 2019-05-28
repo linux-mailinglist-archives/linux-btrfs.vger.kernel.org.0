@@ -2,135 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A1282C65C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 14:22:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E913F2C69F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 14:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727013AbfE1MWT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 May 2019 08:22:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60844 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726580AbfE1MWS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 May 2019 08:22:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DC000AF40
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2019 12:22:16 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: trim: Check the range passed into to prevent
- overflow
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190528082154.6450-1-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <3b1a5a4c-46c7-982d-237a-471fb3663c93@suse.com>
-Date:   Tue, 28 May 2019 15:22:15 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726812AbfE1MgP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 May 2019 08:36:15 -0400
+Received: from mout.gmx.net ([212.227.15.18]:33989 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726749AbfE1MgO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 May 2019 08:36:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1559046970;
+        bh=9rmuG2QsjgXvQyZjnjyMy56CqHX7kRPfwhCGlFU9h7U=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=GodsD/kYIbCAortl7dBr5xaeLFL62GtkDAS++YeHYof1HUfXTWFMNkdxCChZL8YJp
+         gb5x7G8f9vtFlLRgju3JtxOuOm3wI6O34YeCADpcMFtTK50htV8j8uZLsekI+x3/CQ
+         GupDEoAYAO/M62Nxf/jXoEl0h9o4ZDH+ZhJyvrBo=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from monk.localnet ([129.206.205.141]) by mail.gmx.com (mrgmx001
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 0LyEJp-1gZDsV1Tld-015dzQ; Tue, 28
+ May 2019 14:36:10 +0200
+From:   Dennis Schridde <devurandom@gmx.net>
+To:     Szalma =?ISO-8859-1?Q?L=E1szl=F3?= <dblaci@dblaci.hu>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: parent transid verify failed on 604602368 wanted 840641 found 840639
+Date:   Tue, 28 May 2019 14:36:05 +0200
+Message-ID: <5695711.43npD3TUoY@monk>
+In-Reply-To: <2a6df734-4c39-2f8a-7d8f-c627c2c15f76@dblaci.hu>
+References: <5406386.pfifcJONdE@monk> <2a6df734-4c39-2f8a-7d8f-c627c2c15f76@dblaci.hu>
 MIME-Version: 1.0
-In-Reply-To: <20190528082154.6450-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="nextPart11385663.Mnys9a88yD"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Provags-ID: V03:K1:LyMB3ML+jP3floypAiYzZIFeaEZNQYVAQiFzZJfBJA+7tPvKIiN
+ pGua4EO4jOtimbMgCiVMPK7PYsA69A+LZ7QUEZjF8n6SjKoop5OsvWx8PlmdXD/0RQAhUB8
+ XsMq5x+qt1dL7DnYrv+Ej3uFK6F9DqlGQmUouqZyWP39QY+shi2fSIvuThIMfku75M9IjFb
+ q/NLT8ZnjwpI1lv1oTqUg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:W6NfktXGAEM=:jZvsaa3n9KqgQE+nMghgEG
+ RaGU4a9hdhAJzIavkI8bQ+TqfAo7i56lCncIsRXaSTwFoueHoSKSr+83UjWpWaILpnbC8P1Oc
+ Qs0VHBc9VSZzZ9+kyRgZt8hJnS+rXDPrXL/1zP/be4T1sv7D56v0N53xmE9spXAi3akYrcllj
+ 48UxUztiqehOdALZzNUJnLGWSlwA8rsBViTeSWeHN8mEjXyZUFKfyEvfwHRxDP2blBLzPJQ7x
+ xiv4KZZr5kxktX2GccSY5xpHyem5U0Md3tJvXJ6LVFDOnEnsAVJYMLzrm7RiFNg6pbTkMRJqy
+ CTiuZme54TDmLjZ3O8cZ8+bgyw3gxgGTnoUHUmf+3oytzbZ4C5TUw3jiknha/X3Tho0LjfCxu
+ sgDNSRislT7VM24Yf2CY/MjTuF5YQrnCtuIQUfnoSQC+yc0+kcj7B7oUgdEl916loQB9KE61H
+ OIJkEDOfmZZNSSfN0BKGUgEkgIDEmY/6QQn5bvJ8oRwuiPDNudpiiu1XClZFIU7gpQgJJe6kr
+ bQkyCD46EVW/LaBCjYggVfyO60lv0lCx0Is5q8RNOFspGhS2Xdkt+6LcDUmjV2Eln8249nvTA
+ V2vQ0B0Jjz4rbaaTrlyicqea/3sQzsoRHme27S9Lkg//YQw6GUB/5ld3T4hLgE5h2ihQTWGfX
+ +DxQLDUo2r0K1GXB1qjP2rwYWabY2aFkBRuOX4AVHNTPa3zz+3HAMN7c0xDhabKcRX9ARC9tq
+ H3Od4LSqwDBQBhJCPvuHoPG1i6NB5yX+oTq3Zld4KpfqDnDHDo0jlAxxndXuqfy+32KDaKCym
+ vy5ER3mRgi/Y3vapFvzbnN3qLZlVJtQ5qSVoTX42XwDKjMd5pwC5z4mfOUd/zguMSez11Wcm5
+ kVPdqFoxcrRs6FHBQAtbsISC0lKUzc81vYi+RgqNa6yPmFcAiYUldctuyZye+6Br6zp12g7Xa
+ wX92vASc0NnkGb1JTIje4xrQsNB5yYwc=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+--nextPart11385663.Mnys9a88yD
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+
+Dear Szalma!
+
+Thank you for the information.
+
+On Dienstag, 28. Mai 2019 08:40:40 CEST Szalma L=E1szl=F3 wrote:
+> I experienced the same, the problem is with bcache + gcc9. Immediately
+> remove the cache device from the bcache, as it prevents more damages to
+> your filesystem. After it downgrade gcc to 8 or avoid using bcache (with
+> cache device) until the problem is solved by upstream.
+>
+> Please see here for more information:
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D203573
+>=20
+> This is a very serious issue I think, but in my case I could save all my
+> files after reboot without bcache cache device (except 1 insignificant
+> one), but I guess you might need backups (I hope you have).
+
+I did the following so far:
+
+readlink /sys/fs/bcache/*/cache0/set | sed 's,.*/,,' > /sys/block/bcache0/
+bcache/detach
+
+How should I proceed from here on the path that you took to recover your=20
+system?
+
+=2D-Dennis
+--nextPart11385663.Mnys9a88yD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCAAdFiEE0Ngi/nirHnbsz3NFz+h/M161qdwFAlztKzUACgkQz+h/M161
+qdy4egwAtTzctCWEyuBETRyQdqWowWwsV1K03NjrQVVvrD2Cju9yT4ntQkUUzw6y
+OisSOwuJZCs00vjgo8W4Vu2peF12oIISthzw77CQdd+C7XPFN3CV13U2LfyX/VOj
+UNVuNqJGNErC3jtkyeInRh6vkxQ3ja98PQWtSCVWX0V06Gom/NDblhEvw7phY2EG
+A7ptKC0dG8RPJdv7/o4G5GjENx7Zgod+Kj29v6vvCzAUBsqP8sisTK4o/Ix3b5OX
+O+K883XAipH5TvNXUDAoThCenPYmHKLrJgcxDQoOc30qzC17la3vEQAH2i9n8oAy
+txvcslvRiICoO2NpH6l/BMJAMsCiWOslcXSqowXtniP2mD3yN/NjSiggN8ixvvyR
+h4SdoEVEQCi0VBTSLSWncf+t/Bfd53HskDBA6gaDYtc6dkXRJ5ONp43hewZ4HxOx
+zZzZrNrSwiCQDsQiwkgV7Yi508eoxuIeO3d9ckVbCaUZbjjlOqGYsqneB5qFz7A+
+SV8Mzh3k
+=hNgr
+-----END PGP SIGNATURE-----
+
+--nextPart11385663.Mnys9a88yD--
 
 
-On 28.05.19 г. 11:21 ч., Qu Wenruo wrote:
-> Normally the range->len is set to default value (U64_MAX), but when it's
-> not default value, we should check if the range overflows.
-> 
-> And if overflows, return -EINVAL before doing anything.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-
-> ---
->  fs/btrfs/extent-tree.c | 14 +++++++++++---
->  1 file changed, 11 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index f79e477a378e..62bfba6d3c07 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -11245,6 +11245,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
->  	struct btrfs_device *device;
->  	struct list_head *devices;
->  	u64 group_trimmed;
-> +	u64 range_end = U64_MAX;
->  	u64 start;
->  	u64 end;
->  	u64 trimmed = 0;
-> @@ -11254,16 +11255,23 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
->  	int dev_ret = 0;
->  	int ret = 0;
->  
-> +	/*
-> +	 * Check range overflow if range->len is set.
-> +	 * The default range->len is U64_MAX.
-> +	 */
-> +	if (range->len != U64_MAX && check_add_overflow(range->start,
-> +				range->len, &range_end))
-> +		return -EINVAL;
-> +
->  	cache = btrfs_lookup_first_block_group(fs_info, range->start);
->  	for (; cache; cache = next_block_group(cache)) {
-> -		if (cache->key.objectid >= (range->start + range->len)) {
-> +		if (cache->key.objectid >= range_end) {
->  			btrfs_put_block_group(cache);
->  			break;
->  		}
->  
->  		start = max(range->start, cache->key.objectid);
-> -		end = min(range->start + range->len,
-> -				cache->key.objectid + cache->key.offset);
-> +		end = min(range_end, cache->key.objectid + cache->key.offset);
->  
->  		if (end - start >= range->minlen) {
->  			if (!block_group_cache_done(cache)) {
-> 
