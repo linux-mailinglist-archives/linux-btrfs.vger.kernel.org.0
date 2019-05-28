@@ -2,92 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFCB52C2E7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 11:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 259032C349
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 11:30:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726515AbfE1JRc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 May 2019 05:17:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47768 "EHLO mx1.suse.de"
+        id S1726458AbfE1JaY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 May 2019 05:30:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50146 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725943AbfE1JRb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 May 2019 05:17:31 -0400
+        id S1726279AbfE1JaX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 May 2019 05:30:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5C7C7AFE1;
-        Tue, 28 May 2019 09:17:30 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id B0BBE1E3F53; Tue, 28 May 2019 11:17:29 +0200 (CEST)
-Date:   Tue, 28 May 2019 11:17:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-btrfs@vger.kernel.org, kilobyte@angband.pl,
-        linux-fsdevel@vger.kernel.org, jack@suse.cz, david@fromorbit.com,
-        willy@infradead.org, hch@lst.de, dsterba@suse.cz,
-        nborisov@suse.com, linux-nvdimm@lists.01.org
-Subject: Re: [PATCH 04/18] dax: Introduce IOMAP_DAX_COW to CoW edges during
- writes
-Message-ID: <20190528091729.GD9607@quack2.suse.cz>
-References: <20190429172649.8288-1-rgoldwyn@suse.de>
- <20190429172649.8288-5-rgoldwyn@suse.de>
- <20190521165158.GB5125@magnolia>
- <1e9951c1-d320-e480-3130-dc1f4b81ef2c@cn.fujitsu.com>
- <20190523115109.2o4txdjq2ft7fzzc@fiona>
- <1620c513-4ce2-84b0-33dc-2675246183ea@cn.fujitsu.com>
+        by mx1.suse.de (Postfix) with ESMTP id B2EC5B021;
+        Tue, 28 May 2019 09:30:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A9F6FDA85E; Tue, 28 May 2019 11:31:17 +0200 (CEST)
+Date:   Tue, 28 May 2019 11:31:17 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Juan Erbes <jerbes@gmail.com>
+Subject: Re: [PATCH v1.1] btrfs: qgroup: Check if @bg is NULL to avoid NULL
+ pointer dereference
+Message-ID: <20190528093117.GQ15290@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Juan Erbes <jerbes@gmail.com>
+References: <20190521112808.28728-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1620c513-4ce2-84b0-33dc-2675246183ea@cn.fujitsu.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190521112808.28728-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon 27-05-19 16:25:41, Shiyang Ruan wrote:
-> On 5/23/19 7:51 PM, Goldwyn Rodrigues wrote:
-> > > 
-> > > Hi,
-> > > 
-> > > I'm working on reflink & dax in XFS, here are some thoughts on this:
-> > > 
-> > > As mentioned above: the second iomap's offset and length must match the
-> > > first.  I thought so at the beginning, but later found that the only
-> > > difference between these two iomaps is @addr.  So, what about adding a
-> > > @saddr, which means the source address of COW extent, into the struct iomap.
-> > > The ->iomap_begin() fills @saddr if the extent is COW, and 0 if not.  Then
-> > > handle this @saddr in each ->actor().  No more modifications in other
-> > > functions.
-> > 
-> > Yes, I started of with the exact idea before being recommended this by Dave.
-> > I used two fields instead of one namely cow_pos and cow_addr which defined
-> > the source details. I had put it as a iomap flag as opposed to a type
-> > which of course did not appeal well.
-> > 
-> > We may want to use iomaps for cases where two inodes are involved.
-> > An example of the other scenario where offset may be different is file
-> > comparison for dedup: vfs_dedup_file_range_compare(). However, it would
-> > need two inodes in iomap as well.
-> > 
-> Yes, it is reasonable.  Thanks for your explanation.
+On Tue, May 21, 2019 at 07:28:08PM +0800, Qu Wenruo wrote:
+> [BUG]
+> When mounting a fs with reloc tree and has qgroup enabled, it can cause
+> NULL pointer dereference at mount time:
+>   BUG: kernel NULL pointer dereference, address: 00000000000000a8
+>   #PF: supervisor read access in kernel mode
+>   #PF: error_code(0x0000) - not-present page
+>   PGD 0 P4D 0
+>   Oops: 0000 [#1] PREEMPT SMP NOPTI
+>   RIP: 0010:btrfs_qgroup_add_swapped_blocks+0x186/0x300 [btrfs]
+>   Call Trace:
+>    replace_path.isra.23+0x685/0x900 [btrfs]
+>    merge_reloc_root+0x26e/0x5f0 [btrfs]
+>    merge_reloc_roots+0x10a/0x1a0 [btrfs]
+>    btrfs_recover_relocation+0x3cd/0x420 [btrfs]
+>    open_ctree+0x1bc8/0x1ed0 [btrfs]
+>    btrfs_mount_root+0x544/0x680 [btrfs]
+>    legacy_get_tree+0x34/0x60
+>    vfs_get_tree+0x2d/0xf0
+>    fc_mount+0x12/0x40
+>    vfs_kern_mount.part.12+0x61/0xa0
+>    vfs_kern_mount+0x13/0x20
+>    btrfs_mount+0x16f/0x860 [btrfs]
+>    legacy_get_tree+0x34/0x60
+>    vfs_get_tree+0x2d/0xf0
+>    do_mount+0x81f/0xac0
+>    ksys_mount+0xbf/0xe0
+>    __x64_sys_mount+0x25/0x30
+>    do_syscall_64+0x65/0x240
+>    entry_SYSCALL_64_after_hwframe+0x49/0xbe
 > 
-> One more thing RFC:
-> I'd like to add an end-io callback argument in ->dax_iomap_actor() to update
-> the metadata after one whole COW operation is completed.  The end-io can
-> also be called in ->iomap_end().  But one COW operation may call
-> ->iomap_apply() many times, and so does the end-io.  Thus, I think it would
-> be nice to move it to the bottom of ->dax_iomap_actor(), called just once in
-> each COW operation.
+> [CAUSE]
+> In btrfs_recover_relocation(), we don't have enough info to determine
+> which block group we're relocating, but only to merge existing reloc
+> trees.
+> 
+> Thus in btrfs_recover_relocation(), rc->block_group is NULL.
+> btrfs_qgroup_add_swapped_blocks() hasn't take this into consideration,
+> and causes NULL pointer dereference.
+> 
+> The bug is introduced by commit 3d0174f78e72 ("btrfs: qgroup: Only trace
+> data extents in leaves if we're relocating data block group"), and
+> later qgroup refactor still keeps this optimization.
+> 
+> [FIX]
+> Thankfully in the context of btrfs_recover_relocation(), there is no
+> other progress can modify tree blocks, thus those swapped tree blocks
+> pair will never affect qgroup numbers, no matter whatever we set for
+> block->trace_leaf.
+> 
+> So we only need to check if @bg is NULL before accessing @bg->flags.
+> 
+> Reported-by: Juan Erbes <jerbes@gmail.com>
+> Link: https://bugzilla.opensuse.org/show_bug.cgi?id=1134806
+> Fixes: 3d0174f78e72 ("btrfs: qgroup: Only trace data extents in leaves if we're relocating data block group")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-I'm sorry but I don't follow what you suggest. One COW operation is a call
-to dax_iomap_rw(), isn't it? That may call iomap_apply() several times,
-each invocation calls ->iomap_begin(), ->actor() (dax_iomap_actor()),
-->iomap_end() once. So I don't see a difference between doing something in
-->actor() and ->iomap_end() (besides the passed arguments but that does not
-seem to be your concern). So what do you exactly want to do?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I've changed the subject to "btrfs: qgroup: Check bg while resuming
+relocation to avoid NULL pointer dereference", patch is going to 5.2-rc
+and will be tagged for stable.
