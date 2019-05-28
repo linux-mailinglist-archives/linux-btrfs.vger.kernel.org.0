@@ -2,62 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5192C2BE5B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 06:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB2B62BF88
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 08:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbfE1EbN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 May 2019 00:31:13 -0400
-Received: from mail-lf1-f48.google.com ([209.85.167.48]:44424 "EHLO
-        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726675AbfE1EbN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 May 2019 00:31:13 -0400
-Received: by mail-lf1-f48.google.com with SMTP id r15so3959767lfm.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 27 May 2019 21:31:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uhO7eAHn3/d75pfzL+Up6zgQ3OL+KN9y2b9e1duLuS8=;
-        b=kfL3OdD05eIWhG3qXIcFkUmSuSL8/MSAFLKqFrzAJdC1YX9PeIvHrgK4FZpJ8igDfC
-         E/fRn5BtqwOLi8K3flnMGPq0m/WZbN/fpjLoh/C4uZVUg1EPWdS1tkbhy8cuk5Juzoj6
-         yKKr86H7KBeY6nJBxb+0KD4L+8yQDoJQkkkWwF6WduxsHIv8alYAX7BFn2haGM5wbq+s
-         RhPCxrxiERjKyBU4uH89dx7p76Y9+ndGNszkN2iF2RAVGPr5OB+fp7wv4DtEBdJy+eFJ
-         +EQjKJ2jwr5vP6B1t7UfQyjVZ5VHHmA7aTFYiHbvgEpEyHh6RydIigQRfGdL47Hozymq
-         k6OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uhO7eAHn3/d75pfzL+Up6zgQ3OL+KN9y2b9e1duLuS8=;
-        b=ZrZz8ckUUibh6FW5gA/gnKkhOhgFcGLGTnHUyZBKOX47ADinP5/vLTESKoB7AaRtv4
-         k6WPSUTVGAZi8xA5viVFxWqOZRYfCKo93zOPKM/OExhLO59n7HskZvWSycJbtbCHflJf
-         oTFs8sCDmjmYkFjlywjUnDS21gpR2b/KChgaBVnUv8wH4lb/UDPsWuPbKDoXXzz0nleb
-         ntLtVxtMUYVw9J8efxpEVjO5XJHqPoyvppBT0ZP9dFBWIpS8DBmgETJ/v1jCufHqhQcQ
-         sfgof1k/tPyWRhWI7wYqUiEKfoXBJFk2J1nD5mJ7UJYbUvL2PKgIlpQDm6KDGC2AEAUF
-         RUAg==
-X-Gm-Message-State: APjAAAUIizLa6KwJpw0S3SDQtppprygWVMllHEhXlkbkQqqfpkbz+WCj
-        GfhGnu32G63/mvEm3YgSgPwio1yF84IObY+r9aS0fw==
-X-Google-Smtp-Source: APXvYqxlFDKxSSZw/wFv+WJOh16RInL4JEpMEl0STkQNBtxL9hdR0qQzP3w4D2Qspz6Ny8ZBH5J4lnSi4YPWt8eUmiE=
-X-Received: by 2002:a19:f817:: with SMTP id a23mr24252862lff.123.1559017871178;
- Mon, 27 May 2019 21:31:11 -0700 (PDT)
-MIME-Version: 1.0
+        id S1727349AbfE1Gpx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 May 2019 02:45:53 -0400
+Received: from icts.hu ([195.70.57.6]:36588 "EHLO icts.hu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726789AbfE1Gpx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 May 2019 02:45:53 -0400
+X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Tue, 28 May 2019 02:45:52 EDT
+Received: from [192.168.6.104] (80-95-82-11.pool.digikabel.hu [80.95.82.11])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by icts.hu (Postfix) with ESMTPSA id 53E6F269E451
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2019 08:40:40 +0200 (CEST)
+Subject: Re: parent transid verify failed on 604602368 wanted 840641 found
+ 840639
+To:     linux-btrfs@vger.kernel.org
 References: <5406386.pfifcJONdE@monk>
+From:   =?UTF-8?B?U3phbG1hIEzDoXN6bMOz?= <dblaci@dblaci.hu>
+Message-ID: <2a6df734-4c39-2f8a-7d8f-c627c2c15f76@dblaci.hu>
+Date:   Tue, 28 May 2019 08:40:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
 In-Reply-To: <5406386.pfifcJONdE@monk>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 27 May 2019 22:31:00 -0600
-Message-ID: <CAJCQCtRS1vvaczdpkYjkzWHWZgPxyq_B7XR9tY5yHhGAaBU7qA@mail.gmail.com>
-Subject: Re: parent transid verify failed on 604602368 wanted 840641 found 840639
-To:     Dennis Schridde <devurandom@gmx.net>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, May 27, 2019 at 3:33 PM Dennis Schridde <devurandom@gmx.net> wrote:
->
+Dear Dennis,
+
+I experienced the same, the problem is with bcache + gcc9. Immediately 
+remove the cache device from the bcache, as it prevents more damages to 
+your filesystem. After it downgrade gcc to 8 or avoid using bcache (with 
+cache device) until the problem is solved by upstream.
+
+Please see here for more information: 
+https://bugzilla.kernel.org/show_bug.cgi?id=203573
+
+This is a very serious issue I think, but in my case I could save all my 
+files after reboot without bcache cache device (except 1 insignificant 
+one), but I guess you might need backups (I hope you have).
+
+Good luck,
+László Szalma
+
+ps: i use gentoo, not fedora by the way, so it is general issue with 
+gcc, i read reports with gcc9 + 4.xxx kernels too.
+
+2019. 05. 27. 23:33 keltezéssel, Dennis Schridde írta:
 > Hi!
 >
 > Yesterday I upgraded from Linux 5.1.1 (built with GCC 8.3.0) to Linux 5.1.4
@@ -83,11 +82,4 @@ On Mon, May 27, 2019 at 3:33 PM Dennis Schridde <devurandom@gmx.net> wrote:
 >
 > [1]: http://snapper.io/
 
-What happens if you revert to 5.1.1? That error suggests the super
-wants a newer transid than what exist on the filesystem, which
-suggests file system metadata was dropped. It's not certain from this
-information what caused that: device, or some layer in between like
-bcache, or Btrfs.
 
--- 
-Chris Murphy
