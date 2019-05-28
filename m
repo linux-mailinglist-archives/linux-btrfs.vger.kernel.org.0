@@ -2,142 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE362C642
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 14:15:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1282C65C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 14:22:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727045AbfE1MPX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 May 2019 08:15:23 -0400
-Received: from mout.gmx.net ([212.227.15.15]:55673 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726620AbfE1MPW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 May 2019 08:15:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1559045720;
-        bh=Pcht+kAtSxw4K/+9SBLcho/0j/mEnf5c8LiDQ/HuFYI=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=MN8jUyoLD7piir1SApyKx9w5XVLneCQDjH8t3wnefX0sjU99pU3cJDfXDpxt3G1vp
-         Mp5DVvz815NVUeCnF0WFLUoGRLicnSziKy45kKj+Jvs7ASjy2I/g+jTHZgV3gxAHT0
-         xWQaDKRKHBz3W9NJboyayG6NPywJ84seEhSX2vXQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from monk.localnet ([129.206.205.141]) by mail.gmx.com (mrgmx001
- [212.227.17.190]) with ESMTPSA (Nemesis) id 0MK0Np-1hUDZF2gUf-001OEC; Tue, 28
- May 2019 14:15:20 +0200
-From:   Dennis Schridde <devurandom@gmx.net>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: parent transid verify failed on 604602368 wanted 840641 found 840639
-Date:   Tue, 28 May 2019 14:15:15 +0200
-Message-ID: <4832525.7q4I5aUDuF@monk>
-In-Reply-To: <CAJCQCtRS1vvaczdpkYjkzWHWZgPxyq_B7XR9tY5yHhGAaBU7qA@mail.gmail.com>
-References: <5406386.pfifcJONdE@monk> <CAJCQCtRS1vvaczdpkYjkzWHWZgPxyq_B7XR9tY5yHhGAaBU7qA@mail.gmail.com>
+        id S1727013AbfE1MWT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 May 2019 08:22:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60844 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726580AbfE1MWS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 May 2019 08:22:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id DC000AF40
+        for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2019 12:22:16 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: trim: Check the range passed into to prevent
+ overflow
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20190528082154.6450-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <3b1a5a4c-46c7-982d-237a-471fb3663c93@suse.com>
+Date:   Tue, 28 May 2019 15:22:15 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2612858.MPL6rfmJeg"; micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Provags-ID: V03:K1:w/70vlEKxvXXEYHg2krG+Lejbhk6wOOUWkBb9ksobBqxoSw8Ig+
- uaX3QN5jPtz2ORKsWGwN+pPlwdu0s7c1lBvvdDP3DApYRX/PHZe3u5SLTYLfTyVOt3Sdj1Y
- LcZ5ieodZG+Fzwje43c7VULIQoaPSfIRv4yEx2XWEaGn13UXd0AOXJc9hnAm7S/Y8mTkg5U
- j3UYwFAjWppGkNi+rv0Dg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5lq2o3balEc=:9ItBPeZxIITEhAp2ihVgEn
- tvexNm+FsSVWd1Bu8Q9ZlPGhHCAxaQGE1Yl1JjKwiI/hKT33KnY8Q8Skl2oetjfCdwQk76RAK
- RId85ZPGboKiQFTALUPqJZrzXDpZp2rM+/iYabytMgD9MEDSriEtzy4lBYSRVumGnUn+PeX3n
- Ns0zOumpuoZUp9M3FfqYGoYO3L87KqzhaMxNQyHdDDcV4MOv93kNXggo3Aegi3LRSzylHDNiN
- RAo5Qyx+ZKnkX4GV2L8O2OXZ109Ls11nS2EnbXrCUKK9S82f8UIHQbamdmXNxHzkD2dioCCzZ
- lpeF+BX5ITdlSZ9LeFEhyvG96M+YS9kwYEDALGqE36o3Z2xTK3z+wC1bR2nwMsYDk8G00rIlL
- 2E1yN2pnVUMWRHHKEyUr6eMcA8bGkA0mvsMjZhw+qt0ul45eYj7xeCIfQDrc//3kV3dVutUnr
- w9xTXKHrtxVNrGfNadjlkoYR6EhtPmLRJmDSPt2qDVnQJYaJ0NE56RjVtC6TFKw66eRnqVdgD
- SY4NAGZEau3lSK7hSAoU3/oJXwu+HYpLN9+7KtBgZZ5O6OVXeTpKvmdFU70q8bcqJqGQiSflY
- Wvp0/A8hjFq2AlBW0sJ70XEyzX4FUTjt1aR3nlf9MSN6kgvnHPWkiZctLwLmp2Gdpr6XmPfiL
- 44EDPazwSH7vBEUGoKXxXLhKf/DJNK4tTfXZhHZZQfm3+X1/oWs295FpMpnTnXetqDsCgp8Ih
- tsvp/TsKpWF0wYbEVAf9XDZT5pXqDj7hawJgFquPBCFkB8DQEfmLlkXEpISzA2XNUTvPYXQAJ
- rsL5Eyqo+VJEpwkSfWLHwdqb+F/N3ng2qtSJiiYRnzqc5PFbM0WXEsHtby3w2hLNTP2Lwx8l4
- bG/xShZSh+iv7wz2yEBESlhPu9ESUONoeOzaeHKXgxIw+cSSjzLodYLfrJOsGyS+yKVqxuAqL
- Af75mwP+2L6eC/2kzrVuSa8A4bXIPZz8=
+In-Reply-To: <20190528082154.6450-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---nextPart2612858.MPL6rfmJeg
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="us-ascii"
-
-On Dienstag, 28. Mai 2019 06:31:00 CEST Chris Murphy wrote:
-> On Mon, May 27, 2019 at 3:33 PM Dennis Schridde <devurandom@gmx.net> wro=
-te:
-> > Yesterday I upgraded from Linux 5.1.1 (built with GCC 8.3.0) to Linux
-> > 5.1.4
-> > (built with GCC 9.1.0).  The next boot was extremely slow and the desk=
-top
-> > environment (KDE Plasma) never really started, but got kind of stuck i=
-n
-> > the
-> > startup screen.  So I switched to a VT and pressed ctrl+alt+del.  The =
-next
-> > boot stopped early with following message:
-> >
-> > [T445] BTRFS: device label <...> devid 1 transid 840641 /dev/bcache0
-> > [T599] BTRFS info (device bcache0): disk space caching is enabled
-> > [T599] BTRFS info (device bcache0): has skinny extents
-> > [T599] BTRFS error (device bcache0): parent transid verify failed on
-> > 604602368 wanted 840641 found 840639
-> > [T599] BTRFS error (device bcache0): open_ctree failed
-> >
-> > How can I recover from this?
-> >
-> > The filesystem should have several snapshots (created by snapper [1], =
-on
-> > every boot and hourly).  Will they be of any help recovering my data?
-> >
-> > Best regards,
-> > Dennis
-> >
-> > [1]: http://snapper.io/
->
-> What happens if you revert to 5.1.1? That error suggests the super
-> wants a newer transid than what exist on the filesystem, which
-> suggests file system metadata was dropped. It's not certain from this
-> information what caused that: device, or some layer in between like
-> bcache, or Btrfs.
-
-The basic issue appears to be the same with Linux 5.1.1:
-
-[T512] BTRFS: device label <...> devid 1 transid 840641 /dev/bcache0
-[T587] BTRFS info (device bcache0): disk space caching is enabled
-[T587] BTRFS info (device bcache0): has skinny extents
-[T587] BTRFS error (device bcache0): parent transid verify failed on 36867=
-2768
-wanted 840529 found 840072
-[T587] BTRFS error (device bcache0): failed to read block groups: -5
-[T587] BTRFS error (device bcache0): open_ctree failed
-
-I think on subsequent boots Linux 5.1.4 also pointed out other transids th=
-an
-"wanted 840641 found 840639", but I am not sure and I am hesitant to keep
-rebooting in case that means loosing more data.
-
-=2D-Dennis
-
---nextPart2612858.MPL6rfmJeg
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCAAdFiEE0Ngi/nirHnbsz3NFz+h/M161qdwFAlztJlMACgkQz+h/M161
-qdxpDQv/cK2AyfyZYfYlP1g2YxETFKaGhsg/l31MkQ1+TfbiQh1H/8YQltPHupOC
-jFjaa0kClof/vgLi6XY67enCMo1K8C2ibGZLdUblx0mJ629sy2RpAYlm1kQXh9m0
-QcKbBZbv+GUnOG7BxkM+s/+sTkluaxdqyO9wf1FBW0MR7myYD3X9OG2nhmNxiAmp
-OF2yGU+5p+eOCPL6jZ3K67d22XXGyNtVZJufqoR6Pq2XhFj18MG39k9ISTy8vSiz
-Q+0eLzuTGJTfPIbrqWKeYK72uKUH1c45rEJDyL/DOIc96lBbalw8Oex858QiNVNb
-qLFs7h+OYrEoh3PmLD9Su/m+W0Q6tv6yDkCeL4RKHMi4uH297OPN37IUYDITvS6w
-lUCw3owv43u0BbYwUZV62dMDwAS6vm0B2ujZABB4ax6sc0V4LlHkw4xenkPrNYRW
-mLPxB6dQ15IfBfdf0A289Q78KUm7t1FX1RZMECHpK+5nGJJ6SP73l4YdGGNf9brQ
-hm1opRFs
-=sUHV
------END PGP SIGNATURE-----
-
---nextPart2612858.MPL6rfmJeg--
 
 
+On 28.05.19 г. 11:21 ч., Qu Wenruo wrote:
+> Normally the range->len is set to default value (U64_MAX), but when it's
+> not default value, we should check if the range overflows.
+> 
+> And if overflows, return -EINVAL before doing anything.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+
+> ---
+>  fs/btrfs/extent-tree.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index f79e477a378e..62bfba6d3c07 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -11245,6 +11245,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+>  	struct btrfs_device *device;
+>  	struct list_head *devices;
+>  	u64 group_trimmed;
+> +	u64 range_end = U64_MAX;
+>  	u64 start;
+>  	u64 end;
+>  	u64 trimmed = 0;
+> @@ -11254,16 +11255,23 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+>  	int dev_ret = 0;
+>  	int ret = 0;
+>  
+> +	/*
+> +	 * Check range overflow if range->len is set.
+> +	 * The default range->len is U64_MAX.
+> +	 */
+> +	if (range->len != U64_MAX && check_add_overflow(range->start,
+> +				range->len, &range_end))
+> +		return -EINVAL;
+> +
+>  	cache = btrfs_lookup_first_block_group(fs_info, range->start);
+>  	for (; cache; cache = next_block_group(cache)) {
+> -		if (cache->key.objectid >= (range->start + range->len)) {
+> +		if (cache->key.objectid >= range_end) {
+>  			btrfs_put_block_group(cache);
+>  			break;
+>  		}
+>  
+>  		start = max(range->start, cache->key.objectid);
+> -		end = min(range->start + range->len,
+> -				cache->key.objectid + cache->key.offset);
+> +		end = min(range_end, cache->key.objectid + cache->key.offset);
+>  
+>  		if (end - start >= range->minlen) {
+>  			if (!block_group_cache_done(cache)) {
+> 
