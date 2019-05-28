@@ -2,86 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 835DD2C704
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 14:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643882C756
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 15:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726887AbfE1Mvt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 28 May 2019 08:51:49 -0400
-Received: from icts.hu ([195.70.57.6]:50672 "EHLO icts.hu"
+        id S1727045AbfE1NGv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 May 2019 09:06:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38246 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726867AbfE1Mvt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 28 May 2019 08:51:49 -0400
-Received: from [192.168.6.104] (80-95-82-11.pool.digikabel.hu [80.95.82.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1726870AbfE1NGv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 May 2019 09:06:51 -0400
+Received: from localhost (unknown [8.46.75.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by icts.hu (Postfix) with ESMTPSA id 92FC7269F5FD
-        for <linux-btrfs@vger.kernel.org>; Tue, 28 May 2019 14:51:45 +0200 (CEST)
-Subject: Re: parent transid verify failed on 604602368 wanted 840641 found
- 840639
-Cc:     linux-btrfs@vger.kernel.org
-References: <5406386.pfifcJONdE@monk>
- <2a6df734-4c39-2f8a-7d8f-c627c2c15f76@dblaci.hu> <5695711.43npD3TUoY@monk>
-From:   =?UTF-8?B?U3phbG1hIEzDoXN6bMOz?= <dblaci@dblaci.hu>
-Message-ID: <37c76891-028d-8fce-8f80-ac08d7853ade@dblaci.hu>
-Date:   Tue, 28 May 2019 14:51:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        by mail.kernel.org (Postfix) with ESMTPSA id 9882C20989;
+        Tue, 28 May 2019 13:06:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1559048810;
+        bh=/+477RcgvKmGEn2k0v36nD0XwxBdPxQufcHloS9zcdc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2QerHxwwP9JsNDeu2Bjb+5tEsse3oxAzQneqr+GVvUsbFoJYdtV3CPcpMK67E60Cy
+         PtYLCY7m+AsjJjrHVIUKqNIYqQczfc/WPqmRgX6JyXpvNp4mg1Baaok2jaYkTmawNM
+         yXvK15zfxo3gZhXTyZPwU1otEMGCPQGEf7T8Xtdc=
+Date:   Tue, 28 May 2019 15:06:36 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>,
+        stable@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH for v5.0.x] btrfs: honor path->skip_locking in backref
+ code
+Message-ID: <20190528130636.GC6104@kroah.com>
+References: <20190528102353.23714-1-wqu@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <5695711.43npD3TUoY@monk>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190528102353.23714-1-wqu@suse.com>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear Dennis,
+On Tue, May 28, 2019 at 06:23:53PM +0800, Qu Wenruo wrote:
+> From: Josef Bacik <josef@toxicpanda.com>
+> 
+> Commit 38e3eebff643db725633657d1d87a3be019d1018.
 
-Without the bcache cache device, I was able to mount the file system ( 
-root ) for read-only. I recreated it on the same LVM volume, and 
-rsync-ed the files. The files I lost (i/o error because checksum error) 
-was not important. Your case might be different. But without the cache, 
-additional corruption stopped happening, so I think it is safe to 
-recover your files with the gcc9 + 5.1 kernel (on bcache0) - if cache 
-device is not present. If you cannot mount the fs, you can try the 
-standard btrfs recovery methods (mount read only) or btrfsck (please be 
-aware you can make things worse with btrfsck, so if the data is 
-important backup the device as byte stream for new chance)
+Thanks for the backports, now queued up.
 
-I want to mention I had another corruption (btrfs checksum error), but 
-it was simply not there after reboot without bcacha cache device. This 
-means the corruption that time was not written back to the backing 
-device, so I haven't lost data that time. I think I was lucky.
-
-László Szalma
-
-2019. 05. 28. 14:36 keltezéssel, Dennis Schridde írta:
-> Dear Szalma!
->
-> Thank you for the information.
->
-> On Dienstag, 28. Mai 2019 08:40:40 CEST Szalma László wrote:
->> I experienced the same, the problem is with bcache + gcc9. Immediately
->> remove the cache device from the bcache, as it prevents more damages to
->> your filesystem. After it downgrade gcc to 8 or avoid using bcache (with
->> cache device) until the problem is solved by upstream.
->>
->> Please see here for more information:
->> https://bugzilla.kernel.org/show_bug.cgi?id=203573
->>
->> This is a very serious issue I think, but in my case I could save all my
->> files after reboot without bcache cache device (except 1 insignificant
->> one), but I guess you might need backups (I hope you have).
-> I did the following so far:
->
-> readlink /sys/fs/bcache/*/cache0/set | sed 's,.*/,,' > /sys/block/bcache0/
-> bcache/detach
->
-> How should I proceed from here on the path that you took to recover your
-> system?
->
-> --Dennis
-
-
+greg k-h
