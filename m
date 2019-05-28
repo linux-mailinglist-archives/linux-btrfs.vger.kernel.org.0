@@ -2,90 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 893322BCDC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 03:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5192C2BE5B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 28 May 2019 06:31:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbfE1BYg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 27 May 2019 21:24:36 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17168 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727018AbfE1BYg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 27 May 2019 21:24:36 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id CDBE6741DB59E7908D31;
-        Tue, 28 May 2019 09:24:33 +0800 (CST)
-Received: from [10.134.22.195] (10.134.22.195) by smtp.huawei.com
- (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.439.0; Tue, 28 May
- 2019 09:24:26 +0800
-Subject: Re: [PATCH 2/3] mm: remove cleancache.c
-To:     Juergen Gross <jgross@suse.com>, <linux-kernel@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-erofs@lists.ozlabs.org>,
-        <devel@driverdev.osuosl.org>, <linux-fsdevel@vger.kernel.org>,
-        <linux-btrfs@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>, <linux-mm@kvack.org>
-CC:     Jonathan Corbet <corbet@lwn.net>,
-        Gao Xiang <gaoxiang25@huawei.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Mark Fasheh <mark@fasheh.com>,
-        Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        <ocfs2-devel@oss.oracle.com>
-References: <20190527103207.13287-1-jgross@suse.com>
- <20190527103207.13287-3-jgross@suse.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <8f69d56d-3fdd-a160-9574-f81bd066e5ac@huawei.com>
-Date:   Tue, 28 May 2019 09:24:45 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1726949AbfE1EbN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 28 May 2019 00:31:13 -0400
+Received: from mail-lf1-f48.google.com ([209.85.167.48]:44424 "EHLO
+        mail-lf1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726675AbfE1EbN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 28 May 2019 00:31:13 -0400
+Received: by mail-lf1-f48.google.com with SMTP id r15so3959767lfm.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 27 May 2019 21:31:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uhO7eAHn3/d75pfzL+Up6zgQ3OL+KN9y2b9e1duLuS8=;
+        b=kfL3OdD05eIWhG3qXIcFkUmSuSL8/MSAFLKqFrzAJdC1YX9PeIvHrgK4FZpJ8igDfC
+         E/fRn5BtqwOLi8K3flnMGPq0m/WZbN/fpjLoh/C4uZVUg1EPWdS1tkbhy8cuk5Juzoj6
+         yKKr86H7KBeY6nJBxb+0KD4L+8yQDoJQkkkWwF6WduxsHIv8alYAX7BFn2haGM5wbq+s
+         RhPCxrxiERjKyBU4uH89dx7p76Y9+ndGNszkN2iF2RAVGPr5OB+fp7wv4DtEBdJy+eFJ
+         +EQjKJ2jwr5vP6B1t7UfQyjVZ5VHHmA7aTFYiHbvgEpEyHh6RydIigQRfGdL47Hozymq
+         k6OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uhO7eAHn3/d75pfzL+Up6zgQ3OL+KN9y2b9e1duLuS8=;
+        b=ZrZz8ckUUibh6FW5gA/gnKkhOhgFcGLGTnHUyZBKOX47ADinP5/vLTESKoB7AaRtv4
+         k6WPSUTVGAZi8xA5viVFxWqOZRYfCKo93zOPKM/OExhLO59n7HskZvWSycJbtbCHflJf
+         oTFs8sCDmjmYkFjlywjUnDS21gpR2b/KChgaBVnUv8wH4lb/UDPsWuPbKDoXXzz0nleb
+         ntLtVxtMUYVw9J8efxpEVjO5XJHqPoyvppBT0ZP9dFBWIpS8DBmgETJ/v1jCufHqhQcQ
+         sfgof1k/tPyWRhWI7wYqUiEKfoXBJFk2J1nD5mJ7UJYbUvL2PKgIlpQDm6KDGC2AEAUF
+         RUAg==
+X-Gm-Message-State: APjAAAUIizLa6KwJpw0S3SDQtppprygWVMllHEhXlkbkQqqfpkbz+WCj
+        GfhGnu32G63/mvEm3YgSgPwio1yF84IObY+r9aS0fw==
+X-Google-Smtp-Source: APXvYqxlFDKxSSZw/wFv+WJOh16RInL4JEpMEl0STkQNBtxL9hdR0qQzP3w4D2Qspz6Ny8ZBH5J4lnSi4YPWt8eUmiE=
+X-Received: by 2002:a19:f817:: with SMTP id a23mr24252862lff.123.1559017871178;
+ Mon, 27 May 2019 21:31:11 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190527103207.13287-3-jgross@suse.com>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.134.22.195]
-X-CFilter-Loop: Reflected
+References: <5406386.pfifcJONdE@monk>
+In-Reply-To: <5406386.pfifcJONdE@monk>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 27 May 2019 22:31:00 -0600
+Message-ID: <CAJCQCtRS1vvaczdpkYjkzWHWZgPxyq_B7XR9tY5yHhGAaBU7qA@mail.gmail.com>
+Subject: Re: parent transid verify failed on 604602368 wanted 840641 found 840639
+To:     Dennis Schridde <devurandom@gmx.net>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019/5/27 18:32, Juergen Gross wrote:
-> With the removal of tmem and xen-selfballoon the only user of
-> cleancache is gone. Remove it, too.
-> 
-> Signed-off-by: Juergen Gross <jgross@suse.com>
-> ---
->  Documentation/vm/cleancache.rst  | 296 ------------------------------------
->  Documentation/vm/frontswap.rst   |  10 +-
->  Documentation/vm/index.rst       |   1 -
->  MAINTAINERS                      |   7 -
->  drivers/staging/erofs/data.c     |   6 -
->  drivers/staging/erofs/internal.h |   1 -
->  fs/block_dev.c                   |   5 -
->  fs/btrfs/extent_io.c             |   9 --
->  fs/btrfs/super.c                 |   2 -
->  fs/ext4/readpage.c               |   6 -
->  fs/ext4/super.c                  |   2 -
->  fs/f2fs/data.c                   |   3 +-
+On Mon, May 27, 2019 at 3:33 PM Dennis Schridde <devurandom@gmx.net> wrote:
+>
+> Hi!
+>
+> Yesterday I upgraded from Linux 5.1.1 (built with GCC 8.3.0) to Linux 5.1.4
+> (built with GCC 9.1.0).  The next boot was extremely slow and the desktop
+> environment (KDE Plasma) never really started, but got kind of stuck in the
+> startup screen.  So I switched to a VT and pressed ctrl+alt+del.  The next
+> boot stopped early with following message:
+>
+> [T445] BTRFS: device label <...> devid 1 transid 840641 /dev/bcache0
+> [T599] BTRFS info (device bcache0): disk space caching is enabled
+> [T599] BTRFS info (device bcache0): has skinny extents
+> [T599] BTRFS error (device bcache0): parent transid verify failed on 604602368
+> wanted 840641 found 840639
+> [T599] BTRFS error (device bcache0): open_ctree failed
+>
+> How can I recover from this?
+>
+> The filesystem should have several snapshots (created by snapper [1], on every
+> boot and hourly).  Will they be of any help recovering my data?
+>
+> Best regards,
+> Dennis
+>
+> [1]: http://snapper.io/
 
-For erofs and f2fs part,
+What happens if you revert to 5.1.1? That error suggests the super
+wants a newer transid than what exist on the filesystem, which
+suggests file system metadata was dropped. It's not certain from this
+information what caused that: device, or some layer in between like
+bcache, or Btrfs.
 
-Acked-by: Chao Yu <yuchao0@huawei.com>
-
-Thanks,
-
->  fs/mpage.c                       |   7 -
->  fs/ocfs2/super.c                 |   2 -
->  fs/super.c                       |   3 -
->  include/linux/cleancache.h       | 124 ---------------
->  include/linux/fs.h               |   5 -
->  mm/Kconfig                       |  22 ---
->  mm/Makefile                      |   1 -
->  mm/cleancache.c                  | 317 ---------------------------------------
->  mm/filemap.c                     |  11 --
->  mm/truncate.c                    |  15 +-
+-- 
+Chris Murphy
