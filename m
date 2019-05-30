@@ -2,72 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 746C12FA3F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2019 12:27:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E9BC2FA71
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2019 12:43:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727671AbfE3K1L convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 30 May 2019 06:27:11 -0400
-Received: from lilium.sigma-star.at ([109.75.188.150]:52594 "EHLO
-        lilium.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbfE3K1K (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 May 2019 06:27:10 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by lilium.sigma-star.at (Postfix) with ESMTP id 5FD0C18029EE6;
-        Thu, 30 May 2019 12:27:09 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v3 11/13] btrfs: directly call into crypto framework for
- checsumming
-From:   David Gstir <david@sigma-star.at>
-In-Reply-To: <20190530101401.GB15290@suse.cz>
-Date:   Thu, 30 May 2019 12:27:06 +0200
-Cc:     Johannes Thumshirn <jthumshirn@suse.de>, Chris Mason <clm@fb.com>,
-        Richard Weinberger <richard@nod.at>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <6E722EA8-EBFB-45DC-8058-048F5133FA64@sigma-star.at>
-References: <20190522081910.7689-1-jthumshirn@suse.de>
- <20190522081910.7689-12-jthumshirn@suse.de>
- <13AD00D3-9804-4C6A-BF98-CCED1C974EF5@sigma-star.at>
- <20190530101401.GB15290@suse.cz>
-To:     David Sterba <dsterba@suse.cz>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S1726628AbfE3KnO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 May 2019 06:43:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49108 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725440AbfE3KnO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 May 2019 06:43:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5E8B3ACEE;
+        Thu, 30 May 2019 10:43:13 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 04DA8DA85E; Thu, 30 May 2019 12:44:06 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, clm@fb.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.2-rc3
+Date:   Thu, 30 May 2019 12:44:01 +0200
+Message-Id: <cover.1559167316.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
 
-> On 30.05.2019, at 12:14, David Sterba <dsterba@suse.cz> wrote:
-> 
-> On Wed, May 29, 2019 at 09:32:59PM +0200, David Gstir wrote:
->> If you aim for using as many of the hardware drivers as possible,
->> it might be better to use the ahash API, since some drivers
->> (eg. CAAM on NXP's i.MX) only implement that API and not shash.
->> Looking at crypto_ahash_init_tfm(...) in crypto/ahash.c using
->> drivers that implement shash through the ahash API should work
->> fine though.
->> 
->> I just found that out myself today [1]. ;)
->> 
->> - David
->> 
->> [1] https://lore.kernel.org/linux-crypto/729A4150-93A0-456B-B7AB-6D3A446E600E@sigma-star.at/T/#u
-> 
-> The thread says otherwise. Using SHASH interface for AHASH does not
-> work.
+a few more fixes for bugs reported by users, fuzzing tools and
+regressions:
 
-Correct, but that's not what I wrote. I suggested that you can use the ahash API
-instead of the shash API.
+* fix crashes in relocation
+  * resuming interrupted balance operation does not properly clean up
+    orphan trees
+  * with enabled qgroups, resuming needs to be more careful about
+    block groups due to limited context when updating qgroups
 
-> Besides checksumming in btrfs is called from atomic contexts so
-> the sleeping part of the async API can't work at all (crypto_wait_req
-> indirectly calls schedule).
+* fsync and logging fixes found by fuzzing
 
-Yeah, you're right. I overlooked that. So the ahash API is generally not an option
-in this case here.
+* incremental send fixes for no-holes and clone
 
-- David
+* fix spin lock type used in timer function for zstd
+
+No merge conflicts, please pull. Thanks.
+
+----------------------------------------------------------------
+The following changes since commit 4e9845eff5a8027b5181d5bff56a02991fe46d48:
+
+  Btrfs: tree-checker: detect file extent items with overlapping ranges (2019-05-16 14:33:51 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.2-rc2-tag
+
+for you to fetch changes up to 06989c799f04810f6876900d4760c0edda369cf7:
+
+  Btrfs: fix race updating log root item during fsync (2019-05-28 19:26:46 +0200)
+
+----------------------------------------------------------------
+Dennis Zhou (1):
+      btrfs: correct zstd workspace manager lock to use spin_lock_bh()
+
+Filipe Manana (5):
+      Btrfs: incremental send, fix file corruption when no-holes feature is enabled
+      Btrfs: incremental send, fix emission of invalid clone operations
+      Btrfs: fix fsync not persisting changed attributes of a directory
+      Btrfs: fix wrong ctime and mtime of a directory after log replay
+      Btrfs: fix race updating log root item during fsync
+
+Nikolay Borisov (1):
+      btrfs: Ensure replaced device doesn't have pending chunk allocation
+
+Qu Wenruo (2):
+      btrfs: reloc: Also queue orphan reloc tree for cleanup to avoid BUG_ON()
+      btrfs: qgroup: Check bg while resuming relocation to avoid NULL pointer dereference
+
+ fs/btrfs/dev-replace.c | 35 +++++++++++++++++++++++----------
+ fs/btrfs/inode.c       | 14 ++++++++++++--
+ fs/btrfs/qgroup.c      |  8 +++++++-
+ fs/btrfs/relocation.c  | 27 ++++++++++++++++++--------
+ fs/btrfs/send.c        | 52 +++++++++++++++++++++++++++++++++++++++++++++++---
+ fs/btrfs/tree-log.c    | 20 ++++++-------------
+ fs/btrfs/zstd.c        | 20 +++++++++----------
+ 7 files changed, 128 insertions(+), 48 deletions(-)
