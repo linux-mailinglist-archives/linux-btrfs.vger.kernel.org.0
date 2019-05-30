@@ -2,124 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 530C12FAC0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2019 13:16:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 463C12FAFD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2019 13:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbfE3LQL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 May 2019 07:16:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51992 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725440AbfE3LQK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 May 2019 07:16:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 88774AF60;
-        Thu, 30 May 2019 11:16:08 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id AE1651E3C08; Thu, 30 May 2019 13:16:05 +0200 (CEST)
-Date:   Thu, 30 May 2019 13:16:05 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-btrfs@vger.kernel.org, kilobyte@angband.pl,
-        linux-fsdevel@vger.kernel.org, willy@infradead.org, hch@lst.de,
-        dsterba@suse.cz, nborisov@suse.com, linux-nvdimm@lists.01.org
-Subject: Re: [PATCH 04/18] dax: Introduce IOMAP_DAX_COW to CoW edges during
- writes
-Message-ID: <20190530111605.GC29237@quack2.suse.cz>
-References: <20190523115109.2o4txdjq2ft7fzzc@fiona>
- <1620c513-4ce2-84b0-33dc-2675246183ea@cn.fujitsu.com>
- <20190528091729.GD9607@quack2.suse.cz>
- <a3a919e6-ecad-bdf6-423c-fc01f9cfa661@cn.fujitsu.com>
- <20190529024749.GC16786@dread.disaster.area>
- <376256fd-dee4-5561-eb4e-546e227303cd@cn.fujitsu.com>
- <20190529040719.GL5221@magnolia>
- <20190529044658.GD16786@dread.disaster.area>
- <20190529134629.GA32147@quack2.suse.cz>
- <20190529221445.GE16786@dread.disaster.area>
+        id S1726753AbfE3Lgn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 May 2019 07:36:43 -0400
+Received: from mail-it1-f177.google.com ([209.85.166.177]:39923 "EHLO
+        mail-it1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726339AbfE3Lgm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 May 2019 07:36:42 -0400
+Received: by mail-it1-f177.google.com with SMTP id j204so3493900ite.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 May 2019 04:36:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=a3GhSTTSubPQCR2Iq8pL5QgC7SXygfsUeWYQf5UpoNk=;
+        b=tF6VQcrSQAHvgsP6BdKBbORfo+HbBJI5e9UIYI8d2DC7D9/sJWsuI0woRVK/xGlMZ4
+         KLvcmD78519LikPSO9B/sCnMK9VFzEDEqClcTCFG+akTuqwz6BCqbHrcuox/Zq/uc8Ti
+         cNYq95YCBzenk9TJbNJExpJ9quiO/qfBeb4THGZAy4Ks4IzB8qMe41oHo0sLs9IUI91u
+         Dd9374hYy5JyhdSfPOpjfMDWL/VQXffe7THshxLv9q8HjTfly0UwhrEz76/UdqNeADYD
+         iR7MEEj2EeB6ORGIKy7m5dROsFTcK0XQWEdzJwgkNCVE3PszPuW7X0jBIFj6XNgofqb2
+         YiqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=a3GhSTTSubPQCR2Iq8pL5QgC7SXygfsUeWYQf5UpoNk=;
+        b=IYDlyTTvOfQ3S9or5oj/Tj8CWaKWdklkEY+03ALM8vlPWIcjPTAzlQBrLaF6zmgfZL
+         //7EKRdTZ28SthRAbrOuqKUiQoFtkvqSTbkjObeYG38O5zMO4x8cqzTYWX6A4R0Az+xv
+         qAlVHVqRZnUY+k5B4H6Oy4HxRLs/EHdEWkzlFNjVsA+dkdz7BiTOAIhjyeaD0BQyf/2n
+         IIsTWS2OUIdIYw8d3kAfvvNfGcxMCTICzJWmOHFsRcrf+JRmWat7Zm8jTpzc4zYFsxkp
+         qYgUBqenH1WNHF0yDtZiEvjRo9/HH2kDXaH8KmKbnJ95scgG2dOZRd8eFfcqgNVF8N/R
+         ywFQ==
+X-Gm-Message-State: APjAAAUfEHm7L+gzYBKnOi/PISjuxhZNMlkUwbJO4J615fR8Jj4rpQp0
+        SYm6Mhxupm2D/lMWejgFKkT7Ez99/3YJnw==
+X-Google-Smtp-Source: APXvYqxgeKWqxxPEOBPOBpzvuJzzwDtnWaF/ZJ8hHkPbdfxkT+trZiIq3R1aXAcyLCtFy4Fcet2cKw==
+X-Received: by 2002:a24:170b:: with SMTP id 11mr1081633ith.14.1559216201700;
+        Thu, 30 May 2019 04:36:41 -0700 (PDT)
+Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
+        by smtp.gmail.com with ESMTPSA id h20sm807149iog.6.2019.05.30.04.36.40
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 May 2019 04:36:41 -0700 (PDT)
+Subject: Re: sub-file dedup
+To:     Newbugreport <newbugreport@protonmail.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <0tUXYHrSBzkwOdUp7Az8PrnXzFeWPycFN82KoFJ-fkvTjnrYwPP77RoZbDkO6RjkpPBjQlL4p2tUKywSpxErBQJTVJk8zexKNWjW6k6W0CE=@protonmail.com>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <38eb5d80-4c71-c449-c940-2c2ced59ae9c@gmail.com>
+Date:   Thu, 30 May 2019 07:36:38 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190529221445.GE16786@dread.disaster.area>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0tUXYHrSBzkwOdUp7Az8PrnXzFeWPycFN82KoFJ-fkvTjnrYwPP77RoZbDkO6RjkpPBjQlL4p2tUKywSpxErBQJTVJk8zexKNWjW6k6W0CE=@protonmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu 30-05-19 08:14:45, Dave Chinner wrote:
-> On Wed, May 29, 2019 at 03:46:29PM +0200, Jan Kara wrote:
-> > On Wed 29-05-19 14:46:58, Dave Chinner wrote:
-> > >  iomap_apply()
-> > > 
-> > >  	->iomap_begin()
-> > > 		map old data extent that we copy from
-> > > 
-> > > 		allocate new data extent we copy to in data fork,
-> > > 		immediately replacing old data extent
-> > > 
-> > > 		return transaction handle as private data
-> 
-> This holds the inode block map locked exclusively across the IO,
-> so....
+On 2019-05-29 21:13, Newbugreport wrote:
+> I'm experimenting with the rsync algorithm for btrfs deduplication. Every other deduplication tool I've seen works against whole files. I'm concerned about deduping chunks under 4k and about files with scattered extents.
+AFAIK, regions smaller than the FS block size cannot be deduplicated, so 
+you're limited to 4k in most cases, possibly larger on some systems.
 
-Does it? We do hold XFS_IOLOCK_EXCL during the whole dax write. But
-xfs_file_iomap_begin() does release XFS_ILOCK_* on exit AFAICS. So I don't
-see anything that would prevent page fault from mapping blocks into page
-tables just after xfs_file_iomap_begin() returns.
+Also, pretty much every tool I know of for deduplication on BTRFS 
+operates not on whole files, but on blocks.  duperemove, for example, 
+scans whole files at whatever chunk size you tell it to, figures out 
+duplicated extents (that is, runs of sequential duplicate chunks), and 
+then passes the resultant extents to the dedupe ioctl.  That approach 
+even works to deduplicate data _within_ files.
+> 
+> Are there best practices for deduplication on btrfs?
+> General thoughts:
 
-> > > 	dax_iomap_actor()
-> > > 		copies data from old extent to new extent
-> > > 
-> > > 	->iomap_end
-> > > 		commits transaction now data has been copied, making
-> > > 		the COW operation atomic with the data copy.
-> > > 
-> > > 
-> > > This, in fact, should be how we do all DAX writes that require
-> > > allocation, because then we get rid of the need to zero newly
-> > > allocated or unwritten extents before we copy the data into it. i.e.
-> > > we only need to write once to newly allocated storage rather than
-> > > twice.
-> > 
-> > You need to be careful though. You need to synchronize with page faults so
-> > that they cannot see and expose in page tables blocks you've allocated
-> > before their contents is filled.
-> 
-> ... so the page fault will block trying to map the blocks because
-> it can't get the xfs_inode->i_ilock until the allocation transaciton
-> commits....
-> 
-> > This race was actually the strongest
-> > motivation for pre-zeroing of blocks. OTOH copy_from_iter() in
-> > dax_iomap_actor() needs to be able to fault pages to copy from (and these
-> > pages may be from the same file you're writing to) so you cannot just block
-> > faulting for the file through I_MMAP_LOCK.
-> 
-> Right, it doesn't take the I_MMAP_LOCK, but it would block further
-> in. And, really, I'm not caring all this much about this corner
-> case. i.e.  anyone using a "mmap()+write() zero copy" pattern on DAX
-> within a file is unbeleivably naive - the data still gets copied by
-> the CPU in the write() call. It's far simpler and more effcient to
-> just mmap() both ranges of the file(s) and memcpy() in userspace....
-> 
-> FWIW, it's to avoid problems with stupid userspace stuff that nobody
-> really should be doing that I want range locks for the XFS inode
-> locks.  If userspace overlaps the ranges and deadlocks in that case,
-> they they get to keep all the broken bits because, IMO, they are
-> doing something monumentally stupid. I'd probably be making it
-> return EDEADLOCK back out to userspace in the case rather than
-> deadlocking but, fundamentally, I think it's broken behaviour that
-> we should be rejecting with an error rather than adding complexity
-> trying to handle it.
+* Minimize the number of calls you make to the actual dedupe ioctl as 
+much as possible, it does a bytewise comparison of all the regions 
+passed in, and has to freeze I/O to the files the regions are in until 
+it's done, so it's both expensive in terms of time and processing power, 
+and it can slow down the filesystem.  The clone ioctl can be used 
+instead (and is far faster), but runs the risk of data loss if the files 
+are in active use.
 
-I agree with this. We must just prevent user from taking the kernel down
-with maliciously created IOs...
+* Doing a custom script or tool for finding duplicate regions for your 
+data that actually understands the structure of the data will almost 
+always get you better deduplication results and run much faster than one 
+of the generic tools.  For example, I've got a couple of directories on 
+one of my systems where if two files have the same name and relative 
+path under those directories, they _should_ be identical, so all I need 
+to deduplicate that data is a simple path-matching tool that passes 
+whole files to the dedupe ioctl.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+* Deduplicating really small blocks within files is almost never worth 
+it (which is part of why most dedupe tools default to operating on 
+chunks of 128k or larger) because:
+     - A single reflink for a 4k block actually takes up at least the 
+same amount of space as just having the block there, and it might take 
+up more depending on how the extents are split (if the existing 4k block 
+is part of an extent, then it may not be freed when you replace it with 
+the reflink).
+     - Having huge numbers of reflinks can actually negatively impact 
+filesystem performance.  Even ignoring the potential issues with stuff 
+like qgroups, the fragmentation introduced by using lots of reflinks 
+increases the overhead of reading files by a non-negligible amount (even 
+on SSD's).
