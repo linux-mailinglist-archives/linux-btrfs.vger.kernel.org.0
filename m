@@ -2,59 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4ED303CB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2019 23:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EFF130516
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 00:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726509AbfE3VHO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 30 May 2019 17:07:14 -0400
-Received: from smtp.tjto.jus.br ([189.10.44.215]:57796 "EHLO smtp.tjto.jus.br"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726079AbfE3VHO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 May 2019 17:07:14 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.tjto.jus.br (Postfix) with ESMTP id 2883C3E2F22;
-        Thu, 30 May 2019 18:00:25 -0300 (BRT)
-Received: from smtp.tjto.jus.br ([127.0.0.1])
-        by localhost (mta-in.tjto.jus.br [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id twHHrFHgonOe; Thu, 30 May 2019 18:00:24 -0300 (BRT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.tjto.jus.br (Postfix) with ESMTP id DC95E3E2F3B;
-        Thu, 30 May 2019 18:00:24 -0300 (BRT)
-X-Virus-Scanned: amavisd-new at mta-in.tjto.jus.br
-Received: from smtp.tjto.jus.br ([127.0.0.1])
-        by localhost (mta-in.tjto.jus.br [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id jzemEZcv4n2h; Thu, 30 May 2019 18:00:24 -0300 (BRT)
-Received: from [192.99.135.118] (ip118.ip-192-99-135.net [192.99.135.118])
-        (Authenticated sender: nelsonsena@tjto.jus.br)
-        by smtp.tjto.jus.br (Postfix) with ESMTPSA id 584C83E2F22;
-        Thu, 30 May 2019 18:00:18 -0300 (BRT)
-Content-Type: text/plain; charset="utf-8"
+        id S1726442AbfE3W7f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 May 2019 18:59:35 -0400
+Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:50147 "EHLO
+        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726326AbfE3W7e (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 May 2019 18:59:34 -0400
+Received: from dread.disaster.area (pa49-180-144-61.pa.nsw.optusnet.com.au [49.180.144.61])
+        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 236DD3DC5A0;
+        Fri, 31 May 2019 08:59:28 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hWU17-0000OZ-Vz; Fri, 31 May 2019 08:59:25 +1000
+Date:   Fri, 31 May 2019 08:59:25 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-btrfs@vger.kernel.org, kilobyte@angband.pl,
+        linux-fsdevel@vger.kernel.org, willy@infradead.org, hch@lst.de,
+        dsterba@suse.cz, nborisov@suse.com, linux-nvdimm@lists.01.org
+Subject: Re: [PATCH 04/18] dax: Introduce IOMAP_DAX_COW to CoW edges during
+ writes
+Message-ID: <20190530225925.GG16786@dread.disaster.area>
+References: <1620c513-4ce2-84b0-33dc-2675246183ea@cn.fujitsu.com>
+ <20190528091729.GD9607@quack2.suse.cz>
+ <a3a919e6-ecad-bdf6-423c-fc01f9cfa661@cn.fujitsu.com>
+ <20190529024749.GC16786@dread.disaster.area>
+ <376256fd-dee4-5561-eb4e-546e227303cd@cn.fujitsu.com>
+ <20190529040719.GL5221@magnolia>
+ <20190529044658.GD16786@dread.disaster.area>
+ <20190529134629.GA32147@quack2.suse.cz>
+ <20190529221445.GE16786@dread.disaster.area>
+ <20190530111605.GC29237@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: =?utf-8?b?UmU6IOKCrCAyLDAwMCwwMDAuMDAgRXVybw==?=
-To:     Recipients <nelsonsena@tjto.jus.br>
-From:   nelsonsena@tjto.jus.br
-Date:   Thu, 30 May 2019 14:00:15 -0700
-Reply-To: myburghhugohendrik@gmail.com
-Message-Id: <20190530210018.584C83E2F22@smtp.tjto.jus.br>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190530111605.GC29237@quack2.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
+        a=8RU0RCro9O0HS2ezTvitPg==:117 a=8RU0RCro9O0HS2ezTvitPg==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=E5NmQfObTbMA:10
+        a=7-415B0cAAAA:8 a=b_IONgiTaRX6Mws2oq4A:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Lieber Freund,
+On Thu, May 30, 2019 at 01:16:05PM +0200, Jan Kara wrote:
+> On Thu 30-05-19 08:14:45, Dave Chinner wrote:
+> > On Wed, May 29, 2019 at 03:46:29PM +0200, Jan Kara wrote:
+> > > On Wed 29-05-19 14:46:58, Dave Chinner wrote:
+> > > >  iomap_apply()
+> > > > 
+> > > >  	->iomap_begin()
+> > > > 		map old data extent that we copy from
+> > > > 
+> > > > 		allocate new data extent we copy to in data fork,
+> > > > 		immediately replacing old data extent
+> > > > 
+> > > > 		return transaction handle as private data
+> > 
+> > This holds the inode block map locked exclusively across the IO,
+> > so....
+> 
+> Does it? We do hold XFS_IOLOCK_EXCL during the whole dax write.
 
-Ich bin Herr Richard Wahl der Mega-Gewinner von $ 533M In Mega Millions Jackpot spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt. Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt. Ich habe mich freiwillig dazu entschieden, Ihnen den Betrag von € 2.000.000,00 zu spenden eine der ausgewählten 5, um meine Gewinne zu überprüfen, finden Sie auf meiner You Tube Seite unten.
+I forgot about that, I keep thinking that we use shared locking for
+DAX like we do for direct IO. There's another reason for range
+locks - allowing concurrent DAX read/write IO - but that's
+orthogonal to the issue here.
 
-UHR MICH HIER: https://www.youtube.com/watch?v=tne02ExNDrw
+> But
+> xfs_file_iomap_begin() does release XFS_ILOCK_* on exit AFAICS. So I don't
+> see anything that would prevent page fault from mapping blocks into page
+> tables just after xfs_file_iomap_begin() returns.
 
-Das ist dein Spendencode: [DF00430342018]
+Right, holding the IOLOCK doesn't stop concurrent page faults from
+mapping the page we are trying to write, and that leaves a window
+where stale data can be exposed if we don't initialise the newly
+allocated range whilst in the allocation transaction holding the
+ILOCK. That's what the XFS_BMAPI_ZERO flag does in the DAX block
+allocation path.
 
-Antworten Sie mit dem Spendencode auf diese E-Mail: wahlfoundationorg@gmail.com
+So the idea of holding the allocation transaction across the data
+copy means that ILOCK is then held until the data blocks are fully
+initialised with valid data, meaning we can greatly reduce the scope
+of the XFS_BMAPI_ZERO flag and possible get rid of it altogether.
 
-Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+> > > This race was actually the strongest
+> > > motivation for pre-zeroing of blocks. OTOH copy_from_iter() in
+> > > dax_iomap_actor() needs to be able to fault pages to copy from (and these
+> > > pages may be from the same file you're writing to) so you cannot just block
+> > > faulting for the file through I_MMAP_LOCK.
+> > 
+> > Right, it doesn't take the I_MMAP_LOCK, but it would block further
+> > in. And, really, I'm not caring all this much about this corner
+> > case. i.e.  anyone using a "mmap()+write() zero copy" pattern on DAX
+> > within a file is unbeleivably naive - the data still gets copied by
+> > the CPU in the write() call. It's far simpler and more effcient to
+> > just mmap() both ranges of the file(s) and memcpy() in userspace....
+> > 
+> > FWIW, it's to avoid problems with stupid userspace stuff that nobody
+> > really should be doing that I want range locks for the XFS inode
+> > locks.  If userspace overlaps the ranges and deadlocks in that case,
+> > they they get to keep all the broken bits because, IMO, they are
+> > doing something monumentally stupid. I'd probably be making it
+> > return EDEADLOCK back out to userspace in the case rather than
+> > deadlocking but, fundamentally, I think it's broken behaviour that
+> > we should be rejecting with an error rather than adding complexity
+> > trying to handle it.
+> 
+> I agree with this. We must just prevent user from taking the kernel down
+> with maliciously created IOs...
 
-Grüße
+Noted. :)
 
-Herr Richard Wahl
+I'm still working to scale the range locks effectively for direct
+IO; I've got to work out why sometimes they give identical
+performance to rwsems out to 16 threads, and other times they run
+20% slower or worse at 8+ threads. I'm way ahead of the original
+mutex protected tree implementation that I have, but still got work
+to do to get consistently close to rwsem performance for pure shared
+locking workloads like direct IO.
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
