@@ -2,95 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBBE12FF97
-	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2019 17:48:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7763002C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 30 May 2019 18:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbfE3Pso (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 30 May 2019 11:48:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56368 "EHLO mx1.suse.de"
+        id S1726355AbfE3QaF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 30 May 2019 12:30:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60628 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725961AbfE3Pso (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 30 May 2019 11:48:44 -0400
+        id S1726045AbfE3QaF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 30 May 2019 12:30:05 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 761C9AD17;
-        Thu, 30 May 2019 15:48:43 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 18A53AFDB
+        for <linux-btrfs@vger.kernel.org>; Thu, 30 May 2019 16:30:04 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6846ADA85E; Thu, 30 May 2019 17:49:37 +0200 (CEST)
-Date:   Thu, 30 May 2019 17:49:37 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Richard Weinberger <richard@nod.at>,
-        David Gstir <david@sigma-star.at>,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH v3 08/13] btrfs: check for supported superblock checksum
- type before checksum validation
-Message-ID: <20190530154937.GI15290@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        Chris Mason <clm@fb.com>, Richard Weinberger <richard@nod.at>,
-        David Gstir <david@sigma-star.at>,
-        Nikolay Borisov <nborisov@suse.com>
-References: <20190522081910.7689-1-jthumshirn@suse.de>
- <20190522081910.7689-9-jthumshirn@suse.de>
+        id 18552DA85E; Thu, 30 May 2019 18:30:57 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH 0/3] Extent buffer lock cleanups
+Date:   Thu, 30 May 2019 18:30:57 +0200
+Message-Id: <cover.1559233731.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190522081910.7689-9-jthumshirn@suse.de>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, May 22, 2019 at 10:19:05AM +0200, Johannes Thumshirn wrote:
-> Now that we have factorerd out the superblock checksum type validation, we
-> can check for supported superblock checksum types before doing the actual
-> validation of the superblock read from disk.
-> 
-> This leads the path to further simplifications of btrfs_check_super_csum()
-> later on.
-> 
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> ---
-> Changes to v2:
-> - Print on-disk checksum type if we encounter an unsupported type (David)
-> ---
->  fs/btrfs/disk-io.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 594583273782..f541d3c15d99 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -2821,6 +2821,16 @@ int open_ctree(struct super_block *sb,
->  		goto fail_alloc;
->  	}
->  
-> +	if (!btrfs_supported_super_csum((struct btrfs_super_block *)
-> +					bh->b_data)) {
+There are 3 atomics that don't need to be, all related to writes where
+the exclusivity is guaranteed by the lock.
 
-Previous patch changed this to u16
+David Sterba (3):
+  btrfs: switch extent_buffer blocking_writers from atomic to int
+  btrfs: switch extent_buffer spinning_writers from atomic to int
+  btrfs: switch extent_buffer write_locks from atomic to int
 
-> +		btrfs_err(fs_info, "unsupported checksum algorithm: %d",
+ fs/btrfs/extent_io.c  |  6 ++---
+ fs/btrfs/extent_io.h  |  6 ++---
+ fs/btrfs/locking.c    | 62 +++++++++++++++++++------------------------
+ fs/btrfs/print-tree.c |  6 ++---
+ 4 files changed, 37 insertions(+), 43 deletions(-)
 
-that's %u
+-- 
+2.21.0
 
-> +			  btrfs_super_csum_type((struct btrfs_super_block *)
-> +						bh->b_data));
-> +		err = -EINVAL;
-> +		brelse(bh);
-> +		goto fail_alloc;
-> +	}
-> +
->  	/*
->  	 * We want to check superblock checksum, the type is stored inside.
->  	 * Pass the whole disk block of size BTRFS_SUPER_INFO_SIZE (4k).
-> -- 
-> 2.16.4
