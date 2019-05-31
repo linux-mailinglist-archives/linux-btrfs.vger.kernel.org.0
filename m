@@ -2,163 +2,318 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E32530B43
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 11:20:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C87830CE9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 12:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbfEaJUo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 May 2019 05:20:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60088 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726002AbfEaJUn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 May 2019 05:20:43 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7DFE9AFD2
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2019 09:20:42 +0000 (UTC)
-Subject: Re: [PATCH 3/3] btrfs: switch extent_buffer write_locks from atomic
- to int
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1559233731.git.dsterba@suse.com>
- <6665a7f5b02d97bde4a1cadb2478bb6ba1a01cd0.1559233731.git.dsterba@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+        id S1726280AbfEaK4m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 May 2019 06:56:42 -0400
+Received: from mout.gmx.net ([212.227.15.19]:52639 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726002AbfEaK4l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 May 2019 06:56:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1559300192;
+        bh=yOljLAGagZrg6Rev9WOxs39SauMId/irOPZgZb49NJE=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=jgzfRhCbpPbcnjOKEyF3LI5Qde8zPh9ANukMdu6bPelB7dpWrV9w5PQ4Yyvn1R2EU
+         1nj+KOQz6juaAWfM72kD2r7X9IRMdlukOBRUXl4DBA0cBAxv4bP/fHitOkcWBx3bvO
+         JSLT1KfCwewl0oX/mhJfZgONzlccQA7K3ka2TaC4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx002
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0M8NWM-1gcF8J2joI-00vwuM; Fri, 31
+ May 2019 12:56:32 +0200
+Subject: Re: [PATCH v3] btrfs: Flush before reflinking any extent to prevent
+ NOCOW write falling back to CoW without data reservation
+To:     fdmanana@gmail.com
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20190508104958.18363-1-wqu@suse.com>
+ <20190509144915.GV20156@twin.jikos.cz>
+ <a32c0d72-ca46-1886-1788-1ca5d926353c@gmx.com>
+ <CAL3q7H4Px96R9upobOO=7osCjoMeW-w9RCixMo81YEOCsc07kQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <0e3a01be-b02d-aca3-7a8d-04c86f0dde46@suse.com>
-Date:   Fri, 31 May 2019 12:20:41 +0300
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <06563d2a-428d-7811-de6f-6b7b26da23f9@gmx.com>
+Date:   Fri, 31 May 2019 18:56:09 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <6665a7f5b02d97bde4a1cadb2478bb6ba1a01cd0.1559233731.git.dsterba@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H4Px96R9upobOO=7osCjoMeW-w9RCixMo81YEOCsc07kQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="dYfT2hpviMG6ABiLnRO9pJ03U3oUGD64i"
+X-Provags-ID: V03:K1:vMm/DDpAnuRLWPNoKdiyuRUUqCW9JS7GCBQ7M4x4HJpATqFK0UD
+ q+V14yrdRL6bdWZIKVhRZvlmZYjSu4iLcHIJjQf9IQakwkZeHhlVzkQxJLhoDIW0jWFjNBe
+ crHBSlii/PKA+9YQ7uSSQCVwrDr+A8Vr0eJPBgzRwag/uyhtFTPnrvE8CwqmHlpoDnNowbj
+ +nJpmv0ggjjifwSUw+upA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:f838yxxq4IM=:RBqtuWJcGG99rsbv+RD0nX
+ PRsr/5XBoIp6IhwCbi3VNfaubWEJvbpTuvaLXuSMXhLaO+IAItXZ/lp+f/OstCZAevpGmUFBt
+ ZEoiHkNkpmDVq+x1Rw+Q4p1kI/sb662yCLZ3ONCgbcSobS7g7SpR7bHpgRG4gkJqTiod37ryI
+ mVY9A7/O9I1nMzEqokuF8fpHmCpTqKdxdzmWMo7vSJTTZqRZPq0NnuHx72ZsBTnd8wgtbpsK/
+ pfsFxxTq8FkbSff2+k2vQRZF73GgeKLiKS8UWprJGGVv5hb/Emf9TjtfNihUvCzBdrkWSWBZR
+ y5VItrDHgb8KiVbvfycTAoak3WA3/4Lpr8VbD7o598WSuDCo40/kRPcXAqwNXwmuKSE4Xehll
+ oPn+f6dy2Fqgvp17RU+AhEmJttMxhw5OAWvb4Wf+EcoSRN6l5/Xr0f6ieZKSWf1lR6Jw8Lijv
+ /PScGlrDr9he5XyQ4IUkJWy6oJaWn7BgDiGrG4j7IZWe5hc6/l6QGhrnHNV312hJGaU3uEW7j
+ mSwOtzx3MQ5ByKvCqsZ1UYg3Eua0hxQSuf7w1YwWFxWfWEDaTcgIBQiRpVtcyjqkEF9NeUMBQ
+ zYRtebICuzu+i9Era03xJ/Gg3V8zIRlIBTVPsHAJbFKWRSFK/yjMfrVyDGI583LGhCSHcgCgu
+ T6jSpRQ7QHBPO/zppPKj098x29aKbxurKA1hDcFKdaTI+py3CRVuxMmvXx5KIX76yElcQx0zc
+ VZsSPQgy+mzlclgCayhJ4TyYW4hdG3WHABWpigNbeA/jrdXVtmkYK6lsvCwU9veXgjC1x7HMG
+ cxJ0rTVl6qPuSLmI2M/Iz3lXIU/NUqipDbIbCljWOwEew8qQPvJVk/uUQoKeSOXAWmCLBOMnH
+ BUcnjauj+tqgkno4KlAIHfkfpk0uxT+eNN5PjVR143i1POE0axLyyRwd5fhv9l28APzcHe4qC
+ i3UEUCl023dWAykXxzes2gQz4YP/5bfw=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dYfT2hpviMG6ABiLnRO9pJ03U3oUGD64i
+Content-Type: multipart/mixed; boundary="gPdG1yzryV59RQgShUNCenoACUcJjugxz";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: fdmanana@gmail.com
+Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <06563d2a-428d-7811-de6f-6b7b26da23f9@gmx.com>
+Subject: Re: [PATCH v3] btrfs: Flush before reflinking any extent to prevent
+ NOCOW write falling back to CoW without data reservation
+References: <20190508104958.18363-1-wqu@suse.com>
+ <20190509144915.GV20156@twin.jikos.cz>
+ <a32c0d72-ca46-1886-1788-1ca5d926353c@gmx.com>
+ <CAL3q7H4Px96R9upobOO=7osCjoMeW-w9RCixMo81YEOCsc07kQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H4Px96R9upobOO=7osCjoMeW-w9RCixMo81YEOCsc07kQ@mail.gmail.com>
+
+--gPdG1yzryV59RQgShUNCenoACUcJjugxz
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Gentle ping?
+
+I didn't see this patch included in misc-next.
+Anything went wrong?
+
+Thanks,
+Qu
+
+On 2019/5/15 =E4=B8=8B=E5=8D=8810:56, Filipe Manana wrote:
+> On Fri, May 10, 2019 at 12:30 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wro=
+te:
+>>
+>>
+>>
+>> On 2019/5/9 =E4=B8=8B=E5=8D=8810:49, David Sterba wrote:
+>>> On Wed, May 08, 2019 at 06:49:58PM +0800, Qu Wenruo wrote:
+>>>> [BUG]
+>>>> The following script can cause unexpected fsync failure:
+>>>>
+>>>>   #!/bin/bash
+>>>>
+>>>>   dev=3D/dev/test/test
+>>>>   mnt=3D/mnt/btrfs
+>>>>
+>>>>   mkfs.btrfs -f $dev -b 512M > /dev/null
+>>>>   mount $dev $mnt -o nospace_cache
+>>>>
+>>>>   # Prealloc one extent
+>>>>   xfs_io -f -c "falloc 8k 64m" $mnt/file1
+>>>>   # Fill the remaining data space
+>>>>   xfs_io -f -c "pwrite 0 -b 4k 512M" $mnt/padding
+>>>>   sync
+>>>>
+>>>>   # Write into the prealloc extent
+>>>>   xfs_io -c "pwrite 1m 16m" $mnt/file1
+>>>>
+>>>>   # Reflink then fsync, fsync would fail due to ENOSPC
+>>>>   xfs_io -c "reflink $mnt/file1 8k 0 4k" -c "fsync" $mnt/file1
+>>>>   umount $dev
+>>>>
+>>>> The fsync fails with ENOSPC, and the last page of the buffered write=
+ is
+>>>> lost.
+>>>>
+>>>> [CAUSE]
+>>>> This is caused by:
+>>>> - Btrfs' back reference only has extent level granularity
+>>>>   So write into shared extent must be CoWed even only part of the ex=
+tent
+>>>>   is shared.
+>>>>
+>>>> So for above script we have:
+>>>> - fallocate
+>>>>   Create a preallocated extent where we can do NOCOW write.
+>>>>
+>>>> - fill all the remaining data and unallocated space
+>>>>
+>>>> - buffered write into preallocated space
+>>>>   As we have not enough space available for data and the extent is n=
+ot
+>>>>   shared (yet) we fall into NOCOW mode.
+>>>>
+>>>> - reflink
+>>>>   Now part of the large preallocated extent is shared, later write
+>>>>   into that extent must be CoWed.
+>>>>
+>>>> - fsync triggers writeback
+>>>>   But now the extent is shared and therefore we must fallback into C=
+OW
+>>>>   mode, which fails with ENOSPC since there's not enough space to
+>>>>   allocate data extents.
+>>>>
+>>>> [WORKAROUND]
+>>>> The workaround is to ensure any buffered write in the related extent=
+s
+>>>> (not just the reflink source range) get flushed before reflink/dedup=
+e,
+>>>> so that NOCOW writes succeed that happened before reflinking succeed=
+=2E
+>>>>
+>>>> The workaround is expensive
+>>>
+>>> Can you please quantify that, how big the performance drop is going t=
+o
+>>> be?
+>>
+>> Depends on how many dirty pages there are at the timing of reflink/ded=
+upe.
+>>
+>> If there are a lot, then it would be a delay for reflink/dedupe.
+>>
+>>>
+>>> If the fsync comes soon after reflink, then it's effectively no chang=
+e.
+>>> In case the buffered writes happen on a different range than reflink =
+and
+>>> fsync comes later, the buffered writes will stall reflink, right?
+>>
+>> Fsync doesn't make much difference, it mostly depends on how many dirt=
+y
+>> pages are.
+>>
+>> Thus the most impacted use case is concurrent buffered write with
+>> reflink/dedupe.
+>>
+>>>
+>>> If there are other similar corner cases we'd better know them in adva=
+nce
+>>> and estimate the impact, that'll be something to look for when we get=
+
+>>> complaints that reflink is suddenly slow.
+>>>
+>>>> NOCOW range, but that needs extra accounting for NOCOW range.
+>>>> For now, fix the possible data loss first.
+>>>
+>>> filemap_flush says
+>>>
+>>>  437 /**
+>>>  438  * filemap_flush - mostly a non-blocking flush
+>>>  439  * @mapping:    target address_space
+>>>  440  *
+>>>  441  * This is a mostly non-blocking flush.  Not suitable for data-i=
+ntegrity
+>>>  442  * purposes - I/O may not be started against all dirty pages.
+>>>  443  *
+>>>  444  * Return: %0 on success, negative error code otherwise.
+>>>  445  */
+>>>
+>>> so how does this work together with the statement about preventing da=
+ta
+>>> loss?
+>>
+>> The data loss is caused by the fact that we can start buffered write
+>> without reserving data space, but after reflink/dedupe we have to do C=
+oW.
+>> Without enough space, CoW will fail due to ENOSPC.
+>>
+>> The fix here is, we ensure all dirties pages start their writeback
+>> (start btrfs_run_delalloc_range()) before reflink.
+>>
+>> At btrfs_run_delalloc_range() we determine whether a range goes throug=
+h
+>> NOCOW or COW, and submit ordered extent to do real write back/csum
+>> calculation/etc.
+>>
+>> As long as the whole inode goes through btrfs_run_delalloc_range(), an=
+y
+>> NOCOW write will go NOCOW on-disk.
+>> We don't need to wait for the ordered extent to finish, just ensure al=
+l
+>> pages goes through delalloc is enough.
+>> Waiting for ordered extent will cause even more latency for reflink.
+>>
+>> Thus the filemap_flush() is enough, as the point is to ensure delalloc=
+
+>> is started before reflink.
+>=20
+> I believe that David's comment is related to this part of the comment
+> on filemap_flush():
+>=20
+> "I/O may not be started against all dirty pages."
+>=20
+> I.e., his concern being that writeback may not be started and
+> therefore we end up with the data loss due to ENOSPC later, and not to
+> the technical details of why the ENOSPC failure happens, which is
+> already described in the changelog and discussed during the review of
+> previous versions of the patch.
+>=20
+> However btrfs has its own writepages() implementation, which even for
+> WB_SYNC_NONE (used by filemap_flush) starts writeback (and doesn't
+> wait for it to finish if it started before, which is fine for this use
+> case).
+> Anyway, just my interpretation of the doubt/comment.
+>=20
+> Thanks.
+>=20
+>>
+>> Thanks,
+>> Qu
+>>
+>=20
+>=20
 
 
-On 30.05.19 г. 19:31 ч., David Sterba wrote:
-> The write_locks is either 0 or 1 and always updated under the lock,
-> so we don't need the atomic_t semantics.
-> 
-> Signed-off-by: David Sterba <dsterba@suse.com>
+--gPdG1yzryV59RQgShUNCenoACUcJjugxz--
 
-Generally looks good, though my remark for patch2 remains.
+--dYfT2hpviMG6ABiLnRO9pJ03U3oUGD64i
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+-----BEGIN PGP SIGNATURE-----
 
-> ---
->  fs/btrfs/extent_io.c  | 2 +-
->  fs/btrfs/extent_io.h  | 2 +-
->  fs/btrfs/locking.c    | 6 +++---
->  fs/btrfs/print-tree.c | 2 +-
->  4 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 71ee9e976307..6d75d4dcf473 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -4845,7 +4845,7 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
->  	eb->spinning_writers = 0;
->  	atomic_set(&eb->spinning_readers, 0);
->  	atomic_set(&eb->read_locks, 0);
-> -	atomic_set(&eb->write_locks, 0);
-> +	eb->write_locks = 0;
->  #endif
->  
->  	return eb;
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index 5616b96c365d..844e595cde5b 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -190,7 +190,7 @@ struct extent_buffer {
->  	int spinning_writers;
->  	atomic_t spinning_readers;
->  	atomic_t read_locks;
-> -	atomic_t write_locks;
-> +	int write_locks;
->  	struct list_head leak_list;
->  #endif
->  };
-> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-> index 270667627977..98fccce4208c 100644
-> --- a/fs/btrfs/locking.c
-> +++ b/fs/btrfs/locking.c
-> @@ -58,17 +58,17 @@ static void btrfs_assert_tree_read_locked(struct extent_buffer *eb)
->  
->  static void btrfs_assert_tree_write_locks_get(struct extent_buffer *eb)
->  {
-> -	atomic_inc(&eb->write_locks);
-> +	eb->write_locks++;
->  }
->  
->  static void btrfs_assert_tree_write_locks_put(struct extent_buffer *eb)
->  {
-> -	atomic_dec(&eb->write_locks);
-> +	eb->write_locks--;
->  }
->  
->  void btrfs_assert_tree_locked(struct extent_buffer *eb)
->  {
-> -	BUG_ON(!atomic_read(&eb->write_locks));
-> +	BUG_ON(!eb->write_locks);
->  }
->  
->  #else
-> diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-> index c5cc435ed39a..9cb50577d982 100644
-> --- a/fs/btrfs/print-tree.c
-> +++ b/fs/btrfs/print-tree.c
-> @@ -153,7 +153,7 @@ static void print_eb_refs_lock(struct extent_buffer *eb)
->  #ifdef CONFIG_BTRFS_DEBUG
->  	btrfs_info(eb->fs_info,
->  "refs %u lock (w:%d r:%d bw:%d br:%d sw:%d sr:%d) lock_owner %u current %u",
-> -		   atomic_read(&eb->refs), atomic_read(&eb->write_locks),
-> +		   atomic_read(&eb->refs), eb->write_locks,
->  		   atomic_read(&eb->read_locks),
->  		   eb->blocking_writers,
->  		   atomic_read(&eb->blocking_readers),
-> 
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzxCEkACgkQwj2R86El
+/qgBjwgAkNRDpPIKi7UkcobWJtp2chGcO+LWQAB0JcMRimXRBv7UfhXrpFWAe4Q+
+2wTM+DDL8n7PMfqvEkOQsAYLKtqQthdYQSAPpeMLDZVwgV3Nrhqv0DInayU3GGLt
+gFugbvQaE3bWhmGoEUyyH2gSx1/8SS2i2EVDHW5moLAep3XkKKchh+bqFblNlYNz
+WRCHEdx0an/uCapvzdt8/KNfyHBWXx8fo9QU+h3KV2bkrgSdCKqDAQsGHtMI7eiD
+XNBToTbADP3VEPF0rjL7VJNuZgVDNnGa1UZ2Z7mYxS511WL0h0ABmV8Xf8z96Qea
+/aIa9+DEpzvDZgyI5IhUZ51GhyRnFg==
+=dEwJ
+-----END PGP SIGNATURE-----
+
+--dYfT2hpviMG6ABiLnRO9pJ03U3oUGD64i--
