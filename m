@@ -2,34 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B92330830
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 07:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA3A3083D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 08:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbfEaF4f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 May 2019 01:56:35 -0400
-Received: from mout.gmx.net ([212.227.15.19]:57235 "EHLO mout.gmx.net"
+        id S1726330AbfEaGBt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 May 2019 02:01:49 -0400
+Received: from mout.gmx.net ([212.227.15.19]:49001 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726779AbfEaF4f (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 May 2019 01:56:35 -0400
+        id S1725988AbfEaGBt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 May 2019 02:01:49 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1559282184;
-        bh=FbsLnkKGA4jXZYNqiNmUa95mw4W+PGuX5k9Bp+5VQkg=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=YgmgZJ1AOSqb7fYvvDPasaTzJFGXR7ZYG7Axm1WTO9JGarMcmQcDdBBApeuxZrjxB
-         AtUnZS0lNiMLx/DHjLIez4e/t3P37uqLjFrNvZPUuWTHKWf2H2rzijMNbu5Ezh0281
-         W0NN/VGHKkyrs82mIX2kxfSpgvfBZM3K08ZY5G7w=
+        s=badeba3b8450; t=1559282498;
+        bh=wdjyp8LxQUexU/JnkGl2p4FH3k562B3lM/o97kkiAkc=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:References:Date:In-Reply-To;
+        b=AlC/tIxm9twBYrfAXdxNZBdovXSionCJeLsDZObtVB2578HKHARF18JTyz3NUr7Y9
+         vBVX5XNHfomN35EEexjAd8gBFkUbLAOXW5wJXZywxXbbWlAqTyJqi8TTdcuKqJlIXS
+         qa1/QX8EvBE0fWUlFfn+Gz1NpjzNqfTCIwHaJKxw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx001
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0Ma1tv-1hJ3cH2tEV-00Lp7r; Fri, 31
- May 2019 07:56:23 +0200
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx003
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0M54L0-1gf46b3EmU-00zI1P; Fri, 31
+ May 2019 08:01:38 +0200
 Subject: Re: [PATCH] btrfs: trim: Check the range passed into to prevent
  overflow
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
         dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
 References: <20190528082154.6450-1-wqu@suse.com>
  <3ee71943-70f3-67c9-92ed-3a8719aee7f8@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+ <9218c153-f452-a4bc-f36b-d400bd835c86@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,200 +57,211 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <9218c153-f452-a4bc-f36b-d400bd835c86@gmx.com>
-Date:   Fri, 31 May 2019 13:56:12 +0800
+Message-ID: <bf97dd01-6d9c-4a8e-cc5a-1448adc47705@gmx.com>
+Date:   Fri, 31 May 2019 14:01:29 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <3ee71943-70f3-67c9-92ed-3a8719aee7f8@oracle.com>
+In-Reply-To: <9218c153-f452-a4bc-f36b-d400bd835c86@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="RO9arXksnG9sNop64QfQDbxuEqG6DOvwz"
-X-Provags-ID: V03:K1:o/er9aM94o+04Ad1fcpIjf1ZbckVh/bjdFchQUZEJlKxN6qsGa2
- faigg0jJo633N9V5qk3tJf6P3i1n06siqKi1GC3Sr1DQzFlWHydkZbnQ1b1+PmpviGCeHWl
- OarYtt6Vu9RoG8IakJjPIgivjtAdRWWWRVH0z16lKrGrVkdz12yHlhKl7eZICDSGHoAMqzl
- J3ELfBrs4itcxEAVBI5gw==
+ boundary="0epWDmvW75sFqiIKEsoOdN4Mg1GWzAtoc"
+X-Provags-ID: V03:K1:CFpto+PxMy1Vnn/ifnjs9J4D3oF1of/snUcaj9gsoS50aW+4PsE
+ 8OeS1+6lGUU9pOsqRz+Ihxc4oNev6xEmIQ1FoYE5a09v0yOFHtNyNTzjuKsBQNPWCu6vSYV
+ XeYfGe6lez60qrrTJkQH/445kkTPWBNGbJINaCXKrGh6DknxLm7rpCFEsLNvCM2RsWT5/rN
+ IwWQHZveE9SczDWlM8ydw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:6JnPrL4ZTtY=:iZ/cXLNDsdbGYnzH5DfGFG
- csXVBYlHAf5dhbtShV+wZZazeVcHa8ye9hU6tX0LfgJ5zq2mKqA+IV4YVAHsjT7JdPDB1z4Zh
- X1KxBVYhxNGLrhPRY3SLSOCCWP4j0Q4Rd9fzp/qXXJCiGaCmlKFL0frtHIYBuAOT5CCVk0+Hj
- wvNErJZPCPsCjm11pM6r1hmo92hBUtD2XTh9qF1ikKGlCx+1zbEHfvZ+r7KM0mxQtJFsGDEeY
- e3bzl/sKrVZonWI8YLOCnM9bY9114jhtit4BogN5WD8UW5sQ/tYfnt0iJbZIYEwZOdwTtif/V
- AExmBcQQQa7jLPAJ4H7UcAHLpbtpWwRRzjBg8RgpSVUnRyyrCGKxeoNWTONwPILK9nYp3ihk1
- 3Vhgj5URnf7tSwZzgQoyLXN544Roi8aiw+iCIvbosGfFAsiWECwTPGl86WmdNcIaECSrYFmjO
- eO0DL1paOhWzc8Djt7Ejd+pZwPCAmHELbpeXWilEoIsII34CsiqAZrsB2RWmGNRI0k8JaIQUV
- 8sRL3BG7yGsfzA394GETh+PzlGZI5NwgrS1jPX7fg1S5Zd55Y2RW2d0yD+jW15Bb+SSMPFJmJ
- E58zUeWJa2GB3VDd/Hfl8jnSqj5/lkuNxN8ks89xr8PAU2DyPd4Zpx3s6GkUuqzOBO5LmrAKX
- uHZWsbGsa7dsbWQBK6DBpaqLOq23zr7TY84+Yf7zxO/c1KZd6TnQt9e5jkm+DF5wxmwqsVRts
- My/1hSf0iCWXqpzw+5d0CrJFKRN57OFh/MISB6Lc99n6Wp58iO1W0L+qurozHWnenklnWusuK
- DVux0kUvC+anIXC49QEblZ8t7AvtGKMJbDAmlag9Ub+EbaT/7QrmVXHMvWDfpOwflNwEO1c5o
- AMUJHse8vWqCRcfeQmwNT+6OD7kMIHckxFADHt3C9Alh5ZRe5dSSFdPqGyrdSdw11L+VeZHpf
- zubWNiQkVszjh9w5k7leeU9Yq9Pyonbc=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:0yRWkOxDSMo=:7UTJjWZfvVBujEUm87DWVw
+ pX4co7eBEQ/Ps/+5/snSB+y1xZihToHJ0DBmcpepqgTVB+IXeNnefGb+PMYAu09qH564booCW
+ L+yxxJp3Y0CZSFbsxCW//OwsTeRA+N0/frTsaAjqsU2JAhvmlyVKvGpR+chzpwyHPwYbzLzOZ
+ 9X6oLafBVi2dVWlMfaRGSMyNqBH+IEDgrxwa7dJDiXShY/rjX8JEyP79mS6Z4A4IstWfjppt1
+ 5/faZfcILgpJLJeESXwdrLH7W+ZrFixoIdG71FQi/rZ/zy7YSTNJZ+/ABUcxPj/kr2IDd06wF
+ AHVTL+s9YM0ePSvL2I87pW4QYSWx9wAnRqNv6+NJ6jPinbXU8T6adJ7UxKjfqlRW+DaBdxrxb
+ riFD2QqB/4CVQcpm3oJAKbJImZX2hcg81VBtYLUztmkEpGSGbY39a6LXHhmoEBWYyHjHAGoVz
+ ADcfxa19zfm9MFWr0324ufIC5BWgGhleCKKCHP+OQpucftrolqRXOnRq6ltrynVbRd+p+ZxOE
+ a3XS0XO8V6eoxgpXNrM1xls8Y0QiB9Bkc9M6SjC+HYXQH07OPpIxa7s6audnJtboQhi9cQYP4
+ mIU8FkVbLBqzF/RBZVoIVfSdmxpfpxfQSaVBnXUTSG1u+o3qjalV7G9eMQFc8956mi+MXDvyh
+ uQiT+y9mRZcYawumWpvF8r2wuQvw07tNCR1LmGg9RQQ1KuzkESnvSX4Z0Kea/DKsOMIPAYZkn
+ S3tymSbGWSNKjdz9cd08wzWuMvv83ASz8gY6iJpTJrrG3ni7CEUoroyIEOfIGIerZEL0Wrcaz
+ yV4Lz1SBOJ6wthMImNfnBk2YOXBHrbe+rPHVjux5qhzC3CTC+P0Ap7y5UQY88m7v5asTJAoFo
+ BsNQB/CqjAcWO90206IvMYlWzT1ZNj+cy4b3oFa0SJ6qV8BqGkBl8Xu7PIwg176idgKBVvcbs
+ m4Sdw6BSc8WEc5dbMAZ2U14ODQd3GeTQ=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---RO9arXksnG9sNop64QfQDbxuEqG6DOvwz
-Content-Type: multipart/mixed; boundary="NK2LODk5xEvPxFSNXY3qvmfIHFNUjEDwg";
+--0epWDmvW75sFqiIKEsoOdN4Mg1GWzAtoc
+Content-Type: multipart/mixed; boundary="mCYkYq9N2HiaVHNZ3ZLEsksY5narTGd2N";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 To: Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
  dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org
-Message-ID: <9218c153-f452-a4bc-f36b-d400bd835c86@gmx.com>
+Cc: linux-btrfs@vger.kernel.org,
+ Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Message-ID: <bf97dd01-6d9c-4a8e-cc5a-1448adc47705@gmx.com>
 Subject: Re: [PATCH] btrfs: trim: Check the range passed into to prevent
  overflow
 References: <20190528082154.6450-1-wqu@suse.com>
  <3ee71943-70f3-67c9-92ed-3a8719aee7f8@oracle.com>
-In-Reply-To: <3ee71943-70f3-67c9-92ed-3a8719aee7f8@oracle.com>
+ <9218c153-f452-a4bc-f36b-d400bd835c86@gmx.com>
+In-Reply-To: <9218c153-f452-a4bc-f36b-d400bd835c86@gmx.com>
 
---NK2LODk5xEvPxFSNXY3qvmfIHFNUjEDwg
+--mCYkYq9N2HiaVHNZ3ZLEsksY5narTGd2N
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
-
-On 2019/5/31 =E4=B8=8B=E5=8D=881:35, Anand Jain wrote:
-> On 5/28/19 4:21 PM, Qu Wenruo wrote:
->> Normally the range->len is set to default value (U64_MAX), but when it=
-'s
->> not default value, we should check if the range overflows.
->>
->> And if overflows, return -EINVAL before doing anything.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On 2019/5/31 =E4=B8=8B=E5=8D=881:56, Qu Wenruo wrote:
 >=20
-> fstests patch
-> =C2=A0=C2=A0 https://patchwork.kernel.org/patch/10964105/
-> makes the sub-test like [1] in generic/260 skipped
 >=20
-> [1]
-> -----
-> fssize=3D$($DF_PROG -k | grep "$SCRATCH_MNT" | grep "$SCRATCH_DEV"=C2=A0=
+> On 2019/5/31 =E4=B8=8B=E5=8D=881:35, Anand Jain wrote:
+>> On 5/28/19 4:21 PM, Qu Wenruo wrote:
+>>> Normally the range->len is set to default value (U64_MAX), but when i=
+t's
+>>> not default value, we should check if the range overflows.
+>>>
+>>> And if overflows, return -EINVAL before doing anything.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>
+>> fstests patch
+>> =C2=A0=C2=A0 https://patchwork.kernel.org/patch/10964105/
+>> makes the sub-test like [1] in generic/260 skipped
+>>
+>> [1]
+>> -----
+>> fssize=3D$($DF_PROG -k | grep "$SCRATCH_MNT" | grep "$SCRATCH_DEV"=C2=A0=
  | awk
-> '{print $3}')
-> beyond_eofs=3D$((fssize*2048))
-> fstrim -o $beyond_eofs $SCRATCH_MNT <-- should_fail
-> -----
+>> '{print $3}')
+>> beyond_eofs=3D$((fssize*2048))
+>> fstrim -o $beyond_eofs $SCRATCH_MNT <-- should_fail
+>> -----
+>=20
+> As I mentioned in the commit message and offline, the idea of *end of
+> filesystem* is not clear enough.
+>=20
+> For regular fs, they have almost every byte mapped directly to its bloc=
+k device
+> (except external journal).
+> So its end of filesystem is easy to determine.
+> But we can still argue, how to trim the external journal device? Or
+> should the external journal device contribute to the end of the fs?
+>=20
+>=20
+> Now for btrfs, it's a dm-linear space, then dm-raid/dm-linear for each
+> chunk. Thus we can argue either the end of btrfs is U64MAX (from
+> dm-linear view), or the end of last block group (from mapped chunk view=
+).
+>=20
+> Further more, how to define end of a filesystem when the fs spans acros=
+s
+> several devices?
+>=20
+> I'd say this is a good timing for us to make the fstrim behavior more c=
+lear.
 
-As I mentioned in the commit message and offline, the idea of *end of
-filesystem* is not clear enough.
-
-For regular fs, they have every byte mapped directly to its block device
-(except external journal).
-So its end of filesystem is easy to determine.
-But we can still argue, how to trim the external journal device? Or
-should the external journal device contribute to the end of the fs?
-
-
-Now for btrfs, it's a dm-linear space, then dm-raid/dm-linear for each
-chunk. Thus we can argue either the end of btrfs is U64MAX (from
-dm-linear view), or the end of last block group (from mapped chunk view).=
-
-
-Further more, how to define end of a filesystem when the fs spans across
-several devices?
-
-I'd say this is a good timing for us to make the fstrim behavior more cle=
-ar.
-
-Thanks,
-Qu
+Also add fsdevel list into the discussion.
 
 >=20
-> Originally [1] reported expected EINVAL until the patch
-> =C2=A0 6ba9fc8e628b btrfs: Ensure btrfs_trim_fs can trim the whole file=
-system
+> Thanks,
+> Qu
 >=20
-> Not sure how will some of the production machines will find this as,
-> not compatible with previous versions? Nevertheless in practical terms
-> things are fine.
->=20
-> =C2=A0Reviewed-by: Anand Jain <anand.jain@oracle.com>
->=20
-> Thanks, Anand
->=20
->> ---
->> =C2=A0 fs/btrfs/extent-tree.c | 14 +++++++++++---
->> =C2=A0 1 file changed, 11 insertions(+), 3 deletions(-)
 >>
->> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
->> index f79e477a378e..62bfba6d3c07 100644
->> --- a/fs/btrfs/extent-tree.c
->> +++ b/fs/btrfs/extent-tree.c
->> @@ -11245,6 +11245,7 @@ int btrfs_trim_fs(struct btrfs_fs_info
->> *fs_info, struct fstrim_range *range)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_device *device;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct list_head *devices;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 group_trimmed;
->> +=C2=A0=C2=A0=C2=A0 u64 range_end =3D U64_MAX;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 start;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 end;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 trimmed =3D 0;
->> @@ -11254,16 +11255,23 @@ int btrfs_trim_fs(struct btrfs_fs_info
->> *fs_info, struct fstrim_range *range)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int dev_ret =3D 0;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret =3D 0;
->> =C2=A0 +=C2=A0=C2=A0=C2=A0 /*
->> +=C2=A0=C2=A0=C2=A0=C2=A0 * Check range overflow if range->len is set.=
+>> Originally [1] reported expected EINVAL until the patch
+>> =C2=A0 6ba9fc8e628b btrfs: Ensure btrfs_trim_fs can trim the whole fil=
+esystem
+>>
+>> Not sure how will some of the production machines will find this as,
+>> not compatible with previous versions? Nevertheless in practical terms=
 
->> +=C2=A0=C2=A0=C2=A0=C2=A0 * The default range->len is U64_MAX.
->> +=C2=A0=C2=A0=C2=A0=C2=A0 */
->> +=C2=A0=C2=A0=C2=A0 if (range->len !=3D U64_MAX && check_add_overflow(=
-range->start,
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+>> things are fine.
+>>
+>> =C2=A0Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>>
+>> Thanks, Anand
+>>
+>>> ---
+>>> =C2=A0 fs/btrfs/extent-tree.c | 14 +++++++++++---
+>>> =C2=A0 1 file changed, 11 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+>>> index f79e477a378e..62bfba6d3c07 100644
+>>> --- a/fs/btrfs/extent-tree.c
+>>> +++ b/fs/btrfs/extent-tree.c
+>>> @@ -11245,6 +11245,7 @@ int btrfs_trim_fs(struct btrfs_fs_info
+>>> *fs_info, struct fstrim_range *range)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_device *device;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct list_head *devices;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 group_trimmed;
+>>> +=C2=A0=C2=A0=C2=A0 u64 range_end =3D U64_MAX;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 start;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 end;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 trimmed =3D 0;
+>>> @@ -11254,16 +11255,23 @@ int btrfs_trim_fs(struct btrfs_fs_info
+>>> *fs_info, struct fstrim_range *range)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int dev_ret =3D 0;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret =3D 0;
+>>> =C2=A0 +=C2=A0=C2=A0=C2=A0 /*
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Check range overflow if range->len is set=
+=2E
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * The default range->len is U64_MAX.
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>> +=C2=A0=C2=A0=C2=A0 if (range->len !=3D U64_MAX && check_add_overflow=
+(range->start,
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
 =A0=C2=A0=C2=A0=C2=A0 range->len, &range_end))
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
->> +
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache =3D btrfs_lookup_first_block_grou=
-p(fs_info, range->start);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (; cache; cache =3D next_block_grou=
-p(cache)) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cache->key.objectid >=3D=
- (range->start + range->len)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cache->key.objectid >=3D=
- range_end) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 btrfs_put_block_group(cache);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 break;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 start =3D=
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+>>> +
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache =3D btrfs_lookup_first_block_gro=
+up(fs_info, range->start);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (; cache; cache =3D next_block_gro=
+up(cache)) {
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cache->key.objectid >=
+=3D (range->start + range->len)) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cache->key.objectid >=
+=3D range_end) {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 btrfs_put_block_group(cache);
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 break;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 start =3D=
  max(range->start, cache->key.objectid);
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 end =3D min(range->start +=
- range->len,
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 end =3D min(range->start =
++ range->len,
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
 =A0=C2=A0=C2=A0=C2=A0 cache->key.objectid + cache->key.offset);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 end =3D min(range_end, cac=
-he->key.objectid + cache->key.offset);
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (end =
-- start >=3D range->minlen) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 if (!block_group_cache_done(cache)) {
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 end =3D min(range_end, ca=
+che->key.objectid + cache->key.offset);
+>>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (end=
+ - start >=3D range->minlen) {
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 if (!block_group_cache_done(cache)) {
+>>>
 >>
 >=20
 
 
---NK2LODk5xEvPxFSNXY3qvmfIHFNUjEDwg--
+--mCYkYq9N2HiaVHNZ3ZLEsksY5narTGd2N--
 
---RO9arXksnG9sNop64QfQDbxuEqG6DOvwz
+--0epWDmvW75sFqiIKEsoOdN4Mg1GWzAtoc
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzwwfwACgkQwj2R86El
-/qgYpAf/de4mxnT8G1p5xpqqFSbHCfujCrYlDSgOn1yi2qRuF9WX52XpfuU02i/7
-ywJ6THsK90G/9OX9Yk8lTPSZRJLaZeh9S7+gURMJgEd6fFRZLGn5nVBJRQbcPcN0
-0Hc5AG+Jw7dyGiCY3L22v251pwX0XIsGSntpH74CeWnAYW2Ue7kDcTuF/Yl5mJiC
-W16zKfr152YYZv1cPsaV0wxLvJhjRnGzNQPTlF2ODTixQ2iLi4NG0cNFiFR9iyHi
-buIBf0GZ1+uYDaPiBM2V02QBK/vlc7TULXHC55P4/0vQM15xd71B9SdZSiif+vPh
-0roDOQMwGyYmLPRO+vepbBhAwru16Q==
-=iXTA
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlzwwzkACgkQwj2R86El
+/qi+Bwf/TdKn05UfFXEdAwtBpCQ2NI2ZTXL6FBnYZGdOY7v/gcr6anGsUP2aZCGT
+/wb8Tuz5ILMoPQSMbmh+wSPfuSu2G6wMSs+SX161fNI7nZtfWzIyOKfs1kFgm4Kt
+CNalIq6tMwRDsH8AighQB/2LXSnOfZhezaxzYsMqvdTsZ9h/j2vDkqPzC3l1Dy5G
+IPL+dsv9+jNNlYKOlEfdxHFNEoK1rkzXCYJWcm1Id73WYN+yCu+9SMDesnZOveA+
+xOnYDqa9lA6Q5nUJcAUOJ7t/3/62GU7UuqyUrpimLtLJ1jP3Pbs8DQfEiBN9p20S
+4aaV/ey+ioobiCN+3heZjdn9hyLPuA==
+=k0Zi
 -----END PGP SIGNATURE-----
 
---RO9arXksnG9sNop64QfQDbxuEqG6DOvwz--
+--0epWDmvW75sFqiIKEsoOdN4Mg1GWzAtoc--
