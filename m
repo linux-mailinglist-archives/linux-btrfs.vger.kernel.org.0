@@ -2,101 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9080931533
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 21:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C1F5315C5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 22:00:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727267AbfEaTVe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 May 2019 15:21:34 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:53601 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726808AbfEaTVd (ORCPT
+        id S1727430AbfEaUAh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 May 2019 16:00:37 -0400
+Received: from forward104j.mail.yandex.net ([5.45.198.247]:55548 "EHLO
+        forward104j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727282AbfEaUAg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 May 2019 15:21:33 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4VJLJYS021826
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 31 May 2019 15:21:20 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 5EE8C420481; Fri, 31 May 2019 15:21:19 -0400 (EDT)
-Date:   Fri, 31 May 2019 15:21:19 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Jan Kara <jack@suse.cz>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Dave Chinner <david@fromorbit.com>, Chris Mason <clm@fb.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
-Message-ID: <20190531192119.GB3066@mit.edu>
-References: <20190527172655.9287-1-amir73il@gmail.com>
- <20190528202659.GA12412@mit.edu>
- <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
- <CAOQ4uxgj94WR82iHE4PDGSD0UDxG5sCtr+Sv+t1sOHHmnXFYzQ@mail.gmail.com>
- <20190531164136.GA3066@mit.edu>
- <CAOQ4uxjp5psDBLXBu+26xRLpV50txqksVFe6ZhUo0io8kgoH4A@mail.gmail.com>
+        Fri, 31 May 2019 16:00:36 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Fri, 31 May 2019 16:00:35 EDT
+Received: from mxback16j.mail.yandex.net (mxback16j.mail.yandex.net [IPv6:2a02:6b8:0:1619::92])
+        by forward104j.mail.yandex.net (Yandex) with ESMTP id 005A34A0413;
+        Fri, 31 May 2019 22:53:53 +0300 (MSK)
+Received: from smtp3o.mail.yandex.net (smtp3o.mail.yandex.net [2a02:6b8:0:1a2d::27])
+        by mxback16j.mail.yandex.net (nwsmtp/Yandex) with ESMTP id d5NH6O2W6Q-rq10wlFj;
+        Fri, 31 May 2019 22:53:52 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1559332432;
+        bh=5LPGI2g/Pppy4VTLsIsroNZrvadc1PssQ7CE756xPVY=;
+        h=Subject:To:From:Message-Id:Cc:Date;
+        b=C1B4JLYGly9KmpERhIjPTdLL2l+F3MVcts0MaZ0pYdvA3YA/OCYtYtO9phRCcIBv6
+         dGuWCd5QtEWAQN/P4lAfKV5SLLDgDxtSGWHE1+jCPRWWnE7/JnRRJ14EwOkoX8AJ8u
+         nWtqmJ4p6YnhbbDQzVsTihsr3BTxpRYvzoqwYJLI=
+Authentication-Results: mxback16j.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by smtp3o.mail.yandex.net (nwsmtp/Yandex) with ESMTPSA id aBebW1wM4V-rphi5q2w;
+        Fri, 31 May 2019 22:53:51 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+From:   Andrey Abramov <st5pub@yandex.ru>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        st5pub@yandex.ru
+Subject: [PATCH] btrfs: Fix -Wunused-but-set-variable warnings
+Date:   Fri, 31 May 2019 22:53:49 +0300
+Message-Id: <20190531195349.31129-1-st5pub@yandex.ru>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxjp5psDBLXBu+26xRLpV50txqksVFe6ZhUo0io8kgoH4A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, May 31, 2019 at 08:22:06PM +0300, Amir Goldstein wrote:
-> >
-> > This is I think more precise:
-> >
-> >     This guarantee can be achieved by calling fsync(2) before linking
-> >     the file, but there may be more performant ways to provide these
-> >     semantics.  In particular, note that the use of the AT_ATOMIC_DATA
-> >     flag does *not* guarantee that the new link created by linkat(2)
-> >     will be persisted after a crash.
-> 
-> OK. Just to be clear, mentioning hardlinks and st_link is not needed
-> in your opinion?
+Fix -Wunused-but-set-variable warnings in raid56.c and sysfs.c files
 
-Your previous text stated that it was undefined what would happen to
-all hardlinks belonging to the file, and that would imply that if a
-file had N hard links, some in the directory which we are modifying,
-and some in other directories, that somehow any of them might not be
-present after the crash.  And that's not the case.  Suppose the file
-currently has hardlinks test1/foo, test1/quux, and test2/baz --- and
-we've called syncfs(2) on the file system so everything is persisted,
-and then linkat(2) is used to create a new hardlink, test1/bar.
+Signed-off-by: Andrey Abramov <st5pub@yandex.ru>
+---
+ fs/btrfs/raid56.c | 32 +++++++++++---------------------
+ fs/btrfs/sysfs.c  |  5 +----
+ 2 files changed, 12 insertions(+), 25 deletions(-)
 
-After a crash, the existence of test1/foo, test1/quux, and test2/baz
-are not in question.  It's only unclear whether or not test1/bar
-exists after the crash.
+diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+index f3d0576dd327..4ab29eacfdf3 100644
+--- a/fs/btrfs/raid56.c
++++ b/fs/btrfs/raid56.c
+@@ -1182,22 +1182,17 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
+ 	int nr_data = rbio->nr_data;
+ 	int stripe;
+ 	int pagenr;
+-	int p_stripe = -1;
+-	int q_stripe = -1;
++	int is_q_stripe = 0;
+ 	struct bio_list bio_list;
+ 	struct bio *bio;
+ 	int ret;
+ 
+ 	bio_list_init(&bio_list);
+ 
+-	if (rbio->real_stripes - rbio->nr_data == 1) {
+-		p_stripe = rbio->real_stripes - 1;
+-	} else if (rbio->real_stripes - rbio->nr_data == 2) {
+-		p_stripe = rbio->real_stripes - 2;
+-		q_stripe = rbio->real_stripes - 1;
+-	} else {
++	if (rbio->real_stripes - rbio->nr_data == 2)
++		is_q_stripe = 1;
++	else if (rbio->real_stripes - rbio->nr_data != 1)
+ 		BUG();
+-	}
+ 
+ 	/* at this point we either have a full stripe,
+ 	 * or we've read the full stripe from the drive.
+@@ -1241,7 +1236,7 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
+ 		SetPageUptodate(p);
+ 		pointers[stripe++] = kmap(p);
+ 
+-		if (q_stripe != -1) {
++		if (is_q_stripe) {
+ 
+ 			/*
+ 			 * raid6, add the qstripe and call the
+@@ -2340,8 +2335,7 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+ 	int nr_data = rbio->nr_data;
+ 	int stripe;
+ 	int pagenr;
+-	int p_stripe = -1;
+-	int q_stripe = -1;
++	int is_q_stripe = 0;
+ 	struct page *p_page = NULL;
+ 	struct page *q_page = NULL;
+ 	struct bio_list bio_list;
+@@ -2351,14 +2345,10 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+ 
+ 	bio_list_init(&bio_list);
+ 
+-	if (rbio->real_stripes - rbio->nr_data == 1) {
+-		p_stripe = rbio->real_stripes - 1;
+-	} else if (rbio->real_stripes - rbio->nr_data == 2) {
+-		p_stripe = rbio->real_stripes - 2;
+-		q_stripe = rbio->real_stripes - 1;
+-	} else {
++	if (rbio->real_stripes - rbio->nr_data == 2)
++		is_q_stripe = 1;
++	else if (rbio->real_stripes - rbio->nr_data != 1)
+ 		BUG();
+-	}
+ 
+ 	if (bbio->num_tgtdevs && bbio->tgtdev_map[rbio->scrubp]) {
+ 		is_replace = 1;
+@@ -2380,7 +2370,7 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+ 		goto cleanup;
+ 	SetPageUptodate(p_page);
+ 
+-	if (q_stripe != -1) {
++	if (is_q_stripe) {
+ 		q_page = alloc_page(GFP_NOFS | __GFP_HIGHMEM);
+ 		if (!q_page) {
+ 			__free_page(p_page);
+@@ -2403,7 +2393,7 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+ 		/* then add the parity stripe */
+ 		pointers[stripe++] = kmap(p_page);
+ 
+-		if (q_stripe != -1) {
++		if (is_q_stripe) {
+ 
+ 			/*
+ 			 * raid6, add the qstripe and call the
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 2f078b77fe14..514b75dec4a9 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -887,13 +887,10 @@ void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
+ {
+ 	struct btrfs_fs_devices *fs_devs;
+ 	struct kobject *fsid_kobj;
+-	u64 features;
+-	int ret;
+ 
+ 	if (!fs_info)
+ 		return;
+ 
+-	features = get_features(fs_info, set);
+ 	ASSERT(bit & supported_feature_masks[set]);
+ 
+ 	fs_devs = fs_info->fs_devices;
+@@ -907,7 +904,7 @@ void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
+ 	 * to use sysfs_update_group but some refactoring is needed first.
+ 	 */
+ 	sysfs_remove_group(fsid_kobj, &btrfs_feature_attr_group);
+-	ret = sysfs_create_group(fsid_kobj, &btrfs_feature_attr_group);
++	sysfs_create_group(fsid_kobj, &btrfs_feature_attr_group);
+ }
+ 
+ static int btrfs_init_debugfs(void)
+-- 
+2.20.1
 
-As far as st_nlink is concerned, the presumption is that the file
-system itself will be consistent after the crash.  So if the hard link
-has been persisted, then st_nlink will be incremented, if it has not,
-it won't be.
-
-Finally, one thing which gets hard about trying to state these sorts
-of things as guarantees.  Sometimes, the file system won't *know*
-whether or not it can make these guarantees.  For example what should
-we do if the file system is mounted with nobarrier?  If the overall
-hardware design includes UPS's or some other kind of battery backup,
-the guarantee may very well exist.  But the file system code can't
-know whether or not that is the case.  So my inclination is to allow
-the file system to accept the flag even if the mount option nobarrier
-is in play --- but in that case, the guarantee is only if the rest of
-the system is designed appropriately.
-
-(For that matter, it used to be that there existed hard drives that
-lied about whether they had a writeback cache, and/or made the CACHE
-FLUSH a no-op so they could win the Winbench benchmarketing wars,
-which was worth millions and millions of dollars in sales.  So we can
-only assume that the hardware isn't lying to us when we use words like
-"guarantee".)
-
-						- Ted
