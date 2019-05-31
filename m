@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6595330A48
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 10:29:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3A5630B3E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 11:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726331AbfEaI3h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 May 2019 04:29:37 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51482 "EHLO mx1.suse.de"
+        id S1726403AbfEaJTT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 May 2019 05:19:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59916 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725963AbfEaI3h (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 May 2019 04:29:37 -0400
+        id S1726002AbfEaJTT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 May 2019 05:19:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6FFB5AB5F
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2019 08:29:35 +0000 (UTC)
-Subject: Re: [PATCH 1/3] btrfs: switch extent_buffer blocking_writers from
+        by mx1.suse.de (Postfix) with ESMTP id 387F5AE15
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2019 09:19:16 +0000 (UTC)
+Subject: Re: [PATCH 2/3] btrfs: switch extent_buffer spinning_writers from
  atomic to int
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1559233731.git.dsterba@suse.com>
- <ebba72a9ef564b27fb5f652e3edcfbca3e981a10.1559233731.git.dsterba@suse.com>
+ <6dfcb89b254ee5016edfa9816fce3487a23b446c.1559233731.git.dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <ed094516-d79b-0981-5f1e-52002db1d874@suse.com>
-Date:   Fri, 31 May 2019 11:29:33 +0300
+Message-ID: <41aca846-afb1-9b83-f442-d791eb929c36@suse.com>
+Date:   Fri, 31 May 2019 12:19:15 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <ebba72a9ef564b27fb5f652e3edcfbca3e981a10.1559233731.git.dsterba@suse.com>
+In-Reply-To: <6dfcb89b254ee5016edfa9816fce3487a23b446c.1559233731.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,195 +81,87 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.05.19 г. 19:31 ч., David Sterba wrote:
-> The blocking_writers is either 0 or 1 and always updated under the lock,
-> so we don't need the atomic_t semantics.>
+> The spinning_writers is either 0 or 1 and always updated under the lock,
+> so we don't need the atomic_t semantics.
+> 
 > Signed-off-by: David Sterba <dsterba@suse.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
 >  fs/btrfs/extent_io.c  |  2 +-
 >  fs/btrfs/extent_io.h  |  2 +-
->  fs/btrfs/locking.c    | 46 +++++++++++++++++++------------------------
+>  fs/btrfs/locking.c    | 10 +++++-----
 >  fs/btrfs/print-tree.c |  2 +-
->  4 files changed, 23 insertions(+), 29 deletions(-)
+>  4 files changed, 8 insertions(+), 8 deletions(-)
 > 
 > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 2f38c10d2bfb..57b6de9df7c4 100644
+> index 57b6de9df7c4..71ee9e976307 100644
 > --- a/fs/btrfs/extent_io.c
 > +++ b/fs/btrfs/extent_io.c
-> @@ -4823,7 +4823,7 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
->  	eb->bflags = 0;
->  	rwlock_init(&eb->lock);
->  	atomic_set(&eb->blocking_readers, 0);
-> -	atomic_set(&eb->blocking_writers, 0);
-> +	eb->blocking_writers = 0;
->  	eb->lock_nested = false;
->  	init_waitqueue_head(&eb->write_lock_wq);
->  	init_waitqueue_head(&eb->read_lock_wq);
+> @@ -4842,7 +4842,7 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
+>  	BUG_ON(len > MAX_INLINE_EXTENT_BUFFER_SIZE);
+>  
+>  #ifdef CONFIG_BTRFS_DEBUG
+> -	atomic_set(&eb->spinning_writers, 0);
+> +	eb->spinning_writers = 0;
+>  	atomic_set(&eb->spinning_readers, 0);
+>  	atomic_set(&eb->read_locks, 0);
+>  	atomic_set(&eb->write_locks, 0);
 > diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index aa18a16a6ed7..201da61dfc21 100644
+> index 201da61dfc21..5616b96c365d 100644
 > --- a/fs/btrfs/extent_io.h
 > +++ b/fs/btrfs/extent_io.h
-> @@ -167,7 +167,7 @@ struct extent_buffer {
->  	struct rcu_head rcu_head;
->  	pid_t lock_owner;
->  
-> -	atomic_t blocking_writers;
-> +	int blocking_writers;
->  	atomic_t blocking_readers;
->  	bool lock_nested;
->  	/* >= 0 if eb belongs to a log tree, -1 otherwise */
+> @@ -187,7 +187,7 @@ struct extent_buffer {
+>  	wait_queue_head_t read_lock_wq;
+>  	struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
+>  #ifdef CONFIG_BTRFS_DEBUG
+> -	atomic_t spinning_writers;
+> +	int spinning_writers;
+>  	atomic_t spinning_readers;
+>  	atomic_t read_locks;
+>  	atomic_t write_locks;
 > diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-> index 2f6c3c7851ed..5feb01147e19 100644
+> index 5feb01147e19..270667627977 100644
 > --- a/fs/btrfs/locking.c
 > +++ b/fs/btrfs/locking.c
-> @@ -111,10 +111,10 @@ void btrfs_set_lock_blocking_write(struct extent_buffer *eb)
->  	 */
->  	if (eb->lock_nested && current->pid == eb->lock_owner)
->  		return;
-> -	if (atomic_read(&eb->blocking_writers) == 0) {
-> +	if (eb->blocking_writers == 0) {
->  		btrfs_assert_spinning_writers_put(eb);
->  		btrfs_assert_tree_locked(eb);
-> -		atomic_inc(&eb->blocking_writers);
-> +		eb->blocking_writers++;
->  		write_unlock(&eb->lock);
->  	}
->  }
-> @@ -148,12 +148,11 @@ void btrfs_clear_lock_blocking_write(struct extent_buffer *eb)
->  	 */
->  	if (eb->lock_nested && current->pid == eb->lock_owner)
->  		return;
-> -	BUG_ON(atomic_read(&eb->blocking_writers) != 1);
->  	write_lock(&eb->lock);
-> +	BUG_ON(eb->blocking_writers != 1);
->  	btrfs_assert_spinning_writers_get(eb);
-> -	/* atomic_dec_and_test implies a barrier */
-> -	if (atomic_dec_and_test(&eb->blocking_writers))
-> -		cond_wake_up_nomb(&eb->write_lock_wq);
-> +	if (--eb->blocking_writers == 0)
-> +		cond_wake_up(&eb->write_lock_wq);
+> @@ -15,19 +15,19 @@
+>  #ifdef CONFIG_BTRFS_DEBUG
+>  static void btrfs_assert_spinning_writers_get(struct extent_buffer *eb)
+>  {
+> -	WARN_ON(atomic_read(&eb->spinning_writers));
+> -	atomic_inc(&eb->spinning_writers);
+> +	WARN_ON(eb->spinning_writers);
+> +	eb->spinning_writers++;
 >  }
 >  
->  /*
-> @@ -167,12 +166,10 @@ void btrfs_tree_read_lock(struct extent_buffer *eb)
->  	if (trace_btrfs_tree_read_lock_enabled())
->  		start_ns = ktime_get_ns();
->  again:
-> -	BUG_ON(!atomic_read(&eb->blocking_writers) &&
-> -	       current->pid == eb->lock_owner);
-> -
->  	read_lock(&eb->lock);
-> -	if (atomic_read(&eb->blocking_writers) &&
-> -	    current->pid == eb->lock_owner) {
-> +	BUG_ON(eb->blocking_writers == 0 &&
-> +	       current->pid == eb->lock_owner);
-> +	if (eb->blocking_writers && current->pid == eb->lock_owner) {
->  		/*
->  		 * This extent is already write-locked by our thread. We allow
->  		 * an additional read lock to be added because it's for the same
-> @@ -185,10 +182,10 @@ void btrfs_tree_read_lock(struct extent_buffer *eb)
->  		trace_btrfs_tree_read_lock(eb, start_ns);
->  		return;
->  	}
-> -	if (atomic_read(&eb->blocking_writers)) {
-> +	if (eb->blocking_writers) {
->  		read_unlock(&eb->lock);
->  		wait_event(eb->write_lock_wq,
-> -			   atomic_read(&eb->blocking_writers) == 0);
-> +			   eb->blocking_writers == 0);
->  		goto again;
->  	}
->  	btrfs_assert_tree_read_locks_get(eb);
-> @@ -203,11 +200,11 @@ void btrfs_tree_read_lock(struct extent_buffer *eb)
->   */
->  int btrfs_tree_read_lock_atomic(struct extent_buffer *eb)
+>  static void btrfs_assert_spinning_writers_put(struct extent_buffer *eb)
 >  {
-> -	if (atomic_read(&eb->blocking_writers))
-> +	if (eb->blocking_writers)
->  		return 0;
+> -	WARN_ON(atomic_read(&eb->spinning_writers) != 1);
+> -	atomic_dec(&eb->spinning_writers);
+> +	WARN_ON(eb->spinning_writers != 1);
+> +	eb->spinning_writers--;
+>  }
 >  
->  	read_lock(&eb->lock);
-> -	if (atomic_read(&eb->blocking_writers)) {
-> +	if (eb->blocking_writers) {
->  		read_unlock(&eb->lock);
->  		return 0;
->  	}
-> @@ -223,13 +220,13 @@ int btrfs_tree_read_lock_atomic(struct extent_buffer *eb)
->   */
->  int btrfs_try_tree_read_lock(struct extent_buffer *eb)
+>  static void btrfs_assert_no_spinning_writers(struct extent_buffer *eb)
 >  {
-> -	if (atomic_read(&eb->blocking_writers))
-> +	if (eb->blocking_writers)
->  		return 0;
+> -	WARN_ON(atomic_read(&eb->spinning_writers));
+> +	WARN_ON(eb->spinning_writers);
+>  }
+
+IMO longterm  it will be good if those debug functions contained
+lockdep_assert_held_exclusive/read macros for posterity.
+
 >  
->  	if (!read_trylock(&eb->lock))
->  		return 0;
->  
-> -	if (atomic_read(&eb->blocking_writers)) {
-> +	if (eb->blocking_writers) {
->  		read_unlock(&eb->lock);
->  		return 0;
->  	}
-> @@ -245,13 +242,11 @@ int btrfs_try_tree_read_lock(struct extent_buffer *eb)
->   */
->  int btrfs_try_tree_write_lock(struct extent_buffer *eb)
->  {
-> -	if (atomic_read(&eb->blocking_writers) ||
-> -	    atomic_read(&eb->blocking_readers))
-> +	if (eb->blocking_writers || atomic_read(&eb->blocking_readers))
->  		return 0;
->  
->  	write_lock(&eb->lock);
-> -	if (atomic_read(&eb->blocking_writers) ||
-> -	    atomic_read(&eb->blocking_readers)) {
-> +	if (eb->blocking_writers || atomic_read(&eb->blocking_readers)) {
->  		write_unlock(&eb->lock);
->  		return 0;
->  	}
-> @@ -322,10 +317,9 @@ void btrfs_tree_lock(struct extent_buffer *eb)
->  	WARN_ON(eb->lock_owner == current->pid);
->  again:
->  	wait_event(eb->read_lock_wq, atomic_read(&eb->blocking_readers) == 0);
-> -	wait_event(eb->write_lock_wq, atomic_read(&eb->blocking_writers) == 0);
-> +	wait_event(eb->write_lock_wq, eb->blocking_writers == 0);
->  	write_lock(&eb->lock);
-> -	if (atomic_read(&eb->blocking_readers) ||
-> -	    atomic_read(&eb->blocking_writers)) {
-> +	if (atomic_read(&eb->blocking_readers) || eb->blocking_writers) {
->  		write_unlock(&eb->lock);
->  		goto again;
->  	}
-> @@ -340,7 +334,7 @@ void btrfs_tree_lock(struct extent_buffer *eb)
->   */
->  void btrfs_tree_unlock(struct extent_buffer *eb)
->  {
-> -	int blockers = atomic_read(&eb->blocking_writers);
-> +	int blockers = eb->blocking_writers;
->  
->  	BUG_ON(blockers > 1);
->  
-> @@ -351,7 +345,7 @@ void btrfs_tree_unlock(struct extent_buffer *eb)
->  
->  	if (blockers) {
->  		btrfs_assert_no_spinning_writers(eb);
-> -		atomic_dec(&eb->blocking_writers);
-> +		eb->blocking_writers--;
->  		/* Use the lighter barrier after atomic */
->  		smp_mb__after_atomic();
->  		cond_wake_up_nomb(&eb->write_lock_wq);
+>  static void btrfs_assert_spinning_readers_get(struct extent_buffer *eb)
 > diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-> index 1141ca5fae6a..7cb4f1fbe043 100644
+> index 7cb4f1fbe043..c5cc435ed39a 100644
 > --- a/fs/btrfs/print-tree.c
 > +++ b/fs/btrfs/print-tree.c
-> @@ -155,7 +155,7 @@ static void print_eb_refs_lock(struct extent_buffer *eb)
->  "refs %u lock (w:%d r:%d bw:%d br:%d sw:%d sr:%d) lock_owner %u current %u",
->  		   atomic_read(&eb->refs), atomic_read(&eb->write_locks),
+> @@ -157,7 +157,7 @@ static void print_eb_refs_lock(struct extent_buffer *eb)
 >  		   atomic_read(&eb->read_locks),
-> -		   atomic_read(&eb->blocking_writers),
-> +		   eb->blocking_writers,
+>  		   eb->blocking_writers,
 >  		   atomic_read(&eb->blocking_readers),
->  		   atomic_read(&eb->spinning_writers),
+> -		   atomic_read(&eb->spinning_writers),
+> +		   eb->spinning_writers,
 >  		   atomic_read(&eb->spinning_readers),
+>  		   eb->lock_owner, current->pid);
+>  #endif
 > 
