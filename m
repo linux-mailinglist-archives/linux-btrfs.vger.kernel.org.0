@@ -2,56 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C22D31633
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 22:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C6A31635
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 22:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727551AbfEaUiX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 May 2019 16:38:23 -0400
-Received: from forward500p.mail.yandex.net ([77.88.28.110]:47483 "EHLO
-        forward500p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727508AbfEaUiW (ORCPT
+        id S1727589AbfEaUi1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 May 2019 16:38:27 -0400
+Received: from smtprelay0203.hostedemail.com ([216.40.44.203]:58745 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727576AbfEaUi0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 May 2019 16:38:22 -0400
-X-Greylist: delayed 399 seconds by postgrey-1.27 at vger.kernel.org; Fri, 31 May 2019 16:38:22 EDT
-Received: from mxback15g.mail.yandex.net (mxback15g.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b7:94])
-        by forward500p.mail.yandex.net (Yandex) with ESMTP id AEF9294021E;
-        Fri, 31 May 2019 23:31:39 +0300 (MSK)
-Received: from localhost (localhost [::1])
-        by mxback15g.mail.yandex.net (nwsmtp/Yandex) with ESMTP id NSNA6E8kDg-VcHaliMO;
-        Fri, 31 May 2019 23:31:38 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1559334698;
-        bh=aOESg6dc3jbmPoXHPMF+s4E+BmTMe8uF7HOOkbnQtDE=;
-        h=References:Date:Message-Id:Cc:Subject:To:From;
-        b=v5/9XNiapzgSOdFGG8jyLT/DIzELyaVf4t4w7spq6rg8HbjtKxp8BF/qN78qE7sPp
-         AMKxWuZkP0rspkDlKk03cjwPLK/NV/k2pBEMST2c8bcCg4pjrJUmNSfEhWlfTbW2dr
-         IriyRwed5+DUabngfPbCo2OgheVZgLei28FiA690=
-Authentication-Results: mxback15g.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by myt6-add70abb4f02.qloud-c.yandex.net with HTTP;
-        Fri, 31 May 2019 23:31:38 +0300
-From:   Andrey Abramov <st5pub@yandex.ru>
-To:     Joe Perches <joe@perches.com>, "clm@fb.com" <clm@fb.com>,
+        Fri, 31 May 2019 16:38:26 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 764EC3D05;
+        Fri, 31 May 2019 20:38:24 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::,RULES_HIT:41:355:379:421:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3873:3874:4321:5007:10004:10400:10848:11232:11473:11658:11914:12048:12114:12740:12760:12895:13069:13311:13357:13439:14181:14659:14721:14915:21080:21627:30012:30054:30064:30091,0,RBL:23.242.196.136:@perches.com:.lbl8.mailshell.net-62.8.0.180 64.201.201.201,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:28,LUA_SUMMARY:none
+X-HE-Tag: price00_f062e7ab5c2e
+X-Filterd-Recvd-Size: 1735
+Received: from XPS-9350.home (cpe-23-242-196-136.socal.res.rr.com [23.242.196.136])
+        (Authenticated sender: joe@perches.com)
+        by omf01.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 31 May 2019 20:38:23 +0000 (UTC)
+Message-ID: <c7dd57c50690048c16722005bba1c47bcb3af750.camel@perches.com>
+Subject: Re: [PATCH] btrfs: Fix -Wunused-but-set-variable warnings
+From:   Joe Perches <joe@perches.com>
+To:     Andrey Abramov <st5pub@yandex.ru>, "clm@fb.com" <clm@fb.com>,
         "josef@toxicpanda.com" <josef@toxicpanda.com>,
         "dsterba@suse.com" <dsterba@suse.com>
 Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20190531195349.31129-1-st5pub@yandex.ru> <a7a2a7c70c2dcef122ddbe86eb84820fc4384c7e.camel@perches.com>
-Subject: Re: [PATCH] btrfs: Fix -Wunused-but-set-variable warnings
-MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Fri, 31 May 2019 23:31:38 +0300
-Message-Id: <14843931559334698@myt6-add70abb4f02.qloud-c.yandex.net>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8
+Date:   Fri, 31 May 2019 13:38:22 -0700
+In-Reply-To: <14843931559334698@myt6-add70abb4f02.qloud-c.yandex.net>
+References: <20190531195349.31129-1-st5pub@yandex.ru>
+         <a7a2a7c70c2dcef122ddbe86eb84820fc4384c7e.camel@perches.com>
+         <14843931559334698@myt6-add70abb4f02.qloud-c.yandex.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.30.1-1build1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, 2019-05-31 at 23:31 +0300, Andrey Abramov wrote:
+> 31.05.2019, 23:05, "Joe Perches" <joe@perches.com>:
+> > On Fri, 2019-05-31 at 22:53 +0300, Andrey Abramov wrote:
+> > >  Fix -Wunused-but-set-variable warnings in raid56.c and sysfs.c files
+> > These uses seem boolean, so perhaps just use bool?
+> I used int because you use ints (as bools) everywhere (for example
+> there is only one bool (as a function argument) in the entire raid56.c
+> file with 3000 lines of code), so with int code looks more consistent.
+> Are you sure that I should use bool?
+
+That's up to you and the btrfs maintainers.
 
 
-31.05.2019, 23:05, "Joe Perches" <joe@perches.com>:
-> On Fri, 2019-05-31 at 22:53 +0300, Andrey Abramov wrote:
->>  Fix -Wunused-but-set-variable warnings in raid56.c and sysfs.c files
-> These uses seem boolean, so perhaps just use bool?
-I used int because you use ints (as bools) everywhere (for example there is only one bool (as a function argument) in the entire raid56.c file with 3000 lines of code), so with int code looks more consistent.
-Are you sure that I should use bool?
