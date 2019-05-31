@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3A5630B3E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 11:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E32530B43
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 11:20:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726403AbfEaJTT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 May 2019 05:19:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59916 "EHLO mx1.suse.de"
+        id S1726330AbfEaJUo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 May 2019 05:20:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60088 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726002AbfEaJTT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 May 2019 05:19:19 -0400
+        id S1726002AbfEaJUn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 May 2019 05:20:43 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 387F5AE15
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2019 09:19:16 +0000 (UTC)
-Subject: Re: [PATCH 2/3] btrfs: switch extent_buffer spinning_writers from
- atomic to int
+        by mx1.suse.de (Postfix) with ESMTP id 7DFE9AFD2
+        for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2019 09:20:42 +0000 (UTC)
+Subject: Re: [PATCH 3/3] btrfs: switch extent_buffer write_locks from atomic
+ to int
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1559233731.git.dsterba@suse.com>
- <6dfcb89b254ee5016edfa9816fce3487a23b446c.1559233731.git.dsterba@suse.com>
+ <6665a7f5b02d97bde4a1cadb2478bb6ba1a01cd0.1559233731.git.dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <41aca846-afb1-9b83-f442-d791eb929c36@suse.com>
-Date:   Fri, 31 May 2019 12:19:15 +0300
+Message-ID: <0e3a01be-b02d-aca3-7a8d-04c86f0dde46@suse.com>
+Date:   Fri, 31 May 2019 12:20:41 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <6dfcb89b254ee5016edfa9816fce3487a23b446c.1559233731.git.dsterba@suse.com>
+In-Reply-To: <6665a7f5b02d97bde4a1cadb2478bb6ba1a01cd0.1559233731.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,87 +81,84 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.05.19 г. 19:31 ч., David Sterba wrote:
-> The spinning_writers is either 0 or 1 and always updated under the lock,
+> The write_locks is either 0 or 1 and always updated under the lock,
 > so we don't need the atomic_t semantics.
 > 
 > Signed-off-by: David Sterba <dsterba@suse.com>
+
+Generally looks good, though my remark for patch2 remains.
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
 > ---
->  fs/btrfs/extent_io.c  |  2 +-
->  fs/btrfs/extent_io.h  |  2 +-
->  fs/btrfs/locking.c    | 10 +++++-----
->  fs/btrfs/print-tree.c |  2 +-
->  4 files changed, 8 insertions(+), 8 deletions(-)
+>  fs/btrfs/extent_io.c  | 2 +-
+>  fs/btrfs/extent_io.h  | 2 +-
+>  fs/btrfs/locking.c    | 6 +++---
+>  fs/btrfs/print-tree.c | 2 +-
+>  4 files changed, 6 insertions(+), 6 deletions(-)
 > 
 > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 57b6de9df7c4..71ee9e976307 100644
+> index 71ee9e976307..6d75d4dcf473 100644
 > --- a/fs/btrfs/extent_io.c
 > +++ b/fs/btrfs/extent_io.c
-> @@ -4842,7 +4842,7 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
->  	BUG_ON(len > MAX_INLINE_EXTENT_BUFFER_SIZE);
->  
->  #ifdef CONFIG_BTRFS_DEBUG
-> -	atomic_set(&eb->spinning_writers, 0);
-> +	eb->spinning_writers = 0;
+> @@ -4845,7 +4845,7 @@ __alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
+>  	eb->spinning_writers = 0;
 >  	atomic_set(&eb->spinning_readers, 0);
 >  	atomic_set(&eb->read_locks, 0);
->  	atomic_set(&eb->write_locks, 0);
+> -	atomic_set(&eb->write_locks, 0);
+> +	eb->write_locks = 0;
+>  #endif
+>  
+>  	return eb;
 > diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index 201da61dfc21..5616b96c365d 100644
+> index 5616b96c365d..844e595cde5b 100644
 > --- a/fs/btrfs/extent_io.h
 > +++ b/fs/btrfs/extent_io.h
-> @@ -187,7 +187,7 @@ struct extent_buffer {
->  	wait_queue_head_t read_lock_wq;
->  	struct page *pages[INLINE_EXTENT_BUFFER_PAGES];
->  #ifdef CONFIG_BTRFS_DEBUG
-> -	atomic_t spinning_writers;
-> +	int spinning_writers;
+> @@ -190,7 +190,7 @@ struct extent_buffer {
+>  	int spinning_writers;
 >  	atomic_t spinning_readers;
 >  	atomic_t read_locks;
->  	atomic_t write_locks;
+> -	atomic_t write_locks;
+> +	int write_locks;
+>  	struct list_head leak_list;
+>  #endif
+>  };
 > diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-> index 5feb01147e19..270667627977 100644
+> index 270667627977..98fccce4208c 100644
 > --- a/fs/btrfs/locking.c
 > +++ b/fs/btrfs/locking.c
-> @@ -15,19 +15,19 @@
->  #ifdef CONFIG_BTRFS_DEBUG
->  static void btrfs_assert_spinning_writers_get(struct extent_buffer *eb)
+> @@ -58,17 +58,17 @@ static void btrfs_assert_tree_read_locked(struct extent_buffer *eb)
+>  
+>  static void btrfs_assert_tree_write_locks_get(struct extent_buffer *eb)
 >  {
-> -	WARN_ON(atomic_read(&eb->spinning_writers));
-> -	atomic_inc(&eb->spinning_writers);
-> +	WARN_ON(eb->spinning_writers);
-> +	eb->spinning_writers++;
+> -	atomic_inc(&eb->write_locks);
+> +	eb->write_locks++;
 >  }
 >  
->  static void btrfs_assert_spinning_writers_put(struct extent_buffer *eb)
+>  static void btrfs_assert_tree_write_locks_put(struct extent_buffer *eb)
 >  {
-> -	WARN_ON(atomic_read(&eb->spinning_writers) != 1);
-> -	atomic_dec(&eb->spinning_writers);
-> +	WARN_ON(eb->spinning_writers != 1);
-> +	eb->spinning_writers--;
+> -	atomic_dec(&eb->write_locks);
+> +	eb->write_locks--;
 >  }
 >  
->  static void btrfs_assert_no_spinning_writers(struct extent_buffer *eb)
+>  void btrfs_assert_tree_locked(struct extent_buffer *eb)
 >  {
-> -	WARN_ON(atomic_read(&eb->spinning_writers));
-> +	WARN_ON(eb->spinning_writers);
+> -	BUG_ON(!atomic_read(&eb->write_locks));
+> +	BUG_ON(!eb->write_locks);
 >  }
-
-IMO longterm  it will be good if those debug functions contained
-lockdep_assert_held_exclusive/read macros for posterity.
-
 >  
->  static void btrfs_assert_spinning_readers_get(struct extent_buffer *eb)
+>  #else
 > diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-> index 7cb4f1fbe043..c5cc435ed39a 100644
+> index c5cc435ed39a..9cb50577d982 100644
 > --- a/fs/btrfs/print-tree.c
 > +++ b/fs/btrfs/print-tree.c
-> @@ -157,7 +157,7 @@ static void print_eb_refs_lock(struct extent_buffer *eb)
+> @@ -153,7 +153,7 @@ static void print_eb_refs_lock(struct extent_buffer *eb)
+>  #ifdef CONFIG_BTRFS_DEBUG
+>  	btrfs_info(eb->fs_info,
+>  "refs %u lock (w:%d r:%d bw:%d br:%d sw:%d sr:%d) lock_owner %u current %u",
+> -		   atomic_read(&eb->refs), atomic_read(&eb->write_locks),
+> +		   atomic_read(&eb->refs), eb->write_locks,
 >  		   atomic_read(&eb->read_locks),
 >  		   eb->blocking_writers,
 >  		   atomic_read(&eb->blocking_readers),
-> -		   atomic_read(&eb->spinning_writers),
-> +		   eb->spinning_writers,
->  		   atomic_read(&eb->spinning_readers),
->  		   eb->lock_owner, current->pid);
->  #endif
 > 
