@@ -2,218 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 077B7310C8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 17:01:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6BF83112D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 31 May 2019 17:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726687AbfEaPBT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 31 May 2019 11:01:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38380 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726563AbfEaPBT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 31 May 2019 11:01:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 134B4ADE5
-        for <linux-btrfs@vger.kernel.org>; Fri, 31 May 2019 15:01:18 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 2/2] btrfs: Use btrfs_io_geometry appropriately
-Date:   Fri, 31 May 2019 18:01:15 +0300
-Message-Id: <20190531150115.21003-2-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190531150115.21003-1-nborisov@suse.com>
-References: <20190531150115.21003-1-nborisov@suse.com>
+        id S1726716AbfEaPV5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 31 May 2019 11:21:57 -0400
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:33810 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726531AbfEaPV5 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 31 May 2019 11:21:57 -0400
+Received: by mail-yw1-f68.google.com with SMTP id n76so4287627ywd.1;
+        Fri, 31 May 2019 08:21:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hVB+3wva8lYYaR85t5N42o/6t3+e71DhQnwd4VnHZ2s=;
+        b=cauG1fiQiQ8aQQCenQLcHSPvx0I4gcwkiAsElwldIFkEwXd6bYpDga4KE1UvqPxFYC
+         C8/0vrf8SnlO5U59qZrpnpGjhw5zk8B7tlhZVZRPNe5eBn8+dsEMlymmRjxE6XAUo8Rw
+         89R6HOiMiLK/x6SZZLku+9dBLsBrO0EkuRiGBtzTpuZ9T8+dsuYh+F8koLzFKFj9gxLV
+         rSNEGiJfEK1+a7Ch9m7iB8v80YQyb7g3nwL86B6ImAWB8wkibU6jLHFhJZt0rhlwAYfe
+         VZa78TlWWnngrFEhPzRJrqciRm+n6AvzQdvQckUGzVxmq3lL+wpgUSSQAn2bGqKQRwEe
+         t82w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hVB+3wva8lYYaR85t5N42o/6t3+e71DhQnwd4VnHZ2s=;
+        b=H72TB05u5pYQneDC07Bvl1/fvkhke8w1+dqcJa64WBg0Z8uD5Lghd1F8qIXdRT1LAa
+         gZr20WdGv184b0Ce6F8v/+Jd5BdfkHzvFgStUUyIIfwf7Y+7E5L1JYtvQ9m9V3iALTFh
+         YSU7sF/1el3tnswVj8A7Pz10vgysfL604fif/owBMaBTOSpMg12Z+a0os9UX9xu+0A3o
+         EG63JExlaaA821n1v1nDzvfg0508CSIG4jmEH9ebOTTmefIDCeN6NnmklOQtxv2mepYu
+         0AhtpjetvZMRooUgAnRhWOlP+kThhPF0PXZvWHrpHogXR8zDdaXTWIuy87TA6wzNbUe5
+         8MjQ==
+X-Gm-Message-State: APjAAAXgALxsnD6DPRzB7h+wj8Uxl77P20VpCdsUL8Fq9MyJiSHu/M+I
+        AhM00izP88U5skJjcgOoXSIv3lJqjEN/QH1aYtA=
+X-Google-Smtp-Source: APXvYqzweoHJN024aJFPsVRMFJeZ7erwv8ogr3cR1VHrvMTSMSfOoUXoORxVBwUVuv3Wftm9yea1zNU3KdGTZeHMwbg=
+X-Received: by 2002:a81:7096:: with SMTP id l144mr6198986ywc.294.1559316116397;
+ Fri, 31 May 2019 08:21:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190527172655.9287-1-amir73il@gmail.com> <20190528202659.GA12412@mit.edu>
+ <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
+In-Reply-To: <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Fri, 31 May 2019 18:21:45 +0300
+Message-ID: <CAOQ4uxgj94WR82iHE4PDGSD0UDxG5sCtr+Sv+t1sOHHmnXFYzQ@mail.gmail.com>
+Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Jan Kara <jack@suse.cz>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Dave Chinner <david@fromorbit.com>, Chris Mason <clm@fb.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Presently btrfs_map_block is used not only to do everything necessary
-to map a bio to the underlying allocation profile but it's also used to
-identify how much data could be written based on btrfs' stripe logic
-without actually submitting anything. This is achieved by passing NULL
-for 'bbio_ret' parameter.
+> >
+> > So instead of saying "A filesystem that accepts this flag will
+> > guaranty, that old inode data will not be exposed in the new linked
+> > name."  It's much clearer to state this in the affirmative:
+> >
+> >         A filesystem which accepts this flag will guarantee that if
+> >         the new pathname exists after a crash, all of the data written
+> >         to the file at the time of the linkat(2) call will be visible.
+> >
+>
+> Sounds good to me. I will take a swing at another patch.
+>
 
-This patch refactors all callers that require just the mapping length
-by switching them to using btrfs_io_geometry instead of calling
-btrfs_map_block with a special NULL value for 'bbio_ret'. No functional
-change.
----
- fs/btrfs/inode.c   | 25 +++++++--------
- fs/btrfs/volumes.c | 77 +++++++++-------------------------------------
- 2 files changed, 27 insertions(+), 75 deletions(-)
+So I am down to single flag documented with 3 tweets ;-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 80fdf6f21f74..a3abba4c2e2c 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1932,17 +1932,19 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- 	u64 length = 0;
- 	u64 map_length;
- 	int ret;
-+	struct btrfs_io_geometry geom;
- 
- 	if (bio_flags & EXTENT_BIO_COMPRESSED)
- 		return 0;
- 
- 	length = bio->bi_iter.bi_size;
- 	map_length = length;
--	ret = btrfs_map_block(fs_info, btrfs_op(bio), logical, &map_length,
--			      NULL, 0);
-+	ret = btrfs_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
-+				&geom);
- 	if (ret < 0)
- 		return ret;
--	if (map_length < length + size)
-+
-+	if (geom.len < length + size)
- 		return 1;
- 	return 0;
- }
-@@ -8331,15 +8333,15 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
- 	int clone_len;
- 	int ret;
- 	blk_status_t status;
-+	struct btrfs_io_geometry geom;
- 
--	map_length = orig_bio->bi_iter.bi_size;
--	submit_len = map_length;
--	ret = btrfs_map_block(fs_info, btrfs_op(orig_bio), start_sector << 9,
--			      &map_length, NULL, 0);
-+	submit_len = orig_bio->bi_iter.bi_size;
-+	ret = btrfs_io_geometry(fs_info, btrfs_op(orig_bio), start_sector << 9,
-+			      submit_len, &geom);
- 	if (ret)
- 		return -EIO;
- 
--	map_length = min_t(u64, map_length, SZ_1M);
-+	map_length = min_t(u64, geom.len, SZ_1M);
- 	if (map_length >= submit_len) {
- 		bio = orig_bio;
- 		dip->flags |= BTRFS_DIO_ORIG_BIO_SUBMITTED;
-@@ -8393,13 +8395,12 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
- 		start_sector += clone_len >> 9;
- 		file_offset += clone_len;
- 
--		map_length = submit_len;
--		ret = btrfs_map_block(fs_info, btrfs_op(orig_bio),
--				      start_sector << 9, &map_length, NULL, 0);
-+		ret = btrfs_io_geometry(fs_info, btrfs_op(orig_bio),
-+				      start_sector << 9, submit_len, &geom);
- 		if (ret)
- 			goto out_err;
- 
--		map_length = min_t(u64, map_length, SZ_1M);
-+		map_length = min_t(u64, geom.len, SZ_1M);
- 	} while (submit_len > 0);
- 
- submit:
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b130f465ca6d..9d9d1d3329bb 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5961,7 +5961,6 @@ int btrfs_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	stripe_offset = offset - stripe_offset;
- 	data_stripes = nr_data_stripes(map);
- 
--
- 	if (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
- 		u64 max_len = stripe_len - stripe_offset;
- 
-@@ -6031,78 +6030,30 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
- 	int patch_the_first_stripe_for_dev_replace = 0;
- 	u64 physical_to_patch_in_first_stripe = 0;
- 	u64 raid56_full_stripe_start = (u64)-1;
-+	struct btrfs_io_geometry geom;
-+
-+	ASSERT(bbio_ret);
- 
- 	if (op == BTRFS_MAP_DISCARD)
- 		return __btrfs_map_block_for_discard(fs_info, logical,
- 						     *length, bbio_ret);
- 
--	em = btrfs_get_chunk_map(fs_info, logical, *length);
--	if (IS_ERR(em))
--		return PTR_ERR(em);
-+	ret = btrfs_io_geometry(fs_info, op, logical, *length, &geom);
-+	if (ret < 0)
-+		return ret;
- 
-+	em = btrfs_get_chunk_map(fs_info, logical, *length);
-+	ASSERT(em);
- 	map = em->map_lookup;
--	offset = logical - em->start;
- 
--	stripe_len = map->stripe_len;
--	stripe_nr = offset;
--	/*
--	 * stripe_nr counts the total number of stripes we have to stride
--	 * to get to this block
--	 */
--	stripe_nr = div64_u64(stripe_nr, stripe_len);
-+	*length = geom.len;
-+	offset = geom.offset;
-+	stripe_len = geom.stripe_len;
-+	stripe_nr = geom.stripe_nr;
-+	stripe_offset = geom.stripe_offset;
-+	raid56_full_stripe_start = geom.raid56_stripe_offset;
- 	data_stripes = nr_data_stripes(map);
- 
--	stripe_offset = stripe_nr * stripe_len;
--	if (offset < stripe_offset) {
--		btrfs_crit(fs_info,
--			   "stripe math has gone wrong, stripe_offset=%llu, offset=%llu, start=%llu, logical=%llu, stripe_len=%llu",
--			   stripe_offset, offset, em->start, logical,
--			   stripe_len);
--		free_extent_map(em);
--		return -EINVAL;
--	}
--
--	/* stripe_offset is the offset of this block in its stripe*/
--	stripe_offset = offset - stripe_offset;
--
--	/* if we're here for raid56, we need to know the stripe aligned start */
--	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
--		unsigned long full_stripe_len = stripe_len * data_stripes;
--		raid56_full_stripe_start = offset;
--
--		/* allow a write of a full stripe, but make sure we don't
--		 * allow straddling of stripes
--		 */
--		raid56_full_stripe_start = div64_u64(raid56_full_stripe_start,
--				full_stripe_len);
--		raid56_full_stripe_start *= full_stripe_len;
--	}
--
--	if (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
--		u64 max_len;
--		/* For writes to RAID[56], allow a full stripeset across all disks.
--		   For other RAID types and for RAID[56] reads, just allow a single
--		   stripe (on a single disk). */
--		if ((map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
--		    (op == BTRFS_MAP_WRITE)) {
--			max_len = stripe_len * data_stripes -
--				(offset - raid56_full_stripe_start);
--		} else {
--			/* we limit the length of each bio to what fits in a stripe */
--			max_len = stripe_len - stripe_offset;
--		}
--		*length = min_t(u64, em->len - offset, max_len);
--	} else {
--		*length = em->len - offset;
--	}
--
--	/*
--	 * This is for when we're called from btrfs_bio_fits_in_stripe and all
--	 * it cares about is the length
--	 */
--	if (!bbio_ret)
--		goto out;
--
- 	down_read(&dev_replace->rwsem);
- 	dev_replace_is_ongoing = btrfs_dev_replace_is_ongoing(dev_replace);
- 	/*
--- 
-2.17.1
+What do you think of:
 
+"AT_ATOMIC_DATA (since Linux 5.x)
+A filesystem which accepts this flag will guarantee that if the linked file
+name exists after a system crash, then all of the data written to the file
+and all of the file's metadata at the time of the linkat(2) call will be
+visible.
+
+The way to achieve this guarantee on old kernels is to call fsync (2)
+before linking the file, but doing so will also results in flushing of
+volatile disk caches.
+
+A filesystem which accepts this flag does NOT
+guarantee that any of the file hardlinks will exist after a system crash,
+nor that the last observed value of st_nlink (see stat (2)) will persist."
+
+
+Thanks,
+Amir.
