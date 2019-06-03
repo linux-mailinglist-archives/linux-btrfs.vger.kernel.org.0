@@ -2,273 +2,221 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BBD3289E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 08:40:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D9AA328DB
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 08:53:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726798AbfFCGkS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jun 2019 02:40:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58488 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726383AbfFCGkS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Jun 2019 02:40:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7C8F0AF3E;
-        Mon,  3 Jun 2019 06:40:15 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] fstests: generic/260: Make it handle btrfs more gracefully
-Date:   Mon,  3 Jun 2019 14:40:09 +0800
-Message-Id: <20190603064009.9891-1-wqu@suse.com>
-X-Mailer: git-send-email 2.21.0
+        id S1726791AbfFCGxR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jun 2019 02:53:17 -0400
+Received: from mout.gmx.net ([212.227.17.22]:59495 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726565AbfFCGxR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Jun 2019 02:53:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1559544787;
+        bh=sdw1sLuzm/K/O2lyCPElh7zPXQSnKfVQtjW7A5Qew+Y=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=EcWFNAHVyG2ViR5qAZ2916sPhK88cdWjvAjzXZc5CsI2bCzO6B5EmZlPgZeGz1g7/
+         UPkKANc11gevoqAgPL+rDykq4VXhNxJprIkfUePs9fAt9LRPNZ4Lrsnm/RoxIPhGCP
+         R0ynBVukgZTrg21FXiCFBr/4JAT21WPEnu3XsnLk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2Dx8-1gZa9P1R6M-013doj; Mon, 03
+ Jun 2019 08:53:07 +0200
+Subject: Re: [PATCH] btrfs: don't end the transaction for delayed refs in
+ throttle
+To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20190124143143.8838-1-josef@toxicpanda.com>
+ <20190212160351.GD2900@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <d10925d5-e036-379b-f68f-bf0f8fa1a5b9@gmx.com>
+Date:   Mon, 3 Jun 2019 14:53:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190212160351.GD2900@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="AJI4D1j3bnbCKKygAvw1JjIu7FyYoD1GK"
+X-Provags-ID: V03:K1:oFyamZe1kBTT0gdFDZ8o5tAHdqZcdv533ziREn99c0t5DprlMYz
+ Bx+aXpF+e1nrF8lPbTYIRBG/pe99SjWgezlQob8rtG6zhfMM8k4caOq1keksXQv6hVbm/Bn
+ N6R970txFjQtd+srIvE4jWz9LJmacnLWfgai40F/F37F0Fa9g+KCsJduWYE+CSoktKsR6A9
+ 40YRjFrXgJyMBTDkKot3g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:wTln/D/2efQ=:yW6dPeX9JKtBj60xFyeIM4
+ CsE5cVBU/o2SrNs9pKq7CT7I9EsOv0ppLpXjABQ+g5fabFvs6DDqKQ2mKCVjWXLBnkSdgZ+nI
+ /0a///Vf7WHQBHtPMrZpn/gwyEZR6SL8ViARHLNr5+fesR6ZcZeJkvuEV1alp2tvZTAKnrpIe
+ 3cjZufBfKRtIXCm0yv8DEMKVrXAJPIR0V29PKpTpoT80Mu0CqE470FNwibcCyhSy6HtQla+7y
+ ruLtK9SgYLSU/WfhQhtxrY1nnRVCEBrbMwZPvbdVRqd6FhskRJTD7UKf5cRWcMUIRP5svCpzb
+ 9vaSaNYF45P5blcDLOxUuFgR9KETFPkTkz3J5ZCEwYnN4KXW/nGs6t0cI16Dq4qVsZ+08EweG
+ 4CiHO3QYUXcUTHW5qg1WIX7erS01v246MqkdWkHbfelWcrR3VreheJ4k7N0cGXpuBRUaopdzM
+ KnS5xv06HMiR3H0Q/aPhJYs4Kahm07zK6LK1H+tePDCjOlOgZaz/un7Bg/rTeMnnkopTatVtZ
+ SOzWgqyvb7tb6k9vaX2iHnzTihAoP3fdESUqAy76kMUH14ZjZmIW43JbXH7QisnX6zQS05Vux
+ LAl0YUVztXA7R/AoJgdDuobhjK3lqzigbOcwBTq0e/0CriyG+na82cXLc925F66pE/M+uW+La
+ KlhA1pZCGmtq30TDbNhs4yds93vtnTYBnV/KTP4Pk725pKw+rQuetQZA78oIvGa05bBr6f21x
+ idsgLma6MrQtv2P3llIU+n62go68cOxJFgYbHL1o2YYdb+QrmU0IgvVahXgjATNtG4T9xtcMo
+ OctGPX+yCqqV8sPtiC9Z4ap/oTKqGnJdH3UiFay3OJv70As4Rc4zL6t+LAspYdTha4FXibUIl
+ ODCwmDyBzjBtlKQU7CboDyFQsIh1t4ht/sZf6YDkupih+23MQl998fXUkjtcIbjg9wXgQUI7t
+ ZwlpbhJEawJdjDYoKs0tBo5227wvHI5c=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If a filesystem doesn't map its logical address space (normally the
-bytenr/blocknr returned by fiemap) directly to its devices(s), the
-following assumptions used in the test case is no longer true:
-- trim range start beyond the end of fs should fail
-- trim range start beyond the end of fs with len set should fail
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--AJI4D1j3bnbCKKygAvw1JjIu7FyYoD1GK
+Content-Type: multipart/mixed; boundary="oMTVu5Eip6Ncb6a5LSloskPOQ3W4A7DmE";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+ linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Message-ID: <d10925d5-e036-379b-f68f-bf0f8fa1a5b9@gmx.com>
+Subject: Re: [PATCH] btrfs: don't end the transaction for delayed refs in
+ throttle
+References: <20190124143143.8838-1-josef@toxicpanda.com>
+ <20190212160351.GD2900@twin.jikos.cz>
+In-Reply-To: <20190212160351.GD2900@twin.jikos.cz>
 
-Under the following example, even with just one device, btrfs can still
-trim the fs correctly while breaking above assumption:
+--oMTVu5Eip6Ncb6a5LSloskPOQ3W4A7DmE
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-0		1G		1.25G
-|---------------|///////////////|-----------------| <- btrfs logical
-		   |				       address space
-        ------------  mapped as SINGLE
-        |
-0	V	256M
-|///////////////|			<- device address space
 
-Thus trim range start=1G len=256M will cause btrfs to trim the 256M
-block group, thus return correct result.
 
-Furthermore, there is no cleared defined behavior for whether a fs should
-trim the unmapped space. (only for indirectly mapped fs)
+On 2019/2/13 =E4=B8=8A=E5=8D=8812:03, David Sterba wrote:
+> On Thu, Jan 24, 2019 at 09:31:43AM -0500, Josef Bacik wrote:
+>> Previously callers to btrfs_end_transaction_throttle() would commit th=
+e
+>> transaction if there wasn't enough delayed refs space.  This happens i=
+n
+>> relocation, and if the fs is relatively empty we'll run out of delayed=
 
-Btrfs currently will always trim the unmapped space, but the behavior
-can change as large trim can be very expensive.
+>> refs space basically immediately, so we'll just be stuck in this loop =
+of
+>> committing the transaction over and over again.
+>>
+>> This code existed because we didn't have a good feedback mechanism for=
 
-Despite the change to skip certain tests for btrfs, still run the
-following tests for btrfs:
-- trim start=U64_MAX with lenght set
-  This will expose a bug that btrfs doesn't check overflow of the range.
-  This bug will be fixed soon.
+>> running delayed refs, but with the delayed refs rsv we do now.  Delete=
 
-- trim beyond the end of the fs
-  This will expose a bug where btrfs could send trim command beyond the
-  end of its device.
-  This bug is a regression, can be fixed by reverting c2d1b3aae336 ("btrfs:
-  Honour FITRIM range constraints during free space trim")
+>> this throttling code and let the btrfs_start_transaction() in relocati=
+on
+>> deal with putting pressure on the delayed refs infrastructure.  With
+>> this patch we no longer take 5 minutes to balance a metadata only fs.
+>>
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>=20
+> For the record, this has been merged to 5.0-rc5
+>=20
 
-With proper fixes for btrfs, this test case should pass on btrfs, ext4,
-xfs.
+Bisecting leads me to this patch for strange balance ENOSPC.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-changelog:
-v2:
-- Return 0/1 instead of echo "1"/"0" for _is_fs_directly_mapped
-  Although it may be a little confusing, but make
-  "if _is_fs_directly_mapped; then" much cleaner.
-- Comment change.
----
- common/rc             | 15 ++++++++
- tests/generic/260     | 79 +++++++++++++++++++++++++++----------------
- tests/generic/260.out |  9 +----
- 3 files changed, 66 insertions(+), 37 deletions(-)
+Can be reproduced by btrfs/156, or the following small script:
+------
+#!/bin/bash
+dev=3D"/dev/test/test"
+mnt=3D"/mnt/btrfs"
 
-diff --git a/common/rc b/common/rc
-index 17b89d5d..117dcec2 100644
---- a/common/rc
-+++ b/common/rc
-@@ -4005,6 +4005,21 @@ _require_fibmap()
- 	rm -f $file
- }
- 
-+# Check if the logical address (returned by fiemap) can be larger than the
-+# block device.
-+# Currently only btrfs has such behavior even for single device usage.
-+# Return 0 if it's directly mapped, return 1 if not.
-+# This return value looks confusing but allows us to use
-+# "if _is_fs_direct_mapped; then" directly
-+_is_fs_direct_mapped()
-+{
-+	if [ "$FSTYP" == "btrfs" ]; then
-+		return 1
-+	else
-+		return 0
-+	fi
-+}
-+
- _try_wipe_scratch_devs()
- {
- 	test -x "$WIPEFS_PROG" || return 0
-diff --git a/tests/generic/260 b/tests/generic/260
-index 9e652dee..77ace622 100755
---- a/tests/generic/260
-+++ b/tests/generic/260
-@@ -27,40 +27,50 @@ _supported_fs generic
- _supported_os Linux
- _require_math
- 
-+rm -f $seqres.full
-+
- _require_scratch
- _scratch_mkfs >/dev/null 2>&1
- _scratch_mount
- 
- _require_batched_discard $SCRATCH_MNT
- 
-+
- fssize=$($DF_PROG -k | grep "$SCRATCH_MNT" | grep "$SCRATCH_DEV"  | awk '{print $3}')
- 
- beyond_eofs=$(_math "$fssize*2048")
- max_64bit=$(_math "2^64 - 1")
- 
--# All these tests should return EINVAL
--# since the start is beyond the end of
--# the file system
--
--echo "[+] Start beyond the end of fs (should fail)"
--out=$($FSTRIM_PROG -o $beyond_eofs $SCRATCH_MNT 2>&1)
--[ $? -eq 0 ] && status=1
--echo $out | _filter_scratch
--
--echo "[+] Start beyond the end of fs with len set (should fail)"
--out=$($FSTRIM_PROG -o $beyond_eofs -l1M $SCRATCH_MNT 2>&1)
--[ $? -eq 0 ] && status=1
--echo $out | _filter_scratch
--
--echo "[+] Start = 2^64-1 (should fail)"
--out=$($FSTRIM_PROG -o $max_64bit $SCRATCH_MNT 2>&1)
--[ $? -eq 0 ] && status=1
--echo $out | _filter_scratch
-+# For filesystem with direct mapping, all these tests should return EINVAL
-+# since the start is beyond the end of the file system
-+#
-+# Skip these tests if the filesystem has its own address space mapping,
-+# as it's implementation dependent.
-+# E.g btrfs can map its physical address of (devid=1, physical=1M, len=1M)
-+# to its logical address (logical=1G, len=1M). Making trim beyond device
-+# boundary to success.
-+
-+echo "[+] Optional trim range test (fs dependent)"
-+if _is_fs_direct_mapped; then
-+	echo "[+] Start beyond the end of fs (should fail)" >> $seqres.full
-+	$FSTRIM_PROG -o $beyond_eofs $SCRATCH_MNT >> $seqres.full 2>&1
-+	[ $? -eq 0 ] && status=1
-+
-+	echo "[+] Start beyond the end of fs with len set (should fail)" >> $seqres.full
-+	$FSTRIM_PROG -o $beyond_eofs -l1M $SCRATCH_MNT >> $seqres.full 2>&1
-+	[ $? -eq 0 ] && status=1
-+
-+	# indirectly mapped fs may use this special value to trim their
-+	# unmapped space, so don't do this for indirectly mapped fs.
-+	echo "[+] Start = 2^64-1 (should fail)" >> $seqres.full
-+	$FSTRIM_PROG -o $max_64bit $SCRATCH_MNT 2>&1 >> $seqres.full 2>&1
-+	[ $? -eq 0 ] && status=1
-+fi
- 
--echo "[+] Start = 2^64-1 and len is set (should fail)"
--out=$($FSTRIM_PROG -o $max_64bit -l1M $SCRATCH_MNT 2>&1)
-+# This should fail due to overflow no matter how the fs is implemented
-+echo "[+] Start = 2^64-1 and len is set (should fail)" >> $seqres.full
-+$FSTRIM_PROG -o $max_64bit -l1M $SCRATCH_MNT >> $seqres.full 2>&1
- [ $? -eq 0 ] && status=1
--echo $out | _filter_scratch
- 
- _scratch_unmount
- _scratch_mkfs >/dev/null 2>&1
-@@ -86,10 +96,12 @@ _scratch_unmount
- _scratch_mkfs >/dev/null 2>&1
- _scratch_mount
- 
-+echo "[+] Trim an empty fs" >> $seqres.full
- # This is a bit fuzzy, but since the file system is fresh
- # there should be at least (fssize/2) free space to trim.
- # This is supposed to catch wrong FITRIM argument handling
- bytes=$($FSTRIM_PROG -v -o10M $SCRATCH_MNT | _filter_fstrim)
-+echo "$bytes trimed" >> $seqres.full
- 
- if [ $bytes -gt $(_math "$fssize*1024") ]; then
- 	status=1
-@@ -97,11 +109,9 @@ if [ $bytes -gt $(_math "$fssize*1024") ]; then
- 	     "however the file system is $(_math "$fssize*1024") bytes long."
- fi
- 
--# Btrfs is special and this test does not apply to it
--# It is because btrfs does not have not-yet-used parts of the device
--# mapped and since we got here right after the mkfs, there is not
--# enough free extents in the root tree.
--if [ $bytes -le $(_math "$fssize*512") ] && [ $FSTYP != "btrfs" ]; then
-+# Indirect mapped fs can have their own decision on whether to trim
-+# unmapped blocks.
-+if [ $bytes -le $(_math "$fssize*512") ] && _is_fs_direct_mapped; then
- 	status=1
- 	echo "After the full fs discard $bytes bytes were discarded"\
- 	     "however the file system is $(_math "$fssize*1024") bytes long."
-@@ -141,14 +151,23 @@ esac
- _scratch_unmount
- _scratch_mkfs >/dev/null 2>&1
- _scratch_mount
-+
-+echo "[+] Try to trim beyond the end of the fs" >> $seqres.full
- # It should fail since $start is beyond the end of file system
--$FSTRIM_PROG -o$start -l10M $SCRATCH_MNT &> /dev/null
--if [ $? -eq 0 ]; then
-+$FSTRIM_PROG -o$start -l10M $SCRATCH_MNT >> $seqres.full 2>&1
-+ret=$?
-+if [ $ret -eq 0 ] && _is_fs_direct_mapped; then
- 	status=1
- 	echo "It seems that fs logic handling start"\
- 	     "argument overflows"
- fi
- 
-+# For indirectly mapped fs, it shouldn't fail.
-+if [ $ret -ne 0 ] && ! _is_fs_direct_mapped; then
-+	status=1
-+	echo "Unexpected error happened during trim"
-+fi
-+
- _scratch_unmount
- _scratch_mkfs >/dev/null 2>&1
- _scratch_mount
-@@ -160,8 +179,10 @@ _scratch_mount
- # It is because btrfs does not have not-yet-used parts of the device
- # mapped and since we got here right after the mkfs, there is not
- # enough free extents in the root tree.
-+echo "[+] Try to trim the fs with large enough len" >> $seqres.full
- bytes=$($FSTRIM_PROG -v -l$len $SCRATCH_MNT | _filter_fstrim)
--if [ $bytes -le $(_math "$fssize*512") ] && [ $FSTYP != "btrfs" ]; then
-+echo "$bytes trimed" >> $seqres.full
-+if [ $bytes -le $(_math "$fssize*512") ] && _is_fs_direct_mapped; then
- 	status=1
- 	echo "It seems that fs logic handling len argument overflows"
- fi
-diff --git a/tests/generic/260.out b/tests/generic/260.out
-index a16c4f74..f4ee2f72 100644
---- a/tests/generic/260.out
-+++ b/tests/generic/260.out
-@@ -1,12 +1,5 @@
- QA output created by 260
--[+] Start beyond the end of fs (should fail)
--fstrim: SCRATCH_MNT: FITRIM ioctl failed: Invalid argument
--[+] Start beyond the end of fs with len set (should fail)
--fstrim: SCRATCH_MNT: FITRIM ioctl failed: Invalid argument
--[+] Start = 2^64-1 (should fail)
--fstrim: SCRATCH_MNT: FITRIM ioctl failed: Invalid argument
--[+] Start = 2^64-1 and len is set (should fail)
--fstrim: SCRATCH_MNT: FITRIM ioctl failed: Invalid argument
-+[+] Optional trim range test (fs dependent)
- [+] Default length (should succeed)
- [+] Default length with start set (should succeed)
- [+] Length beyond the end of fs (should succeed)
--- 
-2.21.0
+_fail()
+{
+	echo "!!! FAILED: $@ !!!"
+	exit 1
+}
 
+do_work()
+{
+	umount $dev &> /dev/null
+	umount $mnt &> /dev/null
+
+	mkfs.btrfs -b 1G -m single -d single $dev -f > /dev/null
+
+	mount $dev $mnt
+
+	for i in $(seq -w 0 511); do
+	#	xfs_io -f -c "falloc 0 1m" $mnt/file_$i > /dev/null
+		xfs_io -f -c "pwrite 0 1m" $mnt/inline_$i > /dev/null
+	done
+	sync
+
+	btrfs balance start --full $mnt || return 1
+	sync
+
+
+	btrfs balance start --full $mnt || return 1
+	umount $mnt
+}
+
+failed=3D0
+for i in $(seq -w 0 24); do
+	echo "=3D=3D=3D run $i =3D=3D=3D"
+	do_work
+	if [ $? -eq 1 ]; then
+		failed=3D$(($failed + 1))
+	fi
+done
+if [ $failed -ne 0 ]; then
+	echo "!!! failed $failed/25 !!!"
+else
+	echo "=3D=3D=3D all passes =3D=3D=3D"
+fi
+------
+
+For v4.20, it will fail at the rate around 0/25 ~ 2/25 (very rare).
+But at that patch (upstream commit
+302167c50b32e7fccc98994a91d40ddbbab04e52), the failure rate raise to 25/2=
+5.
+
+Any idea for that ENOSPC problem?
+As it looks really wired for the 2nd full balance to fail even we have
+enough unallocated space.
+
+Thanks,
+Qu
+
+
+--oMTVu5Eip6Ncb6a5LSloskPOQ3W4A7DmE--
+
+--AJI4D1j3bnbCKKygAvw1JjIu7FyYoD1GK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlz0w8wACgkQwj2R86El
+/qhJDAgAh23SIN/EU2c/8g+MG4E1swKsi+WfB3xiR6XSPqXGV5JcTtVlCzLSg2wC
+RaxhOD4lz0k3iUHPu6g1YTnOH6bM30WehXNjOkyATBo2vXFJc7A2/PGumxN4MU7m
+m8n4LISXCC9A3I+j8dbV586vinP4Yhg0KYyk+6GrWDyVlueNICVyBsU597YjRttM
+uAGJvTidbPtAJtIU4vi+Rq/jd5t4DgOUqvfOTAs5BeJIqGKzx6R6fZKD4rI1hroD
+dXpy2c4yRkrh0qbdNJlvSzVEPaM0RGHyEpZRjTjYAK/x5bJR3lLmmZ+/mCXCNHHC
+t+NsRzThtBZEmw0w9misa4pGO1vzPw==
+=8tfx
+-----END PGP SIGNATURE-----
+
+--AJI4D1j3bnbCKKygAvw1JjIu7FyYoD1GK--
