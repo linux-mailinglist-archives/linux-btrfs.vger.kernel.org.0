@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A313F32B61
+	by mail.lfdr.de (Postfix) with ESMTP id 3858632B60
 	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 11:05:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbfFCJFR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1727175AbfFCJFR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Mon, 3 Jun 2019 05:05:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37948 "EHLO mx1.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:37974 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726555AbfFCJFQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Jun 2019 05:05:16 -0400
+        id S1726684AbfFCJFR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Jun 2019 05:05:17 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E7878AED7
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jun 2019 09:05:15 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 46420AF02
+        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jun 2019 09:05:16 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 1/3] btrfs: Introduce struct btrfs_io_geometry
-Date:   Mon,  3 Jun 2019 12:05:03 +0300
-Message-Id: <20190603090505.16800-2-nborisov@suse.com>
+Subject: [PATCH 2/3] btrfs: Introduce btrfs_io_geometry
+Date:   Mon,  3 Jun 2019 12:05:04 +0300
+Message-Id: <20190603090505.16800-3-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190603090505.16800-1-nborisov@suse.com>
 References: <20190603090505.16800-1-nborisov@suse.com>
@@ -31,29 +31,132 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/volumes.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/btrfs/volumes.c | 98 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/volumes.h |  2 +
+ 2 files changed, 100 insertions(+)
 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 776f5c7ca7c5..b130f465ca6d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -5907,6 +5907,104 @@ static bool need_full_stripe(enum btrfs_map_op op)
+ 	return (op == BTRFS_MAP_WRITE || op == BTRFS_MAP_GET_READ_MIRRORS);
+ }
+ 
++/*
++ * btrfs_io_geometry - calculates the geomery of a particular (address, len)
++ *		       tuple. This information is used to calculate how big a
++ *		       particular bio can get before it straddles a stripe.
++ *
++ * @fs_info - The omnipresent btrfs structure
++ * @logical - Address that we want to figure out the geometry of
++ * @len	    - The length of IO we are going to perform, starting at @logical
++ * @op      - Type of operation - Write or Read
++ * @io_geom - Pointer used to return values
++ *
++ * Returns < 0 in case a chunk for the given logical address cannot be found,
++ * usually shouldn't happen unless @logical is corrupted, 0 otherwise.
++ */
++int btrfs_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
++		      u64 logical, u64 len, struct btrfs_io_geometry *io_geom)
++{
++	struct extent_map *em;
++	struct map_lookup *map;
++	u64 offset;
++	u64 stripe_offset;
++	u64 stripe_nr;
++	u64 stripe_len;
++	u64 raid56_full_stripe_start = (u64)-1;
++	int data_stripes;
++
++	ASSERT(op != BTRFS_MAP_DISCARD);
++
++	em = btrfs_get_chunk_map(fs_info, logical, len);
++	if (IS_ERR(em))
++		return PTR_ERR(em);
++
++	map = em->map_lookup;
++	/* Offset of this logical address in the chunk */
++	offset = logical - em->start;
++	/* Len of a stripe in a chunk */
++	stripe_len = map->stripe_len;
++	/* Stripe wher this block falls in */
++	stripe_nr = div64_u64(offset, stripe_len);
++	/* Offset of stripe in the chunk */
++	stripe_offset = stripe_nr * stripe_len;
++	if (offset < stripe_offset) {
++		btrfs_crit(fs_info,
++			   "stripe math has gone wrong, stripe_offset=%llu, offset=%llu, start=%llu, logical=%llu, stripe_len=%llu",
++			   stripe_offset, offset, em->start, logical,
++			   stripe_len);
++		free_extent_map(em);
++		return -EINVAL;
++	}
++
++	/* stripe_offset is the offset of this block in its stripe*/
++	stripe_offset = offset - stripe_offset;
++	data_stripes = nr_data_stripes(map);
++
++
++	if (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
++		u64 max_len = stripe_len - stripe_offset;
++
++		/*
++		 * In case of raid56, we need to know the stripe aligned start
++		 */
++		if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
++			unsigned long full_stripe_len = stripe_len * data_stripes;
++			raid56_full_stripe_start = offset;
++
++			/*
++			 * Allow a write of a full stripe, but make sure we
++			 * don't allow straddling of stripes
++			 */
++			raid56_full_stripe_start = div64_u64(raid56_full_stripe_start,
++					full_stripe_len);
++			raid56_full_stripe_start *= full_stripe_len;
++
++			/*
++			 * For writes to RAID[56], allow a full stripeset across
++			 * all disks. For other RAID types and for RAID[56]
++			 * reads, just allow a single stripe (on a single disk).
++			 */
++			if (op == BTRFS_MAP_WRITE) {
++				max_len = stripe_len * data_stripes -
++				(offset - raid56_full_stripe_start);
++			}
++		}
++		len = min_t(u64, em->len - offset, max_len);
++	} else {
++		len = em->len - offset;
++	}
++
++	io_geom->len = len;
++	io_geom->offset = offset;
++	io_geom->stripe_len = stripe_len;
++	io_geom->stripe_nr = stripe_nr;
++	io_geom->stripe_offset = stripe_offset;
++	io_geom->raid56_stripe_offset = raid56_full_stripe_start;
++
++	return 0;
++}
++
+ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+ 			     enum btrfs_map_op op,
+ 			     u64 logical, u64 *length,
 diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index a7121d72388f..7c1ddf35b7d4 100644
+index 7c1ddf35b7d4..f3bdf768bbab 100644
 --- a/fs/btrfs/volumes.h
 +++ b/fs/btrfs/volumes.h
-@@ -23,6 +23,15 @@ struct btrfs_pending_bios {
- 	struct bio *tail;
- };
- 
-+struct btrfs_io_geometry {
-+	u64 len; /* remaining bytes in chunk */
-+	u64 offset; /* offset of logical address in chunk */
-+	u64 stripe_len; /* len of single io stripe */
-+	u64 stripe_nr; /* number of stripe where address falls */
-+	u64 stripe_offset; /* offset of stripe in chunk */
-+	u64 raid56_stripe_offset; /* offset of raid56 stripe into the chunk */
-+};
-+
- /*
-  * Use sequence counter to get consistent device stat data on
-  * 32-bit processors.
+@@ -421,6 +421,8 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ int btrfs_map_sblock(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
+ 		     u64 logical, u64 *length,
+ 		     struct btrfs_bio **bbio_ret);
++int btrfs_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
++		      u64 logical, u64 len, struct btrfs_io_geometry *io_geom);
+ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
+ 		     u64 physical, u64 **logical, int *naddrs, int *stripe_len);
+ int btrfs_read_sys_array(struct btrfs_fs_info *fs_info);
 -- 
 2.17.1
 
