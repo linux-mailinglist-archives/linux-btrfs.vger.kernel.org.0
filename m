@@ -2,220 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19EBF32B62
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 11:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C3E32CF1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 11:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727318AbfFCJFT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jun 2019 05:05:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37980 "EHLO mx1.suse.de"
+        id S1726684AbfFCJda (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jun 2019 05:33:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45034 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727030AbfFCJFS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Jun 2019 05:05:18 -0400
+        id S1726555AbfFCJd3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Jun 2019 05:33:29 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 85561AF0F
-        for <linux-btrfs@vger.kernel.org>; Mon,  3 Jun 2019 09:05:16 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 3/3] btrfs: Use btrfs_io_geometry appropriately
-Date:   Mon,  3 Jun 2019 12:05:05 +0300
-Message-Id: <20190603090505.16800-4-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190603090505.16800-1-nborisov@suse.com>
-References: <20190603090505.16800-1-nborisov@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id BC150AE5A;
+        Mon,  3 Jun 2019 09:33:28 +0000 (UTC)
+Date:   Mon, 3 Jun 2019 11:33:28 +0200
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Chris Mason <clm@fb.com>, Richard Weinberger <richard@nod.at>,
+        David Gstir <david@sigma-star.at>,
+        Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH v3 06/13] btrfs: format checksums according to type for
+ printing
+Message-ID: <20190603093327.GB4044@x250>
+References: <20190522081910.7689-1-jthumshirn@suse.de>
+ <20190522081910.7689-7-jthumshirn@suse.de>
+ <20190527165719.GN15290@twin.jikos.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190527165719.GN15290@twin.jikos.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Presently btrfs_map_block is used not only to do everything necessary
-to map a bio to the underlying allocation profile but it's also used to
-identify how much data could be written based on btrfs' stripe logic
-without actually submitting anything. This is achieved by passing NULL
-for 'bbio_ret' parameter.
+On Mon, May 27, 2019 at 06:57:19PM +0200, David Sterba wrote:
+> I think the helper is not needed at all, the format "%*phN" can be used
+> for crc32c too without the intermediate buffers. For better readability,
+> some macros can be added like
+> 
+> 	"this is wrong csum " CSUM_FORMAT " end of string",
+> 	CSUM_FORMAT_VALUE(csum_size, csum_bytes)
+> 
+> with CSUM_FORMAT "0x%*phN" and
+> CSUM_FORMAT_VALUE(size, bytes)	size, bytes
+> 
+> ie. just for the explict requirement of the variable length required by
+> "*".
 
-This patch refactors all callers that require just the mapping length
-by switching them to using btrfs_io_geometry instead of calling
-btrfs_map_block with a special NULL value for 'bbio_ret'. No functional
-change.
+Good idea, will be updating the patch.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/inode.c   | 25 +++++++--------
- fs/btrfs/volumes.c | 77 +++++++++-------------------------------------
- 2 files changed, 27 insertions(+), 75 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 80fdf6f21f74..a3abba4c2e2c 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1932,17 +1932,19 @@ int btrfs_bio_fits_in_stripe(struct page *page, size_t size, struct bio *bio,
- 	u64 length = 0;
- 	u64 map_length;
- 	int ret;
-+	struct btrfs_io_geometry geom;
- 
- 	if (bio_flags & EXTENT_BIO_COMPRESSED)
- 		return 0;
- 
- 	length = bio->bi_iter.bi_size;
- 	map_length = length;
--	ret = btrfs_map_block(fs_info, btrfs_op(bio), logical, &map_length,
--			      NULL, 0);
-+	ret = btrfs_io_geometry(fs_info, btrfs_op(bio), logical, map_length,
-+				&geom);
- 	if (ret < 0)
- 		return ret;
--	if (map_length < length + size)
-+
-+	if (geom.len < length + size)
- 		return 1;
- 	return 0;
- }
-@@ -8331,15 +8333,15 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
- 	int clone_len;
- 	int ret;
- 	blk_status_t status;
-+	struct btrfs_io_geometry geom;
- 
--	map_length = orig_bio->bi_iter.bi_size;
--	submit_len = map_length;
--	ret = btrfs_map_block(fs_info, btrfs_op(orig_bio), start_sector << 9,
--			      &map_length, NULL, 0);
-+	submit_len = orig_bio->bi_iter.bi_size;
-+	ret = btrfs_io_geometry(fs_info, btrfs_op(orig_bio), start_sector << 9,
-+			      submit_len, &geom);
- 	if (ret)
- 		return -EIO;
- 
--	map_length = min_t(u64, map_length, SZ_1M);
-+	map_length = min_t(u64, geom.len, SZ_1M);
- 	if (map_length >= submit_len) {
- 		bio = orig_bio;
- 		dip->flags |= BTRFS_DIO_ORIG_BIO_SUBMITTED;
-@@ -8393,13 +8395,12 @@ static int btrfs_submit_direct_hook(struct btrfs_dio_private *dip)
- 		start_sector += clone_len >> 9;
- 		file_offset += clone_len;
- 
--		map_length = submit_len;
--		ret = btrfs_map_block(fs_info, btrfs_op(orig_bio),
--				      start_sector << 9, &map_length, NULL, 0);
-+		ret = btrfs_io_geometry(fs_info, btrfs_op(orig_bio),
-+				      start_sector << 9, submit_len, &geom);
- 		if (ret)
- 			goto out_err;
- 
--		map_length = min_t(u64, map_length, SZ_1M);
-+		map_length = min_t(u64, geom.len, SZ_1M);
- 	} while (submit_len > 0);
- 
- submit:
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index b130f465ca6d..9d9d1d3329bb 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5961,7 +5961,6 @@ int btrfs_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
- 	stripe_offset = offset - stripe_offset;
- 	data_stripes = nr_data_stripes(map);
- 
--
- 	if (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
- 		u64 max_len = stripe_len - stripe_offset;
- 
-@@ -6031,78 +6030,30 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
- 	int patch_the_first_stripe_for_dev_replace = 0;
- 	u64 physical_to_patch_in_first_stripe = 0;
- 	u64 raid56_full_stripe_start = (u64)-1;
-+	struct btrfs_io_geometry geom;
-+
-+	ASSERT(bbio_ret);
- 
- 	if (op == BTRFS_MAP_DISCARD)
- 		return __btrfs_map_block_for_discard(fs_info, logical,
- 						     *length, bbio_ret);
- 
--	em = btrfs_get_chunk_map(fs_info, logical, *length);
--	if (IS_ERR(em))
--		return PTR_ERR(em);
-+	ret = btrfs_io_geometry(fs_info, op, logical, *length, &geom);
-+	if (ret < 0)
-+		return ret;
- 
-+	em = btrfs_get_chunk_map(fs_info, logical, *length);
-+	ASSERT(em);
- 	map = em->map_lookup;
--	offset = logical - em->start;
- 
--	stripe_len = map->stripe_len;
--	stripe_nr = offset;
--	/*
--	 * stripe_nr counts the total number of stripes we have to stride
--	 * to get to this block
--	 */
--	stripe_nr = div64_u64(stripe_nr, stripe_len);
-+	*length = geom.len;
-+	offset = geom.offset;
-+	stripe_len = geom.stripe_len;
-+	stripe_nr = geom.stripe_nr;
-+	stripe_offset = geom.stripe_offset;
-+	raid56_full_stripe_start = geom.raid56_stripe_offset;
- 	data_stripes = nr_data_stripes(map);
- 
--	stripe_offset = stripe_nr * stripe_len;
--	if (offset < stripe_offset) {
--		btrfs_crit(fs_info,
--			   "stripe math has gone wrong, stripe_offset=%llu, offset=%llu, start=%llu, logical=%llu, stripe_len=%llu",
--			   stripe_offset, offset, em->start, logical,
--			   stripe_len);
--		free_extent_map(em);
--		return -EINVAL;
--	}
--
--	/* stripe_offset is the offset of this block in its stripe*/
--	stripe_offset = offset - stripe_offset;
--
--	/* if we're here for raid56, we need to know the stripe aligned start */
--	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) {
--		unsigned long full_stripe_len = stripe_len * data_stripes;
--		raid56_full_stripe_start = offset;
--
--		/* allow a write of a full stripe, but make sure we don't
--		 * allow straddling of stripes
--		 */
--		raid56_full_stripe_start = div64_u64(raid56_full_stripe_start,
--				full_stripe_len);
--		raid56_full_stripe_start *= full_stripe_len;
--	}
--
--	if (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
--		u64 max_len;
--		/* For writes to RAID[56], allow a full stripeset across all disks.
--		   For other RAID types and for RAID[56] reads, just allow a single
--		   stripe (on a single disk). */
--		if ((map->type & BTRFS_BLOCK_GROUP_RAID56_MASK) &&
--		    (op == BTRFS_MAP_WRITE)) {
--			max_len = stripe_len * data_stripes -
--				(offset - raid56_full_stripe_start);
--		} else {
--			/* we limit the length of each bio to what fits in a stripe */
--			max_len = stripe_len - stripe_offset;
--		}
--		*length = min_t(u64, em->len - offset, max_len);
--	} else {
--		*length = em->len - offset;
--	}
--
--	/*
--	 * This is for when we're called from btrfs_bio_fits_in_stripe and all
--	 * it cares about is the length
--	 */
--	if (!bbio_ret)
--		goto out;
--
- 	down_read(&dev_replace->rwsem);
- 	dev_replace_is_ongoing = btrfs_dev_replace_is_ongoing(dev_replace);
- 	/*
 -- 
-2.17.1
-
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
+HRB 21284 (AG Nürnberg)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
