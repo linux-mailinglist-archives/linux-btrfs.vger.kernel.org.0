@@ -2,18 +2,18 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 713A5332F0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 16:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 053C1332E9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 16:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729384AbfFCO7L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jun 2019 10:59:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60992 "EHLO mx1.suse.de"
+        id S1729119AbfFCO7F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jun 2019 10:59:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60996 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729356AbfFCO7E (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1729357AbfFCO7E (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 3 Jun 2019 10:59:04 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id AE158AF50;
+        by mx1.suse.de (Postfix) with ESMTP id B2935AF8E;
         Mon,  3 Jun 2019 14:59:02 +0000 (UTC)
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     David Sterba <dsterba@suse.com>
@@ -22,9 +22,9 @@ Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
         David Gstir <david@sigma-star.at>,
         Nikolay Borisov <nborisov@suse.com>,
         Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v4 06/13] btrfs: format checksums according to type for printing
-Date:   Mon,  3 Jun 2019 16:58:52 +0200
-Message-Id: <20190603145859.7176-7-jthumshirn@suse.de>
+Subject: [PATCH v4 07/13] btrfs: add common checksum type validation
+Date:   Mon,  3 Jun 2019 16:58:53 +0200
+Message-Id: <20190603145859.7176-8-jthumshirn@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20190603145859.7176-1-jthumshirn@suse.de>
 References: <20190603145859.7176-1-jthumshirn@suse.de>
@@ -33,59 +33,90 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add a small helper for btrfs_print_data_csum_error() which formats the
-checksum according to it's type for pretty printing.
+Currently btrfs is only supporting CRC32C as checksumming algorithm. As
+this is about to change provide a function to validate the checksum type in
+the superblock against all possible algorithms.
+
+This makes adding new algorithms easier as there are fewer places to adjust
+when adding new algorithms.
 
 Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 
 ---
 Changes to v3:
-- Change the helper function to macros
+- Fix callers of btrfs_supported_csum() (David)
+Changes to v2:
+- Only pass csum_type into btrfs_supported_csum() (David)
+- Directly return in btrfs_check_super_csum() (David)
 ---
- fs/btrfs/btrfs_inode.h | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ fs/btrfs/disk-io.c | 29 +++++++++++++++++++----------
+ 1 file changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index d5b438706b77..4543f4864b2d 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -337,22 +337,31 @@ static inline void btrfs_inode_resume_unlocked_dio(struct btrfs_inode *inode)
- 	clear_bit(BTRFS_INODE_READDIO_NEED_LOCK, &inode->runtime_flags);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 663efce22d98..c2aba3dc33c5 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -356,6 +356,16 @@ static int verify_parent_transid(struct extent_io_tree *io_tree,
+ 	return ret;
  }
  
-+#define CSUM_FORMAT "0x%*phN"
-+#define CSUM_FORMAT_VALUE(size, bytes)  size, bytes
++static bool btrfs_supported_super_csum(u16 csum_type)
++{
++	switch (csum_type) {
++	case BTRFS_CSUM_TYPE_CRC32:
++		return true;
++	default:
++		return false;
++	}
++}
 +
- static inline void btrfs_print_data_csum_error(struct btrfs_inode *inode,
- 		u64 logical_start, u32 csum, u32 csum_expected, int mirror_num)
- {
- 	struct btrfs_root *root = inode->root;
-+	struct btrfs_super_block *sb = root->fs_info->super_copy;
-+	u16 csum_size = btrfs_super_csum_size(sb);
+ /*
+  * Return 0 if the superblock checksum type matches the checksum value of that
+  * algorithm. Pass the raw disk superblock data.
+@@ -366,7 +376,12 @@ static int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
+ 	struct btrfs_super_block *disk_sb =
+ 		(struct btrfs_super_block *)raw_disk_sb;
+ 	u16 csum_type = btrfs_super_csum_type(disk_sb);
+-	int ret = 0;
++
++	if (!btrfs_supported_super_csum(csum_type)) {
++		btrfs_err(fs_info, "unsupported checksum algorithm %u",
++			  csum_type);
++		return 1;
++	}
  
- 	/* Output minus objectid, which is more meaningful */
- 	if (root->root_key.objectid >= BTRFS_LAST_FREE_OBJECTID)
- 		btrfs_warn_rl(root->fs_info,
--	"csum failed root %lld ino %lld off %llu csum 0x%08x expected csum 0x%08x mirror %d",
-+	"csum failed root %lld ino %lld off %llu csum " CSUM_FORMAT " expected csum " CSUM_FORMAT " mirror %d",
- 			root->root_key.objectid, btrfs_ino(inode),
--			logical_start, csum, csum_expected, mirror_num);
-+			logical_start, CSUM_FORMAT_VALUE(csum_size, &csum),
-+			CSUM_FORMAT_VALUE(csum_size, &csum_expected),
-+			mirror_num);
- 	else
- 		btrfs_warn_rl(root->fs_info,
--	"csum failed root %llu ino %llu off %llu csum 0x%08x expected csum 0x%08x mirror %d",
-+	"csum failed root %llu ino %llu off %llu csum " CSUM_FORMAT " expected csum " CSUM_FORMAT " mirror %d",
- 			root->root_key.objectid, btrfs_ino(inode),
--			logical_start, csum, csum_expected, mirror_num);
-+			logical_start, CSUM_FORMAT_VALUE(csum_size, &csum),
-+			CSUM_FORMAT_VALUE(csum_size, &csum_expected),
-+			mirror_num);
+ 	if (csum_type == BTRFS_CSUM_TYPE_CRC32) {
+ 		u32 crc = ~(u32)0;
+@@ -382,16 +397,10 @@ static int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
+ 		btrfs_csum_final(crc, result);
+ 
+ 		if (memcmp(raw_disk_sb, result, sizeof(result)))
+-			ret = 1;
++			return 1;
+ 	}
+ 
+-	if (csum_type >= ARRAY_SIZE(btrfs_csum_sizes)) {
+-		btrfs_err(fs_info, "unsupported checksum algorithm %u",
+-				csum_type);
+-		ret = 1;
+-	}
+-
+-	return ret;
++	return 0;
  }
  
- #endif
+ int btrfs_verify_level_key(struct extent_buffer *eb, int level,
+@@ -2577,7 +2586,7 @@ static int btrfs_validate_write_super(struct btrfs_fs_info *fs_info,
+ 	ret = validate_super(fs_info, sb, -1);
+ 	if (ret < 0)
+ 		goto out;
+-	if (btrfs_super_csum_type(sb) != BTRFS_CSUM_TYPE_CRC32) {
++	if (!btrfs_supported_super_csum(btrfs_super_csum_type(sb))) {
+ 		ret = -EUCLEAN;
+ 		btrfs_err(fs_info, "invalid csum type, has %u want %u",
+ 			  btrfs_super_csum_type(sb), BTRFS_CSUM_TYPE_CRC32);
 -- 
 2.16.4
 
