@@ -2,26 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 280BE32767
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 06:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31A8632864
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 08:17:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbfFCEZu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jun 2019 00:25:50 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:47714 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726257AbfFCEZu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 3 Jun 2019 00:25:50 -0400
-Received: from dread.disaster.area (pa49-180-144-61.pa.nsw.optusnet.com.au [49.180.144.61])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 58010105E579;
-        Mon,  3 Jun 2019 14:25:43 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hXeXU-0003gB-Ot; Mon, 03 Jun 2019 14:25:40 +1000
-Date:   Mon, 3 Jun 2019 14:25:40 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Amir Goldstein <amir73il@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+        id S1726741AbfFCGRc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jun 2019 02:17:32 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:40913 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726314AbfFCGRb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jun 2019 02:17:31 -0400
+Received: by mail-yb1-f194.google.com with SMTP id g62so6200581ybg.7;
+        Sun, 02 Jun 2019 23:17:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AzzBr8p6pAFhPQ4nWb4WT925fUHe7nxuKy6xqODD/EU=;
+        b=Xb3ar0Aa0M7FubHFZCK9tCXx/zPB3ksaeJ++pG/3IezUuXmn6WS07+MfTIuQL6T3WQ
+         DCoBxJtq42XP8GhmVdjTVubt2TbMIA7lcjwHzY/1sWCbnZYPYbmx7N4uWVGPA0YhWTTK
+         bquiJlMZXC8ghiTpKGYa3oQPdGWnmo0X2oYF2fXr1HnLtOBoeW4yYjVNWS3/VSQMqJWd
+         c7dKUXrQMwRLQGcs17S3dKmPq6RizEhc8dv3TX9vSZ14DBfZP+t6XKUlQ5TZwO2LK9eK
+         UlDCUjSmXu/1s6NXMLkVgSTD4kn0uoEJTIJ3g/f2O6q/Ffv5iwRp7rpYm8iqkwgJLHrT
+         AqGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AzzBr8p6pAFhPQ4nWb4WT925fUHe7nxuKy6xqODD/EU=;
+        b=aBL5BjebUnQ3Dv01hhdCMKGJKG+nlDLLNUwPrdvAXzE3bDXpAOrcjojYRH1TVJysjc
+         5PsXLepny58wAlkB1ZKUqhdAIBNfnHIobdOFCNBEGXmDTXBJJE2HF49tP0FrIo32gDlw
+         nPyfIcSmR4d2UKz2Qt9pWKfVOVc9zcOXnM9H2FzZk5F2MsLVoYy88GyIxAxODxdkmtmu
+         ESksRtKQgIAeug3yiTApsL6pEFzNMdMLC2kti4srBVva2eC+yoeXbGWnAKy7tQBzerFv
+         J6rG59p1V5y/DzFmU4TXT7xq+ON1fmc87MSJpRIW9t8uLGgwEyEWDTgszR9wRge1Wvad
+         zt6g==
+X-Gm-Message-State: APjAAAUDlrJB7TXjSftwjggJdv3fOX9kofj/TusydeECK+zadzCbgnxX
+        12XQKI9eA0R8Hz7+0Do7LR/L8rfXGW8JifvY4R0=
+X-Google-Smtp-Source: APXvYqxUiGPrUIOAaEzrGoQGkNMo/lWx7FazJWFNhcVG5sAgy7dd9/YQJahBlF65ALIqHqZpqTnlgtDDFpDqYugx+zo=
+X-Received: by 2002:a25:c983:: with SMTP id z125mr11338526ybf.45.1559542650351;
+ Sun, 02 Jun 2019 23:17:30 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190527172655.9287-1-amir73il@gmail.com> <20190528202659.GA12412@mit.edu>
+ <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
+ <CAOQ4uxgj94WR82iHE4PDGSD0UDxG5sCtr+Sv+t1sOHHmnXFYzQ@mail.gmail.com>
+ <20190531164136.GA3066@mit.edu> <20190531224549.GF29573@dread.disaster.area>
+ <20190531232852.GG29573@dread.disaster.area> <CAOQ4uxi99NDYMrz-Q7xKta4beQiYFX3-MipZ_RxFNktFTA=vMA@mail.gmail.com>
+ <20190603042540.GH29573@dread.disaster.area>
+In-Reply-To: <20190603042540.GH29573@dread.disaster.area>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Mon, 3 Jun 2019 09:17:19 +0300
+Message-ID: <CAOQ4uxhqJJvr=uHmn_vPPPwZDCQoL2GFug30quFScNORT5Fw=w@mail.gmail.com>
+Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         "Darrick J . Wong" <darrick.wong@oracle.com>,
         Chris Mason <clm@fb.com>, Al Viro <viro@zeniv.linux.org.uk>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
@@ -29,151 +61,83 @@ Cc:     Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         Ext4 <linux-ext4@vger.kernel.org>,
         Linux Btrfs <linux-btrfs@vger.kernel.org>,
         Linux API <linux-api@vger.kernel.org>
-Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
-Message-ID: <20190603042540.GH29573@dread.disaster.area>
-References: <20190527172655.9287-1-amir73il@gmail.com>
- <20190528202659.GA12412@mit.edu>
- <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
- <CAOQ4uxgj94WR82iHE4PDGSD0UDxG5sCtr+Sv+t1sOHHmnXFYzQ@mail.gmail.com>
- <20190531164136.GA3066@mit.edu>
- <20190531224549.GF29573@dread.disaster.area>
- <20190531232852.GG29573@dread.disaster.area>
- <CAOQ4uxi99NDYMrz-Q7xKta4beQiYFX3-MipZ_RxFNktFTA=vMA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOQ4uxi99NDYMrz-Q7xKta4beQiYFX3-MipZ_RxFNktFTA=vMA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0 cx=a_idp_d
-        a=8RU0RCro9O0HS2ezTvitPg==:117 a=8RU0RCro9O0HS2ezTvitPg==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=dq6fvYVFJ5YA:10
-        a=7-415B0cAAAA:8 a=07d9gI8wAAAA:8 a=hbhAGIz_z3R__8BJwpYA:9
-        a=8xQTuTa32-gkxqBk:21 a=k5YJsRp0j8SCPEeh:21 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22 a=e2CUPOnPG4QKp8I52DXD:22
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jun 01, 2019 at 11:01:42AM +0300, Amir Goldstein wrote:
-> On Sat, Jun 1, 2019 at 2:28 AM Dave Chinner <david@fromorbit.com> wrote:
-> >
-> > On Sat, Jun 01, 2019 at 08:45:49AM +1000, Dave Chinner wrote:
-> > > Given that we can already use AIO to provide this sort of ordering,
-> > > and AIO is vastly faster than synchronous IO, I don't see any point
-> > > in adding complex barrier interfaces that can be /easily implemented
-> > > in userspace/ using existing AIO primitives. You should start
-> > > thinking about expanding libaio with stuff like
-> > > "link_after_fdatasync()" and suddenly the whole problem of
-> > > filesystem data vs metadata ordering goes away because the
-> > > application directly controls all ordering without blocking and
-> > > doesn't need to care what the filesystem under it does....
-> >
-> > And let me point out that this is also how userspace can do an
-> > efficient atomic rename - rename_after_fdatasync(). i.e. on
-> > completion of the AIO_FSYNC, run the rename. This guarantees that
-> > the application will see either the old file of the complete new
-> > file, and it *doesn't have to wait for the operation to complete*.
-> > Once it is in flight, the file will contain the old data until some
-> > point in the near future when will it contain the new data....
-> 
-> What I am looking for is a way to isolate the effects of "atomic rename/link"
-> from the rest of the users.  Sure there is I/O bandwidth and queued
-> bios, but at least isolate other threads working on other files or metadata
-> from contending with the "atomic rename" thread of journal flushes and
-> the like.
+> > Actually, one of my use cases is "atomic rename" of files with
+> > no data (looking for atomicity w.r.t xattr and mtime), so this "atomic rename"
+> > thread should not be interfering with other workloads at all.
+>
+> Which should already guaranteed because a) rename is supposed to be
+> atomic, and b) metadata ordering requirements in journalled
+> filesystems. If they lose xattrs across rename, there's something
+> seriously wrong with the filesystem implementation.  I'm really not
+> sure what you think filesystems are actually doing with metadata
+> across rename operations....
+>
 
-That's not a function of the kernel API. That's a function of the
-implementation behind the kernel API. i.e. The API requires data to
-be written before the rename/link is committed, how that is achieved
-is up to the filesystem. And some filesystems will not be able to
-isolate the API behavioural requirement from other users....
+Dave,
 
-> Actually, one of my use cases is "atomic rename" of files with
-> no data (looking for atomicity w.r.t xattr and mtime), so this "atomic rename"
-> thread should not be interfering with other workloads at all.
+We are going in circles so much that my head is spinning.
+I don't blame anyone for having a hard time to keep up with the plot, because
+it spans many threads and subjects, so let me re-iterate:
 
-Which should already guaranteed because a) rename is supposed to be
-atomic, and b) metadata ordering requirements in journalled
-filesystems. If they lose xattrs across rename, there's something
-seriously wrong with the filesystem implementation.  I'm really not
-sure what you think filesystems are actually doing with metadata
-across rename operations....
+- I *do* know that rename provides me the needed "metadata barrier"
+  w.r.t. xattr on xfs/ext4 today.
+- I *do* know the sync_file_range()+rename() callback provides the
+"data barrier"
+  I need on xfs/ext4 today.
+- I *do* use this internal fs knowledge in my applications
+- I even fixed up sync_file_range() per your suggestion, so I won't need to use
+  the FIEMAP_FLAG_SYNC hack
+- At attempt from CrashMonkey developers to document this behavior was
+  "shot down" for many justified reasons
+- Without any documentation nor explicit API with a clean guarantee, users
+  cannot write efficient applications without being aware of the filesystem
+  underneath and follow that filesystem development to make sure behavior
+  has not changed
+- The most recent proposal I have made in LSF, based on Jan's suggestion is
+  to change nothing in filesystem implementation, but use a new *explicit* verb
+  to communicate the expectation of the application, so that
+filesystems are free
+  the change behavior in the future in the absence of the new verb
 
-> > Seriously, sit down and work out all the "atomic" data vs metadata
-> > behaviours you want, and then tell me how many of them cannot be
-> > implemented as "AIO_FSYNC w/ completion callback function" in
-> > userspace. This mechanism /guarantees ordering/ at the application
-> > level, the application does not block waiting for these data
-> > integrity operations to complete, and you don't need any new kernel
-> > side functionality to implement this.
-> 
-> So I think what I could have used is AIO_BATCH_FSYNC, an interface
-> that was proposed by Ric Wheeler and discussed on LSF:
-> https://lwn.net/Articles/789024/
-> Ric was looking for a way to efficiently fsync a "bunch of files".
-> Submitting several AIO_FSYNC calls is not the efficient way of doing that.
+Once again, ATOMIC_METADATA is a noop in preset xfs/ext4.
+ATOMIC_DATA is sync_file_range() in present xfs/ext4.
+The APIs I *need* from the kernel *do* exist, but the filesystem developers
+(except xfs) are not willing to document the guarantee that the existing
+interfaces provide in the present.
 
-/me sighs.
+[...]
+> So, in the interests of /informed debate/, please implement what you
+> want using batched AIO_FSYNC + rename/linkat completion callback and
+> measure what it acheives. Then implement a sync_file_range/linkat
+> thread pool that provides the same functionality to the application
+> (i.e. writeback concurrency in userspace) and measure it. Then we
+> can discuss what the relative overhead is with numbers and can
+> perform analysis to determine what the cause of the performance
+> differential actually is.
+>
 
-That's not what I just suggested, and I've already addressed this
-"AIO_FSYNC sucks" FUD in multiple separate threads.  You do realise
-you can submit multiple AIO operations with a single io_submit()
-call, right?
+Fare enough.
 
-	struct iocb	ioc[10];
-	struct io_event ev[10];
+> Neither of these things require kernel modifications, but you need
+> to provide the evidence that existing APIs are insufficient.
 
-	for (i = 0; i < 10; i++) {
-		io_prep_fsync(&ioc[i], fd[i]);
-		ioc[i]->data = callback_arg[i];
-	}
+APIs are sufficient if I know which filesystem I am running on.
+btrfs needs a different set of syscalls to get the same thing done.
 
-	io_submit(aio_ctx, 10, &ioc);
-	io_getevents(aio_ctx, 10, 10, ev, NULL);
+> Indeed, we now have the new async ioring stuff that can run async
+> sync_file_range calls, so you probably need to benchmark replacing
+> AIO_FSYNC with that interface as well. This new API likely does
+> exactly what you want without the journal/device cache flush
+> overhead of AIO_FSYNC....
+>
 
-	for (i = 0; i < 10; i++)
-		post_fsync_callback(&ev[i]);
+Indeed, I am keeping a close watch on io_uring.
 
-
-There's your single syscall AIO_BATCH_FSYNC functionality, and it
-implements a per-fd post-fsync callback function. This isn't rocket
-science....
-
-[snip]
-
-> I am trying to reduce the number of fsyncs from applications
-> and converting fsync to AIO_FSYNC is not going to help with that.
-
-Your whole argument is "fsync is inefficient because cache flushes,
-therefore AIO_FSYNC must be inefficient." IOWs, you've already
-decided what is wrong, how it can and can't be fixed and the
-solution you want regardless of whether your assertions are correct
-or not. You haven't provided any evidence that a new kernel API is
-the only viable solution, nor that the existing ones cannot provide
-the functionality you require.
-
-So, in the interests of /informed debate/, please implement what you
-want using batched AIO_FSYNC + rename/linkat completion callback and
-measure what it acheives. Then implement a sync_file_range/linkat
-thread pool that provides the same functionality to the application
-(i.e. writeback concurrency in userspace) and measure it. Then we
-can discuss what the relative overhead is with numbers and can
-perform analysis to determine what the cause of the performance
-differential actually is.
-
-Neither of these things require kernel modifications, but you need
-to provide the evidence that existing APIs are insufficient.
-Indeed, we now have the new async ioring stuff that can run async
-sync_file_range calls, so you probably need to benchmark replacing
-AIO_FSYNC with that interface as well. This new API likely does
-exactly what you want without the journal/device cache flush
-overhead of AIO_FSYNC....
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks,
+Amir.
