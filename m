@@ -2,142 +2,273 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31A8632864
-	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 08:17:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72BBD3289E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  3 Jun 2019 08:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726741AbfFCGRc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 3 Jun 2019 02:17:32 -0400
-Received: from mail-yb1-f194.google.com ([209.85.219.194]:40913 "EHLO
-        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726314AbfFCGRb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 3 Jun 2019 02:17:31 -0400
-Received: by mail-yb1-f194.google.com with SMTP id g62so6200581ybg.7;
-        Sun, 02 Jun 2019 23:17:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AzzBr8p6pAFhPQ4nWb4WT925fUHe7nxuKy6xqODD/EU=;
-        b=Xb3ar0Aa0M7FubHFZCK9tCXx/zPB3ksaeJ++pG/3IezUuXmn6WS07+MfTIuQL6T3WQ
-         DCoBxJtq42XP8GhmVdjTVubt2TbMIA7lcjwHzY/1sWCbnZYPYbmx7N4uWVGPA0YhWTTK
-         bquiJlMZXC8ghiTpKGYa3oQPdGWnmo0X2oYF2fXr1HnLtOBoeW4yYjVNWS3/VSQMqJWd
-         c7dKUXrQMwRLQGcs17S3dKmPq6RizEhc8dv3TX9vSZ14DBfZP+t6XKUlQ5TZwO2LK9eK
-         UlDCUjSmXu/1s6NXMLkVgSTD4kn0uoEJTIJ3g/f2O6q/Ffv5iwRp7rpYm8iqkwgJLHrT
-         AqGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AzzBr8p6pAFhPQ4nWb4WT925fUHe7nxuKy6xqODD/EU=;
-        b=aBL5BjebUnQ3Dv01hhdCMKGJKG+nlDLLNUwPrdvAXzE3bDXpAOrcjojYRH1TVJysjc
-         5PsXLepny58wAlkB1ZKUqhdAIBNfnHIobdOFCNBEGXmDTXBJJE2HF49tP0FrIo32gDlw
-         nPyfIcSmR4d2UKz2Qt9pWKfVOVc9zcOXnM9H2FzZk5F2MsLVoYy88GyIxAxODxdkmtmu
-         ESksRtKQgIAeug3yiTApsL6pEFzNMdMLC2kti4srBVva2eC+yoeXbGWnAKy7tQBzerFv
-         J6rG59p1V5y/DzFmU4TXT7xq+ON1fmc87MSJpRIW9t8uLGgwEyEWDTgszR9wRge1Wvad
-         zt6g==
-X-Gm-Message-State: APjAAAUDlrJB7TXjSftwjggJdv3fOX9kofj/TusydeECK+zadzCbgnxX
-        12XQKI9eA0R8Hz7+0Do7LR/L8rfXGW8JifvY4R0=
-X-Google-Smtp-Source: APXvYqxUiGPrUIOAaEzrGoQGkNMo/lWx7FazJWFNhcVG5sAgy7dd9/YQJahBlF65ALIqHqZpqTnlgtDDFpDqYugx+zo=
-X-Received: by 2002:a25:c983:: with SMTP id z125mr11338526ybf.45.1559542650351;
- Sun, 02 Jun 2019 23:17:30 -0700 (PDT)
+        id S1726798AbfFCGkS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 3 Jun 2019 02:40:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58488 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726383AbfFCGkS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 3 Jun 2019 02:40:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 7C8F0AF3E;
+        Mon,  3 Jun 2019 06:40:15 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] fstests: generic/260: Make it handle btrfs more gracefully
+Date:   Mon,  3 Jun 2019 14:40:09 +0800
+Message-Id: <20190603064009.9891-1-wqu@suse.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20190527172655.9287-1-amir73il@gmail.com> <20190528202659.GA12412@mit.edu>
- <CAOQ4uxgo5jmwQbLAKQre9=7pLQw=CwMgDaWPaJxi-5NGnPEVPQ@mail.gmail.com>
- <CAOQ4uxgj94WR82iHE4PDGSD0UDxG5sCtr+Sv+t1sOHHmnXFYzQ@mail.gmail.com>
- <20190531164136.GA3066@mit.edu> <20190531224549.GF29573@dread.disaster.area>
- <20190531232852.GG29573@dread.disaster.area> <CAOQ4uxi99NDYMrz-Q7xKta4beQiYFX3-MipZ_RxFNktFTA=vMA@mail.gmail.com>
- <20190603042540.GH29573@dread.disaster.area>
-In-Reply-To: <20190603042540.GH29573@dread.disaster.area>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Mon, 3 Jun 2019 09:17:19 +0300
-Message-ID: <CAOQ4uxhqJJvr=uHmn_vPPPwZDCQoL2GFug30quFScNORT5Fw=w@mail.gmail.com>
-Subject: Re: [RFC][PATCH] link.2: AT_ATOMIC_DATA and AT_ATOMIC_METADATA
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Chris Mason <clm@fb.com>, Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> > Actually, one of my use cases is "atomic rename" of files with
-> > no data (looking for atomicity w.r.t xattr and mtime), so this "atomic rename"
-> > thread should not be interfering with other workloads at all.
->
-> Which should already guaranteed because a) rename is supposed to be
-> atomic, and b) metadata ordering requirements in journalled
-> filesystems. If they lose xattrs across rename, there's something
-> seriously wrong with the filesystem implementation.  I'm really not
-> sure what you think filesystems are actually doing with metadata
-> across rename operations....
->
+If a filesystem doesn't map its logical address space (normally the
+bytenr/blocknr returned by fiemap) directly to its devices(s), the
+following assumptions used in the test case is no longer true:
+- trim range start beyond the end of fs should fail
+- trim range start beyond the end of fs with len set should fail
 
-Dave,
+Under the following example, even with just one device, btrfs can still
+trim the fs correctly while breaking above assumption:
 
-We are going in circles so much that my head is spinning.
-I don't blame anyone for having a hard time to keep up with the plot, because
-it spans many threads and subjects, so let me re-iterate:
+0		1G		1.25G
+|---------------|///////////////|-----------------| <- btrfs logical
+		   |				       address space
+        ------------  mapped as SINGLE
+        |
+0	V	256M
+|///////////////|			<- device address space
 
-- I *do* know that rename provides me the needed "metadata barrier"
-  w.r.t. xattr on xfs/ext4 today.
-- I *do* know the sync_file_range()+rename() callback provides the
-"data barrier"
-  I need on xfs/ext4 today.
-- I *do* use this internal fs knowledge in my applications
-- I even fixed up sync_file_range() per your suggestion, so I won't need to use
-  the FIEMAP_FLAG_SYNC hack
-- At attempt from CrashMonkey developers to document this behavior was
-  "shot down" for many justified reasons
-- Without any documentation nor explicit API with a clean guarantee, users
-  cannot write efficient applications without being aware of the filesystem
-  underneath and follow that filesystem development to make sure behavior
-  has not changed
-- The most recent proposal I have made in LSF, based on Jan's suggestion is
-  to change nothing in filesystem implementation, but use a new *explicit* verb
-  to communicate the expectation of the application, so that
-filesystems are free
-  the change behavior in the future in the absence of the new verb
+Thus trim range start=1G len=256M will cause btrfs to trim the 256M
+block group, thus return correct result.
 
-Once again, ATOMIC_METADATA is a noop in preset xfs/ext4.
-ATOMIC_DATA is sync_file_range() in present xfs/ext4.
-The APIs I *need* from the kernel *do* exist, but the filesystem developers
-(except xfs) are not willing to document the guarantee that the existing
-interfaces provide in the present.
+Furthermore, there is no cleared defined behavior for whether a fs should
+trim the unmapped space. (only for indirectly mapped fs)
 
-[...]
-> So, in the interests of /informed debate/, please implement what you
-> want using batched AIO_FSYNC + rename/linkat completion callback and
-> measure what it acheives. Then implement a sync_file_range/linkat
-> thread pool that provides the same functionality to the application
-> (i.e. writeback concurrency in userspace) and measure it. Then we
-> can discuss what the relative overhead is with numbers and can
-> perform analysis to determine what the cause of the performance
-> differential actually is.
->
+Btrfs currently will always trim the unmapped space, but the behavior
+can change as large trim can be very expensive.
 
-Fare enough.
+Despite the change to skip certain tests for btrfs, still run the
+following tests for btrfs:
+- trim start=U64_MAX with lenght set
+  This will expose a bug that btrfs doesn't check overflow of the range.
+  This bug will be fixed soon.
 
-> Neither of these things require kernel modifications, but you need
-> to provide the evidence that existing APIs are insufficient.
+- trim beyond the end of the fs
+  This will expose a bug where btrfs could send trim command beyond the
+  end of its device.
+  This bug is a regression, can be fixed by reverting c2d1b3aae336 ("btrfs:
+  Honour FITRIM range constraints during free space trim")
 
-APIs are sufficient if I know which filesystem I am running on.
-btrfs needs a different set of syscalls to get the same thing done.
+With proper fixes for btrfs, this test case should pass on btrfs, ext4,
+xfs.
 
-> Indeed, we now have the new async ioring stuff that can run async
-> sync_file_range calls, so you probably need to benchmark replacing
-> AIO_FSYNC with that interface as well. This new API likely does
-> exactly what you want without the journal/device cache flush
-> overhead of AIO_FSYNC....
->
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+changelog:
+v2:
+- Return 0/1 instead of echo "1"/"0" for _is_fs_directly_mapped
+  Although it may be a little confusing, but make
+  "if _is_fs_directly_mapped; then" much cleaner.
+- Comment change.
+---
+ common/rc             | 15 ++++++++
+ tests/generic/260     | 79 +++++++++++++++++++++++++++----------------
+ tests/generic/260.out |  9 +----
+ 3 files changed, 66 insertions(+), 37 deletions(-)
 
-Indeed, I am keeping a close watch on io_uring.
+diff --git a/common/rc b/common/rc
+index 17b89d5d..117dcec2 100644
+--- a/common/rc
++++ b/common/rc
+@@ -4005,6 +4005,21 @@ _require_fibmap()
+ 	rm -f $file
+ }
+ 
++# Check if the logical address (returned by fiemap) can be larger than the
++# block device.
++# Currently only btrfs has such behavior even for single device usage.
++# Return 0 if it's directly mapped, return 1 if not.
++# This return value looks confusing but allows us to use
++# "if _is_fs_direct_mapped; then" directly
++_is_fs_direct_mapped()
++{
++	if [ "$FSTYP" == "btrfs" ]; then
++		return 1
++	else
++		return 0
++	fi
++}
++
+ _try_wipe_scratch_devs()
+ {
+ 	test -x "$WIPEFS_PROG" || return 0
+diff --git a/tests/generic/260 b/tests/generic/260
+index 9e652dee..77ace622 100755
+--- a/tests/generic/260
++++ b/tests/generic/260
+@@ -27,40 +27,50 @@ _supported_fs generic
+ _supported_os Linux
+ _require_math
+ 
++rm -f $seqres.full
++
+ _require_scratch
+ _scratch_mkfs >/dev/null 2>&1
+ _scratch_mount
+ 
+ _require_batched_discard $SCRATCH_MNT
+ 
++
+ fssize=$($DF_PROG -k | grep "$SCRATCH_MNT" | grep "$SCRATCH_DEV"  | awk '{print $3}')
+ 
+ beyond_eofs=$(_math "$fssize*2048")
+ max_64bit=$(_math "2^64 - 1")
+ 
+-# All these tests should return EINVAL
+-# since the start is beyond the end of
+-# the file system
+-
+-echo "[+] Start beyond the end of fs (should fail)"
+-out=$($FSTRIM_PROG -o $beyond_eofs $SCRATCH_MNT 2>&1)
+-[ $? -eq 0 ] && status=1
+-echo $out | _filter_scratch
+-
+-echo "[+] Start beyond the end of fs with len set (should fail)"
+-out=$($FSTRIM_PROG -o $beyond_eofs -l1M $SCRATCH_MNT 2>&1)
+-[ $? -eq 0 ] && status=1
+-echo $out | _filter_scratch
+-
+-echo "[+] Start = 2^64-1 (should fail)"
+-out=$($FSTRIM_PROG -o $max_64bit $SCRATCH_MNT 2>&1)
+-[ $? -eq 0 ] && status=1
+-echo $out | _filter_scratch
++# For filesystem with direct mapping, all these tests should return EINVAL
++# since the start is beyond the end of the file system
++#
++# Skip these tests if the filesystem has its own address space mapping,
++# as it's implementation dependent.
++# E.g btrfs can map its physical address of (devid=1, physical=1M, len=1M)
++# to its logical address (logical=1G, len=1M). Making trim beyond device
++# boundary to success.
++
++echo "[+] Optional trim range test (fs dependent)"
++if _is_fs_direct_mapped; then
++	echo "[+] Start beyond the end of fs (should fail)" >> $seqres.full
++	$FSTRIM_PROG -o $beyond_eofs $SCRATCH_MNT >> $seqres.full 2>&1
++	[ $? -eq 0 ] && status=1
++
++	echo "[+] Start beyond the end of fs with len set (should fail)" >> $seqres.full
++	$FSTRIM_PROG -o $beyond_eofs -l1M $SCRATCH_MNT >> $seqres.full 2>&1
++	[ $? -eq 0 ] && status=1
++
++	# indirectly mapped fs may use this special value to trim their
++	# unmapped space, so don't do this for indirectly mapped fs.
++	echo "[+] Start = 2^64-1 (should fail)" >> $seqres.full
++	$FSTRIM_PROG -o $max_64bit $SCRATCH_MNT 2>&1 >> $seqres.full 2>&1
++	[ $? -eq 0 ] && status=1
++fi
+ 
+-echo "[+] Start = 2^64-1 and len is set (should fail)"
+-out=$($FSTRIM_PROG -o $max_64bit -l1M $SCRATCH_MNT 2>&1)
++# This should fail due to overflow no matter how the fs is implemented
++echo "[+] Start = 2^64-1 and len is set (should fail)" >> $seqres.full
++$FSTRIM_PROG -o $max_64bit -l1M $SCRATCH_MNT >> $seqres.full 2>&1
+ [ $? -eq 0 ] && status=1
+-echo $out | _filter_scratch
+ 
+ _scratch_unmount
+ _scratch_mkfs >/dev/null 2>&1
+@@ -86,10 +96,12 @@ _scratch_unmount
+ _scratch_mkfs >/dev/null 2>&1
+ _scratch_mount
+ 
++echo "[+] Trim an empty fs" >> $seqres.full
+ # This is a bit fuzzy, but since the file system is fresh
+ # there should be at least (fssize/2) free space to trim.
+ # This is supposed to catch wrong FITRIM argument handling
+ bytes=$($FSTRIM_PROG -v -o10M $SCRATCH_MNT | _filter_fstrim)
++echo "$bytes trimed" >> $seqres.full
+ 
+ if [ $bytes -gt $(_math "$fssize*1024") ]; then
+ 	status=1
+@@ -97,11 +109,9 @@ if [ $bytes -gt $(_math "$fssize*1024") ]; then
+ 	     "however the file system is $(_math "$fssize*1024") bytes long."
+ fi
+ 
+-# Btrfs is special and this test does not apply to it
+-# It is because btrfs does not have not-yet-used parts of the device
+-# mapped and since we got here right after the mkfs, there is not
+-# enough free extents in the root tree.
+-if [ $bytes -le $(_math "$fssize*512") ] && [ $FSTYP != "btrfs" ]; then
++# Indirect mapped fs can have their own decision on whether to trim
++# unmapped blocks.
++if [ $bytes -le $(_math "$fssize*512") ] && _is_fs_direct_mapped; then
+ 	status=1
+ 	echo "After the full fs discard $bytes bytes were discarded"\
+ 	     "however the file system is $(_math "$fssize*1024") bytes long."
+@@ -141,14 +151,23 @@ esac
+ _scratch_unmount
+ _scratch_mkfs >/dev/null 2>&1
+ _scratch_mount
++
++echo "[+] Try to trim beyond the end of the fs" >> $seqres.full
+ # It should fail since $start is beyond the end of file system
+-$FSTRIM_PROG -o$start -l10M $SCRATCH_MNT &> /dev/null
+-if [ $? -eq 0 ]; then
++$FSTRIM_PROG -o$start -l10M $SCRATCH_MNT >> $seqres.full 2>&1
++ret=$?
++if [ $ret -eq 0 ] && _is_fs_direct_mapped; then
+ 	status=1
+ 	echo "It seems that fs logic handling start"\
+ 	     "argument overflows"
+ fi
+ 
++# For indirectly mapped fs, it shouldn't fail.
++if [ $ret -ne 0 ] && ! _is_fs_direct_mapped; then
++	status=1
++	echo "Unexpected error happened during trim"
++fi
++
+ _scratch_unmount
+ _scratch_mkfs >/dev/null 2>&1
+ _scratch_mount
+@@ -160,8 +179,10 @@ _scratch_mount
+ # It is because btrfs does not have not-yet-used parts of the device
+ # mapped and since we got here right after the mkfs, there is not
+ # enough free extents in the root tree.
++echo "[+] Try to trim the fs with large enough len" >> $seqres.full
+ bytes=$($FSTRIM_PROG -v -l$len $SCRATCH_MNT | _filter_fstrim)
+-if [ $bytes -le $(_math "$fssize*512") ] && [ $FSTYP != "btrfs" ]; then
++echo "$bytes trimed" >> $seqres.full
++if [ $bytes -le $(_math "$fssize*512") ] && _is_fs_direct_mapped; then
+ 	status=1
+ 	echo "It seems that fs logic handling len argument overflows"
+ fi
+diff --git a/tests/generic/260.out b/tests/generic/260.out
+index a16c4f74..f4ee2f72 100644
+--- a/tests/generic/260.out
++++ b/tests/generic/260.out
+@@ -1,12 +1,5 @@
+ QA output created by 260
+-[+] Start beyond the end of fs (should fail)
+-fstrim: SCRATCH_MNT: FITRIM ioctl failed: Invalid argument
+-[+] Start beyond the end of fs with len set (should fail)
+-fstrim: SCRATCH_MNT: FITRIM ioctl failed: Invalid argument
+-[+] Start = 2^64-1 (should fail)
+-fstrim: SCRATCH_MNT: FITRIM ioctl failed: Invalid argument
+-[+] Start = 2^64-1 and len is set (should fail)
+-fstrim: SCRATCH_MNT: FITRIM ioctl failed: Invalid argument
++[+] Optional trim range test (fs dependent)
+ [+] Default length (should succeed)
+ [+] Default length with start set (should succeed)
+ [+] Length beyond the end of fs (should succeed)
+-- 
+2.21.0
 
-Thanks,
-Amir.
