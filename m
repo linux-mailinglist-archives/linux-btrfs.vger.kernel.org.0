@@ -2,31 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0647335979
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2019 11:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B35473597E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2019 11:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727032AbfFEJNo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jun 2019 05:13:44 -0400
-Received: from mout.gmx.net ([212.227.15.15]:35767 "EHLO mout.gmx.net"
+        id S1726880AbfFEJPH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jun 2019 05:15:07 -0400
+Received: from mout.gmx.net ([212.227.15.19]:49849 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726690AbfFEJNo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jun 2019 05:13:44 -0400
+        id S1726831AbfFEJPH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Jun 2019 05:15:07 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1559726018;
-        bh=OTpejbnu+PktZ38TiKfYn95uJTKCEN2xYLC/k0SoP24=;
+        s=badeba3b8450; t=1559726101;
+        bh=oeBmMHN5/J667KE6bWMCWcy+QzOLDz93LHatOTAzjS8=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=FEZX4yKZK5tQYjryCEo7XoosGOkuqiY8gKqjbfocQD1ZXecLBP7yyMQDtqhDgPXpi
-         JDrCyZNa5excd694ge0RK9/aVS1slrMdHMFBgdLEEh5iQ0umktizJgr4foHJd+Li/x
-         E8g0x4tRXyYnX1fXTFZfb0Rw5FbQnNGsxgt6cyMo=
+        b=I7vrGwZZir/JlFZ57ECtgqlv4B/TN6KrtDD5sC5mTasTgDhSd4ExG+abwK1suYbqv
+         wNhd/uXQnc9eWkbCAcl4ELAcZkqRNKX59AvmKfsMq0L6zjgQ1ihQHhj/Y0CeUiETdu
+         dcGrIBarB+iXBwNoV+ozzRMRC9p1CT7e1G0q1tQ4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx002
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0M6RiN-1gea9S1I2V-00yPRZ; Wed, 05
- Jun 2019 11:13:38 +0200
-Subject: Re: [PATCH 2/4] btrfs: Always trim all unallocated space in
- btrfs_trim_free_extents
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M2f9h-1hYizb2Iil-004Amz; Wed, 05
+ Jun 2019 11:15:01 +0200
+Subject: Re: [PATCH 3/4] btrfs: Skip first megabyte on device when trimming
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20190603100602.19362-1-nborisov@suse.com>
- <20190603100602.19362-3-nborisov@suse.com>
+ <20190603100602.19362-4-nborisov@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -53,35 +52,35 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <065ac952-c620-23ad-2b3b-902c319ad14c@gmx.com>
-Date:   Wed, 5 Jun 2019 17:13:32 +0800
+Message-ID: <91bf1d48-dea5-45a9-4c0f-7a2fa0b22c98@gmx.com>
+Date:   Wed, 5 Jun 2019 17:14:56 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190603100602.19362-3-nborisov@suse.com>
+In-Reply-To: <20190603100602.19362-4-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:K0xe0a56Rm7XNecBIwfJrfIOvIBHZR6uM1A5YU+oXdGv477TEPS
- E4sT7qAwjgl+dKYDui3+CvhD1aDU4jwa5SfKl7Rtdr0xTvUU0mp0VsdqNq0L/7otg05mBoc
- +KzMHo/QAfNaUx/glwlXAKWfmJMS7V4D6cJDcOBCVKiFqQQZOfbUNxoCvhPPSBKgm3nmbCk
- lufv9lXjyYk03SLBNwLHw==
+X-Provags-ID: V03:K1:5lsx7HkETZ79A/ZotR+bC9eDN1fwMNBzbESXIVUk665ckdiMyYw
+ Cb0JJrufoFaGWQqnWBpHGbfC1TGYcDTLN9YoGGJfzsExfC1pqCmhFkpaQEY4b5xlNyTL6Oy
+ sgxBKbx9HeGl72usETf07vwXovz9RckPJjDm4HxQFAxEIKdUbMicXFvWrFGgfDXx4sw/AuH
+ FG1Nx2wJ3ZGVeF2VP8ajg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:BSrqpD6Zv7s=:Nuen/7VdhOCnb2+N+UM+HH
- 4EeJOH6P2Wjjk0Z/w1zbH92Cfrsqjd1+WnjOfGflZzDeI7gIYgl7tXhtuzK347ekNrhFRnn+m
- 8bNXqg+OgQYY4SnCmtKjtSHP4vIqhDatC5Fh6jWlFhSKI7NiNnAzgU+R5Kk36i/ZNol4UUK8h
- WLKyi6ExzL5HkjRLKPm9pJ3h88lM2aXkvEFQONcq4JA4bXdXzBOGJr6hCaqWCrB9K2iwxPiO6
- ieYAdmNpdDUTXqVCk0gDKmymqbnEhcUddFjmK0XzhD89OWJ+cz2Zd9GpnxTfj8vJ+Tdqs4E77
- koZ5WOyoVFGuhsTU8rq7m4dOU+PqnYBxnFDPJUoRNNtynG2i1pbraf6+7gthYVewqYdsBRl64
- O8dWu1aPiuoqIbqsMJjZXx0NO4bRd9bmvy9lSshILEwTVXXGkjVlpRzDLxCyfZQOh5jBt7bUN
- y6OQ39xMJPSV+Y1+AiU8U0VaEVyD9x7+0Wrjobj6mQH5Ew2yKhOWnGirqHoimfOHP6vXVjCMc
- xjA9N3BU1UP/9XbFG0tCn8bcbyTqmveEnzb2SPcQgFR+6oSF37Q149B7Nl6pK3p20bt3Wxo9o
- waWXkkjXdDOcs1I7Rx7pjwshiWLnBF061ib4VqiKneIy2LFy4HQ/DqYu/J8EtGnhr6wufZKBf
- PMM+MUnCI/mzmsIL6FswXqgEk+qtaFqwqBHYjBQo43XWnUssGwT1vsIJGl78aun1sd8g1lNyT
- zlAPnAhu3RLsVNR+F8r57SwLru4s0XPaqq/nv4dxU8nJZtj1fTduJyJsMAPG7Wyqw+VKBnguP
- NjObEya3iGc9qWb5YiqpRwKhzMNG7owkqLPKGhcjaZcRgXvedu36aEWQn3YnQP2RQ1YU+WzDh
- SaFmHsk54h1ZTJulDNPxvX2ad87SHwlpqdaMSlLquuorzKa3t40cIFcwIj4ZxMu5zf3N06nYZ
- wZK5rsn2uVjP8gG31tjbiMcaVwG3TKgmp35EjUu8sP/DPvmLsGERu
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8zWxpF0lhgU=:pX3crKiNMQLXA9L57h2IYY
+ auSBjs57eCI75vp4O9A00woHCcGd6cntZidqIwUvjquxauT/fTBLspEYvS1G8BbV/ABUql3RS
+ QwlKwKRHJvmrpUXMS3I+FpWDEaEuYzuRAi0ugA6oXgwD/+o/xqYvtOijfbiGhIeqGujAtiygz
+ XdFtNugltpkyVTA9Q1/EwPJQiIp+ryX4HpYM//Z8oUPFd+De3fsx1ey2V3/nX/8WAuSboxHrz
+ B+RGm8bkWmGIFFdlZNJzJNjWnSmUEBNflLb3XYy6tl17gUWjOINm2vkAmH3lx0cC0teEughGK
+ KPa2O6F053jjDp6uViJBwrMOQPsFgNbwFwish5ZbK0IXoZYtiD9y22/EirADTd2Jo4KdNhy0d
+ 3WPertzGGAaffhn5jTRWpfbmCHJeFlpAvivcc7tfSrNy2oF/8zYLgRE120SHDZ7sGyKMHgvYN
+ YPn4jv1rPGutizpgp8NR12OdttR5UNa4m82qr8AwTt7NscoyHaMMdToOqq6VZRcueK0UpYdDC
+ Ljh5Bx2x6J6/+HAhDmVNJqPTetLS0AmsyfRvgYWaBsZUF+K1Itgv0ynuhW0B8L0pCqTyub1e3
+ akWh7Fn3r25B1fsYoEli26f6RLIUZ3U9gYwHUhf8PvRQ3ltH4dylhpI2gMO/xSzWjma9OKExO
+ N70qxsmU9YzO/rdEqEVG6JwSHfAOGsGsed08+xYEB5nPTtRPNxGaNvUuSeynIMvDfAL8rDCMf
+ HprvZ5RQK+vb7pRMn9LnNDRQNvql3XnIYs0yXhJAse4XlVBBDzcC0C6tlgwXWyWuAyi0GIfqn
+ r/5XWrzG8vXZgatCuIxb5KTl2PiSmkuILxPOsGtspz8TGHLYIuF6JMDbYBpt6X0TTMcSKeXZp
+ CSuezcsk/1aUTXkFXlP9R+LWKYSPUbu5OYSbYj4/pY4mK8NVWdBLPYfRrTKiapKuLlqwRJhIn
+ miojiG94e8aZtw/WlvEmVYD2G3WQKz+utPuUUPe27iqTRCKpixNET
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -90,96 +89,46 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2019/6/3 =E4=B8=8B=E5=8D=886:06, Nikolay Borisov wrote:
-> This patch removes support for range parameters of FITRIM ioctl when
-> trimming unallocated space on devices. This is necessary since ranges
-> passed from user space are generally interpreted as logical addresses,
-> whereas btrfs_trim_free_extents used to interpret them as device
-> physical extents. This could result in counter-intuitive behavior for
-> users so it's best to remove that support altogether.
+> Currently the first megabyte on a device housing a btrfs filesystem is
+> exempt from allocation and trimming. Currently this is not a problem
+> since 'start' is set to 1m at the beginning of btrfs_trim_free_extents
+> and find_first_clear_extent_bit always returns a range that is >=3D star=
+t.
+> However, in a follow up patch find_first_clear_extent_bit will be
+> changed such that it will return a range containing 'start' and this
+> range may very well be 0...>=3D1M so 'start'.
 >
-> Additionally, the existing range support had a bug where if an offset
-> was passed to FITRIM which overflows u64 e.g. -1 (parsed as u64
-> 18446744073709551615) then wrong data was fed into btrfs_issue_discard,
-> which in turn leads to wrap-around when aligning the passed range and
-> results in wrong regions being discarded which leads to data corruption.
+> Future proof the sole user of find_first_clear_extent_bit by setting
+> 'start' after the function is called. No functional changes.
 >
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Reveiwed-by: Qu Wenruo <wqu@suse.com>
+Doesn't that previous patch already address this by:
+
++	u64 start =3D SZ_1M, len =3D 0, end =3D 0;
 
 Thanks,
 Qu
 
+
 > ---
->  fs/btrfs/extent-tree.c | 28 +++-------------------------
->  1 file changed, 3 insertions(+), 25 deletions(-)
+>  fs/btrfs/extent-tree.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
 > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 96628eb4b389..d8c5febf7636 100644
+> index d8c5febf7636..5a11e4988243 100644
 > --- a/fs/btrfs/extent-tree.c
 > +++ b/fs/btrfs/extent-tree.c
-> @@ -11145,13 +11145,11 @@ int btrfs_error_unpin_extent_range(struct btrf=
-s_fs_info *fs_info,
->   * it while performing the free space search since we have already
->   * held back allocations.
->   */
-> -static int btrfs_trim_free_extents(struct btrfs_device *device,
-> -				   struct fstrim_range *range, u64 *trimmed)
-> +static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *tr=
-immed)
->  {
-> -	u64 start, len =3D 0, end =3D 0;
-> +	u64 start =3D SZ_1M, len =3D 0, end =3D 0;
->  	int ret;
+> @@ -11183,6 +11183,10 @@ static int btrfs_trim_free_extents(struct btrfs=
+_device *device, u64 *trimmed)
+>  		 * to the caller to trim the value to the size of the device.
+>  		 */
+>  		end =3D min(end, device->total_bytes - 1);
+> +
+> +		/* Ensure we skip first mb in case we have a bootloader there */
+> +		start =3D max_t(u64, start, SZ_1M);
+> +
+>  		len =3D end - start + 1;
 >
-> -	start =3D max_t(u64, range->start, SZ_1M);
->  	*trimmed =3D 0;
->
->  	/* Discard not supported =3D nothing to do. */
-> @@ -11194,22 +11192,6 @@ static int btrfs_trim_free_extents(struct btrfs=
-_device *device,
->  			break;
->  		}
->
-> -		/* Keep going until we satisfy minlen or reach end of space */
-> -		if (len < range->minlen) {
-> -			mutex_unlock(&fs_info->chunk_mutex);
-> -			start +=3D len;
-> -			continue;
-> -		}
-> -
-> -		/* If we are out of the passed range break */
-> -		if (start > range->start + range->len - 1) {
-> -			mutex_unlock(&fs_info->chunk_mutex);
-> -			break;
-> -		}
-> -
-> -		start =3D max(range->start, start);
-> -		len =3D min(range->len, len);
-> -
->  		ret =3D btrfs_issue_discard(device->bdev, start, len,
->  					  &bytes);
->  		if (!ret)
-> @@ -11224,10 +11206,6 @@ static int btrfs_trim_free_extents(struct btrfs=
-_device *device,
->  		start +=3D len;
->  		*trimmed +=3D bytes;
->
-> -		/* We've trimmed enough */
-> -		if (*trimmed >=3D range->len)
-> -			break;
-> -
->  		if (fatal_signal_pending(current)) {
->  			ret =3D -ERESTARTSYS;
->  			break;
-> @@ -11311,7 +11289,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info,=
- struct fstrim_range *range)
->  	mutex_lock(&fs_info->fs_devices->device_list_mutex);
->  	devices =3D &fs_info->fs_devices->devices;
->  	list_for_each_entry(device, devices, dev_list) {
-> -		ret =3D btrfs_trim_free_extents(device, range, &group_trimmed);
-> +		ret =3D btrfs_trim_free_extents(device, &group_trimmed);
->  		if (ret) {
->  			dev_failed++;
->  			dev_ret =3D ret;
+>  		/* We didn't find any extents */
 >
