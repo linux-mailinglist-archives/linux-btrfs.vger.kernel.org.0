@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E146F35AF8
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2019 13:16:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 794D635B1A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2019 13:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbfFELQP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jun 2019 07:16:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54200 "EHLO mx1.suse.de"
+        id S1727369AbfFELSQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jun 2019 07:18:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54540 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727427AbfFELQP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jun 2019 07:16:15 -0400
+        id S1727183AbfFELSP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Jun 2019 07:18:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2DD66AE4B;
-        Wed,  5 Jun 2019 11:16:13 +0000 (UTC)
-Subject: Re: [PATCH v2] fstests: generic/260: Make it handle btrfs more
- gracefully
-To:     Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20190603064009.9891-1-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 1229CAE3E;
+        Wed,  5 Jun 2019 11:18:14 +0000 (UTC)
+Subject: Re: [PATCH 3/4] btrfs: Skip first megabyte on device when trimming
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <20190603100602.19362-1-nborisov@suse.com>
+ <20190603100602.19362-4-nborisov@suse.com>
+ <91bf1d48-dea5-45a9-4c0f-7a2fa0b22c98@gmx.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <261bff5e-c0c1-2a38-28d9-964a6c713745@suse.com>
-Date:   Wed, 5 Jun 2019 14:16:12 +0300
+Message-ID: <58c8ee9a-8750-1d60-194f-708d9fb10698@suse.com>
+Date:   Wed, 5 Jun 2019 14:18:13 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190603064009.9891-1-wqu@suse.com>
+In-Reply-To: <91bf1d48-dea5-45a9-4c0f-7a2fa0b22c98@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,78 +80,57 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 3.06.19 г. 9:40 ч., Qu Wenruo wrote:
-> If a filesystem doesn't map its logical address space (normally the
-> bytenr/blocknr returned by fiemap) directly to its devices(s), the
-> following assumptions used in the test case is no longer true:
-> - trim range start beyond the end of fs should fail
-> - trim range start beyond the end of fs with len set should fail
+On 5.06.19 г. 12:14 ч., Qu Wenruo wrote:
 > 
-> Under the following example, even with just one device, btrfs can still
-> trim the fs correctly while breaking above assumption:
 > 
-> 0		1G		1.25G
-> |---------------|///////////////|-----------------| <- btrfs logical
-> 		   |				       address space
->         ------------  mapped as SINGLE
->         |
-> 0	V	256M
-> |///////////////|			<- device address space
+> On 2019/6/3 下午6:06, Nikolay Borisov wrote:
+>> Currently the first megabyte on a device housing a btrfs filesystem is
+>> exempt from allocation and trimming. Currently this is not a problem
+>> since 'start' is set to 1m at the beginning of btrfs_trim_free_extents
+>> and find_first_clear_extent_bit always returns a range that is >= start.
+>> However, in a follow up patch find_first_clear_extent_bit will be
+>> changed such that it will return a range containing 'start' and this
+>> range may very well be 0...>=1M so 'start'.
+>>
+>> Future proof the sole user of find_first_clear_extent_bit by setting
+>> 'start' after the function is called. No functional changes.
+>>
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 > 
-> Thus trim range start=1G len=256M will cause btrfs to trim the 256M
-> block group, thus return correct result.
+> Doesn't that previous patch already address this by:
 > 
-> Furthermore, there is no cleared defined behavior for whether a fs should
-> trim the unmapped space. (only for indirectly mapped fs)
+> +	u64 start = SZ_1M, len = 0, end = 0;
+
+No, because with the changes introduced in the next patch start can
+actually be made to point to 0 for example. One of the self-test cases
+covers this, e.g. :
+
+find_first_clear_extent_bit(&tree, SZ_512K, &start, &end,
++				    CHUNK_TRIMMED | CHUNK_ALLOCATED);
+
 > 
-> Btrfs currently will always trim the unmapped space, but the behavior
-> can change as large trim can be very expensive.
+> Thanks,
+> Qu
 > 
-> Despite the change to skip certain tests for btrfs, still run the
-> following tests for btrfs:
-> - trim start=U64_MAX with lenght set
->   This will expose a bug that btrfs doesn't check overflow of the range.
->   This bug will be fixed soon.
 > 
-> - trim beyond the end of the fs
->   This will expose a bug where btrfs could send trim command beyond the
->   end of its device.
->   This bug is a regression, can be fixed by reverting c2d1b3aae336 ("btrfs:
->   Honour FITRIM range constraints during free space trim")
+>> ---
+>>  fs/btrfs/extent-tree.c | 4 ++++
+>>  1 file changed, 4 insertions(+)
+>>
+>> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+>> index d8c5febf7636..5a11e4988243 100644
+>> --- a/fs/btrfs/extent-tree.c
+>> +++ b/fs/btrfs/extent-tree.c
+>> @@ -11183,6 +11183,10 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
+>>  		 * to the caller to trim the value to the size of the device.
+>>  		 */
+>>  		end = min(end, device->total_bytes - 1);
+>> +
+>> +		/* Ensure we skip first mb in case we have a bootloader there */
+>> +		start = max_t(u64, start, SZ_1M);
+>> +
+>>  		len = end - start + 1;
+>>
+>>  		/* We didn't find any extents */
+>>
 > 
-> With proper fixes for btrfs, this test case should pass on btrfs, ext4,
-> xfs.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> changelog:
-> v2:
-> - Return 0/1 instead of echo "1"/"0" for _is_fs_directly_mapped
->   Although it may be a little confusing, but make
->   "if _is_fs_directly_mapped; then" much cleaner.
-> - Comment change.
-> ---
-
-Nope, the output is rather unhelpful. Current misc-next of btrfs fails
-and the output is:
-
-[+] Start = 2^64-1 and len is set (should fail)
-
-[+] Trim an empty fs
-
-13554941952 trimed
-
-[+] Try to trim beyond the end of the fs
-
-[+] Try to trim the fs with large enough len
-
-15727198208 trimed
-
-generic/260	[failed, exit status 1]
-
-
-There is no 260.out file which is supposed to contain some of the error
-strings which in turn makes the test tedious to debug...
-
-
-<snip>
