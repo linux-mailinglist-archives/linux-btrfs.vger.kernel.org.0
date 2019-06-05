@@ -2,135 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 794D635B1A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2019 13:18:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C41A35C0D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2019 13:50:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbfFELSQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jun 2019 07:18:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54540 "EHLO mx1.suse.de"
+        id S1727457AbfFELuH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jun 2019 07:50:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33374 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727183AbfFELSP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jun 2019 07:18:15 -0400
+        id S1727689AbfFELuG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Jun 2019 07:50:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1229CAE3E;
-        Wed,  5 Jun 2019 11:18:14 +0000 (UTC)
-Subject: Re: [PATCH 3/4] btrfs: Skip first megabyte on device when trimming
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <20190603100602.19362-1-nborisov@suse.com>
- <20190603100602.19362-4-nborisov@suse.com>
- <91bf1d48-dea5-45a9-4c0f-7a2fa0b22c98@gmx.com>
+        by mx1.suse.de (Postfix) with ESMTP id C3125AC24
+        for <linux-btrfs@vger.kernel.org>; Wed,  5 Jun 2019 11:50:05 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <58c8ee9a-8750-1d60-194f-708d9fb10698@suse.com>
-Date:   Wed, 5 Jun 2019 14:18:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <91bf1d48-dea5-45a9-4c0f-7a2fa0b22c98@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH v2] btrfs: Document __etree_search
+Date:   Wed,  5 Jun 2019 14:50:04 +0300
+Message-Id: <20190605115004.2736-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190603100602.19362-2-nborisov@suse.com>
+References: <20190603100602.19362-2-nborisov@suse.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The function has a lot of return values and specific conventions making
+it cumbersome to understand what's returned. Have a go at documenting
+its parameters and return values.
 
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
 
-On 5.06.19 г. 12:14 ч., Qu Wenruo wrote:
-> 
-> 
-> On 2019/6/3 下午6:06, Nikolay Borisov wrote:
->> Currently the first megabyte on a device housing a btrfs filesystem is
->> exempt from allocation and trimming. Currently this is not a problem
->> since 'start' is set to 1m at the beginning of btrfs_trim_free_extents
->> and find_first_clear_extent_bit always returns a range that is >= start.
->> However, in a follow up patch find_first_clear_extent_bit will be
->> changed such that it will return a range containing 'start' and this
->> range may very well be 0...>=1M so 'start'.
->>
->> Future proof the sole user of find_first_clear_extent_bit by setting
->> 'start' after the function is called. No functional changes.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> Doesn't that previous patch already address this by:
-> 
-> +	u64 start = SZ_1M, len = 0, end = 0;
+* Document 'tree' argument to silence error (Johaness)
+* Document that if a range is found then none of the input pointers is 
+touched (Qu)
+ fs/btrfs/extent_io.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-No, because with the changes introduced in the next patch start can
-actually be made to point to 0 for example. One of the self-test cases
-covers this, e.g. :
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index e56afb826517..d7913f42327c 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -359,6 +359,24 @@ static struct rb_node *tree_insert(struct rb_root *root,
+ 	return NULL;
+ }
+ 
++/**
++ * __etree_search - searches @tree for an entry that contains @offset. Such
++ * entry would have entry->start <= offset && entry->end >= offset.
++ *
++ * @tree - the tree to search
++ * @offset - offset that should fall within an entry in @tree
++ * @next_ret - pointer to the first entry whose range ends after @offset
++ * @prev - pointer to the first entry whose range begins before @offset
++ * @p_ret - pointer where new node should be anchored (used when inserting an
++ *	    entry in the tree)
++ * @parent_ret - points to entry which would have been the parent of the entry,
++ * containing @offset
++ *
++ * This function returns a pointer to the entry that contains @offset byte
++ * address. If no such entry exists, then NULL is returned and the other
++ * pointer arguments to the function are filled, otherwise the found entry is
++ * return and other pointers are left untouched.
++ */
+ static struct rb_node *__etree_search(struct extent_io_tree *tree, u64 offset,
+ 				      struct rb_node **next_ret,
+ 				      struct rb_node **prev_ret,
+-- 
+2.17.1
 
-find_first_clear_extent_bit(&tree, SZ_512K, &start, &end,
-+				    CHUNK_TRIMMED | CHUNK_ALLOCATED);
-
-> 
-> Thanks,
-> Qu
-> 
-> 
->> ---
->>  fs/btrfs/extent-tree.c | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
->> index d8c5febf7636..5a11e4988243 100644
->> --- a/fs/btrfs/extent-tree.c
->> +++ b/fs/btrfs/extent-tree.c
->> @@ -11183,6 +11183,10 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
->>  		 * to the caller to trim the value to the size of the device.
->>  		 */
->>  		end = min(end, device->total_bytes - 1);
->> +
->> +		/* Ensure we skip first mb in case we have a bootloader there */
->> +		start = max_t(u64, start, SZ_1M);
->> +
->>  		len = end - start + 1;
->>
->>  		/* We didn't find any extents */
->>
-> 
