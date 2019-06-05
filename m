@@ -2,87 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF1E3599F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2019 11:26:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E146F35AF8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  5 Jun 2019 13:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727029AbfFEJ0I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 5 Jun 2019 05:26:08 -0400
-Received: from mout.gmx.net ([212.227.15.18]:45375 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727003AbfFEJ0H (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 5 Jun 2019 05:26:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1559726737;
-        bh=MEn/M/ub4VrghRC1LEzE04RJBpRqiorISsJ1OBD0dRI=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=QIwjdAtnqeJG4pGWJ6ihog25KDdrLo8LNp1bbV2TlguaCZqJ6A2qH3O5WrOvedaEW
-         lKMbmxIjtKYnYnAv3ydcl2+uW3a2juqVkqDWlHREQ1ccoIz35loqL6ot96f4Rh9/Yl
-         iBQ+NzSAwQjy8qw1NUjLWf20ioWzWEHa9gFs07zs=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx002
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0MQ2zr-1hTFEx1SNP-005M1y; Wed, 05
- Jun 2019 11:25:37 +0200
-Subject: Re: [PATCH 4/4] btrfs: Don't trim returned range based on input value
- in find_first_clear_extent_bit
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190603100602.19362-1-nborisov@suse.com>
- <20190603100602.19362-5-nborisov@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+        id S1727429AbfFELQP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 5 Jun 2019 07:16:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54200 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727427AbfFELQP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 5 Jun 2019 07:16:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 2DD66AE4B;
+        Wed,  5 Jun 2019 11:16:13 +0000 (UTC)
+Subject: Re: [PATCH v2] fstests: generic/260: Make it handle btrfs more
+ gracefully
+To:     Qu Wenruo <wqu@suse.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20190603064009.9891-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <93efd342-4187-4fda-a1c1-563c8faf1541@gmx.com>
-Date:   Wed, 5 Jun 2019 17:25:31 +0800
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <261bff5e-c0c1-2a38-28d9-964a6c713745@suse.com>
+Date:   Wed, 5 Jun 2019 14:16:12 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190603100602.19362-5-nborisov@suse.com>
+In-Reply-To: <20190603064009.9891-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ykTZ8Y2xjH7tZVP2m7x8WbXhP9E+PGLB+2vo3QNXx6CB03fjY++
- Hvvu10opYj3jn3r8vXTniAMf/3oEwX6AdIyDkUYjASdUg5F51sAG1gLwiDaVZ+zpwjY+4iw
- bqxkJ0biCBMOUCZSTPqiK758W1o4vOCDKMhqNWQF2bB0b8Lk34yKsphhYlZ7/EQ+w2muPte
- bGz0OTZ0t774WhTVRpSqw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JTDWReMjiSI=:uQIAJ8BoI1+BPxxLO6AtpP
- 7SUjanMn+TiLy//scGAXNxswvEBMPKfMGCj+ESJZjNUITO5aZ7JpUVAdVg5ccELLNtVKzZPKv
- 9GM6A28NzXRXhe7oCQwcfLCDdbX7Ef6XT0dD5aqtfxbNIuVs6OLL6IDmZ0AYjse9Rk6PwD/Wy
- 9WDsWDTIHPhTEsINcCMBNFjQPloajMGUuI2tnb38MYYKjykcj+ywSe8HBHEqguSHIroSIHw6v
- hDVhUTKLrYf8uSqUBJZAwgF5PPtkqm+JGYZhfeGaRQCXYpD6ELWA7sRee3v+l5WFArFEin8XN
- r2nXWhRO7pt1JBR6gL7Agdgal3qG3tRE621UrigBuy39OVEM2FPQ3Ez9WWQiSn21+ItITqt4i
- szUDu4hTDaK+GN4wz0zLWaUbFYpQ807reIlD/ydCR1ZtLvbgE7SEbO6Jd9LxnGs7JzfaRLyK5
- hGXvHaZGn+PgDEgWi1frqXSpOUNh91t70HmQKdzykHAcdbpX324/4U1D3KK9+CKARFOY6cWNS
- 6z2a9wohkLhPfVBBwihlaFQ8KYegDUVn5c/dom0L88eMA+4sNOn994zXtcuQijiZnAZqXL02Y
- iDBnPaBmbS22cojUa1EmBCFEeocOASY4Mw/tdfLAfb+1lcFmxqUBH+y0Lo1OnoIbBrq6I0WSa
- dYXo2+BgFs82X9kfwT/ISYOuenT/9KV/N57VnuTFiUvfOe9iaCkFBKkZaelmEx/mIxGCVhrLy
- cc8cPkdMnlR9R5AksHMTktHfbYFz5eGlY9vsvsF0Yc7LP7yc91clszbDCYRh7oTaftbR8InvP
- /pw04/2hgIquBQO/5ali2dIE6BrDADXAUWmQapB0A4mkbpGL+1DQbRglb1PucVwJuDKCJjvhM
- dCMiICN//8g5y6iTLbTaYEbD+x2bdmVEnmh28rsRW1nrSK+34FFEyUQ3svYmDPh0Ts3uz5QDO
- +bK+SFt017lMsd9/20sujJsRoT4NFGX4pU4e1XZcKgnlUFz4uom4LLEoXBJyzSEXtCAvGtitP
- BOJUyGrWebD2AMqgxCenqhE=
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -90,223 +80,78 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2019/6/3 =E4=B8=8B=E5=8D=886:06, Nikolay Borisov wrote:
-> Currently find_first_clear_extent_bit always returns a range whose
-> starting value is >=3D passed 'start'. This implicit trimming behavior i=
-s
-> somewhat subtle and an implementation detail. Instead, this patch
-> modifies the function such that now it always returns the range which
-> contains passed 'start' and has the given bits unset. This range could
-> either be due to presence of existing records which contains 'start'
-> but have the bits unset or because there are no records that contain
-> the given starting offset.
->
-> This patch also adds test cases which cover find_first_clear_extent_bit
-> since they were missing up until now.
->
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+On 3.06.19 г. 9:40 ч., Qu Wenruo wrote:
+> If a filesystem doesn't map its logical address space (normally the
+> bytenr/blocknr returned by fiemap) directly to its devices(s), the
+> following assumptions used in the test case is no longer true:
+> - trim range start beyond the end of fs should fail
+> - trim range start beyond the end of fs with len set should fail
+> 
+> Under the following example, even with just one device, btrfs can still
+> trim the fs correctly while breaking above assumption:
+> 
+> 0		1G		1.25G
+> |---------------|///////////////|-----------------| <- btrfs logical
+> 		   |				       address space
+>         ------------  mapped as SINGLE
+>         |
+> 0	V	256M
+> |///////////////|			<- device address space
+> 
+> Thus trim range start=1G len=256M will cause btrfs to trim the 256M
+> block group, thus return correct result.
+> 
+> Furthermore, there is no cleared defined behavior for whether a fs should
+> trim the unmapped space. (only for indirectly mapped fs)
+> 
+> Btrfs currently will always trim the unmapped space, but the behavior
+> can change as large trim can be very expensive.
+> 
+> Despite the change to skip certain tests for btrfs, still run the
+> following tests for btrfs:
+> - trim start=U64_MAX with lenght set
+>   This will expose a bug that btrfs doesn't check overflow of the range.
+>   This bug will be fixed soon.
+> 
+> - trim beyond the end of the fs
+>   This will expose a bug where btrfs could send trim command beyond the
+>   end of its device.
+>   This bug is a regression, can be fixed by reverting c2d1b3aae336 ("btrfs:
+>   Honour FITRIM range constraints during free space trim")
+> 
+> With proper fixes for btrfs, this test case should pass on btrfs, ext4,
+> xfs.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/extent_io.c             | 51 +++++++++++++++---
->  fs/btrfs/tests/extent-io-tests.c | 89 ++++++++++++++++++++++++++++++++
->  2 files changed, 134 insertions(+), 6 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index d5979558c96f..1dd900cfb7ea 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -1553,8 +1553,8 @@ int find_first_extent_bit(struct extent_io_tree *t=
-ree, u64 start,
->  }
->
->  /**
-> - * find_first_clear_extent_bit - finds the first range that has @bits n=
-ot set
-> - * and that starts after @start
-> + * find_first_clear_extent_bit - finds the first range that has @bits n=
-ot set.
-> + * This range could start before @start.
+> changelog:
+> v2:
+> - Return 0/1 instead of echo "1"/"0" for _is_fs_directly_mapped
+>   Although it may be a little confusing, but make
+>   "if _is_fs_directly_mapped; then" much cleaner.
+> - Comment change.
+> ---
 
-What about using the same expression of previous patches? E.g.
-Such range would have range->start <=3D start  && range->start +
-range->len > start.
+Nope, the output is rather unhelpful. Current misc-next of btrfs fails
+and the output is:
 
-Despite that, I think the ascii chart is pretty good, along with
-selftest case it should be OK.
+[+] Start = 2^64-1 and len is set (should fail)
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+[+] Trim an empty fs
 
-Thanks,
-Qu
+13554941952 trimed
 
->   *
->   * @tree - the tree to search
->   * @start - the offset at/after which the found extent should start
-> @@ -1594,12 +1594,51 @@ void find_first_clear_extent_bit(struct extent_i=
-o_tree *tree, u64 start,
->  				goto out;
->  			}
->  		}
-> +		/*
-> +		 * At this point 'node' either contains 'start' or start is
-> +		 * before 'node'
-> +		 */
->  		state =3D rb_entry(node, struct extent_state, rb_node);
-> -		if (in_range(start, state->start, state->end - state->start + 1) &&
-> -			(state->state & bits)) {
-> -			start =3D state->end + 1;
-> +
-> +		if (in_range(start, state->start, state->end - state->start + 1)) {
-> +			if (state->state & bits) {
-> +				/*
-> +				 * |--range with bits sets--|
-> +				 *    |
-> +				 *    start
-> +				 */
-> +				start =3D state->end + 1;
-> +			} else {
-> +				/*
-> +				 * 'start' falls within a range that doesn't
-> +				 * have the bits set, so take its start as
-> +				 * the beginning of the desire range
-> +				 *
-> +				 * |--range with bits cleared----|
-> +				 *      |
-> +				 *      start
-> +				 */
-> +				*start_ret =3D state->start;
-> +				break;
-> +			}
->  		} else {
-> -			*start_ret =3D start;
-> +			/*
-> +			 * |---prev range---|---hole/unset---|---node range---|
-> +			 *                          |
-> +			 *                        start
-> +			 *
-> +			 *                        or
-> +			 *
-> +			 * |---hole/unset--||--first node--|
-> +			 * 0   |
-> +			 *    start
-> +			 */
-> +			if (prev) {
-> +				state =3D rb_entry(prev, struct extent_state, rb_node);
-> +				*start_ret =3D state->end + 1;
-> +			} else {
-> +				*start_ret =3D 0;
-> +			}
->  			break;
->  		}
->  	}
-> diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io=
--tests.c
-> index 7bf4d5734dbe..36fe720fc823 100644
-> --- a/fs/btrfs/tests/extent-io-tests.c
-> +++ b/fs/btrfs/tests/extent-io-tests.c
-> @@ -432,6 +432,91 @@ static int test_eb_bitmaps(u32 sectorsize, u32 node=
-size)
->  	return ret;
->  }
->
-> +static int test_find_first_clear_extent_bit(void)
-> +{
-> +
-> +	struct extent_io_tree tree;
-> +	u64 start, end;
-> +
-> +	test_msg("Running find_first_clear_extent_bit test");
-> +	extent_io_tree_init(NULL, &tree, IO_TREE_SELFTEST, NULL);
-> +
-> +	/*
-> +	 * Set 1m-4m alloc/discard and 32m-64m thus leaving a hole
-> +	 * between 4m-32m
-> +	 */
-> +	set_extent_bits(&tree, SZ_1M, SZ_4M - 1,
-> +			CHUNK_TRIMMED | CHUNK_ALLOCATED);
-> +
-> +
-> +	find_first_clear_extent_bit(&tree, SZ_512K, &start, &end,
-> +				    CHUNK_TRIMMED | CHUNK_ALLOCATED);
-> +
-> +	if (start !=3D 0 || end !=3D SZ_1M -1)
-> +		test_err("Error finding beginning range: start: %llu end: %llu\n",
-> +			 start, end);
-> +
-> +	/* Now add 32m-64m so that we have a hole between 4m-32m */
-> +	set_extent_bits(&tree, SZ_32M, SZ_64M - 1,
-> +			CHUNK_TRIMMED | CHUNK_ALLOCATED);
-> +
-> +	/*
-> +	 * Request first hole starting at 12m, we should get 4m-32m
-> +	 */
-> +	find_first_clear_extent_bit(&tree, 12 * SZ_1M, &start, &end,
-> +				    CHUNK_TRIMMED | CHUNK_ALLOCATED);
-> +
-> +	if (start !=3D SZ_4M || end !=3D SZ_32M - 1)
-> +		test_err("Error finding trimmed range: start: %llu end: %llu",
-> +			 start, end);
-> +
-> +	/*
-> +	 * Search in the middle of allocated range, should get next available,
-> +	 * which happens to be unallocated -> 4m-32m
-> +	 */
-> +	find_first_clear_extent_bit(&tree, SZ_2M, &start, &end,
-> +				    CHUNK_TRIMMED | CHUNK_ALLOCATED);
-> +
-> +	if (start !=3D SZ_4M || end !=3D SZ_32M -1)
-> +		test_err("Error finding next unalloc range: start: %llu end: %llu",
-> +			 start, end);
-> +
-> +	/*
-> +	 * Set 64M-72M with CHUNK_ALLOC flag, then search for CHUNK_TRIMMED fl=
-ag
-> +	 * being unset in this range, we should get the entry in range 64m-72M
-> +	 */
-> +	set_extent_bits(&tree, SZ_64M, SZ_64M + SZ_8M - 1, CHUNK_ALLOCATED);
-> +	find_first_clear_extent_bit(&tree, SZ_64M + SZ_1M, &start, &end,
-> +				    CHUNK_TRIMMED);
-> +
-> +	if (start !=3D SZ_64M || end !=3D SZ_64M + SZ_8M - 1)
-> +		test_err("Error finding exact range: start: %llu end: %llu",
-> +			 start, end);
-> +
-> +	find_first_clear_extent_bit(&tree, SZ_64M - SZ_8M, &start, &end,
-> +				    CHUNK_TRIMMED);
-> +
-> +	/*
-> +	 * Search in the middle of set range whose immediate neighbour doesn't
-> +	 * have the bits set so it must be returned
-> +	 */
-> +	if (start !=3D SZ_64M || end !=3D SZ_64M + SZ_8M - 1)
-> +		test_err("Error finding next alloc range: start: %llu end: %llu",
-> +			 start, end);
-> +
-> +	/*
-> +	 * Search beyond any known range, shall return after last known range
-> +	 * and end should be -1
-> +	 */
-> +	find_first_clear_extent_bit(&tree, -1, &start, &end, CHUNK_TRIMMED);
-> +	if (start !=3D SZ_64M+SZ_8M || end !=3D -1)
-> +		test_err("Error handling beyond end of range search: start: %llu"
-> +			 " end: %llu\n", start, end);
-> +
-> +	return 0;
-> +
-> +}
-> +
->  int btrfs_test_extent_io(u32 sectorsize, u32 nodesize)
->  {
->  	int ret;
-> @@ -442,6 +527,10 @@ int btrfs_test_extent_io(u32 sectorsize, u32 nodesi=
-ze)
->  	if (ret)
->  		goto out;
->
-> +	ret =3D test_find_first_clear_extent_bit();
-> +	if (ret)
-> +		goto out;
-> +
->  	ret =3D test_eb_bitmaps(sectorsize, nodesize);
->  out:
->  	return ret;
->
+[+] Try to trim beyond the end of the fs
+
+[+] Try to trim the fs with large enough len
+
+15727198208 trimed
+
+generic/260	[failed, exit status 1]
+
+
+There is no 260.out file which is supposed to contain some of the error
+strings which in turn makes the test tedious to debug...
+
+
+<snip>
