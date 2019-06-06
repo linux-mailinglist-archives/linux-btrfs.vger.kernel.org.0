@@ -2,99 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8605136DDA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 09:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E74A236E00
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 10:01:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726824AbfFFHyy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 03:54:54 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:3158 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbfFFHyx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 03:54:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1559807694; x=1591343694;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=F4RsOkcrGOWpBQZgmCctN2wD3H9blPOhMwrNxs6NmGc=;
-  b=m0Tgxc4u80GTqCpz4boKpOv1s0/IW8q/QFomnRATu7lQF+VjFJbCwsMR
-   1BiSSLqTFnJBfEdzU1Ge+qnPmdTG4O4Qc7AXVEJihQcHHc1lCUOxhWkaB
-   NEyIFQCrPsu8wyPXds+k40ogaL/MKmF3WJjfJZDx59Z4UXYkoW7k2JTje
-   RuElTu8rX51cHnsXYOoFaZk8H0CS/lWxpWwmVcAdfYZQJORpJqI+ZgmA/
-   jU3xzLLkR5hGKEMNVd12EKzzTlr4LddReSwg+xAcCzpVaopC1v11cEVLs
-   aidHCL5MBxKqXB+lrXcOKA8m5mTG7S7WZc+h/2QzoG9r1SThUdYkDMVEJ
-   A==;
-X-IronPort-AV: E=Sophos;i="5.63,558,1557158400"; 
-   d="scan'208";a="114878920"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Jun 2019 15:54:53 +0800
-IronPort-SDR: 5auJKlu7TkLwgA9p7z3j2yc9UjAzM1ghG2M0qcnNpEETTj/MHcUyOZ0DuKlO75+tBVky2DMzSt
- 4ukXM1NzuDnshrsOdv/JMyqRa+FRYnNgl1G7Qfze+1hQWeupIlb+CvK48qu6KIFiziHCh35zKF
- s8naIqG9quvxQZ7C6qFCdQoFvQf0tc8vfWG9KGKV7OmzT0IdUErrUz9+QkNzdOYKskTRQSXO/k
- GA6Slq/2nt+gaGzDYGZhpAi9psZvj9XlPXid2t6zPgp+nCoatRqUtZvsQhwzTfqkwBiiSvGbv2
- cUxLQJKjU3vW254cKbHHW4g7
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP; 06 Jun 2019 00:32:12 -0700
-IronPort-SDR: z5dYjSjfY4jzPNAhGn5mkBmqzlX25eagVPZCyEb+MFC0R6zvlgOab16q8n+lBanwRFtEFgIczP
- j5sskO2kFqkJ+4tF1GD3X2YVgldPaMb7fBWe1yYj/MKyGjAr0B4mMU3gO0zIOLhvNG4JQfnqPD
- aAHFmlzF43XkwsJf+yRL/FunVPJtCQRtxgKNI5JhTONn/rDtip8hJoE3Jh5VOIbveu0DiR6Pm8
- 8QMvCixRlJnDkD4EFwXGHgUSLH658n8Ny6yrhs5amMo+DBG2D/nWHCapILm6Zd9pr9nSXo5HYT
- yJ8=
-Received: from naota.dhcp.fujisawa.hgst.com (HELO naota.fujisawa.hgst.com) ([10.149.53.115])
-  by uls-op-cesaip01.wdc.com with ESMTP; 06 Jun 2019 00:54:53 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>, stable@vger.kernel.org
-Subject: [PATCH] btrfs: start readahead also in seed devices
-Date:   Thu,  6 Jun 2019 16:54:44 +0900
-Message-Id: <20190606075444.15481-1-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726862AbfFFIBM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 04:01:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55630 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725769AbfFFIBL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Jun 2019 04:01:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6D12AAFC3
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 08:01:09 +0000 (UTC)
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: [PATCH] btrfs: correctly validate compression type
+Date:   Thu,  6 Jun 2019 10:01:06 +0200
+Message-Id: <20190606080106.10640-1-jthumshirn@suse.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently, btrfs does not consult seed devices to start readahead. As a
-result, if readahead zone is added to the seed devices, btrfs_reada_wait()
-indefinitely wait for the reada_ctl to finish.
+Nikolay reported the following KASAN splat when running btrfs/048:
 
-You can reproduce the hung by modifying btrfs/163 to have larger initial
-file size (e.g. xfs_io pwrite 4M instead of current 256K).
+[ 1843.470920] ==================================================================
+[ 1843.471971] BUG: KASAN: slab-out-of-bounds in strncmp+0x66/0xb0
+[ 1843.472775] Read of size 1 at addr ffff888111e369e2 by task btrfs/3979
 
-Fixes: 7414a03fbf9e ("btrfs: initial readahead code and prototypes")
-Cc: stable@vger.kernel.org # 3.2+: ce7791ffee1e: Btrfs: fix race between readahead and device replace/removal
-Cc: stable@vger.kernel.org # 3.2+
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+[ 1843.473904] CPU: 3 PID: 3979 Comm: btrfs Not tainted 5.2.0-rc3-default #536
+[ 1843.475009] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+[ 1843.476322] Call Trace:
+[ 1843.476674]  dump_stack+0x7c/0xbb
+[ 1843.477132]  ? strncmp+0x66/0xb0
+[ 1843.477587]  print_address_description+0x114/0x320
+[ 1843.478256]  ? strncmp+0x66/0xb0
+[ 1843.478740]  ? strncmp+0x66/0xb0
+[ 1843.479185]  __kasan_report+0x14e/0x192
+[ 1843.479759]  ? strncmp+0x66/0xb0
+[ 1843.480209]  kasan_report+0xe/0x20
+[ 1843.480679]  strncmp+0x66/0xb0
+[ 1843.481105]  prop_compression_validate+0x24/0x70
+[ 1843.481798]  btrfs_xattr_handler_set_prop+0x65/0x160
+[ 1843.482509]  __vfs_setxattr+0x71/0x90
+[ 1843.483012]  __vfs_setxattr_noperm+0x84/0x130
+[ 1843.483606]  vfs_setxattr+0xac/0xb0
+[ 1843.484085]  setxattr+0x18c/0x230
+[ 1843.484546]  ? vfs_setxattr+0xb0/0xb0
+[ 1843.485048]  ? __mod_node_page_state+0x1f/0xa0
+[ 1843.485672]  ? _raw_spin_unlock+0x24/0x40
+[ 1843.486233]  ? __handle_mm_fault+0x988/0x1290
+[ 1843.486823]  ? lock_acquire+0xb4/0x1e0
+[ 1843.487330]  ? lock_acquire+0xb4/0x1e0
+[ 1843.487842]  ? mnt_want_write_file+0x3c/0x80
+[ 1843.488442]  ? debug_lockdep_rcu_enabled+0x22/0x40
+[ 1843.489089]  ? rcu_sync_lockdep_assert+0xe/0x70
+[ 1843.489707]  ? __sb_start_write+0x158/0x200
+[ 1843.490278]  ? mnt_want_write_file+0x3c/0x80
+[ 1843.490855]  ? __mnt_want_write+0x98/0xe0
+[ 1843.491397]  __x64_sys_fsetxattr+0xba/0xe0
+[ 1843.492201]  ? trace_hardirqs_off_thunk+0x1a/0x1c
+[ 1843.493201]  do_syscall_64+0x6c/0x230
+[ 1843.493988]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[ 1843.495041] RIP: 0033:0x7fa7a8a7707a
+[ 1843.495819] Code: 48 8b 0d 21 de 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 be 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ee dd 2b 00 f7 d8 64 89 01 48
+[ 1843.499203] RSP: 002b:00007ffcb73bca38 EFLAGS: 00000202 ORIG_RAX: 00000000000000be
+[ 1843.500210] RAX: ffffffffffffffda RBX: 00007ffcb73bda9d RCX: 00007fa7a8a7707a
+[ 1843.501170] RDX: 00007ffcb73bda9d RSI: 00000000006dc050 RDI: 0000000000000003
+[ 1843.502152] RBP: 00000000006dc050 R08: 0000000000000000 R09: 0000000000000000
+[ 1843.503109] R10: 0000000000000002 R11: 0000000000000202 R12: 00007ffcb73bda91
+[ 1843.504055] R13: 0000000000000003 R14: 00007ffcb73bda82 R15: ffffffffffffffff
+
+[ 1843.505268] Allocated by task 3979:
+[ 1843.505771]  save_stack+0x19/0x80
+[ 1843.506211]  __kasan_kmalloc.constprop.5+0xa0/0xd0
+[ 1843.506836]  setxattr+0xeb/0x230
+[ 1843.507264]  __x64_sys_fsetxattr+0xba/0xe0
+[ 1843.507886]  do_syscall_64+0x6c/0x230
+[ 1843.508429]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+[ 1843.509558] Freed by task 0:
+[ 1843.510188] (stack is not available)
+
+[ 1843.511309] The buggy address belongs to the object at ffff888111e369e0
+                which belongs to the cache kmalloc-8 of size 8
+[ 1843.514095] The buggy address is located 2 bytes inside of
+                8-byte region [ffff888111e369e0, ffff888111e369e8)
+[ 1843.516524] The buggy address belongs to the page:
+[ 1843.517561] page:ffff88813f478d80 refcount:1 mapcount:0 mapping:ffff88811940c300 index:0xffff888111e373b8 compound_mapcount: 0
+[ 1843.519993] flags: 0x4404000010200(slab|head)
+[ 1843.520951] raw: 0004404000010200 ffff88813f48b008 ffff888119403d50 ffff88811940c300
+[ 1843.522616] raw: ffff888111e373b8 000000000016000f 00000001ffffffff 0000000000000000
+[ 1843.524281] page dumped because: kasan: bad access detected
+
+[ 1843.525936] Memory state around the buggy address:
+[ 1843.526975]  ffff888111e36880: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.528479]  ffff888111e36900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.530138] >ffff888111e36980: fc fc fc fc fc fc fc fc fc fc fc fc 02 fc fc fc
+[ 1843.531877]                                                        ^
+[ 1843.533287]  ffff888111e36a00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.534874]  ffff888111e36a80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.536468] ==================================================================
+
+This is caused by supplying a too short compression value ('lz') in the
+test-case and comparing it to 'lzo' with strncmp() and a length of 3.
+strncmp() read past the 'lz' when looking for the 'o' and thus caused an
+out-of-bounds read.
+
+Introduce a new check 'btrfs_compress_is_valid_type()' which not only
+checks the user-supplied value against known compression types, but also
+employs checks for too short values.
+
+Fixes: 272e5326c783 ("btrfs: prop: fix vanished compression property after failed set")
+Reported-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 ---
- fs/btrfs/reada.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/btrfs/compression.c | 16 ++++++++++++++++
+ fs/btrfs/compression.h |  1 +
+ fs/btrfs/props.c       |  6 +-----
+ 3 files changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
-index 10d9589001a9..bb5bd49573b4 100644
---- a/fs/btrfs/reada.c
-+++ b/fs/btrfs/reada.c
-@@ -747,6 +747,7 @@ static void __reada_start_machine(struct btrfs_fs_info *fs_info)
- 	u64 total = 0;
- 	int i;
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 66e21a4e9ea2..d21ae92c172c 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -43,6 +43,22 @@ const char* btrfs_compress_type2str(enum btrfs_compression_type type)
+ 	return NULL;
+ }
  
-+again:
- 	do {
- 		enqueued = 0;
- 		mutex_lock(&fs_devices->device_list_mutex);
-@@ -758,6 +759,10 @@ static void __reada_start_machine(struct btrfs_fs_info *fs_info)
- 		mutex_unlock(&fs_devices->device_list_mutex);
- 		total += enqueued;
- 	} while (enqueued && total < 10000);
-+	if (fs_devices->seed) {
-+		fs_devices = fs_devices->seed;
-+		goto again;
++bool btrfs_compress_is_valid_type(const char *str, size_t len)
++{
++	int i;
++
++	for (i = 1; i < ARRAY_SIZE(btrfs_compress_types); i++) {
++		size_t comp_len = strlen(btrfs_compress_types[i]);
++
++		if (comp_len != len)
++			continue;
++
++		if (!strncmp(btrfs_compress_types[i], str, comp_len))
++			return true;
 +	}
++	return false;
++}
++
+ static int btrfs_decompress_bio(struct compressed_bio *cb);
  
- 	if (enqueued == 0)
- 		return;
+ static inline int compressed_bio_size(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index 191e5f4e3523..2035b8eb1290 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -173,6 +173,7 @@ extern const struct btrfs_compress_op btrfs_lzo_compress;
+ extern const struct btrfs_compress_op btrfs_zstd_compress;
+ 
+ const char* btrfs_compress_type2str(enum btrfs_compression_type type);
++bool btrfs_compress_is_valid_type(const char *str, size_t len);
+ 
+ int btrfs_compress_heuristic(struct inode *inode, u64 start, u64 end);
+ 
+diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+index a9e2e66152ee..af109c0ba720 100644
+--- a/fs/btrfs/props.c
++++ b/fs/btrfs/props.c
+@@ -257,11 +257,7 @@ static int prop_compression_validate(const char *value, size_t len)
+ 	if (!value)
+ 		return 0;
+ 
+-	if (!strncmp("lzo", value, 3))
+-		return 0;
+-	else if (!strncmp("zlib", value, 4))
+-		return 0;
+-	else if (!strncmp("zstd", value, 4))
++	if (btrfs_compress_is_valid_type(value, len))
+ 		return 0;
+ 
+ 	return -EINVAL;
 -- 
-2.21.0
+2.16.4
 
