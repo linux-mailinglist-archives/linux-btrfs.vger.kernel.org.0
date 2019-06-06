@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2A037275
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:07:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F54F37277
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbfFFLHA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 07:07:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34928 "EHLO mx1.suse.de"
+        id S1727661AbfFFLHD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 07:07:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34940 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725784AbfFFLHA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Jun 2019 07:07:00 -0400
+        id S1725784AbfFFLHD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Jun 2019 07:07:03 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 3FE3BAE54
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 11:06:58 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id C0E72AE54
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 11:07:01 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 7/9] btrfs-progs: image: Allow restore to record system chunk ranges for later usage
-Date:   Thu,  6 Jun 2019 19:06:09 +0800
-Message-Id: <20190606110611.27176-8-wqu@suse.com>
+Subject: [PATCH 8/9] btrfs-progs: image: Introduce helper to determine if a tree block is in the range of system chunks
+Date:   Thu,  6 Jun 2019 19:06:10 +0800
+Message-Id: <20190606110611.27176-9-wqu@suse.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190606110611.27176-1-wqu@suse.com>
 References: <20190606110611.27176-1-wqu@suse.com>
@@ -30,185 +30,77 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently we are doing a pretty slow search for system chunks before
-restoring real data.
-The current behavior is to search all clusters for chunk tree root
-first, then search all clusters again and again for every chunk tree
-block.
+Introduce a new helper function, is_in_sys_chunks(), to determine if an
+item is in the range of system chunks.
 
-This causes recursive calls and pretty slow start up, the only good news
-is since chunk tree are normally small, we don't need to iterate too
-many times, thus overall it's acceptable.
-
-To address such bad behavior, we could take usage of system chunk array
-in the super block.
-By recording all system chunks ranges, we could easily determine if an
-extent belongs to chunk tree, thus do one loop simple linear search for
-chunk tree leaves.
-
-This patch only introduces the code base for later patches.
+Since btrfs-image will merge adjacent same type extents into one item,
+this function is designed to return true for any bytes in system chunk
+range.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- image/main.c | 103 +++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 103 insertions(+)
+ image/main.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
 diff --git a/image/main.c b/image/main.c
-index f394bfc8..0460a5f5 100644
+index 0460a5f5..dc677409 100644
 --- a/image/main.c
 +++ b/image/main.c
-@@ -35,6 +35,7 @@
- #include "utils.h"
- #include "volumes.h"
- #include "extent_io.h"
-+#include "extent-cache.h"
- #include "help.h"
- #include "image/metadump.h"
- #include "image/sanitize.h"
-@@ -112,6 +113,11 @@ struct mdrestore_struct {
- 	pthread_mutex_t mutex;
- 	pthread_cond_t cond;
- 
-+	/*
-+	 * Records system chunk ranges, so restore can use this to determine
-+	 * if an item is in chunk tree range.
-+	 */
-+	struct cache_tree sys_chunks;
- 	struct rb_root chunk_tree;
- 	struct rb_root physical_tree;
- 	struct list_head list;
-@@ -121,6 +127,8 @@ struct mdrestore_struct {
- 	u64 devid;
- 	u64 alloced_chunks;
- 	u64 last_physical_offset;
-+	/* An quicker checker for if a item is in sys chunk range */
-+	u64 sys_chunk_end;
- 	u8 uuid[BTRFS_UUID_SIZE];
- 	u8 fsid[BTRFS_FSID_SIZE];
- 
-@@ -1544,6 +1552,7 @@ static void mdrestore_destroy(struct mdrestore_struct *mdres, int num_threads)
- 		rb_erase(&entry->p, &mdres->physical_tree);
- 		free(entry);
- 	}
-+	free_extent_cache_tree(&mdres->sys_chunks);
- 	pthread_mutex_lock(&mdres->mutex);
- 	mdres->done = 1;
- 	pthread_cond_broadcast(&mdres->cond);
-@@ -1607,6 +1616,7 @@ static int mdrestore_init(struct mdrestore_struct *mdres,
- 	pthread_mutex_init(&mdres->mutex, NULL);
- 	INIT_LIST_HEAD(&mdres->list);
- 	INIT_LIST_HEAD(&mdres->overlapping_chunks);
-+	cache_tree_init(&mdres->sys_chunks);
- 	mdres->in = in;
- 	mdres->out = out;
- 	mdres->old_restore = old_restore;
-@@ -2025,6 +2035,92 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres,
+@@ -1780,6 +1780,54 @@ static int wait_for_worker(struct mdrestore_struct *mdres)
  	return ret;
  }
  
 +/*
-+ * Add system chunks in super blocks into mdres->sys_chunks, so later
-+ * we can determine if an item is a chunk tree block.
++ * Check if a range [start ,start + len] has ANY bytes covered by
++ * system chunks ranges.
 + */
-+static int add_sys_array(struct mdrestore_struct *mdres,
-+			 struct btrfs_super_block *sb)
++static bool is_in_sys_chunks(struct mdrestore_struct *mdres, u64 start,
++			     u64 len)
 +{
-+	struct btrfs_disk_key *disk_key;
-+	struct btrfs_key key;
-+	struct btrfs_chunk *chunk;
-+	struct cache_extent *cache;
-+	u32 cur_offset;
-+	u32 len = 0;
-+	u32 array_size;
-+	u8 *array_ptr;
-+	int ret;
++	struct rb_node *node = mdres->sys_chunks.root.rb_node;
++	struct cache_extent *entry;
++	struct cache_extent *next;
++	struct cache_extent *prev;
 +
-+	array_size = btrfs_super_sys_array_size(sb);
-+	array_ptr = sb->sys_chunk_array;
-+	cur_offset = 0;
++	if (start > mdres->sys_chunk_end)
++		return false;
 +
-+	while (cur_offset < array_size) {
-+		u32 num_stripes;
-+
-+		disk_key = (struct btrfs_disk_key *)array_ptr;
-+		len = sizeof(*disk_key);
-+		if (cur_offset + len > array_size)
-+			goto out_short_read;
-+		btrfs_disk_key_to_cpu(&key, disk_key);
-+
-+		array_ptr += len;
-+		cur_offset += len;
-+
-+		if (key.type == BTRFS_CHUNK_ITEM_KEY) {
-+			chunk = (struct btrfs_chunk *)array_ptr;
-+
-+			/*
-+			 * At least one btrfs_chunk with one stripe must be
-+			 * present, exact stripe count check comes afterwards
-+			 */
-+			len = btrfs_chunk_item_size(1);
-+			if (cur_offset + len > array_size)
-+				goto out_short_read;
-+			num_stripes = btrfs_stack_chunk_num_stripes(chunk);
-+			if (!num_stripes) {
-+				printk(
-+	    "ERROR: invalid number of stripes %u in sys_array at offset %u\n",
-+					num_stripes, cur_offset);
-+				ret = -EIO;
++	while (node) {
++		entry = rb_entry(node, struct cache_extent, rb_node);
++		if (start > entry->start) {
++			if (!node->rb_right)
 +				break;
-+			}
-+			len = btrfs_chunk_item_size(num_stripes);
-+			if (cur_offset + len > array_size)
-+				goto out_short_read;
-+			if (btrfs_stack_chunk_type(chunk) &
-+			    BTRFS_BLOCK_GROUP_SYSTEM) {
-+				ret = add_merge_cache_extent(&mdres->sys_chunks,
-+					key.offset,
-+					btrfs_stack_chunk_length(chunk));
-+				if (ret < 0)
-+					break;
-+			}
++			node = node->rb_right;
++		} else if (start < entry->start) {
++			if (!node->rb_left)
++				break;
++			node = node->rb_left;
 +		} else {
-+			error("unexpected item type %u in sys_array offset %u",
-+			      key.type, cur_offset);
-+			ret = -EUCLEAN;
-+			break;
++			/* already in a system chunk */
++			return true;
 +		}
-+		array_ptr += len;
-+		cur_offset += len;
 +	}
-+
-+	/* Get the last system chunk end as a quicker check */
-+	cache = last_cache_extent(&mdres->sys_chunks);
-+	if (!cache) {
-+		error("no system chunk found in super block");
-+		return -EUCLEAN;
++	if (!node)
++		return false;
++	entry = rb_entry(node, struct cache_extent, rb_node);
++	/* Now we have entry which is the nearst chunk around @start */
++	if (start > entry->start) {
++		prev = entry;
++		next = next_cache_extent(entry);
++	} else {
++		prev = prev_cache_extent(entry);
++		next = entry;
 +	}
-+	mdres->sys_chunk_end = cache->start + cache->size - 1;
-+	return ret;
-+out_short_read:
-+	error("sys_array too short to read %u bytes at offset %u\n",
-+		len, cur_offset);
-+	return -EUCLEAN;
++	if (prev && prev->start + prev->size > start)
++		return true;
++	if (next && start + len > next->start)
++		return true;
++	return false;
 +}
 +
- static int build_chunk_tree(struct mdrestore_struct *mdres,
- 			    struct meta_cluster *cluster)
- {
-@@ -2117,6 +2213,13 @@ static int build_chunk_tree(struct mdrestore_struct *mdres,
- 		error("invalid superblock");
- 		return ret;
- 	}
-+	ret = add_sys_array(mdres, super);
-+	if (ret < 0) {
-+		error("failed to read system chunk array");
-+		free(buffer);
-+		pthread_mutex_unlock(&mdres->mutex);
-+		return ret;
-+	}
- 	chunk_root_bytenr = btrfs_super_chunk_root(super);
- 	mdres->nodesize = btrfs_super_nodesize(super);
- 	if (btrfs_super_incompat_flags(super) &
+ static int read_chunk_block(struct mdrestore_struct *mdres, u8 *buffer,
+ 			    u64 bytenr, u64 item_bytenr, u32 bufsize,
+ 			    u64 cluster_bytenr)
 -- 
 2.21.0
 
