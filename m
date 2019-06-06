@@ -2,142 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF113766D
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 16:23:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D49A337692
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 16:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729065AbfFFOWh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 10:22:37 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:64232 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729042AbfFFOWg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 10:22:36 -0400
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20190606142233epoutp039312b2d8cebade85fd0f8b595c7b32fa~lofzikUQZ1588515885epoutp032
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 14:22:33 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20190606142233epoutp039312b2d8cebade85fd0f8b595c7b32fa~lofzikUQZ1588515885epoutp032
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1559830953;
-        bh=o26+u579wDsd8MOvWNPCpXlg+PYIMQU4Ow6RM7p975c=;
-        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
-        b=TH/8VoQzYaXX+wk7+1mrGZcUkwtXLZDLPRniSYALcnf/ORVrYGuOPQT3rquBGT1kA
-         9sqCI0uFymXryZu069ag4J3ZszXLIROTdCsPhKY9feROAz/4SJntZHLA9uYXGVj5lV
-         7R0X+hVu3bfcuetkVR5S4KoGCIjat98PC3NyTqYk=
-Received: from epsmges5p1new.samsung.com (unknown [182.195.40.192]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-        20190606142230epcas5p393c19e211d4324b8c8c8291a2b3b2b13~lofxDsG6k2622226222epcas5p3m;
-        Thu,  6 Jun 2019 14:22:30 +0000 (GMT)
-X-AuditID: b6c32a49-5b7ff70000000fe7-f4-5cf921a6715b
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DB.03.04071.6A129FC5; Thu,  6 Jun 2019 23:22:30 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE:(2) [PATCH 1/4] zstd: pass pointer rathen than structure to
- functions
-Reply-To: v.narang@samsung.com
-From:   Vaneet Narang <v.narang@samsung.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     Maninder Singh <maninder1.s@samsung.com>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "joe@perches.com" <joe@perches.com>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
-        PANKAJ MISHRA <pankaj.m@samsung.com>,
-        Vaneet Narang <v.narang@samsung.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "terrelln@fb.com" <terrelln@fb.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <20190605143219.248ca514546f69946aa2e07e@linux-foundation.org>
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20190606141019epcms5p1e9c394d2c2ef37506c8004fe48edd29f@epcms5p1>
-Date:   Thu, 06 Jun 2019 19:40:19 +0530
-X-CMS-MailID: 20190606141019epcms5p1e9c394d2c2ef37506c8004fe48edd29f
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBJsWRmVeSWpSXmKPExsWy7bCmuu4yxZ8xBovXaFlc3J1qMWf9GjaL
-        Sf0z2C3mnG9hsbjwo5HJYvHv7ywWW/eoWnS/krGYff8xi8Wfh4YWZ7pzLS49XsFucf/eTyaL
-        y7vmsFkcnt/GYnHvzVYmi1f/rrFZHDo5l9FByGN2w0UWjy0rbzJ5rDuo6jGx+R27x7YDqh4n
-        Zvxm8fiy6hqzR9+WVYwe67dcZfE4s+AIu8eEzRtZPT5vkgvgicqxyUhNTEktUkjNS85PycxL
-        t1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAH6TEmhLDGnFCgUkFhcrKRvZ1OUX1qS
-        qpCRX1xiq5RakJJTYGhUoFecmFtcmpeul5yfa2VoYGBkClSZkJPx8vl+9oLbEhWTV7k3MDZJ
-        dDFyckgImEisWt3B2sXIxSEksJtR4vqZZqYuRg4OXgFBib87hEFMYYFgifl/MkDKhQTkJI7f
-        2M0IYgsL6EicmLeGEaSETUBL4mNLOEhYRCBE4s7HCywgE5kFnrFKHDi/hRViFa/EjPanLBC2
-        tMT25VvBejkFvCUWfK+GCItK3Fz9lh3Gfn9sPiOELSLReu8sM4QtKPHg526wVgkBGYldb8VB
-        VkkIdDNKTDi3nBXCmcEocar3DVSDucT5k/PBbF4BX4n504+C2SwCqhJLGz6xQgxykbj4lAck
-        zCygLbFs4WtmkDCzgKbE+l36EFNkJaaeWscEUcIn0fv7CRPMVzvmwdhKEucO7mSDsCUknnTO
-        hLrAQ+LR2jZoIE9nlpi64hDbBEaFWYhwnoVk8yyEzQsYmVcxSqYWFOempxabFhjmpZYjR+4m
-        RnAq1/LcwTjrnM8hRgEORiUe3hlMP2OEWBPLiitzDzFKcDArifCWXfgRI8SbklhZlVqUH19U
-        mpNafIjRFBgEE5mlRJPzgXkmryTe0NTIzMzA0sDU2MLMUEmcdxLr1RghgfTEktTs1NSC1CKY
-        PiYOTqkGRvMjX2/oip50mrshhvkaw9VntaX19+dsefYnpOTEZ77Oom6RA7r/lV4ds3HJ57jK
-        oH60zfr8ZtXwrWXbbi08YmHxmoH3RJHJyk2q5xt7Ds4uXnxAc56URU2Ytb+oymax/YytIp7x
-        ImJfDY/Jc51dtHz9xPXZPn7fDptenbLz1Ow/e8tOMNlt2aTEUpyRaKjFXFScCACaZWMH+wMA
-        AA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20190603090232epcas5p1630d0584e8a1aa9495edc819605664fc
-References: <20190605143219.248ca514546f69946aa2e07e@linux-foundation.org>
-        <1559552526-4317-1-git-send-email-maninder1.s@samsung.com>
-        <1559552526-4317-2-git-send-email-maninder1.s@samsung.com>
-        <20190604154326.8868a10f896c148a0ce804d1@linux-foundation.org>
-        <20190605115703.GY15290@twin.jikos.cz> <20190605123253.GZ15290@suse.cz>
-        <CGME20190603090232epcas5p1630d0584e8a1aa9495edc819605664fc@epcms5p1>
+        id S1728249AbfFFO0o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 10:26:44 -0400
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:48778 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727133AbfFFO0o (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 10:26:44 -0400
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id DD71C142BC3; Thu,  6 Jun 2019 15:26:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1559831202;
+        bh=/4s6zncn5HHNPVXo/h8mKJD3pZyHyUVRJNjYSl73I+4=;
+        h=To:From:Subject:Date:From;
+        b=OUbMtA+oqVJkax7SWZREJA84WTCiLVQ60HNh4O3hIUnMSBMZSLWzn0XKpzpZB4Jqk
+         LUV2IdGSybF0+ZK4H4bvJUzc0ZciIkYiZ1rOvJK28NtLNgEZTnF5/WczvHocG5zLgb
+         4SH14iDuRXz5IlOk41qT3DtDUSyF9a9NpnlM8lFXEZTVv3WGLX7STdITw2P72xtrDM
+         4Wa9XCvan5l53RoOj/kYPbGnzBABNguxJj5Vu88AcTVKQjs2U7a9IOtTj84w3dDp4W
+         L5cDi/5ODI+/olFSaSPHkQN0MkHVjRkXGv6dLD5kJaW+2bOtunqpd7G3/DrKQKWKR3
+         xF0JSgdDLs5+Q==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 80929142BC2
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 15:26:42 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1559831202;
+        bh=/4s6zncn5HHNPVXo/h8mKJD3pZyHyUVRJNjYSl73I+4=;
+        h=To:From:Subject:Date:From;
+        b=OUbMtA+oqVJkax7SWZREJA84WTCiLVQ60HNh4O3hIUnMSBMZSLWzn0XKpzpZB4Jqk
+         LUV2IdGSybF0+ZK4H4bvJUzc0ZciIkYiZ1rOvJK28NtLNgEZTnF5/WczvHocG5zLgb
+         4SH14iDuRXz5IlOk41qT3DtDUSyF9a9NpnlM8lFXEZTVv3WGLX7STdITw2P72xtrDM
+         4Wa9XCvan5l53RoOj/kYPbGnzBABNguxJj5Vu88AcTVKQjs2U7a9IOtTj84w3dDp4W
+         L5cDi/5ODI+/olFSaSPHkQN0MkHVjRkXGv6dLD5kJaW+2bOtunqpd7G3/DrKQKWKR3
+         xF0JSgdDLs5+Q==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 4CBA26B0C4
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 15:26:42 +0100 (BST)
+To:     linux-btrfs@vger.kernel.org
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Subject: Scrub resume failure
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <932d9793-96b4-fd54-ae97-62c3b54b0f7e@cobb.uk.net>
+Date:   Thu, 6 Jun 2019 15:26:42 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Andrew / David,
+I have a btrfs filesystem which I want to scrub. This is a multi-TB
+filesystem and will take well over 24 hours to scrub.
 
-=C2=A0=0D=0A>>=C2=A0>=C2=A0>=C2=A0-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0ZSTD_parameters=C2=A0params=C2=A0=3D=C2=A0ZSTD_getParams(level,=C2=
-=A0src_len,=C2=A00);=0D=0A>>=C2=A0>=C2=A0>=C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0static=C2=A0ZSTD_parameters=C2=A0params;=0D=0A>>=C2=
-=A0>=C2=A0=0D=0A>>=C2=A0>=C2=A0>=C2=A0+=0D=0A>>=C2=A0>=C2=A0>=C2=A0+=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params=C2=A0=3D=C2=A0ZSTD_getPara=
-ms(level,=C2=A0src_len,=C2=A00);=0D=0A>>=C2=A0>=C2=A0=0D=0A>>=C2=A0>=C2=A0N=
-o=C2=A0thats'=C2=A0broken,=C2=A0the=C2=A0params=C2=A0can't=C2=A0be=C2=A0sta=
-tic=C2=A0as=C2=A0it=C2=A0depends=C2=A0on=C2=A0level=C2=A0and=0D=0A>>=C2=A0>=
-=C2=A0src_len.=C2=A0What=C2=A0happens=C2=A0if=C2=A0there=C2=A0are=C2=A0seve=
-ral=C2=A0requests=C2=A0in=C2=A0parallel=C2=A0with=0D=0A>>=C2=A0>=C2=A0eg.=
-=C2=A0different=C2=A0levels?=0D=0A=0D=0AThere=20is=20no=20need=20to=20make=
-=20static=20for=20btrfs.=20We=20can=20keep=20it=20as=20a=20stack=20variable=
-.=0D=0AThis=20patch=20set=20=20focussed=20on=20reducing=20stack=20usage=20o=
-f=20zstd=20compression=20when=20triggered=0D=0Athrough=20zram.=20ZRAM=20int=
-ernally=20uses=20crypto=20and=20currently=20crpto=20uses=20fixed=20level=20=
-and=20also=0D=0Anot=20dependent=20upon=20source=20length.=0D=0A=0D=0Acrypto=
-/zstd.c:=20=20=0D=0Astatic=20ZSTD_parameters=20zstd_params(void)=0D=0A=7B=
-=0D=0A=20=20=20=20=20=20=20=20return=20ZSTD_getParams(ZSTD_DEF_LEVEL,=200,=
-=200);=0D=0A=7D=0D=0A=0D=0A=0D=0AActually=20high=20stack=20usage=20problem=
-=20with=20zstd=20compression=20patch=20gets=20exploited=20more=20incase=20o=
-f=20=0D=0Ashrink=20path=20which=20gets=20triggered=20randomly=20from=20any=
-=20call=20flow=20in=20case=20of=20low=20memory=20and=20adds=20overhead=0D=
-=0Aof=20more=20than=202000=20byte=20of=20stack=20and=20results=20in=20stack=
-=20overflow.=0D=0A=0D=0AStack=20usage=20of=20alloc_page=20in=20case=20of=20=
-low=20memory=0D=0A=0D=0A=20=20=2072=20=20=20HUF_compressWeights_wksp+0x140/=
-0x200=20=20=0D=0A=20=20=2064=20=20=20HUF_writeCTable_wksp+0xdc/0x1c8=20=20=
-=20=20=20=20=0D=0A=20=20=2088=20=20=20HUF_compress4X_repeat+0x214/0x450=20=
-=20=20=20=20=0D=0A=20=20208=20=20=20ZSTD_compressBlock_internal+0x224/0x137=
-c=0D=0A=20=20136=20=20=20ZSTD_compressContinue_internal+0x210/0x3b0=0D=0A=
-=20=20192=20=20=20ZSTD_compressCCtx+0x6c/0x144=0D=0A=20=20144=20=20=20zstd_=
-compress+0x40/0x58=0D=0A=20=20=2032=20=20=20crypto_compress+0x2c/0x34=0D=0A=
-=20=20=2032=20=20=20zcomp_compress+0x3c/0x44=0D=0A=20=20=2080=20=20=20zram_=
-bvec_rw+0x2f8/0xa7c=0D=0A=20=20=2064=20=20=20zram_rw_page+0x104/0x170=0D=0A=
-=20=20=2048=20=20=20bdev_write_page+0x80/0xb4=0D=0A=20=20112=20=20=20__swap=
-_writepage+0x160/0x29c=0D=0A=20=20=2024=20=20=20swap_writepage+0x3c/0x58=0D=
-=0A=20=20160=20=20=20shrink_page_list+0x788/0xae0=0D=0A=20=20128=20=20=20sh=
-rink_inactive_list+0x210/0x4a8=0D=0A=20=20184=20=20=20shrink_zone+0x53c/0x7=
-c0=0D=0A=20=20160=20=20=20try_to_free_pages+0x2fc/0x7cc=0D=0A=20=20=2080=20=
-=20=20__alloc_pages_nodemask+0x534/0x91c=0D=0A=0D=0AThanks=20&=20Regards,=
-=0D=0AVaneet=20Narang=C2=A0=0D=0A=C2=A0
+Unfortunately, the scrub turns out to be quite intrusive into the system
+(even when making sure it is very low priority for ionice and nice).
+Operations on other disks run excessively slowly, causing timeouts on
+important actions like mail delivery (causing bounces).
+
+So, I break it up. I run it for some interval (hours), with the
+time-critical services stopped. Then I cancel the scrub and let mail
+delivery run for a while. Then I stop mail again and resume the scrub
+for another interval, etc.
+
+This works and solves the mail bounce problem.
+
+However, after a few cancel/resume cycles, the scrub terminates. No
+errors are reported but one of the resumes will just immediately
+terminate claiming the scrub is done. It isn't. Nowhere near.
+
+The disk being scrubbed is in use during all this. It doesn't get a
+heavy load but it is my main backup disk and various backups happen,
+some of them involving snapshots being created and deleted.
+
+Glancing at the use of the ioctl in the btrfs-progs code, I assume the
+resume is using the last_physical from the last run as the start for the
+next. Does that break if the filesystem has changed and that is no
+longer a used block or something? If so, I think that makes resume useless.
+
+If this is not expected behaviour I will do more work to analyse and
+reproduce.
+
+Graham
