@@ -2,89 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3EDA37145
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 12:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F76A37269
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727852AbfFFKIA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 06:08:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52594 "EHLO mx1.suse.de"
+        id S1727790AbfFFLGU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 07:06:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34774 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726972AbfFFKIA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Jun 2019 06:08:00 -0400
+        id S1727683AbfFFLGS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Jun 2019 07:06:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 15F40AF5B;
-        Thu,  6 Jun 2019 10:07:59 +0000 (UTC)
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     Eryu Guan <guaneryu@gmail.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        fstests@vger.kernel.org, Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH fstests] btrfs: add validation of compression options to btrfs/048
-Date:   Thu,  6 Jun 2019 12:07:54 +0200
-Message-Id: <20190606100754.14575-1-jthumshirn@suse.de>
-X-Mailer: git-send-email 2.16.4
+        by mx1.suse.de (Postfix) with ESMTP id B0583AE54
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 11:06:17 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/9] btrfs-progs: image: Data dump support, restore optimization and small fixes
+Date:   Thu,  6 Jun 2019 19:06:02 +0800
+Message-Id: <20190606110611.27176-1-wqu@suse.com>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The current btrfs/048 test-case did not check the behavior of properties
-with options like compression and with the compression level supplied.
+This patchset can be fetched from github:
+https://github.com/adam900710/btrfs-progs/tree/image_data_dump
+Which is based on v5.1 tag.
 
-Add test cases for compression with compression level as well so we can be
-sure we don't regress there.
+This patchset contains the following main features:
+- various small fixes for btrfs-image
+  From indent misalign, SZ_* cleanup to too many core cores causing
+  btrfs-image crash.
 
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
----
- tests/btrfs/048     | 15 +++++++++++++++
- tests/btrfs/048.out | 12 ++++++++++++
- 2 files changed, 27 insertions(+)
+- btrfs-image dump support 
+  This introduce a new option -d to dump data.
+  Due to item size limit, we have to enlarge the existing limit from
+  256K (enough for tree blocks, but not enough for free space cache) to
+  256M.
+  This change will cause incompatibility, thus we have to introduce a
+  new magic as version. While keeping all other on-disk format the same.
 
-diff --git a/tests/btrfs/048 b/tests/btrfs/048
-index 8bb10a904bc9..af2d4ff34414 100755
---- a/tests/btrfs/048
-+++ b/tests/btrfs/048
-@@ -226,5 +226,20 @@ $BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'lz' 2>&1 | _filter_scrat
- $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
- $BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep '^generation'
- 
-+echo -e "\nTesting argument validation with options"
-+$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'lzo:9' 2>&1 | _filter_scratch
-+echo "***"
-+$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zlib:3' 2>&1 | _filter_scratch
-+echo "***"
-+$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zstd:0' 2>&1 | _filter_scratch
-+echo "***"
-+
-+echo -e "\nTesting invalid argument validation with options, should fail"
-+$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'lz:9' 2>&1 | _filter_scratch
-+echo "***"
-+$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zli:0' 2>&1 | _filter_scratch
-+echo "***"
-+$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zst:3' 2>&1 | _filter_scratch
-+
- status=0
- exit
-diff --git a/tests/btrfs/048.out b/tests/btrfs/048.out
-index 16a785a642f7..016eba265b01 100644
---- a/tests/btrfs/048.out
-+++ b/tests/btrfs/048.out
-@@ -92,3 +92,15 @@ Testing generation is unchanged after failed validation
- generation		7
- ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
- generation		7
-+
-+Testing argument validation with options
-+***
-+***
-+***
-+
-+Testing invalid argument validation with options, should fail
-+ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
-+***
-+ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
-+***
-+ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
+- btrfs-image restore optimization
+  This will speed up chunk item search during restore.
+
+Qu Wenruo (9):
+  btrfs-progs: image: Use SZ_* to replace intermediate size
+  btrfs-progs: image: Fix a indent misalign
+  btrfs-progs: image: Fix a access-beyond-boundary bug when there are 32
+    online CPUs
+  btrfs-progs: image: Verify the superblock before restore
+  btrfs-progs: image: Introduce framework for more dump versions
+  btrfs-progs: image: Introduce -d option to dump data
+  btrfs-progs: image: Allow restore to record system chunk ranges for
+    later usage
+  btrfs-progs: image: Introduce helper to determine if a tree block is
+    in the range of system chunks
+  btrfs-progs: image: Rework how we search chunk tree blocks
+
+ disk-io.c        |   6 +-
+ disk-io.h        |   1 +
+ image/main.c     | 501 +++++++++++++++++++++++++++++++++++------------
+ image/metadump.h |  15 +-
+ 4 files changed, 393 insertions(+), 130 deletions(-)
+
 -- 
-2.16.4
+2.21.0
 
