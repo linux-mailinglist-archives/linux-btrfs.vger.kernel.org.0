@@ -2,55 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A967F37290
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9C493729A
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:16:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbfFFLOa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 07:14:30 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:36522 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbfFFLOa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 07:14:30 -0400
-Received: by mail-vs1-f67.google.com with SMTP id l20so963853vsp.3;
-        Thu, 06 Jun 2019 04:14:29 -0700 (PDT)
+        id S1728050AbfFFLQ3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 07:16:29 -0400
+Received: from mail-vk1-f193.google.com ([209.85.221.193]:35795 "EHLO
+        mail-vk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726092AbfFFLQ3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 07:16:29 -0400
+Received: by mail-vk1-f193.google.com with SMTP id k1so366726vkb.2;
+        Thu, 06 Jun 2019 04:16:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=L5FE5LHOBYJ1vqOcaxoTV/ufmCOkGPMOAnLLWxUn+gY=;
-        b=j6waIAVh+7I7LbSs6indYXCkDPotzrrRDLsA+F4sDLBWtJL3TsPuG6Cfix8X5jhydi
-         1nHBjeU8sKI9aBx02rKHi/WWzd5a44li70bDN1jADnMsjHfcqFgX7EIOWI/Rsvw0TzUO
-         SV5dXi4T+fhJdsIu+dpmPfzSmPNbfpgqLNt9dojAR685jhKeUMLlYhXOw5GAM3Vbrols
-         bHNs84nmGkIVOUORoXRALz0koH31pfqIf14kQh4mlryyIhBkTBgyCu0dhUBHqCvTXSfO
-         4yOZ9To+JFs1e7F9f51G9MKcthaaWtthW+1jj9jn32Jv2OGfaLP5O5IZiQ3L4kv3RCGS
-         O9vw==
+        bh=UKUoeS7QojS6XWNuB0gM09E8mCaD4h6+Tfr0cVr2N2E=;
+        b=pHGiNDmTLKC5O6z8p74TmMUPLn19CLTtXY7BqZg12uwJdAup3aMn7aWbQtNfTexZsd
+         6pUy7aOCGfRY8xfdy9vuhSMVZPHHXsv96yXmJpiO8LoB0puGO5+79Jgad9m0JDMso+wE
+         lotFOUiw0750fCzrcOGlzzgC1hhk4QM7oHW3Ga+uUIdwW60a/gmDAxrNBqy9uBJ+0sGw
+         ejmyIu7ZoMyFlwX1QDDIdySSUt7QNzudE9V60GK/5CCRa0GktxiBKifag61IbHqBIduy
+         Qw+uM1AqZzDN48Ht1CJy9nvQgDgBun9UzmF3xLzvU/HpIX54H4EU4HhycfEMWdZ4GYKb
+         iCIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=L5FE5LHOBYJ1vqOcaxoTV/ufmCOkGPMOAnLLWxUn+gY=;
-        b=JK4OZG1CAeIUCLqvDFcfJM5/81C2OOyqbMM/2L5JpY82ef23aMibp7xIrTVrxxEqdV
-         a3k/5GhnvQFiPGfA/sYYO80KykDb/pllLb9gS/SI5PdFHEuQogMoh2RDENRg/uH2XyDi
-         cba5Dj9/5RGJQyql0q2mbAN7O7Lkq+wGOUE5rtz2pwlHEnSFdkBjuJb0czd1oog7stC+
-         qIKCCutW2kmbFPa5YLjP2R9Xnz2r0lJEEWOWU+NKGWNYW1KERwdQGdU02Z3KRbJRNBoj
-         /nLTSH2DWmaI6D1TWey77elZl0nRIv7HRZkvRfq82GcGcjojNA479iBEJ6MhnIKNPu0P
-         CEGw==
-X-Gm-Message-State: APjAAAXbQZb5KCcGX4MKQjAkXainacNVXSjT8m4+dtVI9X2RMcxyKALF
-        yskaYvlAKhLWMwh4YJ1IQoqOmGYGrN1Zii4V+JJ2zA==
-X-Google-Smtp-Source: APXvYqy9uzi9cGdb1ix/cem/VdxXMljSqCtPw43u5DGU7D9Nn12APz7z2DBpxQr/ZH15do8OGNwsevWPMle40YMAzJc=
-X-Received: by 2002:a67:d990:: with SMTP id u16mr765451vsj.95.1559819669355;
- Thu, 06 Jun 2019 04:14:29 -0700 (PDT)
+        bh=UKUoeS7QojS6XWNuB0gM09E8mCaD4h6+Tfr0cVr2N2E=;
+        b=KzmU5uvy9p21lUjyX73oAQb6aMqN8UdZ+q3YJTLT95z2f0W6C4sNaObHd8eWAA0/ZG
+         zSo2A+araDnT0as32JIbqbYE1GYZIJCP9wkbHOwlrMyHaVgEKKpgUk8YfAB1X/uW2s9s
+         Z5sKr+ukrlsW5kibZlzbEGkXEdW3BjPXZ/G/wcVUEaT5mU7F3CnuNx7oOEDliOy5WhOL
+         HK4aYoys6r+e9epbOMD+btSUwX81Wz4PDBKUXmxNoXlD8muLP11PXBja7vm9lrIBtGyP
+         YyxdPqLS2nnMlJgnzalfZ0yrlg+WcEyr+6nweCXRSdHqv1qO2LNeGytwZVNrukCvYPaa
+         l7nQ==
+X-Gm-Message-State: APjAAAWHuGwtBBdy5VzRtWK1X3rAsLQ9TBK/HtT9sQsajzuPxtS29WYq
+        gtHxeUHMBc/+v1M+xZqq2g+eQDS+PhaSuUNMVho=
+X-Google-Smtp-Source: APXvYqwAoLiuf4yzksxzekyFYHZGy7i/WDfSN1bo1TPVCPBh6RoyTFE6m7SARXpLWRzKGCFgPmn5PWV8b3xIF6CLXdw=
+X-Received: by 2002:a1f:12d5:: with SMTP id 204mr5925695vks.4.1559819788057;
+ Thu, 06 Jun 2019 04:16:28 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190606075444.15481-1-naohiro.aota@wdc.com>
-In-Reply-To: <20190606075444.15481-1-naohiro.aota@wdc.com>
+References: <20190606100754.14575-1-jthumshirn@suse.de>
+In-Reply-To: <20190606100754.14575-1-jthumshirn@suse.de>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 6 Jun 2019 12:14:18 +0100
-Message-ID: <CAL3q7H6ZD=SCcj_dOB6b+8xPTXpq5dTv58Mb4C4qPn1Cx9XOtA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: start readahead also in seed devices
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, stable@vger.kernel.org
+Date:   Thu, 6 Jun 2019 12:16:17 +0100
+Message-ID: <CAL3q7H665Rh7P8bwxNxHJVFibvb6pSg7MeFaqhsRWKx4jMW8JA@mail.gmail.com>
+Subject: Re: [PATCH fstests] btrfs: add validation of compression options to btrfs/048
+To:     Johannes Thumshirn <jthumshirn@suse.de>
+Cc:     Eryu Guan <guaneryu@gmail.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        fstests <fstests@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -58,62 +59,87 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 6, 2019 at 8:56 AM Naohiro Aota <naohiro.aota@wdc.com> wrote:
+On Thu, Jun 6, 2019 at 11:10 AM Johannes Thumshirn <jthumshirn@suse.de> wro=
+te:
 >
-> Currently, btrfs does not consult seed devices to start readahead. As a
-> result, if readahead zone is added to the seed devices, btrfs_reada_wait(=
-)
-> indefinitely wait for the reada_ctl to finish.
+> The current btrfs/048 test-case did not check the behavior of properties
+> with options like compression and with the compression level supplied.
 >
-> You can reproduce the hung by modifying btrfs/163 to have larger initial
-> file size (e.g. xfs_io pwrite 4M instead of current 256K).
+> Add test cases for compression with compression level as well so we can b=
+e
+> sure we don't regress there.
+>
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> ---
+>  tests/btrfs/048     | 15 +++++++++++++++
+>  tests/btrfs/048.out | 12 ++++++++++++
+>  2 files changed, 27 insertions(+)
+>
+> diff --git a/tests/btrfs/048 b/tests/btrfs/048
+> index 8bb10a904bc9..af2d4ff34414 100755
+> --- a/tests/btrfs/048
+> +++ b/tests/btrfs/048
+> @@ -226,5 +226,20 @@ $BTRFS_UTIL_PROG property set $SCRATCH_MNT compressi=
+on 'lz' 2>&1 | _filter_scrat
+>  $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
+>  $BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep '^gener=
+ation'
+>
+> +echo -e "\nTesting argument validation with options"
+> +$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'lzo:9' 2>&1 | _f=
+ilter_scratch
+> +echo "***"
+> +$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zlib:3' 2>&1 | _=
+filter_scratch
+> +echo "***"
+> +$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zstd:0' 2>&1 | _=
+filter_scratch
+> +echo "***"
 
-Are you planning on submitting a patch for the test case as well, so
-that it writes at least 4Mb?
-Would be useful to have.
+For those 3 cases, there's no need to "2>&1 | _filter_scratch", since
+we don't expect any output from the commands in the golden output.
 
->
-> Fixes: 7414a03fbf9e ("btrfs: initial readahead code and prototypes")
-> Cc: stable@vger.kernel.org # 3.2+: ce7791ffee1e: Btrfs: fix race between =
-readahead and device replace/removal
-> Cc: stable@vger.kernel.org # 3.2+
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Other than that, looks good to me, thanks.
 
 Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Looks good, thanks.
-
-> ---
->  fs/btrfs/reada.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
-> index 10d9589001a9..bb5bd49573b4 100644
-> --- a/fs/btrfs/reada.c
-> +++ b/fs/btrfs/reada.c
-> @@ -747,6 +747,7 @@ static void __reada_start_machine(struct btrfs_fs_inf=
-o *fs_info)
->         u64 total =3D 0;
->         int i;
->
-> +again:
->         do {
->                 enqueued =3D 0;
->                 mutex_lock(&fs_devices->device_list_mutex);
-> @@ -758,6 +759,10 @@ static void __reada_start_machine(struct btrfs_fs_in=
-fo *fs_info)
->                 mutex_unlock(&fs_devices->device_list_mutex);
->                 total +=3D enqueued;
->         } while (enqueued && total < 10000);
-> +       if (fs_devices->seed) {
-> +               fs_devices =3D fs_devices->seed;
-> +               goto again;
-> +       }
->
->         if (enqueued =3D=3D 0)
->                 return;
+> +
+> +echo -e "\nTesting invalid argument validation with options, should fail=
+"
+> +$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'lz:9' 2>&1 | _fi=
+lter_scratch
+> +echo "***"
+> +$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zli:0' 2>&1 | _f=
+ilter_scratch
+> +echo "***"
+> +$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zst:3' 2>&1 | _f=
+ilter_scratch
+> +
+>  status=3D0
+>  exit
+> diff --git a/tests/btrfs/048.out b/tests/btrfs/048.out
+> index 16a785a642f7..016eba265b01 100644
+> --- a/tests/btrfs/048.out
+> +++ b/tests/btrfs/048.out
+> @@ -92,3 +92,15 @@ Testing generation is unchanged after failed validatio=
+n
+>  generation             7
+>  ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
+>  generation             7
+> +
+> +Testing argument validation with options
+> +***
+> +***
+> +***
+> +
+> +Testing invalid argument validation with options, should fail
+> +ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
+> +***
+> +ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
+> +***
+> +ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
 > --
-> 2.21.0
+> 2.16.4
 >
 
 
