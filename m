@@ -2,132 +2,221 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D49A337692
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 16:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62EB737793
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 17:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728249AbfFFO0o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 10:26:44 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:48778 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727133AbfFFO0o (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 10:26:44 -0400
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id DD71C142BC3; Thu,  6 Jun 2019 15:26:42 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1559831202;
-        bh=/4s6zncn5HHNPVXo/h8mKJD3pZyHyUVRJNjYSl73I+4=;
-        h=To:From:Subject:Date:From;
-        b=OUbMtA+oqVJkax7SWZREJA84WTCiLVQ60HNh4O3hIUnMSBMZSLWzn0XKpzpZB4Jqk
-         LUV2IdGSybF0+ZK4H4bvJUzc0ZciIkYiZ1rOvJK28NtLNgEZTnF5/WczvHocG5zLgb
-         4SH14iDuRXz5IlOk41qT3DtDUSyF9a9NpnlM8lFXEZTVv3WGLX7STdITw2P72xtrDM
-         4Wa9XCvan5l53RoOj/kYPbGnzBABNguxJj5Vu88AcTVKQjs2U7a9IOtTj84w3dDp4W
-         L5cDi/5ODI+/olFSaSPHkQN0MkHVjRkXGv6dLD5kJaW+2bOtunqpd7G3/DrKQKWKR3
-         xF0JSgdDLs5+Q==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 80929142BC2
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 15:26:42 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1559831202;
-        bh=/4s6zncn5HHNPVXo/h8mKJD3pZyHyUVRJNjYSl73I+4=;
-        h=To:From:Subject:Date:From;
-        b=OUbMtA+oqVJkax7SWZREJA84WTCiLVQ60HNh4O3hIUnMSBMZSLWzn0XKpzpZB4Jqk
-         LUV2IdGSybF0+ZK4H4bvJUzc0ZciIkYiZ1rOvJK28NtLNgEZTnF5/WczvHocG5zLgb
-         4SH14iDuRXz5IlOk41qT3DtDUSyF9a9NpnlM8lFXEZTVv3WGLX7STdITw2P72xtrDM
-         4Wa9XCvan5l53RoOj/kYPbGnzBABNguxJj5Vu88AcTVKQjs2U7a9IOtTj84w3dDp4W
-         L5cDi/5ODI+/olFSaSPHkQN0MkHVjRkXGv6dLD5kJaW+2bOtunqpd7G3/DrKQKWKR3
-         xF0JSgdDLs5+Q==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 4CBA26B0C4
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 15:26:42 +0100 (BST)
-To:     linux-btrfs@vger.kernel.org
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Subject: Scrub resume failure
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <932d9793-96b4-fd54-ae97-62c3b54b0f7e@cobb.uk.net>
-Date:   Thu, 6 Jun 2019 15:26:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1729099AbfFFPPP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 11:15:15 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:41267 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728797AbfFFPPP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 11:15:15 -0400
+Received: by mail-vs1-f67.google.com with SMTP id g24so1422800vso.8;
+        Thu, 06 Jun 2019 08:15:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=kQRTTvJECutu2MpATeVBjptWlhCDL4BG2w6Brzcdt/Q=;
+        b=jN+/DOZH7TZPyl2XEjjxjBxj6JpdHaUVDgnK27rLaEY3h0qgJ7jipDAhbftXHlhJ04
+         nJ1NR5rsFhPm7UyATt+BpoUDleZxJEULs/crJL5ZRwrrHzVmIeuz+fjZQE55ldJ3KZ1P
+         l7F/YPc4VQ8FZYzAv1Hnm7qc5wGb5TtZlHxWjqaE4HolOQYU2NeLhywiQwYd2jeqbayt
+         OsnBvewg3bIrSPxnq9R80WR2s0VHeq8pdmtfiAwTJabqmL0/Efgo+DPAaU0wc1/kLhle
+         QCQAN6JN2FOZHXmjojPE3KSgx8D69J7qQv5IZ+zL816cMYtmpfpNTYbuaofzQQFvsBn3
+         viYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=kQRTTvJECutu2MpATeVBjptWlhCDL4BG2w6Brzcdt/Q=;
+        b=Gv/MPAvgBAos6wV4qOiyzU4FHTGV9sjvEkQjaQ6hXGoowto8t3rkZC9537ioqGLGWz
+         w4HSXFP4gznmKU45PJxNOVKK3MJBIBu+syfI+LCUelh9P0lS+wEgrBxZL2+atUgdkRsM
+         gE+OoILXGLwxMdXw4oksLadHywN2vYHnjRtqTNw+0wH2iaxpSqKscT/lv/xYtbdjOL7N
+         p0gjKEKJcrWdD+cPNM963Z6Rnr0EiFa9B8nDvepyFu/nP/PzXezABt77QSHgh6Ocz164
+         GdD7sf24lXRGZP15UblbtryODrp2I0hS6JdXCGwXSLgwqtFF5ROe0qpdpl7Km+mzu4BM
+         9nOg==
+X-Gm-Message-State: APjAAAU4LYW/oTvoUFwmhbOrX9U6RtLIjyvYlHQ+vukQg76bqn6OJ2Xl
+        55zk9j963Ui22b23u8+XZQweduFlKCYFZZFsl6UGljZx
+X-Google-Smtp-Source: APXvYqziDYowzJK1iN9yuUzvoAt9Ih1JijajesgqtQa8BGKxKcOFkaxpHCU5yzLcTL8muvv0UOk/XP436QqcTfU5f5Y=
+X-Received: by 2002:a67:f684:: with SMTP id n4mr24630231vso.90.1559834114043;
+ Thu, 06 Jun 2019 08:15:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20190606135219.1086-1-nborisov@suse.com> <20190606135219.1086-2-nborisov@suse.com>
+In-Reply-To: <20190606135219.1086-2-nborisov@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 6 Jun 2019 16:15:02 +0100
+Message-ID: <CAL3q7H6UaxOV1dahcTE6aWJtWsOcWUfs06NgUFMjWx56fbpWKQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] btrfs: Implement DRW lock
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, andrea.parri@amarulasolutions.com,
+        peterz@infradead.org, paulmck@linux.ibm.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I have a btrfs filesystem which I want to scrub. This is a multi-TB
-filesystem and will take well over 24 hours to scrub.
+On Thu, Jun 6, 2019 at 2:55 PM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+> A (D)ouble (R)eader (W)riter lock is a locking primitive that allows
+> to have multiple readers or multiple writers but not multiple readers
+> and writers holding it concurrently. The code is factored out from
+> the existing open-coded locking scheme used to exclude pending
+> snapshots from nocow writers and vice-versa. Current implementation
+> actually favors Readers (that is snapshot creaters) to writers (nocow
+> writers of the filesystem).
+>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/Makefile   |  2 +-
+>  fs/btrfs/drw_lock.c | 71 +++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/drw_lock.h | 23 +++++++++++++++
+>  3 files changed, 95 insertions(+), 1 deletion(-)
+>  create mode 100644 fs/btrfs/drw_lock.c
+>  create mode 100644 fs/btrfs/drw_lock.h
+>
+> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+> index ca693dd554e9..dc60127791e6 100644
+> --- a/fs/btrfs/Makefile
+> +++ b/fs/btrfs/Makefile
+> @@ -10,7 +10,7 @@ btrfs-y +=3D super.o ctree.o extent-tree.o print-tree.o=
+ root-tree.o dir-item.o \
+>            export.o tree-log.o free-space-cache.o zlib.o lzo.o zstd.o \
+>            compression.o delayed-ref.o relocation.o delayed-inode.o scrub=
+.o \
+>            reada.o backref.o ulist.o qgroup.o send.o dev-replace.o raid56=
+.o \
+> -          uuid-tree.o props.o free-space-tree.o tree-checker.o
+> +          uuid-tree.o props.o free-space-tree.o tree-checker.o drw_lock.=
+o
+>
+>  btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) +=3D acl.o
+>  btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) +=3D check-integrity.o
+> diff --git a/fs/btrfs/drw_lock.c b/fs/btrfs/drw_lock.c
+> new file mode 100644
+> index 000000000000..9681bf7544be
+> --- /dev/null
+> +++ b/fs/btrfs/drw_lock.c
+> @@ -0,0 +1,71 @@
+> +#include "drw_lock.h"
+> +#include "ctree.h"
+> +
+> +void btrfs_drw_lock_init(struct btrfs_drw_lock *lock)
+> +{
+> +       atomic_set(&lock->readers, 0);
+> +       percpu_counter_init(&lock->writers, 0, GFP_KERNEL);
+> +       init_waitqueue_head(&lock->pending_readers);
+> +       init_waitqueue_head(&lock->pending_writers);
+> +}
+> +
+> +void btrfs_drw_lock_destroy(struct btrfs_drw_lock *lock)
+> +{
+> +       percpu_counter_destroy(&lock->writers);
+> +}
+> +
+> +bool btrfs_drw_try_write_lock(struct btrfs_drw_lock *lock)
+> +{
+> +       if (atomic_read(&lock->readers))
+> +               return false;
+> +
+> +       percpu_counter_inc(&lock->writers);
+> +
+> +       /*
+> +        * Ensure writers count is updated before we check for
+> +        * pending readers
+> +        */
+> +       smp_mb();
+> +       if (atomic_read(&lock->readers)) {
+> +               btrfs_drw_read_unlock(lock);
 
-Unfortunately, the scrub turns out to be quite intrusive into the system
-(even when making sure it is very low priority for ionice and nice).
-Operations on other disks run excessively slowly, causing timeouts on
-important actions like mail delivery (causing bounces).
+Should be btrfs_drw_write_unlock(lock)
 
-So, I break it up. I run it for some interval (hours), with the
-time-critical services stopped. Then I cancel the scrub and let mail
-delivery run for a while. Then I stop mail again and resume the scrub
-for another interval, etc.
+> +               return false;
+> +       }
+> +
+> +       return true;
+> +}
+> +
+> +void btrfs_drw_write_lock(struct btrfs_drw_lock *lock)
+> +{
+> +       while(true) {
 
-This works and solves the mail bounce problem.
+Missing space after 'while'.
 
-However, after a few cancel/resume cycles, the scrub terminates. No
-errors are reported but one of the resumes will just immediately
-terminate claiming the scrub is done. It isn't. Nowhere near.
+Thanks.
 
-The disk being scrubbed is in use during all this. It doesn't get a
-heavy load but it is my main backup disk and various backups happen,
-some of them involving snapshots being created and deleted.
+> +               if (btrfs_drw_try_write_lock(lock))
+> +                       return;
+> +               wait_event(lock->pending_writers, !atomic_read(&lock->rea=
+ders));
+> +       }
+> +}
+> +
+> +void btrfs_drw_write_unlock(struct btrfs_drw_lock *lock)
+> +{
+> +       percpu_counter_dec(&lock->writers);
+> +       cond_wake_up(&lock->pending_readers);
+> +}
+> +
+> +void btrfs_drw_read_lock(struct btrfs_drw_lock *lock)
+> +{
+> +       atomic_inc(&lock->readers);
+> +       smp_mb__after_atomic();
+> +
+> +       wait_event(lock->pending_readers,
+> +                  percpu_counter_sum(&lock->writers) =3D=3D 0);
+> +}
+> +
+> +void btrfs_drw_read_unlock(struct btrfs_drw_lock *lock)
+> +{
+> +       /*
+> +        * Atomic RMW operations imply full barrier, so woken up writers
+> +        * are guaranteed to see the decrement
+> +        */
+> +       if (atomic_dec_and_test(&lock->readers))
+> +               wake_up(&lock->pending_writers);
+> +}
+> +
+> +
+> diff --git a/fs/btrfs/drw_lock.h b/fs/btrfs/drw_lock.h
+> new file mode 100644
+> index 000000000000..baff59561c06
+> --- /dev/null
+> +++ b/fs/btrfs/drw_lock.h
+> @@ -0,0 +1,23 @@
+> +#ifndef BTRFS_DRW_LOCK_H
+> +#define BTRFS_DRW_LOCK_H
+> +
+> +#include <linux/atomic.h>
+> +#include <linux/wait.h>
+> +#include <linux/percpu_counter.h>
+> +
+> +struct btrfs_drw_lock {
+> +       atomic_t readers;
+> +       struct percpu_counter writers;
+> +       wait_queue_head_t pending_writers;
+> +       wait_queue_head_t pending_readers;
+> +};
+> +
+> +void btrfs_drw_lock_init(struct btrfs_drw_lock *lock);
+> +void btrfs_drw_lock_destroy(struct btrfs_drw_lock *lock);
+> +void btrfs_drw_write_lock(struct btrfs_drw_lock *lock);
+> +bool btrfs_drw_try_write_lock(struct btrfs_drw_lock *lock);
+> +void btrfs_drw_write_unlock(struct btrfs_drw_lock *lock);
+> +void btrfs_drw_read_lock(struct btrfs_drw_lock *lock);
+> +void btrfs_drw_read_unlock(struct btrfs_drw_lock *lock);
+> +
+> +#endif
+> --
+> 2.17.1
+>
 
-Glancing at the use of the ioctl in the btrfs-progs code, I assume the
-resume is using the last_physical from the last run as the start for the
-next. Does that break if the filesystem has changed and that is no
-longer a used block or something? If so, I think that makes resume useless.
 
-If this is not expected behaviour I will do more work to analyse and
-reproduce.
+--=20
+Filipe David Manana,
 
-Graham
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
