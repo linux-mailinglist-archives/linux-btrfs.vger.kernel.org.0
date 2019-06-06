@@ -2,340 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEEDE375BA
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 15:52:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBF113766D
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 16:23:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728644AbfFFNwZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 09:52:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40334 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728631AbfFFNwY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Jun 2019 09:52:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 75330AF85;
-        Thu,  6 Jun 2019 13:52:22 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, andrea.parri@amarulasolutions.com,
-        peterz@infradead.org, paulmck@linux.ibm.com,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 2/2] btrfs: convert snapshot/nocow exlcusion to drw lock
-Date:   Thu,  6 Jun 2019 16:52:19 +0300
-Message-Id: <20190606135219.1086-3-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190606135219.1086-1-nborisov@suse.com>
-References: <20190606135219.1086-1-nborisov@suse.com>
+        id S1729065AbfFFOWh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 10:22:37 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:64232 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729042AbfFFOWg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 10:22:36 -0400
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20190606142233epoutp039312b2d8cebade85fd0f8b595c7b32fa~lofzikUQZ1588515885epoutp032
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 14:22:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20190606142233epoutp039312b2d8cebade85fd0f8b595c7b32fa~lofzikUQZ1588515885epoutp032
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1559830953;
+        bh=o26+u579wDsd8MOvWNPCpXlg+PYIMQU4Ow6RM7p975c=;
+        h=Subject:Reply-To:From:To:CC:In-Reply-To:Date:References:From;
+        b=TH/8VoQzYaXX+wk7+1mrGZcUkwtXLZDLPRniSYALcnf/ORVrYGuOPQT3rquBGT1kA
+         9sqCI0uFymXryZu069ag4J3ZszXLIROTdCsPhKY9feROAz/4SJntZHLA9uYXGVj5lV
+         7R0X+hVu3bfcuetkVR5S4KoGCIjat98PC3NyTqYk=
+Received: from epsmges5p1new.samsung.com (unknown [182.195.40.192]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20190606142230epcas5p393c19e211d4324b8c8c8291a2b3b2b13~lofxDsG6k2622226222epcas5p3m;
+        Thu,  6 Jun 2019 14:22:30 +0000 (GMT)
+X-AuditID: b6c32a49-5b7ff70000000fe7-f4-5cf921a6715b
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        DB.03.04071.6A129FC5; Thu,  6 Jun 2019 23:22:30 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE:(2) [PATCH 1/4] zstd: pass pointer rathen than structure to
+ functions
+Reply-To: v.narang@samsung.com
+From:   Vaneet Narang <v.narang@samsung.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        "dsterba@suse.cz" <dsterba@suse.cz>
+CC:     Maninder Singh <maninder1.s@samsung.com>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
+        "joe@perches.com" <joe@perches.com>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        AMIT SAHRAWAT <a.sahrawat@samsung.com>,
+        PANKAJ MISHRA <pankaj.m@samsung.com>,
+        Vaneet Narang <v.narang@samsung.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "terrelln@fb.com" <terrelln@fb.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <20190605143219.248ca514546f69946aa2e07e@linux-foundation.org>
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20190606141019epcms5p1e9c394d2c2ef37506c8004fe48edd29f@epcms5p1>
+Date:   Thu, 06 Jun 2019 19:40:19 +0530
+X-CMS-MailID: 20190606141019epcms5p1e9c394d2c2ef37506c8004fe48edd29f
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrBJsWRmVeSWpSXmKPExsWy7bCmuu4yxZ8xBovXaFlc3J1qMWf9GjaL
+        Sf0z2C3mnG9hsbjwo5HJYvHv7ywWW/eoWnS/krGYff8xi8Wfh4YWZ7pzLS49XsFucf/eTyaL
+        y7vmsFkcnt/GYnHvzVYmi1f/rrFZHDo5l9FByGN2w0UWjy0rbzJ5rDuo6jGx+R27x7YDqh4n
+        Zvxm8fiy6hqzR9+WVYwe67dcZfE4s+AIu8eEzRtZPT5vkgvgicqxyUhNTEktUkjNS85PycxL
+        t1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAH6TEmhLDGnFCgUkFhcrKRvZ1OUX1qS
+        qpCRX1xiq5RakJJTYGhUoFecmFtcmpeul5yfa2VoYGBkClSZkJPx8vl+9oLbEhWTV7k3MDZJ
+        dDFyckgImEisWt3B2sXIxSEksJtR4vqZZqYuRg4OXgFBib87hEFMYYFgifl/MkDKhQTkJI7f
+        2M0IYgsL6EicmLeGEaSETUBL4mNLOEhYRCBE4s7HCywgE5kFnrFKHDi/hRViFa/EjPanLBC2
+        tMT25VvBejkFvCUWfK+GCItK3Fz9lh3Gfn9sPiOELSLReu8sM4QtKPHg526wVgkBGYldb8VB
+        VkkIdDNKTDi3nBXCmcEocar3DVSDucT5k/PBbF4BX4n504+C2SwCqhJLGz6xQgxykbj4lAck
+        zCygLbFs4WtmkDCzgKbE+l36EFNkJaaeWscEUcIn0fv7CRPMVzvmwdhKEucO7mSDsCUknnTO
+        hLrAQ+LR2jZoIE9nlpi64hDbBEaFWYhwnoVk8yyEzQsYmVcxSqYWFOempxabFhjmpZYjR+4m
+        RnAq1/LcwTjrnM8hRgEORiUe3hlMP2OEWBPLiitzDzFKcDArifCWXfgRI8SbklhZlVqUH19U
+        mpNafIjRFBgEE5mlRJPzgXkmryTe0NTIzMzA0sDU2MLMUEmcdxLr1RghgfTEktTs1NSC1CKY
+        PiYOTqkGRvMjX2/oip50mrshhvkaw9VntaX19+dsefYnpOTEZ77Oom6RA7r/lV4ds3HJ57jK
+        oH60zfr8ZtXwrWXbbi08YmHxmoH3RJHJyk2q5xt7Ds4uXnxAc56URU2Ytb+oymax/YytIp7x
+        ImJfDY/Jc51dtHz9xPXZPn7fDptenbLz1Ow/e8tOMNlt2aTEUpyRaKjFXFScCACaZWMH+wMA
+        AA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20190603090232epcas5p1630d0584e8a1aa9495edc819605664fc
+References: <20190605143219.248ca514546f69946aa2e07e@linux-foundation.org>
+        <1559552526-4317-1-git-send-email-maninder1.s@samsung.com>
+        <1559552526-4317-2-git-send-email-maninder1.s@samsung.com>
+        <20190604154326.8868a10f896c148a0ce804d1@linux-foundation.org>
+        <20190605115703.GY15290@twin.jikos.cz> <20190605123253.GZ15290@suse.cz>
+        <CGME20190603090232epcas5p1630d0584e8a1aa9495edc819605664fc@epcms5p1>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch removes all haphazard code implementing nocow writers
-exclusion from pending snapshot creation and switches to using the drw
-lock to ensure this invariant still holds. "Readers" are snapshot
-creators from create_snapshot and 'writers' are nocow writers from
-buffered write path or btrfs_setsize. This locking scheme allows for
-multiple snapshots to happen while any nocow writers are blocked, since
-writes to page cache in the nocow path will make snapshots inconsistent.
+Hi Andrew / David,
 
-So for performance reasons we'd like to have the ability to run multiple
-concurrent snapshots and also favors readers in this case. And in case
-there aren't pending snapshots (which will be the majority of the cases)
-we rely on the percpu's writers counter to avoid cacheline contention.
-
-The main gain from using the drw is it's now a lot easier to reason about
-the guarantees of the locking scheme and whether there is some silent
-breakage lurking.
-
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/ctree.h       | 10 +++-------
- fs/btrfs/disk-io.c     | 39 +++------------------------------------
- fs/btrfs/extent-tree.c | 35 -----------------------------------
- fs/btrfs/file.c        | 12 ++++++------
- fs/btrfs/inode.c       |  8 ++++----
- fs/btrfs/ioctl.c       | 10 +++-------
- 6 files changed, 19 insertions(+), 95 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index a66ed58058d9..fa8a2e15c77c 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -32,6 +32,7 @@
- #include "extent_io.h"
- #include "extent_map.h"
- #include "async-thread.h"
-+#include "drw_lock.h"
- 
- struct btrfs_trans_handle;
- struct btrfs_transaction;
-@@ -1174,11 +1175,6 @@ static inline struct btrfs_fs_info *btrfs_sb(struct super_block *sb)
- 	return sb->s_fs_info;
- }
- 
--struct btrfs_subvolume_writers {
--	struct percpu_counter	counter;
--	wait_queue_head_t	wait;
--};
--
- /*
-  * The state of btrfs root
-  */
-@@ -1350,8 +1346,8 @@ struct btrfs_root {
- 	 * root_item_lock.
- 	 */
- 	int dedupe_in_progress;
--	struct btrfs_subvolume_writers *subv_writers;
--	atomic_t will_be_snapshotted;
-+	struct btrfs_drw_lock snapshot_lock;
-+
- 	atomic_t snapshot_force_cow;
- 
- 	/* For qgroup metadata reserved space */
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 05f215b4d060..ece45e606846 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1125,32 +1125,6 @@ void btrfs_clean_tree_block(struct extent_buffer *buf)
- 	}
- }
- 
--static struct btrfs_subvolume_writers *btrfs_alloc_subvolume_writers(void)
--{
--	struct btrfs_subvolume_writers *writers;
--	int ret;
--
--	writers = kmalloc(sizeof(*writers), GFP_NOFS);
--	if (!writers)
--		return ERR_PTR(-ENOMEM);
--
--	ret = percpu_counter_init(&writers->counter, 0, GFP_NOFS);
--	if (ret < 0) {
--		kfree(writers);
--		return ERR_PTR(ret);
--	}
--
--	init_waitqueue_head(&writers->wait);
--	return writers;
--}
--
--static void
--btrfs_free_subvolume_writers(struct btrfs_subvolume_writers *writers)
--{
--	percpu_counter_destroy(&writers->counter);
--	kfree(writers);
--}
--
- static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
- 			 u64 objectid)
- {
-@@ -1198,7 +1172,6 @@ static void __setup_root(struct btrfs_root *root, struct btrfs_fs_info *fs_info,
- 	atomic_set(&root->log_writers, 0);
- 	atomic_set(&root->log_batch, 0);
- 	refcount_set(&root->refs, 1);
--	atomic_set(&root->will_be_snapshotted, 0);
- 	atomic_set(&root->snapshot_force_cow, 0);
- 	atomic_set(&root->nr_swapfiles, 0);
- 	root->log_transid = 0;
-@@ -1487,7 +1460,6 @@ struct btrfs_root *btrfs_read_fs_root(struct btrfs_root *tree_root,
- int btrfs_init_fs_root(struct btrfs_root *root)
- {
- 	int ret;
--	struct btrfs_subvolume_writers *writers;
- 
- 	root->free_ino_ctl = kzalloc(sizeof(*root->free_ino_ctl), GFP_NOFS);
- 	root->free_ino_pinned = kzalloc(sizeof(*root->free_ino_pinned),
-@@ -1497,12 +1469,8 @@ int btrfs_init_fs_root(struct btrfs_root *root)
- 		goto fail;
- 	}
- 
--	writers = btrfs_alloc_subvolume_writers();
--	if (IS_ERR(writers)) {
--		ret = PTR_ERR(writers);
--		goto fail;
--	}
--	root->subv_writers = writers;
-+
-+	btrfs_drw_lock_init(&root->snapshot_lock);
- 
- 	btrfs_init_free_ino_ctl(root);
- 	spin_lock_init(&root->ino_cache_lock);
-@@ -3873,8 +3841,7 @@ void btrfs_free_fs_root(struct btrfs_root *root)
- 	WARN_ON(!RB_EMPTY_ROOT(&root->inode_tree));
- 	if (root->anon_dev)
- 		free_anon_bdev(root->anon_dev);
--	if (root->subv_writers)
--		btrfs_free_subvolume_writers(root->subv_writers);
-+	btrfs_drw_lock_destroy(&root->snapshot_lock);
- 	free_extent_buffer(root->node);
- 	free_extent_buffer(root->commit_root);
- 	kfree(root->free_ino_ctl);
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 5a11e4988243..3564bae0434d 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -11322,41 +11322,6 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
-  * operations while snapshotting is ongoing and that cause the snapshot to be
-  * inconsistent (writes followed by expanding truncates for example).
-  */
--void btrfs_end_write_no_snapshotting(struct btrfs_root *root)
--{
--	percpu_counter_dec(&root->subv_writers->counter);
--	cond_wake_up(&root->subv_writers->wait);
--}
--
--int btrfs_start_write_no_snapshotting(struct btrfs_root *root)
--{
--	if (atomic_read(&root->will_be_snapshotted))
--		return 0;
--
--	percpu_counter_inc(&root->subv_writers->counter);
--	/*
--	 * Make sure counter is updated before we check for snapshot creation.
--	 */
--	smp_mb();
--	if (atomic_read(&root->will_be_snapshotted)) {
--		btrfs_end_write_no_snapshotting(root);
--		return 0;
--	}
--	return 1;
--}
--
--void btrfs_wait_for_snapshot_creation(struct btrfs_root *root)
--{
--	while (true) {
--		int ret;
--
--		ret = btrfs_start_write_no_snapshotting(root);
--		if (ret)
--			break;
--		wait_var_event(&root->will_be_snapshotted,
--			       !atomic_read(&root->will_be_snapshotted));
--	}
--}
- 
- void btrfs_mark_bg_unused(struct btrfs_block_group_cache *bg)
- {
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 5370152ea7e3..b9f01efff276 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -26,6 +26,7 @@
- #include "volumes.h"
- #include "qgroup.h"
- #include "compression.h"
-+#include "drw_lock.h"
- 
- static struct kmem_cache *btrfs_inode_defrag_cachep;
- /*
-@@ -1554,8 +1555,7 @@ static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
- 	u64 num_bytes;
- 	int ret;
- 
--	ret = btrfs_start_write_no_snapshotting(root);
--	if (!ret)
-+	if (!btrfs_drw_try_write_lock(&root->snapshot_lock))
- 		return -EAGAIN;
- 
- 	lockstart = round_down(pos, fs_info->sectorsize);
-@@ -1570,7 +1570,7 @@ static noinline int check_can_nocow(struct btrfs_inode *inode, loff_t pos,
- 			NULL, NULL, NULL);
- 	if (ret <= 0) {
- 		ret = 0;
--		btrfs_end_write_no_snapshotting(root);
-+		btrfs_drw_write_unlock(&root->snapshot_lock);
- 	} else {
- 		*write_bytes = min_t(size_t, *write_bytes ,
- 				     num_bytes - pos + lockstart);
-@@ -1675,7 +1675,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 						data_reserved, pos,
- 						write_bytes);
- 			else
--				btrfs_end_write_no_snapshotting(root);
-+				btrfs_drw_write_unlock(&root->snapshot_lock);
- 			break;
- 		}
- 
-@@ -1769,7 +1769,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 
- 		release_bytes = 0;
- 		if (only_release_metadata)
--			btrfs_end_write_no_snapshotting(root);
-+			btrfs_drw_write_unlock(&root->snapshot_lock);
- 
- 		if (only_release_metadata && copied > 0) {
- 			lockstart = round_down(pos,
-@@ -1799,7 +1799,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 
- 	if (release_bytes) {
- 		if (only_release_metadata) {
--			btrfs_end_write_no_snapshotting(root);
-+			btrfs_drw_write_unlock(&root->snapshot_lock);
- 			btrfs_delalloc_release_metadata(BTRFS_I(inode),
- 					release_bytes, true);
- 		} else {
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index f5e19ba27bdc..00118805ef00 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -5102,16 +5102,16 @@ static int btrfs_setsize(struct inode *inode, struct iattr *attr)
- 		 * truncation, it must capture all writes that happened before
- 		 * this truncation.
- 		 */
--		btrfs_wait_for_snapshot_creation(root);
-+		btrfs_drw_write_lock(&root->snapshot_lock);
- 		ret = btrfs_cont_expand(inode, oldsize, newsize);
- 		if (ret) {
--			btrfs_end_write_no_snapshotting(root);
-+			btrfs_drw_write_unlock(&root->snapshot_lock);
- 			return ret;
- 		}
- 
- 		trans = btrfs_start_transaction(root, 1);
- 		if (IS_ERR(trans)) {
--			btrfs_end_write_no_snapshotting(root);
-+			btrfs_drw_write_unlock(&root->snapshot_lock);
- 			return PTR_ERR(trans);
- 		}
- 
-@@ -5119,7 +5119,7 @@ static int btrfs_setsize(struct inode *inode, struct iattr *attr)
- 		btrfs_ordered_update_i_size(inode, i_size_read(inode), NULL);
- 		pagecache_isize_extended(inode, oldsize, newsize);
- 		ret = btrfs_update_inode(trans, root, inode);
--		btrfs_end_write_no_snapshotting(root);
-+		btrfs_drw_write_unlock(&root->snapshot_lock);
- 		btrfs_end_transaction(trans);
- 	} else {
- 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 803577d42518..e35f1b14d772 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -791,11 +791,7 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- 	 * possible. This is to avoid later writeback (running dealloc) to
- 	 * fallback to COW mode and unexpectedly fail with ENOSPC.
- 	 */
--	atomic_inc(&root->will_be_snapshotted);
--	smp_mb__after_atomic();
--	/* wait for no snapshot writes */
--	wait_event(root->subv_writers->wait,
--		   percpu_counter_sum(&root->subv_writers->counter) == 0);
-+	btrfs_drw_read_lock(&root->snapshot_lock);
- 
- 	ret = btrfs_start_delalloc_snapshot(root);
- 	if (ret)
-@@ -875,8 +871,8 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- dec_and_free:
- 	if (snapshot_force_cow)
- 		atomic_dec(&root->snapshot_force_cow);
--	if (atomic_dec_and_test(&root->will_be_snapshotted))
--		wake_up_var(&root->will_be_snapshotted);
-+	btrfs_drw_read_unlock(&root->snapshot_lock);
-+
- free_pending:
- 	kfree(pending_snapshot->root_item);
- 	btrfs_free_path(pending_snapshot->path);
--- 
-2.17.1
-
+=C2=A0=0D=0A>>=C2=A0>=C2=A0>=C2=A0-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0ZSTD_parameters=C2=A0params=C2=A0=3D=C2=A0ZSTD_getParams(level,=C2=
+=A0src_len,=C2=A00);=0D=0A>>=C2=A0>=C2=A0>=C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0static=C2=A0ZSTD_parameters=C2=A0params;=0D=0A>>=C2=
+=A0>=C2=A0=0D=0A>>=C2=A0>=C2=A0>=C2=A0+=0D=0A>>=C2=A0>=C2=A0>=C2=A0+=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0params=C2=A0=3D=C2=A0ZSTD_getPara=
+ms(level,=C2=A0src_len,=C2=A00);=0D=0A>>=C2=A0>=C2=A0=0D=0A>>=C2=A0>=C2=A0N=
+o=C2=A0thats'=C2=A0broken,=C2=A0the=C2=A0params=C2=A0can't=C2=A0be=C2=A0sta=
+tic=C2=A0as=C2=A0it=C2=A0depends=C2=A0on=C2=A0level=C2=A0and=0D=0A>>=C2=A0>=
+=C2=A0src_len.=C2=A0What=C2=A0happens=C2=A0if=C2=A0there=C2=A0are=C2=A0seve=
+ral=C2=A0requests=C2=A0in=C2=A0parallel=C2=A0with=0D=0A>>=C2=A0>=C2=A0eg.=
+=C2=A0different=C2=A0levels?=0D=0A=0D=0AThere=20is=20no=20need=20to=20make=
+=20static=20for=20btrfs.=20We=20can=20keep=20it=20as=20a=20stack=20variable=
+.=0D=0AThis=20patch=20set=20=20focussed=20on=20reducing=20stack=20usage=20o=
+f=20zstd=20compression=20when=20triggered=0D=0Athrough=20zram.=20ZRAM=20int=
+ernally=20uses=20crypto=20and=20currently=20crpto=20uses=20fixed=20level=20=
+and=20also=0D=0Anot=20dependent=20upon=20source=20length.=0D=0A=0D=0Acrypto=
+/zstd.c:=20=20=0D=0Astatic=20ZSTD_parameters=20zstd_params(void)=0D=0A=7B=
+=0D=0A=20=20=20=20=20=20=20=20return=20ZSTD_getParams(ZSTD_DEF_LEVEL,=200,=
+=200);=0D=0A=7D=0D=0A=0D=0A=0D=0AActually=20high=20stack=20usage=20problem=
+=20with=20zstd=20compression=20patch=20gets=20exploited=20more=20incase=20o=
+f=20=0D=0Ashrink=20path=20which=20gets=20triggered=20randomly=20from=20any=
+=20call=20flow=20in=20case=20of=20low=20memory=20and=20adds=20overhead=0D=
+=0Aof=20more=20than=202000=20byte=20of=20stack=20and=20results=20in=20stack=
+=20overflow.=0D=0A=0D=0AStack=20usage=20of=20alloc_page=20in=20case=20of=20=
+low=20memory=0D=0A=0D=0A=20=20=2072=20=20=20HUF_compressWeights_wksp+0x140/=
+0x200=20=20=0D=0A=20=20=2064=20=20=20HUF_writeCTable_wksp+0xdc/0x1c8=20=20=
+=20=20=20=20=0D=0A=20=20=2088=20=20=20HUF_compress4X_repeat+0x214/0x450=20=
+=20=20=20=20=0D=0A=20=20208=20=20=20ZSTD_compressBlock_internal+0x224/0x137=
+c=0D=0A=20=20136=20=20=20ZSTD_compressContinue_internal+0x210/0x3b0=0D=0A=
+=20=20192=20=20=20ZSTD_compressCCtx+0x6c/0x144=0D=0A=20=20144=20=20=20zstd_=
+compress+0x40/0x58=0D=0A=20=20=2032=20=20=20crypto_compress+0x2c/0x34=0D=0A=
+=20=20=2032=20=20=20zcomp_compress+0x3c/0x44=0D=0A=20=20=2080=20=20=20zram_=
+bvec_rw+0x2f8/0xa7c=0D=0A=20=20=2064=20=20=20zram_rw_page+0x104/0x170=0D=0A=
+=20=20=2048=20=20=20bdev_write_page+0x80/0xb4=0D=0A=20=20112=20=20=20__swap=
+_writepage+0x160/0x29c=0D=0A=20=20=2024=20=20=20swap_writepage+0x3c/0x58=0D=
+=0A=20=20160=20=20=20shrink_page_list+0x788/0xae0=0D=0A=20=20128=20=20=20sh=
+rink_inactive_list+0x210/0x4a8=0D=0A=20=20184=20=20=20shrink_zone+0x53c/0x7=
+c0=0D=0A=20=20160=20=20=20try_to_free_pages+0x2fc/0x7cc=0D=0A=20=20=2080=20=
+=20=20__alloc_pages_nodemask+0x534/0x91c=0D=0A=0D=0AThanks=20&=20Regards,=
+=0D=0AVaneet=20Narang=C2=A0=0D=0A=C2=A0
