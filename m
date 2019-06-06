@@ -2,57 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D7536ED3
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 10:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9683936EF6
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 10:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727240AbfFFIh2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 04:37:28 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:55533 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726926AbfFFIh2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 04:37:28 -0400
+        id S1727368AbfFFInj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 04:43:39 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:25143 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727354AbfFFInj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 04:43:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1559810248; x=1591346248;
+  t=1559810619; x=1591346619;
   h=from:to:cc:subject:date:message-id:references:
    content-transfer-encoding:mime-version;
-  bh=syI9k+j/TQ+nhb0pyBRJQv8Kzc3fG/SBH1U49ViEndM=;
-  b=bnHAhLK5sfCyA/WUjcaFhPder/6lYIB4Lj5br4o1h8cUKm+om4LJLiC+
-   DB2I6a59lRB40J6Q5kIDcCqSlrZjvzsDzhcG42vgkVTh1MJrzVbF1bH60
-   COaWcENaVJtbZIicW2139rEAPcY2cRehfovDSJkPEGr4S8IiMl984ctpE
-   sAbWBocpOXCSyK+KyEv96YzHlzGPVWaLEUncdx42RYaR+H3wDPWnLN4rj
-   YXsEfzqTWhaBmAU9Eu+EhGgpay6qtXoAu6KmoLgKNdvYXGUpOqlExLzQ+
-   2q0/TbDw63xK6QU/6FQpFrSZHawT7CFRo7AauNJsyUV+wj8eOlx8oK1Rw
-   A==;
+  bh=8Y3HhYKu9y+bwOGquxMBJqsEEZYPKqeXvFbLNLVecIc=;
+  b=BVPqT/YBAlP6CYIDBUSYTH9FmhYOP59+g0ZWZtxv2pw8St4kguZ8qJBz
+   t02mlJt6NxCt6uS8i+hB00cYr9RSJPChyoERGZsQDldzjv1/98pRBvZoB
+   ySz/unBEOvaQjnnbV9WXZ2vQMJEbxeq8MbrYQDkBcS5OXvuO/J1SRf9bS
+   +TsErQsTk1XyPPYtIXyUrIYkAC3C+o8Q5qZ+oEL2Xw/suY076ujKNmFHD
+   ChVYsu6G2mK9BbaCJRY8tOPxcyYxN9X3ezBGPBCV7szmx6DXrt+rb0IYv
+   /KrfYkqSqvGJNtaFzRiEZGrt4odBpUL/Qjd4yHbaVoYcr8/uGtdP+2KRm
+   w==;
 X-IronPort-AV: E=Sophos;i="5.63,558,1557158400"; 
-   d="scan'208";a="209559276"
-Received: from mail-sn1nam02lp2054.outbound.protection.outlook.com (HELO NAM02-SN1-obe.outbound.protection.outlook.com) ([104.47.36.54])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Jun 2019 16:37:29 +0800
+   d="scan'208";a="109926546"
+Received: from mail-cys01nam02lp2057.outbound.protection.outlook.com (HELO NAM02-CY1-obe.outbound.protection.outlook.com) ([104.47.37.57])
+  by ob1.hgst.iphmx.com with ESMTP; 06 Jun 2019 16:43:37 +0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FVc3KQwx7PS0hZc5QNDsslpGEfHxZ4AsSkqRAfRpaMI=;
- b=Ko70FNTvnQnZEc5F0yE5cWV5Q3JVQKBEHDc+Ah3TPlIQVVu4ugz5kRWOloi+H8Ae8lZM7mhXuW0qdXDmW0TJBriW6rYYyLUajaSl/I2UirWivhgkXTcuVrNMIIv3XjiB1ktTcGXu0ubxcDKfbDG95NN3TgpgR0cIWS3dcEuKuvQ=
+ bh=Q6puzGhIjVvy7q21Qurs3VoWhMWKTVTyYQoJ4fEBHCU=;
+ b=pMv8hc4r54tJnrlHbVXfCcTdQGAlcLQNZSyQTwJTk08DVxFQ7mi8jyVRv65JsYtBN3Mu96iTCOc/5A8V51xc2/WrNNFiKddjBrn7WBV//DVTPUBTtF1iwoSK0+JBhaAoktnSKiNgmICOOYSQfOS1+qXkKwNrlQf3bMfPPwZE0D4=
 Received: from SN6PR04MB5231.namprd04.prod.outlook.com (20.177.254.85) by
- SN6PR04MB4286.namprd04.prod.outlook.com (52.135.72.18) with Microsoft SMTP
+ SN6PR04MB4703.namprd04.prod.outlook.com (52.135.122.93) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.12; Thu, 6 Jun 2019 08:37:26 +0000
+ 15.20.1943.22; Thu, 6 Jun 2019 08:43:34 +0000
 Received: from SN6PR04MB5231.namprd04.prod.outlook.com
  ([fe80::903a:ddca:14af:4b90]) by SN6PR04MB5231.namprd04.prod.outlook.com
  ([fe80::903a:ddca:14af:4b90%7]) with mapi id 15.20.1943.023; Thu, 6 Jun 2019
- 08:37:26 +0000
+ 08:43:34 +0000
 From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     David Sterba <dsterba@suse.com>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: fix out-of-bounds access in property handling
-Thread-Topic: [PATCH] btrfs: fix out-of-bounds access in property handling
-Thread-Index: AQHVHDzV3WhxsyP3oEe92Vdx99tOgA==
-Date:   Thu, 6 Jun 2019 08:37:25 +0000
-Message-ID: <SN6PR04MB52317231AFA95217DBC107238C170@SN6PR04MB5231.namprd04.prod.outlook.com>
-References: <20190606074925.12375-1-naohiro.aota@wdc.com>
- <3d3e1b3f-c36b-88e4-7e13-6dab29404a19@suse.com>
+To:     Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>
+CC:     Nikolay Borisov <nborisov@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: correctly validate compression type
+Thread-Topic: [PATCH] btrfs: correctly validate compression type
+Thread-Index: AQHVHD4E4zyPqs9MJk+asqdKL3A0Mw==
+Date:   Thu, 6 Jun 2019 08:43:34 +0000
+Message-ID: <SN6PR04MB5231CD8957F12BBEA8093A828C170@SN6PR04MB5231.namprd04.prod.outlook.com>
+References: <20190606080106.10640-1-jthumshirn@suse.de>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -61,112 +60,129 @@ authentication-results: spf=none (sender IP is )
  smtp.mailfrom=Naohiro.Aota@wdc.com; 
 x-originating-ip: [199.255.47.8]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 41893798-e494-48d2-4c5e-08d6ea5a3402
+x-ms-office365-filtering-correlation-id: d850bdcb-7750-4195-8f80-08d6ea5b0fe9
 x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:SN6PR04MB4286;
-x-ms-traffictypediagnostic: SN6PR04MB4286:
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:SN6PR04MB4703;
+x-ms-traffictypediagnostic: SN6PR04MB4703:
 wdcipoutbound: EOP-TRUE
-x-microsoft-antispam-prvs: <SN6PR04MB428647A485A2AF714755DA468C170@SN6PR04MB4286.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-microsoft-antispam-prvs: <SN6PR04MB47038DD4ED1EAE3A8C252F708C170@SN6PR04MB4703.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
 x-forefront-prvs: 00603B7EEF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(346002)(366004)(39860400002)(136003)(376002)(199004)(189003)(14444005)(99286004)(86362001)(305945005)(55016002)(476003)(7696005)(446003)(81166006)(76176011)(66556008)(8676002)(6116002)(7736002)(5660300002)(6506007)(486006)(3846002)(256004)(53546011)(76116006)(186003)(52536014)(54906003)(66946007)(102836004)(4326008)(25786009)(316002)(71200400001)(71190400001)(73956011)(9686003)(6436002)(64756008)(229853002)(26005)(66446008)(2501003)(6246003)(8936002)(81156014)(478600001)(110136005)(91956017)(66066001)(2906002)(72206003)(66476007)(53936002)(68736007)(74316002)(33656002)(14454004);DIR:OUT;SFP:1102;SCL:1;SRVR:SN6PR04MB4286;H:SN6PR04MB5231.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(396003)(136003)(346002)(376002)(366004)(199004)(189003)(256004)(86362001)(102836004)(6246003)(54906003)(53936002)(186003)(26005)(8676002)(7696005)(8936002)(81166006)(55016002)(316002)(6506007)(53546011)(52536014)(5660300002)(76176011)(68736007)(81156014)(99286004)(71200400001)(14444005)(66066001)(4326008)(229853002)(7736002)(64756008)(25786009)(66476007)(66946007)(72206003)(66446008)(305945005)(446003)(486006)(2906002)(6436002)(73956011)(76116006)(71190400001)(33656002)(91956017)(3846002)(476003)(110136005)(14454004)(478600001)(74316002)(66556008)(6116002)(9686003);DIR:OUT;SFP:1102;SCL:1;SRVR:SN6PR04MB4703;H:SN6PR04MB5231.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: hu6oXqtBrXsdP9hxgG+KGR7UIJPZnEBecDBjDX2vk0DV5zOlZuulT1S+yPSXkWFnoWBhkicYGxqPH9OnEf0RNTa00QMHsn0i3aOgCbrgTAYNLovZkcaYBGeooN8BBCOZuHsWYCy94z0YbxecD7l+XkHN+d48v77cIyS0GN7LvssgJ+/u1a/pZ+03ZYnFIXOQyWhJHhKTcJ6keXxYESAZzTCRCv/NeX0mU2GTwfztvjo40ndc7FDXufrOCFFLtmzfzA3NdKw2kZxZnaKHRpwQnbM2ig7cV2oIogHCuy26iv6E6r9ybwRRJ7dH0KH03enSE24aB/HGfRuUSOxbuAU3GfZoV2mWFo0tC8AI4kCp42ER5Bi89PXwSJVrKIjTRC0dNr+2wvZPyrsAlN0jKQyoj0z0+xEwtT2zL8CzypA5Q94=
-Content-Type: text/plain; charset="koi8-r"
+x-microsoft-antispam-message-info: /885S+E9EBP1DlVkvmUeegvqsWnfv4lC7THGo90xe2Hsil1xuTKTqiRAo52tqQUnv6h1LRMo2tYeJHPzZS1foACG/2Li3GPzca57/PwzqutaoFFXNADvEykp/Xjk/QKilDHTlT0a6bNSi2jutUfwIMycEmhdJKfaP5AMNeP1QmCJS50xaTbZut7AO0Bs9MTGSKr1cbb5dwoPc6IAZ9l4BWiaMTDBI+EgN7apKa3waTPba8n5surkCYemrtuX+RSVivZqe4E/Dq52+dhiiLUsVeY3VsOljyRlrsFKWOJD3TpJr6apLoCGTmbhqDg6LLIlZKr0Tnv4vCRmrhRkkdsRxuCvNJJ/XnC2sDsTRln4SraoUDNb4oVCbIBDL0/tA2joG/0FKJ/28r7k+ve8TIVKSByahY/ukfPMqVDNwEzVrOc=
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 41893798-e494-48d2-4c5e-08d6ea5a3402
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2019 08:37:25.8936
+X-MS-Exchange-CrossTenant-Network-Message-Id: d850bdcb-7750-4195-8f80-08d6ea5b0fe9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2019 08:43:34.8093
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
 X-MS-Exchange-CrossTenant-userprincipalname: Naohiro.Aota1@wdc.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4286
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4703
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019/06/06 17:05, Nikolay Borisov wrote:=0A=
+On 2019/06/06 17:01, Johannes Thumshirn wrote:=0A=
+> Nikolay reported the following KASAN splat when running btrfs/048:=0A=
 > =0A=
+(snip)=0A=
 > =0A=
-> On 6.06.19 =C7. 10:49 =DE., Naohiro Aota wrote:=0A=
->> xattr value is not NULL-terminated string. When you specify "lz" as the=
+> This is caused by supplying a too short compression value ('lz') in the=
 =0A=
->> property value, strncmp("lzo", value, 3) will try to read one byte after=
+> test-case and comparing it to 'lzo' with strncmp() and a length of 3.=0A=
+> strncmp() read past the 'lz' when looking for the 'o' and thus caused an=
 =0A=
->> the value buffer, causing the following OOB access. Fix this out-of-boun=
-d=0A=
->> by explicitly check the required length.=0A=
->>=0A=
- >>(snip)=0A=
->>=0A=
->> Fixes: 272e5326c783 ("btrfs: prop: fix vanished compression property aft=
-er failed set")=0A=
->> Fixes: 50398fde997f ("btrfs: prop: fix zstd compression parameter valida=
-tion")=0A=
->> Cc: stable@vger.kernel.org # 4.14+: 802a5c69584a: btrfs: prop: use commo=
-n helper for type to string conversion=0A=
->> Cc: stable@vger.kernel.org # 4.14+: 3dcf96c7b9fe: btrfs: drop redundant =
-forward declaration in props.c=0A=
->> Cc: stable@vger.kernel.org # 4.14+=0A=
->> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>=0A=
+> out-of-bounds read.=0A=
 > =0A=
-> We caught that one yesterday and were testing various fixes for it=0A=
-> Johannes just sent his version which IMO makes the code a bit more=0A=
-> maintainable.=0A=
+> Introduce a new check 'btrfs_compress_is_valid_type()' which not only=0A=
+> checks the user-supplied value against known compression types, but also=
+=0A=
+> employs checks for too short values.=0A=
+> =0A=
+> Fixes: 272e5326c783 ("btrfs: prop: fix vanished compression property afte=
+r failed set")=0A=
+> Reported-by: Nikolay Borisov <nborisov@suse.com>=0A=
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>=0A=
+> ---=0A=
+>   fs/btrfs/compression.c | 16 ++++++++++++++++=0A=
+>   fs/btrfs/compression.h |  1 +=0A=
+>   fs/btrfs/props.c       |  6 +-----=0A=
+>   3 files changed, 18 insertions(+), 5 deletions(-)=0A=
+> =0A=
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c=0A=
+> index 66e21a4e9ea2..d21ae92c172c 100644=0A=
+> --- a/fs/btrfs/compression.c=0A=
+> +++ b/fs/btrfs/compression.c=0A=
+> @@ -43,6 +43,22 @@ const char* btrfs_compress_type2str(enum btrfs_compres=
+sion_type type)=0A=
+>   	return NULL;=0A=
+>   }=0A=
+>   =0A=
+> +bool btrfs_compress_is_valid_type(const char *str, size_t len)=0A=
+> +{=0A=
+> +	int i;=0A=
+> +=0A=
+> +	for (i =3D 1; i < ARRAY_SIZE(btrfs_compress_types); i++) {=0A=
+> +		size_t comp_len =3D strlen(btrfs_compress_types[i]);=0A=
+> +=0A=
+> +		if (comp_len !=3D len)=0A=
+=0A=
+Should this be "if (comp_len > len)"?=0A=
+=0A=
+a7164fa4e055 ("btrfs: prepare for extensions in compression options") =0A=
+allowed compression property to have compression options. If we have the =
+=0A=
+options, we will have "len" larger than "comp_len".=0A=
+=0A=
+> +			continue;=0A=
+> +=0A=
+> +		if (!strncmp(btrfs_compress_types[i], str, comp_len))=0A=
+> +			return true;=0A=
+> +	}=0A=
+> +	return false;=0A=
+> +}=0A=
+> +=0A=
+>   static int btrfs_decompress_bio(struct compressed_bio *cb);=0A=
+>   =0A=
+>   static inline int compressed_bio_size(struct btrfs_fs_info *fs_info,=0A=
+> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h=0A=
+> index 191e5f4e3523..2035b8eb1290 100644=0A=
+> --- a/fs/btrfs/compression.h=0A=
+> +++ b/fs/btrfs/compression.h=0A=
+> @@ -173,6 +173,7 @@ extern const struct btrfs_compress_op btrfs_lzo_compr=
+ess;=0A=
+>   extern const struct btrfs_compress_op btrfs_zstd_compress;=0A=
+>   =0A=
+>   const char* btrfs_compress_type2str(enum btrfs_compression_type type);=
+=0A=
+> +bool btrfs_compress_is_valid_type(const char *str, size_t len);=0A=
+>   =0A=
+>   int btrfs_compress_heuristic(struct inode *inode, u64 start, u64 end);=
+=0A=
+>   =0A=
+> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c=0A=
+> index a9e2e66152ee..af109c0ba720 100644=0A=
+> --- a/fs/btrfs/props.c=0A=
+> +++ b/fs/btrfs/props.c=0A=
+> @@ -257,11 +257,7 @@ static int prop_compression_validate(const char *val=
+ue, size_t len)=0A=
+>   	if (!value)=0A=
+>   		return 0;=0A=
+>   =0A=
+> -	if (!strncmp("lzo", value, 3))=0A=
+> -		return 0;=0A=
+> -	else if (!strncmp("zlib", value, 4))=0A=
+> -		return 0;=0A=
+> -	else if (!strncmp("zstd", value, 4))=0A=
+> +	if (btrfs_compress_is_valid_type(value, len))=0A=
+>   		return 0;=0A=
+>   =0A=
+>   	return -EINVAL;=0A=
 > =0A=
 =0A=
-yeah, that looks good to me. It's much more easy to add new compression =0A=
-type. Please pick that one.=0A=
-=0A=
-> =0A=
->> ---=0A=
->>   fs/btrfs/props.c | 12 ++++++------=0A=
->>   1 file changed, 6 insertions(+), 6 deletions(-)=0A=
->>=0A=
->> diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c=0A=
->> index a9e2e66152ee..428141bf545d 100644=0A=
->> --- a/fs/btrfs/props.c=0A=
->> +++ b/fs/btrfs/props.c=0A=
->> @@ -257,11 +257,11 @@ static int prop_compression_validate(const char *v=
-alue, size_t len)=0A=
->>   	if (!value)=0A=
->>   		return 0;=0A=
->>   =0A=
->> -	if (!strncmp("lzo", value, 3))=0A=
->> +	if (len >=3D 3 && !strncmp("lzo", value, 3))=0A=
->>   		return 0;=0A=
->> -	else if (!strncmp("zlib", value, 4))=0A=
->> +	else if (len >=3D 4 && !strncmp("zlib", value, 4))=0A=
->>   		return 0;=0A=
->> -	else if (!strncmp("zstd", value, 4))=0A=
->> +	else if (len >=3D 4 && !strncmp("zstd", value, 4))=0A=
->>   		return 0;=0A=
->>   =0A=
->>   	return -EINVAL;=0A=
->> @@ -281,12 +281,12 @@ static int prop_compression_apply(struct inode *in=
-ode, const char *value,=0A=
->>   		return 0;=0A=
->>   	}=0A=
->>   =0A=
->> -	if (!strncmp("lzo", value, 3)) {=0A=
->> +	if (len >=3D 3 && !strncmp("lzo", value, 3)) {=0A=
->>   		type =3D BTRFS_COMPRESS_LZO;=0A=
->>   		btrfs_set_fs_incompat(fs_info, COMPRESS_LZO);=0A=
->> -	} else if (!strncmp("zlib", value, 4)) {=0A=
->> +	} else if (len >=3D 4 && !strncmp("zlib", value, 4)) {=0A=
->>   		type =3D BTRFS_COMPRESS_ZLIB;=0A=
->> -	} else if (!strncmp("zstd", value, 4)) {=0A=
->> +	} else if (len >=3D 4 && !strncmp("zstd", value, 4)) {=0A=
->>   		type =3D BTRFS_COMPRESS_ZSTD;=0A=
->>   		btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);=0A=
->>   	} else {=0A=
-> =0A=
-> This seems redundant as ->validates is supposed to always be called=0A=
-> before calling ->apply.=0A=
-> =0A=
-=0A=
-Indeed.=0A=
