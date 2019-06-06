@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B559337273
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34D3F37274
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbfFFLGq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 07:06:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34890 "EHLO mx1.suse.de"
+        id S1727939AbfFFLGv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 07:06:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34896 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725784AbfFFLGp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Jun 2019 07:06:45 -0400
+        id S1725784AbfFFLGv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Jun 2019 07:06:51 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B5AC3AE54
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 11:06:42 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 68640AE54
+        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 11:06:49 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/9] btrfs-progs: image: Introduce framework for more dump versions
-Date:   Thu,  6 Jun 2019 19:06:07 +0800
-Message-Id: <20190606110611.27176-6-wqu@suse.com>
+Subject: [PATCH 6/9] btrfs-progs: image: Introduce -d option to dump data
+Date:   Thu,  6 Jun 2019 19:06:08 +0800
+Message-Id: <20190606110611.27176-7-wqu@suse.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190606110611.27176-1-wqu@suse.com>
 References: <20190606110611.27176-1-wqu@suse.com>
@@ -30,255 +30,197 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The original dump format only contains a @magic member to verify the
-format, this means if we want to introduce new on-disk format or change
-certain size limit, we can only introduce new magic as kind of version.
+This new data dump feature will dump the whole image, not long the
+existing tree blocks but also all its data extents(*).
 
-This patch will introduce the framework to allow multiple magic to
-co-exist for further functions.
+This feature will rely on the new dump format (_DUmP_v1), as it needs
+extra large extent size limit, and older btrfs-image dump can't handle
+such large item/cluster size.
 
-This patch will introduce the following members for each dump version.
+Since we're dumping all extents including data extents, for the restored
+image there is no need to use any extra super block flags to inform
+kernel.
+Kernel should just treat the restored image as any ordinary btrfs.
 
-- max_pending_size
-  The threshold size for an cluster. It's not a hard limit but a soft
-  one. One cluster can go larger than max_pending_size for one item, but
-  next item would go to next cluster.
-
-- magic_cpu
-  The magic number in CPU endian.
-
-- extra_sb_flags
-  If the super block of this restore needs extra super block flags like
-  BTRFS_SUPER_FLAG_METADUMP_V2.
-  For incoming data dump feature, we don't need any extra super block
-  flags.
-
-This change also implies that all image dumps will use the same magic
-for all clusters. No mixing is allowed, as we will use the first cluster
-to determine the dump version.
+*: The data extents will be dumped as is, that's to say, even for
+preallocated extent, its (meaningless) data will be read out and
+dumpped.
+This behavior will cause extra space usage for the image, but we can
+skip all the complex partially shared preallocated extent check.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- image/main.c     | 80 ++++++++++++++++++++++++++++++++++++++++--------
- image/metadump.h | 13 ++++++--
- 2 files changed, 78 insertions(+), 15 deletions(-)
+ image/main.c     | 53 +++++++++++++++++++++++++++++++++++++-----------
+ image/metadump.h |  2 +-
+ 2 files changed, 42 insertions(+), 13 deletions(-)
 
 diff --git a/image/main.c b/image/main.c
-index 0b7c8736..e8b45a1a 100644
+index e8b45a1a..f394bfc8 100644
 --- a/image/main.c
 +++ b/image/main.c
-@@ -41,6 +41,19 @@
- 
- #define MAX_WORKER_THREADS	(32)
- 
-+const struct dump_version dump_versions[NR_DUMP_VERSIONS] = {
+@@ -49,7 +49,15 @@ const struct dump_version dump_versions[NR_DUMP_VERSIONS] = {
+ 	{ .version = 0,
+ 	  .max_pending_size = SZ_256K,
+ 	  .magic_cpu = 0xbd5c25e27295668bULL,
+-	  .extra_sb_flags = 1 }
++	  .extra_sb_flags = 1 },
 +	/*
-+	 * The original format, which only supports tree blocks and
-+	 * free space cache dump.
++	 * The newer format, with much larger item size to contain
++	 * any data extent.
 +	 */
-+	{ .version = 0,
-+	  .max_pending_size = SZ_256K,
-+	  .magic_cpu = 0xbd5c25e27295668bULL,
-+	  .extra_sb_flags = 1 }
-+};
-+
-+const struct dump_version *current_version = &dump_versions[0];
-+
- struct async_work {
- 	struct list_head list;
- 	struct list_head ordered;
-@@ -395,7 +408,7 @@ static void meta_cluster_init(struct metadump_struct *md, u64 start)
- 	md->num_items = 0;
- 	md->num_ready = 0;
- 	header = &md->cluster.header;
--	header->magic = cpu_to_le64(HEADER_MAGIC);
-+	header->magic = cpu_to_le64(current_version->magic_cpu);
- 	header->bytenr = cpu_to_le64(start);
- 	header->nritems = cpu_to_le32(0);
- 	header->compress = md->compress_level > 0 ?
-@@ -707,7 +720,7 @@ static int add_extent(u64 start, u64 size, struct metadump_struct *md,
- {
- 	int ret;
- 	if (md->data != data ||
--	    md->pending_size + size > MAX_PENDING_SIZE ||
-+	    md->pending_size + size > current_version->max_pending_size ||
- 	    md->pending_start + md->pending_size != start) {
- 		ret = flush_pending(md, 0);
- 		if (ret)
-@@ -1093,7 +1106,8 @@ static void update_super_old(u8 *buffer)
- 	u32 sectorsize = btrfs_super_sectorsize(super);
- 	u64 flags = btrfs_super_flags(super);
++	{ .version = 1,
++	  .max_pending_size = SZ_256M,
++	  .magic_cpu = 0x31765f506d55445fULL, /* ascii _DUmP_v1, no null */
++	  .extra_sb_flags = 0 },
+ };
  
--	flags |= BTRFS_SUPER_FLAG_METADUMP;
-+	if (current_version->extra_sb_flags)
-+		flags |= BTRFS_SUPER_FLAG_METADUMP;
- 	btrfs_set_super_flags(super, flags);
+ const struct dump_version *current_version = &dump_versions[0];
+@@ -444,10 +452,14 @@ static void metadump_destroy(struct metadump_struct *md, int num_threads)
  
- 	key = (struct btrfs_disk_key *)(super->sys_chunk_array);
-@@ -1186,7 +1200,8 @@ static int update_super(struct mdrestore_struct *mdres, u8 *buffer)
- 	if (mdres->clear_space_cache)
- 		btrfs_set_super_cache_generation(super, 0);
- 
--	flags |= BTRFS_SUPER_FLAG_METADUMP_V2;
-+	if (current_version->extra_sb_flags)
-+		flags |= BTRFS_SUPER_FLAG_METADUMP_V2;
- 	btrfs_set_super_flags(super, flags);
- 	btrfs_set_super_sys_array_size(super, new_array_size);
- 	btrfs_set_super_num_devices(super, 1);
-@@ -1374,7 +1389,7 @@ static void *restore_worker(void *data)
- 	u8 *outbuf;
- 	int outfd;
- 	int ret;
--	int compress_size = MAX_PENDING_SIZE * 4;
-+	int compress_size = current_version->max_pending_size * 4;
- 
- 	outfd = fileno(mdres->out);
- 	buffer = malloc(compress_size);
-@@ -1523,6 +1538,42 @@ static void mdrestore_destroy(struct mdrestore_struct *mdres, int num_threads)
- 	pthread_mutex_destroy(&mdres->mutex);
- }
- 
-+static int detect_version(FILE *in)
-+{
-+	struct meta_cluster *cluster;
-+	u8 buf[BLOCK_SIZE];
-+	bool found = false;
-+	int i;
-+	int ret;
-+
-+	if (fseek(in, 0, SEEK_SET) < 0) {
-+		error("seek failed: %m");
-+		return -errno;
-+	}
-+	ret = fread(buf, BLOCK_SIZE, 1, in);
-+	if (!ret) {
-+		error("failed to read header");
-+		return -EIO;
-+	}
-+
-+	fseek(in, 0, SEEK_SET);
-+	cluster = (struct meta_cluster *)buf;
-+	for (i = 0; i < NR_DUMP_VERSIONS; i++) {
-+		if (le64_to_cpu(cluster->header.magic) ==
-+		    dump_versions[i].magic_cpu) {
-+			found = true;
-+			current_version = &dump_versions[i];
-+			break;
-+		}
-+	}
-+
-+	if (!found) {
-+		error("unrecognized header format");
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
- static int mdrestore_init(struct mdrestore_struct *mdres,
- 			  FILE *in, FILE *out, int old_restore,
- 			  int num_threads, int fixup_offset,
-@@ -1530,6 +1581,9 @@ static int mdrestore_init(struct mdrestore_struct *mdres,
+ static int metadump_init(struct metadump_struct *md, struct btrfs_root *root,
+ 			 FILE *out, int num_threads, int compress_level,
+-			 enum sanitize_mode sanitize_names)
++			 bool dump_data, enum sanitize_mode sanitize_names)
  {
  	int i, ret = 0;
  
-+	ret = detect_version(in);
-+	if (ret < 0)
-+		return ret;
- 	memset(mdres, 0, sizeof(*mdres));
- 	pthread_cond_init(&mdres->cond, NULL);
- 	pthread_mutex_init(&mdres->mutex, NULL);
-@@ -1577,9 +1631,9 @@ static int fill_mdres_info(struct mdrestore_struct *mdres,
- 		return 0;
++	/* We need larger item/cluster limit for data extents */
++	if (dump_data)
++		current_version = &dump_versions[1];
++
+ 	memset(md, 0, sizeof(*md));
+ 	INIT_LIST_HEAD(&md->list);
+ 	INIT_LIST_HEAD(&md->ordered);
+@@ -912,7 +924,7 @@ static int copy_space_cache(struct btrfs_root *root,
+ }
  
- 	if (mdres->compress_method == COMPRESS_ZLIB) {
--		size_t size = MAX_PENDING_SIZE * 2;
-+		size_t size = current_version->max_pending_size * 2;
+ static int copy_from_extent_tree(struct metadump_struct *metadump,
+-				 struct btrfs_path *path)
++				 struct btrfs_path *path, bool dump_data)
+ {
+ 	struct btrfs_root *extent_root;
+ 	struct extent_buffer *leaf;
+@@ -977,9 +989,15 @@ static int copy_from_extent_tree(struct metadump_struct *metadump,
+ 			ei = btrfs_item_ptr(leaf, path->slots[0],
+ 					    struct btrfs_extent_item);
+ 			if (btrfs_extent_flags(leaf, ei) &
+-			    BTRFS_EXTENT_FLAG_TREE_BLOCK) {
++			    BTRFS_EXTENT_FLAG_TREE_BLOCK ||
++			    btrfs_extent_flags(leaf, ei) &
++			    BTRFS_EXTENT_FLAG_DATA) {
++				bool is_data;
++
++				is_data = btrfs_extent_flags(leaf, ei) &
++					  BTRFS_EXTENT_FLAG_DATA;
+ 				ret = add_extent(bytenr, num_bytes, metadump,
+-						 0);
++						 is_data);
+ 				if (ret) {
+ 					error("unable to add block %llu: %d",
+ 						(unsigned long long)bytenr, ret);
+@@ -1022,7 +1040,7 @@ static int copy_from_extent_tree(struct metadump_struct *metadump,
  
--		buffer = malloc(MAX_PENDING_SIZE * 2);
-+		buffer = malloc(current_version->max_pending_size * 2);
- 		if (!buffer)
- 			return -ENOMEM;
- 		ret = uncompress(buffer, (unsigned long *)&size,
-@@ -1818,7 +1872,7 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres,
- 	u64 current_cluster = cluster_bytenr, bytenr;
- 	u64 item_bytenr;
- 	u32 bufsize, nritems, i;
--	u32 max_size = MAX_PENDING_SIZE * 2;
-+	u32 max_size = current_version->max_pending_size * 2;
- 	u8 *buffer, *tmp = NULL;
- 	int ret = 0;
- 
-@@ -1874,7 +1928,7 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres,
- 		ret = 0;
- 
- 		header = &cluster->header;
--		if (le64_to_cpu(header->magic) != HEADER_MAGIC ||
-+		if (le64_to_cpu(header->magic) != current_version->magic_cpu ||
- 		    le64_to_cpu(header->bytenr) != current_cluster) {
- 			error("bad header in metadump image");
- 			ret = -EIO;
-@@ -1977,7 +2031,7 @@ static int build_chunk_tree(struct mdrestore_struct *mdres,
- 	ret = 0;
- 
- 	header = &cluster->header;
--	if (le64_to_cpu(header->magic) != HEADER_MAGIC ||
-+	if (le64_to_cpu(header->magic) != current_version->magic_cpu ||
- 	    le64_to_cpu(header->bytenr) != 0) {
- 		error("bad header in metadump image");
- 		return -EIO;
-@@ -2018,10 +2072,10 @@ static int build_chunk_tree(struct mdrestore_struct *mdres,
+ static int create_metadump(const char *input, FILE *out, int num_threads,
+ 			   int compress_level, enum sanitize_mode sanitize,
+-			   int walk_trees)
++			   int walk_trees, bool dump_data)
+ {
+ 	struct btrfs_root *root;
+ 	struct btrfs_path path;
+@@ -1037,7 +1055,7 @@ static int create_metadump(const char *input, FILE *out, int num_threads,
  	}
  
- 	if (mdres->compress_method == COMPRESS_ZLIB) {
--		size_t size = MAX_PENDING_SIZE * 2;
-+		size_t size = current_version->max_pending_size * 2;
- 		u8 *tmp;
+ 	ret = metadump_init(&metadump, root, out, num_threads,
+-			    compress_level, sanitize);
++			    compress_level, dump_data, sanitize);
+ 	if (ret) {
+ 		error("failed to initialize metadump: %d", ret);
+ 		close_ctree(root);
+@@ -1069,7 +1087,7 @@ static int create_metadump(const char *input, FILE *out, int num_threads,
+ 			goto out;
+ 		}
+ 	} else {
+-		ret = copy_from_extent_tree(&metadump, &path);
++		ret = copy_from_extent_tree(&metadump, &path, dump_data);
+ 		if (ret) {
+ 			err = ret;
+ 			goto out;
+@@ -2694,6 +2712,7 @@ static void print_usage(int ret)
+ 	printf("\t-s      \tsanitize file names, use once to just use garbage, use twice if you want crc collisions\n");
+ 	printf("\t-w      \twalk all trees instead of using extent tree, do this if your extent tree is broken\n");
+ 	printf("\t-m	   \trestore for multiple devices\n");
++	printf("\t-d	   \talso dump data, conflicts with -w\n");
+ 	printf("\n");
+ 	printf("\tIn the dump mode, source is the btrfs device and target is the output file (use '-' for stdout).\n");
+ 	printf("\tIn the restore mode, source is the dumped image and target is the btrfs device/file.\n");
+@@ -2713,6 +2732,7 @@ int main(int argc, char *argv[])
+ 	int ret;
+ 	enum sanitize_mode sanitize = SANITIZE_NONE;
+ 	int dev_cnt = 0;
++	bool dump_data = false;
+ 	int usage_error = 0;
+ 	FILE *out;
  
--		tmp = malloc(MAX_PENDING_SIZE * 2);
-+		tmp = malloc(current_version->max_pending_size * 2);
- 		if (!tmp) {
- 			free(buffer);
- 			return -ENOMEM;
-@@ -2478,7 +2532,7 @@ static int restore_metadump(const char *input, FILE *out, int old_restore,
+@@ -2721,7 +2741,7 @@ int main(int argc, char *argv[])
+ 			{ "help", no_argument, NULL, GETOPT_VAL_HELP},
+ 			{ NULL, 0, NULL, 0 }
+ 		};
+-		int c = getopt_long(argc, argv, "rc:t:oswm", long_options, NULL);
++		int c = getopt_long(argc, argv, "rc:t:oswmd", long_options, NULL);
+ 		if (c < 0)
  			break;
+ 		switch (c) {
+@@ -2761,6 +2781,9 @@ int main(int argc, char *argv[])
+ 			create = 0;
+ 			multi_devices = 1;
+ 			break;
++		case 'd':
++			dump_data = true;
++			break;
+ 		case GETOPT_VAL_HELP:
+ 		default:
+ 			print_usage(c != GETOPT_VAL_HELP);
+@@ -2779,10 +2802,15 @@ int main(int argc, char *argv[])
+ 			"create and restore cannot be used at the same time");
+ 			usage_error++;
+ 		}
++		if (dump_data && walk_trees) {
++			error("-d conflicts with -f option");
++			usage_error++;
++		}
+ 	} else {
+-		if (walk_trees || sanitize != SANITIZE_NONE || compress_level) {
++		if (walk_trees || sanitize != SANITIZE_NONE || compress_level ||
++		    dump_data) {
+ 			error(
+-			"using -w, -s, -c options for restore makes no sense");
++		"using -w, -s, -c, -d options for restore makes no sense");
+ 			usage_error++;
+ 		}
+ 		if (multi_devices && dev_cnt < 2) {
+@@ -2835,7 +2863,8 @@ int main(int argc, char *argv[])
+ 		}
  
- 		header = &cluster->header;
--		if (le64_to_cpu(header->magic) != HEADER_MAGIC ||
-+		if (le64_to_cpu(header->magic) != current_version->magic_cpu ||
- 		    le64_to_cpu(header->bytenr) != bytenr) {
- 			error("bad header in metadump image");
- 			ret = -EIO;
+ 		ret = create_metadump(source, out, num_threads,
+-				      compress_level, sanitize, walk_trees);
++				      compress_level, sanitize, walk_trees,
++				      dump_data);
+ 	} else {
+ 		ret = restore_metadump(source, out, old_restore, num_threads,
+ 				       0, target, multi_devices);
 diff --git a/image/metadump.h b/image/metadump.h
-index f85c9bcf..941d4b82 100644
+index 941d4b82..a04f63a9 100644
 --- a/image/metadump.h
 +++ b/image/metadump.h
-@@ -22,8 +22,6 @@
- #include "kernel-lib/list.h"
- #include "ctree.h"
+@@ -38,7 +38,7 @@ struct dump_version {
+ 	unsigned int extra_sb_flags:1;
+ };
  
--#define HEADER_MAGIC		0xbd5c25e27295668bULL
--#define MAX_PENDING_SIZE	SZ_256K
- #define BLOCK_SIZE		SZ_1K
- #define BLOCK_MASK		(BLOCK_SIZE - 1)
+-#define NR_DUMP_VERSIONS	1
++#define NR_DUMP_VERSIONS	2
+ extern const struct dump_version dump_versions[NR_DUMP_VERSIONS];
+ const extern struct dump_version *current_version;
  
-@@ -33,6 +31,17 @@
- #define COMPRESS_NONE		0
- #define COMPRESS_ZLIB		1
- 
-+struct dump_version {
-+	u64 magic_cpu;
-+	int version;
-+	int max_pending_size;
-+	unsigned int extra_sb_flags:1;
-+};
-+
-+#define NR_DUMP_VERSIONS	1
-+extern const struct dump_version dump_versions[NR_DUMP_VERSIONS];
-+const extern struct dump_version *current_version;
-+
- struct meta_cluster_item {
- 	__le64 bytenr;
- 	__le32 size;
 -- 
 2.21.0
 
