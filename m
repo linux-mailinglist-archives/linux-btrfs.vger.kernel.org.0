@@ -2,24 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36E6D36E04
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 10:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08ED36E15
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 10:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbfFFICa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 04:02:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55848 "EHLO mx1.suse.de"
+        id S1726980AbfFFIE6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 04:04:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57392 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725769AbfFFIC3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Jun 2019 04:02:29 -0400
+        id S1725769AbfFFIE6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Jun 2019 04:04:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EB9ADAFB2
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 08:02:27 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: correctly validate compression type
-To:     Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20190606080106.10640-1-jthumshirn@suse.de>
+        by mx1.suse.de (Postfix) with ESMTP id CD3DDACD9;
+        Thu,  6 Jun 2019 08:04:55 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: fix out-of-bounds access in property handling
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, stable@vger.kernel.org
+References: <20190606074925.12375-1-naohiro.aota@wdc.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <a1a6fda3-c8ac-c549-b502-28cb9571bae0@suse.com>
-Date:   Thu, 6 Jun 2019 11:02:26 +0300
+Message-ID: <3d3e1b3f-c36b-88e4-7e13-6dab29404a19@suse.com>
+Date:   Thu, 6 Jun 2019 11:04:54 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190606080106.10640-1-jthumshirn@suse.de>
+In-Reply-To: <20190606074925.12375-1-naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,163 +79,148 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 6.06.19 г. 11:01 ч., Johannes Thumshirn wrote:
-> Nikolay reported the following KASAN splat when running btrfs/048:
+On 6.06.19 г. 10:49 ч., Naohiro Aota wrote:
+> xattr value is not NULL-terminated string. When you specify "lz" as the
+> property value, strncmp("lzo", value, 3) will try to read one byte after
+> the value buffer, causing the following OOB access. Fix this out-of-bound
+> by explicitly check the required length.
 > 
-> [ 1843.470920] ==================================================================
-> [ 1843.471971] BUG: KASAN: slab-out-of-bounds in strncmp+0x66/0xb0
-> [ 1843.472775] Read of size 1 at addr ffff888111e369e2 by task btrfs/3979
+> [ 1519.998589] ==================================================================
+> [ 1520.007505] BUG: KASAN: slab-out-of-bounds in strncmp+0xab/0xc0
+> [ 1520.015116] Read of size 1 at addr ffff8886daec16c2 by task btrfs/15317
 > 
-> [ 1843.473904] CPU: 3 PID: 3979 Comm: btrfs Not tainted 5.2.0-rc3-default #536
-> [ 1843.475009] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
-> [ 1843.476322] Call Trace:
-> [ 1843.476674]  dump_stack+0x7c/0xbb
-> [ 1843.477132]  ? strncmp+0x66/0xb0
-> [ 1843.477587]  print_address_description+0x114/0x320
-> [ 1843.478256]  ? strncmp+0x66/0xb0
-> [ 1843.478740]  ? strncmp+0x66/0xb0
-> [ 1843.479185]  __kasan_report+0x14e/0x192
-> [ 1843.479759]  ? strncmp+0x66/0xb0
-> [ 1843.480209]  kasan_report+0xe/0x20
-> [ 1843.480679]  strncmp+0x66/0xb0
-> [ 1843.481105]  prop_compression_validate+0x24/0x70
-> [ 1843.481798]  btrfs_xattr_handler_set_prop+0x65/0x160
-> [ 1843.482509]  __vfs_setxattr+0x71/0x90
-> [ 1843.483012]  __vfs_setxattr_noperm+0x84/0x130
-> [ 1843.483606]  vfs_setxattr+0xac/0xb0
-> [ 1843.484085]  setxattr+0x18c/0x230
-> [ 1843.484546]  ? vfs_setxattr+0xb0/0xb0
-> [ 1843.485048]  ? __mod_node_page_state+0x1f/0xa0
-> [ 1843.485672]  ? _raw_spin_unlock+0x24/0x40
-> [ 1843.486233]  ? __handle_mm_fault+0x988/0x1290
-> [ 1843.486823]  ? lock_acquire+0xb4/0x1e0
-> [ 1843.487330]  ? lock_acquire+0xb4/0x1e0
-> [ 1843.487842]  ? mnt_want_write_file+0x3c/0x80
-> [ 1843.488442]  ? debug_lockdep_rcu_enabled+0x22/0x40
-> [ 1843.489089]  ? rcu_sync_lockdep_assert+0xe/0x70
-> [ 1843.489707]  ? __sb_start_write+0x158/0x200
-> [ 1843.490278]  ? mnt_want_write_file+0x3c/0x80
-> [ 1843.490855]  ? __mnt_want_write+0x98/0xe0
-> [ 1843.491397]  __x64_sys_fsetxattr+0xba/0xe0
-> [ 1843.492201]  ? trace_hardirqs_off_thunk+0x1a/0x1c
-> [ 1843.493201]  do_syscall_64+0x6c/0x230
-> [ 1843.493988]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> [ 1843.495041] RIP: 0033:0x7fa7a8a7707a
-> [ 1843.495819] Code: 48 8b 0d 21 de 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 be 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ee dd 2b 00 f7 d8 64 89 01 48
-> [ 1843.499203] RSP: 002b:00007ffcb73bca38 EFLAGS: 00000202 ORIG_RAX: 00000000000000be
-> [ 1843.500210] RAX: ffffffffffffffda RBX: 00007ffcb73bda9d RCX: 00007fa7a8a7707a
-> [ 1843.501170] RDX: 00007ffcb73bda9d RSI: 00000000006dc050 RDI: 0000000000000003
-> [ 1843.502152] RBP: 00000000006dc050 R08: 0000000000000000 R09: 0000000000000000
-> [ 1843.503109] R10: 0000000000000002 R11: 0000000000000202 R12: 00007ffcb73bda91
-> [ 1843.504055] R13: 0000000000000003 R14: 00007ffcb73bda82 R15: ffffffffffffffff
+> [ 1520.026628] CPU: 4 PID: 15317 Comm: btrfs Not tainted 5.1.0-rc7+ #3
+> [ 1520.034635] Hardware name: Supermicro X10SLL-F/X10SLL-F, BIOS 3.0 04/24/2015
+> [ 1520.043416] Call Trace:
+> [ 1520.047562]  dump_stack+0x71/0xa0
+> [ 1520.052584]  print_address_description+0x65/0x229
+> [ 1520.058997]  ? strncmp+0xab/0xc0
+> [ 1520.063929]  ? strncmp+0xab/0xc0
+> [ 1520.068834]  kasan_report.cold+0x1a/0x38
+> [ 1520.074439]  ? strncmp+0xab/0xc0
+> [ 1520.079343]  strncmp+0xab/0xc0
+> [ 1520.084110]  prop_compression_validate+0x22/0x70 [btrfs]
+> [ 1520.091135]  btrfs_xattr_handler_set_prop+0x6c/0x1f0 [btrfs]
+> [ 1520.098452]  __vfs_setxattr+0xd8/0x130
+> [ 1520.103821]  ? xattr_resolve_name+0x3e0/0x3e0
+> [ 1520.109812]  __vfs_setxattr_noperm+0xeb/0x3b0
+> [ 1520.115790]  vfs_setxattr+0xa3/0xd0
+> [ 1520.120898]  setxattr+0x17a/0x2c0
+> [ 1520.125824]  ? vfs_setxattr+0xd0/0xd0
+> [ 1520.131102]  ? __pmd_alloc+0x560/0x560
+> [ 1520.136452]  ? __do_sys_newfstat+0xd3/0xe0
+> [ 1520.142123]  ? __ia32_sys_newfstatat+0xf0/0xf0
+> [ 1520.148140]  ? __kasan_slab_free+0x141/0x170
+> [ 1520.153955]  ? handle_mm_fault+0x1ae/0x640
+> [ 1520.159564]  __x64_sys_fsetxattr+0x1a0/0x220
+> [ 1520.165347]  do_syscall_64+0xa0/0x2e0
+> [ 1520.170515]  ? page_fault+0x8/0x30
+> [ 1520.175408]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> [ 1520.181975] RIP: 0033:0x7f84f257ae6e
+> [ 1520.187068] Code: 48 8b 0d 1d 70 0c 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa 49 89 ca b8 be 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ea 6f 0c 00 f7 d8 64 89 01 48
+> [ 1520.209083] RSP: 002b:00007fff87996fa8 EFLAGS: 00000246 ORIG_RAX: 00000000000000be
+> [ 1520.218336] RAX: ffffffffffffffda RBX: 000000000000000b RCX: 00007f84f257ae6e
+> [ 1520.227132] RDX: 00007fff8799798b RSI: 00005561caf83270 RDI: 0000000000000003
+> [ 1520.235912] RBP: 00007fff8799798b R08: 0000000000000000 R09: 00005561caf83290
+> [ 1520.244691] R10: 0000000000000002 R11: 0000000000000246 R12: 00005561caf83270
+> [ 1520.253462] R13: 0000000000000003 R14: 00007fff87997972 R15: 00007fff8799797f
 > 
-> [ 1843.505268] Allocated by task 3979:
-> [ 1843.505771]  save_stack+0x19/0x80
-> [ 1843.506211]  __kasan_kmalloc.constprop.5+0xa0/0xd0
-> [ 1843.506836]  setxattr+0xeb/0x230
-> [ 1843.507264]  __x64_sys_fsetxattr+0xba/0xe0
-> [ 1843.507886]  do_syscall_64+0x6c/0x230
-> [ 1843.508429]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> [ 1520.265443] Allocated by task 15317:
+> [ 1520.270697]  __kasan_kmalloc.constprop.0+0xc2/0xd0
+> [ 1520.277677]  setxattr+0xe8/0x2c0
+> [ 1520.283084]  __x64_sys_fsetxattr+0x1a0/0x220
+> [ 1520.289540]  do_syscall_64+0xa0/0x2e0
+> [ 1520.295379]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> [ 1843.509558] Freed by task 0:
-> [ 1843.510188] (stack is not available)
+> [ 1520.306288] Freed by task 12227:
+> [ 1520.311632]  __kasan_slab_free+0x12c/0x170
+> [ 1520.317828]  kfree+0x90/0x1e0
+> [ 1520.322891]  btrfs_free_block_groups+0x8a1/0xd80 [btrfs]
+> [ 1520.330313]  close_ctree+0x37e/0x650 [btrfs]
+> [ 1520.336627]  generic_shutdown_super+0x12e/0x320
+> [ 1520.343177]  kill_anon_super+0x36/0x60
+> [ 1520.348983]  btrfs_kill_super+0x3d/0x2c0 [btrfs]
+> [ 1520.355636]  deactivate_locked_super+0x85/0xd0
+> [ 1520.362108]  deactivate_super+0x122/0x140
+> [ 1520.368166]  cleanup_mnt+0x9f/0x130
+> [ 1520.373699]  task_work_run+0x131/0x1c0
+> [ 1520.379490]  exit_to_usermode_loop+0x133/0x160
+> [ 1520.386002]  do_syscall_64+0x259/0x2e0
+> [ 1520.391796]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> [ 1843.511309] The buggy address belongs to the object at ffff888111e369e0
+> [ 1520.402415] The buggy address belongs to the object at ffff8886daec16c0
 >                 which belongs to the cache kmalloc-8 of size 8
-> [ 1843.514095] The buggy address is located 2 bytes inside of
->                 8-byte region [ffff888111e369e0, ffff888111e369e8)
-> [ 1843.516524] The buggy address belongs to the page:
-> [ 1843.517561] page:ffff88813f478d80 refcount:1 mapcount:0 mapping:ffff88811940c300 index:0xffff888111e373b8 compound_mapcount: 0
-> [ 1843.519993] flags: 0x4404000010200(slab|head)
-> [ 1843.520951] raw: 0004404000010200 ffff88813f48b008 ffff888119403d50 ffff88811940c300
-> [ 1843.522616] raw: ffff888111e373b8 000000000016000f 00000001ffffffff 0000000000000000
-> [ 1843.524281] page dumped because: kasan: bad access detected
+> [ 1520.418769] The buggy address is located 2 bytes inside of
+>                 8-byte region [ffff8886daec16c0, ffff8886daec16c8)
+> [ 1520.434407] The buggy address belongs to the page:
+> [ 1520.441358] page:ffffea001b6bb040 count:1 mapcount:0 mapping:ffff8886ff40fb80 index:0x0
+> [ 1520.451601] flags: 0x17ffe000000200(slab)
+> [ 1520.457868] raw: 0017ffe000000200 ffffea001bedcec0 0000000700000007 ffff8886ff40fb80
+> [ 1520.467940] raw: 0000000000000000 0000000080aa00aa 00000001ffffffff 0000000000000000
+> [ 1520.478024] page dumped because: kasan: bad access detected
 > 
-> [ 1843.525936] Memory state around the buggy address:
-> [ 1843.526975]  ffff888111e36880: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> [ 1843.528479]  ffff888111e36900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> [ 1843.530138] >ffff888111e36980: fc fc fc fc fc fc fc fc fc fc fc fc 02 fc fc fc
-> [ 1843.531877]                                                        ^
-> [ 1843.533287]  ffff888111e36a00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> [ 1843.534874]  ffff888111e36a80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> [ 1843.536468] ==================================================================
-> 
-> This is caused by supplying a too short compression value ('lz') in the
-> test-case and comparing it to 'lzo' with strncmp() and a length of 3.
-> strncmp() read past the 'lz' when looking for the 'o' and thus caused an
-> out-of-bounds read.
-> 
-> Introduce a new check 'btrfs_compress_is_valid_type()' which not only
-> checks the user-supplied value against known compression types, but also
-> employs checks for too short values.
+> [ 1520.489795] Memory state around the buggy address:
+> [ 1520.496963]  ffff8886daec1580: fc 00 fc fc 00 fc fc 00 fc fc 00 fc fc 00 fc fc
+> [ 1520.506621]  ffff8886daec1600: 00 fc fc 04 fc fc fb fc fc fb fc fc fb fc fc fb
+> [ 1520.516277] >ffff8886daec1680: fc fc 04 fc fc 00 fc fc 02 fc fc fb fc fc 00 fc
+> [ 1520.525915]                                            ^
+> [ 1520.533584]  ffff8886daec1700: fc 00 fc fc 00 fc fc 00 fc fc 00 fc fc 04 fc fc
+> [ 1520.543137]  ffff8886daec1780: fb fc fc 00 fc fc 00 fc fc 00 fc fc 00 fc fc 00
+> [ 1520.552642] ==================================================================
 > 
 > Fixes: 272e5326c783 ("btrfs: prop: fix vanished compression property after failed set")
-> Reported-by: Nikolay Borisov <nborisov@suse.com>
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> Fixes: 50398fde997f ("btrfs: prop: fix zstd compression parameter validation")
+> Cc: stable@vger.kernel.org # 4.14+: 802a5c69584a: btrfs: prop: use common helper for type to string conversion
+> Cc: stable@vger.kernel.org # 4.14+: 3dcf96c7b9fe: btrfs: drop redundant forward declaration in props.c
+> Cc: stable@vger.kernel.org # 4.14+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Tested-by: Nikolay Borisov <nborisov@suse.com>
+We caught that one yesterday and were testing various fixes for it
+Johannes just sent his version which IMO makes the code a bit more
+maintainable.
+
 
 > ---
->  fs/btrfs/compression.c | 16 ++++++++++++++++
->  fs/btrfs/compression.h |  1 +
->  fs/btrfs/props.c       |  6 +-----
->  3 files changed, 18 insertions(+), 5 deletions(-)
+>  fs/btrfs/props.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 66e21a4e9ea2..d21ae92c172c 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -43,6 +43,22 @@ const char* btrfs_compress_type2str(enum btrfs_compression_type type)
->  	return NULL;
->  }
->  
-> +bool btrfs_compress_is_valid_type(const char *str, size_t len)
-> +{
-> +	int i;
-> +
-> +	for (i = 1; i < ARRAY_SIZE(btrfs_compress_types); i++) {
-> +		size_t comp_len = strlen(btrfs_compress_types[i]);
-> +
-> +		if (comp_len != len)
-> +			continue;
-> +
-> +		if (!strncmp(btrfs_compress_types[i], str, comp_len))
-> +			return true;
-> +	}
-> +	return false;
-> +}
-> +
->  static int btrfs_decompress_bio(struct compressed_bio *cb);
->  
->  static inline int compressed_bio_size(struct btrfs_fs_info *fs_info,
-> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> index 191e5f4e3523..2035b8eb1290 100644
-> --- a/fs/btrfs/compression.h
-> +++ b/fs/btrfs/compression.h
-> @@ -173,6 +173,7 @@ extern const struct btrfs_compress_op btrfs_lzo_compress;
->  extern const struct btrfs_compress_op btrfs_zstd_compress;
->  
->  const char* btrfs_compress_type2str(enum btrfs_compression_type type);
-> +bool btrfs_compress_is_valid_type(const char *str, size_t len);
->  
->  int btrfs_compress_heuristic(struct inode *inode, u64 start, u64 end);
->  
 > diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
-> index a9e2e66152ee..af109c0ba720 100644
+> index a9e2e66152ee..428141bf545d 100644
 > --- a/fs/btrfs/props.c
 > +++ b/fs/btrfs/props.c
-> @@ -257,11 +257,7 @@ static int prop_compression_validate(const char *value, size_t len)
+> @@ -257,11 +257,11 @@ static int prop_compression_validate(const char *value, size_t len)
 >  	if (!value)
 >  		return 0;
 >  
 > -	if (!strncmp("lzo", value, 3))
-> -		return 0;
+> +	if (len >= 3 && !strncmp("lzo", value, 3))
+>  		return 0;
 > -	else if (!strncmp("zlib", value, 4))
-> -		return 0;
+> +	else if (len >= 4 && !strncmp("zlib", value, 4))
+>  		return 0;
 > -	else if (!strncmp("zstd", value, 4))
-> +	if (btrfs_compress_is_valid_type(value, len))
+> +	else if (len >= 4 && !strncmp("zstd", value, 4))
 >  		return 0;
 >  
 >  	return -EINVAL;
+> @@ -281,12 +281,12 @@ static int prop_compression_apply(struct inode *inode, const char *value,
+>  		return 0;
+>  	}
+>  
+> -	if (!strncmp("lzo", value, 3)) {
+> +	if (len >= 3 && !strncmp("lzo", value, 3)) {
+>  		type = BTRFS_COMPRESS_LZO;
+>  		btrfs_set_fs_incompat(fs_info, COMPRESS_LZO);
+> -	} else if (!strncmp("zlib", value, 4)) {
+> +	} else if (len >= 4 && !strncmp("zlib", value, 4)) {
+>  		type = BTRFS_COMPRESS_ZLIB;
+> -	} else if (!strncmp("zstd", value, 4)) {
+> +	} else if (len >= 4 && !strncmp("zstd", value, 4)) {
+>  		type = BTRFS_COMPRESS_ZSTD;
+>  		btrfs_set_fs_incompat(fs_info, COMPRESS_ZSTD);
+>  	} else {
+
+This seems redundant as ->validates is supposed to always be called
+before calling ->apply.
+
 > 
