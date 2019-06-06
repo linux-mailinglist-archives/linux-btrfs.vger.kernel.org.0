@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7F873727A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7B73727C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:08:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbfFFLHZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 07:07:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57420 "EHLO mail.kernel.org"
+        id S1726717AbfFFLHy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 07:07:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726717AbfFFLHY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Jun 2019 07:07:24 -0400
+        id S1726551AbfFFLHy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 6 Jun 2019 07:07:54 -0400
 Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E4F3120657
-        for <linux-btrfs@vger.kernel.org>; Thu,  6 Jun 2019 11:07:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 312AB20868;
+        Thu,  6 Jun 2019 11:07:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559819243;
-        bh=1yDwYsXR+j7BIUD8zF8k8D5lghmqIVTY5/DF8HKXt/M=;
-        h=From:To:Subject:Date:From;
-        b=XydEVms13GcJAjnAYwritB36eEHjA6REzAERygE/O2mHtX4jtRq7AnMAZv6a+58Os
-         iV6jjcI50F8TawkT0FVUgb7rMUzrHg7JcVhRH48x4YuPuaUEBQKVlroNWuRIIi0hJO
-         0QIqGVZt31lpHiQvQWP68RZsRkpPSLF8Ci0ZIXSQ=
+        s=default; t=1559819273;
+        bh=gGCNcJUnoR4OJFSmlMOScrrePnBi3TdumjW/YfN3tpc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=tjDPuEV5RMHPzB3aUyyzuDeR94SencGsd35t0H+Hb4B4QmSvJvhGWONTmRDkU5dpO
+         Eh6/ciolLMDlH9MkY2BCB02nxj3n5leEeOmmkmFLURlhbj202FVnj9YTYwVInLmv7r
+         Sq+0BfKNNzWmUrGZ+an6W0Z4j9WfufN2QKRIKZ5k=
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: fix data loss after inode eviction, renaming it, and fsync it
-Date:   Thu,  6 Jun 2019 12:07:19 +0100
-Message-Id: <20190606110719.20855-1-fdmanana@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] generic: test for data loss on fsync after evicting an inode and renaming it
+Date:   Thu,  6 Jun 2019 12:07:47 +0100
+Message-Id: <20190606110747.20908-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -36,106 +37,151 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When we log an inode, regardless of logging it completely or only that it
-exists, we always update it as logged (logged_trans and last_log_commit
-fields of the inode are updated). This is generally fine and avoids future
-attempts to log it from having to do repeated work that brings no value.
+Check that if we write some data to a file, its inode gets evicted (while
+its parent directory's inode is not evicted due to being in use), then we
+rename the file and fsync it, after a power failure the file data is not
+lost.
 
-However, if we write data to a file, then evict its inode after all the
-dealloc was flushed (and ordered extents completed), rename the file and
-fsync it, we end up not logging the new extents, since the rename may
-result in logging that the inode exists in case the parent directory was
-logged before. The following reproducer shows and explains how this can
-happen:
+This currently passes on xfs, ext4 and f2fs but fails on btrfs. The
+following patch for btrfs fixes it:
 
-  $ mkfs.btrfs -f /dev/sdb
-  $ mount /dev/sdb /mnt
-
-  $ mkdir /mnt/dir
-  $ touch /mnt/dir/foo
-  $ touch /mnt/dir/bar
-
-  # Do a direct IO write instead of a buffered write because with a
-  # buffered write we would need to make sure dealloc gets flushed and
-  # complete before we do the inode eviction later, and we can not do that
-  # from user space with call to things such as sync(2) since that results
-  # in a transaction commit as well.
-  $ xfs_io -d -c "pwrite -S 0xd3 0 4K" /mnt/dir/bar
-
-  # Keep the directory dir in use while we evict inodes. We want our file
-  # bar's inode to be evicted but we don't want our directory's inode to
-  # be evicted (if it were evicted too, we would not be able to reproduce
-  # the issue since the first fsync below, of file foo, would result in a
-  # transaction commit.
-  $ ( cd /mnt/dir; while true; do :; done ) &
-  $ pid=$!
-
-  # Wait a bit to give time for the background process to chdir.
-  $ sleep 0.1
-
-  # Evict all inodes, except the inode for the directory dir because it is
-  # currently in use by our background process.
-  $ echo 2 > /proc/sys/vm/drop_caches
-
-  # fsync file foo, which ends up persisting information about the parent
-  # directory because it is a new inode.
-  $ xfs_io -c fsync /mnt/dir/foo
-
-  # Rename bar, this results in logging that this inode exists (inode item,
-  # names, xattrs) because the parent directory is in the log.
-  $ mv /mnt/dir/bar /mnt/dir/baz
-
-  # Now fsync baz, which ends up doing absolutely nothing because of the
-  # rename operation which logged that the inode exists only.
-  $ xfs_io -c fsync /mnt/dir/baz
-
-  <power failure>
-
-  $ mount /dev/sdb /mnt
-  $ od -t x1 -A d /mnt/dir/baz
-  0000000
-
-    --> Empty file, data we wrote is missing.
-
-Fix this by not updating the logged_trans and last_sub_trans of an inode
-when we are logging only that it exists and the inode was not yet logged
-since it was loaded from disk (full_sync bit set).
+  "Btrfs: fix data loss after inode eviction, renaming it, and fsync it"
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/tree-log.c | 19 +++++++++++++++----
- 1 file changed, 15 insertions(+), 4 deletions(-)
+ tests/generic/552     | 98 +++++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/552.out |  7 ++++
+ tests/generic/group   |  1 +
+ 3 files changed, 106 insertions(+)
+ create mode 100755 tests/generic/552
+ create mode 100644 tests/generic/552.out
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 83755d3b96e3..8db230935098 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -5407,10 +5407,21 @@ static int btrfs_log_inode(struct btrfs_trans_handle *trans,
- 		}
- 	}
- 
--	spin_lock(&inode->lock);
--	inode->logged_trans = trans->transid;
--	inode->last_log_commit = inode->last_sub_trans;
--	spin_unlock(&inode->lock);
-+	/*
-+	 * Don't update logged_trans and last_log_commit if we logged that an
-+	 * inode exists after it was loaded from memory (full_sync bit set).
-+	 * This is to prevent data loss when we do a write to the inode, then
-+	 * the inode gets evicted after all delalloc was flushed, then we log
-+	 * it exists (due to a rename for example) and then fsync it. This last
-+	 * fsync would do nothing (not logging the extents previously written).
-+	 */
-+	if (inode_only != LOG_INODE_EXISTS ||
-+	    !test_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &inode->runtime_flags)) {
-+		spin_lock(&inode->lock);
-+		inode->logged_trans = trans->transid;
-+		inode->last_log_commit = inode->last_sub_trans;
-+		spin_unlock(&inode->lock);
-+	}
- out_unlock:
- 	mutex_unlock(&inode->log_mutex);
- 
+diff --git a/tests/generic/552 b/tests/generic/552
+new file mode 100755
+index 00000000..7dc5916f
+--- /dev/null
++++ b/tests/generic/552
+@@ -0,0 +1,98 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FSQA Test No. 552
++#
++# Check that if we write some data to a file, its inode gets evicted (while its
++# parent directory's inode is not evicted due to being in use), then we rename
++# the file and fsync it, after a power failure the file data is not lost.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	_cleanup_flakey
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/dmflakey
++
++# real QA test starts here
++_supported_fs generic
++_supported_os Linux
++_require_scratch
++_require_odirect
++_require_dm_target flakey
++
++rm -f $seqres.full
++
++_scratch_mkfs >>$seqres.full 2>&1
++_require_metadata_journaling $SCRATCH_DEV
++_init_flakey
++_mount_flakey
++
++# Create our test directory with two files in it.
++mkdir $SCRATCH_MNT/dir
++touch $SCRATCH_MNT/dir/foo
++touch $SCRATCH_MNT/dir/bar
++
++# Do a direct IO write into file bar.
++# To trigger the bug found in btrfs, doing a buffered write would also work as
++# long as writeback completes before the file's inode is evicted (the inode can
++# not be evicted while delalloc exists). But since that is hard to trigger from
++# a user space test, without resulting in a transaction commit as well, just do
++# a direct IO write since it is much simpler.
++$XFS_IO_PROG -d -c "pwrite -S 0xd3 0 4K" $SCRATCH_MNT/dir/bar | _filter_xfs_io
++
++# Keep the directory in use while we evict all inodes. This is to prevent
++# eviction of the directory's inode (a necessary condition to trigger the bug
++# found in btrfs, as evicting the directory inode would result in commiting the
++# current transaction when the fsync of file foo happens below).
++(
++	cd $SCRATCH_MNT/dir
++	while true; do
++		:
++	done
++) &
++pid=$!
++# Wait a bit to give time to the background process to chdir to the directory.
++sleep 0.1
++
++# Evict all inodes from memory, except the directory's inode because a background
++# process is using it.
++echo 2 > /proc/sys/vm/drop_caches
++
++# Now fsync our file foo, which ends up persisting information about its parent
++# directory inode because it is a new inode.
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir/foo
++
++# Rename our file bar to baz right before we fsync it.
++mv $SCRATCH_MNT/dir/bar $SCRATCH_MNT/dir/baz
++
++# Fsync our file baz, after a power failure we expect to see the data we
++# previously wrote to it.
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir/baz
++
++# Kill the background process using our test directory.
++kill $pid
++wait $pid
++
++# Simulate a power failure and then check no data loss happened.
++_flakey_drop_and_remount
++
++echo "File data after power failure:"
++od -t x1 -A d $SCRATCH_MNT/dir/baz
++
++_unmount_flakey
++status=0
++exit
+diff --git a/tests/generic/552.out b/tests/generic/552.out
+new file mode 100644
+index 00000000..43c5c521
+--- /dev/null
++++ b/tests/generic/552.out
+@@ -0,0 +1,7 @@
++QA output created by 552
++wrote 4096/4096 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++File data after power failure:
++0000000 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3
++*
++0004096
+diff --git a/tests/generic/group b/tests/generic/group
+index 35f98124..5b3c1616 100644
+--- a/tests/generic/group
++++ b/tests/generic/group
+@@ -554,3 +554,4 @@
+ 549 auto quick encrypt
+ 550 auto quick encrypt
+ 551 auto stress aio
++552 auto quick log
 -- 
 2.11.0
 
