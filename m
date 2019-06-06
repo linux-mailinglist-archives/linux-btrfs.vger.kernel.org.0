@@ -2,186 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA7B73727C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:08:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A967F37290
+	for <lists+linux-btrfs@lfdr.de>; Thu,  6 Jun 2019 13:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726717AbfFFLHy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 6 Jun 2019 07:07:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57564 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726551AbfFFLHy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 6 Jun 2019 07:07:54 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 312AB20868;
-        Thu,  6 Jun 2019 11:07:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1559819273;
-        bh=gGCNcJUnoR4OJFSmlMOScrrePnBi3TdumjW/YfN3tpc=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tjDPuEV5RMHPzB3aUyyzuDeR94SencGsd35t0H+Hb4B4QmSvJvhGWONTmRDkU5dpO
-         Eh6/ciolLMDlH9MkY2BCB02nxj3n5leEeOmmkmFLURlhbj202FVnj9YTYwVInLmv7r
-         Sq+0BfKNNzWmUrGZ+an6W0Z4j9WfufN2QKRIKZ5k=
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] generic: test for data loss on fsync after evicting an inode and renaming it
-Date:   Thu,  6 Jun 2019 12:07:47 +0100
-Message-Id: <20190606110747.20908-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1727072AbfFFLOa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 6 Jun 2019 07:14:30 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:36522 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726092AbfFFLOa (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 6 Jun 2019 07:14:30 -0400
+Received: by mail-vs1-f67.google.com with SMTP id l20so963853vsp.3;
+        Thu, 06 Jun 2019 04:14:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=L5FE5LHOBYJ1vqOcaxoTV/ufmCOkGPMOAnLLWxUn+gY=;
+        b=j6waIAVh+7I7LbSs6indYXCkDPotzrrRDLsA+F4sDLBWtJL3TsPuG6Cfix8X5jhydi
+         1nHBjeU8sKI9aBx02rKHi/WWzd5a44li70bDN1jADnMsjHfcqFgX7EIOWI/Rsvw0TzUO
+         SV5dXi4T+fhJdsIu+dpmPfzSmPNbfpgqLNt9dojAR685jhKeUMLlYhXOw5GAM3Vbrols
+         bHNs84nmGkIVOUORoXRALz0koH31pfqIf14kQh4mlryyIhBkTBgyCu0dhUBHqCvTXSfO
+         4yOZ9To+JFs1e7F9f51G9MKcthaaWtthW+1jj9jn32Jv2OGfaLP5O5IZiQ3L4kv3RCGS
+         O9vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=L5FE5LHOBYJ1vqOcaxoTV/ufmCOkGPMOAnLLWxUn+gY=;
+        b=JK4OZG1CAeIUCLqvDFcfJM5/81C2OOyqbMM/2L5JpY82ef23aMibp7xIrTVrxxEqdV
+         a3k/5GhnvQFiPGfA/sYYO80KykDb/pllLb9gS/SI5PdFHEuQogMoh2RDENRg/uH2XyDi
+         cba5Dj9/5RGJQyql0q2mbAN7O7Lkq+wGOUE5rtz2pwlHEnSFdkBjuJb0czd1oog7stC+
+         qIKCCutW2kmbFPa5YLjP2R9Xnz2r0lJEEWOWU+NKGWNYW1KERwdQGdU02Z3KRbJRNBoj
+         /nLTSH2DWmaI6D1TWey77elZl0nRIv7HRZkvRfq82GcGcjojNA479iBEJ6MhnIKNPu0P
+         CEGw==
+X-Gm-Message-State: APjAAAXbQZb5KCcGX4MKQjAkXainacNVXSjT8m4+dtVI9X2RMcxyKALF
+        yskaYvlAKhLWMwh4YJ1IQoqOmGYGrN1Zii4V+JJ2zA==
+X-Google-Smtp-Source: APXvYqy9uzi9cGdb1ix/cem/VdxXMljSqCtPw43u5DGU7D9Nn12APz7z2DBpxQr/ZH15do8OGNwsevWPMle40YMAzJc=
+X-Received: by 2002:a67:d990:: with SMTP id u16mr765451vsj.95.1559819669355;
+ Thu, 06 Jun 2019 04:14:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190606075444.15481-1-naohiro.aota@wdc.com>
+In-Reply-To: <20190606075444.15481-1-naohiro.aota@wdc.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 6 Jun 2019 12:14:18 +0100
+Message-ID: <CAL3q7H6ZD=SCcj_dOB6b+8xPTXpq5dTv58Mb4C4qPn1Cx9XOtA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: start readahead also in seed devices
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, Jun 6, 2019 at 8:56 AM Naohiro Aota <naohiro.aota@wdc.com> wrote:
+>
+> Currently, btrfs does not consult seed devices to start readahead. As a
+> result, if readahead zone is added to the seed devices, btrfs_reada_wait(=
+)
+> indefinitely wait for the reada_ctl to finish.
+>
+> You can reproduce the hung by modifying btrfs/163 to have larger initial
+> file size (e.g. xfs_io pwrite 4M instead of current 256K).
 
-Check that if we write some data to a file, its inode gets evicted (while
-its parent directory's inode is not evicted due to being in use), then we
-rename the file and fsync it, after a power failure the file data is not
-lost.
+Are you planning on submitting a patch for the test case as well, so
+that it writes at least 4Mb?
+Would be useful to have.
 
-This currently passes on xfs, ext4 and f2fs but fails on btrfs. The
-following patch for btrfs fixes it:
+>
+> Fixes: 7414a03fbf9e ("btrfs: initial readahead code and prototypes")
+> Cc: stable@vger.kernel.org # 3.2+: ce7791ffee1e: Btrfs: fix race between =
+readahead and device replace/removal
+> Cc: stable@vger.kernel.org # 3.2+
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-  "Btrfs: fix data loss after inode eviction, renaming it, and fsync it"
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/generic/552     | 98 +++++++++++++++++++++++++++++++++++++++++++++++++++
- tests/generic/552.out |  7 ++++
- tests/generic/group   |  1 +
- 3 files changed, 106 insertions(+)
- create mode 100755 tests/generic/552
- create mode 100644 tests/generic/552.out
+Looks good, thanks.
 
-diff --git a/tests/generic/552 b/tests/generic/552
-new file mode 100755
-index 00000000..7dc5916f
---- /dev/null
-+++ b/tests/generic/552
-@@ -0,0 +1,98 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FSQA Test No. 552
-+#
-+# Check that if we write some data to a file, its inode gets evicted (while its
-+# parent directory's inode is not evicted due to being in use), then we rename
-+# the file and fsync it, after a power failure the file data is not lost.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	_cleanup_flakey
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/dmflakey
-+
-+# real QA test starts here
-+_supported_fs generic
-+_supported_os Linux
-+_require_scratch
-+_require_odirect
-+_require_dm_target flakey
-+
-+rm -f $seqres.full
-+
-+_scratch_mkfs >>$seqres.full 2>&1
-+_require_metadata_journaling $SCRATCH_DEV
-+_init_flakey
-+_mount_flakey
-+
-+# Create our test directory with two files in it.
-+mkdir $SCRATCH_MNT/dir
-+touch $SCRATCH_MNT/dir/foo
-+touch $SCRATCH_MNT/dir/bar
-+
-+# Do a direct IO write into file bar.
-+# To trigger the bug found in btrfs, doing a buffered write would also work as
-+# long as writeback completes before the file's inode is evicted (the inode can
-+# not be evicted while delalloc exists). But since that is hard to trigger from
-+# a user space test, without resulting in a transaction commit as well, just do
-+# a direct IO write since it is much simpler.
-+$XFS_IO_PROG -d -c "pwrite -S 0xd3 0 4K" $SCRATCH_MNT/dir/bar | _filter_xfs_io
-+
-+# Keep the directory in use while we evict all inodes. This is to prevent
-+# eviction of the directory's inode (a necessary condition to trigger the bug
-+# found in btrfs, as evicting the directory inode would result in commiting the
-+# current transaction when the fsync of file foo happens below).
-+(
-+	cd $SCRATCH_MNT/dir
-+	while true; do
-+		:
-+	done
-+) &
-+pid=$!
-+# Wait a bit to give time to the background process to chdir to the directory.
-+sleep 0.1
-+
-+# Evict all inodes from memory, except the directory's inode because a background
-+# process is using it.
-+echo 2 > /proc/sys/vm/drop_caches
-+
-+# Now fsync our file foo, which ends up persisting information about its parent
-+# directory inode because it is a new inode.
-+$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir/foo
-+
-+# Rename our file bar to baz right before we fsync it.
-+mv $SCRATCH_MNT/dir/bar $SCRATCH_MNT/dir/baz
-+
-+# Fsync our file baz, after a power failure we expect to see the data we
-+# previously wrote to it.
-+$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir/baz
-+
-+# Kill the background process using our test directory.
-+kill $pid
-+wait $pid
-+
-+# Simulate a power failure and then check no data loss happened.
-+_flakey_drop_and_remount
-+
-+echo "File data after power failure:"
-+od -t x1 -A d $SCRATCH_MNT/dir/baz
-+
-+_unmount_flakey
-+status=0
-+exit
-diff --git a/tests/generic/552.out b/tests/generic/552.out
-new file mode 100644
-index 00000000..43c5c521
---- /dev/null
-+++ b/tests/generic/552.out
-@@ -0,0 +1,7 @@
-+QA output created by 552
-+wrote 4096/4096 bytes at offset 0
-+XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
-+File data after power failure:
-+0000000 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3 d3
-+*
-+0004096
-diff --git a/tests/generic/group b/tests/generic/group
-index 35f98124..5b3c1616 100644
---- a/tests/generic/group
-+++ b/tests/generic/group
-@@ -554,3 +554,4 @@
- 549 auto quick encrypt
- 550 auto quick encrypt
- 551 auto stress aio
-+552 auto quick log
--- 
-2.11.0
+> ---
+>  fs/btrfs/reada.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+>
+> diff --git a/fs/btrfs/reada.c b/fs/btrfs/reada.c
+> index 10d9589001a9..bb5bd49573b4 100644
+> --- a/fs/btrfs/reada.c
+> +++ b/fs/btrfs/reada.c
+> @@ -747,6 +747,7 @@ static void __reada_start_machine(struct btrfs_fs_inf=
+o *fs_info)
+>         u64 total =3D 0;
+>         int i;
+>
+> +again:
+>         do {
+>                 enqueued =3D 0;
+>                 mutex_lock(&fs_devices->device_list_mutex);
+> @@ -758,6 +759,10 @@ static void __reada_start_machine(struct btrfs_fs_in=
+fo *fs_info)
+>                 mutex_unlock(&fs_devices->device_list_mutex);
+>                 total +=3D enqueued;
+>         } while (enqueued && total < 10000);
+> +       if (fs_devices->seed) {
+> +               fs_devices =3D fs_devices->seed;
+> +               goto again;
+> +       }
+>
+>         if (enqueued =3D=3D 0)
+>                 return;
+> --
+> 2.21.0
+>
 
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
