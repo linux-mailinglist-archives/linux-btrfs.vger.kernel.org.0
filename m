@@ -2,91 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A377238554
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2019 09:44:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C558D386BD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2019 11:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727904AbfFGHog (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Jun 2019 03:44:36 -0400
-Received: from smtp4.iitb.ac.in ([103.21.127.18]:48820 "EHLO smtp1.iitb.ac.in"
+        id S1727036AbfFGJKG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Jun 2019 05:10:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38354 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727877AbfFGHog (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Jun 2019 03:44:36 -0400
-Received: from ldns2.iitb.ac.in (ldns2.iitb.ac.in [10.200.12.2])
-        by smtp1.iitb.ac.in (Postfix) with SMTP id C654D1050DD2
-        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2019 12:01:53 +0530 (IST)
-Received: (qmail 29995 invoked by uid 510); 7 Jun 2019 12:01:34 +0530
-X-Qmail-Scanner-Diagnostics: from 10.200.1.25 by ldns2 (envelope-from <rws@aero.iitb.ac.in>, uid 501) with qmail-scanner-2.11
- spamassassin: 3.4.1. mhr: 1.0. {clamdscan: 0.100.0/25472} 
- Clear:RC:1(10.200.1.25):SA:0(1.5/7.0):. Processed in 3.224183 secs; 07 Jun 2019 12:01:34 +0530
-X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on ldns2.iitb.ac.in
-X-Spam-Level: *
-X-Spam-Status: No, score=1.5 required=7.0 tests=BAYES_50,IITB_ORIG,
-        MISSING_HEADERS,PROPER_IITB_MSGID autolearn=disabled version=3.4.1
-X-Spam-Pyzor: Reported 1 times.
-X-Envelope-From: rws@aero.iitb.ac.in
-X-Qmail-Scanner-Mime-Attachments: |
-X-Qmail-Scanner-Zip-Files: |
-Received: from unknown (HELO ldns2.iitb.ac.in) (10.200.1.25)
-  by ldns2.iitb.ac.in with SMTP; 7 Jun 2019 12:01:31 +0530
-Received: from vayu.aero.iitb.ac.in (vayu.aero.iitb.ac.in [10.101.1.1])
-        by ldns2.iitb.ac.in (Postfix) with ESMTP id CB958341965;
-        Fri,  7 Jun 2019 12:01:17 +0530 (IST)
-Received: from localhost (localhost [127.0.0.1])
-        by vayu.aero.iitb.ac.in (Postfix) with ESMTP id 9509A8902E52F;
-        Fri,  7 Jun 2019 12:01:17 +0530 (IST)
-Received: from vayu.aero.iitb.ac.in ([127.0.0.1])
-        by localhost (vayu.aero.iitb.ac.in [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id 3VnK-_U7b-vs; Fri,  7 Jun 2019 12:01:17 +0530 (IST)
-Received: from localhost (localhost [127.0.0.1])
-        by vayu.aero.iitb.ac.in (Postfix) with ESMTP id 5DAB88902E54D;
-        Fri,  7 Jun 2019 12:01:14 +0530 (IST)
-X-Virus-Scanned: amavisd-new at aero.iitb.ac.in
-Received: from vayu.aero.iitb.ac.in ([127.0.0.1])
-        by localhost (vayu.aero.iitb.ac.in [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id TgJiwoMo_EHZ; Fri,  7 Jun 2019 12:01:14 +0530 (IST)
-Received: from vayu.aero.iitb.ac.in (vayu.aero.iitb.ac.in [10.101.1.1])
-        by vayu.aero.iitb.ac.in (Postfix) with ESMTP id 0EEE684310111;
-        Fri,  7 Jun 2019 12:01:10 +0530 (IST)
-Date:   Fri, 7 Jun 2019 12:01:09 +0530 (IST)
-From:   Martins Henry <rws@aero.iitb.ac.in>
-Message-ID: <412557711.60336.1559889069980.JavaMail.zimbra@aero.iitb.ac.in>
-Subject: Thanks and I wait for your answer
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.101.1.5]
-X-Mailer: Zimbra 8.8.12_GA_3803 (ZimbraWebClient - FF11 (Win)/8.8.12_GA_3794)
-Thread-Index: SsslhYkcLNFU69da/wYft5cO9/ZYnA==
-Thread-Topic: Thanks and I wait for your answer
-To:     unlisted-recipients:; (no To-header on input)
+        id S1726531AbfFGJKG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Jun 2019 05:10:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6E0A5ADD5;
+        Fri,  7 Jun 2019 09:10:05 +0000 (UTC)
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     Eryu Guan <guaneryu@gmail.com>, Filipe Manana <fdmanana@gmail.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        fstests@vger.kernel.org, Johannes Thumshirn <jthumshirn@suse.de>
+Subject: [PATCH fstests v3] btrfs: add validation of compression options to btrfs/048
+Date:   Fri,  7 Jun 2019 11:09:37 +0200
+Message-Id: <20190607090937.7177-1-jthumshirn@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20190606153228.GD4172@x250>
+References: <20190606153228.GD4172@x250>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+The current btrfs/048 test-case did not check the behavior of properties
+with options like compression and with the compression level supplied.
 
-I am Martin Henry, An American Citizen; I am the personal secretary to
-Mr. Donald Railton, the controller of a Lottery Company. Please I am
-having big problem now, I have a 6yrs old daughter who has leukemia, a
-disease of the blood, and she needs a bone marrow transplant or she
-will die.
+Add test cases for compression with compression level as well so we can be
+sure we don't regress there.
 
-Please I am only asking for your help and you will benefit from it
-also. As an insider with Lottery Firm, working as the personal
-secretary to the controller, I want you to send me your name to play,
-I have some numbers that are going to win, stored in his secret data
-system in the office. The Lottery is an online entry with credit card
-anywhere with a name and address. All I want you to do is to send your
-name to play it and I will send confirmation to you.
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-I will play with my card on your name and the Prize will be shared
-equally between us. Immediately the results are released they will
-contact you for payment as the oversea winner. The lotto can be played
-with 9.00 dollars, or 50 dollars but the prize will be Millions.
-Remember that I am playing on your name with my card; I just want to
-front you for this, because I need this money to save the life of my
-little daughter.
+---
+Changes to v2:
+- Remove validation of lzo compression with option, lzo doesn't have
+  compression levels
 
-Thanks and I wait for your answer
-Martin Henry.
+Changes to v1:
+- Removed output redirection and filtering for the cases we don't expect any
+  actual output (Filipe)
+---
+ tests/btrfs/048     | 13 +++++++++++++
+ tests/btrfs/048.out | 11 +++++++++++
+ 2 files changed, 24 insertions(+)
+
+diff --git a/tests/btrfs/048 b/tests/btrfs/048
+index 8bb10a904bc9..7294f231e4ed 100755
+--- a/tests/btrfs/048
++++ b/tests/btrfs/048
+@@ -226,5 +226,18 @@ $BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'lz' 2>&1 | _filter_scrat
+ $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
+ $BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep '^generation'
+ 
++echo -e "\nTesting argument validation with options"
++$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zlib:3'
++echo "***"
++$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zstd:0'
++echo "***"
++
++echo -e "\nTesting invalid argument validation with options, should fail"
++$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zl:9' 2>&1 | _filter_scratch
++echo "***"
++$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zli:0' 2>&1 | _filter_scratch
++echo "***"
++$BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zst:3' 2>&1 | _filter_scratch
++
+ status=0
+ exit
+diff --git a/tests/btrfs/048.out b/tests/btrfs/048.out
+index 16a785a642f7..0923b00c01ed 100644
+--- a/tests/btrfs/048.out
++++ b/tests/btrfs/048.out
+@@ -92,3 +92,14 @@ Testing generation is unchanged after failed validation
+ generation		7
+ ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
+ generation		7
++
++Testing argument validation with options
++***
++***
++
++Testing invalid argument validation with options, should fail
++ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
++***
++ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
++***
++ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
+-- 
+2.16.4
+
