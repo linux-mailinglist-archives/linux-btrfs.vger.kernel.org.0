@@ -2,54 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5349B383D6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2019 07:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A377238554
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2019 09:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbfFGFoN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Jun 2019 01:44:13 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:49162 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbfFGFoN (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Jun 2019 01:44:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=FhEEcMcR2jAVllW++W9tBLdo7QnhO0RygKH5md+XfdI=; b=ne1l66gyBbTMvX7V2LMgMXi7E
-        qdX7P6G+1EM1tNbhEzjkV7lu7JdUTjUO2SjTH/44d0H+PvtpECsg/2efyp5LzujXn3B/gUq16JCZ1
-        9Qt3AA7trjemJlwkkTPJRNbkq4yNvNta6wDRT4KFZn/96NNiPg/TbGvZ3PzMMMxnmAnQxAHVf2AtD
-        eEvHu8sMci62CdhW2YJg3GRJiXahd4Tg2Ha+ta3dg4ZVtEk19bKBv0wSakXYgdii5rg89X+tpMD89
-        giXyiDv9oJlhisYA6VaASifuRYddqm5rKM2k66H/mMDtWJMHp7E2wtXru2E6rLKTwa1hhssr3vhLo
-        Zk3o8ChMQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hZ7fg-0003xw-PF; Fri, 07 Jun 2019 05:44:12 +0000
-Date:   Thu, 6 Jun 2019 22:44:12 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] fstests: generic/260: Make it handle btrfs more
- gracefully
-Message-ID: <20190607054412.GA15161@infradead.org>
-References: <20190603064009.9891-1-wqu@suse.com>
+        id S1727904AbfFGHog (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Jun 2019 03:44:36 -0400
+Received: from smtp4.iitb.ac.in ([103.21.127.18]:48820 "EHLO smtp1.iitb.ac.in"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727877AbfFGHog (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Jun 2019 03:44:36 -0400
+Received: from ldns2.iitb.ac.in (ldns2.iitb.ac.in [10.200.12.2])
+        by smtp1.iitb.ac.in (Postfix) with SMTP id C654D1050DD2
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2019 12:01:53 +0530 (IST)
+Received: (qmail 29995 invoked by uid 510); 7 Jun 2019 12:01:34 +0530
+X-Qmail-Scanner-Diagnostics: from 10.200.1.25 by ldns2 (envelope-from <rws@aero.iitb.ac.in>, uid 501) with qmail-scanner-2.11
+ spamassassin: 3.4.1. mhr: 1.0. {clamdscan: 0.100.0/25472} 
+ Clear:RC:1(10.200.1.25):SA:0(1.5/7.0):. Processed in 3.224183 secs; 07 Jun 2019 12:01:34 +0530
+X-Spam-Checker-Version: SpamAssassin 3.4.1 (2015-04-28) on ldns2.iitb.ac.in
+X-Spam-Level: *
+X-Spam-Status: No, score=1.5 required=7.0 tests=BAYES_50,IITB_ORIG,
+        MISSING_HEADERS,PROPER_IITB_MSGID autolearn=disabled version=3.4.1
+X-Spam-Pyzor: Reported 1 times.
+X-Envelope-From: rws@aero.iitb.ac.in
+X-Qmail-Scanner-Mime-Attachments: |
+X-Qmail-Scanner-Zip-Files: |
+Received: from unknown (HELO ldns2.iitb.ac.in) (10.200.1.25)
+  by ldns2.iitb.ac.in with SMTP; 7 Jun 2019 12:01:31 +0530
+Received: from vayu.aero.iitb.ac.in (vayu.aero.iitb.ac.in [10.101.1.1])
+        by ldns2.iitb.ac.in (Postfix) with ESMTP id CB958341965;
+        Fri,  7 Jun 2019 12:01:17 +0530 (IST)
+Received: from localhost (localhost [127.0.0.1])
+        by vayu.aero.iitb.ac.in (Postfix) with ESMTP id 9509A8902E52F;
+        Fri,  7 Jun 2019 12:01:17 +0530 (IST)
+Received: from vayu.aero.iitb.ac.in ([127.0.0.1])
+        by localhost (vayu.aero.iitb.ac.in [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 3VnK-_U7b-vs; Fri,  7 Jun 2019 12:01:17 +0530 (IST)
+Received: from localhost (localhost [127.0.0.1])
+        by vayu.aero.iitb.ac.in (Postfix) with ESMTP id 5DAB88902E54D;
+        Fri,  7 Jun 2019 12:01:14 +0530 (IST)
+X-Virus-Scanned: amavisd-new at aero.iitb.ac.in
+Received: from vayu.aero.iitb.ac.in ([127.0.0.1])
+        by localhost (vayu.aero.iitb.ac.in [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id TgJiwoMo_EHZ; Fri,  7 Jun 2019 12:01:14 +0530 (IST)
+Received: from vayu.aero.iitb.ac.in (vayu.aero.iitb.ac.in [10.101.1.1])
+        by vayu.aero.iitb.ac.in (Postfix) with ESMTP id 0EEE684310111;
+        Fri,  7 Jun 2019 12:01:10 +0530 (IST)
+Date:   Fri, 7 Jun 2019 12:01:09 +0530 (IST)
+From:   Martins Henry <rws@aero.iitb.ac.in>
+Message-ID: <412557711.60336.1559889069980.JavaMail.zimbra@aero.iitb.ac.in>
+Subject: Thanks and I wait for your answer
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190603064009.9891-1-wqu@suse.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.101.1.5]
+X-Mailer: Zimbra 8.8.12_GA_3803 (ZimbraWebClient - FF11 (Win)/8.8.12_GA_3794)
+Thread-Index: SsslhYkcLNFU69da/wYft5cO9/ZYnA==
+Thread-Topic: Thanks and I wait for your answer
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 03, 2019 at 02:40:09PM +0800, Qu Wenruo wrote:
-> If a filesystem doesn't map its logical address space (normally the
-> bytenr/blocknr returned by fiemap) directly to its devices(s), the
-> following assumptions used in the test case is no longer true:
-> - trim range start beyond the end of fs should fail
-> - trim range start beyond the end of fs with len set should fail
+Hello,
 
-All these assumptions seem generally bogus.  I don't think we can just
-run this as a generic test.
+I am Martin Henry, An American Citizen; I am the personal secretary to
+Mr. Donald Railton, the controller of a Lottery Company. Please I am
+having big problem now, I have a 6yrs old daughter who has leukemia, a
+disease of the blood, and she needs a bone marrow transplant or she
+will die.
+
+Please I am only asking for your help and you will benefit from it
+also. As an insider with Lottery Firm, working as the personal
+secretary to the controller, I want you to send me your name to play,
+I have some numbers that are going to win, stored in his secret data
+system in the office. The Lottery is an online entry with credit card
+anywhere with a name and address. All I want you to do is to send your
+name to play it and I will send confirmation to you.
+
+I will play with my card on your name and the Prize will be shared
+equally between us. Immediately the results are released they will
+contact you for payment as the oversea winner. The lotto can be played
+with 9.00 dollars, or 50 dollars but the prize will be Millions.
+Remember that I am playing on your name with my card; I just want to
+front you for this, because I need this money to save the life of my
+little daughter.
+
+Thanks and I wait for your answer
+Martin Henry.
