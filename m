@@ -2,127 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7200338803
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2019 12:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED16638832
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2019 12:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbfFGKd7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Jun 2019 06:33:59 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:39223 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726584AbfFGKd6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 7 Jun 2019 06:33:58 -0400
-Received: by mail-vs1-f66.google.com with SMTP id n2so852067vso.6;
-        Fri, 07 Jun 2019 03:33:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=hyTwiK8Lt8BitFEdu+VruB62gkLElbQTumBeMSuP6Yc=;
-        b=KiKbC8/vEq/i/fEcQZvxPeSK2VgJ511Qfg9QP6RJRxwMcr5XwOusolelMV8a+0Hhrb
-         gVSdBthS4p/iaCX69+7FNtXsK+yF6n1cdEHC4jC4ufUqqeSHuZ6N4lu8JUoA6+gbjj9y
-         ToRg1x1hYfc8Ij5w13dKxKYiEgFc90gxtFhuJVoOBhpbW3lYqA/FetjGpz3B4KUB53nL
-         qJ2rwxMOmWPeZrCy4uuNsBkM4Z69ZNcq0NuDzrwYEM7C2//m1RkqZGil49pqlzAtWl5M
-         PljXwRo9advL5Jr0ZwJ2MX0YVT/MUzh1tIWH52iMzJNgPijX8Q0bfXyh6+h/2dol30fH
-         RjGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=hyTwiK8Lt8BitFEdu+VruB62gkLElbQTumBeMSuP6Yc=;
-        b=e1pT4y7fG/MQl1CrwzqOuhEl331WR6hlueMpBlJlO/NdnuwuIdo3b4wVrByFqkVfv5
-         hPPIZjv9Pmv2qlidtheLiVzVwbsK9dkcHE5AV9wZ0bLu31DZW1ct7zT5aduO4mALBfgb
-         EW79B+D5BLrRN2cJGPyUwcQ4LFFdHdsn3Xu2kBAR42SAh48BbKxEPNUl/wVfNRz+mMKW
-         Q6GmzEXUwf+GIsn8SJTmPVc3kf0bYW/lc6zHSglsfSSbREKvZhsrq8/Q4G+tlRtsOcLZ
-         DtYpHNY6SOjvdsi5D76T0ETLg9496Roe3VZFVtUXz0hk8v/6quDvaYX+lS9HtfUjzd5g
-         pbZg==
-X-Gm-Message-State: APjAAAXTnogvNDU2gR2Jd+BjoJvrV666oUXLEg1Jf9nt+ULYYyDuVB22
-        Ge1hSFypnlRZRzuG+zee0g8oHBHcyI7kMvF3xS6usg==
-X-Google-Smtp-Source: APXvYqxUHB2xrC5Ts5W52tT3TJQfiuYamSvLSxElekHFK3sfR0DAuk7ZmyS+NcmOxMEKPRYugBulUBhTJ9tWa5QLSJk=
-X-Received: by 2002:a67:8b44:: with SMTP id n65mr23921781vsd.99.1559903637689;
- Fri, 07 Jun 2019 03:33:57 -0700 (PDT)
+        id S1727731AbfFGKsq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Jun 2019 06:48:46 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:42917 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726584AbfFGKsq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Jun 2019 06:48:46 -0400
+X-Greylist: delayed 501 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 Jun 2019 06:48:45 EDT
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 00D402400E5
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2019 12:40:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1559904023; bh=PyxjFoiHennUxeH9hhqI478lOj8OTQUfkiyC0yrO584=;
+        h=From:To:Subject:Date:From;
+        b=KmFanV3/L5cPQINTsUaKcg6lsm0oVvmRgJlbGh1fATCUIEB3M6NDnjKCYXNDH806B
+         1U+s3aQ67JsZyHoJIwP1Y0LHJkzCu83mqp8kO9GwPz60x2Mj8E26VqvrEgz18nRS6W
+         DBui9EYZAAv4zNJM/c23ohTrEfwAaQoPP1kWtktz1pCfbgWiUkNxSujYAJR5nJJe98
+         G/NEzcNDoXwpNy1SKJPfjEDja42HK61uFuTM4ZA3745oFsmivwp8dfMPBJxyfHYWPK
+         RSpZzHstCfLDTeg3JysRRnra+I1kxXd00ZPRWJuA3yX0ec4Ef0KS82YKXI/3gU3eTh
+         xDKntO6pz+LOw==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 45KzZG1wyXz9rxN
+        for <linux-btrfs@vger.kernel.org>; Fri,  7 Jun 2019 12:40:22 +0200 (CEST)
+From:   "marcos k." <Marcos.Ka@posteo.net>
+To:     linux-btrfs@vger.kernel.org
+Subject: btrfs progs v5.1: tree block bytenr 0 is not aligned to sectorsize 4096
+Date:   Fri, 07 Jun 2019 12:40:21 +0200
+Message-ID: <3057842.IWvHFmXsFP@ernsv0>
+Organization: Ernesto
 MIME-Version: 1.0
-References: <20190607053910.2127-1-naohiro.aota@wdc.com>
-In-Reply-To: <20190607053910.2127-1-naohiro.aota@wdc.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Fri, 7 Jun 2019 11:33:46 +0100
-Message-ID: <CAL3q7H4fvY0rSiOQvbLemX4SOFk4fXgVowKZ62C+yB41QMswwg@mail.gmail.com>
-Subject: Re: [PATCH v2] fstests: btrfs/163: make readahead run on the seed device
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 7, 2019 at 6:39 AM Naohiro Aota <naohiro.aota@wdc.com> wrote:
->
-> There is a long lived bug that btrfs wait for readahead to finish
-> indefinitely when readahead zone is inserted into seed devices.
->
-> Current write size to the file "foobar" is too small to run readahead
-> before the replacing on seed device. So, increase the write size to
-> reproduce the issue.
->
-> Following patch fixes it:
->
->         "btrfs: start readahead also in seed devices"
->
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Hallo to all of you,
+and sorry for asking the very specialists directly, 
+but I found no useful answer to my problem.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+my btrfs-filesystem is corrupt and can not be mounted==>
+btrfsprogs v5.1 and btrfsprogs v4.15.1
+# btrfs check /dev/dm-2
+ERROR: tree block bytenr 0 is not aligned to sectorsize 4096
 
-Thanks!
+BUT btrfsprogs v4.4 can at least check the filesystem and I have (limited)
+access to it. Still can not mount ...
 
-> ---
-> changelog:
-> v2:
-> - Update the expected output as well.
-> ---
->  tests/btrfs/163     | 2 +-
->  tests/btrfs/163.out | 4 ++--
->  2 files changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/tests/btrfs/163 b/tests/btrfs/163
-> index 8c93e83b970a..24c725afb6b9 100755
-> --- a/tests/btrfs/163
-> +++ b/tests/btrfs/163
-> @@ -50,7 +50,7 @@ create_seed()
->  {
->         _mkfs_dev $dev_seed
->         run_check _mount $dev_seed $SCRATCH_MNT
-> -       $XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 256K" $SCRATCH_MNT/foobar=
- >\
-> +       $XFS_IO_PROG -f -d -c "pwrite -S 0xab 0 4M" $SCRATCH_MNT/foobar >=
-\
->                 /dev/null
->         echo -- gloden --
->         od -x $SCRATCH_MNT/foobar
-> diff --git a/tests/btrfs/163.out b/tests/btrfs/163.out
-> index 50f46da6df86..91f6f5b6f48a 100644
-> --- a/tests/btrfs/163.out
-> +++ b/tests/btrfs/163.out
-> @@ -2,8 +2,8 @@ QA output created by 163
->  -- gloden --
->  0000000 abab abab abab abab abab abab abab abab
->  *
-> -1000000
-> +20000000
->  -- sprout --
->  0000000 abab abab abab abab abab abab abab abab
->  *
-> -1000000
-> +20000000
-> --
-> 2.21.0
->
+I would appreciate it very much, if someone could give me a hint,
+marcos k.
+
+======= output ============= output =============
+lap13:~ # uname -a 
+Linux ernnb113 5.1.5-1-default #1 SMP Mon May 27 07:14:33 UTC 2019 (6ad4f79) x86_64 x86_64 x86_64 GNU/Linux
+
+lap13:~ # btrfs --version 
+btrfs-progs v5.1 
+
+lap13:~ # btrfs fi show 
+Label: 'rootfs'  uuid: 0fe9bec5-fd4e-4a4b-a855-b0412d9916a4
+        Total devices 1 FS bytes used 134.48GiB
+        devid    1 size 310.13GiB used 143.06GiB path /dev/mapper/linuxvg-rootlv
+
+Label: 'homefs'  uuid: d3659317-3d28-42f0-beb3-2480fb2b0900
+        Total devices 1 FS bytes used 406.77GiB
+        devid    1 size 590.00GiB used 577.00GiB path /dev/mapper/linuxvg-homelv
+
+lap13:~ # btrfs fi df /dev/dm-2 
+ERROR: not a btrfs filesystem: /dev/dm-2
+
+lap13:~ # dmesg | grep -i btrfs
+[    7.485437] Btrfs loaded, crc32c=crc32c-intel, assert=on
+[    7.487711] BTRFS: device label rootfs devid 1 transid 3190209 /dev/dm-1
+[    7.616145] BTRFS info (device dm-1): disk space caching is enabled
+[    7.616148] BTRFS info (device dm-1): has skinny extents
+[    7.662371] BTRFS info (device dm-1): enabling ssd optimizations
+[    8.263761] BTRFS info (device dm-1): turning on discard
+[    8.263763] BTRFS info (device dm-1): disk space caching is enabled
+[    8.998829] BTRFS info (device dm-1): device fsid 0fe9bec5-fd4e-4a4b-a855-b0412d9916a4 devid 1 moved old:/dev/mapper/linuxvg-rootlv new:/dev/dm-1
+[    8.999507] BTRFS info (device dm-1): device fsid 0fe9bec5-fd4e-4a4b-a855-b0412d9916a4 devid 1 moved old:/dev/dm-1 new:/dev/mapper/linuxvg-rootlv
+[   10.484594] BTRFS: device label homefs devid 1 transid 2087298 /dev/dm-2
+[   10.520725] BTRFS info (device dm-2): turning on discard
+[   10.520728] BTRFS info (device dm-2): disk space caching is enabled
+[   10.520730] BTRFS info (device dm-2): has skinny extents
+[   10.522139] BTRFS critical (device dm-2): corrupt node: root=3 block=16384 slot=0, invalid NULL node pointer
+[   10.523238] BTRFS error (device dm-2): failed to read chunk root
+[   10.545271] BTRFS error (device dm-2): open_ctree failed
+
+lap13:~ # btrfs check /dev/dm-2
+ERROR: tree block bytenr 0 is not aligned to sectorsize 4096
+Couldn't read chunk tree
+ERROR: cannot open file system
+Opening filesystem to check...
+
+lap13:~ # btrfs rescue super-recover /dev/dm-2
+All supers are valid, no need to recover
+
+lap13 :~ # btrfs rescue chunk-recovery /dev/dm-2
+Scanning: DONE in dev0
+Check chunks successfully with no orphans
+Chunk tree recovered successfully
+
+lap13:~ # btrfs check /dev/dm-2
+ERROR: tree block bytenr 0 is not aligned to sectorsize 4096
+Couldn't read chunk tree
+ERROR: cannot open file system
+Opening filesystem to check...
 
 
---=20
-Filipe David Manana,
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
