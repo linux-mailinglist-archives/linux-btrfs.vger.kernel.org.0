@@ -2,236 +2,265 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66DB73898A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2019 13:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6E838993
+	for <lists+linux-btrfs@lfdr.de>; Fri,  7 Jun 2019 13:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727511AbfFGL5d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 7 Jun 2019 07:57:33 -0400
-Received: from mout.gmx.net ([212.227.15.19]:40207 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727388AbfFGL5d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 7 Jun 2019 07:57:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1559908643;
-        bh=4ejKNyooNnJyTtfL5kpJ9xEQc5MGlLYN1mznBMXIO0s=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=iaAfYuva5kOvXiY8IFQRvd+EF5ZbrOp5hCL7rzqrXpP5c9VruJmze6FEOZot4cjN5
-         7rY/jDPnI8ZDgi0+8tz6RmD6vUC8shJFAQZ6rNyE8mkY/iXK8KcDWDxk1vv834iilF
-         ozDrDAdKH8C+wLT8JZzUaftgNtEX5Hx0GH6t5vgY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M6Db0-1hSbnO3S36-006c2A; Fri, 07
- Jun 2019 13:57:23 +0200
-Subject: Re: btrfs progs v5.1: tree block bytenr 0 is not aligned to
- sectorsize 4096
-To:     "marcos k." <Marcos.Ka@posteo.net>, linux-btrfs@vger.kernel.org
-References: <3057842.IWvHFmXsFP@ernsv0>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+        id S1727790AbfFGL7h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 7 Jun 2019 07:59:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39742 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727388AbfFGL7h (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 7 Jun 2019 07:59:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id BFE46AF8F;
+        Fri,  7 Jun 2019 11:59:35 +0000 (UTC)
+Subject: Re: [PATCH 1/2] btrfs: Implement DRW lock
+To:     paulmck@linux.ibm.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        andrea.parri@amarulasolutions.com, peterz@infradead.org
+References: <20190606135219.1086-1-nborisov@suse.com>
+ <20190606135219.1086-2-nborisov@suse.com>
+ <20190607105251.GB28207@linux.ibm.com>
+From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <bef76760-2376-d6c4-4808-ac4e9d7bd361@gmx.com>
-Date:   Fri, 7 Jun 2019 19:57:14 +0800
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <7a1c1f42-6e2f-57fc-5cdd-8c2bea23dffa@suse.com>
+Date:   Fri, 7 Jun 2019 14:59:34 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <3057842.IWvHFmXsFP@ernsv0>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="q1w6Vgv9viQQgr3OfCg8dSe33dMy7R7Xt"
-X-Provags-ID: V03:K1:9PGlDRiZxJBaIIeN99Q6iM+C66ezMb0ceL8Eqp8NOGvULjEoPNM
- bIHFvKYK/VxL8NjpTFT7woQzMkyLZ6qOQ3UIOXpoznYjoc6FIsUlgePpfD1PmDNL9uMUWrS
- Sw+doCl2KpRZlF6Pwn67S8psPzK0LKld1D/ANxR8TESzEuDl+mUvNLXD+A6Qkn0qSgRQFD0
- iwxPu/sBrEOuUqM/Tha7g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:jp5ZPwZYYSk=:UbmnktkWP3VGQxWS5JJ6RX
- 5uaiwsIKwXkQEiclAQUfsQq9hUmeZkds9aM4K4Gd0x9XiVUmo6UuisveOT+6e6q4ZDYXS3Yxm
- kpphkw8BoRhFownDzV04tdhrIfn4pupirjw2nV/BHINCzcw0fudZNdhTasqWJruLWhY/HZ/Qz
- fAK0NJamaOIzUjo+LUAOuHdDrjAVqXQe+KhetsgcnOt2c3tYfhLLp4uEkZjdFL7xL4XU95ZNt
- fxN/v4Pfo0Xf4fwzZ8jS50YnMuMC+nJBbGI23lbDlqCQOCbrYRCKcomQoRwDsyJg0YzZZG2zc
- 8wnANR9aAL25g0FiOI8dgSg4f2Fk9TSGdpELdy4PRW2UI1+aptFw2VY7vFteN28BURpB9xnoP
- ikGDVmue+6/VSolaFvJpFVrjwd47T4QutEUiop1WPcdJryeu3aDlpn2QsSw8JNwXcezJ1HBxf
- qAj5WBRXZiFQUSzi+MwSgy7BMkT06hFLRzjUeY/eflvGKUxopigwqYGPkJYq8J0xQlNUIC2LM
- y/P7+H7x2+TTiuu8GED7nianlNoQiU2xjFhpzH9z7N9BQzWWAQs1wADvSPzo0pW5G4H3YZH2Q
- F9e39Hy8L64HuM5GIMIhayq8KSQRCk0noFAdHraeBTSUrjGCLp5iMgL3U7T6Zm7TNgGJrb8PR
- OIldIpseiYUF7Ionc2xcfZrIBx0KNG4hn5CW0ySQmR/G3yVnHne3BRmbA1z5nCEJJLkOaDB1t
- Z7mV/hPYKrpEig890tgqFv+RIU88jRO35XLLv38qquP5498WwZLEj1yKsRcj7PgJyvyQwJMmi
- yZFiybmdFq7uEqq99A6KDHskYrJzEUrp06EOpvuq+fIpoDKPVk+7VFPW3+TI9z4wq7oOdCQqE
- uMe3YGhHONURJLh29eq5QYXoL6r1agmmB8mb36cU4Sps6Q4b9Iq38qiQIvJ1lwx8Z8FD4Qlll
- xx9inr/Jwrhc/k3dKv/+zAOXU0puRkLA=
+In-Reply-To: <20190607105251.GB28207@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---q1w6Vgv9viQQgr3OfCg8dSe33dMy7R7Xt
-Content-Type: multipart/mixed; boundary="hqugwkVZBBASK4e6YiNKx7npnQG2Db9sc";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: "marcos k." <Marcos.Ka@posteo.net>, linux-btrfs@vger.kernel.org
-Message-ID: <bef76760-2376-d6c4-4808-ac4e9d7bd361@gmx.com>
-Subject: Re: btrfs progs v5.1: tree block bytenr 0 is not aligned to
- sectorsize 4096
-References: <3057842.IWvHFmXsFP@ernsv0>
-In-Reply-To: <3057842.IWvHFmXsFP@ernsv0>
-
---hqugwkVZBBASK4e6YiNKx7npnQG2Db9sc
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 7.06.19 г. 13:52 ч., Paul E. McKenney wrote:
+> On Thu, Jun 06, 2019 at 04:52:18PM +0300, Nikolay Borisov wrote:
+>> A (D)ouble (R)eader (W)riter lock is a locking primitive that allows
+>> to have multiple readers or multiple writers but not multiple readers
+>> and writers holding it concurrently. The code is factored out from
+>> the existing open-coded locking scheme used to exclude pending
+>> snapshots from nocow writers and vice-versa. Current implementation
+>> actually favors Readers (that is snapshot creaters) to writers (nocow
+>> writers of the filesystem).
+>>
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> 
+> A preliminary question...
+> 
+> What prevents the following sequence of events from happening?
+> 
+> o	btrfs_drw_write_lock() invokes btrfs_drw_try_write_lock(),
+> 	which sees that lock->readers is zero and thus executes
+> 	percpu_counter_inc(&lock->writers).
+> 
+> o	btrfs_drw_read_lock() increments lock->readers, does the
+> 	smp_mb__after_atomic(), and then does the wait_event().
+> 	Because btrfs_drw_try_write_lock() incremented its CPU's
+> 	lock->writers, the sum is the value one, so it blocks.
+> 
+> o	btrfs_drw_try_write_lock() checks lock->readers, sees that
+> 	it is now nonzero, and thus invokes btrfs_drw_read_unlock()
+> 	(which decrements the current CPU's counter, so that a future
+> 	sum would get zero), and returns false.
 
-On 2019/6/7 =E4=B8=8B=E5=8D=886:40, marcos k. wrote:
-> Hallo to all of you,
-> and sorry for asking the very specialists directly,=20
-> but I found no useful answer to my problem.
->=20
-> my btrfs-filesystem is corrupt and can not be mounted=3D=3D>
-> btrfsprogs v5.1 and btrfsprogs v4.15.1
-> # btrfs check /dev/dm-2
-> ERROR: tree block bytenr 0 is not aligned to sectorsize 4096
+btrfs_drw_read_unlock is actually btrfs_drw_write_unlock, my bad, Filipe
+already pointed that out and I've fixed it.
 
-Although the error message is not good for human to read, the tree block
-bytenr 0 means some tree block is definitely corrupted.
+The idea here is that if a reader came after we've incremented out
+percpu counter then it would have blocked, the writer would see that and
+invoke btrfs_drw_write_unlock which will decrement the percpu counter
+and will wakeup the reader that is now blocked on pending_readers.
 
->=20
-> BUT btrfsprogs v4.4 can at least check the filesystem and I have (limit=
-ed)
-> access to it. Still can not mount ...
->=20
-> I would appreciate it very much, if someone could give me a hint,
-> marcos k.
->=20
-> =3D=3D=3D=3D=3D=3D=3D output =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D ou=
-tput =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> lap13:~ # uname -a=20
-> Linux ernnb113 5.1.5-1-default #1 SMP Mon May 27 07:14:33 UTC 2019 (6ad=
-4f79) x86_64 x86_64 x86_64 GNU/Linux
->=20
-> lap13:~ # btrfs --version=20
-> btrfs-progs v5.1=20
->=20
-> lap13:~ # btrfs fi show=20
-> Label: 'rootfs'  uuid: 0fe9bec5-fd4e-4a4b-a855-b0412d9916a4
->         Total devices 1 FS bytes used 134.48GiB
->         devid    1 size 310.13GiB used 143.06GiB path /dev/mapper/linux=
-vg-rootlv
->=20
-> Label: 'homefs'  uuid: d3659317-3d28-42f0-beb3-2480fb2b0900
->         Total devices 1 FS bytes used 406.77GiB
->         devid    1 size 590.00GiB used 577.00GiB path /dev/mapper/linux=
-vg-homelv
->=20
-> lap13:~ # btrfs fi df /dev/dm-2=20
-> ERROR: not a btrfs filesystem: /dev/dm-2
->=20
-> lap13:~ # dmesg | grep -i btrfs
-> [    7.485437] Btrfs loaded, crc32c=3Dcrc32c-intel, assert=3Don
-> [    7.487711] BTRFS: device label rootfs devid 1 transid 3190209 /dev/=
-dm-1
-> [    7.616145] BTRFS info (device dm-1): disk space caching is enabled
-> [    7.616148] BTRFS info (device dm-1): has skinny extents
-> [    7.662371] BTRFS info (device dm-1): enabling ssd optimizations
-> [    8.263761] BTRFS info (device dm-1): turning on discard
-> [    8.263763] BTRFS info (device dm-1): disk space caching is enabled
-> [    8.998829] BTRFS info (device dm-1): device fsid 0fe9bec5-fd4e-4a4b=
--a855-b0412d9916a4 devid 1 moved old:/dev/mapper/linuxvg-rootlv new:/dev/=
-dm-1
-> [    8.999507] BTRFS info (device dm-1): device fsid 0fe9bec5-fd4e-4a4b=
--a855-b0412d9916a4 devid 1 moved old:/dev/dm-1 new:/dev/mapper/linuxvg-ro=
-otlv
-> [   10.484594] BTRFS: device label homefs devid 1 transid 2087298 /dev/=
-dm-2
-> [   10.520725] BTRFS info (device dm-2): turning on discard
-> [   10.520728] BTRFS info (device dm-2): disk space caching is enabled
-> [   10.520730] BTRFS info (device dm-2): has skinny extents
-> [   10.522139] BTRFS critical (device dm-2): corrupt node: root=3D3 blo=
-ck=3D16384 slot=3D0, invalid NULL node pointer
-
-Kernel tree checker also detects such problem.
-Your chunk tree is corrupted, with one node slot pointing to bytenr 0.
-
-Normally we shouldn't have a system chunk at logical bytenr 0, but it's
-also possible that all those existing check is too strict.
-
-Would you please provide the following info?
-
-# btrfs ins dump-super -fa /dev/dm-2
-
-If there is no system chunk at bytenr 0, then it must be some strange
-thing happened in your fs.
-
-Thanks,
-Qu
-
-> [   10.523238] BTRFS error (device dm-2): failed to read chunk root
-> [   10.545271] BTRFS error (device dm-2): open_ctree failed
->=20
-> lap13:~ # btrfs check /dev/dm-2
-> ERROR: tree block bytenr 0 is not aligned to sectorsize 4096
-> Couldn't read chunk tree
-> ERROR: cannot open file system
-> Opening filesystem to check...
->=20
-> lap13:~ # btrfs rescue super-recover /dev/dm-2
-> All supers are valid, no need to recover
->=20
-> lap13 :~ # btrfs rescue chunk-recovery /dev/dm-2
-> Scanning: DONE in dev0
-> Check chunks successfully with no orphans
-> Chunk tree recovered successfully
->=20
-> lap13:~ # btrfs check /dev/dm-2
-> ERROR: tree block bytenr 0 is not aligned to sectorsize 4096
-> Couldn't read chunk tree
-> ERROR: cannot open file system
-> Opening filesystem to check...
->=20
->=20
->=20
-
-
---hqugwkVZBBASK4e6YiNKx7npnQG2Db9sc--
-
---q1w6Vgv9viQQgr3OfCg8dSe33dMy7R7Xt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlz6URoACgkQwj2R86El
-/qjFlQf+MAYV6Nvf8evlTxItH/xQpEhaXDebG8JfM9WNKLDzLXuSqbMX9r2YJyqf
-+rXGIs1fo+E7HrbDRvz+KLcbrqnOdU7r41/eWI3SKd0gZpD/Wkn5KAIdpocIEyKi
-hsA+oSyb0nq2bnPL9RgAMmx8x2t8SGmYEZaiyXrDHUdlXrI3dPoWakozkVX6N8Vc
-CCndLXi/78yIcshAK6GANMysw5/3dqCIqIeG0+pVvYjDZOqzw8MkXoZKV4HBU+n1
-tznriOY0m0BHx7dQyWm002wV7bFSq5W87Yza1Fbx2BYiOIkJ6y+5idF1SF4qq/HR
-hjh14T5HRPeFBqblassJietx86nlHg==
-=KE2b
------END PGP SIGNATURE-----
-
---q1w6Vgv9viQQgr3OfCg8dSe33dMy7R7Xt--
+> 
+> o	btrfs_drw_write_lock() therefore does its wait_event().
+> 	Because lock->readers is nonzero, it blocks.
+> 
+> o	Both tasks are now blocked.  In the absence of future calls
+> 	to these functions (and perhaps even given such future calls),
+> 	we have deadlock.
+> 
+> So what am I missing here?
+> 
+> 							Thanx, Paul
+> 
+>> ---
+>>  fs/btrfs/Makefile   |  2 +-
+>>  fs/btrfs/drw_lock.c | 71 +++++++++++++++++++++++++++++++++++++++++++++
+>>  fs/btrfs/drw_lock.h | 23 +++++++++++++++
+>>  3 files changed, 95 insertions(+), 1 deletion(-)
+>>  create mode 100644 fs/btrfs/drw_lock.c
+>>  create mode 100644 fs/btrfs/drw_lock.h
+>>
+>> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+>> index ca693dd554e9..dc60127791e6 100644
+>> --- a/fs/btrfs/Makefile
+>> +++ b/fs/btrfs/Makefile
+>> @@ -10,7 +10,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
+>>  	   export.o tree-log.o free-space-cache.o zlib.o lzo.o zstd.o \
+>>  	   compression.o delayed-ref.o relocation.o delayed-inode.o scrub.o \
+>>  	   reada.o backref.o ulist.o qgroup.o send.o dev-replace.o raid56.o \
+>> -	   uuid-tree.o props.o free-space-tree.o tree-checker.o
+>> +	   uuid-tree.o props.o free-space-tree.o tree-checker.o drw_lock.o
+>>  
+>>  btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
+>>  btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
+>> diff --git a/fs/btrfs/drw_lock.c b/fs/btrfs/drw_lock.c
+>> new file mode 100644
+>> index 000000000000..9681bf7544be
+>> --- /dev/null
+>> +++ b/fs/btrfs/drw_lock.c
+>> @@ -0,0 +1,71 @@
+>> +#include "drw_lock.h"
+>> +#include "ctree.h"
+>> +
+>> +void btrfs_drw_lock_init(struct btrfs_drw_lock *lock)
+>> +{
+>> +	atomic_set(&lock->readers, 0);
+>> +	percpu_counter_init(&lock->writers, 0, GFP_KERNEL);
+>> +	init_waitqueue_head(&lock->pending_readers);
+>> +	init_waitqueue_head(&lock->pending_writers);
+>> +}
+>> +
+>> +void btrfs_drw_lock_destroy(struct btrfs_drw_lock *lock)
+>> +{
+>> +	percpu_counter_destroy(&lock->writers);
+>> +}
+>> +
+>> +bool btrfs_drw_try_write_lock(struct btrfs_drw_lock *lock)
+>> +{
+>> +	if (atomic_read(&lock->readers))
+>> +		return false;
+>> +
+>> +	percpu_counter_inc(&lock->writers);
+>> +
+>> +	/*
+>> +	 * Ensure writers count is updated before we check for
+>> +	 * pending readers
+>> +	 */
+>> +	smp_mb();
+>> +	if (atomic_read(&lock->readers)) {
+>> +		btrfs_drw_read_unlock(lock);
+>> +		return false;
+>> +	}
+>> +
+>> +	return true;
+>> +}
+>> +
+>> +void btrfs_drw_write_lock(struct btrfs_drw_lock *lock)
+>> +{
+>> +	while(true) {
+>> +		if (btrfs_drw_try_write_lock(lock))
+>> +			return;
+>> +		wait_event(lock->pending_writers, !atomic_read(&lock->readers));
+>> +	}
+>> +}
+>> +
+>> +void btrfs_drw_write_unlock(struct btrfs_drw_lock *lock)
+>> +{
+>> +	percpu_counter_dec(&lock->writers);
+>> +	cond_wake_up(&lock->pending_readers);
+>> +}
+>> +
+>> +void btrfs_drw_read_lock(struct btrfs_drw_lock *lock)
+>> +{
+>> +	atomic_inc(&lock->readers);
+>> +	smp_mb__after_atomic();
+>> +
+>> +	wait_event(lock->pending_readers,
+>> +		   percpu_counter_sum(&lock->writers) == 0);
+>> +}
+>> +
+>> +void btrfs_drw_read_unlock(struct btrfs_drw_lock *lock)
+>> +{
+>> +	/*
+>> +	 * Atomic RMW operations imply full barrier, so woken up writers
+>> +	 * are guaranteed to see the decrement
+>> +	 */
+>> +	if (atomic_dec_and_test(&lock->readers))
+>> +		wake_up(&lock->pending_writers);
+>> +}
+>> +
+>> +
+>> diff --git a/fs/btrfs/drw_lock.h b/fs/btrfs/drw_lock.h
+>> new file mode 100644
+>> index 000000000000..baff59561c06
+>> --- /dev/null
+>> +++ b/fs/btrfs/drw_lock.h
+>> @@ -0,0 +1,23 @@
+>> +#ifndef BTRFS_DRW_LOCK_H
+>> +#define BTRFS_DRW_LOCK_H
+>> +
+>> +#include <linux/atomic.h>
+>> +#include <linux/wait.h>
+>> +#include <linux/percpu_counter.h>
+>> +
+>> +struct btrfs_drw_lock {
+>> +	atomic_t readers;
+>> +	struct percpu_counter writers;
+>> +	wait_queue_head_t pending_writers;
+>> +	wait_queue_head_t pending_readers;
+>> +};
+>> +
+>> +void btrfs_drw_lock_init(struct btrfs_drw_lock *lock);
+>> +void btrfs_drw_lock_destroy(struct btrfs_drw_lock *lock);
+>> +void btrfs_drw_write_lock(struct btrfs_drw_lock *lock);
+>> +bool btrfs_drw_try_write_lock(struct btrfs_drw_lock *lock);
+>> +void btrfs_drw_write_unlock(struct btrfs_drw_lock *lock);
+>> +void btrfs_drw_read_lock(struct btrfs_drw_lock *lock);
+>> +void btrfs_drw_read_unlock(struct btrfs_drw_lock *lock);
+>> +
+>> +#endif
+>> -- 
+>> 2.17.1
+>>
+> 
+> 
