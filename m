@@ -2,105 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B42A23B529
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2019 14:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32D13B5D6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2019 15:14:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389601AbfFJMma (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Jun 2019 08:42:30 -0400
-Received: from frost.carfax.org.uk ([85.119.82.111]:53946 "EHLO
-        frost.carfax.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389194AbfFJMma (ORCPT
+        id S2390271AbfFJNOd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Jun 2019 09:14:33 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51506 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2388848AbfFJNOd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Jun 2019 08:42:30 -0400
-Received: from hrm by frost.carfax.org.uk with local (Exim 4.80)
-        (envelope-from <hrm@carfax.org.uk>)
-        id 1haJd4-0000IP-RI; Mon, 10 Jun 2019 12:42:26 +0000
-Date:   Mon, 10 Jun 2019 12:42:26 +0000
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] RAID1 with 3- and 4- copies
-Message-ID: <20190610124226.GA21016@carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1559917235.git.dsterba@suse.com>
+        Mon, 10 Jun 2019 09:14:33 -0400
+Received: from callcc.thunk.org ([66.31.38.53])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5ADEILt032203
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 10 Jun 2019 09:14:18 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id E4DDE420481; Mon, 10 Jun 2019 09:14:17 -0400 (EDT)
+Date:   Mon, 10 Jun 2019 09:14:17 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 1/8] mm/fs: don't allow writes to immutable files
+Message-ID: <20190610131417.GD15963@mit.edu>
+References: <155552786671.20411.6442426840435740050.stgit@magnolia>
+ <155552787330.20411.11893581890744963309.stgit@magnolia>
+ <20190610015145.GB3266@mit.edu>
+ <20190610044144.GA1872750@magnolia>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="oyUTqETQ0mS9luUI"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1559917235.git.dsterba@suse.com>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190610044144.GA1872750@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
---oyUTqETQ0mS9luUI
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-   Hi, David,
-
-On Mon, Jun 10, 2019 at 02:29:40PM +0200, David Sterba wrote:
-> this patchset brings the RAID1 with 3 and 4 copies as a separate
-> feature as outlined in V1
-> (https://lore.kernel.org/linux-btrfs/cover.1531503452.git.dsterba@suse.com/).
-[...]
-> Compatibility
-> ~~~~~~~~~~~~~
+On Sun, Jun 09, 2019 at 09:41:44PM -0700, Darrick J. Wong wrote:
+> On Sun, Jun 09, 2019 at 09:51:45PM -0400, Theodore Ts'o wrote:
+> > On Wed, Apr 17, 2019 at 12:04:33PM -0700, Darrick J. Wong wrote:
+>
+> > Shouldn't this check be moved before the modification of vmf->flags?
+> > It looks like do_page_mkwrite() isn't supposed to be returning with
+> > vmf->flags modified, lest "the caller gets surprised".
 > 
-> The new block group types cost an incompatibility bit, so old kernel
-> will refuse to mount filesystem with RAID1C3 feature, ie. any chunk on
-> the filesystem with the new type.
+> Yeah, I think that was a merge error during a rebase... :(
 > 
-> To upgrade existing filesystems use the balance filters eg. from RAID6
-> 
->   $ btrfs balance start -mconvert=raid1c3 /path
-[...]
+> Er ... if you're still planning to take this patch through your tree,
+> can you move it to above the "vmf->flags = FAULT_FLAG_WRITE..." ?
 
-   If I do:
+I was planning on only taking 8/8 through the ext4 tree.  I also added
+a patch which filtered writes, truncates, and page_mkwrites (but not
+mmap) for immutable files at the ext4 level.
 
-$ btrfs balance start -mprofiles=raid13c,convert=raid1 \
-                      -dprofiles=raid13c,convert=raid6 /path
+I *could* take this patch through the mm/fs tree, but I wasn't sure
+what your plans were for the rest of the patch series, and it seemed
+like it hadn't gotten much review/attention from other fs or mm folks
+(well, I guess Brian Foster weighed in).
 
-will that clear the incompatibility bit?
+What do you think?
 
-(I'm not sure if profiles= and convert= work together, but let's
-assume that they do for the purposes of this question).
+						- Ted
 
-   Hugo.
 
--- 
-Hugo Mills             | The enemy have elected for Death by Powerpoint.
-hugo@... carfax.org.uk | That's what they shall get.
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |                                                   gdb
 
---oyUTqETQ0mS9luUI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJc/lAyAAoJEFheFHXiqx3kLzAP/iHhR/eQyDcZgKdOAaoWPrvi
-vn8AQhEqHOTLSu8Ft6ZQ1biHmlv/+GKMM+v7/Pd4Q2PGXLR5qSOgduSRQ6U9EYBp
-gbr47eog7HxGEkjMveo9JQsKpjE87zi4hIKYoqDboQyy740BA9L+lWdSPCKTlvPE
-ytT27vg2O8DLQddbQ1j86LCvK9VAyi76n58Rdph1g3A9EPxR+qJEJm9XO/RgenMs
-rLKOJdnDd3BEmDV3oSdAkmluf9Eypr7/PLgyezPN1BpeXE6qgSynVi9t9jYdKtG3
-2+sDBmJmg88na6fy4FCpcfyaMmHn1jdbBhq5BkOSVF0RyT7O32iurHzdzeDmZBAq
-4Cnz3hr2Cx60g/v+0sR3DoKHE3tQUy/anH1y5fkwFcO+OZ06RyFSNLERE+NNhSko
-6+6D5IEHc0vW//Oq5zAIT2aTHqe6+avFAqdu34PPiWqHKEFcnZNYruSiwc4KVU+3
-3+1KyJ4DKp8/yJoffrLlTROvtwAosfuhq+RU4F8Yz/xNyE3tYC03UIfiEI6bEkOA
-Z/4D4hwt+uSYxoi1GAvspMGfZZHTVHRJtSt/XaP7RBHZixQ1GcmJcoo9lxfs+Zzm
-ACmKkIDZgLgIN6tshRLy8qmRdTODyjSxMcTMY3V8UDShUEd3v+xEjcSkaZE5BP8p
-ZMvdwIy1TyyCutvsk2mX
-=gcbU
------END PGP SIGNATURE-----
-
---oyUTqETQ0mS9luUI--
