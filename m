@@ -2,103 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E493E3AE44
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2019 06:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF163B502
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2019 14:29:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387451AbfFJElw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Jun 2019 00:41:52 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50236 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725320AbfFJElv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Jun 2019 00:41:51 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5A4djbq014902;
-        Mon, 10 Jun 2019 04:41:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=1rlW4CBK4tGHrpGFthm0IXowDU3XrX/m9jqFgg1EvJs=;
- b=DdQQTu+/oZ8BF78Vl3tSsb9U84OK1y8XCqxtjn2i+ZxuHFIycqvptntC3PB3NuSjZ7tQ
- QKmjw7cLnnSLS55U/ubPkdBlIc5x+/YSrW0qZh5QMmB56/r1MWZ5KQXRl0QeVPuYri5+
- b8xUGpNJqaYNFoP8RM//vtQyCZBGgR0d2Z9NXKJp7dR9DBm8mX2EQ2sonm6F0yVTHxWd
- cL3ROZ6dfNfUUnA0SIOR+IO8zjh7UvQvrjV9SpTbsHGg/5gzVOr879aAAOa+1TNbjIZx
- DLlT37EHBXjkErOWeO8NXIvDjq5iKIJ8nShcQcyxc6zsh4mYgLzzqu28s6IQ9mMDnUfe 1w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2t04etcn0c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Jun 2019 04:41:48 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5A4en2r188090;
-        Mon, 10 Jun 2019 04:41:47 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2t04hxkmcf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 10 Jun 2019 04:41:47 +0000
-Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5A4fk0T009554;
-        Mon, 10 Jun 2019 04:41:46 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 09 Jun 2019 21:41:45 -0700
-Date:   Sun, 9 Jun 2019 21:41:44 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/8] mm/fs: don't allow writes to immutable files
-Message-ID: <20190610044144.GA1872750@magnolia>
-References: <155552786671.20411.6442426840435740050.stgit@magnolia>
- <155552787330.20411.11893581890744963309.stgit@magnolia>
- <20190610015145.GB3266@mit.edu>
+        id S2389813AbfFJM2y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Jun 2019 08:28:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46842 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389001AbfFJM2y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Jun 2019 08:28:54 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id B5AD4AE48
+        for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2019 12:28:52 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 617FCDAC82; Mon, 10 Jun 2019 14:29:40 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH v2 0/6] RAID1 with 3- and 4- copies
+Date:   Mon, 10 Jun 2019 14:29:40 +0200
+Message-Id: <cover.1559917235.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190610015145.GB3266@mit.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9283 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=748
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906100031
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9283 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=793 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906100032
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jun 09, 2019 at 09:51:45PM -0400, Theodore Ts'o wrote:
-> On Wed, Apr 17, 2019 at 12:04:33PM -0700, Darrick J. Wong wrote:
-> > diff --git a/mm/memory.c b/mm/memory.c
-> > index ab650c21bccd..dfd5eba278d6 100644
-> > --- a/mm/memory.c
-> > +++ b/mm/memory.c
-> > @@ -2149,6 +2149,9 @@ static vm_fault_t do_page_mkwrite(struct vm_fault *vmf)
-> >  
-> >  	vmf->flags = FAULT_FLAG_WRITE|FAULT_FLAG_MKWRITE;
-> >  
-> > +	if (vmf->vma->vm_file && IS_IMMUTABLE(file_inode(vmf->vma->vm_file)))
-> > +		return VM_FAULT_SIGBUS;
-> > +
-> >  	ret = vmf->vma->vm_ops->page_mkwrite(vmf);
-> >  	/* Restore original flags so that caller is not surprised */
-> >  	vmf->flags = old_flags;
-> 
-> Shouldn't this check be moved before the modification of vmf->flags?
-> It looks like do_page_mkwrite() isn't supposed to be returning with
-> vmf->flags modified, lest "the caller gets surprised".
+Hi,
 
-Yeah, I think that was a merge error during a rebase... :(
+this patchset brings the RAID1 with 3 and 4 copies as a separate
+feature as outlined in V1
+(https://lore.kernel.org/linux-btrfs/cover.1531503452.git.dsterba@suse.com/).
 
-Er ... if you're still planning to take this patch through your tree,
-can you move it to above the "vmf->flags = FAULT_FLAG_WRITE..." ?
+This should help a bit in the raid56 situation, where the write hole
+hurts most for metadata, without a block group profile that offers 2
+device loss resistance.
 
---D
+I've gathered some feedback from knowlegeable poeople on IRC and the
+following setup is considered good enough (certainly better than what we
+have now):
 
-> 	   	     	       	      	   - Ted
+- data: RAID6
+- metadata: RAID1C3
+
+The RAID1C3 vs RAID6 have different characteristics in terms of space
+consumption and repair.
+
+
+Space consumption
+~~~~~~~~~~~~~~~~~
+
+* RAID6 reduces overall metadata by N/(N-2), so with more devices the
+  parity overhead ratio is small
+
+* RAID1C3 will allways consume 67% of metadata chunks for redundancy
+
+The overall size of metadata is typically in range of gigabytes to
+hundreds of gigabytes (depends on usecase), rough estimate is from
+1%-10%. With larger filesystem the percentage is usually smaller.
+
+So, for the 3-copy raid1 the cost of redundancy is better expressed in
+the absolute value of gigabytes "wasted" on redundancy than as the
+ratio that does look scary compared to raid6.
+
+
+Repair
+~~~~~~
+
+RAID6 needs to access all available devices to calculate the P and Q,
+either 1 or 2 missing devices.
+
+RAID1C3 can utilize the independence of each copy and also the way the
+RAID1 works in btrfs. In the scenario with 1 missing device, one of the
+2 correct copies is read and written to the repaired devices.
+
+Given how the 2-copy RAID1 works on btrfs, the block groups could be
+spread over several devices so the load during repair would be spread as
+well.
+
+Additionally, device replace works sequentially and in big chunks so on
+a lightly used system the read pattern is seek-friendly.
+
+
+Compatibility
+~~~~~~~~~~~~~
+
+The new block group types cost an incompatibility bit, so old kernel
+will refuse to mount filesystem with RAID1C3 feature, ie. any chunk on
+the filesystem with the new type.
+
+To upgrade existing filesystems use the balance filters eg. from RAID6
+
+  $ btrfs balance start -mconvert=raid1c3 /path
+
+
+Merge target
+~~~~~~~~~~~~
+
+I'd like to push that to misc-next for wider testing and merge to 5.3,
+unless something bad pops up. Given that the code changes are small and
+just a new types with the constraints, the rest is done by the generic
+code, I'm not expecting problems that can't be fixed before full
+release.
+
+
+Testing so far
+~~~~~~~~~~~~~~
+
+* mkfs with the profiles
+* fstests (no specific tests, only check that it does not break)
+* profile conversions between single/raid1/raid5/raid1c3/raid6/raid1c4/raid1c4
+  with added devices where needed
+* scrub
+
+TODO:
+
+* 1 missing device followed by repair
+* 2 missing devices followed by repair
+
+
+David Sterba (6):
+  btrfs: add mask for all RAID1 types
+  btrfs: use mask for RAID56 profiles
+  btrfs: document BTRFS_MAX_MIRRORS
+  btrfs: add support for 3-copy replication (raid1c3)
+  btrfs: add support for 4-copy replication (raid1c4)
+  btrfs: add incompat for raid1 with 3, 4 copies
+
+ fs/btrfs/ctree.h                | 14 ++++++++--
+ fs/btrfs/extent-tree.c          | 19 +++++++------
+ fs/btrfs/scrub.c                |  2 +-
+ fs/btrfs/super.c                |  6 +++++
+ fs/btrfs/sysfs.c                |  2 ++
+ fs/btrfs/volumes.c              | 48 ++++++++++++++++++++++++++++-----
+ fs/btrfs/volumes.h              |  4 +++
+ include/uapi/linux/btrfs.h      |  5 +++-
+ include/uapi/linux/btrfs_tree.h | 10 +++++++
+ 9 files changed, 90 insertions(+), 20 deletions(-)
+
+-- 
+2.21.0
+
