@@ -2,71 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E32D13B5D6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2019 15:14:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 615093B6A6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2019 16:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390271AbfFJNOd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Jun 2019 09:14:33 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:51506 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2388848AbfFJNOd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Jun 2019 09:14:33 -0400
-Received: from callcc.thunk.org ([66.31.38.53])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5ADEILt032203
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Jun 2019 09:14:18 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id E4DDE420481; Mon, 10 Jun 2019 09:14:17 -0400 (EDT)
-Date:   Mon, 10 Jun 2019 09:14:17 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/8] mm/fs: don't allow writes to immutable files
-Message-ID: <20190610131417.GD15963@mit.edu>
-References: <155552786671.20411.6442426840435740050.stgit@magnolia>
- <155552787330.20411.11893581890744963309.stgit@magnolia>
- <20190610015145.GB3266@mit.edu>
- <20190610044144.GA1872750@magnolia>
+        id S2390627AbfFJOBs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Jun 2019 10:01:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33960 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390384AbfFJOBs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Jun 2019 10:01:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 1125FADE6;
+        Mon, 10 Jun 2019 14:01:47 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3B319DAC87; Mon, 10 Jun 2019 16:02:36 +0200 (CEST)
+Date:   Mon, 10 Jun 2019 16:02:36 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Hugo Mills <hugo@carfax.org.uk>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] RAID1 with 3- and 4- copies
+Message-ID: <20190610140235.GF30187@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Hugo Mills <hugo@carfax.org.uk>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1559917235.git.dsterba@suse.com>
+ <20190610124226.GA21016@carfax.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190610044144.GA1872750@magnolia>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190610124226.GA21016@carfax.org.uk>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jun 09, 2019 at 09:41:44PM -0700, Darrick J. Wong wrote:
-> On Sun, Jun 09, 2019 at 09:51:45PM -0400, Theodore Ts'o wrote:
-> > On Wed, Apr 17, 2019 at 12:04:33PM -0700, Darrick J. Wong wrote:
->
-> > Shouldn't this check be moved before the modification of vmf->flags?
-> > It looks like do_page_mkwrite() isn't supposed to be returning with
-> > vmf->flags modified, lest "the caller gets surprised".
+On Mon, Jun 10, 2019 at 12:42:26PM +0000, Hugo Mills wrote:
+>    Hi, David,
 > 
-> Yeah, I think that was a merge error during a rebase... :(
+> On Mon, Jun 10, 2019 at 02:29:40PM +0200, David Sterba wrote:
+> > this patchset brings the RAID1 with 3 and 4 copies as a separate
+> > feature as outlined in V1
+> > (https://lore.kernel.org/linux-btrfs/cover.1531503452.git.dsterba@suse.com/).
+> [...]
+> > Compatibility
+> > ~~~~~~~~~~~~~
+> > 
+> > The new block group types cost an incompatibility bit, so old kernel
+> > will refuse to mount filesystem with RAID1C3 feature, ie. any chunk on
+> > the filesystem with the new type.
+> > 
+> > To upgrade existing filesystems use the balance filters eg. from RAID6
+> > 
+> >   $ btrfs balance start -mconvert=raid1c3 /path
+> [...]
 > 
-> Er ... if you're still planning to take this patch through your tree,
-> can you move it to above the "vmf->flags = FAULT_FLAG_WRITE..." ?
+>    If I do:
+> 
+> $ btrfs balance start -mprofiles=raid13c,convert=raid1 \
+>                       -dprofiles=raid13c,convert=raid6 /path
+> 
+> will that clear the incompatibility bit?
 
-I was planning on only taking 8/8 through the ext4 tree.  I also added
-a patch which filtered writes, truncates, and page_mkwrites (but not
-mmap) for immutable files at the ext4 level.
+No the bit will stay, even though there are no chunks of the raid1c3
+type. Same for raid5/6.
 
-I *could* take this patch through the mm/fs tree, but I wasn't sure
-what your plans were for the rest of the patch series, and it seemed
-like it hadn't gotten much review/attention from other fs or mm folks
-(well, I guess Brian Foster weighed in).
+Dropping the bit would need an extra pass trough all chunks after
+balance, which is feasible and I don't see usability surprises. That you
+ask means that the current behaviour is probably opposite to what users
+expect.
 
-What do you think?
+> (I'm not sure if profiles= and convert= work together, but let's
+> assume that they do for the purposes of this question).
 
-						- Ted
-
-
-
+Yes they work together.
