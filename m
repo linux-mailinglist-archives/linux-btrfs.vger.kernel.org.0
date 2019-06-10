@@ -2,120 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 570FD3B7B7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2019 16:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3205A3B907
+	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2019 18:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390216AbfFJOsN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Jun 2019 10:48:13 -0400
-Received: from frost.carfax.org.uk ([85.119.82.111]:54232 "EHLO
-        frost.carfax.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389123AbfFJOsM (ORCPT
+        id S2391469AbfFJQJo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Jun 2019 12:09:44 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:36720 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389392AbfFJQJo (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Jun 2019 10:48:12 -0400
-Received: from hrm by frost.carfax.org.uk with local (Exim 4.80)
-        (envelope-from <hrm@carfax.org.uk>)
-        id 1haLag-0000oq-GO; Mon, 10 Jun 2019 14:48:06 +0000
-Date:   Mon, 10 Jun 2019 14:48:06 +0000
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] RAID1 with 3- and 4- copies
-Message-ID: <20190610144806.GB21016@carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>, dsterba@suse.cz,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1559917235.git.dsterba@suse.com>
- <20190610124226.GA21016@carfax.org.uk>
- <20190610140235.GF30187@twin.jikos.cz>
+        Mon, 10 Jun 2019 12:09:44 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5AG8dYb186787;
+        Mon, 10 Jun 2019 16:09:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=q/XqjsUkDq6xevue9zs57YIabmhhkQKl2VGDHiV5jq4=;
+ b=z113WwHcxX3n/yhODGaHV37Y8Y2xpZmcyhxxxXzJA/k/rxOYXjF2MjD/1uhcbfhftRYf
+ 5pqMjh5K3CtHPhzszPk3sJvtarblaJBFXn+SMzznHbGaB/24N8rQCO6FIzIJiYWF5Jmy
+ 0Ctn3AGwZpPxskUF74cndxv7urz5f3+PcDqCnsdci1pwvBGZZ6ksWHEShe2xXI4W3GG/
+ zsFwGRTeohmYJJragnO65tWk+/TgIVgAHp17i7Qzmiy9ZuC84qzcwRNBXZbhGeO1dq1K
+ Yw1OMGx7ZEqHS/69RztKNiTCeLKDWlHFChndJrLK17c0MsRVkQQFuAzKKwCH+BVYyVom Lg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2t04etfvt2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 10 Jun 2019 16:09:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5AG9TMe154450;
+        Mon, 10 Jun 2019 16:09:37 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2t024twpwf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 10 Jun 2019 16:09:37 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5AG9aDJ022183;
+        Mon, 10 Jun 2019 16:09:36 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 10 Jun 2019 09:09:36 -0700
+Date:   Mon, 10 Jun 2019 09:09:34 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 1/8] mm/fs: don't allow writes to immutable files
+Message-ID: <20190610160934.GH1871505@magnolia>
+References: <155552786671.20411.6442426840435740050.stgit@magnolia>
+ <155552787330.20411.11893581890744963309.stgit@magnolia>
+ <20190610015145.GB3266@mit.edu>
+ <20190610044144.GA1872750@magnolia>
+ <20190610131417.GD15963@mit.edu>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="9zSXsLTf0vkW971A"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190610140235.GF30187@twin.jikos.cz>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190610131417.GD15963@mit.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906100110
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906100110
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
---9zSXsLTf0vkW971A
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 10, 2019 at 04:02:36PM +0200, David Sterba wrote:
-> On Mon, Jun 10, 2019 at 12:42:26PM +0000, Hugo Mills wrote:
-> >    Hi, David,
+On Mon, Jun 10, 2019 at 09:14:17AM -0400, Theodore Ts'o wrote:
+> On Sun, Jun 09, 2019 at 09:41:44PM -0700, Darrick J. Wong wrote:
+> > On Sun, Jun 09, 2019 at 09:51:45PM -0400, Theodore Ts'o wrote:
+> > > On Wed, Apr 17, 2019 at 12:04:33PM -0700, Darrick J. Wong wrote:
+> >
+> > > Shouldn't this check be moved before the modification of vmf->flags?
+> > > It looks like do_page_mkwrite() isn't supposed to be returning with
+> > > vmf->flags modified, lest "the caller gets surprised".
 > > 
-> > On Mon, Jun 10, 2019 at 02:29:40PM +0200, David Sterba wrote:
-> > > this patchset brings the RAID1 with 3 and 4 copies as a separate
-> > > feature as outlined in V1
-> > > (https://lore.kernel.org/linux-btrfs/cover.1531503452.git.dsterba@suse.com/).
-> > [...]
-> > > Compatibility
-> > > ~~~~~~~~~~~~~
-> > > 
-> > > The new block group types cost an incompatibility bit, so old kernel
-> > > will refuse to mount filesystem with RAID1C3 feature, ie. any chunk on
-> > > the filesystem with the new type.
-> > > 
-> > > To upgrade existing filesystems use the balance filters eg. from RAID6
-> > > 
-> > >   $ btrfs balance start -mconvert=raid1c3 /path
-> > [...]
+> > Yeah, I think that was a merge error during a rebase... :(
 > > 
-> >    If I do:
-> > 
-> > $ btrfs balance start -mprofiles=raid13c,convert=raid1 \
-> >                       -dprofiles=raid13c,convert=raid6 /path
-> > 
-> > will that clear the incompatibility bit?
+> > Er ... if you're still planning to take this patch through your tree,
+> > can you move it to above the "vmf->flags = FAULT_FLAG_WRITE..." ?
 > 
-> No the bit will stay, even though there are no chunks of the raid1c3
-> type. Same for raid5/6.
+> I was planning on only taking 8/8 through the ext4 tree.  I also added
+> a patch which filtered writes, truncates, and page_mkwrites (but not
+> mmap) for immutable files at the ext4 level.
+
+*Oh*.  I saw your reply attached to the 1/8 patch and thought that was
+the one you were taking.  I was sort of surprised, tbh. :)
+
+> I *could* take this patch through the mm/fs tree, but I wasn't sure
+> what your plans were for the rest of the patch series, and it seemed
+> like it hadn't gotten much review/attention from other fs or mm folks
+> (well, I guess Brian Foster weighed in).
+
+> What do you think?
+
+Not sure.  The comments attached to the LWN story were sort of nasty,
+and now that a couple of people said "Oh, well, Debian documented the
+inconsistent behavior so just let it be" I haven't felt like
+resurrecting the series for 5.3.
+
+I do want to clean up the parameter validation for the VFS SETFLAGS and
+FSSETXATTR ioctls though... eh, maybe I'll just send out the series as
+it stands now.  I'm still maintaining it, so all that work might as well
+go somewhere.
+
+--D
+
 > 
-> Dropping the bit would need an extra pass trough all chunks after
-> balance, which is feasible and I don't see usability surprises. That you
-> ask means that the current behaviour is probably opposite to what users
-> expect.
-
-   We've had a couple of cases in the past where people have tried out
-a new feature on a new kernel, then turned it off again and not been
-able to go back to an earlier kernel. Particularly in this case, I can
-see people being surprised at the trapdoor. "I don't have any RAID13C
-on this filesystem: why can't I go back to 5.2?"
-
-   Hugo.
-
--- 
-Hugo Mills             | Great films about cricket: Forrest Stump
-hugo@... carfax.org.uk |
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |
-
---9zSXsLTf0vkW971A
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJc/m2mAAoJEFheFHXiqx3k7LgP/3PLZlO4kVm3xI/RmWru0DaU
-uPAZDMKReMNlYPS2bH570C2A8toYkL/sIeTwjaHWQOWXCflAC7OHD3HFQyQN/Ukk
-/Au4q/osRd/1d4qKIeg7cRq0jf/hYM7hZSHNX37EJh1gfcwvnBxl2oNHhTyUb/MZ
-Pw7DTbx7mFIPJvjMnAepNiWymAi/eLlVnlpeYgxN3v2752AwA6IpDSs2LApR02a8
-3jAAJ9a2/rUMit4D4LRX03LUOC5kzZLiLf9BH6ehZmohTWb3q0Uwe0J+jkFgxDeu
-TjSbjlmNESGufYZ2jBlqEBzeNN8BxzvPG2II93H2D/kZqDn+CA/Z0J85sNQfplDA
-9YsaSW8YM1b6pg0T3iNK1Dc+s5LHMak5jaixwL3jvUlMacZNidxSwEboDJrEWOlW
-+TEw2DllXvwYI79jen21vz8Jo+DazeqrGCSRMIO1sG8Z+STPWlcVNxLXutMGEqlD
-bRY6OC8qViD6R+Bs6jWTFx6uXpyG4ZIz3DyNynHDT68rRw0Jyyq2Orn8PdI061u+
-ukrK0HGItu7XGsc8CuySc1OPGl97L+2nsF7yXzKY5vLy6kZZfm6OmeQ2Ng5p/64Z
-qPZ43MsZhdPSWQZQKX11+Q524hDO0IT5S19OCtVLEbn31mswaudBsSHwqvVrTm2m
-oYSzpH0UXJXqQHEPAjmP
-=av2L
------END PGP SIGNATURE-----
-
---9zSXsLTf0vkW971A--
+> 						- Ted
+> 
+> 
+> 
