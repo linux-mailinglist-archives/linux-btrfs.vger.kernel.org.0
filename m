@@ -2,92 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F94E3BDA6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 10 Jun 2019 22:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43CD23BFC6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 01:14:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389742AbfFJUmC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Jun 2019 16:42:02 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:60681 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2389538AbfFJUmC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Jun 2019 16:42:02 -0400
-Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x5AKfsg3006278
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 10 Jun 2019 16:41:55 -0400
-Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id 1ADDB420481; Mon, 10 Jun 2019 16:41:54 -0400 (EDT)
-Date:   Mon, 10 Jun 2019 16:41:54 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/8] mm/fs: don't allow writes to immutable files
-Message-ID: <20190610204154.GA5466@mit.edu>
-References: <155552786671.20411.6442426840435740050.stgit@magnolia>
- <155552787330.20411.11893581890744963309.stgit@magnolia>
- <20190610015145.GB3266@mit.edu>
- <20190610044144.GA1872750@magnolia>
- <20190610131417.GD15963@mit.edu>
- <20190610160934.GH1871505@magnolia>
+        id S2390520AbfFJXOH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Jun 2019 19:14:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390340AbfFJXOG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 10 Jun 2019 19:14:06 -0400
+Received: from gmail.com (unknown [104.132.1.77])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE52820859;
+        Mon, 10 Jun 2019 23:14:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560208446;
+        bh=1znbKbPJNbimnR4+MsOLwFF4y5Rj5sFfCVC3jk2xIAc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oXevS+q4qXOL7M6k9CFJifTza+Kp/5K8C/xY5scvGNIU/Y3g8+WncH2XXv3UZiud6
+         NsxkAB6IUZdt34lejn50ijPpUuzPX/w3TYfTkcvYvd9XF72zEWpRug2xtjjMwWIB0L
+         e1UO/HznlOcoQhP8TW8X7jq7yhqrKc1b/IihEZGc=
+Date:   Mon, 10 Jun 2019 16:14:04 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        syzbot <syzbot+5b658d997a83984507a6@syzkaller.appspotmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: kernel BUG at fs/btrfs/volumes.c:LINE!
+Message-ID: <20190610231403.GZ63833@gmail.com>
+References: <00000000000096009b056df92dc1@google.com>
+ <70a3c2d1-3f53-d4c0-13b3-29f836ec46d9@oracle.com>
+ <20180607153450.GF3215@twin.jikos.cz>
+ <CACT4Y+arBwkwhD-kob9fg1pVBXiMepW6KBK2LkhwjQ9HnDcoqw@mail.gmail.com>
+ <20180607165213.GI3215@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190610160934.GH1871505@magnolia>
+In-Reply-To: <20180607165213.GI3215@twin.jikos.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 09:09:34AM -0700, Darrick J. Wong wrote:
-> > I was planning on only taking 8/8 through the ext4 tree.  I also added
-> > a patch which filtered writes, truncates, and page_mkwrites (but not
-> > mmap) for immutable files at the ext4 level.
+On Thu, Jun 07, 2018 at 06:52:13PM +0200, David Sterba wrote:
+> On Thu, Jun 07, 2018 at 06:28:02PM +0200, Dmitry Vyukov wrote:
+> > > Normally the GFP_NOFS allocations do not fail so I think the fuzzer
+> > > environment is tuned to allow that, which is fine for coverage but does
+> > > not happen in practice. This will be fixed eventually.
+> > 
+> > Isn't GFP_NOFS more restricted than normal allocations?  Are these
+> > allocations accounted against memcg? It's easy to fail any allocation
+> > within a memory container.
 > 
-> *Oh*.  I saw your reply attached to the 1/8 patch and thought that was
-> the one you were taking.  I was sort of surprised, tbh. :)
-
-Sorry, my bad.  I mis-replied to the wrong e-mail message  :-)
-
-> > I *could* take this patch through the mm/fs tree, but I wasn't sure
-> > what your plans were for the rest of the patch series, and it seemed
-> > like it hadn't gotten much review/attention from other fs or mm folks
-> > (well, I guess Brian Foster weighed in).
+> https://lwn.net/Articles/723317/ The 'too small to fail' and some
+> unwritten semantics of GFP_NOFS but I think you're right about the
+> memory controler that can fail any allocation though.
 > 
-> > What do you think?
+> Error handling is being improved over time, the memory allocation
+> failures are in some cases hard and this one would need to update some
+> logic so it's not a oneliner.
 > 
-> Not sure.  The comments attached to the LWN story were sort of nasty,
-> and now that a couple of people said "Oh, well, Debian documented the
-> inconsistent behavior so just let it be" I haven't felt like
-> resurrecting the series for 5.3.
 
-Ah, I had missed the LWN article.   <Looks>
+This bug is still there.  In btrfs_close_one_device():
 
-Yeah, it's the same set of issues that we had discussed when this
-first came up.  We can go round and round on this one; It's true that
-root can now cause random programs which have a file mmap'ed for
-writing to seg fault, but root has a million ways of killing and
-otherwise harming running application programs, and it's unlikely
-files get marked for immutable all that often.  We just have to pick
-one way of doing things, and let it be same across all the file
-systems.
+	if (device->name) {
+		name = rcu_string_strdup(device->name->str, GFP_NOFS);
+		BUG_ON(!name); /* -ENOMEM */
+		rcu_assign_pointer(new_device->name, name);
+	}
 
-My understanding was that XFS had chosen to make the inode immutable
-as soon as the flag is set (as opposed to forbidding new fd's to be
-opened which were writeable), and I was OK moving ext4 to that common
-interpretation of the immmutable bit, even though it would be a change
-to ext4.
+It assumes that the memory allocation succeeded.
 
-And then when I saw that Amir had included a patch that would cause
-test failures unless that patch series was applied, it seemed that we
-had all thought that the change was a done deal.  Perhaps we should
-have had a more explicit discussion when the test was sent for review,
-but I had assumed it was exclusively a copy_file_range set of tests,
-so I didn't realize it was going to cause ext4 failures.
+See syzbot report from v5.2-rc3 here: https://syzkaller.appspot.com/text?tag=CrashReport&x=16c839c1a00000
 
-     	    	       	   	 - Ted
+Is there any plan to fix this?
+
+- Eric
