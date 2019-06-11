@@ -2,168 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BA13C0C9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 03:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242453C0CD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 03:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389725AbfFKBKa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Jun 2019 21:10:30 -0400
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:50509 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388845AbfFKBKa (ORCPT
+        id S2390238AbfFKBLb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Jun 2019 21:11:31 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:48639 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389723AbfFKBLb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Jun 2019 21:10:30 -0400
-Received: by mail-wm1-f51.google.com with SMTP id c66so1079990wmf.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 10 Jun 2019 18:10:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OHZqsfh5YeO6UmGkKCqd4/e5xGIJFJzcN5KGppJxLwQ=;
-        b=xmg7ysHUAwGAKt9NnNgqqJdRg1xxhv3SbBhli22n3Fbx8qwougoaqDayaWuR7hkmLQ
-         zD7Dzo+D2eDaC/HkeeZloJoE2xDF7qPHf0f9KjEFzQjjkUDYvoyTgb1DZMINiRforl7h
-         xwgG+i+2iRIdD46+BjcJKyOaOliukDcp1tePMs1/Tfqu0iAmVCFjLLdhozw9oAiooghU
-         9iEBZnrYtkZfPiQfIHcHNKZrmxLfW9XGURBpVqyHzrlBj9k7e3AHA2SQrptkKiZ+bQLa
-         9MUuMZX9XCoaBgXgzfGbCw8jIbItbkHUEoxNR1kc3m7O/uHyLYJ2DsWX8A/net3xmWJl
-         710Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OHZqsfh5YeO6UmGkKCqd4/e5xGIJFJzcN5KGppJxLwQ=;
-        b=D0Jau/K1Gez8fG4OQEO39wr1ntxypEeVULPufnW/gFtokfUeRT+aAATksDviBS8vm/
-         K5kPzcqSdgH1c/r5t1mKiIP1gj11sBByGYE07rPQU7aNqBbd7twX0WtKLwVz/CqfCYVe
-         TDXPExBl2XxK0WqE+c1026LQsIKJSjJCV0r+U31BzdhUBus0nEoYjA6MVUPjuT2rEd0+
-         MzzAzaYbHfv5G2nF6cdT8W4hLCD2bbk21RCa1Arciefy5xzT0LAFNW/iB28/CAtNWEMZ
-         52Jws+zx0sD6Cb/v1OC+f8xYkBJ4MRJTnsglW1tOba2S78DdS4EglCXPeeNOz3XA/OGK
-         Q4iQ==
-X-Gm-Message-State: APjAAAVwxw9+yFo8DyvYEeRl2dvdqbtE3bi5vupF21Xc69V61GSb5VNv
-        ahJhivvSfJFHhVaKDrLl2eH05VFVAhz6t92xnMp9su4QMrw=
-X-Google-Smtp-Source: APXvYqzHw68TStb5wup3/xbcxbZ6v1Kpp+0gsFLjpzzEedkNy4timVW4D8R8UzXGuinlWWKCMqYFjEw/lzCMGShgzo0=
-X-Received: by 2002:a1c:a997:: with SMTP id s145mr15184351wme.106.1560215428206;
- Mon, 10 Jun 2019 18:10:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
-In-Reply-To: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 10 Jun 2019 19:10:17 -0600
-Message-ID: <CAJCQCtSLVxVtArLHrx0XD6J1oWOowqAnOPzeWVx3J25O7vxFQw@mail.gmail.com>
+        Mon, 10 Jun 2019 21:11:31 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id 6FB34477;
+        Mon, 10 Jun 2019 21:11:29 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 10 Jun 2019 21:11:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type; s=fm3; bh=+1ls2VRp+oZJa/za1CSadqiM1s8
+        +frcH/RsVQnk1ROM=; b=ALNnpRu73HxSWH1cDgJR14XumJ3cqHNcWBHYpUjbhjZ
+        DL0ehIscHmeVL8gQPv4Zcg2PZxdycQrCoFGYeTBhmjtpTowl2iosfcn+6LwsGl6v
+        jjmaTgvcWnxyeiN+UW/v5aIQKKLnYr9nvlLsaRU05O/qSp9jvrjuWjMDMWhOsiN8
+        yp/lIadchow65M09NTVk5p/dcykJH5nsOX71M7fLu5SwCuiDcMnzTEyxMUIamhC7
+        Z4iDwW11CYxbUNSyxOQLlCcBPC24H6PP8YRpv81Kkazrx1z/ksMPOBu+TCiuzUF2
+        /i5yzdg3mKTIjin91pvMazIVOsLDYaRgmNSDpCGtPsg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+1ls2V
+        Rp+oZJa/za1CSadqiM1s8+frcH/RsVQnk1ROM=; b=D+WB6A/7OqetbFA9i8G0S7
+        ONCeLqeHpaIzJj5VAXLOSEwqt8K3n5NjGqTJ6ZXSoMZwlSNzzriI4yiw7nBj/fNQ
+        JVgl63sI0JRJE7MZJn0sgj2GylVF29aDRj5T7ULsq/ISA4Y0fv2YyG3lC8N+1MkM
+        dLD1Utc4QZy6N67sACaTh/3Y3CuSE6jpzhsCTR/GyOqS0CUoHFUKb/AZZjenel0Z
+        XXQR+xtSFyTigQUbMfPoVjuZkoCJVKD9alGGPliYLOCYkHPH6Z9RBknLNKwmeYCy
+        XexRcac9mP1myp6zqHhW8ocKdLHz7MZOeg455BtpIJC1+9U42XhTdmDdvckCWQrg
+        ==
+X-ME-Sender: <xms:wP_-XN9muEv0IbqEy_T-Hq2J4zrmaituyqytPzin_OfMSLMwC8hjCA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduuddrudehfedggeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepuffvfhfhkffffgggjggtsehgtderofdtfeehnecuhfhrohhmpeftvghmihcu
+    ifgruhhvihhnuceorhgvmhhisehgvghorhhgihgrnhhithdrtghomheqnecukfhppedufe
+    ehrddvfedrvdegiedrudefudenucfrrghrrghmpehmrghilhhfrhhomheprhgvmhhisehg
+    vghorhhgihgrnhhithdrtghomhenucevlhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:wP_-XDCAzL00GFj7g9PKN4p9rmKRVNb9bumeKs4GMd3z3IGevZ1gog>
+    <xmx:wP_-XNf7pyX2Y6R5eo7WyUGiIq3KhRSQaiA-HarNoFema_A-c8em4Q>
+    <xmx:wP_-XHGkutko9uMhCe1l1dIEXlePC6GwsWBegHQxm2byaAPM_BpAMg>
+    <xmx:wf_-XGoWZmtWB7nly6DatROE9c-VXnb3JpENOyAC1n1uO5D48ltMNg>
+Received: from [10.0.0.6] (135-23-246-131.cpe.pppoe.ca [135.23.246.131])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 76BEB80060;
+        Mon, 10 Jun 2019 21:11:28 -0400 (EDT)
 Subject: Re: Issues with btrfs send/receive with parents
-To:     Eric Mesa <eric@ericmesa.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     Eric Mesa <eric@ericmesa.com>, linux-btrfs@vger.kernel.org
+References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
+From:   Remi Gauvin <remi@georgianit.com>
+Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
+Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
+ keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
+ CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
+ sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
+ t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
+ 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
+ AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
+ IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
+ OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
+ 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
+ WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
+ k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
+ Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
+ R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
+ WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
+ QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
+ jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
+ oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
+ BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
+ XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
+ r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
+ phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
+ nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
+ SY9JJa155sI=
+Message-ID: <17367bc7-fe7d-5014-7b75-2a3520da119f@georgianit.com>
+Date:   Mon, 10 Jun 2019 21:11:27 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
+MIME-Version: 1.0
+In-Reply-To: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="2yyV7gdS7wNpvVFoc69o1I6sVyDUZ9nRp"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 6:03 PM Eric Mesa <eric@ericmesa.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--2yyV7gdS7wNpvVFoc69o1I6sVyDUZ9nRp
+Content-Type: multipart/mixed; boundary="W0vh9Ky8jpGhdCd0n8GcQTEE8HDwhqIsW";
+ protected-headers="v1"
+From: Remi Gauvin <remi@georgianit.com>
+To: Eric Mesa <eric@ericmesa.com>, linux-btrfs@vger.kernel.org
+Message-ID: <17367bc7-fe7d-5014-7b75-2a3520da119f@georgianit.com>
+Subject: Re: Issues with btrfs send/receive with parents
+References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
+In-Reply-To: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
 
-> When I did the btrfs send / receive for SSDHome it took 2.5 days to send
-> ~500GiB over a 1GBps cable to the 3GBps drive in the server. It also had the
-> error:
-> ERROR: failed to clone extents to ermesa/.cache/krunner/
-> bookmarkrunnerfirefoxfavdbfile.sqlite: Invalid argument
+--W0vh9Ky8jpGhdCd0n8GcQTEE8HDwhqIsW
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-While there are distinct send and receive errors possible, I'm not
-familiar with recognizing them. You can get a better idea what the
-problem is with -vv or -vvv to get a more verbose error on the side
-that's having the problem. My guess is this is a send error message.
+On 2019-06-10 7:56 p.m., Eric Mesa wrote:
 
-
->
-> Let's say that snapshot A is a snapshot sent to the server without -p. It
-> sends the entire 500GB for 18 hours.
->
-> Then I do snapshot B. I send it with -p - takes 15 minutes or so depending on
-> how much data I've added.
->
-> Then I do snapshot C - and here I always get an error.
-
-It's most useful if you show exact commands because actually it's not
-always obvious to everyone what the logic should be and the error
-handling doesn't always stop a user from doing something that doesn't
-make a lot of sense. We need to know the name of the rw subvolume; the
-command to snapshot it; the full send/receive command for that first
-snapshot; the command for a subsequent snapshot; and the command to
-incrementally send/receive it.
-
-
-
-
->
-> And it always is something like:
->
 > ERROR: link ermesa/.mozilla/firefox/n35gu0fb.default/bookmarkbackups/
-> bookmarks-2019-06-09_679_I1bs5PtgsPwtyXvcvcRdSg==.jsonlz4 -> ermesa/.mozilla/
+> bookmarks-2019-06-09_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 -> ermesa=
+/.mozilla/
 > firefox/n35gu0fb.default/bookmarkbackups/
-> bookmarks-2019-06-08_679_I1bs5PtgsPwtyXvcvcRdSg==.jsonlz4 failed: No such file
+> bookmarks-2019-06-08_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 failed: N=
+o such file=20
 > or directory
+>=20
 
-
->
-> It always involves either .cache or .mozilla - the types of files that are
-> constantly changing.
->
-> It doesn't matter if I do a defrag before snapshot C followed by the sync
-> command. It seems that for SSDHome I can only do one full snap send and then
-> one parent send.
-
-I don't actually know the status of snapshot aware defragmentation. It
-wasn't there, then it was there, then there were problems, and I think
-it was pulled rather than fixed. But I don't remember really. I also
-don't know if there's a difference between manual defragging and
-autodefrag, because I don't use either one. I do use reflinks. And I
-have done deduplication. And I don't have any send/receive failures. I
-do sometimes see slow sections of send/receive.
+Are you by any chance using btrfs property to change RO snapshots RW?
+That must *never* be done to parent subvolumes, on either sending or
+receiving side.  (Really probably not a good idea to do at all outside
+of very special development/testing cases, but is guaranteed to make of
+mess of send/receive.)
 
 
 
->
-> Again, so far it seems to be working fine with the other drives which seems to
-> suggest to me that it's maybe not the version of my kernel or btrfs progs or
-> anything else.
 
-Do you remember the mkfs command for this file system? Or also helpful would be:
+--W0vh9Ky8jpGhdCd0n8GcQTEE8HDwhqIsW--
 
-# btrfs insp dump-s -f /dev/X  ## for both send and receive side file
-system (only one device from each Btrfs volume is needed), this will
-give us an idea what the mkfs options were including feature flags.
+--2yyV7gdS7wNpvVFoc69o1I6sVyDUZ9nRp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-> And dmesg.log is attached
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-[    6.949347] BTRFS info (device sdb1): enabling auto defrag
+iQEcBAEBCAAGBQJc/v+/AAoJEO9Tn/JHRWpt8uEH/2B+yv2nhyCkBqT8CG6bwYAF
+8u64SkqEQofobucPcsA1AtjHCChEyvEW17L+37UIAGMAzAAzPeT7nL7si23U1lBv
+h2NSAUf9umJ+vkFGUOzEO0O868DslPvnzm1kFFUSas6c+d+4eWPi2WsSqIabU1Xg
+JdJoV8KrftajAGaZYliZce3MpBsWmnK/ZzMiHjtF9mo0y/KIocL0sGnUq8Y89zgG
+VzXi80QX01unZftKCVQWqbvkgC7le0Y6gk8jfylB0NqlATWoiyL1lHuMPrCD4kog
+qfC44DvmiPFkVFp1up337jurWQtL12QWkw/KSB/qNOQrPy9amttpKH7s5V9l+Mo=
+=Tkxj
+-----END PGP SIGNATURE-----
 
-Could be related. And then also
-
-[    9.906695] usb-storage 8-1.3:1.0: USB Mass Storage device detected
-[    9.907006] scsi host7: usb-storage 8-1.3:1.0
-[   10.950446] scsi 7:0:0:0: Direct-Access     B&N      NOOK
-  0322 PQ: 0 ANSI: 2
-[   10.951110] sd 7:0:0:0: Attached scsi generic sg7 type 0
-[   10.951161] sd 7:0:0:0: Power-on or device reset occurred
-[   10.952880] sd 7:0:0:0: [sdg] Attached SCSI removable disk
-snip
-[  267.794434] usb 9-1.1: reset SuperSpeed Gen 1 USB device number 3
-using xhci_hcd
-[  272.838054] usb 9-1.1: device descriptor read/8, error -110
-[  272.941832] usb 9-1.1: reset SuperSpeed Gen 1 USB device number 3
-using xhci_hcd
-[  277.958049] usb 9-1.1: device descriptor read/8, error -110
-[  278.236339] usb 9-1.1: reset SuperSpeed Gen 1 USB device number 3
-using xhci_hcd
-
-
-USB enclosed drives can be troublesome with any file system, expressly
-because of these seemingly random reset that happen. I had the same
-thing in an early form of my setup, and it did cause me problems that
-Btrfs worked around. But I considered it untenable and fixed it with a
-good quality self-powered USB hub (don't rely on bus power), or
-perhaps more specifically one that comes with a high amp power
-adapter. It needs to be able to drive all the drives in their
-read/write usage, which for laptop drives is ~0.35A each.
-
-You really shouldn't be getting link resets like the above, even
-though I suspect it's unrelated to the current problem report.
-
--- 
-Chris Murphy
+--2yyV7gdS7wNpvVFoc69o1I6sVyDUZ9nRp--
