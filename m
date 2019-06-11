@@ -2,58 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4863D25B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 18:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616DB3D2E7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 18:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404335AbfFKQgs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Jun 2019 12:36:48 -0400
-Received: from mail-it1-f179.google.com ([209.85.166.179]:53861 "EHLO
-        mail-it1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404082AbfFKQgs (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jun 2019 12:36:48 -0400
-Received: by mail-it1-f179.google.com with SMTP id m187so6000784ite.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 09:36:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=vDT/sAXPKl080P/KkIxhJ+x7UcujA/XP62PKmhoj/uQ=;
-        b=GaVMIS4eeFUwitPGrkl7ncCUqnisubc2ULjkosd4Eu+6jt7XBym5kDjLHL4thz0W5f
-         kI3CI9YAmVNVCeOo0adOQ/s44ZtHenVJltMCqU3UmtXX1v0n/+2YuLfNO/RCBaCBJcf2
-         QxUO9ANCvRkpJ5JMrNRzoCyUloQVaCjA/0OBU2xArdcO0t/0XZw0OHQRKntFlnSwnvcu
-         pSS1Q6hspsKbKYZHndZ9MlfmfPcPtI7/TR9MHI5b1XfjnwDTsnaj3qewIjziyYGaUKoq
-         dGy21ZRjNFxRBKnIUOYCOBVpfIQPXSx5LRcixfkub5UKe41O3uJC1k6Yx/velDRGjZCg
-         uHtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=vDT/sAXPKl080P/KkIxhJ+x7UcujA/XP62PKmhoj/uQ=;
-        b=rkWdA68fO+USSqqRXqztDe7ri94jtgEQMB/Rz6i42VlNrgbq1c98pyI5iX4TX0BaQ8
-         YKUa8yjmdlbCi1OOQFu17Y4XhkXUL8c0JWYQxaGhyFkia8py2pwBmtI4xZVxn+z7B6M4
-         X71AdKUecMG8+p4cptHHgsDP3X+QBKvUu0HwBNPeUwhVVsMU98DyfIOKhW7Hn6IhNVZN
-         NU9eJ9GX3F9m9ZfJpmURkkDdM6talM54a9bEK3AgxnEqhAexQEAmjoSQrq1frmCQbimr
-         70U2NwHKMP5yh/xyiZh7BsvwNagE4JsPFt05C+YsHnuyTijjz34Arc3p9cAHmA3oIM8b
-         DG1g==
-X-Gm-Message-State: APjAAAXkGGw1tiRn/3otMMTvvyCrC9GEig8tv24RwGM2VI/J/ffgUei0
-        c/tUzJBQsDqloObC8G8AHsA4LeX009EOBJCjpJ4UCiWC
-X-Google-Smtp-Source: APXvYqyCEkKMpsTQhqsUVD43+Z2bTgRGDaWyswl83heUM5+flhSIsP4VXi6qgrN0/0V5zE0KhQUd3hMq1SpL95lgEuE=
-X-Received: by 2002:a02:914c:: with SMTP id b12mr8919838jag.105.1560271006804;
- Tue, 11 Jun 2019 09:36:46 -0700 (PDT)
-MIME-Version: 1.0
-From:   Jason Ellison <infotek@gmail.com>
-Date:   Tue, 11 Jun 2019 11:36:08 -0500
-Message-ID: <CAFQKmtfhZ3-yr1kP-d_egZ8NMz6ShsHu3twemuWg+-0KG8-Upw@mail.gmail.com>
-Subject: join
+        id S2390442AbfFKQqu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jun 2019 12:46:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46070 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390050AbfFKQqu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Jun 2019 12:46:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6C197AC2C
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 16:46:49 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A90A2DA905; Tue, 11 Jun 2019 18:47:40 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Subject: Btrfs progs release 5.1.1
+Date:   Tue, 11 Jun 2019 18:47:40 +0200
+Message-Id: <20190611164740.14472-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.21.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-join
+Hi,
 
-Regards,
+btrfs-progs version 5.1.1 have been released.
 
-Jason Ellison
-251.202.4519
+Changes:
+
+  * convert and mkfs will try to use optimized crc32c
+  * fi show: accept a file-backed image
+  * fi show: fix possible crash when device is deleted in parallel
+  * build:
+    * support extra flags for python bindings
+    * separate LDFLAGS for libbtrfsutil
+  * other:
+    * space reservation fixes or debugging improvements
+    * V0 extent code removed
+    * more tests and cleanups
+
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
+
+Shortlog:
+
+David Sterba (9):
+      btrfs-progs: tests: unmount testing mount point recursively
+      btrfs-progs: tests: add helper for common mkfs on TEST_DEV
+      btrfs-progs: switch to mkfs helper
+      btrfs-progs: tests: fix misc-tests/029 to run on NFS
+      btrfs-progs: tests: misc-tests/034: use sudo helper for module probing
+      btrfs-progs: test: cleanup misc-tests/034
+      btrfs-progs: fix gcc9 warning and potentially unaligned access to dev stats
+      btrfs-progs: update CHANGES for v5.1.1
+      Btrfs progs v5.1.1
+
+Joshua Watt (1):
+      btrfs-progs: build: Pass CFLAGS and LDFLAGS to Python
+
+Nikolay Borisov (2):
+      btrfs-progs: Correctly open filesystem on image file
+      btrfs-progs: tests: Test fs on image files is correctly recognised
+
+Qu Wenruo (7):
+      btrfs-progs: convert: Workaround delayed ref bug by limiting the size of a transaction
+      btrfs-progs: Output extent tree leaf if we failed to find a backref
+      btrfs-progs: Enable crc32c optimization probe for convert and mkfs
+      btrfs-progs: Cleanup BTRFS_COMPAT_EXTENT_TREE_V0
+      btrfs-progs: check/lowmem: Reset path in repair mode to avoid incorrect item from being passed to lowmem check.
+      btrfs-progs: Avoid nested chunk allocation call
+      btrfs-progs: Do metadata preallocation for fs trees and csum tree
+
+Sergei Trofimovich (1):
+      btrfs-progs: build: apply LDFLAGS to libbtrfsutil.so
+
+Su Yue (1):
+      btrfs-progs: fix invalid memory write in get_fs_info()
+
