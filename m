@@ -2,103 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C4A6A3C9AB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 13:03:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A36CD3CAA7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 14:02:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388764AbfFKLDR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Jun 2019 07:03:17 -0400
-Received: from atlantic.aurorasky.eu ([80.241.214.27]:50646 "EHLO
-        atlantic.aurorasky.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387899AbfFKLDR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jun 2019 07:03:17 -0400
-X-Greylist: delayed 593 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 Jun 2019 07:03:16 EDT
-X-BitDefender-CF-Stamp: none
-X-BitDefender-SpamStamp: Build: [Engines: 2.15.8.1169, Dats: 588906, Stamp: 3], Multi: [Enabled, t: (0.000059,0.008053)], BW: [Enabled, t: (0.000042), whitelisted: *@winca.de], total: 0(675)
-X-Junk-Score: 0 []
-X-BitDefender-Spam: No (0)
-Received: from localhost (localhost [127.0.0.1])
-        by atlantic.aurorasky.eu (Postfix) with ESMTP id 167AD8C0C30
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 12:53:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=winca.de; h=
-        message-id:subject:subject:from:from:date:date
-        :content-transfer-encoding:content-type:content-type
-        :mime-version; s=default; t=1560250401; x=1562064802; bh=rSlhpF7
-        MiHiWQKLdWjCldOBSKL1h6XuAY/yk43wU1Pc=; b=KbJtmDxgAowkmHrGEYzrK7x
-        s/qLDtV81T4Tymh5nqfOCbFIUXFR8GwvZDSFSYaub9BIUU2jQG76hJnv7LsuVjQa
-        blg0PF483lz9gYSNAYI0ryKgiNUwT3azZ7+UXMssrq57ugX5bhjyHdsyp8V/z2hG
-        j7+CoIUhLaegLXzsD/1Q=
-X-Virus-Scanned: Debian amavisd-new at aurorasky.eu
-Received: from atlantic.aurorasky.eu ([127.0.0.1])
-        by localhost (vmd14184.contabo.host [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id XUC_9JnmWgrq for <linux-btrfs@vger.kernel.org>;
-        Tue, 11 Jun 2019 12:53:21 +0200 (CEST)
-Received: from aurorasky.eu (localhost [IPv6:::1])
-        (Authenticated sender: claudius@winca.de)
-        by atlantic.aurorasky.eu (Postfix) with ESMTPSA id 2F6D28C0B9A
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 12:53:21 +0200 (CEST)
+        id S2404493AbfFKMCV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jun 2019 08:02:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42014 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404489AbfFKMCU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Jun 2019 08:02:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id CDBC6AEC3;
+        Tue, 11 Jun 2019 12:02:18 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 4EF3DDA8CC; Tue, 11 Jun 2019 14:03:09 +0200 (CEST)
+Date:   Tue, 11 Jun 2019 14:03:09 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Hugo Mills <hugo@carfax.org.uk>, dsterba@suse.cz,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] RAID1 with 3- and 4- copies
+Message-ID: <20190611120309.GD3563@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Hugo Mills <hugo@carfax.org.uk>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1559917235.git.dsterba@suse.com>
+ <20190610124226.GA21016@carfax.org.uk>
+ <20190610140235.GF30187@twin.jikos.cz>
+ <20190610144806.GB21016@carfax.org.uk>
+ <20190611095314.GC24160@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 11 Jun 2019 12:53:21 +0200
-From:   claudius@winca.de
-To:     linux-btrfs@vger.kernel.org
-Subject: BTRFS recovery not possible
-Message-ID: <75a6f0280fb5829b0701f42c24a2356e@winca.de>
-X-Sender: claudius@winca.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190611095314.GC24160@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-HI Guys,
+On Tue, Jun 11, 2019 at 11:53:15AM +0200, David Sterba wrote:
+> On Mon, Jun 10, 2019 at 02:48:06PM +0000, Hugo Mills wrote:
+> > On Mon, Jun 10, 2019 at 04:02:36PM +0200, David Sterba wrote:
+> > > On Mon, Jun 10, 2019 at 12:42:26PM +0000, Hugo Mills wrote:
+> > > >    Hi, David,
+> > > > 
+> > > > On Mon, Jun 10, 2019 at 02:29:40PM +0200, David Sterba wrote:
+> > > > > this patchset brings the RAID1 with 3 and 4 copies as a separate
+> > > > > feature as outlined in V1
+> > > > > (https://lore.kernel.org/linux-btrfs/cover.1531503452.git.dsterba@suse.com/).
+> > > > [...]
+> > > > > Compatibility
+> > > > > ~~~~~~~~~~~~~
+> > > > > 
+> > > > > The new block group types cost an incompatibility bit, so old kernel
+> > > > > will refuse to mount filesystem with RAID1C3 feature, ie. any chunk on
+> > > > > the filesystem with the new type.
+> > > > > 
+> > > > > To upgrade existing filesystems use the balance filters eg. from RAID6
+> > > > > 
+> > > > >   $ btrfs balance start -mconvert=raid1c3 /path
+> > > > [...]
+> > > > 
+> > > >    If I do:
+> > > > 
+> > > > $ btrfs balance start -mprofiles=raid13c,convert=raid1 \
+> > > >                       -dprofiles=raid13c,convert=raid6 /path
+> > > > 
+> > > > will that clear the incompatibility bit?
+> > > 
+> > > No the bit will stay, even though there are no chunks of the raid1c3
+> > > type. Same for raid5/6.
+> > > 
+> > > Dropping the bit would need an extra pass trough all chunks after
+> > > balance, which is feasible and I don't see usability surprises. That you
+> > > ask means that the current behaviour is probably opposite to what users
+> > > expect.
+> > 
+> >    We've had a couple of cases in the past where people have tried out
+> > a new feature on a new kernel, then turned it off again and not been
+> > able to go back to an earlier kernel. Particularly in this case, I can
+> > see people being surprised at the trapdoor. "I don't have any RAID13C
+> > on this filesystem: why can't I go back to 5.2?"
+> 
+> Undoing the incompat bit is expensive in some cases, eg. for ZSTD this
+> would mean to scan all extents, but in case of the raid profiles it's
+> easy to check the list of space infos that are per-profile.
+> 
+> So, my current idea is to use the sysfs interface. The /features
+> directory lists the files representing features and writing 1 to the
+> file followed by a sync would trigger the rescan and drop the bit
+> eventually.
+> 
+> The meaning of the /sys/fs/btrfs/features/* is defined for 1, which
+> means 'can be set at runtime', so the ability to unset the feature would
+> be eg. 3, as a bitmask of possible actions (0b01 set, 0b10 unset).
+> 
+> We do have infrastructure for changing the state in a safe manner even
+> from sysfs, which sets a bit somewhere and commit processes that. That's
+> why the sync is required, but I don't think that's harming usability t
 
-you are my last try. I was so happy to use BTRFS but now i really hate 
-it....
-
-
-Linux CIA 4.15.0-51-generic #55-Ubuntu SMP Wed May 15 14:27:21 UTC 2019 
-x86_64 x86_64 x86_64 GNU/Linux
-btrfs-progs v4.15.1
-
-btrfs fi show
-Label: none  uuid: 9622fd5c-5f7a-4e72-8efa-3d56a462ba85
-         Total devices 1 FS bytes used 4.58TiB
-         devid    1 size 7.28TiB used 4.59TiB path /dev/mapper/volume1
-
-
-dmesg
-
-[57501.267526] BTRFS info (device dm-5): trying to use backup root at 
-mount time
-[57501.267528] BTRFS info (device dm-5): disk space caching is enabled
-[57501.267529] BTRFS info (device dm-5): has skinny extents
-[57507.511830] BTRFS error (device dm-5): parent transid verify failed 
-on 2069131051008 wanted 4240 found 5115
-[57507.518764] BTRFS error (device dm-5): parent transid verify failed 
-on 2069131051008 wanted 4240 found 5115
-[57507.519265] BTRFS error (device dm-5): failed to read block groups: 
--5
-[57507.605939] BTRFS error (device dm-5): open_ctree failed
-
-
-btrfs check /dev/mapper/volume1
-parent transid verify failed on 2069131051008 wanted 4240 found 5115
-parent transid verify failed on 2069131051008 wanted 4240 found 5115
-parent transid verify failed on 2069131051008 wanted 4240 found 5115
-parent transid verify failed on 2069131051008 wanted 4240 found 5115
-Ignoring transid failure
-extent buffer leak: start 2024985772032 len 16384
-ERROR: cannot open file system
-
-
-
-im not able to mount it anymore.
-
-
-I found the drive in RO the other day and realized somthing was wrong 
-... i did a reboot and now i cant mount anmyore
-
-
-any help
+Scratch that, there's much simpler way and would work as expected in the
+example. Ie. after removing last bg of the given type the incompat bit
+will be dropped.
