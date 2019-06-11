@@ -2,65 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2AD3D1FE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 18:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4863D25B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 18:37:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405550AbfFKQPp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Jun 2019 12:15:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41122 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405241AbfFKQPo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jun 2019 12:15:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4009DADF0;
-        Tue, 11 Jun 2019 16:15:43 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2F936DA8F5; Tue, 11 Jun 2019 18:16:31 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, clm@fb.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fix for 5.2-rc5
-Date:   Tue, 11 Jun 2019 18:16:28 +0200
-Message-Id: <cover.1560268545.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.21.0
+        id S2404335AbfFKQgs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jun 2019 12:36:48 -0400
+Received: from mail-it1-f179.google.com ([209.85.166.179]:53861 "EHLO
+        mail-it1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404082AbfFKQgs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Jun 2019 12:36:48 -0400
+Received: by mail-it1-f179.google.com with SMTP id m187so6000784ite.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 09:36:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=vDT/sAXPKl080P/KkIxhJ+x7UcujA/XP62PKmhoj/uQ=;
+        b=GaVMIS4eeFUwitPGrkl7ncCUqnisubc2ULjkosd4Eu+6jt7XBym5kDjLHL4thz0W5f
+         kI3CI9YAmVNVCeOo0adOQ/s44ZtHenVJltMCqU3UmtXX1v0n/+2YuLfNO/RCBaCBJcf2
+         QxUO9ANCvRkpJ5JMrNRzoCyUloQVaCjA/0OBU2xArdcO0t/0XZw0OHQRKntFlnSwnvcu
+         pSS1Q6hspsKbKYZHndZ9MlfmfPcPtI7/TR9MHI5b1XfjnwDTsnaj3qewIjziyYGaUKoq
+         dGy21ZRjNFxRBKnIUOYCOBVpfIQPXSx5LRcixfkub5UKe41O3uJC1k6Yx/velDRGjZCg
+         uHtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=vDT/sAXPKl080P/KkIxhJ+x7UcujA/XP62PKmhoj/uQ=;
+        b=rkWdA68fO+USSqqRXqztDe7ri94jtgEQMB/Rz6i42VlNrgbq1c98pyI5iX4TX0BaQ8
+         YKUa8yjmdlbCi1OOQFu17Y4XhkXUL8c0JWYQxaGhyFkia8py2pwBmtI4xZVxn+z7B6M4
+         X71AdKUecMG8+p4cptHHgsDP3X+QBKvUu0HwBNPeUwhVVsMU98DyfIOKhW7Hn6IhNVZN
+         NU9eJ9GX3F9m9ZfJpmURkkDdM6talM54a9bEK3AgxnEqhAexQEAmjoSQrq1frmCQbimr
+         70U2NwHKMP5yh/xyiZh7BsvwNagE4JsPFt05C+YsHnuyTijjz34Arc3p9cAHmA3oIM8b
+         DG1g==
+X-Gm-Message-State: APjAAAXkGGw1tiRn/3otMMTvvyCrC9GEig8tv24RwGM2VI/J/ffgUei0
+        c/tUzJBQsDqloObC8G8AHsA4LeX009EOBJCjpJ4UCiWC
+X-Google-Smtp-Source: APXvYqyCEkKMpsTQhqsUVD43+Z2bTgRGDaWyswl83heUM5+flhSIsP4VXi6qgrN0/0V5zE0KhQUd3hMq1SpL95lgEuE=
+X-Received: by 2002:a02:914c:: with SMTP id b12mr8919838jag.105.1560271006804;
+ Tue, 11 Jun 2019 09:36:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Jason Ellison <infotek@gmail.com>
+Date:   Tue, 11 Jun 2019 11:36:08 -0500
+Message-ID: <CAFQKmtfhZ3-yr1kP-d_egZ8NMz6ShsHu3twemuWg+-0KG8-Upw@mail.gmail.com>
+Subject: join
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+join
 
-here's one regression fix to TRIM ioctl. The range cannot be used as
-its meaning can be confusing regarding physical and logical addresses.
-This confusion in code led to potential corruptions when the range
-overlapped data.
+Regards,
 
-The original patch made it to several stable kernels and was promptly
-reverted, the version for master branch is different due to additional
-changes but the change is effectively the same.
-
-Please pull, thanks.
-
-----------------------------------------------------------------
-The following changes since commit 06989c799f04810f6876900d4760c0edda369cf7:
-
-  Btrfs: fix race updating log root item during fsync (2019-05-28 19:26:46 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.2-rc4-tag
-
-for you to fetch changes up to 8103d10b71610aa65a65d6611cd3ad3f3bd7beeb:
-
-  btrfs: Always trim all unallocated space in btrfs_trim_free_extents (2019-06-07 14:52:05 +0200)
-
-----------------------------------------------------------------
-Nikolay Borisov (1):
-      btrfs: Always trim all unallocated space in btrfs_trim_free_extents
-
- fs/btrfs/extent-tree.c | 28 +++-------------------------
- 1 file changed, 3 insertions(+), 25 deletions(-)
+Jason Ellison
+251.202.4519
