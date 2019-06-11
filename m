@@ -2,152 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 242453C0CD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 03:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06113C18C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 05:26:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390238AbfFKBLb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 10 Jun 2019 21:11:31 -0400
-Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:48639 "EHLO
-        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389723AbfFKBLb (ORCPT
+        id S2390941AbfFKD0T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 10 Jun 2019 23:26:19 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:37150 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390856AbfFKD0T (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 10 Jun 2019 21:11:31 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id 6FB34477;
-        Mon, 10 Jun 2019 21:11:29 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 10 Jun 2019 21:11:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-         h=subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type; s=fm3; bh=+1ls2VRp+oZJa/za1CSadqiM1s8
-        +frcH/RsVQnk1ROM=; b=ALNnpRu73HxSWH1cDgJR14XumJ3cqHNcWBHYpUjbhjZ
-        DL0ehIscHmeVL8gQPv4Zcg2PZxdycQrCoFGYeTBhmjtpTowl2iosfcn+6LwsGl6v
-        jjmaTgvcWnxyeiN+UW/v5aIQKKLnYr9nvlLsaRU05O/qSp9jvrjuWjMDMWhOsiN8
-        yp/lIadchow65M09NTVk5p/dcykJH5nsOX71M7fLu5SwCuiDcMnzTEyxMUIamhC7
-        Z4iDwW11CYxbUNSyxOQLlCcBPC24H6PP8YRpv81Kkazrx1z/ksMPOBu+TCiuzUF2
-        /i5yzdg3mKTIjin91pvMazIVOsLDYaRgmNSDpCGtPsg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=+1ls2V
-        Rp+oZJa/za1CSadqiM1s8+frcH/RsVQnk1ROM=; b=D+WB6A/7OqetbFA9i8G0S7
-        ONCeLqeHpaIzJj5VAXLOSEwqt8K3n5NjGqTJ6ZXSoMZwlSNzzriI4yiw7nBj/fNQ
-        JVgl63sI0JRJE7MZJn0sgj2GylVF29aDRj5T7ULsq/ISA4Y0fv2YyG3lC8N+1MkM
-        dLD1Utc4QZy6N67sACaTh/3Y3CuSE6jpzhsCTR/GyOqS0CUoHFUKb/AZZjenel0Z
-        XXQR+xtSFyTigQUbMfPoVjuZkoCJVKD9alGGPliYLOCYkHPH6Z9RBknLNKwmeYCy
-        XexRcac9mP1myp6zqHhW8ocKdLHz7MZOeg455BtpIJC1+9U42XhTdmDdvckCWQrg
-        ==
-X-ME-Sender: <xms:wP_-XN9muEv0IbqEy_T-Hq2J4zrmaituyqytPzin_OfMSLMwC8hjCA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduuddrudehfedggeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtsehgtderofdtfeehnecuhfhrohhmpeftvghmihcu
-    ifgruhhvihhnuceorhgvmhhisehgvghorhhgihgrnhhithdrtghomheqnecukfhppedufe
-    ehrddvfedrvdegiedrudefudenucfrrghrrghmpehmrghilhhfrhhomheprhgvmhhisehg
-    vghorhhgihgrnhhithdrtghomhenucevlhhushhtvghrufhiiigvpedt
-X-ME-Proxy: <xmx:wP_-XDCAzL00GFj7g9PKN4p9rmKRVNb9bumeKs4GMd3z3IGevZ1gog>
-    <xmx:wP_-XNf7pyX2Y6R5eo7WyUGiIq3KhRSQaiA-HarNoFema_A-c8em4Q>
-    <xmx:wP_-XHGkutko9uMhCe1l1dIEXlePC6GwsWBegHQxm2byaAPM_BpAMg>
-    <xmx:wf_-XGoWZmtWB7nly6DatROE9c-VXnb3JpENOyAC1n1uO5D48ltMNg>
-Received: from [10.0.0.6] (135-23-246-131.cpe.pppoe.ca [135.23.246.131])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 76BEB80060;
-        Mon, 10 Jun 2019 21:11:28 -0400 (EDT)
-Subject: Re: Issues with btrfs send/receive with parents
-To:     Eric Mesa <eric@ericmesa.com>, linux-btrfs@vger.kernel.org
-References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
-From:   Remi Gauvin <remi@georgianit.com>
-Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
-Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
- keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
- CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
- sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
- t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
- 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
- AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
- IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
- OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
- 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
- WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
- k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
- Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
- R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
- WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
- QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
- jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
- oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
- BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
- XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
- r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
- phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
- nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
- SY9JJa155sI=
-Message-ID: <17367bc7-fe7d-5014-7b75-2a3520da119f@georgianit.com>
-Date:   Mon, 10 Jun 2019 21:11:27 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Mon, 10 Jun 2019 23:26:19 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5B3JYbq122570;
+        Tue, 11 Jun 2019 03:26:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=+KMHTpIPHehmYr7PrnoKeQGFw46qVIvlu8jfHMIONJs=;
+ b=lTw3n6sfAuJxerQIcWvvAzMYQN+AqtCPDfst2dOgTcdT2K7l70GXNYMqGHsNnCdk6wWJ
+ c7B8KxtKCiw/HIyg0TzHinvugM77U16TWDIV4RUqydwstE2v/O6WmbklmNTHt9ONL6Hf
+ 8nix+RvdOj4fFnrZWzqEqBGocz0+c/cYECmtDtfNx42zPkkJePXJWXe7Hh7CPw4YOW9s
+ 4yqshFav8Do/yNkdOJCBXL2mI4X3yT493ZlzXH1rdALCUQWxVW53N8gWI7PU+/0hSDva
+ e/vYpQcoD4tQPYop3LFIttJa/6DA6+oherOHnagItEI4/fDKCBn6gnQuy8H0a/HVH5Zq ug== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 2t02hejhjw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 Jun 2019 03:26:09 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5B3Q8lN021788;
+        Tue, 11 Jun 2019 03:26:09 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2t0p9r2a63-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 11 Jun 2019 03:26:08 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5B3Q4J4008815;
+        Tue, 11 Jun 2019 03:26:04 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 10 Jun 2019 20:26:04 -0700
+Date:   Mon, 10 Jun 2019 20:26:03 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH 1/8] mm/fs: don't allow writes to immutable files
+Message-ID: <20190611032603.GB1872258@magnolia>
+References: <155552786671.20411.6442426840435740050.stgit@magnolia>
+ <155552787330.20411.11893581890744963309.stgit@magnolia>
+ <20190610015145.GB3266@mit.edu>
+ <20190610044144.GA1872750@magnolia>
+ <20190610131417.GD15963@mit.edu>
+ <20190610160934.GH1871505@magnolia>
+ <20190610204154.GA5466@mit.edu>
 MIME-Version: 1.0
-In-Reply-To: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="2yyV7gdS7wNpvVFoc69o1I6sVyDUZ9nRp"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190610204154.GA5466@mit.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906110021
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906110021
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---2yyV7gdS7wNpvVFoc69o1I6sVyDUZ9nRp
-Content-Type: multipart/mixed; boundary="W0vh9Ky8jpGhdCd0n8GcQTEE8HDwhqIsW";
- protected-headers="v1"
-From: Remi Gauvin <remi@georgianit.com>
-To: Eric Mesa <eric@ericmesa.com>, linux-btrfs@vger.kernel.org
-Message-ID: <17367bc7-fe7d-5014-7b75-2a3520da119f@georgianit.com>
-Subject: Re: Issues with btrfs send/receive with parents
-References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
-In-Reply-To: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
+On Mon, Jun 11, 2019 at 04:41:54PM -0400, Theodore Ts'o wrote:
+> On Mon, Jun 10, 2019 at 09:09:34AM -0700, Darrick J. Wong wrote:
+> > > I was planning on only taking 8/8 through the ext4 tree.  I also added
+> > > a patch which filtered writes, truncates, and page_mkwrites (but not
+> > > mmap) for immutable files at the ext4 level.
+> > 
+> > *Oh*.  I saw your reply attached to the 1/8 patch and thought that was
+> > the one you were taking.  I was sort of surprised, tbh. :)
+> 
+> Sorry, my bad.  I mis-replied to the wrong e-mail message  :-)
+> 
+> > > I *could* take this patch through the mm/fs tree, but I wasn't sure
+> > > what your plans were for the rest of the patch series, and it seemed
+> > > like it hadn't gotten much review/attention from other fs or mm folks
+> > > (well, I guess Brian Foster weighed in).
+> > 
+> > > What do you think?
+> > 
+> > Not sure.  The comments attached to the LWN story were sort of nasty,
+> > and now that a couple of people said "Oh, well, Debian documented the
+> > inconsistent behavior so just let it be" I haven't felt like
+> > resurrecting the series for 5.3.
+> 
+> Ah, I had missed the LWN article.   <Looks>
+> 
+> Yeah, it's the same set of issues that we had discussed when this
+> first came up.  We can go round and round on this one; It's true that
+> root can now cause random programs which have a file mmap'ed for
+> writing to seg fault, but root has a million ways of killing and
+> otherwise harming running application programs, and it's unlikely
+> files get marked for immutable all that often.  We just have to pick
+> one way of doing things, and let it be same across all the file
+> systems.
+> 
+> My understanding was that XFS had chosen to make the inode immutable
+> as soon as the flag is set (as opposed to forbidding new fd's to be
+> opened which were writeable), and I was OK moving ext4 to that common
+> interpretation of the immmutable bit, even though it would be a change
+> to ext4.
 
---W0vh9Ky8jpGhdCd0n8GcQTEE8HDwhqIsW
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+<nod> It started as "just do this to xfs" and has now become a vfs level
+change...
 
-On 2019-06-10 7:56 p.m., Eric Mesa wrote:
+> And then when I saw that Amir had included a patch that would cause
+> test failures unless that patch series was applied, it seemed that we
+> had all thought that the change was a done deal.  Perhaps we should
+> have had a more explicit discussion when the test was sent for review,
+> but I had assumed it was exclusively a copy_file_range set of tests,
+> so I didn't realize it was going to cause ext4 failures.
 
-> ERROR: link ermesa/.mozilla/firefox/n35gu0fb.default/bookmarkbackups/
-> bookmarks-2019-06-09_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 -> ermesa=
-/.mozilla/
-> firefox/n35gu0fb.default/bookmarkbackups/
-> bookmarks-2019-06-08_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 failed: N=
-o such file=20
-> or directory
->=20
+And here we see the inconsistent behavior causing developer confusion. :)
 
-Are you by any chance using btrfs property to change RO snapshots RW?
-That must *never* be done to parent subvolumes, on either sending or
-receiving side.  (Really probably not a good idea to do at all outside
-of very special development/testing cases, but is guaranteed to make of
-mess of send/receive.)
+I think Amir's c_f_r tests just check the existing behavior (of just
+c_f_r) that you can't (most of the time) copy into a file that you
+opened for write but that the administrator has since marked immutable.
 
+/That/ behavior in turn came from the original implementation that would
+try reflink which would fail on the immutable destination check and then
+fail the whole call ... I think?
 
+--D
 
-
---W0vh9Ky8jpGhdCd0n8GcQTEE8HDwhqIsW--
-
---2yyV7gdS7wNpvVFoc69o1I6sVyDUZ9nRp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJc/v+/AAoJEO9Tn/JHRWpt8uEH/2B+yv2nhyCkBqT8CG6bwYAF
-8u64SkqEQofobucPcsA1AtjHCChEyvEW17L+37UIAGMAzAAzPeT7nL7si23U1lBv
-h2NSAUf9umJ+vkFGUOzEO0O868DslPvnzm1kFFUSas6c+d+4eWPi2WsSqIabU1Xg
-JdJoV8KrftajAGaZYliZce3MpBsWmnK/ZzMiHjtF9mo0y/KIocL0sGnUq8Y89zgG
-VzXi80QX01unZftKCVQWqbvkgC7le0Y6gk8jfylB0NqlATWoiyL1lHuMPrCD4kog
-qfC44DvmiPFkVFp1up337jurWQtL12QWkw/KSB/qNOQrPy9amttpKH7s5V9l+Mo=
-=Tkxj
------END PGP SIGNATURE-----
-
---2yyV7gdS7wNpvVFoc69o1I6sVyDUZ9nRp--
+>      	    	       	   	 - Ted
