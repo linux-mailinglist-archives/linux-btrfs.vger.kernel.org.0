@@ -2,156 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49CA53C318
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 06:50:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C4443C803
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 12:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390983AbfFKEuO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Jun 2019 00:50:14 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:46456 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389620AbfFKEuO (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jun 2019 00:50:14 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5B4hbtt159138;
-        Tue, 11 Jun 2019 04:49:06 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=w6B62XWgEySnIWZsve79cF+lTRasJpmyyQueK4g93UE=;
- b=xr/OkVp95W9CZa1qjVKbtngLN9J+a0uZavn2r3ArsGbLa3Idt+XiHAevESEnFd2Muawd
- IDeKByu9gQWLom5QvFu9SB6aGdiFJoCp0tz7vKlzNewkahhwnjXvO0YFc7SwTBUu/TXr
- 1JAzKRa/DZxlP4ZZpnIqV/L0X1JujwSoecEOGG343C3b9FaK4zuy1R0cRIGXh59pnwVC
- rgO1+qT0i60g5fCtoX0xlqOK/qTFrDgQsRkvoiZce/aNAuX3Lrp5ll2wDFoSsEQSMY+0
- xO05b6rP2HVkV4MLCu2gbQsaloZCyjVElf52i0un57IO4AUWcCHG2FJLiCzCFi61Ne0u iQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2t04etjm38-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 04:49:06 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5B4jGrX167613;
-        Tue, 11 Jun 2019 04:47:06 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 2t024u6kpg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 11 Jun 2019 04:47:06 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5B4l5Gj171026;
-        Tue, 11 Jun 2019 04:47:06 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2t024u6kpc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 11 Jun 2019 04:47:05 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5B4l4Q5023284;
-        Tue, 11 Jun 2019 04:47:04 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 10 Jun 2019 21:47:04 -0700
-Subject: [PATCH 6/6] xfs: clean up xfs_merge_ioc_xflags
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
-        darrick.wong@oracle.com, ard.biesheuvel@linaro.org,
-        josef@toxicpanda.com, clm@fb.com, adilger.kernel@dilger.ca,
-        viro@zeniv.linux.org.uk, jack@suse.com, dsterba@suse.com,
-        jaegeuk@kernel.org, jk@ozlabs.org
-Cc:     reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Date:   Mon, 10 Jun 2019 21:47:01 -0700
-Message-ID: <156022842153.3227213.3285668171167534801.stgit@magnolia>
-In-Reply-To: <156022836912.3227213.13598042497272336695.stgit@magnolia>
-References: <156022836912.3227213.13598042497272336695.stgit@magnolia>
-User-Agent: StGit/0.17.1-dirty
+        id S2404572AbfFKKCw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jun 2019 06:02:52 -0400
+Received: from twin.jikos.cz ([91.219.245.39]:57131 "EHLO twin.jikos.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404406AbfFKKCw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Jun 2019 06:02:52 -0400
+X-Greylist: delayed 514 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 Jun 2019 06:02:51 EDT
+Received: from twin.jikos.cz (dave@[127.0.0.1])
+        by twin.jikos.cz (8.13.6/8.13.6) with ESMTP id x5B9rFGb015786
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Tue, 11 Jun 2019 11:53:16 +0200
+Received: (from dave@localhost)
+        by twin.jikos.cz (8.13.6/8.13.6/Submit) id x5B9rF6Y015785;
+        Tue, 11 Jun 2019 11:53:15 +0200
+Date:   Tue, 11 Jun 2019 11:53:15 +0200
+From:   David Sterba <dave@jikos.cz>
+To:     Hugo Mills <hugo@carfax.org.uk>, dsterba@suse.cz,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 0/6] RAID1 with 3- and 4- copies
+Message-ID: <20190611095314.GC24160@twin.jikos.cz>
+Reply-To: dave@jikos.cz
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>, dsterba@suse.cz,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1559917235.git.dsterba@suse.com>
+ <20190610124226.GA21016@carfax.org.uk>
+ <20190610140235.GF30187@twin.jikos.cz>
+ <20190610144806.GB21016@carfax.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9284 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=605 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906110033
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190610144806.GB21016@carfax.org.uk>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+On Mon, Jun 10, 2019 at 02:48:06PM +0000, Hugo Mills wrote:
+> On Mon, Jun 10, 2019 at 04:02:36PM +0200, David Sterba wrote:
+> > On Mon, Jun 10, 2019 at 12:42:26PM +0000, Hugo Mills wrote:
+> > >    Hi, David,
+> > > 
+> > > On Mon, Jun 10, 2019 at 02:29:40PM +0200, David Sterba wrote:
+> > > > this patchset brings the RAID1 with 3 and 4 copies as a separate
+> > > > feature as outlined in V1
+> > > > (https://lore.kernel.org/linux-btrfs/cover.1531503452.git.dsterba@suse.com/).
+> > > [...]
+> > > > Compatibility
+> > > > ~~~~~~~~~~~~~
+> > > > 
+> > > > The new block group types cost an incompatibility bit, so old kernel
+> > > > will refuse to mount filesystem with RAID1C3 feature, ie. any chunk on
+> > > > the filesystem with the new type.
+> > > > 
+> > > > To upgrade existing filesystems use the balance filters eg. from RAID6
+> > > > 
+> > > >   $ btrfs balance start -mconvert=raid1c3 /path
+> > > [...]
+> > > 
+> > >    If I do:
+> > > 
+> > > $ btrfs balance start -mprofiles=raid13c,convert=raid1 \
+> > >                       -dprofiles=raid13c,convert=raid6 /path
+> > > 
+> > > will that clear the incompatibility bit?
+> > 
+> > No the bit will stay, even though there are no chunks of the raid1c3
+> > type. Same for raid5/6.
+> > 
+> > Dropping the bit would need an extra pass trough all chunks after
+> > balance, which is feasible and I don't see usability surprises. That you
+> > ask means that the current behaviour is probably opposite to what users
+> > expect.
+> 
+>    We've had a couple of cases in the past where people have tried out
+> a new feature on a new kernel, then turned it off again and not been
+> able to go back to an earlier kernel. Particularly in this case, I can
+> see people being surprised at the trapdoor. "I don't have any RAID13C
+> on this filesystem: why can't I go back to 5.2?"
 
-Clean up the calling convention since we're editing the fsxattr struct
-anyway.
+Undoing the incompat bit is expensive in some cases, eg. for ZSTD this
+would mean to scan all extents, but in case of the raid profiles it's
+easy to check the list of space infos that are per-profile.
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/xfs/xfs_ioctl.c |   32 ++++++++++++++------------------
- 1 file changed, 14 insertions(+), 18 deletions(-)
+So, my current idea is to use the sysfs interface. The /features
+directory lists the files representing features and writing 1 to the
+file followed by a sync would trigger the rescan and drop the bit
+eventually.
 
+The meaning of the /sys/fs/btrfs/features/* is defined for 1, which
+means 'can be set at runtime', so the ability to unset the feature would
+be eg. 3, as a bitmask of possible actions (0b01 set, 0b10 unset).
 
-diff --git a/fs/xfs/xfs_ioctl.c b/fs/xfs/xfs_ioctl.c
-index 7b19ba2956ad..a67bc9afdd0b 100644
---- a/fs/xfs/xfs_ioctl.c
-+++ b/fs/xfs/xfs_ioctl.c
-@@ -829,35 +829,31 @@ xfs_ioc_ag_geometry(
-  * Linux extended inode flags interface.
-  */
- 
--STATIC unsigned int
-+static inline void
- xfs_merge_ioc_xflags(
--	unsigned int	flags,
--	unsigned int	start)
-+	struct fsxattr	*fa,
-+	unsigned int	flags)
- {
--	unsigned int	xflags = start;
--
- 	if (flags & FS_IMMUTABLE_FL)
--		xflags |= FS_XFLAG_IMMUTABLE;
-+		fa->fsx_xflags |= FS_XFLAG_IMMUTABLE;
- 	else
--		xflags &= ~FS_XFLAG_IMMUTABLE;
-+		fa->fsx_xflags &= ~FS_XFLAG_IMMUTABLE;
- 	if (flags & FS_APPEND_FL)
--		xflags |= FS_XFLAG_APPEND;
-+		fa->fsx_xflags |= FS_XFLAG_APPEND;
- 	else
--		xflags &= ~FS_XFLAG_APPEND;
-+		fa->fsx_xflags &= ~FS_XFLAG_APPEND;
- 	if (flags & FS_SYNC_FL)
--		xflags |= FS_XFLAG_SYNC;
-+		fa->fsx_xflags |= FS_XFLAG_SYNC;
- 	else
--		xflags &= ~FS_XFLAG_SYNC;
-+		fa->fsx_xflags &= ~FS_XFLAG_SYNC;
- 	if (flags & FS_NOATIME_FL)
--		xflags |= FS_XFLAG_NOATIME;
-+		fa->fsx_xflags |= FS_XFLAG_NOATIME;
- 	else
--		xflags &= ~FS_XFLAG_NOATIME;
-+		fa->fsx_xflags &= ~FS_XFLAG_NOATIME;
- 	if (flags & FS_NODUMP_FL)
--		xflags |= FS_XFLAG_NODUMP;
-+		fa->fsx_xflags |= FS_XFLAG_NODUMP;
- 	else
--		xflags &= ~FS_XFLAG_NODUMP;
--
--	return xflags;
-+		fa->fsx_xflags &= ~FS_XFLAG_NODUMP;
- }
- 
- STATIC unsigned int
-@@ -1504,7 +1500,7 @@ xfs_ioc_setxflags(
- 		return -EOPNOTSUPP;
- 
- 	__xfs_ioc_fsgetxattr(ip, false, &fa);
--	fa.fsx_xflags = xfs_merge_ioc_xflags(flags, fa.fsx_xflags);
-+	xfs_merge_ioc_xflags(&fa, flags);
- 
- 	error = mnt_want_write_file(filp);
- 	if (error)
-
+We do have infrastructure for changing the state in a safe manner even
+from sysfs, which sets a bit somewhere and commit processes that. That's
+why the sync is required, but I don't think that's harming usability too
+much.
