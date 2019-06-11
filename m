@@ -2,93 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 02C213C804
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 12:03:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A6A3C9AB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 13:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404501AbfFKKDC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Jun 2019 06:03:02 -0400
-Received: from twin.jikos.cz ([91.219.245.39]:57146 "EHLO twin.jikos.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404406AbfFKKDC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jun 2019 06:03:02 -0400
-Received: from twin.jikos.cz (dave@[127.0.0.1])
-        by twin.jikos.cz (8.13.6/8.13.6) with ESMTP id x5BA1sTh019587
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
-        Tue, 11 Jun 2019 12:01:55 +0200
-Received: (from dave@localhost)
-        by twin.jikos.cz (8.13.6/8.13.6/Submit) id x5BA1rtN019585;
-        Tue, 11 Jun 2019 12:01:53 +0200
-Date:   Tue, 11 Jun 2019 12:01:53 +0200
-From:   David Sterba <dave@jikos.cz>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        syzbot <syzbot+5b658d997a83984507a6@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: kernel BUG at fs/btrfs/volumes.c:LINE!
-Message-ID: <20190611100153.GD24160@twin.jikos.cz>
-Reply-To: dave@jikos.cz
-Mail-Followup-To: Eric Biggers <ebiggers@kernel.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        syzbot <syzbot+5b658d997a83984507a6@syzkaller.appspotmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-References: <00000000000096009b056df92dc1@google.com>
- <70a3c2d1-3f53-d4c0-13b3-29f836ec46d9@oracle.com>
- <20180607153450.GF3215@twin.jikos.cz>
- <CACT4Y+arBwkwhD-kob9fg1pVBXiMepW6KBK2LkhwjQ9HnDcoqw@mail.gmail.com>
- <20180607165213.GI3215@twin.jikos.cz>
- <20190610231403.GZ63833@gmail.com>
+        id S2388764AbfFKLDR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jun 2019 07:03:17 -0400
+Received: from atlantic.aurorasky.eu ([80.241.214.27]:50646 "EHLO
+        atlantic.aurorasky.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387899AbfFKLDR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 11 Jun 2019 07:03:17 -0400
+X-Greylist: delayed 593 seconds by postgrey-1.27 at vger.kernel.org; Tue, 11 Jun 2019 07:03:16 EDT
+X-BitDefender-CF-Stamp: none
+X-BitDefender-SpamStamp: Build: [Engines: 2.15.8.1169, Dats: 588906, Stamp: 3], Multi: [Enabled, t: (0.000059,0.008053)], BW: [Enabled, t: (0.000042), whitelisted: *@winca.de], total: 0(675)
+X-Junk-Score: 0 []
+X-BitDefender-Spam: No (0)
+Received: from localhost (localhost [127.0.0.1])
+        by atlantic.aurorasky.eu (Postfix) with ESMTP id 167AD8C0C30
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 12:53:22 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=winca.de; h=
+        message-id:subject:subject:from:from:date:date
+        :content-transfer-encoding:content-type:content-type
+        :mime-version; s=default; t=1560250401; x=1562064802; bh=rSlhpF7
+        MiHiWQKLdWjCldOBSKL1h6XuAY/yk43wU1Pc=; b=KbJtmDxgAowkmHrGEYzrK7x
+        s/qLDtV81T4Tymh5nqfOCbFIUXFR8GwvZDSFSYaub9BIUU2jQG76hJnv7LsuVjQa
+        blg0PF483lz9gYSNAYI0ryKgiNUwT3azZ7+UXMssrq57ugX5bhjyHdsyp8V/z2hG
+        j7+CoIUhLaegLXzsD/1Q=
+X-Virus-Scanned: Debian amavisd-new at aurorasky.eu
+Received: from atlantic.aurorasky.eu ([127.0.0.1])
+        by localhost (vmd14184.contabo.host [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id XUC_9JnmWgrq for <linux-btrfs@vger.kernel.org>;
+        Tue, 11 Jun 2019 12:53:21 +0200 (CEST)
+Received: from aurorasky.eu (localhost [IPv6:::1])
+        (Authenticated sender: claudius@winca.de)
+        by atlantic.aurorasky.eu (Postfix) with ESMTPSA id 2F6D28C0B9A
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 12:53:21 +0200 (CEST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190610231403.GZ63833@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 11 Jun 2019 12:53:21 +0200
+From:   claudius@winca.de
+To:     linux-btrfs@vger.kernel.org
+Subject: BTRFS recovery not possible
+Message-ID: <75a6f0280fb5829b0701f42c24a2356e@winca.de>
+X-Sender: claudius@winca.de
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 10, 2019 at 04:14:04PM -0700, Eric Biggers wrote:
-> On Thu, Jun 07, 2018 at 06:52:13PM +0200, David Sterba wrote:
-> > On Thu, Jun 07, 2018 at 06:28:02PM +0200, Dmitry Vyukov wrote:
-> > > > Normally the GFP_NOFS allocations do not fail so I think the fuzzer
-> > > > environment is tuned to allow that, which is fine for coverage but does
-> > > > not happen in practice. This will be fixed eventually.
-> > > 
-> > > Isn't GFP_NOFS more restricted than normal allocations?  Are these
-> > > allocations accounted against memcg? It's easy to fail any allocation
-> > > within a memory container.
-> > 
-> > https://lwn.net/Articles/723317/ The 'too small to fail' and some
-> > unwritten semantics of GFP_NOFS but I think you're right about the
-> > memory controler that can fail any allocation though.
-> > 
-> > Error handling is being improved over time, the memory allocation
-> > failures are in some cases hard and this one would need to update some
-> > logic so it's not a oneliner.
-> > 
-> 
-> This bug is still there.  In btrfs_close_one_device():
-> 
-> 	if (device->name) {
-> 		name = rcu_string_strdup(device->name->str, GFP_NOFS);
-> 		BUG_ON(!name); /* -ENOMEM */
-> 		rcu_assign_pointer(new_device->name, name);
-> 	}
-> 
-> It assumes that the memory allocation succeeded.
-> 
-> See syzbot report from v5.2-rc3 here: https://syzkaller.appspot.com/text?tag=CrashReport&x=16c839c1a00000
-> 
-> Is there any plan to fix this?
+HI Guys,
 
-Yes there is, to avoid allocations when closing the device and tracking
-the state in another way. As this has never been reported in practice
-the priority to fix it is rather low so I can't give you an ETA.
+you are my last try. I was so happy to use BTRFS but now i really hate 
+it....
+
+
+Linux CIA 4.15.0-51-generic #55-Ubuntu SMP Wed May 15 14:27:21 UTC 2019 
+x86_64 x86_64 x86_64 GNU/Linux
+btrfs-progs v4.15.1
+
+btrfs fi show
+Label: none  uuid: 9622fd5c-5f7a-4e72-8efa-3d56a462ba85
+         Total devices 1 FS bytes used 4.58TiB
+         devid    1 size 7.28TiB used 4.59TiB path /dev/mapper/volume1
+
+
+dmesg
+
+[57501.267526] BTRFS info (device dm-5): trying to use backup root at 
+mount time
+[57501.267528] BTRFS info (device dm-5): disk space caching is enabled
+[57501.267529] BTRFS info (device dm-5): has skinny extents
+[57507.511830] BTRFS error (device dm-5): parent transid verify failed 
+on 2069131051008 wanted 4240 found 5115
+[57507.518764] BTRFS error (device dm-5): parent transid verify failed 
+on 2069131051008 wanted 4240 found 5115
+[57507.519265] BTRFS error (device dm-5): failed to read block groups: 
+-5
+[57507.605939] BTRFS error (device dm-5): open_ctree failed
+
+
+btrfs check /dev/mapper/volume1
+parent transid verify failed on 2069131051008 wanted 4240 found 5115
+parent transid verify failed on 2069131051008 wanted 4240 found 5115
+parent transid verify failed on 2069131051008 wanted 4240 found 5115
+parent transid verify failed on 2069131051008 wanted 4240 found 5115
+Ignoring transid failure
+extent buffer leak: start 2024985772032 len 16384
+ERROR: cannot open file system
+
+
+
+im not able to mount it anymore.
+
+
+I found the drive in RO the other day and realized somthing was wrong 
+... i did a reboot and now i cant mount anmyore
+
+
+any help
