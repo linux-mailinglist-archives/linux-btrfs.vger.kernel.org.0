@@ -2,129 +2,205 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9FD421D6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jun 2019 11:58:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6D10421F2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jun 2019 12:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731963AbfFLJ6H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Jun 2019 05:58:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37178 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731934AbfFLJ6C (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Jun 2019 05:58:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D60BDAC61;
-        Wed, 12 Jun 2019 09:58:00 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7FD61DA88C; Wed, 12 Jun 2019 11:58:51 +0200 (CEST)
-Date:   Wed, 12 Jun 2019 11:58:51 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Neal Gompa <ngompa13@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: APFS improvements (e.g. firm links, volume w/ subvols
- replication) as ideas for Btrfs?
-Message-ID: <20190612095851.GG3563@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Chris Murphy <lists@colorremedies.com>,
-        Neal Gompa <ngompa13@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>
-References: <CAEg-Je9XTvEtg=Mpb1xKkO6Lzd3-yzSK7GcfbKH13uuf-u-wTA@mail.gmail.com>
- <CAJCQCtSPZwcg5y-d+mOhmyCdvq1dpzLUg05kPUg7CYhZp6Oz_Q@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtSPZwcg5y-d+mOhmyCdvq1dpzLUg05kPUg7CYhZp6Oz_Q@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+        id S2437876AbfFLKFr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Jun 2019 06:05:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58336 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437872AbfFLKFr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Jun 2019 06:05:47 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 54DB02080A
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jun 2019 10:05:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560333946;
+        bh=0mNzTTI6VmtX//zn2Qtdx4vMC7XYTXxnWBtmSrm63ns=;
+        h=From:To:Subject:Date:From;
+        b=2BGdICgog9fne3U/e3jCdkhXiShRoG+znYRa7ZB9lLVKQOenYpN9QwOYTG/Gp31Z6
+         VNgBmB7DjkxnDQ0jigJdri8Ur2rMhnxm4NPlODrxXvvok9ISsEFyWPmCs+oeQgvfNp
+         0PlXkK1etaPgDT2tbNOwgd5bHXPLY51HxUJjU7sM=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] Btrfs: fix race between block group removal and block group allocation
+Date:   Wed, 12 Jun 2019 11:05:42 +0100
+Message-Id: <20190612100542.1848-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 11, 2019 at 10:03:51PM -0600, Chris Murphy wrote:
-> On Tue, Jun 11, 2019 at 12:31 PM Neal Gompa <ngompa13@gmail.com> wrote:
-> >
-> > Hey,
-> >
-> > So Apple held its WWDC event last week, and among other things, they
-> > talked about improvements they've made to filesystems in macOS[1].
-> >
-> > Among other things, one of the things introduced was a concept of
-> > "firm links", which is something like NTFS' directory junctions,
-> > except they can cross (sub)volumes.
-> 
-> My understanding is it's a work around for the lack of APFS supporting
-> directory hardlinks. Btrfs does support directory hardlinks but a
+From: Filipe Manana <fdmanana@suse.com>
 
-Directory hardlinks are not supported in general on linux and prohibited
-on the VFS level. (check fs/namei.c vfs_link, explicitly returns -EPERM
-for a directory).
+If a task is removing the block group that currently has the highest start
+offset amongst all existing block groups, there is a short time window
+where it races with a concurrent block group allocation, resulting in a
+transaction abort with an error code of EEXIST.
 
-> hardlink points to a particular inode within a particular subvolume
-> (files tree) so it's not possible to have a hard link that crosses
-> subvolumes. A reflink can already do this, but it's really just an
-> efficient copy, the resulting directory is independent. A directory
-> symlink can mirror a directory across subvolumes, but like any symlink
-> it must have a fixed path available to always find the real deal.
-> 
-> I think a firm link like thing on Btrfs would require a format change,
-> but I'm not certain. My best guess of what it'd be, is a dir/file
-> object that gets its own inode but contains a hard reference (not
-> independent object) to a subvolid+inode.
-> 
-> 
-> >This concept makes it easier to
-> > handle uglier layouts. While bind mounts work kind of okay for this
-> > with simpler configurations, it requires operating system awareness,
-> > rather than being setup automatically as the volume is mounted. This
-> > is less brittle and works better for recovery environments, and help
-> > make easier to do read-only system volumes while supported read-write
-> > sections in a more flexible way.
-> 
-> There are a couple of things going on. One is something between VFS
-> and Btrfs does this goofy assumption that bind mounts are subvolumes,
-> which is definitely not true. I bring this up here:
-> https://lore.kernel.org/linux-btrfs/CAJCQCtT=-YoFJgEo=BFqfiPdtMoJCYR3dJPSekf+HQ22GYGztw@mail.gmail.com/
+The following diagram explains the race in detail:
 
-The subvolumes build on top of the bind mount API internally but it is
-or should be a different kind of object.
+      Task A                                                        Task B
 
-> Near as I can tell, Btrfs kernel code just needs to be smarter about
-> distinguishing between bind mounts of directories versus the behind
-> the scene bind mount used for subvolumes mounted using -o subvol= or
-> -o subvolid= ; I don't think that's difficult. It's just someone needs
-> to work through the logic and set aside the resources to do it.
+ btrfs_remove_block_group(bg offset X)
 
-I tried to fix that and got half way through, then hit the difficult
-problems mainly with nested subvolumes. For leaf subvolumes, the
-difference between
+   remove_extent_mapping(em offset X)
+     -> removes extent map X from the
+        tree of extent maps
+        (fs_info->mapping_tree), so the
+        next call to find_next_chunk()
+        will return offset X
 
-  subvolume/dir/dir/dir (bind mounted)
+                                                   btrfs_alloc_chunk()
+                                                     find_next_chunk()
+                                                       --> returns offset X
 
-and
+                                                     __btrfs_alloc_chunk(offset X)
+                                                       btrfs_make_block_group()
+                                                         btrfs_create_block_group_cache()
+                                                           --> creates btrfs_block_group_cache
+                                                               object with a key corresponding
+                                                               to the block group item in the
+                                                               extent, the key is:
+                                                               (offset X, BTRFS_BLOCK_GROUP_ITEM_KEY, 1G)
 
-  subvolume (mounted with -o)
+                                                         --> adds the btrfs_block_group_cache object
+                                                             to the list new_bgs of the transaction
+                                                             handle
 
-is to traverse back the path until the subvolume is hit, which in both
-cases would be 'subvolume'. Howvever, with nested subvolumes it's not
-easy to see where to stop
+                                                   btrfs_end_transaction(trans handle)
+                                                     __btrfs_end_transaction()
+                                                       btrfs_create_pending_block_groups()
+                                                         --> sees the new btrfs_block_group_cache
+                                                             in the new_bgs list of the transaction
+                                                             handle
+                                                         --> its call to btrfs_insert_item() fails
+                                                             with -EEXIST when attempting to insert
+                                                             the block group item key
+                                                             (offset X, BTRFS_BLOCK_GROUP_ITEM_KEY, 1G)
+                                                             because task A has not removed that key yet
+                                                         --> aborts the running transaction with
+                                                             error -EEXIST
 
-  subvol1/dir/dir/subvol2/dir/dir/subvol3/dir/dir
+   btrfs_del_item()
+     -> removes the block group's key from
+        the extent tree, key is
+        (offset X, BTRFS_BLOCK_GROUP_ITEM_KEY, 1G)
 
-and take 3 cases:
+A sample transaction abort trace:
 
-  mount -o subvol=subvol1
-  mount -o subvol=subvol2
-  mount -o subvol=subvol3
+  [78912.403537] ------------[ cut here ]------------
+  [78912.403811] BTRFS: Transaction aborted (error -17)
+  [78912.404082] WARNING: CPU: 2 PID: 20465 at fs/btrfs/extent-tree.c:10551 btrfs_create_pending_block_groups+0x196/0x250 [btrfs]
+  (...)
+  [78912.405642] CPU: 2 PID: 20465 Comm: btrfs Tainted: G        W         5.0.0-btrfs-next-46 #1
+  [78912.405941] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.11.2-0-gf9626ccb91-prebuilt.qemu-project.org 04/01/2014
+  [78912.406586] RIP: 0010:btrfs_create_pending_block_groups+0x196/0x250 [btrfs]
+  (...)
+  [78912.407636] RSP: 0018:ffff9d3d4b7e3b08 EFLAGS: 00010282
+  [78912.407997] RAX: 0000000000000000 RBX: ffff90959a3796f0 RCX: 0000000000000006
+  [78912.408369] RDX: 0000000000000007 RSI: 0000000000000001 RDI: ffff909636b16860
+  [78912.408746] RBP: ffff909626758a58 R08: 0000000000000000 R09: 0000000000000000
+  [78912.409144] R10: ffff9095ff462400 R11: 0000000000000000 R12: ffff90959a379588
+  [78912.409521] R13: ffff909626758ab0 R14: ffff9095036c0000 R15: ffff9095299e1158
+  [78912.409899] FS:  00007f387f16f700(0000) GS:ffff909636b00000(0000) knlGS:0000000000000000
+  [78912.410285] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+  [78912.410673] CR2: 00007f429fc87cbc CR3: 000000014440a004 CR4: 00000000003606e0
+  [78912.411095] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+  [78912.411496] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+  [78912.411898] Call Trace:
+  [78912.412318]  __btrfs_end_transaction+0x5b/0x1c0 [btrfs]
+  [78912.412746]  btrfs_inc_block_group_ro+0xcf/0x160 [btrfs]
+  [78912.413179]  scrub_enumerate_chunks+0x188/0x5b0 [btrfs]
+  [78912.413622]  ? __mutex_unlock_slowpath+0x100/0x2a0
+  [78912.414078]  btrfs_scrub_dev+0x2ef/0x720 [btrfs]
+  [78912.414535]  ? __sb_start_write+0xd4/0x1c0
+  [78912.414963]  ? mnt_want_write_file+0x24/0x50
+  [78912.415403]  btrfs_ioctl+0x17fb/0x3120 [btrfs]
+  [78912.415832]  ? lock_acquire+0xa6/0x190
+  [78912.416256]  ? do_vfs_ioctl+0xa2/0x6f0
+  [78912.416685]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
+  [78912.417116]  do_vfs_ioctl+0xa2/0x6f0
+  [78912.417534]  ? __fget+0x113/0x200
+  [78912.417954]  ksys_ioctl+0x70/0x80
+  [78912.418369]  __x64_sys_ioctl+0x16/0x20
+  [78912.418812]  do_syscall_64+0x60/0x1b0
+  [78912.419231]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+  [78912.419644] RIP: 0033:0x7f3880252dd7
+  (...)
+  [78912.420957] RSP: 002b:00007f387f16ed68 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+  [78912.421426] RAX: ffffffffffffffda RBX: 000055f5becc1df0 RCX: 00007f3880252dd7
+  [78912.421889] RDX: 000055f5becc1df0 RSI: 00000000c400941b RDI: 0000000000000003
+  [78912.422354] RBP: 0000000000000000 R08: 00007f387f16f700 R09: 0000000000000000
+  [78912.422790] R10: 00007f387f16f700 R11: 0000000000000246 R12: 0000000000000000
+  [78912.423202] R13: 00007ffda49c266f R14: 0000000000000000 R15: 00007f388145e040
+  [78912.425505] ---[ end trace eb9bfe7c426fc4d3 ]---
 
-the backward path traversal will always say it's subvol3 (that's wrong
-from users POV). Keeping track of the exact subvolume that was mounted
-is not trivial because it partially has to duplicate the internal VFS
-information which makes it hard to keep consistent after moves.
+Fix this by calling remove_extent_mapping(), at btrfs_remove_block_group(),
+only at the very end, after removing the block group item key from the
+extent tree (and removing the free space tree entry if we are using the
+free space tree feature).
 
-There was a concept proposal called 'fs view' that would add proper
-subvolume abstraction for subvolumes to VFS but I don't know how far
-this got.
+Fixes: 04216820fe83d5 ("Btrfs: fix race between fs trimming and block group remove/allocation")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+
+NOTE: this applies only to a 5.2 kernel, although the problem exists in previous
+      kernels starting from 3.19, due to recent changes in the 5.2 merge window
+      that removed the fs_info->pending_chunks, a slightly different version of
+      this patch is needed, one which locks and unlocks the chunk mutex inside
+      the moved block. Such patch version can be found here:
+
+      https://www.dropbox.com/s/1sv0hd2xbsn9jrt/Btrfs-fix-race-between-block-group-removal-and-block.patch?dl=0
+
+ fs/btrfs/extent-tree.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 1aee51a9f3bf..3a26a4ab9cb8 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -10831,17 +10831,6 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	remove_em = (atomic_read(&block_group->trimming) == 0);
+ 	spin_unlock(&block_group->lock);
+ 
+-	if (remove_em) {
+-		struct extent_map_tree *em_tree;
+-
+-		em_tree = &fs_info->mapping_tree.map_tree;
+-		write_lock(&em_tree->lock);
+-		remove_extent_mapping(em_tree, em);
+-		write_unlock(&em_tree->lock);
+-		/* once for the tree */
+-		free_extent_map(em);
+-	}
+-
+ 	mutex_unlock(&fs_info->chunk_mutex);
+ 
+ 	ret = remove_block_group_free_space(trans, block_group);
+@@ -10858,6 +10847,19 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 		goto out;
+ 
+ 	ret = btrfs_del_item(trans, root, path);
++	if (ret)
++		goto out;
++
++	if (remove_em) {
++		struct extent_map_tree *em_tree;
++
++		em_tree = &fs_info->mapping_tree.map_tree;
++		write_lock(&em_tree->lock);
++		remove_extent_mapping(em_tree, em);
++		write_unlock(&em_tree->lock);
++		/* once for the tree */
++		free_extent_map(em);
++	}
+ out:
+ 	if (remove_rsv)
+ 		btrfs_delayed_refs_rsv_release(fs_info, 1);
+-- 
+2.11.0
+
