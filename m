@@ -2,133 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB5FE42808
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jun 2019 15:52:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC604280A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jun 2019 15:52:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436928AbfFLNwT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Jun 2019 09:52:19 -0400
-Received: from mail-ua1-f46.google.com ([209.85.222.46]:46920 "EHLO
-        mail-ua1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436759AbfFLNwT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Jun 2019 09:52:19 -0400
-Received: by mail-ua1-f46.google.com with SMTP id o19so5915145uap.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jun 2019 06:52:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wILGoF5ogfM68yim2OOpOLchdbcUZ9BLdPQNEhYUHkQ=;
-        b=c2vU+qwTtD5leGO97du7WehZosv/JRWeNHnkVuxyg0mRYnOOKQ5fi6c7rnM5eumqgo
-         J3LMMCPJw9DZbOsu8ijTEJAJWTjdgndveRaxJGGa4u/85gSSj81n1SxSV2I1UhwKPmyA
-         HGGHdXnxqThzhnPYJiFH4/33R27SvOaI0yMk82fcJIBi4e3HLF5OKu0VwVgNSU5LkMsc
-         ZxlQl2qcRr/dn7Z0rb6SWPUxgprbI6Vnsl+4VEI3exsk+9qn1PM/udnEKTACQ8xs5KAY
-         sWdkRFXuo8l+2Qbotykj8wqSs1Sye3DrUMUboWnWqqEPdxuLH48kSnJavZbuUG4yk639
-         eg5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wILGoF5ogfM68yim2OOpOLchdbcUZ9BLdPQNEhYUHkQ=;
-        b=ltYNSxIDty0RdOYdinyWx6UhqZJ7/VgYpwlNKtKYRG5JizQ+M5+uQjq9U4yZ0Roufh
-         YX5bsbAa10pCFyy9QHjkBdWlMourmghq81ZR4BWheYth2mXabXQsVQS0lgBiJNpJHiKX
-         PpqUIXw/9nD0dPp7VHhCcivafiUNqOUNvXvDeQ9bvC+6jklo1Qs5c93FrjtkD/hUdqLg
-         k1o5MrlDlYMSEY6iW7CXIX2WY4x8Fs4cJ9SlCQHWxwhG/I/FTnlPEwmkWbTNaxcoFtyz
-         tJCwCyFYy0KkwXucFd9AWq4egYsGuoKDYkxXbtivKVpyeu3P4vD7ajjGNw8mz6IUqPNw
-         9Qsw==
-X-Gm-Message-State: APjAAAWd6wc4B+aih1KSMj1Xox75mZ55H6r+qZyv2HMQLdBcnmXbxpjk
-        qwH10t8V93ZrKiN2yApkvkCwsGuW1y/KYydkGvSRRu7jGZA=
-X-Google-Smtp-Source: APXvYqysbdgjaNfTXP0491o6c7q435mS+RGEUGyqPboeajhTRjBoKcsLHrgsrkmOk0Bbp0/ye/RHr3Dv4Kw3VXwoyEQ=
-X-Received: by 2002:a9f:366b:: with SMTP id s40mr16432829uad.121.1560347538584;
- Wed, 12 Jun 2019 06:52:18 -0700 (PDT)
+        id S2439479AbfFLNwf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Jun 2019 09:52:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35594 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2436759AbfFLNwf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Jun 2019 09:52:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A252BAFDA
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jun 2019 13:52:33 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 663B0DA88C; Wed, 12 Jun 2019 15:53:24 +0200 (CEST)
+Date:   Wed, 12 Jun 2019 15:53:24 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH] btrfs: qgroup: Don't hold qgroup_ioctl_lock in
+ btrfs_qgroup_inherit()
+Message-ID: <20190612135324.GJ3563@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+References: <20190612075745.25024-1-wqu@suse.com>
 MIME-Version: 1.0
-References: <20190611164740.14472-1-dsterba@suse.com>
-In-Reply-To: <20190611164740.14472-1-dsterba@suse.com>
-From:   =?UTF-8?Q?Tomasz_K=C5=82oczko?= <kloczko.tomasz@gmail.com>
-Date:   Wed, 12 Jun 2019 14:51:52 +0100
-Message-ID: <CABB28Cx7UdEmOBOquBd8rHcCnJR4ff4AWP2P1gXnME7G0dLs4w@mail.gmail.com>
-Subject: Re: Btrfs progs release 5.1.1
-To:     David Sterba <dsterba@suse.com>
-Cc:     Linux fs Btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190612075745.25024-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 11 Jun 2019 at 20:02, David Sterba <dsterba@suse.com> wrote:
-> btrfs-progs version 5.1.1 have been released.
+On Wed, Jun 12, 2019 at 03:57:45PM +0800, Qu Wenruo wrote:
+> [BUG]
+> Lockdep will report the following circular locking dependency:
+> 
+>   WARNING: possible circular locking dependency detected
+>   5.2.0-rc2-custom #24 Tainted: G           O
+>   ------------------------------------------------------
+>   btrfs/8631 is trying to acquire lock:
+>   000000002536438c (&fs_info->qgroup_ioctl_lock#2){+.+.}, at: btrfs_qgroup_inherit+0x40/0x620 [btrfs]
+> 
+>   but task is already holding lock:
+>   000000003d52cc23 (&fs_info->tree_log_mutex){+.+.}, at: create_pending_snapshot+0x8b6/0xe60 [btrfs]
+> 
+>   which lock already depends on the new lock.
+> 
+>   the existing dependency chain (in reverse order) is:
+> 
+>   -> #2 (&fs_info->tree_log_mutex){+.+.}:
+>          __mutex_lock+0x76/0x940
+>          mutex_lock_nested+0x1b/0x20
+>          btrfs_commit_transaction+0x475/0xa00 [btrfs]
+>          btrfs_commit_super+0x71/0x80 [btrfs]
+>          close_ctree+0x2bd/0x320 [btrfs]
+>          btrfs_put_super+0x15/0x20 [btrfs]
+>          generic_shutdown_super+0x72/0x110
+>          kill_anon_super+0x18/0x30
+>          btrfs_kill_super+0x16/0xa0 [btrfs]
+>          deactivate_locked_super+0x3a/0x80
+>          deactivate_super+0x51/0x60
+>          cleanup_mnt+0x3f/0x80
+>          __cleanup_mnt+0x12/0x20
+>          task_work_run+0x94/0xb0
+>          exit_to_usermode_loop+0xd8/0xe0
+>          do_syscall_64+0x210/0x240
+>          entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+>   -> #1 (&fs_info->reloc_mutex){+.+.}:
+>          __mutex_lock+0x76/0x940
+>          mutex_lock_nested+0x1b/0x20
+>          btrfs_commit_transaction+0x40d/0xa00 [btrfs]
+>          btrfs_quota_enable+0x2da/0x730 [btrfs]
+>          btrfs_ioctl+0x2691/0x2b40 [btrfs]
+>          do_vfs_ioctl+0xa9/0x6d0
+>          ksys_ioctl+0x67/0x90
+>          __x64_sys_ioctl+0x1a/0x20
+>          do_syscall_64+0x65/0x240
+>          entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+>   -> #0 (&fs_info->qgroup_ioctl_lock#2){+.+.}:
+>          lock_acquire+0xa7/0x190
+>          __mutex_lock+0x76/0x940
+>          mutex_lock_nested+0x1b/0x20
+>          btrfs_qgroup_inherit+0x40/0x620 [btrfs]
+>          create_pending_snapshot+0x9d7/0xe60 [btrfs]
+>          create_pending_snapshots+0x94/0xb0 [btrfs]
+>          btrfs_commit_transaction+0x415/0xa00 [btrfs]
+>          btrfs_mksubvol+0x496/0x4e0 [btrfs]
+>          btrfs_ioctl_snap_create_transid+0x174/0x180 [btrfs]
+>          btrfs_ioctl_snap_create_v2+0x11c/0x180 [btrfs]
+>          btrfs_ioctl+0xa90/0x2b40 [btrfs]
+>          do_vfs_ioctl+0xa9/0x6d0
+>          ksys_ioctl+0x67/0x90
+>          __x64_sys_ioctl+0x1a/0x20
+>          do_syscall_64+0x65/0x240
+>          entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> 
+>   other info that might help us debug this:
+> 
+>   Chain exists of:
+>     &fs_info->qgroup_ioctl_lock#2 --> &fs_info->reloc_mutex --> &fs_info->tree_log_mutex
+> 
+>    Possible unsafe locking scenario:
+> 
+>          CPU0                    CPU1
+>          ----                    ----
+>     lock(&fs_info->tree_log_mutex);
+>                                  lock(&fs_info->reloc_mutex);
+>                                  lock(&fs_info->tree_log_mutex);
+>     lock(&fs_info->qgroup_ioctl_lock#2);
+> 
+>    *** DEADLOCK ***
+> 
+>   6 locks held by btrfs/8631:
+>    #0: 00000000ed8f23f6 (sb_writers#12){.+.+}, at: mnt_want_write_file+0x28/0x60
+>    #1: 000000009fb1597a (&type->i_mutex_dir_key#10/1){+.+.}, at: btrfs_mksubvol+0x70/0x4e0 [btrfs]
+>    #2: 0000000088c5ad88 (&fs_info->subvol_sem){++++}, at: btrfs_mksubvol+0x128/0x4e0 [btrfs]
+>    #3: 000000009606fc3e (sb_internal#2){.+.+}, at: start_transaction+0x37a/0x520 [btrfs]
+>    #4: 00000000f82bbdf5 (&fs_info->reloc_mutex){+.+.}, at: btrfs_commit_transaction+0x40d/0xa00 [btrfs]
+>    #5: 000000003d52cc23 (&fs_info->tree_log_mutex){+.+.}, at: create_pending_snapshot+0x8b6/0xe60 [btrfs]
+> 
+> [CAUSE]
+> Due to the delayed subvolume creation, we need to call
+> btrfs_qgroup_inherit() inside commit transaction code, with a lot of
+> other mutex hold.
+> This hell of lock chain can lead to above problem.
+> 
+> [FIX]
+> On the other hand, we don't really need to hold qgroup_ioctl_lock if
+> we're in the context of create_pending_snapshot().
+> As in that context, we're the only one being able to modify qgroup.
+> 
+> All other qgroup functions which needs qgroup_ioctl_lock are either
+> holding a transaction handle, or will start a new transaction:
+>   Functions will start a new transaction():
+>   * btrfs_quota_enable()
+>   * btrfs_quota_disable()
+>   Functions hold a transaction handler:
+>   * btrfs_add_qgroup_relation()
+>   * btrfs_del_qgroup_relation()
+>   * btrfs_create_qgroup()
+>   * btrfs_remove_qgroup()
+>   * btrfs_limit_qgroup()
+>   * btrfs_qgroup_inherit() call inside create_subvol()
+> 
+> So we have a higher level protection provided by transaction, thus we
+> don't need to always hold qgroup_ioctl_lock in btrfs_qgroup_inherit().
+> 
+> Only the btrfs_qgroup_inherit() call in create_subvol() needs to hold
+> qgroup_ioctl_lock, while the btrfs_qgroup_inherit() call in
+> create_pending_snapshot() is already protected by transaction.
+> 
+> So the fix is to manually hold qgroup_ioctl_lock inside create_subvol()
+> while skip the lock inside create_pending_snapshot.
 
-Still test suite is failing for me.
-
-+ /usr/bin/make test
-    [TEST]   fsck-tests.sh
-    [TEST/fsck]   001-bad-file-extent-bytenr
-    [TEST/fsck]   002-bad-transid
-    [TEST/fsck]   003-shift-offsets
-    [TEST/fsck]   004-no-dir-index
-    [TEST/fsck]   005-bad-item-offset
-    [TEST/fsck]   006-bad-root-items
-    [TEST/fsck]   007-bad-offset-snapshots
-    [TEST/fsck]   008-bad-dir-index-name
-    [TEST/fsck]   009-no-dir-item-or-index
-    [TEST/fsck]   010-no-rootdir-inode-item
-    [TEST/fsck]   011-no-inode-item
-    [TEST/fsck]   012-leaf-corruption
-    [TEST/fsck]   013-extent-tree-rebuild
-    [TEST/fsck]   014-no-extent-info
-    [TEST/fsck]   016-wrong-inode-nbytes
-    [TEST/fsck]   017-missing-all-file-extent
-    [TEST/fsck]   018-leaf-crossing-stripes
-    [TEST/fsck]   019-non-skinny-false-alert
-    [TEST/fsck]   020-extent-ref-cases
-    [TEST/fsck]   021-partially-dropped-snapshot-case
-    [TEST/fsck]   022-qgroup-rescan-halfway
-    [TEST/fsck]   023-qgroup-stack-overflow
-    [TEST/fsck]   024-clear-space-cache
-    [TEST/fsck]   025-file-extents
-    [TEST/fsck]   026-bad-dir-item-name
-    [TEST/fsck]   027-bad-extent-inline-ref-type
-    [TEST/fsck]   028-unaligned-super-dev-sizes
-    [TEST/fsck]   029-valid-orphan-item
-    [TEST/fsck]   030-reflinked-prealloc-extents
-    [TEST/fsck]   031-metadatadump-check-data-csum
-    [TEST/fsck]   032-corrupted-qgroup
-    [TEST/fsck]   033-lowmem-collission-dir-items
-    [TEST/fsck]   034-bad-inode-flags
-    [TEST/fsck]   035-inline-bad-ram-bytes
-    [TEST/fsck]   036-bad-dev-extents
-    [TEST/fsck]   036-rescan-not-kicked-in
-    [TEST/fsck]   037-freespacetree-repair
-failed: root_helper umount
-/home/tkloczko/rpmbuild/BUILD/btrfs-progs-v5.1.1/tests//test.img
-test failed for case 037-freespacetree-repair
-make: *** [Makefile:352: test-fsck] Error 1
-error: Bad exit status from /var/tmp/rpm-tmp.3DQ01g (%check)
-
-In log line I found:
-
-=3D=3D=3D=3D=3D=3D RUN CHECK root_helper mount -t btrfs -o loop
-/home/tkloczko/rpmbuild/BUILD/btrfs-progs-v5.1.1/tests//test.img
-/home/tkloczko/rpmbuild/BUILD/btrfs-progs-v5.1.1/tests//mnt
-=3D=3D=3D=3D=3D=3D RUN CHECK root_helper fallocate -l 50m
-/home/tkloczko/rpmbuild/BUILD/btrfs-progs-v5.1.1/tests//mnt/file
-=3D=3D=3D=3D=3D=3D RUN CHECK root_helper umount
-/home/tkloczko/rpmbuild/BUILD/btrfs-progs-v5.1.1/tests//test.img
-umount: /home/tkloczko/rpmbuild/BUILD/btrfs-progs-v5.1.1/tests/mnt:
-target is busy.
-failed: root_helper umount
-/home/tkloczko/rpmbuild/BUILD/btrfs-progs-v5.1.1/tests//test.img
-
-After test suite fails I'm able to umount it manually.
-
-[tkloczko@domek tests]$ sudo umount
-/home/tkloczko/rpmbuild/BUILD/btrfs-progs-v5.1.1/tests//test.img
-[tkloczko@domek tests]$
-
-So looks like during umount still something is holding umount.
-
-kloczek
---=20
-Tomasz K=C5=82oczko | LinkedIn: http://lnkd.in/FXPWxH
+Would it be possible to add that as a run-time assertion? Eg. check the
+state of the transaction if it's inside commit, and if not then check
+the locks?
