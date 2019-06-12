@@ -2,211 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A2C541E70
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jun 2019 09:58:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E11D41EA3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jun 2019 10:07:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436722AbfFLH5x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Jun 2019 03:57:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40412 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2436640AbfFLH5x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Jun 2019 03:57:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id AE245ADC1
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jun 2019 07:57:51 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: qgroup: Don't hold qgroup_ioctl_lock in btrfs_qgroup_inherit()
-Date:   Wed, 12 Jun 2019 15:57:45 +0800
-Message-Id: <20190612075745.25024-1-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
+        id S2436750AbfFLIHV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Jun 2019 04:07:21 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:46002 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726716AbfFLIHV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 12 Jun 2019 04:07:21 -0400
+Received: by mail-qk1-f195.google.com with SMTP id s22so9485493qkj.12
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jun 2019 01:07:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2RLI1Ux9Wo+tKtYma1gE2z43SXRRSIspmODHozALDrQ=;
+        b=HBykwv/BsQxoeiteLTd6yeNsmDfTIK/UZHtpmlGnvCuNvt5g9sIBY7U/ta0UL4oRpa
+         Zv+q7PsLba1QiU6vL4lDArYKmbXiPjtvFHPjAzWSHOBDzUP0hiEZc2AVwzyetxkp5XAT
+         qdmyUBVxU6cf7gaygp+NF0FzSgvvdxHK0bdWbKGx151KDAy46CQxVlYzE0QIEtMw+2f0
+         jON8F/6C1+7k5pnm+NYMKxXuyDyyUZWOrPfu0GPHOiX1yux7Bwi57FJTcR9argmP6AhA
+         Lq+yQ42z9qZ/qLGemAiD4ze0uW4FDVQ5zJC6lYKZ/l6Q/7s/dMPJ6VTlko+GsckFBDt4
+         D8SA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2RLI1Ux9Wo+tKtYma1gE2z43SXRRSIspmODHozALDrQ=;
+        b=Zw1i8H9Qg9Fp8tOn2/fuTiU/fCckKQhKTLtKU5HmymVurISaYqCZI2dDphO0zPxh9O
+         gULfWt7R9uXOUAsfCbTQjlpTIbW4pycTpuNzuK+qfnROUBoMBqIRKFGYLz//KG9h+6OO
+         PGOmI828F7nwMQ5yUp63ySP2uqS1CUN1sC7MXTaPWlggGXQ/FehmczK/UvZMlUGPKjI7
+         qFpaYCzx/u7vcFSWJwAi19U76nGMIm6h0XPqYrFY1UXz3AjIWtSbUaiuOZZc+4crq24/
+         Sr5pXf5y+c7f7IP0yj+hYk2FtY+gYj5BOne5pY7LLUS+Yp3c1ThirTlbcRegTdVBU+lo
+         rkGQ==
+X-Gm-Message-State: APjAAAW+XOPCpsKej9EzQJpHbDpDHZWx0wfd2q2x4gGuushAVrtXUxQv
+        wtPAVxqDcRX0XaJBvvZuj8awwndazGTjm8zqxKdHiyTJ
+X-Google-Smtp-Source: APXvYqxIPz7yifnycfYr6yiqvWSjfSi2cURLxozMM6vvKEDOzXbl5VvL+c+7LSJmJKUxTAwYpCZW17D3evky4E3aMUw=
+X-Received: by 2002:a05:620a:12db:: with SMTP id e27mr53340200qkl.352.1560326839584;
+ Wed, 12 Jun 2019 01:07:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAEg-Je9XTvEtg=Mpb1xKkO6Lzd3-yzSK7GcfbKH13uuf-u-wTA@mail.gmail.com>
+ <CAJCQCtSPZwcg5y-d+mOhmyCdvq1dpzLUg05kPUg7CYhZp6Oz_Q@mail.gmail.com>
+In-Reply-To: <CAJCQCtSPZwcg5y-d+mOhmyCdvq1dpzLUg05kPUg7CYhZp6Oz_Q@mail.gmail.com>
+From:   Neal Gompa <ngompa13@gmail.com>
+Date:   Wed, 12 Jun 2019 04:06:41 -0400
+Message-ID: <CAEg-Je8envHfMm5znrqDvW_U-RO8cOa3KF0+BmuGOB-3eC0k4A@mail.gmail.com>
+Subject: Re: APFS improvements (e.g. firm links, volume w/ subvols
+ replication) as ideas for Btrfs?
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-Lockdep will report the following circular locking dependency:
+On Wed, Jun 12, 2019 at 12:04 AM Chris Murphy <lists@colorremedies.com> wro=
+te:
+>
+> On Tue, Jun 11, 2019 at 12:31 PM Neal Gompa <ngompa13@gmail.com> wrote:
+> >
+> > Hey,
+> >
+> > So Apple held its WWDC event last week, and among other things, they
+> > talked about improvements they've made to filesystems in macOS[1].
+> >
+> > Among other things, one of the things introduced was a concept of
+> > "firm links", which is something like NTFS' directory junctions,
+> > except they can cross (sub)volumes.
+>
+> My understanding is it's a work around for the lack of APFS supporting
+> directory hardlinks. Btrfs does support directory hardlinks but a
+> hardlink points to a particular inode within a particular subvolume
+> (files tree) so it's not possible to have a hard link that crosses
+> subvolumes. A reflink can already do this, but it's really just an
+> efficient copy, the resulting directory is independent. A directory
+> symlink can mirror a directory across subvolumes, but like any symlink
+> it must have a fixed path available to always find the real deal.
+>
+> I think a firm link like thing on Btrfs would require a format change,
+> but I'm not certain. My best guess of what it'd be, is a dir/file
+> object that gets its own inode but contains a hard reference (not
+> independent object) to a subvolid+inode.
+>
+>
+> >This concept makes it easier to
+> > handle uglier layouts. While bind mounts work kind of okay for this
+> > with simpler configurations, it requires operating system awareness,
+> > rather than being setup automatically as the volume is mounted. This
+> > is less brittle and works better for recovery environments, and help
+> > make easier to do read-only system volumes while supported read-write
+> > sections in a more flexible way.
+>
+> There are a couple of things going on. One is something between VFS
+> and Btrfs does this goofy assumption that bind mounts are subvolumes,
+> which is definitely not true. I bring this up here:
+> https://lore.kernel.org/linux-btrfs/CAJCQCtT=3D-YoFJgEo=3DBFqfiPdtMoJCYR3=
+dJPSekf+HQ22GYGztw@mail.gmail.com/
+>
+> Near as I can tell, Btrfs kernel code just needs to be smarter about
+> distinguishing between bind mounts of directories versus the behind
+> the scene bind mount used for subvolumes mounted using -o subvol=3D or
+> -o subvolid=3D ; I don't think that's difficult. It's just someone needs
+> to work through the logic and set aside the resources to do it.
+>
+> Second, the FHS is a PITA anyway, but it really shows its unhelpful
+> ways when it comes to read-only, recoverable/resettable systems. Just
+> see the massively complicated subvolume carveouts opensuse has to do
+> when installed on Btrfs, and the even more complicated gymnastics
+> libostree is doing on the various rpm-ostree variants including Fedora
+> Silverblue.
+>
+> Apple, a long long time ago said, fuck that insanity, we're burying
+> the FHS so mortal users can't see that shit. And we're going to have a
+> plain language set of directories for, you know, actual people who
+> need to get work done.
+>
+> So definitely consider me in the camp of the FHS making life harder, not =
+easier.
+>
 
-  WARNING: possible circular locking dependency detected
-  5.2.0-rc2-custom #24 Tainted: G           O
-  ------------------------------------------------------
-  btrfs/8631 is trying to acquire lock:
-  000000002536438c (&fs_info->qgroup_ioctl_lock#2){+.+.}, at: btrfs_qgroup_inherit+0x40/0x620 [btrfs]
+I mean, yes... FHS is definitely unhelpful, but Apple conforms to FHS
+pretty well, even though it's not obvious that it does. Apple just has
+the benefit of being able to shuffle things around without people
+noticing, whereas no Linux distribution has that.
 
-  but task is already holding lock:
-  000000003d52cc23 (&fs_info->tree_log_mutex){+.+.}, at: create_pending_snapshot+0x8b6/0xe60 [btrfs]
+> >
+> > For example, this would be useful if a volume has two subvolumes: OS
+> > and data. OS would have /usr and data would have /var and /home. But,
+> > importantly, a couple of system data things need to be part of the OS
+> > that are on /var: /var/lib/rpm and /var/lib/alternatives. These two
+> > belong with the OS, and it's incredibly difficult to move it around
+> > due to all kinds of ecosystem knock-on effects. (If you want to know
+> > more about that, just ask the SUSE kiwi team... it's the gift that
+> > keeps on giving...). Both /var/lib/rpm and /var/lib/alternatives are
+> > part of the OS, but they're in /var. It'd be great to stitch that in
+> > from the read-only OS volume into the /var subvolume so that it's
+> > actually part of the OS volume even though it looks like it's in the
+> > data one. It's completely transparent to everything. Supporting atomic
+> > updates (with something like a dnf plugin) becomes much easier because
+> > we can trigger snapshot and subvolume mounts with preserving enough
+> > structure to make things work. In this circumstance, we can flip the
+> > properties so that the new location has a rw OS and ro data volume
+> > mount for doing only software updates (or leave data volume rw during
+> > this transaction and merge the changes back into the OS). We could
+> > also do creative things with /etc if we so wish...
+>
+> Is it really best to do this in Btrfs proper, rather than in VFS?
+>
 
-  which lock already depends on the new lock.
+If we can handle it in VFS where things like firm links drag linked
+subvolumes to be automatically mounted together at their individually
+set snapshot level, then yeah. But best as I understand it, the VFS
+layer is not capable of this level of granularity.
 
-  the existing dependency chain (in reverse order) is:
+This is probably one issue with Btrfs that ZFS gets to avoid, since
+ZFS can't use VFS and thus implements everything at its level. I'm not
+suggesting Btrfs do it for everything, but the filesystem needs some
+intelligence about subvolume handling that it doesn't have now.
 
-  -> #2 (&fs_info->tree_log_mutex){+.+.}:
-         __mutex_lock+0x76/0x940
-         mutex_lock_nested+0x1b/0x20
-         btrfs_commit_transaction+0x475/0xa00 [btrfs]
-         btrfs_commit_super+0x71/0x80 [btrfs]
-         close_ctree+0x2bd/0x320 [btrfs]
-         btrfs_put_super+0x15/0x20 [btrfs]
-         generic_shutdown_super+0x72/0x110
-         kill_anon_super+0x18/0x30
-         btrfs_kill_super+0x16/0xa0 [btrfs]
-         deactivate_locked_super+0x3a/0x80
-         deactivate_super+0x51/0x60
-         cleanup_mnt+0x3f/0x80
-         __cleanup_mnt+0x12/0x20
-         task_work_run+0x94/0xb0
-         exit_to_usermode_loop+0xd8/0xe0
-         do_syscall_64+0x210/0x240
-         entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>
+> > Another thing that APFS seems to support now is creating linked
+> > snapshots (snapshots of multiple subvolumes that are paired together
+> > as single snapshot) for full system replication. Obviously, with firm
+> > links, it makes sense to be able to do such a thing so that full
+> > system replication works properly. As far as I know, it shouldn't be a
+> > difficult concept to implement in Btrfs, but I guess it wouldn't be
+> > really necessary if we don't have firm links...
+>
+> Right now a subvolume is really just a files tree. It's not as
+> separate as it might seem from the pool, compared to what a ZFS
+> dataset is, or I guess it's called a volume is in APFS. To do this on
+> Btrfs probably is another disk format change. My guess is something
+> based on seed-sprout feature, but without the mandatory 2nd block
+> device for the spout. i.e. freeze all the trees.
+>
 
-  -> #1 (&fs_info->reloc_mutex){+.+.}:
-         __mutex_lock+0x76/0x940
-         mutex_lock_nested+0x1b/0x20
-         btrfs_commit_transaction+0x40d/0xa00 [btrfs]
-         btrfs_quota_enable+0x2da/0x730 [btrfs]
-         btrfs_ioctl+0x2691/0x2b40 [btrfs]
-         do_vfs_ioctl+0xa9/0x6d0
-         ksys_ioctl+0x67/0x90
-         __x64_sys_ioctl+0x1a/0x20
-         do_syscall_64+0x65/0x240
-         entry_SYSCALL_64_after_hwframe+0x49/0xbe
+Hmm... That makes sense. I think it would be good to have it for the
+cases I've mentioned...
 
-  -> #0 (&fs_info->qgroup_ioctl_lock#2){+.+.}:
-         lock_acquire+0xa7/0x190
-         __mutex_lock+0x76/0x940
-         mutex_lock_nested+0x1b/0x20
-         btrfs_qgroup_inherit+0x40/0x620 [btrfs]
-         create_pending_snapshot+0x9d7/0xe60 [btrfs]
-         create_pending_snapshots+0x94/0xb0 [btrfs]
-         btrfs_commit_transaction+0x415/0xa00 [btrfs]
-         btrfs_mksubvol+0x496/0x4e0 [btrfs]
-         btrfs_ioctl_snap_create_transid+0x174/0x180 [btrfs]
-         btrfs_ioctl_snap_create_v2+0x11c/0x180 [btrfs]
-         btrfs_ioctl+0xa90/0x2b40 [btrfs]
-         do_vfs_ioctl+0xa9/0x6d0
-         ksys_ioctl+0x67/0x90
-         __x64_sys_ioctl+0x1a/0x20
-         do_syscall_64+0x65/0x240
-         entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-  other info that might help us debug this:
-
-  Chain exists of:
-    &fs_info->qgroup_ioctl_lock#2 --> &fs_info->reloc_mutex --> &fs_info->tree_log_mutex
-
-   Possible unsafe locking scenario:
-
-         CPU0                    CPU1
-         ----                    ----
-    lock(&fs_info->tree_log_mutex);
-                                 lock(&fs_info->reloc_mutex);
-                                 lock(&fs_info->tree_log_mutex);
-    lock(&fs_info->qgroup_ioctl_lock#2);
-
-   *** DEADLOCK ***
-
-  6 locks held by btrfs/8631:
-   #0: 00000000ed8f23f6 (sb_writers#12){.+.+}, at: mnt_want_write_file+0x28/0x60
-   #1: 000000009fb1597a (&type->i_mutex_dir_key#10/1){+.+.}, at: btrfs_mksubvol+0x70/0x4e0 [btrfs]
-   #2: 0000000088c5ad88 (&fs_info->subvol_sem){++++}, at: btrfs_mksubvol+0x128/0x4e0 [btrfs]
-   #3: 000000009606fc3e (sb_internal#2){.+.+}, at: start_transaction+0x37a/0x520 [btrfs]
-   #4: 00000000f82bbdf5 (&fs_info->reloc_mutex){+.+.}, at: btrfs_commit_transaction+0x40d/0xa00 [btrfs]
-   #5: 000000003d52cc23 (&fs_info->tree_log_mutex){+.+.}, at: create_pending_snapshot+0x8b6/0xe60 [btrfs]
-
-[CAUSE]
-Due to the delayed subvolume creation, we need to call
-btrfs_qgroup_inherit() inside commit transaction code, with a lot of
-other mutex hold.
-This hell of lock chain can lead to above problem.
-
-[FIX]
-On the other hand, we don't really need to hold qgroup_ioctl_lock if
-we're in the context of create_pending_snapshot().
-As in that context, we're the only one being able to modify qgroup.
-
-All other qgroup functions which needs qgroup_ioctl_lock are either
-holding a transaction handle, or will start a new transaction:
-  Functions will start a new transaction():
-  * btrfs_quota_enable()
-  * btrfs_quota_disable()
-  Functions hold a transaction handler:
-  * btrfs_add_qgroup_relation()
-  * btrfs_del_qgroup_relation()
-  * btrfs_create_qgroup()
-  * btrfs_remove_qgroup()
-  * btrfs_limit_qgroup()
-  * btrfs_qgroup_inherit() call inside create_subvol()
-
-So we have a higher level protection provided by transaction, thus we
-don't need to always hold qgroup_ioctl_lock in btrfs_qgroup_inherit().
-
-Only the btrfs_qgroup_inherit() call in create_subvol() needs to hold
-qgroup_ioctl_lock, while the btrfs_qgroup_inherit() call in
-create_pending_snapshot() is already protected by transaction.
-
-So the fix is to manually hold qgroup_ioctl_lock inside create_subvol()
-while skip the lock inside create_pending_snapshot.
-
-Reported-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ioctl.c  | 2 ++
- fs/btrfs/qgroup.c | 9 +++++++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 6dafa857bbb9..5a526f38b446 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -618,7 +618,9 @@ static noinline int create_subvol(struct inode *dir,
- 	trans->block_rsv = &block_rsv;
- 	trans->bytes_reserved = block_rsv.size;
- 
-+	mutex_lock(&fs_info->qgroup_ioctl_lock);
- 	ret = btrfs_qgroup_inherit(trans, 0, objectid, inherit);
-+	mutex_unlock(&fs_info->qgroup_ioctl_lock);
- 	if (ret)
- 		goto fail;
- 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 3e6ffbbd8b0a..26485a73911a 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -2607,6 +2607,13 @@ int btrfs_run_qgroups(struct btrfs_trans_handle *trans)
-  * when a snapshot or a subvolume is created. Throwing an error will
-  * cause a transaction abort so we take extra care here to only error
-  * when a readonly fs is a reasonable outcome.
-+ *
-+ * NOTE: Caller outside of commit transaction code should hold
-+ * qgroup_ioctl_lock.
-+ * For caller inside commit transaction, all other qgroup code will be
-+ * blocked by transaction, thus no need to hold that mutex. This will
-+ * avoid complex lock chain in commit transaction context and make lockdep
-+ * happier.
-  */
- int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 			 u64 objectid, struct btrfs_qgroup_inherit *inherit)
-@@ -2621,7 +2628,6 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	u32 level_size = 0;
- 	u64 nums;
- 
--	mutex_lock(&fs_info->qgroup_ioctl_lock);
- 	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags))
- 		goto out;
- 
-@@ -2785,7 +2791,6 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- unlock:
- 	spin_unlock(&fs_info->qgroup_lock);
- out:
--	mutex_unlock(&fs_info->qgroup_ioctl_lock);
- 	return ret;
- }
- 
--- 
-2.22.0
-
+--=20
+=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
+=BC=81/ Always, there's only one truth!
