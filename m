@@ -2,161 +2,198 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B5741AE7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jun 2019 06:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1689641B95
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jun 2019 07:43:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726585AbfFLEEG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 12 Jun 2019 00:04:06 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46849 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725280AbfFLEEF (ORCPT
+        id S1730617AbfFLFnL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 12 Jun 2019 01:43:11 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:34607 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726593AbfFLFnL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 12 Jun 2019 00:04:05 -0400
-Received: by mail-wr1-f66.google.com with SMTP id n4so15182988wrw.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 21:04:03 -0700 (PDT)
+        Wed, 12 Jun 2019 01:43:11 -0400
+Received: by mail-lf1-f46.google.com with SMTP id y198so11067840lfa.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 22:43:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dl5L/NpuoxAoGZqRRlMiJ9aL22KsZ0egO4M+Py5QceA=;
-        b=iytgooO7YwFQ19z8dSyiQdgnWuf8F62dElf8U/q7lgKTofvf441FHpxEROdIvBEuFp
-         kcOX05dXSZGB69qpr8oEy+gORmFqDOim7aRbvrYSyGoU5I4s4fIB5lgk7uHAI6V+aKEW
-         o36shfXCnNyQLODxGAL7wKfoBJg47GA7BdRaVqMIh0rz5P4FZhFFNpmnU6A1uOtsbJli
-         JNfmFU3/2bMA6Cxv844bYctmHXew+3Jw5lewpyzah2lK38zn4YGE3aRkDqSRNFRN7mYG
-         IL3uJygMo6FncWsHvaK8+4eBuCWCv2BNHvKBkxcWDeYML3EdF/eaFOG1ADoySc3Wjl9S
-         WsSQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=Su9RpNVGZUEDn2JSY4vOVguvbb6eyfAGA/XWNuigqD4=;
+        b=pDQQ9FPV3eDo8yQEjYT5u4Gt+uGSmJUHzleCJxxOqiU/s9KdK9mo0su+Gr2wtgXHr0
+         2vweREJs43FATEH2vBeXSazA1OCdRMNxBCKjLK+7FJGjSHnzDY4HIWY9Gdy1zFE1qBKJ
+         ePeoJhG2yBBdRKeX984yv6cGYK6iVp7AQqR1K33TC/gxW7TDrM5E4+eb75qL4hBCYz/R
+         E9KWvAOXIHqfD5/qr02dgbL1s8zoWe7Thg5NfpJoNzw2mC9190j4mV2u6p49Sld8M2/K
+         IIgSIgR/o7vqXA5o5icOYF3pV2hz+m9u1HcdXFJflP4Y5xUFSzDGzh0TOmtxHIczeOIJ
+         Y3yw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dl5L/NpuoxAoGZqRRlMiJ9aL22KsZ0egO4M+Py5QceA=;
-        b=tA0N0TPdDQIH5XCgff/sI/M/hVVF5I9ybnT7wSgBJyscTeCNq0cTybdExLmoJF6sT2
-         d2uZQVfGjH3euMak/Ia0hcQTLj21tTgEoekT6en9WhHopzj2YxOGTo/UK8KnNCiaaHlH
-         RewdU3oM/ioqpEEuKFr6rNZJDoAQkFTrJtnRNU7NSDBXyo0KOScBHPR87yMqaqRpYJKE
-         Ca5qu0eAON/oL1HoTu6GoEBdx/Mie89eol65tBxacMylLJ2tZVluhwOxxJJM3xxrcnK8
-         C9PGDSFVOoMR+4K0Mpwwt2QV5RqoyJ0ajTZJGSU1+8GVyF59KcVuEa57OLD5S5bDmPjG
-         2Fxw==
-X-Gm-Message-State: APjAAAWpqH8RINVe+I5jLFiq9dlf3PivnkNCU7A4+5a5TSNeh6HstxOG
-        Z93SuWJva3hBux6MybVIbACgEtDbZ05T1+OdqcUJlVRYm6c=
-X-Google-Smtp-Source: APXvYqya+azEyfTrlXEeqvXISbETn+nG4p+JBUOtFPsWlAhV71E7tq/Y8uqHQd+ZOYt9eRMT1frGKMKx0blfUz7rLV0=
-X-Received: by 2002:a05:6000:4b:: with SMTP id k11mr1402519wrx.82.1560312243082;
- Tue, 11 Jun 2019 21:04:03 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to;
+        bh=Su9RpNVGZUEDn2JSY4vOVguvbb6eyfAGA/XWNuigqD4=;
+        b=ZC1e4uh3sB81f5ZDRt81EvjQSKNu9GBgzVsGacuFwGeX0I5k5a/G6zHebX2Pfm0Dtp
+         z2QarS6flgo+bdpDg/jQ788gcCJy+fc42s3qhg1mMbsov4oeR7oOTnXxo3q6SbA8LEab
+         7huTSUAkjEGMeoY4JCrMamSpnq9n+rlRGv18QQYlHti9DuKtX601GCI18yr3AE4ikJs7
+         QdNR5t3DEnjO0XsjMfevEgxZQ0GJErHAxTH3QTcWhXIjEO4tw+nipFmk0OgPqZ1K/wdx
+         S1Ar6Nw194e38RfErNazfdCp9ao2EWBTwNFBWJqtY9ehqHr4HxB9G6hgJM6x/uF4nVgy
+         k2eA==
+X-Gm-Message-State: APjAAAUbrnw1gk6qomMtJK1LpSPLM3Ha4s+nSEP7PFC4/sjY8ttu6L+R
+        F75Y9rDeXVxvHlK93yo7BNLZTFbsn4w=
+X-Google-Smtp-Source: APXvYqxqxqUeNYp8X1Qxva2xMMFBZwXruPqDAm0ZtKhrpJBv/j5GA2cqg3HEf56xF4Bur5pYCIv6tQ==
+X-Received: by 2002:ac2:5a01:: with SMTP id q1mr25821730lfn.46.1560318188484;
+        Tue, 11 Jun 2019 22:43:08 -0700 (PDT)
+Received: from [192.168.1.5] (109-252-90-211.nat.spd-mgts.ru. [109.252.90.211])
+        by smtp.gmail.com with ESMTPSA id m10sm2875659lfd.32.2019.06.11.22.43.07
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 11 Jun 2019 22:43:07 -0700 (PDT)
+Subject: Re: Issues with btrfs send/receive with parents
+To:     Eric Mesa <eric@ericmesa.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
+ <CAJCQCtSLVxVtArLHrx0XD6J1oWOowqAnOPzeWVx3J25O7vxFQw@mail.gmail.com>
+ <9d9f4b67-57c1-2003-8e15-52e8460c3c9d@gmail.com>
+ <2008850.MjMmxLcJHu@supermario.mushroomkingdom>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
+ BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
+ 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
+ 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
+ KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
+ nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
+ gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
+ vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
+ AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <21ecc5c2-7e4c-803e-5299-7ee150d6af4f@gmail.com>
+Date:   Wed, 12 Jun 2019 08:43:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-References: <CAEg-Je9XTvEtg=Mpb1xKkO6Lzd3-yzSK7GcfbKH13uuf-u-wTA@mail.gmail.com>
-In-Reply-To: <CAEg-Je9XTvEtg=Mpb1xKkO6Lzd3-yzSK7GcfbKH13uuf-u-wTA@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 11 Jun 2019 22:03:51 -0600
-Message-ID: <CAJCQCtSPZwcg5y-d+mOhmyCdvq1dpzLUg05kPUg7CYhZp6Oz_Q@mail.gmail.com>
-Subject: Re: APFS improvements (e.g. firm links, volume w/ subvols
- replication) as ideas for Btrfs?
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Chris Murphy <lists@colorremedies.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2008850.MjMmxLcJHu@supermario.mushroomkingdom>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="wbzK48qKgpsDepW0WQMIaEDja2W7E9nIe"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 11, 2019 at 12:31 PM Neal Gompa <ngompa13@gmail.com> wrote:
->
-> Hey,
->
-> So Apple held its WWDC event last week, and among other things, they
-> talked about improvements they've made to filesystems in macOS[1].
->
-> Among other things, one of the things introduced was a concept of
-> "firm links", which is something like NTFS' directory junctions,
-> except they can cross (sub)volumes.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--wbzK48qKgpsDepW0WQMIaEDja2W7E9nIe
+Content-Type: multipart/mixed; boundary="GKTPYBRsaTor0XLzbDne9JI0vTLzsSNfD";
+ protected-headers="v1"
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+To: Eric Mesa <eric@ericmesa.com>
+Cc: Chris Murphy <lists@colorremedies.com>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <21ecc5c2-7e4c-803e-5299-7ee150d6af4f@gmail.com>
+Subject: Re: Issues with btrfs send/receive with parents
+References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
+ <CAJCQCtSLVxVtArLHrx0XD6J1oWOowqAnOPzeWVx3J25O7vxFQw@mail.gmail.com>
+ <9d9f4b67-57c1-2003-8e15-52e8460c3c9d@gmail.com>
+ <2008850.MjMmxLcJHu@supermario.mushroomkingdom>
+In-Reply-To: <2008850.MjMmxLcJHu@supermario.mushroomkingdom>
 
-My understanding is it's a work around for the lack of APFS supporting
-directory hardlinks. Btrfs does support directory hardlinks but a
-hardlink points to a particular inode within a particular subvolume
-(files tree) so it's not possible to have a hard link that crosses
-subvolumes. A reflink can already do this, but it's really just an
-efficient copy, the resulting directory is independent. A directory
-symlink can mirror a directory across subvolumes, but like any symlink
-it must have a fixed path available to always find the real deal.
+--GKTPYBRsaTor0XLzbDne9JI0vTLzsSNfD
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-I think a firm link like thing on Btrfs would require a format change,
-but I'm not certain. My best guess of what it'd be, is a dir/file
-object that gets its own inode but contains a hard reference (not
-independent object) to a subvolid+inode.
+11.06.2019 7:19, Eric Mesa =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> On Monday, June 10, 2019 11:39:53 PM EDT Andrei Borzenkov wrote:
+>> 11.06.2019 4:10, Chris Murphy =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>> It's most useful if you show exact commands because actually it's not=
+
+>>> always obvious to everyone what the logic should be and the error
+>>> handling doesn't always stop a user from doing something that doesn't=
+
+>>> make a lot of sense. We need to know the name of the rw subvolume; th=
+e
+>>> command to snapshot it; the full send/receive command for that first
+>>> snapshot; the command for a subsequent snapshot; and the command to
+>>> incrementally send/receive it.
+>>
+>> And the actual output of each command, not description what user think=
+s
+>> has happened.
+>=20
+> Here is a new session where I'll capture everything - well, on the defr=
+ag I'll=20
+> do a snip.
+>=20
+> #btrfs fi defrag -v -r /home/
+>=20
+> ...there follows a list of files that just scrolls infinitely....
+> /home/ermesa/.dropbox-dist/dropbox-lnx.x86_64-74.4.115/_bisect.cpython-=
+37m-
+> x86_64-linux-gnu.so
+> /home/ermesa/.dropbox-dist/dropbox-lnx.x86_64-74.4.115/
+> tornado.speedups.cpython-37m-x86_64-linux-gnu.so
+> /home/ermesa/.bash_history
+> total 1 failures
+>=20
+> # sync
+>=20
+> # btrfs sub snap -r /home/ /home/.snapshots/2019-06-10-2353
+> Create a readonly snapshot of '/home/' in '/home/.snapshots/2019-06-10-=
+2353'
+>=20
+> # btrfs send -vvv -p /home/.snapshots/2019-06-10-1718/ /home/.snapshots=
+/
+> 2019-06-10-2353/ | ssh root@tanukimario btrfs receive /media/backups/ba=
+ckups1/
+> supermario-home
+> At subvol /home/.snapshots/2019-06-10-2353/
+> ERROR: link ermesa/.mozilla/firefox/n35gu0fb.default/bookmarkbackups/
+> bookmarks-2019-06-10_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 -> ermesa=
+/.mozilla/
+> firefox/n35gu0fb.default/bookmarkbackups/
+> bookmarks-2019-06-09_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 failed: N=
+o such file=20
+> or directory
+>=20
+
+Does
+ermesa/.mozilla/firefox/n35gu0fb.default/bookmarkbackups/bookmarks-2019-0=
+6-09_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4
+actually exist in snapshot /home/.snapshots/2019-06-10-1718/ on source?
+
+ls -lR
+/home/.snapshots/2019-06-10-1718/ermesa/.mozilla/n35gu0fb.default/bookmar=
+kbackups
+
+What is the content of the same directory in matching snapshot on
+destination?
+
+Please show "btrfs subvolume list -qRu /home" for source and "btrfs
+subvolume list -qRu /media/backups/backups1/supermario-home" for
+destination.
 
 
->This concept makes it easier to
-> handle uglier layouts. While bind mounts work kind of okay for this
-> with simpler configurations, it requires operating system awareness,
-> rather than being setup automatically as the volume is mounted. This
-> is less brittle and works better for recovery environments, and help
-> make easier to do read-only system volumes while supported read-write
-> sections in a more flexible way.
-
-There are a couple of things going on. One is something between VFS
-and Btrfs does this goofy assumption that bind mounts are subvolumes,
-which is definitely not true. I bring this up here:
-https://lore.kernel.org/linux-btrfs/CAJCQCtT=-YoFJgEo=BFqfiPdtMoJCYR3dJPSekf+HQ22GYGztw@mail.gmail.com/
-
-Near as I can tell, Btrfs kernel code just needs to be smarter about
-distinguishing between bind mounts of directories versus the behind
-the scene bind mount used for subvolumes mounted using -o subvol= or
--o subvolid= ; I don't think that's difficult. It's just someone needs
-to work through the logic and set aside the resources to do it.
-
-Second, the FHS is a PITA anyway, but it really shows its unhelpful
-ways when it comes to read-only, recoverable/resettable systems. Just
-see the massively complicated subvolume carveouts opensuse has to do
-when installed on Btrfs, and the even more complicated gymnastics
-libostree is doing on the various rpm-ostree variants including Fedora
-Silverblue.
-
-Apple, a long long time ago said, fuck that insanity, we're burying
-the FHS so mortal users can't see that shit. And we're going to have a
-plain language set of directories for, you know, actual people who
-need to get work done.
-
-So definitely consider me in the camp of the FHS making life harder, not easier.
-
->
-> For example, this would be useful if a volume has two subvolumes: OS
-> and data. OS would have /usr and data would have /var and /home. But,
-> importantly, a couple of system data things need to be part of the OS
-> that are on /var: /var/lib/rpm and /var/lib/alternatives. These two
-> belong with the OS, and it's incredibly difficult to move it around
-> due to all kinds of ecosystem knock-on effects. (If you want to know
-> more about that, just ask the SUSE kiwi team... it's the gift that
-> keeps on giving...). Both /var/lib/rpm and /var/lib/alternatives are
-> part of the OS, but they're in /var. It'd be great to stitch that in
-> from the read-only OS volume into the /var subvolume so that it's
-> actually part of the OS volume even though it looks like it's in the
-> data one. It's completely transparent to everything. Supporting atomic
-> updates (with something like a dnf plugin) becomes much easier because
-> we can trigger snapshot and subvolume mounts with preserving enough
-> structure to make things work. In this circumstance, we can flip the
-> properties so that the new location has a rw OS and ro data volume
-> mount for doing only software updates (or leave data volume rw during
-> this transaction and merge the changes back into the OS). We could
-> also do creative things with /etc if we so wish...
-
-Is it really best to do this in Btrfs proper, rather than in VFS?
 
 
-> Another thing that APFS seems to support now is creating linked
-> snapshots (snapshots of multiple subvolumes that are paired together
-> as single snapshot) for full system replication. Obviously, with firm
-> links, it makes sense to be able to do such a thing so that full
-> system replication works properly. As far as I know, it shouldn't be a
-> difficult concept to implement in Btrfs, but I guess it wouldn't be
-> really necessary if we don't have firm links...
 
-Right now a subvolume is really just a files tree. It's not as
-separate as it might seem from the pool, compared to what a ZFS
-dataset is, or I guess it's called a volume is in APFS. To do this on
-Btrfs probably is another disk format change. My guess is something
-based on seed-sprout feature, but without the mandatory 2nd block
-device for the spout. i.e. freeze all the trees.
+--GKTPYBRsaTor0XLzbDne9JI0vTLzsSNfD--
 
---
-Chris Murphy
+--wbzK48qKgpsDepW0WQMIaEDja2W7E9nIe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTsPDUXSW5c6iqbJulHosy62l33jAUCXQCQ5AAKCRBHosy62l33
+jNlTAJ9zzRU53W632Qr8dgrElkNlA66W1QCfa5+dmlRdVqTpNfY0BuuVhdEFYms=
+=IXbs
+-----END PGP SIGNATURE-----
+
+--wbzK48qKgpsDepW0WQMIaEDja2W7E9nIe--
