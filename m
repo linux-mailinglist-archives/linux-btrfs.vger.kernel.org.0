@@ -2,109 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CE43D589
-	for <lists+linux-btrfs@lfdr.de>; Tue, 11 Jun 2019 20:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF194198B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 12 Jun 2019 02:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729327AbfFKSb7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 11 Jun 2019 14:31:59 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:34345 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729074AbfFKSb7 (ORCPT
+        id S2392187AbfFLAgk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 11 Jun 2019 20:36:40 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:51566 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391522AbfFLAgk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 11 Jun 2019 14:31:59 -0400
-Received: by mail-qt1-f194.google.com with SMTP id m29so15772335qtu.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 11 Jun 2019 11:31:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=kn96utnwQnGrG20QEbX7h5+uROjopklg7CkSOIfbcko=;
-        b=PYo8BazIWQIW2gOTcEUi2Jtn/++CXk1KttthwgfpdzkkJNI850HD6QPLUs/aF2li8P
-         od8MCWtXybiYoPms4EP2PbkyuMLVyyepQSrAchxCsIMRh9h9aC17KspDM8N28tbHDrJg
-         BvjA7zdeWEdzQskpi+7E/C+MqxyNNsQzgYPPwcCH6w6WyRJjz3bKaWZ14ZpMOBqvfsXM
-         7wkuyegwRBxJf+uLg6LdBTW5UNv28MkEFxb2i+jAMz48VKo2pQvaSNVBCE0FgW/96Pp/
-         MptT4/fDSAaMCDHyJ42fZkWZOTrHxPMixvVHOklXslZkHPbvNtXaTR3fNA1cgtHZjVdR
-         MjXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=kn96utnwQnGrG20QEbX7h5+uROjopklg7CkSOIfbcko=;
-        b=uCB18ZNpKExU7TcNc5P+Fsrm6DvC1B2TgQh+NYnvykSUfxk0S4OEec+4kKqXP/nILY
-         3gVmAbJb4pUJZb3RwKwu17TJLK2y6eAFb9qIMiGuGeGo0g018uimRA9iA02N44utotZA
-         N4lrgDneRPxr99PIbmy7Wh3kCYy3XlZx64FTLUaFyUM6dFVUguK4Kco8Cujg7t4huCvS
-         IEdagyYrjpoATVVKQXNGNrzn2zpPgk7+j5Tk4NOqoaBCp1Yi2Vsbx9BuzMjSYcnGiIlI
-         NlCyGv7NYvXVFoG3HZrz49Lir3idZgFGwn0reUsT3/1agXWsAZVM2CyBxuoSZnwisQQ6
-         JVkA==
-X-Gm-Message-State: APjAAAXwzi0775x7S4Vc8pKz6H2EpLhbRMbKEDGdeteObDO/QEum1nYI
-        H5/dxsmJCVRG3so/Up8b54sDO2PfpG5Q5ArHlBDJnSuW
-X-Google-Smtp-Source: APXvYqzFf3HpPw+KU5cigeys80UH2cevxxH2158MLIftLk8by3rExpKvMrdkfvXBG9jQFMl8myyo0cSpTsiGVwMdhJc=
-X-Received: by 2002:ac8:183:: with SMTP id x3mr63683838qtf.104.1560277917635;
- Tue, 11 Jun 2019 11:31:57 -0700 (PDT)
+        Tue, 11 Jun 2019 20:36:40 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5C0U2aL172563;
+        Wed, 12 Jun 2019 00:35:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=9gKawnpnm3eYTlbJSmpS31BgWCZu6yO6zvRDwLNExMc=;
+ b=vHQc7RiwFlRopnBcV6yXscL30ZNdwN/v/B17eINRtpQHvUvgM6epdVedyPbAKdmcBBV3
+ cpQKUJvANpmF9rest4EECBPlFj+c/6FFyA1MB+Y7QHfaviX1SgktsC/OuLuEeHTjfJfn
+ IHVrIivC0Er8GlXskbXJ6t5OZcUHTAMhyEJ0O8MOVdKDEgKTHfWtz59o9kiNq/kqTY6E
+ 4hAomBRtHJLX3EPEAvdgUe3wJJHguniVZBFYytUSwIeEiPqdsoMO2S6x/RCI4kCCEC8X
+ 5tzrNpCpeUTAjMu2i0Q0axAMVtIdwT/+kMGJyGR6ACAIOztQv/pzRx3K8FTZ+teYFImj 5Q== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2t04etrany-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 Jun 2019 00:35:50 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5C0YsTE041414;
+        Wed, 12 Jun 2019 00:35:50 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2t1jphr047-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 12 Jun 2019 00:35:50 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5C0Zn8q043221;
+        Wed, 12 Jun 2019 00:35:49 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2t1jphr042-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 Jun 2019 00:35:49 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5C0ZfCm005680;
+        Wed, 12 Jun 2019 00:35:41 GMT
+Received: from localhost (/10.145.179.81)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 11 Jun 2019 17:35:41 -0700
+Date:   Tue, 11 Jun 2019 17:35:38 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Dave Kleikamp <dave.kleikamp@oracle.com>
+Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        shaggy@kernel.org, ard.biesheuvel@linaro.org, josef@toxicpanda.com,
+        clm@fb.com, adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk,
+        linux-xfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, cluster-devel@redhat.com,
+        linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, ocfs2-devel@oss.oracle.com
+Subject: Re: [Jfs-discussion] [PATCH 1/4] vfs: create a generic checking
+ function for FS_IOC_SETFLAGS
+Message-ID: <20190612003538.GW1871505@magnolia>
+References: <156022833285.3227089.11990489625041926920.stgit@magnolia>
+ <156022834076.3227089.14763553158562888103.stgit@magnolia>
+ <fb974a33-2192-30ab-9f31-885c3796360b@oracle.com>
 MIME-Version: 1.0
-From:   Neal Gompa <ngompa13@gmail.com>
-Date:   Tue, 11 Jun 2019 14:31:21 -0400
-Message-ID: <CAEg-Je9XTvEtg=Mpb1xKkO6Lzd3-yzSK7GcfbKH13uuf-u-wTA@mail.gmail.com>
-Subject: APFS improvements (e.g. firm links, volume w/ subvols replication) as
- ideas for Btrfs?
-To:     linux-btrfs@vger.kernel.org
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fb974a33-2192-30ab-9f31-885c3796360b@oracle.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9285 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906120001
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hey,
+On Tue, Jun 11, 2019 at 08:41:06AM -0500, Dave Kleikamp wrote:
+> On 6/10/19 11:45 PM, Darrick J. Wong wrote:
+> > From: Darrick J. Wong <darrick.wong@oracle.com>
+> > 
+> > Create a generic checking function for the incoming FS_IOC_SETFLAGS flag
+> > values so that we can standardize the implementations that follow ext4's
+> > flag values.
+> > 
+> > Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> 
+>  -- clip --
+> 
+> > diff --git a/fs/jfs/ioctl.c b/fs/jfs/ioctl.c
+> > index ba34dae8bd9f..c8446d2cd0c7 100644
+> > --- a/fs/jfs/ioctl.c
+> > +++ b/fs/jfs/ioctl.c
+> > @@ -98,6 +98,12 @@ long jfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+> >  		/* Lock against other parallel changes of flags */
+> >  		inode_lock(inode);
+> >  
+> > +		oldflags = jfs_map_ext2(jfs_inode->mode2 & JFS_FL_USER_VISIBLE,
+> > +					0);
+> > +		err = vfs_ioc_setflags_check(inode, oldflags, flags);
+> > +		if (err)
+> > +			goto setflags_out;
+> 
+> inode_unlock(inode) is not called on the error path.
+> 
+> > +
+> >  		oldflags = jfs_inode->mode2;
+> >  
+> >  		/*
+> 
+> This patch leaves jfs's open-coded version of the same check.
 
-So Apple held its WWDC event last week, and among other things, they
-talked about improvements they've made to filesystems in macOS[1].
+Heh, thanks for pointing that out.  I'll fix both of those things.
 
-Among other things, one of the things introduced was a concept of
-"firm links", which is something like NTFS' directory junctions,
-except they can cross (sub)volumes. This concept makes it easier to
-handle uglier layouts. While bind mounts work kind of okay for this
-with simpler configurations, it requires operating system awareness,
-rather than being setup automatically as the volume is mounted. This
-is less brittle and works better for recovery environments, and help
-make easier to do read-only system volumes while supported read-write
-sections in a more flexible way.
+--D
 
-For example, this would be useful if a volume has two subvolumes: OS
-and data. OS would have /usr and data would have /var and /home. But,
-importantly, a couple of system data things need to be part of the OS
-that are on /var: /var/lib/rpm and /var/lib/alternatives. These two
-belong with the OS, and it's incredibly difficult to move it around
-due to all kinds of ecosystem knock-on effects. (If you want to know
-more about that, just ask the SUSE kiwi team... it's the gift that
-keeps on giving...). Both /var/lib/rpm and /var/lib/alternatives are
-part of the OS, but they're in /var. It'd be great to stitch that in
-from the read-only OS volume into the /var subvolume so that it's
-actually part of the OS volume even though it looks like it's in the
-data one. It's completely transparent to everything. Supporting atomic
-updates (with something like a dnf plugin) becomes much easier because
-we can trigger snapshot and subvolume mounts with preserving enough
-structure to make things work. In this circumstance, we can flip the
-properties so that the new location has a rw OS and ro data volume
-mount for doing only software updates (or leave data volume rw during
-this transaction and merge the changes back into the OS). We could
-also do creative things with /etc if we so wish...
-
-Another thing that APFS seems to support now is creating linked
-snapshots (snapshots of multiple subvolumes that are paired together
-as single snapshot) for full system replication. Obviously, with firm
-links, it makes sense to be able to do such a thing so that full
-system replication works properly. As far as I know, it shouldn't be a
-difficult concept to implement in Btrfs, but I guess it wouldn't be
-really necessary if we don't have firm links...
-
-What do you guys think?
-
-[1]: https://developer.apple.com/videos/play/wwdc2019/710/
-
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+> Thanks,
+> Shaggy
