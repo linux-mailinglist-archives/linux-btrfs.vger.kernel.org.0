@@ -2,95 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55E0044908
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 19:13:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D13B44E50
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 23:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbfFMRNX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jun 2019 13:13:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53944 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728982AbfFMRNW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jun 2019 13:13:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 92E5FABE9;
-        Thu, 13 Jun 2019 17:13:21 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DED4FDA897; Thu, 13 Jun 2019 19:14:08 +0200 (CEST)
-Date:   Thu, 13 Jun 2019 19:14:07 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] Btrfs: prevent send failures and crashes due to
- concurrent relocation
-Message-ID: <20190613171406.GY3563@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20190422154409.16323-1-fdmanana@kernel.org>
- <20190513163216.GF3138@twin.jikos.cz>
- <CAL3q7H4LD1F=D7ERBNTeSTBWUOTnTS-oyBoN3KVBV-uZ0t+QLg@mail.gmail.com>
- <20190513180012.GI3138@twin.jikos.cz>
- <CAL3q7H4L=2SnzDJ+O8X7DojnucBgz2QZDN7xw4AtBdozUkKjWA@mail.gmail.com>
- <CAL3q7H7Z3VS7nu3f9NJSmERSgEC_3NLkLPy2vv8jQ7ci7dPe=A@mail.gmail.com>
+        id S1727009AbfFMVXJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jun 2019 17:23:09 -0400
+Received: from dog.birch.relay.mailchannels.net ([23.83.209.48]:22269 "EHLO
+        dog.birch.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725747AbfFMVXJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Jun 2019 17:23:09 -0400
+X-Sender-Id: dreamhost|x-authsender|eric@ericmesa.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+        by relay.mailchannels.net (Postfix) with ESMTP id 5454E3421FD;
+        Thu, 13 Jun 2019 21:23:07 +0000 (UTC)
+Received: from pdx1-sub0-mail-a53.g.dreamhost.com (100-96-14-97.trex.outbound.svc.cluster.local [100.96.14.97])
+        (Authenticated sender: dreamhost)
+        by relay.mailchannels.net (Postfix) with ESMTPA id C02ED341A62;
+        Thu, 13 Jun 2019 21:23:06 +0000 (UTC)
+X-Sender-Id: dreamhost|x-authsender|eric@ericmesa.com
+Received: from pdx1-sub0-mail-a53.g.dreamhost.com ([TEMPUNAVAIL].
+ [64.90.62.162])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384)
+        by 0.0.0.0:2500 (trex/5.17.2);
+        Thu, 13 Jun 2019 21:23:07 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|eric@ericmesa.com
+X-MailChannels-Auth-Id: dreamhost
+X-Callous-Grain: 1bc6cd952862852e_1560460987138_1223024384
+X-MC-Loop-Signature: 1560460987138:2684021214
+X-MC-Ingress-Time: 1560460987137
+Received: from pdx1-sub0-mail-a53.g.dreamhost.com (localhost [127.0.0.1])
+        by pdx1-sub0-mail-a53.g.dreamhost.com (Postfix) with ESMTP id 6CB86809E9;
+        Thu, 13 Jun 2019 14:23:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=ericmesa.com; h=from:to:cc
+        :subject:date:message-id:in-reply-to:references:mime-version
+        :content-type; s=ericmesa.com; bh=ZP4jBeOmxI+rQnRSpAO1Qq9unT0=; b=
+        JKUjooANC6nvWEt/jivJUzB877jRTUujweBAiHPJ5lSrG1oNqPatepMN6AuxMLM4
+        UowEu8juqbuAT1POE06pdZ/zyNjPct+fHog+wR8ABkAAsUiEzQ2sTtoX1qS5bYOy
+        TlwPLHXII21wfnjqdZoMDwBSoIn2lbLaPXqvR1VWGHA=
+Received: from supermario.mushroomkingdom (pool-68-134-39-132.bltmmd.fios.verizon.net [68.134.39.132])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: eric@ericmesa.com)
+        by pdx1-sub0-mail-a53.g.dreamhost.com (Postfix) with ESMTPSA id 98674809DD;
+        Thu, 13 Jun 2019 14:23:00 -0700 (PDT)
+X-DH-BACKEND: pdx1-sub0-mail-a53
+From:   Eric Mesa <eric@ericmesa.com>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Issues with btrfs send/receive with parents
+Date:   Thu, 13 Jun 2019 17:22:56 -0400
+Message-ID: <97541737.v72oTHCfnW@supermario.mushroomkingdom>
+In-Reply-To: <b2bba48e-a759-cb99-cf2c-04e89bce171e@gmail.com>
+References: <3884539.zL6soEQT1V@supermario.mushroomkingdom> <2331470.mWhmLaHhuV@supermario.mushroomkingdom> <b2bba48e-a759-cb99-cf2c-04e89bce171e@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H7Z3VS7nu3f9NJSmERSgEC_3NLkLPy2vv8jQ7ci7dPe=A@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+Content-Type: multipart/signed; boundary="nextPart3800452.NEQRHaf9XN"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-VR-OUT-STATUS: OK
+X-VR-OUT-SCORE: -100
+X-VR-OUT-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduuddrudehledgudeitdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucggtfgfnhhsuhgsshgtrhhisggvpdfftffgtefojffquffvnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfgggtsehgtderredttddvnecuhfhrohhmpefgrhhitgcuofgvshgruceovghrihgtsegvrhhitghmvghsrgdrtghomheqnecukfhppeeikedrudefgedrfeelrddufedvnecurfgrrhgrmhepmhhouggvpehsmhhtphdphhgvlhhopehsuhhpvghrmhgrrhhiohdrmhhushhhrhhoohhmkhhinhhgughomhdpihhnvghtpeeikedrudefgedrfeelrddufedvpdhrvghtuhhrnhdqphgrthhhpefgrhhitgcuofgvshgruceovghrihgtsegvrhhitghmvghsrgdrtghomheqpdhmrghilhhfrhhomhepvghrihgtsegvrhhitghmvghsrgdrtghomhdpnhhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedt
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 10:24:05AM +0100, Filipe Manana wrote:
-> On Thu, Jun 6, 2019 at 2:24 PM Filipe Manana <fdmanana@kernel.org> wrote:
-> >
-> > On Mon, May 13, 2019 at 6:59 PM David Sterba <dsterba@suse.cz> wrote:
-> > >
-> > > On Mon, May 13, 2019 at 05:43:55PM +0100, Filipe Manana wrote:
-> > > > On Mon, May 13, 2019 at 5:31 PM David Sterba <dsterba@suse.cz> wrote:
-> > > > >
-> > > > > On Mon, Apr 22, 2019 at 04:44:09PM +0100, fdmanana@kernel.org wrote:
-> > > > > > From: Filipe Manana <fdmanana@suse.com>
-> > > > > > --- a/fs/btrfs/send.c
-> > > > > > +++ b/fs/btrfs/send.c
-> > > > > > @@ -6869,9 +6869,23 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
-> > > > > >       if (ret)
-> > > > > >               goto out;
-> > > > > >
-> > > > > > +     mutex_lock(&fs_info->balance_mutex);
-> > > > > > +     if (test_bit(BTRFS_FS_BALANCE_RUNNING, &fs_info->flags)) {
-> > > > > > +             mutex_unlock(&fs_info->balance_mutex);
-> > > > > > +             btrfs_warn_rl(fs_info,
-> > > > > > +           "Can not run send because a balance operation is in progress");
-> > > > > > +             ret = -EAGAIN;
-> > > > > > +             goto out;
-> > > > > > +     }
-> > > > > > +     fs_info->send_in_progress++;
-> > > > > > +     mutex_unlock(&fs_info->balance_mutex);
-> > > > >
-> > > > > This would be better in a helper that hides that the balance mutex from
-> > > > > send.
-> > > >
-> > > > Given the large number of cleanup patches that open code helpers that
-> > > > had only one caller, this somewhat surprises me.
-> > >
-> > > Fair point, though I'd object that there are cases where the function
-> > > name says in short what happens without the implementation details and
-> > > this helps code readability. I struck me when I saw 'send_in_progress
-> > > protected by balance_mutex'. You can find functions that are called just
-> > > once, that's not an anti-pattern in general.
-> > >
-> > > I'll take a fresh look later, the setup phase of btrfs_ioctl_send is not
-> > > exactly short so the added check does not stand out.
-> >
-> > So, several weeks passed, and this prevents a quite serious bug from happening.
-> > Any progress on that or was I supposed to do something about it?
-> >
-> > Thanks.
-> 
-> Ping.
+--nextPart3800452.NEQRHaf9XN
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-Sorry, missed that. I'll apply the patch without changes, the open coding
-of the check is not a big deal.
+On Thursday, June 13, 2019 2:26:10 AM EDT Andrei Borzenkov wrote:
+> 
+> All your snapshots on source have the same received_uuid (I have no idea
+> how is it possible). If received_uuid exists, it is sent to destination
+> instead of subvolume UUID to identify matching snapshot. All your backup
+> sbapshots on destination also have the same received_uuid which is
+> matched against (received_)UUID of source subvolume. In this case
+> receive command takes the first found subvolume (probably the most
+> recent, i.e. with the smallest generation number). So you send
+> differential stream against one subvolume and this stream is applied to
+> another subvolume which explains the error.
+
+Yup. Any idea of how to fix? 
+
+--
+Eric Mesa
+--nextPart3800452.NEQRHaf9XN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEBs24pwhCu/Z7g0Sb2bE1K6FAnEUFAl0CvrAACgkQ2bE1K6FA
+nEUbjggAxYfloJcHc8SNuK04jl5/MF/R13BsyI4tYRGSRA0FGs8cRajmgQfrDGXC
+eT5ndzndVjqd64c3kbxZaoTO7pUkMXwRUYgG8rf8lb3puNFlVpbXdeEoI2PpMciI
+gSBGTu09mMl82RTmz4zVQ1uui4ABRQ2JM8ZaG5z2n1Whf0+XDJ1pMd1x8BV23F25
+YjRSOCPsGJEOuFhHxEQIxDIncnJGLb3zupSZPOzsvBM9TVAMR4+IVu8m2mQmykAk
+FSpVGZzgW1vZMZAwIcfV7HXPCPpTChBOT5luHeXHhiNazFHMPJ1bn9/kzR7UARme
+qtxgC7SiZUIKHWh4xNRI6zkoiVVoSQ==
+=VQUx
+-----END PGP SIGNATURE-----
+
+--nextPart3800452.NEQRHaf9XN--
+
+
+
