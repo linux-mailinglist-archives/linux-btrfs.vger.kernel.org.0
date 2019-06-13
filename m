@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B405943E13
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 17:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8ECF043E11
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 17:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732026AbfFMPrY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S1729026AbfFMPrY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 13 Jun 2019 11:47:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60688 "EHLO mx1.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:60882 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731761AbfFMJam (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jun 2019 05:30:42 -0400
+        id S1731758AbfFMJbf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Jun 2019 05:31:35 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0FBE3AF0A
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2019 09:30:41 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id EDA0AAF0A
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2019 09:31:33 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: qgroup: Don't hold qgroup_ioctl_lock in btrfs_qgroup_inherit()
-Date:   Thu, 13 Jun 2019 17:30:34 +0800
-Message-Id: <20190613093034.25463-1-wqu@suse.com>
+Subject: [PATCH v2] btrfs: qgroup: Don't hold qgroup_ioctl_lock in btrfs_qgroup_inherit()
+Date:   Thu, 13 Jun 2019 17:31:24 +0800
+Message-Id: <20190613093124.25544-1-wqu@suse.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -156,6 +156,10 @@ context and no need to get the mutex.
 
 Reported-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+changelog:
+v2;
+- Detect context in btrfs_qgroup_inherit() itself
 ---
  fs/btrfs/qgroup.c | 24 ++++++++++++++++++++++--
  1 file changed, 22 insertions(+), 2 deletions(-)
