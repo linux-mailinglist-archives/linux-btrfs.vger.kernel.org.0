@@ -2,212 +2,188 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CD64400B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 18:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57CCE4471E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 18:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390677AbfFMQC0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jun 2019 12:02:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58286 "EHLO mx1.suse.de"
+        id S2393174AbfFMQ5N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jun 2019 12:57:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48408 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731409AbfFMQCZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jun 2019 12:02:25 -0400
+        id S1729941AbfFMQ5M (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Jun 2019 12:57:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A8940AE36
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2019 16:02:23 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 13EBBADD9;
+        Thu, 13 Jun 2019 16:57:10 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0EBA9DA897; Thu, 13 Jun 2019 18:03:13 +0200 (CEST)
-Date:   Thu, 13 Jun 2019 18:03:13 +0200
+        id 6F7C6DA897; Thu, 13 Jun 2019 18:57:57 +0200 (CEST)
+Date:   Thu, 13 Jun 2019 18:57:56 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
-Subject: Re: [PATCH] btrfs: qgroup: Don't hold qgroup_ioctl_lock in
- btrfs_qgroup_inherit()
-Message-ID: <20190613160313.GV3563@twin.jikos.cz>
+To:     Chris Mason <clm@fb.com>
+Cc:     dsterba@suse.com, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/2] Btrfs: keep pages dirty when using
+ btrfs_writepage_fixup_worker
+Message-ID: <20190613165755.GW3563@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
-References: <20190613093034.25463-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Chris Mason <clm@fb.com>,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org
+References: <20180620145612.1644763-1-clm@fb.com>
+ <20180620145612.1644763-3-clm@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190613093034.25463-1-wqu@suse.com>
+In-Reply-To: <20180620145612.1644763-3-clm@fb.com>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 13, 2019 at 05:30:34PM +0800, Qu Wenruo wrote:
-> [BUG]
-> Lockdep will report the following circular locking dependency:
-> 
->   WARNING: possible circular locking dependency detected
->   5.2.0-rc2-custom #24 Tainted: G           O
->   ------------------------------------------------------
->   btrfs/8631 is trying to acquire lock:
->   000000002536438c (&fs_info->qgroup_ioctl_lock#2){+.+.}, at: btrfs_qgroup_inherit+0x40/0x620 [btrfs]
-> 
->   but task is already holding lock:
->   000000003d52cc23 (&fs_info->tree_log_mutex){+.+.}, at: create_pending_snapshot+0x8b6/0xe60 [btrfs]
-> 
->   which lock already depends on the new lock.
-> 
->   the existing dependency chain (in reverse order) is:
-> 
->   -> #2 (&fs_info->tree_log_mutex){+.+.}:
->          __mutex_lock+0x76/0x940
->          mutex_lock_nested+0x1b/0x20
->          btrfs_commit_transaction+0x475/0xa00 [btrfs]
->          btrfs_commit_super+0x71/0x80 [btrfs]
->          close_ctree+0x2bd/0x320 [btrfs]
->          btrfs_put_super+0x15/0x20 [btrfs]
->          generic_shutdown_super+0x72/0x110
->          kill_anon_super+0x18/0x30
->          btrfs_kill_super+0x16/0xa0 [btrfs]
->          deactivate_locked_super+0x3a/0x80
->          deactivate_super+0x51/0x60
->          cleanup_mnt+0x3f/0x80
->          __cleanup_mnt+0x12/0x20
->          task_work_run+0x94/0xb0
->          exit_to_usermode_loop+0xd8/0xe0
->          do_syscall_64+0x210/0x240
->          entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> 
->   -> #1 (&fs_info->reloc_mutex){+.+.}:
->          __mutex_lock+0x76/0x940
->          mutex_lock_nested+0x1b/0x20
->          btrfs_commit_transaction+0x40d/0xa00 [btrfs]
->          btrfs_quota_enable+0x2da/0x730 [btrfs]
->          btrfs_ioctl+0x2691/0x2b40 [btrfs]
->          do_vfs_ioctl+0xa9/0x6d0
->          ksys_ioctl+0x67/0x90
->          __x64_sys_ioctl+0x1a/0x20
->          do_syscall_64+0x65/0x240
->          entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> 
->   -> #0 (&fs_info->qgroup_ioctl_lock#2){+.+.}:
->          lock_acquire+0xa7/0x190
->          __mutex_lock+0x76/0x940
->          mutex_lock_nested+0x1b/0x20
->          btrfs_qgroup_inherit+0x40/0x620 [btrfs]
->          create_pending_snapshot+0x9d7/0xe60 [btrfs]
->          create_pending_snapshots+0x94/0xb0 [btrfs]
->          btrfs_commit_transaction+0x415/0xa00 [btrfs]
->          btrfs_mksubvol+0x496/0x4e0 [btrfs]
->          btrfs_ioctl_snap_create_transid+0x174/0x180 [btrfs]
->          btrfs_ioctl_snap_create_v2+0x11c/0x180 [btrfs]
->          btrfs_ioctl+0xa90/0x2b40 [btrfs]
->          do_vfs_ioctl+0xa9/0x6d0
->          ksys_ioctl+0x67/0x90
->          __x64_sys_ioctl+0x1a/0x20
->          do_syscall_64+0x65/0x240
->          entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> 
->   other info that might help us debug this:
-> 
->   Chain exists of:
->     &fs_info->qgroup_ioctl_lock#2 --> &fs_info->reloc_mutex --> &fs_info->tree_log_mutex
-> 
->    Possible unsafe locking scenario:
-> 
->          CPU0                    CPU1
->          ----                    ----
->     lock(&fs_info->tree_log_mutex);
->                                  lock(&fs_info->reloc_mutex);
->                                  lock(&fs_info->tree_log_mutex);
->     lock(&fs_info->qgroup_ioctl_lock#2);
-> 
->    *** DEADLOCK ***
-> 
->   6 locks held by btrfs/8631:
->    #0: 00000000ed8f23f6 (sb_writers#12){.+.+}, at: mnt_want_write_file+0x28/0x60
->    #1: 000000009fb1597a (&type->i_mutex_dir_key#10/1){+.+.}, at: btrfs_mksubvol+0x70/0x4e0 [btrfs]
->    #2: 0000000088c5ad88 (&fs_info->subvol_sem){++++}, at: btrfs_mksubvol+0x128/0x4e0 [btrfs]
->    #3: 000000009606fc3e (sb_internal#2){.+.+}, at: start_transaction+0x37a/0x520 [btrfs]
->    #4: 00000000f82bbdf5 (&fs_info->reloc_mutex){+.+.}, at: btrfs_commit_transaction+0x40d/0xa00 [btrfs]
->    #5: 000000003d52cc23 (&fs_info->tree_log_mutex){+.+.}, at: create_pending_snapshot+0x8b6/0xe60 [btrfs]
-> 
-> [CAUSE]
-> Due to the delayed subvolume creation, we need to call
-> btrfs_qgroup_inherit() inside commit transaction code, with a lot of
-> other mutex hold.
-> This hell of lock chain can lead to above problem.
-> 
-> [FIX]
-> On the other hand, we don't really need to hold qgroup_ioctl_lock if
-> we're in the context of create_pending_snapshot().
-> As in that context, we're the only one being able to modify qgroup.
-> 
-> All other qgroup functions which needs qgroup_ioctl_lock are either
-> holding a transaction handle, or will start a new transaction:
->   Functions will start a new transaction():
->   * btrfs_quota_enable()
->   * btrfs_quota_disable()
->   Functions hold a transaction handler:
->   * btrfs_add_qgroup_relation()
->   * btrfs_del_qgroup_relation()
->   * btrfs_create_qgroup()
->   * btrfs_remove_qgroup()
->   * btrfs_limit_qgroup()
->   * btrfs_qgroup_inherit() call inside create_subvol()
-> 
-> So we have a higher level protection provided by transaction, thus we
-> don't need to always hold qgroup_ioctl_lock in btrfs_qgroup_inherit().
-> 
-> Only the btrfs_qgroup_inherit() call in create_subvol() needs to hold
-> qgroup_ioctl_lock, while the btrfs_qgroup_inherit() call in
-> create_pending_snapshot() is already protected by transaction.
-> 
-> So the fix is to detect the context by checking
-> trans->transaction->state.
-> If we're at TRANS_STATE_COMMIT_DOING, then we're in commit transaction
-> context and no need to get the mutex.
-> 
-> Reported-by: Nikolay Borisov <nborisov@suse.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/qgroup.c | 24 ++++++++++++++++++++++--
->  1 file changed, 22 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 3e6ffbbd8b0a..f8a3c1b0a15a 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -2614,6 +2614,7 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->  	int ret = 0;
->  	int i;
->  	u64 *i_qgroups;
-> +	bool committing = false;
->  	struct btrfs_fs_info *fs_info = trans->fs_info;
->  	struct btrfs_root *quota_root;
->  	struct btrfs_qgroup *srcgroup;
-> @@ -2621,7 +2622,25 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
->  	u32 level_size = 0;
->  	u64 nums;
->  
-> -	mutex_lock(&fs_info->qgroup_ioctl_lock);
-> +	/*
-> +	 * There are only two callers of this function.
-> +	 *
-> +	 * One in create_subvol() in the ioctl context, which needs to hold
-> +	 * the qgroup_ioctl_lock.
-> +	 *
-> +	 * The other one in create_pending_snapshot() where no other qgroup
-> +	 * code can modify the fs as they all need to either start a new trans
-> +	 * or hold a trans handler, thus we don't need to hold
-> +	 * qgroup_ioctl_lock.
-> +	 * This would avoid long and complex lock chain and make lockdep happy.
-> +	 */
-> +	spin_lock(&fs_info->trans_lock);
-> +	if (trans->transaction->state == TRANS_STATE_COMMIT_DOING)
-> +		committing = true;
-> +	spin_unlock(&fs_info->trans_lock);
-> +
-> +	if (!committing)
-> +		mutex_lock(&fs_info->qgroup_ioctl_lock);
+Ping.
 
-That's different from what I had in mind but is better in a way. The
-conditional locking is not always a good option but I think it'll be ok
-as the function is not heavily used in random contexts and it's
-commented.
+On Wed, Jun 20, 2018 at 07:56:12AM -0700, Chris Mason wrote:
+> For COW, btrfs expects pages dirty pages to have been through a few setup
+> steps.  This includes reserving space for the new block allocations and marking
+> the range in the state tree for delayed allocation.
+> 
+> A few places outside btrfs will dirty pages directly, especially when unmapping
+> mmap'd pages.  In order for these to properly go through COW, we run them
+> through a fixup worker to wait for stable pages, and do the delalloc prep.
+> 
+> 87826df0ec36 added a window where the dirty pages were cleaned, but pending
+> more action from the fixup worker.  During this window, page migration can jump
+> in and relocate the page.  Once our fixup work actually starts, it finds
+> page->mapping is NULL and we end up freeing the page without ever writing it.
+> 
+> This leads to crc errors and other exciting problems, since it screws up the
+> whole statemachine for waiting for ordered extents.  The fix here is to keep
+> the page dirty while we're waiting for the fixup worker to get to work.  This
+> also makes sure the error handling in btrfs_writepage_fixup_worker does the
+> right thing with dirty bits when we run out of space.
+> 
+> Signed-off-by: Chris Mason <clm@fb.com>
+> ---
+>  fs/btrfs/inode.c | 67 +++++++++++++++++++++++++++++++++++++++++---------------
+>  1 file changed, 49 insertions(+), 18 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 0b86cf1..5538900 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2100,11 +2100,21 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+>  	page = fixup->page;
+>  again:
+>  	lock_page(page);
+> -	if (!page->mapping || !PageDirty(page) || !PageChecked(page)) {
+> -		ClearPageChecked(page);
+> +
+> +	/*
+> +	 * before we queued this fixup, we took a reference on the page.
+> +	 * page->mapping may go NULL, but it shouldn't be moved to a
+> +	 * different address space.
+> +	 */
+> +	if (!page->mapping || !PageDirty(page) || !PageChecked(page))
+>  		goto out_page;
+> -	}
+>  
+> +	/*
+> +	 * we keep the PageChecked() bit set until we're done with the
+> +	 * btrfs_start_ordered_extent() dance that we do below.  That
+> +	 * drops and retakes the page lock, so we don't want new
+> +	 * fixup workers queued for this page during the churn.
+> +	 */
+>  	inode = page->mapping->host;
+>  	page_start = page_offset(page);
+>  	page_end = page_offset(page) + PAGE_SIZE - 1;
+> @@ -2129,33 +2139,46 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+>  
+>  	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
+>  					   PAGE_SIZE);
+> -	if (ret) {
+> -		mapping_set_error(page->mapping, ret);
+> -		end_extent_writepage(page, ret, page_start, page_end);
+> -		ClearPageChecked(page);
+> -		goto out;
+> -	 }
+> +	if (ret)
+> +		goto out_error;
+>  
+>  	ret = btrfs_set_extent_delalloc(inode, page_start, page_end, 0,
+>  					&cached_state, 0);
+> -	if (ret) {
+> -		mapping_set_error(page->mapping, ret);
+> -		end_extent_writepage(page, ret, page_start, page_end);
+> -		ClearPageChecked(page);
+> -		goto out;
+> -	}
+> +	if (ret)
+> +		goto out_error;
+>  
+> -	ClearPageChecked(page);
+> -	set_page_dirty(page);
+>  	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, false);
+> +
+> +	/*
+> +	 * everything went as planned, we're now the proud owners of a
+> +	 * Dirty page with delayed allocation bits set and space reserved
+> +	 * for our COW destination.
+> +	 *
+> +	 * The page was dirty when we started, nothing should have cleaned it.
+> +	 */
+> +	BUG_ON(!PageDirty(page));
+> +
+>  out:
+>  	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
+>  			     &cached_state);
+>  out_page:
+> +	ClearPageChecked(page);
+>  	unlock_page(page);
+>  	put_page(page);
+>  	kfree(fixup);
+>  	extent_changeset_free(data_reserved);
+> +	return;
+> +
+> +out_error:
+> +	/*
+> +	 * We hit ENOSPC or other errors.  Update the mapping and page to
+> +	 * reflect the errors and clean the page.
+> +	 */
+> +	mapping_set_error(page->mapping, ret);
+> +	end_extent_writepage(page, ret, page_start, page_end);
+> +	clear_page_dirty_for_io(page);
+> +	SetPageError(page);
+> +	goto out;
+>  }
+>  
+>  /*
+> @@ -2179,6 +2202,13 @@ static int btrfs_writepage_start_hook(struct page *page, u64 start, u64 end)
+>  	if (TestClearPagePrivate2(page))
+>  		return 0;
+>  
+> +	/*
+> +	 * PageChecked is set below when we create a fixup worker for this page,
+> +	 * don't try to create another one if we're already PageChecked()
+> +	 *
+> +	 * The extent_io writepage code will redirty the page if we send
+> +	 * back EAGAIN.
+> +	 */
+>  	if (PageChecked(page))
+>  		return -EAGAIN;
+>  
+> @@ -2192,7 +2222,8 @@ static int btrfs_writepage_start_hook(struct page *page, u64 start, u64 end)
+>  			btrfs_writepage_fixup_worker, NULL, NULL);
+>  	fixup->page = page;
+>  	btrfs_queue_work(fs_info->fixup_workers, &fixup->work);
+> -	return -EBUSY;
+> +
+> +	return -EAGAIN;
+>  }
+>  
+>  static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+> -- 
+> 2.9.5
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe linux-btrfs" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
