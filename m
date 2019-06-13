@@ -2,223 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 187C74458D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 18:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEB464445C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 18:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730577AbfFMQoo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jun 2019 12:44:44 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:44776 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725794AbfFMG0T (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jun 2019 02:26:19 -0400
-Received: by mail-lj1-f181.google.com with SMTP id k18so17319834ljc.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jun 2019 23:26:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=n+XMcs1qi7jNntqjWjorThmb6Ojs+bBugPZb2Tj6xVA=;
-        b=CsTq/tZIy/ohd3KBGExL6MERfTiLXeptgN4cd6PCandRi3xiOyyzJy5m0cGccSmTb5
-         MzKQPYZJ5RPgzqnXNuf+FFQlEAD8TCwzLYmvkAWSZFv8LzSvRf/IEDuaZVgqqKIaxBob
-         kGtaEiqeeYu4xh261k6T5NafIr4vB2REMe+lr1s6Cw9NxWLkeHExkRWGh04E1zvq1tWM
-         fabC44jo1rttbWyXH6S6c+tqAJQvvIw5GmxDvzMsB30hX+B6OAC4kgH0Nwb4x6CZ+Uyy
-         uFyYT4xU1MF6yelKyIYo0R0AP3gHdKul/9uMJi1vxmHpU23w177k31HX0pyuf3UdQFtP
-         Ba1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to;
-        bh=n+XMcs1qi7jNntqjWjorThmb6Ojs+bBugPZb2Tj6xVA=;
-        b=Gjv2ewrz7TJXkNULF3urzrHtGlJzaD2mZAkSJEqpc44utIxLHzhA+Rgu+b+VSETSol
-         wfJlDqcFhG96NrO4qLZ1RQkVginJQcUTL/mp8++3z5JaWB62ANQzeH9u+e2wHCjaOgi7
-         wrRYUMtD55AsyQZ9SQRmzb5m+yr3lV1A6J2eP/leiU4mQSIJDXQqnd3OUuQOKMHLYc12
-         e8bJHfZKstPd/bS3JlE9xc3fJtGC3yvvuG3kuSX+YEgJHCXbYWzzwy9FwiXkj22Eglng
-         MGmBcMd7o2YMyQSxA0LTnlxnxGGVtGcV6BM/dy5b5ydU8E2x6fNmJf4prcF7O+nXv0+b
-         jomQ==
-X-Gm-Message-State: APjAAAWylXu+4e2fTlrSpgfTvuHhRL7jPztfF7R5n8d2M/CKpieX993o
-        RYmrAvF1UJd0VVkVcB1VXzh/JTsI
-X-Google-Smtp-Source: APXvYqyixHlWn08ke3mFlRW9VNz7DEA7tzQl1ZNLoF8z5W4rBxG4TzyuVoI2y6lxx9KAgCkcGO2yIg==
-X-Received: by 2002:a2e:2993:: with SMTP id p19mr18174852ljp.202.1560407176297;
-        Wed, 12 Jun 2019 23:26:16 -0700 (PDT)
-Received: from [192.168.1.5] (109-252-90-211.nat.spd-mgts.ru. [109.252.90.211])
-        by smtp.gmail.com with ESMTPSA id u22sm430423ljd.18.2019.06.12.23.26.14
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 12 Jun 2019 23:26:15 -0700 (PDT)
-Subject: Re: Issues with btrfs send/receive with parents
-To:     Eric Mesa <eric@ericmesa.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
- <2008850.MjMmxLcJHu@supermario.mushroomkingdom>
- <21ecc5c2-7e4c-803e-5299-7ee150d6af4f@gmail.com>
- <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
- BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
- 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
- 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
- KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
- nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
- gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
- vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
- AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <b2bba48e-a759-cb99-cf2c-04e89bce171e@gmail.com>
-Date:   Thu, 13 Jun 2019 09:26:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1730690AbfFMQga (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jun 2019 12:36:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37336 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730683AbfFMHdv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Jun 2019 03:33:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id C2345AAD0
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2019 07:33:49 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: delayed-ref: Fix memory leak and use-after-free caused by wrong condition to free delayed ref/head.
+Date:   Thu, 13 Jun 2019 15:33:40 +0800
+Message-Id: <20190613073340.19851-1-wqu@suse.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-In-Reply-To: <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="ogeaqexS2avV1guayVGzPJDUCfjcepPb4"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ogeaqexS2avV1guayVGzPJDUCfjcepPb4
-Content-Type: multipart/mixed; boundary="I4Lkls9J3lGHHyH86dvn5OIZfc3zHY7FI";
- protected-headers="v1"
-From: Andrei Borzenkov <arvidjaar@gmail.com>
-To: Eric Mesa <eric@ericmesa.com>
-Cc: Chris Murphy <lists@colorremedies.com>,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <b2bba48e-a759-cb99-cf2c-04e89bce171e@gmail.com>
-Subject: Re: Issues with btrfs send/receive with parents
-References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
- <2008850.MjMmxLcJHu@supermario.mushroomkingdom>
- <21ecc5c2-7e4c-803e-5299-7ee150d6af4f@gmail.com>
- <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
-In-Reply-To: <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
+[BUG]
+When btrfs-progs is compiled with D=asan, it can't pass even the very
+basic fsck tests due to btrfs-image has memory leak:
+  === START TEST /home/adam/btrfs/btrfs-progs/tests//fsck-tests/001-bad-file-extent-bytenr
+  restoring image default_case.img
 
---I4Lkls9J3lGHHyH86dvn5OIZfc3zHY7FI
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+  =================================================================
+  ==7790==ERROR: LeakSanitizer: detected memory leaks
 
-13.06.2019 2:03, Eric Mesa =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-=2E..
->>>
->>> # btrfs sub snap -r /home/ /home/.snapshots/2019-06-10-2353
->>> Create a readonly snapshot of '/home/' in
->>> '/home/.snapshots/2019-06-10-2353'
->>>
->>> # btrfs send -vvv -p /home/.snapshots/2019-06-10-1718/ /home/.snapsho=
-ts/
->>> 2019-06-10-2353/ | ssh root@tanukimario btrfs receive
->>> /media/backups/backups1/ supermario-home
->>> At subvol /home/.snapshots/2019-06-10-2353/
->>> ERROR: link ermesa/.mozilla/firefox/n35gu0fb.default/bookmarkbackups/=
+  Direct leak of 104 byte(s) in 1 object(s) allocated from:
+      #0 0x7f1d3b738389 in __interceptor_malloc /build/gcc/src/gcc/libsanitizer/asan/asan_malloc_linux.cc:86
+      #1 0x560ca6b7f4ff in btrfs_add_delayed_tree_ref /home/adam/btrfs/btrfs-progs/delayed-ref.c:569
+      #2 0x560ca6af2d0b in btrfs_free_extent /home/adam/btrfs/btrfs-progs/extent-tree.c:2155
+      #3 0x560ca6ac16ca in __btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:319
+      #4 0x560ca6ac1d8c in btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:383
+      #5 0x560ca6ac6c8e in btrfs_search_slot /home/adam/btrfs/btrfs-progs/ctree.c:1153
+      #6 0x560ca6ab7e83 in fixup_device_size image/main.c:2113
+      #7 0x560ca6ab9279 in fixup_chunks_and_devices image/main.c:2333
+      #8 0x560ca6ab9ada in restore_metadump image/main.c:2455
+      #9 0x560ca6abaeba in main image/main.c:2723
+      #10 0x7f1d3b148ce2 in __libc_start_main (/usr/lib/libc.so.6+0x23ce2)
 
->>> bookmarks-2019-06-10_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 ->
->>> ermesa/.mozilla/ firefox/n35gu0fb.default/bookmarkbackups/
->>> bookmarks-2019-06-09_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 failed:=
- No such
->>> file or directory
->>
-=2E..
->=20
->=20
-> On the source disk:
->=20
-> # btrfs subvolume list -qRu /home
-> ID 822 gen 3042780 top level 5 parent_uuid c6101e57-acd3-e54c-a957-
-> b2b6a033bc42 received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uuid=20
-> 7247f4a0-6ea2-0d49-b5c5-1ea2ecb8980a path home
-> ID 823 gen 3042727 top level 822 parent_uuid -                         =
-          =20
-> received_uuid -                                    uuid f83e53b6-dc88-1=
-a44-
-> a5e8-f220d5d21083 path .snapshots
-> ID 2515 gen 3008316 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
-> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
-id=20
-> 8ef83478-86be-8a47-a425-1dc6957a0fbe path .snapshots/2019-06-05-postdef=
-rag
-> ID 2516 gen 3021663 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
-> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
-id=20
-> cbb67aec-02ed-8247-afee-38ae94555471 path .snapshots/2019-06-08-1437
-> ID 2518 gen 3027353 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
-> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
-id=20
-> ca361150-1050-5844-bff7-de5c89b5cc05 path .snapshots/2019-06-09-1550
-> ID 2519 gen 3028168 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
-> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
-id=20
-> 5fa82b5e-59e1-2549-a939-5dabc99c0f2a path .snapshots/2019-06-09-1944
-> ID 2520 gen 3032614 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
-> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
-id=20
-> df437aaf-0f40-344e-8302-932ea8e5f197 path .snapshots/2019-06-10-1718
-> ID 2521 gen 3034140 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
-> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
-id=20
-> 2b985685-d88b-784a-b870-8f5f8fcdd08c path .snapshots/2019-06-10-2353
->=20
->=20
-> On the destination disk: (I deleted 2019-06-2353 since it wasn't a vali=
-d=20
-> backup and I didn't want to get confused when determining which backups=
- I=20
-> could delete)
->=20
-> btrfs subvolume list -qRu /media/backups/backups1/supermario-home
-=2E..
-> ID 2983 gen 15033 top level 258 parent_uuid -                          =
-         =20
-> received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uuid 7685ff5c-0a72-
-> f94e-93d7-7736f68b3ec5 path 2019-06-05-postdefrag
-> ID 3545 gen 14310 top level 258 parent_uuid 7685ff5c-0a72-
-> f94e-93d7-7736f68b3ec5 received_uuid ab1ea98a-b950-2047-802d-3b26568e2e=
-14 uuid=20
-> 26791559-bd47-e44f-9e2f-0ea258615429 path 2019-06-08-1437
-> ID 3550 gen 14878 top level 258 parent_uuid 7685ff5c-0a72-
-> f94e-93d7-7736f68b3ec5 received_uuid ab1ea98a-b950-2047-802d-3b26568e2e=
-14 uuid=20
-> 7c9787bc-fbc4-c146-b88b-e5dd10918eaa path 2019-06-09-1944
-> ID 3582 gen 15012 top level 258 parent_uuid 7685ff5c-0a72-
-> f94e-93d7-7736f68b3ec5 received_uuid ab1ea98a-b950-2047-802d-3b26568e2e=
-14 uuid=20
-> 44963c1e-7bc7-f34a-9370-ce180ce05b69 path 2019-06-10-1718
->=20
+  ... tons of similar leakage for delayed_tree_ref ...
 
-All your snapshots on source have the same received_uuid (I have no idea
-how is it possible). If received_uuid exists, it is sent to destination
-instead of subvolume UUID to identify matching snapshot. All your backup
-sbapshots on destination also have the same received_uuid which is
-matched against (received_)UUID of source subvolume. In this case
-receive command takes the first found subvolume (probably the most
-recent, i.e. with the smallest generation number). So you send
-differential stream against one subvolume and this stream is applied to
-another subvolume which explains the error.
+  Direct leak of 96 byte(s) in 1 object(s) allocated from:
+      #0 0x7f1d3b738389 in __interceptor_malloc /build/gcc/src/gcc/libsanitizer/asan/asan_malloc_linux.cc:86
+      #1 0x560ca6b7f5fb in btrfs_add_delayed_tree_ref /home/adam/btrfs/btrfs-progs/delayed-ref.c:583
+      #2 0x560ca6af5679 in alloc_tree_block /home/adam/btrfs/btrfs-progs/extent-tree.c:2503
+      #3 0x560ca6af57ac in btrfs_alloc_free_block /home/adam/btrfs/btrfs-progs/extent-tree.c:2524
+      #4 0x560ca6ac115b in __btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:290
+      #5 0x560ca6ac1d8c in btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:383
+      #6 0x560ca6b7bb15 in commit_tree_roots /home/adam/btrfs/btrfs-progs/transaction.c:98
+      #7 0x560ca6b7c525 in btrfs_commit_transaction /home/adam/btrfs/btrfs-progs/transaction.c:192
+      #8 0x560ca6ab92be in fixup_chunks_and_devices image/main.c:2337
+      #9 0x560ca6ab9ada in restore_metadump image/main.c:2455
+      #10 0x560ca6abaeba in main image/main.c:2723
+      #11 0x7f1d3b148ce2 in __libc_start_main (/usr/lib/libc.so.6+0x23ce2)
 
+  ... tons of similar leakage for delayed_ref_head ...
 
+  SUMMARY: AddressSanitizer: 1600 byte(s) leaked in 16 allocation(s).
+  failed to restore image ./default_case.img
 
---I4Lkls9J3lGHHyH86dvn5OIZfc3zHY7FI--
+[CAUSE]
+Commit c6039704c580 ("btrfs-progs: Add delayed refs infrastructure")
+introduces delayed ref infrastructure for free space tree, however the
+refcount_dec_and_test() from kernel code is wrongly backported.
 
---ogeaqexS2avV1guayVGzPJDUCfjcepPb4
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+refcount_dec_and_test() will return true if the refcount reaches 0.
+So kernel code will free the allocated space as expected:
+	if (refcount_dec_and_test(&ref->refs)) {
+		kmem_cache_free();
+	}
 
------BEGIN PGP SIGNATURE-----
+However btrfs-progs backport is using the opposite condition:
+	if (--ref->refs) {
+		kfree();
+	}
 
-iF0EARECAB0WIQTsPDUXSW5c6iqbJulHosy62l33jAUCXQHshgAKCRBHosy62l33
-jL+FAKDGa3B0+DdWXcxe5hOXbQOmzUF2WgCdE58dAmFlOu4J5Mk2/ASKRzEZqUI=
-=PCgr
------END PGP SIGNATURE-----
+This will not free the memory for the last user, but for refs >= 2.
+Causing both use-after-free and memory leak for any offline write
+operation.
 
---ogeaqexS2avV1guayVGzPJDUCfjcepPb4--
+[FIX]
+Fix the (--ref->refs) condition to (--ref->refs == 0) to fix the
+backport error.
+
+Fixes: c6039704c580 ("btrfs-progs: Add delayed refs infrastructure")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ delayed-ref.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/delayed-ref.h b/delayed-ref.h
+index efc855eff621..2ccfd27c2b95 100644
+--- a/delayed-ref.h
++++ b/delayed-ref.h
+@@ -161,7 +161,7 @@ btrfs_free_delayed_extent_op(struct btrfs_delayed_extent_op *op)
+ static inline void btrfs_put_delayed_ref(struct btrfs_delayed_ref_node *ref)
+ {
+ 	WARN_ON(ref->refs == 0);
+-	if (--ref->refs) {
++	if (--ref->refs == 0) {
+ 		WARN_ON(ref->in_tree);
+ 		switch (ref->type) {
+ 		case BTRFS_TREE_BLOCK_REF_KEY:
+@@ -180,7 +180,7 @@ static inline void btrfs_put_delayed_ref(struct btrfs_delayed_ref_node *ref)
+ 
+ static inline void btrfs_put_delayed_ref_head(struct btrfs_delayed_ref_head *head)
+ {
+-	if (--head->refs)
++	if (--head->refs == 0)
+ 		kfree(head);
+ }
+ 
+-- 
+2.22.0
+
