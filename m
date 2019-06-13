@@ -2,127 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F31D844415
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 18:36:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9B243E2D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 17:48:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730759AbfFMQeq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jun 2019 12:34:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40108 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730753AbfFMHuF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jun 2019 03:50:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 87A1AAD1E
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2019 07:50:03 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: delayed-ref: Fix memory leak and use-after-free caused by wrong condition to free delayed ref/head.
-Date:   Thu, 13 Jun 2019 15:49:59 +0800
-Message-Id: <20190613074959.20163-1-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
+        id S1731745AbfFMPsB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jun 2019 11:48:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731742AbfFMJYR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 13 Jun 2019 05:24:17 -0400
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D201E21743
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2019 09:24:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1560417857;
+        bh=/Eh2g2POUo1j1OEjHp3862MXf69XGcC8IMeMRxFAqNM=;
+        h=References:In-Reply-To:From:Date:Subject:To:From;
+        b=q4k2suuZWKwo9N5QgHIECpefsXiAxqDc4Lkh550H6hB8LkEi5F8n+OUwVYLL4b55e
+         l3FDWrWP4xwWhFIaRuJbBxhJnWAw5w/g4MY6rkCyWO1wEc25tVOv7dMO6689mjTW1h
+         M2aU1Ps67INUq84l/BqMQ7daQcadzljOCe/EGfXA=
+Received: by mail-ua1-f50.google.com with SMTP id j8so7036287uan.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2019 02:24:16 -0700 (PDT)
+X-Gm-Message-State: APjAAAXJpYGyuyAyKVFQmZH9/T5/njbU+Eadil/y4oNQnh/VkLMbOO7z
+        lBKrjLwvG1ZIakprtFXzOKq9iRrRQbKkW9Wyehw=
+X-Google-Smtp-Source: APXvYqxYyNnJOcI1nClSedOuHsA/YB8YRIp79L8qOgExGwx2PrKUNfIJ1QcEz3FL9vOoKfSo+mQxf/BQsQdTzB9irJg=
+X-Received: by 2002:ab0:5a64:: with SMTP id m33mr22536188uad.135.1560417856009;
+ Thu, 13 Jun 2019 02:24:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190422154409.16323-1-fdmanana@kernel.org> <20190513163216.GF3138@twin.jikos.cz>
+ <CAL3q7H4LD1F=D7ERBNTeSTBWUOTnTS-oyBoN3KVBV-uZ0t+QLg@mail.gmail.com>
+ <20190513180012.GI3138@twin.jikos.cz> <CAL3q7H4L=2SnzDJ+O8X7DojnucBgz2QZDN7xw4AtBdozUkKjWA@mail.gmail.com>
+In-Reply-To: <CAL3q7H4L=2SnzDJ+O8X7DojnucBgz2QZDN7xw4AtBdozUkKjWA@mail.gmail.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 13 Jun 2019 10:24:05 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7Z3VS7nu3f9NJSmERSgEC_3NLkLPy2vv8jQ7ci7dPe=A@mail.gmail.com>
+Message-ID: <CAL3q7H7Z3VS7nu3f9NJSmERSgEC_3NLkLPy2vv8jQ7ci7dPe=A@mail.gmail.com>
+Subject: Re: [PATCH] Btrfs: prevent send failures and crashes due to
+ concurrent relocation
+To:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When btrfs-progs is compiled with D=asan, it can't pass even the very
-basic fsck tests due to btrfs-image has memory leak:
-  === START TEST /home/adam/btrfs/btrfs-progs/tests//fsck-tests/001-bad-file-extent-bytenr
-  restoring image default_case.img
+On Thu, Jun 6, 2019 at 2:24 PM Filipe Manana <fdmanana@kernel.org> wrote:
+>
+> On Mon, May 13, 2019 at 6:59 PM David Sterba <dsterba@suse.cz> wrote:
+> >
+> > On Mon, May 13, 2019 at 05:43:55PM +0100, Filipe Manana wrote:
+> > > On Mon, May 13, 2019 at 5:31 PM David Sterba <dsterba@suse.cz> wrote:
+> > > >
+> > > > On Mon, Apr 22, 2019 at 04:44:09PM +0100, fdmanana@kernel.org wrote:
+> > > > > From: Filipe Manana <fdmanana@suse.com>
+> > > > > --- a/fs/btrfs/send.c
+> > > > > +++ b/fs/btrfs/send.c
+> > > > > @@ -6869,9 +6869,23 @@ long btrfs_ioctl_send(struct file *mnt_file, struct btrfs_ioctl_send_args *arg)
+> > > > >       if (ret)
+> > > > >               goto out;
+> > > > >
+> > > > > +     mutex_lock(&fs_info->balance_mutex);
+> > > > > +     if (test_bit(BTRFS_FS_BALANCE_RUNNING, &fs_info->flags)) {
+> > > > > +             mutex_unlock(&fs_info->balance_mutex);
+> > > > > +             btrfs_warn_rl(fs_info,
+> > > > > +           "Can not run send because a balance operation is in progress");
+> > > > > +             ret = -EAGAIN;
+> > > > > +             goto out;
+> > > > > +     }
+> > > > > +     fs_info->send_in_progress++;
+> > > > > +     mutex_unlock(&fs_info->balance_mutex);
+> > > >
+> > > > This would be better in a helper that hides that the balance mutex from
+> > > > send.
+> > >
+> > > Given the large number of cleanup patches that open code helpers that
+> > > had only one caller, this somewhat surprises me.
+> >
+> > Fair point, though I'd object that there are cases where the function
+> > name says in short what happens without the implementation details and
+> > this helps code readability. I struck me when I saw 'send_in_progress
+> > protected by balance_mutex'. You can find functions that are called just
+> > once, that's not an anti-pattern in general.
+> >
+> > I'll take a fresh look later, the setup phase of btrfs_ioctl_send is not
+> > exactly short so the added check does not stand out.
+>
+> So, several weeks passed, and this prevents a quite serious bug from happening.
+> Any progress on that or was I supposed to do something about it?
+>
+> Thanks.
 
-  =================================================================
-  ==7790==ERROR: LeakSanitizer: detected memory leaks
-
-  Direct leak of 104 byte(s) in 1 object(s) allocated from:
-      #0 0x7f1d3b738389 in __interceptor_malloc /build/gcc/src/gcc/libsanitizer/asan/asan_malloc_linux.cc:86
-      #1 0x560ca6b7f4ff in btrfs_add_delayed_tree_ref /home/adam/btrfs/btrfs-progs/delayed-ref.c:569
-      #2 0x560ca6af2d0b in btrfs_free_extent /home/adam/btrfs/btrfs-progs/extent-tree.c:2155
-      #3 0x560ca6ac16ca in __btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:319
-      #4 0x560ca6ac1d8c in btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:383
-      #5 0x560ca6ac6c8e in btrfs_search_slot /home/adam/btrfs/btrfs-progs/ctree.c:1153
-      #6 0x560ca6ab7e83 in fixup_device_size image/main.c:2113
-      #7 0x560ca6ab9279 in fixup_chunks_and_devices image/main.c:2333
-      #8 0x560ca6ab9ada in restore_metadump image/main.c:2455
-      #9 0x560ca6abaeba in main image/main.c:2723
-      #10 0x7f1d3b148ce2 in __libc_start_main (/usr/lib/libc.so.6+0x23ce2)
-
-  ... tons of similar leakage for delayed_tree_ref ...
-
-  Direct leak of 96 byte(s) in 1 object(s) allocated from:
-      #0 0x7f1d3b738389 in __interceptor_malloc /build/gcc/src/gcc/libsanitizer/asan/asan_malloc_linux.cc:86
-      #1 0x560ca6b7f5fb in btrfs_add_delayed_tree_ref /home/adam/btrfs/btrfs-progs/delayed-ref.c:583
-      #2 0x560ca6af5679 in alloc_tree_block /home/adam/btrfs/btrfs-progs/extent-tree.c:2503
-      #3 0x560ca6af57ac in btrfs_alloc_free_block /home/adam/btrfs/btrfs-progs/extent-tree.c:2524
-      #4 0x560ca6ac115b in __btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:290
-      #5 0x560ca6ac1d8c in btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:383
-      #6 0x560ca6b7bb15 in commit_tree_roots /home/adam/btrfs/btrfs-progs/transaction.c:98
-      #7 0x560ca6b7c525 in btrfs_commit_transaction /home/adam/btrfs/btrfs-progs/transaction.c:192
-      #8 0x560ca6ab92be in fixup_chunks_and_devices image/main.c:2337
-      #9 0x560ca6ab9ada in restore_metadump image/main.c:2455
-      #10 0x560ca6abaeba in main image/main.c:2723
-      #11 0x7f1d3b148ce2 in __libc_start_main (/usr/lib/libc.so.6+0x23ce2)
-
-  ... tons of similar leakage for delayed_ref_head ...
-
-  SUMMARY: AddressSanitizer: 1600 byte(s) leaked in 16 allocation(s).
-  failed to restore image ./default_case.img
-
-[CAUSE]
-Commit c6039704c580 ("btrfs-progs: Add delayed refs infrastructure")
-introduces delayed ref infrastructure for free space tree, however the
-refcount_dec_and_test() from kernel code is wrongly backported.
-
-refcount_dec_and_test() will return true if the refcount reaches 0.
-So kernel code will free the allocated space as expected:
-	if (refcount_dec_and_test(&ref->refs)) {
-		kmem_cache_free();
-	}
-
-However btrfs-progs backport is using the opposite condition:
-	if (--ref->refs) {
-		kfree();
-	}
-
-This will not free the memory for the last user, but for refs >= 2.
-Causing both use-after-free and memory leak for any offline write
-operation.
-
-[FIX]
-Fix the (--ref->refs) condition to (--ref->refs == 0) to fix the
-backport error.
-
-Fixes: c6039704c580 ("btrfs-progs: Add delayed refs infrastructure")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- delayed-ref.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/delayed-ref.h b/delayed-ref.h
-index efc855eff621..2ccfd27c2b95 100644
---- a/delayed-ref.h
-+++ b/delayed-ref.h
-@@ -161,7 +161,7 @@ btrfs_free_delayed_extent_op(struct btrfs_delayed_extent_op *op)
- static inline void btrfs_put_delayed_ref(struct btrfs_delayed_ref_node *ref)
- {
- 	WARN_ON(ref->refs == 0);
--	if (--ref->refs) {
-+	if (--ref->refs == 0) {
- 		WARN_ON(ref->in_tree);
- 		switch (ref->type) {
- 		case BTRFS_TREE_BLOCK_REF_KEY:
-@@ -180,7 +180,7 @@ static inline void btrfs_put_delayed_ref(struct btrfs_delayed_ref_node *ref)
- 
- static inline void btrfs_put_delayed_ref_head(struct btrfs_delayed_ref_head *head)
- {
--	if (--head->refs)
-+	if (--head->refs == 0)
- 		kfree(head);
- }
- 
--- 
-2.22.0
-
+Ping.
