@@ -2,134 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E41B445E6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 18:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 187C74458D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Jun 2019 18:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730322AbfFMQr0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jun 2019 12:47:26 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:49286 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730261AbfFME72 (ORCPT
+        id S1730577AbfFMQoo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jun 2019 12:44:44 -0400
+Received: from mail-lj1-f181.google.com ([209.85.208.181]:44776 "EHLO
+        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725794AbfFMG0T (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jun 2019 00:59:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1560401968; x=1591937968;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=froBIPifBYx27SwWUHteL9+TGrAfb3ZLthb2Y1Mh82o=;
-  b=rCSjt4H5kktAq50t8QH521mHCrks511nJpZL6GJAS/EuM81pYYjtgnfK
-   SEWx5D5U4Ht4Idia6QPfigSskSTLgmkbbPBgy/iktVm4yoQ7/Wo+dmFp4
-   v+0XBduJuj+R1ArnYmgePmYmXxm+QRMmKAr2lU2ddLgpl1I0yuolxdAy6
-   fMJHfhWkkebUUMpzqmo3CYsMCgins6iLZNJb8cNWuFKtN2RDvkIm31pnf
-   HxoyZlzftNX5Oruq3xOgpPIs9kauwG4AqBdeSGfTmucN/szZUDhHvhkGc
-   4xtEl0Qja6mI2T4YvtQOGBEJXnYt+aJm2rX6wB6qlh1ozoJYP3RDlPY33
-   A==;
-X-IronPort-AV: E=Sophos;i="5.63,368,1557158400"; 
-   d="scan'208";a="112089076"
-Received: from mail-bl2nam02lp2058.outbound.protection.outlook.com (HELO NAM02-BL2-obe.outbound.protection.outlook.com) ([104.47.38.58])
-  by ob1.hgst.iphmx.com with ESMTP; 13 Jun 2019 12:59:26 +0800
+        Thu, 13 Jun 2019 02:26:19 -0400
+Received: by mail-lj1-f181.google.com with SMTP id k18so17319834ljc.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 12 Jun 2019 23:26:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=froBIPifBYx27SwWUHteL9+TGrAfb3ZLthb2Y1Mh82o=;
- b=i59vNMQpTaO9sHtd1VnWzw6WxcFG0TZohAYd8IT1tPtQ8nf4FQGH4Ea8AF70ID4x9Y8xtrFNmloTqWDsQejUeVv4xpVzNDjhDfc2eOpNfcxSG4CG50UGHdpGL0Ds7LtwxNrfkyExT6KjXuF8cQWrC5rgxkskfuUDz0UPHs1GlXc=
-Received: from SN6PR04MB5231.namprd04.prod.outlook.com (20.177.254.85) by
- SN6PR04MB5469.namprd04.prod.outlook.com (20.177.254.139) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.15; Thu, 13 Jun 2019 04:59:23 +0000
-Received: from SN6PR04MB5231.namprd04.prod.outlook.com
- ([fe80::5005:99a1:65aa:f088]) by SN6PR04MB5231.namprd04.prod.outlook.com
- ([fe80::5005:99a1:65aa:f088%6]) with mapi id 15.20.1987.012; Thu, 13 Jun 2019
- 04:59:23 +0000
-From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     "dsterba@suse.cz" <dsterba@suse.cz>
-CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hannes Reinecke <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        =?iso-8859-1?Q?Matias_Bj=F8rling?= <mb@lightnvm.io>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH v2 00/19] btrfs zoned block device support
-Thread-Topic: [PATCH v2 00/19] btrfs zoned block device support
-Thread-Index: AQHVHTKAMt+QxADp/024sRBo1BQ8yw==
-Date:   Thu, 13 Jun 2019 04:59:23 +0000
-Message-ID: <SN6PR04MB5231E2F482B8D794950058FF8CEF0@SN6PR04MB5231.namprd04.prod.outlook.com>
-References: <20190607131025.31996-1-naohiro.aota@wdc.com>
- <20190612175138.GT3563@twin.jikos.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Naohiro.Aota@wdc.com; 
-x-originating-ip: [199.255.47.8]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 88ee645f-50c3-4ca4-d0d8-08d6efbbe721
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:SN6PR04MB5469;
-x-ms-traffictypediagnostic: SN6PR04MB5469:
-x-ms-exchange-purlcount: 2
-wdcipoutbound: EOP-TRUE
-x-microsoft-antispam-prvs: <SN6PR04MB5469E8F89BB32AA3CBAEC9978CEF0@SN6PR04MB5469.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 0067A8BA2A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(376002)(366004)(346002)(396003)(136003)(199004)(189003)(229853002)(53546011)(6506007)(256004)(33656002)(2906002)(71190400001)(71200400001)(6916009)(1730700003)(8936002)(81166006)(81156014)(8676002)(7696005)(102836004)(66476007)(7736002)(66556008)(25786009)(91956017)(76116006)(73956011)(64756008)(2351001)(3846002)(74316002)(66946007)(66446008)(76176011)(7416002)(99286004)(305945005)(68736007)(6436002)(6246003)(186003)(54906003)(5660300002)(476003)(72206003)(446003)(26005)(966005)(316002)(478600001)(6116002)(9686003)(52536014)(53936002)(14454004)(55016002)(4326008)(53376002)(66066001)(2501003)(6306002)(86362001)(5640700003)(486006);DIR:OUT;SFP:1102;SCL:1;SRVR:SN6PR04MB5469;H:SN6PR04MB5231.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: R/Kt3jxwG1IpmP2qaeH9kAG9bzyO/MLbAqxdV/V9lh6Rynp06J4PwbN69qOJCEq5qOibH3GYly5SitPBy2szgMqLZL69XjTB1+OrzyK+q4libGsUK8vV7VJ9vwPZp90OhM/B8Rh3TKoL/cy6/KrQIK65UHC0kuRhT4s2cBWkeVnsUQUAgjPb8y5VXtMdXdnxxEIXB/N8jvH9bYRtOPhXOxJwNTTjNV1+8Zna3REeiLbCSS4l82Hb+WHQA95+D2JA3TOhAEQ+ksAm6+2ww1KpVJkLcGeYGl2Pu5x0ht4Grzpzov9fUeMrYHzX/Efoz8vAF5lbCHbxnLVjQCJwiuCNSZ2DvIxGn0EkF5NZcmm3Zv3UU9Ca7N87LcIYgoD1dc7tw5n2joIpJBSHHGBaSYFuh1zeM9f6diKbg75UAYSN2kE=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=n+XMcs1qi7jNntqjWjorThmb6Ojs+bBugPZb2Tj6xVA=;
+        b=CsTq/tZIy/ohd3KBGExL6MERfTiLXeptgN4cd6PCandRi3xiOyyzJy5m0cGccSmTb5
+         MzKQPYZJ5RPgzqnXNuf+FFQlEAD8TCwzLYmvkAWSZFv8LzSvRf/IEDuaZVgqqKIaxBob
+         kGtaEiqeeYu4xh261k6T5NafIr4vB2REMe+lr1s6Cw9NxWLkeHExkRWGh04E1zvq1tWM
+         fabC44jo1rttbWyXH6S6c+tqAJQvvIw5GmxDvzMsB30hX+B6OAC4kgH0Nwb4x6CZ+Uyy
+         uFyYT4xU1MF6yelKyIYo0R0AP3gHdKul/9uMJi1vxmHpU23w177k31HX0pyuf3UdQFtP
+         Ba1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to;
+        bh=n+XMcs1qi7jNntqjWjorThmb6Ojs+bBugPZb2Tj6xVA=;
+        b=Gjv2ewrz7TJXkNULF3urzrHtGlJzaD2mZAkSJEqpc44utIxLHzhA+Rgu+b+VSETSol
+         wfJlDqcFhG96NrO4qLZ1RQkVginJQcUTL/mp8++3z5JaWB62ANQzeH9u+e2wHCjaOgi7
+         wrRYUMtD55AsyQZ9SQRmzb5m+yr3lV1A6J2eP/leiU4mQSIJDXQqnd3OUuQOKMHLYc12
+         e8bJHfZKstPd/bS3JlE9xc3fJtGC3yvvuG3kuSX+YEgJHCXbYWzzwy9FwiXkj22Eglng
+         MGmBcMd7o2YMyQSxA0LTnlxnxGGVtGcV6BM/dy5b5ydU8E2x6fNmJf4prcF7O+nXv0+b
+         jomQ==
+X-Gm-Message-State: APjAAAWylXu+4e2fTlrSpgfTvuHhRL7jPztfF7R5n8d2M/CKpieX993o
+        RYmrAvF1UJd0VVkVcB1VXzh/JTsI
+X-Google-Smtp-Source: APXvYqyixHlWn08ke3mFlRW9VNz7DEA7tzQl1ZNLoF8z5W4rBxG4TzyuVoI2y6lxx9KAgCkcGO2yIg==
+X-Received: by 2002:a2e:2993:: with SMTP id p19mr18174852ljp.202.1560407176297;
+        Wed, 12 Jun 2019 23:26:16 -0700 (PDT)
+Received: from [192.168.1.5] (109-252-90-211.nat.spd-mgts.ru. [109.252.90.211])
+        by smtp.gmail.com with ESMTPSA id u22sm430423ljd.18.2019.06.12.23.26.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 Jun 2019 23:26:15 -0700 (PDT)
+Subject: Re: Issues with btrfs send/receive with parents
+To:     Eric Mesa <eric@ericmesa.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
+ <2008850.MjMmxLcJHu@supermario.mushroomkingdom>
+ <21ecc5c2-7e4c-803e-5299-7ee150d6af4f@gmail.com>
+ <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
+ BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
+ 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
+ 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
+ KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
+ nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
+ gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
+ vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
+ AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <b2bba48e-a759-cb99-cf2c-04e89bce171e@gmail.com>
+Date:   Thu, 13 Jun 2019 09:26:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 88ee645f-50c3-4ca4-d0d8-08d6efbbe721
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Jun 2019 04:59:23.3460
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Naohiro.Aota1@wdc.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5469
+In-Reply-To: <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="ogeaqexS2avV1guayVGzPJDUCfjcepPb4"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019/06/13 2:50, David Sterba wrote:=0A=
-> On Fri, Jun 07, 2019 at 10:10:06PM +0900, Naohiro Aota wrote:=0A=
->> btrfs zoned block device support=0A=
->>=0A=
->> This series adds zoned block device support to btrfs.=0A=
-> =0A=
-> The overall design sounds ok.=0A=
-> =0A=
-> I skimmed through the patches and the biggest task I see is how to make=
-=0A=
-> the hmzoned adjustments and branches less visible, ie. there are too=0A=
-> many if (hmzoned) { do something } standing out. But that's merely a=0A=
-> matter of wrappers and maybe an abstraction here and there.=0A=
-=0A=
-Sure. I'll add some more abstractions in the next version.=0A=
-=0A=
-> How can I test the zoned devices backed by files (or regular disks)? I=0A=
-> searched for some concrete example eg. for qemu or dm-zoned, but closest=
-=0A=
-> match was a text description in libzbc README that it's possible to=0A=
-> implement. All other howtos expect a real zoned device.=0A=
-=0A=
-You can use tcmu-runer [1] to create an emulated zoned device backed by =0A=
-a regular file. Here is a setup how-to:=0A=
-http://zonedstorage.io/projects/tcmu-runner/#compilation-and-installation=
-=0A=
-=0A=
-[1] https://github.com/open-iscsi/tcmu-runner=0A=
-=0A=
-> Merge target is 5.3 or later, we'll see how things will go. I'm=0A=
-> expecting that we might need some time to get feedback about the=0A=
-> usability as there's no previous work widely used that we can build on=0A=
-> top of.=0A=
-> =0A=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ogeaqexS2avV1guayVGzPJDUCfjcepPb4
+Content-Type: multipart/mixed; boundary="I4Lkls9J3lGHHyH86dvn5OIZfc3zHY7FI";
+ protected-headers="v1"
+From: Andrei Borzenkov <arvidjaar@gmail.com>
+To: Eric Mesa <eric@ericmesa.com>
+Cc: Chris Murphy <lists@colorremedies.com>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <b2bba48e-a759-cb99-cf2c-04e89bce171e@gmail.com>
+Subject: Re: Issues with btrfs send/receive with parents
+References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
+ <2008850.MjMmxLcJHu@supermario.mushroomkingdom>
+ <21ecc5c2-7e4c-803e-5299-7ee150d6af4f@gmail.com>
+ <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
+In-Reply-To: <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
+
+--I4Lkls9J3lGHHyH86dvn5OIZfc3zHY7FI
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+13.06.2019 2:03, Eric Mesa =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+=2E..
+>>>
+>>> # btrfs sub snap -r /home/ /home/.snapshots/2019-06-10-2353
+>>> Create a readonly snapshot of '/home/' in
+>>> '/home/.snapshots/2019-06-10-2353'
+>>>
+>>> # btrfs send -vvv -p /home/.snapshots/2019-06-10-1718/ /home/.snapsho=
+ts/
+>>> 2019-06-10-2353/ | ssh root@tanukimario btrfs receive
+>>> /media/backups/backups1/ supermario-home
+>>> At subvol /home/.snapshots/2019-06-10-2353/
+>>> ERROR: link ermesa/.mozilla/firefox/n35gu0fb.default/bookmarkbackups/=
+
+>>> bookmarks-2019-06-10_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 ->
+>>> ermesa/.mozilla/ firefox/n35gu0fb.default/bookmarkbackups/
+>>> bookmarks-2019-06-09_679_I1bs5PtgsPwtyXvcvcRdSg=3D=3D.jsonlz4 failed:=
+ No such
+>>> file or directory
+>>
+=2E..
+>=20
+>=20
+> On the source disk:
+>=20
+> # btrfs subvolume list -qRu /home
+> ID 822 gen 3042780 top level 5 parent_uuid c6101e57-acd3-e54c-a957-
+> b2b6a033bc42 received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uuid=20
+> 7247f4a0-6ea2-0d49-b5c5-1ea2ecb8980a path home
+> ID 823 gen 3042727 top level 822 parent_uuid -                         =
+          =20
+> received_uuid -                                    uuid f83e53b6-dc88-1=
+a44-
+> a5e8-f220d5d21083 path .snapshots
+> ID 2515 gen 3008316 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
+> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
+id=20
+> 8ef83478-86be-8a47-a425-1dc6957a0fbe path .snapshots/2019-06-05-postdef=
+rag
+> ID 2516 gen 3021663 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
+> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
+id=20
+> cbb67aec-02ed-8247-afee-38ae94555471 path .snapshots/2019-06-08-1437
+> ID 2518 gen 3027353 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
+> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
+id=20
+> ca361150-1050-5844-bff7-de5c89b5cc05 path .snapshots/2019-06-09-1550
+> ID 2519 gen 3028168 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
+> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
+id=20
+> 5fa82b5e-59e1-2549-a939-5dabc99c0f2a path .snapshots/2019-06-09-1944
+> ID 2520 gen 3032614 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
+> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
+id=20
+> df437aaf-0f40-344e-8302-932ea8e5f197 path .snapshots/2019-06-10-1718
+> ID 2521 gen 3034140 top level 823 parent_uuid 7247f4a0-6ea2-0d49-
+> b5c5-1ea2ecb8980a received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uu=
+id=20
+> 2b985685-d88b-784a-b870-8f5f8fcdd08c path .snapshots/2019-06-10-2353
+>=20
+>=20
+> On the destination disk: (I deleted 2019-06-2353 since it wasn't a vali=
+d=20
+> backup and I didn't want to get confused when determining which backups=
+ I=20
+> could delete)
+>=20
+> btrfs subvolume list -qRu /media/backups/backups1/supermario-home
+=2E..
+> ID 2983 gen 15033 top level 258 parent_uuid -                          =
+         =20
+> received_uuid ab1ea98a-b950-2047-802d-3b26568e2e14 uuid 7685ff5c-0a72-
+> f94e-93d7-7736f68b3ec5 path 2019-06-05-postdefrag
+> ID 3545 gen 14310 top level 258 parent_uuid 7685ff5c-0a72-
+> f94e-93d7-7736f68b3ec5 received_uuid ab1ea98a-b950-2047-802d-3b26568e2e=
+14 uuid=20
+> 26791559-bd47-e44f-9e2f-0ea258615429 path 2019-06-08-1437
+> ID 3550 gen 14878 top level 258 parent_uuid 7685ff5c-0a72-
+> f94e-93d7-7736f68b3ec5 received_uuid ab1ea98a-b950-2047-802d-3b26568e2e=
+14 uuid=20
+> 7c9787bc-fbc4-c146-b88b-e5dd10918eaa path 2019-06-09-1944
+> ID 3582 gen 15012 top level 258 parent_uuid 7685ff5c-0a72-
+> f94e-93d7-7736f68b3ec5 received_uuid ab1ea98a-b950-2047-802d-3b26568e2e=
+14 uuid=20
+> 44963c1e-7bc7-f34a-9370-ce180ce05b69 path 2019-06-10-1718
+>=20
+
+All your snapshots on source have the same received_uuid (I have no idea
+how is it possible). If received_uuid exists, it is sent to destination
+instead of subvolume UUID to identify matching snapshot. All your backup
+sbapshots on destination also have the same received_uuid which is
+matched against (received_)UUID of source subvolume. In this case
+receive command takes the first found subvolume (probably the most
+recent, i.e. with the smallest generation number). So you send
+differential stream against one subvolume and this stream is applied to
+another subvolume which explains the error.
+
+
+
+--I4Lkls9J3lGHHyH86dvn5OIZfc3zHY7FI--
+
+--ogeaqexS2avV1guayVGzPJDUCfjcepPb4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTsPDUXSW5c6iqbJulHosy62l33jAUCXQHshgAKCRBHosy62l33
+jL+FAKDGa3B0+DdWXcxe5hOXbQOmzUF2WgCdE58dAmFlOu4J5Mk2/ASKRzEZqUI=
+=PCgr
+-----END PGP SIGNATURE-----
+
+--ogeaqexS2avV1guayVGzPJDUCfjcepPb4--
