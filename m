@@ -2,79 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7461B45077
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jun 2019 02:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412BC450B9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jun 2019 02:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725923AbfFNAS5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jun 2019 20:18:57 -0400
-Received: from mail-io1-f68.google.com ([209.85.166.68]:42248 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725801AbfFNAS4 (ORCPT
+        id S1726103AbfFNAdz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jun 2019 20:33:55 -0400
+Received: from mail-pg1-f182.google.com ([209.85.215.182]:36932 "EHLO
+        mail-pg1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725778AbfFNAdy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jun 2019 20:18:56 -0400
-Received: by mail-io1-f68.google.com with SMTP id u19so1890756ior.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Jun 2019 17:18:56 -0700 (PDT)
+        Thu, 13 Jun 2019 20:33:54 -0400
+Received: by mail-pg1-f182.google.com with SMTP id 20so465869pgr.4;
+        Thu, 13 Jun 2019 17:33:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=wYo4W+YtXHA/AJ6GJUShBvb4pm+fzTZgR20rmgEVgCw=;
-        b=ihmuxf6kCwqHd78L8S+BCA50Zd2PHkJqoQwSZmEaY30zpvNbnSsvwdPF7kI8doqqYh
-         dKvhvGhczenAbd3F2W02G+13e2JnKTPk9kEGMW8AL24MGQu85NgJetP5SIlgkRt0q6RO
-         z9uzblQDGVB/ywgKkDf6fPKY/lUBQNfqSmg38GUSW4gvh7UYWQC+6cstzbpy1qMT0M8F
-         vXLx/QnSWssa5mSB/p88TQ+NYiJjIu/r3TH9r8eCrTLmfYxUYELpQorSyxrMo1liVB7E
-         yZDvsxPHW0UkpnXDPRiPfw3LFpltBI3lapuxk7S4twVXdYGpYLJHlY9XVIvWfjNdVOOK
-         lyLQ==
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=oTlzP5u+wueqk5xdHgpRxhOd00u8gJeBwCjbnHotl3k=;
+        b=BzGNcoFmYi8gLKxOomEtTfMFNIXrqiP0F3yWFy2pIZq6bQXNBZWRXp+YK4O+W6BCr2
+         03Dyfn+G4eBB3Qoewqaj5dXNOGEhd5+/AUaHayk9hntIRt+00rCIjkrtozgqiu4dUT67
+         NXksTOoEBg/0aXehmbLZAvEY8gPuTmfpYZOeXwdZ+W6/stWG/qeXrkP4bwKa17v/HPEE
+         9V8TlTDTfG5rKd2Vn0dcSpmSzCnPNzfTNv9ZSXQFSxQqYOM+tQkOTpS5CANKmgM1daZg
+         LNz0VFzp3brsf7zVNzjCvQulg96AMDLT7OhuNOeL/OvusgvhPe3SUuC3odLuGzHJ91OK
+         HOZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=wYo4W+YtXHA/AJ6GJUShBvb4pm+fzTZgR20rmgEVgCw=;
-        b=UtLeAQJhZag6aFmT93JPCt8vAXrGsixELP8OdeDnwFKL3kFYV9jCs4WRlCi5ePpXUZ
-         oXVE3WfNROmLZigeSi/2VFZi1Jc+EOtDMJmQzFl3taso9RI2aFTRCiqIPN1Ekq8Q82vD
-         M509Jv6WWQqvctuNBVw3lmhpk7/bQd+/EXzg4qEBPq8Mfeo2Z3QVvi+OsW/pnwnnB9ft
-         YjfYj9bMGWAEENVexfgoojIi5FeuXlpAdyr2368276FFqc631Z8qoWr4ETsnXurdcOty
-         rMdSh/T4qhqobFvucz/UmCKj9c4toz30qCkyI2rD2xRWu/HCPOn1zTVBvCYSWThdxtzx
-         vyNQ==
-X-Gm-Message-State: APjAAAX+pg+Ve++7vFZMj9YG/va+Km74h+a5JbWL80ruMvcvlMdUH1yr
-        UlBsLZjd3jabL+83WpEImVcbENXa8LCyzAlf6cg8+w==
-X-Google-Smtp-Source: APXvYqyixdS9LUaa10jxll4ldDTQL3VzBDFJkzZV66Y1KSGkInIDDmRYSRPN62DFwy2Gqaxo6+Ebky/PwNZnS8pT3m0=
-X-Received: by 2002:a02:a90a:: with SMTP id n10mr48649801jam.61.1560471535800;
- Thu, 13 Jun 2019 17:18:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAG_8rEfMr-MpQ4bfBs79aJybBE3ipOwN=yQDBM6W+bWprFz34g@mail.gmail.com>
- <51a231b3-7f04-bcad-a3d9-3bec791850a7@gmx.com> <CAG_8rEcn7JYTf6S24wBEQbFDs5yz_uUr9gUMSSmLmgs4j4gheQ@mail.gmail.com>
-In-Reply-To: <CAG_8rEcn7JYTf6S24wBEQbFDs5yz_uUr9gUMSSmLmgs4j4gheQ@mail.gmail.com>
-From:   Steven Fosdick <stevenfosdick@gmail.com>
-Date:   Fri, 14 Jun 2019 01:18:44 +0100
-Message-ID: <CAG_8rEeAWQL1U8EM1e4w6SOdHx0_BVR_7JGLN9fp7-nsn4oDhQ@mail.gmail.com>
-Subject: Fwd: Removing a failed device - stuck in a loop or normal?
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=oTlzP5u+wueqk5xdHgpRxhOd00u8gJeBwCjbnHotl3k=;
+        b=sWaeljdmZ/wx+PkuXrZ845qNKZwXUOs+PtyNPf2GXKVPIdpeu33Y4qee8WRMGXVAEw
+         tWLdLMtytZcSvSwglMvAROF8CA5rCV89wUq4IhGkJ8QlHRpvRpemb68YB2e1+Z4CbYzi
+         N6aqWul8Vgb6XLkR00btt4WLnrw7JK9JqZ/ZqyPtA8/EzcEWh2dBPkrh+/+BPxkQxe5q
+         4Iaz/p9nRjEtlJQVMi50UkjmDzCIdhEed6ECH7l1EW39buBWwQn/iDdi7cyXaT/oowLX
+         nldCy1YA57RXmwwQaOHZ/Mv8hZbc0McdfETvCgDdgQKBxyb67e35X3E3t82tyelVbvmB
+         sDUg==
+X-Gm-Message-State: APjAAAVQ+NBii9uloUaWJUaATdqgcZz0g6qb/no5fYJ6/mPDBm3QRgMO
+        UG/FbEufC3TdRgCvmxyxHRg5xgkw
+X-Google-Smtp-Source: APXvYqwdEJlBHl1J6iniMl+4x+IcJZNUmIQ5tWeT365a3MEshvfmKjso/WA0P3Jq5VOzRc4hZcCN1g==
+X-Received: by 2002:a62:750c:: with SMTP id q12mr75920731pfc.59.1560472433969;
+        Thu, 13 Jun 2019 17:33:53 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::2:9d14])
+        by smtp.gmail.com with ESMTPSA id l1sm894960pgj.67.2019.06.13.17.33.52
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 13 Jun 2019 17:33:53 -0700 (PDT)
+From:   Tejun Heo <tj@kernel.org>
+To:     dsterba@suse.com, clm@fb.com, josef@toxicpanda.com,
+        axboe@kernel.dk, jack@suse.cz
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCHSET btrfs/for-next] btrfs: fix cgroup writeback support
+Date:   Thu, 13 Jun 2019 17:33:42 -0700
+Message-Id: <20190614003350.1178444-1-tj@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 14 Jun 2019 at 00:41, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> That's common if the device is really failing.
-> Raid5 should re-build the corrupted blocks.
+Hello,
 
-That's strange then, because there are a few files that are
-unreadable, i.e. attempting to read them with normal programs like
-'cp' gives I/O error.
+When writeback is executed asynchronously (e.g. for compression), bios
+are bounced to and issued by worker pool shared by all cgroups.  This
+leads to significant priority inversions when cgroup IO control is in
+use - IOs for a low priority cgroup can tie down the workers forcing
+higher priority IOs to wait behind them.
 
-> Looks like a dead loop.
->
-> Would you please provide the kernel version please?
+This patchset adds an bio punt mechanism to blkcg.  A bio tagged with
+REQ_CGROUP_PUNT flag is bounced to the asynchronous issue context of
+the associated blkcg on bio_submit().  As the bios are issued from
+per-blkcg work items, there's no concern for priority inversions and
+it doesn't require invasive changes to the filesystems.  The mechanism
+should be generally useful for IO control support across different
+filesystems.
 
-Linux meije 5.1.9-arch1-1-ARCH #1 SMP PREEMPT
+btrfs async path is simplified and is updated to use REQ_CGROUP_PUNT
+for submitting asynchronous bios.  It's also updated to always and
+only account the original writeback bios against wbc so that cgroup
+inode writeback ownership arbitration isn't confused by downstream
+bios.
 
-> And have you tried cancel current balance and start a new one again?
+This patchset contains the following 8 patches.  The first three are
+my blkcg patches to implement the needed mechanisms.  The latter five
+are Chris Mason's btrfs cleanup and update patches.  Please let me
+know how the patches should be routed.  Given that there currently
+aren't other users, it's likely the easiest to route all through btrfs
+tree.
 
-How do I cancel it?  I started "btrfs device remove missing /data"
-with nohup.  That ssh session is no longer active and issuing SIGTERM
-to that process doesn't cause it to die, which is not surprising since
-looking at the source it seems to execute the whole device remove from
-within the kernel during a single ioctl call.
+ 0001-blkcg-writeback-Add-wbc-no_wbc_acct.patch
+ 0002-blkcg-writeback-Implement-wbc_blkcg_css.patch
+ 0003-blkcg-implement-REQ_CGROUP_PUNT.patch
+ 0004-Btrfs-stop-using-btrfs_schedule_bio.patch
+ 0005-Btrfs-delete-the-entire-async-bio-submission-framewo.patch
+ 0006-Btrfs-only-associate-the-locked-page-with-one-async_.patch
+ 0007-Btrfs-use-REQ_CGROUP_PUNT-for-worker-thread-submitte.patch
+ 0008-Btrfs-extent_write_locked_range-should-attach-inode-.patch
 
-Thanks for such a quick response, too.
+0001-0003 implement wbc->no_wbc_acct, wbc_blkcg_css() and
+REQ_CGROUP_PUNT.
+
+0004-0006 are prep patches to simplify / improve async bio submission.
+
+0007 makes btrfs use REQ_CGROUP_PUNT for async bios.
+
+0008 fixes wbc writeback accounting for IOs issued through
+extent_write_locked_range().
+
+This patchset is also available in the following git branch.
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git review-btrfs-cgroup-updates
+
+Thanks, diffstat follows.
+
+ block/blk-cgroup.c          |   54 +++++++++
+ block/blk-core.c            |    3 
+ fs/btrfs/compression.c      |   16 +-
+ fs/btrfs/compression.h      |    3 
+ fs/btrfs/ctree.h            |    1 
+ fs/btrfs/disk-io.c          |   25 +---
+ fs/btrfs/extent_io.c        |   15 +-
+ fs/btrfs/inode.c            |   61 ++++++++--
+ fs/btrfs/super.c            |    1 
+ fs/btrfs/volumes.c          |  264 --------------------------------------------
+ fs/btrfs/volumes.h          |   10 -
+ fs/fs-writeback.c           |    2 
+ include/linux/backing-dev.h |    1 
+ include/linux/blk-cgroup.h  |   16 ++
+ include/linux/blk_types.h   |   10 +
+ include/linux/writeback.h   |   24 +++-
+ 16 files changed, 194 insertions(+), 312 deletions(-)
+
+--
+tejun
+
