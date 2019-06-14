@@ -2,57 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8D3450B0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jun 2019 02:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04C04450B1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Jun 2019 02:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727129AbfFNAeE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 13 Jun 2019 20:34:04 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:37522 "EHLO
+        id S1727160AbfFNAeF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 13 Jun 2019 20:34:05 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:44610 "EHLO
         mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbfFNAeC (ORCPT
+        with ESMTP id S1727131AbfFNAeE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 13 Jun 2019 20:34:02 -0400
-Received: by mail-pg1-f194.google.com with SMTP id 20so466050pgr.4;
-        Thu, 13 Jun 2019 17:34:01 -0700 (PDT)
+        Thu, 13 Jun 2019 20:34:04 -0400
+Received: by mail-pg1-f194.google.com with SMTP id n2so447870pgp.11;
+        Thu, 13 Jun 2019 17:34:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=n3Cqzxv6aTGPD2mSNBYzcUSmQ9497Z24wwCs2a6QkSk=;
-        b=SCib9XfntYcn4LcVls7DGrduqu9RTCtFqpZHTyb/qLI0lY2kANW4iijqmCQUxyknSk
-         KMvulF1Ve+rXxV49s4csFqHDwf0rU6UEFdf3YJV1chwPkaWVKOG9L4sLxOj3Idl5fNMz
-         I1fuswDCDx5Vi+l0RZKENjE8pGym0asVZLSrHfeu1ycoyL7cZ5xR3m6FQ1GeYrojGhvI
-         BYGOVqorb4nk5XS9XZuVZ3e5V0cCSDNCZ8TNlVK9UIMO7vPoYg3x+a/bNsKuy4e/QidM
-         QroIDSZkQtGCEgUy/BrHIAXTtzFYBXF7cSmnPgsZS/s3hvBZAjaE/ZViGJzBYgQA80vq
-         niVQ==
+        bh=CrY+KbreoYfldBeV5zPNnyWU1ofuXbFZm/3YwXQdBT4=;
+        b=M28Z4fmsM72cbEt5AgFedpHmNIsfMN+JgMEM3X0yRielVNeNhLVVqhbHDQy5vvhIW8
+         HomqwqRy5qKYPssOmd6gLUJcV1tpMloUMMHtqQpnNZ9HJCyb9GadIyM5aw19qc8+ZXCe
+         VrTI/ysbSaww7UZZFLnVj+O9kDCo74ue6x+FeOQ3a2zzaQ5QCzU6Q7NEcwNiGJU5eU7S
+         MvjR9Pm2Iy57CHUFwZsP8nbdAy3SEhPkJqQ9tBveeNYkyhJrrrZjGkiNFcC20oJOp63H
+         4vlxSGB5N2vz5rZrk1HMqzb1MF0LeBnDUNMzWIE4Ijv+IbhX7tb7R3ATCtge81shLEV7
+         /57g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references;
-        bh=n3Cqzxv6aTGPD2mSNBYzcUSmQ9497Z24wwCs2a6QkSk=;
-        b=MZTF+e93PAwnalKd8XxtU+Ifspq/ODyHpU1Y6vzRCv6EeA5FYzphYmJ8LcL8+Ed5P7
-         ZDhY3HKuReDfgxrfH+zRFbwBGUDSoHqY4RJP2Mnfq+pFKQDlhsCzmzfvp1oAzxBRlkz8
-         e/b/uTS6sbQ3jdWWF/DjLv2boCoh+qEmiKTENkmrE/+EFcpi44hjKXtg02dkDyFcTxQ7
-         7DxUBQUm6bTrhKAF/p7dh1A/zi7Yb24HWOAEDPtrATKLcIN67tyEEZDWbloa4BAOQxQM
-         P2j2+lW3RXqezuYbpfRMvUWzborBol90yO5NjtWCDtw4iOtudSeVkNsIlWwl9OoFnTvA
-         xuxw==
-X-Gm-Message-State: APjAAAWeOYiJhHAbxJdfEJZu8ZOuNcgwZ+uzYnKbRI3BJEetKKZ1g8Si
-        7i6SZ98V4sOmkw4wjMxyOAw=
-X-Google-Smtp-Source: APXvYqwyu8WX98uWyN1Y3bw4gfznBIi9+crjgWsT1IpQAEADSMGX+rMye9WPQ0sR/VTOl4e8tvuRow==
-X-Received: by 2002:a65:5685:: with SMTP id v5mr33607678pgs.184.1560472441269;
-        Thu, 13 Jun 2019 17:34:01 -0700 (PDT)
+        bh=CrY+KbreoYfldBeV5zPNnyWU1ofuXbFZm/3YwXQdBT4=;
+        b=HxeeRzsPU4EHCQPI8Ko9yxK3o+vVDvJN4DNtfN66WPVjEvhmPHmQaaGXmk9S7HbQRO
+         CCmZm64xfY/0R7C7HjU2SqKDs8FiD1F5NYOSMzx7QVepHDvbja+XThVYtLvlw5gV81YH
+         P99YZNil3jgJzmsGxnYol9ffBZEdKw21f6GfEVopkcXgnFW9cWJhUhXIVf+ydZCahmk7
+         dhh8JhZYm5AtQAq4EhXHw1f4denxqrkizxBv6Rj+g/gqzIl7eqYH5CjsZ0jMKEYJd380
+         nsGgpJj4yL6Ig6RHrXm5+tNxQyQQYy//5+m586ZA3cYsXOiCp8toTlsG9J8ohaXyjxNx
+         hLtQ==
+X-Gm-Message-State: APjAAAUNAsUER7dPBIjPYsd5DoBHsUuOSYCPLDY/DCNiciJwO2VpXyk1
+        vFi3B3/D/5rJ+lFFeA9Bw0k=
+X-Google-Smtp-Source: APXvYqzgYmsCZbDvDBYklA/y0gChrsQ3rmaEl5P4PAB8IaWAOT96tK7DZChQsR04mJWj8K5aU4nwQg==
+X-Received: by 2002:a17:90a:d34f:: with SMTP id i15mr8252804pjx.1.1560472443647;
+        Thu, 13 Jun 2019 17:34:03 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::2:9d14])
-        by smtp.gmail.com with ESMTPSA id t5sm832075pgh.46.2019.06.13.17.34.00
+        by smtp.gmail.com with ESMTPSA id l20sm787797pff.102.2019.06.13.17.34.03
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 13 Jun 2019 17:34:00 -0700 (PDT)
+        Thu, 13 Jun 2019 17:34:03 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     dsterba@suse.com, clm@fb.com, josef@toxicpanda.com,
         axboe@kernel.dk, jack@suse.cz
 Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, kernel-team@fb.com,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH 3/8] blkcg: implement REQ_CGROUP_PUNT
-Date:   Thu, 13 Jun 2019 17:33:45 -0700
-Message-Id: <20190614003350.1178444-4-tj@kernel.org>
+        linux-block@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 4/8] Btrfs: stop using btrfs_schedule_bio()
+Date:   Thu, 13 Jun 2019 17:33:46 -0700
+Message-Id: <20190614003350.1178444-5-tj@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190614003350.1178444-1-tj@kernel.org>
 References: <20190614003350.1178444-1-tj@kernel.org>
@@ -61,273 +60,230 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When a shared kthread needs to issue a bio for a cgroup, doing so
-synchronously can lead to priority inversions as the kthread can be
-trapped waiting for that cgroup.  This patch implements
-REQ_CGROUP_PUNT flag which makes submit_bio() punt the actual issuing
-to a dedicated per-blkcg work item to avoid such priority inversions.
+From: Chris Mason <clm@fb.com>
 
-This will be used to fix priority inversions in btrfs compression and
-should be generally useful as we grow filesystem support for
-comprehensive IO control.
+btrfs_schedule_bio() hands IO off to a helper thread to do the actual
+submit_bio() call.  This has been used to make sure async crc and
+compression helpers don't get stuck on IO submission.  To maintain good
+performance, over time the IO submission threads duplicated some IO
+scheduler characteristics such as high and low priority IOs and they
+also made some ugly assumptions about request allocation batch sizes.
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Chris Mason <clm@fb.com>
+All of this cost at least one extra context switch during IO submission,
+and doesn't fit well with the modern blkmq IO stack.  So, this commit stops
+using btrfs_schedule_bio().  We may need to adjust the number of async
+helper threads for crcs and compression, but long term it's a better
+path.
+
+Signed-off-by: Chris Mason <clm@fb.com>
 ---
- block/blk-cgroup.c          | 56 +++++++++++++++++++++++++++++++++++--
- block/blk-core.c            |  3 ++
- include/linux/backing-dev.h |  1 +
- include/linux/blk-cgroup.h  | 16 ++++++++++-
- include/linux/blk_types.h   | 10 +++++++
- include/linux/writeback.h   | 13 +++++++--
- 6 files changed, 92 insertions(+), 7 deletions(-)
+ fs/btrfs/compression.c |  8 +++---
+ fs/btrfs/disk-io.c     |  6 ++---
+ fs/btrfs/inode.c       |  6 ++---
+ fs/btrfs/volumes.c     | 55 +++---------------------------------------
+ fs/btrfs/volumes.h     |  2 +-
+ 5 files changed, 15 insertions(+), 62 deletions(-)
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 617a2b3f7582..64d80a661205 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -46,12 +46,10 @@ struct blkcg blkcg_root;
- EXPORT_SYMBOL_GPL(blkcg_root);
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 4ec1df369e47..873261b932b8 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -355,7 +355,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
+ 				BUG_ON(ret); /* -ENOMEM */
+ 			}
  
- struct cgroup_subsys_state * const blkcg_root_css = &blkcg_root.css;
+-			ret = btrfs_map_bio(fs_info, bio, 0, 1);
++			ret = btrfs_map_bio(fs_info, bio, 0);
+ 			if (ret) {
+ 				bio->bi_status = ret;
+ 				bio_endio(bio);
+@@ -385,7 +385,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
+ 		BUG_ON(ret); /* -ENOMEM */
+ 	}
+ 
+-	ret = btrfs_map_bio(fs_info, bio, 0, 1);
++	ret = btrfs_map_bio(fs_info, bio, 0);
+ 	if (ret) {
+ 		bio->bi_status = ret;
+ 		bio_endio(bio);
+@@ -638,7 +638,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 			sums += DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
+ 					     fs_info->sectorsize);
+ 
+-			ret = btrfs_map_bio(fs_info, comp_bio, mirror_num, 0);
++			ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
+ 			if (ret) {
+ 				comp_bio->bi_status = ret;
+ 				bio_endio(comp_bio);
+@@ -662,7 +662,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 		BUG_ON(ret); /* -ENOMEM */
+ 	}
+ 
+-	ret = btrfs_map_bio(fs_info, comp_bio, mirror_num, 0);
++	ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
+ 	if (ret) {
+ 		comp_bio->bi_status = ret;
+ 		bio_endio(comp_bio);
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 663efce22d98..b34240406f36 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -800,7 +800,7 @@ static void run_one_async_done(struct btrfs_work *work)
+ 	}
+ 
+ 	ret = btrfs_map_bio(btrfs_sb(inode->i_sb), async->bio,
+-			async->mirror_num, 1);
++			    async->mirror_num);
+ 	if (ret) {
+ 		async->bio->bi_status = ret;
+ 		bio_endio(async->bio);
+@@ -901,12 +901,12 @@ static blk_status_t btree_submit_bio_hook(struct inode *inode, struct bio *bio,
+ 					  BTRFS_WQ_ENDIO_METADATA);
+ 		if (ret)
+ 			goto out_w_error;
+-		ret = btrfs_map_bio(fs_info, bio, mirror_num, 0);
++		ret = btrfs_map_bio(fs_info, bio, mirror_num);
+ 	} else if (!async) {
+ 		ret = btree_csum_one_bio(bio);
+ 		if (ret)
+ 			goto out_w_error;
+-		ret = btrfs_map_bio(fs_info, bio, mirror_num, 0);
++		ret = btrfs_map_bio(fs_info, bio, mirror_num);
+ 	} else {
+ 		/*
+ 		 * kthread helpers are used to submit writes so that
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index d519c3520e87..91b161fb1521 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2032,7 +2032,7 @@ static blk_status_t btrfs_submit_bio_hook(struct inode *inode, struct bio *bio,
+ 	}
+ 
+ mapit:
+-	ret = btrfs_map_bio(fs_info, bio, mirror_num, 0);
++	ret = btrfs_map_bio(fs_info, bio, mirror_num);
+ 
+ out:
+ 	if (ret) {
+@@ -7764,7 +7764,7 @@ static inline blk_status_t submit_dio_repair_bio(struct inode *inode,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = btrfs_map_bio(fs_info, bio, mirror_num, 0);
++	ret = btrfs_map_bio(fs_info, bio, mirror_num);
+ 
+ 	return ret;
+ }
+@@ -8295,7 +8295,7 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
+ 			goto err;
+ 	}
+ map:
+-	ret = btrfs_map_bio(fs_info, bio, 0, 0);
++	ret = btrfs_map_bio(fs_info, bio, 0);
+ err:
+ 	return ret;
+ }
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 1c2a6e4b39da..72326cc23985 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6386,52 +6386,8 @@ static void btrfs_end_bio(struct bio *bio)
+ 	}
+ }
+ 
+-/*
+- * see run_scheduled_bios for a description of why bios are collected for
+- * async submit.
+- *
+- * This will add one bio to the pending list for a device and make sure
+- * the work struct is scheduled.
+- */
+-static noinline void btrfs_schedule_bio(struct btrfs_device *device,
+-					struct bio *bio)
+-{
+-	struct btrfs_fs_info *fs_info = device->fs_info;
+-	int should_queue = 1;
+-	struct btrfs_pending_bios *pending_bios;
 -
- static struct blkcg_policy *blkcg_policy[BLKCG_MAX_POLS];
+-	/* don't bother with additional async steps for reads, right now */
+-	if (bio_op(bio) == REQ_OP_READ) {
+-		btrfsic_submit_bio(bio);
+-		return;
+-	}
 -
- static LIST_HEAD(all_blkcgs);		/* protected by blkcg_pol_mutex */
+-	WARN_ON(bio->bi_next);
+-	bio->bi_next = NULL;
 -
- static bool blkcg_debug_stats = false;
-+static struct workqueue_struct *blkcg_punt_bio_wq;
+-	spin_lock(&device->io_lock);
+-	if (op_is_sync(bio->bi_opf))
+-		pending_bios = &device->pending_sync_bios;
+-	else
+-		pending_bios = &device->pending_bios;
+-
+-	if (pending_bios->tail)
+-		pending_bios->tail->bi_next = bio;
+-
+-	pending_bios->tail = bio;
+-	if (!pending_bios->head)
+-		pending_bios->head = bio;
+-	if (device->running_pending)
+-		should_queue = 0;
+-
+-	spin_unlock(&device->io_lock);
+-
+-	if (should_queue)
+-		btrfs_queue_work(fs_info->submit_workers, &device->work);
+-}
+-
+ static void submit_stripe_bio(struct btrfs_bio *bbio, struct bio *bio,
+-			      u64 physical, int dev_nr, int async)
++			      u64 physical, int dev_nr)
+ {
+ 	struct btrfs_device *dev = bbio->stripes[dev_nr].dev;
+ 	struct btrfs_fs_info *fs_info = bbio->fs_info;
+@@ -6449,10 +6405,7 @@ static void submit_stripe_bio(struct btrfs_bio *bbio, struct bio *bio,
  
- static bool blkcg_policy_enabled(struct request_queue *q,
- 				 const struct blkcg_policy *pol)
-@@ -87,6 +85,8 @@ static void __blkg_release(struct rcu_head *rcu)
+ 	btrfs_bio_counter_inc_noblocked(fs_info);
  
- 	percpu_ref_exit(&blkg->refcnt);
- 
-+	WARN_ON(!bio_list_empty(&blkg->async_bios));
-+
- 	/* release the blkcg and parent blkg refs this blkg has been holding */
- 	css_put(&blkg->blkcg->css);
- 	if (blkg->parent)
-@@ -112,6 +112,23 @@ static void blkg_release(struct percpu_ref *ref)
- 	call_rcu(&blkg->rcu_head, __blkg_release);
+-	if (async)
+-		btrfs_schedule_bio(dev, bio);
+-	else
+-		btrfsic_submit_bio(bio);
++	btrfsic_submit_bio(bio);
  }
  
-+static void blkg_async_bio_workfn(struct work_struct *work)
-+{
-+	struct blkcg_gq *blkg = container_of(work, struct blkcg_gq,
-+					     async_bio_work);
-+	struct bio_list bios = BIO_EMPTY_LIST;
-+	struct bio *bio;
-+
-+	/* as long as there are pending bios, @blkg can't go away */
-+	spin_lock_bh(&blkg->async_bio_lock);
-+	bio_list_merge(&bios, &blkg->async_bios);
-+	bio_list_init(&blkg->async_bios);
-+	spin_unlock_bh(&blkg->async_bio_lock);
-+
-+	while ((bio = bio_list_pop(&bios)))
-+		submit_bio(bio);
-+}
-+
- /**
-  * blkg_alloc - allocate a blkg
-  * @blkcg: block cgroup the new blkg is associated with
-@@ -137,6 +154,9 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct request_queue *q,
- 
- 	blkg->q = q;
- 	INIT_LIST_HEAD(&blkg->q_node);
-+	spin_lock_init(&blkg->async_bio_lock);
-+	bio_list_init(&blkg->async_bios);
-+	INIT_WORK(&blkg->async_bio_work, blkg_async_bio_workfn);
- 	blkg->blkcg = blkcg;
- 
- 	for (i = 0; i < BLKCG_MAX_POLS; i++) {
-@@ -1582,6 +1602,25 @@ void blkcg_policy_unregister(struct blkcg_policy *pol)
- }
- EXPORT_SYMBOL_GPL(blkcg_policy_unregister);
- 
-+bool __blkcg_punt_bio_submit(struct bio *bio)
-+{
-+	struct blkcg_gq *blkg = bio->bi_blkg;
-+
-+	/* consume the flag first */
-+	bio->bi_opf &= ~REQ_CGROUP_PUNT;
-+
-+	/* never bounce for the root cgroup */
-+	if (!blkg->parent)
-+		return false;
-+
-+	spin_lock_bh(&blkg->async_bio_lock);
-+	bio_list_add(&blkg->async_bios, bio);
-+	spin_unlock_bh(&blkg->async_bio_lock);
-+
-+	queue_work(blkcg_punt_bio_wq, &blkg->async_bio_work);
-+	return true;
-+}
-+
- /*
-  * Scale the accumulated delay based on how long it has been since we updated
-  * the delay.  We only call this when we are adding delay, in case it's been a
-@@ -1782,5 +1821,16 @@ void blkcg_add_delay(struct blkcg_gq *blkg, u64 now, u64 delta)
- 	atomic64_add(delta, &blkg->delay_nsec);
+ static void bbio_error(struct btrfs_bio *bbio, struct bio *bio, u64 logical)
+@@ -6473,7 +6426,7 @@ static void bbio_error(struct btrfs_bio *bbio, struct bio *bio, u64 logical)
  }
  
-+static int __init blkcg_init(void)
-+{
-+	blkcg_punt_bio_wq = alloc_workqueue("blkcg_punt_bio",
-+					    WQ_MEM_RECLAIM | WQ_FREEZABLE |
-+					    WQ_UNBOUND | WQ_SYSFS, 0);
-+	if (!blkcg_punt_bio_wq)
-+		return -ENOMEM;
-+	return 0;
-+}
-+subsys_initcall(blkcg_init);
-+
- module_param(blkcg_debug_stats, bool, 0644);
- MODULE_PARM_DESC(blkcg_debug_stats, "True if you want debug stats, false if not");
-diff --git a/block/blk-core.c b/block/blk-core.c
-index a55389ba8779..5879c1ec044d 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1165,6 +1165,9 @@ EXPORT_SYMBOL_GPL(direct_make_request);
-  */
- blk_qc_t submit_bio(struct bio *bio)
+ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+-			   int mirror_num, int async_submit)
++			   int mirror_num)
  {
-+	if (blkcg_punt_bio_submit(bio))
-+		return BLK_QC_T_NONE;
-+
- 	/*
- 	 * If it's a regular read/write or a barrier with data attached,
- 	 * go through the normal accounting stuff before submission.
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index f9b029180241..35b31d176f74 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -48,6 +48,7 @@ extern spinlock_t bdi_lock;
- extern struct list_head bdi_list;
+ 	struct btrfs_device *dev;
+ 	struct bio *first_bio = bio;
+@@ -6542,7 +6495,7 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 			bio = first_bio;
  
- extern struct workqueue_struct *bdi_wq;
-+extern struct workqueue_struct *bdi_async_bio_wq;
- 
- static inline bool wb_has_dirty_io(struct bdi_writeback *wb)
- {
-diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
-index 76c61318fda5..ffb2f88e87c6 100644
---- a/include/linux/blk-cgroup.h
-+++ b/include/linux/blk-cgroup.h
-@@ -134,13 +134,17 @@ struct blkcg_gq {
- 
- 	struct blkg_policy_data		*pd[BLKCG_MAX_POLS];
- 
--	struct rcu_head			rcu_head;
-+	spinlock_t			async_bio_lock;
-+	struct bio_list			async_bios;
-+	struct work_struct		async_bio_work;
- 
- 	atomic_t			use_delay;
- 	atomic64_t			delay_nsec;
- 	atomic64_t			delay_start;
- 	u64				last_delay;
- 	int				last_use;
-+
-+	struct rcu_head			rcu_head;
- };
- 
- typedef struct blkcg_policy_data *(blkcg_pol_alloc_cpd_fn)(gfp_t gfp);
-@@ -763,6 +767,15 @@ static inline bool blk_throtl_bio(struct request_queue *q, struct blkcg_gq *blkg
- 				  struct bio *bio) { return false; }
- #endif
- 
-+bool __blkcg_punt_bio_submit(struct bio *bio);
-+
-+static inline bool blkcg_punt_bio_submit(struct bio *bio)
-+{
-+	if (bio->bi_opf & REQ_CGROUP_PUNT)
-+		return __blkcg_punt_bio_submit(bio);
-+	else
-+		return false;
-+}
- 
- static inline void blkcg_bio_issue_init(struct bio *bio)
- {
-@@ -910,6 +923,7 @@ static inline char *blkg_path(struct blkcg_gq *blkg) { return NULL; }
- static inline void blkg_get(struct blkcg_gq *blkg) { }
- static inline void blkg_put(struct blkcg_gq *blkg) { }
- 
-+static inline bool blkcg_punt_bio_submit(struct bio *bio) { return false; }
- static inline void blkcg_bio_issue_init(struct bio *bio) { }
- static inline bool blkcg_bio_issue_check(struct request_queue *q,
- 					 struct bio *bio) { return true; }
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index 791fee35df88..e8b42a786315 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -321,6 +321,14 @@ enum req_flag_bits {
- 	__REQ_RAHEAD,		/* read ahead, can fail anytime */
- 	__REQ_BACKGROUND,	/* background IO */
- 	__REQ_NOWAIT,           /* Don't wait if request will block */
-+	/*
-+	 * When a shared kthread needs to issue a bio for a cgroup, doing
-+	 * so synchronously can lead to priority inversions as the kthread
-+	 * can be trapped waiting for that cgroup.  CGROUP_PUNT flag makes
-+	 * submit_bio() punt the actual issuing to a dedicated per-blkcg
-+	 * work item to avoid such priority inversions.
-+	 */
-+	__REQ_CGROUP_PUNT,
- 
- 	/* command specific flags for REQ_OP_WRITE_ZEROES: */
- 	__REQ_NOUNMAP,		/* do not free blocks when zeroing */
-@@ -347,6 +355,8 @@ enum req_flag_bits {
- #define REQ_RAHEAD		(1ULL << __REQ_RAHEAD)
- #define REQ_BACKGROUND		(1ULL << __REQ_BACKGROUND)
- #define REQ_NOWAIT		(1ULL << __REQ_NOWAIT)
-+#define REQ_CGROUP_PUNT		(1ULL << __REQ_CGROUP_PUNT)
-+
- #define REQ_NOUNMAP		(1ULL << __REQ_NOUNMAP)
- #define REQ_HIPRI		(1ULL << __REQ_HIPRI)
- 
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index 1c85563f035d..be602c42aab8 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -11,6 +11,7 @@
- #include <linux/flex_proportions.h>
- #include <linux/backing-dev-defs.h>
- #include <linux/blk_types.h>
-+#include <linux/blk-cgroup.h>
- 
- struct bio;
- 
-@@ -69,6 +70,7 @@ struct writeback_control {
- 	unsigned range_cyclic:1;	/* range_start is cyclic */
- 	unsigned for_sync:1;		/* sync(2) WB_SYNC_ALL writeback */
- 	unsigned no_wbc_acct:1;		/* skip wbc IO accounting */
-+	unsigned punt_to_cgroup:1;	/* cgrp punting, see __REQ_CGROUP_PUNT */
- #ifdef CONFIG_CGROUP_WRITEBACK
- 	struct bdi_writeback *wb;	/* wb this writeback is issued under */
- 	struct inode *inode;		/* inode being written out */
-@@ -85,12 +87,17 @@ struct writeback_control {
- 
- static inline int wbc_to_write_flags(struct writeback_control *wbc)
- {
-+	int flags = 0;
-+
-+	if (wbc->punt_to_cgroup)
-+		flags = REQ_CGROUP_PUNT;
-+
- 	if (wbc->sync_mode == WB_SYNC_ALL)
--		return REQ_SYNC;
-+		flags |= REQ_SYNC;
- 	else if (wbc->for_kupdate || wbc->for_background)
--		return REQ_BACKGROUND;
-+		flags |= REQ_BACKGROUND;
- 
--	return 0;
-+	return flags;
- }
- 
- static inline struct cgroup_subsys_state *
+ 		submit_stripe_bio(bbio, bio, bbio->stripes[dev_nr].physical,
+-				  dev_nr, async_submit);
++				  dev_nr);
+ 	}
+ 	btrfs_bio_counter_dec(fs_info);
+ 	return BLK_STS_OK;
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index b8a0e8d0672d..8c7bd79b234a 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -415,7 +415,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
+ void btrfs_mapping_init(struct btrfs_mapping_tree *tree);
+ void btrfs_mapping_tree_free(struct btrfs_mapping_tree *tree);
+ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+-			   int mirror_num, int async_submit);
++			   int mirror_num);
+ int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+ 		       fmode_t flags, void *holder);
+ struct btrfs_device *btrfs_scan_one_device(const char *path,
 -- 
 2.17.1
 
