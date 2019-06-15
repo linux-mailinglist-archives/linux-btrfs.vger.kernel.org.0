@@ -2,106 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CF57471A0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Jun 2019 20:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2955F471B1
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Jun 2019 20:29:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727246AbfFOSZd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 15 Jun 2019 14:25:33 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:36373 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727224AbfFOSZa (ORCPT
+        id S1726434AbfFOS3h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 15 Jun 2019 14:29:37 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:45666 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbfFOS3h (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 15 Jun 2019 14:25:30 -0400
-Received: by mail-qk1-f196.google.com with SMTP id g18so3827338qkl.3;
-        Sat, 15 Jun 2019 11:25:29 -0700 (PDT)
+        Sat, 15 Jun 2019 14:29:37 -0400
+Received: by mail-qk1-f193.google.com with SMTP id s22so3795741qkj.12;
+        Sat, 15 Jun 2019 11:29:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=LIH/ZSr79Tn55qxPBQsZoWtTcM5IaydfNkQSRyHlb9Q=;
-        b=CurpXwQSCE0pNhvm+GLfAqWmICgukKsaE/IpRpfQXwEsw160H63N5DXWHoUsoljImq
-         su0WKV6unNlBZ5LtyEhB0oDAMkxIiXExCCGVbw3UQOXZSnO5Y2h3sKKg0lT26lesjYvH
-         EXcAnnwWa21/To7Jzgz5zetr/GDjvVEjGFWD4jRzK0J9jJI8m17nmxvOXJSa4LcGBAus
-         sYE0om7+0urC7gOqTtfhLvzSJ1xpUJu2R0tdoAKSZT5Gx/D7o0ovnkmDl2ZMx6czrrHJ
-         V6isIKBAfeL4FSui+fw3Yv0Eo6MLXIY/GIFY7MK0Sea9+Iv+9vkcR0gg1xy44IUYqwqe
-         pZOg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=lZWCDkdCZYN5S0+Ul2IxfiRO29wLQTcP6wWsFwWlu8s=;
+        b=PphbEiU9i51xnvtm9V73bQYuo5cIfkeTXUcMOZ155zwXkW9k1v0AszL3HGTB5AYeTT
+         fMmrhBXuFr0sPCV8eoVVlAksctrq0Tp9EfiShBGan9umj+gy1onSVWWyp/YbfNQ8hPO0
+         /YFxWG/bnNyKmMK9S+h8oW63Tm9QU2mlTRob+1FyRqmyB1V5pEABc7CIakDbt8CPe9zk
+         5OthH7bBlGrWW0NoCY261eL7JxLB03tRJCoGI4wGle7j93IpmuJsT+faKyIQzcXuW9CI
+         btceBey/cK2gygHTP53JgjcqvJ2KM9kFr8n+9XEQeuWH9QBQVX9jjMSGKTp/Ed+ovdcz
+         DqIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references;
-        bh=LIH/ZSr79Tn55qxPBQsZoWtTcM5IaydfNkQSRyHlb9Q=;
-        b=Ln8LIcqbSXe4SS3vhSr8vd8Gv6fAUf347j2tfjggRU+68IL3rh35wnZUcBs9/dWogN
-         miMLPK0wGqtYjnQaJ2eGK3iJs1BusOTU9x7O/DOCUM7UAmTo7DYO/gNYx0THoZVQ3moq
-         4rGQuwE0dx1EEXxr5CK24Qv1lIW89CKzXDn/n8ldqUrOLGyZx/Rt5mY47c2ZwCW6g9LJ
-         Or1vdCIm8bP0NaUizUwwZ//FP/9u8OzQEkfygVfG7Ira52NiKNG2BoIYLjkQigq0QNXC
-         nABMMEgFPvsicyjcugCgxCVchFp5G3JLvxwie/DjHWKcK52UjKe4U1IhMPK5Z3wJmoEt
-         AvxA==
-X-Gm-Message-State: APjAAAVNkHyyScobBW/NM1THY6FNcxLoj+Di3trmx5+F1abcczfev4+g
-        vTAN23ldfCLkql49TcVgKPg=
-X-Google-Smtp-Source: APXvYqyR8G50+n7mA4iZ9L0MB6ZIAZ2h2QTc2eTMh3NaZzH0rWhmETS5t5glFSzSuFEM2/UgoEmwBA==
-X-Received: by 2002:a37:4bc5:: with SMTP id y188mr12989076qka.13.1560623128770;
-        Sat, 15 Jun 2019 11:25:28 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=lZWCDkdCZYN5S0+Ul2IxfiRO29wLQTcP6wWsFwWlu8s=;
+        b=YrJsVPB46VnybZ6pvHnHjY6HMrSeX/gus1txUHXOwRyDr2FIamXMCsiuWRn3tu9mOV
+         hbYjika5yo1yBq4+4L53t5P7VlXGjBxdsHn/G3lAxaVpjcGswnWAvN9Ms5M9Kj+H1wSB
+         Z12X0UlNsBt/TCmmm54ish8unSVy7rHsUpv6DKos26iU+jBN+Av82FcyADN5Zu8QvGR9
+         3maBS/rENyGssPvbRg8GnQqz1+rwQAluN/V5baMxClAjeJts37hsxNl7r3oTH6iRpg/p
+         iYm0Qx342UpkqUgJw+fUPoKP3tgdhDQ2jb4dg9zf6eLXtZLpOnb+UBg8R9EwlqUVObHx
+         k+8A==
+X-Gm-Message-State: APjAAAXW54WSp2Z5E1QfMNc3UuA3Y2N29aPwwXYL8WbTvzGuA8C5ub8L
+        eCo6VsjWRJZwHl1zKCXqYyE=
+X-Google-Smtp-Source: APXvYqx5M5Vccns8o0Sb2Ujl3A2MXEaAf0YNJo2yyhXxfxv1/7ALY9MC70OvLseEU3n6ihO/8XZSew==
+X-Received: by 2002:a05:620a:124c:: with SMTP id a12mr82297214qkl.336.1560623376408;
+        Sat, 15 Jun 2019 11:29:36 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::4883])
-        by smtp.gmail.com with ESMTPSA id f68sm3715819qtb.83.2019.06.15.11.25.28
+        by smtp.gmail.com with ESMTPSA id c5sm4004284qkb.41.2019.06.15.11.29.35
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 15 Jun 2019 11:25:28 -0700 (PDT)
+        Sat, 15 Jun 2019 11:29:35 -0700 (PDT)
+Date:   Sat, 15 Jun 2019 11:29:33 -0700
 From:   Tejun Heo <tj@kernel.org>
 To:     dsterba@suse.com, clm@fb.com, josef@toxicpanda.com,
         axboe@kernel.dk, jack@suse.cz
 Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-block@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 9/9] Btrfs: extent_write_locked_range() should attach inode->i_wb
-Date:   Sat, 15 Jun 2019 11:24:53 -0700
-Message-Id: <20190615182453.843275-10-tj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190615182453.843275-1-tj@kernel.org>
+Subject: Re: [PATCH 4/9] blkcg: implement REQ_CGROUP_PUNT
+Message-ID: <20190615182933.GH657710@devbig004.ftw2.facebook.com>
 References: <20190615182453.843275-1-tj@kernel.org>
+ <20190615182453.843275-5-tj@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190615182453.843275-5-tj@kernel.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Chris Mason <clm@fb.com>
+Hello,
 
-extent_write_locked_range() is used when we're falling back to buffered
-IO from inside of compression.  It allocates its own wbc and should
-associate it with the inode's i_wb to make sure the IO goes down from
-the correct cgroup.
+On Sat, Jun 15, 2019 at 11:24:48AM -0700, Tejun Heo wrote:
+> When a shared kthread needs to issue a bio for a cgroup, doing so
+> synchronously can lead to priority inversions as the kthread can be
+> trapped waiting for that cgroup.  This patch implements
+> REQ_CGROUP_PUNT flag which makes submit_bio() punt the actual issuing
+> to a dedicated per-blkcg work item to avoid such priority inversions.
+> 
+> This will be used to fix priority inversions in btrfs compression and
+> should be generally useful as we grow filesystem support for
+> comprehensive IO control.
+> 
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Cc: Chris Mason <clm@fb.com>
 
-Signed-off-by: Chris Mason <clm@fb.com>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/extent_io.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+The blkcg patches, especially this one, need Jens's review.  Jens, if
+you're okay with the changes, please let me know how you want them to
+be routed.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index d7b57341ff1a..afb916a69c30 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -4180,6 +4180,7 @@ int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
- 		.no_wbc_acct	= 1,
- 	};
- 
-+	wbc_attach_fdatawrite_inode(&wbc_writepages, inode);
- 	while (start <= end) {
- 		page = find_get_page(mapping, start >> PAGE_SHIFT);
- 		if (clear_page_dirty_for_io(page))
-@@ -4194,11 +4195,12 @@ int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
- 	}
- 
- 	ASSERT(ret <= 0);
--	if (ret < 0) {
-+	if (ret == 0)
-+		ret = flush_write_bio(&epd);
-+	else
- 		end_write_bio(&epd, ret);
--		return ret;
--	}
--	ret = flush_write_bio(&epd);
-+
-+	wbc_detach_inode(&wbc_writepages);
- 	return ret;
- }
- 
+Thanks.
+
 -- 
-2.17.1
-
+tejun
