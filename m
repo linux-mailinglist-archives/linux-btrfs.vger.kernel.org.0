@@ -2,91 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2955F471B1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Jun 2019 20:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C97D247253
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Jun 2019 00:05:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726434AbfFOS3h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 15 Jun 2019 14:29:37 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:45666 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725535AbfFOS3h (ORCPT
+        id S1726515AbfFOWFQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 15 Jun 2019 18:05:16 -0400
+Received: from atlantic.aurorasky.eu ([80.241.214.27]:33528 "EHLO
+        atlantic.aurorasky.eu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725535AbfFOWFQ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 15 Jun 2019 14:29:37 -0400
-Received: by mail-qk1-f193.google.com with SMTP id s22so3795741qkj.12;
-        Sat, 15 Jun 2019 11:29:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lZWCDkdCZYN5S0+Ul2IxfiRO29wLQTcP6wWsFwWlu8s=;
-        b=PphbEiU9i51xnvtm9V73bQYuo5cIfkeTXUcMOZ155zwXkW9k1v0AszL3HGTB5AYeTT
-         fMmrhBXuFr0sPCV8eoVVlAksctrq0Tp9EfiShBGan9umj+gy1onSVWWyp/YbfNQ8hPO0
-         /YFxWG/bnNyKmMK9S+h8oW63Tm9QU2mlTRob+1FyRqmyB1V5pEABc7CIakDbt8CPe9zk
-         5OthH7bBlGrWW0NoCY261eL7JxLB03tRJCoGI4wGle7j93IpmuJsT+faKyIQzcXuW9CI
-         btceBey/cK2gygHTP53JgjcqvJ2KM9kFr8n+9XEQeuWH9QBQVX9jjMSGKTp/Ed+ovdcz
-         DqIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lZWCDkdCZYN5S0+Ul2IxfiRO29wLQTcP6wWsFwWlu8s=;
-        b=YrJsVPB46VnybZ6pvHnHjY6HMrSeX/gus1txUHXOwRyDr2FIamXMCsiuWRn3tu9mOV
-         hbYjika5yo1yBq4+4L53t5P7VlXGjBxdsHn/G3lAxaVpjcGswnWAvN9Ms5M9Kj+H1wSB
-         Z12X0UlNsBt/TCmmm54ish8unSVy7rHsUpv6DKos26iU+jBN+Av82FcyADN5Zu8QvGR9
-         3maBS/rENyGssPvbRg8GnQqz1+rwQAluN/V5baMxClAjeJts37hsxNl7r3oTH6iRpg/p
-         iYm0Qx342UpkqUgJw+fUPoKP3tgdhDQ2jb4dg9zf6eLXtZLpOnb+UBg8R9EwlqUVObHx
-         k+8A==
-X-Gm-Message-State: APjAAAXW54WSp2Z5E1QfMNc3UuA3Y2N29aPwwXYL8WbTvzGuA8C5ub8L
-        eCo6VsjWRJZwHl1zKCXqYyE=
-X-Google-Smtp-Source: APXvYqx5M5Vccns8o0Sb2Ujl3A2MXEaAf0YNJo2yyhXxfxv1/7ALY9MC70OvLseEU3n6ihO/8XZSew==
-X-Received: by 2002:a05:620a:124c:: with SMTP id a12mr82297214qkl.336.1560623376408;
-        Sat, 15 Jun 2019 11:29:36 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::4883])
-        by smtp.gmail.com with ESMTPSA id c5sm4004284qkb.41.2019.06.15.11.29.35
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 15 Jun 2019 11:29:35 -0700 (PDT)
-Date:   Sat, 15 Jun 2019 11:29:33 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     dsterba@suse.com, clm@fb.com, josef@toxicpanda.com,
-        axboe@kernel.dk, jack@suse.cz
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 4/9] blkcg: implement REQ_CGROUP_PUNT
-Message-ID: <20190615182933.GH657710@devbig004.ftw2.facebook.com>
-References: <20190615182453.843275-1-tj@kernel.org>
- <20190615182453.843275-5-tj@kernel.org>
+        Sat, 15 Jun 2019 18:05:16 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by atlantic.aurorasky.eu (Postfix) with ESMTP id 520368C08A4;
+        Sun, 16 Jun 2019 00:05:13 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=winca.de; h=
+        content-transfer-encoding:content-language:content-type
+        :content-type:in-reply-to:mime-version:date:date:message-id:from
+        :from:references:subject:subject; s=default; t=1560636311; x=
+        1562450712; bh=VBpvwCPUvkOMCTW9OY8JKu9fxPd9tQNiSoB7DIex1+M=; b=o
+        Rlrn4yk5TocyaqPnUkwa5szk+bq5LTSGvIoHpktaFBfb2P25l0w6MQGKmkdcgATB
+        xZC8knFwRuwrI8xfXBAEpHB2V9ga6zA0ewcgJNozqP2DSH+An5m2N+XHm3G+xP+L
+        C+xa3fqHwh3dZvXMhAUJxbcOaqIYISQlz5HfvsXbQQ=
+X-Virus-Scanned: Debian amavisd-new at aurorasky.eu
+Received: from atlantic.aurorasky.eu ([127.0.0.1])
+        by localhost (vmd14184.contabo.host [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ia4W9mjxVpVm; Sun, 16 Jun 2019 00:05:11 +0200 (CEST)
+Received: from [192.168.4.12] (p5B0D86D4.dip0.t-ipconnect.de [91.13.134.212])
+        (Authenticated sender: claudius@winca.de)
+        by atlantic.aurorasky.eu (Postfix) with ESMTPSA id BFF638C02FD;
+        Sun, 16 Jun 2019 00:05:11 +0200 (CEST)
+Subject: Re: BTRFS recovery not possible
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <75a6f0280fb5829b0701f42c24a2356e@winca.de>
+ <6a72487a-4f21-2c58-df50-b0f5c3aef856@gmx.com>
+From:   Claudius Winkel <claudius@winca.de>
+Message-ID: <0c136862-4b3c-2459-62c6-44b8e92b2815@winca.de>
+Date:   Sun, 16 Jun 2019 00:05:21 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190615182453.843275-5-tj@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <6a72487a-4f21-2c58-df50-b0f5c3aef856@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+X-BitDefender-Spam: No (0)
+X-Junk-Score: 0 []
+X-BitDefender-SpamStamp: Build: [Engines: 2.15.8.1169, Dats: 591306, Stamp: 3], Multi: [Enabled, t: (0.000033,0.009226)], BW: [Enabled, t: (0.000021), whitelisted: *@winca.de], total: 0(675)
+X-BitDefender-CF-Stamp: none
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+Thanks for the Help
 
-On Sat, Jun 15, 2019 at 11:24:48AM -0700, Tejun Heo wrote:
-> When a shared kthread needs to issue a bio for a cgroup, doing so
-> synchronously can lead to priority inversions as the kthread can be
-> trapped waiting for that cgroup.  This patch implements
-> REQ_CGROUP_PUNT flag which makes submit_bio() punt the actual issuing
-> to a dedicated per-blkcg work item to avoid such priority inversions.
-> 
-> This will be used to fix priority inversions in btrfs compression and
-> should be generally useful as we grow filesystem support for
-> comprehensive IO control.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> Cc: Chris Mason <clm@fb.com>
+I get my data back.
 
-The blkcg patches, especially this one, need Jens's review.  Jens, if
-you're okay with the changes, please let me know how you want them to
-be routed.
+But now I`m thinking... how did it come so far?
 
-Thanks.
+Was it luks the dm-crypt?
 
--- 
-tejun
+What did i do wrong? Old Ubuntu Kernel? ubuntu 18.04
+
+What should I do now ... to use btrfs safely? Should i not use it with=20
+DM-crypt
+
+Or even use ZFS instead...
+
+Am 11/06/2019 um 15:02 schrieb Qu Wenruo:
+>
+> On 2019/6/11 =E4=B8=8B=E5=8D=886:53, claudius@winca.de wrote:
+>> HI Guys,
+>>
+>> you are my last try. I was so happy to use BTRFS but now i really hate
+>> it....
+>>
+>>
+>> Linux CIA 4.15.0-51-generic #55-Ubuntu SMP Wed May 15 14:27:21 UTC 201=
+9
+>> x86_64 x86_64 x86_64 GNU/Linux
+>> btrfs-progs v4.15.1
+> So old kernel and old progs.
+>
+>> btrfs fi show
+>> Label: none=C2=A0 uuid: 9622fd5c-5f7a-4e72-8efa-3d56a462ba85
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes u=
+sed 4.58TiB
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 =
+size 7.28TiB used 4.59TiB path /dev/mapper/volume1
+>>
+>>
+>> dmesg
+>>
+>> [57501.267526] BTRFS info (device dm-5): trying to use backup root at
+>> mount time
+>> [57501.267528] BTRFS info (device dm-5): disk space caching is enabled
+>> [57501.267529] BTRFS info (device dm-5): has skinny extents
+>> [57507.511830] BTRFS error (device dm-5): parent transid verify failed
+>> on 2069131051008 wanted 4240 found 5115
+> Some metadata CoW is not recorded correctly.
+>
+> Hopes you didn't every try any btrfs check --repair|--init-* or anythin=
+g
+> other than --readonly.
+> As there is a long exiting bug in btrfs-progs which could cause similar
+> corruption.
+>
+>
+>
+>> [57507.518764] BTRFS error (device dm-5): parent transid verify failed
+>> on 2069131051008 wanted 4240 found 5115
+>> [57507.519265] BTRFS error (device dm-5): failed to read block groups:=
+ -5
+>> [57507.605939] BTRFS error (device dm-5): open_ctree failed
+>>
+>>
+>> btrfs check /dev/mapper/volume1
+>> parent transid verify failed on 2069131051008 wanted 4240 found 5115
+>> parent transid verify failed on 2069131051008 wanted 4240 found 5115
+>> parent transid verify failed on 2069131051008 wanted 4240 found 5115
+>> parent transid verify failed on 2069131051008 wanted 4240 found 5115
+>> Ignoring transid failure
+>> extent buffer leak: start 2024985772032 len 16384
+>> ERROR: cannot open file system
+>>
+>>
+>>
+>> im not able to mount it anymore.
+>>
+>>
+>> I found the drive in RO the other day and realized somthing was wrong
+>> ... i did a reboot and now i cant mount anmyore
+> Btrfs extent tree must has been corrupted at that time.
+>
+> Full recovery back to fully RW mountable fs doesn't look possible.
+> As metadata CoW is completely screwed up in this case.
+>
+> Either you could use btrfs-restore to try to restore the data into
+> another location.
+>
+> Or try my kernel branch:
+> https://github.com/adam900710/linux/tree/rescue_options
+>
+> It's an older branch based on v5.1-rc4.
+> But it has some extra new mount options.
+> For your case, you need to compile the kernel, then mount it with "-o
+> ro,rescue=3Dskip_bg,rescue=3Dno_log_replay".
+>
+> If it mounts (as RO), then do all your salvage.
+> It should be a faster than btrfs-restore, and you can use all your
+> regular tool to backup.
+>
+> Thanks,
+> Qu
+>
+>>
+>> any help
