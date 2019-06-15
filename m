@@ -2,56 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A54BE471A7
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Jun 2019 20:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCA354719A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Jun 2019 20:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbfFOSZS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 15 Jun 2019 14:25:18 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:37665 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbfFOSZR (ORCPT
+        id S1727162AbfFOSZV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 15 Jun 2019 14:25:21 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:33632 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727141AbfFOSZU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 15 Jun 2019 14:25:17 -0400
-Received: by mail-qk1-f195.google.com with SMTP id d15so3815513qkl.4;
-        Sat, 15 Jun 2019 11:25:16 -0700 (PDT)
+        Sat, 15 Jun 2019 14:25:20 -0400
+Received: by mail-qt1-f193.google.com with SMTP id x2so6389082qtr.0;
+        Sat, 15 Jun 2019 11:25:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=YOUrDCMg1yDLfqXbDj7+733WP4wT9Kq/3RGxh4FkPz0=;
-        b=cvHkYQG8X0HXtsqTco0RaZecgA5i/7cLmz0YZUl/MLokK4JWRwXCDUvrEw7++BjQtU
-         cc50svs5FzEtynEO0c4PtBVFVst+N00hRbaGD6F/MdzZURvSJC7qnCQLrxGAWauRSWEe
-         l5z5C9VDU2KaynosUMCWZZ+XV9vpNeaFo8FLEoH8vBI6YjlhnszyNefavDHw4AWnaVRo
-         ulBEUkoll/7mVGK29o4hluF8J+Y7d7f8BULmK4n0WXLr9vEFzTZKyq7HHDVW+R4gJIHM
-         M7p5Xk2OLF7rldn4uJ4DB4+PPr6u/ianEwxgGO5bxWBwPh4ocADH5nmyxaae1uZDGnZ1
-         6a8w==
+        bh=1X3FWS80K1JJNMQCA2qoi8Ha3uMJZ3PHL5FlErhUkgg=;
+        b=W5jXqn75isWClTobNCs6iOsCmrWOO2OVjTjjKtX/6Di8BIiuclxLmeP11JNsJVWfGj
+         8/Eem3yHPwJOv8rOjpTPTAiN0Y8aKMCVD3/IiRVhR9TkoujW2WHiMM/DdeODhQVXham7
+         cewl5BtiFF/GTRKx44D6E0apIHg5dA+D9CwCONOkNxTSA11zblml+QCf13U2nf94iSNp
+         AtEmHzvfuNzs98Hw0wLaypGDA54YOBmqjTbSJNbiOhUgVkhSudCct2ar5/uIU09R0JyN
+         C8/PZ3DA2VZ2WtlO+Fssl5VN5ETXu26367Qh6WuxLjwtwp33mk8TXQiQctGztqwrwpGK
+         p6JA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references;
-        bh=YOUrDCMg1yDLfqXbDj7+733WP4wT9Kq/3RGxh4FkPz0=;
-        b=BeY0hmbrCh31AzFvBH3EjWaxSxK4u8aSggr/zRBP7dtS2vaItk6GwX7YZ3tJdKMZ0E
-         8LFlIi1RpuOOOgsxMOtsqamqjtxYwKtnag+zydRFVwbRzMIof5Mx0KnmG1DSvufS8wDO
-         uRTZpXmcMRs8uMPAoZr8mAF8Vr87A9/zRAWROKB7mhp7URzWz0zt4fcH/qdEG7nHcmbo
-         BN4+OKfEtmSSSJEhL707GZl7e/AeHEvePqHDFFtetG/gdlIfwZXSYuSM+APH93R7DNw6
-         pKLoig1YzoAy2uD6noqKWo37dKWViALGe9JS4OJi+kVRK+I7hhBisdEECbbkzTprA2zn
-         5/bA==
-X-Gm-Message-State: APjAAAV/VOHs/cYAtEn702cToahdTv+2z7ibVtRM9iEfQTD8jaLz3YRd
-        v8SpBaI38PQ+Mqwz4YUv9K4=
-X-Google-Smtp-Source: APXvYqxRed92zUp/aw0i5gOYaxpXI0CPIxh4WJ0r3A01+20vWe9I+pHRW4oytSSHjxNJtAOL4Ksj1Q==
-X-Received: by 2002:a37:a854:: with SMTP id r81mr4984090qke.53.1560623115842;
-        Sat, 15 Jun 2019 11:25:15 -0700 (PDT)
+        bh=1X3FWS80K1JJNMQCA2qoi8Ha3uMJZ3PHL5FlErhUkgg=;
+        b=K9/83Mq+5HH1TornZTtB3Mc6iAMMwZSiqrI7RRtOE/AFYp79fVtYvdhn/PdKJLZ9qV
+         2JoL1DtT6oiS7nANr5Xvu0NkqsLktmoVNQX2o7Ri8sLCiv3pJI1Xj+qpU3dbe3cyuy/0
+         yc+mvfzZYYJ8L7bO0GQb+JQWf0/VFGoGXQctyErIqmCaRRufTxD7kxjkcf1RIb/3fskv
+         qs76jyLcaoLfNG3Whs1yuqlAfI3DDD+clz9zapY+dl+M80n+1eY4DafwVcTyz+MVz6sn
+         6F1PLQBD2GIxkvmfo3FrYSgKR6tlaQomBAFtewaoh8dzYydf3sGP4eyjWwK6wrjwmck8
+         9DrQ==
+X-Gm-Message-State: APjAAAV4AOeaY6s3H6YFHGOv3qp29cw68MxY9H8q+hjRdxF2iADBvW/6
+        HJQy2ILBVvKft2jSyfOrq9k=
+X-Google-Smtp-Source: APXvYqwbk1Oa31Z5DL6a2mtq8MwGt/kbQeQGXY5aOtFWYWv/DxcGr0acqLs3Xu9/ppWEO5pAs+lH5w==
+X-Received: by 2002:a0c:b0e4:: with SMTP id p33mr3955600qvc.208.1560623118761;
+        Sat, 15 Jun 2019 11:25:18 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::4883])
-        by smtp.gmail.com with ESMTPSA id o66sm3445473qkb.90.2019.06.15.11.25.14
+        by smtp.gmail.com with ESMTPSA id o185sm3280557qkd.64.2019.06.15.11.25.17
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 15 Jun 2019 11:25:15 -0700 (PDT)
+        Sat, 15 Jun 2019 11:25:18 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     dsterba@suse.com, clm@fb.com, josef@toxicpanda.com,
         axboe@kernel.dk, jack@suse.cz
 Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-block@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 5/9] Btrfs: stop using btrfs_schedule_bio()
-Date:   Sat, 15 Jun 2019 11:24:49 -0700
-Message-Id: <20190615182453.843275-6-tj@kernel.org>
+Subject: [PATCH 6/9] Btrfs: delete the entire async bio submission framework
+Date:   Sat, 15 Jun 2019 11:24:50 -0700
+Message-Id: <20190615182453.843275-7-tj@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190615182453.843275-1-tj@kernel.org>
 References: <20190615182453.843275-1-tj@kernel.org>
@@ -62,229 +62,334 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Chris Mason <clm@fb.com>
 
-btrfs_schedule_bio() hands IO off to a helper thread to do the actual
-submit_bio() call.  This has been used to make sure async crc and
-compression helpers don't get stuck on IO submission.  To maintain good
-performance, over time the IO submission threads duplicated some IO
-scheduler characteristics such as high and low priority IOs and they
-also made some ugly assumptions about request allocation batch sizes.
-
-All of this cost at least one extra context switch during IO submission,
-and doesn't fit well with the modern blkmq IO stack.  So, this commit stops
-using btrfs_schedule_bio().  We may need to adjust the number of async
-helper threads for crcs and compression, but long term it's a better
-path.
+Now that we're not using btrfs_schedule_bio() anymore, delete all the
+code that supported it.
 
 Signed-off-by: Chris Mason <clm@fb.com>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/compression.c |  8 +++---
- fs/btrfs/disk-io.c     |  6 ++---
- fs/btrfs/inode.c       |  6 ++---
- fs/btrfs/volumes.c     | 55 +++---------------------------------------
- fs/btrfs/volumes.h     |  2 +-
- 5 files changed, 15 insertions(+), 62 deletions(-)
+ fs/btrfs/ctree.h   |   1 -
+ fs/btrfs/disk-io.c |  13 +--
+ fs/btrfs/super.c   |   1 -
+ fs/btrfs/volumes.c | 209 ---------------------------------------------
+ fs/btrfs/volumes.h |   8 --
+ 5 files changed, 1 insertion(+), 231 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 4ec1df369e47..873261b932b8 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -355,7 +355,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 				BUG_ON(ret); /* -ENOMEM */
- 			}
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index b81c331b28fa..2a5ba0f85ed3 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -989,7 +989,6 @@ struct btrfs_fs_info {
+ 	struct btrfs_workqueue *endio_meta_write_workers;
+ 	struct btrfs_workqueue *endio_write_workers;
+ 	struct btrfs_workqueue *endio_freespace_worker;
+-	struct btrfs_workqueue *submit_workers;
+ 	struct btrfs_workqueue *caching_workers;
+ 	struct btrfs_workqueue *readahead_workers;
  
--			ret = btrfs_map_bio(fs_info, bio, 0, 1);
-+			ret = btrfs_map_bio(fs_info, bio, 0);
- 			if (ret) {
- 				bio->bi_status = ret;
- 				bio_endio(bio);
-@@ -385,7 +385,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 		BUG_ON(ret); /* -ENOMEM */
- 	}
- 
--	ret = btrfs_map_bio(fs_info, bio, 0, 1);
-+	ret = btrfs_map_bio(fs_info, bio, 0);
- 	if (ret) {
- 		bio->bi_status = ret;
- 		bio_endio(bio);
-@@ -638,7 +638,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 			sums += DIV_ROUND_UP(comp_bio->bi_iter.bi_size,
- 					     fs_info->sectorsize);
- 
--			ret = btrfs_map_bio(fs_info, comp_bio, mirror_num, 0);
-+			ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
- 			if (ret) {
- 				comp_bio->bi_status = ret;
- 				bio_endio(comp_bio);
-@@ -662,7 +662,7 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 		BUG_ON(ret); /* -ENOMEM */
- 	}
- 
--	ret = btrfs_map_bio(fs_info, comp_bio, mirror_num, 0);
-+	ret = btrfs_map_bio(fs_info, comp_bio, mirror_num);
- 	if (ret) {
- 		comp_bio->bi_status = ret;
- 		bio_endio(comp_bio);
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 663efce22d98..b34240406f36 100644
+index b34240406f36..9dbe4ba3995d 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -800,7 +800,7 @@ static void run_one_async_done(struct btrfs_work *work)
- 	}
+@@ -2028,7 +2028,6 @@ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
+ 	btrfs_destroy_workqueue(fs_info->rmw_workers);
+ 	btrfs_destroy_workqueue(fs_info->endio_write_workers);
+ 	btrfs_destroy_workqueue(fs_info->endio_freespace_worker);
+-	btrfs_destroy_workqueue(fs_info->submit_workers);
+ 	btrfs_destroy_workqueue(fs_info->delayed_workers);
+ 	btrfs_destroy_workqueue(fs_info->caching_workers);
+ 	btrfs_destroy_workqueue(fs_info->readahead_workers);
+@@ -2194,16 +2193,6 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+ 	fs_info->caching_workers =
+ 		btrfs_alloc_workqueue(fs_info, "cache", flags, max_active, 0);
  
- 	ret = btrfs_map_bio(btrfs_sb(inode->i_sb), async->bio,
--			async->mirror_num, 1);
-+			    async->mirror_num);
- 	if (ret) {
- 		async->bio->bi_status = ret;
- 		bio_endio(async->bio);
-@@ -901,12 +901,12 @@ static blk_status_t btree_submit_bio_hook(struct inode *inode, struct bio *bio,
- 					  BTRFS_WQ_ENDIO_METADATA);
- 		if (ret)
- 			goto out_w_error;
--		ret = btrfs_map_bio(fs_info, bio, mirror_num, 0);
-+		ret = btrfs_map_bio(fs_info, bio, mirror_num);
- 	} else if (!async) {
- 		ret = btree_csum_one_bio(bio);
- 		if (ret)
- 			goto out_w_error;
--		ret = btrfs_map_bio(fs_info, bio, mirror_num, 0);
-+		ret = btrfs_map_bio(fs_info, bio, mirror_num);
- 	} else {
- 		/*
- 		 * kthread helpers are used to submit writes so that
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index d519c3520e87..91b161fb1521 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2032,7 +2032,7 @@ static blk_status_t btrfs_submit_bio_hook(struct inode *inode, struct bio *bio,
- 	}
+-	/*
+-	 * a higher idle thresh on the submit workers makes it much more
+-	 * likely that bios will be send down in a sane order to the
+-	 * devices
+-	 */
+-	fs_info->submit_workers =
+-		btrfs_alloc_workqueue(fs_info, "submit", flags,
+-				      min_t(u64, fs_devices->num_devices,
+-					    max_active), 64);
+-
+ 	fs_info->fixup_workers =
+ 		btrfs_alloc_workqueue(fs_info, "fixup", flags, 1, 0);
  
- mapit:
--	ret = btrfs_map_bio(fs_info, bio, mirror_num, 0);
-+	ret = btrfs_map_bio(fs_info, bio, mirror_num);
+@@ -2246,7 +2235,7 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
+ 					    max_active), 8);
  
- out:
- 	if (ret) {
-@@ -7764,7 +7764,7 @@ static inline blk_status_t submit_dio_repair_bio(struct inode *inode,
- 	if (ret)
- 		return ret;
+ 	if (!(fs_info->workers && fs_info->delalloc_workers &&
+-	      fs_info->submit_workers && fs_info->flush_workers &&
++	      fs_info->flush_workers &&
+ 	      fs_info->endio_workers && fs_info->endio_meta_workers &&
+ 	      fs_info->endio_meta_write_workers &&
+ 	      fs_info->endio_repair_workers &&
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 2c66d9ea6a3b..3fb86a7bfdf7 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -1668,7 +1668,6 @@ static void btrfs_resize_thread_pool(struct btrfs_fs_info *fs_info,
  
--	ret = btrfs_map_bio(fs_info, bio, mirror_num, 0);
-+	ret = btrfs_map_bio(fs_info, bio, mirror_num);
- 
- 	return ret;
- }
-@@ -8295,7 +8295,7 @@ static inline blk_status_t btrfs_submit_dio_bio(struct bio *bio,
- 			goto err;
- 	}
- map:
--	ret = btrfs_map_bio(fs_info, bio, 0, 0);
-+	ret = btrfs_map_bio(fs_info, bio, 0);
- err:
- 	return ret;
- }
+ 	btrfs_workqueue_set_max(fs_info->workers, new_pool_size);
+ 	btrfs_workqueue_set_max(fs_info->delalloc_workers, new_pool_size);
+-	btrfs_workqueue_set_max(fs_info->submit_workers, new_pool_size);
+ 	btrfs_workqueue_set_max(fs_info->caching_workers, new_pool_size);
+ 	btrfs_workqueue_set_max(fs_info->endio_workers, new_pool_size);
+ 	btrfs_workqueue_set_max(fs_info->endio_meta_workers, new_pool_size);
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 1c2a6e4b39da..72326cc23985 100644
+index 72326cc23985..fc3a16d87869 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -6386,52 +6386,8 @@ static void btrfs_end_bio(struct bio *bio)
- 	}
+@@ -509,212 +509,6 @@ btrfs_get_bdev_and_sb(const char *device_path, fmode_t flags, void *holder,
+ 	return ret;
  }
  
+-static void requeue_list(struct btrfs_pending_bios *pending_bios,
+-			struct bio *head, struct bio *tail)
+-{
+-
+-	struct bio *old_head;
+-
+-	old_head = pending_bios->head;
+-	pending_bios->head = head;
+-	if (pending_bios->tail)
+-		tail->bi_next = old_head;
+-	else
+-		pending_bios->tail = tail;
+-}
+-
 -/*
-- * see run_scheduled_bios for a description of why bios are collected for
-- * async submit.
+- * we try to collect pending bios for a device so we don't get a large
+- * number of procs sending bios down to the same device.  This greatly
+- * improves the schedulers ability to collect and merge the bios.
 - *
-- * This will add one bio to the pending list for a device and make sure
-- * the work struct is scheduled.
+- * But, it also turns into a long list of bios to process and that is sure
+- * to eventually make the worker thread block.  The solution here is to
+- * make some progress and then put this work struct back at the end of
+- * the list if the block device is congested.  This way, multiple devices
+- * can make progress from a single worker thread.
 - */
--static noinline void btrfs_schedule_bio(struct btrfs_device *device,
--					struct bio *bio)
+-static noinline void run_scheduled_bios(struct btrfs_device *device)
 -{
 -	struct btrfs_fs_info *fs_info = device->fs_info;
--	int should_queue = 1;
+-	struct bio *pending;
+-	struct backing_dev_info *bdi;
 -	struct btrfs_pending_bios *pending_bios;
+-	struct bio *tail;
+-	struct bio *cur;
+-	int again = 0;
+-	unsigned long num_run;
+-	unsigned long batch_run = 0;
+-	unsigned long last_waited = 0;
+-	int force_reg = 0;
+-	int sync_pending = 0;
+-	struct blk_plug plug;
 -
--	/* don't bother with additional async steps for reads, right now */
--	if (bio_op(bio) == REQ_OP_READ) {
--		btrfsic_submit_bio(bio);
--		return;
+-	/*
+-	 * this function runs all the bios we've collected for
+-	 * a particular device.  We don't want to wander off to
+-	 * another device without first sending all of these down.
+-	 * So, setup a plug here and finish it off before we return
+-	 */
+-	blk_start_plug(&plug);
+-
+-	bdi = device->bdev->bd_bdi;
+-
+-loop:
+-	spin_lock(&device->io_lock);
+-
+-loop_lock:
+-	num_run = 0;
+-
+-	/* take all the bios off the list at once and process them
+-	 * later on (without the lock held).  But, remember the
+-	 * tail and other pointers so the bios can be properly reinserted
+-	 * into the list if we hit congestion
+-	 */
+-	if (!force_reg && device->pending_sync_bios.head) {
+-		pending_bios = &device->pending_sync_bios;
+-		force_reg = 1;
+-	} else {
+-		pending_bios = &device->pending_bios;
+-		force_reg = 0;
 -	}
 -
--	WARN_ON(bio->bi_next);
--	bio->bi_next = NULL;
+-	pending = pending_bios->head;
+-	tail = pending_bios->tail;
+-	WARN_ON(pending && !tail);
 -
--	spin_lock(&device->io_lock);
--	if (op_is_sync(bio->bi_opf))
--		pending_bios = &device->pending_sync_bios;
--	else
--		pending_bios = &device->pending_bios;
+-	/*
+-	 * if pending was null this time around, no bios need processing
+-	 * at all and we can stop.  Otherwise it'll loop back up again
+-	 * and do an additional check so no bios are missed.
+-	 *
+-	 * device->running_pending is used to synchronize with the
+-	 * schedule_bio code.
+-	 */
+-	if (device->pending_sync_bios.head == NULL &&
+-	    device->pending_bios.head == NULL) {
+-		again = 0;
+-		device->running_pending = 0;
+-	} else {
+-		again = 1;
+-		device->running_pending = 1;
+-	}
 -
--	if (pending_bios->tail)
--		pending_bios->tail->bi_next = bio;
--
--	pending_bios->tail = bio;
--	if (!pending_bios->head)
--		pending_bios->head = bio;
--	if (device->running_pending)
--		should_queue = 0;
+-	pending_bios->head = NULL;
+-	pending_bios->tail = NULL;
 -
 -	spin_unlock(&device->io_lock);
 -
--	if (should_queue)
--		btrfs_queue_work(fs_info->submit_workers, &device->work);
+-	while (pending) {
+-
+-		rmb();
+-		/* we want to work on both lists, but do more bios on the
+-		 * sync list than the regular list
+-		 */
+-		if ((num_run > 32 &&
+-		    pending_bios != &device->pending_sync_bios &&
+-		    device->pending_sync_bios.head) ||
+-		   (num_run > 64 && pending_bios == &device->pending_sync_bios &&
+-		    device->pending_bios.head)) {
+-			spin_lock(&device->io_lock);
+-			requeue_list(pending_bios, pending, tail);
+-			goto loop_lock;
+-		}
+-
+-		cur = pending;
+-		pending = pending->bi_next;
+-		cur->bi_next = NULL;
+-
+-		BUG_ON(atomic_read(&cur->__bi_cnt) == 0);
+-
+-		/*
+-		 * if we're doing the sync list, record that our
+-		 * plug has some sync requests on it
+-		 *
+-		 * If we're doing the regular list and there are
+-		 * sync requests sitting around, unplug before
+-		 * we add more
+-		 */
+-		if (pending_bios == &device->pending_sync_bios) {
+-			sync_pending = 1;
+-		} else if (sync_pending) {
+-			blk_finish_plug(&plug);
+-			blk_start_plug(&plug);
+-			sync_pending = 0;
+-		}
+-
+-		btrfsic_submit_bio(cur);
+-		num_run++;
+-		batch_run++;
+-
+-		cond_resched();
+-
+-		/*
+-		 * we made progress, there is more work to do and the bdi
+-		 * is now congested.  Back off and let other work structs
+-		 * run instead
+-		 */
+-		if (pending && bdi_write_congested(bdi) && batch_run > 8 &&
+-		    fs_info->fs_devices->open_devices > 1) {
+-			struct io_context *ioc;
+-
+-			ioc = current->io_context;
+-
+-			/*
+-			 * the main goal here is that we don't want to
+-			 * block if we're going to be able to submit
+-			 * more requests without blocking.
+-			 *
+-			 * This code does two great things, it pokes into
+-			 * the elevator code from a filesystem _and_
+-			 * it makes assumptions about how batching works.
+-			 */
+-			if (ioc && ioc->nr_batch_requests > 0 &&
+-			    time_before(jiffies, ioc->last_waited + HZ/50UL) &&
+-			    (last_waited == 0 ||
+-			     ioc->last_waited == last_waited)) {
+-				/*
+-				 * we want to go through our batch of
+-				 * requests and stop.  So, we copy out
+-				 * the ioc->last_waited time and test
+-				 * against it before looping
+-				 */
+-				last_waited = ioc->last_waited;
+-				cond_resched();
+-				continue;
+-			}
+-			spin_lock(&device->io_lock);
+-			requeue_list(pending_bios, pending, tail);
+-			device->running_pending = 1;
+-
+-			spin_unlock(&device->io_lock);
+-			btrfs_queue_work(fs_info->submit_workers,
+-					 &device->work);
+-			goto done;
+-		}
+-	}
+-
+-	cond_resched();
+-	if (again)
+-		goto loop;
+-
+-	spin_lock(&device->io_lock);
+-	if (device->pending_bios.head || device->pending_sync_bios.head)
+-		goto loop_lock;
+-	spin_unlock(&device->io_lock);
+-
+-done:
+-	blk_finish_plug(&plug);
 -}
 -
- static void submit_stripe_bio(struct btrfs_bio *bbio, struct bio *bio,
--			      u64 physical, int dev_nr, int async)
-+			      u64 physical, int dev_nr)
+-static void pending_bios_fn(struct btrfs_work *work)
+-{
+-	struct btrfs_device *device;
+-
+-	device = container_of(work, struct btrfs_device, work);
+-	run_scheduled_bios(device);
+-}
+-
+ static bool device_path_matched(const char *path, struct btrfs_device *device)
  {
- 	struct btrfs_device *dev = bbio->stripes[dev_nr].dev;
- 	struct btrfs_fs_info *fs_info = bbio->fs_info;
-@@ -6449,10 +6405,7 @@ static void submit_stripe_bio(struct btrfs_bio *bbio, struct bio *bio,
+ 	int found;
+@@ -6599,9 +6393,6 @@ struct btrfs_device *btrfs_alloc_device(struct btrfs_fs_info *fs_info,
+ 	else
+ 		generate_random_uuid(dev->uuid);
  
- 	btrfs_bio_counter_inc_noblocked(fs_info);
- 
--	if (async)
--		btrfs_schedule_bio(dev, bio);
--	else
--		btrfsic_submit_bio(bio);
-+	btrfsic_submit_bio(bio);
+-	btrfs_init_work(&dev->work, btrfs_submit_helper,
+-			pending_bios_fn, NULL, NULL);
+-
+ 	return dev;
  }
  
- static void bbio_error(struct btrfs_bio *bbio, struct bio *bio, u64 logical)
-@@ -6473,7 +6426,7 @@ static void bbio_error(struct btrfs_bio *bbio, struct bio *bio, u64 logical)
- }
- 
- blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
--			   int mirror_num, int async_submit)
-+			   int mirror_num)
- {
- 	struct btrfs_device *dev;
- 	struct bio *first_bio = bio;
-@@ -6542,7 +6495,7 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
- 			bio = first_bio;
- 
- 		submit_stripe_bio(bbio, bio, bbio->stripes[dev_nr].physical,
--				  dev_nr, async_submit);
-+				  dev_nr);
- 	}
- 	btrfs_bio_counter_dec(fs_info);
- 	return BLK_STS_OK;
 diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index b8a0e8d0672d..8c7bd79b234a 100644
+index 8c7bd79b234a..231f50dd107d 100644
 --- a/fs/btrfs/volumes.h
 +++ b/fs/btrfs/volumes.h
-@@ -415,7 +415,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *trans, u64 type);
- void btrfs_mapping_init(struct btrfs_mapping_tree *tree);
- void btrfs_mapping_tree_free(struct btrfs_mapping_tree *tree);
- blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
--			   int mirror_num, int async_submit);
-+			   int mirror_num);
- int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       fmode_t flags, void *holder);
- struct btrfs_device *btrfs_scan_one_device(const char *path,
+@@ -18,10 +18,6 @@ extern struct mutex uuid_mutex;
+ #define BTRFS_STRIPE_LEN	SZ_64K
+ 
+ struct buffer_head;
+-struct btrfs_pending_bios {
+-	struct bio *head;
+-	struct bio *tail;
+-};
+ 
+ /*
+  * Use sequence counter to get consistent device stat data on
+@@ -55,10 +51,6 @@ struct btrfs_device {
+ 
+ 	spinlock_t io_lock ____cacheline_aligned;
+ 	int running_pending;
+-	/* regular prio bios */
+-	struct btrfs_pending_bios pending_bios;
+-	/* sync bios */
+-	struct btrfs_pending_bios pending_sync_bios;
+ 
+ 	struct block_device *bdev;
+ 
 -- 
 2.17.1
 
