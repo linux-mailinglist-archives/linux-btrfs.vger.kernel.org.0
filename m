@@ -2,127 +2,786 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32AEA490A1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2019 21:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CFAE49525
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 00:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728141AbfFQTz3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Jun 2019 15:55:29 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:41858 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727419AbfFQTz3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Jun 2019 15:55:29 -0400
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id ABF41142BC3; Mon, 17 Jun 2019 20:55:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1560801327;
-        bh=rah/SN71I6JmJ1qCh7BOjxgQegfKXXq0PDmRXeB54/Y=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=KKz/hrJQkmeDMs8pZ+/4pWAFLMy8ZjqXsHmEFNQpxu7xc7NYZRumm/EoEx5uUdEeU
-         Z3HWOJSdqqnWRJ3LJqB8mpbI6etm6VrybHuUEmBoR1As/Bgve9bvKw2fSS8PdwniRl
-         QFZm/ApNZpAi5QuGd0Ib4o7S/asrOg+LOSW4OV9bPmwX0iMx5O3ihme/TvNGsjlqEG
-         L61vmasCIA8JXkrOFoUvu06jRw4DjLn0h6exkPHiTrBbwz/trlat+XhQB9Qe5JJAOs
-         xn5593ceiRXKmnV6v7xARa5EWd7ELGDllWzX3/xN+SlrUuGACbYYe9L+BRbSo7wKGc
-         WiELWxXSXsqtQ==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 53F1D142BC2
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jun 2019 20:55:27 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1560801327;
-        bh=rah/SN71I6JmJ1qCh7BOjxgQegfKXXq0PDmRXeB54/Y=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=KKz/hrJQkmeDMs8pZ+/4pWAFLMy8ZjqXsHmEFNQpxu7xc7NYZRumm/EoEx5uUdEeU
-         Z3HWOJSdqqnWRJ3LJqB8mpbI6etm6VrybHuUEmBoR1As/Bgve9bvKw2fSS8PdwniRl
-         QFZm/ApNZpAi5QuGd0Ib4o7S/asrOg+LOSW4OV9bPmwX0iMx5O3ihme/TvNGsjlqEG
-         L61vmasCIA8JXkrOFoUvu06jRw4DjLn0h6exkPHiTrBbwz/trlat+XhQB9Qe5JJAOs
-         xn5593ceiRXKmnV6v7xARa5EWd7ELGDllWzX3/xN+SlrUuGACbYYe9L+BRbSo7wKGc
-         WiELWxXSXsqtQ==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id F27DB6BC26;
-        Mon, 17 Jun 2019 20:55:26 +0100 (BST)
-Subject: Re: [PATCH RFC] btrfs-progs: scrub: Correct tracking of last_physical
- across scrub cancel/resume
-To:     "Graham R. Cobb" <g.btrfs@cobb.uk.net>, linux-btrfs@vger.kernel.org
-References: <20190607235501.26637-1-g.btrfs@cobb.uk.net>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <2c415510-8d46-065d-6b38-b8514a8ffcc1@cobb.uk.net>
-Date:   Mon, 17 Jun 2019 20:55:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1727047AbfFQW3Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Jun 2019 18:29:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38018 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726331AbfFQW3Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Jun 2019 18:29:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5284EAE48;
+        Mon, 17 Jun 2019 22:29:22 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D475EDA832; Tue, 18 Jun 2019 00:30:09 +0200 (CEST)
+Date:   Tue, 18 Jun 2019 00:30:08 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Naohiro Aota <naohiro.aota@wdc.com>
+Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
+        linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.com>,
+        linux-fsdevel@vger.kernel.org,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Matias =?iso-8859-1?Q?Bj=F8rling?= <mb@lightnvm.io>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH 07/19] btrfs: do sequential extent allocation in HMZONED
+ mode
+Message-ID: <20190617223007.GI19057@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
+        linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.com>,
+        linux-fsdevel@vger.kernel.org,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Matias =?iso-8859-1?Q?Bj=F8rling?= <mb@lightnvm.io>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>
+References: <20190607131025.31996-1-naohiro.aota@wdc.com>
+ <20190607131025.31996-8-naohiro.aota@wdc.com>
 MIME-Version: 1.0
-In-Reply-To: <20190607235501.26637-1-g.btrfs@cobb.uk.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190607131025.31996-8-naohiro.aota@wdc.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 08/06/2019 00:55, Graham R. Cobb wrote:
-> When a scrub completes or is cancelled, statistics are updated for reporting
-> in a later btrfs scrub status command. Most statistics (such as bytes scrubbed)
-> are additive so scrub adds the statistics from the current run to the
-> saved statistics.
+On Fri, Jun 07, 2019 at 10:10:13PM +0900, Naohiro Aota wrote:
+> On HMZONED drives, writes must always be sequential and directed at a block
+> group zone write pointer position. Thus, block allocation in a block group
+> must also be done sequentially using an allocation pointer equal to the
+> block group zone write pointer plus the number of blocks allocated but not
+> yet written.
 > 
-> However, the last_physical statistic is not additive. The value from the
-> current run should replace the saved value. The current code incorrectly
-> adds the last_physical from the current run to the saved value.
+> Sequential allocation function find_free_extent_seq() bypass the checks in
+> find_free_extent() and increase the reserved byte counter by itself. It is
+> impossible to revert once allocated region in the sequential allocation,
+> since it might race with other allocations and leave an allocation hole,
+> which breaks the sequential write rule.
 > 
-> This bug not only affects user status reporting but also has the effect that
-> subsequent resumes start from the wrong place and large amounts of the
-> filesystem are not scrubbed.
+> Furthermore, this commit introduce two new variable to struct
+> btrfs_block_group_cache. "wp_broken" indicate that write pointer is broken
+> (e.g. not synced on a RAID1 block group) and mark that block group read
+> only. "unusable" keeps track of the size of once allocated then freed
+> region. Such region is never usable until resetting underlying zones.
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+> ---
+>  fs/btrfs/ctree.h            |  24 +++
+>  fs/btrfs/extent-tree.c      | 378 ++++++++++++++++++++++++++++++++++--
+>  fs/btrfs/free-space-cache.c |  33 ++++
+>  fs/btrfs/free-space-cache.h |   5 +
+>  4 files changed, 426 insertions(+), 14 deletions(-)
 > 
-> This patch changes the saved last_physical to track the last reported value
-> from the kernel.
-> 
-> Signed-off-by: Graham R. Cobb <g.btrfs@cobb.uk.net>
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index 6c00101407e4..f4bcd2a6ec12 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -582,6 +582,20 @@ struct btrfs_full_stripe_locks_tree {
+>  	struct mutex lock;
+>  };
+>  
+> +/* Block group allocation types */
+> +enum btrfs_alloc_type {
+> +
+> +	/* Regular first fit allocation */
+> +	BTRFS_ALLOC_FIT		= 0,
+> +
+> +	/*
+> +	 * Sequential allocation: this is for HMZONED mode and
+> +	 * will result in ignoring free space before a block
+> +	 * group allocation offset.
 
-No comments received on this RFC PATCH. I will resubmit it shortly as a
-non-RFC PATCH, with a slightly improved summary and changelog.
+Please format the comments to 80 columns
 
-Graham
+> +	 */
+> +	BTRFS_ALLOC_SEQ		= 1,
+> +};
+> +
+>  struct btrfs_block_group_cache {
+>  	struct btrfs_key key;
+>  	struct btrfs_block_group_item item;
+> @@ -592,6 +606,7 @@ struct btrfs_block_group_cache {
+>  	u64 reserved;
+>  	u64 delalloc_bytes;
+>  	u64 bytes_super;
+> +	u64 unusable;
+
+'unusable' is specific to the zones, so 'zone_unusable' would make it
+clear. The terminilogy around space is confusing already (we have
+unused, free, reserved, allocated, slack).
+
+>  	u64 flags;
+>  	u64 cache_generation;
+>  
+> @@ -621,6 +636,7 @@ struct btrfs_block_group_cache {
+>  	unsigned int iref:1;
+>  	unsigned int has_caching_ctl:1;
+>  	unsigned int removed:1;
+> +	unsigned int wp_broken:1;
+>  
+>  	int disk_cache_state;
+>  
+> @@ -694,6 +710,14 @@ struct btrfs_block_group_cache {
+>  
+>  	/* Record locked full stripes for RAID5/6 block group */
+>  	struct btrfs_full_stripe_locks_tree full_stripe_locks_root;
+> +
+> +	/*
+> +	 * Allocation offset for the block group to implement sequential
+> +	 * allocation. This is used only with HMZONED mode enabled and if
+> +	 * the block group resides on a sequential zone.
+> +	 */
+> +	enum btrfs_alloc_type alloc_type;
+> +	u64 alloc_offset;
+>  };
+>  
+>  /* delayed seq elem */
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 363db58f56b8..ebd0d6eae038 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -28,6 +28,7 @@
+>  #include "sysfs.h"
+>  #include "qgroup.h"
+>  #include "ref-verify.h"
+> +#include "rcu-string.h"
+>  
+>  #undef SCRAMBLE_DELAYED_REFS
+>  
+> @@ -590,6 +591,8 @@ static int cache_block_group(struct btrfs_block_group_cache *cache,
+>  	struct btrfs_caching_control *caching_ctl;
+>  	int ret = 0;
+>  
+> +	WARN_ON(cache->alloc_type == BTRFS_ALLOC_SEQ);
+> +
+>  	caching_ctl = kzalloc(sizeof(*caching_ctl), GFP_NOFS);
+>  	if (!caching_ctl)
+>  		return -ENOMEM;
+> @@ -6555,6 +6558,19 @@ void btrfs_wait_block_group_reservations(struct btrfs_block_group_cache *bg)
+>  	wait_var_event(&bg->reservations, !atomic_read(&bg->reservations));
+>  }
+>  
+> +static void __btrfs_add_reserved_bytes(struct btrfs_block_group_cache *cache,
+> +				       u64 ram_bytes, u64 num_bytes,
+> +				       int delalloc)
+> +{
+> +	struct btrfs_space_info *space_info = cache->space_info;
+> +
+> +	cache->reserved += num_bytes;
+> +	space_info->bytes_reserved += num_bytes;
+> +	update_bytes_may_use(space_info, -ram_bytes);
+> +	if (delalloc)
+> +		cache->delalloc_bytes += num_bytes;
+> +}
+> +
+>  /**
+>   * btrfs_add_reserved_bytes - update the block_group and space info counters
+>   * @cache:	The cache we are manipulating
+> @@ -6573,17 +6589,16 @@ static int btrfs_add_reserved_bytes(struct btrfs_block_group_cache *cache,
+>  	struct btrfs_space_info *space_info = cache->space_info;
+>  	int ret = 0;
+>  
+> +	/* should handled by find_free_extent_seq */
+> +	WARN_ON(cache->alloc_type == BTRFS_ALLOC_SEQ);
+> +
+>  	spin_lock(&space_info->lock);
+>  	spin_lock(&cache->lock);
+> -	if (cache->ro) {
+> +	if (cache->ro)
+>  		ret = -EAGAIN;
+> -	} else {
+> -		cache->reserved += num_bytes;
+> -		space_info->bytes_reserved += num_bytes;
+> -		update_bytes_may_use(space_info, -ram_bytes);
+> -		if (delalloc)
+> -			cache->delalloc_bytes += num_bytes;
+> -	}
+> +	else
+> +		__btrfs_add_reserved_bytes(cache, ram_bytes, num_bytes,
+> +					   delalloc);
+>  	spin_unlock(&cache->lock);
+>  	spin_unlock(&space_info->lock);
+>  	return ret;
+> @@ -6701,9 +6716,13 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
+>  			cache = btrfs_lookup_block_group(fs_info, start);
+>  			BUG_ON(!cache); /* Logic error */
+>  
+> -			cluster = fetch_cluster_info(fs_info,
+> -						     cache->space_info,
+> -						     &empty_cluster);
+> +			if (cache->alloc_type == BTRFS_ALLOC_FIT)
+> +				cluster = fetch_cluster_info(fs_info,
+> +							     cache->space_info,
+> +							     &empty_cluster);
+> +			else
+> +				cluster = NULL;
+> +
+>  			empty_cluster <<= 1;
+>  		}
+>  
+> @@ -6743,7 +6762,8 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
+>  		space_info->max_extent_size = 0;
+>  		percpu_counter_add_batch(&space_info->total_bytes_pinned,
+>  			    -len, BTRFS_TOTAL_BYTES_PINNED_BATCH);
+> -		if (cache->ro) {
+> +		if (cache->ro || cache->alloc_type == BTRFS_ALLOC_SEQ) {
+> +			/* need reset before reusing in ALLOC_SEQ BG */
+>  			space_info->bytes_readonly += len;
+>  			readonly = true;
+>  		}
+> @@ -7588,6 +7608,60 @@ static int find_free_extent_unclustered(struct btrfs_block_group_cache *bg,
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Simple allocator for sequential only block group. It only allows
+> + * sequential allocation. No need to play with trees. This function
+> + * also reserve the bytes as in btrfs_add_reserved_bytes.
+> + */
+> +
+> +static int find_free_extent_seq(struct btrfs_block_group_cache *cache,
+> +				struct find_free_extent_ctl *ffe_ctl)
+> +{
+> +	struct btrfs_space_info *space_info = cache->space_info;
+> +	struct btrfs_free_space_ctl *ctl = cache->free_space_ctl;
+> +	u64 start = cache->key.objectid;
+> +	u64 num_bytes = ffe_ctl->num_bytes;
+> +	u64 avail;
+> +	int ret = 0;
+> +
+> +	/* Sanity check */
+> +	if (cache->alloc_type != BTRFS_ALLOC_SEQ)
+> +		return 1;
+> +
+> +	spin_lock(&space_info->lock);
+> +	spin_lock(&cache->lock);
+> +
+> +	if (cache->ro) {
+> +		ret = -EAGAIN;
+> +		goto out;
+> +	}
+> +
+> +	spin_lock(&ctl->tree_lock);
+> +	avail = cache->key.offset - cache->alloc_offset;
+> +	if (avail < num_bytes) {
+> +		ffe_ctl->max_extent_size = avail;
+> +		spin_unlock(&ctl->tree_lock);
+> +		ret = 1;
+> +		goto out;
+> +	}
+> +
+> +	ffe_ctl->found_offset = start + cache->alloc_offset;
+> +	cache->alloc_offset += num_bytes;
+> +	ctl->free_space -= num_bytes;
+> +	spin_unlock(&ctl->tree_lock);
+> +
+> +	BUG_ON(!IS_ALIGNED(ffe_ctl->found_offset,
+> +			   cache->fs_info->stripesize));
+> +	ffe_ctl->search_start = ffe_ctl->found_offset;
+> +	__btrfs_add_reserved_bytes(cache, ffe_ctl->ram_bytes, num_bytes,
+> +				   ffe_ctl->delalloc);
+> +
+> +out:
+> +	spin_unlock(&cache->lock);
+> +	spin_unlock(&space_info->lock);
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Return >0 means caller needs to re-search for free extent
+>   * Return 0 means we have the needed free extent.
+> @@ -7889,6 +7963,16 @@ static noinline int find_free_extent(struct btrfs_fs_info *fs_info,
+>  		if (unlikely(block_group->cached == BTRFS_CACHE_ERROR))
+>  			goto loop;
+>  
+> +		if (block_group->alloc_type == BTRFS_ALLOC_SEQ) {
+> +			ret = find_free_extent_seq(block_group, &ffe_ctl);
+> +			if (ret)
+> +				goto loop;
+> +			/* btrfs_find_space_for_alloc_seq should ensure
+> +			 * that everything is OK and reserve the extent.
+> +			 */
+
+Please use the
+
+/*
+ * comment
+ */
+
+style
+
+> +			goto nocheck;
+> +		}
+> +
+>  		/*
+>  		 * Ok we want to try and use the cluster allocator, so
+>  		 * lets look there
+> @@ -7944,6 +8028,7 @@ static noinline int find_free_extent(struct btrfs_fs_info *fs_info,
+>  					     num_bytes);
+>  			goto loop;
+>  		}
+> +nocheck:
+>  		btrfs_inc_block_group_reservations(block_group);
+>  
+>  		/* we are all good, lets return */
+> @@ -9616,7 +9701,8 @@ static int inc_block_group_ro(struct btrfs_block_group_cache *cache, int force)
+>  	}
+>  
+>  	num_bytes = cache->key.offset - cache->reserved - cache->pinned -
+> -		    cache->bytes_super - btrfs_block_group_used(&cache->item);
+> +		    cache->bytes_super - cache->unusable -
+> +		    btrfs_block_group_used(&cache->item);
+>  	sinfo_used = btrfs_space_info_used(sinfo, true);
+>  
+>  	if (sinfo_used + num_bytes + min_allocable_bytes <=
+> @@ -9766,6 +9852,7 @@ void btrfs_dec_block_group_ro(struct btrfs_block_group_cache *cache)
+>  	if (!--cache->ro) {
+>  		num_bytes = cache->key.offset - cache->reserved -
+>  			    cache->pinned - cache->bytes_super -
+> +			    cache->unusable -
+>  			    btrfs_block_group_used(&cache->item);
+>  		sinfo->bytes_readonly -= num_bytes;
+>  		list_del_init(&cache->ro_list);
+> @@ -10200,11 +10287,240 @@ static void link_block_group(struct btrfs_block_group_cache *cache)
+>  	}
+>  }
+>  
+> +static int
+> +btrfs_get_block_group_alloc_offset(struct btrfs_block_group_cache *cache)
+> +{
+> +	struct btrfs_fs_info *fs_info = cache->fs_info;
+> +	struct extent_map_tree *em_tree = &fs_info->mapping_tree.map_tree;
+> +	struct extent_map *em;
+> +	struct map_lookup *map;
+> +	struct btrfs_device *device;
+> +	u64 logical = cache->key.objectid;
+> +	u64 length = cache->key.offset;
+> +	u64 physical = 0;
+> +	int ret, alloc_type;
+> +	int i, j;
+> +	u64 *alloc_offsets = NULL;
+> +
+> +#define WP_MISSING_DEV ((u64)-1)
+
+Please move the definition to the beginning of the file
+
+> +
+> +	/* Sanity check */
+> +	if (!IS_ALIGNED(length, fs_info->zone_size)) {
+> +		btrfs_err(fs_info, "unaligned block group at %llu + %llu",
+> +			  logical, length);
+> +		return -EIO;
+> +	}
+> +
+> +	/* Get the chunk mapping */
+> +	em_tree = &fs_info->mapping_tree.map_tree;
+> +	read_lock(&em_tree->lock);
+> +	em = lookup_extent_mapping(em_tree, logical, length);
+> +	read_unlock(&em_tree->lock);
+> +
+> +	if (!em)
+> +		return -EINVAL;
+> +
+> +	map = em->map_lookup;
+> +
+> +	/*
+> +	 * Get the zone type: if the group is mapped to a non-sequential zone,
+> +	 * there is no need for the allocation offset (fit allocation is OK).
+> +	 */
+> +	alloc_type = -1;
+> +	alloc_offsets = kcalloc(map->num_stripes, sizeof(*alloc_offsets),
+> +				GFP_NOFS);
+> +	if (!alloc_offsets) {
+> +		free_extent_map(em);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	for (i = 0; i < map->num_stripes; i++) {
+> +		int is_sequential;
+
+Please use bool instead of int
+
+> +		struct blk_zone zone;
+> +
+> +		device = map->stripes[i].dev;
+> +		physical = map->stripes[i].physical;
+> +
+> +		if (device->bdev == NULL) {
+> +			alloc_offsets[i] = WP_MISSING_DEV;
+> +			continue;
+> +		}
+> +
+> +		is_sequential = btrfs_dev_is_sequential(device, physical);
+> +		if (alloc_type == -1)
+> +			alloc_type = is_sequential ?
+> +					BTRFS_ALLOC_SEQ : BTRFS_ALLOC_FIT;
+> +
+> +		if ((is_sequential && alloc_type != BTRFS_ALLOC_SEQ) ||
+> +		    (!is_sequential && alloc_type == BTRFS_ALLOC_SEQ)) {
+> +			btrfs_err(fs_info, "found block group of mixed zone types");
+> +			ret = -EIO;
+> +			goto out;
+> +		}
+> +
+> +		if (!is_sequential)
+> +			continue;
+> +
+> +		/* this zone will be used for allocation, so mark this
+> +		 * zone non-empty
+> +		 */
+> +		clear_bit(physical >> device->zone_size_shift,
+> +			  device->empty_zones);
+> +
+> +		/*
+> +		 * The group is mapped to a sequential zone. Get the zone write
+> +		 * pointer to determine the allocation offset within the zone.
+> +		 */
+> +		WARN_ON(!IS_ALIGNED(physical, fs_info->zone_size));
+> +		ret = btrfs_get_dev_zone(device, physical, &zone, GFP_NOFS);
+> +		if (ret == -EIO || ret == -EOPNOTSUPP) {
+> +			ret = 0;
+> +			alloc_offsets[i] = WP_MISSING_DEV;
+> +			continue;
+> +		} else if (ret) {
+> +			goto out;
+> +		}
+> +
+> +
+> +		switch (zone.cond) {
+> +		case BLK_ZONE_COND_OFFLINE:
+> +		case BLK_ZONE_COND_READONLY:
+> +			btrfs_err(fs_info, "Offline/readonly zone %llu",
+> +				  physical >> device->zone_size_shift);
+> +			alloc_offsets[i] = WP_MISSING_DEV;
+> +			break;
+> +		case BLK_ZONE_COND_EMPTY:
+> +			alloc_offsets[i] = 0;
+> +			break;
+> +		case BLK_ZONE_COND_FULL:
+> +			alloc_offsets[i] = fs_info->zone_size;
+> +			break;
+> +		default:
+> +			/* Partially used zone */
+> +			alloc_offsets[i] =
+> +				((zone.wp - zone.start) << SECTOR_SHIFT);
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (alloc_type == BTRFS_ALLOC_FIT)
+> +		goto out;
+> +
+> +	switch (map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK) {
+> +	case 0: /* single */
+> +	case BTRFS_BLOCK_GROUP_DUP:
+> +	case BTRFS_BLOCK_GROUP_RAID1:
+> +		cache->alloc_offset = WP_MISSING_DEV;
+> +		for (i = 0; i < map->num_stripes; i++) {
+> +			if (alloc_offsets[i] == WP_MISSING_DEV)
+> +				continue;
+> +			if (cache->alloc_offset == WP_MISSING_DEV)
+> +				cache->alloc_offset = alloc_offsets[i];
+> +			if (alloc_offsets[i] == cache->alloc_offset)
+> +				continue;
+> +
+> +			btrfs_err(fs_info,
+> +				  "write pointer mismatch: block group %llu",
+> +				  logical);
+> +			cache->wp_broken = 1;
+> +		}
+> +		break;
+> +	case BTRFS_BLOCK_GROUP_RAID0:
+> +		cache->alloc_offset = 0;
+> +		for (i = 0; i < map->num_stripes; i++) {
+> +			if (alloc_offsets[i] == WP_MISSING_DEV) {
+> +				btrfs_err(fs_info,
+> +					  "cannot recover write pointer: block group %llu",
+> +					  logical);
+> +				cache->wp_broken = 1;
+> +				continue;
+> +			}
+> +
+> +			if (alloc_offsets[0] < alloc_offsets[i]) {
+> +				btrfs_err(fs_info,
+> +					  "write pointer mismatch: block group %llu",
+> +					  logical);
+> +				cache->wp_broken = 1;
+> +				continue;
+> +			}
+> +
+> +			cache->alloc_offset += alloc_offsets[i];
+> +		}
+> +		break;
+> +	case BTRFS_BLOCK_GROUP_RAID10:
+> +		/*
+> +		 * Pass1: check write pointer of RAID1 level: each pointer
+> +		 * should be equal.
+> +		 */
+> +		for (i = 0; i < map->num_stripes / map->sub_stripes; i++) {
+> +			int base = i*map->sub_stripes;
+
+spaces around binary operators
+
+			int base = i * map->sub_stripes;
+
+> +			u64 offset = WP_MISSING_DEV;
+> +
+> +			for (j = 0; j < map->sub_stripes; j++) {
+> +				if (alloc_offsets[base+j] == WP_MISSING_DEV)
+
+here and below
+
+> +					continue;
+> +				if (offset == WP_MISSING_DEV)
+> +					offset = alloc_offsets[base+j];
+> +				if (alloc_offsets[base+j] == offset)
+> +					continue;
+> +
+> +				btrfs_err(fs_info,
+> +					  "write pointer mismatch: block group %llu",
+> +					  logical);
+> +				cache->wp_broken = 1;
+> +			}
+> +			for (j = 0; j < map->sub_stripes; j++)
+> +				alloc_offsets[base+j] = offset;
+> +		}
+> +
+> +		/* Pass2: check write pointer of RAID1 level */
+> +		cache->alloc_offset = 0;
+> +		for (i = 0; i < map->num_stripes / map->sub_stripes; i++) {
+> +			int base = i*map->sub_stripes;
+> +
+> +			if (alloc_offsets[base] == WP_MISSING_DEV) {
+> +				btrfs_err(fs_info,
+> +					  "cannot recover write pointer: block group %llu",
+> +					  logical);
+> +				cache->wp_broken = 1;
+> +				continue;
+> +			}
+> +
+> +			if (alloc_offsets[0] < alloc_offsets[base]) {
+> +				btrfs_err(fs_info,
+> +					  "write pointer mismatch: block group %llu",
+> +					  logical);
+> +				cache->wp_broken = 1;
+> +				continue;
+> +			}
+> +
+> +			cache->alloc_offset += alloc_offsets[base];
+> +		}
+> +		break;
+> +	case BTRFS_BLOCK_GROUP_RAID5:
+> +	case BTRFS_BLOCK_GROUP_RAID6:
+> +		/* RAID5/6 is not supported yet */
+> +	default:
+> +		btrfs_err(fs_info, "Unsupported profile on HMZONED %llu",
+> +			map->type & BTRFS_BLOCK_GROUP_PROFILE_MASK);
+> +		ret = -EINVAL;
+> +		goto out;
+> +	}
+> +
+> +out:
+> +	cache->alloc_type = alloc_type;
+> +	kfree(alloc_offsets);
+> +	free_extent_map(em);
+> +
+> +	return ret;
+> +}
+> +
+>  static struct btrfs_block_group_cache *
+>  btrfs_create_block_group_cache(struct btrfs_fs_info *fs_info,
+>  			       u64 start, u64 size)
+>  {
+>  	struct btrfs_block_group_cache *cache;
+> +	int ret;
+>  
+>  	cache = kzalloc(sizeof(*cache), GFP_NOFS);
+>  	if (!cache)
+> @@ -10238,6 +10554,16 @@ btrfs_create_block_group_cache(struct btrfs_fs_info *fs_info,
+>  	atomic_set(&cache->trimming, 0);
+>  	mutex_init(&cache->free_space_lock);
+>  	btrfs_init_full_stripe_locks_tree(&cache->full_stripe_locks_root);
+> +	cache->alloc_type = BTRFS_ALLOC_FIT;
+> +	cache->alloc_offset = 0;
+> +
+> +	if (btrfs_fs_incompat(fs_info, HMZONED)) {
+> +		ret = btrfs_get_block_group_alloc_offset(cache);
+> +		if (ret) {
+> +			kfree(cache);
+> +			return NULL;
+> +		}
+> +	}
+>  
+>  	return cache;
+>  }
+> @@ -10310,6 +10636,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+>  	int need_clear = 0;
+>  	u64 cache_gen;
+>  	u64 feature;
+> +	u64 unusable;
+>  	int mixed;
+>  
+>  	feature = btrfs_super_incompat_flags(info->super_copy);
+> @@ -10415,6 +10742,26 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+>  			free_excluded_extents(cache);
+>  		}
+>  
+> +		switch (cache->alloc_type) {
+> +		case BTRFS_ALLOC_FIT:
+> +			unusable = cache->bytes_super;
+> +			break;
+> +		case BTRFS_ALLOC_SEQ:
+> +			WARN_ON(cache->bytes_super != 0);
+> +			unusable = cache->alloc_offset -
+> +				btrfs_block_group_used(&cache->item);
+> +			/* we only need ->free_space in ALLOC_SEQ BGs */
+> +			cache->last_byte_to_unpin = (u64)-1;
+> +			cache->cached = BTRFS_CACHE_FINISHED;
+> +			cache->free_space_ctl->free_space =
+> +				cache->key.offset - cache->alloc_offset;
+> +			cache->unusable = unusable;
+> +			free_excluded_extents(cache);
+> +			break;
+> +		default:
+> +			BUG();
+
+An unexpeced value of allocation is found, this needs a message and
+proper error handling, btrfs_read_block_groups is called from mount path
+so the recovery should be possible.
+
+> +		}
+> +
+>  		ret = btrfs_add_block_group_cache(info, cache);
+>  		if (ret) {
+>  			btrfs_remove_free_space_cache(cache);
+> @@ -10425,7 +10772,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+>  		trace_btrfs_add_block_group(info, cache, 0);
+>  		update_space_info(info, cache->flags, found_key.offset,
+>  				  btrfs_block_group_used(&cache->item),
+> -				  cache->bytes_super, &space_info);
+> +				  unusable, &space_info);
+>  
+>  		cache->space_info = space_info;
+>  
+> @@ -10438,6 +10785,9 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
+>  			ASSERT(list_empty(&cache->bg_list));
+>  			btrfs_mark_bg_unused(cache);
+>  		}
+> +
+> +		if (cache->wp_broken)
+> +			inc_block_group_ro(cache, 1);
+>  	}
+>  
+>  	list_for_each_entry_rcu(space_info, &info->space_info, list) {
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index f74dc259307b..cc69dc71f4c1 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -2326,8 +2326,11 @@ int __btrfs_add_free_space(struct btrfs_fs_info *fs_info,
+>  			   u64 offset, u64 bytes)
+>  {
+>  	struct btrfs_free_space *info;
+> +	struct btrfs_block_group_cache *block_group = ctl->private;
+>  	int ret = 0;
+>  
+> +	WARN_ON(block_group && block_group->alloc_type == BTRFS_ALLOC_SEQ);
+> +
+>  	info = kmem_cache_zalloc(btrfs_free_space_cachep, GFP_NOFS);
+>  	if (!info)
+>  		return -ENOMEM;
+> @@ -2376,6 +2379,28 @@ int __btrfs_add_free_space(struct btrfs_fs_info *fs_info,
+>  	return ret;
+>  }
+>  
+> +int __btrfs_add_free_space_seq(struct btrfs_block_group_cache *block_group,
+> +			       u64 bytenr, u64 size)
+> +{
+> +	struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
+> +	u64 offset = bytenr - block_group->key.objectid;
+> +	u64 to_free, to_unusable;
+> +
+> +	spin_lock(&ctl->tree_lock);
+> +	if (offset >= block_group->alloc_offset)
+> +		to_free = size;
+> +	else if (offset + size <= block_group->alloc_offset)
+> +		to_free = 0;
+> +	else
+> +		to_free = offset + size - block_group->alloc_offset;
+> +	to_unusable = size - to_free;
+> +	ctl->free_space += to_free;
+> +	block_group->unusable += to_unusable;
+> +	spin_unlock(&ctl->tree_lock);
+> +	return 0;
+> +
+> +}
+> +
+>  int btrfs_remove_free_space(struct btrfs_block_group_cache *block_group,
+>  			    u64 offset, u64 bytes)
+>  {
+> @@ -2384,6 +2409,8 @@ int btrfs_remove_free_space(struct btrfs_block_group_cache *block_group,
+>  	int ret;
+>  	bool re_search = false;
+>  
+> +	WARN_ON(block_group->alloc_type == BTRFS_ALLOC_SEQ);
+> +
+>  	spin_lock(&ctl->tree_lock);
+>  
+>  again:
+> @@ -2619,6 +2646,8 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block_group_cache *block_group,
+>  	u64 align_gap = 0;
+>  	u64 align_gap_len = 0;
+>  
+> +	WARN_ON(block_group->alloc_type == BTRFS_ALLOC_SEQ);
+> +
+>  	spin_lock(&ctl->tree_lock);
+>  	entry = find_free_space(ctl, &offset, &bytes_search,
+>  				block_group->full_stripe_len, max_extent_size);
+> @@ -2738,6 +2767,8 @@ u64 btrfs_alloc_from_cluster(struct btrfs_block_group_cache *block_group,
+>  	struct rb_node *node;
+>  	u64 ret = 0;
+>  
+> +	WARN_ON(block_group->alloc_type == BTRFS_ALLOC_SEQ);
+> +
+>  	spin_lock(&cluster->lock);
+>  	if (bytes > cluster->max_size)
+>  		goto out;
+> @@ -3384,6 +3415,8 @@ int btrfs_trim_block_group(struct btrfs_block_group_cache *block_group,
+>  {
+>  	int ret;
+>  
+> +	WARN_ON(block_group->alloc_type == BTRFS_ALLOC_SEQ);
+> +
+>  	*trimmed = 0;
+>  
+>  	spin_lock(&block_group->lock);
+> diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
+> index 8760acb55ffd..d30667784f73 100644
+> --- a/fs/btrfs/free-space-cache.h
+> +++ b/fs/btrfs/free-space-cache.h
+> @@ -73,10 +73,15 @@ void btrfs_init_free_space_ctl(struct btrfs_block_group_cache *block_group);
+>  int __btrfs_add_free_space(struct btrfs_fs_info *fs_info,
+>  			   struct btrfs_free_space_ctl *ctl,
+>  			   u64 bytenr, u64 size);
+> +int __btrfs_add_free_space_seq(struct btrfs_block_group_cache *block_group,
+> +			       u64 bytenr, u64 size);
+>  static inline int
+>  btrfs_add_free_space(struct btrfs_block_group_cache *block_group,
+>  		     u64 bytenr, u64 size)
+>  {
+> +	if (block_group->alloc_type == BTRFS_ALLOC_SEQ)
+> +		return __btrfs_add_free_space_seq(block_group, bytenr, size);
+> +
+>  	return __btrfs_add_free_space(block_group->fs_info,
+>  				      block_group->free_space_ctl,
+>  				      bytenr, size);
+> -- 
+> 2.21.0
