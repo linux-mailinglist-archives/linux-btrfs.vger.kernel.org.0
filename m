@@ -2,69 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5F44854F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2019 16:27:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB5D48766
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2019 17:37:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727921AbfFQO1B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Jun 2019 10:27:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50904 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725995AbfFQO1B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Jun 2019 10:27:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F0E3BAF41;
-        Mon, 17 Jun 2019 14:26:59 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9FF02DA8D1; Mon, 17 Jun 2019 16:27:48 +0200 (CEST)
-Date:   Mon, 17 Jun 2019 16:27:48 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH for 5.2] Btrfs: fix failure to persist compression
- property xattr deletion on fsync
-Message-ID: <20190617142748.GF19057@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20190612141411.25339-1-fdmanana@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190612141411.25339-1-fdmanana@kernel.org>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+        id S1726716AbfFQPhO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Jun 2019 11:37:14 -0400
+Received: from bedivere.hansenpartnership.com ([66.63.167.143]:55062 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726047AbfFQPhN (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Jun 2019 11:37:13 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 87D9B8EE105;
+        Mon, 17 Jun 2019 08:37:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1560785833;
+        bh=mWCugXceKyAOQu9MSBX5QJCVA4ce1/3KeOkdDZTDlzg=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=ZJDd5cdgW4MjM0z6OHQSERQcmoyLpA3Le8JwvP2LWXZklBFFatModPwtvIItyNCZH
+         2ICFd7LJYzqpVh4DiYkQAb5b/Qx0jUOdPSpQdYMOoQwLSYiO60YkUbXAHoSQpOw8n5
+         Q9Dy+jIYR5Xhpy0q5L7+dpmLXv1Lx+jKdQXpQECM=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id lwtkd_OB5eyj; Mon, 17 Jun 2019 08:37:13 -0700 (PDT)
+Received: from jarvis.lan (unknown [50.35.68.20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id E5C1B8EE0D7;
+        Mon, 17 Jun 2019 08:37:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1560785833;
+        bh=mWCugXceKyAOQu9MSBX5QJCVA4ce1/3KeOkdDZTDlzg=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=ZJDd5cdgW4MjM0z6OHQSERQcmoyLpA3Le8JwvP2LWXZklBFFatModPwtvIItyNCZH
+         2ICFd7LJYzqpVh4DiYkQAb5b/Qx0jUOdPSpQdYMOoQwLSYiO60YkUbXAHoSQpOw8n5
+         Q9Dy+jIYR5Xhpy0q5L7+dpmLXv1Lx+jKdQXpQECM=
+Message-ID: <1560785821.3538.22.camel@HansenPartnership.com>
+Subject: Re: Proper packed attribute usage?
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Date:   Mon, 17 Jun 2019 08:37:01 -0700
+In-Reply-To: <f24ea8b6-01ff-f570-4b9b-43b4126118e6@gmx.com>
+References: <f24ea8b6-01ff-f570-4b9b-43b4126118e6@gmx.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-nfwc8CkvWmyN3WVVNp70"
+X-Mailer: Evolution 3.26.6 
+Mime-Version: 1.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 03:14:11PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> After the recent series of cleanups in the properties and xattrs modules
-> that landed in the 5.2 merge window, we ended up with a regression where
-> after deleting the compression xattr property through the setflags ioctl,
-> we don't set the BTRFS_INODE_COPY_EVERYTHING flag in the inode anymore.
-> As a consequence, if the inode was fsync'ed when it had the compression
-> property set, after deleting the compression property through the setflags
-> ioctl and fsync'ing again the inode, the log will still contain the
-> compression xattr, because the inode did not had that bit set, which
-> made the fsync not delete all xattrs from the log and copy all xattrs
-> from the subvolume tree to the log tree.
-> 
-> This regression happens due to the fact that that series of cleanups
-> made btrfs_set_prop() call the old function do_setxattr() (which is now
-> named btrfs_setxattr()), and not the old version of btrfs_setxattr(),
-> which is now called btrfs_setxattr_trans().
-> 
-> Fix this by setting the BTRFS_INODE_COPY_EVERYTHING bit in the current
-> btrfs_setxattr() function and remove it from everywhere else, including
-> its setup at btrfs_ioctl_setflags(). This is cleaner, avoids similar
-> regressions in the future, and centralizes the setup of the bit. After
-> all, the need to setup this bit should only be in the xattrs module,
-> since it is an implementation of xattrs.
-> 
-> Fixes: 04e6863b19c722 ("btrfs: split btrfs_setxattr calls regarding transaction")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Queued for 5.2, thanks.
+--=-nfwc8CkvWmyN3WVVNp70
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2019-06-17 at 17:06 +0800, Qu Wenruo wrote:
+[...]
+> But then this means, we should have two copies of data for every such
+> structures. One for the fixed format one, and one for the compiler
+> aligned one, with enough helper to convert them (along with needed
+> endian convert).
+
+I don't think it does mean this.  The compiler can easily access the
+packed data by pointer, the problem on systems requiring strict
+alignment is that it has to be done with byte accesses, so instead of a
+load word for a pointer to an int, you have to do four load bytes.=20
+This is mostly a minor slowdown so trying to evolve a whole
+infrastructure around copying data for these use cases really wouldn't
+be a good use of resources.
+
+James
+
+--=-nfwc8CkvWmyN3WVVNp70
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABMIAB0WIQTnYEDbdso9F2cI+arnQslM7pishQUCXQeznQAKCRDnQslM7pis
+hWJdAP9EjBUm7QtsCdZKbtHvyByuyW9chKBA9LNOyaGREnGOUAD+Pk1Ks1T/iidR
+0dmNc9xeOMRZohls/XxRWORpuWZV8oY=
+=/m9c
+-----END PGP SIGNATURE-----
+
+--=-nfwc8CkvWmyN3WVVNp70--
+
