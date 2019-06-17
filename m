@@ -2,364 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48B1048D19
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2019 20:56:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32AEA490A1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2019 21:55:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728564AbfFQS4Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Jun 2019 14:56:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48972 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725772AbfFQS4Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Jun 2019 14:56:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9CAA7AF0C;
-        Mon, 17 Jun 2019 18:56:22 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C8B66DA8D1; Mon, 17 Jun 2019 20:57:09 +0200 (CEST)
-Date:   Mon, 17 Jun 2019 20:57:08 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
-        linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.com>,
-        linux-fsdevel@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Matias =?iso-8859-1?Q?Bj=F8rling?= <mb@lightnvm.io>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH 02/19] btrfs: Get zone information of zoned block devices
-Message-ID: <20190617185708.GH19057@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <naohiro.aota@wdc.com>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
-        linux-kernel@vger.kernel.org, Hannes Reinecke <hare@suse.com>,
-        linux-fsdevel@vger.kernel.org,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Matias =?iso-8859-1?Q?Bj=F8rling?= <mb@lightnvm.io>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>
-References: <20190607131025.31996-1-naohiro.aota@wdc.com>
- <20190607131025.31996-3-naohiro.aota@wdc.com>
+        id S1728141AbfFQTz3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Jun 2019 15:55:29 -0400
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:41858 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727419AbfFQTz3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Jun 2019 15:55:29 -0400
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id ABF41142BC3; Mon, 17 Jun 2019 20:55:27 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1560801327;
+        bh=rah/SN71I6JmJ1qCh7BOjxgQegfKXXq0PDmRXeB54/Y=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=KKz/hrJQkmeDMs8pZ+/4pWAFLMy8ZjqXsHmEFNQpxu7xc7NYZRumm/EoEx5uUdEeU
+         Z3HWOJSdqqnWRJ3LJqB8mpbI6etm6VrybHuUEmBoR1As/Bgve9bvKw2fSS8PdwniRl
+         QFZm/ApNZpAi5QuGd0Ib4o7S/asrOg+LOSW4OV9bPmwX0iMx5O3ihme/TvNGsjlqEG
+         L61vmasCIA8JXkrOFoUvu06jRw4DjLn0h6exkPHiTrBbwz/trlat+XhQB9Qe5JJAOs
+         xn5593ceiRXKmnV6v7xARa5EWd7ELGDllWzX3/xN+SlrUuGACbYYe9L+BRbSo7wKGc
+         WiELWxXSXsqtQ==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 53F1D142BC2
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jun 2019 20:55:27 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1560801327;
+        bh=rah/SN71I6JmJ1qCh7BOjxgQegfKXXq0PDmRXeB54/Y=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=KKz/hrJQkmeDMs8pZ+/4pWAFLMy8ZjqXsHmEFNQpxu7xc7NYZRumm/EoEx5uUdEeU
+         Z3HWOJSdqqnWRJ3LJqB8mpbI6etm6VrybHuUEmBoR1As/Bgve9bvKw2fSS8PdwniRl
+         QFZm/ApNZpAi5QuGd0Ib4o7S/asrOg+LOSW4OV9bPmwX0iMx5O3ihme/TvNGsjlqEG
+         L61vmasCIA8JXkrOFoUvu06jRw4DjLn0h6exkPHiTrBbwz/trlat+XhQB9Qe5JJAOs
+         xn5593ceiRXKmnV6v7xARa5EWd7ELGDllWzX3/xN+SlrUuGACbYYe9L+BRbSo7wKGc
+         WiELWxXSXsqtQ==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id F27DB6BC26;
+        Mon, 17 Jun 2019 20:55:26 +0100 (BST)
+Subject: Re: [PATCH RFC] btrfs-progs: scrub: Correct tracking of last_physical
+ across scrub cancel/resume
+To:     "Graham R. Cobb" <g.btrfs@cobb.uk.net>, linux-btrfs@vger.kernel.org
+References: <20190607235501.26637-1-g.btrfs@cobb.uk.net>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <2c415510-8d46-065d-6b38-b8514a8ffcc1@cobb.uk.net>
+Date:   Mon, 17 Jun 2019 20:55:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190607131025.31996-3-naohiro.aota@wdc.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <20190607235501.26637-1-g.btrfs@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 07, 2019 at 10:10:08PM +0900, Naohiro Aota wrote:
-> If a zoned block device is found, get its zone information (number of zones
-> and zone size) using the new helper function btrfs_get_dev_zonetypes().  To
-> avoid costly run-time zone report commands to test the device zones type
-> during block allocation, attach the seqzones bitmap to the device structure
-> to indicate if a zone is sequential or accept random writes.
+On 08/06/2019 00:55, Graham R. Cobb wrote:
+> When a scrub completes or is cancelled, statistics are updated for reporting
+> in a later btrfs scrub status command. Most statistics (such as bytes scrubbed)
+> are additive so scrub adds the statistics from the current run to the
+> saved statistics.
 > 
-> This patch also introduces the helper function btrfs_dev_is_sequential() to
-> test if the zone storing a block is a sequential write required zone.
+> However, the last_physical statistic is not additive. The value from the
+> current run should replace the saved value. The current code incorrectly
+> adds the last_physical from the current run to the saved value.
 > 
-> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> ---
->  fs/btrfs/volumes.c | 143 +++++++++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/volumes.h |  33 +++++++++++
->  2 files changed, 176 insertions(+)
+> This bug not only affects user status reporting but also has the effect that
+> subsequent resumes start from the wrong place and large amounts of the
+> filesystem are not scrubbed.
 > 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 1c2a6e4b39da..b673178718e3 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -786,6 +786,135 @@ static int btrfs_free_stale_devices(const char *path,
->  	return ret;
->  }
->  
-> +static int __btrfs_get_dev_zones(struct btrfs_device *device, u64 pos,
+> This patch changes the saved last_physical to track the last reported value
+> from the kernel.
+> 
+> Signed-off-by: Graham R. Cobb <g.btrfs@cobb.uk.net>
 
-Please drop __ from the name, the pattern where this naming makes sense
-does not apply here. It's for cases where teh function wihout
-underscores does some extra stuff like locking and the underscored does
-not and this is used on some context. I haven't found
-btrfs_get_dev_zones in this or other patches.
+No comments received on this RFC PATCH. I will resubmit it shortly as a
+non-RFC PATCH, with a slightly improved summary and changelog.
 
-> +				 struct blk_zone **zones,
-> +				 unsigned int *nr_zones, gfp_t gfp_mask)
-> +{
-> +	struct blk_zone *z = *zones;
-
-This may apply to more places, plese don't use single letter for
-anything else than 'i' and similar. 'zone' would be suitable.
-
-> +	int ret;
-> +
-> +	if (!z) {
-> +		z = kcalloc(*nr_zones, sizeof(struct blk_zone), GFP_KERNEL);
-> +		if (!z)
-> +			return -ENOMEM;
-> +	}
-> +
-> +	ret = blkdev_report_zones(device->bdev, pos >> SECTOR_SHIFT,
-> +				  z, nr_zones, gfp_mask);
-> +	if (ret != 0) {
-> +		btrfs_err(device->fs_info, "Get zone at %llu failed %d\n",
-
-No capital letter and no "\n" at the end of the message, that's added by
-btrfs_er.
-
-> +			  pos, ret);
-> +		return ret;
-> +	}
-> +
-> +	*zones = z;
-> +
-> +	return 0;
-> +}
-> +
-> +static void btrfs_destroy_dev_zonetypes(struct btrfs_device *device)
-> +{
-> +	kfree(device->seq_zones);
-> +	kfree(device->empty_zones);
-> +	device->seq_zones = NULL;
-> +	device->empty_zones = NULL;
-> +	device->nr_zones = 0;
-> +	device->zone_size = 0;
-> +	device->zone_size_shift = 0;
-> +}
-> +
-> +int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
-> +		       struct blk_zone *zone, gfp_t gfp_mask)
-> +{
-> +	unsigned int nr_zones = 1;
-> +	int ret;
-> +
-> +	ret = __btrfs_get_dev_zones(device, pos, &zone, &nr_zones, gfp_mask);
-> +	if (ret != 0 || !nr_zones)
-> +		return ret ? ret : -EIO;
-> +
-> +	return 0;
-> +}
-> +
-> +int btrfs_get_dev_zonetypes(struct btrfs_device *device)
-> +{
-> +	struct block_device *bdev = device->bdev;
-> +	sector_t nr_sectors = bdev->bd_part->nr_sects;
-> +	sector_t sector = 0;
-> +	struct blk_zone *zones = NULL;
-> +	unsigned int i, n = 0, nr_zones;
-> +	int ret;
-> +
-> +	device->zone_size = 0;
-> +	device->zone_size_shift = 0;
-> +	device->nr_zones = 0;
-> +	device->seq_zones = NULL;
-> +	device->empty_zones = NULL;
-> +
-> +	if (!bdev_is_zoned(bdev))
-> +		return 0;
-> +
-> +	device->zone_size = (u64)bdev_zone_sectors(bdev) << SECTOR_SHIFT;
-> +	device->zone_size_shift = ilog2(device->zone_size);
-> +	device->nr_zones = nr_sectors >> ilog2(bdev_zone_sectors(bdev));
-> +	if (nr_sectors & (bdev_zone_sectors(bdev) - 1))
-> +		device->nr_zones++;
-> +
-> +	device->seq_zones = kcalloc(BITS_TO_LONGS(device->nr_zones),
-> +				    sizeof(*device->seq_zones), GFP_KERNEL);
-
-What's the expected range for the allocation size? There's one bit per
-zone, so one 4KiB page can hold up to 32768 zones, with 1GiB it's 32TiB
-of space on the drive. Ok that seems safe for now.
-
-> +	if (!device->seq_zones)
-> +		return -ENOMEM;
-> +
-> +	device->empty_zones = kcalloc(BITS_TO_LONGS(device->nr_zones),
-> +				      sizeof(*device->empty_zones), GFP_KERNEL);
-> +	if (!device->empty_zones)
-> +		return -ENOMEM;
-
-This leaks device->seq_zones from the current context, though thre are
-calls to btrfs_destroy_dev_zonetypes that would clean it up eventually.
-It'd be better to clean up here instead of relying on the caller.
-
-> +
-> +#define BTRFS_REPORT_NR_ZONES   4096
-
-Please move this to the begining of the file if this is just local to
-the .c file and put a short comment explaining the meaning.
-
-> +
-> +	/* Get zones type */
-> +	while (sector < nr_sectors) {
-> +		nr_zones = BTRFS_REPORT_NR_ZONES;
-> +		ret = __btrfs_get_dev_zones(device, sector << SECTOR_SHIFT,
-> +					    &zones, &nr_zones, GFP_KERNEL);
-> +		if (ret != 0 || !nr_zones) {
-> +			if (!ret)
-> +				ret = -EIO;
-> +			goto out;
-> +		}
-> +
-> +		for (i = 0; i < nr_zones; i++) {
-> +			if (zones[i].type == BLK_ZONE_TYPE_SEQWRITE_REQ)
-> +				set_bit(n, device->seq_zones);
-> +			if (zones[i].cond == BLK_ZONE_COND_EMPTY)
-> +				set_bit(n, device->empty_zones);
-> +			sector = zones[i].start + zones[i].len;
-> +			n++;
-> +		}
-> +	}
-> +
-> +	if (n != device->nr_zones) {
-> +		btrfs_err(device->fs_info,
-> +			  "Inconsistent number of zones (%u / %u)\n", n,
-
-lowercase and no "\n"
-
-> +			  device->nr_zones);
-> +		ret = -EIO;
-> +		goto out;
-> +	}
-> +
-> +	btrfs_info(device->fs_info,
-> +		   "host-%s zoned block device, %u zones of %llu sectors\n",
-> +		   bdev_zoned_model(bdev) == BLK_ZONED_HM ? "managed" : "aware",
-> +		   device->nr_zones, device->zone_size >> SECTOR_SHIFT);
-> +
-> +out:
-> +	kfree(zones);
-> +
-> +	if (ret)
-> +		btrfs_destroy_dev_zonetypes(device);
-> +
-> +	return ret;
-> +}
-> +
->  static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
->  			struct btrfs_device *device, fmode_t flags,
->  			void *holder)
-> @@ -842,6 +971,11 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
->  	clear_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
->  	device->mode = flags;
->  
-> +	/* Get zone type information of zoned block devices */
-> +	ret = btrfs_get_dev_zonetypes(device);
-> +	if (ret != 0)
-> +		goto error_brelse;
-> +
->  	fs_devices->open_devices++;
->  	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
->  	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
-> @@ -1243,6 +1377,7 @@ static void btrfs_close_bdev(struct btrfs_device *device)
->  	}
->  
->  	blkdev_put(device->bdev, device->mode);
-> +	btrfs_destroy_dev_zonetypes(device);
->  }
->  
->  static void btrfs_close_one_device(struct btrfs_device *device)
-> @@ -2664,6 +2799,13 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
->  	mutex_unlock(&fs_info->chunk_mutex);
->  	mutex_unlock(&fs_devices->device_list_mutex);
->  
-> +	/* Get zone type information of zoned block devices */
-> +	ret = btrfs_get_dev_zonetypes(device);
-> +	if (ret) {
-> +		btrfs_abort_transaction(trans, ret);
-> +		goto error_sysfs;
-
-Can this be moved before the locked section so that any failure does not
-lead to transaction abort?
-
-The function returns ENOMEM that does not necessarily need to kill the
-filesystem. And EIO which means that some faulty device is being added
-to the filesystem but this again should fail early.
-
-> +	}
-> +
->  	if (seeding_dev) {
->  		mutex_lock(&fs_info->chunk_mutex);
->  		ret = init_first_rw_device(trans);
-> @@ -2729,6 +2871,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
->  	return ret;
->  
->  error_sysfs:
-> +	btrfs_destroy_dev_zonetypes(device);
->  	btrfs_sysfs_rm_device_link(fs_devices, device);
->  	mutex_lock(&fs_info->fs_devices->device_list_mutex);
->  	mutex_lock(&fs_info->chunk_mutex);
-> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-> index b8a0e8d0672d..1599641e216c 100644
-> --- a/fs/btrfs/volumes.h
-> +++ b/fs/btrfs/volumes.h
-> @@ -62,6 +62,16 @@ struct btrfs_device {
->  
->  	struct block_device *bdev;
->  
-> +	/*
-> +	 * Number of zones, zone size and types of zones if bdev is a
-> +	 * zoned block device.
-> +	 */
-> +	u64 zone_size;
-> +	u8  zone_size_shift;
-
-So the zone_size is always power of two? I may be missing something, but
-I wonder if the calculations based on shifts are safe.
-
-> +	u32 nr_zones;
-> +	unsigned long *seq_zones;
-> +	unsigned long *empty_zones;
-> +
->  	/* the mode sent to blkdev_get */
->  	fmode_t mode;
->  
-> @@ -476,6 +486,28 @@ int btrfs_finish_chunk_alloc(struct btrfs_trans_handle *trans,
->  int btrfs_remove_chunk(struct btrfs_trans_handle *trans, u64 chunk_offset);
->  struct extent_map *btrfs_get_chunk_map(struct btrfs_fs_info *fs_info,
->  				       u64 logical, u64 length);
-> +int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
-> +		       struct blk_zone *zone, gfp_t gfp_mask);
-> +
-> +static inline int btrfs_dev_is_sequential(struct btrfs_device *device, u64 pos)
-> +{
-> +	unsigned int zno = pos >> device->zone_size_shift;
-
-The types don't match here, pos is u64 and I'm not sure if it's
-guaranteed that the value after shift will fit ti unsigned int.
-
-> +
-> +	if (!device->seq_zones)
-> +		return 1;
-> +
-> +	return test_bit(zno, device->seq_zones);
-> +}
-> +
-> +static inline int btrfs_dev_is_empty_zone(struct btrfs_device *device, u64 pos)
-> +{
-> +	unsigned int zno = pos >> device->zone_size_shift;
-
-Same.
-
-> +
-> +	if (!device->empty_zones)
-> +		return 0;
-> +
-> +	return test_bit(zno, device->empty_zones);
-> +}
->  
->  static inline void btrfs_dev_stat_inc(struct btrfs_device *dev,
->  				      int index)
-> @@ -568,5 +600,6 @@ bool btrfs_check_rw_degradable(struct btrfs_fs_info *fs_info,
->  
->  int btrfs_bg_type_to_factor(u64 flags);
->  int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info);
-> +int btrfs_get_dev_zonetypes(struct btrfs_device *device);
->  
->  #endif
-> -- 
-> 2.21.0
+Graham
