@@ -2,84 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2158C48037
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2019 13:08:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C82BF47F36
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Jun 2019 12:05:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727631AbfFQLH7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Jun 2019 07:07:59 -0400
-Received: from mout.kundenserver.de ([212.227.126.135]:58845 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726730AbfFQLH7 (ORCPT
+        id S1727847AbfFQKFv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Jun 2019 06:05:51 -0400
+Received: from briare1.fullpliant.org ([78.227.24.35]:35140 "HELO
+        briare1.fullpliant.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727726AbfFQKFv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Jun 2019 07:07:59 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue011 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MHXSD-1hphfV0scb-00DVxN; Mon, 17 Jun 2019 13:07:44 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Filipe Manana <fdmanana@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: shut up bogus -Wmaybe-uninitialized warning
-Date:   Mon, 17 Jun 2019 13:07:28 +0200
-Message-Id: <20190617110738.2085060-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.20.0
-MIME-Version: 1.0
+        Mon, 17 Jun 2019 06:05:51 -0400
+X-Greylist: delayed 899 seconds by postgrey-1.27 at vger.kernel.org; Mon, 17 Jun 2019 06:05:51 EDT
+From:   Hubert Tonneau <hubert.tonneau@fullpliant.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: Oops in mainline kernel 4.19.50 while btrfs scrubing
+Date:   Mon, 17 Jun 2019 11:53:34 GMT
+Message-ID: <0J8M6DA11@briare1.fullpliant.org>
+X-Mailer: Pliant 114
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:RwSP0+7X1t5QgfnR4q2ka6Ub+2Jpijl+t/7jQ+Cr6YedH8bQ/kk
- KlwYdwGAsCgOFZxO+/Tk5lUAJ6L4zcSnDfCLne0M9V4bgUiCLO7+ZJKGk3W0jqQR8t45u4E
- CTnWr2+Q54ccHMIZaPz3ZGIX1iiX4MuBGoYXBtIWRHRcs/7NPEfMpEssxcZWLv44nQR3HK+
- sN0qCUmYyVwcme/AmDovw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:74SFdUEmAU0=:nBS2O7j265199nWBNA5Nh9
- 6MWecxFoNhTv7OmvGH3GUBiQCKuG/P3j04jZPev7JDSiGnM0zj9Nl0HAg20iGDopxa3Owhgk6
- dPLoUQ64VnojWCYjvGPKqBRmXsmL0hfoYO9MiRpmv1EgCCitTrZuZt/joI6I9S6peAXLticoC
- ZWFG0jO9ZlJmTceF2i2AGjU2fsB/AAfreqhN7t+RzFgEDMc/8jicyCIF4A/Gvc2r0wLu5FARc
- X8Am4PVte2ibalNo5MrFnmkz22QxUttBx26TVHpN8FsvunArGw1Cj/j2KmwYICdG2dCELMg7s
- KgiU8KYsTGdJIlf17L/txxlizwZE49Urh8GEdqi5fWh45/F7CLGSccMTr3aGdnWFxXZV7oIRy
- c9lrNoYY6UNk93kT9BTa/dndPhv3JLK/PLqw6SU9vuMPjCo/T04wQGANJ2L7F0krD1F+kwoci
- nfdOtgG9zw4MTFO/tqXMvNYYq+8nBbo97FxWhC12pQlqTc0ABZaPAHv3/h4RVKD3A4LUe0kAF
- YaX36zxm55/7/XPAzw2Bw3JsNOHVcc1fIb1WzMuwrc0+fvI9o9y8Kfb9Tkn6EhjH77TloJuTH
- 8Seahx15DtyZHeLokPlMae6yUfQOLRILo1R65aCxYzftBZ99xXOmh5xiBvV1gMb0w2z1fefdW
- pQ/lC6BmyRdNB0uMguG+AGpuQ68Di5wnh9l7KN7yivg58Y+AnxWPrO+8zjWpFOuZBcxYVWqFf
- LN9NcaFv5GEXXBL4zeQ4pzPkT6mHU4HeiqJxkg==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-gcc sometimes can't determine whether a variable has been initialized
-when both the initialization and the use are conditional:
+Hi,
 
-fs/btrfs/props.c: In function 'inherit_props':
-fs/btrfs/props.c:389:4: error: 'num_bytes' may be used uninitialized in this function [-Werror=maybe-uninitialized]
-    btrfs_block_rsv_release(fs_info, trans->block_rsv,
+Here is the report of the oops I got while scrubing 2 disks in RAID1.
+No complete crash, no error reported by scrub in the end, just this strage kernel message.
+The kernel is mainline 4.19.50
 
-This code is fine. Unfortunately, I cannot think of a good way to
-rephrase it in a way that makes gcc understand this, so I add
-a bogus initialization the way one should not.
+Label: 'data1'  uuid: a1d97cfd-e793-4a40-98ae-010454321e9c
+	Total devices 2 FS bytes used 2.25TiB
+	devid    1 size 3.14TiB used 2.25TiB path /dev/sda2
+	devid    2 size 3.14TiB used 2.25TiB path /dev/sdb2
 
-Fixes: d7400ee1b476 ("btrfs: use the existing reserved items for our first prop for inheritance")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/btrfs/props.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Data, RAID1: total=2.25TiB, used=2.24TiB
+System, RAID1: total=64.00MiB, used=368.00KiB
+Metadata, RAID1: total=6.00GiB, used=4.35GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
 
-diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
-index a9e2e66152ee..9d47ae1cf5b2 100644
---- a/fs/btrfs/props.c
-+++ b/fs/btrfs/props.c
-@@ -341,7 +341,7 @@ static int inherit_props(struct btrfs_trans_handle *trans,
- 	for (i = 0; i < ARRAY_SIZE(prop_handlers); i++) {
- 		const struct prop_handler *h = &prop_handlers[i];
- 		const char *value;
--		u64 num_bytes;
-+		u64 num_bytes = 0;
- 
- 		if (!h->inheritable)
- 			continue;
--- 
-2.20.0
+<4>[ 3851.858792] RIP: 0010:btrfs_update_device+0x1ba/0x1d0 [btrfs]
+<4>[ 3851.858794] Code: 4c 89 f7 45 31 c0 ba 10 00 00 00 4c 89 ee e8 ed 39 ff ff 4c 89 f7 e8 15 0e fd ff e9 d4 fe ff ff b8 f4 ff ff ff e9 d4 fe ff ff <0f> 0b eb b7 e8 4d 19 aa cc 66 66 66 66 2e 0f 1f 84 00 00 00 00 00
+<4>[ 3851.858796] RSP: 0000:ffffac16c0e87a00 EFLAGS: 00010206
+<4>[ 3851.858799] RAX: 0000000000000fff RBX: 0000000000000000 RCX: 0000032380c00200
+<4>[ 3851.858800] RDX: 0000000000001000 RSI: 0000000000003f5c RDI: ffff9a4059084578
+<4>[ 3851.858802] RBP: ffff9a40cbaef7e0 R08: ffffac16c0e879b0 R09: ffffac16c0e879b8
+<4>[ 3851.858804] R10: 0000000000000003 R11: 0000000000000000 R12: ffff9a40d9f85600
+<4>[ 3851.858805] R13: 0000000000003f3c R14: ffff9a4059084578 R15: ffff9a409b7264e0
+<4>[ 3851.858808] FS:  00007fbe95d62700(0000) GS:ffff9a40dba00000(0000) knlGS:0000000000000000
+<4>[ 3851.858810] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+<4>[ 3851.858812] CR2: 00000000e614f364 CR3: 00000000c1ffa000 CR4: 00000000000006f0
+<4>[ 3851.858813] Call Trace:
+<4>[ 3851.858838]  ? btrfs_finish_chunk_alloc+0x10b/0x480 [btrfs]
+<4>[ 3851.858854]  ? btrfs_insert_item+0x7e/0xf0 [btrfs]
+<4>[ 3851.858872]  ? btrfs_create_pending_block_groups+0x103/0x220 [btrfs]
+<4>[ 3851.858891]  ? __btrfs_end_transaction+0x8c/0x2e0 [btrfs]
+<4>[ 3851.858909]  ? btrfs_inc_block_group_ro+0xbd/0x150 [btrfs]
+<4>[ 3851.858930]  ? scrub_enumerate_chunks+0x1a7/0x5b0 [btrfs]
+<4>[ 3851.858935]  ? woken_wake_function+0x20/0x20
+<4>[ 3851.858956]  ? btrfs_scrub_dev+0x1fe/0x560 [btrfs]
+<4>[ 3851.858960]  ? __kmalloc_track_caller+0x1ba/0x200
+<4>[ 3851.858982]  ? btrfs_ioctl+0x1911/0x2c20 [btrfs]
+<4>[ 3851.858986]  ? filemap_map_pages+0x35f/0x370
+<4>[ 3851.858990]  ? __handle_mm_fault+0xc19/0x1400
+<4>[ 3851.858993]  ? do_vfs_ioctl+0x9e/0x610
+<4>[ 3851.858996]  ? create_task_io_context+0x9b/0x100
+<4>[ 3851.858998]  ? get_task_io_context+0x43/0x80
+<4>[ 3851.859000]  ? ksys_ioctl+0x5e/0x90
+<4>[ 3851.859002]  ? __x64_sys_ioctl+0x16/0x20
+<4>[ 3851.859006]  ? do_syscall_64+0x61/0x300
+<4>[ 3851.859009]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
+<4>[ 3851.859012] ---[ end trace b8b153a7aef691f4 ]---
+
+scrub status for a1d97cfd-e793-4a40-98ae-010454321e9c
+	scrub started at Sun Jun 16 15:03:18 2019 and finished after 04:56:01
+	total bytes scrubbed: 4.50TiB with 0 errors
 
