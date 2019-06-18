@@ -2,129 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 681EA4AAD6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 21:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E801E4AAEE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 21:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730231AbfFRTGp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 15:06:45 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:41731 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730530AbfFRTGl (ORCPT
+        id S1730208AbfFRTPa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 15:15:30 -0400
+Received: from ns211617.ip-188-165-215.eu ([188.165.215.42]:58154 "EHLO
+        mx.speed47.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727386AbfFRTP3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 15:06:41 -0400
-Received: by mail-io1-f65.google.com with SMTP id w25so32307184ioc.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 12:06:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=8PXwtKNyKu6g8MaqFCSzPU9aMEfSVJwPYohY3RKfm0g=;
-        b=Gqt9zuKFGv00+X8g7ZUPvHna9STmJI0qw2jjoP/bNBYXoyVBqeyLAr7Cm39XU5EarB
-         HyU9NHBMa5XHnSu6WEY5GLxgdBEaQVJCh4LOHUkI0MenZ7WyQbp3u7id1lxUF2Gde4Hq
-         emsnKq5ym1i/rTKonxzklnjFhJJqA19Hhs1xE2tMHFqKnPlA1HIUMI7ebH+RJJiehyMP
-         q4QPUA9fcA3F+A+SDLy9AxSWkI3D1YT/6CFRVY+oRtIfq+5oJSnevboYoDVWpWFBpLfz
-         YRHWotvmxl9i4yucldQABrQ2yjHD+5fx8ABs5Zz46U8veGAvpJsr9LggO6LncSYnPxJk
-         uNZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8PXwtKNyKu6g8MaqFCSzPU9aMEfSVJwPYohY3RKfm0g=;
-        b=K7rW7a8yiLJ3YhR8aEz2JTKrJL46Sy7/4lWjTB+1TIfoiqOnW1RMCD5hspj7/G1lu1
-         jEtgUfX+5Vp6jS4URcIIiV34nP4U/tecOEO5BUSLLk0H5z/7IgyWs5WG0DQJclsFEH6S
-         TEBCpKrygoqi85eUEblCnSlb524OTCrdjZhmHfSKyeca+n4FCIx9wMzVkFUAYX3/ocnr
-         RZy5A/D0Cmz4l/XtKEe1iZ3Tv2/DngGSOsyiJmo+NdK3e4idRTs1g+3tf0toAi6YU10d
-         7M1KLovArezyael2G6RaTWs2FfG9O+luS2jSnZd52zu9A6NxjJZ7WdhD/6zsA4o8xVwc
-         G+Nw==
-X-Gm-Message-State: APjAAAU3/lb1t/nJwx9WVlRfxpeWlWCssvNDe5sEUKiBs/Cs0gJy4ew3
-        9uciVhctcaPoagU9+OVLtxV9yL7+3bI=
-X-Google-Smtp-Source: APXvYqy53719SZ+mYsJYOT9vQ3PD/aeoD8jp+eo8E2FA7ggN3EzMbVxg/pTLjit/DwQXc703dJuFTg==
-X-Received: by 2002:a5d:87da:: with SMTP id q26mr6580714ios.193.1560884800182;
-        Tue, 18 Jun 2019 12:06:40 -0700 (PDT)
-Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
-        by smtp.gmail.com with ESMTPSA id b14sm18477841iod.33.2019.06.18.12.06.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 Jun 2019 12:06:39 -0700 (PDT)
-Subject: Re: Rebalancing raid1 after adding a device
-To:     =?UTF-8?Q?St=c3=a9phane_Lesimple?= <stephane_btrfs@lesimple.fr>,
-        linux-btrfs@vger.kernel.org
-References: <16b6bd72bc0.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
-From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Message-ID: <1e1f90ed-80ce-96dc-e3d8-1e406121833d@gmail.com>
-Date:   Tue, 18 Jun 2019 15:06:35 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        Tue, 18 Jun 2019 15:15:29 -0400
+Received: from rain.speed47.net (nginx [192.168.80.2])
+        by box.speed47.net (Postfix) with ESMTPSA id E44E6324F;
+        Tue, 18 Jun 2019 21:15:27 +0200 (CEST)
+Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
+        s=mail01; t=1560885327;
+        bh=vznsupef09BHIYvn89ftA9FraHUvFjq5+tRbkhcOyeQ=;
+        h=Date:From:Subject:To:Cc:In-Reply-To:References;
+        b=C19pqlqFp5QREOrrCyMoXlN5ARJqPeyR+jzZ6xAMT/GiROjL79RyT5GfkqAJPcNKz
+         3rG6nXQnSJWAD9D+KXboEH7u8jyjjJa1J0ewzPcAAaRvAcOBs8I8R7uhVl6elC2nJH
+         kCmLn1gNZ5fnhwMS0HZJ5c5rpjJVxnPqr3l1z7uM=
 MIME-Version: 1.0
-In-Reply-To: <16b6bd72bc0.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Date:   Tue, 18 Jun 2019 19:15:27 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: RainLoop/1.12.1
+From:   "=?utf-8?B?U3TDqXBoYW5lIExlc2ltcGxl?=" <stephane_btrfs@lesimple.fr>
+Message-ID: <97d71a1c6b16fec6a49004db84fac254@lesimple.fr>
+Subject: Re: Rebalancing raid1 after adding a device
+To:     "Hugo Mills" <hugo@carfax.org.uk>
+Cc:     linux-btrfs@vger.kernel.org
+In-Reply-To: <20190618184501.GJ21016@carfax.org.uk>
+References: <20190618184501.GJ21016@carfax.org.uk>
+ <16b6bd72bc0.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019-06-18 14:26, Stéphane Lesimple wrote:
-> Hello,
-> 
-> I've been a btrfs user for quite a number of years now, but it seems I 
-> need the wiseness of the btrfs gurus on this one!
-> 
-> I have a 5-hdd btrfs raid1 setup with 4x3T+1x10T drives.
-> A few days ago, I replaced one of the 3T by a new 10T, running btrfs 
-> replace and then resizing the FS to use all the available space of the 
-> new device.
-> 
-> The filesystem was 90% full before I expanded it so, as expected, most 
-> of the space on the new device wasn't actually allocatable in raid1, as 
-> very few available space was available on the 4 other devs.
-> 
-> Of course the solution is to run a balance, but as the filesystem is now 
-> quite big, I'd like to avoid running a full rebalance. This would be 
-> quite i/o intensive, would be running for several days, and putting and 
-> unecessary stress on the drives. This also seems excessive as in theory 
-> only some Tb would need to be moved: if I'm correct, only one of two 
-> block groups of a sufficient amount of chunks to be moved to the new 
-> device so that the sum of the amount of available space on the 4 
-> preexisting devices would at least equal the available space on the new 
-> device, ~7Tb instead of moving ~22T.
-> I don't need to have a perfectly balanced FS, I just want all the space 
-> to be allocatable.
-> 
-> I tried using the -ddevid option but it only instructs btrfs to work on 
-> the block groups allocated on said device, as it happens, it tends to 
-> move data between the 4 preexisting devices and doesn't fix my problem. 
-> A full balance with -dlimit=100 did no better.
-> 
-> Is there a way to ask the block group allocator to prefer writing to a 
-> specific device during a balance? Something like -ddestdevid=N? This 
-> would just be a hint to the allocator and the usual constraints would 
-> always apply (and prevail over the hint when needed).
-> 
-> Or is there any obvious solution I'm completely missing?
-
-Based on what you've said, you may actually not have enough free space 
-that can be allocated to balance things properly.
-
-When a chunk gets balanced, you need to have enough space to create a 
-new instance of that type of chunk before the old one is removed.  As 
-such, if you can't allocate new chunks at all, you can't balance those 
-chunks either.
-
-So, that brings up the question of how to deal with your situation.
-
-The first thing I would do is multiple compaction passes using the 
-`usage` filter.  Start with:
-
-     btrfs balance -dusage=0 -musage=0 /wherever
-
-That will clear out any empty chunks which haven't been removed (there 
-shouldn't be any if you're on a recent kernel, but it's good practice 
-anyway).  After that, repeat the same command, but with a value of 10 
-instead of 0, and then keep repeating in increments of 10 up until 50. 
-Doing this will clean up chunks that are more than half empty (making 
-multiple passes like this is a bit more reliable, and in some cases also 
-more efficient), which should free up enough space for balance to work 
-with (as well as probably moving most of the block groups it touches to 
-use the new disk).
+June 18, 2019 8:45 PM, "Hugo Mills" <hugo@carfax.org.uk> wrote:=0A=0A> On=
+ Tue, Jun 18, 2019 at 08:26:32PM +0200, St=C3=A9phane Lesimple wrote:=0A>=
+> [...]=0A>> Of course the solution is to run a balance, but as the files=
+ystem is=0A>> now quite big, I'd like to avoid running a full rebalance. =
+This=0A>> would be quite i/o intensive, would be running for several days=
+, and=0A>> putting and unecessary stress on the drives. This also seems=
+=0A>> excessive as in theory only some Tb would need to be moved: if I'm=
+=0A>> correct, only one of two block groups of a sufficient amount of=0A>=
+> chunks to be moved to the new device so that the sum of the amount=0A>>=
+ of available space on the 4 preexisting devices would at least equal=0A>=
+> the available space on the new device, ~7Tb instead of moving ~22T.=0A>=
+> I don't need to have a perfectly balanced FS, I just want all the=0A>> =
+space to be allocatable.=0A>> =0A>> I tried using the -ddevid option but =
+it only instructs btrfs to work=0A>> on the block groups allocated on sai=
+d device, as it happens, it=0A>> tends to move data between the 4 preexis=
+ting devices and doesn't fix=0A>> my problem. A full balance with -dlimit=
+=3D100 did no better.=0A> =0A> -dlimit=3D100 will only move 100 GiB of da=
+ta (i.e. 200 GiB), so it'll=0A> be a pretty limited change. You'll need t=
+o use a larger number than=0A> that if you want it to have a significant =
+visible effect.=0A=0AYes of course, I wasn't clear here but what I meant =
+to do when starting=0Aa full balance with -dlimit=3D100 was to test under=
+ a reasonable amount of=0Atime whether the allocator would prefer to fill=
+ the new drive. I observed=0Aafter those 100G (200G) of data moved that i=
+t wasn't the case at all.=0ASpecifically, no single allocation happened o=
+n the new drive. I know this=0Awould be the case at some point, after Ter=
+abytes of data would have been=0Amoved, but that's exactly what I'm tryin=
+g to avoid.=0A=0A> The -ddevid=3D<old_10T> option would be my recommendat=
+ion. It's got=0A> more chunks on it, so they're likely to have their copi=
+es spread=0A> across the other four devices. This should help with the=0A=
+> balance.=0A=0AMakes sense. That's probably what I'm going to do if I do=
+n't find=0Aa better solution. That's a bit frustrating because I know exa=
+ctly=0Awhat I want btrfs to do, but I have no way to make it do that.=0A=
+=0A> Alternatively, just do a full balance and then cancel it when the=0A=
+> amount of unallocated space is reasonably well spread across the=0A> de=
+vices (specifically, the new device's unallocated space is less than=0A> =
+the sum of the unallocated space on the other devices).=0A=0AI'll try wit=
+h the old 10T and cancel it when I get 0 unallocatable=0Aspace, if that h=
+appens before all the data is moved around.=0A=0A>> Is there a way to ask=
+ the block group allocator to prefer writing to=0A>> a specific device du=
+ring a balance? Something like -ddestdevid=3DN?=0A>> This would just be a=
+ hint to the allocator and the usual constraints=0A>> would always apply =
+(and prevail over the hint when needed).=0A> =0A> No, there isn't. Having=
+ control over the allocator (or bypassing=0A> it) would be pretty difficu=
+lt to implement, I think.=0A> =0A> It would be really great if there was =
+an ioctl that allowed you to=0A> say things like "take the chunks of this=
+ block group and put them on=0A> devices 2, 4 and 5 in RAID-5", because y=
+ou could do a load of=0A> optimisation with reshaping the FS in userspace=
+ with that. But I=0A> suspect it's a long way down the list of things to =
+do.=0A=0AExactly, that would be awesome. I would probably even go as far =
+as=0Awriting some C code myself to call this ioctl to do this "intelligen=
+t"=0Abalance on my system!=0A=0A--=0ASt=C3=A9phane.
