@@ -2,137 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C50E449BBC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 10:09:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB4D49BE1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 10:18:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726428AbfFRIJR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 04:09:17 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:60630 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726359AbfFRIJR (ORCPT
+        id S1728810AbfFRIRz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 04:17:55 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:59670 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725963AbfFRIRy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 04:09:17 -0400
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 3ED58142BC3; Tue, 18 Jun 2019 09:09:15 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1560845355;
-        bh=k4ssHs1D68Qvv4GmcGNTf1E1Pt+GKU6QeG/HiyX4g1U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OXoyjmRREEfGyiTuzP6BIs2FUcj8yOWLZkk97vxN9mR7Dnq245QXNAl/S/i559orH
-         TsWFEi1YHB/ELesxD2xmEDjsESFPGO8E6hZkmxA1kK2wOJlUJ+xMp1DxKsQ8bTNKa+
-         1VexroQxtSV+YsXd0h1LeJOaxWtFedrF1l34EeIlpLo8pxWQTVyWAyDs4Ged9/ICij
-         f1VBL4oQns4NMxq8HVrPk2RH0eY1b2tzn1fA3MXqH4SLi07Sbnzy5MpAVsROHDS8+h
-         2QRq2f0Zt1naU2PMeoCArzghznHjQ81rxyLR/AfdNO+O2mVgVhPWB66Y1u/SGb1mzR
-         9p2jhh5VNNhgQ==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id D14C2142BC1
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 09:09:14 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1560845354;
-        bh=k4ssHs1D68Qvv4GmcGNTf1E1Pt+GKU6QeG/HiyX4g1U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xqUiThBFF9MOUnH2sKbQIDkm8bfeLOTgYTi8uYg8ITY2AVdxewJsgGEh3WaKIa2hI
-         dvNUqsQxB4ge2rae8L5mi5+dHNZ0ym8ujtJ8a7eMShTSh/MjLycbAN4loYM2w0ynMR
-         POE03Q3c6EIliyAjseJzpZ4b5qoI7YkfIf7j9Sck4F7IQHjnR6iBkzUFkddPkiaLwz
-         k2FWM1mAPIeQdCTdxAqajylN0tRmf3Rdf5B7M3PomwNoKOrSh35RnK+T5UIobQsPSX
-         QRxwW8d6SPMqGXb6YplorB4ZXlcYEHXJNRVr8mFGT3C5uJH1J17hRO0uzvb4bMlBaq
-         FLOdFTJkeEsrw==
-Received: by black.home.cobb.me.uk (Postfix, from userid 500)
-        id AA2692B6339; Tue, 18 Jun 2019 09:09:14 +0100 (BST)
-From:   "Graham R. Cobb" <g.btrfs@cobb.uk.net>
-To:     linux-btrfs@vger.kernel.org
-Cc:     "Graham R. Cobb" <g.btrfs@cobb.uk.net>
-Subject: [PATCH] btrfs-progs: scrub: Fix scrub cancel/resume not to skip most of the disk
-Date:   Tue, 18 Jun 2019 09:08:25 +0100
-Message-Id: <20190618080825.15336-1-g.btrfs@cobb.uk.net>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <2c415510-8d46-065d-6b38-b8514a8ffcc1@cobb.uk.net>
-References: <2c415510-8d46-065d-6b38-b8514a8ffcc1@cobb.uk.net>
+        Tue, 18 Jun 2019 04:17:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1560845874; x=1592381874;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=nZVOgOzFmr6Kssz3+tjK0aNLllEcL1/lXKBhQcsyBh0=;
+  b=B4i3u2NeOOqTkxwCI15xUVu0HP9boFZH6+Bcz8S8XQWa86J+348WtGdh
+   2UDSjDwNMNRExMuThmxz8acilCYZaJ53p8OsK+QAWlwnJoGx2Conq/Do8
+   phrnMQXPlKm2R4TIJJK7jQ95Z6WZY4NspiWfDSH2L1xiH88Ptv71DbGPE
+   HIxO2v66p3pCuxFv4tu6WJQecscyy3dJUNI7q9db/oeRRWKDYC+F7bS31
+   7sf6GF6ZT3eppIcPNY/7RcVVe1CpRlDITog/n0QQR643rLpqwPQMP0dC9
+   erfSGWiYiVL0IXWj2eXi5peJ712EoDfnIAzV7SuBK9HADk9rWBxKSbnk3
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.63,388,1557158400"; 
+   d="scan'208";a="217192935"
+Received: from mail-co1nam04lp2058.outbound.protection.outlook.com (HELO NAM04-CO1-obe.outbound.protection.outlook.com) ([104.47.45.58])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Jun 2019 16:17:53 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qGPehlAUNA1ncKJZuPp2p0HXigQnhwMiSTBjnINLosI=;
+ b=g6Y2P/gV7Ztkrt1aZW/odpNcZxY7WI1Jn7gJKsNV2AfOofM+0Y7Ql88CSd3H8/fTpk+TjNCIiHNG7E4KfKnGrG4EoP73Nag6XJWh5GMGxUVc1riNFPFOmmH3O8lV1Ea6VnllH6MgyNjMv10mQlBK7LuCkKfgQIDZWINkFomI5f8=
+Received: from SN6PR04MB5231.namprd04.prod.outlook.com (20.177.254.85) by
+ SN6PR04MB4365.namprd04.prod.outlook.com (52.135.72.142) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1987.13; Tue, 18 Jun 2019 08:17:52 +0000
+Received: from SN6PR04MB5231.namprd04.prod.outlook.com
+ ([fe80::5005:99a1:65aa:f088]) by SN6PR04MB5231.namprd04.prod.outlook.com
+ ([fe80::5005:99a1:65aa:f088%6]) with mapi id 15.20.1987.013; Tue, 18 Jun 2019
+ 08:17:52 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        =?iso-8859-1?Q?Matias_Bj=F8rling?= <mb@lightnvm.io>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH 05/19] btrfs: disable direct IO in HMZONED mode
+Thread-Topic: [PATCH 05/19] btrfs: disable direct IO in HMZONED mode
+Thread-Index: AQHVHTKDedTybPjxfEqayUijXk/wXg==
+Date:   Tue, 18 Jun 2019 08:17:52 +0000
+Message-ID: <SN6PR04MB523168E867B817288A587BA48CEA0@SN6PR04MB5231.namprd04.prod.outlook.com>
+References: <20190607131025.31996-1-naohiro.aota@wdc.com>
+ <20190607131025.31996-6-naohiro.aota@wdc.com>
+ <20190613140020.iiqzrkdztindfjyh@MacBook-Pro-91.local>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Naohiro.Aota@wdc.com; 
+x-originating-ip: [199.255.47.8]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 44ef5d6c-979b-466e-3f7f-08d6f3c57559
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:SN6PR04MB4365;
+x-ms-traffictypediagnostic: SN6PR04MB4365:
+wdcipoutbound: EOP-TRUE
+x-microsoft-antispam-prvs: <SN6PR04MB43655183113FEA8AEFC3304F8CEA0@SN6PR04MB4365.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 007271867D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(346002)(376002)(366004)(396003)(136003)(199004)(189003)(52536014)(91956017)(478600001)(5660300002)(476003)(446003)(33656002)(2906002)(68736007)(6246003)(54906003)(25786009)(4744005)(66476007)(66556008)(86362001)(72206003)(4326008)(6916009)(316002)(6116002)(71200400001)(6436002)(55016002)(3846002)(81166006)(81156014)(14454004)(53936002)(64756008)(305945005)(229853002)(7736002)(7416002)(74316002)(66066001)(76176011)(6506007)(256004)(7696005)(8936002)(9686003)(66946007)(53546011)(26005)(73956011)(186003)(102836004)(486006)(99286004)(76116006)(71190400001)(8676002)(66446008);DIR:OUT;SFP:1102;SCL:1;SRVR:SN6PR04MB4365;H:SN6PR04MB5231.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: yt7azKT5bQLAwKC6ax3o3zOPOq6ITiVfyRYQoWdSP1e++rqW4mjKWQKe38No233nlft+hFhagUrP87/QkQWGgboQ7yUKk0ExJY3WiYq+ohbFl+nUPNq74Aerc67UwZbmWlUNR+FkV7+J0DFSk5aLrLK6wdDdssMBey8Nlw/UzX3OssM4xnc5JOOpM8/Z3A9mN4lO/labH7g2H0jiKR46vSRCk3miBClVS0iBEG0dOUPUupazSTPxS3TSk9iDyYzfjTBzoPbwSGKZXpaXkztuoLuCnDieKJQW1yYqEmlZ3hHg/B0/n6tbjvKGdkd2TOcdsSy5dOJBT0SynBYSZfJyJqyNbAoOtCL9GpGC99nwrULycHCrSEZAJLWTQsi4PPgvOJhSvaaJ6MeJQ9y/thrCo7rgxieIaC/9uF5r5Cb7AV8=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44ef5d6c-979b-466e-3f7f-08d6f3c57559
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2019 08:17:52.0595
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Naohiro.Aota1@wdc.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4365
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When a scrub completes or is cancelled, statistics are updated for reporting
-in a later btrfs scrub status command and for resuming the scrub. Most
-statistics (such as bytes scrubbed) are additive so scrub adds the statistics
-from the current run to the saved statistics.
-
-However, the last_physical statistic is not additive. The value from the
-current run should replace the saved value. The current code incorrectly
-adds the last_physical from the current run to the previous saved value.
-
-This bug causes the resume point to be incorrectly recorded, so large areas
-of the disk are skipped when the scrub resumes. As an example, assume a disk
-had 1000000 bytes and scrub was cancelled and resumed each time 10% (100000
-bytes) had been scrubbed.
-
-Run | Start byte | bytes scrubbed | kernel last_physical | saved last_physical
-  1 |          0 |         100000 |               100000 |              100000
-  2 |     100000 |         100000 |               200000 |              300000
-  3 |     300000 |         100000 |               400000 |              700000
-  4 |     700000 |         100000 |               800000 |             1500000
-  5 |    1500000 |              0 | immediately completes| completed
-
-In this example, only 40% of the disk is actually scrubbed.
-
-This patch changes the saved/displayed last_physical to track the last
-reported value from the kernel.
-
-Signed-off-by: Graham R. Cobb <g.btrfs@cobb.uk.net>
----
- cmds-scrub.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/cmds-scrub.c b/cmds-scrub.c
-index f21d2d89..2800e796 100644
---- a/cmds-scrub.c
-+++ b/cmds-scrub.c
-@@ -171,6 +171,10 @@ static void print_scrub_summary(struct btrfs_scrub_progress *p)
- 	fs_stat->p.name += p->name;		\
- } while (0)
- 
-+#define _SCRUB_FS_STAT_COPY(p, name, fs_stat) do {	\
-+	fs_stat->p.name = p->name;		\
-+} while (0)
-+
- #define _SCRUB_FS_STAT_MIN(ss, name, fs_stat)	\
- do {						\
- 	if (fs_stat->s.name > ss->name) {	\
-@@ -209,7 +213,7 @@ static void add_to_fs_stat(struct btrfs_scrub_progress *p,
- 	_SCRUB_FS_STAT(p, malloc_errors, fs_stat);
- 	_SCRUB_FS_STAT(p, uncorrectable_errors, fs_stat);
- 	_SCRUB_FS_STAT(p, corrected_errors, fs_stat);
--	_SCRUB_FS_STAT(p, last_physical, fs_stat);
-+	_SCRUB_FS_STAT_COPY(p, last_physical, fs_stat);
- 	_SCRUB_FS_STAT_ZMIN(ss, t_start, fs_stat);
- 	_SCRUB_FS_STAT_ZMIN(ss, t_resumed, fs_stat);
- 	_SCRUB_FS_STAT_ZMAX(ss, duration, fs_stat);
-@@ -683,6 +687,8 @@ static int scrub_writev(int fd, char *buf, int max, const char *fmt, ...)
- 
- #define _SCRUB_SUM(dest, data, name) dest->scrub_args.progress.name =	\
- 			data->resumed->p.name + data->scrub_args.progress.name
-+#define _SCRUB_COPY(dest, data, name) dest->scrub_args.progress.name =	\
-+			data->scrub_args.progress.name
- 
- static struct scrub_progress *scrub_resumed_stats(struct scrub_progress *data,
- 						  struct scrub_progress *dest)
-@@ -703,7 +709,7 @@ static struct scrub_progress *scrub_resumed_stats(struct scrub_progress *data,
- 	_SCRUB_SUM(dest, data, malloc_errors);
- 	_SCRUB_SUM(dest, data, uncorrectable_errors);
- 	_SCRUB_SUM(dest, data, corrected_errors);
--	_SCRUB_SUM(dest, data, last_physical);
-+	_SCRUB_COPY(dest, data, last_physical);
- 	dest->stats.canceled = data->stats.canceled;
- 	dest->stats.finished = data->stats.finished;
- 	dest->stats.t_resumed = data->stats.t_start;
--- 
-2.20.1
-
+On 2019/06/13 23:00, Josef Bacik wrote:=0A=
+> On Fri, Jun 07, 2019 at 10:10:11PM +0900, Naohiro Aota wrote:=0A=
+>> Direct write I/Os can be directed at existing extents that have already=
+=0A=
+>> been written. Such write requests are prohibited on host-managed zoned=
+=0A=
+>> block devices. So disable direct IO support for a volume with HMZONED mo=
+de=0A=
+>> enabled.=0A=
+>>=0A=
+> =0A=
+> That's only if we're nocow, so seems like you only need to disable DIO in=
+to=0A=
+> nocow regions with hmzoned?  Thanks,=0A=
+> =0A=
+> Josef=0A=
+> =0A=
+=0A=
+True. And actually, I had to disable or ignore BTRFS_INODE_NODATACOW on HMZ=
+ONED.=0A=
+I'll replace this patch with that one.=0A=
+Thanks,=0A=
