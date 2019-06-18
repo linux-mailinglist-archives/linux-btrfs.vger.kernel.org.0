@@ -2,93 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E801E4AAEE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 21:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 152134AAF6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 21:22:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730208AbfFRTPa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 15:15:30 -0400
-Received: from ns211617.ip-188-165-215.eu ([188.165.215.42]:58154 "EHLO
-        mx.speed47.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727386AbfFRTP3 (ORCPT
+        id S1730073AbfFRTWF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 15:22:05 -0400
+Received: from frost.carfax.org.uk ([85.119.82.111]:32999 "EHLO
+        frost.carfax.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727386AbfFRTWF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 15:15:29 -0400
-Received: from rain.speed47.net (nginx [192.168.80.2])
-        by box.speed47.net (Postfix) with ESMTPSA id E44E6324F;
-        Tue, 18 Jun 2019 21:15:27 +0200 (CEST)
-Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
-        s=mail01; t=1560885327;
-        bh=vznsupef09BHIYvn89ftA9FraHUvFjq5+tRbkhcOyeQ=;
-        h=Date:From:Subject:To:Cc:In-Reply-To:References;
-        b=C19pqlqFp5QREOrrCyMoXlN5ARJqPeyR+jzZ6xAMT/GiROjL79RyT5GfkqAJPcNKz
-         3rG6nXQnSJWAD9D+KXboEH7u8jyjjJa1J0ewzPcAAaRvAcOBs8I8R7uhVl6elC2nJH
-         kCmLn1gNZ5fnhwMS0HZJ5c5rpjJVxnPqr3l1z7uM=
-MIME-Version: 1.0
-Date:   Tue, 18 Jun 2019 19:15:27 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: RainLoop/1.12.1
-From:   "=?utf-8?B?U3TDqXBoYW5lIExlc2ltcGxl?=" <stephane_btrfs@lesimple.fr>
-Message-ID: <97d71a1c6b16fec6a49004db84fac254@lesimple.fr>
-Subject: Re: Rebalancing raid1 after adding a device
-To:     "Hugo Mills" <hugo@carfax.org.uk>
+        Tue, 18 Jun 2019 15:22:05 -0400
+Received: from hrm by frost.carfax.org.uk with local (Exim 4.80)
+        (envelope-from <hrm@carfax.org.uk>)
+        id 1hdJgB-0003s2-0c; Tue, 18 Jun 2019 19:22:03 +0000
+Date:   Tue, 18 Jun 2019 19:22:02 +0000
+From:   Hugo Mills <hugo@carfax.org.uk>
+To:     =?iso-8859-1?Q?St=E9phane?= Lesimple <stephane_btrfs@lesimple.fr>
 Cc:     linux-btrfs@vger.kernel.org
-In-Reply-To: <20190618184501.GJ21016@carfax.org.uk>
+Subject: Re: Rebalancing raid1 after adding a device
+Message-ID: <20190618192202.GL21016@carfax.org.uk>
+Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
+        =?iso-8859-1?Q?St=E9phane?= Lesimple <stephane_btrfs@lesimple.fr>,
+        linux-btrfs@vger.kernel.org
 References: <20190618184501.GJ21016@carfax.org.uk>
  <16b6bd72bc0.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
+ <97d71a1c6b16fec6a49004db84fac254@lesimple.fr>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="KIbT1ud6duwZIwNL"
+Content-Disposition: inline
+In-Reply-To: <97d71a1c6b16fec6a49004db84fac254@lesimple.fr>
+X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
+X-GPG-Key: E2AB1DE4
+X-Parrot: It is no more. It has joined the choir invisible.
+X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-June 18, 2019 8:45 PM, "Hugo Mills" <hugo@carfax.org.uk> wrote:=0A=0A> On=
- Tue, Jun 18, 2019 at 08:26:32PM +0200, St=C3=A9phane Lesimple wrote:=0A>=
-> [...]=0A>> Of course the solution is to run a balance, but as the files=
-ystem is=0A>> now quite big, I'd like to avoid running a full rebalance. =
-This=0A>> would be quite i/o intensive, would be running for several days=
-, and=0A>> putting and unecessary stress on the drives. This also seems=
-=0A>> excessive as in theory only some Tb would need to be moved: if I'm=
-=0A>> correct, only one of two block groups of a sufficient amount of=0A>=
-> chunks to be moved to the new device so that the sum of the amount=0A>>=
- of available space on the 4 preexisting devices would at least equal=0A>=
-> the available space on the new device, ~7Tb instead of moving ~22T.=0A>=
-> I don't need to have a perfectly balanced FS, I just want all the=0A>> =
-space to be allocatable.=0A>> =0A>> I tried using the -ddevid option but =
-it only instructs btrfs to work=0A>> on the block groups allocated on sai=
-d device, as it happens, it=0A>> tends to move data between the 4 preexis=
-ting devices and doesn't fix=0A>> my problem. A full balance with -dlimit=
-=3D100 did no better.=0A> =0A> -dlimit=3D100 will only move 100 GiB of da=
-ta (i.e. 200 GiB), so it'll=0A> be a pretty limited change. You'll need t=
-o use a larger number than=0A> that if you want it to have a significant =
-visible effect.=0A=0AYes of course, I wasn't clear here but what I meant =
-to do when starting=0Aa full balance with -dlimit=3D100 was to test under=
- a reasonable amount of=0Atime whether the allocator would prefer to fill=
- the new drive. I observed=0Aafter those 100G (200G) of data moved that i=
-t wasn't the case at all.=0ASpecifically, no single allocation happened o=
-n the new drive. I know this=0Awould be the case at some point, after Ter=
-abytes of data would have been=0Amoved, but that's exactly what I'm tryin=
-g to avoid.=0A=0A> The -ddevid=3D<old_10T> option would be my recommendat=
-ion. It's got=0A> more chunks on it, so they're likely to have their copi=
-es spread=0A> across the other four devices. This should help with the=0A=
-> balance.=0A=0AMakes sense. That's probably what I'm going to do if I do=
-n't find=0Aa better solution. That's a bit frustrating because I know exa=
-ctly=0Awhat I want btrfs to do, but I have no way to make it do that.=0A=
-=0A> Alternatively, just do a full balance and then cancel it when the=0A=
-> amount of unallocated space is reasonably well spread across the=0A> de=
-vices (specifically, the new device's unallocated space is less than=0A> =
-the sum of the unallocated space on the other devices).=0A=0AI'll try wit=
-h the old 10T and cancel it when I get 0 unallocatable=0Aspace, if that h=
-appens before all the data is moved around.=0A=0A>> Is there a way to ask=
- the block group allocator to prefer writing to=0A>> a specific device du=
-ring a balance? Something like -ddestdevid=3DN?=0A>> This would just be a=
- hint to the allocator and the usual constraints=0A>> would always apply =
-(and prevail over the hint when needed).=0A> =0A> No, there isn't. Having=
- control over the allocator (or bypassing=0A> it) would be pretty difficu=
-lt to implement, I think.=0A> =0A> It would be really great if there was =
-an ioctl that allowed you to=0A> say things like "take the chunks of this=
- block group and put them on=0A> devices 2, 4 and 5 in RAID-5", because y=
-ou could do a load of=0A> optimisation with reshaping the FS in userspace=
- with that. But I=0A> suspect it's a long way down the list of things to =
-do.=0A=0AExactly, that would be awesome. I would probably even go as far =
-as=0Awriting some C code myself to call this ioctl to do this "intelligen=
-t"=0Abalance on my system!=0A=0A--=0ASt=C3=A9phane.
+
+--KIbT1ud6duwZIwNL
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jun 18, 2019 at 07:14:26PM +0000, DO NOT USE wrote:
+> June 18, 2019 8:45 PM, "Hugo Mills" <hugo@carfax.org.uk> wrote:
+>
+> > On Tue, Jun 18, 2019 at 08:26:32PM +0200, St=E9phane Lesimple wrote:
+> >> [...]
+> >> I tried using the -ddevid option but it only instructs btrfs to work
+> >> on the block groups allocated on said device, as it happens, it
+> >> tends to move data between the 4 preexisting devices and doesn't fix
+> >> my problem. A full balance with -dlimit=3D100 did no better.
+> >
+> > -dlimit=3D100 will only move 100 GiB of data (i.e. 200 GiB), so it'll
+> > be a pretty limited change. You'll need to use a larger number than
+> > that if you want it to have a significant visible effect.
+>
+> Yes of course, I wasn't clear here but what I meant to do when starting
+> a full balance with -dlimit=3D100 was to test under a reasonable amount of
+> time whether the allocator would prefer to fill the new drive. I observed
+> after those 100G (200G) of data moved that it wasn't the case at all.
+> Specifically, no single allocation happened on the new drive. I know this
+> would be the case at some point, after Terabytes of data would have been
+> moved, but that's exactly what I'm trying to avoid.
+
+   It's probably putting the data into empty space first. The solution
+here would, as Austin said in his reply to your original post, be to
+run some compaction on the FS, which will move data from chunks with
+little data in, into existing chunks with space. When that's done,
+you'll be able to see the chunks moving onto the new device.
+
+[snip]
+> > It would be really great if there was an ioctl that allowed you to
+> > say things like "take the chunks of this block group and put them on
+> > devices 2, 4 and 5 in RAID-5", because you could do a load of
+> > optimisation with reshaping the FS in userspace with that. But I
+> > suspect it's a long way down the list of things to do.
+>
+> Exactly, that would be awesome. I would probably even go as far as
+> writing some C code myself to call this ioctl to do this "intelligent"
+> balance on my system!
+
+   You wouldn't need to. I'd be at the head of the queue to write the
+tool. :)
+
+   Hugo.
+
+--=20
+Hugo Mills             | How do you become King? You stand in the marketpla=
+ce
+hugo@... carfax.org.uk | and announce you're going to tax everyone. If you
+http://carfax.org.uk/  | get out alive, you're King.
+PGP: E2AB1DE4          |                                        Harry Harri=
+son
+
+--KIbT1ud6duwZIwNL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAEBAgAGBQJdCTnaAAoJEFheFHXiqx3kReoP/jKN3TiDXkwsKW4P1ddl0pIG
+JyGwjAkGJIDYZB83UrZNnOgqNImKBI+g3ZkjtLd/Ud9TMNjetW5s+oi3esVgF3+C
+aVOC1Zj0ex4W1bVfhOXHD2YykfoifM1le0n4PqK4/Y1bzs3g4KfH5xqpMBRqpwSb
+bQzZc6FYOHFgaSK4cBK2mHBF5DepCXjXSSnqolefB5IG9wPOyiOmxVevBz1IswOv
+K1UjUwv54QewZMIE3qm266mEic3V0kusyrQdoEZ3kYT7n5DErBITZIxlKemsRTeY
+9qhWDHVU79sZq9ruAb6+mM0Rr3Vpg6TWuvBkRn14C5jKqH4hCeCF1d5DGjrwsmDr
+ONx35A1FMRHnxqF2nYH3f3v73szZ/X39imKw9ezc/eZoMzqqdYkDSXqYyA0uSWzs
+W/TPFrH6CoJRkTK6cPE1pAOCXMjRcN0nGxACl4wFfOXQ2mORR5TWPnHR5nWlFhZl
+ElPbLBKP4OgMl4J5DcVkQjahWS4YMDphCjSMlIEVeTfcqPag0bSREUuCiOViccbJ
+BMrZaF9/RwVDC3WALgHTPdGgIl8Ayng/zNr9xrfR+ZTrOXf1Uw+6/hfZUBhlbzFb
+HEvF9evDkSQUSH8iERbibdu7+cJpMTbWOdGkw9VN4lt4hw6FygX6NuSzD6rdXOfC
+CM+Xn7VVaxADhUcQJcLr
+=sPaR
+-----END PGP SIGNATURE-----
+
+--KIbT1ud6duwZIwNL--
