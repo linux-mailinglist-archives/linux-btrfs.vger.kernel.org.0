@@ -2,58 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A526A4A89E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 19:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3254A8F4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 19:59:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730032AbfFRRio (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 13:38:44 -0400
-Received: from smtp2.ono.com ([62.42.230.179]:18612 "EHLO smtp2.ono.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729477AbfFRRio (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 13:38:44 -0400
-X-Junkmail-Premium-Raw: score=26/50,refid=2.7.2:2019.6.18.165417:17:26.894,ip=62.42.230.133,rules=__HAS_MSGID,
- __SANE_MSGID, MSGID_JMAIL_DEFAULT, INVALID_MSGID_NO_FQDN, __HAS_FROM,
- FROM_NAME_PHRASE, FROM_NAME_ALLCAPS, __HAS_REPLYTO, __FRAUD_WEBMAIL_REPLYTO,
- BLANK_SUBJECT, __MIME_VERSION, __CT, __CT_TEXT_PLAIN, __CTE, MISSING_HEADERS,
- __ANY_URI, __FRAUD_BODY_WEBMAIL, __URI_NO_WWW, __NO_HTML_TAG_RAW,
- BODYTEXTP_SIZE_400_LESS, BODY_SIZE_200_299, BODYTEXTP_SIZE_3000_LESS,
- __MIME_TEXT_P1, __MIME_TEXT_ONLY, __URI_NS, HTML_00_01, HTML_00_10,
- BODY_SIZE_5000_LESS, __FRAUD_WEBMAIL, WEBMAIL_REPLYTO_NOT_FROM,
- FRAUD_WEBMAIL_R_NOT_F, __MIME_TEXT_P, FRAUD_LITTLE_BODY,
- __PHISH_SPEAR_STRUCTURE_1, BODY_SIZE_1000_LESS, BODY_SIZE_2000_LESS,
- SMALL_BODY, __PHISH_SPEAR_STRUCTURE_2, REPLYTO_FROM_DIFF_ADDY, NO_URI_HTTPS,
- BODY_SIZE_7000_LESS, TO_MALFORMED
-Received: from resprs03 (62.42.230.133) by smtp2.ono.com (9.0.019.09-1)
-        id 5CAF0F5D03693A66; Tue, 18 Jun 2019 19:30:26 +0200
-Received: from (149.126.75.9) by webmailcpr03n.ono.com;  Tue, 18 Jun 2019 19:30:24 +0200
-Message-ID: <33042059.649451560879024452.JavaMail.defaultUser@defaultHost>
-Date:   Tue, 18 Jun 2019 19:30:24 +0200 (CEST)
-From:   DR ALBERT ZONGO <rjpd@ono.com>
-Reply-To: dralbertddzongo@gmail.com
-Subject: 
+        id S1729832AbfFRR7P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 13:59:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45050 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729349AbfFRR7P (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Jun 2019 13:59:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 88B8CAEA1
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 17:59:13 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5184BDA871; Tue, 18 Jun 2019 20:00:01 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH 0/6] Minor cleanups
+Date:   Tue, 18 Jun 2019 20:00:00 +0200
+Message-Id: <cover.1560880630.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain;charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+A few misc cleanups selected from my other branche, all should be safe.
 
+David Sterba (6):
+  btrfs: use common helpers for eb leak messages
+  btrfs: use common helpers for extent IO state insertion messages
+  btrfs: drop default value assignments in enums
+  btrfs: use raid_attr to adjust minimal stripe size in
+    btrfs_calc_avail_data_space
+  btrfs: use raid_attr for minimum stripe count in
+    btrfs_calc_avail_data_space
+  btrfs: lift bio_set_dev from bio allocation helpers
 
+ fs/btrfs/compression.c | 12 ++++++++----
+ fs/btrfs/extent-tree.c | 14 +++++++-------
+ fs/btrfs/extent_io.c   | 23 ++++++++++++++---------
+ fs/btrfs/extent_io.h   |  2 +-
+ fs/btrfs/file.c        |  6 +++---
+ fs/btrfs/super.c       | 15 +++++++--------
+ 6 files changed, 40 insertions(+), 32 deletions(-)
 
---
-Greetings,
-
-I have an intending proposal for you please i need you to contact my 
-private
-
- E-mail (dralbertddzongo@gmail.com) for more updates,
-
-Best Wishes.
-
-DR ALBERT ZONGO
-
---
+-- 
+2.21.0
 
