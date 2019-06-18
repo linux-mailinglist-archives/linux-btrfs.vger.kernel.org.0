@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2F34AB74
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 22:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056374AB75
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 22:10:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730551AbfFRUJo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 16:09:44 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:41770 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729331AbfFRUJo (ORCPT
+        id S1730557AbfFRUJp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 16:09:45 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36343 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729331AbfFRUJp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 16:09:44 -0400
-Received: by mail-qt1-f193.google.com with SMTP id d17so12060955qtj.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 13:09:43 -0700 (PDT)
+        Tue, 18 Jun 2019 16:09:45 -0400
+Received: by mail-qk1-f196.google.com with SMTP id g18so9450789qkl.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 13:09:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=4Zx4+o4IBhgloviJMq79beJ2ggsz7/y+R3bDLLBVplo=;
-        b=dKvJmsAo1XkGueAdHwbeKJJMuoZLQF+J2cCzB3dadjCFJGJwcT9Guvrf9zs/lpqeQK
-         rBaj63kKqDfLI1n+F8vgCxByRHEBkFbHiSZEEvhBUX4DmFwjNOGLeiXTrkD1k3gzMmaj
-         QANm+BUSJgDlCH32McmIxKZxoJA2eS2i2R/1BYXRm1yz/E5soLIhSZVY7h8MCgEsK2U6
-         oqps4TEPAs8ce/uhHglFzYZDAnus7x3M7Zux5lOlpUnZ9QisNdJLGfjPqYjtNX6MQUoN
-         AmJ7NbOPsrDzoVrSQTZ6/6K5Qxzy54h5fNhwWjwooYdV1Hwdtb2fvO1GRgLg33VoMsn1
-         TAqA==
+        bh=NdMZqCEF7NawmklxP0botS918EFPcYHBg7IA6YH2Z5Y=;
+        b=Pi8tSDCai1UHdqdwoweEb19cD16fkg6tiabdAHI7CIAQUtp2YpDt1vR4ap5VEEmWyg
+         5OkmDViidrAJuvRxYU8Us9A0NG4tjU1BbkKrmAWRX0xulBpcSKNXNPaRpQtiYWovjvKK
+         ZIeLD4kUx8Y77oNTs3RDD/wSfzOHWDgmW7lxvGu9tvq0GSOeAjF0HdfzrpQ6xMXpkBvV
+         GFoFYCcMCn/Qaie5hvkdME5HoVSgtrg1tRUWOioiKWfCN5SXqFSP3r3NKFzmZ5vVYlN6
+         m0jbahtv8xCtNO8cinG5rVnatxcW/H/x+Kz9VB37Zbhx76E+1nTtaHjOrKTIsOIsEDc1
+         IqLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references;
-        bh=4Zx4+o4IBhgloviJMq79beJ2ggsz7/y+R3bDLLBVplo=;
-        b=R3q820xyGytVegdUN9/ZvAEE2kU3j49HELnGkAwJbifH/2rThxiCO0gpoIuKkzfzTM
-         PytrU4jPcNbdph34S7azB+2o5SUfxT8n2aUt8//WUBYzlAs9m7UW9nlAmQ0P8B7DdlZJ
-         GlVfbbNIDgTOrblWJOUBX4zzxewZYS4wDNDMzqQM0Pbd8JYqye+9b9gCj71uuDIYzBhw
-         dV2h9KbgCSUX0gyt1WEBCLFNh2CFbOtTJ1euN3tmE+YPeMMc6jIT2qOrdK8/b9j5fBfA
-         IySErmpJ8oDSWfrPaOOyrIJcHNGpsWeVFxa8S0sAQaOsy2XibmhUnOA9rHg8+RxYRSe6
-         ULVw==
-X-Gm-Message-State: APjAAAUS4zLAJCx6Gzgj2/5Mi7rVwOEVtTT97LkKcNz8749xkAeyvu+u
-        i8ag8sR1EqKWW0vcgpKTIBwWFWag9Cd84A==
-X-Google-Smtp-Source: APXvYqwIVbizrvsiP/xe4U8mgctvuwOF0StRnxc4CV8XeAg+aD15XzTNnvqx8yKTft72w4FhBRvDTQ==
-X-Received: by 2002:ac8:685:: with SMTP id f5mr27889434qth.9.1560888582386;
-        Tue, 18 Jun 2019 13:09:42 -0700 (PDT)
+        bh=NdMZqCEF7NawmklxP0botS918EFPcYHBg7IA6YH2Z5Y=;
+        b=Y37befUCqyE9Ynj252r5arlWG5DLzC3ZcdNCXknCM4dmwFXa5X6cI00ZJkaHXQsw6a
+         tOR95SpRFet/08Yl+iLdCf12/vjOMwywvuotj2tqaTTlEG8OIVxhV8qgVlaN1/BjdQc3
+         jML8oyP8uGKXaiUSxXJhk7Qpvr+/JBJnSPDaYxWBtP8hihcuVYysmCtqfatKhWeElD7e
+         sqO8YNhi2FxVME6ZZuf5SBdm6n3w/54VBLBS+mYls5LoRivC9lfhSWX3Jsm3uNlbIU1Z
+         Z3qxI4X0rHr7bqKOm9XT9/IomoOABODGunLxFrcuKTmP4RmcDKXkZmARemCbqipQp+DO
+         ZRXA==
+X-Gm-Message-State: APjAAAUqB5BQOQxjXtzMg9J1aVVCrQqVD/ni9wv6xfkTR58x6thv1H6z
+        4CKNVTvUu/EuvZC5CJPErUAHggeOiMNeUw==
+X-Google-Smtp-Source: APXvYqyrIqAuYX2SfVH8y1zex231Ye6EDr08rEO1SoPO6E4/Y61NtmPeRFXoCmkTNmjfnMJZ6U5pbw==
+X-Received: by 2002:a05:620a:69c:: with SMTP id f28mr9358660qkh.274.1560888583963;
+        Tue, 18 Jun 2019 13:09:43 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u19sm10821186qka.35.2019.06.18.13.09.41
+        by smtp.gmail.com with ESMTPSA id a11sm8374771qkn.26.2019.06.18.13.09.43
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 18 Jun 2019 13:09:41 -0700 (PDT)
+        Tue, 18 Jun 2019 13:09:43 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 07/11] btrfs: move btrfs_space_info_add_*_bytes to space-info.c
-Date:   Tue, 18 Jun 2019 16:09:22 -0400
-Message-Id: <20190618200926.3352-8-josef@toxicpanda.com>
+Subject: [PATCH 08/11] btrfs: export block_rsv_use_bytes
+Date:   Tue, 18 Jun 2019 16:09:23 -0400
+Message-Id: <20190618200926.3352-9-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.14.3
 In-Reply-To: <20190618200926.3352-1-josef@toxicpanda.com>
 References: <20190618200926.3352-1-josef@toxicpanda.com>
@@ -58,281 +58,88 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that we've moved all the pre-requisite stuff, move these two
-functions.
+We are going to need this to move the metadata reservation stuff to
+space_info.c.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-tree.c | 114 -------------------------------------------------
- fs/btrfs/space-info.c  | 106 +++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/space-info.h  |   8 ++++
- 3 files changed, 114 insertions(+), 114 deletions(-)
+ fs/btrfs/ctree.h       |  2 ++
+ fs/btrfs/extent-tree.c | 14 ++++++--------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index cceb1b5fab33..2aeb323cc86e 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2828,6 +2828,8 @@ int btrfs_block_rsv_refill(struct btrfs_root *root,
+ int btrfs_block_rsv_migrate(struct btrfs_block_rsv *src_rsv,
+ 			    struct btrfs_block_rsv *dst_rsv, u64 num_bytes,
+ 			    bool update_size);
++int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv,
++			      u64 num_bytes);
+ int btrfs_cond_migrate_bytes(struct btrfs_fs_info *fs_info,
+ 			     struct btrfs_block_rsv *dest, u64 num_bytes,
+ 			     int min_factor);
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 4ed194f4f60f..86f5b26c0bf1 100644
+index 86f5b26c0bf1..d21ee7af1e3e 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -4487,14 +4487,6 @@ static void shrink_delalloc(struct btrfs_fs_info *fs_info, u64 to_reclaim,
+@@ -53,8 +53,6 @@ static int find_next_key(struct btrfs_path *path, int level,
+ static void dump_space_info(struct btrfs_fs_info *fs_info,
+ 			    struct btrfs_space_info *info, u64 bytes,
+ 			    int dump_block_groups);
+-static int block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv,
+-			       u64 num_bytes);
+ 
+ static noinline int
+ block_group_cache_done(struct btrfs_block_group_cache *cache)
+@@ -5033,7 +5031,7 @@ static int reserve_metadata_bytes(struct btrfs_root *root,
+ 	if (ret == -ENOSPC &&
+ 	    unlikely(root->orphan_cleanup_state == ORPHAN_CLEANUP_STARTED)) {
+ 		if (block_rsv != global_rsv &&
+-		    !block_rsv_use_bytes(global_rsv, orig_bytes))
++		    !btrfs_block_rsv_use_bytes(global_rsv, orig_bytes))
+ 			ret = 0;
  	}
+ 	if (ret == -ENOSPC) {
+@@ -5069,8 +5067,8 @@ static struct btrfs_block_rsv *get_block_rsv(
+ 	return block_rsv;
  }
  
--struct reserve_ticket {
--	u64 orig_bytes;
--	u64 bytes;
--	int error;
--	struct list_head list;
--	wait_queue_head_t wait;
--};
--
- /**
-  * maybe_commit_transaction - possibly commit the transaction if its ok to
-  * @root - the root we're allocating for
-@@ -5214,112 +5206,6 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
- 	return 0;
- }
- 
--/*
-- * This is for space we already have accounted in space_info->bytes_may_use, so
-- * basically when we're returning space from block_rsv's.
-- */
--void btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
--				    struct btrfs_space_info *space_info,
--				    u64 num_bytes)
--{
--	struct reserve_ticket *ticket;
--	struct list_head *head;
--	u64 used;
--	enum btrfs_reserve_flush_enum flush = BTRFS_RESERVE_NO_FLUSH;
--	bool check_overcommit = false;
--
--	spin_lock(&space_info->lock);
--	head = &space_info->priority_tickets;
--
--	/*
--	 * If we are over our limit then we need to check and see if we can
--	 * overcommit, and if we can't then we just need to free up our space
--	 * and not satisfy any requests.
--	 */
--	used = btrfs_space_info_used(space_info, true);
--	if (used - num_bytes >= space_info->total_bytes)
--		check_overcommit = true;
--again:
--	while (!list_empty(head) && num_bytes) {
--		ticket = list_first_entry(head, struct reserve_ticket,
--					  list);
--		/*
--		 * We use 0 bytes because this space is already reserved, so
--		 * adding the ticket space would be a double count.
--		 */
--		if (check_overcommit &&
--		    !btrfs_can_overcommit(fs_info, space_info, 0, flush,
--					  false))
--			break;
--		if (num_bytes >= ticket->bytes) {
--			list_del_init(&ticket->list);
--			num_bytes -= ticket->bytes;
--			ticket->bytes = 0;
--			space_info->tickets_id++;
--			wake_up(&ticket->wait);
--		} else {
--			ticket->bytes -= num_bytes;
--			num_bytes = 0;
--		}
--	}
--
--	if (num_bytes && head == &space_info->priority_tickets) {
--		head = &space_info->tickets;
--		flush = BTRFS_RESERVE_FLUSH_ALL;
--		goto again;
--	}
--	btrfs_space_info_update_bytes_may_use(fs_info, space_info, -num_bytes);
--	trace_btrfs_space_reservation(fs_info, "space_info",
--				      space_info->flags, num_bytes, 0);
--	spin_unlock(&space_info->lock);
--}
--
--/*
-- * This is for newly allocated space that isn't accounted in
-- * space_info->bytes_may_use yet.  So if we allocate a chunk or unpin an extent
-- * we use this helper.
-- */
--void btrfs_space_info_add_new_bytes(struct btrfs_fs_info *fs_info,
--				    struct btrfs_space_info *space_info,
--				    u64 num_bytes)
--{
--	struct reserve_ticket *ticket;
--	struct list_head *head = &space_info->priority_tickets;
--
--again:
--	while (!list_empty(head) && num_bytes) {
--		ticket = list_first_entry(head, struct reserve_ticket,
--					  list);
--		if (num_bytes >= ticket->bytes) {
--			trace_btrfs_space_reservation(fs_info, "space_info",
--						      space_info->flags,
--						      ticket->bytes, 1);
--			list_del_init(&ticket->list);
--			num_bytes -= ticket->bytes;
--			btrfs_space_info_update_bytes_may_use(fs_info,
--							      space_info,
--							      ticket->bytes);
--			ticket->bytes = 0;
--			space_info->tickets_id++;
--			wake_up(&ticket->wait);
--		} else {
--			trace_btrfs_space_reservation(fs_info, "space_info",
--						      space_info->flags,
--						      num_bytes, 1);
--			btrfs_space_info_update_bytes_may_use(fs_info,
--							      space_info,
--							      num_bytes);
--			ticket->bytes -= num_bytes;
--			num_bytes = 0;
--		}
--	}
--
--	if (num_bytes && head == &space_info->priority_tickets) {
--		head = &space_info->tickets;
--		goto again;
--	}
--}
--
- static u64 block_rsv_release_bytes(struct btrfs_fs_info *fs_info,
- 				    struct btrfs_block_rsv *block_rsv,
- 				    struct btrfs_block_rsv *dest, u64 num_bytes,
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 2cb9f3b6ffc9..579de5c0b5cb 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -243,3 +243,109 @@ int btrfs_can_overcommit(struct btrfs_fs_info *fs_info,
- 		return 1;
- 	return 0;
- }
-+
-+/*
-+ * This is for space we already have accounted in space_info->bytes_may_use, so
-+ * basically when we're returning space from block_rsv's.
-+ */
-+void btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
-+				    struct btrfs_space_info *space_info,
-+				    u64 num_bytes)
-+{
-+	struct reserve_ticket *ticket;
-+	struct list_head *head;
-+	u64 used;
-+	enum btrfs_reserve_flush_enum flush = BTRFS_RESERVE_NO_FLUSH;
-+	bool check_overcommit = false;
-+
-+	spin_lock(&space_info->lock);
-+	head = &space_info->priority_tickets;
-+
-+	/*
-+	 * If we are over our limit then we need to check and see if we can
-+	 * overcommit, and if we can't then we just need to free up our space
-+	 * and not satisfy any requests.
-+	 */
-+	used = btrfs_space_info_used(space_info, true);
-+	if (used - num_bytes >= space_info->total_bytes)
-+		check_overcommit = true;
-+again:
-+	while (!list_empty(head) && num_bytes) {
-+		ticket = list_first_entry(head, struct reserve_ticket,
-+					  list);
-+		/*
-+		 * We use 0 bytes because this space is already reserved, so
-+		 * adding the ticket space would be a double count.
-+		 */
-+		if (check_overcommit &&
-+		    !btrfs_can_overcommit(fs_info, space_info, 0, flush,
-+					  false))
-+			break;
-+		if (num_bytes >= ticket->bytes) {
-+			list_del_init(&ticket->list);
-+			num_bytes -= ticket->bytes;
-+			ticket->bytes = 0;
-+			space_info->tickets_id++;
-+			wake_up(&ticket->wait);
-+		} else {
-+			ticket->bytes -= num_bytes;
-+			num_bytes = 0;
-+		}
-+	}
-+
-+	if (num_bytes && head == &space_info->priority_tickets) {
-+		head = &space_info->tickets;
-+		flush = BTRFS_RESERVE_FLUSH_ALL;
-+		goto again;
-+	}
-+	btrfs_space_info_update_bytes_may_use(fs_info, space_info, -num_bytes);
-+	trace_btrfs_space_reservation(fs_info, "space_info",
-+				      space_info->flags, num_bytes, 0);
-+	spin_unlock(&space_info->lock);
-+}
-+
-+/*
-+ * This is for newly allocated space that isn't accounted in
-+ * space_info->bytes_may_use yet.  So if we allocate a chunk or unpin an extent
-+ * we use this helper.
-+ */
-+void btrfs_space_info_add_new_bytes(struct btrfs_fs_info *fs_info,
-+				    struct btrfs_space_info *space_info,
-+				    u64 num_bytes)
-+{
-+	struct reserve_ticket *ticket;
-+	struct list_head *head = &space_info->priority_tickets;
-+
-+again:
-+	while (!list_empty(head) && num_bytes) {
-+		ticket = list_first_entry(head, struct reserve_ticket,
-+					  list);
-+		if (num_bytes >= ticket->bytes) {
-+			trace_btrfs_space_reservation(fs_info, "space_info",
-+						      space_info->flags,
-+						      ticket->bytes, 1);
-+			list_del_init(&ticket->list);
-+			num_bytes -= ticket->bytes;
-+			btrfs_space_info_update_bytes_may_use(fs_info,
-+							      space_info,
-+							      ticket->bytes);
-+			ticket->bytes = 0;
-+			space_info->tickets_id++;
-+			wake_up(&ticket->wait);
-+		} else {
-+			trace_btrfs_space_reservation(fs_info, "space_info",
-+						      space_info->flags,
-+						      num_bytes, 1);
-+			btrfs_space_info_update_bytes_may_use(fs_info,
-+							      space_info,
-+							      num_bytes);
-+			ticket->bytes -= num_bytes;
-+			num_bytes = 0;
-+		}
-+	}
-+
-+	if (num_bytes && head == &space_info->priority_tickets) {
-+		head = &space_info->tickets;
-+		goto again;
-+	}
-+}
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index 800a02e54ac0..e566a2e79d69 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -72,6 +72,14 @@ struct btrfs_space_info {
- 	struct kobject *block_group_kobjs[BTRFS_NR_RAID_TYPES];
- };
- 
-+struct reserve_ticket {
-+	u64 orig_bytes;
-+	u64 bytes;
-+	int error;
-+	struct list_head list;
-+	wait_queue_head_t wait;
-+};
-+
- static inline bool btrfs_mixed_space_info(struct btrfs_space_info *space_info)
+-static int block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv,
+-			       u64 num_bytes)
++int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv,
++			      u64 num_bytes)
  {
- 	return ((space_info->flags & BTRFS_BLOCK_GROUP_METADATA) &&
+ 	int ret = -ENOSPC;
+ 	spin_lock(&block_rsv->lock);
+@@ -5268,7 +5266,7 @@ int btrfs_block_rsv_migrate(struct btrfs_block_rsv *src,
+ {
+ 	int ret;
+ 
+-	ret = block_rsv_use_bytes(src, num_bytes);
++	ret = btrfs_block_rsv_use_bytes(src, num_bytes);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -8142,7 +8140,7 @@ use_block_rsv(struct btrfs_trans_handle *trans,
+ 	if (unlikely(block_rsv->size == 0))
+ 		goto try_reserve;
+ again:
+-	ret = block_rsv_use_bytes(block_rsv, blocksize);
++	ret = btrfs_block_rsv_use_bytes(block_rsv, blocksize);
+ 	if (!ret)
+ 		return block_rsv;
+ 
+@@ -8180,7 +8178,7 @@ use_block_rsv(struct btrfs_trans_handle *trans,
+ 	 */
+ 	if (block_rsv->type != BTRFS_BLOCK_RSV_GLOBAL &&
+ 	    block_rsv->space_info == global_rsv->space_info) {
+-		ret = block_rsv_use_bytes(global_rsv, blocksize);
++		ret = btrfs_block_rsv_use_bytes(global_rsv, blocksize);
+ 		if (!ret)
+ 			return global_rsv;
+ 	}
 -- 
 2.14.3
 
