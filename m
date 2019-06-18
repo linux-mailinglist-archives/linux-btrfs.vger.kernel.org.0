@@ -2,53 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2374A9B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 20:25:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE9A4A9DB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 20:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730021AbfFRSZG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 14:25:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52196 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729943AbfFRSZG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 14:25:06 -0400
-Subject: Re: [GIT PULL] Btrfs fixes for 5.2-rc6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560882305;
-        bh=L+BH+/BGSmQQzkiJDmS7NMe77KecW+xd6L4POtLcO4Q=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=SRwnsc84tLlud3MerfpyYzs13pbJ0GnjPhK2EnZMY+xBx2QY8rwznbkkPt9Y3mD5G
-         cTyCT+WbqghOogn5vHhgfKTbCs4kIvKmgN2B4Z5smXoK8hKlLRZbisX7KY8N/izWp5
-         Osjhw4ta+FT0HWxxCxHHgZnLgGUQRJXeXSc5/j7Y=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1560875945.git.dsterba@suse.com>
-References: <cover.1560875945.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1560875945.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.2-rc5-tag
-X-PR-Tracked-Commit-Id: 3763771cf60236caaf7ccc79cea244c63d7c49a0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bed3c0d84e7e25c8e0964d297794f4c215b01f33
-Message-Id: <156088230576.11931.6591802047054785950.pr-tracker-bot@kernel.org>
-Date:   Tue, 18 Jun 2019 18:25:05 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        clm@fb.com, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S1730085AbfFRScG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 14:32:06 -0400
+Received: from ns211617.ip-188-165-215.eu ([188.165.215.42]:57104 "EHLO
+        mx.speed47.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729922AbfFRScF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Jun 2019 14:32:05 -0400
+X-Greylist: delayed 328 seconds by postgrey-1.27 at vger.kernel.org; Tue, 18 Jun 2019 14:32:04 EDT
+Received: from [192.168.47.90] (lfbn-1-6101-50.w90-110.abo.wanadoo.fr [90.110.6.50])
+        by box.speed47.net (Postfix) with ESMTPSA id 0C748ACC3
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 20:26:32 +0200 (CEST)
+Authentication-Results: box.speed47.net; dmarc=fail (p=none dis=none) header.from=lesimple.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lesimple.fr;
+        s=mail01; t=1560882392;
+        bh=VtqjOQ2vCbdnzy+AIcWK439YVxnOT12frechgbqzS20=;
+        h=From:To:Date:Subject;
+        b=XNcXfdTjNsxZPuz/kVZR9jqlhmKzJrq+y8a0EtCbmJUIxhvBJSi/neXLE7FUT7GDf
+         z98jFQv3B68WiPOjfm5QDSoMXc7ScroBkhYhKxF3VxD2ZFf7G/Dpfsx/cZOlYhp3Xu
+         /Y3wgyu6JZuCw/+HxWfyzmGBPF+DrXXo9Cy7RhQ8=
+From:   =?UTF-8?B?U3TDqXBoYW5lIExlc2ltcGxl?= <stephane_btrfs@lesimple.fr>
+To:     <linux-btrfs@vger.kernel.org>
+Date:   Tue, 18 Jun 2019 20:26:32 +0200
+Message-ID: <16b6bd72bc0.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
+User-Agent: AquaMail/1.20.0-1458 (build: 102100001)
+Subject: Rebalancing raid1 after adding a device
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Tue, 18 Jun 2019 18:52:07 +0200:
+Hello,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.2-rc5-tag
+I've been a btrfs user for quite a number of years now, but it seems I need 
+the wiseness of the btrfs gurus on this one!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bed3c0d84e7e25c8e0964d297794f4c215b01f33
+I have a 5-hdd btrfs raid1 setup with 4x3T+1x10T drives.
+A few days ago, I replaced one of the 3T by a new 10T, running btrfs 
+replace and then resizing the FS to use all the available space of the new 
+device.
 
-Thank you!
+The filesystem was 90% full before I expanded it so, as expected, most of 
+the space on the new device wasn't actually allocatable in raid1, as very 
+few available space was available on the 4 other devs.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+Of course the solution is to run a balance, but as the filesystem is now 
+quite big, I'd like to avoid running a full rebalance. This would be quite 
+i/o intensive, would be running for several days, and putting and 
+unecessary stress on the drives. This also seems excessive as in theory 
+only some Tb would need to be moved: if I'm correct, only one of two block 
+groups of a sufficient amount of chunks to be moved to the new device so 
+that the sum of the amount of available space on the 4 preexisting devices 
+would at least equal the available space on the new device, ~7Tb instead of 
+moving ~22T.
+I don't need to have a perfectly balanced FS, I just want all the space to 
+be allocatable.
+
+I tried using the -ddevid option but it only instructs btrfs to work on the 
+block groups allocated on said device, as it happens, it tends to move data 
+between the 4 preexisting devices and doesn't fix my problem. A full 
+balance with -dlimit=100 did no better.
+
+Is there a way to ask the block group allocator to prefer writing to a 
+specific device during a balance? Something like -ddestdevid=N? This would 
+just be a hint to the allocator and the usual constraints would always 
+apply (and prevail over the hint when needed).
+
+Or is there any obvious solution I'm completely missing?
+
+Thanks,
+
+Stéphane.
+
+
+
+
+
