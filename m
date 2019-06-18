@@ -2,151 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E9C497FE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 06:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E8749A88
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 09:27:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725913AbfFREP7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 00:15:59 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:42541 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725870AbfFREP6 (ORCPT
+        id S1726543AbfFRH07 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 03:26:59 -0400
+Received: from esa6.hgst.iphmx.com ([216.71.154.45]:5736 "EHLO
+        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725870AbfFRH07 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 00:15:58 -0400
-Received: by mail-lf1-f44.google.com with SMTP id y13so8132017lfh.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 17 Jun 2019 21:15:56 -0700 (PDT)
+        Tue, 18 Jun 2019 03:26:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1560842818; x=1592378818;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=d+wG2Fjx0bOhYYZT7YsRsIrQMqCTL7+/VTTJL4X/Ksc=;
+  b=Gb0J09UnwD0iS9xfbqlsgyiN6dj5e1SwuRdWamMUcjrVDhW90ns3ewCq
+   ij2vCI3wsRZVYWAjxmGUqIKr0WtGTEan8p98AT1xfmuxKUCDZXxW4dIHN
+   A1Zu2H7J/H5HMzKg5yWQMDgUxmSSHDnFnMJzGChBlxAfOHKp7xECmbxAT
+   jBniRil4TNJHUQnSyDU7xhdIM5lCKsdrjcd0CrSYifsu7GO6y2Zr3K/pn
+   jHSdCzHy2CzHSwPQoaMZC8SSpa9XRR1L4hPzPbY/8kF5Drw5jacz+xAEK
+   Es4o3B+GHAOnkCLrxCdUZemdEbQwbif9vl/EPm4MWZ7ruojV7eFotHlAu
+   A==;
+X-IronPort-AV: E=Sophos;i="5.63,388,1557158400"; 
+   d="scan'208";a="112473576"
+Received: from mail-dm3nam05lp2050.outbound.protection.outlook.com (HELO NAM05-DM3-obe.outbound.protection.outlook.com) ([104.47.49.50])
+  by ob1.hgst.iphmx.com with ESMTP; 18 Jun 2019 14:04:23 +0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=pVOQpFzcr+i5NPKk1md78FKl7+PlQ47Bst/DRW3YKc0=;
-        b=IOxvW1UwvaxiENbJ8aJlMOyJh6N4ezv6RcPDIYtZHTrGwmXoBakUVBYA8waplc/vIq
-         tnvqVI6yO/5rgI4Q+qFCj2p9geiPlpRiaFkm99bl12g5a2UcKslciuGS2KMFJ5i4TtgH
-         5YwnbPEKIMjnKNMp8TvUKQPMbe1NUDOOkaChkSS+C4DnBo9JA/dtE39JPWRqobiIK40S
-         WxpvntvDJkYLwx4wW16btFlbo/HszyK52FmQhGtwnrhrGZrTLD+LalJcXcR4or8C7iAU
-         2s7yxsaYdnBxif4zMJ3VXhindLGSydVevZQ6pR+5SsJ8+8jk2SSqlPIxNKWF7ZJpEWQR
-         X9fQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to;
-        bh=pVOQpFzcr+i5NPKk1md78FKl7+PlQ47Bst/DRW3YKc0=;
-        b=V91z1IpDgcC94+BP5V6nB9kB34mpWx/V+ozpFdPNVSS3phF/tkOKUaDQ1vIu57zJbe
-         TXYe+7Iy3YMDoR20bhiQS8TmjyPfps/P8JDPHTSdQhz7JAHb2Q9mx5iWFJvKrZv/CZ8R
-         abZXhF68b25/5ZNLi6SGVWQ+fyD0tHxk3AykfqJzTrjRKZX5fzefDqEFmZM0KrqmH/zx
-         Kggp0yc10pH1FzrgGxKUPP2yDPWt8c2lXO6mPJMVtxAIEHZWoh2m16s5fpJa9gowh+az
-         7ndC6mkxCa2opKDvklhMtvCR2kzg9dYRAtDC3Rv0nkCGUdVRxX5mjhBgvt0nFHk+8GPu
-         1bhA==
-X-Gm-Message-State: APjAAAUZ8saNiqIrSzkIqgEcMlsncf9szYNiCKGGvwsKkVvfV6RFoV+W
-        2w4K1Zb+tQgoqhBMJkGr1tPmJQ5w+DY=
-X-Google-Smtp-Source: APXvYqyOvvu6wpHA3L5DPDHMwFMvBxBzS8gw3z/2HBHZjRfrrI3iZkBjedZv7cwCPwSSfJFftpzzOg==
-X-Received: by 2002:ac2:46f9:: with SMTP id q25mr4812570lfo.181.1560831355752;
-        Mon, 17 Jun 2019 21:15:55 -0700 (PDT)
-Received: from [192.168.1.5] ([109.252.90.211])
-        by smtp.gmail.com with ESMTPSA id 137sm2375985ljj.46.2019.06.17.21.15.54
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 17 Jun 2019 21:15:54 -0700 (PDT)
-Subject: Re: Issues with btrfs send/receive with parents
-To:     Eric Mesa <eric@ericmesa.com>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
- <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
- <b2bba48e-a759-cb99-cf2c-04e89bce171e@gmail.com>
- <97541737.v72oTHCfnW@supermario.mushroomkingdom>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
- BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
- 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
- 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
- KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
- nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
- gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
- vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
- AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <52e0b712-2710-b3aa-3247-e2546020050b@gmail.com>
-Date:   Tue, 18 Jun 2019 07:15:48 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZmJFPMJq+tV8srk+lxwmuUSFY8ni9vRMTmfDiyJzrCQ=;
+ b=ZOMzGEaGnl1DBqj3pnLxZo9Ct9ewG0RfZI23EHWK5ww7byBTjE/UR+Abz/W2llAYfDSlrJOLCn5CkhVEHdN/CD44BViSaWblTCM0S2VzosUaEF+ahfe+eN1bhx1HUGybQJg2+QhqelSFXkEVDUj0zfpfuGThklFSq1R+gmtjX64=
+Received: from SN6PR04MB5231.namprd04.prod.outlook.com (20.177.254.85) by
+ SN6PR04MB4941.namprd04.prod.outlook.com (52.135.114.86) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1987.12; Tue, 18 Jun 2019 06:04:21 +0000
+Received: from SN6PR04MB5231.namprd04.prod.outlook.com
+ ([fe80::5005:99a1:65aa:f088]) by SN6PR04MB5231.namprd04.prod.outlook.com
+ ([fe80::5005:99a1:65aa:f088%6]) with mapi id 15.20.1987.013; Tue, 18 Jun 2019
+ 06:04:21 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+CC:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        =?iso-8859-1?Q?Matias_Bj=F8rling?= <mb@lightnvm.io>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH 02/19] btrfs: Get zone information of zoned block devices
+Thread-Topic: [PATCH 02/19] btrfs: Get zone information of zoned block devices
+Thread-Index: AQHVHTJ/1FX3VZfOTkaSGAxvcc7+NQ==
+Date:   Tue, 18 Jun 2019 06:04:21 +0000
+Message-ID: <SN6PR04MB52315752FF4D8E3CFF8801B38CEA0@SN6PR04MB5231.namprd04.prod.outlook.com>
+References: <20190607131025.31996-1-naohiro.aota@wdc.com>
+ <20190607131025.31996-3-naohiro.aota@wdc.com>
+ <20190613135759.22siaadm7l4gz2ri@MacBook-Pro-91.local>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Naohiro.Aota@wdc.com; 
+x-originating-ip: [199.255.47.8]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 4ff130cc-6e51-48c9-775c-08d6f3b2ce8b
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:SN6PR04MB4941;
+x-ms-traffictypediagnostic: SN6PR04MB4941:
+wdcipoutbound: EOP-TRUE
+x-microsoft-antispam-prvs: <SN6PR04MB4941C013C1C390B213378E9E8CEA0@SN6PR04MB4941.namprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 007271867D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(396003)(136003)(376002)(346002)(366004)(189003)(199004)(33656002)(7416002)(76116006)(99286004)(8936002)(74316002)(91956017)(7736002)(66476007)(66556008)(478600001)(68736007)(7696005)(66946007)(64756008)(8676002)(305945005)(73956011)(6506007)(102836004)(53546011)(53936002)(6916009)(229853002)(52536014)(81166006)(66446008)(2906002)(6246003)(81156014)(6116002)(6436002)(3846002)(54906003)(476003)(26005)(4326008)(186003)(71200400001)(71190400001)(66066001)(55016002)(446003)(486006)(5660300002)(86362001)(76176011)(14454004)(5024004)(9686003)(25786009)(72206003)(316002)(256004);DIR:OUT;SFP:1102;SCL:1;SRVR:SN6PR04MB4941;H:SN6PR04MB5231.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: tmzyWYcZUOjUjH2r75U4CtTwBmWbwrI6qsbEbRoyLAw4PwRXjiXLyEG9nU6sdqUmDLqn5UudaowCffjUcYUpytDaAyj5QUh69ZlCzd4gc6hD73y/2M16HfIsZs9HDJv5rxYkQ06A/k7poXszCLksvQpD1ab63kmzp+sjoPH2NXDl/92DOnVEWSKBDiYyIjW1825xDfumQAfRPZQxA9PEwpT6t14S5eXsOQp5HWXKed5EJoG3yOm35W12nF7Gh/4jJHxg44OeoWeoZmNPq8TpW2a7iEijnpGtYAviE6c2jXvG2U6XEGfhzJKpckHrEvGQQq833yE13i1uCfxjmzGtYkcc0lpLR0H+18AoSyRzWlC/EsBdgjbt6ZPgQS6xRTI24QQsn3PZqc49uXYSPxEMnE4p8AVzcOYQCzp9MJ7a8XA=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <97541737.v72oTHCfnW@supermario.mushroomkingdom>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="WwJRAHGswNEPMXbsgtmlHE0jhlBl8ShYo"
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ff130cc-6e51-48c9-775c-08d6f3b2ce8b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Jun 2019 06:04:21.2979
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Naohiro.Aota1@wdc.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB4941
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---WwJRAHGswNEPMXbsgtmlHE0jhlBl8ShYo
-Content-Type: multipart/mixed; boundary="GpTYjcTwNoRQAQCiwoyuQ4nRE9QPhaKCG";
- protected-headers="v1"
-From: Andrei Borzenkov <arvidjaar@gmail.com>
-To: Eric Mesa <eric@ericmesa.com>
-Cc: Chris Murphy <lists@colorremedies.com>,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <52e0b712-2710-b3aa-3247-e2546020050b@gmail.com>
-Subject: Re: Issues with btrfs send/receive with parents
-References: <3884539.zL6soEQT1V@supermario.mushroomkingdom>
- <2331470.mWhmLaHhuV@supermario.mushroomkingdom>
- <b2bba48e-a759-cb99-cf2c-04e89bce171e@gmail.com>
- <97541737.v72oTHCfnW@supermario.mushroomkingdom>
-In-Reply-To: <97541737.v72oTHCfnW@supermario.mushroomkingdom>
-
---GpTYjcTwNoRQAQCiwoyuQ4nRE9QPhaKCG
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-14.06.2019 0:22, Eric Mesa =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> On Thursday, June 13, 2019 2:26:10 AM EDT Andrei Borzenkov wrote:
->>
->> All your snapshots on source have the same received_uuid (I have no id=
-ea
->> how is it possible). If received_uuid exists, it is sent to destinatio=
-n
->> instead of subvolume UUID to identify matching snapshot. All your back=
-up
->> sbapshots on destination also have the same received_uuid which is
->> matched against (received_)UUID of source subvolume. In this case
->> receive command takes the first found subvolume (probably the most
->> recent, i.e. with the smallest generation number). So you send
->> differential stream against one subvolume and this stream is applied t=
-o
->> another subvolume which explains the error.
->=20
-> Yup. Any idea of how to fix?=20
->=20
-
-
-I do not think there is easy way to fix it for existing subvolumes. So
-remove existing ones, and start replication from scratch making sure you
-do not have duplicated received_uuid on either source or destination side=
-s.
-
-
---GpTYjcTwNoRQAQCiwoyuQ4nRE9QPhaKCG--
-
---WwJRAHGswNEPMXbsgtmlHE0jhlBl8ShYo
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EARECAB0WIQTsPDUXSW5c6iqbJulHosy62l33jAUCXQhldAAKCRBHosy62l33
-jFXkAJ9rDcQjE17A/i1neeGecdkhZv6SFwCePDV5qk50CcBLTM6WQtGxqgo7pVI=
-=KLu5
------END PGP SIGNATURE-----
-
---WwJRAHGswNEPMXbsgtmlHE0jhlBl8ShYo--
+On 2019/06/13 22:58, Josef Bacik wrote:=0A=
+> On Fri, Jun 07, 2019 at 10:10:08PM +0900, Naohiro Aota wrote:=0A=
+>> If a zoned block device is found, get its zone information (number of zo=
+nes=0A=
+>> and zone size) using the new helper function btrfs_get_dev_zonetypes(). =
+ To=0A=
+>> avoid costly run-time zone report commands to test the device zones type=
+=0A=
+>> during block allocation, attach the seqzones bitmap to the device struct=
+ure=0A=
+>> to indicate if a zone is sequential or accept random writes.=0A=
+>>=0A=
+>> This patch also introduces the helper function btrfs_dev_is_sequential()=
+ to=0A=
+>> test if the zone storing a block is a sequential write required zone.=0A=
+>>=0A=
+>> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>=0A=
+>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>=0A=
+>> ---=0A=
+>>   fs/btrfs/volumes.c | 143 +++++++++++++++++++++++++++++++++++++++++++++=
+=0A=
+>>   fs/btrfs/volumes.h |  33 +++++++++++=0A=
+>>   2 files changed, 176 insertions(+)=0A=
+>>=0A=
+> =0A=
+> We have enough problems with giant files already, please just add a separ=
+ate=0A=
+> hmzoned.c or whatever and put all the zone specific code in there.  That'=
+ll save=0A=
+> me time when I go and break a bunch of stuff out.  Thanks,=0A=
+> =0A=
+> Josef=0A=
+> =0A=
+=0A=
+Thank you for the reviews.=0A=
+=0A=
+I'll add hmzoned.c and put the things (with more helpers/abstraction) there=
+ in the next version.=0A=
+=0A=
+Thanks.=0A=
