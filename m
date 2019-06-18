@@ -2,89 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E62F24A447
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 16:45:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37DF54A4A8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 16:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729272AbfFROpW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 10:45:22 -0400
-Received: from mail-pf1-f173.google.com ([209.85.210.173]:37835 "EHLO
-        mail-pf1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728572AbfFROpV (ORCPT
+        id S1729189AbfFRO7V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 10:59:21 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:45821 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729042AbfFRO7V (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 10:45:21 -0400
-Received: by mail-pf1-f173.google.com with SMTP id 19so7804069pfa.4;
-        Tue, 18 Jun 2019 07:45:21 -0700 (PDT)
+        Tue, 18 Jun 2019 10:59:21 -0400
+Received: by mail-qk1-f196.google.com with SMTP id s22so8737012qkj.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 07:59:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NMnqg5fufjYWb0sSIzXnpqigWMgenHlEvuLuwxRG46k=;
-        b=iLxHc4UIhIvPcrQW4JIdi7HnIoh5OFdQzF8YuPTWZ8B43cT8o2Yxqe4KV1bj1XSZMg
-         MNOZzh+iuUavxLRbi71HCocW6OKcb5zTCfrglG8n8jxG5ZPD9v5UfoMYB11l3A1rHc0n
-         3GLvHrYfiGSTS/VKcs291iR42fPYzfBATJ83TP47ZwHsJhJBNxTMrRi2XLEPd9w3wKdi
-         QQSjf53v/hTwVTJNf1EOP5vhfCD1cRc99PaxStAc4al4J+76YCK2R9/VDQmYEST9JE9Y
-         1CDbo6TZ3g+zrQIVtIh8KNX3wsfP5+yJ9Zss/wdS+g5CtuAFj2WA0Al5d6U/VOXUzLK6
-         P4uQ==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id;
+        bh=xLcfPFxfhKM11IGnUkfBylPZqW26QYGp6dsgJrhwFU0=;
+        b=aJZ2SDRW0axpoDTba0qGRFDSv09Ly6eO4nSAYJ+TNO7nNubu46sspqn73GqqptUcDt
+         jZGcdM+S1/Z75ZCGc+CtuZSb4kFh9j/J8f32hAWhVVE1epiZHD2ph8x7FnsKle83i+CW
+         dxSrbz9ENQ8/2Nm2Tx9/fBg/Xz4q+q/RHGLe63L+mIXJ0p0Jo9z+CfbQ+MQs9pR2PSPm
+         OAoSFjnwAc7bWXtJjPPJYdBx3jAbghKwKjmI7vQc08st7pzCpswpHGIC2AHFIVoTtmgx
+         /gxlJsTYeT20JD2NH304t/OFKdwUMBnB7oowMfHXpS1GqdGOu4FuxrSos4edzLz5nAu6
+         TR1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NMnqg5fufjYWb0sSIzXnpqigWMgenHlEvuLuwxRG46k=;
-        b=Go/agy2pVTfU0qkjpedPtm/J1isUv8jasWT7ntG82lnP0WC4YiG/MV+Q2qbVRAf9ls
-         akuu51OEPBQiIG3iDY8iev7dT1Ojj3dTbqhOwX3fpR95DW5r8vj7LOJztcff8O2Yh0Yt
-         JlyzWm6RraTuXMQc9l2+p+upFOhzYRR4tehhgLfEwNiOivPQLnDxhYg3QDUkImWtmQqN
-         KlDI3+gifhkbm3fKbR3Mth/I+hJ1RQZhZcM0RYx0I1UZ6OwlI7sPKyMUmy7oB4th9qE8
-         G1RC8ZWpOhPWri0xYUahZMNSWPwBPGyx6H+yhB/XDSxNqDx9PT3ENywxndkgjw3tHHiL
-         QKmw==
-X-Gm-Message-State: APjAAAWv5gYKJ8jN96HAg6a4lY+9LZZCzXud76xXP6Y/2KABRtsBEZFL
-        pAlMhPR8Q09/quO4wE/oyqk=
-X-Google-Smtp-Source: APXvYqzIYeLMQNgDRIdCyouue7+qbHrf+jL2uYPgXh4v17+m5Tepc54GRMoO5ApB7u1tpkGQs04mvg==
-X-Received: by 2002:a17:90a:a008:: with SMTP id q8mr5640617pjp.114.1560869120930;
-        Tue, 18 Jun 2019 07:45:20 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::2:5159])
-        by smtp.gmail.com with ESMTPSA id c133sm16558044pfb.111.2019.06.18.07.45.20
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 Jun 2019 07:45:20 -0700 (PDT)
-Date:   Tue, 18 Jun 2019 07:45:17 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     dsterba@suse.cz, dsterba@suse.com, clm@fb.com,
-        josef@toxicpanda.com, axboe@kernel.dk, jack@suse.cz,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCHSET v2 btrfs/for-next] blkcg, btrfs: fix cgroup writeback
- support
-Message-ID: <20190618144517.GI657710@devbig004.ftw2.facebook.com>
-References: <20190615182453.843275-1-tj@kernel.org>
- <20190618125442.GL19057@twin.jikos.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190618125442.GL19057@twin.jikos.cz>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=xLcfPFxfhKM11IGnUkfBylPZqW26QYGp6dsgJrhwFU0=;
+        b=rAt0ad+VUhq8JCjCAKWxTRz6XaOVTjcadx+5U2c2H6w1aZGzE3Y4DuSW0P+6CmRHyt
+         NUJ/54d2HDAhdKUNqWH7ikfdH33ULtuMLoPOqtKHiCZdmWPJjRp5AoDC7oI4BnWCxIod
+         LLIvHCp+gaqK8PbI3K2AnoOAu1z9OuublvM79sgG/jAXfVK5X4SqtrI2u+vhX75q0Whl
+         IryuHNIpZBmwW2NidIFGTQeUIp455GKu3R5U+u1bnjfD4zIQKNJQoU3/4xrNj6O4aasj
+         OcnH9MeWV86Fs7Yo25Mm4V1+ls8Vifb/7uiwX0cMe2j99EaHbGQjwnKYsUjnZCZZgnC8
+         CPIA==
+X-Gm-Message-State: APjAAAUSLL5V2VdOeTYWlWygKXNsciTPRGMKUo9b3TGJeglSAvcgzbH5
+        sPeQ1Wgr1X0mvjhA+EWEjWaxRktUwHkCWg==
+X-Google-Smtp-Source: APXvYqz92egreelkoVbZTUmr5ihHZ+OjrKo21yjuLbOOqQ426TZ09t6zHZ3wFWC9YnMRWZfIDaa/EQ==
+X-Received: by 2002:a37:4a8a:: with SMTP id x132mr70428162qka.42.1560869960372;
+        Tue, 18 Jun 2019 07:59:20 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id j25sm6103726qkk.53.2019.06.18.07.59.19
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 18 Jun 2019 07:59:19 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH][v2] btrfs: run delayed iput at unlink time
+Date:   Tue, 18 Jun 2019 10:59:18 -0400
+Message-Id: <20190618145918.12641-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.14.3
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello, David.
+We have been seeing issues in production where a cleaner script will end
+up unlinking a bunch of files that have pending iputs.  This means they
+will get their final iput's run at btrfs-cleaner time and thus are not
+throttled, which impacts the workload.
 
-On Tue, Jun 18, 2019 at 02:54:42PM +0200, David Sterba wrote:
-> However, as it's rc5, I'm not at all comfortable to add this patchset to
-> 5.3 queue, the changes seem to be intrusive and redoing bio submission
-> path is something that will affect all workloads. I did quick tests on
-> fstests (without cgruops enabled) and this was fine, but that's the
-> minimum that must work. Wider range of workloads would be needed, I can
-> do that with mmtests, but all of that means that 5.3 is infeasible.
+Since we are unlinking these files we can just drop the delayed iput at
+unlink time.  We are already holding a reference to the inode so this
+will not be the final iput and thus is completely safe to do at this
+point.  Doing this means we are more likely to be doing the final iput
+at unlink time, and thus will get the IO charged to the caller and get
+throttled appropriately without affecting the main workload.
 
-Sure thing.  These aren't urgent in any way.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+v1->v2:
+- consolidate the delayed iput run into a helper.
 
-> So this opens more possibilites regarding the patchset routing. Both
-> parts can go separately through their usual trees.
+ fs/btrfs/inode.c | 40 ++++++++++++++++++++++++++++++++++------
+ 1 file changed, 34 insertions(+), 6 deletions(-)
 
-Yeah, that sounds great too.  Let's wait for Jens's review and decide
-how to route the patches.
-
-Thanks.
-
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 33380f5e2e8a..c311bf6d52f4 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3326,6 +3326,28 @@ void btrfs_add_delayed_iput(struct inode *inode)
+ 		wake_up_process(fs_info->cleaner_kthread);
+ }
+ 
++static void run_delayed_iput_locked(struct btrfs_fs_info *fs_info,
++				    struct btrfs_inode *inode)
++{
++	list_del_init(&inode->delayed_iput);
++	spin_unlock(&fs_info->delayed_iput_lock);
++	iput(&inode->vfs_inode);
++	if (atomic_dec_and_test(&fs_info->nr_delayed_iputs))
++		wake_up(&fs_info->delayed_iputs_wait);
++	spin_lock(&fs_info->delayed_iput_lock);
++}
++
++static void btrfs_run_delayed_iput(struct btrfs_fs_info *fs_info,
++				   struct btrfs_inode *inode)
++{
++	if (!list_empty(&inode->delayed_iput)) {
++		spin_lock(&fs_info->delayed_iput_lock);
++		if (!list_empty(&inode->delayed_iput))
++			run_delayed_iput_locked(fs_info, inode);
++		spin_unlock(&fs_info->delayed_iput_lock);
++	}
++}
++
+ void btrfs_run_delayed_iputs(struct btrfs_fs_info *fs_info)
+ {
+ 
+@@ -3335,12 +3357,7 @@ void btrfs_run_delayed_iputs(struct btrfs_fs_info *fs_info)
+ 
+ 		inode = list_first_entry(&fs_info->delayed_iputs,
+ 				struct btrfs_inode, delayed_iput);
+-		list_del_init(&inode->delayed_iput);
+-		spin_unlock(&fs_info->delayed_iput_lock);
+-		iput(&inode->vfs_inode);
+-		if (atomic_dec_and_test(&fs_info->nr_delayed_iputs))
+-			wake_up(&fs_info->delayed_iputs_wait);
+-		spin_lock(&fs_info->delayed_iput_lock);
++		run_delayed_iput_locked(fs_info, inode);
+ 	}
+ 	spin_unlock(&fs_info->delayed_iput_lock);
+ }
+@@ -4045,6 +4062,17 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 		ret = 0;
+ 	else if (ret)
+ 		btrfs_abort_transaction(trans, ret);
++
++	/*
++	 * If we have a pending delayed iput we could end up with the final iput
++	 * being run in btrfs-cleaner context.  If we have enough of these built
++	 * up we can end up burning a lot of time in btrfs-cleaner without any
++	 * way to throttle the unlinks.  Since we're currently holding a ref on
++	 * the inode we can run the delayed iput here without any issues as the
++	 * final iput won't be done until after we drop the ref we're currently
++	 * holding.
++	 */
++	btrfs_run_delayed_iput(fs_info, inode);
+ err:
+ 	btrfs_free_path(path);
+ 	if (ret)
 -- 
-tejun
+2.14.3
+
