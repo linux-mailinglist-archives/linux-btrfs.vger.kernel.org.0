@@ -2,166 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AFD44A246
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 15:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30CED4A257
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 15:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729107AbfFRNeC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 09:34:02 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45343 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726330AbfFRNeC (ORCPT
+        id S1729367AbfFRNfV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 09:35:21 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:38026 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729189AbfFRNfU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 09:34:02 -0400
-Received: by mail-qt1-f193.google.com with SMTP id j19so15231539qtr.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 06:34:02 -0700 (PDT)
+        Tue, 18 Jun 2019 09:35:20 -0400
+Received: by mail-qk1-f194.google.com with SMTP id a27so8533493qkk.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 06:35:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=uESHdIPMr1/2I8R4apfsQXdORt5EllcKdhz30TRq9+s=;
-        b=SGIjcRfjTQPUsAhNx90ES669WIHnpYBE7Vzbgcc9KMOW9MAywDsUZIv2G/R4LfV2M+
-         2LsnZzuYigyPY1J6gEHM3x8R4YtQnIUA9Vv7Sdk5AIbMc87ZHs3hnlosIk7SMRI/UQk+
-         0V7/Wubit590Sk0vWPTTGIKZV1X2CRsoNZseJh6vw6Vm7BCoSuJ7uUtowk+B3CRXipvv
-         gZ0Ggew6XDCbOm7saHGmt+g2SxPKCDPZFeXbJBHG2n71U1nI66ZTr8uYj2Dosb/IWtMY
-         T37WCxShSheVxEBWOAo7k9pOYBrLRW1afS52oyo5dybQmJTFWcAZOmvgEFCp+crZdI2+
-         wdwQ==
+        bh=eK5CJpBaboC0hEciRwXZ1C92olmsKQDqEljQyovaSOk=;
+        b=YiOIvK80pvLydz0Im11/2kCXM2Q0lUk5O+a5AZ31v1AzEl3ej4o/STSbJdcXX7ZraH
+         +GGCVaNrn9LDGqvkcfri9GbBuDCEmFegVmn/iknd2QUnX+RSbIlFFUZUg2qtuetXPiPM
+         fjbZZb+dHRGhp6NSOeuGscXvchIXuS/ArJydWEHllez8zvYJw29+mtkc5suxgAUZUxvH
+         5Juf+4m7vbsy0ubcdX7FAogWdjuyya45XbnwY7S4GjhdxiayBWhwt2lPp+mANs+neTDl
+         O64zdCjP6r3v7lqVCFQC4kPESsjGi7VflBVxF2a17Y1ijMCHMMkjhdG118TQtm8CZ5uT
+         VwBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=uESHdIPMr1/2I8R4apfsQXdORt5EllcKdhz30TRq9+s=;
-        b=mZAYWsHKaSgzMKyV6LJnq6/QL5vPgBpbul7pquSCTH+Foc08NvqFAnbuNMBX9Eo+cX
-         e3ZIF5vvoPDxqMOO8Oj8NgUuGkE8K/U5ZO09MfkYs33R139XujMsrIPjZZnjQgKLRbbc
-         0Naz79yv974FB7UHCpv5RwttY28J41quRwtRwOMvvel/iMIbVqE60XhE0Fc0pinmX6WZ
-         CMs1jFWt8S0zr1YvUysqEWyfGymeOwvyh3Sw2H7vltpHKJ9EnhiMbEQfV3do0MAou8eU
-         aI7QazTrt15lLMw2H5MFQ+YZ9eyTYicUYo9ltJvffj9e+AALlbCUmqsxEkvCDnZmeTy2
-         +qcA==
-X-Gm-Message-State: APjAAAUamJ7a8e4NM3EH7tIXYWmMPs3t99GmRjo7CeYYgDabxfomSGdD
-        Wtyl/+8lvlgZReBd3DZK2+7TDg==
-X-Google-Smtp-Source: APXvYqw/NY0+diPdp7TeJ0U/wX2Blgzw4e+gsafs2o0OprtgRoc1/dpCLwmQMVwIB+MyuV9LmnynGA==
-X-Received: by 2002:ac8:24f5:: with SMTP id t50mr96953830qtt.285.1560864841328;
-        Tue, 18 Jun 2019 06:34:01 -0700 (PDT)
+        bh=eK5CJpBaboC0hEciRwXZ1C92olmsKQDqEljQyovaSOk=;
+        b=HncB8yboM7yN8YYYdAjoliak2c6mVWEuXredPxHIQ1fb4YLq4IxXgfTD59Bqmqg+P1
+         ednVq6ndB4cb1vpB6RYH7gH2c8yMhI9F4WS37X0bg5LrerbpMD7hYgEHMvvlMXBgwdis
+         m3y9TB+avITiOtIhFH5Qep6S/zNA//rGxPM/Fdhwd/o7wnZ8mZYjUMNb/ZG+Wq78sItc
+         FRiaPcVPxQ906JivJil6N2l4XlMzdZyWJtKnMLDhC73kPCiMbvj7TFQue8pLELo/c0j6
+         ppKxS1JnFK++Cm71PVudKMPXW4kE6tNnsB+TR2goiSFU+R2fKnkYUwmqPZ1kWA4L1ZMC
+         bmmw==
+X-Gm-Message-State: APjAAAUJivnxgEuTt0Jdb6R7b+7e0t2se4lOU8i1S9+5Ny0lhH3GqT+Z
+        hFeO1rFQdBtnc93C6dzMbsUWGw==
+X-Google-Smtp-Source: APXvYqwaGvkUTLPL4DeUKFYdt9gDCaWFB8CBgJI60dAMnRNNCBM8p/c0pVpCPwsG2XyYSuc2ymA8SQ==
+X-Received: by 2002:a05:620a:44:: with SMTP id t4mr5034628qkt.189.1560864919497;
+        Tue, 18 Jun 2019 06:35:19 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::a0ec])
-        by smtp.gmail.com with ESMTPSA id v9sm7627054qti.60.2019.06.18.06.34.00
+        by smtp.gmail.com with ESMTPSA id f25sm10849540qta.81.2019.06.18.06.35.18
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 Jun 2019 06:34:00 -0700 (PDT)
-Date:   Tue, 18 Jun 2019 09:33:59 -0400
+        Tue, 18 Jun 2019 06:35:18 -0700 (PDT)
+Date:   Tue, 18 Jun 2019 09:35:17 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
+To:     Naohiro Aota <Naohiro.Aota@wdc.com>
 Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
         Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Hannes Reinecke <hare@suse.com>,
         "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
         Matias =?utf-8?B?QmrDuHJsaW5n?= <mb@lightnvm.io>,
         Johannes Thumshirn <jthumshirn@suse.de>,
         Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH 11/19] btrfs: introduce submit buffer
-Message-ID: <20190618133357.l55hwc3x5cpycpji@MacBook-Pro-91.local>
+Subject: Re: [PATCH 08/19] btrfs: make unmirroed BGs readonly only if we have
+ at least one writable BG
+Message-ID: <20190618133516.giriyfzpnhdquuot@MacBook-Pro-91.local>
 References: <20190607131025.31996-1-naohiro.aota@wdc.com>
- <20190607131025.31996-12-naohiro.aota@wdc.com>
- <20190613141457.jws5ca63wfgjf7da@MacBook-Pro-91.local>
- <BYAPR04MB5816E9FC012A289CA438E794E7EB0@BYAPR04MB5816.namprd04.prod.outlook.com>
+ <20190607131025.31996-9-naohiro.aota@wdc.com>
+ <20190613140921.a2kmty5p6lzqztej@MacBook-Pro-91.local>
+ <SN6PR04MB5231CACF687ED7001C73111A8CEA0@SN6PR04MB5231.namprd04.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BYAPR04MB5816E9FC012A289CA438E794E7EB0@BYAPR04MB5816.namprd04.prod.outlook.com>
+In-Reply-To: <SN6PR04MB5231CACF687ED7001C73111A8CEA0@SN6PR04MB5231.namprd04.prod.outlook.com>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 17, 2019 at 03:16:05AM +0000, Damien Le Moal wrote:
-> Josef,
-> 
-> On 2019/06/13 23:15, Josef Bacik wrote:
-> > On Fri, Jun 07, 2019 at 10:10:17PM +0900, Naohiro Aota wrote:
-> >> Sequential allocation is not enough to maintain sequential delivery of
-> >> write IOs to the device. Various features (async compress, async checksum,
-> >> ...) of btrfs affect ordering of the IOs. This patch introduces submit
-> >> buffer to sort WRITE bios belonging to a block group and sort them out
-> >> sequentially in increasing block address to achieve sequential write
-> >> sequences with __btrfs_map_bio().
+On Tue, Jun 18, 2019 at 07:42:46AM +0000, Naohiro Aota wrote:
+> On 2019/06/13 23:09, Josef Bacik wrote:
+> > On Fri, Jun 07, 2019 at 10:10:14PM +0900, Naohiro Aota wrote:
+> >> If the btrfs volume has mirrored block groups, it unconditionally makes
+> >> un-mirrored block groups read only. When we have mirrored block groups, but
+> >> don't have writable block groups, this will drop all writable block groups.
+> >> So, check if we have at least one writable mirrored block group before
+> >> setting un-mirrored block groups read only.
 > >>
-> >> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 > > 
-> > I hate everything about this.  Can't we just use the plugging infrastructure for
-> > this and then make sure it re-orders the bios before submitting them?  Also
-> > what's to prevent the block layer scheduler from re-arranging these io's?
-> > Thanks,
+> > I don't understand why you want this.  Thanks,
+> > 
+> > Josef
+> > 
 > 
-> The block I/O scheduler reorders requests in LBA order, but that happens for a
-> newly inserted request against pending requests. If there are no pending
-> requests because all requests were already issued, no ordering happen, and even
-> worse, if the drive queue is not full yet (e.g. there are free tags), then the
-> newly inserted request will be dispatched almost immediately, preventing
-> reordering with subsequent incoming write requests to happen.
+> This is necessary to handle e.g. btrfs/124 case.
 > 
+> When we mount degraded RAID1 FS and write to it, and then
+> re-mount with full device, the write pointers of corresponding
+> zones of written BG differ.  The patch 07 mark such block group
+> as "wp_broken" and make it read only.  In this situation, we only
+> have read only RAID1 BGs because of "wp_broken" and un-mirrored BGs
+> are also marked read only, because we have RAID1 BGs.
+> As a result, all the BGs are now read only, so that we
+> cannot even start the rebalance to fix the situation.
 
-This sounds like we're depending on specific behavior from the ioscheduler,
-which means we're going to have a sad day at some point in the future.
-
-> The other problem is that the mq-deadline scheduler does not track zone WP
-> position. Write request issuing is done regardless of the current WP value,
-> solely based on LBA ordering. This means that mq-deadline will not prevent
-> out-of-order, or rather, unaligned write requests. These will not be detected
-> and dispatched whenever possible. The reasons for this are that:
-> 1) the disk user (the FS) has to manage zone WP positions anyway. So duplicating
-> that management at the block IO scheduler level is inefficient.
-
-I'm not saying it has to manage the WP pointer, and in fact I'm not saying the
-scheduler has to do anything at all.  We just need a more generic way to make
-sure that bio's submitted in order are kept in order.  So perhaps a hmzoned
-scheduler that does just that, and is pinned for these devices.
-
-> 2) Adding zone WP management at the block IO scheduler level would also need a
-> write error processing path to resync the WP value in case of failed writes. But
-> the user/FS also needs that anyway. Again duplicated functionalities.
-
-Again, no not really.  My point is I want as little block layer knowledge in
-btrfs as possible.  I accept we should probably keep track of the WP, it just
-makes it easier on everybody if we allocate sequentially.  I'll even allow that
-we need to handle the write errors and adjust our WP stuff internally when
-things go wrong.
-
-What I'm having a hard time swallowing is having a io scheduler in btrfs proper.
-We just ripped out the old one we had because it broke cgroups.  It just adds
-extra complexity to an already complex mess.
-
-> 3) The block layer will need a timeout to force issue or cancel pending
-> unaligned write requests. This is necessary in case the drive user stops issuing
-> writes (for whatever reasons) or the scheduler is being switched. This would
-> unnecessarily cause write I/O errors or cause deadlocks if the request queue
-> quiesce mode is entered at the wrong time (and I do not see a good way to deal
-> with that).
-
-Again we could just pin the hmzoned scheduler to those devices so you can't
-switch them.  Or make a hmzoned blk plug and pin no scheduler to these devices.
-
-> 
-> blk-mq is already complicated enough. Adding this to the block IO scheduler will
-> unnecessarily complicate things further for no real benefits. I would like to
-> point out the dm-zoned device mapper and f2fs which are both already dealing
-> with write ordering and write error processing directly. Both are fairly
-> straightforward but completely different and each optimized for their own structure.
-> 
-
-So we're duplicating this effort in 2 places already and adding a 3rd place
-seems like a solid plan?  Device-mapper it makes sense, we're sitting squarely
-in the block layer so moving around bio's/requests is its very reason for
-existing.  I'm not sold on the file system needing to take up this behavior.
-This needs to be handled in a more generic way so that all file systems can
-share the same mechanism.
-
-I'd even go so far as to say that you could just require using a dm device with
-these hmzoned block devices and then handle all of that logic in there if you
-didn't feel like doing it generically.  We're already talking about esoteric
-devices that require special care to use, adding the extra requirement of
-needing to go through device-mapper to use it wouldn't be that big of a stretch.
-Thanks,
+Ah ok, please add this explanation to the changelog.  Thanks,
 
 Josef
