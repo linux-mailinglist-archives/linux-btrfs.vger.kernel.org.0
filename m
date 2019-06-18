@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 860F64A8F6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 19:59:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 012B04A8F7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 19:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730168AbfFRR7T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 13:59:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45066 "EHLO mx1.suse.de"
+        id S1730170AbfFRR7W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 18 Jun 2019 13:59:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45084 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729349AbfFRR7T (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 13:59:19 -0400
+        id S1727616AbfFRR7V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 18 Jun 2019 13:59:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EE0E2AEA1
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 17:59:17 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id C4078AEA1
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 17:59:20 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 12E19DA871; Tue, 18 Jun 2019 20:00:05 +0200 (CEST)
+        id B0655DA871; Tue, 18 Jun 2019 20:00:08 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/6] btrfs: use common helpers for extent IO state insertion messages
-Date:   Tue, 18 Jun 2019 20:00:05 +0200
-Message-Id: <b7824fd41f86ac8bcb4dfd19565d590d97cbe2f5.1560880630.git.dsterba@suse.com>
+Subject: [PATCH 3/6] btrfs: drop default value assignments in enums
+Date:   Tue, 18 Jun 2019 20:00:08 +0200
+Message-Id: <726fc64e15ad144b58a4494d87d5e72226631d72.1560880630.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <cover.1560880630.git.dsterba@suse.com>
 References: <cover.1560880630.git.dsterba@suse.com>
@@ -33,43 +33,65 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Print the error messages using the helpers that also print the
-filesystem identification.
+A few more instances whre we don't need to specify the values as long as
+they are the same that enum assigns automatically. All of the enums are
+in-memory only and nothing relies on the exact values.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/extent_io.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+ fs/btrfs/extent-tree.c | 14 +++++++-------
+ fs/btrfs/file.c        |  6 +++---
+ 2 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 8634eda07b7a..a6ad2f6f2bf7 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -524,9 +524,11 @@ static int insert_state(struct extent_io_tree *tree,
- {
- 	struct rb_node *node;
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 7d26ec1e8608..fa7ff6b81fe0 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -46,9 +46,9 @@
+  *
+  */
+ enum {
+-	CHUNK_ALLOC_NO_FORCE = 0,
+-	CHUNK_ALLOC_LIMITED = 1,
+-	CHUNK_ALLOC_FORCE = 2,
++	CHUNK_ALLOC_NO_FORCE,
++	CHUNK_ALLOC_LIMITED,
++	CHUNK_ALLOC_FORCE,
+ };
  
--	if (end < start)
--		WARN(1, KERN_ERR "BTRFS: end < start %llu %llu\n",
--		       end, start);
-+	if (end < start) {
-+		btrfs_err(tree->fs_info,
-+			"insert state: end < start %llu %llu", end, start);
-+		WARN_ON(1);
-+	}
- 	state->start = start;
- 	state->end = end;
+ /*
+@@ -7302,10 +7302,10 @@ wait_block_group_cache_done(struct btrfs_block_group_cache *cache)
+ }
  
-@@ -536,7 +538,8 @@ static int insert_state(struct extent_io_tree *tree,
- 	if (node) {
- 		struct extent_state *found;
- 		found = rb_entry(node, struct extent_state, rb_node);
--		pr_err("BTRFS: found node %llu %llu on insert of %llu %llu\n",
-+		btrfs_err(tree->fs_info,
-+		       "found node %llu %llu on insert of %llu %llu",
- 		       found->start, found->end, start, end);
- 		return -EEXIST;
- 	}
+ enum btrfs_loop_type {
+-	LOOP_CACHING_NOWAIT = 0,
+-	LOOP_CACHING_WAIT = 1,
+-	LOOP_ALLOC_CHUNK = 2,
+-	LOOP_NO_EMPTY_SIZE = 3,
++	LOOP_CACHING_NOWAIT,
++	LOOP_CACHING_WAIT,
++	LOOP_ALLOC_CHUNK,
++	LOOP_NO_EMPTY_SIZE,
+ };
+ 
+ static inline void
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 5370152ea7e3..3c508d2a85bf 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2791,9 +2791,9 @@ static int btrfs_fallocate_update_isize(struct inode *inode,
+ }
+ 
+ enum {
+-	RANGE_BOUNDARY_WRITTEN_EXTENT = 0,
+-	RANGE_BOUNDARY_PREALLOC_EXTENT = 1,
+-	RANGE_BOUNDARY_HOLE = 2,
++	RANGE_BOUNDARY_WRITTEN_EXTENT,
++	RANGE_BOUNDARY_PREALLOC_EXTENT,
++	RANGE_BOUNDARY_HOLE,
+ };
+ 
+ static int btrfs_zero_range_check_range_boundary(struct inode *inode,
 -- 
 2.21.0
 
