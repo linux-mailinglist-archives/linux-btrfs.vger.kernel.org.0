@@ -2,143 +2,160 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8516D49627
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 01:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D05A4968E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Jun 2019 03:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728572AbfFQX7f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 17 Jun 2019 19:59:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50760 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728499AbfFQX7f (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 17 Jun 2019 19:59:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2F10CAC40;
-        Mon, 17 Jun 2019 23:59:33 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1E9FADA832; Tue, 18 Jun 2019 02:00:20 +0200 (CEST)
-Date:   Tue, 18 Jun 2019 02:00:20 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Damien Le Moal <Damien.LeMoal@wdc.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
+        id S1726589AbfFRBHf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 17 Jun 2019 21:07:35 -0400
+Received: from mout.gmx.net ([212.227.17.21]:55705 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725829AbfFRBHf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 17 Jun 2019 21:07:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1560820050;
+        bh=udQO5efJBM9PXQnI6xMdbHSv5W44M5zHvd0ZXbeSIds=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=gtInDD4YmN/OXv3YG1JkUm11yDcvz63BbI430fwsf+PQZo5tJnXZD5JyBRy1ZI45a
+         al5EXe+pmGt84CUNwwrwzYm+G1Y4sOnBweHydvFuBQCwlo62KZzpuQqdUJw1886V7K
+         +jdxwKnpfc11VCOtv7gw79tTAkRzEfWv9n/wr0u4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx102
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0Lj4xG-1iBpBX1kek-00dJ4v; Tue, 18
+ Jun 2019 03:07:30 +0200
+Subject: Re: Proper packed attribute usage?
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hannes Reinecke <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Matias =?iso-8859-1?Q?Bj=F8rling?= <mb@lightnvm.io>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: Re: [PATCH 11/19] btrfs: introduce submit buffer
-Message-ID: <20190618000020.GK19057@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Naohiro Aota <Naohiro.Aota@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hannes Reinecke <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Matias =?iso-8859-1?Q?Bj=F8rling?= <mb@lightnvm.io>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Bart Van Assche <bvanassche@acm.org>
-References: <20190607131025.31996-1-naohiro.aota@wdc.com>
- <20190607131025.31996-12-naohiro.aota@wdc.com>
- <20190613141457.jws5ca63wfgjf7da@MacBook-Pro-91.local>
- <BYAPR04MB5816E9FC012A289CA438E794E7EB0@BYAPR04MB5816.namprd04.prod.outlook.com>
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>
+References: <f24ea8b6-01ff-f570-4b9b-43b4126118e6@gmx.com>
+ <1560785821.3538.22.camel@HansenPartnership.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <94dc6bb0-5df8-6b86-77e8-b3fdc8507660@gmx.com>
+Date:   Tue, 18 Jun 2019 09:07:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <BYAPR04MB5816E9FC012A289CA438E794E7EB0@BYAPR04MB5816.namprd04.prod.outlook.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <1560785821.3538.22.camel@HansenPartnership.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="KcA5qcjNIMGYqJcA63BA1lU0geZnEqLJc"
+X-Provags-ID: V03:K1:6mOPfQw95f38p1xCH06ItjfH4fP31bjdIE45PCu9+xUIpWSVILc
+ d9QNufq3rNUPJ+JiW4TAuwkgQEBsGFKJLhi5FlJ6mUYeNw+dB280+ozz/3m+zJvKJgLXyew
+ jy0y1FILctacUS6R9LcLtdfIn3qQ/qVDliFbysvt7MdIS8gpXwzYlj5IcO7YK3Y0QNuWBkT
+ YJtkBYfuw1Ft2UWh+86XQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BcQpfZbbgdA=:X/ke1fj2J0BxZOAwOQFdao
+ QTyvNOJ2HpGHilzC/4Msyg53D56SuWIbD8VDKPlBsZ4Y1vpgG+HdGEIb67q7KYlBRTLZtom/H
+ r/wWwsu9gEWsHjVUpBAf63fru/9Y7ZsC6XK+mxnmqLd3lCX9r6die4RfTAMAtjw3QdhNgEp5o
+ 29n1bOl0fHO9zfPD0TofBJ42J6NlIEP/odOBNWw5BT9L7EFR6OJQHtABXCWWS3A11+xEmlwls
+ Eg5bch3nPHkAJfr7omb9L3ik/DWof1ZAuTVB5NDlNBZnr5ODsxKJySDoKrW9dpnvVp1LQW/Hr
+ fX06q/iff3YDN1pQq/2e4wr8WXUNsb0/orUb4DlGJvnpfiYps937XkvqlkIWM4LU9VNL8ch0w
+ 1Nf3xKoPHwODOGTo01GDN4jhjWsSew4XFajUU6VxJaVYcevPnvaYLmkJvlm/0kMqDjh1Z2am7
+ tnFCnnR3RuEm1cDh1fqfK8dvGkcwVKO4+fCIjDTk74u1J2PXB5KRMhjDchK1yDbkqYPWPi8fk
+ JO4W9ZG0s8kbRwsU6C1JNWbi4q6Fr+Rw3v7sVJl+dSNlkvSPmzGnFRm+xGuXz/SCj/2Tu8gs5
+ dt09k83Vf4L37ADotXKstcjcHj/3wlO5mfYn8gXCCYD8Tmh8Wglx2MEISm9bYD/C2OMW1+tQW
+ yI6g5AibqvWKDeMvq/Wdbj+WP4Ey6vAQH6tcUo71jq5Z/juf8/586dmWBHoVq8MzGmQ3uK8Lc
+ O4zLIZ3kjPCHnSIUVNWs+y8MYhip5VAhGyuR1jUUD9HRporKp5H4UTv6YgqGVyJYDdEWWC5k8
+ afH9SifWv5vsAxZ3JocMa7gJT+XnwNaWlbwUYOdjIZ/OrG2asPa7gX90id2lJg09LPq8SfT+/
+ MvmsMDdbLT40EcbJIX4EWmGBaZhrBrVWQ83PSg5GVj7/fKnNuqMJ/tMLzkDTNGNK06//DDRXo
+ NYAY6C6CMJOJjOh0HQHgvEF6aGS/O2aE=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 17, 2019 at 03:16:05AM +0000, Damien Le Moal wrote:
-> Josef,
-> 
-> On 2019/06/13 23:15, Josef Bacik wrote:
-> > On Fri, Jun 07, 2019 at 10:10:17PM +0900, Naohiro Aota wrote:
-> >> Sequential allocation is not enough to maintain sequential delivery of
-> >> write IOs to the device. Various features (async compress, async checksum,
-> >> ...) of btrfs affect ordering of the IOs. This patch introduces submit
-> >> buffer to sort WRITE bios belonging to a block group and sort them out
-> >> sequentially in increasing block address to achieve sequential write
-> >> sequences with __btrfs_map_bio().
-> >>
-> >> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
-> > 
-> > I hate everything about this.  Can't we just use the plugging infrastructure for
-> > this and then make sure it re-orders the bios before submitting them?  Also
-> > what's to prevent the block layer scheduler from re-arranging these io's?
-> > Thanks,
-> 
-> The block I/O scheduler reorders requests in LBA order, but that happens for a
-> newly inserted request against pending requests. If there are no pending
-> requests because all requests were already issued, no ordering happen, and even
-> worse, if the drive queue is not full yet (e.g. there are free tags), then the
-> newly inserted request will be dispatched almost immediately, preventing
-> reordering with subsequent incoming write requests to happen.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--KcA5qcjNIMGYqJcA63BA1lU0geZnEqLJc
+Content-Type: multipart/mixed; boundary="6NnAtpdSzpvbdd3QSmZBMblxgrc2GHySA";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: James Bottomley <James.Bottomley@HansenPartnership.com>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+ Linux FS Devel <linux-fsdevel@vger.kernel.org>
+Message-ID: <94dc6bb0-5df8-6b86-77e8-b3fdc8507660@gmx.com>
+Subject: Re: Proper packed attribute usage?
+References: <f24ea8b6-01ff-f570-4b9b-43b4126118e6@gmx.com>
+ <1560785821.3538.22.camel@HansenPartnership.com>
+In-Reply-To: <1560785821.3538.22.camel@HansenPartnership.com>
 
-This would be good to add to the changelog.
-> 
-> The other problem is that the mq-deadline scheduler does not track zone WP
-> position. Write request issuing is done regardless of the current WP value,
-> solely based on LBA ordering. This means that mq-deadline will not prevent
-> out-of-order, or rather, unaligned write requests.
+--6NnAtpdSzpvbdd3QSmZBMblxgrc2GHySA
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-This seems to be the key point.
 
-> These will not be detected
-> and dispatched whenever possible. The reasons for this are that:
-> 1) the disk user (the FS) has to manage zone WP positions anyway. So duplicating
-> that management at the block IO scheduler level is inefficient.
-> 2) Adding zone WP management at the block IO scheduler level would also need a
-> write error processing path to resync the WP value in case of failed writes. But
-> the user/FS also needs that anyway. Again duplicated functionalities.
-> 3) The block layer will need a timeout to force issue or cancel pending
-> unaligned write requests. This is necessary in case the drive user stops issuing
-> writes (for whatever reasons) or the scheduler is being switched. This would
-> unnecessarily cause write I/O errors or cause deadlocks if the request queue
-> quiesce mode is entered at the wrong time (and I do not see a good way to deal
-> with that).
-> 
-> blk-mq is already complicated enough. Adding this to the block IO scheduler will
-> unnecessarily complicate things further for no real benefits. I would like to
-> point out the dm-zoned device mapper and f2fs which are both already dealing
-> with write ordering and write error processing directly. Both are fairly
-> straightforward but completely different and each optimized for their own structure.
 
-So the question is where on which layer the decision logic is. The
-filesystem(s) or dm-zoned have enough information about the zones and
-the writes can be pre-sorted. This is what the patch proposes.
+On 2019/6/17 =E4=B8=8B=E5=8D=8811:37, James Bottomley wrote:
+> On Mon, 2019-06-17 at 17:06 +0800, Qu Wenruo wrote:
+> [...]
+>> But then this means, we should have two copies of data for every such
+>> structures. One for the fixed format one, and one for the compiler
+>> aligned one, with enough helper to convert them (along with needed
+>> endian convert).
+>=20
+> I don't think it does mean this.  The compiler can easily access the
+> packed data by pointer, the problem on systems requiring strict
+> alignment is that it has to be done with byte accesses, so instead of a=
 
-From your explanation I get that the io scheduler can throw the wrench
-in the sequential ordering, for various reasons depending on state of
-internal structures od device queues. This is my simplified
-interpretation as I don't understand all the magic below filesystem
-layer.
+> load word for a pointer to an int, you have to do four load bytes.=20
+> This is mostly a minor slowdown so trying to evolve a whole
+> infrastructure around copying data for these use cases really wouldn't
+> be a good use of resources.
 
-I assume there are some guarantees about the ordering, eg. within one
-plug, that apply to all schedulers (maybe not the noop one). Something
-like that should be the least common functionality that the filesystem
-layer can rely on.
- 
-> Naohiro changes to btrfs IO scheduler have the same intent, that is, efficiently
-> integrate and handle write ordering "a la btrfs". Would creating a different
-> "hmzoned" btrfs IO scheduler help address your concerns ?
+Then I can argue it shouldn't be a default warning for GCC 9.
 
-IMHO this sounds both the same, all we care about is the sequential
-ordering, which in some sense is "scheduling", but I would not call it
-that way due to the simplicity.
+But anyway, kernel will disable the warning, so I think it shouldn't
+cause much problem.
 
-As implemented, it's a list of bios, but I'd suggest using rb-tree or
-xarray, the insertion is fast and submission is start to end traversal.
-I'm not sure that the loop in __btrfs_map_bio_zoned after label
-send_bios: has reasonable complexity, looks like an O(N^2).
+Thanks,
+Qu
+
+>=20
+> James
+>=20
+
+
+--6NnAtpdSzpvbdd3QSmZBMblxgrc2GHySA--
+
+--KcA5qcjNIMGYqJcA63BA1lU0geZnEqLJc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0IOUsACgkQwj2R86El
+/qhrKgf/QA7GMi26LEi/snqrQF0NqHQaD/RXLxt4ehKOgCYW/syJtkeFCOtcmXcJ
+5T3kK4eqL7ZeHsAUuqHeo6+ZP3KhcJ5hbeJHnT7kIMf7C3gjBeuoWKHXkKRoBQAH
+au0FpEbwiUupS1Juodip64BSsvIWBi7o6HZvmDW7Ch9xGK42/9HeBMzuRnMfJzJ2
+MIQnvJnfYSYvojeywyN+M0Wmgh6QtZWztaDlWBF3TEprhoFPgy5jeGGeft42lDqB
+sD4NWe6AfcyoiqulaVlldzY/REwyHhjYPlERJLmLUqzyB4e1JYrT79loNdCOuA94
+FTSHIYfSs1D1TYUYJXkuFdcYAMafUQ==
+=iTrp
+-----END PGP SIGNATURE-----
+
+--KcA5qcjNIMGYqJcA63BA1lU0geZnEqLJc--
