@@ -2,64 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3B704BE68
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 18:39:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB5F04C027
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 19:47:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726865AbfFSQjV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 12:39:21 -0400
-Received: from [195.159.176.226] ([195.159.176.226]:43998 "EHLO
-        blaine.gmane.org" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbfFSQjV (ORCPT
+        id S1726449AbfFSRr3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 13:47:29 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:43330 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbfFSRr2 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 12:39:21 -0400
-Received: from list by blaine.gmane.org with local (Exim 4.89)
-        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane.org>)
-        id 1hddcF-000t1q-3V
-        for linux-btrfs@vger.kernel.org; Wed, 19 Jun 2019 18:39:19 +0200
-X-Injected-Via-Gmane: http://gmane.org/
+        Wed, 19 Jun 2019 13:47:28 -0400
+Received: by mail-qk1-f195.google.com with SMTP id m14so57040qka.10
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 10:47:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id;
+        bh=Gp/MuR4tqTF41cujCrm0d73CWf91Zlxetcrri4jkMMA=;
+        b=qXIaE+QHS+ulyy+rloI242oMrcmF0hc3g6TE2+zh0AKj9VJ3Vt5JtTyeDmejG0UDeB
+         +wSpfQeXa8YoQN1xF3C/HzqXgXwsUSi1MTFovsqTEvr6b3S8VQYritLIoFg7d0psWmDo
+         3Bfdi53hTGORDJSVK+1/1BjIK6zgYueTt5jMx1xzhQPG/3UuW7kDxGeR8QMft+75u4Vq
+         kuPErAz7KkX1lzB8qu5KszvvN18QHfUncuI4FgsNiSwh9hc1wj5XOVxVm9Y9hqlmn67W
+         VwyDvI5RlQA3gZ7GkD5F8xIUVGWChJ51oaTYrMJOia5LGqvRwaKvAEfnNHldlnZPRoIx
+         hwAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=Gp/MuR4tqTF41cujCrm0d73CWf91Zlxetcrri4jkMMA=;
+        b=ktdyUEkrd2vUVBo8Oimb6+BBMO9atqgwmhv6pK6D9vxT8e8bJg5vG/gaQm9Y0rZiTl
+         8BsHkw+QXkzfN7MNZOpw9e+QQFHqBT6c6uu4xiQLq3tzp1h8bXN6wzgJLgqChKSLnkwX
+         62LGGMTb4rE6j6XgjKPrELE15/1zf1zpEswXMsyHJoiUb/nY2aQuo8Df3HMktTBzquY0
+         TIPOQgzXN1OU+9fqis7A0iS5tzz1zXXf8lHnJlraZ0oDUBinDvapa9w5OLyiZ9erOqf1
+         Jx9yVQrpDom7APJh7nKWWjgVrdQdBctK/6ZTsjCd+h5KjrnBqZHed7yBCC5/01oOlh/a
+         H1sA==
+X-Gm-Message-State: APjAAAUVYH6MTdid6KDS65VWZMwvGsa5sjOiW/vN4h74APbuGJ0trgje
+        PHWjuARWABbJGOp2nP7N7vScEOXhntCDEw==
+X-Google-Smtp-Source: APXvYqxpFr70tunArh3XwFX2Lk5dJhlJB/z1lHn/NonKUJhSJhzTVCkP2Npq2fYtASBB5xySiv7dew==
+X-Received: by 2002:a05:620a:152:: with SMTP id e18mr99240766qkn.101.1560966447483;
+        Wed, 19 Jun 2019 10:47:27 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id s44sm13672283qtc.8.2019.06.19.10.47.26
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 19 Jun 2019 10:47:26 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org
-From:   Jean-Denis Girard <jd.girard@sysnux.pf>
-Subject: Re: "no space left on device" from tar on ppc64le
-Date:   Wed, 19 Jun 2019 06:39:09 -1000
-Message-ID: <qedoff$6e0d$1@blaine.gmane.org>
-References: <405184D6-3E29-4308-B2CA-BF5644A6CED7@storix.com>
- <CAJCQCtQtpHbe=in8V+-iYCxZhsnRfxpcde0SJkBH-1ajc=e72w@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-In-Reply-To: <CAJCQCtQtpHbe=in8V+-iYCxZhsnRfxpcde0SJkBH-1ajc=e72w@mail.gmail.com>
-Content-Language: fr-FR
+Subject: [PATCH 0/8] btrfs: move the block_rsv code out of extent-tree.c
+Date:   Wed, 19 Jun 2019 13:47:16 -0400
+Message-Id: <20190619174724.1675-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.14.3
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Rich,
+This patchset depends on the space_info migration patchset.  This is the next
+logical chunk of things to move out of extent-tree.c  With these sets of patches
+we're down below 10k loc in extent-tree.c.  This chunk was much easier to move
+as we had exported a lot of these functions already.  There is 1 code change
+patch in here and that's to cleanup the logic in __btrfs_block_rsv_release so it
+could be used more globally by everybody.  The rest is just exporting and
+migrating code around.  Again I specifically didn't clean anything else up, I'm
+just trying to re-organize everything.  The diffstat of the series is as follows
 
-Le 18/06/2019 à 13:19, Chris Murphy a écrit :
-> On Tue, Jun 18, 2019 at 4:23 PM Rich Turner <rturner@storix.com> wrote:
->>
->> tar: ./lib/modules/4.4.73-7-default/kernel/drivers/md/faulty.ko: Cannot open: No space left on device
-> 
-> If this really is a 4.4.73 based kernel, I expect the report is out of
-> scope for this list. There have been 109 subsequent stable releases of
-> the 4.4 kernel since. There nearly 3000 commits between 4.4 and 5.1.
+ fs/btrfs/Makefile      |   3 +-
+ fs/btrfs/block-rsv.c   | 429 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/block-rsv.h   | 104 ++++++++++++
+ fs/btrfs/ctree.h       |  70 +-------
+ fs/btrfs/extent-tree.c | 452 ++-----------------------------------------------
+ 5 files changed, 549 insertions(+), 509 deletions(-)
 
-I would also recommend using a newer kernel. I'm the one who reported
-the problem back in October, and I had to make new SD cards 2 weeks ago.
-I used the exact same script on kernel 5.1.x and the problem did not
-come up again, ie I was able to untar without the hack to slow down
-write speed.
+Thanks,
 
-Thanks to Btrfs developpers!
-
-
-Best regards,
--- 
-Jean-Denis Girard
-
-SysNux                   Systèmes   Linux   en   Polynésie  française
-https://www.sysnux.pf/   Tél: +689 40.50.10.40 / GSM: +689 87.797.527
-
+Josef
