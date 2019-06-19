@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7B64BAB3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 16:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEC494BAB0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 16:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730404AbfFSOEs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 10:04:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42886 "EHLO mx1.suse.de"
+        id S1730176AbfFSOEo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 10:04:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42892 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729463AbfFSOEo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1730164AbfFSOEo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Wed, 19 Jun 2019 10:04:44 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4F48BAD7C
+        by mx1.suse.de (Postfix) with ESMTP id 93FF6ADE6
         for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 14:04:43 +0000 (UTC)
 From:   Nikolay Borisov <nborisov@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 3/4] btrfs: Remove old send implementation
-Date:   Wed, 19 Jun 2019 17:04:39 +0300
-Message-Id: <20190619140440.5550-4-nborisov@suse.com>
+Subject: [PATCH 4/4] btrfs-progs: check: Remove duplicated and commented functions
+Date:   Wed, 19 Jun 2019 17:04:40 +0300
+Message-Id: <20190619140440.5550-5-nborisov@suse.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190619140440.5550-1-nborisov@suse.com>
 References: <20190619140440.5550-1-nborisov@suse.com>
@@ -29,88 +29,104 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit ba23855cdc89 ("btrfs-progs: send: use splice syscall instead of
-read/write to transfer buffer") changed the send implementation to use
-splice(). The old read/write implementation hasn't be used for at least
-3 years, it's time to remove it.
+Commit 756105181e57 ("btrfs-progs: check: supplement extent backref
+list with rbtree") changed the backref implementation to use rb tree
+and also commented the old implementations. It's been almost 2 years
+since that change and it's unlikely the old version will ever be used,
+so just remove it.
 
 Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 ---
- cmds-send.c | 61 -----------------------------------------------------
- 1 file changed, 61 deletions(-)
+ check/main.c | 69 ----------------------------------------------------
+ 1 file changed, 69 deletions(-)
 
-diff --git a/cmds-send.c b/cmds-send.c
-index 6496d8e39bbf..1735c35dca74 100644
---- a/cmds-send.c
-+++ b/cmds-send.c
-@@ -207,67 +207,6 @@ static int add_clone_source(struct btrfs_send *sctx, u64 root_id)
- 	return 0;
+diff --git a/check/main.c b/check/main.c
+index 731c21d364d7..05ba9819c58e 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -4385,36 +4385,6 @@ static int check_block(struct btrfs_root *root,
+ 	return ret;
  }
  
 -#if 0
--static int write_buf(int fd, const char *buf, size_t size)
+-static struct tree_backref *find_tree_backref(struct extent_record *rec,
+-						u64 parent, u64 root)
 -{
--	int ret;
--	size_t pos = 0;
+-	struct list_head *cur = rec->backrefs.next;
+-	struct extent_backref *node;
+-	struct tree_backref *back;
 -
--	while (pos < size) {
--		ssize_t wbytes;
--
--		wbytes = write(fd, buf + pos, size - pos);
--		if (wbytes < 0) {
--			ret = -errno;
--			error("failed to dump stream: %s", strerror(-ret));
--			goto out;
+-	while (cur != &rec->backrefs) {
+-		node = to_extent_backref(cur);
+-		cur = cur->next;
+-		if (node->is_data)
+-			continue;
+-		back = to_tree_backref(node);
+-		if (parent > 0) {
+-			if (!node->full_backref)
+-				continue;
+-			if (parent == back->parent)
+-				return back;
+-		} else {
+-			if (node->full_backref)
+-				continue;
+-			if (back->root == root)
+-				return back;
 -		}
--		if (!wbytes) {
--			ret = -EIO;
--			error("failed to dump stream: %s", strerror(-ret));
--			goto out;
--		}
--		pos += wbytes;
 -	}
--	ret = 0;
--
--out:
--	return ret;
--}
--
--static void* read_sent_data_copy(void *arg)
--{
--	int ret;
--	struct btrfs_send *sctx = (struct btrfs_send*)arg;
--	char buf[SEND_BUFFER_SIZE];
--
--	while (1) {
--		ssize_t rbytes;
--
--		rbytes = read(sctx->send_fd, buf, sizeof(buf));
--		if (rbytes < 0) {
--			ret = -errno;
--			error("failed to read stream from kernel: %s",
--				strerror(-ret));
--			goto out;
--		}
--		if (!rbytes) {
--			ret = 0;
--			goto out;
--		}
--		ret = write_buf(sctx->dump_fd, buf, rbytes);
--		if (ret < 0)
--			goto out;
--	}
--
--out:
--	if (ret < 0)
--		exit(-ret);
--
--	return ERR_PTR(ret);
+-	return NULL;
 -}
 -#endif
 -
- static void *read_sent_data(void *arg)
+ static struct tree_backref *alloc_tree_backref(struct extent_record *rec,
+ 						u64 parent, u64 root)
  {
- 	int ret;
+@@ -4434,45 +4404,6 @@ static struct tree_backref *alloc_tree_backref(struct extent_record *rec,
+ 	return ref;
+ }
+ 
+-#if 0
+-static struct data_backref *find_data_backref(struct extent_record *rec,
+-						u64 parent, u64 root,
+-						u64 owner, u64 offset,
+-						int found_ref,
+-						u64 disk_bytenr, u64 bytes)
+-{
+-	struct list_head *cur = rec->backrefs.next;
+-	struct extent_backref *node;
+-	struct data_backref *back;
+-
+-	while (cur != &rec->backrefs) {
+-		node = to_extent_backref(cur);
+-		cur = cur->next;
+-		if (!node->is_data)
+-			continue;
+-		back = to_data_backref(node);
+-		if (parent > 0) {
+-			if (!node->full_backref)
+-				continue;
+-			if (parent == back->parent)
+-				return back;
+-		} else {
+-			if (node->full_backref)
+-				continue;
+-			if (back->root == root && back->owner == owner &&
+-			    back->offset == offset) {
+-				if (found_ref && node->found_ref &&
+-				    (back->bytes != bytes ||
+-				    back->disk_bytenr != disk_bytenr))
+-					continue;
+-				return back;
+-			}
+-		}
+-	}
+-	return NULL;
+-}
+-#endif
+-
+ static struct data_backref *alloc_data_backref(struct extent_record *rec,
+ 						u64 parent, u64 root,
+ 						u64 owner, u64 offset,
 -- 
 2.17.1
 
