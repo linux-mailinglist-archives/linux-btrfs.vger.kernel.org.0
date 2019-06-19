@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DA54C02D
+	by mail.lfdr.de (Postfix) with ESMTP id C76334C02E
 	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 19:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730244AbfFSRrg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 13:47:36 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:41258 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbfFSRrf (ORCPT
+        id S1730268AbfFSRrh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 13:47:37 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:36723 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730259AbfFSRrh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 13:47:35 -0400
-Received: by mail-qt1-f194.google.com with SMTP id d17so15996943qtj.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 10:47:35 -0700 (PDT)
+        Wed, 19 Jun 2019 13:47:37 -0400
+Received: by mail-qk1-f194.google.com with SMTP id g18so91100qkl.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 10:47:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=WzYbVk3GqaP2esYjYqzRzg9RpxKz0wwjWDR1en8iAw4=;
-        b=Q05ZYF0lFT4zk62+5BnBYyMFl64mAJY6cMNcOTrHE8kUwoehjkLMF4JkLTCH8ZtgUF
-         5aww6xqNNHriQm5E8vUVnB4RjgMrZw6eyGOnBYfpNOe2PCs4IBXo3Nu9fzRt3d6jkckQ
-         gH3wk2zQnXnkCGWrXqBeHCGQ9KAvlbV90L9rm5wD7vVOxAIztQQFgpzC2HD4FbdVZESa
-         5smQKpMBp45D0FfoSR3xLr9r/q3MrepdL/wzifYyRbmjT025JjxtoG6h6NXs6qRxGLXm
-         Jzzwhtn/9GgOcrkvyA/iNu6UJstwIIreaOtDA9nXJYpuDAQahyza2knflLGKszCZ+Pks
-         tRJA==
+        bh=G6aG0Ob336hf8B5SkmsW7dMhHqR/PJThsUQXDluglbE=;
+        b=Vhm0yHOD/BH9ECv+SJPZdtbllve7+PEeYgvu/QRpHLWfIqPZJYAaJwZGeSlls0u72p
+         ZSxfVNJVxK6Jq4Yb9J+8be2ZU8/NdgZGOnJIjISdYYjDb4RQV+MbeT3KyALaH4QyooZG
+         7l6hxw5UK3wjEGA1k5uXottJzAgUg7fZ82b9d1wmmSrVJxkzA+l+sicGborXa1YsyBlK
+         8vF4tQZSqNullgzlc+9oDNl06Hv1s72j863X/X9QHHuz7XIIAMs4/I7uDMPgy7MJOn6i
+         HpSr0DDlAVSXtguFo58SxK6NcqqDtJOGNAvy6L8Pg2uCn/NtCHsRTP8gRVp513RSN22B
+         N+mA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references;
-        bh=WzYbVk3GqaP2esYjYqzRzg9RpxKz0wwjWDR1en8iAw4=;
-        b=SAcDYl0X3ZhZFM1h6/umFFp2/nxL5gp/rWj69ybDYDKxdjKPmRXdJBaRjwAfajkw/u
-         DXy9zWKoUWq+Ds585eNUrNOP90RFYlRcPbRC5zBerUpJ6BzXOSsfRZNzpS7sARCkfeN7
-         KWUUiBk/61g76gTzKgstgIPoAfoxZamy812hYasKnfXsh4aYq1XXsjKE3SCja4R6d3Bl
-         9+tOQFBd/77F2gFba/dPOaOXZlEp3UTTmssjKwt91Zvl5BXETivafgP1Vf+DVKyC/2x2
-         G5H+xvNg/kb4J5xssMp+OkgWr/YM8ZFAtjma2989Jt4xL1la+qUDQAtPT+3EQGgr1Kvn
-         e7SQ==
-X-Gm-Message-State: APjAAAUwjfcMYSbxa776ATphJbzalWTihoQrCB1AJ2c0MaVkKlAwTEXq
-        I2nATe7+ltSwG+H9s72X1cCmi0DcHp73Zg==
-X-Google-Smtp-Source: APXvYqw7gu1WMGdGCsRf96HKMicg+Vo7x289w82fjVT16b6u8tiEnyMu91DrB0DDsvqO6gfBetK+Lw==
-X-Received: by 2002:ac8:381d:: with SMTP id q29mr106352996qtb.347.1560966454409;
-        Wed, 19 Jun 2019 10:47:34 -0700 (PDT)
+        bh=G6aG0Ob336hf8B5SkmsW7dMhHqR/PJThsUQXDluglbE=;
+        b=FjBlQhCAZIbquz+KImBPAGi5zYX0pEVnyZANRSYY4n+VeItmxbyJ9rC3Eiaeo8JlyX
+         Yc4ttmdqznBHWK3pSSf0OyAqFw3Zvbd3QjnHo98Dx6sriyJRwaMlgLtJR2tVeYlram0b
+         3AFqFCN+MkmEYauKOt+2W0mkzsF/dE8TVP8+L0NtVSheu8BLvx9QCisUzG5T348eU2/Y
+         u53C4R+WdkX4VIj4TmLLGAgLmWSZW778N7fuU27vHDr+uN9J/3mcauw7eOATq048o7NB
+         mguTxMrCSJDFMzUUPuWsRlWfi9932rygvoYdFwB3CsHqGRZAq814qrHQeLEsQuJrssfW
+         B8Lw==
+X-Gm-Message-State: APjAAAXT62sKucCU+SjJmK1VN7dpgG2+Abgf98X9QB4Nb6DK9qqfb0X8
+        LPLRrI3UJWqTHwtwOO2tR5WkbQzWd5T2XQ==
+X-Google-Smtp-Source: APXvYqwKugL88qtHioYvcMWbIcOuph/mnBpdPmWy4Y0CcDmDOMF4yKnZ5ACFYoQ3j9M7bdXlSYxhNA==
+X-Received: by 2002:a37:a017:: with SMTP id j23mr100426322qke.258.1560966456076;
+        Wed, 19 Jun 2019 10:47:36 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id n10sm11228425qke.72.2019.06.19.10.47.33
+        by smtp.gmail.com with ESMTPSA id d123sm11896879qkb.94.2019.06.19.10.47.35
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Jun 2019 10:47:33 -0700 (PDT)
+        Wed, 19 Jun 2019 10:47:35 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/8] btrfs: cleanup the target logic in __btrfs_block_rsv_release
-Date:   Wed, 19 Jun 2019 13:47:20 -0400
-Message-Id: <20190619174724.1675-5-josef@toxicpanda.com>
+Subject: [PATCH 5/8] btrfs: stop using block_rsv_release_bytes everywhere
+Date:   Wed, 19 Jun 2019 13:47:21 -0400
+Message-Id: <20190619174724.1675-6-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.14.3
 In-Reply-To: <20190619174724.1675-1-josef@toxicpanda.com>
 References: <20190619174724.1675-1-josef@toxicpanda.com>
@@ -58,44 +58,64 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This works for all callers already, but if we wanted to use the helper
-for the global_block_rsv it would end up trying to refill itself.  Fix
-the logic to be able to be used no matter which block rsv is passed in
-to this helper.
+block_rsv_release_bytes() is the internal to the block_rsv code, and
+shouldn't be called directly by anything else.  Switch all users to the
+exported helpers.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-tree.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ fs/btrfs/extent-tree.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index d6aff56337aa..6995edf887e1 100644
+index 6995edf887e1..d1fce37107b4 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -4684,12 +4684,20 @@ u64 __btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
+@@ -4750,12 +4750,11 @@ static void btrfs_inode_rsv_release(struct btrfs_inode *inode, bool qgroup_free)
+ void btrfs_delayed_refs_rsv_release(struct btrfs_fs_info *fs_info, int nr)
  {
- 	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
- 	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_refs_rsv;
--	struct btrfs_block_rsv *target = delayed_rsv;
-+	struct btrfs_block_rsv *target = NULL;
+ 	struct btrfs_block_rsv *block_rsv = &fs_info->delayed_refs_rsv;
+-	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+ 	u64 num_bytes = btrfs_calc_trans_metadata_size(fs_info, nr);
+ 	u64 released = 0;
  
--	if (target->full || target == block_rsv)
-+	/*
-+	 * If we are the delayed_rsv then push to the global rsv, otherwise dump
-+	 * into the delayed rsv if it is not full.
-+	 */
-+	if (block_rsv == delayed_rsv) {
- 		target = global_rsv;
-+	} else if (block_rsv != global_rsv) {
-+		if (!delayed_rsv->full)
-+			target = delayed_rsv;
-+	}
+-	released = block_rsv_release_bytes(fs_info, block_rsv, global_rsv,
+-					   num_bytes, NULL);
++	released = __btrfs_block_rsv_release(fs_info, block_rsv, num_bytes,
++					     NULL);
+ 	if (released)
+ 		trace_btrfs_space_reservation(fs_info, "delayed_refs_rsv",
+ 					      0, released, 0);
+@@ -4840,8 +4839,7 @@ static void init_global_block_rsv(struct btrfs_fs_info *fs_info)
  
--	if (block_rsv->space_info != target->space_info)
-+	if (target && block_rsv->space_info != target->space_info)
- 		target = NULL;
+ static void release_global_block_rsv(struct btrfs_fs_info *fs_info)
+ {
+-	block_rsv_release_bytes(fs_info, &fs_info->global_block_rsv, NULL,
+-				(u64)-1, NULL);
++	btrfs_block_rsv_release(fs_info, &fs_info->global_block_rsv, (u64)-1);
+ 	WARN_ON(fs_info->trans_block_rsv.size > 0);
+ 	WARN_ON(fs_info->trans_block_rsv.reserved > 0);
+ 	WARN_ON(fs_info->chunk_block_rsv.size > 0);
+@@ -4890,8 +4888,8 @@ void btrfs_trans_release_chunk_metadata(struct btrfs_trans_handle *trans)
  
- 	return block_rsv_release_bytes(fs_info, block_rsv, target, num_bytes,
+ 	WARN_ON_ONCE(!list_empty(&trans->new_bgs));
+ 
+-	block_rsv_release_bytes(fs_info, &fs_info->chunk_block_rsv, NULL,
+-				trans->chunk_bytes_reserved, NULL);
++	btrfs_block_rsv_release(fs_info, &fs_info->chunk_block_rsv,
++				trans->chunk_bytes_reserved);
+ 	trans->chunk_bytes_reserved = 0;
+ }
+ 
+@@ -7441,7 +7439,7 @@ static void unuse_block_rsv(struct btrfs_fs_info *fs_info,
+ 			    struct btrfs_block_rsv *block_rsv, u32 blocksize)
+ {
+ 	btrfs_block_rsv_add_bytes(block_rsv, blocksize, false);
+-	block_rsv_release_bytes(fs_info, block_rsv, NULL, 0, NULL);
++	btrfs_block_rsv_release(fs_info, block_rsv, 0);
+ }
+ 
+ /*
 -- 
 2.14.3
 
