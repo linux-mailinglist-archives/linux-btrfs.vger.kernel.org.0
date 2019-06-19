@@ -2,75 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C574B710
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 13:29:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42C1E4B732
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 13:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727124AbfFSL3w (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 07:29:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35472 "EHLO mx1.suse.de"
+        id S1727250AbfFSLgM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 07:36:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37198 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726826AbfFSL3w (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 07:29:52 -0400
+        id S1727244AbfFSLgM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Jun 2019 07:36:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C3548AD3E;
-        Wed, 19 Jun 2019 11:29:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5893EDA88C; Wed, 19 Jun 2019 13:30:38 +0200 (CEST)
-Date:   Wed, 19 Jun 2019 13:30:38 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Hans van Kranenburg <hans@knorrie.org>
-Cc:     Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
-        <holger@applied-asynchrony.com>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: updating btrfs-debugfs to python3?
-Message-ID: <20190619113038.GA8917@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Hans van Kranenburg <hans@knorrie.org>,
-        Holger =?iso-8859-1?Q?Hoffst=E4tte?= <holger@applied-asynchrony.com>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtSE2VbeGFs9o=KhPTeRGwZJ=RA2uzc3xG+sU0X-SXbRuQ@mail.gmail.com>
- <08aa27af-8a9e-cd0c-20ab-55ce630085f4@applied-asynchrony.com>
- <b619d96d-92b1-fad0-4911-a1d8080470fc@knorrie.org>
+        by mx1.suse.de (Postfix) with ESMTP id F00D7AEB3
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 11:36:10 +0000 (UTC)
+Date:   Wed, 19 Jun 2019 06:36:08 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Evaluate io_tree in find_lock_delalloc_range()
+Message-ID: <20190619113608.zy24txjcu42nzhb6@fiona>
+References: <20190619003524.32377-1-rgoldwyn@suse.de>
+ <8a7dd8d7-a918-b618-d8e2-bf0ff182cfdc@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b619d96d-92b1-fad0-4911-a1d8080470fc@knorrie.org>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <8a7dd8d7-a918-b618-d8e2-bf0ff182cfdc@suse.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 12:21:34PM +0200, Hans van Kranenburg wrote:
-> On 6/19/19 12:13 PM, Holger Hoffstätte wrote:
-> > On 6/19/19 5:20 AM, Chris Murphy wrote:
-> >> This is on Fedora Rawhide (which is planned to become Fedora 31 due in
-> >> October), which no longer provides python2.
-> >>
-> >> $ ./btrfs-debugfs -b /
-> >> /usr/bin/env: ‘python2’: No such file or directory
-> >> $
-> >>
-> >> I expect other distros are going to follow as Python 2.7 EOL is coming
-> >> up fast, in 6 months.
-> >> https://pythonclock.org/
+On  9:05 19/06, Nikolay Borisov wrote:
+> 
+> 
+> On 19.06.19 г. 3:35 ч., Goldwyn Rodrigues wrote:
+> > Simplification.
+> > No point passing the tree variable when it can be evaluated
+> > from inode.
 > > 
-> > I just ran it through 2to3-3.7 with -w and the new version seems to work
-> > just fine for me, so it seems there is not much porting required.
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> I don't think you want to ship that program at all, for end users.
-
-Agreed, it was probably just some helper script for developers but it
-never got enough features to be useful.
-
-> It's
-> quite horrible, and the -b option even downloads the *entire* extent
-> tree to userspace in a very naive way.
+> The patch is good, however, there are several calls to find_
+> lock_delalloc_range in btrfs tests so you'd need to fix those 
+> invocations, otherwise compilation of the in-kernel test suite will fails. 
 > 
-> There are way simpler, better performing alternatives...
+> fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
+> fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
+> fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
+> fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
+> fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
+> 
+> 
 
-There are, so let's use them!
+Oh, I missed the test, even if it was listed as EXPORT_FOR_TESTS.
+Looking at the tests, it seems it needs to work on a different io_tree than
+in the inode. So, I suppose this patch should NOT be included for the sake
+of tests. Perhaps we should use wrapper functions for simplifications.
+
+-- 
+Goldwyn
