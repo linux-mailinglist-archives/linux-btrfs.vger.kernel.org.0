@@ -2,86 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 501D34BAEA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 16:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02504BAF9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 16:15:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbfFSOOM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 10:14:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45430 "EHLO mx1.suse.de"
+        id S1729581AbfFSOPr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 10:15:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45912 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725893AbfFSOOM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 10:14:12 -0400
+        id S1729179AbfFSOPr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Jun 2019 10:15:47 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 56A84AD33;
-        Wed, 19 Jun 2019 14:14:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 1D07CDA88C; Wed, 19 Jun 2019 16:14:59 +0200 (CEST)
-Date:   Wed, 19 Jun 2019 16:14:59 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.de>,
-        David Sterba <DSterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: reorder struct btrfs_key for better alignment
-Message-ID: <20190619141458.GG8917@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.de>, David Sterba <DSterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190618141514.17322-1-dsterba@suse.com>
- <6ba5daa9-735b-1cdd-fdd7-9c1a60277d46@suse.de>
- <20190619133919.GF8917@twin.jikos.cz>
- <2f911663-067c-e895-4da5-9fe4b5c1cc35@gmx.com>
+        by mx1.suse.de (Postfix) with ESMTP id 4BCF1AE99
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 14:15:45 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Simplify update space_info in
+ __reserve_metadata_bytes()
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20190619141249.23001-1-rgoldwyn@suse.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
+ CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
+ ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
+ HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
+ Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
+ VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
+ E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
+ V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
+ T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
+ mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
+ EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
+ 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
+ csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
+ QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
+ jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
+ VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
+ FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
+ l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
+ MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
+ KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
+ OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
+ AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
+ zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
+ IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
+ iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
+ K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
+ upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
+ R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
+ TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
+ RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
+ 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
+Message-ID: <a59c0738-9f6e-f18f-fa64-4d185bc07057@suse.com>
+Date:   Wed, 19 Jun 2019 17:15:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <20190619141249.23001-1-rgoldwyn@suse.de>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <2f911663-067c-e895-4da5-9fe4b5c1cc35@gmx.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 09:50:58PM +0800, Qu Wenruo wrote:
+
+
+On 19.06.19 г. 17:12 ч., Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
+> Simplification.
+> We don't need an if-else-if structure where we can use a
+> simple OR since both conditions are performing the
+> same action. The short-circuit for OR will ensure that if
+> the first condition is true, can_overcommit() is not
+> called.
 > 
-> On 2019/6/19 下午9:39, David Sterba wrote:
-> > On Wed, Jun 19, 2019 at 09:37:39AM +0800, Qu Wenruo wrote:
-> >>>  struct btrfs_key {
-> >>>  	__u64 objectid;
-> >>> -	__u8 type;
-> >>>  	__u64 offset;
-> >>> +	__u8 type;
-> >>>  } __attribute__ ((__packed__));
-> >>
-> >> And why not remove the packed attribute?
-> > 
-> > Because of this (stack usage changes):
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/extent-tree.c | 14 +++++---------
+>  1 file changed, 5 insertions(+), 9 deletions(-)
 > 
-> That's expected as long as we're using btrfs_key on stack.
-
-And that's in many functions.
-
-> But if we're using btrfs_key on stack and follow the packed feature,
-> then adjacent on stack memory is not accessed aligned, which could cause
-> (unobvious) performance drop.
-
-No, the placement of local variables is up to the compiler and does not
-necessarily follow the same order as teh definition, some of the
-variables can be completely optimized out etc. And the types must be
-accessed according to the type alignments, so one packed structure does
-not cause a disaster.
-
-> If the unaligned memory access is really causing some performance even
-> on stack memory, then I'd say the bump in stack memory usage is acceptable.
-
-Unaligned access overhead depends on architecture, and there's almost
-none on intel, so the packed key makes no difference regarding speed.
-
-I consider the bump in stack consumption high enough to stick to the
-packing, given that it's still ok from the performance POV.
-
-> If not, then the idea of default -Waddress-of-packed-member makes no sense.
-
-Yeah, I start to think that it's causing more harm than good.
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index c7adff343ba9..84a33cbb1e68 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -5158,17 +5158,13 @@ static int __reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
+>  	used = btrfs_space_info_used(space_info, true);
+>  
+>  	/*
+> -	 * If we have enough space then hooray, make our reservation and carry
+> -	 * on.  If not see if we can overcommit, and if we can, hooray carry on.
+> +	 * Carry on if we have enough space (short-circuit) OR call
+> +	 * can_overcommit() to ensure we can overcommit to carry on.
+>  	 * If not things get more complicated.
+>  	 */
+> -	if (used + orig_bytes <= space_info->total_bytes) {
+> -		update_bytes_may_use(space_info, orig_bytes);
+> -		trace_btrfs_space_reservation(fs_info, "space_info",
+> -					      space_info->flags, orig_bytes, 1);
+> -		ret = 0;
+> -	} else if (can_overcommit(fs_info, space_info, orig_bytes, flush,
+> -				  system_chunk)) {
+> +	if ((used + orig_bytes <= space_info->total_bytes) ||
+> +	    can_overcommit(fs_info, space_info, orig_bytes, flush,
+> +			    system_chunk)) {
+>  		update_bytes_may_use(space_info, orig_bytes);
+>  		trace_btrfs_space_reservation(fs_info, "space_info",
+>  					      space_info->flags, orig_bytes, 1);
+> 
