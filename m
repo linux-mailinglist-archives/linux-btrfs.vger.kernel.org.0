@@ -2,127 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D02504BAF9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 16:15:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3B704BE68
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 18:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729581AbfFSOPr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 10:15:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45912 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729179AbfFSOPr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 10:15:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4BCF1AE99
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 14:15:45 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: Simplify update space_info in
- __reserve_metadata_bytes()
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <20190619141249.23001-1-rgoldwyn@suse.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <a59c0738-9f6e-f18f-fa64-4d185bc07057@suse.com>
-Date:   Wed, 19 Jun 2019 17:15:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <20190619141249.23001-1-rgoldwyn@suse.de>
+        id S1726865AbfFSQjV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 12:39:21 -0400
+Received: from [195.159.176.226] ([195.159.176.226]:43998 "EHLO
+        blaine.gmane.org" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1725843AbfFSQjV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Jun 2019 12:39:21 -0400
+Received: from list by blaine.gmane.org with local (Exim 4.89)
+        (envelope-from <gcfb-btrfs-devel-moved1-3@m.gmane.org>)
+        id 1hddcF-000t1q-3V
+        for linux-btrfs@vger.kernel.org; Wed, 19 Jun 2019 18:39:19 +0200
+X-Injected-Via-Gmane: http://gmane.org/
+To:     linux-btrfs@vger.kernel.org
+From:   Jean-Denis Girard <jd.girard@sysnux.pf>
+Subject: Re: "no space left on device" from tar on ppc64le
+Date:   Wed, 19 Jun 2019 06:39:09 -1000
+Message-ID: <qedoff$6e0d$1@blaine.gmane.org>
+References: <405184D6-3E29-4308-B2CA-BF5644A6CED7@storix.com>
+ <CAJCQCtQtpHbe=in8V+-iYCxZhsnRfxpcde0SJkBH-1ajc=e72w@mail.gmail.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+In-Reply-To: <CAJCQCtQtpHbe=in8V+-iYCxZhsnRfxpcde0SJkBH-1ajc=e72w@mail.gmail.com>
+Content-Language: fr-FR
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Rich,
+
+Le 18/06/2019 à 13:19, Chris Murphy a écrit :
+> On Tue, Jun 18, 2019 at 4:23 PM Rich Turner <rturner@storix.com> wrote:
+>>
+>> tar: ./lib/modules/4.4.73-7-default/kernel/drivers/md/faulty.ko: Cannot open: No space left on device
+> 
+> If this really is a 4.4.73 based kernel, I expect the report is out of
+> scope for this list. There have been 109 subsequent stable releases of
+> the 4.4 kernel since. There nearly 3000 commits between 4.4 and 5.1.
+
+I would also recommend using a newer kernel. I'm the one who reported
+the problem back in October, and I had to make new SD cards 2 weeks ago.
+I used the exact same script on kernel 5.1.x and the problem did not
+come up again, ie I was able to untar without the hack to slow down
+write speed.
+
+Thanks to Btrfs developpers!
 
 
-On 19.06.19 г. 17:12 ч., Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> 
-> Simplification.
-> We don't need an if-else-if structure where we can use a
-> simple OR since both conditions are performing the
-> same action. The short-circuit for OR will ensure that if
-> the first condition is true, can_overcommit() is not
-> called.
-> 
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Best regards,
+-- 
+Jean-Denis Girard
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+SysNux                   Systèmes   Linux   en   Polynésie  française
+https://www.sysnux.pf/   Tél: +689 40.50.10.40 / GSM: +689 87.797.527
 
-> ---
->  fs/btrfs/extent-tree.c | 14 +++++---------
->  1 file changed, 5 insertions(+), 9 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index c7adff343ba9..84a33cbb1e68 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -5158,17 +5158,13 @@ static int __reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
->  	used = btrfs_space_info_used(space_info, true);
->  
->  	/*
-> -	 * If we have enough space then hooray, make our reservation and carry
-> -	 * on.  If not see if we can overcommit, and if we can, hooray carry on.
-> +	 * Carry on if we have enough space (short-circuit) OR call
-> +	 * can_overcommit() to ensure we can overcommit to carry on.
->  	 * If not things get more complicated.
->  	 */
-> -	if (used + orig_bytes <= space_info->total_bytes) {
-> -		update_bytes_may_use(space_info, orig_bytes);
-> -		trace_btrfs_space_reservation(fs_info, "space_info",
-> -					      space_info->flags, orig_bytes, 1);
-> -		ret = 0;
-> -	} else if (can_overcommit(fs_info, space_info, orig_bytes, flush,
-> -				  system_chunk)) {
-> +	if ((used + orig_bytes <= space_info->total_bytes) ||
-> +	    can_overcommit(fs_info, space_info, orig_bytes, flush,
-> +			    system_chunk)) {
->  		update_bytes_may_use(space_info, orig_bytes);
->  		trace_btrfs_space_reservation(fs_info, "space_info",
->  					      space_info->flags, orig_bytes, 1);
-> 
