@@ -2,144 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14CF44B06C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 05:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 248ED4B1C9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 08:05:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbfFSD1S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 18 Jun 2019 23:27:18 -0400
-Received: from mail-lj1-f174.google.com ([209.85.208.174]:37110 "EHLO
-        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726037AbfFSD1S (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 18 Jun 2019 23:27:18 -0400
-Received: by mail-lj1-f174.google.com with SMTP id 131so1709336ljf.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Jun 2019 20:27:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=BFgIYCI7yRsuw5QDRPV1hqt7vBc44z/uZpU7Ha6zhfM=;
-        b=PxoR4KeAx3kCpKMu0syuvMIpW+euhfmXNrZqn2SDzVbDZqxSIcFlhVNleGaFIptTyF
-         aLiN9+ixVF2JJZ+9VZiPHPttjGBrUGTeFpdbSpdlfjR3MGqBodkZWnwpJGb8TyB2+7L8
-         7G+T8Z6GDBTbc+fRWGF4s4CaiyuTWJhVu0Q6GDukX4kpBoBO8eYtpUnuF7YIK9RdK3tp
-         uuaUzh3RQ50KCnxteRQ3cIdv75hKanD3a3WHvtljfM690699R5qHKSZXjJRctVrYpx6J
-         hTC1jbalj4VUltfbZCDpNuL3Fx/DYQneABCbDnXHWep4RZ4Aw5UPSEMC1qM3CCby5Lhi
-         BcHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to;
-        bh=BFgIYCI7yRsuw5QDRPV1hqt7vBc44z/uZpU7Ha6zhfM=;
-        b=UtomQd4raGCv0clTsXiajsQU1sMZfcOa2t9P895msGu5CfmKYKG7qXQFc5q5j0scD3
-         LgAMQhBW4TXwdgMZ/VuvpKUj1yxS9EeZ62CKnHAoDZ0Btao3fT2gB8k9hE/D4NE6jsIj
-         dOF25fWNYeS/mtTWR7xdTiJIf2euele/0jBwkbrhkjaischcqNEJa5yVIgNEppcl/Lzn
-         MInlxg+D1TUB+y0z/7cKdjwbmJwIqqFk18gCGx8z9ciRXGGf/NO7IrQ79rktt5BRvZ3e
-         0LlIHDW9vxMxufNyEt4dA9A1dTiZrehw3a3Aiyg42ukPnranMNnp3erAq7J3Imc8iW+r
-         IUMQ==
-X-Gm-Message-State: APjAAAVaMZEkfMqM8vCPncAR2BdSzIZlnJflL3pY5h1UQ6Q00aQucv28
-        Lp2wyCIjDNVJJnxMSHlHbKTxBTxFsbw=
-X-Google-Smtp-Source: APXvYqy3/NECRL684xmBV0nq9e9hQDksGOsgSBAHzxYpQXEaA9EwT8D9LCOTP40AdxX5sQUucGBlIA==
-X-Received: by 2002:a2e:959a:: with SMTP id w26mr19146339ljh.150.1560914836098;
-        Tue, 18 Jun 2019 20:27:16 -0700 (PDT)
-Received: from [192.168.1.5] ([109.252.90.211])
-        by smtp.gmail.com with ESMTPSA id 137sm2861203ljj.46.2019.06.18.20.27.14
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 18 Jun 2019 20:27:14 -0700 (PDT)
-Subject: Re: Rebalancing raid1 after adding a device
-To:     Hugo Mills <hugo@carfax.org.uk>,
-        =?UTF-8?Q?St=c3=a9phane_Lesimple?= <stephane_btrfs@lesimple.fr>,
-        linux-btrfs@vger.kernel.org
-References: <16b6bd72bc0.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
- <20190618184501.GJ21016@carfax.org.uk>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
+        id S1725893AbfFSGFf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 02:05:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50620 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725866AbfFSGFf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Jun 2019 02:05:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 77685AF27
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 06:05:33 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: Evaluate io_tree in find_lock_delalloc_range()
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-btrfs@vger.kernel.org
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.com>
+References: <20190619003524.32377-1-rgoldwyn@suse.de>
+From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
- BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
- 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
- 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
- KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
- nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
- gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
- vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
- AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <42d90ede-b469-0c9e-2a97-1d53df5eeaaf@gmail.com>
-Date:   Wed, 19 Jun 2019 06:27:09 +0300
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <8a7dd8d7-a918-b618-d8e2-bf0ff182cfdc@suse.com>
+Date:   Wed, 19 Jun 2019 09:05:32 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190618184501.GJ21016@carfax.org.uk>
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="rT68ueeV0r3tYxv8eOqiiNbop2R7oILzO"
+In-Reply-To: <20190619003524.32377-1-rgoldwyn@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rT68ueeV0r3tYxv8eOqiiNbop2R7oILzO
-Content-Type: multipart/mixed; boundary="El1G6Ml7erkgUGNGGv2GnQu4FmiEUBOPw";
- protected-headers="v1"
-From: Andrei Borzenkov <arvidjaar@gmail.com>
-To: Hugo Mills <hugo@carfax.org.uk>,
- =?UTF-8?Q?St=c3=a9phane_Lesimple?= <stephane_btrfs@lesimple.fr>,
- linux-btrfs@vger.kernel.org
-Message-ID: <42d90ede-b469-0c9e-2a97-1d53df5eeaaf@gmail.com>
-Subject: Re: Rebalancing raid1 after adding a device
-References: <16b6bd72bc0.2787.faeb54a6cf393cf366ff7c8c6259040e@lesimple.fr>
- <20190618184501.GJ21016@carfax.org.uk>
-In-Reply-To: <20190618184501.GJ21016@carfax.org.uk>
-
---El1G6Ml7erkgUGNGGv2GnQu4FmiEUBOPw
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-18.06.2019 21:45, Hugo Mills =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-=2E..
->=20
->> Is there a way to ask the block group allocator to prefer writing to
->> a specific device during a balance? Something like -ddestdevid=3DN?
->> This would just be a hint to the allocator and the usual constraints
->> would always apply (and prevail over the hint when needed).
->=20
->    No, there isn't. Having control over the allocator (or bypassing
-> it) would be pretty difficult to implement, I think.
->=20
->    It would be really great if there was an ioctl that allowed you to
-> say things like "take the chunks of this block group and put them on
-> devices 2, 4 and 5 in RAID-5", because you could do a load of
-> optimisation with reshaping the FS in userspace with that. But I
-> suspect it's a long way down the list of things to do.
->=20
-
-It really sounds like "btrfs replace -ddrange=3Dx..y". Replace already
-knows how to move chunks from one device and put it on another. Now it
-"just" needs to skip "replace" part and ignore chunks not covered by
-filter ...
 
 
---El1G6Ml7erkgUGNGGv2GnQu4FmiEUBOPw--
+On 19.06.19 г. 3:35 ч., Goldwyn Rodrigues wrote:
+> Simplification.
+> No point passing the tree variable when it can be evaluated
+> from inode.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
---rT68ueeV0r3tYxv8eOqiiNbop2R7oILzO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+The patch is good, however, there are several calls to find_
+lock_delalloc_range in btrfs tests so you'd need to fix those 
+invocations, otherwise compilation of the in-kernel test suite will fails. 
 
------BEGIN PGP SIGNATURE-----
+fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
+fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
+fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
+fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
+fs/btrfs/tests/extent-io-tests.c:       found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
 
-iF0EARECAB0WIQTsPDUXSW5c6iqbJulHosy62l33jAUCXQmrjQAKCRBHosy62l33
-jFYrAKC4GO4oioOKB7/DOxXZqlQ7Af+pmACfRVu7rlF/7k4lvODF2+8Wo9tTjYA=
-=2ptk
------END PGP SIGNATURE-----
 
---rT68ueeV0r3tYxv8eOqiiNbop2R7oILzO--
+> ---
+>  fs/btrfs/extent_io.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index db337e53aab3..e9475d7e11bf 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -1719,10 +1719,10 @@ static noinline int lock_delalloc_pages(struct inode *inode,
+>   */
+>  EXPORT_FOR_TESTS
+>  noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+> -				    struct extent_io_tree *tree,
+>  				    struct page *locked_page, u64 *start,
+>  				    u64 *end)
+>  {
+> +	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+>  	u64 max_bytes = BTRFS_MAX_EXTENT_SIZE;
+>  	u64 delalloc_start;
+>  	u64 delalloc_end;
+> @@ -3290,7 +3290,6 @@ static noinline_for_stack int writepage_delalloc(struct inode *inode,
+>  		struct page *page, struct writeback_control *wbc,
+>  		u64 delalloc_start, unsigned long *nr_written)
+>  {
+> -	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+>  	u64 page_end = delalloc_start + PAGE_SIZE - 1;
+>  	bool found;
+>  	u64 delalloc_to_write = 0;
+> @@ -3300,8 +3299,7 @@ static noinline_for_stack int writepage_delalloc(struct inode *inode,
+>  
+>  
+>  	while (delalloc_end < page_end) {
+> -		found = find_lock_delalloc_range(inode, tree,
+> -					       page,
+> +		found = find_lock_delalloc_range(inode, page,
+>  					       &delalloc_start,
+>  					       &delalloc_end);
+>  		if (!found) {
+> 
