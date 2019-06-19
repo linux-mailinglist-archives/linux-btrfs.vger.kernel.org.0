@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBED4C028
+	by mail.lfdr.de (Postfix) with ESMTP id 25B904C029
 	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 19:47:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbfFSRrb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 13:47:31 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:35588 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbfFSRra (ORCPT
+        id S1730201AbfFSRrd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 13:47:33 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:32942 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726109AbfFSRrc (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 13:47:30 -0400
-Received: by mail-qt1-f193.google.com with SMTP id d23so40939qto.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 10:47:30 -0700 (PDT)
+        Wed, 19 Jun 2019 13:47:32 -0400
+Received: by mail-qt1-f194.google.com with SMTP id x2so57714qtr.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 10:47:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=9U0XAqqhx7QAoCVNOS4kNt9ZQlyfPj58ied+Bo80rmA=;
-        b=nHcEh3TwgIg3FAghRHHGG146nhMCN7p2EO9kfe27eMGV3AnYYeT3mMNBWx9+MxcHF8
-         YuTpZJE7vJgswgAiQKoEHGBbAW+qksmtpTTRoREPjRC/TcrFi7rUlBPkB4GENIsIdkiU
-         V3UxRpOJxlVHNpQBRjwDFWcfxucWnVdUKW1MLLqL5pylncu9slxC58GQIuq43FPJZrpW
-         t+mFmX1CGm31psTm1JUbnWu986z0c4LYZrS56Xb71Mjm7VPJD1b1wxqb7BZ1ZF6xwpoo
-         FZCfN2U1id11mIl60pyDsWhkww0StFrYYoky46QaZ/mbToUvdrwwMvZk17ckyhFMXMd4
-         D67Q==
+        bh=GueFs4REnk8q4/zpbegZhcMKAOARtIldzH33f8atb7Y=;
+        b=o/emcaMHv4RmShmxT+wzmNB2Q0I9aaKrN2xlkvVXiR0lCMiutHe9XcgfnAzG8YWODU
+         QT3ke3sWXIHFUIUCrdEvYadgnbSAgW1L3WVBIhK9Xut0YhzGI2eKR2uB/2UWnENbAxlB
+         LXEvBscVCdNcDg3gU312MhPfvIqlaCdqHNso2Hh0XzxJtv9xs7T5MfM98Ucln52+breD
+         o+3pFXteW7dOiZmmGCT2uXCitZPaHbRoFlB3aQXeV7IUDjD354cfXF8+d+7DsJHqsYbx
+         /mjotPAzYjLieh6dD6o+X9DNdlvOp4QtO4cquM9iF5HK/4CdjZxEpktW4PaPILT4Wti/
+         j5Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references;
-        bh=9U0XAqqhx7QAoCVNOS4kNt9ZQlyfPj58ied+Bo80rmA=;
-        b=TkD/eH7d2f7kGNAz3U8J9bKamqTD8/n4iURN9fRl6lu9BXW7oF2R7kaEkZiEfFRD9p
-         wR1msGdw1BnonuVpnYDMlVQQ9mAMpZcvWv6xM24CrlXetX1NgG+Li3qEx8enOvDJdSWT
-         sHnHqoyKCFZR8CS7yV5Xt9ZgM1CanwuchNlztCWF0j2VydVlolEuia3Fm5sZ3Vq2jyr4
-         V4uW+oAkJVzL9ym18hFXsiVoAmIARb9hZdj9afXI6FFWSA4gnKdz2ZjwWPsbFyvumpup
-         oNyKaQAkWf6eD8L3JuL92nHb3VAoOxG2U5zm9Idg/b1ZgT5kY+dVUQlUkN6+FJsktGA8
-         EMRQ==
-X-Gm-Message-State: APjAAAVY7wttJg8YBJ0AfOIU40f800CQBdqVg1IDzSjNWLUZhNK9CAUl
-        klrZ0LJhZ7qHPzb8riF7ALUBmmtCc5y0nw==
-X-Google-Smtp-Source: APXvYqxDGrCp68r4czcKHnH0O2XMHCCpCAhtR2q5hx+O43Vj3HacMD6Xe5hkfdTrKzUOaugQxq4M9w==
-X-Received: by 2002:a0c:8aaa:: with SMTP id 39mr35023857qvv.17.1560966449161;
-        Wed, 19 Jun 2019 10:47:29 -0700 (PDT)
+        bh=GueFs4REnk8q4/zpbegZhcMKAOARtIldzH33f8atb7Y=;
+        b=XD+CHU1eOoxxEjLtFKeI1/39qwM49TZjsDFYr3a7CN4+mIvQX0C9YsBxI1nm05Xz5X
+         bc0zgh/t3j4XYDWG96zZ0pJzYjIlmNmRlfN60LYrKBAVW0nGjWitwq4ZvmHZsSfngU3a
+         L9rJoSt9Vfx1+dloYHTDqrycSXEo3NaRKMjDFnvW+1uzIP2teArJPQjqDNQpU/HXz5cg
+         9V3uZPAvszBAmUBLOWGLfoBReuYvcFzYBnutBzP6ZBoaw9pg5nGf9q+hsRXVqd48ZkGD
+         DdSW6/aSBbf8Wu62iIz0dleLkhNPZyk+Oa7riQQzktAxRTwKDlNtaEZitoz/xogNw/SJ
+         LYIQ==
+X-Gm-Message-State: APjAAAVdtna/QC36XyU/sI6lQoyE9KyEuKem9q0OMfuwj72gQz7yps9A
+        AZ2ZIUyKqZ7v8CCzVn8ZWG7OaJChPjMn3g==
+X-Google-Smtp-Source: APXvYqzN0+3v62lj93udaIjtWQ3XcJJcJfJfgP9SRdTVVqKdy3fdlYok4h8UwocM40boQHCAffjUyQ==
+X-Received: by 2002:ac8:282b:: with SMTP id 40mr76217978qtq.49.1560966451317;
+        Wed, 19 Jun 2019 10:47:31 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id t8sm14313733qtc.80.2019.06.19.10.47.28
+        by smtp.gmail.com with ESMTPSA id a11sm9709780qkn.26.2019.06.19.10.47.30
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 19 Jun 2019 10:47:28 -0700 (PDT)
+        Wed, 19 Jun 2019 10:47:30 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/8] btrfs: move btrfs_block_rsv definitions into it's own header
-Date:   Wed, 19 Jun 2019 13:47:17 -0400
-Message-Id: <20190619174724.1675-2-josef@toxicpanda.com>
+Subject: [PATCH 2/8] btrfs: export btrfs_block_rsv_add_bytes
+Date:   Wed, 19 Jun 2019 13:47:18 -0400
+Message-Id: <20190619174724.1675-3-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.14.3
 In-Reply-To: <20190619174724.1675-1-josef@toxicpanda.com>
 References: <20190619174724.1675-1-josef@toxicpanda.com>
@@ -58,210 +58,103 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Prep work for separating out all of the block_rsv related code into its
-own file.
+This is used in a few places, we need to make sure it's exported so we
+can move it around.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-rsv.h   | 81 ++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/ctree.h       | 70 +------------------------------------------
- fs/btrfs/extent-tree.c |  1 +
- 3 files changed, 83 insertions(+), 69 deletions(-)
- create mode 100644 fs/btrfs/block-rsv.h
+ fs/btrfs/block-rsv.h   |  2 ++
+ fs/btrfs/extent-tree.c | 18 +++++++++---------
+ 2 files changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/block-rsv.h b/fs/btrfs/block-rsv.h
-new file mode 100644
-index 000000000000..13f5ab02a635
---- /dev/null
+index 13f5ab02a635..1ddc0659c678 100644
+--- a/fs/btrfs/block-rsv.h
 +++ b/fs/btrfs/block-rsv.h
-@@ -0,0 +1,81 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright (C) 2019 Facebook.  All rights reserved.
-+ */
-+
-+#ifndef BTRFS_BLOCK_RSV_H
-+#define BTRFS_BLOCK_RSV_H
-+
-+
-+enum btrfs_reserve_flush_enum;
-+
-+/*
-+ * Types of block reserves
-+ */
-+enum {
-+	BTRFS_BLOCK_RSV_GLOBAL,
-+	BTRFS_BLOCK_RSV_DELALLOC,
-+	BTRFS_BLOCK_RSV_TRANS,
-+	BTRFS_BLOCK_RSV_CHUNK,
-+	BTRFS_BLOCK_RSV_DELOPS,
-+	BTRFS_BLOCK_RSV_DELREFS,
-+	BTRFS_BLOCK_RSV_EMPTY,
-+	BTRFS_BLOCK_RSV_TEMP,
-+};
-+
-+struct btrfs_block_rsv {
-+	u64 size;
-+	u64 reserved;
-+	struct btrfs_space_info *space_info;
-+	spinlock_t lock;
-+	unsigned short full;
-+	unsigned short type;
-+	unsigned short failfast;
-+
-+	/*
-+	 * Qgroup equivalent for @size @reserved
-+	 *
-+	 * Unlike normal @size/@reserved for inode rsv, qgroup doesn't care
-+	 * about things like csum size nor how many tree blocks it will need to
-+	 * reserve.
-+	 *
-+	 * Qgroup cares more about net change of the extent usage.
-+	 *
-+	 * So for one newly inserted file extent, in worst case it will cause
-+	 * leaf split and level increase, nodesize for each file extent is
-+	 * already too much.
-+	 *
-+	 * In short, qgroup_size/reserved is the upper limit of possible needed
-+	 * qgroup metadata reservation.
-+	 */
-+	u64 qgroup_rsv_size;
-+	u64 qgroup_rsv_reserved;
-+};
-+
-+void btrfs_init_block_rsv(struct btrfs_block_rsv *rsv, unsigned short type);
-+struct btrfs_block_rsv *btrfs_alloc_block_rsv(struct btrfs_fs_info *fs_info,
-+					      unsigned short type);
-+void btrfs_init_metadata_block_rsv(struct btrfs_fs_info *fs_info,
-+				   struct btrfs_block_rsv *rsv,
-+				   unsigned short type);
-+void btrfs_free_block_rsv(struct btrfs_fs_info *fs_info,
-+			  struct btrfs_block_rsv *rsv);
-+int btrfs_block_rsv_add(struct btrfs_root *root,
-+			struct btrfs_block_rsv *block_rsv, u64 num_bytes,
-+			enum btrfs_reserve_flush_enum flush);
-+int btrfs_block_rsv_check(struct btrfs_block_rsv *block_rsv, int min_factor);
-+int btrfs_block_rsv_refill(struct btrfs_root *root,
-+			   struct btrfs_block_rsv *block_rsv, u64 min_reserved,
-+			   enum btrfs_reserve_flush_enum flush);
-+int btrfs_block_rsv_migrate(struct btrfs_block_rsv *src_rsv,
-+			    struct btrfs_block_rsv *dst_rsv, u64 num_bytes,
-+			    bool update_size);
-+int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv,
-+			      u64 num_bytes);
-+int btrfs_cond_migrate_bytes(struct btrfs_fs_info *fs_info,
-+			     struct btrfs_block_rsv *dest, u64 num_bytes,
-+			     int min_factor);
-+void btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
-+			     struct btrfs_block_rsv *block_rsv,
-+			     u64 num_bytes);
-+#endif /* BTRFS_BLOCK_RSV_H */
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 2aeb323cc86e..9b8b8d07e66f 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -32,6 +32,7 @@
- #include "extent_io.h"
- #include "extent_map.h"
- #include "async-thread.h"
-+#include "block-rsv.h"
- 
- struct btrfs_trans_handle;
- struct btrfs_transaction;
-@@ -394,49 +395,6 @@ struct raid_kobject {
- 	struct list_head list;
- };
- 
--/*
-- * Types of block reserves
-- */
--enum {
--	BTRFS_BLOCK_RSV_GLOBAL,
--	BTRFS_BLOCK_RSV_DELALLOC,
--	BTRFS_BLOCK_RSV_TRANS,
--	BTRFS_BLOCK_RSV_CHUNK,
--	BTRFS_BLOCK_RSV_DELOPS,
--	BTRFS_BLOCK_RSV_DELREFS,
--	BTRFS_BLOCK_RSV_EMPTY,
--	BTRFS_BLOCK_RSV_TEMP,
--};
--
--struct btrfs_block_rsv {
--	u64 size;
--	u64 reserved;
--	struct btrfs_space_info *space_info;
--	spinlock_t lock;
--	unsigned short full;
--	unsigned short type;
--	unsigned short failfast;
--
--	/*
--	 * Qgroup equivalent for @size @reserved
--	 *
--	 * Unlike normal @size/@reserved for inode rsv, qgroup doesn't care
--	 * about things like csum size nor how many tree blocks it will need to
--	 * reserve.
--	 *
--	 * Qgroup cares more about net change of the extent usage.
--	 *
--	 * So for one newly inserted file extent, in worst case it will cause
--	 * leaf split and level increase, nodesize for each file extent is
--	 * already too much.
--	 *
--	 * In short, qgroup_size/reserved is the upper limit of possible needed
--	 * qgroup metadata reservation.
--	 */
--	u64 qgroup_rsv_size;
--	u64 qgroup_rsv_reserved;
--};
--
- /*
-  * free clusters are used to claim free space in relatively large chunks,
-  * allowing us to do less seeky writes. They are used for all metadata
-@@ -2810,32 +2768,6 @@ void btrfs_delalloc_release_metadata(struct btrfs_inode *inode, u64 num_bytes,
- 				     bool qgroup_free);
- int btrfs_delalloc_reserve_space(struct inode *inode,
- 			struct extent_changeset **reserved, u64 start, u64 len);
--void btrfs_init_block_rsv(struct btrfs_block_rsv *rsv, unsigned short type);
--struct btrfs_block_rsv *btrfs_alloc_block_rsv(struct btrfs_fs_info *fs_info,
--					      unsigned short type);
--void btrfs_init_metadata_block_rsv(struct btrfs_fs_info *fs_info,
--				   struct btrfs_block_rsv *rsv,
--				   unsigned short type);
--void btrfs_free_block_rsv(struct btrfs_fs_info *fs_info,
--			  struct btrfs_block_rsv *rsv);
--int btrfs_block_rsv_add(struct btrfs_root *root,
--			struct btrfs_block_rsv *block_rsv, u64 num_bytes,
--			enum btrfs_reserve_flush_enum flush);
--int btrfs_block_rsv_check(struct btrfs_block_rsv *block_rsv, int min_factor);
--int btrfs_block_rsv_refill(struct btrfs_root *root,
--			   struct btrfs_block_rsv *block_rsv, u64 min_reserved,
--			   enum btrfs_reserve_flush_enum flush);
--int btrfs_block_rsv_migrate(struct btrfs_block_rsv *src_rsv,
--			    struct btrfs_block_rsv *dst_rsv, u64 num_bytes,
--			    bool update_size);
--int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv,
--			      u64 num_bytes);
--int btrfs_cond_migrate_bytes(struct btrfs_fs_info *fs_info,
--			     struct btrfs_block_rsv *dest, u64 num_bytes,
--			     int min_factor);
--void btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
--			     struct btrfs_block_rsv *block_rsv,
--			     u64 num_bytes);
- void btrfs_delayed_refs_rsv_release(struct btrfs_fs_info *fs_info, int nr);
- void btrfs_update_delayed_refs_rsv(struct btrfs_trans_handle *trans);
- int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
+@@ -78,4 +78,6 @@ int btrfs_cond_migrate_bytes(struct btrfs_fs_info *fs_info,
+ void btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
+ 			     struct btrfs_block_rsv *block_rsv,
+ 			     u64 num_bytes);
++void btrfs_block_rsv_add_bytes(struct btrfs_block_rsv *block_rsv,
++			       u64 num_bytes, bool update_size);
+ #endif /* BTRFS_BLOCK_RSV_H */
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 3fc140dfcc58..2e128ecc95f7 100644
+index 2e128ecc95f7..2c81c546f0fc 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -29,6 +29,7 @@
- #include "qgroup.h"
- #include "ref-verify.h"
- #include "space-info.h"
-+#include "block-rsv.h"
+@@ -4385,8 +4385,8 @@ int btrfs_block_rsv_use_bytes(struct btrfs_block_rsv *block_rsv,
+ 	return ret;
+ }
  
- #undef SCRAMBLE_DELAYED_REFS
+-static void block_rsv_add_bytes(struct btrfs_block_rsv *block_rsv,
+-				u64 num_bytes, bool update_size)
++void btrfs_block_rsv_add_bytes(struct btrfs_block_rsv *block_rsv,
++			       u64 num_bytes, bool update_size)
+ {
+ 	spin_lock(&block_rsv->lock);
+ 	block_rsv->reserved += num_bytes;
+@@ -4418,7 +4418,7 @@ int btrfs_cond_migrate_bytes(struct btrfs_fs_info *fs_info,
+ 		global_rsv->full = 0;
+ 	spin_unlock(&global_rsv->lock);
+ 
+-	block_rsv_add_bytes(dest, num_bytes, true);
++	btrfs_block_rsv_add_bytes(dest, num_bytes, true);
+ 	return 0;
+ }
+ 
+@@ -4501,7 +4501,7 @@ int btrfs_delayed_refs_rsv_refill(struct btrfs_fs_info *fs_info,
+ 					   num_bytes, flush);
+ 	if (ret)
+ 		return ret;
+-	block_rsv_add_bytes(block_rsv, num_bytes, 0);
++	btrfs_block_rsv_add_bytes(block_rsv, num_bytes, 0);
+ 	trace_btrfs_space_reservation(fs_info, "delayed_refs_rsv",
+ 				      0, num_bytes, 1);
+ 	return 0;
+@@ -4573,7 +4573,7 @@ int btrfs_block_rsv_migrate(struct btrfs_block_rsv *src,
+ 	if (ret)
+ 		return ret;
+ 
+-	block_rsv_add_bytes(dst, num_bytes, update_size);
++	btrfs_block_rsv_add_bytes(dst, num_bytes, update_size);
+ 	return 0;
+ }
+ 
+@@ -4626,7 +4626,7 @@ int btrfs_block_rsv_add(struct btrfs_root *root,
+ 
+ 	ret = btrfs_reserve_metadata_bytes(root, block_rsv, num_bytes, flush);
+ 	if (!ret)
+-		block_rsv_add_bytes(block_rsv, num_bytes, true);
++		btrfs_block_rsv_add_bytes(block_rsv, num_bytes, true);
+ 
+ 	return ret;
+ }
+@@ -4671,7 +4671,7 @@ int btrfs_block_rsv_refill(struct btrfs_root *root,
+ 
+ 	ret = btrfs_reserve_metadata_bytes(root, block_rsv, num_bytes, flush);
+ 	if (!ret) {
+-		block_rsv_add_bytes(block_rsv, num_bytes, false);
++		btrfs_block_rsv_add_bytes(block_rsv, num_bytes, false);
+ 		return 0;
+ 	}
+ 
+@@ -5062,7 +5062,7 @@ int btrfs_delalloc_reserve_metadata(struct btrfs_inode *inode, u64 num_bytes)
+ 	spin_unlock(&inode->lock);
+ 
+ 	/* Now we can safely add our space to our block rsv */
+-	block_rsv_add_bytes(block_rsv, meta_reserve, false);
++	btrfs_block_rsv_add_bytes(block_rsv, meta_reserve, false);
+ 	trace_btrfs_space_reservation(root->fs_info, "delalloc",
+ 				      btrfs_ino(inode), meta_reserve, 1);
+ 
+@@ -7439,7 +7439,7 @@ use_block_rsv(struct btrfs_trans_handle *trans,
+ static void unuse_block_rsv(struct btrfs_fs_info *fs_info,
+ 			    struct btrfs_block_rsv *block_rsv, u32 blocksize)
+ {
+-	block_rsv_add_bytes(block_rsv, blocksize, false);
++	btrfs_block_rsv_add_bytes(block_rsv, blocksize, false);
+ 	block_rsv_release_bytes(fs_info, block_rsv, NULL, 0, NULL);
+ }
  
 -- 
 2.14.3
