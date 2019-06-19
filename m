@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B968E4B1FF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 08:16:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C7E24B21D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 08:32:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725928AbfFSGQR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 02:16:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52356 "EHLO mx1.suse.de"
+        id S1725899AbfFSGcJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 02:32:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55380 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725892AbfFSGQR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 02:16:17 -0400
+        id S1725881AbfFSGcI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Jun 2019 02:32:08 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DF836AE56
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 06:16:13 +0000 (UTC)
-Subject: Re: [PATCH] btrfs-progs: delayed-ref: Fix memory leak and
- use-after-free caused by wrong condition to free delayed ref/head.
+        by mx1.suse.de (Postfix) with ESMTP id 4B67AAC8E
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 06:32:07 +0000 (UTC)
+Subject: Re: [PATCH] btrfs-progs: Fix false ENOSPC alert by tracking used
+ space correctly
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190613073340.19851-1-wqu@suse.com>
+References: <20190524233243.4780-1-wqu@suse.com>
+Cc:     David Sterba <dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <927951dd-7416-56e7-854c-e56f0e90fdf1@suse.com>
-Date:   Wed, 19 Jun 2019 09:16:13 +0300
+Message-ID: <55b8c4a9-0db9-72f5-fc1c-9b8a0d9ac30b@suse.com>
+Date:   Wed, 19 Jun 2019 09:32:06 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190613073340.19851-1-wqu@suse.com>
+In-Reply-To: <20190524233243.4780-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,103 +80,292 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 13.06.19 г. 10:33 ч., Qu Wenruo wrote:
+On 25.05.19 г. 2:32 ч., Qu Wenruo wrote:
 > [BUG]
-> When btrfs-progs is compiled with D=asan, it can't pass even the very
-> basic fsck tests due to btrfs-image has memory leak:
->   === START TEST /home/adam/btrfs/btrfs-progs/tests//fsck-tests/001-bad-file-extent-bytenr
->   restoring image default_case.img
+> There is a bug report of unexpected ENOSPC from btrfs-convert.
+> https://github.com/kdave/btrfs-progs/issues/123#
 > 
->   =================================================================
->   ==7790==ERROR: LeakSanitizer: detected memory leaks
-> 
->   Direct leak of 104 byte(s) in 1 object(s) allocated from:
->       #0 0x7f1d3b738389 in __interceptor_malloc /build/gcc/src/gcc/libsanitizer/asan/asan_malloc_linux.cc:86
->       #1 0x560ca6b7f4ff in btrfs_add_delayed_tree_ref /home/adam/btrfs/btrfs-progs/delayed-ref.c:569
->       #2 0x560ca6af2d0b in btrfs_free_extent /home/adam/btrfs/btrfs-progs/extent-tree.c:2155
->       #3 0x560ca6ac16ca in __btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:319
->       #4 0x560ca6ac1d8c in btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:383
->       #5 0x560ca6ac6c8e in btrfs_search_slot /home/adam/btrfs/btrfs-progs/ctree.c:1153
->       #6 0x560ca6ab7e83 in fixup_device_size image/main.c:2113
->       #7 0x560ca6ab9279 in fixup_chunks_and_devices image/main.c:2333
->       #8 0x560ca6ab9ada in restore_metadump image/main.c:2455
->       #9 0x560ca6abaeba in main image/main.c:2723
->       #10 0x7f1d3b148ce2 in __libc_start_main (/usr/lib/libc.so.6+0x23ce2)
-> 
->   ... tons of similar leakage for delayed_tree_ref ...
-> 
->   Direct leak of 96 byte(s) in 1 object(s) allocated from:
->       #0 0x7f1d3b738389 in __interceptor_malloc /build/gcc/src/gcc/libsanitizer/asan/asan_malloc_linux.cc:86
->       #1 0x560ca6b7f5fb in btrfs_add_delayed_tree_ref /home/adam/btrfs/btrfs-progs/delayed-ref.c:583
->       #2 0x560ca6af5679 in alloc_tree_block /home/adam/btrfs/btrfs-progs/extent-tree.c:2503
->       #3 0x560ca6af57ac in btrfs_alloc_free_block /home/adam/btrfs/btrfs-progs/extent-tree.c:2524
->       #4 0x560ca6ac115b in __btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:290
->       #5 0x560ca6ac1d8c in btrfs_cow_block /home/adam/btrfs/btrfs-progs/ctree.c:383
->       #6 0x560ca6b7bb15 in commit_tree_roots /home/adam/btrfs/btrfs-progs/transaction.c:98
->       #7 0x560ca6b7c525 in btrfs_commit_transaction /home/adam/btrfs/btrfs-progs/transaction.c:192
->       #8 0x560ca6ab92be in fixup_chunks_and_devices image/main.c:2337
->       #9 0x560ca6ab9ada in restore_metadump image/main.c:2455
->       #10 0x560ca6abaeba in main image/main.c:2723
->       #11 0x7f1d3b148ce2 in __libc_start_main (/usr/lib/libc.so.6+0x23ce2)
-> 
->   ... tons of similar leakage for delayed_ref_head ...
-> 
->   SUMMARY: AddressSanitizer: 1600 byte(s) leaked in 16 allocation(s).
->   failed to restore image ./default_case.img
+> After some debug, even when we have enough unallocated space, we still
+> hit ENOSPC at btrfs_reserve_extent().
 > 
 > [CAUSE]
-> Commit c6039704c580 ("btrfs-progs: Add delayed refs infrastructure")
-> introduces delayed ref infrastructure for free space tree, however the
-> refcount_dec_and_test() from kernel code is wrongly backported.
+> Btrfs-progs relies on chunk preallocator to make enough space for
+> data/metadata.
 > 
-> refcount_dec_and_test() will return true if the refcount reaches 0.
-> So kernel code will free the allocated space as expected:
-> 	if (refcount_dec_and_test(&ref->refs)) {
-> 		kmem_cache_free();
-> 	}
+> However after the introduction of delayed-ref, it's no longer reliable
+> to relie on btrfs_space_info::bytes_used and
+> btrfs_space_info::bytes_pinned to calculate used metadata space.
 > 
-> However btrfs-progs backport is using the opposite condition:
-> 	if (--ref->refs) {
-> 		kfree();
-> 	}
+> For a running transaction with a lot of allocated tree blocks,
+> btrfs_space_info::bytes_used stays its original value, and will only be
+> updated when running delayed ref.
 > 
-> This will not free the memory for the last user, but for refs >= 2.
-> Causing both use-after-free and memory leak for any offline write
-> operation.
+> This makes btrfs-progs chunk preallocator completely useless. And for
+> btrfs-convert/mkfs.btrfs --rootdir, if we're going to have enough
+> metadata to fill a metadata block group in one transaction, we will hit
+> ENOSPC no matter whether we have enough unallocated space.
 > 
 > [FIX]
-> Fix the (--ref->refs) condition to (--ref->refs == 0) to fix the
-> backport error.
+> This patch will introduce btrfs_space_info::bytes_reserved to trace how
+> many space we have reserved but not yet committed to extent tree.
 > 
-> Fixes: c6039704c580 ("btrfs-progs: Add delayed refs infrastructure")
+> To support this change, this commit also introduces the following
+> modification:
+> - More comment on btrfs_space_info::bytes_*
+>   To make code a little easier to read
+> 
+> - Export update_space_info() to preallocate empty data/metadata space
+>   info for mkfs.
+>   For mkfs, we only have a temporary fs image with SYSTEM chunk only.
+>   Export update_space_info() so that we can preallocate empty
+>   data/metadata space info before we start a transaction.
+> 
+> - Proper btrfs_space_info::bytes_reserved update
+>   The timing is the as kernel (except we don't need to update
+>   bytes_reserved for data extents)
+>   * Increase bytes_reserved when call alloc_reserved_tree_block()
+>   * Decrease bytes_reserved when running delayed refs
+>     With the help of head->must_insert_reserved to determine whether we
+>     need to decrease.
+
+This text is opposite to what the code is doing. At the time of
+alloc_reserved_tree_block we actually decrement bytes_reserved since the
+allocated block is going to be added to bytes_used via
+update_block_group. This is done when delayed refs are being run.
+
+At alloc_tree_block you increment bytes_reserved since this is the time
+when space for the extent is reserved.
+
+> 
+> Issue: #123
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
->  delayed-ref.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  ctree.h       | 24 ++++++++++++++++++++++++
+>  extent-tree.c | 43 +++++++++++++++++++++++++++++++++++++------
+>  mkfs/main.c   | 11 +++++++++++
+>  transaction.c |  8 ++++++++
+>  4 files changed, 80 insertions(+), 6 deletions(-)
 > 
-> diff --git a/delayed-ref.h b/delayed-ref.h
-> index efc855eff621..2ccfd27c2b95 100644
-> --- a/delayed-ref.h
-> +++ b/delayed-ref.h
-> @@ -161,7 +161,7 @@ btrfs_free_delayed_extent_op(struct btrfs_delayed_extent_op *op)
->  static inline void btrfs_put_delayed_ref(struct btrfs_delayed_ref_node *ref)
->  {
->  	WARN_ON(ref->refs == 0);
-> -	if (--ref->refs) {
-> +	if (--ref->refs == 0) {
->  		WARN_ON(ref->in_tree);
->  		switch (ref->type) {
->  		case BTRFS_TREE_BLOCK_REF_KEY:
-> @@ -180,7 +180,7 @@ static inline void btrfs_put_delayed_ref(struct btrfs_delayed_ref_node *ref)
->  
->  static inline void btrfs_put_delayed_ref_head(struct btrfs_delayed_ref_head *head)
->  {
-> -	if (--head->refs)
-> +	if (--head->refs == 0)
->  		kfree(head);
+> diff --git a/ctree.h b/ctree.h
+> index 76f52b1c9b08..93f96a578f2c 100644
+> --- a/ctree.h
+> +++ b/ctree.h
+> @@ -1060,8 +1060,29 @@ struct btrfs_qgroup_limit_item {
+>  struct btrfs_space_info {
+>  	u64 flags;
+>  	u64 total_bytes;
+> +	/*
+> +	 * Space already used.
+> +	 * Only accounting space in current extent tree, thus delayed ref
+> +	 * won't be accounted here.
+> +	 */
+>  	u64 bytes_used;
+> +
+> +	/*
+> +	 * Space being pinned down.
+> +	 * So extent allocator will not try to allocate space from them.
+> +	 *
+> +	 * For cases like extents being freed in current transaction, or
+> +	 * manually pinned bytes for re-initializing certain trees.
+> +	 */
+>  	u64 bytes_pinned;
+> +
+> +	/*
+> +	 * Space being reserved.
+> +	 * Space has already being reserved but not yet reach extent tree.
+> +	 *
+> +	 * New tree blocks allocated in current transaction goes here.
+> +	 */
+> +	u64 bytes_reserved;
+>  	int full;
+>  	struct list_head list;
+>  };
+> @@ -2528,6 +2549,9 @@ int btrfs_update_extent_ref(struct btrfs_trans_handle *trans,
+>  			    u64 root_objectid, u64 ref_generation,
+>  			    u64 owner_objectid);
+>  int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans);
+> +int update_space_info(struct btrfs_fs_info *info, u64 flags,
+> +		      u64 total_bytes, u64 bytes_used,
+> +		      struct btrfs_space_info **space_info);
+>  int btrfs_free_block_groups(struct btrfs_fs_info *info);
+>  int btrfs_read_block_groups(struct btrfs_root *root);
+>  struct btrfs_block_group_cache *
+> diff --git a/extent-tree.c b/extent-tree.c
+> index e62ee8c2ba13..c7ca49bccd8b 100644
+> --- a/extent-tree.c
+> +++ b/extent-tree.c
+> @@ -1786,9 +1786,9 @@ static int free_space_info(struct btrfs_fs_info *fs_info, u64 flags,
+>  	return 0;
 >  }
 >  
+> -static int update_space_info(struct btrfs_fs_info *info, u64 flags,
+> -			     u64 total_bytes, u64 bytes_used,
+> -			     struct btrfs_space_info **space_info)
+> +int update_space_info(struct btrfs_fs_info *info, u64 flags,
+> +		      u64 total_bytes, u64 bytes_used,
+> +		      struct btrfs_space_info **space_info)
+>  {
+>  	struct btrfs_space_info *found;
+>  
+> @@ -1814,6 +1814,7 @@ static int update_space_info(struct btrfs_fs_info *info, u64 flags,
+>  	found->total_bytes = total_bytes;
+>  	found->bytes_used = bytes_used;
+>  	found->bytes_pinned = 0;
+> +	found->bytes_reserved = 0;
+>  	found->full = 0;
+>  	*space_info = found;
+>  	return 0;
+> @@ -1859,8 +1860,8 @@ static int do_chunk_alloc(struct btrfs_trans_handle *trans,
+>  		return 0;
+>  
+>  	thresh = div_factor(space_info->total_bytes, 7);
+> -	if ((space_info->bytes_used + space_info->bytes_pinned + alloc_bytes) <
+> -	    thresh)
+> +	if ((space_info->bytes_used + space_info->bytes_pinned +
+> +	     space_info->bytes_reserved + alloc_bytes) < thresh)
+>  		return 0;
+>  
+>  	/*
+> @@ -2538,6 +2539,7 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
+>  	struct btrfs_fs_info *fs_info = trans->fs_info;
+>  	struct btrfs_extent_item *extent_item;
+>  	struct btrfs_extent_inline_ref *iref;
+> +	struct btrfs_space_info *sinfo;
+>  	struct extent_buffer *leaf;
+>  	struct btrfs_path *path;
+>  	struct btrfs_key ins;
+> @@ -2545,6 +2547,9 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
+>  	u64 start, end;
+>  	int ret;
+>  
+> +	sinfo = __find_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA);
+> +	ASSERT(sinfo);
+> +
+>  	ins.objectid = node->bytenr;
+>  	if (skinny_metadata) {
+>  		ins.offset = ref->level;
+> @@ -2605,6 +2610,14 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
+>  
+>  	ret = update_block_group(fs_info, ins.objectid, fs_info->nodesize, 1,
+>  				 0);
+> +	if (sinfo) {
+> +		if (fs_info->nodesize > sinfo->bytes_reserved) {
+> +			WARN_ON(1);
+> +			sinfo->bytes_reserved = 0;
+> +		} else {
+> +			sinfo->bytes_reserved -= fs_info->nodesize;
+> +		}
+> +	}
+>  
+>  	if (ref->root == BTRFS_EXTENT_TREE_OBJECTID) {
+>  		clear_extent_bits(&trans->fs_info->extent_ins, start, end,
+> @@ -2624,6 +2637,8 @@ static int alloc_tree_block(struct btrfs_trans_handle *trans,
+>  	int ret;
+>  	u64 extent_size;
+>  	struct btrfs_delayed_extent_op *extent_op;
+> +	struct btrfs_space_info *sinfo;
+> +	struct btrfs_fs_info *fs_info = root->fs_info;
+>  	bool skinny_metadata = btrfs_fs_incompat(root->fs_info,
+>  						 SKINNY_METADATA);
+>  
+> @@ -2631,6 +2646,8 @@ static int alloc_tree_block(struct btrfs_trans_handle *trans,
+>  	if (!extent_op)
+>  		return -ENOMEM;
+>  
+> +	sinfo = __find_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA);
+> +	ASSERT(sinfo);
+>  	ret = btrfs_reserve_extent(trans, root, num_bytes, empty_size,
+>  				   hint_byte, search_end, ins, 0);
+>  	if (ret < 0)
+> @@ -2663,6 +2680,7 @@ static int alloc_tree_block(struct btrfs_trans_handle *trans,
+>  		BUG_ON(ret);
+>  	}
+>  
+> +	sinfo->bytes_reserved += extent_size;
+>  	ret = btrfs_add_delayed_tree_ref(root->fs_info, trans, ins->objectid,
+>  					 extent_size, 0, root_objectid,
+>  					 level, BTRFS_ADD_DELAYED_EXTENT,
+> @@ -3000,6 +3018,10 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
+>  		sinfo = list_entry(info->space_info.next,
+>  				   struct btrfs_space_info, list);
+>  		list_del_init(&sinfo->list);
+> +		if (sinfo->bytes_reserved)
+> +			warning(
+> +		"reserved space leaked, flag=0x%llx bytes_reserved=%llu",
+> +				sinfo->flags, sinfo->bytes_reserved);
+>  		kfree(sinfo);
+>  	}
+>  	return 0;
+> @@ -4106,8 +4128,17 @@ int cleanup_ref_head(struct btrfs_trans_handle *trans,
+>  	rb_erase(&head->href_node, &delayed_refs->href_root);
+>  	RB_CLEAR_NODE(&head->href_node);
+>  
+> -	if (head->must_insert_reserved)
+> +	if (head->must_insert_reserved) {
+>  		btrfs_pin_extent(fs_info, head->bytenr, head->num_bytes);
+> +		if (!head->is_data) {
+> +			struct btrfs_space_info *sinfo;
+> +
+> +			sinfo = __find_space_info(trans->fs_info,
+> +					BTRFS_BLOCK_GROUP_METADATA);
+> +			ASSERT(sinfo);
+> +			sinfo->bytes_reserved -= head->num_bytes;
+> +		}
+> +	}
+>  
+>  	btrfs_put_delayed_ref_head(head);
+>  	return 0;
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index b442e6e40c37..1d03ec52ddd6 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -58,11 +58,22 @@ static int create_metadata_block_groups(struct btrfs_root *root, int mixed,
+>  {
+>  	struct btrfs_fs_info *fs_info = root->fs_info;
+>  	struct btrfs_trans_handle *trans;
+> +	struct btrfs_space_info *sinfo;
+>  	u64 bytes_used;
+>  	u64 chunk_start = 0;
+>  	u64 chunk_size = 0;
+>  	int ret;
+>  
+> +	/* Create needed space info to trace extents reservation */
+> +	ret = update_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA,
+> +				0, 0, &sinfo);
+> +	if (ret < 0)
+> +		return ret;
+> +	ret = update_space_info(fs_info, BTRFS_BLOCK_GROUP_DATA,
+> +				0, 0, &sinfo);
+> +	if (ret < 0)
+> +		return ret;
+> +
+>  	trans = btrfs_start_transaction(root, 1);
+>  	BUG_ON(IS_ERR(trans));
+>  	bytes_used = btrfs_super_bytes_used(fs_info->super_copy);
+> diff --git a/transaction.c b/transaction.c
+> index 138e10f0d6cc..d2c7f4829eda 100644
+> --- a/transaction.c
+> +++ b/transaction.c
+> @@ -158,6 +158,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans,
+>  	u64 transid = trans->transid;
+>  	int ret = 0;
+>  	struct btrfs_fs_info *fs_info = root->fs_info;
+> +	struct btrfs_space_info *sinfo;
+>  
+>  	if (trans->fs_info->transaction_aborted)
+>  		return -EROFS;
+> @@ -209,6 +210,13 @@ commit_tree:
+>  	root->commit_root = NULL;
+>  	fs_info->running_transaction = NULL;
+>  	fs_info->last_trans_committed = transid;
+> +	list_for_each_entry(sinfo, &fs_info->space_info, list) {
+> +		if (sinfo->bytes_reserved) {
+> +			warning(
+> +	"reserved space leaked, transid=%llu flag=0x%llx bytes_reserved=%llu",
+> +				transid, sinfo->flags, sinfo->bytes_reserved);
+> +		}
+> +	}
+>  	return ret;
+>  error:
+>  	btrfs_destroy_delayed_refs(trans);
 > 
