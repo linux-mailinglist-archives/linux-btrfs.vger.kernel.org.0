@@ -2,97 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 765B04B7A1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 14:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAFFD4B7A6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 14:08:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731670AbfFSMGa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 08:06:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726246AbfFSMG3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 08:06:29 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0802F206E0;
-        Wed, 19 Jun 2019 12:06:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560945988;
-        bh=rBMLUubLEqagGy5MDLeJ89gbQWLVzxg1NVJ1TpeYEi4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=M5XHYJhvZYU27WhdvrAGybU+RYcAXzyXZiwICJdEQjJvJzYvLLNsThN13HBz5SctY
-         W4uPyhTr2C/d68SYKzI3RJrwKdDaMeLsmu3x/eoOokJtoPBSJ/jx7xg15DzCg7JLve
-         f1ZFzV90XId+7HJWp/qiOXp7q/2AuBqsKSoNYzmo=
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 2/2] generic/059: also test that the file's mtime and ctime are updated
-Date:   Wed, 19 Jun 2019 13:06:24 +0100
-Message-Id: <20190619120624.9922-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1727242AbfFSMIq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 08:08:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44742 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726246AbfFSMIq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Jun 2019 08:08:46 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E6C65AC54
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 12:08:43 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 71184DA88C; Wed, 19 Jun 2019 14:09:31 +0200 (CEST)
+Date:   Wed, 19 Jun 2019 14:09:31 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 5/6] btrfs: use raid_attr for minimum stripe count in
+ btrfs_calc_avail_data_space
+Message-ID: <20190619120931.GD8917@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1560880630.git.dsterba@suse.com>
+ <ffdc7e77015c2f5ad45de7acc2336fe2901bb605.1560880630.git.dsterba@suse.com>
+ <7adb54d3-38c9-738b-caf0-c6926ab19dbb@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7adb54d3-38c9-738b-caf0-c6926ab19dbb@suse.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Jun 19, 2019 at 10:51:14AM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 18.06.19 г. 21:00 ч., David Sterba wrote:
+> > Minimum stripe count matches the minimum devices required for a given
+> > profile. The open coded assignments match the raid_attr table.
+> > 
+> > What's changed here is the meaning for RAID5/6. Previously their
+> > min_stripes would be 1, while newly it's devs_min. This however shold be
+> > the same as before because it's not possible to create filesystem on
+> > fewer devices than the raid_attr table allows.
+> > 
+> > There's no adjustment regarding the parity stripes (like
+> > calc_data_stripes does), because we're interested in overall space that
+> > would fit on the devices.
+> > 
+> > Missing devices make no difference for the whole calculation, we have
+> > the size stored in the structures.
+> 
+> I think the clean up in this function should include more here's list of
+> things which I think will make it more readable.
 
-Test as well that hole punch operations that affect a single file block
-also update the file's mtime and ctime.
+I did not intend to clean up the whole function in this patch, only whre
+the raid table could be used.
 
-This is motivated by a bug a found in btrfs which is fixed by the
-following patch for the linux kernel:
+> Something like the
+> attached diff on top of your patch:
+> 
+> 
 
- "Btrfs: add missing inode version, ctime and mtime updates when
-  punching hole"
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 6e196b8a0820..230aef8314da 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1898,11 +1898,10 @@ static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
+>  	struct btrfs_device_info *devices_info;
+>  	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+>  	struct btrfs_device *device;
+> -	u64 skip_space;
+>  	u64 type;
+>  	u64 avail_space;
+>  	u64 min_stripe_size;
+> -	int min_stripes = 1, num_stripes = 1;
+> +	int num_stripes = 1;
+>  	int i = 0, nr_devices;
+>  
+>  	/*
+> @@ -1957,28 +1956,21 @@ static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
+>  		avail_space = device->total_bytes - device->bytes_used;
+>  
+>  		/* align with stripe_len */
+> -		avail_space = div_u64(avail_space, BTRFS_STRIPE_LEN);
+> -		avail_space *= BTRFS_STRIPE_LEN;
+> +		avail_space = rounddown(avail_space, BTRFS_STRIPE_LEN);
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/generic/059 | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+As long as the stripe length is a constant, this is fine. rounddown uses
+% (modulo) so this can be come division that will not work for u64
+types.
 
-diff --git a/tests/generic/059 b/tests/generic/059
-index e8cb93d8..fd44b2ea 100755
---- a/tests/generic/059
-+++ b/tests/generic/059
-@@ -18,6 +18,9 @@
- #
- #  Btrfs: add missing inode update when punching hole
- #
-+# Also test the mtime and ctime properties of the file change after punching
-+# holes with ranges that operate only on a single block of the file.
-+#
- seq=`basename $0`
- seqres=$RESULT_DIR/$seq
- echo "QA output created by $seq"
-@@ -68,6 +71,13 @@ $XFS_IO_PROG -c "fsync" $SCRATCH_MNT/foo
- # fsync log.
- sync
- 
-+# Sleep for 1 second, because we want to check that the next punch operations we
-+# do update the file's mtime and ctime.
-+sleep 1
-+
-+mtime_before=$(stat -c %Y $SCRATCH_MNT/foo)
-+ctime_before=$(stat -c %Z $SCRATCH_MNT/foo)
-+
- # Punch a hole in our file. This small range affects only 1 page.
- # This made the btrfs hole punching implementation write only some zeroes in
- # one page, but it did not update the btrfs inode fields used to determine if
-@@ -94,5 +104,13 @@ _flakey_drop_and_remount
- echo "File content after:"
- od -t x1 $SCRATCH_MNT/foo
- 
-+mtime_after=$(stat -c %Y $SCRATCH_MNT/foo)
-+ctime_after=$(stat -c %Z $SCRATCH_MNT/foo)
-+
-+[ $mtime_after -gt $mtime_before ] || \
-+	echo "mtime did not increase (before: $mtime_before after: $mtime_after"
-+[ $ctime_after -gt $ctime_before ] || \
-+	echo "ctime did not increase (before: $ctime_before after: $mtime_after"
-+
- status=0
- exit
--- 
-2.11.0
+>  
+>  		/*
+>  		 * In order to avoid overwriting the superblock on the drive,
+>  		 * btrfs starts at an offset of at least 1MB when doing chunk
+>  		 * allocation.
+> +		 *
+> +		 * This ensures we have at least min_stripe_size free space
+> +		 * after excluding 1mb.
+>  		 */
+> -		skip_space = SZ_1M;
+> -
+> -		/*
+> -		 * we can use the free space in [0, skip_space - 1], subtract
+> -		 * it from the total.
+> -		 */
+> -		if (avail_space && avail_space >= skip_space)
+> -			avail_space -= skip_space;
+> -		else
+> -			avail_space = 0;
+> -
+> -		if (avail_space < min_stripe_size)
+> +		if (avail_space <= SZ_1M + min_stripe_size)
+>  			continue;
+>  
+> +		avail_space -= SZ_1M;
+> +
+>  		devices_info[i].dev = device;
+>  		devices_info[i].max_avail = avail_space;
+>  
+> @@ -1992,9 +1984,8 @@ static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
+>  
+>  	i = nr_devices - 1;
+>  	avail_space = 0;
+> -	while (nr_devices >= min_stripes) {
+> -		if (num_stripes > nr_devices)
+> -			num_stripes = nr_devices;
+> +	while (nr_devices >= rattr->devs_min) {
+> +		num_stripes = min(num_stripes, nr_devices);
+>  
+>  		if (devices_info[i].max_avail >= min_stripe_size) {
+>  			int j;
 
+All of the above look good to me, feel free to send them as proper
+patches.
