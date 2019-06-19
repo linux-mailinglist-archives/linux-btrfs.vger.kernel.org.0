@@ -2,22 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D974B26A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 08:53:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4397A4B26C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 08:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725901AbfFSGxJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 02:53:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58928 "EHLO mx1.suse.de"
+        id S1726009AbfFSGyT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 02:54:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59470 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725854AbfFSGxJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 02:53:09 -0400
+        id S1725854AbfFSGyT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Jun 2019 02:54:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1286BAF97;
-        Wed, 19 Jun 2019 06:53:07 +0000 (UTC)
-Subject: Re: [PATCH][v2] btrfs: run delayed iput at unlink time
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20190618145918.12641-1-josef@toxicpanda.com>
+        by mx1.suse.de (Postfix) with ESMTP id 3757BAFF1
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 06:54:17 +0000 (UTC)
+Subject: Re: [PATCH 2/6] btrfs: use common helpers for extent IO state
+ insertion messages
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1560880630.git.dsterba@suse.com>
+ <b7824fd41f86ac8bcb4dfd19565d590d97cbe2f5.1560880630.git.dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -62,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <d5797b9a-6f54-591c-027e-f49aa168c941@suse.com>
-Date:   Wed, 19 Jun 2019 09:53:05 +0300
+Message-ID: <39818dbd-efc1-7290-2c64-b1c2f9d71a91@suse.com>
+Date:   Wed, 19 Jun 2019 09:54:16 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190618145918.12641-1-josef@toxicpanda.com>
+In-Reply-To: <b7824fd41f86ac8bcb4dfd19565d590d97cbe2f5.1560880630.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -78,95 +80,46 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 18.06.19 г. 17:59 ч., Josef Bacik wrote:
-> We have been seeing issues in production where a cleaner script will end
-> up unlinking a bunch of files that have pending iputs.  This means they
-> will get their final iput's run at btrfs-cleaner time and thus are not
-> throttled, which impacts the workload.
+On 18.06.19 г. 21:00 ч., David Sterba wrote:
+> Print the error messages using the helpers that also print the
+> filesystem identification.
 > 
-> Since we are unlinking these files we can just drop the delayed iput at
-> unlink time.  We are already holding a reference to the inode so this
-> will not be the final iput and thus is completely safe to do at this
-> point.  Doing this means we are more likely to be doing the final iput
-> at unlink time, and thus will get the IO charged to the caller and get
-> throttled appropriately without affecting the main workload.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-That looks a lot nicer and the explanation is sufficient.
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
+> Signed-off-by: David Sterba <dsterba@suse.com>
 > ---
-> v1->v2:
-> - consolidate the delayed iput run into a helper.
+>  fs/btrfs/extent_io.c | 11 +++++++----
+>  1 file changed, 7 insertions(+), 4 deletions(-)
 > 
->  fs/btrfs/inode.c | 40 ++++++++++++++++++++++++++++++++++------
->  1 file changed, 34 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 33380f5e2e8a..c311bf6d52f4 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -3326,6 +3326,28 @@ void btrfs_add_delayed_iput(struct inode *inode)
->  		wake_up_process(fs_info->cleaner_kthread);
->  }
->  
-> +static void run_delayed_iput_locked(struct btrfs_fs_info *fs_info,
-> +				    struct btrfs_inode *inode)
-> +{
-> +	list_del_init(&inode->delayed_iput);
-> +	spin_unlock(&fs_info->delayed_iput_lock);
-> +	iput(&inode->vfs_inode);
-> +	if (atomic_dec_and_test(&fs_info->nr_delayed_iputs))
-> +		wake_up(&fs_info->delayed_iputs_wait);
-> +	spin_lock(&fs_info->delayed_iput_lock);
-> +}
-> +
-> +static void btrfs_run_delayed_iput(struct btrfs_fs_info *fs_info,
-> +				   struct btrfs_inode *inode)
-> +{
-> +	if (!list_empty(&inode->delayed_iput)) {
-> +		spin_lock(&fs_info->delayed_iput_lock);
-> +		if (!list_empty(&inode->delayed_iput))
-> +			run_delayed_iput_locked(fs_info, inode);
-> +		spin_unlock(&fs_info->delayed_iput_lock);
-> +	}
-> +}
-> +
->  void btrfs_run_delayed_iputs(struct btrfs_fs_info *fs_info)
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 8634eda07b7a..a6ad2f6f2bf7 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -524,9 +524,11 @@ static int insert_state(struct extent_io_tree *tree,
 >  {
+>  	struct rb_node *node;
 >  
-> @@ -3335,12 +3357,7 @@ void btrfs_run_delayed_iputs(struct btrfs_fs_info *fs_info)
+> -	if (end < start)
+> -		WARN(1, KERN_ERR "BTRFS: end < start %llu %llu\n",
+> -		       end, start);
+> +	if (end < start) {
+> +		btrfs_err(tree->fs_info,
+> +			"insert state: end < start %llu %llu", end, start);
+> +		WARN_ON(1);
+> +	}
+
+nit: if (WARN_ON(end < start))
+       btrfs_err(...)
+
+>  	state->start = start;
+>  	state->end = end;
 >  
->  		inode = list_first_entry(&fs_info->delayed_iputs,
->  				struct btrfs_inode, delayed_iput);
-> -		list_del_init(&inode->delayed_iput);
-> -		spin_unlock(&fs_info->delayed_iput_lock);
-> -		iput(&inode->vfs_inode);
-> -		if (atomic_dec_and_test(&fs_info->nr_delayed_iputs))
-> -			wake_up(&fs_info->delayed_iputs_wait);
-> -		spin_lock(&fs_info->delayed_iput_lock);
-> +		run_delayed_iput_locked(fs_info, inode);
+> @@ -536,7 +538,8 @@ static int insert_state(struct extent_io_tree *tree,
+>  	if (node) {
+>  		struct extent_state *found;
+>  		found = rb_entry(node, struct extent_state, rb_node);
+> -		pr_err("BTRFS: found node %llu %llu on insert of %llu %llu\n",
+> +		btrfs_err(tree->fs_info,
+> +		       "found node %llu %llu on insert of %llu %llu",
+>  		       found->start, found->end, start, end);
+>  		return -EEXIST;
 >  	}
->  	spin_unlock(&fs_info->delayed_iput_lock);
->  }
-> @@ -4045,6 +4062,17 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
->  		ret = 0;
->  	else if (ret)
->  		btrfs_abort_transaction(trans, ret);
-> +
-> +	/*
-> +	 * If we have a pending delayed iput we could end up with the final iput
-> +	 * being run in btrfs-cleaner context.  If we have enough of these built
-> +	 * up we can end up burning a lot of time in btrfs-cleaner without any
-> +	 * way to throttle the unlinks.  Since we're currently holding a ref on
-> +	 * the inode we can run the delayed iput here without any issues as the
-> +	 * final iput won't be done until after we drop the ref we're currently
-> +	 * holding.
-> +	 */
-> +	btrfs_run_delayed_iput(fs_info, inode);
->  err:
->  	btrfs_free_path(path);
->  	if (ret)
 > 
