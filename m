@@ -2,24 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46D244B27E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 08:57:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5764B28D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Jun 2019 09:04:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730758AbfFSG5k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 19 Jun 2019 02:57:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60240 "EHLO mx1.suse.de"
+        id S1726628AbfFSHC4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 19 Jun 2019 03:02:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60806 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725980AbfFSG5j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 19 Jun 2019 02:57:39 -0400
+        id S1725854AbfFSHC4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 19 Jun 2019 03:02:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9D068AFBE
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 06:57:37 +0000 (UTC)
-Subject: Re: [PATCH 4/6] btrfs: use raid_attr to adjust minimal stripe size in
- btrfs_calc_avail_data_space
+        by mx1.suse.de (Postfix) with ESMTP id AB03DAFDB
+        for <linux-btrfs@vger.kernel.org>; Wed, 19 Jun 2019 07:02:54 +0000 (UTC)
+Subject: Re: [PATCH 6/6] btrfs: lift bio_set_dev from bio allocation helpers
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1560880630.git.dsterba@suse.com>
- <353ead8638fbac0abe61e1647110bcd795662b27.1560880630.git.dsterba@suse.com>
+ <78e6abb1da3bb93961254526172dc70138f8f39b.1560880630.git.dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <0f7cdd53-4350-6ed8-f103-835ab38d6876@suse.com>
-Date:   Wed, 19 Jun 2019 09:57:36 +0300
+Message-ID: <d36987c6-2e18-5b2e-0760-0cf151446586@suse.com>
+Date:   Wed, 19 Jun 2019 10:02:53 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <353ead8638fbac0abe61e1647110bcd795662b27.1560880630.git.dsterba@suse.com>
+In-Reply-To: <78e6abb1da3bb93961254526172dc70138f8f39b.1560880630.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,50 +80,109 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 18.06.19 г. 21:00 ч., David Sterba wrote:
-> Special case for DUP can be replaced by lookup to the attribute table,
-> where the dev_stripes is the right coefficient.
+> The block device is passed around for the only purpose to set it in new
+> bios. Move the assignment one level up. This is a preparatory patch for
+> further bdev cleanups.
 > 
 > Signed-off-by: David Sterba <dsterba@suse.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+Albeit I'd go as far as suggesting to make btrfs_bio_alloc a void
+function similar to the generic bio alloc functions. It should be up to
+the callers of bio alloc functions to initialize the bio in one place.
+Even after your patch initialization is split across btrfs_bio_alloc and
+its caller which seems a bit idiosyncratic.
+
 > ---
->  fs/btrfs/super.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+>  fs/btrfs/compression.c | 12 ++++++++----
+>  fs/btrfs/extent_io.c   |  6 +++---
+>  fs/btrfs/extent_io.h   |  2 +-
+>  3 files changed, 12 insertions(+), 8 deletions(-)
 > 
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 6e196b8a0820..a813b582fa72 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -1904,6 +1904,7 @@ static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
->  	u64 min_stripe_size;
->  	int min_stripes = 1, num_stripes = 1;
->  	int i = 0, nr_devices;
-> +	const struct btrfs_raid_attr *rattr;
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index db41315f11eb..60c47b417a4b 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -340,7 +340,8 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
 >  
->  	/*
->  	 * We aren't under the device list lock, so this is racy-ish, but good
-> @@ -1927,6 +1928,8 @@ static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
+>  	bdev = fs_info->fs_devices->latest_bdev;
 >  
->  	/* calc min stripe number for data space allocation */
->  	type = btrfs_data_alloc_profile(fs_info);
-> +	rattr = &btrfs_raid_array[btrfs_bg_flags_to_raid_index(type)];
-> +	ASSERT(rattr);
-
-That ASSERT is a noop since btrfs_bg_flags_to_raid_index always returns
-a valid index.
-
->  	if (type & BTRFS_BLOCK_GROUP_RAID0) {
->  		min_stripes = 2;
->  		num_stripes = nr_devices;
-> @@ -1938,10 +1941,8 @@ static inline int btrfs_calc_avail_data_space(struct btrfs_fs_info *fs_info,
->  		num_stripes = 4;
+> -	bio = btrfs_bio_alloc(bdev, first_byte);
+> +	bio = btrfs_bio_alloc(first_byte);
+> +	bio_set_dev(bio, bdev);
+>  	bio->bi_opf = REQ_OP_WRITE | write_flags;
+>  	bio->bi_private = cb;
+>  	bio->bi_end_io = end_compressed_bio_write;
+> @@ -382,7 +383,8 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
+>  				bio_endio(bio);
+>  			}
+>  
+> -			bio = btrfs_bio_alloc(bdev, first_byte);
+> +			bio = btrfs_bio_alloc(first_byte);
+> +			bio_set_dev(bio, bdev);
+>  			bio->bi_opf = REQ_OP_WRITE | write_flags;
+>  			bio->bi_private = cb;
+>  			bio->bi_end_io = end_compressed_bio_write;
+> @@ -620,7 +622,8 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  	/* include any pages we added in add_ra-bio_pages */
+>  	cb->len = bio->bi_iter.bi_size;
+>  
+> -	comp_bio = btrfs_bio_alloc(bdev, cur_disk_byte);
+> +	comp_bio = btrfs_bio_alloc(cur_disk_byte);
+> +	bio_set_dev(comp_bio, bdev);
+>  	comp_bio->bi_opf = REQ_OP_READ;
+>  	comp_bio->bi_private = cb;
+>  	comp_bio->bi_end_io = end_compressed_bio_read;
+> @@ -670,7 +673,8 @@ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+>  				bio_endio(comp_bio);
+>  			}
+>  
+> -			comp_bio = btrfs_bio_alloc(bdev, cur_disk_byte);
+> +			comp_bio = btrfs_bio_alloc(cur_disk_byte);
+> +			bio_set_dev(comp_bio, bdev);
+>  			comp_bio->bi_opf = REQ_OP_READ;
+>  			comp_bio->bi_private = cb;
+>  			comp_bio->bi_end_io = end_compressed_bio_read;
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index a6ad2f6f2bf7..f21be5d3724f 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2863,12 +2863,11 @@ static inline void btrfs_io_bio_init(struct btrfs_io_bio *btrfs_bio)
+>   * never fail.  We're returning a bio right now but you can call btrfs_io_bio
+>   * for the appropriate container_of magic
+>   */
+> -struct bio *btrfs_bio_alloc(struct block_device *bdev, u64 first_byte)
+> +struct bio *btrfs_bio_alloc(u64 first_byte)
+>  {
+>  	struct bio *bio;
+>  
+>  	bio = bio_alloc_bioset(GFP_NOFS, BIO_MAX_PAGES, &btrfs_bioset);
+> -	bio_set_dev(bio, bdev);
+>  	bio->bi_iter.bi_sector = first_byte >> 9;
+>  	btrfs_io_bio_init(btrfs_io_bio(bio));
+>  	return bio;
+> @@ -2979,7 +2978,8 @@ static int submit_extent_page(unsigned int opf, struct extent_io_tree *tree,
+>  		}
 >  	}
 >  
-> -	if (type & BTRFS_BLOCK_GROUP_DUP)
-> -		min_stripe_size = 2 * BTRFS_STRIPE_LEN;
-> -	else
-> -		min_stripe_size = BTRFS_STRIPE_LEN;
-> +	/* Adjust for more than 1 stripe per device */
-> +	min_stripe_size = rattr->dev_stripes * BTRFS_STRIPE_LEN;
->  
->  	rcu_read_lock();
->  	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
+> -	bio = btrfs_bio_alloc(bdev, offset);
+> +	bio = btrfs_bio_alloc(offset);
+> +	bio_set_dev(bio, bdev);
+>  	bio_add_page(bio, page, page_size, pg_offset);
+>  	bio->bi_end_io = end_io_func;
+>  	bio->bi_private = tree;
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index 844e595cde5b..6e13a62a2974 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -497,7 +497,7 @@ void extent_clear_unlock_delalloc(struct inode *inode, u64 start, u64 end,
+>  				 u64 delalloc_end, struct page *locked_page,
+>  				 unsigned bits_to_clear,
+>  				 unsigned long page_ops);
+> -struct bio *btrfs_bio_alloc(struct block_device *bdev, u64 first_byte);
+> +struct bio *btrfs_bio_alloc(u64 first_byte);
+>  struct bio *btrfs_io_bio_alloc(unsigned int nr_iovecs);
+>  struct bio *btrfs_bio_clone(struct bio *bio);
+>  struct bio *btrfs_bio_clone_partial(struct bio *orig, int offset, int size);
 > 
