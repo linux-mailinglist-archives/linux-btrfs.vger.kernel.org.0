@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BE44DA51
+	by mail.lfdr.de (Postfix) with ESMTP id DB4B64DA52
 	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2019 21:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726636AbfFTTiU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jun 2019 15:38:20 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:41783 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726169AbfFTTiT (ORCPT
+        id S1726654AbfFTTiV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jun 2019 15:38:21 -0400
+Received: from mail-yw1-f65.google.com ([209.85.161.65]:37095 "EHLO
+        mail-yw1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726642AbfFTTiU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jun 2019 15:38:19 -0400
-Received: by mail-qt1-f195.google.com with SMTP id d17so4375724qtj.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2019 12:38:18 -0700 (PDT)
+        Thu, 20 Jun 2019 15:38:20 -0400
+Received: by mail-yw1-f65.google.com with SMTP id 186so1677750ywo.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2019 12:38:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=U0halpEC7x+kTO0lyD10AwJ15J9g52O738mFilSAooI=;
-        b=rsPk5Dya8TtG5ZRRgdSnLpgAgGFy7KMKaJSF+82kanlC/Dz6W5kmYQR393b0r6/E2W
-         ZYOv1rLPjK0yX7KjQ0I+wlChauU5J6xxpT9kKoujfH+XSujQ5VXCPcBhOSV75Qn42CWD
-         dkXqwM/hVNLsX9V9/ubFyZLmzg9nQMcIChNWjuS6PgEUtzbN3poq7JqrQ8qO5vY5hzTr
-         Eq+KJZtnd8FZmhe932llLieuux0pPeMeTuBibhrXJ9uTKImhRb26m1prBc7c56tJ3a7B
-         972n5wEHJOtIqK+0BlN7IFJVJeJbP+YLziKOf9G8f/piT7j5nTxqaVGuJZdAhZW25bLV
-         9L1g==
+        bh=SHhPxX2GoI34deta+odVIYrDQ0OKyF/FGgdaroeOugc=;
+        b=dX/IrL1eRQEvrwv2HtfuZIDaPs8qZla9zFFX2Mi7WBLqEGoSshFtECWBZYXdo2fqYs
+         C/g0cn9qRkYHVi5297Q2RBx6xE8cJAD/OrZXjmokbfoTgJxyMvWVFy7599VrG+FX1or0
+         /Mnv9R3Qx1JGQnuAOCBNbyEl4UQLEjWq2uCQVNnAaSOnU+ypQmBi+fJcC+XMY5Uh+KhS
+         1kMLOzqQ9abhJtRWhYEO8fVQfRQcVJvtlcNRd1cwPzoA8qk/2L61ApoTjt1v1f2ly9t8
+         651DhisvfHuUDH6CjKXBYxYiFZ4vL2qQjd33sJz6g8PouwDvx4AEdqVcvGl7lHae7QC4
+         UM4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references;
-        bh=U0halpEC7x+kTO0lyD10AwJ15J9g52O738mFilSAooI=;
-        b=JCWqgYhmKJGWg5JWkxahokV9TyoxJhJQEU6NHxLdluOUzJBL9ask14VN3xwPo2VajD
-         h4ZB6Bj+ejbRu0TCu+jP6oMDMkIWxZ/RSkucm6h9zQ2iJKjgBXqoCfmQt+r0CRb1mr8D
-         S0sTKyy1sX0iO5U9vuP182ovAxN/HTuDtsxzRCvVhCYqQdVHB0rNLcXSNvjnu/lM/MPY
-         4BgPehuTLYj/68Kx851LX11UB7+J31VB1fSXx/1/JlXYVUogZ8bXp5qEMyNcYxTEwd6h
-         pMoTnI+AS33JNO3IRLQ072MSGRzgNmBsrQU/ZLMDAb+ny9AOkST4BWtqa2OHy4DRjzDx
-         54Gw==
-X-Gm-Message-State: APjAAAVg7aXv5JyJqQeFuy/cIbrcO4nVCb3Djh2LO+CxZNaS+Mjv+ADI
-        s01GAAzhfzPr5axeJNyFeZj1dzsZtAgevQ==
-X-Google-Smtp-Source: APXvYqz68bXC5JKZs2KOEEMnPD5AYVQZPlCOVYiUwi6LvSMjfD5j4w3krZY430eEyzKz+QQRFwilzg==
-X-Received: by 2002:ac8:28e2:: with SMTP id j31mr73747306qtj.274.1561059497852;
-        Thu, 20 Jun 2019 12:38:17 -0700 (PDT)
+        bh=SHhPxX2GoI34deta+odVIYrDQ0OKyF/FGgdaroeOugc=;
+        b=Cn6ZpX7vsysJESK94UvvTgika7GHnI47aR2s5fhNBqUhdPxP50eix8QLH3HFf/oO8l
+         vztMuYO/SZolbbTPdcTWWzyP1VJXVk9fSVO2yNORboO4WbZvHEHcKXicRRVpd9p0lNPC
+         BLYwk6OAu1/T/ImPP9+3e0YnmGF1mVTZKfrEACeiY1SgRGGx659otr+rW6zq8Vezlk2W
+         onD7wi5cBmIr2lz8ir+jvXpLt1mjJO2hvFjugg5LbpenjKjIJhgeeKN1dpQpW8Gw3r7f
+         5wsyPUeXmyeM9Zq9y4GXtkbbkYCpsqfTQYwP6JN1G9jPVbkb2ssZ4BCRzr2a0vyJvgx/
+         iA/g==
+X-Gm-Message-State: APjAAAUbTggp8cMLur7Yi+Y01m6OxOkx4esJPhST/XF7P2UYve4M6KAk
+        YWoHOxb7dz+ElF5styIYKlOGIJkPE5E36w==
+X-Google-Smtp-Source: APXvYqybvapx2DFo7w/w/kVm7oC1u4QSp5Ldtdr5uN2S7pUHw2HRG+0ddVl6yqEeHJFoUXKnrEAPfw==
+X-Received: by 2002:a81:35c9:: with SMTP id c192mr67038978ywa.193.1561059499367;
+        Thu, 20 Jun 2019 12:38:19 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u4sm298233qkb.16.2019.06.20.12.38.17
+        by smtp.gmail.com with ESMTPSA id j207sm123760ywj.35.2019.06.20.12.38.18
         for <linux-btrfs@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 Jun 2019 12:38:17 -0700 (PDT)
+        Thu, 20 Jun 2019 12:38:18 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 05/25] btrfs: migrate nocow and reservation helpers
-Date:   Thu, 20 Jun 2019 15:37:47 -0400
-Message-Id: <20190620193807.29311-6-josef@toxicpanda.com>
+Subject: [PATCH 06/25] btrfs: export the block group caching helpers
+Date:   Thu, 20 Jun 2019 15:37:48 -0400
+Message-Id: <20190620193807.29311-7-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.14.3
 In-Reply-To: <20190620193807.29311-1-josef@toxicpanda.com>
 References: <20190620193807.29311-1-josef@toxicpanda.com>
@@ -58,247 +58,235 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These are relatively straightforward as well.
+This will make it so we can move them easily.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-group.c | 83 ++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/block-group.h |  6 ++++
- fs/btrfs/ctree.h       |  6 ----
- fs/btrfs/extent-tree.c | 82 -------------------------------------------------
- 4 files changed, 89 insertions(+), 88 deletions(-)
+ fs/btrfs/block-group.h | 14 +++++++++++
+ fs/btrfs/extent-tree.c | 65 ++++++++++++++++++++++----------------------------
+ 2 files changed, 43 insertions(+), 36 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index b15d7070bcfd..aeb2c806b2b0 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -4,6 +4,7 @@
-  */
- #include "ctree.h"
- #include "block-group.h"
-+#include "space-info.h"
- 
- void btrfs_get_block_group(struct btrfs_block_group_cache *cache)
- {
-@@ -121,3 +122,85 @@ btrfs_next_block_group(struct btrfs_block_group_cache *cache)
- 	spin_unlock(&fs_info->block_group_cache_lock);
- 	return cache;
- }
-+
-+bool btrfs_inc_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr)
-+{
-+	struct btrfs_block_group_cache *bg;
-+	bool ret = true;
-+
-+	bg = btrfs_lookup_block_group(fs_info, bytenr);
-+	if (!bg)
-+		return false;
-+
-+	spin_lock(&bg->lock);
-+	if (bg->ro)
-+		ret = false;
-+	else
-+		atomic_inc(&bg->nocow_writers);
-+	spin_unlock(&bg->lock);
-+
-+	/* no put on block group, done by btrfs_dec_nocow_writers */
-+	if (!ret)
-+		btrfs_put_block_group(bg);
-+
-+	return ret;
-+
-+}
-+
-+void btrfs_dec_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr)
-+{
-+	struct btrfs_block_group_cache *bg;
-+
-+	bg = btrfs_lookup_block_group(fs_info, bytenr);
-+	ASSERT(bg);
-+	if (atomic_dec_and_test(&bg->nocow_writers))
-+		wake_up_var(&bg->nocow_writers);
-+	/*
-+	 * Once for our lookup and once for the lookup done by a previous call
-+	 * to btrfs_inc_nocow_writers()
-+	 */
-+	btrfs_put_block_group(bg);
-+	btrfs_put_block_group(bg);
-+}
-+
-+void btrfs_wait_nocow_writers(struct btrfs_block_group_cache *bg)
-+{
-+	wait_var_event(&bg->nocow_writers, !atomic_read(&bg->nocow_writers));
-+}
-+
-+void btrfs_dec_block_group_reservations(struct btrfs_fs_info *fs_info,
-+					const u64 start)
-+{
-+	struct btrfs_block_group_cache *bg;
-+
-+	bg = btrfs_lookup_block_group(fs_info, start);
-+	ASSERT(bg);
-+	if (atomic_dec_and_test(&bg->reservations))
-+		wake_up_var(&bg->reservations);
-+	btrfs_put_block_group(bg);
-+}
-+
-+void btrfs_wait_block_group_reservations(struct btrfs_block_group_cache *bg)
-+{
-+	struct btrfs_space_info *space_info = bg->space_info;
-+
-+	ASSERT(bg->ro);
-+
-+	if (!(bg->flags & BTRFS_BLOCK_GROUP_DATA))
-+		return;
-+
-+	/*
-+	 * Our block group is read only but before we set it to read only,
-+	 * some task might have had allocated an extent from it already, but it
-+	 * has not yet created a respective ordered extent (and added it to a
-+	 * root's list of ordered extents).
-+	 * Therefore wait for any task currently allocating extents, since the
-+	 * block group's reservations counter is incremented while a read lock
-+	 * on the groups' semaphore is held and decremented after releasing
-+	 * the read access on that semaphore and creating the ordered extent.
-+	 */
-+	down_write(&space_info->groups_sem);
-+	up_write(&space_info->groups_sem);
-+
-+	wait_var_event(&bg->reservations, !atomic_read(&bg->reservations));
-+}
 diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index ddd91c7ed44a..bc2ed52210a3 100644
+index bc2ed52210a3..c8a63ccd6b58 100644
 --- a/fs/btrfs/block-group.h
 +++ b/fs/btrfs/block-group.h
-@@ -161,5 +161,11 @@ struct btrfs_block_group_cache *
- btrfs_next_block_group(struct btrfs_block_group_cache *cache);
- void btrfs_get_block_group(struct btrfs_block_group_cache *cache);
- void btrfs_put_block_group(struct btrfs_block_group_cache *cache);
-+void btrfs_dec_block_group_reservations(struct btrfs_fs_info *fs_info,
-+					 const u64 start);
-+void btrfs_wait_block_group_reservations(struct btrfs_block_group_cache *bg);
-+bool btrfs_inc_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr);
-+void btrfs_dec_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr);
-+void btrfs_wait_nocow_writers(struct btrfs_block_group_cache *bg);
+@@ -167,5 +167,19 @@ void btrfs_wait_block_group_reservations(struct btrfs_block_group_cache *bg);
+ bool btrfs_inc_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr);
+ void btrfs_dec_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr);
+ void btrfs_wait_nocow_writers(struct btrfs_block_group_cache *bg);
++void
++btrfs_wait_block_group_cache_progress(struct btrfs_block_group_cache *cache,
++				      u64 num_bytes);
++int btrfs_wait_block_group_cache_done(struct btrfs_block_group_cache *cache);
++int btrfs_cache_block_group(struct btrfs_block_group_cache *cache,
++			    int load_cache_only);
++
++static inline int
++btrfs_block_group_cache_done(struct btrfs_block_group_cache *cache)
++{
++	smp_mb();
++	return cache->cached == BTRFS_CACHE_FINISHED ||
++		cache->cached == BTRFS_CACHE_ERROR;
++}
  
  #endif /* BTRFS_BLOCK_GROUP_H */
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 4c6e643bc65d..c4ae6714e3d4 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2460,12 +2460,6 @@ static inline u64 btrfs_calc_trunc_metadata_size(struct btrfs_fs_info *fs_info,
- 	return (u64)fs_info->nodesize * BTRFS_MAX_LEVEL * num_items;
- }
- 
--void btrfs_dec_block_group_reservations(struct btrfs_fs_info *fs_info,
--					 const u64 start);
--void btrfs_wait_block_group_reservations(struct btrfs_block_group_cache *bg);
--bool btrfs_inc_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr);
--void btrfs_dec_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr);
--void btrfs_wait_nocow_writers(struct btrfs_block_group_cache *bg);
- int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
- 			   unsigned long count);
- void btrfs_cleanup_ref_head_accounting(struct btrfs_fs_info *fs_info,
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 01a45674382e..63b594532b92 100644
+index 63b594532b92..82451a64f8ee 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -3560,51 +3560,6 @@ int btrfs_extent_readonly(struct btrfs_fs_info *fs_info, u64 bytenr)
- 	return readonly;
- }
+@@ -54,14 +54,6 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
+ static int find_next_key(struct btrfs_path *path, int level,
+ 			 struct btrfs_key *key);
  
--bool btrfs_inc_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr)
+-static noinline int
+-block_group_cache_done(struct btrfs_block_group_cache *cache)
 -{
--	struct btrfs_block_group_cache *bg;
--	bool ret = true;
--
--	bg = btrfs_lookup_block_group(fs_info, bytenr);
--	if (!bg)
--		return false;
--
--	spin_lock(&bg->lock);
--	if (bg->ro)
--		ret = false;
--	else
--		atomic_inc(&bg->nocow_writers);
--	spin_unlock(&bg->lock);
--
--	/* no put on block group, done by btrfs_dec_nocow_writers */
--	if (!ret)
--		btrfs_put_block_group(bg);
--
--	return ret;
--
+-	smp_mb();
+-	return cache->cached == BTRFS_CACHE_FINISHED ||
+-		cache->cached == BTRFS_CACHE_ERROR;
 -}
 -
--void btrfs_dec_nocow_writers(struct btrfs_fs_info *fs_info, u64 bytenr)
--{
--	struct btrfs_block_group_cache *bg;
--
--	bg = btrfs_lookup_block_group(fs_info, bytenr);
--	ASSERT(bg);
--	if (atomic_dec_and_test(&bg->nocow_writers))
--		wake_up_var(&bg->nocow_writers);
--	/*
--	 * Once for our lookup and once for the lookup done by a previous call
--	 * to btrfs_inc_nocow_writers()
--	 */
--	btrfs_put_block_group(bg);
--	btrfs_put_block_group(bg);
--}
--
--void btrfs_wait_nocow_writers(struct btrfs_block_group_cache *bg)
--{
--	wait_var_event(&bg->nocow_writers, !atomic_read(&bg->nocow_writers));
--}
--
- static void set_avail_alloc_bits(struct btrfs_fs_info *fs_info, u64 flags)
+ static int block_group_bits(struct btrfs_block_group_cache *cache, u64 bits)
  {
- 	u64 extra_flags = chunk_to_extended(flags) &
-@@ -4279,43 +4234,6 @@ btrfs_inc_block_group_reservations(struct btrfs_block_group_cache *bg)
- 	atomic_inc(&bg->reservations);
+ 	return (cache->flags & bits) == bits;
+@@ -234,9 +226,10 @@ static void fragment_free_space(struct btrfs_block_group_cache *block_group)
+ #endif
+ 
+ /*
+- * this is only called by cache_block_group, since we could have freed extents
+- * we need to check the pinned_extents for any extents that can't be used yet
+- * since their free space will be released as soon as the transaction commits.
++ * this is only called by btrfs_cache_block_group, since we could have freed
++ * extents we need to check the pinned_extents for any extents that can't be
++ * used yet since their free space will be released as soon as the transaction
++ * commits.
+  */
+ u64 add_new_free_space(struct btrfs_block_group_cache *block_group,
+ 		       u64 start, u64 end)
+@@ -465,8 +458,8 @@ static noinline void caching_thread(struct btrfs_work *work)
+ 	btrfs_put_block_group(block_group);
  }
  
--void btrfs_dec_block_group_reservations(struct btrfs_fs_info *fs_info,
--					const u64 start)
--{
--	struct btrfs_block_group_cache *bg;
--
--	bg = btrfs_lookup_block_group(fs_info, start);
--	ASSERT(bg);
--	if (atomic_dec_and_test(&bg->reservations))
--		wake_up_var(&bg->reservations);
--	btrfs_put_block_group(bg);
--}
--
--void btrfs_wait_block_group_reservations(struct btrfs_block_group_cache *bg)
--{
--	struct btrfs_space_info *space_info = bg->space_info;
--
--	ASSERT(bg->ro);
--
--	if (!(bg->flags & BTRFS_BLOCK_GROUP_DATA))
--		return;
--
--	/*
--	 * Our block group is read only but before we set it to read only,
--	 * some task might have had allocated an extent from it already, but it
--	 * has not yet created a respective ordered extent (and added it to a
--	 * root's list of ordered extents).
--	 * Therefore wait for any task currently allocating extents, since the
--	 * block group's reservations counter is incremented while a read lock
--	 * on the groups' semaphore is held and decremented after releasing
--	 * the read access on that semaphore and creating the ordered extent.
--	 */
--	down_write(&space_info->groups_sem);
--	up_write(&space_info->groups_sem);
--
--	wait_var_event(&bg->reservations, !atomic_read(&bg->reservations));
--}
--
- /**
-  * btrfs_add_reserved_bytes - update the block_group and space info counters
-  * @cache:	The cache we are manipulating
+-static int cache_block_group(struct btrfs_block_group_cache *cache,
+-			     int load_cache_only)
++static int btrfs_cache_block_group(struct btrfs_block_group_cache *cache,
++				   int load_cache_only)
+ {
+ 	DEFINE_WAIT(wait);
+ 	struct btrfs_fs_info *fs_info = cache->fs_info;
+@@ -3982,7 +3975,7 @@ static int update_block_group(struct btrfs_trans_handle *trans,
+ 		 * space back to the block group, otherwise we will leak space.
+ 		 */
+ 		if (!alloc && cache->cached == BTRFS_CACHE_NO)
+-			cache_block_group(cache, 1);
++			btrfs_cache_block_group(cache, 1);
+ 
+ 		byte_in_group = bytenr - cache->key.objectid;
+ 		WARN_ON(byte_in_group > cache->key.offset);
+@@ -4140,7 +4133,7 @@ int btrfs_pin_extent_for_log_replay(struct btrfs_fs_info *fs_info,
+ 	 * to one because the slow code to read in the free extents does check
+ 	 * the pinned extents.
+ 	 */
+-	cache_block_group(cache, 1);
++	btrfs_cache_block_group(cache, 1);
+ 
+ 	pin_down_extent(cache, bytenr, num_bytes, 0);
+ 
+@@ -4161,12 +4154,12 @@ static int __exclude_logged_extent(struct btrfs_fs_info *fs_info,
+ 	if (!block_group)
+ 		return -EINVAL;
+ 
+-	cache_block_group(block_group, 0);
++	btrfs_cache_block_group(block_group, 0);
+ 	caching_ctl = get_caching_control(block_group);
+ 
+ 	if (!caching_ctl) {
+ 		/* Logic error */
+-		BUG_ON(!block_group_cache_done(block_group));
++		BUG_ON(!btrfs_block_group_cache_done(block_group));
+ 		ret = btrfs_remove_free_space(block_group, start, num_bytes);
+ 	} else {
+ 		mutex_lock(&caching_ctl->mutex);
+@@ -4310,7 +4303,7 @@ void btrfs_prepare_extent_commit(struct btrfs_fs_info *fs_info)
+ 	list_for_each_entry_safe(caching_ctl, next,
+ 				 &fs_info->caching_block_groups, list) {
+ 		cache = caching_ctl->block_group;
+-		if (block_group_cache_done(cache)) {
++		if (btrfs_block_group_cache_done(cache)) {
+ 			cache->last_byte_to_unpin = (u64)-1;
+ 			list_del_init(&caching_ctl->list);
+ 			put_caching_control(caching_ctl);
+@@ -4942,9 +4935,9 @@ int btrfs_free_extent(struct btrfs_trans_handle *trans, struct btrfs_ref *ref)
+  * Callers of this must check if cache->cached == BTRFS_CACHE_ERROR before using
+  * any of the information in this block group.
+  */
+-static noinline void
+-wait_block_group_cache_progress(struct btrfs_block_group_cache *cache,
+-				u64 num_bytes)
++void
++btrfs_wait_block_group_cache_progress(struct btrfs_block_group_cache *cache,
++				      u64 num_bytes)
+ {
+ 	struct btrfs_caching_control *caching_ctl;
+ 
+@@ -4952,14 +4945,13 @@ wait_block_group_cache_progress(struct btrfs_block_group_cache *cache,
+ 	if (!caching_ctl)
+ 		return;
+ 
+-	wait_event(caching_ctl->wait, block_group_cache_done(cache) ||
++	wait_event(caching_ctl->wait, btrfs_block_group_cache_done(cache) ||
+ 		   (cache->free_space_ctl->free_space >= num_bytes));
+ 
+ 	put_caching_control(caching_ctl);
+ }
+ 
+-static noinline int
+-wait_block_group_cache_done(struct btrfs_block_group_cache *cache)
++int btrfs_wait_block_group_cache_done(struct btrfs_block_group_cache *cache)
+ {
+ 	struct btrfs_caching_control *caching_ctl;
+ 	int ret = 0;
+@@ -4968,7 +4960,7 @@ wait_block_group_cache_done(struct btrfs_block_group_cache *cache)
+ 	if (!caching_ctl)
+ 		return (cache->cached == BTRFS_CACHE_ERROR) ? -EIO : 0;
+ 
+-	wait_event(caching_ctl->wait, block_group_cache_done(cache));
++	wait_event(caching_ctl->wait, btrfs_block_group_cache_done(cache));
+ 	if (cache->cached == BTRFS_CACHE_ERROR)
+ 		ret = -EIO;
+ 	put_caching_control(caching_ctl);
+@@ -5194,8 +5186,9 @@ static int find_free_extent_clustered(struct btrfs_block_group_cache *bg,
+ 		spin_unlock(&last_ptr->refill_lock);
+ 
+ 		ffe_ctl->retry_clustered = true;
+-		wait_block_group_cache_progress(bg, ffe_ctl->num_bytes +
+-				ffe_ctl->empty_cluster + ffe_ctl->empty_size);
++		btrfs_wait_block_group_cache_progress(bg, ffe_ctl->num_bytes +
++						      ffe_ctl->empty_cluster +
++						      ffe_ctl->empty_size);
+ 		return -EAGAIN;
+ 	}
+ 	/*
+@@ -5261,8 +5254,8 @@ static int find_free_extent_unclustered(struct btrfs_block_group_cache *bg,
+ 	 */
+ 	if (!offset && !ffe_ctl->retry_unclustered && !ffe_ctl->cached &&
+ 	    ffe_ctl->loop > LOOP_CACHING_NOWAIT) {
+-		wait_block_group_cache_progress(bg, ffe_ctl->num_bytes +
+-						ffe_ctl->empty_size);
++		btrfs_wait_block_group_cache_progress(bg, ffe_ctl->num_bytes +
++						      ffe_ctl->empty_size);
+ 		ffe_ctl->retry_unclustered = true;
+ 		return -EAGAIN;
+ 	} else if (!offset) {
+@@ -5562,10 +5555,10 @@ static noinline int find_free_extent(struct btrfs_fs_info *fs_info,
+ 		}
+ 
+ have_block_group:
+-		ffe_ctl.cached = block_group_cache_done(block_group);
++		ffe_ctl.cached = btrfs_block_group_cache_done(block_group);
+ 		if (unlikely(!ffe_ctl.cached)) {
+ 			ffe_ctl.have_caching_bg = true;
+-			ret = cache_block_group(block_group, 0);
++			ret = btrfs_cache_block_group(block_group, 0);
+ 			BUG_ON(ret < 0);
+ 			ret = 0;
+ 		}
+@@ -7569,7 +7562,7 @@ void btrfs_put_block_group_cache(struct btrfs_fs_info *info)
+ 
+ 		block_group = btrfs_lookup_first_block_group(info, last);
+ 		while (block_group) {
+-			wait_block_group_cache_done(block_group);
++			btrfs_wait_block_group_cache_done(block_group);
+ 			spin_lock(&block_group->lock);
+ 			if (block_group->iref)
+ 				break;
+@@ -8314,7 +8307,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
+ 	if (block_group->has_caching_ctl)
+ 		caching_ctl = get_caching_control(block_group);
+ 	if (block_group->cached == BTRFS_CACHE_STARTED)
+-		wait_block_group_cache_done(block_group);
++		btrfs_wait_block_group_cache_done(block_group);
+ 	if (block_group->has_caching_ctl) {
+ 		down_write(&fs_info->commit_root_sem);
+ 		if (!caching_ctl) {
+@@ -8775,14 +8768,14 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 				cache->key.objectid + cache->key.offset);
+ 
+ 		if (end - start >= range->minlen) {
+-			if (!block_group_cache_done(cache)) {
+-				ret = cache_block_group(cache, 0);
++			if (!btrfs_block_group_cache_done(cache)) {
++				ret = btrfs_cache_block_group(cache, 0);
+ 				if (ret) {
+ 					bg_failed++;
+ 					bg_ret = ret;
+ 					continue;
+ 				}
+-				ret = wait_block_group_cache_done(cache);
++				ret = btrfs_wait_block_group_cache_done(cache);
+ 				if (ret) {
+ 					bg_failed++;
+ 					bg_ret = ret;
 -- 
 2.14.3
 
