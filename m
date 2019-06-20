@@ -2,346 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB18F4DA65
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2019 21:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F3B4DCDE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2019 23:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726894AbfFTTiw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jun 2019 15:38:52 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:41882 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726834AbfFTTiv (ORCPT
+        id S1726218AbfFTVkE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jun 2019 17:40:04 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:39864 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726034AbfFTVkD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jun 2019 15:38:51 -0400
-Received: by mail-qt1-f196.google.com with SMTP id d17so4377437qtj.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2019 12:38:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references;
-        bh=sGYq0Jj57WNtwIMg+S8grrJOVgIIiz2hjGE2VGVq/e4=;
-        b=dHwn+gbF1olpCzoOj8EYTIbeSa5ok3qVESbWq/B0dWN87zsjf9smWNqvJx8OEZbluY
-         bNMDdfdCmLrB0fFDqg9tAiBaEHDvtjuyKSydpneC/4eiPNle1VZkkxYxKa7PIe73KlC4
-         ovKD+58M/aJoR/G/CppCek2UOzAzyeX3ki3b9yn857NoOJFKRIAJsoCI9Nx43uRVKUSd
-         iveaGQAI2QAxE+IOeeDJJEDQEoXIe4jJCrpSY/3QZPNvf2mjPetDT8M/unXC57thati9
-         dAxAFkkTuIfVjc2o5iLS2bcVbKYPV/o0CuPDKLMygbpHdojRQmY1T5bU9dyeyG23POKe
-         AQXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references;
-        bh=sGYq0Jj57WNtwIMg+S8grrJOVgIIiz2hjGE2VGVq/e4=;
-        b=c4qPUejqahUwVhnvqCeXTvzF1h7E/wj7sJaFNEOptGoX98UYSMq6ITrpe9VaSRCDXS
-         TWtqWaKXB02dzngY1lBvM5MAswyEzZrP+0hxI7Yhx2GQFAl5WZDyy/l3VRyuy3ulakN3
-         Kn5Bayvx9WGfg1yInSc3y1Im3MHj1XmMLCkj7+IcxP1iGbwmzOu5zYEEhI9hB7PYVhtt
-         0Exnr/A7LrtC47G5J0MGIKh8+Me5BA6HU0NJ3Ez40hRcOCmqJ58RHRN5h+vLNappBk5h
-         7gqpLd6gZuZiP56423wCVa2oOfEqdjaU2x1AjQZ3jJbRQeMauL6mznyM5UBiazFw8SPs
-         Jp5A==
-X-Gm-Message-State: APjAAAXwRe9uaocI4KJ/68jsWZRYseiq905FYCvc/ngiuy0ibdaON/4F
-        JFQtnQ8ewFQ8SzBhBmaoLbbXHpTJljbGmw==
-X-Google-Smtp-Source: APXvYqxqa8BOxPttaoIQOFR9lUtRrd8gR4sqhAVgz3Pl+KtCL52NjVjc9GxjsTRNio7gvFHBFsFTfw==
-X-Received: by 2002:ac8:2181:: with SMTP id 1mr25785578qty.263.1561059529884;
-        Thu, 20 Jun 2019 12:38:49 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id w16sm493623qtc.41.2019.06.20.12.38.49
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 Jun 2019 12:38:49 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 25/25] btrfs: unexport the temporary exported functions
-Date:   Thu, 20 Jun 2019 15:38:07 -0400
-Message-Id: <20190620193807.29311-26-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.14.3
-In-Reply-To: <20190620193807.29311-1-josef@toxicpanda.com>
-References: <20190620193807.29311-1-josef@toxicpanda.com>
+        Thu, 20 Jun 2019 17:40:03 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5KLYHVn088700;
+        Thu, 20 Jun 2019 21:38:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=D3CnJNHOIgWdUG1TcE81fq/bsWj72ILMBiE1tAPqQwo=;
+ b=HKn791tbDcSyV5tTwA4L7n0iz31Dp5T+PYftD80uW1HfTEOKSjNNo8ILTMjO1/Rv8cOI
+ hpROCjBB23fPljyiuqdvwYxNy/xpAecXOJ97+qJXUbuQysBIXp6+kq1M1NohTdSt2o5m
+ bdEHlQfhcUcK9Q2VlmkUVsRBf7mVWZm2yOm4eXP0y5gikqkZmSL3eKCbJdvsPzjLY50k
+ BfxiWb1VEIm42WU1tUp/bKXk3/F6YlHbkAbzrc8pKPgHNgEvkWIV2bY4z7UBJVZQfH8/
+ ZSoTLiWzgKluhc0l9SvuD6uztH108WS7lGdHTqumoJ0SNSOf6qr9qij979gZkZoaMzEB qg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2t7809kdj1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Jun 2019 21:38:38 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5KLacer151050;
+        Thu, 20 Jun 2019 21:36:38 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 2t77ypkrr0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 20 Jun 2019 21:36:38 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5KLabeL151041;
+        Thu, 20 Jun 2019 21:36:37 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2t77ypkrqs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Jun 2019 21:36:37 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5KLaWqH007037;
+        Thu, 20 Jun 2019 21:36:32 GMT
+Received: from localhost (/10.145.179.81)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 20 Jun 2019 14:36:31 -0700
+Date:   Thu, 20 Jun 2019 14:36:29 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Jan Kara <jack@suse.cz>
+Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
+        adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
+        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/6] vfs: don't allow most setxattr to immutable files
+Message-ID: <20190620213629.GB5375@magnolia>
+References: <156022836912.3227213.13598042497272336695.stgit@magnolia>
+ <156022840560.3227213.4776913678782966728.stgit@magnolia>
+ <20190620140345.GI30243@quack2.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190620140345.GI30243@quack2.suse.cz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9294 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906200154
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-These were renamed and exported to facilitate logical migration of
-different code chunks into block-group.c.  Now that all the users are in
-one file go ahead and rename them back, move the code around, and make
-them static.
+On Thu, Jun 20, 2019 at 04:03:45PM +0200, Jan Kara wrote:
+> On Mon 10-06-19 21:46:45, Darrick J. Wong wrote:
+> > From: Darrick J. Wong <darrick.wong@oracle.com>
+> > 
+> > The chattr manpage has this to say about immutable files:
+> > 
+> > "A file with the 'i' attribute cannot be modified: it cannot be deleted
+> > or renamed, no link can be created to this file, most of the file's
+> > metadata can not be modified, and the file can not be opened in write
+> > mode."
+> > 
+> > However, we don't actually check the immutable flag in the setattr code,
+> > which means that we can update inode flags and project ids and extent
+> > size hints on supposedly immutable files.  Therefore, reject setflags
+> > and fssetxattr calls on an immutable file if the file is immutable and
+> > will remain that way.
+> > 
+> > Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> > ---
+> >  fs/inode.c |   31 +++++++++++++++++++++++++++++++
+> >  1 file changed, 31 insertions(+)
+> > 
+> > 
+> > diff --git a/fs/inode.c b/fs/inode.c
+> > index a3757051fd55..adfb458bf533 100644
+> > --- a/fs/inode.c
+> > +++ b/fs/inode.c
+> > @@ -2184,6 +2184,17 @@ int vfs_ioc_setflags_check(struct inode *inode, int oldflags, int flags)
+> >  	    !capable(CAP_LINUX_IMMUTABLE))
+> >  		return -EPERM;
+> >  
+> > +	/*
+> > +	 * We aren't allowed to change any other flags if the immutable flag is
+> > +	 * already set and is not being unset.
+> > +	 */
+> > +	if ((oldflags & FS_IMMUTABLE_FL) &&
+> > +	    (flags & FS_IMMUTABLE_FL)) {
+> > +		if ((oldflags & ~FS_IMMUTABLE_FL) !=
+> > +		    (flags & ~FS_IMMUTABLE_FL))
+> 
+> This check looks a bit strange when you've just check FS_IMMUTABLE_FL isn't
+> changing... Why not just oldflags != flags?
+> 
+> > +	if ((old_fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
+> > +	    (fa->fsx_xflags & FS_XFLAG_IMMUTABLE)) {
+> > +		if ((old_fa->fsx_xflags & ~FS_XFLAG_IMMUTABLE) !=
+> > +		    (fa->fsx_xflags & ~FS_XFLAG_IMMUTABLE))
+> 
+> Ditto here...
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/block-group.c | 140 ++++++++++++++++++++++++-------------------------
- fs/btrfs/block-group.h |   6 ---
- 2 files changed, 70 insertions(+), 76 deletions(-)
+Good point!  I'll fix it.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 57ac375ae847..add34cbf76b8 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -23,7 +23,7 @@
-  *
-  * should be called with balance_lock held
-  */
--u64 btrfs_get_restripe_target(struct btrfs_fs_info *fs_info, u64 flags)
-+static u64 get_restripe_target(struct btrfs_fs_info *fs_info, u64 flags)
- {
- 	struct btrfs_balance_control *bctl = fs_info->balance_ctl;
- 	u64 target = 0;
-@@ -64,7 +64,7 @@ static u64 btrfs_reduce_alloc_profile(struct btrfs_fs_info *fs_info, u64 flags)
- 	 * try to reduce to the target profile
- 	 */
- 	spin_lock(&fs_info->balance_lock);
--	target = btrfs_get_restripe_target(fs_info, flags);
-+	target = get_restripe_target(fs_info, flags);
- 	if (target) {
- 		/* pick target profile only if it's already available */
- 		if ((flags & target) & BTRFS_EXTENDED_PROFILE_MASK) {
-@@ -426,7 +426,7 @@ int btrfs_wait_block_group_cache_done(struct btrfs_block_group_cache *cache)
- }
- 
- #ifdef CONFIG_BTRFS_DEBUG
--void btrfs_fragment_free_space(struct btrfs_block_group_cache *block_group)
-+static void fragment_free_space(struct btrfs_block_group_cache *block_group)
- {
- 	struct btrfs_fs_info *fs_info = block_group->fs_info;
- 	u64 start = block_group->key.objectid;
-@@ -664,7 +664,7 @@ static noinline void caching_thread(struct btrfs_work *work)
- 		block_group->space_info->bytes_used += bytes_used >> 1;
- 		spin_unlock(&block_group->lock);
- 		spin_unlock(&block_group->space_info->lock);
--		btrfs_fragment_free_space(block_group);
-+		fragment_free_space(block_group);
- 	}
- #endif
- 
-@@ -771,7 +771,7 @@ int btrfs_cache_block_group(struct btrfs_block_group_cache *cache,
- 			cache->space_info->bytes_used += bytes_used >> 1;
- 			spin_unlock(&cache->lock);
- 			spin_unlock(&cache->space_info->lock);
--			btrfs_fragment_free_space(cache);
-+			fragment_free_space(cache);
- 		}
- #endif
- 		mutex_unlock(&caching_ctl->mutex);
-@@ -1139,6 +1139,62 @@ btrfs_start_trans_remove_block_group(struct btrfs_fs_info *fs_info,
- 							   num_items, 1);
- }
- 
-+static int inc_block_group_ro(struct btrfs_block_group_cache *cache,
-+			      int force)
-+{
-+	struct btrfs_space_info *sinfo = cache->space_info;
-+	u64 num_bytes;
-+	u64 sinfo_used;
-+	u64 min_allocable_bytes;
-+	int ret = -ENOSPC;
-+
-+	/*
-+	 * We need some metadata space and system metadata space for
-+	 * allocating chunks in some corner cases until we force to set
-+	 * it to be readonly.
-+	 */
-+	if ((sinfo->flags &
-+	     (BTRFS_BLOCK_GROUP_SYSTEM | BTRFS_BLOCK_GROUP_METADATA)) &&
-+	    !force)
-+		min_allocable_bytes = SZ_1M;
-+	else
-+		min_allocable_bytes = 0;
-+
-+	spin_lock(&sinfo->lock);
-+	spin_lock(&cache->lock);
-+
-+	if (cache->ro) {
-+		cache->ro++;
-+		ret = 0;
-+		goto out;
-+	}
-+
-+	num_bytes = cache->key.offset - cache->reserved - cache->pinned -
-+		    cache->bytes_super - btrfs_block_group_used(&cache->item);
-+	sinfo_used = btrfs_space_info_used(sinfo, true);
-+
-+	if (sinfo_used + num_bytes + min_allocable_bytes <=
-+	    sinfo->total_bytes) {
-+		sinfo->bytes_readonly += num_bytes;
-+		cache->ro++;
-+		list_add_tail(&cache->ro_list, &sinfo->ro_bgs);
-+		ret = 0;
-+	}
-+out:
-+	spin_unlock(&cache->lock);
-+	spin_unlock(&sinfo->lock);
-+	if (ret == -ENOSPC && btrfs_test_opt(cache->fs_info, ENOSPC_DEBUG)) {
-+		btrfs_info(cache->fs_info,
-+			"unable to make block group %llu ro",
-+			cache->key.objectid);
-+		btrfs_info(cache->fs_info,
-+			"sinfo_used=%llu bg_num_bytes=%llu min_allocable=%llu",
-+			sinfo_used, num_bytes, min_allocable_bytes);
-+		btrfs_dump_space_info(cache->fs_info, cache->space_info, 0, 0);
-+	}
-+	return ret;
-+}
-+
- /*
-  * Process the unused_bgs list and remove any that don't have any allocated
-  * space inside of them.
-@@ -1194,7 +1250,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 		spin_unlock(&block_group->lock);
- 
- 		/* We don't want to force the issue, only flip if it's ok. */
--		ret = __btrfs_inc_block_group_ro(block_group, 0);
-+		ret = inc_block_group_ro(block_group, 0);
- 		up_write(&space_info->groups_sem);
- 		if (ret < 0) {
- 			ret = 0;
-@@ -1736,7 +1792,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
- 
- 		set_avail_alloc_bits(info, cache->flags);
- 		if (btrfs_chunk_readonly(info, cache->key.objectid)) {
--			__btrfs_inc_block_group_ro(cache, 1);
-+			inc_block_group_ro(cache, 1);
- 		} else if (btrfs_block_group_used(&cache->item) == 0) {
- 			ASSERT(list_empty(&cache->bg_list));
- 			btrfs_mark_bg_unused(cache);
-@@ -1758,11 +1814,11 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
- 		list_for_each_entry(cache,
- 				&space_info->block_groups[BTRFS_RAID_RAID0],
- 				list)
--			__btrfs_inc_block_group_ro(cache, 1);
-+			inc_block_group_ro(cache, 1);
- 		list_for_each_entry(cache,
- 				&space_info->block_groups[BTRFS_RAID_SINGLE],
- 				list)
--			__btrfs_inc_block_group_ro(cache, 1);
-+			inc_block_group_ro(cache, 1);
- 	}
- 
- 	btrfs_add_raid_kobjects(info);
-@@ -1855,7 +1911,7 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans, u64 bytes_used,
- 		u64 new_bytes_used = size - bytes_used;
- 
- 		bytes_used += new_bytes_used >> 1;
--		btrfs_fragment_free_space(cache);
-+		fragment_free_space(cache);
- 	}
- #endif
- 	/*
-@@ -1901,7 +1957,7 @@ static u64 update_block_group_flags(struct btrfs_fs_info *fs_info, u64 flags)
- 	 * if restripe for this chunk_type is on pick target profile and
- 	 * return, otherwise do the usual balance
- 	 */
--	stripped = btrfs_get_restripe_target(fs_info, flags);
-+	stripped = get_restripe_target(fs_info, flags);
- 	if (stripped)
- 		return extended_to_chunk(stripped);
- 
-@@ -1941,62 +1997,6 @@ static u64 update_block_group_flags(struct btrfs_fs_info *fs_info, u64 flags)
- 	return flags;
- }
- 
--int __btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache,
--			       int force)
--{
--	struct btrfs_space_info *sinfo = cache->space_info;
--	u64 num_bytes;
--	u64 sinfo_used;
--	u64 min_allocable_bytes;
--	int ret = -ENOSPC;
--
--	/*
--	 * We need some metadata space and system metadata space for
--	 * allocating chunks in some corner cases until we force to set
--	 * it to be readonly.
--	 */
--	if ((sinfo->flags &
--	     (BTRFS_BLOCK_GROUP_SYSTEM | BTRFS_BLOCK_GROUP_METADATA)) &&
--	    !force)
--		min_allocable_bytes = SZ_1M;
--	else
--		min_allocable_bytes = 0;
--
--	spin_lock(&sinfo->lock);
--	spin_lock(&cache->lock);
--
--	if (cache->ro) {
--		cache->ro++;
--		ret = 0;
--		goto out;
--	}
--
--	num_bytes = cache->key.offset - cache->reserved - cache->pinned -
--		    cache->bytes_super - btrfs_block_group_used(&cache->item);
--	sinfo_used = btrfs_space_info_used(sinfo, true);
--
--	if (sinfo_used + num_bytes + min_allocable_bytes <=
--	    sinfo->total_bytes) {
--		sinfo->bytes_readonly += num_bytes;
--		cache->ro++;
--		list_add_tail(&cache->ro_list, &sinfo->ro_bgs);
--		ret = 0;
--	}
--out:
--	spin_unlock(&cache->lock);
--	spin_unlock(&sinfo->lock);
--	if (ret == -ENOSPC && btrfs_test_opt(cache->fs_info, ENOSPC_DEBUG)) {
--		btrfs_info(cache->fs_info,
--			"unable to make block group %llu ro",
--			cache->key.objectid);
--		btrfs_info(cache->fs_info,
--			"sinfo_used=%llu bg_num_bytes=%llu min_allocable=%llu",
--			sinfo_used, num_bytes, min_allocable_bytes);
--		btrfs_dump_space_info(cache->fs_info, cache->space_info, 0, 0);
--	}
--	return ret;
--}
--
- int btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache)
- 
- {
-@@ -2047,14 +2047,14 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache)
- 			goto out;
- 	}
- 
--	ret = __btrfs_inc_block_group_ro(cache, 0);
-+	ret = inc_block_group_ro(cache, 0);
- 	if (!ret)
- 		goto out;
- 	alloc_flags = btrfs_get_alloc_profile(fs_info, cache->space_info->flags);
- 	ret = btrfs_chunk_alloc(trans, alloc_flags, CHUNK_ALLOC_FORCE);
- 	if (ret < 0)
- 		goto out;
--	ret = __btrfs_inc_block_group_ro(cache, 0);
-+	ret = inc_block_group_ro(cache, 0);
- out:
- 	if (cache->flags & BTRFS_BLOCK_GROUP_SYSTEM) {
- 		alloc_flags = update_block_group_flags(fs_info, cache->flags);
-@@ -2858,7 +2858,7 @@ int btrfs_can_relocate(struct btrfs_fs_info *fs_info, u64 bytenr)
- 	 *      3: raid0
- 	 *      4: single
- 	 */
--	target = btrfs_get_restripe_target(fs_info, block_group->flags);
-+	target = get_restripe_target(fs_info, block_group->flags);
- 	if (target) {
- 		index = btrfs_bg_flags_to_raid_index(extended_to_chunk(target));
- 	} else {
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 3c6cf7477990..bf72dcfc1c82 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -171,7 +171,6 @@ btrfs_should_fragment_free_space(struct btrfs_block_group_cache *block_group)
- 	       (btrfs_test_opt(fs_info, FRAGMENT_DATA) &&
- 		block_group->flags &  BTRFS_BLOCK_GROUP_DATA);
- }
--void btrfs_fragment_free_space(struct btrfs_block_group_cache *block_group);
- #endif
- 
- struct btrfs_block_group_cache *
-@@ -253,9 +252,4 @@ btrfs_block_group_cache_done(struct btrfs_block_group_cache *cache)
- 	return cache->cached == BTRFS_CACHE_FINISHED ||
- 		cache->cached == BTRFS_CACHE_ERROR;
- }
--
--int __btrfs_inc_block_group_ro(struct btrfs_block_group_cache *cache,
--			       int force);
--u64 btrfs_get_restripe_target(struct btrfs_fs_info *fs_info, u64 flags);
--
- #endif /* BTRFS_BLOCK_GROUP_H */
--- 
-2.14.3
+--D
 
+> 
+> > +			return -EPERM;
+> > +		if (old_fa->fsx_projid != fa->fsx_projid)
+> > +			return -EPERM;
+> > +		if ((fa->fsx_xflags & (FS_XFLAG_EXTSIZE |
+> > +				       FS_XFLAG_EXTSZINHERIT)) &&
+> > +		    old_fa->fsx_extsize != fa->fsx_extsize)
+> > +			return -EPERM;
+> > +		if ((old_fa->fsx_xflags & FS_XFLAG_COWEXTSIZE) &&
+> > +		    old_fa->fsx_cowextsize != fa->fsx_cowextsize)
+> > +			return -EPERM;
+> > +	}
+> > +
+> >  	/* Extent size hints of zero turn off the flags. */
+> >  	if (fa->fsx_extsize == 0)
+> >  		fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
