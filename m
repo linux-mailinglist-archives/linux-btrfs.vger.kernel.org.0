@@ -2,92 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06DF94D477
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2019 19:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC414DA4C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2019 21:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726758AbfFTRCy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jun 2019 13:02:54 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:46475 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbfFTRCx (ORCPT
+        id S1726393AbfFTTiL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jun 2019 15:38:11 -0400
+Received: from mail-yw1-f46.google.com ([209.85.161.46]:42897 "EHLO
+        mail-yw1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726169AbfFTTiL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jun 2019 13:02:53 -0400
-Received: by mail-pf1-f193.google.com with SMTP id 81so1992253pfy.13;
-        Thu, 20 Jun 2019 10:02:53 -0700 (PDT)
+        Thu, 20 Jun 2019 15:38:11 -0400
+Received: by mail-yw1-f46.google.com with SMTP id s5so1662515ywd.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 20 Jun 2019 12:38:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8wf4cUw4MBLQ5ZMRZPNnEwMB/4TzHc3tHqQ0sOQp8Os=;
-        b=Wg6NBK6vKlCLiPsPaXNE5QvvdM2CnFaRmcfdeCBn9IjI1jcuHtXo7vm10THbVibgnu
-         u0U7RfwHLhckYVSyanRghxO5KKgFrrx1Tx4JOIjTIzPy1Od9dftVLvCn9tWRZ1vUSSXU
-         d+3feEShEKF3XAyfMZcDewHa0x/55pg6P0pN0kSQShr+btUn26moy4nPnGaKIoul6YM/
-         Pr7GbJHYFwpcwYnHcejjSWyjTgcRVINTrfM+oS3oYJ7kIpqZStAf0KLTrI3+NwphEEyA
-         5vV47bnRpY8qlF/5PnVI9gwXpelTqwQ0RNcBW8OiyK6J3jOOUcERQ6pfuTPhiI5JtpkL
-         dzag==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id;
+        bh=M8tAGAl8pq9Ij65BX0XKVNdv3hBzhBqGkLD1ieC8MhE=;
+        b=qFIW1NJntr5WX/0B02AVJ+r//x3o9Cflk9krr6CPkKrILNMCO03xrqyStzYisUsVHH
+         C0bvlidnFNZ8qHxO+HfySEThmK25p3DIFnml6nhFgiHo41rz3NfFGlfN3R4+lHKNweaL
+         h4JzJGmKNypCvHbpQjGxdi4bc/wY8Ld8sZtnoNJb/41FxLfLMYf1MG4TMu56FXbbJ0QO
+         VYMq+xBN4jri+5Q0pGQ859J3RM8h4CWauYOuvMmoFkhC6OSByeG0qFOybkPp+c7jX18y
+         g+dzG4wzBgn9VnllMiw+n+dNxETSArJU+8Xf8QpoUHXzmL6uAiPJxzttAAqVjTaCwszx
+         wvpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8wf4cUw4MBLQ5ZMRZPNnEwMB/4TzHc3tHqQ0sOQp8Os=;
-        b=EGGdUTVV4rNbNCSm13F0Ykg4l5k1/ltY/+3LhvFDm+AZ+ndEKypiAdOTuyufOnkwnx
-         /b0Bgt+dUw1naLiA/HLZjhpSRkfyEcrw4nNlGBbeuxOAf8iJzySK24ETOF9RH2Y/HvEN
-         GnjxPwAGQIz0fh+7wJnY5qiJ6vzQ8ZGdKH8YhKQqoORYXl5rA/jxL+mJhoZ+1A3fikcq
-         Iys1cvUGmIwXbnEHr+ZkzIgB4geiJfbIlgTgLaqZe6obVOb+CHvyfSafq6rVsvJJq3uX
-         jb40JjYCRNvA0GyUxo+JamDCQggv5rSC0fPPrt+lQ8fNDkd9eL5+xff04znr77MKkerz
-         liLQ==
-X-Gm-Message-State: APjAAAV2TFVkq6iusIwF7AZZ4GzK8CX3GGxUwPWAnHiQQw1oy5pa64RR
-        L6Paui0G/AT5fk1udigv8h2ED2K1zI4=
-X-Google-Smtp-Source: APXvYqzo7LjGo49CmlMqmYF7gjPoklzF78RZuEScWmDOaqfh7XoF3z//V+4KuxJQBWcA7NOcTxhIvg==
-X-Received: by 2002:aa7:8157:: with SMTP id d23mr131848775pfn.92.1561050172819;
-        Thu, 20 Jun 2019 10:02:52 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::3:8402])
-        by smtp.gmail.com with ESMTPSA id p27sm27462pfq.136.2019.06.20.10.02.52
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 Jun 2019 10:02:52 -0700 (PDT)
-Date:   Thu, 20 Jun 2019 10:02:50 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Jan Kara <jack@suse.cz>
-Cc:     dsterba@suse.com, clm@fb.com, josef@toxicpanda.com,
-        axboe@kernel.dk, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 2/9] blkcg, writeback: Add wbc->no_wbc_acct
-Message-ID: <20190620170250.GL657710@devbig004.ftw2.facebook.com>
-References: <20190615182453.843275-1-tj@kernel.org>
- <20190615182453.843275-3-tj@kernel.org>
- <20190620152145.GL30243@quack2.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190620152145.GL30243@quack2.suse.cz>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+        h=x-gm-message-state:from:to:subject:date:message-id;
+        bh=M8tAGAl8pq9Ij65BX0XKVNdv3hBzhBqGkLD1ieC8MhE=;
+        b=UTZZFCszDNWHWX0nDuq749wxZ6i89zmyEXg6SlhAzOERxqfPPssdDf8puZN8mq9hqQ
+         MUEPorKxRKzBk+2anYc4c5rPxm2avNAKd5/xJDGcJ+/CGwTg/i0PrvdLlh0VVvbJuMo4
+         t4hQkf2x5QBj6v0kYfFhWuoDnxYvpwcnEd7L2NWIIN77+uVgIIGiEgTP1VFKpMnyfVup
+         I2pdd6R85HvrvR7bCFPtooIaK1iSnwxWfNj9mXoNGCqsQ56Yibwgl/nCXSMQZixpuIgA
+         MRBHjuGPu922QTYh8dMr9DNqigbT+tjVOGoTTTpr3Lad0wG1WgnKZoLipvXKS7X3xQ8m
+         +MVw==
+X-Gm-Message-State: APjAAAUnf+cL+ek7e5uOCby7upqHXNiVJF7sFrPuM5WJiHxST3xXfM4q
+        +RX1C2kbRs0Mydcn2kNopekYUr7oeJKgaA==
+X-Google-Smtp-Source: APXvYqy4iGaND7QlB9v5kqSo0PkGAyNfhg5wwnXSCX9FD/T6wxE3z4i8FgkGZ3q+vsHKVGhY3dXsuQ==
+X-Received: by 2002:a81:3956:: with SMTP id g83mr73156186ywa.183.1561059490020;
+        Thu, 20 Jun 2019 12:38:10 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id j9sm104400ywc.43.2019.06.20.12.38.09
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 20 Jun 2019 12:38:09 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/25] btrfs: migrate the block group code
+Date:   Thu, 20 Jun 2019 15:37:42 -0400
+Message-Id: <20190620193807.29311-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.14.3
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello, Jan.
+This is the series to migrate the block group code out of extent-tree.c.  This
+is a much larger series than the previous two series because things were much
+more intertwined than block_rsv's and space_info.  There is one code change
+patch in this series, it is
 
-On Thu, Jun 20, 2019 at 05:21:45PM +0200, Jan Kara wrote:
-> I'm completely ignorant of how btrfs compressed writeback works so don't
-> quite understand implications of this. So does this mean that writeback to
-> btrfs compressed files won't be able to transition inodes from one memcg to
-> another? Or are you trying to say the 'wbc' used from async worker thread
-> is actually a dummy one and we would double-account the writeback?
+btrfs: make caching_thread use btrfs_find_next_key
 
-So, before, only the async compression workers would run through the
-wbc accounting code regardless of who originated the dirty pages,
-which is obviously wrong.  After the patch, the code accounts when the
-dirty pages are being handed off to the compression workers and
-no_wbc_acct is used to suppress spurious accounting from the workers.
+This is so I didn't have to copy the simple helper from extent-tree.c into
+block-group.c as well.  It's straightforward, but warrants a close look.
 
-> Anyway, AFAICS no_wbc_acct means: "IO done as a result of this wbc will not
-> have influence on inode memcg ownership", doesn't it?
+The rest is purely moving code around, no code changes at all.  I temporarily
+export some functions at different points and then clean it all up at the end.
 
-Yeap.
+This patchset brings extent-tree.c down to ~5500 loc.  Thanks,
 
-Thanks.
-
--- 
-tejun
+Josef
