@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BDB94C88A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2019 09:42:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 266714C95B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Jun 2019 10:23:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbfFTHmb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 20 Jun 2019 03:42:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50390 "EHLO mx1.suse.de"
+        id S1725889AbfFTIXk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 20 Jun 2019 04:23:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33126 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725912AbfFTHmb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 20 Jun 2019 03:42:31 -0400
+        id S1725875AbfFTIXj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 20 Jun 2019 04:23:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0EF85AF2D;
-        Thu, 20 Jun 2019 07:42:29 +0000 (UTC)
-Subject: Re: [PATCH 00/11] btrfs: move the space_info code out of
- extent-tree.c
+        by mx1.suse.de (Postfix) with ESMTP id D2E6AAD3A;
+        Thu, 20 Jun 2019 08:23:37 +0000 (UTC)
+Subject: Re: [PATCH 4/8] btrfs: cleanup the target logic in
+ __btrfs_block_rsv_release
 To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-References: <20190618200926.3352-1-josef@toxicpanda.com>
+References: <20190619174724.1675-1-josef@toxicpanda.com>
+ <20190619174724.1675-5-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <4a2e0735-43ac-02a1-2974-6a8bff96285a@suse.com>
-Date:   Thu, 20 Jun 2019 10:42:27 +0300
+Message-ID: <3e9708a2-7316-08a4-6cb3-d81842e9b2ab@suse.com>
+Date:   Thu, 20 Jun 2019 11:23:36 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190618200926.3352-1-josef@toxicpanda.com>
+In-Reply-To: <20190619174724.1675-5-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,39 +80,54 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 18.06.19 г. 23:09 ч., Josef Bacik wrote:
-> This is the first pass at making extent-tree.c much smaller.  I've purposefully
-> done no other cleanups or changes.  The places where I needed to modify callers
-> were done in separate patches.  The only time I moved and changed callers in
-> large chunks was the moving of reserve_metadata_bytes out of extent-tree.c, and
-> that was just to rename the users of reserve_metadata_bytes to
-> btrfs_reserve_metadata_bytes.
+On 19.06.19 г. 20:47 ч., Josef Bacik wrote:
+> This works for all callers already, but if we wanted to use the helper
+> for the global_block_rsv it would end up trying to refill itself.  Fix
+> the logic to be able to be used no matter which block rsv is passed in
+> to this helper.
 > 
-> There is 0 functional change in this series.  The next step is to move the other
-> space reservation code that is specific to delayed_refs, inodes, etc.  But I
-> wanted to start with this to make sure we're all onboard with this approach
-> before I do other things.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/extent-tree.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
 > 
-> The diffstat for the whole series is the following
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index d6aff56337aa..6995edf887e1 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -4684,12 +4684,20 @@ u64 __btrfs_block_rsv_release(struct btrfs_fs_info *fs_info,
+>  {
+>  	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
+>  	struct btrfs_block_rsv *delayed_rsv = &fs_info->delayed_refs_rsv;
+> -	struct btrfs_block_rsv *target = delayed_rsv;
+> +	struct btrfs_block_rsv *target = NULL;
+>  
+> -	if (target->full || target == block_rsv)
+> +	/*
+> +	 * If we are the delayed_rsv then push to the global rsv, otherwise dump
+> +	 * into the delayed rsv if it is not full.
+> +	 */
+> +	if (block_rsv == delayed_rsv) {
+>  		target = global_rsv;
+> +	} else if (block_rsv != global_rsv) {
+> +		if (!delayed_rsv->full)
+> +			target = delayed_rsv;
+> +	}
 
-Looks good,
+nit:
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+} else if (block_rsv != global_rsv && !delayed_rs->full) {
 
-> 
->  fs/btrfs/Makefile           |    2 +-
->  fs/btrfs/ctree.h            |   97 +---
->  fs/btrfs/extent-tree.c      | 1277 +++----------------------------------------
->  fs/btrfs/free-space-cache.c |    1 +
->  fs/btrfs/ioctl.c            |    1 +
->  fs/btrfs/space-info.c       | 1103 +++++++++++++++++++++++++++++++++++++
->  fs/btrfs/space-info.h       |  135 +++++
->  fs/btrfs/super.c            |    1 +
->  fs/btrfs/sysfs.c            |    1 +
->  fs/btrfs/volumes.c          |    1 +
->  10 files changed, 1343 insertions(+), 1276 deletions(-)
-> 
-> Thanks,
-> 
-> Josef
+doesn't surpass the 80 character limit and IMO makes it a bit more
+readable but it's minor.
+
+Otherwise looks good.
+
+
+>  
+> -	if (block_rsv->space_info != target->space_info)
+> +	if (target && block_rsv->space_info != target->space_info)
+>  		target = NULL;
+>  
+>  	return block_rsv_release_bytes(fs_info, block_rsv, target, num_bytes,
 > 
