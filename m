@@ -2,128 +2,227 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A78864E9F1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2019 15:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7ED14EB7A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Jun 2019 17:03:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726052AbfFUNw4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Jun 2019 09:52:56 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:40817 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726002AbfFUNwz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Jun 2019 09:52:55 -0400
-Received: by mail-pg1-f193.google.com with SMTP id w10so3410110pgj.7;
-        Fri, 21 Jun 2019 06:52:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2gtphzP/bpRDT8GjhjgIxtYXvKqMZkcliLBFJW0ibC4=;
-        b=talyJMTcjpuLq4hTvxk6zEfv7IpP8BLN6kEH5TTIKlIYbwlc3hW3gcrzAB4O/gOtUF
-         BETBQXXtDsu4wq2W7CZWkUOgvmkr7l+bY4E7g+yrl+ztj3ETe06KTofV3rV8P5mUJjWW
-         sEVg6S907XWCGiywDWy3Bx9dG/yZ19bOwH2sen+/uwr7UohD2jCZohT2vIbRMaFhDaEb
-         EY32TYKMdi+ikdJm+wF0rHTn/lATXlvJErgA2AZRTwNhNbmipWa6DDqM3c95YMyLDNr6
-         9zXUIilsnatphjim8mOIxWLd801oUZV9FgjMDb+7tZXFI5I8s8qOgRipFLb46eIM6Y5h
-         hvNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2gtphzP/bpRDT8GjhjgIxtYXvKqMZkcliLBFJW0ibC4=;
-        b=HxJa73jqL72hXk64QBS8OClCddpNTShw72b6arJalGwsbx4Xp0uHD61xAfrQJ9l4n9
-         QnGMFbN6x/gVqItw1RPAOzgH8GetGZqBFRVq/BegvOLuR0qcKRaHwFTCfB0Yrs2gqmvM
-         PHhCpr3YlBgublOtB6oiB+flC51uQFOdR1xKN0Gjoz/bUq3CxWD9zctOG6qFUzhrnvTZ
-         P0/zZA/FRItx4BwDQ8Fr4ARoTHF3nmVtp4KnvJSLnEzEud37TzYX5uc2Kapzwn195Du0
-         /yavM9NrduaciG+XCHAYwgQy6aik/IZQTqtMsmg2kHnd+expDhiXTh7DDEyZ5UneBTVY
-         YfKQ==
-X-Gm-Message-State: APjAAAVPnqVoSwFnuoY7fqcczWFV+pJ/f7/YjsPZgTJD90qfzDmv/4+q
-        3eTBQLEc0xUUy4J/ghfaP5o=
-X-Google-Smtp-Source: APXvYqwyqVS83chhaxEVGyd7C1vG6DVEpokUX1qngS21+FM3kmKFMvR9A1zCepjypDdS+DFiZlzciw==
-X-Received: by 2002:a65:64d6:: with SMTP id t22mr19026058pgv.406.1561125175021;
-        Fri, 21 Jun 2019 06:52:55 -0700 (PDT)
-Received: from localhost ([178.128.102.47])
-        by smtp.gmail.com with ESMTPSA id c26sm2836654pfr.172.2019.06.21.06.52.52
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 21 Jun 2019 06:52:53 -0700 (PDT)
-Date:   Fri, 21 Jun 2019 21:52:47 +0800
-From:   Eryu Guan <guaneryu@gmail.com>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 2/2] generic/059: also test that the file's mtime and
- ctime are updated
-Message-ID: <20190621135247.GL15846@desktop>
-References: <20190619120624.9922-1-fdmanana@kernel.org>
- <20190621103642.GK15846@desktop>
- <CAL3q7H4YqSZSdUo5zrFKjmtDEaOKak2YHVf9MR3y9WdXnE2xnw@mail.gmail.com>
+        id S1726052AbfFUPC6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Jun 2019 11:02:58 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34958 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726018AbfFUPC6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Jun 2019 11:02:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A4422AFA5
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2019 15:02:56 +0000 (UTC)
+Date:   Fri, 21 Jun 2019 10:02:54 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: Evaluate io_tree in find_lock_delalloc_range()
+Message-ID: <20190621150254.kql745ulwzqginhc@fiona>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL3q7H4YqSZSdUo5zrFKjmtDEaOKak2YHVf9MR3y9WdXnE2xnw@mail.gmail.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 21, 2019 at 11:48:57AM +0100, Filipe Manana wrote:
-> On Fri, Jun 21, 2019 at 11:36 AM Eryu Guan <guaneryu@gmail.com> wrote:
-> >
-> > On Wed, Jun 19, 2019 at 01:06:24PM +0100, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > Test as well that hole punch operations that affect a single file block
-> > > also update the file's mtime and ctime.
-> > >
-> > > This is motivated by a bug a found in btrfs which is fixed by the
-> > > following patch for the linux kernel:
-> > >
-> > >  "Btrfs: add missing inode version, ctime and mtime updates when
-> > >   punching hole"
-> > >
-> > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > ---
-> > >  tests/generic/059 | 18 ++++++++++++++++++
-> > >  1 file changed, 18 insertions(+)
-> > >
-> > > diff --git a/tests/generic/059 b/tests/generic/059
-> > > index e8cb93d8..fd44b2ea 100755
-> > > --- a/tests/generic/059
-> > > +++ b/tests/generic/059
-> > > @@ -18,6 +18,9 @@
-> > >  #
-> > >  #  Btrfs: add missing inode update when punching hole
-> > >  #
-> > > +# Also test the mtime and ctime properties of the file change after punching
-> > > +# holes with ranges that operate only on a single block of the file.
-> > > +#
-> > >  seq=`basename $0`
-> > >  seqres=$RESULT_DIR/$seq
-> > >  echo "QA output created by $seq"
-> > > @@ -68,6 +71,13 @@ $XFS_IO_PROG -c "fsync" $SCRATCH_MNT/foo
-> > >  # fsync log.
-> > >  sync
-> > >
-> > > +# Sleep for 1 second, because we want to check that the next punch operations we
-> > > +# do update the file's mtime and ctime.
-> > > +sleep 1
-> >
-> > Is this supposed to be after recording the initial c/mtime? i.e. moving
-> > it after c/mtime_before?
-> 
-> Either way is fine. Capturing the times right before or right after
-> the sleep, gives the same values as nothing changed the file.
+Simplification.
+No point passing the tree variable when it can be evaluated
+from inode. The tests now use the io_tree from btrfs_inode
+as opposed to creating one.
 
-Ah, you're right.
+Changes since v1:
+ - included btrfs sanity tests
 
-> 
-> Btw, I had noticed the other day that the second "echo" has
-> $mtime_after instead of $ctime_after (copy-paste mistake).
-> Do you want me to send a v2 fixing that typo, or you can do it
-> yourself when you pick the patch?
+Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+---
+ fs/btrfs/extent_io.c             |  6 ++----
+ fs/btrfs/extent_io.h             |  2 +-
+ fs/btrfs/tests/extent-io-tests.c | 30 ++++++++++++++++--------------
+ 3 files changed, 19 insertions(+), 19 deletions(-)
 
-I can fix it on commit, thanks for pointing it out!
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index db337e53aab3..e9475d7e11bf 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1719,10 +1719,10 @@ static noinline int lock_delalloc_pages(struct inode *inode,
+  */
+ EXPORT_FOR_TESTS
+ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+-				    struct extent_io_tree *tree,
+ 				    struct page *locked_page, u64 *start,
+ 				    u64 *end)
+ {
++	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+ 	u64 max_bytes = BTRFS_MAX_EXTENT_SIZE;
+ 	u64 delalloc_start;
+ 	u64 delalloc_end;
+@@ -3290,7 +3290,6 @@ static noinline_for_stack int writepage_delalloc(struct inode *inode,
+ 		struct page *page, struct writeback_control *wbc,
+ 		u64 delalloc_start, unsigned long *nr_written)
+ {
+-	struct extent_io_tree *tree = &BTRFS_I(inode)->io_tree;
+ 	u64 page_end = delalloc_start + PAGE_SIZE - 1;
+ 	bool found;
+ 	u64 delalloc_to_write = 0;
+@@ -3300,8 +3299,7 @@ static noinline_for_stack int writepage_delalloc(struct inode *inode,
+ 
+ 
+ 	while (delalloc_end < page_end) {
+-		found = find_lock_delalloc_range(inode, tree,
+-					       page,
++		found = find_lock_delalloc_range(inode, page,
+ 					       &delalloc_start,
+ 					       &delalloc_end);
+ 		if (!found) {
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index aa18a16a6ed7..2919c3be1933 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -549,7 +549,7 @@ int free_io_failure(struct extent_io_tree *failure_tree,
+ 		    struct extent_io_tree *io_tree,
+ 		    struct io_failure_record *rec);
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+-bool find_lock_delalloc_range(struct inode *inode, struct extent_io_tree *tree,
++bool find_lock_delalloc_range(struct inode *inode,
+ 			     struct page *locked_page, u64 *start,
+ 			     u64 *end);
+ #endif
+diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+index 7bf4d5734dbe..0518aeb4ba95 100644
+--- a/fs/btrfs/tests/extent-io-tests.c
++++ b/fs/btrfs/tests/extent-io-tests.c
+@@ -10,6 +10,7 @@
+ #include "btrfs-tests.h"
+ #include "../ctree.h"
+ #include "../extent_io.h"
++#include "../btrfs_inode.h"
+ 
+ #define PROCESS_UNLOCK		(1 << 0)
+ #define PROCESS_RELEASE		(1 << 1)
+@@ -58,7 +59,7 @@ static noinline int process_page_range(struct inode *inode, u64 start, u64 end,
+ static int test_find_delalloc(u32 sectorsize)
+ {
+ 	struct inode *inode;
+-	struct extent_io_tree tmp;
++	struct extent_io_tree *tmp;
+ 	struct page *page;
+ 	struct page *locked_page = NULL;
+ 	unsigned long index = 0;
+@@ -76,12 +77,13 @@ static int test_find_delalloc(u32 sectorsize)
+ 		test_std_err(TEST_ALLOC_INODE);
+ 		return -ENOMEM;
+ 	}
++	tmp = &BTRFS_I(inode)->io_tree;
+ 
+ 	/*
+ 	 * Passing NULL as we don't have fs_info but tracepoints are not used
+ 	 * at this point
+ 	 */
+-	extent_io_tree_init(NULL, &tmp, IO_TREE_SELFTEST, NULL);
++	extent_io_tree_init(NULL, tmp, IO_TREE_SELFTEST, NULL);
+ 
+ 	/*
+ 	 * First go through and create and mark all of our pages dirty, we pin
+@@ -108,10 +110,10 @@ static int test_find_delalloc(u32 sectorsize)
+ 	 * |--- delalloc ---|
+ 	 * |---  search  ---|
+ 	 */
+-	set_extent_delalloc(&tmp, 0, sectorsize - 1, 0, NULL);
++	set_extent_delalloc(tmp, 0, sectorsize - 1, 0, NULL);
+ 	start = 0;
+ 	end = 0;
+-	found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
++	found = find_lock_delalloc_range(inode, locked_page, &start,
+ 					 &end);
+ 	if (!found) {
+ 		test_err("should have found at least one delalloc");
+@@ -122,7 +124,7 @@ static int test_find_delalloc(u32 sectorsize)
+ 			sectorsize - 1, start, end);
+ 		goto out_bits;
+ 	}
+-	unlock_extent(&tmp, start, end);
++	unlock_extent(tmp, start, end);
+ 	unlock_page(locked_page);
+ 	put_page(locked_page);
+ 
+@@ -139,10 +141,10 @@ static int test_find_delalloc(u32 sectorsize)
+ 		test_err("couldn't find the locked page");
+ 		goto out_bits;
+ 	}
+-	set_extent_delalloc(&tmp, sectorsize, max_bytes - 1, 0, NULL);
++	set_extent_delalloc(tmp, sectorsize, max_bytes - 1, 0, NULL);
+ 	start = test_start;
+ 	end = 0;
+-	found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
++	found = find_lock_delalloc_range(inode, locked_page, &start,
+ 					 &end);
+ 	if (!found) {
+ 		test_err("couldn't find delalloc in our range");
+@@ -158,7 +160,7 @@ static int test_find_delalloc(u32 sectorsize)
+ 		test_err("there were unlocked pages in the range");
+ 		goto out_bits;
+ 	}
+-	unlock_extent(&tmp, start, end);
++	unlock_extent(tmp, start, end);
+ 	/* locked_page was unlocked above */
+ 	put_page(locked_page);
+ 
+@@ -176,7 +178,7 @@ static int test_find_delalloc(u32 sectorsize)
+ 	}
+ 	start = test_start;
+ 	end = 0;
+-	found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
++	found = find_lock_delalloc_range(inode, locked_page, &start,
+ 					 &end);
+ 	if (found) {
+ 		test_err("found range when we shouldn't have");
+@@ -194,10 +196,10 @@ static int test_find_delalloc(u32 sectorsize)
+ 	 *
+ 	 * We are re-using our test_start from above since it works out well.
+ 	 */
+-	set_extent_delalloc(&tmp, max_bytes, total_dirty - 1, 0, NULL);
++	set_extent_delalloc(tmp, max_bytes, total_dirty - 1, 0, NULL);
+ 	start = test_start;
+ 	end = 0;
+-	found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
++	found = find_lock_delalloc_range(inode, locked_page, &start,
+ 					 &end);
+ 	if (!found) {
+ 		test_err("didn't find our range");
+@@ -213,7 +215,7 @@ static int test_find_delalloc(u32 sectorsize)
+ 		test_err("pages in range were not all locked");
+ 		goto out_bits;
+ 	}
+-	unlock_extent(&tmp, start, end);
++	unlock_extent(tmp, start, end);
+ 
+ 	/*
+ 	 * Now to test where we run into a page that is no longer dirty in the
+@@ -238,7 +240,7 @@ static int test_find_delalloc(u32 sectorsize)
+ 	 * this changes at any point in the future we will need to fix this
+ 	 * tests expected behavior.
+ 	 */
+-	found = find_lock_delalloc_range(inode, &tmp, locked_page, &start,
++	found = find_lock_delalloc_range(inode, locked_page, &start,
+ 					 &end);
+ 	if (!found) {
+ 		test_err("didn't find our range");
+@@ -256,7 +258,7 @@ static int test_find_delalloc(u32 sectorsize)
+ 	}
+ 	ret = 0;
+ out_bits:
+-	clear_extent_bits(&tmp, 0, total_dirty - 1, (unsigned)-1);
++	clear_extent_bits(tmp, 0, total_dirty - 1, (unsigned)-1);
+ out:
+ 	if (locked_page)
+ 		put_page(locked_page);
+-- 
+2.16.4
 
-Thanks,
-Eryu
+
+-- 
+Goldwyn
