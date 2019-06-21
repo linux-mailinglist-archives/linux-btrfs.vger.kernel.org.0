@@ -2,94 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 926BA4F0EE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Jun 2019 01:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35564F16E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Jun 2019 01:57:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726130AbfFUXAT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Jun 2019 19:00:19 -0400
-Received: from w1.tutanota.de ([81.3.6.162]:53824 "EHLO w1.tutanota.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726083AbfFUXAT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Jun 2019 19:00:19 -0400
-Received: from w2.tutanota.de (unknown [192.168.1.163])
-        by w1.tutanota.de (Postfix) with ESMTP id BF5E1FA015E
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Jun 2019 23:00:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tuta.io; s=20161216;
-        t=1561158016; bh=M0pJxPgVheW4S7Y9IpSMyJri2WI7fF1Kyv0f0X6JT0E=;
-        h=Date:From:To:In-Reply-To:References:Subject:From;
-        b=N96Cz2aRFehXQf3lZ360ws1M1CFgcRYpyCz6RQPXtMv01CBuV54QRCdCT1QkPnf/4
-         dU6Rv45IIw4O7juCFE+XxDog070V7XGZV/fGlOaEz9FYlHH1F4iRNNHped+ggodEO2
-         /dkS9rMJJvQdAjSudAgzFnJps7aGh79RVJTxnRYPN71pUxGQ0BQy+Zx1iD8xDgAdp7
-         SRlB99r19lvhIwKmsObD+HjwPnxjRMG8NgyNBQM8bVa5zKxoSXmD9auXIZE3qi4eV9
-         DpmyVneOPfrZ1Ptjh2KA7As78PHjaxWVsdduyDNI1JFLkn8iaEQ62b8idrPV9aVOBn
-         +wrs0s/b1cfDg==
-Date:   Sat, 22 Jun 2019 01:00:16 +0200 (CEST)
-From:   <tyomix@tuta.io>
-To:     Linux Btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <LhwGCp6--3-1@tuta.io>
-In-Reply-To: <LhwD3kS--3-1@tuta.io>
-References: <LhwD3kS--3-1@tuta.io>
-Subject: Re: Can't mount or recover! Help! ERROR: cannot read chunk root
-  ERROR: cannot open file system
+        id S1726079AbfFUX5G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Jun 2019 19:57:06 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:48302 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726045AbfFUX5F (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 21 Jun 2019 19:57:05 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5LNsGrX052403;
+        Fri, 21 Jun 2019 23:56:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ cc : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2018-07-02;
+ bh=cAdDQjLmw3paRsCYayAMtBFRH59fRNc4vYLBHuqjsSA=;
+ b=TzR6Wru1xSjTTRJAS5YLkE/BrGnsLOB3oXc++TPNZTilrEotX+w/PXZSlo2GmgalFn6q
+ EFIn2g7OnCMHKiU/KYZQjoVVDHvaifoE42AmpxsuNL7wnDmrtZhKVTyFzOJI7etrK4kK
+ KEBGejr346UOlFcuSkyuDnIO/5wd6UqT/S/KQGVF+NHJ5J7mmhYyVd5c2jc+HbQbg3wB
+ wa4pvaZQ8fS5HuyXYBN1pV+PfgLDpbPcaxs+KsA+sgcG7mAhRxGd5p97mdMZnG6Ft3yd
+ IEh9EmQpStxpaanEvQR/EobOi//ZfTjzIl0oWYndnxgPHklvyg0k1RPOB0QGCH15ATwX mw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2t7809rsvw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Jun 2019 23:56:27 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5LNtFqW105530;
+        Fri, 21 Jun 2019 23:56:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 2t77ypet01-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 Jun 2019 23:56:27 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5LNuRFa107024;
+        Fri, 21 Jun 2019 23:56:27 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2t77ypesyw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Jun 2019 23:56:27 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5LNuGUs018756;
+        Fri, 21 Jun 2019 23:56:16 GMT
+Received: from localhost (/10.159.131.214)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 21 Jun 2019 16:56:16 -0700
+Subject: [PATCH v2 0/4] vfs: clean up SETFLAGS and FSSETXATTR option
+ processing
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        darrick.wong@oracle.com, shaggy@kernel.org,
+        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
+        adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk
+Cc:     cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-efi@vger.kernel.org, reiserfs-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
+Date:   Fri, 21 Jun 2019 16:56:07 -0700
+Message-ID: <156116136742.1664814.17093419199766834123.stgit@magnolia>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9295 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=851 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906210182
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi all,
 
-[root@TYOMIX tyomix]# btrfs restore -D /dev/sda3 /dev/null
-checksum verify failed on 1048576 found E4E3BDB6 wanted 00000000
-checksum verify failed on 1048576 found E4E3BDB6 wanted 00000000
-bad tree block 1048576, bytenr mismatch, want=3D1048576, have=3D0
-ERROR: cannot read chunk root
-Could not open root, trying backup super
-checksum verify failed on 1048576 found E4E3BDB6 wanted 00000000
-checksum verify failed on 1048576 found E4E3BDB6 wanted 00000000
-bad tree block 1048576, bytenr mismatch, want=3D1048576, have=3D0
-ERROR: cannot read chunk root
-Could not open root, trying backup super
-ERROR: superblock bytenr 274877906944 is larger than device size 2434007040=
-00
-Could not open root, trying backup super
-[root@TYOMIX tyomix]#
+The FS_IOC_SETFLAGS and FS_IOC_FSSETXATTR ioctls were promoted from ext4
+and XFS, respectively, into the VFS.  However, we didn't promote any of
+the parameter checking code from those filesystems, which lead to a mess
+where each filesystem open-codes whatever parameter checks they want and
+the behavior across filesystems is no longer consistent.
 
+Therefore, create some generic checking functions in the VFS and remove
+all the open-coded pieces in each filesystem.  This preserves the
+current behavior where a filesystem can choose to ignore fields it
+doesn't understand.
 
-Jun 22, 2019, 1:46 AM by tyomix@tuta.io:
+If you're going to start using this mess, you probably ought to just
+pull from my git trees, which are linked below.
 
-> [root@TYOMIX tyomix]# mount -t btrfs -o ro,recovery /dev/sda3 /mnt
-> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda3, miss=
-ing codepage or helper program, or other error.
-> [root@TYOMIX tyomix]# mount -t btrfs -o ro,usebackuproot /dev/sda3 /mnt
-> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/sda3, miss=
-ing codepage or helper program, or other error.
-> [root@TYOMIX tyomix]#=C2=A0 btrfs check /dev/sda3
-> Opening filesystem to check...
-> checksum verify failed on 1048576 found E4E3BDB6 wanted 00000000
-> checksum verify failed on 1048576 found E4E3BDB6 wanted 00000000
-> bad tree block 1048576, bytenr mismatch, want=3D1048576, have=3D0
-> ERROR: cannot read chunk root
-> ERROR: cannot open file system
-> [root@TYOMIX tyomix]#=C2=A0=C2=A0 uname -a
-> Linux TYOMIX 5.1.9-arch1-1-ARCH #1 SMP PREEMPT Tue Jun 11 16:18:09 UTC 20=
-19 x86_64 GNU/Linux
-> [root@TYOMIX tyomix]#=C2=A0=C2=A0 btrfs --version
-> btrfs-progs v5.1
-> [root@TYOMIX tyomix]#=C2=A0=C2=A0 btrfs fi show
-> Label: 'Extra'=C2=A0 uuid: 23a08cb0-5289-407f-a1c3-192709bb9476
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes used =
-96.19GiB
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 size=
- 107.42GiB used 99.02GiB path /dev/sdc1
->
-> Label: 'Data'=C2=A0 uuid: 2bff7854-bbe0-4368-bf46-8f191805d9ca
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 1 FS bytes used =
-171.19GiB
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 size=
- 226.68GiB used 223.01GiB path /dev/sda3
->
->
->
+This has been lightly tested with fstests.  Enjoy!
+Comments and questions are, as always, welcome.
 
+--D
+
+kernel git tree:
+https://git.kernel.org/cgit/linux/kernel/git/djwong/xfs-linux.git/log/?h=file-ioctl-cleanups
