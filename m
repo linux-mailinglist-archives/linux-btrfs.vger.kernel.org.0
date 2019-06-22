@@ -2,188 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0C14F1F0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Jun 2019 01:59:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD264F29C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Jun 2019 02:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbfFUX7F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 21 Jun 2019 19:59:05 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:50284 "EHLO
+        id S1726289AbfFVAVm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 21 Jun 2019 20:21:42 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:36690 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbfFUX7C (ORCPT
+        with ESMTP id S1726080AbfFVAVm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 21 Jun 2019 19:59:02 -0400
+        Fri, 21 Jun 2019 20:21:42 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5LNt22Y052769;
-        Fri, 21 Jun 2019 23:57:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=rwZuzZLu2QSuxM1deZeCZnnfsOeZtWtWWa3iVLz4Y0o=;
- b=j4pMav0SW7e9IFJcTpCLcn4neiQwevtJo2J+lHllOH0GrPdCMsB8iQfSOQ1NgxlBqbVT
- OICMIQi3C2UlR7VmtDc28J0RWQyGpW/svba+WkpNuDwnYYbtGkzIR9onweaaZ42Hjd4v
- 7+6DtESjx18TSxlVMjfOZTOLmVoXhIFnHLJx/ZuAg0EjP7ntcN5y53Ydpo+wlR3McVro
- P/X2vkBxkiaF5hh8rtBC9Y3IHL9TJQU9hmFMqtuN/6D9K20cct8ZF1rNphEDE4665jhl
- j72tS2nlAV7F8v5YLxysiYVfhqU1R1I/qPp3EaMXTsfzZ3rfbLk0QJO1ozCXzn3jkiUu FA== 
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5M0Jmsb067607;
+        Sat, 22 Jun 2019 00:21:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=OZgG/+PaNSzFNI+C1G5b5d9WJiVZ3f7Dm0+3X0L7Kck=;
+ b=KVCFf6+fIDHVu0LkAq5W2GOo5Zt0679ULfV96BrRNdcRvbtDn9wyOe0lWFpIniqRSufz
+ sd4cyWp+WYCKEcJSVKFjIDKLTsNXlyloWyBGdsMy+eD8M9MF+C0jDbg9rKA1XgznRl2f
+ m6VRPUMcKb14Bo5VxmnmSf0xteGmn6GCXb7rxw1k3aNsclQBP7IJMlQ/Seee+ClC2WPg
+ rxyWcV9s0WlNLYF8hypuJo7NSig+eXfOTt/3JDNO8HBepFW7eXDI+Q4jKv+R4tleBlba
+ RN3j9ambUocWsZsDyQM/7abT+OdBeLekQyfeS/lRjs4e4cZCJ3HZ++kLKAItYOeyDOiF /w== 
 Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2t7809rsyd-1
+        by userp2130.oracle.com with ESMTP id 2t7809ru61-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Jun 2019 23:57:53 +0000
+        Sat, 22 Jun 2019 00:21:10 +0000
 Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5LNvFfg108897;
-        Fri, 21 Jun 2019 23:57:52 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 2t77ypetb6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 21 Jun 2019 23:57:52 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5LNvq84109606;
-        Fri, 21 Jun 2019 23:57:52 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 2t77ypetb3-1
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5M0JPBT150148;
+        Sat, 22 Jun 2019 00:21:10 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2t77ypf1jc-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Jun 2019 23:57:52 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5LNvocq020839;
-        Fri, 21 Jun 2019 23:57:50 GMT
+        Sat, 22 Jun 2019 00:21:10 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5M0L8CR012074;
+        Sat, 22 Jun 2019 00:21:08 GMT
 Received: from localhost (/10.159.131.214)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 21 Jun 2019 16:57:49 -0700
-Subject: [PATCH 7/7] vfs: don't allow writes to swap files
+        with ESMTP ; Fri, 21 Jun 2019 17:21:08 -0700
+Date:   Fri, 21 Jun 2019 17:21:07 -0700
 From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
-        darrick.wong@oracle.com, ard.biesheuvel@linaro.org,
-        josef@toxicpanda.com, clm@fb.com, adilger.kernel@dilger.ca,
-        viro@zeniv.linux.org.uk, jack@suse.com, dsterba@suse.com,
-        jaegeuk@kernel.org, jk@ozlabs.org
-Cc:     reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Date:   Fri, 21 Jun 2019 16:57:46 -0700
-Message-ID: <156116146628.1664939.13724544486987830540.stgit@magnolia>
-In-Reply-To: <156116141046.1664939.11424021489724835645.stgit@magnolia>
-References: <156116141046.1664939.11424021489724835645.stgit@magnolia>
-User-Agent: StGit/0.17.1-dirty
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@lst.de, david@fromorbit.com,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 3/6] iomap: Check iblocksize before transforming
+ page->private
+Message-ID: <20190622002107.GA1611011@magnolia>
+References: <20190621192828.28900-1-rgoldwyn@suse.de>
+ <20190621192828.28900-4-rgoldwyn@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190621192828.28900-4-rgoldwyn@suse.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9295 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906220001
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9295 signatures=668687
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
  suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=969 adultscore=0
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906210182
+ definitions=main-1906220001
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Darrick J. Wong <darrick.wong@oracle.com>
+On Fri, Jun 21, 2019 at 02:28:25PM -0500, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> btrfs uses page->private as well to store extent_buffer. Make
+> the check stricter to make sure we are using page->private for iop by
+> comparing iblocksize < PAGE_SIZE.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Don't let userspace write to an active swap file because the kernel
-effectively has a long term lease on the storage and things could get
-seriously corrupted if we let this happen.
+/me wonders what will happen when btrfs decides to support blocksize !=
+pagesize... will we have to add a pointer to struct iomap_page so that
+btrfs can continue to associate an extent_buffer with a page?
 
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
----
- fs/attr.c     |    3 +++
- mm/filemap.c  |    3 +++
- mm/memory.c   |    4 +++-
- mm/mmap.c     |    2 ++
- mm/swapfile.c |   15 +++++++++++++--
- 5 files changed, 24 insertions(+), 3 deletions(-)
+--D
 
-
-diff --git a/fs/attr.c b/fs/attr.c
-index 1fcfdcc5b367..42f4d4fb0631 100644
---- a/fs/attr.c
-+++ b/fs/attr.c
-@@ -236,6 +236,9 @@ int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **de
- 	if (IS_IMMUTABLE(inode))
- 		return -EPERM;
- 
-+	if (IS_SWAPFILE(inode))
-+		return -ETXTBSY;
-+
- 	if ((ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID | ATTR_TIMES_SET)) &&
- 	    IS_APPEND(inode))
- 		return -EPERM;
-diff --git a/mm/filemap.c b/mm/filemap.c
-index dad85e10f5f8..fd80bc20e30a 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2938,6 +2938,9 @@ inline ssize_t generic_write_checks(struct kiocb *iocb, struct iov_iter *from)
- 	if (IS_IMMUTABLE(inode))
- 		return -EPERM;
- 
-+	if (IS_SWAPFILE(inode))
-+		return -ETXTBSY;
-+
- 	if (!iov_iter_count(from))
- 		return 0;
- 
-diff --git a/mm/memory.c b/mm/memory.c
-index 4311cfdade90..c04c6a689995 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2235,7 +2235,9 @@ static vm_fault_t do_page_mkwrite(struct vm_fault *vmf)
- 
- 	vmf->flags = FAULT_FLAG_WRITE|FAULT_FLAG_MKWRITE;
- 
--	if (vmf->vma->vm_file && IS_IMMUTABLE(file_inode(vmf->vma->vm_file)))
-+	if (vmf->vma->vm_file &&
-+	    (IS_IMMUTABLE(file_inode(vmf->vma->vm_file)) ||
-+	     IS_SWAPFILE(file_inode(vmf->vma->vm_file))))
- 		return VM_FAULT_SIGBUS;
- 
- 	ret = vmf->vma->vm_ops->page_mkwrite(vmf);
-diff --git a/mm/mmap.c b/mm/mmap.c
-index ac1e32205237..031807339869 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1488,6 +1488,8 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
- 					return -EACCES;
- 				if (IS_IMMUTABLE(file_inode(file)))
- 					return -EPERM;
-+				if (IS_SWAPFILE(file_inode(file)))
-+					return -ETXTBSY;
- 			}
- 
- 			/*
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 596ac98051c5..390859785558 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -3165,6 +3165,19 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	if (error)
- 		goto bad_swap;
- 
-+	/*
-+	 * Flush any pending IO and dirty mappings before we start using this
-+	 * swap file.
-+	 */
-+	if (S_ISREG(inode->i_mode)) {
-+		inode->i_flags |= S_SWAPFILE;
-+		error = inode_flush_data(inode);
-+		if (error) {
-+			inode->i_flags &= ~S_SWAPFILE;
-+			goto bad_swap;
-+		}
-+	}
-+
- 	mutex_lock(&swapon_mutex);
- 	prio = -1;
- 	if (swap_flags & SWAP_FLAG_PREFER)
-@@ -3185,8 +3198,6 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	atomic_inc(&proc_poll_event);
- 	wake_up_interruptible(&proc_poll_wait);
- 
--	if (S_ISREG(inode->i_mode))
--		inode->i_flags |= S_SWAPFILE;
- 	error = 0;
- 	goto out;
- bad_swap:
-
+> ---
+>  include/linux/iomap.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index f49767c7fd83..6511124e58b6 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -128,7 +128,8 @@ struct iomap_page {
+>  
+>  static inline struct iomap_page *to_iomap_page(struct page *page)
+>  {
+> -	if (page_has_private(page))
+> +	if (i_blocksize(page->mapping->host) < PAGE_SIZE &&
+> +			page_has_private(page))
+>  		return (struct iomap_page *)page_private(page);
+>  	return NULL;
+>  }
+> -- 
+> 2.16.4
+> 
