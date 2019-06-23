@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A774FAAF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Jun 2019 09:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5284FAC1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Jun 2019 10:09:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726365AbfFWHzr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 23 Jun 2019 03:55:47 -0400
-Received: from mout.gmx.net ([212.227.15.19]:41605 "EHLO mout.gmx.net"
+        id S1726350AbfFWIJG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 23 Jun 2019 04:09:06 -0400
+Received: from mout.gmx.net ([212.227.15.18]:56011 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726056AbfFWHzr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 23 Jun 2019 03:55:47 -0400
+        id S1726086AbfFWIJG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 23 Jun 2019 04:09:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1561276543;
-        bh=jgz7OvCFhxykIGd2USz4u5Y3TUlgKlD/nALk8dKMFTo=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=YpkbjJOOJ/cSVNyn+FCDYXARIUWnzaT0yz8ITnMI6ANYfb93Mp45p9V0ceuS7TGVy
-         FFZ7+Rim4SuazhqSZtYCct+TJZbLzN+R8yY/KMva/hft8fM3WIZHq3LN30Gln8Rqdf
-         hPQae3GZ2at7FNJkp0mTooWpz1lWVAuys0bcqAbg=
+        s=badeba3b8450; t=1561277343;
+        bh=kkIrZxhGY+rZCXdIc6V0v3hgqoQfc4fBMRaWMnSRNVY=;
+        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
+        b=FUQ66fnJOKCgEVe9Rjy/CKW20FmK4mJTLaFHj7wz17H6C+q5H5XpBDFzuqSsVHdB+
+         FjAjwePz3Estyprm4tS0uqwDI3TbgirUwB19memcvM08vX2TVmV+DxAzE5JHrytn3Q
+         vGh8D1b7kSkL+eoJSjd1PSZUrtu/mzMZX+kEMeC8=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx002
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0MS5Dm-1i2eKC1udW-00TFee; Sun, 23
- Jun 2019 09:55:43 +0200
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MMXQ5-1huhgp3U7r-00JbOR; Sun, 23
+ Jun 2019 10:09:03 +0200
 Subject: Re: Confused by btrfs quota group accounting
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 To:     Andrei Borzenkov <arvidjaar@gmail.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <eeb418d8-13a1-39c3-c6d1-dd5a2127abc9@gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+ <669a0428-0517-a10e-c658-c8137463450a@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,215 +53,202 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <669a0428-0517-a10e-c658-c8137463450a@gmx.com>
-Date:   Sun, 23 Jun 2019 15:55:39 +0800
+Message-ID: <cec540b7-f1c1-93f2-adb0-5f0155215e73@gmx.com>
+Date:   Sun, 23 Jun 2019 16:08:56 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.1
 MIME-Version: 1.0
-In-Reply-To: <eeb418d8-13a1-39c3-c6d1-dd5a2127abc9@gmail.com>
+In-Reply-To: <669a0428-0517-a10e-c658-c8137463450a@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="noYV1mK5w6qZAuJVjwdouvfmliFmJ68L7"
-X-Provags-ID: V03:K1:ZDKBbDC9AqWHSMLeEGg2PqDTYHdsAE6oTQdV7nSQjhdXi3WXLys
- mVIXpzB4X9nK1xOEtYuVPBCPnanSo0CZZtCSDAo4RGpEU7BWzoftzuZA15RKLwz/rk2f6A0
- UtEZq45FE9tlWTY0Gbt9Kq8L3ybbJbsDOjvykQF02BX2gHH9figawSAwvFJeTcpBf98IQC1
- JWn11NTSRbFSgD6XVzD4Q==
+ boundary="oPGdnt3cVRCumgV5iBeldaORc4F4w32Mv"
+X-Provags-ID: V03:K1:dcAjhIxUa71EpuSkEdxm/xk6NkqaRWSwJlqk2YJLIiJ1MO0L5Ry
+ 051cjLg1+N0eXZBKXw329fbGGUuSrZEY2dEFLOK1oXo0qkuGAGmsI5evNFSM8DtwSdvyFDE
+ 04momw9+wNtg1eSuQ5K/i9Ebg141DrpEnF6Svo2x+ZtLs3MGbWgWOPFLy6yyL1MHZ3d/0XA
+ DHH4SqR6WPj6Nv4FYgMGQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qafSXPfQjO4=:smVbNUdKRnksxHYjxSjIOA
- RUDsCElEwTq6CiBeCdnXOOnDGavKIvvxiG1YsFBtqG3PK/rnB+fi9kKNeS/n4Csebi7Nd2WX9
- xdhu37h82qeD+W4xgOX2SrMPhX9P+QV3k1knwp/F/LkaVKlHG8GBWZAGQZpnkjSXg1hKEMDfm
- iQAfa5B6zI1i3fd1fCYltKvwJw/Jr0FbFWySsm9sCqJVUpqsvcCckMpRJbQ1MYQnTSMVso4T6
- CI0HJbXH3g/KDieqIypl6FaxVoqjpDxSK8dy5fkuFnxmslyVj2q1nFZ6Lf7xlM9btdR+DGyLf
- y0ePSJLBH4e/gkxciOvn6P1SzY3mczWtJS3EKjH0GfQX2xtQ46xXrDl86C6eXFwaBryBUeIaa
- Sw5cean17vAE9zslUhu+K4/DQuEL2uAnKJpg0Hym4oeGOqiiHkkaS1fr1yybpDoWzS1IaOtFl
- 54jSaDNtDk5qedkHTlYCgc4Ny08Ko/8Os3u1Kemb3USNilBASbfgAaQ/QcVLZqEZW9ixM2ZbC
- QG8WJWCexXlGJ38n7VhCv88+oA6WuP+xlIwf5Y7rPRTXFMy258x3JfmjKayE40YW0hYggoBrO
- AE25IPfYBxr15nWaQJv6DiDHJAumVFbc38wP7A6mJcxN+Op7P6VzMCDRbbxDcbiqMNhI7A3uf
- 7DCJI1Ijgn3loKvRqKrF1ePwK6gajqtPzhqrUobNXRWumd6Wgdq+Fh/4S5wrWEnuRc4ezZ841
- 9k3mfiWUoNyyagbEXdH+9uxm26wjALaxy7KIefYbbA9hD+l80fQjg6atnJUjuhnbyha2PTffY
- QEd0e2UmpXlCkX5vRvURPTGOxkaqPQQcH5atM4WhOBGyHRONKjVEtTSHSaBQeEMww+ZMorz3L
- J1izyMo3ufujH3cAMKMypBX0Nfqe2n6Ynsc/g13NAVByqf/zbyVluumEeudagCqnt59C1Jyx9
- VrpazxqLL+ez+MSHAAlA5MfalmCD3vmI=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BUgKrAb2Ors=:wVZmXHmITIEc+ueeA6UF0f
+ jf3O8WwaxefQGkdeJ2OXf+LCMBYdRAvbibfYgUKt+RExB5urACpmJ/Nk1t8adm0RlFQWQ4RgB
+ BYDjFMDZpBTGrJdwwJJkq0KrphJzXNswu/w8mkoWSvcp08cMqkIfTMPC3E2AScvB2+Qgn/R00
+ G8ZJTagf38DSDWhSLdYWIGZjqWzzYCSsz3VYioF/JlEyW1LAdBFL5VTauvhMTOJOWgb3pEiod
+ pWfZlkADmgbth2RoBXW3hHyQQcbgiKCAO65xNUmsXyhjHR4t0j9lqfYqeBYbdAnK3Q+dtciqq
+ Z73gQgrWuHEp0oITiVeMTxjWbgqfSVD6YjMXtuy4jZe31YF+ktsvzPAPVJZE9QU0+c0VhvTGq
+ aOBid9XHtbAaFWWF4DC7x+3uVU7vTBGWxlka71fnHhUzwXPA0XE3rVgeqdubNYvJgklXECytB
+ 3RROPx4iHF/gb3vUBgITjpeNSZCZu+66WUcivB0bX3sUgnCxkRSa5K5AG+Ted4ql36hWCGIYA
+ b05FzcvDcuPdwzA3wFQuHiXn9ZahWPkYfV5hBVgavp/kz/gPTpiUvO7QtHxYZ8hkMD5VOI73g
+ DnoBjEVMfGfeQ4pTU9SHQZEeRp/nwDZ9g4ua+4XURgb6yQxzRX1mg2rHIOZSpi9cd5mUvHd5B
+ VxJBKNPbNsYUhdUjOLj2VU2Zc1BxjT96QyxI13+T91N5/4sTm/pw6gzTr+inGQojck/BvNQn8
+ KzSYOeJPWgmf9LTe97w4tYX7hMyWnZBG2hiRs7OgwtPtYGxMEbyMB7cu0sv9evRIts8U0msjr
+ CGkhQLMdxFMJZ3AIdEKOGFKjANx5kgAvMzgwOaOKryvwiZpkDQl6w8OaVHoZ7Xg7S0aohw8xh
+ MKCgvlUWvwqLqtfNF6fsMlScGarRzooqK0fwHto9y4LwqeDYq6b65Z6mVy04mpfu3CKuV9oU/
+ JAfCIRdY3KIJCtgTxiLmCfQwQZCjTZTs=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---noYV1mK5w6qZAuJVjwdouvfmliFmJ68L7
-Content-Type: multipart/mixed; boundary="8KJTEJQSgaS942EZA3y1ymFpDd82IOl2K";
+--oPGdnt3cVRCumgV5iBeldaORc4F4w32Mv
+Content-Type: multipart/mixed; boundary="3vdLqSbBTcsQxvc5a8N6rBRIBvfnRoen0";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 To: Andrei Borzenkov <arvidjaar@gmail.com>,
  "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Message-ID: <669a0428-0517-a10e-c658-c8137463450a@gmx.com>
+Message-ID: <cec540b7-f1c1-93f2-adb0-5f0155215e73@gmx.com>
 Subject: Re: Confused by btrfs quota group accounting
 References: <eeb418d8-13a1-39c3-c6d1-dd5a2127abc9@gmail.com>
-In-Reply-To: <eeb418d8-13a1-39c3-c6d1-dd5a2127abc9@gmail.com>
+ <669a0428-0517-a10e-c658-c8137463450a@gmx.com>
+In-Reply-To: <669a0428-0517-a10e-c658-c8137463450a@gmx.com>
 
---8KJTEJQSgaS942EZA3y1ymFpDd82IOl2K
+--3vdLqSbBTcsQxvc5a8N6rBRIBvfnRoen0
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/6/22 =E4=B8=8B=E5=8D=8811:11, Andrei Borzenkov wrote:
-[snip]
+On 2019/6/23 =E4=B8=8B=E5=8D=883:55, Qu Wenruo wrote:
 >=20
-> 10:/mnt # dd if=3D/dev/urandom of=3Dtest/file bs=3D1M count=3D100 seek=3D=
-0
-> conv=3Dnotrunc
-> 100+0 records in
-> 100+0 records out
-> 104857600 bytes (105 MB, 100 MiB) copied, 0.685532 s, 153 MB/s
-> 10:/mnt # sync
-> 10:/mnt # btrfs qgroup show .
-> qgroupid         rfer         excl
-> --------         ----         ----
-> 0/5          16.00KiB     16.00KiB
-> 0/258         1.01GiB    100.02MiB
-> 0/263         1.00GiB     85.02MiB
-
-Sorry, I can't really reproduce it.
-
-5.1.12 kernel, using the following script:
+>=20
+> On 2019/6/22 =E4=B8=8B=E5=8D=8811:11, Andrei Borzenkov wrote:
+> [snip]
+>>
+>> 10:/mnt # dd if=3D/dev/urandom of=3Dtest/file bs=3D1M count=3D100 seek=
+=3D0
+>> conv=3Dnotrunc
+>> 100+0 records in
+>> 100+0 records out
+>> 104857600 bytes (105 MB, 100 MiB) copied, 0.685532 s, 153 MB/s
+>> 10:/mnt # sync
+>> 10:/mnt # btrfs qgroup show .
+>> qgroupid         rfer         excl
+>> --------         ----         ----
+>> 0/5          16.00KiB     16.00KiB
+>> 0/258         1.01GiB    100.02MiB
+>> 0/263         1.00GiB     85.02MiB
+>=20
+> Sorry, I can't really reproduce it.
+>=20
+> 5.1.12 kernel, using the following script:
+> ---
+> #!/bin/bash
+>=20
+> dev=3D"/dev/data/btrfs"
+> mnt=3D"/mnt/btrfs"
+>=20
+> umount $dev &> /dev/null
+> mkfs.btrfs -f $dev > /dev/null
+>=20
+> mount $dev $mnt
+> btrfs sub create $mnt/subv1
+> btrfs quota enable $mnt
+> btrfs quota rescan -w $mnt
+>=20
+> xfs_io -f -c "pwrite 0 1G" $mnt/subv1/file1
+> sync
+> btrfs sub snapshot $mnt/subv1 $mnt/subv2
+> sync
+> btrfs qgroup show -prce $mnt
+>=20
+> xfs_io -c "pwrite 0 100m" $mnt/subv1/file1
+> sync
+> btrfs qgroup show -prce $mnt
+> ---
+>=20
+> The result is:
+> ---
+> Create subvolume '/mnt/btrfs/subv1'
+> wrote 1073741824/1073741824 bytes at offset 0
+> 1 GiB, 262144 ops; 0.5902 sec (1.694 GiB/sec and 444134.2107 ops/sec)
+> Create a snapshot of '/mnt/btrfs/subv1' in '/mnt/btrfs/subv2'
+> qgroupid         rfer         excl     max_rfer     max_excl parent  ch=
+ild
+> --------         ----         ----     --------     -------- ------  --=
 ---
-#!/bin/bash
-
-dev=3D"/dev/data/btrfs"
-mnt=3D"/mnt/btrfs"
-
-umount $dev &> /dev/null
-mkfs.btrfs -f $dev > /dev/null
-
-mount $dev $mnt
-btrfs sub create $mnt/subv1
-btrfs quota enable $mnt
-btrfs quota rescan -w $mnt
-
-xfs_io -f -c "pwrite 0 1G" $mnt/subv1/file1
-sync
-btrfs sub snapshot $mnt/subv1 $mnt/subv2
-sync
-btrfs qgroup show -prce $mnt
-
-xfs_io -c "pwrite 0 100m" $mnt/subv1/file1
-sync
-btrfs qgroup show -prce $mnt
----
-
-The result is:
----
-Create subvolume '/mnt/btrfs/subv1'
-wrote 1073741824/1073741824 bytes at offset 0
-1 GiB, 262144 ops; 0.5902 sec (1.694 GiB/sec and 444134.2107 ops/sec)
-Create a snapshot of '/mnt/btrfs/subv1' in '/mnt/btrfs/subv2'
-qgroupid         rfer         excl     max_rfer     max_excl parent  chil=
-d
---------         ----         ----     --------     -------- ------  ----=
+> 0/5          16.00KiB     16.00KiB         none         none ---     --=
 -
-0/5          16.00KiB     16.00KiB         none         none ---     ---
-0/256         1.00GiB     16.00KiB         none         none ---     ---
-0/259         1.00GiB     16.00KiB         none         none ---     ---
-wrote 104857600/104857600 bytes at offset 0
-100 MiB, 25600 ops; 0.0694 sec (1.406 GiB/sec and 368652.9766 ops/sec)
-qgroupid         rfer         excl     max_rfer     max_excl parent  chil=
-d
---------         ----         ----     --------     -------- ------  ----=
+> 0/256         1.00GiB     16.00KiB         none         none ---     --=
 -
-0/5          16.00KiB     16.00KiB         none         none ---     ---
-0/256         1.10GiB    100.02MiB         none         none ---     ---
-0/259         1.00GiB     16.00KiB         none         none ---     ---
+> 0/259         1.00GiB     16.00KiB         none         none ---     --=
+-
+> wrote 104857600/104857600 bytes at offset 0
+> 100 MiB, 25600 ops; 0.0694 sec (1.406 GiB/sec and 368652.9766 ops/sec)
+> qgroupid         rfer         excl     max_rfer     max_excl parent  ch=
+ild
+> --------         ----         ----     --------     -------- ------  --=
 ---
+> 0/5          16.00KiB     16.00KiB         none         none ---     --=
+-
+> 0/256         1.10GiB    100.02MiB         none         none ---     --=
+-
+> 0/259         1.00GiB     16.00KiB         none         none ---     --=
+-
+> ---
+>=20
+>> 10:/mnt # filefrag -v test/file
+>> Filesystem type is: 9123683e
+>> File size of test/file is 1073741824 (262144 blocks of 4096 bytes)
 
-> 10:/mnt # filefrag -v test/file
-> Filesystem type is: 9123683e
-> File size of test/file is 1073741824 (262144 blocks of 4096 bytes)
->  ext:     logical_offset:        physical_offset: length:   expected: f=
-lags:
->    0:        0..   22463:     315424..    337887:  22464:
+My bad, I'm still using 512 bytes as blocksize.
+If using 4K blocksize, then the fiemap result matches.
 
-There is a initial 10.9MiB extent, I'm not sure how it's created.
+Then please discard my previous comment.
 
->    1:    22464..   25599:      76896..     80031:   3136:     337888:
+Then we need to check data extents layout to make sure what's going on.
 
-Also here comes another 1.5MiB extent.
+Would you please provide the following output?
+# btrfs ins dump-tree -t 258 /dev/vdb
+# btrfs ins dump-tree -t 263 /dev/vdb
+# btrfs check /dev/vdb
 
-=46rom the result of the fiemap, it's definitely not 100MiB written.
-Only 12.5M written.
+If the last command reports qgroup mismatch, then it means qgroup is
+indeed incorrect.
 
-The fiemap result doesn't match with your dd command.
-
-Any clue how this happened?
+Also, I see your subvolume id is not continuous, did you created/removed
+some other subvolumes during your test?
 
 Thanks,
 Qu
 
->    2:    25600..   43135:      59264..     76799:  17536:      80032: s=
-hared
->    3:    43136..   97279:      86048..    140191:  54144:      76800: s=
-hared
->    4:    97280..  151551:     143392..    197663:  54272:     140192: s=
-hared
->    5:   151552..  207359:     200736..    256543:  55808:     197664: s=
-hared
->    6:   207360..  262143:     258080..    312863:  54784:     256544:
-> last,shared,eof
-> test/file: 7 extents found
-> 10:/mnt # filefrag -v snap1/file
-> Filesystem type is: 9123683e
-> File size of snap1/file is 1073741824 (262144 blocks of 4096 bytes)
->  ext:     logical_offset:        physical_offset: length:   expected: f=
-lags:
->    0:        0..   43135:      33664..     76799:  43136:
->    1:    43136..   97279:      86048..    140191:  54144:      76800: s=
-hared
->    2:    97280..  151551:     143392..    197663:  54272:     140192: s=
-hared
->    3:   151552..  207359:     200736..    256543:  55808:     197664: s=
-hared
->    4:   207360..  262143:     258080..    312863:  54784:     256544:
-> last,shared,eof
-> snap1/file: 5 extents found
->=20
->=20
-> Oops. Where 85MiB exclusive usage in snapshot comes from? I would expec=
-t
-> one of
->=20
-> - 0 exclusive, because original first extent is still referenced by tes=
-t
-> (even though partially), so if qgroup counts physical space usage, snap=
-1
-> effectively refers to the same physical extents as test.
->=20
-> - 100MiB exclusive if qgroup counts logical space consumption, because
-> snapshot now has 100MiB different data.
->=20
-> But 85MiB? It does not match any observed value. Judging by 1.01GiB of
-> referenced space for subvolume test, qrgoup counts physical usage, at
-> which point snapshot exclusive space consumption remains 0.
+>> Oops. Where 85MiB exclusive usage in snapshot comes from? I would expe=
+ct
+>> one of
+>>
+>> - 0 exclusive, because original first extent is still referenced by te=
+st
+>> (even though partially), so if qgroup counts physical space usage, sna=
+p1
+>> effectively refers to the same physical extents as test.
+>>
+>> - 100MiB exclusive if qgroup counts logical space consumption, because=
+
+>> snapshot now has 100MiB different data.
+>>
+>> But 85MiB? It does not match any observed value. Judging by 1.01GiB of=
+
+>> referenced space for subvolume test, qrgoup counts physical usage, at
+>> which point snapshot exclusive space consumption remains 0.
+>>
 >=20
 
 
---8KJTEJQSgaS942EZA3y1ymFpDd82IOl2K--
+--3vdLqSbBTcsQxvc5a8N6rBRIBvfnRoen0--
 
---noYV1mK5w6qZAuJVjwdouvfmliFmJ68L7
+--oPGdnt3cVRCumgV5iBeldaORc4F4w32Mv
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0PMHsACgkQwj2R86El
-/qgGDwf/Z6UmIQKOAhNBguz/03Y9sg5f9fkP7+14ETbFW1oM21u47Y+ek8Q8ydxG
-oyH6Au34uRpLVfSVw4hGTAfVF2x9m7GW5TNHZiT88QFzK5zB3LqNukeeJ/uMaeGR
-APEAl+bYNPOgRL2aGX3Ly5Er0D/7/F3iG8AISA78kvXpcUpXTzl47OgTvxQH87UF
-drS0fHkCcHJm3eKSHXCA16ymRL6KsNP7YrvUYVMiEL6qaYdytu1/8r8UL4XpXi6Y
-CV66w1M5clBo0ktyfNmwt8DAcDk7Modovdua1D3y30lEbC1fONl+xN73X38nXGfF
-msjkojy00fMqZ3P4I0+A9HZlqR2J6A==
-=1VnO
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0PM5gACgkQwj2R86El
+/qiVsQf9E8SD6ejIYptwJrX05RXe/JKJYyHz0v+rkv6whSBW6r9SmuEAJQstlCPn
+8ftro+ONvZq1NUMn38xWOl5oUAQnn1sxRanvYLMaoRawsXR5XWz56+Lkrwt38Ogk
+M4rXsBOu9/Oy+nCdY2MpCCoLoX13tTNGLL8E8Sd94fsyViBo+eCLKESY2GLOwG0I
+/G3bl7C53b856XiveFWmKNzp2wDoXjYSKswSJJbW/rW0eVdK0ySpel2ZH8DQyGsa
+w0yu57xMO1BJRH2cah/b6xzHI1xxUgOx+QaE+9ZD4Bk/p3zPN6wSzA2LGmgm33JK
+UxwPq4e/US5W1Rvpdrqf+NnPaj0jXg==
+=4B1I
 -----END PGP SIGNATURE-----
 
---noYV1mK5w6qZAuJVjwdouvfmliFmJ68L7--
+--oPGdnt3cVRCumgV5iBeldaORc4F4w32Mv--
