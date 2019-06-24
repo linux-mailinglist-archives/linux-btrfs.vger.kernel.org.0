@@ -2,121 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7FB51995
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2019 19:31:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6434951A52
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Jun 2019 20:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729913AbfFXRbs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jun 2019 13:31:48 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:35310 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbfFXRbs (ORCPT
+        id S1731906AbfFXSPu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jun 2019 14:15:50 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:44338 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731775AbfFXSPu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jun 2019 13:31:48 -0400
-Received: by mail-wr1-f66.google.com with SMTP id f15so4915268wrp.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2019 10:31:47 -0700 (PDT)
+        Mon, 24 Jun 2019 14:15:50 -0400
+Received: by mail-wr1-f68.google.com with SMTP id r16so14894081wrl.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2019 11:15:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AdTcfs7l9Catez3dddN2vGtpGGD6VKSDi+3LvDvZFk8=;
-        b=tg9ekbPvVO4X084iTOjZzrSJFrUhkw3tSe/8GlesFZfFd7Ie7X1gL8PG6qrwGbgd+Z
-         PwgdIrpjG76y9rcOUZ76xDwMlTTmKG8t+EZoebXLy5NSjY5xTCL16SkrwRiuqrI4PMFd
-         VxPRGFYQoIyfMNLlAsVmrR95CDFGHJk4yfr1+Bf/vKk6ZmtIs2RrSIPIOHagSpLb4JHn
-         g4aEVL5MQwcA70OZErfGON+OU7oOveYKMUcrQoURGqfLQ2DGgYRgA+r4TO8+uYaLtIKU
-         7bQZFfX2AY2fIJzhFB1xZAIIO7L5Nb1hdkaCRcf1tJA8l+C5+td1SddzJtnRYRSKfuDG
-         Of7w==
+         :cc;
+        bh=yyzngSmbA+Vpji5exMt/mMllyDIZvkL36qBsYo2WGQQ=;
+        b=sfbFHqrV6AuVFYzx/9kfTo+MM57+EV3lEgwJNwKmUx8dChA6j+r6emU4/YrzGNScce
+         p7jfze3pI5NHi2X9TB2mfj/DF7oADYb/VXIFZrSmDvAk5pjnwe7odspuc2LP6imQBfJC
+         KVTE4sGRCWgl5ZE4AN0wMy/vMUB6EL8nAadr8Outwf8f+Z9G7k/CXziHDJshHVy8wJ15
+         0imLUABYhetP43fWI8DiDY0ZY+kbCKz6QHRzC5jriZ4zsSrMlE0dv2R36RhYrSPnEWyO
+         7dHmSQxuCr04ULAA+LhZ+l0iK/xdudZTt6eIXECklvOXVyn3AvR0LdIb/tzIRdOhrb2o
+         MTPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AdTcfs7l9Catez3dddN2vGtpGGD6VKSDi+3LvDvZFk8=;
-        b=ScR5VJn74ZiNHoIi7OYZMFdiSpYvmWi2qB3bLhD0Qn6EKidRfXtnHiNorPgvrQs272
-         zkLK6hBkIzHfaYDRa9rZvNbLiAqq7k+35M0HiG0sCw1HnuSH2qssjfDRcb0QsNLbMop6
-         J9+GPlYomG/UbIliV8gBzVSE1pl9XmJXQ2nbNOk5ebWf+v03bz/3tKdt/CZ1uHMoG/yP
-         ZMOxFYDRvWSxlcX2+VuCa/A9o3QSaEMmXY7iDVZHLRk/PyKCHEKkPuASVd+XkIGDIDoH
-         kit5YAAK0RQehqYplM4ZH7jGUjPn93OF2FUI0qExcm6ARk0XsrGLmRocaIa7aToUrwuA
-         +TFQ==
-X-Gm-Message-State: APjAAAUTjVXZG/9J1W0e2SZ3u0vezf9z5fvIB1JruMIj9P6qyESxgvSa
-        S+Q2b707Ym3kYOqileXtX9vVmnnUpjx6lNOnc/yosg==
-X-Google-Smtp-Source: APXvYqz/2FHiubUZe4hSbitcekPG9WtKcuWXIZZreV108caC9LicWImi45NmpocoTZncd3HOibU/16/EX0qzJYTfkNs=
-X-Received: by 2002:a05:6000:12:: with SMTP id h18mr46463251wrx.29.1561397506470;
- Mon, 24 Jun 2019 10:31:46 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=yyzngSmbA+Vpji5exMt/mMllyDIZvkL36qBsYo2WGQQ=;
+        b=CJVcooyO3NH+fha4YTpoacAwYxrB86byiQ5cEMyN6gYhWAggY3cslg66YALV6cBxZD
+         RpUyerJ+liNx3YXkyQFRsHPa1leE6Yc50qh6f5KSa+9CIatDuzJKnCTLaMCJrafdFRgH
+         HjhmrRuuJN0Jk2CasEbFlREh2rYpIbhnIEMMqo2YpSonJLpmdShFugQrRoHstls1rJ4N
+         syQvdMz3csey4lH6biKsNRn3DZmBMAfZ8DGCOqz5eisitJ503bRh4RI1QTR8DpbDTpZa
+         orCgwbLYrvQdpkSyL5wJcWc/E4wW8anmLHxAarpkQ1Nh2fnP3MByUdGlwd42OxG5xrbE
+         CSmA==
+X-Gm-Message-State: APjAAAUoalewK6WBRWKRAnfpe6x1j3lKmTQ6xIon19UBazDOimWVe73t
+        AkuXXql1HHg89BEdgpVfKwDf9XANjXmYquEQIeAEnxntKivVCQ==
+X-Google-Smtp-Source: APXvYqygdGPsU/fJm54wbTEpJeREHJa3TgT2TwigrVdzjSH2u+LpY7Jas1VQTzJ5t0cvwfMnk/RxDXEF7m4G9iuVS34=
+X-Received: by 2002:a05:6000:4b:: with SMTP id k11mr31966414wrx.82.1561400147317;
+ Mon, 24 Jun 2019 11:15:47 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190623204523.GC11831@hungrycats.org> <f1cfe396-aac7-b670-b8de-f5d3b795acfe@gmx.com>
-In-Reply-To: <f1cfe396-aac7-b670-b8de-f5d3b795acfe@gmx.com>
+References: <CAPfCsGuLi6J_CW8_FgA4DQR8-SrOUhmFjZs4imTVW05ta7RXMw@mail.gmail.com>
+In-Reply-To: <CAPfCsGuLi6J_CW8_FgA4DQR8-SrOUhmFjZs4imTVW05ta7RXMw@mail.gmail.com>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 24 Jun 2019 11:31:35 -0600
-Message-ID: <CAJCQCtRrT5pUxOxfKWTC=zt9E=ZxRaiLeBxngqc6YVQEYp8n_g@mail.gmail.com>
-Subject: Re: btrfs vs write caching firmware bugs (was: Re: BTRFS recovery not possible)
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Mon, 24 Jun 2019 12:15:35 -0600
+Message-ID: <CAJCQCtSm0Wh9rknhLT66x3xof1bfB-4=+1N7Uv7Hoq8-s4=mBA@mail.gmail.com>
+Subject: Re: Recover files from broken btrfs
+To:     Robert <robertgt4@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Jun 23, 2019 at 7:52 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+On Sun, Jun 23, 2019 at 7:23 AM Robert <robertgt4@gmail.com> wrote:
 >
+> root@Dyskietka:~# uname -a
+> Linux Dyskietka 4.4.116.armada.1 #1 SMP Mon Feb 19 22:05:00 PST 2018
+> armv7l GNU/Linux
+> root@Dyskietka:~# btrfs --version
+> btrfs-progs v4.12
+
+
+Old kernel, old progs. Definitely do not use 'btrfs check --repair'
+
+
+
+
+
+> root@Dyskietka:~# btrfs fi show
+> Label: '2fe4f8e6:data'  uuid: 0970e8c4-fd47-43d3-aa93-593006e3d0c3
+>         Total devices 1 FS bytes used 8.11TiB
+>         devid    1 size 10.90TiB used 8.11TiB path /dev/md127
 >
->
-> On 2019/6/24 =E4=B8=8A=E5=8D=884:45, Zygo Blaxell wrote:
-> > I first observed these correlations back in 2016.  We had a lot of WD
-> > Green and Black drives in service at the time--too many to replace or
-> > upgrade them all early--so I looked for a workaround to force the
-> > drives to behave properly.  Since it looked like a write ordering issue=
-,
-> > I disabled the write cache on drives with these firmware versions, and
-> > found that the transid-verify filesystem failures stopped immediately
-> > (they had been bi-weekly events with write cache enabled).
->
-> So the worst scenario really happens in real world, badly implemented
-> flush/fua from firmware.
-> Btrfs has no way to fix such low level problem.
+> root@Dyskietka:~# btrfs fi df /dev/md127
+> ERROR: not a btrfs filesystem: /dev/md127
 
-Right. The questions I have: should Btrfs (or any file system) be able
-to detect such devices and still protect the data? i.e. for the file
-system to somehow be more suspicious, without impacting performance,
-and go read-only sooner so that at least read-only mount can work? Or
-is this so much work for such a tiny edge case that it's not worth it?
-
-Arguably the hardware is some kind of zombie saboteur. It's not
-totally dead, it gives the impression that it's working most of the
-time, and then silently fails to do what we think it should in an
-extraordinary departure from specs and expectations.
-
-Are there other failure cases that could look like this and therefore
-worth handling? As storage stacks get more complicated with ever more
-complex firmware, and firmware updates in the field, it might be
-useful to have at least one file system that can detect such problems
-sooner than others and go read-only to prevent further problems?
+That command won't work on an unmount device, so that's normal.
 
 
-> BTW, do you have any corruption using the bad drivers (with write cache)
-> with traditional journal based fs like XFS/EXT4?
->
-> Btrfs is relying more the hardware to implement barrier/flush properly,
-> or CoW can be easily ruined.
-> If the firmware is only tested (if tested) against such fs, it may be
-> the problem of the vendor.
 
-I think we can definitely say this is a vendor problem. But the
-question still is whether the file system as a role in at least
-disqualifying hardware when it knows it's acting up before the file
-system is thoroughly damaged?
+> [Sat Jun  1 13:18:53 2019] BTRFS: device label 2fe4f8e6:data devid 1
+> transid 155439 /dev/md127
+> [Sat Jun  1 13:18:53 2019] BTRFS info (device md127): setting nodatasum
 
-I also wonder how ext4 and XFS will behave. In some ways they might
-tolerate the problem without noticing it for longer, where instead of
-kernel space recognizing it, it's actually user space / application
-layer that gets confused first, if it's bogus data that's being
-returned. Filesystem metadata is a relatively small target for such
-corruption when the file system mostly does overwrites.
-
-I also wonder how ZFS handles this. Both in the single device case,
-and in the RAIDZ case.
+*shrug* I guess some attempt to make it more like ext4 but with
+metadata checksums and snapshots, but it renders a lot of the data
+guarantees of Btrfs moot.
 
 
---=20
+> [Sat Jun  1 13:18:54 2019] BTRFS critical (device md127): unable to
+> find logical 62139990016 len 4096
+> [Sat Jun  1 13:18:54 2019] BTRFS critical (device md127): unable to
+> find logical 62139990016 len 4096
+> [Sat Jun  1 13:18:54 2019] BTRFS critical (device md127): unable to
+> find logical 62139990016 len 4096
+> [Sat Jun  1 13:18:54 2019] BTRFS critical (device md127): unable to
+> find logical 62139990016 len 4096
+> [Sat Jun  1 13:18:54 2019] BTRFS critical (device md127): unable to
+> find logical 62139990016 len 4096
+> [Sat Jun  1 13:18:54 2019] BTRFS critical (device md127): unable to
+> find logical 62139990016 len 4096
+> [Sat Jun  1 13:18:54 2019] BTRFS error (device md127): failed to read chunk root
+> [Sat Jun  1 13:18:54 2019] BTRFS error (device md127): open_ctree failed
+
+a. Don't modify the volume at all, as in do not try to repair it. You
+need to see if a developer has any advice first.
+
+b. Realize that this list is about development of btrfs, not
+maintaining old versions of it. The maintenance job is for the vendor
+who chose to use and keep using a 4.4.x kernel and 4.12 btrfs-progs.
+So it's really their responsibility. This list is upstream
+development: linux-next, mainline, and most recent stable kernels.
+
+c. The most likely chance of success, even though it will take a long
+time, is to use 'btrfs restore' to scrape data off the volume.
+Hopefully you have a backup and you only have to try and scrape recent
+data.
+https://btrfs.wiki.kernel.org/index.php/Restore
+
+d. I don't know that a newer kernel or progs will magically tell us
+what's going on, or fix things. So I wouldn't necessarily go to the
+trouble of imaging the Btrfs volume from md127, onto a big enough
+single drive, so that you can stick it in a computer that's running
+newer kernel and progs. But it's an option. And at the least,
+btrfs-progs 5.1.1 for restore to scrape data off the disk should have
+a better chance of success if it doesn't work with 4.12.
+
+
+
+-- 
 Chris Murphy
