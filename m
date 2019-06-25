@@ -2,79 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A93A5303A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 12:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9788054CB7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 12:51:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729640AbfFYKg5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Jun 2019 06:36:57 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:55772 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728377AbfFYKg5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Jun 2019 06:36:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=1VNqATdiMZjRjBl/SX9aDfK/cY5ROrczskzh7bEhyqQ=; b=ZpriNPniMtQfF3PzrXrZFLu9+
-        swp27pwzGA3dKtOql8ByZMlmC5XAUIK6Dd+GMHjf0qKANtiVkMY+kP24emwMCRR8Bd7PMgTyLe9QA
-        5OqMw/nvM9U3sRjirT+3roDKm/2t058rf3DiyN7fkLSlwMZ0SYle68bvh+fdV+mCDEdE0F8PxUYpO
-        6uADPC1wdetL3m6crno/ECGMbIBw4GF5RRX2ugGr6ltI3bjWVADicfMYipFtp/ocudq1CWBwDRZB8
-        y8f1S9n0qHQVZzv6yurSepPmJiIiCIwpzAKGBbc00350emRHfZhiQtGnClIv9oYZsJs4CbEdnWkcx
-        MCg3FRwHw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hfioR-0001Ln-BN; Tue, 25 Jun 2019 10:36:31 +0000
-Date:   Tue, 25 Jun 2019 03:36:31 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
-        ard.biesheuvel@linaro.org, josef@toxicpanda.com, clm@fb.com,
-        adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, jack@suse.com,
-        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
-        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 0/7] vfs: make immutable files actually immutable
-Message-ID: <20190625103631.GB30156@infradead.org>
-References: <156116141046.1664939.11424021489724835645.stgit@magnolia>
+        id S1730016AbfFYKvO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Jun 2019 06:51:14 -0400
+Received: from len.romanrm.net ([91.121.75.85]:44490 "EHLO len.romanrm.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727924AbfFYKvN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Jun 2019 06:51:13 -0400
+X-Greylist: delayed 557 seconds by postgrey-1.27 at vger.kernel.org; Tue, 25 Jun 2019 06:51:13 EDT
+Received: from natsu (unknown [IPv6:fd39::e99e:8f1b:cfc9:ccb8])
+        by len.romanrm.net (Postfix) with SMTP id 5903F202BE
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2019 10:41:55 +0000 (UTC)
+Date:   Tue, 25 Jun 2019 15:41:55 +0500
+From:   Roman Mamedov <rm@romanrm.net>
+To:     linux-btrfs@vger.kernel.org
+Subject: CoW overhead from old extents?
+Message-ID: <20190625154155.7b660feb@natsu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <156116141046.1664939.11424021489724835645.stgit@magnolia>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 21, 2019 at 04:56:50PM -0700, Darrick J. Wong wrote:
-> Hi all,
-> 
-> The chattr(1) manpage has this to say about the immutable bit that
-> system administrators can set on files:
-> 
-> "A file with the 'i' attribute cannot be modified: it cannot be deleted
-> or renamed, no link can be created to this file, most of the file's
-> metadata can not be modified, and the file can not be opened in write
-> mode."
-> 
-> Given the clause about how the file 'cannot be modified', it is
-> surprising that programs holding writable file descriptors can continue
-> to write to and truncate files after the immutable flag has been set,
-> but they cannot call other things such as utimes, fallocate, unlink,
-> link, setxattr, or reflink.
+Hello,
 
-I still think living code beats documentation.  And as far as I can
-tell the immutable bit never behaved as documented or implemented
-in this series on Linux, and it originated on Linux.
+I have a number of VM images in sparse NOCOW files, with:
 
-If you want  hard cut off style immutable flag it should really be a
-new API, but I don't really see the point.  It isn't like the usual
-workload is to set the flag on a file actively in use.
+  # du -B M -sc *
+  ...
+  46030M	total
+
+and:
+
+  # du -B M -sc --apparent-size *
+  ...
+  96257M	total
+
+But despite there being nothing else on the filesystem and no snapshots,
+
+  # df -B M .
+
+  ... 1M-blocks   Used Available Use% ...
+  ...   710192M 69024M   640102M  10% ...
+
+The filesystem itself is:
+
+  Data, RAID0: total=70.00GiB, used=67.38GiB
+  System, RAID0: total=64.00MiB, used=16.00KiB
+  Metadata, RAID0: total=1.00GiB, used=7.03MiB
+  GlobalReserve, single: total=16.00MiB, used=0.00B
+
+So there's about 23 GB of overhead to store only 46 GB of data.
+
+I vaguely remember the reason is something along the lines of the need to keep
+around old extents, which are split in the middle when CoWed, but the entire
+old extent must be also kept in place, until overwritten fully.
+
+These NOCOW files are being snapshotted for backup purposes, and the snapshot
+is getting removed usually within 30 minutes (while the VMs are active and
+writing to their files), so it was not pure NOCOW 100% of the time.
+
+Main question is, can we have this recorded/explained in the wiki in precise
+terms (perhaps in Gotchas), or is there maybe already a description of this
+issue on it somewhere? I looked through briefly just now, and couldn't find
+anything similar. Only remember this being explained once on the mailing list
+a few years ago. (Anyone has a link?)
+
+Also, any way to mitigate this and regain space? Short of shutting down the
+VMs, copying their images into new files and deleting old ones. Balance,
+defragment or "fallocate -d" (for the non-running ones) do not seem to help.
+
+What's unfortunate is that "fstrim -v" only reports ~640 GB as having been
+trimmed, which means the overhead part will be not freed by TRIM if this was
+on top of thin-provisioned storage either.
+
+-- 
+With respect,
+Roman
