@@ -2,235 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 535C455219
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 16:39:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 029F555371
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 17:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731066AbfFYOhn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Jun 2019 10:37:43 -0400
-Received: from mout.gmx.net ([212.227.17.20]:43503 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728710AbfFYOhn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Jun 2019 10:37:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1561473460;
-        bh=1AcYKt+e1chQd6LU+v+xVYthmpRqLBGuVqtULrhIl/4=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=V3hQB4Dp5KQ5RNDrk0zij/bWIpSGtNrJvwv40SQnV/WJRJ2wMymZej/mjCymKFgpB
-         +12OmCNnazQB6/oZWpWR/ehjB3zjtzz6K1qERG6wfQK2/iiAVPcWg6q00L41C10eP/
-         xny6gBEP92Z5n9KyY5k/iWBtic+OE/9RDmw/gW48=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1Obb-1ihU6a1joZ-012rir; Tue, 25
- Jun 2019 16:37:40 +0200
-Subject: Re: CoW overhead from old extents?
-To:     Roman Mamedov <rm@romanrm.net>, linux-btrfs@vger.kernel.org
-References: <20190625154155.7b660feb@natsu>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <3ad17ed7-cbb9-dc86-816c-afd22f2119af@gmx.com>
-Date:   Tue, 25 Jun 2019 22:37:34 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        id S1732374AbfFYPbq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Jun 2019 11:31:46 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:51954 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730156AbfFYPbq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Jun 2019 11:31:46 -0400
+Received: by mail-wm1-f67.google.com with SMTP id 207so3313755wma.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2019 08:31:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UeeT7H3+S/EfjlH2OjEVsLUN0/0ZPu141DEfB94dmrI=;
+        b=BcRZQLHaqi4tXkfrP+b54JKKpFsgIWz3T0jiG7iliOo0r7JZkMnSWNxak3c5iMk3a+
+         bt5QY7pqdAC8J3xKMR8X/oxT73FFDWPgZaJyC8cCqgnRXIEVwcIlrNLMW5Ke+0XRd/dp
+         JcrIOpZT/YPqiVNFDf0IIa9qwlEQ+n6MemmYp+Q7q7FQq6MseQznUBWYrJsW90xpFnIC
+         toyai0wb2eNeHa/cLPNmM9TJiULbgLXLsPEfQVBUf1GnTk2N6jHxXoNAODyOpv9YM6Zp
+         imJeAUDpB+jprWs68k6nPe7BdUAzGhMiVptaSioY2JwoQqWFW4IA0DE7s9VR1Lar0zXb
+         TlZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UeeT7H3+S/EfjlH2OjEVsLUN0/0ZPu141DEfB94dmrI=;
+        b=QgOy9j6IEfIynAV/O2RITLyR4Q21mxAVBptV/cSAvlS/O2ZslvH3WoWyb9cqik8FKz
+         78OKLK+bMyDHTU6SRc6XkSYMciWQ2CyldMDtV6yn+0vaSfKd+sFwuFULNFhyJv5dIpiw
+         wjHUrVkC1EA5qawvtjjoCshca1w5m1A50W9eFpfNV2mPXjc0rIZwZ7DqqfqW6ijAxmzc
+         /mtf1jSMQw5x1Y/j2gkoLKuxmZ7nyQ7dAo6TmvG9/nkspEuuTEk6alpLcBiZcjn8eOUz
+         X/LNzXWbClinLeBfj10KvdWfY38jjAv4GfBpps3nky+9hXYB0JNKPPejKyZuSeZ1uh6P
+         7gxw==
+X-Gm-Message-State: APjAAAVfuwD62CSECD0xUCONKrl6mQQx0LKnFLz7mIadv9nlS50vUcjk
+        XnJCS62rsLIprX/bZEZ6pVLEazKQzRdp6Ne+s0QdfWyHvS2qLA==
+X-Google-Smtp-Source: APXvYqxboHljMuyzXKeBvNjrEGsLI+HM704aVJ+VMJRhzNXR2/V8LFz6Fg9CWyBB9BP+CgJNRP32m/dTuyxmQ0rxW9A=
+X-Received: by 2002:a7b:ce95:: with SMTP id q21mr20337835wmj.65.1561476704161;
+ Tue, 25 Jun 2019 08:31:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190625154155.7b660feb@natsu>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="fm9UymrIeKJe9S89ONeJhpc6uRWA7L4lm"
-X-Provags-ID: V03:K1:qVzBfO31MIaslBeV87P1KCLsEPpwxPAYpOEERXiII+QuUUUGHa0
- GLplIMimw5ga9+HvR+n0W3g9eSlH4khZKA+BOirwtblcuHz/M77ZmsGaxppD0nDeFAfozNP
- Rp3iXhnjQBvxgPZ1bOGdG7fDUASpEP0ihy+1efEZLDXSfcEfG8HQial7kZY9B5uH/xEIMoI
- mBMQDke2P1ZXI7WEFZUjQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:4sA2gCyUoU4=:YdfPl5AanMznt3L/gP7h1u
- TTdGLFYzu+4QrYQEr+ctScOAn2EIQHyTAqexLCxkudsUQ3udTJqIz6u1kBMHwc3qcVXDtKT0h
- lEnm2hhxnY+YDAEr6l2ODOOAXvjlmspMh8plgkCwE0o+oYmH4af0IR5znlm8ezYBODsFGayuD
- XqmynChcpf3dg6kz+GvmB8MYyvnaAA+9+jA/UmKQTVdzvU36n/CHqMbSo0Yr1YeIXImpjs39m
- D1jK/Ys4lRt2gYkN/kZ5hDzuGphm9Fz1b2g3c77PuY9GtgT2CIsSIHJwvd6V3hLlCkDfuI/2G
- FFP05mToF7aZP7AVHXUyeaLbhfdrzjHqDCyhHzKfqvEExPj5PkIbaaRmr2Yz6Y6VzeSEH14ql
- IZBGv6L5ifnBL3Zb2vc84bpdezMyg0+hubwOEYrRCVGb6UbxSPi1174LfUhien1we3c+2qqCk
- DIncCQC75SBT11FoPkQU9HPSNNWigm1PjkIfCKJntxgKIXAl+4v3JnP3TLf4jAJivQj9gOL0E
- ZXeXmUSYKOWn8LuC1a1FAmZGik4s8Ore1i8qWGT8q5D63vPaE0eDRxcSSlci5PNuXSHgmFA48
- 5SiJ9umKXvdaJ+Xje+w4ZjxfiSPjJQEb4YNhQ0gIQbgWdLd5TM8s1+A4lzTa7rabyBx/5ni9p
- MSdaTUdUaTcHjwnVaEDHUoGIAuFJ61KsoLHWuRhT8Pn/YHh3dQAYria4WAyRx59aZpMuBULvz
- n8d+kzmXhqMDC2yGcaq81iOXoImfybC1Lkd2qLMKiuwCOANAkELji+RTGeqrlWYYWc/9PLJYW
- WUEVh3gQMrODBZlnNpJzYaW0DUn01LvgQgb5etFR7WODRHS8xLYKjs156B1hyLtT9J6uQF6YX
- BxJtwqlmOpyfXKyACvxz0qZdP5ghp622dKhgE2I9hzZCC6sb60puvHcUzc35SK1kaDzW7z6cV
- 2BpGPW/fuXNhTLi0zbLGn+9r4yHkPM+cwPuYbOOOKyZyggkv7KBiUiCOf4dtEzfc1L1hAyuFh
- n/pyEUngUBxgg0as3Rv4SOXh6GCepcicxREcjVNSrlho6hpBYAc3aQZrJgwFYjU1gLwk9bH1c
- KFFcXhZ/QLQxYg=
+References: <CAJCQCtRNn9WFQc2VHc8uHg-Uoe7iKq0zOu6qA1OjBBP_O4385A@mail.gmail.com>
+ <e55aab31-58c3-e736-d95e-9e5324fa0b5c@gmx.com> <CAJCQCtT8SE5TYkVniJxhK5ZpE8OoE6c9AVPzs4baHn8C5y5X5w@mail.gmail.com>
+ <714f8873-9a38-8886-4262-4d8e43683614@suse.com>
+In-Reply-To: <714f8873-9a38-8886-4262-4d8e43683614@suse.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 25 Jun 2019 09:31:32 -0600
+Message-ID: <CAJCQCtTbPNmPdXX4pd1Zar8UA5bUiQTpK5MvZ9mg-qyHwe78Lw@mail.gmail.com>
+Subject: Re: 5.2rc5 corruption, many "is compressed but inode flag doesn't allow"
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---fm9UymrIeKJe9S89ONeJhpc6uRWA7L4lm
-Content-Type: multipart/mixed; boundary="oJRQbxsnsLMjaLMuMY3bIFCpQfvJ21KYH";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Roman Mamedov <rm@romanrm.net>, linux-btrfs@vger.kernel.org
-Message-ID: <3ad17ed7-cbb9-dc86-816c-afd22f2119af@gmx.com>
-Subject: Re: CoW overhead from old extents?
-References: <20190625154155.7b660feb@natsu>
-In-Reply-To: <20190625154155.7b660feb@natsu>
+On Tue, Jun 25, 2019 at 12:58 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 25.06.19 =D0=B3. 5:49 =D1=87., Chris Murphy wrote:
+> > False alarm, not a new issue at all!
+> >
+> > I have a different system on kernel 5.1.11 using Btrfs as root with
+> > persistent systemd-journald storage, and compress=3Dzstd. And I never
+> > have problems with it, so I never run btrfs check on it, until now.
+> > And yep, same problem. All the journals that have been rotated, are
+> > zstd compressed, are nocow, and btrfs check complains about them the
+> > same way.
+> >
+> > root 257 inode 62526 errors 1040, bad file extent, some csum missing
+> > root 257 inode 62734 errors 1040, bad file extent, some csum missing
+> >
+> > Turns out this is just btrfs check noise. There's definitely no
+> > corruption. These files still pass journalctl --verify which is
+> > checking its own internal checksumming in the journal file.
+> >
+> > I don't know what's best practice. I think on any kind of flash media,
+> > I'd rather not have +C by default, so that the logs compress on the
+> > fly, and also rather not have defragment on rotate because that also
+> > just increases wear by rewriting everything. Yes the journals are
+> > heavily fragmented if they are allowed to COW, but I don't think I
+> > really care about legacy files being a little slower on flash. *shrug*
+>
+> But why are your nocompress files being compressed? I just tested latest
+> misc-next branch and a mounted fs with -ocomopress=3Dzstd correctly skips
+> compression on a file where chattr +C has been set?
 
---oJRQbxsnsLMjaLMuMY3bIFCpQfvJ21KYH
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+test.journal has +C set and filefrag shows it's not encoded, single extent.
 
+$ sudo btrfs fi def -vf test.journal
 
+Result? No compression still.
 
-On 2019/6/25 =E4=B8=8B=E5=8D=886:41, Roman Mamedov wrote:
-> Hello,
->=20
-> I have a number of VM images in sparse NOCOW files, with:
+$ sudo btrfs fi def -vf -czstd test.journal
 
-NODATACOW and no snapshot?
+Result? It's compressed.
 
-Then unless some thing like balance or defrag, it should mostly behave
-much like regular fs.
+What is systemd doing? I can't really read the code, but in the
+comments they say they are unsetting +C and then defragmenting?
 
->=20
->   # du -B M -sc *
->   ...
->   46030M	total
->=20
-> and:
->=20
->   # du -B M -sc --apparent-size *
->   ...
->   96257M	total
->=20
-> But despite there being nothing else on the filesystem and no snapshots=
-,
->=20
->   # df -B M .
->=20
->   ... 1M-blocks   Used Available Use% ...
->   ...   710192M 69024M   640102M  10% ...
->=20
-> The filesystem itself is:
->=20
->   Data, RAID0: total=3D70.00GiB, used=3D67.38GiB
->   System, RAID0: total=3D64.00MiB, used=3D16.00KiB
->   Metadata, RAID0: total=3D1.00GiB, used=3D7.03MiB
->   GlobalReserve, single: total=3D16.00MiB, used=3D0.00B
->=20
-> So there's about 23 GB of overhead to store only 46 GB of data.
->=20
-> I vaguely remember the reason is something along the lines of the need =
-to keep
-> around old extents, which are split in the middle when CoWed, but the e=
-ntire
-> old extent must be also kept in place, until overwritten fully.
+https://github.com/systemd/systemd/blob/master/src/journal/journal-file.c
 
-Yes, that's the extent booking mechanism of btrfs.
-But not the case for NODATACOW case if no other snapshot.
+line 371:
+/* Be friendly to btrfs: turn COW back on again now,
+* and defragment the file. We won't write to the file
+* ever again, hence remove all fragmentation, and
+* reenable all the good bits COW usually provides
+* (such as data checksumming). */
 
->=20
-> These NOCOW files are being snapshotted for backup purposes, and the sn=
-apshot
-> is getting removed usually within 30 minutes (while the VMs are active =
-and
-> writing to their files), so it was not pure NOCOW 100% of the time.
+Except all of the logs in /var/log/journal/<machineid>/ have +C set.
+So I don't understand that comment at all. They might think they're
+unsetting it, but it has no effect because the new file inherits the
++C set on the enclosing directory the journal files are in:
+/var/log/journal/<machineid>
 
-Completely removed snapshots still cause some CoWed extents, which
-breaks the NODATACOW flag.
-Remember COW is the default behavior for btrfs, NODATACOW is kinda
-second citizen in btrfs.
+There's more btrfs defragment stuff later in this same journal-file.c
+code but I don't understand how it relates to "turn COW back on
+again", just that they are definitely submitting files for
+defragmentation at log rotate time. But possibly they way they submit
+it is different than 'btrfs fi defrag' default, and somehow it gets
+compressed.
 
-So that could happens under certain cases.
+Anyway this isn't new, all three of my cleanly installed systems on
+Btrfs behave this way (all have compress=3Dzstd set). Years ago I
+mentioned this same behavior on this list with respect to zlib. The
+difference back then I think is that btrfs check never complained.
 
->=20
-> Main question is, can we have this recorded/explained in the wiki in pr=
-ecise
-> terms (perhaps in Gotchas), or is there maybe already a description of =
-this
-> issue on it somewhere? I looked through briefly just now, and couldn't =
-find
-> anything similar. Only remember this being explained once on the mailin=
-g list
-> a few years ago. (Anyone has a link?)
->=20
-> Also, any way to mitigate this and regain space? Short of shutting down=
- the
-> VMs, copying their images into new files and deleting old ones. Balance=
-,
-> defragment or "fallocate -d" (for the non-running ones) do not seem to =
-help.
-
-IIRC defrag should solve your problem as long as there is only one
-subvolume owning that file, and all snapshots are completely removed
-(subv del just orphan it, doesn't ensure it disappear on-disk, but
-normally after some transactions deleted snapshots should disappear).
-
-Balance won't change the situation at all.
-
-And fallocate in fact would make things even worse for snapshot.
-If you fallocate + set nodatacow, write some data, so far so good,
-everything acts normally.
-
-But then just after one snapshot, even writing to the unpopulated space,
-they will be CoWed. So it wastes more space!
-
->=20
-> What's unfortunate is that "fstrim -v" only reports ~640 GB as having b=
-een
-> trimmed, which means the overhead part will be not freed by TRIM if thi=
-s was
-> on top of thin-provisioned storage either.
->=20
-
-Fstrim has a bug, that if you have balanced your fs several times,
-fstrim will only trim unallocated space.
-It should be fixed in recent kernel releases already though.
-
-Thanks,
-Qu
-
-
---oJRQbxsnsLMjaLMuMY3bIFCpQfvJ21KYH--
-
---fm9UymrIeKJe9S89ONeJhpc6uRWA7L4lm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0SMa8ACgkQwj2R86El
-/qi2/wf+Nv6hut5w9iSYAIIC3xr0fY5HFosunqYVWvvuulgVmcDqGNhWWZIxk48Q
-+Fcnx1I7MNhmzq9gxy0NLuklNvgzW4/nU8thCBS6MLWUx/MpnvVmBeNI8mYDaBPZ
-4GzldBQHcyPkvbsZIbvIR2DSOLCe5miAZU2MWViI2k9BrSLWLI2yAXeAGOBxZVdW
-BucpnZLARZz+RZILEQmibiekds8EHPjdjFAsqBTnsOATGV3zQk7VJVFEzWzHz3Gz
-LX9azeyA6K++uHhzKr40gv2fRd2fTYx1zfvnH7MZtWFIvwmNsrcqaFXWI4WRj0AJ
-D/lfY3kadksy2FUsfQr5RjS6MwVowA==
-=iMkL
------END PGP SIGNATURE-----
-
---fm9UymrIeKJe9S89ONeJhpc6uRWA7L4lm--
+--=20
+Chris Murphy
