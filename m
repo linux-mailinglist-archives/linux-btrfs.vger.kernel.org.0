@@ -2,101 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0295852026
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 02:53:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A426B52037
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 03:01:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729732AbfFYAxm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 24 Jun 2019 20:53:42 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35198 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728340AbfFYAxm (ORCPT
+        id S1728318AbfFYBBj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 24 Jun 2019 21:01:39 -0400
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:40278 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727648AbfFYBBj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 24 Jun 2019 20:53:42 -0400
-Received: by mail-wr1-f67.google.com with SMTP id f15so5917945wrp.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2019 17:53:40 -0700 (PDT)
+        Mon, 24 Jun 2019 21:01:39 -0400
+Received: by mail-wm1-f51.google.com with SMTP id v19so1070785wmj.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 24 Jun 2019 18:01:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2lwt6Sx0UTWiuSHDqtmbXq6SAfVksJDWM7fKnSgID3o=;
-        b=gWaspVWU1W+r63W/a1UM6SGXjCGype0mbYHWnUPreWNZ8nFjQCDUb0UExwyRm+XfJi
-         Nlfeo9l4hsWP58WPJeGIKzNDd3O3qOBY7JPvBb74+lTGOdFQ/aupcOZ9dOooaR9mYyEC
-         Ai4ajVWNmAW8/DXxAH7HZkRVCPAxUkOVXN3hxDikKUUvSfaO15/Nlwu6h4lm4njVG15u
-         YAfFH7ELoshiQ+uPuGD9FU49rmk77D+UQMkKuTO1BlXUSB6tBhxLQTTFHPMIKn2ZBtrv
-         LtCh3MvzAMM0CABeMKul8ygECEl1WEXVxX5FIprpDp1NXFKlfoOzg6S53XzAFXIHpEp8
-         0JRg==
+         :cc;
+        bh=6k+57qvIoUeaEr5MwlabVgsbYfQOCXkd4oVOJxGDvsg=;
+        b=UV3tmn06YJqbnw9i+SX8CIF2Pw2+SnyJtPphbPFdUedlsLoUrp2rXz6gMlr679RtVt
+         XBEdd2fmoygkgpS3ixrihrJILl0z9MagVaVWkhs2zSXO6A+NFCvNq5VOsS3Eprv2huOu
+         LIq2aOpUioj/SjCJUHROsVx43M++F2Ml0mhqaOfdzUCXRhSMVIqkatpEfL1TrSqn6Ptz
+         lCUrb3gO1HTWt/UGEhjbu5CvdbImJIPJZ+LHdGMAORA3iQ8BIQyGrVFyIcAoHJp6UzM5
+         uAbvxqrFUy66ny4ETd9Ltot0hEdOqLJfCAztwysYEV879sKfOYcaxzOFUJxOu1hHY+iw
+         foMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2lwt6Sx0UTWiuSHDqtmbXq6SAfVksJDWM7fKnSgID3o=;
-        b=umKKtzDQ7L9Xx8nBEl2+TDJVDg8hbmwmPZfOEMaD3HmezBUF5pSgYFGN+G5tY2gOGC
-         JJdouihry8l7/2VsNll64mNTSp5PKBScL4SbWJCkpWNvzEW1ww8tNiq3JZq+oqMvrje6
-         Bloq1+lPT4a9W/J97DLr4Tn4qfLXVKKwKiWEMlOjbA3peHkJPDNpJqghVb74J9JEnrKt
-         VhxgIr/XlkRArUypQhYksx98ogMM3QkHkkyTfRTx+Quk4JEEwi1x+kHaVp6PLQqMLLNz
-         6NHUiHsSt/Ffrs3LRTpQIc1hbnMr9hjv+2WQNfju8RHY/cu/15590phrvZOFjGzeoFCq
-         Uv5A==
-X-Gm-Message-State: APjAAAUH/T00tgJPRaUQmxDKt1zHqnG22Ca8LmJztOH+g7qlns4MtAA3
-        1m023LL4UbIAKPtEeqskzmGJwY5qKw02iIsBEmK3CI8pH/kHnw==
-X-Google-Smtp-Source: APXvYqxkoOKWN5zqlKveHU1AHKEmEEDld51vJsje6MHPT9yrG2r0T69PcnvuYZ365NaCqahRiS9cOPgvkIKZDlccwj8=
-X-Received: by 2002:a5d:5283:: with SMTP id c3mr29127800wrv.268.1561424020262;
- Mon, 24 Jun 2019 17:53:40 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=6k+57qvIoUeaEr5MwlabVgsbYfQOCXkd4oVOJxGDvsg=;
+        b=ThIgum9hUrUY58IpTvai8HHAZqKItFfJDLMFKdDHDavBwze6ushN9F2btHqqnzSbZ5
+         5YzpENcjNP+9TGjyGsD7yivrYyxZys1h3KhEHC5mNQR6gyXCp/KjScw4DDed+JaAvQrp
+         hcWZ9Xw4HumC0mmkxxw5Qi0ZKxVFbbloV43SupYUqXorOTpyTkvvfFjvvvdEuvr2gh/F
+         VBIff/szCC58q8Sg2vndVWxwcNLeoOLFpR21LgUE3SnCFIh4dx6Sef6ZbIkIJNHYrmT3
+         xXMMwjdx9B1EjKuoIY0i9K8IUVBEjCubY9IOHrBQplrkDppi5Rd7LJwLtzS/k+0l/DMA
+         WtgA==
+X-Gm-Message-State: APjAAAVT957cLXmyJugi85RGYCxWZBOhPXqwWzgGLMRh7pHCKhVtXkt8
+        VsZY7nc1hhU9A4tFTwdunD4FUllYnxtCq0+MjawUOA==
+X-Google-Smtp-Source: APXvYqx/8MTiBfcMVnfFE34V81TnFF4N9rtvm3wOJ+DsRi2w23PWGXIBpUfCXiN5s3v3GqgA50SA/pnt8nIn+wDm9oY=
+X-Received: by 2002:a1c:a997:: with SMTP id s145mr17155724wme.106.1561424497095;
+ Mon, 24 Jun 2019 18:01:37 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAJCQCtRNn9WFQc2VHc8uHg-Uoe7iKq0zOu6qA1OjBBP_O4385A@mail.gmail.com>
- <CAJCQCtR3azJyM40P0AyHSAp=uWxchN+R=LR5BxCuzdxQ5_JcbA@mail.gmail.com>
- <CAJCQCtSN5EO5K3T3K0hkzGPX0sXVL_HiL7V-W_aW5kE_1jjfEw@mail.gmail.com> <4d34f586-6045-0fea-e1a0-0b0c4253fb3f@applied-asynchrony.com>
-In-Reply-To: <4d34f586-6045-0fea-e1a0-0b0c4253fb3f@applied-asynchrony.com>
+ <e55aab31-58c3-e736-d95e-9e5324fa0b5c@gmx.com>
+In-Reply-To: <e55aab31-58c3-e736-d95e-9e5324fa0b5c@gmx.com>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 24 Jun 2019 18:53:29 -0600
-Message-ID: <CAJCQCtR6x=uw-+X4_yxNfp6efZOEb6zVx9L=2ApchpK_jp2hwA@mail.gmail.com>
+Date:   Mon, 24 Jun 2019 19:01:26 -0600
+Message-ID: <CAJCQCtTdnZFjwsKaEV0Z6bPK+L2mHLv6=zjgrVt0G1ei2AXq5A@mail.gmail.com>
 Subject: Re: 5.2rc5 corruption, many "is compressed but inode flag doesn't allow"
-To:     =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     Chris Murphy <lists@colorremedies.com>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jun 24, 2019 at 5:29 PM Holger Hoffst=C3=A4tte
-<holger@applied-asynchrony.com> wrote:
+On Mon, Jun 24, 2019 at 5:48 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
 >
-> On 6/25/19 12:46 AM, Chris Murphy wrote:
-> > Same call trace on ro mount and ro scrub with 5.2.0-rc2+, but also an
-> > additional call trace related to zstd. As this is a zstd compressed
-> > file system, it might be related.
-> >
-> > [  366.319583] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > [  366.325036] WARNING: inconsistent lock state
-> > [  366.330615] 5.2.0-0.rc2.git1.2.fc31.x86_64 #1 Tainted: G        W
-> > [  366.336202] --------------------------------
-> > [  366.341788] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
-> > [  366.347423] swapper/4/0 [HC0[0]:SC1[1]:HE1:SE0] takes:
-> > [  366.353042] 000000006070e818 (&(&wsm.lock)->rlock){+.?.}, at:
-> > zstd_reclaim_timer_fn+0x26/0x170 [btrfs]
+> The problem is not complex, one inode which shouldn't go through
+> compression (maybe nodatacow or nodatasum set) has go through compression.
 >
-> Seeing that this is apparently *rc2* (which is insane to ship) the explan=
-ation
-> for the above is that 5.2-rc2 was tagged on 2019-05-26, but the patch for=
- the
-> above problem [1] was committed *after* that, on 2019-05-28.
+> This leads to missing csum while still compressed.
+>
+> This could cause read time error.
+>
+> The solution should be pretty easy, find inode 4665463 in root 492, and
+> remove it.
 
-a. Please relax. I said from the outset it's Fedora Rawhide, they
-build mainline rc kernels on Monday, and each weekday there's a plus
-version built from whatever's in Linus's tree prior to the next rc.
-It's been this way for a very long time. No one puts Rawhide into
-production including myself, it's a test machine.
-
-b. That rc2+ kernel above was used today for read-only inspection of
-the target Btrfs file system, just because it's what I already had on
-hand. That I've been using the rc5+ kernel I cited in the first email
-for the past three days, so I'm not sure why the problem starts
-suddenly. The problem is with a stale systemd journal.
-
+They are systemd journals. Based on the ctime/mtime they were clearly
+modified today, which I don't understand because I've had volatile
+journal set for a few days now. But you can see they are set to nocow,
+and yet there are zstd compressed extents. We've discussed the case
+before, where defragmenting a nocow file while the file system is
+mounted with compress option, permits compression. I think that's
+what's going on here. I've seen it with zlib and lzo too, but I
+haven't used them in years so I don't know if that's still the case. I
+know systemd-journald does by default set /var/log/journal with chattr
++C and also defragments journals upon rotation.
 
 
---=20
+    item 106 key (4665463 INODE_ITEM 0) itemoff 49169 itemsize 160
+        generation 57085 transid 59069 size 33554432 nbytes 33554432
+        block group 0 mode 100640 links 1 uid 0 gid 190 rdev 0
+        sequence 6143 flags 0x13(NODATASUM|NODATACOW|PREALLOC)
+        atime 1561330326.52881457 (2019-06-23 22:52:06)
+        ctime 1561390782.569639513 (2019-06-24 15:39:42)
+        mtime 1561390782.443639516 (2019-06-24 15:39:42)
+        otime 1561330326.52881457 (2019-06-23 22:52:06)
+    item 107 key (4665463 INODE_REF 169326) itemoff 49110 itemsize 59
+        index 52 namelen 49 name:
+system@00058c139ef35bc6-a1c70e9eca5616e6.journal~
+    item 108 key (4665463 XATTR_ITEM 843765919) itemoff 49056 itemsize 54
+        location key (0 UNKNOWN.0 0) type XATTR
+        transid 57085 data_len 8 name_len 16
+        name: user.crtime_usec
+    item 109 key (4665463 XATTR_ITEM 2038346239) itemoff 48951 itemsize 105
+        location key (0 UNKNOWN.0 0) type XATTR
+        transid 57085 data_len 52 name_len 23
+        name: system.posix_acl_access
+        data
+    item 110 key (4665463 XATTR_ITEM 3817753667) itemoff 48874 itemsize 77
+        location key (0 UNKNOWN.0 0) type XATTR
+        transid 57085 data_len 31 name_len 16
+        name: security.selinux
+        data system_u:object_r:var_log_t:s0
+    item 111 key (4665463 EXTENT_DATA 0) itemoff 48821 itemsize 53
+        generation 59069 type 1 (regular)
+        extent data disk byte 1115086848 nr 16384
+        extent data offset 0 nr 131072 ram 131072
+        extent compression 3 (zstd)
+
+
+Anyway the problem looks minor, the file system itself is fine. But it
+does stop the startup process.
+
+-- 
 Chris Murphy
