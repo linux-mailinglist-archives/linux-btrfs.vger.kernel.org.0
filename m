@@ -2,68 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96A7B54D09
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 12:59:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E08154E0F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 13:58:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732420AbfFYK7R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Jun 2019 06:59:17 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:36820 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729618AbfFYK7R (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Jun 2019 06:59:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Wwjd99RoXuSnHJKoAHqWgUdarmES3VQyay6SQK/R1Zo=; b=UwU0highZEA/FGERbHhOX+NGj
-        wbOEOfYCrykn4i/NMFvP0XQWLaO76P5pTHVLBqJkG76euT9OEwHgRthOqNy2+bpGfoQffYe+VSjUn
-        QLbNyICQ73+5wpZ67NnuWDRQEVMjMQ9n+ScMYd+VXjhbz8KGNZJ7arzmVhIfPVZ6AqQzv7e6MuDSa
-        aGu3nC2IVp/W+ZNu5JgLyHLadtwk9OKFT74gLui/zAk4qpMo1UK4kcsXrMvY0K5yWKTJkGWyq3w6u
-        d68URRrxr9HRoeZ3xU0m2oIIkykZy8SnVCCE4rPDUJESqTKtzeQYumA5/zO5K0UZUKNm4pEvUaMY8
-        Hwh6CeXHA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hfjA7-0000tm-GM; Tue, 25 Jun 2019 10:58:55 +0000
-Date:   Tue, 25 Jun 2019 03:58:55 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
-        shaggy@kernel.org, ard.biesheuvel@linaro.org, josef@toxicpanda.com,
-        clm@fb.com, adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
-        dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk,
-        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
-        linux-efi@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
-        ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/4] vfs: teach vfs_ioc_fssetxattr_check to check extent
- size hints
-Message-ID: <20190625105855.GD26085@infradead.org>
-References: <156116136742.1664814.17093419199766834123.stgit@magnolia>
- <156116140570.1664814.4607468365269898575.stgit@magnolia>
+        id S1727078AbfFYL6A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Jun 2019 07:58:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34106 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726423AbfFYL57 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Jun 2019 07:57:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E4009AEE9;
+        Tue, 25 Jun 2019 11:57:58 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E59E0DA921; Tue, 25 Jun 2019 13:58:43 +0200 (CEST)
+Date:   Tue, 25 Jun 2019 13:58:43 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 04/11] btrfs: move the space_info handling code to
+ space-info.c
+Message-ID: <20190625115843.GO8917@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190618200926.3352-1-josef@toxicpanda.com>
+ <20190618200926.3352-5-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <156116140570.1664814.4607468365269898575.stgit@magnolia>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20190618200926.3352-5-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 21, 2019 at 04:56:45PM -0700, Darrick J. Wong wrote:
-> From: Darrick J. Wong <darrick.wong@oracle.com>
-> 
-> Move the extent size hint checks that aren't xfs-specific to the vfs.
-> 
-> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+On Tue, Jun 18, 2019 at 04:09:19PM -0400, Josef Bacik wrote:
+> --- /dev/null
+> +++ b/fs/btrfs/space-info.c
+> @@ -0,0 +1,177 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2019 Facebook.  All rights reserved.
+> + */
 
-Looks good,
+How does the copyright claim work here? You're just moving code from a
+file (extent-tree.c) that has
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+  "Copyright (C) 2007 Oracle.  All rights reserved."
+
+Adding company copyright to new files that implement something
+completely new seems to be fine and I don't object against adding it,
+though personally I think it's pointless to add the copyrights when
+there's the Signed-off-by mechanism and full and immutable history of
+changes tracked in git and newly the SPDX tag to disperse any confusion
+about licensing of individual files.
+
