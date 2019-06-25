@@ -2,84 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9788054CB7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 12:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5961054CD1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Jun 2019 12:54:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730016AbfFYKvO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 25 Jun 2019 06:51:14 -0400
-Received: from len.romanrm.net ([91.121.75.85]:44490 "EHLO len.romanrm.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727924AbfFYKvN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 25 Jun 2019 06:51:13 -0400
-X-Greylist: delayed 557 seconds by postgrey-1.27 at vger.kernel.org; Tue, 25 Jun 2019 06:51:13 EDT
-Received: from natsu (unknown [IPv6:fd39::e99e:8f1b:cfc9:ccb8])
-        by len.romanrm.net (Postfix) with SMTP id 5903F202BE
-        for <linux-btrfs@vger.kernel.org>; Tue, 25 Jun 2019 10:41:55 +0000 (UTC)
-Date:   Tue, 25 Jun 2019 15:41:55 +0500
-From:   Roman Mamedov <rm@romanrm.net>
-To:     linux-btrfs@vger.kernel.org
-Subject: CoW overhead from old extents?
-Message-ID: <20190625154155.7b660feb@natsu>
+        id S1732160AbfFYKyi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 25 Jun 2019 06:54:38 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:60734 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728078AbfFYKyi (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 25 Jun 2019 06:54:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Vz9EsU+BMp1qYPkPo0lwQQ2lWPTJmqiFxShSC5HxZL8=; b=nBAVGkdglPHpmuYQqFSATJHvp
+        qEilF7DPQiyEZIpSQIzZMPcCB19ggY2hEx92EbZD+IfkhXJZyak79h1VGJHrDEiGWkV7vWdHEwcvG
+        Uia30K8CsEe4KciVwAx9Ueh3ZNWdw+WX0rQuV/+mv6RSULDepJH0TpBhp34CvQXHIF+E3SqeKl+h1
+        M4x4LTLyO9xuSOKuIZjfQoumHfSjD2nHSXzSH8N5h1GHiAmRxpvVGMpCPUokV0wdUvCNSLjPRhyX1
+        eWkvzLLvA59dhTbrV/Jxp6kiY1qeMWIK1b2QPellvvFdOmIPR/rA0YufkoNWt9HeRFDAWMeB3mZv2
+        /tv3kTYFQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
+        id 1hfj5c-00078N-JV; Tue, 25 Jun 2019 10:54:16 +0000
+Date:   Tue, 25 Jun 2019 03:54:16 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
+        shaggy@kernel.org, ard.biesheuvel@linaro.org, josef@toxicpanda.com,
+        clm@fb.com, adilger.kernel@dilger.ca, jk@ozlabs.org, jack@suse.com,
+        dsterba@suse.com, jaegeuk@kernel.org, viro@zeniv.linux.org.uk,
+        cluster-devel@redhat.com, jfs-discussion@lists.sourceforge.net,
+        linux-efi@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+        ocfs2-devel@oss.oracle.com, linux-fsdevel@vger.kernel.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/4] vfs: create a generic checking function for
+ FS_IOC_SETFLAGS
+Message-ID: <20190625105416.GA26085@infradead.org>
+References: <156116136742.1664814.17093419199766834123.stgit@magnolia>
+ <156116138140.1664814.9610454726122206157.stgit@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <156116138140.1664814.9610454726122206157.stgit@magnolia>
+User-Agent: Mutt/1.11.4 (2019-03-13)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Fri, Jun 21, 2019 at 04:56:21PM -0700, Darrick J. Wong wrote:
+> From: Darrick J. Wong <darrick.wong@oracle.com>
+> 
+> Create a generic checking function for the incoming FS_IOC_SETFLAGS flag
+> values so that we can standardize the implementations that follow ext4's
+> flag values.
+> 
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-I have a number of VM images in sparse NOCOW files, with:
+Looks fine:
 
-  # du -B M -sc *
-  ...
-  46030M	total
-
-and:
-
-  # du -B M -sc --apparent-size *
-  ...
-  96257M	total
-
-But despite there being nothing else on the filesystem and no snapshots,
-
-  # df -B M .
-
-  ... 1M-blocks   Used Available Use% ...
-  ...   710192M 69024M   640102M  10% ...
-
-The filesystem itself is:
-
-  Data, RAID0: total=70.00GiB, used=67.38GiB
-  System, RAID0: total=64.00MiB, used=16.00KiB
-  Metadata, RAID0: total=1.00GiB, used=7.03MiB
-  GlobalReserve, single: total=16.00MiB, used=0.00B
-
-So there's about 23 GB of overhead to store only 46 GB of data.
-
-I vaguely remember the reason is something along the lines of the need to keep
-around old extents, which are split in the middle when CoWed, but the entire
-old extent must be also kept in place, until overwritten fully.
-
-These NOCOW files are being snapshotted for backup purposes, and the snapshot
-is getting removed usually within 30 minutes (while the VMs are active and
-writing to their files), so it was not pure NOCOW 100% of the time.
-
-Main question is, can we have this recorded/explained in the wiki in precise
-terms (perhaps in Gotchas), or is there maybe already a description of this
-issue on it somewhere? I looked through briefly just now, and couldn't find
-anything similar. Only remember this being explained once on the mailing list
-a few years ago. (Anyone has a link?)
-
-Also, any way to mitigate this and regain space? Short of shutting down the
-VMs, copying their images into new files and deleting old ones. Balance,
-defragment or "fallocate -d" (for the non-running ones) do not seem to help.
-
-What's unfortunate is that "fstrim -v" only reports ~640 GB as having been
-trimmed, which means the overhead part will be not freed by TRIM if this was
-on top of thin-provisioned storage either.
-
--- 
-With respect,
-Roman
+Reviewed-by: Christoph Hellwig <hch@lst.de>
