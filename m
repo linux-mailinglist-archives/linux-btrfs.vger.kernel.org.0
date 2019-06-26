@@ -2,214 +2,249 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B874E56403
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2019 10:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD4E5564A3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2019 10:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726247AbfFZIKw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jun 2019 04:10:52 -0400
-Received: from mout.gmx.net ([212.227.17.20]:52699 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725954AbfFZIKw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jun 2019 04:10:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1561536649;
-        bh=eFVwkxyBNt2Ghbe9jg2UoeazBz5cCG7Ack+ITspq6qs=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=HD8HlXp4eaUSZKNnKvyHVl0owZbioh4kAObjwVvfV6/ApBeyTOZUxGR/fDM3AQRwX
-         j2xl/SukAkPXkNR7Uy8mA9PO/7JRMWiRlV5I3oMIttp5dgsaB9kJrQMEFPxn4sFS92
-         L6OHHmHbRoaVGoYtwsOmJFldKwoVzbM2NRDgRv4w=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1Ygt-1hhPvP1k1T-0031wG; Wed, 26
- Jun 2019 10:10:49 +0200
-Subject: Re: "bad tree block start" when trying to mount on ARM
-To:     Erik Jensen <erikjensen@rkjnsn.net>,
-        Hugo Mills <hugo@carfax.org.uk>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <CAMj6ewO7PGBoN565WYz_bqL6nGszweNouP-Fphok9+GGpGn8gg@mail.gmail.com>
- <20190521091842.GS1667@carfax.org.uk>
- <CAMj6ewPKbRA_eT7JYA9ob9Qk9ZROoshOqaJE=4N_X9bPaskLUw@mail.gmail.com>
- <CAMj6ewOHrJVdwfKrgXZxwfwE=eoTaB9MS57zha33yb1_iOLWiw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <8aa09a61-aa1c-5dcd-093f-ec096a38a7b5@gmx.com>
-Date:   Wed, 26 Jun 2019 16:10:43 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        id S1726442AbfFZIb4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jun 2019 04:31:56 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:37440 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725876AbfFZIb4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 26 Jun 2019 04:31:56 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5Q8SekF180181
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jun 2019 08:31:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
+ message-id : date : from : to : subject : content-type :
+ content-transfer-encoding; s=corp-2018-07-02;
+ bh=tIcLZYydRVsE5iENfDsOYgDjHAfV676+Mml9lH+CBSA=;
+ b=wsL8obgZbWfWh8r9Vyyt2OoloG5PGMQWrKtXWyaFQNpcOw0L0IsAFxXzTN8sQvr4JtiF
+ gXSKxun2wLCdu93RnFFvzoEqw36CtbmEGhuTGSvL3qmVWb9retifzfd8SrZQW6GSANAs
+ BBejHLaNkCuvVAIhJg/fZs9LDj2g2SRxuTbHV5s74WXhtUF/nVNyPOMr1HLqKIb0u4nz
+ qDsjIv7Ekix6ehCXFXV+4m62uePKugpJ+u4VgNgZhxCKtmztqCjSJRBEOreBz7YIZb1r
+ BPbuRnif5+TpLPrrkxahlnPkxXUhvodnPpTP0wh4kUNvdgjoPw9SE/e7tXvSgpgvGr4E Eg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2t9brt8v18-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jun 2019 08:31:54 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5Q8VsBn023232
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jun 2019 08:31:54 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2t99f4bg6s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jun 2019 08:31:54 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5Q8VrKW011523
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Jun 2019 08:31:54 GMT
+Received: from mb.wifi.oracle.com (/192.188.170.109) by default (Oracle
+ Beehive Gateway v4.0) with ESMTP ; Wed, 26 Jun 2019 01:30:21 -0700
 MIME-Version: 1.0
-In-Reply-To: <CAMj6ewOHrJVdwfKrgXZxwfwE=eoTaB9MS57zha33yb1_iOLWiw@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="A9N8cIjYTWR7Dk3CzRRdxWMhZeSWFGiv8"
-X-Provags-ID: V03:K1:yuH6RQplNsCCDkgopXEJoDkhddiTMIDj+kb7Wbvb1xEkWwvigOs
- cqtRQd/c8LV5tcX7JV9umryu8o2RhTuGKvsLfEUY3XK72gqaQ/00pCDKnaFAIXhGvI+Bd2l
- nFhIejcTLXJCbhhBlZcu1+xtzokrNAxieKuXa/CdsyqVkpMTWZimykion/6+UQbPtQxHMZW
- VrhjvrtGBTWoTQTQsCCPQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:m50kSt7Oouk=:uDaLQiWoEXxmVhVehlgJMU
- 1JYVcJbPn0+r+0Y4ANzvLJjaFgIq6J4NOSsDf2u2VvrlCMZ6gSrud7nwNyGgLNqGs+qC5yxVQ
- ZgsWFgGCDkFHSHefcHup+FUiK4DgEiV6ux3OTBCfybWO2ldPRuC0RL1kkDFDOnbbJBHTf2JIh
- SmjnnOliIkXUUzc4ROn9LcRsDjIchI7f5fEI2EpRtsjDysjb2B3Vv5FWjdLrRkeyyA0nIKcUN
- 0excF/0D9Rip9EJSYCxxRFHoPbxCoKDlKUej+V0OcP4SyZcZEhdAFoTRwcyKnWUjpN1hv6RVD
- +uNR2B9SkZ8WWL5mSiBpzpCB5LUyZ/ZAnFT3hCu10jt4QdBno2zSlvbjQVKiiOCiEJ4uLk0dh
- nEfX6CIWXT/qGXBOuh5lJy2o97w+1HvZ4g3hWyBkIKqEhAWUKSujc2YwqucM3N7+TAQCkWMiv
- MTLpM1fSGY02q4xsQX5FWP7nF/Kh0Xf7v9ZC1M18t7Cwkj1Btr/RDRPd1zSfWq0RXAyGSHrrO
- 0MgobUYE1/NA/z5s5nKn4O1MTSrn6AgjWQSPSeOl5PYdFImlgssM/KE2cI/FQJbyW/aF2RfVz
- R1UjvxvvjECTiXAQrGFoHxxi9esEV64hZ0AQB3jJ2pIgIiNkXQzMp1F6c7i2k2STT1y0sUe3Q
- c3DXPovpIeeF3hWsh+FjbvxaRbgJdzsqX8UmKSXSaWGMoDvzXRYej3uRC/SFX7wgdpTSi6NVx
- 4AQHTUWlJFhKAwaa53Dgi4/b9z8/QqyArsPxJFSCX+sfwjIZmaHAr4bpiiIcCMp65EvfoyBGF
- K3RDUYm2Q9m6KCl3SwtEwFE0d6PsRQvTFM39TBG7iVoBI+o21alX9nB8d70XEQAADT0cRTxaS
- oDo8dGVddNRUrngmFZGDaWOZ0i62vZYBco/AER83A+5eWv6baSBv8TL+hsUjBikkUNeYYdRjq
- VPcCYgBICgOjOS8uFeWICf6GXJC2ljAPVKdYvWox+PECbfeIf62n8astDSUJxFdodpsslWOU5
- pPt+G0aY6oDx1seGzdL88mEponQ6g3RF+0n0u1jimzT/63obf0kjGv+vBjV5fNJByQ4Fka6Zx
- AMyT0YkRM5v+Io=
+Message-ID: <20190626083017.1833-1-anand.jain@oracle.com>
+Date:   Wed, 26 Jun 2019 01:30:17 -0700 (PDT)
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v7 RESEND Rebased] btrfs-progs: dump-tree: add noscan option
+X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+Content-Type: text/plain; charset=ascii
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9299 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906260103
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9299 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906260103
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---A9N8cIjYTWR7Dk3CzRRdxWMhZeSWFGiv8
-Content-Type: multipart/mixed; boundary="MumAJvShtYQjJkyow1yIi10G3KzQo6JoE";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Erik Jensen <erikjensen@rkjnsn.net>, Hugo Mills <hugo@carfax.org.uk>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <8aa09a61-aa1c-5dcd-093f-ec096a38a7b5@gmx.com>
-Subject: Re: "bad tree block start" when trying to mount on ARM
-References: <CAMj6ewO7PGBoN565WYz_bqL6nGszweNouP-Fphok9+GGpGn8gg@mail.gmail.com>
- <20190521091842.GS1667@carfax.org.uk>
- <CAMj6ewPKbRA_eT7JYA9ob9Qk9ZROoshOqaJE=4N_X9bPaskLUw@mail.gmail.com>
- <CAMj6ewOHrJVdwfKrgXZxwfwE=eoTaB9MS57zha33yb1_iOLWiw@mail.gmail.com>
-In-Reply-To: <CAMj6ewOHrJVdwfKrgXZxwfwE=eoTaB9MS57zha33yb1_iOLWiw@mail.gmail.com>
+From: Anand Jain <Anand.Jain@oracle.com>
 
---MumAJvShtYQjJkyow1yIi10G3KzQo6JoE
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+The cli 'btrfs inspect dump-tree <dev>' will scan for the partner devices
+if any by default.
 
+So as of now you can not inspect each mirrored device independently.
 
+This patch adds noscan option, which when used won't scan the system for
+the partner devices, instead it just uses the devices provided in the
+argument.
 
-On 2019/6/26 =E4=B8=8B=E5=8D=883:04, Erik Jensen wrote:
-> I'm still seeing this. Anything else I can try?
-[...]
->>>>
->>>> [   83.066301] BTRFS info (device dm-3): disk space caching is enabl=
-ed
->>>> [   83.072817] BTRFS info (device dm-3): has skinny extents
->>>> [   83.553973] BTRFS error (device dm-3): bad tree block start, want=
+For example:
+  btrfs inspect dump-tree --noscan <dev> [<dev>..]
 
->>>> 17628726968320 have 396461950000496896
->>>> [   83.554089] BTRFS error (device dm-3): bad tree block start, want=
+This helps to debug degraded raid1 and raid10.
 
->>>> 17628727001088 have 5606876608493751477
->>>> [   83.601176] BTRFS error (device dm-3): bad tree block start, want=
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+v6->v7: rebase on latest btrfs-progs::devel
+v5->v6: rebase on latest btrfs-progs::devel
+v4->v5: nit: use %m to print error string.
+	changelog update.
+v3->v4: change the patch title.
+	collapse scan_args() to its only parent cmd_inspect_dump_tree()
+	(it was bit confusing).
+	update the change log.
+	update usage.
+	update man page.
+v2->v3: make it scalable for more than two disks in noscan mode
+v1->v2: rename --degraded to --noscan
+ Documentation/btrfs-inspect-internal.asciidoc |  5 +-
+ cmds-inspect-dump-tree.c                      | 53 ++++++++++++++-----
+ 2 files changed, 45 insertions(+), 13 deletions(-)
 
->>>> 17628727001088 have 5606876608493751477
->>>> [   83.610811] BTRFS error (device dm-3): failed to verify dev exten=
-ts
->>>> against chunks: -5
->>>> [   83.639058] BTRFS error (device dm-3): open_ctree failed
-
-Since your fsck reports no error, I'd say your on-disk data is
-completely fine.
-
-So it's either the block layer reading some wrong from the disk or btrfs
-layer doesn't do correct endian convert.
-
-Would you dump the following data (X86 and ARM should output the same
-content, thus one output is enough).
-# btrfs ins dump-tree -b 17628726968320 /dev/dm-3
-# btrfs ins dump-tree -b 17628727001088 /dev/dm-3
-
-And then, for the ARM system, please apply the following diff, and try
-mount again.
-The diff adds extra debug info, to exam the vital members of a tree block=
-=2E
-
-Correct fs should output something like:
-  BTRFS error (device dm-4): bad tree block start, want 30408704 have 0
-  tree block gen=3D4 owner=3D5 nritems=3D2 level=3D0
-  csum:
-a304e483-0000-0000-0000-00000000000000000000-0000-0000-0000-000000000000
-
-The csum one is the most important one, if there aren't so many zeros,
-it means at that timing, btrfs just got a bunch of garbage, thus we
-could do further debug.
-
-Thanks,
-Qu
-
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index deb74a8c191a..e9d11d501b7b 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -618,8 +618,16 @@ static int btree_readpage_end_io_hook(struct
-btrfs_io_bio *io_bio,
-
-        found_start =3D btrfs_header_bytenr(eb);
-        if (found_start !=3D eb->start) {
-+               u8 csum[BTRFS_CSUM_SIZE];
+diff --git a/Documentation/btrfs-inspect-internal.asciidoc b/Documentation/btrfs-inspect-internal.asciidoc
+index 210f18c30a40..c9962ab3b548 100644
+--- a/Documentation/btrfs-inspect-internal.asciidoc
++++ b/Documentation/btrfs-inspect-internal.asciidoc
+@@ -61,7 +61,7 @@ specify which mirror to print, valid values are 0, 1 and 2 and the superblock
+ must be present on the device with a valid signature, can be used together with
+ '--force'
+ 
+-*dump-tree* [options] <device>::
++*dump-tree* [options] <device> [device...]::
+ (replaces the standalone tool *btrfs-debug-tree*)
+ +
+ Dump tree structures from a given device in textual form, expand keys to human
+@@ -95,6 +95,9 @@ intermixed in the output
+ --bfs::::
+ use breadth-first search to print trees. the nodes are printed before all
+ leaves
++--device::::
++do not scan the system for other partner device(s), only use the device(s)
++provided in the argument
+ -t <tree_id>::::
+ print only the tree with the specified ID, where the ID can be numerical or
+ common name in a flexible human readable form
+diff --git a/cmds-inspect-dump-tree.c b/cmds-inspect-dump-tree.c
+index 1588a0b0774b..8e13b4335a5d 100644
+--- a/cmds-inspect-dump-tree.c
++++ b/cmds-inspect-dump-tree.c
+@@ -21,6 +21,7 @@
+ #include <unistd.h>
+ #include <uuid/uuid.h>
+ #include <getopt.h>
++#include <fcntl.h>
+ 
+ #include "kerncompat.h"
+ #include "radix-tree.h"
+@@ -185,7 +186,7 @@ static u64 treeid_from_string(const char *str, const char **end)
+ }
+ 
+ static const char * const cmd_inspect_dump_tree_usage[] = {
+-	"btrfs inspect-internal dump-tree [options] device",
++	"btrfs inspect-internal dump-tree [options] <device> [<device> ..]",
+ 	"Dump tree structures from a given device",
+ 	"Dump tree structures from a given device in textual form, expand keys to human",
+ 	"readable equivalents where possible.",
+@@ -201,6 +202,7 @@ static const char * const cmd_inspect_dump_tree_usage[] = {
+ 	"                       can be specified multiple times",
+ 	"-t|--tree <tree_id>    print only tree with the given id (string or number)",
+ 	"--follow               use with -b, to show all children tree blocks of <block_num>",
++	"--noscan               do not scan for the partner device(s)",
+ 	NULL
+ };
+ 
+@@ -297,7 +299,7 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+ 	struct btrfs_key found_key;
+ 	struct cache_tree block_root;	/* for multiple --block parameters */
+ 	char uuidbuf[BTRFS_UUID_UNPARSED_SIZE];
+-	int ret;
++	int ret = 0;
+ 	int slot;
+ 	int extent_only = 0;
+ 	int device_only = 0;
+@@ -305,6 +307,7 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+ 	int roots_only = 0;
+ 	int root_backups = 0;
+ 	int traverse = BTRFS_PRINT_TREE_DEFAULT;
++	int dev_optind;
+ 	unsigned open_ctree_flags;
+ 	u64 block_bytenr;
+ 	struct btrfs_root *tree_root_scan;
+@@ -323,8 +326,8 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+ 	optind = 0;
+ 	while (1) {
+ 		int c;
+-		enum { GETOPT_VAL_FOLLOW = 256, GETOPT_VAL_DFS,
+-		       GETOPT_VAL_BFS };
++		enum { GETOPT_VAL_FOLLOW = 256, GETOPT_VAL_DFS, GETOPT_VAL_BFS,
++		       GETOPT_VAL_NOSCAN};
+ 		static const struct option long_options[] = {
+ 			{ "extents", no_argument, NULL, 'e'},
+ 			{ "device", no_argument, NULL, 'd'},
+@@ -336,6 +339,7 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+ 			{ "follow", no_argument, NULL, GETOPT_VAL_FOLLOW },
+ 			{ "bfs", no_argument, NULL, GETOPT_VAL_BFS },
+ 			{ "dfs", no_argument, NULL, GETOPT_VAL_DFS },
++			{ "noscan", no_argument, NULL, GETOPT_VAL_NOSCAN },
+ 			{ NULL, 0, NULL, 0 }
+ 		};
+ 
+@@ -400,24 +404,49 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+ 		case GETOPT_VAL_BFS:
+ 			traverse = BTRFS_PRINT_TREE_BFS;
+ 			break;
++		case GETOPT_VAL_NOSCAN:
++			open_ctree_flags |= OPEN_CTREE_NO_DEVICES;
++			break;
+ 		default:
+ 			usage_unknown_option(cmd, argv);
+ 		}
+ 	}
+ 
+-	if (check_argc_exact(argc - optind, 1))
++	if (check_argc_min(argc - optind, 1))
+ 		return 1;
+ 
+-	ret = check_arg_type(argv[optind]);
+-	if (ret != BTRFS_ARG_BLKDEV && ret != BTRFS_ARG_REG) {
++	dev_optind = optind;
++	while (dev_optind < argc) {
++		int fd;
++		struct btrfs_fs_devices *fs_devices;
++		u64 num_devices;
 +
-                btrfs_err_rl(fs_info, "bad tree block start, want %llu
-have %llu",
-                             eb->start, found_start);
-+               pr_info("tree block gen=3D%llu owner=3D%llu nritems=3D%u
-level=3D%u\n",
-+                       btrfs_header_generation(eb), btrfs_header_owner(e=
-b),
-+                       btrfs_header_nritems(eb), btrfs_header_level(eb))=
-;
-+               read_extent_buffer(eb, csum, 0, BTRFS_CSUM_SIZE);
-+               pr_info("csum: %pU%-pU\n", csum, csum + 16);
-+
-                ret =3D -EIO;
-                goto err;
-        }
++		ret = check_arg_type(argv[optind]);
++		if (ret != BTRFS_ARG_BLKDEV && ret != BTRFS_ARG_REG) {
++			if (ret < 0) {
++				errno = -ret;
++				error("invalid argument %s: %m", argv[dev_optind]);
++			} else {
++				error("not a block device or regular file: %s",
++				       argv[dev_optind]);
++			}
++		}
++		fd = open(argv[dev_optind], O_RDONLY);
++		if (fd < 0) {
++			error("cannot open %s: %m", argv[dev_optind]);
++			return -EINVAL;
++		}
++		ret = btrfs_scan_one_device(fd, argv[dev_optind], &fs_devices,
++					    &num_devices,
++					    BTRFS_SUPER_INFO_OFFSET,
++					    SBREAD_DEFAULT);
++		close(fd);
+ 		if (ret < 0) {
+ 			errno = -ret;
+-			error("invalid argument %s: %m", argv[optind]);
+-		} else {
+-			error("not a block device or regular file: %s",
+-			      argv[optind]);
++			error("device scan %s: %m", argv[dev_optind]);
++			return ret;
+ 		}
+-		goto out;
++		dev_optind++;
+ 	}
+ 
+ 	printf("%s\n", PACKAGE_STRING);
+-- 
+2.20.1 (Apple Git-117)
 
-
---MumAJvShtYQjJkyow1yIi10G3KzQo6JoE--
-
---A9N8cIjYTWR7Dk3CzRRdxWMhZeSWFGiv8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0TKIQACgkQwj2R86El
-/qjD0wf/WVD+EIfGN6lKQki4ELV/FRqa3WHn/VCrgMATXwk0ddQUAl6FUR0/UCw+
-6yqiHrV6Ok6MWotVYh5ObtDw992udbwyXUfWoIH43VPUtvhKKthm0jS20kmKnnoT
-3P9AKt8Fkidpytdw+KD3xzo2yj+z6GIjPmey8vJwtleTauNUA8JFf+4ZTY1cFofR
-D3xEZ/CTHvfrpHTOQtPA0YvRGVD0i1AfCz2EWAh/2mRlIJ6rCg6LayCUtyf3u3Ln
-hF3AZD/oZmXOntNiVThd7k0bIGvHUAf8EpAcAOboe/duYN7IM5Kb0I/mhjVYSJyD
-QjrrvU28nDtWeHeWXzohc9qNhYVfug==
-=kpI6
------END PGP SIGNATURE-----
-
---A9N8cIjYTWR7Dk3CzRRdxWMhZeSWFGiv8--
