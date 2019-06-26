@@ -2,138 +2,217 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E1B456ED7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2019 18:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D249956F15
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2019 18:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbfFZQcI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jun 2019 12:32:08 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47658 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbfFZQcI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jun 2019 12:32:08 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5QGU4Wg004218;
-        Wed, 26 Jun 2019 16:30:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=Mz7em8B5BcTHywkzCrR8lugIdy2ootcWo4w3RRWBYaM=;
- b=N/a93ebuSSKM+1UIO0buPOjR9AvCbLsHhw01AwBMp/XW9BUb98JLnzoJbLgwOZFWmGyw
- hJdpkR7HkvPCAWlWLDnQsdQatbUdssqmn37SwPrTcAyE+/9x/iin4aJ6YtVFtP1GNmmr
- W4gQLbQG2SBcdOy5QNpDSE2/3fIVqQVrn7mZXub6KhldCj8Zzx/yQQ7a5EH7pzSZXmup
- IrJvp7zWK9kXgRoeoC8dGqS2tKAzLiR74Ta5S5LQWYLQBZWpbM10fUskgAys8/96vQdr
- G26RY/thy8CrA4lCa0mPtRoigi2YSG7nQksiKL4VCeGiPZV6yAFAimBMe+B5DQlWGUUd ig== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2t9brtbf85-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jun 2019 16:30:39 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5QGRxdd192423;
-        Wed, 26 Jun 2019 16:28:38 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 2t9p6uvctr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 26 Jun 2019 16:28:38 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.27/8.16.0.27) with SMTP id x5QGScxQ193859;
-        Wed, 26 Jun 2019 16:28:38 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2t9p6uvctj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 26 Jun 2019 16:28:38 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5QGSZWS032167;
-        Wed, 26 Jun 2019 16:28:35 GMT
-Received: from localhost (/10.159.137.246)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 26 Jun 2019 09:28:35 -0700
-Date:   Wed, 26 Jun 2019 09:28:31 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     matthew.garrett@nebula.com, yuchao0@huawei.com, tytso@mit.edu,
-        ard.biesheuvel@linaro.org, josef@toxicpanda.com, hch@infradead.org,
-        clm@fb.com, adilger.kernel@dilger.ca, jack@suse.com,
-        dsterba@suse.com, jaegeuk@kernel.org, jk@ozlabs.org,
-        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        id S1726179AbfFZQrF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jun 2019 12:47:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53498 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726006AbfFZQrF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 26 Jun 2019 12:47:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 2938EADD5;
+        Wed, 26 Jun 2019 16:47:03 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 97258DA8F6; Wed, 26 Jun 2019 18:47:47 +0200 (CEST)
+Date:   Wed, 26 Jun 2019 18:47:47 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Hans van Kranenburg <hans@knorrie.org>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: RFC: btrfs-progs json formatting
+Message-ID: <20190626164747.GY8917@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Hans van Kranenburg <hans@knorrie.org>,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 5/5] vfs: don't allow writes to swap files
-Message-ID: <20190626162831.GF5171@magnolia>
-References: <156151637248.2283603.8458727861336380714.stgit@magnolia>
- <156151641177.2283603.7806026378321236401.stgit@magnolia>
- <20190626035151.GA10613@ZenIV.linux.org.uk>
+References: <20190625160944.GP8917@twin.jikos.cz>
+ <02db4af2-eb76-7319-8cab-d18d37c4db58@knorrie.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190626035151.GA10613@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9300 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906260193
+In-Reply-To: <02db4af2-eb76-7319-8cab-d18d37c4db58@knorrie.org>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 04:51:51AM +0100, Al Viro wrote:
-> On Tue, Jun 25, 2019 at 07:33:31PM -0700, Darrick J. Wong wrote:
-> > --- a/fs/attr.c
-> > +++ b/fs/attr.c
-> > @@ -236,6 +236,9 @@ int notify_change(struct dentry * dentry, struct iattr * attr, struct inode **de
-> >  	if (IS_IMMUTABLE(inode))
-> >  		return -EPERM;
-> >  
-> > +	if (IS_SWAPFILE(inode))
-> > +		return -ETXTBSY;
-> > +
-> >  	if ((ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID | ATTR_TIMES_SET)) &&
-> >  	    IS_APPEND(inode))
-> >  		return -EPERM;
+On Tue, Jun 25, 2019 at 08:07:25PM +0200, Hans van Kranenburg wrote:
+> Hi,
 > 
-> Er...  So why exactly is e.g. chmod(2) forbidden for swapfiles?  Or touch(1),
-> for that matter...
-
-Oops, that check is overly broad; I think the only attribute change we
-need to filter here is ATTR_SIZE.... which we could do unconditionally
-in inode_newsize_ok.
-
-What's the use case for allowing userspace to increase the size of an
-active swapfile?  I don't see any; the kernel has a permanent lease on
-the file space mapping (at least until swapoff)...
-
-> > diff --git a/mm/swapfile.c b/mm/swapfile.c
-> > index 596ac98051c5..1ca4ee8c2d60 100644
-> > --- a/mm/swapfile.c
-> > +++ b/mm/swapfile.c
-> > @@ -3165,6 +3165,19 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
-> >  	if (error)
-> >  		goto bad_swap;
-> >  
-> > +	/*
-> > +	 * Flush any pending IO and dirty mappings before we start using this
-> > +	 * swap file.
-> > +	 */
-> > +	if (S_ISREG(inode->i_mode)) {
-> > +		inode->i_flags |= S_SWAPFILE;
-> > +		error = inode_drain_writes(inode);
-> > +		if (error) {
-> > +			inode->i_flags &= ~S_SWAPFILE;
-> > +			goto bad_swap;
-> > +		}
-> > +	}
+> On 6/25/19 6:09 PM, David Sterba wrote:
+> > Hi,
+> > 
+> > I'd like to get some feedback on the json output, the overall structure
+> > of the information and naming.
+> > 
+> > Code: git://github.com/kdave/btrfs-progs.git preview-json
+> > 
+> > The one example command that supports it is
+> > 
+> >  $ ./btrfs --format json subvolume show /mnt
 > 
-> Why are swap partitions any less worthy of protection?
+> I think for deciding what the structure will look like, it's very
+> interesting to look at what tools, utils, use cases, etc.. will use this
+> and how. Taking the bike for a ride, instead of painting the shed.
 
-Hmm, yeah, S_SWAPFILE should apply to block devices too.  I figured that
-the mantra of "sane tools will open block devices with O_EXCL" should
-have sufficed, but there's really no reason to allow that either.
+Geez bike shedding mentioned in 2nd sentence?
 
---D
+> E.g.
+>  - Does the user expect the same text as in a current btrfs sub list,
+> but while being able to quickly use specific fields instead of using awk
+> to split the current output? -> a field flags with contents like
+> "foo,bar" or "FOO|BAR" might be expected instead of an integer.
+
+The idea is that the default output is for humans, but if there's need
+to parse the output, json is the format for that. Cutting out the
+information using 'awk' is not expected here.
+
+So the information provided by the text and json in a single command is
+almost the same, with json some enhancements are possible to allow
+linking to other commands, eg. not just the subvolume path but also the
+id. Something that you suggested below.
+
+>  - Does the user want to write another tool that actually
+> programmatically does more? In that case the user might prefer having
+> the number instead of the text of flags which needs to be parsed back again.
+
+Ok, so bitfield values can be exported in two ways, one as a raw number
+and one as the string.
+
+> > The test tests/cli-tests/011-* can demonstrate the capabilities.  The
+> > json formatter and example use are in the top commits, otherwise the
+> > branch contains lot of unrelated changes.
+> > 
+> > Example output:
+> > 
+> > {
+> >   "__header": {
+> >     "version": "1"
+> >   },
+> >   "subvolume-show": {
+> >     "path": "subv2",
+> >     "name": "subv2",
+> >     "uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
+> >     "parent_uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
+> >     "received_uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
+> >     "otime": "2019-06-25 17:15:28 +0200",
+> >     "subvolume_id": "256",
+> >     "generation": "6",
+> >     "parent_id": "5",
+> >     "toplevel_id": "5",
+> >     "flags": "-",
+> >     "snapshots": [
+> >     ],
+> >     "quota-group": {
+> >       "qgroupid": "0/256",
+> >       "qgroup-limit-referenced": "-",
+> >       "qgroup-limit-exclusive": "-",
+> >       "qgroup-usage-referenced": "16.00KiB",
+> >       "qgroup-usage-exclusive": "16.00KiB"
+> >     }
+> >   }
+> > }
+> > 
+> > The current proposal:
+> > 
+> > - the toplevel group contains 2 maps, one is some generic header, to
+> >   identify version of the format or the version of progs that produces
+> >   it or whatever could be useful and I did not think of it
+> > 
+> > - the 2nd map is named according to the command that generated the
+> >   output, this is to be able to merge outputs from several commands, or
+> >   to somehow define the contents of the map
+> 
+> In what example use case would I be combining output of several commands?
+
+Well, that's always an issue with usecases. I don't have immediate use
+for that but as the format will be set to stone, additional flexibility
+can pay off in the future.
+
+The util-linux tools support json output and that's what I'm trying to
+copy for sake of some consistency, as the 'btrfs' tool is sort of
+low-level administration tool very close in purpose.
+
+Check eg 'lsblk --json' or 'lscpu --json', that print "blockdevices" or
+"lscpu" as the name of the map.
+
+> > Compare that to a simple unnamed group with bunch of values:
+> > 
+> > {
+> >   "path": "subv2",
+> >   "name": "subv2",
+> >   "uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
+> >   "parent_uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
+> >   "received_uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
+> >   "otime": "2019-06-25 17:15:28 +0200",
+> >   "subvolume_id": "256",
+> >   "generation": "6",
+> >   "parent_id": "5",
+> >   "toplevel_id": "5",
+> >   "flags": "-",
+> >   "snapshots": [
+> >   ],
+> >   "quota-group": {
+> >     "qgroupid": "0/256",
+> >     "qgroup-limit-referenced": "-",
+> >     "qgroup-limit-exclusive": "-",
+> >     "qgroup-usage-referenced": "16.00KiB",
+> >     "qgroup-usage-exclusive": "16.00KiB"
+> >   }
+> > }
+> > 
+> > That's a bit shorter but makes validation harder. I assume that the
+> > output would be accessed programatically like (python pseudo-code)
+> 
+> What about having structures that are result-data-oriented instead of
+> command-oriented?
+
+The commands give different level of details and retrieving some of that
+can take longer. Eg. the quota information query the tree for the
+limits, so this might not be suitable for the 'list' command.
+
+> E.g. something that shows a subvol or lists them could have a bunch of
+> "subvolumes" in the result:
+> 
+> {
+>   "__header": {
+>     [...]
+>   },
+>   "subvolumes": {
+>     5: {
+>     }
+>     256: {
+>     },
+>     260: {
+>     },
+>     1337: {
+>     }
+>   }
+> }
+> 
+> Then subvol show 260 could return the same format, with just one of them:
+> 
+> {
+>   "__header": {
+>     [...]
+>   },
+>   "subvolumes": {
+>     260: {
+>     },
+>   }
+> }
+> 
+> Now I can also combine the result of a few targeted subvol show commands:
+> 
+> subvols = sub_show_260_json["subvolumes"]
+> subvols.update(sub_show_1337_json["subvolumes"])
+> list(subvols.keys())
+>  -> [260, 1337]
+
+I think I see what you mean, perhaps more commands need to be explored
+to see if we can find some common structures to avoid the per-command
+output. Something like lightweight-subvolume and full-details-subvolume,
+with some way distinguish that programatically or just leave it to
+try/catch.
