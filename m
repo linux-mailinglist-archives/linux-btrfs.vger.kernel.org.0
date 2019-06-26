@@ -2,217 +2,219 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D249956F15
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2019 18:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEBE056F96
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2019 19:34:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726179AbfFZQrF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jun 2019 12:47:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53498 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726006AbfFZQrF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jun 2019 12:47:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2938EADD5;
-        Wed, 26 Jun 2019 16:47:03 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 97258DA8F6; Wed, 26 Jun 2019 18:47:47 +0200 (CEST)
-Date:   Wed, 26 Jun 2019 18:47:47 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Hans van Kranenburg <hans@knorrie.org>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: RFC: btrfs-progs json formatting
-Message-ID: <20190626164747.GY8917@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Hans van Kranenburg <hans@knorrie.org>,
-        linux-btrfs@vger.kernel.org
-References: <20190625160944.GP8917@twin.jikos.cz>
- <02db4af2-eb76-7319-8cab-d18d37c4db58@knorrie.org>
+        id S1726441AbfFZReh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jun 2019 13:34:37 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:34158 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726042AbfFZReh (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 26 Jun 2019 13:34:37 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5QHYK8a060304;
+        Wed, 26 Jun 2019 17:34:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=ZmczIJ8ZvCsuRmej6aNezFGFTkOxfkS37PS+rm8DgLI=;
+ b=pKCcYBgFU7Sa/6JuLt5X7DoXHdtlnnEapfwyBeexuV7VsnwURPaRnQ0/taeS2abF197N
+ jGV1LfG86dR67TjkJjhoiPl7IgbtcA3WXctHuf9GOf4GdHZBt5SSP5Uq6jUeZVAOZMcv
+ n1lBEC3O1hn+QUs3r41mG8cLTkRs1ZeO1WOcddNBVSsO15l9cicGFVAEpweaZmZcte2H
+ zNCr4lQwSfB7Y7rH8St3qqEZUWpFs4pOdIaZNykO4aaJp5sk5wZnqgIxIEBZEf1n5nRJ
+ wHiHZZtumu8zZIBYRgF9nrqWdv7aUVT13A1jzcozf74qcPM6omjHR+4xxnRTTF1I7Gma RQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2t9brtbsxp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Jun 2019 17:34:29 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5QHWnPm160244;
+        Wed, 26 Jun 2019 17:34:28 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2t9p6uwcsc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Jun 2019 17:34:28 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5QHYRGB032455;
+        Wed, 26 Jun 2019 17:34:27 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 26 Jun 2019 10:34:26 -0700
+Date:   Wed, 26 Jun 2019 10:34:25 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     Christoph Hellwig <hch@lst.de>, david@fromorbit.com,
+        linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 1/6] iomap: Use a IOMAP_COW/srcmap for a
+ read-modify-write I/O
+Message-ID: <20190626173425.GA5164@magnolia>
+References: <20190621192828.28900-1-rgoldwyn@suse.de>
+ <20190621192828.28900-2-rgoldwyn@suse.de>
+ <20190624070734.GB3675@lst.de>
+ <20190625191442.m27cwx5o6jtu2qch@fiona>
+ <20190626063957.GA24201@lst.de>
+ <20190626161017.rzkktei2ngznhbat@fiona>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <02db4af2-eb76-7319-8cab-d18d37c4db58@knorrie.org>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <20190626161017.rzkktei2ngznhbat@fiona>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9300 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906260207
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9300 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906260207
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jun 25, 2019 at 08:07:25PM +0200, Hans van Kranenburg wrote:
-> Hi,
+On Wed, Jun 26, 2019 at 11:10:17AM -0500, Goldwyn Rodrigues wrote:
+> On  8:39 26/06, Christoph Hellwig wrote:
+> > On Tue, Jun 25, 2019 at 02:14:42PM -0500, Goldwyn Rodrigues wrote:
+> > > > I can't say I'm a huge fan of this two iomaps in one method call
+> > > > approach.  I always though two separate iomap iterations would be nicer,
+> > > > but compared to that even the older hack with just the additional
+> > > > src_addr seems a little better.
+> > > 
+> > > I am just expanding on your idea of using multiple iterations for the Cow case
+> > > in the hope we can come out of a good design:
+> > > 
+> > > 1. iomap_file_buffered_write calls iomap_apply with IOMAP_WRITE flag.
+> > >    which calls iomap_begin() for the respective filesystem.
+> > > 2. btrfs_iomap_begin() sets up iomap->type as IOMAP_COW and fills iomap
+> > >    struct with read addr information.
+> > > 3. iomap_apply() conditionally for IOMAP_COW calls do_cow(new function)
+> > >    and calls ops->iomap_begin() with flag IOMAP_COW_READ_DONE(new flag).
+> > > 4. btrfs_iomap_begin() fills up iomap structure with write information.
+> > > 
+> > > Step 3 seems out of place because iomap_apply should be iomap.type agnostic.
+> > > Right?
+> > > Should we be adding another flag IOMAP_COW_DONE, just to figure out that
+> > > this is the "real" write for iomap_begin to fill iomap?
+> > > 
+> > > If this is not how you imagined, could you elaborate on the dual iteration
+> > > sequence?
+> > 
+> > Here are my thoughts from dealing with this from a while ago, all
+> > XFS based of course.
+> > 
+> > If iomap_file_buffered_write is called on a page that is inside a COW
+> > extent we have the following options:
+> > 
+> >  a) the page is updatodate or entirely overwritten.  We cn just allocate
+> >     new COW blocks and return them, and we are done
+> >  b) the page is not/partially uptodate and not entirely overwritten.
+> > 
+> > The latter case is the interesting one.  My thought was that iff the
+> > IOMAP_F_SHARED flag is set __iomap_write_begin / iomap_read_page_sync
+> > will then have to retreive the source information in some form.
+> > 
+> > My original plan was to just do a nested iomap_apply call, which would
+> > need a special nested flag to not duplicate any locking the file
+> > system might be holding between ->iomap_begin and ->iomap_end.
+> > 
+> > The upside here is that there is no additional overhead for the non-COW
+> > path and the architecture looks relatively clean.  The downside is that
+> > at least for XFS we usually have to look up the source information
+> > anyway before allocating the COW destination extent, so we'd have to
+> > cache that information somewhere or redo it, which would be rather
+> > pointless.  At that point the idea of a srcaddr in the iomap becomes
+> > interesting again - while it looks a little ugly from the architectural
+> > POV it actually ends up having very practical benefits.
+
+I think it's less complicated to pass both mappings out in a single
+->iomap_begin call rather than have this dance where the fs tells iomap
+to call back for the read mapping and then iomap calls back for the read
+mapping with a special "don't take locks" flag.
+
+For XFS specifically this means we can serve both mappings with a single
+ILOCK cycle.
+
+> So, do we move back to the design of adding an extra field of srcaddr?
+
+TLDR: Please no.
+
+> Honestly, I find the design of using an extra field srcaddr in iomap better
+> and simpler versus passing additional iomap srcmap or multiple iterations.
+
+Putting my long-range planning hat on, the usage story (from the fs'
+perspective) here is:
+
+"iomap wants to know how a file write should map to a disk write.  If
+we're doing a straight overwrite of disk blocks then I should send back
+the relevant mapping.  Sometimes I might need the write to go to a
+totally different location than where the data is currently stored, so I
+need to send back a second mapping."
+
+Because iomap is now a general-purpose API, we need to think about the
+read mapping for a moment:
+
+ - For all disk-based filesystems we'll want the source address for the
+   read mapping.
+
+ - For filesystems that support "inline data" (which really just means
+   the fs maintains its own buffers to file data) we'll also need the
+   inline_data pointer.
+
+ - For filesystems that support multiple devices (like btrfs) we'll also
+   need a pointer to a block_device because we could be writing to a
+   different device than the one that stores the data.  The prime
+   example I can think of is reading data from disk A in some RAID
+   stripe and writing to disk B in a different RAID stripe to solve the
+   RAID5 hole... but you could just be lazy-migrating file data to less
+   full or newer drives or whatever.
+
+ - If we ever encounter a filesystem that supports multiple dax devices
+   then we'll need a pointer to the dax_device too.  (That would be
+   btrfs, since I thought your larger goal was to enable dax there...)
+
+ - We're probably going to need the ability to pass flags for the read
+   mapping at some point or another, so we need that too.
+
+From this, you can see that we need half the fields in the existing
+struct iomap, and that's how I arrived at the idea of passing to
+iomap_begin pointers to two iomaps instead of bolting these five fields
+into struct iomap.
+
+In XFS parlance (where the data fork stores mappings for on-disk data
+and the cow fork stores mappings for), this means that our iomap_begin
+data paths remain fairly straightforward:
+
+	xfs_bmapi_read(ip, offset, XFS_DATA_FORK, &imap...);
+	xfs_bmapi_read(ip, offset, XFS_COW_FORK, &cmap...);
+
+	xfs_bmbt_to_iomap(ip, iomap, &imap...);
+	iomap->type = IOMAP_COW;
+	xfs_bmbt_to_iomap(ip, srcmap, &cmap...);
+
+(It's more complicated than that, but that's approximately what we do
+now.)
+
+> Also, should we add another iomap type IOMAP_COW, or (re)use the flag
+> IOMAP_F_SHARED during writes? IOW iomap type vs iomap flag.
+
+I think they need to remain distinct types because the IOMAP_F_SHARED
+flag means that the storage is shared amongst multiple owners (which
+iomap_fiemap reports to userspace), whereas the IOMAP_COW type means
+that RMW is required for unaligned writes.
+
+btrfs has a strong tendency to require copy writes, but that doesn't
+mean the extent is necessarily shared.
+
+> Dave/Darrick, what are your thoughts?
+
+I liked where the first 3 patches of this series were heading. :)
+
+--D
+
 > 
-> On 6/25/19 6:09 PM, David Sterba wrote:
-> > Hi,
-> > 
-> > I'd like to get some feedback on the json output, the overall structure
-> > of the information and naming.
-> > 
-> > Code: git://github.com/kdave/btrfs-progs.git preview-json
-> > 
-> > The one example command that supports it is
-> > 
-> >  $ ./btrfs --format json subvolume show /mnt
-> 
-> I think for deciding what the structure will look like, it's very
-> interesting to look at what tools, utils, use cases, etc.. will use this
-> and how. Taking the bike for a ride, instead of painting the shed.
-
-Geez bike shedding mentioned in 2nd sentence?
-
-> E.g.
->  - Does the user expect the same text as in a current btrfs sub list,
-> but while being able to quickly use specific fields instead of using awk
-> to split the current output? -> a field flags with contents like
-> "foo,bar" or "FOO|BAR" might be expected instead of an integer.
-
-The idea is that the default output is for humans, but if there's need
-to parse the output, json is the format for that. Cutting out the
-information using 'awk' is not expected here.
-
-So the information provided by the text and json in a single command is
-almost the same, with json some enhancements are possible to allow
-linking to other commands, eg. not just the subvolume path but also the
-id. Something that you suggested below.
-
->  - Does the user want to write another tool that actually
-> programmatically does more? In that case the user might prefer having
-> the number instead of the text of flags which needs to be parsed back again.
-
-Ok, so bitfield values can be exported in two ways, one as a raw number
-and one as the string.
-
-> > The test tests/cli-tests/011-* can demonstrate the capabilities.  The
-> > json formatter and example use are in the top commits, otherwise the
-> > branch contains lot of unrelated changes.
-> > 
-> > Example output:
-> > 
-> > {
-> >   "__header": {
-> >     "version": "1"
-> >   },
-> >   "subvolume-show": {
-> >     "path": "subv2",
-> >     "name": "subv2",
-> >     "uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
-> >     "parent_uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
-> >     "received_uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
-> >     "otime": "2019-06-25 17:15:28 +0200",
-> >     "subvolume_id": "256",
-> >     "generation": "6",
-> >     "parent_id": "5",
-> >     "toplevel_id": "5",
-> >     "flags": "-",
-> >     "snapshots": [
-> >     ],
-> >     "quota-group": {
-> >       "qgroupid": "0/256",
-> >       "qgroup-limit-referenced": "-",
-> >       "qgroup-limit-exclusive": "-",
-> >       "qgroup-usage-referenced": "16.00KiB",
-> >       "qgroup-usage-exclusive": "16.00KiB"
-> >     }
-> >   }
-> > }
-> > 
-> > The current proposal:
-> > 
-> > - the toplevel group contains 2 maps, one is some generic header, to
-> >   identify version of the format or the version of progs that produces
-> >   it or whatever could be useful and I did not think of it
-> > 
-> > - the 2nd map is named according to the command that generated the
-> >   output, this is to be able to merge outputs from several commands, or
-> >   to somehow define the contents of the map
-> 
-> In what example use case would I be combining output of several commands?
-
-Well, that's always an issue with usecases. I don't have immediate use
-for that but as the format will be set to stone, additional flexibility
-can pay off in the future.
-
-The util-linux tools support json output and that's what I'm trying to
-copy for sake of some consistency, as the 'btrfs' tool is sort of
-low-level administration tool very close in purpose.
-
-Check eg 'lsblk --json' or 'lscpu --json', that print "blockdevices" or
-"lscpu" as the name of the map.
-
-> > Compare that to a simple unnamed group with bunch of values:
-> > 
-> > {
-> >   "path": "subv2",
-> >   "name": "subv2",
-> >   "uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
-> >   "parent_uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
-> >   "received_uuid": "9178604e-e961-ef40-a5f0-2c109126b209",
-> >   "otime": "2019-06-25 17:15:28 +0200",
-> >   "subvolume_id": "256",
-> >   "generation": "6",
-> >   "parent_id": "5",
-> >   "toplevel_id": "5",
-> >   "flags": "-",
-> >   "snapshots": [
-> >   ],
-> >   "quota-group": {
-> >     "qgroupid": "0/256",
-> >     "qgroup-limit-referenced": "-",
-> >     "qgroup-limit-exclusive": "-",
-> >     "qgroup-usage-referenced": "16.00KiB",
-> >     "qgroup-usage-exclusive": "16.00KiB"
-> >   }
-> > }
-> > 
-> > That's a bit shorter but makes validation harder. I assume that the
-> > output would be accessed programatically like (python pseudo-code)
-> 
-> What about having structures that are result-data-oriented instead of
-> command-oriented?
-
-The commands give different level of details and retrieving some of that
-can take longer. Eg. the quota information query the tree for the
-limits, so this might not be suitable for the 'list' command.
-
-> E.g. something that shows a subvol or lists them could have a bunch of
-> "subvolumes" in the result:
-> 
-> {
->   "__header": {
->     [...]
->   },
->   "subvolumes": {
->     5: {
->     }
->     256: {
->     },
->     260: {
->     },
->     1337: {
->     }
->   }
-> }
-> 
-> Then subvol show 260 could return the same format, with just one of them:
-> 
-> {
->   "__header": {
->     [...]
->   },
->   "subvolumes": {
->     260: {
->     },
->   }
-> }
-> 
-> Now I can also combine the result of a few targeted subvol show commands:
-> 
-> subvols = sub_show_260_json["subvolumes"]
-> subvols.update(sub_show_1337_json["subvolumes"])
-> list(subvols.keys())
->  -> [260, 1337]
-
-I think I see what you mean, perhaps more commands need to be explored
-to see if we can find some common structures to avoid the per-command
-output. Something like lightweight-subvolume and full-details-subvolume,
-with some way distinguish that programatically or just leave it to
-try/catch.
+> -- 
+> Goldwyn
