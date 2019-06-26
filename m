@@ -2,96 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BC78567B9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2019 13:36:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272B156887
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Jun 2019 14:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727258AbfFZLgc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 26 Jun 2019 07:36:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44236 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727139AbfFZLgc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 26 Jun 2019 07:36:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EF211AB9B;
-        Wed, 26 Jun 2019 11:36:30 +0000 (UTC)
-Date:   Wed, 26 Jun 2019 13:36:29 +0200
-From:   Cyril Hrubis <chrubis@suse.cz>
-To:     "Hongzhi, Song" <hongzhi.song@windriver.com>
-Cc:     ltp@lists.linux.it, linux-btrfs@vger.kernel.org
-Subject: Re: Bug Report: fs_fill: fails on btrfs with "ENOSPC" when disk size
- = 512M
-Message-ID: <20190626113629.GA13189@rei.lan>
-References: <a361073f-3fbd-13af-b688-01da6b443b22@windriver.com>
+        id S1726487AbfFZMVQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 26 Jun 2019 08:21:16 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:59914 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726104AbfFZMVP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 26 Jun 2019 08:21:15 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 6DBE3308792C;
+        Wed, 26 Jun 2019 12:20:52 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0DAEC5D9C6;
+        Wed, 26 Jun 2019 12:20:49 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 26F8E1806B0E;
+        Wed, 26 Jun 2019 12:20:43 +0000 (UTC)
+Date:   Wed, 26 Jun 2019 08:20:42 -0400 (EDT)
+From:   Bob Peterson <rpeterso@redhat.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     matthew garrett <matthew.garrett@nebula.com>, yuchao0@huawei.com,
+        tytso@mit.edu, shaggy@kernel.org,
+        ard biesheuvel <ard.biesheuvel@linaro.org>,
+        josef@toxicpanda.com, hch@infradead.org, clm@fb.com,
+        adilger kernel <adilger.kernel@dilger.ca>, jk@ozlabs.org,
+        jack@suse.com, dsterba@suse.com, jaegeuk@kernel.org,
+        viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
+        jfs-discussion@lists.sourceforge.net, linux-efi@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        cluster-devel@redhat.com, linux-nilfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        Christoph Hellwig <hch@lst.de>, ocfs2-devel@oss.oracle.com
+Message-ID: <868182386.37358699.1561551642881.JavaMail.zimbra@redhat.com>
+In-Reply-To: <156151633004.2283456.4175543089138173586.stgit@magnolia>
+References: <156151632209.2283456.3592379873620132456.stgit@magnolia> <156151633004.2283456.4175543089138173586.stgit@magnolia>
+Subject: Re: [Cluster-devel] [PATCH 1/5] vfs: create a generic checking and
+ prep function for FS_IOC_SETFLAGS
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a361073f-3fbd-13af-b688-01da6b443b22@windriver.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.3.116.201, 10.4.195.9]
+Thread-Topic: create a generic checking and prep function for FS_IOC_SETFLAGS
+Thread-Index: 5u1cuSAsKRaw36dS1F+PjLFgFqc7sA==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Wed, 26 Jun 2019 12:21:15 +0000 (UTC)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi!
-Not being able to delete a file on a filled filesystem sounds like a
-filesystem bug to me. CCying Btrfs mailing list.
+----- Original Message -----
+> From: Darrick J. Wong <darrick.wong@oracle.com>
+> 
+> Create a generic function to check incoming FS_IOC_SETFLAGS flag values
+> and later prepare the inode for updates so that we can standardize the
+> implementations that follow ext4's flag values.
+> 
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Acked-by: David Sterba <dsterba@suse.com>
+> ---
+>  fs/btrfs/ioctl.c    |   13 +++++--------
+>  fs/efivarfs/file.c  |   26 +++++++++++++++++---------
+>  fs/ext2/ioctl.c     |   16 ++++------------
+>  fs/ext4/ioctl.c     |   13 +++----------
+>  fs/f2fs/file.c      |    7 ++++---
+>  fs/gfs2/file.c      |   42 +++++++++++++++++++++++++++++-------------
+>  fs/hfsplus/ioctl.c  |   21 ++++++++++++---------
+>  fs/inode.c          |   24 ++++++++++++++++++++++++
+>  fs/jfs/ioctl.c      |   22 +++++++---------------
+>  fs/nilfs2/ioctl.c   |    9 ++-------
+>  fs/ocfs2/ioctl.c    |   13 +++----------
+>  fs/orangefs/file.c  |   35 ++++++++++++++++++++++++++---------
+>  fs/reiserfs/ioctl.c |   10 ++++------
+>  fs/ubifs/ioctl.c    |   13 +++----------
+>  include/linux/fs.h  |    3 +++
+>  15 files changed, 146 insertions(+), 121 deletions(-)
 
->       Description:
-> 
-> fs_fill fails on Btrfs when /dev/loop//*size = 512M*/.
-> I tested other size, 256M 1G, all passed.
-> 
-> 
->       Kernel:
-> 
-> v5.2-rc1, qemux86-64
-> 
-> |# make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc use qemu to bootup kernel |
-> 
-> 
->       LTP:
-> 
-> master branch: date 20190625
-> 
-> 
->       Reproduce:
-> 
-> |build ltp source and cp ltp all outputs to qemu # vi runltp in 
-> function: create_block() dd if=/dev/zero of=${TMP}/test.img bs=1024 
-> count=262144 ---> dd if=/dev/zero of=${TMP}/test.img bs=1024 
-> count=524288 # runltp -f fs -s fs_fill |
-> 
-> 
->       Issue:
-> 
-> The issue maybe not reproduced everytime but four fifths chance.
-> 
-> |safe_macros.c:358: BROK: fs_fill.c:67: unlink(mntpoint/thread9/file0) 
-> failed: ENOSPC safe_macros.c:358: BROK: fs_fill.c:67: 
-> unlink(mntpoint/thread4/file0) failed: ENOSPC [ 154.762502] BTRFS 
-> warning (device loop0): could not allocate space for a delete; will 
-> truncate on mount [ 155.691577] BTRFS warning (device loop0): could not 
-> allocate space for a delete; will truncate on mount [ 156.017697] BTRFS 
-> warning (device loop0): could not allocate space for a delete; will 
-> truncate on mount |
-> 
-> 
->       Analysis:
-> 
-> One new kernel commit contained in v5.2-rc1 introduces the issue.
-> 
-> |commit c8eaeac7b734347c3afba7008b7af62f37b9c140 Author: Josef Bacik 
-> <josef@toxicpanda.com> Date: Wed Apr 10 15:56:10 2019 -0400 btrfs: 
-> reserve delalloc metadata differently ...|
-> 
-> 
-> Anyone's reply will be appreciated.
-> 
-> --Hongzhi
-> 
-> ||
+The gfs2 portion looks correct.
 
--- 
-Cyril Hrubis
-chrubis@suse.cz
+Reviewed-by: Bob Peterson <rpeterso@redhat.com>
+
+Regards,
+
+Bob Peterson
