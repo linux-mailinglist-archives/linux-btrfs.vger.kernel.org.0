@@ -2,321 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 505D858BDC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2019 22:40:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C64C58D58
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2019 23:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbfF0UkM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jun 2019 16:40:12 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:39475 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726830AbfF0UkM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jun 2019 16:40:12 -0400
-Received: by mail-qt1-f193.google.com with SMTP id i34so3979365qta.6;
-        Thu, 27 Jun 2019 13:40:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=asaU2u3+qE2V/tXvNuPV0itByGZXwrnNGauZ3AE0x8Q=;
-        b=mWIjFi6ksn5M294UtD6OzjBoCcGAe+stAI7ZEU++C0SLPFQDR1HBVYjwQJCYLPaUlL
-         wgPZe4orHMigt/L29ffRXdcLiUyd+1zty+hko8XcOLFP85nKpVkRPaPWPYiDj5H7iqgx
-         pC5XDK6I0MHokMJ5E9gVGffJBBFLXPtPkpPIgs3jRXt/bDf2pgkCQzNKfnoO9D+ag2Ph
-         jybYItkKi6WJHM/vxAeDgtZ3bh0bYcGRZ1anuBwPj2iQLxLyDoXSINEpVF/8d5j1QYSq
-         cU7qp5tB9tLDjlvEdqwP04/TIf4lVNRgweY1tu98OiJaJnAyqchLjGCv4bqCEnCvy01F
-         838A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references;
-        bh=asaU2u3+qE2V/tXvNuPV0itByGZXwrnNGauZ3AE0x8Q=;
-        b=j7IFaXETdf2cwn7kxQM9KmimTzNeWAc7LvlM9Vb2VFRIsVN/pVzMPaUrU7Px2ah0f2
-         3KgHkbXIgyI3BbDPOYD2hzyQixjjj15BTzuAEmABLLDCbJVN9ZYjcmfol9Zn3W0P329E
-         OM0IjqWAAvN2qyv6HZt8YuLgTl+sjTwhA5NxE9X4mTvGFD03gJpMoCGesrnA2hxYOD8D
-         v6f4YTh47YLb2KLf9ufG414nks/4z+46fO8HOqeLgmdNqk2lRHOmmf1OKO0Rdnm56Yhe
-         RkslnWIhlSgRLxVe5YXVCKZ6poHlUWJYrQ8N47Dur09o7cN0F5rtwwRO0I5H8gxo0xu/
-         N1xw==
-X-Gm-Message-State: APjAAAUQi4I4wF8bygQwmwed4ldiLJ3vxJQcEl+MCm9jFx4KhHaqHrnC
-        KQ5cL2v3KyRbJlsTgHFoznk=
-X-Google-Smtp-Source: APXvYqxEisVOKnA5w+z3iVn+487JJc2VnADsPPw/D/sgNAIpFIMI0h6sXlh2IuEY4rPXtLOql2AbEA==
-X-Received: by 2002:a0c:93a3:: with SMTP id f32mr5198677qvf.14.1561668010735;
-        Thu, 27 Jun 2019 13:40:10 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::5a51])
-        by smtp.gmail.com with ESMTPSA id h18sm60802qkj.134.2019.06.27.13.40.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Jun 2019 13:40:10 -0700 (PDT)
-From:   Tejun Heo <tj@kernel.org>
-To:     axboe@kernel.dk
-Cc:     jack@suse.cz, josef@toxicpanda.com, clm@fb.com, dsterba@suse.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH 5/5] blkcg: implement REQ_CGROUP_PUNT
-Date:   Thu, 27 Jun 2019 13:39:52 -0700
-Message-Id: <20190627203952.386785-6-tj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190627203952.386785-1-tj@kernel.org>
-References: <20190627203952.386785-1-tj@kernel.org>
+        id S1726682AbfF0Vrp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jun 2019 17:47:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39160 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726441AbfF0Vrp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Jun 2019 17:47:45 -0400
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A388D2133F;
+        Thu, 27 Jun 2019 21:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1561672063;
+        bh=SpV/uemnOrRihge5TJk4ITU92ziigblP630GRC7lbrc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iDZwlAlRNE4TdI8zZGWLcHsYNsMKV28NI1/Z1FWSKsjfQL1MvNJnH3R4FfOt1FI6U
+         NoA4RMc8FNTMy/xmWXqt/uWJxAl8AuodxTg1eEoBn0PUWQSj6LqdN9WWyUoa01fgzL
+         Ul7eDI3qZJrsAg4aeoFpmunVxqDc4COun2zvENiU=
+Received: by mail-vs1-f47.google.com with SMTP id j26so2658421vsn.10;
+        Thu, 27 Jun 2019 14:47:43 -0700 (PDT)
+X-Gm-Message-State: APjAAAVmPQSoLd4/S1DwEI4dEpYOA9mz22UWERHiSjHLnxd+fBsv+G0i
+        NX7f/PYI21csdw1pCjg7CNuWpuTa+Efh36DyFgs=
+X-Google-Smtp-Source: APXvYqzscPkX8+onkT0PS9yyWAEmKERA4byc8s6OtXj5hIMpb0Y27HgKk8Sg5fihvfMrys0KbcAS+H5hMd5yP9+S8sw=
+X-Received: by 2002:a67:d990:: with SMTP id u16mr4271105vsj.95.1561672062824;
+ Thu, 27 Jun 2019 14:47:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190627170030.6149-1-fdmanana@kernel.org> <20190627202818.GB5167@magnolia>
+In-Reply-To: <20190627202818.GB5167@magnolia>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Thu, 27 Jun 2019 22:47:31 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H7PbZh3SNv+jOm_St03bkq=f2-T8Cna-no6U2+FxxMchA@mail.gmail.com>
+Message-ID: <CAL3q7H7PbZh3SNv+jOm_St03bkq=f2-T8Cna-no6U2+FxxMchA@mail.gmail.com>
+Subject: Re: [PATCH] generic: test cloning large exents to a file with many
+ small extents
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When a shared kthread needs to issue a bio for a cgroup, doing so
-synchronously can lead to priority inversions as the kthread can be
-trapped waiting for that cgroup.  This patch implements
-REQ_CGROUP_PUNT flag which makes submit_bio() punt the actual issuing
-to a dedicated per-blkcg work item to avoid such priority inversions.
+On Thu, Jun 27, 2019 at 9:28 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+>
+> On Thu, Jun 27, 2019 at 06:00:30PM +0100, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Test that if we clone a file with some large extents into a file that has
+> > many small extents, when the fs is nearly full, the clone operation does
+> > not fail and produces the correct result.
+> >
+> > This is motivated by a bug found in btrfs wich is fixed by the following
+> > patches for the linux kernel:
+> >
+> >  [PATCH 1/2] Btrfs: factor out extent dropping code from hole punch handler
+> >  [PATCH 2/2] Btrfs: fix ENOSPC errors, leading to transaction aborts, when
+> >              cloning extents
+> >
+> > The test currently passes on xfs.
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >  tests/generic/558     | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++
+> >  tests/generic/558.out |  5 ++++
+> >  tests/generic/group   |  1 +
+> >  3 files changed, 81 insertions(+)
+> >  create mode 100755 tests/generic/558
+> >  create mode 100644 tests/generic/558.out
+> >
+> > diff --git a/tests/generic/558 b/tests/generic/558
+> > new file mode 100755
+> > index 00000000..ee16cdf7
+> > --- /dev/null
+> > +++ b/tests/generic/558
+> > @@ -0,0 +1,75 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
+> > +#
+> > +# FSQA Test No. 558
+> > +#
+> > +# Test that if we clone a file with some large extents into a file that has
+> > +# many small extents, when the fs is nearly full, the clone operation does
+> > +# not fail and produces the correct result.
+> > +#
+> > +seq=`basename $0`
+> > +seqres=$RESULT_DIR/$seq
+> > +echo "QA output created by $seq"
+> > +tmp=/tmp/$$
+> > +status=1     # failure is the default!
+> > +trap "_cleanup; exit \$status" 0 1 2 3 15
+> > +
+> > +_cleanup()
+> > +{
+> > +     cd /
+> > +     rm -f $tmp.*
+> > +}
+> > +
+> > +# get standard environment, filters and checks
+> > +. ./common/rc
+> > +. ./common/filter
+> > +. ./common/reflink
+> > +
+> > +# real QA test starts here
+> > +_supported_fs generic
+> > +_supported_os Linux
+> > +_require_scratch_reflink
+> > +
+> > +rm -f $seqres.full
+> > +
+> > +_scratch_mkfs_sized $((512 * 1024 * 1024)) >>$seqres.full 2>&1
+> > +_scratch_mount
+> > +
+> > +file_size=$(( 128 * 1024 * 1024 )) # 128Mb
+> > +extent_size=4096
+>
+> What if the fs block size is 64k?
 
-This will be used to fix priority inversions in btrfs compression and
-should be generally useful as we grow filesystem support for
-comprehensive IO control.
+Then we get extents of 64Kb instead of 4Kb. Works on btrfs. Is it a
+problem for xfs (or any other fs)?
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Cc: Chris Mason <clm@fb.com>
----
- block/blk-cgroup.c          | 53 +++++++++++++++++++++++++++++++++++++
- block/blk-core.c            |  3 +++
- include/linux/backing-dev.h |  1 +
- include/linux/blk-cgroup.h  | 16 ++++++++++-
- include/linux/blk_types.h   | 10 +++++++
- include/linux/writeback.h   | 13 ++++++---
- 6 files changed, 92 insertions(+), 4 deletions(-)
+>
+> > +num_extents=$(( $file_size / $extent_size ))
+> > +
+> > +# Create a file with many small extents.
+> > +for ((i = 0; i < $num_extents; i++)); do
+> > +     offset=$(( $i * $extent_size ))
+> > +     $XFS_IO_PROG -f -s -c "pwrite -S 0xe5 $offset $extent_size" \
+> > +             $SCRATCH_MNT/foo >>/dev/null
+> > +done
+>
+> I wouldn't have thought that this would actually succeed on xfs because
+> you could lay extents down one after the other, but then started seeing
+> this in the filefrag output:
+>
+> File size of /opt/foo is 528384 (129 blocks of 4096 bytes)
+>  ext:     logical_offset:        physical_offset: length:   expected: flags:
+>    3:       17..      17:         52..        52:      1:         37:
+>    4:       18..      18:         67..        67:      1:         53:
+>    5:       19..      19:         81..        81:      1:         68:
+>    6:       20..      20:         94..        94:      1:         82:
+>    7:       21..      21:        106..       106:      1:         95:
+>    8:       22..      22:        117..       117:      1:        107:
+>    9:       23..      23:        127..       127:      1:        118:
+>   10:       24..      24:        136..       136:      1:        128:
+>   11:       25..      25:        144..       144:      1:        137:
+>   12:       26..      26:        151..       151:      1:        145:
+>   13:       27..      27:        157..       157:      1:        152:
+>   14:       28..      28:        162..       162:      1:        158:
+>   15:       29..      29:        166..       166:      1:        163:
+>   16:       30..      30:        169..       169:      1:        167:
+>   17:       31..      32:        171..       172:      2:        170:
+>   18:       33..      33:        188..       188:      1:        173:
+>
+> 52, 67, 81, 94, 106, 117, 127, 136, 44, 151, 157, 162, 166, 169, 171...
+>
+>  +15 +14 +13 +12  +11  +10   +9   +8  +7   +6   +5   +4   +3   +2...
+>
+> Hm, I wonder what quirk of the xfs allocator this might be?
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 3319ab4ff262..921a3ef329aa 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -54,6 +54,7 @@ static struct blkcg_policy *blkcg_policy[BLKCG_MAX_POLS];
- static LIST_HEAD(all_blkcgs);		/* protected by blkcg_pol_mutex */
- 
- static bool blkcg_debug_stats = false;
-+static struct workqueue_struct *blkcg_punt_bio_wq;
- 
- static bool blkcg_policy_enabled(struct request_queue *q,
- 				 const struct blkcg_policy *pol)
-@@ -88,6 +89,8 @@ static void __blkg_release(struct rcu_head *rcu)
- {
- 	struct blkcg_gq *blkg = container_of(rcu, struct blkcg_gq, rcu_head);
- 
-+	WARN_ON(!bio_list_empty(&blkg->async_bios));
-+
- 	/* release the blkcg and parent blkg refs this blkg has been holding */
- 	css_put(&blkg->blkcg->css);
- 	if (blkg->parent)
-@@ -113,6 +116,23 @@ static void blkg_release(struct percpu_ref *ref)
- 	call_rcu(&blkg->rcu_head, __blkg_release);
- }
- 
-+static void blkg_async_bio_workfn(struct work_struct *work)
-+{
-+	struct blkcg_gq *blkg = container_of(work, struct blkcg_gq,
-+					     async_bio_work);
-+	struct bio_list bios = BIO_EMPTY_LIST;
-+	struct bio *bio;
-+
-+	/* as long as there are pending bios, @blkg can't go away */
-+	spin_lock_bh(&blkg->async_bio_lock);
-+	bio_list_merge(&bios, &blkg->async_bios);
-+	bio_list_init(&blkg->async_bios);
-+	spin_unlock_bh(&blkg->async_bio_lock);
-+
-+	while ((bio = bio_list_pop(&bios)))
-+		submit_bio(bio);
-+}
-+
- /**
-  * blkg_alloc - allocate a blkg
-  * @blkcg: block cgroup the new blkg is associated with
-@@ -141,6 +161,9 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct request_queue *q,
- 
- 	blkg->q = q;
- 	INIT_LIST_HEAD(&blkg->q_node);
-+	spin_lock_init(&blkg->async_bio_lock);
-+	bio_list_init(&blkg->async_bios);
-+	INIT_WORK(&blkg->async_bio_work, blkg_async_bio_workfn);
- 	blkg->blkcg = blkcg;
- 
- 	for (i = 0; i < BLKCG_MAX_POLS; i++) {
-@@ -1527,6 +1550,25 @@ void blkcg_policy_unregister(struct blkcg_policy *pol)
- }
- EXPORT_SYMBOL_GPL(blkcg_policy_unregister);
- 
-+bool __blkcg_punt_bio_submit(struct bio *bio)
-+{
-+	struct blkcg_gq *blkg = bio->bi_blkg;
-+
-+	/* consume the flag first */
-+	bio->bi_opf &= ~REQ_CGROUP_PUNT;
-+
-+	/* never bounce for the root cgroup */
-+	if (!blkg->parent)
-+		return false;
-+
-+	spin_lock_bh(&blkg->async_bio_lock);
-+	bio_list_add(&blkg->async_bios, bio);
-+	spin_unlock_bh(&blkg->async_bio_lock);
-+
-+	queue_work(blkcg_punt_bio_wq, &blkg->async_bio_work);
-+	return true;
-+}
-+
- /*
-  * Scale the accumulated delay based on how long it has been since we updated
-  * the delay.  We only call this when we are adding delay, in case it's been a
-@@ -1727,5 +1769,16 @@ void blkcg_add_delay(struct blkcg_gq *blkg, u64 now, u64 delta)
- 	atomic64_add(delta, &blkg->delay_nsec);
- }
- 
-+static int __init blkcg_init(void)
-+{
-+	blkcg_punt_bio_wq = alloc_workqueue("blkcg_punt_bio",
-+					    WQ_MEM_RECLAIM | WQ_FREEZABLE |
-+					    WQ_UNBOUND | WQ_SYSFS, 0);
-+	if (!blkcg_punt_bio_wq)
-+		return -ENOMEM;
-+	return 0;
-+}
-+subsys_initcall(blkcg_init);
-+
- module_param(blkcg_debug_stats, bool, 0644);
- MODULE_PARM_DESC(blkcg_debug_stats, "True if you want debug stats, false if not");
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 5d1fc8e17dd1..812052c835fc 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -1127,6 +1127,9 @@ EXPORT_SYMBOL_GPL(direct_make_request);
-  */
- blk_qc_t submit_bio(struct bio *bio)
- {
-+	if (blkcg_punt_bio_submit(bio))
-+		return BLK_QC_T_NONE;
-+
- 	/*
- 	 * If it's a regular read/write or a barrier with data attached,
- 	 * go through the normal accounting stuff before submission.
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index f9b029180241..35b31d176f74 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -48,6 +48,7 @@ extern spinlock_t bdi_lock;
- extern struct list_head bdi_list;
- 
- extern struct workqueue_struct *bdi_wq;
-+extern struct workqueue_struct *bdi_async_bio_wq;
- 
- static inline bool wb_has_dirty_io(struct bdi_writeback *wb)
- {
-diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
-index 33f23a858438..689a58231288 100644
---- a/include/linux/blk-cgroup.h
-+++ b/include/linux/blk-cgroup.h
-@@ -132,13 +132,17 @@ struct blkcg_gq {
- 
- 	struct blkg_policy_data		*pd[BLKCG_MAX_POLS];
- 
--	struct rcu_head			rcu_head;
-+	spinlock_t			async_bio_lock;
-+	struct bio_list			async_bios;
-+	struct work_struct		async_bio_work;
- 
- 	atomic_t			use_delay;
- 	atomic64_t			delay_nsec;
- 	atomic64_t			delay_start;
- 	u64				last_delay;
- 	int				last_use;
-+
-+	struct rcu_head			rcu_head;
- };
- 
- typedef struct blkcg_policy_data *(blkcg_pol_alloc_cpd_fn)(gfp_t gfp);
-@@ -701,6 +705,15 @@ static inline bool blk_throtl_bio(struct request_queue *q, struct blkcg_gq *blkg
- 				  struct bio *bio) { return false; }
- #endif
- 
-+bool __blkcg_punt_bio_submit(struct bio *bio);
-+
-+static inline bool blkcg_punt_bio_submit(struct bio *bio)
-+{
-+	if (bio->bi_opf & REQ_CGROUP_PUNT)
-+		return __blkcg_punt_bio_submit(bio);
-+	else
-+		return false;
-+}
- 
- static inline void blkcg_bio_issue_init(struct bio *bio)
- {
-@@ -848,6 +861,7 @@ static inline char *blkg_path(struct blkcg_gq *blkg) { return NULL; }
- static inline void blkg_get(struct blkcg_gq *blkg) { }
- static inline void blkg_put(struct blkcg_gq *blkg) { }
- 
-+static inline bool blkcg_punt_bio_submit(struct bio *bio) { return false; }
- static inline void blkcg_bio_issue_init(struct bio *bio) { }
- static inline bool blkcg_bio_issue_check(struct request_queue *q,
- 					 struct bio *bio) { return true; }
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index 6a53799c3fe2..feff3fe4467e 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -311,6 +311,14 @@ enum req_flag_bits {
- 	__REQ_RAHEAD,		/* read ahead, can fail anytime */
- 	__REQ_BACKGROUND,	/* background IO */
- 	__REQ_NOWAIT,           /* Don't wait if request will block */
-+	/*
-+	 * When a shared kthread needs to issue a bio for a cgroup, doing
-+	 * so synchronously can lead to priority inversions as the kthread
-+	 * can be trapped waiting for that cgroup.  CGROUP_PUNT flag makes
-+	 * submit_bio() punt the actual issuing to a dedicated per-blkcg
-+	 * work item to avoid such priority inversions.
-+	 */
-+	__REQ_CGROUP_PUNT,
- 
- 	/* command specific flags for REQ_OP_WRITE_ZEROES: */
- 	__REQ_NOUNMAP,		/* do not free blocks when zeroing */
-@@ -337,6 +345,8 @@ enum req_flag_bits {
- #define REQ_RAHEAD		(1ULL << __REQ_RAHEAD)
- #define REQ_BACKGROUND		(1ULL << __REQ_BACKGROUND)
- #define REQ_NOWAIT		(1ULL << __REQ_NOWAIT)
-+#define REQ_CGROUP_PUNT		(1ULL << __REQ_CGROUP_PUNT)
-+
- #define REQ_NOUNMAP		(1ULL << __REQ_NOUNMAP)
- #define REQ_HIPRI		(1ULL << __REQ_HIPRI)
- 
-diff --git a/include/linux/writeback.h b/include/linux/writeback.h
-index e056a22075cf..8945aac31392 100644
---- a/include/linux/writeback.h
-+++ b/include/linux/writeback.h
-@@ -78,6 +78,8 @@ struct writeback_control {
- 	 */
- 	unsigned no_cgroup_owner:1;
- 
-+	unsigned punt_to_cgroup:1;	/* cgrp punting, see __REQ_CGROUP_PUNT */
-+
- #ifdef CONFIG_CGROUP_WRITEBACK
- 	struct bdi_writeback *wb;	/* wb this writeback is issued under */
- 	struct inode *inode;		/* inode being written out */
-@@ -94,12 +96,17 @@ struct writeback_control {
- 
- static inline int wbc_to_write_flags(struct writeback_control *wbc)
- {
-+	int flags = 0;
-+
-+	if (wbc->punt_to_cgroup)
-+		flags = REQ_CGROUP_PUNT;
-+
- 	if (wbc->sync_mode == WB_SYNC_ALL)
--		return REQ_SYNC;
-+		flags |= REQ_SYNC;
- 	else if (wbc->for_kupdate || wbc->for_background)
--		return REQ_BACKGROUND;
-+		flags |= REQ_BACKGROUND;
- 
--	return 0;
-+	return flags;
- }
- 
- static inline struct cgroup_subsys_state *
--- 
-2.17.1
+Don't ask me, I have no idea how it works :)
 
+>
+> > +
+> > +# Create file bar with the same size that file foo has but with large extents.
+> > +$XFS_IO_PROG -f -c "pwrite -S 0xc7 -b $file_size 0 $file_size" \
+> > +     $SCRATCH_MNT/bar >>/dev/null
+> > +
+> > +# Fill the fs (for btrfs we are interested in filling all unallocated space
+> > +# and most of the existing metadata block group(s), so that after this there
+> > +# will be no unallocated space and metadata space will be mostly full but with
+> > +# more than enough free space for the clone operation below to succeed).
+> > +i=1
+> > +while true; do
+> > +     $XFS_IO_PROG -f -c "pwrite 0 2K" $SCRATCH_MNT/filler_$i &> /dev/null
+> > +     [ $? -ne 0 ] && break
+> > +     i=$(( i + 1 ))
+> > +done
+>
+> _fill_fs?
+
+No, because that will do fallocate. Writing 2Kb files here is on
+purpose because that will fill the metadata
+block group(s) (on btrfs we inline extents in the btree (metadata) as
+long as they are not bigger than 2Kb, by default).
+Using fallocate, we end up using data block groups.
+
+>
+> > +
+> > +# Now clone file bar into file foo. This is supposed to succeed and not fail
+> > +# with ENOSPC for example.
+> > +$XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar" $SCRATCH_MNT/foo >>/dev/null
+>
+> _reflink $SCRATCH_MNT/bar $SCRATCH_MNT/foo ?
+
+Does exactly the same. I don't mind changing it however.
+
+Thanks.
+
+>
+> --D
+>
+> > +
+> > +_scratch_remount
+> > +
+> > +echo "File foo data after cloning and remount:"
+> > +od -A d -t x1 $SCRATCH_MNT/foo
+> > +
+> > +status=0
+> > +exit
+> > diff --git a/tests/generic/558.out b/tests/generic/558.out
+> > new file mode 100644
+> > index 00000000..d1e8e70f
+> > --- /dev/null
+> > +++ b/tests/generic/558.out
+> > @@ -0,0 +1,5 @@
+> > +QA output created by 558
+> > +File foo data after cloning and remount:
+> > +0000000 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7
+> > +*
+> > +134217728
+> > diff --git a/tests/generic/group b/tests/generic/group
+> > index 543c0627..c06c1cd1 100644
+> > --- a/tests/generic/group
+> > +++ b/tests/generic/group
+> > @@ -560,3 +560,4 @@
+> >  555 auto quick cap
+> >  556 auto quick casefold
+> >  557 auto quick log
+> > +558 auto clone
+> > --
+> > 2.11.0
+> >
