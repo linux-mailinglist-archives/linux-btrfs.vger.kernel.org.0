@@ -2,118 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A81958BDE
+	by mail.lfdr.de (Postfix) with ESMTP id B9C4B58BDF
 	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2019 22:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbfF0Uj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jun 2019 16:39:57 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:44145 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbfF0Uj4 (ORCPT
+        id S1726725AbfF0UkA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jun 2019 16:40:00 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:37682 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbfF0Uj7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jun 2019 16:39:56 -0400
-Received: by mail-qk1-f195.google.com with SMTP id p144so2943227qke.11;
-        Thu, 27 Jun 2019 13:39:56 -0700 (PDT)
+        Thu, 27 Jun 2019 16:39:59 -0400
+Received: by mail-qt1-f193.google.com with SMTP id y57so3995770qtk.4;
+        Thu, 27 Jun 2019 13:39:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=ybck1vLhDov0MKKyXsh2jg2LPJRwZCrCeuFa0yt4DYI=;
-        b=ag2Gs+LKLeevpy56TTxF85ajtVkLQYNbia84gmoW0Xuzlw4/APmVDwv4Hy1Gkyq1XU
-         LgNQ415ZKRlP3PBfVzD1RgBIF8JMG03sjAK1wB5Nr/9WWfYw07ArtOxAYbvySBUNmtaq
-         GR0TPqUYsphdbw3IrJv7hg7XRHno0rimqodWnDvrm8/BU8mHzv2g44oaznOdxCgqJ2Je
-         6rIr5FOdo8Mv9oJt+LRjoj014nnoGVp62H4Fg/qaRSXywxUoi+ux7HO2QUj5YDbGI/JZ
-         ldQFlaqI9ZwBoZsXebY6TGjAJNrXqJtzyonUJQKmdVnDq41M8eNRbpcvcUAS4BEPGc2P
-         2Guw==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=AMywy7ALEe2t0mNJ1TRlsbiFePyakRxLczRqN/PYLqo=;
+        b=R0VDCHQe0+ZVtPpHXez9PeF4IKo1fN/BqfuQtE78nnlRkmudxsQrwwOWjfkHoL5sKY
+         N0Ur2BTQ62Cs6+R/42uHdn0Pso0IGX3tHyknB/AXOI69hG7Dia8Zt6MDTUsuAefjmMua
+         Amli6efEBxs/T/55RsLg9AfCjqq/ZxPXniVAYKgayjMnyJWIPmEPOqwVIn/F0vmIt12g
+         ItguiZP9RbnGqEPMz7RF7EpZ1xZh69kPWN3TBaaQTg+oclUpMByWLcny5yyFLHYakIRo
+         /sz5Yggzahgf2fmL6TWYauIEGFlgYFtrTFbuRyUQZ2J5l9pb22W62vF4K1JIPvhGCC8N
+         dV3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=ybck1vLhDov0MKKyXsh2jg2LPJRwZCrCeuFa0yt4DYI=;
-        b=WRXShxyPID1fRmDUJhgyJVJhm+zVzZ2T+dlrzTS27A/c5eoNeTI/Ayj/rTlM3KNgfm
-         37vyZDBaF/pizSXdWJb+Nc+8o9//xtLYCge5F+vUFpV4yhxZTgTdcDjCoxmB2rQa1jvL
-         C+zeXZ5R6zupZW/9ASsdWmPmjw9X1NqhHg7BswjK3lAzBtfyyEF28ALTFvtVQ3GsTr5A
-         4Vf2kEIS17gfTX+/KFURNQXc/Q90ZQoOpVqmVzseTbwUYKOcFe2xuG+VKdlN0ej1MxLZ
-         pUW7D/nIVJJYVynEtwL5pCCuZPN+idPs+JKm9RJDUWGo5xucWX3BSoKL+lSVM/5FZINf
-         pEUg==
-X-Gm-Message-State: APjAAAX36uDVNC8ruTajkplLl0nBl5h6RGTOZlodRbbVFsjPoB1j2Sgt
-        ktInr0vy+1CBX8PHmks0SVOQluIF
-X-Google-Smtp-Source: APXvYqxdspLa8CegnseSDgRCl+19jBVOk9zvGOA3kE9jB7Cc2EeAbkWGAOXU8jFOKdyHtNKYJRVPPw==
-X-Received: by 2002:a37:b87:: with SMTP id 129mr5171858qkl.132.1561667995759;
-        Thu, 27 Jun 2019 13:39:55 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references;
+        bh=AMywy7ALEe2t0mNJ1TRlsbiFePyakRxLczRqN/PYLqo=;
+        b=Yv55e6iB+CMpiWQ4ku/2bCtuZhBT4z3fllqbDfTRJCvNxRT9h6Qi6Qbf/rYnXt3cu0
+         SLwU9fYMCgOJMM//z5w1bgZrD/GZzjmbA5bncowuyqtpr1td8AX411L3R63LVHFVOaEy
+         qQlrvdCbWKFIxHMIf3XHdUANnLRGVZKVzw+ynBgmQ2fVFQ4gq5tDWKBIPEXNxJ19rxkL
+         r3UDfWzunG7JdagFxvl+7oiNrzZehGTouWPgx/UzPumMNrOKkh/mYd4+AOtU/sRbsqkp
+         1HWXLgixibQSrx9aLogIgSlFhML0tK4xuEV5ePjpAjLR6NilocgFRSqyQCFson5voFSJ
+         Ow1g==
+X-Gm-Message-State: APjAAAVuFrYJVCDtMhFK+GLvwtqrBFNdon8eKgANelfXL77iqH3onePf
+        NrMshqCzB52rgI//dUApy0c=
+X-Google-Smtp-Source: APXvYqweuAgf29mRrCJ2Yfz4Yw3CYiuLfScCA+pqmcAtQjba1z/7eF/+dYrC95C0D1Syo5Ho5LZfgA==
+X-Received: by 2002:a0c:af18:: with SMTP id i24mr4742816qvc.115.1561667998558;
+        Thu, 27 Jun 2019 13:39:58 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::5a51])
-        by smtp.gmail.com with ESMTPSA id 123sm67372qkh.113.2019.06.27.13.39.54
+        by smtp.gmail.com with ESMTPSA id k55sm101322qtf.68.2019.06.27.13.39.57
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Jun 2019 13:39:55 -0700 (PDT)
+        Thu, 27 Jun 2019 13:39:58 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     axboe@kernel.dk
 Cc:     jack@suse.cz, josef@toxicpanda.com, clm@fb.com, dsterba@suse.com,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCHSET for-5.3/block] block: add blkcg bio punt mechanism
-Date:   Thu, 27 Jun 2019 13:39:47 -0700
-Message-Id: <20190627203952.386785-1-tj@kernel.org>
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        Tejun Heo <tj@kernel.org>
+Subject: [PATCH 1/5] cgroup, blkcg: Prepare some symbols for module and !CONFIG_CGROUP usages
+Date:   Thu, 27 Jun 2019 13:39:48 -0700
+Message-Id: <20190627203952.386785-2-tj@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190627203952.386785-1-tj@kernel.org>
+References: <20190627203952.386785-1-tj@kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+btrfs is going to use css_put() and wbc helpers to improve cgroup
+writeback support.  Add dummy css_get() definition and export wbc
+helpers to prepare for module and !CONFIG_CGROUP builds.
 
-This patchset contains only the block part of the following
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: kbuild test robot <lkp@intel.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
+ block/blk-cgroup.c     | 1 +
+ fs/fs-writeback.c      | 3 +++
+ include/linux/cgroup.h | 1 +
+ 3 files changed, 5 insertions(+)
 
-  [1] [PATCHSET v2 btrfs/for-next] blkcg, btrfs: fix cgroup writeback support
-
-with the following changes
-
- * wbc_account_io() is renamed to wbc_account_cgroup_owner() and
-   wbc->no_account_io to wbc->no_cgroup_owner for clarity.
-
-When writeback is executed asynchronously (e.g. for compression), bios
-are bounced to and issued by worker pool shared by all cgroups.  This
-leads to significant priority inversions when cgroup IO control is in
-use - IOs for a low priority cgroup can tie down the workers forcing
-higher priority IOs to wait behind them.
-
-This patchset adds an bio punt mechanism to blkcg and updates btrfs to
-issue async IOs through it.  A bio tagged with REQ_CGROUP_PUNT flag is
-bounced to the asynchronous issue context of the associated blkcg on
-bio_submit().  As the bios are issued from per-blkcg work items,
-there's no concern for priority inversions and it doesn't require
-invasive changes to the filesystems.  The mechanism should be
-generally useful for IO control support across different filesystems.
-
-This patchset contains the following 5 patches.
-
- 0001-cgroup-blkcg-Prepare-some-symbols-for-module-and-CON.patch
- 0002-blkcg-writeback-Rename-wbc_account_io-to-wbc_account.patch
- 0003-blkcg-writeback-Add-wbc-no_cgroup_owner.patch
- 0004-blkcg-writeback-Implement-wbc_blkcg_css.patch
- 0005-blkcg-implement-REQ_CGROUP_PUNT.patch
-
-The patches are also available in the following branch.
-
- git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git review-blkcg-punt
-
-Thanks, diffstat follows.
-
- Documentation/admin-guide/cgroup-v2.rst |    2 -
- block/blk-cgroup.c                      |   54 ++++++++++++++++++++++++++++++++
- block/blk-core.c                        |    3 +
- fs/btrfs/extent_io.c                    |    4 +-
- fs/buffer.c                             |    2 -
- fs/ext4/page-io.c                       |    2 -
- fs/f2fs/data.c                          |    4 +-
- fs/fs-writeback.c                       |   13 ++++---
- fs/mpage.c                              |    2 -
- include/linux/backing-dev.h             |    1 
- include/linux/blk-cgroup.h              |   16 ++++++++-
- include/linux/blk_types.h               |   10 +++++
- include/linux/cgroup.h                  |    1 
- include/linux/writeback.h               |   41 ++++++++++++++++++++----
- 14 files changed, 134 insertions(+), 21 deletions(-)
-
---
-tejun
-
-[1] http://lkml.kernel.org/r/20190615182453.843275-1-tj@kernel.org
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 53b7bd4c7000..3319ab4ff262 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -47,6 +47,7 @@ struct blkcg blkcg_root;
+ EXPORT_SYMBOL_GPL(blkcg_root);
+ 
+ struct cgroup_subsys_state * const blkcg_root_css = &blkcg_root.css;
++EXPORT_SYMBOL_GPL(blkcg_root_css);
+ 
+ static struct blkcg_policy *blkcg_policy[BLKCG_MAX_POLS];
+ 
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 9ebfb1b28430..a8a40bc26c2f 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -270,6 +270,7 @@ void __inode_attach_wb(struct inode *inode, struct page *page)
+ 	if (unlikely(cmpxchg(&inode->i_wb, NULL, wb)))
+ 		wb_put(wb);
+ }
++EXPORT_SYMBOL_GPL(__inode_attach_wb);
+ 
+ /**
+  * locked_inode_to_wb_and_lock_list - determine a locked inode's wb and lock it
+@@ -582,6 +583,7 @@ void wbc_attach_and_unlock_inode(struct writeback_control *wbc,
+ 	if (unlikely(wb_dying(wbc->wb)))
+ 		inode_switch_wbs(inode, wbc->wb_id);
+ }
++EXPORT_SYMBOL_GPL(wbc_attach_and_unlock_inode);
+ 
+ /**
+  * wbc_detach_inode - disassociate wbc from inode and perform foreign detection
+@@ -701,6 +703,7 @@ void wbc_detach_inode(struct writeback_control *wbc)
+ 	wb_put(wbc->wb);
+ 	wbc->wb = NULL;
+ }
++EXPORT_SYMBOL_GPL(wbc_detach_inode);
+ 
+ /**
+  * wbc_account_io - account IO issued during writeback
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index c0077adeea83..da9d2afbcf0c 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -687,6 +687,7 @@ void cgroup_path_from_kernfs_id(const union kernfs_node_id *id,
+ struct cgroup_subsys_state;
+ struct cgroup;
+ 
++static inline void css_get(struct cgroup_subsys_state *css) {}
+ static inline void css_put(struct cgroup_subsys_state *css) {}
+ static inline int cgroup_attach_task_all(struct task_struct *from,
+ 					 struct task_struct *t) { return 0; }
+-- 
+2.17.1
 
