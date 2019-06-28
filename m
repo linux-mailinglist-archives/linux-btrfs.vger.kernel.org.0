@@ -2,241 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C64C58D58
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Jun 2019 23:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D17458FB7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2019 03:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbfF0Vrp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 27 Jun 2019 17:47:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726441AbfF0Vrp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 27 Jun 2019 17:47:45 -0400
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A388D2133F;
-        Thu, 27 Jun 2019 21:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561672063;
-        bh=SpV/uemnOrRihge5TJk4ITU92ziigblP630GRC7lbrc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iDZwlAlRNE4TdI8zZGWLcHsYNsMKV28NI1/Z1FWSKsjfQL1MvNJnH3R4FfOt1FI6U
-         NoA4RMc8FNTMy/xmWXqt/uWJxAl8AuodxTg1eEoBn0PUWQSj6LqdN9WWyUoa01fgzL
-         Ul7eDI3qZJrsAg4aeoFpmunVxqDc4COun2zvENiU=
-Received: by mail-vs1-f47.google.com with SMTP id j26so2658421vsn.10;
-        Thu, 27 Jun 2019 14:47:43 -0700 (PDT)
-X-Gm-Message-State: APjAAAVmPQSoLd4/S1DwEI4dEpYOA9mz22UWERHiSjHLnxd+fBsv+G0i
-        NX7f/PYI21csdw1pCjg7CNuWpuTa+Efh36DyFgs=
-X-Google-Smtp-Source: APXvYqzscPkX8+onkT0PS9yyWAEmKERA4byc8s6OtXj5hIMpb0Y27HgKk8Sg5fihvfMrys0KbcAS+H5hMd5yP9+S8sw=
-X-Received: by 2002:a67:d990:: with SMTP id u16mr4271105vsj.95.1561672062824;
- Thu, 27 Jun 2019 14:47:42 -0700 (PDT)
+        id S1726651AbfF1B1B (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 27 Jun 2019 21:27:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43352 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726606AbfF1B1B (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 27 Jun 2019 21:27:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 2AF91AF0A;
+        Fri, 28 Jun 2019 01:26:59 +0000 (UTC)
+Subject: Re: [PATCH 1/2] btrfs: inode: Don't compress if NODATASUM or
+ NODATACOW set
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20180515073622.18732-1-wqu@suse.com>
+ <20180515073622.18732-2-wqu@suse.com>
+ <95e8171b-6d08-e989-a835-637ccf2efe76@gmx.com>
+ <20190627145849.GA20977@twin.jikos.cz>
+From:   Qu Wenruo <wqu@suse.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=wqu@suse.de; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0F1F1IFdlbnJ1byA8d3F1QHN1c2UuZGU+iQFUBBMBCAA+AhsDBQsJCAcCBhUICQoLAgQW
+ AgMBAh4BAheAFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlnVgp0FCQlmAm4ACgkQwj2R86El
+ /qilmgf/cUq9kFQo577ku5gc6rFpVg68ublBwjYpwjw0b//xo+Wo1wm+RRbUGs+djSZAqw12
+ D4F3r0mBTI7abUCNWAbFkYZSAIFVi0DMkjypIVS7PSaEt04rM9VBTToE+YqU6WENeJ57R2p2
+ +hI0wZrBwxObdsdaOtxWtsp3bmhIbdqxSKrtXuRawy4KnQYcLuGzOce9okdlbAE0W3KHm1gQ
+ oNAe6FX8nC9qo14m8LqEbThYH+qj4iCMlN8HIfbSx4F3e7nHZ+UAMW+E/lnMRkIB9Df+JyVd
+ /NlXzIjZAggcWsqpx6D4wyAuexKWkiGQeUeArUNihAwXjmyqWPGmjVyIh+oC6LkBDQRZ1YGv
+ AQgAqlPrYeBLMv3PAZ75YhQIwH6c4SNcB++hQ9TCT5gIQNw51+SQzkXIGgmzxMIS49cZcE4K
+ Xk/kHw5hieQeQZa60BWVRNXwoRI4ib8okgDuMkD5Kz1WEyO149+BZ7HD4/yK0VFJGuvDJR8T
+ 7RZwB69uVSLjkuNZZmCmDcDzS0c/SJOg5nkxt1iTtgUETb1wNKV6yR9XzRkrEW/qShChyrS9
+ fNN8e9c0MQsC4fsyz9Ylx1TOY/IF/c6rqYoEEfwnpdlz0uOM1nA1vK+wdKtXluCa79MdfaeD
+ /dt76Kp/o6CAKLLcjU1Iwnkq1HSrYfY3HZWpvV9g84gPwxwxX0uXquHxLwARAQABiQE8BBgB
+ CAAmFiEELd9y5aWlW6idqkLhwj2R86El/qgFAlnVga8CGwwFCQPCZwAACgkQwj2R86El/qgN
+ 8Qf+M0vM2Idwm5txZZSs+/kSgcPxEwYmxUinnUJGyc0ZWYQXPl0cBetZon9El0naijGzNWvf
+ HxIPB+ZFehk6Otgc78p1a3/xck/s1myFRLrmbbTJNoFiyL25ljcq0J8z5Zp4yuABL2RiLdaZ
+ Pt/jfwjBHwGR+QKp6dD2qMrUWf9b7TFzYDMZXzZ2/eoIgtyjEelNBPrIgOFe24iKMjaGjd97
+ fJuRcBMHdhUAxvXQF1oRtd83JvYJ5OtwTd8MgkEfl+fo7HwWkuHbzc70L4fFKv2BowqFdaHy
+ mId1ijGPGr46tuZ5a4cw/zbaPYx6fJ4sK9tSv/6V1QPNUdqml6hm6pfs6A==
+Message-ID: <dafc56c9-1cd8-2727-049d-99db6504b7e2@suse.de>
+Date:   Fri, 28 Jun 2019 09:26:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-References: <20190627170030.6149-1-fdmanana@kernel.org> <20190627202818.GB5167@magnolia>
-In-Reply-To: <20190627202818.GB5167@magnolia>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 27 Jun 2019 22:47:31 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7PbZh3SNv+jOm_St03bkq=f2-T8Cna-no6U2+FxxMchA@mail.gmail.com>
-Message-ID: <CAL3q7H7PbZh3SNv+jOm_St03bkq=f2-T8Cna-no6U2+FxxMchA@mail.gmail.com>
-Subject: Re: [PATCH] generic: test cloning large exents to a file with many
- small extents
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190627145849.GA20977@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="eqTWI4KoB6hCpE4i08WK2YVUBY5PjloZ8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 9:28 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
->
-> On Thu, Jun 27, 2019 at 06:00:30PM +0100, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Test that if we clone a file with some large extents into a file that has
-> > many small extents, when the fs is nearly full, the clone operation does
-> > not fail and produces the correct result.
-> >
-> > This is motivated by a bug found in btrfs wich is fixed by the following
-> > patches for the linux kernel:
-> >
-> >  [PATCH 1/2] Btrfs: factor out extent dropping code from hole punch handler
-> >  [PATCH 2/2] Btrfs: fix ENOSPC errors, leading to transaction aborts, when
-> >              cloning extents
-> >
-> > The test currently passes on xfs.
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >  tests/generic/558     | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/generic/558.out |  5 ++++
-> >  tests/generic/group   |  1 +
-> >  3 files changed, 81 insertions(+)
-> >  create mode 100755 tests/generic/558
-> >  create mode 100644 tests/generic/558.out
-> >
-> > diff --git a/tests/generic/558 b/tests/generic/558
-> > new file mode 100755
-> > index 00000000..ee16cdf7
-> > --- /dev/null
-> > +++ b/tests/generic/558
-> > @@ -0,0 +1,75 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-> > +#
-> > +# FSQA Test No. 558
-> > +#
-> > +# Test that if we clone a file with some large extents into a file that has
-> > +# many small extents, when the fs is nearly full, the clone operation does
-> > +# not fail and produces the correct result.
-> > +#
-> > +seq=`basename $0`
-> > +seqres=$RESULT_DIR/$seq
-> > +echo "QA output created by $seq"
-> > +tmp=/tmp/$$
-> > +status=1     # failure is the default!
-> > +trap "_cleanup; exit \$status" 0 1 2 3 15
-> > +
-> > +_cleanup()
-> > +{
-> > +     cd /
-> > +     rm -f $tmp.*
-> > +}
-> > +
-> > +# get standard environment, filters and checks
-> > +. ./common/rc
-> > +. ./common/filter
-> > +. ./common/reflink
-> > +
-> > +# real QA test starts here
-> > +_supported_fs generic
-> > +_supported_os Linux
-> > +_require_scratch_reflink
-> > +
-> > +rm -f $seqres.full
-> > +
-> > +_scratch_mkfs_sized $((512 * 1024 * 1024)) >>$seqres.full 2>&1
-> > +_scratch_mount
-> > +
-> > +file_size=$(( 128 * 1024 * 1024 )) # 128Mb
-> > +extent_size=4096
->
-> What if the fs block size is 64k?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--eqTWI4KoB6hCpE4i08WK2YVUBY5PjloZ8
+Content-Type: multipart/mixed; boundary="8tzf9JWCuftR0dbxssC7BTWOAJYykLn7y";
+ protected-headers="v1"
+From: Qu Wenruo <wqu@suse.de>
+To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Message-ID: <dafc56c9-1cd8-2727-049d-99db6504b7e2@suse.de>
+Subject: Re: [PATCH 1/2] btrfs: inode: Don't compress if NODATASUM or
+ NODATACOW set
+References: <20180515073622.18732-1-wqu@suse.com>
+ <20180515073622.18732-2-wqu@suse.com>
+ <95e8171b-6d08-e989-a835-637ccf2efe76@gmx.com>
+ <20190627145849.GA20977@twin.jikos.cz>
+In-Reply-To: <20190627145849.GA20977@twin.jikos.cz>
 
-Then we get extents of 64Kb instead of 4Kb. Works on btrfs. Is it a
-problem for xfs (or any other fs)?
+--8tzf9JWCuftR0dbxssC7BTWOAJYykLn7y
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
->
-> > +num_extents=$(( $file_size / $extent_size ))
-> > +
-> > +# Create a file with many small extents.
-> > +for ((i = 0; i < $num_extents; i++)); do
-> > +     offset=$(( $i * $extent_size ))
-> > +     $XFS_IO_PROG -f -s -c "pwrite -S 0xe5 $offset $extent_size" \
-> > +             $SCRATCH_MNT/foo >>/dev/null
-> > +done
->
-> I wouldn't have thought that this would actually succeed on xfs because
-> you could lay extents down one after the other, but then started seeing
-> this in the filefrag output:
->
-> File size of /opt/foo is 528384 (129 blocks of 4096 bytes)
->  ext:     logical_offset:        physical_offset: length:   expected: flags:
->    3:       17..      17:         52..        52:      1:         37:
->    4:       18..      18:         67..        67:      1:         53:
->    5:       19..      19:         81..        81:      1:         68:
->    6:       20..      20:         94..        94:      1:         82:
->    7:       21..      21:        106..       106:      1:         95:
->    8:       22..      22:        117..       117:      1:        107:
->    9:       23..      23:        127..       127:      1:        118:
->   10:       24..      24:        136..       136:      1:        128:
->   11:       25..      25:        144..       144:      1:        137:
->   12:       26..      26:        151..       151:      1:        145:
->   13:       27..      27:        157..       157:      1:        152:
->   14:       28..      28:        162..       162:      1:        158:
->   15:       29..      29:        166..       166:      1:        163:
->   16:       30..      30:        169..       169:      1:        167:
->   17:       31..      32:        171..       172:      2:        170:
->   18:       33..      33:        188..       188:      1:        173:
->
-> 52, 67, 81, 94, 106, 117, 127, 136, 44, 151, 157, 162, 166, 169, 171...
->
->  +15 +14 +13 +12  +11  +10   +9   +8  +7   +6   +5   +4   +3   +2...
->
-> Hm, I wonder what quirk of the xfs allocator this might be?
 
-Don't ask me, I have no idea how it works :)
 
->
-> > +
-> > +# Create file bar with the same size that file foo has but with large extents.
-> > +$XFS_IO_PROG -f -c "pwrite -S 0xc7 -b $file_size 0 $file_size" \
-> > +     $SCRATCH_MNT/bar >>/dev/null
-> > +
-> > +# Fill the fs (for btrfs we are interested in filling all unallocated space
-> > +# and most of the existing metadata block group(s), so that after this there
-> > +# will be no unallocated space and metadata space will be mostly full but with
-> > +# more than enough free space for the clone operation below to succeed).
-> > +i=1
-> > +while true; do
-> > +     $XFS_IO_PROG -f -c "pwrite 0 2K" $SCRATCH_MNT/filler_$i &> /dev/null
-> > +     [ $? -ne 0 ] && break
-> > +     i=$(( i + 1 ))
-> > +done
->
-> _fill_fs?
+On 2019/6/27 =E4=B8=8B=E5=8D=8810:58, David Sterba wrote:
+> On Tue, Jun 25, 2019 at 04:24:57PM +0800, Qu Wenruo wrote:
+>> Ping?
+>>
+>> This patch should fix the problem of compressed extent even when
+>> nodatasum is set.
+>>
+>> It has been one year but we still didn't get a conclusion on where
+>> force_compress should behave.
+>=20
+> Note that pings to patches sent year ago will get lost, I noticed only
+> because you resent it and I remembered that we had some discussions,
+> without conclusions.
+>=20
+>> But at least to me, NODATASUM is a strong exclusion for compress, no
+>> matter whatever option we use, we should NEVER compress data without
+>> datasum/datacow.
+>=20
+> That's correct, but the way you fix it is IMO not right. This was also
+> noticed by Nikolay, that there are 2 locations that call
+> inode_need_compress but with different semantics.
+>=20
+> One is the decision if compression applies at all,
 
-No, because that will do fallocate. Writing 2Kb files here is on
-purpose because that will fill the metadata
-block group(s) (on btrfs we inline extents in the btree (metadata) as
-long as they are not bigger than 2Kb, by default).
-Using fallocate, we end up using data block groups.
+> and the second one
+> when that's certain it's compression, to do it or not based on the
+> status decision of eg. heuristics.
 
->
-> > +
-> > +# Now clone file bar into file foo. This is supposed to succeed and not fail
-> > +# with ENOSPC for example.
-> > +$XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar" $SCRATCH_MNT/foo >>/dev/null
->
-> _reflink $SCRATCH_MNT/bar $SCRATCH_MNT/foo ?
+The second call is in compress_file_extent(), with inode_need_compress()
+return 0 for NODATACOW/NODATASUM inodes, we will not go into
+cow_file_range_async() branch at all.
 
-Does exactly the same. I don't mind changing it however.
+So would you please explain how this could cause problem?
+To me, prevent the problem in inode_need_compress() is the safest locatio=
+n.
 
-Thanks.
+Thanks,
+Qu
 
->
-> --D
->
-> > +
-> > +_scratch_remount
-> > +
-> > +echo "File foo data after cloning and remount:"
-> > +od -A d -t x1 $SCRATCH_MNT/foo
-> > +
-> > +status=0
-> > +exit
-> > diff --git a/tests/generic/558.out b/tests/generic/558.out
-> > new file mode 100644
-> > index 00000000..d1e8e70f
-> > --- /dev/null
-> > +++ b/tests/generic/558.out
-> > @@ -0,0 +1,5 @@
-> > +QA output created by 558
-> > +File foo data after cloning and remount:
-> > +0000000 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7 c7
-> > +*
-> > +134217728
-> > diff --git a/tests/generic/group b/tests/generic/group
-> > index 543c0627..c06c1cd1 100644
-> > --- a/tests/generic/group
-> > +++ b/tests/generic/group
-> > @@ -560,3 +560,4 @@
-> >  555 auto quick cap
-> >  556 auto quick casefold
-> >  557 auto quick log
-> > +558 auto clone
-> > --
-> > 2.11.0
-> >
+
+--8tzf9JWCuftR0dbxssC7BTWOAJYykLn7y--
+
+--eqTWI4KoB6hCpE4i08WK2YVUBY5PjloZ8
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0VbN0ACgkQwj2R86El
+/qhDjQf/cPBdRA40VGMMbvulMVpdcjMH3pfASSGn8A++gMjzeG3nvrzhnpL8PLFP
+y103i/gyiUC6jKGr5oNtO+CcgmUY3s5HVpcpho+jRayEyvDUrf5ibu+zU37x2a3u
+nNQJW5ideb6dIm/pzzNd1cGKDTzeAqCat7w2qh0wUlqsDX/GN2qGC27rCrx3KegW
+0wakyHlu2LkI5YHKovr5SwEg0oMroGwAFCv65dhVMO4dDYlQ142Nuq5uF4O3jLXQ
+lKlBxjNxRCGk4Gwzkdcr2LC+/v92/6Etus8C8HxgfeEs/Di99VoxaD6vQaUlfFfz
+FyMfIdSeZzaOGuLDRvDnGww/3L6Jlw==
+=iy07
+-----END PGP SIGNATURE-----
+
+--eqTWI4KoB6hCpE4i08WK2YVUBY5PjloZ8--
