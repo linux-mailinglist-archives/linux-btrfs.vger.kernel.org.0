@@ -2,38 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F14659497
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2019 09:09:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB8EE595D5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2019 10:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbfF1HJu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Jun 2019 03:09:50 -0400
-Received: from mout.gmx.net ([212.227.15.15]:44807 "EHLO mout.gmx.net"
+        id S1726463AbfF1IPU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Jun 2019 04:15:20 -0400
+Received: from mout.gmx.net ([212.227.15.19]:40617 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726828AbfF1HJu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Jun 2019 03:09:50 -0400
+        id S1726408AbfF1IPT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 28 Jun 2019 04:15:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1561705755;
-        bh=/n5f3I84qBWrYKaM5O/5yEhMbNcxDGancJiZ7g1rHbE=;
+        s=badeba3b8450; t=1561709716;
+        bh=/tTUxMVT5DMpRhicWZRWejYds0ogDxyAVac553FfyoA=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=NVl43AOGreYPiIRPucJAlx3+wCvp7dn9KWbu+Qd+8RezGMMJqw/UVvaKC3vXnzV+G
-         ABY7a5zRnfEwTkCGz5nY3t4DBmkMfgAThLHhZKscYkJ1ovAM9KwmZ5KYA4Bhpv9uOe
-         IOwDcJnq2cXGpV6XLiW24w+3m0GabC41cADDB3ZI=
+        b=GO7Z1sLc4taUSq3+v3eWkNIqQebr4A1x74JqIYS0aRVAIYiedrd07qoV+9pXEVkPI
+         /PX07rOe82AmfDCqZtsXspJViar2tZDGDXKvkbLaqOz6EBaoOcwTnrPiG7kcX4RdPi
+         oeMloxaJFST0Ud9TSPfmynw6H7kmDRCx+IDbCkd4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx001
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0Lt2BW-1iiziK2rsI-012W26; Fri, 28
- Jun 2019 09:09:15 +0200
-Subject: Re: [PATCH 1/2] btrfs: inode: Don't compress if NODATASUM or
- NODATACOW set
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     David Sterba <dsterba@suse.cz>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20180515073622.18732-1-wqu@suse.com>
- <20180515073622.18732-2-wqu@suse.com>
- <95e8171b-6d08-e989-a835-637ccf2efe76@gmx.com>
- <20190627145849.GA20977@twin.jikos.cz>
- <fa804a25-b0a8-ad1d-760a-bf543418970a@oracle.com>
- <4581937c-cfa1-91e2-7a83-7c3f40f02857@gmx.com>
- <A47A32AA-1457-4B98-BEB4-A9209694842E@oracle.com>
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx003
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0LjIBr-1iHCO41I5P-00daWw; Fri, 28
+ Jun 2019 10:15:16 +0200
+Subject: Re: "bad tree block start" when trying to mount on ARM
+To:     Erik Jensen <erikjensen@rkjnsn.net>
+Cc:     Hugo Mills <hugo@carfax.org.uk>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <CAMj6ewO7PGBoN565WYz_bqL6nGszweNouP-Fphok9+GGpGn8gg@mail.gmail.com>
+ <20190521091842.GS1667@carfax.org.uk>
+ <CAMj6ewPKbRA_eT7JYA9ob9Qk9ZROoshOqaJE=4N_X9bPaskLUw@mail.gmail.com>
+ <CAMj6ewOHrJVdwfKrgXZxwfwE=eoTaB9MS57zha33yb1_iOLWiw@mail.gmail.com>
+ <8aa09a61-aa1c-5dcd-093f-ec096a38a7b5@gmx.com>
+ <CAMj6ewO229vq6=s+T7GhUegwDADv4dzhqPiM0jo10QiKujvytA@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -60,212 +58,173 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <b83d32bc-3316-735b-d64d-73ac66ad03a2@gmx.com>
-Date:   Fri, 28 Jun 2019 15:09:09 +0800
+Message-ID: <684e89f3-666f-6ae6-5aa2-a4db350c1cd4@gmx.com>
+Date:   Fri, 28 Jun 2019 16:15:07 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.1
 MIME-Version: 1.0
-In-Reply-To: <A47A32AA-1457-4B98-BEB4-A9209694842E@oracle.com>
+In-Reply-To: <CAMj6ewO229vq6=s+T7GhUegwDADv4dzhqPiM0jo10QiKujvytA@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="tzxr7LbAIdq6AkjrH0g7T5ojagv2AeTxs"
-X-Provags-ID: V03:K1:40bav4phMxUeN6NqwgmKhgSSgFId5+lRPkmeqSFj/tI4yFfd3GG
- 508x8CkQcmLlwb5bDjVU7Fz8xNmxVb1ZuTzZ4dDNOG7i/S2Qr3hEzXwnY1SJ3mMcrP1cG/R
- Y5YW9DhAG8r179ecuOm3w5a/Kk9/iqTygfaWkMi/jZ1OdwzjfpSMz1NC6FjdQFL6h25/VNt
- pKreAXCYhPvLemE0nGIAQ==
+ boundary="qWj3QhjVOnQPv89LqbBpZdum4bWdXsHcB"
+X-Provags-ID: V03:K1:EIoJw3HJTU/yl86rEuw9Pe7VVnqQlZKkXZCuCeZxT1eDbfzTNTw
+ NQ3AvWZnPgrBWR4+7s6rw/0Mhx0CxxoMDm/nUu3HHt4a+bL8t/0gHnv24hpiSrLP+0fKXCI
+ eB6ZU6VV6DzyzNg/y8SXhFHgdYlS6ld5VOnRlY10SwnsFeJTm8qVSxmcHnX8dMBFel8u2HM
+ B9yk/AI5X2OZM6suV3vuQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hlwn+iW3Tew=:1Tn9ushEOCpBWeIjkrgf/a
- l9qwG2hSoP8AathM2jE6OAJz3hNuSx1+1sT7Dn4UJzzWYw2JYzzvpT2+1eDCqJ1TVBkBYxEUp
- da8eyV9t6lFiE89jC8uRTSnTiM3ww4mND+8Jv4p6dh/0nSn9ByqteivbTrjs+aK6Xtb2zvSrm
- hAD7bN8s+KQ4vGdMX7b6L6bk4EhAo572q1Pr5W46M6QKYq4+om8wEm3ACMMDmAGgkqsBZPlEH
- Fu44i68XNJTb39ftF1hCMNqSh+zGyW9TPLE8ICZH0o0GJ41Mfg4TX0aFKU6wg34Epm/zN+Bnc
- +a8wy/EdWHYmUNdKGFnxyP5zqAGhBIPu79YOFQXSFQMDy3wJ+mBdDUX14jREc3EZA2RD+GNRU
- /oiqX+sDjY3/FDGgetV1rI6v5EP542421Yc5iPkSUWQz4tTEiWimtZuR0iR8r7ncuoaPxNhCK
- xxsy4WDjCQv8QzJw2co9gsXWHBWucMw+Bl77lyMgmn3sxBu6kNemEw8aMckPxtpHnxKhKTyqZ
- QJ1Ced2BTpZCKn+0yIbAQrR/9xhk/Nw+pjXxK+GNuWFTN3scOMdE8ihwJBUgR54sC0xCl36XC
- LXhxHmC6/b/QcQOQ5neFqM6OM7vR7sf7LQPW4JsyYGdelOA+kwF/zhdDldzJkDgWBw/P8XG/C
- aj9vqryUMKMMejnqX52jV3Q72eloRxsNv5708BYhF0FG0qHmS/rPIulZYuGB7o3NkBGjdQH/g
- Ayl4JMEMUa8YoxovR6XQ+cJjfliUoM7DPAnyDgtZN8xix18nXz9jbhwYkjPolEvIMuILUl1va
- M1z4yuNHBRyd1mYJiVQVGP/YBOfBLvg+0leqThm++WVketH4QtjvK1bPlPPqV569sfOHihjuH
- isVblV/YSUJHROUIh1CgBktIVsxV8b18K/dK5AEIm65sMjqj0azim/U49Z8PYlJHIud95NeNp
- eLpvHo2HT5syXw4eA0B6JCQFzsqsbzMAEfPbyZg1tqlFSw95enTsGhnQJBlg9F7WeVEUOc0Fr
- TBksqI02Gd6rz4ojPWCdJMEuqEBxfe5eSdFk3+AOHJstZ0BLZOY4uAuEpfnttaq23B7WFkJiP
- KpUEgWjgHUV6lQ=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zWRsbZTKOrA=:OUcQ2n4iJk9VkMMVz7T+AM
+ SywgwjihiozaUSseVER20HnXc8k/1rIGvbStfLVdRAZDcbUef+fs1DCTeHxGvodvf7/HwiDof
+ o2Owmc2OatC1LbzyPgTKWub6DyRKACYPV3oRE0VxKWLYBGpZl7S9r7zHYFbEWeEgh02SYNpFI
+ spWaf1HzsWlUa9U2rlMfGeVV23Q3bZAGO+/hHwejIUqW2Skqa/alvqQrEai9mThbydG7C4CDp
+ 61XOezT+RtSCMihN3PH9heQrjCEvbzxJEpW9XxL4E1BAH+OPt8X8wBWXkBUZHjdb9Ry+kxJ2F
+ ul8fHcYfWZwFQJXaq2nZMIIJBSpJdSAUYl5NU28COE9oPNslK4wPHkeKqTFhjbU8XlxR7ZVDZ
+ kv0tC7au9zmeVnhxRcrv5L28pc5KPQ/cnUd28/JevNMoFPlPK0TMwGYQRA6Sg2G9wLd3/RjXh
+ dgj2YYhOK2apU8OWx10TacOzj8cRJcgzuMin6I8YE2YBaKaqes7PWiQcTyaYSKwKWtqRKdTKi
+ TKddDe1UVGlOLOvvE4HvnCWFNGySjTYfjigdYmCQQX+Oq71xx/oYxyZWG5v+8yajPA4RdGeZn
+ 1xTPYHHY+Y9gyOTkZaoxZ3CFP2jzTfQHraG7kvS1IRvN7hZhMMBQkMIkfUgBdumOYNX2DFELi
+ 3a4W4QL3/6yD3C44utfwnwrH472KQ8Lk+HJz5WUU3pKSra+AQkdSAV8CPtPgTWO07vp351/7E
+ MJfWUs/2TQO/Pz7iu/mV1tU2hYDDDvUQhyaNnqZojdaExzn7atg2r5ZMmxzz/+nOHZqu7U1YE
+ +6HhKRNMKlCmcCGV5vKh1Eq9mJT6qhq7HJ3PA0SNpweKgmbs+FF/7lxDrAb4RJth1+aSdCzZh
+ U/SQKQUzQ4dqr27/U8OaJjpITyymLF/D55SizOtry94hXhYg5Sqwkdq4vWQwkIoriasvsHa0N
+ DIJ1wYBelNYA2+T0zlwT8h1qFgb/fTuP2Hutyy6lJWrxmQUQK1XakChCo+TPmN4Jmmbk18BWe
+ P1FQNCrufZqn9krKf30uAET5F64G/jGKSFGHOHakFTuGEpycqktLBJhu6giJij98TqWGidjrq
+ jYRapRf6kKszgY=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---tzxr7LbAIdq6AkjrH0g7T5ojagv2AeTxs
-Content-Type: multipart/mixed; boundary="QpoKyAeJxSjSJWDeIALpSxy6COfXdiNzq";
+--qWj3QhjVOnQPv89LqbBpZdum4bWdXsHcB
+Content-Type: multipart/mixed; boundary="x3UZx2WDT3oql5dFaFHbm0t28C2mLRf33";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: David Sterba <dsterba@suse.cz>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org
-Message-ID: <b83d32bc-3316-735b-d64d-73ac66ad03a2@gmx.com>
-Subject: Re: [PATCH 1/2] btrfs: inode: Don't compress if NODATASUM or
- NODATACOW set
-References: <20180515073622.18732-1-wqu@suse.com>
- <20180515073622.18732-2-wqu@suse.com>
- <95e8171b-6d08-e989-a835-637ccf2efe76@gmx.com>
- <20190627145849.GA20977@twin.jikos.cz>
- <fa804a25-b0a8-ad1d-760a-bf543418970a@oracle.com>
- <4581937c-cfa1-91e2-7a83-7c3f40f02857@gmx.com>
- <A47A32AA-1457-4B98-BEB4-A9209694842E@oracle.com>
-In-Reply-To: <A47A32AA-1457-4B98-BEB4-A9209694842E@oracle.com>
+To: Erik Jensen <erikjensen@rkjnsn.net>
+Cc: Hugo Mills <hugo@carfax.org.uk>, linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <684e89f3-666f-6ae6-5aa2-a4db350c1cd4@gmx.com>
+Subject: Re: "bad tree block start" when trying to mount on ARM
+References: <CAMj6ewO7PGBoN565WYz_bqL6nGszweNouP-Fphok9+GGpGn8gg@mail.gmail.com>
+ <20190521091842.GS1667@carfax.org.uk>
+ <CAMj6ewPKbRA_eT7JYA9ob9Qk9ZROoshOqaJE=4N_X9bPaskLUw@mail.gmail.com>
+ <CAMj6ewOHrJVdwfKrgXZxwfwE=eoTaB9MS57zha33yb1_iOLWiw@mail.gmail.com>
+ <8aa09a61-aa1c-5dcd-093f-ec096a38a7b5@gmx.com>
+ <CAMj6ewO229vq6=s+T7GhUegwDADv4dzhqPiM0jo10QiKujvytA@mail.gmail.com>
+In-Reply-To: <CAMj6ewO229vq6=s+T7GhUegwDADv4dzhqPiM0jo10QiKujvytA@mail.gmail.com>
 
---QpoKyAeJxSjSJWDeIALpSxy6COfXdiNzq
+--x3UZx2WDT3oql5dFaFHbm0t28C2mLRf33
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/6/28 =E4=B8=8B=E5=8D=882:56, Anand Jain wrote:
+On 2019/6/28 =E4=B8=8B=E5=8D=884:00, Erik Jensen wrote:
+>> So it's either the block layer reading some wrong from the disk or btr=
+fs
+>> layer doesn't do correct endian convert.
 >=20
+> My ARM board is running in little endian mode, so it doesn't seem like
+> endianness should be an issue. (It is 32-bits versus my desktop's 64,
+> though.) I've also tried exporting the drives via NBD to my x86_64
+> system, and that worked fine, so if the problem is under btrfs, it
+> would have to be in the encryption layer, but fsck succeeding on the
+> ARM board would seem to rule that out, as well.
 >=20
->> On 28 Jun 2019, at 1:58 PM, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>> Would you dump the following data (X86 and ARM should output the same
+>> content, thus one output is enough).
+>> # btrfs ins dump-tree -b 17628726968320 /dev/dm-3
+>> # btrfs ins dump-tree -b 17628727001088 /dev/dm-3
+>=20
+> Attached, and also 17628705964032, since that's the block mentioned in
+> my most recent mount attempt (see below).
+
+The trees are completely fine.
+
+So it should be something else causing the problem.
+
+>=20
+>> And then, for the ARM system, please apply the following diff, and try=
+
+>> mount again.
+>> The diff adds extra debug info, to exam the vital members of a tree bl=
+ock.
 >>
+>> Correct fs should output something like:
+>>   BTRFS error (device dm-4): bad tree block start, want 30408704 have =
+0
+>>   tree block gen=3D4 owner=3D5 nritems=3D2 level=3D0
+>>   csum:
+>> a304e483-0000-0000-0000-00000000000000000000-0000-0000-0000-0000000000=
+00
 >>
->>
->> On 2019/6/28 =E4=B8=8A=E5=8D=8810:47, Anand Jain wrote:
->>> On 27/6/19 10:58 PM, David Sterba wrote:
->>>> On Tue, Jun 25, 2019 at 04:24:57PM +0800, Qu Wenruo wrote:
->>>>> Ping?
->>>>>
->>>>> This patch should fix the problem of compressed extent even when
->>>>> nodatasum is set.
->>>>>
->>>>> It has been one year but we still didn't get a conclusion on where
->>>>> force_compress should behave.
->>>>
->>>> Note that pings to patches sent year ago will get lost, I noticed on=
-ly
->>>> because you resent it and I remembered that we had some discussions,=
+>> The csum one is the most important one, if there aren't so many zeros,=
 
->>>> without conclusions.
->>>>
->>>>> But at least to me, NODATASUM is a strong exclusion for compress, n=
-o
->>>>> matter whatever option we use, we should NEVER compress data withou=
-t
->>>>> datasum/datacow.
->>>>
->>>> That's correct,=20
->>>
->>>  But I wonder what's the reason that datasum/datacow is prerequisite =
-for
->>> the compression ?
->>
->> It's easy to understand the hard requirement for data COW.
->>
->> If you overwrite compressed extent, a powerloss before transaction
->> commit could easily screw up the data.
+>> it means at that timing, btrfs just got a bunch of garbage, thus we
+>> could do further debug.
 >=20
->  This scenario is even true for non compressed data, right?
+> [  131.725573] BTRFS info (device dm-1): disk space caching is enabled
+> [  131.731884] BTRFS info (device dm-1): has skinny extents
+> [  133.046145] BTRFS error (device dm-1): bad tree block start, want
+> 17628705964032 have 2807793151171243621
+> [  133.055775] tree block gen=3D7888986126946982446
+> owner=3D11331573954727661546 nritems=3D4191910623 level=3D112
+> [  133.065661] csum:
+> 416a456c-1e68-dbc3-185d-aaad410beaef5493ab3f-3cb9-4ba1-2214-b41cba9656f=
+c
 
-Not exactly.
+Completely garbage here, so I'd say the data we got isn't what we want.
 
-For non-compressed data, it's either:
-1) NODATACOW (implies NODATASUM)
-   Then we don't know if the new data is correct or not.
-   But we still can READ it out, and let user space to determine.
+> [  133.108383] BTRFS error (device dm-1): bad tree block start, want
+> 17628705964032 have 2807793151171243621
+> [  133.117999] tree block gen=3D7888986126946982446
+> owner=3D11331573954727661546 nritems=3D4191910623 level=3D112
+> [  133.127756] csum:
+> 416a456c-1e68-dbc3-185d-aaad410beaef5493ab3f-3cb9-4ba1-2214-b41cba9656f=
+c
 
-2) DATACOW (no matter if it has data sum or not)
-   The old data is not touched at all. So nothing but the uncommitted
-   data is lost.
+But strangely, the 2nd try still gives us the same result, if it's
+really some garbage, we should get some different result.
 
-But for compressed NODATACOW data, it's more serious as:
-We CANNOT read the data out, as the on-disk data must follow
-compression schema, thus even we only overwrite the beginning 4K of a
-16K compressed 128K uncompressed extent, the whole 128K extent can't be
-read out.
+> [  133.136241] BTRFS error (device dm-1): failed to verify dev extents
+> against chunks: -5
 
-So it's way more serious than non-compressed extent.
+You can try to skip the dev extents verification by commenting out the
+btrfs_verify_dev_extents() call in disk-io.c::open_ctree().
 
->=20
->> Furthermore, what will happen if you're overwriting a 16K data extent
->> while its original compressed size is only 4K, while the new data afte=
-r
->> compression is 8K?
->=20
->  Sorry I can=E2=80=99t think of any limitation, any idea?
+It may fail at another location though.
 
-We don't know how the compressed extent size is until we compress it.
-
-So how do you know whether we should CoW or not at the delalloc time if
-we allow overwrite compressed extent?
-
->=20
->> For checksum, I'd say it's not as a hard requirement as data cow, but
->> still a very preferred one.
->>
->> Since compressed data corruption could cause more problem, e.g. one bi=
-t
->> corruption can cause the whole extent to be corrupted, it's highly
->> recommended to have checksum to protect them.
->=20
->  Isn=E2=80=99t it true that compression boundary/granularity is an exte=
-nt,
->  so the corrupted extent remains corrupted the same way after the
->  decompress,
-
-For corrupted compressed extent, it may not pass decompress.
-
-> and corruption won=E2=80=99t perpetuate to the other extents
->  in the file. But can a non-impending corruption due to external
->  factors be the reason for datasum perrequisite? it can=E2=80=99t be IM=
-O.
-
-The corruption boundary is the WHOLE extent, not just where the
-corruption is.
-That's the point, and that's why it's more serious than plaintext extent
-corruption, and why checksum is highly recommended.
+The more strange part is, we have the device tree root node read out
+without problem.
 
 Thanks,
 Qu
 
+> [  133.166165] BTRFS error (device dm-1): open_ctree failed
 >=20
-> Thanks, Anand
+> I copied some files over last time I had it mounted on my desktop,
+> which may be why it's now failing at a different block.
 >=20
->> Thanks,
->> Qu
->>>
->>> Thanks, Anand
->>>
->>>> but the way you fix it is IMO not right. This was also
->>>> noticed by Nikolay, that there are 2 locations that call
->>>> inode_need_compress but with different semantics.
->>>>
->>>> One is the decision if compression applies at all, and the second on=
-e
->>>> when that's certain it's compression, to do it or not based on the
->>>> status decision of eg. heuristics.
->>>>
->>>
->>
+> Thanks!
 >=20
 
 
---QpoKyAeJxSjSJWDeIALpSxy6COfXdiNzq--
+--x3UZx2WDT3oql5dFaFHbm0t28C2mLRf33--
 
---tzxr7LbAIdq6AkjrH0g7T5ojagv2AeTxs
+--qWj3QhjVOnQPv89LqbBpZdum4bWdXsHcB
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0VvRUACgkQwj2R86El
-/qiGhAf+NjqmHBD/qtniZ5f3IdAf7YVUaBaoJFnWkl3Yr13z80gV92MK8lk+UWSk
-jNQoRhnGMcOkIWonDfe5NgNj64ATbtoQbD6TNwDbE2li/h46fYVDdkahXAXLpYSS
-P4jBkC4/zwSOVDLMegW6AwuTOBj2i+d1FeMw+S+bojJT6+A9ZS1JH6qUvpnC6Hhh
-2DaZGLaIa/8F5cr6BD5S5/x9PxSIr/u6Ww/NwnhKtAZcSkY9lRsRoh3x30aI/1Pv
-4LJDvXNMkj/DZGRUMEZqRWJA6D5f03Lfe2dcRiqWsGuvTnNyxOUqbAjt4dTtzcq8
-xedgFTmyuhGRaHx95ZdNcHJGmAcMgA==
-=E02c
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0VzIsACgkQwj2R86El
+/qiTDwgAj0iXKz2+ljKeHWs4e6io3mHdEDREz7+isUkCSygvFU7SwEXcA9zYwuIx
+yhjwppcJnag8ooL4tQ2KPuifmhEhElr9396yiKC4VEiYxlzP1M4MTWiLb9q+XbZW
+DaqUrUCBCqbhONErLOj7z1hcX9bNBGa6sY6ZHoDC43OlQrRLmcj1tOtXH7rW9ilO
+v4C0BjmDnoazCGZoGjtus8EuI+Ie+PJAOUD/j6qa+Zk9lE4dD6cP+UxMG6SIGO/k
+8YTrAQQTTs+r3sJc115PkCRg3UTEDFyPx59+gOcL20zQmbDKdBikiYAPjoGBw4ef
+RLKKowFB6phIUK25UDmNMsoSGFmxtg==
+=Zu+r
 -----END PGP SIGNATURE-----
 
---tzxr7LbAIdq6AkjrH0g7T5ojagv2AeTxs--
+--qWj3QhjVOnQPv89LqbBpZdum4bWdXsHcB--
