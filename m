@@ -2,351 +2,240 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7091F593F7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2019 08:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42525944E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2019 08:40:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726749AbfF1GCB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Jun 2019 02:02:01 -0400
-Received: from mout.gmx.net ([212.227.15.15]:34739 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726682AbfF1GCB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Jun 2019 02:02:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1561701708;
-        bh=t0mvSoRoHeS1MqDmpl9cVgoak4lLJRnoOveJkcHAbL0=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=CGAMtgZHVvdv33K3aHMIEmwYFjfX6+LwIzOPisspdC3LvMCEKBXKbcMXW2b8XkjVN
-         tKE1OXp3eVoVPhDEKH1EoCA8K9MJKHmk8Y4otSNonlhc1G2umeBb75kq+YrQKMz17l
-         OzzfZVFDOwftzH75SYyi5hTrJNJYdyV8sD806FBU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx003
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0MUILK-1i7j0D1gBO-00Qyd0; Fri, 28
- Jun 2019 08:01:48 +0200
-Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20190628022611.2844-1-anand.jain@oracle.com>
- <0a250a9a-d710-4c7c-ca24-0e4f635a4a99@gmx.com>
- <5d93d408-2575-f564-32ce-e6c39b3b8d17@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <fb0af2df-d4d6-4e50-33a6-f76f2a39f4f9@gmx.com>
-Date:   Fri, 28 Jun 2019 14:01:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        id S1726827AbfF1GkC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Jun 2019 02:40:02 -0400
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:54928 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726648AbfF1GkC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 28 Jun 2019 02:40:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1561704041; x=1593240041;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=nRhFlmYNp3gYbeF9Q2/oebTs2rJTDTVmhBdRoRfZNS4=;
+  b=mRCXT8DINQZIUAx0VcTyOtrMFCIfvyNHu2ChVWNB0X4VvFIO5CLOij9C
+   5a9jnm0zStUj4KozTskEGSComjGLVXN92tX4W5T/7GjL/mDAoMKLwAHf+
+   wW1ofD7CKIkv1oBGWezkJCGS0jDMU2ixIrOmWFIASD7u3v2U8Q/+Githm
+   F4NFu7NmYY5qsqaeM+O7eLKP65PfsjuDXO7stwyj75EeS1DLMvcMplDak
+   3yTs4QdtvWnAbn8LAHzNZ2G4/X0s8XAHES7gjcCH4F3ffxdxG1uSIm84V
+   liukavy+hK1njIuRWfuiIdWu3HYhk5AxcuRqOvapM7/gbq15HgWanrLiU
+   Q==;
+X-IronPort-AV: E=Sophos;i="5.63,426,1557158400"; 
+   d="scan'208";a="211577689"
+Received: from mail-by2nam05lp2051.outbound.protection.outlook.com (HELO NAM05-BY2-obe.outbound.protection.outlook.com) ([104.47.50.51])
+  by ob1.hgst.iphmx.com with ESMTP; 28 Jun 2019 14:40:39 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=testarcselector01; d=microsoft.com; cv=none;
+ b=qUCyTptd8IoiY3Fy/WEjj56WaEN5e8Ca7/MbiaJu9xfN9HLY5V5iueXZuY789+bNL77J5vEcUGOAkwfhjxWozYMmBOBVPMm+vgVwmJVNOUqgEhwGPbfLQ9o60JaKLVni7x29KaR0chBlJLUF0L8mvZkYwu17NW0LWzsndAj/d7o=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=testarcselector01;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ESmkexQp6xMXPePZbCqOfeCVTYm7TK103WeA/yyskxM=;
+ b=d4dvgo3DfHmsH7qypiDeE/mY9vS9Xh2Y7Vs1sAxtBnk3+wOXlmzLoIJR8FAeNg5Bi3gxgqJR+stf/cjB0DsIhjmg6CDtm1qIR0ALrx3IcFDrZp4808ajDfa6r84lI0ea/aMq/BtZNVzau+rbsGfClSCr/nteq0KCz3PZ0SGMtrI=
+ARC-Authentication-Results: i=1; test.office365.com
+ 1;spf=none;dmarc=none;dkim=none;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ESmkexQp6xMXPePZbCqOfeCVTYm7TK103WeA/yyskxM=;
+ b=AIguh8n4uwl8WOwr8+aN8x8J8n+hPCF7pIgSku6MRj8I8ruJibLafVd02rSBUe+Wk0G6IAdk9wSiOxypUVLrfd6jK7OLORPZRKCc+8dXtBPXMcmEMcCgU9tmx43A5Xlk/Fpw6URzGNR9S5tKi17V7yaE+gWwZjzYtPHd3IddVyE=
+Received: from SN6PR04MB5231.namprd04.prod.outlook.com (20.177.254.85) by
+ SN6PR04MB5119.namprd04.prod.outlook.com (52.135.116.161) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.18; Fri, 28 Jun 2019 06:39:59 +0000
+Received: from SN6PR04MB5231.namprd04.prod.outlook.com
+ ([fe80::5005:99a1:65aa:f088]) by SN6PR04MB5231.namprd04.prod.outlook.com
+ ([fe80::5005:99a1:65aa:f088%6]) with mapi id 15.20.2008.014; Fri, 28 Jun 2019
+ 06:39:59 +0000
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Anand Jain <anand.jain@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+CC:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hannes Reinecke <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        =?iso-8859-1?Q?Matias_Bj=F8rling?= <mb@lightnvm.io>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: Re: [PATCH 09/19] btrfs: limit super block locations in HMZONED mode
+Thread-Topic: [PATCH 09/19] btrfs: limit super block locations in HMZONED mode
+Thread-Index: AQHVHTKI41mlZbldhUiKC20uoMUKKg==
+Date:   Fri, 28 Jun 2019 06:39:54 +0000
+Message-ID: <SN6PR04MB52315AB9E229D0BAAB930D5B8CFC0@SN6PR04MB5231.namprd04.prod.outlook.com>
+References: <20190607131025.31996-1-naohiro.aota@wdc.com>
+ <20190607131025.31996-10-naohiro.aota@wdc.com>
+ <0ca3c475-fe10-4135-ddc9-7a82cc966d9a@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Naohiro.Aota@wdc.com; 
+x-originating-ip: [199.255.47.8]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ea6f06c6-7936-476d-7c3d-08d6fb937130
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(4618075)(2017052603328)(7193020);SRVR:SN6PR04MB5119;
+x-ms-traffictypediagnostic: SN6PR04MB5119:
+x-microsoft-antispam-prvs: <SN6PR04MB5119A80413B27896960723708CFC0@SN6PR04MB5119.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 00826B6158
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(346002)(366004)(39860400002)(136003)(396003)(199004)(189003)(8676002)(6116002)(74316002)(66556008)(7696005)(66946007)(71200400001)(25786009)(305945005)(3846002)(4326008)(99286004)(81156014)(81166006)(66446008)(8936002)(7416002)(71190400001)(5660300002)(66476007)(73956011)(229853002)(446003)(486006)(64756008)(68736007)(66066001)(91956017)(14454004)(76116006)(7736002)(476003)(6246003)(9686003)(54906003)(14444005)(316002)(72206003)(110136005)(53936002)(55016002)(6436002)(6666004)(256004)(76176011)(186003)(478600001)(2906002)(52536014)(86362001)(53546011)(2501003)(26005)(6506007)(102836004)(33656002);DIR:OUT;SFP:1102;SCL:1;SRVR:SN6PR04MB5119;H:SN6PR04MB5231.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: uI3ajd+JN2RD30EasG4Zco/e28nG10i1vdiqunRoVQo0AK8sGSzY3MlYam7+SMsglVJ00eCHOld2vICSjy4v2DQXsTZB0Mu4GGutT//GFQ4JNQtm/ztapJiMD0izvqXJ7zm5uiKVTsh69VmQypnlmDVGRDbCdJk41Dk2WZsP0AE6FQtOK6r4lYxvFS3BpAV41leJHBYyZeujqeQ3YOjrap3Ppooaz6vYO27xvlrRm9SzB8DtKfYs3u/lps3fUa5ID+e0pqzjAHHWplsJO9iq8jLM4gtZ52qjKa3PzUJWAz6C0OfJx/8b/hIsLBPLdNGI3RErmVjlE0CgNpVLToaU7mo/tiLEgFAX+kbqpzsQ/gqA5C6V2io/sQQoxk4Hli+4hWqreLJsMgeDGN8JDEUrOKw8FLo5LzQfKHXw6amBX0A=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-In-Reply-To: <5d93d408-2575-f564-32ce-e6c39b3b8d17@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="DeVSpSYzAzRN2PwDFazjtqA59Kc5znkeq"
-X-Provags-ID: V03:K1:WtlzxsVxQ2BrIIAZNXD7CscnesOBGwAvNC36HpSzvaJMdCe1tJD
- 2P3t7KYaBhWffPev81OUq2So7OpYqmURqTi3NWOOLX1j0tFu31ecHW3IkLlbTpQQc5Hl8aY
- aYugNRpeeZV0xy/cg+b+bvu0tu8ygB+334bjBtFsZc0IWzkcvzi88mxLMdJH9cCr4Prb96a
- C8nBnLlRFwa2o9su/4wWQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:/NgF2j7Wd2s=:mSU2xfgXlpvzHyCp5LhRM1
- sTNz2b3oNZYu4z23O+oUTOFXzWCTrWq6DSvHfLcINPVENhsG312AMv0Q5QgIOtwFalGY2YOA+
- NR2YOU71bzvQ1ISuXlGjwW2GueedUu0vTMrmDQtUlSSqZPwB4Ugvd2nCol5A9EcR+2R+gCVvC
- hZ0DINEBtneZn7cyRsyxS8lG8AxvhHMzWvIk/xezIVTx4np4KjF+OKJarrDPQYrsaV3hrBfdF
- kSZ/acDXTvZQQ+jzqFb0ga9qZW+OQ0PPBW4EBjsftdtBYZE8nxOn7GRN3uTLy4X1GvC5zFQie
- gigRJ4z83mo4wUMCq+jPzpEyXV8/acHQs1jbdqqaqQ3XirLh5WVTwFz8SLLRareQjgDFKbsBc
- 5V9lhj2Bwb0FLatb766WKNf+NdY4IK/lARqtCc7dJjeqMLNNIVMDuLbrXKV1v+43enCmht6X+
- 2fYR3K0hV6jpI01QIGO6qWmXQlJFDOglvRIIh8doAkXpEKIxYaM4vkg7svZ/PDFbyMUVdCXLB
- GevR4mBWlMOQ8/WeFcCVjpA9Hzu6fOJASywrghewayAtwAqQwPJ1/URAFW0efkF8G9IyEr2vZ
- vFnG6uD6fNN1sn/czvfZhKs7XEMVsVnAEGdPVpQwXd35pmmcyVSKnrI7SrzX3Fo/HhBcK9Yc/
- OtPWIq01yAylElO9zRTStIm4vLnBhqZh43AD3f6bDNIOLmwy0FyOayjlci4bJWh6HXtTG0Yf0
- 4H5MqKHLToz1gAaOu1nSC+JQuLCpusXqQrAA1BnYTWDfZ6AU/ZUcMdqvxrXKBrXKPJj3C6rui
- LxyH4n4ULqg2PLVzB6dNB1V33UL4RA7OHGGiH9XdvZiwNt+Hnm8MTWFUJ97pCVP+/DHKVcMEh
- CwNpeC168LPdXb5hoyjFNKF6Xuen4SZ1J23v7FeaJHaPmoa/gw8FbQOB3j+eM/HkNAyQ/Styn
- 60BN9GO8Z0i+zbYKN7ZjsnfFCLdK2/n0MOINhW0O5unNJ/GUEIjbdBg/fIOXdxr0xsmq0Mz32
- kooilBeIOCvfu0UTPPG1Sqjko+FiwZkWeZPNkCsPqvP8+aIuna3OHSKQwwF3yOwRJNCGN+qTS
- YF9e8bcm/V69HU=
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ea6f06c6-7936-476d-7c3d-08d6fb937130
+X-MS-Exchange-CrossTenant-originalarrivaltime: 28 Jun 2019 06:39:54.8658
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Naohiro.Aota1@wdc.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5119
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---DeVSpSYzAzRN2PwDFazjtqA59Kc5znkeq
-Content-Type: multipart/mixed; boundary="BCv0Z4BmKR4PUCDmzAcvtOk9dMesWgXlK";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Message-ID: <fb0af2df-d4d6-4e50-33a6-f76f2a39f4f9@gmx.com>
-Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
-References: <20190628022611.2844-1-anand.jain@oracle.com>
- <0a250a9a-d710-4c7c-ca24-0e4f635a4a99@gmx.com>
- <5d93d408-2575-f564-32ce-e6c39b3b8d17@oracle.com>
-In-Reply-To: <5d93d408-2575-f564-32ce-e6c39b3b8d17@oracle.com>
-
---BCv0Z4BmKR4PUCDmzAcvtOk9dMesWgXlK
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2019/6/28 =E4=B8=8A=E5=8D=8811:28, Anand Jain wrote:
-> On 28/6/19 10:44 AM, Qu Wenruo wrote:
->>
->>
->> On 2019/6/28 =E4=B8=8A=E5=8D=8810:26, Anand Jain wrote:
->>> At the time mkfs.btrfs the device id and stripe index gets reversed a=
-s
->>> shown in [1]. This patch helps to keep them in order at the time of
->>> mkfs.btrfs. And makes it easier to debug.
->>>
->>> Before:
->>> Stripe 0 is on devid 2; Stipe 1 is on devid 1;
->>>
->>> ./mkfs.btrfs -fq -draid1 -mraid1 /dev/sdb /dev/sdc && btrfs in
->>> dump-tree -d /dev/sdb | grep -A 10000 "chunk tree" | grep -B 10000
->>> "device tree" | grep -A 13=C2=A0 "FIRST_CHUNK_TREE CHUNK_ITEM"
->>> =C2=A0=C2=A0=C2=A0=C2=A0item 2 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020=
-096) itemoff 15975
->>> itemsize 112
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 8388608 owner 2 str=
-ipe_len 65536 type SYSTEM|RAID1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
-536 sector_size 4096
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
-0
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 0 devid 2 offset 1048576
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid d9fe51c4-6e79-446d-87ee-5be3184798cd
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 1 devid 1 offset 22020096
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid 16f626ca-1a54-469b-ac7e-25623af884ab
->>> =C2=A0=C2=A0=C2=A0=C2=A0item 3 key (FIRST_CHUNK_TREE CHUNK_ITEM 30408=
-704) itemoff 15863
->>> itemsize 112
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 268435456 owner 2 s=
-tripe_len 65536 type METADATA|RAID1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
-536 sector_size 4096
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
-0
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 0 devid 2 offset 9437184
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid d9fe51c4-6e79-446d-87ee-5be3184798cd
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 1 devid 1 offset 30408704
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid 16f626ca-1a54-469b-ac7e-25623af884ab
->>> =C2=A0=C2=A0=C2=A0=C2=A0item 4 key (FIRST_CHUNK_TREE CHUNK_ITEM 29884=
-4160) itemoff 15751
->>> itemsize 112
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 314572800 owner 2 s=
-tripe_len 65536 type DATA|RAID1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
-536 sector_size 4096
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
-0
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 0 devid 2 offset 277872640
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid d9fe51c4-6e79-446d-87ee-5be3184798cd
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 1 devid 1 offset 298844160
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid 16f626ca-1a54-469b-ac7e-25623af884ab
->>>
->>> After:
->>> Stripe 0 is on devid 1; Stripe 1 is on devid 2
->>>
->>> ./mkfs.btrfs -fq -draid1 -mraid1 /dev/sdb /dev/sdc && btrfs in
->>> dump-tree -d /dev/sdb | grep -A 10000 "chunk tree" | grep -B 10000
->>> "device tree" | grep -A 13=C2=A0 "FIRST_CHUNK_TREE CHUNK_ITEM"
->>> /dev/sdb: 8 bytes were erased at offset 0x00010040 (btrfs): 5f 42 48
->>> 52 66 53 5f 4d
->>> /dev/sdc: 8 bytes were erased at offset 0x00010040 (btrfs): 5f 42 48
->>> 52 66 53 5f 4d
->>> =C2=A0=C2=A0=C2=A0=C2=A0item 2 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020=
-096) itemoff 15975
->>> itemsize 112
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 8388608 owner 2 str=
-ipe_len 65536 type SYSTEM|RAID1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
-536 sector_size 4096
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
-0
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 0 devid 1 offset 22020096
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid 6abc88fa-f42e-4f0c-9bc3-2225735e51d1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 1 devid 2 offset 1048576
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid 73746d27-13a6-4d58-ac6b-48c90c31d94d
->>> =C2=A0=C2=A0=C2=A0=C2=A0item 3 key (FIRST_CHUNK_TREE CHUNK_ITEM 30408=
-704) itemoff 15863
->>> itemsize 112
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 268435456 owner 2 s=
-tripe_len 65536 type METADATA|RAID1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
-536 sector_size 4096
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
-0
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 0 devid 1 offset 30408704
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid 6abc88fa-f42e-4f0c-9bc3-2225735e51d1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 1 devid 2 offset 9437184
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid 73746d27-13a6-4d58-ac6b-48c90c31d94d
->>> =C2=A0=C2=A0=C2=A0=C2=A0item 4 key (FIRST_CHUNK_TREE CHUNK_ITEM 29884=
-4160) itemoff 15751
->>> itemsize 112
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 314572800 owner 2 s=
-tripe_len 65536 type DATA|RAID1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
-536 sector_size 4096
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
-0
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 0 devid 1 offset 298844160
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid 6abc88fa-f42e-4f0c-9bc3-2225735e51d1
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
-ripe 1 devid 2 offset 277872640
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
-v_uuid 73746d27-13a6-4d58-ac6b-48c90c31d94d
->>>
->>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>
->> Reviewed-by: Qu Wenruo <wqu@suse.com>
->>
->> But please also check the comment inlined below.
->>> ---
->>> =C2=A0 volumes.c | 4 ++--
->>> =C2=A0 1 file changed, 2 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/volumes.c b/volumes.c
->>> index 79d1d6a07fb7..8c8b17e814b8 100644
->>> --- a/volumes.c
->>> +++ b/volumes.c
->>> @@ -1109,7 +1109,7 @@ again:
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 return ret;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cur =3D cur->n=
-ext;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (avail >=3D=
- min_free) {
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 l=
-ist_move_tail(&device->dev_list, &private_devs);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 l=
-ist_move(&device->dev_list, &private_devs);
->>
->> This is OK since current btrfs-progs chunk allocator doesn't follow th=
-e
->> kernel behavior by sorting devices with its unallocated space.
->> So it's completely devid based.
->>
->> But please keep in mind that, if we're going to unify the chunk
->> allocator behavior of kernel and btrfs-progs, the behavior will change=
-=2E
->>
->> As the initial temporary chunk is always allocated on devid 1, reducin=
-g
->> its unallocated space thus reducing its priority in chunk allocator, a=
-nd
->> making the devid sequence more unreliable.
->=20
-> =C2=A0Right. For the debug here, I have an experimental code which disa=
-bles
-> =C2=A0the unallocated space sort in the kernel. I don't have a strong r=
-eason
-> =C2=A0to disable the sort in the kernel so didn't send the patch.
-
-I'd say that unallocated sort is a hidden way to prevent starvation.
-
-The mostly common case is 3 disk RAID1. (1024M X 3)
-With the unallocated space sort, we can take full use of 1.5T.
-
-While without that, we can only use 1T, as all allocation will happen on
-the first (or last) 2 devices, not utilize the remaining disk at all.
-
-So that kernel part is very helpful to prevent starvation.
-
-Thanks,
-Qu
-
->=20
-> Thanks, Anand
->=20
->> Thanks,
->> Qu
->>
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 index++;
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 if (type & BTRFS_BLOCK_GROUP_DUP)
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 index++;
->>> @@ -1166,7 +1166,7 @@ again:
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* loop over t=
-his device again if we're doing a dup group */
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!(type & B=
-TRFS_BLOCK_GROUP_DUP) ||
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0 (index =3D=3D num_stripes - 1))
->>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 l=
-ist_move_tail(&device->dev_list, dev_list);
->>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 l=
-ist_move(&device->dev_list, dev_list);
->>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D=
- btrfs_alloc_dev_extent(trans, device, key.offset,
->>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 calc_size, &dev_offset);
->>>
->>
->=20
-
-
---BCv0Z4BmKR4PUCDmzAcvtOk9dMesWgXlK--
-
---DeVSpSYzAzRN2PwDFazjtqA59Kc5znkeq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0VrUYACgkQwj2R86El
-/qjBAQf+P4roPsy0uQhLzzoP9/6VlSnjhKPEgGieIsP9y2hVmmOgCbvOTg7FvrZl
-CGEjvy4xOXQbJ54r0zEcbXUS4c+xYz3Nuev5qlG/W/grM3SGsTcrYTxg8Z0+dBhy
-Aw6iUug3HXjSa5RBL9lnPr6d7amp3yyB7i+T5/6mtGDiS/4otiVPl76VKgFq6/w6
-66VJSO7iRO7l7ORrtdR89LAHBcmRZNAuKOz9m/Wy0pnV+i1o6EHeM6QdHw9SLCY9
-7OcdURtcelYpexVNtvgvPlZOn8nUzXsuFEdBCafD1I9WchMQFNOi0JQ3TB0x/Wm3
-8bKbd27Fr8JUMF/Jf3gYKdjotf7kTA==
-=rPdd
------END PGP SIGNATURE-----
-
---DeVSpSYzAzRN2PwDFazjtqA59Kc5znkeq--
+On 2019/06/28 12:56, Anand Jain wrote:=0A=
+> On 7/6/19 9:10 PM, Naohiro Aota wrote:=0A=
+>> When in HMZONED mode, make sure that device super blocks are located in=
+=0A=
+>> randomly writable zones of zoned block devices. That is, do not write su=
+per=0A=
+>> blocks in sequential write required zones of host-managed zoned block=0A=
+>> devices as update would not be possible.=0A=
+> =0A=
+>    By design all copies of SB must be updated at each transaction,=0A=
+>    as they are redundant copies they must match at the end of=0A=
+>    each transaction.=0A=
+> =0A=
+>    Instead of skipping the sb updates, why not alter number of=0A=
+>    copies at the time of mkfs.btrfs?=0A=
+> =0A=
+> Thanks, Anand=0A=
+=0A=
+That is exactly what the patched code does. It updates all the SB=0A=
+copies, but it just avoids writing a copy to sequential writing=0A=
+required zones. Mkfs.btrfs do the same. So, all the available SB=0A=
+copies always match after a transaction. At the SB location in a=0A=
+sequential write required zone, you will see zeroed region (in the=0A=
+next version of the patch series), but that is easy to ignore: it=0A=
+lacks even BTRFS_MAGIC.=0A=
+=0A=
+The number of SB copy available on HMZONED device will vary=0A=
+by its zone size and its zone layout.=0A=
+=0A=
+Thanks,=0A=
+=0A=
+> =0A=
+>> Signed-off-by: Damien Le Moal <damien.lemoal@wdc.com>=0A=
+>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>=0A=
+>> ---=0A=
+>>    fs/btrfs/disk-io.c     | 11 +++++++++++=0A=
+>>    fs/btrfs/disk-io.h     |  1 +=0A=
+>>    fs/btrfs/extent-tree.c |  4 ++++=0A=
+>>    fs/btrfs/scrub.c       |  2 ++=0A=
+>>    4 files changed, 18 insertions(+)=0A=
+>>=0A=
+>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c=0A=
+>> index 7c1404c76768..ddbb02906042 100644=0A=
+>> --- a/fs/btrfs/disk-io.c=0A=
+>> +++ b/fs/btrfs/disk-io.c=0A=
+>> @@ -3466,6 +3466,13 @@ struct buffer_head *btrfs_read_dev_super(struct b=
+lock_device *bdev)=0A=
+>>    	return latest;=0A=
+>>    }=0A=
+>>    =0A=
+>> +int btrfs_check_super_location(struct btrfs_device *device, u64 pos)=0A=
+>> +{=0A=
+>> +	/* any address is good on a regular (zone_size =3D=3D 0) device */=0A=
+>> +	/* non-SEQUENTIAL WRITE REQUIRED zones are capable on a zoned device *=
+/=0A=
+>> +	return device->zone_size =3D=3D 0 || !btrfs_dev_is_sequential(device, =
+pos);=0A=
+>> +}=0A=
+>> +=0A=
+>>    /*=0A=
+>>     * Write superblock @sb to the @device. Do not wait for completion, a=
+ll the=0A=
+>>     * buffer heads we write are pinned.=0A=
+>> @@ -3495,6 +3502,8 @@ static int write_dev_supers(struct btrfs_device *d=
+evice,=0A=
+>>    		if (bytenr + BTRFS_SUPER_INFO_SIZE >=3D=0A=
+>>    		    device->commit_total_bytes)=0A=
+>>    			break;=0A=
+>> +		if (!btrfs_check_super_location(device, bytenr))=0A=
+>> +			continue;=0A=
+>>    =0A=
+>>    		btrfs_set_super_bytenr(sb, bytenr);=0A=
+>>    =0A=
+>> @@ -3561,6 +3570,8 @@ static int wait_dev_supers(struct btrfs_device *de=
+vice, int max_mirrors)=0A=
+>>    		if (bytenr + BTRFS_SUPER_INFO_SIZE >=3D=0A=
+>>    		    device->commit_total_bytes)=0A=
+>>    			break;=0A=
+>> +		if (!btrfs_check_super_location(device, bytenr))=0A=
+>> +			continue;=0A=
+>>    =0A=
+>>    		bh =3D __find_get_block(device->bdev,=0A=
+>>    				      bytenr / BTRFS_BDEV_BLOCKSIZE,=0A=
+>> diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h=0A=
+>> index a0161aa1ea0b..70e97cd6fa76 100644=0A=
+>> --- a/fs/btrfs/disk-io.h=0A=
+>> +++ b/fs/btrfs/disk-io.h=0A=
+>> @@ -141,6 +141,7 @@ struct extent_map *btree_get_extent(struct btrfs_ino=
+de *inode,=0A=
+>>    		struct page *page, size_t pg_offset, u64 start, u64 len,=0A=
+>>    		int create);=0A=
+>>    int btrfs_get_num_tolerated_disk_barrier_failures(u64 flags);=0A=
+>> +int btrfs_check_super_location(struct btrfs_device *device, u64 pos);=
+=0A=
+>>    int __init btrfs_end_io_wq_init(void);=0A=
+>>    void __cold btrfs_end_io_wq_exit(void);=0A=
+>>    =0A=
+>> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c=0A=
+>> index 3d41d840fe5c..ae2c895d08c4 100644=0A=
+>> --- a/fs/btrfs/extent-tree.c=0A=
+>> +++ b/fs/btrfs/extent-tree.c=0A=
+>> @@ -267,6 +267,10 @@ static int exclude_super_stripes(struct btrfs_block=
+_group_cache *cache)=0A=
+>>    			return ret;=0A=
+>>    	}=0A=
+>>    =0A=
+>> +	/* we won't have super stripes in sequential zones */=0A=
+>> +	if (cache->alloc_type =3D=3D BTRFS_ALLOC_SEQ)=0A=
+>> +		return 0;=0A=
+>> +=0A=
+>>    	for (i =3D 0; i < BTRFS_SUPER_MIRROR_MAX; i++) {=0A=
+>>    		bytenr =3D btrfs_sb_offset(i);=0A=
+>>    		ret =3D btrfs_rmap_block(fs_info, cache->key.objectid,=0A=
+>> diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c=0A=
+>> index f7b29f9db5e2..36ad4fad7eaf 100644=0A=
+>> --- a/fs/btrfs/scrub.c=0A=
+>> +++ b/fs/btrfs/scrub.c=0A=
+>> @@ -3720,6 +3720,8 @@ static noinline_for_stack int scrub_supers(struct =
+scrub_ctx *sctx,=0A=
+>>    		if (bytenr + BTRFS_SUPER_INFO_SIZE >=0A=
+>>    		    scrub_dev->commit_total_bytes)=0A=
+>>    			break;=0A=
+>> +		if (!btrfs_check_super_location(scrub_dev, bytenr))=0A=
+>> +			continue;=0A=
+>>    =0A=
+>>    		ret =3D scrub_pages(sctx, bytenr, BTRFS_SUPER_INFO_SIZE, bytenr,=0A=
+>>    				  scrub_dev, BTRFS_EXTENT_FLAG_SUPER, gen, i,=0A=
+>>=0A=
+> =0A=
+> =0A=
+=0A=
