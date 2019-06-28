@@ -2,35 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF76593EA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2019 07:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7091F593F7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Jun 2019 08:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbfF1F7G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 28 Jun 2019 01:59:06 -0400
-Received: from mout.gmx.net ([212.227.15.19]:51131 "EHLO mout.gmx.net"
+        id S1726749AbfF1GCB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 28 Jun 2019 02:02:01 -0400
+Received: from mout.gmx.net ([212.227.15.15]:34739 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726572AbfF1F7G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 28 Jun 2019 01:59:06 -0400
+        id S1726682AbfF1GCB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 28 Jun 2019 02:02:01 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1561701529;
-        bh=n61k3Fy/VELxsF6Vga5C6E4qLmagMAHuXzYJFllqy5g=;
+        s=badeba3b8450; t=1561701708;
+        bh=t0mvSoRoHeS1MqDmpl9cVgoak4lLJRnoOveJkcHAbL0=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=EIoQkHaSN2R/4n/E9Vt1tytkAShVjGPRnN8VPszJeKsxX2LGUZqg4dr16py6Xevk2
-         PanJuVsE4DwxRUN0HfY3zppsXKUTETJE/MWmOENo1Z+GwIfRvmpiRILZenXlMb575M
-         GQw0yO3bZJ6rx5R5IVYh3ayZ8IlJt+XUEGhDqafE=
+        b=CGAMtgZHVvdv33K3aHMIEmwYFjfX6+LwIzOPisspdC3LvMCEKBXKbcMXW2b8XkjVN
+         tKE1OXp3eVoVPhDEKH1EoCA8K9MJKHmk8Y4otSNonlhc1G2umeBb75kq+YrQKMz17l
+         OzzfZVFDOwftzH75SYyi5hTrJNJYdyV8sD806FBU=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx001
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0MC4R6-1hpVLk22D2-008tHz; Fri, 28
- Jun 2019 07:58:49 +0200
-Subject: Re: [PATCH 1/2] btrfs: inode: Don't compress if NODATASUM or
- NODATACOW set
-To:     Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20180515073622.18732-1-wqu@suse.com>
- <20180515073622.18732-2-wqu@suse.com>
- <95e8171b-6d08-e989-a835-637ccf2efe76@gmx.com>
- <20190627145849.GA20977@twin.jikos.cz>
- <fa804a25-b0a8-ad1d-760a-bf543418970a@oracle.com>
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx003
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0MUILK-1i7j0D1gBO-00Qyd0; Fri, 28
+ Jun 2019 08:01:48 +0200
+Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <20190628022611.2844-1-anand.jain@oracle.com>
+ <0a250a9a-d710-4c7c-ca24-0e4f635a4a99@gmx.com>
+ <5d93d408-2575-f564-32ce-e6c39b3b8d17@oracle.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -57,141 +53,300 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <4581937c-cfa1-91e2-7a83-7c3f40f02857@gmx.com>
-Date:   Fri, 28 Jun 2019 13:58:37 +0800
+Message-ID: <fb0af2df-d4d6-4e50-33a6-f76f2a39f4f9@gmx.com>
+Date:   Fri, 28 Jun 2019 14:01:42 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.1
 MIME-Version: 1.0
-In-Reply-To: <fa804a25-b0a8-ad1d-760a-bf543418970a@oracle.com>
+In-Reply-To: <5d93d408-2575-f564-32ce-e6c39b3b8d17@oracle.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="ghf8KsuXcH0cAtM4GCJivwDV5yFmSFwBd"
-X-Provags-ID: V03:K1:gd4adLCcJtGVgeG7clFHnwE1iRxePQCboBWLT6Y/WdjHwa7NyT9
- 0qy816dZOdxzQ1hcXtCFHNL+jqOuxoepj2vo9A96lC+Xn9xTVXNl+bXFV0G+j/yQ/8wA913
- A8yYlI/QsPV27gntZuvMwD1SzqfRYVdo1GseKkAFHcOGXruLpHa2p0i/IbjrmKah3jXj6xR
- SD2Uetgvfy7sjuiPzmuVA==
+ boundary="DeVSpSYzAzRN2PwDFazjtqA59Kc5znkeq"
+X-Provags-ID: V03:K1:WtlzxsVxQ2BrIIAZNXD7CscnesOBGwAvNC36HpSzvaJMdCe1tJD
+ 2P3t7KYaBhWffPev81OUq2So7OpYqmURqTi3NWOOLX1j0tFu31ecHW3IkLlbTpQQc5Hl8aY
+ aYugNRpeeZV0xy/cg+b+bvu0tu8ygB+334bjBtFsZc0IWzkcvzi88mxLMdJH9cCr4Prb96a
+ C8nBnLlRFwa2o9su/4wWQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9zdrFzqYRZ8=:GZvDmckGyhYX9/wCf3rnEE
- RHxyDPg0DcJounR7Rc+9WXQbUkTLLRfRR/FCsefw69E4NKAAt/MtdNq9vSX7FSGaG+KvyjTk+
- 2/ciHUOY8uz487JHry1ZXXhqnA1h4r+d8QXAQ4hI9YF5PpNS5Y2+NQgnHpIpy9Ucvrqfllqqp
- 049LEb0W2pkFx77z0etbf8g1pndKKG5qv80eOna24xOS6nzs5KMH3BKjhqw44E4SRQwUXoFCs
- I83qqjDxdC0CbEi4tn31am4IguzZpUtWEU4TAE4pUp9o3b5hE29TBWlY9QpN76mweCc5OWcL6
- 33dgzAsoZgpkULgIkZwzunErzbPNW7bWRG3l/lXVYaMaMPVAomV+A+pGbDkV8T3hKHUsmwi1n
- 8Er7747FJVbdk4JrYdrt9T9yRWDB8rVcu2e8ZwI6nBNhd4bYk1u04LZRsHBBs4Odweh5bWdP+
- GJvlPNB8u8Z8/PcTdf491OGuQXA+lVoubTxn4nWvazVCfB9ZVEUhtwr42Mey9MGMrkQgZ/9Rd
- ZsYz2EPB7DcLLGkdwu2H0O/ZWHa1JiTpg87dpx3KQYO438j7ibMb5EDrQegV5cRTHRSj+riKW
- sz87+jJLQgg7sosutJ5oMwopAtrT0rERmFOQ3w6p9Ik/6jk1Q6l+cnmhqbAaqdpEqK6LvAofn
- XoIAZVtSID52BDlKuEUWRH2CwUSsHZC9zm00oQNQ/OBmrOMuTpTK6l+AlyziNNiCpzi4ODfbR
- wIe3jaZnEF/u2es4iq1bsDQJaSQqUp76sboIOoN7dgP5lO8WDgkVLu5ME9pacAmUVZIvJWy5A
- OcrXi3K/vWlwi6HXWILI285L+fvXk3x/XJyLR9LutyVnzGBRsN9o2eFDNmeVs7Hi7gWqCyO+t
- TSiWcjdssK0YIDxl1+NOw5bIMn+5P+iQYTt8AQba4+JKZSp4FYD9DOhTogDPogaFEZW1rv0HY
- qBwZTVTRJ10N6Wqb3tm2vN8fjN9Agn/vyFI7fbZQci7eBCZNATgw059JhoClEUq4MIP8tXEOA
- buvG/xXoxm8xSrnyFH4h1eG8Gr02kmMVqB0DhNhFkzAfHc5kz3Q6IHWSV+PSASalW62e0DPKG
- HO52ZYYYwZn8p8=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:/NgF2j7Wd2s=:mSU2xfgXlpvzHyCp5LhRM1
+ sTNz2b3oNZYu4z23O+oUTOFXzWCTrWq6DSvHfLcINPVENhsG312AMv0Q5QgIOtwFalGY2YOA+
+ NR2YOU71bzvQ1ISuXlGjwW2GueedUu0vTMrmDQtUlSSqZPwB4Ugvd2nCol5A9EcR+2R+gCVvC
+ hZ0DINEBtneZn7cyRsyxS8lG8AxvhHMzWvIk/xezIVTx4np4KjF+OKJarrDPQYrsaV3hrBfdF
+ kSZ/acDXTvZQQ+jzqFb0ga9qZW+OQ0PPBW4EBjsftdtBYZE8nxOn7GRN3uTLy4X1GvC5zFQie
+ gigRJ4z83mo4wUMCq+jPzpEyXV8/acHQs1jbdqqaqQ3XirLh5WVTwFz8SLLRareQjgDFKbsBc
+ 5V9lhj2Bwb0FLatb766WKNf+NdY4IK/lARqtCc7dJjeqMLNNIVMDuLbrXKV1v+43enCmht6X+
+ 2fYR3K0hV6jpI01QIGO6qWmXQlJFDOglvRIIh8doAkXpEKIxYaM4vkg7svZ/PDFbyMUVdCXLB
+ GevR4mBWlMOQ8/WeFcCVjpA9Hzu6fOJASywrghewayAtwAqQwPJ1/URAFW0efkF8G9IyEr2vZ
+ vFnG6uD6fNN1sn/czvfZhKs7XEMVsVnAEGdPVpQwXd35pmmcyVSKnrI7SrzX3Fo/HhBcK9Yc/
+ OtPWIq01yAylElO9zRTStIm4vLnBhqZh43AD3f6bDNIOLmwy0FyOayjlci4bJWh6HXtTG0Yf0
+ 4H5MqKHLToz1gAaOu1nSC+JQuLCpusXqQrAA1BnYTWDfZ6AU/ZUcMdqvxrXKBrXKPJj3C6rui
+ LxyH4n4ULqg2PLVzB6dNB1V33UL4RA7OHGGiH9XdvZiwNt+Hnm8MTWFUJ97pCVP+/DHKVcMEh
+ CwNpeC168LPdXb5hoyjFNKF6Xuen4SZ1J23v7FeaJHaPmoa/gw8FbQOB3j+eM/HkNAyQ/Styn
+ 60BN9GO8Z0i+zbYKN7ZjsnfFCLdK2/n0MOINhW0O5unNJ/GUEIjbdBg/fIOXdxr0xsmq0Mz32
+ kooilBeIOCvfu0UTPPG1Sqjko+FiwZkWeZPNkCsPqvP8+aIuna3OHSKQwwF3yOwRJNCGN+qTS
+ YF9e8bcm/V69HU=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ghf8KsuXcH0cAtM4GCJivwDV5yFmSFwBd
-Content-Type: multipart/mixed; boundary="5gWHDM7oivLJK1K9GmFXq9t3tNeqzPhmV";
+--DeVSpSYzAzRN2PwDFazjtqA59Kc5znkeq
+Content-Type: multipart/mixed; boundary="BCv0Z4BmKR4PUCDmzAcvtOk9dMesWgXlK";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz,
- Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Message-ID: <4581937c-cfa1-91e2-7a83-7c3f40f02857@gmx.com>
-Subject: Re: [PATCH 1/2] btrfs: inode: Don't compress if NODATASUM or
- NODATACOW set
-References: <20180515073622.18732-1-wqu@suse.com>
- <20180515073622.18732-2-wqu@suse.com>
- <95e8171b-6d08-e989-a835-637ccf2efe76@gmx.com>
- <20190627145849.GA20977@twin.jikos.cz>
- <fa804a25-b0a8-ad1d-760a-bf543418970a@oracle.com>
-In-Reply-To: <fa804a25-b0a8-ad1d-760a-bf543418970a@oracle.com>
+To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Message-ID: <fb0af2df-d4d6-4e50-33a6-f76f2a39f4f9@gmx.com>
+Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
+References: <20190628022611.2844-1-anand.jain@oracle.com>
+ <0a250a9a-d710-4c7c-ca24-0e4f635a4a99@gmx.com>
+ <5d93d408-2575-f564-32ce-e6c39b3b8d17@oracle.com>
+In-Reply-To: <5d93d408-2575-f564-32ce-e6c39b3b8d17@oracle.com>
 
---5gWHDM7oivLJK1K9GmFXq9t3tNeqzPhmV
+--BCv0Z4BmKR4PUCDmzAcvtOk9dMesWgXlK
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/6/28 =E4=B8=8A=E5=8D=8810:47, Anand Jain wrote:
-> On 27/6/19 10:58 PM, David Sterba wrote:
->> On Tue, Jun 25, 2019 at 04:24:57PM +0800, Qu Wenruo wrote:
->>> Ping?
+On 2019/6/28 =E4=B8=8A=E5=8D=8811:28, Anand Jain wrote:
+> On 28/6/19 10:44 AM, Qu Wenruo wrote:
+>>
+>>
+>> On 2019/6/28 =E4=B8=8A=E5=8D=8810:26, Anand Jain wrote:
+>>> At the time mkfs.btrfs the device id and stripe index gets reversed a=
+s
+>>> shown in [1]. This patch helps to keep them in order at the time of
+>>> mkfs.btrfs. And makes it easier to debug.
 >>>
->>> This patch should fix the problem of compressed extent even when
->>> nodatasum is set.
+>>> Before:
+>>> Stripe 0 is on devid 2; Stipe 1 is on devid 1;
 >>>
->>> It has been one year but we still didn't get a conclusion on where
->>> force_compress should behave.
+>>> ./mkfs.btrfs -fq -draid1 -mraid1 /dev/sdb /dev/sdc && btrfs in
+>>> dump-tree -d /dev/sdb | grep -A 10000 "chunk tree" | grep -B 10000
+>>> "device tree" | grep -A 13=C2=A0 "FIRST_CHUNK_TREE CHUNK_ITEM"
+>>> =C2=A0=C2=A0=C2=A0=C2=A0item 2 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020=
+096) itemoff 15975
+>>> itemsize 112
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 8388608 owner 2 str=
+ipe_len 65536 type SYSTEM|RAID1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
+536 sector_size 4096
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
+0
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 0 devid 2 offset 1048576
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid d9fe51c4-6e79-446d-87ee-5be3184798cd
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 1 devid 1 offset 22020096
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid 16f626ca-1a54-469b-ac7e-25623af884ab
+>>> =C2=A0=C2=A0=C2=A0=C2=A0item 3 key (FIRST_CHUNK_TREE CHUNK_ITEM 30408=
+704) itemoff 15863
+>>> itemsize 112
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 268435456 owner 2 s=
+tripe_len 65536 type METADATA|RAID1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
+536 sector_size 4096
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
+0
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 0 devid 2 offset 9437184
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid d9fe51c4-6e79-446d-87ee-5be3184798cd
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 1 devid 1 offset 30408704
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid 16f626ca-1a54-469b-ac7e-25623af884ab
+>>> =C2=A0=C2=A0=C2=A0=C2=A0item 4 key (FIRST_CHUNK_TREE CHUNK_ITEM 29884=
+4160) itemoff 15751
+>>> itemsize 112
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 314572800 owner 2 s=
+tripe_len 65536 type DATA|RAID1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
+536 sector_size 4096
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
+0
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 0 devid 2 offset 277872640
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid d9fe51c4-6e79-446d-87ee-5be3184798cd
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 1 devid 1 offset 298844160
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid 16f626ca-1a54-469b-ac7e-25623af884ab
+>>>
+>>> After:
+>>> Stripe 0 is on devid 1; Stripe 1 is on devid 2
+>>>
+>>> ./mkfs.btrfs -fq -draid1 -mraid1 /dev/sdb /dev/sdc && btrfs in
+>>> dump-tree -d /dev/sdb | grep -A 10000 "chunk tree" | grep -B 10000
+>>> "device tree" | grep -A 13=C2=A0 "FIRST_CHUNK_TREE CHUNK_ITEM"
+>>> /dev/sdb: 8 bytes were erased at offset 0x00010040 (btrfs): 5f 42 48
+>>> 52 66 53 5f 4d
+>>> /dev/sdc: 8 bytes were erased at offset 0x00010040 (btrfs): 5f 42 48
+>>> 52 66 53 5f 4d
+>>> =C2=A0=C2=A0=C2=A0=C2=A0item 2 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020=
+096) itemoff 15975
+>>> itemsize 112
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 8388608 owner 2 str=
+ipe_len 65536 type SYSTEM|RAID1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
+536 sector_size 4096
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
+0
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 0 devid 1 offset 22020096
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid 6abc88fa-f42e-4f0c-9bc3-2225735e51d1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 1 devid 2 offset 1048576
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid 73746d27-13a6-4d58-ac6b-48c90c31d94d
+>>> =C2=A0=C2=A0=C2=A0=C2=A0item 3 key (FIRST_CHUNK_TREE CHUNK_ITEM 30408=
+704) itemoff 15863
+>>> itemsize 112
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 268435456 owner 2 s=
+tripe_len 65536 type METADATA|RAID1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
+536 sector_size 4096
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
+0
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 0 devid 1 offset 30408704
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid 6abc88fa-f42e-4f0c-9bc3-2225735e51d1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 1 devid 2 offset 9437184
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid 73746d27-13a6-4d58-ac6b-48c90c31d94d
+>>> =C2=A0=C2=A0=C2=A0=C2=A0item 4 key (FIRST_CHUNK_TREE CHUNK_ITEM 29884=
+4160) itemoff 15751
+>>> itemsize 112
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 length 314572800 owner 2 s=
+tripe_len 65536 type DATA|RAID1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_align 65536 io_width 65=
+536 sector_size 4096
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_stripes 2 sub_stripes =
+0
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 0 devid 1 offset 298844160
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid 6abc88fa-f42e-4f0c-9bc3-2225735e51d1
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 st=
+ripe 1 devid 2 offset 277872640
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 de=
+v_uuid 73746d27-13a6-4d58-ac6b-48c90c31d94d
+>>>
+>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 >>
->> Note that pings to patches sent year ago will get lost, I noticed only=
-
->> because you resent it and I remembered that we had some discussions,
->> without conclusions.
+>> Reviewed-by: Qu Wenruo <wqu@suse.com>
 >>
->>> But at least to me, NODATASUM is a strong exclusion for compress, no
->>> matter whatever option we use, we should NEVER compress data without
->>> datasum/datacow.
+>> But please also check the comment inlined below.
+>>> ---
+>>> =C2=A0 volumes.c | 4 ++--
+>>> =C2=A0 1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/volumes.c b/volumes.c
+>>> index 79d1d6a07fb7..8c8b17e814b8 100644
+>>> --- a/volumes.c
+>>> +++ b/volumes.c
+>>> @@ -1109,7 +1109,7 @@ again:
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 return ret;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cur =3D cur->n=
+ext;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (avail >=3D=
+ min_free) {
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 l=
+ist_move_tail(&device->dev_list, &private_devs);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 l=
+ist_move(&device->dev_list, &private_devs);
 >>
->> That's correct,=20
+>> This is OK since current btrfs-progs chunk allocator doesn't follow th=
+e
+>> kernel behavior by sorting devices with its unallocated space.
+>> So it's completely devid based.
+>>
+>> But please keep in mind that, if we're going to unify the chunk
+>> allocator behavior of kernel and btrfs-progs, the behavior will change=
+=2E
+>>
+>> As the initial temporary chunk is always allocated on devid 1, reducin=
+g
+>> its unallocated space thus reducing its priority in chunk allocator, a=
+nd
+>> making the devid sequence more unreliable.
 >=20
-> =C2=A0But I wonder what's the reason that datasum/datacow is prerequisi=
-te for
-> the compression ?
+> =C2=A0Right. For the debug here, I have an experimental code which disa=
+bles
+> =C2=A0the unallocated space sort in the kernel. I don't have a strong r=
+eason
+> =C2=A0to disable the sort in the kernel so didn't send the patch.
 
-It's easy to understand the hard requirement for data COW.
+I'd say that unallocated sort is a hidden way to prevent starvation.
 
-If you overwrite compressed extent, a powerloss before transaction
-commit could easily screw up the data.
+The mostly common case is 3 disk RAID1. (1024M X 3)
+With the unallocated space sort, we can take full use of 1.5T.
 
-Furthermore, what will happen if you're overwriting a 16K data extent
-while its original compressed size is only 4K, while the new data after
-compression is 8K?
+While without that, we can only use 1T, as all allocation will happen on
+the first (or last) 2 devices, not utilize the remaining disk at all.
 
-For checksum, I'd say it's not as a hard requirement as data cow, but
-still a very preferred one.
-
-Since compressed data corruption could cause more problem, e.g. one bit
-corruption can cause the whole extent to be corrupted, it's highly
-recommended to have checksum to protect them.
+So that kernel part is very helpful to prevent starvation.
 
 Thanks,
 Qu
+
 >=20
 > Thanks, Anand
 >=20
->> but the way you fix it is IMO not right. This was also
->> noticed by Nikolay, that there are 2 locations that call
->> inode_need_compress but with different semantics.
+>> Thanks,
+>> Qu
 >>
->> One is the decision if compression applies at all, and the second one
->> when that's certain it's compression, to do it or not based on the
->> status decision of eg. heuristics.
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 index++;
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 if (type & BTRFS_BLOCK_GROUP_DUP)
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 index++;
+>>> @@ -1166,7 +1166,7 @@ again:
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* loop over t=
+his device again if we're doing a dup group */
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!(type & B=
+TRFS_BLOCK_GROUP_DUP) ||
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 (index =3D=3D num_stripes - 1))
+>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 l=
+ist_move_tail(&device->dev_list, dev_list);
+>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 l=
+ist_move(&device->dev_list, dev_list);
+>>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D=
+ btrfs_alloc_dev_extent(trans, device, key.offset,
+>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 calc_size, &dev_offset);
+>>>
 >>
 >=20
 
 
---5gWHDM7oivLJK1K9GmFXq9t3tNeqzPhmV--
+--BCv0Z4BmKR4PUCDmzAcvtOk9dMesWgXlK--
 
---ghf8KsuXcH0cAtM4GCJivwDV5yFmSFwBd
+--DeVSpSYzAzRN2PwDFazjtqA59Kc5znkeq
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0VrI0ACgkQwj2R86El
-/qh8jgf/WHclQbzCfGWbaA1ToGK0hlCvIqCIaVi6Of9U/nFwMhS8UzhkWKATQMTG
-LOgYfQ/d1rvbmcdWTbEEkIUu1CKiHt0BZKMpCypvcGAehl2CZN7shmypxljhkJCC
-E+8edLnAc+DNCFGUs+qLPCRWFc6LHk/iZB6UU8FWNmHYYBr077QT+rxXyR3i1fWr
-KvgOx8gP04VZvXP6zT1FLTcCIhZ7JHFJQGOpzGYaVihX0O6jfdLPWhpLmR7W815j
-rt4wgTqcBBecmiM9Lt4/3lywSZxavNDdpiQasqquJ1NCrFe5rMC4b6CRuVd3GD11
-+OJxuN8efiJAENc3sNuEPHxu8p4JjA==
-=E692
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0VrUYACgkQwj2R86El
+/qjBAQf+P4roPsy0uQhLzzoP9/6VlSnjhKPEgGieIsP9y2hVmmOgCbvOTg7FvrZl
+CGEjvy4xOXQbJ54r0zEcbXUS4c+xYz3Nuev5qlG/W/grM3SGsTcrYTxg8Z0+dBhy
+Aw6iUug3HXjSa5RBL9lnPr6d7amp3yyB7i+T5/6mtGDiS/4otiVPl76VKgFq6/w6
+66VJSO7iRO7l7ORrtdR89LAHBcmRZNAuKOz9m/Wy0pnV+i1o6EHeM6QdHw9SLCY9
+7OcdURtcelYpexVNtvgvPlZOn8nUzXsuFEdBCafD1I9WchMQFNOi0JQ3TB0x/Wm3
+8bKbd27Fr8JUMF/Jf3gYKdjotf7kTA==
+=rPdd
 -----END PGP SIGNATURE-----
 
---ghf8KsuXcH0cAtM4GCJivwDV5yFmSFwBd--
+--DeVSpSYzAzRN2PwDFazjtqA59Kc5znkeq--
