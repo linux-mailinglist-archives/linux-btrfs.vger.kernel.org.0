@@ -2,59 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 042A75ACE0
-	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Jun 2019 20:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59675AD4A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 29 Jun 2019 22:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726913AbfF2SuG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 29 Jun 2019 14:50:06 -0400
-Received: from smtp1-g21.free.fr ([212.27.42.1]:14517 "EHLO smtp1-g21.free.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726901AbfF2SuG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 29 Jun 2019 14:50:06 -0400
-Received: from 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa (unknown [78.234.252.95])
-        by smtp1-g21.free.fr (Postfix) with ESMTP id A4665B0056B
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jun 2019 20:50:04 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa (Postfix) with ESMTP id 535009D2F
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jun 2019 18:50:04 +0000 (UTC)
-Received: from 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa ([127.0.0.1])
-        by localhost (mail.couderc.eu [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id wZuRi3Yw-VfZ for <linux-btrfs@vger.kernel.org>;
-        Sat, 29 Jun 2019 18:50:04 +0000 (UTC)
-Received: from [192.168.163.11] (unknown [192.168.163.11])
-        by 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa (Postfix) with ESMTPSA id 917C49D2C
-        for <linux-btrfs@vger.kernel.org>; Sat, 29 Jun 2019 18:50:03 +0000 (UTC)
-To:     linux-btrfs@vger.kernel.org
-From:   Pierre Couderc <pierre@couderc.eu>
-Subject: What are the maintenance recommendation ?
-Message-ID: <f9ceb3c8-b557-16d6-3f21-f2de34dfae9c@couderc.eu>
-Date:   Sat, 29 Jun 2019 20:50:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726944AbfF2UJG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 29 Jun 2019 16:09:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52216 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726906AbfF2UJF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 29 Jun 2019 16:09:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 20195AD70;
+        Sat, 29 Jun 2019 20:09:03 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id AA7D51E3F56; Sat, 29 Jun 2019 22:09:01 +0200 (CEST)
+Date:   Sat, 29 Jun 2019 22:09:01 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     " Darrick J. Wong " <darrick.wong@oracle.com>
+Cc:     adilger.kernel@dilger.ca, clm@fb.com, yuchao0@huawei.com,
+        hch@infradead.org, jaegeuk@kernel.org, shaggy@kernel.org,
+        ard.biesheuvel@linaro.org, tytso@mit.edu,
+        matthew.garrett@nebula.com, jk@ozlabs.org,
+        David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.com>,
+        josef@toxicpanda.com, viro@zeniv.linux.org.uk,
+        linux-mtd@lists.infradead.org,
+        jfs-discussion@lists.sourceforge.net,
+        linux-f2fs-devel@lists.sourceforge.net, ocfs2-devel@oss.oracle.com,
+        cluster-devel@redhat.com, linux-btrfs@vger.kernel.org,
+        linux-efi@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nilfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        reiserfs-devel@vger.kernel.org
+Subject: Re: [PATCH 5/5] vfs: only allow FSSETXATTR to set DAX flag on files
+ and dirs
+Message-ID: <20190629200901.GA18642@quack2.suse.cz>
+References: <156174682897.1557318.14418894077683701275.stgit@magnolia>
+ <156174687185.1557318.13703922197244050336.stgit@magnolia>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <156174687185.1557318.13703922197244050336.stgit@magnolia>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-1- Is there a summary of btrfs recommendations for maintenance ?
+On Fri 28-06-19 11:34:31,  Darrick J. Wong  wrote:
+> From: Darrick J. Wong <darrick.wong@oracle.com>
+> 
+> The DAX flag only applies to files and directories, so don't let it get
+> set for other types of files.
+> 
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
 
-I have read somewhere that  a monthly  btrfs scrub is recommended. Is 
-there somewhere a reference,  an "official" (or not...) guide of all  
-that  is recommended ?
+Looks good to me. You can add:
 
-I am lost in the wiki...
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-2- Is there a repair guide ? I see all these commands restore, scrub, 
-rescue. Is there a guide of what to do when a disk has some errors ? The 
-man does not say when use some command...
+								Honza
 
-Erros occurs fairly often on big disks...
-
-Thanks
-
-PC
-
+> ---
+>  fs/inode.c |    8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> 
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 670d5408d022..f08711b34341 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2259,6 +2259,14 @@ int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
+>  	    !S_ISREG(inode->i_mode) && !S_ISDIR(inode->i_mode))
+>  		return -EINVAL;
+>  
+> +	/*
+> +	 * It is only valid to set the DAX flag on regular files and
+> +	 * directories on filesystems.
+> +	 */
+> +	if ((fa->fsx_xflags & FS_XFLAG_DAX) &&
+> +	    !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
+> +		return -EINVAL;
+> +
+>  	/* Extent size hints of zero turn off the flags. */
+>  	if (fa->fsx_extsize == 0)
+>  		fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
