@@ -2,69 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58E825BA5A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2019 13:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A38E5BA65
+	for <lists+linux-btrfs@lfdr.de>; Mon,  1 Jul 2019 13:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728303AbfGALIE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jul 2019 07:08:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48400 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727645AbfGALIC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 1 Jul 2019 07:08:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 26AFEAC9A;
-        Mon,  1 Jul 2019 11:08:01 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 58A0BDA8A9; Mon,  1 Jul 2019 13:08:45 +0200 (CEST)
-Date:   Mon, 1 Jul 2019 13:08:45 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: Btrfs progs pre-release 5.2-rc1
-Message-ID: <20190701110845.GI20977@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Graham Cobb <g.btrfs@cobb.uk.net>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190628174032.3382-1-dsterba@suse.com>
- <5f8d8f28-7d43-e96f-6982-59a584f5f74b@cobb.uk.net>
+        id S1728280AbfGALLo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jul 2019 07:11:44 -0400
+Received: from smtp1-g21.free.fr ([212.27.42.1]:6215 "EHLO smtp1-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728111AbfGALLo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Jul 2019 07:11:44 -0400
+Received: from 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa (unknown [78.234.252.95])
+        by smtp1-g21.free.fr (Postfix) with ESMTP id 870D9B0056B;
+        Mon,  1 Jul 2019 13:11:41 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa (Postfix) with ESMTP id 08599AAFA;
+        Mon,  1 Jul 2019 11:11:41 +0000 (UTC)
+Received: from 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa ([IPv6:::1])
+        by localhost (mail.couderc.eu [IPv6:::1]) (amavisd-new, port 10024)
+        with ESMTP id axhm-OlKk3Gb; Mon,  1 Jul 2019 11:11:40 +0000 (UTC)
+Received: from [192.168.163.11] (unknown [192.168.163.11])
+        by 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa (Postfix) with ESMTPSA id D252BAAF7;
+        Mon,  1 Jul 2019 11:11:40 +0000 (UTC)
+Subject: Re: What are the maintenance recommendation ?
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+References: <f9ceb3c8-b557-16d6-3f21-f2de34dfae9c@couderc.eu>
+ <2798e32e-92cb-529e-e0bc-8e79a3a5ff69@gmx.com>
+From:   Pierre Couderc <pierre@couderc.eu>
+Message-ID: <eb1cf0e4-4e63-5e8d-4040-2f3e42cac774@couderc.eu>
+Date:   Mon, 1 Jul 2019 13:11:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f8d8f28-7d43-e96f-6982-59a584f5f74b@cobb.uk.net>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <2798e32e-92cb-529e-e0bc-8e79a3a5ff69@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 11:37:40PM +0100, Graham Cobb wrote:
-> On 28/06/2019 18:40, David Sterba wrote:
-> > Hi,
-> > 
-> > this is a pre-release of btrfs-progs, 5.2-rc1.
-> > 
-> > The proper release is scheduled to next Friday, +7 days (2019-07-05), but can
-> > be postponed if needed.
-> > 
-> > Scrub status has been reworked:
-> > 
-> >   UUID:             bf8720e0-606b-4065-8320-b48df2e8e669
-> >   Scrub started:    Fri Jun 14 12:00:00 2019
-> >   Status:           running
-> >   Duration:         0:14:11
-> >   Time left:        0:04:04
-> >   ETA:              Fri Jun 14 12:18:15 2019
-> >   Total to scrub:   182.55GiB
-> >   Bytes scrubbed:   141.80GiB
-> >   Rate:             170.63MiB/s
-> >   Error summary:    csum=7
-> >     Corrected:      0
-> >     Uncorrectable:  7
-> >     Unverified:     0
-> 
-> Is it possible to include my recently submitted patch to scrub to
-> correct handling of last_physical and fix skipping much of the disk on
-> scrub cancel/resume?
 
-Yes, I'll add it to the branch.
+On 6/30/19 9:20 AM, Qu Wenruo wrote:
+>
+> On 2019/6/30 上午2:50, Pierre Couderc wrote:
+>> 1- Is there a summary of btrfs recommendations for maintenance ?
+>>
+>> I have read somewhere that  a monthly  btrfs scrub is recommended. Is
+>> there somewhere a reference,  an "official" (or not...) guide of all
+>> that  is recommended ?
+> I'd say scrub can tell you how bad your disks are.
+> But at least, I'd recommend to do an offline check (btrfs check) and a
+> scrub after every unclean shutdown.
+OK, thank you !
+>
+> For the maintenance recommends, Zygo Blaxell should has a pretty good
+> ideas on this topic.
+Is there some link to these "ideas"...?
+>> I am lost in the wiki...
+>>
+>> 2- Is there a repair guide ? I see all these commands restore, scrub,
+>> rescue. Is there a guide of what to do when a disk has some errors ? The
+>> man does not say when use some command...
+> If you're doing scrub routinely, it should give your a more reliable
+> early warning than SMART.
+>
+> Normally for bad disk(s), you could replace them in advance. E.g when
+> the disk begins to have unrecoverable errors suddenly, it is a good time
+> to replace it.
+>
+> If it's too late that the fs can't be mounted any more, my recommends are:
+> 1. btrfs check --readonly and save the output
+>     Sent the output to the mail list for help. The mail list will provide
+>     much detailed solution to recover.
+>
+> 2. try to mount the fs RO and save the output
+>     Just like step 1.
+>
+> 3. Btrfs-restore if you have enough space
+>     The only generic and easy to use way to salvage data.
+>
+> The following methods are only for guys with some btrfs internal knowledge:
+> - mount with usebackroot option
+> - btrfs-find-root paired with btrfs check --chunk-root/--tree-root
+>    Both methods are mostly the same, trying to use old roots.
+>    Not reliable.
+> - experimental kernel patches to skip extent tree at mount time
+>    Kernel equivalent for btrfs-restore. Needs to recompile at least btrfs
+>    kernel module. Only works for extent tree related corruption.
+>
+Thank you, I note that
