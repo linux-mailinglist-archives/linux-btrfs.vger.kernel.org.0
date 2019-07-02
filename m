@@ -2,142 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 206575CDCA
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 12:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A580E5D0B4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 15:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbfGBKpp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Jul 2019 06:45:45 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:41634 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbfGBKpp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Jul 2019 06:45:45 -0400
-Received: by mail-yb1-f193.google.com with SMTP id y67so1127843yba.8;
-        Tue, 02 Jul 2019 03:45:44 -0700 (PDT)
+        id S1726779AbfGBNcZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Jul 2019 09:32:25 -0400
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:33387 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbfGBNcZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Jul 2019 09:32:25 -0400
+Received: by mail-ed1-f49.google.com with SMTP id i11so27352005edq.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Jul 2019 06:32:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
-        b=kdVby+/PzZu5i6Y9UcQYatHEHHsEPhAQY+mjVHF6xlggt8o+nszbdHXCHfEBil5H5H
-         UL+/28eYKfUAOv8AvNzRMQHWK/y4MABFSamQhRwNZH1hpEc5BUQCjqITvhev6DLWRzG3
-         uOgpinFcBt7pSePpbwiWspS3cbj7dBXMod+4Z94YngJ+nIPc3qdhbsYftXAC3oBGhakE
-         Bt+6iCjbrfqQEg0SzB1WdrzlyuHEb0JfhuYdop7KFU8fbo4QPvOCj4+Z+NVkWFYsg5RT
-         IRHHoit1jxeDZWaJHULPmpdSPTutxwczS9nSE3h7MYk2MPhM/kHniCv9ovLGXWy3LfTv
-         lmfQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MBHT4MGbSEIFpsUbpCD92Hmz/UqSMVRuliM7QIELXYk=;
+        b=j7HgL8LpKAbCesVFOuvJRm7HVWp0EN5SRzmlH7DPfY6vfyJqhGs4QPXnVQn+5NlxEm
+         EuFdO7AMKSa9wwbHPBDFEOAp8IQxtPKZb6pJi/cZlenwAPJmqB3eUp1nhWUWUO31DUTf
+         b7PMx3e185IWIDCIETpyr0qroI0FdqqB1LD3Otr0JhvYJER2QurZbMcvpfxqpIFeFQb+
+         n9mfac+JbI2nw1vh+a4y+qkpGhulOZHTaM8F8Nhgris9MNfM+JjlZxE5GlqPM1Xv8h+5
+         n0/3LpZmOGNpMP3rUnPqUk2GIz4wxdRSLgPxlkzDxcqSJx1+vSdpLSWwKIU0HY66bBj3
+         tVDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
-        b=kOQko23Rc0IeST7t53H2gjWohdZk/9tmrCy9j0Rme3aK0mIIU5LjQKBiS+ejJnCJLr
-         eXv3MY5B5zssNxt6ivw3b3ZBvK1ZL89h6U4Y+3AIy7lCyyPMsPb/G6izNdRCpd06xd6E
-         pLh/ruAZmfaEUtviP+xATCFMGfeg5ePmN+63xu/FldL9ljRQfqyluhxF2LBRFjCNOzmg
-         NH1VOREpBkgGMKCPlQ1BVPd3q1TOF4cF+KqV12p2Ladm8UDSa0rsfY1id/BS+Xr1YQRm
-         UvHTCY97g7hTBu2cu7OTDhNjAo9ZikyO8JHLd7mxjGRiEsZr/AWbSs/fESX06x1R833k
-         KGPw==
-X-Gm-Message-State: APjAAAV+qRNH++e6+G9m8S/OV+UlGtYWnV7DHAfM2HUbmIWLZUzkYUAg
-        YebvmfFBvHMYW+g+t12VT1xBFQeakkjTeDO9KTg=
-X-Google-Smtp-Source: APXvYqzMdrjXgWGhi/zPaZxEj+t8DhHrW56qP/YMhmryxOT2o02rqdhc3hQ5y4gjPvsnd8KwypjTK3Tgmn2Zfydvxjo=
-X-Received: by 2002:a25:8109:: with SMTP id o9mr16913558ybk.132.1562064343920;
- Tue, 02 Jul 2019 03:45:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MBHT4MGbSEIFpsUbpCD92Hmz/UqSMVRuliM7QIELXYk=;
+        b=TFiYubSmBHjgIdiF0W2F57wokATJnf1bRNlxqDSz0UD1wriv99V3BMO+983Jpmv7OB
+         FNHye5fWFoyxCEMKr2fm1DVJgLqa4GqfDrQThDMYo2s6WVcgpZZORj1FUJABB57QHxE0
+         k4WWlLjfZXQ68LXq0xAanE79cV7jftF6pPgvKx6FzJ6x1jKKTdO/+vq1iqwt/Wr6IrVJ
+         emVx9hmCK3A68kU+9UOg3x0mZr5DBlZgG8RppmaFbNnOna8p7+8Z2w+P+RuAL0ZzjnM8
+         zXsccvSOLtqhKn9kHG7h+dR3yd9XY1w6vRhd0k5Mj+YAF470t13VHhjs5ZRS68LIyvyr
+         J4ZA==
+X-Gm-Message-State: APjAAAXhWtuOmGFcWvH98b+E3OlcvK7z5G/exb324VlERrqspTDVqnAJ
+        k08yPgj2dr2txnV1gMzYUbY=
+X-Google-Smtp-Source: APXvYqwK6CGW9cP8mQemfnfFAfvDQ+1VeyzltS3p0ZSAjuLXN2osva2FXuk39gJMxiC58oE2JopXVA==
+X-Received: by 2002:aa7:d30b:: with SMTP id p11mr36622230edq.23.1562074343350;
+        Tue, 02 Jul 2019 06:32:23 -0700 (PDT)
+Received: from glet (anon-38-44.vpn.ipredator.se. [46.246.38.44])
+        by smtp.gmail.com with ESMTPSA id c53sm4723158ede.84.2019.07.02.06.32.21
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 02 Jul 2019 06:32:22 -0700 (PDT)
+Date:   Tue, 2 Jul 2019 15:32:19 +0200
+From:   Andrea Gelmini <andrea.gelmini@gmail.com>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: btrfs vs write caching firmware bugs (was: Re: BTRFS recovery
+ not possible)
+Message-ID: <20190702133219.GA24228@glet>
+References: <20190623204523.GC11831@hungrycats.org>
+ <f1cfe396-aac7-b670-b8de-f5d3b795acfe@gmx.com>
+ <CAJCQCtRrT5pUxOxfKWTC=zt9E=ZxRaiLeBxngqc6YVQEYp8n_g@mail.gmail.com>
 MIME-Version: 1.0
-References: <156174687561.1557469.7505651950825460767.stgit@magnolia>
- <156174690758.1557469.9258105121276292687.stgit@magnolia> <20190701154200.GK1404256@magnolia>
-In-Reply-To: <20190701154200.GK1404256@magnolia>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 2 Jul 2019 13:45:32 +0300
-Message-ID: <CAOQ4uxizFXgSa4KzkwxmoPAvpiENg=y0=fsxEC1PkCX5J1ybag@mail.gmail.com>
-Subject: Re: [PATCH v2 4/4] vfs: don't allow most setxattr to immutable files
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     matthew.garrett@nebula.com, Chao Yu <yuchao0@huawei.com>,
-        Theodore Tso <tytso@mit.edu>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Chris Mason <clm@fb.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, jk@ozlabs.org,
-        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
-        devel@lists.orangefs.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs <linux-xfs@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>, linux-nilfs@vger.kernel.org,
-        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Ext4 <linux-ext4@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJCQCtRrT5pUxOxfKWTC=zt9E=ZxRaiLeBxngqc6YVQEYp8n_g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 1, 2019 at 7:31 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
->
-> From: Darrick J. Wong <darrick.wong@oracle.com>
->
-> The chattr manpage has this to say about immutable files:
->
-> "A file with the 'i' attribute cannot be modified: it cannot be deleted
-> or renamed, no link can be created to this file, most of the file's
-> metadata can not be modified, and the file can not be opened in write
-> mode."
->
-> However, we don't actually check the immutable flag in the setattr code,
-> which means that we can update inode flags and project ids and extent
-> size hints on supposedly immutable files.  Therefore, reject setflags
-> and fssetxattr calls on an immutable file if the file is immutable and
-> will remain that way.
->
-> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-> ---
-> v2: use memcmp instead of open coding a bunch of checks
+On Mon, Jun 24, 2019 at 11:31:35AM -0600, Chris Murphy wrote:
+> Right. The questions I have: should Btrfs (or any file system) be able
+> to detect such devices and still protect the data? i.e. for the file
 
+I have more than 600 industrial machine all around the world.
+After a few fs corruption (ext4) I found the culprit in the SSD
+(choosed by the provider) cheating about flush/sync.
 
-Thanks,
+Well, forcing the data=journal at mount, fixed the problem. Same SSDs,
+since years, no more problem at all.
 
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+Personally I don't really care about performance. Resilience first.
+Than options to fix even if the hardware is in the middle of nowhere,
+without need to go on site.
 
+Thanks a lot for your work,
+Andrea
 
-> ---
->  fs/inode.c |   17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff --git a/fs/inode.c b/fs/inode.c
-> index cf07378e5731..31f694e405fe 100644
-> --- a/fs/inode.c
-> +++ b/fs/inode.c
-> @@ -2214,6 +2214,14 @@ int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
->             !capable(CAP_LINUX_IMMUTABLE))
->                 return -EPERM;
->
-> +       /*
-> +        * We aren't allowed to change any other flags if the immutable flag is
-> +        * already set and is not being unset.
-> +        */
-> +       if ((oldflags & FS_IMMUTABLE_FL) && (flags & FS_IMMUTABLE_FL) &&
-> +           oldflags != flags)
-> +               return -EPERM;
-> +
->         /*
->          * Now that we're done checking the new flags, flush all pending IO and
->          * dirty mappings before setting S_IMMUTABLE on an inode via
-> @@ -2284,6 +2292,15 @@ int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
->             !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
->                 return -EINVAL;
->
-> +       /*
-> +        * We aren't allowed to change any fields if the immutable flag is
-> +        * already set and is not being unset.
-> +        */
-> +       if ((old_fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
-> +           (fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
-> +           memcmp(fa, old_fa, offsetof(struct fsxattr, fsx_pad)))
-> +               return -EPERM;
-> +
->         /* Extent size hints of zero turn off the flags. */
->         if (fa->fsx_extsize == 0)
->                 fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
