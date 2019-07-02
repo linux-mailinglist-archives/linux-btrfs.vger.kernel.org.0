@@ -2,45 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C22085CD76
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 12:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB425CD77
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 12:24:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726358AbfGBKYK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 2 Jul 2019 06:24:10 -0400
-Received: from m9a0002g.houston.softwaregrp.com ([15.124.64.67]:40839 "EHLO
+        id S1726455AbfGBKYL convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 2 Jul 2019 06:24:11 -0400
+Received: from m9a0002g.houston.softwaregrp.com ([15.124.64.67]:38247 "EHLO
         m9a0002g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726291AbfGBKYK (ORCPT
+        by vger.kernel.org with ESMTP id S1726344AbfGBKYL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Jul 2019 06:24:10 -0400
+        Tue, 2 Jul 2019 06:24:11 -0400
 Received: FROM m9a0002g.houston.softwaregrp.com (15.121.0.191) BY m9a0002g.houston.softwaregrp.com WITH ESMTP
  FOR linux-btrfs@vger.kernel.org;
- Tue,  2 Jul 2019 10:24:03 +0000
-Received: from M9W0067.microfocus.com (2002:f79:be::f79:be) by
+ Tue,  2 Jul 2019 10:24:09 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
  M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Tue, 2 Jul 2019 10:07:29 +0000
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com (15.124.72.11) by
- M9W0067.microfocus.com (15.121.0.190) with Microsoft SMTP Server
+ 15.1.1591.10; Tue, 2 Jul 2019 10:07:32 +0000
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com (15.124.8.13) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Tue, 2 Jul 2019 10:07:29 +0000
+ 15.1.1591.10 via Frontend Transport; Tue, 2 Jul 2019 10:07:32 +0000
 Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
  BY5PR18MB3284.namprd18.prod.outlook.com (10.255.137.89) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2032.20; Tue, 2 Jul 2019 10:07:28 +0000
+ 15.20.2032.20; Tue, 2 Jul 2019 10:07:31 +0000
 Received: from BY5PR18MB3266.namprd18.prod.outlook.com
  ([fe80::45a9:4750:5868:9bbe]) by BY5PR18MB3266.namprd18.prod.outlook.com
  ([fe80::45a9:4750:5868:9bbe%5]) with mapi id 15.20.2032.018; Tue, 2 Jul 2019
- 10:07:28 +0000
+ 10:07:31 +0000
 From:   WenRuo Qu <wqu@suse.com>
 To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 CC:     WenRuo Qu <wqu@suse.com>
-Subject: [PATCH v2 05/14] btrfs-progs: image: Introduce framework for more
- dump versions
-Thread-Topic: [PATCH v2 05/14] btrfs-progs: image: Introduce framework for
- more dump versions
-Thread-Index: AQHVML30aFI+EDaGdkCJ/BGF15Gdcg==
-Date:   Tue, 2 Jul 2019 10:07:28 +0000
-Message-ID: <20190702100650.2746-6-wqu@suse.com>
+Subject: [PATCH v2 06/14] btrfs-progs: image: Introduce -d option to dump data
+Thread-Topic: [PATCH v2 06/14] btrfs-progs: image: Introduce -d option to dump
+ data
+Thread-Index: AQHVML32HvEstM/0o0KjFdzvImdrVw==
+Date:   Tue, 2 Jul 2019 10:07:31 +0000
+Message-ID: <20190702100650.2746-7-wqu@suse.com>
 References: <20190702100650.2746-1-wqu@suse.com>
 In-Reply-To: <20190702100650.2746-1-wqu@suse.com>
 Accept-Language: zh-CN, en-US
@@ -55,22 +54,22 @@ x-ms-exchange-messagesentrepresentingtype: 1
 x-mailer: git-send-email 2.22.0
 x-originating-ip: [240e:3a1:c40:c630::a40]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 972a0d3e-8f35-40d3-bb17-08d6fed51662
+x-ms-office365-filtering-correlation-id: 1243d9e1-c60e-4400-afba-08d6fed5187b
 x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR18MB3284;
 x-ms-traffictypediagnostic: BY5PR18MB3284:
-x-microsoft-antispam-prvs: <BY5PR18MB3284D8AEADB1560554BD1404D6F80@BY5PR18MB3284.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-microsoft-antispam-prvs: <BY5PR18MB32848B99FC71268633DBA5F8D6F80@BY5PR18MB3284.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
 x-forefront-prvs: 008663486A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(39860400002)(366004)(396003)(136003)(346002)(189003)(199004)(6116002)(476003)(36756003)(50226002)(68736007)(486006)(1076003)(6486002)(2501003)(2616005)(478600001)(8676002)(66476007)(66556008)(73956011)(66946007)(256004)(64756008)(66446008)(14444005)(2906002)(2351001)(102836004)(86362001)(53936002)(7736002)(6436002)(386003)(6506007)(186003)(71190400001)(5640700003)(6916009)(46003)(71200400001)(107886003)(5660300002)(305945005)(316002)(14454004)(6512007)(99286004)(8936002)(25786009)(4326008)(11346002)(76176011)(52116002)(446003)(81166006)(81156014);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3284;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(979002)(4636009)(376002)(39860400002)(366004)(396003)(136003)(346002)(189003)(199004)(6116002)(476003)(36756003)(50226002)(68736007)(486006)(1076003)(6486002)(2501003)(2616005)(478600001)(8676002)(66476007)(66556008)(73956011)(66946007)(256004)(64756008)(66446008)(14444005)(2906002)(2351001)(102836004)(86362001)(53936002)(7736002)(6436002)(386003)(6506007)(186003)(71190400001)(5640700003)(6916009)(46003)(71200400001)(107886003)(5660300002)(305945005)(316002)(14454004)(6512007)(99286004)(8936002)(25786009)(4326008)(11346002)(76176011)(52116002)(446003)(81166006)(81156014)(969003)(989001)(999001)(1009001)(1019001);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3284;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: suse.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: k9xgWyTI7O7sTwBM4a+sva7D6aO/X+ceOKAPhG0OBI7XQgM21tqnMqTK0PD3eUAeWtsAuIASb1BoVS6/2Fcfc7NhSBQw5ZRNRJWUVQbpoVc4aLnO7QGTLTK2HouxuF60k0rz7X00rEbCK9fzjX+yyHD2TbaKTM7mzErQjYavTqpKctqYhXSRy1cEt+XiFBdOm7L/SqLiNDMy32+q28FLbaYry9GveOnNY5967tR4wD2DxR75UjmW4SbwWRRMnnKP6dFgopizuRPifgDiSkLW2eWkIZQwYm50sAk4h+/oJlY7toGg/wFwzcLuhuXxP+ttYafp936ZTTzJSTvEdGG6v/ER8nlWLHKWFhStBZgQ4fO2x17vHQwsbdMxHj8v+oIm3QXcW4GRCaV3AAzNdm6xFha7YPFD6I0OX4NBLwaqGP8=
+x-microsoft-antispam-message-info: ciQpV1VaxQyN4kXHTgmfCSUzV3p+4Hr4zZGm0TpJsGhKGCeE/KKreKEFkC5yjUn1we5W0oSDEA8Q1iOe1iDijS5h4cZItWq2OfJIJcmfXjlk4ohBVMBjXnEK+Gc9AC9iC2y49/rKrAr8ocnIsMf9IEPT+Ob9duSPv8NqVdbr5Svi7QygTZFca5YLYWGopyBIaA3624/CHlMbBzxLWlHJRiWCFIpk7YwNhX62z0CGaYt5VFHScQkqAoMhA2XgdFW3f2/pyV62itZAdOxQhVoDJ+R8rREy9nvR2dF4f4aMwFXeZWQqfuHe/jGxNgjrpy2cn6Xvcrg3ITAz3SVBGbaCCnSkezlTrsgUsn4zFI3ydTjYfy4fQYClJYSWny8fLq8bA3tRsz9bzj7ehIGzQCVRiVWL0HE41JRoEOdo3JSLOTk=
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 972a0d3e-8f35-40d3-bb17-08d6fed51662
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 10:07:28.2918
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1243d9e1-c60e-4400-afba-08d6fed5187b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 10:07:31.8088
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
@@ -83,255 +82,197 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The original dump format only contains a @magic member to verify the
-format, this means if we want to introduce new on-disk format or change
-certain size limit, we can only introduce new magic as kind of version.
+This new data dump feature will dump the whole image, not long the
+existing tree blocks but also all its data extents(*).
 
-This patch will introduce the framework to allow multiple magic to
-co-exist for further functions.
+This feature will rely on the new dump format (_DUmP_v1), as it needs
+extra large extent size limit, and older btrfs-image dump can't handle
+such large item/cluster size.
 
-This patch will introduce the following members for each dump version.
+Since we're dumping all extents including data extents, for the restored
+image there is no need to use any extra super block flags to inform
+kernel.
+Kernel should just treat the restored image as any ordinary btrfs.
 
-- max_pending_size
-  The threshold size for an cluster. It's not a hard limit but a soft
-  one. One cluster can go larger than max_pending_size for one item, but
-  next item would go to next cluster.
-
-- magic_cpu
-  The magic number in CPU endian.
-
-- extra_sb_flags
-  If the super block of this restore needs extra super block flags like
-  BTRFS_SUPER_FLAG_METADUMP_V2.
-  For incoming data dump feature, we don't need any extra super block
-  flags.
-
-This change also implies that all image dumps will use the same magic
-for all clusters. No mixing is allowed, as we will use the first cluster
-to determine the dump version.
+*: The data extents will be dumped as is, that's to say, even for
+preallocated extent, its (meaningless) data will be read out and
+dumpped.
+This behavior will cause extra space usage for the image, but we can
+skip all the complex partially shared preallocated extent check.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- image/main.c     | 80 ++++++++++++++++++++++++++++++++++++++++--------
- image/metadump.h | 13 ++++++--
- 2 files changed, 78 insertions(+), 15 deletions(-)
+ image/main.c     | 53 +++++++++++++++++++++++++++++++++++++-----------
+ image/metadump.h |  2 +-
+ 2 files changed, 42 insertions(+), 13 deletions(-)
 
 diff --git a/image/main.c b/image/main.c
-index f155794cfc19..26c72e85f656 100644
+index 26c72e85f656..04d914d14a66 100644
 --- a/image/main.c
 +++ b/image/main.c
-@@ -41,6 +41,19 @@
- 
- #define MAX_WORKER_THREADS	(32)
- 
-+const struct dump_version dump_versions[NR_DUMP_VERSIONS] = {
+@@ -49,7 +49,15 @@ const struct dump_version dump_versions[NR_DUMP_VERSIONS] = {
+ 	{ .version = 0,
+ 	  .max_pending_size = SZ_256K,
+ 	  .magic_cpu = 0xbd5c25e27295668bULL,
+-	  .extra_sb_flags = 1 }
++	  .extra_sb_flags = 1 },
 +	/*
-+	 * The original format, which only supports tree blocks and
-+	 * free space cache dump.
++	 * The newer format, with much larger item size to contain
++	 * any data extent.
 +	 */
-+	{ .version = 0,
-+	  .max_pending_size = SZ_256K,
-+	  .magic_cpu = 0xbd5c25e27295668bULL,
-+	  .extra_sb_flags = 1 }
-+};
-+
-+const struct dump_version *current_version = &dump_versions[0];
-+
- struct async_work {
- 	struct list_head list;
- 	struct list_head ordered;
-@@ -395,7 +408,7 @@ static void meta_cluster_init(struct metadump_struct *md, u64 start)
- 	md->num_items = 0;
- 	md->num_ready = 0;
- 	header = &md->cluster.header;
--	header->magic = cpu_to_le64(HEADER_MAGIC);
-+	header->magic = cpu_to_le64(current_version->magic_cpu);
- 	header->bytenr = cpu_to_le64(start);
- 	header->nritems = cpu_to_le32(0);
- 	header->compress = md->compress_level > 0 ?
-@@ -707,7 +720,7 @@ static int add_extent(u64 start, u64 size, struct metadump_struct *md,
- {
- 	int ret;
- 	if (md->data != data ||
--	    md->pending_size + size > MAX_PENDING_SIZE ||
-+	    md->pending_size + size > current_version->max_pending_size ||
- 	    md->pending_start + md->pending_size != start) {
- 		ret = flush_pending(md, 0);
- 		if (ret)
-@@ -1036,7 +1049,8 @@ static void update_super_old(u8 *buffer)
- 	u32 sectorsize = btrfs_super_sectorsize(super);
- 	u64 flags = btrfs_super_flags(super);
++	{ .version = 1,
++	  .max_pending_size = SZ_256M,
++	  .magic_cpu = 0x31765f506d55445fULL, /* ascii _DUmP_v1, no null */
++	  .extra_sb_flags = 0 },
+ };
  
--	flags |= BTRFS_SUPER_FLAG_METADUMP;
-+	if (current_version->extra_sb_flags)
-+		flags |= BTRFS_SUPER_FLAG_METADUMP;
- 	btrfs_set_super_flags(super, flags);
+ const struct dump_version *current_version = &dump_versions[0];
+@@ -444,10 +452,14 @@ static void metadump_destroy(struct metadump_struct *md, int num_threads)
  
- 	key = (struct btrfs_disk_key *)(super->sys_chunk_array);
-@@ -1129,7 +1143,8 @@ static int update_super(struct mdrestore_struct *mdres, u8 *buffer)
- 	if (mdres->clear_space_cache)
- 		btrfs_set_super_cache_generation(super, 0);
- 
--	flags |= BTRFS_SUPER_FLAG_METADUMP_V2;
-+	if (current_version->extra_sb_flags)
-+		flags |= BTRFS_SUPER_FLAG_METADUMP_V2;
- 	btrfs_set_super_flags(super, flags);
- 	btrfs_set_super_sys_array_size(super, new_array_size);
- 	btrfs_set_super_num_devices(super, 1);
-@@ -1317,7 +1332,7 @@ static void *restore_worker(void *data)
- 	u8 *outbuf;
- 	int outfd;
- 	int ret;
--	int compress_size = MAX_PENDING_SIZE * 4;
-+	int compress_size = current_version->max_pending_size * 4;
- 
- 	outfd = fileno(mdres->out);
- 	buffer = malloc(compress_size);
-@@ -1466,6 +1481,42 @@ static void mdrestore_destroy(struct mdrestore_struct *mdres, int num_threads)
- 	pthread_mutex_destroy(&mdres->mutex);
- }
- 
-+static int detect_version(FILE *in)
-+{
-+	struct meta_cluster *cluster;
-+	u8 buf[BLOCK_SIZE];
-+	bool found = false;
-+	int i;
-+	int ret;
-+
-+	if (fseek(in, 0, SEEK_SET) < 0) {
-+		error("seek failed: %m");
-+		return -errno;
-+	}
-+	ret = fread(buf, BLOCK_SIZE, 1, in);
-+	if (!ret) {
-+		error("failed to read header");
-+		return -EIO;
-+	}
-+
-+	fseek(in, 0, SEEK_SET);
-+	cluster = (struct meta_cluster *)buf;
-+	for (i = 0; i < NR_DUMP_VERSIONS; i++) {
-+		if (le64_to_cpu(cluster->header.magic) ==
-+		    dump_versions[i].magic_cpu) {
-+			found = true;
-+			current_version = &dump_versions[i];
-+			break;
-+		}
-+	}
-+
-+	if (!found) {
-+		error("unrecognized header format");
-+		return -EINVAL;
-+	}
-+	return 0;
-+}
-+
- static int mdrestore_init(struct mdrestore_struct *mdres,
- 			  FILE *in, FILE *out, int old_restore,
- 			  int num_threads, int fixup_offset,
-@@ -1473,6 +1524,9 @@ static int mdrestore_init(struct mdrestore_struct *mdres,
+ static int metadump_init(struct metadump_struct *md, struct btrfs_root *root,
+ 			 FILE *out, int num_threads, int compress_level,
+-			 enum sanitize_mode sanitize_names)
++			 bool dump_data, enum sanitize_mode sanitize_names)
  {
  	int i, ret = 0;
  
-+	ret = detect_version(in);
-+	if (ret < 0)
-+		return ret;
- 	memset(mdres, 0, sizeof(*mdres));
- 	pthread_cond_init(&mdres->cond, NULL);
- 	pthread_mutex_init(&mdres->mutex, NULL);
-@@ -1520,9 +1574,9 @@ static int fill_mdres_info(struct mdrestore_struct *mdres,
- 		return 0;
++	/* We need larger item/cluster limit for data extents */
++	if (dump_data)
++		current_version = &dump_versions[1];
++
+ 	memset(md, 0, sizeof(*md));
+ 	INIT_LIST_HEAD(&md->list);
+ 	INIT_LIST_HEAD(&md->ordered);
+@@ -875,7 +887,7 @@ static int copy_space_cache(struct btrfs_root *root,
+ }
  
- 	if (mdres->compress_method == COMPRESS_ZLIB) {
--		size_t size = MAX_PENDING_SIZE * 2;
-+		size_t size = current_version->max_pending_size * 2;
+ static int copy_from_extent_tree(struct metadump_struct *metadump,
+-				 struct btrfs_path *path)
++				 struct btrfs_path *path, bool dump_data)
+ {
+ 	struct btrfs_root *extent_root;
+ 	struct extent_buffer *leaf;
+@@ -940,9 +952,15 @@ static int copy_from_extent_tree(struct metadump_struct *metadump,
+ 			ei = btrfs_item_ptr(leaf, path->slots[0],
+ 					    struct btrfs_extent_item);
+ 			if (btrfs_extent_flags(leaf, ei) &
+-			    BTRFS_EXTENT_FLAG_TREE_BLOCK) {
++			    BTRFS_EXTENT_FLAG_TREE_BLOCK ||
++			    btrfs_extent_flags(leaf, ei) &
++			    BTRFS_EXTENT_FLAG_DATA) {
++				bool is_data;
++
++				is_data = btrfs_extent_flags(leaf, ei) &
++					  BTRFS_EXTENT_FLAG_DATA;
+ 				ret = add_extent(bytenr, num_bytes, metadump,
+-						 0);
++						 is_data);
+ 				if (ret) {
+ 					error("unable to add block %llu: %d",
+ 						(unsigned long long)bytenr, ret);
+@@ -965,7 +983,7 @@ static int copy_from_extent_tree(struct metadump_struct *metadump,
  
--		buffer = malloc(MAX_PENDING_SIZE * 2);
-+		buffer = malloc(current_version->max_pending_size * 2);
- 		if (!buffer)
- 			return -ENOMEM;
- 		ret = uncompress(buffer, (unsigned long *)&size,
-@@ -1761,7 +1815,7 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres,
- 	u64 current_cluster = cluster_bytenr, bytenr;
- 	u64 item_bytenr;
- 	u32 bufsize, nritems, i;
--	u32 max_size = MAX_PENDING_SIZE * 2;
-+	u32 max_size = current_version->max_pending_size * 2;
- 	u8 *buffer, *tmp = NULL;
- 	int ret = 0;
- 
-@@ -1817,7 +1871,7 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres,
- 		ret = 0;
- 
- 		header = &cluster->header;
--		if (le64_to_cpu(header->magic) != HEADER_MAGIC ||
-+		if (le64_to_cpu(header->magic) != current_version->magic_cpu ||
- 		    le64_to_cpu(header->bytenr) != current_cluster) {
- 			error("bad header in metadump image");
- 			ret = -EIO;
-@@ -1920,7 +1974,7 @@ static int build_chunk_tree(struct mdrestore_struct *mdres,
- 	ret = 0;
- 
- 	header = &cluster->header;
--	if (le64_to_cpu(header->magic) != HEADER_MAGIC ||
-+	if (le64_to_cpu(header->magic) != current_version->magic_cpu ||
- 	    le64_to_cpu(header->bytenr) != 0) {
- 		error("bad header in metadump image");
- 		return -EIO;
-@@ -1961,10 +2015,10 @@ static int build_chunk_tree(struct mdrestore_struct *mdres,
+ static int create_metadump(const char *input, FILE *out, int num_threads,
+ 			   int compress_level, enum sanitize_mode sanitize,
+-			   int walk_trees)
++			   int walk_trees, bool dump_data)
+ {
+ 	struct btrfs_root *root;
+ 	struct btrfs_path path;
+@@ -980,7 +998,7 @@ static int create_metadump(const char *input, FILE *out, int num_threads,
  	}
  
- 	if (mdres->compress_method == COMPRESS_ZLIB) {
--		size_t size = MAX_PENDING_SIZE * 2;
-+		size_t size = current_version->max_pending_size * 2;
- 		u8 *tmp;
+ 	ret = metadump_init(&metadump, root, out, num_threads,
+-			    compress_level, sanitize);
++			    compress_level, dump_data, sanitize);
+ 	if (ret) {
+ 		error("failed to initialize metadump: %d", ret);
+ 		close_ctree(root);
+@@ -1012,7 +1030,7 @@ static int create_metadump(const char *input, FILE *out, int num_threads,
+ 			goto out;
+ 		}
+ 	} else {
+-		ret = copy_from_extent_tree(&metadump, &path);
++		ret = copy_from_extent_tree(&metadump, &path, dump_data);
+ 		if (ret) {
+ 			err = ret;
+ 			goto out;
+@@ -2637,6 +2655,7 @@ static void print_usage(int ret)
+ 	printf("\t-s      \tsanitize file names, use once to just use garbage, use twice if you want crc collisions\n");
+ 	printf("\t-w      \twalk all trees instead of using extent tree, do this if your extent tree is broken\n");
+ 	printf("\t-m	   \trestore for multiple devices\n");
++	printf("\t-d	   \talso dump data, conflicts with -w\n");
+ 	printf("\n");
+ 	printf("\tIn the dump mode, source is the btrfs device and target is the output file (use '-' for stdout).\n");
+ 	printf("\tIn the restore mode, source is the dumped image and target is the btrfs device/file.\n");
+@@ -2656,6 +2675,7 @@ int main(int argc, char *argv[])
+ 	int ret;
+ 	enum sanitize_mode sanitize = SANITIZE_NONE;
+ 	int dev_cnt = 0;
++	bool dump_data = false;
+ 	int usage_error = 0;
+ 	FILE *out;
  
--		tmp = malloc(MAX_PENDING_SIZE * 2);
-+		tmp = malloc(current_version->max_pending_size * 2);
- 		if (!tmp) {
- 			free(buffer);
- 			return -ENOMEM;
-@@ -2421,7 +2475,7 @@ static int restore_metadump(const char *input, FILE *out, int old_restore,
+@@ -2664,7 +2684,7 @@ int main(int argc, char *argv[])
+ 			{ "help", no_argument, NULL, GETOPT_VAL_HELP},
+ 			{ NULL, 0, NULL, 0 }
+ 		};
+-		int c = getopt_long(argc, argv, "rc:t:oswm", long_options, NULL);
++		int c = getopt_long(argc, argv, "rc:t:oswmd", long_options, NULL);
+ 		if (c < 0)
  			break;
+ 		switch (c) {
+@@ -2704,6 +2724,9 @@ int main(int argc, char *argv[])
+ 			create = 0;
+ 			multi_devices = 1;
+ 			break;
++		case 'd':
++			dump_data = true;
++			break;
+ 		case GETOPT_VAL_HELP:
+ 		default:
+ 			print_usage(c != GETOPT_VAL_HELP);
+@@ -2722,10 +2745,15 @@ int main(int argc, char *argv[])
+ 			"create and restore cannot be used at the same time");
+ 			usage_error++;
+ 		}
++		if (dump_data && walk_trees) {
++			error("-d conflicts with -f option");
++			usage_error++;
++		}
+ 	} else {
+-		if (walk_trees || sanitize != SANITIZE_NONE || compress_level) {
++		if (walk_trees || sanitize != SANITIZE_NONE || compress_level ||
++		    dump_data) {
+ 			error(
+-			"using -w, -s, -c options for restore makes no sense");
++		"using -w, -s, -c, -d options for restore makes no sense");
+ 			usage_error++;
+ 		}
+ 		if (multi_devices && dev_cnt < 2) {
+@@ -2778,7 +2806,8 @@ int main(int argc, char *argv[])
+ 		}
  
- 		header = &cluster->header;
--		if (le64_to_cpu(header->magic) != HEADER_MAGIC ||
-+		if (le64_to_cpu(header->magic) != current_version->magic_cpu ||
- 		    le64_to_cpu(header->bytenr) != bytenr) {
- 			error("bad header in metadump image");
- 			ret = -EIO;
+ 		ret = create_metadump(source, out, num_threads,
+-				      compress_level, sanitize, walk_trees);
++				      compress_level, sanitize, walk_trees,
++				      dump_data);
+ 	} else {
+ 		ret = restore_metadump(source, out, old_restore, num_threads,
+ 				       0, target, multi_devices);
 diff --git a/image/metadump.h b/image/metadump.h
-index f85c9bcfb813..941d4b827a24 100644
+index 941d4b827a24..a04f63a910d6 100644
 --- a/image/metadump.h
 +++ b/image/metadump.h
-@@ -22,8 +22,6 @@
- #include "kernel-lib/list.h"
- #include "ctree.h"
+@@ -38,7 +38,7 @@ struct dump_version {
+ 	unsigned int extra_sb_flags:1;
+ };
  
--#define HEADER_MAGIC		0xbd5c25e27295668bULL
--#define MAX_PENDING_SIZE	SZ_256K
- #define BLOCK_SIZE		SZ_1K
- #define BLOCK_MASK		(BLOCK_SIZE - 1)
+-#define NR_DUMP_VERSIONS	1
++#define NR_DUMP_VERSIONS	2
+ extern const struct dump_version dump_versions[NR_DUMP_VERSIONS];
+ const extern struct dump_version *current_version;
  
-@@ -33,6 +31,17 @@
- #define COMPRESS_NONE		0
- #define COMPRESS_ZLIB		1
- 
-+struct dump_version {
-+	u64 magic_cpu;
-+	int version;
-+	int max_pending_size;
-+	unsigned int extra_sb_flags:1;
-+};
-+
-+#define NR_DUMP_VERSIONS	1
-+extern const struct dump_version dump_versions[NR_DUMP_VERSIONS];
-+const extern struct dump_version *current_version;
-+
- struct meta_cluster_item {
- 	__le64 bytenr;
- 	__le32 size;
 -- 
 2.22.0
 
