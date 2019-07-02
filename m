@@ -2,115 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BE05CD86
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 12:26:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 206575CDCA
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 12:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbfGBK0U convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 2 Jul 2019 06:26:20 -0400
-Received: from m9a0002g.houston.softwaregrp.com ([15.124.64.67]:41627 "EHLO
-        m9a0002g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725867AbfGBK0U (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Jul 2019 06:26:20 -0400
-Received: FROM m9a0002g.houston.softwaregrp.com (15.121.0.190) BY m9a0002g.houston.softwaregrp.com WITH ESMTP
- FOR linux-btrfs@vger.kernel.org;
- Tue,  2 Jul 2019 10:25:44 +0000
-Received: from M9W0068.microfocus.com (2002:f79:bf::f79:bf) by
- M9W0067.microfocus.com (2002:f79:be::f79:be) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Tue, 2 Jul 2019 10:08:01 +0000
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com (15.124.72.10) by
- M9W0068.microfocus.com (15.121.0.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Tue, 2 Jul 2019 10:08:01 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3284.namprd18.prod.outlook.com (10.255.137.89) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2032.20; Tue, 2 Jul 2019 10:08:00 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::45a9:4750:5868:9bbe]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::45a9:4750:5868:9bbe%5]) with mapi id 15.20.2032.018; Tue, 2 Jul 2019
- 10:08:00 +0000
-From:   WenRuo Qu <wqu@suse.com>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     WenRuo Qu <wqu@suse.com>
-Subject: [PATCH v2 14/14] btrfs-progs: image: Fix error output to show correct
- return value
-Thread-Topic: [PATCH v2 14/14] btrfs-progs: image: Fix error output to show
- correct return value
-Thread-Index: AQHVML4HxW4IBy9vgEGUd2ecEFvxrw==
-Date:   Tue, 2 Jul 2019 10:08:00 +0000
-Message-ID: <20190702100650.2746-15-wqu@suse.com>
-References: <20190702100650.2746-1-wqu@suse.com>
-In-Reply-To: <20190702100650.2746-1-wqu@suse.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: HK2P15301CA0007.APCP153.PROD.OUTLOOK.COM
- (2603:1096:202:1::17) To BY5PR18MB3266.namprd18.prod.outlook.com
- (2603:10b6:a03:1a1::15)
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-mailer: git-send-email 2.22.0
-x-originating-ip: [240e:3a1:c40:c630::a40]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 858afc33-436b-4182-978d-08d6fed5296b
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR18MB3284;
-x-ms-traffictypediagnostic: BY5PR18MB3284:
-x-microsoft-antispam-prvs: <BY5PR18MB328431852E549F03E467A5BCD6F80@BY5PR18MB3284.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:323;
-x-forefront-prvs: 008663486A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(39860400002)(366004)(396003)(136003)(346002)(189003)(199004)(6116002)(476003)(36756003)(50226002)(68736007)(486006)(1076003)(6486002)(2501003)(2616005)(478600001)(8676002)(66476007)(66556008)(73956011)(66946007)(256004)(64756008)(66446008)(14444005)(2906002)(4744005)(2351001)(102836004)(86362001)(53936002)(7736002)(6436002)(386003)(6506007)(186003)(71190400001)(5640700003)(6916009)(46003)(71200400001)(107886003)(5660300002)(305945005)(316002)(14454004)(6512007)(99286004)(8936002)(25786009)(4326008)(11346002)(76176011)(52116002)(446003)(81166006)(81156014);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3284;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: X7rI6LNwlYPkcHFzrWb4kuo9a0vmOtmx82odWmf4L38kQaN9nLsuYI/+Iah7v3wuaX5iACd9xp1prlszqRK5WvUGUFV5Sw9wg6YmnSli44Njs+myddQH1RJ26w1+j/RYQiRTqslIn9lPsRWx8nhbBpks0bkPKKybe7GsXWguxKlBB6pV5Bm/OibXs2CRLDLsfYB9wcMmXUGfv0g6R+U2Jdxp6RcyzdZQPYYD2p9R/QYZUyVLu9P7P4CIscw1QdILSbe7UI6Z5GVt5mFeVo/0J5RjKkCIFSgcTF3HrPRCLGLypzLJIOT/zN7aAC2nIoHCM+udJBH1YlDJnC7yAGNz3xp+xTiC+ocjq40/uBDlbuRl6ZaBAVZPUGjzQ73kBIVvwh8tz/nXxxM2SfBuVgWb6pwBKiYKvtjmKYwbpAvZAJ0=
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8BIT
+        id S1726732AbfGBKpp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Jul 2019 06:45:45 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:41634 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725780AbfGBKpp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Jul 2019 06:45:45 -0400
+Received: by mail-yb1-f193.google.com with SMTP id y67so1127843yba.8;
+        Tue, 02 Jul 2019 03:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
+        b=kdVby+/PzZu5i6Y9UcQYatHEHHsEPhAQY+mjVHF6xlggt8o+nszbdHXCHfEBil5H5H
+         UL+/28eYKfUAOv8AvNzRMQHWK/y4MABFSamQhRwNZH1hpEc5BUQCjqITvhev6DLWRzG3
+         uOgpinFcBt7pSePpbwiWspS3cbj7dBXMod+4Z94YngJ+nIPc3qdhbsYftXAC3oBGhakE
+         Bt+6iCjbrfqQEg0SzB1WdrzlyuHEb0JfhuYdop7KFU8fbo4QPvOCj4+Z+NVkWFYsg5RT
+         IRHHoit1jxeDZWaJHULPmpdSPTutxwczS9nSE3h7MYk2MPhM/kHniCv9ovLGXWy3LfTv
+         lmfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vlidC+hQ/gD/8v9eleM4nXtfiap8zhCG0j5qbLCVw18=;
+        b=kOQko23Rc0IeST7t53H2gjWohdZk/9tmrCy9j0Rme3aK0mIIU5LjQKBiS+ejJnCJLr
+         eXv3MY5B5zssNxt6ivw3b3ZBvK1ZL89h6U4Y+3AIy7lCyyPMsPb/G6izNdRCpd06xd6E
+         pLh/ruAZmfaEUtviP+xATCFMGfeg5ePmN+63xu/FldL9ljRQfqyluhxF2LBRFjCNOzmg
+         NH1VOREpBkgGMKCPlQ1BVPd3q1TOF4cF+KqV12p2Ladm8UDSa0rsfY1id/BS+Xr1YQRm
+         UvHTCY97g7hTBu2cu7OTDhNjAo9ZikyO8JHLd7mxjGRiEsZr/AWbSs/fESX06x1R833k
+         KGPw==
+X-Gm-Message-State: APjAAAV+qRNH++e6+G9m8S/OV+UlGtYWnV7DHAfM2HUbmIWLZUzkYUAg
+        YebvmfFBvHMYW+g+t12VT1xBFQeakkjTeDO9KTg=
+X-Google-Smtp-Source: APXvYqzMdrjXgWGhi/zPaZxEj+t8DhHrW56qP/YMhmryxOT2o02rqdhc3hQ5y4gjPvsnd8KwypjTK3Tgmn2Zfydvxjo=
+X-Received: by 2002:a25:8109:: with SMTP id o9mr16913558ybk.132.1562064343920;
+ Tue, 02 Jul 2019 03:45:43 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 858afc33-436b-4182-978d-08d6fed5296b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 10:08:00.2206
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wqu@suse.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3284
-X-OriginatorOrg: suse.com
+References: <156174687561.1557469.7505651950825460767.stgit@magnolia>
+ <156174690758.1557469.9258105121276292687.stgit@magnolia> <20190701154200.GK1404256@magnolia>
+In-Reply-To: <20190701154200.GK1404256@magnolia>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Tue, 2 Jul 2019 13:45:32 +0300
+Message-ID: <CAOQ4uxizFXgSa4KzkwxmoPAvpiENg=y0=fsxEC1PkCX5J1ybag@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] vfs: don't allow most setxattr to immutable files
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     matthew.garrett@nebula.com, Chao Yu <yuchao0@huawei.com>,
+        Theodore Tso <tytso@mit.edu>,
+        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Chris Mason <clm@fb.com>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, jk@ozlabs.org,
+        reiserfs-devel@vger.kernel.org, linux-efi@vger.kernel.org,
+        devel@lists.orangefs.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-xfs <linux-xfs@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>, linux-nilfs@vger.kernel.org,
+        linux-mtd@lists.infradead.org, ocfs2-devel@oss.oracle.com,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Ext4 <linux-ext4@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We can easily get confusing error message like:
-  ERROR: restore failed: Success
+On Mon, Jul 1, 2019 at 7:31 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
+>
+> From: Darrick J. Wong <darrick.wong@oracle.com>
+>
+> The chattr manpage has this to say about immutable files:
+>
+> "A file with the 'i' attribute cannot be modified: it cannot be deleted
+> or renamed, no link can be created to this file, most of the file's
+> metadata can not be modified, and the file can not be opened in write
+> mode."
+>
+> However, we don't actually check the immutable flag in the setattr code,
+> which means that we can update inode flags and project ids and extent
+> size hints on supposedly immutable files.  Therefore, reject setflags
+> and fssetxattr calls on an immutable file if the file is immutable and
+> will remain that way.
+>
+> Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> ---
+> v2: use memcmp instead of open coding a bunch of checks
 
-This is caused by wrong "%m" usage, as we normally use ret to indicate
-error, without populating errno.
 
-This patch will fix it by output the return value directly as normally
-we have extra error message to show more meaning message than the return
-value.
+Thanks,
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- image/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
 
-diff --git a/image/main.c b/image/main.c
-index 0be3b45569ed..2bf3cfe395ec 100644
---- a/image/main.c
-+++ b/image/main.c
-@@ -3150,7 +3150,7 @@ int main(int argc, char *argv[])
- 				       0, target, multi_devices);
- 	}
- 	if (ret) {
--		error("%s failed: %m", (create) ? "create" : "restore");
-+		error("%s failed: %d", (create) ? "create" : "restore", ret);
- 		goto out;
- 	}
- 
--- 
-2.22.0
 
+> ---
+>  fs/inode.c |   17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+>
+> diff --git a/fs/inode.c b/fs/inode.c
+> index cf07378e5731..31f694e405fe 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2214,6 +2214,14 @@ int vfs_ioc_setflags_prepare(struct inode *inode, unsigned int oldflags,
+>             !capable(CAP_LINUX_IMMUTABLE))
+>                 return -EPERM;
+>
+> +       /*
+> +        * We aren't allowed to change any other flags if the immutable flag is
+> +        * already set and is not being unset.
+> +        */
+> +       if ((oldflags & FS_IMMUTABLE_FL) && (flags & FS_IMMUTABLE_FL) &&
+> +           oldflags != flags)
+> +               return -EPERM;
+> +
+>         /*
+>          * Now that we're done checking the new flags, flush all pending IO and
+>          * dirty mappings before setting S_IMMUTABLE on an inode via
+> @@ -2284,6 +2292,15 @@ int vfs_ioc_fssetxattr_check(struct inode *inode, const struct fsxattr *old_fa,
+>             !(S_ISREG(inode->i_mode) || S_ISDIR(inode->i_mode)))
+>                 return -EINVAL;
+>
+> +       /*
+> +        * We aren't allowed to change any fields if the immutable flag is
+> +        * already set and is not being unset.
+> +        */
+> +       if ((old_fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
+> +           (fa->fsx_xflags & FS_XFLAG_IMMUTABLE) &&
+> +           memcmp(fa, old_fa, offsetof(struct fsxattr, fsx_pad)))
+> +               return -EPERM;
+> +
+>         /* Extent size hints of zero turn off the flags. */
+>         if (fa->fsx_extsize == 0)
+>                 fa->fsx_xflags &= ~(FS_XFLAG_EXTSIZE | FS_XFLAG_EXTSZINHERIT);
