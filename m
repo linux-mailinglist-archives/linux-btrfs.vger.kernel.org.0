@@ -2,95 +2,258 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB21C5C8E4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 07:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E32915CB4A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 10:12:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725981AbfGBFjo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Jul 2019 01:39:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60984 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725775AbfGBFjo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 2 Jul 2019 01:39:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 97769ADEC;
-        Tue,  2 Jul 2019 05:39:42 +0000 (UTC)
-Subject: Re: [PATCH] fs: btrfs: extent_map: Change return type of
- unpin_extent_cache
-To:     Hariprasad Kelam <hariprasad.kelam@gmail.com>,
-        Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190702031043.GA24334@hari-Inspiron-1545>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <fa67e273-1f0a-15ae-c6df-98fc3060dcbe@suse.com>
-Date:   Tue, 2 Jul 2019 08:39:41 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        id S1728591AbfGBIJH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 2 Jul 2019 04:09:07 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:59720 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728210AbfGBIJH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Jul 2019 04:09:07 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x62890Jk062246
+        for <linux-btrfs@vger.kernel.org>; Tue, 2 Jul 2019 08:09:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ references : message-id : date : mime-version : in-reply-to : content-type
+ : content-transfer-encoding; s=corp-2018-07-02;
+ bh=JRIWFGHUit7hEdlB3aCv4Mpt1vIl9Cicg6eH0c3doTo=;
+ b=raq9utfdGKQ0MjpiuujlB4frNEt9ytFJdWO/obSqPJrQmGCGU1B5tQ5jtjMjkCWeMFoH
+ h6uY/eZD7WJ9TQwR5ypstEfgCCN5v3JDb+bHmYokvtuzPW2dcMbeQl2U9x2o6QAftgfb
+ 6UQ+11GWjdeF5AWvLxNNpNb7I0rsDF+0IktwCkHEpN1NC2x9aGysdmUCokl4q3DBr3DR
+ 2wsbMbcdryNRNMnsuIuGh80lKPjIEphmh2NrnAT5XqX6p00Ybkv3MbeGYfEKYIhq2bZT
+ 39haM/u175saVY/6k4vo5umFW4YpF6BQiE89ZxexGSlGVr6sNU/r+0juTG1mr/s2rpgZ hg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 2te61e1udx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Jul 2019 08:09:05 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6287T7J024594
+        for <linux-btrfs@vger.kernel.org>; Tue, 2 Jul 2019 08:09:05 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2tebbjm64u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Jul 2019 08:09:05 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x62894ZK027055
+        for <linux-btrfs@vger.kernel.org>; Tue, 2 Jul 2019 08:09:04 GMT
+Received: from [10.190.130.61] (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 02 Jul 2019 01:09:04 -0700
+Subject: Re: [PATCH v7 RESEND Rebased] btrfs-progs: dump-tree: add noscan
+ option
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+References: <20190626083017.1833-1-anand.jain@oracle.com>
+Message-ID: <93dbcda3-fe9a-035c-59fc-b39448d1c867@oracle.com>
+Date:   Tue, 2 Jul 2019 16:09:01 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20190702031043.GA24334@hari-Inspiron-1545>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20190626083017.1833-1-anand.jain@oracle.com>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9305 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1907020095
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9305 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1907020095
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Ping?
 
 
-On 2.07.19 г. 6:10 ч., Hariprasad Kelam wrote:
-> As unpin_extent_cache never fails and Caller does not expect return
-> value we can change return value from int to void.
+
+On 26/6/19 4:30 PM, Anand Jain wrote:
+> From: Anand Jain <Anand.Jain@oracle.com>
 > 
-> Issue identified with coccicheck
-> fs/btrfs/extent_map.c:284:5-8: Unneeded variable: "ret". Return "0" on
-> line 316
+> The cli 'btrfs inspect dump-tree <dev>' will scan for the partner devices
+> if any by default.
 > 
-> Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> So as of now you can not inspect each mirrored device independently.
+> 
+> This patch adds noscan option, which when used won't scan the system for
+> the partner devices, instead it just uses the devices provided in the
+> argument.
+> 
+> For example:
+>    btrfs inspect dump-tree --noscan <dev> [<dev>..]
+> 
+> This helps to debug degraded raid1 and raid10.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v6->v7: rebase on latest btrfs-progs::devel
+> v5->v6: rebase on latest btrfs-progs::devel
+> v4->v5: nit: use %m to print error string.
+> 	changelog update.
+> v3->v4: change the patch title.
+> 	collapse scan_args() to its only parent cmd_inspect_dump_tree()
+> 	(it was bit confusing).
+> 	update the change log.
+> 	update usage.
+> 	update man page.
+> v2->v3: make it scalable for more than two disks in noscan mode
+> v1->v2: rename --degraded to --noscan
+>   Documentation/btrfs-inspect-internal.asciidoc |  5 +-
+>   cmds-inspect-dump-tree.c                      | 53 ++++++++++++++-----
+>   2 files changed, 45 insertions(+), 13 deletions(-)
+> 
+> diff --git a/Documentation/btrfs-inspect-internal.asciidoc b/Documentation/btrfs-inspect-internal.asciidoc
+> index 210f18c30a40..c9962ab3b548 100644
+> --- a/Documentation/btrfs-inspect-internal.asciidoc
+> +++ b/Documentation/btrfs-inspect-internal.asciidoc
+> @@ -61,7 +61,7 @@ specify which mirror to print, valid values are 0, 1 and 2 and the superblock
+>   must be present on the device with a valid signature, can be used together with
+>   '--force'
+>   
+> -*dump-tree* [options] <device>::
+> +*dump-tree* [options] <device> [device...]::
+>   (replaces the standalone tool *btrfs-debug-tree*)
+>   +
+>   Dump tree structures from a given device in textual form, expand keys to human
+> @@ -95,6 +95,9 @@ intermixed in the output
+>   --bfs::::
+>   use breadth-first search to print trees. the nodes are printed before all
+>   leaves
+> +--device::::
+> +do not scan the system for other partner device(s), only use the device(s)
+> +provided in the argument
+>   -t <tree_id>::::
+>   print only the tree with the specified ID, where the ID can be numerical or
+>   common name in a flexible human readable form
+> diff --git a/cmds-inspect-dump-tree.c b/cmds-inspect-dump-tree.c
+> index 1588a0b0774b..8e13b4335a5d 100644
+> --- a/cmds-inspect-dump-tree.c
+> +++ b/cmds-inspect-dump-tree.c
+> @@ -21,6 +21,7 @@
+>   #include <unistd.h>
+>   #include <uuid/uuid.h>
+>   #include <getopt.h>
+> +#include <fcntl.h>
+>   
+>   #include "kerncompat.h"
+>   #include "radix-tree.h"
+> @@ -185,7 +186,7 @@ static u64 treeid_from_string(const char *str, const char **end)
+>   }
+>   
+>   static const char * const cmd_inspect_dump_tree_usage[] = {
+> -	"btrfs inspect-internal dump-tree [options] device",
+> +	"btrfs inspect-internal dump-tree [options] <device> [<device> ..]",
+>   	"Dump tree structures from a given device",
+>   	"Dump tree structures from a given device in textual form, expand keys to human",
+>   	"readable equivalents where possible.",
+> @@ -201,6 +202,7 @@ static const char * const cmd_inspect_dump_tree_usage[] = {
+>   	"                       can be specified multiple times",
+>   	"-t|--tree <tree_id>    print only tree with the given id (string or number)",
+>   	"--follow               use with -b, to show all children tree blocks of <block_num>",
+> +	"--noscan               do not scan for the partner device(s)",
+>   	NULL
+>   };
+>   
+> @@ -297,7 +299,7 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+>   	struct btrfs_key found_key;
+>   	struct cache_tree block_root;	/* for multiple --block parameters */
+>   	char uuidbuf[BTRFS_UUID_UNPARSED_SIZE];
+> -	int ret;
+> +	int ret = 0;
+>   	int slot;
+>   	int extent_only = 0;
+>   	int device_only = 0;
+> @@ -305,6 +307,7 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+>   	int roots_only = 0;
+>   	int root_backups = 0;
+>   	int traverse = BTRFS_PRINT_TREE_DEFAULT;
+> +	int dev_optind;
+>   	unsigned open_ctree_flags;
+>   	u64 block_bytenr;
+>   	struct btrfs_root *tree_root_scan;
+> @@ -323,8 +326,8 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+>   	optind = 0;
+>   	while (1) {
+>   		int c;
+> -		enum { GETOPT_VAL_FOLLOW = 256, GETOPT_VAL_DFS,
+> -		       GETOPT_VAL_BFS };
+> +		enum { GETOPT_VAL_FOLLOW = 256, GETOPT_VAL_DFS, GETOPT_VAL_BFS,
+> +		       GETOPT_VAL_NOSCAN};
+>   		static const struct option long_options[] = {
+>   			{ "extents", no_argument, NULL, 'e'},
+>   			{ "device", no_argument, NULL, 'd'},
+> @@ -336,6 +339,7 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+>   			{ "follow", no_argument, NULL, GETOPT_VAL_FOLLOW },
+>   			{ "bfs", no_argument, NULL, GETOPT_VAL_BFS },
+>   			{ "dfs", no_argument, NULL, GETOPT_VAL_DFS },
+> +			{ "noscan", no_argument, NULL, GETOPT_VAL_NOSCAN },
+>   			{ NULL, 0, NULL, 0 }
+>   		};
+>   
+> @@ -400,24 +404,49 @@ static int cmd_inspect_dump_tree(const struct cmd_struct *cmd,
+>   		case GETOPT_VAL_BFS:
+>   			traverse = BTRFS_PRINT_TREE_BFS;
+>   			break;
+> +		case GETOPT_VAL_NOSCAN:
+> +			open_ctree_flags |= OPEN_CTREE_NO_DEVICES;
+> +			break;
+>   		default:
+>   			usage_unknown_option(cmd, argv);
+>   		}
+>   	}
+>   
+> -	if (check_argc_exact(argc - optind, 1))
+> +	if (check_argc_min(argc - optind, 1))
+>   		return 1;
+>   
+> -	ret = check_arg_type(argv[optind]);
+> -	if (ret != BTRFS_ARG_BLKDEV && ret != BTRFS_ARG_REG) {
+> +	dev_optind = optind;
+> +	while (dev_optind < argc) {
+> +		int fd;
+> +		struct btrfs_fs_devices *fs_devices;
+> +		u64 num_devices;
+> +
+> +		ret = check_arg_type(argv[optind]);
+> +		if (ret != BTRFS_ARG_BLKDEV && ret != BTRFS_ARG_REG) {
+> +			if (ret < 0) {
+> +				errno = -ret;
+> +				error("invalid argument %s: %m", argv[dev_optind]);
+> +			} else {
+> +				error("not a block device or regular file: %s",
+> +				       argv[dev_optind]);
+> +			}
+> +		}
+> +		fd = open(argv[dev_optind], O_RDONLY);
+> +		if (fd < 0) {
+> +			error("cannot open %s: %m", argv[dev_optind]);
+> +			return -EINVAL;
+> +		}
+> +		ret = btrfs_scan_one_device(fd, argv[dev_optind], &fs_devices,
+> +					    &num_devices,
+> +					    BTRFS_SUPER_INFO_OFFSET,
+> +					    SBREAD_DEFAULT);
+> +		close(fd);
+>   		if (ret < 0) {
+>   			errno = -ret;
+> -			error("invalid argument %s: %m", argv[optind]);
+> -		} else {
+> -			error("not a block device or regular file: %s",
+> -			      argv[optind]);
+> +			error("device scan %s: %m", argv[dev_optind]);
+> +			return ret;
+>   		}
+> -		goto out;
+> +		dev_optind++;
+>   	}
+>   
+>   	printf("%s\n", PACKAGE_STRING);
+> 
 
