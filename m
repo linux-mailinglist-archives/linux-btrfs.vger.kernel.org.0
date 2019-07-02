@@ -2,116 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CFC75C795
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 05:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C3D75C799
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 05:13:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbfGBDKt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 1 Jul 2019 23:10:49 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:45172 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbfGBDKt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 1 Jul 2019 23:10:49 -0400
-Received: by mail-pf1-f193.google.com with SMTP id r1so7505286pfq.12;
-        Mon, 01 Jul 2019 20:10:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=qBzA8EczuD3348ecJI29hXjW3DrArL1vFtQRztYBPjs=;
-        b=fRvYez1lO4TaRoT+244gk1rO9gTLKr9mSpN6AiZq5ETNaEikk5g2cnuY4HId7XZcma
-         1qbyvb0RNTTopf91ve7MXTuxP4VpdH2Ba6VAmbf5Mgda82jljjtPegflkRcmOztkiS3G
-         bU5a88rUfiu+25qi9bhvsybzBImqiXGmmo+ZJHa1h2qZqp4s6/l/XV6z88kpkTVmnwqG
-         9bEhaUzua58UHSNhAaldimGHi5taAndkzgUYSBwdNVeBVXTcA3TEM9uzP3MK5wSnTS19
-         vsJVYzkB+rHhVtqAFpqLIkZUXufLwH/TOIozIQEpA2U/+4epYdPCvUPS+EzleJJfjuOq
-         d8Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=qBzA8EczuD3348ecJI29hXjW3DrArL1vFtQRztYBPjs=;
-        b=XopvEt9UwKob6DegJHqzCSYD8YFugsvqjWynWkOzDDe6oxr1NJmXHRp5G3eMeLPsiF
-         ttwF2PFfSC4kcjZ6gT1jabJsyGZOD/tVC3IWU2TAjNI3ADzElkhhNUzWWK+lFqlftYtD
-         bjn7GP0zaznLg/O52Gn/tPKMb/e9zAevnpB2xdGoWJ6ghE+cHC7lh1RCGiha4jR3N4eP
-         C7KWl4XTKtzCm4olayQX7VufOW0h98HL0FtsjlX3kJ+0zhgJCCod7k2817JY5kNtZ8TA
-         vU/00r+IPn7RmcZmXFKLh573tLeBsPqc+6abvyaXd3WNVas7541JaDOD4d0t0gE1vB1l
-         t2EQ==
-X-Gm-Message-State: APjAAAVqaAlzYyeGByDppubsjMSBlGh1zNCGU/Ijljzaboc0aHC9uOov
-        AMSFzKoKN3F1T7wa/dkX23c=
-X-Google-Smtp-Source: APXvYqxvioSgACsFQVT2hUwgNbvLXKb6Hdh7EcLnmFquo+d6vd7JMzZhXeZ53g4tiK23wwTPAlvYig==
-X-Received: by 2002:a63:224a:: with SMTP id t10mr28035908pgm.289.1562037048555;
-        Mon, 01 Jul 2019 20:10:48 -0700 (PDT)
-Received: from hari-Inspiron-1545 ([183.83.92.187])
-        by smtp.gmail.com with ESMTPSA id b15sm11965592pfi.141.2019.07.01.20.10.45
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 01 Jul 2019 20:10:47 -0700 (PDT)
-Date:   Tue, 2 Jul 2019 08:40:43 +0530
-From:   Hariprasad Kelam <hariprasad.kelam@gmail.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] fs: btrfs: extent_map: Change return type of
- unpin_extent_cache
-Message-ID: <20190702031043.GA24334@hari-Inspiron-1545>
+        id S1726846AbfGBDN0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 1 Jul 2019 23:13:26 -0400
+Received: from mail5.windriver.com ([192.103.53.11]:35618 "EHLO mail5.wrs.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726686AbfGBDN0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 1 Jul 2019 23:13:26 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id x623CKIM026551
+        (version=TLSv1 cipher=AES128-SHA bits=128 verify=FAIL);
+        Mon, 1 Jul 2019 20:12:41 -0700
+Received: from [128.224.162.188] (128.224.162.188) by ALA-HCA.corp.ad.wrs.com
+ (147.11.189.50) with Microsoft SMTP Server (TLS) id 14.3.439.0; Mon, 1 Jul
+ 2019 20:12:27 -0700
+From:   "Hongzhi, Song" <hongzhi.song@windriver.com>
+Subject: Bug Report: Btrfs can't allocate space for delete
+To:     <linux-btrfs@vger.kernel.org>, <josef@toxicpanda.com>
+CC:     <dsterba@suse.com>
+Message-ID: <fb2c6fcf-1f43-bfd7-ac6c-07cf2701a063@windriver.com>
+Date:   Tue, 2 Jul 2019 11:12:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [128.224.162.188]
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-As unpin_extent_cache never fails and Caller does not expect return
-value we can change return value from int to void.
+Hi friends,
 
-Issue identified with coccicheck
-fs/btrfs/extent_map.c:284:5-8: Unneeded variable: "ret". Return "0" on
-line 316
+*Description:*
 
-Signed-off-by: Hariprasad Kelam <hariprasad.kelam@gmail.com>
----
- fs/btrfs/extent_map.c | 5 +----
- fs/btrfs/extent_map.h | 2 +-
- 2 files changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 9558d79..2b0eaa1 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -278,10 +278,9 @@ static void try_merge_map(struct extent_map_tree *tree, struct extent_map *em)
-  * to the generation that actually added the file item to the inode so we know
-  * we need to sync this extent when we call fsync().
-  */
--int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
-+void unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
- 		       u64 gen)
- {
--	int ret = 0;
- 	struct extent_map *em;
- 	bool prealloc = false;
- 
-@@ -313,8 +312,6 @@ int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len,
- 	free_extent_map(em);
- out:
- 	write_unlock(&tree->lock);
--	return ret;
--
- }
- 
- void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em)
-diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index 473f039..9d752ce 100644
---- a/fs/btrfs/extent_map.h
-+++ b/fs/btrfs/extent_map.h
-@@ -96,7 +96,7 @@ struct extent_map *alloc_extent_map(void);
- void free_extent_map(struct extent_map *em);
- int __init extent_map_init(void);
- void __cold extent_map_exit(void);
--int unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len, u64 gen);
-+void unpin_extent_cache(struct extent_map_tree *tree, u64 start, u64 len, u64 gen);
- void clear_em_logging(struct extent_map_tree *tree, struct extent_map *em);
- struct extent_map *search_extent_mapping(struct extent_map_tree *tree,
- 					 u64 start, u64 len);
--- 
-2.7.4
+     One LTP testcase, fs_fill.c, fails on btrfs with kernel error when 
+unlink files on Btrfs device:
+
+     "BTRFS warning (device loop0): could not allocate space for a 
+delete; will truncate on mount".
+
+
+     I found the loop block device formatted with btrfs roughly rangs 
+from 460M to 560M will cause the error.
+
+     256M and 1G all pass.
+
+
+     The fs_fill.c source code:
+
+[https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/fs_fill/fs_fill.c]
+
+     The fs_fill.c calls unlink which triggers the error.
+
+[https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/testcases/kernel/fs/fs_fill/fs_fill.c#L55]
+
+[https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/lib/safe_macros.c#L358]
+
+
+*Error info:*
+
+     The issue maybe not reproduced everytime but four fifths chance.
+
+     fs_fill.c:53: INFO: Unlinking mntpoint/thread5/file0
+     safe_macros.c:360: BROK: fs_fill.c:55: 
+unlink(mntpoint/thread10/file0) failed: ENOSPC
+     safe_macros.c:360: BROK: fs_fill.c:55: 
+unlink(mntpoint/thread11/file0) failed: ENOSPC
+     [62477.378848] BTRFS warning (device loop0): could not allocate 
+space for a delete; will truncate on mount
+     [62477.378905] BTRFS warning (device loop0): could not allocate 
+space for a delete; will truncate on mount
+
+
+
+*Kernel:*
+
+     After v5.2-rc1, qemux86-64
+
+     # make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc
+     use qemu to bootup kernel
+
+
+*LTP:*
+
+     master branch: I tested on 20190625
+     Reproduce:
+
+     // build Ltp
+     # cd Ltp-source
+     # ./build.sh
+
+     // copy files to qemu
+     # cp runltp testcases/kernel/fs/fs_fill/fs_fill to qemu
+
+     // login to qemu:
+     // adjust block device size to 512M
+     # vi runltp
+     in function: create_block()
+         dd if=/dev/zero of=${TMP}/test.img bs=1024 count=262144
+         --->
+         dd if=/dev/zero of=${TMP}/test.img bs=1024 count=524288
+
+     // execute testcase
+     # runltp -f fs -s fs_fill
+
+
+*Analysis:*
+
+     One new kernel commit contained in v5.2-rc1 introduces the issue.
+
+     commit c8eaeac7b734347c3afba7008b7af62f37b9c140
+     Author: Josef Bacik <josef@toxicpanda.com>
+     Date:   Wed Apr 10 15:56:10 2019 -0400
+
+         btrfs: reserve delalloc metadata differently
+         ...
+
+
+Anyone's reply will be appreciated.
+
+--Hongzhi
+
+
 
