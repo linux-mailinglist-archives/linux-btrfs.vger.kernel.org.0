@@ -2,124 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6FA45CB33
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 10:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7E9F5CD81
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Jul 2019 12:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728671AbfGBIJi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 2 Jul 2019 04:09:38 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:54014 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728697AbfGBIJg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 2 Jul 2019 04:09:36 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6288irh162788
-        for <linux-btrfs@vger.kernel.org>; Tue, 2 Jul 2019 08:09:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- references : message-id : date : mime-version : in-reply-to : content-type
- : content-transfer-encoding; s=corp-2018-07-02;
- bh=5POajhMPl0qRevwXf0QmzJmvINtzQ8cr25mR/XkwaEI=;
- b=npQIMBjDjPGEbNEpl/lEntV6KaJcnaS38ozL+ylzbtSdz6R0zL/JRil285SEBR11y7iu
- naxqa4i7qwnXMKzTGI7O3SdtCXTKLrQNVYuRmLuKLFXY/e65K5BKPfgwZ42XlolSTEFX
- Kzk+owtZf+ANpUCX5CZf0IfM6GL9miXtaVpTqFE2ZTBTr0JDt8oX3wE8SQjOmg7ro2Nc
- dBnZMpb58ZhZzhj+NAg5/pEI1x7wb+4FuIDHBa7EE7UUQoFL6BD6nEgeu6MM36pYPRgi
- P/i08JL/a+7WMw69OX5284DoSd0e08PxLTtlIhd6xcHo4IpY/QPrgCV6y3Et0r18vUtv nw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2te5tbhv0y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Jul 2019 08:09:35 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6287UIe170653
-        for <linux-btrfs@vger.kernel.org>; Tue, 2 Jul 2019 08:09:34 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2tebqgc0pk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Jul 2019 08:09:34 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6289XWN012529
-        for <linux-btrfs@vger.kernel.org>; Tue, 2 Jul 2019 08:09:33 GMT
-Received: from [10.190.130.61] (/192.188.170.109)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jul 2019 01:09:33 -0700
-Subject: Re: [PATCH 0/3 RESEND Rebased] readmirror feature
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-References: <20190626083402.1895-1-anand.jain@oracle.com>
-Message-ID: <5fcf9c23-89b5-b167-1f80-a0f4ac107d0b@oracle.com>
-Date:   Tue, 2 Jul 2019 16:09:30 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <20190626083402.1895-1-anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S1727153AbfGBKZc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 2 Jul 2019 06:25:32 -0400
+Received: from m9a0002g.houston.softwaregrp.com ([15.124.64.67]:37576 "EHLO
+        m9a0002g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725991AbfGBKZb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 2 Jul 2019 06:25:31 -0400
+Received: FROM m9a0002g.houston.softwaregrp.com (15.121.0.190) BY m9a0002g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-btrfs@vger.kernel.org;
+ Tue,  2 Jul 2019 10:25:21 +0000
+Received: from M4W0334.microfocus.com (2002:f78:1192::f78:1192) by
+ M9W0067.microfocus.com (2002:f79:be::f79:be) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Tue, 2 Jul 2019 10:07:12 +0000
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com (15.124.8.12) by
+ M4W0334.microfocus.com (15.120.17.146) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Tue, 2 Jul 2019 10:07:11 +0000
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
+ BY5PR18MB3284.namprd18.prod.outlook.com (10.255.137.89) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2032.20; Tue, 2 Jul 2019 10:07:11 +0000
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::45a9:4750:5868:9bbe]) by BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::45a9:4750:5868:9bbe%5]) with mapi id 15.20.2032.018; Tue, 2 Jul 2019
+ 10:07:10 +0000
+From:   WenRuo Qu <wqu@suse.com>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+CC:     WenRuo Qu <wqu@suse.com>
+Subject: [PATCH v2 00/14] btrfs-progs: image: Enhance and bug fixes
+Thread-Topic: [PATCH v2 00/14] btrfs-progs: image: Enhance and bug fixes
+Thread-Index: AQHVML3p3lb4ujf/1UWhpeZS3xTe2w==
+Date:   Tue, 2 Jul 2019 10:07:10 +0000
+Message-ID: <20190702100650.2746-1-wqu@suse.com>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9305 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907020095
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9305 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907020095
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: HK2P15301CA0007.APCP153.PROD.OUTLOOK.COM
+ (2603:1096:202:1::17) To BY5PR18MB3266.namprd18.prod.outlook.com
+ (2603:10b6:a03:1a1::15)
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.22.0
+x-originating-ip: [240e:3a1:c40:c630::a40]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9cd56d86-d462-4ce4-3cd4-08d6fed50bf1
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR18MB3284;
+x-ms-traffictypediagnostic: BY5PR18MB3284:
+x-microsoft-antispam-prvs: <BY5PR18MB3284ABBDEA285AA5271A70B4D6F80@BY5PR18MB3284.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 008663486A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(39860400002)(366004)(396003)(136003)(346002)(189003)(199004)(54534003)(6116002)(476003)(36756003)(50226002)(68736007)(486006)(1076003)(6486002)(2501003)(2616005)(478600001)(8676002)(66476007)(66556008)(73956011)(66946007)(256004)(64756008)(66446008)(14444005)(2906002)(2351001)(102836004)(86362001)(53936002)(7736002)(6436002)(386003)(6506007)(186003)(71190400001)(5640700003)(6916009)(46003)(71200400001)(107886003)(5660300002)(305945005)(316002)(14454004)(6512007)(99286004)(8936002)(25786009)(4326008)(52116002)(81166006)(81156014);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3284;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: KMO/0kiEhUNVxEtJnmTzllPqElNUWSOUWp9a8cQhCX7o0rUFRZDDbbj/U+530FPavN7WDVFN0F275uqBSKi/BtaBjNuQK3TlTsm6fcofkHXCrvmklviQrNy6oI1HWlugF+24q5KRjJqDtqbjtttABJDHBir9yg+j46zHh8/l2wQNnPYXP8kqGYq7jzOpBOC6YQRaA1D9+kWUdL+9gj7OG7M56MawvCMzlRAVple4e0L3cTIbEGW6P6wl8KOWNpfT91JIyXauvJuPug0GrZ26mOC9TSRfXIfaRCDPy/7+iI6rDot7f29o1QujPySHjBbwJOLW5o+ecpuIyK+Load2CkUmuaCXwmL1Q/d3rh96wtnNF3Q229ePtJWwqpHlMIqLNENFwkCPjYate316QYsg4pbFF/J9zgO24AQcivlsIA8=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9cd56d86-d462-4ce4-3cd4-08d6fed50bf1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Jul 2019 10:07:10.8458
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: wqu@suse.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3284
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Ping?
+This patchset is based on v5.1.1 tag.
 
+With this update, the patchset has the following features:
+- various small fixes and enhancements for btrfs-image
+  * Fix an indent misalign
+  * Fix an access-beyond-boundary bug
+  * Fix a confusing error message due to unpopulated errno
+  * Output error message for chunk tree build error
+  * Use SZ_* to replace intermediate number
+  * Verify superblock before restore
 
-On 26/6/19 4:33 PM, Anand Jain wrote:
-> These patches are tested to be working fine.
-> 
-> Function call chain  __btrfs_map_block()->find_live_mirror() uses
-> thread pid to determine the %mirror_num when the mirror_num=0.
-> 
-> This patch introduces a framework so that we can add policies to determine
-> the %mirror_num. And adds the devid as the readmirror policy.
-> 
-> The property is stored as an extented attributes of root inode
-> (BTRFS_FS_TREE_OBJECTID).
-> User provided devid list is validated against the fs_devices::dev_list.
-> 
->   For example:
->     Usage:
->       btrfs property set <mnt> readmirror devid<n>[,<m>...]
->       btrfs property set <mnt> readmirror ""
-> 
->     mkfs.btrfs -fq -draid1 -mraid1 /dev/sd[b-d] && mount /dev/sdb /btrfs
->     btrfs prop set /btrfs readmirror devid1,2
->     btrfs prop get /btrfs readmirror
->      readmirror=devid1,2
->     getfattr -n btrfs.readmirror --absolute-names /btrfs
->      btrfs.readmirror="devid1,2"
->     btrfs prop set /btrfs readmirror ""
->     getfattr -n btrfs.readmirror --absolute-names /btrfs
->      /btrfs: btrfs.readmirror: No such attribute
->     btrfs prop get /btrfs readmirror
-> 
-> RFC->v1:
->    Drops pid as one of the readmirror policy choices and as usual remains
->    as default. And when the devid is reset the readmirror policy falls back
->    to pid.
->    Drops the mount -o readmirror idea, it can be added at a later point of
->    time.
->    Property now accepts more than 1 devid as readmirror device. As shown
->    in the example above.
-> 
-> Anand Jain (3):
->    btrfs: add inode pointer to prop_handler::validate()
->    btrfs: add readmirror property framework
->    btrfs: add readmirror devid property
-> 
->   fs/btrfs/props.c   | 120 +++++++++++++++++++++++++++++++++++++++++++--
->   fs/btrfs/props.h   |   4 +-
->   fs/btrfs/volumes.c |  25 +++++++++-
->   fs/btrfs/volumes.h |   8 +++
->   fs/btrfs/xattr.c   |   2 +-
->   5 files changed, 150 insertions(+), 9 deletions(-)
-> 
+- btrfs-image dump support 
+  This introduce a new option -d to dump data.
+  Due to item size limit, we have to enlarge the existing limit from
+  256K (enough for tree blocks, but not enough for free space cache) to
+  256M.
+  This change will cause incompatibility, thus we have to introduce a
+  new magic as version. While keeping all other on-disk format the same.
+
+- Reduce memory usage for both compressed and uncompressed images
+  Originally for compressed extents, we will use 4 * max_pending_size as
+  output buffer, which can be 1G for 256M newer limit.
+
+  Change it to use at most 512K for compressed extent output buf, and
+  also use 512K fixed buffer size for uncompressed extent.
+
+- btrfs-image restore optimization
+  This will speed up chunk item search during restore.
+
+Changelog:
+v2:
+- New small fixes:
+  * Fix a confusing error message due to unpopulated errno
+  * Output error message for chunk tree build error
+  
+- Fix a regression of previous version
+  Patch "btrfs-progs: image: Rework how we search chunk tree blocks"
+  deleted a "ret = 0" line which could cause false early exit.
+
+- Reduce memory usage for data dump
+
+Qu Wenruo (14):
+  btrfs-progs: image: Use SZ_* to replace intermediate size
+  btrfs-progs: image: Fix an indent misalign
+  btrfs-progs: image: Fix an access-beyond-boundary bug when there are
+    32 online CPUs
+  btrfs-progs: image: Verify the superblock before restore
+  btrfs-progs: image: Introduce framework for more dump versions
+  btrfs-progs: image: Introduce -d option to dump data
+  btrfs-progs: image: Allow restore to record system chunk ranges for
+    later usage
+  btrfs-progs: image: Introduce helper to determine if a tree block is
+    in the range of system chunks
+  btrfs-progs: image: Rework how we search chunk tree blocks
+  btrfs-progs: image: Reduce memory requirement for decompression
+  btrfs-progs: image: Don't waste memory when we're just extracting
+    super block
+  btrfs-progs: image: Reduce memory usage for chunk tree search
+  btrfs-progs: image: Output error message for chunk tree build error
+  btrfs-progs: image: Fix error output to show correct return value
+
+ disk-io.c        |   6 +-
+ disk-io.h        |   1 +
+ image/main.c     | 874 +++++++++++++++++++++++++++++++++++------------
+ image/metadump.h |  15 +-
+ 4 files changed, 666 insertions(+), 230 deletions(-)
+
+-- 
+2.22.0
 
