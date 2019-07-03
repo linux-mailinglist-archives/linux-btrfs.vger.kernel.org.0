@@ -2,202 +2,239 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 743855DD8B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2019 06:44:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EF385DDAF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2019 07:09:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725847AbfGCEo2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jul 2019 00:44:28 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:34258 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725828AbfGCEo2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 3 Jul 2019 00:44:28 -0400
-X-Greylist: delayed 425 seconds by postgrey-1.27 at vger.kernel.org; Wed, 03 Jul 2019 00:44:28 EDT
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id DD3973732C9; Wed,  3 Jul 2019 00:37:21 -0400 (EDT)
-Date:   Wed, 3 Jul 2019 00:37:21 -0400
-From:   Zygo Blaxell <zblaxell@furryterror.org>
-To:     Pierre Couderc <pierre@couderc.eu>
+        id S1726094AbfGCFJp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jul 2019 01:09:45 -0400
+Received: from mout.gmx.net ([212.227.15.18]:41023 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725927AbfGCFJp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Jul 2019 01:09:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1562130580;
+        bh=6E7g09QwMLIGpOMEUPHvXTo+pr4s2iVXIlQKPQTXWYQ=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=b6I7RLI/MjwgvMerlQc/aeJVSS43hv2dvIn889aBqmhsr0WWzMyQISYGp3pOlxAKg
+         EzH20N9FnsDm3StzshrYwbRRnWMAc26ZH/n0KN4XNHWqbcOppSsaKbVnVfjcENnzX7
+         dwmmJa+bNg2FnBJNTVByt4FS8uTkRVMo5fjpx9JU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx003
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0Lt1eU-1igeQz2e5a-012V3f; Wed, 03
+ Jul 2019 07:09:40 +0200
+Subject: Re: Spurious "ghost" "parent transid verify failed" messages on
+ 5.0.21 - with call traces
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: What are the maintenance recommendation ?
-Message-ID: <20190703043721.GJ11831@hungrycats.org>
-References: <f9ceb3c8-b557-16d6-3f21-f2de34dfae9c@couderc.eu>
+References: <20190312040024.GI9995@hungrycats.org>
+ <20190403144716.GA15312@hungrycats.org>
+ <20190701033925.GH11831@hungrycats.org>
+ <eb60e397-6e33-b73c-e845-a4498952601d@gmx.com>
+ <20190703043253.GI11831@hungrycats.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <02f9e8b8-0ff9-6dc1-712f-68afdc33d74a@gmx.com>
+Date:   Wed, 3 Jul 2019 13:09:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="bgQAstJ9X1Eg13Dy"
-Content-Disposition: inline
-In-Reply-To: <f9ceb3c8-b557-16d6-3f21-f2de34dfae9c@couderc.eu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190703043253.GI11831@hungrycats.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="prEipx6Dfdss9VcE38rCR2KitAWiudSNt"
+X-Provags-ID: V03:K1:+OflnFEdxaYipcnpFY7SU5DVzBaDWqgGCD77OkUY1rgkb3H1Cm1
+ XlimDWFtdg0iMH0eq1nuWwbhFtuEFcNl2nvEMn6JEGGFtbMusiwqFcDI4gRwPsMSEdk8wC3
+ Fpg9qzl1rCViggT2mFY5ad26t4kCsjm4jj8DsMVzZWQ9NRFxtmCoSI4h7GLR+f9A2109f8z
+ 6TzI1V1JRmpw9Sk6UlksQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1jt9XpuOveg=:5Qk0vXlwvWx9/eUQcxLxnI
+ kOO0C5Md7/4XpWvgnOz9Tk2sljug0ILjIgfbWJDcjyy2sVvCbza5yHvNHK/EhmzTR33q7JROR
+ oOP0NjcBOKfBJZ7+s8NJn9+gnT+vPRu6gyNYU0YaDJT2Y0ffMwbHHj9KenuCeojFpL59pwvFe
+ 8UlABG4fD5fx/zxSS5T+JthPsGvcLYAKNKqOZu9Y+6rCVzqizocR/eBHQ1doqDRuhbF9AbIq+
+ bwErFOXxuLY3ZuNpqHgv0hroVom3KlPV4tqhasygGWEMZKevU0lMPCZbMKr/15+O9mygFjczz
+ 9f+NpS64ToUCrs6syqmhcFjt0oM1RXW7bXh7g9O9XHvmeXa26K5YaCkK8qoeSoR5BNUHFmVrU
+ rWBYuhJLasgsmtzNs3i3ArwPERjpC/U9VIBK+8kiPengRN43dMHnlcYNS4e55dSQ2xSthT/Bt
+ 4iouysXOi1JHJzbu5qZ2u+bUjWKcuzEMyR93tWrQGFt9M0hr36saabkEjXZq5pBlnE1Zi3HvI
+ 6PSnuhjfMBfI+Ld3+coYU33skNH7qzEKKXzYn/P+WD7ZlPf7IWye9uFoQ89cOBVDqyI/6pfWQ
+ 18I4fldciOzJP9lsKHgp3ef7oPvWs75SFEZhtt+odnbCwJXBDJrQW5OelcLIbuKMP5bSMm3kt
+ pxXiBIA+jGfHAgjeRgICTyr9my4P02gbrapb+MKzyrICH5Ft5c1J72uRvwXtg6UPnJU4k9T9A
+ 32Tcf6+QTSPhQN4iQQlQpoYZbXxFsQxFFG5ro1btf7VMlehhBp0GDgYobFQwmOhsHvNfrWHcs
+ 9wkJCFgpAQ8o01tXTAeEKby/szyxgDGlufDZSNeyUjvt8hKWML6akfjk3q/wdC2xmCpMJJt3J
+ PnGDtH6tiw+yIk0Nwd49k/jFj3vjITdw214eJo13ovAA7tIGDKD2vMMZUeRYdcnN1/EYS7G3P
+ SvvWunRiWC/sAycFbexVj/2XL++NGSyDjpVr75OyKb1rPuTqOAMbYlHMYJSNqKZ1GehkYjx71
+ 9Q8w8uacjgp7PEkUggnipUM/SFnNcnbi/ircey22bKOyX0G2S0tZjRbbGPR2+J+APPgHX3puW
+ OZX6TwxAwEpxgc=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--prEipx6Dfdss9VcE38rCR2KitAWiudSNt
+Content-Type: multipart/mixed; boundary="Yad6e1jJblO54H14CD1HL37iDVsbQxwWL";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc: linux-btrfs@vger.kernel.org
+Message-ID: <02f9e8b8-0ff9-6dc1-712f-68afdc33d74a@gmx.com>
+Subject: Re: Spurious "ghost" "parent transid verify failed" messages on
+ 5.0.21 - with call traces
+References: <20190312040024.GI9995@hungrycats.org>
+ <20190403144716.GA15312@hungrycats.org>
+ <20190701033925.GH11831@hungrycats.org>
+ <eb60e397-6e33-b73c-e845-a4498952601d@gmx.com>
+ <20190703043253.GI11831@hungrycats.org>
+In-Reply-To: <20190703043253.GI11831@hungrycats.org>
 
---bgQAstJ9X1Eg13Dy
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+--Yad6e1jJblO54H14CD1HL37iDVsbQxwWL
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Jun 29, 2019 at 08:50:03PM +0200, Pierre Couderc wrote:
-> 1- Is there a summary of btrfs recommendations for maintenance ?
+
+
+On 2019/7/3 =E4=B8=8B=E5=8D=8812:32, Zygo Blaxell wrote:
+> On Mon, Jul 01, 2019 at 01:56:08PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2019/7/1 =E4=B8=8A=E5=8D=8811:39, Zygo Blaxell wrote:
+>>> On Wed, Apr 03, 2019 at 10:47:16AM -0400, Zygo Blaxell wrote:
+>>>> On Tue, Mar 12, 2019 at 12:00:25AM -0400, Zygo Blaxell wrote:
+>>>>> On 4.14.x and 4.20.14 kernels (probably all the ones in between too=
+,
+>>>>> but I haven't tested those), I get what I call "ghost parent transi=
+d
+>>>>> verify failed" errors.  Here's an unedited recent example from dmes=
+g:
+>>>>>
+>>>>> 	[16180.649285] BTRFS error (device dm-3): parent transid verify fa=
+iled on 1218181971968 wanted 9698 found 9744
+>>>>
+>>>> These happen much less often on 5.0.x, but they still happen from ti=
+me
+>>>> to time.
+>>>
+>>> I put this patch in 5.0.21:
+>>>
+>>> 	commit 5abbed1af5570f1317f31736e3862e8b7df1ca8b
+>>> 	Author: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+>>> 	Date:   Sat May 18 17:48:59 2019 -0400
+>>>
+>>> 	    btrfs: get a call trace when we hit ghost parent transid verify =
+failures
+>>>
+>>> 	diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+>>> 	index 6fe9197f6ee4..ed961d2915a1 100644
+>>> 	--- a/fs/btrfs/disk-io.c
+>>> 	+++ b/fs/btrfs/disk-io.c
+>>> 	@@ -356,6 +356,7 @@ static int verify_parent_transid(struct extent_i=
+o_tree *io_tree,
+>>> 			"parent transid verify failed on %llu wanted %llu found %llu",
+>>> 				eb->start,
+>>> 				parent_transid, btrfs_header_generation(eb));
+>>> 	+               WARN_ON(1);
+>>> 		ret =3D 1;
+>>> 	=20
+>>> 		/*
+>>>
+>>> and eventually (six weeks later!) got another reproduction of this bu=
+g
+>>> on 5.0.21:
+>>>
+>> [snip]
+>>>
+>>> which confirms the event comes from the LOGICAL_INO ioctl, at least.
+>>> I had suspected that before based on timing and event log correlation=
+s,
+>>> but now I have stack traces.
+>>>
+>>> It looks like insufficient locking, i.e. the eb got modified while
+>>> LOGICAL_INO was looking at it.
+>>
+>> For this case, a quick dirty fix would be try to joining a transaction=
+
+>> (if the fs is not RO) and hold the trans handler to block current
+>> transaction from being committed.
 >=20
-> I have read somewhere that=A0 a monthly=A0 btrfs scrub is recommended.=20
-
-1.  Scrub detects and (when using the DUP or RAID1/10/5/6 profiles)
-corrects errors introduced into the filesystem by failures in the
-underlying disks.  You can run scrub as much or as little as you want,
-but the longer you go between scrubs, the longer errors can accumulate
-undetected, and the greater the risk that you'll have uncorrected errors
-on multiple disks when one of your disks fails and needs to be replaced.
-In that event, you will lose data or even the entire filesystem.
-
-The ideal frequency for scrubs depends in part on how important your data
-is.  If it's very important that you detect storage failures immediately,
-you can run scrub once a day.  If the data is very unimportant--e.g. you
-have good backups, and you don't care about extended downtime to restore
-them--then you might not need to run scrub at all.
-
-I run alternating SMART long self-tests and btrfs scrubs every 15 days
-(i.e. SMART long self-tests every 30 days, btrfs scrub 15 days after
-every SMART long self-test).
-
-Note that after a power failure or unclean shutdown, you should run
-scrub as soon as possible after rebooting, regardless of the normal
-maintenance schedule.  This is especially important for RAID5/6 profiles
-to regenerate parity blocks that may have been damaged by the parity
-raid write hole issue.  A post-power-failure scrub can also detect some
-drive firmware bugs.
-
-Pay attention to the output of scrub, especially the per-device statistics
-(btrfs scrub status -d and btrfs dev stat).  Errors reported here will
-indicate which disks should be replaced in RAID arrays.
-
-2.  Watch the amount of "unallocated" space on the filesystem.  If the
-"unallocated" space (shown in 'btrfs fi usage') drops below 1GB, you are
-at risk of running out of metadata space.  If you run out of metadata
-space, btrfs becomes read-only and it can be difficult to recover.
-
-To free some unused data space (convert it from "data" to "unallocated"):
-
-	btrfs balance start -dlimit=3D5 /path/to/fs
-
-This usually doesn't need to be done more than once per day, but it
-depends on how busy your filesystem is.  If you have hundreds of GB of
-unallocated space then you won't need to do this at all.
-
-Never balance metadata (i.e. the -m option of btrfs balance) unless you
-are converting to a different RAID profile (e.g. -mconvert=3Draid1,soft).
-If there is sufficient metadata space allocated, then the filesystem
-can be filled with data without any problems.  Balancing metadata can
-reduce the amount of space allocated for metadata, then the filesystem
-will be at risk of going read-only if it fills up.
-
-Normally there will be some overallocation of metadata (roughly 3:2
-allocated:used ratio).  Leave it alone--if the filesystem allocated
-metadata space in the past, the filesystem may need it again in the
-future.
-
-Scrub and balancing are the main requirements.  Filesystems can operate
-with just those two maintenance actions for years (outlasting all of
-their original hardware), and recover from multiple disk failures (one
-at a time) along the way.
-
-> Is there
-> somewhere a reference,=A0 an "official" (or not...) guide of all=A0 that=
-=A0 is
-> recommended ?
-
-There probably should be...
-
-> I am lost in the wiki...
+> Do you mean, revert "bfc61c36260c Btrfs: do not start a transaction at
+> iterate_extent_inodes()"?  Or something else?
 >=20
-> 2- Is there a repair guide ? I see all these commands restore, scrub,
-> rescue. Is there a guide of what to do when a disk has some errors ? The =
-man
-> does not say when use some command...
+> I've had the spurious parent transid verify failures since at least 4.1=
+4,
+> years before that patch.
 
-A scrub can fix everything that btrfs kernel code can recover from, i.e.
-if a disk in a btrfs RAID array is 100% corrupted while online, scrub
-can restore all of the data, including superblocks, without interrupting
-application activity on the filesystem.  With RAID1/5/6/10 this includes
-all single-disk failures and non-malicious data corruption from disks
-(RAID6 does not have a corresponding 3-copy RAID1 profile for metadata
-yet, so RAID6 can't always survive 2 disk failures in practice).
+I mean even longer trans protection.
 
-Scrub is very effective at repairing data damage caused by disk failures
-in RAID arrays, and with DUP metadata on single-disk filesystem scrub can
-often recover from a few random UNC sectors.  If something happens to the
-filesystem that scrub can't repair (e.g. damage caused by accidentally
-overwriting the btrfs partition with another filesystem, host RAM failures
-writing corrupted data to disks, hard drive firmware write caching bugs),
-the other tools usually can't repair it either.
+E.g. start a trans just before calling iterate_inodes_from_logical(),
+and end it after iterate_inodes_from_logical() call.
 
-Always use DUP or RAID1 or RAID10 for metadata.  Do not use single, RAID0,
-RAID5, or RAID6--if there is a UNC sector error or data corruption in
-a metadata page, the filesystem will be broken, and data losses will be
-somewhere between "medium" and "severe".
-
-The other utilities like 'btrfs check --repair' are in an experimental
-state of development, and may make a damaged filesystem completely
-unreadable.  They should only be used as a last resort, with expert
-guidance, after all other data recovery options have been tried, if
-at all.  Often when a filesystem is damaged beyond the ability of scrub
-to recover, the only practical option is to mkfs and start over--but
-ask the mailing list first to be sure, doing so might help improve the
-tools so that this is no longer the case.
-
-Usually a damaged btrfs can still be mounted read-only and some data
-can be recovered.  Corrupted data blocks (with non-matching csums) are
-not allowed to be read through a mounted filesystem.  'btrfs restore'
-is required to read those.
-
-'btrfs restore' can copy data from a damaged btrfs filesystem that is
-not mounted.  It is able to work in some cases where mounting fails.
-When 'btrfs restore' copies data it does not verify csums.  This can be
-used to recover corrupted data that would not be allowed to read through
-a mounted filesystem.  On the other hand, if you want to avoid copying
-data with known corruption, you should mount the filesystem read-only
-and read it that way.
-
-Use 'btrfs replace' to replace failed disks in a RAID1/RAID5/RAID6/RAID10
-array.  It can reconstruct data from other mirror disks quickly by
-simply copying the mirrored data without changing any of the filesystem
-structure that references the data.  If the replacement disk is smaller
-than the disk it is meant to replace, then use 'btrfs dev add' followed by
-'btrfs dev remove', but this is much slower as the data has to be moved
-one extent at a time, and all references to the data must be updated
-across the array.
-
-There appear to be a few low-end hard drive firmwares in the field with
-severe write caching bugs.  The first sign that you have one of those is
-that btrfs gets an unrecoverable 'parent transid verify failure' event
-after a few power failures.  The only known fix for this is to turn off
-write caching on such drives (i.e. hdparm -W0), mkfs, and start over.
-If you think you have encountered one of these, please post to the
-mailing list with drive model and firmware revision.
-
-'btrfs rescue' is useful for fixing bugs caused by old mkfs tools or
-kernel versions.  It is not likely you will ever need it if you mkfs a
-new btrfs today (though there's always the possibility of new bugs in
-the future...).
-
+Thanks,
+Qu
 >=20
-> Erros occurs fairly often on big disks...
+>> This is definitely going to impact performance but at least should avo=
+id
+>> such transid mismatch call.
+>>
+>> In theory it should also affect any backref lookup not protected, like=
+
+>> subvolume aware defrag.
+>>
+>> Thanks,
+>> Qu
+>>
+>>>
+>>> As usual for the "ghost" parent transid verify failure, there's no
+>>> persistent failure, no error reported to applications, and error coun=
+ts
+>>> in 'btrfs dev stats' are not incremented.
+>>>
+>>
 >=20
-> Thanks
 >=20
-> PC
 >=20
 
---bgQAstJ9X1Eg13Dy
+
+--Yad6e1jJblO54H14CD1HL37iDVsbQxwWL--
+
+--prEipx6Dfdss9VcE38rCR2KitAWiudSNt
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXRwxAQAKCRCB+YsaVrMb
-nEgHAJ9XyTiI04C8Sf1ZSTCPNgVSrlLFRACgrWznf7OunCi9t0R4F5ezpKxv0Wk=
-=NADO
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0cOI8ACgkQwj2R86El
+/qh7qgf6Am+oReGCLRnApXpDmkoRxIK/hw/rGiNsxBKYbzx79+SzGquBJmK9udA0
+sToXEbZf+EB9DYrUP08jOfxuYGB8WXNR9Nepf/yqKE5pi0gt63OSGDqM52jBzNsp
+GEqyDv+c3r2C1SGy+orlHdvwy2qJgMQHcmMlLp+awEAuh+8qNDM2E1zXXvQy4X0k
+sAkiDb0pAyMY5mCwbm3bSsFfQrr2Zf2jP/5kTbjnkjt3CgACrfECZvO8rC6VfC1F
+hwmtmB0BooB9f+XAij4b0fuJzWWuNVvkI+VCRRz0blZyNDWsttHKfzdRRkWUZYXi
+5qlxM385zlAwTSsBQa54PefQGtfHFw==
+=Oda0
 -----END PGP SIGNATURE-----
 
---bgQAstJ9X1Eg13Dy--
+--prEipx6Dfdss9VcE38rCR2KitAWiudSNt--
