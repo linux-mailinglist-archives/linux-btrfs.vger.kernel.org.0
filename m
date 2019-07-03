@@ -2,103 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E477C5DD76
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2019 06:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C45585DD78
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Jul 2019 06:33:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725796AbfGCEQ7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 3 Jul 2019 00:16:59 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:52596 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbfGCEQ7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 3 Jul 2019 00:16:59 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x634EW2e132378;
-        Wed, 3 Jul 2019 04:16:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=cieF/VfyHdRT4ILhLIDgDEcOp5SHASOypt87NV9hXi8=;
- b=lnZDhwTIrEoxdyTKuaD+K/BQoICCtZH9vCxO67xkMjnAyhpbGdHlrw7kHJK/Zbn7vQQq
- mvmVh0oBzt1wU8NE7fuRPsvxSUAQYmmDus5jqhqy4cs3J4RpB6UCGEKG5dAO8dfx4MkW
- ssTG95OcfbL+QJ7TOrHMwZ88nBOMAbnlVbHUMY0selBb5xrg9H7bZ7Cj9qcUFNomoEo3
- KiNNTZ8GUvUkfgAbXLC1jTb8+PfvJ+xR0roeqzJyr133gZ3mxmzSadnZegStWNU26oSk
- 77iFaFJerJx8z/vPnI0sJmFVKFPOnDeucEO3zPdKh4DGYatbjOVDQg+a1znqy7NsDhU1 5Q== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2te5tbq1pw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jul 2019 04:16:56 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x634CxOO103081;
-        Wed, 3 Jul 2019 04:16:55 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2tebkumtf9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 03 Jul 2019 04:16:55 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x634GrZH003044;
-        Wed, 3 Jul 2019 04:16:53 GMT
-Received: from [10.190.130.61] (/192.188.170.109)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 02 Jul 2019 21:16:53 -0700
-Subject: Re: [PATCH][next] btrfs: fix memory leak of path on error return path
-To:     Colin King <colin.king@canonical.com>
+        id S1725820AbfGCEcy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 3 Jul 2019 00:32:54 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:33184 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725807AbfGCEcy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 3 Jul 2019 00:32:54 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id AC40A373297; Wed,  3 Jul 2019 00:32:53 -0400 (EDT)
+Date:   Wed, 3 Jul 2019 00:32:53 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     linux-btrfs@vger.kernel.org
-References: <20190702141028.11566-1-colin.king@canonical.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <2e750263-c61a-cda4-a647-f1913b548c33@oracle.com>
-Date:   Wed, 3 Jul 2019 12:16:50 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+Subject: Re: Spurious "ghost" "parent transid verify failed" messages on
+ 5.0.21 - with call traces
+Message-ID: <20190703043253.GI11831@hungrycats.org>
+References: <20190312040024.GI9995@hungrycats.org>
+ <20190403144716.GA15312@hungrycats.org>
+ <20190701033925.GH11831@hungrycats.org>
+ <eb60e397-6e33-b73c-e845-a4498952601d@gmx.com>
 MIME-Version: 1.0
-In-Reply-To: <20190702141028.11566-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9306 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907030052
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9306 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907030052
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="gJNQRAHI5jiYqw2y"
+Content-Disposition: inline
+In-Reply-To: <eb60e397-6e33-b73c-e845-a4498952601d@gmx.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2/7/19 10:10 PM, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Currently if the allocation of roots or tmp_ulist fails the error handling
-> does not free up the allocation of path causing a memory leak. Fix this by
-> freeing path with a call to btrfs_free_path before taking the error return
-> path.
-> 
-> Addresses-Coverity: ("Resource leak")
-> Fixes: 5911c8fe05c5 ("btrfs: fiemap: preallocate ulists for btrfs_check_shared")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+--gJNQRAHI5jiYqw2y
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->   fs/btrfs/extent_io.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 1eb671c16ff1..d7f37a33d597 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -4600,6 +4600,7 @@ int extent_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
->   	tmp_ulist = ulist_alloc(GFP_KERNEL);
->   	if (!roots || !tmp_ulist) {
->   		ret = -ENOMEM;
-> +		btrfs_free_path(path);
->   		goto out_free_ulist;
->   	}
->   
-> 
+On Mon, Jul 01, 2019 at 01:56:08PM +0800, Qu Wenruo wrote:
+>=20
+>=20
+> On 2019/7/1 =E4=B8=8A=E5=8D=8811:39, Zygo Blaxell wrote:
+> > On Wed, Apr 03, 2019 at 10:47:16AM -0400, Zygo Blaxell wrote:
+> >> On Tue, Mar 12, 2019 at 12:00:25AM -0400, Zygo Blaxell wrote:
+> >>> On 4.14.x and 4.20.14 kernels (probably all the ones in between too,
+> >>> but I haven't tested those), I get what I call "ghost parent transid
+> >>> verify failed" errors.  Here's an unedited recent example from dmesg:
+> >>>
+> >>> 	[16180.649285] BTRFS error (device dm-3): parent transid verify fail=
+ed on 1218181971968 wanted 9698 found 9744
+> >>
+> >> These happen much less often on 5.0.x, but they still happen from time
+> >> to time.
+> >=20
+> > I put this patch in 5.0.21:
+> >=20
+> > 	commit 5abbed1af5570f1317f31736e3862e8b7df1ca8b
+> > 	Author: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+> > 	Date:   Sat May 18 17:48:59 2019 -0400
+> >=20
+> > 	    btrfs: get a call trace when we hit ghost parent transid verify fa=
+ilures
+> >=20
+> > 	diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > 	index 6fe9197f6ee4..ed961d2915a1 100644
+> > 	--- a/fs/btrfs/disk-io.c
+> > 	+++ b/fs/btrfs/disk-io.c
+> > 	@@ -356,6 +356,7 @@ static int verify_parent_transid(struct extent_io_=
+tree *io_tree,
+> > 			"parent transid verify failed on %llu wanted %llu found %llu",
+> > 				eb->start,
+> > 				parent_transid, btrfs_header_generation(eb));
+> > 	+               WARN_ON(1);
+> > 		ret =3D 1;
+> > 	=20
+> > 		/*
+> >=20
+> > and eventually (six weeks later!) got another reproduction of this bug
+> > on 5.0.21:
+> >=20
+> [snip]
+> >=20
+> > which confirms the event comes from the LOGICAL_INO ioctl, at least.
+> > I had suspected that before based on timing and event log correlations,
+> > but now I have stack traces.
+> >=20
+> > It looks like insufficient locking, i.e. the eb got modified while
+> > LOGICAL_INO was looking at it.
+>=20
+> For this case, a quick dirty fix would be try to joining a transaction
+> (if the fs is not RO) and hold the trans handler to block current
+> transaction from being committed.
 
+Do you mean, revert "bfc61c36260c Btrfs: do not start a transaction at
+iterate_extent_inodes()"?  Or something else?
+
+I've had the spurious parent transid verify failures since at least 4.14,
+years before that patch.
+
+> This is definitely going to impact performance but at least should avoid
+> such transid mismatch call.
+>=20
+> In theory it should also affect any backref lookup not protected, like
+> subvolume aware defrag.
+>=20
+> Thanks,
+> Qu
+>=20
+> >=20
+> > As usual for the "ghost" parent transid verify failure, there's no
+> > persistent failure, no error reported to applications, and error counts
+> > in 'btrfs dev stats' are not incremented.
+> >=20
+>=20
+
+
+
+
+--gJNQRAHI5jiYqw2y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXRwv8gAKCRCB+YsaVrMb
+nEI9AJ94PJw1M3pNEGMuMFu+mTn2qgsPsQCeIKRBj5k9srJqEjrWrffm/zjfo3Q=
+=+aXD
+-----END PGP SIGNATURE-----
+
+--gJNQRAHI5jiYqw2y--
