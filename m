@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 527B65F29B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2019 08:11:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24DB5F29C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2019 08:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726120AbfGDGLN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Jul 2019 02:11:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54372 "EHLO mx1.suse.de"
+        id S1726696AbfGDGLP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Jul 2019 02:11:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54380 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725861AbfGDGLN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 4 Jul 2019 02:11:13 -0400
+        id S1725861AbfGDGLP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 4 Jul 2019 02:11:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 11EB3AF55
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 Jul 2019 06:11:12 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 0FC35AF55
+        for <linux-btrfs@vger.kernel.org>; Thu,  4 Jul 2019 06:11:14 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2.1 02/10] btrfs-progs: image: Fix error output to show correct return value
-Date:   Thu,  4 Jul 2019 14:10:55 +0800
-Message-Id: <20190704061103.20096-3-wqu@suse.com>
+Subject: [PATCH v2.1 03/10] btrfs-progs: image: Don't waste memory when we're just extracting super block
+Date:   Thu,  4 Jul 2019 14:10:56 +0800
+Message-Id: <20190704061103.20096-4-wqu@suse.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190704061103.20096-1-wqu@suse.com>
 References: <20190704061103.20096-1-wqu@suse.com>
@@ -30,34 +30,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We can easily get confusing error message like:
-  ERROR: restore failed: Success
+There is no need to allocate 2 * max_pending_size (which can be 256M) if
+we're just extracting super block.
 
-This is caused by wrong "%m" usage, as we normally use ret to indicate
-error, without populating errno.
-
-This patch will fix it by output the return value directly as normally
-we have extra error message to show more meaning message than the return
-value.
+We only need to prepare BTRFS_SUPER_INFO_SIZE as buffer size.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- image/main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ image/main.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
 diff --git a/image/main.c b/image/main.c
-index fb407f33f858..7c499c0853d0 100644
+index 7c499c0853d0..162a578a3ff8 100644
 --- a/image/main.c
 +++ b/image/main.c
-@@ -2734,7 +2734,7 @@ int BOX_MAIN(image)(int argc, char *argv[])
- 				       0, target, multi_devices);
- 	}
- 	if (ret) {
--		error("%s failed: %m", (create) ? "create" : "restore");
-+		error("%s failed: %d", (create) ? "create" : "restore", ret);
- 		goto out;
+@@ -1522,9 +1522,14 @@ static int fill_mdres_info(struct mdrestore_struct *mdres,
+ 		return 0;
+ 
+ 	if (mdres->compress_method == COMPRESS_ZLIB) {
+-		size_t size = MAX_PENDING_SIZE * 2;
++		/*
++		 * We know this item is superblock, its should only be 4K.
++		 * Don't need to waste memory following max_pending_size as it
++		 * can be as large as 256M.
++		 */
++		size_t size = BTRFS_SUPER_INFO_SIZE;
+ 
+-		buffer = malloc(MAX_PENDING_SIZE * 2);
++		buffer = malloc(size);
+ 		if (!buffer)
+ 			return -ENOMEM;
+ 		ret = uncompress(buffer, (unsigned long *)&size,
+@@ -1963,10 +1968,10 @@ static int build_chunk_tree(struct mdrestore_struct *mdres,
  	}
  
+ 	if (mdres->compress_method == COMPRESS_ZLIB) {
+-		size_t size = MAX_PENDING_SIZE * 2;
++		size_t size = BTRFS_SUPER_INFO_SIZE;
+ 		u8 *tmp;
+ 
+-		tmp = malloc(MAX_PENDING_SIZE * 2);
++		tmp = malloc(size);
+ 		if (!tmp) {
+ 			free(buffer);
+ 			return -ENOMEM;
 -- 
 2.22.0
 
