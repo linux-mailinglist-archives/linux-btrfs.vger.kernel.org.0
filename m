@@ -2,255 +2,289 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D75485F2A4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2019 08:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E5F5F31F
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2019 08:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbfGDGLc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Jul 2019 02:11:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54474 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725861AbfGDGLc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 4 Jul 2019 02:11:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C50FBAF55
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 Jul 2019 06:11:30 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2.1 10/10] btrfs-progs: image: Reduce memory usage for chunk tree search
-Date:   Thu,  4 Jul 2019 14:11:03 +0800
-Message-Id: <20190704061103.20096-11-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190704061103.20096-1-wqu@suse.com>
-References: <20190704061103.20096-1-wqu@suse.com>
+        id S1726038AbfGDG5L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Jul 2019 02:57:11 -0400
+Received: from mout.gmx.net ([212.227.17.22]:51923 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725879AbfGDG5L (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 4 Jul 2019 02:57:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1562223425;
+        bh=A3E0JQ054RmsOmPT/ZcRom6mi/9D8LkTwskOQgzroYI=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=jxI+ph0yJec04cqmZLCyXu4X/zPnTZTj3PS2cYMMPjVmq03744IInT5mXg1KltIis
+         1QcezjXDqXI9wcM1eWHxp/eDNt4VSKKdSoCdI/QOFvf1XGowhuHLUUwKCYLFsKMEeu
+         luE1FhMndUGmc0nOFBrIhu0d7KDb1W+QTdPrNqtU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx101
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0MADqP-1hpE9B2F8D-00BLNf; Thu, 04
+ Jul 2019 08:57:05 +0200
+Subject: Re: [PATCH] btrfs: don't end the transaction for delayed refs in
+ throttle
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20190124143143.8838-1-josef@toxicpanda.com>
+ <20190212160351.GD2900@twin.jikos.cz>
+ <d10925d5-e036-379b-f68f-bf0f8fa1a5b9@gmx.com>
+ <20190603173609.lxt6mejdqwryebzj@MacBook-Pro-91.local>
+ <cdc66832-34a4-5b3b-2180-cd553e7e9124@gmx.com>
+ <20190604174329.t5iissthayiywyq6@roberthasiphone.dhcp.thefacebook.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <656d0208-93e7-f81a-7a7b-bc378f23b070@gmx.com>
+Date:   Thu, 4 Jul 2019 14:56:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190604174329.t5iissthayiywyq6@roberthasiphone.dhcp.thefacebook.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="y553smeeMuUZBj0WXOJKKbZ2iT6j4cvj1"
+X-Provags-ID: V03:K1:nQJSc+M2wOP6d3owf404FVS35uFdnIuw9Zq4lT44CrQclKl0Bmh
+ k6unkkZE7xx5sVMEGnr8L4dRKqeZUeqQFp9Y2/XexujUE+7gB6LYDd1uJ8hpQ2160U/xpBq
+ 5m1MzaijrI3rAucU3b002OH2l582za9IQT+H0LA6x5WujyFwO3qUQsF5nJYGhBRD9yenuX3
+ fZ9xmJ24n76tVwfqhpPdQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:QMkVsGVODKU=:5PNpwM/01ZW3mJkCdaTe1a
+ TT2AAeWlPKxQs3pMI9N9AXghIt1k46bPbwcgwt/5Irsbm8U0/DIgGPbPkcDHEGlEeOCYsB54c
+ z0JNFdJn0sw5PdQ9b7zlDSWScX6+r/e6YE+NVE9Y0R976vWbuIWrH8wpGadIrtMkiFX68pZK2
+ 2s+b+5sz/jN4QFBgwGjkejY7HzzbLg5eRf6mos/0k4CrskpiNB8obytQ0ueIZ5IlomW+LslDs
+ lzjyzNofmzTaEyLKIe6u9UcDjzT4sTX3x+P8XWBU7t6vAdCBdcIW6aPpWlOwOQyibY6I+8OTX
+ T9hKugNeBgfNYgcuhhfChTSuASBXZzqXuyNFh65s5zQokglTUr1zwS7qabyoPCGlVNCgxrKDi
+ p9tjYn6iLehsD6ieiT/TgqVwhpDT7woKjokTBDtofunWMxjOu5vuyR4mnrFn+r5ubfHgxq73B
+ yC3iS5oSL/1laj1lyck2JcToTvNhmHGGS106cv7y7wPu+8ssgWWu1YEZCYjEa8MuLxKDyTBhV
+ qYCZxY6phSOi6LyZ7BRLkpFhp8f6lGzpfg+Y9nePn1kVJAvvE33zRzdiPinR3XUEfOcZdtj0R
+ 6l5673vxjwGs5Hn+kwCjTIg2eDCD9X8HUBPJovZlS+4at/RGnklm45hZ8oqKN32l54RQBpZ1B
+ 7VOUx8oUePZTcTbCFWkvzca5ECyD7ru+uRA7j5/mQ7CSk/PBGLr2pfA8DdcAFGjrlj6zYXQTq
+ sMSbV539jXAfufQdIx80z/Swo0bLXVS+eiasz2FV+VeY+aiQrj0NxI1DnYwg8RuYF3ierLAFG
+ GLXEtkyNcONygEvjCFGkHnTZnfwqAme9Gz66ChISttoG1dJaMhfJfS8JzPiCqs3XO9F2eB4Oj
+ caEoUGpQ0vxIQQcwZ2gLPCskqxkskUM1QKpdxPHpVg7rcF3G6BFzAU8DxCNqBL+F/ay/pVhuR
+ SF1xZjNuEYWsw5mPN1hxA7RxzekaDoceih21lU8j/Gyyew+L8I+5FswouZMZOTPNUWDnr5zd9
+ FkaACzdlYoSn66A0uqkVAUoY7DASzgvu65/EuINu3H2iDUK04ENQuLBgFEgRy62mhwvl4/Vbg
+ 8WZCZPaLTJ7dbs=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just like original restore_worker, search_for_chunk_blocks() will also
-use a lot of memory for restoring large uncompressed extent or
-compressed extent with data dump.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--y553smeeMuUZBj0WXOJKKbZ2iT6j4cvj1
+Content-Type: multipart/mixed; boundary="x9PRp1EUzvFqpWSzcqf9euBKJInVBiDpN";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Message-ID: <656d0208-93e7-f81a-7a7b-bc378f23b070@gmx.com>
+Subject: Re: [PATCH] btrfs: don't end the transaction for delayed refs in
+ throttle
+References: <20190124143143.8838-1-josef@toxicpanda.com>
+ <20190212160351.GD2900@twin.jikos.cz>
+ <d10925d5-e036-379b-f68f-bf0f8fa1a5b9@gmx.com>
+ <20190603173609.lxt6mejdqwryebzj@MacBook-Pro-91.local>
+ <cdc66832-34a4-5b3b-2180-cd553e7e9124@gmx.com>
+ <20190604174329.t5iissthayiywyq6@roberthasiphone.dhcp.thefacebook.com>
+In-Reply-To: <20190604174329.t5iissthayiywyq6@roberthasiphone.dhcp.thefacebook.com>
 
-Reduce the memory usage by:
-- Use fixed buffer size for uncompressed extent
-  Now we will use fixed 512K as buffer size for reading uncompressed
-  extent.
+--x9PRp1EUzvFqpWSzcqf9euBKJInVBiDpN
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-  Now chunk tree search will read out 512K data at most, then search
-  chunk trees in the buffer.
 
-  Reduce the memory usage from as large as item size, to fixed 512K.
 
-- Use inflate() for compressed extent
-  For compressed extent, we need two buffers, one for compressed data,
-  and one for uncompressed data.
-  For compressed data, we will use the item size as buffer size, since
-  compressed extent should be small enough.
-  For uncompressed data, we use 512K as buffer size.
+On 2019/6/5 =E4=B8=8A=E5=8D=881:43, Josef Bacik wrote:
+> On Tue, Jun 04, 2019 at 08:31:23AM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2019/6/4 =E4=B8=8A=E5=8D=881:36, Josef Bacik wrote:
+>>> On Mon, Jun 03, 2019 at 02:53:00PM +0800, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> On 2019/2/13 =E4=B8=8A=E5=8D=8812:03, David Sterba wrote:
+>>>>> On Thu, Jan 24, 2019 at 09:31:43AM -0500, Josef Bacik wrote:
+>>>>>> Previously callers to btrfs_end_transaction_throttle() would commi=
+t the
+>>>>>> transaction if there wasn't enough delayed refs space.  This happe=
+ns in
+>>>>>> relocation, and if the fs is relatively empty we'll run out of del=
+ayed
+>>>>>> refs space basically immediately, so we'll just be stuck in this l=
+oop of
+>>>>>> committing the transaction over and over again.
+>>>>>>
+>>>>>> This code existed because we didn't have a good feedback mechanism=
+ for
+>>>>>> running delayed refs, but with the delayed refs rsv we do now.  De=
+lete
+>>>>>> this throttling code and let the btrfs_start_transaction() in relo=
+cation
+>>>>>> deal with putting pressure on the delayed refs infrastructure.  Wi=
+th
+>>>>>> this patch we no longer take 5 minutes to balance a metadata only =
+fs.
+>>>>>>
+>>>>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>>>>>
+>>>>> For the record, this has been merged to 5.0-rc5
+>>>>>
+>>>>
+>>>> Bisecting leads me to this patch for strange balance ENOSPC.
+>>>>
+>>>> Can be reproduced by btrfs/156, or the following small script:
+>>>> ------
+>>>> #!/bin/bash
+>>>> dev=3D"/dev/test/test"
+>>>> mnt=3D"/mnt/btrfs"
+>>>>
+>>>> _fail()
+>>>> {
+>>>> 	echo "!!! FAILED: $@ !!!"
+>>>> 	exit 1
+>>>> }
+>>>>
+>>>> do_work()
+>>>> {
+>>>> 	umount $dev &> /dev/null
+>>>> 	umount $mnt &> /dev/null
+>>>>
+>>>> 	mkfs.btrfs -b 1G -m single -d single $dev -f > /dev/null
+>>>>
+>>>> 	mount $dev $mnt
+>>>>
+>>>> 	for i in $(seq -w 0 511); do
+>>>> 	#	xfs_io -f -c "falloc 0 1m" $mnt/file_$i > /dev/null
+>>>> 		xfs_io -f -c "pwrite 0 1m" $mnt/inline_$i > /dev/null
+>>>> 	done
+>>>> 	sync
+>>>>
+>>>> 	btrfs balance start --full $mnt || return 1
+>>>> 	sync
+>>>>
+>>>>
+>>>> 	btrfs balance start --full $mnt || return 1
+>>>> 	umount $mnt
+>>>> }
+>>>>
+>>>> failed=3D0
+>>>> for i in $(seq -w 0 24); do
+>>>> 	echo "=3D=3D=3D run $i =3D=3D=3D"
+>>>> 	do_work
+>>>> 	if [ $? -eq 1 ]; then
+>>>> 		failed=3D$(($failed + 1))
+>>>> 	fi
+>>>> done
+>>>> if [ $failed -ne 0 ]; then
+>>>> 	echo "!!! failed $failed/25 !!!"
+>>>> else
+>>>> 	echo "=3D=3D=3D all passes =3D=3D=3D"
+>>>> fi
+>>>> ------
+>>>>
+>>>> For v4.20, it will fail at the rate around 0/25 ~ 2/25 (very rare).
+>>>> But at that patch (upstream commit
+>>>> 302167c50b32e7fccc98994a91d40ddbbab04e52), the failure rate raise to=
+ 25/25.
+>>>>
+>>>> Any idea for that ENOSPC problem?
+>>>> As it looks really wired for the 2nd full balance to fail even we ha=
+ve
+>>>> enough unallocated space.
+>>>>
+>>>
+>>> I've been running this all morning on kdave's misc-next and not had a=
+ single
+>>> failure.  I ran it a few times on spinning rust and a few times on my=
+ nvme
+>>> drive.  I wouldn't doubt that it's failing for you, but I can't repro=
+duce.  It
+>>> would be helpful to know where the ENOSPC was coming from so I can th=
+ink of
+>>> where the problem might be.  Thanks,
+>>>
+>>> Josef
+>>>
+>>
+>> Since v5.2-rc2 has a lot of enospc debug output merged, here is the
+>> debug info just by enospc_debug:
+>>
+>=20
+> Ah ok, sorry I'm travelling so I can't easily test a patch right now, b=
+ut change
+> the btrfs_join_transaction() in btrfs_inc_block_group_ro to
+> btrfs_start_transaction(root, 0);  This will trigger the delayed ref fl=
+ushing if
+> we need it and likely will fix the problem.
 
-  Now chunk tree search will fill the first 512K, then search chunk
-  trees blocks in the uncompressed 512K buffer, then loop until the
-  compressed data is exhausted.
+Unfortunately, it doesn't work as expected.
 
-  Reduce the memory usage from as large as 256M * 2 to 512K + compressed
-  extent size.
+False ENOSPC still gets triggered.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- image/main.c | 159 ++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 126 insertions(+), 33 deletions(-)
+The same problem for system chunk, min_alloc is causing problem, as
+pinned/reserved/may_use are all zero.
+Just the min_allocable of 1M makes the check to fail.
 
-diff --git a/image/main.c b/image/main.c
-index 9ac921659c8b..32767eed100b 100644
---- a/image/main.c
-+++ b/image/main.c
-@@ -1959,6 +1959,126 @@ static int read_chunk_block(struct mdrestore_struct *mdres, u8 *buffer,
- 	return ret;
- }
- 
-+static int search_chunk_uncompressed(struct mdrestore_struct *mdres,
-+				     struct meta_cluster_item *item,
-+				     u64 current_cluster)
-+{
-+	u32 item_size = le32_to_cpu(item->size);
-+	u64 item_bytenr = le64_to_cpu(item->bytenr);
-+	int bufsize = SZ_512K;
-+	int read_size;
-+	u32 offset = 0;
-+	u8 *buffer;
-+	int ret = 0;
-+
-+	ASSERT(mdres->compress_method == COMPRESS_NONE);
-+	buffer = malloc(bufsize);
-+	if (!buffer)
-+		return -ENOMEM;
-+
-+	while (offset < item_size) {
-+		read_size = min_t(u32, bufsize, item_size - offset);
-+		ret = fread(buffer, read_size, 1, mdres->in);
-+		if (ret != 1) {
-+			error("read error: %m");
-+			ret = -EIO;
-+			goto out;
-+		}
-+		ret = read_chunk_block(mdres, buffer, item_bytenr, read_size,
-+					current_cluster);
-+		if (ret < 0) {
-+			error(
-+	"failed to search tree blocks in item bytenr %llu size %u",
-+				item_bytenr, item_size);
-+			goto out;
-+		}
-+		offset += read_size;
-+	}
-+out:
-+	free(buffer);
-+	return ret;
-+}
-+
-+static int search_chunk_compressed(struct mdrestore_struct *mdres,
-+				   struct meta_cluster_item *item,
-+				   u64 current_cluster)
-+{
-+	z_stream strm;
-+	u32 item_size = le32_to_cpu(item->size);
-+	u64 item_bytenr = le64_to_cpu(item->bytenr);
-+	int bufsize = SZ_512K;
-+	int read_size;
-+	u8 *out_buf = NULL;	/* uncompressed data */
-+	u8 *in_buf = NULL;	/* compressed data */
-+	bool end = false;
-+	int ret;
-+
-+	ASSERT(mdres->compress_method != COMPRESS_NONE);
-+	strm.zalloc = Z_NULL;
-+	strm.zfree = Z_NULL;
-+	strm.opaque = Z_NULL;
-+	strm.avail_in = 0;
-+	strm.next_in = Z_NULL;
-+	strm.avail_out = 0;
-+	strm.next_out = Z_NULL;
-+	ret = inflateInit(&strm);
-+	if (ret != Z_OK) {
-+		error("failed to initialize decompress parameters: %d", ret);
-+		return ret;
-+	}
-+
-+	out_buf = malloc(bufsize);
-+	in_buf = malloc(item_size);
-+	if (!in_buf || !out_buf) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	ret = fread(in_buf, item_size, 1, mdres->in);
-+	if (ret != 1) {
-+		error("read error: %m");
-+		ret = -EIO;
-+		goto out;
-+	}
-+	strm.avail_in = item_size;
-+	strm.next_in = in_buf;
-+	while (!end) {
-+		if (strm.avail_out == 0) {
-+			strm.avail_out = bufsize;
-+			strm.next_out = out_buf;
-+		}
-+		ret = inflate(&strm, Z_NO_FLUSH);
-+		switch (ret) {
-+		case Z_NEED_DICT:
-+			ret = Z_DATA_ERROR; /* fallthrough */
-+			__attribute__ ((fallthrough));
-+		case Z_DATA_ERROR:
-+		case Z_MEM_ERROR:
-+			goto out;
-+		}
-+		if (ret == Z_STREAM_END) {
-+			ret = 0;
-+			end = true;
-+		}
-+		read_size = bufsize - strm.avail_out;
-+
-+		ret = read_chunk_block(mdres, out_buf, item_bytenr, read_size,
-+					current_cluster);
-+		if (ret < 0) {
-+			error(
-+	"failed to search tree blocks in item bytenr %llu size %u",
-+				item_bytenr, item_size);
-+			goto out;
-+		}
-+	}
-+
-+out:
-+	free(in_buf);
-+	free(out_buf);
-+	inflateEnd(&strm);
-+	return ret;
-+}
-+
- /*
-  * This function will try to find all chunk items in the dump image.
-  *
-@@ -2044,8 +2164,6 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
- 
- 		/* Search items for tree blocks in sys chunks */
- 		for (i = 0; i < nritems; i++) {
--			size_t size;
--
- 			item = &cluster->items[i];
- 			bufsize = le32_to_cpu(item->size);
- 			item_bytenr = le64_to_cpu(item->bytenr);
-@@ -2070,41 +2188,16 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
- 			}
- 
- 			if (mdres->compress_method == COMPRESS_ZLIB) {
--				ret = fread(tmp, bufsize, 1, mdres->in);
--				if (ret != 1) {
--					error("read error: %m");
--					ret = -EIO;
--					goto out;
--				}
--
--				size = max_size;
--				ret = uncompress(buffer,
--						 (unsigned long *)&size, tmp,
--						 bufsize);
--				if (ret != Z_OK) {
--					error("decompression failed with %d",
--							ret);
--					ret = -EIO;
--					goto out;
--				}
-+				ret = search_chunk_compressed(mdres, item,
-+						current_cluster);
- 			} else {
--				ret = fread(buffer, bufsize, 1, mdres->in);
--				if (ret != 1) {
--					error("read error: %m");
--					ret = -EIO;
--					goto out;
--				}
--				size = bufsize;
-+				ret = search_chunk_uncompressed(mdres, item,
-+						current_cluster);
- 			}
--			ret = 0;
--
--			ret = read_chunk_block(mdres, buffer,
--					       item_bytenr, size,
--					       current_cluster);
- 			if (ret < 0) {
- 				error(
--	"failed to search tree blocks in item bytenr %llu size %lu",
--					item_bytenr, size);
-+	"failed to search tree blocks in item bytenr %llu size %u",
-+					item_bytenr, bufsize);
- 				goto out;
- 			}
- 			bytenr += bufsize;
--- 
-2.22.0
+While for metadata, btrfs_start_transaction(root, 0) doesn't solve the
+problem as reserved and may_use is still relatively high.
 
+I'll dig further to find a different way to solve it.
+
+Thanks,
+Qu
+
+>  There's so much random cruft built
+> into the relocation enospc stuff that we're likely to keep finding prob=
+lems like
+> this, we just need to rework it so it's still tripping over the normal
+> reservation path.  Thanks,
+>=20
+> Josef=20
+>=20
+
+
+--x9PRp1EUzvFqpWSzcqf9euBKJInVBiDpN--
+
+--y553smeeMuUZBj0WXOJKKbZ2iT6j4cvj1
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0dozsACgkQwj2R86El
+/qhEDQf+O8A3Z53fcVIpMqfD1x2cZq0VkDqLEUrsLqcjWKXTSFkjmW3PD6VQMycD
+3mE4emL8ZwPiGrGco0w7xoTj6DNPid5YjRgXs76+nkOM16JPQN4bdcUe+A/mSeZK
+oQ4Eel7Mndph3a5dkX/1TGrcMXZ/zUCBDkHHfyUBnTH8Z7asK5pjrUcE4JAUUewk
+cRKq5f/q9M82YcDnvryynG/bQDOHBHJLLuy6ZEDO+kWVU9yTKS66YGrpFd9CuhYz
+NzsAS4xe3aV+pC6auoEzu7Viu7hR0/aEEw6x4WTe8yOZ1FqKJIjdcY1crUYeNYMM
+YwivITRf326rGomhITow2vTumjMNJA==
+=IG8n
+-----END PGP SIGNATURE-----
+
+--y553smeeMuUZBj0WXOJKKbZ2iT6j4cvj1--
