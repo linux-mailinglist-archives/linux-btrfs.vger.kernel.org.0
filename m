@@ -2,95 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABCE25FE05
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2019 23:03:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 777115FE85
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 01:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727252AbfGDVDY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Jul 2019 17:03:24 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:47654 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726038AbfGDVDY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 4 Jul 2019 17:03:24 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id B2C2C37741D; Thu,  4 Jul 2019 17:03:23 -0400 (EDT)
-Date:   Thu, 4 Jul 2019 17:03:23 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: repeatable(ish) corrupt leaf filesystem splat on 5.1.x
-Message-ID: <20190704210323.GK11831@hungrycats.org>
+        id S1727462AbfGDXDJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Jul 2019 19:03:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52638 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726038AbfGDXDJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 4 Jul 2019 19:03:09 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.0:RSA_AES_256_CBC_SHA1:32)
+        (Exim 4.76)
+        (envelope-from <colin.king@canonical.com>)
+        id 1hjAkp-0003Ev-LC; Thu, 04 Jul 2019 23:03:03 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next][V2] btrfs: fix memory leak of path on error return path
+Date:   Fri,  5 Jul 2019 00:03:03 +0100
+Message-Id: <20190704230303.5583-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="q6mBvMCt6oafMx9a"
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Colin Ian King <colin.king@canonical.com>
 
---q6mBvMCt6oafMx9a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Currently if the allocation of roots or tmp_ulist fails the error handling
+does not free up the allocation of path causing a memory leak. Fix this and
+other similar leaks by moving the call of btrfs_free_path from label out
+to label out_free_ulist.
 
-I've seen this twice in 3 days after releasing 5.1.x kernels from the
-test lab:
+Kudos to David Sterba for spotting the issue in my original fix and
+providing the correct way to fix the leak.
 
-5.1.15 on 2xSATA RAID1 SSD, during a balance:
+Addresses-Coverity: ("Resource leak")
+Fixes: 5911c8fe05c5 ("btrfs: fiemap: preallocate ulists for btrfs_check_shared")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
 
-	[48714.200014][ T3498] BTRFS critical (device dm-21): corrupt leaf: root=2 block=117776711680 slot=57, unexpected item end, have 109534755 expect 12632
-	[48714.200381][ T3498] BTRFS critical (device dm-21): corrupt leaf: root=2 block=117776711680 slot=57, unexpected item end, have 109534755 expect 12632
-	[48714.200399][ T9749] BTRFS: error (device dm-21) in __btrfs_free_extent:7109: errno=-5 IO failure
-	[48714.200401][ T9749] BTRFS info (device dm-21): forced readonly
-	[48714.200405][ T9749] BTRFS: error (device dm-21) in btrfs_run_delayed_refs:3008: errno=-5 IO failure
-	[48714.200419][ T9749] BTRFS info (device dm-21): found 359 extents
-	[48714.200442][ T9749] BTRFS info (device dm-21): 1 enospc errors during balance
-	[48714.200445][ T9749] BTRFS info (device dm-21): balance: ended with status: -30
+V2: move the btrfs_free_path to the out_free_ulist label as suggested by
+    David Sterba as the correct fix.
 
-and 5.1.9 on 1xNVME, a few hours after some /proc NULL pointer dereference
-bugs:
+---
+ fs/btrfs/extent_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-	[89244.144505][ T7009] BTRFS critical (device dm-4): corrupt leaf: root=2 block=1854946361344 slot=32, unexpected item end, have 1335222703 expect 15056
-	[89244.144822][ T7009] BTRFS critical (device dm-4): corrupt leaf: root=2 block=1854946361344 slot=32, unexpected item end, have 1335222703 expect 15056
-	[89244.144832][ T2403] BTRFS: error (device dm-4) in btrfs_run_delayed_refs:3008: errno=-5 IO failure
-	[89244.144836][ T2403] BTRFS info (device dm-4): forced readonly
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 1eb671c16ff1..31127f6d2971 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4766,11 +4766,11 @@ int extent_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 		ret = emit_last_fiemap_cache(fieinfo, &cache);
+ 	free_extent_map(em);
+ out:
+-	btrfs_free_path(path);
+ 	unlock_extent_cached(&BTRFS_I(inode)->io_tree, start, start + len - 1,
+ 			     &cached_state);
+ 
+ out_free_ulist:
++	btrfs_free_path(path);
+ 	ulist_free(roots);
+ 	ulist_free(tmp_ulist);
+ 	return ret;
+-- 
+2.20.1
 
-The machines had been upgraded from 5.0.x to 5.1.x for less than 24
-hours each.
-
-The 5.1.9 machine had crashed (on 5.0.15) before, but a scrub had passed
-while running 5.1.9 after the crash.  The filesystem failure occurred
-20 hours later.  There were some other NULL pointer deferences in that
-uptime, so maybe 5.1.9 is just a generally buggy kernel that nobody
-should ever run.  I expect better from 5.1.15, though, which had no
-unusual events reported in the 8 hours between its post-reboot scrub
-and the filesystem failure.
-
-I have several other machines running 5.1.x kernels that have not yet had
-such a failure--including all of my test machines, which don't seem to hit
-this issue after 25+ days of stress-testing.  Most of the test machines
-are using rotating disks, a few are running SSD+HDD with lvmcache.
-
-One correlation that may be interesting:  both of the failing filesystems
-had 1MB unallocated on all disks; all of the non-failing filesystems have
-1GB or more unallocated on all disks.  I was running the balance on the
-first filesystem to try to free up some unallocated space.  The second
-filesystem died without any help from me.
-
-It turns out that 'btrfs check --repair' can fix these!  First time
-I've ever seen check --repair fix a broken filesystem.  A few files are
-damaged, but the filesystem is read-write again and still working so far
-(on a 5.0.21 kernel) .
-
---q6mBvMCt6oafMx9a
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXR5pmQAKCRCB+YsaVrMb
-nANnAKCcfXC5HdK77e9gN4RJ5NEFPRG5oQCeId+oRw7vw9rIpOoWPwW0EjlCIU4=
-=yj3T
------END PGP SIGNATURE-----
-
---q6mBvMCt6oafMx9a--
