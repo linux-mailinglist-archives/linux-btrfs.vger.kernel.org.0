@@ -2,92 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 341DD5FC2E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2019 19:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0505FC63
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Jul 2019 19:19:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727279AbfGDREt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Jul 2019 13:04:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44294 "EHLO mx1.suse.de"
+        id S1727204AbfGDRT1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 4 Jul 2019 13:19:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46606 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727231AbfGDREs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 4 Jul 2019 13:04:48 -0400
+        id S1727026AbfGDRT1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 4 Jul 2019 13:19:27 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 37039AB9D
-        for <linux-btrfs@vger.kernel.org>; Thu,  4 Jul 2019 17:04:47 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 8827CACF8;
+        Thu,  4 Jul 2019 17:19:25 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4AA8FDA89D; Thu,  4 Jul 2019 19:05:30 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.cz>
-Subject: Next btrfs development cycle open - 5.4
-Date:   Thu,  4 Jul 2019 19:05:25 +0200
-Message-Id: <20190704170525.26216-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.21.0
+        id E4023DA89D; Thu,  4 Jul 2019 19:20:07 +0200 (CEST)
+Date:   Thu, 4 Jul 2019 19:20:07 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     dsterba@suse.cz, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] btrfs: fix memory leak of path on error return path
+Message-ID: <20190704172007.GB20977@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Colin Ian King <colin.king@canonical.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20190702141028.11566-1-colin.king@canonical.com>
+ <20190704163721.GA20977@twin.jikos.cz>
+ <366d87f9-96ea-ecc3-6464-9d20e3050248@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <366d87f9-96ea-ecc3-6464-9d20e3050248@canonical.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: David Sterba <dsterba@suse.cz>
+On Thu, Jul 04, 2019 at 05:47:50PM +0100, Colin Ian King wrote:
+> >>  	tmp_ulist = ulist_alloc(GFP_KERNEL);
+> >>  	if (!roots || !tmp_ulist) {
+> >>  		ret = -ENOMEM;
+> >> +		btrfs_free_path(path);
+> > 
+> > This fixes only one leak, therere are more that I spotted while
+> > reviewing this patch. The gotos from the while-loop jump to
+> > out_free_list but that leave the path behind>
+> > That's why the exit block is a better place for the cleanups. This
+> > requires proper nesting of the cleanup calls, that's slightly
+> > inconvenient in this case. The free_path is before call to
+> > unlock_extent_cached so when the ordre is switched and free_path moved
+> > to out_free_ulist, then all the leaks are addressed in one go.
+> 
+> Oh, yes. Even static analysis missed that too!
+> 
+> > Bummer that the leaks escaped sight of original patch author (me), 2
+> > reviewers and now 1 fix reviewer.
+> > 
+> Given that you can see more issues, I'll leave the fix in your capable
+> hands.
 
-Hi,
+This
 
-a friendly reminder of the timetable and what's expected at this phase.
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4764,11 +4764,11 @@ int extent_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+                ret = emit_last_fiemap_cache(fieinfo, &cache);
+        free_extent_map(em);
+ out:
+-       btrfs_free_path(path);
+        unlock_extent_cached(&BTRFS_I(inode)->io_tree, start, start + len - 1,
+                             &cached_state);
+ 
+ out_free_ulist:
++       btrfs_free_path(path);
+        ulist_free(roots);
+        ulist_free(tmp_ulist);
+        return ret;
+---
 
-5.1 - current
-5.2 - upcoming, urgent regression fixes only
-5.3 - development closed, pull request in prep, fixes or regressions only
-5.4 - development open, until 5.3-rc5 (at least)
-
-(https://btrfs.wiki.kernel.org/index.php/Developer%27s_FAQ#Development_schedule)
-
-
-Current status
---------------
-
-I've forked the misc-next branch to 5.3 from the point where I did enough
-testing, there are more patches coming from misc-next still.
-
-There are some strange problems still hit on testing machines so at this point
-I don't want to add more patches until we know what's the cause and we have the
-fixes ready.
-
-
-Hilights of 5.3 changes
-------------------------
-
-Not much this time, there's majority of cleanups, refactoring and preparatory
-patches. The raid1c34 feature is postponed as replace of missing device(s) does
-not work as expected. More hash algorithms need the real evaluation, other
-feature patchsets don't seem to be near-merge either due to lack of reviews or
-more work required.
-
-
-Git development repos
----------------------
-
-  k.org: https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git
-  devel1: https://gitlab.com/kdave/btrfs-devel
-  devel2: https://github.com/kdave/btrfs-devel
-
-
-Usual points
-------------
-
-* the current patch queue (as is in misc-next) looks stable, so no big
-  changes are going to be applied at this time. The usual exceptions are
-  bugfixes or obvious cleanups.
-
-* the base of the patches should be the last announced pull request,
-  which is going to be named 'for-5.3' in my k.org tree.  Reviewed
-  patches will be collected in a branch that's usually named 'misc-next'
-  in my devel git repos and is part of the for-next at k.org git repo.
-
-* merging of new patches to misc-next will be slow during the
-  merge window
-
-* review other developer patches, test them, find bugs before they are in a
-  released kernel
+should fix it.
