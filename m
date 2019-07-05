@@ -2,124 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D9FCB60C06
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 22:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B61360C5B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 22:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbfGEUCT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Jul 2019 16:02:19 -0400
-Received: from frost.carfax.org.uk ([85.119.82.111]:48417 "EHLO
-        frost.carfax.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbfGEUCT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Jul 2019 16:02:19 -0400
-Received: from hrm by frost.carfax.org.uk with local (Exim 4.80)
-        (envelope-from <hrm@carfax.org.uk>)
-        id 1hjUPQ-0005ZH-US
-        for linux-btrfs@vger.kernel.org; Fri, 05 Jul 2019 20:02:16 +0000
-Date:   Fri, 5 Jul 2019 20:02:16 +0000
-From:   Hugo Mills <hugo@carfax.org.uk>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: delete recursivly subvolumes?
-Message-ID: <20190705200216.GR32479@carfax.org.uk>
-Mail-Followup-To: Hugo Mills <hugo@carfax.org.uk>,
-        linux-btrfs@vger.kernel.org
-References: <20190705193945.GB23600@tik.uni-stuttgart.de>
- <20190705194720.GC23600@tik.uni-stuttgart.de>
- <20190705195142.GQ32479@carfax.org.uk>
- <20190705195639.GD23600@tik.uni-stuttgart.de>
+        id S1726411AbfGEU2c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Jul 2019 16:28:32 -0400
+Received: from a4-2.smtp-out.eu-west-1.amazonses.com ([54.240.4.2]:55556 "EHLO
+        a4-2.smtp-out.eu-west-1.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725813AbfGEU2c (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 5 Jul 2019 16:28:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=ob2ngmaigrjtzxgmrxn2h6b3gszyqty3; d=urbackup.org; t=1562358510;
+        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+        bh=4FjpfZL8lT0uHxL0t3FZs2X6SbsSz2YKwan1YEEHRoI=;
+        b=hGPUf9ug2bmz4i5PYrtuVjQlq+27PCGmw2JYjEN/WQRHrrGOi7VzydrvE5vYG9fr
+        We2WwSvqVMlqkE/bsCedTTh7T5+cjKOosQ1INMrTfNfMGJQzHzO0tuiSnqyJCQdiiSc
+        JLe8bGisHEffqZVUqfYwF5hwtfb39uJ+FVHcVJY4=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=ihchhvubuqgjsxyuhssfvqohv7z3u4hn; d=amazonses.com; t=1562358510;
+        h=Subject:To:References:From:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+        bh=4FjpfZL8lT0uHxL0t3FZs2X6SbsSz2YKwan1YEEHRoI=;
+        b=XKlBvutkklwGfhqaLZBbJ96YL7EpnFteKElwmd1zwT8VErR0AOfEXwS55F5wG0Nw
+        fOKbdD3nY9qNFiat6LM7+/estFcnOTw7oc1oisMLYGme+rwqtOH1yIMp+y0mmkGn4/d
+        e/DBfzuMEyx/y2LJ5M5HRgS04PpHJAAITN6GGXRM=
+Subject: Re: syncfs() returns no error on fs failure
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <0102016bc283c774-ca60b6ce-5179-4de8-8df3-80752411b5c0-000000@eu-west-1.amazonses.com>
+From:   Martin Raiber <martin@urbackup.org>
+Message-ID: <0102016bc3d2f2a2-46c55025-ec28-468f-b1d2-82d655fa3a1c-000000@eu-west-1.amazonses.com>
+Date:   Fri, 5 Jul 2019 20:28:30 +0000
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="H2kTGx6mr3R59oXC"
-Content-Disposition: inline
-In-Reply-To: <20190705195639.GD23600@tik.uni-stuttgart.de>
-X-GPG-Fingerprint: DD84 D558 9D81 DDEE 930D  2054 585E 1475 E2AB 1DE4
-X-GPG-Key: E2AB1DE4
-X-Parrot: It is no more. It has joined the choir invisible.
-X-IRC-Nicks: darksatanic darkersatanic darkling darkthing
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <0102016bc283c774-ca60b6ce-5179-4de8-8df3-80752411b5c0-000000@eu-west-1.amazonses.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-SES-Outgoing: 2019.07.05-54.240.4.2
+Feedback-ID: 1.eu-west-1.zKMZH6MF2g3oUhhjaE2f3oQ8IBjABPbvixQzV8APwT0=:AmazonSES
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+More research on this. Seems a generic error reporting mechanism for
+this is in the works https://lkml.org/lkml/2018/6/1/640 .
 
---H2kTGx6mr3R59oXC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Wrt. to btrfs one should always use BTRFS_IOC_SYNC because only this one
+seems to wait for delalloc work to finish:
+https://patchwork.kernel.org/patch/2927491/ (five year old patch where
+Filipe Manana added this to BTRFS_IOC_SYNC and with v2->v3 not to
+syncfs() ).
 
-On Fri, Jul 05, 2019 at 09:56:39PM +0200, Ulli Horlacher wrote:
-> On Fri 2019-07-05 (19:51), Hugo Mills wrote:
-> 
-> > > Is there a command/script/whatever to snapshot (copy) a subvolume which
-> > > contains (somewhere) other subvolumes?
-> > > 
-> > > Example:
-> > > 
-> > > root@xerus:/test# btrfs_subvolume_list /test/ | grep /tmp
-> > > /test/tmp
-> > > /test/tmp/xx/ss1
-> > > /test/tmp/xx/ss2
-> > > /test/tmp/xx/ss3
-> > > 
-> > > I want to have (with one command):
-> > > 
-> > > /test/tmp --> /test/tmp2
-> > > /test/tmp/xx/ss1 --> /test/tmp2/xx/ss1
-> > > /test/tmp/xx/ss2 --> /test/tmp2/xx/ss2
-> > > /test/tmp/xx/ss3 --> /test/tmp2/xx/ss3
-> > 
-> >    Remember that this isn't quite so useful, because you can't make
-> > read-only snapshots in that structure.
-> 
-> ss1 ss2 and ss3 are indeed read-only snapshots!
-> Of course they do not contain other subvolumes.
+I was smart enough to check if the filesystem is still writable after a
+syncfs() (so the missing error return doesn't matter that much) but I
+guess the missing wait for delalloc can cause the application to think
+data is on disk even though it isn't.
 
-   What I'm saying is that you can't make a RO snapshot of test/tmp to
-test/tmp2 and have your RO snapshots of ss1-3 in place within it.
+On 05.07.2019 16:22 Martin Raiber wrote:
+> Hi,
+>
+> I realize this isn't a btrfs specific problem but syncfs() returns no
+> error even on complete fs failure. The problem is (I think) that the
+> return value of sb->s_op->sync_fs is being ignored in fs/sync.c. I kind
+> of assumed it would return an error if it fails to write the file system
+> changes to disk.
+>
+> For btrfs there is a work-around of using BTRFS_IOC_SYNC (which I am
+> going to use now) but that is obviously less user friendly than syncfs().
+>
+> Regards,
+> Martin Raiber
 
-   (OK, you could make the snapshot RW initially, snapshot the others
-into place and then force it RO, but then you've just broken
-send/receive on tmp2).
 
-> >    Generally, I'd recommend not having nested subvols at all, but to
-> > put every subvol independently, and mount them into the places you
-> > want them to be. That avoids a lot of the issues of nested subvols,
-> > such as the ones you're trying to deal with here.
-> 
-> *I* do it this way from the very beginning :-)
-> But I have *users* with *strange* ideas :-}
-> 
-> I need to handle their data.
-
-   That makes it more awkward. :(
-
-   Hugo.
-
--- 
-Hugo Mills             | "You know, the British have always been nice to mad
-hugo@... carfax.org.uk | people."
-http://carfax.org.uk/  |
-PGP: E2AB1DE4          |                         Laura Jesson, Brief Encounter
-
---H2kTGx6mr3R59oXC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAEBAgAGBQJdH6zIAAoJEFheFHXiqx3kgN0P/RTSd3tCejFxS3isH9sO3Lfc
-YJZVQqTh779B7arsWiS1CiAY7Ftvpe4aaq1zfb83g02Z37lt7KfndcsNluSFeo3j
-g7z6HC/Xm73g672BC+xm7h9rHDUB8iXh5m8WZeIlS41PQE1kRuSfS0E2105Zi5f+
-QqSidT/x+lUkR/mY2M8NgvGniGaNo8NfRbIOpYPd7ugZpNKl3NSJEwMwa2mZ7K56
-pIIt2n3c5HhI4skX0h1wQ1qx3iBFHt7UmYAWCpGos9nAyTNzbjJBg1EJNXO55k/5
-OKo3OE1qIkmufzSSMFd4rB1/efh4sxt0YDbmhxNnIaAwztCssGZmFItJEqgDd2vI
-cKWt2NodiYtSUTDnalJwhHS8c7BB5a0QtlG24Nt0Y3wsYnXqzT/aANTUbyKZycgw
-5iCECUikGPg437Wz7NV7XIrdLAfjeUQ2gEzGW2Uu5XlJHxDoycpIsNbwH/Qpfqc7
-ClSsqc4ClRBU5HGvED2yhL/9C6VEvJCLe1JU8kDelRCWstyL08QFz9mTFNanxfac
-q0bU6O/jyzrDTvfn1FWRRbF/HEW7mGHrm4kkH4V9F8DRNRIoL6Mux7tkQNVYTkGJ
-802qO+0SQH5qXbejNMmYp1FF8mKWEH1lzOFXHSD+7s2p5PjdZ9hT/kN/fypODQVG
-p1KPN43VYGXHHkZ2Do1B
-=e9dp
------END PGP SIGNATURE-----
-
---H2kTGx6mr3R59oXC--
