@@ -2,135 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B5F60D3C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 23:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E02860D46
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 23:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728215AbfGEVn1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Jul 2019 17:43:27 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:35282 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726559AbfGEVn1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Jul 2019 17:43:27 -0400
-Received: by mail-wm1-f54.google.com with SMTP id l2so3672762wmg.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 05 Jul 2019 14:43:25 -0700 (PDT)
+        id S1727482AbfGEVsS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Jul 2019 17:48:18 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:51701 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725882AbfGEVsS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Jul 2019 17:48:18 -0400
+Received: by mail-wm1-f44.google.com with SMTP id 207so10436716wma.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 05 Jul 2019 14:48:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AyYF1PqVgVNp0UDqaXZk4DXCGbYDF9FLZ6S8gwiprSo=;
-        b=q4gRvOIidhkTDqIfQ55uI7iXCvjrB8bNUT8ozQ6J3NBCD0h34jT5kZhwVL46//59bH
-         borL4tQMFDValt7erfZP4sNwS463BjOY8A7uq5dFFR66jsm6B/j8Zl/zeDZITpYSfmoS
-         /inqlgpS6si5GWMJML8tgtfTchbtqyl85Uay15O5TI8mIY7UOdb2y4wtnF2QDrD2oUgC
-         LD5y+biDsOgy7WczYa4RQBytx63oEKBxYRQAmfx4x/Sstu58126yTXbVnZWBYHApDbVO
-         atU5WZEC3n9MDQI1FVVmRVZU276+9Ah+1/omT05fGAoXuedCGvhNqwoz37wY8QC5u0T/
-         pcfw==
+        bh=z2V4k/Xxk2I0dd0pInRhE70uj3nvnJfVnri3DkBuxm0=;
+        b=gcuket2klH6H40miWR8Vl4xNfJ+1ofJ/yyH5WyKgGJ36EOjwbrMlX3CrkQn8435mKd
+         si7zdiud8/1l+Ra3wkfPYsgQWn8gyYGfqzAttwJFgNGz+syHN+yGPBu3JEen186K8F4e
+         TyLopy+uqM2Kx1HLY/1ISLIfXfiYuQeZDbESaIZNSBESPlrSHk8g0PtTrpBT6gBF235H
+         HKP3cfuhGlfqs/5uG8wnPTom5JNyCyEIZP2y7Q8X+PfObgmjVxUb25zI6Afkk66sUynZ
+         oGdmJ/cGHmCI/uweT5S+ZdUymRb+rKn39zDAXYO//eA8wp/g6blCjd1P9o8p+s/qKqzR
+         sWDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AyYF1PqVgVNp0UDqaXZk4DXCGbYDF9FLZ6S8gwiprSo=;
-        b=MS9VONfV/Srimszd2dLKFOHgX6vgrBu6WOYiAAIzJY/kbE/kIPeQXzhKEf3RBD1Ppc
-         HY7GRMzpeQ/wnbUbIiP06t01oa691jLZJlVIEJ5PZrBcTtrE+2GDHo38R6IxEFpvsNqe
-         /oUonP+s7YmUL0y93L6sQMymSBW/vMeW0R1YzJMiW5l1S2plxu+EuUe7aJmZwjqR2yRr
-         bdU4h28lHWCWNLnhvlUQz0wTZ90Yjvj0qRNorY23Lj5p0E0rVEcwwKUQ0NGGVCDc1aeq
-         uth2go7uYYDV+OGwZ2FiuLy/YMb0YW1JHa2dM0WwcH5Ku2NGjWJPjjixd/bWvy9KxNyG
-         OBqQ==
-X-Gm-Message-State: APjAAAXXD+t040tL60vVMrFGu+8+uBM8WmMNLHro1DYVgtgFSnauxO7Z
-        kYNARtAq/Uas3x/yY6qouEV0HZETt6kVgELJkZ4Pcw==
-X-Google-Smtp-Source: APXvYqxlWUPAmv4NpgcFAzK3FUY9/PltXITta2uyQ/XLUdPHjAZv/VuBnySCMJySBG/g6KD+cQr2e3dGX8Qq2NmbNEk=
-X-Received: by 2002:a1c:f018:: with SMTP id a24mr4593048wmb.66.1562363004482;
- Fri, 05 Jul 2019 14:43:24 -0700 (PDT)
+        bh=z2V4k/Xxk2I0dd0pInRhE70uj3nvnJfVnri3DkBuxm0=;
+        b=pyAqO/t2cZEQlPKk8be2PUAuqrzQ3NgemhBXnsm7shQL9GQaEPkwaplcUo+bZf2kws
+         YOvL0x8J8RrWze0LaC2YL5QzaWKGJEb74teCZSI4hn2KB0gS1XzXdCLnlx0uAAv1N+xj
+         v5Uwvl1rqEH4pIduCJwqGn5/fGexqO9C2nnSCkD2vyrF7/gGeyAoNzbaNwCcchy/+LVq
+         6E1L04MxfREv/lS8S+rwGmnJ1FHV5qWYvYaBxwfcxw8B8xujkb08ZTp2Rx957t0srPmG
+         wa7AVVD7V0r85pz38mkhmFfBWHMhvSqNv/YhrjNnaDbalEmu5+3ncPFEST4Nbz1qfw0S
+         OcjA==
+X-Gm-Message-State: APjAAAWlCv2Bq1jOwHjke+mKN79pa7mPqYTuR/9pdzpTZ83qANayhNQg
+        lOdiGFlBZ6MLm4qUmlH1R1ottJP//S+UdZFyP2EtnQ==
+X-Google-Smtp-Source: APXvYqzAB2L/Sz4S1Svm5MLWXYfI2cWYBiz8QNRk3f2SARqGIJRU3zWNhW6cL/ssrpWcoMhFCGSCCEDYB/uJAW6zxZQ=
+X-Received: by 2002:a1c:f018:: with SMTP id a24mr4600274wmb.66.1562363295738;
+ Fri, 05 Jul 2019 14:48:15 -0700 (PDT)
 MIME-Version: 1.0
 References: <966f5562-1993-2a4f-0d6d-5cea69d6e1c6@gmail.com>
-In-Reply-To: <966f5562-1993-2a4f-0d6d-5cea69d6e1c6@gmail.com>
+ <CAA91j0W+UhJ2O+K1SJs3JaOfzkCnRhWgGjfFxXju5_sUsCj18A@mail.gmail.com> <a0d34e0a-f2bb-abd5-bb6f-f82a8d2da190@gmail.com>
+In-Reply-To: <a0d34e0a-f2bb-abd5-bb6f-f82a8d2da190@gmail.com>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Fri, 5 Jul 2019 15:43:13 -0600
-Message-ID: <CAJCQCtRhXukLGrWTK1D5TLRhxwF6e31oewOSNDg2TAxSanavMA@mail.gmail.com>
+Date:   Fri, 5 Jul 2019 15:48:04 -0600
+Message-ID: <CAJCQCtTiYn3XrMQVVHhnttt_5ys-gaAq5maihNpDiFPRRqr8YA@mail.gmail.com>
 Subject: Re: "kernel BUG" and segmentation fault with "device delete"
 To:     Vladimir Panteleev <thecybershadow@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Cc:     Andrei Borzenkov <arvidjaar@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 4, 2019 at 10:39 PM Vladimir Panteleev
+On Fri, Jul 5, 2019 at 4:20 AM Vladimir Panteleev
 <thecybershadow@gmail.com> wrote:
 >
-> Hi,
+> On 05/07/2019 09.42, Andrei Borzenkov wrote:
+> > On Fri, Jul 5, 2019 at 7:45 AM Vladimir Panteleev
+> > <thecybershadow@gmail.com> wrote:
+> >>
+> >> Hi,
+> >>
+> >> I'm trying to convert a data=RAID10,metadata=RAID1 (4 disks) array to
+> >> RAID1 (2 disks). The array was less than half full, and I disconnected
+> >> two parity drives,
+> >
+> > btrfs does not have dedicated parity drives; it is quite possible that
+> > some chunks had their mirror pieces on these two drives, meaning you
+> > effectively induced data loss. You had to perform "btrfs device
+> > delete" *first*, then disconnect unused drive after this process has
+> > completed.
 >
-> I'm trying to convert a data=RAID10,metadata=RAID1 (4 disks) array to
-> RAID1 (2 disks). The array was less than half full, and I disconnected
-> two parity drives, leaving two that contained one copy of all data.
-
-There's no parity on either raid10 or raid1. But I can't tell from the
-above exactly when each drive was disconnected. In this scenario you
-need to convert to raid1 first, wait for that to complete successfully
-before you can do a device remove. That's clear.  Also clear is you
-must use 'btrfs device remove' and it must complete before that device
-is disconnected.
-
-What I've never tried, but the man page implies, is you can specify
-two devices at one time for 'btrfs device remove' if the profile and
-the number of devices permits it. So exactly the order and commands
-you've used is really important to understand the problem and solution
-including whether there might be a bug.
-
-
+> Hi Andrei,
 >
-> After stubbing out btrfs_check_rw_degradable (because btrfs currently
-> can't realize when it has all drives needed for RAID10),
+> Thank you for replying. However, I'm pretty sure this is not the case as
+> you describe it, and in fact, unrelated to the actual problem I'm having.
+>
+> - I can access all the data on the volumes just fine.
+>
+> - All the RAID10 block profiles had been successfully converted to
+> RAID1. Currently, there are no RAID10 blocks left anywhere on the
+> filesystem.
+>
+> - Only the data was in the RAID10 profile. Metadata was and is in RAID1.
+> It is also metadata which btrfs cannot move away from the missing device.
+>
+> If you can propose a test to verify your hypothesis, I'd be happy to
+> check. But, as far as my understanding of btrfs allows me to see, your
+> conclusion rests on a bad assumption.
+>
+> Also, IIRC, your suggestion is not applicable. btrfs refuses to remove a
+> device from a 4-device filesystem with RAID10 blocks, as that would put
+> it under the minimum number of devices for RAID10 blocks. I think the
+> "correct" approach would be first to convert all RAID10 blocks to RAID1
+> and only then remove the devices, however, this was not an option for me
+> due to other constraints I was working under at the time.
 
-Uhh? This implies it was still raid10 when you disconnected two drives
-of a four drive raid10. That's definitely data loss territory.
-However, your 'btrfs fi us' command suggests only raid1 chunks. What
-I'm suspicious of is this:
+We need to see a list of commands issued in order, along with the
+physical connected state of each drive. I thought I understood what
+you did from the previous email, but this paragraph contradicts my
+understanding, especially when you say "correct approach would be
+first to convert all RAID 10 to RAID1 and then remove devices but that
+wasn't an option"
 
->>Data,RAID1: Size:2.66TiB, Used:2.66TiB
->>  /dev/sdd1   2.66TiB
->>  /dev/sdf1   2.66TiB
-
-All data block groups are only on sdf1 and sdd1.
-
->>Metadata,RAID1: Size:57.00GiB, Used:52.58GiB
->>   /dev/sdd1  57.00GiB
->>  /dev/sdf1  37.00GiB
->>   missing  20.00GiB
-
-There's metadata still on one of the missing devices. You need to
-physically reconnect this device. The device removal did not complete
-before this device was physically disconnected.
-
->> System,RAID1: Size:8.00MiB, Used:416.00KiB
->>   /dev/sdd1   8.00MiB
->>   missing   8.00MiB
-
-This is actually worse, potentially because it means there's only one
-copy of the system chunk on sdd1. It has not been replicated to sdf1,
-but is on the missing device. So it definitely sounds like the missing
-device was physicall removed before 'device remove' command finished.
-
-Depending on degraded operation for this task is the wrong strategy.
-You needed to 'btrfs device delete/remove' before physically
-disconnecting these drives.
+OK so what did you do, in order, each command, interleaving the
+physical device removals.
 
 
->I've
-> successfully mounted rw+degraded, balance-converted all RAID10 data to
-> RAID1, and then btrfs-device-delete-d one of the missing drives. It
-> fails at deleting the second.
-
-OK you definitely did this incorrectly if you're expecting to
-disconnect two devices at the same time, and then "btrfs device delete
-missing" instead of explicitly deleting drives by ID before you
-physically disconnect them.
-
-It sounds to me like you had a successful conversion from 4 disk
-raid10 to a 4 disk raid1. But then you're assuming there are
-sufficient copies of all data and metadata on each drive. That is not
-the case with Btrfs. The drives are not mirrored. The block groups are
-mirrored. Btrfs raid1 tolerates exactly 1 device loss. Not two.
+Thanks,
 
 
 -- 
