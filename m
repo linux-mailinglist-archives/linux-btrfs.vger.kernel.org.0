@@ -2,191 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB6FA6058B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 13:48:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE13E6064F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 15:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728756AbfGELr1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Jul 2019 07:47:27 -0400
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:56761 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726505AbfGELr1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 5 Jul 2019 07:47:27 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5680220A82;
-        Fri,  5 Jul 2019 07:47:26 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Fri, 05 Jul 2019 07:47:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-         h=subject:to:references:from:cc:message-id:date:mime-version
-        :in-reply-to:content-type; s=fm3; bh=2Ixz+pkoDZnmG3ElujSNNtfgQQK
-        w8mnnJ2ebZqkezlo=; b=X9dUQUWj6QZ3yiH/MNPlpXq77Q9ukS6I0jqy66HD1Y/
-        MJyDr0vKJeO+BtN9XSCOOXM9fLs7y34ZEmvN2A3B8Bkt8rdrSrocKAbOUmfWybaD
-        7gCqBA/uzMOF5ebbL9zjZv/O5OzVIQoOkZ001k7wwvyGyoUIHFIBEuGiA2NWKTwV
-        AlewnwRbxZaqn2lQRfrnKyMGkBSTgvxcjRMsALFBcuU+K5w7BiTNQvCpBbM798tO
-        tlrX200NMAGKBmzfwgPM244JVGgBITq1a/m0fG6+kRu75GOuVLRHc97karC2JMmO
-        sT9h8L0rZJhm9rxF0Di1XCtbjKLTFlTRivWmtUdNjNw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=2Ixz+p
-        koDZnmG3ElujSNNtfgQQKw8mnnJ2ebZqkezlo=; b=c3+bWjJXtZ+4vIoFyjgZHI
-        uujEKiYYXmy8XjhFK83VPRwMDfaL4FQNGXULK09ApPIoxCicTFwaCrhfudZroSi2
-        Cl0im6miS+gymBAnw+NQfCVXgTo60OTJU0wT6dOuSSrZ91ypGc/Dj3pcXfHa4vmz
-        HOGG1jVJOMOY/aA+KyLg8WJB4Evm0mIpUKNsWAlhrnUJZVb7IQikXMN7dF8GHwsD
-        eLP2CnjKBC23nOtWKwUw8Y2KUSAKD0oQvyKme9HngdGNHSqolca44490VkU+LGoP
-        FtFRc/kkApaF80UL9qV6JQZeU933W2uFJW33nY7gR9v+5QGeL9PoEBgsJFkQdcZg
-        ==
-X-ME-Sender: <xms:zTgfXYeY3iEv2u1WoJiD0S0PscB_oa5ptbQ7CfX8ByUE43f2pVWiTA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrfeeggdeggecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtsehgtderof
-    dtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgr
-    nhhithdrtghomheqnecukfhppedufeehrddvfedrvdegiedrudefudenucfrrghrrghmpe
-    hmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomhenucevlhhushht
-    vghrufhiiigvpedt
-X-ME-Proxy: <xmx:zTgfXZmSeNhr2z22uSeZwBocF0X8Bn0lLXo-n73Jw8H3iehUBhr9og>
-    <xmx:zTgfXcFN8RPDMvBABr93RBUUejIo85UkVQcPvQtC9uPlLHiy9MDAkg>
-    <xmx:zTgfXfJF5YEs1qpeGIPTESN0CCeFCRfCO0STHRLCbXonBUmQC4kpfw>
-    <xmx:zjgfXa23Kt9MpQtSA0jFDRa9DEBcpZdHzT2f6J8sIIQ4-8SMo7gTbw>
-Received: from [10.0.0.6] (135-23-246-131.cpe.pppoe.ca [135.23.246.131])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 4CBC9380085;
-        Fri,  5 Jul 2019 07:47:25 -0400 (EDT)
+        id S1728913AbfGENDd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Jul 2019 09:03:33 -0400
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:37024 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727965AbfGENDc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Jul 2019 09:03:32 -0400
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id CF966142BC4; Fri,  5 Jul 2019 14:03:29 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1562331809;
+        bh=UDz6aG7GlbGLVhAegZDOkl8/7+LAER8ANsEfXDmPKCo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=dupIWUBJfA8Gd9n3NzgE64ibFMMf1ZH1UZl87HdPBhLPeedmNk7HA8bItcNLg8nd2
+         qrLsYUeSk4jl+e1zeld5JUOQGZvDmvLnjfL/oWEIucSoAC6k3xp0LI9bPFtbBk1sb2
+         6EprC1JzTq8973D622SryYMmM3SG9B3FJiaDl0QXancCdThdoOgDewu45bOrAkWuI1
+         ls5Nu+LMFRIg0l33oCGuG3Yc9XYMOJtlk9XVue4DijmI1yHDxR1XuqtWMavk9sYGh/
+         JHmWaU0FSw9ALJ314CTnTgi9fhyPXGEpNdz6Tpz9qy57+gUg8n4bq0ULVj9PaOtNVn
+         s9QTrIqFBYXuQ==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 9E3AD142BC2;
+        Fri,  5 Jul 2019 14:03:27 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1562331807;
+        bh=UDz6aG7GlbGLVhAegZDOkl8/7+LAER8ANsEfXDmPKCo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=Iy/igmwOUtYtOuN+rEMMExzaaWUR1QW5XcV/4UyJ9zMQdjMVnfNHV7M/8xn6FCZfj
+         6J/4ZxFPWA1Osbm4Xf+f4JBkhxzZGCRXgbqMuY5PDJMLQpUUnNicWYKpLtqdwH77tz
+         NLdNRTq6yPufn1IDUPifb1TJB3wf+k9hxDl8fzt0jBrYhPsokyZO+stjs27yf+PM5O
+         BhZnqyoDIuHp1GvpRtmc5mTgK1EpqfzoBsNYsyZ8m3cWHDQPyFx9bVayRtQS094405
+         zwAaNvuLt3RNFQuDGOrbIvIyB4eJ6grzAgw/tJTdG94XPBmZPzwvBV4yt751tCMbBE
+         REmu2DlFibyrA==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 4771512243;
+        Fri,  5 Jul 2019 14:03:26 +0100 (BST)
 Subject: Re: snapshot rollback
-To:     Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+To:     Remi Gauvin <remi@georgianit.com>,
+        Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <20190705103823.GA13281@tik.uni-stuttgart.de>
  <20190705110614.GA14418@tik.uni-stuttgart.de>
-From:   Remi Gauvin <remi@georgianit.com>
-Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
-Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
- keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
- CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
- sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
- t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
- 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
- AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
- IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
- OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
- 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
- WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
- k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
- Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
- R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
- WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
- QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
- jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
- oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
- BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
- XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
- r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
- phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
- nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
- SY9JJa155sI=
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <f0f13684-8975-721f-5c91-fe3043065634@georgianit.com>
-Date:   Fri, 5 Jul 2019 07:47:24 -0400
+ <f0f13684-8975-721f-5c91-fe3043065634@georgianit.com>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <2d977161-275a-a3e4-1cda-d7221ef12da9@cobb.uk.net>
+Date:   Fri, 5 Jul 2019 14:03:22 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-In-Reply-To: <20190705110614.GA14418@tik.uni-stuttgart.de>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="IYA2Mn9ZAp0V8sTl0YzwWk3N4ynsZYFxK"
+In-Reply-To: <f0f13684-8975-721f-5c91-fe3043065634@georgianit.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IYA2Mn9ZAp0V8sTl0YzwWk3N4ynsZYFxK
-Content-Type: multipart/mixed; boundary="FxWRTNgkxtSDaK27eZn8v9TeGpd73tclg";
- protected-headers="v1"
-From: Remi Gauvin <remi@georgianit.com>
-To: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
-Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <f0f13684-8975-721f-5c91-fe3043065634@georgianit.com>
-Subject: Re: snapshot rollback
-References: <20190705103823.GA13281@tik.uni-stuttgart.de>
- <20190705110614.GA14418@tik.uni-stuttgart.de>
-In-Reply-To: <20190705110614.GA14418@tik.uni-stuttgart.de>
+On 05/07/2019 12:47, Remi Gauvin wrote:
+> On 2019-07-05 7:06 a.m., Ulli Horlacher wrote:
+> 
+>>
+>> Ok, it seems my idea (replacing the original root subvolume with a
+>> snapshot) is not possible. 
+>>
+> ...
+> It is common practice with installers now to mount your root and home on
+> a subvolume for exactly this reason.  (And you can convert your current
+> system as well.  Boot your system with a removable boot media of your
+> choice, create a subvolume named @.  Move all existing folders into this
+> new subvolume.  Edit the @/boot/grub/grub.cfg file so your Linux boot
+> menu has the @ added to the paths of Linux root and initrd.
 
---FxWRTNgkxtSDaK27eZn8v9TeGpd73tclg
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Personally, I use a slightly different strategy. My basic principle is
+that no btrfs filesystem should have any files or directories in its
+root -- only subvolumes. This makes it easier to do stuff with snapshots
+if I want to.
 
-On 2019-07-05 7:06 a.m., Ulli Horlacher wrote:
+For system disks I use a variant of the "@" approach. I create two
+subvolumes when I create a system disk: rootfs and varfs (I separate the
+two because I use different btrbk and other backup configurations for /
+and /var). I then use btrfs subvolume set-default to set rootfs as the
+default mount so I don't have to tell grub, etc about the subvolume (I
+should mention that I put /boot in a separate partition, not using btrfs).
 
->=20
-> Ok, it seems my idea (replacing the original root subvolume with a
-> snapshot) is not possible.=20
->=20
+In /etc/fstab I mount /var with subvol=varfs. I also mount the whole
+filesystem (using subvolid=5) into a separate mount point
+(/mnt/rootdisk) so I can easily get at and manipulate all the top-level
+subvolumes.
 
-Disclaimer: You probably want to wait at least 24 hours before trying my
-directions in case anyone has am important correction to make.  You
-should have a means of recovering in case I got it completely wrong.
-(ie. good backups)
+Data disks are similar. I create a "home" subvolume at the top level in
+the data disk which gets mounted into /home. Below /home, most
+directories are also subvolumes (for example, one for my main account so
+I can backup that separately from other parts of /home). I mount the
+data disk itself (using subvolid=5) into a separate mount point:
+/mnt/datadisk -- which I only use for doing work with messing around
+with the subvolume structure.
 
-It is common practice with installers now to mount your root and home on
-a subvolume for exactly this reason.  (And you can convert your current
-system as well.  Boot your system with a removable boot media of your
-choice, create a subvolume named @.  Move all existing folders into this
-new subvolume.  Edit the @/boot/grub/grub.cfg file so your Linux boot
-menu has the @ added to the paths of Linux root and initrd.
+It sounds more complicated than it is, although it is not supported by
+any distro installers that I am aware of. And you should expect to get a
+few config things wrong while setting it up and will need to have an
+alternative boot to use to get things working (a USB disk or an older
+system disk). Particularly if you want to use btrfs-over-LVM-over-LUKS.
+And don't forget to fully update grub when you think is working and then
+test it again without your old/temporary boot disk in place!
 
-Ex:
+Basically, I make many different subvolumes and use /mount to put them
+into the places they should be in the filesystem (except for / for which
+I use set-default). The real btrfs root directory for each filesystem is
+mounted (using subvolid=5) into a separate place for doing filesystem
+operations.
 
-linux   /@/boot/vmlinuz-4.15.0-43-generic
-root=3DUUID=3D78d04a41-3786-4140-aeb8-5f2f809e7ba7
-initrd  /@/boot/initrd.img-4.15.0-43-generic
+I then have a cron script which checks that every directory within the
+top level of each btrfs filesystem (and within /home) is a subvolume and
+warns me if it isn't (I use special dotfiles within the few top-level
+directories which I don't want to be their own subvolumes).
 
-(you can make this change directly into the grub menu at boot time
-instead of editing  the grub.cfg file, if you prefer.)
+Contact me directly if you would find my personal "how to set up my
+system and root disks, for debian, using btrfs-over-lvm-over-luks" notes
+useful.
 
-Edit the @/etc/fstab file so that mount points to the device we are
-changing have the subvol=3D@ option.
-
-Example:
-
-UUID=3D78d04a41-3786-4140-aeb8-5f2f809e7ba7 /               btrfs
-noatime,nossd,subvol=3D@ 0       1
-
-
-Reboot, and if the system successfully boots, you should run update-grub
-to fix up the grub.cfg file.
-
-=46rom a running system, if you need to see the root subvolume again, (so=
-
-you can see and manipulate the @ subvol,), mount it somewhere else:
-
-mkdir /mnt/sda1
-mount /dev/sda1 /mnt/sda1
-
-=46rom that point forward, it's easy to rename /mnt/sda1/@ and replace it=
-
-with a snapshot of your choice,. (then reboot.)
-
-
-
-
-
---FxWRTNgkxtSDaK27eZn8v9TeGpd73tclg--
-
---IYA2Mn9ZAp0V8sTl0YzwWk3N4ynsZYFxK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQEcBAEBCAAGBQJdHzjMAAoJEO9Tn/JHRWptjzQH/A/4Z6ghqn5jAWuDnOzbQK4p
-TK9saIyDC3g1K4wTB338as/7LBqGweFHcsZ5klgZrdmA44Oaf/38GxyDGI/UJiKq
-88BvJUJAnEA1QyHPizbuZjQQPcMyg2MDbbj8BspeDeePZCst5g96xrW4vxBa/Hb1
-JxnUyg7tNtL/wPOZBKNNjwDUT9ADYtYD5gr30+acnjKxt0tajdzqVaiJyVCyB1qs
-zd2vpL5Xeufg93PNwW8+0bbpNHJqAooxStOoXgvti1BqZEUd1jQZaz03flwjFj4p
-hQCRVlPC/LFLuVP4okDqBslHnTS6UsBW2UU4gg+IWn4YJjVkybrh3VYusMbo95k=
-=wO7T
------END PGP SIGNATURE-----
-
---IYA2Mn9ZAp0V8sTl0YzwWk3N4ynsZYFxK--
+Graham
