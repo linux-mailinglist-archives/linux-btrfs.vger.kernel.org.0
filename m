@@ -2,193 +2,219 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B14601F6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 10:13:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B686024E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 10:39:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727055AbfGEINz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Jul 2019 04:13:55 -0400
-Received: from smtp5-g21.free.fr ([212.27.42.5]:30146 "EHLO smtp5-g21.free.fr"
+        id S1727308AbfGEIjI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Jul 2019 04:39:08 -0400
+Received: from mout.gmx.net ([212.227.15.15]:51609 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726116AbfGEINz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 5 Jul 2019 04:13:55 -0400
-Received: from 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa (unknown [IPv6:2a01:e34:eeaf:c5f0:21e:62ff:fe00:36])
-        by smtp5-g21.free.fr (Postfix) with ESMTP id 055F95FFAD;
-        Fri,  5 Jul 2019 10:13:49 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa (Postfix) with ESMTP id 880C3CF52;
-        Fri,  5 Jul 2019 08:13:49 +0000 (UTC)
-Received: from 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa ([IPv6:::1])
-        by localhost (mail.couderc.eu [IPv6:::1]) (amavisd-new, port 10024)
-        with ESMTP id uPESJjUxs8hM; Fri,  5 Jul 2019 08:13:49 +0000 (UTC)
-Received: from [192.168.163.11] (unknown [192.168.163.11])
-        by 6.3.0.0.0.0.e.f.f.f.2.6.e.1.2.0.0.f.5.c.f.a.e.e.4.3.e.0.1.0.a.2.ip6.arpa (Postfix) with ESMTPSA id 35CD0CF4F;
-        Fri,  5 Jul 2019 08:13:49 +0000 (UTC)
-From:   Pierre Couderc <pierre@couderc.eu>
-Subject: Re: What are the maintenance recommendation ?
-To:     Zygo Blaxell <zblaxell@furryterror.org>
-Cc:     linux-btrfs@vger.kernel.org
-References: <f9ceb3c8-b557-16d6-3f21-f2de34dfae9c@couderc.eu>
- <20190703043721.GJ11831@hungrycats.org>
-Message-ID: <a40d406a-5112-8573-4a3e-7ded4ae972ea@couderc.eu>
-Date:   Fri, 5 Jul 2019 10:13:49 +0200
+        id S1727060AbfGEIjI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 5 Jul 2019 04:39:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1562315941;
+        bh=Nl2Hzl/b05jh6u7d1C4wyMjJgSst0/48d7xxvpzmDYI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=CLGz059JX9pOq9qZL0qvWzgSCvv3lKeLujyQ5DSTkzS+jIvgZethqsX98yP9yY1VG
+         zHe46f2hVJXiU1DtBGYNSOZcj3k4IydSU10eIFUp9mlA6vP4I/XXbROXM3cEca8fjg
+         ZyIU+k3dooLIHCEeO7WLb0+ut0JUKb/H3lFflSck=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx001
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0MF5FT-1hkjqp1Gzz-00GJAm; Fri, 05
+ Jul 2019 10:39:01 +0200
+Subject: Re: [PATCH 1/5] btrfs-progs: mkfs: Apply the sectorsize user
+ specified on 64k page size system
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190705072651.25150-1-wqu@suse.com>
+ <20190705072651.25150-2-wqu@suse.com>
+ <8b26ebd6-55d7-35ef-0f5e-9136c31db876@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <193292d1-1b5f-eab5-dc1f-c233752b307c@gmx.com>
+Date:   Fri, 5 Jul 2019 16:38:54 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190703043721.GJ11831@hungrycats.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: fr
+In-Reply-To: <8b26ebd6-55d7-35ef-0f5e-9136c31db876@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:wrY3OpaPaCtXLRLLG8pL2FLSsRfW7cWGgdhxCafLJZe7wHJGwNk
+ HsXLllJMz9n4vHi2+HR/JXahlp0lejwyLlnc6EuPCsF3QwZJSq4v+hicjd1e0LJoFgT+pCi
+ clajn0kjkLBVPjQoR8HCbF4pSPGGJni9xC0jNsofJVVVTYcA9tftz+jfxEjm8rMKwvjl/9C
+ 1u0RSmSJK99Q5v9iOiE1A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4WMsn5RrUDg=:RRus/+ld20QX8UE4ygiRyU
+ yz6KbBkKBq3FHIRpNlGCQy2LfELUKCsbFLqo096i+iDUpNXil2XFX1O5K71ynMa9yZQZwcbw7
+ QbGvSYPytH3yP3HnQ7HWyy4hd4TVOiVkNkvNGGn/+TFiUl3LW1CQWzFJ+Voq1BFiXthLVLYo9
+ Z6nZ9DeHtMxAwpADCWZuwX17mLA93f76wEbfF/XOB+aVYcqKJOIp9JLfnFiPEzof4VnVZhvEt
+ kMNKaXtGNnRh7kGl/GGz16kFhPmfxnK9VL6NrPlUM8gXYJl1Cn9UKLDC3gdNJtOE+mH8RbZzk
+ B/te+hMU3gEtBZTuPgDLBg5ymhDg6dntyE6cCSw6BAk4+kg1wA4qFaYAai+uRbDRMFRDKMLtk
+ OrhXUiQ/dr7FxH17Rey4LzJAQaRSeNCY6HZ/Ojq0heKQ4VzsbjEhjgZ/J584tKe20/5q7RgVx
+ JU3cXVovj0IqdPziONpyJqS7AvLRa+ZHiAq0mRpAJiUCego1W5DMioFffvEesQsv6veL1iSfF
+ muIrqQ3ZGsujP0bGf0rw75FBW4BplFT7+brdE3PGlEmPoQP1adCGu5cltmmDbxhr+aKJRU8Br
+ XsYbmZqI1CM0aPwxbR9XSjqdpG2jC3JUbZa34EB9RwGVP7ZXMqDvA/EgUs1aCAGCNnqgK+RBs
+ yZdS3K7elL6Yc5BroPE6ee6XNM5oFw9bHkNA1ikw4vNCZiAmx2nGcQ5hfgiQfWvzW9VU5x9hN
+ /21D8ZLmmylXnSQyAqAsTaQOYbqiqmwXrBJFzThbZ5oFiTJ5uE60BQUTLJFl8ZShXWypqMtZS
+ i/Iycepmw5Y4jhrFwBcrzRaKV1n0Du/QtnQtPJVvClcXutt0Z6A8WaxLCuW3+Aw9b56gp5sND
+ mRR0hXqNTkvWqZqWlPlRy6u30oWaG1xEwLKKDbhHvaLhAzXaa7orVhvG3aeOfhV4XEiGUlrCy
+ OPVsY/ATv8UsthX6wo8DNqgbbIZlc2QbHKsbxmn0fMQ/nJJUmJIv44dlSlletlYnRMevFobpT
+ mq2NusCGrs+i2bcMAOsfTVcK3vr4FpNJQx5CrDEAf0WOOtv1IwxOkqOH/w/sUDMlJ12XJL9ab
+ Xb2lsQ4m9MpRaq+ailESGgKvLtVDZCcGzkH
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/3/19 6:37 AM, Zygo Blaxell wrote:
-> On Sat, Jun 29, 2019 at 08:50:03PM +0200, Pierre Couderc wrote:
->> 1- Is there a summary of btrfs recommendations for maintenance ?
+
+
+On 2019/7/5 =E4=B8=8B=E5=8D=883:45, Nikolay Borisov wrote:
+>
+>
+> On 5.07.19 =D0=B3. 10:26 =D1=87., Qu Wenruo wrote:
+>> [BUG]
+>> On aarch64 with 64k page size, mkfs.btrfs -s option doesn't work:
+>>   $ mkfs.btrfs  -s 4096 ~/10G.img  -f
+>>   btrfs-progs v5.1.1
+>>   See http://btrfs.wiki.kernel.org for more information.
 >>
->> I have read somewhere that  a monthly  btrfs scrub is recommended.
-> 1.  Scrub detects and (when using the DUP or RAID1/10/5/6 profiles)
-> corrects errors introduced into the filesystem by failures in the
-> underlying disks.  You can run scrub as much or as little as you want,
-> but the longer you go between scrubs, the longer errors can accumulate
-> undetected, and the greater the risk that you'll have uncorrected errors
-> on multiple disks when one of your disks fails and needs to be replaced.
-> In that event, you will lose data or even the entire filesystem.
+>>   Label:              (null)
+>>   UUID:               c2a09334-aaca-4980-aefa-4b3e27390658
+>>   Node size:          65536
+>>   Sector size:        65536		<< Still 64K, not 4K
+>>   Filesystem size:    10.00GiB
+>>   Block group profiles:
+>>     Data:             single            8.00MiB
+>>     Metadata:         DUP             256.00MiB
+>>     System:           DUP               8.00MiB
+>>   SSD detected:       no
+>>   Incompat features:  extref, skinny-metadata
+>>   Number of devices:  1
+>>   Devices:
+>>      ID        SIZE  PATH
+>>       1    10.00GiB  /home/adam/10G.img
+>>
+>> [CAUSE]
+>> This is because we automatically detect sectorsize based on current
+>> system page size, then get the maxium number between user specified -s
+>> parameter and system page size.
+>>
+>> It's fine for x86 as it has fixed page size 4K, also the minimium valid
+>> sector size.
+>>
+>> But for system like aarch64 or ppc64le, where we can have 64K page size=
+,
+>> and it makes us unable to create a 4k sector sized btrfs.
+>>
+>> [FIX]
+>> Only do auto detect when no -s|--sectorsize option is specified.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  mkfs/main.c | 12 +++++++++++-
+>>  1 file changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mkfs/main.c b/mkfs/main.c
+>> index 8dbec0717b89..26d84e9dafc3 100644
+>> --- a/mkfs/main.c
+>> +++ b/mkfs/main.c
+>> @@ -817,6 +817,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>>  	char *source_dir =3D NULL;
+>>  	bool source_dir_set =3D false;
+>>  	bool shrink_rootdir =3D false;
+>> +	bool sectorsize_set =3D false;
+>>  	u64 source_dir_size =3D 0;
+>>  	u64 min_dev_size;
+>>  	u64 shrink_size;
+>> @@ -906,6 +907,7 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>>  				}
+>>  			case 's':
+>>  				sectorsize =3D parse_size(optarg);
+>> +				sectorsize_set =3D true;
+>>  				break;
+>>  			case 'b':
+>>  				block_count =3D parse_size(optarg);
+>> @@ -943,7 +945,15 @@ int BOX_MAIN(mkfs)(int argc, char **argv)
+>>  		printf("See %s for more information.\n\n", PACKAGE_URL);
+>>  	}
+>>
+>> -	sectorsize =3D max(sectorsize, (u32)sysconf(_SC_PAGESIZE));
+>> +	if (!sectorsize_set)
+>> +		sectorsize =3D max(sectorsize, (u32)sysconf(_SC_PAGESIZE));
 >
-> The ideal frequency for scrubs depends in part on how important your data
-> is.  If it's very important that you detect storage failures immediately,
-> you can run scrub once a day.  If the data is very unimportant--e.g. you
-> have good backups, and you don't care about extended downtime to restore
-> them--then you might not need to run scrub at all.
->
-> I run alternating SMART long self-tests and btrfs scrubs every 15 days
-> (i.e. SMART long self-tests every 30 days, btrfs scrub 15 days after
-> every SMART long self-test).
->
-> Note that after a power failure or unclean shutdown, you should run
-> scrub as soon as possible after rebooting, regardless of the normal
-> maintenance schedule.  This is especially important for RAID5/6 profiles
-> to regenerate parity blocks that may have been damaged by the parity
-> raid write hole issue.  A post-power-failure scrub can also detect some
-> drive firmware bugs.
->
-> Pay attention to the output of scrub, especially the per-device statistics
-> (btrfs scrub status -d and btrfs dev stat).  Errors reported here will
-> indicate which disks should be replaced in RAID arrays.
->
-> 2.  Watch the amount of "unallocated" space on the filesystem.  If the
-> "unallocated" space (shown in 'btrfs fi usage') drops below 1GB, you are
-> at risk of running out of metadata space.  If you run out of metadata
-> space, btrfs becomes read-only and it can be difficult to recover.
->
-> To free some unused data space (convert it from "data" to "unallocated"):
->
-> 	btrfs balance start -dlimit=5 /path/to/fs
->
-> This usually doesn't need to be done more than once per day, but it
-> depends on how busy your filesystem is.  If you have hundreds of GB of
-> unallocated space then you won't need to do this at all.
->
-> Never balance metadata (i.e. the -m option of btrfs balance) unless you
-> are converting to a different RAID profile (e.g. -mconvert=raid1,soft).
-> If there is sufficient metadata space allocated, then the filesystem
-> can be filled with data without any problems.  Balancing metadata can
-> reduce the amount of space allocated for metadata, then the filesystem
-> will be at risk of going read-only if it fills up.
->
-> Normally there will be some overallocation of metadata (roughly 3:2
-> allocated:used ratio).  Leave it alone--if the filesystem allocated
-> metadata space in the past, the filesystem may need it again in the
-> future.
->
-> Scrub and balancing are the main requirements.  Filesystems can operate
-> with just those two maintenance actions for years (outlasting all of
-> their original hardware), and recover from multiple disk failures (one
-> at a time) along the way.
->
->
-This is luminous.
+> This means it's possible for the user to create a filesystem that is not
+> mountable on his current machine, due to the presence of the following
+> check in validate_super:
 
-I suggest  creating a "Guide for maintenance" on the wiki with this 
-contents,
+There is no problem for it as we can also do that on x86:
+mkfs.btrfs -f -s 64k -n 64k
 
-with a link in main page wiki in "Guides and usage information" section
+>
+> if (sectorsize !=3D PAGE_SIZE) {
+> btrfs_err(..)
+> }
+>
+> Perhaps the risk is not that big since if someone creates such a
+> filesystem they will almost instantly realize it won't work and
+> re-create it properly.
 
+And I'd argue any user of -s option should be considered as experienced
+user.
 
->> 2- Is there a repair guide ? I see all these commands restore, scrub,
->> rescue. Is there a guide of what to do when a disk has some errors ? The man
->> does not say when use some command...
-> A scrub can fix everything that btrfs kernel code can recover from, i.e.
-> if a disk in a btrfs RAID array is 100% corrupted while online, scrub
-> can restore all of the data, including superblocks, without interrupting
-> application activity on the filesystem.  With RAID1/5/6/10 this includes
-> all single-disk failures and non-malicious data corruption from disks
-> (RAID6 does not have a corresponding 3-copy RAID1 profile for metadata
-> yet, so RAID6 can't always survive 2 disk failures in practice).
 >
-> Scrub is very effective at repairing data damage caused by disk failures
-> in RAID arrays, and with DUP metadata on single-disk filesystem scrub can
-> often recover from a few random UNC sectors.  If something happens to the
-> filesystem that scrub can't repair (e.g. damage caused by accidentally
-> overwriting the btrfs partition with another filesystem, host RAM failures
-> writing corrupted data to disks, hard drive firmware write caching bugs),
-> the other tools usually can't repair it either.
 >
-> Always use DUP or RAID1 or RAID10 for metadata.  Do not use single, RAID0,
-> RAID5, or RAID6--if there is a UNC sector error or data corruption in
-> a metadata page, the filesystem will be broken, and data losses will be
-> somewhere between "medium" and "severe".
 >
-> The other utilities like 'btrfs check --repair' are in an experimental
-> state of development, and may make a damaged filesystem completely
-> unreadable.  They should only be used as a last resort, with expert
-> guidance, after all other data recovery options have been tried, if
-> at all.  Often when a filesystem is damaged beyond the ability of scrub
-> to recover, the only practical option is to mkfs and start over--but
-> ask the mailing list first to be sure, doing so might help improve the
-> tools so that this is no longer the case.
+>> +	if (!is_power_of_2(sectorsize) || sectorsize < 4096 ||
+>> +	    sectorsize > SZ_64K) {
 >
-> Usually a damaged btrfs can still be mounted read-only and some data
-> can be recovered.  Corrupted data blocks (with non-matching csums) are
-> not allowed to be read through a mounted filesystem.  'btrfs restore'
-> is required to read those.
+> nit: Perhaps this check should be modified so that it follows the kernel
+> style :
+> if (!is_power_of_2(sectorsize) || sectorsize < 4096 ||
+>               sectorsize > BTRFS_MAX_METADATA_BLOCKSIZE) {
 >
-> 'btrfs restore' can copy data from a damaged btrfs filesystem that is
-> not mounted.  It is able to work in some cases where mounting fails.
-> When 'btrfs restore' copies data it does not verify csums.  This can be
-> used to recover corrupted data that would not be allowed to read through
-> a mounted filesystem.  On the other hand, if you want to avoid copying
-> data with known corruption, you should mount the filesystem read-only
-> and read it that way.
->
-> Use 'btrfs replace' to replace failed disks in a RAID1/RAID5/RAID6/RAID10
-> array.  It can reconstruct data from other mirror disks quickly by
-> simply copying the mirrored data without changing any of the filesystem
-> structure that references the data.  If the replacement disk is smaller
-> than the disk it is meant to replace, then use 'btrfs dev add' followed by
-> 'btrfs dev remove', but this is much slower as the data has to be moved
-> one extent at a time, and all references to the data must be updated
-> across the array.
->
-> There appear to be a few low-end hard drive firmwares in the field with
-> severe write caching bugs.  The first sign that you have one of those is
-> that btrfs gets an unrecoverable 'parent transid verify failure' event
-> after a few power failures.  The only known fix for this is to turn off
-> write caching on such drives (i.e. hdparm -W0), mkfs, and start over.
-> If you think you have encountered one of these, please post to the
-> mailing list with drive model and firmware revision.
->
-> 'btrfs rescue' is useful for fixing bugs caused by old mkfs tools or
-> kernel versions.  It is not likely you will ever need it if you mkfs a
-> new btrfs today (though there's always the possibility of new bugs in
-> the future...).
+> MAX_METADATA_BLOCKSIZE is defined as 64k but using the same defines
+> seems more clear to me.
 
-This is luminous.
+That's correct and looks cleaner.
 
-I suggest  creating a "Emergency Repair guide" on the wiki with this 
-contents,
+I'll update this patch.
 
-with a link in main page wiki in "Guides and usage information" section
+Thanks,
+Qu
 
-
+>
+>
+>> +		error(
+>> +		"invalid sectorsize: %u, expect either 4k, 8k, 16k, 32k or 64k",
+>> +			sectorsize);
+>> +		goto error;
+>> +	}
+>>  	stripesize =3D sectorsize;
+>>  	saved_optind =3D optind;
+>>  	dev_cnt =3D argc - optind;
+>>
