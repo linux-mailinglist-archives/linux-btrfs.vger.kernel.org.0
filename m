@@ -2,181 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8FA55FFC4
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 05:34:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C30160039
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 06:39:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbfGEDeA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 4 Jul 2019 23:34:00 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:47298 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727053AbfGEDeA (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 4 Jul 2019 23:34:00 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 8CC84377B44; Thu,  4 Jul 2019 23:33:59 -0400 (EDT)
-Date:   Thu, 4 Jul 2019 23:33:59 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: repeatable(ish) corrupt leaf filesystem splat on 5.1.x
-Message-ID: <20190705033359.GD11820@hungrycats.org>
-References: <20190704210323.GK11831@hungrycats.org>
- <89b27a4e-8074-9e07-f98f-fc7f25d78ca1@gmx.com>
+        id S1725791AbfGEEjf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Jul 2019 00:39:35 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:46064 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725497AbfGEEjf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 5 Jul 2019 00:39:35 -0400
+Received: by mail-wr1-f65.google.com with SMTP id f9so8423796wre.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 04 Jul 2019 21:39:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:openpgp:autocrypt:to:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=h394izWr52rxbfeoB/kRaXH/ldLE3rWdnsU/fMLmuNU=;
+        b=VEqHo3vI+11fNN3XP5p+ORTIMUVhMGQoGb0XU/PJMCbOjJFDmU87LOsKqkLqLWqYWv
+         w/imwiZs36LEkxB3b8qxi6Y7EX70xw2xn7lNTN4picdK7Ufx16kDFy4h4JovqX4D8jx7
+         lO89ZLUwFOTnc/wlSJuKzmI+XdTJyXUH+rUmjEYsPVqShK71uP2sqVQQVCra/ihiqNPb
+         D8Kj730RrMU8HdGr68pnSo9ABqSE9+4pNyJxQ+2XzkpoS5JmOK8bZu3a1RDo+pHUH3Pb
+         jx2ILxsP5N7rVbaXXbpGBHQA26wZlJv2/3Na4QY7xuPPeMM2Lq8I24ompqns5uTPPPId
+         cE1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:openpgp:autocrypt:to:message-id
+         :date:user-agent:mime-version:content-language
+         :content-transfer-encoding;
+        bh=h394izWr52rxbfeoB/kRaXH/ldLE3rWdnsU/fMLmuNU=;
+        b=hZo8/CuYVQNeTcRJ23M25fIaSiLEV8fAQxWv7LgpdlePdO5K3Qn6BGBorkaZjBnL0O
+         YpRMxI1Kh3qZVTAHg8ldMYQB9CwfR8y1lHxlAMHoKYTOQC8CSiuUv8um4PPtcu8HyJV9
+         35etlCh+akdHNV0o3Jwb0U+DR9hydv4VZ6WWInHf8aA7A73WJ5Jc9wcPBQPvdEppIhnP
+         xGsQwCsDeuyJxPEkzjN7t8q4+HBkp9y2JLW0SxU0CKAe4fSbfCNfz/QGuwupbgQsEQ1v
+         2nFeSM7zdBKd4zBHd3vgg3Ig6eE8iKAF0IIZ3kDT8z2cxnbLM5f8TXV09z9SOiQQ5M6u
+         80lA==
+X-Gm-Message-State: APjAAAW95h3vMpW5k0YARzYFDnvbS5SbjT7JdHV8X6nQpDq+XLmJHhEW
+        F56st+pETpV5CebAAkKRQk5rsE37Uho=
+X-Google-Smtp-Source: APXvYqwutSB8vok49Yw8bvFGpEq2OIbLoxH/tVH7PatPnEhG3eCHjnf9efVy81CpDUWzEHwJewuMTg==
+X-Received: by 2002:adf:e588:: with SMTP id l8mr10428wrm.139.1562301572583;
+        Thu, 04 Jul 2019 21:39:32 -0700 (PDT)
+Received: from home.thecybershadow.net ([89.28.117.31])
+        by smtp.gmail.com with ESMTPSA id w20sm20729032wra.96.2019.07.04.21.39.31
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Jul 2019 21:39:31 -0700 (PDT)
+From:   Vladimir Panteleev <thecybershadow@gmail.com>
+Subject: "kernel BUG" and segmentation fault with "device delete"
+Openpgp: preference=signencrypt
+Autocrypt: addr=thecybershadow@gmail.com; prefer-encrypt=mutual; keydata=
+ mQENBFar2yQBCADWo1C5Ir1smytf7+vWGCEoZgb/4XKkxrp+GUO7eJO8iYCWHTmCPZpi6p/z
+ y6eh+NYcDQSRzKA99ffgdN+aT8/L6d63pYdsgtDmX/yrFWyLOVgW62LQpC/To4MTJAIgY/Rg
+ /VjdifOJtYFvr+BKJwFCTfcviy4EQjsfHLnyJjvL9BiCXfSBXASc/Gn9WOTL5ZNpk4TStGXO
+ +/2PIKeg228LtJ5vc/vemBo4hcjJv9ttX7dCebpSAbNo7GgOs8XNgJU2mEcra3IMT15dGk0/
+ KpGMx7bMinTIlxx/BAGt5M5w8OnNi4p2AcKzvH18OTE7Lssn5ub8Ains32hbUFf18hJbABEB
+ AAG0K1ZsYWRpbWlyIFBhbnRlbGVldiA8Z3BnQHRoZWN5YmVyc2hhZG93Lm5ldD6JAVEEEwEI
+ ADsCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AWIQS77RsIjO1/lYkX++hQBPD60FFXbQUC
+ WJ9eKQIZAQAKCRBQBPD60FFXbX0yB/9PEcY3H9mEZtU1UVqxLzPMVXUX5Khk6RD3Jt8/V7aA
+ vu8VO4qwmnhadRPHXxVwnnVotao9d5U1zHw0gDhvJWelGRm52mKAPtyPwtBy4y3oXzymLfOM
+ RIZxwxMY5RkbqdgWNEY7tCplABnWmaUMm5qDIjzkbEabpiqGySMy2gy6lQHUdRHcgFqO+ceZ
+ R7IOPEh2fnVuQc5t1V56OHHRQZMQLgGupInST+svryv2sfr5+ZJqtwWL3nn8aFER6eIWzDDu
+ m9y2RZnykbfwd56c81bpY6qqZtHkyt0hImkOwOiBj3UWtJvgZ95WnJ8NBPHPcttgL3vQTsXu
+ BRYEjQZln81tuQENBFar2yQBCADFGh8NqHMtBT8F4m/UzQx0QAMDyPQN3CjKn67gW//8gd5v
+ TmZCws2TwjaGlrJmwhGseUkZ368dth5vZLPu95MVSo2TBGf+XIVPsGzX6cuIRNtvQOT5YSUz
+ uOghU0wh5gjw7evg7d0qfZRTZ2/JAuWmeTvPl66dasUoqKxVrq5o2MXdYkI6KoSxTsal3/36
+ ii5cl2GfzE+bVAj3MB8B0ktdIZCHAJT8n+8h10/5TD5oEkWjhWdATeWMrC2bZwFykgSKjY/3
+ jUvmfeyJp56sw5w3evZLQdQCo+NWoFGHdHBm0onyZbgbWS+2DEQI+ee0t6q6/iR1tf8VPX2U
+ LY0jjiZ7ABEBAAGJAR8EGAEIAAkFAlar2yQCGwwACgkQUATw+tBRV200GQf8CaQxTy7OhWQ5
+ O47G3+yKuBxDnYoP9h+T/sKcWsOUgy7i/vbqfkJvrqME8rRiO9YB/1/no1KqXm+gq0rSeZjy
+ DA3mk9pNKvreHX9VO1md4r/vZF6jTwxNI7K97T34hZJGUQqsGzd8kMAvrgP199tXGG2+NOXv
+ ih44I0of/VFFklNmO87y/Vn5F8OfNzwiHLNleBXZ1bMp/QBMd3HtahZVk7xRMNAKYqkyvI/C
+ z0kgoHYP9wKpSmbPXJ5Qq0ndAJ7KIRcIwwDcbh3/F9Icj/N3v0SpxuJO7l0KlXQIWQ7TSpaO
+ liYT2ARnGHHYcE2OhA0ixGV3Y3suUhk+GQaRQoiytw==
+To:     linux-btrfs@vger.kernel.org
+Message-ID: <966f5562-1993-2a4f-0d6d-5cea69d6e1c6@gmail.com>
+Date:   Fri, 5 Jul 2019 04:39:30 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="hoZxPH4CaxYzWscb"
-Content-Disposition: inline
-In-Reply-To: <89b27a4e-8074-9e07-f98f-fc7f25d78ca1@gmx.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi,
 
---hoZxPH4CaxYzWscb
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm trying to convert a data=RAID10,metadata=RAID1 (4 disks) array to 
+RAID1 (2 disks). The array was less than half full, and I disconnected 
+two parity drives, leaving two that contained one copy of all data.
 
-On Fri, Jul 05, 2019 at 08:06:13AM +0800, Qu Wenruo wrote:
->=20
->=20
-> On 2019/7/5 =E4=B8=8A=E5=8D=885:03, Zygo Blaxell wrote:
-> > I've seen this twice in 3 days after releasing 5.1.x kernels from the
-> > test lab:
-> >=20
-> > 5.1.15 on 2xSATA RAID1 SSD, during a balance:
-> >=20
-> > 	[48714.200014][ T3498] BTRFS critical (device dm-21): corrupt leaf: ro=
-ot=3D2 block=3D117776711680 slot=3D57, unexpected item end, have 109534755 =
-expect 12632
-> > 	[48714.200381][ T3498] BTRFS critical (device dm-21): corrupt leaf: ro=
-ot=3D2 block=3D117776711680 slot=3D57, unexpected item end, have 109534755 =
-expect 12632
-> > 	[48714.200399][ T9749] BTRFS: error (device dm-21) in __btrfs_free_ext=
-ent:7109: errno=3D-5 IO failure
-> > 	[48714.200401][ T9749] BTRFS info (device dm-21): forced readonly
-> > 	[48714.200405][ T9749] BTRFS: error (device dm-21) in btrfs_run_delaye=
-d_refs:3008: errno=3D-5 IO failure
-> > 	[48714.200419][ T9749] BTRFS info (device dm-21): found 359 extents
-> > 	[48714.200442][ T9749] BTRFS info (device dm-21): 1 enospc errors duri=
-ng balance
-> > 	[48714.200445][ T9749] BTRFS info (device dm-21): balance: ended with =
-status: -30
-> >=20
-> > and 5.1.9 on 1xNVME, a few hours after some /proc NULL pointer derefere=
-nce
-> > bugs:
-> >=20
-> > 	[89244.144505][ T7009] BTRFS critical (device dm-4): corrupt leaf: roo=
-t=3D2 block=3D1854946361344 slot=3D32, unexpected item end, have 1335222703=
- expect 15056
-> > 	[89244.144822][ T7009] BTRFS critical (device dm-4): corrupt leaf: roo=
-t=3D2 block=3D1854946361344 slot=3D32, unexpected item end, have 1335222703=
- expect 15056
-> > 	[89244.144832][ T2403] BTRFS: error (device dm-4) in btrfs_run_delayed=
-_refs:3008: errno=3D-5 IO failure
-> > 	[89244.144836][ T2403] BTRFS info (device dm-4): forced readonly
-> >=20
-> > The machines had been upgraded from 5.0.x to 5.1.x for less than 24
-> > hours each.
->=20
-> All in btrfs_run_delayed_refs() when updating extent tree.
->=20
-> The new check is to prevent btrfs receiving corrupted data, thus it
-> happens at tree read time, where there should be no race.
-> And that check has been there for a while, v4.15 should be the first
-> kernel version with such check.
->=20
-> So it doesn't look like false alert but some real corruption.
+After stubbing out btrfs_check_rw_degradable (because btrfs currently 
+can't realize when it has all drives needed for RAID10), I've 
+successfully mounted rw+degraded, balance-converted all RAID10 data to 
+RAID1, and then btrfs-device-delete-d one of the missing drives. It 
+fails at deleting the second.
 
-There was definite persistent corruption in this case (which is different
-=66rom the "ghost" cases in the other thread).  I had to repair or replace
-filesystems after each of these events.  I did a quick dump-tree and
-found exactly the corruption stated in the kernel log, even after reboot.
+The process reached a point where the last missing device shows as 
+containing 20 GB of RAID1 metadata. At this point, attempting to delete 
+the device causes the operation to shortly fail with "No space left", 
+followed by a "kernel BUG at fs/btrfs/relocation.c:2499!", and the 
+"btrfs device delete" command to crash with a segmentation fault.
 
-> Would you please provide the tree dump of the related tree blocks?
+Here is the information about the filesystem:
 
-Alas, these happened on production systems, so I had to repair or restore
-the filesystems immediately and didn't have time to do more than a quick
-analysis.  I also didn't know I was looking at a pattern of new behavior
-until after the first two failures, so I didn't think of saving the tree.
+https://dump.thecybershadow.net/55d558b4d0a59643e24c6b4ee9019dca/04%3A28%3A23-upload.txt
 
-I can't reproduce this on expendable test machines (they run a replica
-of production workload with no problems, 27 days on 5.1.x so far),
-and it's too expensive to keep running 5.1.x kernels in production if
-an important filesystem is going down every few days.
+And here is the dmesg output (with enospc_debug):
 
-> > The 5.1.9 machine had crashed (on 5.0.15) before, but a scrub had passed
-> > while running 5.1.9 after the crash.  The filesystem failure occurred
-> > 20 hours later.  There were some other NULL pointer deferences in that
-> > uptime, so maybe 5.1.9 is just a generally buggy kernel that nobody
-> > should ever run.  I expect better from 5.1.15, though, which had no
-> > unusual events reported in the 8 hours between its post-reboot scrub
-> > and the filesystem failure.
->=20
-> BTW, would you like to spend some extra time on v5.2-rc kernel?
-> In v5.2 kernel, we have extra write time tree checker (and makes read
-> time tree checker a little faster).
-> Current read time only checker is not good enough to expose the cause of
-> the coorruption and prevent it.
->=20
-> With v5.2, if the bug is still there, we could at least prevent the
-> corruption before it's too late.
+https://dump.thecybershadow.net/9d3811b85d078908141a30886df8894c/04%3A28%3A53-upload.txt
 
-I can build a v5.2-rc kernel and throw it at a test machine...but my test
-machines can't reproduce this bug, so they might not tell us much.
+Attempting to unmount the filesystem causes another warning:
 
-> > I have several other machines running 5.1.x kernels that have not yet h=
-ad
-> > such a failure--including all of my test machines, which don't seem to =
-hit
-> > this issue after 25+ days of stress-testing.  Most of the test machines
-> > are using rotating disks, a few are running SSD+HDD with lvmcache.
-> >=20
-> > One correlation that may be interesting:  both of the failing filesyste=
-ms
-> > had 1MB unallocated on all disks; all of the non-failing filesystems ha=
-ve
-> > 1GB or more unallocated on all disks.  I was running the balance on the
-> > first filesystem to try to free up some unallocated space.  The second
-> > filesystem died without any help from me.
-> >=20
-> > It turns out that 'btrfs check --repair' can fix these!  First time
-> > I've ever seen check --repair fix a broken filesystem.  A few files are
-> > damaged, but the filesystem is read-write again and still working so far
-> > (on a 5.0.21 kernel) .
->=20
-> Maybe one won't believe, btrfs check has leaf re-order and item offset
-> repair from the very beginning, but I'm not sure how reliable it is.
+https://dump.thecybershadow.net/6d6f2353cd07cd8464ece7e4df90816e/04%3A30%3A30-upload.txt
 
-Repair seems to do well with simple software bugs (i.e. things that
-corrupt only single items and don't lose entire leaf nodes) on small
-filesystems (under 10 TB).  I just don't have many failures that fit
-those constraints.  For me, it's either something outside of btrfs
-(hardware failure, firmware bugs, or both) that completely destroys a
-filesystem, or the filesystem is too large for btrfs check (it runs out
-of RAM before it can do anything useful), or the filesystem runs for 5+
-years with no problems at all.
+The umount command then hangs indefinitely.
 
-> Thanks,
-> Qu
->=20
-> >=20
->=20
+Linux 5.1.15-arch1-1-ARCH, btrfs-progs v5.1.1
 
-
-
-
---hoZxPH4CaxYzWscb
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXR7FJAAKCRCB+YsaVrMb
-nJbFAKC4HXw9Lm1QeWIdXk4PtbLmHJlHDACeLfaranxjDGqPNsvgU4/stEFhV3A=
-=2wiZ
------END PGP SIGNATURE-----
-
---hoZxPH4CaxYzWscb--
+-- 
+Best regards,
+  Vladimir
