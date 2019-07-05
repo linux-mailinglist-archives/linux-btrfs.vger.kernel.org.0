@@ -2,106 +2,191 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8241B60541
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 13:26:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB6FA6058B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Jul 2019 13:48:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727714AbfGEL01 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 5 Jul 2019 07:26:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726523AbfGEL01 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 5 Jul 2019 07:26:27 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E763B21852;
-        Fri,  5 Jul 2019 11:26:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562325986;
-        bh=hZwBWuq3kJU0Goy/sqWl63lGwWjaKqG3XOhbCM6rm7Y=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mAqmiB3xfT7UbXqziykTtp1thAO/O9+JIExr/iQxuwYhn1lqxZ6hQ5VkI8mj/c68Q
-         RASjSzxgyEyLuEieu+2Sh+h4gcSixKviYN672Tju31+85jCAtsR1vNrK8IcM+cPKNp
-         TMuk7TnLHrLOsUiKvbzMIaPmxQ8X6Ly47ge96n+E=
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs/189: make the test work on systems with a page size greater than 4Kb
-Date:   Fri,  5 Jul 2019 12:26:21 +0100
-Message-Id: <20190705112621.653-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1728756AbfGELr1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 5 Jul 2019 07:47:27 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:56761 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726505AbfGELr1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 5 Jul 2019 07:47:27 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5680220A82;
+        Fri,  5 Jul 2019 07:47:26 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Fri, 05 Jul 2019 07:47:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:from:cc:message-id:date:mime-version
+        :in-reply-to:content-type; s=fm3; bh=2Ixz+pkoDZnmG3ElujSNNtfgQQK
+        w8mnnJ2ebZqkezlo=; b=X9dUQUWj6QZ3yiH/MNPlpXq77Q9ukS6I0jqy66HD1Y/
+        MJyDr0vKJeO+BtN9XSCOOXM9fLs7y34ZEmvN2A3B8Bkt8rdrSrocKAbOUmfWybaD
+        7gCqBA/uzMOF5ebbL9zjZv/O5OzVIQoOkZ001k7wwvyGyoUIHFIBEuGiA2NWKTwV
+        AlewnwRbxZaqn2lQRfrnKyMGkBSTgvxcjRMsALFBcuU+K5w7BiTNQvCpBbM798tO
+        tlrX200NMAGKBmzfwgPM244JVGgBITq1a/m0fG6+kRu75GOuVLRHc97karC2JMmO
+        sT9h8L0rZJhm9rxF0Di1XCtbjKLTFlTRivWmtUdNjNw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=2Ixz+p
+        koDZnmG3ElujSNNtfgQQKw8mnnJ2ebZqkezlo=; b=c3+bWjJXtZ+4vIoFyjgZHI
+        uujEKiYYXmy8XjhFK83VPRwMDfaL4FQNGXULK09ApPIoxCicTFwaCrhfudZroSi2
+        Cl0im6miS+gymBAnw+NQfCVXgTo60OTJU0wT6dOuSSrZ91ypGc/Dj3pcXfHa4vmz
+        HOGG1jVJOMOY/aA+KyLg8WJB4Evm0mIpUKNsWAlhrnUJZVb7IQikXMN7dF8GHwsD
+        eLP2CnjKBC23nOtWKwUw8Y2KUSAKD0oQvyKme9HngdGNHSqolca44490VkU+LGoP
+        FtFRc/kkApaF80UL9qV6JQZeU933W2uFJW33nY7gR9v+5QGeL9PoEBgsJFkQdcZg
+        ==
+X-ME-Sender: <xms:zTgfXYeY3iEv2u1WoJiD0S0PscB_oa5ptbQ7CfX8ByUE43f2pVWiTA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrfeeggdeggecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtsehgtderof
+    dtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgr
+    nhhithdrtghomheqnecukfhppedufeehrddvfedrvdegiedrudefudenucfrrghrrghmpe
+    hmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomhenucevlhhushht
+    vghrufhiiigvpedt
+X-ME-Proxy: <xmx:zTgfXZmSeNhr2z22uSeZwBocF0X8Bn0lLXo-n73Jw8H3iehUBhr9og>
+    <xmx:zTgfXcFN8RPDMvBABr93RBUUejIo85UkVQcPvQtC9uPlLHiy9MDAkg>
+    <xmx:zTgfXfJF5YEs1qpeGIPTESN0CCeFCRfCO0STHRLCbXonBUmQC4kpfw>
+    <xmx:zjgfXa23Kt9MpQtSA0jFDRa9DEBcpZdHzT2f6J8sIIQ4-8SMo7gTbw>
+Received: from [10.0.0.6] (135-23-246-131.cpe.pppoe.ca [135.23.246.131])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 4CBC9380085;
+        Fri,  5 Jul 2019 07:47:25 -0400 (EDT)
+Subject: Re: snapshot rollback
+To:     Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+References: <20190705103823.GA13281@tik.uni-stuttgart.de>
+ <20190705110614.GA14418@tik.uni-stuttgart.de>
+From:   Remi Gauvin <remi@georgianit.com>
+Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
+Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
+ keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
+ CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
+ sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
+ t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
+ 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
+ AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
+ IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
+ OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
+ 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
+ WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
+ k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
+ Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
+ R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
+ WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
+ QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
+ jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
+ oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
+ BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
+ XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
+ r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
+ phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
+ nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
+ SY9JJa155sI=
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <f0f13684-8975-721f-5c91-fe3043065634@georgianit.com>
+Date:   Fri, 5 Jul 2019 07:47:24 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
+MIME-Version: 1.0
+In-Reply-To: <20190705110614.GA14418@tik.uni-stuttgart.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="IYA2Mn9ZAp0V8sTl0YzwWk3N4ynsZYFxK"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--IYA2Mn9ZAp0V8sTl0YzwWk3N4ynsZYFxK
+Content-Type: multipart/mixed; boundary="FxWRTNgkxtSDaK27eZn8v9TeGpd73tclg";
+ protected-headers="v1"
+From: Remi Gauvin <remi@georgianit.com>
+To: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <f0f13684-8975-721f-5c91-fe3043065634@georgianit.com>
+Subject: Re: snapshot rollback
+References: <20190705103823.GA13281@tik.uni-stuttgart.de>
+ <20190705110614.GA14418@tik.uni-stuttgart.de>
+In-Reply-To: <20190705110614.GA14418@tik.uni-stuttgart.de>
 
-The test currently uses offsets and lengths which are multiples of 4K, but
-not multiples of 64K (or any other page size between 4Kb and 64Kb). This
-makes the reflink calls fail with -EINVAL because reflink only operates on
-ranges that are aligned to the the filesystem's block size.
+--FxWRTNgkxtSDaK27eZn8v9TeGpd73tclg
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Fix this by ensuring all ranges passed to the reflink calls are aligned to
-64K, so that the test works on any system regardless of its page size.
-The test still fails without the corresponding kernel fix applied [1] as
-it is supposed to.
+On 2019-07-05 7:06 a.m., Ulli Horlacher wrote:
 
-[1] 3c850b45110950 ("Btrfs: incremental send, fix emission of invalid clone operations")
+>=20
+> Ok, it seems my idea (replacing the original root subvolume with a
+> snapshot) is not possible.=20
+>=20
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/189     | 10 ++++++----
- tests/btrfs/189.out |  4 ++--
- 2 files changed, 8 insertions(+), 6 deletions(-)
+Disclaimer: You probably want to wait at least 24 hours before trying my
+directions in case anyone has am important correction to make.  You
+should have a means of recovering in case I got it completely wrong.
+(ie. good backups)
 
-diff --git a/tests/btrfs/189 b/tests/btrfs/189
-index 5f736d73..7b6a1708 100755
---- a/tests/btrfs/189
-+++ b/tests/btrfs/189
-@@ -59,20 +59,22 @@ $BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/base 2>&1 \
- 
- # Clone part of the extent from a higher offset to a lower offset of the same
- # file.
--$XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar 1560K 500K 100K" $SCRATCH_MNT/bar \
-+$XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar 1600K 640K 128K" $SCRATCH_MNT/bar \
- 	| _filter_xfs_io
- 
- # Now clone from the previous file, same range, into the middle of another file,
- # such that the end offset at the destination is smaller than the destination's
- # file size.
--$XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar 1560K 0 100K" $SCRATCH_MNT/zoo \
-+$XFS_IO_PROG -c "reflink $SCRATCH_MNT/bar 1600K 0 128K" $SCRATCH_MNT/zoo \
- 	| _filter_xfs_io
- 
- # Truncate the source file of the previous clone operation to a smaller size,
- # which ends up in the middle of the range of previous clone operation from file
- # bar to file bar. We want to check this doesn't confuse send to issue invalid
--# clone operations.
--$XFS_IO_PROG -c "truncate 550K" $SCRATCH_MNT/bar
-+# clone operations. This smaller size must not be aligned to the sector size of
-+# the filesystem - the unaligned size is what can cause those invalid clone
-+# operations.
-+$XFS_IO_PROG -c "truncate 710K" $SCRATCH_MNT/bar
- 
- $BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/incr 2>&1 \
- 	| _filter_scratch
-diff --git a/tests/btrfs/189.out b/tests/btrfs/189.out
-index 0ae3cdce..79c70b03 100644
---- a/tests/btrfs/189.out
-+++ b/tests/btrfs/189.out
-@@ -9,9 +9,9 @@ wrote 2097152/2097152 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/base'
- At subvol SCRATCH_MNT/base
--linked 102400/102400 bytes at offset 512000
-+linked 131072/131072 bytes at offset 655360
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
--linked 102400/102400 bytes at offset 0
-+linked 131072/131072 bytes at offset 0
- XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
- Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/incr'
- At subvol SCRATCH_MNT/incr
--- 
-2.11.0
+It is common practice with installers now to mount your root and home on
+a subvolume for exactly this reason.  (And you can convert your current
+system as well.  Boot your system with a removable boot media of your
+choice, create a subvolume named @.  Move all existing folders into this
+new subvolume.  Edit the @/boot/grub/grub.cfg file so your Linux boot
+menu has the @ added to the paths of Linux root and initrd.
 
+Ex:
+
+linux   /@/boot/vmlinuz-4.15.0-43-generic
+root=3DUUID=3D78d04a41-3786-4140-aeb8-5f2f809e7ba7
+initrd  /@/boot/initrd.img-4.15.0-43-generic
+
+(you can make this change directly into the grub menu at boot time
+instead of editing  the grub.cfg file, if you prefer.)
+
+Edit the @/etc/fstab file so that mount points to the device we are
+changing have the subvol=3D@ option.
+
+Example:
+
+UUID=3D78d04a41-3786-4140-aeb8-5f2f809e7ba7 /               btrfs
+noatime,nossd,subvol=3D@ 0       1
+
+
+Reboot, and if the system successfully boots, you should run update-grub
+to fix up the grub.cfg file.
+
+=46rom a running system, if you need to see the root subvolume again, (so=
+
+you can see and manipulate the @ subvol,), mount it somewhere else:
+
+mkdir /mnt/sda1
+mount /dev/sda1 /mnt/sda1
+
+=46rom that point forward, it's easy to rename /mnt/sda1/@ and replace it=
+
+with a snapshot of your choice,. (then reboot.)
+
+
+
+
+
+--FxWRTNgkxtSDaK27eZn8v9TeGpd73tclg--
+
+--IYA2Mn9ZAp0V8sTl0YzwWk3N4ynsZYFxK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJdHzjMAAoJEO9Tn/JHRWptjzQH/A/4Z6ghqn5jAWuDnOzbQK4p
+TK9saIyDC3g1K4wTB338as/7LBqGweFHcsZ5klgZrdmA44Oaf/38GxyDGI/UJiKq
+88BvJUJAnEA1QyHPizbuZjQQPcMyg2MDbbj8BspeDeePZCst5g96xrW4vxBa/Hb1
+JxnUyg7tNtL/wPOZBKNNjwDUT9ADYtYD5gr30+acnjKxt0tajdzqVaiJyVCyB1qs
+zd2vpL5Xeufg93PNwW8+0bbpNHJqAooxStOoXgvti1BqZEUd1jQZaz03flwjFj4p
+hQCRVlPC/LFLuVP4okDqBslHnTS6UsBW2UU4gg+IWn4YJjVkybrh3VYusMbo95k=
+=wO7T
+-----END PGP SIGNATURE-----
+
+--IYA2Mn9ZAp0V8sTl0YzwWk3N4ynsZYFxK--
