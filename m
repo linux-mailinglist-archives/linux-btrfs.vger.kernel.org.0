@@ -2,137 +2,179 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A072661249
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2019 18:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4836961263
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Jul 2019 19:36:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726800AbfGFQ5i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 6 Jul 2019 12:57:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56694 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726702AbfGFQ5i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 6 Jul 2019 12:57:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B779DAD09
-        for <linux-btrfs@vger.kernel.org>; Sat,  6 Jul 2019 16:57:36 +0000 (UTC)
-Subject: Re: find snapshot parent?
-To:     linux-btrfs@vger.kernel.org
-References: <20190706155353.GA13656@tik.uni-stuttgart.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <1e70c50e-54d7-0507-60ad-9c486e3517a9@suse.com>
-Date:   Sat, 6 Jul 2019 19:57:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        id S1726954AbfGFRg1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 6 Jul 2019 13:36:27 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:38639 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726889AbfGFRg0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 6 Jul 2019 13:36:26 -0400
+Received: by mail-wm1-f68.google.com with SMTP id s15so12544141wmj.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 06 Jul 2019 10:36:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9TBIwLoVA0TWa1MeVrx/D1dgPVGbib1Q9GSpVAXURIw=;
+        b=rbHgAKJurpwJzefLIg5RNvc6CWCWLhwHDhyGMqe1hOrz9uHbzHPCmUOjSYSlreCOlf
+         f9KD8K2O2Ue8YJFkCIR+V1kbJqSeqmvcDMF3O+l6FoSGc78F7I2VbXEO7KMqYiu0e8dK
+         og/S++GlJe2PkN8BI3oXSQWwJVTKuKZ7DYJQdZj8TPxFP6Zx45+XQCKbxO0UXMV+H/8v
+         t0953UGOiCKlrNqyu4cgHtxtipOI1VD1cB+sk/ledRTMBa2RZYDsYMxYVTGI4LCizmie
+         WHW3W8vvQDgPgAmnqr/dh/P6MOF9RsMJvQTJ+bYNcsbtswBwCHtKZz5CL0oqFjueYMBu
+         W2vw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9TBIwLoVA0TWa1MeVrx/D1dgPVGbib1Q9GSpVAXURIw=;
+        b=KWdNorkuthtRCvO87XXoXuZVHyL7mh8ZNfANE1133sa1mrFvMPOEv6grAM7E02cHq2
+         ZC/cW3flN2jeGYM43ESVgGdnxJg0DssE9cSl4BbcsU0/0q3k4AF0WENQ/XPX0xL+oYJV
+         1JNgY3Irz7VGYzT1JJBGkyGNHPjjFTzHx422EDwA7mxeQSHF0eowSJi2LjAmkm+carOA
+         hKfbMUN4rh8E/C1onIt2me4Pw/2CylbVIa+UFzXbFgrc0DI3bdWkygKwW0G5vFg8CaUN
+         ePwweeMgSVh15OoQ0KxySv/HaS8cwyAU+RgOm4duYm0dJnZdyq3NbEuSf+HwwGfEdzDv
+         2NVA==
+X-Gm-Message-State: APjAAAUzLOwY3mpNd3Mz+pjXN0rG5bqI1xHFJyeESas8b9MKOhQuiSmL
+        YjHQB2l1nEWDw7rXZ1VG0bt4ejy5Y8Emo9pr2CHtEA==
+X-Google-Smtp-Source: APXvYqwW6SCgDJLCtUW4037D+jx9p712K+1W9KO8V/waBVpKFNufHGgGEcn3Uq6PteFLzoevV6PRBvAyaMZllgstVcM=
+X-Received: by 2002:a1c:2c41:: with SMTP id s62mr8643770wms.8.1562434584217;
+ Sat, 06 Jul 2019 10:36:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190706155353.GA13656@tik.uni-stuttgart.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <966f5562-1993-2a4f-0d6d-5cea69d6e1c6@gmail.com>
+ <CAJCQCtRhXukLGrWTK1D5TLRhxwF6e31oewOSNDg2TAxSanavMA@mail.gmail.com>
+ <a4920d21-3c90-9a96-9b44-f90d7b5eed3a@gmail.com> <CAJCQCtS87cQV4PWuDRaQmmY-N03XmGqN2hh8EQv8BqqVGRuxbw@mail.gmail.com>
+ <0212c1f0-f02d-bf0f-5748-b1332b6bbfad@gmail.com>
+In-Reply-To: <0212c1f0-f02d-bf0f-5748-b1332b6bbfad@gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sat, 6 Jul 2019 11:36:13 -0600
+Message-ID: <CAJCQCtQVMnP5G=Hp0tnoXuc+_j0Wg3heb1exnNj2nND4Mc3aiw@mail.gmail.com>
+Subject: Re: "kernel BUG" and segmentation fault with "device delete"
+To:     Vladimir Panteleev <thecybershadow@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Jul 5, 2019 at 9:38 PM Vladimir Panteleev
+<thecybershadow@gmail.com> wrote:
+>
+> On 06/07/2019 02.38, Chris Murphy wrote:
+> > It's a really good question for developers if there is a good reason
+> > to permit rw mount of a volume that's missing two or more devices for
+> > raid 1, 10, or 5; and missing three or more for raid6. I cannot think
+> > of a good reason to allow degraded,rw mounts for a raid10 missing two
+> > devices.
+>
+> Sorry, the code currently indeed does not permit mounting a RAID10
+> filesystem with more than one missing device in rw. I needed to patch my
+> kernel to force it to allow it, as I was working on the assumption that
+> the two remaining drives contained a copy of all data (which turned out
+> to be true).
+
+Oh gotcha. I glossed over that. Ahh yeah, so we're kinda back to end
+user sabotage in that case. :-)
+
+The thing about Btrfs, it has very little pre-defined on disk layout.
+The only things explicitly assigned locations are the superblocks. The
+super points to the start of root tree and chunk tree, and those can
+start literally anywhere. When block groups are mirrored, which device
+they appear on, and the physical location on each device, is also not
+consistent.
+
+In other words, you could do this test a bunch of times, and then as
+the file system ages it becomes even more non-deterministic, the
+likelihood of  some data loss when losing two devices on a raid10 very
+quickly approaches 100%.
 
 
-On 6.07.19 г. 18:53 ч., Ulli Horlacher wrote:
-> Is there a standard way to find the path of the subvolume parent of a
-> snapshot? 
-> 
-> For example:
-> 
-> root@xerus:/test# btrfs sub list /test
-> ID 269 gen 9818 top level 5 path tux/test
-> ID 1026 gen 9804 top level 1011 path tmp/xx/ss1
-> ID 1027 gen 9804 top level 1011 path tmp/xx/ss2
-> 
-> root@xerus:/test# btrfs subvolume show /test/tmp
-> /test/tmp
->         Name:                   tmp
->         UUID:                   5a873eca-9b6c-fc4e-aed5-eb287839d693
->         Parent UUID:            -
->         Received UUID:          -
->         Creation time:          2019-07-04 00:17:11 +0200
->         Subvolume ID:           1011
->         Generation:             9813
->         Gen at creation:        9749
->         Parent ID:              5
->         Top level ID:           5
->         Flags:                  -
->         Snapshot(s):
->                                 xx/ss1
->                                 xx/ss2
-> 
-> root@xerus:/test# btrfs subvolume show /test/tmp/xx/ss1
-> /test/tmp/xx/ss1
->         Name:                   ss1
->         UUID:                   3641bb81-d1fd-4440-8f29-6f17ff9ec4e1
->         Parent UUID:            5a873eca-9b6c-fc4e-aed5-eb287839d693
->         Received UUID:          -
->         Creation time:          2019-07-05 11:13:15 +0200
->         Subvolume ID:           1026
->         Generation:             9804
->         Gen at creation:        9793
->         Parent ID:              1011
->         Top level ID:           1011
->         Flags:                  readonly
->         Snapshot(s):
-> 
-> Must I call "btrfs subvolume show" for every subvolume to find the
-> matching Parent ID/UUID or parse the "Snapshot(s)" section?
 
-That seems to be the way, looking at code for the Snapshot(s) section it
-iterates every subvolume and checks if its Parent UUID matches the UUID
-of the subvolume - if yes it adds that particular subvol (snapshots are
-subvolumes with a parent) to the "SNapshot(s)" section.
+>
+> > Wow that's really interesting. So you did 'btrfs replace start' for
+> > one of the missing drive devid's, with a loop device as the
+> > replacement, and that worked and finished?!
+>
+> Yes, that's right.
 
-> 
-> And how can I see whether /test/tmp/xx/ss1 is a snapshot at all?
-> Do all snapshots have a "Parent UUID" and regular subvolumes not?
+I suspect it's lucky. There's every reason to believe in a repeat
+scenario you can end up with raid1 block groups only on to two missing
+devices.
 
-Indeed, only snapshots have a Parent UUID.
 
-> 
+>
+> > Does this three device volume mount rw and not degraded? I guess it
+> > must have because 'btrfs fi us' worked on it.
+> >
+> >          devid    1 size 7.28TiB used 2.71TiB path /dev/sdd1
+> >          devid    2 size 7.28TiB used 22.01GiB path /dev/loop0
+> >          devid    3 size 7.28TiB used 2.69TiB path /dev/sdf1
+>
+> Indeed - with the loop device attached, I can mount the filesystem rw
+> just fine without any mount flags, with a stock kernel.
+>
+> > OK so what happens now if you try to 'btrfs device remove /dev/loop0' ?
+>
+> Unfortunately it fails in the same way (warning followed by "kernel
+> BUG"). The same thing happens if I try to rebalance the metadata.
+
+That seems like a legitimate bug even if the way you got to this point
+is sorta screwy and definitely an edge case.
+
+
+>
+> > Well there's definitely something screwy if Btrfs needs something on a
+> > missing drive, which is indicated by its refusal to remove it from the
+> > volume, and yet at same time it's possible to e.g. rsync every file to
+> > /dev/null without any errors. That's a bug somewhere.
+>
+> As I understand, I don't think it actually "needs" any data from that
+> device, it's just having trouble updating some metadata as it tries to
+> move one redundant copy of the data from there to somewhere else. It's
+> not refusing to remove the device either, rather it tries and fails at
+> doing so.
+
+I think the developers would say anytime the user space tools permit
+an action that results in a kernel warning, it's a bug. The priority
+of fixing that bug will of course depend on the likelihood of users
+running into it, and the scope of the fix, and the resources required.
+
+
+
+>
+> > I'm not a developer but a dev very well might need to have a simple
+> > reproducer for this in order to locate the problem. But the call trace
+> > might tell them what they need to know. I'm not sure.
+>
+> What I'm going to try to do next is to create another COW layer on top
+> of the three devices I have, attach them to a virtual machine, and boot
+> that (as it's not fun to reboot the physical machine each time the code
+> crashes). Then I could maybe poke the related kernel code to try to
+> understand the problem better.
+
+I don't really understand the code, but then also I don't know what's
+happening as it tries to remove the device and what logical problems
+Btrfs is running into that eventually causes the warning. It might be
+there's already confusion with on-disk metadata.
+
+Btrfs debugging isn't enabled in default kernels, it's vaguely
+possible that would reveal more information. And then the integrity
+checker can be incredibly verbose, as in so verbose you definitely do
+not want to be writing out a persistent kernel message log to the same
+Btrfs file system you're checking. The integrity checker also isn't
+enabled in distro kernels. It's both a compile time option as well as
+a mount time option (separate for metadata only and with data
+checking). But i can't give any advice on what mask options to use
+that might help reveal what's going on and where Btrfs gets tripped
+up. It does look like it's related to the global reserve, which is
+something of a misnomer. It's not some separate thing, it's really
+space within a metadata block group.
+
+What still would be interesting is if there's a way to reproduce this
+layout, where user space tools permit device removal but then the
+kernel splats with this warning.
+
+-- 
+Chris Murphy
