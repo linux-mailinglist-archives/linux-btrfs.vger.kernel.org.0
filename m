@@ -2,80 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7D6361F49
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 15:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42CE61F90
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 15:30:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731062AbfGHNID (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Jul 2019 09:08:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53502 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727663AbfGHNIC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 8 Jul 2019 09:08:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0789BAFCB;
-        Mon,  8 Jul 2019 13:08:01 +0000 (UTC)
+        id S1731315AbfGHNaP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Jul 2019 09:30:15 -0400
+Received: from mout.gmx.net ([212.227.17.22]:40369 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728166AbfGHNaP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 8 Jul 2019 09:30:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1562592609;
+        bh=W/nvN1QqUXq7rc1PKSQ9/fgyK3qdMAKFanryYO9/PHU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=HP/KjShaQL/nPkcZjref32zNp0H0vV6qJvsQaDd4rzsoZmFXuNdZFdOXmCRXLvHyQ
+         IIOSvZMkf3F+ZlxwLgv0OCxbwaIgjQLBARwfqpLtW9TsvI+poQRIkQ+ySdz5M1+dTt
+         snduoH1Dn27vXfP0k1qAQ/8ICuCvWTPt8/A1nSZA=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIMbU-1hhE3g2P7k-00ER0x; Mon, 08
+ Jul 2019 15:30:09 +0200
 Subject: Re: [PATCH v2 2/2] btrfs-progs: Avoid unnecessary block group item
  COW if the content hasn't changed
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, WenRuo Qu <wqu@suse.com>,
+To:     Nikolay Borisov <nborisov@suse.com>, WenRuo Qu <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20190708073352.6095-1-wqu@suse.com>
  <20190708073352.6095-3-wqu@suse.com>
  <ab1626ad-ccfe-e913-91e2-47e1710cfd83@suse.com>
  <3221b824-4758-81d2-edb1-9bbc2fdc0775@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+ <5ab3dfd9-6326-a79a-49a4-66a5aacbcb9f@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <5ab3dfd9-6326-a79a-49a4-66a5aacbcb9f@suse.com>
-Date:   Mon, 8 Jul 2019 16:07:59 +0300
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <77bee387-5693-3cdb-cddb-130b1a118ec0@gmx.com>
+Date:   Mon, 8 Jul 2019 21:30:04 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <3221b824-4758-81d2-edb1-9bbc2fdc0775@gmx.com>
+In-Reply-To: <5ab3dfd9-6326-a79a-49a4-66a5aacbcb9f@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:CRDey7bivER16gisyPmGXFtH2nzxgqVnyBcNcal2YEtSVqits2v
+ EGfnw/FHdhE/QdrU8wvBl5ohnw8F72s3hdnNXEzd/sKidExUmbfXyJsiLm8sGaZ79yM5XaP
+ CPOqRJWtCTvFEjC43ItxfhqrWLMyKB6EppfU4+JlEoIQ4h6smhr88TagsW9t3rgxFNPq9XI
+ gXiaGbZmDnqCf6BCQdSeA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:eF1KwwFKf8U=:FY55JXqZULd9umjNbLFMIP
+ y5TW9m2vMU1E7gz01GBrj2yKCLePPLFgYJbPozuq8yQyexuvuDITyFoRpBcKmAWIfO325evlS
+ xvm77xFtym0wQAaXzaAYysBuXFmUXSnyb9jq4LvigoPw+5hYzQjcofiAYZNgCg4hMt+35uwFJ
+ 22qLf0tn0pNlbphjpxhtwv8twFdOOedbAnOpURteUyhBo3Gw6mlSaHmFn33On6hguFfbgMY/0
+ JvYwJtr94CATLOCGQXH7FsvoK/5IGlMu8FX/RnX2e0DWhhGu/uE1tRbayLGwAf0z1KJACg2j0
+ wAlrAPtz2R/aU6SWUxoxYuSDADvmU58kaUpEIgufno92ZiyssZBVL5dCGaiMbM/NtQxJs2wxA
+ vFax9Ug6yHmyeS/YimnJP70IYJtPPCW7varzVG4t+YySgArH+R513IdTBZacY+KEOn8xfX37X
+ In5tlh8d4+1+BWg/EoLKhidm2C0jSPVPbZYG4DPh6TIEae+zyBv2Ug6VymtZ0geDQEZ34UtCR
+ t5VXW8JcSU3vGPu3nIMZMpEnApHuBkIZy0CpwSItcNE2L0ZnA4TJxGk9f+Y3jKkqitlZF7KUG
+ kwYl/udErecTn34RFEmqgEfQxYnL8pYYjlQc4WLOmAwRh+UktG9/7FAgdMvjFGfxHlIAOeZuF
+ EGOn1/ge3PobIDnws9j+g5pCpJ7LFfh/CD4KVLwo1tJiZv6zqPp9XEbVRSirN7nK0Bs1zTm3M
+ mW7mRj8RnefLneYx3h8DrHWH/uZp7MmOy/21itqhOHYFSG6sboku7bQAPtDiYWt4vrooSXmf6
+ 0dTUt/8bes4sXWkfmSmYTF/k5G21OyW/qveQ6LC10jO4FnHixwrmegaZo7sFI0iUHPszC8HGa
+ CP7sF8YXofv0UUDQB5MzF9B09vqc4VyeXlNQaPUVc5nlZ9EmYhM60Qn5yqkdA+8fWL5drhf6b
+ plqaJHUEm+CuZvipZB4C0bJ3Le8kVV/kD/pKeEh2GsXQX+w9a/cIp/pXnNcSK86wpKoKyHExo
+ OjQ0B6KVRKbF3ILxCQJwCZ1YeUdPNNEUYMA3E/8xQnjQrALhWb5AdnXsWX+QT5O10OYbe8N0+
+ sL/bn8iDM6oH3s897tkA6HmUc56plcjIeZx
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -83,55 +95,66 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 8.07.19 г. 15:50 ч., Qu Wenruo wrote:
-> 
-> 
-> On 2019/7/8 下午6:43, Nikolay Borisov wrote:
+On 2019/7/8 =E4=B8=8B=E5=8D=889:07, Nikolay Borisov wrote:
+>
+>
+> On 8.07.19 =D0=B3. 15:50 =D1=87., Qu Wenruo wrote:
 >>
 >>
->> On 8.07.19 г. 10:33 ч., Qu Wenruo wrote:
->>> In write_one_cache_group() we always do COW to update BLOCK_GROUP_ITEM.
->>> However under a lot of cases, the cache->item is not changed at all.
+>> On 2019/7/8 =E4=B8=8B=E5=8D=886:43, Nikolay Borisov wrote:
 >>>
->>> E.g:
->>> Transaction 123, block group [1M, 1M + 16M)
 >>>
->>> tree block 1M + 0 get freed
->>> tree block 1M + 16K get allocated.
+>>> On 8.07.19 =D0=B3. 10:33 =D1=87., Qu Wenruo wrote:
+>>>> In write_one_cache_group() we always do COW to update BLOCK_GROUP_ITE=
+M.
+>>>> However under a lot of cases, the cache->item is not changed at all.
+>>>>
+>>>> E.g:
+>>>> Transaction 123, block group [1M, 1M + 16M)
+>>>>
+>>>> tree block 1M + 0 get freed
+>>>> tree block 1M + 16K get allocated.
+>>>>
+>>>> Transaction 123 get committed.
+>>>>
+>>>> In this case, used space of block group [1M, 1M + 16M) doesn't change=
+d
+>>>> at all, thus we don't need to do COW to update block group item.
+>>>>
+>>>> This patch will make write_one_cache_group() to do a read-only search
+>>>> first, then do COW if we really need to update block group item.
+>>>>
+>>>> This should reduce the btrfs_write_dirty_block_groups() and
+>>>> btrfs_run_delayed_refs() loop introduced in previous commit.
+>>>>
+>>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >>>
->>> Transaction 123 get committed.
->>>
->>> In this case, used space of block group [1M, 1M + 16M) doesn't changed
->>> at all, thus we don't need to do COW to update block group item.
->>>
->>> This patch will make write_one_cache_group() to do a read-only search
->>> first, then do COW if we really need to update block group item.
->>>
->>> This should reduce the btrfs_write_dirty_block_groups() and
->>> btrfs_run_delayed_refs() loop introduced in previous commit.
->>>
->>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> I'm not sure how effective this is going to be
 >>
->> I'm not sure how effective this is going to be
-> 
-> The effectiveness is indeed low.
-> 
-> For btrfs/013 test case, 64K page size, it reduces total number of
-> delayed refs by less than 2% (5/300+)
-> 
-> And similar result for total number of dirty block groups.
-> 
->> and isn't this premature
->> optimization, have you done any measurements?
-> 
-> For the optimization part, I'd say it should be pretty safe.
-> It just really skips unnecessary CoW.
-> 
-> The only downside to me is the extra tree search, thus killing the
-> "optimization" part.
-> 
+>> The effectiveness is indeed low.
+>>
+>> For btrfs/013 test case, 64K page size, it reduces total number of
+>> delayed refs by less than 2% (5/300+)
+>>
+>> And similar result for total number of dirty block groups.
+>>
+>>> and isn't this premature
+>>> optimization, have you done any measurements?
+>>
+>> For the optimization part, I'd say it should be pretty safe.
+>> It just really skips unnecessary CoW.
+>>
+>> The only downside to me is the extra tree search, thus killing the
+>> "optimization" part.
+>>
+>
+> If that's the case then I'd rather see the 2nd patch dropped. It adds
+> more code for no gain.
 
-If that's the case then I'd rather see the 2nd patch dropped. It adds
-more code for no gain.
+Makes sense. I'm OK to drop it.
 
-<snip>
+Thanks,
+Qu
+>
+> <snip>
+>
