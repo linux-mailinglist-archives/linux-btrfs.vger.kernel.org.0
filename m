@@ -2,85 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B85461FD5
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 15:52:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2A4561FEF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 16:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731511AbfGHNwA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Jul 2019 09:52:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38420 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727401AbfGHNwA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 8 Jul 2019 09:52:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1510EB00E;
-        Mon,  8 Jul 2019 13:51:58 +0000 (UTC)
+        id S1731464AbfGHOAR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Jul 2019 10:00:17 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:57017 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727401AbfGHOAR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 8 Jul 2019 10:00:17 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id DA0B0220C7;
+        Mon,  8 Jul 2019 10:00:15 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 08 Jul 2019 10:00:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=vLQH6OReOS/WZJ9XeTJDw26kFTV
+        9th50qcbRcIOBSHQ=; b=AL1vqa0tnZ2mCQaiww3WAfOeFrM0BIbMbGfozXSfKNH
+        WQvizjXKG9k8id5Z16lzSuyU20n/8RCa4//xWXR2rTwdcriv4K8tV7WsegYs5ZFp
+        ZJkec++t13uhqXtHMv2XWXTBFqUMmuAdm0vAhDTh97cqLIb8Zt0fVtkPo8aCIyjx
+        qbIUiEr60oVWJ5I2sMhglBbHdZ//QSmbx6cpb5457XQ/MKTQgsn+9A1DRSXQUURO
+        unBTlBm+UM0xG3IJNaXW0IkzdtrwXfxMuc24NLqbSQVwL0BLJMwcQTwS52Dm+9fY
+        qzAgu5ZVYpUD9uUgNUlag6C+NHOsFsymjCJ7JigGhZA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=vLQH6O
+        ReOS/WZJ9XeTJDw26kFTV9th50qcbRcIOBSHQ=; b=u6rXVs8VR5xOWMJ0OC+6Gw
+        PvMZMfDo1ty9rXA4OD52fvbyanG2UwZiu5nF+2oY/2dVcNFoA2hIZCmdnVtMS15T
+        12T3qrmtZHItT1r0isOdlnGPryP2g16vaqCrEXr8iYyleL5LtanrkQ6sAovLt275
+        N6WQ5bLwWNkw85vIZxxN07V+Hkn8l6D8AaSqqpveAZcdYk3x/vO6bpxAZ+fHqBQe
+        Vq+h6EDJM175CtwC8iy0FtF2UkjzB28Cv2vp/ahrsNs4lLed4dVTffkaGuLeQaOb
+        WcJJzYyZZk7VVe9UxG7mgHN14wVXFM+jkEIOoHpXMpURMwU60jFecbqxSBdj+QEA
+        ==
+X-ME-Sender: <xms:b0wjXf1-0pQpxiQfaesxDVzJWPQjYUjq-Kp-r0srPaoAUNKfQQqmlg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrgedtgdejfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujggfsehttdertddtredvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucffohhmrghinhepkhgvrhhnvghlrd
+    horhhgnecukfhppeekfedrkeeirdekledruddtjeenucfrrghrrghmpehmrghilhhfrhho
+    mhepghhrvghgsehkrhhorghhrdgtohhmnecuvehluhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:b0wjXfnIxDyicltJsfOCtFrBXcbG9v1rSge1OuiJZQTj25_m0aF97A>
+    <xmx:b0wjXUen9CN6caLu9QrTVY7wZdZG2ZgGjeNnbgEcrd8c5xj228UE_w>
+    <xmx:b0wjXUWt2oiw0gVEaaFYFpK1LVc8CyHp2_mWThO20YvPEJ-oqO3UfQ>
+    <xmx:b0wjXWpTXwyC-hGIg9LpmQZLKOB3PFW2KxSSK5_Gmq1_e0VrQx3Gzw>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D3B65380074;
+        Mon,  8 Jul 2019 10:00:14 -0400 (EDT)
+Date:   Mon, 8 Jul 2019 16:00:13 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Stanislaw Gruszka <sgruszka@redhat.com>
+Cc:     stable@vger.kernel.org, linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH 4.14.y] stable/btrfs: fix backport bug in d819d97ea025
  ("btrfs: honor path->skip_locking in backref code")
-To:     Stanislaw Gruszka <sgruszka@redhat.com>, stable@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
+Message-ID: <20190708140013.GA21679@kroah.com>
 References: <20190708120130.GA25587@redhat.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <250b1939-41ae-4f27-11e4-a4b730af8774@suse.com>
-Date:   Mon, 8 Jul 2019 16:51:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20190708120130.GA25587@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 8.07.19 г. 15:01 ч., Stanislaw Gruszka wrote:
+On Mon, Jul 08, 2019 at 02:01:34PM +0200, Stanislaw Gruszka wrote:
 > Upstream commit 38e3eebff643 ("btrfs: honor path->skip_locking in
 > backref code") was incorrectly backported to 4.14.y . It misses removal
 > of two lines from original commit, what cause deadlock.
@@ -93,25 +83,8 @@ On 8.07.19 г. 15:01 ч., Stanislaw Gruszka wrote:
 > I did not test the patch, not even compile, but backport looks
 > obviously wrong compared to original commit.
 
-I concur, it's indeed wrongly backported so:
+Thanks for catching this!
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+now queued up,
 
-> 
->  fs/btrfs/backref.c | 2 --
->  1 file changed, 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index d826fbaf7d50..e4d5e6eae409 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -1290,8 +1290,6 @@ static int find_parent_nodes(struct btrfs_trans_handle *trans,
->  					ret = -EIO;
->  					goto out;
->  				}
-> -				btrfs_tree_read_lock(eb);
-> -				btrfs_set_lock_blocking_rw(eb, BTRFS_READ_LOCK);
->  				if (!path->skip_locking) {
->  					btrfs_tree_read_lock(eb);
->  					btrfs_set_lock_blocking_rw(eb, BTRFS_READ_LOCK);
-> 
+greg k-h
