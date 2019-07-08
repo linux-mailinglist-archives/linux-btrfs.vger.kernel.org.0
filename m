@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D991F61D2E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 12:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 892EC61D30
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 12:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730169AbfGHKn6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Jul 2019 06:43:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44390 "EHLO mx1.suse.de"
+        id S1730195AbfGHKoh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Jul 2019 06:44:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44474 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730165AbfGHKn6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 8 Jul 2019 06:43:58 -0400
+        id S1730166AbfGHKoh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 8 Jul 2019 06:44:37 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C3434AE62
-        for <linux-btrfs@vger.kernel.org>; Mon,  8 Jul 2019 10:43:56 +0000 (UTC)
-Subject: Re: [PATCH v2 2/2] btrfs-progs: Avoid unnecessary block group item
- COW if the content hasn't changed
+        by mx1.suse.de (Postfix) with ESMTP id C4205AE1B;
+        Mon,  8 Jul 2019 10:44:35 +0000 (UTC)
+Subject: Re: [PATCH v2 1/2] btrfs-progs: Exhaust delayed refs and dirty block
+ groups to prevent delayed refs lost
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     =?UTF-8?Q?Klemens_Sch=c3=b6lhorn?= <klemens@schoelhorn.eu>
 References: <20190708073352.6095-1-wqu@suse.com>
- <20190708073352.6095-3-wqu@suse.com>
+ <20190708073352.6095-2-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <ab1626ad-ccfe-e913-91e2-47e1710cfd83@suse.com>
-Date:   Mon, 8 Jul 2019 13:43:55 +0300
+Message-ID: <6846c7ad-a5da-abdb-92f7-ebf619acf2e8@suse.com>
+Date:   Mon, 8 Jul 2019 13:44:34 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190708073352.6095-3-wqu@suse.com>
+In-Reply-To: <20190708073352.6095-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,74 +82,126 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 8.07.19 г. 10:33 ч., Qu Wenruo wrote:
-> In write_one_cache_group() we always do COW to update BLOCK_GROUP_ITEM.
-> However under a lot of cases, the cache->item is not changed at all.
+> [BUG]
+> Btrfs-progs sometimes fails to find certain extent backref when
+> committing transaction.
+> The most reliable way to reproduce it is fsck-test/013 on 64K page sized
+> system:
+>   [...]
+>   adding new data backref on 315859712 root 287 owner 292 offset 0 found 1
+>   btrfs unable to find ref byte nr 31850496 parent 0 root 2  owner 0 offset 0
+>   Failed to find [30867456, 168, 65536]
 > 
-> E.g:
-> Transaction 123, block group [1M, 1M + 16M)
+> Also there are some github bug reports related to this problem.
 > 
-> tree block 1M + 0 get freed
-> tree block 1M + 16K get allocated.
+> [CAUSE]
+> Commit 909357e86799 ("btrfs-progs: Wire up delayed refs") introduced
+> delayed refs in btrfs-progs.
 > 
-> Transaction 123 get committed.
+> However in that commit, delayed refs are not run at correct timing.
+> That commit calls btrfs_run_delayed_refs() before
+> btrfs_write_dirty_block_groups(), which needs to update
+> BLOCK_GROUP_ITEMs in extent tree, thus could cause new delayed refs.
 > 
-> In this case, used space of block group [1M, 1M + 16M) doesn't changed
-> at all, thus we don't need to do COW to update block group item.
+> This means each time we commit a transaction, we may screw up the extent
+> tree by dropping some pending delayed refs, like:
 > 
-> This patch will make write_one_cache_group() to do a read-only search
-> first, then do COW if we really need to update block group item.
+> Transaction 711:
+> btrfs_commit_transaction()
+> |- btrfs_run_delayed_refs()
+> |  Now all delayed refs are written to extent tree
+> |
+> |- btrfs_write_dirty_block_groups()
+> |  Needs to update extent tree root
+> |  ADD_DELAYED_REF to 315859712.
+> |  Delayed refs are attached to current trans handle.
+> |
+> |- __commit_transaction()
+> |- write_ctree_super()
+> |- btrfs_finish_extent_commit()
+> |- kfree(trans)
+>    Now delayed ref for 315859712 are lost
 > 
-> This should reduce the btrfs_write_dirty_block_groups() and
-> btrfs_run_delayed_refs() loop introduced in previous commit.
+> Transaction 712:
+> Tree block 315859712 get dropped
+> btrfs_commit_transaction()
+> |- btrfs_run_delayed_refs()
+>    |- run_one_delayed_ref()
+>       |- __free_extent()
+>          As previous ADD_DELAYED_REF to 315859712 is lost, extent tree
+>          doesn't has any backref for 315859712, causing the bug
 > 
+> In fact, commit c31edf610cbe ("btrfs-progs: Fix false ENOSPC alert by
+> tracking used space correctly") detects the tree block leakage, but in
+> the reproducer we have too many noise, thus nobody notices the leakage
+> warning.
+> 
+> [FIX]
+> We can't just move btrfs_run_delayed_refs() after
+> btrfs_write_dirty_block_groups(), as during btrfs_run_delayed_refs(), we
+> can re-dirty block groups.
+> Thus we need to exhaust both delayed refs and dirty blocks.
+> 
+> This patch will call btrfs_write_dirty_block_groups() and
+> btrfs_run_delayed_refs() in a loop until both delayed refs and dirty
+> blocks are exhausted. Much like what we do in commit_cowonly_roots() in
+> kernel.
+> 
+> Also, to prevent such problem from happening again (and not to debug
+> such problem again), add extra check on delayed refs before freeing the
+> trans handle.
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> 
+> Reported-by: Klemens Schölhorn <klemens@schoelhorn.eu>
+> Issue: 187
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-I'm not sure how effective this is going to be and isn't this premature
-optimization, have you done any measurements?
-
-
 > ---
->  extent-tree.c | 26 +++++++++++++++++++++++++-
->  1 file changed, 25 insertions(+), 1 deletion(-)
+>  transaction.c | 27 +++++++++++++++++++++------
+>  1 file changed, 21 insertions(+), 6 deletions(-)
 > 
-> diff --git a/extent-tree.c b/extent-tree.c
-> index 932af2c644bd..24d3a1ab3f25 100644
-> --- a/extent-tree.c
-> +++ b/extent-tree.c
-> @@ -1533,10 +1533,34 @@ static int write_one_cache_group(struct btrfs_trans_handle *trans,
->  	unsigned long bi;
->  	struct extent_buffer *leaf;
->  
-> +	/* Do a read only check to see if we need to update BLOCK_GROUP_ITEM */
-> +	ret = btrfs_search_slot(NULL, extent_root, &cache->key, path, 0, 0);
-> +	if (ret < 0)
-> +		goto fail;
-> +	if (ret > 0) {
-> +		ret = -ENOENT;
-> +		error("failed to find block group %llu in extent tree",
-> +			cache->key.objectid);
-> +		goto fail;
-> +	}
-> +	leaf = path->nodes[0];
-> +	bi = btrfs_item_ptr_offset(leaf, path->slots[0]);
-> +	ret = memcmp_extent_buffer(leaf, &cache->item, bi, sizeof(cache->item));
-> +	btrfs_release_path(path);
-> +	/* No need to update */
-> +	if (ret == 0)
-> +		return ret;
-> +
-> +	/* Do the COW to update BLOCK_GROUP_ITEM */
->  	ret = btrfs_search_slot(trans, extent_root, &cache->key, path, 0, 1);
+> diff --git a/transaction.c b/transaction.c
+> index 551fb24e674d..3b0a428db76e 100644
+> --- a/transaction.c
+> +++ b/transaction.c
+> @@ -193,17 +193,32 @@ commit_tree:
+>  	ret = commit_tree_roots(trans, fs_info);
 >  	if (ret < 0)
->  		goto fail;
-> -	BUG_ON(ret);
-> +	if (ret > 0) {
-> +		ret = -ENOENT;
-> +		error("failed to find block group %llu in extent tree",
-> +			cache->key.objectid);
-> +		goto fail;
+>  		goto error;
+> +
+>  	/*
+> -	 * Ensure that all committed roots are properly accounted in the
+> -	 * extent tree
+> +	 * btrfs_write_dirty_block_groups() can cause CoW thus new delayed
+> +	 * tree refs, while run such delayed tree refs can dirty block groups
+> +	 * again, we need to exhause both dirty blocks and delayed refs
+>  	 */
+> -	ret = btrfs_run_delayed_refs(trans, -1);
+> -	if (ret < 0)
+> -		goto error;
+> -	btrfs_write_dirty_block_groups(trans);
+> +	while (!RB_EMPTY_ROOT(&trans->delayed_refs.href_root) ||
+> +		test_range_bit(&fs_info->block_group_cache, 0, (u64)-1,
+> +			       BLOCK_GROUP_DIRTY, 0))
+> +	{
+> +		ret = btrfs_write_dirty_block_groups(trans);
+> +		if (ret < 0)
+> +			goto error;
+> +		ret = btrfs_run_delayed_refs(trans, -1);
+> +		if (ret < 0)
+> +			goto error;
 > +	}
->  
->  	leaf = path->nodes[0];
->  	bi = btrfs_item_ptr_offset(leaf, path->slots[0]);
+>  	__commit_transaction(trans, root);
+>  	if (ret < 0)
+>  		goto error;
+> +
+> +	/* There should be no pending delayed refs now */
+> +	if (!RB_EMPTY_ROOT(&trans->delayed_refs.href_root)) {
+> +		error("Uncommitted delayed refs detected");
+> +		goto error;
+> +	}
+>  	ret = write_ctree_super(trans);
+>  	btrfs_finish_extent_commit(trans);
+>  	kfree(trans);
 > 
