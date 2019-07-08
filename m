@@ -2,84 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EEB661ECF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 14:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7D6361F49
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 15:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730880AbfGHMwT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Jul 2019 08:52:19 -0400
-Received: from mout.kundenserver.de ([217.72.192.75]:34741 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728615AbfGHMwT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Jul 2019 08:52:19 -0400
-Received: from threadripper.lan ([149.172.19.189]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.145]) with ESMTPA (Nemesis) id
- 1MJEpp-1i3VP02DD1-00KhBy; Mon, 08 Jul 2019 14:51:37 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] btrfs: add back libcrc32c Kconfig dependency
-Date:   Mon,  8 Jul 2019 14:51:29 +0200
-Message-Id: <20190708125134.3741552-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.20.0
+        id S1731062AbfGHNID (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Jul 2019 09:08:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53502 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727663AbfGHNIC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 8 Jul 2019 09:08:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 0789BAFCB;
+        Mon,  8 Jul 2019 13:08:01 +0000 (UTC)
+Subject: Re: [PATCH v2 2/2] btrfs-progs: Avoid unnecessary block group item
+ COW if the content hasn't changed
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, WenRuo Qu <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190708073352.6095-1-wqu@suse.com>
+ <20190708073352.6095-3-wqu@suse.com>
+ <ab1626ad-ccfe-e913-91e2-47e1710cfd83@suse.com>
+ <3221b824-4758-81d2-edb1-9bbc2fdc0775@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <5ab3dfd9-6326-a79a-49a4-66a5aacbcb9f@suse.com>
+Date:   Mon, 8 Jul 2019 16:07:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
+In-Reply-To: <3221b824-4758-81d2-edb1-9bbc2fdc0775@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:AWoLOmaQqVkujvlZOGfqeO7XSmN82N7FdvLMZoC0P6AUFUFZx48
- WLw5ya4uxvD4RRH6XtfdIFn0CZClvtQ6PP9bIixsrEYcn9IuAq6md22ylxX6t4ZC4A4dnEc
- 8SE9zATLkC30w5tVjHlsa8qBcXCbTRNlC19z22fsFdVr8UMMtbHqzeH95nZ5by2OhMmffGD
- HKJCWhtTExVikb3F7CM+Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Q0Mbfm6OUnM=:WepD4bGaXeT2jygN77K7/e
- JtZxBq72jVyz4n3NocspMdXbdCOiDyrnzOFrT45GBFacOHN7pOMMPbMW2z2V1KIYQGr+mlmUe
- bkUg0+rgPHCDZLpF9LY8FmmEofm4Tj4NkVtvpLGXNsjiBaX8gtChAL4LNdmShZR4J2nY2OVF2
- wHm/HD4K81gvd/Df5Zb8EkmpvqBXnxAXda66FFl/m6bXa1+St1QMyEdf2l1TBL2OYlmA4T8qe
- fTsX55LGvg/4UguDYH3ixkjiuwMtXrrp3QLcLSW1hcveo+/Lsaq9h4wUkI9dRkArWaN12t/X2
- Imvt7mL5BOD+OvVtp6HQa/CSxq++5h6b08dSBI9+/LYs9WIuB2hqSfvbZ++q+L5MQU8r3W/Od
- AGwgIj8FgfBMGD02uhYHCqQ2k/nGKkYAckIn1D3KQD1xJB0eLbLbxxP1JYQLOPjF4AGibyb7N
- N6/2W1icPIrIKn1GPl1Hm06wjTVWTLyCQonTUIlASJpvyzbUT+q80w5sglcFH0y8IweN3UbAI
- 2jYleIMtFYxJvY3MoISNxEJZ2V/bYbYnh2s2PRNLKYZvloqKmU0/pm7ZNqz78SXkrPnkDtQ4F
- SM2zYC29uG4wb99GdrSU/nMZDt4UgXFO0pb4qcBLF86YX/1iUnJIXtCu8R3IiuXViPSv8Bv9K
- Ly4eiK5P1GMDn4hE5Gnu+0Y9LyIX078toPMPOq0/8fMzip/94bS+6ViIbON1maNfhn7CkmuZr
- Uk41zkVAUDjnpyv0Mzl3avcCHyR5gfpGmnf1Hw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While part of btrfs now uses the crypto shash interfaces
-for crc32c, we still get a build time dependency in other
-places:
 
-fs/btrfs/super.o: In function `btrfs_mount_root':
-super.c:(.text+0xc0d4): undefined reference to `crc32c_impl'
-fs/btrfs/super.o: In function `btrfs_print_mod_info':
-super.c:(.init.text+0x3e28): undefined reference to `crc32c_impl'
-fs/btrfs/extent-tree.o: In function `lookup_inline_extent_backref':
-extent-tree.c:(.text+0x17750): undefined reference to `crc32c'
-fs/btrfs/extent-tree.o:extent-tree.c:(.text+0x177f4): more undefined references to `crc32c' follow
 
-Change Kconfig to depend on both.
+On 8.07.19 г. 15:50 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2019/7/8 下午6:43, Nikolay Borisov wrote:
+>>
+>>
+>> On 8.07.19 г. 10:33 ч., Qu Wenruo wrote:
+>>> In write_one_cache_group() we always do COW to update BLOCK_GROUP_ITEM.
+>>> However under a lot of cases, the cache->item is not changed at all.
+>>>
+>>> E.g:
+>>> Transaction 123, block group [1M, 1M + 16M)
+>>>
+>>> tree block 1M + 0 get freed
+>>> tree block 1M + 16K get allocated.
+>>>
+>>> Transaction 123 get committed.
+>>>
+>>> In this case, used space of block group [1M, 1M + 16M) doesn't changed
+>>> at all, thus we don't need to do COW to update block group item.
+>>>
+>>> This patch will make write_one_cache_group() to do a read-only search
+>>> first, then do COW if we really need to update block group item.
+>>>
+>>> This should reduce the btrfs_write_dirty_block_groups() and
+>>> btrfs_run_delayed_refs() loop introduced in previous commit.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>
+>> I'm not sure how effective this is going to be
+> 
+> The effectiveness is indeed low.
+> 
+> For btrfs/013 test case, 64K page size, it reduces total number of
+> delayed refs by less than 2% (5/300+)
+> 
+> And similar result for total number of dirty block groups.
+> 
+>> and isn't this premature
+>> optimization, have you done any measurements?
+> 
+> For the optimization part, I'd say it should be pretty safe.
+> It just really skips unnecessary CoW.
+> 
+> The only downside to me is the extra tree search, thus killing the
+> "optimization" part.
+> 
 
-Fixes: d5178578bcd4 ("btrfs: directly call into crypto framework for checksumming")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- fs/btrfs/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+If that's the case then I'd rather see the 2nd patch dropped. It adds
+more code for no gain.
 
-diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-index 2521a24f74be..aa7453d44e59 100644
---- a/fs/btrfs/Kconfig
-+++ b/fs/btrfs/Kconfig
-@@ -3,6 +3,7 @@
- config BTRFS_FS
- 	tristate "Btrfs filesystem support"
- 	select CRYPTO
-+	select LIBCRC32C
- 	select CRYPTO_CRC32C
- 	select CRYPTO_SHA256
- 	select ZLIB_INFLATE
--- 
-2.20.0
-
+<snip>
