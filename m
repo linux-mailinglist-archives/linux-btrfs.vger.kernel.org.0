@@ -2,115 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A6561AB7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 08:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B336261B4C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 09:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728783AbfGHGeu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Jul 2019 02:34:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44106 "EHLO mx1.suse.de"
+        id S1728958AbfGHHd4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Jul 2019 03:33:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53536 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727420AbfGHGeu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 8 Jul 2019 02:34:50 -0400
+        id S1725840AbfGHHd4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 8 Jul 2019 03:33:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id AAF77ABE9;
-        Mon,  8 Jul 2019 06:34:48 +0000 (UTC)
-Subject: Re: [PATCH 5/5] Btrfs: wake up inode cache waiters sooner to reduce
- waiting time
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20190704152500.20865-1-fdmanana@kernel.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <733adaa9-5296-9d6c-885b-b66fea7abf8b@suse.com>
-Date:   Mon, 8 Jul 2019 09:34:47 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        by mx1.suse.de (Postfix) with ESMTP id 847C4AC47
+        for <linux-btrfs@vger.kernel.org>; Mon,  8 Jul 2019 07:33:55 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/2] btrfs-progs: Fix delayed ref leakage
+Date:   Mon,  8 Jul 2019 15:33:50 +0800
+Message-Id: <20190708073352.6095-1-wqu@suse.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-In-Reply-To: <20190704152500.20865-1-fdmanana@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+We have several bug reports of btrfs-convert failure in
+btrfs_run_delayed_refs().
 
+The bug turns out to be a incorrect backport of delayed ref handling in
+transaction commit.
 
-On 4.07.19 г. 18:25 ч., fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> If we need to start an inode caching thread, because none currently exists
-> on disk, we can wake up all waiters as soon as we mark the range starting
-> at root's highest objectid + 1 and ending at BTRFS_LAST_FREE_OBJECTID as
-> free, so that they don't need to wait for the caching thread to start and
-> do some progress. We follow the same approach within the caching thread,
-> since as soon as it finds a free range and marks it as free space in the
-> cache, it wakes up all waiters. So improve this by adding such a wakeup
-> call after marking that initial range as free space.
-> 
-> Fixes: a47d6b70e28040 ("Btrfs: setup free ino caching in a more asynchronous way")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+In kernel we have a loop to exhause both delayed refs and dirty blocks,
+as btrfs_write_dirty_block_groups() can generate new delayed refs, while
+btrfs_run_delayed_refs() can re-dirty block groups.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+This feedback could cause missing delayed refs, and bite later transaction
+just like the btrfs-convert report.
 
+Furthermore, such lost delayed refs causes memory leakage and reserved
+space leakage, the later one can be detected by commit c31edf610cbe
+("btrfs-progs: Fix false ENOSPC alert by tracking used space
+correctly").
 
-> ---
->  fs/btrfs/inode-map.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/btrfs/inode-map.c b/fs/btrfs/inode-map.c
-> index 4820e05ea6bd..cb107d168019 100644
-> --- a/fs/btrfs/inode-map.c
-> +++ b/fs/btrfs/inode-map.c
-> @@ -175,6 +175,7 @@ static void start_caching(struct btrfs_root *root)
->  	if (!ret && objectid <= BTRFS_LAST_FREE_OBJECTID) {
->  		__btrfs_add_free_space(fs_info, ctl, objectid,
->  				       BTRFS_LAST_FREE_OBJECTID - objectid + 1);
-> +		wake_up(&root->ino_cache_wait);
->  	}
->  
->  	tsk = kthread_run(caching_kthread, root, "btrfs-ino-cache-%llu",
-> 
+The first patch will fix the long existing bug.
+
+The second patch will try to reduce the feedback between
+btrfs_write_dirty_block_groups() and btrfs_run_delayed_refs().
+
+Changelog:
+v2:
+- Use a loop to exhaust both delayed refs and dirty block groups
+  Thanks Nikolay for pointing out the feedback between them.
+
+- Add a new patch to reduce above feedback 
+
+- Handle the error from btrfs_write_dirty_block_groups()
+
+Qu Wenruo (2):
+  btrfs-progs: Exhaust delayed refs and dirty block groups to prevent
+    delayed refs lost
+  btrfs-progs: Avoid unnecessary block group item COW if the content
+    hasn't changed
+
+ extent-tree.c | 26 +++++++++++++++++++++++++-
+ transaction.c | 27 +++++++++++++++++++++------
+ 2 files changed, 46 insertions(+), 7 deletions(-)
+
+-- 
+2.22.0
+
