@@ -2,76 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 467976227D
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Jul 2019 17:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42A9162D26
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Jul 2019 02:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388797AbfGHP0T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 8 Jul 2019 11:26:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388791AbfGHP0T (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 8 Jul 2019 11:26:19 -0400
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 607062166E;
-        Mon,  8 Jul 2019 15:26:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562599578;
-        bh=guJo8kQuNGCLr9IcAC48ivEXO+m7e0YNXbz8SATXBW8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jsWvngfjgFWWVBtahIQfeeEPDQjm8V/loCwWLhWg1KhVQvy1jE3fVGGG4QogqHKFQ
-         EpeRBlYLYx9717WXXGcJdyhNKgnct6T4oKzOcD0LO00S2Y05cDS9zB7ctfn/ry24OC
-         GGBaEohud9mY7gEiwum4S04upHuE+ADF0fAv07ys=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-btrfs@vger.kernel.org,
-        Olivier Mazouffre <olivier.mazouffre@ims-bordeaux.fr>,
-        Stanislaw Gruszka <sgruszka@redhat.com>,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 4.14 56/56] stable/btrfs: fix backport bug in d819d97ea025 ("btrfs: honor path->skip_locking in backref code")
-Date:   Mon,  8 Jul 2019 17:13:48 +0200
-Message-Id: <20190708150524.341162307@linuxfoundation.org>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190708150514.376317156@linuxfoundation.org>
-References: <20190708150514.376317156@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1727125AbfGIAtu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 8 Jul 2019 20:49:50 -0400
+Received: from mail-qt1-f179.google.com ([209.85.160.179]:42168 "EHLO
+        mail-qt1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725857AbfGIAtu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 8 Jul 2019 20:49:50 -0400
+Received: by mail-qt1-f179.google.com with SMTP id h18so12548598qtm.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Jul 2019 17:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=a2LUdFo/eQcnOeupczvKVdR+AyY9Fw5FLz8BjOzmRwE=;
+        b=tKMUqwV/AJN9iaZ7BC/gqzVW0pQTB///57YuWyJUbe9fIoRygRqSu6gilLnJDhDvf1
+         IsZGEM5xVdbKG6CuEgtNwTvlxYeUPxeIf9YJLSvTiEx4F4uQgeI6ZfTlem4g+O2PVil8
+         SO+OC1F4LpkGp6Kj1lcf+Mov3ZE9tpcar1IplGgCStCp6Oc5TMXmrEhvFNVeqkVR8kgd
+         Lt8h1Cg1YyFtnma6T/kvFja3jx+gDygp+0fOw6g50wvoE3xJkHlXXM8uEDWLNRwBPzWw
+         RhhDAsyMkQkFaI+E0VJOIN1ZSZ3VLZC1tcjufYz4hriy/BWgNlxXlGxBDg45XXdHsB9q
+         v7Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=a2LUdFo/eQcnOeupczvKVdR+AyY9Fw5FLz8BjOzmRwE=;
+        b=d4/SHm/zC/tB8u0ICv/RYkFkpBT71saHtveaLMfEwIyl60ZnzOWPeAgm3QWd+Xk0Un
+         L9WKljtFbPmpo3/uJSnBmpe7dl14VeV1wf+mzrGGNf0AI49I4H+QBtuJGKlYp0IsBMoE
+         UXR613/NQq/WWcCvhDBe1AujmYwemASbyo8hOv0t4q5aKsKttd4EnViNbK+2rA2KqUoV
+         wyqGECKPgEbNW9PWi7lgXZT7yflKwN+hXFDM+bPrAx26pa0cjhaSm1gK3XywYgb0wXTU
+         FLEQgfypi5RceG5E5LQG+NH2zMfT9mXHf5zk78ERMcOEGz00w0TCHnCgxT/ZwkE7bBhX
+         AYvw==
+X-Gm-Message-State: APjAAAV/0pRJF1vFTxvPz1Ux5scb46JHtHubZGABhumkPBxmht//Vt9Q
+        nZGXDnu9If7bzqG58VNlwa3ZVo7DJ00Um03Z9U7ikLhHMnQTlg==
+X-Google-Smtp-Source: APXvYqy7ge26iz5VAu1U16/JZmqhJCCs1xYZsQBp0EGbk6OtBXwTDD7vfl9bwvVA4ihdqj6LlOGf9t54oiyOsoexw0w=
+X-Received: by 2002:ac8:45c9:: with SMTP id e9mr11815497qto.133.1562633389134;
+ Mon, 08 Jul 2019 17:49:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From:   Jungyeon Yoon <jungyeon.yoon@gmail.com>
+Date:   Mon, 8 Jul 2019 20:49:38 -0400
+Message-ID: <CANocb6dCc23jUTeHu9+YC5KK9X+ARNuL8aHm0PBT=UkKKXtrFw@mail.gmail.com>
+Subject: Btrfs Bug Report
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Stanislaw Gruszka <sgruszka@redhat.com>
+Hi btrfs developers,
 
-Upstream commit 38e3eebff643 ("btrfs: honor path->skip_locking in
-backref code") was incorrectly backported to 4.14.y . It misses removal
-of two lines from original commit, what cause deadlock.
+I'm Jungyeon Yoon. I have reported btrfs bug before.
+Some of them have marked to fixed thanks to your efforts.
+Additionally following bugs seems also fixed as I've checked.
+If okay, I would like to close following bugs, too.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203993
-Reported-by: Olivier Mazouffre <olivier.mazouffre@ims-bordeaux.fr>
-Fixes: d819d97ea025 ("btrfs: honor path->skip_locking in backref code")
-Signed-off-by: Stanislaw Gruszka <sgruszka@redhat.com>
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
----
- fs/btrfs/backref.c |    2 --
- 1 file changed, 2 deletions(-)
-
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -1290,8 +1290,6 @@ again:
- 					ret = -EIO;
- 					goto out;
- 				}
--				btrfs_tree_read_lock(eb);
--				btrfs_set_lock_blocking_rw(eb, BTRFS_READ_LOCK);
- 				if (!path->skip_locking) {
- 					btrfs_tree_read_lock(eb);
- 					btrfs_set_lock_blocking_rw(eb, BTRFS_READ_LOCK);
+https://bugzilla.kernel.org/show_bug.cgi?id=202839
+https://bugzilla.kernel.org/show_bug.cgi?id=202751
+https://bugzilla.kernel.org/show_bug.cgi?id=202753
 
 
+In addition to those bugs,
+I would like for following 16 reports to be checked.
+Most of following 9 cases end up reporting kernel panic or kernel BUG messages.
+
+https://bugzilla.kernel.org/show_bug.cgi?id=202817
+https://bugzilla.kernel.org/show_bug.cgi?id=202819
+https://bugzilla.kernel.org/show_bug.cgi?id=202821
+https://bugzilla.kernel.org/show_bug.cgi?id=202823
+https://bugzilla.kernel.org/show_bug.cgi?id=202825
+https://bugzilla.kernel.org/show_bug.cgi?id=202827
+https://bugzilla.kernel.org/show_bug.cgi?id=202829
+https://bugzilla.kernel.org/show_bug.cgi?id=202831
+https://bugzilla.kernel.org/show_bug.cgi?id=202833
+https://bugzilla.kernel.org/show_bug.cgi?id=202837
+
+
+Following 7 cases run into assertion with btrfs check integrity options on.
+https://bugzilla.kernel.org/show_bug.cgi?id=203279
+https://bugzilla.kernel.org/show_bug.cgi?id=203253
+https://bugzilla.kernel.org/show_bug.cgi?id=203255
+https://bugzilla.kernel.org/show_bug.cgi?id=203257
+https://bugzilla.kernel.org/show_bug.cgi?id=203259
+https://bugzilla.kernel.org/show_bug.cgi?id=203261
+https://bugzilla.kernel.org/show_bug.cgi?id=203251
+
+
+Thank you,
+Jungyeon
