@@ -2,135 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C571647A4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 15:53:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A0B64C66
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 20:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727670AbfGJNxY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Jul 2019 09:53:24 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:47502 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727528AbfGJNxX (ORCPT
+        id S1727476AbfGJStj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Jul 2019 14:49:39 -0400
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:44908 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727287AbfGJSti (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Jul 2019 09:53:23 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6ADnPQI031198;
-        Wed, 10 Jul 2019 06:53:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=LSwHuOqw8ORrZCDHQsvG/QYCfmhr2ELeIl/jkZcYWrM=;
- b=ekrWL8wKWAmJd8pkzTY5jcY2oge6wvGrdYpvnMj9Cj9fmEAKW7e0ApVFklpBAHMDJ6eP
- GqPnYsu+6Amr0GGwcxrTHOc0d5QH/VMpUt83Sa+nSQj8JburLiCBCAg7lCVQ7vZiRBH6
- SIxrFOCHsY07afc7RcTE0H+kZ/9HUIM2Upc= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tngys825v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 10 Jul 2019 06:53:13 -0700
-Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
- ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 10 Jul 2019 06:53:12 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 10 Jul 2019 06:53:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LSwHuOqw8ORrZCDHQsvG/QYCfmhr2ELeIl/jkZcYWrM=;
- b=iZ1LC1mMRY8xJ1ECViknKbIr3unLR+50cpkhd8oACciYH4s45J25+GYo1vZfaqgUIFNKzuDrdswbO2O6+EuFhEpfE6Hq9RrEWuKFad2z9cCArLOXnDponvnhY7HPIw9IQf0a2VDT34a83+0MVpG4mm93zkWQDNH+mmdddr2ZSfk=
-Received: from CY4PR15MB1463.namprd15.prod.outlook.com (10.172.159.10) by
- CY4PR15MB1638.namprd15.prod.outlook.com (10.175.119.151) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.19; Wed, 10 Jul 2019 13:53:11 +0000
-Received: from CY4PR15MB1463.namprd15.prod.outlook.com
- ([fe80::7d62:c9a2:b34e:74fd]) by CY4PR15MB1463.namprd15.prod.outlook.com
- ([fe80::7d62:c9a2:b34e:74fd%6]) with mapi id 15.20.2052.019; Wed, 10 Jul 2019
- 13:53:11 +0000
-From:   Jens Axboe <axboe@fb.com>
-To:     Tejun Heo <tj@kernel.org>, "axboe@kernel.dk" <axboe@kernel.dk>
-CC:     "jack@suse.cz" <jack@suse.cz>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        Chris Mason <clm@fb.com>,
-        "dsterba@suse.com" <dsterba@suse.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCHSET for-5.3/block] block: add blkcg bio punt mechanism
-Thread-Topic: [PATCHSET for-5.3/block] block: add blkcg bio punt mechanism
-Thread-Index: AQHVLSiKTltqM2bkpE2zuxFAnfDaGabD80mA
-Date:   Wed, 10 Jul 2019 13:53:11 +0000
-Message-ID: <be63af25-6245-18f8-4c0b-4f48682a34ed@fb.com>
-References: <20190627203952.386785-1-tj@kernel.org>
-In-Reply-To: <20190627203952.386785-1-tj@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CH2PR07CA0004.namprd07.prod.outlook.com
- (2603:10b6:610:20::17) To CY4PR15MB1463.namprd15.prod.outlook.com
- (2603:10b6:903:fa::10)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [65.144.74.34]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7a7e2d01-0f5b-4854-236b-08d7053df255
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:CY4PR15MB1638;
-x-ms-traffictypediagnostic: CY4PR15MB1638:
-x-microsoft-antispam-prvs: <CY4PR15MB16384134BFD5B6157ADB8E7AC0F00@CY4PR15MB1638.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-forefront-prvs: 0094E3478A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(376002)(136003)(346002)(366004)(396003)(199004)(189003)(110136005)(5660300002)(66476007)(81166006)(71200400001)(53546011)(486006)(36756003)(66066001)(476003)(66556008)(25786009)(2616005)(4326008)(31696002)(14444005)(8676002)(316002)(68736007)(66946007)(11346002)(81156014)(64756008)(446003)(8936002)(229853002)(66446008)(2906002)(3846002)(6116002)(54906003)(52116002)(386003)(6506007)(14454004)(26005)(186003)(99286004)(6436002)(478600001)(71190400001)(256004)(305945005)(2501003)(86362001)(53936002)(102836004)(31686004)(7736002)(76176011)(6246003)(6512007)(6486002);DIR:OUT;SFP:1102;SCL:1;SRVR:CY4PR15MB1638;H:CY4PR15MB1463.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Kgg6ko+EVOYH4m2T0iyq8q31ANoSwocdu8shUmYMeGhIFJxNpxb/bkVW92WwZMop0EFqlJLPY2jXFI/40kDUWpy5ZVP7fsu5EyPy6ERW6eUkrOPNsvt4ZYcavXY2iBfMeZfDFigr+CQIwkHozYdvMykJrVTC8w854gptrhW54otZWC5MfFIRk6KOVl+T8ccToS7+/wuk9nG8cJKoKb1dso5PI/esZh8/t6Wooccph1GchR2DOYlk8Wm6orELF6tPDXxZgiE0X/ZVJhdL3ZtQMF8kCszs1a9sM2cM8peotlwv84jYjxlOWqwL6lBPaapzxztr0deOYZlzRz2O1cR24yH9alxc1LyPWqHO7SXAkoqAsioQEcUNUD47W/+I4olwss6lbWr5L+yS72/8wBfucyDqMuA1E0uGtnS/e3OYOuY=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <791AA76E10A6A84997426D2AA76AE3C3@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 10 Jul 2019 14:49:38 -0400
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 6830A142BC2; Wed, 10 Jul 2019 19:49:35 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1562784575;
+        bh=askeCnKptZFte6x3gRutpsC7UE+/qqqgh3C/4/+Y/a4=;
+        h=To:From:Subject:Date:From;
+        b=CZf/HYMMlEYwfuOkMRhO3dQkglC5Y7BEiC0SKkYZ0LGDkbG+TYf/GLxFvQvOsDtEz
+         nV3PFVU/19giHopKP32edSYYTf+Fs7k/0xCgyzLl3XvL+LGMfnOKcB/YlpRqtLLjPr
+         R1v86W3HgDn1nnpZmWAdDWHZ++WDVjIM3QKxYl41MlbeaPxoCb3RwQbs+DnvJsni6p
+         mEdGp+juzlAQq2Vhf/gFAWxEGR+rEG6XHov/Pg7SCvsynzzhlAoaa2+r6K5PcSk95C
+         ZMtzsrgs9nC6C0nz7+HSLdwp0dHvZvj/wCmkFoajO8RXdqnE08uDQs/x92ilXxk/oV
+         Wb/3eAvrY0CrA==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id EBDAC142BC1
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Jul 2019 19:49:34 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1562784575;
+        bh=askeCnKptZFte6x3gRutpsC7UE+/qqqgh3C/4/+Y/a4=;
+        h=To:From:Subject:Date:From;
+        b=CZf/HYMMlEYwfuOkMRhO3dQkglC5Y7BEiC0SKkYZ0LGDkbG+TYf/GLxFvQvOsDtEz
+         nV3PFVU/19giHopKP32edSYYTf+Fs7k/0xCgyzLl3XvL+LGMfnOKcB/YlpRqtLLjPr
+         R1v86W3HgDn1nnpZmWAdDWHZ++WDVjIM3QKxYl41MlbeaPxoCb3RwQbs+DnvJsni6p
+         mEdGp+juzlAQq2Vhf/gFAWxEGR+rEG6XHov/Pg7SCvsynzzhlAoaa2+r6K5PcSk95C
+         ZMtzsrgs9nC6C0nz7+HSLdwp0dHvZvj/wCmkFoajO8RXdqnE08uDQs/x92ilXxk/oV
+         Wb/3eAvrY0CrA==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id A5E7316DA2
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Jul 2019 19:49:34 +0100 (BST)
+To:     linux-btrfs@vger.kernel.org
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Subject: "btrfs: harden agaist duplicate fsid" spams syslog
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <5d8baf80-4fb3-221f-5ab4-e98a838f63e1@cobb.uk.net>
+Date:   Wed, 10 Jul 2019 19:49:34 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7a7e2d01-0f5b-4854-236b-08d7053df255
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jul 2019 13:53:11.5586
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: axboe@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR15MB1638
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-10_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907100162
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gNi8yNy8xOSAyOjM5IFBNLCBUZWp1biBIZW8gd3JvdGU6DQo+IEhlbGxvLA0KPiANCj4gVGhp
-cyBwYXRjaHNldCBjb250YWlucyBvbmx5IHRoZSBibG9jayBwYXJ0IG9mIHRoZSBmb2xsb3dpbmcN
-Cj4gDQo+ICAgIFsxXSBbUEFUQ0hTRVQgdjIgYnRyZnMvZm9yLW5leHRdIGJsa2NnLCBidHJmczog
-Zml4IGNncm91cCB3cml0ZWJhY2sgc3VwcG9ydA0KPiANCj4gd2l0aCB0aGUgZm9sbG93aW5nIGNo
-YW5nZXMNCj4gDQo+ICAgKiB3YmNfYWNjb3VudF9pbygpIGlzIHJlbmFtZWQgdG8gd2JjX2FjY291
-bnRfY2dyb3VwX293bmVyKCkgYW5kDQo+ICAgICB3YmMtPm5vX2FjY291bnRfaW8gdG8gd2JjLT5u
-b19jZ3JvdXBfb3duZXIgZm9yIGNsYXJpdHkuDQo+IA0KPiBXaGVuIHdyaXRlYmFjayBpcyBleGVj
-dXRlZCBhc3luY2hyb25vdXNseSAoZS5nLiBmb3IgY29tcHJlc3Npb24pLCBiaW9zDQo+IGFyZSBi
-b3VuY2VkIHRvIGFuZCBpc3N1ZWQgYnkgd29ya2VyIHBvb2wgc2hhcmVkIGJ5IGFsbCBjZ3JvdXBz
-LiAgVGhpcw0KPiBsZWFkcyB0byBzaWduaWZpY2FudCBwcmlvcml0eSBpbnZlcnNpb25zIHdoZW4g
-Y2dyb3VwIElPIGNvbnRyb2wgaXMgaW4NCj4gdXNlIC0gSU9zIGZvciBhIGxvdyBwcmlvcml0eSBj
-Z3JvdXAgY2FuIHRpZSBkb3duIHRoZSB3b3JrZXJzIGZvcmNpbmcNCj4gaGlnaGVyIHByaW9yaXR5
-IElPcyB0byB3YWl0IGJlaGluZCB0aGVtLg0KPiANCj4gVGhpcyBwYXRjaHNldCBhZGRzIGFuIGJp
-byBwdW50IG1lY2hhbmlzbSB0byBibGtjZyBhbmQgdXBkYXRlcyBidHJmcyB0bw0KPiBpc3N1ZSBh
-c3luYyBJT3MgdGhyb3VnaCBpdC4gIEEgYmlvIHRhZ2dlZCB3aXRoIFJFUV9DR1JPVVBfUFVOVCBm
-bGFnIGlzDQo+IGJvdW5jZWQgdG8gdGhlIGFzeW5jaHJvbm91cyBpc3N1ZSBjb250ZXh0IG9mIHRo
-ZSBhc3NvY2lhdGVkIGJsa2NnIG9uDQo+IGJpb19zdWJtaXQoKS4gIEFzIHRoZSBiaW9zIGFyZSBp
-c3N1ZWQgZnJvbSBwZXItYmxrY2cgd29yayBpdGVtcywNCj4gdGhlcmUncyBubyBjb25jZXJuIGZv
-ciBwcmlvcml0eSBpbnZlcnNpb25zIGFuZCBpdCBkb2Vzbid0IHJlcXVpcmUNCj4gaW52YXNpdmUg
-Y2hhbmdlcyB0byB0aGUgZmlsZXN5c3RlbXMuICBUaGUgbWVjaGFuaXNtIHNob3VsZCBiZQ0KPiBn
-ZW5lcmFsbHkgdXNlZnVsIGZvciBJTyBjb250cm9sIHN1cHBvcnQgYWNyb3NzIGRpZmZlcmVudCBm
-aWxlc3lzdGVtcy4NCg0KQXBwbGllZCBmb3IgNS4zLCB0aGFua3MgVGVqdW4uDQoNCi0tIA0KSmVu
-cyBBeGJvZQ0KDQo=
+Anand's Nov 2018 patch "btrfs: harden agaist duplicate fsid" has
+recently percolated through to my Debian buster server system.
+
+And it is spamming my log files.
+
+Each of my btrfs filesystem devices logs 4 messages every 2 minutes.
+Here is an example of the 4 messages related to one device:
+
+Jul 10 19:32:27 black kernel: [33017.407252] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+Jul 10 19:32:27 black kernel: [33017.522242] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+Jul 10 19:32:29 black kernel: [33018.797161] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+Jul 10 19:32:29 black kernel: [33019.061631] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+
+What is happening here is that each device is actually an LVM logical
+volume, and it is known by a /dev/mapper name and a /dev/dm name. And
+every 2 minutes something cause btrfs to notice that there are two names
+for the same device and it swaps them around. Logging a message to say
+it has done so. And doing it 4 times.
+
+I presume that the swapping doesn't cause any problem. I wonder slightly
+whether ordering guarantees and barriers all work correctly but I
+haven't noticed any problems.
+
+I also assume it has been doing this for a while -- just silently before
+this patch came along.
+
+Is btrfs noticing this itself or is something else (udev or systemd, for
+example) triggering it?
+
+Should I worry about it?
+
+Is there any way to not have my log files full of this?
+
+Graham
+
+[This started with a Debian testing kernel a couple of months ago.
+Current uname -a gives: Linux black 4.19.0-5-amd64 #1 SMP Debian
+4.19.37-5 (2019-06-19) x86_64 GNU/Linux]
