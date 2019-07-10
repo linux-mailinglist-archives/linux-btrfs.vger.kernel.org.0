@@ -2,26 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32BD36433E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 10:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97C746433F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 10:02:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727143AbfGJICw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Jul 2019 04:02:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49056 "EHLO mx1.suse.de"
+        id S1727221AbfGJICx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Jul 2019 04:02:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49064 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726198AbfGJICv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Jul 2019 04:02:51 -0400
+        id S1726198AbfGJICx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Jul 2019 04:02:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B2F40AEF8;
-        Wed, 10 Jul 2019 08:02:50 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id ABA9AAF03
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Jul 2019 08:02:51 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Jungyeon Yoon <jungyeon.yoon@gmail.com>
-Subject: [PATCH 0/5] btrfs: Enhanced runtime defence against fuzzed images
-Date:   Wed, 10 Jul 2019 16:02:38 +0800
-Message-Id: <20190710080243.15988-1-wqu@suse.com>
+Subject: [PATCH 1/5] btrfs: extent_io: Do extra check for extent buffer read write functions
+Date:   Wed, 10 Jul 2019 16:02:39 +0800
+Message-Id: <20190710080243.15988-2-wqu@suse.com>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190710080243.15988-1-wqu@suse.com>
+References: <20190710080243.15988-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -29,58 +30,201 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Another wave of defence enhancment, including:
+Although we have start, len check for extent buffer reader/write (e.g.
+read_extent_buffer()), those checks has its limitations:
+- No overflow check
+  Values like start = 1024 len = -1024 can still pass the basic
+   (start + len) > eb->len check.
 
-- Enhanced eb accessors
-  Not really needed for the fuzzed images, as 448de471cd4c
-  ("btrfs: Check the first key and level for cached extent buffer")
-  already fixed half of the reported images.
-  Just add a final layer of safe net.
+- Checks are not consistent
+  For read_extent_buffer() we only check (start + len) against eb->len.
+  While for memcmp_extent_buffer() we also check start against eb->len.
 
-- BUG_ON() hunt in __btrfs_free_extent()
-  Kill BUG_ON()s in __btrfs_free_extent(), replace with error reporting
-  and why it shouldn't happen.
+- Different error reporting mechanism
+  We use WARN() in read_extent_buffer() but BUG() in
+  memcpy_extent_buffer().
 
-  Also add comment on what __btrfs_free_extent() is designed to do, with
-  two dump-tree examples for newcomers.
+- Still modify memory if the request is obviously wrong
+  In read_extent_buffer() even we find (start + len) > eb->len, we still
+  call memset(dst, 0, len), which can eaisly cause memory access error
+  if start + len overflows.
 
-- BUG_ON() hunt in __btrfs_inc_extent_ref()
-  Just like __btrfs_free_extent(), but less comment as
-  comment for __btrfs_free_extent() should also work for
-  __btrfs_inc_extent_ref(), and __btrfs_inc_extent_ref() has a better
-  structure than __btrfs_free_extent().
+To address above problems, this patch creates a new common function to
+check such access, check_eb_range().
+- Add overflow check
+  This function checks start, start + len against eb->len and overflow
+  check.
 
-- Defence against unbalanced empty leaf
+- Unified checks
 
-- Defence against bad key order across two tree blocks
+- Unified error reports
+  Will call WARN() if CONFIG_BTRFS_DEBUG is configured.
+  And also do btrfs_warn() message for non-debug build.
 
-The last two cases can't be rejected by tree-checker and they are all
-cross-eb cases.
-Thankfully we can reuse existing first_key check against unbalanced
-empty leaf, but needs extra check deep into ctree.c for tree block
-merging time check.
+- Exit ASAP if check fails
+  No more possible memory corruption.
 
-Reported-by: Jungyeon Yoon <jungyeon.yoon@gmail.com>
-[ Not to mail bombarding the report, thus only RB tag in cover letter ]
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=202817
+[ Inspired by above report, the report itself is already addressed ]
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/extent_io.c | 79 +++++++++++++++++++++++---------------------
+ 1 file changed, 42 insertions(+), 37 deletions(-)
 
-Qu Wenruo (5):
-  btrfs: extent_io: Do extra check for extent buffer read write
-    functions
-  btrfs: extent-tree: Kill BUG_ON() in __btrfs_free_extent() and do
-    better comment
-  btrfs: Detect unbalanced tree with empty leaf before crashing btree
-    operations
-  btrfs: extent-tree: Kill the BUG_ON() in
-    insert_inline_extent_backref()
-  btrfs: ctree: Checking key orders before merged tree blocks
-
- fs/btrfs/ctree.c        |  63 +++++++++++++++
- fs/btrfs/disk-io.c      |   9 +++
- fs/btrfs/extent-tree.c  | 168 ++++++++++++++++++++++++++++++++++++----
- fs/btrfs/extent_io.c    |  79 ++++++++++---------
- fs/btrfs/tree-checker.c |   6 ++
- 5 files changed, 273 insertions(+), 52 deletions(-)
-
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index db337e53aab3..b072ef5bceac 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -5429,6 +5429,31 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
+ 	return ret;
+ }
+ 
++/*
++ * Check if the [start, start + len) range is valid before reading/writing
++ * the eb.
++ *
++ * Caller should not touch the dst/src memory if this function returns error.
++ */
++static int check_eb_range(const struct extent_buffer *eb, unsigned long start,
++			  unsigned long len)
++{
++	unsigned long end;
++
++	/* start, start + len should not go beyond eb->len nor overflow */
++	if (unlikely(start > eb->len || start + len > eb->len ||
++		     check_add_overflow(start, len, &end))) {
++		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG), KERN_ERR
++"btrfs: bad eb rw request, eb bytenr=%llu len=%lu rw start=%lu len=%lu\n",
++		     eb->start, eb->len, start, len);
++		btrfs_warn(eb->fs_info,
++"btrfs: bad eb rw request, eb bytenr=%llu len=%lu rw start=%lu len=%lu\n",
++			   eb->start, eb->len, start, len);
++		return -EINVAL;
++	}
++	return 0;
++}
++
+ void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
+ 			unsigned long start, unsigned long len)
+ {
+@@ -5440,12 +5465,8 @@ void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
+ 	size_t start_offset = offset_in_page(eb->start);
+ 	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
+ 
+-	if (start + len > eb->len) {
+-		WARN(1, KERN_ERR "btrfs bad mapping eb start %llu len %lu, wanted %lu %lu\n",
+-		     eb->start, eb->len, start, len);
+-		memset(dst, 0, len);
++	if (check_eb_range(eb, start, len))
+ 		return;
+-	}
+ 
+ 	offset = offset_in_page(start_offset + start);
+ 
+@@ -5554,8 +5575,8 @@ int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
+ 	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
+ 	int ret = 0;
+ 
+-	WARN_ON(start > eb->len);
+-	WARN_ON(start + len > eb->start + eb->len);
++	if (check_eb_range(eb, start, len))
++		return -EINVAL;
+ 
+ 	offset = offset_in_page(start_offset + start);
+ 
+@@ -5609,8 +5630,8 @@ void write_extent_buffer(struct extent_buffer *eb, const void *srcv,
+ 	size_t start_offset = offset_in_page(eb->start);
+ 	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
+ 
+-	WARN_ON(start > eb->len);
+-	WARN_ON(start + len > eb->start + eb->len);
++	if (check_eb_range(eb, start, len))
++		return;
+ 
+ 	offset = offset_in_page(start_offset + start);
+ 
+@@ -5639,8 +5660,8 @@ void memzero_extent_buffer(struct extent_buffer *eb, unsigned long start,
+ 	size_t start_offset = offset_in_page(eb->start);
+ 	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
+ 
+-	WARN_ON(start > eb->len);
+-	WARN_ON(start + len > eb->start + eb->len);
++	if (check_eb_range(eb, start, len))
++		return;
+ 
+ 	offset = offset_in_page(start_offset + start);
+ 
+@@ -5684,6 +5705,10 @@ void copy_extent_buffer(struct extent_buffer *dst, struct extent_buffer *src,
+ 	size_t start_offset = offset_in_page(dst->start);
+ 	unsigned long i = (start_offset + dst_offset) >> PAGE_SHIFT;
+ 
++	if (check_eb_range(dst, dst_offset, len) ||
++	    check_eb_range(src, src_offset, len))
++		return;
++
+ 	WARN_ON(src->len != dst_len);
+ 
+ 	offset = offset_in_page(start_offset + dst_offset);
+@@ -5872,7 +5897,6 @@ static void copy_pages(struct page *dst_page, struct page *src_page,
+ void memcpy_extent_buffer(struct extent_buffer *dst, unsigned long dst_offset,
+ 			   unsigned long src_offset, unsigned long len)
+ {
+-	struct btrfs_fs_info *fs_info = dst->fs_info;
+ 	size_t cur;
+ 	size_t dst_off_in_page;
+ 	size_t src_off_in_page;
+@@ -5880,18 +5904,9 @@ void memcpy_extent_buffer(struct extent_buffer *dst, unsigned long dst_offset,
+ 	unsigned long dst_i;
+ 	unsigned long src_i;
+ 
+-	if (src_offset + len > dst->len) {
+-		btrfs_err(fs_info,
+-			"memmove bogus src_offset %lu move len %lu dst len %lu",
+-			 src_offset, len, dst->len);
+-		BUG();
+-	}
+-	if (dst_offset + len > dst->len) {
+-		btrfs_err(fs_info,
+-			"memmove bogus dst_offset %lu move len %lu dst len %lu",
+-			 dst_offset, len, dst->len);
+-		BUG();
+-	}
++	if (check_eb_range(dst, dst_offset, len) ||
++	    check_eb_range(dst, src_offset, len))
++		return;
+ 
+ 	while (len > 0) {
+ 		dst_off_in_page = offset_in_page(start_offset + dst_offset);
+@@ -5917,7 +5932,6 @@ void memcpy_extent_buffer(struct extent_buffer *dst, unsigned long dst_offset,
+ void memmove_extent_buffer(struct extent_buffer *dst, unsigned long dst_offset,
+ 			   unsigned long src_offset, unsigned long len)
+ {
+-	struct btrfs_fs_info *fs_info = dst->fs_info;
+ 	size_t cur;
+ 	size_t dst_off_in_page;
+ 	size_t src_off_in_page;
+@@ -5927,18 +5941,9 @@ void memmove_extent_buffer(struct extent_buffer *dst, unsigned long dst_offset,
+ 	unsigned long dst_i;
+ 	unsigned long src_i;
+ 
+-	if (src_offset + len > dst->len) {
+-		btrfs_err(fs_info,
+-			  "memmove bogus src_offset %lu move len %lu len %lu",
+-			  src_offset, len, dst->len);
+-		BUG();
+-	}
+-	if (dst_offset + len > dst->len) {
+-		btrfs_err(fs_info,
+-			  "memmove bogus dst_offset %lu move len %lu len %lu",
+-			  dst_offset, len, dst->len);
+-		BUG();
+-	}
++	if (check_eb_range(dst, dst_offset, len) ||
++	    check_eb_range(dst, src_offset, len))
++		return;
+ 	if (dst_offset < src_offset) {
+ 		memcpy_extent_buffer(dst, dst_offset, src_offset, len);
+ 		return;
 -- 
 2.22.0
 
