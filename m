@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E8CF64CC4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 21:28:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D23864CC7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 21:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbfGJT2d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Jul 2019 15:28:33 -0400
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:33959 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726111AbfGJT2b (ORCPT
+        id S1728328AbfGJT2e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Jul 2019 15:28:34 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:41336 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728294AbfGJT2e (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Jul 2019 15:28:31 -0400
-Received: by mail-pf1-f195.google.com with SMTP id b13so1556756pfo.1;
-        Wed, 10 Jul 2019 12:28:31 -0700 (PDT)
+        Wed, 10 Jul 2019 15:28:34 -0400
+Received: by mail-pg1-f195.google.com with SMTP id q4so1697821pgj.8;
+        Wed, 10 Jul 2019 12:28:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=nZ7elc2UuS/FrboNoV7WD8dAaucbBsLM5Y4zkWcMIec=;
-        b=qiCfx0rmc+8sLIBCZVBXWBshloWP9bWx9Q85U5m/78c5vqi7KwfuQl3wXQ0er2NMKq
-         cnyPIzEt0dy+WgDXjj3vUzWKdUO2sbqFX9v0mbdvpak7wsrO6vFDYmVd+p2E2we+nF+X
-         TsgaPawOW1GxWiMWLBAYHqDmxCcldeYpbrxA6oHbqFbPdCNZJw+pba5HkKPu8S+HRPKc
-         1A6MmMaxaZdwrbyD+h9GiZUBuUQXicaNbuOAKshkXytGyXN1SEcwnmimMnB8kQA/hp8E
-         CLGJ+mDDsBmw1baxWsEFwCG/dZWfHAwpZBAVeCCAdolAc9ASpRguth3hJeqhVd0+Xq+y
-         V2vw==
+        bh=KAo4WuDRyf54TlDDwMAgNdT7JU5VFdfLCyBXfAFicR0=;
+        b=AJIBfpzy73I3fiEnWjtI1Rq9EaTJalUxkidRxqm5b1kP+SgrCqS1OQP0/l9slWzmxW
+         WwX+5HvIvatawBqEdrYJOrkFxAfqQlaYsqzhgYHMFZJaA8sr9e8m6/ULvXoBVM+ddZXS
+         ldb6psmsfBDZ21w+HIL+DkNo9geu452qaYd+SgQO0YZieAfHvUxYYtdTmymQ5aMW9WU2
+         1ExEjBhc2RgWnYmMh3yMNvvAhyekRIRvmuP9X3jq51/hLFzfr5EG46bm/60IjtJYyMup
+         AF1ZyXqglKdM7NM6biviIIrLa9pClhTyJoxyiYoGjANkblO/fasTKXTgnRyvvgFfBXKl
+         3UHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references;
-        bh=nZ7elc2UuS/FrboNoV7WD8dAaucbBsLM5Y4zkWcMIec=;
-        b=RKRbkMYN/0/4XaINpfwrE9R3DnnFfq80C+Mlgw5C+ZNosUDZBrPDbiCBGyzik7aWns
-         HKCCLmUnS5k5dSTH6ABVRbYfHl58vB1miwq8Y/WE6oXWH8rqzuMFDt2+jCuybVqhhRtk
-         hW8+y5wb8uiDWlpSg+pO1c0Reo8HDC2O/Y75NeJX/ZilHH7EunDe6HzVZ6SStp8SRewC
-         pjYgK9AmX5WzKBEYofm3amRiRL3jZPYJTeIlclpmotUgB3GmgwYr/mOE6OmiF812X+Vd
-         kJHKkZbh0HGg7SFBFQOI+eXVO2TR0G4LQlWHAqYDjgq3oqZpPlbF9uaslpR+/hQTrVRa
-         Bw4A==
-X-Gm-Message-State: APjAAAUwVMGNd4zdyNLV9naw0x66/81DQCR/EBFDGPTEsbjH/XkNTBn5
-        QidVAxxEvZqpRIRFS3AzkTw=
-X-Google-Smtp-Source: APXvYqznLwyb8aAh4JJt/ZHzUO2evjmORiPsPxcjE79kOScSuoqih3fkZmwydf/5r6XJjfnllDF69A==
-X-Received: by 2002:a63:18d:: with SMTP id 135mr38954916pgb.62.1562786910390;
-        Wed, 10 Jul 2019 12:28:30 -0700 (PDT)
+        bh=KAo4WuDRyf54TlDDwMAgNdT7JU5VFdfLCyBXfAFicR0=;
+        b=A4PMT0Rrf8fABz7OTTWygZJm1HT9LoibrRvvbFR74fn9XiKn60rGBnj02rhTVeOZbT
+         QKJZIWq0oEtyCR7R6I3D0TLGk1Cn7iKmFW5p+ZwZdxaawFEfNtr6G2rFwWlbB3xlZMRU
+         voneN8/yV2LXO/fz0hVQZJ1iLafEm6xW4Tima/T7DG1KqbQyd85K99VVJFFETMIv7HpX
+         jVKYbdRfuyz3L10bPIWNGp/WPttzQWZyp0oE35Bj2MeZrszm/md2MJ9fEUlCnZ8FzFZb
+         jL3hoGtnH3YLDeuHstx1paE4rhvqLsYJPS/WgACd9NskiLcdqKMja9Yd32Caay9mmUdp
+         8nIQ==
+X-Gm-Message-State: APjAAAVp9XBXYVSm5BkZv/f0guf4o5lj1BXGm6gTCulW+D8bzphOfWWr
+        fPzm81F7OGZ0Qb5s4GFqK1Q=
+X-Google-Smtp-Source: APXvYqyXzZCHQUdHCdzFQDuIckehOf5px056RzVkmTgXv/uggUcEMbxpHIwKZUaPmsddyKYbjqNioA==
+X-Received: by 2002:a63:61cb:: with SMTP id v194mr36621307pgb.95.1562786913011;
+        Wed, 10 Jul 2019 12:28:33 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::3:2bbe])
-        by smtp.gmail.com with ESMTPSA id u137sm2963923pgc.91.2019.07.10.12.28.29
+        by smtp.gmail.com with ESMTPSA id t7sm2552894pjq.15.2019.07.10.12.28.32
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Jul 2019 12:28:29 -0700 (PDT)
+        Wed, 10 Jul 2019 12:28:32 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     josef@toxicpanda.com, clm@fb.com, dsterba@suse.com
 Cc:     axboe@kernel.dk, jack@suse.cz, linux-kernel@vger.kernel.org,
         linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 3/5] Btrfs: only associate the locked page with one async_cow struct
-Date:   Wed, 10 Jul 2019 12:28:16 -0700
-Message-Id: <20190710192818.1069475-4-tj@kernel.org>
+Subject: [PATCH 4/5] Btrfs: use REQ_CGROUP_PUNT for worker thread submitted bios
+Date:   Wed, 10 Jul 2019 12:28:17 -0700
+Message-Id: <20190710192818.1069475-5-tj@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190710192818.1069475-1-tj@kernel.org>
 References: <20190710192818.1069475-1-tj@kernel.org>
@@ -61,154 +61,190 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Chris Mason <clm@fb.com>
 
-The btrfs writepages function collects a large range of pages flagged
-for delayed allocation, and then sends them down through the COW code
-for processing.  When compression is on, we allocate one async_cow
-structure for every 512K, and then run those pages through the
-compression code for IO submission.
+Async CRCs and compression submit IO through helper threads, which
+means they have IO priority inversions when cgroup IO controllers are
+in use.
 
-writepages starts all of this off with a single page, locked by
-the original call to extent_write_cache_pages(), and it's important to
-keep track of this page because it has already been through
-clear_page_dirty_for_io().
+This flags all of the writes submitted by btrfs helper threads as
+REQ_CGROUP_PUNT.  submit_bio() will punt these to dedicated per-blkcg
+work items to avoid the priority inversion.
 
-The btrfs async_cow struct has a pointer to the locked_page, and when
-we're redirtying the page because compression had to fallback to
-uncompressed IO, we use page->index to decide if a given async_cow
-struct really owns that page.
+For the compression code, we take a reference on the wbc's blkg css and
+pass it down to the async workers.
 
-But, this is racey.  If a given delalloc range is broken up into two
-async_cows (cow_A and cow_B), we can end up with something like this:
-
-compress_file_range(cowA)
-submit_compress_extents(cowA)
-submit compressed bios(cowA)
-put_page(locked_page)
-
-				compress_file_range(cowB)
-				...
-
-The end result is that cowA is completed and cleaned up before cowB even
-starts processing.  This means we can free locked_page() and reuse it
-elsewhere.  If we get really lucky, it'll have the same page->index in
-its new home as it did before.
-
-While we're processing cowB, we might decide we need to fall back to
-uncompressed IO, and so compress_file_range() will call
-__set_page_dirty_nobufers() on cowB->locked_page.
-
-Without cgroups in use, this creates as a phantom dirty page, which
-isn't great but isn't the end of the world.  With cgroups in use, we
-might crash in the accounting code because page->mapping->i_wb isn't
-set.
-
-[ 8308.523110] BUG: unable to handle kernel NULL pointer dereference at 00000000000000d0
-[ 8308.531084] IP: percpu_counter_add_batch+0x11/0x70
-[ 8308.538371] PGD 66534e067 P4D 66534e067 PUD 66534f067 PMD 0
-[ 8308.541750] Oops: 0000 [#1] SMP DEBUG_PAGEALLOC
-[ 8308.551948] CPU: 16 PID: 2172 Comm: rm Not tainted
-[ 8308.566883] RIP: 0010:percpu_counter_add_batch+0x11/0x70
-[ 8308.567891] RSP: 0018:ffffc9000a97bbe0 EFLAGS: 00010286
-[ 8308.568986] RAX: 0000000000000005 RBX: 0000000000000090 RCX: 0000000000026115
-[ 8308.570734] RDX: 0000000000000030 RSI: ffffffffffffffff RDI: 0000000000000090
-[ 8308.572543] RBP: 0000000000000000 R08: fffffffffffffff5 R09: 0000000000000000
-[ 8308.573856] R10: 00000000000260c0 R11: ffff881037fc26c0 R12: ffffffffffffffff
-[ 8308.580099] R13: ffff880fe4111548 R14: ffffc9000a97bc90 R15: 0000000000000001
-[ 8308.582520] FS:  00007f5503ced480(0000) GS:ffff880ff7200000(0000) knlGS:0000000000000000
-[ 8308.585440] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 8308.587951] CR2: 00000000000000d0 CR3: 00000001e0459005 CR4: 0000000000360ee0
-[ 8308.590707] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 8308.592865] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 8308.594469] Call Trace:
-[ 8308.595149]  account_page_cleaned+0x15b/0x1f0
-[ 8308.596340]  __cancel_dirty_page+0x146/0x200
-[ 8308.599395]  truncate_cleanup_page+0x92/0xb0
-[ 8308.600480]  truncate_inode_pages_range+0x202/0x7d0
-[ 8308.617392]  btrfs_evict_inode+0x92/0x5a0
-[ 8308.619108]  evict+0xc1/0x190
-[ 8308.620023]  do_unlinkat+0x176/0x280
-[ 8308.621202]  do_syscall_64+0x63/0x1a0
-[ 8308.623451]  entry_SYSCALL_64_after_hwframe+0x42/0xb7
-
-The fix here is to make asyc_cow->locked_page NULL everywhere but the
-one async_cow struct that's allowed to do things to the locked page.
+For the async crcs, the bio already has the correct css, we just need to
+tell the block layer to use REQ_CGROUP_PUNT.
 
 Signed-off-by: Chris Mason <clm@fb.com>
-Fixes: 771ed689d2cd ("Btrfs: Optimize compressed writeback and reads")
+Modified-and-reviewed-by: Tejun Heo <tj@kernel.org>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c |  2 +-
- fs/btrfs/inode.c     | 25 +++++++++++++++++++++----
- 2 files changed, 22 insertions(+), 5 deletions(-)
+ fs/btrfs/compression.c |  8 +++++++-
+ fs/btrfs/compression.h |  3 ++-
+ fs/btrfs/disk-io.c     |  6 ++++++
+ fs/btrfs/extent_io.c   |  3 +++
+ fs/btrfs/inode.c       | 31 ++++++++++++++++++++++++++++---
+ 5 files changed, 46 insertions(+), 5 deletions(-)
 
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index dfc4eb9b7717..5b142d0d0a0b 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -288,7 +288,8 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
+ 				 unsigned long compressed_len,
+ 				 struct page **compressed_pages,
+ 				 unsigned long nr_pages,
+-				 unsigned int write_flags)
++				 unsigned int write_flags,
++				 struct cgroup_subsys_state *blkcg_css)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct bio *bio = NULL;
+@@ -322,6 +323,11 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
+ 	bio->bi_opf = REQ_OP_WRITE | write_flags;
+ 	bio->bi_private = cb;
+ 	bio->bi_end_io = end_compressed_bio_write;
++
++	if (blkcg_css) {
++		bio->bi_opf |= REQ_CGROUP_PUNT;
++		bio_associate_blkg_from_css(bio, blkcg_css);
++	}
+ 	refcount_set(&cb->pending_bios, 1);
+ 
+ 	/* create and submit bios for the compressed pages */
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index 9976fe0f7526..7cbefab96ecf 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -93,7 +93,8 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
+ 				  unsigned long compressed_len,
+ 				  struct page **compressed_pages,
+ 				  unsigned long nr_pages,
+-				  unsigned int write_flags);
++				  unsigned int write_flags,
++				  struct cgroup_subsys_state *blkcg_css);
+ blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
+ 				 int mirror_num, unsigned long bio_flags);
+ 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 323cab06f2a9..cc0aa77b8128 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -799,6 +799,12 @@ static void run_one_async_done(struct btrfs_work *work)
+ 		return;
+ 	}
+ 
++	/*
++	 * All of the bios that pass through here are from async helpers.
++	 * Use REQ_CGROUP_PUNT to issue them from the owning cgroup's
++	 * context.  This changes nothing when cgroups aren't in use.
++	 */
++	async->bio->bi_opf |= REQ_CGROUP_PUNT;
+ 	ret = btrfs_map_bio(btrfs_sb(inode->i_sb), async->bio,
+ 			    async->mirror_num);
+ 	if (ret) {
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 5106008f5e28..a31574df06aa 100644
+index a31574df06aa..3f3942618e92 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -1838,7 +1838,7 @@ static int __process_pages_contig(struct address_space *mapping,
- 			if (page_ops & PAGE_SET_PRIVATE2)
- 				SetPagePrivate2(pages[i]);
+@@ -4173,6 +4173,9 @@ int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
+ 		.nr_to_write	= nr_pages * 2,
+ 		.range_start	= start,
+ 		.range_end	= end + 1,
++		/* we're called from an async helper function */
++		.punt_to_cgroup	= 1,
++		.no_cgroup_owner = 1,
+ 	};
  
--			if (pages[i] == locked_page) {
-+			if (locked_page && pages[i] == locked_page) {
- 				put_page(pages[i]);
- 				pages_locked++;
- 				continue;
+ 	while (start <= end) {
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 6e6df0eab324..a81e9860ee1f 100644
+index a81e9860ee1f..f5515aea6012 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -666,10 +666,12 @@ static noinline void compress_file_range(struct async_chunk *async_chunk,
- 	 * to our extent and set things up for the async work queue to run
- 	 * cow_file_range to do the normal delalloc dance.
- 	 */
--	if (page_offset(async_chunk->locked_page) >= start &&
--	    page_offset(async_chunk->locked_page) <= end)
-+	if (async_chunk->locked_page &&
-+	    (page_offset(async_chunk->locked_page) >= start &&
-+	     page_offset(async_chunk->locked_page)) <= end) {
- 		__set_page_dirty_nobuffers(async_chunk->locked_page);
- 		/* unlocked later on in the async handlers */
-+	}
+@@ -357,6 +357,7 @@ struct async_extent {
+ };
  
- 	if (redirty)
- 		extent_range_redirty_for_io(inode, start, end);
-@@ -759,7 +761,7 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
- 						  async_extent->start +
- 						  async_extent->ram_size - 1,
- 						  WB_SYNC_ALL);
--			else if (ret)
-+			else if (ret && async_chunk->locked_page)
- 				unlock_page(async_chunk->locked_page);
- 			kfree(async_extent);
- 			cond_resched();
-@@ -1236,10 +1238,25 @@ static int cow_file_range_async(struct inode *inode, struct page *locked_page,
- 		async_chunk[i].inode = inode;
- 		async_chunk[i].start = start;
- 		async_chunk[i].end = cur_end;
--		async_chunk[i].locked_page = locked_page;
- 		async_chunk[i].write_flags = write_flags;
- 		INIT_LIST_HEAD(&async_chunk[i].extents);
+ struct async_chunk {
++	struct cgroup_subsys_state *blkcg_css;
+ 	struct inode *inode;
+ 	struct page *locked_page;
+ 	u64 start;
+@@ -846,7 +847,8 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
+ 				    ins.objectid,
+ 				    ins.offset, async_extent->pages,
+ 				    async_extent->nr_pages,
+-				    async_chunk->write_flags)) {
++				    async_chunk->write_flags,
++				    async_chunk->blkcg_css)) {
+ 			struct page *p = async_extent->pages[0];
+ 			const u64 start = async_extent->start;
+ 			const u64 end = start + async_extent->ram_size - 1;
+@@ -1170,6 +1172,8 @@ static noinline void async_cow_free(struct btrfs_work *work)
+ 	async_chunk = container_of(work, struct async_chunk, work);
+ 	if (async_chunk->inode)
+ 		btrfs_add_delayed_iput(async_chunk->inode);
++	if (async_chunk->blkcg_css)
++		css_put(async_chunk->blkcg_css);
+ 	/*
+ 	 * Since the pointer to 'pending' is at the beginning of the array of
+ 	 * async_chunk's, freeing it ensures the whole array has been freed.
+@@ -1178,12 +1182,15 @@ static noinline void async_cow_free(struct btrfs_work *work)
+ 		kvfree(async_chunk->pending);
+ }
  
-+		/*
-+		 * The locked_page comes all the way from writepage and its
-+		 * the original page we were actually given.  As we spread
-+		 * this large delalloc region across multiple async_cow
-+		 * structs, only the first struct needs a pointer to locked_page
-+		 *
-+		 * This way we don't need racey decisions about who is supposed
-+		 * to unlock it.
-+		 */
-+		if (locked_page) {
-+			async_chunk[i].locked_page = locked_page;
-+			locked_page = NULL;
+-static int cow_file_range_async(struct inode *inode, struct page *locked_page,
++static int cow_file_range_async(struct inode *inode,
++				struct writeback_control *wbc,
++				struct page *locked_page,
+ 				u64 start, u64 end, int *page_started,
+ 				unsigned long *nr_written,
+ 				unsigned int write_flags)
+ {
+ 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
++	struct cgroup_subsys_state *blkcg_css = wbc_blkcg_css(wbc);
+ 	struct async_cow *ctx;
+ 	struct async_chunk *async_chunk;
+ 	unsigned long nr_pages;
+@@ -1251,12 +1258,30 @@ static int cow_file_range_async(struct inode *inode, struct page *locked_page,
+ 		 * to unlock it.
+ 		 */
+ 		if (locked_page) {
++			/*
++			 * Depending on the compressibility, the pages
++			 * might or might not go through async.  We want
++			 * all of them to be accounted against @wbc once.
++			 * Let's do it here before the paths diverge.  wbc
++			 * accounting is used only for foreign writeback
++			 * detection and doesn't need full accuracy.  Just
++			 * account the whole thing against the first page.
++			 */
++			wbc_account_cgroup_owner(wbc, locked_page,
++						 cur_end - start);
+ 			async_chunk[i].locked_page = locked_page;
+ 			locked_page = NULL;
+ 		} else {
+ 			async_chunk[i].locked_page = NULL;
+ 		}
+ 
++		if (blkcg_css != blkcg_root_css) {
++			css_get(blkcg_css);
++			async_chunk[i].blkcg_css = blkcg_css;
 +		} else {
-+			async_chunk[i].locked_page = NULL;
++			async_chunk[i].blkcg_css = NULL;
 +		}
 +
  		btrfs_init_work(&async_chunk[i].work,
  				btrfs_delalloc_helper,
  				async_cow_start, async_cow_submit,
+@@ -1653,7 +1678,7 @@ int btrfs_run_delalloc_range(struct inode *inode, struct page *locked_page,
+ 	} else {
+ 		set_bit(BTRFS_INODE_HAS_ASYNC_EXTENT,
+ 			&BTRFS_I(inode)->runtime_flags);
+-		ret = cow_file_range_async(inode, locked_page, start, end,
++		ret = cow_file_range_async(inode, wbc, locked_page, start, end,
+ 					   page_started, nr_written,
+ 					   write_flags);
+ 	}
 -- 
 2.17.1
 
