@@ -2,139 +2,193 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B3764589
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 13:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03ACF645A2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 13:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbfGJLDZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Jul 2019 07:03:25 -0400
-Received: from m9a0003g.houston.softwaregrp.com ([15.124.64.68]:59683 "EHLO
-        m9a0003g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725994AbfGJLDZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Jul 2019 07:03:25 -0400
-Received: FROM m9a0003g.houston.softwaregrp.com (15.121.0.190) BY m9a0003g.houston.softwaregrp.com WITH ESMTP
- FOR linux-btrfs@vger.kernel.org;
- Wed, 10 Jul 2019 11:03:24 +0000
-Received: from M9W0068.microfocus.com (2002:f79:bf::f79:bf) by
- M9W0067.microfocus.com (2002:f79:be::f79:be) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Wed, 10 Jul 2019 11:00:28 +0000
-Received: from NAM03-CO1-obe.outbound.protection.outlook.com (15.124.72.11) by
- M9W0068.microfocus.com (15.121.0.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Wed, 10 Jul 2019 11:00:28 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3379.namprd18.prod.outlook.com (10.255.136.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.21; Wed, 10 Jul 2019 11:00:27 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::45a9:4750:5868:9bbe]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::45a9:4750:5868:9bbe%5]) with mapi id 15.20.2052.020; Wed, 10 Jul 2019
- 11:00:27 +0000
-From:   WenRuo Qu <wqu@suse.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 2/5] btrfs: extent-tree: Kill BUG_ON() in
- __btrfs_free_extent() and do better comment
-Thread-Topic: [PATCH 2/5] btrfs: extent-tree: Kill BUG_ON() in
- __btrfs_free_extent() and do better comment
-Thread-Index: AQHVNw0Ptp1yUp6TTE+BtEINwqmHsabDrzAA
-Date:   Wed, 10 Jul 2019 11:00:27 +0000
-Message-ID: <2e81bdc8-f441-a10e-d776-c23e5940c091@suse.com>
+        id S1726338AbfGJLMX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Jul 2019 07:12:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47270 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725956AbfGJLMX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Jul 2019 07:12:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 974B6AD0B
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Jul 2019 11:12:20 +0000 (UTC)
+Subject: Re: [PATCH 4/5] btrfs: extent-tree: Kill the BUG_ON() in
+ insert_inline_extent_backref()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20190710080243.15988-1-wqu@suse.com>
- <20190710080243.15988-3-wqu@suse.com>
- <ed5a0fda-0369-e7ba-14f8-4f3b4d04add8@suse.com>
-In-Reply-To: <ed5a0fda-0369-e7ba-14f8-4f3b4d04add8@suse.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: HK0P153CA0035.APCP153.PROD.OUTLOOK.COM
- (2603:1096:203:17::23) To BY5PR18MB3266.namprd18.prod.outlook.com
- (2603:10b6:a03:1a1::15)
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [240e:3a1:c40:c630::cac]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2d8cdf7e-9515-4ee9-c75d-08d70525d092
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR18MB3379;
-x-ms-traffictypediagnostic: BY5PR18MB3379:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <BY5PR18MB33795329789024E52E03CED7D6F00@BY5PR18MB3379.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:428;
-x-forefront-prvs: 0094E3478A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(396003)(39860400002)(366004)(376002)(136003)(346002)(189003)(199004)(386003)(6506007)(31686004)(99286004)(31696002)(2501003)(11346002)(110136005)(476003)(316002)(256004)(14444005)(86362001)(25786009)(486006)(2616005)(76176011)(53936002)(478600001)(6246003)(966005)(186003)(6512007)(6306002)(5660300002)(66946007)(2906002)(66476007)(229853002)(52116002)(46003)(66556008)(64756008)(66446008)(6116002)(36756003)(6486002)(8936002)(8676002)(81166006)(81156014)(14454004)(446003)(7736002)(305945005)(71190400001)(71200400001)(102836004)(68736007)(6436002);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3379;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: EKfkKaYqD1wudR9hAEkiYaPJHxepXSQEZVbJzu0fjBXnwuXeXTfpf+eACnhoq9xOASA7vbw90TzxTvphcnG2Sy3xSfO3Mb2b0Emih/+I1a3NyFZGeE5yVRvKSLeW+ryIBH1Cqjp//QYMEVE7x7TFEzdZPZ4TpLC3D5cflfPIYlYTzym9qqv4vpHCKtoUH4HpMUJpkTpAc6R/CxKpKQaWmZWskgydewuI1q3U2suS3jJBN+FuYeWt9Is4QO+Y2tzl9yRmYJvyNRS/QHGeZpDYPKAVKQWf2r4U/9fPaBhnP+ITYC7Zfn4BNSDthqUNB3toyCpiMlmT0Wr1jR88ciHkWAAGOtafaIb0TKmWcyImBeOfMi9K5usHEXLIi+0suCXE7Ka043/56jdqMbmB6QGrEnbRSVdC6YWVTz3Yx2eoACM=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <02574D37DF245943B8AC4355283A44D0@namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ <20190710080243.15988-5-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <3c5b0478-8409-d6f0-6adb-3d0a9c0f4520@suse.com>
+Date:   Wed, 10 Jul 2019 14:12:19 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2d8cdf7e-9515-4ee9-c75d-08d70525d092
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Jul 2019 11:00:27.0771
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wqu@suse.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3379
-X-OriginatorOrg: suse.com
+In-Reply-To: <20190710080243.15988-5-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMTkvNy8xMCDkuIvljYg2OjQ4LCBOaWtvbGF5IEJvcmlzb3Ygd3JvdGU6DQo+IA0K
-PiANCj4gT24gMTAuMDcuMTkg0LMuIDExOjAyINGHLiwgUXUgV2VucnVvIHdyb3RlOg0KPj4gX19i
-dHJmc19mcmVlX2V4dGVudCgpIGlzIG9uZSBvZiB0aGUgYmVzdCBjYXNlcyB0byBzaG93IGhvdyBv
-cHRpbWl6YXRpb24NCj4+IGNvdWxkIG1ha2UgYSBmdW5jdGlvbiBoYXJkIHRvIHJlYWQuDQo+Pg0K
-Pj4gSW4gZmFjdCBfX2J0cmZzX2ZyZWVfZXh0ZW50KCkgaXMgb25seSBkb2luZyB0d28gbWFqb3Ig
-d29ya3M6DQo+PiAxLiBSZWR1Y2UgdGhlIHJlZnMgbnVtYmVyIG9mIGFuIGV4dGVudCBiYWNrcmVm
-DQo+PiAgICBFaXRoZXIgaXQncyBhbiBpbmxpbmVkIGV4dGVudCBiYWNrcmVmIChpbnNpZGUgRVhU
-RU5UL01FVEFEQVRBIGl0ZW0pIG9yDQo+PiAgICBhIGtleWVkIGV4dGVudCBiYWNrcmVmIChTSEFS
-RURfKiBpdGVtKS4NCj4+ICAgIFdlIG9ubHkgbmVlZCB0byBsb2NhdGUgdGhhdCBiYWNrcmVmIGxp
-bmUsIGVpdGhlciByZWR1Y2UgdGhlIG51bWJlciBvcg0KPj4gICAgcmVtb3ZlIHRoZSBiYWNrcmVm
-IGxpbmUgY29tcGxldGVseS4NCj4+DQo+PiAyLiBVcGRhdGUgdGhlIHJlZnMgY291bnQgaW4gRVhU
-RU5UL01FVEFEQVRBX0lURU0NCj4+DQo+PiBCdXQgaW4gcmVhbCB3b3JsZCwgd2UgZG8gaXQgaW4g
-YSBjb21wbGV4IGJ1dCBzb21ld2hhdCBlZmZpY2llbnQgd2F5Lg0KPj4gRHVyaW5nIHN0ZXAgMSks
-IHdlIHdpbGwgdHJ5IHRvIGxvY2F0ZSB0aGUgRVhURU5UL01FVEFEQVRBX0lURU0gd2l0aG91dA0K
-Pj4gdHJpZ2dlcmluZyBhbm90aGVyIGJ0cmZzX3NlYXJjaF9zbG90KCkgYXMgZmFzdCBwYXRoLg0K
-Pj4NCj4+IE9ubHkgd2hlbiB3ZSBmYWlsZWQgdG8gbG9jYXRlIHRoYXQgaXRlbSwgd2Ugd2lsbCB0
-cmlnZ2VyIGFub3RoZXINCj4+IGJ0cmZzX3NlYXJjaF9zbG90KCkgdG8gZ2V0IHRoYXQgRVhURU5U
-L01FVEFEQVRBX0lURU0gYWZ0ZXIgd2UNCj4+IHVwZGF0ZWQvZGVsZXRlZCB0aGUgYmFja3JlZiBs
-aW5lLg0KPj4NCj4+IEFuZCB3ZSBoYXZlIGEgbG90IG9mIHJlc3RyaWN0IGNoZWNrIG9uIHRoaW5n
-cyBsaWtlIHJlZnNfdG9fZHJvcCBhZ2FpbnN0DQo+PiBleHRlbnQgcmVmcyBhbmQgc3BlY2lhbCBj
-YXNlIGNoZWNrIGZvciBzaW5nbGUgcmVmIGV4dGVudC4NCj4+DQo+PiBBbGwgb2YgdGhlc2UgcmVz
-dWx0czoNCj4+IC0gNyBCVUdfT04oKXMgaW4gYSBzaW5nbGUgZnVuY3Rpb24NCj4+ICAgQWx0aG91
-Z2ggYWxsIHRoZXNlIEJVR19PTigpIGFyZSBkb2luZyBjb3JyZWN0IGNoZWNrLCB0aGV5J3JlIHN1
-cGVyDQo+PiAgIGVhc3kgdG8gZ2V0IHRyaWdnZXJlZCBmb3IgZnV6emVkIGltYWdlcy4NCj4+ICAg
-SXQncyBuZXZlciBhIGdvb2QgaWRlYSB0byBwaXNzIHRoZSBlbmQgdXNlci4NCj4+DQo+PiAtIE5l
-YXIgMzAwIGxpbmVzIHdpdGhvdXQgbXVjaCB1c2VmdWwgY29tbWVudHMgYnV0IGEgbG90IG9mIGhp
-ZGRlbg0KPj4gICBjb25kaXRpb25zDQo+PiAgIEkgYmVsaWV2ZSBldmVuIHRoZSBhdXRob3IgbmVl
-ZHMgc2V2ZXJhbCBtaW51dGVzIHRvIHJlY2FsbCB3aGF0IHRoZQ0KPj4gICBjb2RlIGlzIGRvaW5n
-DQo+PiAgIE5vdCB0byBtZW50aW9uIGEgbG90IG9mIEJVR19PTigpIGNvbmRpdGlvbnMgbmVlZHMg
-dG8gZ28gYmFjayB0ZW5zIG9mDQo+PiAgIGxpbmVzIHRvIGZpbmQgb3V0IHdoeS4NCj4+DQo+PiBU
-aGlzIHBhdGNoIGFkZHJlc3MgYWxsIHRoZXNlIHByb2JsZW1zIGJ5Og0KPj4gLSBJbnRyb2R1Y2Ug
-dHdvIGV4YW1wbGVzIHRvIHNob3cgd2hhdCBfX2J0cmZzX2ZyZWVfZXh0ZW50KCkgaXMgZG9pbmcN
-Cj4+ICAgT25lIGlubGluZWQgYmFja3JlZiBjYXNlIGFuZCBvbmUga2V5ZWQgY2FzZS4NCj4+ICAg
-U2hvdWxkIGNvdmVyIG1vc3QgY2FzZXMuDQo+Pg0KPj4gLSBLaWxsIGFsbCBCVUdfT04oKXMgd2l0
-aCBwcm9wZXIgZXJyb3IgbWVzc2FnZSBhbmQgb3B0aW9uYWwgbGVhZiBkdW1wDQo+Pg0KPj4gLSBB
-ZGQgY29tbWVudCB0byBzaG93IHRoZSBvdmVyYWxsIHdvcmtmbG93DQo+Pg0KPj4gTGluazogaHR0
-cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9pZD0yMDI4MTkNCj4+IFsgVGhl
-IHJlcG9ydCB0cmlnZ2VycyBvbmUgQlVHX09OKCkgaW4gX19idHJmc19mcmVlX2V4dGVudCgpIF0N
-Cj4+IFNpZ25lZC1vZmYtYnk6IFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPg0KPj4gLS0tDQo+IA0K
-PiA8c25pcD4NCj4gDQo+PiBAQCAtNjk5NywxOSArNzA2OCwyNCBAQCBzdGF0aWMgaW50IF9fYnRy
-ZnNfZnJlZV9leHRlbnQoc3RydWN0IGJ0cmZzX3RyYW5zX2hhbmRsZSAqdHJhbnMsDQo+PiAgCWlm
-IChvd25lcl9vYmplY3RpZCA8IEJUUkZTX0ZJUlNUX0ZSRUVfT0JKRUNUSUQgJiYNCj4+ICAJICAg
-IGtleS50eXBlID09IEJUUkZTX0VYVEVOVF9JVEVNX0tFWSkgew0KPj4gIAkJc3RydWN0IGJ0cmZz
-X3RyZWVfYmxvY2tfaW5mbyAqYmk7DQo+PiAtCQlCVUdfT04oaXRlbV9zaXplIDwgc2l6ZW9mKCpl
-aSkgKyBzaXplb2YoKmJpKSk7DQo+PiArCQlpZiAodW5saWtlbHkoaXRlbV9zaXplIDwgc2l6ZW9m
-KCplaSkgKyBzaXplb2YoKmJpKSkpIHsNCj4+ICsJCQlidHJmc19jcml0KGluZm8sDQo+PiArImlu
-dmFsaWQgZXh0ZW50IGl0ZW0gc2l6ZSBmb3Iga2V5ICglbGx1LCAldSwgJWxsdSkgb3duZXIgJWxs
-dSwgaGFzICV1IGV4cGVjdCA+JWx1IiwNCj4gbml0OiBzdHJheSAnPicNCg0KV2l0aCB2YWx1ZXMg
-ZmlsbGVkLCBpdCB3b3VsZCBiZToNCiJpbnZhbGlkIGV4dGVudCBpdGVtIHNpemUgZm9yIGtleSAo
-MTA0ODU3NSwgMTY4LCA0MDk2KSBvd25lciA3LCBoYXMgMTANCmV4cGVjdCA+MzMiDQoNCk5vdyB5
-b3UnZCBzZWUgaXQncyBub3QgYSBzdHJheSAnPicuDQoNClRoYW5rcywNClF1DQo+IA0KPiA8c25p
-cD4NCj4gDQo=
+
+
+On 10.07.19 г. 11:02 ч., Qu Wenruo wrote:
+> [BUG]
+> With crafted image, btrfs can panic at insert_inline_extent_backref():
+>   kernel BUG at fs/btrfs/extent-tree.c:1857!
+>   invalid opcode: 0000 [#1] SMP PTI
+>   CPU: 0 PID: 1117 Comm: btrfs-transacti Not tainted 5.0.0-rc8+ #9
+>   RIP: 0010:insert_inline_extent_backref+0xcc/0xe0
+>   Code: 45 20 49 8b 7e 50 49 89 d8 4c 8b 4d 10 48 8b 55 c8 4c 89 e1 41 57 4c 89 ee 50 ff 75 18 e8 cc bf ff ff 31 c0 48 83 c4 18 eb b2 <0f> 0b e8 9d df bd ff 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 66 66
+>   RSP: 0018:ffffac4dc1287be8 EFLAGS: 00010293
+>   RAX: 0000000000000000 RBX: 0000000000000007 RCX: 0000000000000001
+>   RDX: 0000000000001000 RSI: 0000000000000000 RDI: 0000000000000000
+>   RBP: ffffac4dc1287c28 R08: ffffac4dc1287ab8 R09: ffffac4dc1287ac0
+>   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+>   R13: ffff8febef88a540 R14: ffff8febeaa7bc30 R15: 0000000000000000
+>   FS: 0000000000000000(0000) GS:ffff8febf7a00000(0000) knlGS:0000000000000000
+>   CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 00007f663ace94c0 CR3: 0000000235698006 CR4: 00000000000206f0
+>   Call Trace:
+>   ? _cond_resched+0x1a/0x50
+>   __btrfs_inc_extent_ref.isra.64+0x7e/0x240
+>   ? btrfs_merge_delayed_refs+0xa5/0x330
+>   __btrfs_run_delayed_refs+0x653/0x1120
+>   btrfs_run_delayed_refs+0xdb/0x1b0
+>   btrfs_commit_transaction+0x52/0x950
+>   ? start_transaction+0x94/0x450
+>   transaction_kthread+0x163/0x190
+>   kthread+0x105/0x140
+>   ? btrfs_cleanup_transaction+0x560/0x560
+>   ? kthread_destroy_worker+0x50/0x50
+>   ret_from_fork+0x35/0x40
+>   Modules linked in:
+>   ---[ end trace 2ad8b3de903cf825 ]---
+> 
+> [CAUSE]
+> Due to extent tree corruption (still valid by itself, but bad cross ref),
+> we can allocate an extent which is still in extent tree.
+> 
+> Then we will try to insert/update inlined extent backref line for the
+> existing tree block, and triggering the BUG_ON() where we don't expect
+> to increase refs on non-subvolume tree block.
+> 
+> [FIX]
+> Replace that BUG_ON() with proper error message and leaf dump for debug
+> build.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=202829
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent-tree.c | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 199e4eed8f2d..72868d9ac58e 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -1856,7 +1856,24 @@ int insert_inline_extent_backref(struct btrfs_trans_handle *trans,
+>  					   num_bytes, parent, root_objectid,
+>  					   owner, offset, 1);
+>  	if (ret == 0) {
+> -		BUG_ON(owner < BTRFS_FIRST_FREE_OBJECTID);
+> +		/*
+> +		 * We're adding ref to an existing tree block, only happens
+> +		 * when creating snapshots, not possible to other trees.
+> +		 */
+> +		if (owner < BTRFS_FIRST_FREE_OBJECTID) {
+> +			WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG), KERN_ERR
+> +			"invalid operation for non-subvolume tree block");
+
+Again, the text of the warn doesn't bring any value, make it plain
+WARN_ON(IS_ENABLED())
+
+> +
+> +			btrfs_crit(trans->fs_info,
+> +"invalid operation, adding refs to a non-subvolume tree block, bytenr=%llu num_bytes=%llu root_objectid=%llu",
+> +				   bytenr, num_bytes, root_objectid);
+> +			if (IS_ENABLED(CONFIG_BTRFS_DEBUG)) {
+> +				btrfs_crit(trans->fs_info,
+> +			"path->slots[0]=%d path->nodes[0]:", path->slots[0]);
+> +				btrfs_print_leaf(path->nodes[0]);
+> +			}
+> +			return -EUCLEAN;
+> +		}
+>  		update_inline_extent_backref(path, iref, refs_to_add,
+>  					     extent_op, NULL);
+>  	} else if (ret == -ENOENT) {
+> @@ -2073,6 +2090,9 @@ int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
+>  /*
+>   * __btrfs_inc_extent_ref - insert backreference for a given extent
+>   *
+> + * The work is opposite as __btrfs_free_extent().
+> + * For more info about how it works or examples, refer to __btrfs_free_extent().
+> + *
+>   * @trans:	    Handle of transaction
+>   *
+>   * @node:	    The delayed ref node used to get the bytenr/length for
+> @@ -2153,9 +2173,9 @@ static int __btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
+>  	/* now insert the actual backref */
+>  	ret = insert_extent_backref(trans, path, bytenr, parent, root_objectid,
+>  				    owner, offset, refs_to_add);
+> +out:
+>  	if (ret)
+>  		btrfs_abort_transaction(trans, ret);
+> -out:
+
+I think this silently fixes a bug if insert_inline_extent_backref fails.
+If that's the case then it should be in a dedicated patch with an
+explicit rationale
+
+>  	btrfs_free_path(path);
+>  	return ret;
+>  }
+> 
