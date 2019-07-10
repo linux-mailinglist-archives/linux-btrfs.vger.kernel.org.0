@@ -2,200 +2,227 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A345264571
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 12:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E62E64574
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Jul 2019 12:54:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbfGJKyU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 10 Jul 2019 06:54:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42392 "EHLO mx1.suse.de"
+        id S1727255AbfGJKyw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 10 Jul 2019 06:54:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42548 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726130AbfGJKyU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 10 Jul 2019 06:54:20 -0400
+        id S1727231AbfGJKyw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 10 Jul 2019 06:54:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E96C2AC2C
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Jul 2019 10:54:16 +0000 (UTC)
-Subject: Re: [PATCH 3/5] btrfs: Detect unbalanced tree with empty leaf before
- crashing btree operations
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190710080243.15988-1-wqu@suse.com>
- <20190710080243.15988-4-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <444af357-7668-e0a4-23d7-5f09c8332805@suse.com>
-Date:   Wed, 10 Jul 2019 13:54:12 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        by mx1.suse.de (Postfix) with ESMTP id 54509AC2C;
+        Wed, 10 Jul 2019 10:54:50 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id BB8481E43B7; Wed, 10 Jul 2019 12:54:48 +0200 (CEST)
+Date:   Wed, 10 Jul 2019 12:54:48 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     axboe@kernel.dk, jack@suse.cz, josef@toxicpanda.com, clm@fb.com,
+        dsterba@suse.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 2/5] blkcg, writeback: Rename wbc_account_io() to
+ wbc_account_cgroup_owner()
+Message-ID: <20190710105448.GA9171@quack2.suse.cz>
+References: <20190627203952.386785-1-tj@kernel.org>
+ <20190627203952.386785-3-tj@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20190710080243.15988-4-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190627203952.386785-3-tj@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Thu 27-06-19 13:39:49, Tejun Heo wrote:
+> wbc_account_io() does a very specific job - try to see which cgroup is
+> actually dirtying an inode and transfer its ownership to the majority
+> dirtier if needed.  The name is too generic and confusing.  Let's
+> rename it to something more specific.
+> 
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Cc: Jan Kara <jack@suse.cz>
 
+Looks good to me. You can add:
 
-On 10.07.19 г. 11:02 ч., Qu Wenruo wrote:
-> [BUG]
-> With crafted image, btrfs will panic at btree operations:
->   kernel BUG at fs/btrfs/ctree.c:3894!
->   invalid opcode: 0000 [#1] SMP PTI
->   CPU: 0 PID: 1138 Comm: btrfs-transacti Not tainted 5.0.0-rc8+ #9
->   RIP: 0010:__push_leaf_left+0x6b6/0x6e0
->   Code: 00 00 48 98 48 8d 04 80 48 8d 74 80 65 e8 42 5a 04 00 48 8b bd 78 ff ff ff 8b bf 90 d0 00 00 89 7d 98 83 ef 65 e9 06 ff ff ff <0f> 0b 0f 0b 48 8b 85 78 ff ff ff 8b 90 90 d0 00 00 e9 eb fe ff ff
->   RSP: 0018:ffffc0bd4128b990 EFLAGS: 00010246
->   RAX: 0000000000000000 RBX: ffffa0a4ab8f0e38 RCX: 0000000000000000
->   RDX: ffffa0a280000000 RSI: 0000000000000000 RDI: ffffa0a4b3814000
->   RBP: ffffc0bd4128ba38 R08: 0000000000001000 R09: ffffc0bd4128b948
->   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000240
->   R13: ffffa0a4b556fb60 R14: ffffa0a4ab8f0af0 R15: ffffa0a4ab8f0af0
->   FS: 0000000000000000(0000) GS:ffffa0a4b7a00000(0000) knlGS:0000000000000000
->   CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 00007f2461c80020 CR3: 000000022b32a006 CR4: 00000000000206f0
->   Call Trace:
->   ? _cond_resched+0x1a/0x50
->   push_leaf_left+0x179/0x190
->   btrfs_del_items+0x316/0x470
->   btrfs_del_csums+0x215/0x3a0
->   __btrfs_free_extent.isra.72+0x5a7/0xbe0
->   __btrfs_run_delayed_refs+0x539/0x1120
->   btrfs_run_delayed_refs+0xdb/0x1b0
->   btrfs_commit_transaction+0x52/0x950
->   ? start_transaction+0x94/0x450
->   transaction_kthread+0x163/0x190
->   kthread+0x105/0x140
->   ? btrfs_cleanup_transaction+0x560/0x560
->   ? kthread_destroy_worker+0x50/0x50
->   ret_from_fork+0x35/0x40
->   Modules linked in:
->   ---[ end trace c2425e6e89b5558f ]---
-> 
-> [CAUSE]
-> The offending csum tree looks like this:
-> checksum tree key (CSUM_TREE ROOT_ITEM 0)
-> node 29741056 level 1 items 14 free 107 generation 19 owner CSUM_TREE
->         ...
->         key (EXTENT_CSUM EXTENT_CSUM 85975040) block 29630464 gen 17
->         key (EXTENT_CSUM EXTENT_CSUM 89911296) block 29642752 gen 17 <<<
->         key (EXTENT_CSUM EXTENT_CSUM 92274688) block 29646848 gen 17
->         ...
-> 
-> leaf 29630464 items 6 free space 1 generation 17 owner CSUM_TREE
->         item 0 key (EXTENT_CSUM EXTENT_CSUM 85975040) itemoff 3987 itemsize 8
->                 range start 85975040 end 85983232 length 8192
->         ...
-> leaf 29642752 items 0 free space 3995 generation 17 owner 0
->                     ^ empty leaf            invalid owner ^
-> 
-> leaf 29646848 items 1 free space 602 generation 17 owner CSUM_TREE
->         item 0 key (EXTENT_CSUM EXTENT_CSUM 92274688) itemoff 627 itemsize 3368
->                 range start 92274688 end 95723520 length 3448832
-> 
-> So we have a corrupted csum tree where one tree leaf is completely
-> empty, causing unbalanced btree, thus leading to unexpected btree
-> balance error.
-> 
-> [FIX]
-> For this particular case, we handle it in two directions to catch it:
-> - Check if the tree block is empty through btrfs_verify_level_key()
->   So that invalid tree blocks won't be read out through
->   btrfs_search_slot() and its variants.
-> 
-> - Check 0 tree owner in tree checker
->   NO tree is using 0 as its tree owner, detect it and reject at tree
->   block read time.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=202821
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  fs/btrfs/disk-io.c      | 9 +++++++++
->  fs/btrfs/tree-checker.c | 6 ++++++
->  2 files changed, 15 insertions(+)
+>  Documentation/admin-guide/cgroup-v2.rst | 2 +-
+>  fs/btrfs/extent_io.c                    | 4 ++--
+>  fs/buffer.c                             | 2 +-
+>  fs/ext4/page-io.c                       | 2 +-
+>  fs/f2fs/data.c                          | 4 ++--
+>  fs/fs-writeback.c                       | 8 ++++----
+>  fs/mpage.c                              | 2 +-
+>  include/linux/writeback.h               | 8 ++++----
+>  8 files changed, 16 insertions(+), 16 deletions(-)
 > 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index deb74a8c191a..af4786ed7bae 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -414,6 +414,15 @@ int btrfs_verify_level_key(struct extent_buffer *eb, int level,
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index cf88c1f98270..356a7a3dcb2f 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -2108,7 +2108,7 @@ following two functions.
+>  	a queue (device) has been associated with the bio and
+>  	before submission.
 >  
->  	if (!first_key)
->  		return 0;
-> +	/* We have @first_key, so this @eb must have at least one item */
-> +	if (btrfs_header_nritems(eb) == 0) {
-> +		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG),
-> +		     KERN_ERR "BTRFS: tree nritems check failed\n");
-
-The text is redundant with the one printed from btrfs_err, just make it
-WARN_ON(IS_ENABLED())
-
-> +		btrfs_err(fs_info,
-> +		"invalid tree nritems, bytenr=%llu nritems=0 expect >0",
-> +			  eb->start);
-> +		return -EUCLEAN;
-> +	}
->  
->  	/*
->  	 * For live tree block (new tree blocks in current transaction),
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 96fce4bef4e7..a4c7f7ed8490 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -888,6 +888,12 @@ static int check_leaf(struct extent_buffer *leaf, bool check_item_data)
->  				    owner);
->  			return -EUCLEAN;
+> -  wbc_account_io(@wbc, @page, @bytes)
+> +  wbc_account_cgroup_owner(@wbc, @page, @bytes)
+>  	Should be called for each data segment being written out.
+>  	While this function doesn't care exactly when it's called
+>  	during the writeback session, it's the easiest and most
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index db337e53aab3..5106008f5e28 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -2911,7 +2911,7 @@ static int submit_extent_page(unsigned int opf, struct extent_io_tree *tree,
+>  			bio = NULL;
+>  		} else {
+>  			if (wbc)
+> -				wbc_account_io(wbc, page, page_size);
+> +				wbc_account_cgroup_owner(wbc, page, page_size);
+>  			return 0;
 >  		}
-> +		/* Unknown tree */
-> +		if (owner == 0) {
-> +			generic_err(leaf, 0,
-> +				"invalid owner, root 0 is not defined");
-> +			return -EUCLEAN;
-> +		}
->  		return 0;
+>  	}
+> @@ -2924,7 +2924,7 @@ static int submit_extent_page(unsigned int opf, struct extent_io_tree *tree,
+>  	bio->bi_opf = opf;
+>  	if (wbc) {
+>  		wbc_init_bio(wbc, bio);
+> -		wbc_account_io(wbc, page, page_size);
+> +		wbc_account_cgroup_owner(wbc, page, page_size);
 >  	}
 >  
+>  	*bio_ret = bio;
+> diff --git a/fs/buffer.c b/fs/buffer.c
+> index e450c55f6434..40547bbbea94 100644
+> --- a/fs/buffer.c
+> +++ b/fs/buffer.c
+> @@ -3093,7 +3093,7 @@ static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
+>  
+>  	if (wbc) {
+>  		wbc_init_bio(wbc, bio);
+> -		wbc_account_io(wbc, bh->b_page, bh->b_size);
+> +		wbc_account_cgroup_owner(wbc, bh->b_page, bh->b_size);
+>  	}
+>  
+>  	submit_bio(bio);
+> diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+> index 4690618a92e9..56e287f5ee50 100644
+> --- a/fs/ext4/page-io.c
+> +++ b/fs/ext4/page-io.c
+> @@ -404,7 +404,7 @@ static int io_submit_add_bh(struct ext4_io_submit *io,
+>  	ret = bio_add_page(io->io_bio, page, bh->b_size, bh_offset(bh));
+>  	if (ret != bh->b_size)
+>  		goto submit_and_retry;
+> -	wbc_account_io(io->io_wbc, page, bh->b_size);
+> +	wbc_account_cgroup_owner(io->io_wbc, page, bh->b_size);
+>  	io->io_next_block++;
+>  	return 0;
+>  }
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index eda4181d2092..e1cab1717ac7 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -470,7 +470,7 @@ int f2fs_submit_page_bio(struct f2fs_io_info *fio)
+>  	}
+>  
+>  	if (fio->io_wbc && !is_read_io(fio->op))
+> -		wbc_account_io(fio->io_wbc, page, PAGE_SIZE);
+> +		wbc_account_cgroup_owner(fio->io_wbc, page, PAGE_SIZE);
+>  
+>  	bio_set_op_attrs(bio, fio->op, fio->op_flags);
+>  
+> @@ -537,7 +537,7 @@ void f2fs_submit_page_write(struct f2fs_io_info *fio)
+>  	}
+>  
+>  	if (fio->io_wbc)
+> -		wbc_account_io(fio->io_wbc, bio_page, PAGE_SIZE);
+> +		wbc_account_cgroup_owner(fio->io_wbc, bio_page, PAGE_SIZE);
+>  
+>  	io->last_block_in_bio = fio->new_blkaddr;
+>  	f2fs_trace_ios(fio, 0);
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index a8a40bc26c2f..0aef79e934bb 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -706,7 +706,7 @@ void wbc_detach_inode(struct writeback_control *wbc)
+>  EXPORT_SYMBOL_GPL(wbc_detach_inode);
+>  
+>  /**
+> - * wbc_account_io - account IO issued during writeback
+> + * wbc_account_cgroup_owner - account writeback to update inode cgroup ownership
+>   * @wbc: writeback_control of the writeback in progress
+>   * @page: page being written out
+>   * @bytes: number of bytes being written out
+> @@ -715,8 +715,8 @@ EXPORT_SYMBOL_GPL(wbc_detach_inode);
+>   * controlled by @wbc.  Keep the book for foreign inode detection.  See
+>   * wbc_detach_inode().
+>   */
+> -void wbc_account_io(struct writeback_control *wbc, struct page *page,
+> -		    size_t bytes)
+> +void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
+> +			      size_t bytes)
+>  {
+>  	struct cgroup_subsys_state *css;
+>  	int id;
+> @@ -753,7 +753,7 @@ void wbc_account_io(struct writeback_control *wbc, struct page *page,
+>  	else
+>  		wbc->wb_tcand_bytes -= min(bytes, wbc->wb_tcand_bytes);
+>  }
+> -EXPORT_SYMBOL_GPL(wbc_account_io);
+> +EXPORT_SYMBOL_GPL(wbc_account_cgroup_owner);
+>  
+>  /**
+>   * inode_congested - test whether an inode is congested
+> diff --git a/fs/mpage.c b/fs/mpage.c
+> index 436a85260394..a63620cdb73a 100644
+> --- a/fs/mpage.c
+> +++ b/fs/mpage.c
+> @@ -647,7 +647,7 @@ static int __mpage_writepage(struct page *page, struct writeback_control *wbc,
+>  	 * the confused fail path above (OOM) will be very confused when
+>  	 * it finds all bh marked clean (i.e. it will not write anything)
+>  	 */
+> -	wbc_account_io(wbc, page, PAGE_SIZE);
+> +	wbc_account_cgroup_owner(wbc, page, PAGE_SIZE);
+>  	length = first_unmapped << blkbits;
+>  	if (bio_add_page(bio, page, length, 0) < length) {
+>  		bio = mpage_bio_submit(REQ_OP_WRITE, op_flags, bio);
+> diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+> index 738a0c24874f..dda5cf228172 100644
+> --- a/include/linux/writeback.h
+> +++ b/include/linux/writeback.h
+> @@ -188,8 +188,8 @@ void wbc_attach_and_unlock_inode(struct writeback_control *wbc,
+>  				 struct inode *inode)
+>  	__releases(&inode->i_lock);
+>  void wbc_detach_inode(struct writeback_control *wbc);
+> -void wbc_account_io(struct writeback_control *wbc, struct page *page,
+> -		    size_t bytes);
+> +void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
+> +			      size_t bytes);
+>  void cgroup_writeback_umount(void);
+>  
+>  /**
+> @@ -291,8 +291,8 @@ static inline void wbc_init_bio(struct writeback_control *wbc, struct bio *bio)
+>  {
+>  }
+>  
+> -static inline void wbc_account_io(struct writeback_control *wbc,
+> -				  struct page *page, size_t bytes)
+> +static inline void wbc_account_cgroup_owner(struct writeback_control *wbc,
+> +					    struct page *page, size_t bytes)
+>  {
+>  }
+>  
+> -- 
+> 2.17.1
 > 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
