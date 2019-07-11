@@ -2,242 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01A5C6603F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2019 21:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DC366213
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2019 01:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbfGKTwj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Jul 2019 15:52:39 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32682 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728833AbfGKTwj (ORCPT
+        id S1728597AbfGKXOt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Jul 2019 19:14:49 -0400
+Received: from mailgw-02.dd24.net ([193.46.215.43]:41904 "EHLO
+        mailgw-02.dd24.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726207AbfGKXOt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Jul 2019 15:52:39 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6BJqQeQ024090;
-        Thu, 11 Jul 2019 12:52:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=99sDh+3AYBPe5PBSiNlwj3lQbZlWIpCfglRl25vAfqI=;
- b=UpCCSDerjuF9li5/ohLosGIXl4yXnRcXmWymU0aex9aqqsZBm254zYxKVePveZACgxkX
- hAndAkNEbPRZJfCCJAKZJLpzTKMKfXCu7/OWFfEhMk4StHt9r/UHoONH3nQ2nH1xg7CH
- KK/6U3B64+r5Q1ZLXGjhKpxy3ZkQgcxs340= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tpa9urb2m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 11 Jul 2019 12:52:28 -0700
-Received: from ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) by
- ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 11 Jul 2019 12:52:26 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Thu, 11 Jul 2019 12:52:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=99sDh+3AYBPe5PBSiNlwj3lQbZlWIpCfglRl25vAfqI=;
- b=lwn8os0i85Lbw1rQFkoU86ZARSUhoqY/dQbhN+Q6ZvhYVO+b0VBczR9r87QAMZqgNmClyCTFnV6Rc/Acb0XPY17oGLY2NZPoeE5aA1rf6fzjcYwecIBZMle3MTyzSQOwzOhDl2CBA7TzuEd6HCv513w2o5tU1MIA19XoT6+XahA=
-Received: from DM5PR15MB1290.namprd15.prod.outlook.com (10.173.212.17) by
- DM5PR15MB1131.namprd15.prod.outlook.com (10.173.212.149) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2052.18; Thu, 11 Jul 2019 19:52:24 +0000
-Received: from DM5PR15MB1290.namprd15.prod.outlook.com
- ([fe80::1c4f:5abd:dd85:bb52]) by DM5PR15MB1290.namprd15.prod.outlook.com
- ([fe80::1c4f:5abd:dd85:bb52%6]) with mapi id 15.20.2052.022; Thu, 11 Jul 2019
- 19:52:24 +0000
-From:   Chris Mason <clm@fb.com>
-To:     Nikolay Borisov <nborisov@suse.com>
-CC:     Tejun Heo <tj@kernel.org>, David Sterba <dsterba@suse.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>, "jack@suse.cz" <jack@suse.cz>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/5] Btrfs: only associate the locked page with one
- async_cow struct
-Thread-Topic: [PATCH 3/5] Btrfs: only associate the locked page with one
- async_cow struct
-Thread-Index: AQHVN1W1YCq+faYSzkSDg3ATEuxzP6bFlOIAgABAvoA=
-Date:   Thu, 11 Jul 2019 19:52:24 +0000
-Message-ID: <C459F9B6-8154-4099-BC62-C3DCCAF56CE2@fb.com>
-References: <20190710192818.1069475-1-tj@kernel.org>
- <20190710192818.1069475-4-tj@kernel.org>
- <0522e068-57d0-f7f2-6500-f431225bdc73@suse.com>
-In-Reply-To: <0522e068-57d0-f7f2-6500-f431225bdc73@suse.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: MailMate (1.12.5r5635)
-x-clientproxiedby: BN6PR18CA0004.namprd18.prod.outlook.com
- (2603:10b6:404:121::14) To DM5PR15MB1290.namprd15.prod.outlook.com
- (2603:10b6:3:b8::17)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c091:480::3dbc]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 17444894-47b6-4271-2208-08d706394b4c
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:DM5PR15MB1131;
-x-ms-traffictypediagnostic: DM5PR15MB1131:
-x-microsoft-antispam-prvs: <DM5PR15MB1131E25E917F35CEA78A0B3AD3F30@DM5PR15MB1131.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
-x-forefront-prvs: 0095BCF226
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(39860400002)(366004)(376002)(396003)(346002)(199004)(189003)(6916009)(316002)(33656002)(53936002)(66946007)(2616005)(4326008)(6116002)(25786009)(6246003)(36756003)(14454004)(66556008)(66446008)(66476007)(478600001)(6436002)(54906003)(6512007)(229853002)(6486002)(11346002)(53546011)(50226002)(486006)(99286004)(8676002)(186003)(81166006)(6506007)(64756008)(46003)(2906002)(5660300002)(52116002)(102836004)(76176011)(81156014)(71190400001)(386003)(68736007)(7736002)(86362001)(256004)(14444005)(305945005)(8936002)(476003)(71200400001)(446003);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1131;H:DM5PR15MB1290.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: EkY+nClhjjZ8jeVTy62n7itJq3H2Xee+yRlt1iluIR+eyLyVRXFkHTfkRqfhuZgMz5zFBPCa91x9K6UQL+RdK/hSjJ2DWoc3wrC9tesFodCaYHjuGbQj7skbmyefj4nNIwmHtwHQzgdVsRFJvQCLzimStIHPKjy5YJTD8ZeGQG9DKkjYFi5mj5N1iG4w6XecZXE1WJgn+249Vtgcxa/SSTstEk+SZB5wyjhUXHL6b7/Yh7nojHzGyMpMwrKVTrkUU/yFoe3c57MllFYDXpEDHNRZUJN+1W7X5GW75wdeUAiUNXgvjBisJxN+zM/DjSRwLvbNX6ueI2XqWJwIlYfJvpdoV3CVBO8VndoelBmhm44yMPEbPyAhxyMTbCNEEOskLRMH7jAYAeCM3jcVj/RrUnWrQx5D3JBNKu9a/oj5opw=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <97EC1348466577419B756F2A86481317@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 11 Jul 2019 19:14:49 -0400
+X-Greylist: delayed 490 seconds by postgrey-1.27 at vger.kernel.org; Thu, 11 Jul 2019 19:14:48 EDT
+Received: from mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-02.live.igb.homer.key-systems.net [192.168.1.27])
+        by mailgw-02.dd24.net (Postfix) with ESMTP id 724355FDE9
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Jul 2019 23:06:37 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at
+        mailpolicy-02.live.igb.homer.key-systems.net
+Received: from smtp.dd24.net ([192.168.1.36])
+        by mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-02.live.igb.homer.key-systems.net [192.168.1.25]) (amavisd-new, port 10236)
+        with ESMTP id v22p-4GrnZAL for <linux-btrfs@vger.kernel.org>;
+        Thu, 11 Jul 2019 23:06:35 +0000 (UTC)
+Received: from heisenberg.fritz.box (ppp-46-244-248-28.dynamic.mnet-online.de [46.244.248.28])
+        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp.dd24.net (Postfix) with ESMTPSA
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Jul 2019 23:06:35 +0000 (UTC)
+Message-ID: <e483092adc63d3d86cb99c8e4dcbd56f1d1539b8.camel@scientia.net>
+Subject: Re: "btrfs: harden agaist duplicate fsid" spams syslog
+From:   Christoph Anton Mitterer <calestyo@scientia.net>
+To:     linux-btrfs@vger.kernel.org
+Date:   Fri, 12 Jul 2019 01:06:34 +0200
+In-Reply-To: <c01ab9f6-c553-3625-5656-a8f61659de7d@oracle.com>
+References: <5d8baf80-4fb3-221f-5ab4-e98a838f63e1@cobb.uk.net>
+         <c01ab9f6-c553-3625-5656-a8f61659de7d@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17444894-47b6-4271-2208-08d706394b4c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jul 2019 19:52:24.6300
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: clm@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1131
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-11_05:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1907110219
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-T24gMTEgSnVsIDIwMTksIGF0IDEyOjAwLCBOaWtvbGF5IEJvcmlzb3Ygd3JvdGU6DQoNCj4gT24g
-MTAuMDcuMTkg0LMuIDIyOjI4INGHLiwgVGVqdW4gSGVvIHdyb3RlOg0KPj4gRnJvbTogQ2hyaXMg
-TWFzb24gPGNsbUBmYi5jb20+DQo+Pg0KPj4gVGhlIGJ0cmZzIHdyaXRlcGFnZXMgZnVuY3Rpb24g
-Y29sbGVjdHMgYSBsYXJnZSByYW5nZSBvZiBwYWdlcyBmbGFnZ2VkDQo+PiBmb3IgZGVsYXllZCBh
-bGxvY2F0aW9uLCBhbmQgdGhlbiBzZW5kcyB0aGVtIGRvd24gdGhyb3VnaCB0aGUgQ09XIGNvZGUN
-Cj4+IGZvciBwcm9jZXNzaW5nLiAgV2hlbiBjb21wcmVzc2lvbiBpcyBvbiwgd2UgYWxsb2NhdGUg
-b25lIGFzeW5jX2Nvdw0KPg0KPiBuaXQ6IFRoZSBjb2RlIG5vIGxvbmdlciB1c2VzIGFzeW5jX2Nv
-dyB0byByZXByZXNlbnQgaW4tZmxpZ2h0IGNodW5rcyANCj4gYnV0DQo+IHRoZSBtb3JlIGFwdGx5
-IG5hbWVkIGFzeW5jX2NodW5rLiBQcmVzdW1hYmx5IHRoaXMgcGF0Y2hzZXQgcHJlZGF0ZXMNCj4g
-dGhvc2UgY2hhbmdlcy4NCg0KTm90IGJ5IG11Y2gsIGJ1dCB5ZXMuDQoNCj4NCj4+DQo+PiBUaGUg
-ZW5kIHJlc3VsdCBpcyB0aGF0IGNvd0EgaXMgY29tcGxldGVkIGFuZCBjbGVhbmVkIHVwIGJlZm9y
-ZSBjb3dCIA0KPj4gZXZlbg0KPj4gc3RhcnRzIHByb2Nlc3NpbmcuICBUaGlzIG1lYW5zIHdlIGNh
-biBmcmVlIGxvY2tlZF9wYWdlKCkgYW5kIHJldXNlIGl0DQo+PiBlbHNld2hlcmUuICBJZiB3ZSBn
-ZXQgcmVhbGx5IGx1Y2t5LCBpdCdsbCBoYXZlIHRoZSBzYW1lIHBhZ2UtPmluZGV4IA0KPj4gaW4N
-Cj4+IGl0cyBuZXcgaG9tZSBhcyBpdCBkaWQgYmVmb3JlLg0KPj4NCj4+IFdoaWxlIHdlJ3JlIHBy
-b2Nlc3NpbmcgY293Qiwgd2UgbWlnaHQgZGVjaWRlIHdlIG5lZWQgdG8gZmFsbCBiYWNrIHRvDQo+
-PiB1bmNvbXByZXNzZWQgSU8sIGFuZCBzbyBjb21wcmVzc19maWxlX3JhbmdlKCkgd2lsbCBjYWxs
-DQo+PiBfX3NldF9wYWdlX2RpcnR5X25vYnVmZXJzKCkgb24gY293Qi0+bG9ja2VkX3BhZ2UuDQo+
-Pg0KPj4gV2l0aG91dCBjZ3JvdXBzIGluIHVzZSwgdGhpcyBjcmVhdGVzIGFzIGEgcGhhbnRvbSBk
-aXJ0eSBwYWdlLCB3aGljaD4gDQo+PiBpc24ndCBncmVhdCBidXQgaXNuJ3QgdGhlIGVuZCBvZiB0
-aGUgd29ybGQuICBXaXRoIGNncm91cHMgaW4gdXNlLCB3ZQ0KPg0KPiBIYXZpbmcgYSBwaGFudG9t
-IGRpcnR5IHBhZ2UgaXMgbm90IGdyZWF0IGJ1dCBub3QgdGVycmlibGUgd2l0aG91dA0KPiBjZ3Jv
-dXBzIGJ1dCBhcGFydCBmcm9tIHRoYXQsIGRvZXMgaXQgaGF2ZSBhbnkgb3RoZXIgaW1wbGljYXRp
-b25zPw0KDQpCZXN0IGNhc2UsIGl0J2xsIGdvIHRocm91Z2ggdGhlIHdyaXRlcGFnZSBmaXh1cCB3
-b3JrZXIgYW5kIGdvIHRocm91Z2ggDQp0aGUgd2hvbGUgY293IG1hY2hpbmVyeSBhZ2Fpbi4gIFdv
-cnN0IGNhc2Ugd2UgZ28gdG8gdGhpcyBjb2RlIG1vcmUgdGhhbiANCm9uY2U6DQoNCiAgICAgICAg
-ICAgICAgICAgICAgICAgICAvKg0KICAgICAgICAgICAgICAgICAgICAgICAgICAqIGlmIHBhZ2Vf
-c3RhcnRlZCwgY293X2ZpbGVfcmFuZ2UgaW5zZXJ0ZWQgYW4NCiAgICAgICAgICAgICAgICAgICAg
-ICAgICAgKiBpbmxpbmUgZXh0ZW50IGFuZCB0b29rIGNhcmUgb2YgYWxsIHRoZSANCnVubG9ja2lu
-Zw0KICAgICAgICAgICAgICAgICAgICAgICAgICAqIGFuZCBJTyBmb3IgdXMuICBPdGhlcndpc2Us
-IHdlIG5lZWQgdG8gc3VibWl0DQogICAgICAgICAgICAgICAgICAgICAgICAgICogYWxsIHRob3Nl
-IHBhZ2VzIGRvd24gdG8gdGhlIGRyaXZlLg0KICAgICAgICAgICAgICAgICAgICAgICAgICAqLw0K
-ICAgICAgICAgICAgICAgICAgICAgICAgIGlmICghcGFnZV9zdGFydGVkICYmICFyZXQpDQogICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBleHRlbnRfd3JpdGVfbG9ja2VkX3JhbmdlKGlu
-b2RlLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-YXN5bmNfZXh0ZW50LT5zdGFydCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIGFzeW5jX2V4dGVudC0+c3RhcnQgKw0KICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXN5bmNfZXh0ZW50LT5yYW1fc2l6ZSAN
-Ci0gMSwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IFdCX1NZTkNfQUxMKTsNCiAgICAgICAgICAgICAgICAgICAgICAgICBlbHNlIGlmIChyZXQpDQog
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bmxvY2tfcGFnZShhc3luY19jaHVuay0+
-bG9ja2VkX3BhZ2UpOw0KDQoNClRoYXQgbmV2ZXIgaGFwcGVuZWQgaW4gcHJvZHVjdGlvbiBhcyBm
-YXIgYXMgSSBjYW4gdGVsbCwgYnV0IGl0IHNlZW1zIA0KcG9zc2libGUuDQoNCj4NCj4NCj4+IG1p
-Z2h0IGNyYXNoIGluIHRoZSBhY2NvdW50aW5nIGNvZGUgYmVjYXVzZSBwYWdlLT5tYXBwaW5nLT5p
-X3diIGlzbid0DQo+PiBzZXQuDQo+Pg0KPj4gWyA4MzA4LjUyMzExMF0gQlVHOiB1bmFibGUgdG8g
-aGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgDQo+PiBhdCAwMDAwMDAwMDAw
-MDAwMGQwDQo+PiBbIDgzMDguNTMxMDg0XSBJUDogcGVyY3B1X2NvdW50ZXJfYWRkX2JhdGNoKzB4
-MTEvMHg3MA0KPj4gWyA4MzA4LjUzODM3MV0gUEdEIDY2NTM0ZTA2NyBQNEQgNjY1MzRlMDY3IFBV
-RCA2NjUzNGYwNjcgUE1EIDANCj4+IFsgODMwOC41NDE3NTBdIE9vcHM6IDAwMDAgWyMxXSBTTVAg
-REVCVUdfUEFHRUFMTE9DDQo+PiBbIDgzMDguNTUxOTQ4XSBDUFU6IDE2IFBJRDogMjE3MiBDb21t
-OiBybSBOb3QgdGFpbnRlZA0KPj4gWyA4MzA4LjU2Njg4M10gUklQOiAwMDEwOnBlcmNwdV9jb3Vu
-dGVyX2FkZF9iYXRjaCsweDExLzB4NzANCj4+IFsgODMwOC41Njc4OTFdIFJTUDogMDAxODpmZmZm
-YzkwMDBhOTdiYmUwIEVGTEFHUzogMDAwMTAyODYNCj4+IFsgODMwOC41Njg5ODZdIFJBWDogMDAw
-MDAwMDAwMDAwMDAwNSBSQlg6IDAwMDAwMDAwMDAwMDAwOTAgUkNYOiANCj4+IDAwMDAwMDAwMDAw
-MjYxMTUNCj4+IFsgODMwOC41NzA3MzRdIFJEWDogMDAwMDAwMDAwMDAwMDAzMCBSU0k6IGZmZmZm
-ZmZmZmZmZmZmZmYgUkRJOiANCj4+IDAwMDAwMDAwMDAwMDAwOTANCj4+IFsgODMwOC41NzI1NDNd
-IFJCUDogMDAwMDAwMDAwMDAwMDAwMCBSMDg6IGZmZmZmZmZmZmZmZmZmZjUgUjA5OiANCj4+IDAw
-MDAwMDAwMDAwMDAwMDANCj4+IFsgODMwOC41NzM4NTZdIFIxMDogMDAwMDAwMDAwMDAyNjBjMCBS
-MTE6IGZmZmY4ODEwMzdmYzI2YzAgUjEyOiANCj4+IGZmZmZmZmZmZmZmZmZmZmYNCj4+IFsgODMw
-OC41ODAwOTldIFIxMzogZmZmZjg4MGZlNDExMTU0OCBSMTQ6IGZmZmZjOTAwMGE5N2JjOTAgUjE1
-OiANCj4+IDAwMDAwMDAwMDAwMDAwMDENCj4+IFsgODMwOC41ODI1MjBdIEZTOiAgMDAwMDdmNTUw
-M2NlZDQ4MCgwMDAwKSBHUzpmZmZmODgwZmY3MjAwMDAwKDAwMDApIA0KPj4ga25sR1M6MDAwMDAw
-MDAwMDAwMDAwMA0KPj4gWyA4MzA4LjU4NTQ0MF0gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAw
-IENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPj4gWyA4MzA4LjU4Nzk1MV0gQ1IyOiAwMDAwMDAwMDAw
-MDAwMGQwIENSMzogMDAwMDAwMDFlMDQ1OTAwNSBDUjQ6IA0KPj4gMDAwMDAwMDAwMDM2MGVlMA0K
-Pj4gWyA4MzA4LjU5MDcwN10gRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAw
-MDAwMCBEUjI6IA0KPj4gMDAwMDAwMDAwMDAwMDAwMA0KPj4gWyA4MzA4LjU5Mjg2NV0gRFIzOiAw
-MDAwMDAwMDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZmMCBEUjc6IA0KPj4gMDAwMDAwMDAw
-MDAwMDQwMA0KPj4gWyA4MzA4LjU5NDQ2OV0gQ2FsbCBUcmFjZToNCj4+IFsgODMwOC41OTUxNDld
-ICBhY2NvdW50X3BhZ2VfY2xlYW5lZCsweDE1Yi8weDFmMA0KPj4gWyA4MzA4LjU5NjM0MF0gIF9f
-Y2FuY2VsX2RpcnR5X3BhZ2UrMHgxNDYvMHgyMDANCj4+IFsgODMwOC41OTkzOTVdICB0cnVuY2F0
-ZV9jbGVhbnVwX3BhZ2UrMHg5Mi8weGIwDQo+PiBbIDgzMDguNjAwNDgwXSAgdHJ1bmNhdGVfaW5v
-ZGVfcGFnZXNfcmFuZ2UrMHgyMDIvMHg3ZDANCj4+IFsgODMwOC42MTczOTJdICBidHJmc19ldmlj
-dF9pbm9kZSsweDkyLzB4NWEwDQo+PiBbIDgzMDguNjE5MTA4XSAgZXZpY3QrMHhjMS8weDE5MA0K
-Pj4gWyA4MzA4LjYyMDAyM10gIGRvX3VubGlua2F0KzB4MTc2LzB4MjgwDQo+PiBbIDgzMDguNjIx
-MjAyXSAgZG9fc3lzY2FsbF82NCsweDYzLzB4MWEwDQo+PiBbIDgzMDguNjIzNDUxXSAgZW50cnlf
-U1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NDIvMHhiNw0KPj4NCj4+IFRoZSBmaXggaGVyZSBp
-cyB0byBtYWtlIGFzeWNfY293LT5sb2NrZWRfcGFnZSBOVUxMIGV2ZXJ5d2hlcmUgYnV0IHRoZQ0K
-Pj4gb25lIGFzeW5jX2NvdyBzdHJ1Y3QgdGhhdCdzIGFsbG93ZWQgdG8gZG8gdGhpbmdzIHRvIHRo
-ZSBsb2NrZWQgcGFnZS4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBDaHJpcyBNYXNvbiA8Y2xtQGZi
-LmNvbT4NCj4+IEZpeGVzOiA3NzFlZDY4OWQyY2QgKCJCdHJmczogT3B0aW1pemUgY29tcHJlc3Nl
-ZCB3cml0ZWJhY2sgYW5kIA0KPj4gcmVhZHMiKQ0KPj4gUmV2aWV3ZWQtYnk6IEpvc2VmIEJhY2lr
-IDxqb3NlZkB0b3hpY3BhbmRhLmNvbT4NCj4+IC0tLQ0KPj4gIGZzL2J0cmZzL2V4dGVudF9pby5j
-IHwgIDIgKy0NCj4+ICBmcy9idHJmcy9pbm9kZS5jICAgICB8IDI1ICsrKysrKysrKysrKysrKysr
-KysrKy0tLS0NCj4+ICAyIGZpbGVzIGNoYW5nZWQsIDIyIGluc2VydGlvbnMoKyksIDUgZGVsZXRp
-b25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2V4dGVudF9pby5jIGIvZnMvYnRy
-ZnMvZXh0ZW50X2lvLmMNCj4+IGluZGV4IDUxMDYwMDhmNWUyOC4uYTMxNTc0ZGYwNmFhIDEwMDY0
-NA0KPj4gLS0tIGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMNCj4+ICsrKyBiL2ZzL2J0cmZzL2V4dGVu
-dF9pby5jDQo+PiBAQCAtMTgzOCw3ICsxODM4LDcgQEAgc3RhdGljIGludCBfX3Byb2Nlc3NfcGFn
-ZXNfY29udGlnKHN0cnVjdCANCj4+IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcsDQo+PiAgCQkJaWYg
-KHBhZ2Vfb3BzICYgUEFHRV9TRVRfUFJJVkFURTIpDQo+PiAgCQkJCVNldFBhZ2VQcml2YXRlMihw
-YWdlc1tpXSk7DQo+Pg0KPj4gLQkJCWlmIChwYWdlc1tpXSA9PSBsb2NrZWRfcGFnZSkgew0KPj4g
-KwkJCWlmIChsb2NrZWRfcGFnZSAmJiBwYWdlc1tpXSA9PSBsb2NrZWRfcGFnZSkgew0KPg0KPiBX
-aHkgbm90IG1ha2UgdGhlIGNoZWNrIGp1c3QgaWYgKGxvY2tlZF9wYWdlKSB0aGVuIGNsZWFuIGl0
-IHVwLCBzaW5jZSANCj4gaWYNCj4gX19wcm9jZXNzX3BhZ2VzX2NvbnRpZyBpcyBjYWxsZWQgZnJv
-bSB0aGUgb3duZXIgb2YgdGhlIHBhZ2UgdGhlbiBpdCdzDQo+IGd1YXJhbnRlZWQgdGhhdCB0aGUg
-cGFnZSB3aWxsIGZhbGwgd2l0aGluIGl0J3MgcmFuZ2UuDQoNCkknbSBub3QgY29udmluY2VkIHRo
-YXQgZXZlcnkgc2luZ2xlIGNhbGxlciBvZiBfX3Byb2Nlc3NfcGFnZXNfY29udGlnIGlzIA0KbWFr
-aW5nIHN1cmUgdG8gb25seSBzZW5kIGxvY2tlZF9wYWdlIGZvciByYW5nZXMgdGhhdCBjb3JyZXNw
-b25kIHRvIHRoZSANCmxvY2tlZF9wYWdlLiAgSSdtIG5vdCBzdXJlIGV4YWN0bHkgd2hhdCB5b3Un
-cmUgYXNraW5nIGZvciB0aG91Z2gsIGl0IA0KbG9va3MgbGlrZSBpdCB3b3VsZCByZXF1aXJlIHNv
-bWUgbGFyZ2VyIGNoYW5nZXMgdG8gdGhlIGZsb3cgb2YgdGhhdCANCmxvb3AuDQoNCj4NCj4+ICAJ
-CQkJcHV0X3BhZ2UocGFnZXNbaV0pOw0KPj4gIAkJCQlwYWdlc19sb2NrZWQrKzsNCj4+ICAJCQkJ
-Y29udGludWU7DQo+PiBkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvaW5vZGUuYyBiL2ZzL2J0cmZzL2lu
-b2RlLmMNCj4+IGluZGV4IDZlNmRmMGVhYjMyNC4uYTgxZTk4NjBlZTFmIDEwMDY0NA0KPj4gLS0t
-IGEvZnMvYnRyZnMvaW5vZGUuYw0KPj4gKysrIGIvZnMvYnRyZnMvaW5vZGUuYw0KPj4gQEAgLTY2
-NiwxMCArNjY2LDEyIEBAIHN0YXRpYyBub2lubGluZSB2b2lkIGNvbXByZXNzX2ZpbGVfcmFuZ2Uo
-c3RydWN0IA0KPj4gYXN5bmNfY2h1bmsgKmFzeW5jX2NodW5rLA0KPj4gIAkgKiB0byBvdXIgZXh0
-ZW50IGFuZCBzZXQgdGhpbmdzIHVwIGZvciB0aGUgYXN5bmMgd29yayBxdWV1ZSB0byBydW4NCj4+
-ICAJICogY293X2ZpbGVfcmFuZ2UgdG8gZG8gdGhlIG5vcm1hbCBkZWxhbGxvYyBkYW5jZS4NCj4+
-ICAJICovDQo+PiAtCWlmIChwYWdlX29mZnNldChhc3luY19jaHVuay0+bG9ja2VkX3BhZ2UpID49
-IHN0YXJ0ICYmDQo+PiAtCSAgICBwYWdlX29mZnNldChhc3luY19jaHVuay0+bG9ja2VkX3BhZ2Up
-IDw9IGVuZCkNCj4+ICsJaWYgKGFzeW5jX2NodW5rLT5sb2NrZWRfcGFnZSAmJg0KPj4gKwkgICAg
-KHBhZ2Vfb2Zmc2V0KGFzeW5jX2NodW5rLT5sb2NrZWRfcGFnZSkgPj0gc3RhcnQgJiYNCj4+ICsJ
-ICAgICBwYWdlX29mZnNldChhc3luY19jaHVuay0+bG9ja2VkX3BhZ2UpKSA8PSBlbmQpIHsNCj4N
-Cj4gRElUVE8gc2luY2UgbG9ja2VkX3BhZ2UgaXMgbm93IG9ubHkgc2V0IHRvIHRoZSBjaHVuayB0
-aGF0IGhhcyB0aGUgDQo+IHJpZ2h0DQo+IHRvIGl0IHRoZW4gdGhlcmUgaXMgbm8gbmVlZCB0byBj
-aGVjayB0aGUgb2Zmc2V0cyBhbmQgdGhpcyB3aWxsIA0KPiBzaW1wbGlmeQ0KPiB0aGUgY29kZS4N
-Cj4NCg0Kc3RhcnQgaXMgYWRqdXN0ZWQgaGlnaGVyIHVwIGluIHRoZSBsb29wOg0KDQogICAgICAg
-ICAgICAgICAgICAgICAgICAgaWYgKHN0YXJ0ICsgdG90YWxfaW4gPCBlbmQpIHsNCiAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXJ0ICs9IHRvdGFsX2luOw0KICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgcGFnZXMgPSBOVUxMOw0KICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgY29uZF9yZXNjaGVkKCk7DQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICBnb3RvIGFnYWluOw0KICAgICAgICAgICAgICAgICAgICAgICAgIH0NCg0KU28gd2UgbWln
-aHQgZ2V0IHRvIHRoZSBfX3NldF9wYWdlX2RpcnR5X25vYnVmZmVycygpIHRlc3Qgd2l0aCBhIHJh
-bmdlIA0KdGhhdCBubyBsb25nZXIgY29ycmVzcG9uZHMgdG8gdGhlIGxvY2tlZCBwYWdlLg0KDQot
-Y2hyaXMNCg==
+I'm also seeing these since quite a while on Debian sid:
+
+Jul 11 13:33:56 heisenberg kernel: BTRFS info (device dm-0): device fsid 60[...]3c devid 1 moved old:/dev/mapper/system new:/dev/dm-0
+Jul 11 13:33:56 heisenberg kernel: BTRFS info (device dm-0): device fsid 60[...]3c devid 1 moved old:/dev/dm-0 new:/dev/mapper/system
+Jul 11 23:43:35 heisenberg kernel: BTRFS info (device dm-0): device fsid 60[...]3c devid 1 moved old:/dev/mapper/system new:/dev/dm-0
+Jul 11 23:43:35 heisenberg kernel: BTRFS info (device dm-0): device fsid 60[...]3c devid 1 moved old:/dev/dm-0 new:/dev/mapper/system
+
+In my case it's a simply dm-crypt layer below the fs.
+
+
+Some years ago, there was a longer thread on this list about the
+fragility of btrfs with respect to accidentally or intentionally
+colliding UUIDs.
+IIRC there were quite some concerns that this could have even a big
+security impact when an attacker e.g. plugs in a device with a certain
+UUID and the kernel or userland automatically adds or somehow else uses
+such device (just by UUID).
+Back then it was said this would be looked into... has anything
+happened there?
+
+
+Cheers,
+Chris.
+
