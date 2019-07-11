@@ -2,273 +2,227 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDB065B24
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2019 18:00:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E4065F3C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2019 20:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728409AbfGKQAk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Jul 2019 12:00:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53400 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728248AbfGKQAk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Jul 2019 12:00:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A01A1B05E;
-        Thu, 11 Jul 2019 16:00:38 +0000 (UTC)
-Subject: Re: [PATCH 3/5] Btrfs: only associate the locked page with one
- async_cow struct
-To:     Tejun Heo <tj@kernel.org>, clm@fb.com,
-        David Sterba <dsterba@suse.com>, josef@toxicpanda.com
-Cc:     kernel-team@fb.com, axboe@kernel.dk, jack@suse.cz,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190710192818.1069475-1-tj@kernel.org>
- <20190710192818.1069475-4-tj@kernel.org>
-From:   Nikolay Borisov <nborisov@suse.com>
+        id S1728745AbfGKSA3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Jul 2019 14:00:29 -0400
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:45640 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728655AbfGKSA3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Jul 2019 14:00:29 -0400
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id 86A48142BC3; Thu, 11 Jul 2019 19:00:26 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1562868026;
+        bh=FyJny+JcnyuvnAdqegsGmnJAOwFbp2DvJVJEqbIZyVc=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=BmVpiJXn1wBQE86lhTSR7FQhnCAYEbb/8mPDfddS1t4eZ8342ouenGQAb+QAZgBEv
+         iCVIjDQUMOS6mDUNE+og3HSA8eoWSYIlsnicdWeNaAg9tVoQJF51XpZs356nqFWaWo
+         A/ccClpwPo1b8vTadwulQeXfx7SWa8J1CLmspMGCq5dtO7JI309mn+lsh8Qty7NUR+
+         7BO5Ri6j6h3+2uL9eNAdYF8dRp16TlESG08AUcX/rZMzuTXVVHWRjFisjlGaKhH+3L
+         Y5kpbReH2Gnyr+Jl1D9hkH+vHVWUzYv2cumSy7qV2kMcOWCaVL7Ju2dxMU6pO+Wthw
+         lKw7IF2gRp/VA==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 60979142BC1
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Jul 2019 19:00:25 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1562868025;
+        bh=FyJny+JcnyuvnAdqegsGmnJAOwFbp2DvJVJEqbIZyVc=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=FXFAIwbDwh08KMGjYuyTIJOAQJHC/lQeigFD7QlOEymsTEK3NKuRADLDQPVbF/7Px
+         NVDRzdh7eyu6IEfqIFpuxa9mgbg8By7894rrL34u4OZOpS4KP3Vmlp9/CENM5yYPUw
+         UQ6eAvuwAotEu5WqOj6IXBxA+1hmZaP7Omtpjo2pnDpMPhXa8/kqu7v0H32TNaSkEV
+         HDPf98QqkxQ0+5Zd/3/Hv2VD5LZPPSYWt5nlZAQi+lJ9f5CiC4Q2X2N21meyPJlEu1
+         12pvFu/xQ4H4bqfu0B1YA/jx0Hrk39Ydmga0U0RMUWPDyCqKidbKEg/6oQar7Y+Bey
+         Lri5wRXfcv2dQ==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 768D81758D
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Jul 2019 19:00:24 +0100 (BST)
+Subject: Re: "btrfs: harden agaist duplicate fsid" spams syslog
+To:     linux-btrfs@vger.kernel.org
+References: <5d8baf80-4fb3-221f-5ab4-e98a838f63e1@cobb.uk.net>
+ <c01ab9f6-c553-3625-5656-a8f61659de7d@oracle.com>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
 Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <0522e068-57d0-f7f2-6500-f431225bdc73@suse.com>
-Date:   Thu, 11 Jul 2019 19:00:36 +0300
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <a3d6e202-acf4-c02e-430a-aef4a2ee4247@cobb.uk.net>
+Date:   Thu, 11 Jul 2019 19:00:24 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-In-Reply-To: <20190710192818.1069475-4-tj@kernel.org>
+In-Reply-To: <c01ab9f6-c553-3625-5656-a8f61659de7d@oracle.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 10.07.19 г. 22:28 ч., Tejun Heo wrote:
-> From: Chris Mason <clm@fb.com>
+On 11/07/2019 03:46, Anand Jain wrote:
+> Now the question I am trying to understand, why same device is being
+> scanned every 2 mins, even though its already mount-ed. I am guessing
+> its toggling the same device paths trying to mount the device-path
+> which is not mounted. So autofs's check for the device mount seems to
+> be path based.
 > 
-> The btrfs writepages function collects a large range of pages flagged
-> for delayed allocation, and then sends them down through the COW code
-> for processing.  When compression is on, we allocate one async_cow
+> Would you please provide your LVM configs and I believe you are using
+> dm-mapping too. What are the device paths used in the fstab and in grub.
+> And do you see these messages for all devices of
+> 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 or just devid 4? Would you please
+> provide more logs at least a complete cycle of the repeating logs.
 
-nit: The code no longer uses async_cow to represent in-flight chunks but
-the more aptly named async_chunk. Presumably this patchset predates
-those changes.
+My setup is quite complex, with three btrfs-over-LVM-over-LUKS
+filesystems, so I will explain it fully in a separate message in case it
+is important. Let me first answer your questions regarding
+4d1ba5af-8b89-4cb5-96c6-55d1f028a202, which was the example I used in my
+initial log extract.
 
-> structure for every 512K, and then run those pages through the
-> compression code for IO submission.
-> 
-> writepages starts all of this off with a single page, locked by
-> the original call to extent_write_cache_pages(), and it's important to
-> keep track of this page because it has already been through
-> clear_page_dirty_for_io().
+4d1b...a202 is a filesystem with a main mount point of /mnt/backup2/:
 
-IMO it will be beneficial to state what are the implications of
-clear_page_dirty_for_io being called, i.e what special handling should
-this particular page receive to the rest of its lifetime.
+black:~# btrfs fi show /mnt/backup2/
+Label: 'snap12tb'  uuid: 4d1ba5af-8b89-4cb5-96c6-55d1f028a202
+        Total devices 2 FS bytes used 10.97TiB
+        devid    1 size 10.82TiB used 10.82TiB path /dev/sdc3
+        devid    4 size 3.62TiB used 199.00GiB path
+/dev/mapper/cryptdata4tb--vg-backup
 
-> 
-> The btrfs async_cow struct has a pointer to the locked_page, and when
-> we're redirtying the page because compression had to fallback to
-> uncompressed IO, we use page->index to decide if a given async_cow
-> struct really owns that page.
-> 
-> But, this is racey.  If a given delalloc range is broken up into two
-> async_cows (cow_A and cow_B), we can end up with something like this:
-> 
-> compress_file_range(cowA)
-> submit_compress_extents(cowA)
-> submit compressed bios(cowA)
-> put_page(locked_page)
-> 
-> 				compress_file_range(cowB)
-> 				...
+In this particular filesystem, it has two devices: one is a real disk
+partition (/dev/sdc3), the other is an LVM logical volume. It has also
+had other LVM devices added and removed at various times, but this is
+the current setup.
 
-This call trace is _really_ hand wavy and the correct one is more
-complex, hence it should be something like :
+Note: when I added this LV, I used path /dev/mapper/cryptdata4tb--vg-backup.
 
-async_cow_submit
- submit_compressed_extents <--- falls back to buffered writeout
-  cow_file_range
-   extent_clear_unlock_delalloc
-    __process_pages_contig
-      put_page(locked_pages)
+black:~# lvdisplay /dev/cryptdata4tb-vg/backup
+  --- Logical volume ---
+  LV Path                /dev/cryptdata4tb-vg/backup
+  LV Name                backup
+  VG Name                cryptdata4tb-vg
+  LV UUID                TZaWfo-goG1-GsNV-GCZL-rpbz-IW0H-gNmXBf
+  LV Write Access        read/write
+  LV Creation host, time black, 2019-07-10 10:40:28 +0100
+  LV Status              available
+  # open                 1
+  LV Size                3.62 TiB
+  Current LE             949089
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           254:13
 
-                                           async_cow_submit
+The LVM logical volume is exposed as /dev/mapper/cryptdata4tb--vg-backup
+which is a symlink (set up by LVM, I believe) to /dev/dm-13.
 
-> 
-> The end result is that cowA is completed and cleaned up before cowB even
-> starts processing.  This means we can free locked_page() and reuse it
-> elsewhere.  If we get really lucky, it'll have the same page->index in
-> its new home as it did before.
-> 
-> While we're processing cowB, we might decide we need to fall back to
-> uncompressed IO, and so compress_file_range() will call
-> __set_page_dirty_nobufers() on cowB->locked_page.
-> 
-> Without cgroups in use, this creates as a phantom dirty page, which> isn't great but isn't the end of the world.  With cgroups in use, we
+For the 4d1b...a202 filesystem I currently only see the messages for
+devid 4. But I presume that is because devid 1 is a real device, which
+only appears in /dev once. I did, for a while, have two LV devices in
+this filesystem and, looking at the old logs, I can see that every 2
+minutes the swapping between /dev/mapper/whatever and /dev/dm-N was
+happening for both LV devids (but not for the physical device devid)
 
-Having a phantom dirty page is not great but not terrible without
-cgroups but apart from that, does it have any other implications?
+This particular device is not a root device and I do not believe it is
+referenced in grub or initramfs. It is mounted in /etc/fstab/:
+
+LABEL=snap12tb  /mnt/backup2    btrfs
+defaults,subvolid=0,noatime,nodiratime,compress=lzo,skip_balance,space_cache=v2
+       0       3
+
+Note that /dev/disk/by-label/snap12tb is a symlink to the dm-N alias of
+the LV device (set up by LVM or udev or something - not by me):
+
+black:~# ls -l /dev/disk/by-label/snap12tb
+lrwxrwxrwx 1 root root 11 Jul 11 18:18 /dev/disk/by-label/snap12tb ->
+../../dm-13
+
+Here is a log extract of the cycling messages for the 4d1b...a202
+filesystem:
+
+Jul 11 18:46:28 black kernel: [116657.825658] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+Jul 11 18:46:28 black kernel: [116658.048042] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+Jul 11 18:46:29 black kernel: [116659.157392] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+Jul 11 18:46:29 black kernel: [116659.337504] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+Jul 11 18:48:28 black kernel: [116777.727262] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+Jul 11 18:48:28 black kernel: [116778.019874] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+Jul 11 18:48:29 black kernel: [116779.157038] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+Jul 11 18:48:30 black kernel: [116779.364959] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+Jul 11 18:50:28 black kernel: [116897.705568] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+Jul 11 18:50:28 black kernel: [116897.911805] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+Jul 11 18:50:29 black kernel: [116899.053046] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+Jul 11 18:50:29 black kernel: [116899.213067] BTRFS info (device sdc3):
+device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
 
 
-> might crash in the accounting code because page->mapping->i_wb isn't
-> set.
-> 
-> [ 8308.523110] BUG: unable to handle kernel NULL pointer dereference at 00000000000000d0
-> [ 8308.531084] IP: percpu_counter_add_batch+0x11/0x70
-> [ 8308.538371] PGD 66534e067 P4D 66534e067 PUD 66534f067 PMD 0
-> [ 8308.541750] Oops: 0000 [#1] SMP DEBUG_PAGEALLOC
-> [ 8308.551948] CPU: 16 PID: 2172 Comm: rm Not tainted
-> [ 8308.566883] RIP: 0010:percpu_counter_add_batch+0x11/0x70
-> [ 8308.567891] RSP: 0018:ffffc9000a97bbe0 EFLAGS: 00010286
-> [ 8308.568986] RAX: 0000000000000005 RBX: 0000000000000090 RCX: 0000000000026115
-> [ 8308.570734] RDX: 0000000000000030 RSI: ffffffffffffffff RDI: 0000000000000090
-> [ 8308.572543] RBP: 0000000000000000 R08: fffffffffffffff5 R09: 0000000000000000
-> [ 8308.573856] R10: 00000000000260c0 R11: ffff881037fc26c0 R12: ffffffffffffffff
-> [ 8308.580099] R13: ffff880fe4111548 R14: ffffc9000a97bc90 R15: 0000000000000001
-> [ 8308.582520] FS:  00007f5503ced480(0000) GS:ffff880ff7200000(0000) knlGS:0000000000000000
-> [ 8308.585440] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 8308.587951] CR2: 00000000000000d0 CR3: 00000001e0459005 CR4: 0000000000360ee0
-> [ 8308.590707] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 8308.592865] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [ 8308.594469] Call Trace:
-> [ 8308.595149]  account_page_cleaned+0x15b/0x1f0
-> [ 8308.596340]  __cancel_dirty_page+0x146/0x200
-> [ 8308.599395]  truncate_cleanup_page+0x92/0xb0
-> [ 8308.600480]  truncate_inode_pages_range+0x202/0x7d0
-> [ 8308.617392]  btrfs_evict_inode+0x92/0x5a0
-> [ 8308.619108]  evict+0xc1/0x190
-> [ 8308.620023]  do_unlinkat+0x176/0x280
-> [ 8308.621202]  do_syscall_64+0x63/0x1a0
-> [ 8308.623451]  entry_SYSCALL_64_after_hwframe+0x42/0xb7
-> 
-> The fix here is to make asyc_cow->locked_page NULL everywhere but the
-> one async_cow struct that's allowed to do things to the locked page.
-> 
-> Signed-off-by: Chris Mason <clm@fb.com>
-> Fixes: 771ed689d2cd ("Btrfs: Optimize compressed writeback and reads")
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/extent_io.c |  2 +-
->  fs/btrfs/inode.c     | 25 +++++++++++++++++++++----
->  2 files changed, 22 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 5106008f5e28..a31574df06aa 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -1838,7 +1838,7 @@ static int __process_pages_contig(struct address_space *mapping,
->  			if (page_ops & PAGE_SET_PRIVATE2)
->  				SetPagePrivate2(pages[i]);
->  
-> -			if (pages[i] == locked_page) {
-> +			if (locked_page && pages[i] == locked_page) {
+I will, later, provide more detailed configuration information,
+including the other filesystems and more logs. As that will be very long
+I plan to send it directly to you, Anand, rather than to the list.
 
-Why not make the check just if (locked_page) then clean it up, since if
-__process_pages_contig is called from the owner of the page then it's
-guaranteed that the page will fall within it's range.
-
->  				put_page(pages[i]);
->  				pages_locked++;
->  				continue;
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 6e6df0eab324..a81e9860ee1f 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -666,10 +666,12 @@ static noinline void compress_file_range(struct async_chunk *async_chunk,
->  	 * to our extent and set things up for the async work queue to run
->  	 * cow_file_range to do the normal delalloc dance.
->  	 */
-> -	if (page_offset(async_chunk->locked_page) >= start &&
-> -	    page_offset(async_chunk->locked_page) <= end)
-> +	if (async_chunk->locked_page &&
-> +	    (page_offset(async_chunk->locked_page) >= start &&
-> +	     page_offset(async_chunk->locked_page)) <= end) {
-
-DITTO since locked_page is now only set to the chunk that has the right
-to it then there is no need to check the offsets and this will simplify
-the code.
-
->  		__set_page_dirty_nobuffers(async_chunk->locked_page);
->  		/* unlocked later on in the async handlers */
-> +	}
->  
->  	if (redirty)
->  		extent_range_redirty_for_io(inode, start, end);
-> @@ -759,7 +761,7 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
->  						  async_extent->start +
->  						  async_extent->ram_size - 1,
->  						  WB_SYNC_ALL);
-> -			else if (ret)
-> +			else if (ret && async_chunk->locked_page)
->  				unlock_page(async_chunk->locked_page);
->  			kfree(async_extent);
->  			cond_resched();
-> @@ -1236,10 +1238,25 @@ static int cow_file_range_async(struct inode *inode, struct page *locked_page,
->  		async_chunk[i].inode = inode;
->  		async_chunk[i].start = start;
->  		async_chunk[i].end = cur_end;
-> -		async_chunk[i].locked_page = locked_page;
->  		async_chunk[i].write_flags = write_flags;
->  		INIT_LIST_HEAD(&async_chunk[i].extents);
->  
-> +		/*
-> +		 * The locked_page comes all the way from writepage and its
-> +		 * the original page we were actually given.  As we spread
-> +		 * this large delalloc region across multiple async_cow
-> +		 * structs, only the first struct needs a pointer to locked_page
-> +		 *
-> +		 * This way we don't need racey decisions about who is supposed
-> +		 * to unlock it.
-> +		 */
-> +		if (locked_page) {
-> +			async_chunk[i].locked_page = locked_page;
-> +			locked_page = NULL;
-> +		} else {
-> +			async_chunk[i].locked_page = NULL;
-> +		}
-> +
->  		btrfs_init_work(&async_chunk[i].work,
->  				btrfs_delalloc_helper,
->  				async_cow_start, async_cow_submit,
-> 
+Graham
