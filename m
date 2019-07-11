@@ -2,227 +2,242 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29E4065F3C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2019 20:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01A5C6603F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2019 21:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728745AbfGKSA3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Jul 2019 14:00:29 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:45640 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728655AbfGKSA3 (ORCPT
+        id S1728998AbfGKTwj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Jul 2019 15:52:39 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:32682 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728833AbfGKTwj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Jul 2019 14:00:29 -0400
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 86A48142BC3; Thu, 11 Jul 2019 19:00:26 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1562868026;
-        bh=FyJny+JcnyuvnAdqegsGmnJAOwFbp2DvJVJEqbIZyVc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=BmVpiJXn1wBQE86lhTSR7FQhnCAYEbb/8mPDfddS1t4eZ8342ouenGQAb+QAZgBEv
-         iCVIjDQUMOS6mDUNE+og3HSA8eoWSYIlsnicdWeNaAg9tVoQJF51XpZs356nqFWaWo
-         A/ccClpwPo1b8vTadwulQeXfx7SWa8J1CLmspMGCq5dtO7JI309mn+lsh8Qty7NUR+
-         7BO5Ri6j6h3+2uL9eNAdYF8dRp16TlESG08AUcX/rZMzuTXVVHWRjFisjlGaKhH+3L
-         Y5kpbReH2Gnyr+Jl1D9hkH+vHVWUzYv2cumSy7qV2kMcOWCaVL7Ju2dxMU6pO+Wthw
-         lKw7IF2gRp/VA==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 60979142BC1
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Jul 2019 19:00:25 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1562868025;
-        bh=FyJny+JcnyuvnAdqegsGmnJAOwFbp2DvJVJEqbIZyVc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=FXFAIwbDwh08KMGjYuyTIJOAQJHC/lQeigFD7QlOEymsTEK3NKuRADLDQPVbF/7Px
-         NVDRzdh7eyu6IEfqIFpuxa9mgbg8By7894rrL34u4OZOpS4KP3Vmlp9/CENM5yYPUw
-         UQ6eAvuwAotEu5WqOj6IXBxA+1hmZaP7Omtpjo2pnDpMPhXa8/kqu7v0H32TNaSkEV
-         HDPf98QqkxQ0+5Zd/3/Hv2VD5LZPPSYWt5nlZAQi+lJ9f5CiC4Q2X2N21meyPJlEu1
-         12pvFu/xQ4H4bqfu0B1YA/jx0Hrk39Ydmga0U0RMUWPDyCqKidbKEg/6oQar7Y+Bey
-         Lri5wRXfcv2dQ==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 768D81758D
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Jul 2019 19:00:24 +0100 (BST)
-Subject: Re: "btrfs: harden agaist duplicate fsid" spams syslog
-To:     linux-btrfs@vger.kernel.org
-References: <5d8baf80-4fb3-221f-5ab4-e98a838f63e1@cobb.uk.net>
- <c01ab9f6-c553-3625-5656-a8f61659de7d@oracle.com>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
-Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- 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 myxb
-Message-ID: <a3d6e202-acf4-c02e-430a-aef4a2ee4247@cobb.uk.net>
-Date:   Thu, 11 Jul 2019 19:00:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.1
+        Thu, 11 Jul 2019 15:52:39 -0400
+Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x6BJqQeQ024090;
+        Thu, 11 Jul 2019 12:52:28 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=99sDh+3AYBPe5PBSiNlwj3lQbZlWIpCfglRl25vAfqI=;
+ b=UpCCSDerjuF9li5/ohLosGIXl4yXnRcXmWymU0aex9aqqsZBm254zYxKVePveZACgxkX
+ hAndAkNEbPRZJfCCJAKZJLpzTKMKfXCu7/OWFfEhMk4StHt9r/UHoONH3nQ2nH1xg7CH
+ KK/6U3B64+r5Q1ZLXGjhKpxy3ZkQgcxs340= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tpa9urb2m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 11 Jul 2019 12:52:28 -0700
+Received: from ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) by
+ ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 11 Jul 2019 12:52:26 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 11 Jul 2019 12:52:26 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=99sDh+3AYBPe5PBSiNlwj3lQbZlWIpCfglRl25vAfqI=;
+ b=lwn8os0i85Lbw1rQFkoU86ZARSUhoqY/dQbhN+Q6ZvhYVO+b0VBczR9r87QAMZqgNmClyCTFnV6Rc/Acb0XPY17oGLY2NZPoeE5aA1rf6fzjcYwecIBZMle3MTyzSQOwzOhDl2CBA7TzuEd6HCv513w2o5tU1MIA19XoT6+XahA=
+Received: from DM5PR15MB1290.namprd15.prod.outlook.com (10.173.212.17) by
+ DM5PR15MB1131.namprd15.prod.outlook.com (10.173.212.149) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2052.18; Thu, 11 Jul 2019 19:52:24 +0000
+Received: from DM5PR15MB1290.namprd15.prod.outlook.com
+ ([fe80::1c4f:5abd:dd85:bb52]) by DM5PR15MB1290.namprd15.prod.outlook.com
+ ([fe80::1c4f:5abd:dd85:bb52%6]) with mapi id 15.20.2052.022; Thu, 11 Jul 2019
+ 19:52:24 +0000
+From:   Chris Mason <clm@fb.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+CC:     Tejun Heo <tj@kernel.org>, David Sterba <dsterba@suse.com>,
+        "josef@toxicpanda.com" <josef@toxicpanda.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>, "jack@suse.cz" <jack@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/5] Btrfs: only associate the locked page with one
+ async_cow struct
+Thread-Topic: [PATCH 3/5] Btrfs: only associate the locked page with one
+ async_cow struct
+Thread-Index: AQHVN1W1YCq+faYSzkSDg3ATEuxzP6bFlOIAgABAvoA=
+Date:   Thu, 11 Jul 2019 19:52:24 +0000
+Message-ID: <C459F9B6-8154-4099-BC62-C3DCCAF56CE2@fb.com>
+References: <20190710192818.1069475-1-tj@kernel.org>
+ <20190710192818.1069475-4-tj@kernel.org>
+ <0522e068-57d0-f7f2-6500-f431225bdc73@suse.com>
+In-Reply-To: <0522e068-57d0-f7f2-6500-f431225bdc73@suse.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: MailMate (1.12.5r5635)
+x-clientproxiedby: BN6PR18CA0004.namprd18.prod.outlook.com
+ (2603:10b6:404:121::14) To DM5PR15MB1290.namprd15.prod.outlook.com
+ (2603:10b6:3:b8::17)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c091:480::3dbc]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 17444894-47b6-4271-2208-08d706394b4c
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:DM5PR15MB1131;
+x-ms-traffictypediagnostic: DM5PR15MB1131:
+x-microsoft-antispam-prvs: <DM5PR15MB1131E25E917F35CEA78A0B3AD3F30@DM5PR15MB1131.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-forefront-prvs: 0095BCF226
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(39860400002)(366004)(376002)(396003)(346002)(199004)(189003)(6916009)(316002)(33656002)(53936002)(66946007)(2616005)(4326008)(6116002)(25786009)(6246003)(36756003)(14454004)(66556008)(66446008)(66476007)(478600001)(6436002)(54906003)(6512007)(229853002)(6486002)(11346002)(53546011)(50226002)(486006)(99286004)(8676002)(186003)(81166006)(6506007)(64756008)(46003)(2906002)(5660300002)(52116002)(102836004)(76176011)(81156014)(71190400001)(386003)(68736007)(7736002)(86362001)(256004)(14444005)(305945005)(8936002)(476003)(71200400001)(446003);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR15MB1131;H:DM5PR15MB1290.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: EkY+nClhjjZ8jeVTy62n7itJq3H2Xee+yRlt1iluIR+eyLyVRXFkHTfkRqfhuZgMz5zFBPCa91x9K6UQL+RdK/hSjJ2DWoc3wrC9tesFodCaYHjuGbQj7skbmyefj4nNIwmHtwHQzgdVsRFJvQCLzimStIHPKjy5YJTD8ZeGQG9DKkjYFi5mj5N1iG4w6XecZXE1WJgn+249Vtgcxa/SSTstEk+SZB5wyjhUXHL6b7/Yh7nojHzGyMpMwrKVTrkUU/yFoe3c57MllFYDXpEDHNRZUJN+1W7X5GW75wdeUAiUNXgvjBisJxN+zM/DjSRwLvbNX6ueI2XqWJwIlYfJvpdoV3CVBO8VndoelBmhm44yMPEbPyAhxyMTbCNEEOskLRMH7jAYAeCM3jcVj/RrUnWrQx5D3JBNKu9a/oj5opw=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <97EC1348466577419B756F2A86481317@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <c01ab9f6-c553-3625-5656-a8f61659de7d@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: 17444894-47b6-4271-2208-08d706394b4c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 11 Jul 2019 19:52:24.6300
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: clm@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR15MB1131
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-11_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907110219
+X-FB-Internal: deliver
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/07/2019 03:46, Anand Jain wrote:
-> Now the question I am trying to understand, why same device is being
-> scanned every 2 mins, even though its already mount-ed. I am guessing
-> its toggling the same device paths trying to mount the device-path
-> which is not mounted. So autofs's check for the device mount seems to
-> be path based.
-> 
-> Would you please provide your LVM configs and I believe you are using
-> dm-mapping too. What are the device paths used in the fstab and in grub.
-> And do you see these messages for all devices of
-> 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 or just devid 4? Would you please
-> provide more logs at least a complete cycle of the repeating logs.
-
-My setup is quite complex, with three btrfs-over-LVM-over-LUKS
-filesystems, so I will explain it fully in a separate message in case it
-is important. Let me first answer your questions regarding
-4d1ba5af-8b89-4cb5-96c6-55d1f028a202, which was the example I used in my
-initial log extract.
-
-4d1b...a202 is a filesystem with a main mount point of /mnt/backup2/:
-
-black:~# btrfs fi show /mnt/backup2/
-Label: 'snap12tb'  uuid: 4d1ba5af-8b89-4cb5-96c6-55d1f028a202
-        Total devices 2 FS bytes used 10.97TiB
-        devid    1 size 10.82TiB used 10.82TiB path /dev/sdc3
-        devid    4 size 3.62TiB used 199.00GiB path
-/dev/mapper/cryptdata4tb--vg-backup
-
-In this particular filesystem, it has two devices: one is a real disk
-partition (/dev/sdc3), the other is an LVM logical volume. It has also
-had other LVM devices added and removed at various times, but this is
-the current setup.
-
-Note: when I added this LV, I used path /dev/mapper/cryptdata4tb--vg-backup.
-
-black:~# lvdisplay /dev/cryptdata4tb-vg/backup
-  --- Logical volume ---
-  LV Path                /dev/cryptdata4tb-vg/backup
-  LV Name                backup
-  VG Name                cryptdata4tb-vg
-  LV UUID                TZaWfo-goG1-GsNV-GCZL-rpbz-IW0H-gNmXBf
-  LV Write Access        read/write
-  LV Creation host, time black, 2019-07-10 10:40:28 +0100
-  LV Status              available
-  # open                 1
-  LV Size                3.62 TiB
-  Current LE             949089
-  Segments               1
-  Allocation             inherit
-  Read ahead sectors     auto
-  - currently set to     256
-  Block device           254:13
-
-The LVM logical volume is exposed as /dev/mapper/cryptdata4tb--vg-backup
-which is a symlink (set up by LVM, I believe) to /dev/dm-13.
-
-For the 4d1b...a202 filesystem I currently only see the messages for
-devid 4. But I presume that is because devid 1 is a real device, which
-only appears in /dev once. I did, for a while, have two LV devices in
-this filesystem and, looking at the old logs, I can see that every 2
-minutes the swapping between /dev/mapper/whatever and /dev/dm-N was
-happening for both LV devids (but not for the physical device devid)
-
-This particular device is not a root device and I do not believe it is
-referenced in grub or initramfs. It is mounted in /etc/fstab/:
-
-LABEL=snap12tb  /mnt/backup2    btrfs
-defaults,subvolid=0,noatime,nodiratime,compress=lzo,skip_balance,space_cache=v2
-       0       3
-
-Note that /dev/disk/by-label/snap12tb is a symlink to the dm-N alias of
-the LV device (set up by LVM or udev or something - not by me):
-
-black:~# ls -l /dev/disk/by-label/snap12tb
-lrwxrwxrwx 1 root root 11 Jul 11 18:18 /dev/disk/by-label/snap12tb ->
-../../dm-13
-
-Here is a log extract of the cycling messages for the 4d1b...a202
-filesystem:
-
-Jul 11 18:46:28 black kernel: [116657.825658] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
-Jul 11 18:46:28 black kernel: [116658.048042] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
-Jul 11 18:46:29 black kernel: [116659.157392] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
-Jul 11 18:46:29 black kernel: [116659.337504] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
-Jul 11 18:48:28 black kernel: [116777.727262] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
-Jul 11 18:48:28 black kernel: [116778.019874] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
-Jul 11 18:48:29 black kernel: [116779.157038] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
-Jul 11 18:48:30 black kernel: [116779.364959] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
-Jul 11 18:50:28 black kernel: [116897.705568] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
-Jul 11 18:50:28 black kernel: [116897.911805] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
-Jul 11 18:50:29 black kernel: [116899.053046] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
-Jul 11 18:50:29 black kernel: [116899.213067] BTRFS info (device sdc3):
-device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
-
-
-I will, later, provide more detailed configuration information,
-including the other filesystems and more logs. As that will be very long
-I plan to send it directly to you, Anand, rather than to the list.
-
-Graham
+T24gMTEgSnVsIDIwMTksIGF0IDEyOjAwLCBOaWtvbGF5IEJvcmlzb3Ygd3JvdGU6DQoNCj4gT24g
+MTAuMDcuMTkg0LMuIDIyOjI4INGHLiwgVGVqdW4gSGVvIHdyb3RlOg0KPj4gRnJvbTogQ2hyaXMg
+TWFzb24gPGNsbUBmYi5jb20+DQo+Pg0KPj4gVGhlIGJ0cmZzIHdyaXRlcGFnZXMgZnVuY3Rpb24g
+Y29sbGVjdHMgYSBsYXJnZSByYW5nZSBvZiBwYWdlcyBmbGFnZ2VkDQo+PiBmb3IgZGVsYXllZCBh
+bGxvY2F0aW9uLCBhbmQgdGhlbiBzZW5kcyB0aGVtIGRvd24gdGhyb3VnaCB0aGUgQ09XIGNvZGUN
+Cj4+IGZvciBwcm9jZXNzaW5nLiAgV2hlbiBjb21wcmVzc2lvbiBpcyBvbiwgd2UgYWxsb2NhdGUg
+b25lIGFzeW5jX2Nvdw0KPg0KPiBuaXQ6IFRoZSBjb2RlIG5vIGxvbmdlciB1c2VzIGFzeW5jX2Nv
+dyB0byByZXByZXNlbnQgaW4tZmxpZ2h0IGNodW5rcyANCj4gYnV0DQo+IHRoZSBtb3JlIGFwdGx5
+IG5hbWVkIGFzeW5jX2NodW5rLiBQcmVzdW1hYmx5IHRoaXMgcGF0Y2hzZXQgcHJlZGF0ZXMNCj4g
+dGhvc2UgY2hhbmdlcy4NCg0KTm90IGJ5IG11Y2gsIGJ1dCB5ZXMuDQoNCj4NCj4+DQo+PiBUaGUg
+ZW5kIHJlc3VsdCBpcyB0aGF0IGNvd0EgaXMgY29tcGxldGVkIGFuZCBjbGVhbmVkIHVwIGJlZm9y
+ZSBjb3dCIA0KPj4gZXZlbg0KPj4gc3RhcnRzIHByb2Nlc3NpbmcuICBUaGlzIG1lYW5zIHdlIGNh
+biBmcmVlIGxvY2tlZF9wYWdlKCkgYW5kIHJldXNlIGl0DQo+PiBlbHNld2hlcmUuICBJZiB3ZSBn
+ZXQgcmVhbGx5IGx1Y2t5LCBpdCdsbCBoYXZlIHRoZSBzYW1lIHBhZ2UtPmluZGV4IA0KPj4gaW4N
+Cj4+IGl0cyBuZXcgaG9tZSBhcyBpdCBkaWQgYmVmb3JlLg0KPj4NCj4+IFdoaWxlIHdlJ3JlIHBy
+b2Nlc3NpbmcgY293Qiwgd2UgbWlnaHQgZGVjaWRlIHdlIG5lZWQgdG8gZmFsbCBiYWNrIHRvDQo+
+PiB1bmNvbXByZXNzZWQgSU8sIGFuZCBzbyBjb21wcmVzc19maWxlX3JhbmdlKCkgd2lsbCBjYWxs
+DQo+PiBfX3NldF9wYWdlX2RpcnR5X25vYnVmZXJzKCkgb24gY293Qi0+bG9ja2VkX3BhZ2UuDQo+
+Pg0KPj4gV2l0aG91dCBjZ3JvdXBzIGluIHVzZSwgdGhpcyBjcmVhdGVzIGFzIGEgcGhhbnRvbSBk
+aXJ0eSBwYWdlLCB3aGljaD4gDQo+PiBpc24ndCBncmVhdCBidXQgaXNuJ3QgdGhlIGVuZCBvZiB0
+aGUgd29ybGQuICBXaXRoIGNncm91cHMgaW4gdXNlLCB3ZQ0KPg0KPiBIYXZpbmcgYSBwaGFudG9t
+IGRpcnR5IHBhZ2UgaXMgbm90IGdyZWF0IGJ1dCBub3QgdGVycmlibGUgd2l0aG91dA0KPiBjZ3Jv
+dXBzIGJ1dCBhcGFydCBmcm9tIHRoYXQsIGRvZXMgaXQgaGF2ZSBhbnkgb3RoZXIgaW1wbGljYXRp
+b25zPw0KDQpCZXN0IGNhc2UsIGl0J2xsIGdvIHRocm91Z2ggdGhlIHdyaXRlcGFnZSBmaXh1cCB3
+b3JrZXIgYW5kIGdvIHRocm91Z2ggDQp0aGUgd2hvbGUgY293IG1hY2hpbmVyeSBhZ2Fpbi4gIFdv
+cnN0IGNhc2Ugd2UgZ28gdG8gdGhpcyBjb2RlIG1vcmUgdGhhbiANCm9uY2U6DQoNCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAvKg0KICAgICAgICAgICAgICAgICAgICAgICAgICAqIGlmIHBhZ2Vf
+c3RhcnRlZCwgY293X2ZpbGVfcmFuZ2UgaW5zZXJ0ZWQgYW4NCiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgKiBpbmxpbmUgZXh0ZW50IGFuZCB0b29rIGNhcmUgb2YgYWxsIHRoZSANCnVubG9ja2lu
+Zw0KICAgICAgICAgICAgICAgICAgICAgICAgICAqIGFuZCBJTyBmb3IgdXMuICBPdGhlcndpc2Us
+IHdlIG5lZWQgdG8gc3VibWl0DQogICAgICAgICAgICAgICAgICAgICAgICAgICogYWxsIHRob3Nl
+IHBhZ2VzIGRvd24gdG8gdGhlIGRyaXZlLg0KICAgICAgICAgICAgICAgICAgICAgICAgICAqLw0K
+ICAgICAgICAgICAgICAgICAgICAgICAgIGlmICghcGFnZV9zdGFydGVkICYmICFyZXQpDQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBleHRlbnRfd3JpdGVfbG9ja2VkX3JhbmdlKGlu
+b2RlLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+YXN5bmNfZXh0ZW50LT5zdGFydCwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIGFzeW5jX2V4dGVudC0+c3RhcnQgKw0KICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYXN5bmNfZXh0ZW50LT5yYW1fc2l6ZSAN
+Ci0gMSwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IFdCX1NZTkNfQUxMKTsNCiAgICAgICAgICAgICAgICAgICAgICAgICBlbHNlIGlmIChyZXQpDQog
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bmxvY2tfcGFnZShhc3luY19jaHVuay0+
+bG9ja2VkX3BhZ2UpOw0KDQoNClRoYXQgbmV2ZXIgaGFwcGVuZWQgaW4gcHJvZHVjdGlvbiBhcyBm
+YXIgYXMgSSBjYW4gdGVsbCwgYnV0IGl0IHNlZW1zIA0KcG9zc2libGUuDQoNCj4NCj4NCj4+IG1p
+Z2h0IGNyYXNoIGluIHRoZSBhY2NvdW50aW5nIGNvZGUgYmVjYXVzZSBwYWdlLT5tYXBwaW5nLT5p
+X3diIGlzbid0DQo+PiBzZXQuDQo+Pg0KPj4gWyA4MzA4LjUyMzExMF0gQlVHOiB1bmFibGUgdG8g
+aGFuZGxlIGtlcm5lbCBOVUxMIHBvaW50ZXIgZGVyZWZlcmVuY2UgDQo+PiBhdCAwMDAwMDAwMDAw
+MDAwMGQwDQo+PiBbIDgzMDguNTMxMDg0XSBJUDogcGVyY3B1X2NvdW50ZXJfYWRkX2JhdGNoKzB4
+MTEvMHg3MA0KPj4gWyA4MzA4LjUzODM3MV0gUEdEIDY2NTM0ZTA2NyBQNEQgNjY1MzRlMDY3IFBV
+RCA2NjUzNGYwNjcgUE1EIDANCj4+IFsgODMwOC41NDE3NTBdIE9vcHM6IDAwMDAgWyMxXSBTTVAg
+REVCVUdfUEFHRUFMTE9DDQo+PiBbIDgzMDguNTUxOTQ4XSBDUFU6IDE2IFBJRDogMjE3MiBDb21t
+OiBybSBOb3QgdGFpbnRlZA0KPj4gWyA4MzA4LjU2Njg4M10gUklQOiAwMDEwOnBlcmNwdV9jb3Vu
+dGVyX2FkZF9iYXRjaCsweDExLzB4NzANCj4+IFsgODMwOC41Njc4OTFdIFJTUDogMDAxODpmZmZm
+YzkwMDBhOTdiYmUwIEVGTEFHUzogMDAwMTAyODYNCj4+IFsgODMwOC41Njg5ODZdIFJBWDogMDAw
+MDAwMDAwMDAwMDAwNSBSQlg6IDAwMDAwMDAwMDAwMDAwOTAgUkNYOiANCj4+IDAwMDAwMDAwMDAw
+MjYxMTUNCj4+IFsgODMwOC41NzA3MzRdIFJEWDogMDAwMDAwMDAwMDAwMDAzMCBSU0k6IGZmZmZm
+ZmZmZmZmZmZmZmYgUkRJOiANCj4+IDAwMDAwMDAwMDAwMDAwOTANCj4+IFsgODMwOC41NzI1NDNd
+IFJCUDogMDAwMDAwMDAwMDAwMDAwMCBSMDg6IGZmZmZmZmZmZmZmZmZmZjUgUjA5OiANCj4+IDAw
+MDAwMDAwMDAwMDAwMDANCj4+IFsgODMwOC41NzM4NTZdIFIxMDogMDAwMDAwMDAwMDAyNjBjMCBS
+MTE6IGZmZmY4ODEwMzdmYzI2YzAgUjEyOiANCj4+IGZmZmZmZmZmZmZmZmZmZmYNCj4+IFsgODMw
+OC41ODAwOTldIFIxMzogZmZmZjg4MGZlNDExMTU0OCBSMTQ6IGZmZmZjOTAwMGE5N2JjOTAgUjE1
+OiANCj4+IDAwMDAwMDAwMDAwMDAwMDENCj4+IFsgODMwOC41ODI1MjBdIEZTOiAgMDAwMDdmNTUw
+M2NlZDQ4MCgwMDAwKSBHUzpmZmZmODgwZmY3MjAwMDAwKDAwMDApIA0KPj4ga25sR1M6MDAwMDAw
+MDAwMDAwMDAwMA0KPj4gWyA4MzA4LjU4NTQ0MF0gQ1M6ICAwMDEwIERTOiAwMDAwIEVTOiAwMDAw
+IENSMDogMDAwMDAwMDA4MDA1MDAzMw0KPj4gWyA4MzA4LjU4Nzk1MV0gQ1IyOiAwMDAwMDAwMDAw
+MDAwMGQwIENSMzogMDAwMDAwMDFlMDQ1OTAwNSBDUjQ6IA0KPj4gMDAwMDAwMDAwMDM2MGVlMA0K
+Pj4gWyA4MzA4LjU5MDcwN10gRFIwOiAwMDAwMDAwMDAwMDAwMDAwIERSMTogMDAwMDAwMDAwMDAw
+MDAwMCBEUjI6IA0KPj4gMDAwMDAwMDAwMDAwMDAwMA0KPj4gWyA4MzA4LjU5Mjg2NV0gRFIzOiAw
+MDAwMDAwMDAwMDAwMDAwIERSNjogMDAwMDAwMDBmZmZlMGZmMCBEUjc6IA0KPj4gMDAwMDAwMDAw
+MDAwMDQwMA0KPj4gWyA4MzA4LjU5NDQ2OV0gQ2FsbCBUcmFjZToNCj4+IFsgODMwOC41OTUxNDld
+ICBhY2NvdW50X3BhZ2VfY2xlYW5lZCsweDE1Yi8weDFmMA0KPj4gWyA4MzA4LjU5NjM0MF0gIF9f
+Y2FuY2VsX2RpcnR5X3BhZ2UrMHgxNDYvMHgyMDANCj4+IFsgODMwOC41OTkzOTVdICB0cnVuY2F0
+ZV9jbGVhbnVwX3BhZ2UrMHg5Mi8weGIwDQo+PiBbIDgzMDguNjAwNDgwXSAgdHJ1bmNhdGVfaW5v
+ZGVfcGFnZXNfcmFuZ2UrMHgyMDIvMHg3ZDANCj4+IFsgODMwOC42MTczOTJdICBidHJmc19ldmlj
+dF9pbm9kZSsweDkyLzB4NWEwDQo+PiBbIDgzMDguNjE5MTA4XSAgZXZpY3QrMHhjMS8weDE5MA0K
+Pj4gWyA4MzA4LjYyMDAyM10gIGRvX3VubGlua2F0KzB4MTc2LzB4MjgwDQo+PiBbIDgzMDguNjIx
+MjAyXSAgZG9fc3lzY2FsbF82NCsweDYzLzB4MWEwDQo+PiBbIDgzMDguNjIzNDUxXSAgZW50cnlf
+U1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzB4NDIvMHhiNw0KPj4NCj4+IFRoZSBmaXggaGVyZSBp
+cyB0byBtYWtlIGFzeWNfY293LT5sb2NrZWRfcGFnZSBOVUxMIGV2ZXJ5d2hlcmUgYnV0IHRoZQ0K
+Pj4gb25lIGFzeW5jX2NvdyBzdHJ1Y3QgdGhhdCdzIGFsbG93ZWQgdG8gZG8gdGhpbmdzIHRvIHRo
+ZSBsb2NrZWQgcGFnZS4NCj4+DQo+PiBTaWduZWQtb2ZmLWJ5OiBDaHJpcyBNYXNvbiA8Y2xtQGZi
+LmNvbT4NCj4+IEZpeGVzOiA3NzFlZDY4OWQyY2QgKCJCdHJmczogT3B0aW1pemUgY29tcHJlc3Nl
+ZCB3cml0ZWJhY2sgYW5kIA0KPj4gcmVhZHMiKQ0KPj4gUmV2aWV3ZWQtYnk6IEpvc2VmIEJhY2lr
+IDxqb3NlZkB0b3hpY3BhbmRhLmNvbT4NCj4+IC0tLQ0KPj4gIGZzL2J0cmZzL2V4dGVudF9pby5j
+IHwgIDIgKy0NCj4+ICBmcy9idHJmcy9pbm9kZS5jICAgICB8IDI1ICsrKysrKysrKysrKysrKysr
+KysrKy0tLS0NCj4+ICAyIGZpbGVzIGNoYW5nZWQsIDIyIGluc2VydGlvbnMoKyksIDUgZGVsZXRp
+b25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2V4dGVudF9pby5jIGIvZnMvYnRy
+ZnMvZXh0ZW50X2lvLmMNCj4+IGluZGV4IDUxMDYwMDhmNWUyOC4uYTMxNTc0ZGYwNmFhIDEwMDY0
+NA0KPj4gLS0tIGEvZnMvYnRyZnMvZXh0ZW50X2lvLmMNCj4+ICsrKyBiL2ZzL2J0cmZzL2V4dGVu
+dF9pby5jDQo+PiBAQCAtMTgzOCw3ICsxODM4LDcgQEAgc3RhdGljIGludCBfX3Byb2Nlc3NfcGFn
+ZXNfY29udGlnKHN0cnVjdCANCj4+IGFkZHJlc3Nfc3BhY2UgKm1hcHBpbmcsDQo+PiAgCQkJaWYg
+KHBhZ2Vfb3BzICYgUEFHRV9TRVRfUFJJVkFURTIpDQo+PiAgCQkJCVNldFBhZ2VQcml2YXRlMihw
+YWdlc1tpXSk7DQo+Pg0KPj4gLQkJCWlmIChwYWdlc1tpXSA9PSBsb2NrZWRfcGFnZSkgew0KPj4g
+KwkJCWlmIChsb2NrZWRfcGFnZSAmJiBwYWdlc1tpXSA9PSBsb2NrZWRfcGFnZSkgew0KPg0KPiBX
+aHkgbm90IG1ha2UgdGhlIGNoZWNrIGp1c3QgaWYgKGxvY2tlZF9wYWdlKSB0aGVuIGNsZWFuIGl0
+IHVwLCBzaW5jZSANCj4gaWYNCj4gX19wcm9jZXNzX3BhZ2VzX2NvbnRpZyBpcyBjYWxsZWQgZnJv
+bSB0aGUgb3duZXIgb2YgdGhlIHBhZ2UgdGhlbiBpdCdzDQo+IGd1YXJhbnRlZWQgdGhhdCB0aGUg
+cGFnZSB3aWxsIGZhbGwgd2l0aGluIGl0J3MgcmFuZ2UuDQoNCkknbSBub3QgY29udmluY2VkIHRo
+YXQgZXZlcnkgc2luZ2xlIGNhbGxlciBvZiBfX3Byb2Nlc3NfcGFnZXNfY29udGlnIGlzIA0KbWFr
+aW5nIHN1cmUgdG8gb25seSBzZW5kIGxvY2tlZF9wYWdlIGZvciByYW5nZXMgdGhhdCBjb3JyZXNw
+b25kIHRvIHRoZSANCmxvY2tlZF9wYWdlLiAgSSdtIG5vdCBzdXJlIGV4YWN0bHkgd2hhdCB5b3Un
+cmUgYXNraW5nIGZvciB0aG91Z2gsIGl0IA0KbG9va3MgbGlrZSBpdCB3b3VsZCByZXF1aXJlIHNv
+bWUgbGFyZ2VyIGNoYW5nZXMgdG8gdGhlIGZsb3cgb2YgdGhhdCANCmxvb3AuDQoNCj4NCj4+ICAJ
+CQkJcHV0X3BhZ2UocGFnZXNbaV0pOw0KPj4gIAkJCQlwYWdlc19sb2NrZWQrKzsNCj4+ICAJCQkJ
+Y29udGludWU7DQo+PiBkaWZmIC0tZ2l0IGEvZnMvYnRyZnMvaW5vZGUuYyBiL2ZzL2J0cmZzL2lu
+b2RlLmMNCj4+IGluZGV4IDZlNmRmMGVhYjMyNC4uYTgxZTk4NjBlZTFmIDEwMDY0NA0KPj4gLS0t
+IGEvZnMvYnRyZnMvaW5vZGUuYw0KPj4gKysrIGIvZnMvYnRyZnMvaW5vZGUuYw0KPj4gQEAgLTY2
+NiwxMCArNjY2LDEyIEBAIHN0YXRpYyBub2lubGluZSB2b2lkIGNvbXByZXNzX2ZpbGVfcmFuZ2Uo
+c3RydWN0IA0KPj4gYXN5bmNfY2h1bmsgKmFzeW5jX2NodW5rLA0KPj4gIAkgKiB0byBvdXIgZXh0
+ZW50IGFuZCBzZXQgdGhpbmdzIHVwIGZvciB0aGUgYXN5bmMgd29yayBxdWV1ZSB0byBydW4NCj4+
+ICAJICogY293X2ZpbGVfcmFuZ2UgdG8gZG8gdGhlIG5vcm1hbCBkZWxhbGxvYyBkYW5jZS4NCj4+
+ICAJICovDQo+PiAtCWlmIChwYWdlX29mZnNldChhc3luY19jaHVuay0+bG9ja2VkX3BhZ2UpID49
+IHN0YXJ0ICYmDQo+PiAtCSAgICBwYWdlX29mZnNldChhc3luY19jaHVuay0+bG9ja2VkX3BhZ2Up
+IDw9IGVuZCkNCj4+ICsJaWYgKGFzeW5jX2NodW5rLT5sb2NrZWRfcGFnZSAmJg0KPj4gKwkgICAg
+KHBhZ2Vfb2Zmc2V0KGFzeW5jX2NodW5rLT5sb2NrZWRfcGFnZSkgPj0gc3RhcnQgJiYNCj4+ICsJ
+ICAgICBwYWdlX29mZnNldChhc3luY19jaHVuay0+bG9ja2VkX3BhZ2UpKSA8PSBlbmQpIHsNCj4N
+Cj4gRElUVE8gc2luY2UgbG9ja2VkX3BhZ2UgaXMgbm93IG9ubHkgc2V0IHRvIHRoZSBjaHVuayB0
+aGF0IGhhcyB0aGUgDQo+IHJpZ2h0DQo+IHRvIGl0IHRoZW4gdGhlcmUgaXMgbm8gbmVlZCB0byBj
+aGVjayB0aGUgb2Zmc2V0cyBhbmQgdGhpcyB3aWxsIA0KPiBzaW1wbGlmeQ0KPiB0aGUgY29kZS4N
+Cj4NCg0Kc3RhcnQgaXMgYWRqdXN0ZWQgaGlnaGVyIHVwIGluIHRoZSBsb29wOg0KDQogICAgICAg
+ICAgICAgICAgICAgICAgICAgaWYgKHN0YXJ0ICsgdG90YWxfaW4gPCBlbmQpIHsNCiAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgIHN0YXJ0ICs9IHRvdGFsX2luOw0KICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgcGFnZXMgPSBOVUxMOw0KICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgY29uZF9yZXNjaGVkKCk7DQogICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBnb3RvIGFnYWluOw0KICAgICAgICAgICAgICAgICAgICAgICAgIH0NCg0KU28gd2UgbWln
+aHQgZ2V0IHRvIHRoZSBfX3NldF9wYWdlX2RpcnR5X25vYnVmZmVycygpIHRlc3Qgd2l0aCBhIHJh
+bmdlIA0KdGhhdCBubyBsb25nZXIgY29ycmVzcG9uZHMgdG8gdGhlIGxvY2tlZCBwYWdlLg0KDQot
+Y2hyaXMNCg==
