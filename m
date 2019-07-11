@@ -2,206 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A024665299
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2019 09:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5282C655B7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Jul 2019 13:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728200AbfGKHoG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 11 Jul 2019 03:44:06 -0400
-Received: from mout.gmx.net ([212.227.15.19]:34179 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726088AbfGKHoG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 11 Jul 2019 03:44:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1562831043;
-        bh=FxFuEHbYPh33vwDHOWA8uqrYr2x4zR2mEgOdMdJD+sM=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=lpOo/rmF2TnFVRD4EZkKiaFpboYz6pzfPjH1WEvbcTJiZevTyMzTCrXqwR/933djL
-         BOHikRDgVDeEG1QD5sb/c6y30cwpddWCd9OgogO/1yqR8Fa9P1DJXNXvoJPOMR9Odr
-         /FERluKCzkErOawmPRwnAOF9CnirAW9HQ5c0Xj0M=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MOiHl-1i8FX51fmZ-00QA6V; Thu, 11
- Jul 2019 09:44:03 +0200
-Subject: Re: Btrfs Bug Report
-To:     Jungyeon Yoon <jungyeon.yoon@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CANocb6dCc23jUTeHu9+YC5KK9X+ARNuL8aHm0PBT=UkKKXtrFw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+        id S1728349AbfGKLcZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 11 Jul 2019 07:32:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36208 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728248AbfGKLcY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 11 Jul 2019 07:32:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id D7DA1B126;
+        Thu, 11 Jul 2019 11:32:22 +0000 (UTC)
+Subject: Re: [PATCH 1/5] Btrfs: stop using btrfs_schedule_bio()
+To:     Tejun Heo <tj@kernel.org>, clm@fb.com,
+        David Sterba <dsterba@suse.com>, josef@toxicpanda.com
+Cc:     kernel-team@fb.com, axboe@kernel.dk, jack@suse.cz,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20190710192818.1069475-1-tj@kernel.org>
+ <20190710192818.1069475-2-tj@kernel.org>
+From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <b10a34bc-8d6b-e3cb-76d4-4398b4926a22@gmx.com>
-Date:   Thu, 11 Jul 2019 15:43:56 +0800
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4b4664f4-2f49-bc4b-bc29-be10fb19a3a2@suse.com>
+Date:   Thu, 11 Jul 2019 14:32:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CANocb6dCc23jUTeHu9+YC5KK9X+ARNuL8aHm0PBT=UkKKXtrFw@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="NjcNQqHIhqZL35DPALDxydZDzIe5wWkGu"
-X-Provags-ID: V03:K1:Wuz8LGFnlPCQ6lGHJQ1k/XHw/BvLmYM9l2hUhfw/eHltq8WH3CI
- dkWTVYxA63L2rigNbeXwgXGhc0SBxRW3SNEYJVyRxMnFbF5Fsig6P5bx6QwrPoaHfhJ1SBg
- egbFgpEc99DS4INaaHVLYMBtBkJwwj75ErGNHgFaogqbDBiXKnzcLXhV3kTk53pep0PvXg0
- 315366HZc1wCkdNPSbjwQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:n/rQEGMMMxI=:URxYt+yBF5EGWG3wmyeu8H
- RuBwdv87bAO2DF/nGw+TirsqVAfwNg+LpNnZe4AVQgH3NGdSPtlrr+a4sfkT8kIExRew2LBGj
- iOIjie20s5dPirVqQxJeBuGyraIJKGeoNieh+b2sIOG2i8bqckI0/rKQYSR5XckdoXqBMrgtp
- +AA0kDTNh1iH0CscfdimREmoJgiGTpA8nMcEr/rwOO/yWeTYGs6HKLtPd1HKUTxBbGlrUwKIH
- ymo975msKpvc7+M0/AyhWMmOf7O79LbTWCNxyfAo2YRXFNYSThqJMRZou4+/xGwXSt3UuqDUp
- Xn07jw/CZwpzxFpmLmzrQCks0w6W0RRhE8mI2pg7gw/DD8zR4kIw9JE6amXuVRfK3Y73h/YrM
- a9SdoRTTHgZqcXvTMgfvvwYXTcTahQeqcf7jIR5X2gGO3zkYqyzP7nRGZfy8f/DVC0QF1+uz8
- Sl/ZvcdKmB6LjO7TbbMeuKjqIvsbuIdsrc+lRm8zsEUWmaau3VpyfXZ31DbnDnSKdptjXDmkw
- t0V9nEamTareSNZC+YGxMEaK1PPE7+MX4lgxIQx7v1YJLel5UFpiiQ9Kxv5wp1fq4IizRS6RA
- yrZK5xc50ASJvULZeucc4XqKRja9K5RwhhSGUlVVtb7mUIXZogwpQ0bSfXMGf7J5IID1s0XUC
- 7cLp5cCxWIKU5zIjfoXA30YyfB3GQP/+LILIk9oiAgXLG+CBRD5KrqXFCjUJ8T9z1+STwT9PY
- 1NXDaBZIWEwv2TBKGqsSV4FZojCZ4+zhfsLFbVrgWz3NxwNAjYf7vRVw8flyMivqCeHOUncHN
- ZhqX+fClEALPhAoGtqSkKkGWC4MlqPewoMoh7o8RbF3BX0c/1vo10D4Xr0jRuNQuW4W4bUZqm
- 0KYqORlIYxUnXw3Py3Vk1XlG+Fo9QR0bkn6aAE5D8InaBccdnanMAMr35jlx2dSCPqyq6Squp
- pS8kre9wIbOYzRdoMKn40452/RBYAGrdOkHcm0p00Zytfl39f0Xg0fu3UMf2J94dGytdQzTdd
- /fH4yzH+HLiFHtixtlqwwwaXgop3Vu2Bs2vOQMqS2Y0MeMhtgPL3jU5PNqDI0Pqj277PK6pt1
- GeGj8LTSxRwDEQ=
+In-Reply-To: <20190710192818.1069475-2-tj@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---NjcNQqHIhqZL35DPALDxydZDzIe5wWkGu
-Content-Type: multipart/mixed; boundary="2vENNjA9pQ5PmE8aBsh677exx97hzi5O9";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Jungyeon Yoon <jungyeon.yoon@gmail.com>, linux-btrfs@vger.kernel.org
-Message-ID: <b10a34bc-8d6b-e3cb-76d4-4398b4926a22@gmx.com>
-Subject: Re: Btrfs Bug Report
-References: <CANocb6dCc23jUTeHu9+YC5KK9X+ARNuL8aHm0PBT=UkKKXtrFw@mail.gmail.com>
-In-Reply-To: <CANocb6dCc23jUTeHu9+YC5KK9X+ARNuL8aHm0PBT=UkKKXtrFw@mail.gmail.com>
-
---2vENNjA9pQ5PmE8aBsh677exx97hzi5O9
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 10.07.19 г. 22:28 ч., Tejun Heo wrote:
+> From: Chris Mason <clm@fb.com>
+> 
+> btrfs_schedule_bio() hands IO off to a helper thread to do the actual
+> submit_bio() call.  This has been used to make sure async crc and
+> compression helpers don't get stuck on IO submission.  To maintain good
+> performance, over time the IO submission threads duplicated some IO
+> scheduler characteristics such as high and low priority IOs and they
+> also made some ugly assumptions about request allocation batch sizes.
+> 
+> All of this cost at least one extra context switch during IO submission,
+> and doesn't fit well with the modern blkmq IO stack.  So, this commit stops
+> using btrfs_schedule_bio().  We may need to adjust the number of async
+> helper threads for crcs and compression, but long term it's a better
+> path.
+> 
+> Signed-off-by: Chris Mason <clm@fb.com>
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-On 2019/7/9 =E4=B8=8A=E5=8D=888:49, Jungyeon Yoon wrote:
-> Hi btrfs developers,
->=20
-> I'm Jungyeon Yoon. I have reported btrfs bug before.
-> Some of them have marked to fixed thanks to your efforts.
-> Additionally following bugs seems also fixed as I've checked.
-> If okay, I would like to close following bugs, too.
->=20
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202839
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202751
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202753
->=20
->=20
-> In addition to those bugs,
-> I would like for following 16 reports to be checked.
-> Most of following 9 cases end up reporting kernel panic or kernel BUG m=
-essages.
->=20
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202817
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202819
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202821
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202823
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202825
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202827
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202829
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202831
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202833
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D202837
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-Have addressed all above cases with the new patchset titled "[PATCH 0/5]
-btrfs: Enhanced runtime defence against fuzzed images".
-Although more than half of the reports are already fixed in v5.2.
+<snip>
 
-
-Just one recommendation for later reports.
-
-Please, please don't use DUP metadata/data profile. Use SINGLE instead.
-It will make our life MUCH MUCH MUCH easier.
-
-The problem here is, btrfs-progs' check on tree block is not as strict
-as kernel, since btrfs-progs needs to repair them, rejecting just like
-kernel is not acceptable.
-
-This leads to one problem, btrfs dump-tree can sometimes uses the
-incorrect mirror while kernel uses the other mirror (correct one),
-causing unexpected result for manual analyze.
-
-This makes manual analyze more time consuming, normally I need to either
-mount the fs and trigger all read on all tree blocks and let kernel to
-fix the incorrect mirror and hopes no other modification is done to the f=
-s.
-
-Or for the worst case, I need to manually corruption certain mirrors to
-force btrfs-progs to use the other mirror.
-
-If you could change the metadata profile to SINGLE, it would save us a
-lot of time.
-
-Thanks,
-Qu
-
->=20
->=20
-> Following 7 cases run into assertion with btrfs check integrity options=
- on.
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D203279
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D203253
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D203255
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D203257
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D203259
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D203261
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D203251
->=20
->=20
-> Thank you,
-> Jungyeon
->=20
-
-
---2vENNjA9pQ5PmE8aBsh677exx97hzi5O9--
-
---NjcNQqHIhqZL35DPALDxydZDzIe5wWkGu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0m6LwACgkQwj2R86El
-/qhgCgf8D2Mt0fSJ/Qc+GsdrxAVstlCjxg3Sgxk//9m7qg6O+PjWososJmpKB79k
-X7gEsjS5N5ua/sEINaSpQJj2ZE7ldWEqAB6G7L8gB8Q85jXsTU7libwih+3/3P+E
-RzZVUsKRmyxhZ87QKNJLWuxhKspd4pMuGRAuqGTOaXYP0xC+Zg6pmb6R5ELyo/1D
-21Dh1dU6X0mjhRpYsi9JzBEdqz6QwvbULDtZILa+wulEfxIi53bskp0sMzgunxQO
-uSEmgzXuJ+vKzZOwUrZWjK0dnZ7vX+SeQaBgmaJpuv//K/RsXBZq7EqG1dHo6mAv
-llduJ003hYV6jRrVotVxVYxBT2QHzA==
-=lAjS
------END PGP SIGNATURE-----
-
---NjcNQqHIhqZL35DPALDxydZDzIe5wWkGu--
