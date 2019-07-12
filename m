@@ -2,191 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB65C66CAD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2019 14:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F50E66F20
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2019 14:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727276AbfGLMWL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Jul 2019 08:22:11 -0400
-Received: from mout.gmx.net ([212.227.15.18]:43139 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727647AbfGLMVp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Jul 2019 08:21:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1562934103;
-        bh=BlbCCiNHLxKZYR91d7ntMbu0oMcKzXhBJVHigqvCzg0=;
-        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
-        b=ce8aw9RnveLQmsM0eexd2ic9ttQaHUSFCUIvES1Q2vBNHGrivtskxZ//TpTc1TxZB
-         hRzWoEl+I3f4/181Zmc8YHWyFuLa1t928Lc90oZNmRCrdBrhVNkzXnb/n24zuY5oOc
-         cwVKf2I9SI1++vvbsbkRZfnqln9q0bzyd+B7Hn4k=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx001
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0LoEwL-1iNh9D2ZGz-00gKLH; Fri, 12
- Jul 2019 14:21:43 +0200
-Subject: Re: [BUG] Kernel 5.2: mount fails with can't read superblock on
- /dev/sdb1 (kernel 5.1.16 and 4.19 is fine)
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     mangoblues@gmail.com, linux-btrfs@vger.kernel.org
-References: <CABDitb8iKge1Ut41qxQSG2ep1ozp2Veieha072eANqn_L_LCNw@mail.gmail.com>
- <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <6ffb9d7d-21b7-f938-c638-212058316223@gmx.com>
-Date:   Fri, 12 Jul 2019 20:21:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1727109AbfGLMre (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Jul 2019 08:47:34 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55982 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726449AbfGLMre (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 12 Jul 2019 08:47:34 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6CCdSqh037133;
+        Fri, 12 Jul 2019 12:47:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : cc : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=HJ3wmZz0JqyJJXoIpTglzZn4+bsFbHFgaGLJzVzhxCc=;
+ b=n3UzgFmqZruRK/Pbt0S1wGlnaXqz7pReOJYzT/z5k8FWEAK6R1XeG0okaw3c/zHGwUEz
+ OEhgHPlTuu8Uz15RLhAs+xqAiOEDxmzMiLypRupUOqwjD2BufcEG+hxREI5s3dkMELxY
+ oxyEje3P4SmVmgfCoZA7FXTr2r3P5LxBottP40g6+VgQRBprUCNop/bFuiZ1adTviA9d
+ mk+ZZwuJnADG+CJzQUQd2UUvgEpTh1BJLyZCaMkn/rBnH/ayq2i2JYNjP0y1AlXnzYQV
+ QWQKdc1jMYhfLBBmZ+d+v9SLXpmbauItYJ+mKk+oxudqzMw0/RqDjBzpg0EIoMdgJWOS UQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2tjm9r5dh3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Jul 2019 12:47:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6CCgsSr181431;
+        Fri, 12 Jul 2019 12:47:14 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2tpefd2urw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 12 Jul 2019 12:47:14 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6CClAww007910;
+        Fri, 12 Jul 2019 12:47:11 GMT
+Received: from [192.168.1.119] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 12 Jul 2019 05:47:10 -0700
+Subject: Re: "btrfs: harden agaist duplicate fsid" spams syslog
+To:     Graham Cobb <g.btrfs@cobb.uk.net>, linux-btrfs@vger.kernel.org
+References: <5d8baf80-4fb3-221f-5ab4-e98a838f63e1@cobb.uk.net>
+ <c01ab9f6-c553-3625-5656-a8f61659de7d@oracle.com>
+ <a3d6e202-acf4-c02e-430a-aef4a2ee4247@cobb.uk.net>
+From:   Anand Jain <anand.jain@oracle.com>
+Cc:     calestyo@scientia.net
+Message-ID: <7766d592-525e-67fa-5db0-bcfff17fbf83@oracle.com>
+Date:   Fri, 12 Jul 2019 20:46:59 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="9QeQYjdHYPxhFM12h3givxYI9mlSNIcus"
-X-Provags-ID: V03:K1:R5UxCFLmD+3S7PHnt1FRqGPmEBGU8oyqT4LfBOgUOsgkKVRLQWc
- f4p4rG+DWDpfhzv13+TcQdZhPymrSx2qWpAXeYyfF57RdlEgx6gcYv+n1XqqFpU+uAJAr/r
- 3uwc3cy8j1MO+fVU8hmfwjXO0Je1SxLNPIehYkvKpGXN6UXQC5M4G6LtF3s5odNrPrISDSi
- HWt9ZUwz6KbipNGQEnS8Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ezmDeEn8jck=:b2M7J3K3TKDEmPGxkLDaif
- 7X1iKAo5cZz1KE+UZo0Iloa4QnK2jw4F93JDuJfxfV3afPXdLXeRmlamed1PpGlwkJACOKG0r
- kF9z0ElFAiBNRXdS6h9z6HvLMC2eNl0tjTjmZRKB4kPZgBZU//7WfmsZ89HE3eLLatk0KXJ2X
- ciEcTqWnkzP73fMvkOg9OX+MRD4dxPykBLXgDPc9CB08jooWilY+mJnVuFONL0BQzq/8WPK37
- laAHbhRVPhdIsSZjrwYwM9UfEJr2t7u0fSyd6epvMNG0F4ea+PrP7NonKte37oHSN7v/qGb04
- 8gdtTeAPPggEWdY0y2tC+LEbf1kh4mSPoAUwa/jLCLyUbYTtMzvQ8LHFPduAaHMaoBKXE2ru/
- 8R9pYYe2OAZpVR6eypxsUKlA5BAproE/2/3mEXO4sYB+fX16/+PtUs2isCBy32D6K3k8Hp8Lx
- bgepuhtjQc2ndWqoSKUBxDsfS9vrQjuUIlxjCrAe4LN6q9sTuhwqYu+CpPjxydK2vSMetZCQa
- 7woetug15ffwf3paVFGDU69gIEOxGuJYi8Npc0MAqQ/dQcK6AbxHhmYpr/wMSj7f+QoUt0jmu
- WIJ3Y+Vs8ZBVtPr5iABerUyrsQwXyWABytGiX580g3OpA+grRjRngps30p5/PPYTsfribQ0+u
- KdSAJmkovUO5KH+qz8oMreCc6a3uw89xT86ZtxSbZbY4GyQPyRSzvd4QHYB2ESPPHIoRIFhN0
- 0yE/43Jmjk8QAanez9flYWprhr3rYgWDcaKvuVIhhe96BN9bWmYejP6vCrz9B7TAzcJ5OQejA
- djYxyOUQddC/nxbDxpNZ0tCv/oR4x5ujrWQ0Xo7VYYGrumUrKnbEDKv2PQF2896w6WAgftVgv
- MthrTGnZZDYO71xIjlut4rFw3Zlcu2cpIUdHHcDPiRaNV6ngBCTRZN7Rskmf2RyyyKEcIym1E
- si6bXWvZRq4d6R1xbtJaWqzlsxjppEsZuxZWX/8851Tlr0kPzWb2zZ6RMcNner5fh8MoLSk3H
- /cMc+ahTgR65V7jrf17MUULKZXuSp5SztHk+yNPzK/seVC/xoCXOh6PSSMwCutqjiur2pQrHV
- CHanmh0CrToRJU=
+In-Reply-To: <a3d6e202-acf4-c02e-430a-aef4a2ee4247@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9315 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1907120138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9315 signatures=668688
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1907120138
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9QeQYjdHYPxhFM12h3givxYI9mlSNIcus
-Content-Type: multipart/mixed; boundary="xGWolblj3L29DpAeqjldOchwXU2mOv9dS";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: mangoblues@gmail.com, linux-btrfs@vger.kernel.org
-Message-ID: <6ffb9d7d-21b7-f938-c638-212058316223@gmx.com>
-Subject: Re: [BUG] Kernel 5.2: mount fails with can't read superblock on
- /dev/sdb1 (kernel 5.1.16 and 4.19 is fine)
-References: <CABDitb8iKge1Ut41qxQSG2ep1ozp2Veieha072eANqn_L_LCNw@mail.gmail.com>
- <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
-In-Reply-To: <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
-
---xGWolblj3L29DpAeqjldOchwXU2mOv9dS
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+I am unable to reproduce, I have tried with/without dm-crypt on both
+oraclelinux and opensuse (I am yet to try debian).
 
-On 2019/7/12 =E4=B8=8B=E5=8D=888:18, Qu Wenruo wrote:
->=20
->=20
-> On 2019/7/12 =E4=B8=8B=E5=8D=887:05, mangoblues@gmail.com wrote:
->> Hi,
->>
->> After updating to kernel 5.2 (archlinux):  2 out of my 7 btrfs drives
->> fail to mount on boot.
->>
->> Error: can't read superblock on /dev/sdb1 and /dev/sdc1.
->=20
-> Pull dmesg output please.
+The patch in $subject is fair, but changing device path indicates
+there is some problem in the system. However, I didn't expect
+same device pointed by both /dev/dm-x and /dev/mapper/abc would
+contended.
 
-s/Pull/Full/
+One fix for this is to make it a ratelimit print. But then the same
+thing happens without notice. If you monitor /proc/self/mounts
+probably you will notice that mount device changes every ~2mins.
 
->=20
-> Thanks,
-> Qu
->=20
->>
->> Going back to kernel 5.1.16 (and 4.19 also) fixes the problem. Btrfsck=
+I will be more keen to find the module which is causing this issue,
+that is calling 'btrfs dev scan' every ~2mins or trying to mount
+an unmounted device without understanding that its mapper is already
+mounted.
 
->> reports the 2 drives are OK.
->>
->> What can I do to fix this ?
->>
->> Thanks.
->>
->> $ btrfs fi show
->>
->> Label: 'disk3'  uuid: 37d68257-a2bf-44e4-82e6-7bda35d3af3c
->>         Total devices 1 FS bytes used 1.77TiB
->>         devid    1 size 1.82TiB used 1.82TiB path /dev/sdb1
->>
->> Label: 'disk4'  uuid: 8b72d7bd-603c-41c0-a395-a763ffe0de8b
->>         Total devices 1 FS bytes used 2.67TiB
->>         devid    1 size 2.73TiB used 2.73TiB path /dev/sdc1
->>
->> Label: 'disk5'  uuid: 1728d60b-bdf2-4baa-8372-de7014d85e1d
->>         Total devices 1 FS bytes used 3.59TiB
->>         devid    1 size 3.64TiB used 3.64TiB path /dev/sdg1
->>
->> Label: 'disk7'  uuid: 5e9437b5-bf53-4135-8b25-52539cfc491e
->>         Total devices 1 FS bytes used 6.66TiB
->>         devid    1 size 7.28TiB used 7.23TiB path /dev/sde1
->>
->> Label: 'disk6'  uuid: ce325155-0922-4c62-9f5d-70cbc1726b5c
->>         Total devices 1 FS bytes used 3.47TiB
->>         devid    1 size 3.64TiB used 3.63TiB path /dev/sdd1
->>
->> Label: 'disk1'  uuid: b9c65214-b1dc-4a97-b798-dc9639177880
->>         Total devices 1 FS bytes used 3.31TiB
->>         devid    1 size 3.64TiB used 3.62TiB path /dev/sdh1
->>
->> Label: 'disk2'  uuid: d77e4116-de32-4ff4-938c-9c6eea6cdd42
->>         Total devices 1 FS bytes used 6.83TiB
->>         devid    1 size 7.28TiB used 7.26TiB path /dev/sdf1
->>
->=20
+Thanks, Anand
 
 
---xGWolblj3L29DpAeqjldOchwXU2mOv9dS--
 
---9QeQYjdHYPxhFM12h3givxYI9mlSNIcus
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+On 12/7/19 2:00 AM, Graham Cobb wrote:
+> On 11/07/2019 03:46, Anand Jain wrote:
+>> Now the question I am trying to understand, why same device is being
+>> scanned every 2 mins, even though its already mount-ed. I am guessing
+>> its toggling the same device paths trying to mount the device-path
+>> which is not mounted. So autofs's check for the device mount seems to
+>> be path based.
+>>
+>> Would you please provide your LVM configs and I believe you are using
+>> dm-mapping too. What are the device paths used in the fstab and in grub.
+>> And do you see these messages for all devices of
+>> 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 or just devid 4? Would you please
+>> provide more logs at least a complete cycle of the repeating logs.
+> 
+> My setup is quite complex, with three btrfs-over-LVM-over-LUKS
+> filesystems, so I will explain it fully in a separate message in case it
+> is important. Let me first answer your questions regarding
+> 4d1ba5af-8b89-4cb5-96c6-55d1f028a202, which was the example I used in my
+> initial log extract.
+> 
+> 4d1b...a202 is a filesystem with a main mount point of /mnt/backup2/:
+> 
+> black:~# btrfs fi show /mnt/backup2/
+> Label: 'snap12tb'  uuid: 4d1ba5af-8b89-4cb5-96c6-55d1f028a202
+>          Total devices 2 FS bytes used 10.97TiB
+>          devid    1 size 10.82TiB used 10.82TiB path /dev/sdc3
+>          devid    4 size 3.62TiB used 199.00GiB path
+> /dev/mapper/cryptdata4tb--vg-backup
+> 
+> In this particular filesystem, it has two devices: one is a real disk
+> partition (/dev/sdc3), the other is an LVM logical volume. It has also
+> had other LVM devices added and removed at various times, but this is
+> the current setup.
+> 
+> Note: when I added this LV, I used path /dev/mapper/cryptdata4tb--vg-backup.
+> 
+> black:~# lvdisplay /dev/cryptdata4tb-vg/backup
+>    --- Logical volume ---
+>    LV Path                /dev/cryptdata4tb-vg/backup
+>    LV Name                backup
+>    VG Name                cryptdata4tb-vg
+>    LV UUID                TZaWfo-goG1-GsNV-GCZL-rpbz-IW0H-gNmXBf
+>    LV Write Access        read/write
+>    LV Creation host, time black, 2019-07-10 10:40:28 +0100
+>    LV Status              available
+>    # open                 1
+>    LV Size                3.62 TiB
+>    Current LE             949089
+>    Segments               1
+>    Allocation             inherit
+>    Read ahead sectors     auto
+>    - currently set to     256
+>    Block device           254:13
+> 
+> The LVM logical volume is exposed as /dev/mapper/cryptdata4tb--vg-backup
+> which is a symlink (set up by LVM, I believe) to /dev/dm-13.
+> 
+> For the 4d1b...a202 filesystem I currently only see the messages for
+> devid 4. But I presume that is because devid 1 is a real device, which
+> only appears in /dev once. I did, for a while, have two LV devices in
+> this filesystem and, looking at the old logs, I can see that every 2
+> minutes the swapping between /dev/mapper/whatever and /dev/dm-N was
+> happening for both LV devids (but not for the physical device devid)
+> 
+> This particular device is not a root device and I do not believe it is
+> referenced in grub or initramfs. It is mounted in /etc/fstab/:
+> 
+> LABEL=snap12tb  /mnt/backup2    btrfs
+> defaults,subvolid=0,noatime,nodiratime,compress=lzo,skip_balance,space_cache=v2
+>         0       3
+> 
+> Note that /dev/disk/by-label/snap12tb is a symlink to the dm-N alias of
+> the LV device (set up by LVM or udev or something - not by me):
+> 
+> black:~# ls -l /dev/disk/by-label/snap12tb
+> lrwxrwxrwx 1 root root 11 Jul 11 18:18 /dev/disk/by-label/snap12tb ->
+> .../../dm-13
+> 
+> Here is a log extract of the cycling messages for the 4d1b...a202
+> filesystem:
+> 
+> Jul 11 18:46:28 black kernel: [116657.825658] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+> Jul 11 18:46:28 black kernel: [116658.048042] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+> Jul 11 18:46:29 black kernel: [116659.157392] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+> Jul 11 18:46:29 black kernel: [116659.337504] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+> Jul 11 18:48:28 black kernel: [116777.727262] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+> Jul 11 18:48:28 black kernel: [116778.019874] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+> Jul 11 18:48:29 black kernel: [116779.157038] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+> Jul 11 18:48:30 black kernel: [116779.364959] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+> Jul 11 18:50:28 black kernel: [116897.705568] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+> Jul 11 18:50:28 black kernel: [116897.911805] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+> Jul 11 18:50:29 black kernel: [116899.053046] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
+> Jul 11 18:50:29 black kernel: [116899.213067] BTRFS info (device sdc3):
+> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
+> old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
+> 
+> 
+> I will, later, provide more detailed configuration information,
+> including the other filesystems and more logs. As that will be very long
+> I plan to send it directly to you, Anand, rather than to the list.
+> 
+> Graham
+> 
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0oe1IACgkQwj2R86El
-/qgN0wf/W4S86zsMbuLIaKNU5yq1B7axqxSn3NljIDQ4U7oUEyShtSEtqIrk/pkh
-Uz5HBSSMT0bC7HXX9WQmx1n9gUZQtigfOEKyPDGyN3ewzLyvO9LUFkj5Ix8XVZQP
-ExL4iUiruh1DfMlkXkFHPXEbDTwJmyCOwezs3rKzpoUP3FE/AlcBlDtIJGk+CYUz
-RMOmQhCFICgE5hj0A5ubCG2ynbII3libqFvMnUn+U7UeleuY9uArH2JxI7xh+dxo
-W0l5eTv4lenteH9bfcV94y/IYhR1sB7mwEjwgq/WeOEDJAl8OXF029dOUHDn8V9V
-8JXduoYlMonOLRigtg8zPKBcLnORKg==
-=GK3h
------END PGP SIGNATURE-----
-
---9QeQYjdHYPxhFM12h3givxYI9mlSNIcus--
