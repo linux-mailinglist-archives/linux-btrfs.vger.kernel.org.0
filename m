@@ -2,31 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F1B266C61
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2019 14:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB65C66CAD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Jul 2019 14:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbfGLMSZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 12 Jul 2019 08:18:25 -0400
-Received: from mout.gmx.net ([212.227.17.20]:41959 "EHLO mout.gmx.net"
+        id S1727276AbfGLMWL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 12 Jul 2019 08:22:11 -0400
+Received: from mout.gmx.net ([212.227.15.18]:43139 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726155AbfGLMSZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 12 Jul 2019 08:18:25 -0400
+        id S1727647AbfGLMVp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 12 Jul 2019 08:21:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1562933903;
-        bh=s3cWBnnq5rMzSTv07jM1RKZVkg34fp62KGOBCOH0iRI=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=X3rwJz5FdtjnkMiE1bsqATjysUrHXuX2hVh/cJr9aF4WNZSrxRzzvGLKP9k5rp0fI
-         XRBwYUHjW1fNr7X1s3XifGudaCmi7YSVqIZuJNNjRyYtjImrwlwe4X1vE1E0VQm8hV
-         aPUUD1XShF2hAHsNaHKHLhmDdjXyAzwB0ROjpQRo=
+        s=badeba3b8450; t=1562934103;
+        bh=BlbCCiNHLxKZYR91d7ntMbu0oMcKzXhBJVHigqvCzg0=;
+        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
+        b=ce8aw9RnveLQmsM0eexd2ic9ttQaHUSFCUIvES1Q2vBNHGrivtskxZ//TpTc1TxZB
+         hRzWoEl+I3f4/181Zmc8YHWyFuLa1t928Lc90oZNmRCrdBrhVNkzXnb/n24zuY5oOc
+         cwVKf2I9SI1++vvbsbkRZfnqln9q0bzyd+B7Hn4k=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MXp5Q-1hxsxO2D5Y-00YB1x; Fri, 12
- Jul 2019 14:18:23 +0200
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx001
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0LoEwL-1iNh9D2ZGz-00gKLH; Fri, 12
+ Jul 2019 14:21:43 +0200
 Subject: Re: [BUG] Kernel 5.2: mount fails with can't read superblock on
  /dev/sdb1 (kernel 5.1.16 and 4.19 is fine)
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 To:     mangoblues@gmail.com, linux-btrfs@vger.kernel.org
 References: <CABDitb8iKge1Ut41qxQSG2ep1ozp2Veieha072eANqn_L_LCNw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+ <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,131 +53,140 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
-Date:   Fri, 12 Jul 2019 20:18:17 +0800
+Message-ID: <6ffb9d7d-21b7-f938-c638-212058316223@gmx.com>
+Date:   Fri, 12 Jul 2019 20:21:38 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <CABDitb8iKge1Ut41qxQSG2ep1ozp2Veieha072eANqn_L_LCNw@mail.gmail.com>
+In-Reply-To: <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="rMVIOjWIznr4FNxxRkRL5LWyWcjEVKSq5"
-X-Provags-ID: V03:K1:7SyMGScac7+/mx3HHrv/xO/sqQaEY3aRJPDomHxVfHCCOf2bEFR
- cTv/+lRLP/yYJ3CgtnHRbUW6uWnypwhCeBMK8Wn7JEnNJPdvREvx39paUY4zheOx5WyvpSc
- xEu9qf3I2CjK/yy93u4SwaGJktDR9Bh90mCdEnlGP5sDSX08+MOLe78bqGg1WvZAN8Aq9D/
- C0rv++j1algdMX75ouR2w==
+ boundary="9QeQYjdHYPxhFM12h3givxYI9mlSNIcus"
+X-Provags-ID: V03:K1:R5UxCFLmD+3S7PHnt1FRqGPmEBGU8oyqT4LfBOgUOsgkKVRLQWc
+ f4p4rG+DWDpfhzv13+TcQdZhPymrSx2qWpAXeYyfF57RdlEgx6gcYv+n1XqqFpU+uAJAr/r
+ 3uwc3cy8j1MO+fVU8hmfwjXO0Je1SxLNPIehYkvKpGXN6UXQC5M4G6LtF3s5odNrPrISDSi
+ HWt9ZUwz6KbipNGQEnS8Q==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:9y6r+s+bIQw=:Hy7WVQiH184WWsaKQOnEot
- 2bM55vqeTCX6I8+YEk8ABEMFFE0F7hzg3631Sc32Phw8wBAv2hEpLu/u/aGvCfv1Ywrai5uDe
- Xkc1Q7vH1bjy/IxKFhxW+UCvQoaG7/YmDZtxzLPbMWIfC479t/jaoVZe09fx2rPUxJ4vJUwcl
- +9Dcs/xE+yc0edlnkO4vYrj+hPt9nnYquoc4+z53YGQiaqA9z3vIhmvfuCBIIV1cB0C9QGOUQ
- 90olN5LPMyhzG57JeYXdXugRq9DqzGwD565uxfLZ4XQ+GyM+L81q8WgqEBx8KAl/ACpZ22h0Q
- 2cYT8a4A+zsfGshf/YKMsV15Cy2jqHWF9p/+Whv1YFy5yUFXBY/PK25JqHyxTFHwUXNZ9Wz2M
- N2QRFRWZrGIoir3LzQtFvwbUTBjeYAkuZmHN8eLhuhcHIUiNaQSk38+jPXDLu9G9Tc5sMQawe
- 6wCWY6tf/jRBXtxISJDqchmMWzPdhvT6SigzirhTdcDmUpm5BKq+z+Nv25vGUGrBbosyjJp+b
- RIjTdW6WhKZs+l4++LEeSXVrezZy5DKAuFI/iXqKc/Ksd7u+FE5YS3Ye4th1hufPcWmQRSCXq
- CCpogG74pn3lFK3ZayZDZcnofuK1gT2jyV3ERxi0Vhv1aXclT5l19uHc/Y4/mTZX/5ilRwVwS
- GcvVmNTYWdMy36cec+VTPGhzZpUSOGBX83A+ch005VdhnD5z0yIyClCfVWHiZa1ICj5eMzT9C
- b25kzwztUcKsdtpMiuNTBria9nnI9ZBcRK2b1M8G1NyTekZYAm2iMgxJn8Ytys90lsHxxGQwC
- jD3kjBfnsQCaOe3+NkVct/2RL2HR5IAWa3vUdC/TI5TLzfQHpUrmMNYa/QxxR8v4KzHhP4Arl
- bpZB9FuibR823bL4SsLwwjjp1f8FWQI9AGVv4XvUkFyZslDzDl3Zn+83sakr9i8CKMS4gZsU3
- NF7y6cv8sYaL3rVKwib6Un3qspypyMQ9gCN6NUFTa7jXhPU9CZsiSiaIAloBlMDeyFTv/+1tX
- nA88Obtpux7cF9b11+PRz1FnI/cB5OnwPPucKP0l9tuDJXBkj1H9bXvNMiWV+evNPy4VTvrH7
- miTFMA4ek16Pxw=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:ezmDeEn8jck=:b2M7J3K3TKDEmPGxkLDaif
+ 7X1iKAo5cZz1KE+UZo0Iloa4QnK2jw4F93JDuJfxfV3afPXdLXeRmlamed1PpGlwkJACOKG0r
+ kF9z0ElFAiBNRXdS6h9z6HvLMC2eNl0tjTjmZRKB4kPZgBZU//7WfmsZ89HE3eLLatk0KXJ2X
+ ciEcTqWnkzP73fMvkOg9OX+MRD4dxPykBLXgDPc9CB08jooWilY+mJnVuFONL0BQzq/8WPK37
+ laAHbhRVPhdIsSZjrwYwM9UfEJr2t7u0fSyd6epvMNG0F4ea+PrP7NonKte37oHSN7v/qGb04
+ 8gdtTeAPPggEWdY0y2tC+LEbf1kh4mSPoAUwa/jLCLyUbYTtMzvQ8LHFPduAaHMaoBKXE2ru/
+ 8R9pYYe2OAZpVR6eypxsUKlA5BAproE/2/3mEXO4sYB+fX16/+PtUs2isCBy32D6K3k8Hp8Lx
+ bgepuhtjQc2ndWqoSKUBxDsfS9vrQjuUIlxjCrAe4LN6q9sTuhwqYu+CpPjxydK2vSMetZCQa
+ 7woetug15ffwf3paVFGDU69gIEOxGuJYi8Npc0MAqQ/dQcK6AbxHhmYpr/wMSj7f+QoUt0jmu
+ WIJ3Y+Vs8ZBVtPr5iABerUyrsQwXyWABytGiX580g3OpA+grRjRngps30p5/PPYTsfribQ0+u
+ KdSAJmkovUO5KH+qz8oMreCc6a3uw89xT86ZtxSbZbY4GyQPyRSzvd4QHYB2ESPPHIoRIFhN0
+ 0yE/43Jmjk8QAanez9flYWprhr3rYgWDcaKvuVIhhe96BN9bWmYejP6vCrz9B7TAzcJ5OQejA
+ djYxyOUQddC/nxbDxpNZ0tCv/oR4x5ujrWQ0Xo7VYYGrumUrKnbEDKv2PQF2896w6WAgftVgv
+ MthrTGnZZDYO71xIjlut4rFw3Zlcu2cpIUdHHcDPiRaNV6ngBCTRZN7Rskmf2RyyyKEcIym1E
+ si6bXWvZRq4d6R1xbtJaWqzlsxjppEsZuxZWX/8851Tlr0kPzWb2zZ6RMcNner5fh8MoLSk3H
+ /cMc+ahTgR65V7jrf17MUULKZXuSp5SztHk+yNPzK/seVC/xoCXOh6PSSMwCutqjiur2pQrHV
+ CHanmh0CrToRJU=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---rMVIOjWIznr4FNxxRkRL5LWyWcjEVKSq5
-Content-Type: multipart/mixed; boundary="nfWN18QWs61oerD9wNbYNuDhd90958i9z";
+--9QeQYjdHYPxhFM12h3givxYI9mlSNIcus
+Content-Type: multipart/mixed; boundary="xGWolblj3L29DpAeqjldOchwXU2mOv9dS";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 To: mangoblues@gmail.com, linux-btrfs@vger.kernel.org
-Message-ID: <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
+Message-ID: <6ffb9d7d-21b7-f938-c638-212058316223@gmx.com>
 Subject: Re: [BUG] Kernel 5.2: mount fails with can't read superblock on
  /dev/sdb1 (kernel 5.1.16 and 4.19 is fine)
 References: <CABDitb8iKge1Ut41qxQSG2ep1ozp2Veieha072eANqn_L_LCNw@mail.gmail.com>
-In-Reply-To: <CABDitb8iKge1Ut41qxQSG2ep1ozp2Veieha072eANqn_L_LCNw@mail.gmail.com>
+ <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
+In-Reply-To: <c8ddfed7-bdae-4405-5bec-082b261e07cb@gmx.com>
 
---nfWN18QWs61oerD9wNbYNuDhd90958i9z
+--xGWolblj3L29DpAeqjldOchwXU2mOv9dS
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/7/12 =E4=B8=8B=E5=8D=887:05, mangoblues@gmail.com wrote:
-> Hi,
+On 2019/7/12 =E4=B8=8B=E5=8D=888:18, Qu Wenruo wrote:
 >=20
-> After updating to kernel 5.2 (archlinux):  2 out of my 7 btrfs drives
-> fail to mount on boot.
 >=20
-> Error: can't read superblock on /dev/sdb1 and /dev/sdc1.
+> On 2019/7/12 =E4=B8=8B=E5=8D=887:05, mangoblues@gmail.com wrote:
+>> Hi,
+>>
+>> After updating to kernel 5.2 (archlinux):  2 out of my 7 btrfs drives
+>> fail to mount on boot.
+>>
+>> Error: can't read superblock on /dev/sdb1 and /dev/sdc1.
+>=20
+> Pull dmesg output please.
 
-Pull dmesg output please.
-
-Thanks,
-Qu
+s/Pull/Full/
 
 >=20
-> Going back to kernel 5.1.16 (and 4.19 also) fixes the problem. Btrfsck
-> reports the 2 drives are OK.
+> Thanks,
+> Qu
 >=20
-> What can I do to fix this ?
->=20
-> Thanks.
->=20
-> $ btrfs fi show
->=20
-> Label: 'disk3'  uuid: 37d68257-a2bf-44e4-82e6-7bda35d3af3c
->         Total devices 1 FS bytes used 1.77TiB
->         devid    1 size 1.82TiB used 1.82TiB path /dev/sdb1
->=20
-> Label: 'disk4'  uuid: 8b72d7bd-603c-41c0-a395-a763ffe0de8b
->         Total devices 1 FS bytes used 2.67TiB
->         devid    1 size 2.73TiB used 2.73TiB path /dev/sdc1
->=20
-> Label: 'disk5'  uuid: 1728d60b-bdf2-4baa-8372-de7014d85e1d
->         Total devices 1 FS bytes used 3.59TiB
->         devid    1 size 3.64TiB used 3.64TiB path /dev/sdg1
->=20
-> Label: 'disk7'  uuid: 5e9437b5-bf53-4135-8b25-52539cfc491e
->         Total devices 1 FS bytes used 6.66TiB
->         devid    1 size 7.28TiB used 7.23TiB path /dev/sde1
->=20
-> Label: 'disk6'  uuid: ce325155-0922-4c62-9f5d-70cbc1726b5c
->         Total devices 1 FS bytes used 3.47TiB
->         devid    1 size 3.64TiB used 3.63TiB path /dev/sdd1
->=20
-> Label: 'disk1'  uuid: b9c65214-b1dc-4a97-b798-dc9639177880
->         Total devices 1 FS bytes used 3.31TiB
->         devid    1 size 3.64TiB used 3.62TiB path /dev/sdh1
->=20
-> Label: 'disk2'  uuid: d77e4116-de32-4ff4-938c-9c6eea6cdd42
->         Total devices 1 FS bytes used 6.83TiB
->         devid    1 size 7.28TiB used 7.26TiB path /dev/sdf1
+>>
+>> Going back to kernel 5.1.16 (and 4.19 also) fixes the problem. Btrfsck=
+
+>> reports the 2 drives are OK.
+>>
+>> What can I do to fix this ?
+>>
+>> Thanks.
+>>
+>> $ btrfs fi show
+>>
+>> Label: 'disk3'  uuid: 37d68257-a2bf-44e4-82e6-7bda35d3af3c
+>>         Total devices 1 FS bytes used 1.77TiB
+>>         devid    1 size 1.82TiB used 1.82TiB path /dev/sdb1
+>>
+>> Label: 'disk4'  uuid: 8b72d7bd-603c-41c0-a395-a763ffe0de8b
+>>         Total devices 1 FS bytes used 2.67TiB
+>>         devid    1 size 2.73TiB used 2.73TiB path /dev/sdc1
+>>
+>> Label: 'disk5'  uuid: 1728d60b-bdf2-4baa-8372-de7014d85e1d
+>>         Total devices 1 FS bytes used 3.59TiB
+>>         devid    1 size 3.64TiB used 3.64TiB path /dev/sdg1
+>>
+>> Label: 'disk7'  uuid: 5e9437b5-bf53-4135-8b25-52539cfc491e
+>>         Total devices 1 FS bytes used 6.66TiB
+>>         devid    1 size 7.28TiB used 7.23TiB path /dev/sde1
+>>
+>> Label: 'disk6'  uuid: ce325155-0922-4c62-9f5d-70cbc1726b5c
+>>         Total devices 1 FS bytes used 3.47TiB
+>>         devid    1 size 3.64TiB used 3.63TiB path /dev/sdd1
+>>
+>> Label: 'disk1'  uuid: b9c65214-b1dc-4a97-b798-dc9639177880
+>>         Total devices 1 FS bytes used 3.31TiB
+>>         devid    1 size 3.64TiB used 3.62TiB path /dev/sdh1
+>>
+>> Label: 'disk2'  uuid: d77e4116-de32-4ff4-938c-9c6eea6cdd42
+>>         Total devices 1 FS bytes used 6.83TiB
+>>         devid    1 size 7.28TiB used 7.26TiB path /dev/sdf1
+>>
 >=20
 
 
---nfWN18QWs61oerD9wNbYNuDhd90958i9z--
+--xGWolblj3L29DpAeqjldOchwXU2mOv9dS--
 
---rMVIOjWIznr4FNxxRkRL5LWyWcjEVKSq5
+--9QeQYjdHYPxhFM12h3givxYI9mlSNIcus
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0oeooACgkQwj2R86El
-/qiNrQgAgdRBHR9VSzOi4c2KANULCW27jfwgcniKfh0CrytJjrDjYf7iD1+oPowR
-vE1OSKH1xrzqQC8m7eZDbY4Gzi40LfeuUHlGlbhy+UwTFhcE3ZhCk/t1HWKMDoMk
-FKuqLXTY/sf5qkiUh8hbeGZekm1RTcZD041o++BNS9U9e0BlMFldpd2VMc749X3I
-mcVxDqtCPgPC1M/GrNd/otIs+76SQ4APxsAEReXBYLHd0rst4lo1T4BAgOi6KUzw
-//d6wsxuwlPL0sn42ING2WV8UYA6MRICYDvE62RlpZ+us4AvsIfANfvsuB9vIi6O
-ChkL3MJIYj9ii+jGee0DKrK6WP6+tw==
-=r1jX
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0oe1IACgkQwj2R86El
+/qgN0wf/W4S86zsMbuLIaKNU5yq1B7axqxSn3NljIDQ4U7oUEyShtSEtqIrk/pkh
+Uz5HBSSMT0bC7HXX9WQmx1n9gUZQtigfOEKyPDGyN3ewzLyvO9LUFkj5Ix8XVZQP
+ExL4iUiruh1DfMlkXkFHPXEbDTwJmyCOwezs3rKzpoUP3FE/AlcBlDtIJGk+CYUz
+RMOmQhCFICgE5hj0A5ubCG2ynbII3libqFvMnUn+U7UeleuY9uArH2JxI7xh+dxo
+W0l5eTv4lenteH9bfcV94y/IYhR1sB7mwEjwgq/WeOEDJAl8OXF029dOUHDn8V9V
+8JXduoYlMonOLRigtg8zPKBcLnORKg==
+=GK3h
 -----END PGP SIGNATURE-----
 
---rMVIOjWIznr4FNxxRkRL5LWyWcjEVKSq5--
+--9QeQYjdHYPxhFM12h3givxYI9mlSNIcus--
