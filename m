@@ -2,115 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 655A567ACD
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jul 2019 17:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52CE967C6B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jul 2019 01:14:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727664AbfGMPIf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 Jul 2019 11:08:35 -0400
-Received: from mail-lf1-f41.google.com ([209.85.167.41]:39382 "EHLO
-        mail-lf1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727626AbfGMPIf (ORCPT
+        id S1728758AbfGMXOk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 13 Jul 2019 19:14:40 -0400
+Received: from 11.mo1.mail-out.ovh.net ([188.165.48.29]:42409 "EHLO
+        11.mo1.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728736AbfGMXOk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 Jul 2019 11:08:35 -0400
-Received: by mail-lf1-f41.google.com with SMTP id v85so8286227lfa.6
-        for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2019 08:08:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=EYCEUoXhUG9ZsJ5HyPJ68lHrX+29DI3DrGgXjF4mT1Y=;
-        b=F1sgu1/v11Iux+18EeYM1skFBuASng7MwETJVicM9uuH9L0KPC+TFG6fzAsR7aGAQR
-         Kr8NACaFelTKAE4qDz8Veqi/xAOeLlnvRkVRHGe9xQh93oW/kP4UIdlH1yuNxkOsBx5c
-         Dp02JTQztJe5Hb684AgXVra2HhUVaB1iIfvl0ngF4ImnGrr+k32CU0J6ecddLCApJRom
-         xc1KvG9hOcUfJU0XY6unOgqvhHxsBTjWNFh8JP7i+R2rvsEysu7/r7NJzPYac6XkFnxw
-         kPqveb/EgnUL8vAZH4RQx4tdocZhixiyBPm4SEZr/Gm3dmfzflBnQNUGp1YzhjgEmoSZ
-         w8fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=EYCEUoXhUG9ZsJ5HyPJ68lHrX+29DI3DrGgXjF4mT1Y=;
-        b=V+B0uD6/RngT8nPQxTFVtdVh4lSOALcx3lE0d0so1aRaUSewi/PaObq1vKXC5GNa6P
-         uMVMzE3uaBeqPBTeEoQXk73D5lkFfM88HE1dwPCM5lupn8YsnKHYzwTtDgSqEw65yicZ
-         T1S3XVE73EG7H9mubyvqiZpMvFm0ThCKGc4NK3OyGxLwWkC4Pepg1VzIWw60/baObkUS
-         AiXOfRRCOAlElVwQKqezJGYtdZFNhYhWIifEiFxdryokN1ue5/TiQ3MlZfN9KdaL486b
-         gD5suBpYHYovG4wGU2MzXdiw3aI2yepITXXT08tqjG14yOErD7oP00McpXq63VveMHLP
-         4wCw==
-X-Gm-Message-State: APjAAAV22Lj8UaDerz83DrcxdNRnAiRDxKXu6qixXrlvPbAKK1UUk8/d
-        pYDz2+D8vEQKZsWzypd16L4f1Pxg
-X-Google-Smtp-Source: APXvYqzPKwdYM5weg7FqCx634WeKTyhTGJZfdNmzQRTX0nB7ALmVY8EVXWVqkW+iixvW2Qo0tdq5EA==
-X-Received: by 2002:ac2:4ace:: with SMTP id m14mr6644625lfp.99.1563030512566;
-        Sat, 13 Jul 2019 08:08:32 -0700 (PDT)
-Received: from [192.168.1.6] (109-252-55-203.nat.spd-mgts.ru. [109.252.55.203])
-        by smtp.gmail.com with ESMTPSA id h22sm2034767ljj.105.2019.07.13.08.08.30
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 13 Jul 2019 08:08:31 -0700 (PDT)
-Subject: Re: find subvolume directories
-To:     linux-btrfs@vger.kernel.org
-References: <20190712231705.GA16856@tik.uni-stuttgart.de>
- <75e5bd20-fafa-07fd-afd9-159e9aacb7db@gmail.com>
- <20190713082759.GB16856@tik.uni-stuttgart.de>
- <62366a29-a8ea-a889-f857-0305eba99051@gmail.com>
- <20190713112832.GA30696@tik.uni-stuttgart.de>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
- BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
- 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
- 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
- KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
- nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
- gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
- vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
- AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <5c596c6b-94cc-998b-6992-adcd15128178@gmail.com>
-Date:   Sat, 13 Jul 2019 18:08:29 +0300
+        Sat, 13 Jul 2019 19:14:40 -0400
+X-Greylist: delayed 7801 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Jul 2019 19:14:38 EDT
+Received: from player714.ha.ovh.net (unknown [10.109.146.173])
+        by mo1.mail-out.ovh.net (Postfix) with ESMTP id B24701842D3
+        for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2019 22:48:59 +0200 (CEST)
+Received: from awhome.eu (p4FF91F5A.dip0.t-ipconnect.de [79.249.31.90])
+        (Authenticated sender: postmaster@awhome.eu)
+        by player714.ha.ovh.net (Postfix) with ESMTPSA id 458427D534F0;
+        Sat, 13 Jul 2019 20:48:58 +0000 (UTC)
+To:     linux-btrfs@vger.kernel.org, wqu@suse.com
+From:   Alexander Wetzel <alexander.wetzel@web.de>
+Subject: [BUG] BTRFS critical corrupt leaf - bisected to 496245cac57e
+Message-ID: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
+Date:   Sat, 13 Jul 2019 22:48:55 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190713112832.GA30696@tik.uni-stuttgart.de>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Ovh-Tracer-Id: 4880494623887666410
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduvddrheefgddukecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecu
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-13.07.2019 14:28, Ulli Horlacher пишет:
-> On Sat 2019-07-13 (14:10), Andrei Borzenkov wrote:
-> 
->>>> It is entirely up to the user who creates it how subvolumes are named and
->>>> structured. You can well have /foo, /bar, /baz mounted as /, /var and
->>>> /home.
->>>
->>> And how can I find them in my mounted filesystem?
->>> THIS is my problem.
->>
->> I am not sure what problem you are trying to solve
-> 
-> I want a list of all subvolumes directories (which I can access with UNIX
-> tools like cd and ls or btrfs subvolume ...).
-> 
-> 
->> but you can use list of current mounts to build path to each subvolume
->> (as long as it is either below one of mounted subvolumes or explicitly
->> mounted).
-> 
-> Is there an easy/standard way to do this?
-> 
-> 
+Hello,
 
-Not that I'm aware of.
+After updating one of my VMs from 5.1.16 to 5.2 btrfs is acting up strange:
+The system is using btrfs as root (also for /boot) and has compression 
+enabled. (It's a gentoo virtual machine and not using an initrd.) 
+Rebooting the system into 5.2 is able to bring up openssh, but not other 
+services (like e.g. postfix).
+
+Redirecting dmesg to a file also failed. The file was created but empty, 
+even when checked immediately. Rebooting the system into the old kernel 
+fully restores functionality and a btrfs srub shows no errors..
+
+When running a bad kernel the system is partially ro, but since I'm 
+using selinux in strict mode it could also by caused by selinux unable 
+to read some data.
+
+Here how a reboot via ssh looks for a broken kernel:
+xar /home/alex # shutdown -r now
+shutdown: warning: cannot open /var/run/shutdown.pid
+
+But deleting the "bad" kernel and running "grub-mkconfig -o 
+/boot/grub/grub.cfg" works as it should and the system is using the 
+previous kernel... So it still can write some things...
+
+I've bisected the problem to 496245cac57e (btrfs: tree-checker: Verify 
+inode item)
+
+filtering for btrfs and removing duplicate lines just shows three uniq 
+error messages:
+  BTRFS critical (device vda3): corrupt leaf: root=300 block=8645398528 
+slot=4 ino=259223, invalid inode generation: has 139737289170944 expect 
+[0, 1425224]
+  BTRFS critical (device vda3): corrupt leaf: root=300 block=8645398528 
+slot=4 ino=259223, invalid inode generation: has 139737289170944 expect 
+[0, 1425225]
+  BTRFS critical (device vda3): corrupt leaf: root=300 block=8645398528 
+slot=4 ino=259223, invalid inode generation: has 139737289170944 expect 
+[0, 1425227]
+  BTRFS error (device vda3): block=8645398528 read time tree block 
+corruption detected
+
+All there errors are only there with commit 496245cac57e, booting a 
+kernel without the patch after that just works normally again.
+
+I tried to reproduce the issue transferring the fs with btrfs 
+send/receive to another system. I was able to mount the migrated Fs with 
+a 5.2 kernel and also btrfs scub was ok...
+
+I tried to revert the commit but a simple revert is not working. So I've 
+just verified that a kernel build on 496245cac57e shows the symptoms 
+while using the commit before that is fine.
+
+I've not tried more, so I still can reproduce the issue when needed and 
+gather more data. (The system is now back running 5.1.16)
+
+Now I guess I could have some corruption only detected/triggered with 
+the patch and btrfs check may fix it... shall I try that next?
+
+Here the dmesg from the affected system (the first few lines still in 
+the log buffer when I checked):
+[    8.963796] BTRFS critical (device vda3): corrupt leaf: root=300 
+block=8645398528 slot=4 ino=259223, invalid inode generation: has 
+139737289170944 expect [0, 1425224]
+[    8.963799] BTRFS error (device vda3): block=8645398528 read time 
+tree block corruption detected
+[    8.967487] audit: type=1400 audit(1563023702.540:19): avc:  denied 
+{ write } for  pid=2154 comm="cp" name="localtime" dev="vda3" 
+ino=1061039 scontext=system_u:system_r:initrc_t 
+tcontext=system_u:object_r:locale_t tclass=file permissive=0
+[    9.023608] audit: type=1400 audit(1563023702.590:20): avc:  denied 
+{ mounton } for  pid=2194 comm="mount" path="/chroot/dns/run/named" 
+dev="vda3" ino=1061002 scontext=system_u:system_r:mount_t 
+tcontext=system_u:object_r:named_var_run_t tclass=dir permissive=0
+[    9.038235] audit: type=1400 audit(1563023702.610:21): avc:  denied 
+{ getattr } for  pid=2199 comm="start-stop-daem" path="pid:[4026531836]" 
+dev="nsfs" ino=4026531836 scontext=system_u:system_r:initrc_t 
+tcontext=system_u:object_r:nsfs_t tclass=file permissive=0
+[    9.100897] BTRFS critical (device vda3): corrupt leaf: root=300 
+block=8645398528 slot=4 ino=259223, invalid inode generation: has 
+139737289170944 expect [0, 1425224]
+[    9.100900] BTRFS error (device vda3): block=8645398528 read time 
+tree block corruption detected
+[    9.137974] BTRFS critical (device vda3): corrupt leaf: root=300 
+block=8645398528 slot=4 ino=259223, invalid inode generation: has 
+139737289170944 expect [0, 1425224]
+[    9.137976] BTRFS error (device vda3): block=8645398528 read time 
+tree block corruption detected
+[    9.138095] audit: type=1400 audit(1563023702.710:22): avc:  denied 
+{ getattr } for  pid=2237 comm="start-stop-daem" path="pid:[4026531836]" 
+dev="nsfs" ino=4026531836 scontext=system_u:system_r:initrc_t 
+tcontext=system_u:object_r:nsfs_t tclass=file permissive=0
+[    9.138477] BTRFS critical (device vda3): corrupt leaf: root=300 
+block=8645398528 slot=4 ino=259223, invalid inode generation: has 
+139737289170944 expect [0, 1425224]
+[    9.138480] BTRFS error (device vda3): block=8645398528 read time 
+tree block corruption detected
+[    9.161866] BTRFS critical (device vda3): corrupt leaf: root=300 
+block=8645398528 slot=4 ino=259223, invalid inode generation: has 
+139737289170944 expect [0, 1425224]
+[    9.161868] BTRFS error (device vda3): block=8645398528 read time 
+tree block corruption detected
+[    9.170228] BTRFS critical (device vda3): corrupt leaf: root=300 
+block=8645398528 slot=4 ino=259223, invalid inode generation: has 
+139737289170944 expect [0, 1425224]
+[    9.170230] BTRFS error (device vda3): block=8645398528 read time 
+tree block corruption detected
+[    9.214491] BTRFS critical (device vda3): corrupt leaf: root=300 
+block=8645398528 slot=4 ino=259223, invalid inode generation: has 
+139737289170944 expect [0, 1425224]
+[    9.214494] BTRFS error (device vda3): block=8645398528 read time 
+tree block corruption detected
+
+
+Alexander
