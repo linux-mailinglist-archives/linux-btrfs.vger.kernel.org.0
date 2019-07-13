@@ -2,56 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B61B7679D9
-	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jul 2019 13:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD9A679E2
+	for <lists+linux-btrfs@lfdr.de>; Sat, 13 Jul 2019 13:10:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727826AbfGMLGy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 Jul 2019 07:06:54 -0400
-Received: from mail-lj1-f172.google.com ([209.85.208.172]:44825 "EHLO
-        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726755AbfGMLGx (ORCPT
+        id S1727659AbfGMLKz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 13 Jul 2019 07:10:55 -0400
+Received: from mail-lf1-f52.google.com ([209.85.167.52]:37514 "EHLO
+        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726755AbfGMLKy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 Jul 2019 07:06:53 -0400
-Received: by mail-lj1-f172.google.com with SMTP id k18so11719310ljc.11
-        for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2019 04:06:51 -0700 (PDT)
+        Sat, 13 Jul 2019 07:10:54 -0400
+Received: by mail-lf1-f52.google.com with SMTP id c9so8084943lfh.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 13 Jul 2019 04:10:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:from:openpgp:autocrypt:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=E94RNSmliZ7fw6LMr2oMcTkznm7GMWDVru8EautKiDQ=;
-        b=SezTPLT8xCaqBH2oo7ex3inKr7/3QU+Cis0UsGu7+x/h79u6GF4RO72nIFR/N6X4B8
-         10rAXn3oVm0CcgucTUb/fanBrL/fZQm2aWA0Zm3FFz4D5b2bdKxMz9ofmM3tWkFcE8aO
-         ER/FIQZptF/G3PGgznXFNAbIqEWyTFB7Zuuo/wQQAJPNRZmkjLU1mmIoW0T76H5Jk5Yy
-         WR6AmjXFygQ6CWOnfATaQt238Z9usanZWy/e0zmALgAVAoIrsV4+pjDq9Vf0WCQikgh+
-         jIJCj6VAeQ7g4ao9dBisdaE2btA3QXnTRWF0B5DksWleYvow4kDheG2sIbhZlwd/7pAK
-         tW8w==
+        bh=iJZy/FwstH4LD3hAIh1o7zKr2TebA21ef84URdeVbcA=;
+        b=CWAxYsNTW1MNagZ7aQ6WmPZy8jeYx0iGMoSyY6EXdImLqZH0k34cXiNqzBAi0SqxYA
+         phEPyUst0PZZ6uQWjopl1WQrwBEwQcKREDjzd2MGolA1XL8h3cCgV0dAaE6QvRPMTxb6
+         UognLdcAz7t3K9O1t2IFXtpKslx4TuAIeGhY5sRaGVTlYyv3sSbQgPRws5su2UMzs7wA
+         XYjio1f/59Y2sWKKGNs40Yft6HmqgINjj+OTwiWOKH+TfJaXppsWA8+CeOlMUi9UBjGq
+         C8JHPcyIPWmhHj6atVpcIPek+Co8CURc+EtLJm4+7jY2DTnSc1XFcYjG6vPWc0+bnId4
+         i5nQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=E94RNSmliZ7fw6LMr2oMcTkznm7GMWDVru8EautKiDQ=;
-        b=o7UVCwjBG6zGuiJaSWUIP7/di4YSCo7jw04/SoqIToDw6LepglhuJ40MVcSt9I/RTM
-         hcuESE72nHif3J2eyMbgRRXR9Xzg1TwDKFBXrFpVj34A+hxta/fJ4O1Xby5yt242DKMA
-         E+D9+zAwojdFVssEdaP4DhGR5yVxy15G/I1/jAnDnhrOzhWzD8+nmwWYJCFeuYtVOMEN
-         fhH3L2cJZeF486Oum7XoyHkZ0CjPEM2BhEcDcAqqr7ve2g6aNXXTdZvrbBB397JYP22X
-         H2+ZWezvUm7sGvqK7ubXYMJWlfccLmaFl68+A6YPA3wU8EFWitgPqPcBukZ3lAwJR4Gm
-         vZzA==
-X-Gm-Message-State: APjAAAV6EaXBDwpblkqHeL+AwBs/JABDymVRpb/MoTJba0RNun4Wl7Jd
-        ZfprNfvcFG7iP7GNgO4xiqD4UaZT7jE=
-X-Google-Smtp-Source: APXvYqy1oK0ouy/3AKlNEZNWUXKAzLLmOx+loLVLKLl8+qw8F8t1232Ta1ZERUZ1Z76/JibfW2eXPQ==
-X-Received: by 2002:a2e:968e:: with SMTP id q14mr8080514lji.195.1563016010825;
-        Sat, 13 Jul 2019 04:06:50 -0700 (PDT)
+        bh=iJZy/FwstH4LD3hAIh1o7zKr2TebA21ef84URdeVbcA=;
+        b=UgR93YBXfXPALLO1oFVC5IT8pIWGDRBBANrPMAll1tOznpvfEteXQQVFYdNELnyew3
+         wVS6GLurg9BhD+XasGksNW9i4pDXop/CocdtnUtorqbEYr4nncur+hPxe6q0irOlqO05
+         21J/HIqk5Ic7z6LssxYV1BR835ghSZJoibnawf7eVYTit27nwpCEhVbNfjd3Th2F9ujA
+         i9cxYW7sWfL/2vZMCDgy8NW5ZrAZczLxgqVa9IUMu9vNckFWkoT8dX6Z90uj6qmoauTF
+         21yWjM1W/Wndof6pqQ6sbbWIE1rh/wxMfU4q2pBhzVU19n9jYKIHHXyt96ELZaJCCYjd
+         r+mg==
+X-Gm-Message-State: APjAAAU9sOq+DF6/lJtykW1fHAiqwkKvpFzj6xmysMXPhLW1OprWjQrB
+        1p5XJ8Yen4k8aE8EQk8INBurzvbj1Cs=
+X-Google-Smtp-Source: APXvYqwGsgtUcq4yU4ZlN7ldYEGODvnGQiknpdnnDm5t/y77r0d1II3NrCnkpWhTV67yKfY1KypmXA==
+X-Received: by 2002:ac2:4839:: with SMTP id 25mr6986700lft.79.1563016252711;
+        Sat, 13 Jul 2019 04:10:52 -0700 (PDT)
 Received: from [192.168.1.6] (109-252-55-203.nat.spd-mgts.ru. [109.252.55.203])
-        by smtp.gmail.com with ESMTPSA id r24sm2145218ljb.72.2019.07.13.04.06.48
+        by smtp.gmail.com with ESMTPSA id u27sm1474986lfn.87.2019.07.13.04.10.51
+        for <linux-btrfs@vger.kernel.org>
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 13 Jul 2019 04:06:48 -0700 (PDT)
-Subject: Re: Should nossd mount option be used for an HDD detected as
- non-rotational?
-To:     "R. Schwartz" <schwrtz@protonmail.ch>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <htetrjLP1jLMK9WTasfT2e5ZdkY1yV0iY3PHjVEDqCKIZ8d2VwdRTBRezsUAxzKawi_lsxBi5HYfOlvyByGPBwswTCKXSt_lbhRCAmQZ2Qg=@protonmail.ch>
+        Sat, 13 Jul 2019 04:10:51 -0700 (PDT)
+Subject: Re: find subvolume directories
+To:     linux-btrfs@vger.kernel.org
+References: <20190712231705.GA16856@tik.uni-stuttgart.de>
+ <75e5bd20-fafa-07fd-afd9-159e9aacb7db@gmail.com>
+ <20190713082759.GB16856@tik.uni-stuttgart.de>
 From:   Andrei Borzenkov <arvidjaar@gmail.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
@@ -72,12 +73,12 @@ Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
  gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
  vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
  AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <9c872fcc-18a2-0936-f950-f1a74806da73@gmail.com>
-Date:   Sat, 13 Jul 2019 14:06:47 +0300
+Message-ID: <62366a29-a8ea-a889-f857-0305eba99051@gmail.com>
+Date:   Sat, 13 Jul 2019 14:10:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <htetrjLP1jLMK9WTasfT2e5ZdkY1yV0iY3PHjVEDqCKIZ8d2VwdRTBRezsUAxzKawi_lsxBi5HYfOlvyByGPBwswTCKXSt_lbhRCAmQZ2Qg=@protonmail.ch>
+In-Reply-To: <20190713082759.GB16856@tik.uni-stuttgart.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -86,45 +87,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-13.07.2019 12:22, R. Schwartz пишет:
-> My HDD (one partition, BTRFS) reports itself as non-rational:
+13.07.2019 11:27, Ulli Horlacher пишет:
+> On Sat 2019-07-13 (06:59), Andrei Borzenkov wrote:
+>> 13.07.2019 2:17, Ulli Horlacher ?8H5B:
+>>
+>>> I need to find (all) subvolume directories.
 > 
->     $ cat /sys/class/block/sda/queue/rotational
->     0
+>> That is just coincidence because @/.snapshot subvolume is mounted on
+>> /.snapshot. It could also be mounted under /var/lib/snapper (insert your
+>> path here).
 > 
-> According to btrfs(5), by default, BTRFS detects this value and turns on
-> SSD optimizations for the HDD. Naturally, I'm puzzled...
+> Yes, this is the problem for me!
 > 
-> My question is: should I use the nossd mount option for the HDD?
 > 
-> Following is more details about this HDD.
+>>> But what if a btrfs filesystem does not have a toplevel /@/ directory, but
+>>> anything else, like /this/is/my/top/directory ?
+>>>
+>>
+>> btrfs does not have "top level directory" beyond single /.
 > 
-> It's a recent Western Digital Blue 2TB HDD, model WD20EZAZ. Given its
-> cache size is a rather large 256MB, some people say it's likely an SMR
-> (shingled magnetic record) HDD.
+> I used the wrong naming.
+> I have meant "top level directory beyond /"
 > 
-> Since Host-Managed and Host-Aware SMR HDDs support the `REPORT_ZONES`
-> ATA/SCSI command, I ran this test using `sg3_utils`:
 > 
->     # sg_rep_zones -R /dev/sda
->     Report zones command not supported
->     sg_rep_zones failed: Illegal request, Invalid opcode
+>> It is entirely up to the user who creates it how subvolumes are named and
+>> structured. You can well have /foo, /bar, /baz mounted as /, /var and
+>> /home.
 > 
-> Therefore, _if_ it's SMR, it must be Drive-Managed SMR.
-> 
-> So is there a good reason why the HDD reports itself as non-rotational?
+> And how can I find them in my mounted filesystem?
+> THIS is my problem.
 
-kernel sets non-rotational flag according to Medium Rotation Rate field
-in Block Device Characteristics VPD page (0xb1). What
+I am not sure what problem you are trying to solve, but you can use list
+of current mounts to build path to each subvolume (as long as it is
+either below one of mounted subvolumes or explicitly mounted).
 
-sg_vpd -p bdc /dev/xxx
-
-says?
-
-> Does it have to do with SMR?
+> As I wrote: "find / -inum 256" is too slow.
 > 
-> Additioanlly, the HDD is connected through a SATA to USB connector. I
-> original suspected it was an issue with the connector, but I tested with
-> other HDDs with the same connector and they all report as rotational.
 > 
 
