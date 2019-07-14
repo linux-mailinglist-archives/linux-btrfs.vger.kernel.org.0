@@ -2,30 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B80967CA2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jul 2019 03:38:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B70FB67E6A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 14 Jul 2019 11:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728000AbfGNBaP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 13 Jul 2019 21:30:15 -0400
-Received: from mout.gmx.net ([212.227.17.22]:53947 "EHLO mout.gmx.net"
+        id S1728065AbfGNJtY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 14 Jul 2019 05:49:24 -0400
+Received: from mout.gmx.net ([212.227.15.19]:39011 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727983AbfGNBaP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 13 Jul 2019 21:30:15 -0400
+        id S1726799AbfGNJtX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 14 Jul 2019 05:49:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1563067808;
-        bh=BKPMk76Xe2CM8/1xXYCuxdNWF+ny24fHVVcDhh7GGXw=;
+        s=badeba3b8450; t=1563097754;
+        bh=a6xhizh7Y/AEQPN3+9zMK4ZGoo7xm7l8rWNAtEGd5F0=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=BL463Hj5ztWrTF6XTUACBnJJq6TGlOECdre/SQpFSo79J9qjjfqIXKvukBd3wIQYt
-         1/OGC7gkQbxpnFaRtwZHDHczNvgmcc4BG0ByaQ2Kccg4f5p9739/xV/Ch8VDiWrx24
-         VAfSbDAO9AZ/k6OAgBytNSmViJLzedhYY9YKq6Fo=
+        b=YitQUDp3V2w039ChIoj/Ji7T0Jeusk4ZUb4bsbRVq9xkRH97vx1ePIvmzEMm7jDDJ
+         3GaDxdM0ZYEn3khKAcap0zOtp8eJ/iuUKoEPeuSuUMhLMymr9qdTECXnSLPS7A/BQL
+         wHzpLC4plKa1yB8A4K2/gkQmrJ/fz2oK6pSTpNck=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx103
- [212.227.17.174]) with ESMTPSA (Nemesis) id 0MKpQ4-1hmTL50KNU-0000WU; Sun, 14
- Jul 2019 03:30:08 +0200
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mf0BM-1iNHO72Z0U-00gXi3; Sun, 14
+ Jul 2019 11:49:14 +0200
 Subject: Re: [BUG] BTRFS critical corrupt leaf - bisected to 496245cac57e
 To:     Alexander Wetzel <alexander.wetzel@web.de>,
         linux-btrfs@vger.kernel.org, wqu@suse.com
 References: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
+ <23f33860-9630-2045-483c-f59ebf91b043@gmx.com>
+ <057a7561-f691-d7ee-1dea-27acc5ea79cc@web.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -52,272 +54,252 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <23f33860-9630-2045-483c-f59ebf91b043@gmx.com>
-Date:   Sun, 14 Jul 2019 09:30:02 +0800
+Message-ID: <6e764f38-a8dd-19e2-e885-3d7561479681@gmx.com>
+Date:   Sun, 14 Jul 2019 17:49:09 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
+In-Reply-To: <057a7561-f691-d7ee-1dea-27acc5ea79cc@web.de>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="gCWZNd8M2loc9BCSDq9FUYZnzqqTtjxb7"
-X-Provags-ID: V03:K1:KLeSVxWHcFnVMALAzVCEoAJ4IwKcpyzWBhJI3B2/0/RQWQM+u0U
- apCIN5thKXrQE/j9zog4skDNG78W+e7u84udKFh6gXJ4+Y+v2P7ANJCjRuiIRFOs2lwknBB
- 8J10DlSIXHuCKWcgXEJI6Q8at9DehWR5OiKaMCsULNiBZb8x+ptpcCqo7C4d4ieBVi9pP2b
- dHyoRrrm9nnUbqwjy1kig==
+ boundary="m1PV1kfhfRiXELv1IYXTmVJc4vHLxcqOw"
+X-Provags-ID: V03:K1:cwegQ+n/pi0jyxDRopZJY2gqTw7mPoJLBN0aqjmmowUkhWsZ+If
+ axS3NnPG55M4IfYZcekqw/HL3zW//AAnIBXf3bUu6qE2KyO7GVj7+M5DnhU7o2RGA/tww+g
+ KgBjcM9imFZClQVWK8ZeT3EpFy/1O3AI+HGXt+stysD/3C6gnzHmsTCxOFA/k7V9d2+1CNC
+ PvYvxnlGhLM6YVTr9btLw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:fKGRGhMYswk=:cIGO0BzwZMHNbfuA9yusf5
- ZyUzctyGZmpgNL4kW7OeIkWyzBijypuGFgjsOLJ2Bx/eQVSupLn1Ftb+x+5fckK7EERbwOE8Z
- 4iMBaplyIRSUczBtKGv2C+Z8QgFfncwV0t79FJ5iqeRM0erCiZWAPSHUi3Xf958pCRV6ph9bM
- Lh942l7VHrGUpTxlQD1J5xMP3fOXEt1AjzO+7WulH1EX+SYwK+jdYaacfIvV32V10URnxsbwD
- sJZtN10hzIpUkL92SWJ4dEMYco+hL33m/btZ+Kw57GDQAphzmLy/8/jUtZe8aB6FEexEX770Q
- P6+RKQ6Ulrdm7/8YjtYL15CDchzvOihtdH3/iJlrrBoD06Y33Azk8kdlIjJuefnko2GjE/xx1
- Konxwnv+JAoekwXnWNH0RcBnw/7dJHudBLaCBSYqMc6ZZuN1jmzoc4ov2rxA9fpi5IwFLHar9
- PzoJ93Si+wmhV5CyHBe7wxKJ62TDcJ6a1VMhavUG9czSOTWWEQQPfSOaOUKHdLa3Ov4qAzWe3
- 7Upcvsmo91lGq5kOffarumbAmSPy7x8crsGTxmGBMkt5LSQmrc4ql8HzkjdfjM8D32QAZyBeS
- zTDxe3cD8adVB/BAzJRbpAA6+u6tO34MR04Gq/0k1kqh9dF+3uU4nWiXgv9NQPyKv49C/dbCY
- Wv//6RqLscwTAKtryM+PWeWLeTgjX346vrYe3A0HyU+SKif0wY32Iw9sz3VP/0VirubFl3Y4j
- eyb39CWFFfhzSarPsPpsjvdvY7zTlcccHBzCwMnHpK5xXPKn5EEIK+YNiETwRwKU+Wv2tvq57
- 3tShsciq3QIUJNBMtXRFZj+3aP0SQSuRpEJEBc+l6hbLZD5bTt8grLUmvaBquWmy3l4honv0h
- IE92hjLJc7y4kRDuwf/tDipR76Jk/MkMFddMOcr30Oe+LlreurdCWU4gl2ydg4AQOM2GxKIRY
- rZU+l5xDfj5pE1YM5um70yw14ryKHdavD4otWrRYFtxpOj/QtI69CvoLx+dQuIrh5h78HPopd
- VPobaKdN/HTPHidOFGDpnrH421OP1wYv5Eopr+9lMqlgU5+qVEqvwyueFbluqvaqkUWLsndNc
- Awo5ZDhMJjEAX0=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:P+8XnAcs8fg=:wb2mBeY4jloBYPA11GGcFV
+ WReMblKvDUcOD1XxUK4RdT5Ake6ElPaJLPFParnanU63OUcKXY14X+IK5TIutew7EX92X0D+F
+ kInXQbeSum+JZBjHGG7GtQ2xFlADWBe3mVXEv0P4uzLbpfxtqYQkiVHnBhkxz54p3OyhFtv8B
+ bKFwLx2Hu6lcMy0vPAfBaq1N6TLGXVBi+agySMLanAUu+H9RVljd5S5ssMiKh1NH+BrFjGvGB
+ jiZJBDXkm2aeE/RrboXlWB5m1BVdP+bdDs1b+kIhkNxzj2vBPnUrCHDUQ7zRBGyrpWqzzH4vw
+ 3rnEww7Jy3u+2i2BlU0QlmetnrioP3GnTBRWWc4DgeVWf8Ih7a0mFmATndyNbeZhSkLZQz75f
+ fihGvZhkQWG6AAhfAKDNWZBPoQ70RMnDAG6bBOLqYnYDg1gyztc00FJa1AkaU5AinMxq5iMrZ
+ rrcf/HIpOcMG660WER0/18g0SM5fpl1AKHKIXB6Hi3geekv0uyMY8q+Jq3i40dJHe1fSN+myl
+ 5U+1M1Iben3PAayFgJUxSJ3A2D4UWJzPBd20MElXOyu/DGtGcPpHtkfQt+yQeKDtQbhU5Unhg
+ bhW4rtbwcDu7Mzg4xGVcTzlCV2TYbG6Y3nozgfrkmpwYjjnnDhDkQnp2olVV0JaFyXSy/hQyy
+ ZwYTca3ocgvvhe1Sap0je5yTT73aUTJKAIxJLaFtoW//qcQ5oQ69mfxy2om3ilDBHtQ0ExT8R
+ HcpEyFhvylBdebGKtBXW7QT4RHg1suXs8Qg8YM+NV7OuESOL6dx0b/qEzXyY0yX+bldB9tGeV
+ /RNYZ24N0PDlyIYOMKCnHw0iBqDIpAN/0egKmmQUV4S1xjqaZx/LNX24SHXEKr2WIvBtNhID/
+ mFUIFSBJk7Fnj1Mt7pDfOnANiq3biZkVPXCSmgOO190yNHk5G/eUMax/cuM0qkuQozPA6jI+m
+ 83FbAs7D57FQgF747+Fi/tYLR8zwzl+wT8RfzTUG4jUegzCrrVhgB/80QlDy9amppRloCFqSg
+ FwL3PbVO8r3a7byfxEJxA/bq41MyFYPUaYkox0d2CcWyLzJ8MT9s9hdgYi3/GMuiNSahw38Nn
+ 0OypOy9KiB0ZV0=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---gCWZNd8M2loc9BCSDq9FUYZnzqqTtjxb7
-Content-Type: multipart/mixed; boundary="yxOruhrNGFzWgv6RUF9ojpel7cPpczqtV";
+--m1PV1kfhfRiXELv1IYXTmVJc4vHLxcqOw
+Content-Type: multipart/mixed; boundary="o1bhPH5269qhnDhD7TCUDX60uNl4R4335";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 To: Alexander Wetzel <alexander.wetzel@web.de>, linux-btrfs@vger.kernel.org,
  wqu@suse.com
-Message-ID: <23f33860-9630-2045-483c-f59ebf91b043@gmx.com>
+Message-ID: <6e764f38-a8dd-19e2-e885-3d7561479681@gmx.com>
 Subject: Re: [BUG] BTRFS critical corrupt leaf - bisected to 496245cac57e
 References: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
-In-Reply-To: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
+ <23f33860-9630-2045-483c-f59ebf91b043@gmx.com>
+ <057a7561-f691-d7ee-1dea-27acc5ea79cc@web.de>
+In-Reply-To: <057a7561-f691-d7ee-1dea-27acc5ea79cc@web.de>
 
---yxOruhrNGFzWgv6RUF9ojpel7cPpczqtV
+--o1bhPH5269qhnDhD7TCUDX60uNl4R4335
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/7/14 =E4=B8=8A=E5=8D=884:48, Alexander Wetzel wrote:
-> Hello,
+On 2019/7/14 =E4=B8=8B=E5=8D=885:25, Alexander Wetzel wrote:
 >=20
-> After updating one of my VMs from 5.1.16 to 5.2 btrfs is acting up stra=
-nge:
-> The system is using btrfs as root (also for /boot) and has compression
-> enabled. (It's a gentoo virtual machine and not using an initrd.)
-> Rebooting the system into 5.2 is able to bring up openssh, but not othe=
-r
-> services (like e.g. postfix).
+>>>
+>>> filtering for btrfs and removing duplicate lines just shows three uni=
+q
+>>> error messages:
+>>> =C2=A0=C2=A0BTRFS critical (device vda3): corrupt leaf: root=3D300 bl=
+ock=3D8645398528
+>>> slot=3D4 ino=3D259223, invalid inode generation: has 139737289170944 =
+expect
+>>> [0, 1425224]
+>>> =C2=A0=C2=A0BTRFS critical (device vda3): corrupt leaf: root=3D300 bl=
+ock=3D8645398528
+>>> slot=3D4 ino=3D259223, invalid inode generation: has 139737289170944 =
+expect
+>>> [0, 1425225]
+>>> =C2=A0=C2=A0BTRFS critical (device vda3): corrupt leaf: root=3D300 bl=
+ock=3D8645398528
+>>> slot=3D4 ino=3D259223, invalid inode generation: has 139737289170944 =
+expect
+>>> [0, 1425227]
+>>
+>> The generation number is 0x7f171f7ba000, I see no reason why it would
+>> make any sense.
+>>
+>> I see no problem rejecting obviously corrupted item.
+>>
+>> The problem is:
+>> - Is that corrupted item?
+>> =C2=A0=C2=A0 At least to me, it looks corrupted just from the dmesg.
+>>
+>> - How and when this happens
+>> =C2=A0=C2=A0 Obviously happened on some older kernel.
+>> =C2=A0=C2=A0 V5.2 will report such problem before writing corrupted da=
+ta back to
+>> =C2=A0=C2=A0 disk, at least prevent such problem from happening.
 >=20
-> Redirecting dmesg to a file also failed. The file was created but empty=
-,
-> even when checked immediately. Rebooting the system into the old kernel=
+> It's probably useless information at that point, but the FS was created=
 
-> fully restores functionality and a btrfs srub shows no errors..
->=20
-> When running a bad kernel the system is partially ro, but since I'm
-> using selinux in strict mode it could also by caused by selinux unable
-> to read some data.
->=20
-> Here how a reboot via ssh looks for a broken kernel:
-> xar /home/alex # shutdown -r now
-> shutdown: warning: cannot open /var/run/shutdown.pid
->=20
-> But deleting the "bad" kernel and running "grub-mkconfig -o
-> /boot/grub/grub.cfg" works as it should and the system is using the
-> previous kernel... So it still can write some things...
->=20
-> I've bisected the problem to 496245cac57e (btrfs: tree-checker: Verify
-> inode item)
->=20
-> filtering for btrfs and removing duplicate lines just shows three uniq
-> error messages:
-> =C2=A0BTRFS critical (device vda3): corrupt leaf: root=3D300 block=3D86=
-45398528
-> slot=3D4 ino=3D259223, invalid inode generation: has 139737289170944 ex=
-pect
-> [0, 1425224]
-> =C2=A0BTRFS critical (device vda3): corrupt leaf: root=3D300 block=3D86=
-45398528
-> slot=3D4 ino=3D259223, invalid inode generation: has 139737289170944 ex=
-pect
-> [0, 1425225]
-> =C2=A0BTRFS critical (device vda3): corrupt leaf: root=3D300 block=3D86=
-45398528
-> slot=3D4 ino=3D259223, invalid inode generation: has 139737289170944 ex=
-pect
-> [0, 1425227]
+> with a boot image from Debian 8 around Dec 1st 2016 by migrating an als=
+o
+> freshly created ext4 filesystem to btrfs.
 
-The generation number is 0x7f171f7ba000, I see no reason why it would
-make any sense.
+Migrated image could has something unexpected, but according to the
+owner id, it's definitely not the converted subvolume. But newly created
+subvolume/snapshot.
 
-I see no problem rejecting obviously corrupted item.
+> I'm pretty sure the migration failed with the newer gentoo kernel
+> intended for operation - which was sys-kernel/hardened-sources-4.7.10 -=
 
-The problem is:
-- Is that corrupted item?
-  At least to me, it looks corrupted just from the dmesg.
-
-- How and when this happens
-  Obviously happened on some older kernel.
-  V5.2 will report such problem before writing corrupted data back to
-  disk, at least prevent such problem from happening.
-
-Please provide the following dump:
- # btrfs ins dump-tree -b 8645398528 /dev/vda3
-
-> =C2=A0BTRFS error (device vda3): block=3D8645398528 read time tree bloc=
-k
-> corruption detected
+> and a used the Debian boot image for that. (I can piece together all
+> kernel versions used from wtmp, but the Debian boot kernel would be
+> "guess only".)
 >=20
-> All there errors are only there with commit 496245cac57e, booting a
-> kernel without the patch after that just works normally again.
->=20
-> I tried to reproduce the issue transferring the fs with btrfs
-> send/receive to another system. I was able to mount the migrated Fs wit=
-h
-> a 5.2 kernel and also btrfs scub was ok...
->=20
-> I tried to revert the commit but a simple revert is not working. So I'v=
-e
-> just verified that a kernel build on 496245cac57e shows the symptoms
-> while using the commit before that is fine.
->=20
-> I've not tried more, so I still can reproduce the issue when needed and=
+> The time stamps like "2016-12-01 21:51:27" in the dump below are
+> matching very well to the time I was setting up the system based on the=
 
-> gather more data. (The system is now back running 5.1.16)
+> few remaining log evidence I have.
+
+I just did a quick grep and blame for inode transid related code.
+The latest direct modification to inode_transid is 6e17d30bfaf4 ("Btrfs:
+fill ->last_trans for delayed inode in btrfs_fill_inode."), which is
+upstreamed in v4.1.
+
+Furthermore, at that time, we don't have good enough practice for
+backport, thus that commit lacks fixes tag, and won't be backported to
+most stable branches.
+I don't believe Debian backport team would pick this into their kernels,
+so if the fs is modified by kernel older than v4.1, then that may be the
+cause.
+
 >=20
-> Now I guess I could have some corruption only detected/triggered with
-> the patch and btrfs check may fix it... shall I try that next?
+>> Please provide the following dump:
+>> =C2=A0 # btrfs ins dump-tree -b 8645398528 /dev/vda3
+>>
+>=20
+> xar /home/alex # btrfs ins dump-tree -b 8645398528 /dev/vda3
+> btrfs-progs v4.19
+> leaf 8645398528 items 48 free space 509 generation 1425074 owner 300
+> leaf 8645398528 flags 0x1(WRITTEN) backref revision 1
+> fs uuid 668c885e-50b9-41d0-a3ce-b653a4d3f87a
+> chunk uuid 54c6809b-e261-423f-b4a1-362304e887bd
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 0 key (259222 DIR_ITEM =
+2504220146) itemoff 3960 itemsize 35
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 location key (259223 INODE_ITEM 0) type FILE
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 transid 8119256875011 data_len 0 name_len 5
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 name: .keep
 
-Sorry, AFAIK btrfs doesn't check as strict as kernel tree-checker, as
-corrupted data in kernel space could lead to system crash while in user
-space it would only cause btrfs check to crash.
+If we're checking DIR_ITEM/DIR_INDEX transid, it kernel should fail even
+easier.
 
-Thus I made tree-checker way picky about irregular data, it's literally
-checking every member and even unused member.
-The dump mentioned above should help us to determine whether btrfs check
-can detect and fix it.
-(I believe it shouldn't be that hard to fix in btrfs-progs)
+Those transid makes no sense at all.
+
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 1 key (259222 DIR_INDEX=
+ 2) itemoff 3925 itemsize 35
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 location key (259223 INODE_ITEM 0) type FILE
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 transid 8119256875011 data_len 0 name_len 5
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 name: .keep
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 2 key (259222 DIR_INDEX=
+ 3) itemoff 3888 itemsize 37
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 location key (258830 INODE_ITEM 0) type DIR
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 transid 2673440063491 data_len 0 name_len 7
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 name: portage
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 3 key (259222 DIR_INDEX=
+ 4) itemoff 3851 itemsize 37
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 location key (3632036 INODE_ITEM 0) type DIR
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 transid 169620 data_len 0 name_len 7
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 name: binpkgs
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 4 key (259223 INODE_ITE=
+M 0) itemoff 3691 itemsize 160
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 generation 1 transid 139737289170944 size 0 nbytes 0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 sequence 139737289225400 flags 0x0(none)
+
+Either the reported transid makes sense.
+
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 atime 1480625487.0 (2016-12-01 21:51:27)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 ctime 1480625487.0 (2016-12-01 21:51:27)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 mtime 1480015482.0 (2016-11-24 20:24:42)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 otime 0.0 (1970-01-01 01:00:00)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 5 key (259223 INODE_REF=
+ 259222) itemoff 3676 itemsize 15
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 index 2 namelen 5 name: .keep
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 6 key (259224 INODE_ITE=
+M 0) itemoff 3516 itemsize 160
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 generation 1 transid 1733 size 4 nbytes 5
+
+This transid shold be correct.
+
+According to the leaf geneartion, any transid larger than 1425074 should
+be incorrect.
+
+So, the are a lot of transid error, not limited to the reported item 4.
+There may be so many transid error that most of your tree blocks may get
+modified to update the transid.
+
+To fix this, I believe it's possible to reset all these inodes' transid
+to leaf transid, but I'm not 100% sure if such fix won't affect things
+like send.
+
+
+I totally understand that the solution I'm going to provide sounds
+aweful, but I'd recommend to use a newer enough kernel but without that
+check, to copy all the data to another btrfs fs.
+
+It could be more safe than waiting for a btrfs check to repair it.
 
 Thanks,
 Qu
 
->=20
-> Here the dmesg from the affected system (the first few lines still in
-> the log buffer when I checked):
-> [=C2=A0=C2=A0=C2=A0 8.963796] BTRFS critical (device vda3): corrupt lea=
-f: root=3D300
-> block=3D8645398528 slot=3D4 ino=3D259223, invalid inode generation: has=
 
-> 139737289170944 expect [0, 1425224]
-> [=C2=A0=C2=A0=C2=A0 8.963799] BTRFS error (device vda3): block=3D864539=
-8528 read time
-> tree block corruption detected
-> [=C2=A0=C2=A0=C2=A0 8.967487] audit: type=3D1400 audit(1563023702.540:1=
-9): avc:=C2=A0 denied {
-> write } for=C2=A0 pid=3D2154 comm=3D"cp" name=3D"localtime" dev=3D"vda3=
-" ino=3D1061039
-> scontext=3Dsystem_u:system_r:initrc_t tcontext=3Dsystem_u:object_r:loca=
-le_t
-> tclass=3Dfile permissive=3D0
-> [=C2=A0=C2=A0=C2=A0 9.023608] audit: type=3D1400 audit(1563023702.590:2=
-0): avc:=C2=A0 denied {
-> mounton } for=C2=A0 pid=3D2194 comm=3D"mount" path=3D"/chroot/dns/run/n=
-amed"
-> dev=3D"vda3" ino=3D1061002 scontext=3Dsystem_u:system_r:mount_t
-> tcontext=3Dsystem_u:object_r:named_var_run_t tclass=3Ddir permissive=3D=
-0
-> [=C2=A0=C2=A0=C2=A0 9.038235] audit: type=3D1400 audit(1563023702.610:2=
-1): avc:=C2=A0 denied {
-> getattr } for=C2=A0 pid=3D2199 comm=3D"start-stop-daem" path=3D"pid:[40=
-26531836]"
-> dev=3D"nsfs" ino=3D4026531836 scontext=3Dsystem_u:system_r:initrc_t
-> tcontext=3Dsystem_u:object_r:nsfs_t tclass=3Dfile permissive=3D0
-> [=C2=A0=C2=A0=C2=A0 9.100897] BTRFS critical (device vda3): corrupt lea=
-f: root=3D300
-> block=3D8645398528 slot=3D4 ino=3D259223, invalid inode generation: has=
+--o1bhPH5269qhnDhD7TCUDX60uNl4R4335--
 
-> 139737289170944 expect [0, 1425224]
-> [=C2=A0=C2=A0=C2=A0 9.100900] BTRFS error (device vda3): block=3D864539=
-8528 read time
-> tree block corruption detected
-> [=C2=A0=C2=A0=C2=A0 9.137974] BTRFS critical (device vda3): corrupt lea=
-f: root=3D300
-> block=3D8645398528 slot=3D4 ino=3D259223, invalid inode generation: has=
-
-> 139737289170944 expect [0, 1425224]
-> [=C2=A0=C2=A0=C2=A0 9.137976] BTRFS error (device vda3): block=3D864539=
-8528 read time
-> tree block corruption detected
-> [=C2=A0=C2=A0=C2=A0 9.138095] audit: type=3D1400 audit(1563023702.710:2=
-2): avc:=C2=A0 denied {
-> getattr } for=C2=A0 pid=3D2237 comm=3D"start-stop-daem" path=3D"pid:[40=
-26531836]"
-> dev=3D"nsfs" ino=3D4026531836 scontext=3Dsystem_u:system_r:initrc_t
-> tcontext=3Dsystem_u:object_r:nsfs_t tclass=3Dfile permissive=3D0
-> [=C2=A0=C2=A0=C2=A0 9.138477] BTRFS critical (device vda3): corrupt lea=
-f: root=3D300
-> block=3D8645398528 slot=3D4 ino=3D259223, invalid inode generation: has=
-
-> 139737289170944 expect [0, 1425224]
-> [=C2=A0=C2=A0=C2=A0 9.138480] BTRFS error (device vda3): block=3D864539=
-8528 read time
-> tree block corruption detected
-> [=C2=A0=C2=A0=C2=A0 9.161866] BTRFS critical (device vda3): corrupt lea=
-f: root=3D300
-> block=3D8645398528 slot=3D4 ino=3D259223, invalid inode generation: has=
-
-> 139737289170944 expect [0, 1425224]
-> [=C2=A0=C2=A0=C2=A0 9.161868] BTRFS error (device vda3): block=3D864539=
-8528 read time
-> tree block corruption detected
-> [=C2=A0=C2=A0=C2=A0 9.170228] BTRFS critical (device vda3): corrupt lea=
-f: root=3D300
-> block=3D8645398528 slot=3D4 ino=3D259223, invalid inode generation: has=
-
-> 139737289170944 expect [0, 1425224]
-> [=C2=A0=C2=A0=C2=A0 9.170230] BTRFS error (device vda3): block=3D864539=
-8528 read time
-> tree block corruption detected
-> [=C2=A0=C2=A0=C2=A0 9.214491] BTRFS critical (device vda3): corrupt lea=
-f: root=3D300
-> block=3D8645398528 slot=3D4 ino=3D259223, invalid inode generation: has=
-
-> 139737289170944 expect [0, 1425224]
-> [=C2=A0=C2=A0=C2=A0 9.214494] BTRFS error (device vda3): block=3D864539=
-8528 read time
-> tree block corruption detected
->=20
->=20
-> Alexander
-
-
---yxOruhrNGFzWgv6RUF9ojpel7cPpczqtV--
-
---gCWZNd8M2loc9BCSDq9FUYZnzqqTtjxb7
+--m1PV1kfhfRiXELv1IYXTmVJc4vHLxcqOw
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0qhZoACgkQwj2R86El
-/qgtVggAp1ET5c2Vf2I8RNxscq/xW7x6jcxLUjuzN4wtKIWeyYO1sDa6QuVuwOd8
-jCPMaf3uQ6wyxilryMwh085KZoFfmSHZFGxHdEn0Jc/E1iDwidtsieUzbZKUZVTT
-P+2/mW7uMGU8MQVxjkTEvucsP0m/KBIAC/BzINspxMSBlLpyWpXe3sqToBFo82r/
-VLmOEtPTJjxDEvy3UtEoVs8sI8TH30UVJ+D8+q95o3zYOBVH2CNUDIVhDPdxv9Ja
-r4ABoZ10E/xTo/XOD+v2Hs/JMzRgLKUXqOmo8Uny9IUNbtWQOPn1lU/i/8+rjl5q
-hy2CSey8oFenyyQvaLH3HbfbuYytMg==
-=YUfH
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0q+pUACgkQwj2R86El
+/qiSIQf/T5p3P9Tw8VmNWCsIvhbywER+Q3ay/A9NkDUlqAKwnjZX/4aaYMXN0mg2
+WeaJkVl4kJIVdE1dPxhK4FItFNY0pHBAGxfmUHG4AKw+T9UEt/GKNi++Ly69JgWE
+tZ/sAOksiEtjrTijm3Ha9wM0LIwfFFJQAAinzDjib3oPWNlV+E56WNNzg4hxlugo
+NeVi9qD3qerbWVVV8yNt9pPMw4vIBaSAkUUKRpT2HGOX1QVoE1KrctcC7EpdBnGw
+9dNmOqJ6WV1lIE8VSEi3rbEZutfVU390k6ijDbbWVTvMSz5DEiiiTHMrL1vRZOGS
+BnmbDMEU406KBE16oORmOdfEzADo+w==
+=cxAP
 -----END PGP SIGNATURE-----
 
---gCWZNd8M2loc9BCSDq9FUYZnzqqTtjxb7--
+--m1PV1kfhfRiXELv1IYXTmVJc4vHLxcqOw--
