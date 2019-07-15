@@ -2,64 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C026668400
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2019 09:19:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1C1684C6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2019 10:02:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729223AbfGOHTP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jul 2019 03:19:15 -0400
-Received: from f45.i.mail.ru ([94.100.185.16]:58170 "EHLO f45.i.mail.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728933AbfGOHTO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jul 2019 03:19:14 -0400
-X-Greylist: delayed 1145 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Jul 2019 03:19:13 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail2;
-        h=Content-Transfer-Encoding:Content-Type:Message-ID:Reply-To:Date:MIME-Version:Subject:To:From; bh=ZyoRvjAh86sl2V4TVBHfjLKOzRxc2/QcB5K+OW0F1dE=;
-        b=dwBDwSDvQ55/aS9I7hPgvttaStimiCZflRrfrgx9QOSmd9nZlmMWKLDRpkajfUrrIIVKvNnmXfyTaMoT/VOfW9gyDgrdvn+Mjsi6Qm3hch1NVtf0r1IGVsg7FlC664J0T77iMd99++RAVToXIXeZOIjX9dC1e7nsQd03wi8H5a8=;
-Received: by f45.i.mail.ru with local (envelope-from <naumoffne@mail.ru>)
-        id 1hmvGR-0002Pe-Ij
-        for linux-btrfs@vger.kernel.org; Mon, 15 Jul 2019 10:19:11 +0300
-Received: by e.mail.ru with HTTP;
-        Mon, 15 Jul 2019 10:19:11 +0300
-From:   =?UTF-8?B?0JjQs9C+0YDRjCDQndCw0YPQvNC+0LI=?= <naumoffne@mail.ru>
-To:     =?UTF-8?B?bGludXgtYnRyZnM=?= <linux-btrfs@vger.kernel.org>
-Subject: =?UTF-8?B?SGlnaCB3cml0ZSBpb3Bz?=
+        id S1729207AbfGOICA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jul 2019 04:02:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48980 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729150AbfGOICA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Jul 2019 04:02:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 53CE9AFDB;
+        Mon, 15 Jul 2019 08:01:58 +0000 (UTC)
+Subject: Re: High write iops
+To:     =?UTF-8?B?0JjQs9C+0YDRjCDQndCw0YPQvNC+0LI=?= <naumoffne@mail.ru>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <1563175151.908210506@f45.i.mail.ru>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <a36e572f-6c65-a440-67c5-815f5b14ac7c@suse.com>
+Date:   Mon, 15 Jul 2019 11:01:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Mailer: Mail.Ru Mailer 1.0
-Date:   Mon, 15 Jul 2019 10:19:11 +0300
-Reply-To: =?UTF-8?B?0JjQs9C+0YDRjCDQndCw0YPQvNC+0LI=?= <naumoffne@mail.ru>
-X-Priority: 3 (Normal)
-Message-ID: <1563175151.908210506@f45.i.mail.ru>
+In-Reply-To: <1563175151.908210506@f45.i.mail.ru>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Authentication-Results: f45.i.mail.ru; auth=pass smtp.auth=naumoffne@mail.ru smtp.mailfrom=naumoffne@mail.ru
-X-77F55803: 25892DD85AB26C277F9F52485CB584D7ADE63D71A4B1B0B87904AEFC4768EDD214D1B151A36C956A4ED2A5C103695F1EADAB024B4846C063
-X-7FA49CB5: 70AAF3C13DB7016878DA827A17800CE763EDDDBA5A2DB6ACC4224003CC836476CC500DACC3FED6E28638F802B75D45FFA18204E546F3947C7A2D15A27757B95FAC83A81C8FD4AD23E2E44EFD321A7F275571747095F342E85644E22E05AA81AEE6DE07D961CB05C2376C1FCD0563F95E0B8ADF238913687C52120BFB3F63BC1840A5AABA2AD371197C6FB206A91F05B2DFA115BC79CBEDF082B84DA66C5EB9FAC7C2BEF539CC105AD2E47CDBA5A96583C09775C1D3CA48CF17B107DEF921CE79117882F4460429724CE54428C33FAD30A8DF7F3B2552694A4A5EC4583E1CDF108941B15DA834481F8AA50765F790063783E00425F71A4181389733CBF5DBD5E9B5C8C57E37DE458B4C7702A67D5C33162DBA43225CD8A89F616AD31D0D18CD5CDCFDC61D8DDB14E516BC0FC73BDF143A43847C11F186F3C5E7DDDDC251EA7DABCC89B49CDF41148FA8EF81845B15A4842623479134186CDE6BA297DBC24807EABDAD6C7F3747799A
-X-Mailru-Sender: E5F66E47D5FC5CB62F061C474C29032A69FDE69EB7B5E274133C08A73B32B85F6D9AC9640FEEB7F5252EB2B859AC1B027BE2CDC23E8C93625A866480F5F299C2DBFD4759D6C51B188CB7D1E64D4BCF9EBFEFD633C33BC04EEAB4BC95F72C04283CDA0F3B3F5B9367
-X-Mras: OK
-X-Spam: undefined
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-CkhlbGxvLCAKCnVzaW5nIFVidW50dSBzZXJ2ZXIgMTguMDQuMiBidHJmcyBvbiAvCgoxMCBhYnNv
-bHV0ZWx5IGlkZW50aWNhbCBzZXJ2ZXJzIChEZWxsIE02MzApLCB3aXRoIHRoZSBzYW1lIGNvbmZp
-Z3VyYXRpb24sIHVwZGF0ZWQgMi8xMCBhbmQgZW5jb3VudGVyZWQgdGhpcyBwcm9ibGVtIG9uIGJv
-dGguCkFmdGVyIHVwZ3JhZGluZyBrZXJuZWwgZnJvbSB2ZXJzaW9uIDQuMTUuMC0zNi1nZW5lcmlj
-ICMgMzktVWJ1bnR1IFNNUCBvYnNlcnZpbmcgYXQgdGhlIHNhbWUgc29mdHdhcmUgY29uZmlndXJh
-dGlvbiBhbiBpbmNyZWFzZWQgbG9hZCBvbiB0aGUgZGlzayAod3JpdGUpIC0gTXlTUUwgcHJldmlv
-dXNseSBsb2FkZWQgdGhlIGRpc2sgYXQgMjAtNTAgbUIvcywgYWZ0ZXIgdGhlIHVwZGF0ZSBpdCBz
-dGFydGVkIGxvYWRpbmcgYXQgMTUwLTI1MCBtQi9zLgoKTXlTUUwgY29uZmlndXJhdGlvbiBhbmQg
-cGFja2FnZSB2ZXJzaW9uIHdlcmUgbm90IGNoYW5nZWQuCklmIEkgYm9vdCBpbnRvIHRoZSBvbGQg
-a2VybmVsIHZlcnNpb24gKDQuMTUuMC0zNiksIHRoZSBwcm9ibGVtIGRpc2FwcGVhcnMuIEFsc28g
-dGVzdGVkIGtlcm5lbHM6CjQuMTUuMC01MiAtIHByb2JsZW0gcGVyc2lzdHMKNC4xOC4wLTI1ICho
-d2UpIC0gcHJvYmxlbSBwZXJzaXN0cywgbG9hZCBiZWNhbWUgbW9yZSAyMDAtMjUwIG1CL3MKNS4y
-LXJjNyAodmFuaWxsYSkgLSBwcm9ibGVtIHBlcnNpc3RzCkNoYW5naW5nIC92YXIvbGliL215c3Fs
-IHBhcnRpdGlvbiB0byBleHQ0IGZpeGVzIHRoZSBwcm9ibGVtLgoKV2l0aCB0aGUgaGVscCBvZiBL
-YWktSGVuZyBGZW5nIGluIGJ1Z3MubGF1bmNocGFkLm5ldApmb3VuZGVkIHRoYXQgdGhpcyBjb21t
-aXQgY2F1c2VzIHRoZSByZWdyZXNzaW9uOgpjb21taXQgMzFkMTFiODNiOTZmYWFlZTRiYjUxNGQz
-NzVhMDk0ODkxMTdjM2U4ZApBdXRob3I6IEZpbGlwZSBNYW5hbmEgPCBmZG1hbmFuYUBzdXNlLmNv
-bSA+CkRhdGU6IFdlZCBNYXkgOSAxNjowMTo0NiAyMDE4ICswMTAwCkJ0cmZzOiBmaXggZHVwbGlj
-YXRlIGV4dGVudHMgYWZ0ZXIgZnN5bmMgb2YgZmlsZSB3aXRoIHByZWFsbG9jIGV4dGVudHMKCkFs
-bCB0aGUgZGV0YWlscyB5b3UgY2FuIGZpbmQgaW4gdGhlIGJ1Zy8xODM1MTg1IGF0IGJ1Z3MubGF1
-bmNocGFkLm5ldAotLSAKSWdvciBOYXVtb3Y=
+
+
+On 15.07.19 г. 10:19 ч., Игорь Наумов  wrote:
+> 
+> Hello, 
+> 
+> using Ubuntu server 18.04.2 btrfs on /
+> 
+> 10 absolutely identical servers (Dell M630), with the same configuration, updated 2/10 and encountered this problem on both.
+> After upgrading kernel from version 4.15.0-36-generic # 39-Ubuntu SMP observing at the same software configuration an increased load on the disk (write) - MySQL previously loaded the disk at 20-50 mB/s, after the update it started loading at 150-250 mB/s.
+> 
+> MySQL configuration and package version were not changed.
+> If I boot into the old kernel version (4.15.0-36), the problem disappears. Also tested kernels:
+> 4.15.0-52 - problem persists
+> 4.18.0-25 (hwe) - problem persists, load became more 200-250 mB/s
+> 5.2-rc7 (vanilla) - problem persists
+> Changing /var/lib/mysql partition to ext4 fixes the problem.
+> 
+> With the help of Kai-Heng Feng in bugs.launchpad.net
+> founded that this commit causes the regression:
+> commit 31d11b83b96faaee4bb514d375a09489117c3e8d
+> Author: Filipe Manana < fdmanana@suse.com >
+> Date: Wed May 9 16:01:46 2018 +0100
+> Btrfs: fix duplicate extents after fsync of file with prealloc extents
+> 
+> All the details you can find in the bug/1835185 at bugs.launchpad.net
+
+
+Have you set nodatacow on MySQL data filess? Also have you seen actual
+increase of latency of your mysql queries because it's possible that
+this commit improved what fsync does and allowed your filesystem to
+write more data per unit of time? Have you seen drop in IOPS?
+
+> 
