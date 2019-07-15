@@ -2,67 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF461687B5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2019 13:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCB0A6883A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2019 13:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729888AbfGOLDk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jul 2019 07:03:40 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:44021 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729755AbfGOLDh (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jul 2019 07:03:37 -0400
-Received: by mail-pg1-f196.google.com with SMTP id f25so7533638pgv.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2019 04:03:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=at1U0zLzNGQlxAxn9clrRSHSPpGB2zlKGmciYViXmzQ=;
-        b=QRb1GBodFoBhFvJPBdxPE4VAqCl+I+T1SKUDc8YhKIcP8qXLNKmtBmeLwjLs/FO9lZ
-         75gCGAxY+YSs9c6HnUneWVQ5Kuc7cIu7HA1ZwTW36nCFWmVeEdZxTARPq/JJ6pFyLQCC
-         i5F57UJ0HSPfhhGiuIoSnyQ2CEuZZYzSvF/92SwjNSSKKvpKVbRgR8KxSyIf95yOdirX
-         vUpU9SAkZRrnMLlykrQni0TuHswl2ZAFQk4VFvbGPWK0ElKuMbgEj9smyMqgESRQW96Z
-         0AILN2JphlyIDpV3m3PpFXakYu3MGnxotH6bOcGMyGpkv5udFQwKTslRRPJv+1YEgJFw
-         GLhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=at1U0zLzNGQlxAxn9clrRSHSPpGB2zlKGmciYViXmzQ=;
-        b=kPxsRs0yGgnEya5pGVGiB6vqMt0vNQldDj/wa1vMV2Z9RxnjgaEf5UO2PkUO3B7r4R
-         T9EtcCzsKyiBgGxrkbiSF/onyTqq+Nbfw0fdFYQUqBclbc1C4jgvruyQcmaQuk04/96P
-         h3ra2e4PZeFAOOsBaALu0cUGD8uc8Gpu1oxBGtUdZlf2/JlkdAXn/MZxk1Wa+2SQsq75
-         yfwTJx/R+x1fPbo9UnzqlxC+aKP/BtaqjVtjhrrqOf+mdnxMa1oL/WPBXgwwV0INANTt
-         2ZD5XRUFRL9enoa0zLka4MUhVt1LIHfIb58eYCRZESpV9+WsdEWj2piucnSIIfQD50OK
-         maTg==
-X-Gm-Message-State: APjAAAW9bigImWON3fFFFHIBcf2H0rQitOOnaReYrTagw6PDUAfYzIqD
-        Nq0/We1wHY41RZ9D2upKA1TQS7K3Hx5drWy8/wE=
-X-Google-Smtp-Source: APXvYqzZtOEA+O4p1z4qZpCetbNMVF7GlYWpoUrGzFqj2Xbxoz/rNpVURYzRILo4We5FvCDz7WNaWyJleYBMiLbsRiY=
-X-Received: by 2002:a17:90a:9903:: with SMTP id b3mr28453816pjp.80.1563188616818;
- Mon, 15 Jul 2019 04:03:36 -0700 (PDT)
+        id S1729799AbfGOLdh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jul 2019 07:33:37 -0400
+Received: from smtp02.belwue.de ([129.143.71.87]:61033 "EHLO smtp02.belwue.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729725AbfGOLdh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Jul 2019 07:33:37 -0400
+Received: from fex.rus.uni-stuttgart.de (fex.rus.uni-stuttgart.de [129.69.1.129])
+        by smtp02.belwue.de (Postfix) with SMTP id 9FF9E88C5
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2019 13:33:34 +0200 (MEST)
+Date:   Mon, 15 Jul 2019 13:33:34 +0200
+From:   Ulli Horlacher <framstag@rus.uni-stuttgart.de>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: find subvolume directories
+Message-ID: <20190715113334.GA17669@tik.uni-stuttgart.de>
+Mail-Followup-To: linux-btrfs@vger.kernel.org
+References: <20190712231705.GA16856@tik.uni-stuttgart.de>
 MIME-Version: 1.0
-Received: by 2002:a17:90a:b78d:0:0:0:0 with HTTP; Mon, 15 Jul 2019 04:03:36
- -0700 (PDT)
-From:   Donald Douglas <ddouglasng@gmail.com>
-Date:   Mon, 15 Jul 2019 04:03:36 -0700
-Message-ID: <CALVR28EtFZG5M72gg5535c6GQgjUkrOmnToQem=_bwo5pu8tgQ@mail.gmail.com>
-Subject: Kindly Respond
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190712231705.GA16856@tik.uni-stuttgart.de>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-I am Barr Fredrick Mbogo a business consultant i have a lucrative
-business to discuss with you from the Eastern part of Africa Uganda to
-be precise aimed at agreed percentage upon your acceptance of my hand
-in business and friendship. Kindly respond to me if you are interested
-to partner with me for an update. Very important.
+On Sat 2019-07-13 (01:17), Ulli Horlacher wrote:
+> I need to find (all) subvolume directories.
+> I know, btrfs subvolumes root directories have inode #256, but a
+> "find / -inum 256" is horrible slow!
 
-Yours Sincerely,
-Donald Douglas,
-For,
-Barr Frederick Mbogo
-Legal Consultant.
-Reply to: barrfredmbogo@consultant.com
+At least, I want to exclude non-btrfs filesystems to speed up the find
+run, but find cannot detect snapshots (as part of btrfs):
+
+root@trulla:~# find /opt -inum 256 -printf "%p %F\n"
+/opt btrfs
+/opt/.snapshot/2019-07-10_0000.daily unknown
+/opt/.snapshot/2019-07-11_0000.daily unknown
+/opt/.snapshot/2019-07-12_0000.daily unknown
+/opt/.snapshot/2019-07-13_0000.daily unknown
+/opt/.snapshot/2019-07-15_0000.daily unknown
+/opt/.snapshot/2019-07-15_1200.hourly unknown
+/opt/.snapshot/2019-07-15_1300.hourly unknown
+
+root@trulla:~# find /opt -inum 256 \( -fstype btrfs -o -fstype unknown \) -printf "%p %F\n"
+/opt btrfs
+root@trulla:~# 
+
+root@trulla:~# btrfs subvolume list -o /opt
+ID 14930 gen 2276304 top level 259 path @/opt/.snapshot/2019-07-10_0000.daily
+ID 14957 gen 2277856 top level 259 path @/opt/.snapshot/2019-07-11_0000.daily
+ID 14981 gen 2279354 top level 259 path @/opt/.snapshot/2019-07-12_0000.daily
+ID 15005 gen 2280891 top level 259 path @/opt/.snapshot/2019-07-13_0000.daily
+ID 15052 gen 2283953 top level 259 path @/opt/.snapshot/2019-07-15_0000.daily
+ID 15064 gen 2284721 top level 259 path @/opt/.snapshot/2019-07-15_1200.hourly
+ID 15065 gen 2284788 top level 259 path @/opt/.snapshot/2019-07-15_1300.hourly
+
+root@trulla:~# stat -f -c %T /opt/.snapshot/2019-07-10_0000.daily
+btrfs
+
+
+-- 
+Ullrich Horlacher              Server und Virtualisierung
+Rechenzentrum TIK         
+Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
+Allmandring 30a                Tel:    ++49-711-68565868
+70569 Stuttgart (Germany)      WWW:    http://www.tik.uni-stuttgart.de/
+REF:<20190712231705.GA16856@tik.uni-stuttgart.de>
