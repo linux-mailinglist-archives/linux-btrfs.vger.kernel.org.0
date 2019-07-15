@@ -2,103 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC046682C6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2019 06:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C026668400
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2019 09:19:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726052AbfGOEJP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jul 2019 00:09:15 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:39408 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbfGOEJP (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jul 2019 00:09:15 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6F48tea132857;
-        Mon, 15 Jul 2019 04:09:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=6fvrHdQT17o2rujuT7QWprL32ZCQt5mGRle9dWJ7tBU=;
- b=Agv9UUSwpmShzG+K6VEe57OM/A1Jo8FS/M7jZ39Kt5LMBrTkQLyfO5HhIQdo90UYHmXY
- gVn64XsBneTMIJ1zbrFWbVr9cm5Xp/qW2rtvV1j2SFXVMLMferWq6cb/nxqqjT0lcPDU
- hhwv3iZHZX47656+26B8zXh/yFq5Qh7L6dHaslI0OLeHVuVYBTszYGAG4LLfJy3myVR2
- dU+D1XRolHay3J0fUoqh4jlDtnbK4C9Ge84zBkAMfvWxJ8TSUnql43Ec8EdT4uLbI41g
- ckkqMDzAy7bTDsRuvUvOmfvB1vdbDcVhjlvfuE0HADNOp8APvlteFxyQ5+Wt7evhk/aW ag== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2tq78pc277-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Jul 2019 04:09:10 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6F47t1A047083;
-        Mon, 15 Jul 2019 04:09:10 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2tq6mm2hdd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 15 Jul 2019 04:09:10 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6F4988K020091;
-        Mon, 15 Jul 2019 04:09:09 GMT
-Received: from [10.190.130.61] (/192.188.170.109)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 14 Jul 2019 21:09:08 -0700
-Subject: Re: [PATCH v2.1 08/10] btrfs-progs: image: Introduce -d option to
- dump data
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190704061103.20096-1-wqu@suse.com>
- <20190704061103.20096-9-wqu@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <0909bbd0-5e22-8826-e067-8d38cffa91c7@oracle.com>
-Date:   Mon, 15 Jul 2019 12:09:05 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        id S1729223AbfGOHTP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jul 2019 03:19:15 -0400
+Received: from f45.i.mail.ru ([94.100.185.16]:58170 "EHLO f45.i.mail.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728933AbfGOHTO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Jul 2019 03:19:14 -0400
+X-Greylist: delayed 1145 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Jul 2019 03:19:13 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail2;
+        h=Content-Transfer-Encoding:Content-Type:Message-ID:Reply-To:Date:MIME-Version:Subject:To:From; bh=ZyoRvjAh86sl2V4TVBHfjLKOzRxc2/QcB5K+OW0F1dE=;
+        b=dwBDwSDvQ55/aS9I7hPgvttaStimiCZflRrfrgx9QOSmd9nZlmMWKLDRpkajfUrrIIVKvNnmXfyTaMoT/VOfW9gyDgrdvn+Mjsi6Qm3hch1NVtf0r1IGVsg7FlC664J0T77iMd99++RAVToXIXeZOIjX9dC1e7nsQd03wi8H5a8=;
+Received: by f45.i.mail.ru with local (envelope-from <naumoffne@mail.ru>)
+        id 1hmvGR-0002Pe-Ij
+        for linux-btrfs@vger.kernel.org; Mon, 15 Jul 2019 10:19:11 +0300
+Received: by e.mail.ru with HTTP;
+        Mon, 15 Jul 2019 10:19:11 +0300
+From:   =?UTF-8?B?0JjQs9C+0YDRjCDQndCw0YPQvNC+0LI=?= <naumoffne@mail.ru>
+To:     =?UTF-8?B?bGludXgtYnRyZnM=?= <linux-btrfs@vger.kernel.org>
+Subject: =?UTF-8?B?SGlnaCB3cml0ZSBpb3Bz?=
 MIME-Version: 1.0
-In-Reply-To: <20190704061103.20096-9-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9318 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907150048
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9318 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907150048
+X-Mailer: Mail.Ru Mailer 1.0
+Date:   Mon, 15 Jul 2019 10:19:11 +0300
+Reply-To: =?UTF-8?B?0JjQs9C+0YDRjCDQndCw0YPQvNC+0LI=?= <naumoffne@mail.ru>
+X-Priority: 3 (Normal)
+Message-ID: <1563175151.908210506@f45.i.mail.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: base64
+Authentication-Results: f45.i.mail.ru; auth=pass smtp.auth=naumoffne@mail.ru smtp.mailfrom=naumoffne@mail.ru
+X-77F55803: 25892DD85AB26C277F9F52485CB584D7ADE63D71A4B1B0B87904AEFC4768EDD214D1B151A36C956A4ED2A5C103695F1EADAB024B4846C063
+X-7FA49CB5: 70AAF3C13DB7016878DA827A17800CE763EDDDBA5A2DB6ACC4224003CC836476CC500DACC3FED6E28638F802B75D45FFA18204E546F3947C7A2D15A27757B95FAC83A81C8FD4AD23E2E44EFD321A7F275571747095F342E85644E22E05AA81AEE6DE07D961CB05C2376C1FCD0563F95E0B8ADF238913687C52120BFB3F63BC1840A5AABA2AD371197C6FB206A91F05B2DFA115BC79CBEDF082B84DA66C5EB9FAC7C2BEF539CC105AD2E47CDBA5A96583C09775C1D3CA48CF17B107DEF921CE79117882F4460429724CE54428C33FAD30A8DF7F3B2552694A4A5EC4583E1CDF108941B15DA834481F8AA50765F790063783E00425F71A4181389733CBF5DBD5E9B5C8C57E37DE458B4C7702A67D5C33162DBA43225CD8A89F616AD31D0D18CD5CDCFDC61D8DDB14E516BC0FC73BDF143A43847C11F186F3C5E7DDDDC251EA7DABCC89B49CDF41148FA8EF81845B15A4842623479134186CDE6BA297DBC24807EABDAD6C7F3747799A
+X-Mailru-Sender: E5F66E47D5FC5CB62F061C474C29032A69FDE69EB7B5E274133C08A73B32B85F6D9AC9640FEEB7F5252EB2B859AC1B027BE2CDC23E8C93625A866480F5F299C2DBFD4759D6C51B188CB7D1E64D4BCF9EBFEFD633C33BC04EEAB4BC95F72C04283CDA0F3B3F5B9367
+X-Mras: OK
+X-Spam: undefined
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 4/7/19 2:11 PM, Qu Wenruo wrote:
->   static int copy_from_extent_tree(struct metadump_struct *metadump,
-> -				 struct btrfs_path *path)
-> +				 struct btrfs_path *path, bool dump_data)
->   {
->   	struct btrfs_root *extent_root;
->   	struct extent_buffer *leaf;
-> @@ -948,9 +960,15 @@ static int copy_from_extent_tree(struct metadump_struct *metadump,
->   			ei = btrfs_item_ptr(leaf, path->slots[0],
->   					    struct btrfs_extent_item);
->   			if (btrfs_extent_flags(leaf, ei) &
-> -			    BTRFS_EXTENT_FLAG_TREE_BLOCK) {
-> +			    BTRFS_EXTENT_FLAG_TREE_BLOCK ||
-> +			    btrfs_extent_flags(leaf, ei) &
-> +			    BTRFS_EXTENT_FLAG_DATA) {
-> +				bool is_data;
-> +
-> +				is_data = btrfs_extent_flags(leaf, ei) &
-> +					  BTRFS_EXTENT_FLAG_DATA;
->   				ret = add_extent(bytenr, num_bytes, metadump,
-> -						 0);
-> +						 is_data);
-
-
-   Both with and without -d option copies the data.
-   Should check dump_data.
-
-Thanks, Anand
+CkhlbGxvLCAKCnVzaW5nIFVidW50dSBzZXJ2ZXIgMTguMDQuMiBidHJmcyBvbiAvCgoxMCBhYnNv
+bHV0ZWx5IGlkZW50aWNhbCBzZXJ2ZXJzIChEZWxsIE02MzApLCB3aXRoIHRoZSBzYW1lIGNvbmZp
+Z3VyYXRpb24sIHVwZGF0ZWQgMi8xMCBhbmQgZW5jb3VudGVyZWQgdGhpcyBwcm9ibGVtIG9uIGJv
+dGguCkFmdGVyIHVwZ3JhZGluZyBrZXJuZWwgZnJvbSB2ZXJzaW9uIDQuMTUuMC0zNi1nZW5lcmlj
+ICMgMzktVWJ1bnR1IFNNUCBvYnNlcnZpbmcgYXQgdGhlIHNhbWUgc29mdHdhcmUgY29uZmlndXJh
+dGlvbiBhbiBpbmNyZWFzZWQgbG9hZCBvbiB0aGUgZGlzayAod3JpdGUpIC0gTXlTUUwgcHJldmlv
+dXNseSBsb2FkZWQgdGhlIGRpc2sgYXQgMjAtNTAgbUIvcywgYWZ0ZXIgdGhlIHVwZGF0ZSBpdCBz
+dGFydGVkIGxvYWRpbmcgYXQgMTUwLTI1MCBtQi9zLgoKTXlTUUwgY29uZmlndXJhdGlvbiBhbmQg
+cGFja2FnZSB2ZXJzaW9uIHdlcmUgbm90IGNoYW5nZWQuCklmIEkgYm9vdCBpbnRvIHRoZSBvbGQg
+a2VybmVsIHZlcnNpb24gKDQuMTUuMC0zNiksIHRoZSBwcm9ibGVtIGRpc2FwcGVhcnMuIEFsc28g
+dGVzdGVkIGtlcm5lbHM6CjQuMTUuMC01MiAtIHByb2JsZW0gcGVyc2lzdHMKNC4xOC4wLTI1ICho
+d2UpIC0gcHJvYmxlbSBwZXJzaXN0cywgbG9hZCBiZWNhbWUgbW9yZSAyMDAtMjUwIG1CL3MKNS4y
+LXJjNyAodmFuaWxsYSkgLSBwcm9ibGVtIHBlcnNpc3RzCkNoYW5naW5nIC92YXIvbGliL215c3Fs
+IHBhcnRpdGlvbiB0byBleHQ0IGZpeGVzIHRoZSBwcm9ibGVtLgoKV2l0aCB0aGUgaGVscCBvZiBL
+YWktSGVuZyBGZW5nIGluIGJ1Z3MubGF1bmNocGFkLm5ldApmb3VuZGVkIHRoYXQgdGhpcyBjb21t
+aXQgY2F1c2VzIHRoZSByZWdyZXNzaW9uOgpjb21taXQgMzFkMTFiODNiOTZmYWFlZTRiYjUxNGQz
+NzVhMDk0ODkxMTdjM2U4ZApBdXRob3I6IEZpbGlwZSBNYW5hbmEgPCBmZG1hbmFuYUBzdXNlLmNv
+bSA+CkRhdGU6IFdlZCBNYXkgOSAxNjowMTo0NiAyMDE4ICswMTAwCkJ0cmZzOiBmaXggZHVwbGlj
+YXRlIGV4dGVudHMgYWZ0ZXIgZnN5bmMgb2YgZmlsZSB3aXRoIHByZWFsbG9jIGV4dGVudHMKCkFs
+bCB0aGUgZGV0YWlscyB5b3UgY2FuIGZpbmQgaW4gdGhlIGJ1Zy8xODM1MTg1IGF0IGJ1Z3MubGF1
+bmNocGFkLm5ldAotLSAKSWdvciBOYXVtb3Y=
