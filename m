@@ -2,138 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30C7E68A59
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2019 15:22:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6902F68A93
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Jul 2019 15:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730213AbfGONWF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jul 2019 09:22:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51020 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730124AbfGONWE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jul 2019 09:22:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DB533AC15
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2019 13:22:02 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: don't leak extent_map in btrfs_get_io_geometry()
-To:     Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20190715131612.14040-1-jthumshirn@suse.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <91c20cad-95c2-5b2a-cb51-1710dd5fbdca@suse.com>
-Date:   Mon, 15 Jul 2019 16:22:01 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1730190AbfGONbF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jul 2019 09:31:05 -0400
+Received: from 13.mo3.mail-out.ovh.net ([188.165.33.202]:47454 "EHLO
+        13.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730205AbfGONbF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Jul 2019 09:31:05 -0400
+X-Greylist: delayed 509 seconds by postgrey-1.27 at vger.kernel.org; Mon, 15 Jul 2019 09:31:01 EDT
+Received: from player696.ha.ovh.net (unknown [10.108.57.38])
+        by mo3.mail-out.ovh.net (Postfix) with ESMTP id D987621E056
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2019 15:22:29 +0200 (CEST)
+Received: from grubelek.pl (31-178-94-81.dynamic.chello.pl [31.178.94.81])
+        (Authenticated sender: szarpaj@grubelek.pl)
+        by player696.ha.ovh.net (Postfix) with ESMTPSA id 8545D805702E
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2019 13:22:29 +0000 (UTC)
+Received: by teh mailsystemz
+        id 743A91597D72; Mon, 15 Jul 2019 15:22:28 +0200 (CEST)
+Date:   Mon, 15 Jul 2019 15:22:28 +0200
+From:   Piotr Szymaniak <szarpaj@grubelek.pl>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: find subvolume directories
+Message-ID: <20190715132228.GF4212@pontus.sran>
+References: <20190712231705.GA16856@tik.uni-stuttgart.de>
+ <75e5bd20-fafa-07fd-afd9-159e9aacb7db@gmail.com>
+ <20190713082759.GB16856@tik.uni-stuttgart.de>
+ <62366a29-a8ea-a889-f857-0305eba99051@gmail.com>
+ <20190713112832.GA30696@tik.uni-stuttgart.de>
 MIME-Version: 1.0
-In-Reply-To: <20190715131612.14040-1-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <20190713112832.GA30696@tik.uni-stuttgart.de>
+User-Agent: Mutt/1.12.0 (2019-05-25)
+X-Ovh-Tracer-Id: 9085167823910278807
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduvddrheekgdeivdcutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecu
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 15.07.19 г. 16:16 ч., Johannes Thumshirn wrote:
-> btrfs_get_io_geometry() calls btrfs_get_chunk_map() to acquire a reference
-> on a extent_map, but on normal operation it does not drop this reference
-> anymore.
+On Sat, Jul 13, 2019 at 01:28:32PM +0200, Ulli Horlacher wrote:
+> On Sat 2019-07-13 (14:10), Andrei Borzenkov wrote:
 > 
-> This leads to excessive kmemleak reports.
+> > >> It is entirely up to the user who creates it how subvolumes are named and
+> > >> structured. You can well have /foo, /bar, /baz mounted as /, /var and
+> > >> /home.
+> > > 
+> > > And how can I find them in my mounted filesystem?
+> > > THIS is my problem.
+> > 
+> > I am not sure what problem you are trying to solve
 > 
-> Always call free_extent_map(), not just in the error case.
-> 
-> Fixes: 5f1411265e16 ("btrfs: Introduce btrfs_io_geometry infrastructure")
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> I want a list of all subvolumes directories (which I can access with UNIX
+> tools like cd and ls or btrfs subvolume ...).
 
-My bad:
+Hi,
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+what about btrfs sub list [options]? (see man btrfs-subvolume)
+
+You can make ie.:
+root@ed:~# btrfs sub list -a / | head -10
+ID 259 gen 142795 top level 5 path <FS_TREE>/@rut
+ID 267 gen 1599 top level 259 path @rut/BUP/190417-1748_Image_SYSVOL
+ID 268 gen 2516 top level 259 path @rut/BUP/190417-1750_Image_C
+ID 326 gen 1599 top level 259 path @rut/BUP/190418-1009
+ID 359 gen 1599 top level 259 path @rut/BUP/190418-1751
+ID 361 gen 1599 top level 259 path @rut/BUP/190419-0812
+ID 364 gen 1599 top level 259 path @rut/BUP/190423-1025
+ID 369 gen 2086 top level 259 path @rut/BUP/190423-2232
+
+But, I'm a bit like Andrei, and not sure what are you looking for. You
+already asked about "mounted" and then about "list of all subvols"...
+So you want to find mounted subvolumes or all subvolumes or all mounted
+subvolumes or ...?
 
 
-> ---
->  fs/btrfs/volumes.c | 10 +++++++---
->  1 file changed, 7 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index a13ddba1ebc3..d74b74ca07af 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -5941,6 +5941,7 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
->  	u64 stripe_len;
->  	u64 raid56_full_stripe_start = (u64)-1;
->  	int data_stripes;
-> +	int ret = 0;
->  
->  	ASSERT(op != BTRFS_MAP_DISCARD);
->  
-> @@ -5961,8 +5962,8 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
->  		btrfs_crit(fs_info,
->  "stripe math has gone wrong, stripe_offset=%llu offset=%llu start=%llu logical=%llu stripe_len=%llu",
->  			stripe_offset, offset, em->start, logical, stripe_len);
-> -		free_extent_map(em);
-> -		return -EINVAL;
-> +		ret = -EINVAL;
-> +		goto out;
->  	}
->  
->  	/* stripe_offset is the offset of this block in its stripe */
-> @@ -6009,7 +6010,10 @@ int btrfs_get_io_geometry(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
->  	io_geom->stripe_offset = stripe_offset;
->  	io_geom->raid56_stripe_offset = raid56_full_stripe_start;
->  
-> -	return 0;
-> +out:
-> +	/* once for us */
-> +	free_extent_map(em);
-> +	return ret;
->  }
->  
->  static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
-> 
+Best regards,
+Piotr Szymaniak.
+-- 
+Najgoretsze miejsce w piekle szykowane jest nie tym, ktorzy zabijaja,
+ale tym, ktorzy sie bezczynnie temu przygladaja.
+  -- Dante Alighieri
