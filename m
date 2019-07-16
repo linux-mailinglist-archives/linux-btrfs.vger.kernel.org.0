@@ -2,64 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A69EF6AB4C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 17:04:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C06306AB74
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 17:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387761AbfGPPEW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jul 2019 11:04:22 -0400
-Received: from mga05.intel.com ([192.55.52.43]:64284 "EHLO mga05.intel.com"
+        id S1728619AbfGPPLg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jul 2019 11:11:36 -0400
+Received: from verein.lst.de ([213.95.11.211]:42469 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728513AbfGPPEW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jul 2019 11:04:22 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Jul 2019 08:04:21 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.63,498,1557212400"; 
-   d="scan'208";a="342742570"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga005.jf.intel.com with ESMTP; 16 Jul 2019 08:04:19 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-        id AF899159; Tue, 16 Jul 2019 18:04:18 +0300 (EEST)
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        id S1728384AbfGPPLg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Jul 2019 11:11:36 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id B3D41227A81; Tue, 16 Jul 2019 17:11:33 +0200 (CEST)
+Date:   Tue, 16 Jul 2019 17:11:33 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Lu Fengqi <lufq.fnst@cn.fujitsu.com>,
-        linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH v2 3/3] uuid: Remove no more needed macro
-Date:   Tue, 16 Jul 2019 18:04:18 +0300
-Message-Id: <20190716150418.84018-3-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190716150418.84018-1-andriy.shevchenko@linux.intel.com>
+        linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        David Sterba <dsterba@suse.cz>
+Subject: Re: [PATCH v2 1/3] uuid: Add inline helpers to operate on raw
+ buffers
+Message-ID: <20190716151133.GA6073@lst.de>
 References: <20190716150418.84018-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190716150418.84018-1-andriy.shevchenko@linux.intel.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-uuid_le_gen() is no used anymore, remove it for good.
+On Tue, Jul 16, 2019 at 06:04:16PM +0300, Andy Shevchenko wrote:
+> +static inline void guid_copy_from_raw(guid_t *dst, const __u8 *src)
+> +{
+> +	memcpy(dst, (const guid_t *)src, sizeof(guid_t));
+> +}
+> +
+> +static inline void guid_copy_to_raw(__u8 *dst, const guid_t *src)
+> +{
+> +	memcpy((guid_t *)dst, src, sizeof(guid_t));
+> +}
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- include/linux/uuid.h | 1 -
- 1 file changed, 1 deletion(-)
+Maybe import_guid/export_guid is a better name?
 
-diff --git a/include/linux/uuid.h b/include/linux/uuid.h
-index b8e431d65222..7efa86a1b588 100644
---- a/include/linux/uuid.h
-+++ b/include/linux/uuid.h
-@@ -117,7 +117,6 @@ int guid_parse(const char *uuid, guid_t *u);
- int uuid_parse(const char *uuid, uuid_t *u);
- 
- /* backwards compatibility, don't use in new code */
--#define uuid_le_gen(u)		guid_gen(u)
- #define uuid_le_to_bin(guid, u)	guid_parse(guid, u)
- 
- static inline int uuid_le_cmp(const guid_t u1, const guid_t u2)
--- 
-2.20.1
+Either way, I don't think we need the casts, and they probably want
+kerneldoc comments describing their use.
 
+Same for the uuid side.
+
+> +static inline void guid_gen_raw(__u8 *guid)
+> +{
+> +	guid_gen((guid_t *)guid);
+> +}
+> +
+> +static inline void uuid_gen_raw(__u8 *uuid)
+> +{
+> +	uuid_gen((uuid_t *)uuid);
+> +}
+
+I hate this raw naming.  If people really want to use the generators on
+u8 fields a cast seems more descriptive then hiding it.
