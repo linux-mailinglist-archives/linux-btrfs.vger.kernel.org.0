@@ -2,127 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD636AA55
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 16:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9036D6AB4E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 17:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387847AbfGPOIv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jul 2019 10:08:51 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:44720 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726039AbfGPOIv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jul 2019 10:08:51 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GE3wn9084632;
-        Tue, 16 Jul 2019 14:08:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=mTnmIQweDM9AoYeIkocV1y7Epb+g4+9Dfn8HM08SA+w=;
- b=zVMf4ncPFqWuJPW0km1qCFiisIlCJsIJOrc0NamfwnyPgZP04LO8rp4064jAShQAmSrc
- OlsAAUKPRQQ34Y7c8bRx+yQYRe+5L9qvUwRk9VJofy6dO7V5JpqWNmhpXdm0sdHBQcrt
- FnvYL1+2DjnxTiBHIClr2dOFzgpiGyD7r9Peao0Lm5sHn4iC0v+MprLiOHhgZ/jNLz6Y
- NPhUoTk7ZUSU0DzCsJeWQF4t1M5ZNl8S8gAf6KVbJ47JSlxIhVUFV/4baMMq+7JXRVJf
- XiaHp5l2999q9Ul812odMciksyY0ajCOX96dlap9iDVaWeaWLeryJXog+1uymGNqZCvZ xA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2tq6qtmugj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jul 2019 14:08:41 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6GE7pR3010294;
-        Tue, 16 Jul 2019 14:08:40 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2tq4dtxvsp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 16 Jul 2019 14:08:40 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6GE8dJS028967;
-        Tue, 16 Jul 2019 14:08:39 GMT
-Received: from [192.168.1.119] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 16 Jul 2019 14:08:39 +0000
-Subject: Re: [PATCH] btrfs: ratelimit device path change info on mounted
- device
-From:   Anand Jain <anand.jain@oracle.com>
-To:     g.btrfs@cobb.uk.net, calestyo@scientia.net
-Cc:     linux-btrfs@vger.kernel.org
-References: <5d8baf80-4fb3-221f-5ab4-e98a838f63e1@cobb.uk.net>
- <20190716135910.848-1-anand.jain@oracle.com>
-Message-ID: <f6cf1499-baf4-087a-0778-305aa1fcf2bc@oracle.com>
-Date:   Tue, 16 Jul 2019 22:08:27 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        id S2387892AbfGPPEX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jul 2019 11:04:23 -0400
+Received: from mga17.intel.com ([192.55.52.151]:49677 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728513AbfGPPEW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Jul 2019 11:04:22 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 16 Jul 2019 08:04:22 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,498,1557212400"; 
+   d="scan'208";a="251183689"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga001.jf.intel.com with ESMTP; 16 Jul 2019 08:04:18 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 9242CFD; Tue, 16 Jul 2019 18:04:18 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Lu Fengqi <lufq.fnst@cn.fujitsu.com>,
+        linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Sterba <dsterba@suse.cz>
+Subject: [PATCH v2 1/3] uuid: Add inline helpers to operate on raw buffers
+Date:   Tue, 16 Jul 2019 18:04:16 +0300
+Message-Id: <20190716150418.84018-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-In-Reply-To: <20190716135910.848-1-anand.jain@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9320 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1907160173
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9320 signatures=668688
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1907160173
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Sometimes we may need to copy UUID from or to the raw buffer, which
+is provided outside of kernel and can't be declared as UUID type.
+With current API this operation will require an explicit casting
+to one of UUID types and length, that is always a constant
+derived as sizeof of the certain UUID type.
 
-Graham, Chris,
+Provide a helpful set of inline helpers to minimize developer's effort
+in the cases when raw buffers are involved.
 
-  I am unable to reproduce, would you be able to try this patch and let 
-me know if this fixes the problem?
+Suggested-by: David Sterba <dsterba@suse.cz>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ include/linux/uuid.h | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-Thanks, Anand
-
-
-On 16/7/19 9:59 PM, Anand Jain wrote:
-> If there are more than one path to a device, the last scanned path
-> will map to the mounted FS. In some Linux based os there appears to be a
-> system script (autofs?) which fails to notice that a device's alternative
-> path is already mounted, and so the change in device-path gets logged
-> every ~2mins whenever such a script is active.
-> 
-> kernel: [33017.407252] BTRFS info (device sdc3):
-> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-> old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
-> kernel: [33017.522242] BTRFS info (device sdc3):
-> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-> old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
-> kernel: [33018.797161] BTRFS info (device sdc3):
-> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-> old:/dev/mapper/cryptdata4tb--vg-backup new:/dev/dm-13
-> kernel: [33019.061631] BTRFS info (device sdc3):
-> device fsid 4d1ba5af-8b89-4cb5-96c6-55d1f028a202 devid 4 moved
-> old:/dev/dm-13 new:/dev/mapper/cryptdata4tb--vg-backup
-> 
-> Fix this by using the ratelimit printk.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> Reported-by: g.btrfs@cobb.uk.net
-> Reported-by: calestyo@scientia.net
-> ---
->   fs/btrfs/volumes.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index a13ddba1ebc3..b4c4add7b5e7 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1086,7 +1086,7 @@ static noinline struct btrfs_device *device_list_add(const char *path,
->   				return ERR_PTR(-EEXIST);
->   			}
->   			bdput(path_bdev);
-> -			btrfs_info_in_rcu(device->fs_info,
-> +			btrfs_info_rl_in_rcu(device->fs_info,
->   				"device fsid %pU devid %llu moved old:%s new:%s",
->   				disk_super->fsid, devid,
->   				rcu_str_deref(device->name), path);
-> 
+diff --git a/include/linux/uuid.h b/include/linux/uuid.h
+index 0c631e2a73b6..b8e431d65222 100644
+--- a/include/linux/uuid.h
++++ b/include/linux/uuid.h
+@@ -43,11 +43,26 @@ static inline void guid_copy(guid_t *dst, const guid_t *src)
+ 	memcpy(dst, src, sizeof(guid_t));
+ }
+ 
++static inline void guid_copy_from_raw(guid_t *dst, const __u8 *src)
++{
++	memcpy(dst, (const guid_t *)src, sizeof(guid_t));
++}
++
++static inline void guid_copy_to_raw(__u8 *dst, const guid_t *src)
++{
++	memcpy((guid_t *)dst, src, sizeof(guid_t));
++}
++
+ static inline bool guid_is_null(const guid_t *guid)
+ {
+ 	return guid_equal(guid, &guid_null);
+ }
+ 
++static inline bool guid_is_null_raw(const __u8 *guid)
++{
++	return guid_equal((const guid_t *)guid, &guid_null);
++}
++
+ static inline bool uuid_equal(const uuid_t *u1, const uuid_t *u2)
+ {
+ 	return memcmp(u1, u2, sizeof(uuid_t)) == 0;
+@@ -58,16 +73,41 @@ static inline void uuid_copy(uuid_t *dst, const uuid_t *src)
+ 	memcpy(dst, src, sizeof(uuid_t));
+ }
+ 
++static inline void uuid_copy_from_raw(uuid_t *dst, const __u8 *src)
++{
++	memcpy(dst, (const uuid_t *)src, sizeof(uuid_t));
++}
++
++static inline void uuid_copy_to_raw(__u8 *dst, const uuid_t *src)
++{
++	memcpy((uuid_t *)dst, src, sizeof(uuid_t));
++}
++
+ static inline bool uuid_is_null(const uuid_t *uuid)
+ {
+ 	return uuid_equal(uuid, &uuid_null);
+ }
+ 
++static inline bool uuid_is_null_raw(const __u8 *uuid)
++{
++	return uuid_equal((const uuid_t *)uuid, &uuid_null);
++}
++
+ void generate_random_uuid(unsigned char uuid[16]);
+ 
+ extern void guid_gen(guid_t *u);
+ extern void uuid_gen(uuid_t *u);
+ 
++static inline void guid_gen_raw(__u8 *guid)
++{
++	guid_gen((guid_t *)guid);
++}
++
++static inline void uuid_gen_raw(__u8 *uuid)
++{
++	uuid_gen((uuid_t *)uuid);
++}
++
+ bool __must_check uuid_is_valid(const char *uuid);
+ 
+ extern const u8 guid_index[16];
+-- 
+2.20.1
 
