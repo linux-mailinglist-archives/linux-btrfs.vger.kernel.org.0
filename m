@@ -2,82 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BA486A0BB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 05:09:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 981926A269
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 08:46:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730380AbfGPDG7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jul 2019 23:06:59 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:44666 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728256AbfGPDG7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jul 2019 23:06:59 -0400
-Received: by mail-wr1-f51.google.com with SMTP id p17so19143197wrf.11
-        for <linux-btrfs@vger.kernel.org>; Mon, 15 Jul 2019 20:06:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=O1qlwcr+ZdZoWydP6VLXQ1m1ciEaqAiA/xnPq3mr/CM=;
-        b=muxplhhUkNkr+bJv8o813jZKxOiryS88HxF17OOW2MMLtqm664in/cI1ROwAjEkk/8
-         j8fzY6gjNdfd5my2CgyFUpVqhQHrHBjwSPiaMyhTWkBGY2CCw8EGS9jkTM01//hZJT5q
-         Th/8iYpXFgwtqCEbzDOuq9GogqCvX+nBYn2oedoIJLl95h/HTxNunoXHrcFdZBpt2lIf
-         DAT63M2ol5PDzYjrwUc1gI4ZfnppgSrntlVbmbFdsOdlk8nzCmUQB88CCAGYtRTqaj04
-         xE3MLwbl8zBVHSD6JwMFcGWjcBW9XhCvtnVQeMktAG6x0aBCrpSz1WkEOVk4lSiHtaE0
-         Vocg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=O1qlwcr+ZdZoWydP6VLXQ1m1ciEaqAiA/xnPq3mr/CM=;
-        b=Zr99smeFsNbVWSCQ63f6Fx5a4VTVjDTuduRPnEhV9fDBP10cdKBhCHTIw92JvpsQkv
-         8QSKFQjG3xSh2XUhPJb5hWrlbvVDT0AK8iL6v4sgUBeQVLU3m3wmdr2eKybsqr7j81kb
-         XIO+liblM2g89rFT5NucXTeRLlIdXKfWpaCiOdQZsCa9CHwmgiZXms4rNOuTK0rSWcj0
-         IkfRsWpF3Fo+iAUOTE5tYIOqBqfE859s0atH5noHRTjJy4MrnmqGASkGT7uRrPIOTfZq
-         paxw+o4yrkgg8vxKT6BzhBn7qAJ+FTB6cHtB7XIq/i5FyGFm6xkXmFEcKC/VJx34SvFp
-         5rdQ==
-X-Gm-Message-State: APjAAAWqR0LDj0P2gPBrAly1UGA62zmMAPiMTWbTRdZQu6O45fTkA58Q
-        Qf656dbMdroOfn1DxIYGwRDCWKb/VntUY2cvfIY=
-X-Google-Smtp-Source: APXvYqy3M/jE8WqCcjOvttRIkN2kfRdS2NuwyR5SkSe7hqFqIF8PiERW/nlmWvwVVPYutWz/gdSIOAxz385Zoi7esP0=
-X-Received: by 2002:adf:f38a:: with SMTP id m10mr31108843wro.268.1563246417797;
- Mon, 15 Jul 2019 20:06:57 -0700 (PDT)
+        id S1726408AbfGPGqT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jul 2019 02:46:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54416 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725783AbfGPGqT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Jul 2019 02:46:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6651BAC24;
+        Tue, 16 Jul 2019 06:46:17 +0000 (UTC)
+Subject: Re: [PATCH] btrfs-progs: add verbose option to btrfs device scan
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <20190715144241.1077-1-anand.jain@oracle.com>
+ <4f150d66-0c4d-b0f2-4cf9-9bc1194d83e9@suse.com>
+ <e8aaa2cf-3e10-4ff9-dabe-c6192583e93c@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <d40bf6e2-cf8f-d2af-a769-b217f97ab7dc@suse.com>
+Date:   Tue, 16 Jul 2019 09:46:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <6f5f659ce3967c7cef2c6f8f9c07e8be8e5a2a70.camel@render-wahnsinn.de>
- <fddf59e6-b4c5-307b-2cb4-fbb8e120ac61@gmx.com>
-In-Reply-To: <fddf59e6-b4c5-307b-2cb4-fbb8e120ac61@gmx.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 15 Jul 2019 21:06:46 -0600
-Message-ID: <CAJCQCtQZhTpbEZ_ejwmXrJOBiXxUZtb64cnkFCQTdhkzbaqxDg@mail.gmail.com>
-Subject: Re: Best Practices (or stuff to avoid) with Raid5/6 ?
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Robert Krig <robert.krig@render-wahnsinn.de>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <e8aaa2cf-3e10-4ff9-dabe-c6192583e93c@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 15, 2019 at 8:09 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->
->
->
-> On 2019/7/15 =E4=B8=8B=E5=8D=8811:02, Robert Krig wrote:
-
-> > That being said, are there any recommended best practices when
-> > deploying btrfs with raid5?
->
-> If there is any possibility of powerloss, kernel panic, or even unstable
-> cable connection, then raid5/6 feature from btrfs is not as good as
-> mdraid, mostly due to the write hole problem which hasn't been addressed
-> in btrfs.
-
-In the case of any of those problems, you need to start a scrub. As
-long as there's no additional failure during the scrub, it'll fix any
-problems.
 
 
+On 16.07.19 г. 4:26 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2019/7/15 下午11:09, Nikolay Borisov wrote:
+>>
+>>
+>> On 15.07.19 г. 17:42 ч., Anand Jain wrote:
+>>> To help debug device scan issues, add verbose option to btrfs device scan.
+>>>
+>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>>
+>> I fail to see what this patch helps for. We get the path in case of
+>> errors, in case of success what good could the path be ?
+> 
+> AFAIK it would provide an easy way to debug blkid related bug.
+> 
+> E.g. scan only works on some devices and misses some devices.
 
---=20
-Chris Murphy
+In this case (and I already debugged one such case) it's invaluable to
+use LIBBLKID_DEBUG environment variable, the debug string added in this
+patch won't help in this particular case.
+
+<snip>
