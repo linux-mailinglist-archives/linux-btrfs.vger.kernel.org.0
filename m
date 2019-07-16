@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3CB6A475
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 11:00:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1302D6A476
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 11:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731589AbfGPJAy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 16 Jul 2019 05:00:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59066 "EHLO mx1.suse.de"
+        id S1731690AbfGPJA4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 16 Jul 2019 05:00:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59090 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726465AbfGPJAx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 16 Jul 2019 05:00:53 -0400
+        id S1726465AbfGPJA4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 16 Jul 2019 05:00:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D76A1B0BF
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2019 09:00:52 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 689B5B138
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Jul 2019 09:00:54 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/3] btrfs: delayed-inode: Kill the BUG_ON() in btrfs_delete_delayed_dir_index()
-Date:   Tue, 16 Jul 2019 17:00:32 +0800
-Message-Id: <20190716090034.11641-2-wqu@suse.com>
+Subject: [PATCH 2/3] btrfs: extent-tree: Make sure we only allocate extents from block groups with the same type
+Date:   Tue, 16 Jul 2019 17:00:33 +0800
+Message-Id: <20190716090034.11641-3-wqu@suse.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190716090034.11641-1-wqu@suse.com>
 References: <20190716090034.11641-1-wqu@suse.com>
@@ -30,73 +30,107 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is one report of fuzzed image which leads to BUG_ON() in
-btrfs_delete_delayed_dir_index().
+[BUG]
+With fuzzed image and MIXED_GROUPS super flag, we can hitthe following
+BUG_ON():
+  ------------[ cut here ]------------
+  kernel BUG at fs/btrfs/delayed-ref.c:491!
+  invalid opcode: 0000 [#1] PREEMPT SMP NOPTI
+  CPU: 0 PID: 1849 Comm: sync Tainted: G           O      5.2.0-custom #27
+  RIP: 0010:update_existing_head_ref.cold+0x44/0x46 [btrfs]
+  Call Trace:
+   add_delayed_ref_head+0x20c/0x2d0 [btrfs]
+   btrfs_add_delayed_tree_ref+0x1fc/0x490 [btrfs]
+   btrfs_free_tree_block+0x123/0x380 [btrfs]
+   __btrfs_cow_block+0x435/0x500 [btrfs]
+   btrfs_cow_block+0x110/0x240 [btrfs]
+   btrfs_search_slot+0x230/0xa00 [btrfs]
+   ? __lock_acquire+0x105e/0x1e20
+   btrfs_insert_empty_items+0x67/0xc0 [btrfs]
+   alloc_reserved_file_extent+0x9e/0x340 [btrfs]
+   __btrfs_run_delayed_refs+0x78e/0x1240 [btrfs]
+   ? kvm_clock_read+0x18/0x30
+   ? __sched_clock_gtod_offset+0x21/0x50
+   btrfs_run_delayed_refs.part.0+0x4e/0x180 [btrfs]
+   btrfs_run_delayed_refs+0x23/0x30 [btrfs]
+   btrfs_commit_transaction+0x53/0x9f0 [btrfs]
+   btrfs_sync_fs+0x7c/0x1c0 [btrfs]
+   ? __ia32_sys_fdatasync+0x20/0x20
+   sync_fs_one_sb+0x23/0x30
+   iterate_supers+0x95/0x100
+   ksys_sync+0x62/0xb0
+   __ia32_sys_sync+0xe/0x20
+   do_syscall_64+0x65/0x240
+   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+  ---[ end trace 4372e814d777d9b9 ]---
 
-Although that fuzzed image can already be addressed by enhanced
-extent-tree error handler, it's still better to hunt down more BUG_ON().
+[CAUSE]
+This situation is caused by several factors:
+- Fuzzed image
+  The extent tree of this fs missed one backref for extent tree root.
+  So we can allocated space from that slot.
 
-This patch will hunt down two BUG_ON()s in
-btrfs_delete_delayed_dir_index():
-- One for error from btrfs_delayed_item_reserve_metadata()
-  Instead of BUG_ON(), we output an error message and free the item.
-  And return the error.
-  All callers of this function handles the error by aborting current
-  trasaction.
+- MIXED_BG feature
+  Super block has MIXED_BG flag.
 
-- One for possible EEXIST from __btrfs_add_delayed_deletion_item()
-  That function can return -EEXIST.
-  We already have a good enough error message for that, only need to
-  clean up the reserved metadata space and allocated item.
+- No mixed block groups exists
+  All block groups are just regular ones.
 
-To help above cleanup, also modifiy __btrfs_remove_delayed_item() called
-in btrfs_release_delayed_item(), to skip unassociated item.
+This makes data space_info->block_groups[] contains metadata block
+groups.
+And when we reserve space for data, we can use space in metadata block
+group.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=203253
+Then we hit the following file operations:
+- falloc
+  We need to allocate data extents.
+  find_free_extent() choose to use the metadata block to allocate space
+  from, and choose the space of extent tree root, since its backref is
+  missing.
+
+  This generate one delayed ref head with is_data = 1.
+
+- extent tree update
+  We need to update extent tree at run_delayed_ref time.
+
+  This generate one delayed ref head with is_data = 0, for the same
+  bytenr of old extent tree root.
+
+Then we trigger the BUG_ON().
+
+[FIX]
+The quick fix here is to check block_group->flags before using it.
+
+The problem can only happen for MIXED_GROUPS fs. Regular filesystems
+won't have space_info with DATA|METADATA flag, and no way to hit the
+bug.
+
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=203255
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/delayed-inode.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ fs/btrfs/extent-tree.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 43fdb2992956..c4946d58f49b 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -474,6 +474,9 @@ static void __btrfs_remove_delayed_item(struct btrfs_delayed_item *delayed_item)
- 	struct rb_root_cached *root;
- 	struct btrfs_delayed_root *delayed_root;
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 72868d9ac58e..69d6b2e308fc 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -8013,6 +8013,15 @@ static noinline int find_free_extent(struct btrfs_fs_info *fs_info,
+ 			 */
+ 			if ((flags & extra) && !(block_group->flags & extra))
+ 				goto loop;
++
++			/*
++			 * This block group has different flags than we what.
++			 * It's possible that we have MIXED_GROUP flag but no
++			 * block groups is mixed.
++			 * Just skip such block group.
++			 */
++			btrfs_release_block_group(block_group, delalloc);
++			continue;
+ 		}
  
-+	/* Not associated with any delayed_node */
-+	if (!delayed_item->delayed_node)
-+		return;
- 	delayed_root = delayed_item->delayed_node->root->fs_info->delayed_root;
- 
- 	BUG_ON(!delayed_root);
-@@ -1525,7 +1528,13 @@ int btrfs_delete_delayed_dir_index(struct btrfs_trans_handle *trans,
- 	 * we have reserved enough space when we start a new transaction,
- 	 * so reserving metadata failure is impossible.
- 	 */
--	BUG_ON(ret);
-+	if (ret < 0) {
-+		btrfs_err(trans->fs_info,
-+"metadata reserve fail at %s, should have already reserved space, ret=%d",
-+			  __func__, ret);
-+		btrfs_release_delayed_item(item);
-+		goto end;
-+	}
- 
- 	mutex_lock(&node->mutex);
- 	ret = __btrfs_add_delayed_deletion_item(node, item);
-@@ -1534,7 +1543,8 @@ int btrfs_delete_delayed_dir_index(struct btrfs_trans_handle *trans,
- 			  "err add delayed dir index item(index: %llu) into the deletion tree of the delayed node(root id: %llu, inode id: %llu, errno: %d)",
- 			  index, node->root->root_key.objectid,
- 			  node->inode_id, ret);
--		BUG();
-+		btrfs_delayed_item_release_metadata(dir->root, item);
-+		btrfs_release_delayed_item(item);
- 	}
- 	mutex_unlock(&node->mutex);
- end:
+ have_block_group:
 -- 
 2.22.0
 
