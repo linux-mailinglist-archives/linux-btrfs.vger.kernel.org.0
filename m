@@ -2,31 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ABADB6A037
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 03:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 550656A074
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Jul 2019 04:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732103AbfGPB11 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 15 Jul 2019 21:27:27 -0400
-Received: from mout.gmx.net ([212.227.15.19]:38049 "EHLO mout.gmx.net"
+        id S1729112AbfGPCJd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 15 Jul 2019 22:09:33 -0400
+Received: from mout.gmx.net ([212.227.17.20]:48137 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730607AbfGPB11 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 15 Jul 2019 21:27:27 -0400
+        id S1728256AbfGPCJc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 15 Jul 2019 22:09:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1563240413;
-        bh=MROHeWDAxlSdsRtiwIL+y4l4I3nikPdZ9wLxlO3OYVI=;
+        s=badeba3b8450; t=1563242964;
+        bh=T2FwbWvuJKrBpYrptTRgL5602LG2LwUPSoKG4HVPdy4=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=klwUmbwXBeh/fhEaZAodni6S/nCmJDJIrkYU3xfyCQFrVqiZQ5lE//uHiF6kRlI/S
-         QfFMnH/rPb/84TDKnXNknMLDbpn67HYufh5wa3yWSZqlZ+rJbwQecxkPmaswB+Cg73
-         6miZqHBrPvUXrdkB5ghewXLmmRkTEjC/FrnaO36k=
+        b=IHahG3sicqKXgKjCo9PYdsZut6L00QzgVHt9HIo0RuFI7mUHwZ6kY6i+OG2lRxYPi
+         UMnEm6P3BA0c7hQMfVzVBb04khFhmv7+FZ7gwec2Sm3S3fOOpbAHmib4qf6ZCuXyDk
+         amTiGifISnw/56Wp8n5iLYTGV1Vkj8ZPDOVBIiRE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx002
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0LcBvB-1iCJj73EdJ-00jawt; Tue, 16
- Jul 2019 03:26:53 +0200
-Subject: Re: [PATCH] btrfs-progs: add verbose option to btrfs device scan
-To:     Nikolay Borisov <nborisov@suse.com>,
-        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20190715144241.1077-1-anand.jain@oracle.com>
- <4f150d66-0c4d-b0f2-4cf9-9bc1194d83e9@suse.com>
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx103
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0Lb5Tp-1iBEzq0TsX-00kevs; Tue, 16
+ Jul 2019 04:09:24 +0200
+Subject: Re: Best Practices (or stuff to avoid) with Raid5/6 ?
+To:     Robert Krig <robert.krig@render-wahnsinn.de>,
+        linux-btrfs@vger.kernel.org
+References: <6f5f659ce3967c7cef2c6f8f9c07e8be8e5a2a70.camel@render-wahnsinn.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -53,198 +52,162 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <e8aaa2cf-3e10-4ff9-dabe-c6192583e93c@gmx.com>
-Date:   Tue, 16 Jul 2019 09:26:47 +0800
+Message-ID: <fddf59e6-b4c5-307b-2cb4-fbb8e120ac61@gmx.com>
+Date:   Tue, 16 Jul 2019 10:09:18 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <4f150d66-0c4d-b0f2-4cf9-9bc1194d83e9@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:W5bX6E5xa/AqS3rMeR2jvhenUE3gGTmiizOxh2mAk745p6V/WLW
- APQRIgM1UojPjpCCXiiT7+rpLyV7PUSnaFENJajHzmUeHHzUXqnFBsItZdz+C0xkHD9X3J1
- 9BiJ37i0M7oqCc7fON+saP5gzjUGcpZ7BIIyr5Tus80/9QjYwUEZvUYwL9Y0gaDZziqXJ/6
- eR2WYDzcZb1WkpoD3bb8g==
+In-Reply-To: <6f5f659ce3967c7cef2c6f8f9c07e8be8e5a2a70.camel@render-wahnsinn.de>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="iGtA5F6gpuxpRE20PquCVhjEmCp5BsfPu"
+X-Provags-ID: V03:K1:VTm8+H6zP6avpElJeiVwpifPNeEPriX3Z+C9sRQbGGWjCEiV3gy
+ hMFb5csm2MD29NM8NUXQ7mWQ1jILuiM5p+pUKCr3L73C5Wbgm1RE/M5kUdaHLxyRgGbeExT
+ Tw+RKOyfbldTPBkLVFMjGoG+RmFmDZueMwiON7dMGlXaMRjJ4iYhYtTbm5aOhrM61/tziLi
+ sy+8/XsYUzxswTdoxmuyw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ohhWWGpjhCg=:4tOELA3eY9dAzTFiKU4JZA
- nY54Cor4/SKAHesbuw1KDrIHkT3qisBINGRi2QGJrUF5QotcH3vaYsFf7Y2P0dTCSj/rR1pks
- jLzhSPg6rBEtiCcSF0Gd1Dz+6QN5uXkmheup08lwMYUTwGk4QwfpO2W6gP24lLJMGMATFigZG
- /H4LYLX/RC0AenGg0001/30gTPmi6YAFRU5tmj7K140dfde0MCm5xhjUpcaBnNEtW3DpCBZ0o
- ttkpdkiv6wgwuwgzemK++2BlkrF28IGZ+bfQOk5O+tK3N752ViS5ManKvX8IyHcN+XKxU8ZTh
- Bfz+rZ4KeEEBCaq/ygdYuilXdV1VBJy6uc4/iUv6ModKWw8WS8dnR63tWpi7nYv8j6ST4HVM/
- 49fiYLVjFbw/KH/O7uqCTLaWqATmJda9dcT2x+MJKI3zfekcD8fbObLzXZvAhgMTjqUmeKGJx
- vaQg3HM7kZWrZsxhsYENis5T7bb4sTi4RBxwRkDdzUlIGFN3T5UWFMyqiJJjVOrp1+5lbH7iB
- RotelgxAY+tjlDYX3lOdLyAFdOktazNX0RmCwPia+LPaz4dyYgCy7CP3ewOFhOJ5+tpGN9srj
- GqyJ1I/5Ebd+iqhK1eSyJKk/jgkUsrIDQiC2fW7dPlsqy4lMP+Mw+ZodQwA5+L5H2GmBryfQQ
- Tk3hapcyYHMrdOfpc15GLKzSsfSGzWTwLQCKYkInspJmx4aWldhIJTy1TSyeb5tBLGdsAfZRc
- mJSmaYZ5B1sv09FP7Dz99BuXMFNnW6alg8ul89JhhoWMxxqk/f78sMcRHqYyS591Kh/pTQHOZ
- ClvRmRDpD85dIP2kpMiR4vSQM5PafeNalaGehjRi9xerGbvtA5OioA/wzZmrT0wlAlzfNCfpY
- 7YmIbUHsPlzmejGT40mDp2mfQDSIkDsOJOoyzy+q/F03wDaJKkaRSmXJL7Iou7FyTxePpiZNZ
- eA6hwbs6vNaDgGD6fTM7WRgoaVnt9DbeWcPtySExKTtKtWCLEqpxEweswGXbbmpBleXe5Av+Y
- yp9tJ2wxT8LQQAAUDGfgxE7vD7zDhuydsIMqtu8xA+if06YlbDz/84CVWzp4CQZ1ew5NwMmpS
- dOaR0HApogcOFe+LRApNKvijNbY5AOYpx4/
+X-UI-Out-Filterresults: notjunk:1;V03:K0:tce6H3Qw1Jw=:5yX4exv7gi5citfNI77bDC
+ +Q13rJTBMBZb83Tkrbq7Af1yrLwwPU3ZS21gfWOozRuyvnOIiVXXGAaLNq3ys7WKgxVKA8vUV
+ RrSqjCxfLjE41Ak6v7HpSI/JdN0wVC+JfNKmS3LTx3Q/XC9lkBUZ3jgOm9zxAO6EqR8fkwyWj
+ XUpZVuPboqu721f7NVyN27RhUr9+G8k5DwbzqfPAUa28OLSQsUCpe2Nz309cux7u9iTAdxYqc
+ wlUnxtbqsWLv/85C9uUBLZwMKf9d+JdwQONDFr+iB3Q0MwADnWJctMbNv5aRQ5yrVUe+kIKv5
+ 93MHjwK3/mp0H/szti2OarYf0mGiylvdXcBVxhVi331dy7h36ExB+Qp+pmhmHmVbdh+6xd1KI
+ LVqJEynYyg0LllfRWtenzBHhkaTDSel5pZns7VYB3QJqt7Y8Owwt1x3W981lzByUyBzeYhDpk
+ CWQlaY3/uD/XWt9osm8cHSKOJ5ZuVqT8U1UOD7kTNuAyaSMaz/+zhDn2xMfptNT60Rt4oOQRx
+ adaPcvC4Nk/7IRiFLV9S4fNCCW5nLV1N7CjwtQ4lI5qcOGlJl1rm5q8CoYPNGtEyRy7TMRWBl
+ JPQjt19CFz7SyTLEjgHXjkBlvhsoEI5td6zJYyLhESeB1caYbckgmDpAITV5EPPdY6hFnJJPa
+ 2aC0IW66uTvvAgInyJWXIu2t5qot3lC3YeAzGhWGH1sTXLEkUsWj4egQyAjBJUIRgMVmYAeam
+ vDgc9avPcBL4l1AJlor9lxmMMHMGpgTd/Cfk97kVu6pLP0G3hA8ckpSga7lc2rQ32PyXzu9mU
+ 1/VYkhzgoK228Qijbq9OpTQp1V2FSPsIUaIksqG1z74NT2MIyShaivim3cfYKIV7XLkiOropb
+ nS0EBlU1wVtWE0wLlceJyOOq8EsOiC65wOeLdni8jGFtjh7qXgnrnS9ajobOWz2SW/lG8LIZw
+ zQGCP/b5LI+M9QV8G8v/t3f80qJS6TEu46o3JSlehOlDRhBuVYhi3P0avDG/m4GABP53PaQH3
+ hiWyCjbyhZYkha/291XvqQkLiGEjtlfIPqT5g5Ryi1K6ED4WVKLCuFn4dounpCLdHqOtK/Ah1
+ u9o3ifsAFHNwVs=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--iGtA5F6gpuxpRE20PquCVhjEmCp5BsfPu
+Content-Type: multipart/mixed; boundary="mWspxByNAbXMljcmQqZ0cCMrtBnQz8doI";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Robert Krig <robert.krig@render-wahnsinn.de>, linux-btrfs@vger.kernel.org
+Message-ID: <fddf59e6-b4c5-307b-2cb4-fbb8e120ac61@gmx.com>
+Subject: Re: Best Practices (or stuff to avoid) with Raid5/6 ?
+References: <6f5f659ce3967c7cef2c6f8f9c07e8be8e5a2a70.camel@render-wahnsinn.de>
+In-Reply-To: <6f5f659ce3967c7cef2c6f8f9c07e8be8e5a2a70.camel@render-wahnsinn.de>
+
+--mWspxByNAbXMljcmQqZ0cCMrtBnQz8doI
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2019/7/15 =E4=B8=8B=E5=8D=8811:09, Nikolay Borisov wrote:
->
->
-> On 15.07.19 =D0=B3. 17:42 =D1=87., Anand Jain wrote:
->> To help debug device scan issues, add verbose option to btrfs device sc=
-an.
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->
-> I fail to see what this patch helps for. We get the path in case of
-> errors, in case of success what good could the path be ?
 
-AFAIK it would provide an easy way to debug blkid related bug.
+On 2019/7/15 =E4=B8=8B=E5=8D=8811:02, Robert Krig wrote:
+> Hi guys.=20
+> I was wondering, are there any recommended best practices when using
+> Raid5/6 on BTRFS?
+>=20
+> I intend to build a 4 Disk BTRFS Raid5 array, but that's just going to
+> be as a backup for my main ZFS Server. So the data on it is not
+> important. I just want to see how RAID5 will behave over time.
 
-E.g. scan only works on some devices and misses some devices.
+If we live in a perfect world, no power loss or kernel panic, then btrfs
+raid5/6 would be good.
+But that's not the case.
 
-So it makes sense to me, although "debug" would be more suitable in this
-case.
+>=20
+> That being said, are there any recommended best practices when
+> deploying btrfs with raid5?
+
+If there is any possibility of powerloss, kernel panic, or even unstable
+cable connection, then raid5/6 feature from btrfs is not as good as
+mdraid, mostly due to the write hole problem which hasn't been addressed
+in btrfs.
+
+If you want flexible device management, especially dynamically
+adding/removing devices, then btrfs raid10/raid1 would be more suitable.
+
+>=20
+> According to the wiki a good recommendation seems to be to have
+> metadata as RAID1 and data as RAID5.
+>=20
+> Other than that, are there any mount options which should be used or
+> completely avoided when using raid5/6? (autodefrag,commit=3D,...)
+
+I haven't heard such report yet.
+
+>=20
+> Anything to consider when using realtime compression?
+
+It shouldn't be a problem for raid5/6.
+
+Although btrfs code doesn't has good enough separation for different
+layers, but compression happens at extent level, while raid5/6 is at
+chunk level, they have nothing to do with each other.
+
+> Balancing issues? e.g. should you always do a full balance (when you
+> decide you need one)?
+
+Full balance makes no sense.
+
+For older kernel we used to recommend balance based on usage filter to
+free empty block groups, but now empty block groups are automatically
+freed thus should cause no problem.
+
+Balance should be triggered when:
+- There is very unbalanced data/metadata block groups usage.
+  E.g. a lot of data block groups are almost empty while metadata block
+  groups are almost full.
+  However this should be really rare.
+
+- You want to convert profile
+
+
+For raid5/6 what you really want to scrub, not only routinely but also
+after each power loss/kernel panic/disk lost.
+This should reduce the possibility of write hole.
+
+>=20
+> Whats the best/proper way to replace a failing disk? What about a
+> sudden faulty disk? e.g. won't spin up anymore. Just use btrfs replace
+> as it says in the wiki?
+
+Yes, btrfs replace.
+
+Although for such case mdraid may be a safer solution.
 
 Thanks,
 Qu
->
->
->> ---
->>  cmds/device.c        | 8 ++++++--
->>  cmds/filesystem.c    | 2 +-
->>  common/device-scan.c | 4 +++-
->>  common/device-scan.h | 2 +-
->>  common/utils.c       | 2 +-
->>  disk-io.c            | 2 +-
->>  6 files changed, 13 insertions(+), 7 deletions(-)
->>
->> diff --git a/cmds/device.c b/cmds/device.c
->> index 24158308a41b..2fa13e61f806 100644
->> --- a/cmds/device.c
->> +++ b/cmds/device.c
->> @@ -313,6 +313,7 @@ static int cmd_device_scan(const struct cmd_struct =
-*cmd, int argc, char **argv)
->>  	int all =3D 0;
->>  	int ret =3D 0;
->>  	int forget =3D 0;
->> +	int verbose =3D 0;
->
-> nit: make it a bool.
->
->>
->>  	optind =3D 0;
->>  	while (1) {
->> @@ -323,7 +324,7 @@ static int cmd_device_scan(const struct cmd_struct =
-*cmd, int argc, char **argv)
->>  			{ NULL, 0, NULL, 0}
->>  		};
->>
->> -		c =3D getopt_long(argc, argv, "du", long_options, NULL);
->> +		c =3D getopt_long(argc, argv, "duv", long_options, NULL);
->>  		if (c < 0)
->>  			break;
->>  		switch (c) {
->> @@ -333,6 +334,9 @@ static int cmd_device_scan(const struct cmd_struct =
-*cmd, int argc, char **argv)
->>  		case 'u':
->>  			forget =3D 1;
->>  			break;
->> +		case 'v':
->> +			verbose =3D 1;
->> +			break;
->>  		default:
->>  			usage_unknown_option(cmd, argv);
->>  		}
->> @@ -354,7 +358,7 @@ static int cmd_device_scan(const struct cmd_struct =
-*cmd, int argc, char **argv)
->>  			}
->>  		} else {
->>  			printf("Scanning for Btrfs filesystems\n");
->> -			ret =3D btrfs_scan_devices();
->> +			ret =3D btrfs_scan_devices(verbose);
->>  			error_on(ret, "error %d while scanning", ret);
->>  			ret =3D btrfs_register_all_devices();
->>  			error_on(ret,
->> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
->> index 4f22089abeaa..37b23af36847 100644
->> --- a/cmds/filesystem.c
->> +++ b/cmds/filesystem.c
->> @@ -746,7 +746,7 @@ devs_only:
->>  		else
->>  			ret =3D 1;
->>  	} else {
->> -		ret =3D btrfs_scan_devices();
->> +		ret =3D btrfs_scan_devices(0);
->>  	}
->>
->>  	if (ret) {
->> diff --git a/common/device-scan.c b/common/device-scan.c
->> index 2c5ae225f710..bea201b351f0 100644
->> --- a/common/device-scan.c
->> +++ b/common/device-scan.c
->> @@ -351,7 +351,7 @@ void free_seen_fsid(struct seen_fsid *seen_fsid_has=
-h[])
->>  	}
->>  }
->>
->> -int btrfs_scan_devices(void)
->> +int btrfs_scan_devices(int verbose)
->>  {
->>  	int fd =3D -1;
->>  	int ret;
->> @@ -380,6 +380,8 @@ int btrfs_scan_devices(void)
->>  			continue;
->>  		/* if we are here its definitely a btrfs disk*/
->>  		strncpy_null(path, blkid_dev_devname(dev));
->> +		if (verbose)
->> +			printf("blkid: btrfs device: %s\n", path);
->>
->>  		fd =3D open(path, O_RDONLY);
->>  		if (fd < 0) {
->> diff --git a/common/device-scan.h b/common/device-scan.h
->> index eda2bae5c6c4..8017a27511b9 100644
->> --- a/common/device-scan.h
->> +++ b/common/device-scan.h
->> @@ -29,7 +29,7 @@ struct seen_fsid {
->>  	int fd;
->>  };
->>
->> -int btrfs_scan_devices(void);
->> +int btrfs_scan_devices(int verbose);
->>  int btrfs_register_one_device(const char *fname);
->>  int btrfs_register_all_devices(void);
->>  int btrfs_add_to_fsid(struct btrfs_trans_handle *trans,
->> diff --git a/common/utils.c b/common/utils.c
->> index ad938409a94f..36ce89a025f1 100644
->> --- a/common/utils.c
->> +++ b/common/utils.c
->> @@ -277,7 +277,7 @@ int check_mounted_where(int fd, const char *file, c=
-har *where, int size,
->>
->>  	/* scan other devices */
->>  	if (is_btrfs && total_devs > 1) {
->> -		ret =3D btrfs_scan_devices();
->> +		ret =3D btrfs_scan_devices(0);
->>  		if (ret)
->>  			return ret;
->>  	}
->> diff --git a/disk-io.c b/disk-io.c
->> index be44eead5cef..4f52a29700ab 100644
->> --- a/disk-io.c
->> +++ b/disk-io.c
->> @@ -1085,7 +1085,7 @@ int btrfs_scan_fs_devices(int fd, const char *pat=
-h,
->>  	}
->>
->>  	if (!skip_devices && total_devs !=3D 1) {
->> -		ret =3D btrfs_scan_devices();
->> +		ret =3D btrfs_scan_devices(0);
->>  		if (ret)
->>  			return ret;
->>  	}
->>
+
+>=20
+> Thanks guys.
+>=20
+>=20
+>=20
+>=20
+
+
+--mWspxByNAbXMljcmQqZ0cCMrtBnQz8doI--
+
+--iGtA5F6gpuxpRE20PquCVhjEmCp5BsfPu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl0tMc4ACgkQwj2R86El
+/qhdZgf+KlWcmQ6k92+PM1DZ2gf4Zs56mE2+lpmm0l2gF+B68Rz2J2ttbbTG3uje
+QXzzIH5LB6kVEeRW+V7oZ3RfRmAfny37PFn1P+pXjXg+VKOD7rqXAdjXfqnYQ1vx
+urd8/OKkCToCLtn/AiAQ2m+89bBP7RIv9rgSlXSDdSLOeR5eMj4kjAqnucR7HAcv
+t5FLrSl1jQezbLvDSriFw/DjB3hzz5fOFmfJkYToLX4KsWcu7Pm1t/JVAxoX9ZsV
+1nEUrww9iytNrNuhVDqMOx5H6jg2rXTs01NP6Nn7wePeaSrU/IdjMkQ3z+eFT2Eq
+JXWQ3mI/WLwQU4JCiSDkck4Lcn61sg==
+=lxdA
+-----END PGP SIGNATURE-----
+
+--iGtA5F6gpuxpRE20PquCVhjEmCp5BsfPu--
