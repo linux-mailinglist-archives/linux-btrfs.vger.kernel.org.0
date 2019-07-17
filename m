@@ -2,88 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E1566B823
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2019 10:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 444CD6B85E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2019 10:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbfGQIZE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Jul 2019 04:25:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57904 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725912AbfGQIZE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Jul 2019 04:25:04 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 86DC5AEA4
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2019 08:25:02 +0000 (UTC)
-Subject: Re: how do I know a subvolume is a snapshot?
-To:     linux-btrfs@vger.kernel.org
-References: <20190716232456.GA26411@tik.uni-stuttgart.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <eff513b1-a77c-cd5f-5af7-87eae73cff6a@suse.com>
-Date:   Wed, 17 Jul 2019 11:24:51 +0300
+        id S1725980AbfGQIfF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Jul 2019 04:35:05 -0400
+Received: from mail.windriver.com ([147.11.1.11]:53037 "EHLO
+        mail.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725873AbfGQIfF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Jul 2019 04:35:05 -0400
+Received: from ALA-HCA.corp.ad.wrs.com ([147.11.189.40])
+        by mail.windriver.com (8.15.2/8.15.1) with ESMTPS id x6H8Ysot000091
+        (version=TLSv1 cipher=AES128-SHA bits=128 verify=FAIL);
+        Wed, 17 Jul 2019 01:34:54 -0700 (PDT)
+Received: from [128.224.162.188] (128.224.162.188) by ALA-HCA.corp.ad.wrs.com
+ (147.11.189.50) with Microsoft SMTP Server (TLS) id 14.3.468.0; Wed, 17 Jul
+ 2019 01:34:53 -0700
+From:   "Hongzhi, Song" <hongzhi.song@windriver.com>
+Subject: Bug Report: Btrfs can't allocate space for delete when block size
+ arounds 512M
+To:     <linux-btrfs@vger.kernel.org>, <josef@toxicpanda.com>
+CC:     <dsterba@suse.com>, <ltp@lists.linux.it>
+Message-ID: <b501bcff-8be0-4303-8789-363fda4658e5@windriver.com>
+Date:   Wed, 17 Jul 2019 16:34:50 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.2
 MIME-Version: 1.0
-In-Reply-To: <20190716232456.GA26411@tik.uni-stuttgart.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [128.224.162.188]
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi friends,
+
+*Description:*
 
 
-On 17.07.19 г. 2:24 ч., Ulli Horlacher wrote:
-> I thought, I can recognize a snapshot when it has a Parent UUID, but this
-> is not true for snapshots of toplevel subvolumes: 
+     One LTP testcase, fs_fill.c, fails on btrfs with kernel error when 
+unlink files on Btrfs device:
 
-As you have asked this before - in my testing this is not true. Looking
-at the code it also seems snapshots get a parent. Alternatively you have
-to parse the root tree - the ROOT_ITEM's offset member should be 0 for
-well-known trees/ordinary subvolume or the transaction id when the
-snapshot was created.
+     "BTRFS warning (device loop0): could not allocate space for a 
+delete; will truncate on mount".
+
+
+     I found the loop block device formatted with btrfs roughly rangs 
+from 460M to 560M will cause the error.
+
+     256M and 1G all pass.
+
+
+     The fs_fill.c source code:
+
+[https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/fs_fill/fs_fill.c]
+
+     The fs_fill.c calls unlink which triggers the error.
+
+[https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/testcases/kernel/fs/fs_fill/fs_fill.c#L55]
+
+[https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/lib/safe_macros.c#L358]
+
+
+*Error info:*
+
+     The issue maybe not reproduced everytime but four fifths chance.
+
+     fs_fill.c:53: INFO: Unlinking mntpoint/thread5/file0
+     safe_macros.c:360: BROK: fs_fill.c:55: 
+unlink(mntpoint/thread10/file0) failed: ENOSPC
+     safe_macros.c:360: BROK: fs_fill.c:55: 
+unlink(mntpoint/thread11/file0) failed: ENOSPC
+     [62477.378848] BTRFS warning (device loop0): could not allocate 
+space for a delete; will truncate on mount
+     [62477.378905] BTRFS warning (device loop0): could not allocate 
+space for a delete; will truncate on mount
+
+
+
+*Kernel:*
+
+     After v5.2-rc1, qemux86-64
+
+     # make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc
+     use qemu to bootup kernel
+
+
+*LTP:*
+
+     master branch: I tested on 20190625
+     Reproduce:
+
+     // build Ltp
+     # cd Ltp-source
+     # ./build.sh
+
+     // copy files to qemu
+     # cp runltp testcases/kernel/fs/fs_fill/fs_fill to qemu
+
+     // login to qemu:
+     // adjust block device size to 512M
+     # vi runltp
+     in function: create_block()
+         dd if=/dev/zero of=${TMP}/test.img bs=1024 count=262144
+         --->
+         dd if=/dev/zero of=${TMP}/test.img bs=1024 count=524288
+
+     // execute testcase
+     # runltp -f fs -s fs_fill
+
+
+*Analysis:*
+
+     One new kernel commit contained in v5.2-rc1 introduces the issue.
+
+     commit c8eaeac7b734347c3afba7008b7af62f37b9c140
+     Author: Josef Bacik <josef@toxicpanda.com>
+     Date:   Wed Apr 10 15:56:10 2019 -0400
+
+         btrfs: reserve delalloc metadata differently
+         ...
+
+
+Anyone's reply will be appreciated.
+
+--Hongzhi
+
+
+
+
+
