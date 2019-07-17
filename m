@@ -2,108 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DCF6B9D0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2019 12:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 874606BA27
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2019 12:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726298AbfGQKLl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Jul 2019 06:11:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42784 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725893AbfGQKLl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Jul 2019 06:11:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6D397B090
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2019 10:11:39 +0000 (UTC)
-Subject: Re: how do I know a subvolume is a snapshot?
-To:     linux-btrfs@vger.kernel.org
-References: <20190716232456.GA26411@tik.uni-stuttgart.de>
- <eff513b1-a77c-cd5f-5af7-87eae73cff6a@suse.com>
- <20190717091100.GC3462@tik.uni-stuttgart.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <b2410ac6-34f9-f459-8301-c70fcbe6159e@suse.com>
-Date:   Wed, 17 Jul 2019 13:11:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726951AbfGQK3O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Jul 2019 06:29:14 -0400
+Received: from mail-ot1-f46.google.com ([209.85.210.46]:33159 "EHLO
+        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726273AbfGQK3O (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Jul 2019 06:29:14 -0400
+Received: by mail-ot1-f46.google.com with SMTP id q20so24433114otl.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2019 03:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=UeYfPuaTaNC0W6UJOJBqQZj52QqkaP6KqHo2qumQOr4=;
+        b=cEs7pOuw6P3ZVgqdN6LWrwm9k+3fxFggQJYMya3Bj2QWxwYcsZ/kt/xCZ2RUKb8NnI
+         nIRGK9GcngT3JszfexgbUpZYrNUhh6pX9u7/Pc5lp2oZZx0Wyh0q1y2AfA5fNJcPPjVO
+         /ObmskTbK5Ls9KoGtDdGN/0k277on4IiiqxzoGtm66akcd/45HG+lGGT+A6dD/4NZDqO
+         zQGJu3qhxHvlEN1pFLLXjhI6vfTnOCL0PRHS5hMwqZdOlDX/cKAjOdAnagm1TkBu0r12
+         EFoxjuqThx2BD8GxbDtaSKAs3HVx/aGOuuTaLERBWiVN/+HGNNSkrgEv7b/AokQTMn+J
+         UU8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=UeYfPuaTaNC0W6UJOJBqQZj52QqkaP6KqHo2qumQOr4=;
+        b=gX3oDKwpdIOIWmmtlO/6PFaeFgSwzi+r6QdEZnDUJKyM/4u2GxKdkd0qOFBMt/MLqO
+         rhhFUZd5yqsEV+haPuOQBt0jSxtey8nx1mwu8VcxGiyrXKKjByCKMo87qnGXjAf9fJs3
+         Ep7UlXz7Eez8nweoMcLCdTqQCjmETl1m7EDNpiZdexpwSoj70H46BuLNR9DjFFeU7nPC
+         PKBK4+ihf7iwWvSD7jLmuoU441U2br+lcEELNlDVBNGC7XJEV/jVoksMZoBBk1sNM4Gf
+         jkLnK31m+GRo4XH7nTRHLOczmTmiYr5Spn8jSYxDE4uREo3h8JedcEy85OAweob5xJSg
+         qOLw==
+X-Gm-Message-State: APjAAAXWJt+znXwWWtWdkcKsqV+nul9X5UFsPJfLCqVBhWt4IPYtKOTC
+        2+U527TMP/CLQ9C6wXh0lmEskuIWO9iQ4cYb/Vk=
+X-Google-Smtp-Source: APXvYqxwtRD404ZgFb6q56LTjMHxmgK8JRx5uM9veZACKUb0iy5MWK7KQjpxujoAEB7JIHbuMO3RjNCAuzloI9mqjfA=
+X-Received: by 2002:a9d:4b88:: with SMTP id k8mr8840685otf.285.1563359353698;
+ Wed, 17 Jul 2019 03:29:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190717091100.GC3462@tik.uni-stuttgart.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20190716232456.GA26411@tik.uni-stuttgart.de> <eff513b1-a77c-cd5f-5af7-87eae73cff6a@suse.com>
+ <20190717091100.GC3462@tik.uni-stuttgart.de> <b2410ac6-34f9-f459-8301-c70fcbe6159e@suse.com>
+In-Reply-To: <b2410ac6-34f9-f459-8301-c70fcbe6159e@suse.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Date:   Wed, 17 Jul 2019 13:29:00 +0300
+Message-ID: <CAA91j0U1QBruk+JPE4+FZwuKNOz+YeiQOaeM58Viu6iSCYc99g@mail.gmail.com>
+Subject: Re: how do I know a subvolume is a snapshot?
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Wed, Jul 17, 2019 at 1:14 PM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 17.07.19 =D0=B3. 12:11 =D1=87., Ulli Horlacher wrote:
+> > On Wed 2019-07-17 (11:24), Nikolay Borisov wrote:
+> >>
+> >>
+> >> On 17.07.19 3. 2:24 G., Ulli Horlacher wrote:
+> >>
+> >>> I thought, I can recognize a snapshot when it has a Parent UUID, but =
+this
+> >>> is not true for snapshots of toplevel subvolumes:
+> >>
+> >> As you have asked this before - in my testing this is not true.
+> >
+> > It is true on all my SUSE and Ubuntu systems, for all versions.
+>
+> That's strange, as I've shown in the previous thread, using the latest
+> master doesn't exhibit this behavior.
 
+I doubt you are not aware that distributions rarely use latest master.
 
-On 17.07.19 г. 12:11 ч., Ulli Horlacher wrote:
-> On Wed 2019-07-17 (11:24), Nikolay Borisov wrote:
->>
->>
->> On 17.07.19 3. 2:24 G., Ulli Horlacher wrote:
->>
->>> I thought, I can recognize a snapshot when it has a Parent UUID, but this
->>> is not true for snapshots of toplevel subvolumes: 
->>
->> As you have asked this before - in my testing this is not true.
-> 
-> It is true on all my SUSE and Ubuntu systems, for all versions.
+Actually I have here openSUSE Tumbleweed; root top level subvolume
+does not have UUID but if I create new filesystem *now* it does. btrfs
+tools have been updated since initial installation.
 
-That's strange, as I've shown in the previous thread, using the latest
-master doesn't exhibit this behavior.
-> 
-> 
->> Alternatively you have to parse the root tree - the ROOT_ITEM's offset
->> member should be 0 for well-known trees/ordinary subvolume or the
->> transaction id when the snapshot was created.
-> 
-> Where can I find this ROOT_ITEM offset member? Which command?
-
-btrfs inspect-internal dump-tree -t 1 /dev/vdb
-
-> 
-> 
+Better question would be - is it possible to fix it for existing
+filesystems that had been created using old tools?
