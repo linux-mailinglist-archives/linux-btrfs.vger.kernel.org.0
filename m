@@ -2,32 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D8F36BC38
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2019 14:24:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DB426BC3B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Jul 2019 14:24:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725980AbfGQMXo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 17 Jul 2019 08:23:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33474 "EHLO mail.kernel.org"
+        id S1726424AbfGQMYo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 17 Jul 2019 08:24:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725799AbfGQMXo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 17 Jul 2019 08:23:44 -0400
+        id S1725799AbfGQMYo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 17 Jul 2019 08:24:44 -0400
 Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D0AF820880
-        for <linux-btrfs@vger.kernel.org>; Wed, 17 Jul 2019 12:23:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDD6E20880;
+        Wed, 17 Jul 2019 12:24:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1563366223;
-        bh=5owU9x4U8Ic7nQs68YcqZ8nDyAKd2ei3gy8fobUtf8Q=;
-        h=From:To:Subject:Date:From;
-        b=BJ84ebxzGIMom7gIokoCMwSX7cqAjX0Io6iD5sy/81YzXydivSqzvwejzfbtC1XTQ
-         TBNtHSqwJ/kHkggzHWQ/IVyxVsyyQ3rYzzuDTtStTyVnbqKpDXRrDxwKuqqXl+oyDk
-         hRMoAQHAfVoKtnB+qknPOp8edWtG/ZubgUabkcwE=
+        s=default; t=1563366282;
+        bh=O9hKncjz4e+nFZFzxk8DDNQeA/vhquQ5H6XGndUs5CQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=BNeL9jXhd2pKjx9dozVYo7HnmYTZQFD+1XPl0SFdQg7VbwMvrobeWSdBYiXl1U2ZF
+         nCOGTF8VhLlZxIEVxXjO3XebYyxVkeeHxDCYagCM3pSFjcMNUvMbUo5N3dpoLJ/orQ
+         OAFQWlnHD03YgUXBqomlsZw8PgA/+wskX5AfvYwE=
 From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: fix incremental send failure after deduplication
-Date:   Wed, 17 Jul 2019 13:23:39 +0100
-Message-Id: <20190717122339.4926-1-fdmanana@kernel.org>
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs: test incremental send after deduplication on both snapshots
+Date:   Wed, 17 Jul 2019 13:24:39 +0100
+Message-Id: <20190717122439.28327-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -36,175 +37,173 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When doing an incremental send operation we can fail if we previously did
-deduplication operations against a file that exists in both snapshots. In
-that case we will fail the send operation with -EIO and print a message
-to dmesg/syslog like the following:
+Test that an incremental send operation works after deduplicating into the
+same file in both the parent and send snapshots.
 
-  BTRFS error (device sdc): Send: inconsistent snapshot, found updated \
-  extent for inode 257 without updated inode item, send root is 258, \
-  parent root is 257
+This currently fails on btrfs and a kernel patch to fix it was submitted
+with the subject:
 
-This requires that we deduplicate to the same file in both snapshots for
-the same amount of times on each snapshot. The issue happens because a
-deduplication only updates the iversion of an inode and does not update
-any other field of the inode, therefore if we deduplicate the file on
-each snapshot for the same amount of time, the inode will have the same
-iversion value (stored as the "sequence" field on the inode item) on both
-snapshots, therefore it will be seen as unchanged between in the send
-snapshot while there are new/updated/deleted extent items when comparing
-to the parent snapshot. This makes the send operation return -EIO and
-print an error message.
+  Btrfs: fix incremental send failure after deduplication
 
-Example reproducer:
-
-  $ mkfs.btrfs -f /dev/sdb
-  $ mount /dev/sdb /mnt
-
-  # Create our first file. The first half of the file has several 64Kb
-  # extents while the second half as a single 512Kb extent.
-  $ xfs_io -f -s -c "pwrite -S 0xb8 -b 64K 0 512K" /mnt/foo
-  $ xfs_io -c "pwrite -S 0xb8 512K 512K" /mnt/foo
-
-  # Create the base snapshot and the parent send stream from it.
-  $ btrfs subvolume snapshot -r /mnt /mnt/mysnap1
-  $ btrfs send -f /tmp/1.snap /mnt/mysnap1
-
-  # Create our second file, that has exactly the same data as the first
-  # file.
-  $ xfs_io -f -c "pwrite -S 0xb8 0 1M" /mnt/bar
-
-  # Create the second snapshot, used for the incremental send, before
-  # doing the file deduplication.
-  $ btrfs subvolume snapshot -r /mnt /mnt/mysnap2
-
-  # Now before creating the incremental send stream:
-  #
-  # 1) Deduplicate into a subrange of file foo in snapshot mysnap1. This
-  #    will drop several extent items and add a new one, also updating
-  #    the inode's iversion (sequence field in inode item) by 1, but not
-  #    any other field of the inode;
-  #
-  # 2) Deduplicate into a different subrange of file foo in snapshot
-  #    mysnap2. This will replace an extent item with a new one, also
-  #    updating the inode's iversion by 1 but not any other field of the
-  #    inode.
-  #
-  # After these two deduplication operations, the inode items, for file
-  # foo, are identical in both snapshots, but we have different extent
-  # items for this inode in both snapshots. We want to check this doesn't
-  # cause send to fail with an error or produce an incorrect stream.
-
-  $ xfs_io -r -c "dedupe /mnt/bar 0 0 512K" /mnt/mysnap1/foo
-  $ xfs_io -r -c "dedupe /mnt/bar 512K 512K 512K" /mnt/mysnap2/foo
-
-  # Create the incremental send stream.
-  $ btrfs send -p /mnt/mysnap1 -f /tmp/2.snap /mnt/mysnap2
-  ERROR: send ioctl failed with -5: Input/output error
-
-This issue started happening back in 2015 when deduplication was updated
-to not update the inode's ctime and mtime and update only the iversion.
-Back then we would hit a BUG_ON() in send, but later in 2016 send was
-updated to return -EIO and print the error message instead of doing the
-BUG_ON().
-
-A test case for fstests follows soon.
-
-Fixes: 1c919a5e13702c ("btrfs: don't update mtime/ctime on deduped inodes")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203933
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 77 +++++++++++----------------------------------------------
- 1 file changed, 15 insertions(+), 62 deletions(-)
+ tests/btrfs/191     | 110 ++++++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/191.out |  19 +++++++++
+ tests/btrfs/group   |   1 +
+ 3 files changed, 130 insertions(+)
+ create mode 100755 tests/btrfs/191
+ create mode 100644 tests/btrfs/191.out
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index d18f21061f26..e38287b855a8 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -6322,68 +6322,21 @@ static int changed_extent(struct send_ctx *sctx,
- {
- 	int ret = 0;
- 
--	if (sctx->cur_ino != sctx->cmp_key->objectid) {
--
--		if (result == BTRFS_COMPARE_TREE_CHANGED) {
--			struct extent_buffer *leaf_l;
--			struct extent_buffer *leaf_r;
--			struct btrfs_file_extent_item *ei_l;
--			struct btrfs_file_extent_item *ei_r;
--
--			leaf_l = sctx->left_path->nodes[0];
--			leaf_r = sctx->right_path->nodes[0];
--			ei_l = btrfs_item_ptr(leaf_l,
--					      sctx->left_path->slots[0],
--					      struct btrfs_file_extent_item);
--			ei_r = btrfs_item_ptr(leaf_r,
--					      sctx->right_path->slots[0],
--					      struct btrfs_file_extent_item);
--
--			/*
--			 * We may have found an extent item that has changed
--			 * only its disk_bytenr field and the corresponding
--			 * inode item was not updated. This case happens due to
--			 * very specific timings during relocation when a leaf
--			 * that contains file extent items is COWed while
--			 * relocation is ongoing and its in the stage where it
--			 * updates data pointers. So when this happens we can
--			 * safely ignore it since we know it's the same extent,
--			 * but just at different logical and physical locations
--			 * (when an extent is fully replaced with a new one, we
--			 * know the generation number must have changed too,
--			 * since snapshot creation implies committing the current
--			 * transaction, and the inode item must have been updated
--			 * as well).
--			 * This replacement of the disk_bytenr happens at
--			 * relocation.c:replace_file_extents() through
--			 * relocation.c:btrfs_reloc_cow_block().
--			 */
--			if (btrfs_file_extent_generation(leaf_l, ei_l) ==
--			    btrfs_file_extent_generation(leaf_r, ei_r) &&
--			    btrfs_file_extent_ram_bytes(leaf_l, ei_l) ==
--			    btrfs_file_extent_ram_bytes(leaf_r, ei_r) &&
--			    btrfs_file_extent_compression(leaf_l, ei_l) ==
--			    btrfs_file_extent_compression(leaf_r, ei_r) &&
--			    btrfs_file_extent_encryption(leaf_l, ei_l) ==
--			    btrfs_file_extent_encryption(leaf_r, ei_r) &&
--			    btrfs_file_extent_other_encoding(leaf_l, ei_l) ==
--			    btrfs_file_extent_other_encoding(leaf_r, ei_r) &&
--			    btrfs_file_extent_type(leaf_l, ei_l) ==
--			    btrfs_file_extent_type(leaf_r, ei_r) &&
--			    btrfs_file_extent_disk_bytenr(leaf_l, ei_l) !=
--			    btrfs_file_extent_disk_bytenr(leaf_r, ei_r) &&
--			    btrfs_file_extent_disk_num_bytes(leaf_l, ei_l) ==
--			    btrfs_file_extent_disk_num_bytes(leaf_r, ei_r) &&
--			    btrfs_file_extent_offset(leaf_l, ei_l) ==
--			    btrfs_file_extent_offset(leaf_r, ei_r) &&
--			    btrfs_file_extent_num_bytes(leaf_l, ei_l) ==
--			    btrfs_file_extent_num_bytes(leaf_r, ei_r))
--				return 0;
--		}
--
--		inconsistent_snapshot_error(sctx, result, "extent");
--		return -EIO;
--	}
-+	/*
-+	 * We have found an extent item that changed without the inode item
-+	 * having changed. This can happen either after relocation (where the
-+	 * disk_bytenr of an extent item is replaced at
-+	 * relocation.c:replace_file_extents()) or after deduplication into a
-+	 * file in both the parent and send snapshots (where an extent item can
-+	 * get modified or replaced with a new one). Note that deduplication
-+	 * updates the inode item, but it only changes the iversion (sequence
-+	 * field in the inode item) of the inode, so if a file is deduplicated
-+	 * the same amount of times in both the parent and send snapshots, its
-+	 * iversion becames the same in both snapshots, whence the inode item is
-+	 * the same on both snapshots.
-+	 */
-+	if (sctx->cur_ino != sctx->cmp_key->objectid)
-+		return 0;
- 
- 	if (!sctx->cur_inode_new_gen && !sctx->cur_inode_deleted) {
- 		if (result != BTRFS_COMPARE_TREE_DELETED)
+diff --git a/tests/btrfs/191 b/tests/btrfs/191
+new file mode 100755
+index 00000000..3156dfcc
+--- /dev/null
++++ b/tests/btrfs/191
+@@ -0,0 +1,110 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test No. btrfs/191
++#
++# Test that an incremental send operation works after deduplicating into the
++# same file in both the parent and send snapshots.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -fr $send_files_dir
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/reflink
++
++# real QA test starts here
++_supported_fs btrfs
++_supported_os Linux
++_require_test
++_require_scratch_dedupe
++_require_fssum
++
++send_files_dir=$TEST_DIR/btrfs-test-$seq
++
++rm -f $seqres.full
++rm -fr $send_files_dir
++mkdir $send_files_dir
++
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++# Create our first file. The first half of the file has several 64Kb extents
++# while the second half as a single 512Kb extent.
++$XFS_IO_PROG -f -s -c "pwrite -S 0xb8 -b 64K 0 512K" $SCRATCH_MNT/foo \
++	| _filter_xfs_io
++$XFS_IO_PROG -c "pwrite -S 0xb8 512K 512K" $SCRATCH_MNT/foo | _filter_xfs_io
++
++# Create the base snapshot and the parent send stream from it.
++$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/mysnap1 \
++	| _filter_scratch
++
++$BTRFS_UTIL_PROG send -f $send_files_dir/1.snap $SCRATCH_MNT/mysnap1 2>&1 \
++	| _filter_scratch
++
++# Create our second file, that has exactly the same data as the first file.
++$XFS_IO_PROG -f -c "pwrite -S 0xb8 0 1M" $SCRATCH_MNT/bar | _filter_xfs_io
++
++# Create the second snapshot, used for the incremental send, before doing the
++# file deduplication.
++$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/mysnap2 \
++	| _filter_scratch
++
++# Now before creating the incremental send stream:
++#
++# 1) Deduplicate into a subrange of file foo in snapshot mysnap1. This will drop
++#    several extent items and add a new one, also updating the inode's iversion
++#    (sequence field in inode item) by 1, but not any other field of the inode;
++#
++# 2) Deduplicate into a different subrange of file foo in snapshot mysnap2. This
++#    will replace an extent item with a new one, also updating the inode's
++#    iversion by 1 but not any other field of the inode.
++#
++# After these two deduplication operations, the inode items, for file foo, are
++# identical in both snapshots, but we have different extent items for this inode
++# in both snapshots. We want to check this doesn't cause send to fail with an
++# error or produce an incorrect stream.
++
++$XFS_IO_PROG -r -c "dedupe $SCRATCH_MNT/bar 0 0 512K" $SCRATCH_MNT/mysnap1/foo \
++	| _filter_xfs_io
++
++$XFS_IO_PROG -r -c "dedupe $SCRATCH_MNT/bar 512K 512K 512K" \
++	$SCRATCH_MNT/mysnap2/foo | _filter_xfs_io
++
++# Create the incremental send stream.
++$BTRFS_UTIL_PROG send -p $SCRATCH_MNT/mysnap1 -f $send_files_dir/2.snap \
++	$SCRATCH_MNT/mysnap2 2>&1 | _filter_scratch
++
++# Create the checksums to verify later that the send streams produce correct
++# results.
++$FSSUM_PROG -A -f -w $send_files_dir/1.fssum $SCRATCH_MNT/mysnap1
++$FSSUM_PROG -A -f -w $send_files_dir/2.fssum \
++	-x $SCRATCH_MNT/mysnap2/mysnap1 $SCRATCH_MNT/mysnap2
++
++# Now recreate the filesystem by receiving both send streams and verify we get
++# the same content that the original filesystem had.
++_scratch_unmount
++_scratch_mkfs >>$seqres.full 2>&1
++_scratch_mount
++
++$BTRFS_UTIL_PROG receive -f $send_files_dir/1.snap $SCRATCH_MNT
++$BTRFS_UTIL_PROG receive -f $send_files_dir/2.snap $SCRATCH_MNT
++$FSSUM_PROG -r $send_files_dir/1.fssum $SCRATCH_MNT/mysnap1
++$FSSUM_PROG -r $send_files_dir/2.fssum $SCRATCH_MNT/mysnap2
++
++status=0
++exit
+diff --git a/tests/btrfs/191.out b/tests/btrfs/191.out
+new file mode 100644
+index 00000000..4269803c
+--- /dev/null
++++ b/tests/btrfs/191.out
+@@ -0,0 +1,19 @@
++QA output created by 191
++wrote 524288/524288 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 524288/524288 bytes at offset 524288
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/mysnap1'
++At subvol SCRATCH_MNT/mysnap1
++wrote 1048576/1048576 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++Create a readonly snapshot of 'SCRATCH_MNT' in 'SCRATCH_MNT/mysnap2'
++deduped 524288/524288 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++deduped 524288/524288 bytes at offset 524288
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++At subvol SCRATCH_MNT/mysnap2
++At subvol mysnap1
++At snapshot mysnap2
++OK
++OK
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 6937bf1c..2474d43e 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -193,3 +193,4 @@
+ 188 auto quick send prealloc punch
+ 189 auto quick send clone
+ 190 auto quick replay balance qgroup
++191 auto quick send dedupe
 -- 
 2.11.0
 
