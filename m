@@ -2,77 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 904036EDE1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jul 2019 07:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7FC6EE77
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jul 2019 10:34:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726126AbfGTFmn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 20 Jul 2019 01:42:43 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:38714 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726094AbfGTFmn (ORCPT
+        id S1727061AbfGTIeh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 20 Jul 2019 04:34:37 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:34190 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727056AbfGTIeg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 20 Jul 2019 01:42:43 -0400
-Received: by mail-pf1-f193.google.com with SMTP id y15so15059900pfn.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Jul 2019 22:42:42 -0700 (PDT)
+        Sat, 20 Jul 2019 04:34:36 -0400
+Received: by mail-yb1-f193.google.com with SMTP id q5so1232793ybp.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Jul 2019 01:34:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Bimwqln4w8X0dypwvXkRtc71evwVEVYYolYvzvfh34s=;
-        b=yaj+LIMMgUBtzRxsCnggkvmykmD3bcKVePt8tcKRMGktBEHWKFpTpKnXMerbD74W7W
-         0QoeOp/PRHk4qSXeD5XhN0JrBZEnHDqmyqL57F6eT/FKnhxoKEbjs+ZT7MwStoMG4H21
-         /mqkYt3omHQpAhfUAvr6lB1+C8YKSd/6L78Iam7gxffFYVCoKT+u/9LegMfZ4ssLwTw9
-         D5k5d/VhTgc0ztCeYUp/9S6Rpe3fEzWGEUWRAB2BjH+Mq2b5xmNkjLfDkKAr2BMgIRY5
-         jmpRXmg6izkDLFaUzGvhZS/JMFtzRRy2s9uaCHBB3Zp5JwcLsrGodr1ni+Z/SpeAQiK3
-         Rz+g==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ODjdcUGvkirEkZ4KQNw9pquNIysGi09XN8OJItc8I50=;
+        b=RpBylq2uWLkbD3ncD4lwd8viVyKpe6zEnHWzfxWy1eN4ulJpAFVhENXtCB8608ZAcO
+         Sam3gZnm4w9KLHTkS0ejKBKSyGBOSLEqYec0WeAW/fBfJRL+WPhqooq8kY/w9P75K+2u
+         n3Gd3eIwwHWuIbxBR0nDYxwUZdHxgRP2eplXkLz7N8vqbg8mV6RqM9Di8E3Id+vCplyC
+         UqZMdqtSXc+xEj5d7kbceINbQNVWECmpjI61v0+dG51Uwdx1o2MvJk8sMwQaGrLGK8ud
+         BaaQY9ntdOgCLu7Qzcm9RkCXJy3bbzkjarGttbPUE4Bwho4GZscEogx6hLcHkl+8v/TB
+         aRyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Bimwqln4w8X0dypwvXkRtc71evwVEVYYolYvzvfh34s=;
-        b=WVZBUDC8UGWn6EUfASdSLN7zpgRTyOKo1yU2DjHz63vaPaSqilL7LtRv8Z03cLUU6a
-         adOOhHe4PwtEkYus/P4px0cmh2XMTPoCtphaYpRLQeKVrmFKG8gSSSJiZFVJVmcyeYTi
-         JAcXOey60QLhiSoVJ8nUZy85Njj3hVOH8RIG1E0PxGC4iA7DZ991pY/i1WUZcp0rUPY7
-         KzX9L/wzJXGByGwSFKtc0FReEFuTcBDiRJ4uii/QddbVeHpnmVsN8t+c9RhnSY/f9Zzy
-         VFihpdmUPUvocS7XpNeNYajZExTzC7TxQuydB7t0GKKgBuRrYt/ikcm/84g/c9xjpAmE
-         oc/Q==
-X-Gm-Message-State: APjAAAUNWrZ2dYKI8K9IXPa7LFU9YBJrmc+4DAMgOTuf9PdtZuztomS3
-        QMod+sSxWgp4L4Bz8xe/pSb7xwX6ZCk=
-X-Google-Smtp-Source: APXvYqwCpk39BWYVw0iW7NEKnAdQcnGYmu/FYHPm8NR8gOn10wmT2FH8deHaIOGfCly3KoBY1x7hPQ==
-X-Received: by 2002:a17:90a:8a91:: with SMTP id x17mr62507095pjn.95.1563601362119;
-        Fri, 19 Jul 2019 22:42:42 -0700 (PDT)
-Received: from vader ([2620:10d:c090:180::1:ba1e])
-        by smtp.gmail.com with ESMTPSA id v63sm33831774pfv.174.2019.07.19.22.42.41
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 19 Jul 2019 22:42:41 -0700 (PDT)
-Date:   Fri, 19 Jul 2019 22:42:40 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com
-Subject: Re: [PATCH 1/2] btrfs-progs: receive: get rid of unnecessary strdup()
-Message-ID: <20190720054240.GA7638@vader>
-References: <cover.1563600688.git.osandov@fb.com>
- <f0142166d2059ed0bf319778dd3146d1d0b4523d.1563600688.git.osandov@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ODjdcUGvkirEkZ4KQNw9pquNIysGi09XN8OJItc8I50=;
+        b=NLe7uVpHMzxsqRzNAJa2fXOiHjT6fNBpfujbT2NoPzlt8jqCpRSc6hcyZneBYTjdAd
+         LgIjAl11KWUuBK+Gn87b6VbEWAvfzhJ6I5QUGkfRJnZ6M2vd3BukuS5Ilgi1yH1SIyum
+         Zfx8wQVMQWOODLZ8CAoXHCnlG6ehOC4pQ3h2lWgpe22MXWVQw8AwFSje0dpVGCbzCCXv
+         aJWnU6cGVGFBjqzKNhVEp6vdwPiW5ETWfN7wpYYSaOKPsAlg+llwm328D5iBldI5Kd5o
+         TFFa7ZifMaGQxf+qzG6cbjkjRbQRWfcfKl9Z46KjI6Y67qe/5y3LQRHDcxeNvvBSwUue
+         bslQ==
+X-Gm-Message-State: APjAAAXaCH6zSEMuauJCrwgV8OWV/Jh6OQnYIihR3KKVZT7eUXdj1fTf
+        ZQ3es3UothFe2RIL/dO4kYgj+AtlqRyyiarXXkM=
+X-Google-Smtp-Source: APXvYqzmyFrDPQOO2JPdOZoOWgNrIfPcs9RW08KfU3ws5wKj2k8Bz5Ig0T06766eQdS6pAOLHjivrvx9o5lpJ2KOpO4=
+X-Received: by 2002:a25:5d12:: with SMTP id r18mr36567582ybb.302.1563611676113;
+ Sat, 20 Jul 2019 01:34:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <cover.1563600688.git.osandov@fb.com> <f0142166d2059ed0bf319778dd3146d1d0b4523d.1563600688.git.osandov@fb.com>
 In-Reply-To: <f0142166d2059ed0bf319778dd3146d1d0b4523d.1563600688.git.osandov@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+From:   Mike Fleetwood <mike.fleetwood@googlemail.com>
+Date:   Sat, 20 Jul 2019 09:34:24 +0100
+Message-ID: <CAMU1PDhmxhtiUVYX7q-04FamEbOTFz2o7NQoQpWcMv-GsaJLLw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] btrfs-progs: receive: get rid of unnecessary strdup()
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 19, 2019 at 10:40:00PM -0700, Omar Sandoval wrote:
+On Sat, 20 Jul 2019 at 06:43, Omar Sandoval <osandov@osandov.com> wrote:
+>
 > From: Omar Sandoval <osandov@fb.com>
-> 
+>
 > In process_clone(), we're not checking the return value of strdup().
 > But, there's no reason to strdup() in the first place: we just pass the
 > path into path_cat_out(). Get rid of the strdup().
-> 
+>
 > Fixes: f1c24cd80dfd ("Btrfs-progs: add btrfs send/receive commands")
 > Signed-off-by: Omar Sandoval <osandov@osandov.com>
+> ---
+>  cmds/receive.c | 9 ++++-----
+>  1 file changed, 4 insertions(+), 5 deletions(-)
+>
+> diff --git a/cmds/receive.c b/cmds/receive.c
+> index b97850a7..a3e62985 100644
+> --- a/cmds/receive.c
+> +++ b/cmds/receive.c
+> @@ -739,7 +739,7 @@ static int process_clone(const char *path, u64 offset, u64 len,
+>         struct btrfs_ioctl_clone_range_args clone_args;
+>         struct subvol_info *si = NULL;
+>         char full_path[PATH_MAX];
+> -       char *subvol_path = NULL;
+> +       char *subvol_path;
+I think that should become const char *.
 
-Wrong SOB on this one, should be the usual
+>         char full_clone_path[PATH_MAX];
+>         int clone_fd = -1;
+>
+> @@ -760,7 +760,7 @@ static int process_clone(const char *path, u64 offset, u64 len,
+>                 if (memcmp(clone_uuid, rctx->cur_subvol.received_uuid,
+>                                 BTRFS_UUID_SIZE) == 0) {
+>                         /* TODO check generation of extent */
+> -                       subvol_path = strdup(rctx->cur_subvol_path);
+> +                       subvol_path = rctx->cur_subvol_path;
+>                 } else {
+>                         if (!si)
+>                                 ret = -ENOENT;
+> @@ -794,14 +794,14 @@ static int process_clone(const char *path, u64 offset, u64 len,
+>                         if (sub_len > root_len &&
+>                             strstr(si->path, rctx->full_root_path) == si->path &&
+>                             si->path[root_len] == '/') {
+> -                               subvol_path = strdup(si->path + root_len + 1);
+> +                               subvol_path = si->path + root_len + 1;
+>                         } else {
+>                                 error("clone: source subvol path %s unreachable from %s",
+>                                         si->path, rctx->full_root_path);
+>                                 goto out;
+>                         }
+>                 } else {
+> -                       subvol_path = strdup(si->path);
+> +                       subvol_path = si->path;
+>                 }
+>         }
+>
+> @@ -839,7 +839,6 @@ out:
+>                 free(si->path);
+>                 free(si);
+>         }
+> -       free(subvol_path);
+>         if (clone_fd != -1)
+>                 close(clone_fd);
+>         return ret;
+> --
+> 2.22.0
+>
 
-Signed-off-by: Omar Sandoval <osandov@fb.com>
+Mike
