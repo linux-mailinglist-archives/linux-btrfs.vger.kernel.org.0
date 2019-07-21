@@ -2,153 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C976EF24
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Jul 2019 12:59:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 496196F158
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Jul 2019 05:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727941AbfGTK73 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 20 Jul 2019 06:59:29 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39854 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727376AbfGTK73 (ORCPT
+        id S1726184AbfGUDR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 20 Jul 2019 23:17:26 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36520 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726095AbfGUDR0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 20 Jul 2019 06:59:29 -0400
-Received: by mail-wr1-f67.google.com with SMTP id x4so34577963wrt.6
-        for <linux-btrfs@vger.kernel.org>; Sat, 20 Jul 2019 03:59:27 -0700 (PDT)
+        Sat, 20 Jul 2019 23:17:26 -0400
+Received: by mail-pg1-f195.google.com with SMTP id l21so16086913pgm.3
+        for <linux-btrfs@vger.kernel.org>; Sat, 20 Jul 2019 20:17:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uN9Q5qJ3W4UuGIO9rCvXlXI2NzwtVnyy0zLF6E8O4Rk=;
-        b=Q4B+mz3nURXEHqiium+TbZZNM+lHdOWw9EQu9Cl49JSchquQsnfCTqKawNk1o4G0Ck
-         1XZyXpnd5pC/i3/V/2oaRldsMubzY+mvZcUW1BoZnxAsZBPAkzV2PMP5+Z8ksP/2vpc/
-         A2zmfyCPHuRX3C0XgbcQIOdKKipgOuCSC/JNcHkIhFTiBgkMzegOTfWV2xAdgGpKBUAw
-         bIc7ooyqxonExt1FU0gFsggTDlK6Vz6vkX73h1rxyn5c2hru1sHv8jGdtEN3PyC0ehJl
-         icZfTbX1ZQJzuSW25x4eIbgurKP756ImnY3R2b58daYpxpdV+v2TvE/yF4P3sz67ptn1
-         WGhg==
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zyXnkIi7F7xqnSyYKNN1v5vYpwnsic2ESphyFDreDLQ=;
+        b=Pj/oL1HdVv8VT7peoERrdFpwng8sTUVidfqWObuOjJ5aFm8tp25pSaXwp+6SKshsxq
+         WPnQW3w1N60RftOCTiMQhujmvE68O+IQBxlxWJC6VTHobrsBCJeYfXCt6QexT+kIM6wY
+         k1VKxhw07mb5g2d22m5xvB1qLVNjPSskFlTLR4PQKrxvwf1Vv51lM2vWuJ+fK+M8+KSW
+         Egkq+0ANoK2x2oKAUdOTjhrbZYmklyz8MUTwLDOuAimCKt6n6MMq2BIQAimYC21vwI+/
+         9hvQGj2PQOJHC/DEKOyAa9dbRl8LGGURoRXkVOHImiYV1G9lvq38HsCGchuAoWkBoAM4
+         JcWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=uN9Q5qJ3W4UuGIO9rCvXlXI2NzwtVnyy0zLF6E8O4Rk=;
-        b=DzKjFrXs6iiByr729R9/sPiCierbmJkxgcsR60rC4FPAbWyFUgOb2tbCWE6j9+SaeM
-         HxIB3J4saR7l4+gaLEwSX/rdvNEj6OHaVFL7Sd178rDi7MRuB+JGwhsOiJ2ev+lFgCu3
-         ysGQumpwdXqslyUOehxrfWx3n31/Ul+G7NRkeY5o4WgNCeEwoenWfEbr4DqK745yarJQ
-         ucnUsAjfXTpT/N9YqPQkyGfIm6Q7o4gmhYPXNg87vhYBkvPAgT+lGReTg2GRByb3FFS3
-         k+aViaxucrQMuK03EBJ+uovQDQidplPvTMMKsfRClpZBUOthExyQRGaORwd4vWatY+Bb
-         frHg==
-X-Gm-Message-State: APjAAAV/5V54wLcZTVBjwLzAeCkCSMChD98Hq2O0t9ovkHyfQsz9PA3W
-        AZqdXtuFiv5tB+pmN+nwu5YPZM6RkVk=
-X-Google-Smtp-Source: APXvYqxHHEAX5+P+ot8moZKvMvIJwwIKVb/Se3saiRgOj+2T/c0umvIv0GhlZjnjmm0h/WS/jPtp5w==
-X-Received: by 2002:adf:dcc2:: with SMTP id x2mr49869470wrm.55.1563620366095;
-        Sat, 20 Jul 2019 03:59:26 -0700 (PDT)
-Received: from home.thecybershadow.net ([89.28.117.31])
-        by smtp.gmail.com with ESMTPSA id x129sm29597518wmg.44.2019.07.20.03.59.25
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Sat, 20 Jul 2019 03:59:25 -0700 (PDT)
-Subject: Re: "kernel BUG" and segmentation fault with "device delete"
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <966f5562-1993-2a4f-0d6d-5cea69d6e1c6@gmail.com>
- <8e009a0c-2c82-90c5-807a-bf3477e0b07a@gmx.com>
- <8c221f86-b550-fcd6-aef1-13570270a559@gmail.com>
- <4a7c1c7b-bc1e-4aba-7a9d-581c0272aa86@gmx.com>
-From:   Vladimir Panteleev <thecybershadow@gmail.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=thecybershadow@gmail.com; prefer-encrypt=mutual; keydata=
- mQENBFar2yQBCADWo1C5Ir1smytf7+vWGCEoZgb/4XKkxrp+GUO7eJO8iYCWHTmCPZpi6p/z
- y6eh+NYcDQSRzKA99ffgdN+aT8/L6d63pYdsgtDmX/yrFWyLOVgW62LQpC/To4MTJAIgY/Rg
- /VjdifOJtYFvr+BKJwFCTfcviy4EQjsfHLnyJjvL9BiCXfSBXASc/Gn9WOTL5ZNpk4TStGXO
- +/2PIKeg228LtJ5vc/vemBo4hcjJv9ttX7dCebpSAbNo7GgOs8XNgJU2mEcra3IMT15dGk0/
- KpGMx7bMinTIlxx/BAGt5M5w8OnNi4p2AcKzvH18OTE7Lssn5ub8Ains32hbUFf18hJbABEB
- AAG0K1ZsYWRpbWlyIFBhbnRlbGVldiA8Z3BnQHRoZWN5YmVyc2hhZG93Lm5ldD6JAVEEEwEI
- ADsCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AWIQS77RsIjO1/lYkX++hQBPD60FFXbQUC
- WJ9eKQIZAQAKCRBQBPD60FFXbX0yB/9PEcY3H9mEZtU1UVqxLzPMVXUX5Khk6RD3Jt8/V7aA
- vu8VO4qwmnhadRPHXxVwnnVotao9d5U1zHw0gDhvJWelGRm52mKAPtyPwtBy4y3oXzymLfOM
- RIZxwxMY5RkbqdgWNEY7tCplABnWmaUMm5qDIjzkbEabpiqGySMy2gy6lQHUdRHcgFqO+ceZ
- R7IOPEh2fnVuQc5t1V56OHHRQZMQLgGupInST+svryv2sfr5+ZJqtwWL3nn8aFER6eIWzDDu
- m9y2RZnykbfwd56c81bpY6qqZtHkyt0hImkOwOiBj3UWtJvgZ95WnJ8NBPHPcttgL3vQTsXu
- BRYEjQZln81tuQENBFar2yQBCADFGh8NqHMtBT8F4m/UzQx0QAMDyPQN3CjKn67gW//8gd5v
- TmZCws2TwjaGlrJmwhGseUkZ368dth5vZLPu95MVSo2TBGf+XIVPsGzX6cuIRNtvQOT5YSUz
- uOghU0wh5gjw7evg7d0qfZRTZ2/JAuWmeTvPl66dasUoqKxVrq5o2MXdYkI6KoSxTsal3/36
- ii5cl2GfzE+bVAj3MB8B0ktdIZCHAJT8n+8h10/5TD5oEkWjhWdATeWMrC2bZwFykgSKjY/3
- jUvmfeyJp56sw5w3evZLQdQCo+NWoFGHdHBm0onyZbgbWS+2DEQI+ee0t6q6/iR1tf8VPX2U
- LY0jjiZ7ABEBAAGJAR8EGAEIAAkFAlar2yQCGwwACgkQUATw+tBRV200GQf8CaQxTy7OhWQ5
- O47G3+yKuBxDnYoP9h+T/sKcWsOUgy7i/vbqfkJvrqME8rRiO9YB/1/no1KqXm+gq0rSeZjy
- DA3mk9pNKvreHX9VO1md4r/vZF6jTwxNI7K97T34hZJGUQqsGzd8kMAvrgP199tXGG2+NOXv
- ih44I0of/VFFklNmO87y/Vn5F8OfNzwiHLNleBXZ1bMp/QBMd3HtahZVk7xRMNAKYqkyvI/C
- z0kgoHYP9wKpSmbPXJ5Qq0ndAJ7KIRcIwwDcbh3/F9Icj/N3v0SpxuJO7l0KlXQIWQ7TSpaO
- liYT2ARnGHHYcE2OhA0ixGV3Y3suUhk+GQaRQoiytw==
-Message-ID: <811c2c41-e795-9562-0e8b-033b404bf43d@gmail.com>
-Date:   Sat, 20 Jul 2019 10:59:23 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zyXnkIi7F7xqnSyYKNN1v5vYpwnsic2ESphyFDreDLQ=;
+        b=Ei46QxBszbK1Et8HLIkdcC2UEjNPFOr9Nc0y9KkXC7XUMQlnf9Wbkc/VcdDbU+7ge1
+         fuIxeDKGrQtJT4PxAZp+tPuP9Rp7S8rFKjkd7PiCW6TfsD5eo25zVfRPzytMhJt8QvSw
+         +hSXhiVooHNzSKqZ/mvl6jIZrSXzcB7aRxuwB7lNoix5pwZEdUmHQBspfLLdcGnlhNw2
+         MmJhqKnfo72N9ZTwCQHb32l6ukvKZjJ6rk2V/THgbddB8W6T1U/+VQxKdqXKSiTxt1gz
+         azg5BcN819ytXPBTep/F2MBht79HNZUTnPhQipvk5YuPdoAeZEfmLutWZRXl24t3ZrmE
+         WPEw==
+X-Gm-Message-State: APjAAAVYW04IFCBGNtzVTSxh02n5voXFa0/euGW1NmG3QLSUcZiutzND
+        gMHspWgLqHr9tsTB92OEmMugwA==
+X-Google-Smtp-Source: APXvYqxq772kc2IdK/GrgffxvmSYUScwPnGDioRpXIq2Rb5VrTHM7ZmUzEMeTKY2mZdnPdb0O4fAmw==
+X-Received: by 2002:a63:1749:: with SMTP id 9mr11076226pgx.0.1563679045263;
+        Sat, 20 Jul 2019 20:17:25 -0700 (PDT)
+Received: from vader ([2601:602:8b00:55d3:e6a7:a0ff:fe0b:c9a8])
+        by smtp.gmail.com with ESMTPSA id z13sm27240105pfa.94.2019.07.20.20.17.23
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sat, 20 Jul 2019 20:17:24 -0700 (PDT)
+Date:   Sat, 20 Jul 2019 20:17:21 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Mike Fleetwood <mike.fleetwood@googlemail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
+Subject: Re: [PATCH 1/2] btrfs-progs: receive: get rid of unnecessary strdup()
+Message-ID: <20190721031721.GA8955@vader>
+References: <cover.1563600688.git.osandov@fb.com>
+ <f0142166d2059ed0bf319778dd3146d1d0b4523d.1563600688.git.osandov@fb.com>
+ <CAMU1PDhmxhtiUVYX7q-04FamEbOTFz2o7NQoQpWcMv-GsaJLLw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4a7c1c7b-bc1e-4aba-7a9d-581c0272aa86@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMU1PDhmxhtiUVYX7q-04FamEbOTFz2o7NQoQpWcMv-GsaJLLw@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Sat, Jul 20, 2019 at 09:34:24AM +0100, Mike Fleetwood wrote:
+> On Sat, 20 Jul 2019 at 06:43, Omar Sandoval <osandov@osandov.com> wrote:
+> >
+> > From: Omar Sandoval <osandov@fb.com>
+> >
+> > In process_clone(), we're not checking the return value of strdup().
+> > But, there's no reason to strdup() in the first place: we just pass the
+> > path into path_cat_out(). Get rid of the strdup().
+> >
+> > Fixes: f1c24cd80dfd ("Btrfs-progs: add btrfs send/receive commands")
+> > Signed-off-by: Omar Sandoval <osandov@osandov.com>
+> > ---
+> >  cmds/receive.c | 9 ++++-----
+> >  1 file changed, 4 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/cmds/receive.c b/cmds/receive.c
+> > index b97850a7..a3e62985 100644
+> > --- a/cmds/receive.c
+> > +++ b/cmds/receive.c
+> > @@ -739,7 +739,7 @@ static int process_clone(const char *path, u64 offset, u64 len,
+> >         struct btrfs_ioctl_clone_range_args clone_args;
+> >         struct subvol_info *si = NULL;
+> >         char full_path[PATH_MAX];
+> > -       char *subvol_path = NULL;
+> > +       char *subvol_path;
+> I think that should become const char *.
 
-I've done a few experiments and here are my findings.
-
-First I probably should describe the filesystem: it is a snapshot 
-archive, containing a lot of snapshots for 4 subvolumes, totaling 2487 
-subvolumes/snapshots. There are also a few files (inside the snapshots) 
-that are probably very fragmented. This is probably what causes the bug.
-
-Observations:
-
-- If I delete all snapshots, the bug disappears (device delete succeeds).
-- If I delete all but any single subvolume's snapshots, the bug disappears.
-- If I delete one of two subvolumes' snapshots, the bug disappears, but 
-stays if I delete one of the other two subvolumes' snapshots.
-
-It looks like two subvolumes' snapshots' data participates in causing 
-the bug.
-
-In theory, I guess it would be possible to reduce the filesystem to the 
-minimal one causing the bug by iteratively deleting snapshots / files 
-and checking if the bug manifests, but it would be extremely 
-time-consuming, probably requiring weeks.
-
-Anything else I can do to help diagnose / fix it? Or should I just order 
-more HDDs and clone the RAID10 the right way?
-
-On 06/07/2019 05.51, Qu Wenruo wrote:
-> 
-> 
-> On 2019/7/6 下午1:13, Vladimir Panteleev wrote:
-> [...]
->>> I'm not sure if it's the degraded mount cause the problem, as the
->>> enospc_debug output looks like reserved/pinned/over-reserved space has
->>> taken up all space, while no new chunk get allocated.
->>
->> The problem happens after replace-ing the missing device (which succeeds
->> in full) and then attempting to remove it, i.e. without a degraded mount.
->>
->>> Would you please try to balance metadata to see if the ENOSPC still
->>> happens?
->>
->> The problem also manifests when attempting to rebalance the metadata.
-> 
-> Have you tried to balance just one or two metadata block groups?
-> E.g using -mdevid or -mvrange?
-> 
-> And did the problem always happen at the same block group?
-> 
-> Thanks,
-> Qu
->>
->> Thanks!
->>
-> 
-
--- 
-Best regards,
-  Vladimir
+Yeah, that wouldn't hurt. Dave, can you add that when you apply this or
+should I resend?
