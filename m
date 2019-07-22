@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B66C7008C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2019 15:07:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C6567059B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2019 18:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729075AbfGVNHA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 22 Jul 2019 09:07:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35114 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727360AbfGVNG7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 22 Jul 2019 09:06:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D3246AEE6;
-        Mon, 22 Jul 2019 13:06:58 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B1038DA882; Mon, 22 Jul 2019 15:07:33 +0200 (CEST)
-Date:   Mon, 22 Jul 2019 15:07:33 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: deal with drop_progress properly in fsck
-Message-ID: <20190722130733.GR20977@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190206204924.6096-1-josef@toxicpanda.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190206204924.6096-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+        id S1731072AbfGVQk0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Jul 2019 12:40:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731057AbfGVQk0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 22 Jul 2019 12:40:26 -0400
+Subject: Re: [GIT PULL] Btrfs fixes for 5.3-rc2
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1563813625;
+        bh=zs5i9OM5loAP7/IoeXJmSgLs5f0QPzFOUn4oKcdnsPg=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=L5jwqnET514zCB1mGRbXPGvfmkmlht46qQ2Fb+S5aDW5gszlzVKn4i57Zh1QgxN03
+         joRyJ10rqPoXAwnrX9ZAdzKvSW7hDp+WI/dXcVkC3N+bc/AycFbe8DYrTMCPhkMS78
+         qHbxacP9hK+0nIryF7JDGW9zXEbn22mzRcepQu9I=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1563797135.git.dsterba@suse.com>
+References: <cover.1563797135.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1563797135.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.3-rc1-tag
+X-PR-Tracked-Commit-Id: 373c3b80e459cb57c34381b928588a3794eb5bbd
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 21c730d7347126886c40453feb973161f4ae3fb3
+Message-Id: <156381362502.340.7908822855033800675.pr-tracker-bot@kernel.org>
+Date:   Mon, 22 Jul 2019 16:40:25 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        clm@fb.com, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Feb 06, 2019 at 03:49:24PM -0500, Josef Bacik wrote:
-> While testing snapshot deletion with dm-log-writes I saw that I was
-> failing the fsck sometimes when the fs was actually in the correct
-> state.  This is because we only skip blocks on the same level of
-> root_item->drop_level.  If the drop_level < the root level then we could
-> very well walk into nodes that we wouldn't actually walk into on fs
-> mount, because the drop_progress is further ahead in the slot of the
-> root.  Instead only process the slots of the nodes that are above the
-> drop_progress key.  With this patch in place we no longer improperly
-> fail to check fs'es that have a drop_progress set with a drop_level <
-> root level.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+The pull request you sent on Mon, 22 Jul 2019 14:18:08 +0200:
 
-Now applied to devel, thanks.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.3-rc1-tag
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/21c730d7347126886c40453feb973161f4ae3fb3
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
