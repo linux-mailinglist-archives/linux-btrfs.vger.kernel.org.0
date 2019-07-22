@@ -2,94 +2,1554 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 496196F158
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Jul 2019 05:20:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47BF06F870
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Jul 2019 06:26:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbfGUDR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 20 Jul 2019 23:17:26 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:36520 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbfGUDR0 (ORCPT
+        id S1725855AbfGVE0P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 22 Jul 2019 00:26:15 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41237 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725766AbfGVE0O (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 20 Jul 2019 23:17:26 -0400
-Received: by mail-pg1-f195.google.com with SMTP id l21so16086913pgm.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 20 Jul 2019 20:17:25 -0700 (PDT)
+        Mon, 22 Jul 2019 00:26:14 -0400
+Received: by mail-wr1-f66.google.com with SMTP id c2so34617603wrm.8
+        for <linux-btrfs@vger.kernel.org>; Sun, 21 Jul 2019 21:26:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zyXnkIi7F7xqnSyYKNN1v5vYpwnsic2ESphyFDreDLQ=;
-        b=Pj/oL1HdVv8VT7peoERrdFpwng8sTUVidfqWObuOjJ5aFm8tp25pSaXwp+6SKshsxq
-         WPnQW3w1N60RftOCTiMQhujmvE68O+IQBxlxWJC6VTHobrsBCJeYfXCt6QexT+kIM6wY
-         k1VKxhw07mb5g2d22m5xvB1qLVNjPSskFlTLR4PQKrxvwf1Vv51lM2vWuJ+fK+M8+KSW
-         Egkq+0ANoK2x2oKAUdOTjhrbZYmklyz8MUTwLDOuAimCKt6n6MMq2BIQAimYC21vwI+/
-         9hvQGj2PQOJHC/DEKOyAa9dbRl8LGGURoRXkVOHImiYV1G9lvq38HsCGchuAoWkBoAM4
-         JcWA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0AZM+iqAFVIMzArbyn5Y5Ti9dfF42FhZOfPu9H7ZmXI=;
+        b=vJu26bQOpS6EkWINSMue+3MC/7ygP2Ee14lt3BGmUK2krOLk6RTDf4v8TI06mSAupW
+         WetRgjsSQxhbVOo78C0rH5lF6zk0s7X9O8TsXhY/8POiInubMSoVydCmTqoBECrhIE6O
+         KSywZzsVlAMqmSiJtXLcGftk7DK3rhKrSQ2IzNbdQVQl90vJ2cuCCAmn7wurZxPjhAtx
+         yI0Ra6E+FiNakKMn40SzjuyJL2ZgAZ2jCatPYegQt5CcIPJTmx8ADm+KzBJ9fVeU9sXx
+         Y3OhLR9Fy3xlLDDgyiS+gonSoifjnoNlT+NlUARdSR9Bjb+ucs6NURjK716snhHXzMVl
+         vf7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zyXnkIi7F7xqnSyYKNN1v5vYpwnsic2ESphyFDreDLQ=;
-        b=Ei46QxBszbK1Et8HLIkdcC2UEjNPFOr9Nc0y9KkXC7XUMQlnf9Wbkc/VcdDbU+7ge1
-         fuIxeDKGrQtJT4PxAZp+tPuP9Rp7S8rFKjkd7PiCW6TfsD5eo25zVfRPzytMhJt8QvSw
-         +hSXhiVooHNzSKqZ/mvl6jIZrSXzcB7aRxuwB7lNoix5pwZEdUmHQBspfLLdcGnlhNw2
-         MmJhqKnfo72N9ZTwCQHb32l6ukvKZjJ6rk2V/THgbddB8W6T1U/+VQxKdqXKSiTxt1gz
-         azg5BcN819ytXPBTep/F2MBht79HNZUTnPhQipvk5YuPdoAeZEfmLutWZRXl24t3ZrmE
-         WPEw==
-X-Gm-Message-State: APjAAAVYW04IFCBGNtzVTSxh02n5voXFa0/euGW1NmG3QLSUcZiutzND
-        gMHspWgLqHr9tsTB92OEmMugwA==
-X-Google-Smtp-Source: APXvYqxq772kc2IdK/GrgffxvmSYUScwPnGDioRpXIq2Rb5VrTHM7ZmUzEMeTKY2mZdnPdb0O4fAmw==
-X-Received: by 2002:a63:1749:: with SMTP id 9mr11076226pgx.0.1563679045263;
-        Sat, 20 Jul 2019 20:17:25 -0700 (PDT)
-Received: from vader ([2601:602:8b00:55d3:e6a7:a0ff:fe0b:c9a8])
-        by smtp.gmail.com with ESMTPSA id z13sm27240105pfa.94.2019.07.20.20.17.23
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Sat, 20 Jul 2019 20:17:24 -0700 (PDT)
-Date:   Sat, 20 Jul 2019 20:17:21 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Mike Fleetwood <mike.fleetwood@googlemail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH 1/2] btrfs-progs: receive: get rid of unnecessary strdup()
-Message-ID: <20190721031721.GA8955@vader>
-References: <cover.1563600688.git.osandov@fb.com>
- <f0142166d2059ed0bf319778dd3146d1d0b4523d.1563600688.git.osandov@fb.com>
- <CAMU1PDhmxhtiUVYX7q-04FamEbOTFz2o7NQoQpWcMv-GsaJLLw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0AZM+iqAFVIMzArbyn5Y5Ti9dfF42FhZOfPu9H7ZmXI=;
+        b=QZ6xDYvbgdURkx4M74+ZbEHgLRByYTLiP3ZJK1wevPWybr+2ank+mab1Vc3cmpPcEF
+         9DyAWvZdIJVNEPnRhAaZ1N61l95PNsaUlPxUr7d0wV6CYCzvxoo3M7tayosenuLro5gE
+         JBehTeRXGOtUybWoKTCkPyuKMiR0NEtVN1soex1hQlDf5RBklJMqKg7y00wY9Hvo36RY
+         dzSHpqeR7hIzx7KQBsoBqZS9PCYx7nwZgrPgb3lMhzBM9akPMb3pMOGb4lJfeeYcAkV+
+         B82Lbkg4oLPTsRzJkqmyXH+Poc9CyD+/lew5s3jFdP295yMy5sqVmv4uzp2QSAcy0aXO
+         DmRw==
+X-Gm-Message-State: APjAAAW4DBKllgIidO2h+83XuDb58VHjI3hnmH6n1Mlu4OgiI74QNLSP
+        bLx4+EznwrZ//BGFj86971THcEA6H+eikmUPgvd0wNQu
+X-Google-Smtp-Source: APXvYqw25O6rT39MngsXm3U8RY7Zz/J4TRAPMgkQbWmTDLNhDHKeRuF1YupK3WWM/ItuplIVJxi68UMZ4eIupYOIGFU=
+X-Received: by 2002:adf:f646:: with SMTP id x6mr76208149wrp.18.1563769566071;
+ Sun, 21 Jul 2019 21:26:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMU1PDhmxhtiUVYX7q-04FamEbOTFz2o7NQoQpWcMv-GsaJLLw@mail.gmail.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <CAEEhgEsQD1WgqZBZ2YEsEZKKH6X6PSxZGKbMgSVrzkEjVVDFrg@mail.gmail.com>
+ <9338f259-47a7-11f7-8411-54f777a59487@gmx.com> <CAEEhgEstmUEZs_ArDxRd0RoF70N+w0Pk=CSisQSNK-NWhLga=Q@mail.gmail.com>
+ <f950f86e-e42e-4360-f6bd-0502a7070b91@gmx.com>
+In-Reply-To: <f950f86e-e42e-4360-f6bd-0502a7070b91@gmx.com>
+From:   Nathan Dehnel <ncdehnel@gmail.com>
+Date:   Sun, 21 Jul 2019 23:25:54 -0500
+Message-ID: <CAEEhgEu09Bn74-P++eGWD89o5ynopgdHMUtzyyC-M-x5rdoavQ@mail.gmail.com>
+Subject: Re: reading/writing btrfs volume regularly freezes system
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Jul 20, 2019 at 09:34:24AM +0100, Mike Fleetwood wrote:
-> On Sat, 20 Jul 2019 at 06:43, Omar Sandoval <osandov@osandov.com> wrote:
-> >
-> > From: Omar Sandoval <osandov@fb.com>
-> >
-> > In process_clone(), we're not checking the return value of strdup().
-> > But, there's no reason to strdup() in the first place: we just pass the
-> > path into path_cat_out(). Get rid of the strdup().
-> >
-> > Fixes: f1c24cd80dfd ("Btrfs-progs: add btrfs send/receive commands")
-> > Signed-off-by: Omar Sandoval <osandov@osandov.com>
-> > ---
-> >  cmds/receive.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
-> >
-> > diff --git a/cmds/receive.c b/cmds/receive.c
-> > index b97850a7..a3e62985 100644
-> > --- a/cmds/receive.c
-> > +++ b/cmds/receive.c
-> > @@ -739,7 +739,7 @@ static int process_clone(const char *path, u64 offset, u64 len,
-> >         struct btrfs_ioctl_clone_range_args clone_args;
-> >         struct subvol_info *si = NULL;
-> >         char full_path[PATH_MAX];
-> > -       char *subvol_path = NULL;
-> > +       char *subvol_path;
-> I think that should become const char *.
+I'm still experiencing freezes with kernel 5.2. Here's a backtrace:
 
-Yeah, that wouldn't hurt. Dave, can you add that when you apply this or
-should I resend?
+[1124738.601136] gitea           S    0 12750      1 0x00000000
+[1124738.601138] Call Trace:
+[1124738.601142]  ? __schedule+0x413/0x464
+[1124738.601146]  schedule+0x80/0xab
+[1124738.601149]  futex_wait_queue_me+0xc1/0x106
+[1124738.601153]  futex_wait+0xdb/0x1ea
+[1124738.601156]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.601159]  ? try_to_wake_up+0x358/0x37e
+[1124738.601163]  ? get_futex_key+0x94/0x2c2
+[1124738.601168]  do_futex+0x139/0x98b
+[1124738.601170]  ? __switch_to_asm+0x34/0x70
+[1124738.601173]  ? __switch_to_asm+0x34/0x70
+[1124738.601175]  ? __switch_to_asm+0x40/0x70
+[1124738.601177]  ? __switch_to_asm+0x34/0x70
+[1124738.601179]  ? __switch_to_asm+0x34/0x70
+[1124738.601182]  ? __switch_to_asm+0x40/0x70
+[1124738.601184]  ? __switch_to_asm+0x34/0x70
+[1124738.601186]  ? __switch_to_asm+0x40/0x70
+[1124738.601188]  ? __switch_to_asm+0x34/0x70
+[1124738.601190]  ? __switch_to_asm+0x40/0x70
+[1124738.601192]  ? __switch_to_asm+0x34/0x70
+[1124738.601194]  ? _raw_spin_unlock_irq+0x13/0x24
+[1124738.601197]  ? finish_task_switch+0x17d/0x26b
+[1124738.601201]  __se_sys_futex+0x137/0x15c
+[1124738.601204]  do_syscall_64+0x7e/0x152
+[1124738.601207]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601209] RIP: 0033:0x4625e3
+[1124738.601214] Code: Bad RIP value.
+[1124738.601215] RSP: 002b:00007fc6baffcca0 EFLAGS: 00000286 ORIG_RAX:
+00000000000000ca
+[1124738.601217] RAX: ffffffffffffffda RBX: 000000c00006d500 RCX:
+00000000004625e3
+[1124738.601218] RDX: 0000000000000000 RSI: 0000000000000080 RDI:
+000000c00006d648
+[1124738.601220] RBP: 00007fc6baffcce8 R08: 0000000000000000 R09:
+0000000000000000
+[1124738.601221] R10: 0000000000000000 R11: 0000000000000286 R12:
+0000000000000040
+[1124738.601223] R13: 00000000028aba20 R14: 0000000000000000 R15:
+0000000000000000
+[1124738.601226] gitea           S    0 12751      1 0x00000000
+[1124738.601228] Call Trace:
+[1124738.601232]  ? __schedule+0x413/0x464
+[1124738.601235]  schedule+0x80/0xab
+[1124738.601239]  futex_wait_queue_me+0xc1/0x106
+[1124738.601243]  futex_wait+0xdb/0x1ea
+[1124738.601245]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.601249]  ? try_to_wake_up+0x358/0x37e
+[1124738.601252]  ? get_futex_key+0x94/0x2c2
+[1124738.601257]  do_futex+0x139/0x98b
+[1124738.601261]  ? cgroup_base_stat_cputime_account_end.isra.0+0x24/0x36
+[1124738.601264]  ? update_curr+0x113/0x173
+[1124738.601267]  ? pick_next_entity+0xd1/0xdb
+[1124738.601271]  ? pick_next_task_fair+0x9c/0x54c
+[1124738.601274]  ? rcu_preempt_need_deferred_qs+0x15/0x3d
+[1124738.601278]  __se_sys_futex+0x137/0x15c
+[1124738.601282]  do_syscall_64+0x7e/0x152
+[1124738.601284]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601286] RIP: 0033:0x4625e3
+[1124738.601291] Code: Bad RIP value.
+[1124738.601292] RSP: 002b:00007fc6ba7fbca0 EFLAGS: 00000286 ORIG_RAX:
+00000000000000ca
+[1124738.601294] RAX: ffffffffffffffda RBX: 000000c00006d880 RCX:
+00000000004625e3
+[1124738.601296] RDX: 0000000000000000 RSI: 0000000000000080 RDI:
+000000c00006d9c8
+[1124738.601297] RBP: 00007fc6ba7fbce8 R08: 0000000000000000 R09:
+0000000000000000
+[1124738.601299] R10: 0000000000000000 R11: 0000000000000286 R12:
+00000000003fffed
+[1124738.601300] R13: 000000000000001a R14: 0000000000000019 R15:
+0000000000000200
+[1124738.601303] gitea           S    0 12752      1 0x00000000
+[1124738.601305] Call Trace:
+[1124738.601309]  ? __schedule+0x413/0x464
+[1124738.601313]  schedule+0x80/0xab
+[1124738.601316]  futex_wait_queue_me+0xc1/0x106
+[1124738.601320]  futex_wait+0xdb/0x1ea
+[1124738.601323]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.601327]  ? try_to_wake_up+0x358/0x37e
+[1124738.601330]  ? get_futex_key+0x94/0x2c2
+[1124738.601335]  do_futex+0x139/0x98b
+[1124738.601338]  ? __switch_to_asm+0x34/0x70
+[1124738.601340]  ? __switch_to_asm+0x34/0x70
+[1124738.601342]  ? __switch_to_asm+0x40/0x70
+[1124738.601344]  ? __switch_to_asm+0x34/0x70
+[1124738.601347]  ? __switch_to_asm+0x34/0x70
+[1124738.601349]  ? __switch_to_asm+0x40/0x70
+[1124738.601351]  ? __switch_to_asm+0x34/0x70
+[1124738.601353]  ? __switch_to_asm+0x40/0x70
+[1124738.601355]  ? __switch_to_asm+0x34/0x70
+[1124738.601357]  ? __switch_to_asm+0x40/0x70
+[1124738.601359]  ? __switch_to_asm+0x34/0x70
+[1124738.601361]  ? _raw_spin_unlock_irq+0x13/0x24
+[1124738.601364]  ? finish_task_switch+0x17d/0x26b
+[1124738.601368]  __se_sys_futex+0x137/0x15c
+[1124738.601372]  do_syscall_64+0x7e/0x152
+[1124738.601375]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601376] RIP: 0033:0x4625e3
+[1124738.601381] Code: Bad RIP value.
+[1124738.601382] RSP: 002b:00007fc6b9ffaca0 EFLAGS: 00000286 ORIG_RAX:
+00000000000000ca
+[1124738.601384] RAX: ffffffffffffffda RBX: 000000c002332000 RCX:
+00000000004625e3
+[1124738.601386] RDX: 0000000000000000 RSI: 0000000000000080 RDI:
+000000c002332148
+[1124738.601387] RBP: 00007fc6b9fface8 R08: 0000000000000000 R09:
+0000000000000000
+[1124738.601389] R10: 0000000000000000 R11: 0000000000000286 R12:
+0000000000000055
+[1124738.601390] R13: 00000000028aba20 R14: 0000000000000000 R15:
+0000000000000000
+[1124738.601393] gitea           S    0 12753      1 0x00000000
+[1124738.601395] Call Trace:
+[1124738.601399]  ? __schedule+0x413/0x464
+[1124738.601402]  schedule+0x80/0xab
+[1124738.601406]  futex_wait_queue_me+0xc1/0x106
+[1124738.601410]  futex_wait+0xdb/0x1ea
+[1124738.601414]  ? hrtimer_init+0xf4/0xf4
+[1124738.601419]  do_futex+0x139/0x98b
+[1124738.601424]  ? hrtimer_cancel+0x11/0x1b
+[1124738.601428]  ? do_nanosleep+0xba/0x161
+[1124738.601430]  ? __switch_to_asm+0x34/0x70
+[1124738.601434]  __se_sys_futex+0x137/0x15c
+[1124738.601438]  do_syscall_64+0x7e/0x152
+[1124738.601441]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601443] RIP: 0033:0x4625e3
+[1124738.601447] Code: Bad RIP value.
+[1124738.601448] RSP: 002b:000000c003062ea0 EFLAGS: 00000206 ORIG_RAX:
+00000000000000ca
+[1124738.601451] RAX: ffffffffffffffda RBX: 0000000005f5b74e RCX:
+00000000004625e3
+[1124738.601452] RDX: 0000000000000000 RSI: 0000000000000080 RDI:
+000000000393e940
+[1124738.601454] RBP: 000000c003062ee8 R08: 0000000000000000 R09:
+0000000000000000
+[1124738.601455] R10: 000000c003062ed8 R11: 0000000000000206 R12:
+00000000003fffed
+[1124738.601457] R13: 0000000000000178 R14: 0000000000000177 R15:
+0000000000000200
+[1124738.601459] gitea           S    0 12762      1 0x00000000
+[1124738.601461] Call Trace:
+[1124738.601465]  ? __schedule+0x413/0x464
+[1124738.601469]  schedule+0x80/0xab
+[1124738.601473]  futex_wait_queue_me+0xc1/0x106
+[1124738.601476]  futex_wait+0xdb/0x1ea
+[1124738.601479]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.601482]  ? try_to_wake_up+0x358/0x37e
+[1124738.601486]  ? get_futex_key+0x94/0x2c2
+[1124738.601491]  do_futex+0x139/0x98b
+[1124738.601496]  ? hrtimer_cancel+0x11/0x1b
+[1124738.601499]  ? do_nanosleep+0xba/0x161
+[1124738.601501]  ? __switch_to_asm+0x34/0x70
+[1124738.601506]  __se_sys_futex+0x137/0x15c
+[1124738.601509]  do_syscall_64+0x7e/0x152
+[1124738.601512]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601513] RIP: 0033:0x4625e3
+[1124738.601518] Code: Bad RIP value.
+[1124738.601519] RSP: 002b:00007fc6b8ff8ca0 EFLAGS: 00000286 ORIG_RAX:
+00000000000000ca
+[1124738.601522] RAX: ffffffffffffffda RBX: 000000c0015ac000 RCX:
+00000000004625e3
+[1124738.601523] RDX: 0000000000000000 RSI: 0000000000000080 RDI:
+000000c0015ac148
+[1124738.601525] RBP: 00007fc6b8ff8ce8 R08: 0000000000000000 R09:
+0000000000000000
+[1124738.601526] R10: 0000000000000000 R11: 0000000000000286 R12:
+0000000000000001
+[1124738.601528] R13: 000000c00293a540 R14: 000000c004279080 R15:
+0000000000000200
+[1124738.601531] gitea           S    0 13585      1 0x00000000
+[1124738.601533] Call Trace:
+[1124738.601537]  ? __schedule+0x413/0x464
+[1124738.601541]  schedule+0x80/0xab
+[1124738.601545]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.601548]  ? sock_read_iter+0x79/0xad
+[1124738.601552]  ep_poll+0x263/0x360
+[1124738.601556]  ? wake_up_q+0x53/0x53
+[1124738.601559]  do_epoll_wait+0x92/0xb2
+[1124738.601563]  __x64_sys_epoll_pwait+0x61/0x9d
+[1124738.601566]  do_syscall_64+0x7e/0x152
+[1124738.601569]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601571] RIP: 0033:0x462790
+[1124738.601575] Code: Bad RIP value.
+[1124738.601576] RSP: 002b:00007fc69bffe6f8 EFLAGS: 00000202 ORIG_RAX:
+0000000000000119
+[1124738.601579] RAX: ffffffffffffffda RBX: 00000000ffffffff RCX:
+0000000000462790
+[1124738.601580] RDX: 0000000000000080 RSI: 00007fc69bffe738 RDI:
+0000000000000004
+[1124738.601582] RBP: 00007fc69bffed38 R08: 0000000000000000 R09:
+0000000000000020
+[1124738.601584] R10: 00000000ffffffff R11: 0000000000000202 R12:
+ffffffffffffffff
+[1124738.601585] R13: 0000000000000024 R14: 0000000000000023 R15:
+0000000000000200
+[1124738.601588] gitea           S    0 13871      1 0x00000000
+[1124738.601590] Call Trace:
+[1124738.601594]  ? __schedule+0x413/0x464
+[1124738.601598]  schedule+0x80/0xab
+[1124738.601601]  futex_wait_queue_me+0xc1/0x106
+[1124738.601605]  futex_wait+0xdb/0x1ea
+[1124738.601609]  ? hrtimer_init+0xf4/0xf4
+[1124738.601614]  do_futex+0x139/0x98b
+[1124738.601617]  ? __switch_to_asm+0x34/0x70
+[1124738.601622]  __se_sys_futex+0x137/0x15c
+[1124738.601635]  do_syscall_64+0x7e/0x152
+[1124738.601636]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601637] RIP: 0033:0x4625e3
+[1124738.601638] Code: Bad RIP value.
+[1124738.601639] RSP: 002b:000000c0005faea0 EFLAGS: 00000206 ORIG_RAX:
+00000000000000ca
+[1124738.601640] RAX: ffffffffffffffda RBX: 0000000015a1ddaa RCX:
+00000000004625e3
+[1124738.601640] RDX: 0000000000000000 RSI: 0000000000000080 RDI:
+000000000393e640
+[1124738.601641] RBP: 000000c0005faee8 R08: 0000000000000000 R09:
+0000000000000000
+[1124738.601642] R10: 000000c0005faed8 R11: 0000000000000206 R12:
+0003fef6f4a5027a
+[1124738.601642] R13: 0000000000000002 R14: 0000000000000090 R15:
+0000000000000200
+[1124738.601643] gitea           S    0  4260      1 0x00000000
+[1124738.601644] Call Trace:
+[1124738.601645]  ? __schedule+0x413/0x464
+[1124738.601647]  schedule+0x80/0xab
+[1124738.601648]  futex_wait_queue_me+0xc1/0x106
+[1124738.601649]  futex_wait+0xdb/0x1ea
+[1124738.601650]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.601651]  ? try_to_wake_up+0x358/0x37e
+[1124738.601652]  ? get_futex_key+0x94/0x2c2
+[1124738.601654]  do_futex+0x139/0x98b
+[1124738.601656]  ? hrtimer_cancel+0x11/0x1b
+[1124738.601657]  ? do_nanosleep+0xba/0x161
+[1124738.601659]  __se_sys_futex+0x137/0x15c
+[1124738.601660]  do_syscall_64+0x7e/0x152
+[1124738.601661]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601661] RIP: 0033:0x4625e3
+[1124738.601663] Code: Bad RIP value.
+[1124738.601663] RSP: 002b:00007fc69affcca0 EFLAGS: 00000286 ORIG_RAX:
+00000000000000ca
+[1124738.601664] RAX: ffffffffffffffda RBX: 000000c001b27880 RCX:
+00000000004625e3
+[1124738.601665] RDX: 0000000000000000 RSI: 0000000000000080 RDI:
+000000c001b279c8
+[1124738.601665] RBP: 00007fc69affcce8 R08: 0000000000000000 R09:
+0000000000000000
+[1124738.601666] R10: 0000000000000000 R11: 0000000000000286 R12:
+0000000000000055
+[1124738.601666] R13: 00000000000000a1 R14: 00000000000000a0 R15:
+0000000000000200
+[1124738.601667] apache2         S    0 18555  11440 0x00000100
+[1124738.601668] Call Trace:
+[1124738.601670]  ? __schedule+0x413/0x464
+[1124738.601671]  ? preempt_count_add+0x7d/0x9c
+[1124738.601672]  schedule+0x80/0xab
+[1124738.601673]  schedule_timeout+0x3a/0x2d9
+[1124738.601674]  ? percpu_counter_add_batch+0x87/0xa0
+[1124738.601675]  ? preempt_count_add+0x8a/0x9c
+[1124738.601677]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.601678]  inet_csk_accept+0xe9/0x286
+[1124738.601679]  ? wait_woken+0x6d/0x6d
+[1124738.601680]  inet_accept+0x43/0x139
+[1124738.601681]  __sys_accept4+0xfe/0x1a8
+[1124738.601683]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601684]  __x64_sys_accept4+0x1a/0x1d
+[1124738.601685]  do_syscall_64+0x7e/0x152
+[1124738.601686]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601687] RIP: 0033:0x7f317699b52b
+[1124738.601688] Code: Bad RIP value.
+[1124738.601689] RSP: 002b:00007ffe7fa6cfc0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000120
+[1124738.601689] RAX: ffffffffffffffda RBX: 00007ffe7fa6d100 RCX:
+00007f317699b52b
+[1124738.601690] RDX: 00007ffe7fa6d028 RSI: 00007ffe7fa6d048 RDI:
+0000000000000004
+[1124738.601691] RBP: 000055e43f44da50 R08: 000055e43f71ccc8 R09:
+0000000000000000
+[1124738.601691] R10: 0000000000080000 R11: 0000000000000246 R12:
+000055e43f71f508
+[1124738.601692] R13: 000055e43f71f770 R14: 000055e43f451848 R15:
+0000000000000000
+[1124738.601693] apache2         S    0 25274  11440 0x00000100
+[1124738.601694] Call Trace:
+[1124738.601696]  ? __schedule+0x413/0x464
+[1124738.601697]  ? preempt_count_add+0x7d/0x9c
+[1124738.601698]  schedule+0x80/0xab
+[1124738.601699]  schedule_timeout+0x3a/0x2d9
+[1124738.601700]  ? percpu_counter_add_batch+0x87/0xa0
+[1124738.601701]  ? preempt_count_add+0x8a/0x9c
+[1124738.601703]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.601704]  inet_csk_accept+0xe9/0x286
+[1124738.601705]  ? wait_woken+0x6d/0x6d
+[1124738.601706]  inet_accept+0x43/0x139
+[1124738.601707]  __sys_accept4+0xfe/0x1a8
+[1124738.601708]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601710]  __x64_sys_accept4+0x1a/0x1d
+[1124738.601711]  do_syscall_64+0x7e/0x152
+[1124738.601712]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601712] RIP: 0033:0x7f317699b52b
+[1124738.601714] Code: Bad RIP value.
+[1124738.601714] RSP: 002b:00007ffe7fa6cfc0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000120
+[1124738.601715] RAX: ffffffffffffffda RBX: 00007ffe7fa6d100 RCX:
+00007f317699b52b
+[1124738.601716] RDX: 00007ffe7fa6d028 RSI: 00007ffe7fa6d048 RDI:
+0000000000000004
+[1124738.601716] RBP: 000055e43f44da50 R08: 000055e43f71ccc8 R09:
+0000000000000000
+[1124738.601717] R10: 0000000000080000 R11: 0000000000000246 R12:
+000055e43f71f508
+[1124738.601718] R13: 000055e43f71f770 R14: 000055e43f451848 R15:
+0000000000000000
+[1124738.601719] apache2         S    0 25278  11440 0x00000100
+[1124738.601720] Call Trace:
+[1124738.601721]  ? __schedule+0x413/0x464
+[1124738.601722]  ? preempt_count_add+0x7d/0x9c
+[1124738.601723]  schedule+0x80/0xab
+[1124738.601725]  schedule_timeout+0x3a/0x2d9
+[1124738.601726]  ? percpu_counter_add_batch+0x87/0xa0
+[1124738.601726]  ? preempt_count_add+0x8a/0x9c
+[1124738.601728]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.601729]  inet_csk_accept+0xe9/0x286
+[1124738.601730]  ? wait_woken+0x6d/0x6d
+[1124738.601731]  inet_accept+0x43/0x139
+[1124738.601732]  __sys_accept4+0xfe/0x1a8
+[1124738.601733]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601735]  __x64_sys_accept4+0x1a/0x1d
+[1124738.601735]  do_syscall_64+0x7e/0x152
+[1124738.601736]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601737] RIP: 0033:0x7f317699b52b
+[1124738.601738] Code: Bad RIP value.
+[1124738.601739] RSP: 002b:00007ffe7fa6cfc0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000120
+[1124738.601740] RAX: ffffffffffffffda RBX: 00007ffe7fa6d100 RCX:
+00007f317699b52b
+[1124738.601740] RDX: 00007ffe7fa6d028 RSI: 00007ffe7fa6d048 RDI:
+0000000000000004
+[1124738.601741] RBP: 000055e43f44da50 R08: 000055e43f71ccc8 R09:
+0000000000000000
+[1124738.601741] R10: 0000000000080000 R11: 0000000000000246 R12:
+000055e43f71f508
+[1124738.601742] R13: 000055e43f71f770 R14: 000055e43f451848 R15:
+0000000000000000
+[1124738.601743] apache2         S    0  6081  11440 0x00000100
+[1124738.601744] Call Trace:
+[1124738.601746]  ? __schedule+0x413/0x464
+[1124738.601747]  ? preempt_count_add+0x7d/0x9c
+[1124738.601748]  schedule+0x80/0xab
+[1124738.601749]  schedule_timeout+0x3a/0x2d9
+[1124738.601750]  ? percpu_counter_add_batch+0x87/0xa0
+[1124738.601751]  ? preempt_count_add+0x8a/0x9c
+[1124738.601752]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.601753]  inet_csk_accept+0xe9/0x286
+[1124738.601754]  ? wait_woken+0x6d/0x6d
+[1124738.601756]  inet_accept+0x43/0x139
+[1124738.601757]  __sys_accept4+0xfe/0x1a8
+[1124738.601758]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601759]  __x64_sys_accept4+0x1a/0x1d
+[1124738.601760]  do_syscall_64+0x7e/0x152
+[1124738.601761]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601762] RIP: 0033:0x7f317699b52b
+[1124738.601764] Code: Bad RIP value.
+[1124738.601764] RSP: 002b:00007ffe7fa6cfc0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000120
+[1124738.601765] RAX: ffffffffffffffda RBX: 00007ffe7fa6d100 RCX:
+00007f317699b52b
+[1124738.601766] RDX: 00007ffe7fa6d028 RSI: 00007ffe7fa6d048 RDI:
+0000000000000004
+[1124738.601766] RBP: 000055e43f44da50 R08: 000055e43f71ccc8 R09:
+0000000000000000
+[1124738.601767] R10: 0000000000080000 R11: 0000000000000246 R12:
+000055e43f71f508
+[1124738.601767] R13: 000055e43f71f770 R14: 000055e43f451848 R15:
+0000000000000000
+[1124738.601769] apache2         S    0  6083  11440 0x00000100
+[1124738.601769] Call Trace:
+[1124738.601771]  ? __schedule+0x413/0x464
+[1124738.601772]  ? preempt_count_add+0x7d/0x9c
+[1124738.601773]  schedule+0x80/0xab
+[1124738.601774]  schedule_timeout+0x3a/0x2d9
+[1124738.601775]  ? percpu_counter_add_batch+0x87/0xa0
+[1124738.601776]  ? preempt_count_add+0x8a/0x9c
+[1124738.601778]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.601779]  inet_csk_accept+0xe9/0x286
+[1124738.601780]  ? wait_woken+0x6d/0x6d
+[1124738.601781]  inet_accept+0x43/0x139
+[1124738.601782]  __sys_accept4+0xfe/0x1a8
+[1124738.601784]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601785]  __x64_sys_accept4+0x1a/0x1d
+[1124738.601786]  do_syscall_64+0x7e/0x152
+[1124738.601787]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601787] RIP: 0033:0x7f317699b52b
+[1124738.601789] Code: Bad RIP value.
+[1124738.601789] RSP: 002b:00007ffe7fa6cfc0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000120
+[1124738.601790] RAX: ffffffffffffffda RBX: 00007ffe7fa6d100 RCX:
+00007f317699b52b
+[1124738.601791] RDX: 00007ffe7fa6d028 RSI: 00007ffe7fa6d048 RDI:
+0000000000000004
+[1124738.601791] RBP: 000055e43f44da50 R08: 000055e43f71ccc8 R09:
+0000000000000000
+[1124738.601792] R10: 0000000000080000 R11: 0000000000000246 R12:
+000055e43f71f508
+[1124738.601792] R13: 000055e43f71f770 R14: 000055e43f451848 R15:
+0000000000000000
+[1124738.601794] apache2         S    0  6122  11440 0x00000100
+[1124738.601794] Call Trace:
+[1124738.601796]  ? __schedule+0x413/0x464
+[1124738.601797]  ? preempt_count_add+0x7d/0x9c
+[1124738.601798]  schedule+0x80/0xab
+[1124738.601800]  schedule_timeout+0x3a/0x2d9
+[1124738.601801]  ? percpu_counter_add_batch+0x87/0xa0
+[1124738.601802]  ? preempt_count_add+0x8a/0x9c
+[1124738.601803]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.601804]  inet_csk_accept+0xe9/0x286
+[1124738.601805]  ? wait_woken+0x6d/0x6d
+[1124738.601806]  inet_accept+0x43/0x139
+[1124738.601807]  __sys_accept4+0xfe/0x1a8
+[1124738.601808]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601810]  __x64_sys_accept4+0x1a/0x1d
+[1124738.601811]  do_syscall_64+0x7e/0x152
+[1124738.601812]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601812] RIP: 0033:0x7f317699b52b
+[1124738.601814] Code: Bad RIP value.
+[1124738.601815] RSP: 002b:00007ffe7fa6cfc0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000120
+[1124738.601815] RAX: ffffffffffffffda RBX: 00007ffe7fa6d100 RCX:
+00007f317699b52b
+[1124738.601816] RDX: 00007ffe7fa6d028 RSI: 00007ffe7fa6d048 RDI:
+0000000000000004
+[1124738.601817] RBP: 000055e43f44da50 R08: 000055e43f71ccc8 R09:
+0000000000000000
+[1124738.601817] R10: 0000000000080000 R11: 0000000000000246 R12:
+000055e43f71f508
+[1124738.601818] R13: 000055e43f71f770 R14: 000055e43f451848 R15:
+0000000000000000
+[1124738.601819] apache2         S    0  8529  11440 0x00000100
+[1124738.601820] Call Trace:
+[1124738.601821]  ? __schedule+0x413/0x464
+[1124738.601822]  ? preempt_count_add+0x7d/0x9c
+[1124738.601824]  schedule+0x80/0xab
+[1124738.601825]  schedule_timeout+0x3a/0x2d9
+[1124738.601826]  ? percpu_counter_add_batch+0x87/0xa0
+[1124738.601827]  ? preempt_count_add+0x8a/0x9c
+[1124738.601828]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.601830]  inet_csk_accept+0xe9/0x286
+[1124738.601831]  ? wait_woken+0x6d/0x6d
+[1124738.601832]  inet_accept+0x43/0x139
+[1124738.601833]  __sys_accept4+0xfe/0x1a8
+[1124738.601834]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601836]  __x64_sys_accept4+0x1a/0x1d
+[1124738.601836]  do_syscall_64+0x7e/0x152
+[1124738.601837]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601838] RIP: 0033:0x7f317699b52b
+[1124738.601839] Code: Bad RIP value.
+[1124738.601840] RSP: 002b:00007ffe7fa6cfc0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000120
+[1124738.601841] RAX: ffffffffffffffda RBX: 00007ffe7fa6d100 RCX:
+00007f317699b52b
+[1124738.601841] RDX: 00007ffe7fa6d028 RSI: 00007ffe7fa6d048 RDI:
+0000000000000004
+[1124738.601842] RBP: 000055e43f44da50 R08: 000055e43f71ccc8 R09:
+0000000000000000
+[1124738.601843] R10: 0000000000080000 R11: 0000000000000246 R12:
+000055e43f71f508
+[1124738.601843] R13: 000055e43f71f770 R14: 000055e43f451848 R15:
+0000000000000000
+[1124738.601844] systemd-journal R  running task        0 11195      1
+0x00000100
+[1124738.601845] Call Trace:
+[1124738.601848]  ? irq_work_queue+0xa/0x45
+[1124738.601850]  ? wake_up_klogd+0x4f/0x61
+[1124738.601851]  ? vprintk_emit+0x1a3/0x1b4
+[1124738.601852]  ? apic_timer_interrupt+0xa/0x20
+[1124738.601853]  ? preempt_count_add+0x8a/0x9c
+[1124738.601854]  ? _raw_spin_trylock+0x13/0x2e
+[1124738.601855]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.601856]  ? ___ratelimit+0xbb/0xc3
+[1124738.601858]  ? devkmsg_write+0x98/0x16a
+[1124738.601858]  ? ___bpf_prog_run+0x89b/0x1233
+[1124738.601860]  ? __bpf_prog_run32+0x39/0x59
+[1124738.601861]  ? preempt_count_add+0x7d/0x9c
+[1124738.601862]  ? __seccomp_filter+0x1be/0x3c5
+[1124738.601864]  ? preempt_count_add+0x8a/0x9c
+[1124738.601865]  ? _raw_spin_unlock+0x12/0x23
+[1124738.601866]  ? devkmsg_read+0x1ec/0x214
+[1124738.601867]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601868]  ? do_syscall_64+0x55/0x152
+[1124738.601869]  ? entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601870] apache2         S    0 26040  11440 0x00000100
+[1124738.601871] Call Trace:
+[1124738.601873]  ? __schedule+0x413/0x464
+[1124738.601874]  ? preempt_count_add+0x7d/0x9c
+[1124738.601875]  schedule+0x80/0xab
+[1124738.601877]  schedule_timeout+0x3a/0x2d9
+[1124738.601877]  ? percpu_counter_add_batch+0x87/0xa0
+[1124738.601879]  ? preempt_count_add+0x8a/0x9c
+[1124738.601880]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.601881]  inet_csk_accept+0xe9/0x286
+[1124738.601882]  ? wait_woken+0x6d/0x6d
+[1124738.601883]  inet_accept+0x43/0x139
+[1124738.601885]  __sys_accept4+0xfe/0x1a8
+[1124738.601886]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601887]  __x64_sys_accept4+0x1a/0x1d
+[1124738.601888]  do_syscall_64+0x7e/0x152
+[1124738.601889]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601890] RIP: 0033:0x7f317699b52b
+[1124738.601891] Code: Bad RIP value.
+[1124738.601892] RSP: 002b:00007ffe7fa6cfc0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000120
+[1124738.601892] RAX: ffffffffffffffda RBX: 00007ffe7fa6d100 RCX:
+00007f317699b52b
+[1124738.601893] RDX: 00007ffe7fa6d028 RSI: 00007ffe7fa6d048 RDI:
+0000000000000004
+[1124738.601894] RBP: 000055e43f44da50 R08: 000055e43f71ccc8 R09:
+0000000000000000
+[1124738.601894] R10: 0000000000080000 R11: 0000000000000246 R12:
+000055e43f71f508
+[1124738.601895] R13: 000055e43f71f770 R14: 000055e43f451848 R15:
+0000000000000000
+[1124738.601896] apache2         S    0 26697  11440 0x00000100
+[1124738.601897] Call Trace:
+[1124738.601898]  ? __schedule+0x413/0x464
+[1124738.601900]  ? preempt_count_add+0x7d/0x9c
+[1124738.601901]  schedule+0x80/0xab
+[1124738.601902]  schedule_timeout+0x3a/0x2d9
+[1124738.601904]  ? percpu_counter_add_batch+0x87/0xa0
+[1124738.601905]  ? preempt_count_add+0x8a/0x9c
+[1124738.601906]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.601907]  inet_csk_accept+0xe9/0x286
+[1124738.601908]  ? wait_woken+0x6d/0x6d
+[1124738.601909]  inet_accept+0x43/0x139
+[1124738.601910]  __sys_accept4+0xfe/0x1a8
+[1124738.601912]  ? syscall_trace_enter+0x16c/0x216
+[1124738.601913]  __x64_sys_accept4+0x1a/0x1d
+[1124738.601914]  do_syscall_64+0x7e/0x152
+[1124738.601915]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601916] RIP: 0033:0x7f317699b52b
+[1124738.601917] Code: Bad RIP value.
+[1124738.601918] RSP: 002b:00007ffe7fa6cfc0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000120
+[1124738.601919] RAX: ffffffffffffffda RBX: 00007ffe7fa6d100 RCX:
+00007f317699b52b
+[1124738.601919] RDX: 00007ffe7fa6d028 RSI: 00007ffe7fa6d048 RDI:
+0000000000000004
+[1124738.601920] RBP: 000055e43f44da50 R08: 000055e43f71ccc8 R09:
+0000000000000000
+[1124738.601920] R10: 0000000000080000 R11: 0000000000000246 R12:
+000055e43f71f508
+[1124738.601921] R13: 000055e43f71f770 R14: 000055e43f451848 R15:
+0000000000000000
+[1124738.601922] postgres        S    0 22573   2048 0x00000000
+[1124738.601923] Call Trace:
+[1124738.601925]  ? __schedule+0x413/0x464
+[1124738.601926]  ? ep_send_events_proc+0xcc/0x1b6
+[1124738.601927]  schedule+0x80/0xab
+[1124738.601929]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.601930]  ? _raw_write_unlock_irq+0x13/0x24
+[1124738.601931]  ? ep_scan_ready_list.constprop.3+0x196/0x1cb
+[1124738.601932]  ep_poll+0x263/0x360
+[1124738.601934]  ? wake_up_q+0x53/0x53
+[1124738.601935]  do_epoll_wait+0x92/0xb2
+[1124738.601936]  __x64_sys_epoll_wait+0x1a/0x1d
+[1124738.601937]  do_syscall_64+0x7e/0x152
+[1124738.601938]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601939] RIP: 0033:0x7fdf57acbbfb
+[1124738.601940] Code: Bad RIP value.
+[1124738.601941] RSP: 002b:00007fff27bbaf40 EFLAGS: 00000246 ORIG_RAX:
+00000000000000e8
+[1124738.601942] RAX: ffffffffffffffda RBX: 0000557d77581418 RCX:
+00007fdf57acbbfb
+[1124738.601942] RDX: 0000000000000001 RSI: 0000557d77581488 RDI:
+0000000000000003
+[1124738.601943] RBP: 00007fff27bbb030 R08: 0000000006000000 R09:
+0000000000000000
+[1124738.601943] R10: 00000000ffffffff R11: 0000000000000246 R12:
+ffffffffffffffff
+[1124738.601944] R13: 0000000000002000 R14: 00007fff27bbb02c R15:
+0000557d77556400
+[1124738.601945] postgres        S    0 22574   2048 0x00000000
+[1124738.601946] Call Trace:
+[1124738.601947]  ? __schedule+0x413/0x464
+[1124738.601948]  ? ep_send_events_proc+0xcc/0x1b6
+[1124738.601950]  schedule+0x80/0xab
+[1124738.601951]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.601952]  ? _raw_write_unlock_irq+0x13/0x24
+[1124738.601953]  ? ep_scan_ready_list.constprop.3+0x196/0x1cb
+[1124738.601954]  ep_poll+0x263/0x360
+[1124738.601956]  ? wake_up_q+0x53/0x53
+[1124738.601957]  do_epoll_wait+0x92/0xb2
+[1124738.601958]  __x64_sys_epoll_wait+0x1a/0x1d
+[1124738.601959]  do_syscall_64+0x7e/0x152
+[1124738.601960]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601961] RIP: 0033:0x7fdf57acbbfb
+[1124738.601962] Code: Bad RIP value.
+[1124738.601963] RSP: 002b:00007fff27bbaf40 EFLAGS: 00000246 ORIG_RAX:
+00000000000000e8
+[1124738.601964] RAX: ffffffffffffffda RBX: 0000557d77581418 RCX:
+00007fdf57acbbfb
+[1124738.601964] RDX: 0000000000000001 RSI: 0000557d77581488 RDI:
+0000000000000003
+[1124738.601965] RBP: 00007fff27bbb030 R08: 0000000006000000 R09:
+0000000000000000
+[1124738.601965] R10: 00000000ffffffff R11: 0000000000000246 R12:
+ffffffffffffffff
+[1124738.601966] R13: 0000000000002000 R14: 00007fff27bbb02c R15:
+0000557d77556400
+[1124738.601967] systemd         S    0 23212      1 0x00000000
+[1124738.601968] Call Trace:
+[1124738.601969]  ? __schedule+0x413/0x464
+[1124738.601970]  ? ep_send_events_proc+0xcc/0x1b6
+[1124738.601972]  schedule+0x80/0xab
+[1124738.601973]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.601974]  ? _raw_write_unlock_irq+0x13/0x24
+[1124738.601975]  ? ep_scan_ready_list.constprop.3+0x196/0x1cb
+[1124738.601976]  ep_poll+0x263/0x360
+[1124738.601978]  ? wake_up_q+0x53/0x53
+[1124738.601979]  do_epoll_wait+0x92/0xb2
+[1124738.601980]  __x64_sys_epoll_wait+0x1a/0x1d
+[1124738.601981]  do_syscall_64+0x7e/0x152
+[1124738.601982]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.601983] RIP: 0033:0x7ffb41a44bfb
+[1124738.601984] Code: Bad RIP value.
+[1124738.601985] RSP: 002b:00007ffee5c19f00 EFLAGS: 00000246 ORIG_RAX:
+00000000000000e8
+[1124738.601986] RAX: ffffffffffffffda RBX: 000055b728cf8570 RCX:
+00007ffb41a44bfb
+[1124738.601986] RDX: 0000000000000010 RSI: 00007ffee5c19f40 RDI:
+0000000000000004
+[1124738.601987] RBP: 00007ffee5c1a100 R08: 0000000000000010 R09:
+00007ffee5d1d080
+[1124738.601987] R10: 00000000ffffffff R11: 0000000000000246 R12:
+00007ffee5c19f40
+[1124738.601988] R13: 0000000000000001 R14: ffffffffffffffff R15:
+0000000000000000
+[1124738.601989] (sd-pam)        S    0 23213  23212 0x00000000
+[1124738.601990] Call Trace:
+[1124738.601992]  ? __schedule+0x413/0x464
+[1124738.601993]  schedule+0x80/0xab
+[1124738.601994]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.601995]  ? recalc_sigpending+0x17/0x42
+[1124738.601996]  ? dequeue_signal+0x177/0x19d
+[1124738.601997]  do_sigtimedwait.isra.8+0x13e/0x1f5
+[1124738.601999]  __se_sys_rt_sigtimedwait+0x78/0xb9
+[1124738.602001]  ? switch_fpu_return+0x2d/0x11e
+[1124738.602002]  do_syscall_64+0x7e/0x152
+[1124738.602003]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602004] RIP: 0033:0x7efe262a7f2c
+[1124738.602005] Code: Bad RIP value.
+[1124738.602006] RSP: 002b:00007ffecfed8a80 EFLAGS: 00000293 ORIG_RAX:
+0000000000000080
+[1124738.602006] RAX: ffffffffffffffda RBX: 00007ffecfed8a01 RCX:
+00007efe262a7f2c
+[1124738.602007] RDX: 0000000000000000 RSI: 00007ffecfed8ac0 RDI:
+00007ffecfed8c58
+[1124738.602007] RBP: 00007ffecfed8ac0 R08: 0000000000000000 R09:
+0000557e458a7630
+[1124738.602008] R10: 0000000000000008 R11: 0000000000000293 R12:
+00007ffecfed8bb8
+[1124738.602009] R13: 0000000000005aac R14: 00007ffecfed8bb8 R15:
+0000000000008000
+[1124738.602010] screen          S    0 26041      1 0x00000000
+[1124738.602011] Call Trace:
+[1124738.602012]  ? __schedule+0x413/0x464
+[1124738.602014]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602015]  schedule+0x80/0xab
+[1124738.602016]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.602018]  ? pty_stop+0x70/0x70
+[1124738.602019]  ? n_tty_poll+0x17c/0x18d
+[1124738.602021]  poll_schedule_timeout.constprop.4+0x43/0x5c
+[1124738.602022]  do_select+0x5f1/0x643
+[1124738.602025]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602027]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602028]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602030]  ? lookup_fast+0xff/0x297
+[1124738.602031]  ? __accumulate_pelt_segments+0x29/0x3a
+[1124738.602034]  ? intel_pstate_update_util+0x20/0x3c2
+[1124738.602035]  ? __update_load_avg_cfs_rq+0xee/0x180
+[1124738.602036]  ? enqueue_entity+0x529/0x678
+[1124738.602037]  ? legitimize_path.isra.7+0x3c/0x4d
+[1124738.602038]  ? __switch_to_asm+0x40/0x70
+[1124738.602038]  ? __switch_to_asm+0x34/0x70
+[1124738.602039]  ? __switch_to_asm+0x40/0x70
+[1124738.602040]  ? __switch_to_asm+0x34/0x70
+[1124738.602041]  ? __switch_to_asm+0x40/0x70
+[1124738.602041]  ? __switch_to_asm+0x34/0x70
+[1124738.602042]  ? __switch_to_asm+0x40/0x70
+[1124738.602043]  ? __switch_to_asm+0x34/0x70
+[1124738.602043]  ? __switch_to_asm+0x40/0x70
+[1124738.602044]  ? __switch_to_asm+0x34/0x70
+[1124738.602045]  ? __switch_to_asm+0x34/0x70
+[1124738.602046]  core_sys_select+0x196/0x248
+[1124738.602048]  ? __schedule+0x41b/0x464
+[1124738.602049]  ? hrtimer_try_to_cancel+0x29/0x119
+[1124738.602051]  ? hrtimer_cancel+0x11/0x1b
+[1124738.602052]  ? do_nanosleep+0xba/0x161
+[1124738.602054]  kern_select+0x97/0xcc
+[1124738.602055]  __x64_sys_select+0x20/0x23
+[1124738.602056]  do_syscall_64+0x7e/0x152
+[1124738.602057]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602058] RIP: 0033:0x7f4cc57a556b
+[1124738.602060] Code: Bad RIP value.
+[1124738.602060] RSP: 002b:00007ffeed5bd5e0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000017
+[1124738.602061] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
+00007f4cc57a556b
+[1124738.602062] RDX: 00007ffeed5bd6d8 RSI: 00007ffeed5bd658 RDI:
+0000000000000400
+[1124738.602062] RBP: 0000000000000000 R08: 0000000000000000 R09:
+00005590928afa00
+[1124738.602063] R10: 0000000000000000 R11: 0000000000000246 R12:
+00007ffeed5bd648
+[1124738.602063] R13: 00007ffeed5bd658 R14: 00007ffeed5bd6d8 R15:
+0000000000000040
+[1124738.602064] bash            S    0 26042  26041 0x00000000
+[1124738.602065] Call Trace:
+[1124738.602067]  ? __schedule+0x413/0x464
+[1124738.602068]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602069]  schedule+0x80/0xab
+[1124738.602071]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.602072]  ? pty_stop+0x70/0x70
+[1124738.602073]  ? n_tty_poll+0x17c/0x18d
+[1124738.602075]  poll_schedule_timeout.constprop.4+0x43/0x5c
+[1124738.602076]  do_select+0x5f1/0x643
+[1124738.602079]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602080]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602081]  ? __inode_wait_for_writeback+0x76/0xc9
+[1124738.602082]  ? fsnotify_grab_connector+0x71/0x79
+[1124738.602084]  ? reuse_swap_page+0x6c/0x2f7
+[1124738.602085]  ? __accumulate_pelt_segments+0x29/0x3a
+[1124738.602086]  ? intel_pstate_update_util+0x20/0x3c2
+[1124738.602087]  ? __update_load_avg_cfs_rq+0xee/0x180
+[1124738.602088]  ? enqueue_entity+0x529/0x678
+[1124738.602090]  ? enqueue_task_fair+0x6c8/0x78d
+[1124738.602091]  ? tty_set_termios+0x176/0x196
+[1124738.602092]  ? resched_curr+0x41/0xac
+[1124738.602093]  ? check_preempt_curr+0x4c/0x69
+[1124738.602094]  ? ttwu_do_wakeup.isra.10+0x14/0xe2
+[1124738.602096]  core_sys_select+0x196/0x248
+[1124738.602097]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.602098]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.602099]  ? __wake_up_common_lock+0x8b/0xd0
+[1124738.602101]  __se_sys_pselect6+0x106/0x15f
+[1124738.602103]  do_syscall_64+0x7e/0x152
+[1124738.602104]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602104] RIP: 0033:0x7fbf7de2867a
+[1124738.602106] Code: Bad RIP value.
+[1124738.602106] RSP: 002b:00007fffa31a6600 EFLAGS: 00000246 ORIG_RAX:
+000000000000010e
+[1124738.602108] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
+00007fbf7de2867a
+[1124738.602108] RDX: 0000000000000000 RSI: 00007fffa31a6708 RDI:
+0000000000000001
+[1124738.602109] RBP: 00007fbf7def5a00 R08: 0000000000000000 R09:
+00007fffa31a6640
+[1124738.602109] R10: 0000000000000000 R11: 0000000000000246 R12:
+00007fffa31a6708
+[1124738.602110] R13: 00007fffa31a6688 R14: 0000000000000000 R15:
+0000000000000000
+[1124738.602115] screen          S    0 28157      1 0x00000000
+[1124738.602116] Call Trace:
+[1124738.602118]  ? __schedule+0x413/0x464
+[1124738.602120]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602121]  schedule+0x80/0xab
+[1124738.602122]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.602124]  ? pty_stop+0x70/0x70
+[1124738.602124]  ? n_tty_poll+0x17c/0x18d
+[1124738.602126]  poll_schedule_timeout.constprop.4+0x43/0x5c
+[1124738.602127]  do_select+0x5f1/0x643
+[1124738.602129]  ? enqueue_entity+0x529/0x678
+[1124738.602131]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602133]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602134]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602135]  ? __switch_to_asm+0x40/0x70
+[1124738.602136]  ? lookup_fast+0xff/0x297
+[1124738.602138]  ? __accumulate_pelt_segments+0x29/0x3a
+[1124738.602139]  ? __update_load_avg_se+0xec/0x19e
+[1124738.602140]  ? enqueue_entity+0x529/0x678
+[1124738.602141]  ? __switch_to_asm+0x40/0x70
+[1124738.602142]  ? __switch_to_asm+0x34/0x70
+[1124738.602142]  ? __switch_to_asm+0x40/0x70
+[1124738.602143]  ? __switch_to_asm+0x34/0x70
+[1124738.602144]  ? __switch_to_asm+0x40/0x70
+[1124738.602145]  ? __switch_to_asm+0x34/0x70
+[1124738.602145]  ? __switch_to_asm+0x40/0x70
+[1124738.602146]  ? __switch_to_asm+0x34/0x70
+[1124738.602147]  ? __switch_to_asm+0x40/0x70
+[1124738.602147]  ? __switch_to_asm+0x34/0x70
+[1124738.602148]  ? __switch_to_asm+0x34/0x70
+[1124738.602150]  core_sys_select+0x196/0x248
+[1124738.602151]  ? __schedule+0x41b/0x464
+[1124738.602153]  ? hrtimer_try_to_cancel+0x29/0x119
+[1124738.602154]  ? hrtimer_cancel+0x11/0x1b
+[1124738.602155]  ? do_nanosleep+0xba/0x161
+[1124738.602157]  kern_select+0x97/0xcc
+[1124738.602158]  __x64_sys_select+0x20/0x23
+[1124738.602159]  do_syscall_64+0x7e/0x152
+[1124738.602160]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602161] RIP: 0033:0x7fd5847a556b
+[1124738.602163] Code: Bad RIP value.
+[1124738.602163] RSP: 002b:00007ffd2ef75720 EFLAGS: 00000246 ORIG_RAX:
+0000000000000017
+[1124738.602164] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
+00007fd5847a556b
+[1124738.602164] RDX: 00007ffd2ef75818 RSI: 00007ffd2ef75798 RDI:
+0000000000000400
+[1124738.602165] RBP: 0000000000000000 R08: 0000000000000000 R09:
+000055aba1c38a00
+[1124738.602166] R10: 0000000000000000 R11: 0000000000000246 R12:
+00007ffd2ef75788
+[1124738.602166] R13: 00007ffd2ef75798 R14: 00007ffd2ef75818 R15:
+0000000000000040
+[1124738.602168] bash            S    0 28158  28157 0x00000000
+[1124738.602169] Call Trace:
+[1124738.602170]  ? __schedule+0x413/0x464
+[1124738.602171]  ? preempt_count_add+0x8a/0x9c
+[1124738.602172]  schedule+0x80/0xab
+[1124738.602173]  do_wait+0x1d5/0x237
+[1124738.602175]  kernel_wait4+0xc5/0x11a
+[1124738.602176]  ? __se_compat_sys_waitid+0xf5/0xf5
+[1124738.602178]  __se_sys_wait4+0x3c/0x8b
+[1124738.602179]  ? handle_mm_fault+0x133/0x182
+[1124738.602180]  ? preempt_count_add+0x8a/0x9c
+[1124738.602181]  ? recalc_sigpending+0x17/0x42
+[1124738.602182]  ? __set_current_blocked+0x3d/0x55
+[1124738.602183]  ? _raw_spin_unlock_irq+0x13/0x24
+[1124738.602184]  ? sigprocmask+0x6e/0x8a
+[1124738.602185]  ? _copy_to_user+0x22/0x28
+[1124738.602186]  ? __se_sys_rt_sigprocmask+0x93/0xbb
+[1124738.602187]  do_syscall_64+0x7e/0x152
+[1124738.602188]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602188] RIP: 0033:0x7f0b335fe67b
+[1124738.602190] Code: Bad RIP value.
+[1124738.602190] RSP: 002b:00007ffc9d272300 EFLAGS: 00000246 ORIG_RAX:
+000000000000003d
+[1124738.602191] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
+00007f0b335fe67b
+[1124738.602192] RDX: 000000000000000a RSI: 00007ffc9d272340 RDI:
+00000000ffffffff
+[1124738.602192] RBP: 000000000000000a R08: 0000000000000000 R09:
+0000557394e76d70
+[1124738.602193] R10: 0000000000000000 R11: 0000000000000246 R12:
+0000000000000000
+[1124738.602193] R13: 00000000ffffffff R14: 0000000000000000 R15:
+0000000000000000
+[1124738.602195] su              S    0 28393  28158 0x00000000
+[1124738.602195] Call Trace:
+[1124738.602197]  ? __schedule+0x413/0x464
+[1124738.602198]  schedule+0x80/0xab
+[1124738.602199]  do_wait+0x1d5/0x237
+[1124738.602200]  ? do_wp_page+0x497/0x4b5
+[1124738.602202]  kernel_wait4+0xc5/0x11a
+[1124738.602203]  ? __se_compat_sys_waitid+0xf5/0xf5
+[1124738.602204]  __se_sys_wait4+0x3c/0x8b
+[1124738.602205]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602206]  ? _raw_spin_unlock_irq+0x13/0x24
+[1124738.602207]  ? do_sigaction+0xad/0x184
+[1124738.602208]  ? preempt_count_add+0x8a/0x9c
+[1124738.602209]  ? recalc_sigpending+0x17/0x42
+[1124738.602210]  ? __set_current_blocked+0x3d/0x55
+[1124738.602210]  ? _raw_spin_unlock_irq+0x13/0x24
+[1124738.602211]  ? sigprocmask+0x6e/0x8a
+[1124738.602212]  ? __se_sys_rt_sigprocmask+0x72/0xbb
+[1124738.602213]  do_syscall_64+0x7e/0x152
+[1124738.602215]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602215] RIP: 0033:0x7f184842267b
+[1124738.602217] Code: Bad RIP value.
+[1124738.602217] RSP: 002b:00007ffeeabb96f0 EFLAGS: 00000246 ORIG_RAX:
+000000000000003d
+[1124738.602218] RAX: ffffffffffffffda RBX: 00007ffeeabb9740 RCX:
+00007f184842267b
+[1124738.602219] RDX: 0000000000000002 RSI: 00007ffeeabb973c RDI:
+00000000ffffffff
+[1124738.602219] RBP: 00007ffeeabb973c R08: 0000000000000000 R09:
+00007f184834bb80
+[1124738.602220] R10: 0000000000000000 R11: 0000000000000246 R12:
+00007ffeeabb99b8
+[1124738.602221] R13: 00000000ffffffff R14: 0000000000000000 R15:
+0000000000000000
+[1124738.602222] bash            S    0 28394  28393 0x00000000
+[1124738.602223] Call Trace:
+[1124738.602224]  ? __schedule+0x413/0x464
+[1124738.602226]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602227]  schedule+0x80/0xab
+[1124738.602228]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.602230]  ? pty_stop+0x70/0x70
+[1124738.602230]  ? n_tty_poll+0x17c/0x18d
+[1124738.602232]  poll_schedule_timeout.constprop.4+0x43/0x5c
+[1124738.602233]  do_select+0x5f1/0x643
+[1124738.602236]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602237]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602239]  ? page_counter_try_charge+0x52/0x88
+[1124738.602240]  ? number+0x14d/0x254
+[1124738.602241]  ? lookup_fast+0xff/0x297
+[1124738.602243]  ? __accumulate_pelt_segments+0x29/0x3a
+[1124738.602244]  ? intel_pstate_update_util+0x20/0x3c2
+[1124738.602245]  ? __update_load_avg_cfs_rq+0xee/0x180
+[1124738.602246]  ? enqueue_entity+0x529/0x678
+[1124738.602248]  ? enqueue_task_fair+0x6c8/0x78d
+[1124738.602248]  ? tty_set_termios+0x176/0x196
+[1124738.602250]  ? resched_curr+0x41/0xac
+[1124738.602251]  ? check_preempt_curr+0x4c/0x69
+[1124738.602252]  ? ttwu_do_wakeup.isra.10+0x14/0xe2
+[1124738.602253]  core_sys_select+0x196/0x248
+[1124738.602255]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.602256]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.602257]  ? __wake_up_common_lock+0x8b/0xd0
+[1124738.602259]  __se_sys_pselect6+0x106/0x15f
+[1124738.602260]  do_syscall_64+0x7e/0x152
+[1124738.602261]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602262] RIP: 0033:0x7f44ced9a67a
+[1124738.602263] Code: Bad RIP value.
+[1124738.602264] RSP: 002b:00007ffc83eb9ea0 EFLAGS: 00000246 ORIG_RAX:
+000000000000010e
+[1124738.602265] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
+00007f44ced9a67a
+[1124738.602265] RDX: 0000000000000000 RSI: 00007ffc83eb9fa8 RDI:
+0000000000000001
+[1124738.602266] RBP: 00007f44cee67a00 R08: 0000000000000000 R09:
+00007ffc83eb9ee0
+[1124738.602266] R10: 0000000000000000 R11: 0000000000000246 R12:
+00007ffc83eb9fa8
+[1124738.602267] R13: 00007ffc83eb9f28 R14: 0000000000000000 R15:
+0000000000000000
+[1124738.602268] kworker/6:1     I    0 20084      2 0x80004000
+[1124738.602272] Workqueue:  0x0 (events_power_efficient)
+[1124738.602273] Call Trace:
+[1124738.602274]  ? __schedule+0x413/0x464
+[1124738.602275]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602277]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602278]  schedule+0x80/0xab
+[1124738.602279]  worker_thread+0x24e/0x297
+[1124738.602280]  kthread+0x115/0x11d
+[1124738.602281]  ? kthread_park+0x76/0x76
+[1124738.602282]  ret_from_fork+0x35/0x40
+[1124738.602284] kworker/0:2     I    0 32011      2 0x80004000
+[1124738.602287] Workqueue:  0x0 (events_power_efficient)
+[1124738.602288] Call Trace:
+[1124738.602289]  ? __schedule+0x413/0x464
+[1124738.602290]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602292]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602293]  schedule+0x80/0xab
+[1124738.602294]  worker_thread+0x24e/0x297
+[1124738.602295]  kthread+0x115/0x11d
+[1124738.602296]  ? kthread_park+0x76/0x76
+[1124738.602297]  ret_from_fork+0x35/0x40
+[1124738.602298] kworker/u17:0   I    0  2604      2 0x80004000
+[1124738.602301] Workqueue:  0x0 (btrfs-worker-high)
+[1124738.602302] Call Trace:
+[1124738.602304]  ? __schedule+0x413/0x464
+[1124738.602305]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602306]  schedule+0x80/0xab
+[1124738.602307]  worker_thread+0x24e/0x297
+[1124738.602308]  kthread+0x115/0x11d
+[1124738.602309]  ? kthread_park+0x76/0x76
+[1124738.602310]  ret_from_fork+0x35/0x40
+[1124738.602311] kworker/5:0     I    0  4557      2 0x80004000
+[1124738.602315] Workqueue:  0x0 (mm_percpu_wq)
+[1124738.602315] Call Trace:
+[1124738.602317]  ? __schedule+0x413/0x464
+[1124738.602318]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602319]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602320]  schedule+0x80/0xab
+[1124738.602321]  worker_thread+0x24e/0x297
+[1124738.602323]  kthread+0x115/0x11d
+[1124738.602323]  ? kthread_park+0x76/0x76
+[1124738.602324]  ret_from_fork+0x35/0x40
+[1124738.602326] kworker/1:0     I    0 14039      2 0x80004000
+[1124738.602329] Workqueue:  0x0 (events_freezable_power_)
+[1124738.602329] Call Trace:
+[1124738.602331]  ? __schedule+0x413/0x464
+[1124738.602332]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602333]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602334]  schedule+0x80/0xab
+[1124738.602336]  worker_thread+0x24e/0x297
+[1124738.602337]  kthread+0x115/0x11d
+[1124738.602337]  ? kthread_park+0x76/0x76
+[1124738.602338]  ret_from_fork+0x35/0x40
+[1124738.602340] kworker/2:1     I    0 22643      2 0x80004000
+[1124738.602343] Workqueue:  0x0 (events_freezable_power_)
+[1124738.602344] Call Trace:
+[1124738.602345]  ? __schedule+0x413/0x464
+[1124738.602347]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602348]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602349]  schedule+0x80/0xab
+[1124738.602350]  worker_thread+0x24e/0x297
+[1124738.602351]  kthread+0x115/0x11d
+[1124738.602352]  ? kthread_park+0x76/0x76
+[1124738.602353]  ret_from_fork+0x35/0x40
+[1124738.602354] kworker/3:2     I    0  3070      2 0x80004000
+[1124738.602358] Workqueue:  0x0 (mm_percpu_wq)
+[1124738.602358] Call Trace:
+[1124738.602360]  ? __schedule+0x413/0x464
+[1124738.602361]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602362]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602363]  schedule+0x80/0xab
+[1124738.602364]  worker_thread+0x24e/0x297
+[1124738.602365]  kthread+0x115/0x11d
+[1124738.602366]  ? kthread_park+0x76/0x76
+[1124738.602367]  ret_from_fork+0x35/0x40
+[1124738.602369] kworker/3:0     I    0 13409      2 0x80004000
+[1124738.602372] Workqueue:  0x0 (cgroup_destroy)
+[1124738.602373] Call Trace:
+[1124738.602374]  ? __schedule+0x413/0x464
+[1124738.602376]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602377]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602378]  schedule+0x80/0xab
+[1124738.602379]  worker_thread+0x24e/0x297
+[1124738.602380]  kthread+0x115/0x11d
+[1124738.602381]  ? kthread_park+0x76/0x76
+[1124738.602382]  ret_from_fork+0x35/0x40
+[1124738.602383] kworker/0:0     I    0 13460      2 0x80004000
+[1124738.602386] Workqueue:  0x0 (cgroup_destroy)
+[1124738.602387] Call Trace:
+[1124738.602389]  ? __schedule+0x413/0x464
+[1124738.602390]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602391]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602392]  schedule+0x80/0xab
+[1124738.602393]  worker_thread+0x24e/0x297
+[1124738.602394]  kthread+0x115/0x11d
+[1124738.602395]  ? kthread_park+0x76/0x76
+[1124738.602396]  ret_from_fork+0x35/0x40
+[1124738.602397] kworker/6:0     I    0 19672      2 0x80004000
+[1124738.602401] Workqueue:  0x0 (cgroup_destroy)
+[1124738.602401] Call Trace:
+[1124738.602403]  ? __schedule+0x413/0x464
+[1124738.602404]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602405]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602406]  schedule+0x80/0xab
+[1124738.602407]  worker_thread+0x24e/0x297
+[1124738.602409]  kthread+0x115/0x11d
+[1124738.602410]  ? kthread_park+0x76/0x76
+[1124738.602411]  ret_from_fork+0x35/0x40
+[1124738.602412] kworker/u17:1   I    0 20661      2 0x80004000
+[1124738.602415] Workqueue:  0x0 (btrfs-worker-high)
+[1124738.602416] Call Trace:
+[1124738.602417]  ? __schedule+0x413/0x464
+[1124738.602419]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602420]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602421]  schedule+0x80/0xab
+[1124738.602422]  worker_thread+0x24e/0x297
+[1124738.602423]  kthread+0x115/0x11d
+[1124738.602424]  ? kthread_park+0x76/0x76
+[1124738.602425]  ret_from_fork+0x35/0x40
+[1124738.602427] kworker/4:3     I    0 21762      2 0x80004000
+[1124738.602430] Workqueue:  0x0 (mm_percpu_wq)
+[1124738.602430] Call Trace:
+[1124738.602432]  ? __schedule+0x413/0x464
+[1124738.602433]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602434]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602435]  schedule+0x80/0xab
+[1124738.602436]  worker_thread+0x24e/0x297
+[1124738.602437]  kthread+0x115/0x11d
+[1124738.602438]  ? kthread_park+0x76/0x76
+[1124738.602439]  ret_from_fork+0x35/0x40
+[1124738.602441] kworker/7:3     I    0 22070      2 0x80004000
+[1124738.602444] Workqueue:  0x0 (events_freezable_power_)
+[1124738.602444] Call Trace:
+[1124738.602446]  ? __schedule+0x413/0x464
+[1124738.602447]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602448]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602449]  schedule+0x80/0xab
+[1124738.602450]  worker_thread+0x24e/0x297
+[1124738.602452]  kthread+0x115/0x11d
+[1124738.602453]  ? kthread_park+0x76/0x76
+[1124738.602453]  ret_from_fork+0x35/0x40
+[1124738.602455] pickup          S    0 23399   2375 0x00000100
+[1124738.602456] Call Trace:
+[1124738.602458]  ? __schedule+0x413/0x464
+[1124738.602459]  schedule+0x80/0xab
+[1124738.602461]  schedule_hrtimeout_range_clock+0xb0/0xf4
+[1124738.602462]  ? hrtimer_init+0xf4/0xf4
+[1124738.602463]  ep_poll+0x263/0x360
+[1124738.602465]  ? wake_up_q+0x53/0x53
+[1124738.602466]  do_epoll_wait+0x92/0xb2
+[1124738.602468]  __x64_sys_epoll_wait+0x1a/0x1d
+[1124738.602469]  do_syscall_64+0x7e/0x152
+[1124738.602470]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602470] RIP: 0033:0x7f1298a3bbfb
+[1124738.602472] Code: Bad RIP value.
+[1124738.602472] RSP: 002b:00007ffed6056330 EFLAGS: 00000246 ORIG_RAX:
+00000000000000e8
+[1124738.602473] RAX: ffffffffffffffda RBX: 00007ffed6056388 RCX:
+00007f1298a3bbfb
+[1124738.602474] RDX: 0000000000000064 RSI: 00007ffed6056388 RDI:
+0000000000000008
+[1124738.602474] RBP: 00000000ffffffff R08: 000000000000000f R09:
+0000556e3b2b07f0
+[1124738.602475] R10: 00000000000186a0 R11: 0000000000000246 R12:
+00007f1298d4f454
+[1124738.602476] R13: 00007f1298d4f3c0 R14: 00007ffed6056ec0 R15:
+0000000000000000
+[1124738.602477] kworker/u16:3   I    0 23585      2 0x80004000
+[1124738.602480] Workqueue:  0x0 (btrfs-endio)
+[1124738.602480] Call Trace:
+[1124738.602481]  ? __schedule+0x413/0x464
+[1124738.602483]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602484]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602485]  schedule+0x80/0xab
+[1124738.602486]  worker_thread+0x24e/0x297
+[1124738.602487]  kthread+0x115/0x11d
+[1124738.602488]  ? kthread_park+0x76/0x76
+[1124738.602489]  ret_from_fork+0x35/0x40
+[1124738.602490] kworker/7:1     I    0 23636      2 0x80004000
+[1124738.602493] Workqueue:  0x0 (events_freezable_power_)
+[1124738.602494] Call Trace:
+[1124738.602495]  ? __schedule+0x413/0x464
+[1124738.602497]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602498]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602499]  schedule+0x80/0xab
+[1124738.602500]  worker_thread+0x24e/0x297
+[1124738.602501]  kthread+0x115/0x11d
+[1124738.602502]  ? kthread_park+0x76/0x76
+[1124738.602503]  ret_from_fork+0x35/0x40
+[1124738.602505] kworker/5:1     I    0 23887      2 0x80004000
+[1124738.602508] Workqueue:  0x0 (cgroup_destroy)
+[1124738.602508] Call Trace:
+[1124738.602510]  ? __schedule+0x413/0x464
+[1124738.602511]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602512]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602513]  schedule+0x80/0xab
+[1124738.602514]  worker_thread+0x24e/0x297
+[1124738.602515]  kthread+0x115/0x11d
+[1124738.602516]  ? kthread_park+0x76/0x76
+[1124738.602517]  ret_from_fork+0x35/0x40
+[1124738.602519] kworker/4:0     I    0 23888      2 0x80004000
+[1124738.602522] Call Trace:
+[1124738.602523]  ? __schedule+0x413/0x464
+[1124738.602525]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602526]  schedule+0x80/0xab
+[1124738.602527]  worker_thread+0x24e/0x297
+[1124738.602528]  kthread+0x115/0x11d
+[1124738.602529]  ? kthread_park+0x76/0x76
+[1124738.602530]  ret_from_fork+0x35/0x40
+[1124738.602531] kworker/u16:4   I    0 23902      2 0x80004000
+[1124738.602534] Workqueue:  0x0 (btrfs-endio)
+[1124738.602534] Call Trace:
+[1124738.602536]  ? __schedule+0x413/0x464
+[1124738.602537]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602538]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602539]  schedule+0x80/0xab
+[1124738.602540]  worker_thread+0x24e/0x297
+[1124738.602541]  kthread+0x115/0x11d
+[1124738.602542]  ? kthread_park+0x76/0x76
+[1124738.602543]  ret_from_fork+0x35/0x40
+[1124738.602545] kworker/7:2     I    0 24095      2 0x80004000
+[1124738.602548] Workqueue:  0x0 (mm_percpu_wq)
+[1124738.602548] Call Trace:
+[1124738.602550]  ? __schedule+0x413/0x464
+[1124738.602551]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602552]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602553]  schedule+0x80/0xab
+[1124738.602555]  worker_thread+0x24e/0x297
+[1124738.602556]  kthread+0x115/0x11d
+[1124738.602556]  ? kthread_park+0x76/0x76
+[1124738.602557]  ret_from_fork+0x35/0x40
+[1124738.602559] sshd            S    0 24150   2049 0x00000000
+[1124738.602560] Call Trace:
+[1124738.602561]  ? __schedule+0x413/0x464
+[1124738.602563]  ? __mod_memcg_state+0xa6/0xba
+[1124738.602564]  schedule+0x80/0xab
+[1124738.602565]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.602566]  ? preempt_count_add+0x8a/0x9c
+[1124738.602568]  ? _raw_spin_lock_irqsave+0x17/0x34
+[1124738.602569]  ? add_wait_queue+0x15/0x3e
+[1124738.602570]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.602571]  ? unix_poll+0x87/0x96
+[1124738.602573]  poll_schedule_timeout.constprop.4+0x43/0x5c
+[1124738.602574]  do_sys_poll+0x383/0x431
+[1124738.602576]  ? __kmalloc_reserve.isra.9+0x2d/0x70
+[1124738.602577]  ? __alloc_skb+0xb3/0x18c
+[1124738.602578]  ? __follow_mount_rcu+0x5b/0xc5
+[1124738.602579]  ? lookup_fast+0xff/0x297
+[1124738.602581]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602582]  ? cdev_put+0x1e/0x1e
+[1124738.602583]  ? dput.part.5+0x29/0xfd
+[1124738.602584]  ? mntput_no_expire+0x11/0x185
+[1124738.602585]  ? terminate_walk+0x20/0x7e
+[1124738.602586]  ? path_openat+0xb78/0xc1b
+[1124738.602588]  ? do_filp_open+0x88/0xae
+[1124738.602590]  ? new_sync_write+0x109/0x142
+[1124738.602591]  ? preempt_count_add+0x7d/0x9c
+[1124738.602592]  ? __fd_install+0xa5/0xbe
+[1124738.602593]  __se_sys_poll+0x5a/0xd6
+[1124738.602595]  do_syscall_64+0x7e/0x152
+[1124738.602596]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602596] RIP: 0033:0x7f6aa5be2728
+[1124738.602598] Code: Bad RIP value.
+[1124738.602598] RSP: 002b:00007ffebe1bd450 EFLAGS: 00000246 ORIG_RAX:
+0000000000000007
+[1124738.602599] RAX: ffffffffffffffda RBX: 000055ff5ba891a0 RCX:
+00007f6aa5be2728
+[1124738.602600] RDX: 00000000ffffffff RSI: 0000000000000001 RDI:
+00007ffebe1bd498
+[1124738.602600] RBP: 00007ffebe1bd498 R08: 000055ff5d8038b0 R09:
+000055ff5d803870
+[1124738.602601] R10: 0000000000000000 R11: 0000000000000246 R12:
+000055ff5d7f6880
+[1124738.602601] R13: 0000000000000000 R14: 0000000000005e57 R15:
+0000000000000014
+[1124738.602603] systemd         S    0 24154      1 0x00000000
+[1124738.602604] Call Trace:
+[1124738.602605]  ? __schedule+0x413/0x464
+[1124738.602606]  ? ep_send_events_proc+0xcc/0x1b6
+[1124738.602607]  schedule+0x80/0xab
+[1124738.602609]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.602610]  ? _raw_write_unlock_irq+0x13/0x24
+[1124738.602611]  ? ep_scan_ready_list.constprop.3+0x196/0x1cb
+[1124738.602612]  ep_poll+0x263/0x360
+[1124738.602614]  ? wake_up_q+0x53/0x53
+[1124738.602615]  do_epoll_wait+0x92/0xb2
+[1124738.602616]  __x64_sys_epoll_wait+0x1a/0x1d
+[1124738.602617]  do_syscall_64+0x7e/0x152
+[1124738.602618]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602619] RIP: 0033:0x7fd387c34bfb
+[1124738.602621] Code: Bad RIP value.
+[1124738.602621] RSP: 002b:00007ffd9ba9df20 EFLAGS: 00000246 ORIG_RAX:
+00000000000000e8
+[1124738.602622] RAX: ffffffffffffffda RBX: 000055845d562500 RCX:
+00007fd387c34bfb
+[1124738.602623] RDX: 0000000000000010 RSI: 00007ffd9ba9df60 RDI:
+0000000000000004
+[1124738.602623] RBP: 00007ffd9ba9e120 R08: 0000000000000010 R09:
+00007ffd9bbdf080
+[1124738.602624] R10: 00000000ffffffff R11: 0000000000000246 R12:
+00007ffd9ba9df60
+[1124738.602624] R13: 0000000000000001 R14: ffffffffffffffff R15:
+0000000000000000
+[1124738.602626] (sd-pam)        S    0 24155  24154 0x00000000
+[1124738.602626] Call Trace:
+[1124738.602628]  ? __schedule+0x413/0x464
+[1124738.602629]  schedule+0x80/0xab
+[1124738.602631]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.602632]  ? recalc_sigpending+0x17/0x42
+[1124738.602632]  ? dequeue_signal+0x177/0x19d
+[1124738.602634]  do_sigtimedwait.isra.8+0x13e/0x1f5
+[1124738.602635]  __se_sys_rt_sigtimedwait+0x78/0xb9
+[1124738.602637]  ? switch_fpu_return+0x2d/0x11e
+[1124738.602638]  do_syscall_64+0x7e/0x152
+[1124738.602639]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602639] RIP: 0033:0x7efe262a7f2c
+[1124738.602641] Code: Bad RIP value.
+[1124738.602641] RSP: 002b:00007ffecfed8a80 EFLAGS: 00000293 ORIG_RAX:
+0000000000000080
+[1124738.602642] RAX: ffffffffffffffda RBX: 00007ffecfed8a01 RCX:
+00007efe262a7f2c
+[1124738.602643] RDX: 0000000000000000 RSI: 00007ffecfed8ac0 RDI:
+00007ffecfed8c58
+[1124738.602643] RBP: 00007ffecfed8ac0 R08: 0000000000000000 R09:
+0000557e457450f0
+[1124738.602644] R10: 0000000000000008 R11: 0000000000000293 R12:
+00007ffecfed8bb8
+[1124738.602644] R13: 0000000000005e5a R14: 00007ffecfed8bb8 R15:
+0000000000008000
+[1124738.602646] sshd            S    0 24159  24150 0x00000000
+[1124738.602646] Call Trace:
+[1124738.602648]  ? __schedule+0x413/0x464
+[1124738.602649]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602650]  schedule+0x80/0xab
+[1124738.602652]  schedule_hrtimeout_range_clock+0x48/0xf4
+[1124738.602653]  ? pty_stop+0x70/0x70
+[1124738.602654]  ? n_tty_poll+0x17c/0x18d
+[1124738.602655]  poll_schedule_timeout.constprop.4+0x43/0x5c
+[1124738.602657]  do_select+0x5f1/0x643
+[1124738.602659]  ? __dev_queue_xmit+0x827/0x84f
+[1124738.602660]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602662]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602663]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602664]  ? poll_select_copy_remaining+0x156/0x156
+[1124738.602666]  ? internal_add_timer+0x27/0x34
+[1124738.602667]  ? _raw_spin_unlock_irqrestore+0x14/0x25
+[1124738.602668]  ? mod_timer+0x219/0x241
+[1124738.602670]  ? sk_reset_timer+0x14/0x27
+[1124738.602671]  ? tcp_schedule_loss_probe+0x12d/0x135
+[1124738.602672]  ? tcp_write_xmit+0x822/0xced
+[1124738.602674]  ? __tcp_push_pending_frames+0x31/0xb7
+[1124738.602675]  ? tcp_sendmsg_locked+0x9c1/0xb90
+[1124738.602676]  core_sys_select+0x196/0x248
+[1124738.602678]  ? new_sync_write+0x109/0x142
+[1124738.602680]  kern_select+0x97/0xcc
+[1124738.602681]  ? _copy_to_user+0x22/0x28
+[1124738.602682]  ? put_timespec64+0x3c/0x61
+[1124738.602683]  __x64_sys_select+0x20/0x23
+[1124738.602684]  do_syscall_64+0x7e/0x152
+[1124738.602685]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602686] RIP: 0033:0x7f6aa5be556b
+[1124738.602688] Code: Bad RIP value.
+[1124738.602688] RSP: 002b:00007ffebe1bd3c0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000017
+[1124738.602689] RAX: ffffffffffffffda RBX: 000055ff5d7f84d0 RCX:
+00007f6aa5be556b
+[1124738.602690] RDX: 000055ff5d7f67b0 RSI: 000055ff5d7f1e00 RDI:
+000000000000000d
+[1124738.602690] RBP: 0000000000000000 R08: 0000000000000000 R09:
+00007ffebe1bd440
+[1124738.602691] R10: 0000000000000000 R11: 0000000000000246 R12:
+0000000000000000
+[1124738.602691] R13: 0000000000000003 R14: 0000000000000003 R15:
+000055ff5ba89a20
+[1124738.602693] bash            S    0 24160  24159 0x00000000
+[1124738.602693] Call Trace:
+[1124738.602695]  ? __schedule+0x413/0x464
+[1124738.602696]  schedule+0x80/0xab
+[1124738.602697]  do_wait+0x1d5/0x237
+[1124738.602699]  kernel_wait4+0xc5/0x11a
+[1124738.602700]  ? __se_compat_sys_waitid+0xf5/0xf5
+[1124738.602701]  __se_sys_wait4+0x3c/0x8b
+[1124738.602703]  ? handle_mm_fault+0x133/0x182
+[1124738.602704]  ? preempt_count_add+0x8a/0x9c
+[1124738.602705]  ? recalc_sigpending+0x17/0x42
+[1124738.602706]  ? __set_current_blocked+0x3d/0x55
+[1124738.602707]  ? _raw_spin_unlock_irq+0x13/0x24
+[1124738.602708]  ? sigprocmask+0x6e/0x8a
+[1124738.602708]  ? _copy_to_user+0x22/0x28
+[1124738.602709]  ? __se_sys_rt_sigprocmask+0x93/0xbb
+[1124738.602710]  do_syscall_64+0x7e/0x152
+[1124738.602711]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602712] RIP: 0033:0x7f1ff00d567b
+[1124738.602713] Code: Bad RIP value.
+[1124738.602714] RSP: 002b:00007ffd62a92890 EFLAGS: 00000246 ORIG_RAX:
+000000000000003d
+[1124738.602715] RAX: ffffffffffffffda RBX: 0000000000000000 RCX:
+00007f1ff00d567b
+[1124738.602715] RDX: 000000000000000a RSI: 00007ffd62a928d0 RDI:
+00000000ffffffff
+[1124738.602716] RBP: 000000000000000a R08: 0000000000000000 R09:
+00005615fea643f0
+[1124738.602716] R10: 0000000000000000 R11: 0000000000000246 R12:
+0000000000000000
+[1124738.602717] R13: 00000000ffffffff R14: 0000000000000000 R15:
+0000000000000000
+[1124738.602718] su              S    0 24163  24160 0x00000000
+[1124738.602719] Call Trace:
+[1124738.602721]  ? __schedule+0x413/0x464
+[1124738.602722]  schedule+0x80/0xab
+[1124738.602723]  do_wait+0x1d5/0x237
+[1124738.602724]  ? do_wp_page+0x497/0x4b5
+[1124738.602725]  kernel_wait4+0xc5/0x11a
+[1124738.602726]  ? __se_compat_sys_waitid+0xf5/0xf5
+[1124738.602728]  __se_sys_wait4+0x3c/0x8b
+[1124738.602729]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602730]  ? _raw_spin_unlock_irq+0x13/0x24
+[1124738.602731]  ? do_sigaction+0xad/0x184
+[1124738.602732]  ? preempt_count_add+0x8a/0x9c
+[1124738.602733]  ? recalc_sigpending+0x17/0x42
+[1124738.602733]  ? __set_current_blocked+0x3d/0x55
+[1124738.602734]  ? _raw_spin_unlock_irq+0x13/0x24
+[1124738.602735]  ? sigprocmask+0x6e/0x8a
+[1124738.602736]  ? __se_sys_rt_sigprocmask+0x72/0xbb
+[1124738.602737]  do_syscall_64+0x7e/0x152
+[1124738.602738]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602739] RIP: 0033:0x7f0b662d767b
+[1124738.602740] Code: Bad RIP value.
+[1124738.602741] RSP: 002b:00007ffdc4d82200 EFLAGS: 00000246 ORIG_RAX:
+000000000000003d
+[1124738.602741] RAX: ffffffffffffffda RBX: 00007ffdc4d82250 RCX:
+00007f0b662d767b
+[1124738.602742] RDX: 0000000000000002 RSI: 00007ffdc4d8224c RDI:
+00000000ffffffff
+[1124738.602743] RBP: 00007ffdc4d8224c R08: 0000000000000000 R09:
+00007f0b66200b80
+[1124738.602743] R10: 0000000000000000 R11: 0000000000000246 R12:
+00007ffdc4d824c8
+[1124738.602744] R13: 00000000ffffffff R14: 0000000000000000 R15:
+0000000000000000
+[1124738.602745] bash            R  running task        0 24164  24163
+0x80000000
+[1124738.602746] Call Trace:
+[1124738.602747]  sched_show_task+0x10b/0x13d
+[1124738.602748]  show_state_filter+0x91/0xa5
+[1124738.602750]  sysrq_handle_showstate+0xc/0x11
+[1124738.602752]  __handle_sysrq+0x8d/0x114
+[1124738.602753]  write_sysrq_trigger+0x2b/0x30
+[1124738.602755]  proc_reg_write+0x3e/0x5c
+[1124738.602756]  ? proc_reg_poll+0x55/0x55
+[1124738.602757]  vfs_write+0xc8/0x16f
+[1124738.602759]  ksys_write+0x6b/0xc0
+[1124738.602760]  do_syscall_64+0x7e/0x152
+[1124738.602761]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[1124738.602762] RIP: 0033:0x7f870198c0d8
+[1124738.602763] Code: 00 90 48 83 ec 38 64 48 8b 04 25 28 00 00 00 48
+89 44 24 28 31 c0 48 8d 05 05 96 0d 00 8b 00 85 c0 75 27 b8 01 00 00
+00 0f 05 <48> 3d 00 f0 ff ff 77 60 48 8b 4c 24 28 64 48 33 0c 25 28 00
+00 00
+[1124738.602763] RSP: 002b:00007ffc2c78eac0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000001
+[1124738.602764] RAX: ffffffffffffffda RBX: 0000000000000002 RCX:
+00007f870198c0d8
+[1124738.602765] RDX: 0000000000000002 RSI: 000055cf6a6a19b0 RDI:
+0000000000000001
+[1124738.602765] RBP: 000055cf6a6a19b0 R08: 000000000000000a R09:
+00007f8701647740
+[1124738.602766] R10: fffffffffffffbff R11: 0000000000000246 R12:
+00007f8701a61760
+[1124738.602766] R13: 0000000000000002 R14: 00007f8701a5c760 R15:
+0000000000000002
+[1124738.602767] kworker/u16:0   I    0 24175      2 0x80004000
+[1124738.602770] Workqueue:  0x0 (btrfs-endio)
+[1124738.602771] Call Trace:
+[1124738.602773]  ? __schedule+0x413/0x464
+[1124738.602774]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602775]  schedule+0x80/0xab
+[1124738.602776]  worker_thread+0x24e/0x297
+[1124738.602777]  kthread+0x115/0x11d
+[1124738.602778]  ? kthread_park+0x76/0x76
+[1124738.602779]  ret_from_fork+0x35/0x40
+[1124738.602781] kworker/u16:5   I    0 24177      2 0x80004000
+[1124738.602783] Workqueue:  0x0 (btrfs-endio)
+[1124738.602784] Call Trace:
+[1124738.602785]  ? __schedule+0x413/0x464
+[1124738.602787]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602788]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602789]  schedule+0x80/0xab
+[1124738.602790]  worker_thread+0x24e/0x297
+[1124738.602791]  kthread+0x115/0x11d
+[1124738.602792]  ? kthread_park+0x76/0x76
+[1124738.602793]  ret_from_fork+0x35/0x40
+[1124738.602794] kworker/2:0     I    0 24181      2 0x80004000
+[1124738.602797] Workqueue:  0x0 (events_power_efficient)
+[1124738.602798] Call Trace:
+[1124738.602799]  ? __schedule+0x413/0x464
+[1124738.602801]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602802]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602803]  schedule+0x80/0xab
+[1124738.602804]  worker_thread+0x24e/0x297
+[1124738.602805]  kthread+0x115/0x11d
+[1124738.602806]  ? kthread_park+0x76/0x76
+[1124738.602807]  ret_from_fork+0x35/0x40
+[1124738.602809] kworker/1:2     I    0 24286      2 0x80004000
+[1124738.602812] Workqueue:  0x0 (mm_percpu_wq)
+[1124738.602812] Call Trace:
+[1124738.602814]  ? __schedule+0x413/0x464
+[1124738.602815]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602816]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602817]  schedule+0x80/0xab
+[1124738.602819]  worker_thread+0x24e/0x297
+[1124738.602820]  kthread+0x115/0x11d
+[1124738.602821]  ? kthread_park+0x76/0x76
+[1124738.602822]  ret_from_fork+0x35/0x40
+[1124738.602823] kworker/7:0     I    0 24307      2 0x80004000
+[1124738.602826] Workqueue:  0x0 (mm_percpu_wq)
+[1124738.602827] Call Trace:
+[1124738.602829]  ? __schedule+0x413/0x464
+[1124738.602830]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602831]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602832]  schedule+0x80/0xab
+[1124738.602833]  worker_thread+0x24e/0x297
+[1124738.602834]  kthread+0x115/0x11d
+[1124738.602835]  ? kthread_park+0x76/0x76
+[1124738.602836]  ret_from_fork+0x35/0x40
+[1124738.602837] kworker/2:2     I    0 24377      2 0x80004000
+[1124738.602840] Workqueue:  0x0 (mm_percpu_wq)
+[1124738.602841] Call Trace:
+[1124738.602843]  ? __schedule+0x413/0x464
+[1124738.602844]  ? _raw_spin_lock_irq+0x14/0x2e
+[1124738.602845]  ? pwq_unbound_release_workfn+0xbc/0xbc
+[1124738.602846]  schedule+0x80/0xab
+[1124738.602847]  worker_thread+0x24e/0x297
+[1124738.602848]  kthread+0x115/0x11d
+[1124738.602849]  ? kthread_park+0x76/0x76
+[1124738.602850]  ret_from_fork+0x35/0x40
+[1124738.602852] Showing busy workqueues and worker pools:
+
+
+On Sat, May 11, 2019 at 6:21 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+> > [362108.291969]  btrfs_tree_read_lock+0xbb/0xf1
+> > [362108.291973]  ? wait_woken+0x6d/0x6d
+> > [362108.291978]  find_parent_nodes+0x91d/0x12b8
+> > [362108.291985]  ? btrfs_find_all_roots_safe+0x9c/0x107
+> > [362108.291988]  btrfs_find_all_roots_safe+0x9c/0x107
+> > [362108.291992]  btrfs_find_all_roots+0x57/0x75
+> > [362108.291997]  btrfs_qgroup_trace_extent_post+0x37/0x7c
+>
+> It's qgroup.
+>
+> We have upstream fix for it, 38e3eebff643 ("btrfs: honor
+> path->skip_locking in backref code").
+> It's supported to be backported for all kernels after v4.14.
+> But I'm not sure if it's backported for your kernel.
+>
+> As you're gentoo user, it shouldn't be hard to check the kernel source
+> to find if the fix is backported.
+> If not, feel free to backport for your kernel.
+>
+> Thanks,
+> Qu
+>
+>
+> > [362108.292002]  btrfs_add_delayed_tree_ref+0x305/0x32b
+>
