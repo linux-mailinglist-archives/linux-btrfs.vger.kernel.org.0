@@ -2,67 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA01971B85
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jul 2019 17:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D8C071D9B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jul 2019 19:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728843AbfGWPYd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jul 2019 11:24:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37616 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726283AbfGWPYc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jul 2019 11:24:32 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id CA6DBAFA9;
-        Tue, 23 Jul 2019 15:24:31 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B1A39DA7D5; Tue, 23 Jul 2019 17:25:09 +0200 (CEST)
-Date:   Tue, 23 Jul 2019 17:25:09 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3 RESEND Rebased] btrfs: add readmirror devid property
-Message-ID: <20190723152509.GG2868@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190626083402.1895-1-anand.jain@oracle.com>
- <20190626083402.1895-4-anand.jain@oracle.com>
- <20190723145553.GE2868@twin.jikos.cz>
+        id S1730893AbfGWRYe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jul 2019 13:24:34 -0400
+Received: from mga14.intel.com ([192.55.52.115]:11182 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726513AbfGWRYd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Jul 2019 13:24:33 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Jul 2019 10:24:33 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,299,1559545200"; 
+   d="scan'208";a="193136667"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.145])
+  by fmsmga004.fm.intel.com with ESMTP; 23 Jul 2019 10:24:31 -0700
+Received: from andy by smile with local (Exim 4.92)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1hpyWc-0005zk-0d; Tue, 23 Jul 2019 20:24:30 +0300
+Date:   Tue, 23 Jul 2019 20:24:30 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Johannes Thumshirn <jthumshirn@suse.de>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Lu Fengqi <lufq.fnst@cn.fujitsu.com>,
+        linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v3 3/4] Btrfs: Switch to use new generic UUID API
+Message-ID: <20190723172429.GR9224@smile.fi.intel.com>
+References: <20190717113633.25922-1-andriy.shevchenko@linux.intel.com>
+ <20190717113633.25922-3-andriy.shevchenko@linux.intel.com>
+ <20190718172017.GA5868@x250>
+ <20190718173842.GG9224@smile.fi.intel.com>
+ <20190718174400.GB5868@x250>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190723145553.GE2868@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <20190718174400.GB5868@x250>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 04:55:53PM +0200, David Sterba wrote:
-> On Wed, Jun 26, 2019 at 04:34:02PM +0800, Anand Jain wrote:
-> > Introduces devid readmirror property, to direct read IO to the specified
-> > device(s).
+On Thu, Jul 18, 2019 at 07:44:00PM +0200, Johannes Thumshirn wrote:
+> On Thu, Jul 18, 2019 at 08:38:42PM +0300, Andy Shevchenko wrote:
+> > On Thu, Jul 18, 2019 at 07:20:17PM +0200, Johannes Thumshirn wrote:
+> > > On Wed, Jul 17, 2019 at 02:36:32PM +0300, Andy Shevchenko wrote:
+> > > > There are new types and helpers that are supposed to be used in new code.
+> > > > 
+> > > > As a preparation to get rid of legacy types and API functions do
+> > > > the conversion here.
+> > > 
+> > > Why? What was broken in the old versions? What benefit do we have apart from
+> > > unneeded churn?
 > > 
-> > The readmirror property is stored as extended attribute on the root
-> > inode.
+> > I think Christoph can explain this better than me.
+> > 
+> > By the way, if you look to the headers, there is no more "old" API, it's
+> > covered as alias to the new one.
 > 
-> So this is permanently stored on the filesystem, is the policy applied
-> at mount time?
+> AFAIU it's mostly the naming that causes problems here as a little endian UUID
+> doesn't really exits, is called GUID.
 
-Found in some previous version that it's not permanently stored, so
-scratch that.
+Yes, that's the main point for now.
 
-> > The readmirror input format is devid1,2,3.. etc. And for the
-> > each devid provided, a new flag BTRFS_DEV_STATE_READ_OPTIMISED is set.
-> 
-> I'd say it should be called PREFERRED, and the format specifier could
-> add ":" between devid and the numbers, like "devid:1,2,3", we'll
-> probably want more types in the future.
-> 
-> This is the first whole-filesystem property so we can't follow a naming
-> scheme, so we'll have to decide if we go with flat or hierarchical
-> naming with more generic categories like policy.mirror.read and similar.
+> But please at least document this in a cover letter. Also what tests did you
+> make? I know most of these functions have their origin in XFS.
 
-I'll have to go through the past discussions again, there was some
-feedback regarding this I did not take into account.
+I did only compile test.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
