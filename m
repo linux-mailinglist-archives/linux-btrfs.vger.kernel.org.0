@@ -2,59 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 932CF72102
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jul 2019 22:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CEF672208
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2019 00:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387457AbfGWUmN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jul 2019 16:42:13 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:37752 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391960AbfGWUmJ (ORCPT
+        id S2392321AbfGWWLt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jul 2019 18:11:49 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:49837 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731838AbfGWWLt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jul 2019 16:42:09 -0400
-Received: by mail-pg1-f194.google.com with SMTP id i70so9247481pgd.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Jul 2019 13:42:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=46Sn1TjB+7cXjJ1oCwsYotRCUk4eF4IUbdpH2VBpW9w=;
-        b=Br7NzGnD5/uCHAmUbgP3kHHUnne3uBIYrLHkT3Hm0Jyj+iblE7CK2NiIlIoP+/F9pU
-         01vAz3ku27SycTFXXZSK3irK4+2oOhqILT01R36pQq5zL8cSp9bP7tPG26Sif9oRY3qf
-         0PGSjIRMkZxbsAsxuTMrP9jGTuePIPWJAwuqtn6tYRCVFakd06ytTSrREcFqXS1rEUOO
-         nLOByE+Car72iOAp7zUMnMsh4fAUlmL3oeI8qX9R+sm2mp+h0QjDlfY+G/xzmOyxGloQ
-         /gu0INMxBzrUMs2JSktwTYaMrL4gmyd4KmevwUVfEIdocwgHrBWdFH7GTqrWirEsJ/Fw
-         aDJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=46Sn1TjB+7cXjJ1oCwsYotRCUk4eF4IUbdpH2VBpW9w=;
-        b=YYmvhnZe4OKgQfzk1ZUdnS1CiJYjPI9K+TNehfSZQD1hRur+erL65lIhC0p8wZcITF
-         NmjkSbvWBJXu6Kr5neEHs3M7t5Jw7THXEAqy75h1r/kuXo1uZClSoPgTR59k0tUGJqb7
-         +Ypx/5PZS6OdJ2h2B8gB1W+zoSg76bwbLIbv+NabX5k6sEBCJKDRquS+TdPl65x7w+Cb
-         VeLNWBc+THARSxUCjGFxakb53LeDZ8pFq0dShuMHBmbcSX5Izu3bqdj2AWeS3QWCvARZ
-         qFfmT4vl6oZ7P3sgig7h+0IgEoZrQGPS4MWGfR8S9DS0QtUBdRKkv6qfu659MDZVE22G
-         8IDw==
-X-Gm-Message-State: APjAAAWvT4Se68jrV6hyCDFd57/eTro6rBfwPZphVhyKTKRVrj4Jfsh9
-        ylJsTId1sediwRj3c1b/ksc=
-X-Google-Smtp-Source: APXvYqyJqnV/CGvEDEu2xDeIC1Qvo93stTXChykOGP1ABuWnCB7sJFtX0B0wjIsZWY7FJuPTVEmakQ==
-X-Received: by 2002:a17:90a:7d04:: with SMTP id g4mr84685532pjl.41.1563914528974;
-        Tue, 23 Jul 2019 13:42:08 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::2:a7f8])
-        by smtp.gmail.com with ESMTPSA id g11sm41178603pgu.11.2019.07.23.13.42.07
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 23 Jul 2019 13:42:08 -0700 (PDT)
-Date:   Tue, 23 Jul 2019 16:42:06 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
+        Tue, 23 Jul 2019 18:11:49 -0400
+Received: from dread.disaster.area (pa49-195-139-63.pa.nsw.optusnet.com.au [49.195.139.63])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id E2B522AA6CE;
+        Wed, 24 Jul 2019 08:11:43 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hq2zU-0003lk-Ea; Wed, 24 Jul 2019 08:10:36 +1000
+Date:   Wed, 24 Jul 2019 08:10:36 +1000
+From:   Dave Chinner <david@fromorbit.com>
 To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Dave Chinner <david@fromorbit.com>,
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] psi: annotate refault stalls from IO submission
-Message-ID: <20190723204206.GA30522@cmpxchg.org>
+Message-ID: <20190723221036.GY7777@dread.disaster.area>
 References: <20190722201337.19180-1-hannes@cmpxchg.org>
  <20190723000226.GV7777@dread.disaster.area>
  <20190723190438.GA22541@cmpxchg.org>
@@ -63,7 +36,13 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <2d80cfdb-f5e0-54f1-29a3-a05dee5b94eb@kernel.dk>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
+        a=fNT+DnnR6FjB+3sUuX8HHA==:117 a=fNT+DnnR6FjB+3sUuX8HHA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=0o9FgrsRnhwA:10
+        a=7-415B0cAAAA:8 a=RvhrQjGMwq6Bl1CCUxgA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -109,130 +88,13 @@ On Tue, Jul 23, 2019 at 01:34:50PM -0600, Jens Axboe wrote:
 > Not vehemently opposed to it, even if it sucks having to test page flags
 > in the hot path.
 
-Yeah, it's not great :/ Just seems marginally better than annotating
-all the callsites and maintain correctness there in the future.
+That's kinda why I suggested the bio_add_page_memstall() variant for
+the page cache read IO paths where this check would be required.
 
-> Maybe even do:
-> 
-> 	if (!bio_flagged(bio, BIO_WORKINGSET) && PageWorkingset(page))
-> 		bio_set_flag(bio, BIO_WORKINGSET);
-> 
-> to at least avoid it for the (common?) case where multiple pages are
-> marked as workingset.
+Not fussed either way, this is much cleaner and easier to maintain
+IMO....
 
-Sounds good. If refaults occur, most likely the whole readahead batch
-has that flag set, so I've added that. I've also marked the page test
-unlikely.
-
-This way we have no jumps in the most common path (no refaults), one
-jump in the second most common (bit already set), and the double for
-the least likely case of hitting the first refault page in a batch.
-
-Updated patch below.
-
----
-From 1b3888bdf075f86f226af4e350c8a88435d1fe8e Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Thu, 11 Jul 2019 16:01:40 -0400
-Subject: [PATCH] psi: annotate refault stalls from IO submission
-
-psi tracks the time tasks wait for refaulting pages to become
-uptodate, but it does not track the time spent submitting the IO. The
-submission part can be significant if backing storage is contended or
-when cgroup throttling (io.latency) is in effect - a lot of time is
-spent in submit_bio(). In that case, we underreport memory pressure.
-
-Annotate submit_bio() to account submission time as memory stall when
-the bio is reading userspace workingset pages.
-
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- block/bio.c               |  3 +++
- block/blk-core.c          | 23 ++++++++++++++++++++++-
- include/linux/blk_types.h |  1 +
- 3 files changed, 26 insertions(+), 1 deletion(-)
-
-diff --git a/block/bio.c b/block/bio.c
-index 29cd6cf4da51..4dd9ea0b068b 100644
---- a/block/bio.c
-+++ b/block/bio.c
-@@ -805,6 +805,9 @@ void __bio_add_page(struct bio *bio, struct page *page,
- 
- 	bio->bi_iter.bi_size += len;
- 	bio->bi_vcnt++;
-+
-+	if (!bio_flagged(bio, BIO_WORKINGSET) && unlikely(PageWorkingset(page)))
-+		bio_set_flag(bio, BIO_WORKINGSET);
- }
- EXPORT_SYMBOL_GPL(__bio_add_page);
- 
-diff --git a/block/blk-core.c b/block/blk-core.c
-index 5d1fc8e17dd1..5993922d63fb 100644
---- a/block/blk-core.c
-+++ b/block/blk-core.c
-@@ -36,6 +36,7 @@
- #include <linux/blk-cgroup.h>
- #include <linux/debugfs.h>
- #include <linux/bpf.h>
-+#include <linux/psi.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/block.h>
-@@ -1127,6 +1128,10 @@ EXPORT_SYMBOL_GPL(direct_make_request);
-  */
- blk_qc_t submit_bio(struct bio *bio)
- {
-+	bool workingset_read = false;
-+	unsigned long pflags;
-+	blk_qc_t ret;
-+
- 	/*
- 	 * If it's a regular read/write or a barrier with data attached,
- 	 * go through the normal accounting stuff before submission.
-@@ -1142,6 +1147,8 @@ blk_qc_t submit_bio(struct bio *bio)
- 		if (op_is_write(bio_op(bio))) {
- 			count_vm_events(PGPGOUT, count);
- 		} else {
-+			if (bio_flagged(bio, BIO_WORKINGSET))
-+				workingset_read = true;
- 			task_io_account_read(bio->bi_iter.bi_size);
- 			count_vm_events(PGPGIN, count);
- 		}
-@@ -1156,7 +1163,21 @@ blk_qc_t submit_bio(struct bio *bio)
- 		}
- 	}
- 
--	return generic_make_request(bio);
-+	/*
-+	 * If we're reading data that is part of the userspace
-+	 * workingset, count submission time as memory stall. When the
-+	 * device is congested, or the submitting cgroup IO-throttled,
-+	 * submission can be a significant part of overall IO time.
-+	 */
-+	if (workingset_read)
-+		psi_memstall_enter(&pflags);
-+
-+	ret = generic_make_request(bio);
-+
-+	if (workingset_read)
-+		psi_memstall_leave(&pflags);
-+
-+	return ret;
- }
- EXPORT_SYMBOL(submit_bio);
- 
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index 6a53799c3fe2..2f77e3446760 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -209,6 +209,7 @@ enum {
- 	BIO_BOUNCED,		/* bio is a bounce bio */
- 	BIO_USER_MAPPED,	/* contains user pages */
- 	BIO_NULL_MAPPED,	/* contains invalid user pages */
-+	BIO_WORKINGSET,		/* contains userspace workingset pages */
- 	BIO_QUIET,		/* Make BIO Quiet */
- 	BIO_CHAIN,		/* chained bio, ->bi_remaining in effect */
- 	BIO_REFFED,		/* bio has elevated ->bi_cnt */
+-Dave.
 -- 
-2.22.0
-
+Dave Chinner
+david@fromorbit.com
