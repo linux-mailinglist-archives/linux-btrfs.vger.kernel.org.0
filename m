@@ -2,24 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5553971365
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jul 2019 09:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0366714EE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Jul 2019 11:20:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388610AbfGWH52 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jul 2019 03:57:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44554 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731735AbfGWH51 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jul 2019 03:57:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7DB20AECD
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Jul 2019 07:57:25 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
+        id S1728928AbfGWJUW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jul 2019 05:20:22 -0400
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:59954 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbfGWJUV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Jul 2019 05:20:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1563873622; x=1595409622;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=9hG2yE9mA1V8SJQuHrGfk8aqmLgeOlG+KvqsvxJJzKU=;
+  b=MO6/f+gUROKNvcjYSc3awimzifnbIgo2G98wcF9AJ2nSeTkW5Oy/jbUG
+   KUujYyp5634zvf3meiKKDe7qcNFL7SFu+lP9QY+EKWqwDzIvvJdL2577k
+   toDNsnPkF6IhNjxHr5TJZlop4UlBO9upEtRI6ZyVmMKz00wcPiNPX6v0Q
+   3VsEgq6R5NkzuviXt5uxHZVOq86h7MCyDzd8dTCgw0SDRaD+X6+AUSj2S
+   b+Cm0aNRNIqAJUAqlUjA8c2y/LS9i/8zpUjtIR0FRpXZyGcaeMZwzGaJf
+   sv5IQz3r52pwl52dT7brZDp7qlUAgqEFp5KKQVORLIvUq52mi2HEFiMYn
+   Q==;
+IronPort-SDR: ZLJJXn1ZttgAE6Dk1vDz1JiDyVYuThZ7rjlNP1o7PH8mZlyPg/mtzZb+bBcMsYsQAlikVO0o6+
+ FxB2NLkM4IOX0xLDAdzS98LgTNLEMFVZkF4+ylkPcreEuvqs6K+lijlTZydIScqiMS/ENhbsAi
+ CO52uO0DsuPMIhDzJoLu96YSSH4vVtH3yE9dIIaSgBikbVIdJqZwcA3MmLmt0zm7QgM4ZX2m40
+ CQ1L2jVLkACWK74yDpr+Ng/b9dguzAxiJzB46P3UQMA0XOYXkh1i4PYJ6RmSt01WtLPupBfCvA
+ U8s=
+X-IronPort-AV: E=Sophos;i="5.64,298,1559491200"; 
+   d="scan'208";a="113777525"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Jul 2019 17:20:22 +0800
+IronPort-SDR: riSNiQ+uAwi8FgjN66gcIbaAXANvhrYvMAVUnElVYNMjZxWfY3WhdqELNV6P97q/HThdgcxlFB
+ WCkcMI77UCusMBRsopMvZDkK8LYWTk8LfMNBK0JfRhXmz87qSCTRownzcc6IwR/WiMNU3bSjar
+ qxpmnA+dYPv99VfJaMjUBZWvnlpRDF6Fmfol02a9uxAjq3kvP4xqcWsXz1ka4Obc8Wtl7nFEkq
+ VrRfmxG3sSMsu3pzM0S8diZlk0/BsxSF4vMYrlTcF9MLtQAJ2I+Aj4Q4m7cIXfzGV6CG24woZ0
+ XeyWbri9+bjtLZN/NDq7zy9w
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep02.wdc.com with ESMTP; 23 Jul 2019 02:18:36 -0700
+IronPort-SDR: 4o5xXYoWZc1ALKa80xS42mGllZ8F/ZWjmhUMMvKvoxpYuTy0DnrBb9t/lEuV0jO/S+wcONNeLO
+ GtTCRfK2Qv+8ayxVivvmmMa5suyAgj+sGY6YF9IXhy3JKG23jdR4PGNXgo8MYST9oyAn3pXEPN
+ ZQv+VOrZ9QDEG6XDz/u0KYGiOyfBh+Ft4AbxhYDUA36ymkJLLhg+jLsGhqz7/io5F13i5EvNbw
+ oP0+h5BngKrULNlCkY7S7/EZZuA+6G0fidaT+2UBiXcAZK7YpdRKRdOhdUHfI2qy2/e/5VgXSa
+ yUI=
+Received: from naota.dhcp.fujisawa.hgst.com (HELO naota.fujisawa.hgst.com) ([10.149.53.115])
+  by uls-op-cesaip02.wdc.com with ESMTP; 23 Jul 2019 02:20:21 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: extent-tree: Add comment for walk_control to explain how btrfs drops a subvolume.
-Date:   Tue, 23 Jul 2019 15:57:21 +0800
-Message-Id: <20190723075721.9383-1-wqu@suse.com>
+Cc:     Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH] btrfs-progs: check: initialize qgroup_item_count in earlier stage
+Date:   Tue, 23 Jul 2019 18:19:11 +0900
+Message-Id: <20190723091911.19598-1-naohiro.aota@wdc.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -28,109 +62,46 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs uses several different ways to drop a subvolume. Some methods are
-designed to reduce the modification to extent tree.
-This design can be very confusing if not familiar with
-btrfs_drop_snapshot().
+"btrfsck -Q" segfaults because it does not call qgroup_set_item_count_ptr()
+properly:
 
-Before wasting time of newcomers, just add some explanation.
+  # btrfsck -Q /dev/sdk
+  Opening filesystem to check...
+  Checking filesystem on /dev/sdk
+  UUID: 34a35bbc-43f8-40f0-8043-65ed33f2e6c3
+  Print quota groups for /dev/sdk
+  UUID: 34a35bbc-43f8-40f0-8043-65ed33f2e6c3
+  Segmentation fault (core dumped)
 
-Also add some basic comment for members of struct walk_control.
+Since "struct task_ctx ctx" is global, we can just move
+qgroup_set_item_count_ptr() much earlier stage in the check process to
+avoid to forget initializing it.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 ---
- fs/btrfs/extent-tree.c | 70 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
+ check/main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 5faf057f6f37..8134273b9b88 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -8617,14 +8617,84 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
- 	return ERR_PTR(ret);
- }
+diff --git a/check/main.c b/check/main.c
+index bb57933b83fc..7248a8209532 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -9965,6 +9965,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
  
-+/*
-+ * Btrfs tree walk control for dropping subvolume.
-+ *
-+ * Btrfs uses btrfs_root_item::drop_level and btrfs_root_item::drop_level
-+ * to record where *next* should resume from.
-+ *
-+ * Btrfs uses several different ways to optimize subvolume deleting.
-+ * All the following cases uses the same example tree:
-+ * Root->root_key.object = 300
-+ *       A	<- tree root, level 2
-+ *      / \
-+ *     B   C    <- tree nodes, level 1
-+ *    / \ / \
-+ *    D E F G   <- tree leaves, level 0
-+ *
-+ * 1) Basic dropping.
-+ *    All above tree blocks are owned exclusively.
-+ *    Drop tree blocks using LRN iteration.
-+ *    Tree drop sequence is: D E B F C G A.
-+ *
-+ * 2) Dropping highest owned tree block.
-+ *    In this example, we have tree 299, also owning tree block B and C
-+ *    directly. (Root 299 only exists in this example)
-+ *    Root 300 is a snapshot of root 299, no modification between them.
-+ *
-+ *    In this case, we only need to drop references of B, C
-+ *    Tree drop sequence is: B, C
-+ *
-+ * 3) Convert to FULL_BACKREF, then back to 2)
-+ *    For example, we have tree 301, also owning tree block B and C
-+ *    directly. (Root 301 only exists in this example)
-+ *    Root 301 is a snapshot of root 300, no modification between them.
-+ *
-+ *    In this case, we can't just drop reference to tree block B and C.
-+ *    As in extent tree, tree block D~G are still referred by tree 300, e.g:
-+ *            item XX key (bytenr_of_D METADATA_ITEM 0)
-+ *              refs 1 gen 8 flags TREE_BLOCK
-+ *              tree block skinny level 0
-+ *              tree block backref root 300 <<
-+ *
-+ *    In this case, we convert such tree backref to FULL_BACKREF, which only
-+ *    records its parent, so the new backref would look like:
-+ *            item XX key (bytenr_of_D METADATA_ITEM 0) itemoff 3449 itemsize 33
-+ *              refs 1 gen 8 flags TREE_BLOCK|FULL_BACKREF
-+ *              tree block skinny level 0
-+ *              shared block backref parent bytenr_of_B
-+ *
-+ *    By this, we can go back to 2) to drop the minimal number of backref.
-+ */
- struct walk_control {
-+	/* Number of direct owners of path->nodes[level]. */
- 	u64 refs[BTRFS_MAX_LEVEL];
-+
-+	/* Backref flags, can be either TREE_BLOCK or TREE_BLOCK|FULL_BACKREF */
- 	u64 flags[BTRFS_MAX_LEVEL];
-+
-+	/* Key of next location to update backrefs, in-memory only */
- 	struct btrfs_key update_progress;
-+
-+	/* Key of next location to drop reference */
- 	struct btrfs_key drop_progress;
-+
-+	/* Current drop kevel, used with drop_progress */
- 	int drop_level;
-+
-+	/*
-+	 * Either DROP_REFERENCE or UPDATE_BACKREF
-+	 *
-+	 * In DROP_REFERENCE stage, we drop reference of the target tree block.
-+	 * In UPDATE_BACKREF stage, we convert the backref to FULL_BACKREF of
-+	 * the target subtree.
-+	 */
- 	int stage;
-+
-+	/* Current working level, shared between both stages */
- 	int level;
-+
-+	/* Where the shared node is for case 3) */
- 	int shared_level;
- 	int update_ref;
- 	int keep_locks;
+ 	radix_tree_init();
+ 	cache_tree_init(&root_cache);
++	qgroup_set_item_count_ptr(&ctx.item_count);
+ 
+ 	ret = check_mounted(argv[optind]);
+ 	if (!force) {
+@@ -10291,7 +10292,6 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 	}
+ 
+ 	if (info->quota_enabled) {
+-		qgroup_set_item_count_ptr(&ctx.item_count);
+ 		if (!ctx.progress_enabled) {
+ 			fprintf(stderr, "[7/7] checking quota groups\n");
+ 		} else {
 -- 
 2.22.0
 
