@@ -2,114 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B407333F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2019 17:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7E207339B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2019 18:23:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728404AbfGXP7z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Jul 2019 11:59:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34166 "EHLO mx1.suse.de"
+        id S1728733AbfGXQX4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Jul 2019 12:23:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40372 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725776AbfGXP7z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Jul 2019 11:59:55 -0400
+        id S1726004AbfGXQX4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Jul 2019 12:23:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6C642B128
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jul 2019 15:59:54 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 9680FACB4;
+        Wed, 24 Jul 2019 16:23:55 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2166DDA808; Wed, 24 Jul 2019 18:00:30 +0200 (CEST)
-Date:   Wed, 24 Jul 2019 18:00:29 +0200
+        id 935EEDA808; Wed, 24 Jul 2019 18:24:32 +0200 (CEST)
+Date:   Wed, 24 Jul 2019 18:24:32 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     WenRuo Qu <wqu@suse.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 1/5] btrfs: extent_io: Do extra check for extent buffer
- read write functions
-Message-ID: <20190724160029.GQ2868@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, WenRuo Qu <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 5/5] btrfs: ctree: Checking key orders before merged tree
+ blocks
+Message-ID: <20190724162432.GR2868@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, WenRuo Qu <wqu@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, WenRuo Qu <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
 References: <20190710080243.15988-1-wqu@suse.com>
- <20190710080243.15988-2-wqu@suse.com>
- <0c6525ff-63f5-6342-4c6c-2e229d0e98b2@suse.com>
- <47b88874-6cef-4eb2-74d8-5a1f51efa99d@suse.com>
+ <20190710080243.15988-6-wqu@suse.com>
+ <ba828afc-46b9-b48f-1b05-e5bd3b78af6e@suse.com>
+ <3547c87e-5da0-d4d5-0c37-9e4957a2d390@gmx.com>
+ <49581349-af2d-f800-c3fc-095ef96ab755@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <47b88874-6cef-4eb2-74d8-5a1f51efa99d@suse.com>
+In-Reply-To: <49581349-af2d-f800-c3fc-095ef96ab755@suse.com>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jul 10, 2019 at 10:58:40AM +0000, WenRuo Qu wrote:
-> 
-> 
-> On 2019/7/10 下午6:42, Nikolay Borisov wrote:
+On Wed, Jul 10, 2019 at 03:12:37PM +0300, Nikolay Borisov wrote:
+> On 10.07.19 г. 15:02 ч., Qu Wenruo wrote:
+> > On 2019/7/10 下午7:19, Nikolay Borisov wrote:
+> >> nit: I wonder if it will make it a bit easier to reason about the code
+> >> if that function is renamed to valid_cross_block_key_order and make it
+> >> return true or false, then it's callers will do if
+> >> (!valid_cross_block_key_ordered) {
+> >> return -EUCLEAN
+> >> }>
+> > I'm always uncertain what's the correct schema for check function.
 > > 
+> > Sometimes we have bool check_whatever() sometimes we have bool
+> > is_whatever(), and sometimes we have int check_whatever().
 > > 
-> [...]
-> >>  
-> >> +/*
-> >> + * Check if the [start, start + len) range is valid before reading/writing
-> >> + * the eb.
-> >> + *
-> >> + * Caller should not touch the dst/src memory if this function returns error.
-> >> + */
-> >> +static int check_eb_range(const struct extent_buffer *eb, unsigned long start,
-> >> +			  unsigned long len)
-> >> +{
-> >> +	unsigned long end;
-> >> +
-> >> +	/* start, start + len should not go beyond eb->len nor overflow */
-> >> +	if (unlikely(start > eb->len || start + len > eb->len ||
-> > 
-> > I think your check here is wrong, it should be start + len > start +
-> > eb->len. start is the logical address hence it can be a lot bigger than
-> > the size of the eb which is 16k by default.
+> > If we have a good guidance for btrfs, it will be a no-brain choice.
 > 
-> Definitely NO.
+> There is no such guidance in this case my logic is that this function
+> really returns a boolean value - 0 or -EUCLEAN to make that explicit I'd
+> define it as returning bool and rename it to valid_cross_block_key_order
+> to really emphasize the fact it's a predicated-type of function. Thus if
+> someone reads the they will be certain that this function return either
+> true or false depending on whether the input parameters make sense.
+
+Also what
+https://www.kernel.org/doc/html/v4.10/process/coding-style.html#function-return-values-and-names
+says.
+
+Int in place of bool is in the old code, we should use bool in new code,
+and convert the old code eventually. The naming of predicates prefixed
+wich check_ sounds understandable to me, like going through a check
+list, if it's ok continue, otherwise exit.
+
+	if (check_this_is_fine())
+		goto out_it_is_not;
+
+Using 'is_' could be possible in some cases, and eg. for is_fstree or
+is_bad_inode is ok.
+
+> Whereas right now I will have to go and look at the implementation to
+> determine what are the return values because of the "int" return type.
 > 
-> [start, start + len) must be in the range of [0, nodesize).
-> So think again.
+> Again, that's just me and if you deem it doesn't bring value then feel
+> free to ignore it.
 
-'start' is the logical address, that's always larger than eb->len (16K),
-Nikolay is IMO right, the check
-
-	start > eb->len
-
-does not make sense, neither does 'start + len > eb->len'.
-
-Your reference to nodesize probably means that the interval
-[start, start + len] is subset of [start, start + nodesize].
-
-The test condition in your patch must explode every time the function
-is called.
-
-> >> +		     check_add_overflow(start, len, &end))) {
-> >> +		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG), KERN_ERR
-> >> +"btrfs: bad eb rw request, eb bytenr=%llu len=%lu rw start=%lu len=%lu\n",
-> >> +		     eb->start, eb->len, start, len);
-> >> +		btrfs_warn(eb->fs_info,
-> >> +"btrfs: bad eb rw request, eb bytenr=%llu len=%lu rw start=%lu len=%lu\n",
-> >> +			   eb->start, eb->len, start, len);
-> > 
-> > If CONFIG_BTRFS_DEBUG is enabled then we will print the warning text
-> > twice. Simply make  it:
-> > 
-> > WARN_ON(IS_ENABLED()) and leave the btrfs_Warn to always print the text.
-> 
-> WARN_ON() doesn't contain any text to indicate the reason of the stack dump.
-> Thus I still prefer to show exact the reason other than takes developer
-> several seconds to combine the stack with the following btrfs_warn()
-> message.
-
-I agree that a message next to a WARN is a good thing. Plain WARN does
-not have the btrfs header (filesystem, device, ...) so we should use our
-helpers and do WARN_ON(IS_ENABLED()) after that. Why after? Because with
-panic-on-warn enabled the message won't be printed.
-
-Duplicating the message or even the code does not seem like a good
-practice to me.
+I think this becomes important in a large code base that btrfs is slowly
+turning into, so it's not just you. As I have to read a lot of code I
+can notice patterns that are easy to understand and where checking other
+files is necessary, which takes time and is distracting. New code should
+follow the best practices and old code should be updated when changed.
