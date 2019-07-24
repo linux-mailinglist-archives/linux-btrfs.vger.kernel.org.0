@@ -2,36 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6AA5741C4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 00:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB89C741CA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 00:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729630AbfGXWyg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Jul 2019 18:54:36 -0400
-Received: from mout.gmx.net ([212.227.17.21]:53941 "EHLO mout.gmx.net"
+        id S1729635AbfGXWzu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Jul 2019 18:55:50 -0400
+Received: from mout.gmx.net ([212.227.17.22]:59065 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726178AbfGXWyf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Jul 2019 18:54:35 -0400
+        id S1728208AbfGXWzu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Jul 2019 18:55:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1564008866;
-        bh=FODNZDUXCjf8AKMLSiCVryavuy5o5FIFd/JbBY/Pd44=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=EEmxjDAB5t3knBapJ/Q8W/uGrgz012b4G3vB+/l5xaXK8RzHRDb8Ud5+IxM0S/SGz
-         qPxqut1dHufnCT6LXVrFLW/A924qJdgrYAjWgmGsAtLDgIkuBL0d35gSg9DRgU/N89
-         gF4okhc1cslrKxR3uj6RlMVBXilLlnv0xRHRG49I=
+        s=badeba3b8450; t=1564008943;
+        bh=InN4d7jUtO/yIaovxbP3RKWWy2zVYfYgWq0LQ3QVKSk=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=BpRWEQrkpTCCe9zzav6Tdh77YbVkBwXywNKvFdIcluYV5fPa1rLUkB5NfujJ3BXrk
+         Fttclw7iSUQOAMZHGbZHQsCQryeLNf9n8HCUHObMn3crP+8gpjIMw5UM6oWs4ImniX
+         qxd52dIeLWghjYPvVrMzVZRYa85hSY5WMetEgAbE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx103
- [212.227.17.174]) with ESMTPSA (Nemesis) id 0MHokD-1hpbjw400j-003aGE; Thu, 25
- Jul 2019 00:54:26 +0200
-Subject: Re: [PATCH 1/5] btrfs: extent_io: Do extra check for extent buffer
- read write functions
-To:     dsterba@suse.cz, WenRuo Qu <wqu@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20190710080243.15988-1-wqu@suse.com>
- <20190710080243.15988-2-wqu@suse.com>
- <0c6525ff-63f5-6342-4c6c-2e229d0e98b2@suse.com>
- <47b88874-6cef-4eb2-74d8-5a1f51efa99d@suse.com>
- <20190724160029.GQ2868@twin.jikos.cz>
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6DWi-1hjqb810PI-006eDL; Thu, 25
+ Jul 2019 00:55:43 +0200
+Subject: Re: [PATCH] btrfs: extent-tree: Add comment for walk_control to
+ explain how btrfs drops a subvolume.
+To:     Diego Calleja <diegocg@gmail.com>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20190723075721.9383-1-wqu@suse.com>
+ <3769531.JR3RUOJnLt@archlinux>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -58,130 +54,102 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <777e875c-5190-cd6f-e873-f8be1235409a@gmx.com>
-Date:   Thu, 25 Jul 2019 06:54:20 +0800
+Message-ID: <dd9d30cc-21d7-d216-da5f-024bdca360b6@gmx.com>
+Date:   Thu, 25 Jul 2019 06:55:38 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190724160029.GQ2868@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:78bZ36+mupz6WwuP8xSlq+Pa+1CnjTNPk1Te5z0hVZGbcH6fmjM
- Ku0tQcSTsq2Oh/7No7/CivzYolY3bs6paZ4W9kjWmcwgUaKJXiHbo3PYcEcuzYphafX01zA
- +dyAQDFv2QmwTORmyFH8gQhErNuRrlprv3havpaQSL500QS9smhFjzAkWM3cFXgAQ9NYDZ8
- GPZaANM0ar01fWxWJ/UZg==
+In-Reply-To: <3769531.JR3RUOJnLt@archlinux>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Btz6ce8M9h2pnT38V7UoFblrMV9zMtjAY"
+X-Provags-ID: V03:K1:785iVbeNl57sXlaS902NHs6yJbbZZlaX+PshrU72+zgRux+4hJY
+ rOme6wzADIx0nOS1MRQ+BzA02Z19cWkAzY+F+RghDJttvZgPzX16IhrKBe4EcT3kgDS2aKJ
+ r5AElv3bk+s0xSB3eRWwBsaci+Uk/vI1C3Tgm2s3hxAiif68v/Uk4Iah7kCBZpk6xK+pR/i
+ owcl+93tJbqFcfE304XZQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:U9g2Eg0Nyx8=:TWfF6kjUiu6C7++OK7uTIx
- 6bNlGMhIJ4Aoa9FHGECKOGkosS7Ystl4nvpLbUEf69qfQbANtFQrN2PJ6XA1xtca2vHwtvF43
- pQPST/9/f14OXOq846Zxk9v/FYcSqtFRGy6L7tD571TGKpBhm+rGSj0h3q0RoohWSkzV+GXZD
- 5N7z7uNzJxwB62B5JFHJTke6y3lytCGLfysqSxbbC6rwa0mZEmIEnNRlCBuvnUqAmd1LOtcUe
- GFrWFqR71heF+UUiRKB9/fL/5n6KHMdY2h3obLxv+prtu6Ww2Htb/1n7tpLCVl1/5WP29mFHr
- mszeVOx6XmhiA5SqIrBduZaZ3eMEQy+wPeNG5o4L3ny9zT1GTtctwtpqJltcKQbtf+l3R2ViF
- Ehba3UTzXWT882Jpj/iXyzTDntrKWukWTYVi5cWttmshLEdamuTI6wZVGwQ8W3vEBN+221i1q
- 4MSoidtfH4GUM0baNizTZIrAB0sRpxlVZ7pOjsmfJFkwqALuHa/5tdfk17qk8U/YbWVK5KA8k
- mEoFWCqkkGucrmozzRyg8LkI7vjWNGplzNVm5PuYRHWZOYiEwCVRU++YP5EC4es1JBWZ52unp
- dus8+Bewr1Y5fzlWQDcjaOq1gLhYRnBqHIITw7l5Ml0hhPakUOr2D3IQ0vfjhR2AnGeqr+xTu
- 36Mw74ZDIlkQytszfO7E57BU6s90HMiiYMPRv3Bn7a9Ncszc7QmnL2/LyJiQOjoPFCcici1pS
- C80CSnwUU3ii5oozsXFPqMx3LNe5A4RSei2ox5ls4lVDIjqDTiOfZJht+Un5NFfQr9pBehz0Q
- 6d0eXsaMi38crFgX9l4a+cYQ1bwHz+epkapv0KAixg0K6PcXT2LpUPO6Xa0PKySZAbUdDBtJ2
- BIU2gZ1XDumCHWq9wB/Uv0YM6Xl3GAMQiHG4VLH39M+HkczCAD+Kni6A3aS2uaFuEVgHaYLzw
- Jl11JnY5u2Yd06N/tnS0iOuLHGoUjKdrCnvinbMCk/fXaixD2EUNVU0eWPa+HN9GGoFoOnA6U
- U3szABGk2OzwGj4oQM9pMssFGuuNDkFk44nqarCqKkWSGKzITo9++MTlfRZ8umDXFlDgYRnyy
- 8GJFfDosACn3BB3oEfw7/u+ahyB/udhvkRc
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MWPA2rh2QVM=:URQ6B4Wts36BkJtrWtY5Vf
+ tmG9j2oGKHFXO1oLC12zfszSGW9zZm2pccvV4Er1sO7tj277U0i+Blrop9fMwU6EBVzZcCuNy
+ 0WXQY0qXUM16kVBYZRTr0dIKN4+ZR+eFx3atxLYEAGt30LfKozxGP14aD+qQ4P1M7pWW0+MU6
+ Q+I7jC5m/k2HOoJjnuiiXfBdZ/4PnJrWGVnuFBNRiXVAsK01V5pN5iZzSHDURf3U9/4+IpUrJ
+ 5YgYBJ8UakhpV/YyNdAsv+XILu/QnLIFXIAOdnCQ08lgY3QHCqjpDrJeAdxxGXPt2JwZZ2at6
+ yVu3kunoqwdiO/MZby5BVsHdEgryabwL/YMY4s2ua5Or8vohTVCcFHKLR/jNhnaI9wd4E7mZi
+ YKXUEHR03oyFF8+9CLOgxOpfWYuxlHXWhkEAAbk2CwEYEzYqerEaE1kMrnmo+FeLE5dJrLxnA
+ 5eo/yQA2B695Fu3KTepbP91Pek0455afTZXnzYxkF/jBzww1nOsf0Tgb1OZ7U3E6QYUkGNnYZ
+ KP9zzdTs2ErwiXUw0s/mLp/N5AqDbS439wfzSWWcjai0pJ9hOEKOe3jqi4GMxdGI8M1YQk1bM
+ Sifqz/+pY+0aWwmPRlNRIwty3CJeW4TlVcHIRIjFChovME32VfzGBJcfcBzCsChx1DnfmlWmN
+ Kt3o0mtt4LK2J0nxXVxLjfnlUy6OR9uyQXUv3hD/ghXn4J9fFAjaruHyXuB2xPk9S56ictxGA
+ 8vbqBNBxSjjmv9Y1iGE8WkPA0ruUVI4OdoWUQF4blDTCbI3xZpYvb9UhT1fYmqwhsGbYQo4xC
+ TAbOFWxVZ/DgnJPTNus2x6MOwyGScQfYq33sQdX0mfKExdLxiRwX4LCh04wRqjpf/xjCbY2xf
+ 70wIaMFKQXYmEWvV90wQdwPpV/CcCvUPhMIQY3N8/MxfqCKi8VfdwbzLdEaEGa2fZueOOuzjR
+ oWY5102QQbJqtdX600fqXlf58EqAJ9BFU/ufzMBDgUuNrKoYQRM2jL6QNMOtKD7piGskEHjsf
+ APrpdQ9XbanFQdfVM/UM0E4Pnocg4dRXVaCP+/nu2DG1o6rPG47c5uvD5hMvTgh/nGHxO11Lz
+ JOmLPrgDwWDwTA=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Btz6ce8M9h2pnT38V7UoFblrMV9zMtjAY
+Content-Type: multipart/mixed; boundary="9o5qTsqPLWvdm8s3JqEZnyKVe2TsGCkkm";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Diego Calleja <diegocg@gmail.com>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Message-ID: <dd9d30cc-21d7-d216-da5f-024bdca360b6@gmx.com>
+Subject: Re: [PATCH] btrfs: extent-tree: Add comment for walk_control to
+ explain how btrfs drops a subvolume.
+References: <20190723075721.9383-1-wqu@suse.com>
+ <3769531.JR3RUOJnLt@archlinux>
+In-Reply-To: <3769531.JR3RUOJnLt@archlinux>
+
+--9o5qTsqPLWvdm8s3JqEZnyKVe2TsGCkkm
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2019/7/25 =E4=B8=8A=E5=8D=8812:00, David Sterba wrote:
-> On Wed, Jul 10, 2019 at 10:58:40AM +0000, WenRuo Qu wrote:
->>
->>
->> On 2019/7/10 =E4=B8=8B=E5=8D=886:42, Nikolay Borisov wrote:
->>>
->>>
->> [...]
->>>>
->>>> +/*
->>>> + * Check if the [start, start + len) range is valid before reading/w=
-riting
->>>> + * the eb.
->>>> + *
->>>> + * Caller should not touch the dst/src memory if this function retur=
-ns error.
->>>> + */
->>>> +static int check_eb_range(const struct extent_buffer *eb, unsigned l=
-ong start,
->>>> +			  unsigned long len)
->>>> +{
->>>> +	unsigned long end;
->>>> +
->>>> +	/* start, start + len should not go beyond eb->len nor overflow */
->>>> +	if (unlikely(start > eb->len || start + len > eb->len ||
->>>
->>> I think your check here is wrong, it should be start + len > start +
->>> eb->len. start is the logical address hence it can be a lot bigger tha=
-n
->>> the size of the eb which is 16k by default.
->>
->> Definitely NO.
->>
->> [start, start + len) must be in the range of [0, nodesize).
->> So think again.
->
-> 'start' is the logical address, that's always larger than eb->len (16K),
-> Nikolay is IMO right, the check
 
-No. This @start is not eb->start. It's the offset inside the eb.
+On 2019/7/25 =E4=B8=8A=E5=8D=886:25, Diego Calleja wrote:
+> El martes, 23 de julio de 2019 9:57:21 (CEST) Qu Wenruo escribi=C3=B3:
+>> + *       A	<- tree root, level 2
+>> + *      / \
+>> + *     B   C    <- tree nodes, level 1
+>> + *    / \ / \
+>> + *    D E F G   <- tree leaves, level 0
+>> + *
+>> + * 1) Basic dropping.
+>> + *    All above tree blocks are owned exclusively.
+>> + *    Drop tree blocks using LRN iteration.
+>> + *    Tree drop sequence is: D E B F C G A.
+>=20
+> Excuse me if I am wrong, but there seems to be a small typo, shouldn't
+> it be "F G C"?
 
->
-> 	start > eb->len
->
-> does not make sense, neither does 'start + len > eb->len'.
->
-> Your reference to nodesize probably means that the interval
-> [start, start + len] is subset of [start, start + nodesize].
->
-> The test condition in your patch must explode every time the function
-> is called.
-
-Nope, it doesn't explode.
-
->
->>>> +		     check_add_overflow(start, len, &end))) {
->>>> +		WARN(IS_ENABLED(CONFIG_BTRFS_DEBUG), KERN_ERR
->>>> +"btrfs: bad eb rw request, eb bytenr=3D%llu len=3D%lu rw start=3D%lu=
- len=3D%lu\n",
->>>> +		     eb->start, eb->len, start, len);
->>>> +		btrfs_warn(eb->fs_info,
->>>> +"btrfs: bad eb rw request, eb bytenr=3D%llu len=3D%lu rw start=3D%lu=
- len=3D%lu\n",
->>>> +			   eb->start, eb->len, start, len);
->>>
->>> If CONFIG_BTRFS_DEBUG is enabled then we will print the warning text
->>> twice. Simply make  it:
->>>
->>> WARN_ON(IS_ENABLED()) and leave the btrfs_Warn to always print the tex=
-t.
->>
->> WARN_ON() doesn't contain any text to indicate the reason of the stack =
-dump.
->> Thus I still prefer to show exact the reason other than takes developer
->> several seconds to combine the stack with the following btrfs_warn()
->> message.
->
-> I agree that a message next to a WARN is a good thing. Plain WARN does
-> not have the btrfs header (filesystem, device, ...) so we should use our
-> helpers and do WARN_ON(IS_ENABLED()) after that. Why after? Because with
-> panic-on-warn enabled the message won't be printed.
->
-> Duplicating the message or even the code does not seem like a good
-> practice to me.
->
-OK, I'll just remove the duplicated error message.
+My bad, nice catch!
 
 Thanks,
 Qu
+
+
+--9o5qTsqPLWvdm8s3JqEZnyKVe2TsGCkkm--
+
+--Btz6ce8M9h2pnT38V7UoFblrMV9zMtjAY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl044eoACgkQwj2R86El
+/qg2JQgAkEveKLYYs5dhSzzY6Gibp0kwAsQTQxXNTWDKAUiZhu4nq/Fz/SFGytBI
+bBuvdg3eikZsFyLUoZtU5K5Kr1J50q7d0OybX09qTxUHZCUsaTqNgsnOmp76Jrw5
+7HyxyJu3owDLg9eaTjFwuK/tjvV2YSrFFKiCbZblDhkUOy4+WWFrRwUtE055xUSV
+isvA/xs8AOrKfWVmjB86AsP5D7j4WxXKwfGGAiEi7pvI1g/AcD/oEUD9tPvLnAbq
+5QL+xZSxhUdLnRIwL3JoJ5eCzjGKY8falGrVe044aMPJqyED2tTJ+CA2fb5PKA/A
+ZQKn3azpdiizmiFig5q0pcWYoSrOBg==
+=2NhI
+-----END PGP SIGNATURE-----
+
+--Btz6ce8M9h2pnT38V7UoFblrMV9zMtjAY--
