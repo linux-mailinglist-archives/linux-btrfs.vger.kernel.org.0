@@ -2,264 +2,174 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD937250E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2019 05:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 928DB72521
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2019 05:11:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725851AbfGXDFP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jul 2019 23:05:15 -0400
-Received: from mout.gmx.net ([212.227.17.20]:51793 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725497AbfGXDFP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jul 2019 23:05:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1563937506;
-        bh=vwiMf5EZjJLulz8xuQ8eFC4WMTEdd+hOPfC7bIZr6tY=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=C55XSAfxtanmP7p8j1ppXgEymNxQPqinB3bdciuInEYqsx2QALxX9piWuia34h6/z
-         dD3ERwKflSDi0FkZ6FMcDlWy7wxgY6PqjVRKh7Dmu/jImsVKudv7MPb8nFbBtjf91p
-         FqWrfbdbblOckrkaFf1OCOc/uOfrYuyAziOeqxLw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M26r3-1hs2Sx02X3-002Yaa; Wed, 24
- Jul 2019 05:05:06 +0200
-Subject: Re: [PATCH 0/3 RESEND Rebased] readmirror feature
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
+        id S1725837AbfGXDLR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jul 2019 23:11:17 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:40230 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725468AbfGXDLR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Jul 2019 23:11:17 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6O38xaO163168;
+        Wed, 24 Jul 2019 03:11:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=Bv1dvLrq6YfCYMMwIYL0uRmn7eEvGX/GMQBCzCxF1VE=;
+ b=cCd6xT3ITiJPYW+lteqF94JGhu9TzE6K2lrk7+JxesBKNMf5Pv+BhLUezcJVYQQIsI4h
+ 2xiweBtxUM3r1kiQa8F4pNNg/LWrE0sT+52p04ilg1GT2x0kd/7aI/Rn+D8Y3IeFzvdB
+ yR95oWibPTI0FedzPrly0dNz77IFvuVnOfIp6CCO023342Q1sfkhP7ExnLcSJQu5lbJp
+ jle+iGYuReDKBBPJiLt1NewgRpdsj3MhfSnQ5BeCC16WbCo+KIJN6LU6XgwHCI7g6xaV
+ 0WEyKplaIg5Cs2bsLooUWaYvPWtVETJIhJMTqCV27zkjYqsw/oc51ZP3r0GBfrmV1dnf iA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2tx61btcyt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Jul 2019 03:11:13 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x6O38KxP022481;
+        Wed, 24 Jul 2019 03:11:12 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2tx60xdwj9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 24 Jul 2019 03:11:12 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x6O3BBIa024853;
+        Wed, 24 Jul 2019 03:11:12 GMT
+Received: from [10.190.130.61] (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 23 Jul 2019 20:11:11 -0700
+Subject: Re: [PATCH 2/2 RESEND Rebased] btrfs-progs: add readmirror policy
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
 References: <20190626083402.1895-1-anand.jain@oracle.com>
- <dfd817fd-f832-6c27-8bcd-e1df9141e110@gmx.com>
- <209E99E4-8859-47CD-8826-2493FBEA0407@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <be68e6ea-00bc-b750-25e1-9c584b99308f@gmx.com>
-Date:   Wed, 24 Jul 2019 11:05:01 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <20190626083723.2094-1-anand.jain@oracle.com>
+ <20190626083723.2094-2-anand.jain@oracle.com>
+ <20190723135330.GC2868@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <dacef0f4-f452-4ad8-9c9b-a0395b8c15dc@oracle.com>
+Date:   Wed, 24 Jul 2019 11:11:03 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <209E99E4-8859-47CD-8826-2493FBEA0407@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="qHhUSPbFO4oslu88hXQxjIqw5jaxtCTbl"
-X-Provags-ID: V03:K1:e+ht6dOZx6/0P8h4fg4bGT1t4bVQ0TtDfCda+v5cdu79BDm3KdT
- m3E4036NAdjQH7IEAaCvGzoUKRn95cXhlcW/jLVXotfffDJXFuExmogRz4uVO23lwy96Sul
- ZkcKgnhBOeJtrnGjdDwIfgidcxLLERi46McGr/sqNwmQ2bxXuV7FDpsJ0UmfuD/pY4oW+ur
- yRwuadyChoX7iH523PFqQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nP8dL1qD4os=:dPHA+b83pAtOvOL/GaGk7S
- /MgrRsg+4lcmBAPYe/r5mdOjuJ3fNfj6f743N9L9JQ9Iw60YafKrvUodQbm7IYcgRuFhVAuIk
- jMqHhBO2st8zjtimvZahlTfPCxaxbMTv+YbTi0fgi3U9XhllyjR5ILJfnjmRpUZC+/Ouna/dt
- tiXhaAhvNo1Mu+9BaRFd4VBHwNyGFWz+8pt/HVBRltANAzu6FSdda0pS8kR+Se7gd8U4I4Lyk
- 4u5XeLQCBevbtomKGPxxrAdD+zn4L479keBA09rKNBBB0hsuJVZYcT14KpfsyqL+WCSwNFaol
- 05v9G9EJZ+7bbquhk8mXFPnKRjeNH4nykK6vnqOsmayY6VfDhsqd1gCinDjKrxOxGkxnk/mVP
- xW0CrxUAUWTfqctRj5yRAcF/XMH7pcpeEmliWHBbYRSV3cjQiV0ZrzltzihYcHgex9vs3kZSP
- 4cSS0Ehdqc5uAqQV2MjfTtaoPqCNd5Om4o99b2mDsALpoHXL30KwvtsWrxpI9wNS4N/5sd/A1
- Z1iZKzIgbA1KAs+9VSAmlo+oG1Qlt9FOlvkGn/GrzQ19BVzmBwJ70QhQ366yu2t2+fup59D++
- OuPPHExsTrXdphLACKShP4IHQhDHp0Abctnz56gCLn1BOiNTTQQY+aLMY3lWSOcJ7OKACbaGf
- I+Go1vQNXsAxrngAfuv8imdLX4TZ/Bgaeh3PwbxiatNXsh4Rkr0VMR9HQa3KrZaCqQQ6SzET1
- SwNIjRWlYf/NZtN2XntqZc1twIWiO0wcWxV/FI97os6tzFs2oX/Vn8s7BWoo582O/pnnrUmM+
- 78++9WOAX/hDzQv0+bN1QMfEw66pI3t0vqJMBffg+JSD2pmAO4Wd3yil3vw94GSv1a9+hYmMK
- 1lnS1688bwI82KZVJ8qN9rSjc5cId8elUE/Rds29N+HSy6/PoaHmyn2peLEy0AoD5I5AdBCtu
- 0HH2sNPfCi97+yKw9NDyicab6/1xVGjNWLnFtjPC5WLDw8s6aumyAro2/wU0SyHRlE756Cgp6
- U/ZwWMnJ9RErsG8y/yJiNytrgVPHxDG+bj3PbYFUYm3zzeHCVGi6RZSypFvtl2AtfD5oXwd2B
- voouJFgzpcFykk=
+In-Reply-To: <20190723135330.GC2868@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9327 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1907240035
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9327 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1907240035
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---qHhUSPbFO4oslu88hXQxjIqw5jaxtCTbl
-Content-Type: multipart/mixed; boundary="LLRSjcxfB7rZUPnTqp40gWe9FWuzqRo4Y";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: linux-btrfs@vger.kernel.org
-Message-ID: <be68e6ea-00bc-b750-25e1-9c584b99308f@gmx.com>
-Subject: Re: [PATCH 0/3 RESEND Rebased] readmirror feature
-References: <20190626083402.1895-1-anand.jain@oracle.com>
- <dfd817fd-f832-6c27-8bcd-e1df9141e110@gmx.com>
- <209E99E4-8859-47CD-8826-2493FBEA0407@oracle.com>
-In-Reply-To: <209E99E4-8859-47CD-8826-2493FBEA0407@oracle.com>
-
---LLRSjcxfB7rZUPnTqp40gWe9FWuzqRo4Y
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-
-
-On 2019/7/24 =E4=B8=8A=E5=8D=8810:26, Anand Jain wrote:
->=20
->=20
->> On 24 Jul 2019, at 8:20 AM, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+On 23/7/19 9:53 PM, David Sterba wrote:
+> On Wed, Jun 26, 2019 at 04:37:23PM +0800, Anand Jain wrote:
+>> This sets the readmirror=<parm> as a btrfs.<attr> extentded attribute.
 >>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>>   props.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
+>>   1 file changed, 49 insertions(+)
 >>
->>
->> On 2019/6/26 =E4=B8=8B=E5=8D=884:33, Anand Jain wrote:
->>> These patches are tested to be working fine.
->>>
->>> Function call chain  __btrfs_map_block()->find_live_mirror() uses
->>> thread pid to determine the %mirror_num when the mirror_num=3D0.
->>>
->>> This patch introduces a framework so that we can add policies to dete=
-rmine
->>> the %mirror_num. And adds the devid as the readmirror policy.
->>>
->>> The property is stored as an extented attributes of root inode
->>> (BTRFS_FS_TREE_OBJECTID).
->>
->> This doesn't look right to me.
->>
->> As readmirror should work at chunk layer, putting it into root tree
->> doesn't follow the layer separation of btrfs.
->>
->> And furthermore, this breaks the XATTR schema. Normally we only have
->> XATTR item after an INODE item, not a ROOT_ITEM.
->>
->> Is the on-disk format already accepted or still under design stage?
->>
->=20
->  I mentioned about the storage for this new property in the RFC patch, =
-as I knew there will be some surprises.
->=20
->  The advantage of using the XATTR on the ROOT_ITEM is there is no on-di=
-sk format update nor there is any new KEY, albeit it deviates from the tr=
-aditional way of using the xattr. Also, this approach don=E2=80=99t need =
-an ioctl, as things work using the existing get/set xattr interface.
->=20
->  The other way I had in mind was to introduce a new Key in the dev-tree=
- such as
->=20
->     (BTRFS_READMIRROR_OBJECTID, BTRFS_PERSISTENT_ITEM_KEY, devid)
+>> diff --git a/props.c b/props.c
+>> index 3a498bd9e904..1d1a2c7f9d14 100644
+>> --- a/props.c
+>> +++ b/props.c
+>> @@ -178,6 +178,53 @@ out:
+>>   	return ret;
+>>   }
+>>   
+>> +static int prop_readmirror(enum prop_object_type type, const char *object,
+>> +			   const char *name, const char *value)
+>> +{
+>> +	int fd;
+>> +	int ret;
+>> +	char buf[256] = {0};
+>> +	char *xattr_name;
+>> +	DIR *dirstream = NULL;
+>> +
+>> +	fd = open_file_or_dir3(object, &dirstream, value ? O_RDWR : O_RDONLY);
+>> +	if (fd < 0) {
+>> +		ret = -errno;
+>> +		error("failed to open %s: %m", object);
+>> +		return ret;
+>> +	}
+>> +
+>> +	xattr_name = alloc_xattr_name(name);
+>> +	if (IS_ERR(xattr_name)) {
+>> +		error("failed to alloc xattr_name %s: %m", object);
+>> +		return PTR_ERR(xattr_name);
+>> +	}
+>> +
+>> +	ret = 0;
+>> +	if (value) {
+>> +		if (fsetxattr(fd, xattr_name, value, strlen(value), 0) < 0) {
+>> +			ret = -errno;
+>> +			error("failed to set readmirror for %s: %m", object);
+>> +		}
+>> +	} else {
+>> +		if (fgetxattr(fd, xattr_name, buf, 256) < 0) {
+>> +			if (errno != ENOATTR) {
+>> +				ret = -errno;
+>> +				error("failed to get readmirror for %s: %m",
+>> +				      object);
+>> +			}
+>> +		} else {
+>> +			fprintf(stdout, "readmirror=%.*s\n", (int) strlen(buf),
+>> +				buf);
+>> +		}
+>> +	}
+>> +
+>> +	free(xattr_name);
+>> +	close_file_or_dir(fd, dirstream);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>   const struct prop_handler prop_handlers[] = {
+>>   	{"ro", "Set/get read-only flag of subvolume.", 0, prop_object_subvol,
+>>   	 prop_read_only},
+>> @@ -185,5 +232,7 @@ const struct prop_handler prop_handlers[] = {
+>>   	 prop_object_dev | prop_object_root, prop_label},
+>>   	{"compression", "Set/get compression for a file or directory", 0,
+>>   	 prop_object_inode, prop_compression},
+>> +	{"readmirror", "set/get readmirror policy for filesystem", 0,
+>> +	 prop_object_root, prop_readmirror},
+> 
+> For some unknown reason the object type for filesystem-wide props is
+> called prop_object_root, which is correct, but it got me confused first.
+> 
+> So the most reliable way to set it is
+> 
+>    $ btrfs prop set -t filesystem /path readmirror <VALUE>
+> 
+> and
+> 
+>    $ btrfs prop set /path readmirror <VALUE>
+> 
+> will auto-detect the object type by /path, but I'm not sure what exactly
+> does it do in case it's a mount point but not the toplevel subvolume.
+> 
 
-I'd say, this is more generic.
-If one day we have some more features, we can just add new objectid for i=
-t.
-And to my point of view, it's easier to validate than some floating
-XATTR in root tree, especially for tree checker.
+If its not toplevel subvolume it fails in kernel with -EINVAL.
 
-The only minor comment for this key is the offset and where the tree it
-belongs to.
-
-If the readmirror policy is global, I'd prefer to put it into root tree
-and set the key offset to 0.
-
-If the policy is per-chunk, it would be more easier to understand by
-putting it into chunk tree, and use chunk bytenr as key offset.
-
-If the policy is per-device, then your current key looks pretty good to m=
-e.
->=20
->  Again the interface can be ioctl or the get/set xattr. If we have to u=
-se the xattr then irrespective which inode is used we would anyway store =
-it in the dev-tree using the above key.
-
-The prop interface can be enhanced, as we have filesystem level prop
-already, I see no reason why it can't handle things in other trees.
-
-Thanks,
-Qu
-
->=20
->  This is still open for changes, the idea is to get a long lasting flex=
-ible design, so comments are welcome.
->=20
-> Thanks, Anand
->=20
->=20
->> Thanks,
->> Qu
->>
->>> User provided devid list is validated against the fs_devices::dev_lis=
-t.
->>>
->>> For example:
->>>   Usage:
->>>     btrfs property set <mnt> readmirror devid<n>[,<m>...]
->>>     btrfs property set <mnt> readmirror ""
->>>
->>>   mkfs.btrfs -fq -draid1 -mraid1 /dev/sd[b-d] && mount /dev/sdb /btrf=
-s
->>>   btrfs prop set /btrfs readmirror devid1,2
->>>   btrfs prop get /btrfs readmirror
->>>    readmirror=3Ddevid1,2
->>>   getfattr -n btrfs.readmirror --absolute-names /btrfs
->>>    btrfs.readmirror=3D"devid1,2"
->>>   btrfs prop set /btrfs readmirror ""
->>>   getfattr -n btrfs.readmirror --absolute-names /btrfs
->>>    /btrfs: btrfs.readmirror: No such attribute
->>>   btrfs prop get /btrfs readmirror
->>>
->>> RFC->v1:
->>>  Drops pid as one of the readmirror policy choices and as usual remai=
-ns
->>>  as default. And when the devid is reset the readmirror policy falls =
-back
->>>  to pid.
->>>  Drops the mount -o readmirror idea, it can be added at a later point=
- of
->>>  time.
->>>  Property now accepts more than 1 devid as readmirror device. As show=
-n
->>>  in the example above.
->>>
->>> Anand Jain (3):
->>>  btrfs: add inode pointer to prop_handler::validate()
->>>  btrfs: add readmirror property framework
->>>  btrfs: add readmirror devid property
->>>
->>> fs/btrfs/props.c   | 120 +++++++++++++++++++++++++++++++++++++++++++-=
--
->>> fs/btrfs/props.h   |   4 +-
->>> fs/btrfs/volumes.c |  25 +++++++++-
->>> fs/btrfs/volumes.h |   8 +++
->>> fs/btrfs/xattr.c   |   2 +-
->>> 5 files changed, 150 insertions(+), 9 deletions(-)
->>>
->>
->=20
-
-
---LLRSjcxfB7rZUPnTqp40gWe9FWuzqRo4Y--
-
---qHhUSPbFO4oslu88hXQxjIqw5jaxtCTbl
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl03yt0ACgkQwj2R86El
-/qheoQf+NRBfWdshi3Wkq/CsCS2NAvMdwEkNx1nCZAvAsORl6SoMFYRPz2V+WDp7
-0VX9WvFEkLJVQFAxqAr055aLUBB60M5gh7a6ALduAFouRNzl0weOnSGfxgCkFl9n
-4OPS4Lt9UlrEO8YZhEtJuQFA9ImInbxxwJJOOytYrsJeoo4L7J2PVgiMZ7V/tUvl
-ORpEwqWkbZzj1muE+xgxz1d0fGnctDO/F28wg+bkASR9u7HZOBXwvydV3ktV25MN
-ps6TwDX5QclhBmW1ITERQlBtvjgNLSoSq6oHYclNoFf1VYbEkLsUigMXUlfPpSr2
-jPVfq3+/eot9aWkjP48os0lVIKYmeQ==
-=7ICA
------END PGP SIGNATURE-----
-
---qHhUSPbFO4oslu88hXQxjIqw5jaxtCTbl--
+----
++static int prop_readmirror_validate(struct inode *inode, const char *value,
++                                   size_t len)
++{
++       struct btrfs_root *root = BTRFS_I(inode)->root;
++
++       if (root->root_key.objectid != BTRFS_FS_TREE_OBJECTID)
++               return -EINVAL;
+-----
