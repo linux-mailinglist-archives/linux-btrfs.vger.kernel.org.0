@@ -2,97 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B1FAD724B5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2019 04:34:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11248724D5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2019 04:42:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727805AbfGXCdw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 23 Jul 2019 22:33:52 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:34341 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbfGXCdv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 23 Jul 2019 22:33:51 -0400
-Received: by mail-pg1-f194.google.com with SMTP id n9so14154285pgc.1;
-        Tue, 23 Jul 2019 19:33:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=PG5Fjwwrk0QuD+sTgYEYYGjOti0OiQdq1uV5NO/0c8Y=;
-        b=AAc6uNbrMbXFMcL3MnGZRdvGr23b+I7A8qHl2fitW/UP1nyjy8tBU1FkWAY193tSIY
-         zPRChdZEayDulJTZS+1ewNcZY29Oldm0zo2EoQEO8NAZkwGWSpvAloicBvcrVbFaBVjl
-         RmW2WwT00t4W+QRVAXHTm5SPKx09wyvkMuV/mmjP0/wlKagHVVjK5pDEmRXe92mu6Zfy
-         hr1xJVst4mHX32dPWcAiFRsQNwblgmnnwXP3pg3ycebY3OcxECO3IxFDgRCzFmDccVIB
-         nSA+2sS77AFpvay66K18dlgw4RGp5CrN3/Br4bXRPZ2y30/BBMNoPcaqrl4ZKPHiPFgJ
-         9R8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=PG5Fjwwrk0QuD+sTgYEYYGjOti0OiQdq1uV5NO/0c8Y=;
-        b=OrJbFxk7CvlqTa1mvISHU4hSZtTJTU1cHpiiNDB/Ej4MvmB83ltP3XFaeCGqv+MDo6
-         +ddGPFqDbj4LzbrbRgTF+a8eAhR7q2ZIAKpIbGE2dQ06vc/gj87M0eu0ZSsnQ4aBQJMQ
-         zbJXk+Bum0xYPejD4kJrWOdpT7KZK4tfzgC4fZj/ZKlDU9B8fIjFK9I8kiluDYplEqsX
-         wiOXLS4dgdWCpk/DjF+jqdLr9TnSSO20BkuzkQJcVYu3FlKzq1NneQn0JChCI23cJn6B
-         HUBnXBOpht8wdCyIzd3/jS0MSsX8dEJyodiZPxo4Xy3qE5uC/S/fjSCgF9YONvq0zOoD
-         r4jQ==
-X-Gm-Message-State: APjAAAW4MzhvEkBGrxocNeCJPWN01fQCMts5+QX5hvm2g6T6O28CK2aX
-        40+GSsFYUp0LV9FxsBNMO+WH0p0m
-X-Google-Smtp-Source: APXvYqxSqfZOC7vaEUmBkXSL8+tgg9fFUHQDwWkNEhKzUNDpfhkEivfM5Ae4Np1l/uYn+5Ti8d7FVA==
-X-Received: by 2002:a65:5144:: with SMTP id g4mr26835599pgq.202.1563935630873;
-        Tue, 23 Jul 2019 19:33:50 -0700 (PDT)
-Received: from ?IPv6:2402:f000:4:72:808::177e? ([2402:f000:4:72:808::177e])
-        by smtp.gmail.com with ESMTPSA id 23sm48509918pfn.176.2019.07.23.19.33.48
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Jul 2019 19:33:50 -0700 (PDT)
-Subject: Re: [PATCH] fs: btrfs: Fix a possible null-pointer dereference in
- insert_inline_extent()
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, clm@fb.com,
-        josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190724021132.27378-1-baijiaju1990@gmail.com>
- <df4b5d21-0983-3ca2-44de-ea9f1616df7f@gmx.com>
-From:   Jia-Ju Bai <baijiaju1990@gmail.com>
-Message-ID: <800ae777-928f-2969-d4dd-6f358a039e48@gmail.com>
-Date:   Wed, 24 Jul 2019 10:33:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726074AbfGXCmZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 23 Jul 2019 22:42:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46224 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725372AbfGXCmY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 23 Jul 2019 22:42:24 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E236420828;
+        Wed, 24 Jul 2019 02:42:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1563936144;
+        bh=FbyzKyqD4IuvVM5Rqp413iYqGOWWnKCsasl+YqKFM0M=;
+        h=Date:From:To:Cc:Subject:From;
+        b=fUhlnPwCOsiiaXgdd0cYh53pIDJtLSYo+oHkrOVu44Ofrm/KMiMaPwrtr/4fvwT2Q
+         PzEgJ4s/PrfZGZZeqDWp5CBQn8Tuyx6HcE3dKymQq13Z4+aG7M/zQAt9ljFKM7aUeB
+         fqxxfua2oCXkRADdxsnxFO3V803nIiDPTR0SzcAc=
+Date:   Tue, 23 Jul 2019 19:42:22 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Reminder: 3 open syzbot bugs in "fs/btrfs" subsystem
+Message-ID: <20190724024222.GE643@sol.localdomain>
+Mail-Followup-To: linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
 MIME-Version: 1.0
-In-Reply-To: <df4b5d21-0983-3ca2-44de-ea9f1616df7f@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[This email was generated by a script.  Let me know if you have any suggestions
+to make it better, or if you want it re-generated with the latest status.]
 
+Of the currently open syzbot reports against the upstream kernel, I've manually
+marked 3 of them as possibly being bugs in the "fs/btrfs" subsystem.  I've
+listed these reports below, sorted by an algorithm that tries to list first the
+reports most likely to be still valid, important, and actionable.
 
-On 2019/7/24 10:21, Qu Wenruo wrote:
->
-> On 2019/7/24 上午10:11, Jia-Ju Bai wrote:
->> In insert_inline_extent(), there is an if statement on line 181 to check
->> whether compressed_pages is NULL:
->>      if (compressed_size && compressed_pages)
->>
->> When compressed_pages is NULL, compressed_pages is used on line 215:
->>      cpage = compressed_pages[i];
->>
->> Thus, a possible null-pointer dereference may occur.
->>
->> To fix this possible bug, compressed_pages is checked on line 214.
-> This can only be hit with compressed_size > 0 and compressed_pages != NULL.
->
-> It would be better to have an extra ASSERT() to warn developers about
-> the impossible case.
+Of these 3 bugs, 1 was seen in mainline in the last week.
 
-Thanks for the reply :)
-So I should add ASSERT(compressed_size > 0 & compressed_pages) at the 
-beginning of the function, and remove "if (compressed_size && 
-compressed_pages)"?
+If you believe a bug is no longer valid, please close the syzbot report by
+sending a '#syz fix', '#syz dup', or '#syz invalid' command in reply to the
+original thread, as explained at https://goo.gl/tpsmEJ#status
 
+If you believe I misattributed a bug to the "fs/btrfs" subsystem, please let me
+know, and if possible forward the report to the correct people or mailing list.
 
-Best wishes,
-Jia-Ju Bai
+Here are the bugs:
+
+--------------------------------------------------------------------------------
+Title:              kernel BUG at fs/btrfs/volumes.c:LINE!
+Last occurred:      2 days ago
+Reported:           412 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=d50670eeb21302915bde3f25871dfb7ea43db1e4
+Original thread:    https://lkml.kernel.org/lkml/00000000000096009b056df92dc1@google.com/T/#u
+
+Unfortunately, this bug does not have a reproducer.
+
+The original thread for this bug received 6 replies; the last was 42 days ago.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+5b658d997a83984507a6@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/00000000000096009b056df92dc1@google.com
+
+--------------------------------------------------------------------------------
+Title:              general protection fault in btrfs_scan_one_device
+Last occurred:      170 days ago
+Reported:           250 days ago
+Branches:           Mainline and others
+Dashboard link:     https://syzkaller.appspot.com/bug?id=b54f2496d4cd5132c35cfc274a72ca9aff353ee5
+Original thread:    https://lkml.kernel.org/lkml/000000000000ad2edc057ab76675@google.com/T/#u
+
+Unfortunately, this bug does not have a reproducer.
+
+No one replied to the original thread for this bug.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+46048b9c7ec2fe0d4885@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/000000000000ad2edc057ab76675@google.com
+
+--------------------------------------------------------------------------------
+Title:              invalid opcode in close_fs_devices
+Last occurred:      81 days ago
+Reported:           236 days ago
+Branches:           Mainline
+Dashboard link:     https://syzkaller.appspot.com/bug?id=5b65d7b852d4fe7f77af72e2f2c7a36837250c67
+Original thread:    https://lkml.kernel.org/lkml/0000000000005852b8057bc8b123@google.com/T/#u
+
+Unfortunately, this bug does not have a reproducer.
+
+The original thread for this bug received 1 reply, 235 days ago.
+
+If you fix this bug, please add the following tag to the commit:
+    Reported-by: syzbot+cabf977d00d3db1fdc37@syzkaller.appspotmail.com
+
+If you send any email or patch for this bug, please consider replying to the
+original thread.  For the git send-email command to use, or tips on how to reply
+if the thread isn't in your mailbox, see the "Reply instructions" at
+https://lkml.kernel.org/r/0000000000005852b8057bc8b123@google.com
+
