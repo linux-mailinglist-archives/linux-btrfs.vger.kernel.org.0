@@ -2,60 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DA23F72A3C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2019 10:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E69272C9D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 24 Jul 2019 12:51:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726574AbfGXIgE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 24 Jul 2019 04:36:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44778 "EHLO mx1.suse.de"
+        id S1727100AbfGXKvw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 24 Jul 2019 06:51:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59602 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726317AbfGXIgE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 24 Jul 2019 04:36:04 -0400
+        id S1726087AbfGXKvw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 24 Jul 2019 06:51:52 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4C01EAEBD
-        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jul 2019 08:36:03 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: extent-tree: Unify the parameters of btrfs_inc_extent_ref()
-Date:   Wed, 24 Jul 2019 16:35:54 +0800
-Message-Id: <20190724083554.5545-1-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
+        by mx1.suse.de (Postfix) with ESMTP id 3EF71AF9F
+        for <linux-btrfs@vger.kernel.org>; Wed, 24 Jul 2019 10:51:51 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CB152DA808; Wed, 24 Jul 2019 12:52:28 +0200 (CEST)
+Date:   Wed, 24 Jul 2019 12:52:28 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: misc-test/034: Avoid debug log populating
+ stdout
+Message-ID: <20190724105228.GH2868@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190724050705.29313-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190724050705.29313-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The old parameters, @ref_generation and @owner_objectid, are pretty
-confusing when using auto-completion.
+On Wed, Jul 24, 2019 at 01:07:05PM +0800, Qu Wenruo wrote:
+> When running misc-test/034, we got unexpected log output:
+>       [TEST/misc]   033-filename-length-limit
+>       [TEST/misc]   034-metadata-uuid
+>   Checking btrfstune logic
+>   Checking dump-super output
+>   Checking output after fsid change
+>   Checking for incompat textual representation
+>   Checking setting fsid back to original
+>   Testing btrfs-image restore
+> 
+> This is caused by commit 2570cff076b1 ("btrfs-progs: test: cleanup misc-tests/034")
+> which uses _log facility which also populates stdout.
+> 
+> Revert to echo "$*" >> "$RESULTS" to remove the noise.
 
-Unify the parameters as a quick fix.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- ctree.h | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/ctree.h b/ctree.h
-index b73abe140b1c..0d12563b7261 100644
---- a/ctree.h
-+++ b/ctree.h
-@@ -2537,10 +2537,9 @@ int btrfs_free_extent(struct btrfs_trans_handle *trans,
- 		      u64 root_objectid, u64 owner, u64 offset);
- void btrfs_finish_extent_commit(struct btrfs_trans_handle *trans);
- int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
--				struct btrfs_root *root,
--				u64 bytenr, u64 num_bytes, u64 parent,
--				u64 root_objectid, u64 ref_generation,
--				u64 owner_objectid);
-+			 struct btrfs_root *root,
-+			 u64 bytenr, u64 num_bytes, u64 parent,
-+			 u64 root_objectid, u64 owner, u64 offset);
- int btrfs_update_extent_ref(struct btrfs_trans_handle *trans,
- 			    struct btrfs_root *root, u64 bytenr,
- 			    u64 orig_parent, u64 parent,
--- 
-2.22.0
-
+Yes to remove the noise but the idea was to avoid manual redirections to
+$RESULTS, so we need a new helper or adjust _log.
