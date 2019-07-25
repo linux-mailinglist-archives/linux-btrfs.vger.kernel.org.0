@@ -2,227 +2,238 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65EDE746F1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 08:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02C0F746F9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 08:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729424AbfGYGNb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Jul 2019 02:13:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45512 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729146AbfGYGNb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Jul 2019 02:13:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9A35AB090
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2019 06:13:29 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2 5/5] btrfs: ctree: Checking key orders before merged tree blocks
-Date:   Thu, 25 Jul 2019 14:12:22 +0800
-Message-Id: <20190725061222.9581-6-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190725061222.9581-1-wqu@suse.com>
-References: <20190725061222.9581-1-wqu@suse.com>
+        id S1727645AbfGYGPV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Jul 2019 02:15:21 -0400
+Received: from mout.gmx.net ([212.227.17.20]:38307 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726115AbfGYGPV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Jul 2019 02:15:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1564035313;
+        bh=udH+N6+nBH1qfsHVfB1U/Rg0JncJQ1M9OGmgtokLV8Y=;
+        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
+        b=X30M5jXBRs9LqrBQlxYhOnkssBnolxBgN0nfby7UBXVdg0AMHn3u3PeYXQDNxmY4E
+         ZOwWkf8sLfs5INZlWlA43RQIObm4aZSPSf1IZLWS7d/LT1YVcUnapi9qkXGVGXaOQL
+         kjR1cqsCTRPrJw6WBeifdOAPTW0c8Ttzp+kPMoos=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx103
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0LjquD-1iNNsE3BMX-00box5; Thu, 25
+ Jul 2019 08:15:13 +0200
+Subject: Re: [PATCH v3 2/3] btrfs: Introduce "rescue=" mount option
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190612063657.21063-1-wqu@suse.com>
+ <20190612063657.21063-3-wqu@suse.com> <20190612150910.GP3563@twin.jikos.cz>
+ <4c6ed328-1fc6-610f-e63e-4ce45a605f99@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <90e13081-0f75-37ac-bc57-4bfea24e6482@gmx.com>
+Date:   Thu, 25 Jul 2019 14:15:06 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4c6ed328-1fc6-610f-e63e-4ce45a605f99@gmx.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="R37Q8RuYkVKfroFsezIrcuFxwg3XtYs6p"
+X-Provags-ID: V03:K1:Qx+kkCvj++MDUOGvQnUiCTD6Uaw99NAXlIBaYK7BehMShqtr/19
+ 57iDYLfbn3q3J5w7Ky/MK/dQsQRjjmHv9EOqOsN8tBqF8bkIZYEctemGlVJlI1BcLIJvok8
+ rXsCpwbXb+h9TIf4icFBzTcEjRer2mB4J/pwlZIPY5+AoDPwwlurwhIgwTvnBitw865vjeR
+ ftagg00qF8FaAie/bAqaA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hzI4CjUqFe4=:lPgBO1L0b/wIPfjuPknXda
+ gKKWAPM51cHkSz5RAsbj0oFGFnEOj4MQm3vWeT/TaSGux4mJQu1ufs7Q/ygFfjwwcny8cO23+
+ 9L+dzR8VsmkP3YDx1okb0TbdcwJxsHnwwOXaDoJ2ad9WxbcwSHzHnkaXVArSJpipURjvEcI4O
+ cFmkdwASjNt6+7GmsNAE04QQUAxi8Pt3sB9niEmC49JQsy6xBYhK+g6zadZAs/ORIOQGd8mCv
+ 4Pm12JtvjT4FXzcP8San+iFfD7zBkh9USqd+BSBgoWC5lmUJbl0qboxD5VmF/jdpiMSoVn5BY
+ k1YgMEFm9Nwa7ORMUYBineT8KonGGTbmLxWMRsU8LIWgrjB3aG97fE21tep8kq5sezkjWoY1g
+ Re+H3rtcbSBGmwtBgXRmX+pziql+QQtCzm3bwnHJSQb57FcWyYF4io3SlDWWWuRRemMyQbqRZ
+ gpsiJy845OCLdVzWgRVExyhWJOmZZKcajbcKUKy7DXZ9cRvAUQPzj6D84s0ZN9cJWf0R4zkfu
+ 0XsczNvMCdF52hE94IqN8e7i/VAPCMKYTQV+s4zezJ0eg7AOwrX4hFmJcQP9ex9vQja7f3XN2
+ mniJDYnrRqGHnCiR1MFWA+TfUyLe2tW1zfIl9RAFrWxy4XcEk9EeHPJFRw7DgPqFUMDMHVekx
+ aZEcxKiRJnI4POAEN3WjbTlD9+F80uWmRROkUzqQF3AVSo0Mo2OWOi03MMgSJvuCPZwYN6gQe
+ p1sYyGs5salLZ3sFzyq5b2DoNu7Z/9HE6am8jQO7/0PbUeNRLKZLILVYRN8q1JsdgFN7CJ5Sa
+ qiViBOO6Rs8LdH2spd3ipsJJ22ruR+LtbRyARz2VRsWjF8a5ngEet4KMcS+yqI8qYTCK0i96k
+ Jz9fzQhJeMQn7e6Vzi4NrAQJP9Bl4+hc9teYVlvkbsMTrIAnZbw6B1xFUzg/H483jRX2qX/JR
+ s5Y0fLmV3H6Z5yvaHUKNrfe98H6BtSruusCvJKbseTPDj+6EJfATab7rUKxIeypBJjDWzRdq3
+ r5FOwc9ZAkbETYEWA8ZhOPIg5oS8kc9sl6OjbosM8ymwI1tsDt74JLrPNmVAP8c8Qgy6k3/yV
+ vzEespScs7azos=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-With crafted image, btrfs can panic at btrfs_del_csums().
-  kernel BUG at fs/btrfs/ctree.c:3188!
-  invalid opcode: 0000 [#1] SMP PTI
-  CPU: 0 PID: 1156 Comm: btrfs-transacti Not tainted 5.0.0-rc8+ #9
-  RIP: 0010:btrfs_set_item_key_safe+0x16c/0x180
-  Code: b7 48 8d 7d bf 4c 89 fe 48 89 45 c8 0f b6 45 b6 88 45 c7 48 8b 45 ae 48 89 45 bf e8 ce f2 ff ff 85 c0 0f 8f 48 ff ff ff 0f 0b <0f> 0b e8 dd 8d be ff 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 66 66
-  RSP: 0018:ffff976141257ab8 EFLAGS: 00010202
-  RAX: 0000000000000001 RBX: ffff898a6b890930 RCX: 0000000004b70000
-  RDX: 0000000000000000 RSI: ffff976141257bae RDI: ffff976141257acf
-  RBP: ffff976141257b10 R08: 0000000000001000 R09: ffff9761412579a8
-  R10: 0000000000000000 R11: 0000000000000000 R12: ffff976141257abe
-  R13: 0000000000000003 R14: ffff898a6a8be578 R15: ffff976141257bae
-  FS: 0000000000000000(0000) GS:ffff898a77a00000(0000) knlGS:0000000000000000
-  CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007f779d9cd624 CR3: 000000022b2b4006 CR4: 00000000000206f0
-  Call Trace:
-  truncate_one_csum+0xac/0xf0
-  btrfs_del_csums+0x24f/0x3a0
-  __btrfs_free_extent.isra.72+0x5a7/0xbe0
-  __btrfs_run_delayed_refs+0x539/0x1120
-  btrfs_run_delayed_refs+0xdb/0x1b0
-  btrfs_commit_transaction+0x52/0x950
-  ? start_transaction+0x94/0x450
-  transaction_kthread+0x163/0x190
-  kthread+0x105/0x140
-  ? btrfs_cleanup_transaction+0x560/0x560
-  ? kthread_destroy_worker+0x50/0x50
-  ret_from_fork+0x35/0x40
-  Modules linked in:
-  ---[ end trace 93bf9db00e6c374e ]---
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--R37Q8RuYkVKfroFsezIrcuFxwg3XtYs6p
+Content-Type: multipart/mixed; boundary="NjzrrrF7sWbSjpyw4Ry7wCumqfvSVDuYm";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Message-ID: <90e13081-0f75-37ac-bc57-4bfea24e6482@gmx.com>
+Subject: Re: [PATCH v3 2/3] btrfs: Introduce "rescue=" mount option
+References: <20190612063657.21063-1-wqu@suse.com>
+ <20190612063657.21063-3-wqu@suse.com> <20190612150910.GP3563@twin.jikos.cz>
+ <4c6ed328-1fc6-610f-e63e-4ce45a605f99@gmx.com>
+In-Reply-To: <4c6ed328-1fc6-610f-e63e-4ce45a605f99@gmx.com>
 
-[CAUSE]
-This crafted image has a very tricky key order corruption:
+--NjzrrrF7sWbSjpyw4Ry7wCumqfvSVDuYm
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-  checksum tree key (CSUM_TREE ROOT_ITEM 0)
-  node 29741056 level 1 items 14 free 107 generation 19 owner CSUM_TREE
-          ...
-          key (EXTENT_CSUM EXTENT_CSUM 73785344) block 29757440 gen 19
-          key (EXTENT_CSUM EXTENT_CSUM 77594624) block 29753344 gen 19
-          ...
 
-  leaf 29757440 items 5 free space 150 generation 19 owner CSUM_TREE
-          item 0 key (EXTENT_CSUM EXTENT_CSUM 73785344) itemoff 2323 itemsize 1672
-                  range start 73785344 end 75497472 length 1712128
-          item 1 key (EXTENT_CSUM EXTENT_CSUM 75497472) itemoff 2319 itemsize 4
-                  range start 75497472 end 75501568 length 4096
-          item 2 key (EXTENT_CSUM EXTENT_CSUM 75501568) itemoff 579 itemsize 1740
-                  range start 75501568 end 77283328 length 1781760
-          item 3 key (EXTENT_CSUM EXTENT_CSUM 77283328) itemoff 575 itemsize 4
-                  range start 77283328 end 77287424 length 4096
-          item 4 key (EXTENT_CSUM EXTENT_CSUM 4120596480) itemoff 275 itemsize 300 <<<
-                  range start 4120596480 end 4120903680 length 307200
-  leaf 29753344 items 3 free space 1936 generation 19 owner CSUM_TREE
-          item 0 key (18446744073457893366 EXTENT_CSUM 77594624) itemoff 2323 itemsize 1672
-                  range start 77594624 end 79306752 length 1712128
-          ...
 
-Note the item 4 key of leaf 29757440, which is obviously too large, and
-even larger than the first key of the next leaf.
+On 2019/6/13 =E4=B8=8A=E5=8D=889:30, Qu Wenruo wrote:
+>=20
+>=20
+> On 2019/6/12 =E4=B8=8B=E5=8D=8811:09, David Sterba wrote:
+>> On Wed, Jun 12, 2019 at 02:36:56PM +0800, Qu Wenruo wrote:
+>>> This patch introduces a new "rescue=3D" mount option for all those mo=
+unt
+>>> options for data recovery.
+>>>
+>>> Different rescue sub options are seperated by ':'. E.g
+>>> "ro,rescue=3Dno_log_replay:use_backup_root".
+>>> (The original plan is to use ';', but ';' needs to be escaped/quoted,=
 
-However it still follows the key order in that tree block, thus tree
-checker is unable to detect it at read time, since tree checker can only
-work inside a leaf, thus such complex corruption can't be rejected in
-advance.
+>>> or it will be interpreted by bash)
+>>
+>> ':' as separator is fine
+>>
+>>> The following mount options are converted to "rescue=3D", old mount
+>>> options are deprecated but still available for compatibility purpose:=
 
-[FIX]
-The next timing to detect such problem is at tree block merge time,
-which is in push_node_left(), balance_node_right(), push_leaf_left() and
-push_leaf_right().
+>>>
+>>> - usebackuproot
+>>>   Now it's "rescue=3Duse_backup_root"
+>>>
+>>> - nologreplay
+>>>   Now it's "rescue=3Dno_log_replay"
+>>>
+>>> The new underscore is here to make the option more readable and make
+>>> spell check happier.
+>>
+>> Who uses spell checker on mount options, really? I'd expect that the n=
+ew
+>> syntax would build on top of the old so the exact same names of the
+>> options are now shifted to the value of 'rescue=3D'.
+>>
+>> The usability is better with switching
+>>
+>>   -o usebackuproot
+>>
+>> to
+>>
+>>   -o rescue=3Dusebackuproot
+>=20
+> The problem is, every time I see things like usebackuproot or
+> nologreplay, it's not that easy to understand them just by a quick glan=
+ce.
+> Further more, they are already rescue options, not something we would
+> need to use in a daily basis.
+>=20
+> A little longer but easier to read looks valid to me in such use case.
 
-Now we check if the key order of the right most key of the left node is
-larger than the left most key of the right node.
+Gentle ping here.
 
-By this we don't need to call the full tree-check, while still keeps the
-key order correct as key order in each node is already checked by tree
-checker thus we only need to check the above two slots.
+Do we still need to follow the hard to read mount options?
+If so, I can go ahead with old names, but I really want to know if
+others are OK with the existing naming.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=202833
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
----
- fs/btrfs/ctree.c | 68 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 68 insertions(+)
+Thanks,
+Qu
+>=20
+> Thanks,
+> Qu
+>=20
+>>
+>> ie. just prepending 'rescue=3D'.
+>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>>  fs/btrfs/super.c | 65 +++++++++++++++++++++++++++++++++++++++++++++-=
+--
+>>>  1 file changed, 62 insertions(+), 3 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+>>> index 64f20725615a..4512f25dcf69 100644
+>>> --- a/fs/btrfs/super.c
+>>> +++ b/fs/btrfs/super.c
+>>> @@ -310,7 +310,6 @@ enum {
+>>>  	Opt_datasum, Opt_nodatasum,
+>>>  	Opt_defrag, Opt_nodefrag,
+>>>  	Opt_discard, Opt_nodiscard,
+>>> -	Opt_nologreplay,
+>>>  	Opt_ratio,
+>>>  	Opt_rescan_uuid_tree,
+>>>  	Opt_skip_balance,
+>>> @@ -323,7 +322,6 @@ enum {
+>>>  	Opt_subvolid,
+>>>  	Opt_thread_pool,
+>>>  	Opt_treelog, Opt_notreelog,
+>>> -	Opt_usebackuproot,
+>>>  	Opt_user_subvol_rm_allowed,
+>>> =20
+>>>  	/* Deprecated options */
+>>> @@ -341,6 +339,8 @@ enum {
+>>>  #ifdef CONFIG_BTRFS_FS_REF_VERIFY
+>>>  	Opt_ref_verify,
+>>>  #endif
+>>> +	/* Rescue options */
+>>> +	Opt_rescue, Opt_usebackuproot, Opt_nologreplay,
+>>
+>> The options have been sorted and grouped, don't mess it up again pleas=
+e.
+>> Check the list and find a better place than after the deprecated and
+>> debugging options.
+>>
+>=20
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 5df76c17775a..af884cf3e2f4 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -3219,6 +3219,52 @@ void btrfs_set_item_key_safe(struct btrfs_fs_info *fs_info,
- 		fixup_low_keys(path, &disk_key, 1);
- }
- 
-+/*
-+ * Check the cross tree block key ordering.
-+ *
-+ * Tree-checker only works inside one tree block, thus the following
-+ * corruption can not be rejected by tree-checker:
-+ * Leaf @left			| Leaf @right
-+ * --------------------------------------------------------------
-+ * | 1 | 2 | 3 | 4 | 5 | f6 |   | 7 | 8 |
-+ *
-+ * Key f6 in leaf @left itself is valid, but not valid when the next
-+ * key in leaf @right is 7.
-+ * This can only be checked at tree block merge time.
-+ * And since tree checker has ensured all key order in each tree block
-+ * is correct, we only need to bother the last key of @left and the first
-+ * key of @right.
-+ */
-+static bool valid_cross_tree_key_order(struct extent_buffer *left,
-+				       struct extent_buffer *right)
-+{
-+	struct btrfs_key left_last;
-+	struct btrfs_key right_first;
-+	int level = btrfs_header_level(left);
-+	int nr_left = btrfs_header_nritems(left);
-+	int nr_right = btrfs_header_nritems(right);
-+
-+	/* No key to check in one of the tree blocks */
-+	if (!nr_left || !nr_right)
-+		return true;
-+	if (level) {
-+		btrfs_node_key_to_cpu(left, &left_last, nr_left - 1);
-+		btrfs_node_key_to_cpu(right, &right_first, 0);
-+	} else {
-+		btrfs_item_key_to_cpu(left, &left_last, nr_left - 1);
-+		btrfs_item_key_to_cpu(right, &right_first, 0);
-+	}
-+	if (btrfs_comp_cpu_keys(&left_last, &right_first) >= 0) {
-+		btrfs_crit(left->fs_info,
-+"bad key order cross tree blocks, left last (%llu %u %llu) right first (%llu %u %llu",
-+			   left_last.objectid, left_last.type,
-+			   left_last.offset, right_first.objectid,
-+			   right_first.type, right_first.offset);
-+		return false;
-+	}
-+	return true;
-+}
-+
- /*
-  * try to push data from one node into the next node left in the
-  * tree.
-@@ -3263,6 +3309,12 @@ static int push_node_left(struct btrfs_trans_handle *trans,
- 	} else
- 		push_items = min(src_nritems - 8, push_items);
- 
-+	/* dst is the left eb, src is the middle eb */
-+	if (!valid_cross_tree_key_order(dst, src)) {
-+		ret = -EUCLEAN;
-+		btrfs_abort_transaction(trans, ret);
-+		return ret;
-+	}
- 	ret = tree_mod_log_eb_copy(dst, src, dst_nritems, 0, push_items);
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
-@@ -3331,6 +3383,12 @@ static int balance_node_right(struct btrfs_trans_handle *trans,
- 	if (max_push < push_items)
- 		push_items = max_push;
- 
-+	/* dst is the right eb, src is the middle eb */
-+	if (!valid_cross_tree_key_order(src, dst)) {
-+		ret = -EUCLEAN;
-+		btrfs_abort_transaction(trans, ret);
-+		return ret;
-+	}
- 	ret = tree_mod_log_insert_move(dst, push_items, 0, dst_nritems);
- 	BUG_ON(ret < 0);
- 	memmove_extent_buffer(dst, btrfs_node_key_ptr_offset(push_items),
-@@ -3810,6 +3868,12 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
- 	if (left_nritems == 0)
- 		goto out_unlock;
- 
-+	if (!valid_cross_tree_key_order(left, right)) {
-+		ret = -EUCLEAN;
-+		btrfs_tree_unlock(right);
-+		free_extent_buffer(right);
-+		return ret;
-+	}
- 	if (path->slots[0] == left_nritems && !empty) {
- 		/* Key greater than all keys in the leaf, right neighbor has
- 		 * enough room for it and we're not emptying our leaf to delete
-@@ -4048,6 +4112,10 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
- 		goto out;
- 	}
- 
-+	if (!valid_cross_tree_key_order(left, right)) {
-+		ret = -EUCLEAN;
-+		goto out;
-+	}
- 	return __push_leaf_left(path, min_data_size,
- 			       empty, left, free_space, right_nritems,
- 			       max_slot);
--- 
-2.22.0
 
+--NjzrrrF7sWbSjpyw4Ry7wCumqfvSVDuYm--
+
+--R37Q8RuYkVKfroFsezIrcuFxwg3XtYs6p
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl05SOoACgkQwj2R86El
+/qh8Pwf/UvoOIxlkjB/ppMLZOx7MIQDdn2DIAqiGDRhlYUcm9GF6Bxte5lsIkwjA
+p/m4AenjQhtGMD0QfcvadxBaaVovP1un3oSycjKCuqyYRHY8B9HVMfAynrsdQasu
+2pXxokXI0obBKWCWTXKzuXcvcRuu2XRf8pQTzoRXZoUVFKCEZGq3ZgHXG+lJQS8+
+QKbYI0/qnZ/MWLRC3UnFDvKRkcNz3qbMcwznKMAtaoAR7iZv2Pp/nVloHtfG5Ftf
+j23SrPLh/vYT0Zb4YcWl0fj87WQ2RhnnUy6M8Pkzo6aYvfPGTNFAI6CNJKv67CR8
+S2zShuEYo1ry8nr4jXMf1rEDAgzo0w==
+=PTl2
+-----END PGP SIGNATURE-----
+
+--R37Q8RuYkVKfroFsezIrcuFxwg3XtYs6p--
