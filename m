@@ -2,108 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3BC74B88
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 12:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C135274C83
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 13:08:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbfGYK1V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Jul 2019 06:27:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728603AbfGYK1V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Jul 2019 06:27:21 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2698921901
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2019 10:27:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564050440;
-        bh=8uDfLTXY2dw/TBPQWOcFM+T7bp4H+KaSIIAzWWgTCFA=;
-        h=From:To:Subject:Date:From;
-        b=u02jui/PCaXqHv1m2g8VNwH6pqOfLMrKeRikme9c7FfYma83V3/CKe7sIGnZt42qA
-         4p+aHJmQ3rfR3Cw98+2dcvxI8vMlHUhAA5Fn7iCdGChhhDAtBAf1yhj6xoHhm7jMcS
-         M5haHs3pVZgUNi8BJ4KACMV1IXquzIy0iclXhgLA=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs-progs: mkfs, fix metadata corruption when using mixed mode
-Date:   Thu, 25 Jul 2019 11:27:17 +0100
-Message-Id: <20190725102717.11688-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S2391571AbfGYLI4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Jul 2019 07:08:56 -0400
+Received: from mail-yb1-f196.google.com ([209.85.219.196]:35739 "EHLO
+        mail-yb1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387743AbfGYLI4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Jul 2019 07:08:56 -0400
+Received: by mail-yb1-f196.google.com with SMTP id p85so5703538yba.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2019 04:08:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kvbNcebQcgCLFVP2tF0bFneV6kYj++3+8V7Mg1H4Qoc=;
+        b=hDnLK3AHm48Yc3iZYdPyktIrxsF0jdiLwbudoUhHwOyTpjjOFWQcCXkqwuMSSKTS8B
+         2r8WS3wMYxNhPOWaYcQxBP0I42V8cUutFmzTOqVJyNS++Xlrpk9AFsCBV+yCS2gZcV2f
+         +QMRDbpcHJyq1y0a0XqWNxL68owCdYb9ZJTSDi3Lo39xYkqFiaklisuBedElukCQhPeO
+         ha2stwhnoqnXCfrF0OFujBPzSSvbk3Ig23WHbK5l0+NQ0+LTyQOhmVHT7E2TPEv9fgm+
+         GqzK1jVYBT7BsenhX1iamevnLqu1Ejn2cX3JfoQEIf156VuphGdRbS6SCGs78GWlz5RM
+         wGlQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kvbNcebQcgCLFVP2tF0bFneV6kYj++3+8V7Mg1H4Qoc=;
+        b=nK+9TvohqlUtz1tIOFVRl95nrsV5Nujup4HJuO0hPoXqyLhTWQ7rxlucF5yR1G7wa8
+         HT2Nv5xaRJIoNNvxgW7SRChACvjvS2YBrSfrbaZertmzI5f4qzYBQMl9P9OfnkO3TRBi
+         dg3sxoiyPO5KLrMCXCC5rlQKQiYZTAQxRx4eayRjC4KpPXC5BLQqkqGpHgyDmTW7pgmN
+         Q2fcIH4d4F2TgshJTed5E8h2X/BguK4zdLYkICcIS/FMO3+I34eqcAw8EG2pPY/hI8Tz
+         8e2ojE2h7dSmh3ciU1hVLXYcZ1Sz+0+4Mmmez6Ew9+Lf4uHxn1EGJ+4quqLU7cPY5qIN
+         pLsw==
+X-Gm-Message-State: APjAAAWOL1cWiGvgdofGyva2VXY0a7QApFwJXf5WNdtMNL4T0TJ01PlZ
+        wd+pqg4WFtDB05Nir+ZNJq4DRFGIw8t4V/gGjHg=
+X-Google-Smtp-Source: APXvYqz5nTQ7tHzutlW9m0PgrHufPOecVyMqQAyJUKcFYrCwqoqGNnpeJIfWN3MTzxU6HaCpRUE+PLyw11MPK9x1DuE=
+X-Received: by 2002:a25:900c:: with SMTP id s12mr37991173ybl.244.1564052935871;
+ Thu, 25 Jul 2019 04:08:55 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1564046812.git.jthumshirn@suse.de> <6601e14425550304e1ba8b5317e74a5f806d6a34.1564046812.git.jthumshirn@suse.de>
+In-Reply-To: <6601e14425550304e1ba8b5317e74a5f806d6a34.1564046812.git.jthumshirn@suse.de>
+From:   Mike Fleetwood <mike.fleetwood@googlemail.com>
+Date:   Thu, 25 Jul 2019 12:08:44 +0100
+Message-ID: <CAMU1PDgcQhvQcc-=Q8XZcr5XLjVUxHpx7xD328JZBKTh3QGFHw@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/4] btrfs: turn checksum type define into a union
+To:     Johannes Thumshirn <jthumshirn@suse.de>
+Cc:     David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Thu, 25 Jul 2019 at 10:34, Johannes Thumshirn <jthumshirn@suse.de> wrote:
+>
+> Turn the checksum type definition into a union. This eases later addition
+> of new checksums.
 
-When creating a filesystem with mixed block groups, we are creating two
-space info objects to track used/reserved/pinned space, one only for data
-and another one only for metadata.
+I think you meant to say "Turn the checksum type definition into an
+_enum_." in the title and commit message.
 
-This is making fstests test case generic/416 fail, with btrfs' check
-reporting over an hundred errors about bad extents:
 
-  (...)
-  bad extent [17186816, 17190912), type mismatch with chunk
-  bad extent [17195008, 17199104), type mismatch with chunk
-  bad extent [17203200, 17207296), type mismatch with chunk
-  (...)
-
-Because, surprisingly, this results in block groups that do not have the
-BTRFS_BLOCK_GROUP_DATA flag set but have data extents allocated in them.
-This is a regression introduced in btrfs-progs v5.2.
-
-So fix this by making sure we only create one space info object, for both
-metadata and data, when mixed block groups are enabled.
-
-Fixes: c31edf610cbe1e ("btrfs-progs: Fix false ENOSPC alert by tracking used space correctly")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- mkfs/main.c | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
-
-diff --git a/mkfs/main.c b/mkfs/main.c
-index 8dbec071..971cb395 100644
---- a/mkfs/main.c
-+++ b/mkfs/main.c
-@@ -64,18 +64,17 @@ static int create_metadata_block_groups(struct btrfs_root *root, int mixed,
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_trans_handle *trans;
- 	struct btrfs_space_info *sinfo;
-+	u64 flags = BTRFS_BLOCK_GROUP_METADATA;
- 	u64 bytes_used;
- 	u64 chunk_start = 0;
- 	u64 chunk_size = 0;
- 	int ret;
- 
-+	if (mixed)
-+		flags |= BTRFS_BLOCK_GROUP_DATA;
-+
- 	/* Create needed space info to trace extents reservation */
--	ret = update_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA,
--				0, 0, &sinfo);
--	if (ret < 0)
--		return ret;
--	ret = update_space_info(fs_info, BTRFS_BLOCK_GROUP_DATA,
--				0, 0, &sinfo);
-+	ret = update_space_info(fs_info, flags, 0, 0, &sinfo);
- 	if (ret < 0)
- 		return ret;
- 
-@@ -149,6 +148,13 @@ static int create_data_block_groups(struct btrfs_trans_handle *trans,
- 	int ret = 0;
- 
- 	if (!mixed) {
-+		struct btrfs_space_info *sinfo;
-+
-+		ret = update_space_info(fs_info, BTRFS_BLOCK_GROUP_DATA,
-+					0, 0, &sinfo);
-+		if (ret < 0)
-+			return ret;
-+
- 		ret = btrfs_alloc_chunk(trans, fs_info,
- 					&chunk_start, &chunk_size,
- 					BTRFS_BLOCK_GROUP_DATA);
--- 
-2.11.0
-
+>
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> ---
+>  include/uapi/linux/btrfs_tree.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+> index 34d5b34286fa..babef98181a2 100644
+> --- a/include/uapi/linux/btrfs_tree.h
+> +++ b/include/uapi/linux/btrfs_tree.h
+> @@ -300,7 +300,9 @@
+>  #define BTRFS_CSUM_SIZE 32
+>
+>  /* csum types */
+> -#define BTRFS_CSUM_TYPE_CRC32  0
+> +enum btrfs_csum_type {
+> +       BTRFS_CSUM_TYPE_CRC32   = 0,
+> +};
+>
+>  /*
+>   * flags definitions for directory entry item type
+> --
+> 2.16.4
+>
