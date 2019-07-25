@@ -2,32 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83EB574DA7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 14:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 332DC74DBD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 14:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404417AbfGYMC1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Jul 2019 08:02:27 -0400
-Received: from mout.gmx.net ([212.227.15.19]:43897 "EHLO mout.gmx.net"
+        id S1726332AbfGYMGS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Jul 2019 08:06:18 -0400
+Received: from mout.gmx.net ([212.227.15.19]:47433 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404362AbfGYMC0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Jul 2019 08:02:26 -0400
+        id S1725822AbfGYMGS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Jul 2019 08:06:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1564056138;
-        bh=pzTDNSzlVo4Q4Yi7FQQ/WQwukBNUTvNPn/q2nBr1BOc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=JC3urCBDzEKQ+p8xB1Ipgn+cg7cCHapSCQgNHI4y7EerJhfhaTnuKQUrX/V/JV0tV
-         kK73VMvn2gvuZZYZwQ2C7V8/vQHIxrRk6nFPQVzXpDMi4lQpvf7TWQ3BHfg3scfgde
-         yHRfVObPe1ASwjLVgweoDMQDF2J5F2aB9u/pk7oc=
+        s=badeba3b8450; t=1564056373;
+        bh=6Tgjl6lwlMac9hbGlzgs9WInYXEgMSNVWN4c77uGaKw=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=a5p4xf1d5WKvOfOHtVQ1o+7Orv3Ik1LkS45K/9rjBej+C+L5XsURMeV9lrOHxFA5G
+         hcpo/KPdb+BMTJgXLg8zyW8UPpB5fqWpwo21zGLaGg1OFvVREJqmipH9209gyCUuwK
+         Ho1YB0GaQ5bxU5+M/PQZAz0/PYMuzqqlS2N4TwSE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx003
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0MRoRF-1hx2US3Sjh-00T030; Thu, 25
- Jul 2019 14:02:18 +0200
-Subject: Re: [RFC PATCH 3/4] btrfs: use xxhash64 for checksumming
-To:     Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <cover.1564046812.git.jthumshirn@suse.de>
- <4ac3332af1fa5ba7ecb92181329151382b800f3d.1564046812.git.jthumshirn@suse.de>
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0LnOve-1iKhvm2FYs-00haVd; Thu, 25
+ Jul 2019 14:06:13 +0200
+Subject: Re: [PATCH] Btrfs-progs: mkfs, fix metadata corruption when using
+ mixed mode
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20190725102717.11688-1-fdmanana@kernel.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -54,159 +52,165 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <c2f5e995-6edf-991a-51a6-2c7ba43df41b@gmx.com>
-Date:   Thu, 25 Jul 2019 20:02:12 +0800
+Message-ID: <842947a9-7547-d38e-dd0c-866c8abeb725@gmx.com>
+Date:   Thu, 25 Jul 2019 20:06:08 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <4ac3332af1fa5ba7ecb92181329151382b800f3d.1564046812.git.jthumshirn@suse.de>
+In-Reply-To: <20190725102717.11688-1-fdmanana@kernel.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="LcIunSoXYpXkbTtPucwFolri722sl5etT"
-X-Provags-ID: V03:K1:gjbSOewiVclyac1DUXrKtiwJO8F6WPiQg1bi8ZWFa9xGMhrLzW2
- S82fftIvhzzlW7dHicLCzjSbH1iDPP+UmflM9rnKrr34+hag/1S/L3pu/nw6ENxFhcp7DgN
- jMlEWVdwinmy5A6J8SDR8dSvD4EHxjqM28FL42O1ZgyLZkUYlw8gz5sTULyX7zvGgDTWikH
- UhM7CQyftsK2GuphnNKFg==
+ boundary="VZcnLmsLQTP9u4yYklV8iQBU0HHKqv4zK"
+X-Provags-ID: V03:K1:wwlscXGEuq5AYnEqqBZF9aIAW8VyKi3E4hmmvMIgZiRtIg92uCL
+ Ls6x56+qCcOW3kU0nxWSiBdnG6cL+grb95U3jHSQ+6nykHlZcCP9tXhQhC93LMA3j/6zlhJ
+ 8Z/LzMZLgTzJVkQNp0yDXuKxplzecd1L8lvqogavEa01L4zaNFwQAJLLL5i18PtNq7OSS4j
+ DdFw5Y7cglPM/sHxptB/A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sRv8UA/uiU8=:KS2jxZd8iHcYRXtUcl7oKc
- GeFpkUPoq/cX+D62XG6f0l0R5r+M0tBZmCo3H+lk+IdlIRP/xzUak8QNZTbF0zLxzjQqNK+wc
- ZspH0AY0f9xw52ZLuR+yLzjlHnHuin0bkJIWb8C8txdVrKgPjyUP6Fc6jgoppJ80M+bxTZlvu
- G/wJdAQk6u71iHP4mCaOQ9+dzc2StWUSXxQ1aibJlmJ8dsxiSiLaHJinHKcpLb8nS9/wgEnuT
- QzBZaCcCB6UdDnrKka0gmoamgJLZdStWSdBX7w9KJaw0/ghd0qDHudJycWQDvQyUjoIG/rUQv
- KfKPjSnTPb483kbznlBuiOeIaINFkasSHmUfMM3g8zuihY43rflCP4GjfXP/pe6sD+gcwXq4E
- 8KJ/QN/2sEq6fzgyp17h/o6rm3sYEv36po1XiXxKUfc+vY+eZ9y3D7i62WJSR9y63n3PFrKy7
- NjBIOW7QmKIUHt7nKtOnA65rj/gZQBnpPKsM+VpEpsl3LrpXcRVZW/cb402FugnU9XiOSV6SB
- 8chN5uAQLTbmI0Iu45xeYflWmaKLy40HAyWt+OhRhRUbM5okTpO23k3REsw8hzvecBNOucLNZ
- RHSGXUMOMibtYLtOMLoQt7hS309V0Yixbe/WzC9bKZRw4IUob2JHAEiO0m6YPuoYu4ZMbk9s9
- QQwM2qiNg7BD9UFsgTH4zwUzmPlkuYpe7O55/bM8juUPo3soldRX87txPflqzXdd/kilU+rLF
- U6D+QKFYl4hLMsUeBmXzu7Oq4s66WK4QBzbNvIMRgqHtxLAXS/aaL8A4+glTvBnsBi3H2oT7w
- e/Yjx4AHysSWHv4eZ7hGeN5i7X2XpS8LV5tbuXhqxr86sJvAP5TBTZP8SARymLLvA01Lk9dQz
- eLRDh3Rf9NGS0nsslFyf5kcX6mjgtApG/YNNqUrl9wnpPrjh5tfnHgIIAjPUfwzcZmPuWp6M6
- JYlmVSkuvmz5wqLeg0wC5X0eXl126jzyQr/rjHYbyd1fdGQFrtPcTE3fwxN01SkaWfnkHzLL1
- EfptmLDwNxc8JpuZkHkro2dzC0fSoRPxIDed/DU2WVDh7kT+3ldSWIZmzvQkyIkt8g4ZJdZIr
- jmyId8h04ezgMI=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2wrsgv+qvBA=:BM8Ii1umor7roEARz8DMP7
+ GX9mBI188PaX29w8PNYuANMOBhsFWRngWovEjSJm8c4e9xoclpOsyXgBJ/AHfhO/gPalZKLUJ
+ WG/FE2l5YXoX3ruchva03l1v/h2NUiAyWtY6UYO+iTU7U4RbhGtJpX0dVR0WNL+hKOt33uzZ7
+ 0Ed2xPHg36JLoNQEwIcF/J2oW6H0LQ8GoQeC0yatQ+ln/CfzvD2SXxRHenu1tHDRg/H/KXXf5
+ eScnMOpwnR2Gta6StPvj45iTsNSBKQLnzVdV8jPxL2LWUxOGAXpdM5t5ACUcMDv2TQmOt/hig
+ ZT8aFSW/hIFFBSxBAJujCHE8fCec1hlPEjD47i3b0fQo7fWznpmVNFlCgwhwTKua7mngzqPN1
+ GdvFEvJ/cVtgpnYNl+ooqHPDd2paxIxg7xAobwB0eMfGeb78P5p1u+m7Lgj2UMHMCsW3egEPb
+ ykEvLo06Z2fU4q/n6BdFsx6v/GmG3GKhDXoBD6awcbqHcrEBtOZINVpcrBkRTIHE35482Gc6P
+ cP2k+JjAruWOci/li18CParvxLTafD7TXa/F/tn+HdqqBADLKTl2Qqt5lV6uLvH2C1lpDRaxp
+ Df+o7J2VgUoKoI1edC0poxbF3I5yfxINrw9psvTENn8/VhChQp7mzCFUaWqOj9vYFgDmjtLF6
+ hcpcoQF0vat6AlJYOIIbdp3kGe6n8SKw5SXg9ArNdNMu325zeWgDJBSMWl8gMRn/Xa4IOpBcz
+ SxenbHu7AMvHnTqB2K/BMgbyIIOWVXAzVKucc5zBk/4PfpJS6yE/5YzwRewEsFyTlw4XKjEwc
+ zKo3cMciOg5tvn+5Dns/yGFmbLiSuR7h3jxFXuydzfPFmOeqk8Rz5HJ8HCtSiEd1omes9bNmi
+ J0VPe7UeY3HY0BlII7m+Gl09PtS6aqu6ji2kFCBWyKXP6r10vVnjGsi9+n1IVflU36Ntf9/zO
+ ASZTTio+C3a91mB83hfPidOiBAwn9WCvTsohZqT4xMlx54IbP/KE2jlTR1uAOb4RnnCSEmfhy
+ DG7JN6Bul/v9mFuBeDyw4Cj+Du0kve8Ms9FbxSnxUoCeVrMlaF3kXU0Z1zOlCHuyXIYPX2gv0
+ aOudffWULJSf38=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---LcIunSoXYpXkbTtPucwFolri722sl5etT
-Content-Type: multipart/mixed; boundary="s410T96vFKXg7FaF08DDQ0lsPplzw6ZWn";
+--VZcnLmsLQTP9u4yYklV8iQBU0HHKqv4zK
+Content-Type: multipart/mixed; boundary="OACIB2a0zeJey9jI9ZubqLX0MxNvHzpZv";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Johannes Thumshirn <jthumshirn@suse.de>, David Sterba <dsterba@suse.com>
-Cc: Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Message-ID: <c2f5e995-6edf-991a-51a6-2c7ba43df41b@gmx.com>
-Subject: Re: [RFC PATCH 3/4] btrfs: use xxhash64 for checksumming
-References: <cover.1564046812.git.jthumshirn@suse.de>
- <4ac3332af1fa5ba7ecb92181329151382b800f3d.1564046812.git.jthumshirn@suse.de>
-In-Reply-To: <4ac3332af1fa5ba7ecb92181329151382b800f3d.1564046812.git.jthumshirn@suse.de>
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+Message-ID: <842947a9-7547-d38e-dd0c-866c8abeb725@gmx.com>
+Subject: Re: [PATCH] Btrfs-progs: mkfs, fix metadata corruption when using
+ mixed mode
+References: <20190725102717.11688-1-fdmanana@kernel.org>
+In-Reply-To: <20190725102717.11688-1-fdmanana@kernel.org>
 
---s410T96vFKXg7FaF08DDQ0lsPplzw6ZWn
+--OACIB2a0zeJey9jI9ZubqLX0MxNvHzpZv
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/7/25 =E4=B8=8B=E5=8D=885:33, Johannes Thumshirn wrote:
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> ---
->  fs/btrfs/Kconfig                | 1 +
->  fs/btrfs/ctree.h                | 1 +
->  fs/btrfs/disk-io.c              | 1 +
->  fs/btrfs/super.c                | 1 +
->  include/uapi/linux/btrfs_tree.h | 1 +
->  5 files changed, 5 insertions(+)
+On 2019/7/25 =E4=B8=8B=E5=8D=886:27, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 >=20
-> diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-> index 38651fae7f21..6d5a01c57da3 100644
-> --- a/fs/btrfs/Kconfig
-> +++ b/fs/btrfs/Kconfig
-> @@ -5,6 +5,7 @@ config BTRFS_FS
->  	select CRYPTO
->  	select CRYPTO_CRC32C
->  	select LIBCRC32C
-> +	select CRYPTO_XXHASH
+> When creating a filesystem with mixed block groups, we are creating two=
 
-Just an off topic idea, can we make such CRYPTO_* support configurable?
-E.g. make something like CONFIG_BTRFS_CRYPTO_XXHASH.
+> space info objects to track used/reserved/pinned space, one only for da=
+ta
+> and another one only for metadata.
+>=20
+> This is making fstests test case generic/416 fail, with btrfs' check
+> reporting over an hundred errors about bad extents:
+>=20
+>   (...)
+>   bad extent [17186816, 17190912), type mismatch with chunk
+>   bad extent [17195008, 17199104), type mismatch with chunk
+>   bad extent [17203200, 17207296), type mismatch with chunk
+>   (...)
+>=20
+> Because, surprisingly, this results in block groups that do not have th=
+e
+> BTRFS_BLOCK_GROUP_DATA flag set but have data extents allocated in them=
+=2E
+> This is a regression introduced in btrfs-progs v5.2.
+>=20
+> So fix this by making sure we only create one space info object, for bo=
+th
+> metadata and data, when mixed block groups are enabled.
+>=20
+> Fixes: c31edf610cbe1e ("btrfs-progs: Fix false ENOSPC alert by tracking=
+ used space correctly")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Not sure if everyone would like to pull all hash algorithm.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
->  	select ZLIB_INFLATE
->  	select ZLIB_DEFLATE
->  	select LZO_COMPRESS
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 099401f5dd47..b34f22e55304 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -90,6 +90,7 @@ static const struct btrfs_csums {
->  	const char	*name;
->  } btrfs_csums[] =3D {
->  	BTRFS_CHECKSUM_TYPE(BTRFS_CSUM_TYPE_CRC32, 4, "crc32c"),
-> +	BTRFS_CHECKSUM_TYPE(BTRFS_CSUM_TYPE_XXHASH, 8, "xxhash64"),
->  };
+> ---
+>  mkfs/main.c | 18 ++++++++++++------
+>  1 file changed, 12 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index 8dbec071..971cb395 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -64,18 +64,17 @@ static int create_metadata_block_groups(struct btrf=
+s_root *root, int mixed,
+>  	struct btrfs_fs_info *fs_info =3D root->fs_info;
+>  	struct btrfs_trans_handle *trans;
+>  	struct btrfs_space_info *sinfo;
+> +	u64 flags =3D BTRFS_BLOCK_GROUP_METADATA;
+>  	u64 bytes_used;
+>  	u64 chunk_start =3D 0;
+>  	u64 chunk_size =3D 0;
+>  	int ret;
 > =20
->  #define BTRFS_EMPTY_DIR_SIZE 0
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 5f7ee70b3d1a..54a8ef489850 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -351,6 +351,7 @@ static bool btrfs_supported_super_csum(u16 csum_typ=
-e)
->  {
->  	switch (csum_type) {
->  	case BTRFS_CSUM_TYPE_CRC32:
-> +	case BTRFS_CSUM_TYPE_XXHASH:
->  		return true;
->  	default:
->  		return false;
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 78de9d5d80c6..7312f675d702 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -2464,3 +2464,4 @@ module_exit(exit_btrfs_fs)
+> +	if (mixed)
+> +		flags |=3D BTRFS_BLOCK_GROUP_DATA;
+> +
+>  	/* Create needed space info to trace extents reservation */
+> -	ret =3D update_space_info(fs_info, BTRFS_BLOCK_GROUP_METADATA,
+> -				0, 0, &sinfo);
+> -	if (ret < 0)
+> -		return ret;
+> -	ret =3D update_space_info(fs_info, BTRFS_BLOCK_GROUP_DATA,
+> -				0, 0, &sinfo);
+> +	ret =3D update_space_info(fs_info, flags, 0, 0, &sinfo);
+>  	if (ret < 0)
+>  		return ret;
 > =20
->  MODULE_LICENSE("GPL");
->  MODULE_SOFTDEP("pre: crc32c");
-> +MODULE_SOFTDEP("pre: xxhash64");
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs=
-_tree.h
-> index babef98181a2..af4f5dec10b7 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -302,6 +302,7 @@
->  /* csum types */
->  enum btrfs_csum_type {
->  	BTRFS_CSUM_TYPE_CRC32	=3D 0,
-> +	BTRFS_CSUM_TYPE_XXHASH	=3D 1,
->  };
+> @@ -149,6 +148,13 @@ static int create_data_block_groups(struct btrfs_t=
+rans_handle *trans,
+>  	int ret =3D 0;
 > =20
->  /*
+>  	if (!mixed) {
+> +		struct btrfs_space_info *sinfo;
+> +
+> +		ret =3D update_space_info(fs_info, BTRFS_BLOCK_GROUP_DATA,
+> +					0, 0, &sinfo);
+> +		if (ret < 0)
+> +			return ret;
+> +
+>  		ret =3D btrfs_alloc_chunk(trans, fs_info,
+>  					&chunk_start, &chunk_size,
+>  					BTRFS_BLOCK_GROUP_DATA);
 >=20
 
 
---s410T96vFKXg7FaF08DDQ0lsPplzw6ZWn--
+--OACIB2a0zeJey9jI9ZubqLX0MxNvHzpZv--
 
---LcIunSoXYpXkbTtPucwFolri722sl5etT
+--VZcnLmsLQTP9u4yYklV8iQBU0HHKqv4zK
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl05mkQACgkQwj2R86El
-/qgFEQf/bZQCBlZ5VcbeRPNeUcJ/vcxExKw1fQRYAiL7dYwGscMhVqp37aTuLNm5
-A0eEqqRazmL6BfqEjuXMP5krFPu+InFyTLLk4IvVepEKMXXvYTUXqUHHJfPI/lyo
-920HJ4ju/a567IE9yumABCWlKSCk59aFTy3uvmXzsuONgZ60F7DiRKQmIPpOk1vF
-mXebITNT1RndJz1M5ImJPvNpdhuQEQ4Qre/JvamXndxKyK8DhKPk8OM1mzW6FWYq
-ElqsV28ufHNyq/RqHu4L03RYuHujOmq4fLRAw5HgZM1QqgASeE01AtVIS846NIA7
-xXEKg+9SWFrF5mA1UGTG7H3nLdjiwQ==
-=NM12
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl05mzAACgkQwj2R86El
+/qiPpgf+Lcs7pQEcMdNUY3LiLtGWjQu9rT4IsxkOU5UkpSYKHsZAeTL9KLd/QILk
+BbNicXpQHf8UuL8VUVT/Ovf0CcC2KzC5QK02anjmKPTeR8Z6FYHLv/H/K7gxxWBc
+lBZzEe0tjsysuPOC6Iv5CvRkGoni0FSCDVNxQDeXOu1W6kC/mxfvVtcuT8sZdRG6
+TV3PTIF1WF06LSNT6QU0cYcoR4EX5XE6AFUO8nx7h9LGK9A2hTNbSibk1zmskw32
+qR9pJesndIKdrUxYGU0yQYBzVyqgWwHmuTzZXxRmjj6p5Wg8ywi7p4KmPlPr8+3+
+a6QFTj/BxUW8zAGYvFsI+FPP082K6Q==
+=OtCs
 -----END PGP SIGNATURE-----
 
---LcIunSoXYpXkbTtPucwFolri722sl5etT--
+--VZcnLmsLQTP9u4yYklV8iQBU0HHKqv4zK--
