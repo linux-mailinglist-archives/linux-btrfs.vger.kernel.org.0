@@ -2,180 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8444074B64
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 12:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C494774B82
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 12:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388220AbfGYKUQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Jul 2019 06:20:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37328 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387948AbfGYKUQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Jul 2019 06:20:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8F1DAAEB8
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2019 10:20:14 +0000 (UTC)
-Subject: Re: [PATCH v2 4/5] btrfs: extent-tree: Kill the BUG_ON() in
- insert_inline_extent_backref()
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190725061222.9581-1-wqu@suse.com>
- <20190725061222.9581-5-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <59416b0c-f34a-3319-4eac-09cc703c78eb@suse.com>
-Date:   Thu, 25 Jul 2019 13:20:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190725061222.9581-5-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728143AbfGYK1L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Jul 2019 06:27:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48508 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727273AbfGYK1L (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Jul 2019 06:27:11 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 38E6D22BEF
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2019 10:27:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564050429;
+        bh=zIpctvcc75vGoGrIo5OrE6cE6+ok4OOkFKzceeW0Jqs=;
+        h=From:To:Subject:Date:From;
+        b=Bq7YvAp5oJTZcvsDZUv03UaPrV3PhscEOAQS/DhShR1YuSiQGb2y258SspjEe7EOT
+         btqqZtnRqXeQzcNY6G6ZZDwhMudeehxSftJcyiffj5vyclZXrCTS/+i2QGM7v5zEVr
+         fv33vLmc40rGmFZKXnP5HJIPvwiq0nipfLIAr+zY=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] Btrfs: fix race leading to fs corruption after transaction abortion
+Date:   Thu, 25 Jul 2019 11:27:04 +0100
+Message-Id: <20190725102704.11404-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Filipe Manana <fdmanana@suse.com>
 
+When one transaction is finishing its commit, it is possible for another
+transaction to start and enter its initial commit phase as well. If the
+first ends up getting aborted, we have a small time window where the second
+transaction commit does not notice that the previous transaction aborted
+and ends up committing, writing a superblock that points to btrees that
+reference extent buffers (nodes and leafs) that were not persisted to disk.
+The consequence is that after mounting the filesystem again, we will be
+unable to load some btree nodes/leafs, either because the content on disk
+is either garbage (or just zeroes) or corresponds to the old content of a
+previouly COWed or deleted node/leaf, resulting in the well known error
+messages "parent transid verify failed on ...".
+The following sequence diagram illustrates how this can happen.
 
-On 25.07.19 г. 9:12 ч., Qu Wenruo wrote:
-> [BUG]
-> With crafted image, btrfs can panic at insert_inline_extent_backref():
->   kernel BUG at fs/btrfs/extent-tree.c:1857!
->   invalid opcode: 0000 [#1] SMP PTI
->   CPU: 0 PID: 1117 Comm: btrfs-transacti Not tainted 5.0.0-rc8+ #9
->   RIP: 0010:insert_inline_extent_backref+0xcc/0xe0
->   Code: 45 20 49 8b 7e 50 49 89 d8 4c 8b 4d 10 48 8b 55 c8 4c 89 e1 41 57 4c 89 ee 50 ff 75 18 e8 cc bf ff ff 31 c0 48 83 c4 18 eb b2 <0f> 0b e8 9d df bd ff 0f 1f 00 66 2e 0f 1f 84 00 00 00 00 00 66 66
->   RSP: 0018:ffffac4dc1287be8 EFLAGS: 00010293
->   RAX: 0000000000000000 RBX: 0000000000000007 RCX: 0000000000000001
->   RDX: 0000000000001000 RSI: 0000000000000000 RDI: 0000000000000000
->   RBP: ffffac4dc1287c28 R08: ffffac4dc1287ab8 R09: ffffac4dc1287ac0
->   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
->   R13: ffff8febef88a540 R14: ffff8febeaa7bc30 R15: 0000000000000000
->   FS: 0000000000000000(0000) GS:ffff8febf7a00000(0000) knlGS:0000000000000000
->   CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->   CR2: 00007f663ace94c0 CR3: 0000000235698006 CR4: 00000000000206f0
->   Call Trace:
->   ? _cond_resched+0x1a/0x50
->   __btrfs_inc_extent_ref.isra.64+0x7e/0x240
->   ? btrfs_merge_delayed_refs+0xa5/0x330
->   __btrfs_run_delayed_refs+0x653/0x1120
->   btrfs_run_delayed_refs+0xdb/0x1b0
->   btrfs_commit_transaction+0x52/0x950
->   ? start_transaction+0x94/0x450
->   transaction_kthread+0x163/0x190
->   kthread+0x105/0x140
->   ? btrfs_cleanup_transaction+0x560/0x560
->   ? kthread_destroy_worker+0x50/0x50
->   ret_from_fork+0x35/0x40
->   Modules linked in:
->   ---[ end trace 2ad8b3de903cf825 ]---
-> 
-> [CAUSE]
-> Due to extent tree corruption (still valid by itself, but bad cross ref),
-> we can allocate an extent which is still in extent tree.
-> The offending tree block of that case is from csum tree.
-> The newly allocated tree block is also for csum tree.
-> 
-> Then we will try to insert an tree block ref for the existing tree block
-> ref.
-> 
-> For btrfs tree extent item, a tree block can never be shared directly by
-> the same tree twice.
-> We have such BUG_ON() to prevent such problem, but BUG_ON() is
-> definitely not good enough.
-> 
-> [FIX]
-> Replace that BUG_ON() with proper error message and leaf dump for debug
-> build.
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=202829
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+        CPU 1                                           CPU 2
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+ <at transaction N>
 
-> ---
->  fs/btrfs/extent-tree.c | 20 +++++++++++++++++++-
->  1 file changed, 19 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 74e4b138218e..19dd9148a3aa 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -1856,7 +1856,22 @@ int insert_inline_extent_backref(struct btrfs_trans_handle *trans,
->  					   num_bytes, parent, root_objectid,
->  					   owner, offset, 1);
->  	if (ret == 0) {
-> -		BUG_ON(owner < BTRFS_FIRST_FREE_OBJECTID);
-> +		/*
-> +		 * We're adding refs to an tree block we already own, this
-> +		 * should not happen at all.
-> +		 */
-> +		if (owner < BTRFS_FIRST_FREE_OBJECTID) {
-> +			btrfs_crit(trans->fs_info,
-> +"invalid operation, adding refs to an existing tree ref, bytenr=%llu num_bytes=%llu root_objectid=%llu",
-> +				   bytenr, num_bytes, root_objectid);
-> +			if (IS_ENABLED(CONFIG_BTRFS_DEBUG)) {
-> +				WARN_ON(1);
-> +				btrfs_crit(trans->fs_info,
-> +			"path->slots[0]=%d path->nodes[0]:", path->slots[0]);
-> +				btrfs_print_leaf(path->nodes[0]);
-> +			}
-> +			return -EUCLEAN;
-> +		}
->  		update_inline_extent_backref(path, iref, refs_to_add,
->  					     extent_op, NULL);
->  	} else if (ret == -ENOENT) {
-> @@ -2073,6 +2088,9 @@ int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
->  /*
->   * __btrfs_inc_extent_ref - insert backreference for a given extent
->   *
-> + * The work is opposite as __btrfs_free_extent().
-> + * For more info about how it works or examples, refer to __btrfs_free_extent().
-> + *
->   * @trans:	    Handle of transaction
->   *
->   * @node:	    The delayed ref node used to get the bytenr/length for
-> 
+ btrfs_commit_transaction()
+   (...)
+   --> sets transaction state to
+       TRANS_STATE_UNBLOCKED
+   --> sets fs_info->running_transaction
+       to NULL
+
+                                                    (...)
+                                                    btrfs_start_transaction()
+                                                      start_transaction()
+                                                        wait_current_trans()
+                                                          --> returns immediately
+                                                              because
+                                                              fs_info->running_transaction
+                                                              is NULL
+                                                        join_transaction()
+                                                          --> creates transaction N + 1
+                                                          --> sets
+                                                              fs_info->running_transaction
+                                                              to transaction N + 1
+                                                          --> adds transaction N + 1 to
+                                                              the fs_info->trans_list list
+                                                        --> returns transaction handle
+                                                            pointing to the new
+                                                            transaction N + 1
+                                                    (...)
+
+                                                    btrfs_sync_file()
+                                                      btrfs_start_transaction()
+                                                        --> returns handle to
+                                                            transaction N + 1
+                                                      (...)
+
+   btrfs_write_and_wait_transaction()
+     --> writeback of some extent
+         buffer fails, returns an
+	 error
+   btrfs_handle_fs_error()
+     --> sets BTRFS_FS_STATE_ERROR in
+         fs_info->fs_state
+   --> jumps to label "scrub_continue"
+   cleanup_transaction()
+     btrfs_abort_transaction(N)
+       --> sets BTRFS_FS_STATE_TRANS_ABORTED
+           flag in fs_info->fs_state
+       --> sets aborted field in the
+           transaction and transaction
+	   handle structures, for
+           transaction N only
+     --> removes transaction from the
+         list fs_info->trans_list
+                                                      btrfs_commit_transaction(N + 1)
+                                                        --> transaction N + 1 was not
+							    aborted, so it proceeds
+                                                        (...)
+                                                        --> sets the transaction's state
+                                                            to TRANS_STATE_COMMIT_START
+                                                        --> does not find the previous
+                                                            transaction (N) in the
+                                                            fs_info->trans_list, so it
+                                                            doesn't know that transaction
+                                                            was aborted, and the commit
+                                                            of transaction N + 1 proceeds
+                                                        (...)
+                                                        --> sets transaction N + 1 state
+                                                            to TRANS_STATE_UNBLOCKED
+                                                        btrfs_write_and_wait_transaction()
+                                                          --> succeeds writing all extent
+                                                              buffers created in the
+                                                              transaction N + 1
+                                                        write_all_supers()
+                                                           --> succeeds
+                                                           --> we now have a superblock on
+                                                               disk that points to trees
+                                                               that refer to at least one
+                                                               extent buffer that was
+                                                               never persisted
+
+So fix this by updating the transaction commit path to check if the flag
+BTRFS_FS_STATE_TRANS_ABORTED is set on fs_info->fs_state if after setting
+the transaction to the TRANS_STATE_COMMIT_START we do not find any previous
+transaction in the fs_info->trans_list. If the flag is set, just fail the
+transaction commit with -EROFS, as we do in other places. The exact error
+code for the previous transaction abort was already logged and reported.
+
+Fixes: 49b25e0540904b ("btrfs: enhance transaction abort infrastructure")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/transaction.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 3f6811cdf803..7b8bd9046229 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2019,6 +2019,17 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 		}
+ 	} else {
+ 		spin_unlock(&fs_info->trans_lock);
++		/*
++		 * The previous transaction was aborted and was already removed
++		 * from the list of transactions at fs_info->trans_list. So we
++		 * abort to prevent writing a new superblock that reflects a
++		 * corrupt state (pointing to trees with unwritten nodes/leafs).
++		 */
++		if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED,
++			     &fs_info->fs_state)) {
++			ret = -EROFS;
++			goto cleanup_transaction;
++		}
+ 	}
+ 
+ 	extwriter_counter_dec(cur_trans, trans->type);
+-- 
+2.11.0
+
