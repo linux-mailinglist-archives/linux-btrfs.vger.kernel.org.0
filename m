@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB7137493D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 10:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59DE0749D0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Jul 2019 11:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389734AbfGYIjy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Jul 2019 04:39:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35088 "EHLO mx1.suse.de"
+        id S2389403AbfGYJ0k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Jul 2019 05:26:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49072 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389705AbfGYIjy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Jul 2019 04:39:54 -0400
+        id S2388704AbfGYJ0j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Jul 2019 05:26:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7FF69AD9C
-        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2019 08:39:52 +0000 (UTC)
-Subject: Re: [PATCH v2 2/5] btrfs: extent-tree: Kill BUG_ON() in
- __btrfs_free_extent() and do better comment
+        by mx1.suse.de (Postfix) with ESMTP id E465EADBF
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Jul 2019 09:26:36 +0000 (UTC)
+Subject: Re: [PATCH v2 3/5] btrfs: Detect unbalanced tree with empty leaf
+ before crashing btree operations
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20190725061222.9581-1-wqu@suse.com>
- <20190725061222.9581-3-wqu@suse.com>
+ <20190725061222.9581-4-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <52e2fbdf-7e6a-fab7-ad45-f569a7d7c482@suse.com>
-Date:   Thu, 25 Jul 2019 11:39:51 +0300
+Message-ID: <6dbec951-751d-cd48-d20c-bc558cf213e0@suse.com>
+Date:   Thu, 25 Jul 2019 12:26:35 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190725061222.9581-3-wqu@suse.com>
+In-Reply-To: <20190725061222.9581-4-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,57 +81,120 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 25.07.19 г. 9:12 ч., Qu Wenruo wrote:
-> __btrfs_free_extent() is one of the best cases to show how optimization
-> could make a function hard to read.
+> [BUG]
+> With crafted image, btrfs will panic at btree operations:
+>   kernel BUG at fs/btrfs/ctree.c:3894!
+>   invalid opcode: 0000 [#1] SMP PTI
+>   CPU: 0 PID: 1138 Comm: btrfs-transacti Not tainted 5.0.0-rc8+ #9
+>   RIP: 0010:__push_leaf_left+0x6b6/0x6e0
+>   Code: 00 00 48 98 48 8d 04 80 48 8d 74 80 65 e8 42 5a 04 00 48 8b bd 78 ff ff ff 8b bf 90 d0 00 00 89 7d 98 83 ef 65 e9 06 ff ff ff <0f> 0b 0f 0b 48 8b 85 78 ff ff ff 8b 90 90 d0 00 00 e9 eb fe ff ff
+>   RSP: 0018:ffffc0bd4128b990 EFLAGS: 00010246
+>   RAX: 0000000000000000 RBX: ffffa0a4ab8f0e38 RCX: 0000000000000000
+>   RDX: ffffa0a280000000 RSI: 0000000000000000 RDI: ffffa0a4b3814000
+>   RBP: ffffc0bd4128ba38 R08: 0000000000001000 R09: ffffc0bd4128b948
+>   R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000240
+>   R13: ffffa0a4b556fb60 R14: ffffa0a4ab8f0af0 R15: ffffa0a4ab8f0af0
+>   FS: 0000000000000000(0000) GS:ffffa0a4b7a00000(0000) knlGS:0000000000000000
+>   CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   CR2: 00007f2461c80020 CR3: 000000022b32a006 CR4: 00000000000206f0
+>   Call Trace:
+>   ? _cond_resched+0x1a/0x50
+>   push_leaf_left+0x179/0x190
+>   btrfs_del_items+0x316/0x470
+>   btrfs_del_csums+0x215/0x3a0
+>   __btrfs_free_extent.isra.72+0x5a7/0xbe0
+>   __btrfs_run_delayed_refs+0x539/0x1120
+>   btrfs_run_delayed_refs+0xdb/0x1b0
+>   btrfs_commit_transaction+0x52/0x950
+>   ? start_transaction+0x94/0x450
+>   transaction_kthread+0x163/0x190
+>   kthread+0x105/0x140
+>   ? btrfs_cleanup_transaction+0x560/0x560
+>   ? kthread_destroy_worker+0x50/0x50
+>   ret_from_fork+0x35/0x40
+>   Modules linked in:
+>   ---[ end trace c2425e6e89b5558f ]---
 > 
-> In fact __btrfs_free_extent() is only doing two major works:
-> 1. Reduce the refs number of an extent backref
->    Either it's an inlined extent backref (inside EXTENT/METADATA item) or
->    a keyed extent backref (SHARED_* item).
->    We only need to locate that backref line, either reduce the number or
->    remove the backref line completely.
+> [CAUSE]
+> The offending csum tree looks like this:
+> checksum tree key (CSUM_TREE ROOT_ITEM 0)
+> node 29741056 level 1 items 14 free 107 generation 19 owner CSUM_TREE
+>         ...
+>         key (EXTENT_CSUM EXTENT_CSUM 85975040) block 29630464 gen 17
+>         key (EXTENT_CSUM EXTENT_CSUM 89911296) block 29642752 gen 17 <<<
+>         key (EXTENT_CSUM EXTENT_CSUM 92274688) block 29646848 gen 17
+>         ...
 > 
-> 2. Update the refs count in EXTENT/METADATA_ITEM
+> leaf 29630464 items 6 free space 1 generation 17 owner CSUM_TREE
+>         item 0 key (EXTENT_CSUM EXTENT_CSUM 85975040) itemoff 3987 itemsize 8
+>                 range start 85975040 end 85983232 length 8192
+>         ...
+> leaf 29642752 items 0 free space 3995 generation 17 owner 0
+>                     ^ empty leaf            invalid owner ^
 > 
-> But in real world, we do it in a complex but somewhat efficient way.
-> During step 1), we will try to locate the EXTENT/METADATA_ITEM without
-> triggering another btrfs_search_slot() as fast path.
+> leaf 29646848 items 1 free space 602 generation 17 owner CSUM_TREE
+>         item 0 key (EXTENT_CSUM EXTENT_CSUM 92274688) itemoff 627 itemsize 3368
+>                 range start 92274688 end 95723520 length 3448832
 > 
-> Only when we failed to locate that item, we will trigger another
-> btrfs_search_slot() to get that EXTENT/METADATA_ITEM after we
-> updated/deleted the backref line.
+> So we have a corrupted csum tree where one tree leaf is completely
+> empty, causing unbalanced btree, thus leading to unexpected btree
+> balance error.
 > 
-> And we have a lot of restrict check on things like refs_to_drop against
-> extent refs and special case check for single ref extent.
+> [FIX]
+> For this particular case, we handle it in two directions to catch it:
+> - Check if the tree block is empty through btrfs_verify_level_key()
+>   So that invalid tree blocks won't be read out through
+>   btrfs_search_slot() and its variants.
 > 
-> All of these results:
-> - 7 BUG_ON()s in a single function
->   Although all these BUG_ON() are doing correct check, they're super
->   easy to get triggered for fuzzed images.
->   It's never a good idea to piss the end user.
+> - Check 0 tree owner in tree checker
+>   NO tree is using 0 as its tree owner, detect it and reject at tree
+>   block read time.
 > 
-> - Near 300 lines without much useful comments but a lot of hidden
->   conditions
->   I believe even the author needs several minutes to recall what the
->   code is doing
->   Not to mention a lot of BUG_ON() conditions needs to go back tens of
->   lines to find out why.
-> 
-> This patch address all these problems by:
-> - Introduce two examples to show what __btrfs_free_extent() is doing
->   One inlined backref case and one keyed case.
->   Should cover most cases.
-> 
-> - Kill all BUG_ON()s with proper error message and optional leaf dump
-> 
-> - Add comment to show the overall workflow
-> 
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=202819
-> [ The report triggers one BUG_ON() in __btrfs_free_extent() ]
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=202821
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/disk-io.c      | 8 ++++++++
+>  fs/btrfs/tree-checker.c | 6 ++++++
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index deb74a8c191a..a843c21f3060 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -414,6 +414,14 @@ int btrfs_verify_level_key(struct extent_buffer *eb, int level,
+>  
+>  	if (!first_key)
+>  		return 0;
+> +	/* We have @first_key, so this @eb must have at least one item */
+> +	if (btrfs_header_nritems(eb) == 0) {
+> +		btrfs_err(fs_info,
+> +		"invalid tree nritems, bytenr=%llu nritems=0 expect >0",
+> +			  eb->start);
+> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+> +		return -EUCLEAN;
+> +	}
 
-Changes look simple enough and benign, only thing I wonder is if we
-should force the system in RO mode? In any case:
+Shouldn't this check be before !first_key, e.g. we always want to verify
+that a particular node has at least 1 item ?
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
+>  
+>  	/*
+>  	 * For live tree block (new tree blocks in current transaction),
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index 96fce4bef4e7..a4c7f7ed8490 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -888,6 +888,12 @@ static int check_leaf(struct extent_buffer *leaf, bool check_item_data)
+>  				    owner);
+>  			return -EUCLEAN;
+>  		}
+> +		/* Unknown tree */
+> +		if (owner == 0) {
+> +			generic_err(leaf, 0,
+> +				"invalid owner, root 0 is not defined");
+> +			return -EUCLEAN;
+> +		}
+>  		return 0;
+>  	}
+>  
+> 
