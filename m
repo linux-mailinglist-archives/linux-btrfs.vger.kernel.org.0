@@ -2,92 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03F57760AD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 10:26:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55BA7614B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 10:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725945AbfGZI04 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Jul 2019 04:26:56 -0400
-Received: from mout.gmx.net ([212.227.15.19]:35603 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725815AbfGZI04 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Jul 2019 04:26:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1564129607;
-        bh=4wKAQUe/2SeznEXQTior8F3yIlk6uh0BBPVnAKMxl0o=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=YVurt8UExSthB0GvdOcJauvh3d1n9l/OB2dFNACFIxXWofwOB/vW5u/f59r5J6xsB
-         vBn8ztY+St1KslVLoKbsCw7Tv+bKCm7h+bp+nFRwyQ8get2mzTQ2J+Kb81bYVM/ERQ
-         mSBnGeNCZbupk57NZTWwMmSx/E0zyalrNKOTqmiA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MqJqD-1iCSof2SUF-00nRUv; Fri, 26
- Jul 2019 10:26:47 +0200
-Subject: Re: [PATCH] btrfs: fix extent buffer read/write range checks
-To:     Naohiro Aota <naohiro.aota@wdc.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        David Sterba <dsterba@suse.com>
-References: <20190726052724.12338-1-naohiro.aota@wdc.com>
- <d81154a4-dd3f-481f-92cb-25ea32b55900@suse.com>
- <20190726061300.gvwypjd32elqtkhu@naota.dhcp.fujisawa.hgst.com>
- <71f0399e-0719-ca8c-cb7b-aba5de5d0c5a@gmx.com>
- <20190726081518.ilukyrpdsrioiq36@naota.dhcp.fujisawa.hgst.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+        id S1725953AbfGZItL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Jul 2019 04:49:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47042 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725815AbfGZItL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Jul 2019 04:49:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id B043BAE2F;
+        Fri, 26 Jul 2019 08:49:09 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: fix extent_state leak in
+ btrfs_lock_and_flush_ordered_range
+To:     Naohiro Aota <naohiro.aota@wdc.com>, linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+References: <20190726074705.27513-1-naohiro.aota@wdc.com>
+From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <539b12bb-200f-b53e-fa63-dba39aaeeb9a@gmx.com>
-Date:   Fri, 26 Jul 2019 16:26:41 +0800
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
+ CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
+ ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
+ HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
+ Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
+ VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
+ E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
+ V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
+ T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
+ mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
+ EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
+ 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
+ csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
+ QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
+ jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
+ VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
+ FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
+ l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
+ MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
+ KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
+ OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
+ AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
+ zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
+ IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
+ iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
+ K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
+ upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
+ R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
+ TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
+ RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
+ 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
+Message-ID: <1f016f72-28fb-5895-c3b3-5bcb831ef142@suse.com>
+Date:   Fri, 26 Jul 2019 11:49:08 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190726081518.ilukyrpdsrioiq36@naota.dhcp.fujisawa.hgst.com>
+In-Reply-To: <20190726074705.27513-1-naohiro.aota@wdc.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:C8qhMNW/nQTpbfzPpR8VVXhZaP7Oute0USVZAqwgkpeVhLoHzuc
- /85HppmWANLtNx8ecZPQgnPvXGGXBJmOygvuxfb7BcII/UkiY9xzaXAsAmQBg2PfggcWjyD
- nOBbnib3RewB2kYstglMo+Bo2rk3cAamRk0r7EF7DTQ2Qt8ygPUmS0IVAryqBAKPLdvTrgH
- ECsGrU8kEeaiu5FN8BWIw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1Rc8H3f3ozw=:OGNvx516+rdkeKiO5J86ce
- R5QFp+J/0rxZnOUsjcAXUTNyvJ1fDjQAWh5eAioKY0d+qmYZu2EdcjTHYM8meCwiPCZi5uoL0
- /EhIrUNdqN3eRJKBXhyN0/Z8YGHvblSJ9WhhGvJhL7cdWddWSmFYhgKeaDc2nQLhi18IkDsee
- F4xLSoxjZwGGV04ItjhwVa5VNp81AqlwDiOuYkZ0cOa+NubNBYBCYpPszA8HD14w/c4kCyj7i
- fnD8fD7ygDicbv4KoI0Z4jpm5V1fVLxRIKD7AD7J+hcC22wFywjIjUSIAZRlGBV220/sT2y8X
- ZlBHbQLeKHzB5tDCpXBUBux6rhobUApGkNlz29QnChEabDBR8r5ECmlp2R0jdBOkfRptZ+HNF
- 9Xvz3hGz5l4C7hCcmQg1ecacVDuWWkug7N4aULnFeAIC9vGoG9PsEgaPbC9Qoh4PFZnPdqojU
- a+cwia1uLW7R25Bu+Rnlk410udFo7JRc3sTfiyG7/zGSz6+8PR6pM3ZtlEhB1D/pMq6eImuns
- i6BMJ4KDVpeYprhSuTEVqn0FFGQslp87ym2HfiUAygnV4ACRmiegFwTTzSMDlEQLxjmLkl8Ke
- r0+MuW4/5TYR2KFNcOaOopQlpX04mzxkbo7kSWoEnNBMm/tJOkDq6QtQAcxPKh/wSxXF/jgDs
- aerXzZfMKGJulr9VbECb+1OcTENi8XaDBxeAyUt6SB1CWrTZxjEB/8QEar8fYHCw+fHi80ckr
- 4zbgeBD8Ro7tI4PlmRrZwDh1H+g9jTmdazeSWxwdC/966JEMOxKTEqTAEeWFtMXnePpCKBmdM
- 4l5Hm9nEbdPBDZhUECpQdhw+wwHq3V25/ROcYUX7Poi2hvCsgFZwhNJyIsiYFnloJLMfHDQCW
- B9HMN5lkj+NsCbxGgMpXxV+plpd/grhNbA3bbrwyIfutA8qVj7W2ZjXP6WmnPjm2jDkLczxeG
- /mVRlNLdtGuQ+5cD1uedWebPb0Mx2QqyjJHmFtj4gA3NR/XswCqfQfVq2lY435xDOYkGv2lVG
- OvLJh16j4VageBygT5Bg6T9MletXKLTqI6sWxT6BdjOTmA7yMc5Lul+5a3Rnv9/TcT/qq/zSD
- AI1B/KP1WZnBXLPZ8sQus5sGgzCbhf4TqEt
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -95,75 +80,57 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2019/7/26 =E4=B8=8B=E5=8D=884:15, Naohiro Aota wrote:
-> On Fri, Jul 26, 2019 at 02:36:10PM +0800, Qu Wenruo wrote:
->>
->>
->> On 2019/7/26 =E4=B8=8B=E5=8D=882:13, Naohiro Aota wrote:
->>> On Fri, Jul 26, 2019 at 08:38:27AM +0300, Nikolay Borisov wrote:
->>>>
->>>>
->>>> On 26.07.19 =D0=B3. 8:27 =D1=87., Naohiro Aota wrote:
->>>>> Several functions to read/write an extent buffer check if specified
->>>>> offset
->>>>> range resides in the size of the extent buffer. However, those check=
-s
->>>>> have
->>>>> two problems:
->>>>>
->>>>> (1) they don't catch "start =3D=3D eb->len" case.
->>>>> (2) it checks offset in extent buffer against logical address using
->>>>> =C2=A0=C2=A0=C2=A0 eb->start.
->>>>>
->>>>> Generally, eb->start is much larger than the offset, so the second
->>>>> WARN_ON
->>>>> was almost useless.
->>>>>
->>>>> Fix these problems in read_extent_buffer_to_user(),
->>>>> {memcmp,write,memzero}_extent_buffer().
->>>>>
->>>>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
->>>>
->>>> Qu already sent similar patch:
->>>>
->>>> [PATCH v2 1/5] btrfs: extent_io: Do extra check for extent buffer rea=
-d
->>>> write functions
->>>>
->>>>
->>>> He centralised the checking code, your >=3D fixes though should be me=
-rged
->>>> there.
->>>
->>> Oops, I missed that series. Thank you for pointing out. Then, this
->>> should be merged into Qu's version.
->>>
->>> Qu, could you pick the change from "start > eb->len" to "start >=3D
->>> eb->len"?
->>
->> start >=3D eb->len is not always invalid.
->>
->> start =3D=3D eb->len while len =3D=3D 0 is still valid.
->
-> Correct.
->
-> But then, we can even say "start > eb->len" is valid if len =3D=3D 0?
->
->> Or should we also warn such bad practice?
->
-> Maybe...
->
-> Or how about let the callers bailing out by e.g. "if (!len) return 1;"
-> in the check function?
+On 26.07.19 г. 10:47 ч., Naohiro Aota wrote:
+> btrfs_lock_and_flush_ordered_range() loads given "*cached_state" into
+> cachedp, which, in general, is NULL. Then, lock_extent_bits() updates
+> "cachedp", but it never goes backs to the caller. Thus the caller still
+> see its "cached_state" to be NULL and never free the state allocated
+> under btrfs_lock_and_flush_ordered_range(). As a result, we will
+> see massive state leak with e.g. fstests btrfs/005. Fix this bug by
+> properly handling the pointers.
+> 
+> Fixes: bd80d94efb83 ("btrfs: Always use a cached extent_state in btrfs_lock_and_flush_ordered_range")
+> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
 
-Well, let's forgot len =3D=3D 0 case and make start >=3D eb->len invalid.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-That len =3D=3D 0 is making a lot of invalid use case valid, and making th=
-e
-check more complex.
-
-Thanks,
-Qu
->
-> Regards,
-> Naohiro
+> ---
+>  fs/btrfs/ordered-data.c | 11 ++++++-----
+>  1 file changed, 6 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> index df02ed25b7db..ab31b1a1b624 100644
+> --- a/fs/btrfs/ordered-data.c
+> +++ b/fs/btrfs/ordered-data.c
+> @@ -982,13 +982,14 @@ void btrfs_lock_and_flush_ordered_range(struct extent_io_tree *tree,
+>  					struct extent_state **cached_state)
+>  {
+>  	struct btrfs_ordered_extent *ordered;
+> -	struct extent_state *cachedp = NULL;
+> +	struct extent_state *cache = NULL;
+> +	struct extent_state **cachedp = &cache;
+>  
+>  	if (cached_state)
+> -		cachedp = *cached_state;
+> +		cachedp = cached_state;
+>  
+>  	while (1) {
+> -		lock_extent_bits(tree, start, end, &cachedp);
+> +		lock_extent_bits(tree, start, end, cachedp);
+>  		ordered = btrfs_lookup_ordered_range(inode, start,
+>  						     end - start + 1);
+>  		if (!ordered) {
+> @@ -998,10 +999,10 @@ void btrfs_lock_and_flush_ordered_range(struct extent_io_tree *tree,
+>  			 * aren't exposing it outside of this function
+>  			 */
+>  			if (!cached_state)
+> -				refcount_dec(&cachedp->refs);
+> +				refcount_dec(&cache->refs);
+>  			break;
+>  		}
+> -		unlock_extent_cached(tree, start, end, &cachedp);
+> +		unlock_extent_cached(tree, start, end, cachedp);
+>  		btrfs_start_ordered_extent(&inode->vfs_inode, ordered, 1);
+>  		btrfs_put_ordered_extent(ordered);
+>  	}
+> 
