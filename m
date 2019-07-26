@@ -2,150 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5771E76B58
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 16:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9409576BB6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 16:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727492AbfGZOSu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Jul 2019 10:18:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41402 "EHLO mx1.suse.de"
+        id S1726979AbfGZOfj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Jul 2019 10:35:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45966 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727358AbfGZOSu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Jul 2019 10:18:50 -0400
+        id S1726434AbfGZOfj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Jul 2019 10:35:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 44458AE82;
-        Fri, 26 Jul 2019 14:18:48 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 66E8CAC10;
+        Fri, 26 Jul 2019 14:35:37 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C9770DA811; Fri, 26 Jul 2019 16:19:23 +0200 (CEST)
-Date:   Fri, 26 Jul 2019 16:19:23 +0200
+        id 6F8A8DA811; Fri, 26 Jul 2019 16:36:13 +0200 (CEST)
+Date:   Fri, 26 Jul 2019 16:36:12 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Btrfs: fix race leading to fs corruption after
- transaction abortion
-Message-ID: <20190726141922.GC2868@twin.jikos.cz>
+Subject: Re: [PATCH] Btrfs: fix incremental send failure after deduplication
+Message-ID: <20190726143611.GD2868@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
         linux-btrfs@vger.kernel.org
-References: <20190725102704.11404-1-fdmanana@kernel.org>
+References: <20190717122339.4926-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190725102704.11404-1-fdmanana@kernel.org>
+In-Reply-To: <20190717122339.4926-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 25, 2019 at 11:27:04AM +0100, fdmanana@kernel.org wrote:
+On Wed, Jul 17, 2019 at 01:23:39PM +0100, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> When one transaction is finishing its commit, it is possible for another
-> transaction to start and enter its initial commit phase as well. If the
-> first ends up getting aborted, we have a small time window where the second
-> transaction commit does not notice that the previous transaction aborted
-> and ends up committing, writing a superblock that points to btrees that
-> reference extent buffers (nodes and leafs) that were not persisted to disk.
-> The consequence is that after mounting the filesystem again, we will be
-> unable to load some btree nodes/leafs, either because the content on disk
-> is either garbage (or just zeroes) or corresponds to the old content of a
-> previouly COWed or deleted node/leaf, resulting in the well known error
-> messages "parent transid verify failed on ...".
-> The following sequence diagram illustrates how this can happen.
+> When doing an incremental send operation we can fail if we previously did
+> deduplication operations against a file that exists in both snapshots. In
+> that case we will fail the send operation with -EIO and print a message
+> to dmesg/syslog like the following:
 > 
->         CPU 1                                           CPU 2
+>   BTRFS error (device sdc): Send: inconsistent snapshot, found updated \
+>   extent for inode 257 without updated inode item, send root is 258, \
+>   parent root is 257
 > 
->  <at transaction N>
+> This requires that we deduplicate to the same file in both snapshots for
+> the same amount of times on each snapshot. The issue happens because a
+> deduplication only updates the iversion of an inode and does not update
+> any other field of the inode, therefore if we deduplicate the file on
+> each snapshot for the same amount of time, the inode will have the same
+> iversion value (stored as the "sequence" field on the inode item) on both
+> snapshots, therefore it will be seen as unchanged between in the send
+> snapshot while there are new/updated/deleted extent items when comparing
+> to the parent snapshot. This makes the send operation return -EIO and
+> print an error message.
 > 
->  btrfs_commit_transaction()
->    (...)
->    --> sets transaction state to
->        TRANS_STATE_UNBLOCKED
->    --> sets fs_info->running_transaction
->        to NULL
+> Example reproducer:
 > 
->                                                     (...)
->                                                     btrfs_start_transaction()
->                                                       start_transaction()
->                                                         wait_current_trans()
->                                                           --> returns immediately
->                                                               because
->                                                               fs_info->running_transaction
->                                                               is NULL
->                                                         join_transaction()
->                                                           --> creates transaction N + 1
->                                                           --> sets
->                                                               fs_info->running_transaction
->                                                               to transaction N + 1
->                                                           --> adds transaction N + 1 to
->                                                               the fs_info->trans_list list
->                                                         --> returns transaction handle
->                                                             pointing to the new
->                                                             transaction N + 1
->                                                     (...)
+>   $ mkfs.btrfs -f /dev/sdb
+>   $ mount /dev/sdb /mnt
 > 
->                                                     btrfs_sync_file()
->                                                       btrfs_start_transaction()
->                                                         --> returns handle to
->                                                             transaction N + 1
->                                                       (...)
+>   # Create our first file. The first half of the file has several 64Kb
+>   # extents while the second half as a single 512Kb extent.
+>   $ xfs_io -f -s -c "pwrite -S 0xb8 -b 64K 0 512K" /mnt/foo
+>   $ xfs_io -c "pwrite -S 0xb8 512K 512K" /mnt/foo
 > 
->    btrfs_write_and_wait_transaction()
->      --> writeback of some extent
->          buffer fails, returns an
-> 	 error
->    btrfs_handle_fs_error()
->      --> sets BTRFS_FS_STATE_ERROR in
->          fs_info->fs_state
->    --> jumps to label "scrub_continue"
->    cleanup_transaction()
->      btrfs_abort_transaction(N)
->        --> sets BTRFS_FS_STATE_TRANS_ABORTED
->            flag in fs_info->fs_state
->        --> sets aborted field in the
->            transaction and transaction
-> 	   handle structures, for
->            transaction N only
->      --> removes transaction from the
->          list fs_info->trans_list
->                                                       btrfs_commit_transaction(N + 1)
->                                                         --> transaction N + 1 was not
-> 							    aborted, so it proceeds
->                                                         (...)
->                                                         --> sets the transaction's state
->                                                             to TRANS_STATE_COMMIT_START
->                                                         --> does not find the previous
->                                                             transaction (N) in the
->                                                             fs_info->trans_list, so it
->                                                             doesn't know that transaction
->                                                             was aborted, and the commit
->                                                             of transaction N + 1 proceeds
->                                                         (...)
->                                                         --> sets transaction N + 1 state
->                                                             to TRANS_STATE_UNBLOCKED
->                                                         btrfs_write_and_wait_transaction()
->                                                           --> succeeds writing all extent
->                                                               buffers created in the
->                                                               transaction N + 1
->                                                         write_all_supers()
->                                                            --> succeeds
->                                                            --> we now have a superblock on
->                                                                disk that points to trees
->                                                                that refer to at least one
->                                                                extent buffer that was
->                                                                never persisted
+>   # Create the base snapshot and the parent send stream from it.
+>   $ btrfs subvolume snapshot -r /mnt /mnt/mysnap1
+>   $ btrfs send -f /tmp/1.snap /mnt/mysnap1
 > 
-> So fix this by updating the transaction commit path to check if the flag
-> BTRFS_FS_STATE_TRANS_ABORTED is set on fs_info->fs_state if after setting
-> the transaction to the TRANS_STATE_COMMIT_START we do not find any previous
-> transaction in the fs_info->trans_list. If the flag is set, just fail the
-> transaction commit with -EROFS, as we do in other places. The exact error
-> code for the previous transaction abort was already logged and reported.
+>   # Create our second file, that has exactly the same data as the first
+>   # file.
+>   $ xfs_io -f -c "pwrite -S 0xb8 0 1M" /mnt/bar
 > 
-> Fixes: 49b25e0540904b ("btrfs: enhance transaction abort infrastructure")
+>   # Create the second snapshot, used for the incremental send, before
+>   # doing the file deduplication.
+>   $ btrfs subvolume snapshot -r /mnt /mnt/mysnap2
+> 
+>   # Now before creating the incremental send stream:
+>   #
+>   # 1) Deduplicate into a subrange of file foo in snapshot mysnap1. This
+>   #    will drop several extent items and add a new one, also updating
+>   #    the inode's iversion (sequence field in inode item) by 1, but not
+>   #    any other field of the inode;
+>   #
+>   # 2) Deduplicate into a different subrange of file foo in snapshot
+>   #    mysnap2. This will replace an extent item with a new one, also
+>   #    updating the inode's iversion by 1 but not any other field of the
+>   #    inode.
+>   #
+>   # After these two deduplication operations, the inode items, for file
+>   # foo, are identical in both snapshots, but we have different extent
+>   # items for this inode in both snapshots. We want to check this doesn't
+>   # cause send to fail with an error or produce an incorrect stream.
+> 
+>   $ xfs_io -r -c "dedupe /mnt/bar 0 0 512K" /mnt/mysnap1/foo
+>   $ xfs_io -r -c "dedupe /mnt/bar 512K 512K 512K" /mnt/mysnap2/foo
+> 
+>   # Create the incremental send stream.
+>   $ btrfs send -p /mnt/mysnap1 -f /tmp/2.snap /mnt/mysnap2
+>   ERROR: send ioctl failed with -5: Input/output error
+> 
+> This issue started happening back in 2015 when deduplication was updated
+> to not update the inode's ctime and mtime and update only the iversion.
+> Back then we would hit a BUG_ON() in send, but later in 2016 send was
+> updated to return -EIO and print the error message instead of doing the
+> BUG_ON().
+> 
+> A test case for fstests follows soon.
+> 
+> Fixes: 1c919a5e13702c ("btrfs: don't update mtime/ctime on deduped inodes")
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=203933
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Reviewed-by: David Sterba <dsterba@suse.com>
-
-Queued for 5.3, thanks.
+Added to misc-next, thanks.
