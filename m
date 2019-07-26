@@ -2,159 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C614475B6F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 01:42:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C31E775D45
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 05:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727584AbfGYXlz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 25 Jul 2019 19:41:55 -0400
-Received: from mout.gmx.net ([212.227.17.22]:53393 "EHLO mout.gmx.net"
+        id S1725944AbfGZDJ7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 25 Jul 2019 23:09:59 -0400
+Received: from mout.gmx.net ([212.227.15.18]:53983 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727037AbfGYXlz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 25 Jul 2019 19:41:55 -0400
+        id S1725878AbfGZDJ7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 25 Jul 2019 23:09:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1564098106;
-        bh=5DrjjJ0Qy2J/HhvNGL2HDoD4BbCh+h3pWiCuY6TRXyU=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ZOypsc5k2OY0aToa52ZSkapWoy1ct0fBvWnMFl+Tq0oLEuCbxwdciFBWtuKRUkr61
-         kCXOvrMlYcG1H3Az8fWE+/Y8oNxNF7JvJOut1ln0YMC3RtMCoZtJ7AjBFSnSHYhBbn
-         uE04A7RvIFXV1WwFbynbmUfjbLIsk/e6VKIFZCso=
+        s=badeba3b8450; t=1564110591;
+        bh=jpTG0GqMm8CXqRo9fzUNWrJyB9ncfY/1vxXbJZ1szg4=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=J1+emSCdVDBQ26qQqAgMp6FRVNSFUpA6aNr6gyBpVhtQLo10wdZT8FHvmqJKzbRYc
+         6GMcq8cNddS3paeR0QVuwIldNiz7VPdZMjMvEJDrT92YREoPW4nogdYBmtvpYtimnp
+         93KukrVld2z00cb9isvV4Ec4ANCWyJU6nHN99E40=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx103
- [212.227.17.174]) with ESMTPSA (Nemesis) id 0Mdrph-1i3D2i4C5N-00Pff9; Fri, 26
- Jul 2019 01:41:46 +0200
-Subject: Re: [PATCH] btrfs: Allow more disks missing for RAID10
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190718062749.11276-1-wqu@suse.com>
- <20190725183741.GX2868@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <a835760e-be9d-cfd9-d8c3-c316f34ec20f@gmx.com>
-Date:   Fri, 26 Jul 2019 07:41:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Received: from [192.168.2.137] ([34.92.239.241]) by mail.gmx.com (mrgmx001
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0MPUZ7-1hmk0d2Udt-004mYa; Fri, 26
+ Jul 2019 05:09:51 +0200
+Subject: Re: [RFC PATCH 2/4] btrfs: create structure to encode checksum type
+ and length
+To:     Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <cover.1564046812.git.jthumshirn@suse.de>
+ <944b685765a68c3389888159d3fe228c2e78eb22.1564046812.git.jthumshirn@suse.de>
+From:   Su Yue <Damenly_Su@gmx.com>
+Message-ID: <46419ff0-a625-0738-6a57-0ab903636fd8@gmx.com>
+Date:   Fri, 26 Jul 2019 11:09:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:60.0)
+ Gecko/20100101 Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190725183741.GX2868@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="p2Pn2ByTKKkOVc1wnYArLAeroBLrAV6hH"
-X-Provags-ID: V03:K1:KGmuvniE1rrba9kSNLW6QTS92/ALNU9NP2Wk/ZOwCagrJOLr5Q3
- WU4HShrIfFm4WZVsrCPnRHRBOvNkfHc2GFwESfAgVNPGPGybhsI89dJxQWvr2olCngGapWw
- xYEkMcqKTwnOWxdEZM+CEXDxaFKXwKa0EpiYy8iyH1WsYB6LZXKWjnlfZnrzUJK+hxuuWdH
- AhdE6KSMwuGxuiGYXJXZw==
+In-Reply-To: <944b685765a68c3389888159d3fe228c2e78eb22.1564046812.git.jthumshirn@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:meDatBeh3F5kG1A5tapnZAYRsXoYD1w7CHYsRyvitvx6xZN9s2a
+ b0ukrqznkONi6BSyXrCaAd6tHFr4ou5gEtEGsg7V9R6qhdka6hpQVMeelP1DTU1fz2PISAi
+ 1fJmRg3P5J4WpwGD65aW+c8wfMEgtG+Fq/rpEVrUPxiT+tElmXIwTeXfKEr+NfJnvAlfXgh
+ y/Fn0dNHU4sDb8Z7/ZTGg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TUvRir+A0C4=:HSzCTOfaXxlBLuVGkoV0/v
- h1OKnR3PhYyLhbbBVFTcQC+/H/nyxEN0GTgfFzYzm0PzPKIHHq8LifZIrrkMhxfsrxcSYgvHf
- fLUmA5DrCCu6rRkJ9sRclb9ndycZkxeZo9sEYaMUoYiVdo8WTKf7d3QSQ4vcuBjujAB+mUeEO
- z3DmoZWUGhK3BuSzqHdx8Y0uko5SpVsE+D+haKqsSWF2NPTvCTRU/AQKBXTdkEdtjLT02MpY/
- vR46+Ildx6ezg3chDEf5lILlQlXilJa633+sAuUUWqd2BYNWxmwjOoscT5ZdEh55AQiqVudc3
- VHjZMei4Pw3avaXLzkKAU7746y245laB9NH8dksbyKfPaj8jNotmcZosr930megrkYetw2kK1
- gdS2lwr5EsJX7rtg3T6oQmucG592MOv6ZxmtXf1fSnYohlqINDay6Rc9eGx845xZqjeZqqIT/
- GkQt5PHWy08mVmf4nUeUOZPcvTZ5Oi6DypPSECAsJ1ELYe1klY4YjgZVNn3tE9QJGGONz6T08
- wV2IKlQnqNleoirtlJQ9Uqp59Emo6Tljf3/b+8uD0AmLBqbAo8gvuTYCMYZtBi4I0OCa4pWLU
- 7mxhZL6+JBQ1BSndoWuGHkZ8ayNrV2C0f4Ll12sdXT/1YyDd79e0NQdexNrbBhIo/h3tOBr2x
- KV43dITunqr0fxo3yek4EL0+BB3rRRRHDV+BRw8YMZwVNi9XR81yOJ+QlBYFe+NWYcJtDJzCX
- TaBuLgGOAx55QZFd8MZG/S0YHkWmenrhAKd5HyQKBz8NcH8hImSJZkGO4nuxlFVQYo9uK5inL
- S3U/MYLi7Lg4wALzKHr4Oxi/9gIWDNvSc7k1MKYBqn8s98by5VISTR8uDBxvE5Sz5Pg170KbS
- X9T72Kle6NIJTDJLP3glA+/MTnr8xH/IBjOzEk5OFVT6KLxbttm/owE+jN+mwNIA5pjgD6p+g
- 4eR8STKxjyDtgDWAxwvQZrm64WWGBujJtgoeCmMaRsw7ThSUHAeW6pqPaD9M7BAXYcKaNLmKK
- A8DEHFvrASGVnI+UW339nT2B4ahV/yRzVIuUbwgWKJ5GvLKMgUWNugCFKPEk/W0QN1pQ/w8r0
- EkTWYjINWzGC9g=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:52LajNwg2Bw=:rxHziyDw4uWV2PwYudZT32
+ M7u0SQYAka+f7Yi2xlwVEFG6ltkm0uCfYjAM+Kqt9ULzB/nh2y5aUFPk/XptXVpMdNPbWn1G+
+ EVrB93i5/B3VNVpRVMTT5AW3yzDlkh8ZyIMf/BWtuyL+youJOxfb/XDEDuBstLxAs/tJPDc+I
+ P2LJj02jWmK5YrjBZ1MFd0bgKl7lOi/9/vtXVfNyAhj4rfFInN4sqtFkQVBUj1a0x6uO83dG0
+ wH6Wzt5eqErCbHbYHag3l2W3IN/6OtZTyUmqbviszXNAcGu0PTSvPZWMn4M4Wmd8sjKjzX0ky
+ 3QiiqG3LP+biGm5lbVvyVrd3rJThUCDcBMlHXl/um1P4LD2ktAPxVzZ5qLy5KgAYWclXPje3m
+ 6aHC/xmk6o3zqbadyzW9buGWLqKfDisXCPcUWHE02AHKvQ67JDwxILMZU1cfgWH/THShxr45X
+ fP0XSiH3+PMhKWGXHw71MnsrV2OmWnR46HJx+OMVacRjaYaAxdRQnLTNPNQeoxzXugzNJkS6F
+ e1cADIhHP1iGuAR9qRkKcMUBTvTjwaG+1hWyVn01bHf1L3RrP0j74RoEChgdOng/md9b3/3R6
+ vAz0+ljaPzTO/ErkMjT7PyoA4eE0EckkabWKEPK2NDRO+FOu86X0y16H949ja8luivxDEe08b
+ Ie0uaeRDhd4tVeAGJloxDtanpBCXEQvq/1fE8gO/1IMhWIik1Y17uwfINufI81RLpDh5UraMM
+ 6ZBEDW1VWu/LaAeShC3WpkE92LR3B6iSbNV/3QralDZMGhAtGsF3Dg9m49nvCVYDiOn/Ah55N
+ 2rMw1V25UwYPWxVqHBSSSEFrf+8oQwbBCGH89ISho1nvzCqKAIfTZo4nAWvcTFUN856HH676M
+ 5y5ZSY9mC9GvYi57XcKlLMJn2V7HGShVzfxHitTwovt0AqcWqVr417y0IiKqC6p44Su06XqKW
+ b0YVbs7ahOvaHiq9Qf85v7PgxpwKbdfEakg0F36+2xNCHNEfSPPKArSB8k/EoQWhwpIJEV+/w
+ RMBpWYQbScwvodK13S+rUyXlSBm8UozfNUARW1h90jXrueP5CyD5TANsAq+Jgz68WT9mJtjRj
+ RBmcNi4riimZd4ksfLeppxNrwSPsSc4K4c5
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---p2Pn2ByTKKkOVc1wnYArLAeroBLrAV6hH
-Content-Type: multipart/mixed; boundary="45u8ylyl9zsDeXCHqwBi3upPAlF3DsTnS";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Message-ID: <a835760e-be9d-cfd9-d8c3-c316f34ec20f@gmx.com>
-Subject: Re: [PATCH] btrfs: Allow more disks missing for RAID10
-References: <20190718062749.11276-1-wqu@suse.com>
- <20190725183741.GX2868@twin.jikos.cz>
-In-Reply-To: <20190725183741.GX2868@twin.jikos.cz>
-
---45u8ylyl9zsDeXCHqwBi3upPAlF3DsTnS
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 2019/7/25 5:33 PM, Johannes Thumshirn wrote:
+> Create a structure to encode the type and length for the known on-disk
+> checksums. Also add a table and a convenience macro for adding the
+> checksum types to the table.
+>
+> This makes it easier to add new checksums later.
+>
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> ---
+>   fs/btrfs/ctree.h | 16 +++++++++++-----
+>   1 file changed, 11 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> index da97ff10f421..099401f5dd47 100644
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -82,9 +82,15 @@ struct btrfs_ref;
+>    */
+>   #define BTRFS_LINK_MAX 65535U
+>
+> -/* four bytes for CRC32 */
+> -static const int btrfs_csum_sizes[] =3D { 4 };
+> -static const char *btrfs_csum_names[] =3D { "crc32c" };
+> +#define BTRFS_CHECKSUM_TYPE(_type, _size, _name) \
+> +	[_type] =3D { .size =3D _size, .name =3D _name }
+> +
+> +static const struct btrfs_csums {
+> +	u16		size;
+> +	const char	*name;
+> +} btrfs_csums[] =3D {
+> +	BTRFS_CHECKSUM_TYPE(BTRFS_CSUM_TYPE_CRC32, 4, "crc32c"),
+> +};
+>
+How about:
 
-On 2019/7/26 =E4=B8=8A=E5=8D=882:37, David Sterba wrote:
-> On Thu, Jul 18, 2019 at 02:27:49PM +0800, Qu Wenruo wrote:
->> RAID10 can accept as much as half of its disks to be missing, as long =
-as
->> each sub stripe still has a good mirror.
->=20
-> Can you please make a test case for that?
+struct btrfs_csum {
+         u16             size;
+         const char      *name;
+};
 
-Fstests one or btrfs-progs one?
+static const struct btrfs_csum btrfs_csums[] =3D {
+#define BTRFS_CHECKSUM_TYPE(_type, _size, _name) \
+              [_type] =3D { .size =3D _size, .name =3D _name }
 
->=20
-> I think the number of devices that can be lost can be higher than a hal=
-f
-> in some extreme cases: one device has copies of all stripes, 2nd copy
-> can be scattered randomly on the other devices, but that's highly
-> unlikely to happen.
->=20
-> On average it's same as raid1, but the more exact check can potentially=
+         BTRFS_CHECKSUM_TYPE(BTRFS_CSUM_TYPE_CRC32, 4, "crc32c"),
+};
 
-> utilize the stripe layout.
->=20
-That will be at extent level, to me it's an internal level violation,
-far from what we want to improve.
-
-So not that worthy.
-
-Thanks,
-Qu
+Since the macro BTRFS_CHECKSUM_TYPE is only used in array btrfs_csum
+btrfs_csums. And this makes the struct btrfs_csum clear.
 
 
---45u8ylyl9zsDeXCHqwBi3upPAlF3DsTnS--
+=2D--
+Su
 
---p2Pn2ByTKKkOVc1wnYArLAeroBLrAV6hH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+>   #define BTRFS_EMPTY_DIR_SIZE 0
+>
+> @@ -2373,13 +2379,13 @@ static inline int btrfs_super_csum_size(const st=
+ruct btrfs_super_block *s)
+>   	/*
+>   	 * csum type is validated at mount time
+>   	 */
+> -	return btrfs_csum_sizes[t];
+> +	return btrfs_csums[t].size;
+>   }
+>
+>   static inline const char *btrfs_super_csum_name(u16 csum_type)
+>   {
+>   	/* csum type is validated at mount time */
+> -	return btrfs_csum_names[csum_type];
+> +	return btrfs_csums[csum_type].name;
+>   }
+>
+>   /*
+>
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl06PjUACgkQwj2R86El
-/qhplwgAi0LSjDWKnUvxVE/TQqcQQgENmhbHjsWaYKEqS00/N1sVEAIxsHzU8H0Z
-iO8e6pU752BVXNTafmlok+yUj4qQG2bY7rPbzuK1MOGxEH073L2ivQBLOAiR5Tgw
-fh67en93zgbz0lIlDHFnw/3lZd8FTMUjvrvyzAUXc5BfE40yPHlBEVD3fh49vlsu
-keNbnlBQsjwl3gOCdHndHDFjxCS2p3TI2J6ApIsUtanOTVWNMV28NmBTz9Ws5/kN
-HdCVACyVbFeSqW6sQ4G5m2bqvVWogzhGHkWtqphm6JyIOsBv7/M4+2U4fmc6q04R
-MnMbCqnYpqHJ289MayX0fScme/fwAA==
-=4uL/
------END PGP SIGNATURE-----
-
---p2Pn2ByTKKkOVc1wnYArLAeroBLrAV6hH--
