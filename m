@@ -2,141 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EAB1771F0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 21:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAE5774F0
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Jul 2019 01:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388346AbfGZTQl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Jul 2019 15:16:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55694 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387455AbfGZTQl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Jul 2019 15:16:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id ADC9DAC66;
-        Fri, 26 Jul 2019 19:16:39 +0000 (UTC)
-Subject: Re: 5.3.0-0.rc1 various tasks blocked for more than 120 seconds
-To:     Chris Murphy <lists@colorremedies.com>
+        id S1726491AbfGZXYb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Jul 2019 19:24:31 -0400
+Received: from mout.gmx.net ([212.227.15.15]:43089 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726167AbfGZXYa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Jul 2019 19:24:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1564183456;
+        bh=SNvyN2iD5lBxulOqDqWeE6quPnedzolWrtHqY9gWVTI=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=W2KYODEsDUjgpdG1Uv00DgbmxSIj0F5ytidTc/b//MrB7r//5bfBzscaMdyOcSRVb
+         X8GZVQPqhDLX6Ukf5XCazVKHbDQ2WfUNuFF9zV/eyV7LkiqrAGh+QhQjXEBKuMbkWh
+         cQ0eOioy73IqVN/pd2ShG++lyiJD3YNrDWhb+M8U=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx001
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0LkfdE-1iRJjX2zm0-00aYRw; Sat, 27
+ Jul 2019 01:24:16 +0200
+Subject: Re: qgroup: Don't trigger backref walk at delayed ref insert time
+ (Re: Kernel traces)
+To:     "Stephen R. van den Berg" <srb@cuci.nl>
 Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtRGNrKDBBFOZ3=Say=STMBAGMNKBwe4xsdJZL7mCRw98g@mail.gmail.com>
- <CAJCQCtSFNVTNNAEP9hSY3cbWike5VkdH8EZnaojjgZZ3tf-SfQ@mail.gmail.com>
- <a06193db-a690-49cd-0f04-0a8f7a680951@suse.com>
- <CAJCQCtQMcrAv9eQbHXenYzmbeEpFG+jkCm5Hqs75vXCyX29amg@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+References: <20181210120514.GA14828@cuci.nl>
+ <CAJCQCtQxaAKMP9qSF1UnOG7cy8ya=4MckGt9kL0O8oGxD4fitg@mail.gmail.com>
+ <20181211115226.GA20157@cuci.nl>
+ <CAJCQCtRva5ZrF2pq93pb0_be7P+CE+0no-nJeQTXtEaq-LpfVQ@mail.gmail.com>
+ <20181212072614.GA9188@cuci.nl>
+ <CAJCQCtSCcM0YTtp0f1i=FmrFigsfJEsr+Excwm=YHx4_wN49gg@mail.gmail.com>
+ <20181228092036.GA30363@cuci.nl>
+ <9b81647b-66c2-9870-161f-084b7d41af9c@gmx.com>
+ <20190726163132.GA29895@cuci.nl>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <35b5e6a8-8e9b-037d-b248-36fee9da8717@suse.com>
-Date:   Fri, 26 Jul 2019 22:16:38 +0300
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <9c462f2e-9157-6bce-84f7-e70afa8bbe31@gmx.com>
+Date:   Sat, 27 Jul 2019 07:24:12 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtQMcrAv9eQbHXenYzmbeEpFG+jkCm5Hqs75vXCyX29amg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190726163132.GA29895@cuci.nl>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="I3BlDjvx0ccCTSoxyn52SfboKeObgkibv"
+X-Provags-ID: V03:K1:i9NImdKOPh10o2JErB1w7n6rz+/N0wxYhUKgY/HQLKYObBZhQC2
+ jMK0sjTLB2UJqLfPJCxVJ61yGGmoid3wSW5wkoArgrUpk77DYT4O/+SShfSawRl9Bx/km9s
+ XR0ggeeA8zLt1tVDFaxDcwisjSEwC8LAK3qTULWpEc4KemXor9XAsj2RkdXmOq1u1nzDDvK
+ cODx0gwZ0emOu2J+MqW9A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:6q250u1KXPo=:7pyL8kLboE1vKDvSfLCw6I
+ 6ueiIT5jnU97gKFdAKaUGyfRkvnepy+WsIwdh39diUZ44tEjn1748uuC1ObgZ8VDDxu0CjZ/Y
+ 76Ezlak/a4iDIstcPLQ1ZSWN7fkJrlVWCjtMKl/EUADxsdPVjd2MxSty0HLsHj+UrnmM98nUY
+ XvtoZTe5jwQHcMC49XwWlPHj5XWoN8eTLkNDedujtKuk9o5wsBzsWB4P0T7Myjd4lCRA3BG+9
+ LBvpo9vIvGh6ihsam0rkb95V4Or6HybXLvFqKN3C9MeV1kzGni1HCqu4pWvPREqNlxxRMknp9
+ z/JDK015RDvzR1VsHM0N3F1smszxJb+zgKQkHPlCsfoJVyBEqKrpFC8D3pfJnyY3U3INJk2rD
+ yoaSYC9JJAesE8w43yNNc0H8gQzsbAhDVrJqNPV3yHDek1tlXSZY2Y8gOEO1sLGkcb7qN/sfD
+ j/PXA2/cp66UFFaF5po9OfzExG7ckMtqfysWE3YYle3/A4h3HBLwnmY8/xfcVVGUkojaarOiM
+ pgFC/R553XUfEbZslU7+NKrN9rGztxXb6h+/g6orGm5AO/s8lmJtTWW4JnHl5Tc5r7MiegcIj
+ l/fKxoR8b7b4/8/P0G2+Idm2XYIfsOeW26wZLx11+sxQqRA/Vq1SJuAgucc9pot1YSmlufTxK
+ kepzybDFYLJoizfE6iXTyyaa09Lp9SOMkZdg5VXngFmtlEGIfh4JJpph0f8mA+84iBtaxDfRh
+ kqXg4dut7/67HzFNFY1tjXILRkVvaHhGZ2hLBE4tkfuOXNXQlx7iO9j2XG6VBm+gto3Y/xzMt
+ I/BBy4nwlo8d8j9vftpqq4gwDq0P6gMQ+yR1DDvwKiYXBkEJzJy9KxI4cHmT11vgcFR8V32bm
+ hPeEwkhIcIImgLrMKESp2t+hJhwJG+v2pgdAmgHI2z0njPAomcQk5RzhTIfZrpaIo3pOY3HFR
+ 72H/ufnUrIUQGLsc83Rw/jQRpH8Kqmqd6Hp5cHhj7yFGq3EDiXfKxKlU5ZyJx0CvphLWw+K5Q
+ pcNO5GbO933pqe9ZpiECMBRzbaqN1C+Kl7nt6KqRE03kCtrLIUwq77d3q5zOdo+pwNKdbbaWi
+ FBFk6lO8GGw28E=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--I3BlDjvx0ccCTSoxyn52SfboKeObgkibv
+Content-Type: multipart/mixed; boundary="WPFNyzHqdQYT31hntbIISagUCvhSyTLxv";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: "Stephen R. van den Berg" <srb@cuci.nl>
+Cc: Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <9c462f2e-9157-6bce-84f7-e70afa8bbe31@gmx.com>
+Subject: Re: qgroup: Don't trigger backref walk at delayed ref insert time
+ (Re: Kernel traces)
+References: <20181210120514.GA14828@cuci.nl>
+ <CAJCQCtQxaAKMP9qSF1UnOG7cy8ya=4MckGt9kL0O8oGxD4fitg@mail.gmail.com>
+ <20181211115226.GA20157@cuci.nl>
+ <CAJCQCtRva5ZrF2pq93pb0_be7P+CE+0no-nJeQTXtEaq-LpfVQ@mail.gmail.com>
+ <20181212072614.GA9188@cuci.nl>
+ <CAJCQCtSCcM0YTtp0f1i=FmrFigsfJEsr+Excwm=YHx4_wN49gg@mail.gmail.com>
+ <20181228092036.GA30363@cuci.nl>
+ <9b81647b-66c2-9870-161f-084b7d41af9c@gmx.com>
+ <20190726163132.GA29895@cuci.nl>
+In-Reply-To: <20190726163132.GA29895@cuci.nl>
+
+--WPFNyzHqdQYT31hntbIISagUCvhSyTLxv
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 26.07.19 г. 22:10 ч., Chris Murphy wrote:
-> On Fri, Jul 26, 2019 at 1:07 PM Nikolay Borisov <nborisov@suse.com> wrote:
->>
->>
->>
->> On 26.07.19 г. 22:00 ч., Chris Murphy wrote:
->>> On Fri, Jul 26, 2019 at 12:43 PM Chris Murphy <lists@colorremedies.com> wrote:
->>>>
->>>> Seeing this with Fedora kernel 5.3.0-0.rc1.git3.1.fc31.x86_64 which
->>>> translates to git bed38c3e2dca
->>>>
->>>> It's causing automated OS installations to hang indefinitely, only on
->>>> Btrfs. This is an excerpt of the first of many call traces:
->>>>
->>>> 15:52:20,316 ERR kernel:INFO: task kworker/u4:0:7 blocked for more
->>>> than 122 seconds.
->>>> 15:52:20,316 ERR kernel:      Not tainted 5.3.0-0.rc1.git3.1.fc31.x86_64 #1
->>>> 15:52:20,316 ERR kernel:"echo 0 >
->>>> /proc/sys/kernel/hung_task_timeout_secs" disables this message.
->>>> 15:52:20,316 INFO kernel:kworker/u4:0    D12192     7      2 0x80004000
->>>> 15:52:20,317 INFO kernel:Workqueue: btrfs-endio-write
->>>> btrfs_endio_write_helper [btrfs]
->>>> 15:52:20,317 WARNING kernel:Call Trace:
->>>> 15:52:20,317 WARNING kernel: ? __schedule+0x352/0x900
->>>> 15:52:20,317 WARNING kernel: schedule+0x3a/0xb0
->>>> 15:52:20,317 WARNING kernel: btrfs_tree_read_lock+0xa3/0x260 [btrfs]
->>>> 15:52:20,317 WARNING kernel: ? finish_wait+0x90/0x90
->>>> 15:52:20,317 WARNING kernel: btrfs_read_lock_root_node+0x2f/0x40 [btrfs]
->>>> 15:52:20,317 WARNING kernel: btrfs_search_slot+0x601/0x9d0 [btrfs]
->>>> 15:52:20,317 WARNING kernel: btrfs_lookup_file_extent+0x4c/0x70 [btrfs]
->>>> 15:52:20,317 WARNING kernel: __btrfs_drop_extents+0x16e/0xe00 [btrfs]
->>>> 15:52:20,317 WARNING kernel: ? __set_extent_bit+0x55f/0x6a0 [btrfs]
->>>> 15:52:20,317 WARNING kernel: ? kmem_cache_free+0x368/0x420
->>>> 15:52:20,318 WARNING kernel:
->>>> insert_reserved_file_extent.constprop.0+0x93/0x2e0 [btrfs]
->>>> 15:52:20,318 WARNING kernel: ? start_transaction+0x95/0x4e0 [btrfs]
->>>> 15:52:20,318 WARNING kernel: btrfs_finish_ordered_io+0x3da/0x840 [btrfs]
->>>> 15:52:20,318 WARNING kernel: normal_work_helper+0xd7/0x500 [btrfs]
->>>> 15:52:20,318 WARNING kernel: process_one_work+0x272/0x5a0
->>>> 15:52:20,318 WARNING kernel: worker_thread+0x50/0x3b0
->>>> 15:52:20,318 WARNING kernel: kthread+0x108/0x140
->>>> 15:52:20,318 WARNING kernel: ? process_one_work+0x5a0/0x5a0
->>>> 15:52:20,318 WARNING kernel: ? kthread_park+0x80/0x80
->>>> 15:52:20,318 WARNING kernel: ret_from_fork+0x3a/0x50
->>>> 15:52:20,318 ERR kernel:INFO: task kworker/u4:1:31 blocked for more
->>>> than 122 seconds.
->>>
->>> Is it related to this and maybe already fixed? Or is it a different problem?
->>> https://lore.kernel.org/linux-btrfs/20190725082729.14109-3-nborisov@suse.com/
->>
->> Likely yes.
-> 
-> Yes it's fixed, or yes it's different?
 
-Yes, it looks like the problem described in the referenced patch and it
-should be fixed.
+On 2019/7/27 =E4=B8=8A=E5=8D=8812:31, Stephen R. van den Berg wrote:
+> Qu Wenruo wrote:
+>> It's caused by qgroup, and a dead lock on btrfs_drop_snapshot().
+>=20
+>> This is one of the easiest way to trigger an ABBA deadlock.
+>=20
+>> Please either disable qgroup or apply this patch to solve it:
+>> https://patchwork.kernel.org/patch/10725371/
+>=20
+> Can anyone confirm that patch https://patchwork.kernel.org/patch/107253=
+71/
+> (qgroup: Don't trigger backref walk at delayed ref insert time)
+> is present in mainline Linux kernel v5.2.2 ?
 
-> 
+Upstream goes with a better solution:
+Fixes: 38e3eebff643 ("btrfs: honor path->skip_locking in backref code")
+
+Thanks,
+Qu
+
+>=20
+> I seem to be getting a conflict on merging that patch with this kernel.=
+
+>=20
+
+
+--WPFNyzHqdQYT31hntbIISagUCvhSyTLxv--
+
+--I3BlDjvx0ccCTSoxyn52SfboKeObgkibv
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl07i5wACgkQwj2R86El
+/qj6Ugf9HLOS1rJj8tMpacwMEyQpQw/RZT40uRa8l9VQENgTz7tXvJovLuvHCN4C
+DhRU0hBGXYRPfA00ncwHuni8wl5LxSsjaIG44Xli7s557D4LTaP+qWEuuxpqPZKN
+mmmx0oBpSM7JY8ijdDCBjxPmGf+kSfP18q9Wy8ZBdC4s/BRPDqgok7pmA19dYT/v
+ChNH9s6Yd9GEKhv4z/O8tSRobx/Vcp+/YMzsMzRbQW9xPKK4ZvGMk+im2NuUv/bV
+Ee7rMIGb9gDnriwbSIj/dlMKhiSzDrlUjb2xDRK5LUZiYB9J3xJFumrf/jpPMsCD
+nUAOwbB/aS+5p5qbRNEytpkbt3tj+A==
+=xmLh
+-----END PGP SIGNATURE-----
+
+--I3BlDjvx0ccCTSoxyn52SfboKeObgkibv--
