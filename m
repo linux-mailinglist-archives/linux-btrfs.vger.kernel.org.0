@@ -2,56 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F23AC76F2F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 18:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9CCD76F39
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 18:41:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387452AbfGZQjt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Jul 2019 12:39:49 -0400
-Received: from aristoteles.cuci.nl ([212.125.128.18]:45425 "EHLO
-        aristoteles.cuci.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725298AbfGZQjt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Jul 2019 12:39:49 -0400
-X-Greylist: delayed 495 seconds by postgrey-1.27 at vger.kernel.org; Fri, 26 Jul 2019 12:39:48 EDT
-Received: by aristoteles.cuci.nl (Postfix, from userid 500)
-        id 922295463; Fri, 26 Jul 2019 18:31:32 +0200 (CEST)
-Date:   Fri, 26 Jul 2019 18:31:32 +0200
-From:   "Stephen R. van den Berg" <srb@cuci.nl>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: qgroup: Don't trigger backref walk at delayed ref insert time (Re:
- Kernel traces)
-Message-ID: <20190726163132.GA29895@cuci.nl>
-References: <20181210120514.GA14828@cuci.nl>
- <CAJCQCtQxaAKMP9qSF1UnOG7cy8ya=4MckGt9kL0O8oGxD4fitg@mail.gmail.com>
- <20181211115226.GA20157@cuci.nl>
- <CAJCQCtRva5ZrF2pq93pb0_be7P+CE+0no-nJeQTXtEaq-LpfVQ@mail.gmail.com>
- <20181212072614.GA9188@cuci.nl>
- <CAJCQCtSCcM0YTtp0f1i=FmrFigsfJEsr+Excwm=YHx4_wN49gg@mail.gmail.com>
- <20181228092036.GA30363@cuci.nl>
- <9b81647b-66c2-9870-161f-084b7d41af9c@gmx.com>
+        id S1727807AbfGZQlw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Jul 2019 12:41:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57038 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727343AbfGZQlw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Jul 2019 12:41:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 31E5FAF27;
+        Fri, 26 Jul 2019 16:41:51 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 99A62DA811; Fri, 26 Jul 2019 18:42:27 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, clm@fb.com,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.3-rc2
+Date:   Fri, 26 Jul 2019 18:42:24 +0200
+Message-Id: <cover.1564158940.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9b81647b-66c2-9870-161f-084b7d41af9c@gmx.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Qu Wenruo wrote:
->It's caused by qgroup, and a dead lock on btrfs_drop_snapshot().
+Hi,
 
->This is one of the easiest way to trigger an ABBA deadlock.
+please pull two regression fixes:
 
->Please either disable qgroup or apply this patch to solve it:
->https://patchwork.kernel.org/patch/10725371/
+* hangs caused by a missing barrier in the locking code
 
-Can anyone confirm that patch https://patchwork.kernel.org/patch/10725371/
-(qgroup: Don't trigger backref walk at delayed ref insert time)
-is present in mainline Linux kernel v5.2.2 ?
+* memory leaks of extent_state due to bad handling of a cached pointer
 
-I seem to be getting a conflict on merging that patch with this kernel.
--- 
-Stephen.
+Thanks.
+
+----------------------------------------------------------------
+The following changes since commit 373c3b80e459cb57c34381b928588a3794eb5bbd:
+
+  btrfs: don't leak extent_map in btrfs_get_io_geometry() (2019-07-17 17:03:36 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.3-rc1-tag
+
+for you to fetch changes up to a3b46b86ca76d7f9d487e6a0b594fd1984e0796e:
+
+  btrfs: fix extent_state leak in btrfs_lock_and_flush_ordered_range (2019-07-26 12:21:22 +0200)
+
+----------------------------------------------------------------
+Naohiro Aota (1):
+      btrfs: fix extent_state leak in btrfs_lock_and_flush_ordered_range
+
+Nikolay Borisov (1):
+      btrfs: Fix deadlock caused by missing memory barrier
+
+ fs/btrfs/locking.c      |  9 ++++++---
+ fs/btrfs/ordered-data.c | 11 ++++++-----
+ 2 files changed, 12 insertions(+), 8 deletions(-)
