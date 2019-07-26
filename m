@@ -2,100 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8972376938
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 15:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5771E76B58
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 16:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388622AbfGZNuK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Jul 2019 09:50:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56088 "EHLO mx1.suse.de"
+        id S1727492AbfGZOSu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Jul 2019 10:18:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41402 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388359AbfGZNog (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Jul 2019 09:44:36 -0400
+        id S1727358AbfGZOSu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 26 Jul 2019 10:18:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EA119AD18;
-        Fri, 26 Jul 2019 13:44:34 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 44458AE82;
+        Fri, 26 Jul 2019 14:18:48 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 04038DA811; Fri, 26 Jul 2019 15:45:10 +0200 (CEST)
-Date:   Fri, 26 Jul 2019 15:45:09 +0200
+        id C9770DA811; Fri, 26 Jul 2019 16:19:23 +0200 (CEST)
+Date:   Fri, 26 Jul 2019 16:19:23 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [RFC PATCH 3/4] btrfs: use xxhash64 for checksumming
-Message-ID: <20190726134508.GB2868@twin.jikos.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] Btrfs: fix race leading to fs corruption after
+ transaction abortion
+Message-ID: <20190726141922.GC2868@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <cover.1564046812.git.jthumshirn@suse.de>
- <4ac3332af1fa5ba7ecb92181329151382b800f3d.1564046812.git.jthumshirn@suse.de>
- <c2f5e995-6edf-991a-51a6-2c7ba43df41b@gmx.com>
- <20190725141837.GA3936@x250.microfocus.com>
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20190725102704.11404-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190725141837.GA3936@x250.microfocus.com>
+In-Reply-To: <20190725102704.11404-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jul 25, 2019 at 04:18:37PM +0200, Johannes Thumshirn wrote:
-> On Thu, Jul 25, 2019 at 08:02:12PM +0800, Qu Wenruo wrote:
-> > 
-> > 
-> > On 2019/7/25 下午5:33, Johannes Thumshirn wrote:
-> > > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> > > ---
-> > >  fs/btrfs/Kconfig                | 1 +
-> > >  fs/btrfs/ctree.h                | 1 +
-> > >  fs/btrfs/disk-io.c              | 1 +
-> > >  fs/btrfs/super.c                | 1 +
-> > >  include/uapi/linux/btrfs_tree.h | 1 +
-> > >  5 files changed, 5 insertions(+)
-> > > 
-> > > diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-> > > index 38651fae7f21..6d5a01c57da3 100644
-> > > --- a/fs/btrfs/Kconfig
-> > > +++ b/fs/btrfs/Kconfig
-> > > @@ -5,6 +5,7 @@ config BTRFS_FS
-> > >  	select CRYPTO
-> > >  	select CRYPTO_CRC32C
-> > >  	select LIBCRC32C
-> > > +	select CRYPTO_XXHASH
-> > 
-> > Just an off topic idea, can we make such CRYPTO_* support configurable?
-> > E.g. make something like CONFIG_BTRFS_CRYPTO_XXHASH.
-> > 
-> > Not sure if everyone would like to pull all hash algorithm.
->  
-> This is something I thought about as well, but I was afraid of people shooting
-> themselves in the foot if they forget to switch them on and mkfs with the
-> wrong option.
+On Thu, Jul 25, 2019 at 11:27:04AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When one transaction is finishing its commit, it is possible for another
+> transaction to start and enter its initial commit phase as well. If the
+> first ends up getting aborted, we have a small time window where the second
+> transaction commit does not notice that the previous transaction aborted
+> and ends up committing, writing a superblock that points to btrees that
+> reference extent buffers (nodes and leafs) that were not persisted to disk.
+> The consequence is that after mounting the filesystem again, we will be
+> unable to load some btree nodes/leafs, either because the content on disk
+> is either garbage (or just zeroes) or corresponds to the old content of a
+> previouly COWed or deleted node/leaf, resulting in the well known error
+> messages "parent transid verify failed on ...".
+> The following sequence diagram illustrates how this can happen.
+> 
+>         CPU 1                                           CPU 2
+> 
+>  <at transaction N>
+> 
+>  btrfs_commit_transaction()
+>    (...)
+>    --> sets transaction state to
+>        TRANS_STATE_UNBLOCKED
+>    --> sets fs_info->running_transaction
+>        to NULL
+> 
+>                                                     (...)
+>                                                     btrfs_start_transaction()
+>                                                       start_transaction()
+>                                                         wait_current_trans()
+>                                                           --> returns immediately
+>                                                               because
+>                                                               fs_info->running_transaction
+>                                                               is NULL
+>                                                         join_transaction()
+>                                                           --> creates transaction N + 1
+>                                                           --> sets
+>                                                               fs_info->running_transaction
+>                                                               to transaction N + 1
+>                                                           --> adds transaction N + 1 to
+>                                                               the fs_info->trans_list list
+>                                                         --> returns transaction handle
+>                                                             pointing to the new
+>                                                             transaction N + 1
+>                                                     (...)
+> 
+>                                                     btrfs_sync_file()
+>                                                       btrfs_start_transaction()
+>                                                         --> returns handle to
+>                                                             transaction N + 1
+>                                                       (...)
+> 
+>    btrfs_write_and_wait_transaction()
+>      --> writeback of some extent
+>          buffer fails, returns an
+> 	 error
+>    btrfs_handle_fs_error()
+>      --> sets BTRFS_FS_STATE_ERROR in
+>          fs_info->fs_state
+>    --> jumps to label "scrub_continue"
+>    cleanup_transaction()
+>      btrfs_abort_transaction(N)
+>        --> sets BTRFS_FS_STATE_TRANS_ABORTED
+>            flag in fs_info->fs_state
+>        --> sets aborted field in the
+>            transaction and transaction
+> 	   handle structures, for
+>            transaction N only
+>      --> removes transaction from the
+>          list fs_info->trans_list
+>                                                       btrfs_commit_transaction(N + 1)
+>                                                         --> transaction N + 1 was not
+> 							    aborted, so it proceeds
+>                                                         (...)
+>                                                         --> sets the transaction's state
+>                                                             to TRANS_STATE_COMMIT_START
+>                                                         --> does not find the previous
+>                                                             transaction (N) in the
+>                                                             fs_info->trans_list, so it
+>                                                             doesn't know that transaction
+>                                                             was aborted, and the commit
+>                                                             of transaction N + 1 proceeds
+>                                                         (...)
+>                                                         --> sets transaction N + 1 state
+>                                                             to TRANS_STATE_UNBLOCKED
+>                                                         btrfs_write_and_wait_transaction()
+>                                                           --> succeeds writing all extent
+>                                                               buffers created in the
+>                                                               transaction N + 1
+>                                                         write_all_supers()
+>                                                            --> succeeds
+>                                                            --> we now have a superblock on
+>                                                                disk that points to trees
+>                                                                that refer to at least one
+>                                                                extent buffer that was
+>                                                                never persisted
+> 
+> So fix this by updating the transaction commit path to check if the flag
+> BTRFS_FS_STATE_TRANS_ABORTED is set on fs_info->fs_state if after setting
+> the transaction to the TRANS_STATE_COMMIT_START we do not find any previous
+> transaction in the fs_info->trans_list. If the flag is set, just fail the
+> transaction commit with -EROFS, as we do in other places. The exact error
+> code for the previous transaction abort was already logged and reported.
+> 
+> Fixes: 49b25e0540904b ("btrfs: enhance transaction abort infrastructure")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-> Not sure what's the better way here? Dave?
+Reviewed-by: David Sterba <dsterba@suse.com>
 
-I'd go to pull everything unconditionally, which means that all
-dependent modules are built and does not require the user to tweak the
-config.
-
-I understand that there are setups that don't want to provide all hash
-algorithms eg. due to space constraints. That will be still possible and
-puts the "burden" on the distributor/integrator. Simply don't provide
-the .ko files. The crypto API can detect that during mount the shash
-descriptor cannot be instantiated and will fail. In specialized setups
-this is ok, because lack of the hash algorithm is known.
-
-For everybody else, the filesystem should come with all parts included
-so the features work.
-
-The situation with zlib/lzo/zstd is different because we use the library
-functions, not the separate .ko modules. This is a bit more convenient.
-
-We don't want to do that with the hash algorithms though because there
-are usually optimized verions that we do want to use, and the crypto API
-does all the work.
+Queued for 5.3, thanks.
