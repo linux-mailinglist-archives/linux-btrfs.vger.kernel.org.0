@@ -2,117 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F30076010
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 09:47:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2500276085
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Jul 2019 10:15:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbfGZHr1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 26 Jul 2019 03:47:27 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:8944 "EHLO
+        id S1726586AbfGZIPZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 26 Jul 2019 04:15:25 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:11529 "EHLO
         esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbfGZHr0 (ORCPT
+        with ESMTP id S1726203AbfGZIPU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 26 Jul 2019 03:47:26 -0400
+        Fri, 26 Jul 2019 04:15:20 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1564127247; x=1595663247;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=mk5kSLQStMoPCc9aun5tnr8NyiXoRCK9IzcsRVv8jVc=;
-  b=HB2wwLBZyDbszmXEGH6DkESkBCAwKBg/6xiz2jBM5JZrjiZXm9jix5Pz
-   UjwkBHHWfoeX7bTafAfDTIrPzRs3m+7POYt3rZbEg/MepvwfhjKRvy10j
-   /DwDGwvnPL2kluq4g05rSLKccJ55fKqbFJ9Ky/Km+iJno28jXxqqlaRcl
-   1pliNCG9nG1UwyNX1NbI69gzAlXYfvlHTHGq20nAi4wm/FFxvrOnktfXy
-   FXpX64DOTpqnePgIzYnL4b1bLBxvSnocQ3/5IMnh2mSjKHZTIUajAc5XE
-   pE+PI1XOu619Wh+WhQQbdNIn8wZGq2PVqqglq3mLxkOp3i+GGZs2+Dww3
-   A==;
-IronPort-SDR: 5md4WM+QhVHkThp2Y3IgMdqLmgbM17aicxLJDg2tilw4kWOBxX7sw0rhf/v5wR3EWnLPRpM9JB
- BDwuwlP1y73EJ72DUa/yUezaKAjM9PIJiBQsHai5N5S7jfpLzBUG10NE3k03NYBNlJFSU3oE+n
- oAhMJrpl84Gs25SEozXAEPj+NjcKKPlriqIXUmthc/e0NT3E7Ao07tPtToKCxEEEqhbr9veROc
- wIb3TF7X1eVHUNtxMw9fQwyXTJ+1Qo7IyQQ9ysGNR/KvP1GuOLOnutaIOxGqhOG748Bzt0Lsik
- wkg=
+  t=1564128920; x=1595664920;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=VkKIzJq+7U8jxmFSMc0E2oXrCb2hdYr8AaDhljLA4QI=;
+  b=EKBg3foMd8yQ/daYSeID3B5YRFrDkUUEOJuD8QPlXU9YZQg8+hGza++e
+   zhVCipO6pICUJIVwDKFyXL12yycATTvITpya3STCDCuX7KveASstHTHlr
+   cbshtH9zT6u0zYzXfPoY5mfM/Zsh/5ickXpSnkkg/LZVZYF1xIs23tgVn
+   rWy0tOKR+NhLBv1k7Hu9obnkzAUNFPnABvW87uojMrYzvy+SxtEaQozQc
+   kE+3S5Ln0u1T6okcS3RhbEohKoiJRArmc/GDFh8KEwwHzKJlb71cRj7lT
+   7x0+xM36ThfYKi5XuYt0aNqO2bc25Avebod+DqAqWLVFCbeYCFHOmVxMn
+   g==;
+IronPort-SDR: 10bZR+NoEGPdyWnkEIONXM+kCuJrFXf/2pAp7ehUiNHlUN89U6Cq4NyhrHyzqi6RvkoJL/e7tL
+ bHgVuFesJAZJ5a64+oHkunNXP8dn1yxeVLEjwKfFRaXq1/wO/lk5ALaSViZ0YeQVrxyjmxwWIj
+ hNJquri30lrgmXYQijCy215uTqiU1nlUxNvTzNJom3HydIoNWrANcB+RLPFlgRcp2UulrmhJhE
+ C0omPI6xeXG9kddJ26goAF4FrKG8a9XxAFM1R2LcSa61C8X8Hl0gCHZutUf8qd1LYo3uPfNimc
+ bYk=
 X-IronPort-AV: E=Sophos;i="5.64,310,1559491200"; 
-   d="scan'208";a="118887351"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Jul 2019 15:47:26 +0800
-IronPort-SDR: L2RifZdd1CSELDxpQ/NwqVP5K3+cBkXgy6yqgjDyFUC3VlYL7S/jbXwZoT4Rr9RnfjDfwCAFMC
- V0t4zH1lcdf/6z+phES+//AjAwDjxzTSbKUWU7fjJYbJQhDFU64mESpRAgk+DUcc7XeEpaPoXQ
- UpbHeGycbyJO5alctt3NQYevLNWS+EVpaCnCpG6hN/dw9caRP8GCe5LOT6eu6l5eaL/1u0sm4W
- Z3+hb97GBZTlEs3pmxe32tDCNUqUITWBWkWUzcRauFIQx6S5D6CwUspvIZdF/XuXwIpleNCskG
- rQ4owC4y5sEYVVpOaSWy60ww
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP; 26 Jul 2019 00:45:35 -0700
-IronPort-SDR: Tb6uNtzw+n2RcFQnRjqFt0QtKTcZBTCarHnV4lUUcGoPbeeaquZWRn4nDbmngfPgmvfrHLtWdc
- 1Cdz1IamuFo/OZ7KmCphgdYfO5kIYPHlASLL+8kyXAnIGENZsK+VaTCzoMaxMhYD/p5QMlfneZ
- MrTanDLmeYGCgK329IWb4tvbsXygTg4nBY0armidGg2fMWi9UZ+9GMDRadkHLaJhpmD1RAkctH
- TRT+bHqHwN4XzhhMrSah3GjJoB4u4SEyLfs1WAjSqBI+/G7RM6isv6PhhsPm7vaJT8qkFeY9+O
- yOw=
-Received: from naota.dhcp.fujisawa.hgst.com (HELO naota.fujisawa.hgst.com) ([10.149.53.115])
-  by uls-op-cesaip01.wdc.com with ESMTP; 26 Jul 2019 00:47:26 -0700
+   d="scan'208";a="118889135"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 26 Jul 2019 16:15:20 +0800
+IronPort-SDR: 2e+EgDWxq8EqUY7K5svt/E1RcCx+YLE4A2x2UsRzSa2pKObVSIHJ/HJGwsHh2LRUpoowPskMYn
+ PirEtaLefUiOG4v8ummlAl6pNyjJ8VysaiSaNhf4cQqyO2YWQIflc/Rv0+a34DYSc80QJA/H+R
+ glRIspPbSvKEWHvf6PVdqqAnV+BVzpc3bDQMzDcGqGxR6t+1LCz597907yNmVVRgvl9avQRCns
+ ppib+ftPRqY/fkXWE3bXkAlmjctT2swNdJqrruxNrwHa9R3NB5XDE+DC2ByYjdxH2l0xDrzHYj
+ FctLre9cSVLZdWPQrptgF4CT
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP; 26 Jul 2019 01:13:29 -0700
+IronPort-SDR: OCgvOK6qKbgd6PVS6MyE6ZgZlOTQsww/TXASZd1Dr1Xbis51aQwkbscoSoyz0l+rLI/4LAXgnm
+ 0vJdERRVCII/caB2xgalILMEqxyoMIJ93I3iKaaIhcO9Upo3Uuk3JBiciKSjIlsSSl0SNXEjJB
+ rP5JY2w2p5cQXb3H/E/7nn95AR+lgQFFJg/5chVEAAxIPzMktzP7eI2mdKd++DhZVysA4Tz7HH
+ lz0LmGlD57lm9DPRfwYr6X0qEkHNAxcEpqBOtk4e1zwvS6CWDmv9oeb5/G7kg6hU5hDQRZgEy9
+ qsk=
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
+  by uls-op-cesaip02.wdc.com with SMTP; 26 Jul 2019 01:15:19 -0700
+Received: (nullmailer pid 12698 invoked by uid 1000);
+        Fri, 26 Jul 2019 08:15:18 -0000
+Date:   Fri, 26 Jul 2019 17:15:18 +0900
 From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH] btrfs: fix extent_state leak in btrfs_lock_and_flush_ordered_range
-Date:   Fri, 26 Jul 2019 16:47:05 +0900
-Message-Id: <20190726074705.27513-1-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.22.0
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH] btrfs: fix extent buffer read/write range checks
+Message-ID: <20190726081518.ilukyrpdsrioiq36@naota.dhcp.fujisawa.hgst.com>
+References: <20190726052724.12338-1-naohiro.aota@wdc.com>
+ <d81154a4-dd3f-481f-92cb-25ea32b55900@suse.com>
+ <20190726061300.gvwypjd32elqtkhu@naota.dhcp.fujisawa.hgst.com>
+ <71f0399e-0719-ca8c-cb7b-aba5de5d0c5a@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <71f0399e-0719-ca8c-cb7b-aba5de5d0c5a@gmx.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_lock_and_flush_ordered_range() loads given "*cached_state" into
-cachedp, which, in general, is NULL. Then, lock_extent_bits() updates
-"cachedp", but it never goes backs to the caller. Thus the caller still
-see its "cached_state" to be NULL and never free the state allocated
-under btrfs_lock_and_flush_ordered_range(). As a result, we will
-see massive state leak with e.g. fstests btrfs/005. Fix this bug by
-properly handling the pointers.
+On Fri, Jul 26, 2019 at 02:36:10PM +0800, Qu Wenruo wrote:
+>
+>
+>On 2019/7/26 下午2:13, Naohiro Aota wrote:
+>> On Fri, Jul 26, 2019 at 08:38:27AM +0300, Nikolay Borisov wrote:
+>>>
+>>>
+>>> On 26.07.19 г. 8:27 ч., Naohiro Aota wrote:
+>>>> Several functions to read/write an extent buffer check if specified
+>>>> offset
+>>>> range resides in the size of the extent buffer. However, those checks
+>>>> have
+>>>> two problems:
+>>>>
+>>>> (1) they don't catch "start == eb->len" case.
+>>>> (2) it checks offset in extent buffer against logical address using
+>>>>     eb->start.
+>>>>
+>>>> Generally, eb->start is much larger than the offset, so the second
+>>>> WARN_ON
+>>>> was almost useless.
+>>>>
+>>>> Fix these problems in read_extent_buffer_to_user(),
+>>>> {memcmp,write,memzero}_extent_buffer().
+>>>>
+>>>> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+>>>
+>>> Qu already sent similar patch:
+>>>
+>>> [PATCH v2 1/5] btrfs: extent_io: Do extra check for extent buffer read
+>>> write functions
+>>>
+>>>
+>>> He centralised the checking code, your >= fixes though should be merged
+>>> there.
+>>
+>> Oops, I missed that series. Thank you for pointing out. Then, this
+>> should be merged into Qu's version.
+>>
+>> Qu, could you pick the change from "start > eb->len" to "start >= eb->len"?
+>
+> start >= eb->len is not always invalid.
+>
+> start == eb->len while len == 0 is still valid.
 
-Fixes: bd80d94efb83 ("btrfs: Always use a cached extent_state in btrfs_lock_and_flush_ordered_range")
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/ordered-data.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+Correct.
 
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index df02ed25b7db..ab31b1a1b624 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -982,13 +982,14 @@ void btrfs_lock_and_flush_ordered_range(struct extent_io_tree *tree,
- 					struct extent_state **cached_state)
- {
- 	struct btrfs_ordered_extent *ordered;
--	struct extent_state *cachedp = NULL;
-+	struct extent_state *cache = NULL;
-+	struct extent_state **cachedp = &cache;
- 
- 	if (cached_state)
--		cachedp = *cached_state;
-+		cachedp = cached_state;
- 
- 	while (1) {
--		lock_extent_bits(tree, start, end, &cachedp);
-+		lock_extent_bits(tree, start, end, cachedp);
- 		ordered = btrfs_lookup_ordered_range(inode, start,
- 						     end - start + 1);
- 		if (!ordered) {
-@@ -998,10 +999,10 @@ void btrfs_lock_and_flush_ordered_range(struct extent_io_tree *tree,
- 			 * aren't exposing it outside of this function
- 			 */
- 			if (!cached_state)
--				refcount_dec(&cachedp->refs);
-+				refcount_dec(&cache->refs);
- 			break;
- 		}
--		unlock_extent_cached(tree, start, end, &cachedp);
-+		unlock_extent_cached(tree, start, end, cachedp);
- 		btrfs_start_ordered_extent(&inode->vfs_inode, ordered, 1);
- 		btrfs_put_ordered_extent(ordered);
- 	}
--- 
-2.22.0
+But then, we can even say "start > eb->len" is valid if len == 0?
 
+> Or should we also warn such bad practice?
+
+Maybe...
+
+Or how about let the callers bailing out by e.g. "if (!len) return 1;"
+in the check function?
+
+Regards,
+Naohiro
