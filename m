@@ -2,28 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08B1878BF8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 14:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8258E78C30
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 15:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727090AbfG2MrD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Jul 2019 08:47:03 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:49359 "EHLO
+        id S1728378AbfG2NCk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 09:02:40 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:36397 "EHLO
         relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726717AbfG2MrD (ORCPT
+        with ESMTP id S1726674AbfG2NCk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 08:47:03 -0400
+        Mon, 29 Jul 2019 09:02:40 -0400
 X-Originating-IP: 88.191.131.7
-Received: from [10.137.0.38] (unknown [88.191.131.7])
+Received: from [192.168.1.167] (unknown [88.191.131.7])
         (Authenticated sender: swami@petaramesh.org)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 6ED881BF206;
-        Mon, 29 Jul 2019 12:47:00 +0000 (UTC)
-To:     alexander.wetzel@web.de
-References: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
-Subject: [BUG] BTRFS critical corrupt leaf - bisected to 496245cac57e
-Cc:     linux-btrfs@vger.kernel.org
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 239461BF213;
+        Mon, 29 Jul 2019 13:02:37 +0000 (UTC)
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     linux-btrfs@vger.kernel.org
+References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
 From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
 Openpgp: preference=signencrypt
-Autocrypt: addr=swami@petaramesh.org; keydata=
+Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
  xsDiBEP8C/QRBADPiYmcQstlx+HdyR2FGH+bDgRZ0ZJBAx6F0OPW+CmIa6tlwdhSFtCTJGcw
  eqCgSKqzLS+WBd6qknpGP3D2GOmASt+Juqnl+qmX8F/XrkxSNOVGGD0vkKGX4H5uDwufWkuV
  7kD/0VFJg2areJXx5tIK4+IR0E0O4Yv6DmBPwPgNUwCg0OdUy9lbCxMmshwJDGUX2Y/hiDsD
@@ -57,31 +56,46 @@ Autocrypt: addr=swami@petaramesh.org; keydata=
  TYaSBqmVw+0A3ILCZgQYEQIAJgIbDBYhBMwf46BtOfqyuRyYLi/CXB2QduMuBQJdAnbyBQki
  bGwWAAoJEC/CXB2QduMur1wAn1X3FcsmMdhMfiYwXw7LVw4FAIeWAJ9kLGer22WFWR2z2iU7
  BtUAN08OPA==
-Message-ID: <daeb4767-b113-f945-da67-61d250fa1663@petaramesh.org>
-Date:   Mon, 29 Jul 2019 14:46:59 +0200
+Message-ID: <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
+Date:   Mon, 29 Jul 2019 15:02:37 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
+In-Reply-To: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Le 29/07/2019 à 14:32, Swâmi Petaramesh a écrit :
+> 
+> Today, same machine, but this time my external BTRFS (over LUKS) backup
+> USB HDD went corrupt the same.
 
-The corruption issue that you report just after upgrading to kernel 5.2
-resembles very much to what I had on 2 filesystems after such an upgrade.
+btrfs check reports as follows :
 
-I think I'me gonna emergency downgrade all my BTRFS machines to kernel
-5.1 before they break ,-(
+# btrfs check /dev/mapper/luks-UUID
+Opening filesystem to check...
+Checking filesystem on /dev/mapper/luks-UUID
+UUID: ---Something---
+[1/7] checking root items
+[2/7] checking extents
+parent transid verify failed on 2137144377344 wanted 7684 found 7499
+parent transid verify failed on 2137144377344 wanted 7684 found 7499
+parent transid verify failed on 2137144377344 wanted 7684 found 7499
+Ignoring transid failure
+leaf parent key incorrect 2137144377344
+bad block 2137144377344
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space cache
+[4/7] checking fs roots
 
+(Still running)
 
 ॐ
 
 -- 
 Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
-
