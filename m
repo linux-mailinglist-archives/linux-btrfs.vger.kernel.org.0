@@ -2,311 +2,108 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C98B578D8C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 16:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BF4F78DAA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 16:21:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387546AbfG2ONq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Jul 2019 10:13:46 -0400
-Received: from foss.arm.com ([217.140.110.172]:44858 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387538AbfG2ONq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 10:13:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E5F428;
-        Mon, 29 Jul 2019 07:13:45 -0700 (PDT)
-Received: from [10.1.194.37] (e113632-lin.cambridge.arm.com [10.1.194.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 94F523F71F;
-        Mon, 29 Jul 2019 07:13:44 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Refactor snapshot vs nocow writers locking
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     paulmck@linux.ibm.com, andrea.parri@amarulasolutions.com,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <20190719083949.5351-1-nborisov@suse.com>
-From:   Valentin Schneider <valentin.schneider@arm.com>
-Message-ID: <ed015bb1-490e-7102-d172-73c1d069476c@arm.com>
-Date:   Mon, 29 Jul 2019 15:13:42 +0100
+        id S2387773AbfG2OVE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 10:21:04 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:44395 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387756AbfG2OVD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Jul 2019 10:21:03 -0400
+X-Originating-IP: 88.191.131.7
+Received: from [192.168.1.167] (unknown [88.191.131.7])
+        (Authenticated sender: swami@petaramesh.org)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id C5B78E0005;
+        Mon, 29 Jul 2019 14:21:01 +0000 (UTC)
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
+ <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
+ <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
+ <325a96b2-e6a4-91e3-3b07-1d20a5a031af@petaramesh.org>
+ <49785aa8-fb71-8e0e-bd1d-1e3cda4c7036@gmx.com>
+ <39d43f92-413c-2184-b8da-2c6073b5223f@petaramesh.org>
+ <b7037726-14dd-a1a2-238f-b5d0d43e3c80@petaramesh.org>
+ <71bc824e-1462-50ef-19b1-848c5eb0439d@gmx.com>
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
+ 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
+ BtUAN08OPA==
+Message-ID: <a08455f0-0ee0-7349-69b3-9cdd00bfe2aa@petaramesh.org>
+Date:   Mon, 29 Jul 2019 16:21:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190719083949.5351-1-nborisov@suse.com>
+In-Reply-To: <71bc824e-1462-50ef-19b1-848c5eb0439d@gmx.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Nikolay,
-
-On 19/07/2019 09:39, Nikolay Borisov wrote:
-> Hello, 
+Le 29/07/2019 à 16:08, Qu Wenruo a écrit :
+> You don't need to repair.
 > 
-> Here is the second version of the DRW lock for btrfs. Main changes from v1: 
+> The corruption is in extent tree, to read data out you don't need extent
+> tree at all.
+
+> But I'd say you would have a good chance to salvage a lot of data at least.
 > 
-> * Fixed all checkpatch warnings (Andrea Parri)
-> * Properly call write_unlock in btrfs_drw_try_write_lock (Filipe Manana)
-> * Comment fix. 
-> * Stress tested it via locktorture. Survived for 8 straight days on a 4 socket
-> 48 thread machine.
-> 
-> I have also produced a PlusCal specification which I'd be happy to discuss with 
-> people since I'm new to formal specification and I seem it doesn't have the 
-> right fidelity: 
-> 
-
-I haven't played with PlusCal in a while but I figured I'd have a go at it
-anyway. I've also Cc'd Catalin who's my local TLA+/PCal guru.
+> BTW, --repair may help, but won't be any better than that skip_bg
+> rescue, you won't have much chance other than salvaging data.
 
 
-FYI PlusCal also supports a C-like syntax, which means you can use glorious
-brackets instead of begin/end (unless you prefer those... I won't judge).
+Basically my question is : Is there anyway I can turn this broken FS
+into a sane FS using « btrfs repair » EVEN if this causes data losses ?
 
-I appended my "clean-up" of your spec - mainly changed to C-style
-syntax, added a few more constant definitions, and split the locker
-process into separate reader and writer processes. IMO makes it more
-readable.
+I can afford some data losses of this backup disk (next backup will fix
+missing files)
 
-> ---- MODULE specs ----
-> EXTENDS Integers, Sequences, TLC
-> 
-> CONSTANT NumLockers
-> 
-> ASSUME NumLockers > 0
-> 
-> (*--algorithm DRW
-> 
-> variables
->     lock_state = "idle",
->     states = {"idle", "write_locked", "read_locked", "read_waiting", "write_waiting"},
->     threads = [thread \in 1..NumLockers |-> "idle" ] \* everyone is in idle state at first, this generates a tuple
-> 
-> define
-> INV_SingleLockerType  == \/ lock_state = "write_locked" /\ ~\E thread \in 1..Len(threads): threads[thread] = "read_locked"
->                          \/ lock_state = "read_locked" /\ ~\E thread \in 1..Len(threads): threads[thread] = "write_locked"
->                          \/ lock_state = "idle" /\ \A thread \in 1..Len(threads): threads[thread] = "idle"
+But I DO NOT want to lose (or have to recreate) the complete FS with all
+its subvols and snapshots, which I have no other disk to copy to currently.
 
-I've tried to think about liveness properties we would want to check
-against this spec, but the usual ones don't really work there: AFAICT
-there is no fairness there, readers can completely block writers (and
-the opposite is true as well).
+So I can accept a « fix with losses », but not a « well you need to
+reformat the disk completely »...
 
-TLC checks for deadlocks by default (IIRC that should translate to always
-having > 1 non-stuttering step enabled in the next-state formula), so
-maybe that is all we need?
+Kind regards.
 
-> end define;
-> 
-> macro ReadLock(tid) begin
->     if lock_state = "idle" \/ lock_state = "read_locked" then
->         lock_state := "read_locked";
->         threads[tid] := "read_locked";
->     else
->         assert lock_state = "write_locked";
->         threads[tid] := "write_waiting"; \* waiting for writers to finish
->         await lock_state = "" \/ lock_state = "read_locked";
-                             ^^
-That's not a valid lock state, was that meant to be "idle"? 
+ॐ
 
-BTW your spec doesn't have a type check invariant (something to make sure
-whatever is in your variables is sane). It seems to be common practice, and
-it's quite handy to spot stupid mistakes. For this spec it would look
-something like this:
-
-LOCK_STATES == {"idle", "write_locked", "read_locked"}
-THREAD_STATES == LOCK_STATES \union {"read_waiting", "write_waiting"}
-
-TypeCheck ==
-    /\ lock_state \in LOCK_STATES
-    /\ \A thread \in THREADS: threads[thread] \in THREAD_STATES
-
->     end if;
-> 
-> end macro;
-> 
-> macro WriteLock(tid) begin
->     if lock_state = "idle" \/ lock_state = "write_locked" then
->         lock_state := "write_locked";
->         threads[tid] := "write_locked";
->     else
->         assert lock_state = "read_locked";
->         threads[tid] := "reader_waiting"; \* waiting for readers to finish
->         await lock_state = "idle" \/ lock_state = "write_locked";
-
-Aren't we missing an extra action here (same goes for the read lock)?
-
-threads[tid] should be set to "write_locked", and lock_state should be
-updated if it was previously "idle".
-
-Now the nasty thing is that we'd be setting threads[tid] to two different
-values in the same atomic block, so PlusCal will complain and we'll have
-to add some labels (which means changing the macro into a procedure).
-
-Maybe something like this?
-
-procedure WriteLock()
-{
-prepare:
-    \* waiting for readers to finish
-    threads[self] := "read_waiting";
-lock:
-    await lock_state = "idle" \/ lock_state = "write_locked";
-    lock_state := "write_locked";
-    threads[self] := "write_locked";
-    return;
-};
-
-+ something similar for ReadLock().
-
-Alternatively the "prepare" step could be some counter increment, to more
-closely mimic the actual implementation, but I don't think it adds much
-value to the model.
-
----------------------------------------------------------------------------
-
-specs.tla:
-
----- MODULE specs ----
-EXTENDS Integers, Sequences, TLC
-
-CONSTANTS
-    NR_WRITERS,
-    NR_READERS,
-    WRITER_TASK,
-    READER_TASK
-
-WRITERS == {WRITER_TASK} \X (1..NR_WRITERS)
-READERS == {READER_TASK} \X (1..NR_READERS)
-THREADS == WRITERS \union READERS
-
-(*--algorithm DRW {
-
-variables
-    lock_state = "idle",
-    \* everyone is in idle state at first, this generates a tuple
-    threads = [thread \in THREADS |-> "idle" ]
-
-define {
-
-LOCK_STATES == {"idle", "write_locked", "read_locked"}
-THREAD_STATES == LOCK_STATES \union {"read_waiting", "write_waiting"}
-
-(* Safety invariants *)
-TypeCheck ==
-    /\ lock_state \in LOCK_STATES
-    /\ \A thread \in THREADS: threads[thread] \in THREAD_STATES
-
-NoReadWhenWrite ==
-    lock_state = "write_locked" =>
-        \A thread \in THREADS: threads[thread] # "read_locked"
-
-NoWriteWhenRead ==
-    lock_state = "read_locked" =>
-        \A thread \in THREADS: threads[thread] # "write_locked"
-
-AllIdleWhenIdle ==
-    lock_state = "idle" =>
-        \A thread \in THREADS: threads[thread] = "idle"
-
-(* Ensure critical section exclusiveness *)
-Exclusion ==
-    /\ \E writer \in WRITERS: pc[writer] = "write_cs" =>
-        \A reader \in READERS: pc[reader] # "read_cs"
-    /\ \E reader \in READERS: pc[reader] = "read_cs" =>
-        \A writer \in WRITERS: pc[writer] # "write_cs"
-}
-
-macro ReadLock(tid)
-{
-    if (lock_state = "idle" \/ lock_state = "read_locked") {
-        lock_state := "read_locked";
-        threads[tid] := "read_locked";
-    } else {
-        assert lock_state = "write_locked";
-        \* waiting for writers to finish
-        threads[tid] := "write_waiting";
-        await lock_state = "" \/ lock_state = "read_locked";
-    };
-}
-
-macro WriteLock(tid)
-{
-    if (lock_state = "idle" \/ lock_state = "write_locked") {
-        lock_state := "write_locked";
-        threads[tid] := "write_locked";
-    } else {
-        assert lock_state = "read_locked";
-        \* waiting for readers to finish
-        threads[tid] := "read_waiting";
-        await lock_state = "idle" \/ lock_state = "write_locked";
-    };
-}
-
-macro ReadUnlock(tid) {
-    if (threads[tid] = "read_locked") {
-        threads[tid] := "idle";
-        if (\A thread \in THREADS: threads[thread] # "read_locked") {
-            \* we were the last read holder, everyone else should be waiting, unlock the lock
-            lock_state := "idle";
-        };
-    };
-}
-
-macro WriteUnlock(tid) {
-    if (threads[tid] = "write_locked") {
-        threads[tid] := "idle";
-        if (\A thread \in THREADS: threads[thread] # "write_locked") {
-            \* we were the last write holder, everyone else should be waiting, unlock the lock
-            lock_state := "idle";
-        };
-    };
-}
-
-fair process(writer \in WRITERS)
-{
-loop:
-    while (TRUE) {
-        WriteLock(self);
-write_cs:
-        skip;
-unlock:
-        WriteUnlock(self);
-    };
-}
-
-fair process(reader \in READERS)
-{
-loop:
-    while (TRUE) {
-        ReadLock(self);
-read_cs:
-        skip;
-unlock:
-        ReadUnlock(self);
-    };
-
-}
-
-}*)
-====
-
-specs.cfg:
-
-SPECIFICATION Spec
-\* Add statements after this line.
-
-CONSTANTS
-	NR_READERS = 3
-	NR_WRITERS = 3
-	READER_TASK = reader
-	WRITER_TASK = writer
-
-INVARIANTS
-	TypeCheck
-	
-	NoReadWhenWrite
-	NoWriteWhenRead
-	AllIdleWhenIdle
-	
-	Exclusion
+-- 
+Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
