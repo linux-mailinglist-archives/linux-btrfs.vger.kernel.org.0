@@ -2,26 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3934978D0A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 15:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C2078D1A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 15:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727358AbfG2Nmi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Jul 2019 09:42:38 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:49785 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726985AbfG2Nmh (ORCPT
+        id S1727758AbfG2NpX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 09:45:23 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:52359 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726926AbfG2NpU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 09:42:37 -0400
+        Mon, 29 Jul 2019 09:45:20 -0400
 X-Originating-IP: 88.191.131.7
 Received: from [192.168.1.167] (unknown [88.191.131.7])
         (Authenticated sender: swami@petaramesh.org)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 32DBF24000A;
-        Mon, 29 Jul 2019 13:42:31 +0000 (UTC)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 0FA4420016;
+        Mon, 29 Jul 2019 13:45:18 +0000 (UTC)
 Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+To:     Lionel Bouton <lionel-subscription@bouton.name>,
+        linux-btrfs@vger.kernel.org
 References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
- <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
- <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
+ <f8b08aec-2c43-9545-906e-7e41953d9ed4@bouton.name>
+ <02f206eb-0c36-6ba7-94ce-f50fa3061271@bouton.name>
 From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
 Openpgp: preference=signencrypt
 Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
@@ -58,12 +59,12 @@ Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
  TYaSBqmVw+0A3ILCZgQYEQIAJgIbDBYhBMwf46BtOfqyuRyYLi/CXB2QduMuBQJdAnbyBQki
  bGwWAAoJEC/CXB2QduMur1wAn1X3FcsmMdhMfiYwXw7LVw4FAIeWAJ9kLGer22WFWR2z2iU7
  BtUAN08OPA==
-Message-ID: <325a96b2-e6a4-91e3-3b07-1d20a5a031af@petaramesh.org>
-Date:   Mon, 29 Jul 2019 15:42:31 +0200
+Message-ID: <6fb5af6c-d7b8-951b-f213-e2b9b536ae6a@petaramesh.org>
+Date:   Mon, 29 Jul 2019 15:45:18 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
+In-Reply-To: <02f206eb-0c36-6ba7-94ce-f50fa3061271@bouton.name>
 Content-Type: text/plain; charset=utf-8
 Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
@@ -72,163 +73,12 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Le 29/07/2019 à 15:39, Lionel Bouton a écrit :
+> My laptop rebooted without problems. Note : my system uses a NVMe
+> device, not a SATA SSD.
 
-Le 29/07/2019 à 15:35, Qu Wenruo a écrit :
-> This means btrfs metadata CoW is broken.
-
-I remember having had exactly the same kind of messages on the main
-machine's SSD a week ago (before I had to recreate, backup and restore it)
-
-> Did the system went through some power loss?
-
-No *THIS* filesystem is an external backup. It's typical use is plug,
-backup, umount (properly), unplug.
-
-So there's very little reasons such a filsystem would en up broken.
-
-> If not, then it's btrfs or lower layer causing the problem.
-> 
-> Did you have any btrfs without LUKS?
-
-Not much...
-
-Here's the rest of the (still running) btrsf check :
-
-# btrfs check /dev/mapper/luks-UUID
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/luks-UUID
-UUID: ==somehing==
-[1/7] checking root items
-[2/7] checking extents
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-leaf parent key incorrect 2137144377344
-bad block 2137144377344
-ERROR: errors found in extent allocation tree or chunk allocation
-[3/7] checking free space cache
-[4/7] checking fs roots
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-parent transid verify failed on 2137144377344 wanted 7684 found 7499
-Ignoring transid failure
-Wrong key of child node/leaf, wanted: (1797454, 96, 23), have:
-(18446744073709551606, 128, 2538887163904)
-Wrong generation of child node/leaf, wanted: 7499, have: 7684
-
-
-Uh I'm at a loss...
+Anyway in computer science, « works here now » has never been and will
+never be a proof that something doesn't have deadly bugs waiting to bite...
 
 ॐ
 
