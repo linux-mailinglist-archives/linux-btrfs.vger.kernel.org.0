@@ -2,32 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF5E78CEA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 15:33:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74BD278CF4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 15:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387483AbfG2Ndt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Jul 2019 09:33:49 -0400
-Received: from mout.gmx.net ([212.227.15.19]:55785 "EHLO mout.gmx.net"
+        id S2387728AbfG2Nfy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 09:35:54 -0400
+Received: from mout.gmx.net ([212.227.15.19]:53773 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387449AbfG2Ndt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 09:33:49 -0400
+        id S2387638AbfG2Nfy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Jul 2019 09:35:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1564407225;
-        bh=FhvALpyZetTXrmg++lAXY/hyxeJtPcEiDE4/pznBpH4=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Crn2GuJLV3RmNJ6C3gh7hYwFLVMYZt40iG2TiRQz70tp1VeBLft9fSU/fIHk1jVfo
-         bkSGTqoLi0p2zzV3GF56VmFvv7KriPlh30Zu6oACFijfoNGlR5XLPNYoihTcAr1WMr
-         D3fOFREsuuviDjGcKwlttAscjncZtV+jSaQ6Qo+4=
+        s=badeba3b8450; t=1564407351;
+        bh=2hCluCX4mg/z/nBhShWTO8DiqzAohDvB/LQIQhuzXg0=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=S0zP6bdJXRkGqmploS5mHTeRxfh8JQt5rEpmnV4JdeIkHBJ+rXH6TSBKtMeV5CMiu
+         nZEEc6vfs+mpLCuuhlBWjnJPJPI6LXUqURPL42qGEn32DC90p4dn/6F+DGfWADizVJ
+         vJMzUo6F6MWmv3JIR0XK1TXC7q6zueYaSYRBEjvY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx001
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0LjrDd-1iPEbh3LU9-00bwek; Mon, 29
- Jul 2019 15:33:45 +0200
-Subject: Re: [BUG] BTRFS critical corrupt leaf - bisected to 496245cac57e
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MvsEn-1ihItF3jfz-00sygs; Mon, 29
+ Jul 2019 15:35:51 +0200
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
 To:     =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>,
-        alexander.wetzel@web.de
-Cc:     linux-btrfs@vger.kernel.org
-References: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
- <daeb4767-b113-f945-da67-61d250fa1663@petaramesh.org>
+        linux-btrfs@vger.kernel.org
+References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
+ <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -54,37 +53,37 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <d9ea9623-657e-0315-7166-b7f58b32d4e0@gmx.com>
-Date:   Mon, 29 Jul 2019 21:33:39 +0800
+Message-ID: <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
+Date:   Mon, 29 Jul 2019 21:35:46 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <daeb4767-b113-f945-da67-61d250fa1663@petaramesh.org>
+In-Reply-To: <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:p2ioTwRLlqhfsu1sCsauOOombSJHQ+JtOYS0FuvGwef7yPDctXU
- Wu+shqw0zb17gaAKdx7ltjhoWLZjiDAN+JajV/ZwmHQenFjw4GIXrTxCs3xyC3kH+vsdVOF
- s/FVFcraUFsEtEMDHFbxP+/a+q73IPRQlSB6wgrAbIdT/Hkvm5FOQSNo2qdPW6moKOfG31W
- Qsy7LCERxMBAaIS+Mq/WA==
+X-Provags-ID: V03:K1:cYxjNUDve39xOxB+ZQ/jBee6fsr4mKParJ9YKeKZ25Akc6Ng8KG
+ g2lDYJ7FAuforM+m5REk0yXSo93lvo+k2A3OZYrTt8aom3F14+Vdt9LIt47znzyYAQx9byF
+ /614112ZKQhfR+a90PgFNFPtCcv6mSWGKGe55bQ+ggFgMoZVdFGS4byuH7jC3Gy+dbRU4x+
+ 765VRvI1BFXrLCaRdP/1g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7GRSyLeGyfE=:tVQ/iuwxakuWggESbl7kZl
- W/gbHIFD7M0YrV5v/GBt9E+sJo+6NhuYe1yMs0vnTspzwIqQzGEr1LLmPe7mLdE1Sd8Vwip9i
- zW6U7pS6Fv7N+jo2Ev/ayKVdtc6eotjZyQPy8yW+xRnbuuQWkV7nK4nkPYagg8gCemfuG79V2
- 1DhTYTzKhoE5Fr8V7MUntfnyxMPA4f4rBiAfbTfgsxEwG1ZKXsPVJ8HQmk5HmrdNdjLQEFuxm
- SDEiWB1h+cUZnmyNodT1br5oadFsQhl5hO8zRR4NnTtwyGc20Ur0bHyNkE7Xnp/sYN9IJRs9J
- +vhurpYYnkYz7oroG0qXSgHM7TOJpTpvM5aTAR9JvLIB5Q6gR9FHHPeEEYAt3CGg/W4Gr46JH
- QEpDVJDPF5FKgnxWn/wfPJYK9rMUK0uARFQjSTcFiPShCeoPG/59wWUPPiQ/jqJR6Aho1lc5g
- jxIQo1tBQw66bJmkbUn71OgSNsZjy5F2Rkri8HJxDpDuZcwHGe+1W+tzI8WVBIZanfpoFvvVO
- 2f1vhQGX5bBJpaQmRsr6Y01+WeISBU1fZQHRf1lRYdYPfvweQaVptdWNu0bDisDnEkOxAVwrH
- kDhkNJTdOI0kHV4LELvSntu7GBqZx8WJf7nrxNz7Sm4VBVs4HfsdQVOfB36/iXZ4taoGv8/Kj
- VzO5jkwb95/cVsuryTIdLK43Ry3rp7w5IdrSdev2hvvzT/2ULXxVpgZWeYVcrSPNQpjeR06YY
- z8qkMvjtPcJNIss2zJWYubOWWnp5ZAnwUc3yH8pRIFVM0/O4ozDm8utfdLkp2ToiY8HlLLwsc
- N48rho9MvCo6+zWmgsP81BJyuILqgCFo51Z9r0TlkDMpkRdtNE/9z6fXRoLaH4uqsGsPKV0Ch
- 85/iJIPLEMEO0iGjGPnmJy0QGmg4f7Qvfstn5Ddwdy+qoaOxFNjDs2uCeZgnsU2IaKrIzSALB
- 1Y/K74kN3nTysxrq3w4I3UxI2JsH16WuXuGA/eNNezgwB0AJGuYNU0nRv2KqbwkK0uXHioTdH
- P24hCr3pcRdFLjxyJDasK9y5lY5NgpX7AsPIF1CgC4CnY4NjYt9MdmA93SMmQsZLAaJLGuiNv
- 0yZA+tJCoB3hfF68VP9SWAxmX5wf9oZ6SUX
+X-UI-Out-Filterresults: notjunk:1;V03:K0:euQNsr/7RZk=:DeDrTVjMU1Kkwz9484PKFL
+ PuMW+Q9FcqEbupihLZ44k1mY9C+pcJcoMjVlQ/NewN6oVScpLF9oGEbdGCFpkN7BcToja8j3X
+ mnt1ebJ0mQejdDZuSTLi4U/FsZCrmNZsktprLWrQ4mSlUcPzZVhkVRr97Mfvhm73hL0pWGDg9
+ cr5Qs/umKHLO0ptUnjzJV78+STLRTfO50scpqqMKGWgY4AhXFk61r+79IBGDXnNU9SCrBGQXz
+ rtcKepRXC950uF7FWjorGiOrVdjf5HfLil05JZDAa7Na9KOGXiU5eZ6Rb6HIE26hlx3gonwl0
+ f+qPVTZ2BjLc+aFul02xGzphWeQWQucVKk3KOjIuV0n0197n0tDKrEX+Xbwe6674LBmv4kxB+
+ 3KKZd0BrT15BhOxIgeRJDxEnt8biw7J/xxKeUfsYCII/k7ARu3U5FLieku/SfpY1JDkhsTvJ4
+ OYaeXZ+NWD4kTzLOskeZLU+kFTyj0i3RR8Cw8Hlsn7+8X25Gf18kXyifkHij97RTmMeevBhL2
+ czSwiF5hUDUKaHj1yYm5Dv+pyX5Fo5689nKgw83WvvZwCwy4ryzcjJrp52PDnJzma96awgntC
+ /sCPozyY9O8V2DTadAodjFuBFcIeXyfou+tC4lra+f4TJCJWnZS8PzkQuP2UpCmjCTHNfQgUt
+ jCWy5sDQYxEbBZHOhvr+J1DezjKmWd4D0FSF/lOyIDy8BNrEPyjbD0B4UF/HJrMoj/n0TCoUC
+ Oe3r65KabkH823yjJfcP5Bl1JNhbGg9gg2pdRJKNOYCjKxRYO2gtaUM6Z7+E5Ma79tvtTghJT
+ H4tT7vQ/t23jibZfRH2qmwg0Tm3t8bs+kvkO5UlrDaDSYkBnUL8uNYxmP+YCkx3YsYdoISkRw
+ 2ljOCjVhXbix95NXaTbmpiejTesgDflLk2zuLEewTIg/mLEAsQAHriWNJgn+j85xuynkIl2kB
+ bNfPRkaNBcsPToh//x3p3pDHDZIy42g1oM+fKXlzvtQGdTdbldM7jC3LmlXhCPUBxU/kXg28i
+ X3dvMtlMy7EKk60yBieNXFtNEgcmwLv+SvZFg+jILrbHpV3kzXlkowwXbzkWIuAaRxOjIAFCf
+ FcgJ2vgM+kiczXswUj3yQpkAOwbnRc3lqVS
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -92,25 +91,43 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2019/7/29 =E4=B8=8B=E5=8D=888:46, Sw=C3=A2mi Petaramesh wrote:
-> Hi,
+On 2019/7/29 =E4=B8=8B=E5=8D=889:02, Sw=C3=A2mi Petaramesh wrote:
+> Le 29/07/2019 =C3=A0 14:32, Sw=C3=A2mi Petaramesh a =C3=A9crit=C2=A0:
+>>
+>> Today, same machine, but this time my external BTRFS (over LUKS) backup
+>> USB HDD went corrupt the same.
 >
-> The corruption issue that you report just after upgrading to kernel 5.2
-> resembles very much to what I had on 2 filesystems after such an upgrade=
-.
+> btrfs check reports as follows :
 >
-> I think I'me gonna emergency downgrade all my BTRFS machines to kernel
-> 5.1 before they break ,-(
+> # btrfs check /dev/mapper/luks-UUID
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/luks-UUID
+> UUID: ---Something---
+> [1/7] checking root items
+> [2/7] checking extents
+> parent transid verify failed on 2137144377344 wanted 7684 found 7499
+> parent transid verify failed on 2137144377344 wanted 7684 found 7499
+> parent transid verify failed on 2137144377344 wanted 7684 found 7499
 
-Full kernel message please.
+This means btrfs metadata CoW is broken.
 
-That commit is designed to corrupted inode item, we need more info to
-determine if it's a real corruption or not.
+Did the system went through some power loss?
+If not, then it's btrfs or lower layer causing the problem.
+
+Did you have any btrfs without LUKS?
 
 Thanks,
 Qu
 
+
+> Ignoring transid failure
+> leaf parent key incorrect 2137144377344
+> bad block 2137144377344
+> ERROR: errors found in extent allocation tree or chunk allocation
+> [3/7] checking free space cache
+> [4/7] checking fs roots
 >
+> (Still running)
 >
 > =E0=A5=90
 >
