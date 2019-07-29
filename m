@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A090178685
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 09:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1AB78686
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 09:43:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbfG2Hnr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Jul 2019 03:43:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35568 "EHLO mx1.suse.de"
+        id S1727025AbfG2Hnt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 03:43:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35574 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726862AbfG2Hnr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 03:43:47 -0400
+        id S1726862AbfG2Hnt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Jul 2019 03:43:49 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1A9ACAE1C
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2019 07:43:46 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 4823CAE1C
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2019 07:43:47 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs: tree-checker: Add simple keyed refs check
-Date:   Mon, 29 Jul 2019 15:43:36 +0800
-Message-Id: <20190729074337.10573-3-wqu@suse.com>
+Subject: [PATCH 3/3] btrfs: tree-checker: Add EXTENT_DATA_REF check
+Date:   Mon, 29 Jul 2019 15:43:37 +0800
+Message-Id: <20190729074337.10573-4-wqu@suse.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190729074337.10573-1-wqu@suse.com>
 References: <20190729074337.10573-1-wqu@suse.com>
@@ -30,56 +30,71 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For TREE_BLOCK_REF, SHARED_DATA_REF and SHARED_BLOCK_REF we need to
-check:
-              | TREE_BLOCK_REF | SHARED_BLOCK_REF | SHARED_BLOCK_REF
---------------+----------------+-----------------+------------------
-key->objectid |    Alignment   |     Alignment    |    Alignment
-key->offset   |    Any value   |     Alignment    |    Alignment
-item_size     |        0       |        0         |   sizeof(le32) (*)
+EXTENT_DATA_REF is a little like DIR_ITEM which contains hash in its
+key->offset.
 
-*: sizeof(struct btrfs_shared_data_ref)
+This patch will check the following contents:
+- Key->objectid
+  Basic alignment check.
 
-So introduce a check to check all these 3 key types together.
+- Hash
+  Hash of each extent_data_ref item must match key->offset.
+
+- Offset
+  Basic alignment check.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/tree-checker.c | 40 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 39 insertions(+), 1 deletion(-)
+ fs/btrfs/ctree.h        |  1 +
+ fs/btrfs/extent-tree.c  |  2 +-
+ fs/btrfs/tree-checker.c | 48 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 50 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 1e97bb127893..6ef174c7fb05 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -912,7 +912,9 @@ static void extent_err(const struct extent_buffer *eb, int slot,
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 0a61dff27f57..710ea3a6608c 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2679,6 +2679,7 @@ enum btrfs_inline_ref_type {
+ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+ 				     struct btrfs_extent_inline_ref *iref,
+ 				     enum btrfs_inline_ref_type is_data);
++u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset);
  
- 	btrfs_item_key_to_cpu(eb, &key, slot);
- 	bytenr = key.objectid;
--	if (key.type == BTRFS_METADATA_ITEM_KEY)
-+	if (key.type == BTRFS_METADATA_ITEM_KEY ||
-+	    key.type == BTRFS_TREE_BLOCK_REF_KEY ||
-+	    key.type == BTRFS_SHARED_BLOCK_REF_KEY)
- 		len = eb->fs_info->nodesize;
- 	else
- 		len = key.offset;
-@@ -1144,6 +1146,37 @@ static int check_extent_item(struct extent_buffer *leaf,
- 	return -EUCLEAN;
+ u64 btrfs_csum_bytes_to_leaves(struct btrfs_fs_info *fs_info, u64 csum_bytes);
+ 
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index b4e9e36b65f1..c0888ed503df 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -1114,7 +1114,7 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
+ 	return BTRFS_REF_TYPE_INVALID;
  }
  
-+static int check_simple_keyed_refs(struct extent_buffer *leaf,
-+				   struct btrfs_key *key, int slot)
+-static u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
++u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
+ {
+ 	u32 high_crc = ~(u32)0;
+ 	u32 low_crc = ~(u32)0;
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 6ef174c7fb05..115725f742c2 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -1177,6 +1177,51 @@ static int check_simple_keyed_refs(struct extent_buffer *leaf,
+ 	return 0;
+ }
+ 
++static int check_extent_data_ref(struct extent_buffer *leaf,
++				 struct btrfs_key *key, int slot)
 +{
-+	u32 expect_item_size = 0;
++	struct btrfs_extent_data_ref *dref;
++	u64 ptr = btrfs_item_ptr_offset(leaf, slot);
++	u64 end = ptr + btrfs_item_size_nr(leaf, slot);
 +
-+	if (key->type == BTRFS_SHARED_DATA_REF_KEY)
-+		expect_item_size = sizeof(struct btrfs_shared_data_ref);
-+
-+	if (btrfs_item_size_nr(leaf, slot) != expect_item_size) {
++	if (btrfs_item_size_nr(leaf, slot) % sizeof(*dref) != 0) {
 +		generic_err(leaf, slot,
-+	"invalid item size, have %u expect %u for key type %u",
++	"invalid item size, have %u expect aligned to %lu for key type %u",
 +			    btrfs_item_size_nr(leaf, slot),
-+			    expect_item_size, key->type);
-+		return -EUCLEAN;
++			    sizeof(*dref), key->type);
 +	}
 +	if (!IS_ALIGNED(key->objectid, leaf->fs_info->sectorsize)) {
 +		generic_err(leaf, slot,
@@ -87,12 +102,28 @@ index 1e97bb127893..6ef174c7fb05 100644
 +			    key->objectid, leaf->fs_info->sectorsize);
 +		return -EUCLEAN;
 +	}
-+	if (key->type != BTRFS_TREE_BLOCK_REF_KEY &&
-+	    !IS_ALIGNED(key->offset, leaf->fs_info->sectorsize)) {
-+		extent_err(leaf, slot,
-+		"invalid tree parent bytenr, have %llu expect aligned to %u",
-+			   key->offset, leaf->fs_info->sectorsize);
-+		return -EUCLEAN;
++	for (; ptr < end; ptr += sizeof(*dref)) {
++		u64 root_objectid;
++		u64 owner;
++		u64 offset;
++		u64 hash;
++
++		dref = (struct btrfs_extent_data_ref *)ptr;
++		root_objectid = btrfs_extent_data_ref_root(leaf, dref);
++		owner = btrfs_extent_data_ref_objectid(leaf, dref);
++		offset = btrfs_extent_data_ref_offset(leaf, dref);
++		hash = hash_extent_data_ref(root_objectid, owner, offset);
++		if (hash != key->offset) {
++			extent_err(leaf, slot,
++	"invalid extent data ref hash, item have 0x%016llx key have 0x%016llx",
++				   hash, key->offset);
++			return -EUCLEAN;
++		}
++		if (!IS_ALIGNED(offset, leaf->fs_info->sectorsize)) {
++			extent_err(leaf, slot,
++	"invalid extent data backref offset, have %llu expect aligned to %u",
++				   offset, leaf->fs_info->sectorsize);
++		}
 +	}
 +	return 0;
 +}
@@ -100,14 +131,12 @@ index 1e97bb127893..6ef174c7fb05 100644
  /*
   * Common point to switch the item-specific validation.
   */
-@@ -1186,6 +1219,11 @@ static int check_leaf_item(struct extent_buffer *leaf,
- 	case BTRFS_METADATA_ITEM_KEY:
- 		ret = check_extent_item(leaf, key, slot);
+@@ -1224,6 +1269,9 @@ static int check_leaf_item(struct extent_buffer *leaf,
+ 	case BTRFS_SHARED_BLOCK_REF_KEY:
+ 		ret = check_simple_keyed_refs(leaf, key, slot);
  		break;
-+	case BTRFS_TREE_BLOCK_REF_KEY:
-+	case BTRFS_SHARED_DATA_REF_KEY:
-+	case BTRFS_SHARED_BLOCK_REF_KEY:
-+		ret = check_simple_keyed_refs(leaf, key, slot);
++	case BTRFS_EXTENT_DATA_REF_KEY:
++		ret = check_extent_data_ref(leaf, key, slot);
 +		break;
  	}
  	return ret;
