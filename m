@@ -2,33 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9566378D37
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 15:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB5478D52
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 16:00:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbfG2Nxm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Jul 2019 09:53:42 -0400
-Received: from mout.gmx.net ([212.227.15.15]:56929 "EHLO mout.gmx.net"
+        id S1727578AbfG2N77 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 09:59:59 -0400
+Received: from mout.gmx.net ([212.227.15.19]:57581 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726281AbfG2Nxm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 09:53:42 -0400
+        id S1727100AbfG2N77 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Jul 2019 09:59:59 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1564408396;
-        bh=nSstwPE4kx/tS9p+lu6M8xJiiCbsuUxHfo15KJPY6mY=;
+        s=badeba3b8450; t=1564408797;
+        bh=rQfPWU7v8Sqij/VH66aSwXGjqbJcherRKVdrCnX9NIU=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Rk1x+9/i2Y/TngmLA3dBdARfmZzmhUMclyijp/zisByGg8W7BufZcsK6havp4OLQA
-         byFXZXQNQ9KiiEHEJM364V4bpaFUmff8mmPc5TGmI++pIe4fVau87XxyzZo66IzKxk
-         TJgzWNeyS10nYW6wVdi9XPw4YMBr7gLNjr/0mQ+c=
+        b=cIxMzHptMCNQVLiOd/kzwCLOGhxbahFZaOIKnmTa31yfO44omuWNjpufwBbvw9BVC
+         0wqyfhV1RDaS2N9XeK+sto9EkZqHtdMPbaMqKxT/650m4j9SPGBBBu/W8JRoGmjCyK
+         kT0l6LubZT7Kl2its0in++qHuRlMDy5S2r5nd60c=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx002
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0LwaMR-1iRrCn2wk3-018Gq4; Mon, 29
- Jul 2019 15:53:16 +0200
-Subject: Re: [PATCH 1/3] btrfs: tree-checker: Add EXTENT_ITEM and
- METADATA_ITEM check
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx003
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0MGjfl-1hf7dE1InJ-00DWTk; Mon, 29
+ Jul 2019 15:59:57 +0200
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>,
         linux-btrfs@vger.kernel.org
-References: <20190729074337.10573-1-wqu@suse.com>
- <20190729074337.10573-2-wqu@suse.com>
- <bd6c75f8-c9b5-c29f-a691-101fee33cef5@suse.com>
+References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
+ <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
+ <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
+ <325a96b2-e6a4-91e3-3b07-1d20a5a031af@petaramesh.org>
+ <49785aa8-fb71-8e0e-bd1d-1e3cda4c7036@gmx.com>
+ <39d43f92-413c-2184-b8da-2c6073b5223f@petaramesh.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -55,37 +57,37 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <66256780-4fa9-9627-151e-62e834a6cc39@gmx.com>
-Date:   Mon, 29 Jul 2019 21:53:10 +0800
+Message-ID: <ad72f3dc-d801-8857-885c-32b7ee206518@gmx.com>
+Date:   Mon, 29 Jul 2019 21:59:44 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <bd6c75f8-c9b5-c29f-a691-101fee33cef5@suse.com>
+In-Reply-To: <39d43f92-413c-2184-b8da-2c6073b5223f@petaramesh.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:3SJdsUe89deLQa5fQvsMBLg+CiNEpzq5Q2L7T3ORutKCvB8bmYy
- 958QUfxMIomstdZSYfr76FqX/GvKjL4lWAn9L+IOv5mbbKPPH8vN4fmi5dmS0FbViGDYZHH
- NTuxr5zDbD8Ded3eW75pVZB15h+9QM+Nf72m+TfraIv2nS/NLQJTOu6ZJQm6wCuc0w/1hMp
- sjNmWeWEhDZLmC4nnpdwA==
+X-Provags-ID: V03:K1:b6PWeO9qMcebly/0mccxiTETWI1Rc8V5RcZgFqGktxIxstIwU58
+ RSdfZb/7hq0/K69ON7ASb+DpYbOJ2e/z3wkpFuWTO9dimSCHIaq1SQRXvCT6cpUiR74MNkE
+ AZbrJ8KMgWV01xQ2MkevzBangh5OLDgXbDkitLUmiIjZdjxxaKKF/9RiFwyWzjka8uP6pUB
+ gmeoFZNj9cZ7i0Bvxzl2w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OVZXlOYDl0Q=:kJR86M3QJx82KlcDAikkDl
- VRrP0akdGoxE53NV3RIthubVLX8bDkWGhCI/tDUhYpCe7NSWmcLK93e4HFwQgDMQ/E9PbT3zY
- +gKVYqMYXIDhOc05O3gLW68jYwpLg1JJ4O5Eb7BQWx6cYx+A+q0SY9wKSS4pW8FI52g6vQElS
- oft1Gb9x5pIHrBnf5b3nk7yWEpfM7urQ9DUXBTKWyxOoAefP/PzKWttJevSVf+ZTJ/5ftmjsB
- 7S9wHwebdGARik+x3J7whf0Z27QQa4SLHNfa+af1lSAvR5eexGf4+yuRYBp6ypOCxuQFqUlJ/
- oI1+44bOW7tUozA7Tc57JMFERf3xfajRPO8xnI14/QSyYJQkq/+Qc9ZjRkPdq0VwaR8dPn5Ft
- rf2z9xndk57eIwkhgLbQl77dSUW+2zrHKVkWnBqwr4lYiTwKNiCRtRAOUOUH8ejLodfbbNQwo
- iRq+YT/kQtJ7Rm/M+55SrODPWNyKltVuH+JUcMvnTfnwH+QyCuts2jRYP4qur8+3UC5o1+BcB
- tEtjWe2NftAguJsa6sI3309BHtaALicYjKsJ4oaoN0wC+DQhS0FGdjZpr4zlFxY340TAy4ftF
- rbUcs2BVj6ySstEsLzNRUsTDq3iSQHm9atx7JaD0kFMufvm4ZaLUk2luyNtuWdxs3zb+Viifj
- eHXZqj8psDtIqIvMWhsyUG5/wSVCd8h1piZWEvJ59fu0vNmeUKC5BFgzGowSOfW461aKW8FQs
- OEOdgH5bZrjLqhmkiCHJLzT9wW3JT8oMf+l10BFwo9/xBF32d8amWtcyNBcuSArGdaAUlaa0L
- znggE1kJMJlfW/UCTn976m+y4JND147CxviOmf6R+IOjPzvjrB+2nWH/iVYlfQQA9eF4/1nek
- 3oCCtbk1CVSBydw0frMgy7Dc0Wgx6VQVnJLuyhGCe6cXdVF8/9FDy1fjaQKD87jVlZe5nOpVR
- FZ0KavyNOOSmqcwtwYuBUIY15g8SJP7chc0k/bRpIOuaODb23RDogA+swfQ6WuXBDQ8xdyaJG
- vL659yOVRMPZ69k3PG5AtCWW4Qcbuurouz5qSNNJPhJKpJ4OgR2vAMCpFuRTpfv9EpRTvshwl
- TxbhJT4/C1uuIpPb/st4q2kX5X1OfuB2P0P
+X-UI-Out-Filterresults: notjunk:1;V03:K0:DNLgRSYKlZ0=:pMUP2cM/JNm/V1ALMFGn12
+ oPTM3JgsVlsTTgOyGH4YYo8B5pxtOByHv09zLm0+J7vkelZcvBJskDlzqGOkRKAQU+a+1yjx8
+ xzhdhzD8pZwcNwUADAEG9TjOBf8p0rvVrb918qmxKUcxsCtkkP0Jqw+sKE9Kx81NQkJlUzpKS
+ 9Zwr+oHrfqKfeqQJo+/0HgzXn09YCKUueeww2NFjyN3T6UdO72RWDZ0WfcGrEvMtilpbLCXNO
+ CJtfeZYBnvjuS7JMpeHRP2NiGSRRamTRodU0yklcTMB/Besqo5wvxeeZCzEOsJP4p6BGRCJUg
+ c0ooHqYPwip2HjNXSLdflBaV5qnTWkAR4KXNaz6E0e0czZUx8SzWlzVgn7oPEmZkWsDZ2Jrpx
+ +/O+SXVKCFXPDPU8GeBjT5ca2s49FmPeKuIKBCrWZm/IrNuxT9TutAcYGLO6z5MczFrBy1+z2
+ IY+yx/AcN2i4JgKPAYQZaHPjDX98IBwjeQ1PTGpwoTuIE4d6QiWTJKRjS3MPpATkOEZKYxHTo
+ CLVo6nqBS3rVEq4CEtlQNtAjEhgOqgwWzxPgacxbW2c4kogfkFsz/ZdhQdZxpq/A5wNNxCg+T
+ 48wGtgRtoph0UF0ZPWohF2U5X+btnqt/GY+4wlK1DgcHhL2IkbIR8/WbulaHKYlNadkhilOdl
+ KSfYPOjpDyqe1eejT63TYmpdQvsu3/kQj2gDSebv+6KzKWWuHY9Vo+crt2Z/6KaAylFnoQO5M
+ EIXtqzDKSNNpNMhMtQMdC5Dh7YrtpTUiOsS7H9FlRJtkGjmWpASVQQLcH8kAU9xWUoH6eG2Fh
+ Il8hUxDpL9gSoKtqE4Pyd+xhpuwbwTTi3Cj8L56/vo6/Baz1c5aPQ5uNFARHLTm3OQkdsqTTj
+ MtpT/g9g2xK56XhcXAT/xA+IX1/uP2tEWAYBnfdayK7/AepQ2tqWWLVzjyxuVre9nqAp7Nn81
+ ThVQgTEyedPnrmR02UWoxLOKD6vSahb0Tp33h7YscpW9n3z8Q+e8YMHPfshedNPL/4wr1hu7l
+ r9yUJf0QaYltJghJ1TXE+WYvRp+/XRnN4RyF+6KMzjpA6tr6hgU5LvAxJvCYMRwM01fx1o6Nu
+ IHilvbFbLcP4EHLazm5bhBDCJK4/JI0V6F1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -93,223 +95,45 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2019/7/29 =E4=B8=8B=E5=8D=889:42, Nikolay Borisov wrote:
-[...]
->> +
->> +	/* key->offset is tree level for METADATA_ITEM_KEY */
->> +	if (key->type =3D=3D BTRFS_METADATA_ITEM_KEY) {
->> +		if (key->offset >=3D BTRFS_MAX_LEVEL) {
+On 2019/7/29 =E4=B8=8B=E5=8D=889:52, Sw=C3=A2mi Petaramesh wrote:
+> On 7/29/19 3:47 PM, Qu Wenruo wrote:
+>> Although there are some bug fixes queued for stable, it doesn't look
+>> like related to such CoW breakage.
+>>
+>> Thus we need to rule out lower layer bugs to make sure it's btrfs
+>> causing the problem.
 >
-> make it a compound statement:
->
-> if key->type && key->offset. The extra if doesn't bring anything...
+> Please tell me how I could help.
 
-Right, that's the case.
-I though there would be more checks, but turns out there is only one check=
-.
+Full history of the backup device please.
 
->
->> +			extent_err(leaf, slot,
->> +				"invalid tree level, have %llu expect [0, %u]",
->> +				   key->offset, BTRFS_MAX_LEVEL - 1);
->> +			return -EUCLEAN;
->> +		}
->> +	}
->> +
->> +	/*
->> +	 * EXTENT/METADATA_ITEM is consistent of:
->> +	 * 1) One btrfs_extent_item
->> +	 *    Records the total refs, type and generation of the extent.
->> +	 *
->> +	 * 2) One btrfs_tree_block_info (for EXTENT_ITEM and tree backref onl=
-y)
->> +	 *    Records the first key and level of the tree block.
->> +	 *
->> +	 * 2) *Zero* or more btrfs_extent_inline_ref(s)
->> +	 *    Each inline ref has one btrfs_extent_inline_ref shows:
->> +	 *    2.1) The ref type, one of the 4
->> +	 *         TREE_BLOCK_REF	Tree block only
->> +	 *         SHARED_BLOCK_REF	Tree block only
->> +	 *         EXTENT_DATA_REF	Data only
->> +	 *         SHARED_DATA_REF	Data only
->> +	 *    2.2) Ref type specific data
->> +	 *         Either using btrfs_extent_inline_ref::offset, or specific
->> +	 *         data structure.
->> +	 */
->> +	if (item_size < sizeof(*ei)) {
->> +		extent_err(leaf, slot,
->> +			   "invalid item size, have %u expect >=3D %lu",
->> +			   item_size, sizeof(*ei));
->> +		return -EUCLEAN;
->> +	}
->> +	end =3D item_size + btrfs_item_ptr_offset(leaf, slot);
->> +
->> +	/* Checks against extent_item */
->> +	ei =3D btrfs_item_ptr(leaf, slot, struct btrfs_extent_item);
->> +	flags =3D btrfs_extent_flags(leaf, ei);
->> +	total_refs =3D btrfs_extent_refs(leaf, ei);
->> +	generation =3D btrfs_extent_generation(leaf, ei);
->> +	if (generation > btrfs_super_generation(fs_info->super_copy) + 1) {
->> +		extent_err(leaf, slot,
->> +			"invalid generation, have %llu expect <=3D %llu",
->
-> nit: I find the '<=3D [number]' somewhat confusing, wouldn't it be bette=
-r
-> if it's spelled our e.g 'expecting less than or equal than [number]'.
-> Might be just me.
-
-I normally prefer the "[start, end]" notion, but sometimes even myself
-can't always keep the format the same.
-
-Furthermore, I can't find a minimal value to use [start, end] notion.
-Maybe (0, end] would be more suitable here?
+Including the mount/usage before and after 5.2 kernel.
 
 >
->> +			   generation,
->> +			   btrfs_super_generation(fs_info->super_copy) + 1);
->> +		return -EUCLEAN;
->> +	}
->> +	if (!is_power_of_2(flags & (BTRFS_EXTENT_FLAG_DATA |
->> +				    BTRFS_EXTENT_FLAG_TREE_BLOCK))) {
->> +		extent_err(leaf, slot,
->> +		"invalid extent flag, have 0x%llx expect 1 bit set in 0x%llx",
->> +			flags, BTRFS_EXTENT_FLAG_DATA |
->> +			BTRFS_EXTENT_FLAG_TREE_BLOCK);
->> +		return -EUCLEAN;
->> +	}
->> +	is_tree_block =3D !!(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK);
->> +	if (is_tree_block && key->type =3D=3D BTRFS_EXTENT_ITEM_KEY &&
->> +	    key->offset !=3D fs_info->nodesize) {
->> +		extent_err(leaf, slot,
->> +			   "invalid extent length, have %llu expect %u",
->> +			   key->offset, fs_info->nodesize);
->> +		return -EUCLEAN;
->> +	}
->> +	if (!is_tree_block) {
->> +		if (key->type !=3D BTRFS_EXTENT_ITEM_KEY) {
->> +			extent_err(leaf, slot,
->> +		"invalid key type, have %u expect %u for data backref",
->> +				   key->type, BTRFS_EXTENT_ITEM_KEY);
->> +			return -EUCLEAN;
->> +		}
->> +		if (!IS_ALIGNED(key->offset, fs_info->sectorsize)) {
->> +			extent_err(leaf, slot,
->> +			"invalid extent length, have %llu expect aliged to %u",
->> +				   key->offset, fs_info->sectorsize);
->> +			return -EUCLEAN;
->> +		}
->> +	}
->
-> unify the two is_tree_block/!is_tree_block either in:
->
-> if (is_tree_block) {
-> 	if (keypt->type =3D EXTENT_ITEM_KEY && offset !=3D nodesize {
-> 		foo;
-> 	}
-> } else {
-> 	bar;
-> }
->
+> This machine was extremely stable (for years) before upgrading from
+> kernel 5.1 to 5.2 so unless the hardware is failing, I can hardly
+> imagine what else could be the problem...
 
-Right, that's better.
+You know, LUKS/LVM all uses device mapper, which adds an extra layer for
+the storage stack, and it may affects how FLUSH/FUA is handled, and
+break the fragile CoW used in btrfs.
 
-> or
->
-> if (is_tree_block && key->type =3D=3D BTRFS_EXTENT_ITEM_KEY ..) {
->
-> } else if (!is_tree_block) {
-> bar
-> }
->
->> +	ptr =3D (u64)(struct btrfs_extent_item *)(ei + 1);
->> +
->> +	/* Check the special case of btrfs_tree_block_info */
->> +	if (is_tree_block && key->type !=3D BTRFS_METADATA_ITEM_KEY) {
->> +		struct btrfs_tree_block_info *info;
->> +
->> +		info =3D (struct btrfs_tree_block_info *)ptr;
->> +		if (btrfs_tree_block_level(leaf, info) >=3D BTRFS_MAX_LEVEL) {
->> +			extent_err(leaf, slot,
->> +			"invalid tree block info level, have %u expect [0, %u)",
->
-> nit: Strictly speaking using [0, 7) is wrong, because ')' already
-> implies an open interval. Since we have 8 levels 0/7 inclusive this
-> means the correct way to print it would be [0, 7] or [0, 8).
+And device mapper code is also upgraded with kernel.
+(Although I don't believe that's the case, but we still need to wipe out
+all possibilities)
 
-It's not that rare I misuses such notion. [0, 7] would be the case.
+Despite that, testing btrfs without LUKS/LVM on the same backup disk
+(after you have restored needed data) would help us to determine if it's
+the disk to blame.
 
->
->
->> +				   btrfs_tree_block_level(leaf, info),
->> +				   BTRFS_MAX_LEVEL - 1);
->> +			return -EUCLEAN;
->> +		}
->> +		ptr =3D (u64)(struct btrfs_tree_block_info *)(info + 1);
->> +	}
->> +
->> +	/* Check inline refs */
->> +	while (ptr < end) {
->> +		struct btrfs_extent_inline_ref *iref;
->> +		struct btrfs_extent_data_ref *dref;
->> +		struct btrfs_shared_data_ref *sref;
->> +		u64 dref_offset;
->> +		u64 inline_offset;
->> +		u8 inline_type;
->> +
->> +		if (ptr + sizeof(*iref) > end) {
->> +			extent_err(leaf, slot,
->> +	"invalid item size, size too small, ptr %llu end %llu",
->> +				   ptr, end);
->> +			goto err;
->> +		}
->> +		iref =3D (struct btrfs_extent_inline_ref *)ptr;
->> +		inline_type =3D btrfs_extent_inline_ref_type(leaf, iref);
->> +		inline_offset =3D btrfs_extent_inline_ref_offset(leaf, iref);
->> +		if (ptr + btrfs_extent_inline_ref_size(inline_type) > end) {
->> +			extent_err(leaf, slot,
->> +	"invalid item size, size too small, ptr %llu end %llu",
->
-> Make that text explicit:
->
-> "inline ref item overflows extent item" or some such.
-
-OK, I'll use this expression.
+(It's possible the disk itself doesn't handle FUA/FLUSH correctly thus
+it's just a problem of time to hit such problem)
 
 Thanks,
 Qu
 
-[...]
->> +
->> +	/* Finally, check the inline refs against total refs */
->> +	if (total_refs < inline_refs) {
 >
-> nit: if (inline_refs > total_refs) {} looks saner to me.
+> Both FSes are BTRFS over LUKS (one using an LVM, the other not).
 >
+> Kind regards.
 >
->
->> +		extent_err(leaf, slot,
->> +			"invalid extent refs, have %llu expect >=3D %llu",
->> +			   total_refs, inline_refs);
->> +		goto err;
->> +	}
->> +	return 0;
->> +err:
->> +	return -EUCLEAN;
->> +}
->> +
->>  /*
->>   * Common point to switch the item-specific validation.
->>   */
->> @@ -937,6 +1182,10 @@ static int check_leaf_item(struct extent_buffer *=
-leaf,
->>  	case BTRFS_ROOT_ITEM_KEY:
->>  		ret =3D check_root_item(leaf, key, slot);
->>  		break;
->> +	case BTRFS_EXTENT_ITEM_KEY:
->> +	case BTRFS_METADATA_ITEM_KEY:
->> +		ret =3D check_extent_item(leaf, key, slot);
->> +		break;
->>  	}
->>  	return ret;
->>  }
->>
