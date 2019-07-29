@@ -2,145 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A1AB78686
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 09:43:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2917B7878E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 10:37:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727025AbfG2Hnt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Jul 2019 03:43:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35574 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726862AbfG2Hnt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 03:43:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4823CAE1C
-        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2019 07:43:47 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
+        id S1727611AbfG2IhQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 04:37:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726305AbfG2IhP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Jul 2019 04:37:15 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D27620693
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2019 08:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564389434;
+        bh=dQLN0Yggeu00v/FWI2FUFqWz1032sNdaQzdYzFAWs6M=;
+        h=From:To:Subject:Date:From;
+        b=k6MHKNjWRZlxL7S3T+yQQmbpAQvHCwTZwMjuoxXsQWV1qiGLd5C9U/FUnO0WOTBWU
+         lHIHBjSw4uuHBw9aoyxGHoOkGsp2kh1cspBY+HQLzoAWEEp5WN5A26OoQfba+xnSHS
+         k+PJStFpImpXJDUXr7U8z7d4KxGvcBxlKUeKFJ4Y=
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: tree-checker: Add EXTENT_DATA_REF check
-Date:   Mon, 29 Jul 2019 15:43:37 +0800
-Message-Id: <20190729074337.10573-4-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190729074337.10573-1-wqu@suse.com>
-References: <20190729074337.10573-1-wqu@suse.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH] Btrfs: fix deadlock between fiemap and transaction commits
+Date:   Mon, 29 Jul 2019 09:37:10 +0100
+Message-Id: <20190729083710.5680-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-EXTENT_DATA_REF is a little like DIR_ITEM which contains hash in its
-key->offset.
+From: Filipe Manana <fdmanana@suse.com>
 
-This patch will check the following contents:
-- Key->objectid
-  Basic alignment check.
+The fiemap handler locks a file range that can have unflushed delalloc,
+and after locking the range, it tries to attach to a running transaction.
+If the running transaction started its commit, that is, it is in state
+TRANS_STATE_COMMIT_START, and either the filesystem was mounted with the
+flushoncommit option or the transaction is creating a snapshot for the
+subvolume that contains the file that fiemap is operating on, we end up
+deadlocking. This happens because fiemap is blocked on the transaction,
+waiting for it to complete, and the transaction is waiting for the flushed
+dealloc to complete, which requires locking the file range that the fiemap
+task already locked. The following stack traces serve as an example of
+when this deadlock happens:
 
-- Hash
-  Hash of each extent_data_ref item must match key->offset.
+  (...)
+  [404571.515510] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+  [404571.515956] Call Trace:
+  [404571.516360]  ? __schedule+0x3ae/0x7b0
+  [404571.516730]  schedule+0x3a/0xb0
+  [404571.517104]  lock_extent_bits+0x1ec/0x2a0 [btrfs]
+  [404571.517465]  ? remove_wait_queue+0x60/0x60
+  [404571.517832]  btrfs_finish_ordered_io+0x292/0x800 [btrfs]
+  [404571.518202]  normal_work_helper+0xea/0x530 [btrfs]
+  [404571.518566]  process_one_work+0x21e/0x5c0
+  [404571.518990]  worker_thread+0x4f/0x3b0
+  [404571.519413]  ? process_one_work+0x5c0/0x5c0
+  [404571.519829]  kthread+0x103/0x140
+  [404571.520191]  ? kthread_create_worker_on_cpu+0x70/0x70
+  [404571.520565]  ret_from_fork+0x3a/0x50
+  [404571.520915] kworker/u8:6    D    0 31651      2 0x80004000
+  [404571.521290] Workqueue: btrfs-flush_delalloc btrfs_flush_delalloc_helper [btrfs]
+  (...)
+  [404571.537000] fsstress        D    0 13117  13115 0x00004000
+  [404571.537263] Call Trace:
+  [404571.537524]  ? __schedule+0x3ae/0x7b0
+  [404571.537788]  schedule+0x3a/0xb0
+  [404571.538066]  wait_current_trans+0xc8/0x100 [btrfs]
+  [404571.538349]  ? remove_wait_queue+0x60/0x60
+  [404571.538680]  start_transaction+0x33c/0x500 [btrfs]
+  [404571.539076]  btrfs_check_shared+0xa3/0x1f0 [btrfs]
+  [404571.539513]  ? extent_fiemap+0x2ce/0x650 [btrfs]
+  [404571.539866]  extent_fiemap+0x2ce/0x650 [btrfs]
+  [404571.540170]  do_vfs_ioctl+0x526/0x6f0
+  [404571.540436]  ksys_ioctl+0x70/0x80
+  [404571.540734]  __x64_sys_ioctl+0x16/0x20
+  [404571.540997]  do_syscall_64+0x60/0x1d0
+  [404571.541279]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+  (...)
+  [404571.543729] btrfs           D    0 14210  14208 0x00004000
+  [404571.544023] Call Trace:
+  [404571.544275]  ? __schedule+0x3ae/0x7b0
+  [404571.544526]  ? wait_for_completion+0x112/0x1a0
+  [404571.544795]  schedule+0x3a/0xb0
+  [404571.545064]  schedule_timeout+0x1ff/0x390
+  [404571.545351]  ? lock_acquire+0xa6/0x190
+  [404571.545638]  ? wait_for_completion+0x49/0x1a0
+  [404571.545890]  ? wait_for_completion+0x112/0x1a0
+  [404571.546228]  wait_for_completion+0x131/0x1a0
+  [404571.546503]  ? wake_up_q+0x70/0x70
+  [404571.546775]  btrfs_wait_ordered_extents+0x27c/0x400 [btrfs]
+  [404571.547159]  btrfs_commit_transaction+0x3b0/0xae0 [btrfs]
+  [404571.547449]  ? btrfs_mksubvol+0x4a4/0x640 [btrfs]
+  [404571.547703]  ? remove_wait_queue+0x60/0x60
+  [404571.547969]  btrfs_mksubvol+0x605/0x640 [btrfs]
+  [404571.548226]  ? __sb_start_write+0xd4/0x1c0
+  [404571.548512]  ? mnt_want_write_file+0x24/0x50
+  [404571.548789]  btrfs_ioctl_snap_create_transid+0x169/0x1a0 [btrfs]
+  [404571.549048]  btrfs_ioctl_snap_create_v2+0x11d/0x170 [btrfs]
+  [404571.549307]  btrfs_ioctl+0x133f/0x3150 [btrfs]
+  [404571.549549]  ? mem_cgroup_charge_statistics+0x4c/0xd0
+  [404571.549792]  ? mem_cgroup_commit_charge+0x84/0x4b0
+  [404571.550064]  ? __handle_mm_fault+0xe3e/0x11f0
+  [404571.550306]  ? do_raw_spin_unlock+0x49/0xc0
+  [404571.550608]  ? _raw_spin_unlock+0x24/0x30
+  [404571.550976]  ? __handle_mm_fault+0xedf/0x11f0
+  [404571.551319]  ? do_vfs_ioctl+0xa2/0x6f0
+  [404571.551659]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
+  [404571.552087]  do_vfs_ioctl+0xa2/0x6f0
+  [404571.552355]  ksys_ioctl+0x70/0x80
+  [404571.552621]  __x64_sys_ioctl+0x16/0x20
+  [404571.552864]  do_syscall_64+0x60/0x1d0
+  [404571.553104]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+  (...)
 
-- Offset
-  Basic alignment check.
+If we were joining the transaction instead of attaching to it, we would
+not risk a deadlock because a join only blocks if the transaction is in a
+state greater then or equals to TRANS_STATE_COMMIT_DOING, and the delalloc
+flush performed by a transaction is done before it reaches that state,
+when it is in the state TRANS_STATE_COMMIT_START. However a transaction
+join is intended for use cases where we do modify the filesystem, and
+fiemap only needs to peek at delayed references from the current
+transaction in order to determine if extents are shared, and, besides
+that, when there is no current transaction or when it blocks to wait for
+a current committing transaction to complete, it creates a new transaction
+without reserving any space. Such unnecessary transactions, besides doing
+unnecessary IO, can cause transaction aborts (-ENOSPC) and unnecessary
+rotation of the precious backup roots.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+So fix this by adding a new transaction join variant, named join_nostart,
+which behaves like the regular join, but it does not create a transaction
+when none currently exists or after waiting for a committing transaction
+to complete.
+
+Fixes: 03628cdbc64db6 ("Btrfs: do not start a transaction during fiemap")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.h        |  1 +
- fs/btrfs/extent-tree.c  |  2 +-
- fs/btrfs/tree-checker.c | 48 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 50 insertions(+), 1 deletion(-)
+ fs/btrfs/backref.c     |  2 +-
+ fs/btrfs/transaction.c | 22 ++++++++++++++++++----
+ fs/btrfs/transaction.h |  3 +++
+ 3 files changed, 22 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 0a61dff27f57..710ea3a6608c 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2679,6 +2679,7 @@ enum btrfs_inline_ref_type {
- int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
- 				     struct btrfs_extent_inline_ref *iref,
- 				     enum btrfs_inline_ref_type is_data);
-+u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset);
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index 89116afda7a2..e5d85311d5d5 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -1483,7 +1483,7 @@ int btrfs_check_shared(struct btrfs_root *root, u64 inum, u64 bytenr,
+ 	ulist_init(roots);
+ 	ulist_init(tmp);
  
- u64 btrfs_csum_bytes_to_leaves(struct btrfs_fs_info *fs_info, u64 csum_bytes);
+-	trans = btrfs_attach_transaction(root);
++	trans = btrfs_join_transaction_nostart(root);
+ 	if (IS_ERR(trans)) {
+ 		if (PTR_ERR(trans) != -ENOENT && PTR_ERR(trans) != -EROFS) {
+ 			ret = PTR_ERR(trans);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 7b8bd9046229..9dd62647895a 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -28,15 +28,18 @@ static const unsigned int btrfs_blocked_trans_types[TRANS_STATE_MAX] = {
+ 	[TRANS_STATE_COMMIT_START]	= (__TRANS_START | __TRANS_ATTACH),
+ 	[TRANS_STATE_COMMIT_DOING]	= (__TRANS_START |
+ 					   __TRANS_ATTACH |
+-					   __TRANS_JOIN),
++					   __TRANS_JOIN |
++					   __TRANS_JOIN_NOSTART),
+ 	[TRANS_STATE_UNBLOCKED]		= (__TRANS_START |
+ 					   __TRANS_ATTACH |
+ 					   __TRANS_JOIN |
+-					   __TRANS_JOIN_NOLOCK),
++					   __TRANS_JOIN_NOLOCK |
++					   __TRANS_JOIN_NOSTART),
+ 	[TRANS_STATE_COMPLETED]		= (__TRANS_START |
+ 					   __TRANS_ATTACH |
+ 					   __TRANS_JOIN |
+-					   __TRANS_JOIN_NOLOCK),
++					   __TRANS_JOIN_NOLOCK |
++					   __TRANS_JOIN_NOSTART),
+ };
  
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index b4e9e36b65f1..c0888ed503df 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1114,7 +1114,7 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
- 	return BTRFS_REF_TYPE_INVALID;
+ void btrfs_put_transaction(struct btrfs_transaction *transaction)
+@@ -525,7 +528,8 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 		ret = join_transaction(fs_info, type);
+ 		if (ret == -EBUSY) {
+ 			wait_current_trans(fs_info);
+-			if (unlikely(type == TRANS_ATTACH))
++			if (unlikely(type == TRANS_ATTACH ||
++				     type == TRANS_JOIN_NOSTART))
+ 				ret = -ENOENT;
+ 		}
+ 	} while (ret == -EBUSY);
+@@ -642,6 +646,16 @@ struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root
  }
  
--static u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
-+u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
- {
- 	u32 high_crc = ~(u32)0;
- 	u32 low_crc = ~(u32)0;
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 6ef174c7fb05..115725f742c2 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -1177,6 +1177,51 @@ static int check_simple_keyed_refs(struct extent_buffer *leaf,
- 	return 0;
- }
- 
-+static int check_extent_data_ref(struct extent_buffer *leaf,
-+				 struct btrfs_key *key, int slot)
+ /*
++ * Similar to regular join but it never starts a transaction when none is
++ * running or after waiting for the current one to finish.
++ */
++struct btrfs_trans_handle *btrfs_join_transaction_nostart(struct btrfs_root *root)
 +{
-+	struct btrfs_extent_data_ref *dref;
-+	u64 ptr = btrfs_item_ptr_offset(leaf, slot);
-+	u64 end = ptr + btrfs_item_size_nr(leaf, slot);
-+
-+	if (btrfs_item_size_nr(leaf, slot) % sizeof(*dref) != 0) {
-+		generic_err(leaf, slot,
-+	"invalid item size, have %u expect aligned to %lu for key type %u",
-+			    btrfs_item_size_nr(leaf, slot),
-+			    sizeof(*dref), key->type);
-+	}
-+	if (!IS_ALIGNED(key->objectid, leaf->fs_info->sectorsize)) {
-+		generic_err(leaf, slot,
-+"invalid key objectid for shared block ref, have %llu expect aligned to %u",
-+			    key->objectid, leaf->fs_info->sectorsize);
-+		return -EUCLEAN;
-+	}
-+	for (; ptr < end; ptr += sizeof(*dref)) {
-+		u64 root_objectid;
-+		u64 owner;
-+		u64 offset;
-+		u64 hash;
-+
-+		dref = (struct btrfs_extent_data_ref *)ptr;
-+		root_objectid = btrfs_extent_data_ref_root(leaf, dref);
-+		owner = btrfs_extent_data_ref_objectid(leaf, dref);
-+		offset = btrfs_extent_data_ref_offset(leaf, dref);
-+		hash = hash_extent_data_ref(root_objectid, owner, offset);
-+		if (hash != key->offset) {
-+			extent_err(leaf, slot,
-+	"invalid extent data ref hash, item have 0x%016llx key have 0x%016llx",
-+				   hash, key->offset);
-+			return -EUCLEAN;
-+		}
-+		if (!IS_ALIGNED(offset, leaf->fs_info->sectorsize)) {
-+			extent_err(leaf, slot,
-+	"invalid extent data backref offset, have %llu expect aligned to %u",
-+				   offset, leaf->fs_info->sectorsize);
-+		}
-+	}
-+	return 0;
++	return start_transaction(root, 0, TRANS_JOIN_NOSTART,
++				 BTRFS_RESERVE_NO_FLUSH, true);
 +}
 +
- /*
-  * Common point to switch the item-specific validation.
-  */
-@@ -1224,6 +1269,9 @@ static int check_leaf_item(struct extent_buffer *leaf,
- 	case BTRFS_SHARED_BLOCK_REF_KEY:
- 		ret = check_simple_keyed_refs(leaf, key, slot);
- 		break;
-+	case BTRFS_EXTENT_DATA_REF_KEY:
-+		ret = check_extent_data_ref(leaf, key, slot);
-+		break;
- 	}
- 	return ret;
- }
++/*
+  * btrfs_attach_transaction() - catch the running transaction
+  *
+  * It is used when we want to commit the current the transaction, but
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 78c446c222b7..2f695587f828 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -94,11 +94,13 @@ struct btrfs_transaction {
+ #define __TRANS_JOIN		(1U << 11)
+ #define __TRANS_JOIN_NOLOCK	(1U << 12)
+ #define __TRANS_DUMMY		(1U << 13)
++#define __TRANS_JOIN_NOSTART	(1U << 14)
+ 
+ #define TRANS_START		(__TRANS_START | __TRANS_FREEZABLE)
+ #define TRANS_ATTACH		(__TRANS_ATTACH)
+ #define TRANS_JOIN		(__TRANS_JOIN | __TRANS_FREEZABLE)
+ #define TRANS_JOIN_NOLOCK	(__TRANS_JOIN_NOLOCK)
++#define TRANS_JOIN_NOSTART	(__TRANS_JOIN_NOSTART)
+ 
+ #define TRANS_EXTWRITERS	(__TRANS_START | __TRANS_ATTACH)
+ 
+@@ -183,6 +185,7 @@ struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rsv(
+ 					int min_factor);
+ struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *root);
+ struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root);
++struct btrfs_trans_handle *btrfs_join_transaction_nostart(struct btrfs_root *root);
+ struct btrfs_trans_handle *btrfs_attach_transaction(struct btrfs_root *root);
+ struct btrfs_trans_handle *btrfs_attach_transaction_barrier(
+ 					struct btrfs_root *root);
 -- 
-2.22.0
+2.11.0
 
