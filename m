@@ -2,112 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BBF2790E5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 18:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B994D79394
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 21:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbfG2QcP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Jul 2019 12:32:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:47346 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727093AbfG2QcP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 12:32:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7922F337;
-        Mon, 29 Jul 2019 09:32:14 -0700 (PDT)
-Received: from [10.1.194.37] (e113632-lin.cambridge.arm.com [10.1.194.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A97143F694;
-        Mon, 29 Jul 2019 09:32:13 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Refactor snapshot vs nocow writers locking
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        paulmck@linux.ibm.com, andrea.parri@amarulasolutions.com,
-        linux-kernel@vger.kernel.org
-References: <20190719083949.5351-1-nborisov@suse.com>
- <ed015bb1-490e-7102-d172-73c1d069476c@arm.com>
- <20190729153319.GH2368@arrakis.emea.arm.com>
-From:   Valentin Schneider <valentin.schneider@arm.com>
-Message-ID: <60eda0ab-08b3-de82-5b06-98386ee1928f@arm.com>
-Date:   Mon, 29 Jul 2019 17:32:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1728891AbfG2TKS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 15:10:18 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:38277 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727987AbfG2TKS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Jul 2019 15:10:18 -0400
+Received: by mail-wr1-f66.google.com with SMTP id g17so63037956wrr.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2019 12:10:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=t59ZlgmNU16d/aCKjUAbTSrwyGGcSXOzIiFi7Uom1fA=;
+        b=GUDt21lFgUS/785vG91AXkhmdxQoutNpXBj21cHnTa7/E6TX3qBYuJsqmHqIhRTMV+
+         s0enmgYS28imlcaCdo4X4ZO2znPyMp8j/rL4TQXfDXfTkfYXfB+coUijB+pLb8O41Qa7
+         wU5On8xwEERnmc+g/X5OGhh2MwcBE+zdVzT7Bb+YlZZQAK8OGtWhGSd6Z4uli6kFSpNb
+         FT+lwMRk3a2Bfim1v12c7SmbNtrwE55BdvgpSOEiy4ckvgqOw+oD/wTGpGBP9pPJ8XPl
+         NEZWY+iP90Fp/7UXingYOv+PxKw1P+u8vjnWzMwoctnzwhVU+iMDv+8l95qz9kT458NH
+         mw3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=t59ZlgmNU16d/aCKjUAbTSrwyGGcSXOzIiFi7Uom1fA=;
+        b=nNL7IwZqJQpZ90SQkP+R45pGvOpbQP2VDT57WIM9lNM8yM357uVViMuBhX591FWZOG
+         91JjxQau/ti41CF3QRHuhXoa9PQdUWBlvzlBNgrcgJgBBYtyu45oioOAbTyQEAxPy4Gt
+         zQoQiF/M56iYDYT1q3m0W7ZtIYSREJYYkSRb60d6GSWRH2wXf0qpu4muI5tyisFqVPaS
+         lWa4CwvvQ+HLEFUMxlfFESZleYKpAx7M2GNLsRwvD1YeAceUYsb9bDHonWSazTG4vVLd
+         SBVueh0JR1Dn4UtMhVAnQnC0snt3UsjB1Jmactyru175kFq9kV6Kk/d0AOO4wiXUwWIY
+         ++Aw==
+X-Gm-Message-State: APjAAAVTuF1lrqjFdaAWWzk/VC0g/JlOZjMp196bV3dt5cNxhWbtjZgO
+        FxfFb7DN3sJh6yOU0m2rohJwHN5+9/YlRi98x7Bs5dgies8=
+X-Google-Smtp-Source: APXvYqzU+uyK4gkNEyhqPZyCHKYj4yO888MULZKcYCdN/DYZAn/PHDbRQmYGagJYLJ7SarVv0nuY+Chk4IMWNGblSro=
+X-Received: by 2002:a05:6000:4b:: with SMTP id k11mr19895522wrx.82.1564427416069;
+ Mon, 29 Jul 2019 12:10:16 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190729153319.GH2368@arrakis.emea.arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
+ <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org> <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
+ <325a96b2-e6a4-91e3-3b07-1d20a5a031af@petaramesh.org> <49785aa8-fb71-8e0e-bd1d-1e3cda4c7036@gmx.com>
+ <39d43f92-413c-2184-b8da-2c6073b5223f@petaramesh.org> <b7037726-14dd-a1a2-238f-b5d0d43e3c80@petaramesh.org>
+ <71bc824e-1462-50ef-19b1-848c5eb0439d@gmx.com> <a08455f0-0ee0-7349-69b3-9cdd00bfe2aa@petaramesh.org>
+ <fc26d1e5-ea31-b0c9-0647-63db89a37f53@gmx.com> <4aa57293-3f60-8ced-db14-ed38dff7644b@petaramesh.org>
+ <43dc92e7-cd13-81db-bbe5-68affcdd317b@gmx.com>
+In-Reply-To: <43dc92e7-cd13-81db-bbe5-68affcdd317b@gmx.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 29 Jul 2019 13:10:04 -0600
+Message-ID: <CAJCQCtTSu4XdUmEPHD_8QL71U3O3M8-0m+SweqhPonkKRMUMeg@mail.gmail.com>
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 29/07/2019 16:33, Catalin Marinas wrote:
-[...]
->> ---- MODULE specs ----
->> EXTENDS Integers, Sequences, TLC
->>
->> CONSTANTS
->>     NR_WRITERS,
->>     NR_READERS,
->>     WRITER_TASK,
->>     READER_TASK
->>
->> WRITERS == {WRITER_TASK} \X (1..NR_WRITERS)
->> READERS == {READER_TASK} \X (1..NR_READERS)
->> THREADS == WRITERS \union READERS
-> 
-> Recommendation: use symbolic values for WRITERS and READERS (defined in
-> .cfg: e.g. r1, r2, r3, w1, w2, w2). It allows you do to symmetry
-> optimisations. We've also hit a TLC bug in the past with process values
-> made up of a Cartesian product (though it may have been fixed since).
-> 
+On Mon, Jul 29, 2019 at 8:40 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2019/7/29 =E4=B8=8B=E5=8D=8810:34, Sw=C3=A2mi Petaramesh wrote:
+> > Le 29/07/2019 =C3=A0 16:27, Qu Wenruo a =C3=A9crit :
+> >> BTW, I'm more interesting in your other corrupted leaf report other th=
+an
+> >> this transid error.
+> >
+> > Well I already broke 2 FSes including my most important computer with
+> > this, took me 2 working days to restore and mostly fix my main computer
+> > which I couldn't use for a week (because of lack of time for restoring
+> > it) and now I lose my main backup disk.
+>
+> At least from what I see in this transid error, unless you ruled out the
+> possibility of bad disk firmware and LVM/LUKS, it's hard to say it's
+> btrfs causing the problem.
 
-Right, I had forgotten that one:
+I'm using kernel 5.2.x since early rc's on several ystems, nvme, SSD,
+HDD, half plain partition, half on dmcrypt/LUKS. I can report no
+problems. None are on LVM.
 
-  https://github.com/tlaplus/tlaplus/issues/164
+It comes down to:
+a. workload specific behavior is triggering a new bug in Btrfs or dm
+or blk layer, or combination
+b. new hardware issue
 
-Being very lazy I dislike having to manually input those, but as you say
-it can't be avoided if we want to use symmetry.
+It seems to me whenever weird stuff pops up with ext4 or XFS, their
+call traces generally expose the problem, so I wonder if Btrfs devs
+still have the kernel debug information needed to point the blame; or
+if there needs to be some debug mode (mount option?) that does extra
+checks to try and catch the problem. Is this a case for metadata
+integrity checking of some kind, and have Sw=C3=A2mi run this workload?
+Either on the problem file system or a new Btrfs file system, just to
+gather better quality information?
 
->> macro ReadLock(tid)
->> {
->>     if (lock_state = "idle" \/ lock_state = "read_locked") {
->>         lock_state := "read_locked";
->>         threads[tid] := "read_locked";
->>     } else {
->>         assert lock_state = "write_locked";
->>         \* waiting for writers to finish
->>         threads[tid] := "write_waiting";
->>         await lock_state = "" \/ lock_state = "read_locked";
-> 
-> lock_state = "idle"?
-> 
+But yeah, at least a complete current dmesg is needed. And even
+possibly helpful is kernel messages for the entire time since
+switching to 5.2.0: it could be a big file but easy to filter for dm,
+libata, smartd, and btrfs messages. The filtering I'd leave up to a
+developer, I always by default provide the entire dmesg, it's not
+always clear what the instigator is.
 
-Aye, I didn't modify those macros from the original spec.
+We've discussed many times how both file system repair, and file
+system restore from backup, simply are not scalable for big file
+systems. It takes too long.
 
->> macro WriteLock(tid)
->> {
->>     if (lock_state = "idle" \/ lock_state = "write_locked") {
->>         lock_state := "write_locked";
->>         threads[tid] := "write_locked";
->>     } else {
->>         assert lock_state = "read_locked";
->>         \* waiting for readers to finish
->>         threads[tid] := "read_waiting";
->>         await lock_state = "idle" \/ lock_state = "write_locked";
->>     };
->> }
-> 
-> I'd say that's one of the pitfalls of PlusCal. The above is executed
-> atomically, so you'd have the lock_state read and updated in the same
-> action. Looking at the C patches, there is an
-> atomic_read(&lock->readers) followed by a
-> percpu_counter_inc(&lock->writers). Between these two, you can have
-> "readers" becoming non-zero via a different CPU.
-> 
-> My suggestion would be to use procedures with labels to express the
-> non-atomicity of such sequences.
-> 
 
-Agreed, I've suggested something like this in my reply.
-
-[...]
+--=20
+Chris Murphy
