@@ -2,108 +2,203 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE98F78CF5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 15:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63D5878CFC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 15:39:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387733AbfG2Nfz convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 29 Jul 2019 09:35:55 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:53867 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387722AbfG2Nfy (ORCPT
+        id S1726690AbfG2Ni7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 09:38:59 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:44871 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726627AbfG2Ni7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 09:35:54 -0400
-X-Originating-IP: 88.191.131.7
-Received: from [10.137.0.38] (unknown [88.191.131.7])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id A59C5FF809;
-        Mon, 29 Jul 2019 13:35:52 +0000 (UTC)
-Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     Lionel Bouton <lionel-subscription@bouton.name>,
-        linux-btrfs@vger.kernel.org
-References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
- <f8b08aec-2c43-9545-906e-7e41953d9ed4@bouton.name>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-Openpgp: preference=signencrypt
-Autocrypt: addr=swami@petaramesh.org; keydata=
- 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
- BtUAN08OPA==
-Message-ID: <09817d56-e037-8403-fb3b-9f3121bc8cdb@petaramesh.org>
-Date:   Mon, 29 Jul 2019 15:35:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Mon, 29 Jul 2019 09:38:59 -0400
+Received: by mail-qt1-f195.google.com with SMTP id 44so28628111qtg.11
+        for <linux-btrfs@vger.kernel.org>; Mon, 29 Jul 2019 06:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=4ExJgCH3jkTtRb0859IcYKAiEfRaIpIYK5KxDMMhMmI=;
+        b=jRXrximwieG6CEtYNexJ/z6H19fUKp8hqRHcaNhXTRfhdS9Qzf4uX9cD3YcJu/cMk/
+         /vJq+vD3DednzduBANIEnQ8y12T4Lf1b1dBsDKBb5tJ/PU2Fhq+aEv2CUFypI3AsNnI1
+         txI7NJr1S/zpDJSjtIjD6eNHzsjVDaXFMqesYdUVY9IoSkM7etPCSSi4ocATUwp+UYDT
+         i5VVuZDjokMuk4w+XeUOLOPqV1Rn79Nc6TPGWv1zAN2i+DywdH9/7JD8lHC2tXWFdv5y
+         ExeJDLf9ExQ1GI+KuYBGwHu+BsKJVGoMzgQYmCx0QJP7fd7RrrE7qs6TUlWSPapnOsQH
+         JeOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=4ExJgCH3jkTtRb0859IcYKAiEfRaIpIYK5KxDMMhMmI=;
+        b=C7nglgpUZP2NvaPpJ73DmEo8c+ilAS3aZ7ODl+iDel/j/CizJyN1MjaU2DTFXDM4id
+         XT/1qlNNxrpNCpPSQX3xo5RWf9WjmFcW0sxj98jVnPGxHKc5xsvX2ItsT7YL0UfuMBjZ
+         4DURl85mpBPRTRqGkmaO4FNQ4dNh1Tw3gVJvxLQhgQ8J+eLF85a4ld8iJAm2yv5OGi9s
+         pgF6P7xVlXrFwtLUNa02izDxO3BJI8BGGuWe7/qYsFh4dfhPbfBl77pQ8KROt84Dox5M
+         zFT2EIxx2OUdiodZ+BboNay7cH8E324meDGYg30zi9cMvyElC0ykorVJMU4BlWTLHuL6
+         hVDQ==
+X-Gm-Message-State: APjAAAX3uflAv6seTHPw5n9k74euA/5sJ3jcHfgA2jHz7ojvPl9sRpc4
+        xS7+2JhvcFhKlR0SP8OEZz/bMB2dpH8=
+X-Google-Smtp-Source: APXvYqzEyIUbJW1ynFk4PtH8yZlYJSlfAcVB4PZDXEV8eRhq3U0Nrte4KPR1L3lZV+qrGaRDNHx6xg==
+X-Received: by 2002:aed:355d:: with SMTP id b29mr77725720qte.12.1564407537735;
+        Mon, 29 Jul 2019 06:38:57 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::a861])
+        by smtp.gmail.com with ESMTPSA id h4sm27231132qkk.39.2019.07.29.06.38.56
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Jul 2019 06:38:57 -0700 (PDT)
+Date:   Mon, 29 Jul 2019 09:38:55 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] Btrfs: fix race leading to fs corruption after
+ transaction abortion
+Message-ID: <20190729133854.lkaiv7fvw4lf3cun@macbook-pro-91.dhcp.thefacebook.com>
+References: <20190725102704.11404-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <f8b08aec-2c43-9545-906e-7e41953d9ed4@bouton.name>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: fr-FR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190725102704.11404-1-fdmanana@kernel.org>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/29/19 3:29 PM, Lionel Bouton wrote:
-> For another reference point, my personal laptop reports 17 days of
-> uptime on 5.2.0-arch2-1-ARCH.
-> I use BTRFS both over LUKS over LVM and directly over LVM. The system
-> is suspended during the night and running otherwise (probably more
-> than 16 hours a day).
->
-> I don't have any problem so far. I'll reboot right away and reply to
-> this message (if you see it and not a reply shortly after, there might
-> be a bug affecting me too).
->
-Well I had upgraded 3 machines to 5.2 (One Arch and 2 Manjaros).
+On Thu, Jul 25, 2019 at 11:27:04AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> When one transaction is finishing its commit, it is possible for another
+> transaction to start and enter its initial commit phase as well. If the
+> first ends up getting aborted, we have a small time window where the second
+> transaction commit does not notice that the previous transaction aborted
+> and ends up committing, writing a superblock that points to btrees that
+> reference extent buffers (nodes and leafs) that were not persisted to disk.
+> The consequence is that after mounting the filesystem again, we will be
+> unable to load some btree nodes/leafs, either because the content on disk
+> is either garbage (or just zeroes) or corresponds to the old content of a
+> previouly COWed or deleted node/leaf, resulting in the well known error
+> messages "parent transid verify failed on ...".
+> The following sequence diagram illustrates how this can happen.
+> 
+>         CPU 1                                           CPU 2
+> 
+>  <at transaction N>
+> 
+>  btrfs_commit_transaction()
+>    (...)
+>    --> sets transaction state to
+>        TRANS_STATE_UNBLOCKED
+>    --> sets fs_info->running_transaction
+>        to NULL
+> 
+>                                                     (...)
+>                                                     btrfs_start_transaction()
+>                                                       start_transaction()
+>                                                         wait_current_trans()
+>                                                           --> returns immediately
+>                                                               because
+>                                                               fs_info->running_transaction
+>                                                               is NULL
+>                                                         join_transaction()
+>                                                           --> creates transaction N + 1
+>                                                           --> sets
+>                                                               fs_info->running_transaction
+>                                                               to transaction N + 1
+>                                                           --> adds transaction N + 1 to
+>                                                               the fs_info->trans_list list
+>                                                         --> returns transaction handle
+>                                                             pointing to the new
+>                                                             transaction N + 1
+>                                                     (...)
+> 
+>                                                     btrfs_sync_file()
+>                                                       btrfs_start_transaction()
+>                                                         --> returns handle to
+>                                                             transaction N + 1
+>                                                       (...)
+> 
+>    btrfs_write_and_wait_transaction()
+>      --> writeback of some extent
+>          buffer fails, returns an
+> 	 error
+>    btrfs_handle_fs_error()
+>      --> sets BTRFS_FS_STATE_ERROR in
+>          fs_info->fs_state
+>    --> jumps to label "scrub_continue"
+>    cleanup_transaction()
+>      btrfs_abort_transaction(N)
+>        --> sets BTRFS_FS_STATE_TRANS_ABORTED
+>            flag in fs_info->fs_state
+>        --> sets aborted field in the
+>            transaction and transaction
+> 	   handle structures, for
+>            transaction N only
+>      --> removes transaction from the
+>          list fs_info->trans_list
+>                                                       btrfs_commit_transaction(N + 1)
+>                                                         --> transaction N + 1 was not
+> 							    aborted, so it proceeds
+>                                                         (...)
+>                                                         --> sets the transaction's state
+>                                                             to TRANS_STATE_COMMIT_START
+>                                                         --> does not find the previous
+>                                                             transaction (N) in the
+>                                                             fs_info->trans_list, so it
+>                                                             doesn't know that transaction
+>                                                             was aborted, and the commit
+>                                                             of transaction N + 1 proceeds
+>                                                         (...)
+>                                                         --> sets transaction N + 1 state
+>                                                             to TRANS_STATE_UNBLOCKED
+>                                                         btrfs_write_and_wait_transaction()
+>                                                           --> succeeds writing all extent
+>                                                               buffers created in the
+>                                                               transaction N + 1
+>                                                         write_all_supers()
+>                                                            --> succeeds
+>                                                            --> we now have a superblock on
+>                                                                disk that points to trees
+>                                                                that refer to at least one
+>                                                                extent buffer that was
+>                                                                never persisted
+> 
+> So fix this by updating the transaction commit path to check if the flag
+> BTRFS_FS_STATE_TRANS_ABORTED is set on fs_info->fs_state if after setting
+> the transaction to the TRANS_STATE_COMMIT_START we do not find any previous
+> transaction in the fs_info->trans_list. If the flag is set, just fail the
+> transaction commit with -EROFS, as we do in other places. The exact error
+> code for the previous transaction abort was already logged and reported.
+> 
+> Fixes: 49b25e0540904b ("btrfs: enhance transaction abort infrastructure")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/transaction.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 3f6811cdf803..7b8bd9046229 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -2019,6 +2019,17 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+>  		}
+>  	} else {
+>  		spin_unlock(&fs_info->trans_lock);
+> +		/*
+> +		 * The previous transaction was aborted and was already removed
+> +		 * from the list of transactions at fs_info->trans_list. So we
+> +		 * abort to prevent writing a new superblock that reflects a
+> +		 * corrupt state (pointing to trees with unwritten nodes/leafs).
+> +		 */
+> +		if (test_bit(BTRFS_FS_STATE_TRANS_ABORTED,
+> +			     &fs_info->fs_state)) {
+> +			ret = -EROFS;
+> +			goto cleanup_transaction;
+> +		}
+>  	}
+>  
+>  	extwriter_counter_dec(cur_trans, trans->type);
 
-The Arch broke 2 BTRFS filesystems residing on 2 different disks that
-had been perfectly reliable ever before.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-The 2 Manjaros did not exhibit trouble so far but I use these 2 very
-little and I preferred to revert back to 5.1 in a hurry before I break
-my backup machines as badly as my main machine :-/
+Thanks,
 
-My Arch first broke its BTRFS main FS and I told myself it was years
-old, so maybe some old corruption undetected by scrub so far...
-
-But the external HD that just broke is less than 6 months old and has
-been formatted with at least a 4.20 kernel... And is used purely for
-backups. So this I don't understand.
-
-Kind regards.
-
-ॐ
-
--- 
-Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
-
-
+Josef
