@@ -2,24 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C6E178BD4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 14:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08B1878BF8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 14:47:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728120AbfG2MdE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 29 Jul 2019 08:33:04 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:54785 "EHLO
-        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbfG2MdD (ORCPT
+        id S1727090AbfG2MrD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 08:47:03 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:49359 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726717AbfG2MrD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 08:33:03 -0400
+        Mon, 29 Jul 2019 08:47:03 -0400
 X-Originating-IP: 88.191.131.7
 Received: from [10.137.0.38] (unknown [88.191.131.7])
         (Authenticated sender: swami@petaramesh.org)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 258B460010;
-        Mon, 29 Jul 2019 12:33:00 +0000 (UTC)
-To:     linux-btrfs@vger.kernel.org, swami@petaramesh.org
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 6ED881BF206;
+        Mon, 29 Jul 2019 12:47:00 +0000 (UTC)
+To:     alexander.wetzel@web.de
+References: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
+Subject: [BUG] BTRFS critical corrupt leaf - bisected to 496245cac57e
+Cc:     linux-btrfs@vger.kernel.org
 From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-Subject: Massive filesystem corruption since kernel 5.2 (ARCH)
 Openpgp: preference=signencrypt
 Autocrypt: addr=swami@petaramesh.org; keydata=
  xsDiBEP8C/QRBADPiYmcQstlx+HdyR2FGH+bDgRZ0ZJBAx6F0OPW+CmIa6tlwdhSFtCTJGcw
@@ -55,47 +57,31 @@ Autocrypt: addr=swami@petaramesh.org; keydata=
  TYaSBqmVw+0A3ILCZgQYEQIAJgIbDBYhBMwf46BtOfqyuRyYLi/CXB2QduMuBQJdAnbyBQki
  bGwWAAoJEC/CXB2QduMur1wAn1X3FcsmMdhMfiYwXw7LVw4FAIeWAJ9kLGer22WFWR2z2iU7
  BtUAN08OPA==
-Message-ID: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
-Date:   Mon, 29 Jul 2019 14:32:59 +0200
+Message-ID: <daeb4767-b113-f945-da67-61d250fa1663@petaramesh.org>
+Date:   Mon, 29 Jul 2019 14:46:59 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
+In-Reply-To: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Content-Language: fr-FR
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi list,
+Hi,
 
-I've been using BTRFS for years on a whole lot of machines witch complex
-configurations (in RAID, over LUKS, with bcache etc) and was happy I
-never lost ONE byte.
+The corruption issue that you report just after upgrading to kernel 5.2
+resembles very much to what I had on 2 filesystems after such an upgrade.
 
-Well, since I upgraded my main laptop to Arch Linux kernel 5.2, I
-IMMEDIATELY got my laptop's SSD BTRFS FS (over LUKS) corrupt, and have
-to rebuild and restore it.
+I think I'me gonna emergency downgrade all my BTRFS machines to kernel
+5.1 before they break ,-(
 
-Today, same machine, but this time my external BTRFS (over LUKS) backup
-USB HDD went corrupt the same.
-
-The first logged messages looks the same in both cases : « Parent
-transid verify failed on (huge number) wanted 7684 found 7499. »
-
-(This time - or similar numbers)
-
-So I'm under the impression that either my laptop's RAM is dying, or
-something is *very* broke in BTRFS in kernel 5.2.
-
-Any hint or advice very much appreciated.
-
-Kind regards.
 
 ॐ
 
 -- 
 Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
-
 
