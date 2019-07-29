@@ -2,107 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0628578EB0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 17:05:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5008E78F5F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Jul 2019 17:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387856AbfG2PFm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 29 Jul 2019 11:05:42 -0400
-Received: from relay11.mail.gandi.net ([217.70.178.231]:38929 "EHLO
-        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387494AbfG2PFl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 29 Jul 2019 11:05:41 -0400
-Received: from [10.137.0.38] (unknown [88.191.131.7])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay11.mail.gandi.net (Postfix) with ESMTPSA id DC73F100004;
-        Mon, 29 Jul 2019 15:05:39 +0000 (UTC)
-Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
- <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
- <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
- <325a96b2-e6a4-91e3-3b07-1d20a5a031af@petaramesh.org>
- <49785aa8-fb71-8e0e-bd1d-1e3cda4c7036@gmx.com>
- <39d43f92-413c-2184-b8da-2c6073b5223f@petaramesh.org>
- <b7037726-14dd-a1a2-238f-b5d0d43e3c80@petaramesh.org>
- <71bc824e-1462-50ef-19b1-848c5eb0439d@gmx.com>
- <a08455f0-0ee0-7349-69b3-9cdd00bfe2aa@petaramesh.org>
- <fc26d1e5-ea31-b0c9-0647-63db89a37f53@gmx.com>
- <4aa57293-3f60-8ced-db14-ed38dff7644b@petaramesh.org>
- <43dc92e7-cd13-81db-bbe5-68affcdd317b@gmx.com>
- <a74e3ba6-7106-f2c5-383e-1f75621605a5@petaramesh.org>
- <c5fb61ef-05dc-2bd4-a0aa-d86358d7b82a@gmx.com>
- <5fd82812-22cf-253e-312a-1cfc33f4dfff@petaramesh.org>
-Openpgp: preference=signencrypt
-Autocrypt: addr=swami@petaramesh.org; keydata=
- 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
- BtUAN08OPA==
-Message-ID: <e8a4ca58-0b5e-96ee-1fa5-552ad7e55785@petaramesh.org>
-Date:   Mon, 29 Jul 2019 17:05:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S2388001AbfG2PdY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 29 Jul 2019 11:33:24 -0400
+Received: from foss.arm.com ([217.140.110.172]:45808 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387887AbfG2PdX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 29 Jul 2019 11:33:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 15FDA337;
+        Mon, 29 Jul 2019 08:33:23 -0700 (PDT)
+Received: from arrakis.emea.arm.com (arrakis.cambridge.arm.com [10.1.196.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 132313F694;
+        Mon, 29 Jul 2019 08:33:21 -0700 (PDT)
+Date:   Mon, 29 Jul 2019 16:33:19 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        paulmck@linux.ibm.com, andrea.parri@amarulasolutions.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/2] Refactor snapshot vs nocow writers locking
+Message-ID: <20190729153319.GH2368@arrakis.emea.arm.com>
+References: <20190719083949.5351-1-nborisov@suse.com>
+ <ed015bb1-490e-7102-d172-73c1d069476c@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <5fd82812-22cf-253e-312a-1cfc33f4dfff@petaramesh.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: fr-FR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ed015bb1-490e-7102-d172-73c1d069476c@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/29/19 4:55 PM, Swâmi Petaramesh wrote:
-> Well  All the errors I detailed today happen on the SAME FS, and this fs
-> is a BTRFS that was created on a new HD with a recent kernel (surely >=
-> 4.19) only a few months ago.
->
-> And the errors I have one this one, As far as I can tell, look exactly
-> like what happened on the same machines SSD as soons as I installer a
-> 5.2 kernel...
+Some nitpicking below:
 
-Plus I just decided to “btrfs check” the SSD FS from my machine (not yet
-showing errors), which I completely reformatted using 5.2 3 days ago
-(after having fully tested the SSD error-free itself)...
+On Mon, Jul 29, 2019 at 03:13:42PM +0100, Valentin Schneider wrote:
+> specs.tla:
+> 
+> ---- MODULE specs ----
+> EXTENDS Integers, Sequences, TLC
+> 
+> CONSTANTS
+>     NR_WRITERS,
+>     NR_READERS,
+>     WRITER_TASK,
+>     READER_TASK
+> 
+> WRITERS == {WRITER_TASK} \X (1..NR_WRITERS)
+> READERS == {READER_TASK} \X (1..NR_READERS)
+> THREADS == WRITERS \union READERS
 
-And btrfs check tells me that this FS is now completely corrupt as well
-:-(((
+Recommendation: use symbolic values for WRITERS and READERS (defined in
+.cfg: e.g. r1, r2, r3, w1, w2, w2). It allows you do to symmetry
+optimisations. We've also hit a TLC bug in the past with process values
+made up of a Cartesian product (though it may have been fixed since).
 
-The list of files in error has been scrolling for five minutes now :-(((
+> macro ReadLock(tid)
+> {
+>     if (lock_state = "idle" \/ lock_state = "read_locked") {
+>         lock_state := "read_locked";
+>         threads[tid] := "read_locked";
+>     } else {
+>         assert lock_state = "write_locked";
+>         \* waiting for writers to finish
+>         threads[tid] := "write_waiting";
+>         await lock_state = "" \/ lock_state = "read_locked";
+
+lock_state = "idle"?
+
+> macro WriteLock(tid)
+> {
+>     if (lock_state = "idle" \/ lock_state = "write_locked") {
+>         lock_state := "write_locked";
+>         threads[tid] := "write_locked";
+>     } else {
+>         assert lock_state = "read_locked";
+>         \* waiting for readers to finish
+>         threads[tid] := "read_waiting";
+>         await lock_state = "idle" \/ lock_state = "write_locked";
+>     };
+> }
+
+I'd say that's one of the pitfalls of PlusCal. The above is executed
+atomically, so you'd have the lock_state read and updated in the same
+action. Looking at the C patches, there is an
+atomic_read(&lock->readers) followed by a
+percpu_counter_inc(&lock->writers). Between these two, you can have
+"readers" becoming non-zero via a different CPU.
+
+My suggestion would be to use procedures with labels to express the
+non-atomicity of such sequences.
+
+> macro ReadUnlock(tid) {
+>     if (threads[tid] = "read_locked") {
+>         threads[tid] := "idle";
+>         if (\A thread \in THREADS: threads[thread] # "read_locked") {
+>             \* we were the last read holder, everyone else should be waiting, unlock the lock
+>             lock_state := "idle";
+>         };
+>     };
+> }
+
+I'd make this close to the proposed C code with atomic counters. You'd
+not be able to check each thread atomically in practice anyway.
 
 -- 
-ॐ
-
-Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
-
+Catalin
