@@ -2,25 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24B2D7B5D6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2019 00:44:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C7A7B623
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2019 01:13:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbfG3Wot (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jul 2019 18:44:49 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:35657 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725935AbfG3Wot (ORCPT
+        id S1726973AbfG3XNY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jul 2019 19:13:24 -0400
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:59722 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbfG3XNY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jul 2019 18:44:49 -0400
-X-Originating-IP: 88.191.131.7
-Received: from [192.168.1.167] (unknown [88.191.131.7])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id AE8F5E0004;
-        Tue, 30 Jul 2019 22:44:44 +0000 (UTC)
+        Tue, 30 Jul 2019 19:13:24 -0400
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id D7277142BC3; Wed, 31 Jul 2019 00:13:20 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1564528400;
+        bh=z0mBSs5dzs7dafBoH35hluyxpOGeHYaq+46JoqJEEEo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ky0ipiKTmabQ1O1FcqyUPOS0B5LyG1o2OKKopT1+dE7VpM87Tp4ccKU6Ft55fB67g
+         srTxCkRIEe7dnZTucXQcA7VpxPaEBC8TqiBZbeRUA9rDN154RVcHApbQU+ko6tsUE5
+         gTGrqSZBMpq8M+as/FRRAxSOC6ZgqVfRUGxHmnctInU6s2k3bNQ+uC4YrkKUnuf6Wn
+         JVjxvH0uuEHEB8+FeUeHVX5dO+6K0/ZO3MyroqxvcGC51acZT8UMgfSqy/XiGBN9Oz
+         jm4/Z8m/f9zt9/LX7QsUmIRVdy9MuIllZuzyH/WuyvIdj33ZNLRzrPOS8Ln/sY1TT1
+         t6HhQ3Csz9zog==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 77A86142BC2;
+        Wed, 31 Jul 2019 00:13:20 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1564528400;
+        bh=z0mBSs5dzs7dafBoH35hluyxpOGeHYaq+46JoqJEEEo=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ky0ipiKTmabQ1O1FcqyUPOS0B5LyG1o2OKKopT1+dE7VpM87Tp4ccKU6Ft55fB67g
+         srTxCkRIEe7dnZTucXQcA7VpxPaEBC8TqiBZbeRUA9rDN154RVcHApbQU+ko6tsUE5
+         gTGrqSZBMpq8M+as/FRRAxSOC6ZgqVfRUGxHmnctInU6s2k3bNQ+uC4YrkKUnuf6Wn
+         JVjxvH0uuEHEB8+FeUeHVX5dO+6K0/ZO3MyroqxvcGC51acZT8UMgfSqy/XiGBN9Oz
+         jm4/Z8m/f9zt9/LX7QsUmIRVdy9MuIllZuzyH/WuyvIdj33ZNLRzrPOS8Ln/sY1TT1
+         t6HhQ3Csz9zog==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id 306EC20448;
+        Wed, 31 Jul 2019 00:13:20 +0100 (BST)
 Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+To:     =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
  <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
  <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
@@ -36,86 +63,72 @@ References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
  <CAJCQCtTSu4XdUmEPHD_8QL71U3O3M8-0m+SweqhPonkKRMUMeg@mail.gmail.com>
  <d76a038d-fc7f-5910-ec2d-ac783891f001@petaramesh.org>
  <CAJCQCtR3pW7T7=DxuAyqwfG+4ii-jg2AVqQL2wVEAx2VrGAY8g@mail.gmail.com>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+ <1d80844d-9932-03a8-ae59-c8cbf48a1f57@petaramesh.org>
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
 Openpgp: preference=signencrypt
-Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
- 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
- BtUAN08OPA==
-Message-ID: <1d80844d-9932-03a8-ae59-c8cbf48a1f57@petaramesh.org>
-Date:   Wed, 31 Jul 2019 00:44:42 +0200
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <a73770f4-5ee9-176a-5591-5700864f75b9@cobb.uk.net>
+Date:   Wed, 31 Jul 2019 00:13:19 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtR3pW7T7=DxuAyqwfG+4ii-jg2AVqQL2wVEAx2VrGAY8g@mail.gmail.com>
+In-Reply-To: <1d80844d-9932-03a8-ae59-c8cbf48a1f57@petaramesh.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: fr-FR
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Le 30/07/2019 à 22:15, Chris Murphy a écrit :
-> I sympathize with the lack of resources. But no full disk backup
-> simply cannot be taken seriously in any computer science context. The
-> data cannot be that important by the user's own estimation if there
-> aren't backups. It's reasonable for resource limitations to have a
-> subset of data backed up. But if none of it is *shrug* there just
-> aren't that many people who will sympathize with data loss if there
-> are no backups.
+On 30/07/2019 23:44, Swâmi Petaramesh wrote:
+> Still, losing a given FS with subvols, snapshots etc, may be very
+> annoying and very time consuming rebuilding.
 
-I do, have backups for everything, and backups of backups and offsite
-backups, etc.
+I believe that in one of the earlier mails, Qu said that you can
+probably mount the corrupted fs readonly and read everything.
 
-What I mean is that i.e. I have a NAS machine that acts as a backup
-server for all the rest of my machines. Yes the rest is also cross
-backed up scattered here and there. If I lose the NAS I don't lose no
-*unique data*
+If that is the case then, if I were in your position, I would probably
+buy another disk, create a a new fs, and then use one of the subvol
+preserving btrfs clone utilities to clone the readonly disk onto the new
+disk.
 
-Still, the exact organization of THIS machine's filesystems is unique
-and would be long redoing, it may hold some timeline snapshots that
-other storage doesn't have or doesn't have anymore etc.
-
-I can lose any of my filesystems without losing critical data. I can
-live and survive this way.
-
-Still, losing a given FS with subvols, snapshots etc, may be very
-annoying and very time consuming rebuilding.
-
-Kind regards.
-
-ॐ
-
--- 
-Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
+Not cheap, and would still take some time, but at least it could be
+automated.
