@@ -2,116 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38B0A7A2B7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 10:03:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 067137A2BA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 10:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729990AbfG3IDB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 30 Jul 2019 04:03:01 -0400
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:43555 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726351AbfG3IDB (ORCPT
+        id S1730776AbfG3IDO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jul 2019 04:03:14 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:36522 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729810AbfG3IDO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jul 2019 04:03:01 -0400
-X-Originating-IP: 37.173.35.67
-Received: from [10.137.0.38] (unknown [37.173.35.67])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id E5FA11C0006;
-        Tue, 30 Jul 2019 08:02:57 +0000 (UTC)
-Subject: Re: [BUG] BTRFS critical corrupt leaf - bisected to 496245cac57e
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
- <daeb4767-b113-f945-da67-61d250fa1663@petaramesh.org>
- <d9ea9623-657e-0315-7166-b7f58b32d4e0@gmx.com>
- <4776e0bd-83c2-44a1-4403-3a155fe3f6c7@gmx.com>
- <508c6378-522a-ae24-6c33-83c8efc64ae5@petaramesh.org>
- <83294063-9f98-71ab-428b-e2251b96e5b9@gmx.com>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-Openpgp: preference=signencrypt
-Autocrypt: addr=swami@petaramesh.org; keydata=
- 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
- BtUAN08OPA==
-Message-ID: <d4b7fba8-632d-2d3b-4edd-70433b835a59@petaramesh.org>
-Date:   Tue, 30 Jul 2019 10:02:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Tue, 30 Jul 2019 04:03:14 -0400
+Received: by mail-oi1-f194.google.com with SMTP id q4so18095275oij.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2019 01:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=imSedO+dXsuu9Wc44hnYPbpIoMr3qD2NYxlc7VESMmI=;
+        b=Sk2ByhHb1cOHldpuuLzH0gTcEz1phpZzO6Ae3nYCJXFRPDoL036K8htlUemQuMpu0S
+         KMWD8iM/88cBdyJLBoSoXlfeMi3I9XTGMSOK9ORntlreT0sg8/WRNCmV7pUNHBSY2mHj
+         jOjXlWUOVfWM0bZPO0eznbWzZsc+ucx3tdlPybbvjUlzaqYj2WwsxD6awGQ49niVeEvs
+         fVNTsrQp6cGvKuxYBntkU7/yoDxhUzRAkzV+G3S2JWbTCagLi4tAep6CIhdzx4CWVJ78
+         7CREcbkEiC+6YC7vzpvrTApiuGPr1cWLkbIv+alLer2489rwl/VGdIEf4cP3tuj5qs/x
+         Mibw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=imSedO+dXsuu9Wc44hnYPbpIoMr3qD2NYxlc7VESMmI=;
+        b=RMBeN9Bu/kXCKgBTUvfYIuiq6t+LOnfx46VFS/j1lW5+XwAcqrFQbZxX58tAhONmeM
+         6ZvQjPuQbnVGZD+rYNVju1X2xlnIBwCY026Zp4mqbfndCPcCvmWAPgVeW88wHz8RoqhW
+         bJ7jOcF/J1uhiJxnZgJNP4moKew1scR4JS1q/UEDG0f3mLP4NzYgV6Arl/shayYeVxUK
+         yQTaH+WxlcOJzfmbwM1+91rfRpoE8ps4JEQfZ2ocq/XsSNl1bnaI0/4LQDUjewFYAfBw
+         U85h7qFyg4ybVz/IzoSUUkBJlGVvs0CET25Rb/QqcacNyd/Op/HhFifdeVFG1x2Dbg12
+         SPLA==
+X-Gm-Message-State: APjAAAV6Cj1q1al0hn71II3oBrxx9yE82e0dHLyreZ/TvTetYplI69QS
+        7UOly67Y30pFBugI+Rdd7fZ7y3fcruxaYEVweIi9ODnV
+X-Google-Smtp-Source: APXvYqx36NAIjWzp9k0GCvh1SpykvSpjCoNyJR/4Z4HXndwjL7XwCv4EveUeYAnoKOeM9jeU3SCoyHuuzrAcm0xFFBU=
+X-Received: by 2002:a05:6808:3d5:: with SMTP id o21mr42741792oie.108.1564473793404;
+ Tue, 30 Jul 2019 01:03:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <83294063-9f98-71ab-428b-e2251b96e5b9@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: fr-FR
+References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
+ <f8b08aec-2c43-9545-906e-7e41953d9ed4@bouton.name> <09817d56-e037-8403-fb3b-9f3121bc8cdb@petaramesh.org>
+In-Reply-To: <09817d56-e037-8403-fb3b-9f3121bc8cdb@petaramesh.org>
+From:   Henk Slager <eye1tm@gmail.com>
+Date:   Tue, 30 Jul 2019 10:04:02 +0200
+Message-ID: <CAPmG0jYew8zBEYW=HWRrEQGZfsox4gq9ATt4iYHcn4voGwfEdQ@mail.gmail.com>
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/30/19 9:21 AM, Qu Wenruo wrote:
+On Mon, Jul 29, 2019 at 4:17 PM Sw=C3=A2mi Petaramesh <swami@petaramesh.org=
+> wrote:
 >
->> I have emergency downgraded my system to 5.1 not to take any risk of
->> crashing my SSD again (and if it crashes again anyway, then I will know
->> it is not kernel 5.2's fault and let you know...)
-> That kernel message is to *prevent* any further damage, by rejecting any
-> invalid metadata.
-> If it caused mount failure, it shouldn't have written anything to the disk.
+> On 7/29/19 3:29 PM, Lionel Bouton wrote:
+> > For another reference point, my personal laptop reports 17 days of
+> > uptime on 5.2.0-arch2-1-ARCH.
+> > I use BTRFS both over LUKS over LVM and directly over LVM. The system
+> > is suspended during the night and running otherwise (probably more
+> > than 16 hours a day).
+> >
+> > I don't have any problem so far. I'll reboot right away and reply to
+> > this message (if you see it and not a reply shortly after, there might
+> > be a bug affecting me too).
+> >
+> Well I had upgraded 3 machines to 5.2 (One Arch and 2 Manjaros).
 >
-> The later transid error doesn't really match the original report.
+> The Arch broke 2 BTRFS filesystems residing on 2 different disks that
+> had been perfectly reliable ever before.
 >
-> We really need the mount failure message of that fs.
-
-This message is what I just got from my external backup USB HD that
-started acting up yesterday (before I reverted back to 5.1).
-
-I may find more in the syslog (but the machine is at home and I'm at
-work so it'll have to wait... I have the external disk with me however,
-so I would be able to run anything to test it now.)
-
-For the machine's system SSD, what happened is that mount never actually
-*failed* but the machine started displaying error messages at boot and
-these error messages went along with such BTRFS error messages on the
-console.
-
-For example the machines wouldn't boot to GUI anymore but I would still
-be able to log in in console and see that the log was crowded with
-failing services and BTRFS errors.
-
-Then I reformatted and reinstalled from backup, so the corresponding
-logs are indeed lost.
-
-ॐ
-
--- 
-
-Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
-
-
+> The 2 Manjaros did not exhibit trouble so far but I use these 2 very
+> little and I preferred to revert back to 5.1 in a hurry before I break
+> my backup machines as badly as my main machine :-/
+>
+> My Arch first broke its BTRFS main FS and I told myself it was years
+> old, so maybe some old corruption undetected by scrub so far...
+Maybe you could zoom-in a bit more on the kernel (and btrfs-progs) binary.
+Does Arch do any changes to the kernel.org version 5.2.0 ?
+And what configuration is used?
+Or did you create/compile things by yourself?
+What compiler version is used?
