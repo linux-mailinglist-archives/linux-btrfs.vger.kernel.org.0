@@ -2,136 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9662B7B421
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 22:15:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7987B42E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 22:15:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728014AbfG3UPM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jul 2019 16:15:12 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45084 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727955AbfG3UPF (ORCPT
+        id S2387409AbfG3UPq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jul 2019 16:15:46 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:46010 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387406AbfG3UPq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jul 2019 16:15:05 -0400
-Received: by mail-ot1-f66.google.com with SMTP id x21so2193333otq.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2019 13:15:05 -0700 (PDT)
+        Tue, 30 Jul 2019 16:15:46 -0400
+Received: by mail-wr1-f65.google.com with SMTP id f9so67093555wre.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2019 13:15:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=5RzApq6XFoztBnIqNk8vSnTrtbUfODyGJJfunMohfoM=;
-        b=Zwx0RQpMg/Mqj/9z5S89A3ZEJVMpYC9h+xxOXAaZcuU5PCAM8m9Gqaz//RnKDBGDqW
-         9liyDLB1BwWzU+ZNcxIkUlAhEM4dwaxEWMetA5zngGXxvLUm9KzmX8yqMCHjIc+8qA1I
-         4Kz3jT1Z/FAcCfiuMTNuiLT9z2kiwc9S0x8YZz6OVlR8h69bqZIY4y5U2CziwyfAHt6S
-         8CcPZTmDK53Mwk0qwS3iX6X/MjsfAEfTAQNYo9qJOCNeLP9BFCn9fMgZ4bp/B5yi3zOB
-         uh6pK4X9QLjcA5W2PzdnflMG8qYA3C40MW87vpeyNAEv23qLtzsWi1Ofnp3dkIf+XH59
-         Buzg==
+         :cc:content-transfer-encoding;
+        bh=m7EI3vntCmvJmJ6eO+YYdPUGaO6p7/rr2Az1b+GCojY=;
+        b=VXwwvEpMsB+rn2+3QX3rTQQ4dxLZFlBtrXXMJqQEZvhBUHwll43gSG/h5t6j/25/Z9
+         lwS5nfwPL/hip9KnDd3yPjKRrG0/HZrPmLW2w2QDq5Cvu4+vgEVTbq2/Yzy4ccxdMYZ3
+         wGIo0WaF8WgZ1df+rbGEnb4LGT/sT+E2hiIK5g7Vfn0QHZzjkCOcPizgEQToDo5otHfP
+         GByPt6NdT9hcLmyB5qcwNI/Dm6V1SIS43A5XVUUj37S+cBaW1TMb5HSq24WqFk5OCcld
+         1IafijJs9PV4t07gIeF11F09INr60PO8rmD0jhRXQgcpO3HgKVOJanGanDcip6fYGeOm
+         UQ8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=5RzApq6XFoztBnIqNk8vSnTrtbUfODyGJJfunMohfoM=;
-        b=Bcp4VzxoLtJsSCo2RDanejZtLWkoysETZdbfZdhLqr/2xbKuBFBXnRFU/qxUvDsZdj
-         Wu2wWi7wMNlHl/rvU5+AcJLThVM+W/ZIp0U1/0sMVO2zkJg8v1Ynq/FXZQXMdg3Sgdyl
-         B7plnRM20z107IVmRypeB6sjWJAhn9NlUfBTyyGCBCThDNBCFcZAc22wiaxGV2pHagLw
-         o6RlUsU7SWb0/Ie8YHUaaKFT1fgf+DKNanji4WAX8VD5ptcuiTkIVs1DBLY4Av5Y28KC
-         O02wxX8qF4Xxs5DsrcP+8wqpTCG17dOYeRlNV9ggpdK/Ail9KL8JqcRYzSHmVXIvwio1
-         zMDQ==
-X-Gm-Message-State: APjAAAVABYW6vKxCjat3XQli0KFvtEB9gkj0NcTQs/O1IPqDos7gRpg6
-        7kAhjxF/xVlKwfwHLe5KzQNzTmr+N6BMwPzj+WVaXg==
-X-Google-Smtp-Source: APXvYqw9ObVuL9+XuGR4o0J2QBLrDkVcN3aYitNJvsGPbv5ZPcYvxRI6eCPCNx+pUD4yOvd0Fq+ICTQ9s+BKXhNpUpI=
-X-Received: by 2002:a9d:7248:: with SMTP id a8mr23671169otk.363.1564517704838;
- Tue, 30 Jul 2019 13:15:04 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=m7EI3vntCmvJmJ6eO+YYdPUGaO6p7/rr2Az1b+GCojY=;
+        b=EDTyfv2kOv+8lVovrkDotaAk3nDf0BVMy1wtnN4uahFwnDaQJTndLJ9F5EGnK+GuYe
+         nqsljSxWUSwFvF79iTyquM8u/obXXpgQSjGG4yBpO9HeyODfn5s6z2PREXhZCcibRRDx
+         VDexBOG7TyKLTgQ787yV0Y+an3wOZyj9wWXzFHUEXdzHsBQ/JHtQT+u2lLGZ0g8EE0s1
+         CvHhXYbMXHAShSqWR2Bn0NReH+pVQouIZQIW6NAAQlx7BqCYQiH5jIAFhm4K5WcMnDSj
+         pcKiLIWX0gZoOMZTbLGSMNAUzKl8Ju5QzB+YY/TW8Xna7NY2KhFqWpElLYoVV9gUC5Wo
+         GzFg==
+X-Gm-Message-State: APjAAAXekBNRUEQdMrSuGDc5CGjNENkKI4eFbyyWtX8ibKYhoIxcEPZh
+        4L6T7B8NOKFc4Z9MvM6LVpIoktT0kyqwZ3Kvi3U=
+X-Google-Smtp-Source: APXvYqzl3dMk3xYadoSj358pdUEpvV9Qn0PjO03KkzeZkvakn2xb0eRIcaFa4Iz1O+REhzrxuVhnarvtnYdu0Ff/Ckw=
+X-Received: by 2002:a05:6000:4b:: with SMTP id k11mr26733982wrx.82.1564517743954;
+ Tue, 30 Jul 2019 13:15:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190730192552.4014288-1-arnd@arndb.de> <20190730195819.901457-1-arnd@arndb.de>
-In-Reply-To: <20190730195819.901457-1-arnd@arndb.de>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 30 Jul 2019 13:14:52 -0700
-Message-ID: <CAPcyv4i_nHzV155RcgnAQ189aq2Lfd2g8pA1D5NbZqo9E_u+Dw@mail.gmail.com>
-Subject: Re: [PATCH v5 13/29] compat_ioctl: move more drivers to compat_ptr_ioctl
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-iio@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-pci@vger.kernel.org, linux-nvme@lists.infradead.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        sparclinux@vger.kernel.org,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-nvdimm <linux-nvdimm@lists.01.org>,
-        linux-rdma <linux-rdma@vger.kernel.org>, qat-linux@intel.com,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Jason Gunthorpe <jgg@mellanox.com>,
-        linux-input@vger.kernel.org, Darren Hart <dvhart@infradead.org>,
-        "Linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        linux-remoteproc@vger.kernel.org,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        David Sterba <dsterba@suse.com>,
-        platform-driver-x86@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Linux Wireless List <linux-wireless@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        tee-dev@lists.linaro.org,
-        linux-crypto <linux-crypto@vger.kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs@vger.kernel.org
+References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
+ <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org> <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
+ <325a96b2-e6a4-91e3-3b07-1d20a5a031af@petaramesh.org> <49785aa8-fb71-8e0e-bd1d-1e3cda4c7036@gmx.com>
+ <39d43f92-413c-2184-b8da-2c6073b5223f@petaramesh.org> <b7037726-14dd-a1a2-238f-b5d0d43e3c80@petaramesh.org>
+ <71bc824e-1462-50ef-19b1-848c5eb0439d@gmx.com> <a08455f0-0ee0-7349-69b3-9cdd00bfe2aa@petaramesh.org>
+ <fc26d1e5-ea31-b0c9-0647-63db89a37f53@gmx.com> <4aa57293-3f60-8ced-db14-ed38dff7644b@petaramesh.org>
+ <43dc92e7-cd13-81db-bbe5-68affcdd317b@gmx.com> <CAJCQCtTSu4XdUmEPHD_8QL71U3O3M8-0m+SweqhPonkKRMUMeg@mail.gmail.com>
+ <d76a038d-fc7f-5910-ec2d-ac783891f001@petaramesh.org>
+In-Reply-To: <d76a038d-fc7f-5910-ec2d-ac783891f001@petaramesh.org>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 30 Jul 2019 14:15:32 -0600
+Message-ID: <CAJCQCtR3pW7T7=DxuAyqwfG+4ii-jg2AVqQL2wVEAx2VrGAY8g@mail.gmail.com>
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 30, 2019 at 12:59 PM Arnd Bergmann <arnd@arndb.de> wrote:
+On Tue, Jul 30, 2019 at 2:09 AM Sw=C3=A2mi Petaramesh <swami@petaramesh.org=
+> wrote:
 >
-> The .ioctl and .compat_ioctl file operations have the same prototype so
-> they can both point to the same function, which works great almost all
-> the time when all the commands are compatible.
+> On 7/29/19 9:10 PM, Chris Murphy wrote:
+> > We've discussed many times how both file system repair, and file
+> > system restore from backup, simply are not scalable for big file
+> > systems. It takes too long.
 >
-> One exception is the s390 architecture, where a compat pointer is only
-> 31 bit wide, and converting it into a 64-bit pointer requires calling
-> compat_ptr(). Most drivers here will never run in s390, but since we now
-> have a generic helper for it, it's easy enough to use it consistently.
->
-> I double-checked all these drivers to ensure that all ioctl arguments
-> are used as pointers or are ignored, but are not interpreted as integer
-> values.
->
-> Acked-by: Jason Gunthorpe <jgg@mellanox.com>
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Acked-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Acked-by: David Sterba <dsterba@suse.com>
-> Acked-by: Darren Hart (VMware) <dvhart@infradead.org>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> Acked-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  drivers/nvdimm/bus.c                        | 4 ++--
-[..]
-> diff --git a/drivers/nvdimm/bus.c b/drivers/nvdimm/bus.c
-> index 798c5c4aea9c..6ca142d833ab 100644
-> --- a/drivers/nvdimm/bus.c
-> +++ b/drivers/nvdimm/bus.c
-> @@ -1229,7 +1229,7 @@ static const struct file_operations nvdimm_bus_fops = {
->         .owner = THIS_MODULE,
->         .open = nd_open,
->         .unlocked_ioctl = bus_ioctl,
-> -       .compat_ioctl = bus_ioctl,
-> +       .compat_ioctl = compat_ptr_ioctl,
->         .llseek = noop_llseek,
->  };
->
-> @@ -1237,7 +1237,7 @@ static const struct file_operations nvdimm_fops = {
->         .owner = THIS_MODULE,
->         .open = nd_open,
->         .unlocked_ioctl = dimm_ioctl,
-> -       .compat_ioctl = dimm_ioctl,
-> +       .compat_ioctl = compat_ptr_ioctl,
->         .llseek = noop_llseek,
->  };
+> So what would be the solution ?
 
-Acked-by: Dan Williams <dan.j.williams@intel.com>
+There presently is no solution, and I'm not aware of the future plan
+either. I think it's a problem.
+
+>
+> IMHO yes, having to full backup then reformat then full restore is
+> impractical for big FSes. Especially if they have a lot of subvols.
+>
+> Also most private individuals do not have enough disks to perform a full
+> backup of their RAID NAS, etc.
+
+I sympathize with the lack of resources. But no full disk backup
+simply cannot be taken seriously in any computer science context. The
+data cannot be that important by the user's own estimation if there
+aren't backups. It's reasonable for resource limitations to have a
+subset of data backed up. But if none of it is *shrug* there just
+aren't that many people who will sympathize with data loss if there
+are no backups.
+
+Backup+restore is for sure a Byzantine work around for the data
+storage problem, but you have no idea what will fail or what will
+fail. There's not a file system list on earth that will tell you it's
+OK to not have backups.
+
+
+> I believe that we should have a repair tool that can fix a filesystem
+> metadata and make it clean and usable again even if this is at the cost
+> of losing a whole directory tree or subvols or whatever.
+
+So far that isn't how it works. I don't know if it's a limitation of
+the on disk format. Or a limitation on reconstructing from incorrect
+information, even though the checksum is correct.
+
+
+> But it would be better to lose clearly identified things and resume with
+> a working FS and a list of files to be restored, rather than being
+> unable to repair and having to reformat everything and restore everything=
+...
+
+Yep. That doesn't exist yet and I don't know if that's a design goal
+of Btrfs eventually.
+
+ZFS meanwhile has no repair tool. If it becomes inconsistent, that's
+it, recreate the file system.
+
+If your use case policy requires a repair tool, you really have to
+disqualify both ZFS and Btrfs because the Btrfs repair tool is still
+marked in the man page as dangerous. I just cannot take repair of
+Btrfs seriously when Btrfs developers consider it dangerous on a case
+by case basis.
+
+It's always the case with any file system that a clean reproducer has
+the best chance of getting developer attention. This is not easy. Part
+of practical best practice is having a bulk of systems on some very
+stable operating system with well maintained stable, or actively
+maintained long term kernels. And to have some smaller percentage of
+machines to test mainline kernels on. It might be annoying and
+tedious, and definitely bad and a bug, to have a problem. But at least
+your problem is restricted to your test machines.
+
+There isn't enough history here to piece together with any certainty
+why you're experiencing what you're experiencing beyond what Qu has
+already stated.
+
+--=20
+Chris Murphy
