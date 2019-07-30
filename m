@@ -2,140 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFBB17A666
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 13:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C4097A6B4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 13:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728504AbfG3LDh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jul 2019 07:03:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:59290 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbfG3LDh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jul 2019 07:03:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 929AE344;
-        Tue, 30 Jul 2019 04:03:36 -0700 (PDT)
-Received: from [10.1.194.37] (e113632-lin.cambridge.arm.com [10.1.194.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD0F93F575;
-        Tue, 30 Jul 2019 04:03:35 -0700 (PDT)
-Subject: Re: [PATCH v2 0/2] Refactor snapshot vs nocow writers locking
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
-        paulmck@linux.ibm.com, andrea.parri@amarulasolutions.com,
-        linux-kernel@vger.kernel.org
-References: <20190719083949.5351-1-nborisov@suse.com>
- <ed015bb1-490e-7102-d172-73c1d069476c@arm.com>
- <20190729153319.GH2368@arrakis.emea.arm.com>
- <60eda0ab-08b3-de82-5b06-98386ee1928f@arm.com>
-Message-ID: <69ef76a2-ebd6-956e-c611-2e742606ed95@arm.com>
-Date:   Tue, 30 Jul 2019 12:03:34 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1728325AbfG3LRU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jul 2019 07:17:20 -0400
+Received: from guitar.tcltek.co.il ([192.115.133.116]:35150 "EHLO
+        mx.tkos.co.il" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728233AbfG3LRT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 30 Jul 2019 07:17:19 -0400
+Received: from tarshish (unknown [10.0.8.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx.tkos.co.il (Postfix) with ESMTPS id 72555440242;
+        Tue, 30 Jul 2019 14:17:16 +0300 (IDT)
+References: <20190726155847.12970-1-dsterba@suse.com>
+User-agent: mu4e 1.2.0; emacs 26.1
+From:   Baruch Siach <baruch@tkos.co.il>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Btrfs progs release 5.2.1
+In-reply-to: <20190726155847.12970-1-dsterba@suse.com>
+Date:   Tue, 30 Jul 2019 14:17:16 +0300
+Message-ID: <87tvb3wz43.fsf@tarshish>
 MIME-Version: 1.0
-In-Reply-To: <60eda0ab-08b3-de82-5b06-98386ee1928f@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 29/07/2019 17:32, Valentin Schneider wrote:
-> On 29/07/2019 16:33, Catalin Marinas wrote:
-[...]
->> I'd say that's one of the pitfalls of PlusCal. The above is executed
->> atomically, so you'd have the lock_state read and updated in the same
->> action. Looking at the C patches, there is an
->> atomic_read(&lock->readers) followed by a
->> percpu_counter_inc(&lock->writers). Between these two, you can have
->> "readers" becoming non-zero via a different CPU.
->>
->> My suggestion would be to use procedures with labels to express the
->> non-atomicity of such sequences.
->>
-> 
+Hi David,
 
-FYI, with a very simple and stupid modification of the spec:
+On Fri, Jul 26 2019, David Sterba wrote:
+> btrfs-progs version 5.2.1 have been released. This is a bugfix release.
+>
+> Changes:
+>   * scrub status: fix ETA calculation after resume
+>   * check: fix crash when using -Q
+>   * restore: fix symlink owner restoration
+>   * mkfs: fix regression with mixed block groups
+>   * core: fix commit to process all delayed refs
+>   * other:
+>     * minor cleanups
+>     * test updates
+>
+> Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+> Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
 
------>8-----
-macro ReadUnlock()
-{
-    reader_count := reader_count - 1;
-    \* Condition variable signal is "implicit" here
-}
+The last commit in this repo's master branch is 608fd900ca45 ("Btrfs
+progs v5.2"). Where can I find the updated git repo?
 
-macro WriteUnlock()
-{
-    writer_count := writer_count - 1;
-    \* Ditto on the cond var
-}
+Thanks,
+baruch
 
-procedure ReadLock()
-{
-add:
-    reader_count := reader_count + 1;
-lock:
-    await writer_count = 0;
-    return;
-}
+> Shortlog:
+>
+> Adam Borowski (1):
+>       btrfs-progs: fix a printf format string fatal warning
+>
+> David Sterba (7):
+>       btrfs-progs: props: update descriptions
+>       btrfs-progs: props: convert to C99 initializers
+>       btrfs-progs: props: update help texts
+>       btrfs-progs: tests: switch messages to _log
+>       btrfs-progs: restore: fix chown of a symlink
+>       btrfs-progs: update CHANGES for v5.2.1
+>       Btrfs progs v5.2.1
+>
+> Filipe Manana (1):
+>       Btrfs-progs: mkfs, fix metadata corruption when using mixed mode
+>
+> Grzegorz Kowal (2):
+>       btrfs-progs: scrub: fix ETA calculation
+>       btrfs-progs: scrub: fix status lines alignment
+>
+> Josef Bacik (1):
+>       btrfs-progs: deal with drop_progress properly in fsck
+>
+> Naohiro Aota (1):
+>       btrfs-progs: check: initialize qgroup_item_count in earlier stage
+>
+> Omar Sandoval (1):
+>       btrfs-progs: receive: get rid of unnecessary strdup()
+>
+> Qu Wenruo (3):
+>       btrfs-progs: Exhaust delayed refs and dirty block groups to prevent delayed refs lost
+>       btrfs-progs: extent-tree: Unify the parameters of btrfs_inc_extent_ref()
+>       btrfs-progs: tests: Avoid debug log populating stdout
 
-procedure WriteLock()
-{
-add:
-    writer_count := writer_count + 1;
-lock:
-    await reader_count = 0;
-    return;
-};
------8<-----
 
-it's quite easy to trigger the case Paul pointed out in [1]:
-
------>8-----
-Error: Deadlock reached.
-Error: The behavior up to this point is:
-State 1: <Initial predicate>
-/\ stack = (<<reader, 1>> :> <<>> @@ <<writer, 1>> :> <<>>)
-/\ pc = (<<reader, 1>> :> "loop" @@ <<writer, 1>> :> "loop_")
-/\ writer_count = 0
-/\ reader_count = 0
-/\ lock_state = "idle"
-
-State 2: <loop_ line 159, col 16 to line 164, col 72 of module specs>
-/\ stack = ( <<reader, 1>> :> <<>> @@
-  <<writer, 1>> :> <<[pc |-> "write_cs", procedure |-> "WriteLock"]>> )
-/\ pc = (<<reader, 1>> :> "loop" @@ <<writer, 1>> :> "add")
-/\ writer_count = 0
-/\ reader_count = 0
-/\ lock_state = "idle"
-
-State 3: <add line 146, col 14 to line 149, col 63 of module specs>
-/\ stack = ( <<reader, 1>> :> <<>> @@
-  <<writer, 1>> :> <<[pc |-> "write_cs", procedure |-> "WriteLock"]>> )
-/\ pc = (<<reader, 1>> :> "loop" @@ <<writer, 1>> :> "lock")
-/\ writer_count = 1
-/\ reader_count = 0
-/\ lock_state = "idle"
-
-State 4: <loop line 179, col 15 to line 184, col 71 of module specs>
-/\ stack = ( <<reader, 1>> :> <<[pc |-> "read_cs", procedure |-> "ReadLock"]>> @@
-  <<writer, 1>> :> <<[pc |-> "write_cs", procedure |-> "WriteLock"]>> )
-/\ pc = (<<reader, 1>> :> "add_" @@ <<writer, 1>> :> "lock")
-/\ writer_count = 1
-/\ reader_count = 0
-/\ lock_state = "idle"
-
-State 5: <add_ line 133, col 15 to line 136, col 64 of module specs>
-/\ stack = ( <<reader, 1>> :> <<[pc |-> "read_cs", procedure |-> "ReadLock"]>> @@
-  <<writer, 1>> :> <<[pc |-> "write_cs", procedure |-> "WriteLock"]>> )
-/\ pc = (<<reader, 1>> :> "lock_" @@ <<writer, 1>> :> "lock")
-/\ writer_count = 1
-/\ reader_count = 1
-/\ lock_state = "idle"
------8<-----
-
-Which I think is pretty cool considering the effort that was required
-(read: not much).
-
-[1]: https://lore.kernel.org/lkml/20190607105251.GB28207@linux.ibm.com/
+-- 
+     http://baruch.siach.name/blog/                  ~. .~   Tk Open Systems
+=}------------------------------------------------ooO--U--Ooo------------{=
+   - baruch@tkos.co.il - tel: +972.52.368.4656, http://www.tkos.co.il -
