@@ -2,38 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D5A7A2D7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 10:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C58917A2FB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 10:17:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728892AbfG3IJn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 30 Jul 2019 04:09:43 -0400
-Received: from relay8-d.mail.gandi.net ([217.70.183.201]:44653 "EHLO
-        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726870AbfG3IJn (ORCPT
+        id S1728852AbfG3IRO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jul 2019 04:17:14 -0400
+Received: from relay2-d.mail.gandi.net ([217.70.183.194]:53979 "EHLO
+        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728297AbfG3IRO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jul 2019 04:09:43 -0400
+        Tue, 30 Jul 2019 04:17:14 -0400
 X-Originating-IP: 37.173.35.67
 Received: from [10.137.0.38] (unknown [37.173.35.67])
         (Authenticated sender: swami@petaramesh.org)
-        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 937471BF20D;
-        Tue, 30 Jul 2019 08:09:40 +0000 (UTC)
+        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id 602A640007;
+        Tue, 30 Jul 2019 08:17:11 +0000 (UTC)
 Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     Chris Murphy <lists@colorremedies.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+To:     Henk Slager <eye1tm@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
- <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
- <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
- <325a96b2-e6a4-91e3-3b07-1d20a5a031af@petaramesh.org>
- <49785aa8-fb71-8e0e-bd1d-1e3cda4c7036@gmx.com>
- <39d43f92-413c-2184-b8da-2c6073b5223f@petaramesh.org>
- <b7037726-14dd-a1a2-238f-b5d0d43e3c80@petaramesh.org>
- <71bc824e-1462-50ef-19b1-848c5eb0439d@gmx.com>
- <a08455f0-0ee0-7349-69b3-9cdd00bfe2aa@petaramesh.org>
- <fc26d1e5-ea31-b0c9-0647-63db89a37f53@gmx.com>
- <4aa57293-3f60-8ced-db14-ed38dff7644b@petaramesh.org>
- <43dc92e7-cd13-81db-bbe5-68affcdd317b@gmx.com>
- <CAJCQCtTSu4XdUmEPHD_8QL71U3O3M8-0m+SweqhPonkKRMUMeg@mail.gmail.com>
+ <f8b08aec-2c43-9545-906e-7e41953d9ed4@bouton.name>
+ <09817d56-e037-8403-fb3b-9f3121bc8cdb@petaramesh.org>
+ <CAPmG0jYew8zBEYW=HWRrEQGZfsox4gq9ATt4iYHcn4voGwfEdQ@mail.gmail.com>
 From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
 Openpgp: preference=signencrypt
 Autocrypt: addr=swami@petaramesh.org; keydata=
@@ -70,42 +60,41 @@ Autocrypt: addr=swami@petaramesh.org; keydata=
  TYaSBqmVw+0A3ILCZgQYEQIAJgIbDBYhBMwf46BtOfqyuRyYLi/CXB2QduMuBQJdAnbyBQki
  bGwWAAoJEC/CXB2QduMur1wAn1X3FcsmMdhMfiYwXw7LVw4FAIeWAJ9kLGer22WFWR2z2iU7
  BtUAN08OPA==
-Message-ID: <d76a038d-fc7f-5910-ec2d-ac783891f001@petaramesh.org>
-Date:   Tue, 30 Jul 2019 10:09:37 +0200
+Message-ID: <5bac1ca7-237c-7b7f-cbbe-ea903ad01f38@petaramesh.org>
+Date:   Tue, 30 Jul 2019 10:17:08 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTSu4XdUmEPHD_8QL71U3O3M8-0m+SweqhPonkKRMUMeg@mail.gmail.com>
+In-Reply-To: <CAPmG0jYew8zBEYW=HWRrEQGZfsox4gq9ATt4iYHcn4voGwfEdQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Content-Language: fr-FR
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 7/29/19 9:10 PM, Chris Murphy wrote:
-> We've discussed many times how both file system repair, and file
-> system restore from backup, simply are not scalable for big file
-> systems. It takes too long.
+Hi,
 
-So what would be the solution ?
+On 7/30/19 10:04 AM, Henk Slager wrote:
+> Maybe you could zoom-in a bit more on the kernel (and btrfs-progs) binary.
+> Does Arch do any changes to the kernel.org version 5.2.0 ?
 
-IMHO yes, having to full backup then reformat then full restore is
-impractical for big FSes. Especially if they have a lot of subvols.
+I don't precisely know. Each and every distro out there applies some set
+of patches to the kernel that they package.
 
-Also most private individuals do not have enough disks to perform a full
-backup of their RAID NAS, etc.
+However Arch is known to keep things simple and up-to-date and as close
+as possible to the upstream.
 
-And a FS “repair” is long and often inefficient.
+> And what configuration is used?
+> Or did you create/compile things by yourself?
+> What compiler version is used?
 
-I believe that we should have a repair tool that can fix a filesystem
-metadata and make it clean and usable again even if this is at the cost
-of losing a whole directory tree or subvols or whatever.
+I didn't compile this kernel, just used the latest kernel packages i.e.
+https://www.archlinux.org/packages/core/x86_64/linux/
 
-But it would be better to lose clearly identified things and resume with
-a working FS and a list of files to be restored, rather than being
-unable to repair and having to reformat everything and restore everything...
+(There's been another upgrade since the fisrt 4.2.x I installed, with
+reported issues...)
 
 Kind regards.
 
@@ -113,5 +102,4 @@ Kind regards.
 
 -- 
 Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
-
 
