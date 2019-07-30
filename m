@@ -2,28 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 562B27A168
-	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 08:45:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710067A16C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 30 Jul 2019 08:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729106AbfG3GpD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jul 2019 02:45:03 -0400
-Received: from relay4-d.mail.gandi.net ([217.70.183.196]:58809 "EHLO
-        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728477AbfG3GpC (ORCPT
+        id S1729111AbfG3Grn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jul 2019 02:47:43 -0400
+Received: from relay11.mail.gandi.net ([217.70.178.231]:52457 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728477AbfG3Grn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jul 2019 02:45:02 -0400
-X-Originating-IP: 88.191.131.7
+        Tue, 30 Jul 2019 02:47:43 -0400
 Received: from [192.168.1.167] (unknown [88.191.131.7])
         (Authenticated sender: swami@petaramesh.org)
-        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id F0EFBE0007;
-        Tue, 30 Jul 2019 06:44:59 +0000 (UTC)
-Subject: Re: [BUG] BTRFS critical corrupt leaf - bisected to 496245cac57e
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, alexander.wetzel@web.de
-Cc:     linux-btrfs@vger.kernel.org
-References: <5a89e922-00af-51a9-390f-b0a6b1f6cfb6@web.de>
- <daeb4767-b113-f945-da67-61d250fa1663@petaramesh.org>
- <d9ea9623-657e-0315-7166-b7f58b32d4e0@gmx.com>
- <4776e0bd-83c2-44a1-4403-3a155fe3f6c7@gmx.com>
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id 2753A100005;
+        Tue, 30 Jul 2019 06:47:40 +0000 (UTC)
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
+ <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org>
+ <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
+ <325a96b2-e6a4-91e3-3b07-1d20a5a031af@petaramesh.org>
+ <49785aa8-fb71-8e0e-bd1d-1e3cda4c7036@gmx.com>
+ <39d43f92-413c-2184-b8da-2c6073b5223f@petaramesh.org>
+ <b7037726-14dd-a1a2-238f-b5d0d43e3c80@petaramesh.org>
+ <71bc824e-1462-50ef-19b1-848c5eb0439d@gmx.com>
+ <a08455f0-0ee0-7349-69b3-9cdd00bfe2aa@petaramesh.org>
+ <fc26d1e5-ea31-b0c9-0647-63db89a37f53@gmx.com>
+ <4aa57293-3f60-8ced-db14-ed38dff7644b@petaramesh.org>
+ <43dc92e7-cd13-81db-bbe5-68affcdd317b@gmx.com>
+ <a74e3ba6-7106-f2c5-383e-1f75621605a5@petaramesh.org>
+ <c5fb61ef-05dc-2bd4-a0aa-d86358d7b82a@gmx.com>
+ <5fd82812-22cf-253e-312a-1cfc33f4dfff@petaramesh.org>
+ <e8a4ca58-0b5e-96ee-1fa5-552ad7e55785@petaramesh.org>
+ <CAJCQCtRgZht7Eh3L_kXfnvLH4WDNMvXXr=EK-9Bn-1tsRKRERg@mail.gmail.com>
 From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
 Openpgp: preference=signencrypt
 Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
@@ -60,12 +73,12 @@ Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
  TYaSBqmVw+0A3ILCZgQYEQIAJgIbDBYhBMwf46BtOfqyuRyYLi/CXB2QduMuBQJdAnbyBQki
  bGwWAAoJEC/CXB2QduMur1wAn1X3FcsmMdhMfiYwXw7LVw4FAIeWAJ9kLGer22WFWR2z2iU7
  BtUAN08OPA==
-Message-ID: <508c6378-522a-ae24-6c33-83c8efc64ae5@petaramesh.org>
-Date:   Tue, 30 Jul 2019 08:44:59 +0200
+Message-ID: <1400f092-ab97-1ca6-c411-2728651b118f@petaramesh.org>
+Date:   Tue, 30 Jul 2019 08:47:40 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <4776e0bd-83c2-44a1-4403-3a155fe3f6c7@gmx.com>
+In-Reply-To: <CAJCQCtRgZht7Eh3L_kXfnvLH4WDNMvXXr=EK-9Bn-1tsRKRERg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
@@ -74,48 +87,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Le 30/07/2019 à 06:56, Qu Wenruo a écrit :
->>>
->>> I think I'me gonna emergency downgrade all my BTRFS machines to kernel
->>> 5.1 before they break ,-(
->>
->> Full kernel message please.
->>
->> That commit is designed to corrupted inode item, we need more info to
->> determine if it's a real corruption or not.
->>
->> Thanks,
->> Qu
-> 
-> Ping? If you really want to solve the problem, please provide the full
-> kernel message.
+Le 29/07/2019 à 21:20, Chris Murphy a écrit :
+> I think it's totally reasonable to go back to 5.1 for a while and make
+> certain the problems aren't happening there.
 
-Hi,
+That's exactly what I did.
 
-I have emergency downgraded my system to 5.1 not to take any risk of
-crashing my SSD again (and if it crashes again anyway, then I will know
-it is not kernel 5.2's fault and let you know...)
+> If they are, then I start
+> to wonder about noisy power since you have so many different drives
+> and setups affected. Some of the strangest problems I have ever seen
+> in computing were directly attributed to noise on the power line.
 
-I don't have the « first kernel messages » for the SSD because I
-restored it to a backup before it failed, so obviously last kernel
-messages were lost.
+Yeah, but in this case, being a laptop with the main power being
+filtered by the battery, I wouldn't expect a power issue...
 
-This morning if I try to scrub (using kernel5.1.16-arch1-1-ARCH) the
-external HD that failed yesterday, I get :
-
-BTRFS info (device dm-3): scrub: started on devid 1
-BTRFS error (device dm-3): parent transid verify failed on 2137144377344
-wanted 7684 found 7499
-BTRFS error (device dm-3): parent transid verify failed on 2137144377344
-wanted 7684 found 7499
-BTRFS error (device dm-3): parent transid verify failed on 2137144377344
-wanted 7684 found 7499
-BTRFS: error (device dm-3) in btrfs_drop_snapshot:9603: errno=-5 IO failure
-BTRFS info (device dm-3): forced readonly
-BTRFS warning (device dm-3): failed setting block group ro: -30
-BTRFS info (device dm-3): scrub: not finished on devid 1 with status: -30
-
-Hope this helps...
+Best regards.
 
 ॐ
 
