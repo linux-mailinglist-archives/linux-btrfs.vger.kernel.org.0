@@ -2,95 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E85997B634
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2019 01:25:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC757B7F6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Jul 2019 04:13:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbfG3XZH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 30 Jul 2019 19:25:07 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:33865 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726169AbfG3XZH (ORCPT
+        id S1726652AbfGaCNS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 30 Jul 2019 22:13:18 -0400
+Received: from mail1.windriver.com ([147.11.146.13]:46381 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726492AbfGaCNS (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 30 Jul 2019 19:25:07 -0400
-Received: by mail-wr1-f43.google.com with SMTP id 31so67592828wrm.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 30 Jul 2019 16:25:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wB9GRCyGrImKnIe37AZDZhedjTuA4riiTi45nfBIZCo=;
-        b=UgTCOC3SfKfa9y60hrN9ISrPKlQaGg4KEtlwfkD8TzpTKRmzRbV6ZCJlbRaD3B+eyC
-         1OduBhQRRrGHknJR3kLiCa1jNJAu+nhJHPb7xKwunU9ASGsuBokrs1YOr39CZVxRJ1a2
-         aTnta26kBfaEqmoNRio+6eCgONC1pc6sFkCiMacMeZZBiTjXJ50BydBMug/MbKu5ybCt
-         J26tnX56qDWkt4SKczA71PgXdDVgMCeNzeD94QMJYsV2CYhAQ7J4W/u5J3O6ek2bLKMM
-         mICjqZz1czqSI6m6Dn0CSJdf/HkqvaTnz9xkATvkA83urDXCGd7O73QvaiSfTs1KriGd
-         Mjnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wB9GRCyGrImKnIe37AZDZhedjTuA4riiTi45nfBIZCo=;
-        b=onrKDNRjscJIZ4dNIGvbHzYxCttfIiksQ003MfAu03rnMT7Tf13Z9xlq9E/p70o3u8
-         +Sbmv0pHp3czeOBSiUoS6e8WiWzq6tlySqkstNL+ua8o2z+l6OfzUuopYRTfqYGyEm1e
-         upfh49CmqbgwjTd8IqjdJuKUZ2TROLJjEYHDkbIw7OiNNsS51/6+jmpczLq9wQXdeG1J
-         F8fjxti7jY/A3x3CAdR2PnELCNwN6EPpEt7AmVYERvSttGLEH6bmwp7jE7ZHzHtNIGuM
-         cJzq+IvIvn0Mp56Pk6CXGQ1lDcdxc7+EaoVq8mwXwMP00WoF98uZF7uPRD0DCaflCIrV
-         10QQ==
-X-Gm-Message-State: APjAAAWRRJqIC7M/dxhfPdcri7T48SVOpsCGuN4beTX4zzedVtgoUebO
-        0LteUB2KmAIcMLBaXY8Enn1l1xaw5MsNif355Y0=
-X-Google-Smtp-Source: APXvYqyL9yhWc1qjn3gINW1sQgXotzkxcFAKMnTEvKfIn4u45yOaW8O+x1HASHmP1WnFRZStOHP+sXVIZs22f23uS+Y=
-X-Received: by 2002:a5d:4403:: with SMTP id z3mr49069422wrq.29.1564529105881;
- Tue, 30 Jul 2019 16:25:05 -0700 (PDT)
+        Tue, 30 Jul 2019 22:13:18 -0400
+Received: from ALA-HCA.corp.ad.wrs.com ([147.11.189.40])
+        by mail1.windriver.com (8.15.2/8.15.1) with ESMTPS id x6V2D4vY006089
+        (version=TLSv1 cipher=AES128-SHA bits=128 verify=FAIL);
+        Tue, 30 Jul 2019 19:13:04 -0700 (PDT)
+Received: from [128.224.162.188] (128.224.162.188) by ALA-HCA.corp.ad.wrs.com
+ (147.11.189.50) with Microsoft SMTP Server (TLS) id 14.3.468.0; Tue, 30 Jul
+ 2019 19:13:04 -0700
+Subject: Re: Bug Report: Btrfs can't allocate space for delete when block size
+ arounds 512M
+To:     <linux-btrfs@vger.kernel.org>, <josef@toxicpanda.com>
+CC:     <dsterba@suse.com>, <ltp@lists.linux.it>
+References: <b501bcff-8be0-4303-8789-363fda4658e5@windriver.com>
+From:   "Hongzhi, Song" <hongzhi.song@windriver.com>
+Message-ID: <cc01d19f-4955-c0b9-a5be-356ea10de59c@windriver.com>
+Date:   Wed, 31 Jul 2019 10:13:01 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
- <c336ccf4-34f5-a844-888c-cd63d8dc5c4e@petaramesh.org> <0ce15d14-9f30-ac83-0964-8e695eca8cbd@gmx.com>
- <325a96b2-e6a4-91e3-3b07-1d20a5a031af@petaramesh.org> <49785aa8-fb71-8e0e-bd1d-1e3cda4c7036@gmx.com>
- <39d43f92-413c-2184-b8da-2c6073b5223f@petaramesh.org> <b7037726-14dd-a1a2-238f-b5d0d43e3c80@petaramesh.org>
- <71bc824e-1462-50ef-19b1-848c5eb0439d@gmx.com> <a08455f0-0ee0-7349-69b3-9cdd00bfe2aa@petaramesh.org>
- <fc26d1e5-ea31-b0c9-0647-63db89a37f53@gmx.com> <4aa57293-3f60-8ced-db14-ed38dff7644b@petaramesh.org>
- <43dc92e7-cd13-81db-bbe5-68affcdd317b@gmx.com> <CAJCQCtTSu4XdUmEPHD_8QL71U3O3M8-0m+SweqhPonkKRMUMeg@mail.gmail.com>
- <d76a038d-fc7f-5910-ec2d-ac783891f001@petaramesh.org> <CAJCQCtR3pW7T7=DxuAyqwfG+4ii-jg2AVqQL2wVEAx2VrGAY8g@mail.gmail.com>
- <1d80844d-9932-03a8-ae59-c8cbf48a1f57@petaramesh.org> <a73770f4-5ee9-176a-5591-5700864f75b9@cobb.uk.net>
-In-Reply-To: <a73770f4-5ee9-176a-5591-5700864f75b9@cobb.uk.net>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 30 Jul 2019 17:24:54 -0600
-Message-ID: <CAJCQCtSMHLTBV5RJzqBTZXOQ+dGsQ54RQpu3QX8KuE_RZqytmA@mail.gmail.com>
-Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <b501bcff-8be0-4303-8789-363fda4658e5@windriver.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [128.224.162.188]
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Jul 30, 2019 at 5:13 PM Graham Cobb <g.btrfs@cobb.uk.net> wrote:
->
-> On 30/07/2019 23:44, Sw=C3=A2mi Petaramesh wrote:
-> > Still, losing a given FS with subvols, snapshots etc, may be very
-> > annoying and very time consuming rebuilding.
->
-> I believe that in one of the earlier mails, Qu said that you can
-> probably mount the corrupted fs readonly and read everything.
->
-> If that is the case then, if I were in your position, I would probably
-> buy another disk, create a a new fs, and then use one of the subvol
-> preserving btrfs clone utilities to clone the readonly disk onto the new
-> disk.
->
-> Not cheap, and would still take some time, but at least it could be
-> automated.
+Hi,
 
-btrfstune might allow the seeding flag to be changed on this volume;
-I'm not sure what kind of checks are done to see if it's viable; but
-also the seed feature is somewhere between tricky and unsupported in
-multiple device contexts.
+Anyone notice this?
 
-But yeah if it's readonly mountable, it should be possible to script
-`btrfs send-receive` based replication for the ro snapshots anyway, to
-preserve shared extents.
+--Hongzhi
 
---=20
-Chris Murphy
+
+On 7/17/19 4:34 PM, Hongzhi, Song wrote:
+> Hi friends,
+>
+> *Description:*
+>
+>
+>     One LTP testcase, fs_fill.c, fails on btrfs with kernel error when 
+> unlink files on Btrfs device:
+>
+>     "BTRFS warning (device loop0): could not allocate space for a 
+> delete; will truncate on mount".
+>
+>
+>     I found the loop block device formatted with btrfs roughly rangs 
+> from 460M to 560M will cause the error.
+>
+>     256M and 1G all pass.
+>
+>
+>     The fs_fill.c source code:
+>
+> [https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/fs_fill/fs_fill.c] 
+>
+>
+>     The fs_fill.c calls unlink which triggers the error.
+>
+> [https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/testcases/kernel/fs/fs_fill/fs_fill.c#L55] 
+>
+>
+> [https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/lib/safe_macros.c#L358] 
+>
+>
+>
+> *Error info:*
+>
+>     The issue maybe not reproduced everytime but four fifths chance.
+>
+>     fs_fill.c:53: INFO: Unlinking mntpoint/thread5/file0
+>     safe_macros.c:360: BROK: fs_fill.c:55: 
+> unlink(mntpoint/thread10/file0) failed: ENOSPC
+>     safe_macros.c:360: BROK: fs_fill.c:55: 
+> unlink(mntpoint/thread11/file0) failed: ENOSPC
+>     [62477.378848] BTRFS warning (device loop0): could not allocate 
+> space for a delete; will truncate on mount
+>     [62477.378905] BTRFS warning (device loop0): could not allocate 
+> space for a delete; will truncate on mount
+>
+>
+>
+> *Kernel:*
+>
+>     After v5.2-rc1, qemux86-64
+>
+>     # make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc
+>     use qemu to bootup kernel
+>
+>
+> *LTP:*
+>
+>     master branch: I tested on 20190625
+>     Reproduce:
+>
+>     // build Ltp
+>     # cd Ltp-source
+>     # ./build.sh
+>
+>     // copy files to qemu
+>     # cp runltp testcases/kernel/fs/fs_fill/fs_fill to qemu
+>
+>     // login to qemu:
+>     // adjust block device size to 512M
+>     # vi runltp
+>     in function: create_block()
+>         dd if=/dev/zero of=${TMP}/test.img bs=1024 count=262144
+>         --->
+>         dd if=/dev/zero of=${TMP}/test.img bs=1024 count=524288
+>
+>     // execute testcase
+>     # runltp -f fs -s fs_fill
+>
+>
+> *Analysis:*
+>
+>     One new kernel commit contained in v5.2-rc1 introduces the issue.
+>
+>     commit c8eaeac7b734347c3afba7008b7af62f37b9c140
+>     Author: Josef Bacik <josef@toxicpanda.com>
+>     Date:   Wed Apr 10 15:56:10 2019 -0400
+>
+>         btrfs: reserve delalloc metadata differently
+>         ...
+>
+>
+> Anyone's reply will be appreciated.
+>
+> --Hongzhi
+>
+>
+>
+>
+>
+>
