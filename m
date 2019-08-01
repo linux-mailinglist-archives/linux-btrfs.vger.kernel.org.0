@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 254AC7E548
+	by mail.lfdr.de (Postfix) with ESMTP id 94B617E549
 	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 00:19:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389406AbfHAWTm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Aug 2019 18:19:42 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34376 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728193AbfHAWTm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Aug 2019 18:19:42 -0400
-Received: by mail-qk1-f195.google.com with SMTP id t8so53332799qkt.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 01 Aug 2019 15:19:42 -0700 (PDT)
+        id S2389410AbfHAWTo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Aug 2019 18:19:44 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:34378 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728193AbfHAWTn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Aug 2019 18:19:43 -0400
+Received: by mail-qk1-f194.google.com with SMTP id t8so53332835qkt.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Aug 2019 15:19:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=Xl1dTrL5seaXbUGaVnYhNkrrBWqXmhFFgquiHTthXWw=;
-        b=hWh/pXUecQwD5lRK44tkh4Fae6Qqkl6Tv2tGroT0C5n0d7AafbAoE9IRbkYJ5R8gqI
-         tOvcxeWOif3/TBm5TJKmwYdmiiZQPEs3klK/SMEDNa9Ayz+qehgJvVDz5SQ+6S58k627
-         72uLU9sC/PazJfr3OCLy+zzyFrWu4MuKvpXx2CgSFb/zPmApDWzr8GWU8L+pgd2/OfCG
-         UgKduOLBPor4cPYV7yM6c7+mkRJuiiWPbUgnIcByadg4xegFP63d8rWdBCs+Z/bwfRS5
-         Dxm4DTfpuDw+mt+lIsdoBxwatNqltg4Heh3BJS0QFkgeAYx1LWzPf944M8iReHgLXGXY
-         L9HA==
+        bh=nZPrvNMXJ8qeBbBl7IHk9h8xErrr9OKxhGMLKN1MGoI=;
+        b=iMqViAUVWkKVWniCnFGIROAGABOfuVxKmP8pFzIoKWO6xSPps1DyF80G2foXFDTL54
+         RO4w3BIKjMGJM7vQTM8/IHJYwLLNuXdlcnCEOeGSrwZktPf7PlN+cID6txvwsr01f1r6
+         dUabiqZmTMgpNvCX33NPu+5Tm9FaDt9hYfCm6XN2XMDLdm+9yCU3u8BhHUniZIwRsySy
+         zWaPQvhPzxzJgKW+OHKnn269BTHe79KxazKaByDzM7GNDq0JeYhBThb1PN88FVTENOvE
+         4/Z2bWzu76sDL52v46Xdq/AHX80X0+AhsRis+iR+1YZ/1i2GSDpTvNrh1ct8HNAGDVKN
+         ravA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Xl1dTrL5seaXbUGaVnYhNkrrBWqXmhFFgquiHTthXWw=;
-        b=meY+mj91d/+9Aumq1JfUcvx8+1QS6XsGatFvcU4au5CYfTO+ari84kkpUEQLUQx6Mc
-         92moGfumCroetqbdpE09P3F7h35Es5cCsfemVR5VRedwPRs2dKsYGOY7A5vl7hJ59dWl
-         RCZoqAO60E1qSghZc9B7FZaphSUmBkeKQn+70wGvepW/JBCE41bOpliIpbIhcSHASTks
-         UYrll6l4SxR1wttYRfRtMjdVZ5vqZK+t2Xi8ibRYHixeRkXIXdgWKkuwiZBjTLFch+vN
-         mF0SI7+iRlYDRvjX8NwQ37DjFXhhuMibw0+uPKz4ABv9qMCX+EX6SRUTKNtGTcOcdyWj
-         5KAQ==
-X-Gm-Message-State: APjAAAV7DgFlEfwCOiaIjAPSwKVpu8mjamx6KCpLOxNzX4ZMKvfEDbKo
-        Sq4AjWt6qvChjyvRYZr6vMkrtzTGvD8=
-X-Google-Smtp-Source: APXvYqxtPScgKvVUUDu16QQq75W+b5feFTi/AHJ3VbEjzB0x6iddgdK/YiPnJdl8+ZvXkwLuNMNkGw==
-X-Received: by 2002:a37:512:: with SMTP id 18mr82009743qkf.220.1564697981023;
-        Thu, 01 Aug 2019 15:19:41 -0700 (PDT)
+        bh=nZPrvNMXJ8qeBbBl7IHk9h8xErrr9OKxhGMLKN1MGoI=;
+        b=SxYbIJ1Wn3XzXowIC//ZsRUhHDswPxX2M+olI/QWSgnrjxY0E6a0oG5E9aM8cT9cMO
+         dZsqQt9AzJWZbncXv+obH2u/eiXaqbiowUqfhs+xbybPhTFcgTmsV3YK4zS7hpKfIGH5
+         HtMLKAgKq76PL2Bv7x9lndfMozuw0YTh8Wg9eubjH32b2fZGb1tZIpXTv14axkzf3V+n
+         UwlKnABnYEvXdMxIKh7p4pCPqdBI6XowvCd681waU6aAp4mxDr15x/hy73CIg+Z7F/QT
+         HoDOel0SJcHY8z3EEUtWNZ0UPltxtuSUWkKN0vnEmrTGitcNzpYLnd4rBBw3mD0XBnUS
+         XrDg==
+X-Gm-Message-State: APjAAAVB5jraVRAb5iGk9wP13htLTixGonN/hpu2QN6tFto6S+9b/5ML
+        +cUs/lqduMNpz7JYXZ2zGEl4tNnzoH8=
+X-Google-Smtp-Source: APXvYqx/+C9UlMKD4U0CExedfK86VB8zVX1ZArMtcfTBnLyVrBAlTKYQ5mto0Gku4nVKBjYT2PwMLg==
+X-Received: by 2002:a05:620a:12ef:: with SMTP id f15mr9358786qkl.340.1564697982689;
+        Thu, 01 Aug 2019 15:19:42 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id x2sm30831168qkc.92.2019.08.01.15.19.40
+        by smtp.gmail.com with ESMTPSA id z19sm33508961qtu.43.2019.08.01.15.19.41
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 01 Aug 2019 15:19:40 -0700 (PDT)
+        Thu, 01 Aug 2019 15:19:42 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/5] btrfs: add a flush step for delayed iputs
-Date:   Thu,  1 Aug 2019 18:19:33 -0400
-Message-Id: <20190801221937.22742-2-josef@toxicpanda.com>
+Subject: [PATCH 2/5] btrfs: unify error handling for ticket flushing
+Date:   Thu,  1 Aug 2019 18:19:34 -0400
+Message-Id: <20190801221937.22742-3-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190801221937.22742-1-josef@toxicpanda.com>
 References: <20190801221937.22742-1-josef@toxicpanda.com>
@@ -59,66 +59,87 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Delayed iputs could very well free up enough space without needing to
-commit the transaction, so make this step it's own step.  This will
-allow us to skip the step for evictions in a later patch.
+Currently we handle the cleanup of errored out tickets in both the
+priority flush path and the normal flushing path.  This is the same code
+in both places, so just refactor so we don't duplicate the cleanup work.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ctree.h             | 3 ++-
- fs/btrfs/space-info.c        | 5 +++--
- include/trace/events/btrfs.h | 1 +
- 3 files changed, 6 insertions(+), 3 deletions(-)
+ fs/btrfs/space-info.c | 32 +++++++++++---------------------
+ 1 file changed, 11 insertions(+), 21 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 299e11e6c554..313a8194c0ef 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2733,7 +2733,8 @@ enum btrfs_flush_state {
- 	FLUSH_DELALLOC_WAIT	=	6,
- 	ALLOC_CHUNK		=	7,
- 	ALLOC_CHUNK_FORCE	=	8,
--	COMMIT_TRANS		=	9,
-+	RUN_DELAYED_IPUTS	=	9,
-+	COMMIT_TRANS		=	10,
- };
- 
- /*
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index ab7b9ec4c240..7dfac0d4b24c 100644
+index 7dfac0d4b24c..ce7ae1cd1153 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -684,7 +684,7 @@ static void flush_space(struct btrfs_fs_info *fs_info,
- 		if (ret > 0 || ret == -ENOSPC)
- 			ret = 0;
- 		break;
--	case COMMIT_TRANS:
-+	case RUN_DELAYED_IPUTS:
- 		/*
- 		 * If we have pending delayed iputs then we could free up a
- 		 * bunch of pinned space, so make sure we run the iputs before
-@@ -692,7 +692,8 @@ static void flush_space(struct btrfs_fs_info *fs_info,
- 		 */
- 		btrfs_run_delayed_iputs(fs_info);
- 		btrfs_wait_on_delayed_iputs(fs_info);
--
-+		break;
-+	case COMMIT_TRANS:
- 		ret = may_commit_transaction(fs_info, space_info);
- 		break;
- 	default:
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 2f6a669408bb..08f294f96424 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -1088,6 +1088,7 @@ TRACE_EVENT(btrfs_trigger_flush,
- 		{ FLUSH_DELAYED_REFS,		"FLUSH_ELAYED_REFS"},		\
- 		{ ALLOC_CHUNK,			"ALLOC_CHUNK"},			\
- 		{ ALLOC_CHUNK_FORCE,		"ALLOC_CHUNK_FORCE"},		\
-+		{ RUN_DELAYED_IPUTS,		"RUN_DELAYED_IPUTS"},		\
- 		{ COMMIT_TRANS,			"COMMIT_TRANS"})
+@@ -898,20 +898,19 @@ static void priority_reclaim_metadata_space(struct btrfs_fs_info *fs_info,
+ 	} while (flush_state < ARRAY_SIZE(priority_flush_states));
+ }
  
- TRACE_EVENT(btrfs_flush_space,
+-static int wait_reserve_ticket(struct btrfs_fs_info *fs_info,
+-			       struct btrfs_space_info *space_info,
+-			       struct reserve_ticket *ticket)
++static void wait_reserve_ticket(struct btrfs_fs_info *fs_info,
++				struct btrfs_space_info *space_info,
++				struct reserve_ticket *ticket)
+ 
+ {
+ 	DEFINE_WAIT(wait);
+-	u64 reclaim_bytes = 0;
+ 	int ret = 0;
+ 
+ 	spin_lock(&space_info->lock);
+ 	while (ticket->bytes > 0 && ticket->error == 0) {
+ 		ret = prepare_to_wait_event(&ticket->wait, &wait, TASK_KILLABLE);
+ 		if (ret) {
+-			ret = -EINTR;
++			ticket->error = -EINTR;
+ 			break;
+ 		}
+ 		spin_unlock(&space_info->lock);
+@@ -921,18 +920,7 @@ static int wait_reserve_ticket(struct btrfs_fs_info *fs_info,
+ 		finish_wait(&ticket->wait, &wait);
+ 		spin_lock(&space_info->lock);
+ 	}
+-	if (!ret)
+-		ret = ticket->error;
+-	if (!list_empty(&ticket->list))
+-		list_del_init(&ticket->list);
+-	if (ticket->bytes && ticket->bytes < ticket->orig_bytes)
+-		reclaim_bytes = ticket->orig_bytes - ticket->bytes;
+ 	spin_unlock(&space_info->lock);
+-
+-	if (reclaim_bytes)
+-		btrfs_space_info_add_old_bytes(fs_info, space_info,
+-					       reclaim_bytes);
+-	return ret;
+ }
+ 
+ /**
+@@ -1030,16 +1018,18 @@ static int __reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
+ 		return ret;
+ 
+ 	if (flush == BTRFS_RESERVE_FLUSH_ALL)
+-		return wait_reserve_ticket(fs_info, space_info, &ticket);
++		wait_reserve_ticket(fs_info, space_info, &ticket);
++	else
++		priority_reclaim_metadata_space(fs_info, space_info, &ticket);
+ 
+-	ret = 0;
+-	priority_reclaim_metadata_space(fs_info, space_info, &ticket);
+ 	spin_lock(&space_info->lock);
+-	if (ticket.bytes) {
++	ret = ticket.error;
++	if (ticket.bytes || ticket.error) {
+ 		if (ticket.bytes < orig_bytes)
+ 			reclaim_bytes = orig_bytes - ticket.bytes;
+ 		list_del_init(&ticket.list);
+-		ret = -ENOSPC;
++		if (!ret)
++			ret = -ENOSPC;
+ 	}
+ 	spin_unlock(&space_info->lock);
+ 
 -- 
 2.21.0
 
