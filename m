@@ -2,155 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 587257D6C2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2019 09:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1617D6EC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2019 10:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729091AbfHAH40 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Aug 2019 03:56:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37636 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728974AbfHAH40 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Aug 2019 03:56:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 90252AF77
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2019 07:56:24 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC] btrfs: qgroup: Introduce qgroup memory usage and soft limit
-Date:   Thu,  1 Aug 2019 15:56:20 +0800
-Message-Id: <20190801075620.26925-1-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
+        id S1729578AbfHAIHy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 1 Aug 2019 04:07:54 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:50393 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729572AbfHAIHy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 1 Aug 2019 04:07:54 -0400
+X-Originating-IP: 37.173.91.251
+Received: from [10.137.0.38] (unknown [37.173.91.251])
+        (Authenticated sender: swami@petaramesh.org)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id DEFD1FF803;
+        Thu,  1 Aug 2019 08:07:50 +0000 (UTC)
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        Lionel Bouton <lionel-subscription@bouton.name>,
+        linux-btrfs@vger.kernel.org
+References: <bcb1a04b-f0b0-7699-92af-501e774de41a@petaramesh.org>
+ <f8b08aec-2c43-9545-906e-7e41953d9ed4@bouton.name>
+ <02f206eb-0c36-6ba7-94ce-f50fa3061271@bouton.name>
+ <6fb5af6c-d7b8-951b-f213-e2b9b536ae6a@petaramesh.org>
+ <d8c571e4-718e-1241-66ab-176d091d6b48@bouton.name>
+ <f8dfd578-95ac-1711-e382-7304bf800fb2@petaramesh.org>
+ <c4885e92-937c-8fc7-625a-3bfc372e3bf5@oracle.com>
+ <0bba3536-391b-42ea-1030-bd4598f39140@petaramesh.org>
+ <a199a382-3ea4-e061-e5fc-dc8c2cc66e73@gmx.com>
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=swami@petaramesh.org; keydata=
+ xsDiBEP8C/QRBADPiYmcQstlx+HdyR2FGH+bDgRZ0ZJBAx6F0OPW+CmIa6tlwdhSFtCTJGcw
+ eqCgSKqzLS+WBd6qknpGP3D2GOmASt+Juqnl+qmX8F/XrkxSNOVGGD0vkKGX4H5uDwufWkuV
+ 7kD/0VFJg2areJXx5tIK4+IR0E0O4Yv6DmBPwPgNUwCg0OdUy9lbCxMmshwJDGUX2Y/hiDsD
+ /3YTjHYH2OMTg/5xXlkQgR4aWn8SaVTG1vJPcm2j2BMq1LUNklgsKw7qJToRjFndHCYjSeqF
+ /Yk2Cbeez9qIk3lX2M59CTwbHPZAk7fCEVg1Wf7RvR2i4zEDBWKd3nChALaXLE3mTWOE1pf8
+ mUNPLALisxKDUkgyrwM4rZ28kKxyA/960xC5VVMkHWYYiisQQy2OQk+ElxSfPz5AWB5ijdJy
+ SJXOT/xvgswhurPRcJc+l8Ld1GWKyey0o+EBlbkAcaZJ8RCGX77IJGG3NKDBoBN7fGXv3xQZ
+ mFLbDyZWjQHl33wSUcskw2IP0D/vjRk/J7rHajIk+OxgbuTkeXF1qwX2yc0oU3fDom1pIFBl
+ dGFyYW1lc2ggPHN3YW1pQHBldGFyYW1lc2gub3JnPsJ+BBMRAgA+AhsDAh4BAheABQsJCAcC
+ BhUKCQgLAgQWAgMBFiEEzB/joG05+rK5HJguL8JcHZB24y4FAl0Cdr0FCSJsbEkACgkQL8Jc
+ HZB24y7PrwCeIj82AsMnwgOebV274cWEyR/yaDsAn25VN/Hw+yzkeXWAn5uIWJ+ZsoZkzsNN
+ BEP8DFwQEAC77CwwyVuzngvfFTx2UzFwFOZ25osxSYE1Hpw249kbeK09EYbvMYzcWR34vbS0
+ DhxqwJYH9uSuMZf/Jp4Qa/oYN4x4ZMeOGc5+BdigcetQQnZkIpMaCdFm6HK/A4aqCjqbPpvF
+ 3Mtd4CXcl1v94pIWq/n9JrLNclUA7rWnVKkPDqJ8WaxzDWm2YH9l1H+K+JbU/ow+Rk+y5xqp
+ jL3XpOsVqf34RQhFUyCoysvvxH8RdHAeKfWTf5x6P8jOvxB6XwOnKkX91kC2N7PzoDxY7llY
+ Uvy+ehrVVpaKLJ1a1R2eaVIHTFGO//2ARn6g4vVPMB93FLNR0BOGzEXCnnJKO5suw9Njv/aL
+ bdnVdDPt9nc1yn3o8Bx/nZq1asX3zo/PnMz4Up24l6GrakJFMBZybX/KxA0CXDK6Rq4HSphI
+ y/+v0I27FiQm7oT4ykiKnfFuh16NWM8rPV0UQgBLxSBoz327bUpsRuSrYh/oYBbE6p5KYHlB
+ Acpix7wQ61OdUihBX73/AAx0Gd53fc0d4AYeKy4JXMl2uP2aiIvBeBaOKY5tzIq9gnL5K6rr
+ xt4PSeONoLdVo8m8OyYeao1zvpgeNZ6FJ+VCYGBtsZEYIi80Ez5V0PpgAh7kSY1xbimDqKQx
+ A/Jq2Q7sXBCdUeHN5cDgOZLKoJRvat/rhNaCSgUNfhUc2wADBRAAskb9Eolxs20NCfs424b3
+ /NRI7SVn9W2hXvI61UYfs19lfScnn9YfmiN7IdB2cLCE6OiAbSsK3Aw8HDnEc0AdylVNOiIK
+ su7C4+CW6HKMyIUm1q2qv8RwW3K8eE8+S4+4/5k+38T39BlC3HcLSxS9vfgqmF6mF6VeD5Mn
+ DDbrm7G06UFm1Eh5PKFSzYKZ4i9rD9R4ivDCxRBT9Cibw36iigdp14z87/Qq/NoFe8j9zrbs
+ 3/3XZ22NxS0G8aNi0ejgDeYVRUUudBXK7zjV/pJDS4luB9iOiblysJmdKI3EegHlAcapTASn
+ qsJ42O/Uv9jdSPPruZrMbeRKILqOl/YtI0orHGW/UzMYf/vbYWZ82azkPQqKDZF3Tb3h6ZHt
+ csifD/J9IN7xh71aPf8ayIAus1AtPFtPUTjIJXqXIvAlNcDpaEpxn8xxcbVdcRBU/odASwsX
+ IPdz8/HV5esod/QhR6/16kkKyOJNF5M/qC3PLur8Zu4iRu8EPiPr6vTAjhLrfXbQycuVc4CV
+ c+hGlyYSW0xFaT+XF/4d+KZirsu07P5w/OCu+oRhH4StCOz58KrtuaX1dK5nLk6XkM4nKZhC
+ 7kmpnPqS6BkdJngkozuKQZMJahIvFglag90xgLrOl5MtO55yr/0j4S4a8GxTkVs70GttcMKN
+ TYaSBqmVw+0A3ILCZgQYEQIAJgIbDBYhBMwf46BtOfqyuRyYLi/CXB2QduMuBQJdAnbyBQki
+ bGwWAAoJEC/CXB2QduMur1wAn1X3FcsmMdhMfiYwXw7LVw4FAIeWAJ9kLGer22WFWR2z2iU7
+ BtUAN08OPA==
+Message-ID: <e73421f5-444b-2daa-4c28-45f3b5db007c@petaramesh.org>
+Date:   Thu, 1 Aug 2019 10:07:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a199a382-3ea4-e061-e5fc-dc8c2cc66e73@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: fr-FR
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs can allocate a lot of btrfs_qgroup_extent_record, it can use a lot
-of kernel memory and under extreme case it can cause OOM.
+On 8/1/19 8:36 AM, Qu Wenruo wrote:
+> Could you give more detailed history, including each reboot?
+> Like:
+>
+> CASE 1
+> # Upgrade kernel (running 5.1)
+> # Reboot
+> # Kernel mount failure (running 5.2)
 
-E.g. if we have 1024 subvolumes and they all share the same 4096 tree blocks.
+No, it never was a “kernel mount failure”, it was more of :
 
-Then if we trigger some workload to change the owner of all these 1024
-tree blocks in one transaction, we will need:
+- Running 5.1 OK
 
- nr_tree_blocks * (sizeof(extent_record) + 2 * nr_subvols * sizeof(ulist_node))
- = 4096 * (64 + 2 * 1024 * 56)
- = 117506048 = 448.25MiB
+- Upgrade to 5.2
 
-That's not a small amount of memory.
+- Reboot without noticing problem on kernel 5.2.1-arch1-1
 
-So this patch introduces a simple qgroup memory limiter, it will check
-if we hit the memory up limit when inserting qgroup extent record.
+- Performed usual remote rsync backup using kernel 5.2.1-arch1-1 WITHOUT
+any error at 23:20 on july, 16
 
-Such simple mechanism has the following limit:
-- Soft limit only
-  When we exceed the limit, we will only try our best to commit
-  transaction when possible.
-  Thus it's not ensured to prevent huge memory pressure.
+- Quite unfortunately I do not backup /var/log in frequent rsync backups...
 
-- Limit based on estimation
-  Since at the time of qgroup extent record insert, we only have
-  record->old_roots (ulist of all subvolumes owning this extent in
-  previous transaction), we don't have record->new_roots yet (calculate
-  at commit transaction time).
-  So we can only estimate that by double the memory usage of old_roots.
+- Machine does its usual cronned snapper snapshots auto-delete
 
-  This can cause both underestimation and overestimation.
-  Underestimation happens for case like reflink, the original extent is
-  only shared once, while after reflink it can be shared by a lot of
-  more subvolumes.
-  Overestimation happens for reference drop.
+- Turned off machine for the night
 
-- Not working for qgroup subtree rescan
-  Subtree rescan happens in one transaction, thus we have no way to
-  commit transaction with trans handler hold.
-  Qgroup subtree rescan flood will be addressed by pausing qgroup.
+- Next days, boot machine as usual (without paying attention to
+scrolling messages)
 
-In fact, the need for such memory limitation is uncertain.
+- Machine boots. Cinnamon GUI fails loading. Wonders. Reboot.
 
-As the only possible scenario to generate so many records is qgroup
-subtree rescan, but we're already purposing pausing qgroup to address
-that, I doubt if it's possible to hit current hardcoded 128M memory
-limit.
+- Notice BTRFS error messages on console at boot. Still no GUI.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ctree.h   |  8 ++++++++
- fs/btrfs/disk-io.c |  8 ++++++++
- fs/btrfs/qgroup.c  | 12 ++++++++++++
- 3 files changed, 28 insertions(+)
+- Reboot in systemd rescue mode. Run "btrfs check -f" in read-only mode.
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 0a61dff27f57..da4a8c8f43a7 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1096,6 +1096,14 @@ struct btrfs_fs_info {
- 	struct rb_root qgroup_tree;
- 	spinlock_t qgroup_lock;
- 
-+	/*
-+	 * Monitor and limit btrfs_qgroup_extent_record memory usage.
-+	 *
-+	 * Both protected by qgroup_lock.
-+	 */
-+	u64 qgroup_mem_estimate;
-+	u64 qgroup_mem_limit;
-+
- 	/*
- 	 * used to avoid frequently calling ulist_alloc()/ulist_free()
- 	 * when doing qgroup accounting, it must be protected by qgroup_lock.
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index deb74a8c191a..c4070824dea1 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2171,6 +2171,14 @@ static void btrfs_init_qgroup(struct btrfs_fs_info *fs_info)
- 	fs_info->qgroup_ulist = NULL;
- 	fs_info->qgroup_rescan_running = false;
- 	mutex_init(&fs_info->qgroup_rescan_lock);
-+
-+	/*
-+	 * SZ_128M means we can have around 1M dirty extent record if each
-+	 * one is owned by one root.
-+	 * Or 113K records if each one is owned by 20 roots.
-+	 */
-+	fs_info->qgroup_mem_limit = SZ_128M;
-+	fs_info->qgroup_mem_estimate = 0;
- }
- 
- static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 7f4f8c4b4bb2..677806873f03 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1543,6 +1543,15 @@ int btrfs_qgroup_trace_extent_nolock(struct btrfs_trans_handle *trans,
- 	lockdep_assert_held(&delayed_refs->lock);
- 	trace_btrfs_qgroup_trace_extent(fs_info, record);
- 
-+	if (record->old_roots) {
-+		spin_lock(&fs_info->qgroup_lock);
-+		fs_info->qgroup_mem_estimate += sizeof(*record) +
-+			2 * record->old_roots->nnodes *
-+			sizeof(struct ulist_node);
-+		if (fs_info->qgroup_mem_estimate >= fs_info->qgroup_mem_limit)
-+			btrfs_commit_transaction_locksafe(fs_info);
-+		spin_unlock(&fs_info->qgroup_lock);
-+	}
- 	while (*p) {
- 		parent_node = *p;
- 		entry = rb_entry(parent_node, struct btrfs_qgroup_extent_record,
-@@ -2558,6 +2567,9 @@ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans)
- 		kfree(record);
- 
- 	}
-+	spin_lock(&fs_info->qgroup_lock);
-+	fs_info->qgroup_mem_estimate = 0;
-+	spin_unlock(&fs_info->qgroup_lock);
- 	trace_qgroup_num_dirty_extents(fs_info, trans->transid,
- 				       num_dirty_extents);
- 	return ret;
+- Get LOADS of error messages.
+
+- Tells myself « Jeez the damn thing screwed up ! »
+
+- Reboot in multi-user.target console mode
+
+- Notice BTRFS errors again.
+
+- Connect external USB HD for performing an emergency full backup of
+what can be.
+
+- Lack enough space on external USB HD. Delete a load of old snapshots
+to make enough space.
+
+- Perform full backup (rsync onto external HD). Everything goes well
+except for a few recently modified files that fail. Either temp or cache
+files I can live without, or files that are OK in the remote backup
+performed the evening before.
+
+- Wait a few days before restoring the machine - lack of time.
+
+- Reformat and restore the machine, reverting to kernel 5.1.
+
+- Want to perform more backups onto the external USB HD.
+
+- Get BTRFS errors on the external HD (posted here previously).
+
+- Eventually decide to reformat the external HD completely as the FS
+seems to be beyond salvation by “btrfs check”.
+
+
+- The machine and involved disks seems stable and have been checked
+healthy now with kernel 5.1.
+
+- As you can see, the damaged filesystems have been reformatted, and I'm
+afraid I don't have useful logs available.
+
+
+> (It's a really pity that the original corrupted leaf kernel message
+> can't be preserved, that could really help a lot to detect memory
+> corruption or things like that
+
+Well I'm sorry..
+
+Kind regards.
+
 -- 
-2.22.0
+
+ॐ
+
+Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
+
 
