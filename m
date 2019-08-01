@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B2D7DBE9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2019 14:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CF0B7DBEA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Aug 2019 14:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731475AbfHAMuA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 1 Aug 2019 08:50:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34468 "EHLO mx1.suse.de"
+        id S1731501AbfHAMuD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 1 Aug 2019 08:50:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34502 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726422AbfHAMuA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 1 Aug 2019 08:50:00 -0400
+        id S1726422AbfHAMuD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 1 Aug 2019 08:50:03 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 205F6AF1D
-        for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2019 12:49:59 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 01AA7ADF1
+        for <linux-btrfs@vger.kernel.org>; Thu,  1 Aug 2019 12:50:02 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 63EA7DA7D9; Thu,  1 Aug 2019 14:50:33 +0200 (CEST)
+        id 1F1C8DA7D9; Thu,  1 Aug 2019 14:50:35 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/3] btrsf: async-thread: convert defines to enums
-Date:   Thu,  1 Aug 2019 14:50:33 +0200
-Message-Id: <c08ca39051113680ea5801bc137cb1fa634246e3.1564663765.git.dsterba@suse.com>
+Subject: [PATCH 3/3] btrfs: tree-log: use symbolic name for first replay stage
+Date:   Thu,  1 Aug 2019 14:50:35 +0200
+Message-Id: <5e7f207680bb5e16c0ef4f8499b060bff308a8f5.1564663765.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <cover.1564663765.git.dsterba@suse.com>
 References: <cover.1564663765.git.dsterba@suse.com>
@@ -35,28 +35,22 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/async-thread.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ fs/btrfs/tree-log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
-index 122cb97c7909..2e9e13ffbd08 100644
---- a/fs/btrfs/async-thread.c
-+++ b/fs/btrfs/async-thread.c
-@@ -12,9 +12,11 @@
- #include "async-thread.h"
- #include "ctree.h"
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 5513e76cc336..f48c8b9b513b 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6237,7 +6237,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+ 	struct btrfs_fs_info *fs_info = log_root_tree->fs_info;
+ 	struct walk_control wc = {
+ 		.process_func = process_one_buffer,
+-		.stage = 0,
++		.stage = LOG_WALK_PIN_ONLY,
+ 	};
  
--#define WORK_DONE_BIT 0
--#define WORK_ORDER_DONE_BIT 1
--#define WORK_HIGH_PRIO_BIT 2
-+enum {
-+	WORK_DONE_BIT,
-+	WORK_ORDER_DONE_BIT,
-+	WORK_HIGH_PRIO_BIT,
-+};
- 
- #define NO_THRESHOLD (-1)
- #define DFT_THRESHOLD (32)
+ 	path = btrfs_alloc_path();
 -- 
 2.22.0
 
