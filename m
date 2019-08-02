@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D56BA7FE4C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 18:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9C27FE5E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 18:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390045AbfHBQKf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Aug 2019 12:10:35 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:35590 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389951AbfHBQKe (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Aug 2019 12:10:34 -0400
-Received: by mail-qk1-f196.google.com with SMTP id r21so55256677qke.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2019 09:10:33 -0700 (PDT)
+        id S2389815AbfHBQMC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Aug 2019 12:12:02 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:41633 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732543AbfHBQMC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Aug 2019 12:12:02 -0400
+Received: by mail-qt1-f194.google.com with SMTP id d17so74306933qtj.8
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2019 09:12:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=lEE9BURXq/CcFhTG0kTrWbkssIFAc4F3H+vKX68PpxU=;
-        b=03VvsZd/7b0GgCK3Gvhxm5/Sy3tJ+enmYvzJP2jBmVjeYZCMaYO9OYeCMtjLL/47cI
-         IFy2zyoTpVLqZEF5QgOahzPJM+TcdqB4TjNhkoDW/9lwZ+lMW9OsUVZzfuRXrbvm9zju
-         xnYE7dZMgv0Tw98rtjYFSGQXOlaSIZ2fb82vMiLDdtzHk1F0eWUtpVK5gHUzgjURHrQj
-         t0tNpKSKS53eWBEXmgaRkjmTAEsbcP03YHskogu8nr6XEB3RQFT/bNiQ0pMUfPzPV8/r
-         rIxnEH/6cYW3lV2mNhlwLK8COHIO/bwuet4FNyY6M2B2B74qJXWNDvf/0eLvbvxvTM8d
-         FsQg==
+        bh=VjEH6VSX5ljt1iUXK9XBsRVEM9cTuTTtfBz6dXPXc1s=;
+        b=lOeMbNYxAPrRuObd5RdpMQzfQYCr8KAG3SAYIvUoCq9Q9SBvL97SQdfLTaqUu50TZr
+         92TX6SQlnmxwp2Tub4cX3JGgYL3inq8TqK5mnauJ/VpuRPnPj5XPUiuTUROVaZDZIfG6
+         iwaU4Rsx4YhtXua/RWuMrqIOdShfV+r5nXRrVvkz4pJOZAaeEY8eutdWlNwcB9E/Ibh/
+         WlP+hFCqiNb6VuHowU849BZAvQHkJafK5R8znICVfUjvdPBvWUz3TZhv9YQzGKfXQPrL
+         GhlF7tTOHcv4Iqf6pZQq93lNO2qX/NbJrF5ovFMFDUY415Xk+DoODWytI0X/o5ET8sKc
+         gc8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=lEE9BURXq/CcFhTG0kTrWbkssIFAc4F3H+vKX68PpxU=;
-        b=U6I30DhM6R+R32bFA6VhAzMGhrzyUwgxe7Ajo9jMZbjY9TEwG4yYHxOYmOKYG8oJR4
-         BkeEDAigroXSrnDdy+oAA459R17mHnW8tLHuiVoKnJbnmccz36WUPKnEpWHgRwAdLfvv
-         mb7lW/ZA/TxVCVk4JGO8htAkBtIzG2lOo7kmSdSFlEpKNhiA1Vxn+n1NzlklgdqSJgWT
-         pfolGzU/mof8pu374dNwUQkflJy42it/7e2Wy1xAJvbq5/HtqO1Zg/Mgf3o3PSG2E5uj
-         85NlbjfNbqjCp19iwOzDaMvBfy4ZBhb/Sei1eG6WXNAVuIN7sUck4drno9bnjImC1Z0M
-         1LiQ==
-X-Gm-Message-State: APjAAAVBKBzi7rxPj3iZZLEffqA0C1Gr3YtC20MV7vCXJ4olmG77HLxr
-        tc8TO/RrdeJJi0zCAn0bMKD1EVZAqC8=
-X-Google-Smtp-Source: APXvYqy+Yq7nwyvcxHiN8+xefBh5t4F1zNOHj5p0BWIEKE37SrYpdqVQecEGNHjkgtucwanYRlrTlw==
-X-Received: by 2002:a05:620a:166a:: with SMTP id d10mr86561066qko.195.1564762233128;
-        Fri, 02 Aug 2019 09:10:33 -0700 (PDT)
+        bh=VjEH6VSX5ljt1iUXK9XBsRVEM9cTuTTtfBz6dXPXc1s=;
+        b=om1pAcobryXnLJQjHjFmBwUZuXjxFEvGby/IgVjNWe3+PIPNQ573TNIf1VP9S/nvyj
+         x1NEk0W8dmHg22Op1JsAW/JcVUmF7M0vQg/mph9MV038o2s142D4GpN+/SxPgZPJFZJM
+         n34Q+kLYqhcFxuCe5kLo3mGj5aPFEp+pPz9nZ9Kc3pcC/wNidC8tGK2FYThlYo1s2fG/
+         eiMAelMEeK5e8SiZi8e5BgyKk48z2YXV2Lh9KPzVFyAbIQgpVhN0vakoVKxxUM2l7upI
+         3Fjsf6pPVHp864SBKnFERg0i1vrFnESBoXiEn7x21cys5HEz2wqb6PivLTmnVSEHzaba
+         wOiA==
+X-Gm-Message-State: APjAAAVPVwwiqmpA7RXPq38Q//iOWhgnoFTHzonZvJnLqPc/ajs32VQs
+        oW9W7dLk1WM6j/92Z1Z8fqlTukMaqiQ=
+X-Google-Smtp-Source: APXvYqwj8Kttmut9AymMJXdxoQC8hlchcYAq+JJq1fG22iRu5eacLvjHxEZ5sF1mz44nSKJZ5pWa5w==
+X-Received: by 2002:a0c:d4d0:: with SMTP id y16mr95322081qvh.191.1564762320939;
+        Fri, 02 Aug 2019 09:12:00 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id b18sm28572126qkc.112.2019.08.02.09.10.32
+        by smtp.gmail.com with ESMTPSA id b13sm44859776qtk.55.2019.08.02.09.11.59
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 02 Aug 2019 09:10:32 -0700 (PDT)
+        Fri, 02 Aug 2019 09:12:00 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: add an ioctl to force chunk allocation
-Date:   Fri,  2 Aug 2019 12:10:31 -0400
-Message-Id: <20190802161031.18427-1-josef@toxicpanda.com>
+Subject: [PATCH] btrfs-progs: add a alloc-chunk command
+Date:   Fri,  2 Aug 2019 12:11:59 -0400
+Message-Id: <20190802161159.18473-1-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,75 +57,94 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In testing block group removal it's sometimes handy to be able to create
-block groups on demand.  Add an ioctl to allow us to force allocation
-from userspace.
+This is so we can force chunk allocation to test various parts of the
+fs.  I used this to test my btrfsck patch for checking for empty block
+groups, and a weird block group removal issue.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ioctl.c           | 30 ++++++++++++++++++++++++++++++
- include/uapi/linux/btrfs.h |  1 +
- 2 files changed, 31 insertions(+)
+ cmds/filesystem.c | 48 +++++++++++++++++++++++++++++++++++++++++++++++
+ ioctl.h           |  1 +
+ 2 files changed, 49 insertions(+)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index d0743ec1231d..f100def53c29 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -5553,6 +5553,34 @@ static int _btrfs_ioctl_send(struct file *file, void __user *argp, bool compat)
- 	return ret;
+diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+index 4f22089a..93d51195 100644
+--- a/cmds/filesystem.c
++++ b/cmds/filesystem.c
+@@ -1174,6 +1174,53 @@ static int cmd_filesystem_label(const struct cmd_struct *cmd,
  }
+ static DEFINE_SIMPLE_COMMAND(filesystem_label, "label");
  
-+static long btrfs_ioctl_alloc_chunk(struct file *file, void __user *arg)
++static const char * const cmd_filesystem_alloc_chunk_usage[] = {
++	"btrfs filesystem alloc-chunk [data|metadata|system] <path>",
++	"Force a chunk allocation of the specified type on the given filesystem.",
++	NULL
++};
++
++static int cmd_filesystem_alloc_chunk(const struct cmd_struct *cmd,
++				      int argc, char **argv)
 +{
-+	struct btrfs_root *root = BTRFS_I(file_inode(file))->root;
-+	struct btrfs_trans_handle *trans;
-+	u64 flags;
-+	int ret;
++	char *path;
++	DIR *dirstream = NULL;
++	int fd, ret, e;
++	u64 flags = 0;
 +
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
++	clean_args_no_options(cmd, argc, argv);
 +
-+	if (copy_from_user(&flags, arg, sizeof(flags)))
-+		return -EFAULT;
++	if (check_argc_exact(argc - optind, 2))
++		return 1;
 +
-+	/* We can only specify one type at a time. */
-+	if (flags != BTRFS_BLOCK_GROUP_DATA &&
-+	    flags != BTRFS_BLOCK_GROUP_METADATA &&
-+	    flags != BTRFS_BLOCK_GROUP_SYSTEM)
-+		return -EINVAL;
++	if (!strncmp(argv[optind], "data", strlen("data")))
++		flags = BTRFS_BLOCK_GROUP_DATA;
++	else if (!strncmp(argv[optind], "system", strlen("system")))
++		flags = BTRFS_BLOCK_GROUP_SYSTEM;
++	else if (!strncmp(argv[optind], "metadata", strlen("metadata")))
++		flags = BTRFS_BLOCK_GROUP_METADATA;
 +
-+	trans = btrfs_start_transaction(root, 0);
-+	if (IS_ERR(trans))
-+		return PTR_ERR(trans);
++	if (flags == 0) {
++		error("Must specify either data, system, or metadata");
++		return 1;
++	}
 +
-+	ret = btrfs_chunk_alloc(trans, flags, CHUNK_ALLOC_FORCE);
-+	btrfs_end_transaction(trans);
-+	return ret < 0 ? ret : 0;
++	path = argv[optind + 1];
++	fd = btrfs_open_dir(path, &dirstream, 1);
++	if (fd < 0)
++		return 1;
++
++	ret = ioctl(fd, BTRFS_IOC_ALLOC_CHUNK, &flags);
++	e = errno;
++	close_file_or_dir(fd, dirstream);
++	if (ret) {
++		error("Failed to alloc chunk: %d", e);
++		return 1;
++	}
++	return 0;
 +}
++static DEFINE_SIMPLE_COMMAND(filesystem_alloc_chunk, "alloc-chunk");
 +
- long btrfs_ioctl(struct file *file, unsigned int
- 		cmd, unsigned long arg)
- {
-@@ -5699,6 +5727,8 @@ long btrfs_ioctl(struct file *file, unsigned int
- 		return btrfs_ioctl_get_subvol_rootref(file, argp);
- 	case BTRFS_IOC_INO_LOOKUP_USER:
- 		return btrfs_ioctl_ino_lookup_user(file, argp);
-+	case BTRFS_IOC_ALLOC_CHUNK:
-+		return btrfs_ioctl_alloc_chunk(file, argp);
+ static const char * const cmd_filesystem_balance_usage[] = {
+ 	"btrfs filesystem balance [args...] (alias of \"btrfs balance\")",
+ 	"Please see \"btrfs balance --help\" for more information.",
+@@ -1209,6 +1256,7 @@ static const struct cmd_group filesystem_cmd_group = {
+ 		&cmd_struct_filesystem_resize,
+ 		&cmd_struct_filesystem_label,
+ 		&cmd_struct_filesystem_usage,
++		&cmd_struct_filesystem_alloc_chunk,
+ 		NULL
  	}
- 
- 	return -ENOTTY;
-diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
-index c195896d478f..3a6474c34ad0 100644
---- a/include/uapi/linux/btrfs.h
-+++ b/include/uapi/linux/btrfs.h
-@@ -943,5 +943,6 @@ enum btrfs_err_code {
+ };
+diff --git a/ioctl.h b/ioctl.h
+index 66ee599f..4a5c2891 100644
+--- a/ioctl.h
++++ b/ioctl.h
+@@ -929,6 +929,7 @@ static inline char *btrfs_err_str(enum btrfs_err_code err_code)
  				struct btrfs_ioctl_get_subvol_rootref_args)
  #define BTRFS_IOC_INO_LOOKUP_USER _IOWR(BTRFS_IOCTL_MAGIC, 62, \
  				struct btrfs_ioctl_ino_lookup_user_args)
 +#define BTRFS_IOC_ALLOC_CHUNK _IOR(BTRFS_IOCTL_MAGIC, 63, __u64)
- 
- #endif /* _UAPI_LINUX_BTRFS_H */
+ #ifdef __cplusplus
+ }
+ #endif
 -- 
 2.21.0
 
