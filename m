@@ -2,56 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE027FB98
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 15:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 401F57FB9F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 15:59:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731359AbfHBN4G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Aug 2019 09:56:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36182 "EHLO mx1.suse.de"
+        id S2406625AbfHBN7F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Aug 2019 09:59:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36654 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730204AbfHBN4G (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 2 Aug 2019 09:56:06 -0400
+        id S2387723AbfHBN7E (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 2 Aug 2019 09:59:04 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9738DAEF1;
-        Fri,  2 Aug 2019 13:56:05 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id C5BC4AFA5;
+        Fri,  2 Aug 2019 13:59:03 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 0C836DADC0; Fri,  2 Aug 2019 15:56:38 +0200 (CEST)
-Date:   Fri, 2 Aug 2019 15:56:38 +0200
+        id 7FEA3DADC0; Fri,  2 Aug 2019 15:59:37 +0200 (CEST)
+Date:   Fri, 2 Aug 2019 15:59:37 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/25] btrfs: migrate the block group code
-Message-ID: <20190802135638.GW28208@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 3/3] btrfs: tree-log: use symbolic name for first replay
+ stage
+Message-ID: <20190802135937.GX28208@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190620193807.29311-1-josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1564663765.git.dsterba@suse.com>
+ <5e7f207680bb5e16c0ef4f8499b060bff308a8f5.1564663765.git.dsterba@suse.com>
+ <053e458d-fffb-e483-0880-62a49ccda990@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190620193807.29311-1-josef@toxicpanda.com>
+In-Reply-To: <053e458d-fffb-e483-0880-62a49ccda990@oracle.com>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Jun 20, 2019 at 03:37:42PM -0400, Josef Bacik wrote:
-> This is the series to migrate the block group code out of extent-tree.c.  This
-> is a much larger series than the previous two series because things were much
-> more intertwined than block_rsv's and space_info.  There is one code change
-> patch in this series, it is
+On Fri, Aug 02, 2019 at 11:50:26AM +0800, Anand Jain wrote:
 > 
-> btrfs: make caching_thread use btrfs_find_next_key
+> For whole series.
+> 
+> Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> 
+> One nit below.
+> 
+> On 8/1/19 8:50 PM, David Sterba wrote:
+> > Signed-off-by: David Sterba <dsterba@suse.com>
+> > ---
+> >   fs/btrfs/tree-log.c | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> > index 5513e76cc336..f48c8b9b513b 100644
+> > --- a/fs/btrfs/tree-log.c
+> > +++ b/fs/btrfs/tree-log.c
+> > @@ -6237,7 +6237,7 @@ int btrfs_recover_log_trees(struct btrfs_root *log_root_tree)
+> >   	struct btrfs_fs_info *fs_info = log_root_tree->fs_info;
+> >   	struct walk_control wc = {
+> >   		.process_func = process_one_buffer,
+> > -		.stage = 0,
+> > +		.stage = LOG_WALK_PIN_ONLY,
+> 
+>   Why this isn't enum?
 
-I've merged 1-10 (ie. up to the patch mentioned above) as it applied
-cleanly on current misc-next, the rest produced some conflicts.
-
-Although most of the code is moving from a file to file, I fixed the
-coding style as this is the perfect opportunity to update code that does
-not change often.
-
-If you're going to send more patchsets like that, please do another pass
-after copy&paste of the code. Also note that the SPDX header in new .c
-files uses the weird // comments, unlike headers that use /* */ .
+It could be, though the values of stage are used as raw int comparing it
+to some value (eg. replay_one_buffer and LOG_WALK_REPLAY_ALL), so that's
+beyond the scope of the simple conversion.
