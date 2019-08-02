@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DEF67FB43
+	by mail.lfdr.de (Postfix) with ESMTP id CAF447FB44
 	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 15:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436512AbfHBNjx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Aug 2019 09:39:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60142 "EHLO mx1.suse.de"
+        id S2436517AbfHBNj5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Aug 2019 09:39:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60168 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404517AbfHBNjx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 2 Aug 2019 09:39:53 -0400
+        id S2404226AbfHBNj4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 2 Aug 2019 09:39:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B07E9AFA4
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2019 13:39:52 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 0C63AB62C
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2019 13:39:55 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8BC24DADC0; Fri,  2 Aug 2019 15:40:26 +0200 (CEST)
+        id DD1EEDADC0; Fri,  2 Aug 2019 15:40:28 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 11/13] btrfs: cleanup kobject.h includes
-Date:   Fri,  2 Aug 2019 15:40:26 +0200
-Message-Id: <42f6e0b3bd3e1f06bdeabb9bdec5eec2327950ea.1564752900.git.dsterba@suse.com>
+Subject: [PATCH 12/13] btrfs: sysfs: move helper macros to sysfs.c
+Date:   Fri,  2 Aug 2019 15:40:28 +0200
+Message-Id: <70d63845f687c17b9e152f4d7f9aa9b7f2a08293.1564752900.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <cover.1564752900.git.dsterba@suse.com>
 References: <cover.1564752900.git.dsterba@suse.com>
@@ -33,53 +33,135 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The kobject should be pulled in via sysfs.h and that needs to include it
-because it needs various definitions like kobj_attribute or kobject.
+None of the macros is used outside of sysfs.c.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/ctree.h | 1 -
- fs/btrfs/sysfs.c | 1 -
- fs/btrfs/sysfs.h | 2 ++
- 3 files changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/sysfs.c | 49 +++++++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/sysfs.h | 50 ------------------------------------------------
+ 2 files changed, 49 insertions(+), 50 deletions(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index a61bf19a7ef6..e32d992a3597 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -16,7 +16,6 @@
- #include <linux/backing-dev.h>
- #include <linux/wait.h>
- #include <linux/slab.h>
--#include <linux/kobject.h>
- #include <trace/events/btrfs.h>
- #include <asm/kmap_types.h>
- #include <asm/unaligned.h>
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index b7eb921e3fd3..624ab9e29e21 100644
+index 624ab9e29e21..e306e6e173cf 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -7,7 +7,6 @@
- #include <linux/slab.h>
- #include <linux/spinlock.h>
- #include <linux/completion.h>
--#include <linux/kobject.h>
- #include <linux/bug.h>
- #include <linux/debugfs.h>
+@@ -17,6 +17,55 @@
+ #include "volumes.h"
+ #include "space-info.h"
+ 
++struct btrfs_feature_attr {
++	struct kobj_attribute kobj_attr;
++	enum btrfs_feature_set feature_set;
++	u64 feature_bit;
++};
++
++/* For raid type sysfs entries */
++struct raid_kobject {
++	u64 flags;
++	struct kobject kobj;
++	struct list_head list;
++};
++
++#define __INIT_KOBJ_ATTR(_name, _mode, _show, _store)			\
++{									\
++	.attr	= { .name = __stringify(_name), .mode = _mode },	\
++	.show	= _show,						\
++	.store	= _store,						\
++}
++
++#define BTRFS_ATTR_RW(_prefix, _name, _show, _store)			\
++	static struct kobj_attribute btrfs_attr_##_prefix##_##_name =	\
++			__INIT_KOBJ_ATTR(_name, 0644, _show, _store)
++
++#define BTRFS_ATTR(_prefix, _name, _show)				\
++	static struct kobj_attribute btrfs_attr_##_prefix##_##_name =	\
++			__INIT_KOBJ_ATTR(_name, 0444, _show, NULL)
++
++#define BTRFS_ATTR_PTR(_prefix, _name)					\
++	(&btrfs_attr_##_prefix##_##_name.attr)
++
++#define BTRFS_FEAT_ATTR(_name, _feature_set, _feature_prefix, _feature_bit)  \
++static struct btrfs_feature_attr btrfs_attr_features_##_name = {	     \
++	.kobj_attr = __INIT_KOBJ_ATTR(_name, S_IRUGO,			     \
++				      btrfs_feature_attr_show,		     \
++				      btrfs_feature_attr_store),	     \
++	.feature_set	= _feature_set,					     \
++	.feature_bit	= _feature_prefix ##_## _feature_bit,		     \
++}
++#define BTRFS_FEAT_ATTR_PTR(_name)					     \
++	(&btrfs_attr_features_##_name.kobj_attr.attr)
++
++#define BTRFS_FEAT_ATTR_COMPAT(name, feature) \
++	BTRFS_FEAT_ATTR(name, FEAT_COMPAT, BTRFS_FEATURE_COMPAT, feature)
++#define BTRFS_FEAT_ATTR_COMPAT_RO(name, feature) \
++	BTRFS_FEAT_ATTR(name, FEAT_COMPAT_RO, BTRFS_FEATURE_COMPAT_RO, feature)
++#define BTRFS_FEAT_ATTR_INCOMPAT(name, feature) \
++	BTRFS_FEAT_ATTR(name, FEAT_INCOMPAT, BTRFS_FEATURE_INCOMPAT, feature)
++
+ static inline struct btrfs_fs_info *to_fs_info(struct kobject *kobj);
+ static inline struct btrfs_fs_devices *to_fs_devs(struct kobject *kobj);
  
 diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
-index aabc67a20ce5..ab5e39b5496a 100644
+index ab5e39b5496a..ab0ea53b7d4b 100644
 --- a/fs/btrfs/sysfs.h
 +++ b/fs/btrfs/sysfs.h
-@@ -3,6 +3,8 @@
- #ifndef BTRFS_SYSFS_H
- #define BTRFS_SYSFS_H
+@@ -17,56 +17,6 @@ enum btrfs_feature_set {
+ 	FEAT_MAX
+ };
  
-+#include <linux/kobject.h>
-+
- /*
-  * Data exported through sysfs
-  */
+-#define __INIT_KOBJ_ATTR(_name, _mode, _show, _store)			\
+-{									\
+-	.attr	= { .name = __stringify(_name), .mode = _mode },	\
+-	.show	= _show,						\
+-	.store	= _store,						\
+-}
+-
+-#define BTRFS_ATTR_RW(_prefix, _name, _show, _store)			\
+-	static struct kobj_attribute btrfs_attr_##_prefix##_##_name =	\
+-			__INIT_KOBJ_ATTR(_name, 0644, _show, _store)
+-
+-#define BTRFS_ATTR(_prefix, _name, _show)				\
+-	static struct kobj_attribute btrfs_attr_##_prefix##_##_name =	\
+-			__INIT_KOBJ_ATTR(_name, 0444, _show, NULL)
+-
+-#define BTRFS_ATTR_PTR(_prefix, _name)					\
+-	(&btrfs_attr_##_prefix##_##_name.attr)
+-
+-
+-struct btrfs_feature_attr {
+-	struct kobj_attribute kobj_attr;
+-	enum btrfs_feature_set feature_set;
+-	u64 feature_bit;
+-};
+-
+-/* For raid type sysfs entries */
+-struct raid_kobject {
+-	u64 flags;
+-	struct kobject kobj;
+-	struct list_head list;
+-};
+-
+-#define BTRFS_FEAT_ATTR(_name, _feature_set, _feature_prefix, _feature_bit)  \
+-static struct btrfs_feature_attr btrfs_attr_features_##_name = {	     \
+-	.kobj_attr = __INIT_KOBJ_ATTR(_name, S_IRUGO,			     \
+-				      btrfs_feature_attr_show,		     \
+-				      btrfs_feature_attr_store),	     \
+-	.feature_set	= _feature_set,					     \
+-	.feature_bit	= _feature_prefix ##_## _feature_bit,		     \
+-}
+-#define BTRFS_FEAT_ATTR_PTR(_name)					     \
+-	(&btrfs_attr_features_##_name.kobj_attr.attr)
+-
+-#define BTRFS_FEAT_ATTR_COMPAT(name, feature) \
+-	BTRFS_FEAT_ATTR(name, FEAT_COMPAT, BTRFS_FEATURE_COMPAT, feature)
+-#define BTRFS_FEAT_ATTR_COMPAT_RO(name, feature) \
+-	BTRFS_FEAT_ATTR(name, FEAT_COMPAT_RO, BTRFS_FEATURE_COMPAT_RO, feature)
+-#define BTRFS_FEAT_ATTR_INCOMPAT(name, feature) \
+-	BTRFS_FEAT_ATTR(name, FEAT_INCOMPAT, BTRFS_FEATURE_INCOMPAT, feature)
+-
+ /* convert from attribute */
+ static inline struct btrfs_feature_attr *
+ to_btrfs_feature_attr(struct kobj_attribute *a)
 -- 
 2.22.0
 
