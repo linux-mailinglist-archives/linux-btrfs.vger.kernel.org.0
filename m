@@ -2,152 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7797ED10
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 09:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E1E7F29D
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 11:50:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389277AbfHBHDr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Aug 2019 03:03:47 -0400
-Received: from mail1.windriver.com ([147.11.146.13]:55752 "EHLO
-        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732058AbfHBHDr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Aug 2019 03:03:47 -0400
-Received: from ALA-HCA.corp.ad.wrs.com ([147.11.189.40])
-        by mail1.windriver.com (8.15.2/8.15.1) with ESMTPS id x723BsMQ006917
-        (version=TLSv1 cipher=AES128-SHA bits=128 verify=FAIL);
-        Thu, 1 Aug 2019 20:11:54 -0700 (PDT)
-Received: from [128.224.162.188] (128.224.162.188) by ALA-HCA.corp.ad.wrs.com
- (147.11.189.50) with Microsoft SMTP Server (TLS) id 14.3.468.0; Thu, 1 Aug
- 2019 20:11:53 -0700
-Subject: Re: Bug Report: Btrfs prompts "can't allocate space for delete" when
- block size arounds 512M
-From:   "Hongzhi, Song" <hongzhi.song@windriver.com>
-To:     <linux-btrfs@vger.kernel.org>, <josef@toxicpanda.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <dsterba@suse.com>, <ltp@lists.linux.it>
-References: <b501bcff-8be0-4303-8789-363fda4658e5@windriver.com>
-Message-ID: <f6795b4b-d70e-491e-e7ce-d235ca1b95ff@windriver.com>
-Date:   Fri, 2 Aug 2019 11:11:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2405495AbfHBJqJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Aug 2019 05:46:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40066 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2405471AbfHBJqG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 2 Aug 2019 05:46:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id CB1DEB066;
+        Fri,  2 Aug 2019 09:46:05 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9540CDADC0; Fri,  2 Aug 2019 11:46:39 +0200 (CEST)
+Date:   Fri, 2 Aug 2019 11:46:39 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC] BTRFS_DEV_REPLACE_ITEM_STATE_* doesn't match with on disk
+Message-ID: <20190802094639.GV28208@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <e932064c-6182-a87c-3475-bf1765b165bc@oracle.com>
+ <e19a1d1c-3d93-7b5c-01b1-83c0c53323c8@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <b501bcff-8be0-4303-8789-363fda4658e5@windriver.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [128.224.162.188]
+In-Reply-To: <e19a1d1c-3d93-7b5c-01b1-83c0c53323c8@suse.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add linux-kernel@vger.kernel.org.
+On Mon, Nov 12, 2018 at 09:50:36AM +0200, Nikolay Borisov wrote:
+> On 12.11.18 г. 6:58 ч., Anand Jain wrote:
+> > The dev_replace_state defines are miss matched between the
+> > BTRFS_IOCTL_DEV_REPLACE_STATE_* and BTRFS_DEV_REPLACE_ITEM_STATE_* [1].
+> > 
+> > [1]
+> > -----------------------------
+> > btrfs.h:#define BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED        2
+> > btrfs.h:#define BTRFS_IOCTL_DEV_REPLACE_STATE_CANCELED        3
+> > btrfs.h:#define BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED        4
+> > 
+> > btrfs_tree.h:#define BTRFS_DEV_REPLACE_ITEM_STATE_SUSPENDED    2
+> > btrfs_tree.h:#define BTRFS_DEV_REPLACE_ITEM_STATE_FINISHED    3
+> > btrfs_tree.h:#define BTRFS_DEV_REPLACE_ITEM_STATE_CANCELED    4
+> > -----------------------------
+> > 
+> > The BTRFS_DEV_REPLACE_ITEM_STATE_* series is unused in both btrfs.ko and
+> > btrfs-progs, the on-disk also follows BTRFS_IOCTL_DEV_REPLACE_STATE_*
+> > (we set dev_replace->replace_state using the
+> > BTRFS_IOCTL_DEV_REPLACE_STATE_* defines and write to the on-disk).
+> > 
+> >  359         btrfs_set_dev_replace_replace_state(eb, ptr,
+> >  360                 dev_replace->replace_state);
+> > 
+> > IMO it should be ok to delete the BTRFS_DEV_REPLACE_ITEM_STATE_*
+> > altogether? But how about the userland progs other than btrfs-progs?
+> > If not at least fix the miss match as in [2], any comments?
+> 
+> Unfortunately you are right. This seems to stem from sloppy job back in
+> the days of initial dev-replace support. BTRFS_DEV_REPLACE_ITEM_STATE_*
+> were added in e922e087a35c ("Btrfs: enhance btrfs structures for device
+> replace support"), yet they were never used. And the
+> IOCTL_DEV_REPLACE_STATE* were added in e93c89c1aaaa ("Btrfs: add new
+> sources for device replace code").
+> 
+> It looks like the ITEM_STATE* definitions were stillborn so to speak and
+> personally I'm in favor of removing them. They shouldn't have been
+> merged in the first place and indeed the patch doesn't even have a
+> Reviewed-by tag. So it originated from the, I'd say, spartan days of
+> btrfs development...
+> 
+> David,  any code which is using BTRFS_DEV_REPLACE_ITEM_STATE_SUSPENDED
+> is inherently broken, so how about we remove those definitions, then
+> when it's compilation is broken in the future the author will actually
+> have a chance to fix it, though it's highly unlikely anyone is relying
+> on those definitions.
 
-Ping...
-
-
-Thanks,
-
---Hongzhi
-
-
-On 7/17/19 4:34 PM, Hongzhi, Song wrote:
-> Hi friends,
->
-> *Description:*
->
->
->     One LTP testcase, fs_fill.c, fails on btrfs with kernel error when 
-> unlink files on Btrfs device:
->
->     "BTRFS warning (device loop0): could not allocate space for a 
-> delete; will truncate on mount".
->
->
->     I found the loop block device formatted with btrfs roughly rangs 
-> from 460M to 560M will cause the error.
->
->     256M and 1G all pass.
->
->
->     The fs_fill.c source code:
->
-> [https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/fs/fs_fill/fs_fill.c] 
->
->
->     The fs_fill.c calls unlink which triggers the error.
->
-> [https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/testcases/kernel/fs/fs_fill/fs_fill.c#L55] 
->
->
-> [https://github.com/linux-test-project/ltp/blob/e3457e42c1b93f54bb81da746eba314fd34ad40e/lib/safe_macros.c#L358] 
->
->
->
-> *Error info:*
->
->     The issue maybe not reproduced everytime but four fifths chance.
->
->     fs_fill.c:53: INFO: Unlinking mntpoint/thread5/file0
->     safe_macros.c:360: BROK: fs_fill.c:55: 
-> unlink(mntpoint/thread10/file0) failed: ENOSPC
->     safe_macros.c:360: BROK: fs_fill.c:55: 
-> unlink(mntpoint/thread11/file0) failed: ENOSPC
->     [62477.378848] BTRFS warning (device loop0): could not allocate 
-> space for a delete; will truncate on mount
->     [62477.378905] BTRFS warning (device loop0): could not allocate 
-> space for a delete; will truncate on mount
->
->
->
-> *Kernel:*
->
->     After v5.2-rc1, qemux86-64
->
->     # make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc
->     use qemu to bootup kernel
->
->
-> *LTP:*
->
->     master branch: I tested on 20190625
->     Reproduce:
->
->     // build Ltp
->     # cd Ltp-source
->     # ./build.sh
->
->     // copy files to qemu
->     # cp runltp testcases/kernel/fs/fs_fill/fs_fill to qemu
->
->     // login to qemu:
->     // adjust block device size to 512M
->     # vi runltp
->     in function: create_block()
->         dd if=/dev/zero of=${TMP}/test.img bs=1024 count=262144
->         --->
->         dd if=/dev/zero of=${TMP}/test.img bs=1024 count=524288
->
->     // execute testcase
->     # runltp -f fs -s fs_fill
->
->
-> *Analysis:*
->
->     One new kernel commit contained in v5.2-rc1 introduces the issue.
->
->     commit c8eaeac7b734347c3afba7008b7af62f37b9c140
->     Author: Josef Bacik <josef@toxicpanda.com>
->     Date:   Wed Apr 10 15:56:10 2019 -0400
->
->         btrfs: reserve delalloc metadata differently
->         ...
->
->
-> Anyone's reply will be appreciated.
->
-> --Hongzhi
->
->
->
->
->
+I agree it's better to remove them, progs use the define but there's own
+defintion in ioctl.h so it's not affected by the kernel header. It's not
+like we're removing something in wide use so even if there are some
+code that uses it it can be fixed trivially.
