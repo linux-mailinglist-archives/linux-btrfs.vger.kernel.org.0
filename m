@@ -2,124 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8EF7FBAC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 16:03:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ECA77FBBB
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 16:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729487AbfHBODG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Aug 2019 10:03:06 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:33396 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725954AbfHBODF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Aug 2019 10:03:05 -0400
-Received: by mail-qk1-f196.google.com with SMTP id r6so54876499qkc.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2019 07:03:05 -0700 (PDT)
+        id S2390754AbfHBOHU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Aug 2019 10:07:20 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:44663 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727024AbfHBOHU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Aug 2019 10:07:20 -0400
+Received: by mail-qt1-f193.google.com with SMTP id 44so42946977qtg.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2019 07:07:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=UrzY++6e4BtMD6YllAW22Dx30WyrZkdtgyZ3nfrNFvE=;
-        b=jpawgkJGtsZ4I2k1kmHeo+J+SW/Th8SVpLEC3WKHk9+VwB9Xsrf6JIeE0bvXRmf/eU
-         Lc22+SAY9alLiYx7ADtg7kk1lsuvzMKcFVRrw2p0fvtM6n38nkilOq/p7UurNVQOf0QB
-         9wFnXB7NoPY//jxNKHht8mQ9VX+eeefZ5pjobiDD3VBBwy2vECKVyA1TXtK4NHtTcqXR
-         yPzqCI8ifQMfxoiM6AGblczlYgjzM11318EazxrO92J+9BLCKEICWxmQO8gg/i9QlzN4
-         5EAUb20B1IaSLWWjW/MzWLKqlHOONaab0syyEdmi1dDlBkuFyHHjuNhM3ik2dqCtT6wM
-         drrw==
+         :content-disposition:in-reply-to:user-agent;
+        bh=svWDsGSEgSRqG6IOp68mmj+IOfFDRdVQJ08EwBzz0f8=;
+        b=uINLmnZIfg4B+gCrBxHcXl+fe63GmHd4ossyINbPjUDMwbzok++YnxKSLNkuEVy+PY
+         dLqv8xnhR1fgRlrgRZIFEG6CJkSVi8nfpSrZAeu1ZlywPHUW2Y2h/DOSPeWm9S9z9HVC
+         wpIdhp0j+zreH0DwS9DzC506rT4YW3Gyx6yiJuXfceQ5VS06T7fmmaSxNtZ413uWI5NJ
+         cer668mQoz+7Djy/X7hKWYw80hEpHD0P7+cNH0f42cG4QN4o635ti48PuuB7gDykaIpP
+         7P17gidDEupyNM6XxOZ1ZncamyDD2tXQzZPypuFl8MVWWcJO1fJqX2zDSeEgwJKvSoWT
+         +osQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=UrzY++6e4BtMD6YllAW22Dx30WyrZkdtgyZ3nfrNFvE=;
-        b=GMLMCXwgbqeD2xUmO67364ZY0PhC5QFS0zR4+TTNe9uJWPrHtzznND+I9j2hjXPaRm
-         mrEOxch1EcwNrsIJhxzMQBlnshLR25ojJIw0ijky/eXc2xkGvJuSWX2ERcsdtwE/Kvgj
-         39SuVD8ncb2Jd9dc8CyMLXl3Y0CfVnFO3aohB3txqxW60fmY2hRal/BZ+VRBkScrKQwQ
-         MU8aOK2JhNarxA3EkLdjqqC3TyDwu0zJHLJxiPnCxz3w6MeW4q+57S/oXNUnq5CK4N4D
-         z9v2/dnj/6PrsshAaTy+9Q/ep5rYqMcrK+xQUqxcjfcCcFXB9luKL6NsPjKm4g4yJVw2
-         qftw==
-X-Gm-Message-State: APjAAAXrBjnRb7NQF6hHXM5UIzVZt2iFxQ+J5wwypy3h1UqZl1xpOlKa
-        C+m5kXghpSxN848BvjmxekkWh8ktUB0=
-X-Google-Smtp-Source: APXvYqzFINVZMYhaFTr6yqUXB2wQYfAlP0FzCUwm9tkA/zvJftc0ghYbVPGDaSdxWWDJj5KxMpTbow==
-X-Received: by 2002:a05:620a:14ba:: with SMTP id x26mr89896326qkj.328.1564754584947;
-        Fri, 02 Aug 2019 07:03:04 -0700 (PDT)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=svWDsGSEgSRqG6IOp68mmj+IOfFDRdVQJ08EwBzz0f8=;
+        b=YxSlzljgvaLGHOqciUSrKA6P5cxKN58SoUDoIBmfmYjR/DeRebI0nAtu4h2fKNpnKH
+         LOpG2JBtAedNwMoSRTkwFrSAnW+lSYP00MFRUHmAs2MDKRym9jZhPqlnfrSonlhOJsfx
+         h4jyVfPJGrmeqJpxpdZp06/Eiiu1L0tbs2MBifZL8KV45V1Sn7uzpBVENhF1/BEPdw9k
+         mpyrXCrpo/4lNwtfsGQJURBM2JMxX3KWSVVrPAuv3PYG9RoE8XbcFbDeKFE+JNE8pRkh
+         IRLQ8FWGgTX7SX3yYK7IvG2AGhZoj2vgFaOmBsPw13oKeuZoMnr0K90Flo/ScRAIyMHM
+         yZNw==
+X-Gm-Message-State: APjAAAUA+fFbaAwzH2EzsqcyiO9rqTeDM/bmU0b5ZrnT+/iXabvFpnIb
+        ekz5ldXzSVMBNvp4qKZ1BlAxvpsQxDQ=
+X-Google-Smtp-Source: APXvYqw3CrydXKKYLu/jbI9nw/JVrz+KXmH7eRynAxR7v/lLCyuBRG9TD+8UnX8bdI8s1PRnYQPwYQ==
+X-Received: by 2002:a05:6214:1c5:: with SMTP id c5mr14984082qvt.97.1564754839268;
+        Fri, 02 Aug 2019 07:07:19 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id i1sm33146486qtb.7.2019.08.02.07.03.03
+        by smtp.gmail.com with ESMTPSA id v7sm34683757qte.86.2019.08.02.07.07.18
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 02 Aug 2019 07:03:04 -0700 (PDT)
-Date:   Fri, 2 Aug 2019 10:03:02 -0400
+        Fri, 02 Aug 2019 07:07:18 -0700 (PDT)
+Date:   Fri, 2 Aug 2019 10:07:17 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] btrfs-progs: add a --check-bg-usage option to fsck
-Message-ID: <20190802140301.t7od3oj2qsnbfjyq@MacBook-Pro-91.local>
-References: <20190802130635.3698-1-josef@toxicpanda.com>
- <c4ffca4b-f2a2-b570-5354-c13ac46154fd@gmx.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/25] btrfs: migrate the block group code
+Message-ID: <20190802140716.zmyytedvuzwq6gbn@MacBook-Pro-91.local>
+References: <20190620193807.29311-1-josef@toxicpanda.com>
+ <20190802135638.GW28208@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c4ffca4b-f2a2-b570-5354-c13ac46154fd@gmx.com>
+In-Reply-To: <20190802135638.GW28208@twin.jikos.cz>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 02, 2019 at 09:54:12PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2019/8/2 下午9:06, Josef Bacik wrote:
-> > Sometimes when messing with the chunk allocator code we can end up
-> > over-allocating chunks.  Generally speaking I'll notice this when a
-> > random xfstest fails with ENOSPC when it shouldn't, but I'm super
-> > worried that I won't catch a problem until somebody has a fs completely
-> > filled up with empty block groups.  Add a fsck option to check for too
-> > many empty block groups.  This way I can set FSCK_OPTIONS="-B" to catch
-> > cases where we're too aggressive with the chunk allocator but not so
-> > aggressive that it causes problems in xfstests.
+On Fri, Aug 02, 2019 at 03:56:38PM +0200, David Sterba wrote:
+> On Thu, Jun 20, 2019 at 03:37:42PM -0400, Josef Bacik wrote:
+> > This is the series to migrate the block group code out of extent-tree.c.  This
+> > is a much larger series than the previous two series because things were much
+> > more intertwined than block_rsv's and space_info.  There is one code change
+> > patch in this series, it is
 > > 
-> > Thankfully this doesn't trip up currently, so this will just keep me
-> > from regressing us.  Thanks,
+> > btrfs: make caching_thread use btrfs_find_next_key
 > 
-> I think the empty bg check is valid.
+> I've merged 1-10 (ie. up to the patch mentioned above) as it applied
+> cleanly on current misc-next, the rest produced some conflicts.
 > 
-> Although I hope this check can be a warning for default check, and a new
-> option to report too many empty bgs as error.
+> Although most of the code is moving from a file to file, I fixed the
+> coding style as this is the perfect opportunity to update code that does
+> not change often.
 > 
+> If you're going to send more patchsets like that, please do another pass
+> after copy&paste of the code. Also note that the SPDX header in new .c
+> files uses the weird // comments, unlike headers that use /* */ .
 
-I don't want to make it default for the reason you describe below.  I'm thinking
-of some new log-writes test that checks an fs at a transaction commit where
-we've emptied a ton of block groups but haven't removed them yet.
-
-<snip>
-
-> > +
-> > +	if (empty_data > 1) {
-> > +		ret = -EINVAL;
-> > +		fprintf(stderr, "Too many empty data block groups: %d\n",
-> > +			empty_data);
-> > +	}
-> > +	if (empty_metadata > 1) {
-> > +		ret = -EINVAL;
-> > +		fprintf(stderr, "Too many empty metadata block groups: %d\n",
-> > +			empty_metadata);
-> > +	}
-> > +	if (empty_system > 1) {
-> > +		ret = -EINVAL;
-> > +		fprintf(stderr, "Too many empty system block groups: %d\n",
-> > +			empty_system);
-> > +	}
-> 
-> This hard coded threshold (1) is too vague and maybe too restrict.
-> What will happen for things like a lot of data got removed and cleaner
-> didn't get kicked in quickly enough before unmount?
-> 
-
-Which is why I ran it through xfstests first to verify this wasn't too weird.
-What I'm try to capture is the case where something has really gone wrong, so
-there will be tons of empty block groups, not just one.  I think generally
-speaking having 1 left over makes sense for the testcases that fill and then
-delete a bunch, so I don't want those to fail.  Thanks,
+I'm working off of next-fixes on git.kernel.org, and it looks like you have all
+my patches there.  Is there a different branch that I'm supposed to be working
+off of?  Thanks,
 
 Josef
