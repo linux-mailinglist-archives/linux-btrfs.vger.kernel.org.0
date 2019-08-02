@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F37737FB40
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 15:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 776BD7FB41
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 15:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436514AbfHBNjr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Aug 2019 09:39:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60096 "EHLO mx1.suse.de"
+        id S2393667AbfHBNjt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Aug 2019 09:39:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60106 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2436507AbfHBNjq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 2 Aug 2019 09:39:46 -0400
+        id S2391798AbfHBNjt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 2 Aug 2019 09:39:49 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BD8B3B62C
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2019 13:39:45 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 19C38AFA4
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2019 13:39:48 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A2F86DADC0; Fri,  2 Aug 2019 15:40:19 +0200 (CEST)
+        id EA705DADC0; Fri,  2 Aug 2019 15:40:21 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 08/13] btrfs: factor out sysfs code for sending device uevent
-Date:   Fri,  2 Aug 2019 15:40:19 +0200
-Message-Id: <74407f83f95e5186bcb547fbdfda471dc192fc8b.1564752900.git.dsterba@suse.com>
+Subject: [PATCH 09/13] btrfs: factor out sysfs code for deleting block group and space infos
+Date:   Fri,  2 Aug 2019 15:40:21 +0200
+Message-Id: <4e6e4f7834c7f877e278031010b357ffeed5ed82.1564752900.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <cover.1564752900.git.dsterba@suse.com>
 References: <cover.1564752900.git.dsterba@suse.com>
@@ -33,73 +33,92 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The device uevent belongs to the sysfs API.
+The helpers to create block group and space info directories already
+live in sysfs.c, move the deletion part there too.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/sysfs.c   | 11 +++++++++++
- fs/btrfs/sysfs.h   |  1 +
- fs/btrfs/volumes.c | 13 -------------
- 3 files changed, 12 insertions(+), 13 deletions(-)
+ fs/btrfs/extent-tree.c | 14 +-------------
+ fs/btrfs/sysfs.c       | 22 ++++++++++++++++++++++
+ fs/btrfs/sysfs.h       |  1 +
+ 3 files changed, 24 insertions(+), 13 deletions(-)
 
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 8ac496fddc59..3a711f5e7919 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -7744,8 +7744,6 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
+ 	btrfs_release_global_block_rsv(info);
+ 
+ 	while (!list_empty(&info->space_info)) {
+-		int i;
+-
+ 		space_info = list_entry(info->space_info.next,
+ 					struct btrfs_space_info,
+ 					list);
+@@ -7759,17 +7757,7 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
+ 			    space_info->bytes_may_use > 0))
+ 			btrfs_dump_space_info(info, space_info, 0, 0);
+ 		list_del(&space_info->list);
+-		for (i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
+-			struct kobject *kobj;
+-			kobj = space_info->block_group_kobjs[i];
+-			space_info->block_group_kobjs[i] = NULL;
+-			if (kobj) {
+-				kobject_del(kobj);
+-				kobject_put(kobj);
+-			}
+-		}
+-		kobject_del(&space_info->kobj);
+-		kobject_put(&space_info->kobj);
++		btrfs_sysfs_remove_space_info(space_info);
+ 	}
+ 	return 0;
+ }
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 0d37403a4733..0f7e97ceec4e 100644
+index 0f7e97ceec4e..2490144863ae 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -902,6 +902,17 @@ int btrfs_sysfs_add_device_link(struct btrfs_fs_devices *fs_devices,
- 	return error;
+@@ -789,6 +789,28 @@ void btrfs_sysfs_add_block_group_type(struct btrfs_block_group_cache *cache)
+ 	space_info->block_group_kobjs[index] = &rkobj->kobj;
  }
  
-+void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action)
++/*
++ * Remove sysfs directories for all block group types of a given space info and
++ * the space info as well
++ */
++void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info)
 +{
-+	int ret;
++	int i;
 +
-+	ret = kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, action);
-+	if (ret)
-+		pr_warn("BTRFS: Sending event '%d' to kobject: '%s' (%p): failed\n",
-+			action, kobject_name(&disk_to_dev(bdev->bd_disk)->kobj),
-+			&disk_to_dev(bdev->bd_disk)->kobj);
++	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
++		struct kobject *kobj;
++
++		kobj = space_info->block_group_kobjs[i];
++		space_info->block_group_kobjs[i] = NULL;
++		if (kobj) {
++			kobject_del(kobj);
++			kobject_put(kobj);
++		}
++	}
++	kobject_del(&space_info->kobj);
++	kobject_put(&space_info->kobj);
 +}
 +
- /* /sys/fs/btrfs/ entry */
- static struct kset *btrfs_kset;
- 
+ static const char *alloc_name(u64 flags)
+ {
+ 	switch (flags) {
 diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
-index f17faa5d5264..371fa9db5bbd 100644
+index 371fa9db5bbd..857710e77775 100644
 --- a/fs/btrfs/sysfs.h
 +++ b/fs/btrfs/sysfs.h
-@@ -95,6 +95,7 @@ int btrfs_sysfs_add_device(struct btrfs_fs_devices *fs_devs);
- void btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs);
- void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
- 		u64 bit, enum btrfs_feature_set set);
-+void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action);
+@@ -105,5 +105,6 @@ void btrfs_add_raid_kobjects(struct btrfs_fs_info *fs_info);
+ void btrfs_sysfs_add_block_group_type(struct btrfs_block_group_cache *cache);
+ int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
+ 				    struct btrfs_space_info *space_info);
++void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info);
  
- int __init btrfs_init_sysfs(void);
- void __cold btrfs_exit_sysfs(void);
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index f85bbc819ab6..bc20e01f2f93 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -358,19 +358,6 @@ static void free_fs_devices(struct btrfs_fs_devices *fs_devices)
- 	kfree(fs_devices);
- }
- 
--static void btrfs_kobject_uevent(struct block_device *bdev,
--				 enum kobject_action action)
--{
--	int ret;
--
--	ret = kobject_uevent(&disk_to_dev(bdev->bd_disk)->kobj, action);
--	if (ret)
--		pr_warn("BTRFS: Sending event '%d' to kobject: '%s' (%p): failed\n",
--			action,
--			kobject_name(&disk_to_dev(bdev->bd_disk)->kobj),
--			&disk_to_dev(bdev->bd_disk)->kobj);
--}
--
- void __exit btrfs_cleanup_fs_uuids(void)
- {
- 	struct btrfs_fs_devices *fs_devices;
+ #endif
 -- 
 2.22.0
 
