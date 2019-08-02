@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 776BD7FB41
+	by mail.lfdr.de (Postfix) with ESMTP id E4F657FB42
 	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 15:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393667AbfHBNjt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Aug 2019 09:39:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60106 "EHLO mx1.suse.de"
+        id S2436507AbfHBNjw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Aug 2019 09:39:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60122 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2391798AbfHBNjt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 2 Aug 2019 09:39:49 -0400
+        id S2391798AbfHBNjv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 2 Aug 2019 09:39:51 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 19C38AFA4
-        for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2019 13:39:48 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 5FE58AFA4
+        for <linux-btrfs@vger.kernel.org>; Fri,  2 Aug 2019 13:39:50 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EA705DADC0; Fri,  2 Aug 2019 15:40:21 +0200 (CEST)
+        id 3AAA9DADC0; Fri,  2 Aug 2019 15:40:24 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 09/13] btrfs: factor out sysfs code for deleting block group and space infos
-Date:   Fri,  2 Aug 2019 15:40:21 +0200
-Message-Id: <4e6e4f7834c7f877e278031010b357ffeed5ed82.1564752900.git.dsterba@suse.com>
+Subject: [PATCH 10/13] btrfs: factor out sysfs code for updating sprout fsid
+Date:   Fri,  2 Aug 2019 15:40:24 +0200
+Message-Id: <62c272bb613701d56cf6b0da56516bbcbf68ead9.1564752900.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <cover.1564752900.git.dsterba@suse.com>
 References: <cover.1564752900.git.dsterba@suse.com>
@@ -33,92 +33,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The helpers to create block group and space info directories already
-live in sysfs.c, move the deletion part there too.
+Wrap the fsid renaming code and move it to sysfs.c.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/extent-tree.c | 14 +-------------
- fs/btrfs/sysfs.c       | 22 ++++++++++++++++++++++
- fs/btrfs/sysfs.h       |  1 +
- 3 files changed, 24 insertions(+), 13 deletions(-)
+ fs/btrfs/sysfs.c   | 15 +++++++++++++++
+ fs/btrfs/sysfs.h   |  2 ++
+ fs/btrfs/volumes.c | 12 ++----------
+ 3 files changed, 19 insertions(+), 10 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 8ac496fddc59..3a711f5e7919 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -7744,8 +7744,6 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
- 	btrfs_release_global_block_rsv(info);
- 
- 	while (!list_empty(&info->space_info)) {
--		int i;
--
- 		space_info = list_entry(info->space_info.next,
- 					struct btrfs_space_info,
- 					list);
-@@ -7759,17 +7757,7 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
- 			    space_info->bytes_may_use > 0))
- 			btrfs_dump_space_info(info, space_info, 0, 0);
- 		list_del(&space_info->list);
--		for (i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
--			struct kobject *kobj;
--			kobj = space_info->block_group_kobjs[i];
--			space_info->block_group_kobjs[i] = NULL;
--			if (kobj) {
--				kobject_del(kobj);
--				kobject_put(kobj);
--			}
--		}
--		kobject_del(&space_info->kobj);
--		kobject_put(&space_info->kobj);
-+		btrfs_sysfs_remove_space_info(space_info);
- 	}
- 	return 0;
- }
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 0f7e97ceec4e..2490144863ae 100644
+index 2490144863ae..b7eb921e3fd3 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -789,6 +789,28 @@ void btrfs_sysfs_add_block_group_type(struct btrfs_block_group_cache *cache)
- 	space_info->block_group_kobjs[index] = &rkobj->kobj;
+@@ -935,6 +935,21 @@ void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action)
+ 			&disk_to_dev(bdev->bd_disk)->kobj);
  }
  
-+/*
-+ * Remove sysfs directories for all block group types of a given space info and
-+ * the space info as well
-+ */
-+void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info)
++void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices,
++				    const u8 *fsid)
 +{
-+	int i;
++	char fsid_buf[BTRFS_UUID_UNPARSED_SIZE];
 +
-+	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++) {
-+		struct kobject *kobj;
-+
-+		kobj = space_info->block_group_kobjs[i];
-+		space_info->block_group_kobjs[i] = NULL;
-+		if (kobj) {
-+			kobject_del(kobj);
-+			kobject_put(kobj);
-+		}
-+	}
-+	kobject_del(&space_info->kobj);
-+	kobject_put(&space_info->kobj);
++	/*
++	 * Sprouting changes fsid of the mounted filesystem, rename the fsid
++	 * directory
++	 */
++	snprintf(fsid_buf, BTRFS_UUID_UNPARSED_SIZE, "%pU", fsid);
++	if (kobject_rename(&fs_devices->fsid_kobj, fsid_buf))
++		btrfs_warn(fs_devices->fs_info,
++				"sysfs: failed to create fsid for sprout");
 +}
 +
- static const char *alloc_name(u64 flags)
- {
- 	switch (flags) {
+ /* /sys/fs/btrfs/ entry */
+ static struct kset *btrfs_kset;
+ 
 diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
-index 371fa9db5bbd..857710e77775 100644
+index 857710e77775..aabc67a20ce5 100644
 --- a/fs/btrfs/sysfs.h
 +++ b/fs/btrfs/sysfs.h
-@@ -105,5 +105,6 @@ void btrfs_add_raid_kobjects(struct btrfs_fs_info *fs_info);
- void btrfs_sysfs_add_block_group_type(struct btrfs_block_group_cache *cache);
- int btrfs_sysfs_add_space_info_type(struct btrfs_fs_info *fs_info,
- 				    struct btrfs_space_info *space_info);
-+void btrfs_sysfs_remove_space_info(struct btrfs_space_info *space_info);
+@@ -93,6 +93,8 @@ int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs,
+ 				struct kobject *parent);
+ int btrfs_sysfs_add_device(struct btrfs_fs_devices *fs_devs);
+ void btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs);
++void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices,
++				    const u8 *fsid);
+ void btrfs_sysfs_feature_update(struct btrfs_fs_info *fs_info,
+ 		u64 bit, enum btrfs_feature_set set);
+ void btrfs_kobject_uevent(struct block_device *bdev, enum kobject_action action);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index bc20e01f2f93..d32eaffbbcef 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -2680,22 +2680,14 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+ 	}
  
- #endif
+ 	if (seeding_dev) {
+-		char fsid_buf[BTRFS_UUID_UNPARSED_SIZE];
+-
+ 		ret = btrfs_finish_sprout(trans);
+ 		if (ret) {
+ 			btrfs_abort_transaction(trans, ret);
+ 			goto error_sysfs;
+ 		}
+ 
+-		/* Sprouting would change fsid of the mounted root,
+-		 * so rename the fsid on the sysfs
+-		 */
+-		snprintf(fsid_buf, BTRFS_UUID_UNPARSED_SIZE, "%pU",
+-						fs_info->fs_devices->fsid);
+-		if (kobject_rename(&fs_devices->fsid_kobj, fsid_buf))
+-			btrfs_warn(fs_info,
+-				   "sysfs: failed to create fsid for sprout");
++		btrfs_sysfs_update_sprout_fsid(fs_devices,
++				fs_info->fs_devices->fsid);
+ 	}
+ 
+ 	ret = btrfs_commit_transaction(trans);
 -- 
 2.22.0
 
