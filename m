@@ -2,128 +2,206 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC747F79B
-	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 14:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15BB97F7CD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  2 Aug 2019 15:06:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390832AbfHBM4h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 2 Aug 2019 08:56:37 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:38494 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390817AbfHBM4h (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Aug 2019 08:56:37 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x72Cs1PS029628;
-        Fri, 2 Aug 2019 12:56:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=HNaHuPDIrmsWRHoZucWaleNBxBTgi7FbVUcEpYuy1oM=;
- b=LVJZKU4ssn89/+4gWGP/ba+lUkGcr5kub1A1c8SGTAVCCUbK+mu25aeg87B93F+m2mly
- bak9QqMuqxYn2bj4ImCBG51Ya9h00/c//jH4OeI98kuAZFR4pmW8zFgcuOy2/IEEXjMT
- x9lRdT6hZ6Ci9uDS/qZSKtpjlEGHyf9mVhoh6AS0U0EkAxaRXMkgT8aiStwAGoJCVK9V
- 7foADSkDiuBsbtQzcs3lsYB4WU8qLHlxUH3/2weeKX1X1w2lhweRsvs+IiI6vrrSKk2j
- zCLz4Zj8LQIF6N4ZTgn1cGkttOU21E9UUITaVtLs1DHxpUhqgbPVfeves/uzxnHOnPw2 1g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2u0e1ua5v1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Aug 2019 12:56:33 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x72CqnHk036489;
-        Fri, 2 Aug 2019 12:54:32 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2u3mbvjpxk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 02 Aug 2019 12:54:32 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x72CsVAh021115;
-        Fri, 2 Aug 2019 12:54:31 GMT
-Received: from [192.168.1.147] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 02 Aug 2019 05:54:31 -0700
-Subject: Re: The btrfs 'label' property: device or filesystem-wide?
-To:     Hans van Kranenburg <hans@knorrie.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <8e535199-800a-b794-07e4-cb42f2f9b0c5@knorrie.org>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <79005fd4-3314-aa73-5830-caad37ff1f2c@oracle.com>
-Date:   Fri, 2 Aug 2019 20:54:24 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1726976AbfHBNGj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 2 Aug 2019 09:06:39 -0400
+Received: from mail-qt1-f173.google.com ([209.85.160.173]:35944 "EHLO
+        mail-qt1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726808AbfHBNGj (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 2 Aug 2019 09:06:39 -0400
+Received: by mail-qt1-f173.google.com with SMTP id z4so73826718qtc.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 02 Aug 2019 06:06:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ZioIYn/H+9Yj4rIs8l+ffq/lygbmecuYuXxYTjdVsM=;
+        b=SqF/EHlSgZfrBRSyfuUcbqEXvVBiw+xSWtlmFUWwsq6FynQMog56Grr5GKzW4JFRh1
+         7w24FVYVJ4F9V3CcVg8uOph3A/MCAmao15/zRi7HLWTGLIjhliENYYY+WndAj2QJn4bV
+         HXcVQv1EOkjHgG+S8crO/+IP/xKeClzMFAX8lO0J1TCcKgieplaC4yV9lKgByzAuUs/f
+         e7v69RNdjRv4OL6qSYLZ/LCFmKhivqQLqHRscFJjKWi3Qv0DGGpHMOOUAdgDQrlbSpBO
+         EuQMH3iOccdIDQhRZWHeOsi/aOgm4SeRG6SFDEdfniZyAPBbsTdEKyWCwZBJQbfu4qh8
+         iWDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1ZioIYn/H+9Yj4rIs8l+ffq/lygbmecuYuXxYTjdVsM=;
+        b=ghhnM5lLMX+jrCTnqQV7sCL2uchGvlhMkc9zhe1l070anjohOaFNYDRyHFOAHuVnYt
+         +8qppKts5Z2FL8AOgMHR0LsnJ5JI1jNXLij8NgCP0o++336PmPXlLCqK0PV/US0F0z23
+         KURuPLfbar42SBgx8vTo8ox/Yd4edRDHDLAonc5qM8sAA8Blz/yLX0pDBSsaPb/rbaSx
+         sLAOBoKYR8dzAmPq3dvrZdexKf/F4/qz+RUTBtIAjzzg9/IcUmFUKdHP3eOgChPVGrya
+         Ov7W0P1dRsF6KtASxf0U6Wrk3dlpikeKpE5oh+LIRT8yWOh6KAqemgu3oXDrI1Y6v6+E
+         pOkg==
+X-Gm-Message-State: APjAAAUZQDLhqX8dxUeProqD7D+tQXQQTbpsAqMr2UBPPCBIVeNkBuJ6
+        VS3vvydS3yLMQ2MZyNZxpi4CZtf8VMg=
+X-Google-Smtp-Source: APXvYqywm+Irt7cb92tLc6JvAf+upaTXRtlJATv6Dtsuwq6SqF/09ZdvKqAhSy30m365uv3FQJkXvg==
+X-Received: by 2002:ac8:25b1:: with SMTP id e46mr96198116qte.36.1564751197384;
+        Fri, 02 Aug 2019 06:06:37 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id s25sm31264384qkm.130.2019.08.02.06.06.36
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 02 Aug 2019 06:06:36 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] btrfs-progs: add a --check-bg-usage option to fsck
+Date:   Fri,  2 Aug 2019 09:06:35 -0400
+Message-Id: <20190802130635.3698-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <8e535199-800a-b794-07e4-cb42f2f9b0c5@knorrie.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9336 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908020132
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9336 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908020132
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/2/19 5:42 PM, Hans van Kranenburg wrote:
-> Hi,
-> 
-> I was just looking at btrfs property and what it can do.
-> 
-> Now, I notice that the man page contains:
-> 
->    label: label of device
-> 
-> When I look at a device and ask what properties I can set, I see:
-> 
-> -# btrfs property list -t device /dev/xvdb
-> label               Set/get label of device.
-> 
-> But, when I try to set it, it complains:
-> 
-> -# btrfs property set -t device /dev/xvdb label yolo
-> ERROR: device /dev/xvdb is mounted, use mount point
-> 
-> A mount point points to a whole filesystem, not a specific device.
-> 
-> -# btrfs property set -t device /btrfs label yolo
-> 
-> The result is that the label at filesystem level is set. A device
-> doesn't even have something like a label itself.
-> 
-> -# btrfs fi show
-> Label: 'yolo'  uuid: 370415b8-b96f-456e-8713-6833b2a65127
-> 	Total devices 4 FS bytes used 144.00KiB
-> 	devid    1 size 10.00GiB used 1.00GiB path /dev/xvdb
-> 	devid    2 size 10.00GiB used 1.00GiB path /dev/xvdc
-> 	devid    3 size 10.00GiB used 288.00MiB path /dev/xvdd
-> 	devid    4 size 10.00GiB used 288.00MiB path /dev/xvde
-> 
-> So, am I missing something, or should this have been:
-> 
-> -# btrfs property set -t filesystem label foo /mountpoint
+Sometimes when messing with the chunk allocator code we can end up
+over-allocating chunks.  Generally speaking I'll notice this when a
+random xfstest fails with ENOSPC when it shouldn't, but I'm super
+worried that I won't catch a problem until somebody has a fs completely
+filled up with empty block groups.  Add a fsck option to check for too
+many empty block groups.  This way I can set FSCK_OPTIONS="-B" to catch
+cases where we're too aggressive with the chunk allocator but not so
+aggressive that it causes problems in xfstests.
 
-Yes. Label is for the whole filesystem.
+Thankfully this doesn't trip up currently, so this will just keep me
+from regressing us.  Thanks,
 
-Initially the label was set-able only using the device path (after
-mkfs), for which the device has to be in unmounted state.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ btrfsck.h    |  1 +
+ check/main.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++--
+ 2 files changed, 51 insertions(+), 2 deletions(-)
 
-So when we implemented the label ioctl, so that label can be set on the
-mounted fs, we had to maintain its backward compatible.
-
-So at both, btrfs fi label and btrfs prop set the label works on the
-mount-point or the device path if its unmounted. And even if the device
-path is used the label is for the whole filesystem.
-
-HTH
-Anand
-
-
-> Hans
-> 
+diff --git a/btrfsck.h b/btrfsck.h
+index ac7f5d48..5e779075 100644
+--- a/btrfsck.h
++++ b/btrfsck.h
+@@ -44,6 +44,7 @@ struct block_group_record {
+ 	u64 offset;
+ 
+ 	u64 flags;
++	u64 used;
+ };
+ 
+ struct block_group_tree {
+diff --git a/check/main.c b/check/main.c
+index 0cc6fdba..a3ff3791 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -62,6 +62,7 @@ int no_holes = 0;
+ static int is_free_space_tree = 0;
+ int init_extent_tree = 0;
+ int check_data_csum = 0;
++int check_bg_usage = 0;
+ struct btrfs_fs_info *global_info;
+ struct task_ctx ctx = { 0 };
+ struct cache_tree *roots_info_cache = NULL;
+@@ -5126,6 +5127,7 @@ btrfs_new_block_group_record(struct extent_buffer *leaf, struct btrfs_key *key,
+ 
+ 	ptr = btrfs_item_ptr(leaf, slot, struct btrfs_block_group_item);
+ 	rec->flags = btrfs_disk_block_group_flags(leaf, ptr);
++	rec->used = btrfs_disk_block_group_used(leaf, ptr);
+ 
+ 	INIT_LIST_HEAD(&rec->list);
+ 
+@@ -8522,6 +8524,41 @@ out:
+ 	return ret;
+ }
+ 
++static int check_block_group_usage(struct block_group_tree *block_group_cache)
++{
++	struct block_group_record *bg_rec;
++	int empty_data = 0, empty_metadata = 0, empty_system = 0;
++	int ret = 0;
++
++	list_for_each_entry(bg_rec, &block_group_cache->block_groups, list) {
++		if (bg_rec->used)
++			continue;
++		if (bg_rec->flags & BTRFS_BLOCK_GROUP_DATA)
++			empty_data++;
++		else if (bg_rec->flags & BTRFS_BLOCK_GROUP_METADATA)
++			empty_metadata++;
++		else
++			empty_system++;
++	}
++
++	if (empty_data > 1) {
++		ret = -EINVAL;
++		fprintf(stderr, "Too many empty data block groups: %d\n",
++			empty_data);
++	}
++	if (empty_metadata > 1) {
++		ret = -EINVAL;
++		fprintf(stderr, "Too many empty metadata block groups: %d\n",
++			empty_metadata);
++	}
++	if (empty_system > 1) {
++		ret = -EINVAL;
++		fprintf(stderr, "Too many empty system block groups: %d\n",
++			empty_system);
++	}
++	return ret;
++}
++
+ static int check_chunks_and_extents(struct btrfs_fs_info *fs_info)
+ {
+ 	struct rb_root dev_cache;
+@@ -8630,6 +8667,12 @@ again:
+ 		err = ret;
+ 	}
+ 
++	if (check_bg_usage) {
++		ret = check_block_group_usage(&block_group_cache);
++		if (ret)
++			err = ret;
++	}
++
+ 	ret = check_extent_refs(root, &extent_cache);
+ 	if (ret < 0) {
+ 		if (ret == -EAGAIN)
+@@ -9810,6 +9853,7 @@ static const char * const cmd_check_usage[] = {
+ 	"       -E|--subvol-extents <subvolid>",
+ 	"                                   print subvolume extents and sharing state",
+ 	"       -p|--progress               indicate progress",
++	"       -B|--check-bg-usage         check for too many empty block groups",
+ 	NULL
+ };
+ 
+@@ -9841,7 +9885,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 			GETOPT_VAL_INIT_EXTENT, GETOPT_VAL_CHECK_CSUM,
+ 			GETOPT_VAL_READONLY, GETOPT_VAL_CHUNK_TREE,
+ 			GETOPT_VAL_MODE, GETOPT_VAL_CLEAR_SPACE_CACHE,
+-			GETOPT_VAL_FORCE };
++			GETOPT_VAL_FORCE};
+ 		static const struct option long_options[] = {
+ 			{ "super", required_argument, NULL, 's' },
+ 			{ "repair", no_argument, NULL, GETOPT_VAL_REPAIR },
+@@ -9864,10 +9908,11 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 			{ "clear-space-cache", required_argument, NULL,
+ 				GETOPT_VAL_CLEAR_SPACE_CACHE},
+ 			{ "force", no_argument, NULL, GETOPT_VAL_FORCE },
++			{ "check-bg-usage", no_argument, NULL, 'B' },
+ 			{ NULL, 0, NULL, 0}
+ 		};
+ 
+-		c = getopt_long(argc, argv, "as:br:pEQ", long_options, NULL);
++		c = getopt_long(argc, argv, "as:br:pEQB", long_options, NULL);
+ 		if (c < 0)
+ 			break;
+ 		switch(c) {
+@@ -9875,6 +9920,9 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+ 			case 'b':
+ 				ctree_flags |= OPEN_CTREE_BACKUP_ROOT;
+ 				break;
++			case 'B':
++				check_bg_usage = 1;
++				break;
+ 			case 's':
+ 				num = arg_strtou64(optarg);
+ 				if (num >= BTRFS_SUPER_MIRROR_MAX) {
+-- 
+2.21.0
 
