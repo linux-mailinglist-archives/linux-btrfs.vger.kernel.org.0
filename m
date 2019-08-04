@@ -2,312 +2,143 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C27680CB5
-	for <lists+linux-btrfs@lfdr.de>; Sun,  4 Aug 2019 23:23:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C27C580F71
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 01:44:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbfHDVXM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 4 Aug 2019 17:23:12 -0400
-Received: from syrinx.knorrie.org ([82.94.188.77]:43518 "EHLO
-        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726687AbfHDVXM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 4 Aug 2019 17:23:12 -0400
-Received: from [IPv6:2001:980:4a41:fb::12] (unknown [IPv6:2001:980:4a41:fb::12])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by syrinx.knorrie.org (Postfix) with ESMTPSA id 381504CF9EF2B
-        for <linux-btrfs@vger.kernel.org>; Sun,  4 Aug 2019 23:23:09 +0200 (CEST)
-To:     linux-btrfs@vger.kernel.org
-From:   Hans van Kranenburg <hans@knorrie.org>
-Subject: Weird otime values for chromium profile directories (2015)
-Openpgp: preference=signencrypt
-Autocrypt: addr=hans@knorrie.org; keydata=
- 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
-Message-ID: <d3406e46-261c-c3d8-d42f-07fb75912827@knorrie.org>
-Date:   Sun, 4 Aug 2019 23:23:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726666AbfHDXoe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 4 Aug 2019 19:44:34 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:43937 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726526AbfHDXoe (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 4 Aug 2019 19:44:34 -0400
+Received: from dread.disaster.area (pa49-181-167-148.pa.nsw.optusnet.com.au [49.181.167.148])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id E99D57E6E18;
+        Mon,  5 Aug 2019 09:44:29 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1huQ9p-0004nq-Po; Mon, 05 Aug 2019 09:43:21 +1000
+Date:   Mon, 5 Aug 2019 09:43:21 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        hch@lst.de, darrick.wong@oracle.com, ruansy.fnst@cn.fujitsu.com,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 10/13] iomap: use a function pointer for dio submits
+Message-ID: <20190804234321.GC7689@dread.disaster.area>
+References: <20190802220048.16142-1-rgoldwyn@suse.de>
+ <20190802220048.16142-11-rgoldwyn@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------BFED649855AAE8282325B70C"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190802220048.16142-11-rgoldwyn@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0 cx=a_idp_d
+        a=gu9DDhuZhshYSb5Zs/lkOA==:117 a=gu9DDhuZhshYSb5Zs/lkOA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=iox4zFpeAAAA:8 a=7-415B0cAAAA:8 a=rPsGVnoBL0T1KS3q8WIA:9
+        a=CjuIK1q_8ugA:10 a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------BFED649855AAE8282325B70C
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+On Fri, Aug 02, 2019 at 05:00:45PM -0500, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> This helps filesystems to perform tasks on the bio while
+> submitting for I/O. Since btrfs requires the position
+> we are working on, pass pos to iomap_dio_submit_bio()
+> 
+> The correct place for submit_io() is not page_ops. Would it
+> better to rename the structure to something like iomap_io_ops
+> or put it directly under struct iomap?
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> ---
+>  fs/iomap/direct-io.c  | 16 +++++++++++-----
+>  include/linux/iomap.h |  1 +
+>  2 files changed, 12 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index 5279029c7a3c..a802e66bf11f 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -59,7 +59,7 @@ int iomap_dio_iopoll(struct kiocb *kiocb, bool spin)
+>  EXPORT_SYMBOL_GPL(iomap_dio_iopoll);
+>  
+>  static void iomap_dio_submit_bio(struct iomap_dio *dio, struct iomap *iomap,
+> -		struct bio *bio)
+> +		struct bio *bio, loff_t pos)
+>  {
+>  	atomic_inc(&dio->ref);
+>  
+> @@ -67,7 +67,13 @@ static void iomap_dio_submit_bio(struct iomap_dio *dio, struct iomap *iomap,
+>  		bio_set_polled(bio, dio->iocb);
+>  
+>  	dio->submit.last_queue = bdev_get_queue(iomap->bdev);
+> -	dio->submit.cookie = submit_bio(bio);
+> +	if (iomap->page_ops && iomap->page_ops->submit_io) {
+> +		iomap->page_ops->submit_io(bio, file_inode(dio->iocb->ki_filp),
+> +				pos);
+> +		dio->submit.cookie = BLK_QC_T_NONE;
+> +	} else {
+> +		dio->submit.cookie = submit_bio(bio);
+> +	}
 
-Hi,
+I don't really like this at all. Apart from the fact it doesn't work
+with block device polling (RWF_HIPRI), the iomap architecture is
+supposed to resolve the file offset -> block device + LBA mapping
+completely up front and so all that remains to be done is build and
+submit the bio(s) to the block device.
 
-When climbing some metadata trees for fun, I ran into a set of
-suspicious otime values on inode objects.
+What I see here is a hack to work around the fact that btrfs has
+implemented both file data transformations and device mapping layer
+functionality as a filesystem layer between file data bio building
+and device bio submission. And as the btrfs file data mapping
+(->iomap_begin) is completely unaware that there is further block
+mapping to be done before block device bio submission, any generic
+code that btrfs uses requires special IO submission hooks rather
+than just calling submit_bio().
 
-I found that a bunch of inodes have values for the seconds.nseconds
-fields that are either 422212465065984.0 or even much higher values like
-16811597680319950858.1387412042.
+I'm not 100% sure what the solution here is, but the one thing we
+must resist is turning the iomap code into a mess of custom hooks
+that only one filesystem uses. We've been taught this lesson time
+and time again - the iomap infrastructure exists because stuff like
+bufferheads and the old direct IO code ended up so full of special
+case code that it ossified and became unmodifiable and
+unmaintainable.
 
-So, I wrote a snippet to search for more suspicious otime values in the
-file trees that I have here. The code is attached, together with the
-output of it. It shows that all of the affected ones are directories
-under .config/chromium/Default.
+We do not want to go down that path again. 
 
-All other otime fields on my filesystem here have either value 0.0, if
-they were created before Dec 2014 or have a normal value, and those
-start around 2015-08-01. In between, these weird values occur, but
-*only* for directories, and apparently only in the chromium browser profile.
+IMO, the iomap IO model needs to be restructured to support post-IO
+and pre-IO data verification/calculation/transformation operations
+so all the work that needs to be done at the inode/offset context
+level can be done in the iomap path before bio submission/after
+bio completion. This will allow infrastructure like fscrypt, data
+compression, data checksums, etc to be suported generically, not
+just by individual filesystems that provide a ->submit_io hook.
 
-Has anyone else seen this? Did the linux kernel version I used between
-Dec 2014 and Aug 2015 (I have no idea which one) do this? Or did the
-chromium program cause this?
+As for the btrfs needing to slice and dice bios for multiple
+devices?  That should be done via a block device ->make_request
+function, not a custom hook in the iomap code.
 
-For fixing it, I can just make a copy of the chromium profile and throw
-away the old one... But I'm curious if anyone remembers or has a pointer
-to what happened here, in the past, that caused it.
+That's why I don't like this hook - I think hiding data operations
+and/or custom bio manipulations in opaque filesystem callouts is
+completely the wrong approach to be taking. We need to do these
+things in a generic manner so that all filesystems (and block
+devices!) that use the iomap infrastructure can take advantage of
+them, not just one of them.
 
-Hans
+Quite frankly, I don't care if it takes more time and work up front,
+I'm tired of expedient hacks to merge code quickly repeatedly biting
+us on the arse and wasting far more time sorting out than we would
+have spent getting it right in the first place.
 
---------------BFED649855AAE8282325B70C
-Content-Type: text/x-python;
- name="suspicious_otime.py"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="suspicious_otime.py"
+Cheers,
 
-#!/usr/bin/python3
-
-import btrfs
-import sys
-
-if len(sys.argv) < 2:
-    print("Usage: {} <mountpoint>".format(sys.argv[0]))
-    sys.exit(1)
-
-
-def suspicious_inodes(fs):
-    min_key =3D btrfs.ctree.Key(btrfs.ctree.FIRST_FREE_OBJECTID, 0, 0)
-    max_key =3D btrfs.ctree.Key(btrfs.ctree.LAST_FREE_OBJECTID, -1, -1)
-    for root in fs.subvolumes():
-        tree =3D root.objectid
-        for header, data in btrfs.ioctl.search_v2(fs.fd, tree, min_key, m=
-ax_key):
-            if header.type =3D=3D btrfs.ctree.INODE_ITEM_KEY:
-                inode =3D btrfs.ctree.InodeItem(header, data)
-                if inode.otime.sec >=3D 422212465065984:
-                    _, path_bytes =3D btrfs.ioctl.ino_lookup(fs.fd, tree,=
- inode.objectid)
-                    yield {
-                        'tree': tree,
-                        'path': path_bytes.decode(),
-                        'atime': inode.atime.iso8601,
-                        'ctime': inode.ctime.iso8601,
-                        'otime sec.nsec': "{}.{}".format(inode.otime.sec,=
- inode.otime.nsec),
-                    }
-
-
-with btrfs.FileSystem(sys.argv[1]) as fs:
-    btrfs.utils.pretty_print(suspicious_inodes(fs))
-
---------------BFED649855AAE8282325B70C
-Content-Type: text/plain; charset=UTF-8;
- name="otimes"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="otimes"
-
-LQogIHRyZWU6CiAgICAyNjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVt
-L0RlZmF1bHQvCiAgYXRpbWU6CiAgICAyMDE0LTEyLTEyVDIzOjE2OjI1LjI1OTcxNwogIGN0
-aW1lOgogICAgMjAxOS0wOC0wNFQxMjoxNTowOC4zMDI1MzcKICBvdGltZSBzZWMubnNlYzoK
-ICAgIDQyMjIxMjQ2NTA2NTk4NC4wCi0KICB0cmVlOgogICAgMjYwCiAgcGF0aDoKICAgIGtu
-b3JyaWUvLmNvbmZpZy9jaHJvbWl1bS9EZWZhdWx0L0FwcGxpY2F0aW9uIENhY2hlLwogIGF0
-aW1lOgogICAgMjAxNC0xMi0xMlQyMzoxNjoyNS4yNTk3MTcKICBjdGltZToKICAgIDIwMTQt
-MTItMTJUMjM6MTY6MjUuMjU5NzE3CiAgb3RpbWUgc2VjLm5zZWM6CiAgICA0MjIyMTI0NjUw
-NjU5ODQuMAotCiAgdHJlZToKICAgIDI2MAogIHBhdGg6CiAgICBrbm9ycmllLy5jb25maWcv
-Y2hyb21pdW0vRGVmYXVsdC9FeHRlbnNpb24gUnVsZXMvCiAgYXRpbWU6CiAgICAyMDE0LTEy
-LTEyVDIzOjE2OjI1LjMzMTcxNwogIGN0aW1lOgogICAgMjAxOS0wNy0zMFQyMjoyMjozMi40
-MzM4NTMKICBvdGltZSBzZWMubnNlYzoKICAgIDQyMjIxMjQ2NTA2NTk4NC4wCi0KICB0cmVl
-OgogICAgMjYwCiAgcGF0aDoKICAgIGtub3JyaWUvLmNvbmZpZy9jaHJvbWl1bS9EZWZhdWx0
-L0V4dGVuc2lvbiBTdGF0ZS8KICBhdGltZToKICAgIDIwMTQtMTItMTJUMjM6MTY6MjUuMzM1
-NzE3CiAgY3RpbWU6CiAgICAyMDE5LTA3LTIyVDA3OjU4OjMxLjc2OTczMAogIG90aW1lIHNl
-Yy5uc2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6CiAgICAyNjAKICBwYXRo
-OgogICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQvRXh0ZW5zaW9ucy8KICBh
-dGltZToKICAgIDIwMTQtMTItMTJUMjM6MTY6MjUuMzM1NzE3CiAgY3RpbWU6CiAgICAyMDE5
-LTA3LTMwVDIyOjIyOjMyLjM5Nzg1NAogIG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEyNDY1
-MDY1OTg0LjAKLQogIHRyZWU6CiAgICAyNjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmln
-L2Nocm9taXVtL0RlZmF1bHQvRmlsZSBTeXN0ZW0vCiAgYXRpbWU6CiAgICAyMDE0LTEyLTEy
-VDIzOjE2OjI1LjczNTcxNwogIGN0aW1lOgogICAgMjAxOS0wNC0wOVQyMTo1MDoyMy4yNzE1
-ODkKICBvdGltZSBzZWMubnNlYzoKICAgIDQyMjIxMjQ2NTA2NTk4NC4wCi0KICB0cmVlOgog
-ICAgMjYwCiAgcGF0aDoKICAgIGtub3JyaWUvLmNvbmZpZy9jaHJvbWl1bS9EZWZhdWx0L0dQ
-VUNhY2hlLwogIGF0aW1lOgogICAgMjAxNC0xMi0xMlQyMzoxNjoyNS44MTE3MTcKICBjdGlt
-ZToKICAgIDIwMTktMDctMTdUMTA6MTA6MzMuMTY5MTA3CiAgb3RpbWUgc2VjLm5zZWM6CiAg
-ICA0MjIyMTI0NjUwNjU5ODQuMAotCiAgdHJlZToKICAgIDI2MAogIHBhdGg6CiAgICBrbm9y
-cmllLy5jb25maWcvY2hyb21pdW0vRGVmYXVsdC9JbmRleGVkREIvCiAgYXRpbWU6CiAgICAy
-MDE0LTEyLTEyVDIzOjE2OjIxLjU5MTcxNwogIGN0aW1lOgogICAgMjAxOS0wNi0xMFQyMDox
-NTo0OC43NzMxMzEKICBvdGltZSBzZWMubnNlYzoKICAgIDQyMjIxMjQ2NTA2NTk4NC4wCi0K
-ICB0cmVlOgogICAgMjYwCiAgcGF0aDoKICAgIGtub3JyaWUvLmNvbmZpZy9jaHJvbWl1bS9E
-ZWZhdWx0L0xvY2FsIEV4dGVuc2lvbiBTZXR0aW5ncy8KICBhdGltZToKICAgIDIwMTQtMTIt
-MTJUMjM6MTY6MjUuODExNzE3CiAgY3RpbWU6CiAgICAyMDE2LTA0LTA2VDE4OjEyOjU2LjE3
-NDQ0OQogIG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6
-CiAgICAyNjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQv
-TG9jYWwgU3RvcmFnZS8KICBhdGltZToKICAgIDIwMTQtMTItMTJUMjM6MTY6MjUuODIzNzE3
-CiAgY3RpbWU6CiAgICAyMDE5LTA0LTE5VDIxOjE5OjMyLjkyODk1NwogIG90aW1lIHNlYy5u
-c2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6CiAgICAyNjAKICBwYXRoOgog
-ICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQvTWFuYWdlZCBFeHRlbnNpb24g
-U2V0dGluZ3MvCiAgYXRpbWU6CiAgICAyMDE0LTEyLTEyVDIzOjE2OjIxLjU5MTcxNwogIGN0
-aW1lOgogICAgMjAxNi0wOC0yMFQyMDo0MzozOC43NjU3MTEKICBvdGltZSBzZWMubnNlYzoK
-ICAgIDQyMjIxMjQ2NTA2NTk4NC4wCi0KICB0cmVlOgogICAgMjYwCiAgcGF0aDoKICAgIGtu
-b3JyaWUvLmNvbmZpZy9jaHJvbWl1bS9EZWZhdWx0L1Nlc3Npb24gU3RvcmFnZS8KICBhdGlt
-ZToKICAgIDIwMTQtMTItMTJUMjM6MTY6MjUuODIzNzE3CiAgY3RpbWU6CiAgICAyMDE5LTA3
-LTIyVDA3OjU4OjMxLjU3NzQzOQogIG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEyNDY1MDY1
-OTg0LjAKLQogIHRyZWU6CiAgICAyNjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmlnL2No
-cm9taXVtL0RlZmF1bHQvVXNlciBTdHlsZVNoZWV0cy8KICBhdGltZToKICAgIDIwMTQtMTIt
-MTJUMjM6MTY6MjUuODIzNzE3CiAgY3RpbWU6CiAgICAyMDE0LTEyLTEyVDIzOjE2OjI1Ljgy
-MzcxNwogIG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6
-CiAgICAyNjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQv
-ZGF0YWJhc2VzLwogIGF0aW1lOgogICAgMjAxNC0xMi0xMlQyMzoxNjoyNS44MjM3MTcKICBj
-dGltZToKICAgIDIwMTctMTEtMTVUMDA6MDc6MjYuNzIxNTU2CiAgb3RpbWUgc2VjLm5zZWM6
-CiAgICA0MjIyMTI0NjUwNjU5ODQuMAotCiAgdHJlZToKICAgIDI2MAogIHBhdGg6CiAgICBr
-bm9ycmllLy5jb25maWcvY2hyb21pdW0vRGVmYXVsdC9Db29raWVzLwogIGF0aW1lOgogICAg
-MjAxNC0xMi0xMlQyMzoxNjoyNS4yMjM3MTcKICBjdGltZToKICAgIDIwMTktMDctMzFUMDk6
-MzU6NTQuNDUzNTMyCiAgb3RpbWUgc2VjLm5zZWM6CiAgICAxNjgxMTU5NzY4MDMxOTk1MDg1
-OC4xMzg3NDEyMDQyCi0KICB0cmVlOgogICAgMjYwCiAgcGF0aDoKICAgIGtub3JyaWUvLmNv
-bmZpZy9jaHJvbWl1bS9EZWZhdWx0L0Nvb2tpZXMtam91cm5hbC8KICBhdGltZToKICAgIDIw
-MTQtMTItMTJUMjM6MTY6MjUuMjIzNzE3CiAgY3RpbWU6CiAgICAyMDE5LTA3LTMxVDA5OjM1
-OjU0LjQ2MTUzMgogIG90aW1lIHNlYy5uc2VjOgogICAgMTQyOTM0MTc2NTc5MTY1NDYyMTgu
-MjExMzI2NDE1MgotCiAgdHJlZToKICAgIDI2MAogIHBhdGg6CiAgICBrbm9ycmllLy5jb25m
-aWcvY2hyb21pdW0vRGVmYXVsdC9GYXZpY29ucy8KICBhdGltZToKICAgIDIwMTQtMTItMTJU
-MjM6MTY6MjUuMjMxNzE3CiAgY3RpbWU6CiAgICAyMDE5LTA4LTAxVDE3OjAzOjMyLjIwODE1
-NwogIG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6CiAg
-ICAyNjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQvRmF2
-aWNvbnMtam91cm5hbC8KICBhdGltZToKICAgIDIwMTQtMTItMTJUMjM6MTY6MjUuMjMxNzE3
-CiAgY3RpbWU6CiAgICAyMDE5LTA4LTAxVDE3OjAzOjMyLjIxNjE1NwogIG90aW1lIHNlYy5u
-c2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6CiAgICAyNjAKICBwYXRoOgog
-ICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQvUXVvdGFNYW5hZ2VyLwogIGF0
-aW1lOgogICAgMjAxNC0xMi0xMlQyMzoxNjoyNS4yNDc3MTcKICBjdGltZToKICAgIDIwMTkt
-MDctMjlUMjA6MTc6NTUuODg0ODM2CiAgb3RpbWUgc2VjLm5zZWM6CiAgICA0MjIyMTI0NjUw
-NjU5ODQuMAotCiAgdHJlZToKICAgIDI2MAogIHBhdGg6CiAgICBrbm9ycmllLy5jb25maWcv
-Y2hyb21pdW0vRGVmYXVsdC9RdW90YU1hbmFnZXItam91cm5hbC8KICBhdGltZToKICAgIDIw
-MTQtMTItMTJUMjM6MTY6MjUuMjQ3NzE3CiAgY3RpbWU6CiAgICAyMDE5LTA3LTI5VDIwOjE3
-OjU1Ljg5NjgzNgogIG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQog
-IHRyZWU6CiAgICAyNjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0Rl
-ZmF1bHQvR0NNIFN0b3JlLwogIGF0aW1lOgogICAgMjAxNS0wNS0zMVQxNjoyMToxNy41OTI1
-NjkKICBjdGltZToKICAgIDIwMTgtMDYtMjdUMTM6MjU6NDkuMzEzODg3CiAgb3RpbWUgc2Vj
-Lm5zZWM6CiAgICA0MjIyMTI0NjUwNjU5ODQuMAotCiAgdHJlZToKICAgIDI2MAogIHBhdGg6
-CiAgICBrbm9ycmllLy5jb25maWcvY2hyb21pdW0vRGVmYXVsdC9TdG9yYWdlLwogIGF0aW1l
-OgogICAgMjAxNS0wNy0xMVQxNTo0MTo1MS40MzU5NTkKICBjdGltZToKICAgIDIwMTUtMDct
-MTFUMTU6NDE6NTEuNDM1OTU5CiAgb3RpbWUgc2VjLm5zZWM6CiAgICA0MjIyMTI0NjUwNjU5
-ODQuMAotCiAgdHJlZToKICAgIDI2MAogIHBhdGg6CiAgICBrbm9ycmllLy5jb25maWcvY2hy
-b21pdW0vRGVmYXVsdC9TZXJ2aWNlIFdvcmtlci8KICBhdGltZToKICAgIDIwMTUtMDktMDRU
-MTk6MjU6NTguMTI4OTYzCiAgY3RpbWU6CiAgICAyMDE1LTEwLTAxVDIwOjQzOjE1LjQ5NzE2
-OAogIG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6CiAg
-ICAyNjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQvZGF0
-YV9yZWR1Y3Rpb25fcHJveHlfbGV2ZWxkYi8KICBhdGltZToKICAgIDIwMTUtMTAtMjNUMTk6
-NTE6MTQuNDQ1ODg2CiAgY3RpbWU6CiAgICAyMDE5LTA3LTIyVDA3OjU4OjMwLjExNzc2Mgog
-IG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6CiAgICAy
-NjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQvU3luYyBF
-eHRlbnNpb24gU2V0dGluZ3MvCiAgYXRpbWU6CiAgICAyMDE2LTA0LTA2VDE4OjEyOjU2LjE1
-ODQ0OQogIGN0aW1lOgogICAgMjAxNi0wNC0wN1QwOToyODoyMC4yNzAyMzUKICBvdGltZSBz
-ZWMubnNlYzoKICAgIDQyMjIxMjQ2NTA2NTk4NC4wCi0KICB0cmVlOgogICAgMjYwCiAgcGF0
-aDoKICAgIGtub3JyaWUvLmNvbmZpZy9jaHJvbWl1bS9EZWZhdWx0Ly5vcmcuY2hyb21pdW0u
-Q2hyb21pdW0uQkpPdjUwLwogIGF0aW1lOgogICAgMjAxNi0wNC0yNVQwNToyMzo1Mi42MzEz
-NzAKICBjdGltZToKICAgIDIwMTYtMDQtMjVUMDU6MjM6NTIuNjMxMzcwCiAgb3RpbWUgc2Vj
-Lm5zZWM6CiAgICAxNDI5MzQxNzY1NzkxNjU0NjIxOC4yMTEzMjY0MTUyCi0KICB0cmVlOgog
-ICAgMjYwCiAgcGF0aDoKICAgIGtub3JyaWUvLmNvbmZpZy9jaHJvbWl1bS9EZWZhdWx0L1Bs
-YXRmb3JtIE5vdGlmaWNhdGlvbnMvCiAgYXRpbWU6CiAgICAyMDE2LTEwLTAxVDE0OjQ5OjI0
-LjgxMzk5NAogIGN0aW1lOgogICAgMjAxNi0xMC0wMVQxNDo0OToyNC44Mjk5OTMKICBvdGlt
-ZSBzZWMubnNlYzoKICAgIDQyMjIxMjQ2NTA2NTk4NC4wCi0KICB0cmVlOgogICAgMjYwCiAg
-cGF0aDoKICAgIGtub3JyaWUvLmNvbmZpZy9jaHJvbWl1bS9EZWZhdWx0L2Jsb2Jfc3RvcmFn
-ZS8KICBhdGltZToKICAgIDIwMTctMDQtMDlUMTk6MDI6MDAuMjEwNDM1CiAgY3RpbWU6CiAg
-ICAyMDE5LTA3LTIyVDA3OjU4OjM0LjI5MzY4MAogIG90aW1lIHNlYy5uc2VjOgogICAgNDIy
-MjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6CiAgICAyNjAKICBwYXRoOgogICAga25vcnJpZS8u
-Y29uZmlnL2Nocm9taXVtL0RlZmF1bHQvU3luYyBEYXRhLwogIGF0aW1lOgogICAgMjAxNy0x
-Mi0wOFQxNzowMjo0NS4zMjgyMDcKICBjdGltZToKICAgIDIwMTctMTItMDhUMTc6MDI6NDUu
-MzI4MjA3CiAgb3RpbWUgc2VjLm5zZWM6CiAgICA0MjIyMTI0NjUwNjU5ODQuMAotCiAgdHJl
-ZToKICAgIDI2MAogIHBhdGg6CiAgICBrbm9ycmllLy5jb25maWcvY2hyb21pdW0vRGVmYXVs
-dC9GZWF0dXJlIEVuZ2FnZW1lbnQgVHJhY2tlci8KICBhdGltZToKICAgIDIwMTctMTItMDhU
-MTc6MjA6NTQuNDkwNjkzCiAgY3RpbWU6CiAgICAyMDE3LTEyLTA4VDE3OjIwOjU0LjUwMjY5
-MgogIG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6CiAg
-ICAyNjAKICBwYXRoOgogICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQvRG93
-bmxvYWQgU2VydmljZS8KICBhdGltZToKICAgIDIwMTgtMDEtMTdUMjI6MTY6MjIuODAwMjY0
-CiAgY3RpbWU6CiAgICAyMDE4LTAxLTE3VDIyOjE2OjIyLjgwODI2MwogIG90aW1lIHNlYy5u
-c2VjOgogICAgNDIyMjEyNDY1MDY1OTg0LjAKLQogIHRyZWU6CiAgICAyNjAKICBwYXRoOgog
-ICAga25vcnJpZS8uY29uZmlnL2Nocm9taXVtL0RlZmF1bHQvVmlkZW9EZWNvZGVTdGF0cy8K
-ICBhdGltZToKICAgIDIwMTgtMDItMTZUMjA6NTM6NDIuNTQzNzQ0CiAgY3RpbWU6CiAgICAy
-MDE5LTA2LTEwVDIwOjIzOjA2LjcwODg0NQogIG90aW1lIHNlYy5uc2VjOgogICAgNDIyMjEy
-NDY1MDY1OTg0LjAK
---------------BFED649855AAE8282325B70C--
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
