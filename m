@@ -2,128 +2,220 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDD038190F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 14:20:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D416881936
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 14:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727989AbfHEMUj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Aug 2019 08:20:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46546 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727259AbfHEMUj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 5 Aug 2019 08:20:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A7365AF4E;
-        Mon,  5 Aug 2019 12:20:37 +0000 (UTC)
-Subject: Re: [PATCH] btrfs-progs: Check for metadata uuid feature in
- misc-tests/034-metadata-uuid
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <20190805114522.12151-1-nborisov@suse.com>
- <fbda482d-5530-e6d2-b351-d94c10583c65@gmx.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+        id S1728716AbfHEMYg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Aug 2019 08:24:36 -0400
+Received: from mout.gmx.net ([212.227.17.21]:51963 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727259AbfHEMYg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Aug 2019 08:24:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1565007870;
+        bh=OUlSgA+tRdF9LsGDou7YGHUnAx0vAAl3B6HnpBG6zG4=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Tr2MgTW1z8HSIEMEjtHgA84JUWHCV3KRMbE+iwjnInmMYRkTona9vszwcD3+Y4Qvq
+         KrAD6xeVxdchiq686C/VqU2qhvRa23xNF1rvM+t1aYJr/dCqk+Q6PRbP+rflUCVG7x
+         gEvIzXuQ4gViR8Ff2l2eme8hup+FEd2BgQiZKZgg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1My32F-1iGVZC2HZn-00zUHK; Mon, 05
+ Aug 2019 14:24:30 +0200
+Subject: Re: [PATCH] btrfs: add an ioctl to force chunk allocation
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20190802161031.18427-1-josef@toxicpanda.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <cf65bf5c-a1ec-8871-8e3b-b510a36a4e60@suse.com>
-Date:   Mon, 5 Aug 2019 15:20:36 +0300
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <7b0e9be3-2239-ecdc-8b7e-a386f1def64f@gmx.com>
+Date:   Mon, 5 Aug 2019 20:24:23 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <fbda482d-5530-e6d2-b351-d94c10583c65@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190802161031.18427-1-josef@toxicpanda.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="5iZYx5L0x8nckH0Ebg4f76R4cVT4GRilq"
+X-Provags-ID: V03:K1:CIPlm6D+VBqqHFsp87KkuLJqR1h5a6yY+GEbFfxhjMMcthk6nW3
+ VOzyjvZ+9GRoQDTXQGtpJr11YFwAAbSwBWM8mf18lNO0dnE8dj93/pKxtd56Xmmo4T/W99d
+ GlE8FP7t90vtWh9b/HxmSuBl1JtXOVXMoeQ8MVmFvqzixkWAGx9EDtk+PtEUS2KTWclEX3d
+ 5xFEINQ+0yt2Jpc5YzDHA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:LlBatJgt/3M=:wrw+ejgUxSJqmdy8E+mDry
+ QbLcDjmX++P9zviiDGE+K89ipxiS6/6abz2ydz5dZvnNm5ub+j9PAimFnQ39SupK6dBRftH6S
+ hgWhZJd0cyT9wYL+FNGsZ03TreTq19auxRWN+usR8Ne2sTVCZQqZhVLpDxNqQgns2+atC1FsT
+ 48Kgov4YbPNmyHve+4GaSssR7/duPVIIuyzFUQghxrRN0jo7q6JgOWxGQsY804rVWJaddc4a+
+ kp0yiuL8cGssr/rB12fUU2kNqFgogT0C9qavnOpMrAmJ71asUw3/YRV9++FJNqWHkDfeW4o7M
+ QIrQF1/QvUpiqM8+OVohzERYsAMbBneYotl7E9EmxxqEc5Z6dzB2SlDCWYX2CRNsn+iqyotm4
+ IsWe3Erwdi+5ONBHCwaCNQsBSrof7OSzagTYFOhjDRGdUxeRpO5NWPMqh7MctbCayQWHVpHaN
+ +XbmWY8MP3OPHONkZHSSHwXCOKtogMMu+X+nILomborAUoCd9V7nYF8X8hpHvUXVjXlzuV1v8
+ POwXCBdYRAQpf97LgM1uky02iMoEsn/8ZURFCZPCnNytblvq7BGxFRKLWmmmyFyUD30HkrVjJ
+ nyC5YzMSXEdil++WJFcYeLvUhLtt+o6cfhnHoKv2aGZfrQizCbq611a9Q227b2ZUYX08AItKh
+ CZv1JqIi6fMCaxb8nW25jgV4vkdyvRmyTLvLs6R8qrzDrGAhBG/kj0hx/2BtwdWz4WUv4mSwh
+ MCFXU/UU1FNSomfDxcVAXQDu5UMKnuFcpV6Mcet64EqTSA+DefI97ls2+wAcGBu/jEV0EtXla
+ N79S/rNu2qZ7fsKJAC0X4su99c485iykOsAOfuda4EskydBHHLvrmU8dvy2bUcM1vpS0v2Dbf
+ ORAK5YqjLm4tSBnz7Qi9/O0G4vusvtJqQC4Q3HpWgplAuUra6wXfNDOkcRiGH9YiIL+n0A1PV
+ 0Xe0Z+OQx+93wz/IQNwYbgscQ2REB5IXcOx7d0yokAiCMd9EEF2qWIDNLWfN+9tFIcEaVLaEJ
+ P68LsgvxK8YWcNE6/GlgWDnpbgJbRhdT9vtFipPTayhkQo1lQj3wNCnXAQX/4o76H/0r5IDy2
+ XbBZQHmLgE5+KThLe6LVsHHdlMVaoddnaF5ZDreCq3E2HyXPG82fcB5/A==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--5iZYx5L0x8nckH0Ebg4f76R4cVT4GRilq
+Content-Type: multipart/mixed; boundary="Af4HMmuR5OJC12WP6RMmI2e6cCzAg2msa";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+Message-ID: <7b0e9be3-2239-ecdc-8b7e-a386f1def64f@gmx.com>
+Subject: Re: [PATCH] btrfs: add an ioctl to force chunk allocation
+References: <20190802161031.18427-1-josef@toxicpanda.com>
+In-Reply-To: <20190802161031.18427-1-josef@toxicpanda.com>
+
+--Af4HMmuR5OJC12WP6RMmI2e6cCzAg2msa
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 5.08.19 г. 15:16 ч., Qu Wenruo wrote:
-> 
-> 
-> On 2019/8/5 下午7:45, Nikolay Borisov wrote:
->> Instead of checking the kernel version, explicitly check for the
->> presence of metadata_uuid file in sysfs. This allows the test to be run
->> on older kernels that might have this feature backported.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> The idea is pretty good, as sysfs is way more accurate.
-> 
-> But /sys/fs/btrfs/features is not ensured to exist, e.g btrfs module not
-> loaded yet.
-> 
-> Can we fallback to regular kernel version check if
-> /sys/fs/btrfs/features not exist?
 
-The top-level test runned (misc-tests.sh in this case) already calls
-check_kernel_support which ensures the module is loaded. So such
-fallback is unnecessary.
+On 2019/8/3 =E4=B8=8A=E5=8D=8812:10, Josef Bacik wrote:
+> In testing block group removal it's sometimes handy to be able to creat=
+e
+> block groups on demand.  Add an ioctl to allow us to force allocation
+> from userspace.
 
-> 
-> Thanks,
-> Qu
-> 
->> ---
->>  tests/misc-tests/034-metadata-uuid/test.sh | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>
->> diff --git a/tests/misc-tests/034-metadata-uuid/test.sh b/tests/misc-tests/034-metadata-uuid/test.sh
->> index 3ef110cda823..6ac55b1cacfa 100755
->> --- a/tests/misc-tests/034-metadata-uuid/test.sh
->> +++ b/tests/misc-tests/034-metadata-uuid/test.sh
->> @@ -10,8 +10,8 @@ check_prereq btrfs-image
->>  setup_root_helper
->>  prepare_test_dev
->>
->> -if ! check_min_kernel_version 5.0; then
->> -	_not_run "kernel too old, METADATA_UUID support needed"
->> +if [ ! -f /sys/fs/btrfs/features/metadata_uuid ] ; then
->> +	_not_run "METADATA_UUID feature not supported"
->>  fi
->>
->>  read_fsid() {
->>
-> 
+Not sure if we should add another ioctl just for debug purpose.
+
+Although I see the usefulness in such debug feature, can we move it to
+something like sysfs so we can hide it more easily?
+
+>=20
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/ioctl.c           | 30 ++++++++++++++++++++++++++++++
+>  include/uapi/linux/btrfs.h |  1 +
+>  2 files changed, 31 insertions(+)
+>=20
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index d0743ec1231d..f100def53c29 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -5553,6 +5553,34 @@ static int _btrfs_ioctl_send(struct file *file, =
+void __user *argp, bool compat)
+>  	return ret;
+>  }
+> =20
+> +static long btrfs_ioctl_alloc_chunk(struct file *file, void __user *ar=
+g)
+> +{
+> +	struct btrfs_root *root =3D BTRFS_I(file_inode(file))->root;
+> +	struct btrfs_trans_handle *trans;
+> +	u64 flags;
+> +	int ret;
+> +
+> +	if (!capable(CAP_SYS_ADMIN))
+> +		return -EPERM;
+> +
+> +	if (copy_from_user(&flags, arg, sizeof(flags)))
+> +		return -EFAULT;
+> +
+> +	/* We can only specify one type at a time. */
+> +	if (flags !=3D BTRFS_BLOCK_GROUP_DATA &&
+> +	    flags !=3D BTRFS_BLOCK_GROUP_METADATA &&
+> +	    flags !=3D BTRFS_BLOCK_GROUP_SYSTEM)
+> +		return -EINVAL;
+
+It looks like MIXED bg get less and less love.
+
+> +
+> +	trans =3D btrfs_start_transaction(root, 0);
+> +	if (IS_ERR(trans))
+> +		return PTR_ERR(trans);
+> +
+> +	ret =3D btrfs_chunk_alloc(trans, flags, CHUNK_ALLOC_FORCE);
+
+And the flags lacks the profile bits, thus default to SINGLE.
+Is it designed or you'd better use btrfs_force_chunk_alloc()?
+
+Thanks,
+Qu
+
+> +	btrfs_end_transaction(trans);
+> +	return ret < 0 ? ret : 0;
+> +}
+> +
+>  long btrfs_ioctl(struct file *file, unsigned int
+>  		cmd, unsigned long arg)
+>  {
+> @@ -5699,6 +5727,8 @@ long btrfs_ioctl(struct file *file, unsigned int
+>  		return btrfs_ioctl_get_subvol_rootref(file, argp);
+>  	case BTRFS_IOC_INO_LOOKUP_USER:
+>  		return btrfs_ioctl_ino_lookup_user(file, argp);
+> +	case BTRFS_IOC_ALLOC_CHUNK:
+> +		return btrfs_ioctl_alloc_chunk(file, argp);
+>  	}
+> =20
+>  	return -ENOTTY;
+> diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+> index c195896d478f..3a6474c34ad0 100644
+> --- a/include/uapi/linux/btrfs.h
+> +++ b/include/uapi/linux/btrfs.h
+> @@ -943,5 +943,6 @@ enum btrfs_err_code {
+>  				struct btrfs_ioctl_get_subvol_rootref_args)
+>  #define BTRFS_IOC_INO_LOOKUP_USER _IOWR(BTRFS_IOCTL_MAGIC, 62, \
+>  				struct btrfs_ioctl_ino_lookup_user_args)
+> +#define BTRFS_IOC_ALLOC_CHUNK _IOR(BTRFS_IOCTL_MAGIC, 63, __u64)
+> =20
+>  #endif /* _UAPI_LINUX_BTRFS_H */
+>=20
+
+
+--Af4HMmuR5OJC12WP6RMmI2e6cCzAg2msa--
+
+--5iZYx5L0x8nckH0Ebg4f76R4cVT4GRilq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1IH/cACgkQwj2R86El
+/qjx0Af+NtQPbvkQdmUy+Qtsj6NJzgELnQX+N4Lh6K1Yc1u1X+9jcqwjrQ60yVGn
+doa0F4J3Xwa98kIajMZ2x6YfRMCt/34XWVZb9k3WRhceFuJzqrRKeNi3/wkxboW8
+HcvUeRi/4c5essu7fnIikLg2gGgXTPUVS4fmzlSiFknvyGGRJH+3ZRWXvbg5Nox2
+VU2OAhnQ3xObo5S42Ojm5UviassMqj9ckTZurLhlaQolh8Am1DYZav7WayMSMrjo
+nvsfn8F1LWtpN32qsiSiKl43CSf4tj8a2pQMA21QFZjuYNjrrmYNgF0PfEc1Vfja
+jpPtTC6Auogw5+u62UgU/Z+fxkkJPg==
+=wqL1
+-----END PGP SIGNATURE-----
+
+--5iZYx5L0x8nckH0Ebg4f76R4cVT4GRilq--
