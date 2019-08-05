@@ -2,115 +2,201 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3DB8267F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 23:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A0082737
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 23:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730222AbfHEVAE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Aug 2019 17:00:04 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46001 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730036AbfHEVAE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Aug 2019 17:00:04 -0400
-Received: by mail-wr1-f67.google.com with SMTP id f9so6811095wre.12
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Aug 2019 14:00:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9vocE39myszHyxQd5MFLurjPKevzVChf79OrWrbsKkM=;
-        b=ktSWt8/JNZFvdzUpZUu6JwEV7iA+YMZHEEJBqMh/FmfgVjbSK4yLuiQuhXDDwt5Zlq
-         YgJ01GfeYATkw0IDl1uu/xOqWXW/QRUIOX+h3RJGfQEF/eL7+9/S3vzaqIF+E9zYrQhV
-         HEnYpJ9V7kBIBMROe9/Bdjgfk7wws+FwgvwRLZOA2qmYooL33UhCSJVOw7H/KGKEPQNI
-         EgfOxZSowvFWIk6voVXJ09yggHQmtFubSkNsMdkDRoNus2HGOXgR3iDATbP1xGfnfa7H
-         Wx6j9kRxHv0dQp05iKSBVA2HhJbU+qcz+rOtHIr/3pOo2qPPEbxXM41XkHhGX+NDlr15
-         wneQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9vocE39myszHyxQd5MFLurjPKevzVChf79OrWrbsKkM=;
-        b=RKnihZvqOzEe6gwbee7mRv38wZxPgDd/zWwbP5QOFDEikLGF0kPK150mvf4sYRhh6L
-         HHyR+Yi4ADpezoMV8CWTtFa8Ro9eA8EiMu/pAhgiGJLc/nXebixKPqh9v9kI+FjzqFVz
-         U5UnfjVxkOn154bZimU24cJy3McR2a1MAYvcbEIwRcEPWtshGWiGfz0xe6Cgq7Y042Od
-         TVEpJL7ff3KUq/lh32rAtN33R1C6Ldaj1aCLQYqw/ZEeacoc9wjDdU1mh0bKfH3G8jms
-         qf6gsE6xxJeiGnWOGjjLx7R7gbQQ+C6g4mJtaDVAgtDzNA/VfuttVpANDJL2aWtxUJel
-         tK2g==
-X-Gm-Message-State: APjAAAVshGMqnqxPDZ5Q2TOh/WClB61JmG5UaZEL0GTY2vBiXeEPeKT/
-        N/9HahQWjqEunP5T6uVJHZL9IpkLLnNpJRF5zFaXMDxy/zY=
-X-Google-Smtp-Source: APXvYqxChBpsMUTJRuL1nMhgb4xQYVP++DPvPbrwuQ9DnmWR7aIfnHSJZZOG23hFKqVe1+wr/FJD5Vk2S6qWIu5KteI=
-X-Received: by 2002:adf:dd01:: with SMTP id a1mr55491wrm.12.1565038802976;
- Mon, 05 Aug 2019 14:00:02 -0700 (PDT)
+        id S1728998AbfHEV4K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Aug 2019 17:56:10 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:54516 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728483AbfHEV4K (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Aug 2019 17:56:10 -0400
+Received: from dread.disaster.area (pa49-181-167-148.pa.nsw.optusnet.com.au [49.181.167.148])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 77DD5361759;
+        Tue,  6 Aug 2019 07:56:06 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hukwU-0004gg-NE; Tue, 06 Aug 2019 07:54:58 +1000
+Date:   Tue, 6 Aug 2019 07:54:58 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Goldwyn Rodrigues <RGoldwyn@suse.com>
+Cc:     "hch@lst.de" <hch@lst.de>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ruansy.fnst@cn.fujitsu.com" <ruansy.fnst@cn.fujitsu.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 10/13] iomap: use a function pointer for dio submits
+Message-ID: <20190805215458.GH7689@dread.disaster.area>
+References: <20190802220048.16142-1-rgoldwyn@suse.de>
+ <20190802220048.16142-11-rgoldwyn@suse.de>
+ <20190804234321.GC7689@dread.disaster.area>
+ <1565021323.13240.14.camel@suse.com>
 MIME-Version: 1.0
-References: <CAEg-Je9XTvEtg=Mpb1xKkO6Lzd3-yzSK7GcfbKH13uuf-u-wTA@mail.gmail.com>
- <CAJCQCtSPZwcg5y-d+mOhmyCdvq1dpzLUg05kPUg7CYhZp6Oz_Q@mail.gmail.com> <20190612095851.GG3563@twin.jikos.cz>
-In-Reply-To: <20190612095851.GG3563@twin.jikos.cz>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 5 Aug 2019 14:59:51 -0600
-Message-ID: <CAJCQCtQTk35fnaHLKhj9SLWVs=WftOJ11AxM-BN0Q-vARQ50SA@mail.gmail.com>
-Subject: Re: APFS improvements (e.g. firm links, volume w/ subvols
- replication) as ideas for Btrfs?
-To:     David Sterba <dsterba@suse.cz>, Josef Bacik <josef@toxicpanda.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1565021323.13240.14.camel@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0 cx=a_idp_d
+        a=gu9DDhuZhshYSb5Zs/lkOA==:117 a=gu9DDhuZhshYSb5Zs/lkOA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=iox4zFpeAAAA:8 a=7-415B0cAAAA:8 a=KOOFzyzWw9rIk0OJFBUA:9
+        a=CjuIK1q_8ugA:10 a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 3:58 AM David Sterba <dsterba@suse.cz> wrote:
->
-> On Tue, Jun 11, 2019 at 10:03:51PM -0600, Chris Murphy wrote:
+On Mon, Aug 05, 2019 at 04:08:43PM +0000, Goldwyn Rodrigues wrote:
+> On Mon, 2019-08-05 at 09:43 +1000, Dave Chinner wrote:
+> > On Fri, Aug 02, 2019 at 05:00:45PM -0500, Goldwyn Rodrigues wrote:
+> > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > > 
+> > > This helps filesystems to perform tasks on the bio while
+> > > submitting for I/O. Since btrfs requires the position
+> > > we are working on, pass pos to iomap_dio_submit_bio()
+> > > 
+> > > The correct place for submit_io() is not page_ops. Would it
+> > > better to rename the structure to something like iomap_io_ops
+> > > or put it directly under struct iomap?
+> > > 
+> > > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > > ---
+> > >  fs/iomap/direct-io.c  | 16 +++++++++++-----
+> > >  include/linux/iomap.h |  1 +
+> > >  2 files changed, 12 insertions(+), 5 deletions(-)
+> > > 
+> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> > > index 5279029c7a3c..a802e66bf11f 100644
+> > > --- a/fs/iomap/direct-io.c
+> > > +++ b/fs/iomap/direct-io.c
+> > > @@ -59,7 +59,7 @@ int iomap_dio_iopoll(struct kiocb *kiocb, bool
+> > > spin)
+> > >  EXPORT_SYMBOL_GPL(iomap_dio_iopoll);
+> > >  
+> > >  static void iomap_dio_submit_bio(struct iomap_dio *dio, struct
+> > > iomap *iomap,
+> > > -		struct bio *bio)
+> > > +		struct bio *bio, loff_t pos)
+> > >  {
+> > >  	atomic_inc(&dio->ref);
+> > >  
+> > > @@ -67,7 +67,13 @@ static void iomap_dio_submit_bio(struct
+> > > iomap_dio *dio, struct iomap *iomap,
+> > >  		bio_set_polled(bio, dio->iocb);
+> > >  
+> > >  	dio->submit.last_queue = bdev_get_queue(iomap->bdev);
+> > > -	dio->submit.cookie = submit_bio(bio);
+> > > +	if (iomap->page_ops && iomap->page_ops->submit_io) {
+> > > +		iomap->page_ops->submit_io(bio, file_inode(dio-
+> > > >iocb->ki_filp),
+> > > +				pos);
+> > > +		dio->submit.cookie = BLK_QC_T_NONE;
+> > > +	} else {
+> > > +		dio->submit.cookie = submit_bio(bio);
+> > > +	}
+> > 
+> > I don't really like this at all. Apart from the fact it doesn't work
+> > with block device polling (RWF_HIPRI), the iomap architecture is
+> 
+> That can be added, no? Should be relayed when we clone the bio.
 
-> > There are a couple of things going on. One is something between VFS
-> > and Btrfs does this goofy assumption that bind mounts are subvolumes,
-> > which is definitely not true. I bring this up here:
-> > https://lore.kernel.org/linux-btrfs/CAJCQCtT=-YoFJgEo=BFqfiPdtMoJCYR3dJPSekf+HQ22GYGztw@mail.gmail.com/
->
-> The subvolumes build on top of the bind mount API internally but it is
-> or should be a different kind of object.
->
-> > Near as I can tell, Btrfs kernel code just needs to be smarter about
-> > distinguishing between bind mounts of directories versus the behind
-> > the scene bind mount used for subvolumes mounted using -o subvol= or
-> > -o subvolid= ; I don't think that's difficult. It's just someone needs
-> > to work through the logic and set aside the resources to do it.
->
-> I tried to fix that and got half way through, then hit the difficult
-> problems mainly with nested subvolumes. For leaf subvolumes, the
-> difference between
->
->   subvolume/dir/dir/dir (bind mounted)
->
-> and
->
->   subvolume (mounted with -o)
->
-> is to traverse back the path until the subvolume is hit, which in both
-> cases would be 'subvolume'. Howvever, with nested subvolumes it's not
-> easy to see where to stop
->
->   subvol1/dir/dir/subvol2/dir/dir/subvol3/dir/dir
->
-> and take 3 cases:
->
->   mount -o subvol=subvol1
->   mount -o subvol=subvol2
->   mount -o subvol=subvol3
->
-> the backward path traversal will always say it's subvol3 (that's wrong
-> from users POV). Keeping track of the exact subvolume that was mounted
-> is not trivial because it partially has to duplicate the internal VFS
-> information which makes it hard to keep consistent after moves.
->
-> There was a concept proposal called 'fs view' that would add proper
-> subvolume abstraction for subvolumes to VFS but I don't know how far
-> this got.
+No idea how that all is supposed to work when you split a single bio
+into multiple bios. I'm pretty sure the iomap code is broken for
+that case, too -  Jens was silent on how to fix other than to say
+"it wasn't important so we didn't care to make sure it worked". So
+it's not clear to me exactly how block polling is supposed to work
+when a an IO needs to be split into multiple submissions...
 
-I guess I'm curious why in these cases the subvolid number is correct
-in mount and mountinfo, but the subvol name is wrong? And if it's not
-just anomalous that the id is correct, why not just use that and do a
-lookup of id to name instead of however the name is currently
-determined?
+> > supposed to resolve the file offset -> block device + LBA mapping
+> > completely up front and so all that remains to be done is build and
+> > submit the bio(s) to the block device.
+> > 
+> > What I see here is a hack to work around the fact that btrfs has
+> > implemented both file data transformations and device mapping layer
+> > functionality as a filesystem layer between file data bio building
+> > and device bio submission. And as the btrfs file data mapping
+> > (->iomap_begin) is completely unaware that there is further block
+> > mapping to be done before block device bio submission, any generic
+> > code that btrfs uses requires special IO submission hooks rather
+> > than just calling submit_bio().
+> > 
+> > I'm not 100% sure what the solution here is, but the one thing we
+> > must resist is turning the iomap code into a mess of custom hooks
+> > that only one filesystem uses. We've been taught this lesson time
+> > and time again - the iomap infrastructure exists because stuff like
+> > bufferheads and the old direct IO code ended up so full of special
+> > case code that it ossified and became unmodifiable and
+> > unmaintainable.
+> > 
+> > We do not want to go down that path again. 
+> > 
+> > IMO, the iomap IO model needs to be restructured to support post-IO
+> > and pre-IO data verification/calculation/transformation operations
+> > so all the work that needs to be done at the inode/offset context
+> > level can be done in the iomap path before bio submission/after
+> > bio completion. This will allow infrastructure like fscrypt, data
+> > compression, data checksums, etc to be suported generically, not
+> > just by individual filesystems that provide a ->submit_io hook.
+> > 
+> > As for the btrfs needing to slice and dice bios for multiple
+> > devices?  That should be done via a block device ->make_request
+> > function, not a custom hook in the iomap code.
+> 
+> btrfs differentiates the way how metadata and data is
+> handled/replicated/stored. We would still need an entry point in the
+> iomap code to handle the I/O submission.
 
+This is a data IO path. How metadata is stored/replicated is
+irrelevant to this code path...
+
+> > That's why I don't like this hook - I think hiding data operations
+> > and/or custom bio manipulations in opaque filesystem callouts is
+> > completely the wrong approach to be taking. We need to do these
+> > things in a generic manner so that all filesystems (and block
+> > devices!) that use the iomap infrastructure can take advantage of
+> > them, not just one of them.
+> > 
+> > Quite frankly, I don't care if it takes more time and work up front,
+> > I'm tired of expedient hacks to merge code quickly repeatedly biting
+> > us on the arse and wasting far more time sorting out than we would
+> > have spent getting it right in the first place.
+> 
+> Sure. I am open to ideas. What are you proposing?
+
+That you think about how to normalise the btrfs IO path to fit into
+the standard iomap/blockdev model, rather than adding special hacks
+to iomap to allow an opaque, custom, IO model to be shoe-horned into
+the generic code.
+
+For example, post-read validation requires end-io processing,
+whether it be encryption, decompression, CRC/T10 validation, etc. The
+iomap end-io completion has all the information needed to run these
+things, whether it be a callout to the filesystem for custom
+processing checking, or a generic "decrypt into supplied data page"
+sort of thing. These all need to be done in the same place, so we
+should have common support for this. And I suspect the iomap should
+also state in a flag that something like this is necessary (e.g.
+IOMAP_FL_ENCRYPTED indicates post-IO decryption needs to be run).
+
+Similarly, on the IO submit side we have need for a pre-IO
+processing hook. That can be used to encrypt, compress, calculate
+data CRCs, do pre-IO COW processing (XFS requires a hook for this),
+etc.
+
+These hooks are needed for for both buffered and direct IO, and they
+are needed for more filesystems than just btrfs. fscrypt will need
+them, XFS needs them, etc. So rather than hide data CRCs,
+compression, and encryption deep inside the btrfs code, pull it up
+into common layers that are called by the generic code. THis will
+leave with just the things like mirroring, raid, IO retries, etc
+below the iomap code, and that's all stuff that can be done behind a
+->make_request function that is passed a bio...
+
+Cheers,
+
+Dave.
 -- 
-Chris Murphy
+Dave Chinner
+david@fromorbit.com
