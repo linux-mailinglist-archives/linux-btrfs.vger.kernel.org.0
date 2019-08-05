@@ -2,64 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 879D48140C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 10:20:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD0B81622
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 11:57:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727450AbfHEIU1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Aug 2019 04:20:27 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:35462 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727161AbfHEIU0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 5 Aug 2019 04:20:26 -0400
-Received: by mail-lj1-f195.google.com with SMTP id x25so78604484ljh.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Aug 2019 01:20:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=PK19ZBciZouvMJRe4+iw8z9JI58DHPEU7r8KStdt74c=;
-        b=dhEZmTA5dmm0dZpU6i+uuLmnIFCF4NGl+cqWFKRQV0hqXZK6AcSusu4JhOwpuNiyyq
-         ToLAySJuCfamYPBmS/DsZHP16/xSCgSsMNeuWORC8gxJ0aIc/qZKh7fR6SqP1MIkSlIt
-         eCAY8uKjWd40gNC/pjsHDRBYOtWHvWoe/krYgtriosiCPDTWE7lg5V30+O0xKgPYx06O
-         1Irnq6EDlBIvxXx6CCfuuZJajKXYTmRvPd5ev8WyhyMq22SQnqFNhIFjis0vI78inNq6
-         2TxLA8qqZC0sQL2SRPNKrhxhfB1Bhlt5PHL24kUdOTFwKZgTGNupSne+lOPMLIkoutt+
-         XcWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=PK19ZBciZouvMJRe4+iw8z9JI58DHPEU7r8KStdt74c=;
-        b=mixMh4q9YumIpg8oOjw5lgwmqffEb/O01TY8ihieu+ggcS/wITDfts0/9WxM/fyrXP
-         gSbm8DHWtvOVK5/raYGL+Ro+/gi9cpNSC9m0nIpxDQFw24e1sYC5jP0H9RHw6bjsrvJi
-         4g5+3UWyabtjBHkVNrHMirM+FC8wkk8gAJZpyo11zrPqxUkWrNmLAeRfgq6ZORn3L7Ru
-         dOdjYYHVKEsDZesGz2sR+ryIZt8TJ1BcJK1m5X+o+rCvoRLduEJ0cH++OsXTwwGPbHf+
-         EmY8Cjl+EdTqSSD5Crgr4AK9DAhlajuxr9eKQpnkSvj6kFlnyqZM4yY/l7i3AHn/VIoH
-         O3VA==
-X-Gm-Message-State: APjAAAVLgrbVhsjmfx7lWBduoEp1T/0luBFbRg8FQsho5a4JPE/Ue/lL
-        qNyeBHqQSCLyULnTmr4yPsj0O9VP8nxKynn9IA==
-X-Google-Smtp-Source: APXvYqxQQoCrDimngerY7T64JV2GiY43Ecr7Lg4BIJV2DvMBEGoHruqFU49q6aoVNV77G9EoXOPSE08jouqALwGN+FM=
-X-Received: by 2002:a2e:9b81:: with SMTP id z1mr78359951lji.101.1564993224939;
- Mon, 05 Aug 2019 01:20:24 -0700 (PDT)
-MIME-Version: 1.0
-Received: by 2002:ab3:6e9a:0:0:0:0:0 with HTTP; Mon, 5 Aug 2019 01:20:23 -0700 (PDT)
-Reply-To: virginiecharl4222@gmail.com
-From:   "Mrs. Virginie Charlotte" <roseamadueke@gmail.com>
-Date:   Mon, 5 Aug 2019 09:20:23 +0100
-Message-ID: <CAGK8kqOAewXh2XXRdrZuVGKYgJMJiYbujSjmXoTBf7e7obXXuA@mail.gmail.com>
-Subject: Dear Beloved
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        id S1727802AbfHEJ5r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Aug 2019 05:57:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44492 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727349AbfHEJ5r (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Aug 2019 05:57:47 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4E7A02182B
+        for <linux-btrfs@vger.kernel.org>; Mon,  5 Aug 2019 09:57:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564999065;
+        bh=EtgzMJSlxkGJItjh3fKGo0yonNwfWVXEmpTxnmlAvPY=;
+        h=From:To:Subject:Date:From;
+        b=KxXexBv4wtcMj2QvW/NaQqzLbz2eoiMrcxeD4n4ratrJVBnK8OmLg7hQAbfLqXkHt
+         vmX4wT7L2NBx1yETQrGjxsDC+HTKFHKuLP4aW1OTFrFAttydKb1sWZS/ogksJ0NYRP
+         DiV0dpNktwVE2GxFguUlACa6kA/mSBNE1LeUbPvQ=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] Btrfs: make test_find_first_clear_extent_bit fail on incorrect results
+Date:   Mon,  5 Aug 2019 10:57:41 +0100
+Message-Id: <20190805095741.31265-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear friend,
+From: Filipe Manana <fdmanana@suse.com>
 
-Sorry to invade your privacy through this media. I have bad health
-condition and I'm just looking for someone I can trust to lead
-a charity work for me. If you are interested, come back to me as
-as soon as possible for further explanation.
+If any call to find_first_clear_extent_bit() returns an unexpected result,
+the test should fail and not just print an error message, otherwise it
+makes detection of regressions much harder to notice.
 
-Thanks for your collaboration
+Fixes: 1eaebb341d2b41 ("btrfs: Don't trim returned range based on input value in find_first_clear_extent_bit")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
 
-Mrs. Virginie Charlotte
+Applies on top of recent patch with subject:
+
+  "Btrfs: fix memory leaks in the test test_find_first_clear_extent_bit"
+
+ fs/btrfs/tests/extent-io-tests.c | 29 ++++++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
+
+diff --git a/fs/btrfs/tests/extent-io-tests.c b/fs/btrfs/tests/extent-io-tests.c
+index 705a8a7eb815..123d9a614357 100644
+--- a/fs/btrfs/tests/extent-io-tests.c
++++ b/fs/btrfs/tests/extent-io-tests.c
+@@ -438,6 +438,7 @@ static int test_find_first_clear_extent_bit(void)
+ {
+ 	struct extent_io_tree tree;
+ 	u64 start, end;
++	int ret = -EINVAL;
+ 
+ 	test_msg("running find_first_clear_extent_bit test");
+ 	extent_io_tree_init(NULL, &tree, IO_TREE_SELFTEST, NULL);
+@@ -452,9 +453,11 @@ static int test_find_first_clear_extent_bit(void)
+ 	find_first_clear_extent_bit(&tree, SZ_512K, &start, &end,
+ 				    CHUNK_TRIMMED | CHUNK_ALLOCATED);
+ 
+-	if (start != 0 || end != SZ_1M -1)
++	if (start != 0 || end != SZ_1M - 1) {
+ 		test_err("error finding beginning range: start %llu end %llu",
+ 			 start, end);
++		goto out;
++	}
+ 
+ 	/* Now add 32M-64M so that we have a hole between 4M-32M */
+ 	set_extent_bits(&tree, SZ_32M, SZ_64M - 1,
+@@ -466,9 +469,11 @@ static int test_find_first_clear_extent_bit(void)
+ 	find_first_clear_extent_bit(&tree, 12 * SZ_1M, &start, &end,
+ 				    CHUNK_TRIMMED | CHUNK_ALLOCATED);
+ 
+-	if (start != SZ_4M || end != SZ_32M - 1)
++	if (start != SZ_4M || end != SZ_32M - 1) {
+ 		test_err("error finding trimmed range: start %llu end %llu",
+ 			 start, end);
++		goto out;
++	}
+ 
+ 	/*
+ 	 * Search in the middle of allocated range, should get the next one
+@@ -477,9 +482,11 @@ static int test_find_first_clear_extent_bit(void)
+ 	find_first_clear_extent_bit(&tree, SZ_2M, &start, &end,
+ 				    CHUNK_TRIMMED | CHUNK_ALLOCATED);
+ 
+-	if (start != SZ_4M || end != SZ_32M -1)
++	if (start != SZ_4M || end != SZ_32M - 1) {
+ 		test_err("error finding next unalloc range: start %llu end %llu",
+ 			 start, end);
++		goto out;
++	}
+ 
+ 	/*
+ 	 * Set 64M-72M with CHUNK_ALLOC flag, then search for CHUNK_TRIMMED flag
+@@ -489,9 +496,11 @@ static int test_find_first_clear_extent_bit(void)
+ 	find_first_clear_extent_bit(&tree, SZ_64M + SZ_1M, &start, &end,
+ 				    CHUNK_TRIMMED);
+ 
+-	if (start != SZ_64M || end != SZ_64M + SZ_8M - 1)
++	if (start != SZ_64M || end != SZ_64M + SZ_8M - 1) {
+ 		test_err("error finding exact range: start %llu end %llu",
+ 			 start, end);
++		goto out;
++	}
+ 
+ 	find_first_clear_extent_bit(&tree, SZ_64M - SZ_8M, &start, &end,
+ 				    CHUNK_TRIMMED);
+@@ -500,23 +509,29 @@ static int test_find_first_clear_extent_bit(void)
+ 	 * Search in the middle of set range whose immediate neighbour doesn't
+ 	 * have the bits set so it must be returned
+ 	 */
+-	if (start != SZ_64M || end != SZ_64M + SZ_8M - 1)
++	if (start != SZ_64M || end != SZ_64M + SZ_8M - 1) {
+ 		test_err("error finding next alloc range: start %llu end %llu",
+ 			 start, end);
++		goto out;
++	}
+ 
+ 	/*
+ 	 * Search beyond any known range, shall return after last known range
+ 	 * and end should be -1
+ 	 */
+ 	find_first_clear_extent_bit(&tree, -1, &start, &end, CHUNK_TRIMMED);
+-	if (start != SZ_64M + SZ_8M || end != -1)
++	if (start != SZ_64M + SZ_8M || end != -1) {
+ 		test_err(
+ 		"error handling beyond end of range search: start %llu end %llu",
+ 			start, end);
++		goto out;
++	}
+ 
++	ret = 0;
++out:
+ 	clear_extent_bits(&tree, 0, (u64)-1, CHUNK_TRIMMED | CHUNK_ALLOCATED);
+ 
+-	return 0;
++	return ret;
+ }
+ 
+ int btrfs_test_extent_io(u32 sectorsize, u32 nodesize)
+-- 
+2.11.0
+
