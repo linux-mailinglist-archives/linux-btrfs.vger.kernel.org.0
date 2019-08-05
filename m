@@ -2,57 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE208243B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 19:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF28F82495
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 20:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726834AbfHERuW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Aug 2019 13:50:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50622 "EHLO mx1.suse.de"
+        id S1728975AbfHESEu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Aug 2019 14:04:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54022 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726559AbfHERuW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 5 Aug 2019 13:50:22 -0400
+        id S1728837AbfHESEu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Aug 2019 14:04:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6949BB0BF;
-        Mon,  5 Aug 2019 17:50:21 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 3E43AAC7F;
+        Mon,  5 Aug 2019 18:04:49 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 86A56DABC7; Mon,  5 Aug 2019 19:50:53 +0200 (CEST)
-Date:   Mon, 5 Aug 2019 19:50:53 +0200
+        id BD9B4DABC7; Mon,  5 Aug 2019 20:05:21 +0200 (CEST)
+Date:   Mon, 5 Aug 2019 20:05:21 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 0/5] Rework eviction space flushing
-Message-ID: <20190805175052.GD28208@twin.jikos.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] Btrfs: fix memory leaks in the test
+ test_find_first_clear_extent_bit
+Message-ID: <20190805180521.GE28208@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20190801221937.22742-1-josef@toxicpanda.com>
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20190803085316.7448-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190801221937.22742-1-josef@toxicpanda.com>
+In-Reply-To: <20190803085316.7448-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 01, 2019 at 06:19:32PM -0400, Josef Bacik wrote:
-> This is a set of patches to address how we do space flushing for inode
-> evictions.  Historically we've only been allowed to do a few things to reclaim
-> space for inode evictions, mostly because we'd deadlock with iput.  But we have
-> delayed iputs in place to make sure we're always doing iput where it's
-> completely safe to do an iput.
+On Sat, Aug 03, 2019 at 09:53:16AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> However we do run iputs for flushing, so we can't just do FLUSH_ALL, otherwise
-> we could deadlock.  Also we still want to prioritize evictions for space
-> reclamation because we likely will free up space for other people to make
-> reservations.
+> The test creates an extent io tree and sets several ranges with the
+> CHUNK_ALLOCATED and CHUNK_TRIMMED bits, resulting in the allocation of
+> several extent state structures. However the test never clears those
+> ranges, resulting in memory leaks of the extent state structures.
 > 
-> The first 4 patches are preparation patches, just refactoring so we can add this
-> new flushing time for eviction.  This allows us to clean up our current ad-hoc
-> loop we have for reclaiming space for evictions and use the common helpers that
-> everybody else uses.  Thanks,
+> This is detected when CONFIG_BTRFS_DEBUG is set once we remove the
+> btrfs module (rmmod btrfs):
+> 
+> [57399.787918] BTRFS: state leak: start 67108864 end 75497471 state 1 in tree 1 refs 1
+> [57399.790155] BTRFS: state leak: start 33554432 end 67108863 state 33 in tree 1 refs 1
+> [57399.791941] BTRFS: state leak: start 1048576 end 4194303 state 33 in tree 1 refs 1
+> [57399.793753] BTRFS: state leak: start 67108864 end 75497471 state 1 in tree 1 refs 1
+> [57399.795188] BTRFS: state leak: start 33554432 end 67108863 state 33 in tree 1 refs 1
+> [57399.796453] BTRFS: state leak: start 1048576 end 4194303 state 33 in tree 1 refs 1
+> [57399.797765] BTRFS: state leak: start 67108864 end 75497471 state 1 in tree 1 refs 1
+> [57399.799049] BTRFS: state leak: start 33554432 end 67108863 state 33 in tree 1 refs 1
+> [57399.800142] BTRFS: state leak: start 1048576 end 4194303 state 33 in tree 1 refs 1
+> [57399.801126] BTRFS: state leak: start 67108864 end 75497471 state 1 in tree 1 refs 1
+> [57399.802106] BTRFS: state leak: start 33554432 end 67108863 state 33 in tree 1 refs 1
+> [57399.803119] BTRFS: state leak: start 1048576 end 4194303 state 33 in tree 1 refs 1
+> [57399.804153] BTRFS: state leak: start 67108864 end 75497471 state 1 in tree 1 refs 1
+> [57399.805196] BTRFS: state leak: start 33554432 end 67108863 state 33 in tree 1 refs 1
+> [57399.806191] BTRFS: state leak: start 1048576 end 4194303 state 33 in tree 1 refs 1
+> 
+> The start and end offsets reported correspond exactly to the ranges
+> used by the test.
+> 
+> So fix that by clearing all the ranges when the test finishes.
+> 
+> Fixes: 1eaebb341d2b41 ("btrfs: Don't trim returned range based on input value in find_first_clear_extent_bit")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-I'll add this as a topic branch to for-next for testing, I have only
-skimmed the patches and did not do any kind of review.
+Added to misc-next, thanks.
