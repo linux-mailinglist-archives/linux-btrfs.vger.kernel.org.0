@@ -2,24 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B276683349
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 15:49:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9308334D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 15:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731458AbfHFNtC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 09:49:02 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44523 "EHLO
+        id S1732603AbfHFNtz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 09:49:55 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:44544 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729554AbfHFNtC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Aug 2019 09:49:02 -0400
+        with ESMTP id S1728189AbfHFNtz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Aug 2019 09:49:55 -0400
 Received: from 1.general.cking.uk.vpn ([10.172.193.212])
         by youngberry.canonical.com with esmtpsa (TLS1.0:RSA_AES_128_CBC_SHA1:16)
         (Exim 4.76)
         (envelope-from <colin.king@canonical.com>)
-        id 1huzpj-0004R2-Lu; Tue, 06 Aug 2019 13:48:59 +0000
+        id 1huzqa-0004Tf-Tq; Tue, 06 Aug 2019 13:49:52 +0000
+Subject: Re: btrfs: qgroup: Try our best to delete qgroup relations (bug
+ report)
+From:   Colin Ian King <colin.king@canonical.com>
 To:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>,
         Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
         linux-btrfs@vger.kernel.org
-From:   Colin Ian King <colin.king@canonical.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <ea7f88e7-108e-ad2a-232f-b18715607bf3@canonical.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
  mQINBE6TJCgBEACo6nMNvy06zNKj5tiwDsXXS+LhT+LwtEsy9EnraKYXAf2xwazcICSjX06e
@@ -63,65 +67,72 @@ Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
  WNp62+mTeHsX6v9EACH4S+Cw9Q1qJElFEu9/1vFNBmGY2vDv14gU2xEiS2eIvKiYl/b5Y85Q
  QLOHWV8up73KK5Qq/6bm4BqVd1rKGI9un8kezUQNGBKre2KKs6wquH8oynDP/baoYxEGMXBg
  GF/qjOC6OY+U7kNUW3N/A7J3M2VdOTLu3hVTzJMZdlMmmsg74azvZDV75dUigqXcwjE=
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: re: btrfs: qgroup: Try our best to delete qgroup relations (bug
- report)
-Message-ID: <ea7f88e7-108e-ad2a-232f-b18715607bf3@canonical.com>
-Date:   Tue, 6 Aug 2019 14:48:59 +0100
+Message-ID: <ca0946de-5343-aaf9-10f2-007e341cb8a4@canonical.com>
+Date:   Tue, 6 Aug 2019 14:49:52 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <ea7f88e7-108e-ad2a-232f-b18715607bf3@canonical.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On 06/08/2019 14:48, Colin Ian King wrote:
+> Hi,
+> 
+> Static analysis with Coverity on linux-next picked up a potential issue
+> with the following commit:
+> 
+> commit 035087b3c256741be367747eab866505cece31fb
+> Author: Qu Wenruo <wqu@suse.com>
+> Date:   Sat Aug 3 14:45:59 2019 +0800
+> 
+>     btrfs: qgroup: Try our best to delete qgroup relations
+> 
+> The static analysis report is as follows:
+> 
+> 1334         */
+> 
+>     3. Condition !member, taking true branch.
+>     4. var_compare_op: Comparing member to null implies that member
+> might be null.
+>     5. Condition !parent, taking false branch.
+> 
+> 1335        if (!member && !parent)
+> 1336                goto delete_item;
+> 1337
+> 1338        /* check if such qgroup relation exist firstly */
+> 
+> 
+> CID 85026 (#1 of 1): Dereference after null check (FORWARD_NULL)
+> 
+> 6. var_deref_op: Dereferencing null pointer member.
+> 
+> 1339        list_for_each_entry(list, &member->groups, next_group) {
+> 1340                if (list->group == parent) {
+> 1341                        found = true;
+> 1342                        break;
+> 1343                }
+> 1344        }
+> 
+> An example of the issue that if member is NULL and parent is not null
+> then  the list_for_each_entry loop with dereference the NULL member
+> pointer.  The changed logic in the patch on line 1335 is the root cause
+> of this regression.  I believe it should still be:
+> 
+> 	if (!member && !parent)
+> 		goto delete_item;
 
-Static analysis with Coverity on linux-next picked up a potential issue
-with the following commit:
+oops, I mean:
 
-commit 035087b3c256741be367747eab866505cece31fb
-Author: Qu Wenruo <wqu@suse.com>
-Date:   Sat Aug 3 14:45:59 2019 +0800
-
-    btrfs: qgroup: Try our best to delete qgroup relations
-
-The static analysis report is as follows:
-
-1334         */
-
-    3. Condition !member, taking true branch.
-    4. var_compare_op: Comparing member to null implies that member
-might be null.
-    5. Condition !parent, taking false branch.
-
-1335        if (!member && !parent)
-1336                goto delete_item;
-1337
-1338        /* check if such qgroup relation exist firstly */
-
-
-CID 85026 (#1 of 1): Dereference after null check (FORWARD_NULL)
-
-6. var_deref_op: Dereferencing null pointer member.
-
-1339        list_for_each_entry(list, &member->groups, next_group) {
-1340                if (list->group == parent) {
-1341                        found = true;
-1342                        break;
-1343                }
-1344        }
-
-An example of the issue that if member is NULL and parent is not null
-then  the list_for_each_entry loop with dereference the NULL member
-pointer.  The changed logic in the patch on line 1335 is the root cause
-of this regression.  I believe it should still be:
-
-	if (!member && !parent)
+	if (!member || !parent)
 		goto delete_item;
 
-Colin
+> 
+> Colin
+> 
+
