@@ -2,148 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5C0C83525
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 17:23:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A418836B7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 18:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731450AbfHFPXz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 11:23:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52466 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728156AbfHFPXz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Aug 2019 11:23:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 50AD8AF5D
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2019 15:23:53 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: transaction: Commit transaction more frequently
- for BPF
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190806082201.22683-1-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <94e81fef-1dff-28e7-0d2d-a366ccdbe8c8@suse.com>
-Date:   Tue, 6 Aug 2019 18:23:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2387603AbfHFQ2l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 12:28:41 -0400
+Received: from mail-qt1-f174.google.com ([209.85.160.174]:34307 "EHLO
+        mail-qt1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728927AbfHFQ2l (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Aug 2019 12:28:41 -0400
+Received: by mail-qt1-f174.google.com with SMTP id k10so15999054qtq.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 06 Aug 2019 09:28:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QHWEHlS5m3jSZsBxi0LOHpu+8UCMK3FtD8j84r4jHZQ=;
+        b=qFXjaF/L8P8gWQxaay4Tt6q/y4KSPinyylw89i7Q6l69YdAC5ORjCabMiTrTuBHpPN
+         rHgIJFVsWBELEoO1WTeBn3BdD+tk5waTWRA4JZz2aOJhcD6HD+VLrrFH36TJJ5nD85fe
+         YMKsRG6+CvBYWWJ/UwIFKVSbmKG0vhuSXn1OHlpCerWqAdj476AlM/4CUz5aLL5UV/QJ
+         TvQB2x1mzhNxt/8jnTq0rqKJQfJCtTnSmhNqb0FEveZq0AoLeliMOw0MvxFSQHHkXCQG
+         8HYw+iCGOAV44Ox3JQkxtTtYIMAOhiVDdSttk61FqBz5JdpjV0vLwCnj+7ENV+VKXDJP
+         PVVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QHWEHlS5m3jSZsBxi0LOHpu+8UCMK3FtD8j84r4jHZQ=;
+        b=OQlkk8M7f13aXWXzvE3JFOTtYoTY2RcBEjjHIRQjlHpUMf/ncsIIdBrX6VXob93rk4
+         2octm46FuSQSyrbsahQoZwdBtsSLRd5SE39R3Jxc8VY0bSg9DfkKVdQ3FFnmcVd3uAzl
+         KzePX1Y7EZoc/4KurN1b8/WKfFI082qiww/FMMRWm7qu4/q9OGUBKawCVq8sH0newgkx
+         z/FV4T3Kdy5p54Gb7gEOvSEh9y8bHFzUJct/9tECYpQDnXKhY47sL+sguf3LXOEyrOPT
+         fvG2BW9CxksQpPZpFWXzKS3NrqzIY1waTZyzcOe2CnTbmPTdSEJV0xT+NUwvAhDojNPx
+         GlKw==
+X-Gm-Message-State: APjAAAVjpvySCBilzyHeobkLRKTZrAMPX3t15HYINp4kjqqefS+hd2tN
+        ShK45SwMAxxnxbEQFo4Z0OTrTA==
+X-Google-Smtp-Source: APXvYqyEvJ6+vn9y+U/zkbkt54G+WmvjZIG8ch0umKp3p/SjGX4L0mFeJK4Dbn0gqTr74Q235Z1esg==
+X-Received: by 2002:aed:3aaa:: with SMTP id o39mr3967258qte.146.1565108920258;
+        Tue, 06 Aug 2019 09:28:40 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id b13sm51916847qtk.55.2019.08.06.09.28.39
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 06 Aug 2019 09:28:39 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/15] Migrate the block group code into it's own file
+Date:   Tue,  6 Aug 2019 12:28:22 -0400
+Message-Id: <20190806162837.15840-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20190806082201.22683-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is the rebased set of the much larger group of patches I sent last month.
+The first 10 patches are already merged, these just didn't apply cleanly.  I
+went through and applied each one, deleted and re-copied anything that didn't
+merge cleanly, and compiled between each patch to make sure everything was
+kosher.  This series just moves code around with the goal of making
+extent-tree.c smaller.  I made no other changes other than moving code around, I
+want to keep cleanups a separate thing _after_ we move the code around.  Thanks,
 
+Josef
 
-On 6.08.19 г. 11:22 ч., Qu Wenruo wrote:
-> Btrfs has btrfs_end_transaction_throttle() which could try to commit
-> transaction when needed.
-> 
-> However under most cases btrfs_end_transaction_throttle() won't really
-> commit transaction, due to the hard timing requirement.
-> 
-> Now introduce a new error injection point, btrfs_need_trans_pressure(),
-> to allow btrfs_should_end_transaction() to return 1 and
-> btrfs_end_transaction_throttle() to fallback to
-> btrfs_commit_transaction().
-> 
-> With such more aggressive transaction commit, we can dig deeper into
-> cases like snapshot drop.
-> Now each reference drop of btrfs_drop_snapshot() will lead to a
-> transaction commit, allowing dm-logwrites to catch more details, other
-> than one big transaction dropping everything.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/transaction.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index 248d535bb14d..2e758957126e 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -10,6 +10,7 @@
->  #include <linux/pagemap.h>
->  #include <linux/blkdev.h>
->  #include <linux/uuid.h>
-> +#include <linux/error-injection.h>
->  #include "ctree.h"
->  #include "disk-io.h"
->  #include "transaction.h"
-> @@ -781,10 +782,18 @@ void btrfs_throttle(struct btrfs_fs_info *fs_info)
->  	wait_current_trans(fs_info);
->  }
->  
-> +static noinline bool btrfs_need_trans_pressure(struct btrfs_trans_handle *trans)
-> +{
-> +	return false;
-> +}
-> +ALLOW_ERROR_INJECTION(btrfs_need_trans_pressure, TRUE);
-> +
->  static int should_end_transaction(struct btrfs_trans_handle *trans)
->  {
->  	struct btrfs_fs_info *fs_info = trans->fs_info;
->  
-> +	if (btrfs_need_trans_pressure(trans))
-> +		return 1;
->  	if (btrfs_check_space_for_delayed_refs(fs_info))
->  		return 1;
->  
-> @@ -845,6 +854,8 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
->  
->  	btrfs_trans_release_chunk_metadata(trans);
->  
-> +	if (throttle && btrfs_need_trans_pressure(trans))
-> +		return btrfs_commit_transaction(trans);
-
-I'd rather have this gated behind CONFIG_BTRFS_DEBUG.
-
-
->  	if (lock && READ_ONCE(cur_trans->state) == TRANS_STATE_BLOCKED) {
->  		if (throttle)
->  			return btrfs_commit_transaction(trans);
-> 
