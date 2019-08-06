@@ -2,53 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC1C5836C1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 18:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30579836C2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 18:29:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387903AbfHFQ26 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 12:28:58 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:46272 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387893AbfHFQ26 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Aug 2019 12:28:58 -0400
-Received: by mail-qt1-f195.google.com with SMTP id h21so85093058qtn.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 06 Aug 2019 09:28:57 -0700 (PDT)
+        id S2387907AbfHFQ3A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 12:29:00 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:42617 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387892AbfHFQ27 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Aug 2019 12:28:59 -0400
+Received: by mail-qk1-f193.google.com with SMTP id 201so63317197qkm.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 06 Aug 2019 09:28:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=RnXREa8RVoocEwkNCkNI2GYWcey90wZ0QRnkNMZk7Pw=;
-        b=RLEXVzA5xar3CR3oPTrQ3FVXpKE3UrcfDSaWOk6r4RQpIPdpHUYd1ShUskUd9+qZ3R
-         8MTmTpY4lPKqF2ZEZugoUz07mSZZDl3eo14e8WQQJUEa2s7nksbth0N2IkPJFMNg7vqJ
-         v3pDIPx0GTeZaHEDrYOVayGlrQmsI6I7Ml7GkV9GKJ4U5nHfLp1F9F/xFZ2nLgL1bR+w
-         oIgl6kXtQyQ2M6uYlX/DfLLogfymDxwUhaCeyn6oImM7+K3sxCC5YadL06UAgFSpM6HY
-         gkXGPi5jF56//2AuZb+LiJqQrjuZhYkoyecbJOZmiCNxx+a3pj7VZykFg2kgORamsGPl
-         AutA==
+        bh=ZCke4KIJ/wCizwcYAwrqKJf7qIiYsu4D+m8YqD+sgNM=;
+        b=mez/KCt7kBd624rIOuJvorHJ2F3g8DWDdafvTlfi10Tfr/Ak9gh6GI0NuZZ0HYc53u
+         0KkKYnDYZ4MW/T8PBhV0o0hXFpGojLVmzum6w2uHEtFFKVde3i7o2hoNFiujZVt2S/os
+         6+Fi8t9I/0R9QOUzhg1RczMF5VSlQjIEayMk4Iy/IMUm9NLUZOviHEoWBHRBgf3zGQuI
+         zyj006nhqWXafFzEwSV21qN8Tj+vzVXJYj8jU4tOYS8TeqjEWcxT6DEi8kbq6SglUgy4
+         nnh+SxnH3LfV+xxkLQ3bVaHp1b44Hq2/jXPgk92tas443INZ+tOjrcr6dd1sgW+f6Mqd
+         HTrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=RnXREa8RVoocEwkNCkNI2GYWcey90wZ0QRnkNMZk7Pw=;
-        b=TjLIuPzpzUoiFkZsPLKlgd2GLyaPCL6UkatxAJD1g0g2u8p+Ue2KFfCO9ftp02zfmb
-         Kcw6TQlmb2h2USubavx6zHH5plg6WbPR2jzEXcUp/fS/yZFVxFaKPQEcDOkcluOeAqj3
-         KHps1ihjb+zjLUk7fIgic/nYEKfUnEtJJm5pX0XAT/Xcryx9iFTKoFVH4UOAn90zxZjN
-         lcapHNNtJ1nIa5cYDcjCXgi4SuCiqrfeEjBVCKivUi8SVU47eMLLs06a4sqwSK0FD/9i
-         tyZu75lPGZRA4DkeddJOwD/UbNuNG6hGFGlbCBC8a0CbtVB/XwrZUxWIJVqa+sXQVvzl
-         rNvA==
-X-Gm-Message-State: APjAAAW5lGBKuG19E+qHrtfPbNKRbZLQt90++BxX0blE+tnQf3KJn4Lm
-        JcePL+JW82rja6voplp4AreFBA==
-X-Google-Smtp-Source: APXvYqzX8+W52dkJli/ZnL0t34Y35HCo4/iPhmXBio6LxASjFBjd1HvanzWcuqIMcwO4IbLuISw7tw==
-X-Received: by 2002:ac8:47d5:: with SMTP id d21mr4032765qtr.360.1565108936528;
-        Tue, 06 Aug 2019 09:28:56 -0700 (PDT)
+        bh=ZCke4KIJ/wCizwcYAwrqKJf7qIiYsu4D+m8YqD+sgNM=;
+        b=ZJy3jSN87BAfiCkWfB8EolTINoD2XjtsPVYzvBlW/gpfoO8Ve8pCjdL0CsNSn8/Hws
+         hQriIOi2Oi9gg8s9QLTX4OC5nNbTFIzfduAeQur+tUqvOPcevjF2bCQbgYi/1V9kYxPe
+         dbNm4jcLtPFioOtllzYRUS6dT6UIaQWNDi2JY6Xw0bPSX+INx0kbczs/R4C0XLBWcOCO
+         5Nt1/dIjqIUEfWPnBMMj0eTJ0HiFwfiHD2ZEYu9wSBK8wdgdpWIPiZgxMSVJVsDzWMg2
+         GU5wY3WJmgYz48/jrNpuPzJxEJyOVBZ5Jy4BERPunpWZXjcllNTyz7sdNHMGsWVCAr1j
+         MPZQ==
+X-Gm-Message-State: APjAAAXDwl1pUmXF0pr26yhVmo5WaA8C8LoAXCJXxhOB6lx813H3TPCI
+        e/bbCNGFCRSjO3HZfp9YMDX//uYWn6PZiA==
+X-Google-Smtp-Source: APXvYqwmJ87Ra//l16Oov7SzTBGPGl6ehB3ms8IA7OM+8NqGTH2egx2m3YlYgrB48t7M0iCQqOe+Gg==
+X-Received: by 2002:a05:620a:10b2:: with SMTP id h18mr4057238qkk.14.1565108938235;
+        Tue, 06 Aug 2019 09:28:58 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id q17sm34048370qtl.13.2019.08.06.09.28.55
+        by smtp.gmail.com with ESMTPSA id z21sm34682211qto.48.2019.08.06.09.28.57
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 06 Aug 2019 09:28:55 -0700 (PDT)
+        Tue, 06 Aug 2019 09:28:57 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH 09/15] btrfs: export block group accounting helpers
-Date:   Tue,  6 Aug 2019 12:28:31 -0400
-Message-Id: <20190806162837.15840-10-josef@toxicpanda.com>
+Subject: [PATCH 10/15] btrfs: migrate the block group space accounting helpers
+Date:   Tue,  6 Aug 2019 12:28:32 -0400
+Message-Id: <20190806162837.15840-11-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190806162837.15840-1-josef@toxicpanda.com>
 References: <20190806162837.15840-1-josef@toxicpanda.com>
@@ -59,98 +59,386 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Want to move these functions into block-group.c, so export them.
+We can now easily migrate this code as well.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-group.h |  6 ++++++
- fs/btrfs/extent-tree.c | 21 ++++++++++-----------
- 2 files changed, 16 insertions(+), 11 deletions(-)
+ fs/btrfs/block-group.c | 173 +++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/extent-tree.c | 173 -----------------------------------------
+ 2 files changed, 173 insertions(+), 173 deletions(-)
 
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index f23da9d82525..e17effab028f 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -193,6 +193,12 @@ void btrfs_dec_block_group_ro(struct btrfs_block_group_cache *cache);
- int btrfs_start_dirty_block_groups(struct btrfs_trans_handle *trans);
- int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans);
- int btrfs_setup_space_cache(struct btrfs_trans_handle *trans);
-+int btrfs_update_block_group(struct btrfs_trans_handle *trans,
-+			     u64 bytenr, u64 num_bytes, int alloc);
-+int btrfs_add_reserved_bytes(struct btrfs_block_group_cache *cache,
-+			     u64 ram_bytes, u64 num_bytes, int delalloc);
-+void btrfs_free_reserved_bytes(struct btrfs_block_group_cache *cache,
-+			       u64 num_bytes, int delalloc);
- 
- static inline int btrfs_block_group_cache_done(
- 		struct btrfs_block_group_cache *cache)
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 7f65958efc40..6959debccd35 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2914,8 +2914,8 @@ int btrfs_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags,
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index de9d5b3cdac6..5c2995d9b572 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2535,3 +2535,176 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
  	return ret;
  }
  
--static int update_block_group(struct btrfs_trans_handle *trans,
--			      u64 bytenr, u64 num_bytes, int alloc)
 +int btrfs_update_block_group(struct btrfs_trans_handle *trans,
 +			     u64 bytenr, u64 num_bytes, int alloc)
- {
- 	struct btrfs_fs_info *info = trans->fs_info;
- 	struct btrfs_block_group_cache *cache = NULL;
-@@ -3215,8 +3215,8 @@ btrfs_inc_block_group_reservations(struct btrfs_block_group_cache *bg)
-  * reservation and the block group has become read only we cannot make the
-  * reservation and return -EAGAIN, otherwise this function always succeeds.
-  */
--static int btrfs_add_reserved_bytes(struct btrfs_block_group_cache *cache,
--				    u64 ram_bytes, u64 num_bytes, int delalloc)
++{
++	struct btrfs_fs_info *info = trans->fs_info;
++	struct btrfs_block_group_cache *cache = NULL;
++	u64 total = num_bytes;
++	u64 old_val;
++	u64 byte_in_group;
++	int factor;
++	int ret = 0;
++
++	/* block accounting for super block */
++	spin_lock(&info->delalloc_root_lock);
++	old_val = btrfs_super_bytes_used(info->super_copy);
++	if (alloc)
++		old_val += num_bytes;
++	else
++		old_val -= num_bytes;
++	btrfs_set_super_bytes_used(info->super_copy, old_val);
++	spin_unlock(&info->delalloc_root_lock);
++
++	while (total) {
++		cache = btrfs_lookup_block_group(info, bytenr);
++		if (!cache) {
++			ret = -ENOENT;
++			break;
++		}
++		factor = btrfs_bg_type_to_factor(cache->flags);
++
++		/*
++		 * If this block group has free space cache written out, we
++		 * need to make sure to load it if we are removing space.  This
++		 * is because we need the unpinning stage to actually add the
++		 * space back to the block group, otherwise we will leak space.
++		 */
++		if (!alloc && cache->cached == BTRFS_CACHE_NO)
++			btrfs_cache_block_group(cache, 1);
++
++		byte_in_group = bytenr - cache->key.objectid;
++		WARN_ON(byte_in_group > cache->key.offset);
++
++		spin_lock(&cache->space_info->lock);
++		spin_lock(&cache->lock);
++
++		if (btrfs_test_opt(info, SPACE_CACHE) &&
++		    cache->disk_cache_state < BTRFS_DC_CLEAR)
++			cache->disk_cache_state = BTRFS_DC_CLEAR;
++
++		old_val = btrfs_block_group_used(&cache->item);
++		num_bytes = min(total, cache->key.offset - byte_in_group);
++		if (alloc) {
++			old_val += num_bytes;
++			btrfs_set_block_group_used(&cache->item, old_val);
++			cache->reserved -= num_bytes;
++			cache->space_info->bytes_reserved -= num_bytes;
++			cache->space_info->bytes_used += num_bytes;
++			cache->space_info->disk_used += num_bytes * factor;
++			spin_unlock(&cache->lock);
++			spin_unlock(&cache->space_info->lock);
++		} else {
++			old_val -= num_bytes;
++			btrfs_set_block_group_used(&cache->item, old_val);
++			cache->pinned += num_bytes;
++			btrfs_space_info_update_bytes_pinned(info,
++					cache->space_info, num_bytes);
++			cache->space_info->bytes_used -= num_bytes;
++			cache->space_info->disk_used -= num_bytes * factor;
++			spin_unlock(&cache->lock);
++			spin_unlock(&cache->space_info->lock);
++
++			trace_btrfs_space_reservation(info, "pinned",
++						      cache->space_info->flags,
++						      num_bytes, 1);
++			percpu_counter_add_batch(&cache->space_info->total_bytes_pinned,
++					   num_bytes,
++					   BTRFS_TOTAL_BYTES_PINNED_BATCH);
++			set_extent_dirty(info->pinned_extents,
++					 bytenr, bytenr + num_bytes - 1,
++					 GFP_NOFS | __GFP_NOFAIL);
++		}
++
++		spin_lock(&trans->transaction->dirty_bgs_lock);
++		if (list_empty(&cache->dirty_list)) {
++			list_add_tail(&cache->dirty_list,
++				      &trans->transaction->dirty_bgs);
++			trans->delayed_ref_updates++;
++			btrfs_get_block_group(cache);
++		}
++		spin_unlock(&trans->transaction->dirty_bgs_lock);
++
++		/*
++		 * No longer have used bytes in this block group, queue it for
++		 * deletion. We do this after adding the block group to the
++		 * dirty list to avoid races between cleaner kthread and space
++		 * cache writeout.
++		 */
++		if (!alloc && old_val == 0)
++			btrfs_mark_bg_unused(cache);
++
++		btrfs_put_block_group(cache);
++		total -= num_bytes;
++		bytenr += num_bytes;
++	}
++
++	/* Modified block groups are accounted for in the delayed_refs_rsv. */
++	btrfs_update_delayed_refs_rsv(trans);
++	return ret;
++}
++
++/**
++ * btrfs_add_reserved_bytes - update the block_group and space info counters
++ * @cache:	The cache we are manipulating
++ * @ram_bytes:  The number of bytes of file content, and will be same to
++ *              @num_bytes except for the compress path.
++ * @num_bytes:	The number of bytes in question
++ * @delalloc:   The blocks are allocated for the delalloc write
++ *
++ * This is called by the allocator when it reserves space. If this is a
++ * reservation and the block group has become read only we cannot make the
++ * reservation and return -EAGAIN, otherwise this function always succeeds.
++ */
 +int btrfs_add_reserved_bytes(struct btrfs_block_group_cache *cache,
 +			     u64 ram_bytes, u64 num_bytes, int delalloc)
- {
- 	struct btrfs_space_info *space_info = cache->space_info;
- 	int ret = 0;
-@@ -3249,9 +3249,8 @@ static int btrfs_add_reserved_bytes(struct btrfs_block_group_cache *cache,
-  * A and before transaction A commits you free that leaf, you call this with
-  * reserve set to 0 in order to clear the reservation.
-  */
--
--static void btrfs_free_reserved_bytes(struct btrfs_block_group_cache *cache,
--				      u64 num_bytes, int delalloc)
++{
++	struct btrfs_space_info *space_info = cache->space_info;
++	int ret = 0;
++
++	spin_lock(&space_info->lock);
++	spin_lock(&cache->lock);
++	if (cache->ro) {
++		ret = -EAGAIN;
++	} else {
++		cache->reserved += num_bytes;
++		space_info->bytes_reserved += num_bytes;
++		btrfs_space_info_update_bytes_may_use(cache->fs_info,
++						      space_info, -ram_bytes);
++		if (delalloc)
++			cache->delalloc_bytes += num_bytes;
++	}
++	spin_unlock(&cache->lock);
++	spin_unlock(&space_info->lock);
++	return ret;
++}
++
++/**
++ * btrfs_free_reserved_bytes - update the block_group and space info counters
++ * @cache:      The cache we are manipulating
++ * @num_bytes:  The number of bytes in question
++ * @delalloc:   The blocks are allocated for the delalloc write
++ *
++ * This is called by somebody who is freeing space that was never actually used
++ * on disk.  For example if you reserve some space for a new leaf in transaction
++ * A and before transaction A commits you free that leaf, you call this with
++ * reserve set to 0 in order to clear the reservation.
++ */
 +void btrfs_free_reserved_bytes(struct btrfs_block_group_cache *cache,
 +			       u64 num_bytes, int delalloc)
++{
++	struct btrfs_space_info *space_info = cache->space_info;
++
++	spin_lock(&space_info->lock);
++	spin_lock(&cache->lock);
++	if (cache->ro)
++		space_info->bytes_readonly += num_bytes;
++	cache->reserved -= num_bytes;
++	space_info->bytes_reserved -= num_bytes;
++	space_info->max_extent_size = 0;
++
++	if (delalloc)
++		cache->delalloc_bytes -= num_bytes;
++	spin_unlock(&cache->lock);
++	spin_unlock(&space_info->lock);
++}
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 6959debccd35..7e694d4837ad 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2914,115 +2914,6 @@ int btrfs_chunk_alloc(struct btrfs_trans_handle *trans, u64 flags,
+ 	return ret;
+ }
+ 
+-int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+-			     u64 bytenr, u64 num_bytes, int alloc)
+-{
+-	struct btrfs_fs_info *info = trans->fs_info;
+-	struct btrfs_block_group_cache *cache = NULL;
+-	u64 total = num_bytes;
+-	u64 old_val;
+-	u64 byte_in_group;
+-	int factor;
+-	int ret = 0;
+-
+-	/* block accounting for super block */
+-	spin_lock(&info->delalloc_root_lock);
+-	old_val = btrfs_super_bytes_used(info->super_copy);
+-	if (alloc)
+-		old_val += num_bytes;
+-	else
+-		old_val -= num_bytes;
+-	btrfs_set_super_bytes_used(info->super_copy, old_val);
+-	spin_unlock(&info->delalloc_root_lock);
+-
+-	while (total) {
+-		cache = btrfs_lookup_block_group(info, bytenr);
+-		if (!cache) {
+-			ret = -ENOENT;
+-			break;
+-		}
+-		factor = btrfs_bg_type_to_factor(cache->flags);
+-
+-		/*
+-		 * If this block group has free space cache written out, we
+-		 * need to make sure to load it if we are removing space.  This
+-		 * is because we need the unpinning stage to actually add the
+-		 * space back to the block group, otherwise we will leak space.
+-		 */
+-		if (!alloc && cache->cached == BTRFS_CACHE_NO)
+-			btrfs_cache_block_group(cache, 1);
+-
+-		byte_in_group = bytenr - cache->key.objectid;
+-		WARN_ON(byte_in_group > cache->key.offset);
+-
+-		spin_lock(&cache->space_info->lock);
+-		spin_lock(&cache->lock);
+-
+-		if (btrfs_test_opt(info, SPACE_CACHE) &&
+-		    cache->disk_cache_state < BTRFS_DC_CLEAR)
+-			cache->disk_cache_state = BTRFS_DC_CLEAR;
+-
+-		old_val = btrfs_block_group_used(&cache->item);
+-		num_bytes = min(total, cache->key.offset - byte_in_group);
+-		if (alloc) {
+-			old_val += num_bytes;
+-			btrfs_set_block_group_used(&cache->item, old_val);
+-			cache->reserved -= num_bytes;
+-			cache->space_info->bytes_reserved -= num_bytes;
+-			cache->space_info->bytes_used += num_bytes;
+-			cache->space_info->disk_used += num_bytes * factor;
+-			spin_unlock(&cache->lock);
+-			spin_unlock(&cache->space_info->lock);
+-		} else {
+-			old_val -= num_bytes;
+-			btrfs_set_block_group_used(&cache->item, old_val);
+-			cache->pinned += num_bytes;
+-			btrfs_space_info_update_bytes_pinned(info,
+-					cache->space_info, num_bytes);
+-			cache->space_info->bytes_used -= num_bytes;
+-			cache->space_info->disk_used -= num_bytes * factor;
+-			spin_unlock(&cache->lock);
+-			spin_unlock(&cache->space_info->lock);
+-
+-			trace_btrfs_space_reservation(info, "pinned",
+-						      cache->space_info->flags,
+-						      num_bytes, 1);
+-			percpu_counter_add_batch(&cache->space_info->total_bytes_pinned,
+-					   num_bytes,
+-					   BTRFS_TOTAL_BYTES_PINNED_BATCH);
+-			set_extent_dirty(info->pinned_extents,
+-					 bytenr, bytenr + num_bytes - 1,
+-					 GFP_NOFS | __GFP_NOFAIL);
+-		}
+-
+-		spin_lock(&trans->transaction->dirty_bgs_lock);
+-		if (list_empty(&cache->dirty_list)) {
+-			list_add_tail(&cache->dirty_list,
+-				      &trans->transaction->dirty_bgs);
+-			trans->delayed_ref_updates++;
+-			btrfs_get_block_group(cache);
+-		}
+-		spin_unlock(&trans->transaction->dirty_bgs_lock);
+-
+-		/*
+-		 * No longer have used bytes in this block group, queue it for
+-		 * deletion. We do this after adding the block group to the
+-		 * dirty list to avoid races between cleaner kthread and space
+-		 * cache writeout.
+-		 */
+-		if (!alloc && old_val == 0)
+-			btrfs_mark_bg_unused(cache);
+-
+-		btrfs_put_block_group(cache);
+-		total -= num_bytes;
+-		bytenr += num_bytes;
+-	}
+-
+-	/* Modified block groups are accounted for in the delayed_refs_rsv. */
+-	btrfs_update_delayed_refs_rsv(trans);
+-	return ret;
+-}
+-
+ static u64 first_logical_byte(struct btrfs_fs_info *fs_info, u64 search_start)
  {
- 	struct btrfs_space_info *space_info = cache->space_info;
+ 	struct btrfs_block_group_cache *cache;
+@@ -3203,70 +3094,6 @@ btrfs_inc_block_group_reservations(struct btrfs_block_group_cache *bg)
+ 	atomic_inc(&bg->reservations);
+ }
  
-@@ -3824,7 +3823,7 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
- 			goto out;
- 		}
- 
--		ret = update_block_group(trans, bytenr, num_bytes, 0);
-+		ret = btrfs_update_block_group(trans, bytenr, num_bytes, 0);
- 		if (ret) {
- 			btrfs_abort_transaction(trans, ret);
- 			goto out;
-@@ -4904,7 +4903,7 @@ static int alloc_reserved_file_extent(struct btrfs_trans_handle *trans,
- 	if (ret)
- 		return ret;
- 
--	ret = update_block_group(trans, ins->objectid, ins->offset, 1);
-+	ret = btrfs_update_block_group(trans, ins->objectid, ins->offset, 1);
- 	if (ret) { /* -ENOENT, logic error */
- 		btrfs_err(fs_info, "update block group failed for %llu %llu",
- 			ins->objectid, ins->offset);
-@@ -4994,8 +4993,8 @@ static int alloc_reserved_tree_block(struct btrfs_trans_handle *trans,
- 	if (ret)
- 		return ret;
- 
--	ret = update_block_group(trans, extent_key.objectid,
--				 fs_info->nodesize, 1);
-+	ret = btrfs_update_block_group(trans, extent_key.objectid,
-+				       fs_info->nodesize, 1);
- 	if (ret) { /* -ENOENT, logic error */
- 		btrfs_err(fs_info, "update block group failed for %llu %llu",
- 			extent_key.objectid, extent_key.offset);
+-/**
+- * btrfs_add_reserved_bytes - update the block_group and space info counters
+- * @cache:	The cache we are manipulating
+- * @ram_bytes:  The number of bytes of file content, and will be same to
+- *              @num_bytes except for the compress path.
+- * @num_bytes:	The number of bytes in question
+- * @delalloc:   The blocks are allocated for the delalloc write
+- *
+- * This is called by the allocator when it reserves space. If this is a
+- * reservation and the block group has become read only we cannot make the
+- * reservation and return -EAGAIN, otherwise this function always succeeds.
+- */
+-int btrfs_add_reserved_bytes(struct btrfs_block_group_cache *cache,
+-			     u64 ram_bytes, u64 num_bytes, int delalloc)
+-{
+-	struct btrfs_space_info *space_info = cache->space_info;
+-	int ret = 0;
+-
+-	spin_lock(&space_info->lock);
+-	spin_lock(&cache->lock);
+-	if (cache->ro) {
+-		ret = -EAGAIN;
+-	} else {
+-		cache->reserved += num_bytes;
+-		space_info->bytes_reserved += num_bytes;
+-		btrfs_space_info_update_bytes_may_use(cache->fs_info,
+-						      space_info, -ram_bytes);
+-		if (delalloc)
+-			cache->delalloc_bytes += num_bytes;
+-	}
+-	spin_unlock(&cache->lock);
+-	spin_unlock(&space_info->lock);
+-	return ret;
+-}
+-
+-/**
+- * btrfs_free_reserved_bytes - update the block_group and space info counters
+- * @cache:      The cache we are manipulating
+- * @num_bytes:  The number of bytes in question
+- * @delalloc:   The blocks are allocated for the delalloc write
+- *
+- * This is called by somebody who is freeing space that was never actually used
+- * on disk.  For example if you reserve some space for a new leaf in transaction
+- * A and before transaction A commits you free that leaf, you call this with
+- * reserve set to 0 in order to clear the reservation.
+- */
+-void btrfs_free_reserved_bytes(struct btrfs_block_group_cache *cache,
+-			       u64 num_bytes, int delalloc)
+-{
+-	struct btrfs_space_info *space_info = cache->space_info;
+-
+-	spin_lock(&space_info->lock);
+-	spin_lock(&cache->lock);
+-	if (cache->ro)
+-		space_info->bytes_readonly += num_bytes;
+-	cache->reserved -= num_bytes;
+-	space_info->bytes_reserved -= num_bytes;
+-	space_info->max_extent_size = 0;
+-
+-	if (delalloc)
+-		cache->delalloc_bytes -= num_bytes;
+-	spin_unlock(&cache->lock);
+-	spin_unlock(&space_info->lock);
+-}
+ void btrfs_prepare_extent_commit(struct btrfs_fs_info *fs_info)
+ {
+ 	struct btrfs_caching_control *next;
 -- 
 2.21.0
 
