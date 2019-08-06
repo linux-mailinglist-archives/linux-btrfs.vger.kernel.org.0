@@ -2,63 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E587A83738
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 18:43:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2298373A
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 18:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732834AbfHFQnM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 12:43:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51370 "EHLO mx1.suse.de"
+        id S1732873AbfHFQpe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 12:45:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52076 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728927AbfHFQnL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Aug 2019 12:43:11 -0400
+        id S1732117AbfHFQpe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 12:45:34 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D9A63ACC2;
-        Tue,  6 Aug 2019 16:43:10 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 93E8BAEB3;
+        Tue,  6 Aug 2019 16:45:33 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 08769DA7D7; Tue,  6 Aug 2019 18:43:41 +0200 (CEST)
-Date:   Tue, 6 Aug 2019 18:43:39 +0200
+        id 9DD98DA7D7; Tue,  6 Aug 2019 18:46:05 +0200 (CEST)
+Date:   Tue, 6 Aug 2019 18:46:05 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/25] btrfs: migrate the block group code
-Message-ID: <20190806164339.GM28208@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/2] Sysfs updates
+Message-ID: <20190806164604.GN28208@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190620193807.29311-1-josef@toxicpanda.com>
- <20190802135638.GW28208@twin.jikos.cz>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1564505777.git.dsterba@suse.com>
+ <939d08f0-e851-4f00-733e-c7de15685318@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190802135638.GW28208@twin.jikos.cz>
+In-Reply-To: <939d08f0-e851-4f00-733e-c7de15685318@oracle.com>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 02, 2019 at 03:56:38PM +0200, David Sterba wrote:
-> On Thu, Jun 20, 2019 at 03:37:42PM -0400, Josef Bacik wrote:
-> > This is the series to migrate the block group code out of extent-tree.c.  This
-> > is a much larger series than the previous two series because things were much
-> > more intertwined than block_rsv's and space_info.  There is one code change
-> > patch in this series, it is
+On Tue, Aug 06, 2019 at 11:17:09PM +0800, Anand Jain wrote:
+> On 7/31/19 1:10 AM, David Sterba wrote:
+> > Export the potential debugging data in the per-filesystem directories we
+> > already have, so we can drop debugfs. The new directories depend on
+> > CONFIG_BTRFS_DEBUG so they're not affecting normal builds.
 > > 
-> > btrfs: make caching_thread use btrfs_find_next_key
+> > David Sterba (2):
+> >    btrfs: sysfs: add debugging exports
+> >    btrfs: delete debugfs code
+> > 
+> >   fs/btrfs/sysfs.c | 68 +++++++++++++++++++++++-------------------------
+> >   fs/btrfs/sysfs.h |  5 ----
+> >   2 files changed, 32 insertions(+), 41 deletions(-)
+> > 
 > 
-> I've merged 1-10 (ie. up to the patch mentioned above) as it applied
-> cleanly on current misc-next, the rest produced some conflicts.
+> For 2/2:
+>   Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> 
+> For 1/2:
+>   IMO it would be better to delay this until we really have a debug hook
+>   exposed at the sysfs.
 
-11-25 is now in testing and will be in misc-next soon.
-
-I merged most of the patches manually, there were several updates (code
-and coding style) in the moved code. As I don't want to do that painful
-exercise again, patchsets like that must come last before the pull
-request branch is frozen. This worked well with the other code moving
-patchsets (3 patchsets, 23 patches in total).
-
-This one alone has about the same amount of patches, which appears to
-bee too much as the number of conflicts increases as other changes get
-merged. So the recommended approach is to do that in smaller batches and
-do next once the previous is merged.
+Sorry, I don't understand what you mean.
