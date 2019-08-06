@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8797682B14
+	by mail.lfdr.de (Postfix) with ESMTP id F0FBF82B15
 	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 07:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731631AbfHFFfq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 01:35:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55324 "EHLO mx1.suse.de"
+        id S1731611AbfHFFfr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 01:35:47 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55336 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725798AbfHFFfp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Aug 2019 01:35:45 -0400
+        id S1731645AbfHFFfr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 01:35:47 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D8BE7ACBA
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2019 05:35:43 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 73AE9ACC1
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2019 05:35:45 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs: qgroup: Introduce quota pause infrastrucutre
-Date:   Tue,  6 Aug 2019 13:35:34 +0800
-Message-Id: <20190806053535.14375-3-wqu@suse.com>
+Subject: [PATCH 3/3] btrfs: Pause and resume qgroup for snapshot drop
+Date:   Tue,  6 Aug 2019 13:35:35 +0800
+Message-Id: <20190806053535.14375-4-wqu@suse.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190806053535.14375-1-wqu@suse.com>
 References: <20190806053535.14375-1-wqu@suse.com>
@@ -30,195 +30,156 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch will introduce the following functions to provide a way to
-pause/resume quota:
-- btrfs_quota_pause()
-- btrfs_quota_is_paused()
-- btrfs_quota_resume()
+Btrfs qgroup has one big performance overhead for certain snapshot drop.
 
-btrfs_quota_pause() will:
-- Clear QUOTA_ENABLE bit
-  So later delayed refs won't trigger qgroup workload, and running
-  qgroup rescan will come to a stop.
+Current btrfs_drop_snapshot() will try its best to find the highest
+shared node, and just drop one ref of that common node.
+This behavior is good for minimize extent tree modification, but a
+disaster for qgroup.
 
-- Wait any existing running qgroup rescan
+Example:
+      Root 300  Root 301
+        A         B
+        | \     / |
+        |    X    |
+        | /     \ |
+        C         D
+      /   \     /   \
+     E     F    G    H
+    / \   / \  / \   / \
+   I   J K  L  M  N O   P
 
-- Update on-disk qgroup status
-  To INCONSISTENT status but still keeps QUOTA_ENABLED bit.
+In above case, if we're dropping root 301, btrfs_drop_snapshot() will
+only drop one ref for tree block C and D.
 
-- Cleanup existing qgroup traced extents
+But for qgroup, tree blocks E~P also have their owner changed, from
+300, 301 to 300 only.
 
-In paused status, newer delayed refs will not be accounted for qgroup,
-thus no qgroup overhead at commit transaction time.
+Currently we use btrfs_qgroup_trace_subtree() to manually re-dirty tree
+block E~P. And since such ref change happens in one transaction for each
+ref drop, we can't split the overhead to different transactions.
 
-While in paused status, btrfs qgroup status item and qgroup root is
-still kept as it, the status item still has STATUS_FLAG_ON, so next
-mount will still enable qgroup (although with STATUS_FLAG_INCONSIST
-flag).
+This could cause qgroup extent record flood, hugely damage performance
+or even cause OOM for too many qgroup extent records.
 
-The main purpose is to allow btrfs to skip certain qgroup heavy workload
-and trigger a rescan later.
+This patch will try to solve it in a different method, since we can't
+split the overhead into different transactions, instead of doing such
+heavy work, we just pause qgroup at the very beginning of
+btrfs_drop_snapshot().
+
+So later owner change won't trigger qgroup subtree trace, and after
+all subvolumes get removed, we just trigger a qgroup rescan to rebuild
+qgroup accounting.
+
+Also, to co-operate previous qgroup balance optimization, we don't need
+to pause qgroup to balance, thus introduce a new parameter for
+btrfs_drop_snapshot() to inform caller that we have other optimization
+to handle balance.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/qgroup.c | 87 +++++++++++++++++++++++++++++++++++++++++++++--
- fs/btrfs/qgroup.h |  3 ++
- 2 files changed, 88 insertions(+), 2 deletions(-)
+ fs/btrfs/ctree.h       |  3 ++-
+ fs/btrfs/disk-io.c     |  2 ++
+ fs/btrfs/extent-tree.c | 13 ++++++++++++-
+ fs/btrfs/relocation.c  |  4 ++--
+ fs/btrfs/transaction.c |  4 ++--
+ 5 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index f8a3c1b0a15a..5c4eb8ce7e2d 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -22,6 +22,8 @@
- #include "extent_io.h"
- #include "qgroup.h"
- 
-+/* In-memory only flag for paused qgroup */
-+#define BTRFS_QGROUP_STATUS_FLAG_PAUSED		(1 << 31)
- 
- /* TODO XXX FIXME
-  *  - subvol delete -> delete when ref goes to 0? delete limits also?
-@@ -795,12 +797,16 @@ static int update_qgroup_status_item(struct btrfs_trans_handle *trans)
- 	struct btrfs_key key;
- 	struct extent_buffer *l;
- 	struct btrfs_qgroup_status_item *ptr;
-+	u64 on_disk_flag_mask;
- 	int ret;
- 	int slot;
- 
- 	key.objectid = 0;
- 	key.type = BTRFS_QGROUP_STATUS_KEY;
- 	key.offset = 0;
-+	on_disk_flag_mask = BTRFS_QGROUP_STATUS_FLAG_ON |
-+			    BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT |
-+			    BTRFS_QGROUP_STATUS_FLAG_RESCAN;
- 
- 	path = btrfs_alloc_path();
- 	if (!path)
-@@ -816,7 +822,8 @@ static int update_qgroup_status_item(struct btrfs_trans_handle *trans)
- 	l = path->nodes[0];
- 	slot = path->slots[0];
- 	ptr = btrfs_item_ptr(l, slot, struct btrfs_qgroup_status_item);
--	btrfs_set_qgroup_status_flags(l, ptr, fs_info->qgroup_flags);
-+	btrfs_set_qgroup_status_flags(l, ptr, fs_info->qgroup_flags &
-+					      on_disk_flag_mask);
- 	btrfs_set_qgroup_status_generation(l, ptr, trans->transid);
- 	btrfs_set_qgroup_status_rescan(l, ptr,
- 				fs_info->qgroup_rescan_progress.objectid);
-@@ -1115,6 +1122,80 @@ int btrfs_quota_disable(struct btrfs_fs_info *fs_info)
- 	return ret;
- }
- 
-+/*
-+ * Pause qgroup temporarily.
-+ *
-+ * Will mark qgroup inconsistent and update qgroup tree to reflect it.
-+ * Then clear BTRFS_FS_QUOTA_ENABLED flag of fs_info, and cleanup any existing
-+ * qgroup structures.
-+ * But still leave on-disk qgroup status as quota enabled, so when user
-+ * mount such qgroup paused fs, it still shows qgroup enabled.
-+ */
-+int btrfs_quota_pause(struct btrfs_trans_handle *trans)
-+{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_delayed_ref_root *delayed_refs;
-+	int ret = 0;
-+
-+	delayed_refs = &trans->transaction->delayed_refs;
-+	mutex_lock(&fs_info->qgroup_ioctl_lock);
-+	if (test_and_clear_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags)) {
-+		btrfs_qgroup_wait_for_completion(fs_info, false);
-+
-+		if (!fs_info->quota_root)
-+			goto out;
-+
-+		spin_lock(&fs_info->qgroup_lock);
-+		fs_info->qgroup_flags |= BTRFS_QGROUP_STATUS_FLAG_INCONSISTENT |
-+					 BTRFS_QGROUP_STATUS_FLAG_PAUSED;
-+		/* Clean up dirty qgroups */
-+		while (!list_empty(&fs_info->dirty_qgroups))
-+			list_del_init(fs_info->dirty_qgroups.next);
-+		spin_unlock(&fs_info->qgroup_lock);
-+
-+		ret = update_qgroup_status_item(trans);
-+
-+		/* Cleanup qgroup traced extents by running accounting now */
-+		spin_lock(&delayed_refs->lock);
-+		btrfs_qgroup_account_extents(trans);
-+		spin_unlock(&delayed_refs->lock);
-+	}
-+out:
-+	mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+	return ret;
-+}
-+
-+bool btrfs_quota_is_paused(struct btrfs_fs_info *fs_info)
-+{
-+	if (!test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags) &&
-+	    fs_info->quota_root && fs_info->qgroup_flags &
-+	    BTRFS_QGROUP_STATUS_FLAG_PAUSED)
-+		return true;
-+	return false;
-+}
-+
-+/*
-+ * Resume previously paused quota
-+ *
-+ * This function will re-set BTRFS_FS_QUOTA_ENABLED bit, and queue
-+ * qgroup rescan work
-+ */
-+int btrfs_quota_resume(struct btrfs_fs_info *fs_info)
-+{
-+	mutex_lock(&fs_info->qgroup_ioctl_lock);
-+	if (!fs_info->quota_root) {
-+		mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+		return 0;
-+	}
-+	if (!(fs_info->qgroup_flags & BTRFS_QGROUP_STATUS_FLAG_PAUSED)) {
-+		mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+		return 0;
-+	}
-+	set_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
-+	mutex_unlock(&fs_info->qgroup_ioctl_lock);
-+	return btrfs_qgroup_rescan(fs_info);
-+}
-+
- static void qgroup_dirty(struct btrfs_fs_info *fs_info,
- 			 struct btrfs_qgroup *qgroup)
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 299e11e6c554..250da1ceda36 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2914,7 +2914,8 @@ static inline int btrfs_next_item(struct btrfs_root *root, struct btrfs_path *p)
+ int btrfs_leaf_free_space(struct extent_buffer *leaf);
+ int __must_check btrfs_drop_snapshot(struct btrfs_root *root,
+ 				     struct btrfs_block_rsv *block_rsv,
+-				     int update_ref, int for_reloc);
++				     int update_ref, int for_reloc,
++				     int pause_qgroup);
+ int btrfs_drop_subtree(struct btrfs_trans_handle *trans,
+ 			struct btrfs_root *root,
+ 			struct extent_buffer *node,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index dda4945c4beb..4587653cacf8 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1739,6 +1739,8 @@ static int cleaner_kthread(void *arg)
+ 		if (kthread_should_stop())
+ 			return 0;
+ 		if (!again) {
++			if (btrfs_quota_is_paused(fs_info))
++				btrfs_quota_resume(fs_info);
+ 			set_current_state(TASK_INTERRUPTIBLE);
+ 			schedule();
+ 			__set_current_state(TASK_RUNNING);
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index d3b58e388535..8ec0f11cd589 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -6991,7 +6991,7 @@ static noinline int walk_up_tree(struct btrfs_trans_handle *trans,
+  */
+ int btrfs_drop_snapshot(struct btrfs_root *root,
+ 			 struct btrfs_block_rsv *block_rsv, int update_ref,
+-			 int for_reloc)
++			 int for_reloc, int pause_qgroup)
  {
-@@ -2497,7 +2578,9 @@ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans)
- 	u64 num_dirty_extents = 0;
- 	u64 qgroup_to_skip;
- 	int ret = 0;
-+	bool need_search_roots;
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_path *path;
+@@ -7098,6 +7098,17 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
+ 		}
+ 	}
  
-+	need_search_roots = test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags);
- 	delayed_refs = &trans->transaction->delayed_refs;
- 	qgroup_to_skip = delayed_refs->qgroup_to_skip;
- 	while ((node = rb_first(&delayed_refs->dirty_extent_root))) {
-@@ -2507,7 +2590,7 @@ int btrfs_qgroup_account_extents(struct btrfs_trans_handle *trans)
- 		num_dirty_extents++;
- 		trace_btrfs_qgroup_account_extents(fs_info, record);
++	/*
++	 * If this subvolume is shared, and pretty high, we tend to pause
++	 * qgroup to avoid qgroup extent records flood due to sudden subtree
++	 * owner change happened in one transaction.
++	 */
++	if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags) &&
++	    pause_qgroup && (root->root_key.offset ||
++	     btrfs_root_last_snapshot(&root->root_item)) &&
++	    btrfs_header_level(root->node))
++		btrfs_quota_pause(trans);
++
+ 	wc->restarted = test_bit(BTRFS_ROOT_DEAD_TREE, &root->state);
+ 	wc->level = level;
+ 	wc->shared_level = -1;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 7f219851fa23..1e34ee7e57ab 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -2191,14 +2191,14 @@ static int clean_dirty_subvols(struct reloc_control *rc)
+ 			root->reloc_root = NULL;
+ 			if (reloc_root) {
  
--		if (!ret) {
-+		if (!ret && need_search_roots) {
- 			/*
- 			 * Old roots should be searched when inserting qgroup
- 			 * extent record
-diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-index 46ba7bd2961c..334941146a2e 100644
---- a/fs/btrfs/qgroup.h
-+++ b/fs/btrfs/qgroup.h
-@@ -234,6 +234,9 @@ struct btrfs_qgroup {
+-				ret2 = btrfs_drop_snapshot(reloc_root, NULL, 0, 1);
++				ret2 = btrfs_drop_snapshot(reloc_root, NULL, 0, 1, 0);
+ 				if (ret2 < 0 && !ret)
+ 					ret = ret2;
+ 			}
+ 			btrfs_put_fs_root(root);
+ 		} else {
+ 			/* Orphan reloc tree, just clean it up */
+-			ret2 = btrfs_drop_snapshot(root, NULL, 0, 1);
++			ret2 = btrfs_drop_snapshot(root, NULL, 0, 1, 0);
+ 			if (ret2 < 0 && !ret)
+ 				ret = ret2;
+ 		}
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index b78f853305d2..248d535bb14d 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2359,9 +2359,9 @@ int btrfs_clean_one_deleted_snapshot(struct btrfs_fs_info *fs_info)
  
- int btrfs_quota_enable(struct btrfs_fs_info *fs_info);
- int btrfs_quota_disable(struct btrfs_fs_info *fs_info);
-+int btrfs_quota_pause(struct btrfs_trans_handle *trans);
-+bool btrfs_quota_is_paused(struct btrfs_fs_info *fs_info);
-+int btrfs_quota_resume(struct btrfs_fs_info *fs_info);
- int btrfs_qgroup_rescan(struct btrfs_fs_info *fs_info);
- void btrfs_qgroup_rescan_resume(struct btrfs_fs_info *fs_info);
- int btrfs_qgroup_wait_for_completion(struct btrfs_fs_info *fs_info,
+ 	if (btrfs_header_backref_rev(root->node) <
+ 			BTRFS_MIXED_BACKREF_REV)
+-		ret = btrfs_drop_snapshot(root, NULL, 0, 0);
++		ret = btrfs_drop_snapshot(root, NULL, 0, 0, 1);
+ 	else
+-		ret = btrfs_drop_snapshot(root, NULL, 1, 0);
++		ret = btrfs_drop_snapshot(root, NULL, 1, 0, 1);
+ 
+ 	return (ret < 0) ? 0 : 1;
+ }
 -- 
 2.22.0
 
