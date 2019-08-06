@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E89C683CBD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 23:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B2183C69
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 23:42:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727827AbfHFVoE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 17:44:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51886 "EHLO mail.kernel.org"
+        id S1729077AbfHFVmB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 17:42:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53548 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727465AbfHFVeC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Aug 2019 17:34:02 -0400
+        id S1728677AbfHFVfp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 17:35:45 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 14ED0217D9;
-        Tue,  6 Aug 2019 21:34:01 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7384821872;
+        Tue,  6 Aug 2019 21:35:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565127241;
-        bh=MP1MNuC35v+xHhPROL3SIHaVCctp2q7fjRjduImFbk0=;
+        s=default; t=1565127345;
+        bh=UUJuLsrm3zV6ZEHRW9fyqquTnoyQjAhYN10RPTHWzv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rEv9f1JZ9j+TJglOGUsXRmIpS8Atw8L4MVnzwPU8wb7SvXCpUyb54UAHrBu7N/U2j
-         YirgXVrhOTG+fiq/zU5oCv/n7Awuy3n2J8WGvfD2yNDyZt1/sda0NAnMHSi5hcoSng
-         kZIX+4tUK3Zew5n5OBW3GEmkxf8qh/FR8lUBTnaQ=
+        b=fB/oiGBhFOb7DlcgrAkZQM9WQbP5YW4GE+h20CoAX/cj5kl/WETtwFfjb0SyaNTqC
+         fpqpDUOh9xZVIknJ+MmQtzYkZ+b5qIEKte3L7PCjKD8Z2RvannCK2iq6K1a8edCbEc
+         zaMX4QEr781Bh3vnFsW7JMBxvBDxPM5bM0k/Z7Js=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 24/59] Btrfs: fix deadlock between fiemap and transaction commits
-Date:   Tue,  6 Aug 2019 17:32:44 -0400
-Message-Id: <20190806213319.19203-24-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 12/32] Btrfs: fix deadlock between fiemap and transaction commits
+Date:   Tue,  6 Aug 2019 17:35:00 -0400
+Message-Id: <20190806213522.19859-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190806213319.19203-1-sashal@kernel.org>
-References: <20190806213319.19203-1-sashal@kernel.org>
+In-Reply-To: <20190806213522.19859-1-sashal@kernel.org>
+References: <20190806213522.19859-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -158,10 +158,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 22 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 982152d3f9200..69f8ab4d91f2b 100644
+index ac6c383d63140..19855659f6503 100644
 --- a/fs/btrfs/backref.c
 +++ b/fs/btrfs/backref.c
-@@ -1488,7 +1488,7 @@ int btrfs_check_shared(struct btrfs_root *root, u64 inum, u64 bytenr)
+@@ -1485,7 +1485,7 @@ int btrfs_check_shared(struct btrfs_root *root, u64 inum, u64 bytenr)
  		goto out;
  	}
  
@@ -171,7 +171,7 @@ index 982152d3f9200..69f8ab4d91f2b 100644
  		if (PTR_ERR(trans) != -ENOENT && PTR_ERR(trans) != -EROFS) {
  			ret = PTR_ERR(trans);
 diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 3f6811cdf803b..168942c5af89e 100644
+index bb8f6c020d227..a68e9130663fe 100644
 --- a/fs/btrfs/transaction.c
 +++ b/fs/btrfs/transaction.c
 @@ -28,15 +28,18 @@ static const unsigned int btrfs_blocked_trans_types[TRANS_STATE_MAX] = {
@@ -196,7 +196,7 @@ index 3f6811cdf803b..168942c5af89e 100644
  };
  
  void btrfs_put_transaction(struct btrfs_transaction *transaction)
-@@ -525,7 +528,8 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+@@ -531,7 +534,8 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
  		ret = join_transaction(fs_info, type);
  		if (ret == -EBUSY) {
  			wait_current_trans(fs_info);
@@ -206,7 +206,7 @@ index 3f6811cdf803b..168942c5af89e 100644
  				ret = -ENOENT;
  		}
  	} while (ret == -EBUSY);
-@@ -641,6 +645,16 @@ struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root
+@@ -647,6 +651,16 @@ struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root
  				 BTRFS_RESERVE_NO_FLUSH, true);
  }
  
@@ -224,10 +224,10 @@ index 3f6811cdf803b..168942c5af89e 100644
   * btrfs_attach_transaction() - catch the running transaction
   *
 diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 78c446c222b7d..2f695587f828e 100644
+index 4cbb1b55387dc..c1d34cc704722 100644
 --- a/fs/btrfs/transaction.h
 +++ b/fs/btrfs/transaction.h
-@@ -94,11 +94,13 @@ struct btrfs_transaction {
+@@ -97,11 +97,13 @@ struct btrfs_transaction {
  #define __TRANS_JOIN		(1U << 11)
  #define __TRANS_JOIN_NOLOCK	(1U << 12)
  #define __TRANS_DUMMY		(1U << 13)
@@ -241,7 +241,7 @@ index 78c446c222b7d..2f695587f828e 100644
  
  #define TRANS_EXTWRITERS	(__TRANS_START | __TRANS_ATTACH)
  
-@@ -183,6 +185,7 @@ struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rsv(
+@@ -187,6 +189,7 @@ struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rsv(
  					int min_factor);
  struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *root);
  struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root);
