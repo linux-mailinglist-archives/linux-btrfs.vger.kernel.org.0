@@ -2,140 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D19DF83387
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 16:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2712F83390
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 16:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730177AbfHFOFP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 10:05:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50892 "EHLO mx1.suse.de"
+        id S1729275AbfHFOHZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 10:07:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51680 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728836AbfHFOFP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Aug 2019 10:05:15 -0400
+        id S1726834AbfHFOHZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 10:07:25 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 53D89AF0D;
-        Tue,  6 Aug 2019 14:05:14 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Andrei Borzenkov <arvidjaar@gmail.com>
-Subject: [PATCH v2] btrfs: qgroup: Try our best to delete qgroup relations
-Date:   Tue,  6 Aug 2019 22:05:07 +0800
-Message-Id: <20190806140507.5204-1-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
+        by mx1.suse.de (Postfix) with ESMTP id 95EEFAD43
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2019 14:07:24 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B378ADA7D7; Tue,  6 Aug 2019 16:07:56 +0200 (CEST)
+Date:   Tue, 6 Aug 2019 16:07:56 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: transaction: Commit transaction more frequently
+ for BPF
+Message-ID: <20190806140756.GL28208@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190806082201.22683-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190806082201.22683-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When we try to delete qgroups, we're pretty cautious, we make sure both
-qgroups exist and there is a relationship between them, then try to
-delete the relation.
+On Tue, Aug 06, 2019 at 04:22:01PM +0800, Qu Wenruo wrote:
+> Btrfs has btrfs_end_transaction_throttle() which could try to commit
+> transaction when needed.
+> 
+> However under most cases btrfs_end_transaction_throttle() won't really
+> commit transaction, due to the hard timing requirement.
+> 
+> Now introduce a new error injection point, btrfs_need_trans_pressure(),
+> to allow btrfs_should_end_transaction() to return 1 and
+> btrfs_end_transaction_throttle() to fallback to
+> btrfs_commit_transaction().
+> 
+> With such more aggressive transaction commit, we can dig deeper into
+> cases like snapshot drop.
+> Now each reference drop of btrfs_drop_snapshot() will lead to a
+> transaction commit, allowing dm-logwrites to catch more details, other
+> than one big transaction dropping everything.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/transaction.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 248d535bb14d..2e758957126e 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/pagemap.h>
+>  #include <linux/blkdev.h>
+>  #include <linux/uuid.h>
+> +#include <linux/error-injection.h>
+>  #include "ctree.h"
+>  #include "disk-io.h"
+>  #include "transaction.h"
+> @@ -781,10 +782,18 @@ void btrfs_throttle(struct btrfs_fs_info *fs_info)
+>  	wait_current_trans(fs_info);
+>  }
+>  
 
-This behavior is OK, but the problem is we need to two relation items,
-and if we failed the first item deletion, we error out, leaving the
-other relation item in qgroup tree.
+Please put a comment here what's the purpose of the function otherwise
+the people who like to delete code will find it and you know what will
+happen next.
 
-Sometimes the error from del_qgroup_relation_item() could just be
--ENOENT, thus we can ignore that error and continue without any problem.
-
-Further more, such cautious behavior makes qgroup relation deletion
-impossible for orphan relation items.
-
-This patch will enhance __del_qgroup_relation():
-- If both qgroups and their relation items exist
-  Go the regular deletion routine and update their accounting if needed.
-
-- If any qgroup or relation item doesn't exist
-  Then we still try to delete the orphan items anyway, but don't trigger
-  the accounting update.
-
-By this, we try our best to remove relation items, and can handle orphan
-relation items properly, while still keep the existing behavior for good
-qgroup tree.
-
-Reported-by: Andrei Borzenkov <arvidjaar@gmail.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-changelog:
-v2:
-- Fix a condition for checking either @parent or @member is not found
----
- fs/btrfs/qgroup.c | 46 +++++++++++++++++++++++++++++-----------------
- 1 file changed, 29 insertions(+), 17 deletions(-)
-
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 3e6ffbbd8b0a..d6500ed42e99 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1312,8 +1312,9 @@ static int __del_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
- 	struct btrfs_qgroup *member;
- 	struct btrfs_qgroup_list *list;
- 	struct ulist *tmp;
-+	bool found = false;
- 	int ret = 0;
--	int err;
-+	int ret2;
- 
- 	tmp = ulist_alloc(GFP_KERNEL);
- 	if (!tmp)
-@@ -1327,28 +1328,39 @@ static int __del_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
- 
- 	member = find_qgroup_rb(fs_info, src);
- 	parent = find_qgroup_rb(fs_info, dst);
--	if (!member || !parent) {
--		ret = -EINVAL;
--		goto out;
--	}
-+	/*
-+	 * The parent/member pair doesn't exist, then try to delete the dead
-+	 * relation items only.
-+	 */
-+	if (!member || !parent)
-+		goto delete_item;
- 
- 	/* check if such qgroup relation exist firstly */
- 	list_for_each_entry(list, &member->groups, next_group) {
--		if (list->group == parent)
--			goto exist;
-+		if (list->group == parent) {
-+			found = true;
-+			break;
-+		}
- 	}
--	ret = -ENOENT;
--	goto out;
--exist:
-+
-+delete_item:
- 	ret = del_qgroup_relation_item(trans, src, dst);
--	err = del_qgroup_relation_item(trans, dst, src);
--	if (err && !ret)
--		ret = err;
-+	if (ret < 0 && ret != -ENOENT)
-+		goto out;
-+	ret2 = del_qgroup_relation_item(trans, dst, src);
-+	if (ret2 < 0 && ret2 != -ENOENT)
-+		goto out;
- 
--	spin_lock(&fs_info->qgroup_lock);
--	del_relation_rb(fs_info, src, dst);
--	ret = quick_update_accounting(fs_info, tmp, src, dst, -1);
--	spin_unlock(&fs_info->qgroup_lock);
-+	/* At least one deletion succeeded, return 0 */
-+	if (!ret || !ret2)
-+		ret = 0;
-+
-+	if (found) {
-+		spin_lock(&fs_info->qgroup_lock);
-+		del_relation_rb(fs_info, src, dst);
-+		ret = quick_update_accounting(fs_info, tmp, src, dst, -1);
-+		spin_unlock(&fs_info->qgroup_lock);
-+	}
- out:
- 	ulist_free(tmp);
- 	return ret;
--- 
-2.22.0
-
+> +static noinline bool btrfs_need_trans_pressure(struct btrfs_trans_handle *trans)
+> +{
+> +	return false;
+> +}
+> +ALLOW_ERROR_INJECTION(btrfs_need_trans_pressure, TRUE);
+> +
+>  static int should_end_transaction(struct btrfs_trans_handle *trans)
+>  {
+>  	struct btrfs_fs_info *fs_info = trans->fs_info;
+>  
+> +	if (btrfs_need_trans_pressure(trans))
+> +		return 1;
+>  	if (btrfs_check_space_for_delayed_refs(fs_info))
+>  		return 1;
+>  
+> @@ -845,6 +854,8 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
+>  
+>  	btrfs_trans_release_chunk_metadata(trans);
+>  
+> +	if (throttle && btrfs_need_trans_pressure(trans))
+> +		return btrfs_commit_transaction(trans);
+>  	if (lock && READ_ONCE(cur_trans->state) == TRANS_STATE_BLOCKED) {
+>  		if (throttle)
+>  			return btrfs_commit_transaction(trans);
+> -- 
+> 2.22.0
