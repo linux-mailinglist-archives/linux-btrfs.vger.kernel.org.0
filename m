@@ -2,25 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8BA582B12
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 07:35:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E34882B13
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 07:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726077AbfHFFfm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 01:35:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55290 "EHLO mx1.suse.de"
+        id S1731620AbfHFFfo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 01:35:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55310 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725798AbfHFFfm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Aug 2019 01:35:42 -0400
+        id S1725798AbfHFFfn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 01:35:43 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8D0FFACBA
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2019 05:35:41 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id ADDFAAFCE
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2019 05:35:42 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/3] btrfs: qgroup: Pause and resume qgroup for subvolume removal
-Date:   Tue,  6 Aug 2019 13:35:32 +0800
-Message-Id: <20190806053535.14375-1-wqu@suse.com>
+Subject: [PATCH 1/3] btrfs: Refactor btrfs_clean_one_deleted_snapshot() to use fs_info other than root
+Date:   Tue,  6 Aug 2019 13:35:33 +0800
+Message-Id: <20190806053535.14375-2-wqu@suse.com>
 X-Mailer: git-send-email 2.22.0
+In-Reply-To: <20190806053535.14375-1-wqu@suse.com>
+References: <20190806053535.14375-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -28,73 +30,81 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs qgroup has one big performance overhead for certain snapshot drop.
+btrfs_clean_one_deleted_snapshot() will grab needed root from fs_info,
+thus no need to pass a @root parameter.
 
-Current btrfs_drop_snapshot() will try its best to find the highest
-shared node, and just drop one ref of that common node.
-This behavior is good for minimize extent tree modification, but a
-disaster for qgroup.
+Also refactor its sole caller, cleaner_kthread() to use fs_info other
+than root.
 
-Example:
-      Root 300  Root 301
-        A         B
-        | \     / |
-        |    X    |
-        | /     \ |
-        C         D
-      /   \     /   \
-     E     F    G    H
-    / \   / \  / \   / \
-   I   J K  L  M  N O   P
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/disk-io.c     | 7 +++----
+ fs/btrfs/transaction.c | 4 ++--
+ fs/btrfs/transaction.h | 2 +-
+ 3 files changed, 6 insertions(+), 7 deletions(-)
 
-In above case, if we're dropping root 301, btrfs_drop_snapshot() will
-only drop one ref for tree block C and D.
-
-But for qgroup, tree blocks E~P also have their owner changed, from
-300, 301 to 300 only.
-
-Currently we use btrfs_qgroup_trace_subtree() to manually re-dirty tree
-block E~P. And since such ref change happens in one transaction for each
-ref drop, we can't split the overhead to different transactions.
-
-This could cause qgroup extent record flood, hugely damage performance
-or even cause OOM for too many qgroup extent records.
-
-
-Unfortunately unlike previous qgroup + balance optimization, we can't
-really do much to help.
-So to make the problem less obvious, let's just pause qgroup and resume
-it for snapshot drop, and queue a rescan automatically.
-
-For independent subvolume or small snapshot, we don't really need to do
-such pause/rescan workaround, as regular per-tree-block dropping is
-pretty qgroup friendly.
-
-
-One existing test case, btrfs/179 can trigger the behavior and test the
-patchset. Although this patchset will change the snapshot drop behavior,
-thus leaving the test harder to detect the original detect lock.
-
-Changelog:
-v1:
-- Prevent race between quota enable/disable and quota pause/resume
-
-Qu Wenruo (3):
-  btrfs: Refactor btrfs_clean_one_deleted_snapshot() to use fs_info
-    other than root
-  btrfs: qgroup: Introduce quota pause infrastrucutre
-  btrfs: Pause and resume qgroup for snapshot drop
-
- fs/btrfs/ctree.h       |  3 +-
- fs/btrfs/disk-io.c     |  9 +++--
- fs/btrfs/extent-tree.c | 13 ++++++-
- fs/btrfs/qgroup.c      | 87 +++++++++++++++++++++++++++++++++++++++++-
- fs/btrfs/qgroup.h      |  3 ++
- fs/btrfs/relocation.c  |  4 +-
- fs/btrfs/transaction.c |  8 ++--
- fs/btrfs/transaction.h |  2 +-
- 8 files changed, 114 insertions(+), 15 deletions(-)
-
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 5f7ee70b3d1a..dda4945c4beb 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -1681,8 +1681,7 @@ static void end_workqueue_fn(struct btrfs_work *work)
+ 
+ static int cleaner_kthread(void *arg)
+ {
+-	struct btrfs_root *root = arg;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
++	struct btrfs_fs_info *fs_info = arg;
+ 	int again;
+ 
+ 	while (1) {
+@@ -1715,7 +1714,7 @@ static int cleaner_kthread(void *arg)
+ 
+ 		btrfs_run_delayed_iputs(fs_info);
+ 
+-		again = btrfs_clean_one_deleted_snapshot(root);
++		again = btrfs_clean_one_deleted_snapshot(fs_info);
+ 		mutex_unlock(&fs_info->cleaner_mutex);
+ 
+ 		/*
+@@ -3161,7 +3160,7 @@ int open_ctree(struct super_block *sb,
+ 		goto fail_sysfs;
+ 	}
+ 
+-	fs_info->cleaner_kthread = kthread_run(cleaner_kthread, tree_root,
++	fs_info->cleaner_kthread = kthread_run(cleaner_kthread, fs_info,
+ 					       "btrfs-cleaner");
+ 	if (IS_ERR(fs_info->cleaner_kthread))
+ 		goto fail_sysfs;
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index e3adb714c04b..b78f853305d2 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2338,10 +2338,10 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+  * because btrfs_commit_super will poke cleaner thread and it will process it a
+  * few seconds later.
+  */
+-int btrfs_clean_one_deleted_snapshot(struct btrfs_root *root)
++int btrfs_clean_one_deleted_snapshot(struct btrfs_fs_info *fs_info)
+ {
++	struct btrfs_root *root;
+ 	int ret;
+-	struct btrfs_fs_info *fs_info = root->fs_info;
+ 
+ 	spin_lock(&fs_info->trans_lock);
+ 	if (list_empty(&fs_info->dead_roots)) {
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 2c5a6f6e5bb0..96e1bc4f8ae5 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -193,7 +193,7 @@ int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid);
+ 
+ void btrfs_add_dead_root(struct btrfs_root *root);
+ int btrfs_defrag_root(struct btrfs_root *root);
+-int btrfs_clean_one_deleted_snapshot(struct btrfs_root *root);
++int btrfs_clean_one_deleted_snapshot(struct btrfs_fs_info *fs_info);
+ int btrfs_commit_transaction(struct btrfs_trans_handle *trans);
+ int btrfs_commit_transaction_async(struct btrfs_trans_handle *trans,
+ 				   int wait_for_unblock);
 -- 
 2.22.0
 
