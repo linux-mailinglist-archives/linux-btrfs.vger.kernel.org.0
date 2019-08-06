@@ -2,202 +2,266 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A70837EF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 19:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F50383831
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 19:47:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731273AbfHFRfC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 13:35:02 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:35504 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727549AbfHFRfC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Aug 2019 13:35:02 -0400
-Received: by mail-pf1-f193.google.com with SMTP id u14so41901032pfn.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 06 Aug 2019 10:35:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hg13ycSoVuOhgBDbF5aB//LdUT21VGJu5PgfZk+vIis=;
-        b=Oz0uxAGzE9N6vEdoc5bG+caraSmlUWbqjKferBXGIOgTjS3C8UKtqXrqBeDF6amr5T
-         uoRE9clbhck0brEGP3xBf8XyXE5ebGA6gEO04I87zBGVTHvd6w1jGdsZbNHzG8VnmaSo
-         EbVuPop26feWFdK9uST5RCqQJR5HRB4c0T3TTAk/4bzA3N8IYgkYAjp/Ey3s3KeEs6FB
-         VX+w5PRZBurH5fEMn4hyvzwuV1VAnpX7mkslMkax1MHOdm5ZHZTznqrfJ30HNpDeLjzR
-         IWKnAtq8GXRE59a8/r38yLrrL3sdMA2P/mpbF41zosQCMkQIlC5IL5ae1k6jpmHwS3OH
-         E7Bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hg13ycSoVuOhgBDbF5aB//LdUT21VGJu5PgfZk+vIis=;
-        b=KKWbm38vQrxvz5tnT1CsLgITo4EaA+yNMf7hE9y1SENovAEpIUbNhx2tPUpOLTaJRR
-         aks9GhnAgVVQ+uSz98KewVfIi4PrE+bKo481PBgcXOX7J0nne7bfFGXQYlRQ4saA7DyS
-         mL9XhoE3KOWLNJvdnXjk3zefle4TkplLX/2oMwFH71WSPMhkWDIJowRdM6THuQkTbVmm
-         VzZfyc9vvM553HQQzAppebDPcg5OmflOvyNGjzGMojrTVnkI/kHUTf+55DoqqmMFW+MK
-         4cAkiNYp3N+l23cOOMgtMjCojLbxZbQ0p8atKyKIZFgQJaT920en2wc99tbJVY3SEdSG
-         CASA==
-X-Gm-Message-State: APjAAAXXOVD+KinIOKnhnm+uU4BZVxVpyyySZ87s8iKsuqTNledzPawf
-        S4H7H+FJIwBzwCyMqB9pdeqjx6VlVK0=
-X-Google-Smtp-Source: APXvYqzU2oDEs5YKlL3JNQk5CRdf8hIesaC6RszW+Ix3kZydfmrsVISOXazpXnpjLg60tPDtMbjmCA==
-X-Received: by 2002:a17:90a:5207:: with SMTP id v7mr4137579pjh.127.1565112900393;
-        Tue, 06 Aug 2019 10:35:00 -0700 (PDT)
-Received: from vader.thefacebook.com ([2620:10d:c090:200::aa33])
-        by smtp.gmail.com with ESMTPSA id v63sm90486586pfv.174.2019.08.06.10.34.59
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 06 Aug 2019 10:34:59 -0700 (PDT)
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH] Btrfs: fix workqueue deadlock on dependent filesystems
-Date:   Tue,  6 Aug 2019 10:34:52 -0700
-Message-Id: <0bea516a54b26e4e1c42e6fe47548cb48cc4172b.1565112813.git.osandov@fb.com>
-X-Mailer: git-send-email 2.22.0
+        id S1728836AbfHFRrI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 13:47:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38458 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726877AbfHFRrH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 13:47:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 65A26AED0;
+        Tue,  6 Aug 2019 17:47:05 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3CF71DA7D7; Tue,  6 Aug 2019 19:47:34 +0200 (CEST)
+Date:   Tue, 6 Aug 2019 19:47:34 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 3/5] btrfs: Detect unbalanced tree with empty leaf
+ before crashing btree operations
+Message-ID: <20190806174733.GP28208@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20190725061222.9581-1-wqu@suse.com>
+ <20190725061222.9581-4-wqu@suse.com>
+ <20190806135818.GK28208@twin.jikos.cz>
+ <1ee4b55b-8453-e07f-70dc-fa56eb15e0ad@gmx.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1ee4b55b-8453-e07f-70dc-fa56eb15e0ad@gmx.com>
+User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+On Tue, Aug 06, 2019 at 10:04:51PM +0800, Qu Wenruo wrote:
+> 
+> 
+> On 2019/8/6 下午9:58, David Sterba wrote:
+> > On Thu, Jul 25, 2019 at 02:12:20PM +0800, Qu Wenruo wrote:
+> >>  
+> >>  	if (!first_key)
+> >>  		return 0;
+> >> +	/* We have @first_key, so this @eb must have at least one item */
+> >> +	if (btrfs_header_nritems(eb) == 0) {
+> >> +		btrfs_err(fs_info,
+> >> +		"invalid tree nritems, bytenr=%llu nritems=0 expect >0",
+> >> +			  eb->start);
+> >> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
+> >> +		return -EUCLEAN;
+> >> +	}
+> > 
+> > generic/015 complains:
+> > 
+> > generic/015             [13:51:40][ 5949.416657] run fstests generic/015 at 2019-08-06 13:51:40
+> 
+> I hit this once, but not this test case.
+> The same backtrace for csum tree.
+> 
+> Have you ever hit it again?
 
-We hit a the following very strange deadlock on a system with Btrfs on a
-loop device backed by another Btrfs filesystem:
+Yes I found a few more occurences, the last one seems to be interesting so it's
+pasted as-is.
 
-1. The top (loop device) filesystem queues an async_cow work item from
-   cow_file_range_async(). We'll call this work X.
-2. Worker thread A starts work X (normal_work_helper()).
-3. Worker thread A executes the ordered work for the top filesystem
-   (run_ordered_work()).
-4. Worker thread A finishes the ordered work for work X and frees X
-   (work->ordered_free()).
-5. Worker thread A executes another ordered work and gets blocked on I/O
-   to the bottom filesystem (still in run_ordered_work()).
-6. Meanwhile, the bottom filesystem allocates and queues an async_cow
-   work item which happens to be the recently-freed X.
-7. The workqueue code sees that X is already being executed by worker
-   thread A, so it schedules X to be executed _after_ worker thread A
-   finishes (see the find_worker_executing_work() call in
-   process_one_work()).
+generic/449
 
-Now, the top filesystem is waiting for I/O on the bottom filesystem, but
-the bottom filesystem is waiting for the top filesystem to finish, so we
-deadlock.
+[21423.875017]  read_block_for_search+0x144/0x380 [btrfs]
+[21423.876433]  btrfs_search_slot+0x297/0xfc0 [btrfs]
+[21423.877830]  ? btrfs_update_delayed_refs_rsv+0x59/0x70 [btrfs]
+[21423.880038]  btrfs_lookup_csum+0xa9/0x210 [btrfs]
+[21423.881304]  btrfs_csum_file_blocks+0x205/0x800 [btrfs]
+[21423.882674]  ? unpin_extent_cache+0x27/0xc0 [btrfs]
+[21423.884050]  add_pending_csums+0x50/0x70 [btrfs]
+[21423.885285]  btrfs_finish_ordered_io+0x403/0x7b0 [btrfs]
+[21423.886781]  ? _raw_spin_unlock_bh+0x30/0x40
+[21423.888164]  normal_work_helper+0xe2/0x520 [btrfs]
+[21423.889521]  process_one_work+0x22f/0x5b0
+[21423.890332]  worker_thread+0x50/0x3b0
+[21423.891001]  ? process_one_work+0x5b0/0x5b0
+[21423.892025]  kthread+0x11a/0x130
 
-This happens because we are breaking the workqueue assumption that a
-work item cannot be recycled while it still depends on other work. Fix
-it by waiting to free the work item until we are done with all of the
-related ordered work.
+generic/511
 
-P.S.:
+[45857.582982]  read_block_for_search+0x144/0x380 [btrfs]
+[45857.584197]  btrfs_search_slot+0x297/0xfc0 [btrfs]
+[45857.585363]  ? btrfs_update_delayed_refs_rsv+0x59/0x70 [btrfs]
+[45857.586758]  btrfs_lookup_csum+0xa9/0x210 [btrfs]
+[45857.587919]  btrfs_csum_file_blocks+0x205/0x800 [btrfs]
+[45857.589023]  ? unpin_extent_cache+0x27/0xc0 [btrfs]
+[45857.590311]  add_pending_csums+0x50/0x70 [btrfs]
+[45857.591482]  btrfs_finish_ordered_io+0x403/0x7b0 [btrfs]
+[45857.592671]  ? _raw_spin_unlock_bh+0x30/0x40
+[45857.593759]  normal_work_helper+0xe2/0x520 [btrfs]
+[45857.595274]  process_one_work+0x22f/0x5b0
+[45857.596372]  worker_thread+0x50/0x3b0
+[45857.597221]  ? process_one_work+0x5b0/0x5b0
+[45857.598438]  kthread+0x11a/0x130
 
-One might ask why the workqueue code doesn't try to detect a recycled
-work item. It actually does try by checking whether the work item has
-the same work function (find_worker_executing_work()), but in our case
-the function is the same. This is the only key that the workqueue code
-has available to compare, short of adding an additional, layer-violating
-"custom key". Considering that we're the only ones that have ever hit
-this, we should just play by the rules.
+generic/129
 
-Unfortunately, we haven't been able to create a minimal reproducer other
-than our full container setup using a compress-force=zstd filesystem on
-top of another compress-force=zstd filesystem.
-
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
- fs/btrfs/async-thread.c | 56 ++++++++++++++++++++++++++++++++---------
- 1 file changed, 44 insertions(+), 12 deletions(-)
-
-diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
-index 122cb97c7909..b2bfde560331 100644
---- a/fs/btrfs/async-thread.c
-+++ b/fs/btrfs/async-thread.c
-@@ -250,16 +250,17 @@ static inline void thresh_exec_hook(struct __btrfs_workqueue *wq)
- 	}
- }
- 
--static void run_ordered_work(struct __btrfs_workqueue *wq)
-+static void run_ordered_work(struct btrfs_work *self)
- {
-+	struct __btrfs_workqueue *wq = self->wq;
- 	struct list_head *list = &wq->ordered_list;
- 	struct btrfs_work *work;
- 	spinlock_t *lock = &wq->list_lock;
- 	unsigned long flags;
-+	void *wtag;
-+	bool free_self = false;
- 
- 	while (1) {
--		void *wtag;
--
- 		spin_lock_irqsave(lock, flags);
- 		if (list_empty(list))
- 			break;
-@@ -285,16 +286,47 @@ static void run_ordered_work(struct __btrfs_workqueue *wq)
- 		list_del(&work->ordered_list);
- 		spin_unlock_irqrestore(lock, flags);
- 
--		/*
--		 * We don't want to call the ordered free functions with the
--		 * lock held though. Save the work as tag for the trace event,
--		 * because the callback could free the structure.
--		 */
--		wtag = work;
--		work->ordered_free(work);
--		trace_btrfs_all_work_done(wq->fs_info, wtag);
-+		if (work == self) {
-+			/*
-+			 * This is the work item that the worker is currently
-+			 * executing.
-+			 *
-+			 * The kernel workqueue code guarantees non-reentrancy
-+			 * of work items. I.e., if a work item with the same
-+			 * address and work function is queued twice, the second
-+			 * execution is blocked until the first one finishes. A
-+			 * work item may be freed and recycled with the same
-+			 * work function; the workqueue code assumes that the
-+			 * original work item cannot depend on the recycled work
-+			 * item in that case (see find_worker_executing_work()).
-+			 *
-+			 * Note that the work of one Btrfs filesystem may depend
-+			 * on the work of another Btrfs filesystem via, e.g., a
-+			 * loop device. Therefore, we must not allow the current
-+			 * work item to be recycled until we are really done,
-+			 * otherwise we break the above assumption and can
-+			 * deadlock.
-+			 */
-+			free_self = true;
-+		} else {
-+			/*
-+			 * We don't want to call the ordered free functions with
-+			 * the lock held though. Save the work as tag for the
-+			 * trace event, because the callback could free the
-+			 * structure.
-+			 */
-+			wtag = work;
-+			work->ordered_free(work);
-+			trace_btrfs_all_work_done(wq->fs_info, wtag);
-+		}
- 	}
- 	spin_unlock_irqrestore(lock, flags);
-+
-+	if (free_self) {
-+		wtag = self;
-+		self->ordered_free(self);
-+		trace_btrfs_all_work_done(wq->fs_info, wtag);
-+	}
- }
- 
- static void normal_work_helper(struct btrfs_work *work)
-@@ -322,7 +354,7 @@ static void normal_work_helper(struct btrfs_work *work)
- 	work->func(work);
- 	if (need_order) {
- 		set_bit(WORK_DONE_BIT, &work->flags);
--		run_ordered_work(wq);
-+		run_ordered_work(work);
- 	}
- 	if (!need_order)
- 		trace_btrfs_all_work_done(wq->fs_info, wtag);
--- 
-2.22.0
-
+[ 7512.874839] BTRFS info (device vda): disk space caching is enabled
+[ 7512.877660] BTRFS info (device vda): has skinny extents
+[ 7512.951947] BTRFS: device fsid 815ae95d-a328-472d-8299-a373d67af54e devid 1 transid 5 /dev/vdb
+[ 7512.969169] BTRFS info (device vdb): turning on discard
+[ 7512.971138] BTRFS info (device vdb): disk space caching is enabled
+[ 7512.973506] BTRFS info (device vdb): has skinny extents
+[ 7512.975497] BTRFS info (device vdb): flagging fs with big metadata feature
+[ 7513.005926] BTRFS info (device vdb): checking UUID tree
+[ 7513.395115] ------------[ cut here ]------------
+[ 7513.395120] BTRFS error (device vdb): invalid tree nritems, bytenr=30736384 nritems=0 expect >0
+[ 7513.395122] ------------[ cut here ]------------
+[ 7513.395124] BTRFS error (device vdb): invalid tree nritems, bytenr=30736384 nritems=0 expect >0
+[ 7513.395125] ------------[ cut here ]------------
+[ 7513.395185] WARNING: CPU: 1 PID: 17085 at fs/btrfs/disk-io.c:417 btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
+[ 7513.395186] Modules linked in: dm_snapshot dm_bufio dm_log_writes dm_flakey dm_mod btrfs libcrc32c xor zstd_decompress zstd_compress xxhash raid6_pq loop af_packet [last unloaded: scsi_debug]
+[ 7513.395193] CPU: 1 PID: 17085 Comm: kworker/u8:4 Tainted: G        W         5.3.0-rc3-next-20190806-default #5
+[ 7513.395194] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
+[ 7513.395212] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+[ 7513.395230] RIP: 0010:btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
+[ 7513.395232] Code: ff ff e8 9f c8 ff ff e9 4d 58 f5 ff 48 8b 13 48 c7 c6 48 9c 48 c0 48 89 ef e8 88 c8 ff ff 48 c7 c7 c0 95 48 c0 e8 c0 e9 c6 df <0f> 0b 41 be 8b ff ff ff e9 dd 5a f5 ff be e9 05 00 00 48 c7 c7 40
+[ 7513.395232] RSP: 0018:ffffab1286483ab8 EFLAGS: 00010246
+[ 7513.395233] RAX: 0000000000000024 RBX: ffff9d4f06a493b0 RCX: 0000000000000001
+[ 7513.395234] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffffffffa00d1ca8
+[ 7513.395235] RBP: ffff9d4f069d4000 R08: 0000000000000000 R09: 0000000000000000
+[ 7513.395235] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000006
+[ 7513.395247] R13: ffffab1286483b6e R14: ffff9d4f2267aaf0 R15: 0000000000000000
+[ 7513.395251] FS:  0000000000000000(0000) GS:ffff9d4f7d800000(0000) knlGS:0000000000000000
+[ 7513.395252] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 7513.395253] CR2: 00007f5d921edef4 CR3: 0000000014011000 CR4: 00000000000006e0
+[ 7513.395254] Call Trace:
+[ 7513.395277]  read_block_for_search.isra.0+0x13d/0x3d0 [btrfs]
+[ 7513.395300]  btrfs_search_slot+0x25d/0xc10 [btrfs]
+[ 7513.395325]  btrfs_lookup_csum+0x6a/0x160 [btrfs]
+[ 7513.395330]  ? kmem_cache_alloc+0x1f2/0x280
+[ 7513.395354]  btrfs_csum_file_blocks+0x198/0x6f0 [btrfs]
+[ 7513.395378]  add_pending_csums+0x50/0x70 [btrfs]
+[ 7513.395403]  btrfs_finish_ordered_io+0x3cb/0x7f0 [btrfs]
+[ 7513.395432]  normal_work_helper+0xd1/0x540 [btrfs]
+[ 7513.395437]  process_one_work+0x22d/0x580
+[ 7513.395440]  worker_thread+0x50/0x3b0
+[ 7513.395443]  kthread+0xfe/0x140
+[ 7513.395446]  ? process_one_work+0x580/0x580
+[ 7513.395447]  ? kthread_park+0x80/0x80
+[ 7513.395452]  ret_from_fork+0x24/0x30
+[ 7513.395454] irq event stamp: 0
+[ 7513.395457] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[ 7513.395461] hardirqs last disabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
+[ 7513.395463] softirqs last  enabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
+[ 7513.395465] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[ 7513.395466] ---[ end trace f6f3adf90f4ea411 ]---
+[ 7513.395470] ------------[ cut here ]------------
+[ 7513.395471] BTRFS: Transaction aborted (error -117)
+[ 7513.395528] WARNING: CPU: 1 PID: 17085 at fs/btrfs/inode.c:3175 btrfs_finish_ordered_io+0x781/0x7f0 [btrfs]
+[ 7513.395529] Modules linked in: dm_snapshot dm_bufio dm_log_writes dm_flakey dm_mod btrfs libcrc32c xor zstd_decompress zstd_compress xxhash raid6_pq loop af_packet [last unloaded: scsi_debug]
+[ 7513.395540] CPU: 1 PID: 17085 Comm: kworker/u8:4 Tainted: G        W         5.3.0-rc3-next-20190806-default #5
+[ 7513.395542] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
+[ 7513.395570] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+[ 7513.395588] RIP: 0010:btrfs_finish_ordered_io+0x781/0x7f0 [btrfs]
+[ 7513.395590] Code: e9 aa fc ff ff 49 8b 47 50 f0 48 0f ba a8 e8 33 00 00 02 72 17 41 83 fd fb 74 5b 44 89 ee 48 c7 c7 08 b4 48 c0 e8 22 55 c9 df <0f> 0b 44 89 e9 ba 67 0c 00 00 eb b0 88 5c 24 10 41 89 de 41 bd fb
+[ 7513.395592] RSP: 0018:ffffab1286483d90 EFLAGS: 00010286
+[ 7513.395593] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
+[ 7513.395594] RDX: 0000000000000002 RSI: 0000000000000001 RDI: ffffffffa00d1ca8
+[ 7513.395596] RBP: ffff9d4f573d8c80 R08: 0000000000000000 R09: 0000000000000000
+[ 7513.395597] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9d4f06120e80
+[ 7513.395598] R13: 00000000ffffff8b R14: ffff9d4f03e85000 R15: ffff9d4f57763750
+[ 7513.395603] FS:  0000000000000000(0000) GS:ffff9d4f7d800000(0000) knlGS:0000000000000000
+[ 7513.395605] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 7513.395606] CR2: 00007f5d921edef4 CR3: 0000000014011000 CR4: 00000000000006e0
+[ 7513.395607] Call Trace:
+[ 7513.395638]  normal_work_helper+0xd1/0x540 [btrfs]
+[ 7513.395642]  process_one_work+0x22d/0x580
+[ 7513.395645]  worker_thread+0x50/0x3b0
+[ 7513.395648]  kthread+0xfe/0x140
+[ 7513.395651]  ? process_one_work+0x580/0x580
+[ 7513.395653]  ? kthread_park+0x80/0x80
+[ 7513.395656]  ret_from_fork+0x24/0x30
+[ 7513.395658] irq event stamp: 0
+[ 7513.395659] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[ 7513.395662] hardirqs last disabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
+[ 7513.395665] softirqs last  enabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
+[ 7513.395666] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[ 7513.395668] ---[ end trace f6f3adf90f4ea412 ]---
+[ 7513.395671] BTRFS: error (device vdb) in btrfs_finish_ordered_io:3175: errno=-117 unknown
+[ 7513.395674] BTRFS info (device vdb): forced readonly
+[ 7513.396527] WARNING: CPU: 3 PID: 2709 at fs/btrfs/disk-io.c:417 btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
+[ 7513.399117] WARNING: CPU: 2 PID: 29478 at fs/btrfs/disk-io.c:417 btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
+[ 7513.400326] Modules linked in: dm_snapshot dm_bufio dm_log_writes dm_flakey dm_mod btrfs libcrc32c xor zstd_decompress zstd_compress xxhash raid6_pq loop af_packet [last unloaded: scsi_debug]
+[ 7513.402828] Modules linked in: dm_snapshot dm_bufio dm_log_writes dm_flakey dm_mod btrfs libcrc32c xor zstd_decompress zstd_compress xxhash raid6_pq loop af_packet [last unloaded: scsi_debug]
+[ 7513.404136] CPU: 3 PID: 2709 Comm: kworker/u8:8 Tainted: G        W         5.3.0-rc3-next-20190806-default #5
+[ 7513.406553] CPU: 2 PID: 29478 Comm: kworker/u8:14 Tainted: G        W         5.3.0-rc3-next-20190806-default #5
+[ 7513.411174] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
+[ 7513.413441] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
+[ 7513.413464] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+[ 7513.415124] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+[ 7513.416431] RIP: 0010:btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
+[ 7513.416433] Code: ff ff e8 9f c8 ff ff e9 4d 58 f5 ff 48 8b 13 48 c7 c6 48 9c 48 c0 48 89 ef e8 88 c8 ff ff 48 c7 c7 c0 95 48 c0 e8 c0 e9 c6 df <0f> 0b 41 be 8b ff ff ff e9 dd 5a f5 ff be e9 05 00 00 48 c7 c7 40
+[ 7513.417412] RIP: 0010:btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
+[ 7513.420742] RSP: 0000:ffffab1283b83ab8 EFLAGS: 00010246
+[ 7513.421912] Code: ff ff e8 9f c8 ff ff e9 4d 58 f5 ff 48 8b 13 48 c7 c6 48 9c 48 c0 48 89 ef e8 88 c8 ff ff 48 c7 c7 c0 95 48 c0 e8 c0 e9 c6 df <0f> 0b 41 be 8b ff ff ff e9 dd 5a f5 ff be e9 05 00 00 48 c7 c7 40
+[ 7513.423177] RAX: 0000000000000024 RBX: ffff9d4f06a493b0 RCX: 0000000000000001
+[ 7513.423178] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffffffffa00d040b
+[ 7513.424570] RSP: 0018:ffffab1287043ab8 EFLAGS: 00010246
+[ 7513.426005] RBP: ffff9d4f069d4000 R08: 0000000000000000 R09: 0000000000000000
+[ 7513.427876] RAX: 0000000000000024 RBX: ffff9d4f06a493b0 RCX: 0000000000000001
+[ 7513.429411] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000006
+[ 7513.429412] R13: ffffab1283b83b6e R14: ffff9d4f47b27150 R15: 0000000000000000
+[ 7513.430963] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffffffffa00d040b
+[ 7513.432092] FS:  0000000000000000(0000) GS:ffff9d4f7da00000(0000) knlGS:0000000000000000
+[ 7513.433535] RBP: ffff9d4f069d4000 R08: 0000000000000000 R09: 0000000000000000
+[ 7513.434145] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 7513.434146] CR2: 00007f907ab328e0 CR3: 000000007d2cb000 CR4: 00000000000006e0
+[ 7513.435037] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000006
+[ 7513.435038] R13: ffffab1287043b6e R14: ffff9d4f61e75af0 R15: 0000000000000000
+[ 7513.436009] Call Trace:
+[ 7513.436973] FS:  0000000000000000(0000) GS:ffff9d4f7dc00000(0000) knlGS:0000000000000000
+[ 7513.437892]  read_block_for_search.isra.0+0x13d/0x3d0 [btrfs]
+[ 7513.438806] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 7513.439932]  btrfs_search_slot+0x25d/0xc10 [btrfs]
+[ 7513.441229] CR2: 00007f5d91fa7e40 CR3: 000000007d2cb000 CR4: 00000000000006e0
+[ 7513.442323]  btrfs_lookup_csum+0x6a/0x160 [btrfs]
+[ 7513.442994] Call Trace:
+[ 7513.443764]  ? kmem_cache_alloc+0x1f2/0x280
+[ 7513.444346]  read_block_for_search.isra.0+0x13d/0x3d0 [btrfs]
+[ 7513.445182]  btrfs_csum_file_blocks+0x198/0x6f0 [btrfs]
+[ 7513.445815]  btrfs_search_slot+0x25d/0xc10 [btrfs]
+[ 7513.446570]  add_pending_csums+0x50/0x70 [btrfs]
+[ 7513.447126]  btrfs_lookup_csum+0x6a/0x160 [btrfs]
+[ 7513.448462]  btrfs_finish_ordered_io+0x3cb/0x7f0 [btrfs]
+[ 7513.450730]  ? kmem_cache_alloc+0x1f2/0x280
+[ 7513.452643]  normal_work_helper+0xd1/0x540 [btrfs]
+[ 7513.454315]  btrfs_csum_file_blocks+0x198/0x6f0 [btrfs]
+[ 7513.455379]  process_one_work+0x22d/0x580
+[ 7513.456451]  add_pending_csums+0x50/0x70 [btrfs]
+[ 7513.457570]  worker_thread+0x50/0x3b0
+[ 7513.460066]  btrfs_finish_ordered_io+0x3cb/0x7f0 [btrfs]
+[ 7513.463658]  kthread+0xfe/0x140
+[ 7513.465743]  normal_work_helper+0xd1/0x540 [btrfs]
+[ 7513.467701]  ? process_one_work+0x580/0x580
+[ 7513.467703]  ? kthread_park+0x80/0x80
+[ 7513.468978]  process_one_work+0x22d/0x580
+[ 7513.470096]  ret_from_fork+0x24/0x30
+[ 7513.473537]  worker_thread+0x50/0x3b0
+[ 7513.474525] irq event stamp: 0
+[ 7513.475631]  kthread+0xfe/0x140
+[ 7513.477203] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+[ 7513.477207] hardirqs last disabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
+[ 7513.479011]  ? process_one_work+0x580/0x580
+[ 7513.480541] softirqs last  enabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
+[ 7513.480542] softirqs last disabled at (0): [<0000000000000000>] 0x0
+[ 7513.482354]  ? kthread_park+0x80/0x80
+[ 7513.484191] ---[ end trace f6f3adf90f4ea413 ]---
+[ 7513.591444]  ret_from_fork+0x24/0x30
+[ 7513.592257] irq event stamp: 13768774
+[ 7513.592975] hardirqs last  enabled at (13768773): [<ffffffffa06575b9>] _raw_spin_unlock_irq+0x29/0x40
+[ 7513.594386] hardirqs last disabled at (13768774): [<ffffffffa064fb7e>] __schedule+0xae/0x830
+[ 7513.595732] softirqs last  enabled at (13768770): [<ffffffffa0a0035c>] __do_softirq+0x35c/0x45c
+[ 7513.597472] softirqs last disabled at (13768759): [<ffffffffa006a713>] irq_exit+0xb3/0xc0
