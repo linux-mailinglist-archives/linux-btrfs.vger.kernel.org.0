@@ -2,253 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B2183C69
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 23:42:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3B3283D8A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 00:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729077AbfHFVmB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 17:42:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728677AbfHFVfp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Aug 2019 17:35:45 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7384821872;
-        Tue,  6 Aug 2019 21:35:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1565127345;
-        bh=UUJuLsrm3zV6ZEHRW9fyqquTnoyQjAhYN10RPTHWzv4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fB/oiGBhFOb7DlcgrAkZQM9WQbP5YW4GE+h20CoAX/cj5kl/WETtwFfjb0SyaNTqC
-         fpqpDUOh9xZVIknJ+MmQtzYkZ+b5qIEKte3L7PCjKD8Z2RvannCK2iq6K1a8edCbEc
-         zaMX4QEr781Bh3vnFsW7JMBxvBDxPM5bM0k/Z7Js=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 12/32] Btrfs: fix deadlock between fiemap and transaction commits
-Date:   Tue,  6 Aug 2019 17:35:00 -0400
-Message-Id: <20190806213522.19859-12-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190806213522.19859-1-sashal@kernel.org>
-References: <20190806213522.19859-1-sashal@kernel.org>
+        id S1726783AbfHFWsZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 18:48:25 -0400
+Received: from m9a0001g.houston.softwaregrp.com ([15.124.64.66]:39669 "EHLO
+        m9a0001g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726044AbfHFWsZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 18:48:25 -0400
+Received: FROM m9a0001g.houston.softwaregrp.com (15.121.0.190) BY m9a0001g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-btrfs@vger.kernel.org;
+ Tue,  6 Aug 2019 22:48:14 +0000
+Received: from M4W0335.microfocus.com (2002:f78:1193::f78:1193) by
+ M9W0067.microfocus.com (2002:f79:be::f79:be) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Tue, 6 Aug 2019 22:47:53 +0000
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com (15.124.8.13) by
+ M4W0335.microfocus.com (15.120.17.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Tue, 6 Aug 2019 22:47:53 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ro/M3XW/YsFrM8qtmpkmTZxQwAYkGyFPJsXXdZhnMIRVHR8UXEZIgl/bji7lEy35abJpZIyVQxPo+JmuUfFUqKB44rNaZv4eGThdzJy44PIHJK2EfVD9ziGDwpkH1DbF8dkrZEn8Nn/YHH6WVT5OPnUNPKZvlMALEpZL9TEEHgoATk0FHXshMgvGZHjfWPZR4eWigipK2UjjwcfGHUp3RVBC3At4QvQVip2/DPD7sOmbEOIysCfVlcP5ozsOuzCg1z0EvYNByy+1RHEUFh+TwSexY2hhPS6evmu1xLSsohzmd6DfWlRK/kB8YNNbadx/aRNJRFXKIU3Aih80xL468w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xu46FZDgXOr+zeGGpfXdyMRgqm9qz3KplBt36OypqKA=;
+ b=AQxN7jC+Lir2pR2TPzG8pdhjG5o/5lmJomBv8XCrUamjNx0p4LjWHVS+K0BHK/7UDDrWc49FR5I1E/2klPVJaS5Add4lD1U//CFtFXi+UPJQUlzRP57spaY/yNFzQlRda7f29fSA9Qu8mErOiXHcka/O/IreEcmlwYRw2g8g8I1Q6b2CxBnMbribJ89gz6rUm6sCv/mI37pzaRRnx+7b09Te7v6EXgrlLEMCdvucb8oZ4GAYsvUEbt4b33G2upbXV4J28Wzwzxtkqs2vloAE0VmyYHWe1c+3GkZa+hVCTDo/jvsQxGaKfgChBoJ8jjMElLEmNIYdjCD9grRQxMSjDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
+ BY5PR18MB3363.namprd18.prod.outlook.com (10.255.139.24) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2157.14; Tue, 6 Aug 2019 22:47:52 +0000
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::e94d:d625:c907:d8a0]) by BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::e94d:d625:c907:d8a0%4]) with mapi id 15.20.2157.011; Tue, 6 Aug 2019
+ 22:47:52 +0000
+From:   WenRuo Qu <wqu@suse.com>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: transaction: Commit transaction more frequently
+ for BPF
+Thread-Topic: [PATCH] btrfs: transaction: Commit transaction more frequently
+ for BPF
+Thread-Index: AQHVTGrzEtc3c1UWiUyycIcN1ab4i6buuQ2A
+Date:   Tue, 6 Aug 2019 22:47:51 +0000
+Message-ID: <7a1d90b0-968f-33b4-79ff-4cb155e93ef4@suse.com>
+References: <20190806082201.22683-1-wqu@suse.com>
+ <94e81fef-1dff-28e7-0d2d-a366ccdbe8c8@suse.com>
+In-Reply-To: <94e81fef-1dff-28e7-0d2d-a366ccdbe8c8@suse.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: TYCPR01CA0113.jpnprd01.prod.outlook.com
+ (2603:1096:405:4::29) To BY5PR18MB3266.namprd18.prod.outlook.com
+ (2603:10b6:a03:1a1::15)
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [54.250.245.166]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dad25be1-278d-4c5f-5dd7-08d71ac01cd2
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR18MB3363;
+x-ms-traffictypediagnostic: BY5PR18MB3363:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BY5PR18MB33631A412DB43561BDC56A19D6D50@BY5PR18MB3363.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 0121F24F22
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(366004)(376002)(396003)(346002)(39860400002)(136003)(199004)(189003)(66446008)(7736002)(64756008)(186003)(6506007)(52116002)(305945005)(76176011)(31686004)(14454004)(55236004)(102836004)(478600001)(36756003)(99286004)(386003)(66556008)(446003)(486006)(316002)(11346002)(476003)(2906002)(110136005)(2616005)(256004)(26005)(66946007)(14444005)(66476007)(8936002)(3846002)(2501003)(8676002)(6116002)(5660300002)(53936002)(229853002)(86362001)(71200400001)(71190400001)(6246003)(81166006)(81156014)(68736007)(31696002)(6512007)(25786009)(6436002)(6486002)(66066001);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3363;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: weYSN8VzpDs+jj1PDK+vMKdQILRlNWflZaoSVEcyqiLbEivY8giGSX4QkFkQ/U+isZ91kTEztHMLwyapBTDgoIQHvjL9UJzChYSFW1UfJvkRUCH109fdTRFvP3hCLTp/Tps63ZCpx4tJAOpl82CgZVnjLgAwQVLtdcZRGG8mM5bcLKaMlwSsEkdS8hVJwv2d60UZNTdUaGUnlp7Zprr2Sqd/LXh/2dqI3LyciK7hULBPcFITeJS/NJ7QXpzGUcznPbc1Qs6Yu6s62g2e6BJnAiLRJy32eNiyFkc1X/od2TypQw22TWhpAAkqZYm6vZPD9dglb/sq7wGl178NiPCMCZiOZxMwD32TswSolg81laQMmAoQjP8yxbiL6JGSzRFRf4waasZrvF59Nzyx9AcsX7fmcBGlF6lfCiAcIB47H0g=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4D6C740B3F79114CB9C5D062E01EC2F4@namprd18.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: dad25be1-278d-4c5f-5dd7-08d71ac01cd2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Aug 2019 22:47:51.7845
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8QV9Gj/zhX0UmrqD1v8UBaCvAW32xO/fIU8r+EiCYHOrWP0T9owc9wNJJqulB4gT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3363
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
-
-[ Upstream commit a6d155d2e363f26290ffd50591169cb96c2a609e ]
-
-The fiemap handler locks a file range that can have unflushed delalloc,
-and after locking the range, it tries to attach to a running transaction.
-If the running transaction started its commit, that is, it is in state
-TRANS_STATE_COMMIT_START, and either the filesystem was mounted with the
-flushoncommit option or the transaction is creating a snapshot for the
-subvolume that contains the file that fiemap is operating on, we end up
-deadlocking. This happens because fiemap is blocked on the transaction,
-waiting for it to complete, and the transaction is waiting for the flushed
-dealloc to complete, which requires locking the file range that the fiemap
-task already locked. The following stack traces serve as an example of
-when this deadlock happens:
-
-  (...)
-  [404571.515510] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
-  [404571.515956] Call Trace:
-  [404571.516360]  ? __schedule+0x3ae/0x7b0
-  [404571.516730]  schedule+0x3a/0xb0
-  [404571.517104]  lock_extent_bits+0x1ec/0x2a0 [btrfs]
-  [404571.517465]  ? remove_wait_queue+0x60/0x60
-  [404571.517832]  btrfs_finish_ordered_io+0x292/0x800 [btrfs]
-  [404571.518202]  normal_work_helper+0xea/0x530 [btrfs]
-  [404571.518566]  process_one_work+0x21e/0x5c0
-  [404571.518990]  worker_thread+0x4f/0x3b0
-  [404571.519413]  ? process_one_work+0x5c0/0x5c0
-  [404571.519829]  kthread+0x103/0x140
-  [404571.520191]  ? kthread_create_worker_on_cpu+0x70/0x70
-  [404571.520565]  ret_from_fork+0x3a/0x50
-  [404571.520915] kworker/u8:6    D    0 31651      2 0x80004000
-  [404571.521290] Workqueue: btrfs-flush_delalloc btrfs_flush_delalloc_helper [btrfs]
-  (...)
-  [404571.537000] fsstress        D    0 13117  13115 0x00004000
-  [404571.537263] Call Trace:
-  [404571.537524]  ? __schedule+0x3ae/0x7b0
-  [404571.537788]  schedule+0x3a/0xb0
-  [404571.538066]  wait_current_trans+0xc8/0x100 [btrfs]
-  [404571.538349]  ? remove_wait_queue+0x60/0x60
-  [404571.538680]  start_transaction+0x33c/0x500 [btrfs]
-  [404571.539076]  btrfs_check_shared+0xa3/0x1f0 [btrfs]
-  [404571.539513]  ? extent_fiemap+0x2ce/0x650 [btrfs]
-  [404571.539866]  extent_fiemap+0x2ce/0x650 [btrfs]
-  [404571.540170]  do_vfs_ioctl+0x526/0x6f0
-  [404571.540436]  ksys_ioctl+0x70/0x80
-  [404571.540734]  __x64_sys_ioctl+0x16/0x20
-  [404571.540997]  do_syscall_64+0x60/0x1d0
-  [404571.541279]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-  (...)
-  [404571.543729] btrfs           D    0 14210  14208 0x00004000
-  [404571.544023] Call Trace:
-  [404571.544275]  ? __schedule+0x3ae/0x7b0
-  [404571.544526]  ? wait_for_completion+0x112/0x1a0
-  [404571.544795]  schedule+0x3a/0xb0
-  [404571.545064]  schedule_timeout+0x1ff/0x390
-  [404571.545351]  ? lock_acquire+0xa6/0x190
-  [404571.545638]  ? wait_for_completion+0x49/0x1a0
-  [404571.545890]  ? wait_for_completion+0x112/0x1a0
-  [404571.546228]  wait_for_completion+0x131/0x1a0
-  [404571.546503]  ? wake_up_q+0x70/0x70
-  [404571.546775]  btrfs_wait_ordered_extents+0x27c/0x400 [btrfs]
-  [404571.547159]  btrfs_commit_transaction+0x3b0/0xae0 [btrfs]
-  [404571.547449]  ? btrfs_mksubvol+0x4a4/0x640 [btrfs]
-  [404571.547703]  ? remove_wait_queue+0x60/0x60
-  [404571.547969]  btrfs_mksubvol+0x605/0x640 [btrfs]
-  [404571.548226]  ? __sb_start_write+0xd4/0x1c0
-  [404571.548512]  ? mnt_want_write_file+0x24/0x50
-  [404571.548789]  btrfs_ioctl_snap_create_transid+0x169/0x1a0 [btrfs]
-  [404571.549048]  btrfs_ioctl_snap_create_v2+0x11d/0x170 [btrfs]
-  [404571.549307]  btrfs_ioctl+0x133f/0x3150 [btrfs]
-  [404571.549549]  ? mem_cgroup_charge_statistics+0x4c/0xd0
-  [404571.549792]  ? mem_cgroup_commit_charge+0x84/0x4b0
-  [404571.550064]  ? __handle_mm_fault+0xe3e/0x11f0
-  [404571.550306]  ? do_raw_spin_unlock+0x49/0xc0
-  [404571.550608]  ? _raw_spin_unlock+0x24/0x30
-  [404571.550976]  ? __handle_mm_fault+0xedf/0x11f0
-  [404571.551319]  ? do_vfs_ioctl+0xa2/0x6f0
-  [404571.551659]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
-  [404571.552087]  do_vfs_ioctl+0xa2/0x6f0
-  [404571.552355]  ksys_ioctl+0x70/0x80
-  [404571.552621]  __x64_sys_ioctl+0x16/0x20
-  [404571.552864]  do_syscall_64+0x60/0x1d0
-  [404571.553104]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-  (...)
-
-If we were joining the transaction instead of attaching to it, we would
-not risk a deadlock because a join only blocks if the transaction is in a
-state greater then or equals to TRANS_STATE_COMMIT_DOING, and the delalloc
-flush performed by a transaction is done before it reaches that state,
-when it is in the state TRANS_STATE_COMMIT_START. However a transaction
-join is intended for use cases where we do modify the filesystem, and
-fiemap only needs to peek at delayed references from the current
-transaction in order to determine if extents are shared, and, besides
-that, when there is no current transaction or when it blocks to wait for
-a current committing transaction to complete, it creates a new transaction
-without reserving any space. Such unnecessary transactions, besides doing
-unnecessary IO, can cause transaction aborts (-ENOSPC) and unnecessary
-rotation of the precious backup roots.
-
-So fix this by adding a new transaction join variant, named join_nostart,
-which behaves like the regular join, but it does not create a transaction
-when none currently exists or after waiting for a committing transaction
-to complete.
-
-Fixes: 03628cdbc64db6 ("Btrfs: do not start a transaction during fiemap")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/backref.c     |  2 +-
- fs/btrfs/transaction.c | 22 ++++++++++++++++++----
- fs/btrfs/transaction.h |  3 +++
- 3 files changed, 22 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index ac6c383d63140..19855659f6503 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -1485,7 +1485,7 @@ int btrfs_check_shared(struct btrfs_root *root, u64 inum, u64 bytenr)
- 		goto out;
- 	}
- 
--	trans = btrfs_attach_transaction(root);
-+	trans = btrfs_join_transaction_nostart(root);
- 	if (IS_ERR(trans)) {
- 		if (PTR_ERR(trans) != -ENOENT && PTR_ERR(trans) != -EROFS) {
- 			ret = PTR_ERR(trans);
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index bb8f6c020d227..a68e9130663fe 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -28,15 +28,18 @@ static const unsigned int btrfs_blocked_trans_types[TRANS_STATE_MAX] = {
- 	[TRANS_STATE_COMMIT_START]	= (__TRANS_START | __TRANS_ATTACH),
- 	[TRANS_STATE_COMMIT_DOING]	= (__TRANS_START |
- 					   __TRANS_ATTACH |
--					   __TRANS_JOIN),
-+					   __TRANS_JOIN |
-+					   __TRANS_JOIN_NOSTART),
- 	[TRANS_STATE_UNBLOCKED]		= (__TRANS_START |
- 					   __TRANS_ATTACH |
- 					   __TRANS_JOIN |
--					   __TRANS_JOIN_NOLOCK),
-+					   __TRANS_JOIN_NOLOCK |
-+					   __TRANS_JOIN_NOSTART),
- 	[TRANS_STATE_COMPLETED]		= (__TRANS_START |
- 					   __TRANS_ATTACH |
- 					   __TRANS_JOIN |
--					   __TRANS_JOIN_NOLOCK),
-+					   __TRANS_JOIN_NOLOCK |
-+					   __TRANS_JOIN_NOSTART),
- };
- 
- void btrfs_put_transaction(struct btrfs_transaction *transaction)
-@@ -531,7 +534,8 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 		ret = join_transaction(fs_info, type);
- 		if (ret == -EBUSY) {
- 			wait_current_trans(fs_info);
--			if (unlikely(type == TRANS_ATTACH))
-+			if (unlikely(type == TRANS_ATTACH ||
-+				     type == TRANS_JOIN_NOSTART))
- 				ret = -ENOENT;
- 		}
- 	} while (ret == -EBUSY);
-@@ -647,6 +651,16 @@ struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root
- 				 BTRFS_RESERVE_NO_FLUSH, true);
- }
- 
-+/*
-+ * Similar to regular join but it never starts a transaction when none is
-+ * running or after waiting for the current one to finish.
-+ */
-+struct btrfs_trans_handle *btrfs_join_transaction_nostart(struct btrfs_root *root)
-+{
-+	return start_transaction(root, 0, TRANS_JOIN_NOSTART,
-+				 BTRFS_RESERVE_NO_FLUSH, true);
-+}
-+
- /*
-  * btrfs_attach_transaction() - catch the running transaction
-  *
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 4cbb1b55387dc..c1d34cc704722 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -97,11 +97,13 @@ struct btrfs_transaction {
- #define __TRANS_JOIN		(1U << 11)
- #define __TRANS_JOIN_NOLOCK	(1U << 12)
- #define __TRANS_DUMMY		(1U << 13)
-+#define __TRANS_JOIN_NOSTART	(1U << 14)
- 
- #define TRANS_START		(__TRANS_START | __TRANS_FREEZABLE)
- #define TRANS_ATTACH		(__TRANS_ATTACH)
- #define TRANS_JOIN		(__TRANS_JOIN | __TRANS_FREEZABLE)
- #define TRANS_JOIN_NOLOCK	(__TRANS_JOIN_NOLOCK)
-+#define TRANS_JOIN_NOSTART	(__TRANS_JOIN_NOSTART)
- 
- #define TRANS_EXTWRITERS	(__TRANS_START | __TRANS_ATTACH)
- 
-@@ -187,6 +189,7 @@ struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rsv(
- 					int min_factor);
- struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *root);
- struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root);
-+struct btrfs_trans_handle *btrfs_join_transaction_nostart(struct btrfs_root *root);
- struct btrfs_trans_handle *btrfs_attach_transaction(struct btrfs_root *root);
- struct btrfs_trans_handle *btrfs_attach_transaction_barrier(
- 					struct btrfs_root *root);
--- 
-2.20.1
-
+DQoNCk9uIDIwMTkvOC82IOS4i+WNiDExOjIzLCBOaWtvbGF5IEJvcmlzb3Ygd3JvdGU6DQo+IA0K
+PiANCj4gT24gNi4wOC4xOSDQsy4gMTE6MjIg0YcuLCBRdSBXZW5ydW8gd3JvdGU6DQo+PiBCdHJm
+cyBoYXMgYnRyZnNfZW5kX3RyYW5zYWN0aW9uX3Rocm90dGxlKCkgd2hpY2ggY291bGQgdHJ5IHRv
+IGNvbW1pdA0KPj4gdHJhbnNhY3Rpb24gd2hlbiBuZWVkZWQuDQo+Pg0KPj4gSG93ZXZlciB1bmRl
+ciBtb3N0IGNhc2VzIGJ0cmZzX2VuZF90cmFuc2FjdGlvbl90aHJvdHRsZSgpIHdvbid0IHJlYWxs
+eQ0KPj4gY29tbWl0IHRyYW5zYWN0aW9uLCBkdWUgdG8gdGhlIGhhcmQgdGltaW5nIHJlcXVpcmVt
+ZW50Lg0KPj4NCj4+IE5vdyBpbnRyb2R1Y2UgYSBuZXcgZXJyb3IgaW5qZWN0aW9uIHBvaW50LCBi
+dHJmc19uZWVkX3RyYW5zX3ByZXNzdXJlKCksDQo+PiB0byBhbGxvdyBidHJmc19zaG91bGRfZW5k
+X3RyYW5zYWN0aW9uKCkgdG8gcmV0dXJuIDEgYW5kDQo+PiBidHJmc19lbmRfdHJhbnNhY3Rpb25f
+dGhyb3R0bGUoKSB0byBmYWxsYmFjayB0bw0KPj4gYnRyZnNfY29tbWl0X3RyYW5zYWN0aW9uKCku
+DQo+Pg0KPj4gV2l0aCBzdWNoIG1vcmUgYWdncmVzc2l2ZSB0cmFuc2FjdGlvbiBjb21taXQsIHdl
+IGNhbiBkaWcgZGVlcGVyIGludG8NCj4+IGNhc2VzIGxpa2Ugc25hcHNob3QgZHJvcC4NCj4+IE5v
+dyBlYWNoIHJlZmVyZW5jZSBkcm9wIG9mIGJ0cmZzX2Ryb3Bfc25hcHNob3QoKSB3aWxsIGxlYWQg
+dG8gYQ0KPj4gdHJhbnNhY3Rpb24gY29tbWl0LCBhbGxvd2luZyBkbS1sb2d3cml0ZXMgdG8gY2F0
+Y2ggbW9yZSBkZXRhaWxzLCBvdGhlcg0KPj4gdGhhbiBvbmUgYmlnIHRyYW5zYWN0aW9uIGRyb3Bw
+aW5nIGV2ZXJ5dGhpbmcuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogUXUgV2VucnVvIDx3cXVAc3Vz
+ZS5jb20+DQo+PiAtLS0NCj4+ICBmcy9idHJmcy90cmFuc2FjdGlvbi5jIHwgMTEgKysrKysrKysr
+KysNCj4+ICAxIGZpbGUgY2hhbmdlZCwgMTEgaW5zZXJ0aW9ucygrKQ0KPj4NCj4+IGRpZmYgLS1n
+aXQgYS9mcy9idHJmcy90cmFuc2FjdGlvbi5jIGIvZnMvYnRyZnMvdHJhbnNhY3Rpb24uYw0KPj4g
+aW5kZXggMjQ4ZDUzNWJiMTRkLi4yZTc1ODk1NzEyNmUgMTAwNjQ0DQo+PiAtLS0gYS9mcy9idHJm
+cy90cmFuc2FjdGlvbi5jDQo+PiArKysgYi9mcy9idHJmcy90cmFuc2FjdGlvbi5jDQo+PiBAQCAt
+MTAsNiArMTAsNyBAQA0KPj4gICNpbmNsdWRlIDxsaW51eC9wYWdlbWFwLmg+DQo+PiAgI2luY2x1
+ZGUgPGxpbnV4L2Jsa2Rldi5oPg0KPj4gICNpbmNsdWRlIDxsaW51eC91dWlkLmg+DQo+PiArI2lu
+Y2x1ZGUgPGxpbnV4L2Vycm9yLWluamVjdGlvbi5oPg0KPj4gICNpbmNsdWRlICJjdHJlZS5oIg0K
+Pj4gICNpbmNsdWRlICJkaXNrLWlvLmgiDQo+PiAgI2luY2x1ZGUgInRyYW5zYWN0aW9uLmgiDQo+
+PiBAQCAtNzgxLDEwICs3ODIsMTggQEAgdm9pZCBidHJmc190aHJvdHRsZShzdHJ1Y3QgYnRyZnNf
+ZnNfaW5mbyAqZnNfaW5mbykNCj4+ICAJd2FpdF9jdXJyZW50X3RyYW5zKGZzX2luZm8pOw0KPj4g
+IH0NCj4+ICANCj4+ICtzdGF0aWMgbm9pbmxpbmUgYm9vbCBidHJmc19uZWVkX3RyYW5zX3ByZXNz
+dXJlKHN0cnVjdCBidHJmc190cmFuc19oYW5kbGUgKnRyYW5zKQ0KPj4gK3sNCj4+ICsJcmV0dXJu
+IGZhbHNlOw0KPj4gK30NCj4+ICtBTExPV19FUlJPUl9JTkpFQ1RJT04oYnRyZnNfbmVlZF90cmFu
+c19wcmVzc3VyZSwgVFJVRSk7DQo+PiArDQo+PiAgc3RhdGljIGludCBzaG91bGRfZW5kX3RyYW5z
+YWN0aW9uKHN0cnVjdCBidHJmc190cmFuc19oYW5kbGUgKnRyYW5zKQ0KPj4gIHsNCj4+ICAJc3Ry
+dWN0IGJ0cmZzX2ZzX2luZm8gKmZzX2luZm8gPSB0cmFucy0+ZnNfaW5mbzsNCj4+ICANCj4+ICsJ
+aWYgKGJ0cmZzX25lZWRfdHJhbnNfcHJlc3N1cmUodHJhbnMpKQ0KPj4gKwkJcmV0dXJuIDE7DQo+
+PiAgCWlmIChidHJmc19jaGVja19zcGFjZV9mb3JfZGVsYXllZF9yZWZzKGZzX2luZm8pKQ0KPj4g
+IAkJcmV0dXJuIDE7DQo+PiAgDQo+PiBAQCAtODQ1LDYgKzg1NCw4IEBAIHN0YXRpYyBpbnQgX19i
+dHJmc19lbmRfdHJhbnNhY3Rpb24oc3RydWN0IGJ0cmZzX3RyYW5zX2hhbmRsZSAqdHJhbnMsDQo+
+PiAgDQo+PiAgCWJ0cmZzX3RyYW5zX3JlbGVhc2VfY2h1bmtfbWV0YWRhdGEodHJhbnMpOw0KPj4g
+IA0KPj4gKwlpZiAodGhyb3R0bGUgJiYgYnRyZnNfbmVlZF90cmFuc19wcmVzc3VyZSh0cmFucykp
+DQo+PiArCQlyZXR1cm4gYnRyZnNfY29tbWl0X3RyYW5zYWN0aW9uKHRyYW5zKTsNCj4gDQo+IEkn
+ZCByYXRoZXIgaGF2ZSB0aGlzIGdhdGVkIGJlaGluZCBDT05GSUdfQlRSRlNfREVCVUcuDQoNClRo
+ZW4gd2UgbmVlZCBib3RoIENPTkZJR19CVFJGU19ERUJVRyBhbmQgQ09ORklHX0JQRl9LUFJPQkVf
+T1ZFUlJJREUgdG8NCmVuYWJsZSB0aGlzIGZlYXR1cmUuDQoNCkFuZCBmb3IgQ09ORklHX0JUUkZT
+X0RFQlVHIG5vdCBlbmFibGVkIGNhc2UsIHRoYXQgZnVuY3Rpb24gd291bGQgbm90IGJlDQp1c2Vk
+IGF0IGFsbCAoaWYgeW91IGFsc28gZ2F0ZSB0aGUgb25lIGluIHNob3VsZF9lbmRfdHJhbnNhY3Rp
+b24oKSkuDQoNCk5vdCBzdXJlIGlmIGV4dHJhIGhhc3NsZSBpcyByZWFsbHkgd29ydGh5IGZvciBz
+dWNoIGEgc2ltcGxlIGRlYnVnIGZlYXR1cmUuDQoNClRoYW5rcywNClF1DQo+IA0KPiANCj4+ICAJ
+aWYgKGxvY2sgJiYgUkVBRF9PTkNFKGN1cl90cmFucy0+c3RhdGUpID09IFRSQU5TX1NUQVRFX0JM
+T0NLRUQpIHsNCj4+ICAJCWlmICh0aHJvdHRsZSkNCj4+ICAJCQlyZXR1cm4gYnRyZnNfY29tbWl0
+X3RyYW5zYWN0aW9uKHRyYW5zKTsNCj4+DQo=
