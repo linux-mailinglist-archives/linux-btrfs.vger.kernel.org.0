@@ -2,201 +2,182 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A0082737
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Aug 2019 23:56:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7322082855
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 02:04:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728998AbfHEV4K (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 5 Aug 2019 17:56:10 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:54516 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728483AbfHEV4K (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 5 Aug 2019 17:56:10 -0400
-Received: from dread.disaster.area (pa49-181-167-148.pa.nsw.optusnet.com.au [49.181.167.148])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 77DD5361759;
-        Tue,  6 Aug 2019 07:56:06 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1hukwU-0004gg-NE; Tue, 06 Aug 2019 07:54:58 +1000
-Date:   Tue, 6 Aug 2019 07:54:58 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Goldwyn Rodrigues <RGoldwyn@suse.com>
-Cc:     "hch@lst.de" <hch@lst.de>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ruansy.fnst@cn.fujitsu.com" <ruansy.fnst@cn.fujitsu.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 10/13] iomap: use a function pointer for dio submits
-Message-ID: <20190805215458.GH7689@dread.disaster.area>
-References: <20190802220048.16142-1-rgoldwyn@suse.de>
- <20190802220048.16142-11-rgoldwyn@suse.de>
- <20190804234321.GC7689@dread.disaster.area>
- <1565021323.13240.14.camel@suse.com>
+        id S1730952AbfHFAEi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 5 Aug 2019 20:04:38 -0400
+Received: from mout.gmx.net ([212.227.15.18]:60439 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728851AbfHFAEi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 5 Aug 2019 20:04:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1565049868;
+        bh=8bLgcufoNxSAKNenm83PdqYsCkIih0uNqnls2V4cgfM=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Q1+341D2C2et1eUbN6HpmIuQ+zwCQSirmcaUAnEVlRAmXR8ALinGWKZiuuyserKTi
+         N580/qKkBz0MJrFP7fTwrPF0C1ZGmHzAmU/te4jh7g+Ezalu577AoTfaweMErcr442
+         SDpeGtY49HA0Bb/xeXOVN/SNPiO56PVd8BajjmHs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M72oH-1hywEO1Ej9-008a0A; Tue, 06
+ Aug 2019 02:04:28 +0200
+Subject: Re: [PATCH] btrfs: qgroup: Try our best to delete qgroup relations
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, Andrei Borzenkov <arvidjaar@gmail.com>
+References: <20190803064559.9031-1-wqu@suse.com>
+ <20190805181356.GG28208@twin.jikos.cz>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <0f02d4fc-22ae-c4e7-44e8-5564e8724d73@gmx.com>
+Date:   Tue, 6 Aug 2019 08:04:19 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1565021323.13240.14.camel@suse.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0 cx=a_idp_d
-        a=gu9DDhuZhshYSb5Zs/lkOA==:117 a=gu9DDhuZhshYSb5Zs/lkOA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=iox4zFpeAAAA:8 a=7-415B0cAAAA:8 a=KOOFzyzWw9rIk0OJFBUA:9
-        a=CjuIK1q_8ugA:10 a=WzC6qhA0u3u7Ye7llzcV:22 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20190805181356.GG28208@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="KF4iqJNOKM6WmxulcsrTE1yI77AwPojdB"
+X-Provags-ID: V03:K1:zn6aApyO3rG5+S3XQZ3rTRwTQ01uBuXXbmK8/t+uCsp7vW2s5dS
+ 5PPEogrV1KWaXa/TO0/nUOYRQQX+XI7l1y84OJMrmbzHb0MzNFZHQQrFpxUzSRhAaSnO08v
+ UqBwm5Ig1oroL3J3V6WDFuxmZtc+BGWXeSEvyGibf0wYkRFeF2GHMbtJAhXPwpNKsSdeXpS
+ +elwpmNbEz/S881cCA8WA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:l++HdeNgERA=:xrLEZH8ixD3vhUeSfDgXQp
+ +F5JKO6pRZcJEnycPSTC//ypVoxF6oykDXbbj2DpIcRypgIP/xOwCqo2HPHDGP1vYPbJzm27/
+ H0napcXUaCDUGODu9uedISiVIIux6kpp7yESr1vIXO7bJA/3CbADNICFT0lOlCfnS/KoEq++H
+ fkdwDpyP9PlvANS3dz2gajHSrYbZtbLtoQXer4ZX7vuW0/9feJVnb+6yEczf2usAHQiFMvSEO
+ t0H4WRD6XLztG4+jpp1xRz9cWzj1cT0J4pqgOqcijTVK3OTHn5aN8vygsy1p0xmz90HsBjla/
+ F0yDcta7zolTL3PlZh6FYRONm97Uvpc1S79tyTXy/U8EXh0CYrlpk1PzP2PP5/sqvtUn8iKXW
+ 0/H7uylAK6uF/Mi/v45LTS+exECRVwFWXIVS6hY7KurtcP1/LrYOyFFh2H7fF66oitBU/vG5j
+ P/9V/qKPvlRp7KdvzUgqh5mQliwSw9zfcMdIO7XgnhoI0z3GZLkLpPAF+2KbXGeYJJTVxOiAG
+ EkWmAS4Zvjpn+jOWZJNIDI9LiWrf9hMTqQzyIk9HUiLGuUXw9txvS0daB4r0LGNMxpcvAwj6x
+ 0vsyF8ddVMpRiFQS1D5sAImmktKYFKrYt19cTDmJhDArRMA55fqQS5PwY6NmFrBM9GMB090oa
+ Wb/Q3CdEQNX+6WSgkO4DP38PfchUTqDYsz6RXtyzmikyDh88eWC2Q5miNEFdA6gQCXot8Kv0u
+ 9hcLVb56wG255mf0/4Iw2aZU8JcAIJmNaRN+fVKARSHuUNvipwkCMfzi9KvGW13ZqXTvJxHH1
+ RGFvNsgd+nU5FJWeCC1omqm4NthY7eoTbH65K7jxNBFkHr6XaaLsxee7HoG1YtNB889T50bfD
+ un8rV0NOwwGjpMHUMMTmTnbDTUkRy+rLhZgODcWiJ5T11jIHYRMdDYGBthUFpHtwr8EAB6nkv
+ OHDb1+ZMhpqE4t/cnkI9g4GHEw/YVU/jWCPaOL1JttdRrvEXlJJ6lGiUXZ5d1R8zo51URaRx+
+ HKfLT381p6BcgA/e9EhHz/FDPFh0q0uYQUootk/pnIBNy29SquVq5JHBWRMjwvM2+OM8kd+oH
+ nwp9ao+Q0T9tyQTffTi6gXrMANWuCXRL8w84vhQbPH7LDSQBXX9V3XUYg==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 05, 2019 at 04:08:43PM +0000, Goldwyn Rodrigues wrote:
-> On Mon, 2019-08-05 at 09:43 +1000, Dave Chinner wrote:
-> > On Fri, Aug 02, 2019 at 05:00:45PM -0500, Goldwyn Rodrigues wrote:
-> > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > 
-> > > This helps filesystems to perform tasks on the bio while
-> > > submitting for I/O. Since btrfs requires the position
-> > > we are working on, pass pos to iomap_dio_submit_bio()
-> > > 
-> > > The correct place for submit_io() is not page_ops. Would it
-> > > better to rename the structure to something like iomap_io_ops
-> > > or put it directly under struct iomap?
-> > > 
-> > > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > ---
-> > >  fs/iomap/direct-io.c  | 16 +++++++++++-----
-> > >  include/linux/iomap.h |  1 +
-> > >  2 files changed, 12 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > > index 5279029c7a3c..a802e66bf11f 100644
-> > > --- a/fs/iomap/direct-io.c
-> > > +++ b/fs/iomap/direct-io.c
-> > > @@ -59,7 +59,7 @@ int iomap_dio_iopoll(struct kiocb *kiocb, bool
-> > > spin)
-> > >  EXPORT_SYMBOL_GPL(iomap_dio_iopoll);
-> > >  
-> > >  static void iomap_dio_submit_bio(struct iomap_dio *dio, struct
-> > > iomap *iomap,
-> > > -		struct bio *bio)
-> > > +		struct bio *bio, loff_t pos)
-> > >  {
-> > >  	atomic_inc(&dio->ref);
-> > >  
-> > > @@ -67,7 +67,13 @@ static void iomap_dio_submit_bio(struct
-> > > iomap_dio *dio, struct iomap *iomap,
-> > >  		bio_set_polled(bio, dio->iocb);
-> > >  
-> > >  	dio->submit.last_queue = bdev_get_queue(iomap->bdev);
-> > > -	dio->submit.cookie = submit_bio(bio);
-> > > +	if (iomap->page_ops && iomap->page_ops->submit_io) {
-> > > +		iomap->page_ops->submit_io(bio, file_inode(dio-
-> > > >iocb->ki_filp),
-> > > +				pos);
-> > > +		dio->submit.cookie = BLK_QC_T_NONE;
-> > > +	} else {
-> > > +		dio->submit.cookie = submit_bio(bio);
-> > > +	}
-> > 
-> > I don't really like this at all. Apart from the fact it doesn't work
-> > with block device polling (RWF_HIPRI), the iomap architecture is
-> 
-> That can be added, no? Should be relayed when we clone the bio.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--KF4iqJNOKM6WmxulcsrTE1yI77AwPojdB
+Content-Type: multipart/mixed; boundary="3VbNUW7QX6nMavirjleZISy4JbsLaZjBq";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+ Andrei Borzenkov <arvidjaar@gmail.com>
+Message-ID: <0f02d4fc-22ae-c4e7-44e8-5564e8724d73@gmx.com>
+Subject: Re: [PATCH] btrfs: qgroup: Try our best to delete qgroup relations
+References: <20190803064559.9031-1-wqu@suse.com>
+ <20190805181356.GG28208@twin.jikos.cz>
+In-Reply-To: <20190805181356.GG28208@twin.jikos.cz>
 
-No idea how that all is supposed to work when you split a single bio
-into multiple bios. I'm pretty sure the iomap code is broken for
-that case, too -  Jens was silent on how to fix other than to say
-"it wasn't important so we didn't care to make sure it worked". So
-it's not clear to me exactly how block polling is supposed to work
-when a an IO needs to be split into multiple submissions...
+--3VbNUW7QX6nMavirjleZISy4JbsLaZjBq
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> > supposed to resolve the file offset -> block device + LBA mapping
-> > completely up front and so all that remains to be done is build and
-> > submit the bio(s) to the block device.
-> > 
-> > What I see here is a hack to work around the fact that btrfs has
-> > implemented both file data transformations and device mapping layer
-> > functionality as a filesystem layer between file data bio building
-> > and device bio submission. And as the btrfs file data mapping
-> > (->iomap_begin) is completely unaware that there is further block
-> > mapping to be done before block device bio submission, any generic
-> > code that btrfs uses requires special IO submission hooks rather
-> > than just calling submit_bio().
-> > 
-> > I'm not 100% sure what the solution here is, but the one thing we
-> > must resist is turning the iomap code into a mess of custom hooks
-> > that only one filesystem uses. We've been taught this lesson time
-> > and time again - the iomap infrastructure exists because stuff like
-> > bufferheads and the old direct IO code ended up so full of special
-> > case code that it ossified and became unmodifiable and
-> > unmaintainable.
-> > 
-> > We do not want to go down that path again. 
-> > 
-> > IMO, the iomap IO model needs to be restructured to support post-IO
-> > and pre-IO data verification/calculation/transformation operations
-> > so all the work that needs to be done at the inode/offset context
-> > level can be done in the iomap path before bio submission/after
-> > bio completion. This will allow infrastructure like fscrypt, data
-> > compression, data checksums, etc to be suported generically, not
-> > just by individual filesystems that provide a ->submit_io hook.
-> > 
-> > As for the btrfs needing to slice and dice bios for multiple
-> > devices?  That should be done via a block device ->make_request
-> > function, not a custom hook in the iomap code.
-> 
-> btrfs differentiates the way how metadata and data is
-> handled/replicated/stored. We would still need an entry point in the
-> iomap code to handle the I/O submission.
 
-This is a data IO path. How metadata is stored/replicated is
-irrelevant to this code path...
 
-> > That's why I don't like this hook - I think hiding data operations
-> > and/or custom bio manipulations in opaque filesystem callouts is
-> > completely the wrong approach to be taking. We need to do these
-> > things in a generic manner so that all filesystems (and block
-> > devices!) that use the iomap infrastructure can take advantage of
-> > them, not just one of them.
-> > 
-> > Quite frankly, I don't care if it takes more time and work up front,
-> > I'm tired of expedient hacks to merge code quickly repeatedly biting
-> > us on the arse and wasting far more time sorting out than we would
-> > have spent getting it right in the first place.
-> 
-> Sure. I am open to ideas. What are you proposing?
+On 2019/8/6 =E4=B8=8A=E5=8D=882:13, David Sterba wrote:
+> On Sat, Aug 03, 2019 at 02:45:59PM +0800, Qu Wenruo wrote:
+>> When we try to delete qgroups, we're pretty cautious, we make sure bot=
+h
+>> qgroups exist and there is a relationship between them, then try to
+>> delete the relation.
+>>
+>> This behavior is OK, but the problem is we need to two relation items,=
 
-That you think about how to normalise the btrfs IO path to fit into
-the standard iomap/blockdev model, rather than adding special hacks
-to iomap to allow an opaque, custom, IO model to be shoe-horned into
-the generic code.
+>> and if we failed the first item deletion, we error out, leaving the
+>> other relation item in qgroup tree.
+>>
+>> Sometimes the error from del_qgroup_relation_item() could just be
+>> -ENOENT, thus we can ignore that error and continue without any proble=
+m.
+>>
+>> Further more, such cautious behavior makes qgroup relation deletion
+>> impossible for orphan relation items.
+>>
+>> This patch will enhance __del_qgroup_relation():
+>> - If both qgroups and their relation items exist
+>>   Go the regular deletion routine and update their accounting if neede=
+d.
+>>
+>> - If any qgroup or relation item doesn't exist
+>>   Then we still try to delete the orphan items anyway, but don't trigg=
+er
+>>   the accounting update.
+>>
+>> By this, we try our best to remove relation items, and can handle orph=
+an
+>> relation items properly, while still keep the existing behavior for go=
+od
+>> qgroup tree.
+>>
+>> Reported-by: Andrei Borzenkov <arvidjaar@gmail.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>=20
+> Adding this to misc-next, please send a fstests testcase, thanks.
+>=20
+That's the problem, I haven't found how the orphan relationship item is
+left over.
 
-For example, post-read validation requires end-io processing,
-whether it be encryption, decompression, CRC/T10 validation, etc. The
-iomap end-io completion has all the information needed to run these
-things, whether it be a callout to the filesystem for custom
-processing checking, or a generic "decrypt into supplied data page"
-sort of thing. These all need to be done in the same place, so we
-should have common support for this. And I suspect the iomap should
-also state in a flag that something like this is necessary (e.g.
-IOMAP_FL_ENCRYPTED indicates post-IO decryption needs to be run).
+Latest kernel will already delete both of them if nothing wrong happened.=
 
-Similarly, on the IO submit side we have need for a pre-IO
-processing hook. That can be used to encrypt, compress, calculate
-data CRCs, do pre-IO COW processing (XFS requires a hook for this),
-etc.
 
-These hooks are needed for for both buffered and direct IO, and they
-are needed for more filesystems than just btrfs. fscrypt will need
-them, XFS needs them, etc. So rather than hide data CRCs,
-compression, and encryption deep inside the btrfs code, pull it up
-into common layers that are called by the generic code. THis will
-leave with just the things like mirroring, raid, IO retries, etc
-below the iomap code, and that's all stuff that can be done behind a
-->make_request function that is passed a bio...
+So no idea how to write one test case.
 
-Cheers,
+Thanks,
+Qu
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+
+--3VbNUW7QX6nMavirjleZISy4JbsLaZjBq--
+
+--KF4iqJNOKM6WmxulcsrTE1yI77AwPojdB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1IxAMACgkQwj2R86El
+/qgVuQf/VY/mpq1Ag/BOzlhVMQKtivKzpxBmOc4aa2cy4Q7MxOfzw89zSzv1oLtX
+uM1MHL3JkHDr9x6tW+NMgtOK1kE7lMxzemPQ+oE+d9k20KaLl+bPOG/isInRvGU5
+nOiddGMU8oSOokutZYYz4e0cWxJSyI3974XKYQYFG2s5GB0cQGYrZaa3TZMvWnMG
+Fs43nHraV6BCFbEedZWXHk2p6Jt5oFd1D2gMXaxB4NzwC1Ufl/Lrn1tgMdnhlTHO
+NREpEW+LxGBBNUjG2WlUQOn7oFwWJ9szHxKTg3Cak2MxCC70Drv3SeF6UnB9wV9r
+Zm6MBa/dLnFLespNp4siuuiUjUqDRw==
+=umte
+-----END PGP SIGNATURE-----
+
+--KF4iqJNOKM6WmxulcsrTE1yI77AwPojdB--
