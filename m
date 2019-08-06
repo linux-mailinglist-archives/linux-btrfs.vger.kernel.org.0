@@ -2,266 +2,253 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F50383831
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 19:47:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E89C683CBD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 23:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728836AbfHFRrI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 13:47:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38458 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726877AbfHFRrH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Aug 2019 13:47:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 65A26AED0;
-        Tue,  6 Aug 2019 17:47:05 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3CF71DA7D7; Tue,  6 Aug 2019 19:47:34 +0200 (CEST)
-Date:   Tue, 6 Aug 2019 19:47:34 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] btrfs: Detect unbalanced tree with empty leaf
- before crashing btree operations
-Message-ID: <20190806174733.GP28208@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190725061222.9581-1-wqu@suse.com>
- <20190725061222.9581-4-wqu@suse.com>
- <20190806135818.GK28208@twin.jikos.cz>
- <1ee4b55b-8453-e07f-70dc-fa56eb15e0ad@gmx.com>
+        id S1727827AbfHFVoE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 17:44:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51886 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727465AbfHFVeC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 17:34:02 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 14ED0217D9;
+        Tue,  6 Aug 2019 21:34:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565127241;
+        bh=MP1MNuC35v+xHhPROL3SIHaVCctp2q7fjRjduImFbk0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rEv9f1JZ9j+TJglOGUsXRmIpS8Atw8L4MVnzwPU8wb7SvXCpUyb54UAHrBu7N/U2j
+         YirgXVrhOTG+fiq/zU5oCv/n7Awuy3n2J8WGvfD2yNDyZt1/sda0NAnMHSi5hcoSng
+         kZIX+4tUK3Zew5n5OBW3GEmkxf8qh/FR8lUBTnaQ=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.2 24/59] Btrfs: fix deadlock between fiemap and transaction commits
+Date:   Tue,  6 Aug 2019 17:32:44 -0400
+Message-Id: <20190806213319.19203-24-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190806213319.19203-1-sashal@kernel.org>
+References: <20190806213319.19203-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1ee4b55b-8453-e07f-70dc-fa56eb15e0ad@gmx.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 06, 2019 at 10:04:51PM +0800, Qu Wenruo wrote:
-> 
-> 
-> On 2019/8/6 下午9:58, David Sterba wrote:
-> > On Thu, Jul 25, 2019 at 02:12:20PM +0800, Qu Wenruo wrote:
-> >>  
-> >>  	if (!first_key)
-> >>  		return 0;
-> >> +	/* We have @first_key, so this @eb must have at least one item */
-> >> +	if (btrfs_header_nritems(eb) == 0) {
-> >> +		btrfs_err(fs_info,
-> >> +		"invalid tree nritems, bytenr=%llu nritems=0 expect >0",
-> >> +			  eb->start);
-> >> +		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
-> >> +		return -EUCLEAN;
-> >> +	}
-> > 
-> > generic/015 complains:
-> > 
-> > generic/015             [13:51:40][ 5949.416657] run fstests generic/015 at 2019-08-06 13:51:40
-> 
-> I hit this once, but not this test case.
-> The same backtrace for csum tree.
-> 
-> Have you ever hit it again?
+From: Filipe Manana <fdmanana@suse.com>
 
-Yes I found a few more occurences, the last one seems to be interesting so it's
-pasted as-is.
+[ Upstream commit a6d155d2e363f26290ffd50591169cb96c2a609e ]
 
-generic/449
+The fiemap handler locks a file range that can have unflushed delalloc,
+and after locking the range, it tries to attach to a running transaction.
+If the running transaction started its commit, that is, it is in state
+TRANS_STATE_COMMIT_START, and either the filesystem was mounted with the
+flushoncommit option or the transaction is creating a snapshot for the
+subvolume that contains the file that fiemap is operating on, we end up
+deadlocking. This happens because fiemap is blocked on the transaction,
+waiting for it to complete, and the transaction is waiting for the flushed
+dealloc to complete, which requires locking the file range that the fiemap
+task already locked. The following stack traces serve as an example of
+when this deadlock happens:
 
-[21423.875017]  read_block_for_search+0x144/0x380 [btrfs]
-[21423.876433]  btrfs_search_slot+0x297/0xfc0 [btrfs]
-[21423.877830]  ? btrfs_update_delayed_refs_rsv+0x59/0x70 [btrfs]
-[21423.880038]  btrfs_lookup_csum+0xa9/0x210 [btrfs]
-[21423.881304]  btrfs_csum_file_blocks+0x205/0x800 [btrfs]
-[21423.882674]  ? unpin_extent_cache+0x27/0xc0 [btrfs]
-[21423.884050]  add_pending_csums+0x50/0x70 [btrfs]
-[21423.885285]  btrfs_finish_ordered_io+0x403/0x7b0 [btrfs]
-[21423.886781]  ? _raw_spin_unlock_bh+0x30/0x40
-[21423.888164]  normal_work_helper+0xe2/0x520 [btrfs]
-[21423.889521]  process_one_work+0x22f/0x5b0
-[21423.890332]  worker_thread+0x50/0x3b0
-[21423.891001]  ? process_one_work+0x5b0/0x5b0
-[21423.892025]  kthread+0x11a/0x130
+  (...)
+  [404571.515510] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+  [404571.515956] Call Trace:
+  [404571.516360]  ? __schedule+0x3ae/0x7b0
+  [404571.516730]  schedule+0x3a/0xb0
+  [404571.517104]  lock_extent_bits+0x1ec/0x2a0 [btrfs]
+  [404571.517465]  ? remove_wait_queue+0x60/0x60
+  [404571.517832]  btrfs_finish_ordered_io+0x292/0x800 [btrfs]
+  [404571.518202]  normal_work_helper+0xea/0x530 [btrfs]
+  [404571.518566]  process_one_work+0x21e/0x5c0
+  [404571.518990]  worker_thread+0x4f/0x3b0
+  [404571.519413]  ? process_one_work+0x5c0/0x5c0
+  [404571.519829]  kthread+0x103/0x140
+  [404571.520191]  ? kthread_create_worker_on_cpu+0x70/0x70
+  [404571.520565]  ret_from_fork+0x3a/0x50
+  [404571.520915] kworker/u8:6    D    0 31651      2 0x80004000
+  [404571.521290] Workqueue: btrfs-flush_delalloc btrfs_flush_delalloc_helper [btrfs]
+  (...)
+  [404571.537000] fsstress        D    0 13117  13115 0x00004000
+  [404571.537263] Call Trace:
+  [404571.537524]  ? __schedule+0x3ae/0x7b0
+  [404571.537788]  schedule+0x3a/0xb0
+  [404571.538066]  wait_current_trans+0xc8/0x100 [btrfs]
+  [404571.538349]  ? remove_wait_queue+0x60/0x60
+  [404571.538680]  start_transaction+0x33c/0x500 [btrfs]
+  [404571.539076]  btrfs_check_shared+0xa3/0x1f0 [btrfs]
+  [404571.539513]  ? extent_fiemap+0x2ce/0x650 [btrfs]
+  [404571.539866]  extent_fiemap+0x2ce/0x650 [btrfs]
+  [404571.540170]  do_vfs_ioctl+0x526/0x6f0
+  [404571.540436]  ksys_ioctl+0x70/0x80
+  [404571.540734]  __x64_sys_ioctl+0x16/0x20
+  [404571.540997]  do_syscall_64+0x60/0x1d0
+  [404571.541279]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+  (...)
+  [404571.543729] btrfs           D    0 14210  14208 0x00004000
+  [404571.544023] Call Trace:
+  [404571.544275]  ? __schedule+0x3ae/0x7b0
+  [404571.544526]  ? wait_for_completion+0x112/0x1a0
+  [404571.544795]  schedule+0x3a/0xb0
+  [404571.545064]  schedule_timeout+0x1ff/0x390
+  [404571.545351]  ? lock_acquire+0xa6/0x190
+  [404571.545638]  ? wait_for_completion+0x49/0x1a0
+  [404571.545890]  ? wait_for_completion+0x112/0x1a0
+  [404571.546228]  wait_for_completion+0x131/0x1a0
+  [404571.546503]  ? wake_up_q+0x70/0x70
+  [404571.546775]  btrfs_wait_ordered_extents+0x27c/0x400 [btrfs]
+  [404571.547159]  btrfs_commit_transaction+0x3b0/0xae0 [btrfs]
+  [404571.547449]  ? btrfs_mksubvol+0x4a4/0x640 [btrfs]
+  [404571.547703]  ? remove_wait_queue+0x60/0x60
+  [404571.547969]  btrfs_mksubvol+0x605/0x640 [btrfs]
+  [404571.548226]  ? __sb_start_write+0xd4/0x1c0
+  [404571.548512]  ? mnt_want_write_file+0x24/0x50
+  [404571.548789]  btrfs_ioctl_snap_create_transid+0x169/0x1a0 [btrfs]
+  [404571.549048]  btrfs_ioctl_snap_create_v2+0x11d/0x170 [btrfs]
+  [404571.549307]  btrfs_ioctl+0x133f/0x3150 [btrfs]
+  [404571.549549]  ? mem_cgroup_charge_statistics+0x4c/0xd0
+  [404571.549792]  ? mem_cgroup_commit_charge+0x84/0x4b0
+  [404571.550064]  ? __handle_mm_fault+0xe3e/0x11f0
+  [404571.550306]  ? do_raw_spin_unlock+0x49/0xc0
+  [404571.550608]  ? _raw_spin_unlock+0x24/0x30
+  [404571.550976]  ? __handle_mm_fault+0xedf/0x11f0
+  [404571.551319]  ? do_vfs_ioctl+0xa2/0x6f0
+  [404571.551659]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
+  [404571.552087]  do_vfs_ioctl+0xa2/0x6f0
+  [404571.552355]  ksys_ioctl+0x70/0x80
+  [404571.552621]  __x64_sys_ioctl+0x16/0x20
+  [404571.552864]  do_syscall_64+0x60/0x1d0
+  [404571.553104]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+  (...)
 
-generic/511
+If we were joining the transaction instead of attaching to it, we would
+not risk a deadlock because a join only blocks if the transaction is in a
+state greater then or equals to TRANS_STATE_COMMIT_DOING, and the delalloc
+flush performed by a transaction is done before it reaches that state,
+when it is in the state TRANS_STATE_COMMIT_START. However a transaction
+join is intended for use cases where we do modify the filesystem, and
+fiemap only needs to peek at delayed references from the current
+transaction in order to determine if extents are shared, and, besides
+that, when there is no current transaction or when it blocks to wait for
+a current committing transaction to complete, it creates a new transaction
+without reserving any space. Such unnecessary transactions, besides doing
+unnecessary IO, can cause transaction aborts (-ENOSPC) and unnecessary
+rotation of the precious backup roots.
 
-[45857.582982]  read_block_for_search+0x144/0x380 [btrfs]
-[45857.584197]  btrfs_search_slot+0x297/0xfc0 [btrfs]
-[45857.585363]  ? btrfs_update_delayed_refs_rsv+0x59/0x70 [btrfs]
-[45857.586758]  btrfs_lookup_csum+0xa9/0x210 [btrfs]
-[45857.587919]  btrfs_csum_file_blocks+0x205/0x800 [btrfs]
-[45857.589023]  ? unpin_extent_cache+0x27/0xc0 [btrfs]
-[45857.590311]  add_pending_csums+0x50/0x70 [btrfs]
-[45857.591482]  btrfs_finish_ordered_io+0x403/0x7b0 [btrfs]
-[45857.592671]  ? _raw_spin_unlock_bh+0x30/0x40
-[45857.593759]  normal_work_helper+0xe2/0x520 [btrfs]
-[45857.595274]  process_one_work+0x22f/0x5b0
-[45857.596372]  worker_thread+0x50/0x3b0
-[45857.597221]  ? process_one_work+0x5b0/0x5b0
-[45857.598438]  kthread+0x11a/0x130
+So fix this by adding a new transaction join variant, named join_nostart,
+which behaves like the regular join, but it does not create a transaction
+when none currently exists or after waiting for a committing transaction
+to complete.
 
-generic/129
+Fixes: 03628cdbc64db6 ("Btrfs: do not start a transaction during fiemap")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/backref.c     |  2 +-
+ fs/btrfs/transaction.c | 22 ++++++++++++++++++----
+ fs/btrfs/transaction.h |  3 +++
+ 3 files changed, 22 insertions(+), 5 deletions(-)
 
-[ 7512.874839] BTRFS info (device vda): disk space caching is enabled
-[ 7512.877660] BTRFS info (device vda): has skinny extents
-[ 7512.951947] BTRFS: device fsid 815ae95d-a328-472d-8299-a373d67af54e devid 1 transid 5 /dev/vdb
-[ 7512.969169] BTRFS info (device vdb): turning on discard
-[ 7512.971138] BTRFS info (device vdb): disk space caching is enabled
-[ 7512.973506] BTRFS info (device vdb): has skinny extents
-[ 7512.975497] BTRFS info (device vdb): flagging fs with big metadata feature
-[ 7513.005926] BTRFS info (device vdb): checking UUID tree
-[ 7513.395115] ------------[ cut here ]------------
-[ 7513.395120] BTRFS error (device vdb): invalid tree nritems, bytenr=30736384 nritems=0 expect >0
-[ 7513.395122] ------------[ cut here ]------------
-[ 7513.395124] BTRFS error (device vdb): invalid tree nritems, bytenr=30736384 nritems=0 expect >0
-[ 7513.395125] ------------[ cut here ]------------
-[ 7513.395185] WARNING: CPU: 1 PID: 17085 at fs/btrfs/disk-io.c:417 btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
-[ 7513.395186] Modules linked in: dm_snapshot dm_bufio dm_log_writes dm_flakey dm_mod btrfs libcrc32c xor zstd_decompress zstd_compress xxhash raid6_pq loop af_packet [last unloaded: scsi_debug]
-[ 7513.395193] CPU: 1 PID: 17085 Comm: kworker/u8:4 Tainted: G        W         5.3.0-rc3-next-20190806-default #5
-[ 7513.395194] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
-[ 7513.395212] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
-[ 7513.395230] RIP: 0010:btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
-[ 7513.395232] Code: ff ff e8 9f c8 ff ff e9 4d 58 f5 ff 48 8b 13 48 c7 c6 48 9c 48 c0 48 89 ef e8 88 c8 ff ff 48 c7 c7 c0 95 48 c0 e8 c0 e9 c6 df <0f> 0b 41 be 8b ff ff ff e9 dd 5a f5 ff be e9 05 00 00 48 c7 c7 40
-[ 7513.395232] RSP: 0018:ffffab1286483ab8 EFLAGS: 00010246
-[ 7513.395233] RAX: 0000000000000024 RBX: ffff9d4f06a493b0 RCX: 0000000000000001
-[ 7513.395234] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffffffffa00d1ca8
-[ 7513.395235] RBP: ffff9d4f069d4000 R08: 0000000000000000 R09: 0000000000000000
-[ 7513.395235] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000006
-[ 7513.395247] R13: ffffab1286483b6e R14: ffff9d4f2267aaf0 R15: 0000000000000000
-[ 7513.395251] FS:  0000000000000000(0000) GS:ffff9d4f7d800000(0000) knlGS:0000000000000000
-[ 7513.395252] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 7513.395253] CR2: 00007f5d921edef4 CR3: 0000000014011000 CR4: 00000000000006e0
-[ 7513.395254] Call Trace:
-[ 7513.395277]  read_block_for_search.isra.0+0x13d/0x3d0 [btrfs]
-[ 7513.395300]  btrfs_search_slot+0x25d/0xc10 [btrfs]
-[ 7513.395325]  btrfs_lookup_csum+0x6a/0x160 [btrfs]
-[ 7513.395330]  ? kmem_cache_alloc+0x1f2/0x280
-[ 7513.395354]  btrfs_csum_file_blocks+0x198/0x6f0 [btrfs]
-[ 7513.395378]  add_pending_csums+0x50/0x70 [btrfs]
-[ 7513.395403]  btrfs_finish_ordered_io+0x3cb/0x7f0 [btrfs]
-[ 7513.395432]  normal_work_helper+0xd1/0x540 [btrfs]
-[ 7513.395437]  process_one_work+0x22d/0x580
-[ 7513.395440]  worker_thread+0x50/0x3b0
-[ 7513.395443]  kthread+0xfe/0x140
-[ 7513.395446]  ? process_one_work+0x580/0x580
-[ 7513.395447]  ? kthread_park+0x80/0x80
-[ 7513.395452]  ret_from_fork+0x24/0x30
-[ 7513.395454] irq event stamp: 0
-[ 7513.395457] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-[ 7513.395461] hardirqs last disabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
-[ 7513.395463] softirqs last  enabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
-[ 7513.395465] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[ 7513.395466] ---[ end trace f6f3adf90f4ea411 ]---
-[ 7513.395470] ------------[ cut here ]------------
-[ 7513.395471] BTRFS: Transaction aborted (error -117)
-[ 7513.395528] WARNING: CPU: 1 PID: 17085 at fs/btrfs/inode.c:3175 btrfs_finish_ordered_io+0x781/0x7f0 [btrfs]
-[ 7513.395529] Modules linked in: dm_snapshot dm_bufio dm_log_writes dm_flakey dm_mod btrfs libcrc32c xor zstd_decompress zstd_compress xxhash raid6_pq loop af_packet [last unloaded: scsi_debug]
-[ 7513.395540] CPU: 1 PID: 17085 Comm: kworker/u8:4 Tainted: G        W         5.3.0-rc3-next-20190806-default #5
-[ 7513.395542] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
-[ 7513.395570] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
-[ 7513.395588] RIP: 0010:btrfs_finish_ordered_io+0x781/0x7f0 [btrfs]
-[ 7513.395590] Code: e9 aa fc ff ff 49 8b 47 50 f0 48 0f ba a8 e8 33 00 00 02 72 17 41 83 fd fb 74 5b 44 89 ee 48 c7 c7 08 b4 48 c0 e8 22 55 c9 df <0f> 0b 44 89 e9 ba 67 0c 00 00 eb b0 88 5c 24 10 41 89 de 41 bd fb
-[ 7513.395592] RSP: 0018:ffffab1286483d90 EFLAGS: 00010286
-[ 7513.395593] RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
-[ 7513.395594] RDX: 0000000000000002 RSI: 0000000000000001 RDI: ffffffffa00d1ca8
-[ 7513.395596] RBP: ffff9d4f573d8c80 R08: 0000000000000000 R09: 0000000000000000
-[ 7513.395597] R10: 0000000000000000 R11: 0000000000000000 R12: ffff9d4f06120e80
-[ 7513.395598] R13: 00000000ffffff8b R14: ffff9d4f03e85000 R15: ffff9d4f57763750
-[ 7513.395603] FS:  0000000000000000(0000) GS:ffff9d4f7d800000(0000) knlGS:0000000000000000
-[ 7513.395605] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 7513.395606] CR2: 00007f5d921edef4 CR3: 0000000014011000 CR4: 00000000000006e0
-[ 7513.395607] Call Trace:
-[ 7513.395638]  normal_work_helper+0xd1/0x540 [btrfs]
-[ 7513.395642]  process_one_work+0x22d/0x580
-[ 7513.395645]  worker_thread+0x50/0x3b0
-[ 7513.395648]  kthread+0xfe/0x140
-[ 7513.395651]  ? process_one_work+0x580/0x580
-[ 7513.395653]  ? kthread_park+0x80/0x80
-[ 7513.395656]  ret_from_fork+0x24/0x30
-[ 7513.395658] irq event stamp: 0
-[ 7513.395659] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-[ 7513.395662] hardirqs last disabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
-[ 7513.395665] softirqs last  enabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
-[ 7513.395666] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[ 7513.395668] ---[ end trace f6f3adf90f4ea412 ]---
-[ 7513.395671] BTRFS: error (device vdb) in btrfs_finish_ordered_io:3175: errno=-117 unknown
-[ 7513.395674] BTRFS info (device vdb): forced readonly
-[ 7513.396527] WARNING: CPU: 3 PID: 2709 at fs/btrfs/disk-io.c:417 btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
-[ 7513.399117] WARNING: CPU: 2 PID: 29478 at fs/btrfs/disk-io.c:417 btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
-[ 7513.400326] Modules linked in: dm_snapshot dm_bufio dm_log_writes dm_flakey dm_mod btrfs libcrc32c xor zstd_decompress zstd_compress xxhash raid6_pq loop af_packet [last unloaded: scsi_debug]
-[ 7513.402828] Modules linked in: dm_snapshot dm_bufio dm_log_writes dm_flakey dm_mod btrfs libcrc32c xor zstd_decompress zstd_compress xxhash raid6_pq loop af_packet [last unloaded: scsi_debug]
-[ 7513.404136] CPU: 3 PID: 2709 Comm: kworker/u8:8 Tainted: G        W         5.3.0-rc3-next-20190806-default #5
-[ 7513.406553] CPU: 2 PID: 29478 Comm: kworker/u8:14 Tainted: G        W         5.3.0-rc3-next-20190806-default #5
-[ 7513.411174] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
-[ 7513.413441] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.1-0-ga5cab58-prebuilt.qemu.org 04/01/2014
-[ 7513.413464] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
-[ 7513.415124] Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
-[ 7513.416431] RIP: 0010:btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
-[ 7513.416433] Code: ff ff e8 9f c8 ff ff e9 4d 58 f5 ff 48 8b 13 48 c7 c6 48 9c 48 c0 48 89 ef e8 88 c8 ff ff 48 c7 c7 c0 95 48 c0 e8 c0 e9 c6 df <0f> 0b 41 be 8b ff ff ff e9 dd 5a f5 ff be e9 05 00 00 48 c7 c7 40
-[ 7513.417412] RIP: 0010:btrfs_verify_level_key.cold+0x1e/0x2b [btrfs]
-[ 7513.420742] RSP: 0000:ffffab1283b83ab8 EFLAGS: 00010246
-[ 7513.421912] Code: ff ff e8 9f c8 ff ff e9 4d 58 f5 ff 48 8b 13 48 c7 c6 48 9c 48 c0 48 89 ef e8 88 c8 ff ff 48 c7 c7 c0 95 48 c0 e8 c0 e9 c6 df <0f> 0b 41 be 8b ff ff ff e9 dd 5a f5 ff be e9 05 00 00 48 c7 c7 40
-[ 7513.423177] RAX: 0000000000000024 RBX: ffff9d4f06a493b0 RCX: 0000000000000001
-[ 7513.423178] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffffffffa00d040b
-[ 7513.424570] RSP: 0018:ffffab1287043ab8 EFLAGS: 00010246
-[ 7513.426005] RBP: ffff9d4f069d4000 R08: 0000000000000000 R09: 0000000000000000
-[ 7513.427876] RAX: 0000000000000024 RBX: ffff9d4f06a493b0 RCX: 0000000000000001
-[ 7513.429411] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000006
-[ 7513.429412] R13: ffffab1283b83b6e R14: ffff9d4f47b27150 R15: 0000000000000000
-[ 7513.430963] RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffffffffa00d040b
-[ 7513.432092] FS:  0000000000000000(0000) GS:ffff9d4f7da00000(0000) knlGS:0000000000000000
-[ 7513.433535] RBP: ffff9d4f069d4000 R08: 0000000000000000 R09: 0000000000000000
-[ 7513.434145] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 7513.434146] CR2: 00007f907ab328e0 CR3: 000000007d2cb000 CR4: 00000000000006e0
-[ 7513.435037] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000006
-[ 7513.435038] R13: ffffab1287043b6e R14: ffff9d4f61e75af0 R15: 0000000000000000
-[ 7513.436009] Call Trace:
-[ 7513.436973] FS:  0000000000000000(0000) GS:ffff9d4f7dc00000(0000) knlGS:0000000000000000
-[ 7513.437892]  read_block_for_search.isra.0+0x13d/0x3d0 [btrfs]
-[ 7513.438806] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 7513.439932]  btrfs_search_slot+0x25d/0xc10 [btrfs]
-[ 7513.441229] CR2: 00007f5d91fa7e40 CR3: 000000007d2cb000 CR4: 00000000000006e0
-[ 7513.442323]  btrfs_lookup_csum+0x6a/0x160 [btrfs]
-[ 7513.442994] Call Trace:
-[ 7513.443764]  ? kmem_cache_alloc+0x1f2/0x280
-[ 7513.444346]  read_block_for_search.isra.0+0x13d/0x3d0 [btrfs]
-[ 7513.445182]  btrfs_csum_file_blocks+0x198/0x6f0 [btrfs]
-[ 7513.445815]  btrfs_search_slot+0x25d/0xc10 [btrfs]
-[ 7513.446570]  add_pending_csums+0x50/0x70 [btrfs]
-[ 7513.447126]  btrfs_lookup_csum+0x6a/0x160 [btrfs]
-[ 7513.448462]  btrfs_finish_ordered_io+0x3cb/0x7f0 [btrfs]
-[ 7513.450730]  ? kmem_cache_alloc+0x1f2/0x280
-[ 7513.452643]  normal_work_helper+0xd1/0x540 [btrfs]
-[ 7513.454315]  btrfs_csum_file_blocks+0x198/0x6f0 [btrfs]
-[ 7513.455379]  process_one_work+0x22d/0x580
-[ 7513.456451]  add_pending_csums+0x50/0x70 [btrfs]
-[ 7513.457570]  worker_thread+0x50/0x3b0
-[ 7513.460066]  btrfs_finish_ordered_io+0x3cb/0x7f0 [btrfs]
-[ 7513.463658]  kthread+0xfe/0x140
-[ 7513.465743]  normal_work_helper+0xd1/0x540 [btrfs]
-[ 7513.467701]  ? process_one_work+0x580/0x580
-[ 7513.467703]  ? kthread_park+0x80/0x80
-[ 7513.468978]  process_one_work+0x22d/0x580
-[ 7513.470096]  ret_from_fork+0x24/0x30
-[ 7513.473537]  worker_thread+0x50/0x3b0
-[ 7513.474525] irq event stamp: 0
-[ 7513.475631]  kthread+0xfe/0x140
-[ 7513.477203] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
-[ 7513.477207] hardirqs last disabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
-[ 7513.479011]  ? process_one_work+0x580/0x580
-[ 7513.480541] softirqs last  enabled at (0): [<ffffffffa005ff00>] copy_process+0x6d0/0x1ac0
-[ 7513.480542] softirqs last disabled at (0): [<0000000000000000>] 0x0
-[ 7513.482354]  ? kthread_park+0x80/0x80
-[ 7513.484191] ---[ end trace f6f3adf90f4ea413 ]---
-[ 7513.591444]  ret_from_fork+0x24/0x30
-[ 7513.592257] irq event stamp: 13768774
-[ 7513.592975] hardirqs last  enabled at (13768773): [<ffffffffa06575b9>] _raw_spin_unlock_irq+0x29/0x40
-[ 7513.594386] hardirqs last disabled at (13768774): [<ffffffffa064fb7e>] __schedule+0xae/0x830
-[ 7513.595732] softirqs last  enabled at (13768770): [<ffffffffa0a0035c>] __do_softirq+0x35c/0x45c
-[ 7513.597472] softirqs last disabled at (13768759): [<ffffffffa006a713>] irq_exit+0xb3/0xc0
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index 982152d3f9200..69f8ab4d91f2b 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -1488,7 +1488,7 @@ int btrfs_check_shared(struct btrfs_root *root, u64 inum, u64 bytenr)
+ 		goto out;
+ 	}
+ 
+-	trans = btrfs_attach_transaction(root);
++	trans = btrfs_join_transaction_nostart(root);
+ 	if (IS_ERR(trans)) {
+ 		if (PTR_ERR(trans) != -ENOENT && PTR_ERR(trans) != -EROFS) {
+ 			ret = PTR_ERR(trans);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 3f6811cdf803b..168942c5af89e 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -28,15 +28,18 @@ static const unsigned int btrfs_blocked_trans_types[TRANS_STATE_MAX] = {
+ 	[TRANS_STATE_COMMIT_START]	= (__TRANS_START | __TRANS_ATTACH),
+ 	[TRANS_STATE_COMMIT_DOING]	= (__TRANS_START |
+ 					   __TRANS_ATTACH |
+-					   __TRANS_JOIN),
++					   __TRANS_JOIN |
++					   __TRANS_JOIN_NOSTART),
+ 	[TRANS_STATE_UNBLOCKED]		= (__TRANS_START |
+ 					   __TRANS_ATTACH |
+ 					   __TRANS_JOIN |
+-					   __TRANS_JOIN_NOLOCK),
++					   __TRANS_JOIN_NOLOCK |
++					   __TRANS_JOIN_NOSTART),
+ 	[TRANS_STATE_COMPLETED]		= (__TRANS_START |
+ 					   __TRANS_ATTACH |
+ 					   __TRANS_JOIN |
+-					   __TRANS_JOIN_NOLOCK),
++					   __TRANS_JOIN_NOLOCK |
++					   __TRANS_JOIN_NOSTART),
+ };
+ 
+ void btrfs_put_transaction(struct btrfs_transaction *transaction)
+@@ -525,7 +528,8 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 		ret = join_transaction(fs_info, type);
+ 		if (ret == -EBUSY) {
+ 			wait_current_trans(fs_info);
+-			if (unlikely(type == TRANS_ATTACH))
++			if (unlikely(type == TRANS_ATTACH ||
++				     type == TRANS_JOIN_NOSTART))
+ 				ret = -ENOENT;
+ 		}
+ 	} while (ret == -EBUSY);
+@@ -641,6 +645,16 @@ struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root
+ 				 BTRFS_RESERVE_NO_FLUSH, true);
+ }
+ 
++/*
++ * Similar to regular join but it never starts a transaction when none is
++ * running or after waiting for the current one to finish.
++ */
++struct btrfs_trans_handle *btrfs_join_transaction_nostart(struct btrfs_root *root)
++{
++	return start_transaction(root, 0, TRANS_JOIN_NOSTART,
++				 BTRFS_RESERVE_NO_FLUSH, true);
++}
++
+ /*
+  * btrfs_attach_transaction() - catch the running transaction
+  *
+diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+index 78c446c222b7d..2f695587f828e 100644
+--- a/fs/btrfs/transaction.h
++++ b/fs/btrfs/transaction.h
+@@ -94,11 +94,13 @@ struct btrfs_transaction {
+ #define __TRANS_JOIN		(1U << 11)
+ #define __TRANS_JOIN_NOLOCK	(1U << 12)
+ #define __TRANS_DUMMY		(1U << 13)
++#define __TRANS_JOIN_NOSTART	(1U << 14)
+ 
+ #define TRANS_START		(__TRANS_START | __TRANS_FREEZABLE)
+ #define TRANS_ATTACH		(__TRANS_ATTACH)
+ #define TRANS_JOIN		(__TRANS_JOIN | __TRANS_FREEZABLE)
+ #define TRANS_JOIN_NOLOCK	(__TRANS_JOIN_NOLOCK)
++#define TRANS_JOIN_NOSTART	(__TRANS_JOIN_NOSTART)
+ 
+ #define TRANS_EXTWRITERS	(__TRANS_START | __TRANS_ATTACH)
+ 
+@@ -183,6 +185,7 @@ struct btrfs_trans_handle *btrfs_start_transaction_fallback_global_rsv(
+ 					int min_factor);
+ struct btrfs_trans_handle *btrfs_join_transaction(struct btrfs_root *root);
+ struct btrfs_trans_handle *btrfs_join_transaction_nolock(struct btrfs_root *root);
++struct btrfs_trans_handle *btrfs_join_transaction_nostart(struct btrfs_root *root);
+ struct btrfs_trans_handle *btrfs_attach_transaction(struct btrfs_root *root);
+ struct btrfs_trans_handle *btrfs_attach_transaction_barrier(
+ 					struct btrfs_root *root);
+-- 
+2.20.1
+
