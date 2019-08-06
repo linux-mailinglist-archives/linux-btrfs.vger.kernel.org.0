@@ -2,27 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F0FBF82B15
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 07:35:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBEC82B8F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 08:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731611AbfHFFfr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 01:35:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55336 "EHLO mx1.suse.de"
+        id S1731766AbfHFGXQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 02:23:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40366 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731645AbfHFFfr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 6 Aug 2019 01:35:47 -0400
+        id S1726076AbfHFGXP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 02:23:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 73AE9ACC1
-        for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2019 05:35:45 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id CB9F6B035
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2019 06:23:14 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: Pause and resume qgroup for snapshot drop
-Date:   Tue,  6 Aug 2019 13:35:35 +0800
-Message-Id: <20190806053535.14375-4-wqu@suse.com>
+Subject: [PATCH] btrfs-progs: print-tree: Use BFS as default traversal method
+Date:   Tue,  6 Aug 2019 14:23:11 +0800
+Message-Id: <20190806062311.16194-1-wqu@suse.com>
 X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190806053535.14375-1-wqu@suse.com>
-References: <20190806053535.14375-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -30,156 +28,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Btrfs qgroup has one big performance overhead for certain snapshot drop.
+When debugging tree nodes with higher level, default DFS is not that
+reader friendly:
 
-Current btrfs_drop_snapshot() will try its best to find the highest
-shared node, and just drop one ref of that common node.
-This behavior is good for minimize extent tree modification, but a
-disaster for qgroup.
+  file tree key (262 ROOT_ITEM 16)
+  node 33800192 level 2 items 4 free 117 generation 16 owner 262
+  fs uuid 2d66d111-6850-4ca1-ae73-03f50adde41c
+  chunk uuid 11141e63-2534-4d04-a0bd-c0531a8f5b88
+  	key (256 INODE_ITEM 0) block 33771520 gen 15
+  	key (330 EXTENT_DATA 0) block 33325056 gen 11
+  	key (438 EXTENT_DATA 0) block 33652736 gen 15
+  	key (654 EXTENT_DATA 0) block 33644544 gen 15
+  node 33771520 level 1 items 59 free 62 generation 15 owner 256
+  fs uuid 2d66d111-6850-4ca1-ae73-03f50adde41c
+  chunk uuid 11141e63-2534-4d04-a0bd-c0531a8f5b88
+  	key (256 INODE_ITEM 0) block 33787904 gen 15
+  	key (256 DIR_ITEM 273597024) block 33124352 gen 9
+  	[...]
+  leaf 33787904 items 30 free space 1868 generation 15 owner 256
+  fs uuid 2d66d111-6850-4ca1-ae73-03f50adde41c
+  chunk uuid 11141e63-2534-4d04-a0bd-c0531a8f5b88
+  	item 0 key (256 INODE_ITEM 0) itemoff 3835 itemsize 160
+  		generation 6 transid 15 size 12954 nbytes 0
+  		block group 0 mode 40755 links 1 uid 0 gid 0 rdev 0
+  		sequence 528 flags 0x0(none)
+  		atime 1565071339.446118888 (2019-08-06 14:02:19)
+  		ctime 1565071339.449452222 (2019-08-06 14:02:19)
+  		mtime 1565071339.449452222 (2019-08-06 14:02:19)
+  		otime 1565071338.89452221 (2019-08-06 14:02:18)
+  	item 1 key (256 INODE_REF 256) itemoff 3823 itemsize 12
+  		index 0 namelen 2 name: ..
+  	item 2 key (256 DIR_ITEM 2487323) itemoff 3781 itemsize 42
+  		location key (487 INODE_ITEM 0) type FILE
+  		transid 7 data_len 0 name_len 12
+  		name: file_reg_115
+  	[...]
+  leaf 33124352 items 31 free space 1873 generation 9 owner 256
+  	[...]
 
-Example:
-      Root 300  Root 301
-        A         B
-        | \     / |
-        |    X    |
-        | /     \ |
-        C         D
-      /   \     /   \
-     E     F    G    H
-    / \   / \  / \   / \
-   I   J K  L  M  N O   P
+However such DFS will show the leaves before nodes. If tracing things
+like drop_progress, we want to see nodes first then leaves.
 
-In above case, if we're dropping root 301, btrfs_drop_snapshot() will
-only drop one ref for tree block C and D.
-
-But for qgroup, tree blocks E~P also have their owner changed, from
-300, 301 to 300 only.
-
-Currently we use btrfs_qgroup_trace_subtree() to manually re-dirty tree
-block E~P. And since such ref change happens in one transaction for each
-ref drop, we can't split the overhead to different transactions.
-
-This could cause qgroup extent record flood, hugely damage performance
-or even cause OOM for too many qgroup extent records.
-
-This patch will try to solve it in a different method, since we can't
-split the overhead into different transactions, instead of doing such
-heavy work, we just pause qgroup at the very beginning of
-btrfs_drop_snapshot().
-
-So later owner change won't trigger qgroup subtree trace, and after
-all subvolumes get removed, we just trigger a qgroup rescan to rebuild
-qgroup accounting.
-
-Also, to co-operate previous qgroup balance optimization, we don't need
-to pause qgroup to balance, thus introduce a new parameter for
-btrfs_drop_snapshot() to inform caller that we have other optimization
-to handle balance.
+So change default behavior to BFS to life of developers easier.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/ctree.h       |  3 ++-
- fs/btrfs/disk-io.c     |  2 ++
- fs/btrfs/extent-tree.c | 13 ++++++++++++-
- fs/btrfs/relocation.c  |  4 ++--
- fs/btrfs/transaction.c |  4 ++--
- 5 files changed, 20 insertions(+), 6 deletions(-)
+ print-tree.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 299e11e6c554..250da1ceda36 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2914,7 +2914,8 @@ static inline int btrfs_next_item(struct btrfs_root *root, struct btrfs_path *p)
- int btrfs_leaf_free_space(struct extent_buffer *leaf);
- int __must_check btrfs_drop_snapshot(struct btrfs_root *root,
- 				     struct btrfs_block_rsv *block_rsv,
--				     int update_ref, int for_reloc);
-+				     int update_ref, int for_reloc,
-+				     int pause_qgroup);
- int btrfs_drop_subtree(struct btrfs_trans_handle *trans,
- 			struct btrfs_root *root,
- 			struct extent_buffer *node,
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index dda4945c4beb..4587653cacf8 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1739,6 +1739,8 @@ static int cleaner_kthread(void *arg)
- 		if (kthread_should_stop())
- 			return 0;
- 		if (!again) {
-+			if (btrfs_quota_is_paused(fs_info))
-+				btrfs_quota_resume(fs_info);
- 			set_current_state(TASK_INTERRUPTIBLE);
- 			schedule();
- 			__set_current_state(TASK_RUNNING);
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index d3b58e388535..8ec0f11cd589 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -6991,7 +6991,7 @@ static noinline int walk_up_tree(struct btrfs_trans_handle *trans,
+diff --git a/print-tree.h b/print-tree.h
+index d4721b60647f..92ed5fb7c270 100644
+--- a/print-tree.h
++++ b/print-tree.h
+@@ -31,7 +31,7 @@ void btrfs_print_leaf(struct extent_buffer *l);
   */
- int btrfs_drop_snapshot(struct btrfs_root *root,
- 			 struct btrfs_block_rsv *block_rsv, int update_ref,
--			 int for_reloc)
-+			 int for_reloc, int pause_qgroup)
- {
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct btrfs_path *path;
-@@ -7098,6 +7098,17 @@ int btrfs_drop_snapshot(struct btrfs_root *root,
- 		}
- 	}
+ #define BTRFS_PRINT_TREE_DFS		0
+ #define BTRFS_PRINT_TREE_BFS		1
+-#define BTRFS_PRINT_TREE_DEFAULT	BTRFS_PRINT_TREE_DFS
++#define BTRFS_PRINT_TREE_DEFAULT	BTRFS_PRINT_TREE_BFS
+ void btrfs_print_tree(struct extent_buffer *eb, bool follow, int traverse);
  
-+	/*
-+	 * If this subvolume is shared, and pretty high, we tend to pause
-+	 * qgroup to avoid qgroup extent records flood due to sudden subtree
-+	 * owner change happened in one transaction.
-+	 */
-+	if (test_bit(BTRFS_FS_QUOTA_ENABLED, &fs_info->flags) &&
-+	    pause_qgroup && (root->root_key.offset ||
-+	     btrfs_root_last_snapshot(&root->root_item)) &&
-+	    btrfs_header_level(root->node))
-+		btrfs_quota_pause(trans);
-+
- 	wc->restarted = test_bit(BTRFS_ROOT_DEAD_TREE, &root->state);
- 	wc->level = level;
- 	wc->shared_level = -1;
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 7f219851fa23..1e34ee7e57ab 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2191,14 +2191,14 @@ static int clean_dirty_subvols(struct reloc_control *rc)
- 			root->reloc_root = NULL;
- 			if (reloc_root) {
- 
--				ret2 = btrfs_drop_snapshot(reloc_root, NULL, 0, 1);
-+				ret2 = btrfs_drop_snapshot(reloc_root, NULL, 0, 1, 0);
- 				if (ret2 < 0 && !ret)
- 					ret = ret2;
- 			}
- 			btrfs_put_fs_root(root);
- 		} else {
- 			/* Orphan reloc tree, just clean it up */
--			ret2 = btrfs_drop_snapshot(root, NULL, 0, 1);
-+			ret2 = btrfs_drop_snapshot(root, NULL, 0, 1, 0);
- 			if (ret2 < 0 && !ret)
- 				ret = ret2;
- 		}
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index b78f853305d2..248d535bb14d 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -2359,9 +2359,9 @@ int btrfs_clean_one_deleted_snapshot(struct btrfs_fs_info *fs_info)
- 
- 	if (btrfs_header_backref_rev(root->node) <
- 			BTRFS_MIXED_BACKREF_REV)
--		ret = btrfs_drop_snapshot(root, NULL, 0, 0);
-+		ret = btrfs_drop_snapshot(root, NULL, 0, 0, 1);
- 	else
--		ret = btrfs_drop_snapshot(root, NULL, 1, 0);
-+		ret = btrfs_drop_snapshot(root, NULL, 1, 0, 1);
- 
- 	return (ret < 0) ? 0 : 1;
- }
+ void btrfs_print_key(struct btrfs_disk_key *disk_key);
 -- 
 2.22.0
 
