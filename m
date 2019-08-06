@@ -2,106 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE1818350D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 17:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5C0C83525
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Aug 2019 17:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732298AbfHFPUv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 6 Aug 2019 11:20:51 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:42424 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726713AbfHFPUv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 6 Aug 2019 11:20:51 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x76FDVo2058039;
-        Tue, 6 Aug 2019 15:20:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2018-07-02;
- bh=4eRpe1+h0SkaNG6q2rxXH5tTDhpbxAqt/q0I3g/AjQc=;
- b=YOMXwj1NWsiaQhlo64WXM+IcDit4Y56fE4OS97u1Pt1dTzZwuxR15gT+j/xL2jY1vPLT
- G3XMPl2fi1C/D0Gtr9gr8PmBqsdopnGnbQq5hcStcG7mcBZdWnD81JX9Z+bPF8w4ViWN
- S4meUhEAtkY0IdGolvocZO0EjCUYsQLj+6cRU9LeP5LxRq2wfWP+GGqIrc7R1LYHGcvM
- hGmopPbwBPlmlRM0LbOkHatSBTjX1E48flGT4wNwyWp+GuXVv6tkjLR1U/oe0zAUG2Kv
- GM5+pYwIa9GIEAg6VanwoTPxkd5LHUh1l/sTSIXxow1v4tMkvA2GC2mca0aM/tupyFQS tQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2u527pptm5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Aug 2019 15:20:43 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x76FGJIs194869;
-        Tue, 6 Aug 2019 15:20:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2u75bvkb2y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 06 Aug 2019 15:20:43 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x76FKVjN015187;
-        Tue, 6 Aug 2019 15:20:32 GMT
-Received: from [192.168.1.147] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 06 Aug 2019 08:20:31 -0700
-Subject: Re: [PATCH] btrfs-progs: docs: fix label property description
-To:     Hans van Kranenburg <hans@knorrie.org>, linux-btrfs@vger.kernel.org
-Cc:     Hans van Kranenburg <hans.van.kranenburg@mendix.com>
-References: <20190803214403.1040-1-hans@knorrie.org>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <f2b90bc0-1a23-5879-d3d4-e0c1b259e1cc@oracle.com>
-Date:   Tue, 6 Aug 2019 23:20:27 +0800
+        id S1731450AbfHFPXz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 6 Aug 2019 11:23:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52466 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728156AbfHFPXz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 6 Aug 2019 11:23:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 50AD8AF5D
+        for <linux-btrfs@vger.kernel.org>; Tue,  6 Aug 2019 15:23:53 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: transaction: Commit transaction more frequently
+ for BPF
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20190806082201.22683-1-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <94e81fef-1dff-28e7-0d2d-a366ccdbe8c8@suse.com>
+Date:   Tue, 6 Aug 2019 18:23:52 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190803214403.1040-1-hans@knorrie.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20190806082201.22683-1-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908060150
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908060150
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/4/19 5:44 AM, Hans van Kranenburg wrote:
-> From: Hans van Kranenburg <hans.van.kranenburg@mendix.com>
+
+
+On 6.08.19 г. 11:22 ч., Qu Wenruo wrote:
+> Btrfs has btrfs_end_transaction_throttle() which could try to commit
+> transaction when needed.
 > 
-> Recently, commit c9da5695b2 improved the description for the label
-> property, to clarify it's a filesystem property, and not a device
-> property. Follow this change in the man page for btrfs-property.
+> However under most cases btrfs_end_transaction_throttle() won't really
+> commit transaction, due to the hard timing requirement.
 > 
-> Also add a little hint about what to specify as object.
+> Now introduce a new error injection point, btrfs_need_trans_pressure(),
+> to allow btrfs_should_end_transaction() to return 1 and
+> btrfs_end_transaction_throttle() to fallback to
+> btrfs_commit_transaction().
 > 
-> Signed-off-by: Hans van Kranenburg <hans.van.kranenburg@mendix.com>
-
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
-
-
-
+> With such more aggressive transaction commit, we can dig deeper into
+> cases like snapshot drop.
+> Now each reference drop of btrfs_drop_snapshot() will lead to a
+> transaction commit, allowing dm-logwrites to catch more details, other
+> than one big transaction dropping everything.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->   Documentation/btrfs-property.asciidoc | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+>  fs/btrfs/transaction.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> diff --git a/Documentation/btrfs-property.asciidoc b/Documentation/btrfs-property.asciidoc
-> index b562717b..47960833 100644
-> --- a/Documentation/btrfs-property.asciidoc
-> +++ b/Documentation/btrfs-property.asciidoc
-> @@ -43,7 +43,8 @@ the following:
->   ro::::
->   read-only flag of subvolume: true or false
->   label::::
-> -label of device
-> +label of the filesystem. For an unmounted filesystem, provide a path to a block
-> +device as object. For a mounted filesystem, specify a mount point.
->   compression::::
->   compression algorithm set for an inode, possible values: 'lzo', 'zlib', 'zstd'.
->   To disable compression use "" (empty string), 'no' or 'none'.
-> 
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 248d535bb14d..2e758957126e 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -10,6 +10,7 @@
+>  #include <linux/pagemap.h>
+>  #include <linux/blkdev.h>
+>  #include <linux/uuid.h>
+> +#include <linux/error-injection.h>
+>  #include "ctree.h"
+>  #include "disk-io.h"
+>  #include "transaction.h"
+> @@ -781,10 +782,18 @@ void btrfs_throttle(struct btrfs_fs_info *fs_info)
+>  	wait_current_trans(fs_info);
+>  }
+>  
+> +static noinline bool btrfs_need_trans_pressure(struct btrfs_trans_handle *trans)
+> +{
+> +	return false;
+> +}
+> +ALLOW_ERROR_INJECTION(btrfs_need_trans_pressure, TRUE);
+> +
+>  static int should_end_transaction(struct btrfs_trans_handle *trans)
+>  {
+>  	struct btrfs_fs_info *fs_info = trans->fs_info;
+>  
+> +	if (btrfs_need_trans_pressure(trans))
+> +		return 1;
+>  	if (btrfs_check_space_for_delayed_refs(fs_info))
+>  		return 1;
+>  
+> @@ -845,6 +854,8 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
+>  
+>  	btrfs_trans_release_chunk_metadata(trans);
+>  
+> +	if (throttle && btrfs_need_trans_pressure(trans))
+> +		return btrfs_commit_transaction(trans);
 
+I'd rather have this gated behind CONFIG_BTRFS_DEBUG.
+
+
+>  	if (lock && READ_ONCE(cur_trans->state) == TRANS_STATE_BLOCKED) {
+>  		if (throttle)
+>  			return btrfs_commit_transaction(trans);
+> 
