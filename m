@@ -2,23 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 96DBB8457F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 09:17:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E00CC846EE
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:16:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727426AbfHGHR3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Aug 2019 03:17:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54616 "EHLO mx1.suse.de"
+        id S1728547AbfHGIQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Aug 2019 04:16:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44196 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727281AbfHGHR3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 7 Aug 2019 03:17:29 -0400
+        id S1728235AbfHGIQK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 7 Aug 2019 04:16:10 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9B1C9AF40;
-        Wed,  7 Aug 2019 07:17:27 +0000 (UTC)
-Subject: Re: [PATCH] Btrfs: fix workqueue deadlock on dependent filesystems
-To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com, Tejun Heo <tj@kernel.org>
-References: <0bea516a54b26e4e1c42e6fe47548cb48cc4172b.1565112813.git.osandov@fb.com>
+        by mx1.suse.de (Postfix) with ESMTP id 471FBACFA;
+        Wed,  7 Aug 2019 08:16:08 +0000 (UTC)
+Subject: Re: [PATCH 2/6] btrfs: Improve comments around nocow path
+To:     fdmanana@gmail.com
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20190805144708.5432-1-nborisov@suse.com>
+ <20190805144708.5432-3-nborisov@suse.com>
+ <CAL3q7H7VnX7ez5VeYbKFk=W1s_1AeS0hYpmVPvZ4af4NJerjUw@mail.gmail.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <70f6b4fa-26b1-9225-7509-aa89bb7e067c@suse.com>
-Date:   Wed, 7 Aug 2019 10:17:26 +0300
+Message-ID: <df7b35d1-da0d-c99a-40dc-44c8ccd8d985@suse.com>
+Date:   Wed, 7 Aug 2019 11:16:07 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <0bea516a54b26e4e1c42e6fe47548cb48cc4172b.1565112813.git.osandov@fb.com>
+In-Reply-To: <CAL3q7H7VnX7ez5VeYbKFk=W1s_1AeS0hYpmVPvZ4af4NJerjUw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,156 +81,71 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 6.08.19 г. 20:34 ч., Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> We hit a the following very strange deadlock on a system with Btrfs on a
-> loop device backed by another Btrfs filesystem:
-> 
-> 1. The top (loop device) filesystem queues an async_cow work item from
->    cow_file_range_async(). We'll call this work X.
-> 2. Worker thread A starts work X (normal_work_helper()).
-> 3. Worker thread A executes the ordered work for the top filesystem
->    (run_ordered_work()).
-> 4. Worker thread A finishes the ordered work for work X and frees X
->    (work->ordered_free()).
-> 5. Worker thread A executes another ordered work and gets blocked on I/O
->    to the bottom filesystem (still in run_ordered_work()).
-> 6. Meanwhile, the bottom filesystem allocates and queues an async_cow
->    work item which happens to be the recently-freed X.
-> 7. The workqueue code sees that X is already being executed by worker
->    thread A, so it schedules X to be executed _after_ worker thread A
->    finishes (see the find_worker_executing_work() call in
->    process_one_work()).
+On 6.08.19 г. 13:09 ч., Filipe Manana wrote:
+> On Mon, Aug 5, 2019 at 3:48 PM Nikolay Borisov <nborisov@suse.com> wrote:
 
-Isn't the bigger problem  that a single run_ordered_work could
-potentially run the ordered work for more than one normal work? E.g.
-what if btrfs' code is reworked such that run_ordered_work executes
-ordered_func for just one work item (the one which called the function
-in the first place) ? Wouldn't that also resolve the issue? Correct me
-if I'm wrong but it seems silly to have one work item outlive
-ordered_free which is what currently happens, right?
+<snip>
+
+>> @@ -1371,23 +1376,39 @@ static noinline int run_delalloc_nocow(struct inode *inode,
+>>
+>>                 btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+>>
+>> +               /* Didn't find anything for our INO */
+>>                 if (found_key.objectid > ino)
+>>                         break;
+>> +               /*
+>> +                * Found a different inode or no extents for our file,
+>> +                * goto next slot
+> 
+> No. This does not mean that there are no extents for the file. If
+> there weren't any, we would break instead of iterating to the next
+> slot.
+> One example described at
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1d512cb77bdbda80f0dd0620a3b260d697fd581d
+
+I see, thanks for the pointer. How about the following :
+
+/*
+                 * Keep searching until we find an EXTENT ITEM or are
+sure
+                 * there are no more extents for this inode
+
+                 */
+
+While it doesn't mention the race condition this check, coupled with the
+next one (where we break if type > EXTENT_DATA_KEY), it reflects reality
+close enough?
 
 
-
 > 
-> Now, the top filesystem is waiting for I/O on the bottom filesystem, but
-> the bottom filesystem is waiting for the top filesystem to finish, so we
-> deadlock.
-> 
-> This happens because we are breaking the workqueue assumption that a
-> work item cannot be recycled while it still depends on other work. Fix
-> it by waiting to free the work item until we are done with all of the
-> related ordered work.
-> 
-> P.S.:
-> 
-> One might ask why the workqueue code doesn't try to detect a recycled
-> work item. It actually does try by checking whether the work item has
-> the same work function (find_worker_executing_work()), but in our case
-> the function is the same. This is the only key that the workqueue code
-> has available to compare, short of adding an additional, layer-violating
-> "custom key". Considering that we're the only ones that have ever hit
-> this, we should just play by the rules.
-> 
-> Unfortunately, we haven't been able to create a minimal reproducer other
-> than our full container setup using a compress-force=zstd filesystem on
-> top of another compress-force=zstd filesystem.
-> 
-> Suggested-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
-> ---
->  fs/btrfs/async-thread.c | 56 ++++++++++++++++++++++++++++++++---------
->  1 file changed, 44 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
-> index 122cb97c7909..b2bfde560331 100644
-> --- a/fs/btrfs/async-thread.c
-> +++ b/fs/btrfs/async-thread.c
-> @@ -250,16 +250,17 @@ static inline void thresh_exec_hook(struct __btrfs_workqueue *wq)
->  	}
->  }
->  
-> -static void run_ordered_work(struct __btrfs_workqueue *wq)
-> +static void run_ordered_work(struct btrfs_work *self)
->  {
-> +	struct __btrfs_workqueue *wq = self->wq;
->  	struct list_head *list = &wq->ordered_list;
->  	struct btrfs_work *work;
->  	spinlock_t *lock = &wq->list_lock;
->  	unsigned long flags;
-> +	void *wtag;
-> +	bool free_self = false;
->  
->  	while (1) {
-> -		void *wtag;
-> -
->  		spin_lock_irqsave(lock, flags);
->  		if (list_empty(list))
->  			break;
-> @@ -285,16 +286,47 @@ static void run_ordered_work(struct __btrfs_workqueue *wq)
->  		list_del(&work->ordered_list);
->  		spin_unlock_irqrestore(lock, flags);
->  
-> -		/*
-> -		 * We don't want to call the ordered free functions with the
-> -		 * lock held though. Save the work as tag for the trace event,
-> -		 * because the callback could free the structure.
-> -		 */
-> -		wtag = work;
-> -		work->ordered_free(work);
-> -		trace_btrfs_all_work_done(wq->fs_info, wtag);
-> +		if (work == self) {
-> +			/*
-> +			 * This is the work item that the worker is currently
-> +			 * executing.
-> +			 *
-> +			 * The kernel workqueue code guarantees non-reentrancy
-> +			 * of work items. I.e., if a work item with the same
-> +			 * address and work function is queued twice, the second
-> +			 * execution is blocked until the first one finishes. A
-> +			 * work item may be freed and recycled with the same
-> +			 * work function; the workqueue code assumes that the
-> +			 * original work item cannot depend on the recycled work
-> +			 * item in that case (see find_worker_executing_work()).
-> +			 *
-> +			 * Note that the work of one Btrfs filesystem may depend
-> +			 * on the work of another Btrfs filesystem via, e.g., a
-> +			 * loop device. Therefore, we must not allow the current
-> +			 * work item to be recycled until we are really done,
-> +			 * otherwise we break the above assumption and can
-> +			 * deadlock.
-> +			 */
-> +			free_self = true;
-> +		} else {
-> +			/*
-> +			 * We don't want to call the ordered free functions with
-> +			 * the lock held though. Save the work as tag for the
-> +			 * trace event, because the callback could free the
-> +			 * structure.
-> +			 */
-> +			wtag = work;
-> +			work->ordered_free(work);
-> +			trace_btrfs_all_work_done(wq->fs_info, wtag);
-> +		}
->  	}
->  	spin_unlock_irqrestore(lock, flags);
-> +
-> +	if (free_self) {
-> +		wtag = self;
-> +		self->ordered_free(self);
-> +		trace_btrfs_all_work_done(wq->fs_info, wtag);
-> +	}
->  }
->  
->  static void normal_work_helper(struct btrfs_work *work)
-> @@ -322,7 +354,7 @@ static void normal_work_helper(struct btrfs_work *work)
->  	work->func(work);
->  	if (need_order) {
->  		set_bit(WORK_DONE_BIT, &work->flags);
-> -		run_ordered_work(wq);
-> +		run_ordered_work(work);
->  	}
->  	if (!need_order)
->  		trace_btrfs_all_work_done(wq->fs_info, wtag);
-> 
+>> +                */
+>>                 if (WARN_ON_ONCE(found_key.objectid < ino) ||
+>>                     found_key.type < BTRFS_EXTENT_DATA_KEY) {
+>>                         path->slots[0]++;
+>>                         goto next_slot;
+>>                 }
+>> +
+>> +               /* Found key is not EXTENT_DATA_KEY or starts after req range */
+>>                 if (found_key.type > BTRFS_EXTENT_DATA_KEY ||
+>>                     found_key.offset > end)
+>>                         break;
+>>
+>> +               /*
+>> +                * If the found extent starts after requested offset, then
+>> +                * adjust extent_end to be right before this extent begins
+>> +                */
+>>                 if (found_key.offset > cur_offset) {
+>>                         extent_end = found_key.offset;
+>>                         extent_type = 0;
+>>                         goto out_check;
+>>                 }
+>>
+>> +
+>> +               /*
+>> +                * Found extent which begins before our range and has the
+>> +                * potential to intersect it.
+>> +                */
+>>                 fi = btrfs_item_ptr(leaf, path->slots[0],
+>>                                     struct btrfs_file_extent_item);
+>>                 extent_type = btrfs_file_extent_type(leaf, fi);
+<snip>
