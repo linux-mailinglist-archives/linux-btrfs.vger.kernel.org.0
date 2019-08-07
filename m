@@ -2,115 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B3FB84706
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BB3D84734
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:27:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387548AbfHGIV2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Aug 2019 04:21:28 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:42686 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387539AbfHGIV2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Aug 2019 04:21:28 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778J0Ie192140
-        for <linux-btrfs@vger.kernel.org>; Wed, 7 Aug 2019 08:21:26 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2018-07-02;
- bh=Rk80Lg7jEbs5bPN5GvYjXZR1c9HaA/agfd94UHkXDQU=;
- b=tEpSvbxAdGJXIYJuaWg5R5MwchHk80vuFLBZV/JoLQeF5qFyy0WIcDElx3/FI1G9b/Tk
- Ykutka6KpIzLvF657EPg3KPJmTYpEbLkgLPz9AnK7nOULQAEVIICU6OIhTTzcYBU9pPO
- bovgcS7/doJYBca16tHt11Usod0OaCO0CtQfjXt+LGna+co4I/lb1r/iCxbNEh0rBoj/
- +XwcMnO9Xh2t2wb9GAEPiaQX2ERQA01slk27DF3Q/0g2fU/P3qWnTaio9+iXh1K3aaPH
- kqj8jADBsEIFRKCoJrN3oELjorN982/pfOU8JZt7FuGDjMBTmlfsNe2VZcjHkkyvPT96 rg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2u52wrarer-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Aug 2019 08:21:26 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778I8nW005596
-        for <linux-btrfs@vger.kernel.org>; Wed, 7 Aug 2019 08:21:25 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2u75bw799r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Aug 2019 08:21:25 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x778LPhm016612
-        for <linux-btrfs@vger.kernel.org>; Wed, 7 Aug 2019 08:21:25 GMT
-Received: from mb.wifi.oracle.com (/192.188.170.109)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Aug 2019 01:21:25 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: opencode to reset all devices stat
-Date:   Wed,  7 Aug 2019 16:21:20 +0800
-Message-Id: <20190807082120.1973-2-anand.jain@oracle.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-120)
-In-Reply-To: <20190807082120.1973-1-anand.jain@oracle.com>
-References: <20190807082120.1973-1-anand.jain@oracle.com>
+        id S2387687AbfHGI0n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Aug 2019 04:26:43 -0400
+Received: from mail-vs1-f66.google.com ([209.85.217.66]:37613 "EHLO
+        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387674AbfHGI0m (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Aug 2019 04:26:42 -0400
+Received: by mail-vs1-f66.google.com with SMTP id v6so60195963vsq.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Aug 2019 01:26:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=wvxX4HnwFhFL0mVKgKf4vEO+g72YTqRJllWkh8ndkhM=;
+        b=Z5u+nwwxxPV7eMpwFUsLiFvqZQgDE+4OjDF6820u9HXCTaspW1dH6BWg33kXk+nC2Q
+         Hzi9ajN+YKkKxqLAwSLRdVfYmMRWEylNudXI2MmvUPAQ0b5u6SDNxlYpE+IhGVAo9ljw
+         lcB7V7YT7Uvx+qNam+EBcfUZ/7AV8D0K2Mz4EXEBokHO4eD57OIAzxEZk94YVZtmVKtb
+         F1l7o2MB2m1GVPl+Ix7UJlcO19x5YuiJHHvB4u4oiMqmxbdyIEOaWg4FFkh8hNRG2RAu
+         J6QvI7f+WVQwwGmGcSTe+PwJ6Di/PotfC0gcOY+5YedBu+miRTYq006xVTsBGNVDQnAE
+         xGLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=wvxX4HnwFhFL0mVKgKf4vEO+g72YTqRJllWkh8ndkhM=;
+        b=Z1aS+wdLSDZxgXixksfq7plHGFzxb7vmyr30ncWvUjDQb3lshK7DFAYolTUsaVOA07
+         wn1UcozfXfrGiWPnArZ4RULJfe/Id64Buow4cGs7R0WMZXdAlyUiWTnTMH1GzkTfozOQ
+         fMO79KiDtrot3aj9nLebks585BE5/SM6itf25s0PxjJb0YL0QlAF+KNyClUw1pgkdms3
+         FBmsiEjwm+57dtOu/onbr4DC7g4FqjClmf7+G9JmvCS2TwHXTjhkPhLWyeH351xRvWB7
+         SoXxT1J++XvzdsswaO/JIWVQQJOKW4bdNh0DtePeszcKCaxvzHeRY7TygNpgQ+EDroBU
+         3itA==
+X-Gm-Message-State: APjAAAURjRGgBCDENJGGxri3foQAiXL7dydFrvx20dGdIAuXaKPgPuPn
+        VvZrZcWCLeT0KzPuHpTrSGgnA97XRewBzmuC0hOvoA==
+X-Google-Smtp-Source: APXvYqzWzJx4RBKCPa9qeCWrsMugxKj89S0FCIMrZlVC2KBRN8eCAtZdOA+Vb7BDsT17iAoxVgtdgTyN90ND2I7E2FU=
+X-Received: by 2002:a67:7087:: with SMTP id l129mr4999068vsc.206.1565166401282;
+ Wed, 07 Aug 2019 01:26:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908070090
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908070090
+References: <20190805144708.5432-1-nborisov@suse.com> <20190805144708.5432-3-nborisov@suse.com>
+ <CAL3q7H7VnX7ez5VeYbKFk=W1s_1AeS0hYpmVPvZ4af4NJerjUw@mail.gmail.com> <df7b35d1-da0d-c99a-40dc-44c8ccd8d985@suse.com>
+In-Reply-To: <df7b35d1-da0d-c99a-40dc-44c8ccd8d985@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Wed, 7 Aug 2019 09:26:30 +0100
+Message-ID: <CAL3q7H4f6uutH4aWqO0nJoJ_d0p1mgCbvxVOoREVbG_DSA1yTg@mail.gmail.com>
+Subject: Re: [PATCH 2/6] btrfs: Improve comments around nocow path
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-__btrfs_reset_dev_stats() is a small helper function to reset devices stat
-values, and is used only once, instead just open code it.
+On Wed, Aug 7, 2019 at 9:16 AM Nikolay Borisov <nborisov@suse.com> wrote:
+>
+>
+>
+> On 6.08.19 =D0=B3. 13:09 =D1=87., Filipe Manana wrote:
+> > On Mon, Aug 5, 2019 at 3:48 PM Nikolay Borisov <nborisov@suse.com> wrot=
+e:
+>
+> <snip>
+>
+> >> @@ -1371,23 +1376,39 @@ static noinline int run_delalloc_nocow(struct =
+inode *inode,
+> >>
+> >>                 btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]=
+);
+> >>
+> >> +               /* Didn't find anything for our INO */
+> >>                 if (found_key.objectid > ino)
+> >>                         break;
+> >> +               /*
+> >> +                * Found a different inode or no extents for our file,
+> >> +                * goto next slot
+> >
+> > No. This does not mean that there are no extents for the file. If
+> > there weren't any, we would break instead of iterating to the next
+> > slot.
+> > One example described at
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/?id=3D1d512cb77bdbda80f0dd0620a3b260d697fd581d
+>
+> I see, thanks for the pointer. How about the following :
+>
+> /*
+>                  * Keep searching until we find an EXTENT ITEM or are
+> sure
+>                  * there are no more extents for this inode
+>
+>                  */
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/volumes.c | 12 ++----------
- 1 file changed, 2 insertions(+), 10 deletions(-)
+Yes, that's just fine.
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 3eed7968fe16..492342973c3c 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -191,7 +191,6 @@ out_overflow:;
- 
- static int init_first_rw_device(struct btrfs_trans_handle *trans);
- static int btrfs_relocate_sys_chunks(struct btrfs_fs_info *fs_info);
--static void __btrfs_reset_dev_stats(struct btrfs_device *dev);
- static void btrfs_dev_stat_print_on_error(struct btrfs_device *dev);
- static void btrfs_dev_stat_print_on_load(struct btrfs_device *device);
- static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
-@@ -7311,14 +7310,6 @@ void btrfs_init_devices_late(struct btrfs_fs_info *fs_info)
- 	}
- }
- 
--static void __btrfs_reset_dev_stats(struct btrfs_device *dev)
--{
--	int i;
--
--	for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
--		btrfs_dev_stat_set(dev, i, 0);
--}
--
- int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
- {
- 	struct btrfs_key key;
-@@ -7348,7 +7339,8 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
- 		key.offset = device->devid;
- 		ret = btrfs_search_slot(NULL, dev_root, &key, path, 0, 0);
- 		if (ret) {
--			__btrfs_reset_dev_stats(device);
-+			for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
-+				btrfs_dev_stat_set(device, i, 0);
- 			device->dev_stats_valid = 1;
- 			btrfs_release_path(path);
- 			continue;
--- 
-2.21.0 (Apple Git-120)
+Thanks.
 
+>
+> While it doesn't mention the race condition this check, coupled with the
+> next one (where we break if type > EXTENT_DATA_KEY), it reflects reality
+> close enough?
+>
+>
+> >
+> >> +                */
+> >>                 if (WARN_ON_ONCE(found_key.objectid < ino) ||
+> >>                     found_key.type < BTRFS_EXTENT_DATA_KEY) {
+> >>                         path->slots[0]++;
+> >>                         goto next_slot;
+> >>                 }
+> >> +
+> >> +               /* Found key is not EXTENT_DATA_KEY or starts after re=
+q range */
+> >>                 if (found_key.type > BTRFS_EXTENT_DATA_KEY ||
+> >>                     found_key.offset > end)
+> >>                         break;
+> >>
+> >> +               /*
+> >> +                * If the found extent starts after requested offset, =
+then
+> >> +                * adjust extent_end to be right before this extent be=
+gins
+> >> +                */
+> >>                 if (found_key.offset > cur_offset) {
+> >>                         extent_end =3D found_key.offset;
+> >>                         extent_type =3D 0;
+> >>                         goto out_check;
+> >>                 }
+> >>
+> >> +
+> >> +               /*
+> >> +                * Found extent which begins before our range and has =
+the
+> >> +                * potential to intersect it.
+> >> +                */
+> >>                 fi =3D btrfs_item_ptr(leaf, path->slots[0],
+> >>                                     struct btrfs_file_extent_item);
+> >>                 extent_type =3D btrfs_file_extent_type(leaf, fi);
+> <snip>
+
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
