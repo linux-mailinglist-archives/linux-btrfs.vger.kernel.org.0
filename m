@@ -2,25 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E00CC846EE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3DE0846F9
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:18:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728547AbfHGIQK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Aug 2019 04:16:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44196 "EHLO mx1.suse.de"
+        id S1727749AbfHGISX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Aug 2019 04:18:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44806 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728235AbfHGIQK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 7 Aug 2019 04:16:10 -0400
+        id S1727415AbfHGISX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 7 Aug 2019 04:18:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 471FBACFA;
-        Wed,  7 Aug 2019 08:16:08 +0000 (UTC)
-Subject: Re: [PATCH 2/6] btrfs: Improve comments around nocow path
+        by mx1.suse.de (Postfix) with ESMTP id A2A80ACFA;
+        Wed,  7 Aug 2019 08:18:21 +0000 (UTC)
+Subject: Re: [PATCH 6/6] btrfs: Remove BUG_ON from run_delalloc_nocow
 To:     fdmanana@gmail.com
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <20190805144708.5432-1-nborisov@suse.com>
- <20190805144708.5432-3-nborisov@suse.com>
- <CAL3q7H7VnX7ez5VeYbKFk=W1s_1AeS0hYpmVPvZ4af4NJerjUw@mail.gmail.com>
+ <20190805144708.5432-7-nborisov@suse.com>
+ <CAL3q7H4bG0g7O8vUOR7pYBn9fvQbDvKVYUSucsPAcxBsNorrnw@mail.gmail.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -65,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <df7b35d1-da0d-c99a-40dc-44c8ccd8d985@suse.com>
-Date:   Wed, 7 Aug 2019 11:16:07 +0300
+Message-ID: <92e30fce-58bb-8049-99e0-7af34098806f@suse.com>
+Date:   Wed, 7 Aug 2019 11:18:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H7VnX7ez5VeYbKFk=W1s_1AeS0hYpmVPvZ4af4NJerjUw@mail.gmail.com>
+In-Reply-To: <CAL3q7H4bG0g7O8vUOR7pYBn9fvQbDvKVYUSucsPAcxBsNorrnw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,71 +81,60 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 6.08.19 г. 13:09 ч., Filipe Manana wrote:
-> On Mon, Aug 5, 2019 at 3:48 PM Nikolay Borisov <nborisov@suse.com> wrote:
-
-<snip>
-
->> @@ -1371,23 +1376,39 @@ static noinline int run_delalloc_nocow(struct inode *inode,
+On 6.08.19 г. 13:34 ч., Filipe Manana wrote:
+> On Mon, Aug 5, 2019 at 3:47 PM Nikolay Borisov <nborisov@suse.com> wrote:
 >>
->>                 btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+>> Correctly handle failure cases when adding an ordered extents in case
+>> of REGULAR or PREALLOC extents.
 >>
->> +               /* Didn't find anything for our INO */
->>                 if (found_key.objectid > ino)
->>                         break;
->> +               /*
->> +                * Found a different inode or no extents for our file,
->> +                * goto next slot
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 > 
-> No. This does not mean that there are no extents for the file. If
-> there weren't any, we would break instead of iterating to the next
-> slot.
-> One example described at
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=1d512cb77bdbda80f0dd0620a3b260d697fd581d
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> 
+> It's correct, but:
+> 
+>> ---
+>>  fs/btrfs/inode.c | 16 +++++++++++++---
+>>  1 file changed, 13 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 6c3f9f3a7ed1..b935c301ca72 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -1569,16 +1569,26 @@ static noinline int run_delalloc_nocow(struct inode *inode,
+>>                                                        disk_bytenr, num_bytes,
+>>                                                        num_bytes,
+>>                                                        BTRFS_ORDERED_PREALLOC);
+>> +                       if (nocow)
+>> +                               btrfs_dec_nocow_writers(fs_info, disk_bytenr);
+>> +                       if (ret) {
+>> +                               btrfs_drop_extent_cache(BTRFS_I(inode),
+>> +                                                       cur_offset,
+>> +                                                       cur_offset + num_bytes - 1,
+>> +                                                       0);
+>> +                               goto error;
+>> +                       }
+>>                 } else {
+>>                         ret = btrfs_add_ordered_extent(inode, cur_offset,
+>>                                                        disk_bytenr, num_bytes,
+>>                                                        num_bytes,
+>>                                                        BTRFS_ORDERED_NOCOW);
+>> +                       if (nocow)
+>> +                               btrfs_dec_nocow_writers(fs_info, disk_bytenr);
+>> +                       if (ret)
+>> +                               goto error;
+> 
+> We are now duplicating some error handling. Could be done like before,
+> outside the if branches.
+> 
 
-I see, thanks for the pointer. How about the following :
+Dependson the POV. IMO it's better to have all error handling for the
+respective branch in one place. That way when someone is reading the
+function and gets to that branch they see that in case one of the
+functions fail what is the error handling. Otherwise as they are
+scanning the code they'd have to look up and see if something tricky is
+going on.
 
-/*
-                 * Keep searching until we find an EXTENT ITEM or are
-sure
-                 * there are no more extents for this inode
-
-                 */
-
-While it doesn't mention the race condition this check, coupled with the
-next one (where we break if type > EXTENT_DATA_KEY), it reflects reality
-close enough?
-
+David, what's your take on that ?
 
 > 
->> +                */
->>                 if (WARN_ON_ONCE(found_key.objectid < ino) ||
->>                     found_key.type < BTRFS_EXTENT_DATA_KEY) {
->>                         path->slots[0]++;
->>                         goto next_slot;
->>                 }
->> +
->> +               /* Found key is not EXTENT_DATA_KEY or starts after req range */
->>                 if (found_key.type > BTRFS_EXTENT_DATA_KEY ||
->>                     found_key.offset > end)
->>                         break;
->>
->> +               /*
->> +                * If the found extent starts after requested offset, then
->> +                * adjust extent_end to be right before this extent begins
->> +                */
->>                 if (found_key.offset > cur_offset) {
->>                         extent_end = found_key.offset;
->>                         extent_type = 0;
->>                         goto out_check;
->>                 }
->>
->> +
->> +               /*
->> +                * Found extent which begins before our range and has the
->> +                * potential to intersect it.
->> +                */
->>                 fi = btrfs_item_ptr(leaf, path->slots[0],
->>                                     struct btrfs_file_extent_item);
->>                 extent_type = btrfs_file_extent_type(leaf, fi);
-<snip>
