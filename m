@@ -2,49 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64D4B84703
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:21:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FBF384705
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387516AbfHGIVK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Aug 2019 04:21:10 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:42288 "EHLO
+        id S2387543AbfHGIV1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Aug 2019 04:21:27 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42648 "EHLO
         userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387498AbfHGIVK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Aug 2019 04:21:10 -0400
+        with ESMTP id S2387498AbfHGIV0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Aug 2019 04:21:26 -0400
 Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778Iu9Q192061;
-        Wed, 7 Aug 2019 08:21:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2018-07-02; bh=LAiC2L/LXx573r+O05hiX0P3ZAMIcxpigkv3UcuZiAY=;
- b=gc/R+qUwSkA1EnhDSypJLaiQq5jiQbitBd6uqOq1qau1KW6IXmPf/sirxoO8DfH6UloY
- eRK08yCOdNYMyMnHgbdokVoXEvsxHsbZQ/Ya1bbuJGsO8uhWgPwmUopfOUUi3FlPXYPc
- f/5fpetK6VuteMR3fWEh2Ra0ur11KHIIMWNytfEwnMUVf9DzUPfPAnZegal7tAgCXk/Z
- 3iGV4JJ3BdC+qDnUnUAi9n9/EQMkLCG7HWTBbFNBiauSJEcWL9zDbm3TEGUWQn4sQ2re
- NnjZQC3IkbzqVvssAIhG1ePONR6HwJj40XVmeMuaPV6W69kCooOyRSIIIepk2HLNsabr gg== 
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778IxiS192122
+        for <linux-btrfs@vger.kernel.org>; Wed, 7 Aug 2019 08:21:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2018-07-02; bh=gIFCC8ULJnOwByKnjamXXFWvDO+HA++u9bilB3g4H84=;
+ b=F/f8Pmk5i4Ehua0PZHVJ88aDaOYBu5deoF5l9g1NiveTuRNu0pv1EyCIkvtsGDetupFN
+ l7aSpLdFoxZYrCcTd3MmJgeI/Hm5cD1aT8arGMLdV9FVumAeHTNynVf4+6DtckGKXQMD
+ cba1GFWgGVeyEYh+2oFOum3o7rVO5Ua7sov1ev3N2rj5m6jRwzUOoCT+Z6D1TopZU87B
+ EZzTc/GELV841ogLw0YON38JEWL+w3WTqQjFQ78GfjcMYK28VgNRouNns7geQSYt91NA
+ dEEBIGj6ovi8IAthIa+0gwt+2E4M+fOOabu6GmZJcycewe1Cu1g+jIVGw/SrGp+myw3M UA== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2u52wrarcc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Aug 2019 08:21:01 +0000
+        by userp2120.oracle.com with ESMTP id 2u52wrarek-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Aug 2019 08:21:25 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778I5vX070009;
-        Wed, 7 Aug 2019 08:21:00 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2u7667c3rk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 07 Aug 2019 08:21:00 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x778KxqB016166;
-        Wed, 7 Aug 2019 08:20:59 GMT
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778I5ZC069990
+        for <linux-btrfs@vger.kernel.org>; Wed, 7 Aug 2019 08:21:24 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2u7667c43x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Aug 2019 08:21:24 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x778LObA001386
+        for <linux-btrfs@vger.kernel.org>; Wed, 7 Aug 2019 08:21:24 GMT
 Received: from mb.wifi.oracle.com (/192.188.170.109)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 07 Aug 2019 01:20:58 -0700
+        with ESMTP ; Wed, 07 Aug 2019 01:21:23 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     wqu@suse.com
-Subject: [PATCH] btrfs: trim: fix range start validity check
-Date:   Wed,  7 Aug 2019 16:20:54 +0800
-Message-Id: <20190807082054.1922-1-anand.jain@oracle.com>
+Subject: [PATCH 1/2] btrfs: reset device stat using btrfs_dev_stat_set
+Date:   Wed,  7 Aug 2019 16:21:19 +0800
+Message-Id: <20190807082120.1973-1-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-120)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,43 +63,63 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 6ba9fc8e628b (btrfs: Ensure btrfs_trim_fs can trim the whole
-filesystem) makes sure we always trim starting from the first block group.
-However it also removed the range.start validity check which is set in the
-context of the user, where its range is from 0 to maximum of filesystem
-totalbytes and so we have to check its validity in the kernel.
+btrfs_dev_stat_reset() is an overdo in terms of wrapping. So this patch
+open codes btrfs_dev_stat_reset().
 
-Also as in the fstrim(8) [1] the kernel layers may modify the trim range.
-
-[1]
-Further, the kernel block layer reserves the right to adjust the discard
-ranges to fit raid stripe geometry, non-trim capable devices in a LVM
-setup, etc. These reductions would not be reflected in fstrim_range.len
-(the --length option).
-
-This patch undos the deleted range::start validity check.
-
-Fixes: 6ba9fc8e628b (btrfs: Ensure btrfs_trim_fs can trim the whole filesystem)
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-  With this patch fstests generic/260 is successful now.
+ fs/btrfs/volumes.c | 6 +++---
+ fs/btrfs/volumes.h | 6 ------
+ 2 files changed, 3 insertions(+), 9 deletions(-)
 
- fs/btrfs/ioctl.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index b431f7877e88..9345fcdf80c7 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -521,6 +521,8 @@ static noinline int btrfs_ioctl_fitrim(struct file *file, void __user *arg)
- 		return -EOPNOTSUPP;
- 	if (copy_from_user(&range, arg, sizeof(range)))
- 		return -EFAULT;
-+	if (range.start > btrfs_super_total_bytes(fs_info->super_copy))
-+		return -EINVAL;
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index ea9ff506681a..3eed7968fe16 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -7316,7 +7316,7 @@ static void __btrfs_reset_dev_stats(struct btrfs_device *dev)
+ 	int i;
  
- 	/*
- 	 * NOTE: Don't truncate the range using super->total_bytes.  Bytenr of
+ 	for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
+-		btrfs_dev_stat_reset(dev, i);
++		btrfs_dev_stat_set(dev, i, 0);
+ }
+ 
+ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
+@@ -7366,7 +7366,7 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
+ 				btrfs_dev_stat_set(device, i,
+ 					btrfs_dev_stats_value(eb, ptr, i));
+ 			else
+-				btrfs_dev_stat_reset(device, i);
++				btrfs_dev_stat_set(device, i, 0);
+ 		}
+ 
+ 		device->dev_stats_valid = 1;
+@@ -7549,7 +7549,7 @@ int btrfs_get_dev_stats(struct btrfs_fs_info *fs_info,
+ 				stats->values[i] =
+ 					btrfs_dev_stat_read_and_reset(dev, i);
+ 			else
+-				btrfs_dev_stat_reset(dev, i);
++				btrfs_dev_stat_set(dev, i, 0);
+ 		}
+ 	} else {
+ 		for (i = 0; i < BTRFS_DEV_STAT_VALUES_MAX; i++)
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index 081cb734a239..a7da1f3e3627 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -547,12 +547,6 @@ static inline void btrfs_dev_stat_set(struct btrfs_device *dev,
+ 	atomic_inc(&dev->dev_stats_ccnt);
+ }
+ 
+-static inline void btrfs_dev_stat_reset(struct btrfs_device *dev,
+-					int index)
+-{
+-	btrfs_dev_stat_set(dev, index, 0);
+-}
+-
+ /*
+  * Convert block group flags (BTRFS_BLOCK_GROUP_*) to btrfs_raid_types, which
+  * can be used as index to access btrfs_raid_array[].
 -- 
 2.21.0 (Apple Git-120)
 
