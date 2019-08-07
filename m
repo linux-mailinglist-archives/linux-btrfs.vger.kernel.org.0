@@ -2,145 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 149E484E48
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 16:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C8F84E4F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 16:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388135AbfHGOIz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Aug 2019 10:08:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52976 "EHLO mx1.suse.de"
+        id S2388067AbfHGOKH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Aug 2019 10:10:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53470 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388132AbfHGOIy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 7 Aug 2019 10:08:54 -0400
+        id S2387998AbfHGOKH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 7 Aug 2019 10:10:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 074B8B01F
-        for <linux-btrfs@vger.kernel.org>; Wed,  7 Aug 2019 14:08:53 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v1.1 3/3] btrfs: tree-checker: Add EXTENT_DATA_REF check
-Date:   Wed,  7 Aug 2019 22:08:43 +0800
-Message-Id: <20190807140843.2728-4-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20190807140843.2728-1-wqu@suse.com>
-References: <20190807140843.2728-1-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 06257B022
+        for <linux-btrfs@vger.kernel.org>; Wed,  7 Aug 2019 14:10:06 +0000 (UTC)
+Date:   Wed, 7 Aug 2019 16:10:05 +0200
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Subject: Re: [RFC PATCH 4/4] btrfs: sysfs: export supported checksums
+Message-ID: <20190807141005.GB28023@x250.microfocus.com>
+References: <cover.1564046812.git.jthumshirn@suse.de>
+ <e377ded65e4f2799776596ead308658710e4c8c1.1564046812.git.jthumshirn@suse.de>
+ <20190730171904.GE28208@twin.jikos.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190730171904.GE28208@twin.jikos.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-EXTENT_DATA_REF is a little like DIR_ITEM which contains hash in its
-key->offset.
+On Tue, Jul 30, 2019 at 07:19:04PM +0200, David Sterba wrote:
+> On Thu, Jul 25, 2019 at 11:33:51AM +0200, Johannes Thumshirn wrote:
+> > From: David Sterba <dsterba@suse.com>
+> > 
+> > Export supported checksum algorithms via sysfs.
+> 
+> I wonder if we should also export the implementation that would be used.
+> This could be crross referenced with /proc/crypto, but having it in one
+> place would be IMHO convenient.  Also for the case when the kernel
+> module is missing.
+> 
+> Currently the hash names are printed as comma separated values so we'd
+> need bit something structured:
+> 
+> crc32c: crc32c-intel
+> xxhash64: xxhash-generic
 
-This patch will check the following contents:
-- Key->objectid
-  Basic alignment check.
+I thought a bit more about it and it's not quite that easy as I would need to
+have access to the respective "struct crypto_shash". For the currently used
+checksum this isn't much of a problem, as I get it via "struct btrfs_fs_info".
 
-- Hash
-  Hash of each extent_data_ref item must match key->offset.
+But this sysfs attribute lists all the checksumming algorithms the current
+btrfs version is able to use irrespectively of the currently mounted
+file-systems.
 
-- Offset
-  Basic alignment check.
+So yes I can do it but I think this is for another sysfs attribute which shows
+the used checksumming algorithm for this FS, not the supported checksumming
+algorithms.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ctree.h        |  1 +
- fs/btrfs/extent-tree.c  |  2 +-
- fs/btrfs/tree-checker.c | 48 +++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 50 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 0a61dff27f57..710ea3a6608c 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2679,6 +2679,7 @@ enum btrfs_inline_ref_type {
- int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
- 				     struct btrfs_extent_inline_ref *iref,
- 				     enum btrfs_inline_ref_type is_data);
-+u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset);
- 
- u64 btrfs_csum_bytes_to_leaves(struct btrfs_fs_info *fs_info, u64 csum_bytes);
- 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index b4e9e36b65f1..c0888ed503df 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -1114,7 +1114,7 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
- 	return BTRFS_REF_TYPE_INVALID;
- }
- 
--static u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
-+u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
- {
- 	u32 high_crc = ~(u32)0;
- 	u32 low_crc = ~(u32)0;
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 6aaf3650b13d..5755a7a8477f 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -1178,6 +1178,51 @@ static int check_simple_keyed_refs(struct extent_buffer *leaf,
- 	return 0;
- }
- 
-+static int check_extent_data_ref(struct extent_buffer *leaf,
-+				 struct btrfs_key *key, int slot)
-+{
-+	struct btrfs_extent_data_ref *dref;
-+	u64 ptr = btrfs_item_ptr_offset(leaf, slot);
-+	u64 end = ptr + btrfs_item_size_nr(leaf, slot);
-+
-+	if (btrfs_item_size_nr(leaf, slot) % sizeof(*dref) != 0) {
-+		generic_err(leaf, slot,
-+	"invalid item size, have %u expect aligned to %lu for key type %u",
-+			    btrfs_item_size_nr(leaf, slot),
-+			    sizeof(*dref), key->type);
-+	}
-+	if (!IS_ALIGNED(key->objectid, leaf->fs_info->sectorsize)) {
-+		generic_err(leaf, slot,
-+"invalid key objectid for shared block ref, have %llu expect aligned to %u",
-+			    key->objectid, leaf->fs_info->sectorsize);
-+		return -EUCLEAN;
-+	}
-+	for (; ptr < end; ptr += sizeof(*dref)) {
-+		u64 root_objectid;
-+		u64 owner;
-+		u64 offset;
-+		u64 hash;
-+
-+		dref = (struct btrfs_extent_data_ref *)ptr;
-+		root_objectid = btrfs_extent_data_ref_root(leaf, dref);
-+		owner = btrfs_extent_data_ref_objectid(leaf, dref);
-+		offset = btrfs_extent_data_ref_offset(leaf, dref);
-+		hash = hash_extent_data_ref(root_objectid, owner, offset);
-+		if (hash != key->offset) {
-+			extent_err(leaf, slot,
-+	"invalid extent data ref hash, item have 0x%016llx key have 0x%016llx",
-+				   hash, key->offset);
-+			return -EUCLEAN;
-+		}
-+		if (!IS_ALIGNED(offset, leaf->fs_info->sectorsize)) {
-+			extent_err(leaf, slot,
-+	"invalid extent data backref offset, have %llu expect aligned to %u",
-+				   offset, leaf->fs_info->sectorsize);
-+		}
-+	}
-+	return 0;
-+}
-+
- /*
-  * Common point to switch the item-specific validation.
-  */
-@@ -1225,6 +1270,9 @@ static int check_leaf_item(struct extent_buffer *leaf,
- 	case BTRFS_SHARED_BLOCK_REF_KEY:
- 		ret = check_simple_keyed_refs(leaf, key, slot);
- 		break;
-+	case BTRFS_EXTENT_DATA_REF_KEY:
-+		ret = check_extent_data_ref(leaf, key, slot);
-+		break;
- 	}
- 	return ret;
- }
+Byte,
+	Johannes
 -- 
-2.22.0
-
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
+HRB 21284 (AG Nürnberg)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
