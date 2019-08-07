@@ -2,34 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 054BB84A72
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 13:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3372A84B26
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 14:03:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729588AbfHGLPw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Aug 2019 07:15:52 -0400
-Received: from mout.gmx.net ([212.227.17.22]:44457 "EHLO mout.gmx.net"
+        id S1727522AbfHGMD4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Aug 2019 08:03:56 -0400
+Received: from mout.gmx.net ([212.227.17.20]:44785 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729488AbfHGLPw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 7 Aug 2019 07:15:52 -0400
+        id S1727096AbfHGMDz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 7 Aug 2019 08:03:55 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1565176536;
-        bh=IJXojDAVdaTGb1gx0FvQc00f2dCSs9BezlvqbtYmSs0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=jLkfWvocd6eTp1zxYwAM3OvdyrfMISBvUaNoc+eeKLzVgHsOMxs0ncLkzd9D5rauY
-         EV4CK5530rZQ6EBYNzVhts/IBW/UoNgx2nUClAgDKSBiZZNTo+brpFogsmPYIVmzpr
-         eqYvoSxm0MCUsUvGg/US3Pz0cNCh3XvL30v78H7w=
+        s=badeba3b8450; t=1565179428;
+        bh=k4NRFq/JDGAvx1jZHQA4bG5rpsf+rPa4w1vpVLEZt08=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Ez9EFGE7Vxsr+UN8E57otU9oo141yYwSYHHZls7MZLdi8Ih3a4OYb3rqAIYGGBctR
+         OH0P+7xIOfINezetLzCnTJgn8JXEmPmDxJuWXqBA90xARz6+2PiMjmNOUbn7Gdo9nH
+         d3JxVdFN0YCJxb1IvZTWMLmZEDY5JWp4ZnFLAbEM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx101
- [212.227.17.174]) with ESMTPSA (Nemesis) id 0Lg5kl-1if3ng3Y1D-00peuD; Wed, 07
- Aug 2019 13:15:36 +0200
-Subject: Re: [PATCH] btrfs: trim: fix range start validity check
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     fdmanana@gmail.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Qu Wenruo <wqu@suse.com>
-References: <20190807082054.1922-1-anand.jain@oracle.com>
- <CAL3q7H7WRPuFNh3+534kF7SgLe0NmQAwCejfW9DJgasXfkQ1qQ@mail.gmail.com>
- <11d658dd-060e-536b-9bf7-907f6d36eaf9@gmx.com>
- <237D0D12-0975-4504-970E-81FB775ECD6A@oracle.com>
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx102
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0MhNk6-1hhdJ32qR8-00Mf9u; Wed, 07
+ Aug 2019 14:03:48 +0200
+Subject: Re: [PATCH] btrfs: trim: Check the range passed into to prevent
+ overflow
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20190528082154.6450-1-wqu@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -56,237 +52,140 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <b5140d67-1422-2265-d597-130aaa108167@gmx.com>
-Date:   Wed, 7 Aug 2019 19:15:30 +0800
+Message-ID: <8c3ba53e-7718-514a-2d1a-765e84e0a75d@gmx.com>
+Date:   Wed, 7 Aug 2019 20:03:41 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <237D0D12-0975-4504-970E-81FB775ECD6A@oracle.com>
+In-Reply-To: <20190528082154.6450-1-wqu@suse.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="IXh7IeNkm5GbCWocOZ0tYD1jlmMN7NN9Z"
-X-Provags-ID: V03:K1:N/O8wpvn0+riFa0yZMdtU4wZv2/7/FKvfLmmm10v+8P6hplUhUz
- OUIR//Z3ei5hi8VIJqoAyEr8GbHkzMlJeMLGuE65MKT+vWworEyBOTSsRaMQvJH+w1D4bAg
- K4nbeDEdkCljrxUOTToUOtHK5dXoBPoBoLGWJCo8kP1eODh0/Z0BYBQJuBkzc4xo5RGWw2j
- UcU4TDkR5Lj465huonnRA==
+ boundary="iJz7nczvm4qxVpHGQlqJCnqdhWA1jcJaS"
+X-Provags-ID: V03:K1:9pTtipt1I+W/1utpXsvbiIgiQIHE8zpjyBJ7pdQHIQDJwmuOIbA
+ dPo0g7jtsxrLFdMJXX1f8r/8+xVzOLelnQebSdQoQX3+1oaNSuUp1eGwwPk3K/A06EFihxp
+ Lx3t6Wh8ImcHv7XkbCIJnn2onb3wKXZmnfNDe5jhbuMOL+ziYjB+pbxH2Tu2d+OQf7ny8kR
+ CSe6BVAl+i7DnhtesjocQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KyqmvD8r4h8=:Y04REpPm07huhLhu/tfzGU
- OrVa7sJPANwIHl7fk3CBMN2Ca/t+wPhMpdRhRIXBHXGsKhqM2VkEBzfOyBdvg8uPBbY7MT1ro
- KzBa+1+JjyfjmHEJYZjXAfaWQZjGUPT9xd1LmXIyQKW3jdGMXdWhdOp2c0EXEWPsdgluSfpsg
- Rm4HFyBvrx8xPNN+7sxdO/+XOq4DnuSnFOMKfAycL1C8x1S/sgpx3EsbA70F/1qaCkSvjEsoC
- a4w40adtw1QZSUZ8gP+mu2453gdvJtGVbJd4vdyHlqAVsOL/ta3KJGa3bu9LXdaEzg/7sDGcK
- derLz9atYUf7vCeHHeuzWrcUGW3AYpY5GL5gUGMeiNRINT71VSukv7OT4GUCq62T7Sr97zEuF
- HChyk25WMY0SE2foT4etNA5LqRb2AYO4DdoIsF/8buoeTMVkoRUWzOxoAIZ5dvLm1yZhLiYwz
- 68RNredzqtMD5XzGZu/P6DU72cPMraOXQkIqphamD2QK3d7nLw867ZvKtKhyrHI2qKPFZGN76
- X3qVapoAkC/kvoNjUNV6U4UzeoJ0Y7ZHUO7Lplu3AzehqAUhEYe/tMJA1ZnQasVxjXjl1iKSR
- lvJnGO2A5JSkqbVgScse1YccHHXnBJsKirJSKNefepYisxPdEtX/KoUehmIqDDyfLnREbEm8r
- NK2FA+E2DWnlIrYdZrJgcO1yqV2AWzORT2z4e3mgoXRCQG7O6SzTCyrFb1s9Hy5NwHXeVuzAM
- EnT8z+cqR3QiO2Vcxa5H+oAfyLSRUExgOZeY3+qwmpT7zSO3Wz/fbf6W3OUFIzV8eMO2b9IYv
- plXHFojQdlTKMrZhhglSydBeFZJstyjNOYpfBjNLs1tH3VvhCuKleAYBxz3+abr6WsirJN+3X
- W8EvolE9FZ4jku11yo6ARiaaz9sqspbrK869I+B4NxjNKJwK62V0T7fYAvUqcl/i4wm+cZ0Dh
- xOJSfEN+KjmddjG4r63f3xoCNgym5vSs5I+o8J+yV27pUbIBEVU3ASYIchfrehcKVj3Q0uX4+
- iuSu+HNqlWfVKX+e/1M7PUWtk/930H+Cr4XhA2r/8kitk2P/oNXUSbLvqz2bt+zkaLNekeEMG
- CZsgzCMNR2a41DqsU0mLn+tHOW2SIxFWtH3ur7T50hwmvlaHTRaG/yu/Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2Q3OmhLwg/M=:wdxccaZzpUp2tRjSz2o88Z
+ qhqDHlAxwq69t56t5UvxzfSlCCE+tCAriohFfU3N8lXfYWWXEKKha9cJhIIYz1OwP04hf9Y8q
+ aQ4xiacuSSx6IRP4Z8oVsUyCdfY6HZvkpBb7jEEbf3sj6qfJd7L4eXgpzrSOTlTxD6VOg5uaJ
+ HxwmId3ShzknAv294yUx9sqhBkH19tLrRVpeCpeIwBUfq7YD82tQOGwSwTgNuCSDeh0h96hlC
+ ulIinnfE37+gjGO3vU4SAfmGdvjFQI63U0o7lltEue/zM/zm9XZifia6mIkSO9HlWlstgmd8X
+ uly5lCUBTV1cuZh7j5G6kETx+xfaGvi1MHu8GdShfTU4jLSSKqHqeVMR/1drwZ/hjTf4/ZtNu
+ xmJfG0JUh1UyjGBUGAfyvEdUyKfqy9fo4TH7Ak/fxVoqoRRyvxTm/YEwEWQ8/Lm0LO6e11b4Y
+ IGB31HozEaMkgr8/NimIw92VwGS5HfpUVV2sDS6TvfcGhpXhRYFavBNDN3zC3W+0j5698tzGO
+ CxcO0Te4YpAP+k+DY+JxjBxvSJ8nclvekkIMV/AgmGucXDrSjbXohGkUFvgxSqxDWyBlAtrQl
+ MclUKjJ/Lky2bzRb7qAmTjCW979bEsGQTIRuoj1FHYxdCwwDSWS8SH+zK+tq3VSJAq2ed/HT5
+ IL9Gze7v/A9m5yEOvf58uGagYpp5sRrL77B4ZcRvdA7K0Kvs2N+PBYj3SgHp25i4/KLI1Sb/Q
+ NYk5heTiybCe8hSCENHOWN7DxiGpwA2/2lbZ4UFGYx6xyCRglyH1wGBp1kxcX7GMzPrs7xWLx
+ 1ALGgWWR08xBqAHq5kWg7h+j6TJf6QCfe8nX64TqQcHDwar94X0kd94YWDcbGjeAcHs319ZJ/
+ HpRo89oE0g7ryP8Cq9FdAS+FVV27x1f9NwI4dU+pKb7DBJzHTcSWiajxd3Vp9pHLDTvDTfkKe
+ 6EbELVxvK+F64KlZaHfF+KTvG+Wr5PERjpxPhlcO/ylE3s9sYTKf/wQP8S/FYVOxhWRaqhvPx
+ 3F99fBoHuZjeKJlvJkOrdrw/OcXpQTqm9AanyW/YjIAXU/iYjp3dGxNNLpAiAhVu2If63f1Od
+ GAbiQexsi0wAKCAL/qin5Wm62s6lFSh2CYHuXqrBZuDKmzB0pXtCKdmDQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IXh7IeNkm5GbCWocOZ0tYD1jlmMN7NN9Z
-Content-Type: multipart/mixed; boundary="Prte5qK6fIOxDv20I5WTmDyiTNyfeHa9Y";
+--iJz7nczvm4qxVpHGQlqJCnqdhWA1jcJaS
+Content-Type: multipart/mixed; boundary="oBKixnlURIkIyhp2qAANcx1SVfdhheuDP";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Anand Jain <anand.jain@oracle.com>
-Cc: fdmanana@gmail.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
- Qu Wenruo <wqu@suse.com>
-Message-ID: <b5140d67-1422-2265-d597-130aaa108167@gmx.com>
-Subject: Re: [PATCH] btrfs: trim: fix range start validity check
-References: <20190807082054.1922-1-anand.jain@oracle.com>
- <CAL3q7H7WRPuFNh3+534kF7SgLe0NmQAwCejfW9DJgasXfkQ1qQ@mail.gmail.com>
- <11d658dd-060e-536b-9bf7-907f6d36eaf9@gmx.com>
- <237D0D12-0975-4504-970E-81FB775ECD6A@oracle.com>
-In-Reply-To: <237D0D12-0975-4504-970E-81FB775ECD6A@oracle.com>
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Message-ID: <8c3ba53e-7718-514a-2d1a-765e84e0a75d@gmx.com>
+Subject: Re: [PATCH] btrfs: trim: Check the range passed into to prevent
+ overflow
+References: <20190528082154.6450-1-wqu@suse.com>
+In-Reply-To: <20190528082154.6450-1-wqu@suse.com>
 
---Prte5qK6fIOxDv20I5WTmDyiTNyfeHa9Y
+--oBKixnlURIkIyhp2qAANcx1SVfdhheuDP
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
+Gentle ping?
 
+Thanks to the discussion with Anand, I find this patch is not merged yet.=
 
-On 2019/8/7 =E4=B8=8B=E5=8D=885:43, Anand Jain wrote:
->=20
->=20
->> On 7 Aug 2019, at 4:55 PM, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
->>
->>
->>
->> On 2019/8/7 =E4=B8=8B=E5=8D=884:44, Filipe Manana wrote:
->>> On Wed, Aug 7, 2019 at 9:35 AM Anand Jain <anand.jain@oracle.com> wro=
-te:
->>>>
->>>> Commit 6ba9fc8e628b (btrfs: Ensure btrfs_trim_fs can trim the whole
->>>> filesystem) makes sure we always trim starting from the first block =
-group.
->>>> However it also removed the range.start validity check which is set =
-in the
->>>> context of the user, where its range is from 0 to maximum of filesys=
-tem
->>>> totalbytes and so we have to check its validity in the kernel.
->>>>
->>>> Also as in the fstrim(8) [1] the kernel layers may modify the trim r=
-ange.
->>>>
->>>> [1]
->>>> Further, the kernel block layer reserves the right to adjust the dis=
-card
->>>> ranges to fit raid stripe geometry, non-trim capable devices in a LV=
-M
->>>> setup, etc. These reductions would not be reflected in fstrim_range.=
-len
->>>> (the --length option).
->>>>
->>>> This patch undos the deleted range::start validity check.
->>>>
->>>> Fixes: 6ba9fc8e628b (btrfs: Ensure btrfs_trim_fs can trim the whole =
-filesystem)
->>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>>> ---
->>>>  With this patch fstests generic/260 is successful now.
->>>>
->>>> fs/btrfs/ioctl.c | 2 ++
->>>> 1 file changed, 2 insertions(+)
->>>>
->>>> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
->>>> index b431f7877e88..9345fcdf80c7 100644
->>>> --- a/fs/btrfs/ioctl.c
->>>> +++ b/fs/btrfs/ioctl.c
->>>> @@ -521,6 +521,8 @@ static noinline int btrfs_ioctl_fitrim(struct fi=
-le *file, void __user *arg)
->>>>                return -EOPNOTSUPP;
->>>>        if (copy_from_user(&range, arg, sizeof(range)))
->>>>                return -EFAULT;
->>>> +       if (range.start > btrfs_super_total_bytes(fs_info->super_cop=
-y))
->>>> +               return -EINVAL;
->>>
->>> This makes it impossible to trim block groups that start at an offset=
-
->>> greater then the super_total_bytes values.
->>
->=20
->  what did I miss? As there is no limit on the range::length
->  so we can still trim beyond super_total_bytes. So I don=E2=80=99t
->  understand why not? More below.
->=20
->=20
->> Exactly.
->>
->>> In fact, in extreme cases
->>> it's possible all block groups start at offsets larger then
->>> super_total_bytes.
->>> Have you considered that, or am I missing something?
->>
->> And, I have already mentioned exactly the same reason in that commit
->> message.
->>
->> To address it once again, the bytenr is btrfs logical address space, h=
-as
->> nothing to do with any device.
->> Thus it can be [0, U64MAX].
->>
->=20
->  Fundamentally, logical address space has no relevance in the user cont=
-ext,
->  so also I don=E2=80=99t understand your view on how anyone shall use t=
-he range::start
->  even if there is no check?
-
-range::start =3D=3D bg_bytenr, range::len =3D bg_len to trim only a bg.
-
-And that bg_bytenr is at 128T, since the fs has gone through several
-balance.
-But there is only one device, and its size is only 1T.
-
-Please tell me how to trim that block group only?
-
->=20
->  As in the man page it's ok to adjust the range internally, and as leng=
-th
->  can be up to U64MAX we can still trim beyond super_total_bytes?
-
-As I said already, super_total_bytes makes no sense in logical address
-space.
-As super_total_bytes is just the sum of all devices, it's a device layer
-thing, nothing to do with logical address space.
-
-You're mixing logical bytenr with something not even a device physical
-offset, how can it be correct?
-
-Let me make it more clear, btrfs has its own logical address space
-unrelated to whatever the devices mapping are.
-It's always [0, U64_MAX], no matter how many devices there are.
-
-If btrfs is implemented using dm, it should be more clear.
-
-(single device btrfs)
-          |
-(dm linear, 0 ~ U64_MAX, virtual devices)<- that's logical address space
-  |   |   |    |
-  |   |   |    \- (dm raid1, 1T ~ 1T + 128M, devid1 XXX, devid2 XXX)
-  |   |   \------ (dm raid0, 2T ~ 2T + 1G, devid1 XXX, devid2 XXX)
-  |   \---------- (dm raid1, 128G ~ 128G + 128M, devi1 XXX, devid xxx)
-  \-------------- (dm raid0, 1M ~ 1M + 1G, devid1 xxx, devid2 xxx).
-
-If we're trim such fs layout, you tell me which offset you should use.
 
 Thanks,
 Qu
 
+On 2019/5/28 =E4=B8=8B=E5=8D=884:21, Qu Wenruo wrote:
+> Normally the range->len is set to default value (U64_MAX), but when it'=
+s
+> not default value, we should check if the range overflows.
 >=20
-> Thanks, Anand
+> And if overflows, return -EINVAL before doing anything.
 >=20
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent-tree.c | 14 +++++++++++---
+>  1 file changed, 11 insertions(+), 3 deletions(-)
 >=20
->> Thanks,
->> Qu
->>
->>>
->>> The change log is also vague to me, doesn't explain why you are
->>> re-adding that check.
->>>
->>> Thanks.
->>>
->>>>
->>>>        /*
->>>>         * NOTE: Don't truncate the range using super->total_bytes.  =
-Bytenr of
->>>> --
->>>> 2.21.0 (Apple Git-120)
->>>>
->>>
->>>
->>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index f79e477a378e..62bfba6d3c07 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -11245,6 +11245,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info=
+, struct fstrim_range *range)
+>  	struct btrfs_device *device;
+>  	struct list_head *devices;
+>  	u64 group_trimmed;
+> +	u64 range_end =3D U64_MAX;
+>  	u64 start;
+>  	u64 end;
+>  	u64 trimmed =3D 0;
+> @@ -11254,16 +11255,23 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_in=
+fo, struct fstrim_range *range)
+>  	int dev_ret =3D 0;
+>  	int ret =3D 0;
+> =20
+> +	/*
+> +	 * Check range overflow if range->len is set.
+> +	 * The default range->len is U64_MAX.
+> +	 */
+> +	if (range->len !=3D U64_MAX && check_add_overflow(range->start,
+> +				range->len, &range_end))
+> +		return -EINVAL;
+> +
+>  	cache =3D btrfs_lookup_first_block_group(fs_info, range->start);
+>  	for (; cache; cache =3D next_block_group(cache)) {
+> -		if (cache->key.objectid >=3D (range->start + range->len)) {
+> +		if (cache->key.objectid >=3D range_end) {
+>  			btrfs_put_block_group(cache);
+>  			break;
+>  		}
+> =20
+>  		start =3D max(range->start, cache->key.objectid);
+> -		end =3D min(range->start + range->len,
+> -				cache->key.objectid + cache->key.offset);
+> +		end =3D min(range_end, cache->key.objectid + cache->key.offset);
+> =20
+>  		if (end - start >=3D range->minlen) {
+>  			if (!block_group_cache_done(cache)) {
 >=20
 
 
---Prte5qK6fIOxDv20I5WTmDyiTNyfeHa9Y--
+--oBKixnlURIkIyhp2qAANcx1SVfdhheuDP--
 
---IXh7IeNkm5GbCWocOZ0tYD1jlmMN7NN9Z
+--iJz7nczvm4qxVpHGQlqJCnqdhWA1jcJaS
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1KstIACgkQwj2R86El
-/qgcoQf8DlmK+68GKMWEutib0VYVbcPIXJoeQTTTmPrtqAT7Jha0NLlD7P5brb41
-Z6ffzq5ffUD/xUjiodJ9bOQ1fPuFkR8N03da5icQFZzmQypoRjSTORynncA8G47n
-nrzmJsoQHPlzd58YKYeoo3G5zRi2AKEzQWcVgwLU5jAbKxciAJke6vv3/4sAsWgD
-D0QBEjyXty6hl5KAsBuimIo/94Rue2b3Qzx0S9eYlx0/jWifvjBtPkw2kDScjbzb
-riGQuMm3CTuvn9iIx7e2B4g77H7kSqfuKYGXFyU/T1uoGeBq6ll6otAjAJTy85Ut
-bKJxzLeqdCix2y4YIrPOinp9iyAVoQ==
-=nht7
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1Kvh0ACgkQwj2R86El
+/qhcZAgAosh9FXhyMJdU7fRYP7sLq9rau4xEFzfWtqyPQ3/hHwhuGFDzbHpllBv0
+rsuZ2xjqXG9HL5b8jYeA8QGXvsRAPWx+/FryDOl36tH/R/u7S81Lz37PoAh7BGvt
+N7BhzDri08BhDx80mNqSYQTIc5ZFcfzhbesp9KUKij23mwNWhP84BTr7Ys4kDsSu
+ZTeXomNy3zZbRndg3RAn31cPV4mU6euLXa9f1SDARCC0MUk4cR5cvMBQjLeYFR7h
+wclDxxc19upwPdemGEswy0aVLp6UL8vg59DUxQAXtMUcWwf3rsQrr6K/yW4YdsG4
+2RAN3F2e0XchfKmGjUkH5E2s4N0m4Q==
+=DBXu
 -----END PGP SIGNATURE-----
 
---IXh7IeNkm5GbCWocOZ0tYD1jlmMN7NN9Z--
+--iJz7nczvm4qxVpHGQlqJCnqdhWA1jcJaS--
