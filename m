@@ -2,85 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D70084BD3
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 14:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 820AF84BE8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 14:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729913AbfHGMmC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Aug 2019 08:42:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47442 "EHLO mx1.suse.de"
+        id S2387846AbfHGMoH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Aug 2019 08:44:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48656 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727213AbfHGMmB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 7 Aug 2019 08:42:01 -0400
+        id S2387777AbfHGMoH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 7 Aug 2019 08:44:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BDF59AD23;
-        Wed,  7 Aug 2019 12:42:00 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B5E05AC64;
+        Wed,  7 Aug 2019 12:44:05 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 75BE5DA7D7; Wed,  7 Aug 2019 14:42:32 +0200 (CEST)
-Date:   Wed, 7 Aug 2019 14:42:32 +0200
+        id 617BDDA7D7; Wed,  7 Aug 2019 14:44:37 +0200 (CEST)
+Date:   Wed, 7 Aug 2019 14:44:37 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] Sysfs updates
-Message-ID: <20190807124232.GS28208@twin.jikos.cz>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        David Sterba <dsterba@suse.com>,
+        Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.19 12/32] Btrfs: fix deadlock between fiemap
+ and transaction commits
+Message-ID: <20190807124437.GT28208@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1564505777.git.dsterba@suse.com>
- <939d08f0-e851-4f00-733e-c7de15685318@oracle.com>
- <20190806164604.GN28208@twin.jikos.cz>
- <1893f2cd-b2d3-875e-977f-ce2c8ec43852@oracle.com>
+Mail-Followup-To: dsterba@suse.cz, Greg KH <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, David Sterba <dsterba@suse.com>,
+        Filipe Manana <fdmanana@suse.com>, linux-btrfs@vger.kernel.org
+References: <20190806213522.19859-1-sashal@kernel.org>
+ <20190806213522.19859-12-sashal@kernel.org>
+ <20190807094759.GQ28208@suse.cz>
+ <20190807105126.GA14880@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1893f2cd-b2d3-875e-977f-ce2c8ec43852@oracle.com>
+In-Reply-To: <20190807105126.GA14880@kroah.com>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 07, 2019 at 04:29:45PM +0800, Anand Jain wrote:
-> On 7/8/19 12:46 AM, David Sterba wrote:
-> > On Tue, Aug 06, 2019 at 11:17:09PM +0800, Anand Jain wrote:
-> >> On 7/31/19 1:10 AM, David Sterba wrote:
-> >>> Export the potential debugging data in the per-filesystem directories we
-> >>> already have, so we can drop debugfs. The new directories depend on
-> >>> CONFIG_BTRFS_DEBUG so they're not affecting normal builds.
-> >>>
-> >>> David Sterba (2):
-> >>>     btrfs: sysfs: add debugging exports
-> >>>     btrfs: delete debugfs code
-> >>>
-> >>>    fs/btrfs/sysfs.c | 68 +++++++++++++++++++++++-------------------------
-> >>>    fs/btrfs/sysfs.h |  5 ----
-> >>>    2 files changed, 32 insertions(+), 41 deletions(-)
-> >>>
-> >>
-> >> For 2/2:
-> >>    Reviewed-by: Anand Jain <anand.jain@oracle.com>
-> >>
-> >> For 1/2:
-> >>    IMO it would be better to delay this until we really have a debug hook
-> >>    exposed at the sysfs.
+On Wed, Aug 07, 2019 at 12:51:26PM +0200, Greg KH wrote:
+> On Wed, Aug 07, 2019 at 11:47:59AM +0200, David Sterba wrote:
+> > On Tue, Aug 06, 2019 at 05:35:00PM -0400, Sasha Levin wrote:
+> > > From: Filipe Manana <fdmanana@suse.com>
+> > > 
+> > > [ Upstream commit a6d155d2e363f26290ffd50591169cb96c2a609e ]
+> > > 
+> > > Fixes: 03628cdbc64db6 ("Btrfs: do not start a transaction during fiemap")
 > > 
-> > Sorry, I don't understand what you mean.
+> > The commit is a regression fix during the 5.2 cycle, how it could end up
+> > in a 4.19 stable candidate?
 > > 
+> > $ git describe  03628cdbc64db6
+> > v5.1-rc7-201-g03628cdbc64d
+> > 
+> > $ git describe --contains 03628cdbc64db6
+> > v5.2-rc1~163^2~26
+> > 
+> > And it does not belong to 5.2 either, git cherry-pick on top of 5.2
+> > fails.
+> > 
+> > I think such sanity check can be done automatically so the patches don't
+> > accidentally land in trees where don't belong.
 > 
->   I notice that /sysfs/fs/btrfs/<debug>|<fsid/debug> is dummy as of now,
->   IMO its better to add this (1/2) patch along with the some actual trace
->   which is needed.
+> 
+> Commit 03628cdbc64d ("Btrfs: do not start a transaction during fiemap")
+> was tagged for the stable trees, and ended up in the following releases:
+> 	4.14.121 4.19.45 5.0.18 5.1.4 5.2
+> so yes, it does need to go back to all of those locations if this patch
+> really does fix the issue there.
 
-Yes it is empty for now, ready for use, like was the previous debugfs.
-
-I don't want to delay removing the debugfs code further and not
-providing a replacement does not sound as a good option, the patch would
-be lost in the mailinglist.
-
->   Potentially either dtrace/bfp probes will be better
->   runtime debugging approach.
-
-That's orthogonal, the sysfs is for exporting data or triggering some
-action by writing to the files. The file based approach is simple to use
-without external tools like bpf or even 3rd party patchsets like dtrace.
+You're right, I did not notice the CC tag when examining the patches.
