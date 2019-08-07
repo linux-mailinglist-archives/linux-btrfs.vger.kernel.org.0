@@ -2,152 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB3D84734
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:27:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1E084765
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387687AbfHGI0n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Aug 2019 04:26:43 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:37613 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387674AbfHGI0m (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Aug 2019 04:26:42 -0400
-Received: by mail-vs1-f66.google.com with SMTP id v6so60195963vsq.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Aug 2019 01:26:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=wvxX4HnwFhFL0mVKgKf4vEO+g72YTqRJllWkh8ndkhM=;
-        b=Z5u+nwwxxPV7eMpwFUsLiFvqZQgDE+4OjDF6820u9HXCTaspW1dH6BWg33kXk+nC2Q
-         Hzi9ajN+YKkKxqLAwSLRdVfYmMRWEylNudXI2MmvUPAQ0b5u6SDNxlYpE+IhGVAo9ljw
-         lcB7V7YT7Uvx+qNam+EBcfUZ/7AV8D0K2Mz4EXEBokHO4eD57OIAzxEZk94YVZtmVKtb
-         F1l7o2MB2m1GVPl+Ix7UJlcO19x5YuiJHHvB4u4oiMqmxbdyIEOaWg4FFkh8hNRG2RAu
-         J6QvI7f+WVQwwGmGcSTe+PwJ6Di/PotfC0gcOY+5YedBu+miRTYq006xVTsBGNVDQnAE
-         xGLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=wvxX4HnwFhFL0mVKgKf4vEO+g72YTqRJllWkh8ndkhM=;
-        b=Z1aS+wdLSDZxgXixksfq7plHGFzxb7vmyr30ncWvUjDQb3lshK7DFAYolTUsaVOA07
-         wn1UcozfXfrGiWPnArZ4RULJfe/Id64Buow4cGs7R0WMZXdAlyUiWTnTMH1GzkTfozOQ
-         fMO79KiDtrot3aj9nLebks585BE5/SM6itf25s0PxjJb0YL0QlAF+KNyClUw1pgkdms3
-         FBmsiEjwm+57dtOu/onbr4DC7g4FqjClmf7+G9JmvCS2TwHXTjhkPhLWyeH351xRvWB7
-         SoXxT1J++XvzdsswaO/JIWVQQJOKW4bdNh0DtePeszcKCaxvzHeRY7TygNpgQ+EDroBU
-         3itA==
-X-Gm-Message-State: APjAAAURjRGgBCDENJGGxri3foQAiXL7dydFrvx20dGdIAuXaKPgPuPn
-        VvZrZcWCLeT0KzPuHpTrSGgnA97XRewBzmuC0hOvoA==
-X-Google-Smtp-Source: APXvYqzWzJx4RBKCPa9qeCWrsMugxKj89S0FCIMrZlVC2KBRN8eCAtZdOA+Vb7BDsT17iAoxVgtdgTyN90ND2I7E2FU=
-X-Received: by 2002:a67:7087:: with SMTP id l129mr4999068vsc.206.1565166401282;
- Wed, 07 Aug 2019 01:26:41 -0700 (PDT)
+        id S2387538AbfHGIa1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Aug 2019 04:30:27 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:43584 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387516AbfHGIa0 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Aug 2019 04:30:26 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778TiCp071345;
+        Wed, 7 Aug 2019 08:29:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2018-07-02;
+ bh=b/2lFhxWqQyQoedI2e6nsVMwQxnbsXZZC72z3i9kKnk=;
+ b=YQ+yxIGh5RBVIK6y/W7w7UI/LjVCGD3Saw11oc7PunUsMmd606YLPAOskkWLIT6VIMX3
+ Esg8f2GzroPRPQAXrmmayr6f461JBrtwnY6vWI/Oz4cOhvcRMGg45I5S/WzqYyC4v/AB
+ +c6PWisy39Jhm0wkwJd/bvkXIpeTC4XVEI5gEpqFb2lzF6Nyh+rx2XLkF3pbEisLn7Kd
+ huYWbgln3s36SG6NyAmq99oEy+V6xxjllKmhFUXWL4sSRog3lt9Fw0Ytvzd4NZrjdBij
+ dMnEk7w5rV1k3jE4z28vSkZFlrEx3kawAwPd9k+LbZngfNjst8iWJvat5ZJ+Oh18Jaut 1Q== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 2u527ptr9f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Aug 2019 08:29:56 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778SCY3056208;
+        Wed, 7 Aug 2019 08:29:56 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2u7577qr7v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Aug 2019 08:29:56 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x778TsXp030708;
+        Wed, 7 Aug 2019 08:29:54 GMT
+Received: from [10.190.130.61] (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Aug 2019 01:29:54 -0700
+Subject: Re: [PATCH 0/2] Sysfs updates
+To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <cover.1564505777.git.dsterba@suse.com>
+ <939d08f0-e851-4f00-733e-c7de15685318@oracle.com>
+ <20190806164604.GN28208@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <1893f2cd-b2d3-875e-977f-ce2c8ec43852@oracle.com>
+Date:   Wed, 7 Aug 2019 16:29:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20190805144708.5432-1-nborisov@suse.com> <20190805144708.5432-3-nborisov@suse.com>
- <CAL3q7H7VnX7ez5VeYbKFk=W1s_1AeS0hYpmVPvZ4af4NJerjUw@mail.gmail.com> <df7b35d1-da0d-c99a-40dc-44c8ccd8d985@suse.com>
-In-Reply-To: <df7b35d1-da0d-c99a-40dc-44c8ccd8d985@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 7 Aug 2019 09:26:30 +0100
-Message-ID: <CAL3q7H4f6uutH4aWqO0nJoJ_d0p1mgCbvxVOoREVbG_DSA1yTg@mail.gmail.com>
-Subject: Re: [PATCH 2/6] btrfs: Improve comments around nocow path
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20190806164604.GN28208@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908070092
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908070092
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 7, 2019 at 9:16 AM Nikolay Borisov <nborisov@suse.com> wrote:
->
->
->
-> On 6.08.19 =D0=B3. 13:09 =D1=87., Filipe Manana wrote:
-> > On Mon, Aug 5, 2019 at 3:48 PM Nikolay Borisov <nborisov@suse.com> wrot=
-e:
->
-> <snip>
->
-> >> @@ -1371,23 +1376,39 @@ static noinline int run_delalloc_nocow(struct =
-inode *inode,
-> >>
-> >>                 btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]=
-);
-> >>
-> >> +               /* Didn't find anything for our INO */
-> >>                 if (found_key.objectid > ino)
-> >>                         break;
-> >> +               /*
-> >> +                * Found a different inode or no extents for our file,
-> >> +                * goto next slot
-> >
-> > No. This does not mean that there are no extents for the file. If
-> > there weren't any, we would break instead of iterating to the next
-> > slot.
-> > One example described at
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
-it/?id=3D1d512cb77bdbda80f0dd0620a3b260d697fd581d
->
-> I see, thanks for the pointer. How about the following :
->
-> /*
->                  * Keep searching until we find an EXTENT ITEM or are
-> sure
->                  * there are no more extents for this inode
->
->                  */
+On 7/8/19 12:46 AM, David Sterba wrote:
+> On Tue, Aug 06, 2019 at 11:17:09PM +0800, Anand Jain wrote:
+>> On 7/31/19 1:10 AM, David Sterba wrote:
+>>> Export the potential debugging data in the per-filesystem directories we
+>>> already have, so we can drop debugfs. The new directories depend on
+>>> CONFIG_BTRFS_DEBUG so they're not affecting normal builds.
+>>>
+>>> David Sterba (2):
+>>>     btrfs: sysfs: add debugging exports
+>>>     btrfs: delete debugfs code
+>>>
+>>>    fs/btrfs/sysfs.c | 68 +++++++++++++++++++++++-------------------------
+>>>    fs/btrfs/sysfs.h |  5 ----
+>>>    2 files changed, 32 insertions(+), 41 deletions(-)
+>>>
+>>
+>> For 2/2:
+>>    Reviewed-by: Anand Jain <anand.jain@oracle.com>
+>>
+>> For 1/2:
+>>    IMO it would be better to delay this until we really have a debug hook
+>>    exposed at the sysfs.
+> 
+> Sorry, I don't understand what you mean.
+> 
 
-Yes, that's just fine.
+  I notice that /sysfs/fs/btrfs/<debug>|<fsid/debug> is dummy as of now,
+  IMO its better to add this (1/2) patch along with the some actual trace
+  which is needed. Potentially either dtrace/bfp probes will be better
+  runtime debugging approach.
 
-Thanks.
-
->
-> While it doesn't mention the race condition this check, coupled with the
-> next one (where we break if type > EXTENT_DATA_KEY), it reflects reality
-> close enough?
->
->
-> >
-> >> +                */
-> >>                 if (WARN_ON_ONCE(found_key.objectid < ino) ||
-> >>                     found_key.type < BTRFS_EXTENT_DATA_KEY) {
-> >>                         path->slots[0]++;
-> >>                         goto next_slot;
-> >>                 }
-> >> +
-> >> +               /* Found key is not EXTENT_DATA_KEY or starts after re=
-q range */
-> >>                 if (found_key.type > BTRFS_EXTENT_DATA_KEY ||
-> >>                     found_key.offset > end)
-> >>                         break;
-> >>
-> >> +               /*
-> >> +                * If the found extent starts after requested offset, =
-then
-> >> +                * adjust extent_end to be right before this extent be=
-gins
-> >> +                */
-> >>                 if (found_key.offset > cur_offset) {
-> >>                         extent_end =3D found_key.offset;
-> >>                         extent_type =3D 0;
-> >>                         goto out_check;
-> >>                 }
-> >>
-> >> +
-> >> +               /*
-> >> +                * Found extent which begins before our range and has =
-the
-> >> +                * potential to intersect it.
-> >> +                */
-> >>                 fi =3D btrfs_item_ptr(leaf, path->slots[0],
-> >>                                     struct btrfs_file_extent_item);
-> >>                 extent_type =3D btrfs_file_extent_type(leaf, fi);
-> <snip>
-
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Thanks, Anand
