@@ -2,139 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DE0846F9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D4B84703
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Aug 2019 10:21:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727749AbfHGISX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 7 Aug 2019 04:18:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44806 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727415AbfHGISX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 7 Aug 2019 04:18:23 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A2A80ACFA;
-        Wed,  7 Aug 2019 08:18:21 +0000 (UTC)
-Subject: Re: [PATCH 6/6] btrfs: Remove BUG_ON from run_delalloc_nocow
-To:     fdmanana@gmail.com
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20190805144708.5432-1-nborisov@suse.com>
- <20190805144708.5432-7-nborisov@suse.com>
- <CAL3q7H4bG0g7O8vUOR7pYBn9fvQbDvKVYUSucsPAcxBsNorrnw@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <92e30fce-58bb-8049-99e0-7af34098806f@suse.com>
-Date:   Wed, 7 Aug 2019 11:18:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2387516AbfHGIVK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 7 Aug 2019 04:21:10 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:42288 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387498AbfHGIVK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 7 Aug 2019 04:21:10 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778Iu9Q192061;
+        Wed, 7 Aug 2019 08:21:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2018-07-02; bh=LAiC2L/LXx573r+O05hiX0P3ZAMIcxpigkv3UcuZiAY=;
+ b=gc/R+qUwSkA1EnhDSypJLaiQq5jiQbitBd6uqOq1qau1KW6IXmPf/sirxoO8DfH6UloY
+ eRK08yCOdNYMyMnHgbdokVoXEvsxHsbZQ/Ya1bbuJGsO8uhWgPwmUopfOUUi3FlPXYPc
+ f/5fpetK6VuteMR3fWEh2Ra0ur11KHIIMWNytfEwnMUVf9DzUPfPAnZegal7tAgCXk/Z
+ 3iGV4JJ3BdC+qDnUnUAi9n9/EQMkLCG7HWTBbFNBiauSJEcWL9zDbm3TEGUWQn4sQ2re
+ NnjZQC3IkbzqVvssAIhG1ePONR6HwJj40XVmeMuaPV6W69kCooOyRSIIIepk2HLNsabr gg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2u52wrarcc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Aug 2019 08:21:01 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x778I5vX070009;
+        Wed, 7 Aug 2019 08:21:00 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3030.oracle.com with ESMTP id 2u7667c3rk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 07 Aug 2019 08:21:00 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x778KxqB016166;
+        Wed, 7 Aug 2019 08:20:59 GMT
+Received: from mb.wifi.oracle.com (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 07 Aug 2019 01:20:58 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     wqu@suse.com
+Subject: [PATCH] btrfs: trim: fix range start validity check
+Date:   Wed,  7 Aug 2019 16:20:54 +0800
+Message-Id: <20190807082054.1922-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-120)
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H4bG0g7O8vUOR7pYBn9fvQbDvKVYUSucsPAcxBsNorrnw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908070090
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9341 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908070090
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Commit 6ba9fc8e628b (btrfs: Ensure btrfs_trim_fs can trim the whole
+filesystem) makes sure we always trim starting from the first block group.
+However it also removed the range.start validity check which is set in the
+context of the user, where its range is from 0 to maximum of filesystem
+totalbytes and so we have to check its validity in the kernel.
 
+Also as in the fstrim(8) [1] the kernel layers may modify the trim range.
 
-On 6.08.19 г. 13:34 ч., Filipe Manana wrote:
-> On Mon, Aug 5, 2019 at 3:47 PM Nikolay Borisov <nborisov@suse.com> wrote:
->>
->> Correctly handle failure cases when adding an ordered extents in case
->> of REGULAR or PREALLOC extents.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> 
-> It's correct, but:
-> 
->> ---
->>  fs/btrfs/inode.c | 16 +++++++++++++---
->>  1 file changed, 13 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->> index 6c3f9f3a7ed1..b935c301ca72 100644
->> --- a/fs/btrfs/inode.c
->> +++ b/fs/btrfs/inode.c
->> @@ -1569,16 +1569,26 @@ static noinline int run_delalloc_nocow(struct inode *inode,
->>                                                        disk_bytenr, num_bytes,
->>                                                        num_bytes,
->>                                                        BTRFS_ORDERED_PREALLOC);
->> +                       if (nocow)
->> +                               btrfs_dec_nocow_writers(fs_info, disk_bytenr);
->> +                       if (ret) {
->> +                               btrfs_drop_extent_cache(BTRFS_I(inode),
->> +                                                       cur_offset,
->> +                                                       cur_offset + num_bytes - 1,
->> +                                                       0);
->> +                               goto error;
->> +                       }
->>                 } else {
->>                         ret = btrfs_add_ordered_extent(inode, cur_offset,
->>                                                        disk_bytenr, num_bytes,
->>                                                        num_bytes,
->>                                                        BTRFS_ORDERED_NOCOW);
->> +                       if (nocow)
->> +                               btrfs_dec_nocow_writers(fs_info, disk_bytenr);
->> +                       if (ret)
->> +                               goto error;
-> 
-> We are now duplicating some error handling. Could be done like before,
-> outside the if branches.
-> 
+[1]
+Further, the kernel block layer reserves the right to adjust the discard
+ranges to fit raid stripe geometry, non-trim capable devices in a LVM
+setup, etc. These reductions would not be reflected in fstrim_range.len
+(the --length option).
 
-Dependson the POV. IMO it's better to have all error handling for the
-respective branch in one place. That way when someone is reading the
-function and gets to that branch they see that in case one of the
-functions fail what is the error handling. Otherwise as they are
-scanning the code they'd have to look up and see if something tricky is
-going on.
+This patch undos the deleted range::start validity check.
 
-David, what's your take on that ?
+Fixes: 6ba9fc8e628b (btrfs: Ensure btrfs_trim_fs can trim the whole filesystem)
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+  With this patch fstests generic/260 is successful now.
 
-> 
+ fs/btrfs/ioctl.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index b431f7877e88..9345fcdf80c7 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -521,6 +521,8 @@ static noinline int btrfs_ioctl_fitrim(struct file *file, void __user *arg)
+ 		return -EOPNOTSUPP;
+ 	if (copy_from_user(&range, arg, sizeof(range)))
+ 		return -EFAULT;
++	if (range.start > btrfs_super_total_bytes(fs_info->super_copy))
++		return -EINVAL;
+ 
+ 	/*
+ 	 * NOTE: Don't truncate the range using super->total_bytes.  Bytenr of
+-- 
+2.21.0 (Apple Git-120)
+
