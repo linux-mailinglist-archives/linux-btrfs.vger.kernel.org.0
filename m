@@ -2,159 +2,164 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 346A3864F5
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2019 16:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E65A86943
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2019 21:03:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732640AbfHHO7E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Aug 2019 10:59:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45868 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732414AbfHHO7D (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Aug 2019 10:59:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F2C55B01F
-        for <linux-btrfs@vger.kernel.org>; Thu,  8 Aug 2019 14:59:01 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 49C16DA7C5; Thu,  8 Aug 2019 16:59:32 +0200 (CEST)
-Date:   Thu, 8 Aug 2019 16:59:32 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v1.1 3/3] btrfs: tree-checker: Add EXTENT_DATA_REF check
-Message-ID: <20190808145932.GB8267@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190807140843.2728-1-wqu@suse.com>
- <20190807140843.2728-4-wqu@suse.com>
+        id S2390295AbfHHTDE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Aug 2019 15:03:04 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:36353 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390300AbfHHTDE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Aug 2019 15:03:04 -0400
+Received: by mail-pf1-f194.google.com with SMTP id r7so44618420pfl.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Aug 2019 12:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=YaDw968sYZinLHwfTVtmoWadaU+xxvDOnKy5RkNnHhY=;
+        b=HIQxeRJULmhNEAqcWiiIVZr0UAHZw/vMZ/YXLmvIkXIat0A1z75P9Q0d/P74XRw3do
+         R7+ctJwPKZUsckjeTNvykCKZsWrBGUXA5z5ZhyRNBYXd8H4O6Fr/Cfh1Tgcp0VtQSpzQ
+         sHkoTTEtlwzMapLsx/9XmEPsqlkUGcTTXFX0+zFyl6atF/lOxErRKyNsY876FIdy4kom
+         iHrVYxjJMl+rUFyMB+98d2/kmsgt03t7E0C/Gw5ePaTD8Sis0vFdJXbU/8NWpzUYzFd/
+         +GAdy2lZyujaVYVCBCBCH4QSjJMb3LYnJxKiTOIRpKMlA/KjrXwRHyDPiu3C/9kVghl3
+         PqlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=YaDw968sYZinLHwfTVtmoWadaU+xxvDOnKy5RkNnHhY=;
+        b=VAUo+XqE9iAsRyI2M5eHBuZ5XS3fQ4Iw2cwTvIA6MvKBkzJ9E/iiBL6NNlCQfcJ6pH
+         N5OkOij3wRGqYPTKwl5mWHnhZV1HuWdz4w7/6M8ebHIy6ZBWh3oNkCYh2prVX09Fg3SU
+         bNlYyA5z/VjTfSEac6FV3Cygpdo9CUxpae/zjHfkTmXbbsV2gMHxpCuPzLnp2T5qzDJu
+         VMu5qmU21vp5B4BT566WSAQ+pidgirEr+9ZkHOkPWrSkyHtC+Wgqpqnh/Yt113aV21yI
+         GjxRmFK/e3aX79K9LO700H52DJpbEz5CglSm5xxdw979pZy9PpcUxkAFj2dbi197kfxE
+         KjWQ==
+X-Gm-Message-State: APjAAAXTqSgzMzIMuJ4LNmQwUhsH76nQ4ptfj3fmxFcNz8kfCKRKblqC
+        lMRvzm2BgX58I383XzYuuOTcFw==
+X-Google-Smtp-Source: APXvYqyauxFlil+jXyg34wXrmqepCBj1OqcfC1/2Gy4eTEI53he4OQNjlsbx5piBhi7v9zETXwpdnA==
+X-Received: by 2002:a17:90a:8b98:: with SMTP id z24mr5545969pjn.77.1565290983429;
+        Thu, 08 Aug 2019 12:03:03 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::1:e15f])
+        by smtp.gmail.com with ESMTPSA id t6sm22068113pgu.23.2019.08.08.12.03.02
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 08 Aug 2019 12:03:02 -0700 (PDT)
+Date:   Thu, 8 Aug 2019 15:03:00 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH RESEND] block: annotate refault stalls from IO submission
+Message-ID: <20190808190300.GA9067@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190807140843.2728-4-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 07, 2019 at 10:08:43PM +0800, Qu Wenruo wrote:
-> EXTENT_DATA_REF is a little like DIR_ITEM which contains hash in its
-> key->offset.
-> 
-> This patch will check the following contents:
-> - Key->objectid
->   Basic alignment check.
-> 
-> - Hash
->   Hash of each extent_data_ref item must match key->offset.
-> 
-> - Offset
->   Basic alignment check.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/ctree.h        |  1 +
->  fs/btrfs/extent-tree.c  |  2 +-
->  fs/btrfs/tree-checker.c | 48 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 50 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 0a61dff27f57..710ea3a6608c 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -2679,6 +2679,7 @@ enum btrfs_inline_ref_type {
->  int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
->  				     struct btrfs_extent_inline_ref *iref,
->  				     enum btrfs_inline_ref_type is_data);
-> +u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset);
->  
->  u64 btrfs_csum_bytes_to_leaves(struct btrfs_fs_info *fs_info, u64 csum_bytes);
->  
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index b4e9e36b65f1..c0888ed503df 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -1114,7 +1114,7 @@ int btrfs_get_extent_inline_ref_type(const struct extent_buffer *eb,
->  	return BTRFS_REF_TYPE_INVALID;
->  }
->  
-> -static u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
-> +u64 hash_extent_data_ref(u64 root_objectid, u64 owner, u64 offset)
->  {
->  	u32 high_crc = ~(u32)0;
->  	u32 low_crc = ~(u32)0;
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 6aaf3650b13d..5755a7a8477f 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1178,6 +1178,51 @@ static int check_simple_keyed_refs(struct extent_buffer *leaf,
->  	return 0;
->  }
->  
-> +static int check_extent_data_ref(struct extent_buffer *leaf,
-> +				 struct btrfs_key *key, int slot)
-> +{
-> +	struct btrfs_extent_data_ref *dref;
-> +	u64 ptr = btrfs_item_ptr_offset(leaf, slot);
-> +	u64 end = ptr + btrfs_item_size_nr(leaf, slot);
+psi tracks the time tasks wait for refaulting pages to become
+uptodate, but it does not track the time spent submitting the IO. The
+submission part can be significant if backing storage is contended or
+when cgroup throttling (io.latency) is in effect - a lot of time is
+spent in submit_bio(). In that case, we underreport memory pressure.
 
-same here, unsigned long
+Annotate submit_bio() to account submission time as memory stall when
+the bio is reading userspace workingset pages.
 
-> +
-> +	if (btrfs_item_size_nr(leaf, slot) % sizeof(*dref) != 0) {
-> +		generic_err(leaf, slot,
-> +	"invalid item size, have %u expect aligned to %lu for key type %u",
-> +			    btrfs_item_size_nr(leaf, slot),
-> +			    sizeof(*dref), key->type);
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ block/bio.c               |  3 +++
+ block/blk-core.c          | 23 ++++++++++++++++++++++-
+ include/linux/blk_types.h |  1 +
+ 3 files changed, 26 insertions(+), 1 deletion(-)
 
-sizeof needs %zu
+diff --git a/block/bio.c b/block/bio.c
+index 299a0e7651ec..4196865dd300 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -806,6 +806,9 @@ void __bio_add_page(struct bio *bio, struct page *page,
+ 
+ 	bio->bi_iter.bi_size += len;
+ 	bio->bi_vcnt++;
++
++	if (!bio_flagged(bio, BIO_WORKINGSET) && unlikely(PageWorkingset(page)))
++		bio_set_flag(bio, BIO_WORKINGSET);
+ }
+ EXPORT_SYMBOL_GPL(__bio_add_page);
+ 
+diff --git a/block/blk-core.c b/block/blk-core.c
+index d0cc6e14d2f0..1b1705b7dde7 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -36,6 +36,7 @@
+ #include <linux/blk-cgroup.h>
+ #include <linux/debugfs.h>
+ #include <linux/bpf.h>
++#include <linux/psi.h>
+ 
+ #define CREATE_TRACE_POINTS
+ #include <trace/events/block.h>
+@@ -1128,6 +1129,10 @@ EXPORT_SYMBOL_GPL(direct_make_request);
+  */
+ blk_qc_t submit_bio(struct bio *bio)
+ {
++	bool workingset_read = false;
++	unsigned long pflags;
++	blk_qc_t ret;
++
+ 	if (blkcg_punt_bio_submit(bio))
+ 		return BLK_QC_T_NONE;
+ 
+@@ -1146,6 +1151,8 @@ blk_qc_t submit_bio(struct bio *bio)
+ 		if (op_is_write(bio_op(bio))) {
+ 			count_vm_events(PGPGOUT, count);
+ 		} else {
++			if (bio_flagged(bio, BIO_WORKINGSET))
++				workingset_read = true;
+ 			task_io_account_read(bio->bi_iter.bi_size);
+ 			count_vm_events(PGPGIN, count);
+ 		}
+@@ -1160,7 +1167,21 @@ blk_qc_t submit_bio(struct bio *bio)
+ 		}
+ 	}
+ 
+-	return generic_make_request(bio);
++	/*
++	 * If we're reading data that is part of the userspace
++	 * workingset, count submission time as memory stall. When the
++	 * device is congested, or the submitting cgroup IO-throttled,
++	 * submission can be a significant part of overall IO time.
++	 */
++	if (workingset_read)
++		psi_memstall_enter(&pflags);
++
++	ret = generic_make_request(bio);
++
++	if (workingset_read)
++		psi_memstall_leave(&pflags);
++
++	return ret;
+ }
+ EXPORT_SYMBOL(submit_bio);
+ 
+diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+index 1b1fa1557e68..a9dadfc16a92 100644
+--- a/include/linux/blk_types.h
++++ b/include/linux/blk_types.h
+@@ -209,6 +209,7 @@ enum {
+ 	BIO_BOUNCED,		/* bio is a bounce bio */
+ 	BIO_USER_MAPPED,	/* contains user pages */
+ 	BIO_NULL_MAPPED,	/* contains invalid user pages */
++	BIO_WORKINGSET,		/* contains userspace workingset pages */
+ 	BIO_QUIET,		/* Make BIO Quiet */
+ 	BIO_CHAIN,		/* chained bio, ->bi_remaining in effect */
+ 	BIO_REFFED,		/* bio has elevated ->bi_cnt */
+-- 
+2.22.0
 
-> +	}
-> +	if (!IS_ALIGNED(key->objectid, leaf->fs_info->sectorsize)) {
-> +		generic_err(leaf, slot,
-> +"invalid key objectid for shared block ref, have %llu expect aligned to %u",
-> +			    key->objectid, leaf->fs_info->sectorsize);
-> +		return -EUCLEAN;
-> +	}
-> +	for (; ptr < end; ptr += sizeof(*dref)) {
-> +		u64 root_objectid;
-> +		u64 owner;
-> +		u64 offset;
-> +		u64 hash;
-> +
-> +		dref = (struct btrfs_extent_data_ref *)ptr;
-> +		root_objectid = btrfs_extent_data_ref_root(leaf, dref);
-> +		owner = btrfs_extent_data_ref_objectid(leaf, dref);
-> +		offset = btrfs_extent_data_ref_offset(leaf, dref);
-> +		hash = hash_extent_data_ref(root_objectid, owner, offset);
-> +		if (hash != key->offset) {
-> +			extent_err(leaf, slot,
-> +	"invalid extent data ref hash, item have 0x%016llx key have 0x%016llx",
-> +				   hash, key->offset);
-> +			return -EUCLEAN;
-> +		}
-> +		if (!IS_ALIGNED(offset, leaf->fs_info->sectorsize)) {
-> +			extent_err(leaf, slot,
-> +	"invalid extent data backref offset, have %llu expect aligned to %u",
-> +				   offset, leaf->fs_info->sectorsize);
-> +		}
-> +	}
-> +	return 0;
-> +}
-> +
->  /*
->   * Common point to switch the item-specific validation.
->   */
-> @@ -1225,6 +1270,9 @@ static int check_leaf_item(struct extent_buffer *leaf,
->  	case BTRFS_SHARED_BLOCK_REF_KEY:
->  		ret = check_simple_keyed_refs(leaf, key, slot);
->  		break;
-> +	case BTRFS_EXTENT_DATA_REF_KEY:
-> +		ret = check_extent_data_ref(leaf, key, slot);
-> +		break;
->  	}
->  	return ret;
->  }
-> -- 
-> 2.22.0
