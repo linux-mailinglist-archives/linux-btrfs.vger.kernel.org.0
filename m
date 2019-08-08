@@ -2,36 +2,48 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F39885956
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2019 06:35:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEF5685A06
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2019 07:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727242AbfHHEex (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Aug 2019 00:34:53 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3934 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726047AbfHHEex (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Aug 2019 00:34:53 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id 5C50310500061E1BEF56;
-        Thu,  8 Aug 2019 12:34:50 +0800 (CST)
-Received: from dggeme762-chm.china.huawei.com (10.3.19.108) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 8 Aug 2019 12:34:50 +0800
-Received: from 138 (10.175.124.28) by dggeme762-chm.china.huawei.com
- (10.3.19.108) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Thu, 8
- Aug 2019 12:34:49 +0800
-Date:   Thu, 8 Aug 2019 12:52:00 +0800
-From:   Gao Xiang <gaoxiang25@huawei.com>
-To:     Dave Chinner <david@fromorbit.com>
-CC:     Goldwyn Rodrigues <RGoldwyn@suse.com>, "hch@lst.de" <hch@lst.de>,
+        id S1730768AbfHHFtj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Aug 2019 01:49:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55736 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728090AbfHHFtj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 8 Aug 2019 01:49:39 -0400
+Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D142214C6;
+        Thu,  8 Aug 2019 05:49:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565243377;
+        bh=yK/HFvksaQrj8GwaFCyuT15Mjv+wfQ/4JtVWU/RSuqw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WckH3pdJxuB5qMJYz95SwgB+YRSOgVEYey5Fftk5MGP5Tgx4unBvapT7MHxc8WKzL
+         6IH+YPolHVzJT2xF7R+LIAICMmzHHVW2SZyO9qd5WNih8kg1JdG0hxv4s0s63X2T5h
+         8lGkyM8QHmMV2P7D2TvwFu1HpMhGc7FWGZjZUEoY=
+Date:   Wed, 7 Aug 2019 22:49:36 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Gao Xiang <gaoxiang25@huawei.com>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Goldwyn Rodrigues <RGoldwyn@suse.com>,
+        "hch@lst.de" <hch@lst.de>,
         "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
         "ruansy.fnst@cn.fujitsu.com" <ruansy.fnst@cn.fujitsu.com>,
         "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        <linux-erofs@lists.ozlabs.org>, <miaoxie@huawei.com>
+        linux-erofs@lists.ozlabs.org, miaoxie@huawei.com
 Subject: Re: [PATCH 10/13] iomap: use a function pointer for dio submits
-Message-ID: <20190808045200.GB28630@138>
+Message-ID: <20190808054936.GA5319@sol.localdomain>
+Mail-Followup-To: Gao Xiang <gaoxiang25@huawei.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Goldwyn Rodrigues <RGoldwyn@suse.com>, "hch@lst.de" <hch@lst.de>,
+        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "ruansy.fnst@cn.fujitsu.com" <ruansy.fnst@cn.fujitsu.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        linux-erofs@lists.ozlabs.org, miaoxie@huawei.com
 References: <20190802220048.16142-1-rgoldwyn@suse.de>
  <20190802220048.16142-11-rgoldwyn@suse.de>
  <20190804234321.GC7689@dread.disaster.area>
@@ -39,123 +51,16 @@ References: <20190802220048.16142-1-rgoldwyn@suse.de>
  <20190805215458.GH7689@dread.disaster.area>
  <20190808042640.GA28630@138>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20190808042640.GA28630@138>
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Originating-IP: [10.175.124.28]
-X-ClientProxiedBy: dggeme709-chm.china.huawei.com (10.1.199.105) To
- dggeme762-chm.china.huawei.com (10.3.19.108)
-X-CFilter-Loop: Reflected
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On Thu, Aug 08, 2019 at 12:26:42PM +0800, Gao Xiang wrote:
-> On Tue, Aug 06, 2019 at 07:54:58AM +1000, Dave Chinner wrote:
-> > On Mon, Aug 05, 2019 at 04:08:43PM +0000, Goldwyn Rodrigues wrote:
-> > > On Mon, 2019-08-05 at 09:43 +1000, Dave Chinner wrote:
-> > > > On Fri, Aug 02, 2019 at 05:00:45PM -0500, Goldwyn Rodrigues wrote:
-> > > > > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > > > 
-> > > > > This helps filesystems to perform tasks on the bio while
-> > > > > submitting for I/O. Since btrfs requires the position
-> > > > > we are working on, pass pos to iomap_dio_submit_bio()
-> > > > > 
-> > > > > The correct place for submit_io() is not page_ops. Would it
-> > > > > better to rename the structure to something like iomap_io_ops
-> > > > > or put it directly under struct iomap?
-> > > > > 
-> > > > > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > > > > ---
-> > > > >  fs/iomap/direct-io.c  | 16 +++++++++++-----
-> > > > >  include/linux/iomap.h |  1 +
-> > > > >  2 files changed, 12 insertions(+), 5 deletions(-)
-> > > > > 
-> > > > > diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> > > > > index 5279029c7a3c..a802e66bf11f 100644
-> > > > > --- a/fs/iomap/direct-io.c
-> > > > > +++ b/fs/iomap/direct-io.c
-> > > > > @@ -59,7 +59,7 @@ int iomap_dio_iopoll(struct kiocb *kiocb, bool
-> > > > > spin)
-> > > > >  EXPORT_SYMBOL_GPL(iomap_dio_iopoll);
-> > > > >  
-> > > > >  static void iomap_dio_submit_bio(struct iomap_dio *dio, struct
-> > > > > iomap *iomap,
-> > > > > -		struct bio *bio)
-> > > > > +		struct bio *bio, loff_t pos)
-> > > > >  {
-> > > > >  	atomic_inc(&dio->ref);
-> > > > >  
-> > > > > @@ -67,7 +67,13 @@ static void iomap_dio_submit_bio(struct
-> > > > > iomap_dio *dio, struct iomap *iomap,
-> > > > >  		bio_set_polled(bio, dio->iocb);
-> > > > >  
-> > > > >  	dio->submit.last_queue = bdev_get_queue(iomap->bdev);
-> > > > > -	dio->submit.cookie = submit_bio(bio);
-> > > > > +	if (iomap->page_ops && iomap->page_ops->submit_io) {
-> > > > > +		iomap->page_ops->submit_io(bio, file_inode(dio-
-> > > > > >iocb->ki_filp),
-> > > > > +				pos);
-> > > > > +		dio->submit.cookie = BLK_QC_T_NONE;
-> > > > > +	} else {
-> > > > > +		dio->submit.cookie = submit_bio(bio);
-> > > > > +	}
-> > > > 
-> > > > I don't really like this at all. Apart from the fact it doesn't work
-> > > > with block device polling (RWF_HIPRI), the iomap architecture is
-> > > 
-> > > That can be added, no? Should be relayed when we clone the bio.
-> > 
-> > No idea how that all is supposed to work when you split a single bio
-> > into multiple bios. I'm pretty sure the iomap code is broken for
-> > that case, too -  Jens was silent on how to fix other than to say
-> > "it wasn't important so we didn't care to make sure it worked". So
-> > it's not clear to me exactly how block polling is supposed to work
-> > when a an IO needs to be split into multiple submissions...
-> > 
-> > > > supposed to resolve the file offset -> block device + LBA mapping
-> > > > completely up front and so all that remains to be done is build and
-> > > > submit the bio(s) to the block device.
-> > > > 
-> > > > What I see here is a hack to work around the fact that btrfs has
-> > > > implemented both file data transformations and device mapping layer
-> > > > functionality as a filesystem layer between file data bio building
-> > > > and device bio submission. And as the btrfs file data mapping
-> > > > (->iomap_begin) is completely unaware that there is further block
-> > > > mapping to be done before block device bio submission, any generic
-> > > > code that btrfs uses requires special IO submission hooks rather
-> > > > than just calling submit_bio().
-> > > > 
-> > > > I'm not 100% sure what the solution here is, but the one thing we
-> > > > must resist is turning the iomap code into a mess of custom hooks
-> > > > that only one filesystem uses. We've been taught this lesson time
-> > > > and time again - the iomap infrastructure exists because stuff like
-> > > > bufferheads and the old direct IO code ended up so full of special
-> > > > case code that it ossified and became unmodifiable and
-> > > > unmaintainable.
-> > > > 
-> > > > We do not want to go down that path again. 
-> > > > 
-> > > > IMO, the iomap IO model needs to be restructured to support post-IO
-> > > > and pre-IO data verification/calculation/transformation operations
-> > > > so all the work that needs to be done at the inode/offset context
-> > > > level can be done in the iomap path before bio submission/after
-> > > > bio completion. This will allow infrastructure like fscrypt, data
-> > > > compression, data checksums, etc to be suported generically, not
-> > > > just by individual filesystems that provide a ->submit_io hook.
-> > > > 
-> > > > As for the btrfs needing to slice and dice bios for multiple
-> > > > devices?  That should be done via a block device ->make_request
-> > > > function, not a custom hook in the iomap code.
-> > > 
-> > > btrfs differentiates the way how metadata and data is
-> > > handled/replicated/stored. We would still need an entry point in the
-> > > iomap code to handle the I/O submission.
-> > 
-> > This is a data IO path. How metadata is stored/replicated is
-> > irrelevant to this code path...
 > > 
 > > > > That's why I don't like this hook - I think hiding data operations
 > > > > and/or custom bio manipulations in opaque filesystem callouts is
@@ -214,57 +119,35 @@ On Thu, Aug 08, 2019 at 12:26:42PM +0800, Gao Xiang wrote:
 >     2. verity->decompress->decrypt
 > 
 >     3. decompress->decrypt->verity
-
-maybe "4. decrypt->decompress->verity" is useful as well.
-
-some post-read processing operates on physical data size and
-the other post-read processing operates on logical data size.
-
 > 
 >    1. and 2. could cause less computation since it processes
-
-and less verify data IO as well.
-
 >    compressed data, and the security is good enough since
 >    the behavior of decompression algorithm is deterministic.
 >    3 could cause more computation.
 > 
 > All I want to say is the post process is so complicated since we have
 > many selection if encryption, decompression, verification are all involved.
-
-Correct the above word, I mean "all I want to say is the pre/post
-process is so complicated", therefore a full generic approach for
-decryption, decompression, verification is hard.
-
-Thanks,
-Gao Xiang
-
 > 
 > Maybe introduce a core subset to IOMAP is better for long-term
 > maintainment and better performance. And we should consider it
 > more carefully.
 > 
-> Thanks,
-> Gao Xiang
-> 
-> > 
-> > Similarly, on the IO submit side we have need for a pre-IO
-> > processing hook. That can be used to encrypt, compress, calculate
-> > data CRCs, do pre-IO COW processing (XFS requires a hook for this),
-> > etc.
-> > 
-> > These hooks are needed for for both buffered and direct IO, and they
-> > are needed for more filesystems than just btrfs. fscrypt will need
-> > them, XFS needs them, etc. So rather than hide data CRCs,
-> > compression, and encryption deep inside the btrfs code, pull it up
-> > into common layers that are called by the generic code. THis will
-> > leave with just the things like mirroring, raid, IO retries, etc
-> > below the iomap code, and that's all stuff that can be done behind a
-> > ->make_request function that is passed a bio...
-> > 
-> > Cheers,
-> > 
-> > Dave.
-> > -- 
-> > Dave Chinner
-> > david@fromorbit.com
+
+FWIW, the only order that actually makes sense is decrypt->decompress->verity.
+
+Decrypt before decompress, i.e. encrypt after compress, because only the
+plaintext can be compressible; the ciphertext isn't.
+
+Verity last, on the original data, because otherwise the file hash that
+fs-verity reports would be specific to that particular inode on-disk and
+therefore would be useless for authenticating the file's user-visible contents.
+
+[By "verity" I mean specifically fs-verity.  Integrity-only block checksums are
+a different case; those can be done at any point, but doing them on the
+compressed data would make sense as then there would be less to checksum.
+
+And yes, compression+encryption leaks information about the original data, so
+may not be advisable.  My point is just that if the two are nevertheless
+combined, it only makes sense to compress the plaintext.]
+
+- Eric
