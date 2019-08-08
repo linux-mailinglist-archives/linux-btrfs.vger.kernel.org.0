@@ -2,194 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95B6986BB8
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2019 22:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E2EA86E9F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2019 01:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390186AbfHHUk7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Aug 2019 16:40:59 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:37551 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725785AbfHHUk6 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Aug 2019 16:40:58 -0400
-Received: by mail-wr1-f65.google.com with SMTP id b3so3806631wro.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 08 Aug 2019 13:40:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=13jQWTVffZ5yhYIDEGnbHiu50uG7FbNALo45S86/kkA=;
-        b=NfMJ/jVks/t9aZEfKcG4FTqISIvUH1lmMXPERMSZlVOIAvYbR13RcgNkz2b534O+I6
-         p2biSNcKX1U9gymBEd0+7WlE7Mn9MSchL2xgHlQC1LvxP3kO4yNCApexaDgARUjCfH7M
-         JepTG9gMx8uvUy1i8qea7qbYrnecSjb5odK+jJ6Ye2ChP5s1NvpkwMLz4VnM/zWhEYlf
-         CG98ug44NaSCzBUYIMe7gknspTtcnZ1B4nrdIywkORZYmtEaDiqdzLcITZ9YGXojar6u
-         GOW8Qn9C8eSOjHabRoOchcaYFbfu9ldgi/nhZon+Nk2t3SRFif6Zjs/oaqoMsH07DRVa
-         yhjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=13jQWTVffZ5yhYIDEGnbHiu50uG7FbNALo45S86/kkA=;
-        b=R8g/0NMOvrRSUBIkE1ncEQhK/2fS7ScUapSjBPnJuzyt8ylfLMySWU4OJiuSkVwLrb
-         IHm17dbGiiI0rUOHaryr7pEdcUVFrTwr5Om9AniMgb7Uca/OcBA1ey0mYcI3EorkM6QI
-         lD9Bm6x6ZMe1sWqW1F2QSqMGNb+cCCHMvVy3CIA1JrIHbEkHIuWwEAuo9vgGhFbkUlND
-         d+wh2X+xAc/h5pZAVLugRzlQjgL6um9msJel9lijT6+KU0mXgaKME4RgjYsxBxAujHB+
-         XSoKmR047w5sPAjzofpJ4B7DfUuBsWnU/g00mnTw4ApzEegb+PAmrvOjFkwGKDCVfJnC
-         l2jg==
-X-Gm-Message-State: APjAAAXcgkLb4gcGUfb+3MidcDHleQgFV4oqcWXoIJxyC4R5gHFsmQB5
-        LmdcACNQakX3LrrpnpGymK73AKfoE/Q=
-X-Google-Smtp-Source: APXvYqw00APg67s2gIFclR+9OV4n2nzCNy09X/ihZtKeMzalI80VigiaHDlsiXttLXEXkUXqpB+EEA==
-X-Received: by 2002:a5d:4211:: with SMTP id n17mr17755463wrq.137.1565296855892;
-        Thu, 08 Aug 2019 13:40:55 -0700 (PDT)
-Received: from home.thecybershadow.net ([89.28.117.31])
-        by smtp.gmail.com with ESMTPSA id s25sm2339985wmc.21.2019.08.08.13.40.54
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Thu, 08 Aug 2019 13:40:55 -0700 (PDT)
-Subject: Re: "kernel BUG" and segmentation fault with "device delete"
-From:   Vladimir Panteleev <thecybershadow@gmail.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <966f5562-1993-2a4f-0d6d-5cea69d6e1c6@gmail.com>
- <8e009a0c-2c82-90c5-807a-bf3477e0b07a@gmx.com>
- <8c221f86-b550-fcd6-aef1-13570270a559@gmail.com>
- <4a7c1c7b-bc1e-4aba-7a9d-581c0272aa86@gmx.com>
- <811c2c41-e795-9562-0e8b-033b404bf43d@gmail.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=thecybershadow@gmail.com; prefer-encrypt=mutual; keydata=
- mQENBFar2yQBCADWo1C5Ir1smytf7+vWGCEoZgb/4XKkxrp+GUO7eJO8iYCWHTmCPZpi6p/z
- y6eh+NYcDQSRzKA99ffgdN+aT8/L6d63pYdsgtDmX/yrFWyLOVgW62LQpC/To4MTJAIgY/Rg
- /VjdifOJtYFvr+BKJwFCTfcviy4EQjsfHLnyJjvL9BiCXfSBXASc/Gn9WOTL5ZNpk4TStGXO
- +/2PIKeg228LtJ5vc/vemBo4hcjJv9ttX7dCebpSAbNo7GgOs8XNgJU2mEcra3IMT15dGk0/
- KpGMx7bMinTIlxx/BAGt5M5w8OnNi4p2AcKzvH18OTE7Lssn5ub8Ains32hbUFf18hJbABEB
- AAG0K1ZsYWRpbWlyIFBhbnRlbGVldiA8Z3BnQHRoZWN5YmVyc2hhZG93Lm5ldD6JAVEEEwEI
- ADsCGwMFCwkIBwIGFQgJCgsCBBYCAwECHgECF4AWIQS77RsIjO1/lYkX++hQBPD60FFXbQUC
- WJ9eKQIZAQAKCRBQBPD60FFXbX0yB/9PEcY3H9mEZtU1UVqxLzPMVXUX5Khk6RD3Jt8/V7aA
- vu8VO4qwmnhadRPHXxVwnnVotao9d5U1zHw0gDhvJWelGRm52mKAPtyPwtBy4y3oXzymLfOM
- RIZxwxMY5RkbqdgWNEY7tCplABnWmaUMm5qDIjzkbEabpiqGySMy2gy6lQHUdRHcgFqO+ceZ
- R7IOPEh2fnVuQc5t1V56OHHRQZMQLgGupInST+svryv2sfr5+ZJqtwWL3nn8aFER6eIWzDDu
- m9y2RZnykbfwd56c81bpY6qqZtHkyt0hImkOwOiBj3UWtJvgZ95WnJ8NBPHPcttgL3vQTsXu
- BRYEjQZln81tuQENBFar2yQBCADFGh8NqHMtBT8F4m/UzQx0QAMDyPQN3CjKn67gW//8gd5v
- TmZCws2TwjaGlrJmwhGseUkZ368dth5vZLPu95MVSo2TBGf+XIVPsGzX6cuIRNtvQOT5YSUz
- uOghU0wh5gjw7evg7d0qfZRTZ2/JAuWmeTvPl66dasUoqKxVrq5o2MXdYkI6KoSxTsal3/36
- ii5cl2GfzE+bVAj3MB8B0ktdIZCHAJT8n+8h10/5TD5oEkWjhWdATeWMrC2bZwFykgSKjY/3
- jUvmfeyJp56sw5w3evZLQdQCo+NWoFGHdHBm0onyZbgbWS+2DEQI+ee0t6q6/iR1tf8VPX2U
- LY0jjiZ7ABEBAAGJAR8EGAEIAAkFAlar2yQCGwwACgkQUATw+tBRV200GQf8CaQxTy7OhWQ5
- O47G3+yKuBxDnYoP9h+T/sKcWsOUgy7i/vbqfkJvrqME8rRiO9YB/1/no1KqXm+gq0rSeZjy
- DA3mk9pNKvreHX9VO1md4r/vZF6jTwxNI7K97T34hZJGUQqsGzd8kMAvrgP199tXGG2+NOXv
- ih44I0of/VFFklNmO87y/Vn5F8OfNzwiHLNleBXZ1bMp/QBMd3HtahZVk7xRMNAKYqkyvI/C
- z0kgoHYP9wKpSmbPXJ5Qq0ndAJ7KIRcIwwDcbh3/F9Icj/N3v0SpxuJO7l0KlXQIWQ7TSpaO
- liYT2ARnGHHYcE2OhA0ixGV3Y3suUhk+GQaRQoiytw==
-Message-ID: <9f0f001c-54a6-9db4-3f1d-668d90fde023@gmail.com>
-Date:   Thu, 8 Aug 2019 20:40:53 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <811c2c41-e795-9562-0e8b-033b404bf43d@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S2404943AbfHHX4f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Aug 2019 19:56:35 -0400
+Received: from m9a0001g.houston.softwaregrp.com ([15.124.64.66]:46803 "EHLO
+        m9a0001g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404428AbfHHX4e (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 8 Aug 2019 19:56:34 -0400
+Received: FROM m9a0001g.houston.softwaregrp.com (15.121.0.191) BY m9a0001g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-btrfs@vger.kernel.org;
+ Thu,  8 Aug 2019 23:56:19 +0000
+Received: from M9W0068.microfocus.com (2002:f79:bf::f79:bf) by
+ M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Thu, 8 Aug 2019 23:55:40 +0000
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (15.124.72.11) by
+ M9W0068.microfocus.com (15.121.0.191) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Thu, 8 Aug 2019 23:55:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fc3xu17iYWYYxiinXJdrq3kIl9DZ1I427pzKg78+o2HygrQGPzw8HYFEQAGFe/wZajGbPv7jzzs5X9HcDDct05DpIML+H+DKipFy2UlNjoE07K2VQmemM2ozI529T+PbiYJXj7WJMfXectQelgytIIePz3QNgimnb2K0J3jQhsBgq4M1eOyUP2bMdlySWyBEJU3j1I3mZfy3zcB/XHTap05SmEc7yt2Sq2Q9T4CQsC2e7IJcPVksST+41N3YTSYN7vOyGxb3N5W6i4q5WLluMRn4Q2J22yJ+t0vDvS22Q8HRN9T0TEp3Lyb9wG8j+XfaRhHI05UGbpAYMv8Q2T+opQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V314AOjqzwbcB8f3Jjj9ElzUOgq+8F5yKpp1GhUksxo=;
+ b=W2HOFAulQfb57ZvM09DllpMfaHvB5thwWlsyIQ/my90dVnR6fW+KlCAnrtTsuV5DAAw0JvUR7yw/dkW6Yezi9uvtgedjYTqPYEV7ZyQEKvnjuihsr9usxGiIJZLUPhT0i6Waq45dJ6NBruhcqCQTlzS7vBsfQiK98iTIDZvezrP06H+QWAygMEiPPsKO57EjcBha9tgzVvb4guoDFJkLnG8lw6MJ3ma4Ob3sDX0VbmcXHMmnPmUNYhRlQFGFHNOOc6Y9qX/Ad0f7w40PqMfXlrLIEzEtHReHpnI53Mviawghwz9wKTwokGAlNN7xFszzdulixUaz6XZTX5CkkPpDdg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
+ BY5PR18MB3091.namprd18.prod.outlook.com (10.255.136.76) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2157.16; Thu, 8 Aug 2019 23:55:38 +0000
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::e94d:d625:c907:d8a0]) by BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::e94d:d625:c907:d8a0%4]) with mapi id 15.20.2157.015; Thu, 8 Aug 2019
+ 23:55:37 +0000
+From:   WenRuo Qu <wqu@suse.com>
+To:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v1.1 1/3] btrfs: tree-checker: Add EXTENT_ITEM and
+ METADATA_ITEM check
+Thread-Topic: [PATCH v1.1 1/3] btrfs: tree-checker: Add EXTENT_ITEM and
+ METADATA_ITEM check
+Thread-Index: AQHVTfkehTuiaQagY0apuwFrqygshKbx7YgA
+Date:   Thu, 8 Aug 2019 23:55:37 +0000
+Message-ID: <23a97139-f304-5e01-6d42-5a05d9f5b62b@suse.com>
+References: <20190807140843.2728-1-wqu@suse.com>
+ <20190807140843.2728-2-wqu@suse.com> <20190808145407.GA8267@twin.jikos.cz>
+In-Reply-To: <20190808145407.GA8267@twin.jikos.cz>
+Accept-Language: zh-CN, en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: TY2PR0101CA0004.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:92::16) To BY5PR18MB3266.namprd18.prod.outlook.com
+ (2603:10b6:a03:1a1::15)
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [54.250.245.166]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 59f4e437-2d27-4c40-5905-08d71c5be920
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(7168020)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR18MB3091;
+x-ms-traffictypediagnostic: BY5PR18MB3091:
+x-microsoft-antispam-prvs: <BY5PR18MB309130C49BE9280BE7B39E05D6D70@BY5PR18MB3091.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-forefront-prvs: 012349AD1C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(39860400002)(396003)(346002)(136003)(366004)(189003)(199004)(229853002)(66476007)(7736002)(31696002)(2501003)(66946007)(14454004)(8936002)(102836004)(186003)(305945005)(55236004)(446003)(8676002)(386003)(6506007)(5660300002)(66446008)(66556008)(26005)(2906002)(25786009)(81156014)(71190400001)(6116002)(3846002)(4744005)(64756008)(71200400001)(478600001)(6246003)(6486002)(476003)(36756003)(81166006)(6512007)(316002)(6436002)(76176011)(256004)(53936002)(110136005)(486006)(99286004)(11346002)(66066001)(86362001)(31686004)(52116002)(2616005);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3091;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: vKb7gRKgGmFLn4tYgqZ8yOl7tzaUfmD4INbnjYY/HoValOxtr2kqrO6N/LCuUkphfLazVezzaMYwUlgk0qyhvxZ/HGAOCjR4RkY6koTtynxR9Z3ECwzVqBTnZL9wqmyPxZq6VtzAQjnFCnqWINMs+9KNsNd5nafIBY4n1hTKk/piFBqIdyEHqoz6vIz+e4Zl6gVoeZ5D4Pm+mO/WpHJyThjHOX9Mv2clCX0MiSG+kB+B/0lewz6nfU2PXgSRds4mBoIoFrdummGFBVBoP4XYxQq2o61GeLiz+5qJc8JINrqhxzcsnySM+tc17azp5ZnsSQ3PESGJjkNggU8tk4ePXrdg22Z9kGhK0E5fp0Zc93WcbTECDmyR6XCQJbyKshCHksTFvsl/tw/aBKQOy+ZF+V9LPLlwDz0ufIarzo5YRmc=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <103713A2AB3CAA4DB506D5E3A6924F03@namprd18.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59f4e437-2d27-4c40-5905-08d71c5be920
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Aug 2019 23:55:37.7915
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: D0IyCFYT4Yrq1uP7eQJi74eb9J0rGf/8ADO1Jt3dnAvSh3S8EmlVBGQa0/EHOKVI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3091
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Did more digging today. Here is where the -ENOSPC is coming from:
-
-btrfs_run_delayed_refs ->          // WARN here
-__btrfs_run_delayed_refs ->
-btrfs_run_delayed_refs_for_head ->
-run_one_delayed_ref ->
-run_delayed_data_ref ->
-__btrfs_inc_extent_ref ->
-insert_extent_backref ->
-insert_extent_data_ref ->
-btrfs_insert_empty_item ->
-btrfs_insert_empty_items ->
-btrfs_search_slot ->
-split_leaf ->
-alloc_tree_block_no_bg_flush ->
-btrfs_alloc_tree_block ->
-use_block_rsv ->
-block_rsv_use_bytes / reserve_metadata_bytes
-
-In use_block_rsv, first block_rsv_use_bytes (with the 
-BTRFS_BLOCK_RSV_DELREFS one) fails, then reserve_metadata_bytes fails, 
-then block_rsv_use_bytes with global_rsv fails again.
-
-My understanding of this in plain English is as follows: btrfs attempted 
-to finalize a transaction and add the queued backreferences. When doing 
-so, it ran out of space in a B-tree, and attempted to allocate a new 
-tree block; however, in doing so, it hit the limit it reserved for 
-itself for how much space it was going to use during that operation, so 
-it gave up on the whole thing, which led everything to go downhill from 
-there. Is this anywhere close to being accurate?
-
-BTW, the DELREFS rsv is 0 / 7GB reserved/free. So, it looks like it 
-didn't expect to allocate the new tree node at all? Perhaps it should be 
-using some other rsv for those?
-
-Am I on the right track, or should I be discussing this elsewhere / with 
-someone else?
-
-On 20/07/2019 10.59, Vladimir Panteleev wrote:
-> Hi,
-> 
-> I've done a few experiments and here are my findings.
-> 
-> First I probably should describe the filesystem: it is a snapshot 
-> archive, containing a lot of snapshots for 4 subvolumes, totaling 2487 
-> subvolumes/snapshots. There are also a few files (inside the snapshots) 
-> that are probably very fragmented. This is probably what causes the bug.
-> 
-> Observations:
-> 
-> - If I delete all snapshots, the bug disappears (device delete succeeds).
-> - If I delete all but any single subvolume's snapshots, the bug disappears.
-> - If I delete one of two subvolumes' snapshots, the bug disappears, but 
-> stays if I delete one of the other two subvolumes' snapshots.
-> 
-> It looks like two subvolumes' snapshots' data participates in causing 
-> the bug.
-> 
-> In theory, I guess it would be possible to reduce the filesystem to the 
-> minimal one causing the bug by iteratively deleting snapshots / files 
-> and checking if the bug manifests, but it would be extremely 
-> time-consuming, probably requiring weeks.
-> 
-> Anything else I can do to help diagnose / fix it? Or should I just order 
-> more HDDs and clone the RAID10 the right way?
-> 
-> On 06/07/2019 05.51, Qu Wenruo wrote:
->>
->>
->> On 2019/7/6 下午1:13, Vladimir Panteleev wrote:
->> [...]
->>>> I'm not sure if it's the degraded mount cause the problem, as the
->>>> enospc_debug output looks like reserved/pinned/over-reserved space has
->>>> taken up all space, while no new chunk get allocated.
->>>
->>> The problem happens after replace-ing the missing device (which succeeds
->>> in full) and then attempting to remove it, i.e. without a degraded 
->>> mount.
->>>
->>>> Would you please try to balance metadata to see if the ENOSPC still
->>>> happens?
->>>
->>> The problem also manifests when attempting to rebalance the metadata.
->>
->> Have you tried to balance just one or two metadata block groups?
->> E.g using -mdevid or -mvrange?
->>
->> And did the problem always happen at the same block group?
->>
->> Thanks,
->> Qu
->>>
->>> Thanks!
->>>
->>
-> 
-
--- 
-Best regards,
-  Vladimir
+DQoNCk9uIDIwMTkvOC84IOS4i+WNiDEwOjU0LCBEYXZpZCBTdGVyYmEgd3JvdGU6DQo+IE9uIFdl
+ZCwgQXVnIDA3LCAyMDE5IGF0IDEwOjA4OjQxUE0gKzA4MDAsIFF1IFdlbnJ1byB3cm90ZToNCj4+
+ICsNCj4+ICtzdGF0aWMgaW50IGNoZWNrX2V4dGVudF9pdGVtKHN0cnVjdCBleHRlbnRfYnVmZmVy
+ICpsZWFmLA0KPj4gKwkJCSAgICAgc3RydWN0IGJ0cmZzX2tleSAqa2V5LCBpbnQgc2xvdCkNCj4+
+ICt7DQo+PiArCXN0cnVjdCBidHJmc19mc19pbmZvICpmc19pbmZvID0gbGVhZi0+ZnNfaW5mbzsN
+Cj4+ICsJc3RydWN0IGJ0cmZzX2V4dGVudF9pdGVtICplaTsNCj4+ICsJYm9vbCBpc190cmVlX2Js
+b2NrID0gZmFsc2U7DQo+PiArCXU2NCBwdHI7CS8qIEN1cnJlbnQgcG9pbnRlciBpbnNpZGUgaW5s
+aW5lIHJlZnMgKi8NCj4gDQo+IFdoaWxlIHU2NCBpcyB3aWRlIGVub3VnaCwgSSBzdWdnZXN0IHRv
+IHVzZSB1bnNpZ25lZCBsb25nIGFzIHRoZQ0KPiBpbnRlcm1lZGlhdGUgdHlwZSBmb3IgcG9pbnRl
+ciBjb252ZXJzaW9ucy4NCg0KSW4gZmFjdCwgd2Ugb25seSBuZWVkIHUzMiBmb3IgcG9pbnRlci4N
+Cih1MTYgaXMgZW5vdWdoIGZvciAwfjY0ay0xIGJ1dCBJJ20gbm90IHN1cmUgaWYgd2Ugd291bGQg
+dXNlIDY0SyBhcyBvZmZzZXQpDQoNClNvIHJlZ3VsYXIgdW5zaWduZWQgaW50IHNob3VsZCBiZSBl
+bm91Z2g/DQoNClRoYW5rcywNClF1DQo=
