@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A000C85D0B
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2019 10:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBCD785DF0
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Aug 2019 11:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731227AbfHHIkj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Aug 2019 04:40:39 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3083 "EHLO huawei.com"
+        id S1731555AbfHHJMi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 8 Aug 2019 05:12:38 -0400
+Received: from szxga02-in.huawei.com ([45.249.212.188]:3527 "EHLO huawei.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726187AbfHHIki (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 8 Aug 2019 04:40:38 -0400
-Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.55])
-        by Forcepoint Email with ESMTP id F0C7E64C495EF3C2A2DF;
-        Thu,  8 Aug 2019 16:40:36 +0800 (CST)
+        id S1731054AbfHHJMi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 8 Aug 2019 05:12:38 -0400
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.57])
+        by Forcepoint Email with ESMTP id C450A75703B499C5F0BD;
+        Thu,  8 Aug 2019 17:12:35 +0800 (CST)
 Received: from dggeme762-chm.china.huawei.com (10.3.19.108) by
- DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
- id 14.3.439.0; Thu, 8 Aug 2019 16:40:36 +0800
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.439.0; Thu, 8 Aug 2019 17:12:35 +0800
 Received: from 138 (10.175.124.28) by dggeme762-chm.china.huawei.com
  (10.3.19.108) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1591.10; Thu, 8
- Aug 2019 16:40:36 +0800
-Date:   Thu, 8 Aug 2019 16:57:45 +0800
+ Aug 2019 17:12:34 +0800
+Date:   Thu, 8 Aug 2019 17:29:47 +0800
 From:   Gao Xiang <gaoxiang25@huawei.com>
 To:     Dave Chinner <david@fromorbit.com>
 CC:     Goldwyn Rodrigues <RGoldwyn@suse.com>, "hch@lst.de" <hch@lst.de>,
@@ -31,7 +31,7 @@ CC:     Goldwyn Rodrigues <RGoldwyn@suse.com>, "hch@lst.de" <hch@lst.de>,
         "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
         <linux-erofs@lists.ozlabs.org>, <miaoxie@huawei.com>
 Subject: Re: [PATCH 10/13] iomap: use a function pointer for dio submits
-Message-ID: <20190808085745.GE28630@138>
+Message-ID: <20190808091632.GF28630@138>
 References: <20190802220048.16142-1-rgoldwyn@suse.de>
  <20190802220048.16142-11-rgoldwyn@suse.de>
  <20190804234321.GC7689@dread.disaster.area>
@@ -46,15 +46,13 @@ Content-Disposition: inline
 In-Reply-To: <20190808081647.GI7689@dread.disaster.area>
 User-Agent: Mutt/1.11.3 (2019-02-01)
 X-Originating-IP: [10.175.124.28]
-X-ClientProxiedBy: dggeme704-chm.china.huawei.com (10.1.199.100) To
+X-ClientProxiedBy: dggeme713-chm.china.huawei.com (10.1.199.109) To
  dggeme762-chm.china.huawei.com (10.3.19.108)
 X-CFilter-Loop: Reflected
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
-
-Hi Dave,
 
 On Thu, Aug 08, 2019 at 06:16:47PM +1000, Dave Chinner wrote:
 > On Wed, Aug 07, 2019 at 10:49:36PM -0700, Eric Biggers wrote:
@@ -70,35 +68,12 @@ On Thu, Aug 08, 2019 at 06:16:47PM +1000, Dave Chinner wrote:
 > can do with block-based verity layers below the filesystem. e.g.
 > using dm-verity when you don't know if there's hardware encryption
 > below or software encryption on top becomes problematic...
-> 
-> So really, from a filesystem and iomap perspective, What Eric says
-> is the right - it's the only order that makes sense...
 
-Don't be surprised there will be a decrypt/verity/decompress
-all-in-one hardware approach for such stuff. 30% random IO (no matter
-hardware or software approach) can be saved that is greatly helpful
-for user experience on embedded devices with too limited source.
-
-and I really got a SHA256 CPU hardware bug years ago.
-
-I don't want to talk more on tendency, it depends on real scenerio
-and user selection (server or embedded device).
-
-For security consideration, these approaches are all the same
-level --- these approaches all from the same signed key and
-storage source, all transformation A->B->C or A->C->B are equal.
-
-For bug-free, we can fuzzer compression/verity algorithms even
-the whole file-system stack. There is another case other than
-security consideration.
+Add a word, I was just talking benefits between "decrypt->decompress->
+verity" and "decrypt->verity->decompress", I think both forms are
+compatible with inline en/decryption. I don't care which level
+"decrypt" is at... But maybe some user cares. Am I missing something?
 
 Thanks,
 Gao Xiang
 
-> 
-> Cheers,
-> 
-> Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
