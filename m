@@ -2,87 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F2788843D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2019 22:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B649885B0
+	for <lists+linux-btrfs@lfdr.de>; Sat, 10 Aug 2019 00:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbfHIUp1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 9 Aug 2019 16:45:27 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:52728 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725980AbfHIUp1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Aug 2019 16:45:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=r3dsx6QVmSUscYTWrHVh0F7zwcjR91dpsterxBkUC8s=; b=TLJg1pKD9j6YHm/H37OhEVDOl
-        8da2sYlD4V5mVM84jMZdKOKy9/DTnFcQjQW0txNN/sjDRCo8WEoF9cWP2tFIGMAumjDEpKavemMRs
-        4s14f9uX8lSxORoFI9iIpY5fljFbZNmKKgUpZNQRurkaZtGWiuGjmwnbKC9c6mv1UqaDrz7BPhyw3
-        /AI+Ae+NXenu8vna83hq60qECoatL4uG0fG6u0J2CGrE/Nk7dvKys9fLrf+BbEwaa3bGahn4rhzTU
-        DPkfLQuLi4oSQV4zomrIgQPE8vhPr06zoiEVlT2IfCBMIvVHcjCfLhXoktwK4JN0cdeyh32lj4cMF
-        5m5xYhuaA==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1hwBlF-000213-GK; Fri, 09 Aug 2019 20:45:17 +0000
-Date:   Fri, 9 Aug 2019 13:45:17 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Gao Xiang <gaoxiang25@huawei.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Goldwyn Rodrigues <RGoldwyn@suse.com>,
-        "hch@lst.de" <hch@lst.de>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "ruansy.fnst@cn.fujitsu.com" <ruansy.fnst@cn.fujitsu.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        linux-erofs@lists.ozlabs.org, miaoxie@huawei.com
-Subject: Re: [PATCH 10/13] iomap: use a function pointer for dio submits
-Message-ID: <20190809204517.GR5482@bombadil.infradead.org>
-References: <20190802220048.16142-1-rgoldwyn@suse.de>
- <20190802220048.16142-11-rgoldwyn@suse.de>
- <20190804234321.GC7689@dread.disaster.area>
- <1565021323.13240.14.camel@suse.com>
- <20190805215458.GH7689@dread.disaster.area>
- <20190808042640.GA28630@138>
- <20190808054936.GA5319@sol.localdomain>
+        id S1727727AbfHIWOD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Aug 2019 18:14:03 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:38798 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725985AbfHIWOD (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 9 Aug 2019 18:14:03 -0400
+Received: from dread.disaster.area (pa49-181-167-148.pa.nsw.optusnet.com.au [49.181.167.148])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 6AD0036420D;
+        Sat, 10 Aug 2019 08:13:56 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1hwD7w-000108-Ua; Sat, 10 Aug 2019 08:12:48 +1000
+Date:   Sat, 10 Aug 2019 08:12:48 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] block: annotate refault stalls from IO submission
+Message-ID: <20190809221248.GK7689@dread.disaster.area>
+References: <20190808190300.GA9067@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190808054936.GA5319@sol.localdomain>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <20190808190300.GA9067@cmpxchg.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
+        a=gu9DDhuZhshYSb5Zs/lkOA==:117 a=gu9DDhuZhshYSb5Zs/lkOA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=7-415B0cAAAA:8 a=tU5beferOtS2JaHV9NYA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 07, 2019 at 10:49:36PM -0700, Eric Biggers wrote:
-> On Thu, Aug 08, 2019 at 12:26:42PM +0800, Gao Xiang wrote:
-> >     1. decrypt->verity->decompress
-> > 
-> >     2. verity->decompress->decrypt
-> > 
-> >     3. decompress->decrypt->verity
-> > 
-> >    1. and 2. could cause less computation since it processes
-> >    compressed data, and the security is good enough since
-> >    the behavior of decompression algorithm is deterministic.
-> >    3 could cause more computation.
-> > 
-> > All I want to say is the post process is so complicated since we have
-> > many selection if encryption, decompression, verification are all involved.
-> > 
-> > Maybe introduce a core subset to IOMAP is better for long-term
-> > maintainment and better performance. And we should consider it
-> > more carefully.
-> > 
+On Thu, Aug 08, 2019 at 03:03:00PM -0400, Johannes Weiner wrote:
+> psi tracks the time tasks wait for refaulting pages to become
+> uptodate, but it does not track the time spent submitting the IO. The
+> submission part can be significant if backing storage is contended or
+> when cgroup throttling (io.latency) is in effect - a lot of time is
+
+Or the wbt is throttling.
+
+> spent in submit_bio(). In that case, we underreport memory pressure.
 > 
-> FWIW, the only order that actually makes sense is decrypt->decompress->verity.
+> Annotate submit_bio() to account submission time as memory stall when
+> the bio is reading userspace workingset pages.
 
-That used to be true, but a paper in 2004 suggested it's not true.
-Further work in this space in 2009 based on block ciphers:
-https://arxiv.org/pdf/1009.1759
+PAtch looks fine to me, but it raises another question w.r.t. IO
+stalls and reclaim pressure feedback to the vm: how do we make use
+of the pressure stall infrastructure to track inode cache pressure
+and stalls?
 
-It looks like it'd be computationally expensive to do, but feasible.
+With the congestion_wait() and wait_iff_congested() being entire
+non-functional for block devices since 5.0, there is no IO load
+based feedback going into memory reclaim from shrinkers that might
+require IO to free objects before they can be reclaimed. This is
+directly analogous to page reclaim writing back dirty pages from
+the LRU, and as I understand it one of things the PSI is supposed
+to be tracking.
 
-> Decrypt before decompress, i.e. encrypt after compress, because only the
-> plaintext can be compressible; the ciphertext isn't.
+Lots of workloads create inode cache pressure and often it can
+dominate the time spent in memory reclaim, so it would seem to me
+that having PSI only track/calculate pressure and stalls from LRU
+pages misses a fair chunk of the memory pressure and reclaim stalls
+that can be occurring.
+
+Any thoughts of how we might be able to integrate more of the system
+caches into the PSI infrastructure, Johannes?
+
+Cheers,
+
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
