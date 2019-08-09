@@ -2,115 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4461C86F5D
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2019 03:31:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEA20870A7
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Aug 2019 06:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405087AbfHIBb2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 8 Aug 2019 21:31:28 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:57892 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732796AbfHIBb2 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 8 Aug 2019 21:31:28 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x791Sw3s013874;
-        Fri, 9 Aug 2019 01:31:24 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=hPVSpA8g72KdoIKpyeBaTutMNPniNhafljipnDqtxtk=;
- b=SsTSodQl5wnAmJ7e4J63a239yWLmN7bR7+ez3z0tuQogRqiYRercWHCUNkE8X3zLuuv5
- o6KeSMj5sS+Bk4pwQG3nSBQ2JNM3qNox5bds7hSavK1iOqk5dbKcBvEdHsyfHM1rRbRM
- 1fj2Xoi7xVN6fmgSV9BIKtmbvyZG7t3bVFLwLmR43SAWUxDkTa+fyigGkjFDOfzDQ8np
- PQxIOnskqv0m7HbSURWK4xzuqDAL2wOJT7whPd6LuffzFbR4U/9uwcNihHu+U3m41KbS
- t8DGpnM/n0cDeWdgxGwC2XyJAXWwqJc83ziJbpDdZBOgZutL2/iyY9LaN0C/a8hPF282 Hw== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=hPVSpA8g72KdoIKpyeBaTutMNPniNhafljipnDqtxtk=;
- b=gVh1xkQiJ3hI0YqMR9gxeaKi6qpbIrTNOca/3MGdUUpXTCuu4IaQNAQQy7QdaVXng0ld
- e4M3Nfj5/GeAy6TySNWp8iDLu1APwLS2uA9IlJlx9Ry9K8jEIjQ/fdM9vzPLy0ppcCAv
- /SJ8U7narMir0hWOtHmXoR7TsIHbrTCeelzFgaSYfZrzrpyru8sYCTZK5QKgfA5aFcfj
- MNlZKXgCyjLR/YOg6NrFowK02Qz1EnFuwYAboZAZiCgU9Mttqb8m4hsE777t/mX6qvnj
- r5fdhj9/2V7Jly4wBAZ/uEV4TIKn6eA2PrJM5pbk7UE1Kxazo55tRaI0o6mLmzy3bQ3w EQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2u8hps4cgc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Aug 2019 01:31:24 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x791SMh3140961;
-        Fri, 9 Aug 2019 01:31:23 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2u8x9f129e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 09 Aug 2019 01:31:23 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x791VL9a001422;
-        Fri, 9 Aug 2019 01:31:22 GMT
-Received: from localhost (/10.145.178.70)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 08 Aug 2019 18:00:59 -0700
-Date:   Thu, 8 Aug 2019 18:00:58 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-ext4@vger.kernel.org,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: mke2fs accepts block size not mentioned in its man page
-Message-ID: <20190809010058.GA7125@magnolia>
-References: <ce9edecb-6f04-77d3-32f1-2b9de6cd3d7e@gmx.com>
+        id S1725879AbfHIEZw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 9 Aug 2019 00:25:52 -0400
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:56127 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725795AbfHIEZw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 9 Aug 2019 00:25:52 -0400
+Received: by mail-wm1-f42.google.com with SMTP id f72so4292734wmf.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Aug 2019 21:25:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=AU9+SJRrIjalwISmLEA36IprN4nnVpX+LzpFEpKCB7c=;
+        b=IZEUAZ8qeurqwATyZSEpwb+4LJFkoHFg6AJ5aO6jvxplrjfm5URR4qJIZ8SWw+ai29
+         IumfNjUF0JiCJijfZhc1ZucEM6o6bVY+y1LTIwP8bGSXqceUclw91m9pTrQVaX4CLL4L
+         9YB8JZU5BPmhnQoFc5/PfrVlJ5zG/jD9lzopCVipicdAZDZDBBN078RsdVGYH21kH5D7
+         PBSfKcqlUiBBuCDc+5b77pEvZkwMRHWztjbLWCrj+AEeybuLYYLFlumsDYevJ6Rxz5fB
+         aWdNWe7e+qftgTfibtJU9v4QU+4nW8l72CUwiPzGnvDaroGGcxddXWKzvP676CVcRZ2X
+         muqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=AU9+SJRrIjalwISmLEA36IprN4nnVpX+LzpFEpKCB7c=;
+        b=lujQM9tmPDr0yjmTfX5UBczRGUci3EecU1wavuO5p+5ZtMBqYFT8whhLVk9tForct6
+         EYZ2IC/fuc/GSzxhyWP7eGgzY1gsdb/Xg9HNmAzFVP+XJZr7Mt4IkjDZwvW315Cm+NbI
+         v4uAyoD8H0RkDSfZemdbsQmzdmnJF+HpC8m2sJRXuiG1R+XYSFt6fGYWL2gpeJgG0mZ9
+         qc+E1x4wr7BffXrLIJUgF/OMaJ8maqbpS/kl9ghzlNOwbtc99QZeOqAjY59Wpwdro/IJ
+         C7iR3Gj/xauSXH5AkOmtT+OlVPZDadb4vbndf8fSFv68iFkA2midH5I3uEdkHiwJgYQ7
+         f2XQ==
+X-Gm-Message-State: APjAAAWiZZszrJD4oG2PfFbv4LK3PZud3BLUY4aLnOnwDq+2xOmoD736
+        dgTj7ieKb36EFZElXSFOiL09+DBEIImC17S/UlWKVQ==
+X-Google-Smtp-Source: APXvYqzYh/D0ncUHLk4WNBnC2oLgRbA7xCrhLmZyOfQ69EgygOjxwJxys2cQS+/KpHbEHbamCdB2bibmKCefACNEAq4=
+X-Received: by 2002:a7b:c447:: with SMTP id l7mr7653273wmi.89.1565324749441;
+ Thu, 08 Aug 2019 21:25:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce9edecb-6f04-77d3-32f1-2b9de6cd3d7e@gmx.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9343 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908090014
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9343 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908090014
+References: <20190809012424.11420-1-wqu@suse.com> <20190809012424.11420-3-wqu@suse.com>
+ <CAKzB54SN1FmGhGHQOfT2fvn=ESQn4vOwbPpPM7p8eJRkNmvf7w@mail.gmail.com>
+In-Reply-To: <CAKzB54SN1FmGhGHQOfT2fvn=ESQn4vOwbPpPM7p8eJRkNmvf7w@mail.gmail.com>
+From:   Alex Shashkov <oleks.sha74@gmail.com>
+Date:   Thu, 8 Aug 2019 23:25:43 -0500
+Message-ID: <CAKzB54QYNFjgfPUM8KqAHGPwSWPVczbhZidKpCpL7baJO8hzAA@mail.gmail.com>
+Subject: Deletion on BTRFS - how does it work
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Jul 05, 2019 at 01:35:02PM +0800, Qu Wenruo wrote:
-> Hi,
-> 
-> Just doing some tests on aarch64 with 64K page size.
-> 
-> Man page of mke2fs only mentions 3 valid block size: 1k, 2k, 4k.
-> But in real world, we can pass 64K as block size for it without any problem:
-> 
->   $mke2fs -F -t ext3 -b 65536 /dev/loop1
->   Warning: blocksize 65536 not usable on most systems.
->   mke2fs 1.45.2 (27-May-2019)
->   /dev/loop1 contains a btrfs file system
->   Discarding device blocks: done
->   Creating filesystem with 81920 64k blocks and 81920 inodes
->   Filesystem UUID: 311bb224-6d2d-44a7-9790-92c4878d6549
->   [...]
-> 
-> It's great to see mke2fs accepts 64K as nodesize, which allows
-> btrfs-convert to work.
-> (If blocksize is default to 4K or doesn't accept 64K page size,
-> btrfs-convert can work but can't be mounted on system with 64K page size)
-> 
-> Shouldn't the man page mention all valid values?
-
-You'd think so, but 64k blocks only works on machines with 64k pages,
-so that's why it doesn't mention anything beyond the lowest common
-denominator. :/
-
---D
-
-> Thanks,
-> Qu
-> 
-
-
-
+I'm trying to understand how deletion works on BTRFS. Let's say
+directory containing files and other directories gets deleted. What is
+essentially happening during this action, what strucutres get updated,
+what artifacts remain after the deletion, is it possible to find them
+and recover deleted objects, if yes, then how? Thanks in advance!
+-- 
+Alex Shashkov
