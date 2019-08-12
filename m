@@ -2,30 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE29896F8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 07:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 104A689704
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 07:58:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726452AbfHLFnr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 01:43:47 -0400
-Received: from mout.gmx.net ([212.227.15.19]:33187 "EHLO mout.gmx.net"
+        id S1726940AbfHLF6F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Aug 2019 01:58:05 -0400
+Received: from mout.gmx.net ([212.227.17.21]:49335 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725852AbfHLFnr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 01:43:47 -0400
+        id S1725852AbfHLF6F (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Aug 2019 01:58:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1565588625;
-        bh=qSRBd/ZjVAh6pvTEiD8K7O4/KBQ2Yjnl+E5vOcAWJ4s=;
+        s=badeba3b8450; t=1565589458;
+        bh=vJvDVXlA3+zppmlYohEBvxnesIdjmjfvvH3c4qcsi84=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=hQriSG8XDaoV+Nyzg1S300BodPyHsmchKS5gLD36MmKKuq2sqMk4aFzJReJb/ixh/
-         1DAtY5mI5OmAhCSRA2zppChGW4D9Iv7NRCg68AYHD9jbYL9PBIDD/WX+sHZjgNGr8X
-         pC4Fbpe4tJl/2udzTemBce+cHU/uSYusNfB2d9to=
+        b=jLMhaD7cGPK0WCqT4m2x9QuF2i3wuE9ykB4G0YXKh6xAfS6xui06HVjuncaNLdEpb
+         dpjLUIg3FtdIJhlkUMrdwPwmSvptkwsfWO29SJByFatyhorlsMJzqQ4wDsndMf/xf9
+         /HcBiViu2fKu6R3oQOMF4sig3tMqtojct4N+sFfE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MI5UD-1i3JzU2h6d-00FCfI; Mon, 12
- Aug 2019 07:43:45 +0200
-Subject: Re: many busy btrfs processes during heavy cpu and memory pressure
-To:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtSZ=0p-hFFgFW6hXmAHF=3yv+29DQO_=coc1Kmtzh-bvg@mail.gmail.com>
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M1po0-1hzFCD0XIe-002GXG; Mon, 12
+ Aug 2019 07:57:38 +0200
+Subject: Re: [PATCH 1/3] btrfs-progs: check/lowmem: Check and repair root
+ generation
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20190809065320.22702-1-wqu@suse.com>
+ <20190809065320.22702-2-wqu@suse.com>
+ <4e94c953-2ecb-8941-1b1c-d1a2dd6a080e@suse.com>
+ <f7d26a1d-1f16-64c1-1f08-dc4494c27b8c@gmx.com>
+ <d5d32957-5328-9886-c491-c57c2dcc1846@suse.com>
+ <e396da5b-8ae7-fc1d-5381-d0b3138bdfba@gmx.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -52,124 +57,160 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <e70b4ea0-3416-14ce-79de-4a4c0bf2c9cd@gmx.com>
-Date:   Mon, 12 Aug 2019 13:43:39 +0800
+Message-ID: <105ec15f-e1ec-82c0-0e34-6681be1d4fde@gmx.com>
+Date:   Mon, 12 Aug 2019 13:57:31 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtSZ=0p-hFFgFW6hXmAHF=3yv+29DQO_=coc1Kmtzh-bvg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="iMf8PVCxS7GxJ0VG1rlQSRSXbjTDggAfW"
-X-Provags-ID: V03:K1:DDGM3/BKWASdkskOUi/lhVODnMGwBJIAStoX7nz/Kr9ejvy75W4
- 8UYJ/jmv5Q+LElcDaTstym4IFF9PEkiXS13OiMDf55ut2JUfQFUub6A240tIf+62QHGLmUi
- jPTXScS6TMRebK+eWXBeT195Ig7v1CE4ARndHI4tgW2RB04tUIyOOLa9zXkzzgxwH9tUcQO
- 1E5JPII2XLUqKhcuy0WQQ==
+In-Reply-To: <e396da5b-8ae7-fc1d-5381-d0b3138bdfba@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:baGql3eqJ77QIZ7HV3L5uJoMK1LpBzk4VLpSElpadL1ARotgavX
+ B3pqZctu4LTkNWOit77eNpKcwIXPUaOGE8/1Q8+yhT3f6TRHzPP0cU2+Mp+GlueJxm/l/k2
+ g+KfTLby0jQieayq9zYvdT/ITTJHAlGrpQNh+EeC20uS3f2b7lOWykGdn1/Y4QKbu7QRNsW
+ IedJECppdVYdQlAufW3aw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:r4SrzXIGU/s=:jM3HOsEOedoKJ5jzOFZdcW
- ao+72HD+v6fUYQHdPxHJHa0qsrrlH4pdLQ1OsqbVDsynFB2suRzaqmh6wkKxPhEg06YDZwd6M
- vK1liVApF+1op/cHsJ/X7xjeKgdhQi2V3g1cHf5UlCFJXJa/nBH8vqR/oMKOlbHGVkA+xWoBf
- 0NfOJRSS4h7Ae1SN7HHh4QsJS60/TO5LuBa2AwDwi9Oc1IaK432Rjyi3zISXmLRwSCuNquMNx
- gQqLm4oyaZ24IDNeh5Fl2yOi2/Y1x9mN2ZcQEgnm7IVbB3u46T/+27J95IOFUxdiQdUnZcwq4
- /gK3MWqlchkSVlBOf5XIjg6obBlmmDrh06X+89Q7we9vpQsNfUpY0VxA3vQHBkHdqs+50jZos
- 0DFD/H/5CZuj7M1k2vDzVZqt9zfg2OlmpHLzEpJDbI0esz5+kqGWzdXEIriNB8AeLT+2Gb5qc
- pX01U2jDupcCmdanKy0rAGbU0JT/TRd91dfwFRan8387y8B+VoiTJEgtT5tN8oenJGoXzuMoT
- U1K4KCCE7a+QP0hNtA1qTCvLsT8svJyxlE8wKNIDHAFHazXtjm2kONQt5nZFysZ3kXS/fGZKm
- F5EQkEEodvXJGIiaBI3HFdgPNhvF8uK+G8iO9vEcASxF6pigIuB/Y1JQGQELexnCUzsCgTO2f
- BZJsioxoTQMXLmcrzHHWWrzPVle/81NdMeeei6eF6S7n7Oz12ZIriwyws/cuRDjJTHvYOduZU
- R0WCMTRbegu2n7fqXwmtNQUIu8oHmxDZbCLTu9VY9PSksd+MhOgNeziVMTnh+uKC+C+J6jDVP
- qnx4XoPCXtAFbWD2tckssyachyIAdHh62eNbAjsv08KWyO2Eost26zWS+bkWh8ELpin2H6PFA
- oRoh2qHsw29S6YajPYdteVKFcJEWVWE9mgpJ0GOUHnpRJ1J9N6r2B8YPlpMod7083q/AnzcYT
- b3nLlwk67e/Yrq7AXNIkwchfpqntD+AOsBPZfWf9fc3p5MMUCKsaTA1nBttSDGLsCTseSm/Rk
- g7kbVXvGatYFi0NeyPAW+jVk2SHnFsLK0c9eJ7SQSsrt+g884by+vNxl9AHQaQPBLu3CX60Lj
- qjyJFVyDXRvrALTj1qzLZprZAmxQrwsMqarLY9wOIEyM8d+2vQUjiXA8Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NmVNAmz75FM=:gGs4T2tLV8uNCwbXgrlgmx
+ b7tpcODALQC+oLcxCB5swuin+28r34bn4Nk1WBlvdnvB2zX1oovcWxJwjnnDvD4YukQCd4tyC
+ wC5OR70+YrHYyXv2MWJ3zJBLEZzEu70Db4NEs9/Qx8w7RycDNVtA6UbO8IMgbNr4ZFG2KOjF5
+ 2vFj0VACEXFwWC+p37gwAeT7Fqa6BOB6uug9okyCrYGgNXTSSG4ZFa0JJ3BFeeWOzV/+6somR
+ nxSAwhZsk13fEk5yX3LZuexmZqXp8nBKcFaps5qkhrAEnRRJtfXK5kY1+QBBq2LsxPrUBZaO2
+ WtW9zKGbH5Go+ihdwzpXHoxjOpHTOFiu3KZyRp61M1Y6pt8HKGAo4oSfzKeOS+vPQILh56grw
+ VACDk8m/dobM66eTjMkAXfiex7CUGALmE9TD0EU4fOrD72sRwF272oTBcwf6ztrDATdWc+Z5/
+ p2l36njTI9Y7fQoXNgH83qaF3rY3SR/XoiOH0jdheffzYURQS/1hTIqEceoDRAOQcMrtAdOs7
+ hqIfN9ECQefLUzhobZAHjORu0ZwGdTMds/Wvvz0JFTq+Ga/AOGJjKQf7lAae/k4i5qiyR40I0
+ 81cGx8jAaJSN/BfK21vNbgvVubaTq1FIuZSgBvBk7PilgpKAPC/8dg0zemJ/WpWvtteugvhJY
+ yyiDkuqcY0M64I9CDpaZOxoCIsXfynFcIWJ9agbTkFVNMC3/JzKM+PGKOffrk1rU4/6GUB7qr
+ ZNhNWYP+NKER/gtek/XPj/UvXXlVZ+gOrQur0cBva0KMFNgRNTpqms3k8bjuEG4t9IO8TYSEK
+ NTEkmFn1AzCNQt3uv1T2KNUdyskvLlAs7h/8lrvE2pUIDL1qoudOq+cIk6LXrfgLQcuCgu0Q7
+ QbuS58oHtj+GQAd2iz3LpfVTvNHU58c/X0KTqaQM5tvmkS2107ggpmVaOr1PKbFn7CNxsB/Lg
+ lmHZROQqrjtEEn3BKLxdATOEit3folQx9EvLoXL4EX1DsUOe1c2c/AsKfdE5HKZNc+QWSZxBv
+ 6hoq8/Jx1WU7wfevRX+HrO7K8OpGPVjAPwrnslLOJGJdJiXVrRHAKyyy9swuQMuV+4oEFt4JV
+ CiWLpAZDD5aajYaQ7Ob74sOIld0RKoJPyHGYQccCz8qIuHEsDJi0IZGmSLkZg0LADO0wRzUMX
+ qcEh4=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---iMf8PVCxS7GxJ0VG1rlQSRSXbjTDggAfW
-Content-Type: multipart/mixed; boundary="B9OkindzTsNruhn5Mbfwuy1ELVP56fqmp";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Chris Murphy <lists@colorremedies.com>,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <e70b4ea0-3416-14ce-79de-4a4c0bf2c9cd@gmx.com>
-Subject: Re: many busy btrfs processes during heavy cpu and memory pressure
-References: <CAJCQCtSZ=0p-hFFgFW6hXmAHF=3yv+29DQO_=coc1Kmtzh-bvg@mail.gmail.com>
-In-Reply-To: <CAJCQCtSZ=0p-hFFgFW6hXmAHF=3yv+29DQO_=coc1Kmtzh-bvg@mail.gmail.com>
-
---B9OkindzTsNruhn5Mbfwuy1ELVP56fqmp
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 2019/8/10 =E4=B8=8B=E5=8D=885:24, Qu Wenruo wrote:
+>
+> [...]
+>>>
+>>> Because we have extra transid check in
+>>> btrfs_search_slot()/btrfs_cow_block().
+>>>
+>>> EXTENT_BAD_TRANSID is to suppress such warning.
+>>
+>> nod
+>>
+>>>
+>>>>
+>>>> So repair_root_generation could possibly be as simple as just linking
+>>>> root->node to the fs_info->recow_ebs and leave the rest to the existi=
+ng
+>>>> logic?
+>>>
+>>> It doesn't change the root generation.
+>>
+>> recow_extent_buffer seems to be doing exactly the same thing
+>> repair_root_generation does - findw the root item and commits the
+>> transaction. What am I missing?
+>
+> The way it gets the root is not correct.
+>
+> Using header owner is not good enough for locating the tree owning the
+> tree blocks.
+>
+> Cases like log trees and shared tree blocks (especially for cases like
+> original tree got deleted) are the main corner cases where the old
+> behavior can't handle.
 
-On 2019/8/12 =E4=B8=8A=E5=8D=8810:27, Chris Murphy wrote:
-> I'm not sure this is a bug, but I'm also not sure if the behavior is ex=
-pected.
->=20
-> Test system as follows:
->=20
-> Intel i7-2820QM, 4/8 cores
-> 8 GiB RAM, 8 GiB swap on SSD plain partition
-> Samsung SSD 840 EVO 250GB
-> kernel 5.3.0-0.rc3.git0.1.fc31.x86_64+debug, but same behavior seen on =
-5.2.6
->=20
-> Test involves using a desktop, GNOME shell, while building webkitgtk.
-> This uses all available RAM, and eventually all available swap.
->=20
-> While the build fails on ext4 as well as on Btrfs, the difference on
-> Btrfs is many btrfs processes taking up quite a lot of cpu resources.
-> And iotop shows many processes with unexpectedly high read IO. I don't
-> have enough data collected to be certain, but it does seem on Btrfs
-> the oom killer is substantially delayed. Realistically, by the time
-> the system is in this state, practically speaking it's lost.
->=20
-> Screenshot shows iotop and top state information for this system, at
-> the time sysrq+t is taken.
->=20
-> Full 'journalctl -k' output is rather excessive, 13MB uncompressed,
-> 714K zstd compressed
-> https://drive.google.com/open?id=3D1bYYedsj1O4pii51MUy-7cWhnWGXb67XE
->=20
-> from last sysrq+t
-> https://drive.google.com/open?id=3D1vhnIki9lpiWK8T5Qsl81_RToQ8CFdnfU
->=20
-> last screenshot, matching above sysrq+t
-> https://drive.google.com/open?id=3D12jpQeskPsvHmfvDjWSPOwIWSz09JIUlk
+My bad, in fact log tree won't exist in repair mode, and since it's the
+tree root node, it won't be shared with other trees, so the existing
+facility is completely fine with the use case.
 
-This shows it's btrfs endio workqueue, which do the data verification
-against csum tree.
-
-So you see the point, ext* just doesn't support data csum.
-
-Thanks,
+Thanks for pointing this out!
 Qu
 
-
-
-
---B9OkindzTsNruhn5Mbfwuy1ELVP56fqmp--
-
---iMf8PVCxS7GxJ0VG1rlQSRSXbjTDggAfW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1Q/IsACgkQwj2R86El
-/qiHwgf/VCA3Ev29E3rLxSbFlYwoXKHUrXbh80zSop3l9HAOqxn+ihxAAtfZMfVb
-PaMXC4dVJNM5pB1UznWWjE4uwIw4VZgDpH32awV7+APUaCwTOeFZhPgqUmuf8uCu
-TO5Z/u0N8wOg8WhSNuF/t+OzNE1voCagVrMRfLBRjovFTTo5ZYszZCgbfADf+6iD
-urgQb+OQaA52ODC/KSfHDzUW2NMnAbdWR3LQovTdrMO9TyfxOtp6aEtUQZ0O9QtY
-/UxTzXovOOmcf+tdb7rrVAaWKQVS2vp6no5fxsgd+rFqgIIUn2cydhOfCvhYLGSc
-C2GQgilR1xQfju2P+D95m9l2TSnbBA==
-=776+
------END PGP SIGNATURE-----
-
---iMf8PVCxS7GxJ0VG1rlQSRSXbjTDggAfW--
+>
+> Thanks,
+> Qu
+>
+>>
+>>>
+>>>>
+>>>>> +
+>>>>> +	ret =3D btrfs_search_slot(trans, root, &key, &path, 0, 1);
+>>>>> +	if (ret < 0)
+>>>>> +		return ret;
+>>>>> +
+>>>>> +	btrfs_release_path(&path);
+>>>>> +	ret =3D btrfs_commit_transaction(trans, root);
+>>>>> +	return ret;
+>>>>> +}
+>>>>> diff --git a/check/mode-common.h b/check/mode-common.h
+>>>>> index 4c169c6e3b29..4a3abeb02c81 100644
+>>>>> --- a/check/mode-common.h
+>>>>> +++ b/check/mode-common.h
+>>>>> @@ -155,4 +155,5 @@ static inline bool is_valid_imode(u32 imode)
+>>>>>  	return true;
+>>>>>  }
+>>>>>
+>>>>> +int repair_root_generation(struct btrfs_root *root);
+>>>>>  #endif
+>>>>> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+>>>>> index a2be0e6d7034..bf3b57f5ad2d 100644
+>>>>> --- a/check/mode-lowmem.c
+>>>>> +++ b/check/mode-lowmem.c
+>>>>> @@ -4957,6 +4957,7 @@ static int check_btrfs_root(struct btrfs_root =
+*root, int check_all)
+>>>>>  	struct btrfs_path path;
+>>>>>  	struct node_refs nrefs;
+>>>>>  	struct btrfs_root_item *root_item =3D &root->root_item;
+>>>>> +	u64 super_generation =3D btrfs_super_generation(root->fs_info->sup=
+er_copy);
+>>>>>  	int ret;
+>>>>>  	int level;
+>>>>>  	int err =3D 0;
+>>>>> @@ -4978,6 +4979,21 @@ static int check_btrfs_root(struct btrfs_root=
+ *root, int check_all)
+>>>>>  	level =3D btrfs_header_level(root->node);
+>>>>>  	btrfs_init_path(&path);
+>>>>>
+>>>>> +	if (btrfs_root_generation(root_item) > super_generation + 1) {
+>>>>> +		error(
+>>>>> +	"invalid root generation for root %llu, have %llu expect (0, %llu)=
+",
+>>>>> +		      root->root_key.objectid, btrfs_root_generation(root_item),
+>>>>> +		      super_generation + 1);
+>>>>> +		err |=3D INVALID_GENERATION;
+>>>>> +		if (repair) {
+>>>>> +			ret =3D repair_root_generation(root);
+>>>>> +			if (!ret) {
+>>>>> +				err &=3D ~INVALID_GENERATION;
+>>>>> +				printf("Reset generation for root %llu\n",
+>>>>> +					root->root_key.objectid);
+>>>>> +			}
+>>>>> +		}
+>>>>> +	}
+>>>>>  	if (btrfs_root_refs(root_item) > 0 ||
+>>>>>  	    btrfs_disk_key_objectid(&root_item->drop_progress) =3D=3D 0) {
+>>>>>  		path.nodes[level] =3D root->node;
+>>>>> diff --git a/check/mode-lowmem.h b/check/mode-lowmem.h
+>>>>> index d2983fd12eb4..0361fb3382b1 100644
+>>>>> --- a/check/mode-lowmem.h
+>>>>> +++ b/check/mode-lowmem.h
+>>>>> @@ -47,6 +47,7 @@
+>>>>>  #define INODE_FLAGS_ERROR	(1<<23) /* Invalid inode flags */
+>>>>>  #define DIR_ITEM_HASH_MISMATCH	(1<<24) /* Dir item hash mismatch */
+>>>>>  #define INODE_MODE_ERROR	(1<<25) /* Bad inode mode */
+>>>>> +#define INVALID_GENERATION	(1<<26)	/* Generation is too new */
+>>>>>
+>>>>>  /*
+>>>>>   * Error bit for low memory mode check.
+>>>>>
+>>>
