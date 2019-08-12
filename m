@@ -2,24 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D16898CF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 10:37:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1319389970
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 11:07:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727072AbfHLIhe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 04:37:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48938 "EHLO mx1.suse.de"
+        id S1727228AbfHLJHq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Aug 2019 05:07:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59728 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727017AbfHLIhd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 04:37:33 -0400
+        id S1727154AbfHLJHq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Aug 2019 05:07:46 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BC79EAD46;
-        Mon, 12 Aug 2019 08:37:30 +0000 (UTC)
-Subject: Re: [PATCH 1/1] btrfs: Add global_reserve_size mount option
-To:     Vladimir Panteleev <git@thecybershadow.net>,
-        linux-btrfs@vger.kernel.org
-References: <20190810124101.15440-1-git@thecybershadow.net>
- <20190810124101.15440-2-git@thecybershadow.net>
+        by mx1.suse.de (Postfix) with ESMTP id A28F0AD35
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 09:07:44 +0000 (UTC)
+Subject: Re: [RFC PATCH 2/4] btrfs: create structure to encode checksum type
+ and length
+To:     Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <cover.1564046812.git.jthumshirn@suse.de>
+ <cover.1564046812.git.jthumshirn@suse.de>
+ <944b685765a68c3389888159d3fe228c2e78eb22.1564046812.git.jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +67,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <ebdcf4f9-dd5e-b4ec-4a5b-ccda52c825d4@suse.com>
-Date:   Mon, 12 Aug 2019 11:37:30 +0300
+Message-ID: <93b6f356-e6bc-a1c6-0266-2b1c12178bed@suse.com>
+Date:   Mon, 12 Aug 2019 12:07:44 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190810124101.15440-2-git@thecybershadow.net>
+In-Reply-To: <944b685765a68c3389888159d3fe228c2e78eb22.1564046812.git.jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,140 +83,60 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 10.08.19 г. 15:41 ч., Vladimir Panteleev wrote:
-> In some circumstances (filesystems with many extents and backrefs),
-> the global reserve gets overrun causing balance and device deletion
-> operations to fail with -ENOSPC. Providing a way for users to increase
-> the global reserve size can allow them to complete the operation.
+On 25.07.19 г. 12:33 ч., Johannes Thumshirn wrote:
+> Create a structure to encode the type and length for the known on-disk
+> checksums. Also add a table and a convenience macro for adding the
+> checksum types to the table.
 > 
-> Signed-off-by: Vladimir Panteleev <git@thecybershadow.net>
-
-I'm inclined to NAK this patch. On the basis that it pampers over
-deficiencies in the current ENOSPC handling algorithms. Furthermore in
-your cover letter you state that you don't completely understand the
-root cause. So at the very best this is pampering over a bug.
-
+> This makes it easier to add new checksums later.
+> 
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 > ---
->  fs/btrfs/block-rsv.c |  2 +-
->  fs/btrfs/ctree.h     |  3 +++
->  fs/btrfs/disk-io.c   |  1 +
->  fs/btrfs/super.c     | 17 ++++++++++++++++-
->  4 files changed, 21 insertions(+), 2 deletions(-)
+>  fs/btrfs/ctree.h | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
 > 
-> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-> index 698470b9f32d..5e5f5521de0e 100644
-> --- a/fs/btrfs/block-rsv.c
-> +++ b/fs/btrfs/block-rsv.c
-> @@ -272,7 +272,7 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
->  	spin_lock(&sinfo->lock);
->  	spin_lock(&block_rsv->lock);
->  
-> -	block_rsv->size = min_t(u64, num_bytes, SZ_512M);
-> +	block_rsv->size = min_t(u64, num_bytes, fs_info->global_reserve_size);
->  
->  	if (block_rsv->reserved < block_rsv->size) {
->  		num_bytes = btrfs_space_info_used(sinfo, true);
 > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 299e11e6c554..d975d4f5723c 100644
+> index da97ff10f421..099401f5dd47 100644
 > --- a/fs/btrfs/ctree.h
 > +++ b/fs/btrfs/ctree.h
-> @@ -775,6 +775,8 @@ struct btrfs_fs_info {
->  	 */
->  	u64 max_inline;
+> @@ -82,9 +82,15 @@ struct btrfs_ref;
+>   */
+>  #define BTRFS_LINK_MAX 65535U
 >  
-> +	u64 global_reserve_size;
+> -/* four bytes for CRC32 */
+> -static const int btrfs_csum_sizes[] = { 4 };
+> -static const char *btrfs_csum_names[] = { "crc32c" };
+> +#define BTRFS_CHECKSUM_TYPE(_type, _size, _name) \
+> +	[_type] = { .size = _size, .name = _name }
 > +
->  	struct btrfs_transaction *running_transaction;
->  	wait_queue_head_t transaction_throttle;
->  	wait_queue_head_t transaction_wait;
-> @@ -1359,6 +1361,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
+> +static const struct btrfs_csums {
+> +	u16		size;
+> +	const char	*name;
+> +} btrfs_csums[] = {
+> +	BTRFS_CHECKSUM_TYPE(BTRFS_CSUM_TYPE_CRC32, 4, "crc32c"),
+> +};
+
+
+Considering we won't support more than 4-5 csums  I'd rather you remove
+the macro.
+
 >  
->  #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
->  #define BTRFS_DEFAULT_MAX_INLINE	(2048)
-> +#define BTRFS_DEFAULT_GLOBAL_RESERVE_SIZE (SZ_512M)
+>  #define BTRFS_EMPTY_DIR_SIZE 0
 >  
->  #define btrfs_clear_opt(o, opt)		((o) &= ~BTRFS_MOUNT_##opt)
->  #define btrfs_set_opt(o, opt)		((o) |= BTRFS_MOUNT_##opt)
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 5f7ee70b3d1a..06f835a44b8a 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -2723,6 +2723,7 @@ int open_ctree(struct super_block *sb,
->  	atomic64_set(&fs_info->tree_mod_seq, 0);
->  	fs_info->sb = sb;
->  	fs_info->max_inline = BTRFS_DEFAULT_MAX_INLINE;
-> +	fs_info->global_reserve_size = BTRFS_DEFAULT_GLOBAL_RESERVE_SIZE;
->  	fs_info->metadata_ratio = 0;
->  	fs_info->defrag_inodes = RB_ROOT;
->  	atomic64_set(&fs_info->free_chunk_space, 0);
-> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-> index 78de9d5d80c6..f44223a44cb8 100644
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -327,6 +327,7 @@ enum {
->  	Opt_treelog, Opt_notreelog,
->  	Opt_usebackuproot,
->  	Opt_user_subvol_rm_allowed,
-> +	Opt_global_reserve_size,
->  
->  	/* Deprecated options */
->  	Opt_alloc_start,
-> @@ -394,6 +395,7 @@ static const match_table_t tokens = {
->  	{Opt_notreelog, "notreelog"},
->  	{Opt_usebackuproot, "usebackuproot"},
->  	{Opt_user_subvol_rm_allowed, "user_subvol_rm_allowed"},
-> +	{Opt_global_reserve_size, "global_reserve_size=%s"},
->  
->  	/* Deprecated options */
->  	{Opt_alloc_start, "alloc_start=%s"},
-> @@ -426,7 +428,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->  			unsigned long new_flags)
->  {
->  	substring_t args[MAX_OPT_ARGS];
-> -	char *p, *num;
-> +	char *p, *num, *retptr;
->  	u64 cache_gen;
->  	int intarg;
->  	int ret = 0;
-> @@ -746,6 +748,15 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
->  		case Opt_user_subvol_rm_allowed:
->  			btrfs_set_opt(info->mount_opt, USER_SUBVOL_RM_ALLOWED);
->  			break;
-> +		case Opt_global_reserve_size:
-> +			info->global_reserve_size = memparse(args[0].from, &retptr);
-> +			if (retptr != args[0].to || info->global_reserve_size == 0) {
-> +				ret = -EINVAL;
-> +				goto out;
-> +			}
-> +			btrfs_info(info, "global_reserve_size at %llu",
-> +				   info->global_reserve_size);
-> +			break;
->  		case Opt_enospc_debug:
->  			btrfs_set_opt(info->mount_opt, ENOSPC_DEBUG);
->  			break;
-> @@ -1336,6 +1347,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
->  		seq_puts(seq, ",clear_cache");
->  	if (btrfs_test_opt(info, USER_SUBVOL_RM_ALLOWED))
->  		seq_puts(seq, ",user_subvol_rm_allowed");
-> +	if (info->global_reserve_size != BTRFS_DEFAULT_GLOBAL_RESERVE_SIZE)
-> +		seq_printf(seq, ",global_reserve_size=%llu", info->global_reserve_size);
->  	if (btrfs_test_opt(info, ENOSPC_DEBUG))
->  		seq_puts(seq, ",enospc_debug");
->  	if (btrfs_test_opt(info, AUTO_DEFRAG))
-> @@ -1725,6 +1738,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
->  	u64 old_max_inline = fs_info->max_inline;
->  	u32 old_thread_pool_size = fs_info->thread_pool_size;
->  	u32 old_metadata_ratio = fs_info->metadata_ratio;
-> +	u64 old_global_reserve_size = fs_info->global_reserve_size;
->  	int ret;
->  
->  	sync_filesystem(sb);
-> @@ -1859,6 +1873,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
->  	btrfs_resize_thread_pool(fs_info,
->  		old_thread_pool_size, fs_info->thread_pool_size);
->  	fs_info->metadata_ratio = old_metadata_ratio;
-> +	fs_info->global_reserve_size = old_global_reserve_size;
->  	btrfs_remount_cleanup(fs_info, old_opts);
->  	return ret;
+> @@ -2373,13 +2379,13 @@ static inline int btrfs_super_csum_size(const struct btrfs_super_block *s)
+>  	/*
+>  	 * csum type is validated at mount time
+>  	 */
+> -	return btrfs_csum_sizes[t];
+> +	return btrfs_csums[t].size;
 >  }
+>  
+>  static inline const char *btrfs_super_csum_name(u16 csum_type)
+>  {
+>  	/* csum type is validated at mount time */
+> -	return btrfs_csum_names[csum_type];
+> +	return btrfs_csums[csum_type].name;
+>  }
+>  
+>  /*
 > 
