@@ -2,162 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E66589E6B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 14:32:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC9A28A141
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 16:36:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbfHLMcK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 08:32:10 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:50774 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726383AbfHLMcJ (ORCPT
+        id S1726704AbfHLOgu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 12 Aug 2019 10:36:50 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:42557 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726480AbfHLOgu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 08:32:09 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x7CCT8Xt043340
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 08:32:08 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2ub5ux54c8-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 08:32:08 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <linux-btrfs@vger.kernel.org> from <riteshh@linux.ibm.com>;
-        Mon, 12 Aug 2019 13:32:05 +0100
-Received: from b06avi18626390.portsmouth.uk.ibm.com (9.149.26.192)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Mon, 12 Aug 2019 13:32:03 +0100
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x7CCVhXr14942510
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 12 Aug 2019 12:31:44 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B57EC52050;
-        Mon, 12 Aug 2019 12:32:02 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.124.31.57])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id 904205204F;
-        Mon, 12 Aug 2019 12:32:01 +0000 (GMT)
-Subject: Re: [PATCH 07/13] btrfs: basic direct read operation
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>, linux-fsdevel@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, hch@lst.de, darrick.wong@oracle.com,
-        ruansy.fnst@cn.fujitsu.com, Goldwyn Rodrigues <rgoldwyn@suse.com>
-References: <20190802220048.16142-1-rgoldwyn@suse.de>
- <20190802220048.16142-8-rgoldwyn@suse.de>
-From:   RITESH HARJANI <riteshh@linux.ibm.com>
-Date:   Mon, 12 Aug 2019 18:02:00 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Mon, 12 Aug 2019 10:36:50 -0400
+Received: by mail-lj1-f194.google.com with SMTP id 15so6741103ljr.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 07:36:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=elzwEYnE0FshUcAicer9wfnk6Uo3LVK+R6TClwJtehU=;
+        b=myO8Go67WGBpFaN39zQ2VyafRr4fXtHeRJaw4m22U9Gb9sArhcKF+l06ckQff0dGkv
+         tm9rRK6gBCTC4gEzQABrr3ndpvWVWVGyeyq5pP/6NNz/i3KRke9yIyZWUKz6G/vkxLhX
+         jKvKtyG20idvEnWuCbCX0gyExSbgy2b3QvzUAza9TVLSY5sL8aMNH8m2UgTyHGT4Pf2m
+         Zm48i0GOUv5WhhngnKth21nPy1CqrkVMeiZIgiL4Vv8XMXHL1dh9i665GGxpJBa5vkJe
+         DvqJpKyPwqGikIPQ1N2rDljlvShWiAiiS+z5SU0IbFz1fq64bpKP2slVyzJyAkdH5j8U
+         qRjg==
+X-Gm-Message-State: APjAAAWhYXBQJxMQNxoFnAE2/XWNM3YDV6xN8+lYmOr1w9ia2Bq2o8Rd
+        dBTnvYv0KbfMhl4OVM2YvDiAI5rzFM5iUw==
+X-Google-Smtp-Source: APXvYqyKBdNdJ4F3CJw42vHukxxvbm5SuYbaeKrUoTB8pzj3BmeqZ4UhRWinGx2tjCl+EdO1sJBicQ==
+X-Received: by 2002:a2e:900c:: with SMTP id h12mr18629283ljg.197.1565620607740;
+        Mon, 12 Aug 2019 07:36:47 -0700 (PDT)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id b21sm5009803lff.11.2019.08.12.07.36.47
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
+        Mon, 12 Aug 2019 07:36:47 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id c9so74332724lfh.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 07:36:47 -0700 (PDT)
+X-Received: by 2002:ac2:5c4f:: with SMTP id s15mr21517612lfp.74.1565620607455;
+ Mon, 12 Aug 2019 07:36:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190802220048.16142-8-rgoldwyn@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-TM-AS-GCONF: 00
-x-cbid: 19081212-4275-0000-0000-00000358325E
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19081212-4276-0000-0000-0000386A3EB6
-Message-Id: <20190812123201.904205204F@d06av21.portsmouth.uk.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-08-12_06:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1906280000 definitions=main-1908120141
+References: <20190810124101.15440-1-git@thecybershadow.net>
+ <20190810124101.15440-2-git@thecybershadow.net> <ebdcf4f9-dd5e-b4ec-4a5b-ccda52c825d4@suse.com>
+In-Reply-To: <ebdcf4f9-dd5e-b4ec-4a5b-ccda52c825d4@suse.com>
+From:   Vladimir Panteleev <git@thecybershadow.net>
+Date:   Mon, 12 Aug 2019 14:36:31 +0000
+X-Gmail-Original-Message-ID: <CAHhfkvx=aTAYoKLyE0RP8Eag9WbCBJ0Q3tdVAfZ1YNp=+HW3RQ@mail.gmail.com>
+Message-ID: <CAHhfkvx=aTAYoKLyE0RP8Eag9WbCBJ0Q3tdVAfZ1YNp=+HW3RQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] btrfs: Add global_reserve_size mount option
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hi Nikolay,
 
-On 8/3/19 3:30 AM, Goldwyn Rodrigues wrote:
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+Thank you for looking at my patch!
+
+You are completely correct in that this pampers over a bug I do not
+understand. And, I would very much like to understand and fix the
+underlying bug instead of settling for a workaround.
+
+Unfortunately, after three days of looking at BTRFS code (and getting
+to where I am now), I have realized that, as a developer with no
+experience in filesystems or kernel development, it would take me a
+lot more, possibly several weeks, to reach a level of understanding of
+BTRFS to the point where I could contribute a meaningful fix. This is
+not something I would be opposed to, as I have the time and I've
+personally invested into BTRFS, but it certainly would be a lot easier
+if I could at least get occasional confirmation that my findings and
+understanding so far are correct and that I am on the right track.
+Unfortunately the people in a position to do this seem to be too busy
+with far more important issues than helping debug my particular edge
+case, and the previous thread has not received any replies since my
+last few posts there, so this patch is the least I could contribute so
+far.
+
+FWIW #1: My current best guess at why the problem occurs, using my
+current level of understanding of BTRFS, is that the filesystem in
+question (16TB of historical snapshots) has so many subvolumes and
+fragmentation that balance or device delete operations allocate so
+much metadata space while processing the chunk (by allocating new
+blocks for splitting filled metadata tree nodes) that the global
+reserve is overrun. Corrections or advice on how to verify this theory
+would be appreciated! (Or perhaps I should just use my patch to fix my
+filesystem and move on with my life. Would be good to know when I can
+wipe the disks containing the test case FS which reproduces the bug
+and use them for something else.)
+
+FWIW #2: I noticed that Josef Bacik proposed a change back in 2013 to
+increase the global reserve size to 1G. The comments on the patch was
+the reason I proposed to make it configurable rather than raising the
+size again: https://patchwork.kernel.org/patch/2517071/
+
+Thanks!
+
+On Mon, 12 Aug 2019 at 08:37, Nikolay Borisov <nborisov@suse.com> wrote:
 >
-> Add btrfs_dio_iomap_ops for iomap.begin() function. In order to
-> accomodate dio reads, add a new function btrfs_file_read_iter()
-> which would call btrfs_dio_iomap_read() for DIO reads and
-> fallback to generic_file_read_iter otherwise.
 >
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> ---
->   fs/btrfs/ctree.h |  2 ++
->   fs/btrfs/file.c  | 10 +++++++++-
->   fs/btrfs/iomap.c | 20 ++++++++++++++++++++
->   3 files changed, 31 insertions(+), 1 deletion(-)
 >
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 7a4ff524dc77..9eca2d576dd1 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -3247,7 +3247,9 @@ int btrfs_fdatawrite_range(struct inode *inode, loff_t start, loff_t end);
->   loff_t btrfs_remap_file_range(struct file *file_in, loff_t pos_in,
->   			      struct file *file_out, loff_t pos_out,
->   			      loff_t len, unsigned int remap_flags);
-> +/* iomap.c */
->   size_t btrfs_buffered_iomap_write(struct kiocb *iocb, struct iov_iter *from);
-> +ssize_t btrfs_dio_iomap_read(struct kiocb *iocb, struct iov_iter *to);
->   
->   /* tree-defrag.c */
->   int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index f7087e28ac08..997eb152a35a 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -2839,9 +2839,17 @@ static int btrfs_file_open(struct inode *inode, struct file *filp)
->   	return generic_file_open(inode, filp);
->   }
->   
-> +static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
-> +{
-> +	if (iocb->ki_flags & IOCB_DIRECT)
-> +		return btrfs_dio_iomap_read(iocb, to);
-
-No provision to fallback to bufferedIO read? Not sure from btrfs 
-perspective,
-but earlier generic_file_read_iter may fall through to bufferedIO read 
-say in case where directIO could not be completed (returned 0 or less 
-than the requested read bytes).
-Is it not required anymore in case of btrfs when we move to iomap 
-infrastructure, to still fall back to bufferedIO read?
-Correct me if I am missing anything here.
-
-> +
-> +	return generic_file_read_iter(iocb, to);
-> +}
-> +
->   const struct file_operations btrfs_file_operations = {
->   	.llseek		= btrfs_file_llseek,
-> -	.read_iter      = generic_file_read_iter,
-> +	.read_iter      = btrfs_file_read_iter,
->   	.splice_read	= generic_file_splice_read,
->   	.write_iter	= btrfs_file_write_iter,
->   	.mmap		= btrfs_file_mmap,
-> diff --git a/fs/btrfs/iomap.c b/fs/btrfs/iomap.c
-> index 879038e2f1a0..36df606fc028 100644
-> --- a/fs/btrfs/iomap.c
-> +++ b/fs/btrfs/iomap.c
-> @@ -420,3 +420,23 @@ size_t btrfs_buffered_iomap_write(struct kiocb *iocb, struct iov_iter *from)
->   	return written;
->   }
->   
-> +static int btrfs_dio_iomap_begin(struct inode *inode, loff_t pos,
-> +		loff_t length, unsigned flags, struct iomap *iomap,
-> +		struct iomap *srcmap)
-> +{
-> +	return get_iomap(inode, pos, length, iomap);
-> +}
-> +
-> +static const struct iomap_ops btrfs_dio_iomap_ops = {
-> +	.iomap_begin            = btrfs_dio_iomap_begin,
-> +};
-> +
-> +ssize_t btrfs_dio_iomap_read(struct kiocb *iocb, struct iov_iter *to)
-> +{
-> +	struct inode *inode = file_inode(iocb->ki_filp);
-> +	ssize_t ret;
-> +	inode_lock_shared(inode);
-> +	ret = iomap_dio_rw(iocb, to, &btrfs_dio_iomap_ops, NULL);
-> +	inode_unlock_shared(inode);
-> +	return ret;
-> +}
-
+> On 10.08.19 г. 15:41 ч., Vladimir Panteleev wrote:
+> > In some circumstances (filesystems with many extents and backrefs),
+> > the global reserve gets overrun causing balance and device deletion
+> > operations to fail with -ENOSPC. Providing a way for users to increase
+> > the global reserve size can allow them to complete the operation.
+> >
+> > Signed-off-by: Vladimir Panteleev <git@thecybershadow.net>
+>
+> I'm inclined to NAK this patch. On the basis that it pampers over
+> deficiencies in the current ENOSPC handling algorithms. Furthermore in
+> your cover letter you state that you don't completely understand the
+> root cause. So at the very best this is pampering over a bug.
+>
+> > ---
+> >  fs/btrfs/block-rsv.c |  2 +-
+> >  fs/btrfs/ctree.h     |  3 +++
+> >  fs/btrfs/disk-io.c   |  1 +
+> >  fs/btrfs/super.c     | 17 ++++++++++++++++-
+> >  4 files changed, 21 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+> > index 698470b9f32d..5e5f5521de0e 100644
+> > --- a/fs/btrfs/block-rsv.c
+> > +++ b/fs/btrfs/block-rsv.c
+> > @@ -272,7 +272,7 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
+> >       spin_lock(&sinfo->lock);
+> >       spin_lock(&block_rsv->lock);
+> >
+> > -     block_rsv->size = min_t(u64, num_bytes, SZ_512M);
+> > +     block_rsv->size = min_t(u64, num_bytes, fs_info->global_reserve_size);
+> >
+> >       if (block_rsv->reserved < block_rsv->size) {
+> >               num_bytes = btrfs_space_info_used(sinfo, true);
+> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > index 299e11e6c554..d975d4f5723c 100644
+> > --- a/fs/btrfs/ctree.h
+> > +++ b/fs/btrfs/ctree.h
+> > @@ -775,6 +775,8 @@ struct btrfs_fs_info {
+> >        */
+> >       u64 max_inline;
+> >
+> > +     u64 global_reserve_size;
+> > +
+> >       struct btrfs_transaction *running_transaction;
+> >       wait_queue_head_t transaction_throttle;
+> >       wait_queue_head_t transaction_wait;
+> > @@ -1359,6 +1361,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
+> >
+> >  #define BTRFS_DEFAULT_COMMIT_INTERVAL        (30)
+> >  #define BTRFS_DEFAULT_MAX_INLINE     (2048)
+> > +#define BTRFS_DEFAULT_GLOBAL_RESERVE_SIZE (SZ_512M)
+> >
+> >  #define btrfs_clear_opt(o, opt)              ((o) &= ~BTRFS_MOUNT_##opt)
+> >  #define btrfs_set_opt(o, opt)                ((o) |= BTRFS_MOUNT_##opt)
+> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > index 5f7ee70b3d1a..06f835a44b8a 100644
+> > --- a/fs/btrfs/disk-io.c
+> > +++ b/fs/btrfs/disk-io.c
+> > @@ -2723,6 +2723,7 @@ int open_ctree(struct super_block *sb,
+> >       atomic64_set(&fs_info->tree_mod_seq, 0);
+> >       fs_info->sb = sb;
+> >       fs_info->max_inline = BTRFS_DEFAULT_MAX_INLINE;
+> > +     fs_info->global_reserve_size = BTRFS_DEFAULT_GLOBAL_RESERVE_SIZE;
+> >       fs_info->metadata_ratio = 0;
+> >       fs_info->defrag_inodes = RB_ROOT;
+> >       atomic64_set(&fs_info->free_chunk_space, 0);
+> > diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> > index 78de9d5d80c6..f44223a44cb8 100644
+> > --- a/fs/btrfs/super.c
+> > +++ b/fs/btrfs/super.c
+> > @@ -327,6 +327,7 @@ enum {
+> >       Opt_treelog, Opt_notreelog,
+> >       Opt_usebackuproot,
+> >       Opt_user_subvol_rm_allowed,
+> > +     Opt_global_reserve_size,
+> >
+> >       /* Deprecated options */
+> >       Opt_alloc_start,
+> > @@ -394,6 +395,7 @@ static const match_table_t tokens = {
+> >       {Opt_notreelog, "notreelog"},
+> >       {Opt_usebackuproot, "usebackuproot"},
+> >       {Opt_user_subvol_rm_allowed, "user_subvol_rm_allowed"},
+> > +     {Opt_global_reserve_size, "global_reserve_size=%s"},
+> >
+> >       /* Deprecated options */
+> >       {Opt_alloc_start, "alloc_start=%s"},
+> > @@ -426,7 +428,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+> >                       unsigned long new_flags)
+> >  {
+> >       substring_t args[MAX_OPT_ARGS];
+> > -     char *p, *num;
+> > +     char *p, *num, *retptr;
+> >       u64 cache_gen;
+> >       int intarg;
+> >       int ret = 0;
+> > @@ -746,6 +748,15 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
+> >               case Opt_user_subvol_rm_allowed:
+> >                       btrfs_set_opt(info->mount_opt, USER_SUBVOL_RM_ALLOWED);
+> >                       break;
+> > +             case Opt_global_reserve_size:
+> > +                     info->global_reserve_size = memparse(args[0].from, &retptr);
+> > +                     if (retptr != args[0].to || info->global_reserve_size == 0) {
+> > +                             ret = -EINVAL;
+> > +                             goto out;
+> > +                     }
+> > +                     btrfs_info(info, "global_reserve_size at %llu",
+> > +                                info->global_reserve_size);
+> > +                     break;
+> >               case Opt_enospc_debug:
+> >                       btrfs_set_opt(info->mount_opt, ENOSPC_DEBUG);
+> >                       break;
+> > @@ -1336,6 +1347,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
+> >               seq_puts(seq, ",clear_cache");
+> >       if (btrfs_test_opt(info, USER_SUBVOL_RM_ALLOWED))
+> >               seq_puts(seq, ",user_subvol_rm_allowed");
+> > +     if (info->global_reserve_size != BTRFS_DEFAULT_GLOBAL_RESERVE_SIZE)
+> > +             seq_printf(seq, ",global_reserve_size=%llu", info->global_reserve_size);
+> >       if (btrfs_test_opt(info, ENOSPC_DEBUG))
+> >               seq_puts(seq, ",enospc_debug");
+> >       if (btrfs_test_opt(info, AUTO_DEFRAG))
+> > @@ -1725,6 +1738,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+> >       u64 old_max_inline = fs_info->max_inline;
+> >       u32 old_thread_pool_size = fs_info->thread_pool_size;
+> >       u32 old_metadata_ratio = fs_info->metadata_ratio;
+> > +     u64 old_global_reserve_size = fs_info->global_reserve_size;
+> >       int ret;
+> >
+> >       sync_filesystem(sb);
+> > @@ -1859,6 +1873,7 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
+> >       btrfs_resize_thread_pool(fs_info,
+> >               old_thread_pool_size, fs_info->thread_pool_size);
+> >       fs_info->metadata_ratio = old_metadata_ratio;
+> > +     fs_info->global_reserve_size = old_global_reserve_size;
+> >       btrfs_remount_cleanup(fs_info, old_opts);
+> >       return ret;
+> >  }
+> >
