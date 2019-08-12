@@ -2,27 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1319389970
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 11:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86B5F899A7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 11:19:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727228AbfHLJHq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 05:07:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59728 "EHLO mx1.suse.de"
+        id S1727359AbfHLJTR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Aug 2019 05:19:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36530 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727154AbfHLJHq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 05:07:46 -0400
+        id S1727154AbfHLJTQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Aug 2019 05:19:16 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A28F0AD35
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 09:07:44 +0000 (UTC)
-Subject: Re: [RFC PATCH 2/4] btrfs: create structure to encode checksum type
- and length
+        by mx1.suse.de (Postfix) with ESMTP id B216EAEF6
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 09:19:14 +0000 (UTC)
+Subject: Re: [RFC PATCH 4/4] btrfs: sysfs: export supported checksums
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <cover.1564046812.git.jthumshirn@suse.de>
  <cover.1564046812.git.jthumshirn@suse.de>
- <944b685765a68c3389888159d3fe228c2e78eb22.1564046812.git.jthumshirn@suse.de>
+ <e377ded65e4f2799776596ead308658710e4c8c1.1564046812.git.jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -67,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <93b6f356-e6bc-a1c6-0266-2b1c12178bed@suse.com>
-Date:   Mon, 12 Aug 2019 12:07:44 +0300
+Message-ID: <d79d158e-f68a-a7ad-6e29-387a6ed42ecc@suse.com>
+Date:   Mon, 12 Aug 2019 12:19:13 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <944b685765a68c3389888159d3fe228c2e78eb22.1564046812.git.jthumshirn@suse.de>
+In-Reply-To: <e377ded65e4f2799776596ead308658710e4c8c1.1564046812.git.jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,59 +83,79 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 25.07.19 г. 12:33 ч., Johannes Thumshirn wrote:
-> Create a structure to encode the type and length for the known on-disk
-> checksums. Also add a table and a convenience macro for adding the
-> checksum types to the table.
+> From: David Sterba <dsterba@suse.com>
 > 
-> This makes it easier to add new checksums later.
+> Export supported checksum algorithms via sysfs.
 > 
+> Signed-off-by: David Sterba <dsterba@suse.com>
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 > ---
->  fs/btrfs/ctree.h | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
+>  fs/btrfs/sysfs.c | 35 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 35 insertions(+)
 > 
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index da97ff10f421..099401f5dd47 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -82,9 +82,15 @@ struct btrfs_ref;
->   */
->  #define BTRFS_LINK_MAX 65535U
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index 9539f8143b7a..920282a3452b 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -182,6 +182,30 @@ static umode_t btrfs_feature_visible(struct kobject *kobj,
+>  	return mode;
+>  }
 >  
-> -/* four bytes for CRC32 */
-> -static const int btrfs_csum_sizes[] = { 4 };
-> -static const char *btrfs_csum_names[] = { "crc32c" };
-> +#define BTRFS_CHECKSUM_TYPE(_type, _size, _name) \
-> +	[_type] = { .size = _size, .name = _name }
+> +static ssize_t btrfs_checksums_show(struct kobject *kobj,
+> +				       struct kobj_attribute *a, char *buf)
+> +{
+> +	ssize_t ret = 0;
+> +	int i;
 > +
-> +static const struct btrfs_csums {
-> +	u16		size;
-> +	const char	*name;
-> +} btrfs_csums[] = {
-> +	BTRFS_CHECKSUM_TYPE(BTRFS_CSUM_TYPE_CRC32, 4, "crc32c"),
+> +	for (i = 0; i < ARRAY_SIZE(btrfs_csums); i++) {
+> +		ret += snprintf(buf + ret, PAGE_SIZE, "%s%s",
+> +				(i == 0 ? "" : ", "),
+> +				btrfs_csums[i].name);
+> +
+> +	}
+> +
+> +	ret += snprintf(buf + ret, PAGE_SIZE, "\n");
+> +	return ret;
+> +}
+> +
+> +static ssize_t btrfs_checksums_store(struct kobject *kobj,
+> +					struct kobj_attribute *a,
+> +					const char *buf, size_t count)
+> +{
+> +	return -EPERM;
+> +}
+> +
+>  BTRFS_FEAT_ATTR_INCOMPAT(mixed_backref, MIXED_BACKREF);
+>  BTRFS_FEAT_ATTR_INCOMPAT(default_subvol, DEFAULT_SUBVOL);
+>  BTRFS_FEAT_ATTR_INCOMPAT(mixed_groups, MIXED_GROUPS);
+> @@ -195,6 +219,14 @@ BTRFS_FEAT_ATTR_INCOMPAT(no_holes, NO_HOLES);
+>  BTRFS_FEAT_ATTR_INCOMPAT(metadata_uuid, METADATA_UUID);
+>  BTRFS_FEAT_ATTR_COMPAT_RO(free_space_tree, FREE_SPACE_TREE);
+>  
+> +static struct btrfs_feature_attr btrfs_attr_features_checksums_name = {
+> +	.kobj_attr = __INIT_KOBJ_ATTR(checksums, S_IRUGO,
+> +				      btrfs_checksums_show,
+> +				      btrfs_checksums_store),
+
+Since we won't ever support writing to this sysfs just kill
+btrfs_checksums_store and simply pass NULL as the last argument to
+INIT_KOBJ_ATTR.
+
+> +	.feature_set	= FEAT_INCOMPAT,
+> +	.feature_bit	= 0,
 > +};
-
-
-Considering we won't support more than 4-5 csums  I'd rather you remove
-the macro.
-
+> +
+>  static struct attribute *btrfs_supported_feature_attrs[] = {
+>  	BTRFS_FEAT_ATTR_PTR(mixed_backref),
+>  	BTRFS_FEAT_ATTR_PTR(default_subvol),
+> @@ -208,6 +240,9 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
+>  	BTRFS_FEAT_ATTR_PTR(no_holes),
+>  	BTRFS_FEAT_ATTR_PTR(metadata_uuid),
+>  	BTRFS_FEAT_ATTR_PTR(free_space_tree),
+> +
+> +	&btrfs_attr_features_checksums_name.kobj_attr.attr,
+> +
+>  	NULL
+>  };
 >  
->  #define BTRFS_EMPTY_DIR_SIZE 0
->  
-> @@ -2373,13 +2379,13 @@ static inline int btrfs_super_csum_size(const struct btrfs_super_block *s)
->  	/*
->  	 * csum type is validated at mount time
->  	 */
-> -	return btrfs_csum_sizes[t];
-> +	return btrfs_csums[t].size;
->  }
->  
->  static inline const char *btrfs_super_csum_name(u16 csum_type)
->  {
->  	/* csum type is validated at mount time */
-> -	return btrfs_csum_names[csum_type];
-> +	return btrfs_csums[csum_type].name;
->  }
->  
->  /*
 > 
