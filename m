@@ -2,26 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D19789A78
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 11:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97DC89A95
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 11:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727515AbfHLJwT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 05:52:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46464 "EHLO mx1.suse.de"
+        id S1727463AbfHLJ4k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Aug 2019 05:56:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47636 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727425AbfHLJwS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 05:52:18 -0400
+        id S1727324AbfHLJ4k (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Aug 2019 05:56:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D98BDAF00
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 09:52:16 +0000 (UTC)
-Subject: Re: [RFC PATCH 08/17] btrfs-progs: cache csum_type in recover_control
+        by mx1.suse.de (Postfix) with ESMTP id 2A6A8ABD9
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 09:56:39 +0000 (UTC)
+Subject: Re: [RFC PATCH 09/17] progs: pass in a btrfs_mkfs_config to
+ write_temp_extent_buffer
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <cover.1564046812.git.jthumshirn@suse.de>
  <cover.1564046812.git.jthumshirn@suse.de>
- <9f3f9dd60d4c7dbfc854ad98e6133914bb47f7dc.1564046972.git.jthumshirn@suse.de>
+ <042f116c565320bc134a6bca5b5d91b0754a19a8.1564046972.git.jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -66,12 +67,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <f5fbe8f0-5740-9e84-6532-8ead1b67830d@suse.com>
-Date:   Mon, 12 Aug 2019 12:52:16 +0300
+Message-ID: <407c3169-94e8-3db4-4141-65a491f2c486@suse.com>
+Date:   Mon, 12 Aug 2019 12:56:38 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <9f3f9dd60d4c7dbfc854ad98e6133914bb47f7dc.1564046972.git.jthumshirn@suse.de>
+In-Reply-To: <042f116c565320bc134a6bca5b5d91b0754a19a8.1564046972.git.jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,36 +84,84 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 25.07.19 г. 12:33 ч., Johannes Thumshirn wrote:
-> Cache the super-block's checksum type field in 'struct recover_control'.
-> This will be needed for further refactoring the checksum handling.
+> Pass in a btrfs_mkfs_config to write_temp_extent_buffer(), this is needed
+> so we can grab the checksum type for checksum buffer verification in later
+> patches.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> ---
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-
->  cmds/rescue-chunk-recover.c | 2 ++
->  1 file changed, 2 insertions(+)
+> ---
+>  convert/common.c | 15 ++++++++-------
+>  1 file changed, 8 insertions(+), 7 deletions(-)
 > 
-> diff --git a/cmds/rescue-chunk-recover.c b/cmds/rescue-chunk-recover.c
-> index 608af9d49407..308731ea5ea6 100644
-> --- a/cmds/rescue-chunk-recover.c
-> +++ b/cmds/rescue-chunk-recover.c
-> @@ -47,6 +47,7 @@ struct recover_control {
->  	int yes;
+> diff --git a/convert/common.c b/convert/common.c
+> index af4f8d372299..dea5f5b20d50 100644
+> --- a/convert/common.c
+> +++ b/convert/common.c
+> @@ -218,7 +218,8 @@ static void insert_temp_root_item(struct extent_buffer *buf,
+>   * Setup an extent buffer for tree block.
+>   */
+>  static inline int write_temp_extent_buffer(int fd, struct extent_buffer *buf,
+> -					   u64 bytenr)
+> +					   u64 bytenr,
+> +					   struct btrfs_mkfs_config *cfg)
+>  {
+>  	int ret;
 >  
->  	u16 csum_size;
-> +	u16 csum_type;
->  	u32 sectorsize;
->  	u32 nodesize;
->  	u64 generation;
-> @@ -1530,6 +1531,7 @@ static int recover_prepare(struct recover_control *rc, const char *path)
->  	rc->generation = btrfs_super_generation(sb);
->  	rc->chunk_root_generation = btrfs_super_chunk_root_generation(sb);
->  	rc->csum_size = btrfs_super_csum_size(sb);
-> +	rc->csum_type = btrfs_super_csum_type(sb);
+> @@ -281,7 +282,7 @@ static int setup_temp_root_tree(int fd, struct btrfs_mkfs_config *cfg,
+>  	insert_temp_root_item(buf, cfg, &slot, &itemoff,
+>  			      BTRFS_CSUM_TREE_OBJECTID, csum_bytenr);
 >  
->  	/* if seed, the result of scanning below will be partial */
->  	if (btrfs_super_flags(sb) & BTRFS_SUPER_FLAG_SEEDING) {
+> -	ret = write_temp_extent_buffer(fd, buf, root_bytenr);
+> +	ret = write_temp_extent_buffer(fd, buf, root_bytenr, cfg);
+>  out:
+>  	free(buf);
+>  	return ret;
+> @@ -456,7 +457,7 @@ static int setup_temp_chunk_tree(int fd, struct btrfs_mkfs_config *cfg,
+>  				     BTRFS_BLOCK_GROUP_METADATA);
+>  	if (ret < 0)
+>  		goto out;
+> -	ret = write_temp_extent_buffer(fd, buf, chunk_bytenr);
+> +	ret = write_temp_extent_buffer(fd, buf, chunk_bytenr, cfg);
+>  
+>  out:
+>  	free(buf);
+> @@ -515,7 +516,7 @@ static int setup_temp_dev_tree(int fd, struct btrfs_mkfs_config *cfg,
+>  			       BTRFS_MKFS_SYSTEM_GROUP_SIZE);
+>  	insert_temp_dev_extent(buf, &slot, &itemoff, meta_chunk_start,
+>  			       BTRFS_CONVERT_META_GROUP_SIZE);
+> -	ret = write_temp_extent_buffer(fd, buf, dev_bytenr);
+> +	ret = write_temp_extent_buffer(fd, buf, dev_bytenr, cfg);
+>  out:
+>  	free(buf);
+>  	return ret;
+> @@ -537,7 +538,7 @@ static int setup_temp_fs_tree(int fd, struct btrfs_mkfs_config *cfg,
+>  	/*
+>  	 * Temporary fs tree is completely empty.
+>  	 */
+> -	ret = write_temp_extent_buffer(fd, buf, fs_bytenr);
+> +	ret = write_temp_extent_buffer(fd, buf, fs_bytenr, cfg);
+>  out:
+>  	free(buf);
+>  	return ret;
+> @@ -559,7 +560,7 @@ static int setup_temp_csum_tree(int fd, struct btrfs_mkfs_config *cfg,
+>  	/*
+>  	 * Temporary csum tree is completely empty.
+>  	 */
+> -	ret = write_temp_extent_buffer(fd, buf, csum_bytenr);
+> +	ret = write_temp_extent_buffer(fd, buf, csum_bytenr, cfg);
+>  out:
+>  	free(buf);
+>  	return ret;
+> @@ -765,7 +766,7 @@ static int setup_temp_extent_tree(int fd, struct btrfs_mkfs_config *cfg,
+>  	if (ret < 0)
+>  		goto out;
+>  
+> -	ret = write_temp_extent_buffer(fd, buf, extent_bytenr);
+> +	ret = write_temp_extent_buffer(fd, buf, extent_bytenr, cfg);
+>  out:
+>  	free(buf);
+>  	return ret;
 > 
