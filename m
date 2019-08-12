@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EF321899D8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 11:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF0A89A65
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 11:49:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727266AbfHLJaR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 05:30:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40144 "EHLO mx1.suse.de"
+        id S1727612AbfHLJtu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Aug 2019 05:49:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45848 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727140AbfHLJaR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 05:30:17 -0400
+        id S1727425AbfHLJtu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Aug 2019 05:49:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5614EAFB1
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 09:30:15 +0000 (UTC)
-Subject: Re: [RFC PATCH 05/17] btrfs-progs: add option for checksum type to
- mkfs
+        by mx1.suse.de (Postfix) with ESMTP id 222F7AEFF
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 09:49:48 +0000 (UTC)
+Subject: Re: [RFC PATCH 06/17] btrfs-progs: don't blindly assume crc32c in
+ csum_tree_block_size()
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <cover.1564046812.git.jthumshirn@suse.de>
  <cover.1564046812.git.jthumshirn@suse.de>
- <d404e57945240f413ab62945fd1cc4bfc86364ae.1564046971.git.jthumshirn@suse.de>
+ <ae31ea458aff801cbd9d0674431019314834c64f.1564046972.git.jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -67,12 +67,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <7a7e9273-6795-7c8c-bcb6-e8da3d40d8fa@suse.com>
-Date:   Mon, 12 Aug 2019 12:30:14 +0300
+Message-ID: <4f7c177e-7c2a-aaa5-26eb-a06cf1578ba9@suse.com>
+Date:   Mon, 12 Aug 2019 12:49:47 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <d404e57945240f413ab62945fd1cc4bfc86364ae.1564046971.git.jthumshirn@suse.de>
+In-Reply-To: <ae31ea458aff801cbd9d0674431019314834c64f.1564046972.git.jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,45 +84,11 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 25.07.19 г. 12:33 ч., Johannes Thumshirn wrote:
-> Add an option to mkfs to specify which checksum algorithm will be used for
-> the filesystem.
-> 
-> XXX this patch should go last in the series.
+> The callers of csum_tree_block_size() blindly assume we're only having
+> crc32c as a possible checksum and thus pass in
+> btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32] for the size argument of
+> csum_tree_block_size().
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 
-<snip>
-
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -346,6 +346,7 @@ static void print_usage(int ret)
->  	printf("\t--shrink                (with --rootdir) shrink the filled filesystem to minimal size\n");
->  	printf("\t-K|--nodiscard          do not perform whole device TRIM\n");
->  	printf("\t-f|--force              force overwrite of existing filesystem\n");
-> +	printf("\t-C|--checksum           checksum algorithm to use (default: crc32c)\n");
->  	printf("  general:\n");
->  	printf("\t-q|--quiet              no messages except errors\n");
->  	printf("\t-V|--version            print the mkfs.btrfs version and exit\n");
-> @@ -380,6 +381,18 @@ static u64 parse_profile(const char *s)
->  	return 0;
->  }
->  
-> +static u16 parse_csum_type(const char *s)
-> +{
-> +	if (strcasecmp(s, "crc32c") == 0) {
-> +		return BTRFS_CSUM_TYPE_CRC32;
-> +	} else {
-> +		error("unknown csum type %s", s);
-> +		exit(1);
-> +	}
-> +	/* not reached */
-> +	return 0;
-> +}
-
-How hard would it be making this function return 'enum btrfs_csum_type'
-and all further references to the checksum type be done through this
-enum type? Functionally this won't bring any differences but will make
-the code very explicit. Perhaps you'd have to also add a value for
-invalid checksum ?
-
-<snip>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
