@@ -2,23 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5EC898A4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 10:23:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E78898B1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 10:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727023AbfHLIW7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 04:22:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44948 "EHLO mx1.suse.de"
+        id S1727054AbfHLIap (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Aug 2019 04:30:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47074 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726834AbfHLIW7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 04:22:59 -0400
+        id S1726528AbfHLIap (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Aug 2019 04:30:45 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 77444AEED
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 08:22:57 +0000 (UTC)
-Subject: Re: [PATCH v2.1 0/3] btrfs-progs: Check and repair invalid root item
- generation
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190812063422.22219-1-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 9A896AED0
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 08:30:43 +0000 (UTC)
+Subject: Re: [PATCH 1/2] btrfs: define compression levels statically
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1565362438.git.dsterba@suse.com>
+ <78207f6784c457dad6583f7bc7eecc495c7d5d54.1565362438.git.dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <3772450d-1d34-c67b-246b-f4ff1429d8cb@suse.com>
-Date:   Mon, 12 Aug 2019 11:22:56 +0300
+Message-ID: <ae30ae87-0e4a-af31-5a58-b32e7364588e@suse.com>
+Date:   Mon, 12 Aug 2019 11:30:42 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190812063422.22219-1-wqu@suse.com>
+In-Reply-To: <78207f6784c457dad6583f7bc7eecc495c7d5d54.1565362438.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,39 +79,69 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 12.08.19 г. 9:34 ч., Qu Wenruo wrote:
-> Kernel is going to reject invalid root generation.
+On 9.08.19 г. 17:55 ч., David Sterba wrote:
+> The maximum and default levels do not change and can be defined
+> directly. The set_level callback was a temporary solution and will be
+> removed.
 > 
-> Consider the existing checks are causing some error reports, we should
-> handle such problem in advance, so that's the patchset is going to do,
-> check and repair such invalid root generation.
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
+>  fs/btrfs/compression.h | 4 ++++
+>  fs/btrfs/lzo.c         | 2 ++
+>  fs/btrfs/zlib.c        | 2 ++
+>  fs/btrfs/zstd.c        | 2 ++
+>  4 files changed, 10 insertions(+)
 > 
-> Changelog:
-> v2:
-> - Use existing recow_extent_buffer() to do the repair
-> 
-> v2.1:
-> - Add beacon file to allow lowmem mode repair for newly added test case.
-> 
-> Qu Wenruo (3):
->   btrfs-progs: check/lowmem: Check and repair root generation
->   btrfs-progs: check/original: Check and repair root item geneartion
->   btrfs-progs: fsck-tests: Add test case for invalid root generation
-> 
->  check/main.c                                  |  57 +++++++-----------
->  check/mode-common.c                           |  36 +++++++++++
->  check/mode-common.h                           |   1 +
->  check/mode-lowmem.c                           |  17 ++++++
->  check/mode-lowmem.h                           |   1 +
->  .../.lowmem_repairable                        |   0
->  .../default_case.img                          | Bin 0 -> 3072 bytes
->  7 files changed, 76 insertions(+), 36 deletions(-)
->  create mode 100644 tests/fsck-tests/041-invalid-root-generation/.lowmem_repairable
->  create mode 100644 tests/fsck-tests/041-invalid-root-generation/default_case.img
-> 
+> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+> index 2035b8eb1290..07b2009dc63f 100644
+> --- a/fs/btrfs/compression.h
+> +++ b/fs/btrfs/compression.h
+> @@ -162,6 +162,10 @@ struct btrfs_compress_op {
+>  	 * if the level is out of bounds or the default if 0 is passed in.
+>  	 */
+>  	unsigned int (*set_level)(unsigned int level);
+> +
+> +	/* Maximum level supported by the compression algorithm */
+> +	int max_level;
+> +	int default_level;
 
-The patchset looks rather trivial - just use recow_extent_buffer when
-you find a root with larger generation. So:
+can levels be negative? If not just define those as unsigned ints and in
+the next patch it won't be necessary to use min_t but plain min.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
+>  };
+>  
+>  /* The heuristic workspaces are managed via the 0th workspace manager */
+> diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+> index 579d53ae256f..adac6cb30d65 100644
+> --- a/fs/btrfs/lzo.c
+> +++ b/fs/btrfs/lzo.c
+> @@ -523,4 +523,6 @@ const struct btrfs_compress_op btrfs_lzo_compress = {
+>  	.decompress_bio		= lzo_decompress_bio,
+>  	.decompress		= lzo_decompress,
+>  	.set_level		= lzo_set_level,
+> +	.max_level		= 1,
+> +	.default_level		= 1,
+>  };
+> diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+> index b86b7ad6b900..03d6c3683bd9 100644
+> --- a/fs/btrfs/zlib.c
+> +++ b/fs/btrfs/zlib.c
+> @@ -437,4 +437,6 @@ const struct btrfs_compress_op btrfs_zlib_compress = {
+>  	.decompress_bio		= zlib_decompress_bio,
+>  	.decompress		= zlib_decompress,
+>  	.set_level              = zlib_set_level,
+> +	.max_level		= 9,
+> +	.default_level		= BTRFS_ZLIB_DEFAULT_LEVEL,
+>  };
+> diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+> index 3837ca180d52..b2b23a6a497d 100644
+> --- a/fs/btrfs/zstd.c
+> +++ b/fs/btrfs/zstd.c
+> @@ -729,4 +729,6 @@ const struct btrfs_compress_op btrfs_zstd_compress = {
+>  	.decompress_bio = zstd_decompress_bio,
+>  	.decompress = zstd_decompress,
+>  	.set_level = zstd_set_level,
+> +	.max_level	= ZSTD_BTRFS_MAX_LEVEL,
+> +	.default_level	= ZSTD_BTRFS_DEFAULT_LEVEL,
+>  };
+> 
