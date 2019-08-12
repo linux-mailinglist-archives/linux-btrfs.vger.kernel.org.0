@@ -2,142 +2,241 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCB789C03
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 12:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F56489D41
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 13:39:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728098AbfHLKx4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 06:53:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35514 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727235AbfHLKx4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 06:53:56 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BAE96AEE0
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 10:53:54 +0000 (UTC)
-Subject: Re: [RFC PATCH 14/17] btrfs-progs: simplify update_block_csum() in
- btrfs-sb-mod.c
-To:     Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <cover.1564046812.git.jthumshirn@suse.de>
- <cover.1564046812.git.jthumshirn@suse.de>
- <c6b85bfa502c4db5d57a1c3db7e4c828cc8c1dba.1564046972.git.jthumshirn@suse.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <dc79b4dd-8b42-e1bd-fe55-5c5eac18100c@suse.com>
-Date:   Mon, 12 Aug 2019 13:53:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728240AbfHLLjI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Aug 2019 07:39:08 -0400
+Received: from mail-ua1-f67.google.com ([209.85.222.67]:39987 "EHLO
+        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728063AbfHLLjI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Aug 2019 07:39:08 -0400
+Received: by mail-ua1-f67.google.com with SMTP id s4so40066851uad.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 04:39:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=f6fhHV8aDNy5KBpWNbKmfN0j3LMtvqY5OjIHy0I+SpY=;
+        b=ihAehqdSq0+wKxc/CC2mJsv6u1gBiSltXQK5zKKMyhDT6CaUuOhlkWxkd98EHETNKd
+         /dUR4VkwDtrP32bxPrje9HrCoZZGTjkGtdgNd2ZAIU8ls0/fgYAQ1VPoub0JmdAz3tXw
+         q/DifXZVJhxwtuSokkf1zORN5+MPpo95oJ+94HyX3P/Yr5BsHR/6IVaPhscvoLOTZQ3e
+         VaI5EakySYC4svrUgeOCNhneylNl+ykSjnvXhRKphtGNmMquIro6QehSYfG2MQIDKKeH
+         AoTdQ2wEfcAD4Gs3HYTYgB98KI00BTRadkRM2jINQtZf7ANPWJpkasprEabfE55w7DBi
+         ggwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=f6fhHV8aDNy5KBpWNbKmfN0j3LMtvqY5OjIHy0I+SpY=;
+        b=c+l+oSKgwcQy/FPSWBF9vzEl8WkHFrllcSUdYyCNKRZNOLhze12uvCj3AXq8DlxI9+
+         2AZWn3m1JUbSHkvohEMl7gGqqKgu8GGg5JqzN1KjHGrRuND6C0rrEVptfVryfQXfvolV
+         RqFMzp3K5X3vzpiVPveVHFDlO5ZxOPXnMTk9cV9KjzKTFPzGTa+6KhqIryE0KToF6IIi
+         +DR+G/CW4i/5Em93MMX34HezeQ7S01U3zDAmgVMzKquj/QYCW970mnhnijS6n/D4eJNa
+         hr5CSaFh9k+Nqwg2pBgBMJt9b3ovCeQF4asaD5Mm/0Lrw5GALUBP5fXBqc0j5kicFpSk
+         iW0Q==
+X-Gm-Message-State: APjAAAWfOYtFY803CK5/IeYzSjEly9D6x9siXhhNr2qMiBkEaU6UJ4/0
+        m60cNbT9ubpQvbxayOzw+HlC1xXX6tM3c0qQsZdDZQgX
+X-Google-Smtp-Source: APXvYqwZnuY3OcKbPqH+tNFQOy+E5q0nJzrp3pf2dgYszDeK+oD9Se/bIA0O3mYMVAztbhb8vxmAS8EuWZSQDmh6+40=
+X-Received: by 2002:ab0:66:: with SMTP id 93mr19248869uai.135.1565609946992;
+ Mon, 12 Aug 2019 04:39:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c6b85bfa502c4db5d57a1c3db7e4c828cc8c1dba.1564046972.git.jthumshirn@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <0bea516a54b26e4e1c42e6fe47548cb48cc4172b.1565112813.git.osandov@fb.com>
+In-Reply-To: <0bea516a54b26e4e1c42e6fe47548cb48cc4172b.1565112813.git.osandov@fb.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 12 Aug 2019 12:38:55 +0100
+Message-ID: <CAL3q7H4cSMNSKfQKtFk9Q5Shw3VxMFZQ0E7uusL0efHzyN3MXw@mail.gmail.com>
+Subject: Re: [PATCH] Btrfs: fix workqueue deadlock on dependent filesystems
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com,
+        Tejun Heo <tj@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Aug 6, 2019 at 6:48 PM Omar Sandoval <osandov@osandov.com> wrote:
+>
+> From: Omar Sandoval <osandov@fb.com>
+>
+> We hit a the following very strange deadlock on a system with Btrfs on a
+> loop device backed by another Btrfs filesystem:
+>
+> 1. The top (loop device) filesystem queues an async_cow work item from
+>    cow_file_range_async(). We'll call this work X.
+> 2. Worker thread A starts work X (normal_work_helper()).
+> 3. Worker thread A executes the ordered work for the top filesystem
+>    (run_ordered_work()).
+> 4. Worker thread A finishes the ordered work for work X and frees X
+>    (work->ordered_free()).
+> 5. Worker thread A executes another ordered work and gets blocked on I/O
+>    to the bottom filesystem (still in run_ordered_work()).
+> 6. Meanwhile, the bottom filesystem allocates and queues an async_cow
+>    work item which happens to be the recently-freed X.
+> 7. The workqueue code sees that X is already being executed by worker
+>    thread A, so it schedules X to be executed _after_ worker thread A
+>    finishes (see the find_worker_executing_work() call in
+>    process_one_work()).
+>
+> Now, the top filesystem is waiting for I/O on the bottom filesystem, but
+> the bottom filesystem is waiting for the top filesystem to finish, so we
+> deadlock.
+>
+> This happens because we are breaking the workqueue assumption that a
+> work item cannot be recycled while it still depends on other work. Fix
+> it by waiting to free the work item until we are done with all of the
+> related ordered work.
+>
+> P.S.:
+>
+> One might ask why the workqueue code doesn't try to detect a recycled
+> work item. It actually does try by checking whether the work item has
+> the same work function (find_worker_executing_work()), but in our case
+> the function is the same. This is the only key that the workqueue code
+> has available to compare, short of adding an additional, layer-violating
+> "custom key". Considering that we're the only ones that have ever hit
+> this, we should just play by the rules.
+>
+> Unfortunately, we haven't been able to create a minimal reproducer other
+> than our full container setup using a compress-force=3Dzstd filesystem on
+> top of another compress-force=3Dzstd filesystem.
+>
+> Suggested-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Omar Sandoval <osandov@fb.com>
 
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-On 25.07.19 г. 12:34 ч., Johannes Thumshirn wrote:
-> update_block_csum() in btrfs-sb-mod.c is always called with the 'is_sb'
-> argument set to 1.
-> 
-> Get rid of the special case for is_sb == 0.
-> 
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Looks good to me, thanks.
+Another variant of the problem Liu fixed back in 2014 (commit
+9e0af23764344f7f1b68e4eefbe7dc865018b63d).
 
 > ---
->  btrfs-sb-mod.c | 19 ++++++-------------
->  1 file changed, 6 insertions(+), 13 deletions(-)
-> 
-> diff --git a/btrfs-sb-mod.c b/btrfs-sb-mod.c
-> index d9630f187d0f..9e64b34d2b8f 100644
-> --- a/btrfs-sb-mod.c
-> +++ b/btrfs-sb-mod.c
-> @@ -46,24 +46,17 @@ static int check_csum_superblock(void *sb)
->  	return !memcmp(sb, &result, csum_size);
+>  fs/btrfs/async-thread.c | 56 ++++++++++++++++++++++++++++++++---------
+>  1 file changed, 44 insertions(+), 12 deletions(-)
+>
+> diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
+> index 122cb97c7909..b2bfde560331 100644
+> --- a/fs/btrfs/async-thread.c
+> +++ b/fs/btrfs/async-thread.c
+> @@ -250,16 +250,17 @@ static inline void thresh_exec_hook(struct __btrfs_=
+workqueue *wq)
+>         }
 >  }
->  
-> -static void update_block_csum(void *block, int is_sb)
-> +static void update_block_csum(void *block)
+>
+> -static void run_ordered_work(struct __btrfs_workqueue *wq)
+> +static void run_ordered_work(struct btrfs_work *self)
 >  {
->  	u8 result[csum_size];
->  	struct btrfs_header *hdr;
->  	u32 crc = ~(u32)0;
->  	u16 csum_type = btrfs_super_csum_type(block);
->  
-> -	if (is_sb) {
-> -		crc = btrfs_csum_data(csum_type,
-> -				      (char *)block + BTRFS_CSUM_SIZE,
-> -				      (u8 *)&crc,
-> -				BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
-> -	} else {
-> -		crc = btrfs_csum_data(csum_type,
-> -				      (char *)block + BTRFS_CSUM_SIZE,
-> -				      (u8 *)&crc,
-> -				BLOCKSIZE - BTRFS_CSUM_SIZE);
-> -	}
-> +	crc = btrfs_csum_data(csum_type, (char *)block + BTRFS_CSUM_SIZE,
-> +			      (u8 *)&crc,
-> +			      BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
+> +       struct __btrfs_workqueue *wq =3D self->wq;
+>         struct list_head *list =3D &wq->ordered_list;
+>         struct btrfs_work *work;
+>         spinlock_t *lock =3D &wq->list_lock;
+>         unsigned long flags;
+> +       void *wtag;
+> +       bool free_self =3D false;
+>
+>         while (1) {
+> -               void *wtag;
+> -
+>                 spin_lock_irqsave(lock, flags);
+>                 if (list_empty(list))
+>                         break;
+> @@ -285,16 +286,47 @@ static void run_ordered_work(struct __btrfs_workque=
+ue *wq)
+>                 list_del(&work->ordered_list);
+>                 spin_unlock_irqrestore(lock, flags);
+>
+> -               /*
+> -                * We don't want to call the ordered free functions with =
+the
+> -                * lock held though. Save the work as tag for the trace e=
+vent,
+> -                * because the callback could free the structure.
+> -                */
+> -               wtag =3D work;
+> -               work->ordered_free(work);
+> -               trace_btrfs_all_work_done(wq->fs_info, wtag);
+> +               if (work =3D=3D self) {
+> +                       /*
+> +                        * This is the work item that the worker is curre=
+ntly
+> +                        * executing.
+> +                        *
+> +                        * The kernel workqueue code guarantees non-reent=
+rancy
+> +                        * of work items. I.e., if a work item with the s=
+ame
+> +                        * address and work function is queued twice, the=
+ second
+> +                        * execution is blocked until the first one finis=
+hes. A
+> +                        * work item may be freed and recycled with the s=
+ame
+> +                        * work function; the workqueue code assumes that=
+ the
+> +                        * original work item cannot depend on the recycl=
+ed work
+> +                        * item in that case (see find_worker_executing_w=
+ork()).
+> +                        *
+> +                        * Note that the work of one Btrfs filesystem may=
+ depend
+> +                        * on the work of another Btrfs filesystem via, e=
+.g., a
+> +                        * loop device. Therefore, we must not allow the =
+current
+> +                        * work item to be recycled until we are really d=
+one,
+> +                        * otherwise we break the above assumption and ca=
+n
+> +                        * deadlock.
+> +                        */
+> +                       free_self =3D true;
+> +               } else {
+> +                       /*
+> +                        * We don't want to call the ordered free functio=
+ns with
+> +                        * the lock held though. Save the work as tag for=
+ the
+> +                        * trace event, because the callback could free t=
+he
+> +                        * structure.
+> +                        */
+> +                       wtag =3D work;
+> +                       work->ordered_free(work);
+> +                       trace_btrfs_all_work_done(wq->fs_info, wtag);
+> +               }
+>         }
+>         spin_unlock_irqrestore(lock, flags);
 > +
->  	btrfs_csum_final(csum_type, crc, result);
->  	memset(block, 0, BTRFS_CSUM_SIZE);
->  	hdr = (struct btrfs_header *)block;
-> @@ -354,7 +347,7 @@ int main(int argc, char **argv) {
->  
->  	if (changed) {
->  		printf("Update csum\n");
-> -		update_block_csum(buf, 1);
-> +		update_block_csum(buf);
->  		ret = pwrite(fd, buf, BLOCKSIZE, off);
->  		if (ret <= 0) {
->  			printf("pwrite error %d at offset %llu\n",
-> 
+> +       if (free_self) {
+> +               wtag =3D self;
+> +               self->ordered_free(self);
+> +               trace_btrfs_all_work_done(wq->fs_info, wtag);
+> +       }
+>  }
+>
+>  static void normal_work_helper(struct btrfs_work *work)
+> @@ -322,7 +354,7 @@ static void normal_work_helper(struct btrfs_work *wor=
+k)
+>         work->func(work);
+>         if (need_order) {
+>                 set_bit(WORK_DONE_BIT, &work->flags);
+> -               run_ordered_work(wq);
+> +               run_ordered_work(work);
+>         }
+>         if (!need_order)
+>                 trace_btrfs_all_work_done(wq->fs_info, wtag);
+> --
+> 2.22.0
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
