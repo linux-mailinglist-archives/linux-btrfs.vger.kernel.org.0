@@ -2,27 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF0A89A65
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 11:49:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D19789A78
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 11:52:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727612AbfHLJtu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 05:49:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45848 "EHLO mx1.suse.de"
+        id S1727515AbfHLJwT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 12 Aug 2019 05:52:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46464 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727425AbfHLJtu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 05:49:50 -0400
+        id S1727425AbfHLJwS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 12 Aug 2019 05:52:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 222F7AEFF
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 09:49:48 +0000 (UTC)
-Subject: Re: [RFC PATCH 06/17] btrfs-progs: don't blindly assume crc32c in
- csum_tree_block_size()
+        by mx1.suse.de (Postfix) with ESMTP id D98BDAF00
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 09:52:16 +0000 (UTC)
+Subject: Re: [RFC PATCH 08/17] btrfs-progs: cache csum_type in recover_control
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <cover.1564046812.git.jthumshirn@suse.de>
  <cover.1564046812.git.jthumshirn@suse.de>
- <ae31ea458aff801cbd9d0674431019314834c64f.1564046972.git.jthumshirn@suse.de>
+ <9f3f9dd60d4c7dbfc854ad98e6133914bb47f7dc.1564046972.git.jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -67,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <4f7c177e-7c2a-aaa5-26eb-a06cf1578ba9@suse.com>
-Date:   Mon, 12 Aug 2019 12:49:47 +0300
+Message-ID: <f5fbe8f0-5740-9e84-6532-8ead1b67830d@suse.com>
+Date:   Mon, 12 Aug 2019 12:52:16 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <ae31ea458aff801cbd9d0674431019314834c64f.1564046972.git.jthumshirn@suse.de>
+In-Reply-To: <9f3f9dd60d4c7dbfc854ad98e6133914bb47f7dc.1564046972.git.jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,11 +83,36 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 25.07.19 г. 12:33 ч., Johannes Thumshirn wrote:
-> The callers of csum_tree_block_size() blindly assume we're only having
-> crc32c as a possible checksum and thus pass in
-> btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32] for the size argument of
-> csum_tree_block_size().
+> Cache the super-block's checksum type field in 'struct recover_control'.
+> This will be needed for further refactoring the checksum handling.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> ---
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+
+>  cmds/rescue-chunk-recover.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/cmds/rescue-chunk-recover.c b/cmds/rescue-chunk-recover.c
+> index 608af9d49407..308731ea5ea6 100644
+> --- a/cmds/rescue-chunk-recover.c
+> +++ b/cmds/rescue-chunk-recover.c
+> @@ -47,6 +47,7 @@ struct recover_control {
+>  	int yes;
+>  
+>  	u16 csum_size;
+> +	u16 csum_type;
+>  	u32 sectorsize;
+>  	u32 nodesize;
+>  	u64 generation;
+> @@ -1530,6 +1531,7 @@ static int recover_prepare(struct recover_control *rc, const char *path)
+>  	rc->generation = btrfs_super_generation(sb);
+>  	rc->chunk_root_generation = btrfs_super_chunk_root_generation(sb);
+>  	rc->csum_size = btrfs_super_csum_size(sb);
+> +	rc->csum_type = btrfs_super_csum_type(sb);
+>  
+>  	/* if seed, the result of scanning below will be partial */
+>  	if (btrfs_super_flags(sb) & BTRFS_SUPER_FLAG_SEEDING) {
+> 
