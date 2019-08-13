@@ -2,143 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E158A6A5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Aug 2019 20:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 716748B009
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2019 08:40:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbfHLSxX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 12 Aug 2019 14:53:23 -0400
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:38193 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbfHLSxX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 12 Aug 2019 14:53:23 -0400
-Received: by mail-ua1-f68.google.com with SMTP id g13so3876218uap.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Aug 2019 11:53:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=yCJM930kjWAD4lhCmAWINhO7qH15RlEok+iJQT6nx0g=;
-        b=hzBI/j4UGfDpPTh1NjiaxgDu3Hdc3Qmqs/VUWRqb2pTlm7WpEossr4XCMcyUuKZtNH
-         S7GG87rTymdbE0pKbieIRV/TtUqk/C8pzDj7CIhLQkfVMkVfunZdc44m8obyIRCKdtc3
-         NoeH1lh21WxEtnJkutBM6Io3eF3dH0Wpy92w9WzIITnSDSqR+bglnfvtJWJxR3CpTibS
-         D+MAcetLWU5dq1Og5R7Xe6tZrwGlyDekix52l/ZYjWsacIvRLd8X3xtkxrNLxjzVmoMD
-         au8CWBSKWc0TYIfIIrVra8f/IVPMkcHFVoMRObfNGgm91BHx9SlA/kOun5So5IGp9dqs
-         f6dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=yCJM930kjWAD4lhCmAWINhO7qH15RlEok+iJQT6nx0g=;
-        b=c7II4LySKdbWmRxYB33OeMUh6+WWv//F/06wDz9Jbc+94wdfUHjgh7sFOQrG3IkeII
-         ElvPP6pNtKO35CuIPp7BSIFswYiM/xssdjzQC+FI2rM/zm6roBB2JLuzsJi+0sB2z+IF
-         lDoB+dUiPw9muDK99dm6GCoY8/EuuEeuXPJtX/Ps/c5dFNtiDCBQGjPBBes3derKwfsB
-         SThPySuiQeqjPlimZRV3UrcIlSi0aLJDpDchXzW/EZN9GBmFLr4TuOAq0FUSZ8/K13uW
-         TixnQkIbJ/jteI4ELtpfZaOBD0/dMQaTMdTa8jhKS9HcWb08bnj7dWnIIEJzi80B5jKR
-         QgXA==
-X-Gm-Message-State: APjAAAWuYmRp1B4QsOETkokPWeR/jbj7SRRwXfL/XrsPayz7RubAdcVh
-        DbXBoTsxKS2rgxW2vXmPMvQuSfmbLv7DygXxlWWU0Q==
-X-Google-Smtp-Source: APXvYqxYArjFu76uiIYmGDdPNhAhocw8aF9qjl4wuQof+0Wd5ugSn3ISkCde2jyVZQaSj4RGEjGLc9+u57o6y8LM2Ks=
-X-Received: by 2002:ab0:2784:: with SMTP id t4mr1370353uap.27.1565636001674;
- Mon, 12 Aug 2019 11:53:21 -0700 (PDT)
+        id S1726287AbfHMGky (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Aug 2019 02:40:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46492 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725869AbfHMGkx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 13 Aug 2019 02:40:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 4C5F7AD88;
+        Tue, 13 Aug 2019 06:40:52 +0000 (UTC)
+Subject: Re: [PATCH 1/1] btrfs: Add global_reserve_size mount option
+To:     Vladimir Panteleev <git@thecybershadow.net>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <20190810124101.15440-1-git@thecybershadow.net>
+ <20190810124101.15440-2-git@thecybershadow.net>
+ <ebdcf4f9-dd5e-b4ec-4a5b-ccda52c825d4@suse.com>
+ <CAHhfkvx=aTAYoKLyE0RP8Eag9WbCBJ0Q3tdVAfZ1YNp=+HW3RQ@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <7b0c575d-53f3-5d62-da73-d899ed3cc5c1@suse.com>
+Date:   Tue, 13 Aug 2019 09:40:50 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <0bea516a54b26e4e1c42e6fe47548cb48cc4172b.1565112813.git.osandov@fb.com>
- <CAL3q7H4cSMNSKfQKtFk9Q5Shw3VxMFZQ0E7uusL0efHzyN3MXw@mail.gmail.com> <20190812184812.GA4142@vader>
-In-Reply-To: <20190812184812.GA4142@vader>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 12 Aug 2019 19:53:10 +0100
-Message-ID: <CAL3q7H4d6mGsiKRmsELw1o6XQBVTWOEQ-bYqwr5RS7i__jarzA@mail.gmail.com>
-Subject: Re: [PATCH] Btrfs: fix workqueue deadlock on dependent filesystems
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com,
-        Tejun Heo <tj@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAHhfkvx=aTAYoKLyE0RP8Eag9WbCBJ0Q3tdVAfZ1YNp=+HW3RQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 12, 2019 at 7:48 PM Omar Sandoval <osandov@osandov.com> wrote:
->
-> On Mon, Aug 12, 2019 at 12:38:55PM +0100, Filipe Manana wrote:
-> > On Tue, Aug 6, 2019 at 6:48 PM Omar Sandoval <osandov@osandov.com> wrot=
-e:
-> > >
-> > > From: Omar Sandoval <osandov@fb.com>
-> > >
-> > > We hit a the following very strange deadlock on a system with Btrfs o=
-n a
-> > > loop device backed by another Btrfs filesystem:
-> > >
-> > > 1. The top (loop device) filesystem queues an async_cow work item fro=
-m
-> > >    cow_file_range_async(). We'll call this work X.
-> > > 2. Worker thread A starts work X (normal_work_helper()).
-> > > 3. Worker thread A executes the ordered work for the top filesystem
-> > >    (run_ordered_work()).
-> > > 4. Worker thread A finishes the ordered work for work X and frees X
-> > >    (work->ordered_free()).
-> > > 5. Worker thread A executes another ordered work and gets blocked on =
-I/O
-> > >    to the bottom filesystem (still in run_ordered_work()).
-> > > 6. Meanwhile, the bottom filesystem allocates and queues an async_cow
-> > >    work item which happens to be the recently-freed X.
-> > > 7. The workqueue code sees that X is already being executed by worker
-> > >    thread A, so it schedules X to be executed _after_ worker thread A
-> > >    finishes (see the find_worker_executing_work() call in
-> > >    process_one_work()).
-> > >
-> > > Now, the top filesystem is waiting for I/O on the bottom filesystem, =
-but
-> > > the bottom filesystem is waiting for the top filesystem to finish, so=
- we
-> > > deadlock.
-> > >
-> > > This happens because we are breaking the workqueue assumption that a
-> > > work item cannot be recycled while it still depends on other work. Fi=
-x
-> > > it by waiting to free the work item until we are done with all of the
-> > > related ordered work.
-> > >
-> > > P.S.:
-> > >
-> > > One might ask why the workqueue code doesn't try to detect a recycled
-> > > work item. It actually does try by checking whether the work item has
-> > > the same work function (find_worker_executing_work()), but in our cas=
-e
-> > > the function is the same. This is the only key that the workqueue cod=
-e
-> > > has available to compare, short of adding an additional, layer-violat=
-ing
-> > > "custom key". Considering that we're the only ones that have ever hit
-> > > this, we should just play by the rules.
-> > >
-> > > Unfortunately, we haven't been able to create a minimal reproducer ot=
-her
-> > > than our full container setup using a compress-force=3Dzstd filesyste=
-m on
-> > > top of another compress-force=3Dzstd filesystem.
-> > >
-> > > Suggested-by: Tejun Heo <tj@kernel.org>
-> > > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> >
-> > Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> >
-> > Looks good to me, thanks.
-> > Another variant of the problem Liu fixed back in 2014 (commit
-> > 9e0af23764344f7f1b68e4eefbe7dc865018b63d).
->
-> Good point. I think we can actually get rid of those unique helpers with
-> this fix. I'll send some followup cleanups.
 
-Great! Thanks.
+
+On 12.08.19 г. 17:36 ч., Vladimir Panteleev wrote:
+> Hi Nikolay,
+> 
+> Thank you for looking at my patch!
+> 
+> You are completely correct in that this pampers over a bug I do not
+> understand. And, I would very much like to understand and fix the
+> underlying bug instead of settling for a workaround.
+> 
+> Unfortunately, after three days of looking at BTRFS code (and getting
+> to where I am now), I have realized that, as a developer with no
+> experience in filesystems or kernel development, it would take me a
+> lot more, possibly several weeks, to reach a level of understanding of
+> BTRFS to the point where I could contribute a meaningful fix. This is
+> not something I would be opposed to, as I have the time and I've
+> personally invested into BTRFS, but it certainly would be a lot easier
+> if I could at least get occasional confirmation that my findings and
+> understanding so far are correct and that I am on the right track.
+> Unfortunately the people in a position to do this seem to be too busy
+> with far more important issues than helping debug my particular edge
+> case, and the previous thread has not received any replies since my
+> last few posts there, so this patch is the least I could contribute so
+> far.
+> 
+> FWIW #1: My current best guess at why the problem occurs, using my
+> current level of understanding of BTRFS, is that the filesystem in
+> question (16TB of historical snapshots) has so many subvolumes and
+> fragmentation that balance or device delete operations allocate so
+> much metadata space while processing the chunk (by allocating new
+> blocks for splitting filled metadata tree nodes) that the global
+> reserve is overrun. Corrections or advice on how to verify this theory
+> would be appreciated! (Or perhaps I should just use my patch to fix my
+> filesystem and move on with my life. Would be good to know when I can
+> wipe the disks containing the test case FS which reproduces the bug
+> and use them for something else.)
+
+The thing is global rsv should be a last resort allocation pool. E.g. if
+you have 16tb of snapshots but also has plenty of metadata space then
+you shouldn't be hitting global rsv. Have you tried with a recent kernel
+that includes the patches from the following series:
+https://patchwork.kernel.org/project/linux-btrfs/list/?series=17715
 
 
 
---=20
-Filipe David Manana,
+> 
+> FWIW #2: I noticed that Josef Bacik proposed a change back in 2013 to
+> increase the global reserve size to 1G. The comments on the patch was
+> the reason I proposed to make it configurable rather than raising the
+> size again: https://patchwork.kernel.org/patch/2517071/
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+And that change hasn't really landed because it caused other problems.
+Current global rsv code is also capped at 512mb
+
+> 
+> Thanks!
+> 
+<snip>
