@@ -2,202 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3560F8B35C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2019 11:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457AD8B48D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2019 11:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727377AbfHMJHJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Aug 2019 05:07:09 -0400
-Received: from mail-vk1-f196.google.com ([209.85.221.196]:44219 "EHLO
-        mail-vk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727234AbfHMJHI (ORCPT
+        id S1727992AbfHMJsw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Aug 2019 05:48:52 -0400
+Received: from mail1.arhont.com ([178.248.108.111]:33712 "EHLO
+        mail1.arhont.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726811AbfHMJsv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Aug 2019 05:07:08 -0400
-Received: by mail-vk1-f196.google.com with SMTP id w186so12905242vkd.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Aug 2019 02:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=JXZ9agtJ7p2NkqBn4F49XX20E8cmp/W00aCHiP4CEt4=;
-        b=tKEM3rwgnuDP5ht/yJQnF9wNGsLOiVmUkOJEwJ96Jxk/dBHyE6eFkim1FkdMia2zWn
-         k+5ubyKzkEG/YyK4916PAHGk2bEfnZD5JeEqisDE/Snwd1/g6t6WiJZHN9BiLRNChmZg
-         nFt+Y3lw5tKe1X8P7HzyibBBlOxNckV5OyUeYWOUSOXQCF7BOC9YWNnS7dDwTVmhiWcj
-         kILNvsxv05LBzPTaQRHXeo4+KDOMJfoEU363r5cgSSWdx3lrzJF5noYRWJGInera6Z+H
-         INv0k407W6XRFxEPs7x1/VKO8RjLiMqetiNih1Py71EVAEDMwHhS6ls1P72MjZyRYUEi
-         eS5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=JXZ9agtJ7p2NkqBn4F49XX20E8cmp/W00aCHiP4CEt4=;
-        b=n35Psx4CaHdBH44QyBTF5XN0biGInqpT23I1EUjQ+8od+4GKa/ZO0i3OmEjWIokWWA
-         5aUE3pCQ3hLnC5yUoU3W32Su/4yTGNDKY5yZu9Gl3nonsT9lcFcdwVO7SacysmaY7RIE
-         +6eOScdkjU3OH1ydH7dIoZRc+jSeO+XCneB9B2ZApOGpq8pfmj3yQTOUjmdxYUcOW8WW
-         v1FCDhFCDr2yQFTCCKDv981nFNAzV6JQEXA0ChIqrQS4MT+3JOHxknF9scDLn33BkPEr
-         bINmWunEf8g1pF54QsRMOl+nA6dPVeVuhgk+iPGYDJyCOyakOTMrJSs0igRd7dIcT3sL
-         q69A==
-X-Gm-Message-State: APjAAAWYkVt7hWNzx1pcKy8KBy1/STH6WqKfMJiyu3r7kpWeV6DEqQig
-        2+A7uNlUB5FU56wrydx+HUuURYk1Uc/dBMK/pMk=
-X-Google-Smtp-Source: APXvYqyXAFIqsBDdiNeB875hnGTeUOIJ7wBIAj78gQD2j43kvtz9h3Jfdo9xSnQjs5jrIDL3Ojt9lGrlgIlxz/wddgQ=
-X-Received: by 2002:a1f:29d5:: with SMTP id p204mr3532640vkp.31.1565687227099;
- Tue, 13 Aug 2019 02:07:07 -0700 (PDT)
+        Tue, 13 Aug 2019 05:48:51 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail1.arhont.com (Postfix) with ESMTP id C1D5D360067
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Aug 2019 10:48:48 +0100 (BST)
+Received: from mail1.arhont.com ([127.0.0.1])
+        by localhost (mail1.arhont.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 1jEw8wH24Jr9 for <linux-btrfs@vger.kernel.org>;
+        Tue, 13 Aug 2019 10:48:47 +0100 (BST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail1.arhont.com (Postfix) with ESMTP id DB13B36008B
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Aug 2019 10:48:46 +0100 (BST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail1.arhont.com DB13B36008B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arhont.com;
+        s=157CE280-B46F-11E5-BB22-6D46E05691A3; t=1565689726;
+        bh=mMwP2t3LQj7pC1I/Qd4mqaGFNtxlVA7HTjmES97jQSA=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=U6ohS+daVekRfLoU0KSZ5qgeewj27+rPgO63Zf6Ou+tMfTSPatD0rFCXy0Crj1QC/
+         f6ZXEIEwKQudxHBsjwzk38vOvTeCIayx2plO0lYRC5HgJUYdnTxKE6bCBxVso8u1C4
+         7rMWX3RjWlcL25RFLS3uML+YnIfnuFGzj7pfEIsY=
+X-Virus-Scanned: amavisd-new at arhont.com
+Received: from mail1.arhont.com ([127.0.0.1])
+        by localhost (mail1.arhont.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id IzqeG9LoDMQg for <linux-btrfs@vger.kernel.org>;
+        Tue, 13 Aug 2019 10:48:46 +0100 (BST)
+Received: from mail1.arhont.com (localhost.localdomain [127.0.0.1])
+        by mail1.arhont.com (Postfix) with ESMTP id A408B360067
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Aug 2019 10:48:46 +0100 (BST)
+Date:   Tue, 13 Aug 2019 10:48:46 +0100 (BST)
+From:   "Konstantin V. Gavrilenko" <k.gavrilenko@arhont.com>
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <347523577.41.1565689723208.JavaMail.gkos@xpska>
+In-Reply-To: <632175948.36.1565689408284.JavaMail.gkos@xpska>
+Subject: btrfs errors
 MIME-Version: 1.0
-References: <cover.1565680721.git.osandov@fb.com> <958fe7c61896c82b35b5c552d3fb5bfd4df62627.1565680721.git.osandov@fb.com>
-In-Reply-To: <958fe7c61896c82b35b5c552d3fb5bfd4df62627.1565680721.git.osandov@fb.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 13 Aug 2019 10:06:56 +0100
-Message-ID: <CAL3q7H44_+TjbF0kOA_HgJGDHXGqykA_JG2iWTpKkUhZ84X=ww@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Btrfs: get rid of pointless wtag variable in async-thread.c
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 8.8.12_GA_3803 (Zimbra Desktop/7.3.1_13063_Linux)
+Thread-Index: eq7c5ilmqhTw03ljmcizp5gHFjLgwQ==
+Thread-Topic: btrfs errors
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 8:28 AM Omar Sandoval <osandov@osandov.com> wrote:
->
-> From: Omar Sandoval <osandov@fb.com>
->
-> Commit ac0c7cf8be00 ("btrfs: fix crash when tracepoint arguments are
-> freed by wq callbacks") added a void pointer, wtag, which is passed into
-> trace_btrfs_all_work_done() instead of the freed work item. This is
-> silly for a few reasons:
->
-> 1. The freed work item still has the same address.
-> 2. work is still in scope after it's freed, so assigning wtag doesn't
->    stop anyone from using it.
-> 3. The tracepoint has always taken a void * argument, so assigning wtag
->    doesn't actually make things any more type-safe. (Note that the
->    original bug in commit bc074524e123 ("btrfs: prefix fsid to all trace
->    events") was that the void * was implicitly casted when it was passed
->    to btrfs_work_owner() in the trace point itself).
->
-> Instead, let's add some clearer warnings as comments.
->
-> Signed-off-by: Omar Sandoval <osandov@fb.com>
+Hi list
 
-Looks good, just a double "that" word in a comment below.
+I have run the btrfs check, and that reported multiple errors on the FS.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-> ---
->  fs/btrfs/async-thread.c      | 21 ++++++++-------------
->  include/trace/events/btrfs.h |  6 +++---
->  2 files changed, 11 insertions(+), 16 deletions(-)
->
-> diff --git a/fs/btrfs/async-thread.c b/fs/btrfs/async-thread.c
-> index d105d3df6fa6..baeb4058e9dc 100644
-> --- a/fs/btrfs/async-thread.c
-> +++ b/fs/btrfs/async-thread.c
-> @@ -226,7 +226,6 @@ static void run_ordered_work(struct btrfs_work *self)
->         struct btrfs_work *work;
->         spinlock_t *lock =3D &wq->list_lock;
->         unsigned long flags;
-> -       void *wtag;
->         bool free_self =3D false;
->
->         while (1) {
-> @@ -281,21 +280,19 @@ static void run_ordered_work(struct btrfs_work *sel=
-f)
->                 } else {
->                         /*
->                          * We don't want to call the ordered free functio=
-ns with
-> -                        * the lock held though. Save the work as tag for=
- the
-> -                        * trace event, because the callback could free t=
-he
-> -                        * structure.
-> +                        * the lock held.
->                          */
-> -                       wtag =3D work;
->                         work->ordered_free(work);
-> -                       trace_btrfs_all_work_done(wq->fs_info, wtag);
-> +                       /* work must not be dereferenced past this point.=
- */
-> +                       trace_btrfs_all_work_done(wq->fs_info, work);
->                 }
->         }
->         spin_unlock_irqrestore(lock, flags);
->
->         if (free_self) {
-> -               wtag =3D self;
->                 self->ordered_free(self);
-> -               trace_btrfs_all_work_done(wq->fs_info, wtag);
-> +               /* self must not be dereferenced past this point. */
-> +               trace_btrfs_all_work_done(wq->fs_info, self);
->         }
->  }
->
-> @@ -304,7 +301,6 @@ static void btrfs_work_helper(struct work_struct *nor=
-mal_work)
->         struct btrfs_work *work =3D container_of(normal_work, struct btrf=
-s_work,
->                                                normal_work);
->         struct __btrfs_workqueue *wq;
-> -       void *wtag;
->         int need_order =3D 0;
->
->         /*
-> @@ -318,8 +314,6 @@ static void btrfs_work_helper(struct work_struct *nor=
-mal_work)
->         if (work->ordered_func)
->                 need_order =3D 1;
->         wq =3D work->wq;
-> -       /* Safe for tracepoints in case work gets freed by the callback *=
-/
-> -       wtag =3D work;
->
->         trace_btrfs_work_sched(work);
->         thresh_exec_hook(wq);
-> @@ -327,9 +321,10 @@ static void btrfs_work_helper(struct work_struct *no=
-rmal_work)
->         if (need_order) {
->                 set_bit(WORK_DONE_BIT, &work->flags);
->                 run_ordered_work(work);
-> +       } else {
-> +               /* work must not be dereferenced past this point. */
-> +               trace_btrfs_all_work_done(wq->fs_info, work);
->         }
-> -       if (!need_order)
-> -               trace_btrfs_all_work_done(wq->fs_info, wtag);
->  }
->
->  void btrfs_init_work(struct btrfs_work *work, btrfs_func_t func,
-> diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-> index 5cb95646b94e..3d61e80d3c6e 100644
-> --- a/include/trace/events/btrfs.h
-> +++ b/include/trace/events/btrfs.h
-> @@ -1388,9 +1388,9 @@ DECLARE_EVENT_CLASS(btrfs__work,
->  );
->
->  /*
-> - * For situiations when the work is freed, we pass fs_info and a tag tha=
-t that
-> - * matches address of the work structure so it can be paired with the
-> - * scheduling event.
-> + * For situations when the work is freed, we pass fs_info and a tag that=
- that
-
-"that" twice.
-
-> + * matches address of the work structure so it can be paired with the sc=
-heduling
-> + * event. DO NOT add anything here that dereferences wtag.
->   */
->  DECLARE_EVENT_CLASS(btrfs__work__done,
->
-> --
-> 2.22.0
->
+# btrfs check --readonly --force /dev/kubuntu-vg/lv_root
+<SKIP>
+root 9214 inode 6850330 errors 2001, no inode item, link count wrong
+        unresolved ref dir 266982 index 22459 namelen 36 name 9621041045a17a475428a26fcfb5982f.png filetype 1 errors 6, no dir index, no inode ref
+        unresolved ref dir 226516 index 9 namelen 28 name GYTSPMxjwCVp8kXB7+j91O8kcq4= filetype 1 errors 4, no inode ref
+root 9214 inode 6877070 errors 2001, no inode item, link count wrong
+        unresolved ref dir 226516 index 11 namelen 28 name VSqlYzl4pFqJpvC3GA9bQ0mZK8A= filetype 1 errors 4, no inode ref
+root 9214 inode 6878054 errors 2001, no inode item, link count wrong
+        unresolved ref dir 266982 index 22460 namelen 36 name 52e74e9d2b6f598038486f90f8f911c4.png filetype 1 errors 4, no inode ref
+root 9214 inode 6888414 errors 2001, no inode item, link count wrong
+        unresolved ref dir 226391 index 122475 namelen 14 name the-real-index filetype 1 errors 4, no inode ref
+root 9214 inode 6889202 errors 100, file extent discount
+Found file extent holes:
+        start: 0, len: 4096
+root 9214 inode 6889203 errors 100, file extent discount
+Found file extent holes:
+        start: 0, len: 4096
+ERROR: errors found in fs roots
+found 334531551237 bytes used, error(s) found
+total csum bytes: 291555464
+total tree bytes: 1004404736
+total fs tree bytes: 411713536
+total extent tree bytes: 242974720
+btree space waste bytes: 186523621
+file data blocks allocated: 36730163200
+ referenced 42646511616
 
 
---=20
-Filipe David Manana,
+However, scrub and badblock find no errors.
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+# btrfs scrub status /mnt/
+scrub status for 7b19fb5e-4e16-4b62-b803-f59364fd61a2
+        scrub started at Tue Aug 13 07:31:38 2019 and finished after 00:02:47
+        total bytes scrubbed: 311.15GiB with 0 errors
+
+# badblocks -sv /dev/kubuntu-vg/lv_root 
+Checking blocks 0 to 352133119
+Checking for bad blocks (read-only test):  done                                                 
+Pass completed, 0 bad blocks found. (0/0/0 errors)
+
+# btrfs dev stats /dev/kubuntu-vg/lv_root                                                                                                                                                       
+[/dev/mapper/kubuntu--vg-lv_root].write_io_errs    0
+[/dev/mapper/kubuntu--vg-lv_root].read_io_errs     0
+[/dev/mapper/kubuntu--vg-lv_root].flush_io_errs    0
+[/dev/mapper/kubuntu--vg-lv_root].corruption_errs  0
+[/dev/mapper/kubuntu--vg-lv_root].generation_errs  0
+
+
+
+FS mount fine, and is operational.
+would you recommend executing the btrfs check --repair option or is there something else that I can try.
+
+#  uname -a                                                                                                                                                                                         Linux xps 5.1.16-050116-generic #201907031232 SMP Wed Jul 3 12:35:21 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+# btrfs --version                                                                                                                                                                               
+btrfs-progs v4.15.1
+
+
+mount options
+on / type btrfs (rw,relatime,compress-force=lzo,ssd,discard,space_cache=v2,autodefrag,subvol=/@)
+
+thanks,
+Konstantin
