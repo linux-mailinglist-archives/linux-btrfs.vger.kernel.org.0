@@ -2,81 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C12938B06C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2019 09:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 971A78B0C5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2019 09:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726986AbfHMHD0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Aug 2019 03:03:26 -0400
-Received: from know-smtprelay-omd-11.server.virginmedia.net ([81.104.62.43]:42535
-        "EHLO know-smtprelay-omd-11.server.virginmedia.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725981AbfHMHDZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Aug 2019 03:03:25 -0400
-Received: from [172.16.100.1] ([86.12.75.74])
-        by cmsmtp with ESMTPA
-        id xQq2hHLA9XaJRxQq3hSHYD; Tue, 13 Aug 2019 08:03:23 +0100
-X-Originating-IP: [86.12.75.74]
-X-Authenticated-User: peter.chant@ntlworld.com
-X-Spam: 0
-X-Authority: v=2.3 cv=IZIzplia c=1 sm=1 tr=0 a=RxXffCTTaIU9mOmmEQ6aGA==:117
- a=RxXffCTTaIU9mOmmEQ6aGA==:17 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19
- a=IkcTkHD0fZMA:10 a=nxt6yEdAfYn9l88bm4QA:9 a=QEXdDO2ut3YA:10
-Subject: Re: Mount failure with 5.2.7 but mounts with 5.1.4
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <13654030-d9c5-ad3f-283e-16e6ef6c7bcf@petezilla.co.uk>
- <9240f2ad-905d-533a-8bb6-55af0aaafbb7@gmx.com>
- <0bc24d6e-2f3f-c0b8-dc0b-59b162653d3a@petezilla.co.uk>
- <cd48f1e8-8fef-9fca-5013-e80909c9801e@gmx.com>
-From:   Pete <pete@petezilla.co.uk>
-Message-ID: <8a094eaf-bb2a-255c-59c5-bfd9ed0e64aa@petezilla.co.uk>
-Date:   Tue, 13 Aug 2019 08:02:26 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727894AbfHMH0R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Aug 2019 03:26:17 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:35553 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727885AbfHMH0N (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 13 Aug 2019 03:26:13 -0400
+Received: by mail-pf1-f194.google.com with SMTP id d85so588401pfd.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Aug 2019 00:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZolOhzSa1lUkXTmuW7coS+Lw6yX5kpeQCFv7HRgJNCw=;
+        b=mo09P3nidod0mp/W5mv/HGC8YVHDTVnZuiMME4t88/NQMP4EdIu+utqrSXiTjSArFH
+         Q9J9W63t/qw5WFY7ZPa+cUSLJFI3ST49EltjJkW46D7pIGFeU79x8fJcgm5JsNw6aJEu
+         IssEKajjuC2Rc5BoJkO6QneYKabk8Z1/3YKrT+/9qNF5yPzF+N/+jY8ldOwhYWvf7fD9
+         tfabjAMxa+MhvRR6xaN/UdNkBd6eKHYIo0rdQd1GKCdiJW701OzMpcwdX66LtiYQZp4o
+         HfDNHnr8JNEA1nG5MTHkJ4mlLOIw9WJa2e3C0EOtuzbBTNeakQbVlrEeRXvDHl3ax3w3
+         5xFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZolOhzSa1lUkXTmuW7coS+Lw6yX5kpeQCFv7HRgJNCw=;
+        b=htbW/fpGrcNR8Ew00zZFeupAjkeqJLhLL/YzgRqIPdFyqf4iyvLhPpVD0yo8Zczld8
+         P7hwHDG06BnW2O3AnAQvzl3hLnGXr8R1TWMk1LXmr3v7b/bsv/3FsLpMd6uUVqaycTt4
+         fGvaB9X81ILE0vtqGN8C1Q+3/8ArnC4lqQNtzWHXM8qPRu6groXmeDFvZyuA/QXLIhIz
+         0or7MEbcUk7k1RGumRO8LECl75N5YUC1mPg+8OiSYx+vvIAtJKjhkyi7Cn/jiHl5nqND
+         E+EVbwzrSoGNVNUh0QSGOsCO9FnWa65qyWzqyK2rpB3W+uTnwXKLGGdqD5w2XgXfMClk
+         Va/g==
+X-Gm-Message-State: APjAAAXZwJVDH+qi1mZPM6X3am76d2g26MjlkbEpDewl0AMKfk0ZfnHt
+        m8KWV768wAWkIENEuUVgVOIBUD5RF0s=
+X-Google-Smtp-Source: APXvYqw4TBU+QSwDaGr/c6z/n4bULJtDuPLaQT64PXKBc0JiavF0FkNhlV6zkxh0NgtZs8vfWeOQ9g==
+X-Received: by 2002:a63:3046:: with SMTP id w67mr34164717pgw.37.1565681172134;
+        Tue, 13 Aug 2019 00:26:12 -0700 (PDT)
+Received: from vader.thefacebook.com ([2620:10d:c090:180::66b8])
+        by smtp.gmail.com with ESMTPSA id b14sm43528151pga.20.2019.08.13.00.26.11
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 13 Aug 2019 00:26:11 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com
+Subject: [PATCH 0/2] Btrfs: workqueue cleanups
+Date:   Tue, 13 Aug 2019 00:26:02 -0700
+Message-Id: <cover.1565680721.git.osandov@fb.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-In-Reply-To: <cd48f1e8-8fef-9fca-5013-e80909c9801e@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfLStWZf7nlaO4igIedNNWTeLX3TdKizgfEPk4bzMjvsUTVsQ39X3UooS9MDsz09J2MP6jky9urgtm+ohwK7hHoSOffvPfR0qKboxPaRr2WvVYziYM/g3
- 2USf5MLagMHu0GAp8F4SF3lMy4Idp2ObcBW2GfQgyzDGVOZEgKoTzWYtjDi5gC7wub8LJ80mMt71HsUWotXlmgPBirrtOlAJ2hY=
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/12/19 1:21 AM, Qu Wenruo wrote:
+From: Omar Sandoval <osandov@fb.com>
 
-> The offending inode item.
-> 
->> 		block group 0 mode 100600 links 1 uid 1002 gid 100 rdev 0
->> 		sequence 0 flags 0x0(none)
->> 		atime 1395590849.0 (2014-03-23 16:07:29)
->> 		ctime 1395436187.0 (2014-03-21 21:09:47)
->> 		mtime 1395436187.0 (2014-03-21 21:09:47)
-> 
-> It's an old fs, maybe some older kernel caused such strange behavior.
-> 
+These are a couple of cleanups for Btrfs workqueues as a follow-up to
+"Btrfs: fix workqueue deadlock on dependent filesystems" [1]. They are
+based on misc-next + that patch.
 
-Whilst tidying up the system I did find some modules from a 3.* series
-kernel.
+Patch 1 removes the previous, incomplete fix for the same issue fixed by
+[1]. Patch 2 is more of a nitpick, but I think it makes things clearer.
 
+Thanks!
 
-> So the workaround won't work until you delete all those 2014 files.
+1: https://lore.kernel.org/linux-btrfs/0bea516a54b26e4e1c42e6fe47548cb48cc4172b.1565112813.git.osandov@fb.com/
 
-I left it running to do that.
+Omar Sandoval (2):
+  Btrfs: get rid of unique workqueue helper functions
+  Btrfs: get rid of pointless wtag variable in async-thread.c
 
-> 
-> I'd recommend to copy the data to a new btrfs using 5.1 kernel.
->
+ fs/btrfs/async-thread.c      | 79 ++++++++++--------------------------
+ fs/btrfs/async-thread.h      | 33 +--------------
+ fs/btrfs/block-group.c       |  3 +-
+ fs/btrfs/delayed-inode.c     |  4 +-
+ fs/btrfs/disk-io.c           | 34 +++++-----------
+ fs/btrfs/inode.c             | 36 +++++-----------
+ fs/btrfs/ordered-data.c      |  1 -
+ fs/btrfs/qgroup.c            |  1 -
+ fs/btrfs/raid56.c            |  5 +--
+ fs/btrfs/reada.c             |  3 +-
+ fs/btrfs/scrub.c             | 14 +++----
+ fs/btrfs/volumes.c           |  3 +-
+ include/trace/events/btrfs.h |  6 +--
+ 13 files changed, 61 insertions(+), 161 deletions(-)
 
-OK.  Its due an update shortly anyway.  Perhaps I'll treat it to a SSD,
-as it will make updates quicker.
-
-> Thanks,
-> Qu
-
-Thank you.
-
-
+-- 
+2.22.0
 
