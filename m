@@ -2,26 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 716748B009
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2019 08:40:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 456408B02D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Aug 2019 08:54:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726287AbfHMGky (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Aug 2019 02:40:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46492 "EHLO mx1.suse.de"
+        id S1726287AbfHMGyQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Aug 2019 02:54:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48824 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725869AbfHMGkx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Aug 2019 02:40:53 -0400
+        id S1725820AbfHMGyP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 13 Aug 2019 02:54:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4C5F7AD88;
-        Tue, 13 Aug 2019 06:40:52 +0000 (UTC)
-Subject: Re: [PATCH 1/1] btrfs: Add global_reserve_size mount option
-To:     Vladimir Panteleev <git@thecybershadow.net>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <20190810124101.15440-1-git@thecybershadow.net>
- <20190810124101.15440-2-git@thecybershadow.net>
- <ebdcf4f9-dd5e-b4ec-4a5b-ccda52c825d4@suse.com>
- <CAHhfkvx=aTAYoKLyE0RP8Eag9WbCBJ0Q3tdVAfZ1YNp=+HW3RQ@mail.gmail.com>
+        by mx1.suse.de (Postfix) with ESMTP id 48864ACBD;
+        Tue, 13 Aug 2019 06:54:14 +0000 (UTC)
+Subject: Re: [PATCH] Btrfs: fix use-after-free when using the tree
+ modification log
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20190812181429.11444-1-fdmanana@kernel.org>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -66,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <7b0c575d-53f3-5d62-da73-d899ed3cc5c1@suse.com>
-Date:   Tue, 13 Aug 2019 09:40:50 +0300
+Message-ID: <b15a1f35-f07c-cbb8-d60b-4bbed5c32209@suse.com>
+Date:   Tue, 13 Aug 2019 09:54:13 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAHhfkvx=aTAYoKLyE0RP8Eag9WbCBJ0Q3tdVAfZ1YNp=+HW3RQ@mail.gmail.com>
+In-Reply-To: <20190812181429.11444-1-fdmanana@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,60 +79,62 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 12.08.19 г. 17:36 ч., Vladimir Panteleev wrote:
-> Hi Nikolay,
+On 12.08.19 г. 21:14 ч., fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Thank you for looking at my patch!
+> At ctree.c:get_old_root(), we are accessing a root's header owner field
+> after we have freed the respective extent buffer. This results in an
+> use-after-free that can lead to crashes, and when CONFIG_DEBUG_PAGEALLOC
+> is set, results in a stack trace like the following:
 > 
-> You are completely correct in that this pampers over a bug I do not
-> understand. And, I would very much like to understand and fix the
-> underlying bug instead of settling for a workaround.
+>   [ 3876.799331] stack segment: 0000 [#1] SMP DEBUG_PAGEALLOC PTI
+>   [ 3876.799363] CPU: 0 PID: 15436 Comm: pool Not tainted 5.3.0-rc3-btrfs-next-54 #1
+>   [ 3876.799385] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.12.0-0-ga698c8995f-prebuilt.qemu.org 04/01/2014
+>   [ 3876.799433] RIP: 0010:btrfs_search_old_slot+0x652/0xd80 [btrfs]
+>   (...)
+>   [ 3876.799502] RSP: 0018:ffff9f08c1a2f9f0 EFLAGS: 00010286
+>   [ 3876.799518] RAX: ffff8dd300000000 RBX: ffff8dd85a7a9348 RCX: 000000038da26000
+>   [ 3876.799538] RDX: 0000000000000000 RSI: ffffe522ce368980 RDI: 0000000000000246
+>   [ 3876.799559] RBP: dae1922adadad000 R08: 0000000008020000 R09: ffffe522c0000000
+>   [ 3876.799579] R10: ffff8dd57fd788c8 R11: 000000007511b030 R12: ffff8dd781ddc000
+>   [ 3876.799599] R13: ffff8dd9e6240578 R14: ffff8dd6896f7a88 R15: ffff8dd688cf90b8
+>   [ 3876.799620] FS:  00007f23ddd97700(0000) GS:ffff8dda20200000(0000) knlGS:0000000000000000
+>   [ 3876.799643] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>   [ 3876.799660] CR2: 00007f23d4024000 CR3: 0000000710bb0005 CR4: 00000000003606f0
+>   [ 3876.799682] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>   [ 3876.799703] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>   [ 3876.799723] Call Trace:
+>   [ 3876.799735]  ? do_raw_spin_unlock+0x49/0xc0
+>   [ 3876.799749]  ? _raw_spin_unlock+0x24/0x30
+>   [ 3876.799779]  resolve_indirect_refs+0x1eb/0xc80 [btrfs]
+>   [ 3876.799810]  find_parent_nodes+0x38d/0x1180 [btrfs]
+>   [ 3876.799841]  btrfs_check_shared+0x11a/0x1d0 [btrfs]
+>   [ 3876.799870]  ? extent_fiemap+0x598/0x6e0 [btrfs]
+>   [ 3876.799895]  extent_fiemap+0x598/0x6e0 [btrfs]
+>   [ 3876.799913]  do_vfs_ioctl+0x45a/0x700
+>   [ 3876.799926]  ksys_ioctl+0x70/0x80
+>   [ 3876.799938]  ? trace_hardirqs_off_thunk+0x1a/0x20
+>   [ 3876.799953]  __x64_sys_ioctl+0x16/0x20
+>   [ 3876.799965]  do_syscall_64+0x62/0x220
+>   [ 3876.799977]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>   [ 3876.799993] RIP: 0033:0x7f23e0013dd7
+>   (...)
+>   [ 3876.800056] RSP: 002b:00007f23ddd96ca8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+>   [ 3876.800078] RAX: ffffffffffffffda RBX: 00007f23d80210f8 RCX: 00007f23e0013dd7
+>   [ 3876.800099] RDX: 00007f23d80210f8 RSI: 00000000c020660b RDI: 0000000000000003
+>   [ 3876.800626] RBP: 000055fa2a2a2440 R08: 0000000000000000 R09: 00007f23ddd96d7c
+>   [ 3876.801143] R10: 00007f23d8022000 R11: 0000000000000246 R12: 00007f23ddd96d80
+>   [ 3876.801662] R13: 00007f23ddd96d78 R14: 00007f23d80210f0 R15: 00007f23ddd96d80
+>   (...)
+>   [ 3876.805107] ---[ end trace e53161e179ef04f9 ]---
 > 
-> Unfortunately, after three days of looking at BTRFS code (and getting
-> to where I am now), I have realized that, as a developer with no
-> experience in filesystems or kernel development, it would take me a
-> lot more, possibly several weeks, to reach a level of understanding of
-> BTRFS to the point where I could contribute a meaningful fix. This is
-> not something I would be opposed to, as I have the time and I've
-> personally invested into BTRFS, but it certainly would be a lot easier
-> if I could at least get occasional confirmation that my findings and
-> understanding so far are correct and that I am on the right track.
-> Unfortunately the people in a position to do this seem to be too busy
-> with far more important issues than helping debug my particular edge
-> case, and the previous thread has not received any replies since my
-> last few posts there, so this patch is the least I could contribute so
-> far.
+> Fix that by saving the root's header owner field into a local variable
+> before freeing the root's extent buffer, and then use that local variable
+> when needed.
 > 
-> FWIW #1: My current best guess at why the problem occurs, using my
-> current level of understanding of BTRFS, is that the filesystem in
-> question (16TB of historical snapshots) has so many subvolumes and
-> fragmentation that balance or device delete operations allocate so
-> much metadata space while processing the chunk (by allocating new
-> blocks for splitting filled metadata tree nodes) that the global
-> reserve is overrun. Corrections or advice on how to verify this theory
-> would be appreciated! (Or perhaps I should just use my patch to fix my
-> filesystem and move on with my life. Would be good to know when I can
-> wipe the disks containing the test case FS which reproduces the bug
-> and use them for something else.)
+> Fixes: 30b0463a9394d9 ("Btrfs: fix accessing the root pointer in tree mod log functions")
+> CC: stable@vger.kernel.org # 3.10+
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-The thing is global rsv should be a last resort allocation pool. E.g. if
-you have 16tb of snapshots but also has plenty of metadata space then
-you shouldn't be hitting global rsv. Have you tried with a recent kernel
-that includes the patches from the following series:
-https://patchwork.kernel.org/project/linux-btrfs/list/?series=17715
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-
-
-> 
-> FWIW #2: I noticed that Josef Bacik proposed a change back in 2013 to
-> increase the global reserve size to 1G. The comments on the patch was
-> the reason I proposed to make it configurable rather than raising the
-> size again: https://patchwork.kernel.org/patch/2517071/
-
-And that change hasn't really landed because it caused other problems.
-Current global rsv code is also capped at 512mb
-
-> 
-> Thanks!
-> 
-<snip>
