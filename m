@@ -2,167 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B888D571
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 15:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 242058D696
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 16:50:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728096AbfHNNx6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Aug 2019 09:53:58 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:44779 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727687AbfHNNx6 (ORCPT
+        id S1727119AbfHNOug (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Aug 2019 10:50:36 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:36629 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726047AbfHNOug (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Aug 2019 09:53:58 -0400
-Received: by mail-pf1-f196.google.com with SMTP id c81so4612416pfc.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Aug 2019 06:53:57 -0700 (PDT)
+        Wed, 14 Aug 2019 10:50:36 -0400
+Received: by mail-ot1-f65.google.com with SMTP id k18so50832529otr.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Aug 2019 07:50:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=n++KcFD4V/b6zBcrsczOTyMNO8jb/xPsUB8LHz0KWls=;
-        b=b04AglKvxQ5eDEWRWO6CxcfuRA8NK9xxVyKIVJlPRBQzDP0H96mQmDjbDsJABkRoMT
-         SwkIogOXf/Nrrkmgna6L0612c8DArkdixIzW7pbjX9u+B0tzzFZ4iK7rLq9TfpGvA63I
-         ocAuu7T3ee9N/nPxNiyb/PQVv67kREbw6vTFdv+bPs57XaDGX3H3XDFQBp9+CfKLxv3U
-         zRJ/m/4Jh3QRL9P5/dGv8E5IsMGoqRV3C6pjKyMj0ZM/6OFKesuACZaExyPuRRxon5fz
-         gu1DOOeMp5IfTMKH6iNuWwF98FoVffyNMdTwAWot/jHCmopG2UuFC6mBXIGCI2bRRiCg
-         E/TQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=cWx0cFqnOpCViIJ4tMHIiuLTvCAxlz9fs3eE3H38dRE=;
+        b=lXrxUu2GbQ/3WBKNQg6bGoE9vwtRUCP4SFYSH0scEDD89DaRziNNmLBjE0vttmjUe/
+         O4oi/JbfzfFG5Xw+9gyej9xa8Hxo6VT5l/5Uhu6Ny65juAt0JRUAzvszKia3iSP6nh2r
+         cE0Ny9xPzGSah2fDAN6DN8EjpM8B6mh5i7nhJfiWPFDueWS5tsen90BhvNf8os6QfOaB
+         R9wxOqDAIO9Yz9t6d1bMDRQ3gDdzZeohh4mmfilwhiOUUe/mDlQ6e3WFeK9AEwQGx/YF
+         rY1tFBsimehN69v0SOIHFcLiMcb9eRNPzSfZvNrcyjLsWDG+3r2rJKdeGRUyQs6JW23U
+         vFbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=n++KcFD4V/b6zBcrsczOTyMNO8jb/xPsUB8LHz0KWls=;
-        b=KmK7+72oVhrTTfMtz4R4uOWgGeQvkKLuIjx+dG24OSTapNZpLjXO2LRx/0TuSz76fB
-         6Vl6NQDe24RTFlZKljtYexOIsf/tC8sh/Ic3UCDFAiO159Vu5UJmko+Vi98S1eFCFATU
-         JVaoud8blSgUMvv2q/GYwetFyC1IYPu//3kxWxGk82xhUWVYz223fP0h6uJm+NvT1y9O
-         91/kgVCznOGK5WASvyo8RY897WpspgkR/ZG6SXEJ2FqlZa8kJC8efXCCX0yy4Imv1Mi7
-         LWgKI+e2uDzYkY9gmjlYnFZXndwJRDmlkUnJPmdWwPTs2X90+/g9qCkI/zo6Ih5lGZfD
-         gX0A==
-X-Gm-Message-State: APjAAAXKdXP7ZtM3pMRxzQBUVGbksPgtOWrtmXGehvOr/FqnrZ9btzhK
-        Ot4p2zHfKnzWc8jlwjaKV9iRbQ==
-X-Google-Smtp-Source: APXvYqzke17f6CA3f3O7qxwwkDjXbUQ2aD4jV4h6qBmPzp0njUgRl6QAvBH7pexmJAZbHgXac4VhyQ==
-X-Received: by 2002:a65:52c5:: with SMTP id z5mr39237537pgp.118.1565790836994;
-        Wed, 14 Aug 2019 06:53:56 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:180::cd07])
-        by smtp.gmail.com with ESMTPSA id 203sm22454812pfz.107.2019.08.14.06.53.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Aug 2019 06:53:55 -0700 (PDT)
-Date:   Wed, 14 Aug 2019 09:53:53 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=cWx0cFqnOpCViIJ4tMHIiuLTvCAxlz9fs3eE3H38dRE=;
+        b=sXpREzwz7KFDmV5shoR6eSn9zvUJfizQsqtmaJQkUlcHDjIzXWhqzaDhVqOALPtbDS
+         C4X8db7ntwyTt3LxDWAvD0dDHBDGo54AM1b2MjaF4ZjWRzNWxqdvuIC6gzY34itzJe4b
+         Hs26R+20RkySVgi0Zx+z8Y8gqzAmQHQpI4pjBHebyVHnO/riO0wnIdjxBXFCXSqgKtQm
+         Bp/9qPEWcDtrss/orEij5dsIk4a9GmpsxBHLkLHcUCAxuYDtAlIWHS35CnKAgylFOHSm
+         shMcRZnmVU/tlbMO+rDcM7IBIiq9PbGFxiBcTJTt5WCw9MLk+G2Le0fpb7sn3dHuVlte
+         Yn6g==
+X-Gm-Message-State: APjAAAXMe4enPxfqgdKq3GO5qlUIxizw59LtzDSx+yLXXnNV+YNujHWH
+        NDHcto0y7ko3Ty6Qqk3/pEhKMg==
+X-Google-Smtp-Source: APXvYqzQoRGPHjcNHC/V15omIqsc2Ze631e9qimSe/1ZAhI9YzS7mHKxHhdIL75MIuw/sd9unwIaTQ==
+X-Received: by 2002:a5e:834d:: with SMTP id y13mr288968iom.79.1565794234700;
+        Wed, 14 Aug 2019 07:50:34 -0700 (PDT)
+Received: from [192.168.1.50] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id e22sm101663iog.2.2019.08.14.07.50.32
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Aug 2019 07:50:33 -0700 (PDT)
+Subject: Re: [PATCH RESEND] block: annotate refault stalls from IO submission
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Dave Chinner <david@fromorbit.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RESEND] block: annotate refault stalls from IO submission
-Message-ID: <20190814135353.GA30543@cmpxchg.org>
 References: <20190808190300.GA9067@cmpxchg.org>
- <20190809221248.GK7689@dread.disaster.area>
- <20190813174625.GA21982@cmpxchg.org>
- <20190814025130.GI7777@dread.disaster.area>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <4ad47b61-e917-16cc-95a0-18e070b6b4e0@kernel.dk>
+Date:   Wed, 14 Aug 2019 08:50:32 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190814025130.GI7777@dread.disaster.area>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <20190808190300.GA9067@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 14, 2019 at 12:51:30PM +1000, Dave Chinner wrote:
-> On Tue, Aug 13, 2019 at 01:46:25PM -0400, Johannes Weiner wrote:
-> > On Sat, Aug 10, 2019 at 08:12:48AM +1000, Dave Chinner wrote:
-> > > On Thu, Aug 08, 2019 at 03:03:00PM -0400, Johannes Weiner wrote:
-> > > > psi tracks the time tasks wait for refaulting pages to become
-> > > > uptodate, but it does not track the time spent submitting the IO. The
-> > > > submission part can be significant if backing storage is contended or
-> > > > when cgroup throttling (io.latency) is in effect - a lot of time is
-> > > 
-> > > Or the wbt is throttling.
-> > > 
-> > > > spent in submit_bio(). In that case, we underreport memory pressure.
-> > > > 
-> > > > Annotate submit_bio() to account submission time as memory stall when
-> > > > the bio is reading userspace workingset pages.
-> > > 
-> > > PAtch looks fine to me, but it raises another question w.r.t. IO
-> > > stalls and reclaim pressure feedback to the vm: how do we make use
-> > > of the pressure stall infrastructure to track inode cache pressure
-> > > and stalls?
-> > > 
-> > > With the congestion_wait() and wait_iff_congested() being entire
-> > > non-functional for block devices since 5.0, there is no IO load
-> > > based feedback going into memory reclaim from shrinkers that might
-> > > require IO to free objects before they can be reclaimed. This is
-> > > directly analogous to page reclaim writing back dirty pages from
-> > > the LRU, and as I understand it one of things the PSI is supposed
-> > > to be tracking.
-> > >
-> > > Lots of workloads create inode cache pressure and often it can
-> > > dominate the time spent in memory reclaim, so it would seem to me
-> > > that having PSI only track/calculate pressure and stalls from LRU
-> > > pages misses a fair chunk of the memory pressure and reclaim stalls
-> > > that can be occurring.
-> > 
-> > psi already tracks the entire reclaim operation. So if reclaim calls
-> > into the shrinker and the shrinker scans inodes, initiates IO, or even
-> > waits on IO, that time is accounted for as memory pressure stalling.
+On 8/8/19 1:03 PM, Johannes Weiner wrote:
+> psi tracks the time tasks wait for refaulting pages to become
+> uptodate, but it does not track the time spent submitting the IO. The
+> submission part can be significant if backing storage is contended or
+> when cgroup throttling (io.latency) is in effect - a lot of time is
+> spent in submit_bio(). In that case, we underreport memory pressure.
 > 
-> hmmmm - reclaim _scanning_ is considered a stall event? i.e. even if
-> scanning does not block, it's still accounting that _time_ as a
-> memory pressure stall?
+> Annotate submit_bio() to account submission time as memory stall when
+> the bio is reading userspace workingset pages.
 
-Yes. Reclaim doesn't need to block, the entire operation itself is an
-interruption of the workload that only happens due to a lack of RAM.
+Applied for 5.4.
 
-Of course, as long as kswapd is just picking up one-off cache, it does
-not take a whole lot of time, and it will barely register as
-pressure. But as memory demand mounts and we have to look harder for
-unused pages, reclaim time can become significant, even without IO.
+-- 
+Jens Axboe
 
-> I'm probably missing it, but I don't see anything in vmpressure()
-> that actually accounts for time spent scanning.  AFAICT it accounts
-> for LRU objects scanned and reclaimed from memcgs, and then the
-> memory freed from the shrinkers is accounted only to the
-> sc->target_mem_cgroup once all memcgs have been iterated.
-
-vmpressure is an orthogonal feature that is based purely on reclaim
-efficiency (reclaimed/scanned).
-
-psi accounting begins when we first call into try_to_free_pages() and
-friends. psi_memstall_enter() marks the task, and it's the scheduler
-part of psi that aggregates task state time into pressure ratios.
-
-> > If you can think of asynchronous events that are initiated from
-> > reclaim but cause indirect stalls in other contexts, contexts which
-> > can clearly link the stall back to reclaim activity, we can annotate
-> > them using psi_memstall_enter() / psi_memstall_leave().
-> 
-> Well, I was more thinking that issuing/waiting on IOs is a stall
-> event, not scanning.
-> 
-> The IO-less inode reclaim stuff for XFS really needs the main
-> reclaim loop to back off under heavy IO load, but we cannot put the
-> entire metadata writeback path under psi_memstall_enter/leave()
-> because:
-> 
-> 	a) it's not linked to any user context - it's a
-> 	per-superblock kernel thread; and
-> 
-> 	b) it's designed to always be stalled on IO when there is
-> 	metadata writeback pressure. That pressure most often comes from
-> 	running out of journal space rather than memory pressure, and
-> 	really there is no way to distinguish between the two from
-> 	the writeback context.
-> 
-> Hence I don't think the vmpressure mechanism does what the memory
-> reclaim scanning loops really need because they do not feed back a
-> clear picture of the load on the IO subsystem load into the reclaim
-> loops.....
-
-Memory pressure metrics really seem unrelated to this problem, and
-that's not what vmpressure or psi try to solve in the first place.
-
-When you say we need better IO pressure feedback / congestion
-throttling in reclaim, I can believe it, even though it's not
-something we necessarily observed in our fleet.
