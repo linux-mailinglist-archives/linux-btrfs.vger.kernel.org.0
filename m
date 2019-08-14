@@ -2,85 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 242058D696
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 16:50:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 845A38D77F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 17:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbfHNOug (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Aug 2019 10:50:36 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:36629 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726047AbfHNOug (ORCPT
+        id S1726230AbfHNP4U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Aug 2019 11:56:20 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:38086 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726121AbfHNP4U (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Aug 2019 10:50:36 -0400
-Received: by mail-ot1-f65.google.com with SMTP id k18so50832529otr.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Aug 2019 07:50:35 -0700 (PDT)
+        Wed, 14 Aug 2019 11:56:20 -0400
+Received: by mail-lf1-f67.google.com with SMTP id h28so79632571lfj.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Aug 2019 08:56:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=cWx0cFqnOpCViIJ4tMHIiuLTvCAxlz9fs3eE3H38dRE=;
-        b=lXrxUu2GbQ/3WBKNQg6bGoE9vwtRUCP4SFYSH0scEDD89DaRziNNmLBjE0vttmjUe/
-         O4oi/JbfzfFG5Xw+9gyej9xa8Hxo6VT5l/5Uhu6Ny65juAt0JRUAzvszKia3iSP6nh2r
-         cE0Ny9xPzGSah2fDAN6DN8EjpM8B6mh5i7nhJfiWPFDueWS5tsen90BhvNf8os6QfOaB
-         R9wxOqDAIO9Yz9t6d1bMDRQ3gDdzZeohh4mmfilwhiOUUe/mDlQ6e3WFeK9AEwQGx/YF
-         rY1tFBsimehN69v0SOIHFcLiMcb9eRNPzSfZvNrcyjLsWDG+3r2rJKdeGRUyQs6JW23U
-         vFbA==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=8D396UMchtwbR2S3wHOPpycYYgPplFH+gIFwub6JmQc=;
+        b=jT4l6kMPsGS9RBEcjElxvfHh3T2YCI/VeedRVwh+rIQDvmJpponei6TpXRI1mG0Cs/
+         FCRYZZHZRLuEnkpbIsq39WjRbTMDS23fQZ2FbU6D3doFznC7Z9nQIHimN2BYXLF2D5Z3
+         PCrbAA4wxqmE0US72f7F4ZuE3pPIiGb0VDOEtlv70gOV8ud/+GD++6LgOzmeLcqpAHpv
+         +t2Z9pPqvSQ0lf36Nq6yRNHUta7M1gTAmcToApULidE12FOm9s9rXTjEAI2WYBw622uj
+         e+K5GxGTCqlIDafOOp1g7QWhjpQVAeHnhr4zYSx868y89IZi5dSBkRfpQIC/1k5NtwMv
+         tQ8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=cWx0cFqnOpCViIJ4tMHIiuLTvCAxlz9fs3eE3H38dRE=;
-        b=sXpREzwz7KFDmV5shoR6eSn9zvUJfizQsqtmaJQkUlcHDjIzXWhqzaDhVqOALPtbDS
-         C4X8db7ntwyTt3LxDWAvD0dDHBDGo54AM1b2MjaF4ZjWRzNWxqdvuIC6gzY34itzJe4b
-         Hs26R+20RkySVgi0Zx+z8Y8gqzAmQHQpI4pjBHebyVHnO/riO0wnIdjxBXFCXSqgKtQm
-         Bp/9qPEWcDtrss/orEij5dsIk4a9GmpsxBHLkLHcUCAxuYDtAlIWHS35CnKAgylFOHSm
-         shMcRZnmVU/tlbMO+rDcM7IBIiq9PbGFxiBcTJTt5WCw9MLk+G2Le0fpb7sn3dHuVlte
-         Yn6g==
-X-Gm-Message-State: APjAAAXMe4enPxfqgdKq3GO5qlUIxizw59LtzDSx+yLXXnNV+YNujHWH
-        NDHcto0y7ko3Ty6Qqk3/pEhKMg==
-X-Google-Smtp-Source: APXvYqzQoRGPHjcNHC/V15omIqsc2Ze631e9qimSe/1ZAhI9YzS7mHKxHhdIL75MIuw/sd9unwIaTQ==
-X-Received: by 2002:a5e:834d:: with SMTP id y13mr288968iom.79.1565794234700;
-        Wed, 14 Aug 2019 07:50:34 -0700 (PDT)
-Received: from [192.168.1.50] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id e22sm101663iog.2.2019.08.14.07.50.32
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 14 Aug 2019 07:50:33 -0700 (PDT)
-Subject: Re: [PATCH RESEND] block: annotate refault stalls from IO submission
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20190808190300.GA9067@cmpxchg.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4ad47b61-e917-16cc-95a0-18e070b6b4e0@kernel.dk>
-Date:   Wed, 14 Aug 2019 08:50:32 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=8D396UMchtwbR2S3wHOPpycYYgPplFH+gIFwub6JmQc=;
+        b=fzk7PUN3si1kyrcBNJJDn3u2k9cw7/+6IR8N8HxQZdv9gKwcydjnnUmhp3TUsIkT71
+         GqgrJ/fcn/EqxX346PrBmd73skXRjXc1BcVjftspdlGeKrD9McLvHbejuqdjSRFjSuEW
+         RvPuIwlHCtxKW8v7O0JJLjMoah3qomVeGInWg95GuuxHgFYdhJJnL/cHdGygxitn2yRT
+         N+4Z6kuGsj9VhW3gGTvp4bL+C45cuycExQN+FujYc1Lvr6E1tMchrapgbA526bcRuPiQ
+         cXfYW5+SvfUa2702nwsb+mdryb2Q7uGIZoyoqQeOJvnrqhpWho6SLvhuF/tDBQhC3sBY
+         PWiA==
+X-Gm-Message-State: APjAAAUqMcEp8H+VSDvdzGVRwgXaBSLp3iEOVPfkqwZwEGk31ukWwv0h
+        5CG56lGM+ha9skcoh3xRI6DhdbJb4uxBAdWMARo=
+X-Google-Smtp-Source: APXvYqxGsM3eyIEjH7fyA0YatWGhsrQ+9IAmghmBCmbOfJtM3ZcOQHjrZ6GoPHvYpZ8Hjh0zvyChS9lMeJUi9ZTvI8g=
+X-Received: by 2002:ac2:51b0:: with SMTP id f16mr54305lfk.103.1565798178126;
+ Wed, 14 Aug 2019 08:56:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190808190300.GA9067@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a2e:5c09:0:0:0:0:0 with HTTP; Wed, 14 Aug 2019 08:56:17
+ -0700 (PDT)
+Reply-To: benjaminhulk2019@gmail.com
+From:   BENJAMIN HULK <benchikezie134@gmail.com>
+Date:   Wed, 14 Aug 2019 16:56:17 +0100
+Message-ID: <CAM8-8kuR06V7_Rg61M41yC6cVYN=SKGJRWZO4oCgOGS34qaZ9g@mail.gmail.com>
+Subject: SUPPLY CONTRACT
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/8/19 1:03 PM, Johannes Weiner wrote:
-> psi tracks the time tasks wait for refaulting pages to become
-> uptodate, but it does not track the time spent submitting the IO. The
-> submission part can be significant if backing storage is contended or
-> when cgroup throttling (io.latency) is in effect - a lot of time is
-> spent in submit_bio(). In that case, we underreport memory pressure.
-> 
-> Annotate submit_bio() to account submission time as memory stall when
-> the bio is reading userspace workingset pages.
+Sir,
 
-Applied for 5.4.
+I got your email information through a search in the internet. I am an
+authorized agent registered with the Department for Business, Energy &
+Industrial Strategy{Project Procurement Division} as a sourcing agent
+for sundry products. I search for companies to bid for supply
+contracts on commission basis. I receive 3% commission from the seller
+in any successful contract done through my recommendation.
 
--- 
-Jens Axboe
+At the moment, the Ministry is interested in your products and I will
+like to make a preliminary introduction of you/your company to the
+Ministry for their consideration. Please furnish me with the following
+information to enable me introduce you/your  company  to the
+Tender/procurement department  of the ministry:
 
+Payment of every government contract in U.K is by 100% bank swift
+transfer (TT) in advance immediately every contract formality is
+completed.
+
+1) Your price list
+2) Comprehensive details/information of your product
+3) Your Company profile
+
+I am looking forward to working with you.
+
+Best regards,
+
+Benjamin Hulk
