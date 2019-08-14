@@ -2,84 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 845A38D77F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 17:56:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A75FE8DD22
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 20:40:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbfHNP4U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Aug 2019 11:56:20 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:38086 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbfHNP4U (ORCPT
+        id S1728433AbfHNSkX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Aug 2019 14:40:23 -0400
+Received: from resqmta-po-10v.sys.comcast.net ([96.114.154.169]:60164 "EHLO
+        resqmta-po-10v.sys.comcast.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728265AbfHNSkX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Aug 2019 11:56:20 -0400
-Received: by mail-lf1-f67.google.com with SMTP id h28so79632571lfj.5
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Aug 2019 08:56:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=8D396UMchtwbR2S3wHOPpycYYgPplFH+gIFwub6JmQc=;
-        b=jT4l6kMPsGS9RBEcjElxvfHh3T2YCI/VeedRVwh+rIQDvmJpponei6TpXRI1mG0Cs/
-         FCRYZZHZRLuEnkpbIsq39WjRbTMDS23fQZ2FbU6D3doFznC7Z9nQIHimN2BYXLF2D5Z3
-         PCrbAA4wxqmE0US72f7F4ZuE3pPIiGb0VDOEtlv70gOV8ud/+GD++6LgOzmeLcqpAHpv
-         +t2Z9pPqvSQ0lf36Nq6yRNHUta7M1gTAmcToApULidE12FOm9s9rXTjEAI2WYBw622uj
-         e+K5GxGTCqlIDafOOp1g7QWhjpQVAeHnhr4zYSx868y89IZi5dSBkRfpQIC/1k5NtwMv
-         tQ8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=8D396UMchtwbR2S3wHOPpycYYgPplFH+gIFwub6JmQc=;
-        b=fzk7PUN3si1kyrcBNJJDn3u2k9cw7/+6IR8N8HxQZdv9gKwcydjnnUmhp3TUsIkT71
-         GqgrJ/fcn/EqxX346PrBmd73skXRjXc1BcVjftspdlGeKrD9McLvHbejuqdjSRFjSuEW
-         RvPuIwlHCtxKW8v7O0JJLjMoah3qomVeGInWg95GuuxHgFYdhJJnL/cHdGygxitn2yRT
-         N+4Z6kuGsj9VhW3gGTvp4bL+C45cuycExQN+FujYc1Lvr6E1tMchrapgbA526bcRuPiQ
-         cXfYW5+SvfUa2702nwsb+mdryb2Q7uGIZoyoqQeOJvnrqhpWho6SLvhuF/tDBQhC3sBY
-         PWiA==
-X-Gm-Message-State: APjAAAUqMcEp8H+VSDvdzGVRwgXaBSLp3iEOVPfkqwZwEGk31ukWwv0h
-        5CG56lGM+ha9skcoh3xRI6DhdbJb4uxBAdWMARo=
-X-Google-Smtp-Source: APXvYqxGsM3eyIEjH7fyA0YatWGhsrQ+9IAmghmBCmbOfJtM3ZcOQHjrZ6GoPHvYpZ8Hjh0zvyChS9lMeJUi9ZTvI8g=
-X-Received: by 2002:ac2:51b0:: with SMTP id f16mr54305lfk.103.1565798178126;
- Wed, 14 Aug 2019 08:56:18 -0700 (PDT)
+        Wed, 14 Aug 2019 14:40:23 -0400
+X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Wed, 14 Aug 2019 14:40:23 EDT
+Received: from resomta-po-13v.sys.comcast.net ([96.114.154.237])
+        by resqmta-po-10v.sys.comcast.net with ESMTP
+        id xvs0hY59jELdDxy4FhLW67; Wed, 14 Aug 2019 18:32:15 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=comcast.net;
+        s=20190202a; t=1565807535;
+        bh=dwjFedyl7PFAsVX36yTCWtHF0uR7vwswCWP6t2DPWIQ=;
+        h=Received:Received:Received:Received:Date:From:To:Subject:
+         Message-ID:Reply-To:MIME-Version:Content-Type;
+        b=nLmZCbS9DiI3ZwzSLk/FepW8U+D9/b/8Zy8SnVHk1tjeccJQRnCloOjlqgs1VXa4t
+         RSMPwjR5vL4f7QLPEVAOBrG8/Nsw2xZA2/2n4xGl1gkv+2HCOjcYlhln7GJXC1s9TZ
+         Ps85Y8C0Ebdk7qcbNCsm0hRuIfAo0IlJXxeI4VP9vkXjJbL+wURu06LMGQMkHtv5H8
+         Z4xEaFyDx/B187ZV+dI7dhVB0tbz9G+wzSW+eu2VPg858n2L+JnD/+MYnSXJmmCG22
+         ZCFwP8Nfi1dWbOTriuQ6hF3QmWNADcymlxXafW+kvi9fS+CS3jdsYh0awvgpehLg0+
+         T3S12X3LyiiXg==
+Received: from beta.localdomain ([73.209.109.78])
+        by resomta-po-13v.sys.comcast.net with ESMTPA
+        id xy4DhOcvoDWf1xy4Eh2fMO; Wed, 14 Aug 2019 18:32:15 +0000
+X-Xfinity-VAAS: gggruggvucftvghtrhhoucdtuddrgeduvddruddvledgieefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuvehomhgtrghsthdqtfgvshhipdfqfgfvpdfpqffurfetoffkrfenuceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkrhggtgguvggfsehttdertddtredvnecuhfhrohhmpefvihhmucghrghlsggvrhhguceothifrghlsggvrhhgsegtohhmtggrshhtrdhnvghtqeenucfkphepjeefrddvtdelrddutdelrdejkeenucfrrghrrghmpehhvghlohepsggvthgrrdhlohgtrghlughomhgrihhnpdhinhgvthepjeefrddvtdelrddutdelrdejkedpmhgrihhlfhhrohhmpehtfigrlhgsvghrghestghomhgtrghsthdrnhgvthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+X-Xfinity-VMeta: sc=0;st=legit
+Received: from calvin.localdomain ([10.0.0.8])
+        by beta.localdomain with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <twalberg@comcast.net>)
+        id 1hxy4D-0006OD-AY; Wed, 14 Aug 2019 13:32:13 -0500
+Received: from tew by calvin.localdomain with local (Exim 4.84_2)
+        (envelope-from <tew@calvin.localdomain>)
+        id 1hxy4D-0003AC-4B; Wed, 14 Aug 2019 13:32:13 -0500
+Date:   Wed, 14 Aug 2019 13:32:13 -0500
+From:   Tim Walberg <twalberg@comcast.net>
+To:     linux-btrfs@vger.kernel.org
+Subject: recovering from "parent transid verify failed"
+Message-ID: <20190814183213.GA2731@comcast.net>
+Reply-To: Tim Walberg <twalberg@comcast.net>
 MIME-Version: 1.0
-Received: by 2002:a2e:5c09:0:0:0:0:0 with HTTP; Wed, 14 Aug 2019 08:56:17
- -0700 (PDT)
-Reply-To: benjaminhulk2019@gmail.com
-From:   BENJAMIN HULK <benchikezie134@gmail.com>
-Date:   Wed, 14 Aug 2019 16:56:17 +0100
-Message-ID: <CAM8-8kuR06V7_Rg61M41yC6cVYN=SKGJRWZO4oCgOGS34qaZ9g@mail.gmail.com>
-Subject: SUPPLY CONTRACT
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Sir,
+Most of the recommendations I've found online deal with when "wanted" is
+greater than "found", which, if I understand correctly means that one or
+more transactions were interrupted/lost before fully committed.
 
-I got your email information through a search in the internet. I am an
-authorized agent registered with the Department for Business, Energy &
-Industrial Strategy{Project Procurement Division} as a sourcing agent
-for sundry products. I search for companies to bid for supply
-contracts on commission basis. I receive 3% commission from the seller
-in any successful contract done through my recommendation.
+Are the recommendations for recovery the same if the system is reporting a
+"wanted" that is less than "found"?
 
-At the moment, the Ministry is interested in your products and I will
-like to make a preliminary introduction of you/your company to the
-Ministry for their consideration. Please furnish me with the following
-information to enable me introduce you/your  company  to the
-Tender/procurement department  of the ministry:
-
-Payment of every government contract in U.K is by 100% bank swift
-transfer (TT) in advance immediately every contract formality is
-completed.
-
-1) Your price list
-2) Comprehensive details/information of your product
-3) Your Company profile
-
-I am looking forward to working with you.
-
-Best regards,
-
-Benjamin Hulk
+-- 
+twalberg@comcast.net
