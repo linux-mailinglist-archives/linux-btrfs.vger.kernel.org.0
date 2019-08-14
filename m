@@ -2,319 +2,167 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F0C18D19D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 12:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74B888D571
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 15:54:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727445AbfHNKzu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 14 Aug 2019 06:55:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58940 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726619AbfHNKzt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 14 Aug 2019 06:55:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 3ED41ACD9;
-        Wed, 14 Aug 2019 10:55:48 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: [PATCH] fstests: btrfs: Check snapshot creation and deletion with dm-logwrites
-Date:   Wed, 14 Aug 2019 18:55:44 +0800
-Message-Id: <20190814105544.18318-1-wqu@suse.com>
-X-Mailer: git-send-email 2.22.0
+        id S1728096AbfHNNx6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 14 Aug 2019 09:53:58 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:44779 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727687AbfHNNx6 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 14 Aug 2019 09:53:58 -0400
+Received: by mail-pf1-f196.google.com with SMTP id c81so4612416pfc.11
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Aug 2019 06:53:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=n++KcFD4V/b6zBcrsczOTyMNO8jb/xPsUB8LHz0KWls=;
+        b=b04AglKvxQ5eDEWRWO6CxcfuRA8NK9xxVyKIVJlPRBQzDP0H96mQmDjbDsJABkRoMT
+         SwkIogOXf/Nrrkmgna6L0612c8DArkdixIzW7pbjX9u+B0tzzFZ4iK7rLq9TfpGvA63I
+         ocAuu7T3ee9N/nPxNiyb/PQVv67kREbw6vTFdv+bPs57XaDGX3H3XDFQBp9+CfKLxv3U
+         zRJ/m/4Jh3QRL9P5/dGv8E5IsMGoqRV3C6pjKyMj0ZM/6OFKesuACZaExyPuRRxon5fz
+         gu1DOOeMp5IfTMKH6iNuWwF98FoVffyNMdTwAWot/jHCmopG2UuFC6mBXIGCI2bRRiCg
+         E/TQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=n++KcFD4V/b6zBcrsczOTyMNO8jb/xPsUB8LHz0KWls=;
+        b=KmK7+72oVhrTTfMtz4R4uOWgGeQvkKLuIjx+dG24OSTapNZpLjXO2LRx/0TuSz76fB
+         6Vl6NQDe24RTFlZKljtYexOIsf/tC8sh/Ic3UCDFAiO159Vu5UJmko+Vi98S1eFCFATU
+         JVaoud8blSgUMvv2q/GYwetFyC1IYPu//3kxWxGk82xhUWVYz223fP0h6uJm+NvT1y9O
+         91/kgVCznOGK5WASvyo8RY897WpspgkR/ZG6SXEJ2FqlZa8kJC8efXCCX0yy4Imv1Mi7
+         LWgKI+e2uDzYkY9gmjlYnFZXndwJRDmlkUnJPmdWwPTs2X90+/g9qCkI/zo6Ih5lGZfD
+         gX0A==
+X-Gm-Message-State: APjAAAXKdXP7ZtM3pMRxzQBUVGbksPgtOWrtmXGehvOr/FqnrZ9btzhK
+        Ot4p2zHfKnzWc8jlwjaKV9iRbQ==
+X-Google-Smtp-Source: APXvYqzke17f6CA3f3O7qxwwkDjXbUQ2aD4jV4h6qBmPzp0njUgRl6QAvBH7pexmJAZbHgXac4VhyQ==
+X-Received: by 2002:a65:52c5:: with SMTP id z5mr39237537pgp.118.1565790836994;
+        Wed, 14 Aug 2019 06:53:56 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:180::cd07])
+        by smtp.gmail.com with ESMTPSA id 203sm22454812pfz.107.2019.08.14.06.53.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Aug 2019 06:53:55 -0700 (PDT)
+Date:   Wed, 14 Aug 2019 09:53:53 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Jens Axboe <axboe@kernel.dk>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] block: annotate refault stalls from IO submission
+Message-ID: <20190814135353.GA30543@cmpxchg.org>
+References: <20190808190300.GA9067@cmpxchg.org>
+ <20190809221248.GK7689@dread.disaster.area>
+ <20190813174625.GA21982@cmpxchg.org>
+ <20190814025130.GI7777@dread.disaster.area>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190814025130.GI7777@dread.disaster.area>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have generic dm-logwrites with fsstress test case (generic/482), but
-it doesn't cover fs specific operations like btrfs snapshot creation and
-deletion.
+On Wed, Aug 14, 2019 at 12:51:30PM +1000, Dave Chinner wrote:
+> On Tue, Aug 13, 2019 at 01:46:25PM -0400, Johannes Weiner wrote:
+> > On Sat, Aug 10, 2019 at 08:12:48AM +1000, Dave Chinner wrote:
+> > > On Thu, Aug 08, 2019 at 03:03:00PM -0400, Johannes Weiner wrote:
+> > > > psi tracks the time tasks wait for refaulting pages to become
+> > > > uptodate, but it does not track the time spent submitting the IO. The
+> > > > submission part can be significant if backing storage is contended or
+> > > > when cgroup throttling (io.latency) is in effect - a lot of time is
+> > > 
+> > > Or the wbt is throttling.
+> > > 
+> > > > spent in submit_bio(). In that case, we underreport memory pressure.
+> > > > 
+> > > > Annotate submit_bio() to account submission time as memory stall when
+> > > > the bio is reading userspace workingset pages.
+> > > 
+> > > PAtch looks fine to me, but it raises another question w.r.t. IO
+> > > stalls and reclaim pressure feedback to the vm: how do we make use
+> > > of the pressure stall infrastructure to track inode cache pressure
+> > > and stalls?
+> > > 
+> > > With the congestion_wait() and wait_iff_congested() being entire
+> > > non-functional for block devices since 5.0, there is no IO load
+> > > based feedback going into memory reclaim from shrinkers that might
+> > > require IO to free objects before they can be reclaimed. This is
+> > > directly analogous to page reclaim writing back dirty pages from
+> > > the LRU, and as I understand it one of things the PSI is supposed
+> > > to be tracking.
+> > >
+> > > Lots of workloads create inode cache pressure and often it can
+> > > dominate the time spent in memory reclaim, so it would seem to me
+> > > that having PSI only track/calculate pressure and stalls from LRU
+> > > pages misses a fair chunk of the memory pressure and reclaim stalls
+> > > that can be occurring.
+> > 
+> > psi already tracks the entire reclaim operation. So if reclaim calls
+> > into the shrinker and the shrinker scans inodes, initiates IO, or even
+> > waits on IO, that time is accounted for as memory pressure stalling.
+> 
+> hmmmm - reclaim _scanning_ is considered a stall event? i.e. even if
+> scanning does not block, it's still accounting that _time_ as a
+> memory pressure stall?
 
-Furthermore, that test is not heavy enough to bump btrfs tree height by
-its short runtime.
+Yes. Reclaim doesn't need to block, the entire operation itself is an
+interruption of the workload that only happens due to a lack of RAM.
 
-And finally, btrfs check doesn't consider dirty log as an error, unlike
-ext*/xfs, that's to say we don't need to mount the fs to replay the log,
-but just run btrfs check on the fs is enough.
+Of course, as long as kswapd is just picking up one-off cache, it does
+not take a whole lot of time, and it will barely register as
+pressure. But as memory demand mounts and we have to look harder for
+unused pages, reclaim time can become significant, even without IO.
 
-So introduce a similar test case but for btrfs only.
+> I'm probably missing it, but I don't see anything in vmpressure()
+> that actually accounts for time spent scanning.  AFAICT it accounts
+> for LRU objects scanned and reclaimed from memcgs, and then the
+> memory freed from the shrinkers is accounted only to the
+> sc->target_mem_cgroup once all memcgs have been iterated.
 
-The test case will stress btrfs by:
-- Using small nodesize to bump tree height
-- Creating a base tree which is already high enough
-- Trimming tree blocks to find possible trim bugs
-- Calling snapshot creation and deletion along with fsstress
+vmpressure is an orthogonal feature that is based purely on reclaim
+efficiency (reclaimed/scanned).
 
-Also it includes certain workaround for btrfs:
-- Use no-holes feature
-  To avoid missing hole file extents.
-  Although that behavior doesn't follow the on-disk format spec, it
-  doesn't cause data loss. And will follow the new on-disk format spec
-  of no-holes feature, so it's better to workaround it.
+psi accounting begins when we first call into try_to_free_pages() and
+friends. psi_memstall_enter() marks the task, and it's the scheduler
+part of psi that aggregates task state time into pressure ratios.
 
-And an optimization for btrfs only:
-- Use replay-log --fsck/--check command
-  Since dm-log-writes records bios sequentially, there is no way to
-  locate certain entry unless we iterate all entries.
-  This is becoming a big performance penalty if we replay certain a
-  range, check the fs, then re-execute replay-log to replay another
-  range.
+> > If you can think of asynchronous events that are initiated from
+> > reclaim but cause indirect stalls in other contexts, contexts which
+> > can clearly link the stall back to reclaim activity, we can annotate
+> > them using psi_memstall_enter() / psi_memstall_leave().
+> 
+> Well, I was more thinking that issuing/waiting on IOs is a stall
+> event, not scanning.
+> 
+> The IO-less inode reclaim stuff for XFS really needs the main
+> reclaim loop to back off under heavy IO load, but we cannot put the
+> entire metadata writeback path under psi_memstall_enter/leave()
+> because:
+> 
+> 	a) it's not linked to any user context - it's a
+> 	per-superblock kernel thread; and
+> 
+> 	b) it's designed to always be stalled on IO when there is
+> 	metadata writeback pressure. That pressure most often comes from
+> 	running out of journal space rather than memory pressure, and
+> 	really there is no way to distinguish between the two from
+> 	the writeback context.
+> 
+> Hence I don't think the vmpressure mechanism does what the memory
+> reclaim scanning loops really need because they do not feed back a
+> clear picture of the load on the IO subsystem load into the reclaim
+> loops.....
 
-  We need to records the previous entry location, or we need to
-  re-iterate all previous entries.
+Memory pressure metrics really seem unrelated to this problem, and
+that's not what vmpressure or psi try to solve in the first place.
 
-  Thankfully, replay-log has already addressed it by providing --fsck and
-  --check command, thus we won't lose the replay status.
-
-Please note, for fast storage (e.g. fast NVME or unsafe cache mode),
-it's recommended to use log devices larger than 15G, or we can't record
-the full log of just 30s fsstress run.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-For the log devices size problem, I have submitted dm-logwrites bio flag
-filter support, to filter out data bios on the fly.
-
-But that is not yet merged into kernel, thus we need a large log device
-for short run.
----
- common/config               |   1 +
- common/dmlogwrites          |  28 ++++++++
- src/log-writes/replay-log.c |   2 +
- tests/btrfs/192             | 135 ++++++++++++++++++++++++++++++++++++
- tests/btrfs/192.out         |   2 +
- tests/btrfs/group           |   1 +
- 6 files changed, 169 insertions(+)
- create mode 100755 tests/btrfs/192
- create mode 100644 tests/btrfs/192.out
-
-diff --git a/common/config b/common/config
-index bd64be62..4c86a492 100644
---- a/common/config
-+++ b/common/config
-@@ -183,6 +183,7 @@ export LOGGER_PROG="$(type -P logger)"
- export DBENCH_PROG="$(type -P dbench)"
- export DMSETUP_PROG="$(type -P dmsetup)"
- export WIPEFS_PROG="$(type -P wipefs)"
-+export BLKDISCARD_PROG="$(type -P blkdiscard)"
- export DUMP_PROG="$(type -P dump)"
- export RESTORE_PROG="$(type -P restore)"
- export LVM_PROG="$(type -P lvm)"
-diff --git a/common/dmlogwrites b/common/dmlogwrites
-index ae2cbc6a..5eca7142 100644
---- a/common/dmlogwrites
-+++ b/common/dmlogwrites
-@@ -175,3 +175,31 @@ _log_writes_replay_log_range()
- 		>> $seqres.full 2>&1
- 	[ $? -ne 0 ] && _fail "replay failed"
- }
-+
-+# Replay log range to specified entry
-+# Replay and check each fua/flush point.
-+# Since dm-log-writes records bio sequentially, even just replaying a range
-+# still needs to iterate all records before the end point.
-+# When number of records grows, it will be unacceptably slow, thus we need
-+# to use relay-log itself to trigger fsck, avoid unnecessary seek.
-+_log_writes_fast_replay_check()
-+{
-+	local check_point=$1
-+	local blkdev=$2
-+	local fsck_command
-+
-+	[ -z "$check_point" -o -z "$blkdev" ] && _fail \
-+	"check_point and blkdev must be specified for _log_writes_fast_replay_check"
-+
-+	# Check program must not treat dirty log as a problem.
-+	# So only btrfs can use this feature
-+	if [ $FSTYP = "btrfs" ]; then
-+		fsck_command="$BTRFS_PROG check $blkdev"
-+	else
-+		_notrun "fsck of $FSTYP may report false alert of dirty log"
-+	fi
-+	$here/src/log-writes/replay-log --log $LOGWRITES_DEV \
-+		--replay $blkdev --check $check_point --fsck "$fsck_command" \
-+		>> $seqres.full 2>&1
-+	[ $? -ne 0 ] && _fail "fsck failed during replay"
-+}
-diff --git a/src/log-writes/replay-log.c b/src/log-writes/replay-log.c
-index 829b18e2..1e1cd524 100644
---- a/src/log-writes/replay-log.c
-+++ b/src/log-writes/replay-log.c
-@@ -1,5 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <stdio.h>
-+#include <errno.h>
- #include <unistd.h>
- #include <getopt.h>
- #include <stdlib.h>
-@@ -375,6 +376,7 @@ int main(int argc, char **argv)
- 				fprintf(stderr, "Fsck errored out on entry "
- 					"%llu\n",
- 					(unsigned long long)log->cur_entry - 1);
-+				ret = -EUCLEAN;
- 				break;
- 			}
- 		}
-diff --git a/tests/btrfs/192 b/tests/btrfs/192
-new file mode 100755
-index 00000000..e919f703
---- /dev/null
-+++ b/tests/btrfs/192
-@@ -0,0 +1,135 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2019 YOUR NAME HERE.  All Rights Reserved.
-+#
-+# FS QA Test 192
-+#
-+# Test btrfs consistency after each FUA operation
-+# Mostly the same test as generic/482, with some btrfs specific operations
-+# like snapshot creation and deletion.
-+# Alone with some btrfs specific workaround.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	kill -q $pid1 &> /dev/null
-+	kill -q $pid2 &> /dev/null
-+	wait
-+	$KILLALL_PROG -q $FSSTRESS_PROG &> /dev/null
-+	_log_writes_cleanup &> /dev/null
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/dmlogwrites
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_supported_os Linux
-+
-+_require_command "$KILLALL_PROG" killall
-+_require_command "$BLKDISCARD_PROG" blkdiscard
-+_require_log_writes
-+_require_scratch
-+
-+runtime=30
-+nr_cpus=$("$here/src/feature" -o)
-+# cap nr_cpus to 8 to avoid spending too much time on hosts with many cpus
-+if [ $nr_cpus -gt 8 ]; then
-+	nr_cpus=8
-+fi
-+fsstress_args=$(_scale_fsstress_args -w -d $SCRATCH_MNT -n 99999 -p $nr_cpus \
-+		$FSSTRESS_AVOID)
-+_log_writes_init $SCRATCH_DEV
-+# Discard the whole devices so when some tree pointer is wrong, it won't point
-+# to some older tree blocks, and we can detect it.
-+blkdiscard $LOGWRITES_DMDEV 2>&1
-+
-+# Workaround minor file extent discountinous.
-+# Also, use small node size 4K to bump up tree height.
-+_log_writes_mkfs -O no-holes -n 4k >> $seqres.full 2>&1
-+
-+# We need inline extents to quickly bump the tree height
-+_log_writes_mount -o max_inline=2048
-+
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/src > /dev/null 2>&1
-+mkdir -p $SCRATCH_MNT/snapshots
-+mkdir -p $SCRATCH_MNT/src/padding
-+
-+random_file() {
-+	local basedir=$1
-+	echo "$basedir/$(ls $basedir | sort -R | tail -1)"
-+}
-+
-+snapshot_workload() {
-+	while true; do
-+		$BTRFS_UTIL_PROG subvolume snapshot \
-+			$SCRATCH_MNT/src $SCRATCH_MNT/snapshots/$i \
-+			> /dev/null 2>&1
-+		# Remove two random padding so each snapshot is different
-+		rm "$(random_file $SCRATCH_MNT/src/padding)"
-+		rm "$(random_file $SCRATCH_MNT/src/padding)"
-+		sleep 1
-+	done
-+}
-+
-+delete_workload() {
-+	while true; do
-+		sleep 2
-+		$BTRFS_UTIL_PROG subvolume delete \
-+			"$(random_file $SCRATCH_MNT/snapshots)" \
-+			> /dev/null 2>&1
-+	done
-+}
-+
-+# Bump the tree height to 2 at least
-+for ((i = 0; i < 256; i++)); do
-+	_pwrite_byte 0xcd 0 2k "$SCRATCH_MNT/src/padding/inline_$i" > /dev/null 2>&1
-+	_pwrite_byte 0xcd 0 4k "$SCRATCH_MNT/src/padding/regular_$i" > /dev/null 2>&1
-+done
-+sync
-+
-+_log_writes_mark prepare
-+
-+snapshot_workload &
-+pid1=$!
-+delete_workload &
-+pid2=$!
-+
-+$FSSTRESS_PROG $fsstress_args > /dev/null 2>&1 &
-+sleep $runtime
-+
-+$KILLALL_PROG -q $FSSTRESS_PROG &> /dev/null
-+kill $pid1 &> /dev/null
-+kill $pid2 &> /dev/null
-+wait
-+_log_writes_unmount
-+_log_writes_remove
-+
-+# Since we have a lot of work to replay, and relay-log will search
-+# from the first record to the needed entry, we need to use --fsck option
-+# to reduce unnecessary search, or it will be too slow
-+$here/src/log-writes/replay-log --log $LOGWRITES_DEV --replay $SCRATCH_DEV \
-+	--fsck "btrfs check $SCRATCH_DEV" --check fua >> $seqres.full 2>&1
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/192.out b/tests/btrfs/192.out
-new file mode 100644
-index 00000000..6779aa77
---- /dev/null
-+++ b/tests/btrfs/192.out
-@@ -0,0 +1,2 @@
-+QA output created by 192
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 2474d43e..24723bf1 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -194,3 +194,4 @@
- 189 auto quick send clone
- 190 auto quick replay balance qgroup
- 191 auto quick send dedupe
-+192 auto replay
--- 
-2.22.0
-
+When you say we need better IO pressure feedback / congestion
+throttling in reclaim, I can believe it, even though it's not
+something we necessarily observed in our fleet.
