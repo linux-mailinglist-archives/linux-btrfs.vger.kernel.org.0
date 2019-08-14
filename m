@@ -2,31 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 806BA8C5AA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 03:51:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EDB08C5B3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Aug 2019 03:53:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726533AbfHNBvk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 13 Aug 2019 21:51:40 -0400
-Received: from mout.gmx.net ([212.227.17.21]:35453 "EHLO mout.gmx.net"
+        id S1726515AbfHNBxo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 13 Aug 2019 21:53:44 -0400
+Received: from mout.gmx.net ([212.227.15.18]:51351 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726102AbfHNBvk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 13 Aug 2019 21:51:40 -0400
+        id S1726102AbfHNBxn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 13 Aug 2019 21:53:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1565747473;
-        bh=obISN4I+r6aNSC+AL+6O3rwYcCsjQWpghyoS7nbegNE=;
+        s=badeba3b8450; t=1565747617;
+        bh=PECcPAv3QDi7WUzWf5WQzDxetjtxNEUJ6HejqogemjA=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=IKunhuJuZNiGg1gKr0G6tfpKv65X2KB7ikpamG4NZ/BeXswengl8f6pbM+O+UwNea
-         RPV++jYsCjQqKHWJg1NmueLHWtsJh/s8WvD3iBgEsgX76R5ZkPWP8Ob64QJ5zd78N/
-         MaKdLNbCRQn4hLM2bOKg30eMw9j6JNtXBu6pAeKU=
+        b=S73rzlm7NooIQuteMgqJcXyS6t7Y2pAP5E8yKEaQCMURx7tZfYAXxg7cwnZwZyZ+p
+         Ifwd5JTOwkDfFJFDYTNWWp+GaKrVLYJyddQaPAX24MHqyqQ/VAZjcSGylZlA/f7evh
+         HUNL6Z89OrK5CFsJtXKD/PF7BMA9XeI5MlIl+lbE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx103
- [212.227.17.174]) with ESMTPSA (Nemesis) id 0MUYiV-1hnzQh2ztj-00RKIz; Wed, 14
- Aug 2019 03:51:13 +0200
-Subject: Re: [PATCH 3/5] btrfs-progs: qgroups: use parse_size instead of open
- coding it
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx001
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0MKprU-1hxiTo4BSi-0007km; Wed, 14
+ Aug 2019 03:53:37 +0200
+Subject: Re: [PATCH 4/5] btrfs-progs: resize: more sensible error messages for
+ bad sizes
 To:     Jeff Mahoney <jeffm@suse.com>, linux-btrfs@vger.kernel.org
 References: <20190814010402.22546-1-jeffm@suse.com>
- <20190814010402.22546-3-jeffm@suse.com>
+ <20190814010402.22546-4-jeffm@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -53,56 +53,57 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <698f8ba6-d00f-b9d5-41e3-620d821a0f1e@gmx.com>
-Date:   Wed, 14 Aug 2019 09:51:08 +0800
+Message-ID: <ed2cbb17-8b93-9d29-0405-a485e8d36a7a@gmx.com>
+Date:   Wed, 14 Aug 2019 09:53:33 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190814010402.22546-3-jeffm@suse.com>
+In-Reply-To: <20190814010402.22546-4-jeffm@suse.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="OgjtVNFw2APjv9YRn9oCopVrMEjfrObK5"
-X-Provags-ID: V03:K1:tX7IkyB9jHNrI+qAamjxvcsJPb5IS9ywLHr7uDpidjai/xioSOq
- KVoj3DYUJv608tEcGFvIB34520NoHn4gcDtYmWthYoHABtH1dO/aSoFOkdk2xvooqCJEPO7
- ZnMonS2NjiMqZ3y2+mi7brUvRRx04YtM75crrupqysiaArZet1FSOfNiDTPy+RDrKNzQI4S
- SUGdmsAoL1oi6ng45o82A==
+ boundary="EtdYNSXwlSX6vrPoqdKYwGIGU0EVU0asm"
+X-Provags-ID: V03:K1:2dmG+bRTdOeYlfBfTJgIm4eEat/Sdz3S2tIrS0pDx4PwsPSuw30
+ 3XpS5CeE8EvirLP5IVh4kNBfHJQ7yz2xVUU5tBZaKYayT5pFqkeI5O7yC9ntN61V/xXtpbK
+ e1VnZgrguh08dxLri6rjxMV2NmopdQ9CCAGo3JNZdxyihH19inbMEUmujLQaBbpNdRUZxDF
+ 4V9JDrkrr3YCaIOq4UMSw==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Xa53cJqGO5U=:n9CYZvvRqyp1CiL26DrnfK
- hrmsleInIUQEo/APCIPugoVe+BTL0dbnWk7nvNhiUyhEXFJANn2S4qGErh9nirSiLf/2IaZNp
- Ja8S442c7QQWnEvPqD+HH9KZTIX9I2XOpw1W1CR6fFrrJ+xH04XIp3pG60hijF/Zu7dGdpzl+
- z4dCGwkPLIq2gkx2yrZnMWzDgAGiRaLhdHpCGjx0TQ+fGaTEhZaQhizZM5L44yf3mV51+tNWd
- WT09Yg97z6iXqCXzjhPiiYLoZJRLXLa/AP7n+Z+W1f6WWy3r/WUHLC91CKkdoWXJ0LgVvjmOb
- ZfiK1bnpn8eyL7UPitDUjeCtdIaQXfB/cZgTgrpC11euXC1+m+siAzyxqameiqSlg7ItBHHc+
- 4YuxM4UXs9F4k8UnJVIbD/JgTuhxkEOzzgmwQekwcqn+s5V7xU22Cy/+d0wK2K6wBkDt6wDSB
- gu4Pa9DAr2/QfgmKR4837Nyuq2zgUX6R8h27oisVGQetzNz/7z7cgXPC1TIT/yhpuesYHhbEU
- o+Rd5Q/KZBzdvZzrrGiexrN499H9Qf2P7hUdPBQKO2GNRGG++bSixKzK21H80wn/gRG9mOm1B
- 8WT6g9/g9RtxVvDZbzhLOGizBIUNzdfxzVAaiOt0SIAddalDceig1Noq8+8KdEaVWfgQ68LHs
- jumUBNgd5Eu5oxDUphWlR8P1Lzc03Uushm08m41ep/xqBJ9lMAwr9MFBcsXlmMh5zAXNLWrUY
- 1GFvxAM4suXXMdP6cvG1i8V938j0hC0n/Dzx7F4twMayBtrZPHwrBmwbdRa23jteMo1BqvIXT
- UPD4+ZPM+F/ppm6T/1eR84t2OgXBns2NTLzjXCdJBImh6TU3gC9makM7r79czTHVlERVNiuZP
- 6VbC0kWf/6taKnsRR4K0B2w8N1iSg6RqvxQYMuZuOw2PgNCD+IE2Mypu/r09JB+hr/NBdQjkm
- y54s1gRp5qa+lN9jJMzzD1kZkFi2S+y5GnBaoUpAqObOgwChyZ1bxCEuFq29ggJzD3egSCJQ2
- NN8xBPDl2xoq0nITk6KQeybM5NZCgDRM3moYxV7OThdwQ/Sa4xinqNuZs5SYtK9xSD4X8ExWi
- ZgbqW/+k+LP5qTEhzGuC6PEPAew5qpjy+ULJN3OH3mM10DP6x/jaXfCoQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:cSbEChZUilo=:OCd0aelIo6knW5VyGh/T8n
+ rIfcfcfXYDscC/oFwoUycWMZmhte755Srj8jZcHBkSmpUZrPvAePVPe5tKVvahTSlYBBQMCHZ
+ xKhEt3gEszgsn2WZcSrp6fS3Gqck0yAt5JkAzNINGuUtJHyBQTfjnrRA/F3t/2qVKbfUS5GmN
+ Hr//XIz27rT9MKdlh1VGVGHzROPFaZM9Fa0uCrpbhJOaekl48Mxt2IoM6PVlgISJzhAki00DI
+ dPmWCyLXJjShS+UdydL0fzlLAgQtcypzIaIT8lluXO/Yykfh9bsqwxyBDEIsQxRVXxjD/N6fO
+ pIyS284GVIj23BNOuGBOOUqI5oM+JdLzIypzFuQxjRbS9IJcTn2I0lf8MwS0wGnYw0fDgECbW
+ 1tzU0S+v4Z0DJEil0N0qMFzFZSHFFn6nqaeaSXu8LOb3Mq/k3k01SNy4CE+QcVd30382e+Ql8
+ FoSYAylLyDdC87dcDbmHcC7mdByDGYsRWYerRc8Frb+7kw2c4M46topzSLGoJwCDR6mfeMb+U
+ xLwMO1pNyaIvRVv6dkDfBfv3BsrnKP8f/LAxA9EfJfh4n4UWVSl/R1xaC+EmjJh5AD1BD3O77
+ 7IHU/lydCOUGjQgtKPBiCp8dZqN2nZIvfgXDgCqcCFAlNZCeHipAYEzaucnosk3GbThlI0OOQ
+ 4Iur9d2Arn0sVZDEB6GnrotOBkwhqr5p+233XtwnjnqtnfceiXnI67thKYDY9WPF2l6XxwyLa
+ I+Xo0FY3S9rHst4iAOpir8OXXYBUHvDGeYnLcT0J0RHnxJyoHNrW1Lwol4GgU8kzFQ4EHTuwR
+ FqSZdiDlmMRqK28PhOMX+VXSmLppeUgYSVZnl7MDXJD2fXeMWBT2/Fh63Ij8x0y5bIXiTNpEQ
+ 7TwYlpistA8SlgLWUqgxj9RePLz1hbuDfVulFA577yLD6/0clZk3H9nnvgl8YX5S/Y6LY4m/p
+ zYi5cn9XeGFTTY/GBH/Y/k9QygOc2eGEDXnDWjhpLPG2Q4XJi5MsNWAqrgvXRH41ThMn7bgwP
+ m7/Y0LDXEYgaD0jkUyKvchAbKFvOgeAAXq6pVj9Yl8J6iNdz6kDMox36/mtMgZlfETHIcnzrg
+ RT6+uoptgrcjiAEYlQplJw6oD5mQmNmiA5G/SsnWP/z1UJg7TuIMk+O1GV2dgesee2rWwEBVl
+ 94acWjFZxQ/kHpkxJDA81jwHnVvYq5Qb3/R4YkQTb6NG2vig==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---OgjtVNFw2APjv9YRn9oCopVrMEjfrObK5
-Content-Type: multipart/mixed; boundary="ctQ1oeBXNoXSLKAIgD1Ss6rDvCMaEWdCj";
+--EtdYNSXwlSX6vrPoqdKYwGIGU0EVU0asm
+Content-Type: multipart/mixed; boundary="sL6GyjhC2PTGIT3oxu77KrrZHnLVNYnOe";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 To: Jeff Mahoney <jeffm@suse.com>, linux-btrfs@vger.kernel.org
-Message-ID: <698f8ba6-d00f-b9d5-41e3-620d821a0f1e@gmx.com>
-Subject: Re: [PATCH 3/5] btrfs-progs: qgroups: use parse_size instead of open
- coding it
+Message-ID: <ed2cbb17-8b93-9d29-0405-a485e8d36a7a@gmx.com>
+Subject: Re: [PATCH 4/5] btrfs-progs: resize: more sensible error messages for
+ bad sizes
 References: <20190814010402.22546-1-jeffm@suse.com>
- <20190814010402.22546-3-jeffm@suse.com>
-In-Reply-To: <20190814010402.22546-3-jeffm@suse.com>
+ <20190814010402.22546-4-jeffm@suse.com>
+In-Reply-To: <20190814010402.22546-4-jeffm@suse.com>
 
---ctQ1oeBXNoXSLKAIgD1Ss6rDvCMaEWdCj
+--sL6GyjhC2PTGIT3oxu77KrrZHnLVNYnOe
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
@@ -110,120 +111,152 @@ Content-Transfer-Encoding: quoted-printable
 
 
 On 2019/8/14 =E4=B8=8A=E5=8D=889:04, Jeff Mahoney wrote:
-> The only difference between parse_limit and parse_size is that
-> parse_limit accepts "none" as a valid input.  That's easy enough
-> to handle as a special case and lets us drop the duplicate code.
+> If a user attempts to resize a file system to a size under 256MiB,
+> it will be rejected with EINVAL and get then unhelpful error message
+> "ERROR: unable to resize '/path': Invalid argument."
+>=20
+> This commit performs that check before issuing the ioctl to report
+> a more sensible error message.   We also do overflow/underflow
+> checking when -/+ size is used and report those errors as well.
 >=20
 > Signed-off-by: Jeff Mahoney <jeffm@suse.com>
+> ---
+>  cmds/filesystem.c | 41 +++++++++++++++++++++++++++++++++++++++++
+>  common/utils.c    |  2 +-
+>  common/utils.h    |  2 +-
+>  3 files changed, 43 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+> index 4f22089a..e3415126 100644
+> --- a/cmds/filesystem.c
+> +++ b/cmds/filesystem.c
+> @@ -34,10 +34,12 @@
+>  #include "kerncompat.h"
+>  #include "ctree.h"
+>  #include "common/utils.h"
+> +#include "common/device-utils.h"
+>  #include "volumes.h"
+>  #include "cmds/commands.h"
+>  #include "cmds/filesystem-usage.h"
+>  #include "kernel-lib/list_sort.h"
+> +#include "kernel-lib/overflow.h"
+>  #include "disk-io.h"
+>  #include "common/help.h"
+>  #include "common/fsfeatures.h"
+> @@ -1062,6 +1064,41 @@ next:
+>  }
+>  static DEFINE_SIMPLE_COMMAND(filesystem_defrag, "defragment");
+> =20
+> +static int check_resize_size(const char *path, const char *amount)
+> +{
+> +	int mod =3D 0;
+> +	u64 oldsize =3D 0, size, newsize;
+> +
+> +	if (*amount =3D=3D '-')
+> +		mod =3D -1;
+> +	else if (*amount =3D=3D '+')
+> +		mod =3D 1;
+> +
+> +	if (mod) {
+> +		amount++;
+> +		oldsize =3D disk_size(path);
+> +		if (oldsize =3D=3D 0)
+> +			return -1;
+> +	}
+> +
+> +	size =3D parse_size(amount);
+> +
+> +	if (mod =3D=3D -1 && check_sub_overflow(oldsize, size, &newsize)) {
+> +		error("can't resize to negative size");
+> +		return -1;
+> +	} else if (mod =3D=3D 1 && check_add_overflow(oldsize, size, &newsize=
+)) {
+> +		error("can't resize to larger than 16EiB");
+> +		return -1;
+> +	} else
+> +		newsize =3D size;
+> +
+> +	if (newsize < SZ_256M) {
+> +		error("can't resize to size smaller than 256MiB");
+> +		return -1;
+> +	}
+> +	return 0;
+> +}
+> +
+>  static const char * const cmd_filesystem_resize_usage[] =3D {
+>  	"btrfs filesystem resize [devid:][+/-]<newsize>[kKmMgGtTpPeE]|[devid:=
+]max <path>",
+>  	"Resize a filesystem",
+> @@ -1110,6 +1147,10 @@ static int cmd_filesystem_resize(const struct cm=
+d_struct *cmd,
+>  	if (fd < 0)
+>  		return 1;
+> =20
+> +	res =3D check_resize_size(path, amount);
+> +	if (res < 0)
+> +		return 1;
+> +
+>  	printf("Resize '%s' of '%s'\n", path, amount);
+>  	memset(&args, 0, sizeof(args));
+>  	strncpy_null(args.name, amount);
+> diff --git a/common/utils.c b/common/utils.c
+> index ad938409..f2a10ccc 100644
+> --- a/common/utils.c
+> +++ b/common/utils.c
+> @@ -638,7 +638,7 @@ static int fls64(u64 x)
+>  	return 64 - i;
+>  }
+> =20
+> -u64 parse_size(char *s)
+> +u64 parse_size(const char *s)
+
+Although a good change, not sure if David will ask for an explict patch
+for that.
+
+Despite that, looks good.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
-> ---
->  cmds/qgroup.c | 58 ++++-----------------------------------------------=
--------
->  1 file changed, 4 insertions(+), 54 deletions(-)
->=20
-> diff --git a/cmds/qgroup.c b/cmds/qgroup.c
-> index 59b43c98..ba81052a 100644
-> --- a/cmds/qgroup.c
-> +++ b/cmds/qgroup.c
-> @@ -159,56 +159,6 @@ static int _cmd_qgroup_create(int create, int argc=
-, char **argv)
->  	return 0;
->  }
+>  {
+>  	char c;
+>  	char *endptr;
+> diff --git a/common/utils.h b/common/utils.h
+> index 7867fb0a..0ef1d6e8 100644
+> --- a/common/utils.h
+> +++ b/common/utils.h
+> @@ -65,7 +65,7 @@ int pretty_size_snprintf(u64 size, char *str, size_t =
+str_bytes, unsigned unit_mo
+>  #define pretty_size(size) 	pretty_size_mode(size, UNITS_DEFAULT)
+>  const char *pretty_size_mode(u64 size, unsigned mode);
 > =20
-> -static int parse_limit(const char *p, unsigned long long *s)
-> -{
-> -	char *endptr;
-> -	unsigned long long size;
-> -	unsigned long long CLEAR_VALUE =3D -1;
-> -
-> -	if (strcasecmp(p, "none") =3D=3D 0) {
-> -		*s =3D CLEAR_VALUE;
-> -		return 1;
-> -	}
-> -
-> -	if (p[0] =3D=3D '-')
-> -		return 0;
-> -
-> -	size =3D strtoull(p, &endptr, 10);
-> -	if (p =3D=3D endptr)
-> -		return 0;
-> -
-> -	switch (*endptr) {
-> -	case 'T':
-> -	case 't':
-> -		size *=3D 1024;
-> -		/* fallthrough */
-> -	case 'G':
-> -	case 'g':
-> -		size *=3D 1024;
-> -		/* fallthrough */
-> -	case 'M':
-> -	case 'm':
-> -		size *=3D 1024;
-> -		/* fallthrough */
-> -	case 'K':
-> -	case 'k':
-> -		size *=3D 1024;
-> -		++endptr;
-> -		break;
-> -	case 0:
-> -		break;
-> -	default:
-> -		return 0;
-> -	}
-> -
-> -	if (*endptr)
-> -		return 0;
-> -
-> -	*s =3D size;
-> -
-> -	return 1;
-> -}
-> -
->  static const char * const cmd_qgroup_assign_usage[] =3D {
->  	"btrfs qgroup assign [options] <src> <dst> <path>",
->  	"Assign SRC as the child qgroup of DST",
-> @@ -455,10 +405,10 @@ static int cmd_qgroup_limit(const struct cmd_stru=
-ct *cmd, int argc, char **argv)
->  	if (check_argc_min(argc - optind, 2))
->  		return 1;
-> =20
-> -	if (!parse_limit(argv[optind], &size)) {
-> -		error("invalid size argument: %s", argv[optind]);
-> -		return 1;
-> -	}
-> +	if (!strcasecmp(argv[optind], "none"))
-> +		size =3D -1ULL;
-> +	else
-> +		size =3D parse_size(argv[optind]);
-> =20
->  	memset(&args, 0, sizeof(args));
->  	if (compressed)
+> -u64 parse_size(char *s);
+> +u64 parse_size(const char *s);
+>  u64 parse_qgroupid(const char *p);
+>  u64 arg_strtou64(const char *str);
+>  int open_file_or_dir(const char *fname, DIR **dirstream);
 >=20
 
 
---ctQ1oeBXNoXSLKAIgD1Ss6rDvCMaEWdCj--
+--sL6GyjhC2PTGIT3oxu77KrrZHnLVNYnOe--
 
---OgjtVNFw2APjv9YRn9oCopVrMEjfrObK5
+--EtdYNSXwlSX6vrPoqdKYwGIGU0EVU0asm
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1TaQ0ACgkQwj2R86El
-/qi3BQf9H1HSehch1RLbayCNQe7l8HuAwB9qKK4qNa8ONOaaoSbotky3HZOfL6t7
-DEbrmvUcJk2Pn2uGj6NwL7QGY9XuIIG8ndOxJcoLY8bkdJDLYAg3bPUKF7xrL672
-MgSRno7c9E68EEfkmH9OV7mzAdNJe1R7Ph897A1/1kvpfQ6GuwCVaUqAmsIyY1uB
-HD0Ad6UCSDQzL6vLt+2PoXEtxzjvl+FusXhi0nb+wU/krqV5oK3oMwex7Mdto+/p
-nYXd16NcuoW4uu3MOFws6hCU+vwwcMYlu8ATUgj5xsvTtQYR/+8Hqg31Yn1Trn/D
-qU+G6khteAq0OEldboFsncY4WiRDkQ==
-=akUW
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1TaZ0ACgkQwj2R86El
+/qhULwgAg/R94d/bC/IofVR3U5J8qiwVc4KftV+n+xKME2/60VftfAbEgKmHK6hq
+0GOdDPQr9RBCukj4Z9QE8+R9AhgtCZN65SF8GPvQBdiDnSOMzQeFGvuUOwmY4bbi
+0DxXLNgHnlecLjtax4LA2rXBGOjQR7GyQlzt837usRgGYQYSP5EvHnA1NUY5HJlg
+YQrSfCEBlFttdDhv3HUdE1Z4c2YV0WCE2USaj7/BnqYaW7KVfqA2XISavQHXCz1D
+ShuGvXtSF40j8aN5XXEsRAxd1s3CoK2CE6HuMq6z0q7ayorIQhzSPK5WynLXfdw5
+wHPMi2O6fA/wCyhicJDCB/3VQibAfQ==
+=Cgl/
 -----END PGP SIGNATURE-----
 
---OgjtVNFw2APjv9YRn9oCopVrMEjfrObK5--
+--EtdYNSXwlSX6vrPoqdKYwGIGU0EVU0asm--
