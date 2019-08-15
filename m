@@ -2,122 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE438EF43
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Aug 2019 17:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B95F78EF81
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Aug 2019 17:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729112AbfHOPY7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Aug 2019 11:24:59 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:37150 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727160AbfHOPY7 (ORCPT
+        id S1730615AbfHOPh2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Aug 2019 11:37:28 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:43114 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730491AbfHOPhP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Aug 2019 11:24:59 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FFJQCB136194;
-        Thu, 15 Aug 2019 15:24:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=EpIVQiNCwCTUbnAkihnc0Cc81qJr1r6lBl7uzRkVzkI=;
- b=jFOOxX5H730wRc5h5tsHDqS9vn0YY4v7Ub8nXRO3GevICzTUjw7+m/tDuoMm+VcPvNrN
- srZYm/0W/Pjq0CrLzOw1TFSmx795a7q3ZO2EAjYygKBL3EFr3BbBzwEWCgPYnkTfAc7Q
- yVp3QBO2ZDuCLQMdf36l4H97Plt13+S47OlewVzCWgKFyAFUiFcgYNZ6vRI+4dxdTI/X
- 0Y4RFK2ClkFuJ0lAmx+hRjNrU1Uc6V8CPlUbGJz7MUw+kEcj9pWDGy9KVY05amf/KlVz
- AuSqJ5n1BFfiVWFtrBOvA5S+IRZpbBFT26po4UnaY9ZHHSBk7ltfamdRYTLp9EOwJppZ /g== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2u9pjqu7f7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Aug 2019 15:24:55 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7FFI3P6151513;
-        Thu, 15 Aug 2019 15:24:55 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2ucs882eqr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 15 Aug 2019 15:24:55 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7FFOsxj021311;
-        Thu, 15 Aug 2019 15:24:54 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 15 Aug 2019 08:24:54 -0700
-Date:   Thu, 15 Aug 2019 08:24:25 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
+        Thu, 15 Aug 2019 11:37:15 -0400
+Received: by mail-qk1-f194.google.com with SMTP id m2so2129345qkd.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2019 08:37:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XVjUpcFYD1ci28Ctlt3H1bt2XvGHoPCMziTuLM3PvyM=;
+        b=Hag3O+pho7bKOdFneZYMjnHHEAWXvWd0Tf1wntt/HnEqEzRIieLf1S6xLicPIHj4K9
+         FxVvfS0RYRsaOb8jP7c0P/4HPN4Dj2IJPGm609RLAdqohJFvhHWBK+OAII8cHYHX0Vi2
+         USWMLQ0roAGjcjUZ3n9QVzvlmuC+DNN2D2F5TDTjL4M4gmK8ZDFO3oTP94bj2RnjPoCT
+         s4bAvAxnC59IMbD12ZDKKmawxUTg89PbeGmo/mPOFjsbWTN7t5S/Qbt4FNpmNSCGd+BI
+         sgafPdXSby2Z5Ub7jSBq3b73tTvVXR16NuPNU07FX6YchzmHGjS6VnyK0PkR2CnoGMe9
+         oKlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XVjUpcFYD1ci28Ctlt3H1bt2XvGHoPCMziTuLM3PvyM=;
+        b=mckgEg5AYtSLw1lMqfOa0xGaK0SWFTKfLIpmxD3vjDkeieKYR+34e2h8gRJBSeh1pO
+         nrlzY3BuOZTDdMFThpJZm025qdSrOL/FoKyO4x61PMmp0C/qO3CcnP/nFpIpVf/MpvGn
+         7DDyueC10fG7/yBHNc9f113YFDorgIE5jL14BzyomYQaXmnxrjKfG8S5n8mnCEyc4fIe
+         8XbN1T0Na86jxcgO3F/5gfXMGeU2YZ9He6dfoj+8ZQJ8m6h7KrgzOt7nzeseh4XefVQC
+         ZqPkmC2FAPI7UQqI37Uj7x9N2mitOKlkhRclf+JVvRDuk4QQyAGzHAiPt+ZEnvJskaT8
+         oHOg==
+X-Gm-Message-State: APjAAAUBtct9yZXeCWt5WzRibwf8gES5jCr6H4pNNJ8p1CW17DyHqSuY
+        iNJy8tsEebmQxWyRbySk5dW0/g==
+X-Google-Smtp-Source: APXvYqw5t3F1cacvLOI7Wando0f98ug/NuLb7Y+lryciq7ETrEXJ58BsflXFruNa3urm/wuV41/pIg==
+X-Received: by 2002:a37:6905:: with SMTP id e5mr4533206qkc.121.1565883434122;
+        Thu, 15 Aug 2019 08:37:14 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::7746])
+        by smtp.gmail.com with ESMTPSA id x3sm1605791qkl.71.2019.08.15.08.37.13
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 15 Aug 2019 08:37:13 -0700 (PDT)
+Date:   Thu, 15 Aug 2019 11:37:12 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, fstests@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
 Subject: Re: [PATCH 1/2] fstests: make generic/500 xfs+ext4 only
-Message-ID: <20190815152425.GA15181@magnolia>
+Message-ID: <20190815153711.dwturun54gtibldz@macbook-pro-91.dhcp.thefacebook.com>
 References: <20190815150033.15996-1-josef@toxicpanda.com>
+ <20190815152425.GA15181@magnolia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190815150033.15996-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908150152
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908150152
+In-Reply-To: <20190815152425.GA15181@magnolia>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 15, 2019 at 11:00:31AM -0400, Josef Bacik wrote:
-> I recently fixed some bugs in btrfs's enospc handling that made it start
-> failing generic/500.
+On Thu, Aug 15, 2019 at 08:24:25AM -0700, Darrick J. Wong wrote:
+> On Thu, Aug 15, 2019 at 11:00:31AM -0400, Josef Bacik wrote:
+> > I recently fixed some bugs in btrfs's enospc handling that made it start
+> > failing generic/500.
+> > 
+> > The point of this test is to make the thin provisioned device run out of
+> > space, which results in an EIO being seen on a device from the file
+> > systems perspective.  This is fine for xfs and ext4 who's metadata is
+> > being overwritten and already allocated on the thin provisioned device.
+> > They get an EIO on data writes, fstrim to free up the space, and keep it
+> > going.
+> > 
+> > Btrfs however has dynamic metadata, so the rm -rf could result in
+> > metadata IO being done on the file system.  Since the thin provisioned
+> > device is out of space this gives us an EIO, and we flip read only.  We
+> > didn't remove the file, so the fstrim doesn't recover space anyway, so
+> > we can't even fstrim and remount.
+> > 
+> > Make this test for ext4/xfs only, it just simply won't work right for
+> > btrfs in it's current form.
 > 
-> The point of this test is to make the thin provisioned device run out of
-> space, which results in an EIO being seen on a device from the file
-> systems perspective.  This is fine for xfs and ext4 who's metadata is
-> being overwritten and already allocated on the thin provisioned device.
-> They get an EIO on data writes, fstrim to free up the space, and keep it
-> going.
+> How about:
 > 
-> Btrfs however has dynamic metadata, so the rm -rf could result in
-> metadata IO being done on the file system.  Since the thin provisioned
-> device is out of space this gives us an EIO, and we flip read only.  We
-> didn't remove the file, so the fstrim doesn't recover space anyway, so
-> we can't even fstrim and remount.
+> test $FSTYP = "btrfs" && _notrun "btrfs doesn't work that way lol"
 > 
-> Make this test for ext4/xfs only, it just simply won't work right for
-> btrfs in it's current form.
+> since afaik btrfs is the only fs that shouldn't run this test?
+> Also, I think Ted was trying to kill off tests/shared/...
+> 
 
-How about:
+That explains why it seemed emptier than normal.  Yeah that sounds like a fine
+solution to me, I'll send a updated patch shortly.  Thanks,
 
-test $FSTYP = "btrfs" && _notrun "btrfs doesn't work that way lol"
-
-since afaik btrfs is the only fs that shouldn't run this test?
-Also, I think Ted was trying to kill off tests/shared/...
-
---D
-
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  tests/generic/500 | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/tests/generic/500 b/tests/generic/500
-> index 201d8b9f..1cbd9d65 100755
-> --- a/tests/generic/500
-> +++ b/tests/generic/500
-> @@ -44,7 +44,7 @@ _cleanup()
->  rm -f $seqres.full
->  
->  # real QA test starts here
-> -_supported_fs generic
-> +_supported_fs xfs ext4
->  _supported_os Linux
->  _require_scratch_nocheck
->  _require_dm_target thin-pool
-> -- 
-> 2.21.0
-> 
+Josef
