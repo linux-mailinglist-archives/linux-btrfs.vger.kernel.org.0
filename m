@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C14A8ED6B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Aug 2019 15:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4363C8ED7A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Aug 2019 15:56:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732627AbfHONwx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Aug 2019 09:52:53 -0400
-Received: from resqmta-po-01v.sys.comcast.net ([96.114.154.160]:48506 "EHLO
-        resqmta-po-01v.sys.comcast.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732426AbfHONwx (ORCPT
+        id S1732642AbfHON4F (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Aug 2019 09:56:05 -0400
+Received: from resqmta-po-07v.sys.comcast.net ([96.114.154.166]:41006 "EHLO
+        resqmta-po-07v.sys.comcast.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732425AbfHON4B (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Aug 2019 09:52:53 -0400
-Received: from resomta-po-20v.sys.comcast.net ([96.114.154.244])
-        by resqmta-po-01v.sys.comcast.net with ESMTP
-        id yFk6hhO77pdw9yGBQhgH8G; Thu, 15 Aug 2019 13:52:52 +0000
+        Thu, 15 Aug 2019 09:56:01 -0400
+Received: from resomta-po-04v.sys.comcast.net ([96.114.154.228])
+        by resqmta-po-07v.sys.comcast.net with ESMTP
+        id yFbGhLytoRaDUyGEShBTeC; Thu, 15 Aug 2019 13:56:00 +0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=comcast.net;
-        s=20190202a; t=1565877172;
-        bh=9GHNH99Nso8hhIAcIkTr4ozYJREq1hKA781y0M35EIk=;
+        s=20190202a; t=1565877360;
+        bh=gBQNQXP8Bh5qf65kgSHrrwIbj/iaFNjs91R14kzcrwc=;
         h=Received:Received:Received:Received:Date:From:To:Subject:
          Message-ID:Reply-To:MIME-Version:Content-Type;
-        b=JSodLHeMPp0sOiXagKQyPSXgckx6NIfbR4qraCsSAzO4/UdRH1kiA3gOZBpqeCn/k
-         sHwezpHIG1wL7v44IRfAXlZ0d5V/ynjc776K5QYfNSkKLDvvdbNTMtQFE6aKcm0p1N
-         U7djcp9Rh1FqmPpB6k8j8K14QfZOZBaBq5gh2Mwh8ZJOrD8OHXZ2pIL8iOjptqfDKx
-         ftrniqyn8Ah0QGF9FI6+laBa541m4+/jb9xhD2G/gZ4BqZvbmEgQHQDaPUI0RjghsB
-         Zd/A/8Lm94RGqKk34Uuth1S5SKMIiyMoFFotQbtTt3i1nmtFs2+QZ3HR5v5d2pYJIy
-         23Qm1Bjf1IbfQ==
+        b=kDEgyA8JS/x5mdWRiHOG+nMKAD6pfvA2RVkRZi+RTLFdLExWaLHRlpQSer8pexHmp
+         GNgbvyycg+eZgJ5JFnspmCfwwPPn6DV1C+liZY9dis7ik1vtxm7GtZ1KH8Fra2jo7z
+         AD5kNvD33v0CsNbujbudxKCf2zsAohAomtuZ6yf7iPFv4wXs5bTmhDXYigck+eu9g+
+         e/FF7BT82Qk0jyHRojXDWqCXkWKiwVLDaYuGmNZMlMYwFoFRu0he6//sUo+p6tLUFh
+         t0/y1H2NjNfDJvq3rlwjofbd8mhNjRCmky9MQWgKyvQg0Zx7z33biI6vfsudFWQcLL
+         JufTnliHFd8fA==
 Received: from beta.localdomain ([73.209.109.78])
-        by resomta-po-20v.sys.comcast.net with ESMTPA
-        id yGBPhE3DGDsRxyGBQhGmKt; Thu, 15 Aug 2019 13:52:52 +0000
+        by resomta-po-04v.sys.comcast.net with ESMTPA
+        id yGERh9GiFGJEUyGEShtNMG; Thu, 15 Aug 2019 13:56:00 +0000
 X-Xfinity-VAAS: gggruggvucftvghtrhhoucdtuddrgeduvddrudefuddgieelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuvehomhgtrghsthdqtfgvshhipdfqfgfvpdfpqffurfetoffkrfenuceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkrhhfgggtuggjvggfsehttdertddtredvnecuhfhrohhmpefvihhmucghrghlsggvrhhguceothifrghlsggvrhhgsegtohhmtggrshhtrdhnvghtqeenucfkphepjeefrddvtdelrddutdelrdejkeenucfrrghrrghmpehhvghlohepsggvthgrrdhlohgtrghlughomhgrihhnpdhinhgvthepjeefrddvtdelrddutdelrdejkedpmhgrihhlfhhrohhmpehtfigrlhgsvghrghestghomhgtrghsthdrnhgvthdprhgtphhtthhopehquhifvghnrhhuohdrsghtrhhfshesghhmgidrtghomhdprhgtphhtthhopehtfigrlhgsvghrghestghomhgtrghsthdrnhgvthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
 X-Xfinity-VMeta: sc=0;st=legit
 Received: from calvin.localdomain ([10.0.0.8])
         by beta.localdomain with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.84_2)
         (envelope-from <twalberg@comcast.net>)
-        id 1hyGBP-0007HA-Eo; Thu, 15 Aug 2019 08:52:51 -0500
+        id 1hyGEQ-0007J8-UE; Thu, 15 Aug 2019 08:55:59 -0500
 Received: from tew by calvin.localdomain with local (Exim 4.84_2)
         (envelope-from <tew@calvin.localdomain>)
-        id 1hyGBP-0003ZH-A1; Thu, 15 Aug 2019 08:52:51 -0500
-Date:   Thu, 15 Aug 2019 08:52:51 -0500
+        id 1hyGEQ-0003ds-Pl; Thu, 15 Aug 2019 08:55:58 -0500
+Date:   Thu, 15 Aug 2019 08:55:58 -0500
 From:   Tim Walberg <twalberg@comcast.net>
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
 Cc:     Tim Walberg <twalberg@comcast.net>, linux-btrfs@vger.kernel.org
 Subject: Re: recovering from "parent transid verify failed"
-Message-ID: <20190815135251.GC2731@comcast.net>
+Message-ID: <20190815135558.GD2731@comcast.net>
 Reply-To: Tim Walberg <twalberg@comcast.net>
 References: <20190814183213.GA2731@comcast.net>
  <4be5086f-61e7-a108-8036-da7d7a5d5c11@gmx.com>
@@ -58,40 +58,66 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Had to wait for 'btrfs recover' to finish before I proceed farther.
+Also - here's 'btrfs inspect-internal dump-super /dev/sdc1':
 
-Kernel is 4.19.45, tools are 4.19.1
+superblock: bytenr=65536, device=/dev/sdc1
+---------------------------------------------------------
+csum_type   0 (crc32c)
+csum_size   4
+csum	  0x4331039b [match]
+bytenr	    65536
+flags	  0x1
+      ( WRITTEN )
+magic	  _BHRfS_M [match]
+fsid	  53749823-faaf-46f9-866d-3778d93cb1ca
+label	  btrfs1
+generation    49750
+root	  229846646784
+sys_array_size	  129
+chunk_root_generation 49725
+root_level    1
+chunk_root    2568857059328
+chunk_root_level  1
+log_root    0
+log_root_transid  0
+log_root_level	  0
+total_bytes   9001775738880
+bytes_used    2085801975808
+sectorsize    4096
+nodesize    16384
+leafsize (deprecated)	16384
+stripesize    4096
+root_dir    6
+num_devices   3
+compat_flags	0x0
+compat_ro_flags	  0x0
+incompat_flags	  0x361
+      ( MIXED_BACKREF |
+        BIG_METADATA |
+        EXTENDED_IREF |
+        SKINNY_METADATA |
+        NO_HOLES )
+cache_generation  49748
+uuid_tree_generation  49748
+dev_item.uuid	7338a973-9a45-4032-a4c9-d18142fd7908
+dev_item.fsid	53749823-faaf-46f9-866d-3778d93cb1ca [match]
+dev_item.type	0
+dev_item.total_bytes  3000591912960
+dev_item.bytes_used 1407675531264
+dev_item.io_align 4096
+dev_item.io_width 4096
+dev_item.sector_size  4096
+dev_item.devid	  1
+dev_item.dev_group  0
+dev_item.seek_speed 0
+dev_item.bandwidth  0
+dev_item.generation 0
 
-File system is a 3-disk RAID10 with WD3003FZEX (WD Black 3TB)
 
-Output from attempting to mount:
+Although, 'btrfs inspect-internal logical-resolve ...' just says:
 
-# mount -o ro,usebackuproot /dev/sdc1 /mnt
-mount: wrong fs type, bad option, bad superblock on /dev/sdc1,
-       missing codepage or helper program, or other error
-
-       In some cases useful info is found in syslog - try
-       dmesg | tail or so.
-
-Kernel messages from the mount attempt:
-
-[Thu Aug 15 08:47:42 2019] BTRFS info (device sdc1): trying to use backup root at mount time
-[Thu Aug 15 08:47:42 2019] BTRFS info (device sdc1): disk space caching is enabled
-[Thu Aug 15 08:47:42 2019] BTRFS info (device sdc1): has skinny extents
-[Thu Aug 15 08:47:42 2019] BTRFS error (device sdc1): parent transid verify failed on 229846466560 wanted 49749 found 49750
-[Thu Aug 15 08:47:42 2019] BTRFS error (device sdc1): parent transid verify failed on 229846466560 wanted 49749 found 49750
-[Thu Aug 15 08:47:42 2019] BTRFS error (device sdc1): failed to read block groups: -5
-[Thu Aug 15 08:47:42 2019] BTRFS error (device sdc1): open_ctree failed
-
-Output from 'btrfs check -p /dev/sdc1':
-
-# btrfs check -p /dev/sdc1
-Opening filesystem to check...
-parent transid verify failed on 229846466560 wanted 49749 found 49750
-Ignoring transid failure
-ERROR: child eb corrupted: parent bytenr=229845336064 item=0 parent level=1 child level=2
-ERROR: cannot open file system
-
+# btrfs inspect-internal logical-resolve 229846466560 /dev/sdc1
+ERROR: not a btrfs filesystem: /dev/sdc1
 
 
 
@@ -124,6 +150,9 @@ On 08/15/2019 10:35 +0800, Qu Wenruo wrote:
 >>	Qu
 >>	
 
+
+
+End of included message
 
 
 
