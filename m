@@ -2,85 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0946D90448
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2019 16:59:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10AD890456
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2019 17:06:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727286AbfHPO7e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Aug 2019 10:59:34 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:15993 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726032AbfHPO7e (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Aug 2019 10:59:34 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 46960z1nmWz9v05y;
-        Fri, 16 Aug 2019 16:59:31 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=SwguTCzY; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id oIYrMznhkI2g; Fri, 16 Aug 2019 16:59:31 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 46960z0Wzgz9v05x;
-        Fri, 16 Aug 2019 16:59:31 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1565967571; bh=QzBQvuU27IG1FFZD0blGRcB6IDCr/14dULk17F/vjN8=;
-        h=Subject:To:References:Cc:From:Date:In-Reply-To:From;
-        b=SwguTCzYkjeZxTd7cw4B17Cn9PpPUYs/aLJZ0dSQRN+UDCrJk0tRyhrDpj8jBAv1L
-         uaA22sEp8FIiaocd8tUtllA0981oLMolUFLJAcLUMWqtiAW4PhESMuBj8cZpk3I6TR
-         kXnL80Tnv9LpQYEu5ENS0MUE6odqhVkbZrySRwMg=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C2D8C8B78A;
-        Fri, 16 Aug 2019 16:59:32 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 4WT5c70SmVZm; Fri, 16 Aug 2019 16:59:32 +0200 (CEST)
-Received: from [172.25.230.101] (po15451.idsi0.si.c-s.fr [172.25.230.101])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id AD4008B754;
-        Fri, 16 Aug 2019 16:59:32 +0200 (CEST)
-Subject: Re: [Bug 204371] BUG kmalloc-4k (Tainted: G W ): Object padding
- overwritten
-To:     bugzilla-daemon@bugzilla.kernel.org
-References: <bug-204371-206129@https.bugzilla.kernel.org/>
- <bug-204371-206129-GvRQpDzlfW@https.bugzilla.kernel.org/>
-Cc:     linux-btrfs@vger.kernel.org
-From:   Christophe Leroy <christophe.leroy@c-s.fr>
-Message-ID: <e20943a9-d1a5-0a49-9917-e7b31674c703@c-s.fr>
-Date:   Fri, 16 Aug 2019 16:59:24 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727334AbfHPPGF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Aug 2019 11:06:05 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]:44590 "EHLO
+        mail-qt1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727217AbfHPPGE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 16 Aug 2019 11:06:04 -0400
+Received: by mail-qt1-f181.google.com with SMTP id 44so6390516qtg.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2019 08:06:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q+qwIW0gm1TJY0bcgQeRuuzJSrSz+2++GNxoTeEp0ro=;
+        b=ChXALQh6o8niXvqv3YNiItdcwu4bu/zKeUklfr/L1IV2OFKl2opnvHmLXYaAEQEvY2
+         iFs8GWXexDJKmCTkMLg+gEQbHgfPQijv/b2XfPt/6DLo2U6PY+d7rvVdnZTmaCUwuKLb
+         akD6Q3s4O1kfJ+UdpiWpr/ZT4BHHUJQshTSuWkBZe0IGYIFjBKvb1XzcsJKXuvARG3xm
+         KBZiHKEMA3oSOfznf5n/sO6nGyEh1BZ2rxq0jJOptJbaMr3KGTelbD5hpqWV4sbUCH5W
+         c61gjCJAfB65iaRaAn4rNEgrng8M8328wt7+dp/Xdvz+sZfOUz2lsqoA7YD5hXSrZzoW
+         dqlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=q+qwIW0gm1TJY0bcgQeRuuzJSrSz+2++GNxoTeEp0ro=;
+        b=USPwjL41G/wMgBTs6IrULtfUXOK4U7iYrBbwWekhRp5g2f30ytuCAbCo7trnFHAJ1c
+         lawsZfIcxNfamYkWyRfdSJbJs89pWMO69+kt40yuNxKz5EV77eJi6/i3eZbSnp2l9RGZ
+         8h2jNklnkEc5O7ebQrecq7n/yGfK7pfF1L4JwPwVpqMIoFZpMn8cKnYRa9j/0erOMNpe
+         xAa58nmHPNVAa/qXfvhWDuo0xlzEeqjePQmTt8AZjibDuKhjrXfivJuPtKH0YC7je2qt
+         SCkG1NxGYWoJ5gtxdrI4Hwcpuy3dfTSJs0M2Qe7aQH5YX8DpZBSF3IWj3RDs1BJk1BMl
+         mHBg==
+X-Gm-Message-State: APjAAAWAXSJkEq5fV7nf+Coo3vADP774JggnqhsYJGTf4dAyDoPM282G
+        8yZAJ+7xInP32JHsD18k887e1zAJ+MiS5A==
+X-Google-Smtp-Source: APXvYqxSpxrYvR3ChTEH8/9zJyJstWuQV8EgCzGcPPSyiM1eiOOnYIhHR8F/LyaV1mLygoCrGKtF2w==
+X-Received: by 2002:ac8:6109:: with SMTP id a9mr9102193qtm.151.1565967963513;
+        Fri, 16 Aug 2019 08:06:03 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id b1sm2843237qkk.8.2019.08.16.08.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Aug 2019 08:06:02 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/3] Rework the worst case calculations for space reservation
+Date:   Fri, 16 Aug 2019 11:05:57 -0400
+Message-Id: <20190816150600.9188-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <bug-204371-206129-GvRQpDzlfW@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+We have two worst case calculations for space reservation, one that takes into
+account splitting at every level when cow'ing down the btree, and another that
+doesn't account for splitting at all.  The first is used everywhere, and the
+second is used mostly for truncate.
 
+However we also do not split when we're only changing an item, so for example
+updating the inode item.  So the name for this helper is wrong, because it can
+be used for in-place updates as well as for truncates.  Rename the helpers and
+then use the smaller worst-case reservation for inode updates in a few places.
 
-Le 16/08/2019 à 16:38, bugzilla-daemon@bugzilla.kernel.org a écrit :
-> https://bugzilla.kernel.org/show_bug.cgi?id=204371
-> 
-> --- Comment #34 from Erhard F. (erhard_f@mailbox.org) ---
-> On Fri, 16 Aug 2019 08:22:31 +0000
-> bugzilla-daemon@bugzilla.kernel.org wrote:
-> 
->> https://bugzilla.kernel.org/show_bug.cgi?id=204371
->>
->> --- Comment #32 from Christophe Leroy (christophe.leroy@c-s.fr) ---
->> Then see if the WARNING on kfree() in  btrfs_free_dummy_fs_info() is still
->> there.
-> With latest changes there are no complaints of the kernel any longer. btrfs
-> selftests pass, mounting and unmounting a btrfs partition works without any
-> suspicious dmesg output.
-> 
+As a rule we still want to use the insert calculation when we can't be sure what
+kind of operation is going to end up happening.  But for things like delayed
+inode updates and file writes where we know there is going to be an existing
+inode item we can use the smaller reservation.  Thanks,
 
-That's good news. Will you handle submitting the patch to BTRFS file 
-system ?
+Josef
 
