@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 605419048B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2019 17:20:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 823EC9048C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2019 17:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbfHPPUZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 16 Aug 2019 11:20:25 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:37077 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727311AbfHPPUZ (ORCPT
+        id S1727529AbfHPPU1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 16 Aug 2019 11:20:27 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:39978 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727311AbfHPPU0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 16 Aug 2019 11:20:25 -0400
-Received: by mail-qk1-f194.google.com with SMTP id s14so5062000qkm.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2019 08:20:24 -0700 (PDT)
+        Fri, 16 Aug 2019 11:20:26 -0400
+Received: by mail-qt1-f196.google.com with SMTP id e8so6454185qtp.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Aug 2019 08:20:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=uj7RCs2MZoUADRXciWAkYJ4yzZdsQ6VBxGKx7wFHGRo=;
-        b=hMVlLyqBzm7E89T0uOCg9eLukqUyLJSDg7oOlqDocwsHV7nFllqKeAQnkQN6UZYwgc
-         ULQoNXx42b1yvn4ZRxETjMyit5m3LcyeV7+kP6S/ZWC4dFEdw9PbxOXQoQF7LmyH9BaT
-         aSNARZOCHTVo6Vq6KcWKxgTRVOYszAK/ME1aYktjkWNaUhPj2OwhWDpWEmhJKyV0wZ6+
-         HaywOhiClRsWBMiQn7NBANvIjd9rlqBQFDA6fTtq6rQXmNuTmY1aj628tUI4l036YuXK
-         oM1PhELUIjNsOUYQolMtl/yyNJqWMaa7lkNHYgZG4ogA7RpYtSjcNsMUlq9zeWwzSvpf
-         LgOw==
+        bh=q46PD7UxMjoqblNZxRfqQ5JkvwrT9L9w1KjqSx+ge9s=;
+        b=zdHetuc2myY3vnnd4J1GufMfR4gs3ZzWhBUEH+of+w0BWJo3l4KAd/LKB113BsInAw
+         kixJC9c9C4X5MOVK/hVDvpyQE6VP1jKsXCJSZzQLMx3FJhToyMlCiCS29D3ASCmn+oHj
+         CvjKTfQX4hEuEjVkj0XSpEzf5j9iY02vRaqHOHwjh2xsNKMSCi6k+KmWXvj6lZ9a3ip5
+         +aW8jcHy/BqlGGcQ9wkaD5u8/n6hpxUvuSyW0PR8miV/BqDOVlHN+lXf4y59JcMTpuPJ
+         ukBKDUAbEVyIaOuQIgW+AACqG+ADlVHAzEQ/ttEhH88DuB2OVLWyLH/9iJh+X/AuLCtE
+         wzHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=uj7RCs2MZoUADRXciWAkYJ4yzZdsQ6VBxGKx7wFHGRo=;
-        b=QMMeWtFL0I+j0xsIQ6aRrsEGwUfI3nPLqnahMhKNtpV+0FmkJqR+0YmnU0Za0Ig7mf
-         xRpwEri/bdm1eivAZwQGzlX0CK54zKqD5o2asfJtx7WXv/Fgfn7ARKPUjHBj+uNTGgjV
-         kSMOuvl+eWKVCrtiztZSH88xLTbff1WHztlizmH47aoTCWzYkgiFXubgnprOSr48q+0S
-         KQpwwxbubzjQf6+EZQkHkxwhBI3ylcSXZjYJhfTFfQ1J5vlBWNTl5EpK7OZsEx3Odouf
-         VJeroCsi9JBef+tmVV36MDl8+hSpyLF8o64Ip9OaWsGeiMjNzPv5zKoCgzLFxFkH9nHg
-         pUzg==
-X-Gm-Message-State: APjAAAVunBQoec776Sf8QImCYyGZ8giOamd3+OH++V8a/ASsR67o+z+6
-        Dc0d6mZJy7Ct0LOIwaEwmow8UjcjOtPNLQ==
-X-Google-Smtp-Source: APXvYqz+hGZpkcH64ShV+LnOoR/q6B3617J5a0QTlejQZ1/0EYvK8Z0/vPFpoCvy7FqF0KO5pxe3Mg==
-X-Received: by 2002:a37:be41:: with SMTP id o62mr9395196qkf.356.1565968823894;
-        Fri, 16 Aug 2019 08:20:23 -0700 (PDT)
+        bh=q46PD7UxMjoqblNZxRfqQ5JkvwrT9L9w1KjqSx+ge9s=;
+        b=rRisV5bkFrjwq1++eu/x/7R7HSYVdN1NuDw64IMs7/MaW3svH8MRRCKXfrxp9gyGcN
+         B+5xFKai3HHOZVL/x2dttvCwdFm1IsRikAiPnIJTBhJ3PMsxVTPwbt/S9kbqINoFGEKB
+         dkDEAjn8duRex+ekuXd+nsGFduD9BhUktMfiaqFkpSrdRhl663fxNkYtZZgtXOwB1kjP
+         YaoDXZ+nsgXCNHjPKIKxB9b3ZqIe+D/18qLIQgDtyHzAkcm9AzNtjKR/M2+KoM+Se/dd
+         baF8qH2Hzihfgl4MPmg1mm6PQLZ29tjYNULjEwta6hM/LcA/1CYrnJztZ6TmuTaL+npO
+         Ujyw==
+X-Gm-Message-State: APjAAAXRIpu6jUyAha8z9grKXBpS0wKA0gYOt5rIogveL+RjrAmmfB4l
+        mwDLcPzmCfGY9prlnrY4GVoJQlCLDnLUKw==
+X-Google-Smtp-Source: APXvYqw3o3+QFeCgIYfpzKp7sT/d9ySUZjtCOWhkxdLZlIf0J6StgVDUWZ3h+/IqWAmMuW2K0IZy4A==
+X-Received: by 2002:a0c:d003:: with SMTP id u3mr2243979qvg.112.1565968825603;
+        Fri, 16 Aug 2019 08:20:25 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id f7sm2967275qtj.16.2019.08.16.08.20.23
+        by smtp.gmail.com with ESMTPSA id r15sm3005604qkm.27.2019.08.16.08.20.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Aug 2019 08:20:23 -0700 (PDT)
+        Fri, 16 Aug 2019 08:20:25 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/5] btrfs: change the minimum global reserve size
-Date:   Fri, 16 Aug 2019 11:20:15 -0400
-Message-Id: <20190816152019.1962-2-josef@toxicpanda.com>
+Subject: [PATCH 2/5] btrfs: always reserve our entire size for the global reserve
+Date:   Fri, 16 Aug 2019 11:20:16 -0400
+Message-Id: <20190816152019.1962-3-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190816152019.1962-1-josef@toxicpanda.com>
 References: <20190816152019.1962-1-josef@toxicpanda.com>
@@ -60,61 +60,45 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It made sense to have the global reserve set at 16M in the past, but
-since it is used less nowadays set the minimum size to the number of
-items we'll need to update the main trees we update during a transaction
-commit, plus some slop area so we can do unlinks if we need to.
-
-In practice this doesn't affect normal file systems, but for xfstests
-where we do things like fill up a fs and then rm * it can fall over in
-weird ways.  This enables us for more sane behavior at extremely small
-file system sizes.
+While messing with the overcommit logic I noticed that sometimes we'd
+ENOSPC out when really we should have run out of space much earlier.  It
+turns out it's because we'll only reserve up to the free amount left in
+the space info for the global reserve, but that doesn't make sense with
+overcommit because we could be well above our actual size.  This results
+in the global reserve not carving out it's entire reservation, and thus
+not putting enough pressure on the rest of the infrastructure to do the
+right thing and ENOSPC out at a convenient time.  Fix this by always
+taking our full reservation amount for the global reserve.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-rsv.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ fs/btrfs/block-rsv.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
 diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-index c64b460a4301..657675eef443 100644
+index 657675eef443..18a0af20ee5a 100644
 --- a/fs/btrfs/block-rsv.c
 +++ b/fs/btrfs/block-rsv.c
-@@ -258,6 +258,7 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
- 	struct btrfs_block_rsv *block_rsv = &fs_info->global_block_rsv;
- 	struct btrfs_space_info *sinfo = block_rsv->space_info;
- 	u64 num_bytes;
-+	unsigned min_items;
+@@ -295,15 +295,10 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
+ 	block_rsv->size = min_t(u64, num_bytes, SZ_512M);
  
- 	/*
- 	 * The global block rsv is based on the size of the extent tree, the
-@@ -267,7 +268,26 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
- 	num_bytes = btrfs_root_used(&fs_info->extent_root->root_item) +
- 		btrfs_root_used(&fs_info->csum_root->root_item) +
- 		btrfs_root_used(&fs_info->tree_root->root_item);
--	num_bytes = max_t(u64, num_bytes, SZ_16M);
-+
-+	/*
-+	 * We at a minimum are going to modify the csum root, the tree root, and
-+	 * the extent root.
-+	 */
-+	min_items = 3;
-+
-+	/*
-+	 * But we also want to reserve enough space so we can do the fallback
-+	 * global reserve for an unlink, which is an additional 5 items (see the
-+	 * comment in __unlink_start_trans for what we're modifying.)
-+	 *
-+	 * But we also need space for the delayed ref updates from the unlink,
-+	 * so its 10, 5 for the actual operation, and 5 for the delayed ref
-+	 * updates.
-+	 */
-+	min_items += 10;
-+
-+	num_bytes = max_t(u64, num_bytes,
-+			  btrfs_calc_insert_metadata_size(fs_info, min_items));
- 
- 	spin_lock(&sinfo->lock);
- 	spin_lock(&block_rsv->lock);
+ 	if (block_rsv->reserved < block_rsv->size) {
+-		num_bytes = btrfs_space_info_used(sinfo, true);
+-		if (sinfo->total_bytes > num_bytes) {
+-			num_bytes = sinfo->total_bytes - num_bytes;
+-			num_bytes = min(num_bytes,
+-					block_rsv->size - block_rsv->reserved);
+-			block_rsv->reserved += num_bytes;
+-			btrfs_space_info_update_bytes_may_use(fs_info, sinfo,
+-							      num_bytes);
+-		}
++		num_bytes = block_rsv->size - block_rsv->reserved;
++		block_rsv->reserved += num_bytes;
++		btrfs_space_info_update_bytes_may_use(fs_info, sinfo,
++						      num_bytes);
+ 	} else if (block_rsv->reserved > block_rsv->size) {
+ 		num_bytes = block_rsv->reserved - block_rsv->size;
+ 		btrfs_space_info_update_bytes_may_use(fs_info, sinfo,
 -- 
 2.21.0
 
