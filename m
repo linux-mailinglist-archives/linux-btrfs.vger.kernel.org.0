@@ -2,130 +2,109 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9390D8F64A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Aug 2019 23:14:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E058F8C8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Aug 2019 04:16:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729514AbfHOVO4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 15 Aug 2019 17:14:56 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:43295 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726357AbfHOVO4 (ORCPT
+        id S1726384AbfHPCQl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 15 Aug 2019 22:16:41 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57778 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726215AbfHPCQk (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 15 Aug 2019 17:14:56 -0400
-Received: by mail-pg1-f193.google.com with SMTP id k3so1828718pgb.10
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Aug 2019 14:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Fo8TvHNwcclOQWNPsALFAghma3YSyfd4PcynfGFYxYY=;
-        b=z2Xqyy3R0JMfA5c2vx+2M1qUbswEgAac+9/ZLOlt238aeEW5Gjd/5qWc1RHi2lz1u2
-         dKX29sm9vvn7D8fkth7N/4Yk1UF/vJ6rX2B5lw0pyZ6VGBDk/wFRZaK3BUE+88F8uZWl
-         Hge1uvHVCdvKrbJL4LDBxtmKai6xr5QSfL1nudITOEmeMuxUF68qe2vZYFeN6hFnfwQd
-         hxWfaQ4IjkIwZQzEW64PjYym1rAf7PwUhetJsy5wMst3/ZUbzEnJsDLFP539hS4LqvRL
-         AU9s7O/+GdD+Ohg6raMt2Khd3rYcbBLw65q+d0Cj1SIhkTATIPLJzNmYG1CFE+AFxcaw
-         08nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Fo8TvHNwcclOQWNPsALFAghma3YSyfd4PcynfGFYxYY=;
-        b=XmCsoUYK2aIzJxSQZfee1H2nPioPNNwA1jDrla9qXNj9lykcPTJf45gtBd3U1MV2vG
-         cu7ZWJFMgXEPRCpYuS8PUEEi2aQ4V+3z014swxCrEEy51lwdJTHMvgLThBSnzt0QEaaK
-         YgOR5UcPbOACyHU561XXHSpuSU3C1cnzS6VwpqAW1AHedZ40VMlRuoUAit6xrc1edZ5p
-         l9mqoeqIzoGnvofFzw+CZ5R5rfLL/mfqUmERAOho3s76VsfDVpqARU3/O0e1Ar9nwH4i
-         hsL3EbX9ZMbDomn5bkwPOpBMffOhEm1VR+XH5mxbbRidjJbhM3FxtZeks54zupgx25bh
-         0Fhw==
-X-Gm-Message-State: APjAAAVDu7pdep990se/F+AOjzEolmW7GWSxzQXlWstPcM7hZ9Fn09bz
-        u3MnL1duF3BSQqw3l3pFA/PTZgAmga0=
-X-Google-Smtp-Source: APXvYqwa/6hJR/Ipg3ILuIKdZIXStzOR4Q4nOtNXFwTUZF+pFQfy8/J7TYLF5e5hzHXEZCFui8EaDQ==
-X-Received: by 2002:a65:64c5:: with SMTP id t5mr5178638pgv.168.1565903695039;
-        Thu, 15 Aug 2019 14:14:55 -0700 (PDT)
-Received: from vader ([2620:10d:c090:200::3:2aa9])
-        by smtp.gmail.com with ESMTPSA id a20sm1883413pjo.0.2019.08.15.14.14.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Aug 2019 14:14:54 -0700 (PDT)
-Date:   Thu, 15 Aug 2019 14:14:54 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com
-Subject: Re: [RFC PATCH 0/5] Btrfs: add interface for writing compressed
- extent directly
-Message-ID: <20190815211454.GC27472@vader>
-References: <cover.1565900769.git.osandov@fb.com>
+        Thu, 15 Aug 2019 22:16:40 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7G2E03T072309;
+        Fri, 16 Aug 2019 02:16:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=5zGxCaY2q+Jg4s901FEPuVa15/+cH22cogU/E1G7Ufo=;
+ b=fsikMhdIMsm6hUZ8jnZm55xQt5KbKP5FiNi5KUzR6VIb3ePQvM/Mj8PivOhG37cSqF1n
+ 5S5Y5k9sgG1RteLglUIJ+GnA/Z/xN4SmszuiIE7/ShnwYxc/7s76WT18BVk4yXEcaB1h
+ FM5zMYKVmPNzK/lxVmwmKaTNyZzDNgi9rMJ/KSMToa6el8fR48lSQTzi3cKvoMEHaIxW
+ V3Q6y2hM2xTvF8K3qFGkdGebTeddQQF9lOS836VYTY4D8OWfB3XBViCxnalPYYReEQrx
+ thExm8ycRD8RC3toVrrAllxFhqQf742YxoWJZsM0pw4DGmFM4RyaNEdqRyQIhZia9ZBk qg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2u9pjqwu2q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Aug 2019 02:16:37 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7G2Dl2c116951;
+        Fri, 16 Aug 2019 02:16:36 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 2udgqfkqwr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 16 Aug 2019 02:16:36 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7G2GYTP019517;
+        Fri, 16 Aug 2019 02:16:35 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 15 Aug 2019 19:16:34 -0700
+Date:   Thu, 15 Aug 2019 19:16:33 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] fstests: generic/500 doesn't work for btrfs
+Message-ID: <20190816021633.GB15181@magnolia>
+References: <20190815182659.27875-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1565900769.git.osandov@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190815182659.27875-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908160022
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9350 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908160022
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 15, 2019 at 02:04:01PM -0700, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
+On Thu, Aug 15, 2019 at 02:26:59PM -0400, Josef Bacik wrote:
+> Btrfs does COW, so when we unlink the file we need to update metadata
+> and write it to a new location, which we can't do because the thinp is
+> full.  This results in an EIO during a metadata write, which makes us
+> flip read only, thus making it impossible to fstrim the fs.  Just make
+> it so we skip this test for btrfs.
 > 
-> Hello,
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  tests/generic/500 | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> This series adds a way to write compressed data directly to Btrfs. The
-> intended use case is making send/receive on compressed file systems more
-> efficient; however, the interface is general enough that it could be
-> used in other scenarios. Patch 5 is the main change; see that for more
-> details.
-> 
-> Patches 1-3 are small fixes/cleanups that I ran into while implementing
-> this; they should go in regardless of the remainder of the series. Patch
-> 4 exports a required VFS interface.
-> 
-> An example program and test case are available at [1].
-> 
-> To preemptively address a few concerns:
-> 
-> - Writing arbitrary, untrusted data which we feed to the decompression
->   algorithm can be a security risk. For that reason, the ioctl is
->   restricted to CAP_SYS_ADMIN. The Btrfs code is properly hardened
->   against invalid compressed data/incorrect lengths, and the compression
->   libraries are mature, but better safe than sorry for now.
-> - If the user is writing their own compressed data rather than just
->   blindly feeding in something from btrfs send, they need to know some
->   implementation details about the compression format. For zlib, there
->   are no special requirements. For zstd, a non-default compression
->   parameter must be used. For lzo, we have our own wrapper format since
->   lzo doesn't have a standard wrapper format. It feels a little wrong to
->   expose these details, but they are part of the on-disk format, so they
->   must be stable regardless.
-> - The permissions checks duplicated from the VFS code are fairly
->   minimal.
-> 
-> This series is based on misc-next.
-> 
-> This is an RFC, so please, comment away.
-> 
-> Thanks!
-> 
-> 1: https://github.com/osandov/xfstests/tree/btrfs-compressed-write
-> 
-> Omar Sandoval (5):
->   Btrfs: use correct count in btrfs_file_write_iter()
->   Btrfs: treat RWF_{,D}SYNC writes as sync for CRCs
->   Btrfs: stop clearing EXTENT_DIRTY in inode I/O tree
->   fs: export rw_verify_area()
->   Btrfs: add ioctl for directly writing compressed data
-> 
->  fs/btrfs/compression.c       |   6 +-
->  fs/btrfs/compression.h       |  14 +--
->  fs/btrfs/ctree.h             |  12 ++
->  fs/btrfs/extent_io.c         |   6 +-
->  fs/btrfs/file.c              |  22 ++--
->  fs/btrfs/free-space-cache.c  |   9 +-
->  fs/btrfs/inode.c             | 232 +++++++++++++++++++++++++++++++----
->  fs/btrfs/ioctl.c             | 101 ++++++++++++++-
->  fs/btrfs/tests/inode-tests.c |  12 +-
->  fs/internal.h                |   5 -
->  fs/read_write.c              |   1 +
->  include/linux/fs.h           |   1 +
->  include/uapi/linux/btrfs.h   |  63 ++++++++++
->  13 files changed, 415 insertions(+), 69 deletions(-)
+> diff --git a/tests/generic/500 b/tests/generic/500
+> index 201d8b9f..5cd7126f 100755
+> --- a/tests/generic/500
+> +++ b/tests/generic/500
+> @@ -49,6 +49,12 @@ _supported_os Linux
+>  _require_scratch_nocheck
+>  _require_dm_target thin-pool
+>  
+> +# The unlink below will result in new metadata blocks for btrfs because of CoW,
+> +# and since we've filled the thinp device it'll return EIO, which will make
+> +# btrfs flip read only, making it fail this test when it just won't work right
+> +# for us in the first place.
+> +test $FSTYP == "btrfs"  && _notrun "btrfs doesn't work that way lol"
 
-I forgot to CC fsdevel. I'll do that for v2.
+I did it for the lulz,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+
+--D
+
+> +
+>  # Require underlying device support discard
+>  _scratch_mkfs >>$seqres.full 2>&1
+>  _scratch_mount
+> -- 
+> 2.21.0
+> 
