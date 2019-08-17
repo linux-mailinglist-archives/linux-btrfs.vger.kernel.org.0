@@ -2,44 +2,44 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FB13913A8
-	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Aug 2019 01:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2911F913AB
+	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Aug 2019 01:20:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726208AbfHQXOl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 17 Aug 2019 19:14:41 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:51136 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726082AbfHQXOk (ORCPT
+        id S1726217AbfHQXTf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 17 Aug 2019 19:19:35 -0400
+Received: from mail-wm1-f50.google.com ([209.85.128.50]:39432 "EHLO
+        mail-wm1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbfHQXTf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 17 Aug 2019 19:14:40 -0400
-Received: by mail-wm1-f67.google.com with SMTP id v15so6845048wml.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 17 Aug 2019 16:14:39 -0700 (PDT)
+        Sat, 17 Aug 2019 19:19:35 -0400
+Received: by mail-wm1-f50.google.com with SMTP id i63so6917360wmg.4
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Aug 2019 16:19:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=C6JRXnjaJJgRW731XUZ/F/SCVK8s5pHSAXk+rEQ7Azo=;
-        b=qBPbELslZnPMuzgUnQXdeEs3FV9ZycvFyRnJun+VbXuTpJjHe1kNbFyN9bO6v0KRTI
-         FmfxB3MnTLwljUbdJlMQyP9pnpzWi4reU8CcJWqRRYPKA5Da0cCYr7LsGe+Xvl9xUk10
-         ajZUYfVrTlcCmkw9QdW0cWCMb1j8yVcTPlYseqF7ojQHsF7AbBppq3Q8pSpGxp/7q6S5
-         KsW1oxoTvaaP93vI8zBIq9yQ3Q2xO/kAkvfKLKvKNcvvawWzLvjXot93fNNP8TS/7aDD
-         iXYN1+g8uSV3tkH/+NO6XGoptx5BM/07YwOd+bv5xkxqNJxz2BIUj5CmWntylkVqKf80
-         uQBA==
-X-Gm-Message-State: APjAAAXg66faIp2AkcY7msn9kzws0TLQbyYvelCjNqF1pkHJytj2Wj3j
-        s/CE/2EP2dAq4yw3F15/oemR3aBeyEg=
-X-Google-Smtp-Source: APXvYqw6e/4X92n8BkGm2o6IiqrAYxH/Wt675oqilzaRjH6LtwTxTm2HWd8TVt+mlKADnB6idoJpHw==
-X-Received: by 2002:a05:600c:2487:: with SMTP id 7mr13183400wms.141.1566083678275;
-        Sat, 17 Aug 2019 16:14:38 -0700 (PDT)
+        bh=rKnwiKkVSvnbgFUtV72xZWm8gKPXcZZVBCOLnx02sYg=;
+        b=tqUw/d9KGYrF99UWWv8e3tu51lwKvhXtj8S3yDpAhhUcIPtx36fwKM0TjGXHWH9oJy
+         Dh9BC6aPKdjxy79SMJVGlCJGebLARTTXbfs5p8VyWJIvWkkRnK0vZD0hOu/XGfp5f3dY
+         cFGXluiI8n9/4u9KWnYqg+73FUp8RnGuvyh/+1Im5MkGQeGOBlfgaPqAVvrMah0mta78
+         48mbdAk12Xjhf5ZHH235yV8vSXrxWUmFULiSRO1EaJcb7ky26xM3CfUOfJugYnv38zzk
+         2yEoaXJtEluSPTkDx5dV9mNgEKFpkeGNvdhX4XfrinWBDMJn1RAdvo+qbVbXiUvN3UUP
+         70HQ==
+X-Gm-Message-State: APjAAAWbaLdFF7CQcDcugYZLG82VERzzi112YgroyedH4mca9dRSmQty
+        I6lmHm4Ht316ctoVD9Nlmy2qIGoqOXI=
+X-Google-Smtp-Source: APXvYqy0NQx52k2DdRpLeTiE9urC+PsSqYqlf/UYTwJcjqrVw7Cyw+OzQkcGDqXO054WB6Odn2mGVQ==
+X-Received: by 2002:a05:600c:1087:: with SMTP id e7mr12923549wmd.19.1566083972708;
+        Sat, 17 Aug 2019 16:19:32 -0700 (PDT)
 Received: from home.thecybershadow.net ([89.28.117.31])
-        by smtp.gmail.com with ESMTPSA id u186sm19724976wmu.26.2019.08.17.16.14.36
+        by smtp.gmail.com with ESMTPSA id o9sm13512217wrm.88.2019.08.17.16.19.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Aug 2019 16:14:37 -0700 (PDT)
+        Sat, 17 Aug 2019 16:19:32 -0700 (PDT)
 From:   Vladimir Panteleev <git@vladimir.panteleev.md>
 To:     linux-btrfs@vger.kernel.org
 Cc:     Vladimir Panteleev <git@vladimir.panteleev.md>
-Subject: [PATCH] btrfs-progs: balance: check for full-balance before background fork
-Date:   Sat, 17 Aug 2019 23:14:34 +0000
-Message-Id: <20190817231434.1034-1-git@vladimir.panteleev.md>
+Subject: [PATCH] btrfs-progs: tests: fix cli-tests/003-fi-resize-args
+Date:   Sat, 17 Aug 2019 23:18:49 +0000
+Message-Id: <20190817231849.18675-1-git@vladimir.panteleev.md>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -48,93 +48,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Move the full-balance warning to before the fork, so that the user can
-see and react to it.
+grep's exit code was never checked (and -o errexit is not in effect),
+thus the test was ineffectual and regressed.
 
-Notes on test:
-
-- Don't use grep -q, as it causes a SIGPIPE during the countdown, and
-  the balance thus doesn't start.
-
-- The "balance cancel" is superfluous as the last command, but it
-  provides some idempotence and allows adding more tests below it.
-
-Fixes: https://github.com/kdave/btrfs-progs/issues/168
+Add the missing exit code check, and update the error messages to
+make the test pass again.
 
 Signed-off-by: Vladimir Panteleev <git@vladimir.panteleev.md>
 ---
- cmds/balance.c                                | 36 +++++++++----------
- .../002-balance-full-no-filters/test.sh       |  5 +++
- 2 files changed, 23 insertions(+), 18 deletions(-)
+ tests/cli-tests/003-fi-resize-args/test.sh | 24 ++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
 
-diff --git a/cmds/balance.c b/cmds/balance.c
-index 6f2d4803..32830002 100644
---- a/cmds/balance.c
-+++ b/cmds/balance.c
-@@ -437,24 +437,6 @@ static int do_balance(const char *path, struct btrfs_ioctl_balance_args *args,
- 	if (fd < 0)
- 		return 1;
+diff --git a/tests/cli-tests/003-fi-resize-args/test.sh b/tests/cli-tests/003-fi-resize-args/test.sh
+index 4249c1ce..c9267035 100755
+--- a/tests/cli-tests/003-fi-resize-args/test.sh
++++ b/tests/cli-tests/003-fi-resize-args/test.sh
+@@ -16,21 +16,29 @@ run_check_mount_test_dev
+ # missing the one of the required arguments
+ for sep in '' '--'; do
+ 	run_check_stdout "$TOP/btrfs" filesystem resize $sep |
+-		grep -q "btrfs filesystem resize: too few arguments"
++		grep -q "btrfs filesystem resize: exactly 2 arguments expected, 0 given" ||
++		_fail "no expected error message in the output"
+ 	run_check_stdout "$TOP/btrfs" filesystem resize $sep "$TEST_MNT" |
+-		grep -q "btrfs filesystem resize: too few arguments"
++		grep -q "btrfs filesystem resize: exactly 2 arguments expected, 1 given" ||
++		_fail "no expected error message in the output"
+ 	run_check_stdout "$TOP/btrfs" filesystem resize $sep -128M |
+-		grep -q "btrfs filesystem resize: too few arguments"
++		grep -q "btrfs filesystem resize: exactly 2 arguments expected, 1 given" ||
++		_fail "no expected error message in the output"
+ 	run_check_stdout "$TOP/btrfs" filesystem resize $sep +128M |
+-		grep -q "btrfs filesystem resize: too few arguments"
++		grep -q "btrfs filesystem resize: exactly 2 arguments expected, 1 given" ||
++		_fail "no expected error message in the output"
+ 	run_check_stdout "$TOP/btrfs" filesystem resize $sep 512M |
+-		grep -q "btrfs filesystem resize: too few arguments"
++		grep -q "btrfs filesystem resize: exactly 2 arguments expected, 1 given" ||
++		_fail "no expected error message in the output"
+ 	run_check_stdout "$TOP/btrfs" filesystem resize $sep 1:-128M |
+-		grep -q "btrfs filesystem resize: too few arguments"
++		grep -q "btrfs filesystem resize: exactly 2 arguments expected, 1 given" ||
++		_fail "no expected error message in the output"
+ 	run_check_stdout "$TOP/btrfs" filesystem resize $sep 1:512M |
+-		grep -q "btrfs filesystem resize: too few arguments"
++		grep -q "btrfs filesystem resize: exactly 2 arguments expected, 1 given" ||
++		_fail "no expected error message in the output"
+ 	run_check_stdout "$TOP/btrfs" filesystem resize $sep 1:+128M |
+-		grep -q "btrfs filesystem resize: too few arguments"
++		grep -q "btrfs filesystem resize: exactly 2 arguments expected, 1 given" ||
++		_fail "no expected error message in the output"
+ done
  
--	if (!(flags & BALANCE_START_FILTERS) && !(flags & BALANCE_START_NOWARN)) {
--		int delay = 10;
--
--		printf("WARNING:\n\n");
--		printf("\tFull balance without filters requested. This operation is very\n");
--		printf("\tintense and takes potentially very long. It is recommended to\n");
--		printf("\tuse the balance filters to narrow down the scope of balance.\n");
--		printf("\tUse 'btrfs balance start --full-balance' option to skip this\n");
--		printf("\twarning. The operation will start in %d seconds.\n", delay);
--		printf("\tUse Ctrl-C to stop it.\n");
--		while (delay) {
--			printf("%2d", delay--);
--			fflush(stdout);
--			sleep(1);
--		}
--		printf("\nStarting balance without any filters.\n");
--	}
--
- 	ret = ioctl(fd, BTRFS_IOC_BALANCE_V2, args);
- 	if (ret < 0) {
- 		/*
-@@ -634,6 +616,24 @@ static int cmd_balance_start(const struct cmd_struct *cmd,
- 		}
- 	}
- 
-+	if (!(start_flags & BALANCE_START_FILTERS) && !(start_flags & BALANCE_START_NOWARN)) {
-+		int delay = 10;
-+
-+		printf("WARNING:\n\n");
-+		printf("\tFull balance without filters requested. This operation is very\n");
-+		printf("\tintense and takes potentially very long. It is recommended to\n");
-+		printf("\tuse the balance filters to narrow down the scope of balance.\n");
-+		printf("\tUse 'btrfs balance start --full-balance' option to skip this\n");
-+		printf("\twarning. The operation will start in %d seconds.\n", delay);
-+		printf("\tUse Ctrl-C to stop it.\n");
-+		while (delay) {
-+			printf("%2d", delay--);
-+			fflush(stdout);
-+			sleep(1);
-+		}
-+		printf("\nStarting balance without any filters.\n");
-+	}
-+
- 	if (force)
- 		args.flags |= BTRFS_BALANCE_FORCE;
- 	if (verbose)
-diff --git a/tests/cli-tests/002-balance-full-no-filters/test.sh b/tests/cli-tests/002-balance-full-no-filters/test.sh
-index 9c31dd6f..daadcc44 100755
---- a/tests/cli-tests/002-balance-full-no-filters/test.sh
-+++ b/tests/cli-tests/002-balance-full-no-filters/test.sh
-@@ -18,4 +18,9 @@ run_check $SUDO_HELPER "$TOP/btrfs" balance start "$TEST_MNT"
- run_check $SUDO_HELPER "$TOP/btrfs" balance --full-balance "$TEST_MNT"
- run_check $SUDO_HELPER "$TOP/btrfs" balance "$TEST_MNT"
- 
-+run_check_stdout $SUDO_HELPER "$TOP/btrfs" balance start --background "$TEST_MNT" |
-+	grep -F "Full balance without filters requested." ||
-+	_fail "full balance warning not in the output"
-+run_mayfail $SUDO_HELPER "$TOP/btrfs" balance cancel "$TEST_MNT"
-+
- run_check_umount_test_dev
+ # valid resize
 -- 
 2.22.0
 
