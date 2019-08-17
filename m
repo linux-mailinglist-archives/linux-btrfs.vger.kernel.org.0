@@ -2,140 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CBD090F5E
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Aug 2019 10:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FB13913A8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 18 Aug 2019 01:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbfHQIJt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 17 Aug 2019 04:09:49 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:64712 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725784AbfHQIJt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 17 Aug 2019 04:09:49 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 469Xsk4XFmz9typx;
-        Sat, 17 Aug 2019 10:09:46 +0200 (CEST)
-Authentication-Results: localhost; dkim=pass
-        reason="1024-bit key; insecure key"
-        header.d=c-s.fr header.i=@c-s.fr header.b=PFmZ3tEw; dkim-adsp=pass;
-        dkim-atps=neutral
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id sNvX-0_3f_4K; Sat, 17 Aug 2019 10:09:46 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 469Xsk3PNRz9typs;
-        Sat, 17 Aug 2019 10:09:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=c-s.fr; s=mail;
-        t=1566029386; bh=pVI9gY6iiTOKFqgekWFv504Tf/QYksOUjRjQFOu2kD0=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=PFmZ3tEwbCcnorGnd5QrmBxwxFFSuDEhTO5ZjS4uBLNisb+UKUNsl94HoIWJQIWXF
-         bOBEfuKIST6lerMbAPKSPdZzybS4qFVQ/HaIuSoZO3dGUCBsiLoMn8RJkAXWz528uW
-         yVq0TMp+3G9mqWqk98b8zsX+IrJ6HBJWVGviJp44=
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 9214B8B793;
-        Sat, 17 Aug 2019 10:09:47 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id Lp6brMJxdad5; Sat, 17 Aug 2019 10:09:47 +0200 (CEST)
-Received: from [192.168.232.53] (unknown [192.168.232.53])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id EAA278B790;
-        Sat, 17 Aug 2019 10:09:46 +0200 (CEST)
-Subject: Re: [Bug 204371] BUG kmalloc-4k (Tainted: G W ): Object padding
- overwritten
-To:     bugzilla-daemon@bugzilla.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-btrfs@vger.kernel.org, erhard_f@mailbox.org,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <bug-204371-206035@https.bugzilla.kernel.org/>
- <bug-204371-206035-O9m4mwJN9f@https.bugzilla.kernel.org/>
-From:   christophe leroy <christophe.leroy@c-s.fr>
-Message-ID: <e8b5b450-bdb2-6be8-8b14-bd76b81de9a0@c-s.fr>
-Date:   Sat, 17 Aug 2019 10:09:46 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726208AbfHQXOl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 17 Aug 2019 19:14:41 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:51136 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbfHQXOk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 17 Aug 2019 19:14:40 -0400
+Received: by mail-wm1-f67.google.com with SMTP id v15so6845048wml.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 17 Aug 2019 16:14:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=C6JRXnjaJJgRW731XUZ/F/SCVK8s5pHSAXk+rEQ7Azo=;
+        b=qBPbELslZnPMuzgUnQXdeEs3FV9ZycvFyRnJun+VbXuTpJjHe1kNbFyN9bO6v0KRTI
+         FmfxB3MnTLwljUbdJlMQyP9pnpzWi4reU8CcJWqRRYPKA5Da0cCYr7LsGe+Xvl9xUk10
+         ajZUYfVrTlcCmkw9QdW0cWCMb1j8yVcTPlYseqF7ojQHsF7AbBppq3Q8pSpGxp/7q6S5
+         KsW1oxoTvaaP93vI8zBIq9yQ3Q2xO/kAkvfKLKvKNcvvawWzLvjXot93fNNP8TS/7aDD
+         iXYN1+g8uSV3tkH/+NO6XGoptx5BM/07YwOd+bv5xkxqNJxz2BIUj5CmWntylkVqKf80
+         uQBA==
+X-Gm-Message-State: APjAAAXg66faIp2AkcY7msn9kzws0TLQbyYvelCjNqF1pkHJytj2Wj3j
+        s/CE/2EP2dAq4yw3F15/oemR3aBeyEg=
+X-Google-Smtp-Source: APXvYqw6e/4X92n8BkGm2o6IiqrAYxH/Wt675oqilzaRjH6LtwTxTm2HWd8TVt+mlKADnB6idoJpHw==
+X-Received: by 2002:a05:600c:2487:: with SMTP id 7mr13183400wms.141.1566083678275;
+        Sat, 17 Aug 2019 16:14:38 -0700 (PDT)
+Received: from home.thecybershadow.net ([89.28.117.31])
+        by smtp.gmail.com with ESMTPSA id u186sm19724976wmu.26.2019.08.17.16.14.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 17 Aug 2019 16:14:37 -0700 (PDT)
+From:   Vladimir Panteleev <git@vladimir.panteleev.md>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Vladimir Panteleev <git@vladimir.panteleev.md>
+Subject: [PATCH] btrfs-progs: balance: check for full-balance before background fork
+Date:   Sat, 17 Aug 2019 23:14:34 +0000
+Message-Id: <20190817231434.1034-1-git@vladimir.panteleev.md>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-In-Reply-To: <bug-204371-206035-O9m4mwJN9f@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
-X-Antivirus: Avast (VPS 190816-4, 16/08/2019), Outbound message
-X-Antivirus-Status: Clean
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Move the full-balance warning to before the fork, so that the user can
+see and react to it.
 
+Notes on test:
 
-Le 30/07/2019 à 20:52, bugzilla-daemon@bugzilla.kernel.org a écrit :
-> https://bugzilla.kernel.org/show_bug.cgi?id=204371
-> 
-> --- Comment #2 from Andrew Morton (akpm@linux-foundation.org) ---
-> (switched to email.  Please respond via emailed reply-to-all, not via the
-> bugzilla web interface).
+- Don't use grep -q, as it causes a SIGPIPE during the countdown, and
+  the balance thus doesn't start.
 
-Reply all replies to bugzilla-daemon@bugzilla.kernel.org only.
+- The "balance cancel" is superfluous as the last command, but it
+  provides some idempotence and allows adding more tests below it.
 
+Fixes: https://github.com/kdave/btrfs-progs/issues/168
 
-[...]
-
-
-> 
-> cc'ing various people here.
-
-Hum ... only got that email through the bugzilla interface, and CC'ed 
-people don't show up.
-
-
-> 
-> I suspect proc_cgroup_show() is innocent and that perhaps
-> bpf_prepare_filter() had a memory scribble.  iirc there has been at
-> least one recent pretty serious bpf fix applied recently.  Can others
-> please take a look?
-> 
-> (Seriously - please don't modify this report via the bugzilla web interface!)
-> 
-
-Haven't got the original CC'ed list, so please reply with missing Cc's 
-if any.
-
-We have well progressed on this case.
-
-Erhard made a relation being this "Object padding overwritten" issue 
-arising on any driver, and the presence of the BTRFS driver.
-
-Then he was able to bisect the issue to:
-
-commit 69d2480456d1baf027a86e530989d7bedd698d5f
-Author: David Sterba <dsterba@suse.com>
-Date:   Fri Jun 29 10:56:44 2018 +0200
-
-     btrfs: use copy_page for copying pages instead of memcpy
-
-     Use the helper that's possibly optimized for full page copies.
-
-     Signed-off-by: David Sterba <dsterba@suse.com>
-
-
-
-After looking in the code, it has appeared that some of the said "pages" 
-were allocated with "kzalloc()".
-
-Using the patch https://patchwork.ozlabs.org/patch/1148033/ Erhard 
-confirmed that some btrfs functions were calling copy_page() with 
-misaligned destinations.
-
-copy_page(), at least on powerpc, expects cache aligned destination.
-
-The patch https://patchwork.ozlabs.org/patch/1148606/ fixes the issue.
-
-Christophe
-
+Signed-off-by: Vladimir Panteleev <git@vladimir.panteleev.md>
 ---
-L'absence de virus dans ce courrier électronique a été vérifiée par le logiciel antivirus Avast.
-https://www.avast.com/antivirus
+ cmds/balance.c                                | 36 +++++++++----------
+ .../002-balance-full-no-filters/test.sh       |  5 +++
+ 2 files changed, 23 insertions(+), 18 deletions(-)
+
+diff --git a/cmds/balance.c b/cmds/balance.c
+index 6f2d4803..32830002 100644
+--- a/cmds/balance.c
++++ b/cmds/balance.c
+@@ -437,24 +437,6 @@ static int do_balance(const char *path, struct btrfs_ioctl_balance_args *args,
+ 	if (fd < 0)
+ 		return 1;
+ 
+-	if (!(flags & BALANCE_START_FILTERS) && !(flags & BALANCE_START_NOWARN)) {
+-		int delay = 10;
+-
+-		printf("WARNING:\n\n");
+-		printf("\tFull balance without filters requested. This operation is very\n");
+-		printf("\tintense and takes potentially very long. It is recommended to\n");
+-		printf("\tuse the balance filters to narrow down the scope of balance.\n");
+-		printf("\tUse 'btrfs balance start --full-balance' option to skip this\n");
+-		printf("\twarning. The operation will start in %d seconds.\n", delay);
+-		printf("\tUse Ctrl-C to stop it.\n");
+-		while (delay) {
+-			printf("%2d", delay--);
+-			fflush(stdout);
+-			sleep(1);
+-		}
+-		printf("\nStarting balance without any filters.\n");
+-	}
+-
+ 	ret = ioctl(fd, BTRFS_IOC_BALANCE_V2, args);
+ 	if (ret < 0) {
+ 		/*
+@@ -634,6 +616,24 @@ static int cmd_balance_start(const struct cmd_struct *cmd,
+ 		}
+ 	}
+ 
++	if (!(start_flags & BALANCE_START_FILTERS) && !(start_flags & BALANCE_START_NOWARN)) {
++		int delay = 10;
++
++		printf("WARNING:\n\n");
++		printf("\tFull balance without filters requested. This operation is very\n");
++		printf("\tintense and takes potentially very long. It is recommended to\n");
++		printf("\tuse the balance filters to narrow down the scope of balance.\n");
++		printf("\tUse 'btrfs balance start --full-balance' option to skip this\n");
++		printf("\twarning. The operation will start in %d seconds.\n", delay);
++		printf("\tUse Ctrl-C to stop it.\n");
++		while (delay) {
++			printf("%2d", delay--);
++			fflush(stdout);
++			sleep(1);
++		}
++		printf("\nStarting balance without any filters.\n");
++	}
++
+ 	if (force)
+ 		args.flags |= BTRFS_BALANCE_FORCE;
+ 	if (verbose)
+diff --git a/tests/cli-tests/002-balance-full-no-filters/test.sh b/tests/cli-tests/002-balance-full-no-filters/test.sh
+index 9c31dd6f..daadcc44 100755
+--- a/tests/cli-tests/002-balance-full-no-filters/test.sh
++++ b/tests/cli-tests/002-balance-full-no-filters/test.sh
+@@ -18,4 +18,9 @@ run_check $SUDO_HELPER "$TOP/btrfs" balance start "$TEST_MNT"
+ run_check $SUDO_HELPER "$TOP/btrfs" balance --full-balance "$TEST_MNT"
+ run_check $SUDO_HELPER "$TOP/btrfs" balance "$TEST_MNT"
+ 
++run_check_stdout $SUDO_HELPER "$TOP/btrfs" balance start --background "$TEST_MNT" |
++	grep -F "Full balance without filters requested." ||
++	_fail "full balance warning not in the output"
++run_mayfail $SUDO_HELPER "$TOP/btrfs" balance cancel "$TEST_MNT"
++
+ run_check_umount_test_dev
+-- 
+2.22.0
 
