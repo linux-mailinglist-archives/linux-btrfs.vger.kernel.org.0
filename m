@@ -2,62 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C5194ADD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2019 18:50:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72D8F94B00
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2019 18:56:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727459AbfHSQud (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Aug 2019 12:50:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60764 "EHLO mx1.suse.de"
+        id S1727744AbfHSQ4s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Aug 2019 12:56:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33812 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727971AbfHSQud (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Aug 2019 12:50:33 -0400
+        id S1727459AbfHSQ4s (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 19 Aug 2019 12:56:48 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 3BBABAFE2;
-        Mon, 19 Aug 2019 16:50:32 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 0E42BB0DA;
+        Mon, 19 Aug 2019 16:56:47 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id F0172DA7DA; Mon, 19 Aug 2019 18:50:58 +0200 (CEST)
-Date:   Mon, 19 Aug 2019 18:50:58 +0200
+        id B52A5DA7DA; Mon, 19 Aug 2019 18:57:13 +0200 (CEST)
+Date:   Mon, 19 Aug 2019 18:57:13 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: replace: BTRFS_DEV_REPLACE_ITEM_STATE_x
- defines should go
-Message-ID: <20190819165058.GJ24086@twin.jikos.cz>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2] btrfs: transaction: Commit transaction more
+ frequently for BPF
+Message-ID: <20190819165713.GK24086@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190808043244.1256-1-anand.jain@oracle.com>
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20190815080404.20600-1-wqu@suse.com>
+ <CAL3q7H75=BecnH0L34OAKmQcbHPDegsO6YxVxJgg--wv_cgciA@mail.gmail.com>
+ <54b0adec-ce06-90f0-e0e1-8ecd7e5b4915@gmx.com>
+ <CAL3q7H4jM5ydhOazozLQR5kQnAi84WhPHu7uFm+k8zFy31-agQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190808043244.1256-1-anand.jain@oracle.com>
+In-Reply-To: <CAL3q7H4jM5ydhOazozLQR5kQnAi84WhPHu7uFm+k8zFy31-agQ@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 08, 2019 at 12:32:43PM +0800, Anand Jain wrote:
-> The BTRFS_DEV_REPLACE_ITEM_STATE_x series defines as shown in [1] are
-> unused in both kernel and btrfs-progs.
+On Fri, Aug 16, 2019 at 11:03:33AM +0100, Filipe Manana wrote:
+> > Originally planned to use this feature to catch the exact update, but
+> > the problem is, with this pressure, we need an extra ioctl to wait the
+> > full subvolume drop to finish.
 > 
-> [1]
-> btrfs.h:#define BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED        2
-> btrfs.h:#define BTRFS_IOCTL_DEV_REPLACE_STATE_CANCELED        3
-> btrfs.h:#define BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED       4
-> 
-> Further the BTRFS_DEV_REPLACE_ITEM_STATE_x values are different form its
-> counterpart BTRFS_IOCTL_DEV_REPLACE_STATE_x series as shown in [2].
-> 
-> [2]
-> btrfs_tree.h:#define BTRFS_DEV_REPLACE_ITEM_STATE_SUSPENDED   2
-> btrfs_tree.h:#define BTRFS_DEV_REPLACE_ITEM_STATE_FINISHED    3
-> btrfs_tree.h:#define BTRFS_DEV_REPLACE_ITEM_STATE_CANCELED    4
-> 
-> So this patch deletes the BTRFS_DEV_REPLACE_ITEM_STATE_x altogether.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> That, the ioctl to wait (or better, poll) for subvolume removal to
+> complete (either all subvolumes or just a specific one), would be
+> useful.
 
-Applied, thanks. Please note that in this case the subject prefix should
-be "libbtrfsutil: ", not "btrfs-progs: ".
+The polling for subvolume drop is implemented using the SEARCH_TREE
+ioctl and provided as 'btrfs subvolume sync' command. Is there
+something that this approach does not provide and would need a new
+ioctl?
