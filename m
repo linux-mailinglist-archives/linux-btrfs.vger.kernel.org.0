@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CDA7691E4B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2019 09:51:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA5F191EB6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2019 10:19:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726211AbfHSHvW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Aug 2019 03:51:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60306 "EHLO mx1.suse.de"
+        id S1727072AbfHSISM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Aug 2019 04:18:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38648 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725790AbfHSHvW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Aug 2019 03:51:22 -0400
+        id S1726366AbfHSISM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 19 Aug 2019 04:18:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 340B8B090
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Aug 2019 07:51:20 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 20C42ADEC;
+        Mon, 19 Aug 2019 08:18:11 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Subject: [PATCH v2] fstests: btrfs: Check snapshot creation and deletion with dm-logwrites
-Date:   Mon, 19 Aug 2019 15:51:16 +0800
-Message-Id: <20190819075116.32344-1-wqu@suse.com>
+Date:   Mon, 19 Aug 2019 16:18:06 +0800
+Message-Id: <20190819081806.32728-1-wqu@suse.com>
 X-Mailer: git-send-email 2.22.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
