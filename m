@@ -2,78 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDCD94AA1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2019 18:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED4B94AB9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2019 18:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727744AbfHSQlf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Aug 2019 12:41:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58458 "EHLO mx1.suse.de"
+        id S1726987AbfHSQq0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Aug 2019 12:46:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59926 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727094AbfHSQlf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Aug 2019 12:41:35 -0400
+        id S1726553AbfHSQq0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 19 Aug 2019 12:46:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 897AAAE96
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Aug 2019 16:41:34 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 3A324AE96;
+        Mon, 19 Aug 2019 16:46:25 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 225D8DA7DA; Mon, 19 Aug 2019 18:42:01 +0200 (CEST)
-Date:   Mon, 19 Aug 2019 18:42:01 +0200
+        id 243B9DA7DA; Mon, 19 Aug 2019 18:46:51 +0200 (CEST)
+Date:   Mon, 19 Aug 2019 18:46:51 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
+To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/6] Refactor nocow path
-Message-ID: <20190819164201.GH24086@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: replace: BTRFS_DEV_REPLACE_ITEM_STATE_x defines
+ should go
+Message-ID: <20190819164651.GI24086@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
         linux-btrfs@vger.kernel.org
-References: <20190805144708.5432-1-nborisov@suse.com>
+References: <20190808043244.1256-1-anand.jain@oracle.com>
+ <20190808043244.1256-2-anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190805144708.5432-1-nborisov@suse.com>
+In-Reply-To: <20190808043244.1256-2-anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 05, 2019 at 05:47:02PM +0300, Nikolay Borisov wrote:
-> This series aims at making the nocow path code more understanble. This done by 
-> doing the following things: 
+On Thu, Aug 08, 2019 at 12:32:44PM +0800, Anand Jain wrote:
+> The BTRFS_DEV_REPLACE_ITEM_STATE_x defines, as shown in [1], are
+> unused in both kernel and btrfs-progs (except for one instance of
+> BTRFS_DEV_REPLACE_ITEM_STATE_NEVER_STARTED in kernel).
 > 
-> 1. Re-arranging and renaming some variables so that they have more expressive
-> names, as well as reducing their scope. Patch 1 does this. 
+> [1]
+> btrfs.h:#define BTRFS_IOCTL_DEV_REPLACE_STATE_FINISHED        2
+> btrfs.h:#define BTRFS_IOCTL_DEV_REPLACE_STATE_CANCELED        3
+> btrfs.h:#define BTRFS_IOCTL_DEV_REPLACE_STATE_SUSPENDED       4
 > 
-> 2. Since run_delalloc_nocow open-codes traversal of the btree it contains a lot
-> of checks which do not pertain to the nocow logic per-se, but are there to 
-> ensure the code has found the correct EXTENT_ITEM. The nocow logic itself 
-> contains some subtle checks which are non-obvious at first. Patch 2 rectifies 
-> this by adding appropriate comments.
+> Further these define-values are different form its counterpart
+> BTRFS_IOCTL_DEV_REPLACE_STATE_x series as shown in [2].
 > 
-> 3. Patch 3 duplicates the call to btrfs_add_ordered_extent into each branch for 
-> REGULAR or PREALLOC extents. Despite this duplication I think the code flow 
-> becomes more streamlined and easier to understand. It also does away with one 
-> of the local variables. 
+> [2]
+> btrfs_tree.h:#define BTRFS_DEV_REPLACE_ITEM_STATE_SUSPENDED   2
+> btrfs_tree.h:#define BTRFS_DEV_REPLACE_ITEM_STATE_FINISHED    3
+> btrfs_tree.h:#define BTRFS_DEV_REPLACE_ITEM_STATE_CANCELED    4
 > 
-> 4. Patch 4 moves extent checking code into the branch it pertains to. 
+> So this patch deletes the BTRFS_DEV_REPLACE_ITEM_STATE_x altogether, and
+> one instance of BTRFS_DEV_REPLACE_ITEM_STATE_NEVER_STARTED is replaced
+> with BTRFS_IOCTL_DEV_REPLACE_STATE_NEVER_STARTED in the kernel.
 > 
-> 5. Patch 5 simplifies the conditions of the main 'if' in that function 
-> 
-> 6. Finally, patch 6 removes the BUG_ON that will be triggered in case 
-> btrfs_add_ordered_extent returned ENOMEM. Now it's replaced with proper graceful
-> error handling. 
-> 
-> This patchset has been tested with a full xfstest run with -onodatacow option
-> mount options set. 
-> 
-> Nikolay Borisov (6):
->   btrfs: Refactor run_delalloc_nocow
->   btrfs: Improve comments around nocow path
->   btrfs: Simplify run_delalloc_nocow
->   btrfs: Streamline code in run_delalloc_nocow in case of inline extents
->   btrfs: Simplify extent type check
->   btrfs: Remove BUG_ON from run_delalloc_nocow
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-The patchset has been in for-next, no problems so far so I'd like to
-promote it to misc-next. Patch 2 has some nontrivial changes suggested,
-please update and resend. Thanks.
+Added to misc-next, thanks.
