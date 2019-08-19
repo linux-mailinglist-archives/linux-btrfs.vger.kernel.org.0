@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4175925A4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2019 15:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D268392783
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Aug 2019 16:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727503AbfHSN6Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 19 Aug 2019 09:58:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34476 "EHLO mx1.suse.de"
+        id S1726553AbfHSOts (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 19 Aug 2019 10:49:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52696 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726987AbfHSN6S (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 19 Aug 2019 09:58:18 -0400
+        id S1726168AbfHSOts (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 19 Aug 2019 10:49:48 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C5FE1AE36;
-        Mon, 19 Aug 2019 13:58:15 +0000 (UTC)
-Subject: Re: [PATCH 5/8] btrfs: refactor the ticket wakeup code
+        by mx1.suse.de (Postfix) with ESMTP id D4A18AE72;
+        Mon, 19 Aug 2019 14:49:46 +0000 (UTC)
+Subject: Re: [PATCH 6/8] btrfs: rework wake_all_tickets
 To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
 References: <20190816141952.19369-1-josef@toxicpanda.com>
- <20190816141952.19369-6-josef@toxicpanda.com>
+ <20190816141952.19369-7-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <846e2e03-abef-301a-f69d-800265e3d9d6@suse.com>
-Date:   Mon, 19 Aug 2019 16:58:14 +0300
+Message-ID: <92c9dda1-bc57-48b5-e3d1-2a0af4e56adb@suse.com>
+Date:   Mon, 19 Aug 2019 17:49:45 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190816141952.19369-6-josef@toxicpanda.com>
+In-Reply-To: <20190816141952.19369-7-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,72 +81,87 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 16.08.19 г. 17:19 ч., Josef Bacik wrote:
-> Now that btrfs_space_info_add_old_bytes simply checks if we can make the
-> reservation and updates bytes_may_use, there's no reason to have both
-> helpers in place.  Factor out the ticket wakeup logic into it's own
-> helper, make btrfs_space_info_add_old_bytes() update bytes_may_use and
-> then call the wakeup helper, and replace all calls to
-> btrfs_space_info_add_new_bytes() with the wakeup helper.
+> Now that we no longer partially fill tickets we need to rework
+> wake_all_tickets to call btrfs_try_to_wakeup_tickets() in order to see
+> if any subsequent tickets are able to be satisfied.  If our tickets_id
+> changes we know something happened and we can keep flushing.
+> 
+> Also if we find a ticket that is smaller than the first ticket in our
+> queue then we want to retry the flushing loop again in case
+> may_commit_transaction() decides we could satisfy the ticket by
+> committing the transaction.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-
-Generally looks good and much nicer than before, one small nit below,
-when fixed you can add:
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
->  fs/btrfs/extent-tree.c |  4 ++--
->  fs/btrfs/space-info.c  | 53 +++---------------------------------------
->  fs/btrfs/space-info.h  | 19 ++++++++++-----
->  3 files changed, 18 insertions(+), 58 deletions(-)
+>  fs/btrfs/space-info.c | 34 +++++++++++++++++++++++++++-------
+>  1 file changed, 27 insertions(+), 7 deletions(-)
 > 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 32f9473c8426..08c6fcfc418d 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2863,8 +2863,8 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
->  			spin_unlock(&global_rsv->lock);
->  			/* Add to any tickets we may have */
->  			if (len)
-> -				btrfs_space_info_add_new_bytes(fs_info,
-> -						space_info, len);
-> +				btrfs_try_to_wakeup_tickets(fs_info,
-> +							    space_info);
->  		}
->  		spin_unlock(&space_info->lock);
->  	}
 > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 5f123b36fdcd..8a1c7ada67cb 100644
+> index 8a1c7ada67cb..bd485be783b8 100644
 > --- a/fs/btrfs/space-info.c
 > +++ b/fs/btrfs/space-info.c
-> @@ -131,9 +131,7 @@ void btrfs_update_space_info(struct btrfs_fs_info *info, u64 flags,
->  	found->bytes_readonly += bytes_readonly;
->  	if (total_bytes > 0)
->  		found->full = 0;
-> -	btrfs_space_info_add_new_bytes(info, found,
-> -				       total_bytes - bytes_used -
-> -				       bytes_readonly);
-> +	btrfs_try_to_wakeup_tickets(info, found);
->  	spin_unlock(&found->lock);
->  	*space_info = found;
+> @@ -676,19 +676,39 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
+>  		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
 >  }
-> @@ -229,17 +227,13 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
->   * This is for space we already have accounted in space_info->bytes_may_use, so
->   * basically when we're returning space from block_rsv's.
->   */
-> -void btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
-> -				    struct btrfs_space_info *space_info,
-> -				    u64 num_bytes)
-> +void btrfs_try_to_wakeup_tickets(struct btrfs_fs_info *fs_info,
-> +				 struct btrfs_space_info *space_info)
->  {
->  	struct list_head *head;
->  	enum btrfs_reserve_flush_enum flush = BTRFS_RESERVE_NO_FLUSH;
 >  
-> -	spin_lock(&space_info->lock);
+> -static bool wake_all_tickets(struct list_head *head)
+> +static bool wake_all_tickets(struct btrfs_fs_info *fs_info,
+> +			     struct btrfs_space_info *space_info)
+>  {
+>  	struct reserve_ticket *ticket;
+> +	u64 tickets_id = space_info->tickets_id;
+> +	u64 first_ticket_bytes = 0;
+> +
+> +	while (!list_empty(&space_info->tickets) &&
+> +	       tickets_id == space_info->tickets_id) {
+> +		ticket = list_first_entry(&space_info->tickets,
+> +					  struct reserve_ticket, list);
+> +
+> +		/*
+> +		 * may_commit_transaction will avoid committing the transaction
+> +		 * if it doesn't feel like the space reclaimed by the commit
+> +		 * would result in the ticket succeeding.  However if we have a
+> +		 * smaller ticket in the queue it may be small enough to be
+> +		 * satisified by committing the transaction, so if any
+> +		 * subsequent ticket is smaller than the first ticket go ahead
+> +		 * and send us back for another loop through the enospc flushing
+> +		 * code.
+> +		 */
+> +		if (first_ticket_bytes == 0)
+> +			first_ticket_bytes = ticket->bytes;
+> +		else if (first_ticket_bytes > ticket->bytes)
+> +			return true;
+>  
+> -	while (!list_empty(head)) {
+> -		ticket = list_first_entry(head, struct reserve_ticket, list);
+>  		list_del_init(&ticket->list);
+>  		ticket->error = -ENOSPC;
+>  		wake_up(&ticket->wait);
+> -		if (ticket->bytes != ticket->orig_bytes)
+> -			return true;
+> +		btrfs_try_to_wakeup_tickets(fs_info, space_info);
 
+So the change in this logic is directly related to the implementation of
+btrfs_try_to_wakeup_tickets. Because when we fail and remove a ticket in
+this function we give a chance that the next ticket *could* be
+satisfied. But how well does that work in practice, given you fail
+normal prio tickets here, whereas btrfs_try_to_wakeup_tickets first
+checks the prio ticket. So even if you are failing normal ticket but
+there is one unsatifiable prio ticket that won't really change anything.
 
-Add an lockdep_assert_held(&space_info->lock);
-
-<snip>
+>  	}
+> -	return false;
+> +	return (tickets_id != space_info->tickets_id);
+>  }
+>  
+>  /*
+> @@ -756,7 +776,7 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
+>  		if (flush_state > COMMIT_TRANS) {
+>  			commit_cycles++;
+>  			if (commit_cycles > 2) {
+> -				if (wake_all_tickets(&space_info->tickets)) {
+> +				if (wake_all_tickets(fs_info, space_info)) {
+>  					flush_state = FLUSH_DELAYED_ITEMS_NR;
+>  					commit_cycles--;
+>  				} else {
+> 
