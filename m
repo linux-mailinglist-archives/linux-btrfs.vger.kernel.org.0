@@ -2,145 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7A495676
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 07:08:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8F8958E3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 09:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729222AbfHTFHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Aug 2019 01:07:41 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:24738 "EHLO
-        esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729211AbfHTFHl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Aug 2019 01:07:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1566277660; x=1597813660;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=fl8BLF18hm58lWYLu4Ls1heitlaJ27vCTrR3jcNlaHs=;
-  b=UJiHQFTu/c9Yg863aVkzxe8O0iWRaur2agyIMgOSumtjqOlSzBF5/8On
-   fUtPS9Cq2qdXVA8dHTznZxIPDJaS6hfJiCIlscp4h66ulK69j5vy9AVFg
-   n9NFa3NSeBA5v6bgbrQ0ykOFBv5Uspo52rIWxfZ8PquNE2E6LF3crtmuh
-   XRsHfTHLMirNV3IHsu/EpKlz5cfb+YXY70kUzhbQxvYTTnRlw95kaP2CG
-   qcJKgMos+2Jh7pvym/6mpNHPxnxyzTwTySTK9SSfKUGxrilfxpTHIwhku
-   d4DBXJvrQtLg+APY6Xor8M9drOPYcMwiQ6lJdd9qF3UddfDrBIO6tk+X+
-   w==;
-IronPort-SDR: phjFc4own2sYnUD7KNrBxEoMGYaQJPqlPvqYgz0Q4Me6KcJvPtIt4ly9vR05vfuqEwL9I8kECu
- jyTsejwmgw25pBgc8YTjmqXu1f7iME1SpEXO5rYxD435l4EAUzMeE4Upj/FJoUwi8egLy80uXh
- Xk0eVJqPMs+PcHRTDX/N675zlSrVPP8zZHNIYH8j1sRKikAlWBH6UmAivgJtVkqWxaSukJOpEK
- J5TVpFOaQ2fYeUUK50fS0PUS7tvy7/Z5WtjrNSv7biIlfcqR9iAG21NyuRw6H4GCe45isFdnxE
- WFE=
-X-IronPort-AV: E=Sophos;i="5.64,407,1559491200"; 
-   d="scan'208";a="117137003"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Aug 2019 13:07:40 +0800
-IronPort-SDR: t/DaqTsA2a8PmhuI/lO/UfCpjRfTb3QddGAGs+sKX6KtrcUbYFlyp7rHKsU+mr1ir2y6Mkup0E
- KKgtGOUQJg31SyUte2BUstzSSMPdCtnXi+92f0kakQHoS+HFzvBqx8qqUm9CFC8js+TLS9Vfid
- +ZBhy9lF+FHSKNPCg/TBQ7ju31A6U6uUNc/+Xs6CO6A6I6uioUrnMfPAny8Js6GuV1bCPSNTxf
- YJnvKQlq6+i9TqbwcQNHW2ThDDCbRSpy4xT7BtpfytNHYPXHOxnCuwnootrAB9FmbOc7J60+8q
- X3KaaiqmJBFIG+S3aHvTPHfA
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2019 22:05:02 -0700
-IronPort-SDR: zjBaAsyLYEpztGAsSYq97eqrEj2pj0dwX9CaAa1dI5CzY/bpd/VNRcxAaREbCA/iYKFgIeiotC
- GLB8LG0RR80dMDJwY2D9EbZdBpjgaFp62kPodQ3+r5j3ATbxF/3qMCnSA6+C6J72QUjvp/guwj
- pNgN6GCsLQ5RK2dhfB9Gnz5LbXjVIEDZ1OhnLkyiTTP12jSJQaABBCIP5h4N7Xz5CJsFiMkSMD
- 3MrQFXhVYbfpUoqduDN8E/tfjjPwb7IJ28e9JAOhC5WcFsjNOMbRmtXlCjV+c6d+pYz2UlRIgT
- z3k=
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
-  by uls-op-cesaip01.wdc.com with SMTP; 19 Aug 2019 22:07:37 -0700
-Received: (nullmailer pid 1583429 invoked by uid 1000);
-        Tue, 20 Aug 2019 05:07:37 -0000
-Date:   Tue, 20 Aug 2019 14:07:37 +0900
-From:   Naohiro Aota <Naohiro.Aota@wdc.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Matias Bjorling <Matias.Bjorling@wdc.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH v3 03/27] btrfs: Check and enable HMZONED mode
-Message-ID: <20190820050737.ngyaamjkdmzvhlqj@naota.dhcp.fujisawa.hgst.com>
-References: <20190808093038.4163421-1-naohiro.aota@wdc.com>
- <20190808093038.4163421-4-naohiro.aota@wdc.com>
- <edcb46f5-1c3e-0b69-a2d9-66164e64b07e@oracle.com>
- <BYAPR04MB5816FCD8F3A0330C8B3DC609E7AF0@BYAPR04MB5816.namprd04.prod.outlook.com>
- <86ef7944-0029-3d61-0ae3-874015726751@oracle.com>
+        id S1729246AbfHTHvL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Aug 2019 03:51:11 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43556 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726049AbfHTHvK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 20 Aug 2019 03:51:10 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id DA94CAF05;
+        Tue, 20 Aug 2019 07:51:08 +0000 (UTC)
+Subject: Re: [PATCH 6/8] btrfs: rework wake_all_tickets
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+References: <20190816141952.19369-1-josef@toxicpanda.com>
+ <20190816141952.19369-7-josef@toxicpanda.com>
+ <92c9dda1-bc57-48b5-e3d1-2a0af4e56adb@suse.com>
+ <20190819150601.rj4k2li2f2bl35eo@MacBook-Pro-91.local>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <95aa4f11-760b-f056-fe20-8bf8a3097cfd@suse.com>
+Date:   Tue, 20 Aug 2019 10:51:07 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <86ef7944-0029-3d61-0ae3-874015726751@oracle.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20190819150601.rj4k2li2f2bl35eo@MacBook-Pro-91.local>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Aug 17, 2019 at 07:56:50AM +0800, Anand Jain wrote:
->
->
->On 8/16/19 10:23 PM, Damien Le Moal wrote:
->>On 2019/08/15 22:46, Anand Jain wrote:
->>>On 8/8/19 5:30 PM, Naohiro Aota wrote:
->>>>HMZONED mode cannot be used together with the RAID5/6 profile for now.
->>>>Introduce the function btrfs_check_hmzoned_mode() to check this. This
->>>>function will also check if HMZONED flag is enabled on the file system and
->>>>if the file system consists of zoned devices with equal zone size.
->>>>
->>>>Additionally, as updates to the space cache are in-place, the space cache
->>>>cannot be located over sequential zones and there is no guarantees that the
->>>>device will have enough conventional zones to store this cache. Resolve
->>>>this problem by disabling completely the space cache.  This does not
->>>>introduces any problems with sequential block groups: all the free space is
->>>>located after the allocation pointer and no free space before the pointer.
->>>>There is no need to have such cache.
->>>>
->>>>For the same reason, NODATACOW is also disabled.
->>>>
->>>>Also INODE_MAP_CACHE is also disabled to avoid preallocation in the
->>>>INODE_MAP_CACHE inode.
->>>
->>>   A list of incompatibility features with zoned devices. This need better
->>>   documentation, may be a table and its reason is better.
+
+
+On 19.08.19 г. 18:06 ч., Josef Bacik wrote:
+> On Mon, Aug 19, 2019 at 05:49:45PM +0300, Nikolay Borisov wrote:
 >>
->>Are you referring to the format of the commit message itself ? Or would you like
->>to see a documentation added to Documentation/filesystems/btrfs.txt ?
->
-> Documenting in the commit change log is fine. But it can be better
-> documented in a listed format as it looks like we have a list of
-> features which will be incompatible with zoned devices.
->
->more below..
-
-Sure. I will add a table in the next version.
-
-btrfs.txt seems not to have much there. I'm considering to write a new
-page in the wiki like:
-
-https://btrfs.wiki.kernel.org/index.php/Feature:Skinny_Metadata
-
->>>>+	if (!hmzoned_devices && incompat_hmzoned) {
->>>>+		/* No zoned block device found on HMZONED FS */
->>>>+		btrfs_err(fs_info, "HMZONED enabled file system should have zoned devices");
->>>>+		ret = -EINVAL;
->>>>+		goto out;
+>>
+>> On 16.08.19 г. 17:19 ч., Josef Bacik wrote:
+>>> Now that we no longer partially fill tickets we need to rework
+>>> wake_all_tickets to call btrfs_try_to_wakeup_tickets() in order to see
+>>> if any subsequent tickets are able to be satisfied.  If our tickets_id
+>>> changes we know something happened and we can keep flushing.
 >>>
+>>> Also if we find a ticket that is smaller than the first ticket in our
+>>> queue then we want to retry the flushing loop again in case
+>>> may_commit_transaction() decides we could satisfy the ticket by
+>>> committing the transaction.
 >>>
->>>   When does the HMZONED gets enabled? I presume during mkfs. Where are
->>>   the related btrfs-progs patches? Searching for the related btrfs-progs
->>>   patches doesn't show up anything in the ML. Looks like I am missing
->>>   something, nor the cover letter said anything about the progs part.
->
->
-> Any idea about this comment above?
->
->Thanks, Anand
+>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>>> ---
+>>>  fs/btrfs/space-info.c | 34 +++++++++++++++++++++++++++-------
+>>>  1 file changed, 27 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+>>> index 8a1c7ada67cb..bd485be783b8 100644
+>>> --- a/fs/btrfs/space-info.c
+>>> +++ b/fs/btrfs/space-info.c
+>>> @@ -676,19 +676,39 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
+>>>  		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
+>>>  }
+>>>  
+>>> -static bool wake_all_tickets(struct list_head *head)
+>>> +static bool wake_all_tickets(struct btrfs_fs_info *fs_info,
+>>> +			     struct btrfs_space_info *space_info)
+>>>  {
+>>>  	struct reserve_ticket *ticket;
+>>> +	u64 tickets_id = space_info->tickets_id;
+>>> +	u64 first_ticket_bytes = 0;
+>>> +
+>>> +	while (!list_empty(&space_info->tickets) &&
+>>> +	       tickets_id == space_info->tickets_id) {
+>>> +		ticket = list_first_entry(&space_info->tickets,
+>>> +					  struct reserve_ticket, list);
+>>> +
+>>> +		/*
+>>> +		 * may_commit_transaction will avoid committing the transaction
+>>> +		 * if it doesn't feel like the space reclaimed by the commit
+>>> +		 * would result in the ticket succeeding.  However if we have a
+>>> +		 * smaller ticket in the queue it may be small enough to be
+>>> +		 * satisified by committing the transaction, so if any
+>>> +		 * subsequent ticket is smaller than the first ticket go ahead
+>>> +		 * and send us back for another loop through the enospc flushing
+>>> +		 * code.
+>>> +		 */
+>>> +		if (first_ticket_bytes == 0)
+>>> +			first_ticket_bytes = ticket->bytes;
+>>> +		else if (first_ticket_bytes > ticket->bytes)
+>>> +			return true;
+>>>  
+>>> -	while (!list_empty(head)) {
+>>> -		ticket = list_first_entry(head, struct reserve_ticket, list);
+>>>  		list_del_init(&ticket->list);
+>>>  		ticket->error = -ENOSPC;
+>>>  		wake_up(&ticket->wait);
+>>> -		if (ticket->bytes != ticket->orig_bytes)
+>>> -			return true;
+>>> +		btrfs_try_to_wakeup_tickets(fs_info, space_info);
+>>
+>> So the change in this logic is directly related to the implementation of
+>> btrfs_try_to_wakeup_tickets. Because when we fail and remove a ticket in
+>> this function we give a chance that the next ticket *could* be
+>> satisfied. But how well does that work in practice, given you fail
+>> normal prio tickets here, whereas btrfs_try_to_wakeup_tickets first
+>> checks the prio ticket. So even if you are failing normal ticket but
+>> there is one unsatifiable prio ticket that won't really change anything.
+> 
+> In practice we don't get to this state with high priority tickets on the list.
+> Anything that would be long-ish term on the priority list is evict, and we wait
+> for iput()'s in the normal flushing code.  At the point we hit wake_all_tickets
+> we generally should only have tickets on the normal list.
 
-I just post the updated version of userland side series:
-https://lore.kernel.org/linux-btrfs/20190820045258.1571640-1-naohiro.aota@wdc.com/T/
+Be that as it may, I think this assumption needs to be codified via an
+assert or WARN_ON.
 
-Thanks,
-Naohiro
+> 
+> I suppose we could possibly get into this situation, but again the high priority
+> tickets are going to be evict, truncate block, and relocate, which all have
+> significantly lower reservation amounts than things like create or unlink.  If
+> those things are unable to get reservations then we are truly out of space.
+> Thanks,
+> 
+> Josef
+> 
