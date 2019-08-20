@@ -2,159 +2,139 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0FC89699E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 21:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C58896ABD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 22:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730473AbfHTTmp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Aug 2019 15:42:45 -0400
-Received: from mail-lj1-f182.google.com ([209.85.208.182]:38692 "EHLO
-        mail-lj1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728283AbfHTTmp (ORCPT
+        id S1730092AbfHTUiC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Aug 2019 16:38:02 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:36477 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729156AbfHTUiC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Aug 2019 15:42:45 -0400
-Received: by mail-lj1-f182.google.com with SMTP id x3so6256094lji.5
-        for <linux-btrfs@vger.kernel.org>; Tue, 20 Aug 2019 12:42:43 -0700 (PDT)
+        Tue, 20 Aug 2019 16:38:02 -0400
+Received: by mail-wr1-f49.google.com with SMTP id r3so13756322wrt.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Aug 2019 13:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VcLFoCyl+vpoc3ONbc8hMvvCDtqFo00ZZqwgrsA3mr4=;
+        b=UdO1Dl6eaxuILQbQRkZw7OzqQmzyPMPUVix21DdSRRNFZxBgQQly536fPTqLmDAw8d
+         5+Zxs5Xvsk1wzIvi9j36/TlLAa2qqY+PkZRd6B4XTgi6/CtzrtiImPj8YoXCG1zJVuJ/
+         I9Bk5BZs53mFPJ1o/fhy+DrbeZoM9IUnKqmLmYpm3CSJTFtV0unITaOlrG5RGyV38cRx
+         /8dauwF+luW28X9hivrpGVsR39Sveu7MobXXHvrcXoLjoPC7IejnU4H0KbTCs/jiIVPm
+         iWAVRq1ZpjDY26iu3oppRvGMdZSWt6xGPGlPg8LlEcQ+7Cdw8BG6NEgb7jBXCqyW1vqN
+         sWfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=4gGrjZS+obQL6IT5pBT5f5JXMoNT1nne8XuRmR+mh7w=;
-        b=dqXxuGYn8XjKhqYQh2iMvN5Cieg45nxppF++aeg3JBJGSccbo2jFZobvDVj4OQ8cOb
-         b96iNRIwRt6FMB2cQTOdUpEDcEXcc95yXA/BxQiNTSxKpwQycvlPBL+KpzyQkfUGWFF/
-         ldK4MNNw4O74rhGpk4xd5hokO8svmZs8vdxDhtJIIHLKdenFfJaFVKfbVcjoDZh96F6e
-         a3W78AUlE1hlFKJxpVzOEgap44oO6JW6wbklTHZ23zpWjLCjxWhDofIlvh5NEFVwv2XA
-         7KkocV0KY6532yx/N1wCPGASJ87Pgm3/D6U8phAyLrHPlbRB/YMMknxBElf7R+C8hpgh
-         zuPg==
-X-Gm-Message-State: APjAAAVgcbGS1mIXpABr8yHWONEbRCSrEfIWvcZ7yWyAdhWv6AeCZ60W
-        mDHpUMuZsNC99L0xhXwkAI0r826OD4eVXO6Ahl2uMUfD
-X-Google-Smtp-Source: APXvYqzeb/As3F+zhtcU22OGIpZZc6GNGzZyxL5pOWl9x+ffQbWV0p2rbhjmPezqifLsb6msD7H3hDWBwpWn3kA+H0I=
-X-Received: by 2002:a2e:22c4:: with SMTP id i187mr16538743lji.41.1566330162497;
- Tue, 20 Aug 2019 12:42:42 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VcLFoCyl+vpoc3ONbc8hMvvCDtqFo00ZZqwgrsA3mr4=;
+        b=oVsGXMniDth7iTmx83eh3Bdxfl2D2uGcb32gOUFlinowIOQHcg2/7+ndHm+dV0yTKl
+         kM5yqMAbsgVk2yW7WaAPmSw12B6HUEIRGAVq/Ib9Sejdfw+oNmsCnX5AQeLldGksY2r0
+         /3j5JYcNfY+++ieYAg9r5xk+YghKDtARTQ+KeIV7S7OF0Lf4/tEv8xLDvRVzoVqJ4bfL
+         Xm0aWfyAnju0Hoh4fZrEvqQ1zSa4qswbZ7rHK+AIDcU6KXfcZ47WKL89LuLfqWVcSXvl
+         ZzqiuKvrrYGvzqwWdjlAaTSsuwUg6PTDT+zbJoc3kXM0oX0ZvpTnopIOu+/ZrqDzrY6D
+         ZXTQ==
+X-Gm-Message-State: APjAAAUMZt3VXtnr7wRS4HRU+pRM2S+bmtDDUBugbbY91k/KkZZvQAFM
+        fbvzDcL/yaMx6p5YD23ZADsYEJCXksc9OWSBgWtTca6EZlY3vQ==
+X-Google-Smtp-Source: APXvYqwSLiIAnfKpgXafRwD74YyxDsKxwHkXkKrI9KNT/jpKv2pxZMMrS+axVZyYGFc4nn82zIQPV6XGAM/I3p9fVWU=
+X-Received: by 2002:a5d:4403:: with SMTP id z3mr25405263wrq.29.1566333480412;
+ Tue, 20 Aug 2019 13:38:00 -0700 (PDT)
 MIME-Version: 1.0
-From:   Daniel Clarke <dan@e-dan.co.uk>
-Date:   Tue, 20 Aug 2019 20:42:31 +0100
-Message-ID: <CAP-b2nNHVnfDyC2-F2pWtwUgjZxcqfwqYvNcBmknd5ZHauWoUw@mail.gmail.com>
-Subject: BTRFS unable to mount after one failed disk in RAID 1
-To:     linux-btrfs@vger.kernel.org
+References: <CAP-b2nNHVnfDyC2-F2pWtwUgjZxcqfwqYvNcBmknd5ZHauWoUw@mail.gmail.com>
+In-Reply-To: <CAP-b2nNHVnfDyC2-F2pWtwUgjZxcqfwqYvNcBmknd5ZHauWoUw@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 20 Aug 2019 14:37:49 -0600
+Message-ID: <CAJCQCtQDs00bs=L_W39XhdJm5iRZPP1F_NrFhn3F3JLNR8g_wQ@mail.gmail.com>
+Subject: Re: BTRFS unable to mount after one failed disk in RAID 1
+To:     Daniel Clarke <dan@e-dan.co.uk>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Tue, Aug 20, 2019 at 1:42 PM Daniel Clarke <dan@e-dan.co.uk> wrote:
 
-I'm having some trouble recovering my data after a single disk has
-failed in a raid1 two disk setup.
-
-The original setup:
-mkfs.btrfs -L MASTER /dev/sdb1
-mount -o compress=zstd,noatime /dev/sdb1 /mnt/master
-btrfs subvolume create /mnt/master/home
-btrfs device add /dev/sdc1 /mnt/master
-btrfs balance start -dconvert=raid1 -mconvert=raid1 /mnt/master
-
-Mount after in fstab:
-
-UUID=70a651ab-4837-4891-9099-a6c8a52aa40f /mnt/master     btrfs
-defaults,noatime,compress=zstd 0      0
-
-Was working fine for about 8 months, however I found the filesystem
-went to read only, and after a restart, would not mount at all. A
-failed disk seems to be the cause.
-
-I'm trying to get the files off the other disk, but it will not mount.
-
-Some info:
-~$ blkid /dev/sdc1
-/dev/sdc1: LABEL="MASTER" UUID="70a651ab-4837-4891-9099-a6c8a52aa40f"
-UUID_SUB="150986ba-521c-4eb0-85ec-9435edecaf2a" TYPE="btrfs"
-PARTUUID="50a736da-aba8-224a-8e82-f1322ede466f"
-
-~$ btrfs --version
-btrfs-progs v4.15.1
-
-~$ btrfs fi show
-warning, device 2 is missing
-bytenr mismatch, want=1057828618240, have=0
-Label: 'MASTER'  uuid: 70a651ab-4837-4891-9099-a6c8a52aa40f
-Total devices 2 FS bytes used 1001.59GiB
-devid    1 size 1.82TiB used 1003.03GiB path /dev/sdc1
-*** Some devices missing
-
-Things I've tried:
-
-~$ mount -t btrfs -o ro,usebackuproot,compress=zstd /dev/sdc1 /mnt/maindisk
-mount: /mnt/maindisk: wrong fs type, bad option, bad superblock on
-/dev/sdc1, missing codepage or helper program, or other error.
-
-In dmesg:
-[ 4044.456472] BTRFS info (device sdc1): trying to use backup root at mount time
-[ 4044.456478] BTRFS info (device sdc1): use zstd compression, level 0
-[ 4044.456481] BTRFS info (device sdc1): disk space caching is enabled
-[ 4044.456482] BTRFS info (device sdc1): has skinny extents
-[ 4044.802419] BTRFS error (device sdc1): devid 2 uuid
-a3889c61-07b3-4165-bc37-e9918e41ea8d is missing
-[ 4044.802426] BTRFS error (device sdc1): failed to read chunk tree: -2
-[ 4044.863400] BTRFS error (device sdc1): open_ctree failed
-
-Pretty much the same thing with other mount options, with same
-messages in dmesg.
-
-~$ btrfs check --init-extent-tree /dev/sdc1
-warning, device 2 is missing
-Checking filesystem on /dev/sdc1
-UUID: 70a651ab-4837-4891-9099-a6c8a52aa40f
-Creating a new extent tree
-bytenr mismatch, want=1058577645568, have=0
-Error reading tree block
-error pinning down used bytes
-ERROR: attempt to start transaction over already running one
-extent buffer leak: start 1768503115776 len 16384
-
-~$ btrfs rescue super-recover -v /dev/sdc1
-All Devices:
-Device: id = 1, name = /dev/sdc1
-
-Before Recovering:
-[All good supers]:
-device name = /dev/sdc1
-superblock bytenr = 65536
-
-device name = /dev/sdc1
-superblock bytenr = 67108864
-
-device name = /dev/sdc1
-superblock bytenr = 274877906944
-
-[All bad supers]:
-
-All supers are valid, no need to recover
+> ~$ btrfs check --init-extent-tree /dev/sdc1
+> warning, device 2 is missing
+> Checking filesystem on /dev/sdc1
+> UUID: 70a651ab-4837-4891-9099-a6c8a52aa40f
+> Creating a new extent tree
+> bytenr mismatch, want=3D1058577645568, have=3D0
+> Error reading tree block
+> error pinning down used bytes
+> ERROR: attempt to start transaction over already running one
+> extent buffer leak: start 1768503115776 len 16384
 
 
-~$ sudo btrfs restore -mxs /dev/sdc1 /mnt/ssd1/
-warning, device 2 is missing
-bytenr mismatch, want=1057828618240, have=0
-Could not open root, trying backup super
-warning, device 2 is missing
-bytenr mismatch, want=1057828618240, have=0
-Could not open root, trying backup super
-warning, device 2 is missing
-bytenr mismatch, want=1057828618240, have=0
-Could not open root, trying backup super
+This very likely has made the problem much worse and will prevent data
+recovery, especially given the old version of btrfs-progs you were
+using. This option is explicitly listed in the man page as a dangerous
+option, *and* it comes with a note:
 
-~$ btrfs check /dev/sdc1
-warning, device 2 is missing
-bytenr mismatch, want=1057828618240, have=0
-ERROR: cannot open file system
+               Do not use unless you know what you=E2=80=99re doing.
 
-~$ btrfs rescue zero-log /dev/sdc1
-warning, device 2 is missing
-bytenr mismatch, want=1057828618240, have=0
-ERROR: could not open ctree
+That you used this option without first trying to use 'degraded' mount
+option (or at least you didn't say you tried it), suggests you don't
+know what you're doing.
 
-I'm only interested in getting it read-only mounted so I can copy
-somewhere else. Any ideas you have are welcome!
+Otherwise, had you not used this option I'd have suggested the following:
 
-Many Thanks,
+> ~$ mount -t btrfs -o ro,usebackuproot,compress=3Dzstd /dev/sdc1 /mnt/main=
+disk
+> mount: /mnt/maindisk: wrong fs type, bad option, bad superblock on
+> /dev/sdc1, missing codepage or helper program, or other error.
 
-Daniel Clarke
+I would use mount -o ro,degraded, check the kernel messages, see if
+this mounts and your latest files are intact, make a backup of
+important files while you have the chance. If this does not mount then
+try:
+
+mount -o ro,degraded,norecovery   ##same as nologreplay
+
+>~$ btrfs --version
+>btrfs-progs v4.15.1
+
+Before proceeding further I recommend newer btrfs-progs, that's old
+enough I'm not totally certain of the 'btrfs replace' status - it's
+probably fine, I just can't vouch for it because a lot of bugs have
+been fixed since this version. You didn't mention kernel but since
+you're using zstd it must be 4.14 or newer, and that should be safe to
+proceed, but I'll recommend 5.1.20+, or the newest long term kernel
+you can use.
+
+Next,
+
+mount -o degraded
+## or if already ro mounted
+mount -o remount,rw,degraded
+
+Choose one:
+
+##replacement device is same size or bigger than the failed drive
+btrfs replace start
+btrfs fi resize X:max
+
+##replacement device is smaller than the failed drive
+brtfs dev add
+btrfs dev rem missing
+
+Of course you need to read the man page and ensure you specify the
+correct devices to add and remove (the failed device can be referred
+to as "missing" without quotes) and proper mount points. Using replace
+is faster than dev add + dev rem, but filesystem resize is not
+included. Where btrfs dev add + dev rem will resize the file system
+(twice actually).
+
+It should be safe to just immediately mount degraded and start one of
+the replacement processes, while you do your backup refresh. But I'm
+very conservative and tend to start with an ro,degraded mount, that
+way if there are problems I have made very few changes to the file
+system and I also have decent backups.
+
+--=20
+Chris Murphy
