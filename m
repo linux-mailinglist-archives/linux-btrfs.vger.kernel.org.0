@@ -2,140 +2,138 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 625C8968CD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 20:58:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 607209692B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 21:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730119AbfHTS47 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Aug 2019 14:56:59 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:54593 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729231AbfHTS46 (ORCPT
+        id S1730142AbfHTTMc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Aug 2019 15:12:32 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:32799 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730088AbfHTTMb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Aug 2019 14:56:58 -0400
-X-Originating-IP: 88.191.131.7
-Received: from [192.168.1.167] (unknown [88.191.131.7])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 0A6E9FF804;
-        Tue, 20 Aug 2019 18:56:55 +0000 (UTC)
-Subject: Re: Unable to mount, even in recovery, parent transid verify failed
- on raid 1
-To:     David Radford <croxis@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CABJoFDA-ZwF3ZDpajHo3288NcV+_NO5BAsXv7yTe_hqqRNv0PQ@mail.gmail.com>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-Openpgp: preference=signencrypt
-Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
- 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
- BtUAN08OPA==
-Message-ID: <79c2e4e9-735b-f526-04be-60069a2149c4@petaramesh.org>
-Date:   Tue, 20 Aug 2019 20:56:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Tue, 20 Aug 2019 15:12:31 -0400
+Received: by mail-qt1-f196.google.com with SMTP id v38so1710qtb.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Aug 2019 12:12:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=k63u3B7AhoOTq5HSdjeUreax738FiWQeFg9CY+QxMlQ=;
+        b=dN027u6IW2XikH+ra0mc1E8WtAd51XS6Dx4UDpTTqCZGFYRUTZ9UDZwPto5HteUJIW
+         rrFS8kHwv2m05NpAcUsa8IpAccZ4U1/AT5gxQUrzHH5rCS+YZOzShHR2abcG1HrRNVXc
+         XMKoEqLvv7JbsuT76RnY4/sbh0lPEgSsh4wje1tapW51TRRs1cPGBqsU+TnlEYVIatbG
+         gqpMLBkuURY3R1mdLLYYl4aof9fx3taSycBcuJyBGO9oY/V31DhaAcgdqRrJmtS/tD9B
+         bdfIzLuZzKliyZ7MU6n5qosEi1NcfSD6YN+YWOd4aBLWu980lBW5ft9N2csSt6NjmeCQ
+         Yk+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=k63u3B7AhoOTq5HSdjeUreax738FiWQeFg9CY+QxMlQ=;
+        b=gVqf1sFyMrxIp8FiSDZYnd4TSsPhac+tPREoiG7hOh9dkePjhN5qaBk2CZfKWIiiSZ
+         1tbAJWeRayqlssqbFqjZEpH+tHuuuNOhUEi2tVdX6mZyYXXKfk8+I12otmXp/x40Qc5R
+         m5lesaz7bfayBNfW5mYuP2v0xjiFArX3kF8WYO7rfopbhMD2iaw1OjS+BvNrz79qGxdf
+         iY1bsqznfdhupJ6NO1VegoGBBygpJsZMGnthowTT4URtFyfNVUr/UzoLAhKl2L/9SCaA
+         9SIGAwloBlWPbFCwj4NMIyhQ1QK/jiOAicj22ZZMRIBWjhO0jPDBOuzg2alQ+CmLwSDI
+         R3cg==
+X-Gm-Message-State: APjAAAX96jA1p4PP9Tnza+gyqcJ9zmAo6aKkF7/VPXV79QV+xhNYuARr
+        LKRqf+aJqzI44ppUKCbRCP8bCA==
+X-Google-Smtp-Source: APXvYqz0DnL92PeZS9bAeGTzIIBmk8rmTvpjhW6ZXVuhPIGP0Lg3BngE7JXGaiUlqUqG1g0yveHg5w==
+X-Received: by 2002:ac8:4117:: with SMTP id q23mr28197120qtl.305.1566328350398;
+        Tue, 20 Aug 2019 12:12:30 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id u45sm9434391qta.13.2019.08.20.12.12.29
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 20 Aug 2019 12:12:29 -0700 (PDT)
+Date:   Tue, 20 Aug 2019 15:12:28 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/5] btrfs: change the minimum global reserve size
+Message-ID: <20190820191227.xukyhs3idfemila2@MacBook-Pro-91.local>
+References: <20190816152019.1962-1-josef@toxicpanda.com>
+ <20190816152019.1962-2-josef@toxicpanda.com>
+ <761ca884-2f9a-dc44-65db-d9a4db61bf78@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <CABJoFDA-ZwF3ZDpajHo3288NcV+_NO5BAsXv7yTe_hqqRNv0PQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: fr-FR
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <761ca884-2f9a-dc44-65db-d9a4db61bf78@suse.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks like the FS suicide I had the first time I upgraded to kernel 5.2...
+On Tue, Aug 20, 2019 at 04:45:15PM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 16.08.19 г. 18:20 ч., Josef Bacik wrote:
+> > It made sense to have the global reserve set at 16M in the past, but
+> > since it is used less nowadays set the minimum size to the number of
+> > items we'll need to update the main trees we update during a transaction
+> > commit, plus some slop area so we can do unlinks if we need to.
+> > 
+> > In practice this doesn't affect normal file systems, but for xfstests
+> > where we do things like fill up a fs and then rm * it can fall over in
+> > weird ways.  This enables us for more sane behavior at extremely small
+> > file system sizes.
+> > 
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > ---
+> >  fs/btrfs/block-rsv.c | 22 +++++++++++++++++++++-
+> >  1 file changed, 21 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+> > index c64b460a4301..657675eef443 100644
+> > --- a/fs/btrfs/block-rsv.c
+> > +++ b/fs/btrfs/block-rsv.c
+> > @@ -258,6 +258,7 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
+> >  	struct btrfs_block_rsv *block_rsv = &fs_info->global_block_rsv;
+> >  	struct btrfs_space_info *sinfo = block_rsv->space_info;
+> >  	u64 num_bytes;
+> > +	unsigned min_items;
+> >  
+> >  	/*
+> >  	 * The global block rsv is based on the size of the extent tree, the
+> > @@ -267,7 +268,26 @@ void btrfs_update_global_block_rsv(struct btrfs_fs_info *fs_info)
+> >  	num_bytes = btrfs_root_used(&fs_info->extent_root->root_item) +
+> >  		btrfs_root_used(&fs_info->csum_root->root_item) +
+> >  		btrfs_root_used(&fs_info->tree_root->root_item);
+> > -	num_bytes = max_t(u64, num_bytes, SZ_16M);
+> > +
+> > +	/*
+> > +	 * We at a minimum are going to modify the csum root, the tree root, and
+> > +	 * the extent root.
+> > +	 */
+> > +	min_items = 3;
+> > +
+> > +	/*
+> > +	 * But we also want to reserve enough space so we can do the fallback
+> > +	 * global reserve for an unlink, which is an additional 5 items (see the
+> > +	 * comment in __unlink_start_trans for what we're modifying.)
+> > +	 *
+> > +	 * But we also need space for the delayed ref updates from the unlink,
+> > +	 * so its 10, 5 for the actual operation, and 5 for the delayed ref
+> > +	 * updates.
+> > +	 */
+> > +	min_items += 10;
+> > +
+> > +	num_bytes = max_t(u64, num_bytes,
+> > +			  btrfs_calc_insert_metadata_size(fs_info, min_items));
+> 
+> For ordinary, 16k nodesize filesystem, btrfs_calc_insert_metadata_size
+> will really return 3.4m -> 16 * 8 * 2 * 13 * 1024 = 3407872 bytes . In
+> those cases I expect that the code will always be doing num_bytes =
+> num_bytes.
+> 
 
-Le 20/08/2019 à 20:17, David Radford a écrit :
-> I have two 2TB spinning disks with full disk btrfs in raid 1. I am
-> unable to mount the disks using any method I have found online. I've
-> attached what I hope are the relevant logs. I had to edit them down to
-> meet the file size limit.
-> 
-> uname: Linux babylon 5.2.9-arch1-1-custom-btrfs #1 SMP PREEMPT Mon Aug
-> 19 06:41:35 PDT 2019 x86_64 GNU/Linux (Standard Arch Linux kernel
-> compiled with Qu's new rescue patch
-> https://patchwork.kernel.org/project/linux-btrfs/list/?series=130637)
-> 
-> btrfs-progs v5.2.1
-> 
-> [root@babylon ~]# btrfs fi show
-> Label: 'linux'  uuid: 3fd368de-157c-4512-8985-2be93a21a371
->     Total devices 1 FS bytes used 102.48GiB
->     devid    1 size 119.24GiB used 110.31GiB path /dev/sdb1
-> 
-> Label: none  uuid: 2507581c-dec0-4fdd-afe7-1f7c7ff66c6d (this is the
-> one unountable)
->     Total devices 2 FS bytes used 1.54TiB
->     devid    1 size 1.82TiB used 790.03GiB path /dev/sdc
->     devid    2 size 1.82TiB used 790.03GiB path /dev/sdd
-> 
-> mounting with usebackuproot and rescue=skip_bg results in
-> [ 1088.130629] BTRFS info (device sdc): trying to use backup root at mount time
-> [ 1088.130633] BTRFS info (device sdc): disk space caching is enabled
-> [ 1088.130635] BTRFS info (device sdc): has skinny extents
-> [ 1088.135907] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.151587] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.151605] BTRFS warning (device sdc): failed to read root (objectid=2): -5
-> [ 1088.151902] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.152134] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.152143] BTRFS warning (device sdc): failed to read root (objectid=2): -5
-> [ 1088.152519] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.152633] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.152640] BTRFS warning (device sdc): failed to read root (objectid=2): -5
-> [ 1088.153462] BTRFS error (device sdc): parent transid verify failed
-> on 343428399104 wanted 18163 found 19034
-> [ 1088.153690] BTRFS error (device sdc): parent transid verify failed
-> on 343428399104 wanted 18163 found 19034
-> [ 1088.153699] BTRFS warning (device sdc): failed to read root (objectid=4): -5
-> [ 1088.154714] BTRFS error (device sdc): parent transid verify failed
-> on 343428399104 wanted 18163 found 19034
-> [ 1088.154915] BTRFS error (device sdc): parent transid verify failed
-> on 343428399104 wanted 18163 found 19034
-> [ 1088.154921] BTRFS warning (device sdc): failed to read root (objectid=4): -5
-> [ 1088.261675] BTRFS error (device sdc): open_ctree failed
-> 
-> btrfs-find-root log attached
-> 
-> I do have partial backup but it is a little outdated and would really
-> appreciate help either fixing the filesystem, or finding out how to
-> recover it with as minimal loss as possible. Thank you for the help!
-> 
+Right, generally this will always be num_bytes = num_bytes.  This is mostly for
+things like xfstests which start with empty fs's and then fill up the fs with
+data, so you only have like 200kib of metadata ever, so it ends up being the
+btrfs_calc_insert_metadat_size() amount.  Thanks,
 
--- 
-ॐ
-
-Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
+Josef
