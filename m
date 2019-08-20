@@ -2,92 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FE9B95F6E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 15:05:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2707D96166
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 15:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729261AbfHTNF0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Aug 2019 09:05:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49964 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727006AbfHTNFZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Aug 2019 09:05:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 76112AE42;
-        Tue, 20 Aug 2019 13:05:24 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 56B46DA7DA; Tue, 20 Aug 2019 15:05:50 +0200 (CEST)
-Date:   Tue, 20 Aug 2019 15:05:50 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc:     Anand Jain <anand.jain@oracle.com>, Chris Mason <clm@fb.com>,
+        id S1730266AbfHTNk6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Aug 2019 09:40:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35808 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730237AbfHTNkx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 20 Aug 2019 09:40:53 -0400
+Received: from sasha-vm.mshome.net (unknown [12.236.144.82])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B587622DD3;
+        Tue, 20 Aug 2019 13:40:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1566308452;
+        bh=kXBUgL0Xmp8Au5PXKEfhptc9iWLrCWUwIQpyw62rx6U=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=SLUG7/3Z0w9jaKGiAvA64J4YDZu83sQ0w/ssMZevllU4geRqhVTP/CM0useKgU11P
+         waUTU6Xj8pFwHskAxr1xy7frq7BOrfTLhk1yE8rRUvPPvzmx6o+5P8YfjPeM6Ajvtv
+         3S4s0QVUz0TnDVfbnhUH32h/KUVu/dzK4VQA5HA8=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Qu Wenruo <wqu@suse.com>, Nikolay Borisov <nborisov@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
         David Sterba <dsterba@suse.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Matias Bjorling <Matias.Bjorling@wdc.com>
-Subject: Re: [PATCH v3 03/27] btrfs: Check and enable HMZONED mode
-Message-ID: <20190820130419.GP24086@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Naohiro Aota <Naohiro.Aota@wdc.com>,
-        Anand Jain <anand.jain@oracle.com>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, Hannes Reinecke <hare@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Matias Bjorling <Matias.Bjorling@wdc.com>
-References: <20190808093038.4163421-1-naohiro.aota@wdc.com>
- <20190808093038.4163421-4-naohiro.aota@wdc.com>
- <edcb46f5-1c3e-0b69-a2d9-66164e64b07e@oracle.com>
- <BYAPR04MB5816FCD8F3A0330C8B3DC609E7AF0@BYAPR04MB5816.namprd04.prod.outlook.com>
- <86ef7944-0029-3d61-0ae3-874015726751@oracle.com>
- <20190820050737.ngyaamjkdmzvhlqj@naota.dhcp.fujisawa.hgst.com>
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.2 22/44] btrfs: trim: Check the range passed into to prevent overflow
+Date:   Tue, 20 Aug 2019 09:40:06 -0400
+Message-Id: <20190820134028.10829-22-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190820134028.10829-1-sashal@kernel.org>
+References: <20190820134028.10829-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190820050737.ngyaamjkdmzvhlqj@naota.dhcp.fujisawa.hgst.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 20, 2019 at 02:07:37PM +0900, Naohiro Aota wrote:
-> >>>>cannot be located over sequential zones and there is no guarantees that the
-> >>>>device will have enough conventional zones to store this cache. Resolve
-> >>>>this problem by disabling completely the space cache.  This does not
-> >>>>introduces any problems with sequential block groups: all the free space is
-> >>>>located after the allocation pointer and no free space before the pointer.
-> >>>>There is no need to have such cache.
-> >>>>
-> >>>>For the same reason, NODATACOW is also disabled.
-> >>>>
-> >>>>Also INODE_MAP_CACHE is also disabled to avoid preallocation in the
-> >>>>INODE_MAP_CACHE inode.
-> >>>
-> >>>   A list of incompatibility features with zoned devices. This need better
-> >>>   documentation, may be a table and its reason is better.
-> >>
-> >>Are you referring to the format of the commit message itself ? Or would you like
-> >>to see a documentation added to Documentation/filesystems/btrfs.txt ?
-> >
-> > Documenting in the commit change log is fine. But it can be better
-> > documented in a listed format as it looks like we have a list of
-> > features which will be incompatible with zoned devices.
-> >
-> >more below..
-> 
-> Sure. I will add a table in the next version.
-> 
-> btrfs.txt seems not to have much there.
+From: Qu Wenruo <wqu@suse.com>
 
-We don't use the in-kernel documentation, it's either the wiki or the
-manual pages in btrfs-progs. The section 5 page contains some generic
-topics, eg. the swapfile limitations are there.
+[ Upstream commit 07301df7d2fc220d3de5f7ad804dcb941400cb00 ]
+
+Normally the range->len is set to default value (U64_MAX), but when it's
+not default value, we should check if the range overflows.
+
+And if it overflows, return -EINVAL before doing anything.
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/extent-tree.c | 14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 5faf057f6f37f..b8f4720879021 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -11226,6 +11226,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 	struct btrfs_device *device;
+ 	struct list_head *devices;
+ 	u64 group_trimmed;
++	u64 range_end = U64_MAX;
+ 	u64 start;
+ 	u64 end;
+ 	u64 trimmed = 0;
+@@ -11235,16 +11236,23 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 	int dev_ret = 0;
+ 	int ret = 0;
+ 
++	/*
++	 * Check range overflow if range->len is set.
++	 * The default range->len is U64_MAX.
++	 */
++	if (range->len != U64_MAX &&
++	    check_add_overflow(range->start, range->len, &range_end))
++		return -EINVAL;
++
+ 	cache = btrfs_lookup_first_block_group(fs_info, range->start);
+ 	for (; cache; cache = next_block_group(cache)) {
+-		if (cache->key.objectid >= (range->start + range->len)) {
++		if (cache->key.objectid >= range_end) {
+ 			btrfs_put_block_group(cache);
+ 			break;
+ 		}
+ 
+ 		start = max(range->start, cache->key.objectid);
+-		end = min(range->start + range->len,
+-				cache->key.objectid + cache->key.offset);
++		end = min(range_end, cache->key.objectid + cache->key.offset);
+ 
+ 		if (end - start >= range->minlen) {
+ 			if (!block_group_cache_done(cache)) {
+-- 
+2.20.1
+
