@@ -2,29 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C28C96DDC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 01:39:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D8A96DE5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 01:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726482AbfHTXj0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Aug 2019 19:39:26 -0400
-Received: from mout.gmx.net ([212.227.15.15]:45155 "EHLO mout.gmx.net"
+        id S1726203AbfHTXps (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Aug 2019 19:45:48 -0400
+Received: from mout.gmx.net ([212.227.17.21]:41523 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726151AbfHTXjZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Aug 2019 19:39:25 -0400
+        id S1726128AbfHTXps (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 20 Aug 2019 19:45:48 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1566344363;
-        bh=0Ub6qgfZge2tyQkLG+Z2dBIRpSeZvbwLN6DGl3Qe6FE=;
+        s=badeba3b8450; t=1566344746;
+        bh=jmR8eNNkTRidNwL+pmm3BZhb3nTrCf4rMqrRbhywDPY=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Mof+/05Og1QtbbyTGAzPfktqZKtpqXlwu0lrLrWR+RWVFgrN1Lyj5e8LL9GfCPV1Y
-         4OiMlIsLiK//5TimPKIhlLV4CKKpWL0RvYE9Rl2zcrUTsT087v4OZG29SdeoL0Ovn3
-         EpKZPM9OtCyQaBt/KdD8SJgUjpJbTfcA0S8Nn4Uk=
+        b=KeB0JzJ98z9OoWJfZc+vyMab+r+xUyzLbJfstnhLbUoSmAQVxcMXTgYEAIPzuGA3g
+         M/3kcuTvdleuVqtEN9hRZuDmJmFB8ruaC49Gjtm//aim1le/eBc4mksiI7pSvfXVpN
+         wvmy3AZcL+nuUG9qiFFR1A1Ts0mRLinP5mn83lGg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N8GMk-1iMCXy20Om-01497I; Wed, 21
- Aug 2019 01:39:23 +0200
-Subject: Re: BTRFS unable to mount after one failed disk in RAID 1
-To:     Daniel Clarke <dan@e-dan.co.uk>, linux-btrfs@vger.kernel.org
-References: <CAP-b2nNHVnfDyC2-F2pWtwUgjZxcqfwqYvNcBmknd5ZHauWoUw@mail.gmail.com>
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2Dx8-1iNq4N0Vd0-013gOu; Wed, 21
+ Aug 2019 01:45:45 +0200
+Subject: Re: Chasing IO errors. BTRFS: error (device dm-2) in
+ btrfs_run_delayed_refs:2907: errno=-5 IO failure
+To:     Peter Chant <pete@petezilla.co.uk>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <fc2b166a-4466-4a5a-ee88-da5e57ee89b6@petezilla.co.uk>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -51,246 +53,154 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <cafc855e-b030-83ff-2984-dfb45a36d1b3@gmx.com>
-Date:   Wed, 21 Aug 2019 07:39:19 +0800
+Message-ID: <dd6a2a4d-1f96-2b87-acee-1348cc73503e@gmx.com>
+Date:   Wed, 21 Aug 2019 07:45:41 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CAP-b2nNHVnfDyC2-F2pWtwUgjZxcqfwqYvNcBmknd5ZHauWoUw@mail.gmail.com>
+In-Reply-To: <fc2b166a-4466-4a5a-ee88-da5e57ee89b6@petezilla.co.uk>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="luF8TudM5ptxoLeFfT6vVfHegkleRDqxn"
-X-Provags-ID: V03:K1:bke6U9tyWTohgszDooIVa/WGjhliCH5EBEmbtfZd9JASOmcYh33
- rfxzNropdlFQJjjDOza894d76TCN6goT/etRmWXnMUAIAr34Azj0YrgkVrN7iyiJDiJnQiK
- InuV411MgKBf9gtiDUCthbck5WE6aWyeBOGpAbU1P3h+dOchAF3cXmUyuV58tKosHkAcKbm
- fJ9h7XXdZm2Tl20nqhUeg==
+ boundary="0Ud833rf7D3yuNk1KeFziILV05Dm0zU1D"
+X-Provags-ID: V03:K1:EqnWfjIEZ6qamYWczJs5N+4CK1Epupm/UyYrN8dQ8gWITdWBE1F
+ V+qCCRNCC5FSao7yy8shsSxdTh5shnVFWdo+N1g5oZE+2aqUuifIPn1RNpNAXYxhh0PvMsw
+ 8rY8yJ9xrV5ExQan9VAQEf0O2fcxa04WnMblImNV7HEgjee4ptb36BFzbKAbwUQ725HrQ6p
+ 1jc4ba8oGtgeqapPUS5Sg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:pPUurIkVJ/o=:PriukUKp97XUuQhQlt7uqA
- liAYBMhnGqdRR1ksFSgLOT+YLCGGSSb60/VpHLUrJk1XM61F2Fj7BRkLJYMH6D2oIolBTiGEG
- i5ajlL4dQ7BgPWaIjd1o7NcOjh9un7NCPAXuCPJDoxKbgz/jo5daLqYKlnK47qt1dgk5x85CO
- 5xK2GvWeHBVKOZbr06KAKXqqeSuSuIprcvB1pZXbLTycG+j5FzYThAjB8/ISizHx0K5nGlxYa
- 3kDgCHeIC+T2FZJPye87+Ls0kNDIBPYH9sn0V5+dtgyy6LLu/eB7HHKqO6ozH/8uxSwhewGbY
- fZ5Afe/CZY6iFU81ypeUSLub4pq5FWCqGMathi0FGfmH4dlbO6C/aXerj5HaOR9kMPhQtlbwR
- svA/WL0mpAEa+R3lH3en8K0ChgTVhh/uPIxIz3fZL8uUT56nRD9PR8SJhZKFgeZ+Y0NXxNQGN
- CvEZZixKPyaucmKW8HH4CxWKOzsVz5Zz/GTJGxw+/pvoSyrX2Vhq6BkMAYKnVAoc1c2pVrqg7
- AU5rvDkc0vVnWB6eK8zpVzs0q9PhgXkkks4HbnFM4SKD68lRI4ISronAjEqil7S7BitX+S3Xq
- 4ixWzHCWXA7eIBYzBGfOAh9pHA1296YwPzkZTufxThfcBQKqcS5O2rXaz08H8uSmlXjwS2la9
- yMzWg1tcwpUX2RN8WstzG55Am2Qmnq/Z5pJAX9SkiQomtjqvlCF7mP7Djg/shaodl6E0RNVx/
- FhAOeHkNx1uvEXO5N7L5OJuzFIFE6I69ON1tgwYW8C6h5CHyBlmPoom5u8tTv6qEX0Y2nI8sL
- d4x+APJkZ9VxrIDdNIW+eGbOn3LwV8XU7xyJGMUReDDQ8NU9ClHPuNK3c4kURzVsInaVEc2kC
- YUi41nq0M47R+4+LdTfE3pNGeQRGw48NJ8JZG0lPG2SCKkWIDijbT7GwTOD7Om+7UCH0tXB70
- FK45G33dFi/10ynDrlW2vlPB8mtCzvajCUD2sXJtHPm9pDxUz1auVV5MHxn2tv0UBqqT/N26T
- 2RTO7HqSnfTFQcvSYxQ0cWlYqFhbBa45hji/nITKiofpLuNsbRexC6+pFl3SmIpeNtdGGtn+E
- C58h4kA+DBNl0vy7oxQMCiyTCfd1YxVBGERZdA1gX+hl4N/CcXBgPkgyg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:EjxszmHowAk=:zaxr2sfks1fxaJHy/5lsyK
+ lUzIn4n3eS0WhoZ3wLLyGbxiIAOGX65fJeK/PtnfcSUAhQ2V3TdqCdV61Yl8jvmghkLtX2jCC
+ UnfJKKIrxvYCULqvCern2c/ARAKmwm9BYwLBw+0O4hhZ0g5YCug+mtvWNKphOxHF6oDQX/jZa
+ v6eekFnB7ERhggSx58XzMlQcES+yAptmE5T/G0OSuYEpq0E8R6weg0FWWyej8DjDCDVaR172U
+ GUFXEY82QjaTWFdQIIMvlrkAiubGFVH3kIwNewwntrh44945gvK3ZHq4P35NrCnpLM7rXJ0pk
+ Fyg/IrOy8HVHE2k9Gyk7igF4RmYDERe/rMddKIxj/nveEqeyv2vVoCzJ36yz+SS4dWycm5Cef
+ XLeIRG33I+BzRJO2kjTz4hT3VmiybHlTfr12uKsLjbiYtZhxE2XgMAV8dLFiEQryPejOF1XYM
+ FrQzO3Se2ko1Eo2iU7x2nr2tf03256hNaYAOkFW4PbwiFjHxe/NQLiL9ofQjJQLGmN0kv67j9
+ 96uY5oIN4U89vQhzBowqhQ61FULPVJ5SzG9tl3/BXaG0r21cnrayy9TdQpNceRtgAb0L4Wnpt
+ oxu7CZMVu+xQ+uZ9WTM0NE3ukh48gW+Wv+Zr+wzkAdVBn9XDns08Mu4zqljg8d83scOKICuro
+ Vdqzu55ArXFOi65yucvqcNZcdHFpXsOuVNnxreW+2+42O+QPi4ntGzen+Yduzh9kIH0hqE7c1
+ 2hwsABWI5sOSNZ3oTXqpRGHVYaJGKwI3vTiKI1rsR8/eYryRGSZ1EfQSJErREjvKWJLqB1SNW
+ 4zPVoEH7dndYbUZt2bF/2bBz0tza+PKY1wSH9sN6sJdaVPSKLCazguIz29XgfENjVZHXG0/jk
+ Eq/4hRT9r+p4mJxIRRezsKebgbiTVcQq7GeWg/nMrc+41YAB9UfTWuk6AF9xZGP51blrVb0ek
+ u5EKQ4Qxyvhca8/QFdLtOsTvacCMXcpsd/ZuIYGmacM9utLioAPBU6rCMnA4OYZU3/AnO4m1p
+ BkxhAWVeTBlAOu8pbc4zWVgQQ+D2YqXRvNXBoHLlPAXh6Yw8O3I7MrjXUi1aHEheZ3GHGpHwk
+ YB9Qnn5CX+/X+YgkzQhm5QdRIa2rX85jGIrRazdR5JnkcRJiq7L0uXt3Q==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---luF8TudM5ptxoLeFfT6vVfHegkleRDqxn
-Content-Type: multipart/mixed; boundary="HOv6mAO7AxLRox6P8egCva8c1bx91nc7B";
+--0Ud833rf7D3yuNk1KeFziILV05Dm0zU1D
+Content-Type: multipart/mixed; boundary="iqfIMhILtj921wDt2ox73sBwbTL2A52sq";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Daniel Clarke <dan@e-dan.co.uk>, linux-btrfs@vger.kernel.org
-Message-ID: <cafc855e-b030-83ff-2984-dfb45a36d1b3@gmx.com>
-Subject: Re: BTRFS unable to mount after one failed disk in RAID 1
-References: <CAP-b2nNHVnfDyC2-F2pWtwUgjZxcqfwqYvNcBmknd5ZHauWoUw@mail.gmail.com>
-In-Reply-To: <CAP-b2nNHVnfDyC2-F2pWtwUgjZxcqfwqYvNcBmknd5ZHauWoUw@mail.gmail.com>
+To: Peter Chant <pete@petezilla.co.uk>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <dd6a2a4d-1f96-2b87-acee-1348cc73503e@gmx.com>
+Subject: Re: Chasing IO errors. BTRFS: error (device dm-2) in
+ btrfs_run_delayed_refs:2907: errno=-5 IO failure
+References: <fc2b166a-4466-4a5a-ee88-da5e57ee89b6@petezilla.co.uk>
+In-Reply-To: <fc2b166a-4466-4a5a-ee88-da5e57ee89b6@petezilla.co.uk>
 
---HOv6mAO7AxLRox6P8egCva8c1bx91nc7B
+--iqfIMhILtj921wDt2ox73sBwbTL2A52sq
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/8/21 =E4=B8=8A=E5=8D=883:42, Daniel Clarke wrote:
-> Hi,
->=20
-> I'm having some trouble recovering my data after a single disk has
-> failed in a raid1 two disk setup.
->=20
-> The original setup:
-> mkfs.btrfs -L MASTER /dev/sdb1
-> mount -o compress=3Dzstd,noatime /dev/sdb1 /mnt/master
-> btrfs subvolume create /mnt/master/home
-> btrfs device add /dev/sdc1 /mnt/master
-> btrfs balance start -dconvert=3Draid1 -mconvert=3Draid1 /mnt/master
->=20
-> Mount after in fstab:
->=20
-> UUID=3D70a651ab-4837-4891-9099-a6c8a52aa40f /mnt/master     btrfs
-> defaults,noatime,compress=3Dzstd 0      0
->=20
-> Was working fine for about 8 months, however I found the filesystem
-> went to read only,
+On 2019/8/21 =E4=B8=8A=E5=8D=884:36, Peter Chant wrote:
+> Chasing IO errors.  BTRFS: error (device dm-2) in
+> btrfs_run_delayed_refs:2907: errno=3D-5 IO failure
 
-Dmesg of that please.
+Full dmesg please.
 
-And there is a known bug that an aborted transaction can cause race and
-corrupt the fs.
-Please provide the kernel version of that RO event.
+This output should include a lot of info, like stack dump and several
+different error message.
 
-> and after a restart, would not mount at all. A
-> failed disk seems to be the cause.
+One single line with least amount of info is not going to help.
+>=20
+>=20
+> I've just had an odd one.
+>=20
+> Over the last few days I've noticed a file system blocking, if that is
+> the correct term, and this morning go read only.  This resulted in a lo=
+t
+> of checksum errors.
+>=20
+> Having spotted the file system go read only in the logs and then noted
+> the error message in the subject shortly after booting I assumed a
+> hardware error and changed the SATA cable.  That had no effect so I
+> isolated the disk and mounted the respective file system degraded.
+> Shortly after mounting the degraded file system I had the same error
+> again. So I unmounted the file system edited fstab and swapped the disk=
 
-Dmesg of the first mount failure please.
-It's hard to say just by the little info we get.
+> which I though originally had the error with the one now showing an err=
+or.
+>=20
+> The file system is btrfs, kernel 5.2.9, RAID 1 with three WD reds of 3,=
 
+> 3 and 4 TB.  btrfs is on top of luks.
 >=20
-> I'm trying to get the files off the other disk, but it will not mount.
->=20
-> Some info:
-> ~$ blkid /dev/sdc1
-> /dev/sdc1: LABEL=3D"MASTER" UUID=3D"70a651ab-4837-4891-9099-a6c8a52aa40=
-f"
-> UUID_SUB=3D"150986ba-521c-4eb0-85ec-9435edecaf2a" TYPE=3D"btrfs"
-> PARTUUID=3D"50a736da-aba8-224a-8e82-f1322ede466f"
->=20
-> ~$ btrfs --version
-> btrfs-progs v4.15.1
+> The original 'blocking' behaviour seemed to manifest itself as I
+> upgraded the kernel to 5.2.5 or 5.2.7 a day or two ago.  So I tried
+> 5.1.21 to see if that made a difference when the error was showing.  It=
 
-Too old, too dangerous, especially considering older btrfs-progs can
-cause further corruption if it hits some BUG_ON() or abort trans.
->=20
-> ~$ btrfs fi show
-> warning, device 2 is missing
-> bytenr mismatch, want=3D1057828618240, have=3D0
-> Label: 'MASTER'  uuid: 70a651ab-4837-4891-9099-a6c8a52aa40f
-> Total devices 2 FS bytes used 1001.59GiB
-> devid    1 size 1.82TiB used 1003.03GiB path /dev/sdc1
-> *** Some devices missing
->=20
-> Things I've tried:
->=20
-> ~$ mount -t btrfs -o ro,usebackuproot,compress=3Dzstd /dev/sdc1 /mnt/ma=
-indisk
-> mount: /mnt/maindisk: wrong fs type, bad option, bad superblock on
-> /dev/sdc1, missing codepage or helper program, or other error.
+> did not.  Yesterday I had a backup with rsync, started early in the
+> morning that should take minutes to complete still running 8h later wit=
+h
+> two CPU cores maxed.  Up until I had the file system go read only I had=
 
-You're using RO, it already means btrfs will try its best to mount
-unless vital tree blocks are missing.
+> not noticed anything amiss in the logs, but to be honest, I'd not looke=
+d
+> very hard.
 
->=20
-> In dmesg:
-> [ 4044.456472] BTRFS info (device sdc1): trying to use backup root at m=
-ount time
-> [ 4044.456478] BTRFS info (device sdc1): use zstd compression, level 0
-> [ 4044.456481] BTRFS info (device sdc1): disk space caching is enabled
-> [ 4044.456482] BTRFS info (device sdc1): has skinny extents
-> [ 4044.802419] BTRFS error (device sdc1): devid 2 uuid
-> a3889c61-07b3-4165-bc37-e9918e41ea8d is missing
-> [ 4044.802426] BTRFS error (device sdc1): failed to read chunk tree: -2=
+That run delayed refs failure mostly means extent tree corruption, or
+some known fixed bug.
 
-
-And that's the case, chunk tree blocks are missing.
-
-Please provide the following dump:
-
-# btrfs ins dump-super -FfA /dev/sdc1
-
-> [ 4044.863400] BTRFS error (device sdc1): open_ctree failed
->=20
-> Pretty much the same thing with other mount options, with same
-> messages in dmesg.
->=20
-> ~$ btrfs check --init-extent-tree /dev/sdc1
-
-Why you're doing so?! It's already mentioned --init-extent-tree is UNSAFE=
-!
-
-> warning, device 2 is missing
-> Checking filesystem on /dev/sdc1
-> UUID: 70a651ab-4837-4891-9099-a6c8a52aa40f
-> Creating a new extent tree
-> bytenr mismatch, want=3D1058577645568, have=3D0
-> Error reading tree block
-> error pinning down used bytes
-> ERROR: attempt to start transaction over already running one
-
-Transaction get aborted, exactly the situation where fs can get further
-corrupted.
-
-The only good news is, we shouldn't have written much data as it's
-happening in tree pinning down process, so no further damage.
-
-> extent buffer leak: start 1768503115776 len 16384
->=20
-> ~$ btrfs rescue super-recover -v /dev/sdc1
-> All Devices:
-> Device: id =3D 1, name =3D /dev/sdc1
->=20
-> Before Recovering:
-> [All good supers]:
-> device name =3D /dev/sdc1
-> superblock bytenr =3D 65536
->=20
-> device name =3D /dev/sdc1
-> superblock bytenr =3D 67108864
->=20
-> device name =3D /dev/sdc1
-> superblock bytenr =3D 274877906944
->=20
-> [All bad supers]:
->=20
-> All supers are valid, no need to recover
->=20
->=20
-> ~$ sudo btrfs restore -mxs /dev/sdc1 /mnt/ssd1/
-> warning, device 2 is missing
-> bytenr mismatch, want=3D1057828618240, have=3D0
-> Could not open root, trying backup super
-> warning, device 2 is missing
-> bytenr mismatch, want=3D1057828618240, have=3D0
-> Could not open root, trying backup super
-> warning, device 2 is missing
-> bytenr mismatch, want=3D1057828618240, have=3D0
-> Could not open root, trying backup super
->=20
-> ~$ btrfs check /dev/sdc1
-> warning, device 2 is missing
-> bytenr mismatch, want=3D1057828618240, have=3D0
-> ERROR: cannot open file system
->=20
-> ~$ btrfs rescue zero-log /dev/sdc1
-> warning, device 2 is missing
-> bytenr mismatch, want=3D1057828618240, have=3D0
-> ERROR: could not open ctree
->=20
-> I'm only interested in getting it read-only mounted so I can copy
-> somewhere else. Any ideas you have are welcome!
-
-It looks like some metadata tree blocks are still not in RAID1 mode.
-Needs that ins dump-super output to confirm.
+Please run btrfs check --readonly on that fs to see if it's corrupted.
+If not then it's probably some runtime bug.
 
 Thanks,
 Qu
 
 >=20
-> Many Thanks,
+> smartctl did not show anything amiss with the drives.
 >=20
-> Daniel Clarke
+> Does this sound like a hardware error?  I have ordered a replacement
+> drive, if it is not needed as a replacement I will put it into a
+> homebrew NAS.
+>=20
+> I've hit the issue again.  Hopefully the system is up long enough to
+> post this.
+>=20
+> I'm a bit worried that trying to track this down disconnecting a disk a=
+t
+> a time I might hit the btrfs split brain issue.
+>=20
+>=20
+>=20
+> Pete
 >=20
 
 
---HOv6mAO7AxLRox6P8egCva8c1bx91nc7B--
+--iqfIMhILtj921wDt2ox73sBwbTL2A52sq--
 
---luF8TudM5ptxoLeFfT6vVfHegkleRDqxn
+--0Ud833rf7D3yuNk1KeFziILV05Dm0zU1D
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1chKcACgkQwj2R86El
-/qikcgf8CILHlPiFFoIHfmODpzJXe8g5S3ahy+o3VB1ZUqY8SdnsTbqzGMWQYZFa
-vmrMdLwZRZqCuIauo8xR/XmBQB735jy+/DM7lGu2grgcYxm1E//dxqsjcdpgUePg
-S3zcg9EOKEBCIcjbiSep9rf21ZfeBvbS2tmpV+GSCfCm2c0kl35BChWRDkR1916M
-0O2EipvbGuWnyrEEIgerR3SPA38wDyMNh/Xz0DK5d+yfaH9xRv7aSQSzcTba2gym
-EJ/FqNdTI8BVcadUz8CMpEJalKwKPwUQoVwopNoZOsn7jnCGUGaoOTQsUhW3YEJs
-H1jbiuOrxR9zQ7TLXuxwyphgtksNDA==
-=LAuN
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1chiUACgkQwj2R86El
+/qh5oAf+N5TXgHL5RV2Xl0VNA0lUMTzI1y13PG0vC4sGgfzSrkHyuTBGhR92Rw3C
+D4wh8xor4XWkFtdPAixWv/42mZfEYE32mSUTP/T9YrCtYQTCrA4FF5fsB7tm6QOT
+RF+WxWSmfcabqyXjnFkn4ecXYFJb6lybLv2b6pLAMBykzKQ282KSvKrqDqpK74X6
+ywKIs4VfEK1vqI2LvervA5SYe7bZpOwM9bcHSJiTIIwtU3Q/EqEaJXS50vRpoPIQ
+XA7jZNy1CX0C50R2HKOKEWQpwhE6GULRTo3j5sstm5gPljxwQ4yQnt6bnUJ5k/7T
+Xi1hl4WmiOt6wPf+0j+p4ouZoxVRSg==
+=pkO+
 -----END PGP SIGNATURE-----
 
---luF8TudM5ptxoLeFfT6vVfHegkleRDqxn--
+--0Ud833rf7D3yuNk1KeFziILV05Dm0zU1D--
