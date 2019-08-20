@@ -2,69 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0839627E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 16:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B4696288
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 16:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730033AbfHTOcd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Aug 2019 10:32:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51292 "EHLO mx1.suse.de"
+        id S1730030AbfHTOe4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Aug 2019 10:34:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51872 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729912AbfHTOcd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Aug 2019 10:32:33 -0400
+        id S1730029AbfHTOe4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 20 Aug 2019 10:34:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 34E93AE87;
-        Tue, 20 Aug 2019 14:32:32 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B5240ACC2
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Aug 2019 14:34:55 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7B5C8DA7DA; Tue, 20 Aug 2019 16:32:58 +0200 (CEST)
-Date:   Tue, 20 Aug 2019 16:32:58 +0200
+        id 182D7DA7DA; Tue, 20 Aug 2019 16:35:22 +0200 (CEST)
+Date:   Tue, 20 Aug 2019 16:35:22 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Vladimir Panteleev <git@panteleev.md>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: balance: check for full-balance before
- background fork
-Message-ID: <20190820143258.GS24086@twin.jikos.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] btrfs: define compression levels statically
+Message-ID: <20190820143521.GT24086@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Vladimir Panteleev <git@panteleev.md>,
-        linux-btrfs@vger.kernel.org
-References: <20190817231434.1034-1-git@vladimir.panteleev.md>
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1565362438.git.dsterba@suse.com>
+ <78207f6784c457dad6583f7bc7eecc495c7d5d54.1565362438.git.dsterba@suse.com>
+ <ae30ae87-0e4a-af31-5a58-b32e7364588e@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190817231434.1034-1-git@vladimir.panteleev.md>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ae30ae87-0e4a-af31-5a58-b32e7364588e@suse.com>
 User-Agent: Mutt/1.5.23.1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Aug 17, 2019 at 11:14:34PM +0000, Vladimir Panteleev wrote:
-> Move the full-balance warning to before the fork, so that the user can
-> see and react to it.
+On Mon, Aug 12, 2019 at 11:30:42AM +0300, Nikolay Borisov wrote:
 > 
-> Notes on test:
 > 
-> - Don't use grep -q, as it causes a SIGPIPE during the countdown, and
->   the balance thus doesn't start.
+> On 9.08.19 г. 17:55 ч., David Sterba wrote:
+> > The maximum and default levels do not change and can be defined
+> > directly. The set_level callback was a temporary solution and will be
+> > removed.
+> > 
+> > Signed-off-by: David Sterba <dsterba@suse.com>
+> > ---
+> >  fs/btrfs/compression.h | 4 ++++
+> >  fs/btrfs/lzo.c         | 2 ++
+> >  fs/btrfs/zlib.c        | 2 ++
+> >  fs/btrfs/zstd.c        | 2 ++
+> >  4 files changed, 10 insertions(+)
+> > 
+> > diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+> > index 2035b8eb1290..07b2009dc63f 100644
+> > --- a/fs/btrfs/compression.h
+> > +++ b/fs/btrfs/compression.h
+> > @@ -162,6 +162,10 @@ struct btrfs_compress_op {
+> >  	 * if the level is out of bounds or the default if 0 is passed in.
+> >  	 */
+> >  	unsigned int (*set_level)(unsigned int level);
+> > +
+> > +	/* Maximum level supported by the compression algorithm */
+> > +	int max_level;
+> > +	int default_level;
 > 
-> - The "balance cancel" is superfluous as the last command, but it
->   provides some idempotence and allows adding more tests below it.
-> 
-> Fixes: https://github.com/kdave/btrfs-progs/issues/168
-> 
-> Signed-off-by: Vladimir Panteleev <git@vladimir.panteleev.md>
+> can levels be negative? If not just define those as unsigned ints and in
+> the next patch it won't be necessary to use min_t but plain min.
 
-Applied, thanks. The issues can be referenced as
-
-Issue: #168
-
-> --- a/tests/cli-tests/002-balance-full-no-filters/test.sh
-> +++ b/tests/cli-tests/002-balance-full-no-filters/test.sh
-> @@ -18,4 +18,9 @@ run_check $SUDO_HELPER "$TOP/btrfs" balance start "$TEST_MNT"
->  run_check $SUDO_HELPER "$TOP/btrfs" balance --full-balance "$TEST_MNT"
->  run_check $SUDO_HELPER "$TOP/btrfs" balance "$TEST_MNT"
->  
-> +run_check_stdout $SUDO_HELPER "$TOP/btrfs" balance start --background "$TEST_MNT" |
-> +	grep -F "Full balance without filters requested." ||
-
-This needs -q, otherwise the text appears in the output of make. Fixed.
+No, levels should be >= 0.
