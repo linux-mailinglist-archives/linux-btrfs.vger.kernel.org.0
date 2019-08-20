@@ -2,127 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1D539565A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 06:53:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E7A495676
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Aug 2019 07:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729257AbfHTExd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 20 Aug 2019 00:53:33 -0400
-Received: from esa5.hgst.iphmx.com ([216.71.153.144]:11098 "EHLO
+        id S1729222AbfHTFHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 20 Aug 2019 01:07:41 -0400
+Received: from esa5.hgst.iphmx.com ([216.71.153.144]:24738 "EHLO
         esa5.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729254AbfHTExc (ORCPT
+        with ESMTP id S1729211AbfHTFHl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 20 Aug 2019 00:53:32 -0400
+        Tue, 20 Aug 2019 01:07:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1566276812; x=1597812812;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=nBu49akIyAGHh9SzymnOJF+LRH5iJJ7A21f9W33xnCM=;
-  b=k+4OK7dptRKwYSCKSm+bPv9ph2KffdeZ6MfYQ8rQ4zjXi0PmWn3HN5DR
-   exZIHgSnqsewSuBkYTzXgsezosp4Yz6Xb8AbY1EadMv345n129hbaTq84
-   mdx97V/lVKVtyUf3aHR2XIigJGOfHrwwgcR4eGGyg87XGVxhSvuxJOMko
-   dpifrmnSqy5BCU6p6mKSSU3UtN61kS0T00Wn+iEccKds+IAhcWJT1Vz4e
-   0/p9usp0IAiq3ThtJC5aZmf+jpol+NTa2CNyNIc+PIHcPcxnw8R7qo/rF
-   OJVxxZEgayDYZUZitCMhQVCUl//y11SJlw014CQe3UU8TkYAdAFY/bpa8
-   A==;
-IronPort-SDR: 0kLPT1oFo6IybCzxEYd9iEDvtsooJanuZdCkf/ucljFCogmhWf3atRvYO0Am3U03ErqxW5/VsK
- v346Lr5yBPTFba2CjMT0gTlZYldP3cAbf2iL3eFsHkaU/b01qkpOfy+VezcAdeU1AfRzRCCzNf
- 7xR6nAXaNE8KCWiR7LA0uljNiA64grF2aRpk+0pP7daoHOxA5rMq7d5H97R+t/xGYQGZ8759f0
- AdDwrEQPzmowNUBXdkSf1kI3kAOZhJyOMIj90S0PwaXeA25FUQ6JKzkq5ScQz+He5oZPMwpAyG
- ZI4=
+  t=1566277660; x=1597813660;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=fl8BLF18hm58lWYLu4Ls1heitlaJ27vCTrR3jcNlaHs=;
+  b=UJiHQFTu/c9Yg863aVkzxe8O0iWRaur2agyIMgOSumtjqOlSzBF5/8On
+   fUtPS9Cq2qdXVA8dHTznZxIPDJaS6hfJiCIlscp4h66ulK69j5vy9AVFg
+   n9NFa3NSeBA5v6bgbrQ0ykOFBv5Uspo52rIWxfZ8PquNE2E6LF3crtmuh
+   XRsHfTHLMirNV3IHsu/EpKlz5cfb+YXY70kUzhbQxvYTTnRlw95kaP2CG
+   qcJKgMos+2Jh7pvym/6mpNHPxnxyzTwTySTK9SSfKUGxrilfxpTHIwhku
+   d4DBXJvrQtLg+APY6Xor8M9drOPYcMwiQ6lJdd9qF3UddfDrBIO6tk+X+
+   w==;
+IronPort-SDR: phjFc4own2sYnUD7KNrBxEoMGYaQJPqlPvqYgz0Q4Me6KcJvPtIt4ly9vR05vfuqEwL9I8kECu
+ jyTsejwmgw25pBgc8YTjmqXu1f7iME1SpEXO5rYxD435l4EAUzMeE4Upj/FJoUwi8egLy80uXh
+ Xk0eVJqPMs+PcHRTDX/N675zlSrVPP8zZHNIYH8j1sRKikAlWBH6UmAivgJtVkqWxaSukJOpEK
+ J5TVpFOaQ2fYeUUK50fS0PUS7tvy7/Z5WtjrNSv7biIlfcqR9iAG21NyuRw6H4GCe45isFdnxE
+ WFE=
 X-IronPort-AV: E=Sophos;i="5.64,407,1559491200"; 
-   d="scan'208";a="117136322"
-Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 20 Aug 2019 12:53:31 +0800
-IronPort-SDR: A5sUlv4knqi2FYYSI07ulUPNU5sUQL6mEPz8Cp2tGZEgEoIpmywShaESxaq4d/ExeZsdpSyDly
- ivz178Q81gdcmT0JNhbxmoFo4WxciYiKH/XVvo+FFgL6MU/N4Fgmrp+iNnMq3xKUhfx4GLggDZ
- TcGuvsv87EcTLJcVwvXbEiLGB0T+uXmpRuL6bjfrJcX7tBwO9XOaOlSnC5RiJFuctHLfmRwUj2
- TU4MAf9qlgyhQz7spDyVuYN/saoiQN6/ol4RkTNibtJv9I3cgayx8lQKC9Oftts3GbX+vU7Adc
- Xeww0i/FZTee+QlN8p8iCfz7
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2019 21:50:56 -0700
-IronPort-SDR: e45tWBCatkTPegpC8zgJzlFpe5247SQUcy9uu9jSi8S9fXoR9XXTkAUrwdj/uJBNhw20UQCKn5
- AGGZknKw655lB6h+7ndhZ7fWMt3K91zkR50ylXpViD2kumnvFhZo/FTX89myw5G0meWvxoDvVs
- rM1nYDdO46v+Zy5+Sn1Jqc4UjxDzEcTLLx6EwzVA35s6aJ/LmQGGjtoT37PqFyylwjfYUT4k0+
- s3fndlD8A6k8XIjjh8uPMs3J8q+Y6foquKF692vP19QwXCto55p2VIFewRG88/0BsGSb4fSpqw
- AJo=
-Received: from naota.dhcp.fujisawa.hgst.com (HELO naota.fujisawa.hgst.com) ([10.149.53.115])
-  by uls-op-cesaip02.wdc.com with ESMTP; 19 Aug 2019 21:53:28 -0700
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+   d="scan'208";a="117137003"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Aug 2019 13:07:40 +0800
+IronPort-SDR: t/DaqTsA2a8PmhuI/lO/UfCpjRfTb3QddGAGs+sKX6KtrcUbYFlyp7rHKsU+mr1ir2y6Mkup0E
+ KKgtGOUQJg31SyUte2BUstzSSMPdCtnXi+92f0kakQHoS+HFzvBqx8qqUm9CFC8js+TLS9Vfid
+ +ZBhy9lF+FHSKNPCg/TBQ7ju31A6U6uUNc/+Xs6CO6A6I6uioUrnMfPAny8Js6GuV1bCPSNTxf
+ YJnvKQlq6+i9TqbwcQNHW2ThDDCbRSpy4xT7BtpfytNHYPXHOxnCuwnootrAB9FmbOc7J60+8q
+ X3KaaiqmJBFIG+S3aHvTPHfA
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2019 22:05:02 -0700
+IronPort-SDR: zjBaAsyLYEpztGAsSYq97eqrEj2pj0dwX9CaAa1dI5CzY/bpd/VNRcxAaREbCA/iYKFgIeiotC
+ GLB8LG0RR80dMDJwY2D9EbZdBpjgaFp62kPodQ3+r5j3ATbxF/3qMCnSA6+C6J72QUjvp/guwj
+ pNgN6GCsLQ5RK2dhfB9Gnz5LbXjVIEDZ1OhnLkyiTTP12jSJQaABBCIP5h4N7Xz5CJsFiMkSMD
+ 3MrQFXhVYbfpUoqduDN8E/tfjjPwb7IJ28e9JAOhC5WcFsjNOMbRmtXlCjV+c6d+pYz2UlRIgT
+ z3k=
+Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
+  by uls-op-cesaip01.wdc.com with SMTP; 19 Aug 2019 22:07:37 -0700
+Received: (nullmailer pid 1583429 invoked by uid 1000);
+        Tue, 20 Aug 2019 05:07:37 -0000
+Date:   Tue, 20 Aug 2019 14:07:37 +0900
+From:   Naohiro Aota <Naohiro.Aota@wdc.com>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
         Matias Bjorling <Matias.Bjorling@wdc.com>,
         Johannes Thumshirn <jthumshirn@suse.de>,
-        Hannes Reinecke <hare@suse.com>, linux-fsdevel@vger.kernel.org,
-        Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH v3 15/15] btrfs-progs: introduce support for device replace HMZONED device
-Date:   Tue, 20 Aug 2019 13:52:58 +0900
-Message-Id: <20190820045258.1571640-16-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190820045258.1571640-1-naohiro.aota@wdc.com>
-References: <20190820045258.1571640-1-naohiro.aota@wdc.com>
+        Hannes Reinecke <hare@suse.com>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH v3 03/27] btrfs: Check and enable HMZONED mode
+Message-ID: <20190820050737.ngyaamjkdmzvhlqj@naota.dhcp.fujisawa.hgst.com>
+References: <20190808093038.4163421-1-naohiro.aota@wdc.com>
+ <20190808093038.4163421-4-naohiro.aota@wdc.com>
+ <edcb46f5-1c3e-0b69-a2d9-66164e64b07e@oracle.com>
+ <BYAPR04MB5816FCD8F3A0330C8B3DC609E7AF0@BYAPR04MB5816.namprd04.prod.outlook.com>
+ <86ef7944-0029-3d61-0ae3-874015726751@oracle.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <86ef7944-0029-3d61-0ae3-874015726751@oracle.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch check if the target file system is flagged as HMZONED. If it is,
-the device to be added is flagged PREP_DEVICE_HMZONED.  Also add checks to
-prevent mixing non-zoned devices and zoned devices.
+On Sat, Aug 17, 2019 at 07:56:50AM +0800, Anand Jain wrote:
+>
+>
+>On 8/16/19 10:23 PM, Damien Le Moal wrote:
+>>On 2019/08/15 22:46, Anand Jain wrote:
+>>>On 8/8/19 5:30 PM, Naohiro Aota wrote:
+>>>>HMZONED mode cannot be used together with the RAID5/6 profile for now.
+>>>>Introduce the function btrfs_check_hmzoned_mode() to check this. This
+>>>>function will also check if HMZONED flag is enabled on the file system and
+>>>>if the file system consists of zoned devices with equal zone size.
+>>>>
+>>>>Additionally, as updates to the space cache are in-place, the space cache
+>>>>cannot be located over sequential zones and there is no guarantees that the
+>>>>device will have enough conventional zones to store this cache. Resolve
+>>>>this problem by disabling completely the space cache.  This does not
+>>>>introduces any problems with sequential block groups: all the free space is
+>>>>located after the allocation pointer and no free space before the pointer.
+>>>>There is no need to have such cache.
+>>>>
+>>>>For the same reason, NODATACOW is also disabled.
+>>>>
+>>>>Also INODE_MAP_CACHE is also disabled to avoid preallocation in the
+>>>>INODE_MAP_CACHE inode.
+>>>
+>>>   A list of incompatibility features with zoned devices. This need better
+>>>   documentation, may be a table and its reason is better.
+>>
+>>Are you referring to the format of the commit message itself ? Or would you like
+>>to see a documentation added to Documentation/filesystems/btrfs.txt ?
+>
+> Documenting in the commit change log is fine. But it can be better
+> documented in a listed format as it looks like we have a list of
+> features which will be incompatible with zoned devices.
+>
+>more below..
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- cmds/replace.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Sure. I will add a table in the next version.
 
-diff --git a/cmds/replace.c b/cmds/replace.c
-index 2321aa156fe2..670df68a93f7 100644
---- a/cmds/replace.c
-+++ b/cmds/replace.c
-@@ -119,6 +119,7 @@ static const char *const cmd_replace_start_usage[] = {
- static int cmd_replace_start(const struct cmd_struct *cmd,
- 			     int argc, char **argv)
- {
-+	struct btrfs_ioctl_feature_flags feature_flags;
- 	struct btrfs_ioctl_dev_replace_args start_args = {0};
- 	struct btrfs_ioctl_dev_replace_args status_args = {0};
- 	int ret;
-@@ -126,6 +127,7 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
- 	int c;
- 	int fdmnt = -1;
- 	int fddstdev = -1;
-+	int hmzoned;
- 	char *path;
- 	char *srcdev;
- 	char *dstdev = NULL;
-@@ -166,6 +168,13 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
- 	if (fdmnt < 0)
- 		goto leave_with_error;
- 
-+	ret = ioctl(fdmnt, BTRFS_IOC_GET_FEATURES, &feature_flags);
-+	if (ret) {
-+		error("ioctl(GET_FEATURES) on '%s' returns error: %m", path);
-+		goto leave_with_error;
-+	}
-+	hmzoned = feature_flags.incompat_flags & BTRFS_FEATURE_INCOMPAT_HMZONED;
-+
- 	/* check for possible errors before backgrounding */
- 	status_args.cmd = BTRFS_IOCTL_DEV_REPLACE_CMD_STATUS;
- 	status_args.result = BTRFS_IOCTL_DEV_REPLACE_RESULT_NO_RESULT;
-@@ -260,7 +269,8 @@ static int cmd_replace_start(const struct cmd_struct *cmd,
- 	strncpy((char *)start_args.start.tgtdev_name, dstdev,
- 		BTRFS_DEVICE_PATH_NAME_MAX);
- 	ret = btrfs_prepare_device(fddstdev, dstdev, &dstdev_block_count, 0,
--			PREP_DEVICE_ZERO_END | PREP_DEVICE_VERBOSE);
-+			PREP_DEVICE_ZERO_END | PREP_DEVICE_VERBOSE |
-+			(hmzoned ? PREP_DEVICE_HMZONED : 0));
- 	if (ret)
- 		goto leave_with_error;
- 
--- 
-2.23.0
+btrfs.txt seems not to have much there. I'm considering to write a new
+page in the wiki like:
 
+https://btrfs.wiki.kernel.org/index.php/Feature:Skinny_Metadata
+
+>>>>+	if (!hmzoned_devices && incompat_hmzoned) {
+>>>>+		/* No zoned block device found on HMZONED FS */
+>>>>+		btrfs_err(fs_info, "HMZONED enabled file system should have zoned devices");
+>>>>+		ret = -EINVAL;
+>>>>+		goto out;
+>>>
+>>>
+>>>   When does the HMZONED gets enabled? I presume during mkfs. Where are
+>>>   the related btrfs-progs patches? Searching for the related btrfs-progs
+>>>   patches doesn't show up anything in the ML. Looks like I am missing
+>>>   something, nor the cover letter said anything about the progs part.
+>
+>
+> Any idea about this comment above?
+>
+>Thanks, Anand
+
+I just post the updated version of userland side series:
+https://lore.kernel.org/linux-btrfs/20190820045258.1571640-1-naohiro.aota@wdc.com/T/
+
+Thanks,
+Naohiro
