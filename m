@@ -2,36 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D58B987ED
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 01:38:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3188B98819
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 01:52:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729489AbfHUXcW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Aug 2019 19:32:22 -0400
-Received: from mout.gmx.net ([212.227.17.22]:43491 "EHLO mout.gmx.net"
+        id S1728708AbfHUXry (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Aug 2019 19:47:54 -0400
+Received: from mout.gmx.net ([212.227.17.22]:53127 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726828AbfHUXcV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Aug 2019 19:32:21 -0400
+        id S1728124AbfHUXrx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Aug 2019 19:47:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1566430339;
-        bh=K/KBc5gVxBbCJt2rWEdMJgbG5phIouF9QG4a5Ihouh0=;
+        s=badeba3b8450; t=1566431266;
+        bh=w46fCot75IQS2gqDHdonJNDNyjg6uYYICk6cRjtRQvE=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Q41Tp1xQQMs9+LFo7IHWUeXuQL+LzixD0KS4ba50iFfw70NA0o0NxJJl6G1bziZop
-         WrGf1G1t2GglD13k7HX0yWjxw+OptC2TL6RWqyTfj9mOXbJKM8SJEdghLpQ5Wjrn1e
-         nmH7BC6oU07kqcwyUdFVFxFMZ5SHhBHve7+kHRMc=
+        b=I7Y2C89yeJVO+P/Vys+SvxnQjmU/QhRhAAt0UX4ZVXw8J6iCpFR8TNtJ9csZs0Y3j
+         Eywbon9N+o3Py2jblZnAhyRHJc6G2kApDGyOoSBwiydMAuIVZIFj+1nujVoT1elxWR
+         t433ibdhEAkBrFk1KxMa9IRvb5ORsl7QxRg3I3Tc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx101
- [212.227.17.174]) with ESMTPSA (Nemesis) id 0MdnN3-1havZH0JfZ-00PdQ8; Thu, 22
- Aug 2019 01:32:18 +0200
-Subject: Re: Chasing IO errors. BTRFS: error (device dm-2) in
- btrfs_run_delayed_refs:2907: errno=-5 IO failure
-To:     Peter Chant <pete@petezilla.co.uk>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <fc2b166a-4466-4a5a-ee88-da5e57ee89b6@petezilla.co.uk>
- <CAJCQCtSWi+PUbOWXNwv0guCLRuSgZunWdvRBB4TKMG_X48jHFw@mail.gmail.com>
- <2433d4cb-e7f7-72c5-977b-02f51e9717b3@petezilla.co.uk>
- <e439aafe-8836-b761-3b72-b9215b463c09@gmx.com>
- <c593c2ef-044d-32e1-a75d-a2116a5b91a5@petezilla.co.uk>
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx103
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0MDR21-1i1QL60hEj-00Gpvq; Thu, 22
+ Aug 2019 01:47:45 +0200
+Subject: Re: [PATCH 5/6] btrfs: Simplify extent type check
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190805144708.5432-1-nborisov@suse.com>
+ <20190805144708.5432-6-nborisov@suse.com>
+ <20190821154039.GA2752@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
@@ -58,222 +54,104 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <a632bbef-974a-1ff5-fa10-300ce9a47b42@gmx.com>
-Date:   Thu, 22 Aug 2019 07:32:14 +0800
+Message-ID: <bb544b37-ed4c-f3f1-bf2a-df7b9a3b4479@gmx.com>
+Date:   Thu, 22 Aug 2019 07:47:40 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <c593c2ef-044d-32e1-a75d-a2116a5b91a5@petezilla.co.uk>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="SH2CYKSJLdtFBN00mQ7azBD6L9kNM7iag"
-X-Provags-ID: V03:K1:y4ip5OhPJT2bJS3w8cBK6L1vmO2hRyR6/1p1ZxbSQqQzgYcvQ03
- KzW+1AzRhD0YWCz1eGiXjHelef9JcUYZ+lNlFimFNSDZHZzLE9m1jCOaERHlKMzrR0Q/hfM
- BKVZVL7CFszoBREF2/4ngnaNa68juIaibIy/TqQ52KyRl8MKQp47Z7OyeNEYM/W3vA1cyO0
- NLZRmu2oizfF+fqws2p5w==
+In-Reply-To: <20190821154039.GA2752@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:uRT1vl2m9T7PhnJqo+3VigKgRezh68PmRJWRxtF+GGZdWYbyAjt
+ /hKD8QehW5iqAYizHN36dDoHlfrobDhuWO/JNxsBzNWS6/3r1VpUcsW8mSu1Q/IXWJzhPIv
+ z1/Gy+mviucgV27l3KUpOXJgdH9PKbIthEKH/zynDND3zlBLcjvvb2KTh0aWWD4jlKC2vGD
+ PgQku0KIM9R4yJpAoxllQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:nGkbBtfwhMQ=:yQduQJyNC13oHyYaFg0akX
- 3KlI03XTN/RtLJ2eQYgRg6dseBclsvKJ0AljRql/mGe7Vwg+hwCEGb6TJIOasLSkV1NzOmWrm
- F5ePbY9zaECvuiOKTvgiw3ns2k8NqVS/rKLo/fFpAzq72tnh55jDS+wvPyDppT8vCFZCYmUH8
- x3oDw2bpOG404OxVfR/3QQd72gx4YC/lfioYVVvSK1MrYKvUdUpB3pqz89ai/1MuYUENynE6z
- yhqexJQekJcUZ5ehhrODoiQDF0HHYxbKTO/OQ9EOnCS55lFQhqq17losPJ+itX07jbu1oNRNU
- hLbQ0qPp04AAJsX0tqAhWRcKc1TR5uHvK+h4V4iQuuwV21fHNf+nYNo1bJpiu1ivCftRkyCvd
- PkvgMbreWYFdSWRAy9V6+aeAC8Hul/Zg0wWfaxwoDU6rqenewj7IOPp1vvG3BKa5kA9tXX6h9
- XyZjZPpGtZNelhSoqf3oL/G1vJMEmGceX1J0clr9y9IN/7RNmdVASJU7VaSX9Qx0cPglR3caa
- kHU8Co4ykLDjnm1YPaGFAW8aNG2hF47pyKS3v0tSzGY1vnmTUZRh1U+d6A3y4QmfGQfPa1EdZ
- ZzHpFnsZwVdhX5h7qeI2XhuQTnj1FBwRkBMik0p04WoaLs7Fg5PKwWFHhwjOkCrkeWlURYPPv
- gxEbfwTlw8WDyOR3UwAXVRE8MM09LHd5VIp3l/vuSwRg6JJUXZRLgRAUH6OxTXpbi9vNxnecO
- kAC3TtwHdjYN2jFdDXuUUgHOkPLy1OzuGvjNStoKqyxmCy7G+r4avE4MxOD4vCzQBPGZTKptI
- seoohv75s13FXbX30dvUMyuWDkEFJT6e42o5gZeBAaNZUJ2Fna0bn1vjg0xTycG6XPdGGbUW3
- uv7q8X6MhjzIHoraeDSrnEl6XocAhFZoyiXyS3K9lBhsyUQOFI7wJvKL9hNtHaurHz0rS8CKW
- ga7pwpsgxnUXugtA0UTaxPpOV9x4fnP1y8cJ1PvDZ941JJtYBg2rt4YIh5+X5MsM7+MVpDs5s
- 7P+G2LZT0lSu+TgGq/l7rgE2i8CRUzRWnJAmQQd8QP3w/ES+I23dhpoL+v5A75ZmjMc3/RBJw
- 3NyBjWfq162Ar7WAm9rqWbXcQeSzTAbZzmlCD5yIOaY6Dls9r1TZ33J6A==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:kL1C9yvqfZI=:uHSyuh8fjeC2idiwNCin5q
+ X7B6aukRRZDaP52icF7h8qxWx4VXOmf7FZh2xoGYqJ4ZszcICTkFzopJ3lkZyJyJ2IUmcsSUC
+ KDUX6YqSg+ez2Awfp6q3Q4B0pRTIRuQg7YR+pa15WBaFZ1OPzIgEh83TlmjRagYUG8l+0xMTp
+ biXd5sPN/5KdMfpmkdAZar563RiQMmmroyrYbyNkca8/IuGd8Pan+45cgm0ROu+N+Yfx+D9/l
+ rGcagttjTHJndZxZZYrR17vXLUuFUgyUETooO4pgDM5TQgKj40sXZhShHqwIv2LbgIoZuQW/+
+ PydJZAK6C52Ou9sMf5vv3qfLsnWpLUzs8L6IfZtwKdWMwMmbtmSBlU0lv/hegM3dBman/5aev
+ 0Z3oc89pprERbwYJX2VgqDv9o2tplNqvyuAa91dD2pkp271rkp3lSpwFm7g+b1SPR4buI3rZh
+ BpUrSOsPRjHEsygXv0ul2fG+Y2nI86w47UpGC5XTeItWbtXjEArD7M80eHn+yaj1jqBs3TAIg
+ /WSQxcu0MGdyONhvOmCQ5w+KTWSm4HCr9q/eYOqvYUkET8I9m1hj6nq6iS11EyppOkEQNGLEL
+ UADjF7wO5NJHI1JQTBbhJllxLYx8u83IyOWgYImzOWyeHb8HLBGduU67WoEQRQe7P05779Hky
+ bHhCwmC0hgb91zv/FMSspLqTOU4ZWJMkcIYEDl5AVQvE4AgAXbiddme8H7Ot8ZZ3mpTwLqwNK
+ fjzXzQZy4S+SgzEeFZpMSWJyBfKn4hOMynCLsmPeIzTUiDWcAW7SNjRUcx2TpkTW2iq+gN8Va
+ EKpoevDwAO74de+okSgzIMk1LLTADEm2TIWdAE1m4TMYaKQZkpxhy6HcXDvShfYlNt9KWGBgR
+ R+r7uSOyeGRYb/tOguBeqw64mEZ1VDxHJSvuNJEU5nwz1uay7nNfy/dPfP4nq/Yhqxg5n+O9u
+ xsMH6Uf6YCfJq7lJZ5GS6a/EmKSd2jmSJZUc+H7M/Jjrbe+w5aV0q1c/8Ye4YjT84BCf+O+MA
+ 2R5QZZkUHzymJj3v9R41Yv6VbKG0rgrYze2VdcCiu40RB0HDHR2XsTm7qDCdw7DQjF0aYcvnN
+ hChKVmhhyZmbLUoqnarFoeD9nx0k4QDvL1bPEzK1ObgjxM/z0eNSgfcnpS+BTldxQczqutzsu
+ Wsulc=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SH2CYKSJLdtFBN00mQ7azBD6L9kNM7iag
-Content-Type: multipart/mixed; boundary="CEWE9kczmANPXpJ2EaCeOYDY7HoKWTq9x";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Peter Chant <pete@petezilla.co.uk>, Chris Murphy
- <lists@colorremedies.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Message-ID: <a632bbef-974a-1ff5-fa10-300ce9a47b42@gmx.com>
-Subject: Re: Chasing IO errors. BTRFS: error (device dm-2) in
- btrfs_run_delayed_refs:2907: errno=-5 IO failure
-References: <fc2b166a-4466-4a5a-ee88-da5e57ee89b6@petezilla.co.uk>
- <CAJCQCtSWi+PUbOWXNwv0guCLRuSgZunWdvRBB4TKMG_X48jHFw@mail.gmail.com>
- <2433d4cb-e7f7-72c5-977b-02f51e9717b3@petezilla.co.uk>
- <e439aafe-8836-b761-3b72-b9215b463c09@gmx.com>
- <c593c2ef-044d-32e1-a75d-a2116a5b91a5@petezilla.co.uk>
-In-Reply-To: <c593c2ef-044d-32e1-a75d-a2116a5b91a5@petezilla.co.uk>
-
---CEWE9kczmANPXpJ2EaCeOYDY7HoKWTq9x
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
-
-On 2019/8/22 =E4=B8=8A=E5=8D=885:38, Peter Chant wrote:
-> On 8/21/19 8:29 AM, Qu Wenruo wrote:
->=20
->>> I'll run the checks shortly.
+On 2019/8/21 =E4=B8=8B=E5=8D=8811:40, David Sterba wrote:
+> On Mon, Aug 05, 2019 at 05:47:07PM +0300, Nikolay Borisov wrote:
+>> Extent type can only be regular/prealloc/inline. The main branch of the
+>> 'if' already handles the first two, leaving the 'else' to handle inline=
+.
+>> Furthermore, tree-checker ensures that leaf items are correct.
 >>
->> Well, check will also report that transid mismatch, and possibly a lot=
-
->> of extent tree corruption.
+>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>> ---
+>>  fs/btrfs/inode.c | 10 +++-------
+>>  1 file changed, 3 insertions(+), 7 deletions(-)
 >>
->=20
->=20
-> Depends on what is 'a lot', over 400 lines here:
->=20
-> parent transid verify failed on 11000765267968 wanted 2265511 found 226=
-5437
-> parent transid verify failed on 11000777834496 wanted 2265511 found 226=
-5453
-> parent transid verify failed on 11001243893760 wanted 2265512 found 226=
-5500
-[...]
-> Ignoring transid failure
-> ERROR: child eb corrupted: parent bytenr=3D11016181694464 item=3D83 par=
-ent
-> level=3D1 child level=3D1
-> ERROR: failed to repair root items: Input/output error
-> Opening filesystem to check...
-> Checking filesystem on /dev/mapper/data_disk_1
-> UUID: 159b8826-8380-45be-acb6-0cb992a8dfd7
->=20
->>> [   99.710315] EDAC amd64: Node 0: DRAM ECC disabled.
->>> [   99.710317] EDAC amd64: ECC disabled in the BIOS or no ECC
->>> capability, module will not load.
->>>                 Either enable ECC checking or force module loading by=
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 8e24b7641247..6c3f9f3a7ed1 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -1502,18 +1502,14 @@ static noinline int run_delalloc_nocow(struct i=
+node *inode,
+>>  			if (!btrfs_inc_nocow_writers(fs_info, disk_bytenr))
+>>  				goto out_check;
+>>  			nocow =3D true;
+>> -		} else if (extent_type =3D=3D BTRFS_FILE_EXTENT_INLINE) {
+>> -			extent_end =3D found_key.offset +
+>> -				btrfs_file_extent_ram_bytes(leaf, fi);
+>> -			extent_end =3D ALIGN(extent_end,
+>> -					   fs_info->sectorsize);
+>> +		} else {
+>> +			extent_end =3D found_key.offset + ram_bytes;
+>> +			extent_end =3D ALIGN(extent_end, fs_info->sectorsize);
+>>  			/* Skip extents outside of our requested range */
+>>  			if (extent_end <=3D start) {
+>>  				path->slots[0]++;
+>>  				goto next_slot;
+>>  			}
+>> -		} else {
+>> -			BUG();
+>
+> I am not sure if we should delete this or leave it (with a message what
+> happened). There are other places that switch value from a known set and
+> have a catch-all branch.
 
->>> setting 'ecc_enable_override'.
->>>                 (Note that use of the override may cause unknown side=
+We can just delete it IHMO.
 
->>> effects.)
->> Not sure what the ECC part is doing, but it repeats quite some times.
->> I'd assume it's unrelated though.
->>
->=20
-> Not sure either.  I've not got ECC RAM.  Motherboard is capable I think=
-=2E
->=20
->=20
->=20
->> [...]
->>> [  142.507291] BTRFS error (device dm-2): parent transid verify faile=
-d
->>> on 13395960053760 wanted 2265296 found 2263090
->>> [  142.544548] BTRFS error (device dm-2): parent transid verify faile=
-d
->>> on 13395960053760 wanted 2265296 found 2263090
->>> [  142.544561] BTRFS: error (device dm-2) in
->>> btrfs_run_delayed_refs:2907: errno=3D-5 IO failure
->>
->> This means, btrfs is trying to read extent tree for CoW, but at that
->> time, extent tree is already corrupted, thus it returns -EIO.
->>
->> And btrfs_run_delayed_refs just returns error.
->> t
->> Not sure if it's related to device replace, but anyway the corruption
->> just happened.
->> The device replace may be an interesting clue, as currently our
->> dm-log-writes are mostly focused on single device usage.
->=20
-> Sorry, 'device replace'?  I've not done that lately.  I _may_ have trie=
-d
-> that years back with this file system.  However, iirc it failed as the
-> new, allegedly same size new disk was possibly slightly smaller.
+That's why we have tree-checker, we have ensured at least EXTENT_DATA
+item read from disk doesn't contain invalid type.
+So removing the BUG() here should be OK.
 
-OK, it's my bad read on the following lines:
+Although converting it to a better error handler won't hurt.
+In that case it can catch runtime memory corruption earlier.
 
-[   99.237670] BTRFS info (device dm-2): device fsid
-159b8826-8380-45be-acb6-0cb992a8dfd7 devid 4 moved old:/dev/dm-1
-new:/dev/mapper/data_disk_1
-[   99.241061] BTRFS info (device dm-4): device fsid
-6b0245ec-bdd4-4076-b800-2243d466b174 devid 1 moved old:/dev/dm-4
-new:/dev/mapper/nvme0_vg-lxc
-[   99.242692] BTRFS info (device dm-2): device fsid
-159b8826-8380-45be-acb6-0cb992a8dfd7 devid 3 moved old:/dev/dm-2
-
-It just a device path update, not a big deal.
->=20
-> From the above it looks like it is not a specific hardware failure.
-
-Yep, no hardware related error message at all.
-
->=20
->=20
->>
->> Then I'd recommend to do regular rescue procedure:
->> - Try that skip_bg patchset if possible
->>   This provides the best salvage method so far, full subvolume
->>   available, although needs out-of-tree patches.
->>   https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D1306=
-37
->>
->=20
-> I can give that a go, but not for a while.
->=20
-> I seem to be able to read the file system as is, as it goes read only.
-> But perhaps 'seems' is the operative word.
-
-As long as you can mount RO, it shouldn't be mostly OK for data salvage.
-
-THanks,
+Thanks,
 Qu
 
->=20
->> - btrfs-restore
->>   The regular unmounted recover, needs extra space. Latest btrfs-progs=
-
->>   recommended.
->=20
-> I've got the latest btrfs progs.    if neither of those two work I have=
-
-> a backup.
->=20
-> So, basically, make a new file system and recover the data to it.  I've=
-
-> a new disk on the way, so I can create a file system as single and once=
-
-> I'm happy I've migrated data to it, wipe the old disks and move one  or=
-
-> two to the new array and rebalance.
->=20
->>
->> Thanks,
->> Qu
->>
->=20
-> Thank you, very much appreciated.
->=20
-> Pete
->=20
-
-
---CEWE9kczmANPXpJ2EaCeOYDY7HoKWTq9x--
-
---SH2CYKSJLdtFBN00mQ7azBD6L9kNM7iag
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1d1H4ACgkQwj2R86El
-/qhfrggAmXnOnIUOu24acONaEA0I8P8c57gNeHbmM9G86dFbY7KMskSUk38A3JNw
-FCz5819gYtn9feE0xz2hnkC/Sx7EYPsml8MQkBUx6YIApzabWB29WR8OtFV5TeY+
-Rm64m3OY03yjhb8WEsP/TAgOVGS2jbSS1HpuBXF/dx85DQSP9kHmDOBENMtJyW++
-lmf5pZVhCyqgvMl04SQjPVexOsasrpspkYbZUTiue2B+euFCW5EkLu13P1atQI/g
-wjuc9eToas4MsAScREcR1KuIjueUKa9ynccz0wFnNiu/ZNTl1blYsb7Aq1+NyoIM
-c+isfqIb3k/XLcXm2V5PEsBF3NJ7dw==
-=Dnci
------END PGP SIGNATURE-----
-
---SH2CYKSJLdtFBN00mQ7azBD6L9kNM7iag--
+>
+> With your change the 'catch-all' is the inline extent type. It's true
+> that the checker should not let an unknown type appear in this code,
+> however I'd rather make it explicit that something is seriously wrong if
+> there's an unexpected type rather than silently continuing.
+>
+> The BUG can be turned to actual error handling so we don't need to crash
+> at least.
+>
