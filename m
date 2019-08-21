@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF7097B59
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 15:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5192897BE3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 16:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729059AbfHUNyc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Aug 2019 09:54:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54278 "EHLO mx1.suse.de"
+        id S1728923AbfHUOA7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Aug 2019 10:00:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56416 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726371AbfHUNy1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Aug 2019 09:54:27 -0400
+        id S1728822AbfHUOA6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Aug 2019 10:00:58 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 09194AC4A;
-        Wed, 21 Aug 2019 13:54:26 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id CC1E4AEB8;
+        Wed, 21 Aug 2019 14:00:57 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id AD489DA7DB; Wed, 21 Aug 2019 15:54:51 +0200 (CEST)
-Date:   Wed, 21 Aug 2019 15:54:51 +0200
+        id 490B7DA7DB; Wed, 21 Aug 2019 16:01:22 +0200 (CEST)
+Date:   Wed, 21 Aug 2019 16:01:22 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Anand Jain <anand.jain@oracle.com>
 Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH 3/3] btrfs: clean search for device item in finish sprout
-Message-ID: <20190821135450.GE18575@twin.jikos.cz>
+Message-ID: <20190821140121.GF18575@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
         linux-btrfs@vger.kernel.org
@@ -56,10 +56,6 @@ On Wed, Aug 21, 2019 at 05:26:34PM +0800, Anand Jain wrote:
 >  	struct btrfs_dev_item *dev_item;
 >  	struct btrfs_device *device;
 > +	struct btrfs_key found_key;
-
-The declaration should be in the scope of use, ie. inside the while
-loop.
-
 >  	struct btrfs_key key;
 >  	u8 fs_uuid[BTRFS_FSID_SIZE];
 >  	u8 dev_uuid[BTRFS_UUID_SIZE];
@@ -69,6 +65,10 @@ loop.
 >  				goto error;
 > -			leaf = path->nodes[0];
 > -			btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
+
+This goes back to while, so in this step, 'key' is set up for the next
+search, but you remove it.
+
 >  			btrfs_release_path(path);
 >  			continue;
 >  		}
@@ -77,6 +77,13 @@ loop.
 > -		if (key.objectid != BTRFS_DEV_ITEMS_OBJECTID ||
 > -		    key.type != BTRFS_DEV_ITEM_KEY)
 > +		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+
+And here 'key' is not updated as well. 'found_key' does not lead to the
+same behaviour as it's only set here and check in the if below, but
+nothing else.
+
+This would probably lead to an infinite loop in the search slot.
+
 > +		if (found_key.objectid != BTRFS_DEV_ITEMS_OBJECTID ||
 > +		    found_key.type != BTRFS_DEV_ITEM_KEY)
 >  			break;
