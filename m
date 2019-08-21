@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF59D9722F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 08:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC6397257
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 08:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727219AbfHUGVM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Aug 2019 02:21:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45818 "EHLO mx1.suse.de"
+        id S1728037AbfHUGjH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Aug 2019 02:39:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48486 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726484AbfHUGVM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Aug 2019 02:21:12 -0400
+        id S1726741AbfHUGjH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Aug 2019 02:39:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8C09EAEB3;
-        Wed, 21 Aug 2019 06:21:10 +0000 (UTC)
-Subject: Re: Unable to mount, even in recovery, parent transid verify failed
- on raid 1
-To:     David Radford <croxis@gmail.com>, linux-btrfs@vger.kernel.org
-References: <CABJoFDA-ZwF3ZDpajHo3288NcV+_NO5BAsXv7yTe_hqqRNv0PQ@mail.gmail.com>
+        by mx1.suse.de (Postfix) with ESMTP id 67D92ADBB;
+        Wed, 21 Aug 2019 06:39:05 +0000 (UTC)
+Subject: Re: [PATCH 5/5] btrfs: add enospc debug messages for ticket failure
+To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+References: <20190816152019.1962-1-josef@toxicpanda.com>
+ <20190816152019.1962-6-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <f0574fc5-5343-5b9a-fda9-60ba947d88c9@suse.com>
-Date:   Wed, 21 Aug 2019 09:20:56 +0300
+Message-ID: <09dbb66d-9b23-5b3b-7f91-fdfad6a0202d@suse.com>
+Date:   Wed, 21 Aug 2019 09:39:04 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CABJoFDA-ZwF3ZDpajHo3288NcV+_NO5BAsXv7yTe_hqqRNv0PQ@mail.gmail.com>
+In-Reply-To: <20190816152019.1962-6-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,71 +80,95 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 20.08.19 г. 21:17 ч., David Radford wrote:
-> I have two 2TB spinning disks with full disk btrfs in raid 1. I am
-> unable to mount the disks using any method I have found online. I've
-> attached what I hope are the relevant logs. I had to edit them down to
-> meet the file size limit.
+On 16.08.19 г. 18:20 ч., Josef Bacik wrote:
+> When debugging weird enospc problems it's handy to be able to dump the
+> space info when we wake up all tickets, and see what the ticket values
+> are.  This helped me figure out cases where we were enospc'ing when we
+> shouldn't have been.
 > 
-> uname: Linux babylon 5.2.9-arch1-1-custom-btrfs #1 SMP PREEMPT Mon Aug
-> 19 06:41:35 PDT 2019 x86_64 GNU/Linux (Standard Arch Linux kernel
-> compiled with Qu's new rescue patch
-> https://patchwork.kernel.org/project/linux-btrfs/list/?series=130637)
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-SO what event predates this inability to mount? Did you experience any
-hard resets - system hangs etc that prompted you to reboot your machine?
-Have you changed your kernel recently ? There really isn't much to go on
-in here? At the very least DO NOT run any of the repair functionality in
-btrfs-progs just yet.
+With the suggestion below implemented you can add:
 
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/space-info.c | 32 ++++++++++++++++++++++++--------
+>  1 file changed, 24 insertions(+), 8 deletions(-)
 > 
-> btrfs-progs v5.2.1
-> 
-> [root@babylon ~]# btrfs fi show
-> Label: 'linux'  uuid: 3fd368de-157c-4512-8985-2be93a21a371
->     Total devices 1 FS bytes used 102.48GiB
->     devid    1 size 119.24GiB used 110.31GiB path /dev/sdb1
-> 
-> Label: none  uuid: 2507581c-dec0-4fdd-afe7-1f7c7ff66c6d (this is the
-> one unountable)
->     Total devices 2 FS bytes used 1.54TiB
->     devid    1 size 1.82TiB used 790.03GiB path /dev/sdc
->     devid    2 size 1.82TiB used 790.03GiB path /dev/sdd
-> 
-> mounting with usebackuproot and rescue=skip_bg results in
-> [ 1088.130629] BTRFS info (device sdc): trying to use backup root at mount time
-> [ 1088.130633] BTRFS info (device sdc): disk space caching is enabled
-> [ 1088.130635] BTRFS info (device sdc): has skinny extents
-> [ 1088.135907] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.151587] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.151605] BTRFS warning (device sdc): failed to read root (objectid=2): -5
-> [ 1088.151902] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.152134] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.152143] BTRFS warning (device sdc): failed to read root (objectid=2): -5
-> [ 1088.152519] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.152633] BTRFS error (device sdc): parent transid verify failed
-> on 30425088 wanted 18663 found 18664
-> [ 1088.152640] BTRFS warning (device sdc): failed to read root (objectid=2): -5
-> [ 1088.153462] BTRFS error (device sdc): parent transid verify failed
-> on 343428399104 wanted 18163 found 19034
-> [ 1088.153690] BTRFS error (device sdc): parent transid verify failed
-> on 343428399104 wanted 18163 found 19034
-> [ 1088.153699] BTRFS warning (device sdc): failed to read root (objectid=4): -5
-> [ 1088.154714] BTRFS error (device sdc): parent transid verify failed
-> on 343428399104 wanted 18163 found 19034
-> [ 1088.154915] BTRFS error (device sdc): parent transid verify failed
-> on 343428399104 wanted 18163 found 19034
-> [ 1088.154921] BTRFS warning (device sdc): failed to read root (objectid=4): -5
-> [ 1088.261675] BTRFS error (device sdc): open_ctree failed
-> 
-> btrfs-find-root log attached
-> 
-> I do have partial backup but it is a little outdated and would really
-> appreciate help either fixing the filesystem, or finding out how to
-> recover it with as minimal loss as possible. Thank you for the help!
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 3d3f301bae26..2819fa91c4f0 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -256,14 +256,9 @@ do {									\
+>  	spin_unlock(&__rsv->lock);					\
+>  } while (0)
+>  
+> -void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+> -			   struct btrfs_space_info *info, u64 bytes,
+> -			   int dump_block_groups)
+> +static void __btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+> +				    struct btrfs_space_info *info)
+>  {
+> -	struct btrfs_block_group_cache *cache;
+> -	int index = 0;
+> -
+> -	spin_lock(&info->lock);
+
+lockdep_assert_held please
+
+>  	btrfs_info(fs_info, "space_info %llu has %llu free, is %sfull",
+>  		   info->flags,
+>  		   info->total_bytes - btrfs_space_info_used(info, true),
+> @@ -273,7 +268,6 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+>  		info->total_bytes, info->bytes_used, info->bytes_pinned,
+>  		info->bytes_reserved, info->bytes_may_use,
+>  		info->bytes_readonly);
+> -	spin_unlock(&info->lock);
+>  
+>  	DUMP_BLOCK_RSV(fs_info, global_block_rsv);
+>  	DUMP_BLOCK_RSV(fs_info, trans_block_rsv);
+> @@ -281,6 +275,19 @@ void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+>  	DUMP_BLOCK_RSV(fs_info, delayed_block_rsv);
+>  	DUMP_BLOCK_RSV(fs_info, delayed_refs_rsv);
+>  
+> +}
+> +
+> +void btrfs_dump_space_info(struct btrfs_fs_info *fs_info,
+> +			   struct btrfs_space_info *info, u64 bytes,
+> +			   int dump_block_groups)
+> +{
+> +	struct btrfs_block_group_cache *cache;
+> +	int index = 0;
+> +
+> +	spin_lock(&info->lock);
+> +	__btrfs_dump_space_info(fs_info, info);
+> +	spin_unlock(&info->lock);
+> +
+>  	if (!dump_block_groups)
+>  		return;
+>  
+> @@ -685,6 +692,11 @@ static bool wake_all_tickets(struct btrfs_fs_info *fs_info,
+>  	u64 tickets_id = space_info->tickets_id;
+>  	u64 first_ticket_bytes = 0;
+>  
+> +	if (btrfs_test_opt(fs_info, ENOSPC_DEBUG)) {
+> +		btrfs_info(fs_info, "cannot satisfy tickets, dumping space info");
+> +		__btrfs_dump_space_info(fs_info, space_info);
+> +	}
+> +
+>  	while (!list_empty(&space_info->tickets) &&
+>  	       tickets_id == space_info->tickets_id) {
+>  		ticket = list_first_entry(&space_info->tickets,
+> @@ -705,6 +717,10 @@ static bool wake_all_tickets(struct btrfs_fs_info *fs_info,
+>  		else if (first_ticket_bytes > ticket->bytes)
+>  			return true;
+>  
+> +		if (btrfs_test_opt(fs_info, ENOSPC_DEBUG))
+> +			btrfs_info(fs_info, "failing ticket with %llu bytes",
+> +				   ticket->bytes);
+> +
+>  		list_del_init(&ticket->list);
+>  		ticket->error = -ENOSPC;
+>  		wake_up(&ticket->wait);
 > 
