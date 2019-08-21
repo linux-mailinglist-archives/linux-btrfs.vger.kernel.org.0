@@ -2,25 +2,22 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 320A3972DC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 08:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A03D972DD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 08:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbfHUGvd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Aug 2019 02:51:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51392 "EHLO mx1.suse.de"
+        id S1727373AbfHUGws (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Aug 2019 02:52:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51628 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725268AbfHUGvd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Aug 2019 02:51:33 -0400
+        id S1725268AbfHUGws (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Aug 2019 02:52:48 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6FFCBABE3;
-        Wed, 21 Aug 2019 06:51:31 +0000 (UTC)
-Subject: Re: [PATCH 4/5] btrfs: do not account global reserve in
- can_overcommit
-To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <20190816152019.1962-1-josef@toxicpanda.com>
- <20190816152019.1962-5-josef@toxicpanda.com>
+        by mx1.suse.de (Postfix) with ESMTP id 4A071AE1C
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2019 06:52:46 +0000 (UTC)
+Subject: Re: [PATCH v2 0/2] Compression level API cleanups
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1566313756.git.dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -65,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <c27d7b14-10a5-d5b8-a339-03c940955d20@suse.com>
-Date:   Wed, 21 Aug 2019 09:51:30 +0300
+Message-ID: <4440499b-5a2f-e37d-0593-848a55e7c92c@suse.com>
+Date:   Wed, 21 Aug 2019 09:52:45 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190816152019.1962-5-josef@toxicpanda.com>
+In-Reply-To: <cover.1566313756.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,83 +78,25 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 16.08.19 г. 18:20 ч., Josef Bacik wrote:
-> We ran into a problem in production where a box with plenty of space was
-> getting wedged doing ENOSPC flushing.  These boxes only had 20% of the
-> disk allocated, but their metadata space + global reserve was right at
-> the size of their metadata chunk.
+On 20.08.19 г. 19:17 ч., David Sterba wrote:
+> Remove the callback indirection.
 > 
-> In this case can_overcommit should be allowing allocations without
-> problem, but there's logic in can_overcommit that doesn't allow us to
-> overcommit if there's not enough real space to satisfy the global
-> reserve.
+> v2:
+> * switch to unsigned int and use min()
 > 
-> This is for historical reasons.  Before there were only certain places
-> we could allocate chunks.  We could go to commit the transaction and not
-> have enough space for our pending delayed refs and such and be unable to
-> allocate a new chunk.  This would result in a abort because of ENOSPC.
-> This code was added to solve this problem.
+> David Sterba (2):
+>   btrfs: define compression levels statically
+>   btrfs: compression: replace set_level callbacks by a common helper
 > 
-> However since then we've gained the ability to always be able to
-> allocate a chunk.  So we can easily overcommit in these cases without
-> risking a transaction abort because of ENOSPC.
-> 
-> Also prior to now the global reserve really would be used because that's
-> the space we relied on for delayed refs.  With delayed refs being
-> tracked separately we no longer have to worry about running out of
-> delayed refs space while committing.  We are much less likely to
-> exhaust our global reserve space during transaction commit.
-> 
-> Fix the can_overcommit code to simply see if our current usage + what we
-> want is less than our current free space plus whatever slack space we
-> have in the disk is.  This solves the problem we were seeing in
-> production and keeps us from flushing as aggressively as we approach our
-> actual metadata size usage.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+For the whole series:
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-> ---
->  fs/btrfs/space-info.c | 19 +------------------
->  1 file changed, 1 insertion(+), 18 deletions(-)
-> 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 9c5f81074cd5..3d3f301bae26 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -165,9 +165,7 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
->  			  enum btrfs_reserve_flush_enum flush,
->  			  bool system_chunk)
->  {
-> -	struct btrfs_block_rsv *global_rsv = &fs_info->global_block_rsv;
->  	u64 profile;
-> -	u64 space_size;
->  	u64 avail;
->  	u64 used;
->  	int factor;
-> @@ -181,22 +179,7 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
->  	else
->  		profile = btrfs_metadata_alloc_profile(fs_info);
->  
-> -	used = btrfs_space_info_used(space_info, false);
-> -
-> -	/*
-> -	 * We only want to allow over committing if we have lots of actual space
-> -	 * free, but if we don't have enough space to handle the global reserve
-> -	 * space then we could end up having a real enospc problem when trying
-> -	 * to allocate a chunk or some other such important allocation.
-> -	 */
-> -	spin_lock(&global_rsv->lock);
-> -	space_size = calc_global_rsv_need_space(global_rsv);
-> -	spin_unlock(&global_rsv->lock);
-> -	if (used + space_size >= space_info->total_bytes)
-> -		return 0;
-> -
-> -	used += space_info->bytes_may_use;
-> -
-> +	used = btrfs_space_info_used(space_info, true);
->  	avail = atomic64_read(&fs_info->free_chunk_space);
->  
->  	/*
+>  fs/btrfs/compression.c | 20 ++++++++++++++++++--
+>  fs/btrfs/compression.h | 11 +++++------
+>  fs/btrfs/lzo.c         |  8 ++------
+>  fs/btrfs/zlib.c        | 11 ++---------
+>  fs/btrfs/zstd.c        | 11 ++---------
+>  5 files changed, 29 insertions(+), 32 deletions(-)
 > 
