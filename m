@@ -2,218 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF51973C0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 09:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BE69761B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 11:26:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727339AbfHUHnG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Aug 2019 03:43:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35546 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727063AbfHUHnG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Aug 2019 03:43:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 72699AFB6
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2019 07:43:04 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
+        id S1727316AbfHUJ0l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Aug 2019 05:26:41 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34466 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726530AbfHUJ0l (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Aug 2019 05:26:41 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7L9OIrI021301
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2019 09:26:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=oEDzQ2i6XHoYBBvrSQhc0YoGgcJeagUucisRkljajrE=;
+ b=VbahspWeiHM1uMgJlf2tRW6FI4E0mgJx2EBK+Avrap65EfjacwxBzP/q+P/RHPLMMFog
+ tKytjXo4ig5cKQIcinYdlMGZx7UK9oDOpuNVOvA/KdDoZggTaVXOSit3H0IEYVl7Jikt
+ 1GCfNPUseGS9c/OA5/ogdtcsQ7fCABr36Lfun6GJXQy1TU0Z6zygysjQR7J1lZDnsIGB
+ dAmOoZ2NDoke1WQvvfj/EUKQokRRXyvU+RSGD0vdyiUHTsLh76UiH64OE1EE3llef2LQ
+ yWX+YJCsc0N0A4TJgZOZo+BfUfgTQeQU0YC9c/8EuOxMnnUTil1QNM2UxZa1xDNsBiei +Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2ue9hpm90y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2019 09:26:40 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7L9OHaG192162
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2019 09:26:39 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2uh2q49e1c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2019 09:26:39 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7L9QcW8004285
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2019 09:26:38 GMT
+Received: from localhost.localdomain (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 21 Aug 2019 02:26:38 -0700
+From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2 2/2] btrfs: Improve comments around nocow path
-Date:   Wed, 21 Aug 2019 10:42:57 +0300
-Message-Id: <20190821074257.22382-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190805144708.5432-3-nborisov@suse.com>
-References: <20190805144708.5432-3-nborisov@suse.com>
+Subject: [PATCH 1/3] btrfs: dev stat drop useless goto
+Date:   Wed, 21 Aug 2019 17:26:32 +0800
+Message-Id: <20190821092634.6778-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-120)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908210102
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908210102
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-run_delalloc_nocow contains numerous, somewhat subtle, checks when
-figuring out whether a particular extent should be CoW'ed or not. This
-patch explicitly states the assumptions those checks verify. As a
-result also document 2 of the more subtle checks in check_committed_ref
-as well.
+In the function btrfs_init_dev_stats() goto out is not needed, because the
+alloc has failed. So just return -ENOMEM.
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
+ fs/btrfs/volumes.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-V2:
- * Use 'shared' instead of 'referenced' when referring to extents 
- * Clarify some comments in run_delalloc_nocow 
-
- fs/btrfs/extent-tree.c |  3 +++
- fs/btrfs/inode.c       | 50 +++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 50 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index d3b58e388535..9895698cbde9 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2963,16 +2963,19 @@ static noinline int check_committed_ref(struct btrfs_root *root,
- 	item_size = btrfs_item_size_nr(leaf, path->slots[0]);
- 	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_extent_item);
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 9b684adad81c..bd279db0f760 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -7289,10 +7289,8 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
+ 	int i;
  
-+	/* If extent item has more than 1 inline ref then it's shared*/
- 	if (item_size != sizeof(*ei) +
- 	    btrfs_extent_inline_ref_size(BTRFS_EXTENT_DATA_REF_KEY))
- 		goto out;
+ 	path = btrfs_alloc_path();
+-	if (!path) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
++	if (!path)
++		return -ENOMEM;
  
-+	/* If extent created before last snapshot => it's definitely shared */
- 	if (btrfs_extent_generation(leaf, ei) <=
- 	    btrfs_root_last_snapshot(&root->root_item))
- 		goto out;
+ 	mutex_lock(&fs_devices->device_list_mutex);
+ 	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+@@ -7332,7 +7330,6 @@ int btrfs_init_dev_stats(struct btrfs_fs_info *fs_info)
+ 	}
+ 	mutex_unlock(&fs_devices->device_list_mutex);
  
- 	iref = (struct btrfs_extent_inline_ref *)(ei + 1);
- 
-+	/* If this extent has SHARED_DATA_REF then it's shared */
- 	type = btrfs_get_extent_inline_ref_type(leaf, iref, BTRFS_REF_TYPE_DATA);
- 	if (type != BTRFS_EXTENT_DATA_REF_KEY)
- 		goto out;
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index fc6a8f9abb40..223d424532fd 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1355,6 +1355,12 @@ static noinline int run_delalloc_nocow(struct inode *inode,
- 					       cur_offset, 0);
- 		if (ret < 0)
- 			goto error;
-+
-+		/*
-+		 * If there is no extent for our range when doing the initial
-+		 * search, then go back to the previous slot as it will be the
-+		 * one containing the search offset
-+		 */
- 		if (ret > 0 && path->slots[0] > 0 && check_prev) {
- 			leaf = path->nodes[0];
- 			btrfs_item_key_to_cpu(leaf, &found_key,
-@@ -1365,6 +1371,7 @@ static noinline int run_delalloc_nocow(struct inode *inode,
- 		}
- 		check_prev = false;
- next_slot:
-+		/* Go to next leaf if we have exhausted the current one */
- 		leaf = path->nodes[0];
- 		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
- 			ret = btrfs_next_leaf(root, path);
-@@ -1380,23 +1387,39 @@ static noinline int run_delalloc_nocow(struct inode *inode,
- 
- 		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
- 
-+		/* Didn't find anything for our INO */
- 		if (found_key.objectid > ino)
- 			break;
-+		/*
-+		 * Keep searching until we find an EXTENT_ITEM or there are no
-+		 * more extents for this inode
-+		 */
- 		if (WARN_ON_ONCE(found_key.objectid < ino) ||
- 		    found_key.type < BTRFS_EXTENT_DATA_KEY) {
- 			path->slots[0]++;
- 			goto next_slot;
- 		}
-+
-+		/* Found key is not EXTENT_DATA_KEY or starts after req range */
- 		if (found_key.type > BTRFS_EXTENT_DATA_KEY ||
- 		    found_key.offset > end)
- 			break;
- 
-+		/*
-+		 * If the found extent starts after requested offset, then
-+		 * adjust extent_end to be right before this extent begins
-+		 */
- 		if (found_key.offset > cur_offset) {
- 			extent_end = found_key.offset;
- 			extent_type = 0;
- 			goto out_check;
- 		}
- 
-+
-+		/*
-+		 * Found extent which begins before our range and potentially
-+		 * intersect it.
-+		 */
- 		fi = btrfs_item_ptr(leaf, path->slots[0],
- 				    struct btrfs_file_extent_item);
- 		extent_type = btrfs_file_extent_type(leaf, fi);
-@@ -1410,19 +1433,28 @@ static noinline int run_delalloc_nocow(struct inode *inode,
- 				btrfs_file_extent_num_bytes(leaf, fi);
- 			disk_num_bytes =
- 				btrfs_file_extent_disk_num_bytes(leaf, fi);
-+			/*
-+			 * If extent we got ends before our range starts,
-+			 * skip to next extent
-+			 */
- 			if (extent_end <= start) {
- 				path->slots[0]++;
- 				goto next_slot;
- 			}
-+			/* skip holes */
- 			if (disk_bytenr == 0)
- 				goto out_check;
-+			/* skip compressed/encrypted/encoded extents */
- 			if (btrfs_file_extent_compression(leaf, fi) ||
- 			    btrfs_file_extent_encryption(leaf, fi) ||
- 			    btrfs_file_extent_other_encoding(leaf, fi))
- 				goto out_check;
- 			/*
--			 * Do the same check as in btrfs_cross_ref_exist but
--			 * without the unnecessary search.
-+			 * If extent is created before the last volume's snapshot
-+			 * this implies the extent is shared, hence we can't do
-+			 * nocow. This is the same check as in
-+			 * btrfs_cross_ref_exist but without calling
-+			 * btrfs_search_slot.
- 			 */
- 			if (!freespace_inode &&
- 			    btrfs_file_extent_generation(leaf, fi) <=
-@@ -1430,6 +1462,7 @@ static noinline int run_delalloc_nocow(struct inode *inode,
- 				goto out_check;
- 			if (extent_type == BTRFS_FILE_EXTENT_REG && !force)
- 				goto out_check;
-+			/* If extent RO, we must CoW it */
- 			if (btrfs_extent_readonly(fs_info, disk_bytenr))
- 				goto out_check;
- 			ret = btrfs_cross_ref_exist(root, ino,
-@@ -1453,7 +1486,7 @@ static noinline int run_delalloc_nocow(struct inode *inode,
- 			disk_bytenr += cur_offset - found_key.offset;
- 			num_bytes = min(end + 1, extent_end) - cur_offset;
- 			/*
--			 * if there are pending snapshots for this root,
-+			 * If there are pending snapshots for this root,
- 			 * we fall into common COW way.
- 			 */
- 			if (!freespace_inode && atomic_read(&root->snapshot_force_cow))
-@@ -1490,12 +1523,17 @@ static noinline int run_delalloc_nocow(struct inode *inode,
- 			BUG();
- 		}
- out_check:
-+		/* Skip extents outside of our requested range */
- 		if (extent_end <= start) {
- 			path->slots[0]++;
- 			if (nocow)
- 				btrfs_dec_nocow_writers(fs_info, disk_bytenr);
- 			goto next_slot;
- 		}
-+		/*
-+		 * If nocow is false then record the beginning of the range
-+		 * that needs to be CoWed
-+		 */
- 		if (!nocow) {
- 			if (cow_start == (u64)-1)
- 				cow_start = cur_offset;
-@@ -1507,6 +1545,12 @@ static noinline int run_delalloc_nocow(struct inode *inode,
- 		}
- 
- 		btrfs_release_path(path);
-+
-+		/*
-+		 * CoW range from cow_start to found_key.offset - 1. As the key
-+		 * will contains the beginning of the first extent that can be
-+		 * NOCOW, following one which needs to be CoW'ed
-+		 */
- 		if (cow_start != (u64)-1) {
- 			ret = cow_file_range(inode, locked_page,
- 					     cow_start, found_key.offset - 1,
+-out:
+ 	btrfs_free_path(path);
+ 	return ret < 0 ? ret : 0;
+ }
 -- 
-2.17.1
+2.21.0 (Apple Git-120)
 
