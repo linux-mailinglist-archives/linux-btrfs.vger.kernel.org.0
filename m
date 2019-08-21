@@ -2,119 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BE8984B1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 21:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 832899857B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 22:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbfHUTnH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Aug 2019 15:43:07 -0400
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:35433 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729835AbfHUTnH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Aug 2019 15:43:07 -0400
-Received: by mail-wm1-f49.google.com with SMTP id l2so3352442wmg.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Aug 2019 12:43:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=b/OXkbPvTuBIRH32fYbbMkZMfH0apgoTiBlBAQBJ+a4=;
-        b=q2lf+B3ZaMg3cV4ghI+hzaBKsZWtHTUSqOKNsUUbg963ou9KRM7jZu8XNSw2RoRqBg
-         YlmT5pEXzEodh7lwWdpFc1zik6pMRS7CJzjZjEPSAtfBY/1M/U5GaRFevlXblqnv9BYa
-         i+Hi0tsJdjMZqnxkfJ0oOYGKsDsBHqyCJBa9WlEX2DpJoG6v/txrciNhli2Ye8zYLCJT
-         EKy5fazJzUIiduNMdfWMzQnYfTUnAYbkb1uxTE+qmEDB4W+Yf9loo22Ns6rDFJaO6UHX
-         mkR0RnadXCn6ldXIw8xanudNS3OkOzGVC/w60N/NJNbma5Pj/j5Nm9okFhOqzS3Z6f/k
-         D4Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=b/OXkbPvTuBIRH32fYbbMkZMfH0apgoTiBlBAQBJ+a4=;
-        b=NOiTQbO5jI+/3V0pGjsTQwXVuvkKczSyurcg/ECnD0Rnc6awqdKXdF9wi6XUdEA/qU
-         nZxAoTGvczqUPZXDAbkS8ToL7nFc9eY8M1ug2rDBFaxPGbnNfQGcuCqBrfJZMzy3qKu/
-         S+oamkQ+PN7UuMjshge/Bntss3x8UkMlB0eQdteTNDs0E3HrQrZvoXhyJSLPpppPJ1+5
-         G6Jo3HAAf9CmIolVbBdoYFA+DaFOqhE7chWpkadLOOJ9lM/2sytIjUjxq5DFLixkZLYp
-         WNhCVAYc5RIpXSeRnQDtOVzTAUEQQ3w3lIGF1SG3WeK7VLc/vd0EcFjr3MtQ/BhxJD3w
-         7DCw==
-X-Gm-Message-State: APjAAAViUsQ7aFBs990lCEJ1JOoWUXStuSwWzMMTfci7A9oX+GhvxbWR
-        yluheLeDYadH0bfignOIViFCd6mxYKgy86d9p2PP5xNP7hScCw==
-X-Google-Smtp-Source: APXvYqyit5shYjjGUilNlLuNHeRx8JYqnFkNyEcwES6nMORIdisxGignaLja/hW1udVpdwuOO9RR1++sXAeWQRBiwRE=
-X-Received: by 2002:a1c:9ec5:: with SMTP id h188mr1928032wme.176.1566416584545;
- Wed, 21 Aug 2019 12:43:04 -0700 (PDT)
+        id S1728152AbfHUUV3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Aug 2019 16:21:29 -0400
+Received: from rin.romanrm.net ([91.121.75.85]:34136 "EHLO rin.romanrm.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727959AbfHUUV3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Aug 2019 16:21:29 -0400
+X-Greylist: delayed 547 seconds by postgrey-1.27 at vger.kernel.org; Wed, 21 Aug 2019 16:21:28 EDT
+Received: from natsu (natsu.40.romanrm.net [IPv6:fd39:aa:c499:6515:e99e:8f1b:cfc9:ccb8])
+        by rin.romanrm.net (Postfix) with SMTP id 51AE920294;
+        Wed, 21 Aug 2019 20:12:20 +0000 (UTC)
+Date:   Thu, 22 Aug 2019 01:12:19 +0500
+From:   Roman Mamedov <rm@romanrm.net>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Btrfs on LUKS on loopback mounted image on Btrfs
+Message-ID: <20190822011219.77d2d8bf@natsu>
+In-Reply-To: <CAJCQCtRYFtPGn2drNxrcuYFTTvmvRD7iuDNG=i1cDvSu=zcF6A@mail.gmail.com>
+References: <CAJCQCtRYFtPGn2drNxrcuYFTTvmvRD7iuDNG=i1cDvSu=zcF6A@mail.gmail.com>
 MIME-Version: 1.0
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 21 Aug 2019 13:42:53 -0600
-Message-ID: <CAJCQCtRYFtPGn2drNxrcuYFTTvmvRD7iuDNG=i1cDvSu=zcF6A@mail.gmail.com>
-Subject: Btrfs on LUKS on loopback mounted image on Btrfs
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Wed, 21 Aug 2019 13:42:53 -0600
+Chris Murphy <lists@colorremedies.com> wrote:
 
-Why do this? a) compression for home, b) encryption for home, c) home
-is portable because it's a file, d) I still get btrfs snapshots
-anywhere (I tend to snapshot subvolumes inside of cryptohome; but I
-could "snapshot" outside of it by reflink copying the backing file.
+> Why do this? a) compression for home, b) encryption for home, c) home
+> is portable because it's a file, d) I still get btrfs snapshots
+> anywhere (I tend to snapshot subvolumes inside of cryptohome; but
 
-But, I'm curious about other's experiences. I've been doing this for a
-while (few years) in the following configuration.
+Storing Btrfs on Btrfs really feels suboptimal, good that at least you are
+using NOCOW; of course it still will be CoW'ed in case of snapshots. Also you
+are likely to run into the space wasting issue as discussed in
+https://www.spinics.net/lists/linux-btrfs/msg90352.html
 
-NVMe>plain partition>Btrfs sysroot->fallocated file that also has
-chattr +C applied>attached to loop device>luksopen>Btrfs on the
-dmcrypt device>mounted at /home.
+I'd strongly suggest that you look into deploying LVM Thin instead. There you
+can specify an arbitrary CoW chunk size, and a value such as 1MB or more will
+reduce management overhead and fragmentation dramatically.
 
-sysroot mkfs options: -dsingle -msingle
-cryptohome mkfs options: -M
+Or if the partition size in question is just 4GB, with today's SSD sizes, just
+store it as a regular LV and save on quite a bit of complexity and brittleness.
 
-Btrfs sysroot mount options: noatime,compress=zstd:3,ssd,space_cache=v2
-dmcrypt discard passthrough is enabled
-Btrfs crypto home mount options: noatime,compress=zstd:3,ssd,space_cache=v2
+> I could "snapshot" outside of it by reflink copying the backing file.
 
-Ergo, pretty much the same except the smallish home uses mixed block
-groups, and I mainly did that to avoid any balance related issues in
-home, and figure the allocation behavior at this layer is
-irrelevant/virtual anyway. The Btrfs on top of the actual device does
-used separate block groups, and sees the "stream" from the loop device
-as all data.
+Pretty sure "cp -a is not atomic, so beware, you cannot safely do this while
+the /home is open and mounted. On the other hand if you keep this file inside
+a subvolume and then snapshot it, then it is safe(r).
 
-I have done some crazy things with this, like, I routinely,
-intentionally, just force power off on the laptop while this is all
-assembled as described. Literally hundreds of times. Zero complaints
-by either Btrfs (as in no mount time complaints, no btrfs check
-complaints, no scrub complaints, no Firefox database complaints). I
-admit I do not often do super crazy things like simultaneous heavy
-writes to both sysroot and home, and *then* force the power off. I
-have done it, just not enough times that I can say for sure it's not
-possible to corrupt either one of these file systems.
+> sysroot mkfs options: -dsingle -msingle
 
-I have not benchmarked this setup at all, but I notice no unusual
-latency. It might exist, just that the use cases I regularly use don't
-display any additional latency (I do go back and forth between a
-crypto home and plaintext home on the same system). For VMs, the
-images tend to be +C raw images in /var/lib/libvirt/images; but a
-valid use case exists for VM user sessions, including GNOME Boxes
-which creates a qcow2 file in /home. That's a curious case I haven't
-tested. There's now a new virtio-fs driver that might be better for
-this use case, and directly use a subvolume in cryptohome, no VM
-backing file needed. (?)
-
-Cryptohome does get subject to fstrim.timer, which passes through and
-punches holes in the file just fine. But, as a consequence of this
-entire arrangement, the loopback mounted file does fragment quite a
-lot. It's only a 4GiB image file, not even half full, and there are
-18000+ fragments for the file. I don't defragment it, ever. I don't
-use autodefrag. But I'm using NVMe, which has super low latency and
-supports multiqueueing. I think it would be a problem on conventional
-single queue SATA SSD and HDD.
-
-And to amp this up a notch, I wonder about parallelism or multiqueue
-limitations of the loop device? I know XFS and Btrfs both do leverage
-parallelism quite a bit.
-
-Anyway, the point is, I'm curious about this arrangement, other
-arrangements, and avoiding pathological cases.
+This is asking for trouble, even if you said you power-cut it constantly,
+there is little reason to run with "single" metadata, not even on SSDs where
+some insinuate that "DUP" is always magically 100% deduped internally by the
+SSD during writes at speeds of 600-2500 MB/sec; even though we can't see the
+internals and SSD firmware is proprietary to reliably confirm or deny, this
+seems very unlikely, and more importantly there are other places where one
+(and in your case the only) copy of metadata might get corrupted: RAM, storage
+controller, cabling. Even a sudden poweroff has more chances to finally do its
+thing when there's no possible "other copy of metadata" to refer to, and the
+broken one is all you get.
 
 -- 
-Chris Murphy
+With respect,
+Roman
