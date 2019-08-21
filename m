@@ -2,122 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C454097798
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 12:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D575977A1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 12:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbfHUKwq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Aug 2019 06:52:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58426 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726389AbfHUKwq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Aug 2019 06:52:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 97202B049;
-        Wed, 21 Aug 2019 10:52:44 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 464CEDA7DA; Wed, 21 Aug 2019 12:53:10 +0200 (CEST)
-Date:   Wed, 21 Aug 2019 12:53:09 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] btrfs: compression: replace set_level callbacks
- by a common helper
-Message-ID: <20190821105309.GV24086@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+        id S1727037AbfHUKzl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Aug 2019 06:55:41 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48014 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725283AbfHUKzk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Aug 2019 06:55:40 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LArW8j089942;
+        Wed, 21 Aug 2019 10:55:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=HrzWG/tr2nsoSxoULjEwmKkhu7QhpvnZ6ywNVWSsUhc=;
+ b=bxAS2OP+DOauvGYajvw90ryEVas4hmKdWY8RLs/S2A/+y6gOmeyaOklYsJZPvicrmoyL
+ dp1JSV79OFH89phT8bDm4GJ++Xvp1zNzYXPmTYr8oaVDTDfjTtcnG+RXCb1ODnTvi8GU
+ bzAE073dMvAdsEtI/h1Jo2bNIO1e6AQLrX4cj7wkwdohVt+LlP9VIez6n9zmwhZEND/d
+ Hw32CrwJ5je78Q4CbAg3GXduNAHGWm2lRPSwrMZT/+LQ5VdTH+kdEFutNkOygbrhvZyJ
+ pcpf3ahyylyaA6GyL+9bmJPQSOgKEIbX0HG8WOS1Meyh5Q/oix6Tvh+7qeUQTGMTwhfs cQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2uea7qvsc2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Aug 2019 10:55:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LAnEG1152240;
+        Wed, 21 Aug 2019 10:55:36 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2ugj7psha6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Aug 2019 10:55:36 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7LAtZp1015769;
+        Wed, 21 Aug 2019 10:55:35 GMT
+Received: from [192.168.1.119] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 21 Aug 2019 03:55:34 -0700
+Subject: Re: [PATCH v2 1/2] btrfs: define compression levels statically
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1566313756.git.dsterba@suse.com>
- <779b3811b04d18b861f14166b2f67ac402df7a88.1566313756.git.dsterba@suse.com>
- <adfb48ec-8cc8-2d0a-bce8-fda730e2f919@oracle.com>
+ <d4972ff57eb3ef57c616f5f7545f92d0cab7e12e.1566313756.git.dsterba@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <08f16559-a8f9-f147-2919-2f0ceb8f317e@oracle.com>
+Date:   Wed, 21 Aug 2019 18:55:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <adfb48ec-8cc8-2d0a-bce8-fda730e2f919@oracle.com>
-User-Agent: Mutt/1.5.23.1 (2014-03-12)
+In-Reply-To: <d4972ff57eb3ef57c616f5f7545f92d0cab7e12e.1566313756.git.dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908210117
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908210118
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 06:16:27PM +0800, Anand Jain wrote:
-> On 21/8/19 12:17 AM, David Sterba wrote:
-> > The set_level callbacks do not do anything special and can be replaced
-> > by a helper that uses the levels defined in the tables.
-> > 
-> > Signed-off-by: David Sterba <dsterba@suse.com>
-> > ---
-> >   fs/btrfs/compression.c | 20 ++++++++++++++++++--
-> >   fs/btrfs/compression.h |  9 ++-------
-> >   fs/btrfs/lzo.c         |  6 ------
-> >   fs/btrfs/zlib.c        |  9 ---------
-> >   fs/btrfs/zstd.c        |  9 ---------
-> >   5 files changed, 20 insertions(+), 33 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> > index 60c47b417a4b..53376c640f61 100644
-> > --- a/fs/btrfs/compression.c
-> > +++ b/fs/btrfs/compression.c
-> > @@ -1039,7 +1039,7 @@ int btrfs_compress_pages(unsigned int type_level, struct address_space *mapping,
-> >   	struct list_head *workspace;
-> >   	int ret;
-> >   
-> > -	level = btrfs_compress_op[type]->set_level(level);
-> > +	level = btrfs_compress_set_level(type, level);
-> >   	workspace = get_workspace(type, level);
-> >   	ret = btrfs_compress_op[type]->compress_pages(workspace, mapping,
-> >   						      start, pages,
-> > @@ -1611,7 +1611,23 @@ unsigned int btrfs_compress_str2level(unsigned int type, const char *str)
-> >   			level = 0;
-> >   	}
-> >   
-> > -	level = btrfs_compress_op[type]->set_level(level);
-> > +	level = btrfs_compress_set_level(type, level);
-> > +
-> > +	return level;
-> > +}
-> > +
-> > +/*
-> > + * Adjust @level according to the limits of the compression algorithm or
-> > + * fallback to default
-> > + */
-> > +unsigned int btrfs_compress_get_level(int type, unsigned level)
-> > +{
-> > +	const struct btrfs_compress_op *ops = btrfs_compress_op[type];
-> > +
-> > +	if (level == 0)
-> > +		level = ops->default_level;
-> > +	else
-> > +		level = min(level, ops->max_level);
-> >   
-> >   	return level;
-> >   }
-> > diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> > index cffd689adb6e..4cb8be9ff88b 100644
-> > --- a/fs/btrfs/compression.h
-> > +++ b/fs/btrfs/compression.h
-> > @@ -156,13 +156,6 @@ struct btrfs_compress_op {
-> >   			  unsigned long start_byte,
-> >   			  size_t srclen, size_t destlen);
-> >   
-> > -	/*
-> > -	 * This bounds the level set by the user to be within range of a
-> > -	 * particular compression type.  It returns the level that will be used
-> > -	 * if the level is out of bounds or the default if 0 is passed in.
-> > -	 */
-> > -	unsigned int (*set_level)(unsigned int level);
-> > -
-> >   	/* Maximum level supported by the compression algorithm */
-> >   	unsigned int max_level;
-> >   	unsigned int default_level;
-> > @@ -179,6 +172,8 @@ extern const struct btrfs_compress_op btrfs_zstd_compress;
-> >   const char* btrfs_compress_type2str(enum btrfs_compression_type type);
-> >   bool btrfs_compress_is_valid_type(const char *str, size_t len);
-> >   
-> > +unsigned int btrfs_compress_set_level(int type, unsigned level);
-> > +
+On 21/8/19 12:17 AM, David Sterba wrote:
+> The maximum and default levels do not change and can be defined
+> directly. The set_level callback was a temporary solution and will be
+> removed.
 > 
->     btrfs_compress_set_level() is undefined.
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-Indeed, by some mistake the function is named btrfs_compress_get_level
-and my compiler does not care to fail the build.
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
