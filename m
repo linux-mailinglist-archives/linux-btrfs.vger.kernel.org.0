@@ -2,564 +2,278 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FC37985BB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Aug 2019 22:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D58B987ED
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 01:38:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729659AbfHUUiV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 21 Aug 2019 16:38:21 -0400
-Received: from phi.wiserhosting.co.uk ([77.245.66.218]:36428 "EHLO
-        phi.wiserhosting.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726998AbfHUUiV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 21 Aug 2019 16:38:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=petezilla.co.uk; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=KPITsKkQrz1PSNF37dIAQu7iqHaZomP28ex+fkZwACk=; b=r4gCB5L839yK8B3V4FuL1Hf7lq
-        O3toCtml2gR05o2RLMO/yxF5OMQXXIjqubPdj2YXerUktRsGLZHFcZUx6JvxSfkZVFFWaCCIRFdYq
-        Xgopc/Z3OcZuW2bFeg1qxVP18PBXaf11az9VUQrCPdZXSqloOumn/N6KLiEJN3ETbcE69GgESycTZ
-        0Plk53W5bKnl/gVNcHuL7GoJn1KlGmS+bYDSU1YbzOXf4sxeTZhus8VNp1DvBf4pNmkbl99Zg+9gs
-        N1t8GSU/SpuYo5duYxT//t52COrFkYmiSSADsKH7pPnPuaDDpFJLtC6gwUcnLFBngkPltA4h4LOWe
-        Ru4b0KWg==;
-Received: from cpc75874-ando7-2-0-cust841.15-1.cable.virginm.net ([86.12.75.74]:59460 helo=[172.16.100.107])
-        by phi.wiserhosting.co.uk with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.91)
-        (envelope-from <pete@petezilla.co.uk>)
-        id 1i0XN2-00EYgz-Nx; Wed, 21 Aug 2019 21:38:18 +0100
+        id S1729489AbfHUXcW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 21 Aug 2019 19:32:22 -0400
+Received: from mout.gmx.net ([212.227.17.22]:43491 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726828AbfHUXcV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 21 Aug 2019 19:32:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1566430339;
+        bh=K/KBc5gVxBbCJt2rWEdMJgbG5phIouF9QG4a5Ihouh0=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=Q41Tp1xQQMs9+LFo7IHWUeXuQL+LzixD0KS4ba50iFfw70NA0o0NxJJl6G1bziZop
+         WrGf1G1t2GglD13k7HX0yWjxw+OptC2TL6RWqyTfj9mOXbJKM8SJEdghLpQ5Wjrn1e
+         nmH7BC6oU07kqcwyUdFVFxFMZ5SHhBHve7+kHRMc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([54.250.245.166]) by mail.gmx.com (mrgmx101
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 0MdnN3-1havZH0JfZ-00PdQ8; Thu, 22
+ Aug 2019 01:32:18 +0200
 Subject: Re: Chasing IO errors. BTRFS: error (device dm-2) in
  btrfs_run_delayed_refs:2907: errno=-5 IO failure
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+To:     Peter Chant <pete@petezilla.co.uk>,
         Chris Murphy <lists@colorremedies.com>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 References: <fc2b166a-4466-4a5a-ee88-da5e57ee89b6@petezilla.co.uk>
  <CAJCQCtSWi+PUbOWXNwv0guCLRuSgZunWdvRBB4TKMG_X48jHFw@mail.gmail.com>
  <2433d4cb-e7f7-72c5-977b-02f51e9717b3@petezilla.co.uk>
  <e439aafe-8836-b761-3b72-b9215b463c09@gmx.com>
-From:   Peter Chant <pete@petezilla.co.uk>
-Message-ID: <c593c2ef-044d-32e1-a75d-a2116a5b91a5@petezilla.co.uk>
-Date:   Wed, 21 Aug 2019 22:38:20 +0100
+ <c593c2ef-044d-32e1-a75d-a2116a5b91a5@petezilla.co.uk>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <a632bbef-974a-1ff5-fa10-300ce9a47b42@gmx.com>
+Date:   Thu, 22 Aug 2019 07:32:14 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <e439aafe-8836-b761-3b72-b9215b463c09@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-OutGoing-Spam-Status: No, score=-0.1
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - phi.wiserhosting.co.uk
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - petezilla.co.uk
-X-Get-Message-Sender-Via: phi.wiserhosting.co.uk: authenticated_id: pete@petezilla.co.uk
-X-Authenticated-Sender: phi.wiserhosting.co.uk: pete@petezilla.co.uk
+In-Reply-To: <c593c2ef-044d-32e1-a75d-a2116a5b91a5@petezilla.co.uk>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="SH2CYKSJLdtFBN00mQ7azBD6L9kNM7iag"
+X-Provags-ID: V03:K1:y4ip5OhPJT2bJS3w8cBK6L1vmO2hRyR6/1p1ZxbSQqQzgYcvQ03
+ KzW+1AzRhD0YWCz1eGiXjHelef9JcUYZ+lNlFimFNSDZHZzLE9m1jCOaERHlKMzrR0Q/hfM
+ BKVZVL7CFszoBREF2/4ngnaNa68juIaibIy/TqQ52KyRl8MKQp47Z7OyeNEYM/W3vA1cyO0
+ NLZRmu2oizfF+fqws2p5w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:nGkbBtfwhMQ=:yQduQJyNC13oHyYaFg0akX
+ 3KlI03XTN/RtLJ2eQYgRg6dseBclsvKJ0AljRql/mGe7Vwg+hwCEGb6TJIOasLSkV1NzOmWrm
+ F5ePbY9zaECvuiOKTvgiw3ns2k8NqVS/rKLo/fFpAzq72tnh55jDS+wvPyDppT8vCFZCYmUH8
+ x3oDw2bpOG404OxVfR/3QQd72gx4YC/lfioYVVvSK1MrYKvUdUpB3pqz89ai/1MuYUENynE6z
+ yhqexJQekJcUZ5ehhrODoiQDF0HHYxbKTO/OQ9EOnCS55lFQhqq17losPJ+itX07jbu1oNRNU
+ hLbQ0qPp04AAJsX0tqAhWRcKc1TR5uHvK+h4V4iQuuwV21fHNf+nYNo1bJpiu1ivCftRkyCvd
+ PkvgMbreWYFdSWRAy9V6+aeAC8Hul/Zg0wWfaxwoDU6rqenewj7IOPp1vvG3BKa5kA9tXX6h9
+ XyZjZPpGtZNelhSoqf3oL/G1vJMEmGceX1J0clr9y9IN/7RNmdVASJU7VaSX9Qx0cPglR3caa
+ kHU8Co4ykLDjnm1YPaGFAW8aNG2hF47pyKS3v0tSzGY1vnmTUZRh1U+d6A3y4QmfGQfPa1EdZ
+ ZzHpFnsZwVdhX5h7qeI2XhuQTnj1FBwRkBMik0p04WoaLs7Fg5PKwWFHhwjOkCrkeWlURYPPv
+ gxEbfwTlw8WDyOR3UwAXVRE8MM09LHd5VIp3l/vuSwRg6JJUXZRLgRAUH6OxTXpbi9vNxnecO
+ kAC3TtwHdjYN2jFdDXuUUgHOkPLy1OzuGvjNStoKqyxmCy7G+r4avE4MxOD4vCzQBPGZTKptI
+ seoohv75s13FXbX30dvUMyuWDkEFJT6e42o5gZeBAaNZUJ2Fna0bn1vjg0xTycG6XPdGGbUW3
+ uv7q8X6MhjzIHoraeDSrnEl6XocAhFZoyiXyS3K9lBhsyUQOFI7wJvKL9hNtHaurHz0rS8CKW
+ ga7pwpsgxnUXugtA0UTaxPpOV9x4fnP1y8cJ1PvDZ941JJtYBg2rt4YIh5+X5MsM7+MVpDs5s
+ 7P+G2LZT0lSu+TgGq/l7rgE2i8CRUzRWnJAmQQd8QP3w/ES+I23dhpoL+v5A75ZmjMc3/RBJw
+ 3NyBjWfq162Ar7WAm9rqWbXcQeSzTAbZzmlCD5yIOaY6Dls9r1TZ33J6A==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/21/19 8:29 AM, Qu Wenruo wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--SH2CYKSJLdtFBN00mQ7azBD6L9kNM7iag
+Content-Type: multipart/mixed; boundary="CEWE9kczmANPXpJ2EaCeOYDY7HoKWTq9x";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Peter Chant <pete@petezilla.co.uk>, Chris Murphy
+ <lists@colorremedies.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Message-ID: <a632bbef-974a-1ff5-fa10-300ce9a47b42@gmx.com>
+Subject: Re: Chasing IO errors. BTRFS: error (device dm-2) in
+ btrfs_run_delayed_refs:2907: errno=-5 IO failure
+References: <fc2b166a-4466-4a5a-ee88-da5e57ee89b6@petezilla.co.uk>
+ <CAJCQCtSWi+PUbOWXNwv0guCLRuSgZunWdvRBB4TKMG_X48jHFw@mail.gmail.com>
+ <2433d4cb-e7f7-72c5-977b-02f51e9717b3@petezilla.co.uk>
+ <e439aafe-8836-b761-3b72-b9215b463c09@gmx.com>
+ <c593c2ef-044d-32e1-a75d-a2116a5b91a5@petezilla.co.uk>
+In-Reply-To: <c593c2ef-044d-32e1-a75d-a2116a5b91a5@petezilla.co.uk>
 
->> I'll run the checks shortly.
-> 
-> Well, check will also report that transid mismatch, and possibly a lot
-> of extent tree corruption.
-> 
-
-
-Depends on what is 'a lot', over 400 lines here:
-
-parent transid verify failed on 11000765267968 wanted 2265511 found 2265437
-parent transid verify failed on 11000777834496 wanted 2265511 found 2265453
-parent transid verify failed on 11001243893760 wanted 2265512 found 2265500
-parent transid verify failed on 11000777621504 wanted 2265511 found 2265443
-parent transid verify failed on 11001243942912 wanted 2265512 found 2265500
-parent transid verify failed on 11001244483584 wanted 2265512 found 2265500
-parent transid verify failed on 11000487755776 wanted 2265512 found 2265510
-parent transid verify failed on 11001244549120 wanted 2265512 found 2265500
-parent transid verify failed on 11001244598272 wanted 2265512 found 2265500
-parent transid verify failed on 11000493064192 wanted 2265512 found 2265510
-parent transid verify failed on 11000711954432 wanted 2265511 found 2265510
-parent transid verify failed on 11000723996672 wanted 2265511 found 2265510
-parent transid verify failed on 11001306152960 wanted 2265511 found 2265509
-parent transid verify failed on 11000737202176 wanted 2265511 found 2265510
-parent transid verify failed on 11000739381248 wanted 2265511 found 2265510
-parent transid verify failed on 11000777506816 wanted 2265511 found 2265453
-parent transid verify failed on 11000493228032 wanted 2265512 found 2265510
-parent transid verify failed on 11001244745728 wanted 2265512 found 2265500
-parent transid verify failed on 11001244893184 wanted 2265512 found 2265500
-parent transid verify failed on 11000493604864 wanted 2265512 found 2265510
-parent transid verify failed on 11000767119360 wanted 2265511 found 2265446
-parent transid verify failed on 11000767201280 wanted 2265511 found 2265439
-parent transid verify failed on 11000767283200 wanted 2265511 found 2265433
-parent transid verify failed on 11000764989440 wanted 2265511 found 2265433
-parent transid verify failed on 11000777818112 wanted 2265511 found 2265453
-parent transid verify failed on 11001244975104 wanted 2265512 found 2265500
-parent transid verify failed on 11001245384704 wanted 2265512 found 2265500
-parent transid verify failed on 11000767709184 wanted 2265511 found 2265445
-parent transid verify failed on 11000768135168 wanted 2265511 found 2265446
-parent transid verify failed on 11000777801728 wanted 2265511 found 2265453
-parent transid verify failed on 11001249447936 wanted 2265512 found 2265500
-parent transid verify failed on 11001249742848 wanted 2265512 found 2265500
-parent transid verify failed on 11001294536704 wanted 2265512 found 2265509
-parent transid verify failed on 11001294569472 wanted 2265512 found 2265509
-parent transid verify failed on 11001253101568 wanted 2265512 found 2265500
-parent transid verify failed on 11001295372288 wanted 2265512 found 2265509
-parent transid verify failed on 11000781504512 wanted 2265511 found 2265453
-parent transid verify failed on 11000779374592 wanted 2265511 found 2265453
-parent transid verify failed on 11000780029952 wanted 2265511 found 2265453
-parent transid verify failed on 11000781750272 wanted 2265511 found 2265453
-parent transid verify failed on 11000780177408 wanted 2265511 found 2265453
-parent transid verify failed on 11000781799424 wanted 2265511 found 2265453
-parent transid verify failed on 11000780275712 wanted 2265511 found 2265453
-parent transid verify failed on 11000781815808 wanted 2265511 found 2265453
-parent transid verify failed on 11000771198976 wanted 2265511 found 2265451
-parent transid verify failed on 11000778047488 wanted 2265511 found 2265453
-parent transid verify failed on 11000778063872 wanted 2265511 found 2265453
-parent transid verify failed on 11000775032832 wanted 2265511 found 2265453
-parent transid verify failed on 11000775114752 wanted 2265511 found 2265442
-parent transid verify failed on 11000775311360 wanted 2265511 found 2265451
-parent transid verify failed on 11001249185792 wanted 2265512 found 2265500
-parent transid verify failed on 11001249251328 wanted 2265512 found 2265500
-parent transid verify failed on 11000769249280 wanted 2265512 found 2265437
-parent transid verify failed on 11000778129408 wanted 2265511 found 2265451
-parent transid verify failed on 11000775753728 wanted 2265511 found 2265452
-parent transid verify failed on 11000781864960 wanted 2265511 found 2265453
-parent transid verify failed on 11000781062144 wanted 2265511 found 2265453
-parent transid verify failed on 11000775868416 wanted 2265511 found 2265442
-parent transid verify failed on 11000778194944 wanted 2265511 found 2265452
-parent transid verify failed on 11000777408512 wanted 2265511 found 2265443
-parent transid verify failed on 11000776310784 wanted 2265511 found 2265452
-parent transid verify failed on 11000776392704 wanted 2265511 found 2265453
-parent transid verify failed on 11000776458240 wanted 2265511 found 2265453
-[1/7] checking root items
-parent transid verify failed on 11000765284352 wanted 2265511 found 2265437
-parent transid verify failed on 11000486051840 wanted 2265512 found 2265510
-parent transid verify failed on 11000765382656 wanted 2265511 found 2265437
-parent transid verify failed on 11000765448192 wanted 2265511 found 2265448
-parent transid verify failed on 11000765464576 wanted 2265511 found 2265437
-parent transid verify failed on 11000765513728 wanted 2265511 found 2265439
-parent transid verify failed on 11000765562880 wanted 2265511 found 2265439
-parent transid verify failed on 11000765579264 wanted 2265511 found 2265445
-parent transid verify failed on 11000765612032 wanted 2265511 found 2265439
-parent transid verify failed on 11000765628416 wanted 2265511 found 2265439
-parent transid verify failed on 11000765693952 wanted 2265511 found 2265439
-parent transid verify failed on 11000765775872 wanted 2265511 found 2265439
-parent transid verify failed on 11000765792256 wanted 2265511 found 2265439
-parent transid verify failed on 11000765841408 wanted 2265511 found 2265439
-parent transid verify failed on 11000765874176 wanted 2265511 found 2265439
-parent transid verify failed on 11000765972480 wanted 2265511 found 2265445
-parent transid verify failed on 11000766021632 wanted 2265511 found 2265447
-parent transid verify failed on 11000486477824 wanted 2265512 found 2265510
-parent transid verify failed on 11000766136320 wanted 2265511 found 2265437
-parent transid verify failed on 11000766169088 wanted 2265511 found 2265439
-parent transid verify failed on 11000766349312 wanted 2265511 found 2265445
-parent transid verify failed on 11000766595072 wanted 2265511 found 2265437
-parent transid verify failed on 11001304416256 wanted 2265511 found 2265509
-parent transid verify failed on 11001305972736 wanted 2265511 found 2265509
-parent transid verify failed on 11000699371520 wanted 2265511 found 2265510
-parent transid verify failed on 11001306595328 wanted 2265511 found 2265509
-parent transid verify failed on 11000742772736 wanted 2265511 found 2265510
-parent transid verify failed on 11000763285504 wanted 2265511 found 2265439
-parent transid verify failed on 11000486871040 wanted 2265512 found 2265510
-parent transid verify failed on 11000762761216 wanted 2265511 found 2265446
-parent transid verify failed on 11001306890240 wanted 2265511 found 2265509
-parent transid verify failed on 11001307332608 wanted 2265511 found 2265509
-parent transid verify failed on 11001307676672 wanted 2265511 found 2265509
-parent transid verify failed on 11000762810368 wanted 2265511 found 2265437
-parent transid verify failed on 11000764448768 wanted 2265511 found 2265446
-parent transid verify failed on 11000764481536 wanted 2265511 found 2265433
-parent transid verify failed on 11000699240448 wanted 2265511 found 2265510
-parent transid verify failed on 11000764710912 wanted 2265511 found 2265446
-parent transid verify failed on 11000764825600 wanted 2265511 found 2265437
-parent transid verify failed on 11000764891136 wanted 2265511 found 2265433
-parent transid verify failed on 11000764907520 wanted 2265511 found 2265444
-parent transid verify failed on 11000765120512 wanted 2265511 found 2265444
-parent transid verify failed on 11000707203072 wanted 2265511 found 2265510
-parent transid verify failed on 11000490459136 wanted 2265512 found 2265510
-parent transid verify failed on 11000766726144 wanted 2265511 found 2265437
-parent transid verify failed on 11000766742528 wanted 2265511 found 2265437
-parent transid verify failed on 11000766791680 wanted 2265511 found 2265437
-parent transid verify failed on 11000766824448 wanted 2265511 found 2265437
-parent transid verify failed on 11000707809280 wanted 2265511 found 2265510
-parent transid verify failed on 11000708661248 wanted 2265511 found 2265510
-parent transid verify failed on 11000710070272 wanted 2265511 found 2265510
-parent transid verify failed on 11000710152192 wanted 2265511 found 2265510
-parent transid verify failed on 11000710250496 wanted 2265511 found 2265510
-parent transid verify failed on 11000710348800 wanted 2265511 found 2265510
-parent transid verify failed on 11000710496256 wanted 2265511 found 2265510
-parent transid verify failed on 11000710529024 wanted 2265511 found 2265510
-parent transid verify failed on 11000710758400 wanted 2265511 found 2265510
-parent transid verify failed on 11000710889472 wanted 2265511 found 2265510
-parent transid verify failed on 11000710922240 wanted 2265511 found 2265510
-parent transid verify failed on 11000493146112 wanted 2265512 found 2265510
-parent transid verify failed on 11000710938624 wanted 2265511 found 2265510
-parent transid verify failed on 11000712069120 wanted 2265511 found 2265510
-parent transid verify failed on 11000716148736 wanted 2265511 found 2265510
-parent transid verify failed on 11000716574720 wanted 2265511 found 2265510
-parent transid verify failed on 11000717410304 wanted 2265511 found 2265510
-parent transid verify failed on 11000717443072 wanted 2265511 found 2265510
-parent transid verify failed on 11000717508608 wanted 2265511 found 2265510
-parent transid verify failed on 11000717754368 wanted 2265511 found 2265510
-parent transid verify failed on 11000718196736 wanted 2265511 found 2265510
-parent transid verify failed on 11000719474688 wanted 2265511 found 2265510
-parent transid verify failed on 11000724389888 wanted 2265511 found 2265510
-parent transid verify failed on 11000724488192 wanted 2265511 found 2265510
-parent transid verify failed on 11000724570112 wanted 2265511 found 2265510
-parent transid verify failed on 11000724766720 wanted 2265511 found 2265510
-parent transid verify failed on 11000724963328 wanted 2265511 found 2265510
-parent transid verify failed on 11000725061632 wanted 2265511 found 2265510
-parent transid verify failed on 11000725078016 wanted 2265511 found 2265510
-parent transid verify failed on 11000725225472 wanted 2265511 found 2265510
-parent transid verify failed on 11000725274624 wanted 2265511 found 2265510
-parent transid verify failed on 11000726503424 wanted 2265511 found 2265510
-parent transid verify failed on 11000727044096 wanted 2265511 found 2265510
-parent transid verify failed on 11000727617536 wanted 2265511 found 2265510
-parent transid verify failed on 11000728125440 wanted 2265511 found 2265510
-parent transid verify failed on 11000728289280 wanted 2265511 found 2265510
-parent transid verify failed on 11000728305664 wanted 2265511 found 2265510
-parent transid verify failed on 11000728338432 wanted 2265511 found 2265510
-parent transid verify failed on 11000728354816 wanted 2265511 found 2265510
-parent transid verify failed on 11000728698880 wanted 2265511 found 2265510
-parent transid verify failed on 11000729190400 wanted 2265511 found 2265510
-parent transid verify failed on 11000729501696 wanted 2265511 found 2265510
-parent transid verify failed on 11000729600000 wanted 2265511 found 2265510
-parent transid verify failed on 11000729747456 wanted 2265511 found 2265510
-parent transid verify failed on 11000725356544 wanted 2265511 found 2265510
-parent transid verify failed on 11000725405696 wanted 2265511 found 2265510
-parent transid verify failed on 11000725471232 wanted 2265511 found 2265510
-parent transid verify failed on 11000729796608 wanted 2265511 found 2265510
-parent transid verify failed on 11000730714112 wanted 2265511 found 2265510
-parent transid verify failed on 11000731172864 wanted 2265511 found 2265510
-parent transid verify failed on 11000731697152 wanted 2265511 found 2265510
-parent transid verify failed on 11000731729920 wanted 2265511 found 2265510
-parent transid verify failed on 11000732237824 wanted 2265511 found 2265510
-parent transid verify failed on 11000732598272 wanted 2265511 found 2265510
-parent transid verify failed on 11000732778496 wanted 2265511 found 2265510
-parent transid verify failed on 11000734203904 wanted 2265511 found 2265510
-parent transid verify failed on 11000734318592 wanted 2265511 found 2265510
-parent transid verify failed on 11000734728192 wanted 2265511 found 2265510
-parent transid verify failed on 11000702025728 wanted 2265511 found 2265510
-parent transid verify failed on 11000700141568 wanted 2265511 found 2265510
-parent transid verify failed on 11000735039488 wanted 2265511 found 2265510
-parent transid verify failed on 11000735662080 wanted 2265511 found 2265510
-parent transid verify failed on 11000735711232 wanted 2265511 found 2265510
-parent transid verify failed on 11000735793152 wanted 2265511 found 2265510
-parent transid verify failed on 11000736415744 wanted 2265511 found 2265510
-parent transid verify failed on 11000739250176 wanted 2265511 found 2265510
-parent transid verify failed on 11000739315712 wanted 2265511 found 2265510
-parent transid verify failed on 11000739430400 wanted 2265511 found 2265510
-parent transid verify failed on 11000739463168 wanted 2265511 found 2265510
-parent transid verify failed on 11000739479552 wanted 2265511 found 2265510
-parent transid verify failed on 11000740003840 wanted 2265511 found 2265510
-parent transid verify failed on 11000740298752 wanted 2265511 found 2265510
-parent transid verify failed on 11000740937728 wanted 2265511 found 2265510
-parent transid verify failed on 11000741953536 wanted 2265511 found 2265510
-parent transid verify failed on 11000703320064 wanted 2265511 found 2265510
-parent transid verify failed on 11000703795200 wanted 2265511 found 2265510
-parent transid verify failed on 11000746377216 wanted 2265511 found 2265510
-parent transid verify failed on 11000746442752 wanted 2265511 found 2265510
-parent transid verify failed on 11000746557440 wanted 2265511 found 2265510
-parent transid verify failed on 11000746606592 wanted 2265511 found 2265510
-parent transid verify failed on 11000746721280 wanted 2265511 found 2265510
-parent transid verify failed on 11000746770432 wanted 2265511 found 2265510
-parent transid verify failed on 11000746835968 wanted 2265511 found 2265510
-parent transid verify failed on 11000746852352 wanted 2265511 found 2265510
-parent transid verify failed on 11000746934272 wanted 2265511 found 2265510
-parent transid verify failed on 11000747212800 wanted 2265511 found 2265510
-parent transid verify failed on 11000747294720 wanted 2265511 found 2265510
-parent transid verify failed on 11000747458560 wanted 2265511 found 2265510
-parent transid verify failed on 11000748097536 wanted 2265511 found 2265510
-parent transid verify failed on 11000748195840 wanted 2265511 found 2265510
-parent transid verify failed on 11000748228608 wanted 2265511 found 2265510
-parent transid verify failed on 11000749244416 wanted 2265511 found 2265510
-parent transid verify failed on 11000750047232 wanted 2265511 found 2265510
-parent transid verify failed on 11000751538176 wanted 2265511 found 2265510
-parent transid verify failed on 11000700846080 wanted 2265511 found 2265510
-parent transid verify failed on 11000750620672 wanted 2265511 found 2265510
-parent transid verify failed on 11000750702592 wanted 2265511 found 2265510
-parent transid verify failed on 11000751767552 wanted 2265511 found 2265510
-parent transid verify failed on 11000752160768 wanted 2265511 found 2265510
-parent transid verify failed on 11000752275456 wanted 2265511 found 2265510
-parent transid verify failed on 11000752340992 wanted 2265511 found 2265510
-parent transid verify failed on 11000752717824 wanted 2265511 found 2265510
-parent transid verify failed on 11000752848896 wanted 2265511 found 2265510
-parent transid verify failed on 11000752865280 wanted 2265511 found 2265510
-parent transid verify failed on 11000752963584 wanted 2265511 found 2265510
-parent transid verify failed on 11000753389568 wanted 2265511 found 2265510
-parent transid verify failed on 11000753471488 wanted 2265511 found 2265510
-parent transid verify failed on 11000753553408 wanted 2265511 found 2265510
-parent transid verify failed on 11000753668096 wanted 2265511 found 2265510
-parent transid verify failed on 11000753799168 wanted 2265511 found 2265510
-parent transid verify failed on 11000753848320 wanted 2265511 found 2265510
-parent transid verify failed on 11000754012160 wanted 2265511 found 2265510
-parent transid verify failed on 11000754061312 wanted 2265511 found 2265510
-parent transid verify failed on 11000754143232 wanted 2265511 found 2265510
-parent transid verify failed on 11000754159616 wanted 2265511 found 2265510
-parent transid verify failed on 11000754208768 wanted 2265511 found 2265510
-parent transid verify failed on 11000754241536 wanted 2265511 found 2265510
-parent transid verify failed on 11000754454528 wanted 2265511 found 2265510
-parent transid verify failed on 11000754520064 wanted 2265511 found 2265510
-parent transid verify failed on 11000754618368 wanted 2265511 found 2265510
-parent transid verify failed on 11000754651136 wanted 2265511 found 2265510
-parent transid verify failed on 11000754700288 wanted 2265511 found 2265510
-parent transid verify failed on 11000754765824 wanted 2265511 found 2265510
-parent transid verify failed on 11000754798592 wanted 2265511 found 2265510
-parent transid verify failed on 11000754978816 wanted 2265511 found 2265510
-parent transid verify failed on 11000755060736 wanted 2265511 found 2265510
-parent transid verify failed on 11000755093504 wanted 2265511 found 2265510
-parent transid verify failed on 11000755240960 wanted 2265511 found 2265510
-parent transid verify failed on 11000755306496 wanted 2265511 found 2265510
-parent transid verify failed on 11000755322880 wanted 2265511 found 2265510
-parent transid verify failed on 11000755699712 wanted 2265511 found 2265510
-parent transid verify failed on 11000755798016 wanted 2265511 found 2265510
-parent transid verify failed on 11000755896320 wanted 2265511 found 2265510
-parent transid verify failed on 11000755912704 wanted 2265511 found 2265510
-parent transid verify failed on 11000756027392 wanted 2265511 found 2265510
-parent transid verify failed on 11000756076544 wanted 2265511 found 2265510
-parent transid verify failed on 11000756142080 wanted 2265511 found 2265510
-parent transid verify failed on 11000756174848 wanted 2265511 found 2265510
-parent transid verify failed on 11000756453376 wanted 2265511 found 2265510
-parent transid verify failed on 11000756518912 wanted 2265511 found 2265510
-parent transid verify failed on 11000756568064 wanted 2265511 found 2265510
-parent transid verify failed on 11000756600832 wanted 2265511 found 2265510
-parent transid verify failed on 11000756912128 wanted 2265511 found 2265510
-parent transid verify failed on 11000757207040 wanted 2265511 found 2265510
-parent transid verify failed on 11000757551104 wanted 2265511 found 2265510
-parent transid verify failed on 11000757370880 wanted 2265511 found 2265510
-parent transid verify failed on 11000493260800 wanted 2265512 found 2265510
-parent transid verify failed on 11000757731328 wanted 2265511 found 2265510
-parent transid verify failed on 11000758157312 wanted 2265511 found 2265510
-parent transid verify failed on 11000758288384 wanted 2265511 found 2265510
-parent transid verify failed on 11000758337536 wanted 2265511 found 2265510
-parent transid verify failed on 11000759025664 wanted 2265511 found 2265510
-parent transid verify failed on 11000758452224 wanted 2265511 found 2265510
-parent transid verify failed on 11000758468608 wanted 2265511 found 2265510
-parent transid verify failed on 11000758632448 wanted 2265511 found 2265510
-parent transid verify failed on 11000759140352 wanted 2265511 found 2265510
-parent transid verify failed on 11000759189504 wanted 2265511 found 2265510
-parent transid verify failed on 11000759255040 wanted 2265511 found 2265510
-parent transid verify failed on 11000759304192 wanted 2265511 found 2265510
-parent transid verify failed on 11000759336960 wanted 2265511 found 2265510
-parent transid verify failed on 11000759762944 wanted 2265511 found 2265444
-parent transid verify failed on 11000760221696 wanted 2265511 found 2265432
-parent transid verify failed on 11000760254464 wanted 2265511 found 2265432
-parent transid verify failed on 11000760303616 wanted 2265511 found 2265444
-parent transid verify failed on 11000760401920 wanted 2265511 found 2265444
-parent transid verify failed on 11000760483840 wanted 2265511 found 2265444
-parent transid verify failed on 11000760500224 wanted 2265511 found 2265442
-parent transid verify failed on 11000760631296 wanted 2265511 found 2265444
-parent transid verify failed on 11000760909824 wanted 2265511 found 2265432
-parent transid verify failed on 11000760942592 wanted 2265511 found 2265439
-parent transid verify failed on 11000760958976 wanted 2265511 found 2265444
-parent transid verify failed on 11000761106432 wanted 2265511 found 2265432
-parent transid verify failed on 11000761335808 wanted 2265511 found 2265444
-parent transid verify failed on 11000761352192 wanted 2265511 found 2265444
-parent transid verify failed on 11000761516032 wanted 2265511 found 2265444
-parent transid verify failed on 11000761532416 wanted 2265511 found 2265444
-parent transid verify failed on 11000761597952 wanted 2265511 found 2265444
-parent transid verify failed on 11000761614336 wanted 2265511 found 2265444
-parent transid verify failed on 11000762155008 wanted 2265511 found 2265445
-parent transid verify failed on 11000762433536 wanted 2265511 found 2265444
-parent transid verify failed on 11000762335232 wanted 2265511 found 2265445
-parent transid verify failed on 11000762580992 wanted 2265511 found 2265446
-parent transid verify failed on 11000762695680 wanted 2265511 found 2265445
-parent transid verify failed on 11000494047232 wanted 2265512 found 2265510
-parent transid verify failed on 11000765071360 wanted 2265511 found 2265444
-parent transid verify failed on 11000494276608 wanted 2265512 found 2265510
-parent transid verify failed on 11000767102976 wanted 2265511 found 2265439
-parent transid verify failed on 11000767152128 wanted 2265511 found 2265448
-parent transid verify failed on 11000767217664 wanted 2265511 found 2265439
-parent transid verify failed on 11000767250432 wanted 2265511 found 2265448
-parent transid verify failed on 11000767692800 wanted 2265511 found 2265444
-parent transid verify failed on 11000767758336 wanted 2265511 found 2265446
-parent transid verify failed on 11000767807488 wanted 2265511 found 2265450
-parent transid verify failed on 11000767856640 wanted 2265511 found 2265448
-parent transid verify failed on 11000767873024 wanted 2265511 found 2265444
-parent transid verify failed on 11000767938560 wanted 2265511 found 2265433
-parent transid verify failed on 11000768102400 wanted 2265511 found 2265446
-parent transid verify failed on 11000768118784 wanted 2265511 found 2265444
-parent transid verify failed on 11000768249856 wanted 2265511 found 2265439
-parent transid verify failed on 11000496242688 wanted 2265512 found 2265510
-parent transid verify failed on 11000496308224 wanted 2265512 found 2265510
-parent transid verify failed on 11000764596224 wanted 2265511 found 2265437
-parent transid verify failed on 11000764661760 wanted 2265511 found 2265437
-parent transid verify failed on 11001249759232 wanted 2265512 found 2265500
-parent transid verify failed on 11001250086912 wanted 2265512 found 2265500
-parent transid verify failed on 11001257312256 wanted 2265512 found 2265500
-parent transid verify failed on 11001257394176 wanted 2265512 found 2265500
-parent transid verify failed on 11000779407360 wanted 2265511 found 2265453
-parent transid verify failed on 11001299206144 wanted 2265512 found 2265509
-parent transid verify failed on 11001302827008 wanted 2265512 found 2265500
-parent transid verify failed on 11001303973888 wanted 2265512 found 2265500
-parent transid verify failed on 11001304055808 wanted 2265512 found 2265509
-parent transid verify failed on 11001304317952 wanted 2265512 found 2265500
-parent transid verify failed on 11000780079104 wanted 2265511 found 2265453
-parent transid verify failed on 11000780210176 wanted 2265511 found 2265453
-parent transid verify failed on 11000780308480 wanted 2265511 found 2265453
-parent transid verify failed on 11000583602176 wanted 2265512 found 2265420
-parent transid verify failed on 11000768348160 wanted 2265511 found 2265439
-parent transid verify failed on 11000600363008 wanted 2265512 found 2265420
-parent transid verify failed on 11000768872448 wanted 2265511 found 2265447
-parent transid verify failed on 11000768987136 wanted 2265511 found 2265439
-parent transid verify failed on 11000769003520 wanted 2265511 found 2265450
-parent transid verify failed on 11000769019904 wanted 2265511 found 2265439
-parent transid verify failed on 11000769052672 wanted 2265511 found 2265439
-parent transid verify failed on 11000769085440 wanted 2265511 found 2265439
-parent transid verify failed on 11000918310912 wanted 2265512 found 2265488
-parent transid verify failed on 11000769167360 wanted 2265511 found 2265439
-parent transid verify failed on 11000769282048 wanted 2265511 found 2265450
-parent transid verify failed on 11000781144064 wanted 2265511 found 2265453
-parent transid verify failed on 11000620744704 wanted 2265512 found 2265420
-parent transid verify failed on 11001293258752 wanted 2265512 found 2265509
-parent transid verify failed on 11000770297856 wanted 2265511 found 2265444
-parent transid verify failed on 11000770428928 wanted 2265511 found 2265444
-parent transid verify failed on 11000770445312 wanted 2265511 found 2265444
-parent transid verify failed on 11000770576384 wanted 2265511 found 2265439
-parent transid verify failed on 11000770592768 wanted 2265511 found 2265444
-parent transid verify failed on 11000770625536 wanted 2265511 found 2265445
-parent transid verify failed on 11000770756608 wanted 2265511 found 2265444
-parent transid verify failed on 11000770772992 wanted 2265511 found 2265445
-parent transid verify failed on 11000770805760 wanted 2265511 found 2265439
-parent transid verify failed on 11000771100672 wanted 2265511 found 2265444
-parent transid verify failed on 11000771117056 wanted 2265511 found 2265449
-parent transid verify failed on 11000771149824 wanted 2265511 found 2265452
-parent transid verify failed on 11000771166208 wanted 2265511 found 2265439
-parent transid verify failed on 11000771428352 wanted 2265511 found 2265444
-parent transid verify failed on 11000776638464 wanted 2265511 found 2265453
-parent transid verify failed on 11000776769536 wanted 2265511 found 2265452
-parent transid verify failed on 11000771444736 wanted 2265511 found 2265444
-parent transid verify failed on 11000771690496 wanted 2265511 found 2265452
-parent transid verify failed on 11000771756032 wanted 2265511 found 2265451
-parent transid verify failed on 11000771952640 wanted 2265511 found 2265442
-parent transid verify failed on 11000704778240 wanted 2265512 found 2265423
-parent transid verify failed on 11001171886080 wanted 2265512 found 2265500
-parent transid verify failed on 11000772034560 wanted 2265511 found 2265453
-parent transid verify failed on 11000772116480 wanted 2265511 found 2265452
-parent transid verify failed on 11000776802304 wanted 2265511 found 2265452
-parent transid verify failed on 11000776818688 wanted 2265511 found 2265452
-parent transid verify failed on 11000776867840 wanted 2265511 found 2265452
-parent transid verify failed on 11000776900608 wanted 2265511 found 2265451
-parent transid verify failed on 11000776916992 wanted 2265511 found 2265453
-parent transid verify failed on 11000776933376 wanted 2265511 found 2265451
-parent transid verify failed on 11000737415168 wanted 2265512 found 2265438
-parent transid verify failed on 11000772395008 wanted 2265511 found 2265452
-parent transid verify failed on 11000772427776 wanted 2265511 found 2265447
-parent transid verify failed on 11000772575232 wanted 2265511 found 2265444
-parent transid verify failed on 11000772640768 wanted 2265511 found 2265444
-parent transid verify failed on 11000780488704 wanted 2265511 found 2265453
-parent transid verify failed on 11000772739072 wanted 2265511 found 2265442
-parent transid verify failed on 11000772837376 wanted 2265511 found 2265444
-parent transid verify failed on 11000780505088 wanted 2265511 found 2265453
-parent transid verify failed on 11000777064448 wanted 2265511 found 2265452
-parent transid verify failed on 11000737841152 wanted 2265512 found 2265438
-parent transid verify failed on 11000772968448 wanted 2265511 found 2265452
-parent transid verify failed on 11000773001216 wanted 2265511 found 2265452
-parent transid verify failed on 11000773115904 wanted 2265511 found 2265451
-parent transid verify failed on 11000773148672 wanted 2265511 found 2265442
-parent transid verify failed on 11000773181440 wanted 2265511 found 2265444
-parent transid verify failed on 11000773197824 wanted 2265511 found 2265453
-parent transid verify failed on 11000773312512 wanted 2265511 found 2265453
-parent transid verify failed on 11000773345280 wanted 2265511 found 2265452
-parent transid verify failed on 11000777162752 wanted 2265511 found 2265452
-parent transid verify failed on 11000773967872 wanted 2265511 found 2265442
-parent transid verify failed on 11000774148096 wanted 2265511 found 2265447
-parent transid verify failed on 11000777228288 wanted 2265511 found 2265452
-parent transid verify failed on 11000774344704 wanted 2265511 found 2265452
-parent transid verify failed on 11000774377472 wanted 2265511 found 2265447
-parent transid verify failed on 11000774524928 wanted 2265511 found 2265442
-parent transid verify failed on 11000774557696 wanted 2265511 found 2265445
-parent transid verify failed on 11000774574080 wanted 2265511 found 2265445
-parent transid verify failed on 11000777310208 wanted 2265511 found 2265452
-parent transid verify failed on 11000781029376 wanted 2265511 found 2265453
-parent transid verify failed on 11000774639616 wanted 2265511 found 2265452
-parent transid verify failed on 11000774770688 wanted 2265511 found 2265452
-parent transid verify failed on 11000774819840 wanted 2265511 found 2265439
-parent transid verify failed on 11000777359360 wanted 2265511 found 2265452
-parent transid verify failed on 13395960053760 wanted 2265296 found 2263090
-parent transid verify failed on 13395960053760 wanted 2265296 found 2263090
-parent transid verify failed on 13395960053760 wanted 2265296 found 2263090
-Ignoring transid failure
-ERROR: child eb corrupted: parent bytenr=11016181694464 item=83 parent
-level=1 child level=1
-ERROR: failed to repair root items: Input/output error
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/data_disk_1
-UUID: 159b8826-8380-45be-acb6-0cb992a8dfd7
-
->> [   99.710315] EDAC amd64: Node 0: DRAM ECC disabled.
->> [   99.710317] EDAC amd64: ECC disabled in the BIOS or no ECC
->> capability, module will not load.
->>                 Either enable ECC checking or force module loading by
->> setting 'ecc_enable_override'.
->>                 (Note that use of the override may cause unknown side
->> effects.)
-> Not sure what the ECC part is doing, but it repeats quite some times.
-> I'd assume it's unrelated though.
->
-
-Not sure either.  I've not got ECC RAM.  Motherboard is capable I think.
+--CEWE9kczmANPXpJ2EaCeOYDY7HoKWTq9x
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
 
-> [...]
->> [  142.507291] BTRFS error (device dm-2): parent transid verify failed
->> on 13395960053760 wanted 2265296 found 2263090
->> [  142.544548] BTRFS error (device dm-2): parent transid verify failed
->> on 13395960053760 wanted 2265296 found 2263090
->> [  142.544561] BTRFS: error (device dm-2) in
->> btrfs_run_delayed_refs:2907: errno=-5 IO failure
-> 
-> This means, btrfs is trying to read extent tree for CoW, but at that
-> time, extent tree is already corrupted, thus it returns -EIO.
-> 
-> And btrfs_run_delayed_refs just returns error.
-> t
-> Not sure if it's related to device replace, but anyway the corruption
-> just happened.
-> The device replace may be an interesting clue, as currently our
-> dm-log-writes are mostly focused on single device usage.
+On 2019/8/22 =E4=B8=8A=E5=8D=885:38, Peter Chant wrote:
+> On 8/21/19 8:29 AM, Qu Wenruo wrote:
+>=20
+>>> I'll run the checks shortly.
+>>
+>> Well, check will also report that transid mismatch, and possibly a lot=
 
-Sorry, 'device replace'?  I've not done that lately.  I _may_ have tried
-that years back with this file system.  However, iirc it failed as the
-new, allegedly same size new disk was possibly slightly smaller.
+>> of extent tree corruption.
+>>
+>=20
+>=20
+> Depends on what is 'a lot', over 400 lines here:
+>=20
+> parent transid verify failed on 11000765267968 wanted 2265511 found 226=
+5437
+> parent transid verify failed on 11000777834496 wanted 2265511 found 226=
+5453
+> parent transid verify failed on 11001243893760 wanted 2265512 found 226=
+5500
+[...]
+> Ignoring transid failure
+> ERROR: child eb corrupted: parent bytenr=3D11016181694464 item=3D83 par=
+ent
+> level=3D1 child level=3D1
+> ERROR: failed to repair root items: Input/output error
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/data_disk_1
+> UUID: 159b8826-8380-45be-acb6-0cb992a8dfd7
+>=20
+>>> [   99.710315] EDAC amd64: Node 0: DRAM ECC disabled.
+>>> [   99.710317] EDAC amd64: ECC disabled in the BIOS or no ECC
+>>> capability, module will not load.
+>>>                 Either enable ECC checking or force module loading by=
 
-From the above it looks like it is not a specific hardware failure.
+>>> setting 'ecc_enable_override'.
+>>>                 (Note that use of the override may cause unknown side=
+
+>>> effects.)
+>> Not sure what the ECC part is doing, but it repeats quite some times.
+>> I'd assume it's unrelated though.
+>>
+>=20
+> Not sure either.  I've not got ECC RAM.  Motherboard is capable I think=
+=2E
+>=20
+>=20
+>=20
+>> [...]
+>>> [  142.507291] BTRFS error (device dm-2): parent transid verify faile=
+d
+>>> on 13395960053760 wanted 2265296 found 2263090
+>>> [  142.544548] BTRFS error (device dm-2): parent transid verify faile=
+d
+>>> on 13395960053760 wanted 2265296 found 2263090
+>>> [  142.544561] BTRFS: error (device dm-2) in
+>>> btrfs_run_delayed_refs:2907: errno=3D-5 IO failure
+>>
+>> This means, btrfs is trying to read extent tree for CoW, but at that
+>> time, extent tree is already corrupted, thus it returns -EIO.
+>>
+>> And btrfs_run_delayed_refs just returns error.
+>> t
+>> Not sure if it's related to device replace, but anyway the corruption
+>> just happened.
+>> The device replace may be an interesting clue, as currently our
+>> dm-log-writes are mostly focused on single device usage.
+>=20
+> Sorry, 'device replace'?  I've not done that lately.  I _may_ have trie=
+d
+> that years back with this file system.  However, iirc it failed as the
+> new, allegedly same size new disk was possibly slightly smaller.
+
+OK, it's my bad read on the following lines:
+
+[   99.237670] BTRFS info (device dm-2): device fsid
+159b8826-8380-45be-acb6-0cb992a8dfd7 devid 4 moved old:/dev/dm-1
+new:/dev/mapper/data_disk_1
+[   99.241061] BTRFS info (device dm-4): device fsid
+6b0245ec-bdd4-4076-b800-2243d466b174 devid 1 moved old:/dev/dm-4
+new:/dev/mapper/nvme0_vg-lxc
+[   99.242692] BTRFS info (device dm-2): device fsid
+159b8826-8380-45be-acb6-0cb992a8dfd7 devid 3 moved old:/dev/dm-2
+
+It just a device path update, not a big deal.
+>=20
+> From the above it looks like it is not a specific hardware failure.
+
+Yep, no hardware related error message at all.
+
+>=20
+>=20
+>>
+>> Then I'd recommend to do regular rescue procedure:
+>> - Try that skip_bg patchset if possible
+>>   This provides the best salvage method so far, full subvolume
+>>   available, although needs out-of-tree patches.
+>>   https://patchwork.kernel.org/project/linux-btrfs/list/?series=3D1306=
+37
+>>
+>=20
+> I can give that a go, but not for a while.
+>=20
+> I seem to be able to read the file system as is, as it goes read only.
+> But perhaps 'seems' is the operative word.
+
+As long as you can mount RO, it shouldn't be mostly OK for data salvage.
+
+THanks,
+Qu
+
+>=20
+>> - btrfs-restore
+>>   The regular unmounted recover, needs extra space. Latest btrfs-progs=
+
+>>   recommended.
+>=20
+> I've got the latest btrfs progs.    if neither of those two work I have=
+
+> a backup.
+>=20
+> So, basically, make a new file system and recover the data to it.  I've=
+
+> a new disk on the way, so I can create a file system as single and once=
+
+> I'm happy I've migrated data to it, wipe the old disks and move one  or=
+
+> two to the new array and rebalance.
+>=20
+>>
+>> Thanks,
+>> Qu
+>>
+>=20
+> Thank you, very much appreciated.
+>=20
+> Pete
+>=20
 
 
-> 
-> Then I'd recommend to do regular rescue procedure:
-> - Try that skip_bg patchset if possible
->   This provides the best salvage method so far, full subvolume
->   available, although needs out-of-tree patches.
->   https://patchwork.kernel.org/project/linux-btrfs/list/?series=130637
-> 
+--CEWE9kczmANPXpJ2EaCeOYDY7HoKWTq9x--
 
-I can give that a go, but not for a while.
+--SH2CYKSJLdtFBN00mQ7azBD6L9kNM7iag
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I seem to be able to read the file system as is, as it goes read only.
-But perhaps 'seems' is the operative word.
+-----BEGIN PGP SIGNATURE-----
 
-> - btrfs-restore
->   The regular unmounted recover, needs extra space. Latest btrfs-progs
->   recommended.
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1d1H4ACgkQwj2R86El
+/qhfrggAmXnOnIUOu24acONaEA0I8P8c57gNeHbmM9G86dFbY7KMskSUk38A3JNw
+FCz5819gYtn9feE0xz2hnkC/Sx7EYPsml8MQkBUx6YIApzabWB29WR8OtFV5TeY+
+Rm64m3OY03yjhb8WEsP/TAgOVGS2jbSS1HpuBXF/dx85DQSP9kHmDOBENMtJyW++
+lmf5pZVhCyqgvMl04SQjPVexOsasrpspkYbZUTiue2B+euFCW5EkLu13P1atQI/g
+wjuc9eToas4MsAScREcR1KuIjueUKa9ynccz0wFnNiu/ZNTl1blYsb7Aq1+NyoIM
+c+isfqIb3k/XLcXm2V5PEsBF3NJ7dw==
+=Dnci
+-----END PGP SIGNATURE-----
 
-I've got the latest btrfs progs.    if neither of those two work I have
-a backup.
-
-So, basically, make a new file system and recover the data to it.  I've
-a new disk on the way, so I can create a file system as single and once
-I'm happy I've migrated data to it, wipe the old disks and move one  or
-two to the new array and rebalance.
-
-> 
-> Thanks,
-> Qu
-> 
-
-Thank you, very much appreciated.
-
-Pete
+--SH2CYKSJLdtFBN00mQ7azBD6L9kNM7iag--
