@@ -2,93 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25ED4998FE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 18:18:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B26599F54
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 21:04:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733300AbfHVQSo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 12:18:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54476 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730741AbfHVQSo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 12:18:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 46D1AAF77;
-        Thu, 22 Aug 2019 16:18:42 +0000 (UTC)
-Subject: Re: Deletion on BTRFS - how does it work
-To:     Alex Shashkov <oleks.sha74@gmail.com>, linux-btrfs@vger.kernel.org
-References: <20190809012424.11420-1-wqu@suse.com>
- <20190809012424.11420-3-wqu@suse.com>
- <CAKzB54SN1FmGhGHQOfT2fvn=ESQn4vOwbPpPM7p8eJRkNmvf7w@mail.gmail.com>
- <CAKzB54QYNFjgfPUM8KqAHGPwSWPVczbhZidKpCpL7baJO8hzAA@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <cdc805dc-a276-8943-6b40-f878e698c580@suse.com>
-Date:   Thu, 22 Aug 2019 19:18:40 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2390392AbfHVTDJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 15:03:09 -0400
+Received: from mail-yw1-f68.google.com ([209.85.161.68]:35055 "EHLO
+        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731910AbfHVTDJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 15:03:09 -0400
+Received: by mail-yw1-f68.google.com with SMTP id g19so2846667ywe.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 12:03:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2yhcalcO46fpfNDyxdD+0q3fJKu8Fzb8zmEgrpZ4TD8=;
+        b=nS7fv5RncGX3Jo1yRZCTHw7Bh4IePORHFN9DYY95qWwsnLkcoEsk+SweR7oTewCfdd
+         1evxUJGMRW4D1W7XJ6Caeb/GL6Ud8CAjLyusAuQySYt3zbgykOaK0Ee+DzKzSqtijfmk
+         i+wMZYdC8b6G58EgO7f5aO5gYq70i1UUhskMHxLRYvNG+cj4EsCQuG4CKXTfDTO4hkb7
+         yG7h9/lU6JQWmu+Jp2YemfN0KhGOBvo4MMbP1d2l9JW8/BxgxS1LttjR4YJF95khnF8U
+         Av6+oaOXOJrEl+YBRTYD3iK/RoVgvdRHHKyrfaEcA0JNoh/ZalMt9vnqsLDMUBaiFmQQ
+         WevA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2yhcalcO46fpfNDyxdD+0q3fJKu8Fzb8zmEgrpZ4TD8=;
+        b=bsFML5srF9LsqjrrMQUJI5IzzLRr14pAAkXS+vRpidWCPx6DRwA24IWG+6bvwkNsl6
+         tXi8eoAJ7i7HUfRIF93b+chwB5UYEMDZhqH05bwH8WhUtfs3dApJ9ipJHFCJWU2xJ2sf
+         Rkt5dFItMBJQYVoBH6mkaXewe6/flM6OfYVwRagX+WCNzB/aqAR9caySmYW7JbhbBaU5
+         IEvE0msRL3MIL+sQIzXQB23xocvY6TR8LYNEnGzEXR/FOi3SVLOugtsTSAiGMtxwfk9u
+         gUJlOD0AkJl2KrHANl8nL6yVzcmr1Q2+U3gEjUlJwGTuvWoVRVPfLsJBEWVi3ezHzqzj
+         QsUQ==
+X-Gm-Message-State: APjAAAUQqU15EhRO5yPu/7pzZWSv0AWi+t2c8X8+1CrSkYUnqIzgEcee
+        EHxnnQd6SF4KbOPSd/or5JUJRIo1XYZZuA==
+X-Google-Smtp-Source: APXvYqyfSUK7Zs2aFVc9c4CqgLO288Mf1wFoW5r3Nc7u1lgpAzJuucR6BVXDALs6aNg+SVbnJe1/YA==
+X-Received: by 2002:a81:350b:: with SMTP id c11mr639646ywa.123.1566500588113;
+        Thu, 22 Aug 2019 12:03:08 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id b202sm113612ywb.78.2019.08.22.12.03.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Aug 2019 12:03:06 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH][RESEND] btrfs: add a force_chunk_alloc to space_info's sysfs
+Date:   Thu, 22 Aug 2019 15:03:05 -0400
+Message-Id: <20190822190305.13673-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <CAKzB54QYNFjgfPUM8KqAHGPwSWPVczbhZidKpCpL7baJO8hzAA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+In testing various things such as the btrfsck patch to detect over
+allocation of chunks, empty block group deletion, and balance I've had
+various ways to force chunk allocations for debug purposes.  Add a sysfs
+file to enable forcing of chunk allocation for the owning space info in
+order to enable us to add testcases in the future to test these various
+features easier.
 
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/sysfs.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-On 9.08.19 г. 7:25 ч., Alex Shashkov wrote:
-> I'm trying to understand how deletion works on BTRFS. Let's say
-> directory containing files and other directories gets deleted. What is
-> essentially happening during this action, what strucutres get updated,
-> what artifacts remain after the deletion, is it possible to find them
-> and recover deleted objects, if yes, then how? Thanks in advance!
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index f6d3c80f2e28..c290a0cd37d2 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -68,6 +68,7 @@ static struct btrfs_feature_attr btrfs_attr_features_##_name = {	     \
+ 
+ static inline struct btrfs_fs_info *to_fs_info(struct kobject *kobj);
+ static inline struct btrfs_fs_devices *to_fs_devs(struct kobject *kobj);
++static inline struct kobject *get_btrfs_kobj(struct kobject *kobj);
+ 
+ static struct btrfs_feature_attr *to_btrfs_feature_attr(struct kobj_attribute *a)
+ {
+@@ -405,6 +406,58 @@ static struct kobj_type btrfs_raid_ktype = {
+ 	.default_groups = raid_groups,
+ };
+ 
++static ssize_t btrfs_space_info_force_chunk_alloc_show(struct kobject *kobj,
++						       struct kobj_attribute *a,
++						       char *buf)
++{
++	return snprintf(buf, PAGE_SIZE, "0\n");
++}
++
++static ssize_t btrfs_space_info_force_chunk_alloc(struct kobject *kobj,
++						  struct kobj_attribute *a,
++						  const char *buf, size_t len)
++{
++	struct btrfs_space_info *space_info = to_space_info(kobj);
++	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
++	struct btrfs_trans_handle *trans;
++	unsigned long val;
++	int ret;
++
++	if (!fs_info) {
++		printk(KERN_ERR "couldn't get fs_info\n");
++		return -EPERM;
++	}
++
++	if (!capable(CAP_SYS_ADMIN))
++		return -EPERM;
++
++	if (sb_rdonly(fs_info->sb))
++		return -EROFS;
++
++	ret = kstrtoul(buf, 10, &val);
++	if (ret)
++		return ret;
++
++	/*
++	 * We don't really care, but if we echo 0 > force it seems silly to do
++	 * anything.
++	 */
++	if (val == 0)
++		return -EINVAL;
++
++	trans = btrfs_start_transaction(fs_info->extent_root, 0);
++	if (!trans)
++		return PTR_ERR(trans);
++	ret = btrfs_force_chunk_alloc(trans, space_info->flags);
++	btrfs_end_transaction(trans);
++	if (ret == 1)
++		return len;
++	return -ENOSPC;
++}
++BTRFS_ATTR_RW(space_info, force_chunk_alloc,
++	      btrfs_space_info_force_chunk_alloc_show,
++	      btrfs_space_info_force_chunk_alloc);
++
+ #define SPACE_INFO_ATTR(field)						\
+ static ssize_t btrfs_space_info_show_##field(struct kobject *kobj,	\
+ 					     struct kobj_attribute *a,	\
+@@ -447,6 +500,7 @@ static struct attribute *space_info_attrs[] = {
+ 	BTRFS_ATTR_PTR(space_info, disk_used),
+ 	BTRFS_ATTR_PTR(space_info, disk_total),
+ 	BTRFS_ATTR_PTR(space_info, total_bytes_pinned),
++	BTRFS_ATTR_PTR(space_info, force_chunk_alloc),
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(space_info);
+@@ -641,6 +695,16 @@ static inline struct btrfs_fs_info *to_fs_info(struct kobject *kobj)
+ 	return to_fs_devs(kobj)->fs_info;
+ }
+ 
++static inline struct kobject *get_btrfs_kobj(struct kobject *kobj)
++{
++	while (kobj) {
++		if (kobj->ktype == &btrfs_ktype)
++			return kobj;
++		kobj = kobj->parent;
++	}
++	return NULL;
++}
++
+ #define NUM_FEATURE_BITS 64
+ #define BTRFS_FEATURE_NAME_MAX 13
+ static char btrfs_unknown_feature_names[FEAT_MAX][NUM_FEATURE_BITS][BTRFS_FEATURE_NAME_MAX];
+-- 
+2.21.0
 
-You want to look into btrfs_unlink_inode to see how unlinking works in
-bttrfs.
-
-> 
