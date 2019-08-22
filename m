@@ -2,63 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2AC79936D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 14:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2551B99370
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 14:30:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730711AbfHVM2z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 08:28:55 -0400
-Received: from mail02.iobjects.de ([188.40.134.68]:38660 "EHLO
-        mail02.iobjects.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727807AbfHVM2z (ORCPT
+        id S1732737AbfHVM3X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 08:29:23 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:44671 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732024AbfHVM3W (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 08:28:55 -0400
-Received: from tux.wizards.de (pD9EBF359.dip0.t-ipconnect.de [217.235.243.89])
-        by mail02.iobjects.de (Postfix) with ESMTPSA id 2A0AF4160376
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 14:28:54 +0200 (CEST)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.wizards.de (Postfix) with ESMTP id C70F95C9997
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 14:28:53 +0200 (CEST)
-Subject: Re: [PATCH v2 0/4] Support xxhash64 checksums
-To:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20190822114029.11225-1-jthumshirn@suse.de>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
-Date:   Thu, 22 Aug 2019 14:28:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 22 Aug 2019 08:29:22 -0400
+Received: by mail-lf1-f68.google.com with SMTP id v16so4369395lfg.11
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 05:29:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
+        b=Uh83TYpKL0GQ/nM6wFMlLCF+K/QQ+NWaS4ZIx2sQQvI0KNNqN/E6zTArGpXOLOBt/f
+         N6QFHzklBH631+fvsO6vTelavHgyHvvHVBwI+y20TBUOZtQ5/sT4JlP23bjtE/oA0X0A
+         xvXAKbCZ0pU5aA60LB4dH6xcUJXMTHD8lsxQmkm/vQ11xahFHBmNMIdacasF15YPXded
+         CUm/z2mtG67xtMwBBKPI8MsyFlOGkBdqomx6M8r6sJ/85QLiNUCv9kdIKNh8VC0ZCY5l
+         yK5dXChs/m/0WrIay4/uBCczsKiY1ayIx+UdL3eXQ5RZfdSnei35OgrfUOHzvU7muA6w
+         OR9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=aWwEGZ7IKPwlD1SyN53LweuoS+rG8j2WBRgPDxMagPA=;
+        b=Ey7saEsnh6v+aOwuDtamSE0CAA8fuosca6aF4Fra6x4X5/MfNQu1vSZnXbS3LB6YpI
+         cCJdGxGB1NAnuemVt3WjyoqEbx85KncFRNP+5T7Mceqm4c/T1HOA5+ibDn4ChCM55bNA
+         jyW3xFgfWd//LDrCFwGxbc0V2yDb4jBwW0IcpIQfJVOeHJwfdi2Uox6OoZIV2OqfHukz
+         6b+msHX2P646V6EtiPMRytmkd1iuRGiH0IlroYzfNAm5H10gpIN0/BGV5DAUN+mjFmPj
+         LzRCpIsx5OTEvp0RXrqsAKjLf9Xhy3+gbZNKJSbMT49xgYQLdGBmgVU01oJ8ZVTeAMv5
+         HhHg==
+X-Gm-Message-State: APjAAAXhgo1iU622625bnHrz1viUPqxZ2dyHoZzOiDx1PCHoAnKHVWdD
+        9VZT3NTE8IPzo74kIyoDPNMhQ7zcqnlFfbTyLOk=
+X-Google-Smtp-Source: APXvYqw9sQwSpmxjAXS7bfZJ09F9JlAGXMwoQhntJWPTMt4Hq9l+6KygepnFg49Lj9VXPBN7VHtr8pRnDUQyUgeXodI=
+X-Received: by 2002:a19:ed11:: with SMTP id y17mr21470359lfy.141.1566476961148;
+ Thu, 22 Aug 2019 05:29:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190822114029.11225-1-jthumshirn@suse.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a19:dc4f:0:0:0:0:0 with HTTP; Thu, 22 Aug 2019 05:29:20
+ -0700 (PDT)
+Reply-To: eku.lawfirm@gmail.com
+From:   "Law firm(Eku and Associates)" <elenabaltach66@gmail.com>
+Date:   Thu, 22 Aug 2019 12:29:20 +0000
+Message-ID: <CAOGpsp6x-FLHmOKGyjMV8QnAdMQ5tZOzyu8q0D-N36-PB1LdEA@mail.gmail.com>
+Subject: MY $25,000,000.00 INVESTMENT PROPOSAL WITH YOU AND IN YOUR COUNTRY.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/22/19 1:40 PM, Johannes Thumshirn wrote:
-> Now that Nikolay's XXHASH64 support for the Crypto API has landed and BTRFS is
-> prepared for an easy addition of new checksums, this patchset implements
-> XXHASH64 as a second, fast but not cryptographically secure checksum hash.
+--=20
+Dear,
+With due respect this is not spam or Scam mail, because I have
+contacted you before and there was no response from you,I apologise if
+the contents of this mail are contrary to your moral ethics, which I
+feel may be of great disturbance to your person, but please treat this
+with absolute confidentiality, believing that this email reaches you
+in good faith. My contacting you is not a mistake or a coincidence
+because God can use any person known or unknown to accomplish great
+things.
+I am a lawyer and I have an investment business proposal to offer you.
+It is not official but should be considered as legal and confidential
+business. I have a customer's deposit of $US25 million dollars ready
+to be moved for investment if you can partner with us. We are ready to
+offer you 10% of this total amount as your compensation for supporting
+the transaction to completion. If you are interested to help me please
+reply me with your full details as stated below:
+(1) Your full names:
+(2) Your address:
+(3) Your occupation:
+(4) Your mobile telephone number:
+(5) Your nationality:
+(6) Your present location:
+(7) Your age:
+So that I will provide you more details on what to do and what is
+required for successful completion.
+Note: DO NOT REPLY ME IF YOU ARE NOT INTERESTED AND WITHOUT THE ABOVE
+MENTIONED DETAILS
 
-Question from the cheap seats.. :)
-
-I know that crc32c-intel uses native SSE 4.2 instructions, but so far I have
-been unable to find benchmarks or explanations why adding xxhash64 benefits
-btrfs. All benchmarks seem to be against crc32c in *software*, not the
-SSE4.2-enabled version (or I can't read). I mean, it's great that xxhash64 is
-really fast for a software implementation, but how does btrfs benefit from this
-compared to using crc32-intel?
-
-Verifying that plugging in other hash impls works (e.g. as preparation for
-stronger impls) has value, but it's probably not something most
-users care about.
-
-Maybe there are obscure downsides to crc32c-intel like instruction latency
-(def. a problem for AVX512), cache pollution..?
-
-Just curious.
-
-thanks,
-Holger
+Sinc=C3=A8rement v=C3=B4tre,
+Avocat Etienne Eku Esq.(Lawfirm)
+Procureur principal. De Cabinet d=E2=80=99avocats de l=E2=80=99Afrique de l=
+=E2=80=99ouest.
+Skype:westafricalawfirm
