@@ -2,55 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A9899F80
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 21:11:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F0E99F81
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 21:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391544AbfHVTLP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 15:11:15 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:45807 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387990AbfHVTLP (ORCPT
+        id S2391564AbfHVTLR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 15:11:17 -0400
+Received: from mail-yw1-f66.google.com ([209.85.161.66]:36371 "EHLO
+        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387990AbfHVTLR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 15:11:15 -0400
-Received: by mail-qk1-f195.google.com with SMTP id m2so6112420qki.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 12:11:14 -0700 (PDT)
+        Thu, 22 Aug 2019 15:11:17 -0400
+Received: by mail-yw1-f66.google.com with SMTP id m11so2850845ywh.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 12:11:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=jo6UDQHALNv+EwzXafLqFqVdzqvJ+aDClaqqQOQU604=;
-        b=qPgGcMNdVOT4HI4lMGOnYCw+m+e0OylmONBWOmWe9FqPd2nTzrn2kI5ANizpOrZp6k
-         n6ArzDHgIXtj3cQh4QBZkSh0Xu37qR2VVZrEAWeWd3DAzszDvnyksckKGpniw8CCC92e
-         Vq1KEtz0Efadou61Hc1aJhzJWVH8jKM8xMsoJv7UrMumOf9a039aExDYHIW2bpd7lS6o
-         +8xBmypQEtARMdY5wZ/VNYplHCEeQryvBw/qqzmykw6mKBSj247BkvZ1i4t2DT+KvOtI
-         rStYO9HTGQ08PRxlvxm7CyA44cU4LDWkiA5es9Y0y+R6dOUZb8kLoho0c9punM3spZHC
-         v4qw==
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=DFUWkxxV8j4WIwdU4nZnpBxKbZnkig1x1ot7uIbwXlI=;
+        b=JhXGPGy2ajDskg3rYTXBan7ubsHQS3FckmC/tt9/h2SkqPKXiOCchphb7Y2dZV8GZC
+         MHd0bsj3jtOgNWROWC5N+y7+c1S+eEKJdhewsNEeDHW3bzZHPiS9U/h3/im4GtAGgyn4
+         nxEBp4znixL/pAB7Y6IXWzDTu7CwJNf3cwUmNl7REVFPO44vws7RX85s9BstjTDEOwEW
+         cmEJX4t5QKhjrHIcpjNj4PMk1ApwShl/Z7hcXESTEZ4WEvk4r3IpsiPNPzN73BAiwrOU
+         8d08CG2lvGb7Qb+pXqdXCDVolLAEzi26i3jkvHk3pJkIocQA/VCdxcOqiVjQw4maqO9x
+         w2Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=jo6UDQHALNv+EwzXafLqFqVdzqvJ+aDClaqqQOQU604=;
-        b=aVuxmLOnxd3GlZ92k5Me7lhE39Bzf3xj24Hw4OBVWcvZYsXToXBynSK2qkIgM+wCRC
-         3r5iQ8c6/Sx+4V7yyMCzjVdKRzxZfOgoJmNhRtPHq9SeExHw9CAUNm2z1W6lFNibRT7j
-         s+mtZX+xQ2WULrMwAofbYf+4x0GK1JTg/DUqkrdDmhAsP2OxqMvzb4DBrRYUd7EF7uiN
-         dVk1ieC1Cl2kJZVdRdG0iVyMagAHvc9smztuHxPQU1nmGnRzGtlPDR7l4zt5uigrOSnH
-         VvofzxyqTXJh0m+Nwio/sJ/5Gn8I4HBDqKP12K+j+SqQrVBoqs+seAN6hFCEITEeUYTI
-         naPA==
-X-Gm-Message-State: APjAAAUdV6XU3dRaZ/Xp/XUoizoa5CH+xVo/2dxYROUR+AvDBiN+rPbV
-        YvU32RC5qaxdLT2TcCZUpbOgmA==
-X-Google-Smtp-Source: APXvYqzz5xXwqtxIUg7te0DQHCD8TZC20OnZWFx0/7DfydbABDI1v6u4IV14Gv4civzJoIwE7iJoRA==
-X-Received: by 2002:a37:4c4e:: with SMTP id z75mr512208qka.195.1566501074148;
-        Thu, 22 Aug 2019 12:11:14 -0700 (PDT)
+        bh=DFUWkxxV8j4WIwdU4nZnpBxKbZnkig1x1ot7uIbwXlI=;
+        b=bJi+4ODn3X6sYjDzrhGvzAIsCDm5fp58PkJbwbP2vmUabvH1j0KmYpTccaDqzj2ALj
+         7vnJblxJJ+LXZpSeokS5Evb5MMuYO+XHlrzPBnVZam0qBV7xfT6T6rhHqww1bgjkMfw9
+         FEQQl1VNxD62PjLOIZrMjizW+tJwbdBXczv63nyHkXB8vJSIEX+3BdAC/r0wO4PADJBu
+         rpRumkTclQXB1JKww/LHKtp9z0gXPBuIL8Wz9glxzq5oNGNOdPQIhgiGrWs0zXKg1fv3
+         mmz4hWoPJqC2T7B8Rg7fWMZHUipxFfJriZ/GgAsSpSm+dnpT/k36JyfV3OBtilbd+tdo
+         yH6w==
+X-Gm-Message-State: APjAAAV9Czx68xiIKQd4YJTAS70njeMCxLRLN4a6AcUTLD8uN3qJndHk
+        34RDT7qTZ2QcYP88HDPtYnYtpQ==
+X-Google-Smtp-Source: APXvYqxs4BUWegopHiRM4atVIZAS7i0zRvWCWcuxSu+Dxz6oUEKEhSgXiIEIxJD5N1t8R/52uoJy7w==
+X-Received: by 2002:a0d:d84c:: with SMTP id a73mr648425ywe.97.1566501075917;
+        Thu, 22 Aug 2019 12:11:15 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id q28sm298260qtk.34.2019.08.22.12.11.13
+        by smtp.gmail.com with ESMTPSA id l4sm111529ywa.58.2019.08.22.12.11.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2019 12:11:13 -0700 (PDT)
+        Thu, 22 Aug 2019 12:11:15 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 5/9] btrfs: refactor the ticket wakeup code
-Date:   Thu, 22 Aug 2019 15:10:58 -0400
-Message-Id: <20190822191102.13732-6-josef@toxicpanda.com>
+Subject: [PATCH 6/9] btrfs: rework wake_all_tickets
+Date:   Thu, 22 Aug 2019 15:10:59 -0400
+Message-Id: <20190822191102.13732-7-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190822191102.13732-1-josef@toxicpanda.com>
 References: <20190822191102.13732-1-josef@toxicpanda.com>
@@ -61,157 +60,90 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that btrfs_space_info_add_old_bytes simply checks if we can make the
-reservation and updates bytes_may_use, there's no reason to have both
-helpers in place.  Factor out the ticket wakeup logic into it's own
-helper, make btrfs_space_info_add_old_bytes() update bytes_may_use and
-then call the wakeup helper, and replace all calls to
-btrfs_space_info_add_new_bytes() with the wakeup helper.
+Now that we no longer partially fill tickets we need to rework
+wake_all_tickets to call btrfs_try_to_wakeup_tickets() in order to see
+if any subsequent tickets are able to be satisfied.  If our tickets_id
+changes we know something happened and we can keep flushing.
+
+Also if we find a ticket that is smaller than the first ticket in our
+queue then we want to retry the flushing loop again in case
+may_commit_transaction() decides we could satisfy the ticket by
+committing the transaction.
+
+Rename this to maybe_fail_all_tickets() while we're at it, to better
+reflect what the function is actually doing.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 ---
- fs/btrfs/extent-tree.c |  4 +--
- fs/btrfs/space-info.c  | 55 ++++--------------------------------------
- fs/btrfs/space-info.h  | 19 ++++++++++-----
- 3 files changed, 20 insertions(+), 58 deletions(-)
+ fs/btrfs/space-info.c | 41 ++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 34 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 8c3e8fdbf2c1..2a56232309a3 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2866,8 +2866,8 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
- 			spin_unlock(&global_rsv->lock);
- 			/* Add to any tickets we may have */
- 			if (len)
--				btrfs_space_info_add_new_bytes(fs_info,
--						space_info, len);
-+				btrfs_try_granting_tickets(fs_info,
-+							   space_info);
- 		}
- 		spin_unlock(&space_info->lock);
- 	}
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 357fe7548e07..c2143ddb7f4a 100644
+index c2143ddb7f4a..dd4adfa75a71 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -131,9 +131,7 @@ void btrfs_update_space_info(struct btrfs_fs_info *info, u64 flags,
- 	found->bytes_readonly += bytes_readonly;
- 	if (total_bytes > 0)
- 		found->full = 0;
--	btrfs_space_info_add_new_bytes(info, found,
--				       total_bytes - bytes_used -
--				       bytes_readonly);
-+	btrfs_try_granting_tickets(info, found);
- 	spin_unlock(&found->lock);
- 	*space_info = found;
+@@ -679,19 +679,46 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
+ 		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
  }
-@@ -229,17 +227,15 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
-  * This is for space we already have accounted in space_info->bytes_may_use, so
-  * basically when we're returning space from block_rsv's.
-  */
--void btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
--				    struct btrfs_space_info *space_info,
--				    u64 num_bytes)
-+void btrfs_try_granting_tickets(struct btrfs_fs_info *fs_info,
-+				struct btrfs_space_info *space_info)
+ 
+-static bool wake_all_tickets(struct list_head *head)
++static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
++				   struct btrfs_space_info *space_info)
  {
- 	struct list_head *head;
- 	enum btrfs_reserve_flush_enum flush = BTRFS_RESERVE_NO_FLUSH;
+ 	struct reserve_ticket *ticket;
++	u64 tickets_id = space_info->tickets_id;
++	u64 first_ticket_bytes = 0;
++
++	while (!list_empty(&space_info->tickets) &&
++	       tickets_id == space_info->tickets_id) {
++		ticket = list_first_entry(&space_info->tickets,
++					  struct reserve_ticket, list);
++
++		/*
++		 * may_commit_transaction will avoid committing the transaction
++		 * if it doesn't feel like the space reclaimed by the commit
++		 * would result in the ticket succeeding.  However if we have a
++		 * smaller ticket in the queue it may be small enough to be
++		 * satisified by committing the transaction, so if any
++		 * subsequent ticket is smaller than the first ticket go ahead
++		 * and send us back for another loop through the enospc flushing
++		 * code.
++		 */
++		if (first_ticket_bytes == 0)
++			first_ticket_bytes = ticket->bytes;
++		else if (first_ticket_bytes > ticket->bytes)
++			return true;
  
--	spin_lock(&space_info->lock);
--	head = &space_info->priority_tickets;
--	btrfs_space_info_update_bytes_may_use(fs_info, space_info, -num_bytes);
-+	lockdep_assert_held(&space_info->lock);
- 
-+	head = &space_info->priority_tickets;
- again:
- 	while (!list_empty(head)) {
- 		struct reserve_ticket *ticket;
-@@ -268,47 +264,6 @@ void btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
- 		flush = BTRFS_RESERVE_FLUSH_ALL;
- 		goto again;
+-	while (!list_empty(head)) {
+-		ticket = list_first_entry(head, struct reserve_ticket, list);
+ 		list_del_init(&ticket->list);
+ 		ticket->error = -ENOSPC;
+ 		wake_up(&ticket->wait);
+-		if (ticket->bytes != ticket->orig_bytes)
+-			return true;
++
++		/*
++		 * We're just throwing tickets away, so more flushing may not
++		 * trip over btrfs_try_granting_tickets, so we need to call it
++		 * here to see if we can make progress with the next ticket in
++		 * the list.
++		 */
++		btrfs_try_granting_tickets(fs_info, space_info);
  	}
--	spin_unlock(&space_info->lock);
--}
--
--/*
-- * This is for newly allocated space that isn't accounted in
-- * space_info->bytes_may_use yet.  So if we allocate a chunk or unpin an extent
-- * we use this helper.
-- */
--void btrfs_space_info_add_new_bytes(struct btrfs_fs_info *fs_info,
--				    struct btrfs_space_info *space_info,
--				    u64 num_bytes)
--{
--	struct reserve_ticket *ticket;
--	struct list_head *head = &space_info->priority_tickets;
--
--again:
--	while (!list_empty(head) && num_bytes) {
--		ticket = list_first_entry(head, struct reserve_ticket,
--					  list);
--		if (num_bytes >= ticket->bytes) {
--			list_del_init(&ticket->list);
--			num_bytes -= ticket->bytes;
--			btrfs_space_info_update_bytes_may_use(fs_info,
--							      space_info,
--							      ticket->bytes);
--			ticket->bytes = 0;
--			space_info->tickets_id++;
--			wake_up(&ticket->wait);
--		} else {
--			btrfs_space_info_update_bytes_may_use(fs_info,
--							      space_info,
--							      num_bytes);
--			ticket->bytes -= num_bytes;
--			num_bytes = 0;
--		}
--	}
--
--	if (num_bytes && head == &space_info->priority_tickets) {
--		head = &space_info->tickets;
--		goto again;
--	}
+-	return false;
++	return (tickets_id != space_info->tickets_id);
  }
  
- #define DUMP_BLOCK_RSV(fs_info, rsv_name)				\
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index 025f7ce2c9b1..0e805b5b1fca 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -110,12 +110,6 @@ btrfs_space_info_update_##name(struct btrfs_fs_info *fs_info,		\
- DECLARE_SPACE_INFO_UPDATE(bytes_may_use, "space_info");
- DECLARE_SPACE_INFO_UPDATE(bytes_pinned, "pinned");
- 
--void btrfs_space_info_add_new_bytes(struct btrfs_fs_info *fs_info,
--				    struct btrfs_space_info *space_info,
--				    u64 num_bytes);
--void btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
--				    struct btrfs_space_info *space_info,
--				    u64 num_bytes);
- int btrfs_init_space_info(struct btrfs_fs_info *fs_info);
- void btrfs_update_space_info(struct btrfs_fs_info *info, u64 flags,
- 			     u64 total_bytes, u64 bytes_used,
-@@ -133,5 +127,18 @@ int btrfs_reserve_metadata_bytes(struct btrfs_root *root,
- 				 struct btrfs_block_rsv *block_rsv,
- 				 u64 orig_bytes,
- 				 enum btrfs_reserve_flush_enum flush);
-+void btrfs_try_granting_tickets(struct btrfs_fs_info *fs_info,
-+				struct btrfs_space_info *space_info);
-+
-+static inline void
-+btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
-+			       struct btrfs_space_info *space_info,
-+			       u64 num_bytes)
-+{
-+	spin_lock(&space_info->lock);
-+	btrfs_space_info_update_bytes_may_use(fs_info, space_info, -num_bytes);
-+	btrfs_try_granting_tickets(fs_info, space_info);
-+	spin_unlock(&space_info->lock);
-+}
- 
- #endif /* BTRFS_SPACE_INFO_H */
+ /*
+@@ -759,7 +786,7 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
+ 		if (flush_state > COMMIT_TRANS) {
+ 			commit_cycles++;
+ 			if (commit_cycles > 2) {
+-				if (wake_all_tickets(&space_info->tickets)) {
++				if (maybe_fail_all_tickets(fs_info, space_info)) {
+ 					flush_state = FLUSH_DELAYED_ITEMS_NR;
+ 					commit_cycles--;
+ 				} else {
 -- 
 2.21.0
 
