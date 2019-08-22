@@ -2,67 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 915BC9985A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 17:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25ED4998FE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 18:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732536AbfHVPkg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 11:40:36 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:39572 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731416AbfHVPkg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 11:40:36 -0400
-Received: by mail-lf1-f66.google.com with SMTP id x3so4878389lfn.6
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 08:40:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cXGljeB99bXUDWMB64Bv9wKPC4CRt8+++/6B34P0I2g=;
-        b=en0JZibSEhonSSvBSAk0Rg6qZtoqIL9SzWmBP17m29Lgw3EigbJOJI31XB+FCfQRl6
-         sKZkNydu1/GTkpx947dl/T9PtiK8Kp68vMxDNHHr/8iLxmBPvyThpjGsqJPrMYaJPgv3
-         lQuI99mLd1viyQZu41iAcMkm96qZoEpL6toziBn94zV0nVRR6/uPejhb/MFX/ngt3noT
-         6gYPlWgeQmPAk99xaGq+p+bseDxeEgnql4DCs+n1oRClO/Jf06Am6w6p2G6yhudJoYK6
-         F5xFS1oOq+Ip+os5kAVZRr4YxUzZexhdfRso6QoJmti6VjSXFxZceW6mdNlFuP5uAuYl
-         /YYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cXGljeB99bXUDWMB64Bv9wKPC4CRt8+++/6B34P0I2g=;
-        b=M9ixFN10bl8C9JxXuAJOb9Nhsuojt6TfSo6sReuY7g98QFJ/gCs+4uV8/RXvTW6jnt
-         SHqaqWKiA8NJ6SOyKd0mjqPyIQ6o8pNQJZdMSgPC04FOgd8EkkGHSmUrgNiYUR1GiGyF
-         DDxQZt5RBp7xWA2iD29UGxw5VaaHys1OidmQWaJ150vW1spUD15S8PobMlU0D8JnPiSQ
-         3xNHkSb/WjCTrm231vHBWcMsuPBt/quLE+7y0svUDgCRNcQgPPOUQnIPqi2hPjKn7qTP
-         ZxKNwmkFl6nVGIO5ZyvBcYbXtHIiLxGrN7LStvmeGYw3Qk7aCayRinB/1Pk1zP8G12aV
-         Ul0A==
-X-Gm-Message-State: APjAAAUIoxP3Q2ogiKde/Kq+VlSaRF32eowS2F9+pX12jE767fK9+VTM
-        mledpb0oyVQ2G4Gt10vmg1uaxxFegG/BkZquVsFXDwBgWTw=
-X-Google-Smtp-Source: APXvYqyr6Wv9x5Tqn5Zk9k4yRgd6paSqbgx6j1NicWeI2Uhmqne0rNYcgnVe/7IPlfLT3sYkkF5doszFssKsF6hooSQ=
-X-Received: by 2002:ac2:592f:: with SMTP id v15mr4672208lfi.57.1566488434149;
- Thu, 22 Aug 2019 08:40:34 -0700 (PDT)
+        id S1733300AbfHVQSo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 12:18:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54476 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730741AbfHVQSo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 12:18:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 46D1AAF77;
+        Thu, 22 Aug 2019 16:18:42 +0000 (UTC)
+Subject: Re: Deletion on BTRFS - how does it work
+To:     Alex Shashkov <oleks.sha74@gmail.com>, linux-btrfs@vger.kernel.org
+References: <20190809012424.11420-1-wqu@suse.com>
+ <20190809012424.11420-3-wqu@suse.com>
+ <CAKzB54SN1FmGhGHQOfT2fvn=ESQn4vOwbPpPM7p8eJRkNmvf7w@mail.gmail.com>
+ <CAKzB54QYNFjgfPUM8KqAHGPwSWPVczbhZidKpCpL7baJO8hzAA@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <cdc805dc-a276-8943-6b40-f878e698c580@suse.com>
+Date:   Thu, 22 Aug 2019 19:18:40 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20190822114029.11225-1-jthumshirn@suse.de> <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
-In-Reply-To: <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
-From:   Peter Becker <floyd.net@gmail.com>
-Date:   Thu, 22 Aug 2019 17:40:23 +0200
-Message-ID: <CAEtw4r01JMFqszs0bBeeU3OXLqbT5+cU+4ZP282J3cvYzALgZg@mail.gmail.com>
-Subject: Re: [PATCH v2 0/4] Support xxhash64 checksums
-To:     =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAKzB54QYNFjgfPUM8KqAHGPwSWPVczbhZidKpCpL7baJO8hzAA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am Do., 22. Aug. 2019 um 16:41 Uhr schrieb Holger Hoffst=C3=A4tte
-<holger@applied-asynchrony.com>:
-> but how does btrfs benefit from this compared to using crc32-intel?
 
-As i know, crc32c  is as far as ~3x faster than xxhash. But xxHash was
-created with a differend design goal.
-If you using a cpu without hardware crc32 support, xxHash provides you
-a maximum portability and speed. Look at arm, mips, power, etc. or old
-intel cpus like Core 2 Duo.
+
+On 9.08.19 г. 7:25 ч., Alex Shashkov wrote:
+> I'm trying to understand how deletion works on BTRFS. Let's say
+> directory containing files and other directories gets deleted. What is
+> essentially happening during this action, what strucutres get updated,
+> what artifacts remain after the deletion, is it possible to find them
+> and recover deleted objects, if yes, then how? Thanks in advance!
+
+You want to look into btrfs_unlink_inode to see how unlinking works in
+bttrfs.
+
+> 
