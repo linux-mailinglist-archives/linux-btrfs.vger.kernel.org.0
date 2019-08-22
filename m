@@ -2,159 +2,136 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F003298BC9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 08:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1904498C65
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 09:25:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731857AbfHVG4Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 02:56:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56396 "EHLO mx1.suse.de"
+        id S1730531AbfHVHZQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 03:25:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36182 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725710AbfHVG4Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 02:56:24 -0400
+        id S1728104AbfHVHZQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 03:25:16 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 19598AE1B;
-        Thu, 22 Aug 2019 06:56:22 +0000 (UTC)
-Subject: Re: [PATCH] fs/btrfs/raid56.c: remove set but not used variables
- 'p_stripe'
-To:     zhengbin <zhengbin13@huawei.com>, clm@fb.com,
-        David Sterba <dsterba@suse.com>, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org
-Cc:     yi.zhang@huawei.com
-References: <1566447421-16137-1-git-send-email-zhengbin13@huawei.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <c0ffc4cb-4f72-c8bf-c82d-67b0d2e2a392@suse.com>
-Date:   Thu, 22 Aug 2019 09:56:20 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        by mx1.suse.de (Postfix) with ESMTP id E0C9FAE1C
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 07:25:14 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 1/2] btrfs: transaction: Add comment for btrfs transaction lifespan
+Date:   Thu, 22 Aug 2019 15:24:59 +0800
+Message-Id: <20190822072500.22730-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <1566447421-16137-1-git-send-email-zhengbin13@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Just a overview of the basic btrfs transaction lifespan, including the
+following states:
+- No transaction states
+- Transaction N [[TRANS_STATE_RUNNING]]
+- Transaction N [[TRANS_STATE_COMMIT_START]]
+- Transaction N [[TRANS_STATE_COMMIT_DOING]]
+- Transaction N [[TRANS_STATE_UNBLOCKED]]
+- Transaction N [[TRANS_STATE_COMPLETED]]
 
+For each states, the comment will include:
+- Basic explaination about current state
+- How to go next stage
+- What will happen if we call variant start_transaction() functions
+- Relationship to transaction N+1
 
-On 22.08.19 г. 7:17 ч., zhengbin wrote:
-> fs/btrfs/raid56.c: In function finish_rmw:
-> fs/btrfs/raid56.c:1185:6: warning: variable p_stripe set but not used [-Wunused-but-set-variable]
-> fs/btrfs/raid56.c: In function finish_parity_scrub:
-> fs/btrfs/raid56.c:2343:6: warning: variable p_stripe set but not used [-Wunused-but-set-variable]
-> 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: zhengbin <zhengbin13@huawei.com>
+This doesn't provide much tech details, but just a cheat sheet for
+reader to get into the code a little easier.
 
-Have you tested this patch on a RAID5/6 configuration? WHy do I think
-that for the raid 5 case (if (rbio->real_stripes - rbio->nr_data == 1))
-we'll now go into the else clause and BUG, despite the variable not
-being used.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/transaction.c | 70 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 70 insertions(+)
 
-> ---
->  fs/btrfs/raid56.c | 18 ++++--------------
->  1 file changed, 4 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index f3d0576..2603f99 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -1182,7 +1182,6 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
->  	int nr_data = rbio->nr_data;
->  	int stripe;
->  	int pagenr;
-> -	int p_stripe = -1;
->  	int q_stripe = -1;
->  	struct bio_list bio_list;
->  	struct bio *bio;
-> @@ -1190,14 +1189,10 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
-> 
->  	bio_list_init(&bio_list);
-> 
-> -	if (rbio->real_stripes - rbio->nr_data == 1) {
-> -		p_stripe = rbio->real_stripes - 1;
-> -	} else if (rbio->real_stripes - rbio->nr_data == 2) {
-> -		p_stripe = rbio->real_stripes - 2;
-> +	if (rbio->real_stripes - rbio->nr_data == 2)
->  		q_stripe = rbio->real_stripes - 1;
-> -	} else {
-> +	else if (rbio->real_stripes - rbio->nr_data != 1)
->  		BUG();
-> -	}
-> 
->  	/* at this point we either have a full stripe,
->  	 * or we've read the full stripe from the drive.
-> @@ -2340,7 +2335,6 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
->  	int nr_data = rbio->nr_data;
->  	int stripe;
->  	int pagenr;
-> -	int p_stripe = -1;
->  	int q_stripe = -1;
->  	struct page *p_page = NULL;
->  	struct page *q_page = NULL;
-> @@ -2351,14 +2345,10 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
-> 
->  	bio_list_init(&bio_list);
-> 
-> -	if (rbio->real_stripes - rbio->nr_data == 1) {
-> -		p_stripe = rbio->real_stripes - 1;
-> -	} else if (rbio->real_stripes - rbio->nr_data == 2) {
-> -		p_stripe = rbio->real_stripes - 2;
-> +	if (rbio->real_stripes - rbio->nr_data == 2)
->  		q_stripe = rbio->real_stripes - 1;
-> -	} else {
-> +	else if (rbio->real_stripes - rbio->nr_data != 1)
->  		BUG();
-> -	}
-> 
->  	if (bbio->num_tgtdevs && bbio->tgtdev_map[rbio->scrubp]) {
->  		is_replace = 1;
-> --
-> 2.7.4
-> 
-> 
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index e3adb714c04b..6568eca28b43 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -22,6 +22,76 @@
+ 
+ #define BTRFS_ROOT_TRANS_TAG 0
+ 
++/*
++ * About btrfs transaction lifespan.
++ *
++ * No running transaction (fs tree blocks are not modified)
++ * |
++ * | To next stage:
++ * |  Call start_transaction() variants. Except btrfs_join_transaction_nostart().
++ * V
++ * Transaction N [[TRANS_STATE_RUNNING]]
++ * |
++ * | New trans handles can be attached to transaction N by calling all
++ * | start_transaction() variants.
++ * |
++ * | To next stage:
++ * |  Call btrfs_commit_transaction() on any trans handler attached to
++ * |  transaction N
++ * V
++ * Transaction N [[TRANS_STATE_COMMIT_START]]
++ * |
++ * | Will wait previous running transaction to completely finish if we have.
++ * |
++ * | Then either:
++ * | - Wait all other trans handler holder to release.
++ * |   This btrfs_commit_transaction() caller will do the commit work.
++ * | - Wait current transaction to be committed by others.
++ * |   Other btrfs_commit_transaction() caller will do the commit work.
++ * |
++ * | At this stage, only btrfs_join_transaction*() variants can attach
++ * | to this running transaction.
++ * | All other variants will wait current one to finish and attach to
++ * | transaction N+1.
++ * |
++ * | To next stage:
++ * |  Caller is chosen to commit transaction N, and all other trans handlers
++ * |  haven been release.
++ * V
++ * Transaction N [[TRANS_STATE_COMMIT_DOING]]
++ * |
++ * | Heavy lift transaction is started.
++ * | From running delayed refs (modifying extent tree) to creating pending
++ * | snapshots, running qgroups.
++ * | In short, modify supporting trees to reflect modifications of subvolume
++ * | trees.
++ * |
++ * | At this stage, all start_transaction() calls will wait this transaction
++ * | to finish and attach to transaction N+1.
++ * |
++ * | To next stage:
++ * |  Until all supporting trees are updated.
++ * V
++ * Transaction N [[TRANS_STATE_UNBLOCKED]]
++ * |						    Transaction N+1
++ * | All needed trees are modified, thus only	    [[TRANS_STATE_RUNNING]]
++ * | need to write them back to disk and update	    |
++ * | super blocks.				    |
++ * |						    |
++ * | At this stage, new transaction is allowed to   |
++ * | start.					    |
++ * | All new start_transaction() calls will be	    |
++ * | attached to transid N+1.			    |
++ * |						    |
++ * | To next stage:				    |
++ * |  Until all tree blocks are super blocks are    |
++ * |  written to block device(s)		    |
++ * V						    |
++ * Transaction N [[TRANS_STATE_COMPLETED]]	    V
++ *   All tree blocks and super blocks are written.  Transaction N+1
++ *   This transaction is finished and all its	    [[TRANS_STATE_COMMIT_START]]
++ *   data structures will be cleaned up.	    | Life goes on
++ */
+ static const unsigned int btrfs_blocked_trans_types[TRANS_STATE_MAX] = {
+ 	[TRANS_STATE_RUNNING]		= 0U,
+ 	[TRANS_STATE_BLOCKED]		=  __TRANS_START,
+-- 
+2.23.0
+
