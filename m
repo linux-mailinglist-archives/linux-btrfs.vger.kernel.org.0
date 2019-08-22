@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D60329925B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 13:40:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F26C999257
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 13:40:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731748AbfHVLke (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 07:40:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50746 "EHLO mx1.suse.de"
+        id S1731709AbfHVLkd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 07:40:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50752 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727953AbfHVLkd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1731648AbfHVLkd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Thu, 22 Aug 2019 07:40:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 75FD1AD69
+        by mx1.suse.de (Postfix) with ESMTP id 89B31AE84
         for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 11:40:32 +0000 (UTC)
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
         Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v2 3/4] btrfs: use xxhash64 for checksumming
-Date:   Thu, 22 Aug 2019 13:40:28 +0200
-Message-Id: <20190822114029.11225-4-jthumshirn@suse.de>
+Subject: [PATCH v2 4/4] btrfs: sysfs: export supported checksums
+Date:   Thu, 22 Aug 2019 13:40:29 +0200
+Message-Id: <20190822114029.11225-5-jthumshirn@suse.de>
 X-Mailer: git-send-email 2.16.4
 In-Reply-To: <20190822114029.11225-1-jthumshirn@suse.de>
 References: <20190822114029.11225-1-jthumshirn@suse.de>
@@ -30,72 +30,75 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
----
- fs/btrfs/Kconfig                | 1 +
- fs/btrfs/ctree.h                | 1 +
- fs/btrfs/disk-io.c              | 1 +
- fs/btrfs/super.c                | 1 +
- include/uapi/linux/btrfs_tree.h | 1 +
- 5 files changed, 5 insertions(+)
+From: David Sterba <dsterba@suse.com>
 
-diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-index 38651fae7f21..6d5a01c57da3 100644
---- a/fs/btrfs/Kconfig
-+++ b/fs/btrfs/Kconfig
-@@ -5,6 +5,7 @@ config BTRFS_FS
- 	select CRYPTO
- 	select CRYPTO_CRC32C
- 	select LIBCRC32C
-+	select CRYPTO_XXHASH
- 	select ZLIB_INFLATE
- 	select ZLIB_DEFLATE
- 	select LZO_COMPRESS
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 327ca7e95549..10fa3a6fe8bf 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -90,6 +90,7 @@ static const struct btrfs_csums {
- 	const char	*name;
- } btrfs_csums[] = {
- 	[BTRFS_CSUM_TYPE_CRC32] = { .size = 4, .name = "crc32c" },
-+	[BTRFS_CSUM_TYPE_XXHASH] = { .size = 8, .name = "xxhash64" },
+Export supported checksum algorithms via sysfs.
+
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+
+---
+Changes to v1:
+- Removed btrfs_checksums_store() function (Nik)
+- Renamed sysfs file to supported_checksums
+---
+ fs/btrfs/sysfs.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
+
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index f6d3c80f2e28..1cd351d2be03 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -246,6 +246,24 @@ static umode_t btrfs_feature_visible(struct kobject *kobj,
+ 	return mode;
+ }
+ 
++static ssize_t btrfs_supported_checksums_show(struct kobject *kobj,
++					      struct kobj_attribute *a,
++					      char *buf)
++{
++	ssize_t ret = 0;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(btrfs_csums); i++) {
++		ret += snprintf(buf + ret, PAGE_SIZE, "%s%s",
++				(i == 0 ? "" : ", "),
++				btrfs_csums[i].name);
++
++	}
++
++	ret += snprintf(buf + ret, PAGE_SIZE, "\n");
++	return ret;
++}
++
+ BTRFS_FEAT_ATTR_INCOMPAT(mixed_backref, MIXED_BACKREF);
+ BTRFS_FEAT_ATTR_INCOMPAT(default_subvol, DEFAULT_SUBVOL);
+ BTRFS_FEAT_ATTR_INCOMPAT(mixed_groups, MIXED_GROUPS);
+@@ -259,6 +277,14 @@ BTRFS_FEAT_ATTR_INCOMPAT(no_holes, NO_HOLES);
+ BTRFS_FEAT_ATTR_INCOMPAT(metadata_uuid, METADATA_UUID);
+ BTRFS_FEAT_ATTR_COMPAT_RO(free_space_tree, FREE_SPACE_TREE);
+ 
++static struct btrfs_feature_attr btrfs_attr_features_checksums_name = {
++	.kobj_attr = __INIT_KOBJ_ATTR(supported_checksums, S_IRUGO,
++				      btrfs_supported_checksums_show,
++				      NULL),
++	.feature_set	= FEAT_INCOMPAT,
++	.feature_bit	= 0,
++};
++
+ static struct attribute *btrfs_supported_feature_attrs[] = {
+ 	BTRFS_FEAT_ATTR_PTR(mixed_backref),
+ 	BTRFS_FEAT_ATTR_PTR(default_subvol),
+@@ -272,6 +298,9 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
+ 	BTRFS_FEAT_ATTR_PTR(no_holes),
+ 	BTRFS_FEAT_ATTR_PTR(metadata_uuid),
+ 	BTRFS_FEAT_ATTR_PTR(free_space_tree),
++
++	&btrfs_attr_features_checksums_name.kobj_attr.attr,
++
+ 	NULL
  };
  
- #define BTRFS_EMPTY_DIR_SIZE 0
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 99dfd889b9f7..ac039a4d23ff 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -352,6 +352,7 @@ static bool btrfs_supported_super_csum(u16 csum_type)
- {
- 	switch (csum_type) {
- 	case BTRFS_CSUM_TYPE_CRC32:
-+	case BTRFS_CSUM_TYPE_XXHASH:
- 		return true;
- 	default:
- 		return false;
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 1b151af25772..60116d0410e5 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2456,3 +2456,4 @@ module_exit(exit_btrfs_fs)
- 
- MODULE_LICENSE("GPL");
- MODULE_SOFTDEP("pre: crc32c");
-+MODULE_SOFTDEP("pre: xxhash64");
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-index b65c7ee75bc7..ba2f125a3a1c 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -302,6 +302,7 @@
- /* csum types */
- enum btrfs_csum_type {
- 	BTRFS_CSUM_TYPE_CRC32	= 0,
-+	BTRFS_CSUM_TYPE_XXHASH	= 1,
- };
- 
- /*
 -- 
 2.16.4
 
