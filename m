@@ -2,62 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CA12992FC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 14:17:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2AC79936D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 14:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388367AbfHVML1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 08:11:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59270 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730980AbfHVML0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 08:11:26 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7A0AAAE89
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 12:11:25 +0000 (UTC)
-Date:   Thu, 22 Aug 2019 14:11:25 +0200
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 2/4] btrfs: create structure to encode checksum type
- and length
-Message-ID: <20190822121124.GE4052@x250>
+        id S1730711AbfHVM2z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 08:28:55 -0400
+Received: from mail02.iobjects.de ([188.40.134.68]:38660 "EHLO
+        mail02.iobjects.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727807AbfHVM2z (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 08:28:55 -0400
+Received: from tux.wizards.de (pD9EBF359.dip0.t-ipconnect.de [217.235.243.89])
+        by mail02.iobjects.de (Postfix) with ESMTPSA id 2A0AF4160376
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 14:28:54 +0200 (CEST)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.wizards.de (Postfix) with ESMTP id C70F95C9997
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 14:28:53 +0200 (CEST)
+Subject: Re: [PATCH v2 0/4] Support xxhash64 checksums
+To:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20190822114029.11225-1-jthumshirn@suse.de>
- <20190822114029.11225-3-jthumshirn@suse.de>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
+Date:   Thu, 22 Aug 2019 14:28:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190822114029.11225-3-jthumshirn@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190822114029.11225-1-jthumshirn@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 22, 2019 at 01:40:27PM +0200, Johannes Thumshirn wrote:
-> Create a structure to encode the type and length for the known on-disk
-> checksums. Also add a table and a convenience macro for adding the
-> checksum types to the table.
-> 
-> This makes it easier to add new checksums later.
-> 
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> 
-> ---
-> Changes to v1:
-> - Remove initializer macro (David)
+On 8/22/19 1:40 PM, Johannes Thumshirn wrote:
+> Now that Nikolay's XXHASH64 support for the Crypto API has landed and BTRFS is
+> prepared for an easy addition of new checksums, this patchset implements
+> XXHASH64 as a second, fast but not cryptographically secure checksum hash.
 
-> +#define BTRFS_CHECKSUM_TYPE(_type, _size, _name) \
-> +	[_type] = { .size = _size, .name = _name }
-> +
+Question from the cheap seats.. :)
 
-Adn obviously this should be gone as well *facepalm*
+I know that crc32c-intel uses native SSE 4.2 instructions, but so far I have
+been unable to find benchmarks or explanations why adding xxhash64 benefits
+btrfs. All benchmarks seem to be against crc32c in *software*, not the
+SSE4.2-enabled version (or I can't read). I mean, it's great that xxhash64 is
+really fast for a software implementation, but how does btrfs benefit from this
+compared to using crc32-intel?
 
--- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
-GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
-HRB 21284 (AG Nürnberg)
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+Verifying that plugging in other hash impls works (e.g. as preparation for
+stronger impls) has value, but it's probably not something most
+users care about.
+
+Maybe there are obscure downsides to crc32c-intel like instruction latency
+(def. a problem for AVX512), cache pollution..?
+
+Just curious.
+
+thanks,
+Holger
