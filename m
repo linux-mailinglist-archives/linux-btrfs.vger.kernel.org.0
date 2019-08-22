@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 899C999F7E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 21:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E9EF99F7F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 21:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391487AbfHVTLM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 15:11:12 -0400
-Received: from mail-yw1-f66.google.com ([209.85.161.66]:37701 "EHLO
-        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387990AbfHVTLM (ORCPT
+        id S2391542AbfHVTLO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 15:11:14 -0400
+Received: from mail-yw1-f49.google.com ([209.85.161.49]:34545 "EHLO
+        mail-yw1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387990AbfHVTLN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 15:11:12 -0400
-Received: by mail-yw1-f66.google.com with SMTP id u141so2850743ywe.4
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 12:11:11 -0700 (PDT)
+        Thu, 22 Aug 2019 15:11:13 -0400
+Received: by mail-yw1-f49.google.com with SMTP id n126so2854499ywf.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 12:11:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=9CkSd9BE74+W51JiHMD0MEGF+qCN+/eIQz3CH+6fCG4=;
-        b=MW6SxWJE7T0gbebkLEQCTmvnqNp2FF7ksqISSnR86yFmyRjxNNpwXJhKL6/pzjf8pp
-         CvTByBVZyXs6fKXHsh5WIqSXItWrxvwAS69UNcP+kqGG8a+4LkUygZnN2l6lQsOvquT5
-         H3yBgVuB8ccyhefH0CjjarxeIqLOydok7ea2cZhSJSCVxkmeSvid6zxK8zX2i74rdfc7
-         qnHm918lY6uQLxtSXQCeUx2wyT8Ixh3u8imPqQTLEh67Ezztw6Bz4/8PAWI/bRmuyqMe
-         6SfK2U9petHyDqvJKojwzEPEYITdG4ZSJBqVK9kZkmOLa6kkM+OAaLNepcJdjdX3URDR
-         5uUA==
+        bh=1TohfY64odoKuSpukVPpVWeT8cyz97ORIcTqA6NHK4M=;
+        b=npXwjyySxH5tXY6phD6V92l80v/ZdllLL2sO25zQCX2Rl4QdzwssusizaddTOD3YT9
+         3ie8OFju7/1MsoAVEY/qVI9PJx0M+Puse9IkuhnvvPfMZNRpI/KSRlDo2BgTFIs4u7yU
+         s4RudqxGThFp2m6QsWQWFaFD87e3etYDm15vZcoJkAVxL2WdUiY3zMPtZTbqR8c9Qoff
+         938rPoXsgSfuH74MdcwA227hoNbzYOejqijql7GRCVfiNXjTFu3GmWCmuneVquwRIPqe
+         2EEPupKQHkFmP+eclYfCchA9bVWvtAJ4qQHlNSHkh0rs1rEyPduYL0zgMiN582chkPVe
+         WhEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=9CkSd9BE74+W51JiHMD0MEGF+qCN+/eIQz3CH+6fCG4=;
-        b=PT85/9rqH05l0tEpd4MoacGbRQW6mt/kFQ5znn7mtJTIMJVsFUZhwOziRCDZuH3scR
-         en1BlM3KT0JF5loG4qPEqzLUF2H15Tx/oW69XlcJzxGlLH9GmpCBgSPiSN0pIZ5UQFIW
-         dKPcMAv1OZFI9x0dLQpchCe/z+l9EOeSCkzEgHFFVuR7/YuzZM8NBvYCW+/rzAdbIill
-         Xkxm3Xlhf1j9B83Zti/8jYaUMbLFUPTAFnOmzmdN78Dat1Q3h4vhEoB/Lzo/hniQaICn
-         7LLmWkBc76EO618yOrTf2xHOt+J0bPAtjPjxsX6SWzLM7YNH7pnsUnFX47AGuUD7ZguG
-         42ZA==
-X-Gm-Message-State: APjAAAXykgivGIw2NaA2mm8Yr5V64kqHY7S9yy05nDMn45JukHBFJtdQ
-        5626b/z2bjcvgNyS+ALO28CdPv+OYBnttQ==
-X-Google-Smtp-Source: APXvYqzttA9zp9dRhpk68KROHW6MrFVv1MbPRT2pLRDlvgEP4xKcVjZNnnQI9UPvCqB+Tb5znraq+w==
-X-Received: by 2002:a81:94c7:: with SMTP id l190mr660132ywg.55.1566501070897;
-        Thu, 22 Aug 2019 12:11:10 -0700 (PDT)
+        bh=1TohfY64odoKuSpukVPpVWeT8cyz97ORIcTqA6NHK4M=;
+        b=Eg26oZA/mszbFW4rbpKd+y7yzjFr8fezBx1/JevNlK/KGUuLPeQfjFyKusvDZ6SozB
+         1NHNDEr0Y1kiCsXdpfjmGufMSceq05UFFQovSNQUDjl5adRbDx5536IpWl+eE+qttent
+         69qYRuJ/Knb12hI+njqJmJNe71L/u69loxIgrojcpVDh+tJzyToK9RwcloXYIs/AfEl9
+         cYbaDxkFMM/PL5H+0QMbEP301D0/vsG5OLRsma6PlKzDPoPTrvzXR5MEtoUK6yC20V5Y
+         xwJgS6W7Z9PyZMV60Tdog9G8OeQwWCLQ3tcXFZ2QCey2KzSGZs9WCS/gtDS+kjDC4SRQ
+         4ZsQ==
+X-Gm-Message-State: APjAAAU3tz8dF3aJOdFdBQtKGX+uHforzpHduzUakRkWDRUSSK7+Fj9z
+        kLnSY48diTC1/6dZdxMSO/TxRA==
+X-Google-Smtp-Source: APXvYqzmtZvSTkDZQBB2kcA3VL/E9w69syEd1QXyQ5FxDNrNn0RMGE4XyG08r94AYjRXOlI4hT1qyQ==
+X-Received: by 2002:a81:b308:: with SMTP id r8mr646481ywh.45.1566501072481;
+        Thu, 22 Aug 2019 12:11:12 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id t186sm108524ywt.20.2019.08.22.12.11.10
+        by smtp.gmail.com with ESMTPSA id m40sm100187ywh.2.2019.08.22.12.11.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2019 12:11:10 -0700 (PDT)
+        Thu, 22 Aug 2019 12:11:11 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/9] btrfs: add space reservation tracepoint for reserved bytes
-Date:   Thu, 22 Aug 2019 15:10:56 -0400
-Message-Id: <20190822191102.13732-4-josef@toxicpanda.com>
+Subject: [PATCH 4/9] btrfs: rework btrfs_space_info_add_old_bytes
+Date:   Thu, 22 Aug 2019 15:10:57 -0400
+Message-Id: <20190822191102.13732-5-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190822191102.13732-1-josef@toxicpanda.com>
 References: <20190822191102.13732-1-josef@toxicpanda.com>
@@ -60,33 +60,110 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-I noticed when folding the trace_btrfs_space_reservation() tracepoint
-into the btrfs_space_info_update_* helpers that we didn't emit a
-tracepoint when doing btrfs_add_reserved_bytes().  I know this is
-because we were swapping bytes_may_use for bytes_reserved, so in my mind
-there was no reason to have the tracepoint there.  But now there is
-because we always emit the unreserve for the bytes_may_use side, and
-this would have broken if compression was on anyway.  Add a tracepoint
-to cover the bytes_reserved counter so the math still comes out right.
+If there are pending tickets and we are overcommitted we will simply
+return free'd reservations to space_info->bytes_may_use if we cannot
+overcommit any more.  This is problematic because we assume any free
+space would have been added to the tickets, and so if we go from an
+overcommitted state to not overcommitted we could have plenty of space
+in our space_info but be unable to make progress on our tickets because
+we only refill tickets from previous reservations.
+
+Consider the following example.  We were allowed to overcommit to
+space_info->total_bytes + 2mib.  Now we've allocated all of our chunks
+and are no longer allowed to overcommit those extra 2mib.  Assume there
+is a 3mib reservation we are now freeing.  Because we can no longer
+overcommit we do not partially refill the ticket with the 3mib, instead
+we subtract it from space_info->bytes_may_use.  Now the total reserved
+space is 1mib less than total_bytes, meaning we have 1mib of space we
+could reserve.  Now assume that our ticket is 2mib, and we only have
+1mib of space to reclaim, so we have a partial refilling to 1mib.  We
+keep trying to flush and eventually give up and ENOSPC the ticket, when
+there was the remaining 1mib left in the space_info for usage.
+
+Instead of doing this partial filling of tickets dance we need to simply
+add our space to the space_info, and then do the normal check to see if
+we can satisfy the whole reservation.  If we can then we wake up the
+ticket and carry on.  This solves the above problem and makes it much
+more straightforward to understand how the tickets are satisfied.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-group.c | 2 ++
- 1 file changed, 2 insertions(+)
+ fs/btrfs/space-info.c | 43 ++++++++++++++++---------------------------
+ 1 file changed, 16 insertions(+), 27 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 9867c5d98650..afae5c731904 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2758,6 +2758,8 @@ int btrfs_add_reserved_bytes(struct btrfs_block_group_cache *cache,
- 	} else {
- 		cache->reserved += num_bytes;
- 		space_info->bytes_reserved += num_bytes;
-+		trace_btrfs_space_reservation(cache->fs_info, "space_info",
-+					      space_info->flags, num_bytes, 1);
- 		btrfs_space_info_update_bytes_may_use(cache->fs_info,
- 						      space_info, -ram_bytes);
- 		if (delalloc)
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index a0a36d5768e1..357fe7548e07 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -233,52 +233,41 @@ void btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
+ 				    struct btrfs_space_info *space_info,
+ 				    u64 num_bytes)
+ {
+-	struct reserve_ticket *ticket;
+ 	struct list_head *head;
+-	u64 used;
+ 	enum btrfs_reserve_flush_enum flush = BTRFS_RESERVE_NO_FLUSH;
+-	bool check_overcommit = false;
+ 
+ 	spin_lock(&space_info->lock);
+ 	head = &space_info->priority_tickets;
++	btrfs_space_info_update_bytes_may_use(fs_info, space_info, -num_bytes);
+ 
+-	/*
+-	 * If we are over our limit then we need to check and see if we can
+-	 * overcommit, and if we can't then we just need to free up our space
+-	 * and not satisfy any requests.
+-	 */
+-	used = btrfs_space_info_used(space_info, true);
+-	if (used - num_bytes >= space_info->total_bytes)
+-		check_overcommit = true;
+ again:
+-	while (!list_empty(head) && num_bytes) {
+-		ticket = list_first_entry(head, struct reserve_ticket,
+-					  list);
+-		/*
+-		 * We use 0 bytes because this space is already reserved, so
+-		 * adding the ticket space would be a double count.
+-		 */
+-		if (check_overcommit &&
+-		    !can_overcommit(fs_info, space_info, 0, flush, false))
+-			break;
+-		if (num_bytes >= ticket->bytes) {
++	while (!list_empty(head)) {
++		struct reserve_ticket *ticket;
++		u64 used = btrfs_space_info_used(space_info, true);
++
++		ticket = list_first_entry(head, struct reserve_ticket, list);
++
++		/* Check and see if our ticket can be satisified now. */
++		if ((used + ticket->bytes <= space_info->total_bytes) ||
++		    can_overcommit(fs_info, space_info, ticket->bytes, flush,
++				   false)) {
++			btrfs_space_info_update_bytes_may_use(fs_info,
++							      space_info,
++							      ticket->bytes);
+ 			list_del_init(&ticket->list);
+-			num_bytes -= ticket->bytes;
+ 			ticket->bytes = 0;
+ 			space_info->tickets_id++;
+ 			wake_up(&ticket->wait);
+ 		} else {
+-			ticket->bytes -= num_bytes;
+-			num_bytes = 0;
++			break;
+ 		}
+ 	}
+ 
+-	if (num_bytes && head == &space_info->priority_tickets) {
++	if (head == &space_info->priority_tickets) {
+ 		head = &space_info->tickets;
+ 		flush = BTRFS_RESERVE_FLUSH_ALL;
+ 		goto again;
+ 	}
+-	btrfs_space_info_update_bytes_may_use(fs_info, space_info, -num_bytes);
+ 	spin_unlock(&space_info->lock);
+ }
+ 
 -- 
 2.21.0
 
