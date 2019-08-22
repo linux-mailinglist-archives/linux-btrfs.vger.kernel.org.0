@@ -2,170 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B26599F54
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 21:04:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0214699F95
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 21:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390392AbfHVTDJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 15:03:09 -0400
-Received: from mail-yw1-f68.google.com ([209.85.161.68]:35055 "EHLO
-        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731910AbfHVTDJ (ORCPT
+        id S2388363AbfHVTNJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Thu, 22 Aug 2019 15:13:09 -0400
+Received: from mail.physics.pub.ro ([141.85.216.3]:52916 "EHLO
+        physics1.physics.pub.ro" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730531AbfHVTNI (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 15:03:09 -0400
-Received: by mail-yw1-f68.google.com with SMTP id g19so2846667ywe.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 12:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2yhcalcO46fpfNDyxdD+0q3fJKu8Fzb8zmEgrpZ4TD8=;
-        b=nS7fv5RncGX3Jo1yRZCTHw7Bh4IePORHFN9DYY95qWwsnLkcoEsk+SweR7oTewCfdd
-         1evxUJGMRW4D1W7XJ6Caeb/GL6Ud8CAjLyusAuQySYt3zbgykOaK0Ee+DzKzSqtijfmk
-         i+wMZYdC8b6G58EgO7f5aO5gYq70i1UUhskMHxLRYvNG+cj4EsCQuG4CKXTfDTO4hkb7
-         yG7h9/lU6JQWmu+Jp2YemfN0KhGOBvo4MMbP1d2l9JW8/BxgxS1LttjR4YJF95khnF8U
-         Av6+oaOXOJrEl+YBRTYD3iK/RoVgvdRHHKyrfaEcA0JNoh/ZalMt9vnqsLDMUBaiFmQQ
-         WevA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2yhcalcO46fpfNDyxdD+0q3fJKu8Fzb8zmEgrpZ4TD8=;
-        b=bsFML5srF9LsqjrrMQUJI5IzzLRr14pAAkXS+vRpidWCPx6DRwA24IWG+6bvwkNsl6
-         tXi8eoAJ7i7HUfRIF93b+chwB5UYEMDZhqH05bwH8WhUtfs3dApJ9ipJHFCJWU2xJ2sf
-         Rkt5dFItMBJQYVoBH6mkaXewe6/flM6OfYVwRagX+WCNzB/aqAR9caySmYW7JbhbBaU5
-         IEvE0msRL3MIL+sQIzXQB23xocvY6TR8LYNEnGzEXR/FOi3SVLOugtsTSAiGMtxwfk9u
-         gUJlOD0AkJl2KrHANl8nL6yVzcmr1Q2+U3gEjUlJwGTuvWoVRVPfLsJBEWVi3ezHzqzj
-         QsUQ==
-X-Gm-Message-State: APjAAAUQqU15EhRO5yPu/7pzZWSv0AWi+t2c8X8+1CrSkYUnqIzgEcee
-        EHxnnQd6SF4KbOPSd/or5JUJRIo1XYZZuA==
-X-Google-Smtp-Source: APXvYqyfSUK7Zs2aFVc9c4CqgLO288Mf1wFoW5r3Nc7u1lgpAzJuucR6BVXDALs6aNg+SVbnJe1/YA==
-X-Received: by 2002:a81:350b:: with SMTP id c11mr639646ywa.123.1566500588113;
-        Thu, 22 Aug 2019 12:03:08 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id b202sm113612ywb.78.2019.08.22.12.03.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Aug 2019 12:03:06 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH][RESEND] btrfs: add a force_chunk_alloc to space_info's sysfs
-Date:   Thu, 22 Aug 2019 15:03:05 -0400
-Message-Id: <20190822190305.13673-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.21.0
+        Thu, 22 Aug 2019 15:13:08 -0400
+X-Greylist: delayed 22109 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Aug 2019 15:13:08 EDT
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by physics1.physics.pub.ro (Postfix) with ESMTP id AF59BE3D0E9;
+        Thu, 22 Aug 2019 14:01:17 +0300 (EEST)
+X-Virus-Scanned: amavisd-new at physics.pub.ro
+Received: from physics1.physics.pub.ro ([127.0.0.1])
+        by localhost (physics1.physics.pub.ro [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id mAipg-ErUdAn; Thu, 22 Aug 2019 14:01:17 +0300 (EEST)
+Received: from [10.51.176.174] (unknown [105.4.6.61])
+        by physics1.physics.pub.ro (Postfix) with ESMTPSA id 7A1B5E3D0A8;
+        Thu, 22 Aug 2019 14:01:08 +0300 (EEST)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
+To:     Recipients <niculae-tiberiu.puscas@physics.pub.ro>
+From:   ''Tayeb Souami'' <niculae-tiberiu.puscas@physics.pub.ro>
+Date:   Thu, 22 Aug 2019 13:01:01 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20190822110108.7A1B5E3D0A8@physics1.physics.pub.ro>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In testing various things such as the btrfsck patch to detect over
-allocation of chunks, empty block group deletion, and balance I've had
-various ways to force chunk allocations for debug purposes.  Add a sysfs
-file to enable forcing of chunk allocation for the owning space info in
-order to enable us to add testcases in the future to test these various
-features easier.
+Lieber Freund,
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/sysfs.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite unten.
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index f6d3c80f2e28..c290a0cd37d2 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -68,6 +68,7 @@ static struct btrfs_feature_attr btrfs_attr_features_##_name = {	     \
- 
- static inline struct btrfs_fs_info *to_fs_info(struct kobject *kobj);
- static inline struct btrfs_fs_devices *to_fs_devs(struct kobject *kobj);
-+static inline struct kobject *get_btrfs_kobj(struct kobject *kobj);
- 
- static struct btrfs_feature_attr *to_btrfs_feature_attr(struct kobj_attribute *a)
- {
-@@ -405,6 +406,58 @@ static struct kobj_type btrfs_raid_ktype = {
- 	.default_groups = raid_groups,
- };
- 
-+static ssize_t btrfs_space_info_force_chunk_alloc_show(struct kobject *kobj,
-+						       struct kobj_attribute *a,
-+						       char *buf)
-+{
-+	return snprintf(buf, PAGE_SIZE, "0\n");
-+}
-+
-+static ssize_t btrfs_space_info_force_chunk_alloc(struct kobject *kobj,
-+						  struct kobj_attribute *a,
-+						  const char *buf, size_t len)
-+{
-+	struct btrfs_space_info *space_info = to_space_info(kobj);
-+	struct btrfs_fs_info *fs_info = to_fs_info(get_btrfs_kobj(kobj));
-+	struct btrfs_trans_handle *trans;
-+	unsigned long val;
-+	int ret;
-+
-+	if (!fs_info) {
-+		printk(KERN_ERR "couldn't get fs_info\n");
-+		return -EPERM;
-+	}
-+
-+	if (!capable(CAP_SYS_ADMIN))
-+		return -EPERM;
-+
-+	if (sb_rdonly(fs_info->sb))
-+		return -EROFS;
-+
-+	ret = kstrtoul(buf, 10, &val);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * We don't really care, but if we echo 0 > force it seems silly to do
-+	 * anything.
-+	 */
-+	if (val == 0)
-+		return -EINVAL;
-+
-+	trans = btrfs_start_transaction(fs_info->extent_root, 0);
-+	if (!trans)
-+		return PTR_ERR(trans);
-+	ret = btrfs_force_chunk_alloc(trans, space_info->flags);
-+	btrfs_end_transaction(trans);
-+	if (ret == 1)
-+		return len;
-+	return -ENOSPC;
-+}
-+BTRFS_ATTR_RW(space_info, force_chunk_alloc,
-+	      btrfs_space_info_force_chunk_alloc_show,
-+	      btrfs_space_info_force_chunk_alloc);
-+
- #define SPACE_INFO_ATTR(field)						\
- static ssize_t btrfs_space_info_show_##field(struct kobject *kobj,	\
- 					     struct kobj_attribute *a,	\
-@@ -447,6 +500,7 @@ static struct attribute *space_info_attrs[] = {
- 	BTRFS_ATTR_PTR(space_info, disk_used),
- 	BTRFS_ATTR_PTR(space_info, disk_total),
- 	BTRFS_ATTR_PTR(space_info, total_bytes_pinned),
-+	BTRFS_ATTR_PTR(space_info, force_chunk_alloc),
- 	NULL,
- };
- ATTRIBUTE_GROUPS(space_info);
-@@ -641,6 +695,16 @@ static inline struct btrfs_fs_info *to_fs_info(struct kobject *kobj)
- 	return to_fs_devs(kobj)->fs_info;
- }
- 
-+static inline struct kobject *get_btrfs_kobj(struct kobject *kobj)
-+{
-+	while (kobj) {
-+		if (kobj->ktype == &btrfs_ktype)
-+			return kobj;
-+		kobj = kobj->parent;
-+	}
-+	return NULL;
-+}
-+
- #define NUM_FEATURE_BITS 64
- #define BTRFS_FEATURE_NAME_MAX 13
- static char btrfs_unknown_feature_names[FEAT_MAX][NUM_FEATURE_BITS][BTRFS_FEATURE_NAME_MAX];
--- 
-2.21.0
+UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
 
+Das ist dein Spendencode: [TS530342018]
+
+Antworten Sie mit dem SPENDE-CODE an diese E-Mail:Tayebsouam.spende@gmail.com
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+Herr Tayeb Souami
