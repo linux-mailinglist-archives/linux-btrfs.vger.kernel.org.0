@@ -2,269 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDA8999788
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 16:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430E399796
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 17:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389153AbfHVO64 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 10:58:56 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60706 "EHLO mx1.suse.de"
+        id S2389211AbfHVPAo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 11:00:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32828 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388968AbfHVO64 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 10:58:56 -0400
+        id S1731841AbfHVPAn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 11:00:43 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F416EAC8E
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 14:58:52 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EB85CDA791; Thu, 22 Aug 2019 16:59:17 +0200 (CEST)
-Date:   Thu, 22 Aug 2019 16:59:17 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v1.2 1/3] btrfs: tree-checker: Add EXTENT_ITEM and
- METADATA_ITEM check
-Message-ID: <20190822145916.GH2752@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190809012424.11420-1-wqu@suse.com>
- <20190809012424.11420-2-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 2C68EAD7C;
+        Thu, 22 Aug 2019 15:00:42 +0000 (UTC)
+Date:   Thu, 22 Aug 2019 10:00:38 -0500
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     RITESH HARJANI <riteshh@linux.ibm.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        hch@lst.de, darrick.wong@oracle.com, ruansy.fnst@cn.fujitsu.com
+Subject: Re: [PATCH 07/13] btrfs: basic direct read operation
+Message-ID: <20190822150038.rebfrmyk2m6ljzoo@fiona>
+References: <20190802220048.16142-1-rgoldwyn@suse.de>
+ <20190802220048.16142-8-rgoldwyn@suse.de>
+ <20190812123201.904205204F@d06av21.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190809012424.11420-2-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20190812123201.904205204F@d06av21.portsmouth.uk.ibm.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 09, 2019 at 09:24:22AM +0800, Qu Wenruo wrote:
-> +static int check_extent_item(struct extent_buffer *leaf,
-> +			     struct btrfs_key *key, int slot)
-> +{
-> +	struct btrfs_fs_info *fs_info = leaf->fs_info;
-> +	struct btrfs_extent_item *ei;
-> +	bool is_tree_block = false;
-> +	unsigned long ptr;	/* Current pointer inside inline refs */
-> +	unsigned long end;	/* Extent item end */
-> +	u32 item_size = btrfs_item_size_nr(leaf, slot);
-> +	u64 flags;
-> +	u64 generation;
-> +	u64 total_refs;		/* Total refs in btrfs_extent_item */
-> +	u64 inline_refs = 0;	/* found total inline refs */
-> +
-> +	if (key->type == BTRFS_METADATA_ITEM_KEY &&
-> +	    !btrfs_fs_incompat(fs_info, SKINNY_METADATA)) {
-> +		generic_err(leaf, slot,
-> +"invalid key type, METADATA_ITEM type invalid when SKINNY_METADATA feature disabled");
-> +		return -EUCLEAN;
-> +	}
-> +	/* key->objectid is the bytenr for both key types */
-> +	if (!IS_ALIGNED(key->objectid, fs_info->sectorsize)) {
-> +		generic_err(leaf, slot,
-> +"invalid key objectid, have %llu expect to be aligned to %u",
-> +			   key->objectid, fs_info->sectorsize);
-> +		return -EUCLEAN;
-> +	}
-> +
-> +	/* key->offset is tree level for METADATA_ITEM_KEY */
-> +	if (key->type == BTRFS_METADATA_ITEM_KEY &&
-> +	    key->offset >= BTRFS_MAX_LEVEL) {
-> +		extent_err(leaf, slot,
-> +			   "invalid tree level, have %llu expect [0, %u]",
-> +			   key->offset, BTRFS_MAX_LEVEL - 1);
-> +		return -EUCLEAN;
-> +	}
-> +
-> +	/*
-> +	 * EXTENT/METADATA_ITEM is consistent of:
-> +	 * 1) One btrfs_extent_item
-> +	 *    Records the total refs, type and generation of the extent.
-> +	 *
-> +	 * 2) One btrfs_tree_block_info (for EXTENT_ITEM and tree backref only)
-> +	 *    Records the first key and level of the tree block.
-> +	 *
-> +	 * 2) *Zero* or more btrfs_extent_inline_ref(s)
-> +	 *    Each inline ref has one btrfs_extent_inline_ref shows:
-> +	 *    2.1) The ref type, one of the 4
-> +	 *         TREE_BLOCK_REF	Tree block only
-> +	 *         SHARED_BLOCK_REF	Tree block only
-> +	 *         EXTENT_DATA_REF	Data only
-> +	 *         SHARED_DATA_REF	Data only
-> +	 *    2.2) Ref type specific data
-> +	 *         Either using btrfs_extent_inline_ref::offset, or specific
-> +	 *         data structure.
-> +	 */
-> +	if (item_size < sizeof(*ei)) {
-> +		extent_err(leaf, slot,
-> +			   "invalid item size, have %u expect [%zu, %u)",
-> +			   item_size, sizeof(*ei),
-> +			   BTRFS_LEAF_DATA_SIZE(fs_info));
-> +		return -EUCLEAN;
-> +	}
-> +	end = item_size + btrfs_item_ptr_offset(leaf, slot);
-> +
-> +	/* Checks against extent_item */
-> +	ei = btrfs_item_ptr(leaf, slot, struct btrfs_extent_item);
-> +	flags = btrfs_extent_flags(leaf, ei);
-> +	total_refs = btrfs_extent_refs(leaf, ei);
-> +	generation = btrfs_extent_generation(leaf, ei);
-> +	if (generation > btrfs_super_generation(fs_info->super_copy) + 1) {
-> +		extent_err(leaf, slot,
-> +			"invalid generation, have %llu expect (0, %llu]",
-> +			   generation,
-> +			   btrfs_super_generation(fs_info->super_copy) + 1);
-> +		return -EUCLEAN;
-> +	}
-> +	if (!is_power_of_2(flags & (BTRFS_EXTENT_FLAG_DATA |
-> +				    BTRFS_EXTENT_FLAG_TREE_BLOCK))) {
-> +		extent_err(leaf, slot,
-> +		"invalid extent flag, have 0x%llx expect 1 bit set in 0x%llx",
-> +			flags, BTRFS_EXTENT_FLAG_DATA |
-> +			BTRFS_EXTENT_FLAG_TREE_BLOCK);
-> +		return -EUCLEAN;
-> +	}
-> +	is_tree_block = !!(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK);
-> +	if (is_tree_block) {
-> +		if (key->type == BTRFS_EXTENT_ITEM_KEY &&
-> +		    key->offset != fs_info->nodesize) {
-> +			extent_err(leaf, slot,
-> +				   "invalid extent length, have %llu expect %u",
-> +				   key->offset, fs_info->nodesize);
-> +			return -EUCLEAN;
-> +		}
-> +	} else {
-> +		if (key->type != BTRFS_EXTENT_ITEM_KEY) {
-> +			extent_err(leaf, slot,
-> +		"invalid key type, have %u expect %u for data backref",
-> +				   key->type, BTRFS_EXTENT_ITEM_KEY);
-> +			return -EUCLEAN;
-> +		}
-> +		if (!IS_ALIGNED(key->offset, fs_info->sectorsize)) {
-> +			extent_err(leaf, slot,
-> +			"invalid extent length, have %llu expect aligned to %u",
-> +				   key->offset, fs_info->sectorsize);
-> +			return -EUCLEAN;
-> +		}
-> +	}
-> +	ptr = (unsigned long)(struct btrfs_extent_item *)(ei + 1);
-> +
-> +	/* Check the special case of btrfs_tree_block_info */
-> +	if (is_tree_block && key->type != BTRFS_METADATA_ITEM_KEY) {
-> +		struct btrfs_tree_block_info *info;
-> +
-> +		info = (struct btrfs_tree_block_info *)ptr;
-> +		if (btrfs_tree_block_level(leaf, info) >= BTRFS_MAX_LEVEL) {
-> +			extent_err(leaf, slot,
-> +			"invalid tree block info level, have %u expect [0, %u]",
-> +				   btrfs_tree_block_level(leaf, info),
-> +				   BTRFS_MAX_LEVEL - 1);
-> +			return -EUCLEAN;
-> +		}
-> +		ptr = (unsigned long)(struct btrfs_tree_block_info *)(info + 1);
-> +	}
-> +
-> +	/* Check inline refs */
-> +	while (ptr < end) {
-> +		struct btrfs_extent_inline_ref *iref;
-> +		struct btrfs_extent_data_ref *dref;
-> +		struct btrfs_shared_data_ref *sref;
-> +		u64 dref_offset;
-> +		u64 inline_offset;
-> +		u8 inline_type;
-> +
-> +		if (ptr + sizeof(*iref) > end) {
-> +			extent_err(leaf, slot,
-> +"inline ref item overflows extent item, ptr %lu iref size %zu end %lu",
-> +				   ptr, sizeof(*iref), end);
-> +			goto err;
+On 18:02 12/08, RITESH HARJANI wrote:
+> 
+> On 8/3/19 3:30 AM, Goldwyn Rodrigues wrote:
+> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > 
+> > Add btrfs_dio_iomap_ops for iomap.begin() function. In order to
+> > accomodate dio reads, add a new function btrfs_file_read_iter()
+> > which would call btrfs_dio_iomap_read() for DIO reads and
+> > fallback to generic_file_read_iter otherwise.
+> > 
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > ---
+> >   fs/btrfs/ctree.h |  2 ++
+> >   fs/btrfs/file.c  | 10 +++++++++-
+> >   fs/btrfs/iomap.c | 20 ++++++++++++++++++++
+> >   3 files changed, 31 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+> > index 7a4ff524dc77..9eca2d576dd1 100644
+> > --- a/fs/btrfs/ctree.h
+> > +++ b/fs/btrfs/ctree.h
+> > @@ -3247,7 +3247,9 @@ int btrfs_fdatawrite_range(struct inode *inode, loff_t start, loff_t end);
+> >   loff_t btrfs_remap_file_range(struct file *file_in, loff_t pos_in,
+> >   			      struct file *file_out, loff_t pos_out,
+> >   			      loff_t len, unsigned int remap_flags);
+> > +/* iomap.c */
+> >   size_t btrfs_buffered_iomap_write(struct kiocb *iocb, struct iov_iter *from);
+> > +ssize_t btrfs_dio_iomap_read(struct kiocb *iocb, struct iov_iter *to);
+> >   /* tree-defrag.c */
+> >   int btrfs_defrag_leaves(struct btrfs_trans_handle *trans,
+> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > index f7087e28ac08..997eb152a35a 100644
+> > --- a/fs/btrfs/file.c
+> > +++ b/fs/btrfs/file.c
+> > @@ -2839,9 +2839,17 @@ static int btrfs_file_open(struct inode *inode, struct file *filp)
+> >   	return generic_file_open(inode, filp);
+> >   }
+> > +static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+> > +{
+> > +	if (iocb->ki_flags & IOCB_DIRECT)
+> > +		return btrfs_dio_iomap_read(iocb, to);
+> 
+> No provision to fallback to bufferedIO read? Not sure from btrfs
+> perspective,
+> but earlier generic_file_read_iter may fall through to bufferedIO read say
+> in case where directIO could not be completed (returned 0 or less than the
+> requested read bytes).
+> Is it not required anymore in case of btrfs when we move to iomap
+> infrastructure, to still fall back to bufferedIO read?
+> Correct me if I am missing anything here.
+> 
 
-Half of the function does return -EUCLEAN and the other goto err, that
-does return -EUCLEAN without any other code. Is there a reason you don't
-use the return consistently?
+No, you are right here. We should fallback to buffered reads in case of
+incomplete reads. Thanks for pointing it out. I will incorporate it in the
+next series.
 
-> +		}
-> +		iref = (struct btrfs_extent_inline_ref *)ptr;
-> +		inline_type = btrfs_extent_inline_ref_type(leaf, iref);
-> +		inline_offset = btrfs_extent_inline_ref_offset(leaf, iref);
-> +		if (ptr + btrfs_extent_inline_ref_size(inline_type) > end) {
-> +			extent_err(leaf, slot,
-> +"inline ref item overflows extent item, ptr %lu iref size %u end %lu",
-> +				   ptr, inline_type, end);
-> +			goto err;
-> +		}
-> +
-> +		switch (inline_type) {
-> +		/* inline_offset is subvolid of the owner, no need to check */
-> +		case BTRFS_TREE_BLOCK_REF_KEY:
-> +			inline_refs++;
-> +			break;
-> +		/* contains parent bytenr */
-
-Comments should start with a capital letter unless it's an identifier.
-
-> +		case BTRFS_SHARED_BLOCK_REF_KEY:
-> +			if (!IS_ALIGNED(inline_offset, fs_info->sectorsize)) {
-> +				extent_err(leaf, slot,
-> +	"invalid tree parent bytenr, have %llu expect aligned to %u",
-> +					   inline_offset, fs_info->sectorsize);
-> +				goto err;
-> +			}
-> +			inline_refs++;
-> +			break;
-> +		/*
-> +		 * contains owner subvolid, owner key objectid, adjusted offset.
-> +		 * the only obvious corruption can happen in that offset.
-> +		 */
-> +		case BTRFS_EXTENT_DATA_REF_KEY:
-> +			dref = (struct btrfs_extent_data_ref *)(&iref->offset);
-> +			dref_offset = btrfs_extent_data_ref_offset(leaf, dref);
-> +			if (!IS_ALIGNED(dref_offset, fs_info->sectorsize)) {
-> +				extent_err(leaf, slot,
-> +		"invalid data ref offset, have %llu expect aligned to %u",
-> +					   dref_offset, fs_info->sectorsize);
-> +				goto err;
-> +			}
-> +			inline_refs += btrfs_extent_data_ref_count(leaf, dref);
-> +			break;
-> +		/* contains parent bytenr and ref count */
-> +		case BTRFS_SHARED_DATA_REF_KEY:
-> +			sref = (struct btrfs_shared_data_ref *)(iref + 1);
-> +			if (!IS_ALIGNED(inline_offset, fs_info->sectorsize)) {
-> +				extent_err(leaf, slot,
-> +		"invalid data parent bytenr, have %llu expect aligned to %u",
-> +					   inline_offset, fs_info->sectorsize);
-> +				goto err;
-> +			}
-> +			inline_refs += btrfs_shared_data_ref_count(leaf, sref);
-> +			break;
-> +		default:
-> +			extent_err(leaf, slot, "unknown inline ref type: %u",
-> +				   inline_type);
-> +			goto err;
-> +		}
-> +		ptr += btrfs_extent_inline_ref_size(inline_type);
-> +	}
-> +	/* No padding is allowed */
-> +	if (ptr != end) {
-> +		extent_err(leaf, slot,
-> +			   "invalid extent item size, padding bytes found");
-
-The other messages are detailed which is good, this one lacks the amount
-of padding found.
-
-> +		goto err;
-> +	}
-> +
-> +	/* Finally, check the inline refs against total refs */
-> +	if (inline_refs > total_refs) {
-> +		extent_err(leaf, slot,
-> +			"invalid extent refs, have %llu expect >= inline %llu",
-> +			   total_refs, inline_refs);
-> +		goto err;
-> +	}
-> +	return 0;
-> +err:
-> +	return -EUCLEAN;
-> +}
+-- 
+Goldwyn
