@@ -2,83 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80C129979E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 17:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4385C9979A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 17:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732355AbfHVPCB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 11:02:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33520 "EHLO mx1.suse.de"
+        id S1731205AbfHVPB7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 11:01:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33484 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725886AbfHVPCB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 11:02:01 -0400
+        id S1725886AbfHVPB7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 11:01:59 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 50044AE3F;
-        Thu, 22 Aug 2019 15:02:00 +0000 (UTC)
-Date:   Thu, 22 Aug 2019 10:01:58 -0500
-From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        hch@lst.de, darrick.wong@oracle.com, ruansy.fnst@cn.fujitsu.com,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 05/13] btrfs: Add CoW in iomap based writes
-Message-ID: <20190822150158.5jz74zrf6aiai5kh@fiona>
-References: <20190802220048.16142-1-rgoldwyn@suse.de>
- <20190802220048.16142-6-rgoldwyn@suse.de>
- <20190805001317.GG7689@dread.disaster.area>
+        by mx1.suse.de (Postfix) with ESMTP id 3C988AF58
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 15:01:58 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id B0E00DA791; Thu, 22 Aug 2019 17:02:23 +0200 (CEST)
+Date:   Thu, 22 Aug 2019 17:02:23 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v1.2 2/3] btrfs: tree-checker: Add simple keyed refs check
+Message-ID: <20190822150223.GI2752@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190809012424.11420-1-wqu@suse.com>
+ <20190809012424.11420-3-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190805001317.GG7689@dread.disaster.area>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20190809012424.11420-3-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10:13 05/08, Dave Chinner wrote:
-> On Fri, Aug 02, 2019 at 05:00:40PM -0500, Goldwyn Rodrigues wrote:
-> > From: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> > 
-> > Set iomap->type to IOMAP_COW and fill up the source map in case
-> > the I/O is not page aligned.
-> .....
-> >  static void btrfs_buffered_page_done(struct inode *inode, loff_t pos,
-> >  		unsigned copied, struct page *page,
-> >  		struct iomap *iomap)
-> > @@ -188,6 +217,7 @@ static int btrfs_buffered_iomap_begin(struct inode *inode, loff_t pos,
-> >  	int ret;
-> >  	size_t write_bytes = length;
-> >  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> > +	size_t end;
-> >  	size_t sector_offset = pos & (fs_info->sectorsize - 1);
-> >  	struct btrfs_iomap *bi;
-> >  
-> > @@ -255,6 +285,17 @@ static int btrfs_buffered_iomap_begin(struct inode *inode, loff_t pos,
-> >  	iomap->private = bi;
-> >  	iomap->length = round_up(write_bytes, fs_info->sectorsize);
-> >  	iomap->offset = round_down(pos, fs_info->sectorsize);
-> > +	end = pos + write_bytes;
-> > +	/* Set IOMAP_COW if start/end is not page aligned */
-> > +	if (((pos & (PAGE_SIZE - 1)) || (end & (PAGE_SIZE - 1)))) {
-> > +		iomap->type = IOMAP_COW;
-> > +		ret = get_iomap(inode, pos, length, srcmap);
-> > +		if (ret < 0)
-> > +			goto release;
+On Fri, Aug 09, 2019 at 09:24:23AM +0800, Qu Wenruo wrote:
+> For TREE_BLOCK_REF, SHARED_DATA_REF and SHARED_BLOCK_REF we need to
+> check:
+>               | TREE_BLOCK_REF | SHARED_BLOCK_REF | SHARED_BLOCK_REF
+> --------------+----------------+-----------------+------------------
+> key->objectid |    Alignment   |     Alignment    |    Alignment
+> key->offset   |    Any value   |     Alignment    |    Alignment
+> item_size     |        0       |        0         |   sizeof(le32) (*)
 > 
-> I suspect you didn't test this case, because....
+> *: sizeof(struct btrfs_shared_data_ref)
 > 
-> > +	} else {
-> > +		iomap->type = IOMAP_DELALLOC;
-> > +	}
-> > +
-> >  	iomap->addr = IOMAP_NULL_ADDR;
-> >  	iomap->type = IOMAP_DELALLOC;
+> So introduce a check to check all these 3 key types together.
 > 
-> The iomap->type is overwritten here and so IOMAP_COW will never be
-> seen by the iomap infrastructure...
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Yes, thats correct. I will fix this.
-
--- 
-Goldwyn
+Reviewed-by: David Sterba <dsterba@suse.com>
