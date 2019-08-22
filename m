@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E605898B12
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 07:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F003298BC9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 08:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbfHVF6z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 01:58:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46682 "EHLO mx1.suse.de"
+        id S1731857AbfHVG4Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 02:56:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56396 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727476AbfHVF6z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 01:58:55 -0400
+        id S1725710AbfHVG4Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 02:56:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A0BEAACCA;
-        Thu, 22 Aug 2019 05:58:53 +0000 (UTC)
-Subject: Re: [PATCH 5/6] btrfs: Simplify extent type check
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+        by mx1.suse.de (Postfix) with ESMTP id 19598AE1B;
+        Thu, 22 Aug 2019 06:56:22 +0000 (UTC)
+Subject: Re: [PATCH] fs/btrfs/raid56.c: remove set but not used variables
+ 'p_stripe'
+To:     zhengbin <zhengbin13@huawei.com>, clm@fb.com,
+        David Sterba <dsterba@suse.com>, josef@toxicpanda.com,
         linux-btrfs@vger.kernel.org
-References: <20190805144708.5432-1-nborisov@suse.com>
- <20190805144708.5432-6-nborisov@suse.com>
- <20190821154039.GA2752@twin.jikos.cz>
- <bb544b37-ed4c-f3f1-bf2a-df7b9a3b4479@gmx.com>
+Cc:     yi.zhang@huawei.com
+References: <1566447421-16137-1-git-send-email-zhengbin13@huawei.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -66,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <93cab3f5-6ad2-395c-516c-7150191427ae@suse.com>
-Date:   Thu, 22 Aug 2019 08:58:51 +0300
+Message-ID: <c0ffc4cb-4f72-c8bf-c82d-67b0d2e2a392@suse.com>
+Date:   Thu, 22 Aug 2019 09:56:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <bb544b37-ed4c-f3f1-bf2a-df7b9a3b4479@gmx.com>
+In-Reply-To: <1566447421-16137-1-git-send-email-zhengbin13@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,75 +82,79 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 22.08.19 г. 2:47 ч., Qu Wenruo wrote:
+On 22.08.19 г. 7:17 ч., zhengbin wrote:
+> fs/btrfs/raid56.c: In function finish_rmw:
+> fs/btrfs/raid56.c:1185:6: warning: variable p_stripe set but not used [-Wunused-but-set-variable]
+> fs/btrfs/raid56.c: In function finish_parity_scrub:
+> fs/btrfs/raid56.c:2343:6: warning: variable p_stripe set but not used [-Wunused-but-set-variable]
 > 
-> 
-> On 2019/8/21 下午11:40, David Sterba wrote:
->> On Mon, Aug 05, 2019 at 05:47:07PM +0300, Nikolay Borisov wrote:
->>> Extent type can only be regular/prealloc/inline. The main branch of the
->>> 'if' already handles the first two, leaving the 'else' to handle inline.
->>> Furthermore, tree-checker ensures that leaf items are correct.
->>>
->>> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->>> ---
->>>  fs/btrfs/inode.c | 10 +++-------
->>>  1 file changed, 3 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->>> index 8e24b7641247..6c3f9f3a7ed1 100644
->>> --- a/fs/btrfs/inode.c
->>> +++ b/fs/btrfs/inode.c
->>> @@ -1502,18 +1502,14 @@ static noinline int run_delalloc_nocow(struct inode *inode,
->>>  			if (!btrfs_inc_nocow_writers(fs_info, disk_bytenr))
->>>  				goto out_check;
->>>  			nocow = true;
->>> -		} else if (extent_type == BTRFS_FILE_EXTENT_INLINE) {
->>> -			extent_end = found_key.offset +
->>> -				btrfs_file_extent_ram_bytes(leaf, fi);
->>> -			extent_end = ALIGN(extent_end,
->>> -					   fs_info->sectorsize);
->>> +		} else {
->>> +			extent_end = found_key.offset + ram_bytes;
->>> +			extent_end = ALIGN(extent_end, fs_info->sectorsize);
->>>  			/* Skip extents outside of our requested range */
->>>  			if (extent_end <= start) {
->>>  				path->slots[0]++;
->>>  				goto next_slot;
->>>  			}
->>> -		} else {
->>> -			BUG();
->>
->> I am not sure if we should delete this or leave it (with a message what
->> happened). There are other places that switch value from a known set and
->> have a catch-all branch.
-> 
-> We can just delete it IHMO.
-> 
-> That's why we have tree-checker, we have ensured at least EXTENT_DATA
-> item read from disk doesn't contain invalid type.
-> So removing the BUG() here should be OK.
-> 
-> Although converting it to a better error handler won't hurt.
-> In that case it can catch runtime memory corruption earlier.
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: zhengbin <zhengbin13@huawei.com>
 
-IMO it's counter productive to have duplicated checks. That's just more
-code that someone needs to grok down the line when they need to
-understand the code. If the tree-checker was an optional feature - then
-perhaps it makes sense. But since the tree-checker is, so to speak, the
-outer layer of protection, ensuring the btrfs shouldn't work with
-invalid data then I'd rather remove the check.
+Have you tested this patch on a RAID5/6 configuration? WHy do I think
+that for the raid 5 case (if (rbio->real_stripes - rbio->nr_data == 1))
+we'll now go into the else clause and BUG, despite the variable not
+being used.
 
+> ---
+>  fs/btrfs/raid56.c | 18 ++++--------------
+>  1 file changed, 4 insertions(+), 14 deletions(-)
 > 
-> Thanks,
-> Qu
+> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> index f3d0576..2603f99 100644
+> --- a/fs/btrfs/raid56.c
+> +++ b/fs/btrfs/raid56.c
+> @@ -1182,7 +1182,6 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
+>  	int nr_data = rbio->nr_data;
+>  	int stripe;
+>  	int pagenr;
+> -	int p_stripe = -1;
+>  	int q_stripe = -1;
+>  	struct bio_list bio_list;
+>  	struct bio *bio;
+> @@ -1190,14 +1189,10 @@ static noinline void finish_rmw(struct btrfs_raid_bio *rbio)
 > 
->>
->> With your change the 'catch-all' is the inline extent type. It's true
->> that the checker should not let an unknown type appear in this code,
->> however I'd rather make it explicit that something is seriously wrong if
->> there's an unexpected type rather than silently continuing.
->>
->> The BUG can be turned to actual error handling so we don't need to crash
->> at least.
->>
+>  	bio_list_init(&bio_list);
+> 
+> -	if (rbio->real_stripes - rbio->nr_data == 1) {
+> -		p_stripe = rbio->real_stripes - 1;
+> -	} else if (rbio->real_stripes - rbio->nr_data == 2) {
+> -		p_stripe = rbio->real_stripes - 2;
+> +	if (rbio->real_stripes - rbio->nr_data == 2)
+>  		q_stripe = rbio->real_stripes - 1;
+> -	} else {
+> +	else if (rbio->real_stripes - rbio->nr_data != 1)
+>  		BUG();
+> -	}
+> 
+>  	/* at this point we either have a full stripe,
+>  	 * or we've read the full stripe from the drive.
+> @@ -2340,7 +2335,6 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+>  	int nr_data = rbio->nr_data;
+>  	int stripe;
+>  	int pagenr;
+> -	int p_stripe = -1;
+>  	int q_stripe = -1;
+>  	struct page *p_page = NULL;
+>  	struct page *q_page = NULL;
+> @@ -2351,14 +2345,10 @@ static noinline void finish_parity_scrub(struct btrfs_raid_bio *rbio,
+> 
+>  	bio_list_init(&bio_list);
+> 
+> -	if (rbio->real_stripes - rbio->nr_data == 1) {
+> -		p_stripe = rbio->real_stripes - 1;
+> -	} else if (rbio->real_stripes - rbio->nr_data == 2) {
+> -		p_stripe = rbio->real_stripes - 2;
+> +	if (rbio->real_stripes - rbio->nr_data == 2)
+>  		q_stripe = rbio->real_stripes - 1;
+> -	} else {
+> +	else if (rbio->real_stripes - rbio->nr_data != 1)
+>  		BUG();
+> -	}
+> 
+>  	if (bbio->num_tgtdevs && bbio->tgtdev_map[rbio->scrubp]) {
+>  		is_replace = 1;
+> --
+> 2.7.4
+> 
 > 
