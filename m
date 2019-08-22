@@ -2,103 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F26C999257
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 13:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CA12992FC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 14:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731709AbfHVLkd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 07:40:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50752 "EHLO mx1.suse.de"
+        id S2388367AbfHVML1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 08:11:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59270 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731648AbfHVLkd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 07:40:33 -0400
+        id S1730980AbfHVML0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 08:11:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 89B31AE84
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 11:40:32 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 7A0AAAE89
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 12:11:25 +0000 (UTC)
+Date:   Thu, 22 Aug 2019 14:11:25 +0200
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v2 4/4] btrfs: sysfs: export supported checksums
-Date:   Thu, 22 Aug 2019 13:40:29 +0200
-Message-Id: <20190822114029.11225-5-jthumshirn@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20190822114029.11225-1-jthumshirn@suse.de>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2 2/4] btrfs: create structure to encode checksum type
+ and length
+Message-ID: <20190822121124.GE4052@x250>
 References: <20190822114029.11225-1-jthumshirn@suse.de>
+ <20190822114029.11225-3-jthumshirn@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190822114029.11225-3-jthumshirn@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+On Thu, Aug 22, 2019 at 01:40:27PM +0200, Johannes Thumshirn wrote:
+> Create a structure to encode the type and length for the known on-disk
+> checksums. Also add a table and a convenience macro for adding the
+> checksum types to the table.
+> 
+> This makes it easier to add new checksums later.
+> 
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> 
+> ---
+> Changes to v1:
+> - Remove initializer macro (David)
 
-Export supported checksum algorithms via sysfs.
+> +#define BTRFS_CHECKSUM_TYPE(_type, _size, _name) \
+> +	[_type] = { .size = _size, .name = _name }
+> +
 
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+Adn obviously this should be gone as well *facepalm*
 
----
-Changes to v1:
-- Removed btrfs_checksums_store() function (Nik)
-- Renamed sysfs file to supported_checksums
----
- fs/btrfs/sysfs.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
-
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index f6d3c80f2e28..1cd351d2be03 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -246,6 +246,24 @@ static umode_t btrfs_feature_visible(struct kobject *kobj,
- 	return mode;
- }
- 
-+static ssize_t btrfs_supported_checksums_show(struct kobject *kobj,
-+					      struct kobj_attribute *a,
-+					      char *buf)
-+{
-+	ssize_t ret = 0;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(btrfs_csums); i++) {
-+		ret += snprintf(buf + ret, PAGE_SIZE, "%s%s",
-+				(i == 0 ? "" : ", "),
-+				btrfs_csums[i].name);
-+
-+	}
-+
-+	ret += snprintf(buf + ret, PAGE_SIZE, "\n");
-+	return ret;
-+}
-+
- BTRFS_FEAT_ATTR_INCOMPAT(mixed_backref, MIXED_BACKREF);
- BTRFS_FEAT_ATTR_INCOMPAT(default_subvol, DEFAULT_SUBVOL);
- BTRFS_FEAT_ATTR_INCOMPAT(mixed_groups, MIXED_GROUPS);
-@@ -259,6 +277,14 @@ BTRFS_FEAT_ATTR_INCOMPAT(no_holes, NO_HOLES);
- BTRFS_FEAT_ATTR_INCOMPAT(metadata_uuid, METADATA_UUID);
- BTRFS_FEAT_ATTR_COMPAT_RO(free_space_tree, FREE_SPACE_TREE);
- 
-+static struct btrfs_feature_attr btrfs_attr_features_checksums_name = {
-+	.kobj_attr = __INIT_KOBJ_ATTR(supported_checksums, S_IRUGO,
-+				      btrfs_supported_checksums_show,
-+				      NULL),
-+	.feature_set	= FEAT_INCOMPAT,
-+	.feature_bit	= 0,
-+};
-+
- static struct attribute *btrfs_supported_feature_attrs[] = {
- 	BTRFS_FEAT_ATTR_PTR(mixed_backref),
- 	BTRFS_FEAT_ATTR_PTR(default_subvol),
-@@ -272,6 +298,9 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
- 	BTRFS_FEAT_ATTR_PTR(no_holes),
- 	BTRFS_FEAT_ATTR_PTR(metadata_uuid),
- 	BTRFS_FEAT_ATTR_PTR(free_space_tree),
-+
-+	&btrfs_attr_features_checksums_name.kobj_attr.attr,
-+
- 	NULL
- };
- 
 -- 
-2.16.4
-
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
+GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
+HRB 21284 (AG Nürnberg)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
