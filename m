@@ -2,73 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2079944B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 14:54:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821FF994DC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 15:22:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388164AbfHVMyU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 08:54:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45410 "EHLO mx1.suse.de"
+        id S1733222AbfHVNWi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 09:22:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56770 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725856AbfHVMyU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 08:54:20 -0400
+        id S1727401AbfHVNWi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 09:22:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2B0B9AC8B;
-        Thu, 22 Aug 2019 12:54:19 +0000 (UTC)
-Date:   Thu, 22 Aug 2019 14:54:18 +0200
+        by mx1.suse.de (Postfix) with ESMTP id E0ADFAF70
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 13:22:36 +0000 (UTC)
 From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
-        <holger@applied-asynchrony.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] Support xxhash64 checksums
-Message-ID: <20190822125418.GF4052@x250>
-References: <20190822114029.11225-1-jthumshirn@suse.de>
- <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+To:     David Sterba <dsterba@suse.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: [PATCH v2.1] btrfs: create structure to encode checksum type and length
+Date:   Thu, 22 Aug 2019 15:22:32 +0200
+Message-Id: <20190822132232.16276-1-jthumshirn@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20190822114029.11225-3-jthumshirn@suse.de>
+References: <20190822114029.11225-3-jthumshirn@suse.de>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 22, 2019 at 02:28:53PM +0200, Holger Hoffstätte wrote:
-> On 8/22/19 1:40 PM, Johannes Thumshirn wrote:
-> > Now that Nikolay's XXHASH64 support for the Crypto API has landed and BTRFS is
-> > prepared for an easy addition of new checksums, this patchset implements
-> > XXHASH64 as a second, fast but not cryptographically secure checksum hash.
-> 
-> Question from the cheap seats.. :)
-> 
-> I know that crc32c-intel uses native SSE 4.2 instructions, but so far I have
-> been unable to find benchmarks or explanations why adding xxhash64 benefits
-> btrfs. All benchmarks seem to be against crc32c in *software*, not the
-> SSE4.2-enabled version (or I can't read). I mean, it's great that xxhash64 is
-> really fast for a software implementation, but how does btrfs benefit from this
-> compared to using crc32-intel?
-> 
-> Verifying that plugging in other hash impls works (e.g. as preparation for
-> stronger impls) has value, but it's probably not something most
-> users care about.
-> 
-> Maybe there are obscure downsides to crc32c-intel like instruction latency
-> (def. a problem for AVX512), cache pollution..?
-> 
-> Just curious.
+Create a structure to encode the type and length for the known on-disk
+checksums. Also add a table and a convenience macro for adding the
+checksum types to the table.
 
-It's not so much about the performance aspect of xxhash64 vs crc32c. xxhash64
-has a lower collission proability compared to crc32c, which for instance makes
-it a good candidate to use for de-duplication.
+This makes it easier to add new checksums later.
 
-HTH,
-	Johannes
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+
+---
+Changes to v2:
+- Really remove initializer macro *doh*
+
+Changes to v1:
+- Remove initializer macro (David)
+---
+ fs/btrfs/ctree.h | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index b161224b5a0b..139354d02dfa 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -82,9 +82,12 @@ struct btrfs_ref;
+  */
+ #define BTRFS_LINK_MAX 65535U
+ 
+-/* four bytes for CRC32 */
+-static const int btrfs_csum_sizes[] = { 4 };
+-static const char *btrfs_csum_names[] = { "crc32c" };
++static const struct btrfs_csums {
++	u16		size;
++	const char	*name;
++} btrfs_csums[] = {
++	[BTRFS_CSUM_TYPE_CRC32] = { .size = 4, .name = "crc32c" },
++};
+ 
+ #define BTRFS_EMPTY_DIR_SIZE 0
+ 
+@@ -2207,13 +2210,13 @@ static inline int btrfs_super_csum_size(const struct btrfs_super_block *s)
+ 	/*
+ 	 * csum type is validated at mount time
+ 	 */
+-	return btrfs_csum_sizes[t];
++	return btrfs_csums[t].size;
+ }
+ 
+ static inline const char *btrfs_super_csum_name(u16 csum_type)
+ {
+ 	/* csum type is validated at mount time */
+-	return btrfs_csum_names[csum_type];
++	return btrfs_csums[csum_type].name;
+ }
+ 
+ /*
 -- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
-GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
-HRB 21284 (AG Nürnberg)
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+2.16.4
+
