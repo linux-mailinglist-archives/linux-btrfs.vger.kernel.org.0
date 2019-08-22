@@ -2,73 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F01D4997BF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 17:09:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915BC9985A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 17:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389428AbfHVPIL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 11:08:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35960 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732611AbfHVPIL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 11:08:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 21919AD7C
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 15:08:10 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 90C5ADA791; Thu, 22 Aug 2019 17:08:35 +0200 (CEST)
-Date:   Thu, 22 Aug 2019 17:08:35 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v1.2 0/3] btrfs: tree-checker: Add extent items check
-Message-ID: <20190822150835.GJ2752@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190809012424.11420-1-wqu@suse.com>
+        id S1732536AbfHVPkg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 11:40:36 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:39572 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731416AbfHVPkg (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 22 Aug 2019 11:40:36 -0400
+Received: by mail-lf1-f66.google.com with SMTP id x3so4878389lfn.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 08:40:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cXGljeB99bXUDWMB64Bv9wKPC4CRt8+++/6B34P0I2g=;
+        b=en0JZibSEhonSSvBSAk0Rg6qZtoqIL9SzWmBP17m29Lgw3EigbJOJI31XB+FCfQRl6
+         sKZkNydu1/GTkpx947dl/T9PtiK8Kp68vMxDNHHr/8iLxmBPvyThpjGsqJPrMYaJPgv3
+         lQuI99mLd1viyQZu41iAcMkm96qZoEpL6toziBn94zV0nVRR6/uPejhb/MFX/ngt3noT
+         6gYPlWgeQmPAk99xaGq+p+bseDxeEgnql4DCs+n1oRClO/Jf06Am6w6p2G6yhudJoYK6
+         F5xFS1oOq+Ip+os5kAVZRr4YxUzZexhdfRso6QoJmti6VjSXFxZceW6mdNlFuP5uAuYl
+         /YYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cXGljeB99bXUDWMB64Bv9wKPC4CRt8+++/6B34P0I2g=;
+        b=M9ixFN10bl8C9JxXuAJOb9Nhsuojt6TfSo6sReuY7g98QFJ/gCs+4uV8/RXvTW6jnt
+         SHqaqWKiA8NJ6SOyKd0mjqPyIQ6o8pNQJZdMSgPC04FOgd8EkkGHSmUrgNiYUR1GiGyF
+         DDxQZt5RBp7xWA2iD29UGxw5VaaHys1OidmQWaJ150vW1spUD15S8PobMlU0D8JnPiSQ
+         3xNHkSb/WjCTrm231vHBWcMsuPBt/quLE+7y0svUDgCRNcQgPPOUQnIPqi2hPjKn7qTP
+         ZxKNwmkFl6nVGIO5ZyvBcYbXtHIiLxGrN7LStvmeGYw3Qk7aCayRinB/1Pk1zP8G12aV
+         Ul0A==
+X-Gm-Message-State: APjAAAUIoxP3Q2ogiKde/Kq+VlSaRF32eowS2F9+pX12jE767fK9+VTM
+        mledpb0oyVQ2G4Gt10vmg1uaxxFegG/BkZquVsFXDwBgWTw=
+X-Google-Smtp-Source: APXvYqyr6Wv9x5Tqn5Zk9k4yRgd6paSqbgx6j1NicWeI2Uhmqne0rNYcgnVe/7IPlfLT3sYkkF5doszFssKsF6hooSQ=
+X-Received: by 2002:ac2:592f:: with SMTP id v15mr4672208lfi.57.1566488434149;
+ Thu, 22 Aug 2019 08:40:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190809012424.11420-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <20190822114029.11225-1-jthumshirn@suse.de> <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
+In-Reply-To: <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
+From:   Peter Becker <floyd.net@gmail.com>
+Date:   Thu, 22 Aug 2019 17:40:23 +0200
+Message-ID: <CAEtw4r01JMFqszs0bBeeU3OXLqbT5+cU+4ZP282J3cvYzALgZg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Support xxhash64 checksums
+To:     =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 09, 2019 at 09:24:21AM +0800, Qu Wenruo wrote:
-> Finally, we are going to add tree-checker support for extent items,
-> which includes:
-> - EXTENT_ITEM/METADATA_ITEM
->   Which futher contains inline backrefs of:
->   * TREE_BLOCK_REF
->   * SHARED_BLOCK_REF
->   * EXETNT_DATA_REF
->   * SHARED_DATA_REF
-> 
-> - TREE_BLOCK_REF
-> - SHARED_BLOCK_REF
-> - EXTENT_DATA_REF
-> - SHARED_DATA_REF
->   Keyed version of the above types
+Am Do., 22. Aug. 2019 um 16:41 Uhr schrieb Holger Hoffst=C3=A4tte
+<holger@applied-asynchrony.com>:
+> but how does btrfs benefit from this compared to using crc32-intel?
 
-Great, thanks.
-
-> v1.2:
-  ^^^^
-
-Please use integers for patchsets, ie. this is v3 for me.
-
-> - Use "unsigned long" for pointer convertion
-> 
-> - Use "%zu" format for sizeof() in the 3rd patch
-> 
-> Qu Wenruo (3):
->   btrfs: tree-checker: Add EXTENT_ITEM and METADATA_ITEM check
->   btrfs: tree-checker: Add simple keyed refs check
->   btrfs: tree-checker: Add EXTENT_DATA_REF check
-
-I'll update patch 1 with the goto -> return and fix the comments, no
-need to resend. V2 has been in for-next, there were no significant
-changes since so I'll add v3 to misc-next. Thanks.
+As i know, crc32c  is as far as ~3x faster than xxhash. But xxHash was
+created with a differend design goal.
+If you using a cpu without hardware crc32 support, xxHash provides you
+a maximum portability and speed. Look at arm, mips, power, etc. or old
+intel cpus like Core 2 Duo.
