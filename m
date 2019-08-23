@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 616229A91C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 09:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EA39AA08
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 10:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390895AbfHWHsp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Aug 2019 03:48:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35046 "EHLO mx1.suse.de"
+        id S1731756AbfHWIRJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Aug 2019 04:17:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42956 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728519AbfHWHsp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Aug 2019 03:48:45 -0400
+        id S1730760AbfHWIRJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Aug 2019 04:17:09 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6EEABAECA;
-        Fri, 23 Aug 2019 07:48:42 +0000 (UTC)
-Subject: Re: [PATCH 4/9] btrfs: rework btrfs_space_info_add_old_bytes
+        by mx1.suse.de (Postfix) with ESMTP id 926DEACFA;
+        Fri, 23 Aug 2019 08:17:07 +0000 (UTC)
+Subject: Re: [PATCH 6/9] btrfs: rework wake_all_tickets
 To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
 References: <20190822191102.13732-1-josef@toxicpanda.com>
- <20190822191102.13732-5-josef@toxicpanda.com>
+ <20190822191102.13732-7-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <b3a697e5-016d-5c8c-f0c6-711e433ca18f@suse.com>
-Date:   Fri, 23 Aug 2019 10:48:35 +0300
+Message-ID: <9ab7f79a-6b04-f548-c9a6-f90b0b353826@suse.com>
+Date:   Fri, 23 Aug 2019 11:17:06 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190822191102.13732-5-josef@toxicpanda.com>
+In-Reply-To: <20190822191102.13732-7-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,128 +81,102 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 22.08.19 г. 22:10 ч., Josef Bacik wrote:
-> If there are pending tickets and we are overcommitted we will simply
-> return free'd reservations to space_info->bytes_may_use if we cannot
-> overcommit any more.  This is problematic because we assume any free
-> space would have been added to the tickets, and so if we go from an
-> overcommitted state to not overcommitted we could have plenty of space
-> in our space_info but be unable to make progress on our tickets because
-> we only refill tickets from previous reservations.
+> Now that we no longer partially fill tickets we need to rework
+> wake_all_tickets to call btrfs_try_to_wakeup_tickets() in order to see
+> if any subsequent tickets are able to be satisfied.  If our tickets_id
+> changes we know something happened and we can keep flushing.
 > 
-> Consider the following example.  We were allowed to overcommit to
-> space_info->total_bytes + 2mib.  Now we've allocated all of our chunks
-> and are no longer allowed to overcommit those extra 2mib.  Assume there
-> is a 3mib reservation we are now freeing.  Because we can no longer
-> overcommit we do not partially refill the ticket with the 3mib, instead
-> we subtract it from space_info->bytes_may_use.  Now the total reserved
-> space is 1mib less than total_bytes, meaning we have 1mib of space we
-> could reserve.  Now assume that our ticket is 2mib, and we only have
-> 1mib of space to reclaim, so we have a partial refilling to 1mib.  We
-> keep trying to flush and eventually give up and ENOSPC the ticket, when
-> there was the remaining 1mib left in the space_info for usage.
-
-The wording of this paragraph makes it a bit hard to understand. How
-about something like:
-
-Consider an example where a request is allowed to overcommit
-space_info->total_bytes + 2mib. At this point it's no longer possible to
-overcommit extra space. At the same time there is an existing 3mib
-reservation which is being freed. Due to the existing check failing:
-
-if (check_overcommit &&
-  !can_overcommit(fs_info, space_info, 0, flush, false))
-
-btrfs_space_info_add_old_bytes won't partially refill tickets with those
-3mib, instead it will subtract them from space_info->bytes_may_use. This
-results in the total reserved space being 1mib below
-space_info->total_bytes. <You need to expand on where the 2mib ticket
-came - was it part of the original reservation that caused the
-overcommit or is it a new reservation that comes while we are at 1mb
-below space_info->total_bytes>
-
+> Also if we find a ticket that is smaller than the first ticket in our
+> queue then we want to retry the flushing loop again in case
+> may_commit_transaction() decides we could satisfy the ticket by
+> committing the transaction.
 > 
-> Instead of doing this partial filling of tickets dance we need to simply
-> add our space to the space_info, and then do the normal check to see if
-> we can satisfy the whole reservation.  If we can then we wake up the
-> ticket and carry on.  This solves the above problem and makes it much
-> more straightforward to understand how the tickets are satisfied.
+> Rename this to maybe_fail_all_tickets() while we're at it, to better
+> reflect what the function is actually doing.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/space-info.c | 43 ++++++++++++++++---------------------------
->  1 file changed, 16 insertions(+), 27 deletions(-)
+>  fs/btrfs/space-info.c | 41 ++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 34 insertions(+), 7 deletions(-)
 > 
 > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index a0a36d5768e1..357fe7548e07 100644
+> index c2143ddb7f4a..dd4adfa75a71 100644
 > --- a/fs/btrfs/space-info.c
 > +++ b/fs/btrfs/space-info.c
-> @@ -233,52 +233,41 @@ void btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
->  				    struct btrfs_space_info *space_info,
->  				    u64 num_bytes)
->  {
-> -	struct reserve_ticket *ticket;
->  	struct list_head *head;
-> -	u64 used;
->  	enum btrfs_reserve_flush_enum flush = BTRFS_RESERVE_NO_FLUSH;
-> -	bool check_overcommit = false;
->  
->  	spin_lock(&space_info->lock);
->  	head = &space_info->priority_tickets;
-> +	btrfs_space_info_update_bytes_may_use(fs_info, space_info, -num_bytes);
->  
-> -	/*
-> -	 * If we are over our limit then we need to check and see if we can
-> -	 * overcommit, and if we can't then we just need to free up our space
-> -	 * and not satisfy any requests.
-> -	 */
-> -	used = btrfs_space_info_used(space_info, true);
-> -	if (used - num_bytes >= space_info->total_bytes)
-> -		check_overcommit = true;
->  again:
-> -	while (!list_empty(head) && num_bytes) {
-> -		ticket = list_first_entry(head, struct reserve_ticket,
-> -					  list);
-> -		/*
-> -		 * We use 0 bytes because this space is already reserved, so
-> -		 * adding the ticket space would be a double count.
-> -		 */
-> -		if (check_overcommit &&
-> -		    !can_overcommit(fs_info, space_info, 0, flush, false))
-> -			break;
-> -		if (num_bytes >= ticket->bytes) {
-> +	while (!list_empty(head)) {
-> +		struct reserve_ticket *ticket;
-> +		u64 used = btrfs_space_info_used(space_info, true);
-> +
-> +		ticket = list_first_entry(head, struct reserve_ticket, list);
-> +
-> +		/* Check and see if our ticket can be satisified now. */
-> +		if ((used + ticket->bytes <= space_info->total_bytes) ||
-> +		    can_overcommit(fs_info, space_info, ticket->bytes, flush,
-> +				   false)) {
-> +			btrfs_space_info_update_bytes_may_use(fs_info,
-> +							      space_info,
-> +							      ticket->bytes);
->  			list_del_init(&ticket->list);
-> -			num_bytes -= ticket->bytes;
->  			ticket->bytes = 0;
->  			space_info->tickets_id++;
->  			wake_up(&ticket->wait);
->  		} else {
-> -			ticket->bytes -= num_bytes;
-> -			num_bytes = 0;
-> +			break;
->  		}
->  	}
->  
-> -	if (num_bytes && head == &space_info->priority_tickets) {
-> +	if (head == &space_info->priority_tickets) {
->  		head = &space_info->tickets;
->  		flush = BTRFS_RESERVE_FLUSH_ALL;
->  		goto again;
->  	}
-> -	btrfs_space_info_update_bytes_may_use(fs_info, space_info, -num_bytes);
->  	spin_unlock(&space_info->lock);
+> @@ -679,19 +679,46 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
+>  		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
 >  }
 >  
+> -static bool wake_all_tickets(struct list_head *head)
+> +static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
+> +				   struct btrfs_space_info *space_info)
+>  {
+>  	struct reserve_ticket *ticket;
+> +	u64 tickets_id = space_info->tickets_id;
+> +	u64 first_ticket_bytes = 0;
+> +
+> +	while (!list_empty(&space_info->tickets) &&
+> +	       tickets_id == space_info->tickets_id) {
+> +		ticket = list_first_entry(&space_info->tickets,
+> +					  struct reserve_ticket, list);
+> +
+> +		/*
+> +		 * may_commit_transaction will avoid committing the transaction
+> +		 * if it doesn't feel like the space reclaimed by the commit
+> +		 * would result in the ticket succeeding.  However if we have a
+> +		 * smaller ticket in the queue it may be small enough to be
+> +		 * satisified by committing the transaction, so if any
+> +		 * subsequent ticket is smaller than the first ticket go ahead
+> +		 * and send us back for another loop through the enospc flushing
+> +		 * code.
+> +		 */
+> +		if (first_ticket_bytes == 0)
+> +			first_ticket_bytes = ticket->bytes;
+> +		else if (first_ticket_bytes > ticket->bytes)
+> +			return true;
+>  
+> -	while (!list_empty(head)) {
+> -		ticket = list_first_entry(head, struct reserve_ticket, list);
+>  		list_del_init(&ticket->list);
+>  		ticket->error = -ENOSPC;
+>  		wake_up(&ticket->wait);
+> -		if (ticket->bytes != ticket->orig_bytes)
+> -			return true;
+> +
+> +		/*
+> +		 * We're just throwing tickets away, so more flushing may not
+> +		 * trip over btrfs_try_granting_tickets, so we need to call it
+> +		 * here to see if we can make progress with the next ticket in
+> +		 * the list.
+> +		 */
+> +		btrfs_try_granting_tickets(fs_info, space_info);
+>  	}
+> -	return false;
+> +	return (tickets_id != space_info->tickets_id);
+>  }
+>  
+>  /*
+> @@ -759,7 +786,7 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
+>  		if (flush_state > COMMIT_TRANS) {
+>  			commit_cycles++;
+>  			if (commit_cycles > 2) {
+> -				if (wake_all_tickets(&space_info->tickets)) {
+> +				if (maybe_fail_all_tickets(fs_info, space_info)) {
+
+This looks odd. A function called "maybe_fail" which if it returns true
+then we are sure we haven't failed all tickets, instead make another go
+through the flushing machinery. I think the problem stems from the fact
+it's doing 3 things, namely:
+
+1. Failing all tickets, that aren't smaller than the initial one
+2. Trying to satisfy other tickets apart from the one failed
+3. If it succeeded it signals to the flushing machinery to make another go
+
+The function's name really reflects what's going on in 1. But 2 and 3
+are also major part of the logic. I think there is 'impedance mismatch'
+here. I'm at a loss what to do here, honestly.
+
+>  					flush_state = FLUSH_DELAYED_ITEMS_NR;
+>  					commit_cycles--;
+>  				} else {
 > 
