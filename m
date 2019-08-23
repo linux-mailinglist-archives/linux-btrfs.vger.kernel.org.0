@@ -2,121 +2,311 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2840B9AB91
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 11:43:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEDBA9ACA2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 12:12:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388313AbfHWJn2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Aug 2019 05:43:28 -0400
-Received: from mail-eopbgr1360042.outbound.protection.outlook.com ([40.107.136.42]:47040
-        "EHLO AUS01-ME1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387777AbfHWJn1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Aug 2019 05:43:27 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gnJRrEW2TZqhYxFYxOZNwjRV5DMUSrf+eAHmGvEuj2M45aZESqvIxk2+rlG5brQK3+XK5q4lMlTqJtU6NzEuFYNFA5oSU7tpGbt8e92vwIhPp5id096JjNMGBYfXxoKNFN8eflStrcuSWhS2uxXOKwzZxvx6XtGX8HIMXnChiBb9twkUVG8eh4aPjGRUcq8QBOxJt7T3dmJGQ+BVUV+yG4p9CFbzFQpZk6GKQwpF2Oi1iSB0XRBiDe31NKq/fzCXu9jbv0JteiijEsDdQKBQj8L4dWc8ZmiedJZTbQSWzEmT+RrJwZCUKNI+aGgLDofBKkaHc4r+LwxI8ORz6YIoVw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qfu4LFeUlqz3rLpg2ipROH2hktHorw+cA9ZVxlD1qN8=;
- b=cJO78twrvKT24x0PZSirnovsZXMJsnH8Ic6vztYds0o/f9yIAoZv0qHTA10mM7omF0xnFYpLXjrw9RfLM3FOkZK+7YxweAAtYh89/KCPsDKMKnRrkGdoa0+/PPli9zrX2JLa7GV+ohYkSXOF1VcJ6UHWUFZy9WIxYaigIL8jlqEpoqy++F7PsPFD4UhKTP09SsqVnM280s5t7nZE4SwQBAU1FBZ+Cj9N3zYLNM3CzeqZHR6EW9zD5/cQEaad9M4+UFCS9flFsSVdUz5E6dZCISZXzJ0fHAnH8PkLyw34BgPHJ11gU/LqGz41c+FXAFM4GavCeOQa8Y0bcBA7O32ThA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=pauljones.id.au; dmarc=pass action=none
- header.from=pauljones.id.au; dkim=pass header.d=pauljones.id.au; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oakvillepondscapes.onmicrosoft.com;
- s=selector2-oakvillepondscapes-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qfu4LFeUlqz3rLpg2ipROH2hktHorw+cA9ZVxlD1qN8=;
- b=CbbHWNpPiceBFz6qHlpGARSD7MviHIz/lNVt8TsyM1AN4XClm5tn7/TypAuhonkHlca1rWTpmWkNO4vzcJ2VhTXVAxNWLqPGrb8ZLWFMKWW9Ay4aqFqh6rBTh5ST1G4f2HRXDl5QWqMes4tB1nx9ViTtiAHcRJyn7btoYap0Vy8=
-Received: from SYCPR01MB5086.ausprd01.prod.outlook.com (20.178.187.213) by
- SYCPR01MB3917.ausprd01.prod.outlook.com (20.177.142.207) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2178.16; Fri, 23 Aug 2019 09:43:22 +0000
-Received: from SYCPR01MB5086.ausprd01.prod.outlook.com
- ([fe80::a4a3:7933:106d:97cd]) by SYCPR01MB5086.ausprd01.prod.outlook.com
- ([fe80::a4a3:7933:106d:97cd%6]) with mapi id 15.20.2178.020; Fri, 23 Aug 2019
- 09:43:22 +0000
-From:   Paul Jones <paul@pauljones.id.au>
-To:     Paul Jones <paul@pauljones.id.au>,
-        Peter Becker <floyd.net@gmail.com>,
-        =?utf-8?B?SG9sZ2VyIEhvZmZzdMOkdHRl?= 
-        <holger@applied-asynchrony.com>
-CC:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: RE: [PATCH v2 0/4] Support xxhash64 checksums
-Thread-Topic: [PATCH v2 0/4] Support xxhash64 checksums
-Thread-Index: AQHVWN5sZym6CkEPx0WNaunvpntJ1acHGJSAgAA1gYCAASHToIAADGHw
-Date:   Fri, 23 Aug 2019 09:43:22 +0000
-Message-ID: <SYCPR01MB5086BAB60D850EBC8FE046E49EA40@SYCPR01MB5086.ausprd01.prod.outlook.com>
-References: <20190822114029.11225-1-jthumshirn@suse.de>
- <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
- <CAEtw4r01JMFqszs0bBeeU3OXLqbT5+cU+4ZP282J3cvYzALgZg@mail.gmail.com>
- <SYCPR01MB5086F030FA4FD295783638B99EA40@SYCPR01MB5086.ausprd01.prod.outlook.com>
-In-Reply-To: <SYCPR01MB5086F030FA4FD295783638B99EA40@SYCPR01MB5086.ausprd01.prod.outlook.com>
-Accept-Language: en-AU, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=paul@pauljones.id.au; 
-x-originating-ip: [203.213.69.224]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3f3fdf94-b863-4a49-a186-08d727ae568b
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(7021145)(8989299)(5600166)(711020)(4605104)(1401327)(4534185)(7022145)(4603075)(4627221)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:SYCPR01MB3917;
-x-ms-traffictypediagnostic: SYCPR01MB3917:
-x-ms-exchange-purlcount: 1
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SYCPR01MB39170B004BD29339CF9EF5759EA40@SYCPR01MB3917.ausprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1751;
-x-forefront-prvs: 0138CD935C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(39830400003)(396003)(366004)(136003)(346002)(199004)(189003)(13464003)(4326008)(110136005)(86362001)(76176011)(7696005)(99286004)(53936002)(81156014)(8936002)(6246003)(316002)(2940100002)(256004)(25786009)(8676002)(478600001)(33656002)(71200400001)(71190400001)(81166006)(6306002)(6116002)(55016002)(6436002)(9686003)(3846002)(229853002)(2906002)(476003)(102836004)(53546011)(486006)(26005)(186003)(14454004)(5660300002)(66066001)(74316002)(6506007)(66446008)(52536014)(305945005)(7736002)(11346002)(66476007)(446003)(76116006)(66556008)(64756008)(66946007);DIR:OUT;SFP:1101;SCL:1;SRVR:SYCPR01MB3917;H:SYCPR01MB5086.ausprd01.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: pauljones.id.au does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: hUF3zunGklLzxfhAsRYLsijteVWq054c6LdMPSLYv8LW3UgIy7l+XI+RcXVHPUqERUcCU7BsN+NJtofPmLSv4ONw7+e7k5UU+bPqq2j9AptN5qT3bT8VK1vkI/GpYeHhPmzsrLFu41wXGJHEJI3U2gDpS5Sdr8gQfiht1H2GeRnXMeEG1Wv7q8n94E8KtxV5iDe+RxF7nrTgcBkRyEqNEvn5jgE3xwdjL9lasjTg8pNz16pqsc1/r8SXh+VNGwQd3681RrLVO55CHE1bmRfMo7yuLXQy2GF6zQdLOmEGIr/MC7jgGndmDir/mwX78bFPdu//4Jd3ziK+TaGfzX84Ae/RzfgdW7lNm1IfHEMrJVc7olW7aXVDUQti8FwXTfuGImMesFzlyDVgkiBtBbeEWiuMzOQ4bFar/LaUqNVa6B4=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S2404047AbfHWKLN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Aug 2019 06:11:13 -0400
+Received: from esa3.hgst.iphmx.com ([216.71.153.141]:47762 "EHLO
+        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403955AbfHWKLM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Aug 2019 06:11:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1566555072; x=1598091072;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=johZ3eEmJ7Y/r5f5FRznclycBRDrptdIfjF4T4dC6Wo=;
+  b=MLiELV07c89x1kezqUsecsM5YA34kKhQ1vfSJefItqa32PuLaT6zSQNe
+   6cZllDmMOFDY92KK5Wg0ZL2clCTT5amOp7e5QL5yaeSnRdhCSYy7s30Z3
+   q2WrjPeK+/BAq3kwq9BOzuvGRCi1AnSwxhzKVoKMimLn03KktPDP6uZ13
+   e8t9sNLu3W4Zbrx40MRWF+rZhx9EXS/0mySv4KiANrsem9dF8Lim75Srw
+   I5OVJpDyfaaYbzv2eY+wPF+GOAjr2uRj5FG6hMKjysOBFtSDB90fB+dSK
+   2zBJoMkP+HNdkCg8pjo1OcXobHpuneF5pbK6pxawaXefUXVcWrdFAx1Xa
+   Q==;
+IronPort-SDR: Qv4P9sC5k3TtIH9bDIZcBFrMkmFVpZOqxvWK9eJsbcVQs9bW/RpMkjZXRLDFG/H0cdBtZWzCi/
+ 68m5u3TV9ANra6/bwZUnhlTe2bZJl6nRbvG3cBTmevbZ1y7IiK10KpPWvSIw2lj2/CUkDWvDnI
+ FFas593EyUFe/3zZdn9dCDOiE80XuyNTrWZT5A6inzq+N7HcekvLncDYotOvNESjX8cjgQEXQj
+ MhOv6CklHN/gMEABWMF5aQMvf9qQ23FuVtAdjwgBErdsJXH28XmZ7w9ldFHbwDMfQpxLs4nNIf
+ mm8=
+X-IronPort-AV: E=Sophos;i="5.64,420,1559491200"; 
+   d="scan'208";a="121096227"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 23 Aug 2019 18:11:10 +0800
+IronPort-SDR: cLE20ZULspzFZCu9I0F9BvIg8tbZ8A9c5cUHL0+CRYs+VfMRUJaaztocesy3a0UN77M3ExUOg9
+ B4zunWnD+BiI1X57vgU9k3N+Ur2b4ie1FcNHeXeZ6/22u7WSYjY+XlIoYBf3xXKxrlkzzdOLRY
+ 7DjPEPsy652bP1OTzZjT65kNy2dTeqa+uCMaFpftg14RUat1mILAZKFZLMo++/Ae8XmyGf/CuU
+ Fw98nvB9SSGH9Zb/ro8u6pKeWPBB0UTvEU7dpxTT60CcEdNhyzC6VDRFwmCjaIAnDqlLh08BnX
+ hH+jB0YEFEqJjwzOxlEEITX4
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Aug 2019 03:08:28 -0700
+IronPort-SDR: oVbyAQih1lrni9oQaY1JxmQ9SwuEquPyN68og0ucE+8TvlNFoh0BPunK1X21uTHA/RkREXztqD
+ 1AcEBkGSOGF2iKNgkGDYmULsavd2KochEhmwE+e0tIUxD7ce/whqwjq683SuHBObAbxXWEZGdf
+ /YuvfTdWCCQPEHW6M2C+htsTZdXPMrHL3ekQxbOFYzo44AMlGP/CesQhuTpMFFBdqoDdvSaP2t
+ XN9IVtuY3T+xy4SzBVwdpzExuGrB0U+9YZzLOesDqFo817S9dr69voVaUOIYkb0efNZgpRMxrq
+ n+0=
+WDCIronportException: Internal
+Received: from naota.dhcp.fujisawa.hgst.com (HELO naota.fujisawa.hgst.com) ([10.149.53.115])
+  by uls-op-cesaip02.wdc.com with ESMTP; 23 Aug 2019 03:11:09 -0700
+From:   Naohiro Aota <naohiro.aota@wdc.com>
+To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Matias Bjorling <Matias.Bjorling@wdc.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Hannes Reinecke <hare@suse.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        linux-fsdevel@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
+Subject: [PATCH v4 00/27] btrfs zoned block device support
+Date:   Fri, 23 Aug 2019 19:10:09 +0900
+Message-Id: <20190823101036.796932-1-naohiro.aota@wdc.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-X-OriginatorOrg: pauljones.id.au
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3f3fdf94-b863-4a49-a186-08d727ae568b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Aug 2019 09:43:22.5059
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8f216723-e13f-4cce-b84c-58d8f16a0082
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SUZMEfTrzLYAlo8e2L8P6N8pZF835tchQuSEf3dco0YAM/SlcCjIuBvgolL+Pb9HttN6u0ZEOU1ELf8bZAKPTA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SYCPR01MB3917
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogbGludXgtYnRyZnMtb3du
-ZXJAdmdlci5rZXJuZWwub3JnIDxsaW51eC1idHJmcy0NCj4gb3duZXJAdmdlci5rZXJuZWwub3Jn
-PiBPbiBCZWhhbGYgT2YgUGF1bCBKb25lcw0KPiBTZW50OiBGcmlkYXksIDIzIEF1Z3VzdCAyMDE5
-IDc6MzkgUE0NCj4gVG86IFBldGVyIEJlY2tlciA8ZmxveWQubmV0QGdtYWlsLmNvbT47IEhvbGdl
-ciBIb2Zmc3TDpHR0ZQ0KPiA8aG9sZ2VyQGFwcGxpZWQtYXN5bmNocm9ueS5jb20+DQo+IENjOiBM
-aW51eCBCVFJGUyBNYWlsaW5nbGlzdCA8bGludXgtYnRyZnNAdmdlci5rZXJuZWwub3JnPg0KPiBT
-dWJqZWN0OiBSRTogW1BBVENIIHYyIDAvNF0gU3VwcG9ydCB4eGhhc2g2NCBjaGVja3N1bXMNCj4g
-DQo+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiBGcm9tOiBsaW51eC1idHJmcy1v
-d25lckB2Z2VyLmtlcm5lbC5vcmcgPGxpbnV4LWJ0cmZzLQ0KPiA+IG93bmVyQHZnZXIua2VybmVs
-Lm9yZz4gT24gQmVoYWxmIE9mIFBldGVyIEJlY2tlcg0KPiA+IFNlbnQ6IEZyaWRheSwgMjMgQXVn
-dXN0IDIwMTkgMTo0MCBBTQ0KPiA+IFRvOiBIb2xnZXIgSG9mZnN0w6R0dGUgPGhvbGdlckBhcHBs
-aWVkLWFzeW5jaHJvbnkuY29tPg0KPiA+IENjOiBMaW51eCBCVFJGUyBNYWlsaW5nbGlzdCA8bGlu
-dXgtYnRyZnNAdmdlci5rZXJuZWwub3JnPg0KPiA+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjIgMC80
-XSBTdXBwb3J0IHh4aGFzaDY0IGNoZWNrc3Vtcw0KPiA+DQo+ID4gQW0gRG8uLCAyMi4gQXVnLiAy
-MDE5IHVtIDE2OjQxIFVociBzY2hyaWViIEhvbGdlciBIb2Zmc3TDpHR0ZQ0KPiA+IDxob2xnZXJA
-YXBwbGllZC1hc3luY2hyb255LmNvbT46DQo+ID4gPiBidXQgaG93IGRvZXMgYnRyZnMgYmVuZWZp
-dCBmcm9tIHRoaXMgY29tcGFyZWQgdG8gdXNpbmcgY3JjMzItaW50ZWw/DQo+ID4NCj4gPiBBcyBp
-IGtub3csIGNyYzMyYyAgaXMgYXMgZmFyIGFzIH4zeCBmYXN0ZXIgdGhhbiB4eGhhc2guIEJ1dCB4
-eEhhc2ggd2FzDQo+ID4gY3JlYXRlZCB3aXRoIGEgZGlmZmVyZW5kIGRlc2lnbiBnb2FsLg0KPiA+
-IElmIHlvdSB1c2luZyBhIGNwdSB3aXRob3V0IGhhcmR3YXJlIGNyYzMyIHN1cHBvcnQsIHh4SGFz
-aCBwcm92aWRlcyB5b3UNCj4gPiBhIG1heGltdW0gcG9ydGFiaWxpdHkgYW5kIHNwZWVkLiBMb29r
-IGF0IGFybSwgbWlwcywgcG93ZXIsIGV0Yy4gb3Igb2xkDQo+ID4gaW50ZWwgY3B1cyBsaWtlIENv
-cmUgMiBEdW8uDQo+IA0KPiBJJ3ZlIGdvdCBhIG1vZGlmaWVkIHZlcnNpb24gb2Ygc21oYXNoZXIN
-Cj4gKGh0dHBzOi8vZ2l0aHViLmNvbS9QZWVKYXkvc21oYXNoZXIpIHRoYXQgdGVzdHMgc3BlZWQg
-YW5kIGNyeXB0b2dyYXBoaWNzDQo+IG9mIHZhcmlvdXMgaGFzaGluZyBmdW5jdGlvbnMuDQoNCkkg
-Zm9yZ290IHRvIGFkZCB4eGhhc2gzMg0KIA0KQ3JjMzIgU29mdHdhcmUgLSAgMzc5LjkxIE1pQi9z
-ZWMNCkNyYzMyIEhhcmR3YXJlIC0gNzMzOC42MCBNaUIvc2VjDQpYWGhhc2g2NCBTb2Z0d2FyZSAt
-IDEyMDk0LjQwIE1pQi9zZWMNClhYaGFzaDMyIFNvZnR3YXJlIC0gNjA2MC4xMSBNaUIvc2VjDQoN
-ClRlc3RpbmcgZG9uZSBvbiBhIDFzdCBHZW4gUnl6ZW4uIEltcHJlc3NpdmUgbnVtYmVycyBmcm9t
-IFhYaGFzaDY0Lg0KIA0KIA0KUGF1bC4NCg==
+This series adds zoned block device support to btrfs.
+
+This v4 is slightly fixed version of v3:
+
+Changes:
+ - Move memory allcation of zone informattion out of
+   btrfs_get_dev_zones() (Anand)
+ - Add disabled features table in commit log (Anand)
+ - Ensure "max_chunk_size >= devs_min * data_stripes * zone_size"
+
+Userland series (unchanged):
+https://lore.kernel.org/linux-btrfs/20190820045258.1571640-1-naohiro.aota@wdc.com/T/
+
+* Summary of changes from v2
+
+The most significant change from v2 is the serialization of sequential
+block allocation and submit_bio using per block group mutex instead of
+waiting and sorting BIOs in a buffer. This per block group mutex now
+locked before allocation and released after all BIOs submission
+finishes. The same method is used for both data and metadata IOs.
+
+By using a mutex instead of a submit buffer, we must disable
+EXTENT_PREALLOC entirely in HMZONED mode to prevent deadlocks. As a
+result, INODE_MAP_CACHE and MIXED_BG are disabled in HMZONED mode, and
+relocation inode is reworked to use btrfs_wait_ordered_range() after
+each relocation instead of relying on preallocated file region.
+
+Furthermore, asynchronous checksum is disabled in and inline with the
+serialized block allocation and BIO submission. This allows preserving
+sequential write IO order without introducing any new functionality
+such as submit buffers. Async submit will be removed once we merge
+cgroup writeback support patch series.
+
+* Patch series description
+
+A zoned block device consists of a number of zones. Zones are either
+conventional and accepting random writes or sequential and requiring
+that writes be issued in LBA order from each zone write pointer
+position. This patch series ensures that the sequential write
+constraint of sequential zones is respected while fundamentally not
+changing BtrFS block and I/O management for block stored in
+conventional zones.
+
+To achieve this, the default chunk size of btrfs is changed on zoned
+block devices so that chunks are always aligned to a zone. Allocation
+of blocks within a chunk is changed so that the allocation is always
+sequential from the beginning of the chunks. To do so, an allocation
+pointer is added to block groups and used as the allocation hint.  The
+allocation changes also ensure that blocks freed below the allocation
+pointer are ignored, resulting in sequential block allocation
+regardless of the chunk usage.
+
+While the introduction of the allocation pointer ensures that blocks
+will be allocated sequentially, I/Os to write out newly allocated
+blocks may be issued out of order, causing errors when writing to
+sequential zones.  To preserve the ordering, this patch series adds
+some mutexes around allocation and submit_bio and serialize
+them. Also, this series disable async checksum and submit to avoid
+mixing the BIOs.
+
+The zone of a chunk is reset to allow reuse of the zone only when the
+block group is being freed, that is, when all the chunks of the block
+group are unused.
+
+For btrfs volumes composed of multiple zoned disks, a restriction is
+added to ensure that all disks have the same zone size. This
+restriction matches the existing constraint that all chunks in a block
+group must have the same size.
+
+* Patch series organization
+
+Patch 1 introduces the HMZONED incompatible feature flag to indicate
+that the btrfs volume was formatted for use on zoned block devices.
+
+Patches 2 and 3 implement functions to gather information on the zones
+of the device (zones type and write pointer position).
+
+Patches 4 to 8 disable features which are not compatible with the
+sequential write constraints of zoned block devices. These includes
+RAID5/6, space_cache, NODATACOW, TREE_LOG, and fallocate.
+
+Patches 9 and 10 tweak the extent buffer allocation for HMZONED mode
+to implement sequential block allocation in block groups and chunks.
+
+Patch 11 and 12 handles the case when write pointers of devices which
+compose e.g., RAID1 block group devices, are a mismatch.
+
+Patch 13 implement a zone reset for unused block groups.
+
+Patch 14 restrict the possible locations of super blocks to conventional
+zones to preserve the existing update in-place mechanism for the super
+blocks.
+
+Patches 15 to 21 implement the serialization of allocation and
+submit_bio for several types of IO (non-compressed data, compressed
+data, direct IO, and metadata). These include re-dirtying once-freed
+metadata blocks to prevent write holes.
+
+Patch 22 and 23 disable features which are not compatible with the
+serialization to prevent deadlocks. These include MIXED_BG and
+INODE_MAP_CACHE.
+
+Patches 24 to 26 tweak some btrfs features work with HMZONED
+mode. These include device-replace, relocation, and repairing IO
+error.
+
+Finally, patch 27 adds the HMZONED feature to the list of supported
+features.
+
+* Patch testing note
+
+This series is based on kdave/for-5.3-rc2.
+
+Also, you need to cherry-pick the following commits to disable write
+plugging with that branch. As described in commit b49773e7bcf3
+("block: Disable write plugging for zoned block devices"), without
+these commits, write plugging can reorder BIOs submitted from multiple
+contexts, e.g., multiple extent_write_cached_pages().
+
+0c8cf8c2a553 ("block: initialize the write priority in blk_rq_bio_prep")
+f924cddebc90 ("block: remove blk_init_request_from_bio")
+14ccb66b3f58 ("block: remove the bi_phys_segments field in struct bio")
+c05f42206f4d ("blk-mq: remove blk_mq_put_ctx()")
+970d168de636 ("blk-mq: simplify blk_mq_make_request()")
+b49773e7bcf3 ("block: Disable write plugging for zoned block devices")
+
+Furthermore, you need to apply the following patch if you run xfstests
+with tcmu-loop disks. xfstests btrfs/003 failed to "_devmgt_add" after
+"_devmgt_remove" without this patch.
+
+https://marc.info/?l=linux-scsi&m=156498625421698&w=2
+
+You can use tcmu-runer [1] to create an emulated zoned device backed
+by a regular file. Here is a setup how-to:
+http://zonedstorage.io/projects/tcmu-runner/#compilation-and-installation
+                                                                                                                                                                                              
+[1] https://github.com/open-iscsi/tcmu-runner
+
+v3 https://lore.kernel.org/linux-btrfs/20190808093038.4163421-1-naohiro.aota@wdc.com/
+v2 https://lore.kernel.org/linux-btrfs/20190607131025.31996-1-naohiro.aota@wdc.com/
+v1 https://lore.kernel.org/linux-btrfs/20180809180450.5091-1-naota@elisp.net/
+
+Changelog
+v4:
+ - Move memory allcation of zone informattion out of
+   btrfs_get_dev_zones() (Anand)
+ - Add disabled features table in commit log (Anand)
+ - Ensure "max_chunk_size >= devs_min * data_stripes * zone_size"
+v3:
+ - Serialize allocation and submit_bio instead of bio buffering in
+   btrfs_map_bio().
+ -- Disable async checksum/submit in HMZONED mode
+ - Introduce helper functions and hmzoned.c/h (Josef, David)
+ - Add support for repairing IO failure
+ - Add support for NOCOW direct IO write (Josef)
+ - Disable preallocation entirely
+ -- Disable INODE_MAP_CACHE
+ -- relocation is reworked not to rely on preallocation in HMZONED mode
+ - Disable NODATACOW
+ -Disable MIXED_BG
+ - Device extent that cover super block position is banned (David)
+v2:
+ - Add support for dev-replace
+ -- To support dev-replace, moved submit_buffer one layer up. It now
+    handles bio instead of btrfs_bio.
+ -- Mark unmirrored Block Group readonly only when there are writable
+    mirrored BGs. Necessary to handle degraded RAID.
+ - Expire worker use vanilla delayed_work instead of btrfs's async-thread
+ - Device extent allocator now ensure that region is on the same zone type.
+ - Add delayed allocation shrinking.
+ - Rename btrfs_drop_dev_zonetypes() to btrfs_destroy_dev_zonetypes
+ - Fix
+ -- Use SECTOR_SHIFT (Nikolay)
+ -- Use btrfs_err (Nikolay)
+
+Naohiro Aota (27):
+  btrfs: introduce HMZONED feature flag
+  btrfs: Get zone information of zoned block devices
+  btrfs: Check and enable HMZONED mode
+  btrfs: disallow RAID5/6 in HMZONED mode
+  btrfs: disallow space_cache in HMZONED mode
+  btrfs: disallow NODATACOW in HMZONED mode
+  btrfs: disable tree-log in HMZONED mode
+  btrfs: disable fallocate in HMZONED mode
+  btrfs: align device extent allocation to zone boundary
+  btrfs: do sequential extent allocation in HMZONED mode
+  btrfs: make unmirroed BGs readonly only if we have at least one
+    writable BG
+  btrfs: ensure metadata space available on/after degraded mount in
+    HMZONED
+  btrfs: reset zones of unused block groups
+  btrfs: limit super block locations in HMZONED mode
+  btrfs: redirty released extent buffers in sequential BGs
+  btrfs: serialize data allocation and submit IOs
+  btrfs: implement atomic compressed IO submission
+  btrfs: support direct write IO in HMZONED
+  btrfs: serialize meta IOs on HMZONED mode
+  btrfs: wait existing extents before truncating
+  btrfs: avoid async checksum/submit on HMZONED mode
+  btrfs: disallow mixed-bg in HMZONED mode
+  btrfs: disallow inode_cache in HMZONED mode
+  btrfs: support dev-replace in HMZONED mode
+  btrfs: enable relocation in HMZONED mode
+  btrfs: relocate block group to repair IO failure in HMZONED
+  btrfs: enable to mount HMZONED incompat flag
+
+ fs/btrfs/Makefile           |   2 +-
+ fs/btrfs/compression.c      |   5 +-
+ fs/btrfs/ctree.h            |  37 +-
+ fs/btrfs/dev-replace.c      | 155 +++++++
+ fs/btrfs/dev-replace.h      |   3 +
+ fs/btrfs/disk-io.c          |  29 ++
+ fs/btrfs/extent-tree.c      | 277 +++++++++++--
+ fs/btrfs/extent_io.c        |  22 +-
+ fs/btrfs/extent_io.h        |   2 +
+ fs/btrfs/file.c             |   4 +
+ fs/btrfs/free-space-cache.c |  35 ++
+ fs/btrfs/free-space-cache.h |   5 +
+ fs/btrfs/hmzoned.c          | 785 ++++++++++++++++++++++++++++++++++++
+ fs/btrfs/hmzoned.h          | 198 +++++++++
+ fs/btrfs/inode.c            |  88 +++-
+ fs/btrfs/ioctl.c            |   3 +
+ fs/btrfs/relocation.c       |  39 +-
+ fs/btrfs/scrub.c            |  89 +++-
+ fs/btrfs/space-info.c       |  13 +-
+ fs/btrfs/space-info.h       |   4 +-
+ fs/btrfs/super.c            |  15 +-
+ fs/btrfs/sysfs.c            |   4 +
+ fs/btrfs/transaction.c      |  10 +
+ fs/btrfs/transaction.h      |   3 +
+ fs/btrfs/volumes.c          | 212 +++++++++-
+ fs/btrfs/volumes.h          |   5 +
+ include/uapi/linux/btrfs.h  |   1 +
+ 27 files changed, 1991 insertions(+), 54 deletions(-)
+ create mode 100644 fs/btrfs/hmzoned.c
+ create mode 100644 fs/btrfs/hmzoned.h
+
+-- 
+2.23.0
+
