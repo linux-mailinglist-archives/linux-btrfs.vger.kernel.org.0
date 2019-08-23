@@ -2,99 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B189B52C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 19:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC6AD9B52A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 19:09:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732817AbfHWRJU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Aug 2019 13:09:20 -0400
-Received: from tartarus.angband.pl ([54.37.238.230]:52454 "EHLO
-        tartarus.angband.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732783AbfHWRIy (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Aug 2019 13:08:54 -0400
-Received: from kilobyte by tartarus.angband.pl with local (Exim 4.92)
-        (envelope-from <kilobyte@angband.pl>)
-        id 1i1D3N-0005nZ-SX; Fri, 23 Aug 2019 19:08:45 +0200
-Date:   Fri, 23 Aug 2019 19:08:45 +0200
-From:   Adam Borowski <kilobyte@angband.pl>
-To:     Paul Jones <paul@pauljones.id.au>
-Cc:     Peter Becker <floyd.net@gmail.com>,
-        Holger =?iso-8859-1?Q?Hoffst=E4tte?= 
-        <holger@applied-asynchrony.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 0/4] Support xxhash64 checksums
-Message-ID: <20190823170845.GD17075@angband.pl>
-References: <20190822114029.11225-1-jthumshirn@suse.de>
- <ed9e2eaa-7637-9752-94bb-fd415ab2b798@applied-asynchrony.com>
- <CAEtw4r01JMFqszs0bBeeU3OXLqbT5+cU+4ZP282J3cvYzALgZg@mail.gmail.com>
- <SYCPR01MB5086F030FA4FD295783638B99EA40@SYCPR01MB5086.ausprd01.prod.outlook.com>
- <SYCPR01MB5086BAB60D850EBC8FE046E49EA40@SYCPR01MB5086.ausprd01.prod.outlook.com>
+        id S1732528AbfHWRJS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Aug 2019 13:09:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54368 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732817AbfHWRIW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Aug 2019 13:08:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id F1D5AAC0C
+        for <linux-btrfs@vger.kernel.org>; Fri, 23 Aug 2019 17:08:20 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1F0A9DA796; Fri, 23 Aug 2019 19:08:46 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH 6/7] btrfs: move struct io_ctl to free-space-cache.h
+Date:   Fri, 23 Aug 2019 19:08:46 +0200
+Message-Id: <3cb910fc494f8ee7037e93174f7e40b012eef967.1566579823.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.22.0
+In-Reply-To: <cover.1566579823.git.dsterba@suse.com>
+References: <cover.1566579823.git.dsterba@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <SYCPR01MB5086BAB60D850EBC8FE046E49EA40@SYCPR01MB5086.ausprd01.prod.outlook.com>
-X-Junkbait: aaron@angband.pl, zzyx@angband.pl
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: <locally generated>
-X-SA-Exim-Mail-From: kilobyte@angband.pl
-X-SA-Exim-Scanned: No (on tartarus.angband.pl); SAEximRunCond expanded to false
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 09:43:22AM +0000, Paul Jones wrote:
-> > > Am Do., 22. Aug. 2019 um 16:41 Uhr schrieb Holger Hoffstätte
-> > > <holger@applied-asynchrony.com>:
-> > > > but how does btrfs benefit from this compared to using crc32-intel?
-> > >
-> > > As i know, crc32c  is as far as ~3x faster than xxhash. But xxHash was
-> > > created with a differend design goal.
-> > > If you using a cpu without hardware crc32 support, xxHash provides you
-> > > a maximum portability and speed. Look at arm, mips, power, etc. or old
-> > > intel cpus like Core 2 Duo.
-> > 
-> > I've got a modified version of smhasher
-> > (https://github.com/PeeJay/smhasher) that tests speed and cryptographics
-> > of various hashing functions.
-> 
-> I forgot to add xxhash32
->  
-> Crc32 Software -  379.91 MiB/sec
-> Crc32 Hardware - 7338.60 MiB/sec
-> XXhash64 Software - 12094.40 MiB/sec
-> XXhash32 Software - 6060.11 MiB/sec
-> 
-> Testing done on a 1st Gen Ryzen. Impressive numbers from XXhash64.
+The io_ctl structure is used for free space management, and used only by
+the v1 space cache code, but unfortunatlly the full definition is
+required by block-group.h so it can't be moved to free-space-cache.c
+without additional changes.
 
-Newest biggest Threadripper (2990WX, no 3* version released yet):
-crc32      -   492.75 MiB/sec
-crc32hw    -  9447.37 MiB/sec
-crc64      -  1959.51 MiB/sec
-xxhash32   -  7479.29 MiB/sec
-xxhash64   - 14911.58 MiB/sec
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/block-group.h      |  2 ++
+ fs/btrfs/ctree.h            | 14 --------------
+ fs/btrfs/free-space-cache.h | 14 +++++++++++++-
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
-An old Skylake (i7-6700):
-crc32      -   359.32 MiB/sec
-crc32hw    - 21119.68 MiB/sec
-crc64      -  1656.34 MiB/sec
-xxhash32   -  5989.87 MiB/sec
-xxhash64   - 11949.41 MiB/sec
-
-Cascade Lake (0000%@):
-crc32hw 1.92× as fast as xxhash64.
-
-So you want crc32hw on Intel, xxhash64 on AMD.
-
-crc32 also allows going back to old kernels; the improved collision
-resistance of xxhash64 is not a reason as if you intend to dedupe you want
-a crypto hash so you don't need to verify.
-
-
-Meow!
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index 5c6e2fb23e35..c391800388dd 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -3,6 +3,8 @@
+ #ifndef BTRFS_BLOCK_GROUP_H
+ #define BTRFS_BLOCK_GROUP_H
+ 
++#include "free-space-cache.h"
++
+ enum btrfs_disk_cache_state {
+ 	BTRFS_DC_WRITTEN,
+ 	BTRFS_DC_ERROR,
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 1fd5931a9489..5977995b1b69 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -433,20 +433,6 @@ enum btrfs_caching_type {
+ 	BTRFS_CACHE_ERROR,
+ };
+ 
+-struct btrfs_io_ctl {
+-	void *cur, *orig;
+-	struct page *page;
+-	struct page **pages;
+-	struct btrfs_fs_info *fs_info;
+-	struct inode *inode;
+-	unsigned long size;
+-	int index;
+-	int num_pages;
+-	int entries;
+-	int bitmaps;
+-	unsigned check_crcs:1;
+-};
+-
+ /*
+  * Tree to record all locked full stripes of a RAID5/6 block group
+  */
+diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
+index 2205a4113ef3..39c32c8fc24f 100644
+--- a/fs/btrfs/free-space-cache.h
++++ b/fs/btrfs/free-space-cache.h
+@@ -36,7 +36,19 @@ struct btrfs_free_space_op {
+ 			   struct btrfs_free_space *info);
+ };
+ 
+-struct btrfs_io_ctl;
++struct btrfs_io_ctl {
++	void *cur, *orig;
++	struct page *page;
++	struct page **pages;
++	struct btrfs_fs_info *fs_info;
++	struct inode *inode;
++	unsigned long size;
++	int index;
++	int num_pages;
++	int entries;
++	int bitmaps;
++	unsigned check_crcs:1;
++};
+ 
+ struct inode *lookup_free_space_inode(
+ 		struct btrfs_block_group_cache *block_group,
 -- 
-⢀⣴⠾⠻⢶⣦⠀
-⣾⠁⢠⠒⠀⣿⡁
-⢿⡄⠘⠷⠚⠋  The root of a real enemy is an imaginary friend.
-⠈⠳⣄⠀⠀⠀⠀
+2.22.0
+
