@@ -2,24 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D41C9A7A8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 08:36:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 495FF9A8DD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 09:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404583AbfHWGf1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Aug 2019 02:35:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49674 "EHLO mx1.suse.de"
+        id S1729116AbfHWHdU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Aug 2019 03:33:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60818 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404002AbfHWGf0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Aug 2019 02:35:26 -0400
+        id S1728512AbfHWHdU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Aug 2019 03:33:20 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C45E1AD6D;
-        Fri, 23 Aug 2019 06:35:24 +0000 (UTC)
-Subject: Re: [PATCH][RESEND] btrfs: add a force_chunk_alloc to space_info's
- sysfs
+        by mx1.suse.de (Postfix) with ESMTP id BE610AE1B;
+        Fri, 23 Aug 2019 07:33:18 +0000 (UTC)
+Subject: Re: [PATCH 1/9] btrfs: do not allow reservations if we have pending
+ tickets
 To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
-References: <20190822190305.13673-1-josef@toxicpanda.com>
+References: <20190822191102.13732-1-josef@toxicpanda.com>
+ <20190822191102.13732-2-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <e54d6bb1-3bcb-a409-575a-c59b2e5da73d@suse.com>
-Date:   Fri, 23 Aug 2019 09:35:22 +0300
+Message-ID: <d1d8b3ad-9fd0-1afe-c033-36bc63aa8064@suse.com>
+Date:   Fri, 23 Aug 2019 10:33:17 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190822190305.13673-1-josef@toxicpanda.com>
+In-Reply-To: <20190822191102.13732-2-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,17 +81,59 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 22.08.19 г. 22:03 ч., Josef Bacik wrote:
-> In testing various things such as the btrfsck patch to detect over
-> allocation of chunks, empty block group deletion, and balance I've had
-> various ways to force chunk allocations for debug purposes.  Add a sysfs
-> file to enable forcing of chunk allocation for the owning space info in
-> order to enable us to add testcases in the future to test these various
-> features easier.
+On 22.08.19 г. 22:10 ч., Josef Bacik wrote:
+> If we already have tickets on the list we don't want to steal their
+> reservations.  This is a preparation patch for upcoming changes,
+> technically this shouldn't happen today because of the way we add bytes
+> to tickets before adding them to the space_info in most cases.
+> 
+> This does not change the FIFO nature of reserve tickets, it simply
+> allows us to enforce it in a different way.  Previously it was enforced
+> because any new space would be added to the first ticket on the list,
+> which would result in new reservations getting a reserve ticket.  This
+> replaces that mechanism by simply checking to see if we have outstanding
+> reserve tickets and skipping straight to adding a ticket for our
+> reservation.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Since this is really a debugging feature I think it should be gated by
-CONFIG_BTRFS_DEBUG.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
-<snip>
+> ---
+>  fs/btrfs/space-info.c | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 5f8f65599de1..33fa0ba49759 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -993,6 +993,7 @@ static int __reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
+>  	struct reserve_ticket ticket;
+>  	u64 used;
+>  	int ret = 0;
+> +	bool pending_tickets;
+>  
+>  	ASSERT(orig_bytes);
+>  	ASSERT(!current->journal_info || flush != BTRFS_RESERVE_FLUSH_ALL);
+> @@ -1000,14 +1001,17 @@ static int __reserve_metadata_bytes(struct btrfs_fs_info *fs_info,
+>  	spin_lock(&space_info->lock);
+>  	ret = -ENOSPC;
+>  	used = btrfs_space_info_used(space_info, true);
+> +	pending_tickets = !list_empty(&space_info->tickets) ||
+> +		!list_empty(&space_info->priority_tickets);
+>  
+>  	/*
+>  	 * Carry on if we have enough space (short-circuit) OR call
+>  	 * can_overcommit() to ensure we can overcommit to continue.
+>  	 */
+> -	if ((used + orig_bytes <= space_info->total_bytes) ||
+> -	    can_overcommit(fs_info, space_info, orig_bytes, flush,
+> -			   system_chunk)) {
+> +	if (!pending_tickets &&
+> +	    ((used + orig_bytes <= space_info->total_bytes) ||
+> +	     can_overcommit(fs_info, space_info, orig_bytes, flush,
+> +			   system_chunk))) {
+>  		btrfs_space_info_update_bytes_may_use(fs_info, space_info,
+>  						      orig_bytes);
+>  		trace_btrfs_space_reservation(fs_info, "space_info",
+> 
