@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 622669AA0C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 10:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FC7B9AA18
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 10:18:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388493AbfHWISI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 23 Aug 2019 04:18:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43218 "EHLO mx1.suse.de"
+        id S2389970AbfHWISw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 23 Aug 2019 04:18:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43394 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387966AbfHWISH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 23 Aug 2019 04:18:07 -0400
+        id S2389974AbfHWISu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 23 Aug 2019 04:18:50 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6CA2BACFA;
-        Fri, 23 Aug 2019 08:18:06 +0000 (UTC)
-Subject: Re: [PATCH 7/9] btrfs: fix may_commit_transaction to deal with no
- partial filling
+        by mx1.suse.de (Postfix) with ESMTP id 6B369ACFA;
+        Fri, 23 Aug 2019 08:18:48 +0000 (UTC)
+Subject: Re: [PATCH 9/9] btrfs: rename btrfs_space_info_add_old_bytes
 To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
 References: <20190822191102.13732-1-josef@toxicpanda.com>
- <20190822191102.13732-8-josef@toxicpanda.com>
+ <20190822191102.13732-10-josef@toxicpanda.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -65,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <33cf9dd2-0c53-a053-5c5c-b00b75b3f661@suse.com>
-Date:   Fri, 23 Aug 2019 11:18:05 +0300
+Message-ID: <02e4a5a4-d794-e4c6-fd7a-b2c3b7762860@suse.com>
+Date:   Fri, 23 Aug 2019 11:18:47 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190822191102.13732-8-josef@toxicpanda.com>
+In-Reply-To: <20190822191102.13732-10-josef@toxicpanda.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,58 +81,64 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 22.08.19 г. 22:11 ч., Josef Bacik wrote:
-> Now that we aren't partially filling tickets we may have some slack
-> space left in the space_info.  We need to account for this in
-> may_commit_transaction, otherwise we may choose to not commit the
-> transaction despite it actually having enough space to satisfy our
-> ticket.
-> 
-> Calculate the free space we have in the space_info, if any, and subtract
-> this from the ticket we have and use that amount to determine if we will
-> need to commit to reclaim enough space.
+> This name doesn't really fit with how the space reservation stuff works
+> now, rename it to btrfs_space_info_free_bytes_may_use so it's clear what
+> the function is doing.
 > 
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
->  fs/btrfs/space-info.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  fs/btrfs/block-rsv.c   | 5 +++--
+>  fs/btrfs/delayed-ref.c | 2 +-
+>  fs/btrfs/space-info.h  | 6 +++---
+>  3 files changed, 7 insertions(+), 6 deletions(-)
 > 
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index dd4adfa75a71..cec6db0c41cc 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -473,12 +473,19 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
->  	struct btrfs_trans_handle *trans;
->  	u64 bytes_needed;
->  	u64 reclaim_bytes = 0;
-> +	u64 cur_free_bytes = 0;
+> diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
+> index c64b460a4301..60f313888a7d 100644
+> --- a/fs/btrfs/block-rsv.c
+> +++ b/fs/btrfs/block-rsv.c
+> @@ -54,8 +54,9 @@ static u64 block_rsv_release_bytes(struct btrfs_fs_info *fs_info,
+>  			spin_unlock(&dest->lock);
+>  		}
+>  		if (num_bytes)
+> -			btrfs_space_info_add_old_bytes(fs_info, space_info,
+> -						       num_bytes);
+> +			btrfs_space_info_free_bytes_may_use(fs_info,
+> +							    space_info,
+> +							    num_bytes);
+>  	}
+>  	if (qgroup_to_release_ret)
+>  		*qgroup_to_release_ret = qgroup_to_release;
+> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+> index 9a91d1eb0af4..3822edbf54a7 100644
+> --- a/fs/btrfs/delayed-ref.c
+> +++ b/fs/btrfs/delayed-ref.c
+> @@ -158,7 +158,7 @@ void btrfs_migrate_to_delayed_refs_rsv(struct btrfs_fs_info *fs_info,
+>  		trace_btrfs_space_reservation(fs_info, "delayed_refs_rsv",
+>  					      0, num_bytes, 1);
+>  	if (to_free)
+> -		btrfs_space_info_add_old_bytes(fs_info,
+> +		btrfs_space_info_free_bytes_may_use(fs_info,
+>  				delayed_refs_rsv->space_info, to_free);
+>  }
 >  
->  	trans = (struct btrfs_trans_handle *)current->journal_info;
->  	if (trans)
->  		return -EAGAIN;
+> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+> index d61550f06c94..c93fe9808dc0 100644
+> --- a/fs/btrfs/space-info.h
+> +++ b/fs/btrfs/space-info.h
+> @@ -130,9 +130,9 @@ void btrfs_try_granting_tickets(struct btrfs_fs_info *fs_info,
+>  				struct btrfs_space_info *space_info);
 >  
+>  static inline void
+> -btrfs_space_info_add_old_bytes(struct btrfs_fs_info *fs_info,
+> -			       struct btrfs_space_info *space_info,
+> -			       u64 num_bytes)
+> +btrfs_space_info_free_bytes_may_use(struct btrfs_fs_info *fs_info,
+> +				    struct btrfs_space_info *space_info,
+> +				    u64 num_bytes)
+>  {
 >  	spin_lock(&space_info->lock);
-> +	cur_free_bytes = btrfs_space_info_used(space_info, true);
-> +	if (cur_free_bytes < space_info->total_bytes)
-> +		cur_free_bytes = space_info->total_bytes - cur_free_bytes;
-> +	else
-> +		cur_free_bytes = 0;
-> +
->  	if (!list_empty(&space_info->priority_tickets))
->  		ticket = list_first_entry(&space_info->priority_tickets,
->  					  struct reserve_ticket, list);
-> @@ -486,6 +493,11 @@ static int may_commit_transaction(struct btrfs_fs_info *fs_info,
->  		ticket = list_first_entry(&space_info->tickets,
->  					  struct reserve_ticket, list);
->  	bytes_needed = (ticket) ? ticket->bytes : 0;
-> +
-> +	if (bytes_needed > cur_free_bytes)
-> +		bytes_needed -= cur_free_bytes;
-> +	else
-> +		bytes_needed = 0;
->  	spin_unlock(&space_info->lock);
->  
->  	if (!bytes_needed)
+>  	btrfs_space_info_update_bytes_may_use(fs_info, space_info, -num_bytes);
 > 
