@@ -2,118 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 952A29A21C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 22 Aug 2019 23:24:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC1E9A5A0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Aug 2019 04:38:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390637AbfHVVV6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 22 Aug 2019 17:21:58 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]:53179 "EHLO
-        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390541AbfHVVV6 (ORCPT
+        id S2390933AbfHWCiW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 22 Aug 2019 22:38:22 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:35867 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388550AbfHWCiW (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 22 Aug 2019 17:21:58 -0400
-Received: by mail-wm1-f44.google.com with SMTP id o4so6981843wmh.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 14:21:56 -0700 (PDT)
+        Thu, 22 Aug 2019 22:38:22 -0400
+Received: by mail-wm1-f65.google.com with SMTP id g67so7595133wme.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 22 Aug 2019 19:38:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fChKrEgDy14PviADacm05oLfTT8UXQ+CAMP+aVeACLk=;
-        b=vkIg3klsLgkBoTEZBlyRr96pxpnDUB0iNL6hb9mxUL7hWXkIlsxXrBBaHaBIq65w/z
-         deynOq33dWgPo5gdK6RTD8JpG/eI4GupCIincS68HF8sFyAQRKaEq51eG+ZmcOGmpo0p
-         iNiv1OXK9HCXgwnjqTc04sQyIDVD+jk5kAnbmcWh6/kgQZUhSgrh1dq/57jE8YkTvEAq
-         GGbcyAxxyjmoUzkaa8Hhlnu+VOpZrsB8UdOy9/zH/BNtOmplRfL09i+P22eTJxsfxv8k
-         ADgTTf3Ilr9coQCi3vHJdm2o4VaYkKZaFqDETB8jhtPiPJTcousaujgafLgabC1eW3nq
-         AkYw==
+        h=mime-version:from:date:message-id:subject:to;
+        bh=dpcgR0trNDUf12F3u3NBnBE/S2vvo6HeOmbbH9NOKxM=;
+        b=ZiYBK8EnAkC6OZ3FtUhllvEH9clLF4F8BXPF4WKQNYUneJgDAasHXhaYvZs9sszAVN
+         g33In+wx6KilDhtmC/EEflCBN76pEua7McXE1huFdMWcke/zAiVHQ3WZw+g/nOmxp+mj
+         8afzIkVsnMaF3yU09ktdAeT7qmx3dVHsEy0vdl6hLelXfgzuY4Ls+J71Ecbq/veSGuTr
+         Q73FGChfKMJKN4cXSXO6HFLfj+c3nTsr8rj2pGnPsyxCrlnqOQWmhUbxUzbhqrNw3LXd
+         sMpY1JuyDbDheyTbOZHtCRegLgGZoVkueQdHRUC4bEaf6fZ3Tl5PeJzC2glAEWINUyVz
+         Wpbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fChKrEgDy14PviADacm05oLfTT8UXQ+CAMP+aVeACLk=;
-        b=McoWHDVRg5DDxITFu1+hUi7bCz1XU4XHZi5fEZDV6p4yRILfcaQ4aoB9sIOovP5q4q
-         f8RCewnF7JCV2gEn9/lDP0KFSGfTUDjqeQZw9Uijw42PKZNQxFEh//j63pVkQ04okv/0
-         FfNi0ZEM1MQ/sDEYfzeE0qY9cnZNy8Ofu06r/N2uEz+khlbsC6T/yUPk/4z5b3Rdsrxg
-         BLtI/MtTH4DMEujaD77qJBII7WWf8VLm2FAD84EEUYuQw1R07SFdRqBOMjSRau6H81yv
-         Ck1ShTZ0ZnvB/iRfhvsi4XOOxvUeN48VQNkyRY2vQ1Wk4XD3DL7+Xz0EPUN7RUTlsC2c
-         tg4g==
-X-Gm-Message-State: APjAAAU0cJGqgqTQ7JBItUmSmxKNw+S3fDYZS1xJpVmKwKrDFxukm8Vg
-        Plo0zlcV68NOhIsAg1ElMuWnjhAccAD976P1xBKCXw==
-X-Google-Smtp-Source: APXvYqyI3HSO2rjtZ0amlWYDObqFZ5xsStBnHG6b9UUap+tWOAdmbdP2oSIGUZr2AXD9yx+V7mRaUgDL6YsKuRqPXlY=
-X-Received: by 2002:a1c:a957:: with SMTP id s84mr1083242wme.65.1566508916227;
- Thu, 22 Aug 2019 14:21:56 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=dpcgR0trNDUf12F3u3NBnBE/S2vvo6HeOmbbH9NOKxM=;
+        b=VrsCzf0ZTDgyTdD1H9FHsDpG8E4YRA+9BuiAuAZw4X7f/HmCwrEN9Nnrq4Ja285y8j
+         jtui8rNAh42t3xw4Xs7O6VaFn+py0q/iPh2JcZMlSAmnLClkd7dSHHTeFa730El+bn0Y
+         EAbNRzFVJdYP9AsKuMHLC+fG4mEk9ErlPrUqJLghg5d7KzYW9zWpnmj3B711bPq7oVoi
+         WbBy+TSS+B2Mhxu6rO1WfH1tE201Zs5o7SFsOZ4QXPxh/dbYN8esgT2G6U+OUFwO3mpP
+         82pkzL3wqUkzIdHliR+SNviFg1L2AweRl76LtiDxA/o+eN7MdRWUKwc0XRCIdVlAzP5H
+         VSwg==
+X-Gm-Message-State: APjAAAWUwq1OOkxfhW+rjlYNsIp9RTuGu3aHUJUhbXbt0NVP741dYqqW
+        gexCyggN8awkYu9RlQA+4Ll7N3pb5Lfu3Tib4Xd7EmTHmNr0qA==
+X-Google-Smtp-Source: APXvYqx4wEDCn5FGhh7TwljwEIUvSh9LM0hA18mKJeDdHDJRzN/OgenFUASuVqn0fFV4uRTTQue/JVqbGE1hdnHlv2c=
+X-Received: by 2002:a1c:a957:: with SMTP id s84mr2058837wme.65.1566527900025;
+ Thu, 22 Aug 2019 19:38:20 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAJCQCtRYFtPGn2drNxrcuYFTTvmvRD7iuDNG=i1cDvSu=zcF6A@mail.gmail.com>
- <20190822011219.77d2d8bf@natsu>
-In-Reply-To: <20190822011219.77d2d8bf@natsu>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 22 Aug 2019 15:21:44 -0600
-Message-ID: <CAJCQCtSgBK9KJOf92M8p+2HT33EZcyVVA92qHaQN7gqyDne2Kg@mail.gmail.com>
-Subject: Re: Btrfs on LUKS on loopback mounted image on Btrfs
-To:     Roman Mamedov <rm@romanrm.net>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Thu, 22 Aug 2019 20:38:09 -0600
+Message-ID: <CAJCQCtRij3ENFW3Gam+-JThg8LhewdpHKzJSfgcR-OPnvrSL=Q@mail.gmail.com>
+Subject: shared extents, but no snapshots or reflinks
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 21, 2019 at 2:12 PM Roman Mamedov <rm@romanrm.net> wrote:
->
-> On Wed, 21 Aug 2019 13:42:53 -0600
-> Chris Murphy <lists@colorremedies.com> wrote:
->
-> > Why do this? a) compression for home, b) encryption for home, c) home
-> > is portable because it's a file, d) I still get btrfs snapshots
-> > anywhere (I tend to snapshot subvolumes inside of cryptohome; but
->
-> Storing Btrfs on Btrfs really feels suboptimal,
+kernel 5.2.9
+btrfs-progs 5.1.1
+File system is pretty new, few months, has only seen kernels 5.1.16+
 
-Yes, although not having native encryption on Btrfs is also
-suboptimal. It leaves separate file system on LUKS for /home.
+This is a bit curious. Three subvolumes, no snapshots, no reflinks.
 
->good that at least you are
-> using NOCOW; of course it still will be CoW'ed in case of snapshots. Also you
-> are likely to run into the space wasting issue as discussed in
-> https://www.spinics.net/lists/linux-btrfs/msg90352.html
+There have previously been snapshots, typically prior to doing system
+updates. Is this an example of extents being pinned due to snapshots,
+and then extents updated and are now "stuck"? I'm kinda surprised, in
+that I'd expect most programs, especially RPM, are writing out new
+files entirely, then deleting obsolete files, then renaming. But...
+this suggests something is doing partial overwrites of file extents
+rather than replacements.
 
-Interesting problem. I think it can mostly be worked around by
-snapshoting the "upper" (plaintext) file system subvolumes, rather
-than the ciphertext backing file.
+Any ideas?
 
-> I'd strongly suggest that you look into deploying LVM Thin instead. There you
-> can specify an arbitrary CoW chunk size, and a value such as 1MB or more will
-> reduce management overhead and fragmentation dramatically.
 
-Yes on paper LVM thinp is well suited for this. I used to use it quite
-a lot for throw away VMs, it's not directly supported by virt-manager
-but it is possible to add a thinLV using virsh. The thing is, for
-mortal users, it's more complicated even than LVM - conceptually and
-should any repairs be needed. I'm looking for something simpler that
-doesn't depend on LVM.
-
-> > sysroot mkfs options: -dsingle -msingle
->
-> This is asking for trouble, even if you said you power-cut it constantly,
-
-In any case, if the hardware is working correctly, the file system is
-always consistent regardless of how many copies of metadata there are.
-I'm not sure what this gets me even hypothetically speaking, setting
-aside the upstream default is single for all SSDs.
-
-The filesystem definitely needs one copy committed to stable media,
-two copies doesn't improve the chances of commitment to stable media.
-Two copies is insurance against subsequent corruption. There's no such
-thing as torn or redirected writes with SSDs. If the first committed
-copy is corrupt but the second isn't, true Btrfs automatically
-recovers and repairs the bad copy. But I don't see how it improves the
-chance of data or metadata getting onto stable media.
-
-If anything, the slight additional latency of writing out a 2nd copy,
-delays writing the super block that points to the new tree roots. So
-improves handling for corruption but maybe increases the chance of an
-automatic rollback to an older tree at next mount?
-
+$ ls -l
+total 0
+drwxr-xr-x. 1 root root  10 Jun 23 13:36 home
+drwxr-xr-x. 1 root root  26 Jun  9 22:27 images
+dr-xr-xr-x. 1 root root 144 Aug 22 13:49 root
+$ sudo btrfs fi du -s *
+     Total   Exclusive  Set shared  Filename
+   4.41GiB     4.39GiB    14.51MiB  home
+ 581.40MiB   552.04MiB    29.36MiB  images
+   7.78GiB     7.77GiB     6.71MiB  root
+$
 
 -- 
 Chris Murphy
