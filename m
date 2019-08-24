@@ -2,156 +2,221 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFE99BD87
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Aug 2019 14:08:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A2A9BDF6
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Aug 2019 15:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727809AbfHXMF5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 24 Aug 2019 08:05:57 -0400
-Received: from relay2-d.mail.gandi.net ([217.70.183.194]:35953 "EHLO
-        relay2-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727779AbfHXMF5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 24 Aug 2019 08:05:57 -0400
-X-Originating-IP: 163.158.29.153
-Received: from katrien.duckstad.net (153-029-158-163.dynamic.caiway.nl [163.158.29.153])
-        (Authenticated sender: relay@duckstad.net)
-        by relay2-d.mail.gandi.net (Postfix) with ESMTPSA id CB8D840002;
-        Sat, 24 Aug 2019 12:05:54 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by katrien.duckstad.net (Postfix) with ESMTP id 458CA3802F;
-        Sat, 24 Aug 2019 14:05:54 +0200 (CEST)
-Received: from katrien.duckstad.net ([127.0.0.1])
-        by localhost (katrien.duckstad.net [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id sf94Q5OUmMhv; Sat, 24 Aug 2019 14:05:52 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by katrien.duckstad.net (Postfix) with ESMTP id 075DF38030;
-        Sat, 24 Aug 2019 14:05:52 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 katrien.duckstad.net 075DF38030
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=duckstad.net;
-        s=EEE0E95C-ABE4-11E9-AA35-1FC771689572; t=1566648352;
-        bh=Vwyjvq0rzhQEKtHTv98e73YpWM/BeBs3s8o0dXaJN6o=;
-        h=Message-ID:From:To:Date:MIME-Version;
-        b=n53rhWJvZbJdfrO+NGLQPsKKVjvq0L3BdWL5pBBLuvEp+OmgXD4Io9KaCpZ7Y5TC4
-         zvxv7RgbyRhbZ7cYOWcVR00TN7VNAPCmZy1/6pJMrurWK+TDy5CXKiciA2RJ7z8dOu
-         UpFWaL14ZyAss7I+Q5BunbTbrJKdeMlUl9LWsvZTUj0hfr0pEeVK2VhpXHSicSplUe
-         hLir1m0llKHWOFj0ZUKDi3HTg56eI+O1P8aiT22M8+Ve2BVCqq2JuQGH+UnNx72Qpp
-         KPAt60lJlRL4xHtfs3tRG7LqQCSIXW2A+SmSPfiFskhD6KYRjjz7b6Gv7FSOpqrZiU
-         84pOr9VV1AhBQ==
-X-Virus-Scanned: amavisd-new at katrien.duckstad.net
-Received: from katrien.duckstad.net ([127.0.0.1])
-        by localhost (katrien.duckstad.net [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id RQ6OnaofgvDM; Sat, 24 Aug 2019 14:05:51 +0200 (CEST)
-Received: from bolderbast (unknown [10.4.2.1])
-        by katrien.duckstad.net (Postfix) with ESMTPSA id B1C533802F;
-        Sat, 24 Aug 2019 14:05:51 +0200 (CEST)
-Message-ID: <579f07cdb257e15e9f79f501600ce8033353db91.camel@duckstad.net>
+        id S1727679AbfHXNYg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 24 Aug 2019 09:24:36 -0400
+Received: from mout.gmx.net ([212.227.15.18]:47841 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727671AbfHXNYf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 24 Aug 2019 09:24:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1566653066;
+        bh=bEAC7PeNZlzwWQIMHsXEhIxqoMrlKCroAq0/kBWTQAc=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=XzHDqbCp1h93+jpf8Bdw0NOjT8Bnv9dmwXqjDyf/dVNvT6c17MzY1FhnsEnIFkvpH
+         QWsBqflfc/3jSpzDs3+OhfH5J6BMvR2yntSK3wVYKUSlK64X+l7Fkts/IgFSN87onV
+         cPOqh2u2gqyXSrM6tWzU8Ip8Uh92QfWgJ7Uo19uk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx002
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0M5tU1-1iPcWW2XYf-00xqMv; Sat, 24
+ Aug 2019 15:24:26 +0200
 Subject: Re: Need help: super_total_bytes mismatch with fs_devices
  total_rw_bytes
-From:   Patrick Dijkgraaf <bolderbast@duckstad.net>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Date:   Sat, 24 Aug 2019 14:05:51 +0200
-In-Reply-To: <211fbb73-6a16-a8a6-e2b3-a0799216fe9c@gmx.com>
+To:     Patrick Dijkgraaf <bolderbast@duckstad.net>,
+        linux-btrfs@vger.kernel.org
 References: <42e408bdd5b38305358c961e06c0afe250a00a90.camel@duckstad.net>
-         <211fbb73-6a16-a8a6-e2b3-a0799216fe9c@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 
+ <211fbb73-6a16-a8a6-e2b3-a0799216fe9c@gmx.com>
+ <579f07cdb257e15e9f79f501600ce8033353db91.camel@duckstad.net>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <2e471646-7201-f33d-a9c7-ecbe19b73a58@gmx.com>
+Date:   Sat, 24 Aug 2019 21:24:22 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <579f07cdb257e15e9f79f501600ce8033353db91.camel@duckstad.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="O4x4XQTjWleQEoSbp6OZ2RvuTUUBFqoXf"
+X-Provags-ID: V03:K1:rdMtOEMYqkseynzJAukDfhRoPjJa7p6bcmNmCaMrhV7IObxjl80
+ yC8XWQM7FoiPoeci1N7flj/2AUVxZQCboQdlB8T7FAiyO5RKaQCjkaaW5dw5cgq7aAtTmqJ
+ SXZiiExQCzDTtwC9kbpb7jStuBmPqfcfr2c9FQXnfRKrVZCowNXeuBl0/1NQSUqXTl9n7Qv
+ AmC9fzvU6pF6Y66+elq+A==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:E4ehckCimT4=:jcG0YS0vnQNDNbMSNKzzcI
+ n9EHzgtBSX1Ep5XvrKncUZs4dym3olMcjlfsanpGdP+eGySzU1BlS4IQ2RyBvt3FdBNTRuCCk
+ LAdgl1ZGpwMbjmD175sgih/5KHs/1mNkOFTXsep1ffjNiS2192iBdsBP/KsSBULH7ZRA7tdlK
+ R0GhOEjBTtNf+3L0nldycknIfWJ+oxBW5UFXQQc96KuuyXbca75SuFZurBk6mYcl9Lv3YzUHx
+ DkGcNlaLeTKS2Llkrhd1UHd1QFAEVaQd/0fQAeZfsmLKRLI4WQG3rOLU9X1YhDnw7o1trVS6x
+ eebOtLwxcg5wygwKw7cC78mHKWW8qv9h7ErYpBZO4R0wFzUYsuEOj2FLj0BFVBXSY1bqc0Osu
+ gp9Uo3AbEvW0S9oc05AFRGHrelFZAT967526iMpJJnNVcO+pMH28MLouOR+W0/CX8TR0SZwZ3
+ nORFTxfxSdGNZ29V47Pf7gVRSqdVwSyfwRPojnWzm3kmmcpsv+V+bTRl3ZM5oixbrgmbKhp5R
+ EKCXITzpmKLjimqUjGN6R70oPb2INJWtcLSj4JCYs1WyjrFmuMsHYOq69xBL4mwv2azz4RRtX
+ 7hYWwmf3LctZ02xZ/j7ZdeH6NsZLG4JYcxZDZnLpnqRHhh1EkZylCq7/wKtu8eeCBWWVVDonJ
+ 4+o3ytl0b4NFCL1H/akOOZGDKach24NPFpiI2i70Fyou0y98lbvc/lCRzbOLyvM4RbAReCe0K
+ /gyGBYOOUb2lqh5jsfWD29djP43sNIUgj387XSXp9wXztqaaAzqb+we/Iz2s6OUSFOYktIsjG
+ WjF/LiTcu0jKRY/nIjh4TZx3/LbkRDeUzZBmaUvu+gPSZ/vteXcpxecvTjAyguaCXf1IPzlYo
+ e9Si2TZ0JDVlr839aF728+GxcZ2ADZtWtKLaxyEO4TLdkmCy/tC+gfMkjOG+MSkYE8TGpsqLh
+ Z6mLoCXWgKAJakiF5545L/KQAM+dGXhoE0/EQQGLFMkgvlttMzR246FcM39F7ZS0BsDHlUgcp
+ Oh748Vuh2VwplQJoqC+cfFC/Bxb0bje/8RgRirYmTQZlHO308U2O1yTSFApwF1Pl+DwtR868z
+ u7DlJfuRijDoLRy9Ki1IfeVwulcJVwrZx+ay3hHiWq/+08DFz2c8ABbg0HxdwXDhF+sj1rgqC
+ pnTcB8PsXlMW2IeFlesSo+ZOPUlSsmbZMJTiFsX0/GAKh7Zg==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thanks for the quick reply!
-See responses inline.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--O4x4XQTjWleQEoSbp6OZ2RvuTUUBFqoXf
+Content-Type: multipart/mixed; boundary="T7V6QDyrhi3OaUB8GCnbOoolyAXfvESFp";
+ protected-headers="v1"
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+To: Patrick Dijkgraaf <bolderbast@duckstad.net>, linux-btrfs@vger.kernel.org
+Message-ID: <2e471646-7201-f33d-a9c7-ecbe19b73a58@gmx.com>
+Subject: Re: Need help: super_total_bytes mismatch with fs_devices
+ total_rw_bytes
+References: <42e408bdd5b38305358c961e06c0afe250a00a90.camel@duckstad.net>
+ <211fbb73-6a16-a8a6-e2b3-a0799216fe9c@gmx.com>
+ <579f07cdb257e15e9f79f501600ce8033353db91.camel@duckstad.net>
+In-Reply-To: <579f07cdb257e15e9f79f501600ce8033353db91.camel@duckstad.net>
 
-On Sat, 2019-08-24 at 19:01 +0800, Qu Wenruo wrote:
-> On 2019/8/24 =E4=B8=8B=E5=8D=882:48, Patrick Dijkgraaf wrote:
-> > Hi all,
-> >=20
-> > My server hung this morning, and I had to hard-reset is. I did not
-> > apply any updates. After the reboot, my FS won't mount:
-> >=20
-> > [Sat Aug 24 08:16:31 2019] BTRFS error (device sde2):
-> > super_total_bytes
-> > 92017957797888 mismatch with fs_devices total_rw_bytes
-> > 184035915595776
-> > [Sat Aug 24 08:16:31 2019] BTRFS error (device sde2): failed to
-> > read
-> > chunk tree: -22
-> > [Sat Aug 24 08:16:31 2019] BTRFS error (device sde2): open_ctree
-> > failed
-> >=20
-> > However, running btrfs rescue shows:
-> > root@cornelis ~]# btrfs rescue fix-device-size /dev/sdh2
-> > No device size related problem found
+--T7V6QDyrhi3OaUB8GCnbOoolyAXfvESFp
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2019/8/24 =E4=B8=8B=E5=8D=888:05, Patrick Dijkgraaf wrote:
+> Thanks for the quick reply!
+> See responses inline.
 >=20
-> That's strange.
+> On Sat, 2019-08-24 at 19:01 +0800, Qu Wenruo wrote:
+>> On 2019/8/24 =E4=B8=8B=E5=8D=882:48, Patrick Dijkgraaf wrote:
+>>> Hi all,
+>>>
+>>> My server hung this morning, and I had to hard-reset is. I did not
+>>> apply any updates. After the reboot, my FS won't mount:
+>>>
+>>> [Sat Aug 24 08:16:31 2019] BTRFS error (device sde2):
+>>> super_total_bytes
+>>> 92017957797888 mismatch with fs_devices total_rw_bytes
+>>> 184035915595776
+>>> [Sat Aug 24 08:16:31 2019] BTRFS error (device sde2): failed to
+>>> read
+>>> chunk tree: -22
+>>> [Sat Aug 24 08:16:31 2019] BTRFS error (device sde2): open_ctree
+>>> failed
+>>>
+>>> However, running btrfs rescue shows:
+>>> root@cornelis ~]# btrfs rescue fix-device-size /dev/sdh2
+>>> No device size related problem found
+>>
+>> That's strange.
+>>
+>> Would you please dump the chunk tree and super blocks?
+>> # btrfs ins dump-super -fFa /dev/sdh2
 >=20
-> Would you please dump the chunk tree and super blocks?
-> # btrfs ins dump-super -fFa /dev/sdh2
+> See: https://pastebin.com/f5Wn15sx
 
-See: https://pastebin.com/f5Wn15sx
+Did a quick calculation, from your fi show result, it's 83.72TiB, thus
+the super total_bytes is correct.
 
-> # btrfs ins dump-tree -t chunk /dev/sdh2
+It's the kernel doing incorrect calculation for its
+fs_devices->total_rw_bytes.
 
-This output is too large for pastebin. The output is
-viewable/downloadable here: https://kwek.duckstad.net/tree.txt
-
-> And, have you tried to mount using different devices? If it's some
-> super
-> blocks get corrupted, using a different device to mount may help.
-> (With that said, it's better to call that dump-super for each device)
-
-Tried it with sde and sdh. Both give the same error.
-
-> > FS config is shown below:
-> > [root@cornelis ~]# btrfs fi show
-> > Label: 'cornelis-btrfs'  uuid: ac643516-670e-40f3-aa4c-f329fc3795fd
-> > Total devices 1 FS bytes used 536.05GiB
-> > devid    1 size 800.00GiB used 630.02GiB path /dev/mapper/cornelis-
-> > cornelis--btrfs
-> >=20
-> > Label: 'data'  uuid: 43472491-7bb3-418c-b476-874a52e8b2b0
-> > Total devices 16 FS bytes used 36.61TiB
-> > devid    1 size 7.28TiB used 2.65TiB path /dev/sde2
-> > devid    2 size 3.64TiB used 2.65TiB path /dev/sdf2
-> > devid    3 size 3.64TiB used 2.65TiB path /dev/sdg2
-> > devid    4 size 7.28TiB used 2.65TiB path /dev/sdh2
-> > devid    5 size 3.64TiB used 2.65TiB path /dev/sdi2
-> > devid    6 size 7.28TiB used 2.65TiB path /dev/sdj2
-> > devid    7 size 3.64TiB used 2.65TiB path /dev/sdk2
-> > devid    8 size 3.64TiB used 2.65TiB path /dev/sdl2
-> > devid    9 size 7.28TiB used 2.65TiB path /dev/sdm2
-> > devid   10 size 3.64TiB used 2.65TiB path /dev/sdn2
-> > devid   11 size 7.28TiB used 2.65TiB path /dev/sdo2
-> > devid   12 size 3.64TiB used 2.65TiB path /dev/sdp2
-> > devid   13 size 7.28TiB used 2.65TiB path /dev/sdq2
-> > devid   14 size 7.28TiB used 2.65TiB path /dev/sdr2
-> > devid   15 size 3.64TiB used 2.65TiB path /dev/sds2
-> > devid   16 size 3.64TiB used 2.65TiB path /dev/sdt2
+This matches the output of dump-super. No wonder why btrfs-progs refuse
+to fix.
 >=20
-> What's the profile used on so many devices?
-> RAID10?
+>> # btrfs ins dump-tree -t chunk /dev/sdh2
+>=20
+> This output is too large for pastebin. The output is
+> viewable/downloadable here: https://kwek.duckstad.net/tree.txt
 
-It's RAID6. I know the risk, although I believe that should be minimal
-nowadays.
+This also proves your chunk tree is CORRECT!
+The sum of all devices is 92017957797888, which matches with super block.=
 
-> The simplest way to fix it is to just update the
+[...]
+>=20
+>> The simplest way to fix it is to just update the
+>=20
+> Nice teaser! =F0=9F=98=89 What should I update?
 
-Nice teaser! =F0=9F=98=89 What should I update?
+Sorry, I meant to say just update the "superblock", but it turns out,
+it's something wrong with your kernel. Probably some old bug we fixed
+before.
 
-> Thanks,
-> Qu
-> > Other info:
-> > [root@cornelis ~]# uname -r
-> > 4.18.16-arch1-1-ARCH
-> >=20
-> > I was able to mount is using:
-> > [root@cornelis ~]# mount -o usebackuproot,ro /dev/sdh2 /mnt/data
-> >=20
-> > Now updating my backup, but I REALLY hope to get this fixed on the
-> > production server!
-> >=20
+Would you try to use latest ARCH kernel from an Archiso to try to mount
+it RO (just to be safe)?
+
+I checked latest v5.3-rc kernels, haven't found an obvious problem with
+the fs_devices->total_rw_bytes update routines.
+
+So it may be an old bug which is already fixed.
+
+Thanks,
+Qu
+
+>=20
+>> Thanks,
+>> Qu
+>>> Other info:
+>>> [root@cornelis ~]# uname -r
+>>> 4.18.16-arch1-1-ARCH
+>>>
+>>> I was able to mount is using:
+>>> [root@cornelis ~]# mount -o usebackuproot,ro /dev/sdh2 /mnt/data
+>>>
+>>> Now updating my backup, but I REALLY hope to get this fixed on the
+>>> production server!
+>>>
+>=20
+>=20
 
 
+--T7V6QDyrhi3OaUB8GCnbOoolyAXfvESFp--
+
+--O4x4XQTjWleQEoSbp6OZ2RvuTUUBFqoXf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1hOoYACgkQwj2R86El
+/qjr7gf/dt/qklJapqIaYlu6nchZi7s6C19Smg+Ryps3X3QfuSGJw3eYkn0r/4Gq
+hR8rMJBlBaurul0XzWVpJOIgzZ4GxclyFg3z6ndAn004rPEBxxyZuaIC8Zh2frG2
+eVqLDOFX6DDF5fylQVAXPcFsRfWDGcJNNLE+oBm5lipVRCv3qeZgZXtOG6AC4kxe
+jkzbdKsjKFWz+SBv9zI0au1aPfVfQGZ6aa0GjTkru/vmelHUQ2ALdGinNTs7PTTG
+WEH+RFk+pH/Be4SomCj+ErYT5jeWzTnqZidq4RIXK2GRNnZUL8BgrFDu6vZhM12O
+i78e91bbIss7VD4RCLTkPRNCqTsoFQ==
+=7kbO
+-----END PGP SIGNATURE-----
+
+--O4x4XQTjWleQEoSbp6OZ2RvuTUUBFqoXf--
