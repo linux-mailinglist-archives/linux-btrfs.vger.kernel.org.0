@@ -2,179 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A88A19C258
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Aug 2019 08:41:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BAD9C28A
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Aug 2019 10:14:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725922AbfHYGlb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 25 Aug 2019 02:41:31 -0400
-Received: from relay12.mail.gandi.net ([217.70.178.232]:50811 "EHLO
-        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbfHYGlb (ORCPT
+        id S1726127AbfHYIOR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 25 Aug 2019 04:14:17 -0400
+Received: from mail-lj1-f178.google.com ([209.85.208.178]:43682 "EHLO
+        mail-lj1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725922AbfHYIOR (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 25 Aug 2019 02:41:31 -0400
-Received: from katrien.duckstad.net (153-029-158-163.dynamic.caiway.nl [163.158.29.153])
-        (Authenticated sender: relay@duckstad.net)
-        by relay12.mail.gandi.net (Postfix) with ESMTPSA id E9BFF200003;
-        Sun, 25 Aug 2019 06:41:28 +0000 (UTC)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by katrien.duckstad.net (Postfix) with ESMTP id 630C03802F;
-        Sun, 25 Aug 2019 08:41:28 +0200 (CEST)
-Received: from katrien.duckstad.net ([127.0.0.1])
-        by localhost (katrien.duckstad.net [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id k4mxjp_XblvK; Sun, 25 Aug 2019 08:41:26 +0200 (CEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by katrien.duckstad.net (Postfix) with ESMTP id 2FCB438030;
-        Sun, 25 Aug 2019 08:41:26 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 katrien.duckstad.net 2FCB438030
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=duckstad.net;
-        s=EEE0E95C-ABE4-11E9-AA35-1FC771689572; t=1566715286;
-        bh=A3nXaXnyEF5H9jwuwUzWzKTzjvf8GcnXr95iSM58QPo=;
-        h=Message-ID:From:To:Date:MIME-Version;
-        b=oo9ZoyhaIXYuOTsQRgMn3P5GemG/HL1N0L10aM3V+JAIC+KbbMhKtfmWHjRsDhMQV
-         NPksPKDzPEa0AkIhW7kuCN6SijIuP/mg/JjsJguBAEIUNOCyXDNDLoPbnkkCMsXFfG
-         1J6z1CXM3M90EwtiCmfkcxfcae4oHrTLzKcvyJ3Cncwt9pmAXEMEwKpPDMeRIYAFvw
-         l1gb4Pi+TEaWaXjXIyvo8YGn6sygqg8MLa8uLQMQar8ax68gZ5HSPWv6s9r+kFuX78
-         mNRcdGicnGEbxae8UkZeL7OYu5rglzgQRy08FvZmEEvdiqKY7AkmfkVbnK5filaUbq
-         7XFv/sCD35HJQ==
-X-Virus-Scanned: amavisd-new at katrien.duckstad.net
-Received: from katrien.duckstad.net ([127.0.0.1])
-        by localhost (katrien.duckstad.net [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id gLrcqI3pElRz; Sun, 25 Aug 2019 08:41:24 +0200 (CEST)
-Received: from bolderbast (unknown [10.4.2.1])
-        by katrien.duckstad.net (Postfix) with ESMTPSA id CC05F3802F;
-        Sun, 25 Aug 2019 08:41:23 +0200 (CEST)
-Message-ID: <2c681f5fd6ea3d8bc764416bad7da1f6f0665347.camel@duckstad.net>
-Subject: Re: Need help: super_total_bytes mismatch with fs_devices
- total_rw_bytes
-From:   Patrick Dijkgraaf <bolderbast@duckstad.net>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-Date:   Sun, 25 Aug 2019 08:41:23 +0200
-In-Reply-To: <2e471646-7201-f33d-a9c7-ecbe19b73a58@gmx.com>
-References: <42e408bdd5b38305358c961e06c0afe250a00a90.camel@duckstad.net>
-         <211fbb73-6a16-a8a6-e2b3-a0799216fe9c@gmx.com>
-         <579f07cdb257e15e9f79f501600ce8033353db91.camel@duckstad.net>
-         <2e471646-7201-f33d-a9c7-ecbe19b73a58@gmx.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 
+        Sun, 25 Aug 2019 04:14:17 -0400
+Received: by mail-lj1-f178.google.com with SMTP id h15so12373847ljg.10
+        for <linux-btrfs@vger.kernel.org>; Sun, 25 Aug 2019 01:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=aETKOLk9zZQ8WiGUHKIjrlBMIsb4F9GdTE2AoIPDrfI=;
+        b=Kju/9MfBlPuqgnllj9J3MfRMrWGE/Ees6tQm/u7KZ8AVrac1wtYxaq6CcQ3jC0tUcE
+         ajdq0BuNRAGUTWYmS57VGci914Vgk1ou6v5qL13dHxfQb4PFa2I+pAjVts1Xz/aunwJB
+         j+6BMZZM5b+KuSqM9L+KqSZV3OhM1Qh0IX5XvE1BTYpthN3i0cAIzeAaTmbcN7f+SLl8
+         +J9rjH+44pPZHO/KUn2C93rPFQC0MrLSmsbaXkQ9g/qkCZ2IFtmakd+XDK23cuf0nWMP
+         Xb+B7OECHWxQD5DEsz8UZnvsF9+pPo6INfzfcS+4A0QwGWwonmYcaiLZGn7NDPJ0EMyL
+         S0Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=aETKOLk9zZQ8WiGUHKIjrlBMIsb4F9GdTE2AoIPDrfI=;
+        b=OeNQby8s2Rr/N/wsWENwQj7QR9RImULDbY37BD26mH80hx8skoEvXFHmDeYZy+LbUv
+         v4NMD2n2Cwfdf/LNsBRhObFsYjJ1k3G0UFSSxuEW2oU7a3a6pp12CQpj1lNNJZdOeLer
+         UBY/IpRTJPWddEjfQSTlQQwitX9kQCDpN9FoWHdLAvl83Yc9+gdw7TdiMsmBe81Ssz+x
+         3LzKOvIff7YWNnHep4MrSwVYEsGLfqyoNEnDvu3hDoBuJqC1L+fDLxoyRgc+NkiNTp8t
+         /rbxF6Vey7T+w2rj8Zec7OSGZ8PfoFVlsfeSOLjJOuHx4lmjNgItmbw0g6grCOMEPtt1
+         wMcg==
+X-Gm-Message-State: APjAAAXLf+wuO43/ZpmfevK+KVKzQfc/XTZPfRFiqEeYujvAWgXW6vm0
+        R9Yjmh5SC1xlQvn4/VuvkSYkMqvE
+X-Google-Smtp-Source: APXvYqwa4Ghd9MOCPwpSPD7KB2ae+n/8skBr9BuBFkKAMh7s+PJ8EunNLDz8Cb0iwJ1P1GsENXE2MA==
+X-Received: by 2002:a2e:8651:: with SMTP id i17mr7602928ljj.136.1566720854304;
+        Sun, 25 Aug 2019 01:14:14 -0700 (PDT)
+Received: from [192.168.1.6] (109-252-55-20.nat.spd-mgts.ru. [109.252.55.20])
+        by smtp.gmail.com with ESMTPSA id y14sm41329lfh.64.2019.08.25.01.14.12
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 25 Aug 2019 01:14:13 -0700 (PDT)
+Subject: Re: shared extents, but no snapshots or reflinks
+To:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtRij3ENFW3Gam+-JThg8LhewdpHKzJSfgcR-OPnvrSL=Q@mail.gmail.com>
+ <CAJCQCtQZ-BH3vHaV6canyi+HA_Q2Ny_QryKFLtddyR7YME4dzQ@mail.gmail.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
+ BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
+ 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
+ 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
+ KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
+ nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
+ gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
+ vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
+ AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <c5a80940-463b-ee5f-6c70-e13156c8e1ec@gmail.com>
+Date:   Sun, 25 Aug 2019 11:14:12 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJCQCtQZ-BH3vHaV6canyi+HA_Q2Ny_QryKFLtddyR7YME4dzQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
+23.08.2019 6:19, Chris Murphy пишет:
+> On Thu, Aug 22, 2019 at 8:38 PM Chris Murphy <lists@colorremedies.com> wrote:
+>>
+>> There have previously been snapshots, typically prior to doing system
+>> updates. Is this an example of extents being pinned due to snapshots,
+>> and then extents updated and are now "stuck"? I'm kinda surprised, in
+>> that I'd expect most programs, especially RPM, are writing out new
+>> files entirely, then deleting obsolete files, then renaming. But...
+>> this suggests something is doing partial overwrites of file extents
+>> rather than replacements.
+> 
+> It's databases. Databases are updating their files with block
+> overwrites, btrfs COWs them. And if there's a snapshot that exists
+> while COW happens, partial extents get pinned. This affects the
+> firefox database files, and also RPM's. It's a small effect on my
+> system, but it's a curious issue in particular if the files were much
+> larger.
+> 
+> 
 
-At the end of my first initial post, I mentioned that I finally was
-able to mount the volume using:
+What exactly "pinned" means, why it happens and when it goes away?
 
-mount -o usebackuproot,ro /dev/sdh2 /mnt/data
-
-The chunk tree and super blocks dumps were taken after that.
-
-Now I noticed that I was able to mount the volume without special
-options (same kernel version). YAY! =E2=98=BA
-Could it be that the "usebackuproot,ro" mount options already fixed the
-issue?
-
-Cheers,
-Patrick
-
-
-On Sat, 2019-08-24 at 21:24 +0800, Qu Wenruo wrote:
-> On 2019/8/24 =E4=B8=8B=E5=8D=888:05, Patrick Dijkgraaf wrote:
-> > Thanks for the quick reply!
-> > See responses inline.
-> >=20
-> > On Sat, 2019-08-24 at 19:01 +0800, Qu Wenruo wrote:
-> > > On 2019/8/24 =E4=B8=8B=E5=8D=882:48, Patrick Dijkgraaf wrote:
-> > > > Hi all,
-> > > >=20
-> > > > My server hung this morning, and I had to hard-reset is. I did
-> > > > not
-> > > > apply any updates. After the reboot, my FS won't mount:
-> > > >=20
-> > > > [Sat Aug 24 08:16:31 2019] BTRFS error (device sde2):
-> > > > super_total_bytes
-> > > > 92017957797888 mismatch with fs_devices total_rw_bytes
-> > > > 184035915595776
-> > > > [Sat Aug 24 08:16:31 2019] BTRFS error (device sde2): failed to
-> > > > read
-> > > > chunk tree: -22
-> > > > [Sat Aug 24 08:16:31 2019] BTRFS error (device sde2):
-> > > > open_ctree
-> > > > failed
-> > > >=20
-> > > > However, running btrfs rescue shows:
-> > > > root@cornelis ~]# btrfs rescue fix-device-size /dev/sdh2
-> > > > No device size related problem found
-> > >=20
-> > > That's strange.
-> > >=20
-> > > Would you please dump the chunk tree and super blocks?
-> > > # btrfs ins dump-super -fFa /dev/sdh2
-> >=20
-> > See:=20
-> > https://pastebin.com/f5Wn15sx
-> >=20
->=20
-> Did a quick calculation, from your fi show result, it's 83.72TiB,
-> thus
-> the super total_bytes is correct.
->=20
-> It's the kernel doing incorrect calculation for its
-> fs_devices->total_rw_bytes.
->=20
-> This matches the output of dump-super. No wonder why btrfs-progs
-> refuse
-> to fix.
-> > > # btrfs ins dump-tree -t chunk /dev/sdh2
-> >=20
-> > This output is too large for pastebin. The output is
-> > viewable/downloadable here:=20
-> > https://kwek.duckstad.net/tree.txt
-> >=20
->=20
-> This also proves your chunk tree is CORRECT!
-> The sum of all devices is 92017957797888, which matches with super
-> block.
-> [...]
-> > > The simplest way to fix it is to just update the
-> >=20
-> > Nice teaser! =F0=9F=98=89 What should I update?
->=20
-> Sorry, I meant to say just update the "superblock", but it turns out,
-> it's something wrong with your kernel. Probably some old bug we fixed
-> before.
->=20
-> Would you try to use latest ARCH kernel from an Archiso to try to
-> mount
-> it RO (just to be safe)?
->=20
-> I checked latest v5.3-rc kernels, haven't found an obvious problem
-> with
-> the fs_devices->total_rw_bytes update routines.
->=20
-> So it may be an old bug which is already fixed.
->=20
-> Thanks,
-> Qu
->=20
-> > > Thanks,
-> > > Qu
-> > > > Other info:
-> > > > [root@cornelis ~]# uname -r
-> > > > 4.18.16-arch1-1-ARCH
-> > > >=20
-> > > > I was able to mount is using:
-> > > > [root@cornelis ~]# mount -o usebackuproot,ro /dev/sdh2
-> > > > /mnt/data
-> > > >=20
-> > > > Now updating my backup, but I REALLY hope to get this fixed on
-> > > > the
-> > > > production server!
-> > > >=20
-> >=20
-> >=20
+Comparing situation with and without shared extents - when you simply
+delete snapshot, it disappears:
 
 
+-       item 12 key (257 ROOT_ITEM 7) itemoff 13188 itemsize 439
+-               generation 7 root_dirid 256 bytenr 30670848 level 0 refs 1
+-               lastsnap 7 byte_limit 0 bytes_used 16384 flags 0x1(RDONLY)
+-               uuid 5357e159-c577-d34b-8e0e-815767568a89
+-               parent_uuid 1dfec531-ef6e-4d2e-a93b-2a4e4c0e4682
+-               ctransid 6 otransid 7 stransid 0 rtransid 0
+-               ctime 1566719522.371361184 (2019-08-25 10:52:02)
+-               otime 1566719541.289249684 (2019-08-25 10:52:21)
+-               drop key (0 UNKNOWN.0 0) level 0
+-       item 13 key (257 ROOT_BACKREF 5) itemoff 13166 itemsize 22
+-               root backref key dirid 258 sequence 2 name snap
+
+
+but when there was shared extent (caused by partial overwrite) it is stuck:
+
+-       item 12 key (257 ROOT_ITEM 7) itemoff 13188 itemsize 439
+-               generation 7 root_dirid 256 bytenr 30670848 level 0 refs 1
+-               lastsnap 7 byte_limit 0 bytes_used 16384 flags 0x1(RDONLY)
++       item 11 key (257 ROOT_ITEM 7) itemoff 13210 itemsize 439
++               generation 7 root_dirid 256 bytenr 30670848 level 0 refs 0
++               lastsnap 7 byte_limit 0 bytes_used 16384 flags
+0x1000000000001(RDONLY)
+
+
+Now the undecoded flag is
+
+/*
+ * Internal in-memory flag that a subvolume has been marked for deletion but
+ * still visible as a directory
+ */
+#define BTRFS_ROOT_SUBVOL_DEAD          (1ULL << 48)
+
+but it does not agree with comment - this flag is not "in memory", it is
+persistent (output above is from inspect-internal after filesystem is
+unmounted).
+
+So when this dead subvolume is going to be removed? This can cause quite
+real memory leak if it is stuck as long as original extent reference
+remains.
