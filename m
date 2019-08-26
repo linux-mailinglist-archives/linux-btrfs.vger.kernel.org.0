@@ -2,123 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEF69CBBA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2019 10:38:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B72A9CC2F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2019 11:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730705AbfHZIie (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Aug 2019 04:38:34 -0400
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:5094 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729737AbfHZIid (ORCPT
+        id S1730528AbfHZJGr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Aug 2019 05:06:47 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:59750 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726497AbfHZJGr (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Aug 2019 04:38:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1566808732; x=1598344732;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=qYbgIhd+LYGqIfubx5rmRAWksx9Nt8cmtOHsk7qSItk=;
-  b=X9bZ2388DUojFeSDe5YbW857FZkGyT1e3MSHv2gvzoJlMDatPVoSX4Jl
-   gbxWkPggPvyaERPRIo3Mx8ukxHBK9aJ/jcU7KgvuvpyCzJVCqwSwVdHuZ
-   tGAdVz0pPaZ8H2XQ0zbrfA8AjVJjK6nua6whpEIUdm8xELsHLgC7oNOLL
-   F31ewHWm/ofzBHeiYgIvoj8dfjC+21egs4uq/A+l9P/0b2Mub1BRiGOH8
-   lu2ul+85oxjKKEuctVh6113fMLIkyucK6XB5+MwH6SE29hhQc88kJXExu
-   UU/QOS3y8FVXWsit7A575tnx2CAuZnuzxqJf/3AuRz9PR/ynnZVK1hwaR
-   A==;
-IronPort-SDR: +NYucYLSYUloOsAOtD/US7ixMCVHRLJjXiO3jvPBh+Xm9/FjrwcksOE7ks4F8NKahkq8uJqBVG
- DK/y+nCefhWLPyMMCx9eSiWNvSlv8u5+EzAJHaRDn180XkF1Y7iFwDlgaSkot11FtIsns4ydbl
- GZLHM0sZl/YEW4XGBaCpMbUvDDUD/E8DQHZeboH0iXbD3ucfs7p5t1ChZuRbR2LQxcwWuIqDpW
- KEJZq/nbqSwxHW8xMwX1hl8QSILAbfM7xaN3UKZ7gI0R3idY/UAvgnO7RIielJc0ugZYf2E2xV
- vG4=
-X-IronPort-AV: E=Sophos;i="5.64,431,1559491200"; 
-   d="scan'208";a="217133459"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Aug 2019 16:38:52 +0800
-IronPort-SDR: 8rUzccAQWn5lL4m2aWkPP0rJYEJAHrfbfv5uwLZF4j8nhaC9ygH8edIoGGIca8FEgqa4QLecT3
- Ge4Cp3V6pRZbFnj4WpEmPh0VJt3ts+KFYFenf/hl6C7Tv2Zey1k7nt5qdSfe5E2ljU76EiXIuc
- L2iT+a4mJmlJrcSYtQWO/Lk27PcwFc7aOhTT3Gj2pZPayHgEjVrMyOBWCmfwqXImGr0owKE6us
- +utAeZq5EfNlRk4mOCCWt8/fWtRxXvuUK4AfgBcjNG8VSSy6AWFJoRco7AK2Ea0JIPq+FmrIwj
- IJ5NgqG+sRZGSM/FeAxPug0/
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Aug 2019 01:35:47 -0700
-IronPort-SDR: wr3nDW4oIPCcBwy+O0TRgLMW7eyuq3PGxgiPKJdbyxJr7Ob3Upd7CwmIBD/iZXTuatInYvRkrh
- zNCqtgeU5c8AettFjMuPlXzK/DvYOEVoCW8jVjNteuCbhCZ+2Qufws0AB1//aO+5523zr4CKi7
- +JBkz+tPBaTpBOijfr2NNVVcpn4Jm5MFREPIH9iQwvbUDqkK/OPB8z6gz23eSC60bn+7xsWikc
- YRuPqOSsnwReqP5dDpVdQym5sq3T1BpJPnC1OAvt5Wugi1oyk+EY+63bUZcpZiZ9hNd1qBhmrC
- yM0=
-WDCIronportException: Internal
-Received: from naota.dhcp.fujisawa.hgst.com ([10.149.53.115])
-  by uls-op-cesaip01.wdc.com with SMTP; 26 Aug 2019 01:38:32 -0700
-Received: (nullmailer pid 432157 invoked by uid 1000);
-        Mon, 26 Aug 2019 08:38:30 -0000
-Date:   Mon, 26 Aug 2019 17:38:30 +0900
-From:   Naohiro Aota <naohiro.aota@wdc.com>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Matias Bjorling <Matias.Bjorling@wdc.com>,
-        Hannes Reinecke <hare@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 03/27] btrfs: Check and enable HMZONED mode
-Message-ID: <20190826083830.3dvajoi3dnu3nrr5@naota.dhcp.fujisawa.hgst.com>
-References: <20190823101036.796932-1-naohiro.aota@wdc.com>
- <20190823101036.796932-4-naohiro.aota@wdc.com>
- <9c947b6c-c74d-24eb-ff6b-b448c8acfa40@suse.de>
+        Mon, 26 Aug 2019 05:06:47 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7Q93mGj101720
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2019 09:06:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=dekF4Tf7Cm2shFn/WRFblJJ+2Cll4xByspQoazZOiDo=;
+ b=qsN4ol907SS4rcI5E3I3p8I4mfGdNW5Z1cNB8LCIKZpFs5tkcpcINQCPL6AMCnD882iv
+ y6W0EvuthLkgtuKa28nGIJ1rLOHT37xIa9pA5C4cLvBV7oQvpYenr33y0GGTJiUtyKBF
+ XE17M5Gve6Mfjjr797kVrTWisMM93PhmvMDNuEkvt8+bDw9+JSMJhNYBj1HTPVqQHtMB
+ YUvMVEi4uMD6sw8mfr/wwhfQWerQ8x7nDhi4UDTXObcxvBtogoIMsnpBHtPllmqgz016
+ 9SkEtsQJ8hk1Tg33w+nJxQMvXYnPwkNMFB3MOUcZ+COQ5h1YCCHGwbFTBkFeONRaqVfl xw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2ujw6yyn1p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2019 09:06:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7Q93lmV159042
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2019 09:04:45 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 2ujw6umbhw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2019 09:04:45 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7Q94ihs023099
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2019 09:04:44 GMT
+Received: from mb.wifi.oracle.com (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 26 Aug 2019 02:04:42 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC v2 0/2]  readmirror feature
+Date:   Mon, 26 Aug 2019 17:04:36 +0800
+Message-Id: <20190826090438.7044-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-120)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <9c947b6c-c74d-24eb-ff6b-b448c8acfa40@suse.de>
-User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9360 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908260101
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9360 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908260102
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 23, 2019 at 02:07:05PM +0200, Johannes Thumshirn wrote:
->On 23/08/2019 12:10, Naohiro Aota wrote:
->> HMZONED mode cannot be used together with the RAID5/6 profile for now.
->> Introduce the function btrfs_check_hmzoned_mode() to check this. This
->> function will also check if HMZONED flag is enabled on the file system and
->> if the file system consists of zoned devices with equal zone size.
->>
->> Additionally, as updates to the space cache are in-place, the space cache
->> cannot be located over sequential zones and there is no guarantees that the
->> device will have enough conventional zones to store this cache. Resolve
->> this problem by disabling completely the space cache.  This does not
->completely disabling ~^
->
->> introduces any problems with sequential block groups: all the free space is
->introduce ~^
->
->> located after the allocation pointer and no free space before the pointer.
->                                           is located? ~^
->> There is no need to have such cache.
+Function call chain  __btrfs_map_block()->find_live_mirror() uses
+thread pid to determine the %mirror_num when the mirror_num=0.
 
-Thanks.
+This patch introduces a framework so that we can add policies to determine
+the %mirror_num. And also adds the devid as the readmirror policy.
 
->> @@ -25,6 +27,7 @@ int btrfs_get_dev_zone(struct btrfs_device *device, u64 pos,
->>  		       struct blk_zone *zone, gfp_t gfp_mask);
->>  int btrfs_get_dev_zone_info(struct btrfs_device *device);
->>  void btrfs_destroy_dev_zone_info(struct btrfs_device *device);
->> +int btrfs_check_hmzoned_mode(struct btrfs_fs_info *fs_info);
->
->
->While we're at it, shouldn't all the functions in hmzoned.[ch] have a
->!CONFIG_BLK_DEV_ZONED compat wrapper and hmzoned.o is dependent on
->CONFIG_BLK_DEV_ZONED?
+The new property is stored as an item in the device tree as show below.
+    (BTRFS_READMIRROR_OBJECTID, BTRFS_PERSISTENT_ITEM_KEY, devid)
 
-Exactly. It was broken on !CONFIG_BLK_DEV_ZONED as the bot pointed
-out... I'll push them behind CONFIG_BLK_DEV_ZONED in the next
-version.
+To be able to set and get this new property also introduces new ioctls
+BTRFS_IOC_GET_READMIRROR and BTRFS_IOC_SET_READMIRROR. The ioctl argument
+is defined as
+        struct btrfs_ioctl_readmirror_args {
+                __u64 type; /* RW */
+                __u64 device_bitmap; /* RW */
+        }
 
->-- 
->Johannes Thumshirn                            SUSE Labs Filesystems
->jthumshirn@suse.de                                +49 911 74053 689
->SUSE LINUX GmbH, Maxfeldstr. 5, 90409 Nürnberg
->GF: Felix Imendörffer, Mary Higgins, Sri Rasiah
->HRB 21284 (AG Nürnberg)
->Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+An usage example as follows:
+        btrfs property set /btrfs readmirror devid:1,3
+        btrfs property get /btrfs readmirror
+          readmirror devid:1 3
+        btrfs property set /btrfs readmirror ""
+        btrfs property get /btrfs readmirror
+          readmirror default
+
+This patchset has been tested completely, however marked as RFC for the 
+following reasons and comments on them (or any other) are appreciated as
+usual.
+ . The new objectid is defined as
+      #define BTRFS_READMIRROR_OBJECTID -1ULL
+   Need consent we are fine to use this value, and with this value it
+   shall be placed just before the DEV_STATS_OBJECTID item which is more
+   frequently used only during the device errors.
+
+.  I am using a u64 bitmap to represent the devices id, so the max device
+   id that we could represent is 63, its a kind of limitation which should
+   be addressed before integration, I wonder if there is any suggestion?
+   Kindly note that, multiple ioctls with each time representing a set of
+   device(s) is not a choice because we need to make sure the readmirror
+   changes happens in a commit transaction.
+
+v1->RFC v2:
+  . Property is stored as a dev-tree item instead of root inode extended
+    attribute.
+  . Rename BTRFS_DEV_STATE_READ_OPRIMIZED to BTRFS_DEV_STATE_READ_PREFERRED.
+  . Changed format specifier from devid1,2,3.. to devid:1,2,3..
+
+RFC->v1:
+  Drops pid as one of the readmirror policy choices and as usual remains
+  as default. And when the devid is reset the readmirror policy falls back
+  to pid.
+  Drops the mount -o readmirror idea, it can be added at a later point of
+  time.
+  Property now accepts more than 1 devid as readmirror device. As shown
+  in the example above.
+
+Anand Jain (1):
+  btrfs: add readmirror framework and policy devid
+
+ fs/btrfs/ctree.h                |   3 +
+ fs/btrfs/disk-io.c              |   9 ++
+ fs/btrfs/ioctl.c                | 108 ++++++++++++++++++++++++
+ fs/btrfs/transaction.c          |   3 +
+ fs/btrfs/volumes.c              | 145 +++++++++++++++++++++++++++++++-
+ fs/btrfs/volumes.h              |   9 +-
+ include/uapi/linux/btrfs.h      |  15 +++-
+ include/uapi/linux/btrfs_tree.h |  11 +++
+ 8 files changed, 300 insertions(+), 3 deletions(-)
+
+Anand Jain (1):
+  btrfs_progs: add readmirror property and ioctl to set get
+
+ ioctl.h | 14 +++++++++
+ props.c | 98 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 112 insertions(+)
