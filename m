@@ -2,24 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EAE19D318
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2019 17:40:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 639EB9D323
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2019 17:40:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733194AbfHZPja (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Aug 2019 11:39:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52400 "EHLO mx1.suse.de"
+        id S1731298AbfHZPk3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Aug 2019 11:40:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52854 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1733174AbfHZPjV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Aug 2019 11:39:21 -0400
+        id S1730499AbfHZPk2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Aug 2019 11:40:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A1513AFFE
-        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2019 15:39:19 +0000 (UTC)
-Subject: Re: [PATCH v3 0/4] btrfs: support xxhash64 checksums
-To:     Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20190826114834.14789-1-jthumshirn@suse.de>
+        by mx1.suse.de (Postfix) with ESMTP id A6E3DAFFE;
+        Mon, 26 Aug 2019 15:40:26 +0000 (UTC)
+Subject: Re: [PATCH v2] btrfs: fix allocation of bitmap pages.
+To:     dsterba@suse.cz, Christophe Leroy <christophe.leroy@c-s.fr>,
+        erhard_f@mailbox.org, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        stable@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org
+References: <c3157c8e8e0e7588312b40c853f65c02fe6c957a.1566399731.git.christophe.leroy@c-s.fr>
+ <20190826153757.GW2752@twin.jikos.cz>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +69,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <5d7f250d-88d8-8d29-0a12-5e217992cbde@suse.com>
-Date:   Mon, 26 Aug 2019 18:39:18 +0300
+Message-ID: <a096d653-8b64-be15-3e81-581536a88e8a@suse.com>
+Date:   Mon, 26 Aug 2019 18:40:24 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190826114834.14789-1-jthumshirn@suse.de>
+In-Reply-To: <20190826153757.GW2752@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,31 +85,83 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 26.08.19 г. 14:48 ч., Johannes Thumshirn wrote:
-> Now that Nikolay's XXHASH64 support for the Crypto API has landed and BTRFS is
-> prepared for an easy addition of new checksums, this patchset implements
-> XXHASH64 as a second, fast but not cryptographically secure checksum hash.
+On 26.08.19 г. 18:37 ч., David Sterba wrote:
+> On Wed, Aug 21, 2019 at 03:05:55PM +0000, Christophe Leroy wrote:
+>> Various notifications of type "BUG kmalloc-4096 () : Redzone
+>> overwritten" have been observed recently in various parts of
+>> the kernel. After some time, it has been made a relation with
+>> the use of BTRFS filesystem.
+>>
+>> [   22.809700] BUG kmalloc-4096 (Tainted: G        W        ): Redzone overwritten
+>> [   22.809971] -----------------------------------------------------------------------------
+>>
+>> [   22.810286] INFO: 0xbe1a5921-0xfbfc06cd. First byte 0x0 instead of 0xcc
+>> [   22.810866] INFO: Allocated in __load_free_space_cache+0x588/0x780 [btrfs] age=22 cpu=0 pid=224
+>> [   22.811193] 	__slab_alloc.constprop.26+0x44/0x70
+>> [   22.811345] 	kmem_cache_alloc_trace+0xf0/0x2ec
+>> [   22.811588] 	__load_free_space_cache+0x588/0x780 [btrfs]
+>> [   22.811848] 	load_free_space_cache+0xf4/0x1b0 [btrfs]
+>> [   22.812090] 	cache_block_group+0x1d0/0x3d0 [btrfs]
+>> [   22.812321] 	find_free_extent+0x680/0x12a4 [btrfs]
+>> [   22.812549] 	btrfs_reserve_extent+0xec/0x220 [btrfs]
+>> [   22.812785] 	btrfs_alloc_tree_block+0x178/0x5f4 [btrfs]
+>> [   22.813032] 	__btrfs_cow_block+0x150/0x5d4 [btrfs]
+>> [   22.813262] 	btrfs_cow_block+0x194/0x298 [btrfs]
+>> [   22.813484] 	commit_cowonly_roots+0x44/0x294 [btrfs]
+>> [   22.813718] 	btrfs_commit_transaction+0x63c/0xc0c [btrfs]
+>> [   22.813973] 	close_ctree+0xf8/0x2a4 [btrfs]
+>> [   22.814107] 	generic_shutdown_super+0x80/0x110
+>> [   22.814250] 	kill_anon_super+0x18/0x30
+>> [   22.814437] 	btrfs_kill_super+0x18/0x90 [btrfs]
+>> [   22.814590] INFO: Freed in proc_cgroup_show+0xc0/0x248 age=41 cpu=0 pid=83
+>> [   22.814841] 	proc_cgroup_show+0xc0/0x248
+>> [   22.814967] 	proc_single_show+0x54/0x98
+>> [   22.815086] 	seq_read+0x278/0x45c
+>> [   22.815190] 	__vfs_read+0x28/0x17c
+>> [   22.815289] 	vfs_read+0xa8/0x14c
+>> [   22.815381] 	ksys_read+0x50/0x94
+>> [   22.815475] 	ret_from_syscall+0x0/0x38
+>>
+>> Commit 69d2480456d1 ("btrfs: use copy_page for copying pages instead
+>> of memcpy") changed the way bitmap blocks are copied. But allthough
+>> bitmaps have the size of a page, they were allocated with kzalloc().
+>>
+>> Most of the time, kzalloc() allocates aligned blocks of memory, so
+>> copy_page() can be used. But when some debug options like SLAB_DEBUG
+>> are activated, kzalloc() may return unaligned pointer.
+>>
+>> On powerpc, memcpy(), copy_page() and other copying functions use
+>> 'dcbz' instruction which provides an entire zeroed cacheline to avoid
+>> memory read when the intention is to overwrite a full line. Functions
+>> like memcpy() are writen to care about partial cachelines at the start
+>> and end of the destination, but copy_page() assumes it gets pages. As
+>> pages are naturally cache aligned, copy_page() doesn't care about
+>> partial lines. This means that when copy_page() is called with a
+>> misaligned pointer, a few leading bytes are zeroed.
+>>
+>> To fix it, allocate bitmaps through kmem_cache instead of using kzalloc()
+>> The cache pool is created with PAGE_SIZE alignment constraint.
+>>
+>> Reported-by: Erhard F. <erhard_f@mailbox.org>
+>> Link: https://bugzilla.kernel.org/show_bug.cgi?id=204371
+>> Fixes: 69d2480456d1 ("btrfs: use copy_page for copying pages instead of memcpy")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Christophe Leroy <christophe.leroy@c-s.fr>
+>> ---
+>> v2: Using kmem_cache instead of get_zeroed_page() in order to benefit from SLAB debugging features like redzone.
 > 
-> For changes since v2, please see the individual patches.
+> I'll take this version, thanks. Though I'm not happy about the allocator
+> behaviour. The kmem cache based fix can be backported independently to
+> 4.19 regardless of the SL*B fixes.
 > 
-> David Sterba (1):
->   btrfs: sysfs: export supported checksums
+>> +extern struct kmem_cache *btrfs_bitmap_cachep;
 > 
-> Johannes Thumshirn (3):
->   btrfs: turn checksum type define into a enum
->   btrfs: create structure to encode checksum type and length
->   btrfs: use xxhash64 for checksumming
+> I've renamed the cache to btrfs_free_space_bitmap_cachep
 > 
->  fs/btrfs/Kconfig                |  1 +
->  fs/btrfs/ctree.h                | 14 +++++++++-----
->  fs/btrfs/disk-io.c              |  1 +
->  fs/btrfs/super.c                |  1 +
->  fs/btrfs/sysfs.c                | 29 +++++++++++++++++++++++++++++
->  include/uapi/linux/btrfs_tree.h |  5 ++++-
->  6 files changed, 45 insertions(+), 6 deletions(-)
+> Reviewed-by: David Sterba <dsterba@suse.com>
 
-Short and sweet, apart from the minor nit on 3/4 you can add:
+Isn't this obsoleted by
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+'[PATCH v2 0/2] guarantee natural alignment for kmalloc()' ?
 
 > 
