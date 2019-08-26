@@ -2,581 +2,393 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35C059C691
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2019 01:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76D1B9C927
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2019 08:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728730AbfHYXvp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 25 Aug 2019 19:51:45 -0400
-Received: from mout.gmx.net ([212.227.15.18]:41129 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726584AbfHYXvo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 25 Aug 2019 19:51:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1566777103;
-        bh=MrgQoss6ZKF7QFhWHAEiKKJHFkFSDEKDbxy+ZONF614=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=kd4PCo5yDxoXhMve39zbDZDjJWlK0YcJeShyIjT4KBEYJL+kr1drnJ3OTfH03NrDT
-         oqwtY65ck707ZFmwbm9avbv28WASgTnfaUasTlvSG307twyWSe9gfDATG6eZdMSj/q
-         H0vRkuHv93tCpb/JihydJ7AJqkQtQMT4wz3nAIlM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx003
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0LzLJR-1iFBRX0OZN-014WSv; Mon, 26
- Aug 2019 01:51:42 +0200
-Subject: Re: BTRFS unable to mount after one failed disk in RAID 1
-To:     Daniel Clarke <dan@e-dan.co.uk>, linux-btrfs@vger.kernel.org
-References: <CAP-b2nNHVnfDyC2-F2pWtwUgjZxcqfwqYvNcBmknd5ZHauWoUw@mail.gmail.com>
- <cafc855e-b030-83ff-2984-dfb45a36d1b3@gmx.com>
- <CAP-b2nPJE_=957ARh+JMzOkVg4E_A_tAJPiN0e1BTyCLTZ=Jhw@mail.gmail.com>
- <55f9d2ff-b6b0-7f13-287e-c9916c57943f@gmx.com>
- <CAP-b2nM=s07wA0Yb9XQvea_ULZ=kui0UZNddGDa_gfd1C_m7qQ@mail.gmail.com>
- <CAP-b2nNzzjsAbJGAi=R0yk6qvQ-bRM3__k-NBCb+oko7Ume+kQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <2846a423-ba1e-698d-6369-f9588223bb94@gmx.com>
-Date:   Mon, 26 Aug 2019 07:51:38 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1729524AbfHZGVB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Aug 2019 02:21:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41998 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725446AbfHZGVB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Aug 2019 02:21:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 45FECAD31;
+        Mon, 26 Aug 2019 06:20:58 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: [PATCH v3] fstests: btrfs: Check snapshot creation and deletion with dm-logwrites
+Date:   Mon, 26 Aug 2019 14:20:45 +0800
+Message-Id: <20190826062045.18670-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <CAP-b2nNzzjsAbJGAi=R0yk6qvQ-bRM3__k-NBCb+oko7Ume+kQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="K5NuW5UK006XMKlutS14lQ0n790aNLO8I"
-X-Provags-ID: V03:K1:q6263O7OfgW0mCWBTpijDrLmx0a2tEwFY1xirP618ra3CN+wIp1
- AkDXz1uEyHmXNmGHvxYlbh1Q4huWTvoS6gunZK4ukLqF73iBlKsqrXXjwZ6YDdvtjx1xPy/
- 6ndqSY4XVvjT3jPlSkuI9QkTfhGrCkOREYwgmdxovuwvwXUAVYhwHzQlz1U/maaK7slgFy0
- NAGgv/j2f1kNnj/2mlyjA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8SeL2pZapZU=:+pLohIARW9WFfzug0mO7nb
- rqKp83OWH2U025eE51b2Sphgr6XpXMXf1bSMORgiXilhc+wS3y0AEcuVGqIdb0/GSmmIkefvs
- C1D20hUqPOWuhc/6D1NOegfPgd0rEVUj4tnUefi3G9k9Wlf4cFwZRLfDxvEPz/1QcYO5EzesF
- 7tY1TRAin09cJZEHcAmvWGFkRRPzqXl02Qi1IUpQFIdmjrGS+OMySJdk0V1cORPLwSsPTtFnB
- q2yJvXz17KAqzRtXPSOBfd1AEv5mqhGTDlHNF5zXBWk/ulkupvyYwAc+ZntL9Gi2xJfe+Bszw
- UUVgjL6dNo3N8Y9SPYdIqc1BZxfDl4O9YWy+H/ZEIUXbmh5YqCARvpFpg9VoRL9P3el1qbhG9
- JlC9XwJmuLLnCsklopNLTXBgY4HqJTVoyVZCotLfE+g7E+MKOBv7r6XuJCxrn/w+88momLZOx
- S6DY6YESace06fqj7/3akMu2+2SOXEIMKuMwsCNKxhxpHn0Kf94Y1UC9e+ToSRSInO/IvQh+v
- UwhP/mOALWKzZuIQ0bjkBr4olmo0Zb/hf81ASpISStmx7x6Kai2GfgVMOjB6ITq/CBPwC3ZQA
- rT82IpAmWcuroXmUPPU1yMCVWkKrW/Cj4yv8yp0bNGmGvPvuotAdAlH2a11uC2v3kmD1pePGL
- 8PntS/oBVY1MtnW2aQUqASsy/p86EiCBOwJkRhkj2F+dCQ353dO3DsSY2ei7iragwxCWvNNZo
- LY7YinxJ3h0scTFJGpAuIRr+72vZwrGPalsWbduWaBG9/6X7Np24+yZv/aqrdsx+jApIy6KTt
- GrlM/l8WS2QII46pDDCfCDDWTtySzBFBvpE/0hk+y8QOpFc4c8B0LK6QqTlH5mraefouSB2pC
- O8O8m12vJoqikG6qlY4DKSMS8pdrqL9NBh9fhRefiNxa4j2pL1mtMY2bOQ3pvdsQFyqwpHyeF
- BI2jg1PpwhADuSpzlYniiogaBjUzqNjO0sziSAB/MST77JNOi1b9qmeFUKDFipPNfoonwvrx/
- CTghQ0DntCfQoLI6vNV0v5L96dRHK7aTOAqgUmxyZatWZZtW6AjjueWzD+8wJmnq99OYtk7Xf
- 0lWiVq3wP/Gr/tpQjzepssNtK7PknpTmr3vwWO/AzPa+5uv99u9mx7UHDop9We3XnZ8VR4HcH
- 1g0QpbWBYzDqTTcJEMOBWY/S0XDdL2NqQ+6b64AHRkZYnmcw==
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---K5NuW5UK006XMKlutS14lQ0n790aNLO8I
-Content-Type: multipart/mixed; boundary="2SqhpljWLJ7XoxgMmJlB3zwFHX9SRb8Ll";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Daniel Clarke <dan@e-dan.co.uk>, linux-btrfs@vger.kernel.org
-Message-ID: <2846a423-ba1e-698d-6369-f9588223bb94@gmx.com>
-Subject: Re: BTRFS unable to mount after one failed disk in RAID 1
-References: <CAP-b2nNHVnfDyC2-F2pWtwUgjZxcqfwqYvNcBmknd5ZHauWoUw@mail.gmail.com>
- <cafc855e-b030-83ff-2984-dfb45a36d1b3@gmx.com>
- <CAP-b2nPJE_=957ARh+JMzOkVg4E_A_tAJPiN0e1BTyCLTZ=Jhw@mail.gmail.com>
- <55f9d2ff-b6b0-7f13-287e-c9916c57943f@gmx.com>
- <CAP-b2nM=s07wA0Yb9XQvea_ULZ=kui0UZNddGDa_gfd1C_m7qQ@mail.gmail.com>
- <CAP-b2nNzzjsAbJGAi=R0yk6qvQ-bRM3__k-NBCb+oko7Ume+kQ@mail.gmail.com>
-In-Reply-To: <CAP-b2nNzzjsAbJGAi=R0yk6qvQ-bRM3__k-NBCb+oko7Ume+kQ@mail.gmail.com>
+We have generic dm-logwrites with fsstress test case (generic/482), but
+it doesn't cover fs specific operations like btrfs snapshot creation and
+deletion.
 
---2SqhpljWLJ7XoxgMmJlB3zwFHX9SRb8Ll
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Furthermore, that test is not heavy enough to bump btrfs tree height by
+its short runtime.
 
+And finally, btrfs check doesn't consider dirty log as an error, unlike
+ext*/xfs, that's to say we don't need to mount the fs to replay the log,
+but just run btrfs check on the fs is enough.
 
+So introduce a similar test case but for btrfs only.
 
-On 2019/8/26 =E4=B8=8A=E5=8D=884:49, Daniel Clarke wrote:
-> Hello,
->=20
-> Not sure if you got my previous email (see below).
+The test case will stress btrfs by:
+- Use small nodesize to bump tree height
+- Create a base tree which is already high enough
+- Trim tree blocks to find possible trim bugs
+- Call snapshot creation and deletion along with fsstress
 
-Well, I didn't get the previous mail at all.
+To utilize replay-log --check and --fsck command, we fix one bug in
+replay-log first:
+- Return 1 when fsck failed
+  Original when fsck failed, run_fsck() returns -1, but to make
+  replay_log prog to return 1, we need to return a minus value, so
+  fix it by setting @ret to -EUCLEAN when run_fsck() failed, so that
+  we can detect the fsck failure by simply checking the return value
+  of replay-log.
 
-Not sure why but it looks like my personal mail box seems to have
-something strange, mostly due to the name...
+Also it includes certain workaround for btrfs:
+- Use no-holes feature
+  To avoid missing hole file extents.
+  Although that behavior doesn't follow the on-disk format spec, it
+  doesn't cause data loss. And will follow the new on-disk format spec
+  of no-holes feature, so it's better to workaround it.
 
->=20
-> Today I ran another attempt at using btrfs restore, and it's picked up
-> a fair amount of files (about 80% of them).
->=20
-> Command used:
->=20
-> ~$ btrfs restore -x -m -i -v --path-regex '^/(|home(|/dan(|/.*)))$'
-> /dev/sdb1 /mnt/ssd1/
->=20
-> and rerun without attributes/metadata in case it helped (no change thou=
-gh):
->=20
-> ~$ btrfs restore -i -v --path-regex '^/(|home(|/dan(|/.*)))$'
-> /dev/sdb1 /mnt/ssd1/
->=20
-> I logged various output (stdout and stderr) and there is a fair amount
-> skipped with messages like below:
->=20
-> bad tree block 1058371960832, bytenr mismatch, want=3D1058371960832, ha=
-ve=3D0
+And an optimization for btrfs only:
+- Use replay-log --fsck/--check command
+  Since dm-log-writes records bios sequentially, there is no way to
+  locate certain entry unless we iterate all entries.
+  This is becoming a big performance penalty if we replay certain a
+  range, check the fs, then re-execute replay-log to replay another
+  range.
 
-Yep, this means btrfs fails to read out data on the missing device.
-Thus really hard to restore info from those tree blocks.
+  We need to records the previous entry location, or we need to
+  re-iterate all previous entries.
 
-> bad tree block 1058371977216, bytenr mismatch, want=3D1058371977216, ha=
-ve=3D0
-> bad tree block 1058371993600, bytenr mismatch, want=3D1058371993600, ha=
-ve=3D0
-> bad tree block 1058372009984, bytenr mismatch, want=3D1058372009984, ha=
-ve=3D0
-> bad tree block 1058372026368, bytenr mismatch, want=3D1058372026368, ha=
-ve=3D0
-> bad tree block 1058372042752, bytenr mismatch, want=3D1058372042752, ha=
-ve=3D0
-> bad tree block 1058372059136, bytenr mismatch, want=3D1058372059136, ha=
-ve=3D0
-> bad tree block 1058372075520, bytenr mismatch, want=3D1058372075520, ha=
-ve=3D0
-> bad tree block 1058372091904, bytenr mismatch, want=3D1058372091904, ha=
-ve=3D0
-> bad tree block 1058372108288, bytenr mismatch, want=3D1058372108288, ha=
-ve=3D0
-> bad tree block 1058372124672, bytenr mismatch, want=3D1058372124672, ha=
-ve=3D0
-> bad tree block 1058405138432, bytenr mismatch, want=3D1058405138432, ha=
-ve=3D0
-> bad tree block 1058372075520, bytenr mismatch, want=3D1058372075520, ha=
-ve=3D0
-> Error searching -5
-> Error searching /mnt/ssd1/home/dan/Pictures/Malaysia Singapore 2012
-> bad tree block 1058405138432, bytenr mismatch, want=3D1058405138432, ha=
-ve=3D0
->=20
-> Is there any option to try to fix/recovery in these cases.
+  Thankfully, replay-log has already address it by providing --fsck and
+  --check command, thus we don't need to break replay-log command.
 
-It's really hard to recover data from a missing device.
-I suggest to get that missing device back and retry.
+Please note, for fast storage (e.g. fast NVME or unsafe cache mode),
+it's recommended to use log devices larger than 15G, or we can't record
+the full log of just 30s fsstress run.
 
-There maybe some exotic ways to scan the whole disk and try to get some
-old copy from it.
-But that feature is not implemented by btrfs-progs yet.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+For the log devices size problem, I have submitted dm-logwrites bio flag
+filter support, to filter out data bios.
 
-Someone in the mail list suggested some commercial tool which does the
-above behavior, but I can't recall the name of the tool or the thread.
+But that is not yet merged into kernel, thus we need a large log device
+for short run.
 
->=20
-> Thanks very much,
->=20
-> Dan
->=20
->=20
-> On Thu, 22 Aug 2019 at 21:10, Daniel Clarke <dan@e-dan.co.uk> wrote:
->>
->> Hi Qu,
->>
->> Thanks again,
->>
->> The dump-tree output ran really quick, but somewhat large so I've
->> attached as a txt file.
+For reference, if using unsafe cache mode for all test devices, on a
+system with 32G dual-channel DDR4 3200 RAM, 5G log device will be
+filled up in less than 15 seconds.
+So to ensure dm-log-writes covers all the operations, one needs at least
+15G log device, and even more if using RAM with more channels.
 
-Didn't get that, but I think it should be OK as you have found the
-offending chunk.
+Changelog:
+v2
+- Better expression/words for comment
+- Add requirement for no-holes features
+- Use xattr to bump up tree height
+  So no need for max_inline mount option
+- Coding style fixes for function definition
+- Add -f for rm to avoid user alias setting
+- Add new workload (update time stamp and create new files) for snapshot
+  workload
+- Remove an unnecessary sync call
+- Get rid of wrong 2>&1 redirection
+- Add to group "snapshot" and "stress"
 
->>
->> Your thoughts are correct, everything looks ok (RAID1) apart from this=
+v3:
+- Add '_require_attrs' and source common/attr
+- Introduce '_require_fsck_not_report_dirty_logs_as_error'
+- Add comment for the replay-log code fix
+- Wait after killing all background fsstress
+- Use $BLKDISCARD_PROG instead of plain 'blkdiscard'
+- Add trap for snapshot and delete workload
+---
+ common/config               |   1 +
+ common/dmlogwrites          |  44 ++++++++++
+ src/log-writes/replay-log.c |   2 +
+ tests/btrfs/192             | 156 ++++++++++++++++++++++++++++++++++++
+ tests/btrfs/192.out         |   2 +
+ tests/btrfs/group           |   1 +
+ 6 files changed, 206 insertions(+)
+ create mode 100755 tests/btrfs/192
+ create mode 100644 tests/btrfs/192.out
 
->> one item (DUP):
->>
->>     item 43 key (FIRST_CHUNK_TREE CHUNK_ITEM 1057666105344) itemoff
->> 11355 itemsize 112
->>         length 1073741824 owner 2 stripe_len 65536 type METADATA|DUP
->>         io_align 65536 io_width 65536 sector_size 4096
->>         num_stripes 2 sub_stripes 1
->>             stripe 0 devid 2 offset 172873482240
->>             dev_uuid a3889c61-07b3-4165-bc37-e9918e41ea8d
->>             stripe 1 devid 2 offset 173947224064
->>             dev_uuid a3889c61-07b3-4165-bc37-e9918e41ea8d
+diff --git a/common/config b/common/config
+index bd64be62..4c86a492 100644
+--- a/common/config
++++ b/common/config
+@@ -183,6 +183,7 @@ export LOGGER_PROG="$(type -P logger)"
+ export DBENCH_PROG="$(type -P dbench)"
+ export DMSETUP_PROG="$(type -P dmsetup)"
+ export WIPEFS_PROG="$(type -P wipefs)"
++export BLKDISCARD_PROG="$(type -P blkdiscard)"
+ export DUMP_PROG="$(type -P dump)"
+ export RESTORE_PROG="$(type -P restore)"
+ export LVM_PROG="$(type -P lvm)"
+diff --git a/common/dmlogwrites b/common/dmlogwrites
+index ae2cbc6a..474ec570 100644
+--- a/common/dmlogwrites
++++ b/common/dmlogwrites
+@@ -175,3 +175,47 @@ _log_writes_replay_log_range()
+ 		>> $seqres.full 2>&1
+ 	[ $? -ne 0 ] && _fail "replay failed"
+ }
++
++# Require fsck not to report dirty logs as error
++#
++# This is a special requirement to use _log_writes_fast_replay_check
++# The reasons are:
++# - To avoid unnecessary seek when there are a lot of entries
++#   replay-log doesn't have a tree-like structure to do fast index,
++#   thus it iterate all entries one by one, this can be very slow
++# - No way to revert the log replay for next check
++#   A lot of fsck will replay the log, which will pollute the replay device
++#   for next entry
++_require_fsck_not_report_dirty_logs_as_error()
++{
++	if [ $FSTYP != "btrfs" ]; then
++		_notrun "fsck of $FSTYP reports dirty jounal/log as error, skipping test"
++	fi
++}
++
++# Replay and check each fua/flush (specified by $2) point.
++#
++# Since dm-log-writes records bio sequentially, even just replaying a range
++# still needs to iterate all records before the end point.
++# When number of records grows, it will be unacceptably slow, thus we need
++# to use relay-log itself to trigger fsck, avoid unnecessary seek.
++_log_writes_fast_replay_check()
++{
++	local check_point=$1
++	local blkdev=$2
++	local fsck_command
++
++	_require_fsck_not_report_dirty_logs_as_error
++
++	[ -z "$check_point" -o -z "$blkdev" ] && _fail \
++	"check_point and blkdev must be specified for _log_writes_fast_replay_check"
++	case $FSTYP in
++	btrfs)
++		fsck_command="$BTRFS_UTIL_PROG check $blkdev"
++		;;
++	esac
++	$here/src/log-writes/replay-log --log $LOGWRITES_DEV \
++		--replay $blkdev --check $check_point --fsck "$fsck_command" \
++		2>&1 | tail -n 128 >> $seqres.full
++	[ $? -ne 0 ] && _fail "fsck failed during replay"
++}
+diff --git a/src/log-writes/replay-log.c b/src/log-writes/replay-log.c
+index 829b18e2..1e1cd524 100644
+--- a/src/log-writes/replay-log.c
++++ b/src/log-writes/replay-log.c
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <stdio.h>
++#include <errno.h>
+ #include <unistd.h>
+ #include <getopt.h>
+ #include <stdlib.h>
+@@ -375,6 +376,7 @@ int main(int argc, char **argv)
+ 				fprintf(stderr, "Fsck errored out on entry "
+ 					"%llu\n",
+ 					(unsigned long long)log->cur_entry - 1);
++				ret = -EUCLEAN;
+ 				break;
+ 			}
+ 		}
+diff --git a/tests/btrfs/192 b/tests/btrfs/192
+new file mode 100755
+index 00000000..db9bc40e
+--- /dev/null
++++ b/tests/btrfs/192
+@@ -0,0 +1,156 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 192
++#
++# Test btrfs consistency after each FUA for a workload with snapshot creation
++# and removal
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	kill -q $pid1 &> /dev/null
++	kill -q $pid2 &> /dev/null
++	"$KILLALL_PROG" -q $FSSTRESS_PROG &> /dev/null
++	wait
++	_log_writes_cleanup &> /dev/null
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/attr
++. ./common/dmlogwrites
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_supported_os Linux
++
++_require_command "$KILLALL_PROG" killall
++_require_command "$BLKDISCARD_PROG" blkdiscard
++_require_btrfs_fs_feature "no_holes"
++_require_btrfs_mkfs_feature "no-holes"
++_require_fsck_not_report_dirty_logs_as_error
++_require_log_writes
++_require_scratch
++_require_attrs
++
++# To generate 3 level fs tree for 64K nodesize, we need 32768 xattr items.
++# That will cause too many transactions, bumping replay check time
++# from ~60s to ~300s. (VM alreayd using unsafe cache for the test devices)
++# So here we skip non-4K page size system, in favor of a shorter default
++# test time
++if [ $(get_page_size) -ne 4096 ]; then
++	_notrun "This test doesn't support non-4K page size yet"
++fi
++
++runtime=30
++nr_cpus=$("$here/src/feature" -o)
++# cap nr_cpus to 8 to avoid spending too much time on hosts with many cpus
++if [ $nr_cpus -gt 8 ]; then
++	nr_cpus=8
++fi
++fsstress_args=$(_scale_fsstress_args -w -d $SCRATCH_MNT -n 99999 -p $nr_cpus \
++		$FSSTRESS_AVOID)
++_log_writes_init $SCRATCH_DEV
++
++# Discard the whole devices so when some tree pointer is wrong, it won't point
++# to some older valid tree blocks, so we can detect it.
++$BLKDISCARD_PROG $LOGWRITES_DMDEV > /dev/null 2>&1
++
++# Workaround minor file extent discountinous.
++# And use 4K nodesize to bump tree height.
++_log_writes_mkfs -O no-holes -n 4k >> $seqres.full
++_log_writes_mount
++
++$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/src > /dev/null
++mkdir -p $SCRATCH_MNT/snapshots
++mkdir -p $SCRATCH_MNT/src/padding
++
++random_file()
++{
++	local basedir=$1
++	echo "$basedir/$(ls $basedir | sort -R | tail -1)"
++}
++
++snapshot_workload()
++{
++	trap "wait; exit" SIGTERM
++
++	local i=0
++	while true; do
++		$BTRFS_UTIL_PROG subvolume snapshot \
++			$SCRATCH_MNT/src $SCRATCH_MNT/snapshots/$i \
++			> /dev/null
++		# Do something small to make snapshots different
++		rm -f "$(random_file $SCRATCH_MNT/src/padding)"
++		rm -f "$(random_file $SCRATCH_MNT/src/padding)"
++		touch "$(random_file $SCRATCH_MNT/src/padding)"
++		touch "$SCRATCH_MNT/src/padding/random_$RANDOM"
++
++		i=$(($i + 1))
++		sleep 1
++	done
++}
++
++delete_workload()
++{
++	trap "wait; exit" SIGTERM
++
++	while true; do
++		sleep 2
++		$BTRFS_UTIL_PROG subvolume delete \
++			"$(random_file $SCRATCH_MNT/snapshots)" \
++			> /dev/null 2>&1
++	done
++}
++
++xattr_value=$(printf '%0.sX' $(seq 1 3800))
++
++# Bumping tree height to level 2.
++for ((i = 0; i < 64; i++)); do
++	touch "$SCRATCH_MNT/src/padding/$i"
++	$SETFATTR_PROG -n 'user.x1' -v $xattr_value \
++		"$SCRATCH_MNT/src/padding/$i"
++done
++
++_log_writes_mark prepare
++
++snapshot_workload &
++pid1=$!
++delete_workload &
++pid2=$!
++
++"$FSSTRESS_PROG" $fsstress_args > /dev/null &
++sleep $runtime
++
++"$KILLALL_PROG" -q "$FSSTRESS_PROG" &> /dev/null
++kill $pid1 &> /dev/null
++kill $pid2 &> /dev/null
++wait
++_log_writes_unmount
++_log_writes_remove
++
++_log_writes_fast_replay_check fua "$SCRATCH_DEV"
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/192.out b/tests/btrfs/192.out
+new file mode 100644
+index 00000000..6779aa77
+--- /dev/null
++++ b/tests/btrfs/192.out
+@@ -0,0 +1,2 @@
++QA output created by 192
++Silence is golden
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 2474d43e..cab10d19 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -194,3 +194,4 @@
+ 189 auto quick send clone
+ 190 auto quick replay balance qgroup
+ 191 auto quick send dedupe
++192 auto replay snapshot stress
+-- 
+2.22.0
 
-This looks like you have mounted the fs degraded at sometime, and did
-some write to trigger a chunk allocation.
-
-Since at degraded mode, there is only one device, thus btrfs can't
-create degraded RAID1 chunk, it created a DUP chunk.
-
-And that caused the problem of unable to mount.
-As mentioned, try to get that device back and retry may be a good idea.
-
-Thanks,
-Qu
-
->>
->> Cheers,
->>
->> Dan
->>
->> On Thu, 22 Aug 2019 at 00:23, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote=
-:
->>>
->>>
->>>
->>> On 2019/8/22 =E4=B8=8A=E5=8D=882:51, Daniel Clarke wrote:
->>>> Hi Qu,
->>>>
->>>> Many thanks for you response, see below:
->>>>
->>>>>
->>>>>
->>>>>
->>>>> On 2019/8/21 =E4=B8=8A=E5=8D=883:42, Daniel Clarke wrote:
->>>>>> Hi,
->>>>>>
->>>>>> I'm having some trouble recovering my data after a single disk has=
-
->>>>>> failed in a raid1 two disk setup.
->>>>>>
->>>>>> The original setup:
->>>>>> mkfs.btrfs -L MASTER /dev/sdb1
->>>>>> mount -o compress=3Dzstd,noatime /dev/sdb1 /mnt/master
->>>>>> btrfs subvolume create /mnt/master/home
->>>>>> btrfs device add /dev/sdc1 /mnt/master
->>>>>> btrfs balance start -dconvert=3Draid1 -mconvert=3Draid1 /mnt/maste=
-r
->>>>>>
->>>>>> Mount after in fstab:
->>>>>>
->>>>>> UUID=3D70a651ab-4837-4891-9099-a6c8a52aa40f /mnt/master     btrfs
->>>>>> defaults,noatime,compress=3Dzstd 0      0
->>>>>>
->>>>>> Was working fine for about 8 months, however I found the filesyste=
-m
->>>>>> went to read only,
->>>>>
->>>>> Dmesg of that please.
->>>>>
->>>>> And there is a known bug that an aborted transaction can cause race=
- and
->>>>> corrupt the fs.
->>>>> Please provide the kernel version of that RO event.
->>>>>
->>>>
->>>> When the original event occurred, the kernel version was:
->>>> ~$ uname -a
->>>> Linux dan-server 4.15.0-58-generic #64-Ubuntu SMP Tue Aug 6 11:12:41=
-
->>>> UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
->>>
->>> A little old, but should be OK as I haven't see much problem related =
-to
->>> older kernel yet.
->>>
->>>>
->>>> I've only got syslog going back 7 days, and it looks like the failur=
-e
->>>> occurred before that without me knowing. I've attached syslog.7.gz f=
-or
->>>> your information anyway.
->>>
->>> From that, the most obvious is your sdc1 has some hardware related
->>> problem, a lot of read error directly from disk controller.
->>>
->>>>
->>>> File system was read only at that point, but the restart failed, so =
-I
->>>> commented out the mount in fstab and tried manually.
->>>
->>> Consider how many read error and write error it hit, it's very possib=
-le
->>> that btrfs goes RO as some tree blocks write fails, thus it goes RO.
->>>
->>> And considering it's sdc1 causing the problem, if you're using RAID1 =
-for
->>> both metadata and data, your sdb1 should be more or less OK.
->>>
->>>>
->>>> Actually that first mount returned these errors (in attached syslog.=
-3.gz):
->>>> Aug 17 09:08:01 dan-server kernel: [   68.568642] BTRFS info (device=
-
->>>> sdb1): allowing degraded mounts
->>>> Aug 17 09:08:01 dan-server kernel: [   68.568644] BTRFS info (device=
-
->>>> sdb1): disk space caching is enabled
->>>> Aug 17 09:08:01 dan-server kernel: [   68.568645] BTRFS info (device=
-
->>>> sdb1): has skinny extents
->>>> Aug 17 09:08:01 dan-server kernel: [   68.569781] BTRFS warning
->>>> (device sdb1): devid 2 uuid a3889c61-07b3-4165-bc37-e9918e41ea8d is
->>>> missing
->>>> Aug 17 09:08:01 dan-server kernel: [   68.577883] BTRFS warning
->>>> (device sdb1): devid 2 uuid a3889c61-07b3-4165-bc37-e9918e41ea8d is
->>>> missing
->>>> Aug 17 09:08:02 dan-server kernel: [   69.586393] BTRFS error (devic=
-e
->>>> sdb1): failed to read block groups: -5
->>>
->>> Then I'd say, some tree blocks are just missing, maybe you have some
->>> SINGLE/DUP tree blocks on sdc1, thus causing the problem.
->>>
->>> It shouldn't be a problem if you only want RO mount.
->>>
->>> [...]
->>>>> # btrfs ins dump-super -FfA /dev/sdc1
->>> [...]
->>>> stripesize        4096
->>>> root_dir        6
->>>> num_devices        2
->>>> compat_flags        0x0
->>>> compat_ro_flags        0x0
->>>> incompat_flags        0x171
->>>>             ( MIXED_BACKREF |
->>>>               COMPRESS_ZSTD |
->>>>               BIG_METADATA |
->>>>               EXTENDED_IREF |
->>>>               SKINNY_METADATA )
->>>> cache_generation    8596
->>>> uuid_tree_generation    8596
->>>> dev_item.uuid        150986ba-521c-4eb0-85ec-9435edecaf2a
->>>> dev_item.fsid        70a651ab-4837-4891-9099-a6c8a52aa40f [match]
->>>> dev_item.type        0
->>>> dev_item.total_bytes    2000397864960
->>>> dev_item.bytes_used    1076996603904
->>>> dev_item.io_align    4096
->>>> dev_item.io_width    4096
->>>> dev_item.sector_size    4096
->>>> dev_item.devid        1
->>>> dev_item.dev_group    0
->>>> dev_item.seek_speed    0
->>>> dev_item.bandwidth    0
->>>> dev_item.generation    0
->>>> sys_chunk_array[2048]:
->>>>     item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 1769556934656)
->>>>         length 33554432 owner 2 stripe_len 65536 type SYSTEM|RAID1
->>>>         io_align 65536 io_width 65536 sector_size 4096
->>>>         num_stripes 2 sub_stripes 1
->>>>             stripe 0 devid 1 offset 2186280960
->>>>             dev_uuid 150986ba-521c-4eb0-85ec-9435edecaf2a
->>>>             stripe 1 devid 2 offset 885838053376
->>>>             dev_uuid a3889c61-07b3-4165-bc37-e9918e41ea8d
->>>
->>> So system chunk is still OK, all RAID1.
->>>
->>> Then maybe some metadata chunks causing the problem. (can be caused b=
-y
->>> btrfs-progs writes).
->>>
->>> If you want some more analyse why this mount fails, please provide th=
-e
->>> following dump:
->>> # btrfs ins dump-tree -t chunk /dev/sdb1
->>>
->>> Thanks,
->>> Qu
->>>
->>>> backup_roots[4]:
->>>>     backup 0:
->>>>         backup_tree_root:    1507300622336    gen: 8594    level: 1
->>>>         backup_chunk_root:    1769556934656    gen: 8191    level: 1=
-
->>>>         backup_extent_root:    1507302375424    gen: 8594    level: =
-2
->>>>         backup_fs_root:        1506503901184    gen: 7886    level: =
-0
->>>>         backup_dev_root:    1507550887936    gen: 8473    level: 1
->>>>         backup_csum_root:    1507311517696    gen: 8594    level: 2
->>>>         backup_total_bytes:    4000795729920
->>>>         backup_bytes_used:    1075454636032
->>>>         backup_num_devices:    2
->>>>
->>>>     backup 1:
->>>>         backup_tree_root:    1507500949504    gen: 8595    level: 1
->>>>         backup_chunk_root:    1769556934656    gen: 8191    level: 1=
-
->>>>         backup_extent_root:    1507297804288    gen: 8595    level: =
-2
->>>>         backup_fs_root:        1506503901184    gen: 7886    level: =
-0
->>>>         backup_dev_root:    1507550887936    gen: 8473    level: 1
->>>>         backup_csum_root:    1768498708480    gen: 8595    level: 2
->>>>         backup_total_bytes:    4000795729920
->>>>         backup_bytes_used:    1075454439424
->>>>         backup_num_devices:    2
->>>>
->>>>     backup 2:
->>>>         backup_tree_root:    1768503099392    gen: 8596    level: 1
->>>>         backup_chunk_root:    1769556934656    gen: 8191    level: 1=
-
->>>>         backup_extent_root:    1768503115776    gen: 8596    level: =
-2
->>>>         backup_fs_root:        1506503901184    gen: 7886    level: =
-0
->>>>         backup_dev_root:    1507550887936    gen: 8473    level: 1
->>>>         backup_csum_root:    1768505966592    gen: 8596    level: 2
->>>>         backup_total_bytes:    4000795729920
->>>>         backup_bytes_used:    1075454439424
->>>>         backup_num_devices:    2
->>>>
->>>>     backup 3:
->>>>         backup_tree_root:    1507234676736    gen: 8593    level: 1
->>>>         backup_chunk_root:    1769556934656    gen: 8191    level: 1=
-
->>>>         backup_extent_root:    1507234725888    gen: 8593    level: =
-2
->>>>         backup_fs_root:        1506503901184    gen: 7886    level: =
-0
->>>>         backup_dev_root:    1507550887936    gen: 8473    level: 1
->>>>         backup_csum_root:    1507297738752    gen: 8593    level: 2
->>>>         backup_total_bytes:    4000795729920
->>>>         backup_bytes_used:    1075454636032
->>>>         backup_num_devices:    2
->>>>
->>>>
->>>>
->>>>>
->>>>>> [ 4044.863400] BTRFS error (device sdc1): open_ctree failed
->>>>>>
->>>>>> Pretty much the same thing with other mount options, with same
->>>>>> messages in dmesg.
->>>>>>
->>>>>> ~$ btrfs check --init-extent-tree /dev/sdc1
->>>>>
->>>>> Why you're doing so?! It's already mentioned --init-extent-tree is =
-UNSAFE!
->>>>
->>>> Apologies, saw it somewhere and tried in some desperation. It ran an=
-d
->>>> exited in just a second though so maybe didn't do anything.
->>>>
->>>>>
->>>>>> warning, device 2 is missing
->>>>>> Checking filesystem on /dev/sdc1
->>>>>> UUID: 70a651ab-4837-4891-9099-a6c8a52aa40f
->>>>>> Creating a new extent tree
->>>>>> bytenr mismatch, want=3D1058577645568, have=3D0
->>>>>> Error reading tree block
->>>>>> error pinning down used bytes
->>>>>> ERROR: attempt to start transaction over already running one
->>>>>
->>>>> Transaction get aborted, exactly the situation where fs can get fur=
-ther
->>>>> corrupted.
->>>>>
->>>>> The only good news is, we shouldn't have written much data as it's
->>>>> happening in tree pinning down process, so no further damage.
->>>>
->>>> Thanks, that's what I'm hoping!
->>>>
->>>>>
->>>>>> extent buffer leak: start 1768503115776 len 16384
->>>>>>
->>>>>> ~$ btrfs rescue super-recover -v /dev/sdc1
->>>>>> All Devices:
->>>>>> Device: id =3D 1, name =3D /dev/sdc1
->>>>>>
->>>>>> Before Recovering:
->>>>>> [All good supers]:
->>>>>> device name =3D /dev/sdc1
->>>>>> superblock bytenr =3D 65536
->>>>>>
->>>>>> device name =3D /dev/sdc1
->>>>>> superblock bytenr =3D 67108864
->>>>>>
->>>>>> device name =3D /dev/sdc1
->>>>>> superblock bytenr =3D 274877906944
->>>>>>
->>>>>> [All bad supers]:
->>>>>>
->>>>>> All supers are valid, no need to recover
->>>>>>
->>>>>>
->>>>>> ~$ sudo btrfs restore -mxs /dev/sdc1 /mnt/ssd1/
->>>>>> warning, device 2 is missing
->>>>>> bytenr mismatch, want=3D1057828618240, have=3D0
->>>>>> Could not open root, trying backup super
->>>>>> warning, device 2 is missing
->>>>>> bytenr mismatch, want=3D1057828618240, have=3D0
->>>>>> Could not open root, trying backup super
->>>>>> warning, device 2 is missing
->>>>>> bytenr mismatch, want=3D1057828618240, have=3D0
->>>>>> Could not open root, trying backup super
->>>>>>
->>>>>> ~$ btrfs check /dev/sdc1
->>>>>> warning, device 2 is missing
->>>>>> bytenr mismatch, want=3D1057828618240, have=3D0
->>>>>> ERROR: cannot open file system
->>>>>>
->>>>>> ~$ btrfs rescue zero-log /dev/sdc1
->>>>>> warning, device 2 is missing
->>>>>> bytenr mismatch, want=3D1057828618240, have=3D0
->>>>>> ERROR: could not open ctree
->>>>>>
->>>>>> I'm only interested in getting it read-only mounted so I can copy
->>>>>> somewhere else. Any ideas you have are welcome!
->>>>>
->>>>> It looks like some metadata tree blocks are still not in RAID1 mode=
-=2E
->>>>> Needs that ins dump-super output to confirm.
->>>>>
->>>>> Thanks,
->>>>> Qu
->>>>>
->>>>>>
->>>>>> Many Thanks,
->>>>>>
->>>>>> Daniel Clarke
->>>>>>
->>>>>
->>>>
->>>> Thanks again,
->>>>
->>>> Dan
->>>>
->>>
-
-
---2SqhpljWLJ7XoxgMmJlB3zwFHX9SRb8Ll--
-
---K5NuW5UK006XMKlutS14lQ0n790aNLO8I
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1jHwsACgkQwj2R86El
-/qi5/ggArCdyqsGRxMFG1eZq/qdA5SQ3REemvKIxXieQOZoWrddk4ieDBEIOw1Ay
-XBTFZeANXUJ9vz0pX4a3utuhj3fbyhoujaWl8lqvs+tDn4G0sJfjmdaVBWw30YhB
-EnHkujM2cTF39UUCzfBlEOYpJRvymY5bU8tC+GDrEoWK4RDM2PolgYjZhyivBVl0
-McCYFD5dQeU77tH66iMwMWnVgecl6Ayc0sghvZikOe+rGBS9RQLn7PtPvGLHjhN+
-+UOVZD2s3QXVCrAq4SlQjAg2pgaA7lKmFLyJhFc2ftAJICX2F3Lz36LFpF7agEOG
-cWfSpjvysOfI5cGfrmYhwXuNV4u/Lg==
-=3EiP
------END PGP SIGNATURE-----
-
---K5NuW5UK006XMKlutS14lQ0n790aNLO8I--
