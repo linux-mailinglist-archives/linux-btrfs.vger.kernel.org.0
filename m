@@ -2,271 +2,169 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 109BA9CDE5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2019 13:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D85AF9CE5A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Aug 2019 13:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731220AbfHZLQq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 26 Aug 2019 07:16:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60106 "EHLO mx1.suse.de"
+        id S1726866AbfHZLpa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 26 Aug 2019 07:45:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37954 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731178AbfHZLQo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 26 Aug 2019 07:16:44 -0400
+        id S1726389AbfHZLpa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 26 Aug 2019 07:45:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A3E48AC64;
-        Mon, 26 Aug 2019 11:16:42 +0000 (UTC)
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        linux-btrfs@vger.kernel.org, Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for kmalloc(power-of-two)
-Date:   Mon, 26 Aug 2019 13:16:27 +0200
-Message-Id: <20190826111627.7505-3-vbabka@suse.cz>
-X-Mailer: git-send-email 2.22.1
-In-Reply-To: <20190826111627.7505-1-vbabka@suse.cz>
-References: <20190826111627.7505-1-vbabka@suse.cz>
+        by mx1.suse.de (Postfix) with ESMTP id 1FEE1AE35
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Aug 2019 11:45:28 +0000 (UTC)
+Subject: Re: [PATCH 2/2] btrfs: tree-checker: Add check for INODE_REF
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20190826074039.28517-1-wqu@suse.com>
+ <20190826074039.28517-3-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4c9195c9-5fc1-8524-e7d8-78ad1e942df7@suse.com>
+Date:   Mon, 26 Aug 2019 14:45:25 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20190826074039.28517-3-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-In most configurations, kmalloc() happens to return naturally aligned (i.e.
-aligned to the block size itself) blocks for power of two sizes. That means
-some kmalloc() users might unknowingly rely on that alignment, until stuff
-breaks when the kernel is built with e.g.  CONFIG_SLUB_DEBUG or CONFIG_SLOB,
-and blocks stop being aligned. Then developers have to devise workaround such
-as own kmem caches with specified alignment [1], which is not always practical,
-as recently evidenced in [2].
 
-The topic has been discussed at LSF/MM 2019 [3]. Adding a 'kmalloc_aligned()'
-variant would not help with code unknowingly relying on the implicit alignment.
-For slab implementations it would either require creating more kmalloc caches,
-or allocate a larger size and only give back part of it. That would be
-wasteful, especially with a generic alignment parameter (in contrast with a
-fixed alignment to size).
 
-Ideally we should provide to mm users what they need without difficult
-workarounds or own reimplementations, so let's make the kmalloc() alignment to
-size explicitly guaranteed for power-of-two sizes under all configurations.
-What this means for the three available allocators?
+On 26.08.19 г. 10:40 ч., Qu Wenruo wrote:
+> For INODE_REF we will check:
+> - Objectid (ino) against previous key
+>   To detect missing INODE_ITEM.
+> 
+> - No overflow/padding in the data payload
+>   Much like DIR_ITEM, but with less members to check.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/tree-checker.c | 53 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 53 insertions(+)
+> 
+> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+> index 636ce1b4566e..3ce447eb591c 100644
+> --- a/fs/btrfs/tree-checker.c
+> +++ b/fs/btrfs/tree-checker.c
+> @@ -842,6 +842,56 @@ static int check_inode_item(struct extent_buffer *leaf,
+>  	return 0;
+>  }
+>  
+> +#define inode_ref_err(fs_info, eb, slot, fmt, ...)		\
+> +	inode_item_err(fs_info, eb, slot, fmt, __VA_ARGS__)
 
-* SLAB object layout happens to be mostly unchanged by the patch. The
-  implicitly provided alignment could be compromised with CONFIG_DEBUG_SLAB due
-  to redzoning, however SLAB disables redzoning for caches with alignment
-  larger than unsigned long long. Practically on at least x86 this includes
-  kmalloc caches as they use cache line alignment, which is larger than that.
-  Still, this patch ensures alignment on all arches and cache sizes.
+This define doesn't bring anything, just opencode the call to
+inode_item_err directly.
 
-* SLUB layout is also unchanged unless redzoning is enabled through
-  CONFIG_SLUB_DEBUG and boot parameter for the particular kmalloc cache. With
-  this patch, explicit alignment is guaranteed with redzoning as well. This
-  will result in more memory being wasted, but that should be acceptable in a
-  debugging scenario.
-
-* SLOB has no implicit alignment so this patch adds it explicitly for
-  kmalloc(). The potential downside is increased fragmentation. While
-  pathological allocation scenarios are certainly possible, in my testing,
-  after booting a x86_64 kernel+userspace with virtme, around 16MB memory
-  was consumed by slab pages both before and after the patch, with difference
-  in the noise.
-
-[1] https://lore.kernel.org/linux-btrfs/c3157c8e8e0e7588312b40c853f65c02fe6c957a.1566399731.git.christophe.leroy@c-s.fr/
-[2] https://lore.kernel.org/linux-fsdevel/20190225040904.5557-1-ming.lei@redhat.com/
-[3] https://lwn.net/Articles/787740/
-
-Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
----
- Documentation/core-api/memory-allocation.rst |  4 ++
- include/linux/slab.h                         |  4 ++
- mm/slab_common.c                             | 11 ++++-
- mm/slob.c                                    | 42 +++++++++++++++-----
- 4 files changed, 49 insertions(+), 12 deletions(-)
-
-diff --git a/Documentation/core-api/memory-allocation.rst b/Documentation/core-api/memory-allocation.rst
-index 7744aa3bf2e0..27c54854b508 100644
---- a/Documentation/core-api/memory-allocation.rst
-+++ b/Documentation/core-api/memory-allocation.rst
-@@ -98,6 +98,10 @@ limited. The actual limit depends on the hardware and the kernel
- configuration, but it is a good practice to use `kmalloc` for objects
- smaller than page size.
- 
-+The address of a chunk allocated with `kmalloc` is aligned to at least
-+ARCH_KMALLOC_MINALIGN bytes. For sizes of power of two bytes, the
-+alignment is also guaranteed to be at least to the respective size.
-+
- For large allocations you can use :c:func:`vmalloc` and
- :c:func:`vzalloc`, or directly request pages from the page
- allocator. The memory allocated by `vmalloc` and related functions is
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index 56c9c7eed34e..0d4c26395785 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -493,6 +493,10 @@ static __always_inline void *kmalloc_large(size_t size, gfp_t flags)
-  * kmalloc is the normal method of allocating memory
-  * for objects smaller than page size in the kernel.
-  *
-+ * The allocated object address is aligned to at least ARCH_KMALLOC_MINALIGN
-+ * bytes. For @size of power of two bytes, the alignment is also guaranteed
-+ * to be at least to the size.
-+ *
-  * The @flags argument may be one of the GFP flags defined at
-  * include/linux/gfp.h and described at
-  * :ref:`Documentation/core-api/mm-api.rst <mm-api-gfp-flags>`
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 929c02a90fba..b9ba93ad5c7f 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -993,10 +993,19 @@ void __init create_boot_cache(struct kmem_cache *s, const char *name,
- 		unsigned int useroffset, unsigned int usersize)
- {
- 	int err;
-+	unsigned int align = ARCH_KMALLOC_MINALIGN;
- 
- 	s->name = name;
- 	s->size = s->object_size = size;
--	s->align = calculate_alignment(flags, ARCH_KMALLOC_MINALIGN, size);
-+
-+	/*
-+	 * For power of two sizes, guarantee natural alignment for kmalloc
-+	 * caches, regardless of SL*B debugging options.
-+	 */
-+	if (is_power_of_2(size))
-+		align = max(align, size);
-+	s->align = calculate_alignment(flags, align, size);
-+
- 	s->useroffset = useroffset;
- 	s->usersize = usersize;
- 
-diff --git a/mm/slob.c b/mm/slob.c
-index 3dcde9cf2b17..07a39047aa54 100644
---- a/mm/slob.c
-+++ b/mm/slob.c
-@@ -224,6 +224,7 @@ static void slob_free_pages(void *b, int order)
-  * @sp: Page to look in.
-  * @size: Size of the allocation.
-  * @align: Allocation alignment.
-+ * @align_offset: Offset in the allocated block that will be aligned.
-  * @page_removed_from_list: Return parameter.
-  *
-  * Tries to find a chunk of memory at least @size bytes big within @page.
-@@ -234,7 +235,7 @@ static void slob_free_pages(void *b, int order)
-  *         true (set to false otherwise).
-  */
- static void *slob_page_alloc(struct page *sp, size_t size, int align,
--			     bool *page_removed_from_list)
-+			      int align_offset, bool *page_removed_from_list)
- {
- 	slob_t *prev, *cur, *aligned = NULL;
- 	int delta = 0, units = SLOB_UNITS(size);
-@@ -243,8 +244,17 @@ static void *slob_page_alloc(struct page *sp, size_t size, int align,
- 	for (prev = NULL, cur = sp->freelist; ; prev = cur, cur = slob_next(cur)) {
- 		slobidx_t avail = slob_units(cur);
- 
-+		/*
-+		 * 'aligned' will hold the address of the slob block so that the
-+		 * address 'aligned'+'align_offset' is aligned according to the
-+		 * 'align' parameter. This is for kmalloc() which prepends the
-+		 * allocated block with its size, so that the block itself is
-+		 * aligned when needed.
-+		 */
- 		if (align) {
--			aligned = (slob_t *)ALIGN((unsigned long)cur, align);
-+			aligned = (slob_t *)
-+				(ALIGN((unsigned long)cur + align_offset, align)
-+				 - align_offset);
- 			delta = aligned - cur;
- 		}
- 		if (avail >= units + delta) { /* room enough? */
-@@ -288,7 +298,8 @@ static void *slob_page_alloc(struct page *sp, size_t size, int align,
- /*
-  * slob_alloc: entry point into the slob allocator.
-  */
--static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
-+static void *slob_alloc(size_t size, gfp_t gfp, int align, int node,
-+							int align_offset)
- {
- 	struct page *sp;
- 	struct list_head *slob_list;
-@@ -319,7 +330,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
- 		if (sp->units < SLOB_UNITS(size))
- 			continue;
- 
--		b = slob_page_alloc(sp, size, align, &page_removed_from_list);
-+		b = slob_page_alloc(sp, size, align, align_offset, &page_removed_from_list);
- 		if (!b)
- 			continue;
- 
-@@ -356,7 +367,7 @@ static void *slob_alloc(size_t size, gfp_t gfp, int align, int node)
- 		INIT_LIST_HEAD(&sp->slab_list);
- 		set_slob(b, SLOB_UNITS(PAGE_SIZE), b + SLOB_UNITS(PAGE_SIZE));
- 		set_slob_page_free(sp, slob_list);
--		b = slob_page_alloc(sp, size, align, &_unused);
-+		b = slob_page_alloc(sp, size, align, align_offset, &_unused);
- 		BUG_ON(!b);
- 		spin_unlock_irqrestore(&slob_lock, flags);
- 	}
-@@ -458,7 +469,7 @@ static __always_inline void *
- __do_kmalloc_node(size_t size, gfp_t gfp, int node, unsigned long caller)
- {
- 	unsigned int *m;
--	int align = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
-+	int minalign = max_t(size_t, ARCH_KMALLOC_MINALIGN, ARCH_SLAB_MINALIGN);
- 	void *ret;
- 
- 	gfp &= gfp_allowed_mask;
-@@ -466,19 +477,28 @@ __do_kmalloc_node(size_t size, gfp_t gfp, int node, unsigned long caller)
- 	fs_reclaim_acquire(gfp);
- 	fs_reclaim_release(gfp);
- 
--	if (size < PAGE_SIZE - align) {
-+	if (size < PAGE_SIZE - minalign) {
-+		int align = minalign;
-+
-+		/*
-+		 * For power of two sizes, guarantee natural alignment for
-+		 * kmalloc()'d objects.
-+		 */
-+		if (is_power_of_2(size))
-+			align = max(minalign, (int) size);
-+
- 		if (!size)
- 			return ZERO_SIZE_PTR;
- 
--		m = slob_alloc(size + align, gfp, align, node);
-+		m = slob_alloc(size + minalign, gfp, align, node, minalign);
- 
- 		if (!m)
- 			return NULL;
- 		*m = size;
--		ret = (void *)m + align;
-+		ret = (void *)m + minalign;
- 
- 		trace_kmalloc_node(caller, ret,
--				   size, size + align, gfp, node);
-+				   size, size + minalign, gfp, node);
- 	} else {
- 		unsigned int order = get_order(size);
- 
-@@ -579,7 +599,7 @@ static void *slob_alloc_node(struct kmem_cache *c, gfp_t flags, int node)
- 	fs_reclaim_release(flags);
- 
- 	if (c->size < PAGE_SIZE) {
--		b = slob_alloc(c->size, flags, c->align, node);
-+		b = slob_alloc(c->size, flags, c->align, node, 0);
- 		trace_kmem_cache_alloc_node(_RET_IP_, b, c->object_size,
- 					    SLOB_UNITS(c->size) * SLOB_UNIT,
- 					    flags, node);
--- 
-2.22.1
-
+> +static int check_inode_ref(struct extent_buffer *leaf,
+> +			   struct btrfs_key *key, struct btrfs_key *prev_key,
+> +			   int slot)
+> +{
+> +	struct btrfs_inode_ref *iref;
+> +	unsigned long ptr;
+> +	unsigned long end;
+> +
+> +	/* namelen can't be 0, so item_size == sizeof() is also invalid */
+> +	if (btrfs_item_size_nr(leaf, slot) <= sizeof(*iref)) {
+> +		inode_ref_err(fs_info, leaf, slot,
+> +		"invalid item size, have %u expect (%zu, %u)",
+> +			btrfs_item_size_nr(leaf, slot),
+> +			sizeof(*iref), BTRFS_LEAF_DATA_SIZE(leaf->fs_info));
+> +		return -EUCLEAN;
+> +	}
+> +
+> +	ptr = btrfs_item_ptr_offset(leaf, slot);
+> +	end = ptr + btrfs_item_size_nr(leaf, slot);
+> +	while (ptr < end) {
+> +		u16 namelen;
+> +
+> +		if (ptr + sizeof(iref) > end) {
+> +			inode_ref_err(fs_info, leaf, slot,
+> +		"inode ref overflow, ptr %lu end %lu inode_ref_size %zu",
+> +				ptr, end, sizeof(iref));
+> +			return -EUCLEAN;
+> +		}
+> +
+> +		iref = (struct btrfs_inode_ref *)ptr;
+> +		namelen = btrfs_inode_ref_name_len(leaf, iref);
+> +		if (ptr + sizeof(*iref) + namelen > end) {
+> +			inode_ref_err(fs_info, leaf, slot,
+> +		"inode ref overflow, ptr %lu end %lu namelen %u",
+> +				ptr, end, namelen);
+> +			return -EUCLEAN;
+> +		}
+> +
+> +		/*
+> +		 * NOTE: In theory we should record all found index number
+> +		 * to find any duplicated index. But that will be too time
+> +		 * consuming for inodes with too many hard links.
+> +		 */
+> +		ptr += sizeof(*iref) + namelen;
+> +	}
+> +	return 0;
+> +}
+> +
+>  /*
+>   * Common point to switch the item-specific validation.
+>   */
+> @@ -864,6 +914,9 @@ static int check_leaf_item(struct extent_buffer *leaf,
+>  	case BTRFS_XATTR_ITEM_KEY:
+>  		ret = check_dir_item(leaf, key, prev_key, slot);
+>  		break;
+> +	case BTRFS_INODE_REF_KEY:
+> +		ret = check_inode_ref(leaf, key, prev_key, slot);
+> +		break;
+>  	case BTRFS_BLOCK_GROUP_ITEM_KEY:
+>  		ret = check_block_group_item(leaf, key, slot);
+>  		break;
+> 
