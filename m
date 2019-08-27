@@ -2,165 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 564BD9E50E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 11:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB789E640
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 12:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbfH0J7I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Aug 2019 05:59:08 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52654 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbfH0J7I (ORCPT
+        id S1728845AbfH0K7k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Aug 2019 06:59:40 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:38027 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbfH0K7k (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Aug 2019 05:59:08 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7R9x4RQ028227;
-        Tue, 27 Aug 2019 09:59:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=WzKfXhLyl5qb772Vl608f9gXGX3AL3SOaESg9hibZBk=;
- b=lwsCGWbHzjvQOkxG073Y6tq0qq7zqkemhJoBThO+CV1vQ0xzKMNV/Gb35mXTLvDMLfjN
- a+QZG77C6hupQFj5k/sPlKC/JqyM4YKpXY0MOuTFLCQ3nqLU3UE3SXpbujOY8UqwtHA1
- CZoZL86i1keogLd3M96sPnkjHSILFExpAMlDt0+5ACT2aiIcEulT7DbnhtHpM29AcmkA
- P/ZZTMGjYy38O9yD7hu99uPPbav20VgiwMj6S3ayqo/n12QRakAj9n3AasmPt4XUX6Zt
- +JpGZYNFhr5leJSzXfD0tlLW6zZKH9SUS/wXbTktk8X2T/0xngjINUjaqB4gpmzMpmcG Rg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2un1sh08p3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Aug 2019 09:59:03 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7R9x3Kv142745;
-        Tue, 27 Aug 2019 09:59:03 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2umhu8htk9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 27 Aug 2019 09:59:02 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7R9wHbU012223;
-        Tue, 27 Aug 2019 09:58:17 GMT
-Received: from [192.168.1.119] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 27 Aug 2019 02:58:17 -0700
-Subject: Re: [PATCH 1/2] btrfs: fix BUG_ON with proper error handle in
- find_next_devid
+        Tue, 27 Aug 2019 06:59:40 -0400
+X-Originating-IP: 88.191.131.7
+Received: from [192.168.1.167] (unknown [88.191.131.7])
+        (Authenticated sender: swami@petaramesh.org)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 5AECE20006;
+        Tue, 27 Aug 2019 10:59:37 +0000 (UTC)
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
 To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <20190827074045.5563-1-anand.jain@oracle.com>
- <20190827074045.5563-2-anand.jain@oracle.com>
- <2a203bdb-7cde-f970-6e33-38ba5f190c1b@gmx.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <5b866472-0a12-78df-d8a3-d940caf755ef@oracle.com>
-Date:   Tue, 27 Aug 2019 17:58:14 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+Cc:     Christoph Anton Mitterer <calestyo@scientia.net>
+References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
+ <18d24f2f-4d33-10aa-5052-c358d4f7c328@petaramesh.org>
+ <a8968a812e270a0dd80c4cf431a8437d3a7daba5.camel@scientia.net>
+ <5aefca34-224a-0a81-c930-4ccfcd144aef@petaramesh.org>
+ <4bd70aa2-7ad0-d5c6-bc1f-22340afaac60@petaramesh.org>
+ <370697f1-24c9-c8bd-01a7-c2885a7ece05@gmx.com>
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
+ 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
+ BtUAN08OPA==
+Message-ID: <fcd2e070-67e9-4889-f778-748070cc9856@petaramesh.org>
+Date:   Tue, 27 Aug 2019 12:59:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <2a203bdb-7cde-f970-6e33-38ba5f190c1b@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <370697f1-24c9-c8bd-01a7-c2885a7ece05@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9361 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908270113
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9361 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908270113
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 27/8/19 4:12 PM, Qu Wenruo wrote:
-> 
-> 
-> On 2019/8/27 下午3:40, Anand Jain wrote:
->> In a corrupted tree if search for next devid finds the device with
->> devid = -1, then report the error -EUCLEAN back to the parent
->> function to fail gracefully.
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->>   fs/btrfs/volumes.c | 7 ++++++-
->>   1 file changed, 6 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 4db4a100c05b..36aa5f79fb6c 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -1849,7 +1849,12 @@ static noinline int find_next_devid(struct btrfs_fs_info *fs_info,
->>   	if (ret < 0)
->>   		goto error;
->>   
->> -	BUG_ON(ret == 0); /* Corruption */
->> +	if (ret == 0) {
->> +		/* Corruption */
->> +		btrfs_err(fs_info, "corrupted chunk tree devid -1 matched");
-> 
-> It will never hit this branch.
-> 
-> As in tree checker, we have checked if the devid is so large that a
-> chunk item or system chunk array can't contain one.
+Hi again,
 
-  That check is buggy. It assumes devid represents the num_devices,
-  it does not account for the possible devid hole as created in the
-  below script.
+Le 27/08/2019 à 08:21, Qu Wenruo a écrit :
+> I'd prefer to do a "btrfs check --readonly" anyway (which also checks
+> free space cache), then go nospace_cache if you're concerned.
 
-$ cat t
+Here's what I dit, here's what I got...:
 
-umount /btrfs
-dev1=/dev/sdb
-dev2=/dev/sdc
-mkfs.btrfs -fq -dsingle -msingle $dev1
-mount $dev1 /btrfs
+root@PartedMagic:~# uname -r
+5.1.5-pmagic64
 
-_fail()
-{
-	echo $1
-	exit 1
-}
+root@PartedMagic:~# btrfs --version
+btrfs-progs v5.1
 
-while true; do
-	btrfs dev add -f $dev2 /btrfs || _fail "add failed"
-	btrfs dev del $dev1 /btrfs || _fail "del failed"
-	dev_tmp=$dev1
-	dev1=$dev2
-	dev2=$dev_tmp
-done
+root@PartedMagic:~# btrfs check --readonly /dev/PPL_VG1/LINUX
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+block group 52677312512 has wrong amount of free space, free space cache
+has 266551296 block group has 266584064
+failed to load free space cache for block group 52677312512
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+Opening filesystem to check...
+Checking filesystem on /dev/PPL_VG1/LINUX
+UUID: 25fede5a-d8c2-4c7e-9e7e-b19aad319044
+found 87804731392 bytes used, no error found
+total csum bytes: 79811080
+total tree bytes: 2195832832
+total fs tree bytes: 1992900608
+total extent tree bytes: 101548032
+btree space waste bytes: 380803707
+file data blocks allocated: 626135830528
+ referenced 124465221632
 
------------------------
-[  185.446441] BTRFS critical (device sdb): corrupt leaf: root=3 
-block=313739198464 slot=1 devid=1 invalid devid: has=507 expect=[0, 506]
-[  185.446446] BTRFS error (device sdb): block=313739198464 write time 
-tree block corruption detected
-[  185.446556] BTRFS: error (device sdb) in 
-btrfs_commit_transaction:2268: errno=-5 IO failure (Error while writing 
-out transaction)
-[  185.446559] BTRFS warning (device sdb): Skipping commit of aborted 
-transaction.
-[  185.446561] BTRFS: error (device sdb) in cleanup_transaction:1827: 
-errno=-5 IO failure
------------------------
+root@PartedMagic:~# mkdir /hd
+root@PartedMagic:~# mount -t btrfs -o noatime,clear_cache
+/dev/PPL_VG1/LINUX /hd
+
+(Waited for no disk activity and top showing no btrfs processes)
+
+root@PartedMagic:~# umount /hd
+
+root@PartedMagic:~# mount -t btrfs -o noatime /dev/PPL_VG1/LINUX /hd
+
+root@PartedMagic:~# grep btrfs /proc/self/mountinfo
+40 31 0:43 / /hd rw,noatime - btrfs /dev/mapper/PPL_VG1-LINUX
+rw,ssd,space_cache,subvolid=5,subvol=/
+
+root@PartedMagic:~# umount /hd
+
+root@PartedMagic:~# btrfs check --readonly /dev/PPL_VG1/LINUX
+[1/7] checking root items
+[2/7] checking extents
+[3/7] checking free space cache
+block group 52677312512 has wrong amount of free space, free space cache
+has 266551296 block group has 266584064
+failed to load free space cache for block group 52677312512
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+Opening filesystem to check...
+Checking filesystem on /dev/PPL_VG1/LINUX
+UUID: 25fede5a-d8c2-4c7e-9e7e-b19aad319044
+found 87804207104 bytes used, no error found
+total csum bytes: 79811080
+total tree bytes: 2195832832
+total fs tree bytes: 1992900608
+total extent tree bytes: 101548032
+btree space waste bytes: 380804019
+file data blocks allocated: 626135306240
+ referenced 124464697344
+root@PartedMagic:~#
 
 
-Thanks, Anand
+So it seems that mounting with “clear_cache” did not actually clear the
+cache and fix the issue ?
 
+ॐ
 
-> That limit is way smaller than (u64)-1.
-> Thus if we really have a key (DEV_ITEMS DEV_ITEM -1), it will be
-> rejected by tree-checker in the first place, thus you will get a ret ==
-> -EUCLEAN from previous btrfs_search_slot() call.
-> 
-> Thanks,
-> Qu
->> +		ret = -EUCLEAN;
->> +		goto error;
->> +	}
->>   
->>   	ret = btrfs_previous_item(fs_info->chunk_root, path,
->>   				  BTRFS_DEV_ITEMS_OBJECTID,
->>
-> 
-
+-- 
+Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
