@@ -2,100 +2,118 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCA9C9E3C3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 11:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF0E9E459
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 11:33:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729058AbfH0JOj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Aug 2019 05:14:39 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:51439 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728676AbfH0JOj (ORCPT
+        id S1729140AbfH0Jdb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Aug 2019 05:33:31 -0400
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:50758 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729087AbfH0Jdb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Aug 2019 05:14:39 -0400
-X-Originating-IP: 37.164.105.202
-Received: from [10.137.0.38] (unknown [37.164.105.202])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 9697DFF810
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2019 09:14:36 +0000 (UTC)
-Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+        Tue, 27 Aug 2019 05:33:31 -0400
+Received: by mail-wm1-f48.google.com with SMTP id v15so2333635wml.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2019 02:33:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=bJ2QyIWqENyTT2hWJJohBUOKSFcc0b/uY0usNC2JmYE=;
+        b=BvrQNA9AiTFzEoZtQQoGkAKnz/f3BOANBGrwUpAvgqMY9DjEnJwSq70U1sglpJyuxE
+         VO/4ncfhHsDPV3muI5hULEnvBDM+U7eW8ur2bHIuoJSLQcdiX78Qz52omzS64xAbxskO
+         qDLk+zzwaZuheC+PzwtZy7JnyX3aAKts4CY+CC8iu0PQmXjrqKaKJHdiw7CcKMulDF6k
+         y/gS8LGkRtjWHUYhee2SMqorQk1z7r6ESJ8vDi/q+rdb7h1mzPPGJcXj8YoMcUlduJ4Z
+         q8QJrZlgAyVhyMBcu4nN12dq7YLcvNQHY71/rx0hxdji3ijFS7aCW8hw5Sqdc32Yz8mS
+         3QLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:message-id:date:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=bJ2QyIWqENyTT2hWJJohBUOKSFcc0b/uY0usNC2JmYE=;
+        b=tWsFoM6svqejEI6bcVlz3I0rIn1jvuISr7xDHfPU7Aon2vUKPFKb/caC3xvC+JvZgi
+         DSMb9aEliETTa5cb5FIgzpq9TLzX5zizIkQbQgvykmRFzQ9lMnYBc2p3Wqt8R5IItjYi
+         I+Blhf0ASXGvAUxWWPFX3PIozu5PuZW/f4BvmAncjoUqBVkRWWP0BDOeBGh9U7o1JpcW
+         VUkK+pam6nsQz3Kzh7GpsFkFwF8ERUDRHDjOGCzm1fuu2lbebXqMq2L82+Ptgpk1aroo
+         Is9qeY4la6Hujx/ROamST3gn7NoonqGUnY6HbgmOiUBWvVKMSkqbg6NHI1DqtFhzuFeY
+         1Klg==
+X-Gm-Message-State: APjAAAV5fwK/JSBWs1+Hn3bfo/qUMv1EphcZL13j/S3wVsggssC/iSZ8
+        0NIdNDTZW3tYrwSy/0LGWqs+5kb9
+X-Google-Smtp-Source: APXvYqzvEv3TGQrPFrup5o7hN66+02B4quGSVTgO5ocnK5xcU/bBWCl264WDF2vCCg4lI7GRUJX2sg==
+X-Received: by 2002:a1c:7c06:: with SMTP id x6mr27475511wmc.133.1566898408286;
+        Tue, 27 Aug 2019 02:33:28 -0700 (PDT)
+Received: from [10.19.90.60] ([193.16.224.12])
+        by smtp.gmail.com with ESMTPSA id m7sm4202558wmi.18.2019.08.27.02.33.27
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Aug 2019 02:33:27 -0700 (PDT)
+From:   Thomas Schneider <74cmonty@gmail.com>
+Subject: No files in snapshot
 To:     linux-btrfs@vger.kernel.org
-References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
- <18d24f2f-4d33-10aa-5052-c358d4f7c328@petaramesh.org>
- <a8968a812e270a0dd80c4cf431a8437d3a7daba5.camel@scientia.net>
- <5aefca34-224a-0a81-c930-4ccfcd144aef@petaramesh.org>
- <4bd70aa2-7ad0-d5c6-bc1f-22340afaac60@petaramesh.org>
- <370697f1-24c9-c8bd-01a7-c2885a7ece05@gmx.com>
- <209fcd36-6748-99c5-7b6d-319571bdd11f@petaramesh.org>
- <6525d5cf-9203-0332-cad5-2abc5d3e541c@gmx.com>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
-Openpgp: preference=signencrypt
-Autocrypt: addr=swami@petaramesh.org; keydata=
- xsDiBEP8C/QRBADPiYmcQstlx+HdyR2FGH+bDgRZ0ZJBAx6F0OPW+CmIa6tlwdhSFtCTJGcw
- eqCgSKqzLS+WBd6qknpGP3D2GOmASt+Juqnl+qmX8F/XrkxSNOVGGD0vkKGX4H5uDwufWkuV
- 7kD/0VFJg2areJXx5tIK4+IR0E0O4Yv6DmBPwPgNUwCg0OdUy9lbCxMmshwJDGUX2Y/hiDsD
- /3YTjHYH2OMTg/5xXlkQgR4aWn8SaVTG1vJPcm2j2BMq1LUNklgsKw7qJToRjFndHCYjSeqF
- /Yk2Cbeez9qIk3lX2M59CTwbHPZAk7fCEVg1Wf7RvR2i4zEDBWKd3nChALaXLE3mTWOE1pf8
- mUNPLALisxKDUkgyrwM4rZ28kKxyA/960xC5VVMkHWYYiisQQy2OQk+ElxSfPz5AWB5ijdJy
- SJXOT/xvgswhurPRcJc+l8Ld1GWKyey0o+EBlbkAcaZJ8RCGX77IJGG3NKDBoBN7fGXv3xQZ
- mFLbDyZWjQHl33wSUcskw2IP0D/vjRk/J7rHajIk+OxgbuTkeXF1qwX2yc0oU3fDom1pIFBl
- dGFyYW1lc2ggPHN3YW1pQHBldGFyYW1lc2gub3JnPsJ+BBMRAgA+AhsDAh4BAheABQsJCAcC
- BhUKCQgLAgQWAgMBFiEEzB/joG05+rK5HJguL8JcHZB24y4FAl0Cdr0FCSJsbEkACgkQL8Jc
- HZB24y7PrwCeIj82AsMnwgOebV274cWEyR/yaDsAn25VN/Hw+yzkeXWAn5uIWJ+ZsoZkzsNN
- BEP8DFwQEAC77CwwyVuzngvfFTx2UzFwFOZ25osxSYE1Hpw249kbeK09EYbvMYzcWR34vbS0
- DhxqwJYH9uSuMZf/Jp4Qa/oYN4x4ZMeOGc5+BdigcetQQnZkIpMaCdFm6HK/A4aqCjqbPpvF
- 3Mtd4CXcl1v94pIWq/n9JrLNclUA7rWnVKkPDqJ8WaxzDWm2YH9l1H+K+JbU/ow+Rk+y5xqp
- jL3XpOsVqf34RQhFUyCoysvvxH8RdHAeKfWTf5x6P8jOvxB6XwOnKkX91kC2N7PzoDxY7llY
- Uvy+ehrVVpaKLJ1a1R2eaVIHTFGO//2ARn6g4vVPMB93FLNR0BOGzEXCnnJKO5suw9Njv/aL
- bdnVdDPt9nc1yn3o8Bx/nZq1asX3zo/PnMz4Up24l6GrakJFMBZybX/KxA0CXDK6Rq4HSphI
- y/+v0I27FiQm7oT4ykiKnfFuh16NWM8rPV0UQgBLxSBoz327bUpsRuSrYh/oYBbE6p5KYHlB
- Acpix7wQ61OdUihBX73/AAx0Gd53fc0d4AYeKy4JXMl2uP2aiIvBeBaOKY5tzIq9gnL5K6rr
- xt4PSeONoLdVo8m8OyYeao1zvpgeNZ6FJ+VCYGBtsZEYIi80Ez5V0PpgAh7kSY1xbimDqKQx
- A/Jq2Q7sXBCdUeHN5cDgOZLKoJRvat/rhNaCSgUNfhUc2wADBRAAskb9Eolxs20NCfs424b3
- /NRI7SVn9W2hXvI61UYfs19lfScnn9YfmiN7IdB2cLCE6OiAbSsK3Aw8HDnEc0AdylVNOiIK
- su7C4+CW6HKMyIUm1q2qv8RwW3K8eE8+S4+4/5k+38T39BlC3HcLSxS9vfgqmF6mF6VeD5Mn
- DDbrm7G06UFm1Eh5PKFSzYKZ4i9rD9R4ivDCxRBT9Cibw36iigdp14z87/Qq/NoFe8j9zrbs
- 3/3XZ22NxS0G8aNi0ejgDeYVRUUudBXK7zjV/pJDS4luB9iOiblysJmdKI3EegHlAcapTASn
- qsJ42O/Uv9jdSPPruZrMbeRKILqOl/YtI0orHGW/UzMYf/vbYWZ82azkPQqKDZF3Tb3h6ZHt
- csifD/J9IN7xh71aPf8ayIAus1AtPFtPUTjIJXqXIvAlNcDpaEpxn8xxcbVdcRBU/odASwsX
- IPdz8/HV5esod/QhR6/16kkKyOJNF5M/qC3PLur8Zu4iRu8EPiPr6vTAjhLrfXbQycuVc4CV
- c+hGlyYSW0xFaT+XF/4d+KZirsu07P5w/OCu+oRhH4StCOz58KrtuaX1dK5nLk6XkM4nKZhC
- 7kmpnPqS6BkdJngkozuKQZMJahIvFglag90xgLrOl5MtO55yr/0j4S4a8GxTkVs70GttcMKN
- TYaSBqmVw+0A3ILCZgQYEQIAJgIbDBYhBMwf46BtOfqyuRyYLi/CXB2QduMuBQJdAnbyBQki
- bGwWAAoJEC/CXB2QduMur1wAn1X3FcsmMdhMfiYwXw7LVw4FAIeWAJ9kLGer22WFWR2z2iU7
- BtUAN08OPA==
-Message-ID: <317a6f8f-3810-4a6c-ba64-3825317de1e7@petaramesh.org>
-Date:   Tue, 27 Aug 2019 11:14:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+Message-ID: <b729e524-3c63-cf90-7115-02dcf2fda003@gmail.com>
+Date:   Tue, 27 Aug 2019 11:33:27 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <6525d5cf-9203-0332-cad5-2abc5d3e541c@gmx.com>
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: fr-FR
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/27/19 8:52 AM, Qu Wenruo wrote:
->> or to use the V2 space
->> cache generally speaking, on any machine that I use (I had understood it
->> was useful only on multi-TB filesystems...)
-> 10GiB is enough to create large enough block groups to utilize free
-> space cache.
-> So you can't really escape from free space cache.
+Hi,
 
-I meant that I had understood that the V2 space cache was preferable to
-V1 only for multi-TB filesystems.
+I'm running Debian 10 with btrfs-progs=5.2.1.
+Creating snapshots with snapper=0.8.2 works w/o errors.
+root@ld5507:~# uname -r
+5.0.18-1-pve
+root@ld5508:~# btrfs fi show
+Label: none  uuid: 70997a0b-a36f-46cf-9ddc-b88d47eabc9e
+         Total devices 1 FS bytes used 11.17GiB
+         devid    1 size 192.53GiB used 22.02GiB path /dev/sdbq3
 
-So would you advise to use V2 space cache also for filesystems < 1 TB ?
+root@ld5507:~# btrfs fi df /
+Data, single: total=18.00GiB, used=10.71GiB
+System, DUP: total=8.00MiB, used=16.00KiB
+Metadata, DUP: total=2.00GiB, used=465.84MiB
+GlobalReserve, single: total=68.03MiB, used=0.00B
 
-TIA.
+However, I run into an issue and need to restore various files.
 
-Kind regards.
+I thought that I could simply take the files from a snapshot created before.
+However, the files required don't exist in any snapshot!
 
-ॐ
+Therefore I have created a new snapshot manually to verify if the files 
+will be included, but there's nothing.
 
--- 
-Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
+These files are required:
+root@ld5507:/usr/bin# ls -l /var/lib/ceph/osd/ceph-4/
+insgesamt 56
+-rw-r--r-- 1 root root 402 Jun  7 12:18 activate.monmap
+-rw-r--r-- 1 ceph ceph   3 Jun  7 12:18 active
+lrwxrwxrwx 1 ceph ceph  58 Jun  7 12:18 block -> 
+/dev/disk/by-partuuid/3bc0c812-2c6b-4544-bbe7-e0444c3448eb
+-rw-r--r-- 1 ceph ceph  37 Jun  7 12:18 block_uuid
+-rw-r--r-- 1 ceph ceph   2 Jun  7 12:18 bluefs
+-rw-r--r-- 1 ceph ceph  37 Jun  7 12:18 ceph_fsid
+-rw-r--r-- 1 ceph ceph  37 Jun  7 12:18 fsid
+-rw------- 1 ceph ceph  56 Jun  7 12:18 keyring
+-rw-r--r-- 1 ceph ceph   8 Jun  7 12:18 kv_backend
+-rw-r--r-- 1 ceph ceph  21 Jun  7 12:18 magic
+-rw-r--r-- 1 ceph ceph   4 Jun  7 12:18 mkfs_done
+-rw-r--r-- 1 ceph ceph   6 Jun  7 12:18 ready
+-rw-r--r-- 1 ceph ceph   3 Aug 23 09:56 require_osd_release
+-rw-r--r-- 1 ceph ceph   0 Aug 21 12:41 systemd
+-rw-r--r-- 1 ceph ceph  10 Jun  7 12:18 type
+-rw-r--r-- 1 ceph ceph   2 Jun  7 12:18 whoami
+
+And there are not files in latest snapshot:
+root@ld5507:/usr/bin# ls -l 
+/btrfs/@snapshots/158/snapshot/var/lib/ceph/osd/ceph-4/
+insgesamt 0
+
+
+Why is this?
+
+THX
 
