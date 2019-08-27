@@ -2,28 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31CD29DCF0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 07:06:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E81DC9DD72
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 08:13:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbfH0FGH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Aug 2019 01:06:07 -0400
-Received: from relay3-d.mail.gandi.net ([217.70.183.195]:33599 "EHLO
+        id S1726833AbfH0GNC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Aug 2019 02:13:02 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:60641 "EHLO
         relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725795AbfH0FGG (ORCPT
+        with ESMTP id S1726125AbfH0GNC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Aug 2019 01:06:06 -0400
+        Tue, 27 Aug 2019 02:13:02 -0400
 X-Originating-IP: 88.191.131.7
 Received: from [192.168.1.167] (unknown [88.191.131.7])
         (Authenticated sender: swami@petaramesh.org)
-        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id D93F860004;
-        Tue, 27 Aug 2019 05:06:03 +0000 (UTC)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id B802B60006;
+        Tue, 27 Aug 2019 06:13:00 +0000 (UTC)
 Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     Christoph Anton Mitterer <calestyo@scientia.net>,
-        linux-btrfs@vger.kernel.org
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+To:     linux-btrfs@vger.kernel.org
 References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
  <18d24f2f-4d33-10aa-5052-c358d4f7c328@petaramesh.org>
  <a8968a812e270a0dd80c4cf431a8437d3a7daba5.camel@scientia.net>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+ <5aefca34-224a-0a81-c930-4ccfcd144aef@petaramesh.org>
+Cc:     Christoph Anton Mitterer <calestyo@scientia.net>
 Openpgp: preference=signencrypt
 Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
  xsDiBEP8C/QRBADPiYmcQstlx+HdyR2FGH+bDgRZ0ZJBAx6F0OPW+CmIa6tlwdhSFtCTJGcw
@@ -59,12 +60,12 @@ Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
  TYaSBqmVw+0A3ILCZgQYEQIAJgIbDBYhBMwf46BtOfqyuRyYLi/CXB2QduMuBQJdAnbyBQki
  bGwWAAoJEC/CXB2QduMur1wAn1X3FcsmMdhMfiYwXw7LVw4FAIeWAJ9kLGer22WFWR2z2iU7
  BtUAN08OPA==
-Message-ID: <5aefca34-224a-0a81-c930-4ccfcd144aef@petaramesh.org>
-Date:   Tue, 27 Aug 2019 07:06:03 +0200
+Message-ID: <4bd70aa2-7ad0-d5c6-bc1f-22340afaac60@petaramesh.org>
+Date:   Tue, 27 Aug 2019 08:13:00 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <a8968a812e270a0dd80c4cf431a8437d3a7daba5.camel@scientia.net>
+In-Reply-To: <5aefca34-224a-0a81-c930-4ccfcd144aef@petaramesh.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: fr-FR
 Content-Transfer-Encoding: 8bit
@@ -73,39 +74,33 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-
-Le 27/08/2019 à 02:00, Christoph Anton Mitterer a écrit :
+Le 27/08/2019 à 07:06, Swâmi Petaramesh a écrit :
 > 
-> On Sun, 2019-08-25 at 12:00 +0200, Swâmi Petaramesh wrote:
->> I haven't seen any filesystem issue since, but I haven't used the
->> system
->> very much yet.
-> 
-> Hmm strange... so could it have been a hardware issue?
+> Now the machine looks stable so far with a 5.2, albeit more recent, Arch
+> kernel : 5.2.9-arch1-1-ARCH.
 
-I really do not feel so.
+As my 1st machine looks fairly stable now, I just upgraded to 5.2
+another one that had always been running <= 5.1 before.
 
-This is a laptop that has been perfectly stable and reliable since 2014.
+So I keep an eye on the syslog.
 
-Hardware dies, but if it did I would expect problems to persist or
-manifest again real soon. When RAM fails it usually doesn't feel better
-later on.
+Right after reboot in 5.2 I see :
 
-It has corrupt its internal SSD's BTRFS right after I first upgraded to
-kernel 5.2, then it corrupt an external's HD BTRFS while I was trying to
-backup what could still be...
+kernel: BTRFS warning (device dm-1): block
+group 34390147072 has wrong amount of free space
+kernel: BTRFS warning (device dm-1):
+failed to load free space cache for block group 34390147072, rebuilding
+it now
 
-Then the machine reverted to its usual fair and stable behaviour after I
-restored it with a 5.1 kernel again.
+So it seems that the 5.2 kernel finds and tries to fix minor
+inconsistencies that were unnoticed in previous kernel versions ?
 
-Now the machine looks stable so far with a 5.2, albeit more recent, Arch
-kernel : 5.2.9-arch1-1-ARCH.
+I wonder if such things could be the cause of the corruption issues I
+got : finding some inconsistencies with new checks right after a kernel
+upgrade, trying to fix them and creating a mess instead ?
 
-I'm typing this email on it.
-
-I cannot tell what happened, but really this doesn't feel like an
-hardware issue to me...
+(This 2nd machine has been rebooted twice after this and still looks
+happy...)
 
 Kind regards.
 
