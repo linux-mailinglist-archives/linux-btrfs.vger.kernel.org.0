@@ -2,48 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6DEE9E6C0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 13:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 145AB9E6FB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 13:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725912AbfH0L3s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Aug 2019 07:29:48 -0400
-Received: from mail-oln040092071021.outbound.protection.outlook.com ([40.92.71.21]:32263
-        "EHLO EUR03-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725793AbfH0L3s (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Aug 2019 07:29:48 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nBjtZSDAapG71g/EayM2k5oTBEOcT8/SVnGWh0Pl7JcD1LXgoxiQksYnNaOCdXLD3MlXPxxGe+jBTjrtdf+3za5Vu73Pad6da9Kk7dKSh19O4gaU5bJgeUfqvUgMJ/1QhxNFkrlUD/r+R0WYUyhw6vIrG9sI8huVg8qPCSm3iJDTmp8dBEFSYymGBqz7lk1kXwl+5oBCH9efOiPdjDNaXzqbOUVxr+32QcRZ8Rd+kudko8N8jLRuA9Umy8v37LNowOcPchFIgv/GoC2C7ngu3h0YPgWwMQM5d8qhEe/216e3EQTgfd44x2Ah/FZcErDWUcR8yvc+7P8pLEa1gow+FQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SqYKiwXO2hZjWNzxuwY/OgKBKzNzUTL4l/OL+7Dvkjg=;
- b=Vjx0oNyFrZDzISxM6Ktq8b0MA2sg9KzHX73FcLW/b5m6kyjy0Tf5X9kMLj582O7ufBwpPm3Afk++EDBMFafB8m2cpKLW/R9OL1VF1cIv+ZTAUmqBP2SBDoCno/AaO1we3ypwGC/+Txe4gNp8JNpY65RAZ0Z/0OD7+tcf/AE3Yplb91zNcTM6/gol4rxqJDyWUNEf0yZUUaefqZaFGpFuPN+aPIHpkY9279b3KXCXW1IAYsX7POv0Ky4WyznIeq2r+XGCu6QC14R40AHe6Wi0DOM5HraUwhhGibffife5dWlERubiduiEgOVZk91HBifaHyGSj626EW1Y8ublqlrADw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from DB5EUR03FT019.eop-EUR03.prod.protection.outlook.com
- (10.152.20.54) by DB5EUR03HT179.eop-EUR03.prod.protection.outlook.com
- (10.152.21.247) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.2199.13; Tue, 27 Aug
- 2019 11:29:45 +0000
-Received: from DB7P191MB0377.EURP191.PROD.OUTLOOK.COM (10.152.20.53) by
- DB5EUR03FT019.mail.protection.outlook.com (10.152.20.163) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.2199.13 via Frontend Transport; Tue, 27 Aug 2019 11:29:45 +0000
-Received: from DB7P191MB0377.EURP191.PROD.OUTLOOK.COM
- ([fe80::bc80:8fa0:42bd:4be5]) by DB7P191MB0377.EURP191.PROD.OUTLOOK.COM
- ([fe80::bc80:8fa0:42bd:4be5%5]) with mapi id 15.20.2199.021; Tue, 27 Aug 2019
- 11:29:44 +0000
-From:   Alberto Bursi <alberto.bursi@outlook.it>
-To:     =?utf-8?B?U3fDom1pIFBldGFyYW1lc2g=?= <swami@petaramesh.org>,
+        id S1727086AbfH0Lpw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Aug 2019 07:45:52 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:54707 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726140AbfH0Lpw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Aug 2019 07:45:52 -0400
+X-Originating-IP: 88.191.131.7
+Received: from [192.168.1.167] (unknown [88.191.131.7])
+        (Authenticated sender: swami@petaramesh.org)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id 6B9DC1BF20C;
+        Tue, 27 Aug 2019 11:45:48 +0000 (UTC)
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     Alberto Bursi <alberto.bursi@outlook.it>,
         Qu Wenruo <quwenruo.btrfs@gmx.com>,
         "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-CC:     Christoph Anton Mitterer <calestyo@scientia.net>
-Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-Thread-Topic: Massive filesystem corruption since kernel 5.2 (ARCH)
-Thread-Index: AQHVWqS22gbHP/giy0mM/nLVdqYtGacLopmAgAJ9HICAAFVBgIAAErQAgAACbYCAAE2mAIAAA4SAgAACQwCAAALEAA==
-Date:   Tue, 27 Aug 2019 11:29:44 +0000
-Message-ID: <DB7P191MB0377D8AA890573819E717F3192A00@DB7P191MB0377.EURP191.PROD.OUTLOOK.COM>
+Cc:     Christoph Anton Mitterer <calestyo@scientia.net>
 References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
  <18d24f2f-4d33-10aa-5052-c358d4f7c328@petaramesh.org>
  <a8968a812e270a0dd80c4cf431a8437d3a7daba5.camel@scientia.net>
@@ -53,51 +31,64 @@ References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
  <fcd2e070-67e9-4889-f778-748070cc9856@petaramesh.org>
  <DB7P191MB0377516063743C8D5A382C4292A00@DB7P191MB0377.EURP191.PROD.OUTLOOK.COM>
  <82263aa3-bc0c-8b45-e5e5-ed38f7c00058@petaramesh.org>
-In-Reply-To: <82263aa3-bc0c-8b45-e5e5-ed38f7c00058@petaramesh.org>
-Accept-Language: it-IT, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: MR2P264CA0013.FRAP264.PROD.OUTLOOK.COM
- (2603:10a6:500:1::25) To DB7P191MB0377.EURP191.PROD.OUTLOOK.COM
- (2603:10a6:5:10::13)
-x-incomingtopheadermarker: OriginalChecksum:411AA2BCDD2E014B05AC26B4775006DC261738608A1C90FA449AA362A7F75B75;UpperCasedChecksum:A0EA3431FD3E53DCE0386E3D1802892B049F16CC8E17728667204D8BE0FC89B2;SizeAsReceived:8065;Count:49
-x-ms-exchange-messagesentrepresentingtype: 1
-x-tmn:  [qv4jWOOMgyJacTlhzJs2D/FP20Px1gtg]
-x-microsoft-original-message-id: <0f498bcf-ee3d-0687-4655-f72576aa9ed9@outlook.it>
-x-ms-publictraffictype: Email
-x-incomingheadercount: 49
-x-eopattributedmessage: 0
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(5050001)(7020095)(20181119110)(201702061078)(5061506573)(5061507331)(1603103135)(2017031320274)(2017031322404)(2017031323274)(2017031324274)(1601125500)(1603101475)(1701031045);SRVR:DB5EUR03HT179;
-x-ms-traffictypediagnostic: DB5EUR03HT179:
-x-microsoft-antispam-message-info: NFpQ4dndfjqEIvtNDzqDYPz2JAQXicPMqh6qXAObEVGhcdqhCewmTgS5HlWlc9L9PieT2kucn4s9i9k0EQrckCXUJ/KlJ1IKkxt5+H9HEhhWhfJHHt6DgxfXcuTQRZYWK4kmu9m0jC1fpUVQE2pi7ZcA6vjMuPSNiT/i7iGDAZ6sdExwqc6dFe+e9205NXRn
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <07CB6E722BE4F946B1532DE4A13C1532@EURP191.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+ <DB7P191MB0377D8AA890573819E717F3192A00@DB7P191MB0377.EURP191.PROD.OUTLOOK.COM>
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
+ 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
+ BtUAN08OPA==
+Message-ID: <91f687e6-d6b8-2a56-5f7a-95782db4e234@petaramesh.org>
+Date:   Tue, 27 Aug 2019 13:45:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-Network-Message-Id: bf8256e2-6a82-4d5d-2a12-08d72ae1dbf9
-X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Aug 2019 11:29:44.7689
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Internet
-X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB5EUR03HT179
+In-Reply-To: <DB7P191MB0377D8AA890573819E717F3192A00@DB7P191MB0377.EURP191.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQpPbiAyNy8wOC8xOSAxMzoyMCwgU3fDom1pIFBldGFyYW1lc2ggd3JvdGU6DQo+IExlIDI3LzA4
-LzIwMTkgw6AgMTM6MTEsIEFsYmVydG8gQnVyc2kgYSDDqWNyaXTCoDoNCj4+DQo+PiBidHJmcyBj
-aGVjayAtLWNsZWFyLXNwYWNlLWNhY2hlIHYxIC9kZXYvc2RYDQo+IOKAnEJhZCBvcHRpb27igJ0g
-KGV2ZW4gd2l0aCBfIGluc3RlYWQgb2YgLSBhbmQgYmV0d2VlbiBvcHRpb24gYW5kIHYxIG9yIFYy
-Li4uDQo+DQo+IOClkA0KPg0KDQpIZXJlIG9uIG15IHVwLXRvLWRhdGUgT3BlblNVU0UgVHVtYmxl
-d2VlZCBzeXN0ZW0gaXQgd29ya3MuDQoNCihkb2luZyB0aGlzIG9uIGEgcmFuZG9tIGZsYXNoIGRy
-aXZlIEkganVzdCBmb3JtYXR0ZWQpDQoNCmhwcHJvYm9vazovaG9tZS9hbGJ5ICMgYnRyZnMgY2hl
-Y2sgLS1jbGVhci1zcGFjZS1jYWNoZSB2MSAvZGV2L3NkZDENCk9wZW5pbmcgZmlsZXN5c3RlbSB0
-byBjaGVjay4uLg0KQ2hlY2tpbmcgZmlsZXN5c3RlbSBvbiAvZGV2L3NkZDENClVVSUQ6IGY2OWE4
-NmNlLTdhYWEtNGM5ZC1hNmRkLTRjOGZmMDkyMDA3Zg0KRnJlZSBzcGFjZSBjYWNoZSBjbGVhcmVk
-DQoNCi1BbGJlcnRvDQoNCg==
+Le 27/08/2019 à 13:29, Alberto Bursi a écrit :
+> hpprobook:/home/alby # btrfs check --clear-space-cache v1 /dev/sdd1
+
+My mistake, I read it too fast and tried it a a mount option...
+
+ॐ
+
+
+-- 
+Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
