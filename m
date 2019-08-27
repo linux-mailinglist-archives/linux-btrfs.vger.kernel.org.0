@@ -2,106 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF699E48C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 11:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 564BD9E50E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 11:59:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729897AbfH0Jhy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Aug 2019 05:37:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34028 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729596AbfH0Jhx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Aug 2019 05:37:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B33A9AFDD
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2019 09:37:52 +0000 (UTC)
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v4 4/4] btrfs: sysfs: export supported checksums
-Date:   Tue, 27 Aug 2019 11:37:50 +0200
-Message-Id: <20190827093750.15310-5-jthumshirn@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20190827093750.15310-1-jthumshirn@suse.de>
-References: <20190827093750.15310-1-jthumshirn@suse.de>
+        id S1726071AbfH0J7I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Aug 2019 05:59:08 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52654 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725805AbfH0J7I (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Aug 2019 05:59:08 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7R9x4RQ028227;
+        Tue, 27 Aug 2019 09:59:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=WzKfXhLyl5qb772Vl608f9gXGX3AL3SOaESg9hibZBk=;
+ b=lwsCGWbHzjvQOkxG073Y6tq0qq7zqkemhJoBThO+CV1vQ0xzKMNV/Gb35mXTLvDMLfjN
+ a+QZG77C6hupQFj5k/sPlKC/JqyM4YKpXY0MOuTFLCQ3nqLU3UE3SXpbujOY8UqwtHA1
+ CZoZL86i1keogLd3M96sPnkjHSILFExpAMlDt0+5ACT2aiIcEulT7DbnhtHpM29AcmkA
+ P/ZZTMGjYy38O9yD7hu99uPPbav20VgiwMj6S3ayqo/n12QRakAj9n3AasmPt4XUX6Zt
+ +JpGZYNFhr5leJSzXfD0tlLW6zZKH9SUS/wXbTktk8X2T/0xngjINUjaqB4gpmzMpmcG Rg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2un1sh08p3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Aug 2019 09:59:03 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7R9x3Kv142745;
+        Tue, 27 Aug 2019 09:59:03 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2umhu8htk9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 27 Aug 2019 09:59:02 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7R9wHbU012223;
+        Tue, 27 Aug 2019 09:58:17 GMT
+Received: from [192.168.1.119] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 27 Aug 2019 02:58:17 -0700
+Subject: Re: [PATCH 1/2] btrfs: fix BUG_ON with proper error handle in
+ find_next_devid
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <20190827074045.5563-1-anand.jain@oracle.com>
+ <20190827074045.5563-2-anand.jain@oracle.com>
+ <2a203bdb-7cde-f970-6e33-38ba5f190c1b@gmx.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <5b866472-0a12-78df-d8a3-d940caf755ef@oracle.com>
+Date:   Tue, 27 Aug 2019 17:58:14 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
+MIME-Version: 1.0
+In-Reply-To: <2a203bdb-7cde-f970-6e33-38ba5f190c1b@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9361 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908270113
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9361 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908270113
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+On 27/8/19 4:12 PM, Qu Wenruo wrote:
+> 
+> 
+> On 2019/8/27 下午3:40, Anand Jain wrote:
+>> In a corrupted tree if search for next devid finds the device with
+>> devid = -1, then report the error -EUCLEAN back to the parent
+>> function to fail gracefully.
+>>
+>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+>> ---
+>>   fs/btrfs/volumes.c | 7 ++++++-
+>>   1 file changed, 6 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index 4db4a100c05b..36aa5f79fb6c 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -1849,7 +1849,12 @@ static noinline int find_next_devid(struct btrfs_fs_info *fs_info,
+>>   	if (ret < 0)
+>>   		goto error;
+>>   
+>> -	BUG_ON(ret == 0); /* Corruption */
+>> +	if (ret == 0) {
+>> +		/* Corruption */
+>> +		btrfs_err(fs_info, "corrupted chunk tree devid -1 matched");
+> 
+> It will never hit this branch.
+> 
+> As in tree checker, we have checked if the devid is so large that a
+> chunk item or system chunk array can't contain one.
 
-Export supported checksum algorithms via sysfs.
+  That check is buggy. It assumes devid represents the num_devices,
+  it does not account for the possible devid hole as created in the
+  below script.
 
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+$ cat t
 
----
-Changes to v2:
-- Prevent possible overflow of sysfs attribute
-Changes to v1:
-- Removed btrfs_checksums_store() function (Nik)
-- Renamed sysfs file to supported_checksums
----
- fs/btrfs/sysfs.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+umount /btrfs
+dev1=/dev/sdb
+dev2=/dev/sdc
+mkfs.btrfs -fq -dsingle -msingle $dev1
+mount $dev1 /btrfs
 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index f6d3c80f2e28..cae9c99253c7 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -246,6 +246,24 @@ static umode_t btrfs_feature_visible(struct kobject *kobj,
- 	return mode;
- }
- 
-+static ssize_t btrfs_supported_checksums_show(struct kobject *kobj,
-+					      struct kobj_attribute *a,
-+					      char *buf)
-+{
-+	ssize_t ret = 0;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(btrfs_csums); i++) {
-+		ret += snprintf(buf + ret, PAGE_SIZE - ret, "%s%s",
-+				(i == 0 ? "" : ", "),
-+				btrfs_csums[i].name);
-+
-+	}
-+
-+	ret += snprintf(buf + ret, PAGE_SIZE - ret, "\n");
-+	return ret;
-+}
-+
- BTRFS_FEAT_ATTR_INCOMPAT(mixed_backref, MIXED_BACKREF);
- BTRFS_FEAT_ATTR_INCOMPAT(default_subvol, DEFAULT_SUBVOL);
- BTRFS_FEAT_ATTR_INCOMPAT(mixed_groups, MIXED_GROUPS);
-@@ -259,6 +277,14 @@ BTRFS_FEAT_ATTR_INCOMPAT(no_holes, NO_HOLES);
- BTRFS_FEAT_ATTR_INCOMPAT(metadata_uuid, METADATA_UUID);
- BTRFS_FEAT_ATTR_COMPAT_RO(free_space_tree, FREE_SPACE_TREE);
- 
-+static struct btrfs_feature_attr btrfs_attr_features_checksums_name = {
-+	.kobj_attr = __INIT_KOBJ_ATTR(supported_checksums, S_IRUGO,
-+				      btrfs_supported_checksums_show,
-+				      NULL),
-+	.feature_set	= FEAT_INCOMPAT,
-+	.feature_bit	= 0,
-+};
-+
- static struct attribute *btrfs_supported_feature_attrs[] = {
- 	BTRFS_FEAT_ATTR_PTR(mixed_backref),
- 	BTRFS_FEAT_ATTR_PTR(default_subvol),
-@@ -272,6 +298,9 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
- 	BTRFS_FEAT_ATTR_PTR(no_holes),
- 	BTRFS_FEAT_ATTR_PTR(metadata_uuid),
- 	BTRFS_FEAT_ATTR_PTR(free_space_tree),
-+
-+	&btrfs_attr_features_checksums_name.kobj_attr.attr,
-+
- 	NULL
- };
- 
--- 
-2.16.4
+_fail()
+{
+	echo $1
+	exit 1
+}
+
+while true; do
+	btrfs dev add -f $dev2 /btrfs || _fail "add failed"
+	btrfs dev del $dev1 /btrfs || _fail "del failed"
+	dev_tmp=$dev1
+	dev1=$dev2
+	dev2=$dev_tmp
+done
+
+-----------------------
+[  185.446441] BTRFS critical (device sdb): corrupt leaf: root=3 
+block=313739198464 slot=1 devid=1 invalid devid: has=507 expect=[0, 506]
+[  185.446446] BTRFS error (device sdb): block=313739198464 write time 
+tree block corruption detected
+[  185.446556] BTRFS: error (device sdb) in 
+btrfs_commit_transaction:2268: errno=-5 IO failure (Error while writing 
+out transaction)
+[  185.446559] BTRFS warning (device sdb): Skipping commit of aborted 
+transaction.
+[  185.446561] BTRFS: error (device sdb) in cleanup_transaction:1827: 
+errno=-5 IO failure
+-----------------------
+
+
+Thanks, Anand
+
+
+> That limit is way smaller than (u64)-1.
+> Thus if we really have a key (DEV_ITEMS DEV_ITEM -1), it will be
+> rejected by tree-checker in the first place, thus you will get a ret ==
+> -EUCLEAN from previous btrfs_search_slot() call.
+> 
+> Thanks,
+> Qu
+>> +		ret = -EUCLEAN;
+>> +		goto error;
+>> +	}
+>>   
+>>   	ret = btrfs_previous_item(fs_info->chunk_root, path,
+>>   				  BTRFS_DEV_ITEMS_OBJECTID,
+>>
+> 
 
