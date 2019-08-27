@@ -2,93 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 636359DD96
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 08:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393CD9DDB7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 08:26:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726392AbfH0GVu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Aug 2019 02:21:50 -0400
-Received: from mout.gmx.net ([212.227.17.21]:52149 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725825AbfH0GVu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Aug 2019 02:21:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1566886907;
-        bh=QTYytZccOUGbcA1xo8NiiFXPwicZsdqzhn6S2AhPgQY=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Gu02fl+Mt71Xn1OtLXXcY9FpDZoaxUDXDrJUJKWK9WERzbnJf3HfygolO6MYttnPA
-         dslkmyeulp0Q/dsun3lYysFTgKEqUIq7an71AYe1lGxRBgrZBjUHxQApAleoQ+HaNn
-         1fBQ7GPKf0gfj4+rviv95YUcV6VphVYIsFOdz66c=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MRCKC-1ho9Ms1wIO-00NCee; Tue, 27
- Aug 2019 08:21:47 +0200
-Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>,
-        linux-btrfs@vger.kernel.org
-Cc:     Christoph Anton Mitterer <calestyo@scientia.net>
-References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
- <18d24f2f-4d33-10aa-5052-c358d4f7c328@petaramesh.org>
- <a8968a812e270a0dd80c4cf431a8437d3a7daba5.camel@scientia.net>
- <5aefca34-224a-0a81-c930-4ccfcd144aef@petaramesh.org>
- <4bd70aa2-7ad0-d5c6-bc1f-22340afaac60@petaramesh.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+        id S1726134AbfH0G0Z (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Aug 2019 02:26:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55728 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725825AbfH0G0Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Aug 2019 02:26:25 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 3D92FB0B3;
+        Tue, 27 Aug 2019 06:26:24 +0000 (UTC)
+Subject: Re: [RFC PATCH 5/5] Btrfs: add ioctl for directly writing compressed
+ data
+To:     Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>
+Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+References: <cover.1565900769.git.osandov@fb.com>
+ <78747c3028ce91db9856e7fbd98ccbb2609acdc6.1565900769.git.osandov@fb.com>
+ <20190826213618.qdsivmmwwlxkqtxc@macbook-pro-91.dhcp.thefacebook.com>
+From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <370697f1-24c9-c8bd-01a7-c2885a7ece05@gmx.com>
-Date:   Tue, 27 Aug 2019 14:21:41 +0800
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
+ T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
+ u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
+ bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
+ GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
+ EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
+ TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
+ c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
+ c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
+ k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
+ cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
+ CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
+ ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
+ HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
+ Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
+ VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
+ E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
+ V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
+ T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
+ mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
+ EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
+ 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
+ csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
+ QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
+ jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
+ VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
+ FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
+ l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
+ MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
+ KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
+ OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
+ AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
+ zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
+ IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
+ iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
+ K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
+ upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
+ R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
+ TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
+ RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
+ 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
+Message-ID: <a9c8436c-ca94-081d-d83b-25360ebb8cb0@suse.com>
+Date:   Tue, 27 Aug 2019 09:26:21 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <4bd70aa2-7ad0-d5c6-bc1f-22340afaac60@petaramesh.org>
+In-Reply-To: <20190826213618.qdsivmmwwlxkqtxc@macbook-pro-91.dhcp.thefacebook.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XiKRZIV5OoYsOZ1VmxRIDWnyq4MfMojGdIVk+IwWYXcYuPp+BOt
- 1ZlIgj0vqvSz9LXORKsuqnMLnq6ZlfvKLHAVexHI7AHfMgqWti6c2rZD0MJDOSppL7KfoS7
- zCVwY2LUhTN0mHIUIXlzc8syOrzTZizuXkynV1iZ7iKzVB4ww/Z8rbB1W33UoLiR6m4/ziM
- fhtn8P02eEWleDBBDJVoA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+42kana8WAg=:stLxwAfov1IgShYDtd4AvE
- 6NyQnP2Y2wBUyYm2cSgyDLSeTuG5uYuDvjJKe1lF/KwVJuHnopYkpsxfiFPmSvkG8OVboHyPv
- qwCmtgaNFd3AqtoTz1I2w4UHyoe+B4Mq8zQ/I9i0sJmSkdTfdBeayQCya7ZNGh91ODIHIzLTD
- bbnUN9vXiUbh0b6/albTyrHWhZhTro4IXyrrYsOhlADYT4eM/lNRo0kOlGxDwKi9mf8C3XVuS
- flZybrE4h7S9pzjfCIHsv1eMdwh3S++RzGkkMy/Eiz3h7a11gvWq1wEkvLMf+KUGY4YNSgkxu
- 6w2bNLf9WDjZk6V70ag7pu9xnJKeLLqmWW3HWVLetHWBh9Rq9mu35AHt4kmndtM4NMSuM5JvL
- EmUuYrrkepoZJEJaeY9PgcOAdBzga2Df15/+EPEVtM6sUxXV3CkAcjMPmGAVEC6g0l9DBliGJ
- aCJ94Qc3mcecI7bV1K2VXD9lcODeyHkuEw0xE2xqxczhOtKFxbCmFM0PqSP2fzn9a/uwj4IHk
- pEielVLmnQB66nnIM02+IrIqgQqlFHectrQUpum3g5fONaSv9qFbPU7VYXlgXel1Pc35miXkr
- X9LLdy4yU0mS/mzKAAqaquSutzmLqZ9z5ZzsBZxhuC1d9DONI7DTqtRdDRPpGoqRl5FYpdQ83
- cQ86ntiUj/CkDUY8zg0axPIF3A/lPasj1+841AEd/+CuuvpMUvZogUd6CarKxFa1j5bXsjaLz
- K4KE6yWkA4pBZSNo918kT9mzABwi8qFBOFJNA8llkiyiamnV3Bpo6IBQfXbcy7k4WddxkBMsG
- ib2D42yjezK9I5bca4KwbJfWi0SDoe11SrtwrDbF1ipJEjzMDP1ZQAMYIVJGgZnBK1BKjVOIA
- 2Fs2McxQ3zgFmXaDKfN8dvWaHDct147jDU2bssHZUca4dHtjH61SOcazotqBOWJLY7GNTrAGa
- oJqcV7vY8UaOo6ORlEEdnrYwAyN/vxxxWNcWUBsrnyqSKJ5s5TdGIYXkrm3SWtWipoz6Vry94
- sIOIlBMuZADO93LuL0ClmJX7E+cziuStFE59IJMiRQbpxe0hyMNw5feIsh0Ze+XHawyA/mAZL
- MkYrzrA5N37QtkEDnpoQ7XTM6C7S3gWxKdLoLjrbGXxpoNzULXYGOL49Rgk5VKfLRVkLrbnEp
- YckeM=
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -96,61 +83,46 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2019/8/27 =E4=B8=8B=E5=8D=882:13, Sw=C3=A2mi Petaramesh wrote:
-> Le 27/08/2019 =C3=A0 07:06, Sw=C3=A2mi Petaramesh a =C3=A9crit=C2=A0:
+On 27.08.19 г. 0:36 ч., Josef Bacik wrote:
+> On Thu, Aug 15, 2019 at 02:04:06PM -0700, Omar Sandoval wrote:
+>> From: Omar Sandoval <osandov@fb.com>
 >>
->> Now the machine looks stable so far with a 5.2, albeit more recent, Arc=
-h
->> kernel : 5.2.9-arch1-1-ARCH.
->
-> As my 1st machine looks fairly stable now, I just upgraded to 5.2
-> another one that had always been running <=3D 5.1 before.
->
-> So I keep an eye on the syslog.
->
-> Right after reboot in 5.2 I see :
->
-> kernel: BTRFS warning (device dm-1): block
-> group 34390147072 has wrong amount of free space
-> kernel: BTRFS warning (device dm-1):
-> failed to load free space cache for block group 34390147072, rebuilding
-> it now
->
-> So it seems that the 5.2 kernel finds and tries to fix minor
-> inconsistencies that were unnoticed in previous kernel versions ?
+>> This adds an API for writing compressed data directly to the filesystem.
+>> The use case that I have in mind is send/receive: currently, when
+>> sending data from one compressed filesystem to another, the sending side
+>> decompresses the data and the receiving side recompresses it before
+>> writing it out. This is wasteful and can be avoided if we can just send
+>> and write compressed extents. The send part will be implemented in a
+>> separate series, as this ioctl can stand alone.
+>>
+>> The interface is essentially pwrite(2) with some extra information:
+>>
+>> - The input buffer contains the compressed data.
+>> - Both the compressed and decompressed sizes of the data are given.
+>> - The compression type (zlib, lzo, or zstd) is given.
+>>
+>> A more detailed description of the interface, including restrictions and
+>> edge cases, is included in include/uapi/linux/btrfs.h.
+>>
+>> The implementation is similar to direct I/O: we have to flush any
+>> ordered extents, invalidate the page cache, and do the io
+>> tree/delalloc/extent map/ordered extent dance. From there, we can reuse
+>> the compression code with a minor modification to distinguish the new
+>> ioctl from writeback.
+>>
+> 
+> I've looked at this a few times, the locking and space reservation stuff look
+> right.  What about encrypted send/recieve?  Are we going to want to use this to
+> just blind copy encrypted data without having to decrypt/re-encrypt?  Should
+> this be taken into consideration for this interface?  I'll think more about it,
+> but I can't really see any better option than this.  Thanks,
 
-It means something wrong is already done in previous kernel.
+The main problem is we don't have encryption implemented. And one of the
+larger aspects of the encryption support is going to be how we are
+storing the encryption keys. E.g. should they be part of the send
+format? Or are we going to limit send/receive based on whether the
+source/dest have transferred encryption keys out of line?
 
-V1 space cache use regular-file-like internal structures to record used
-space. V1 space cache doesn't use btrfs' regular csum tree, but uses its
-own inline csum to protect its content.
-
-If free space cache is invalid but passes its csum check, it's
-completely *possible* to break metadata CoW, thus leads to transid mismatc=
-h.
-
-You can go v2 space cache which uses metadata CoW to protect its space
-cache, thus in theory it should be a little safer than V1 space cache.
-
-Or you can just disable space cache using nospace_cache mount option, as
-it's just an optimization. It's also recommended to clean existing cache
-by using "btrfs check --clear-space-cache v1".
-
-I'd prefer to do a "btrfs check --readonly" anyway (which also checks
-free space cache), then go nospace_cache if you're concerned.
-
-Thanks,
-Qu
-
->
-> I wonder if such things could be the cause of the corruption issues I
-> got : finding some inconsistencies with new checks right after a kernel
-> upgrade, trying to fix them and creating a mess instead ?
->
-> (This 2nd machine has been rebooted twice after this and still looks
-> happy...)
->
-> Kind regards.
->
-> =E0=A5=90
->
+> 
+> Josef 
+> 
