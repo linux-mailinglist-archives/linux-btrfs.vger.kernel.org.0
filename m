@@ -2,157 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C99599DE3D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 08:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DCCC9DEB1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 09:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbfH0GxG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Aug 2019 02:53:06 -0400
-Received: from mout.gmx.net ([212.227.15.18]:44265 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725920AbfH0GxG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Aug 2019 02:53:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1566888783;
-        bh=JXt6wuDTCj1qd97GOSHiEUXWoGG76fggIVcHa9WMaCw=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=NiUN/RG5gLnH8lemql3Pvn+HhvbRrjdxBaacD0i1exOtySfc+VfErzLELw2MPVb/M
-         xttE89GS4NPqFpIYxQTeiefuvEz2c99v9hF9PaUgqY4fx1pYtqSI1QNrbzvuUxoD7F
-         m4xZ6LPpcBHHKfCdEdOXIc25PHV+ucOf0qKViOWI=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx001
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0McmFl-1hl6vH1l2H-00Hw04; Tue, 27
- Aug 2019 08:53:03 +0200
-Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>,
-        linux-btrfs@vger.kernel.org
-Cc:     Christoph Anton Mitterer <calestyo@scientia.net>
-References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
- <18d24f2f-4d33-10aa-5052-c358d4f7c328@petaramesh.org>
- <a8968a812e270a0dd80c4cf431a8437d3a7daba5.camel@scientia.net>
- <5aefca34-224a-0a81-c930-4ccfcd144aef@petaramesh.org>
- <4bd70aa2-7ad0-d5c6-bc1f-22340afaac60@petaramesh.org>
- <370697f1-24c9-c8bd-01a7-c2885a7ece05@gmx.com>
- <209fcd36-6748-99c5-7b6d-319571bdd11f@petaramesh.org>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+        id S1725920AbfH0H10 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Aug 2019 03:27:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43022 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725825AbfH0H10 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Aug 2019 03:27:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 63D0EB653
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2019 07:27:24 +0000 (UTC)
+Subject: Re: [PATCH v3 3/4] btrfs: use xxhash64 for checksumming
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <20190826114834.14789-1-jthumshirn@suse.de>
+ <20190826114834.14789-4-jthumshirn@suse.de>
+ <238f4883-ced5-009e-2d77-61f5d4a8e5b8@suse.com>
+ <20190826232146.GE2752@suse.cz>
+From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <6525d5cf-9203-0332-cad5-2abc5d3e541c@gmx.com>
-Date:   Tue, 27 Aug 2019 14:52:57 +0800
+Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <2189d3db-48be-6ea7-7152-f142631cd7a4@suse.de>
+Date:   Tue, 27 Aug 2019 09:27:24 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <209fcd36-6748-99c5-7b6d-319571bdd11f@petaramesh.org>
+In-Reply-To: <20190826232146.GE2752@suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:1mytLaGuaij4jbaJdUGXJfyT1RF/a4YUGC0k3y+CXheBFchMDdW
- E6dtf4dzHpStoE1tvMfySh4xyWIxuY1W5i+MaU+eYQc+rYF+NsMzFhlmFnj0cipwJISjXHU
- eR5Jo51xoeju4ocIopjJeu3lSgYdnHWW3s7vbEEG/ZIjFrbUNnbWbAf/C4Yg+CZJ858pugM
- PsuG1fGMH6/TIp7js6E+g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ht1UBK76QY4=:dYQdc3IcZNjtE+gTZfq5Y1
- otdD/Si9LYJqyEqx/cYUjcFkMUWAXr3Sja0UH/uO64n+viZnNbcxXHURsroQfEOs9NzTKfZCs
- GGKuU53RboBKexEPrfQ9wXmCQO72bZYQRF0coCS3x9HVLWskhYJNEgnQLNi1Mk5aG1MXBhgSo
- GMKVN5oNrdPgVomILz4/zbXHmNBKpafq93cFRkiWBr3TfZS55ARbfVQttC+3ci/rl2jkjJ/5G
- MlAJJtdWyqI3uv5h9dkTytFapARvUTrcue63Z/6QZHIaqJs6qjxL0qjJ4n5osrXoDSTyb80oy
- 3USM6co+yK4ptFMQjqiWjrSY/RD4jAjDQWZJ7krwLtqIxkd6PlcbJDOocMypgv/O127f89jyc
- VczxrSarEVYJI2mzf+HEpiqYQTbZzjskrwTa94GJCwfrBBXQgXE8h2aLLGKXb02gYAZHURzsL
- 9dc0VHjl95lUX+dZ0erY8gd9wnhuxveQL88retYvKF530vdutCWx4suk4vXeGXDPkt8YE2xHJ
- T2WpkiA7GHO17GFUakH9VZHkKWTVJtueKQjJpAMxkycWEjEmSjSDY56PX/AKc5YfAW4/eNo5C
- ZrDkVYfS2L6JSoKUegZ/84gqa6fQJR1KuIjEf2+7Mo2JIrcboLDtwOE2tQ8JmM9zGQh+LWRIE
- 6Uj93fDOHRupBGaRcKUQ/71bYFnDXtwjjhllSj9Rz3L0EmkahFgZdZWgtFz1HGZihM1Acgp1h
- iz80W2E/XsfS8L4oSSg0TH0n85LIO6daAfhb8w8ysEHP2yECX8alM3xeblQ5ZSn9Us4Yp9lZL
- vaOrA7LuTz3QhVWbw35W85i4OspBDskEplUAncPkP3JUdzr02DQ3+u15g2EL9BBbT5QeMViyK
- GDYIAUcizlzHbia+R8CbLC7L4lDqlyq3nQ+n7jeGPxPPacpfv/S1XJJJs1b1j5xtMA/7VuWfi
- Y27DsMmVte420SrTgMu38Pb9NYUpbxbedIia+swoLCOX/myXZMpsY5orLq1GQGchOKSspDYtH
- V5TclhAmSvvJKzkxGOLmknF2CfqHgMfQZJUSNC1JmIrf1V1SkqsE8AIxuQnjSDtnoViLo8o/a
- jb1JIKqJYwQROgyxep7gxCZId2Emc9Qt5vvMirqvQHeEDrySbFV6K/vOyZy2Pwb9yTspKeRoH
- 7e9e3vgDzV18ht2AQr+AY3xwfPGQ7SF9wgDuT7yIl2ABOlLw==
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2019/8/27 =E4=B8=8B=E5=8D=882:34, Sw=C3=A2mi Petaramesh wrote:
-> Hi Qu,
->
-> Le 27/08/2019 =C3=A0 08:21, Qu Wenruo a =C3=A9crit=C2=A0:
->> If free space cache is invalid but passes its csum check, it's
->> completely *possible* to break metadata CoW, thus leads to transid mism=
-atch.
+On 27/08/2019 01:21, David Sterba wrote:
+> On Mon, Aug 26, 2019 at 06:38:13PM +0300, Nikolay Borisov wrote:
+>> nit: I'd name this commit  "Add xxhash64 to supported checksum hashes"
 >>
->> You can go v2 space cache which uses metadata CoW to protect its space
->> cache, thus in theory it should be a little safer than V1 space cache.
->>
->> Or you can just disable space cache using nospace_cache mount option, a=
-s
->> it's just an optimization. It's also recommended to clean existing cach=
-e
->> by using "btrfs check --clear-space-cache v1".
->>
->> I'd prefer to do a "btrfs check --readonly" anyway (which also checks
->> free space cache), then go nospace_cache if you're concerned.
->
-> I will leave for travel shortly, so I will be unable to perform further
-> tests on this machine for a week, but I'll do when I'm back.
->
-> Should I understand your statement as an advice to clear the space cache
-> even though the kernel said it has rebuilt it,
+>> Personally, I interpret 'use <some hash> for checksumming' as if you are
+>> modifying code to use that hash. But in fact you are not, at least not
+>> in that patch.
+> 
+> It could be percieved as nitpicking, but this kind of feedback is a
+> check that the author's intentions are understood by someone else.  Some
+> subtleties or nuances can be missed by authors and this is maybe
+> inevitable when one spends significant time on the code or changelog.
+> The fresh look and first impression is not possible anymore. But this is
+> how patches are read when found git log.
+> 
+> In this case I agree with you and the use use of 'use' is a bit
+> misleading, suggesting that xxhash is now default.
 
-Rebuild only happens when kernel detects such mismatch by comparing the
-block group free space (recorded in block group item) and free space cache=
-.
+No problem. Dave are going to fix it up or do you want me to re-submit?
+I don't really care either way.
 
-If those numbers (along with other things like csum and generation)
-match, we don't have a way to detect wrong free space cache at all.
-
-So if kernel is already complaining about free space cache, then no
-matter whatever the reason is, you'd better take extra care about the
-free space cache.
-
-Although another possible cause is, your extent tree is already
-corrupted thus the free space number in block group item is already
-incorrect.
-You can only determine that by running btrfs check --readonly.
-
-> or to use the V2 space
-> cache generally speaking, on any machine that I use (I had understood it
-> was useful only on multi-TB filesystems...)
-
-10GiB is enough to create large enough block groups to utilize free
-space cache.
-So you can't really escape from free space cache.
-
-Thanks,
-Qu
-
->
-> Thanks.
->
-> =E0=A5=90
->
+Byte,
+	Johannes
+-- 
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 Nürnberg
+Germany
+(HRB 247165, AG München)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
