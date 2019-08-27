@@ -2,159 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0E99F20D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 20:06:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A10C99F22C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Aug 2019 20:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730517AbfH0SG1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 27 Aug 2019 14:06:27 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:46706 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727893AbfH0SG0 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 27 Aug 2019 14:06:26 -0400
-Received: by mail-pg1-f196.google.com with SMTP id m3so13082514pgv.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Aug 2019 11:06:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=97LVZDC7BiAt2XCVjA7xM4eJbI4swAlcmwOiH3VCU7s=;
-        b=i6ZWtt5xuZ207mX+4f19DWwra554VlIBDslkPO7f8wW+eHECh/whSGsZD+5QQyXNvD
-         Cl1YDJDsjFGSvI+k28Kj3GTC7jHCrDcFhQVY8nDCyZAxOTwyTbYu+vOTA6jlErP/8Dtn
-         HT8AApMZYmcrMbNnLlyqkIoTgDXSlkHF8K/kCulSqRp9BeiFrn2HAQ66e0o4mkW9utYY
-         KNxw4ohvRpACaW/FbE1QtH5nlsE2fxxdZLoI86K1/uSLp3EyqH0gp9u29Joc4UdxmuhH
-         7gnE0FGvRvxtYykTmaoOpc0T4N+K8fzJKHNbL2q3krCXcJg5saLUcvdlEGI6adRdbWWs
-         q/Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=97LVZDC7BiAt2XCVjA7xM4eJbI4swAlcmwOiH3VCU7s=;
-        b=p7eT8EL/WqAaEebCoS+SlLDRULzYUsnOaNl9eBU6M9cggUUPLUN7hXDA2GLy4emmg1
-         R9GcQ6rltuM1F2D45t4auufL3mgqYA8sa5zfBwthZhgraVkzunCeLO47R9bC5DnQ69dX
-         MKxKB8BcHS23EP4Mp6bu8kfJZPY6MkA8hIdjJAFv5liqish2lhaS5XslPsTqMEIUNJ1L
-         g4HgKbWo8vqTbWR7+1g4AJvRjMOmXeOxFdtP1SqutUO1ohJzl5zMSPLziRJHDSxDZZh8
-         yLTpLBJ8u4mcMeOQunazc9EUQM+JE/8NeeSQ76KN5CdkBHvF0spFi5rXx/b86JHt77o8
-         621g==
-X-Gm-Message-State: APjAAAUfFcw07Fg9XgRG6Ko5hTrnIHQq9GB2sGF3rPsJfW0JbeGKDIzU
-        4q0BEUBO75eAjbp3Q7ntbqDJUQ==
-X-Google-Smtp-Source: APXvYqw1QsLaRVBS5c6ZTBWnlfDcGNNlLRso3st8jgZtuxmMa6F+Ixu6LJMf+EjF/L5LhLVVal+4Sg==
-X-Received: by 2002:a65:60d2:: with SMTP id r18mr21891575pgv.71.1566929185312;
-        Tue, 27 Aug 2019 11:06:25 -0700 (PDT)
-Received: from vader ([2620:10d:c090:200::2:56d8])
-        by smtp.gmail.com with ESMTPSA id 185sm22151320pff.54.2019.08.27.11.06.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2019 11:06:24 -0700 (PDT)
-Date:   Tue, 27 Aug 2019 11:06:23 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH 5/5] Btrfs: add ioctl for directly writing compressed
- data
-Message-ID: <20190827180623.GB28029@vader>
+        id S1730038AbfH0SQ3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 27 Aug 2019 14:16:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56022 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729377AbfH0SQ3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 27 Aug 2019 14:16:29 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 09DE7B0E6;
+        Tue, 27 Aug 2019 18:16:28 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id BABFFDA809; Tue, 27 Aug 2019 20:16:50 +0200 (CEST)
+Date:   Tue, 27 Aug 2019 20:16:50 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 2/5] Btrfs: treat RWF_{,D}SYNC writes as sync for CRCs
+Message-ID: <20190827181650.GX2752@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
 References: <cover.1565900769.git.osandov@fb.com>
- <78747c3028ce91db9856e7fbd98ccbb2609acdc6.1565900769.git.osandov@fb.com>
- <20190826213618.qdsivmmwwlxkqtxc@macbook-pro-91.dhcp.thefacebook.com>
- <a9c8436c-ca94-081d-d83b-25360ebb8cb0@suse.com>
- <20190827115740.n57xrl7i7pshjkey@macbook-pro-91.dhcp.thefacebook.com>
+ <ba7aa871e255c0e264a782b863513b9afd499f91.1565900769.git.osandov@fb.com>
+ <20190827123512.GF2752@twin.jikos.cz>
+ <20190827174439.GA28029@vader>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190827115740.n57xrl7i7pshjkey@macbook-pro-91.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190827174439.GA28029@vader>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Aug 27, 2019 at 07:57:41AM -0400, Josef Bacik wrote:
-> On Tue, Aug 27, 2019 at 09:26:21AM +0300, Nikolay Borisov wrote:
-> > 
-> > 
-> > On 27.08.19 г. 0:36 ч., Josef Bacik wrote:
-> > > On Thu, Aug 15, 2019 at 02:04:06PM -0700, Omar Sandoval wrote:
-> > >> From: Omar Sandoval <osandov@fb.com>
-> > >>
-> > >> This adds an API for writing compressed data directly to the filesystem.
-> > >> The use case that I have in mind is send/receive: currently, when
-> > >> sending data from one compressed filesystem to another, the sending side
-> > >> decompresses the data and the receiving side recompresses it before
-> > >> writing it out. This is wasteful and can be avoided if we can just send
-> > >> and write compressed extents. The send part will be implemented in a
-> > >> separate series, as this ioctl can stand alone.
-> > >>
-> > >> The interface is essentially pwrite(2) with some extra information:
-> > >>
-> > >> - The input buffer contains the compressed data.
-> > >> - Both the compressed and decompressed sizes of the data are given.
-> > >> - The compression type (zlib, lzo, or zstd) is given.
-> > >>
-> > >> A more detailed description of the interface, including restrictions and
-> > >> edge cases, is included in include/uapi/linux/btrfs.h.
-> > >>
-> > >> The implementation is similar to direct I/O: we have to flush any
-> > >> ordered extents, invalidate the page cache, and do the io
-> > >> tree/delalloc/extent map/ordered extent dance. From there, we can reuse
-> > >> the compression code with a minor modification to distinguish the new
-> > >> ioctl from writeback.
-> > >>
+On Tue, Aug 27, 2019 at 10:44:39AM -0700, Omar Sandoval wrote:
+> On Tue, Aug 27, 2019 at 02:35:13PM +0200, David Sterba wrote:
+> > On Thu, Aug 15, 2019 at 02:04:03PM -0700, Omar Sandoval wrote:
+> > > From: Omar Sandoval <osandov@fb.com>
 > > > 
-> > > I've looked at this a few times, the locking and space reservation stuff look
-> > > right.  What about encrypted send/recieve?  Are we going to want to use this to
-> > > just blind copy encrypted data without having to decrypt/re-encrypt?  Should
-> > > this be taken into consideration for this interface?  I'll think more about it,
-> > > but I can't really see any better option than this.  Thanks,
+> > > In btrfs_file_write_iter(), we treat a write as synchrononous if the
+> > > file is marked as synchronous. However, with pwritev2(), a write with
+> > > RWF_SYNC or RWF_DSYNC is also synchronous even if the file isn't by
+> > > default. Make sure we bump the sync_writers counter in that case, too,
+> > > so that we'll do the CRCs synchronously.
+> > > 
+> > > Signed-off-by: Omar Sandoval <osandov@fb.com>
+> > > ---
+> > >  fs/btrfs/file.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> > > index 4393b6b24e02..27223753da7b 100644
+> > > --- a/fs/btrfs/file.c
+> > > +++ b/fs/btrfs/file.c
+> > > @@ -1882,7 +1882,7 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
+> > >  	u64 start_pos;
+> > >  	u64 end_pos;
+> > >  	ssize_t num_written = 0;
+> > > -	bool sync = (file->f_flags & O_DSYNC) || IS_SYNC(file->f_mapping->host);
+> > > +	bool sync = iocb->ki_flags & IOCB_DSYNC;
 > > 
-> > The main problem is we don't have encryption implemented. And one of the
-> > larger aspects of the encryption support is going to be how we are
-> > storing the encryption keys. E.g. should they be part of the send
-> > format? Or are we going to limit send/receive based on whether the
-> > source/dest have transferred encryption keys out of line?
-> > 
+> > I'd like to merge the patches 1-3, but have hard time matching the
+> > changelog to the change here. It's from one set of sync flags to
+> > another, mentioning pwritev2 but that's a syscall and the function
+> > itself does not use the sync flags at all. That's probably somewhere
+> > deep in the vfs calls but that's what I'd appreciate stated explicitly
+> > in the changelog as I was not able to find it out in a reasonable time.
 > 
-> Subvolume encryption will be coming soon, but I'm less worried about the
-> mechanics of how that will be used and more worried about making this interface
-> work for that eventual future.  I assume we'll want to be able to just blind
-> copy the encrypted data instead of decrypting into the send stream and then
-> re-encrypting on the other side.  Which means we'll have two uses for this
-> interface, and I want to make sure we're happy with it before it gets merged.
-> Thanks,
+> You're right, there are a few layers here. How about this for the
+> changelog:
 > 
-> Josef
+> 
+> The VFS indicates a synchronous write to ->write_iter() via
+> iocb->ki_flags. The IOCB_{,D}SYNC flags may be set based on the file
+> (see iocb_flags()) or the RWF_* flags passed to a syscall like
+> pwritev2() (see kiocb_set_rw_flags()). However, in
+> btrfs_file_write_iter(), we're checking if a write is synchronous based
+> only on the file; we use this to decide when to bump the sync_writers
+> counter and thus do CRCs synchronously. Make sure we do this for all
+> synchronous writes as determined by the VFS.
 
-Right, I think the only way to do this would be to blindly send
-encrypted data, and leave the key management to a higher layer.
-
-Looking at the ioctl definition:
-
-struct btrfs_ioctl_compressed_pwrite_args {
-        __u64 offset;           /* in */
-        __u32 orig_len;         /* in */
-        __u32 compressed_len;   /* in */
-        __u32 compress_type;    /* in */
-        __u32 reserved[9];
-        void __user *buf;       /* in */
-} __attribute__ ((__packed__));
-
-I think there are enough reserved fields in there for, e.g., encryption
-type, any key management-related things we might need to stuff in, etc.
-But the naming would be pretty bad if we extended it this way. Maybe
-compressed write -> raw write, orig_len -> num_bytes, compressed_len ->
-disk_num_bytes?
-
-struct btrfs_ioctl_raw_pwrite_args {
-        __u64 offset;           /* in */
-        __u32 num_bytes;        /* in */
-        __u32 disk_num_bytes;   /* in */
-        __u32 compress_type;    /* in */
-        __u32 reserved[9];
-        void __user *buf;       /* in */
-} __attribute__ ((__packed__));
-
-Besides the naming, I don't think anything else would need to change for
-now. And if we decide that we don't want encrypted send/receive, then
-fine, this naming is still okay.
+That's great, thanks, no need to resend.
