@@ -2,136 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CFF9FC36
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2019 09:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61009FC3A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2019 09:51:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbfH1Hsp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Aug 2019 03:48:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40100 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726310AbfH1Hsp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Aug 2019 03:48:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 21886AFFC
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 07:48:43 +0000 (UTC)
-Subject: Re: [PATCH v2 01/11] btrfs-progs: don't blindly assume crc32c in
- csum_tree_block_size()
-To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20190826114853.14860-1-jthumshirn@suse.de>
- <20190826114853.14860-2-jthumshirn@suse.de>
- <20190827163302.GU2752@twin.jikos.cz> <20190827163638.GV2752@twin.jikos.cz>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <368ea9b7-7c21-2565-0b17-6a8e504fcf8d@suse.de>
-Date:   Wed, 28 Aug 2019 09:48:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726413AbfH1HvW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Aug 2019 03:51:22 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38044 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726382AbfH1HvV (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 28 Aug 2019 03:51:21 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7S7nUWR137570
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 07:51:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ references : message-id : date : mime-version : in-reply-to : content-type
+ : content-transfer-encoding; s=corp-2019-08-05;
+ bh=cZpexP4MJHd09wh58zYRgh9RZy/ZIasGiWA/6GLJmKo=;
+ b=VRU9Iu9tJvTm0N0XZDVb0pihZE0ox+4jY/VVR/VQdjiO+5yAbZ+6Q7LzGsPAPtl638ZF
+ amv5PyxRwbXmjSH4e6H+yZNxkpwzizguO/aIybN5IB53Y75ybtFAOM+HnMFSM6TyBewr
+ oezcaCSAIlCpKErxD1J0fPBNMlFRz/fadIUeBnOTP31UtO3U0NbNln7Ni7tFXOZGuVMI
+ zBWTfjQC+kmHTIo9feAc9uhuS4z4n9E0VP6YUXFYFSZSh1fJudzqRgxjAyWFAKUTBqW3
+ aPE8ufW7Cui13rUk+IYgYseP9qxVCBboOsGVpyQFqAipNdPNw9SkVYqET2XtCuZSLZIB XA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2unngag10c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 07:51:20 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7S7mInw183381
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 07:51:19 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2undupn14s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 07:51:19 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7S7pITE022178
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 07:51:19 GMT
+Received: from [10.190.130.61] (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 28 Aug 2019 00:51:18 -0700
+Subject: Re: [PATCH v2] btrfs-progs: add verbose option to btrfs device scan
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+References: <20190715144241.1077-1-anand.jain@oracle.com>
+ <20190716030514.1152-1-anand.jain@oracle.com>
+Message-ID: <11e67be8-1fea-4a11-2e74-42a9928ade78@oracle.com>
+Date:   Wed, 28 Aug 2019 15:51:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20190827163638.GV2752@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20190716030514.1152-1-anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9362 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908280082
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9362 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908280082
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 27/08/2019 18:36, David Sterba wrote:
-> On Tue, Aug 27, 2019 at 06:33:02PM +0200, David Sterba wrote:
->> On Mon, Aug 26, 2019 at 01:48:43PM +0200, Johannes Thumshirn wrote:
->>> The callers of csum_tree_block_size() blindly assume we're only having
->>> crc32c as a possible checksum and thus pass in
->>> btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32] for the size argument of
->>> csum_tree_block_size().
->>>
->>> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
->>> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
->>> ---
->>>  mkfs/common.c | 14 +++++++-------
->>>  1 file changed, 7 insertions(+), 7 deletions(-)
->>>
->>> diff --git a/mkfs/common.c b/mkfs/common.c
->>> index caca5e707233..b6e549b19272 100644
->>> --- a/mkfs/common.c
->>> +++ b/mkfs/common.c
->>> @@ -101,7 +101,7 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
->>>  	}
->>>  
->>>  	/* generate checksum */
->>> -	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0);
->>> +	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0);
->>
->> Where is btrfs_mkfs_config::csum_type defined?
+Ping?
+
+Thanks, Anand
+
+
+On 16/7/19 11:05 AM, Anand Jain wrote:
+> To help debug device scan issues, add verbose option to btrfs device scan.
 > 
-> Aha it's in 8/11.
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> v2: Use bool instead of int as a btrfs_scan_device() argument.
+> 
+>   cmds/device.c        | 8 ++++++--
+>   cmds/filesystem.c    | 2 +-
+>   common/device-scan.c | 4 +++-
+>   common/device-scan.h | 3 ++-
+>   common/utils.c       | 2 +-
+>   disk-io.c            | 2 +-
+>   6 files changed, 14 insertions(+), 7 deletions(-)
+> 
+> diff --git a/cmds/device.c b/cmds/device.c
+> index 24158308a41b..9b715ffc42a3 100644
+> --- a/cmds/device.c
+> +++ b/cmds/device.c
+> @@ -313,6 +313,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
+>   	int all = 0;
+>   	int ret = 0;
+>   	int forget = 0;
+> +	bool verbose = false;
+>   
+>   	optind = 0;
+>   	while (1) {
+> @@ -323,7 +324,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
+>   			{ NULL, 0, NULL, 0}
+>   		};
+>   
+> -		c = getopt_long(argc, argv, "du", long_options, NULL);
+> +		c = getopt_long(argc, argv, "duv", long_options, NULL);
+>   		if (c < 0)
+>   			break;
+>   		switch (c) {
+> @@ -333,6 +334,9 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
+>   		case 'u':
+>   			forget = 1;
+>   			break;
+> +		case 'v':
+> +			verbose = true;
+> +			break;
+>   		default:
+>   			usage_unknown_option(cmd, argv);
+>   		}
+> @@ -354,7 +358,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
+>   			}
+>   		} else {
+>   			printf("Scanning for Btrfs filesystems\n");
+> -			ret = btrfs_scan_devices();
+> +			ret = btrfs_scan_devices(verbose);
+>   			error_on(ret, "error %d while scanning", ret);
+>   			ret = btrfs_register_all_devices();
+>   			error_on(ret,
+> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+> index 4f22089abeaa..02d47a43a792 100644
+> --- a/cmds/filesystem.c
+> +++ b/cmds/filesystem.c
+> @@ -746,7 +746,7 @@ devs_only:
+>   		else
+>   			ret = 1;
+>   	} else {
+> -		ret = btrfs_scan_devices();
+> +		ret = btrfs_scan_devices(false);
+>   	}
+>   
+>   	if (ret) {
+> diff --git a/common/device-scan.c b/common/device-scan.c
+> index 2c5ae225f710..71c91dee6a86 100644
+> --- a/common/device-scan.c
+> +++ b/common/device-scan.c
+> @@ -351,7 +351,7 @@ void free_seen_fsid(struct seen_fsid *seen_fsid_hash[])
+>   	}
+>   }
+>   
+> -int btrfs_scan_devices(void)
+> +int btrfs_scan_devices(bool verbose)
+>   {
+>   	int fd = -1;
+>   	int ret;
+> @@ -380,6 +380,8 @@ int btrfs_scan_devices(void)
+>   			continue;
+>   		/* if we are here its definitely a btrfs disk*/
+>   		strncpy_null(path, blkid_dev_devname(dev));
+> +		if (verbose)
+> +			printf("blkid: btrfs device: %s\n", path);
+>   
+>   		fd = open(path, O_RDONLY);
+>   		if (fd < 0) {
+> diff --git a/common/device-scan.h b/common/device-scan.h
+> index eda2bae5c6c4..3e473c48d1af 100644
+> --- a/common/device-scan.h
+> +++ b/common/device-scan.h
+> @@ -1,6 +1,7 @@
+>   #ifndef __DEVICE_SCAN_H__
+>   #define __DEVICE_SCAN_H__
+>   
+> +#include <stdbool.h>
+>   #include "kerncompat.h"
+>   #include "ioctl.h"
+>   
+> @@ -29,7 +30,7 @@ struct seen_fsid {
+>   	int fd;
+>   };
+>   
+> -int btrfs_scan_devices(void);
+> +int btrfs_scan_devices(bool verbose);
+>   int btrfs_register_one_device(const char *fname);
+>   int btrfs_register_all_devices(void);
+>   int btrfs_add_to_fsid(struct btrfs_trans_handle *trans,
+> diff --git a/common/utils.c b/common/utils.c
+> index ad938409a94f..07648f07fbd4 100644
+> --- a/common/utils.c
+> +++ b/common/utils.c
+> @@ -277,7 +277,7 @@ int check_mounted_where(int fd, const char *file, char *where, int size,
+>   
+>   	/* scan other devices */
+>   	if (is_btrfs && total_devs > 1) {
+> -		ret = btrfs_scan_devices();
+> +		ret = btrfs_scan_devices(false);
+>   		if (ret)
+>   			return ret;
+>   	}
+> diff --git a/disk-io.c b/disk-io.c
+> index be44eead5cef..71ed78b671da 100644
+> --- a/disk-io.c
+> +++ b/disk-io.c
+> @@ -1085,7 +1085,7 @@ int btrfs_scan_fs_devices(int fd, const char *path,
+>   	}
+>   
+>   	if (!skip_devices && total_devs != 1) {
+> -		ret = btrfs_scan_devices();
+> +		ret = btrfs_scan_devices(false);
+>   		if (ret)
+>   			return ret;
+>   	}
+> 
 
-Grr, more artifacts of rebasing/reorganizing the series.
-
-Sorry for that.
-
--- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 247165, AG München)
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
