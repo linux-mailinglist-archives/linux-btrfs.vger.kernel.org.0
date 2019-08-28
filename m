@@ -2,119 +2,166 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFED8A053B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2019 16:45:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 752DBA05D5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2019 17:12:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbfH1OpY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Aug 2019 10:45:24 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:54392 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726395AbfH1OpY (ORCPT
+        id S1726591AbfH1PMu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Aug 2019 11:12:50 -0400
+Received: from mail-qt1-f174.google.com ([209.85.160.174]:38799 "EHLO
+        mail-qt1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726428AbfH1PMu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Aug 2019 10:45:24 -0400
-Received: by mail-wm1-f46.google.com with SMTP id t6so336807wmj.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 07:45:22 -0700 (PDT)
+        Wed, 28 Aug 2019 11:12:50 -0400
+Received: by mail-qt1-f174.google.com with SMTP id q64so3397965qtd.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 08:12:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=0BEjoSTlcGLs2tsgn7jxrftr6eID5J8qKRsTkVEr2Ik=;
-        b=FCjQEBemcCYcDekTz6INAJldaLnmQZBj9I14J8OFey8wLaIcoh+uIDe1Ka8T2XKhLz
-         Ca6H0RRU0VjcSU1RD5FlLOvE7Mc6gRRo/4PvUSpEORBuat3DMfwDSgX2RQUFGXG2iXMw
-         rycbM1brxncwN9zN4Xmi1NTV2b3WQ+KtQ4WVeYzJIANXZbIankO0TgeRUo0HdFXzohme
-         yPX+HyBL1XSwexk7hM2kXKZpVkdAlsAh1Y/SrobpuZ1UojBkPgKp4m2vgblAQple1nnI
-         GSeD95jIHQDnG+T1nzeNlW9PFKb8BOG8Jx+boBhegaS8L+8sr75VGg9BsuvV1FPON/RY
-         rBdg==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
+         :content-transfer-encoding;
+        bh=87F5fHiaVTc4Asp26UQYSoKOoF6GTJH/fHz0XYTGP8k=;
+        b=ijPVs9OV09zqmTuB0vxktflHXOR/VOseQJIHAPfm6auBh3elKJ6Cs1QcI6VNOHH3hd
+         ukDQXsQUzxZslWU4XcylStH5Y/IeXuxv0n8AUb3Vgu3Ea3D8rAR3eh1BO2/qDOrSudLG
+         C1Xs8IWEJsjbGbaXrgzVmYIlxpwUkn+l7niQguy77jnFNhUJCg7JZYIZ636JqkGwyNqr
+         d2uZWmP0uiltsdwUpv9PwBd7Dk82C14sCbrpPkBgsAWv8HR4k+K9hsogoSLIX6q2tEGv
+         RyGtCrhZyGXLqxIaEJzMqFs93P/g8TCDAGF0X3Z1yxzbhSHcODmJRoiEZOiHN+/HseQC
+         /bWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=0BEjoSTlcGLs2tsgn7jxrftr6eID5J8qKRsTkVEr2Ik=;
-        b=sfV6h4GkvOTDIhDXp2ArBC2TVQr2qOz+eiX/iHeRpIBLFVwvPb2p0dPX1SC9X/lf0V
-         R62oppNA/RD0jJxNSdR3xi60xBp+9LaAQ5Do+jbIqxExS+Q9ozWDU/lOoEYC8GjNqJsG
-         cjvYkNiH9sHgrpx8mNPV98YJUq4BWTK1moT6Q0S5csrMPhyh3H4tk0PYt5sWLfN475F7
-         yA4SUIDOjCsViFtUt7lc+37E/aXIo9h8yIiE5tuev0BG29mJIoGeimawWr+PNP3Cn8VO
-         B5Xw7d/+YiQGkB3qygFqHEzSQVJyTS/Tea4pj3ZucYkDTzfuZXYZCz8UzzsOCcPMxuk/
-         xJiw==
-X-Gm-Message-State: APjAAAU3Z1kIeWfSAkVOWEg6Dd9BiWXgTnzk04ydrcbJpm6mIN1xj9jQ
-        YGl9+i31CcpOXAcNh7FBmrl039x7
-X-Google-Smtp-Source: APXvYqw3BaEiK+Hbsv1SbPSJJzRm+yNKKvHyV12CQc3vpsB9ve/m6Xbf26OPegeW2Puh4N7mZe+6VQ==
-X-Received: by 2002:a7b:c241:: with SMTP id b1mr5499196wmj.165.1567003521576;
-        Wed, 28 Aug 2019 07:45:21 -0700 (PDT)
-Received: from [10.19.90.60] ([193.16.224.12])
-        by smtp.gmail.com with ESMTPSA id i5sm3588613wrn.48.2019.08.28.07.45.20
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Aug 2019 07:45:20 -0700 (PDT)
-Subject: Re: No files in snapshot
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <b729e524-3c63-cf90-7115-02dcf2fda003@gmail.com>
- <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
-From:   Thomas Schneider <74cmonty@gmail.com>
-Message-ID: <f22229eb-ab68-fecb-f10a-6e40c0b0e1ef@gmail.com>
-Date:   Wed, 28 Aug 2019 16:45:19 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=87F5fHiaVTc4Asp26UQYSoKOoF6GTJH/fHz0XYTGP8k=;
+        b=kW+xR370+728lZSgnw40nIl4ZmN7IBeJXndmE0nAXsOTMM5bI+k0yYOSzQz+LaygTS
+         SqsLTwbWgQutBT6jEEAuj76jf0QrKHnzotqsQG/SbLNpGn0Ymg5yemWmfdOEd/BK8Rm8
+         iFGzcePCBshKIevpRglcbl/Scm6uwlQrkomO81sDJlem7Z+60Pz3sdE1yEg8KHLVR5P3
+         cEBZIjG+9Fwd8Po2nBGu8DdDnLDLLLt9jwEGsLiM0MYduP85lz8j8j5dclgTyYxe73Lw
+         1+SQz1ziSbraV/LRJjJ3+hqTvluM/BAPpwqDX00egMHS9IlR5JAhoSRQux25Q9dLGwtd
+         R7OA==
+X-Gm-Message-State: APjAAAWf28NIzOmEHOsSC+Bu5Cd52EmrGNsPFoDcWt5HCxUkZOJWnlxn
+        vCPl7nTuuwnSAZ8xyN8B5w4szw==
+X-Google-Smtp-Source: APXvYqxrdWBN0jlsR8cEptm+IKxI2GZpNOEXetKeyrP7X2RX6oMO+kPdLsF/fNQbxCGHyz7pPysGMA==
+X-Received: by 2002:ac8:41d1:: with SMTP id o17mr4718371qtm.383.1567005169382;
+        Wed, 28 Aug 2019 08:12:49 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id u16sm1362815qkj.107.2019.08.28.08.12.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Aug 2019 08:12:48 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH][v2] btrfs: rework wake_all_tickets
+Date:   Wed, 28 Aug 2019 11:12:47 -0400
+Message-Id: <20190828151247.17512-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190822191102.13732-7-josef@toxicpanda.com>
+References: <20190822191102.13732-7-josef@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+Now that we no longer partially fill tickets we need to rework
+wake_all_tickets to call btrfs_try_to_wakeup_tickets() in order to see
+if any subsequent tickets are able to be satisfied.  If our tickets_id
+changes we know something happened and we can keep flushing.
 
-I was thinking of this, too. But it does not apply.
-root@ld5507:~# btrfs su list -to /var/lib
-ID      gen     top level       path
---      ---     ---------       ----
-root@ld5507:~# btrfs su list -to /var
-ID      gen     top level       path
---      ---     ---------       ----
+Also if we find a ticket that is smaller than the first ticket in our
+queue then we want to retry the flushing loop again in case
+may_commit_transaction() decides we could satisfy the ticket by
+committing the transaction.
 
-And there are files in other directories:
-root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mgr/ceph-ld5507/
-insgesamt 4
--rw-r--r-- 1 ceph ceph 61 Mai 28 14:33 keyring
+Rename this to maybe_fail_all_tickets() while we're at it, to better
+reflect what the function is actually doing.
 
-root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mon/ceph-ld5507/
-insgesamt 12
--rw------- 1 ceph ceph  77 Mai 28 14:33 keyring
--rw-r--r-- 1 ceph ceph   8 Mai 28 14:33 kv_backend
--rw-r--r-- 1 ceph ceph   3 Aug 23 09:41 min_mon_release
-drwxr-xr-x 1 ceph ceph 244 Aug 26 18:37 store.db
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+v1->v2:
+- added a comment for maybe_fail_all_tickets
 
-Only this directories 
-/.snapshots/158/snapshot/var/lib/ceph/osd/ceph-<id>/ are empty:
-root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/osd/ceph-219/
-insgesamt 0
+ fs/btrfs/space-info.c | 56 +++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 49 insertions(+), 7 deletions(-)
 
-To create a snapshot I run this command:
-snapper create --type single --description "validate 
-/var/lib/ceph/osd/ceph-<n>"
-
-
-
-Am 28.08.2019 um 00:24 schrieb Chris Murphy:
-> On Tue, Aug 27, 2019 at 3:33 AM Thomas Schneider <74cmonty@gmail.com> wrote:
->> However, I run into an issue and need to restore various files.
->>
->> I thought that I could simply take the files from a snapshot created before.
->> However, the files required don't exist in any snapshot!
->>
->> Therefore I have created a new snapshot manually to verify if the files
->> will be included, but there's nothing.
-> Snapshots are not recursive on Btrfs. The snapshot will not extend
-> into nested subvolumes. Check to see if you are snapshotting the
-> proper subvolume.
->
-> # btrfs sub list -to /var/lib
-> # btrfs sub list -to /var/
->
-> In some sense these are redundant, I'm not sure if your /var/lib is a
-> subvolume or not. Also please include the exact snapshot command
-> you're making.
->
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index c2143ddb7f4a..b2bb9d0bd44e 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -679,19 +679,61 @@ static inline int need_do_async_reclaim(struct btrfs_fs_info *fs_info,
+ 		!test_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state));
+ }
+ 
+-static bool wake_all_tickets(struct list_head *head)
++/*
++ * maybe_fail_all_tickets - we've exhausted our flushing, start failing tickets
++ * @fs_info - fs_info for this fs
++ * @space_info - the space info we were flushing
++ *
++ * We call this when we've exhausted our flushing ability and haven't made
++ * progress in satisfying tickets.  The reservation code handles tickets in
++ * order, so if there is a large ticket first and then smaller ones we could
++ * very well satisfy the smaller tickets.  This will attempt to wake up any
++ * tickets in the list to catch this case.
++ *
++ * This function returns true if it was able to make progress by clearing out
++ * other tickets, or if it stumbles across a ticket that was smaller than the
++ * first ticket.
++ */
++static bool maybe_fail_all_tickets(struct btrfs_fs_info *fs_info,
++				   struct btrfs_space_info *space_info)
+ {
+ 	struct reserve_ticket *ticket;
++	u64 tickets_id = space_info->tickets_id;
++	u64 first_ticket_bytes = 0;
++
++	while (!list_empty(&space_info->tickets) &&
++	       tickets_id == space_info->tickets_id) {
++		ticket = list_first_entry(&space_info->tickets,
++					  struct reserve_ticket, list);
++
++		/*
++		 * may_commit_transaction will avoid committing the transaction
++		 * if it doesn't feel like the space reclaimed by the commit
++		 * would result in the ticket succeeding.  However if we have a
++		 * smaller ticket in the queue it may be small enough to be
++		 * satisified by committing the transaction, so if any
++		 * subsequent ticket is smaller than the first ticket go ahead
++		 * and send us back for another loop through the enospc flushing
++		 * code.
++		 */
++		if (first_ticket_bytes == 0)
++			first_ticket_bytes = ticket->bytes;
++		else if (first_ticket_bytes > ticket->bytes)
++			return true;
+ 
+-	while (!list_empty(head)) {
+-		ticket = list_first_entry(head, struct reserve_ticket, list);
+ 		list_del_init(&ticket->list);
+ 		ticket->error = -ENOSPC;
+ 		wake_up(&ticket->wait);
+-		if (ticket->bytes != ticket->orig_bytes)
+-			return true;
++
++		/*
++		 * We're just throwing tickets away, so more flushing may not
++		 * trip over btrfs_try_granting_tickets, so we need to call it
++		 * here to see if we can make progress with the next ticket in
++		 * the list.
++		 */
++		btrfs_try_granting_tickets(fs_info, space_info);
+ 	}
+-	return false;
++	return (tickets_id != space_info->tickets_id);
+ }
+ 
+ /*
+@@ -759,7 +801,7 @@ static void btrfs_async_reclaim_metadata_space(struct work_struct *work)
+ 		if (flush_state > COMMIT_TRANS) {
+ 			commit_cycles++;
+ 			if (commit_cycles > 2) {
+-				if (wake_all_tickets(&space_info->tickets)) {
++				if (maybe_fail_all_tickets(fs_info, space_info)) {
+ 					flush_state = FLUSH_DELAYED_ITEMS_NR;
+ 					commit_cycles--;
+ 				} else {
+-- 
+2.21.0
 
