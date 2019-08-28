@@ -2,173 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7179FA04F5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2019 16:28:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFED8A053B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 28 Aug 2019 16:45:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726743AbfH1O1y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Aug 2019 10:27:54 -0400
-Received: from mout.gmx.net ([212.227.17.20]:51459 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726466AbfH1O1x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Aug 2019 10:27:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1567002466;
-        bh=6dON/JFO/ccTs22mAgJ4I6TNeNlm1nFTxq/I8ECexNI=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=CXK1WoLsAXDB6gmgnT7cgOVb/++RHTPcUPRcX5pk2VRvITINihooJHbAnWfR7mj4t
-         Jcj/Kj/hYdGeIUYzOUi82jQ3ycL0qzmWqRjSVbdVFa0J9sp/eL1/KxhR2yZCXzDWxs
-         GKbDoYMw2hKp7TzjJyEs282Mjz0OB1b/7tvtPSrU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx102
- [212.227.17.174]) with ESMTPSA (Nemesis) id 0M5IdH-1iPjoM2b9j-00zZGY; Wed, 28
- Aug 2019 16:27:46 +0200
-Subject: Re: [PATCH v2 1/2] btrfs-progs: add BTRFS_DEV_ITEMS_OBJECTID in
- comment in print-tree
-To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20190828095619.9923-1-anand.jain@oracle.com>
- <20190828140605.20790-1-anand.jain@oracle.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <364d1417-c86f-9866-2388-637514037195@gmx.com>
-Date:   Wed, 28 Aug 2019 22:27:41 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        id S1726437AbfH1OpY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Aug 2019 10:45:24 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:54392 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbfH1OpY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 28 Aug 2019 10:45:24 -0400
+Received: by mail-wm1-f46.google.com with SMTP id t6so336807wmj.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 07:45:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=0BEjoSTlcGLs2tsgn7jxrftr6eID5J8qKRsTkVEr2Ik=;
+        b=FCjQEBemcCYcDekTz6INAJldaLnmQZBj9I14J8OFey8wLaIcoh+uIDe1Ka8T2XKhLz
+         Ca6H0RRU0VjcSU1RD5FlLOvE7Mc6gRRo/4PvUSpEORBuat3DMfwDSgX2RQUFGXG2iXMw
+         rycbM1brxncwN9zN4Xmi1NTV2b3WQ+KtQ4WVeYzJIANXZbIankO0TgeRUo0HdFXzohme
+         yPX+HyBL1XSwexk7hM2kXKZpVkdAlsAh1Y/SrobpuZ1UojBkPgKp4m2vgblAQple1nnI
+         GSeD95jIHQDnG+T1nzeNlW9PFKb8BOG8Jx+boBhegaS8L+8sr75VGg9BsuvV1FPON/RY
+         rBdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=0BEjoSTlcGLs2tsgn7jxrftr6eID5J8qKRsTkVEr2Ik=;
+        b=sfV6h4GkvOTDIhDXp2ArBC2TVQr2qOz+eiX/iHeRpIBLFVwvPb2p0dPX1SC9X/lf0V
+         R62oppNA/RD0jJxNSdR3xi60xBp+9LaAQ5Do+jbIqxExS+Q9ozWDU/lOoEYC8GjNqJsG
+         cjvYkNiH9sHgrpx8mNPV98YJUq4BWTK1moT6Q0S5csrMPhyh3H4tk0PYt5sWLfN475F7
+         yA4SUIDOjCsViFtUt7lc+37E/aXIo9h8yIiE5tuev0BG29mJIoGeimawWr+PNP3Cn8VO
+         B5Xw7d/+YiQGkB3qygFqHEzSQVJyTS/Tea4pj3ZucYkDTzfuZXYZCz8UzzsOCcPMxuk/
+         xJiw==
+X-Gm-Message-State: APjAAAU3Z1kIeWfSAkVOWEg6Dd9BiWXgTnzk04ydrcbJpm6mIN1xj9jQ
+        YGl9+i31CcpOXAcNh7FBmrl039x7
+X-Google-Smtp-Source: APXvYqw3BaEiK+Hbsv1SbPSJJzRm+yNKKvHyV12CQc3vpsB9ve/m6Xbf26OPegeW2Puh4N7mZe+6VQ==
+X-Received: by 2002:a7b:c241:: with SMTP id b1mr5499196wmj.165.1567003521576;
+        Wed, 28 Aug 2019 07:45:21 -0700 (PDT)
+Received: from [10.19.90.60] ([193.16.224.12])
+        by smtp.gmail.com with ESMTPSA id i5sm3588613wrn.48.2019.08.28.07.45.20
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Aug 2019 07:45:20 -0700 (PDT)
+Subject: Re: No files in snapshot
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <b729e524-3c63-cf90-7115-02dcf2fda003@gmail.com>
+ <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
+From:   Thomas Schneider <74cmonty@gmail.com>
+Message-ID: <f22229eb-ab68-fecb-f10a-6e40c0b0e1ef@gmail.com>
+Date:   Wed, 28 Aug 2019 16:45:19 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190828140605.20790-1-anand.jain@oracle.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="cJUoUmgqgI5iAMkmzUpCZwyvlivGc6TRf"
-X-Provags-ID: V03:K1:pBLAOpP5peTUYHXNCmKOkH6p65CMBC6MgMmL1xLI2cuS8mZtcwf
- tsSZx/nVabfoKhiHXRvovP5JziFebkFoAA0/mCX3LFQY9Rmlud/yVewm1dx3NxBKIryLakG
- /dV6KGi9uku6PDk1/v7IhwkDGYjALe8KDzRLolhjKT95VmliogyR6242kENiR9ouUSN9vUG
- SUrz3UMDFLIApS90Oig2w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:U4LOTqFsFyM=:PQra55Fpxryjja/R6bFuZC
- L+i306An8ekVJWio9GayXuDgPlFhRhWOocs7AtV+wFfwUP060GKfHS1xUwkxwD3eqDokl+GLm
- qWgYtF3/La+hPS0S3a3rBDD5/9Q1kxJI62ZN2SIASKbvSMCrR0LIgTjT2wo6c1KXvz7JlLO74
- M5ztA6sM3aATbwecQCxxgU0lcxPVxPuXp3jrifWZZfz7ASdIXvM9ldptoxdJYlLREho3kY2ac
- jmbqKwjGrv4qxDiVGWPlnFfyDHyFXVQ2MvOnZ/JpnggwWR6Hss1f9SckLAXZuHwp4Ci9caQO2
- Eydtf42427lwknWwlrKSpztMTDizCln8tEKILaZ5eBukcvBU+X69iWo8IePSaHypLDroKEnc0
- 9pQ2dYPD14dyd+cbr0So7XyKoU/BhAtHxxf9XQd0wSalanqm6amCeVvo9nBmys6ceU21FsG+0
- qc31IMl0a74VvuMfORSu1Q7S4ZNW7CzOkVPAoDlB3QnGXnXQogSkJyh4nusHPczguj7YqCMR5
- AApi5Ti9ZDsixh2o0e0PUuou7vCKfI9EZ7zDoNOSMnyULM832z8WgbdAIzImpqB9EKVfvHma+
- 0GdNOhpKU/Xmr8OQ5TckbYQu9vee/Ncjw6vK3HhZjZu9bk3qQvsP65aBidi8yKc8P95osrNxS
- DbmUxQU0osyKeP2xRkM7ATUxadMPUafHzuRZu2DYYkwlJGw7p8FYEJlJQMaTXRWrYieE75MzM
- HkR9//vVxNdzDOcFmhKsgE8l+y8YyC9He7gcohMxwe+hNCTC4Nk9jZJy0NvdtcJoOlK72Aa2s
- Nv+loZstAMCxLubKVV4M9DQPlmHefRNm3MlaSLu4fxxCBVHf8v96TLvFQXot1d3z21VOWt3PE
- sLUywjDiGJ60GQJvijdmygE9I1KSedwmsX2FMy9D3OjweFQt0fsoHrlzyvSzXF4/XcGc5dNv1
- du/aorXAXZZ1KkmixLbHQt7Q2POGO5iFUPKeydvmI/5sJPaizYO1VzlShkIAAZ0iHag3qAd9r
- XlRSkCv86RrraO/g22y18b/XF5Z+4mR0WnNUlj2y4iVPErQ9ERvlImu8/DeaL7O31gQXk/RnM
- uJiexZi71Uclq99Jj/oYuMrHW8LTLd4zcHskN+aYJrEWHjCtrAM5fysCNJYWT+JmgMshgjMQU
- LN/BPf+I0Pj95r5OVzQqKj0RHpMZId/1Zg83ddxhyr6TgFpQ==
+In-Reply-To: <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---cJUoUmgqgI5iAMkmzUpCZwyvlivGc6TRf
-Content-Type: multipart/mixed; boundary="zYijM4koUmt3vz9JHFHaaey0vrSCz4jJk";
- protected-headers="v1"
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-To: Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Message-ID: <364d1417-c86f-9866-2388-637514037195@gmx.com>
-Subject: Re: [PATCH v2 1/2] btrfs-progs: add BTRFS_DEV_ITEMS_OBJECTID in
- comment in print-tree
-References: <20190828095619.9923-1-anand.jain@oracle.com>
- <20190828140605.20790-1-anand.jain@oracle.com>
-In-Reply-To: <20190828140605.20790-1-anand.jain@oracle.com>
+Hi,
 
---zYijM4koUmt3vz9JHFHaaey0vrSCz4jJk
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I was thinking of this, too. But it does not apply.
+root@ld5507:~# btrfs su list -to /var/lib
+ID      gen     top level       path
+--      ---     ---------       ----
+root@ld5507:~# btrfs su list -to /var
+ID      gen     top level       path
+--      ---     ---------       ----
 
+And there are files in other directories:
+root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mgr/ceph-ld5507/
+insgesamt 4
+-rw-r--r-- 1 ceph ceph 61 Mai 28 14:33 keyring
 
+root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mon/ceph-ld5507/
+insgesamt 12
+-rw------- 1 ceph ceph  77 Mai 28 14:33 keyring
+-rw-r--r-- 1 ceph ceph   8 Mai 28 14:33 kv_backend
+-rw-r--r-- 1 ceph ceph   3 Aug 23 09:41 min_mon_release
+drwxr-xr-x 1 ceph ceph 244 Aug 26 18:37 store.db
 
-On 2019/8/28 =E4=B8=8B=E5=8D=8810:06, Anand Jain wrote:
-> So when searching for BTRFS_DEV_ITEMS_OBJECTID, it hits, albeit it is
-> defined same as BTRFS_ROOT_TREE_OBJECTID.
->=20
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Only this directories 
+/.snapshots/158/snapshot/var/lib/ceph/osd/ceph-<id>/ are empty:
+root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/osd/ceph-219/
+insgesamt 0
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-> ---
-> v1->v2: Improve comment.
->=20
->  print-tree.c | 5 +++++
->  1 file changed, 5 insertions(+)
->=20
-> diff --git a/print-tree.c b/print-tree.c
-> index b31e515f8989..b1c59d776547 100644
-> --- a/print-tree.c
-> +++ b/print-tree.c
-> @@ -705,6 +705,11 @@ void print_objectid(FILE *stream, u64 objectid, u8=
- type)
-> =20
->  	switch (objectid) {
->  	case BTRFS_ROOT_TREE_OBJECTID:
-> +		/*
-> +		 * BTRFS_ROOT_TREE_OBJECTID and BTRFS_DEV_ITEMS_OBJECTID are
-> +		 * defined with the same value of 1ULL, distinguish them by
-> +		 * checking the type.
-> +		 */
-
-Oh, some bad design from the very beginning of btrfs.
-
-Any other duplicated objectid?
-
-Thanks,
-Qu
-
->  		if (type =3D=3D BTRFS_DEV_ITEM_KEY)
->  			fprintf(stream, "DEV_ITEMS");
->  		else
->=20
+To create a snapshot I run this command:
+snapper create --type single --description "validate 
+/var/lib/ceph/osd/ceph-<n>"
 
 
---zYijM4koUmt3vz9JHFHaaey0vrSCz4jJk--
 
---cJUoUmgqgI5iAMkmzUpCZwyvlivGc6TRf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Am 28.08.2019 um 00:24 schrieb Chris Murphy:
+> On Tue, Aug 27, 2019 at 3:33 AM Thomas Schneider <74cmonty@gmail.com> wrote:
+>> However, I run into an issue and need to restore various files.
+>>
+>> I thought that I could simply take the files from a snapshot created before.
+>> However, the files required don't exist in any snapshot!
+>>
+>> Therefore I have created a new snapshot manually to verify if the files
+>> will be included, but there's nothing.
+> Snapshots are not recursive on Btrfs. The snapshot will not extend
+> into nested subvolumes. Check to see if you are snapshotting the
+> proper subvolume.
+>
+> # btrfs sub list -to /var/lib
+> # btrfs sub list -to /var/
+>
+> In some sense these are redundant, I'm not sure if your /var/lib is a
+> subvolume or not. Also please include the exact snapshot command
+> you're making.
+>
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1mj10ACgkQwj2R86El
-/qgeNwf+NiRz7ZXlimT45qzH0PcW0fdcCnvpQP3JrfNlR/ln5PiGcw3ZfXEgwWKI
-4DT/T6t1V9nj8dsM2PgdnK6kxaYEItKOUqOCfl6GFI96R0NFu5NDlOiYgExsrLgM
-6+MVkE+tghwdGWUVvdtilzz2GVoBNos+p9cOBRiH9LRQO1K/eyFIlNIEHN/R4J7F
-+id9R2uhrfkAuE/nT5xv3EXV1UxdVBh2oJoMz2ck66Iy3xp1OJHwAjdriMoW/BQS
-QOTcelwWr4WT8Oob94t/MCrpZQyunCPnJflq+SBC2hOx7fNFLM+U+/VlvVSQp1R/
-bBJM8Ov2ZLf4SQ3jvzZ3M7J645Ml3g==
-=GXso
------END PGP SIGNATURE-----
-
---cJUoUmgqgI5iAMkmzUpCZwyvlivGc6TRf--
