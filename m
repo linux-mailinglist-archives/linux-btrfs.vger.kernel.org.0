@@ -2,223 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDC3A1476
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 11:14:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC15A1A61
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 14:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726070AbfH2JOL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Aug 2019 05:14:11 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:57322 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725782AbfH2JOL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Aug 2019 05:14:11 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 7F2DC10C6974
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2019 09:14:10 +0000 (UTC)
-Received: from localhost (unknown [10.43.2.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A39AF600C1
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2019 09:14:07 +0000 (UTC)
-From:   Stanislaw Gruszka <sgruszka@redhat.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: print procentage of used space
-Date:   Thu, 29 Aug 2019 11:14:05 +0200
-Message-Id: <1567070045-10592-1-git-send-email-sgruszka@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.65]); Thu, 29 Aug 2019 09:14:10 +0000 (UTC)
+        id S1727244AbfH2Mq2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Aug 2019 08:46:28 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:37295 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726739AbfH2Mq2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Aug 2019 08:46:28 -0400
+Received: by mail-wr1-f65.google.com with SMTP id z11so3299727wrt.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2019 05:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=subject:to:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YRTXsuxg4QFkrrKVLZ9Q+cwr6RlM0UhgaOaE8VhJHdk=;
+        b=WCQLG+ldcQQgCCUCy49a+cpkR4JNzduJSF74OL9DthbBjYE0A0dN/BrdUc1iF5Ah6e
+         PQeGjAmDrK6mQluZD8CfZCXhU2XkbDJRxbNWw5LWpkmb5INX5W2lWy0n6Ywy1ZMQyeBz
+         lBSKcHPVyWbL+lpwdWPDaBHBH2zKx3oa1ROkmCJ+QIQOqHSATn5fpZKFTLzvUZ9Ft9MK
+         O9QqMscx7s/BSa5AcIbOCId8VCBDhlq+m9YfHjiW/bXIGdwZVW4K+ONHLD1PweRnHN5r
+         ntNG1PnHdC61s1vuxy6qmvfywOWSfSOoHbPw1PDusBAG5IlBe2a59HzCVFK9XZQPAqOT
+         IElw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=YRTXsuxg4QFkrrKVLZ9Q+cwr6RlM0UhgaOaE8VhJHdk=;
+        b=LupYD6sXb3GNqpF8A1DgiA5ENiui7048vHegGAV7Ht6yAwtQB7JxMTKXbUKrn8Mw6n
+         3+AXKe2oPIWp1pj584d2xCSXQWugsDX7E1v6IYjzzTUi7DDZiN1siCCFHmuUiTdi89ff
+         YY9tVqmxAHWVPJbsION7hmhkHYqrwnyOG1bSj8aKIeLG5rAfRtRl68It5d7heAmwrSpJ
+         9jzcSV4gO3SVhGRPJTrNZ7GH4z1tjFC/+DV8y2vZd9nic+vvB2YTE6vg06q7mL2aBR1z
+         hzTE4MIEOGf3VS0dFTMBQz/tmC5dHtSI5qgkTI0kgo7bszU1dbRibl9IAT3HCOnZM+aH
+         Z1OQ==
+X-Gm-Message-State: APjAAAWIix73/OK/tM80/l8OPrrkrfn9mhWY5rJLMsYokY0buTIt2Ssd
+        rFXzsizNB07kTzloD65ZJNNhBUd0sbg=
+X-Google-Smtp-Source: APXvYqxvWZmMNzY9thH5xYWRzZxAjzIOp3za/LBzoOX4cNk1mZEnHOEDbgf/gLdUIsz1H7LqH3nTvA==
+X-Received: by 2002:adf:f90e:: with SMTP id b14mr10625744wrr.124.1567082785440;
+        Thu, 29 Aug 2019 05:46:25 -0700 (PDT)
+Received: from ?IPv6:2a01:5c0:e097:52b0:fd3f:afaf:148a:b588? ([2a01:5c0:e097:52b0:fd3f:afaf:148a:b588])
+        by smtp.googlemail.com with ESMTPSA id e6sm2412952wrw.35.2019.08.29.05.46.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Aug 2019 05:46:24 -0700 (PDT)
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     Hans van Kranenburg <hans@knorrie.org>,
+        =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>,
+        linux-btrfs@vger.kernel.org
+References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
+ <18d24f2f-4d33-10aa-5052-c358d4f7c328@petaramesh.org>
+ <a8968a812e270a0dd80c4cf431a8437d3a7daba5.camel@scientia.net>
+ <5aefca34-224a-0a81-c930-4ccfcd144aef@petaramesh.org>
+ <4bd70aa2-7ad0-d5c6-bc1f-22340afaac60@petaramesh.org>
+ <370697f1-24c9-c8bd-01a7-c2885a7ece05@gmx.com>
+ <209fcd36-6748-99c5-7b6d-319571bdd11f@petaramesh.org>
+ <6525d5cf-9203-0332-cad5-2abc5d3e541c@gmx.com>
+ <317a6f8f-3810-4a6c-ba64-3825317de1e7@petaramesh.org>
+ <c116d672-a212-f73f-ffdf-fd97aa958135@knorrie.org>
+From:   Oliver Freyermuth <o.freyermuth@googlemail.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=o.freyermuth@googlemail.com; prefer-encrypt=mutual; keydata=
+ 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
+ KB7t2CoZv5xo0STm
+Message-ID: <3fe4a6dd-942b-56b6-c5ca-fed5e801dc0e@googlemail.com>
+Date:   Thu, 29 Aug 2019 14:46:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <c116d672-a212-f73f-ffdf-fd97aa958135@knorrie.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patch adds -p option for 'fi df' and 'fi show' commands to print
-procentate of used space. Output with the option will look like on
-example below:
+Am 27.08.19 um 14:40 schrieb Hans van Kranenburg:
+> On 8/27/19 11:14 AM, Swâmi Petaramesh wrote:
+>> On 8/27/19 8:52 AM, Qu Wenruo wrote:
+>>>> or to use the V2 space
+>>>> cache generally speaking, on any machine that I use (I had understood it
+>>>> was useful only on multi-TB filesystems...)
+>>> 10GiB is enough to create large enough block groups to utilize free
+>>> space cache.
+>>> So you can't really escape from free space cache.
+>>
+>> I meant that I had understood that the V2 space cache was preferable to
+>> V1 only for multi-TB filesystems.
+>>
+>> So would you advise to use V2 space cache also for filesystems < 1 TB ?
+> 
+> Yes.
+> 
 
-Data, single: total=43.99GiB, used=37.25GiB (84.7%)
-System, single: total=4.00MiB, used=12.00KiB (0.3%)
-Metadata, single: total=1.01GiB, used=511.23MiB (49.5%)
-GlobalReserve, single: total=92.50MiB, used=0.00B (0.0%)
+This makes me wonder if it should be the default? 
 
-I considered to change the prints by default without extra option,
-but not sure if that would not break existing scripts that could parse
-the output.
+This thread made me check on my various BTRFS volumes and for almost all of them (in different machines), I find cases of
+ failed to load free space cache for block group XXXX, rebuilding it now
+at several points during the last months in my syslogs - and that's for machines without broken memory, for disks for which FUA should be working fine,
+without any unsafe shutdowns over their lifetime, and with histories as short as only having seen 5.x kernels. 
 
-Signed-off-by: Stanislaw Gruszka <sgruszka@redhat.com>
----
- cmds/filesystem.c | 55 +++++++++++++++++++++++++++++++++++++++++++++----------
- 1 file changed, 45 insertions(+), 10 deletions(-)
+So if this may cause harmful side effects, happens without clear origin, and v2 is safer due to being CoW, 
+I guess I should switch all my nodes to v2 (or this should become the default in a future kernel?). 
 
-diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-index 4f22089abeaa..c25301aa0df9 100644
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -61,20 +61,39 @@ static const char * const cmd_filesystem_df_usage[] = {
- 	"Show space usage information for a mount point",
- 	"",
- 	HELPINFO_UNITS_SHORT_LONG,
-+	"-p                 show procentage of disk usage",
- 	NULL
- };
- 
--static void print_df(struct btrfs_ioctl_space_args *sargs, unsigned unit_mode)
-+static char *usage_procentage(struct btrfs_ioctl_space_info *sp, int p)
-+{
-+	static char __thread s[12];
-+	float procentage;
-+
-+	if (p) {
-+		ASSERT(sp->total_bytes);
-+		procentage = 100.0*((float) sp->used_bytes / sp->total_bytes);
-+		snprintf(s, 12, " (%.1f%)", procentage);
-+	} else {
-+		s[0] = '\0';
-+	}
-+
-+	return s;
-+}
-+
-+static void print_df(struct btrfs_ioctl_space_args *sargs, unsigned unit_mode,
-+		     int p)
- {
- 	u64 i;
- 	struct btrfs_ioctl_space_info *sp = sargs->spaces;
- 
- 	for (i = 0; i < sargs->total_spaces; i++, sp++) {
--		printf("%s, %s: total=%s, used=%s\n",
-+		printf("%s, %s: total=%s, used=%s%s\n",
- 			btrfs_group_type_str(sp->flags),
- 			btrfs_group_profile_str(sp->flags),
- 			pretty_size_mode(sp->total_bytes, unit_mode),
--			pretty_size_mode(sp->used_bytes, unit_mode));
-+			pretty_size_mode(sp->used_bytes, unit_mode),
-+			usage_procentage(sp, p));
- 	}
- }
- 
-@@ -84,12 +103,17 @@ static int cmd_filesystem_df(const struct cmd_struct *cmd,
- 	struct btrfs_ioctl_space_args *sargs = NULL;
- 	int ret;
- 	int fd;
-+	int p;
- 	char *path;
- 	DIR *dirstream = NULL;
- 	unsigned unit_mode;
- 
- 	unit_mode = get_unit_mode_from_arg(&argc, argv, 1);
- 
-+	p = getopt(argc, argv, "p");
-+	if (p != 'p')
-+		p = 0;
-+
- 	clean_args_no_options(cmd, argc, argv);
- 
- 	if (check_argc_exact(argc - optind, 1))
-@@ -104,7 +128,7 @@ static int cmd_filesystem_df(const struct cmd_struct *cmd,
- 	ret = get_df(fd, &sargs);
- 
- 	if (ret == 0) {
--		print_df(sargs, unit_mode);
-+		print_df(sargs, unit_mode, p);
- 		free(sargs);
- 	} else {
- 		errno = -ret;
-@@ -280,7 +304,7 @@ static u64 calc_used_bytes(struct btrfs_ioctl_space_args *si)
- static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
- 		struct btrfs_ioctl_dev_info_args *dev_info,
- 		struct btrfs_ioctl_space_args *space_info,
--		char *label, unsigned unit_mode)
-+		char *label, unsigned unit_mode, int p)
- {
- 	int i;
- 	int fd;
-@@ -308,6 +332,7 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
- 
- 	for (i = 0; i < fs_info->num_devices; i++) {
- 		char *canonical_path;
-+		struct btrfs_ioctl_space_info tmp_sp;
- 
- 		tmp_dev_info = (struct btrfs_ioctl_dev_info_args *)&dev_info[i];
- 
-@@ -319,10 +344,15 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
- 		}
- 		close(fd);
- 		canonical_path = canonicalize_path((char *)tmp_dev_info->path);
--		printf("\tdevid %4llu size %s used %s path %s\n",
-+
-+		tmp_sp.total_bytes = tmp_dev_info->total_bytes;
-+		tmp_sp.used_bytes = tmp_dev_info->bytes_used;
-+
-+		printf("\tdevid %4llu size %s used %s%s path %s\n",
- 			tmp_dev_info->devid,
- 			pretty_size_mode(tmp_dev_info->total_bytes, unit_mode),
- 			pretty_size_mode(tmp_dev_info->bytes_used, unit_mode),
-+			usage_procentage(&tmp_sp, p),
- 			canonical_path);
- 
- 		free(canonical_path);
-@@ -334,7 +364,7 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
- 	return 0;
- }
- 
--static int btrfs_scan_kernel(void *search, unsigned unit_mode)
-+static int btrfs_scan_kernel(void *search, unsigned unit_mode, int p)
- {
- 	int ret = 0, fd;
- 	int found = 0;
-@@ -381,7 +411,7 @@ static int btrfs_scan_kernel(void *search, unsigned unit_mode)
- 		fd = open(mnt->mnt_dir, O_RDONLY);
- 		if ((fd != -1) && !get_df(fd, &space_info_arg)) {
- 			print_one_fs(&fs_info_arg, dev_info_arg,
--				     space_info_arg, label, unit_mode);
-+				     space_info_arg, label, unit_mode, p);
- 			free(space_info_arg);
- 			memset(label, 0, sizeof(label));
- 			found = 1;
-@@ -630,6 +660,7 @@ static const char * const cmd_filesystem_show_usage[] = {
- 	"-d|--all-devices   show only disks under /dev containing btrfs filesystem",
- 	"-m|--mounted       show only mounted btrfs",
- 	HELPINFO_UNITS_LONG,
-+	"-p                 show procentage of disk usage",
- 	"If no argument is given, structure of all present filesystems is shown.",
- 	NULL
- };
-@@ -644,6 +675,7 @@ static int cmd_filesystem_show(const struct cmd_struct *cmd,
- 	/* default, search both kernel and udev */
- 	int where = -1;
- 	int type = 0;
-+	int p = 0;
- 	char mp[PATH_MAX];
- 	char path[PATH_MAX];
- 	u8 fsid[BTRFS_FSID_SIZE];
-@@ -662,7 +694,7 @@ static int cmd_filesystem_show(const struct cmd_struct *cmd,
- 			{ NULL, 0, NULL, 0 }
- 		};
- 
--		c = getopt_long(argc, argv, "dm", long_options, NULL);
-+		c = getopt_long(argc, argv, "dmp", long_options, NULL);
- 		if (c < 0)
- 			break;
- 		switch (c) {
-@@ -672,6 +704,9 @@ static int cmd_filesystem_show(const struct cmd_struct *cmd,
- 		case 'm':
- 			where = BTRFS_SCAN_MOUNTED;
- 			break;
-+		case 'p':
-+			p = 1;
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
-@@ -725,7 +760,7 @@ static int cmd_filesystem_show(const struct cmd_struct *cmd,
- 		goto devs_only;
- 
- 	/* show mounted btrfs */
--	ret = btrfs_scan_kernel(search, unit_mode);
-+	ret = btrfs_scan_kernel(search, unit_mode, p);
- 	if (search && !ret) {
- 		/* since search is found we are done */
- 		goto out;
--- 
-1.9.3
-
+Cheers,
+	Oliver
