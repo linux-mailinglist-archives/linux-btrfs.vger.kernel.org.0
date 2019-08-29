@@ -2,120 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B5434A23E8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 20:19:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F53A29E0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2019 00:41:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730452AbfH2SS7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Aug 2019 14:18:59 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:34119 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729461AbfH2SS6 (ORCPT
+        id S1728492AbfH2Wle (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Aug 2019 18:41:34 -0400
+Received: from smtp.domeneshop.no ([194.63.252.55]:34807 "EHLO
+        smtp.domeneshop.no" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728480AbfH2Wle (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Aug 2019 14:18:58 -0400
-Received: by mail-wm1-f65.google.com with SMTP id y135so2644074wmc.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2019 11:18:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=lKCYB4Fty5i77I0dar4HOxW5qSZfqlrhayxzobItuVI=;
-        b=14OE+uk48sxQe+vAqLV7QLZzKeMrkPU9jvmMfPP+VxNo0Szrok2p6h+kDOCJt0otCH
-         2uUAPiT3c4D667y2xYKVqB49avwV0ist+/F61YDyogKpgua6uu3ANsVtMUGQy1123IpP
-         /WVNK53viXG8rFPMsahTCYrENzwABbiARYnjxrlaHIOW2cRXpawoVTS/UZCJaQ5AbyjB
-         vhIhFEdsEQLvvysKDfucgRSxqoLQ1k5YFpAFfnziz37D9a9qBNQwwMYFoS5ElvWtk+E4
-         AxSVtupUCwpb65/EafTRdOa2kk5GcsntnVJbk9oMfZ7LgdAd+rSyaA1f8ebTbUaxUdbn
-         E9nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=lKCYB4Fty5i77I0dar4HOxW5qSZfqlrhayxzobItuVI=;
-        b=jzhgP2AlTs04iihQY8cTmoU2f0Wn97QrQaLNot+9L4W2jBw8xNdU/v4f3lOS4obRvn
-         95LQBKgBT1NDKl0+yJoTPdI82Piy3m1DcQCjuRBO68uxJSTsU8KWwI8132m77JV1Wzhd
-         dMj80HMOh5HBZ0NVQ+M9jPw4QzUuocFRWsEhRXzBpPy5wbteuf8CnTc8Q4N7/sJ40bMF
-         2ud/Hi3YDSIJpD2Nob1yFwaYggyk4bgPDKY+GQIsjLq0y79IrVfirHsYCV3c8onIYaGJ
-         YDEVXAZQzFsfukxBMnWR5RTKkpBgqUoirgnoZ1fF6oqgP3KI84C0rJo/l5iNPf/PnAtE
-         AXjA==
-X-Gm-Message-State: APjAAAUfWqONSqhE65wq6ADfEdxhD1wIebC6WktgScoObsNv3AM4dqwo
-        IWh18ATFj5muWsRGvnLV4l02l5QzEdJIBcDg5r5z5g==
-X-Google-Smtp-Source: APXvYqyHyrL/KqkyH/U2lCHsXMVp1Ur74zEVJ3DMbhlvqsSivK5CVPSla1pQHbos6zZ1T1kbAu1jtIEmYFPtBvubKDk=
-X-Received: by 2002:a1c:9ec5:: with SMTP id h188mr13376271wme.176.1567102736484;
- Thu, 29 Aug 2019 11:18:56 -0700 (PDT)
+        Thu, 29 Aug 2019 18:41:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=dirtcellar.net; s=ds201810;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To; bh=c4r2g6u62XDnS1hPmD3lB2vdEDi+XMdJWmkpDjN6IhY=;
+        b=bDPT9mDkDyI3GEL30YNbr9/8/lLXsTx4tMs/JC2r5Ef2L70yYboZ56rjDf8hZd4aAzAiRR3DDFYuhWXg9JgiMKkLy4mOecnw/iyxDnWdZNN5VeknfYozFLbol6l1/yYTtRXTGdDk1bEPLxtQzSsgrDUjVZAXEW8qedAqajHaQuOG7M5GfiS3IgG2Xs7r+Sn1whVYVY60xUBJuqYn5kkaI2lWJPLy3uQREBOz5YCh2eakztjtBlpSCHQzNtFUNjGx0Gc6BUEWzXZxJzQkBTVe+6neb1RGiaexQfftKEi5mamzvRZE97F5nvMkLOjCL12Cle2JSLfIgGbaPjXf+rF7hg==;
+Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:1467 helo=[10.0.0.10])
+        by smtp.domeneshop.no with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.84_2)
+        (envelope-from <waxhead@dirtcellar.net>)
+        id 1i3T6h-0008AC-GM; Fri, 30 Aug 2019 00:41:31 +0200
+Reply-To: waxhead@dirtcellar.net
+Subject: Re: Spare Volume Features
+To:     Sean Greenslade <sean@seangreenslade.com>,
+        Marc Oggier <marc.oggier@megavolts.ch>,
+        linux-btrfs@vger.kernel.org
+References: <0b7bfde0-0711-cee3-1ed8-a37b1a62bf5e@megavolts.ch>
+ <CD4A10E4-5342-4F72-862A-3A2C3877EC36@seangreenslade.com>
+From:   waxhead <waxhead@dirtcellar.net>
+Message-ID: <a15fadad-9d78-d1a2-a7a6-e6fc33c417b8@dirtcellar.net>
+Date:   Fri, 30 Aug 2019 00:41:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Firefox/52.0 SeaMonkey/2.49.4
 MIME-Version: 1.0
-References: <CAEgruXsjz36vEZhULWneZKY4yD3x2n05yR8qx9eiN-GOVvfiJg@mail.gmail.com>
- <20190829145732.GB2488@savella.carfax.org.uk>
-In-Reply-To: <20190829145732.GB2488@savella.carfax.org.uk>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 29 Aug 2019 12:18:44 -0600
-Message-ID: <CAJCQCtQokwhyWWK-KLCtn3zyVGAG3iWAX_U8jxQ8teXF6ABQGQ@mail.gmail.com>
-Subject: Re: Need advice for fixing a btrfs volume
-To:     Hugo Mills <hugo@carfax.org.uk>, UGlee <matianfu@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CD4A10E4-5342-4F72-862A-3A2C3877EC36@seangreenslade.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Aug 29, 2019 at 8:57 AM Hugo Mills <hugo@carfax.org.uk> wrote:
->
-> On Thu, Aug 29, 2019 at 10:45:37PM +0800, UGlee wrote:
-> > Dear:
-> >
-> > We are using btrfs in an embedded arm/linux device.
-> >
-> > The bootloader (u-boot) has only limited support for btrfs.
-> > Occasionally the device lost power supply unexpectedly, leaving an
-> > inconsistent file system on eMMC. If I dump the partition image from
-> > eMMC and mount it on linux desktop, the file system is perfectly
-> > usable.
-
-What kernel messages do you get when trying to mount the mmc device?
-And also, does it mount ok with '-o ro,norecovery' ? And also I wonder
-if there is even a log tree, which you can discover with 'btrfs insp
-dump-s -f <dev>' and see if the log tree address is something other
-than 0. Anyway, point is, Btrfs gets to a certain point in the mount
-process and will try to do a write, and if that write fails, it
-complains. Writes could fail on the mmc device but succeed on the
-image file.
-
-Both eMMC and SD cards are dreadfully susceptible to failure with
-abrupt power supply loss, perhaps especially if writes are happening
-at the time of the loss (there probably is some research and better
-anecdotal information to support this contention). This topic comes up
-all the time on Hacker News and people who do this a lot swear by
-getting industrial grade flash for such embedded devices. This stuff
-is not cheap compared to consumer grade flash. It's decently likely
-the consumer grade stuff is optimized for exFAT, and the kind of
-sequential writes you get from photos and video being written out by a
-camera, rather than a file system like Btrfs (or even ext4 or XFS)
-containing an operating system, and writing system logs/journals, and
-doing updates, and things like that.
 
 
+Sean Greenslade wrote:
+> On August 28, 2019 5:51:02 PM PDT, Marc Oggier <marc.oggier@megavolts.ch> wrote:
+>> Hi All,
+>>
+>> I am currently buidling a small data server for an experiment.
+>>
+>> I was wondering if the features of the spare volume introduced a couple
+>>
+>> of years ago (ttps://patchwork.kernel.org/patch/8687721/) would be
+>> release soon. I think this would be awesome to have a drive installed,
+>> that can be used as a spare if one drive of an array died to avoid
+>> downtime.
+>>
+>> Does anyone have news about it, and when it will be officially in the
+>> kernel/btrfs-progs ?
+>>
+>> Marc
+>>
+>> P.S. It took me a long time to switch to btrfs. I did it less than a
+>> year ago, and I love it.  Keep the great job going, y'all
+> 
+> I've been thinking about this issue myself, and I have an (untested) idea for how to accomplish something similar. My file server has three disks in a btrfs raid1. I added a fourth disk to the array as just a normal, participating disk. I keep an eye on the usage to make sure that I never exceed 3 disk's worth of usage. That way, if one disk dies, there are still enough disks to mount RW (though I may still need to do an explicit degraded mount, not sure). In that scenario, I can just trigger an online full balance to rebuild the missing raid copies on the remaining disks. In theory, minimal to no downtime.
+> 
+> I'm curious if anyone can see any problems with this idea. I've never tested it, and my offsite backups are thorough enough to survive downtime anyway.
+> 
+> --Sean
+> 
+I'm just a regular btrfs user, but I see tons of problems with this.
 
-> >
-> > My guess is that the linux kernel can fully handle the journalled
-> > update and garbage data.
->
->    btrfs doesn't have a journal -- if the hardware is telling the
-> truth about barriers, and about written data reaching permanent
-> storage, then the FS structures on disk are always consistent. It's
-> got a log tree which is used for recovery of partial writes in the
-> case of a crash midway through a transaction, but that doesn't affect
-> the primary FS structures.
+When BTRFS introduce per-subvolume (or even per file) "RAID" or 
+redundancy levels a spare device an quickly become a headache. While you 
+can argue that a spare device of equal or large size than the largest 
+device in the pool would suffice in most cases I don't think it is very 
+practical.
 
-Yeah and the log tree is per subvolume. A possible work around might
-be to separate things in their own subvolumes, thereby obviating the
-problem with a bootloader's lack of support for log tree replay. In
-that case rudimentary breakdown would be boot, root, home subvolumes
-at the top level of the file system, that way subvolid 5 isn't getting
-the log tree added, rather it'll be root or home - hopefully boot
-would be spared a log tree if writes weren't happening at the time of
-the power failure.
+What BTRFS needs to do (IMHO) is to reserve spare-space instead. This 
+means that many smaller devices can be used in case a large device keels 
+over.
 
-Also, it's worth 'chattr +C' on the boot subvolume to ensure it's not
-subject to compression mount options, if the bootloader doesn't
-explicitly support compression.
+The spare space also of course needs to be as large or larger than the 
+largest device in the pool, but you would have more flexibility.
 
--- 
-Chris Murphy
+For example spare space COULD be pre-populated with the most important 
+data (hot data tracking) and serve as a speed-up for read operations. 
+What is the point of having idle space just waiting to be used when you 
+in fact can just use it for useful things such as obvious ideas like 
+increased read speed, extra redundancy for stuff like single, dup or 
+even raid0 chunks. Using the spare space for SOME potential for recovery 
+is better than not using the spare space for anything.
+
+When the spare space is needed you can either simply discard the data on 
+the device that is broken if the spare space already holds the data 
+(which makes for superfast recovery) or drop any caches it is used for 
+and repopulate by restoring non-redundant data to it as soon as you hit 
+a certain error count on another device etc...
+
+Just like Linux uses memory I think that BTRFS is better off using the 
+spare space for something rather than nothing. This should of course be 
+configurable just for the record.
+
+Anyway - that is how I, a humble user without the detailed know-how 
+think it should be implemented... :)
