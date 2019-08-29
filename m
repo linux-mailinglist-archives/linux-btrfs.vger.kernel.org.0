@@ -2,24 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83386A1AFA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 15:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C50A1B14
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 15:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727285AbfH2NJL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Aug 2019 09:09:11 -0400
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:58303 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727066AbfH2NJL (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Aug 2019 09:09:11 -0400
-X-Originating-IP: 78.245.226.90
-Received: from [10.137.0.38] (vau38-1-78-245-226-90.fbx.proxad.net [78.245.226.90])
-        (Authenticated sender: swami@petaramesh.org)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id A8FA9C0007;
-        Thu, 29 Aug 2019 13:09:08 +0000 (UTC)
+        id S1727189AbfH2NMC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Aug 2019 09:12:02 -0400
+Received: from mout.gmx.net ([212.227.15.18]:55455 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726985AbfH2NMC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Aug 2019 09:12:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1567084318;
+        bh=3nmBVGm4s2QI0mjqma6HFnT6N6Aor5vEmNmKAE9OlJI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=ZF4BEjrpVfaonPW0KNroCZjFMX9wINKhJT6d+NkaTX63CQMdG1C0SoQISCMjWWj+V
+         gURH1jHapUNULk55unf6Ng4eYC+ZyItLWlm2VkwX+vvOOYwLWocv7pu500mzpra4hE
+         rMp9nmsH/nfQPJp1KrUKxoZ6/0WptIxZ54EyeMnc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx003
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 0MIuSH-1i5ExR3SNV-002Urm; Thu, 29
+ Aug 2019 15:11:58 +0200
 Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
 To:     Oliver Freyermuth <o.freyermuth@googlemail.com>,
         Hans van Kranenburg <hans@knorrie.org>,
+        =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>,
         linux-btrfs@vger.kernel.org
 References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
  <18d24f2f-4d33-10aa-5052-c358d4f7c328@petaramesh.org>
@@ -32,66 +38,130 @@ References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
  <317a6f8f-3810-4a6c-ba64-3825317de1e7@petaramesh.org>
  <c116d672-a212-f73f-ffdf-fd97aa958135@knorrie.org>
  <3fe4a6dd-942b-56b6-c5ca-fed5e801dc0e@googlemail.com>
-From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=swami@petaramesh.org; keydata=
- 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
- BtUAN08OPA==
-Message-ID: <9e1e7372-81ad-1f69-517c-6a8bc2f6fd6c@petaramesh.org>
-Date:   Thu, 29 Aug 2019 15:09:07 +0200
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <d0a7ec7d-42c8-ebc4-7d54-28bda3d50e5f@gmx.com>
+Date:   Thu, 29 Aug 2019 21:11:51 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ Thunderbird/60.8.0
 MIME-Version: 1.0
 In-Reply-To: <3fe4a6dd-942b-56b6-c5ca-fed5e801dc0e@googlemail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: fr-FR
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:PfAN9mftHseOEE4XFUEwNHz0wYE+D9YsdstEgRfUHBHe32uCmHA
+ glJJ91RrBeD37HYmRFD+IVzjEYhmO7BNEntZSn//88BHKkVyEtvvfKkEbmZCD2x22yt/cle
+ ohAzqeflZN15eZc/ty8qUOGkYxH/y9gQJi1rPEYoeibUw47TfLvGuSqRwGZVlbaaXnIBZMG
+ Kr2rIr4jyRJ7RM8gn0gBg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:NAKbRHL0KxE=:XsOHFYcIk3Zrl/IRDDfXv3
+ E9zwAeo9vwfzC3hPf4h4dXOJyYospg/CIcS+l01L4i3gPYkCD4swbi7Z8AccToM72YJYt2hmw
+ WOwXjivCTVkR6cuytmnNt6IDr9a+zOLz7FQCqfSayF9ifkcif0XGRhjqPUlkn5vJCsZOBQgF5
+ UIqCUCgbXUVNZV2HKGduju+5sNboV9JutqQunl54swunvCuSAiCGmk9VBGPEyZ81X0zfy30ko
+ jCQFuJWwNeaq0ChfaZSaMoRNt48ertWn85JcJTORSocMJfngRV4NeoDydn9H6mx51Vt7EfrHO
+ J0NAaftrPkUTrlQncVUgDerv7DJZy0JAynV0wmeFSGQBoWXp3KQE8CeFnwNg0vmhyGadcImxV
+ +vjibS7Euln4qvUC8O+OZO7WeyjvMlFwBD6YDqa3yy56VO9v1TAO60Dv7BQDoYzHH8O8uEqm5
+ hT2Ub5i0CkRDnbp8/hSyMtsk4ZwwHiG4d22CgiHJPTbFvudnJB6jWat91x4GYxmq6lKq/2akI
+ PEDlrFuyu5Eglr2JQaqtS3HnQgb8XRStViBOTa035WYxiVtz1bIL94vA5QPO7Wk3re6SbRMvS
+ 5u4Jq22opVaaRVGBnHsN9ZePb5xlBLkk+nB+dk9W30FEKO1w5WpGyqYJOY1Gx+x1MmMNY1HAv
+ TaQx8dhgLbaEB0V6UUG5ui0mgL9PsnLY0yMn66yXphATbu9pM0Z8fOFLbK0jWGFry4qE8GgCd
+ ZBqLSSk1IiuoRPsC3kf8J5ciWeYlKUp9CB1H6OzCU3/8edTK6eRTajFEUd3PcbFCLrFizu36x
+ tHAiZNCoE9AaqXr7c5uw+n8WdeWnJybxSYYT7c/3E7i+xV6Xdwqh+zLL6Vt1XbkPHJ4wbEcSH
+ shQvSn6oTjGYr3pjCalWTbWTmbGsQtUEkvuafOFTqQxRDT5ZBSuTL1N0BIAOMay/weO9RmlJh
+ dMJ4w2BDT80c56wsrxDxY5azXZFWCMfDhtRY6h0n/qYcGK4bU5pipzv8u3+jSj63xD5yWtaFn
+ B17FYt/m/UJsMwD2JPuYbZK8BRa9iY18Ff9ens4veijwasKB3QVwjpMzV3tvr20Re9YTMBV1N
+ BJVos0mdtObR1oksrdDtXVGNHtRUxABErBXiRPAMdrKxfrbhFKTVGJ52tmWV7e1iJG9kD79PC
+ IEJpC3YDX9p8OCnykD6MXrr5Sv0al39aCCaZ8YlluvgBoweg==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/29/19 2:46 PM, Oliver Freyermuth wrote:
-> This thread made me check on my various BTRFS volumes and for almost all of them (in different machines), I find cases of
+
+
+On 2019/8/29 =E4=B8=8B=E5=8D=888:46, Oliver Freyermuth wrote:
+> Am 27.08.19 um 14:40 schrieb Hans van Kranenburg:
+>> On 8/27/19 11:14 AM, Sw=C3=A2mi Petaramesh wrote:
+>>> On 8/27/19 8:52 AM, Qu Wenruo wrote:
+>>>>> or to use the V2 space
+>>>>> cache generally speaking, on any machine that I use (I had understoo=
+d it
+>>>>> was useful only on multi-TB filesystems...)
+>>>> 10GiB is enough to create large enough block groups to utilize free
+>>>> space cache.
+>>>> So you can't really escape from free space cache.
+>>>
+>>> I meant that I had understood that the V2 space cache was preferable t=
+o
+>>> V1 only for multi-TB filesystems.
+>>>
+>>> So would you advise to use V2 space cache also for filesystems < 1 TB =
+?
+>>
+>> Yes.
+>>
+>
+> This makes me wonder if it should be the default?
+
+It will be.
+
+Just a spoiler, I believe features like no-holes and v2 space cache will
+be default in not so far future.
+
+>
+> This thread made me check on my various BTRFS volumes and for almost all=
+ of them (in different machines), I find cases of
 >  failed to load free space cache for block group XXXX, rebuilding it now
-> at several points during the last months in my syslogs - and that's for machines without broken memory, for disks for which FUA should be working fine,
-> without any unsafe shutdowns over their lifetime, and with histories as short as only having seen 5.x kernels. 
+> at several points during the last months in my syslogs - and that's for =
+machines without broken memory, for disks for which FUA should be working =
+fine,
+> without any unsafe shutdowns over their lifetime, and with histories as =
+short as only having seen 5.x kernels.
 
-Wow. Thanks for the report. There's definitely some bug out there.
+That's interesting. In theory that shouldn't happen, especially without
+unsafe shutdown.
 
-ॐ
+But please also be aware that, there is no concrete proof that corrupted
+v1 space cache is causing all the problems.
+What I said is just, corrupted v1 space cache may cause problem, I need
+to at least craft an image to proof my assumption.
 
--- 
-Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
+>
+> So if this may cause harmful side effects, happens without clear origin,=
+ and v2 is safer due to being CoW,
+> I guess I should switch all my nodes to v2 (or this should become the de=
+fault in a future kernel?).
 
+At least, your experience would definitely help the btrfs community.
+
+Thanks,
+Qu
+
+>
+> Cheers,
+> 	Oliver
+>
