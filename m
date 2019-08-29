@@ -2,158 +2,223 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A5423A130C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 09:56:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FDC3A1476
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 11:14:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725990AbfH2H4R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Aug 2019 03:56:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50842 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725782AbfH2H4Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Aug 2019 03:56:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2F228AC8E;
-        Thu, 29 Aug 2019 07:56:14 +0000 (UTC)
-Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
- kmalloc(power-of-two)
-To:     Dave Chinner <david@fromorbit.com>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     Christopher Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190826111627.7505-1-vbabka@suse.cz>
- <20190826111627.7505-3-vbabka@suse.cz>
- <0100016cd98bb2c1-a2af7539-706f-47ba-a68e-5f6a91f2f495-000000@email.amazonses.com>
- <20190828194607.GB6590@bombadil.infradead.org>
- <20190828222422.GL1119@dread.disaster.area>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Openpgp: preference=signencrypt
-Autocrypt: addr=vbabka@suse.cz; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <be70bf94-a63f-cc19-4958-0e7eed10859b@suse.cz>
-Date:   Thu, 29 Aug 2019 09:56:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20190828222422.GL1119@dread.disaster.area>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726070AbfH2JOL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Aug 2019 05:14:11 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:57322 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725782AbfH2JOL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Aug 2019 05:14:11 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 7F2DC10C6974
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2019 09:14:10 +0000 (UTC)
+Received: from localhost (unknown [10.43.2.236])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A39AF600C1
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2019 09:14:07 +0000 (UTC)
+From:   Stanislaw Gruszka <sgruszka@redhat.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: print procentage of used space
+Date:   Thu, 29 Aug 2019 11:14:05 +0200
+Message-Id: <1567070045-10592-1-git-send-email-sgruszka@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.6.2 (mx1.redhat.com [10.5.110.65]); Thu, 29 Aug 2019 09:14:10 +0000 (UTC)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 8/29/19 12:24 AM, Dave Chinner wrote:
-> On Wed, Aug 28, 2019 at 12:46:08PM -0700, Matthew Wilcox wrote:
->> On Wed, Aug 28, 2019 at 06:45:07PM +0000, Christopher Lameter wrote:
->>> I still think implicit exceptions to alignments are a bad idea. Those need
->>> to be explicity specified and that is possible using kmem_cache_create().
->>
->> I swear we covered this last time the topic came up, but XFS would need
->> to create special slab caches for each size between 512 and PAGE_SIZE.
->> Potentially larger, depending on whether the MM developers are willing to
->> guarantee that kmalloc(PAGE_SIZE * 2, GFP_KERNEL) will return a PAGE_SIZE
->> aligned block of memory indefinitely.
-> 
-> Page size alignment of multi-page heap allocations is ncessary. The
-> current behaviour w/ KASAN is to offset so a 8KB allocation spans 3
-> pages and is not page aligned. That causes just as much in way
-> of alignment problems as unaligned objects in multi-object-per-page
-> slabs.
+This patch adds -p option for 'fi df' and 'fi show' commands to print
+procentate of used space. Output with the option will look like on
+example below:
 
-Ugh, multi-page (power of two) allocations *at the page allocator level*
-simply have to be aligned, as that's how the buddy allocator has always
-worked, and it would be madness to try relax that guarantee and require
-an explicit flag at this point. The kmalloc wrapper with SLUB will pass
-everything above 8KB directly to the page allocator, so that's fine too.
-4k and 8k are the only (multi-)page sizes still managed as SLUB objects.
-I would say that these sizes are the most striking example that it's
-wrong not to align them without extra flags or special API variant.
+Data, single: total=43.99GiB, used=37.25GiB (84.7%)
+System, single: total=4.00MiB, used=12.00KiB (0.3%)
+Metadata, single: total=1.01GiB, used=511.23MiB (49.5%)
+GlobalReserve, single: total=92.50MiB, used=0.00B (0.0%)
 
-> As I said in the lastest discussion of this problem on XFS (pmem
-> devices w/ KASAN enabled), all we -need- is a GFP flag that tells the
-> slab allocator to give us naturally aligned object or fail if it
-> can't. I don't care how that gets implemented (e.g. another set of
-> heap slabs like the -rcl slabs), I just don't want every high level
+I considered to change the prints by default without extra option,
+but not sure if that would not break existing scripts that could parse
+the output.
 
-Given alignment is orthogonal to -rcl and dma-, would that be another
-three sets? Or we assume that dma- would want it always, and complicate
-the rules further? Funilly enough, SLOB would be the simplest case here.
+Signed-off-by: Stanislaw Gruszka <sgruszka@redhat.com>
+---
+ cmds/filesystem.c | 55 +++++++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 45 insertions(+), 10 deletions(-)
 
-> subsystem that allocates heap memory for IO buffers to have to
-> implement their own aligned slab caches.
-
-Definitely agree. I still hope we can do that even without a new flag/API.
-
-> Cheers,
-> 
-> Dave.
-> 
+diff --git a/cmds/filesystem.c b/cmds/filesystem.c
+index 4f22089abeaa..c25301aa0df9 100644
+--- a/cmds/filesystem.c
++++ b/cmds/filesystem.c
+@@ -61,20 +61,39 @@ static const char * const cmd_filesystem_df_usage[] = {
+ 	"Show space usage information for a mount point",
+ 	"",
+ 	HELPINFO_UNITS_SHORT_LONG,
++	"-p                 show procentage of disk usage",
+ 	NULL
+ };
+ 
+-static void print_df(struct btrfs_ioctl_space_args *sargs, unsigned unit_mode)
++static char *usage_procentage(struct btrfs_ioctl_space_info *sp, int p)
++{
++	static char __thread s[12];
++	float procentage;
++
++	if (p) {
++		ASSERT(sp->total_bytes);
++		procentage = 100.0*((float) sp->used_bytes / sp->total_bytes);
++		snprintf(s, 12, " (%.1f%)", procentage);
++	} else {
++		s[0] = '\0';
++	}
++
++	return s;
++}
++
++static void print_df(struct btrfs_ioctl_space_args *sargs, unsigned unit_mode,
++		     int p)
+ {
+ 	u64 i;
+ 	struct btrfs_ioctl_space_info *sp = sargs->spaces;
+ 
+ 	for (i = 0; i < sargs->total_spaces; i++, sp++) {
+-		printf("%s, %s: total=%s, used=%s\n",
++		printf("%s, %s: total=%s, used=%s%s\n",
+ 			btrfs_group_type_str(sp->flags),
+ 			btrfs_group_profile_str(sp->flags),
+ 			pretty_size_mode(sp->total_bytes, unit_mode),
+-			pretty_size_mode(sp->used_bytes, unit_mode));
++			pretty_size_mode(sp->used_bytes, unit_mode),
++			usage_procentage(sp, p));
+ 	}
+ }
+ 
+@@ -84,12 +103,17 @@ static int cmd_filesystem_df(const struct cmd_struct *cmd,
+ 	struct btrfs_ioctl_space_args *sargs = NULL;
+ 	int ret;
+ 	int fd;
++	int p;
+ 	char *path;
+ 	DIR *dirstream = NULL;
+ 	unsigned unit_mode;
+ 
+ 	unit_mode = get_unit_mode_from_arg(&argc, argv, 1);
+ 
++	p = getopt(argc, argv, "p");
++	if (p != 'p')
++		p = 0;
++
+ 	clean_args_no_options(cmd, argc, argv);
+ 
+ 	if (check_argc_exact(argc - optind, 1))
+@@ -104,7 +128,7 @@ static int cmd_filesystem_df(const struct cmd_struct *cmd,
+ 	ret = get_df(fd, &sargs);
+ 
+ 	if (ret == 0) {
+-		print_df(sargs, unit_mode);
++		print_df(sargs, unit_mode, p);
+ 		free(sargs);
+ 	} else {
+ 		errno = -ret;
+@@ -280,7 +304,7 @@ static u64 calc_used_bytes(struct btrfs_ioctl_space_args *si)
+ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
+ 		struct btrfs_ioctl_dev_info_args *dev_info,
+ 		struct btrfs_ioctl_space_args *space_info,
+-		char *label, unsigned unit_mode)
++		char *label, unsigned unit_mode, int p)
+ {
+ 	int i;
+ 	int fd;
+@@ -308,6 +332,7 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
+ 
+ 	for (i = 0; i < fs_info->num_devices; i++) {
+ 		char *canonical_path;
++		struct btrfs_ioctl_space_info tmp_sp;
+ 
+ 		tmp_dev_info = (struct btrfs_ioctl_dev_info_args *)&dev_info[i];
+ 
+@@ -319,10 +344,15 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
+ 		}
+ 		close(fd);
+ 		canonical_path = canonicalize_path((char *)tmp_dev_info->path);
+-		printf("\tdevid %4llu size %s used %s path %s\n",
++
++		tmp_sp.total_bytes = tmp_dev_info->total_bytes;
++		tmp_sp.used_bytes = tmp_dev_info->bytes_used;
++
++		printf("\tdevid %4llu size %s used %s%s path %s\n",
+ 			tmp_dev_info->devid,
+ 			pretty_size_mode(tmp_dev_info->total_bytes, unit_mode),
+ 			pretty_size_mode(tmp_dev_info->bytes_used, unit_mode),
++			usage_procentage(&tmp_sp, p),
+ 			canonical_path);
+ 
+ 		free(canonical_path);
+@@ -334,7 +364,7 @@ static int print_one_fs(struct btrfs_ioctl_fs_info_args *fs_info,
+ 	return 0;
+ }
+ 
+-static int btrfs_scan_kernel(void *search, unsigned unit_mode)
++static int btrfs_scan_kernel(void *search, unsigned unit_mode, int p)
+ {
+ 	int ret = 0, fd;
+ 	int found = 0;
+@@ -381,7 +411,7 @@ static int btrfs_scan_kernel(void *search, unsigned unit_mode)
+ 		fd = open(mnt->mnt_dir, O_RDONLY);
+ 		if ((fd != -1) && !get_df(fd, &space_info_arg)) {
+ 			print_one_fs(&fs_info_arg, dev_info_arg,
+-				     space_info_arg, label, unit_mode);
++				     space_info_arg, label, unit_mode, p);
+ 			free(space_info_arg);
+ 			memset(label, 0, sizeof(label));
+ 			found = 1;
+@@ -630,6 +660,7 @@ static const char * const cmd_filesystem_show_usage[] = {
+ 	"-d|--all-devices   show only disks under /dev containing btrfs filesystem",
+ 	"-m|--mounted       show only mounted btrfs",
+ 	HELPINFO_UNITS_LONG,
++	"-p                 show procentage of disk usage",
+ 	"If no argument is given, structure of all present filesystems is shown.",
+ 	NULL
+ };
+@@ -644,6 +675,7 @@ static int cmd_filesystem_show(const struct cmd_struct *cmd,
+ 	/* default, search both kernel and udev */
+ 	int where = -1;
+ 	int type = 0;
++	int p = 0;
+ 	char mp[PATH_MAX];
+ 	char path[PATH_MAX];
+ 	u8 fsid[BTRFS_FSID_SIZE];
+@@ -662,7 +694,7 @@ static int cmd_filesystem_show(const struct cmd_struct *cmd,
+ 			{ NULL, 0, NULL, 0 }
+ 		};
+ 
+-		c = getopt_long(argc, argv, "dm", long_options, NULL);
++		c = getopt_long(argc, argv, "dmp", long_options, NULL);
+ 		if (c < 0)
+ 			break;
+ 		switch (c) {
+@@ -672,6 +704,9 @@ static int cmd_filesystem_show(const struct cmd_struct *cmd,
+ 		case 'm':
+ 			where = BTRFS_SCAN_MOUNTED;
+ 			break;
++		case 'p':
++			p = 1;
++			break;
+ 		default:
+ 			usage_unknown_option(cmd, argv);
+ 		}
+@@ -725,7 +760,7 @@ static int cmd_filesystem_show(const struct cmd_struct *cmd,
+ 		goto devs_only;
+ 
+ 	/* show mounted btrfs */
+-	ret = btrfs_scan_kernel(search, unit_mode);
++	ret = btrfs_scan_kernel(search, unit_mode, p);
+ 	if (search && !ret) {
+ 		/* since search is found we are done */
+ 		goto out;
+-- 
+1.9.3
 
