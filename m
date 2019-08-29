@@ -2,108 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC3C8A1271
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 09:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78623A12B6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 09:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727347AbfH2HRi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Aug 2019 03:17:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34794 "EHLO mx1.suse.de"
+        id S1727315AbfH2HjY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Aug 2019 03:39:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44172 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725853AbfH2HRi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Aug 2019 03:17:38 -0400
+        id S1726330AbfH2HjY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 29 Aug 2019 03:39:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8A874B035
-        for <linux-btrfs@vger.kernel.org>; Thu, 29 Aug 2019 07:17:37 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: volumes: Allow missing devices to be writeable
-Date:   Thu, 29 Aug 2019 15:17:31 +0800
-Message-Id: <20190829071731.11521-1-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
+        by mx1.suse.de (Postfix) with ESMTP id 78FB3B03B;
+        Thu, 29 Aug 2019 07:39:22 +0000 (UTC)
+Date:   Thu, 29 Aug 2019 09:39:21 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Christopher Lameter <cl@linux.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
+ kmalloc(power-of-two)
+Message-ID: <20190829073921.GA21880@dhcp22.suse.cz>
+References: <20190826111627.7505-1-vbabka@suse.cz>
+ <20190826111627.7505-3-vbabka@suse.cz>
+ <0100016cd98bb2c1-a2af7539-706f-47ba-a68e-5f6a91f2f495-000000@email.amazonses.com>
+ <20190828194607.GB6590@bombadil.infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190828194607.GB6590@bombadil.infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-There is a long existing bug that degraded mounted btrfs can allocate new
-SINGLE/DUP chunks on a RAID1 fs:
-  #!/bin/bash
+On Wed 28-08-19 12:46:08, Matthew Wilcox wrote:
+> On Wed, Aug 28, 2019 at 06:45:07PM +0000, Christopher Lameter wrote:
+[...]
+> > be suprising and it limits the optimizations that slab allocators may use
+> > for optimizing data use. The SLOB allocator was designed in such a way
+> > that data wastage is limited. The changes here sabotage that goal and show
+> > that future slab allocators may be similarly constrained with the
+> > exceptional alignents implemented. Additional debugging features etc etc
+> > must all support the exceptional alignment requirements.
+> 
+> While I sympathise with the poor programmer who has to write the
+> fourth implementation of the sl*b interface, it's more for the pain of
+> picking a new letter than the pain of needing to honour the alignment
+> of allocations.
+> 
+> There are many places in the kernel which assume alignment.  They break
+> when it's not supplied.  I believe we have a better overall system if
+> the MM developers provide stronger guarantees than the MM consumers have
+> to work around only weak guarantees.
 
-  dev1=/dev/test/scratch1
-  dev2=/dev/test/scratch2
-  mnt=/mnt/btrfs
-
-  umount $mnt &> /dev/null
-  umount $dev1 &> /dev/null
-  umount $dev2 &> /dev/null
-
-  dmesg -C
-  mkfs.btrfs -f -m raid1 -d raid1 $dev1 $dev2
-
-  wipefs -fa $dev2
-
-  mount -o degraded $dev1 $mnt
-  btrfs balance start --full $mnt
-  umount $mnt
-  echo "=== chunk after degraded mount ==="
-  btrfs ins dump-tree -t chunk $dev1 | grep stripe_len.*type
-
-The result fs will have chunks with SINGLE and DUP only:
-  === chunk after degraded mount ===
-                  length 33554432 owner 2 stripe_len 65536 type SYSTEM
-                  length 1073741824 owner 2 stripe_len 65536 type DATA
-                  length 1073741824 owner 2 stripe_len 65536 type DATA|DUP
-                  length 219676672 owner 2 stripe_len 65536 type METADATA|DUP
-                  length 33554432 owner 2 stripe_len 65536 type SYSTEM|DUP
-
-This behavior greatly breaks the RAID1 tolerance.
-
-Even with missing device replaced, if the device with DUP/SINGLE chunks
-on them get missing, the whole fs can't be mounted RW any more.
-And we already have reports that user even can't mount the fs as some
-essential tree blocks got written to those DUP chunks.
-
-[CAUSE]
-The cause is pretty simple, we treat missing devices as non-writable.
-Thus when we need to allocate chunks, we can only fall back to single
-device profiles (SINGLE and DUP).
-
-[FIX]
-Just consider the missing devices as WRITABLE, so we allocate new chunks
-on them to maintain old profiles.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/volumes.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 56f751192a6c..cc30b1fa9306 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7002,6 +7002,18 @@ static int read_one_dev(struct extent_buffer *leaf,
- 
- 	fill_device_from_item(leaf, dev_item, device);
- 	set_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state);
-+
-+	/*
-+	 * We treat missing devices as writable, so that we can maintain
-+	 * the existing profiles without degrading to DUP/SINGLE.
-+	 */
-+	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state)) {
-+		set_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
-+		list_add(&device->dev_alloc_list,
-+			 &fs_devices->alloc_list);
-+		fs_devices->rw_devices++;
-+	}
-+
- 	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
- 	   !test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state)) {
- 		device->fs_devices->total_rw_bytes += device->total_bytes;
+I absolutely agree. A hypothetical benefit of a new implementation
+doesn't outweigh the complexity the existing code has to jump over or
+worse is not aware of and it is broken silently. My general experience
+is that the later is more likely with a large variety of drivers we have
+in the tree and odd things they do in general.
 -- 
-2.23.0
-
+Michal Hocko
+SUSE Labs
