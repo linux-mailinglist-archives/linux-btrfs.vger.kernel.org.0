@@ -2,87 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B58EA0D85
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 00:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB85BA0EB4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Aug 2019 02:51:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbfH1WYb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 28 Aug 2019 18:24:31 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:58774 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726828AbfH1WYb (ORCPT
+        id S1727002AbfH2AvF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 28 Aug 2019 20:51:05 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:59793 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726985AbfH2AvF (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 28 Aug 2019 18:24:31 -0400
-Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 0CD40361493;
-        Thu, 29 Aug 2019 08:24:24 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1i36MY-0004x3-2B; Thu, 29 Aug 2019 08:24:22 +1000
-Date:   Thu, 29 Aug 2019 08:24:22 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christopher Lameter <cl@linux.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
- kmalloc(power-of-two)
-Message-ID: <20190828222422.GL1119@dread.disaster.area>
-References: <20190826111627.7505-1-vbabka@suse.cz>
- <20190826111627.7505-3-vbabka@suse.cz>
- <0100016cd98bb2c1-a2af7539-706f-47ba-a68e-5f6a91f2f495-000000@email.amazonses.com>
- <20190828194607.GB6590@bombadil.infradead.org>
+        Wed, 28 Aug 2019 20:51:05 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id EB8A821E44
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 20:51:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 28 Aug 2019 20:51:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=megavolts.ch; h=
+        to:from:subject:message-id:date:mime-version:content-type
+        :content-transfer-encoding; s=fm1; bh=Q75eWbTgImqXvFySUTvRjRFbGh
+        /fIaDxdgY8o4UEKJc=; b=ooJLV3BPmMw5xLq31SYykw71JLptGSTKEIqRzqdy/C
+        tkdCs9+wJpsDmOrFf2rulr8qnZUoWAz3k2jxFbLFG3Z3tJeJy5V2r6Toki6+3dA1
+        I02qVUT5QJ8F48JFRHBzSTnABlOfi8oJAjMU4iNW6e5Y3oORnT5XoA1kk8PeNhNw
+        CqwnorcfQtfpX5QDbMj99PlZoLOn1N8SDpvqJyBE/ek7K+++AyOuObBSuPwlCSVG
+        IqjskG8NPoyuEJZFcBCBRnWJmgATtvuc6SJ7gmoXOFiar2JcXOXoIz2r+uO1S21n
+        Y+C5Qk9RFj83UqFHZdS1yxmeHOS6Fmic1He7rbIk4EZw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=Q75eWb
+        TgImqXvFySUTvRjRFbGh/fIaDxdgY8o4UEKJc=; b=mTphmxIFZTCAG8Rl93emWA
+        IJSn5eU+ZpS8awiO/yvSEsijBzdfA/M7c96xlK3peQVNUm4FPeif4cL7s7k4CJgJ
+        VWwr3uc76KcQ0PDe3m4yQJuIHpjUn8FgdKYQgL4bKYzBVIVM2e8gdw3bgIVmoMtB
+        3Eeow23CXHSZrCrw4Jjnh0/NQOdpDBxbIwEOnvX6fzCMykRyx2GjLnSFzxeMxVOt
+        jP79xiKbLaqK34o5Kz/DqA9dkcecBXHdCUtUoBO0iMAQ05JDzJrs28PfuKmhy0/N
+        C/35kcyVLFkM8Mav7J7uxhwmfY4T7vSLvmYqpHpjmPK43T2YFHqq9huBkOcINGYg
+        ==
+X-ME-Sender: <xms:dyFnXVwWO-C0d3q9JHnlxzYVEhpF0InTEhO8JjooqZOs7FDLfU6JsA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrudeiuddgfeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefvhffukffffgggtgfgsehtkeertd
+    dtfeejnecuhfhrohhmpeforghrtgcuqfhgghhivghruceomhgrrhgtrdhoghhgihgvrhes
+    mhgvghgrvhholhhtshdrtghhqeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukf
+    hppedufeejrddvvdelrdejkedruddvudenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
+    rhgtrdhoghhgihgvrhesmhgvghgrvhholhhtshdrtghhnecuvehluhhsthgvrhfuihiivg
+    eptd
+X-ME-Proxy: <xmx:dyFnXW0pFr00iviuQ9Gt8Ui3v4BBaTxHK2lH1N-dhWj2fSlS5idUuQ>
+    <xmx:dyFnXVp475nTxalFcqrvhrBsklssH99WUHtUPOLhl03CSxSwOCtxwg>
+    <xmx:dyFnXTVTtSOgqLs0fTRgUnLaitNQbf5mZginHtH95NAhHts1OSQ4Mw>
+    <xmx:dyFnXagSUz-si0UjiEWL7jWgbbOlCZustO_CAdEM0GoYNjdUig0n_A>
+Received: from [10.25.167.37] (unknown [137.229.78.121])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 555418005B
+        for <linux-btrfs@vger.kernel.org>; Wed, 28 Aug 2019 20:51:03 -0400 (EDT)
+To:     linux-btrfs@vger.kernel.org
+From:   Marc Oggier <marc.oggier@megavolts.ch>
+Subject: Spare Volume Features
+Message-ID: <0b7bfde0-0711-cee3-1ed8-a37b1a62bf5e@megavolts.ch>
+Date:   Wed, 28 Aug 2019 16:51:02 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190828194607.GB6590@bombadil.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
-        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
-        a=7-415B0cAAAA:8 a=wUb5uO5YJnghlZLzW24A:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 12:46:08PM -0700, Matthew Wilcox wrote:
-> On Wed, Aug 28, 2019 at 06:45:07PM +0000, Christopher Lameter wrote:
-> > I still think implicit exceptions to alignments are a bad idea. Those need
-> > to be explicity specified and that is possible using kmem_cache_create().
-> 
-> I swear we covered this last time the topic came up, but XFS would need
-> to create special slab caches for each size between 512 and PAGE_SIZE.
-> Potentially larger, depending on whether the MM developers are willing to
-> guarantee that kmalloc(PAGE_SIZE * 2, GFP_KERNEL) will return a PAGE_SIZE
-> aligned block of memory indefinitely.
+Hi All,
 
-Page size alignment of multi-page heap allocations is ncessary. The
-current behaviour w/ KASAN is to offset so a 8KB allocation spans 3
-pages and is not page aligned. That causes just as much in way
-of alignment problems as unaligned objects in multi-object-per-page
-slabs.
+I am currently buidling a small data server for an experiment.
 
-As I said in the lastest discussion of this problem on XFS (pmem
-devices w/ KASAN enabled), all we -need- is a GFP flag that tells the
-slab allocator to give us naturally aligned object or fail if it
-can't. I don't care how that gets implemented (e.g. another set of
-heap slabs like the -rcl slabs), I just don't want every high level
-subsystem that allocates heap memory for IO buffers to have to
-implement their own aligned slab caches.
+I was wondering if the features of the spare volume introduced a couple 
+of years ago (ttps://patchwork.kernel.org/patch/8687721/) would be 
+release soon. I think this would be awesome to have a drive installed, 
+that can be used as a spare if one drive of an array died to avoid downtime.
 
-Cheers,
+Does anyone have news about it, and when it will be officially in the 
+kernel/btrfs-progs ?
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Marc
+
+P.S. It took me a long time to switch to btrfs. I did it less than a 
+year ago, and I love it.  Keep the great job going, y'all
+
