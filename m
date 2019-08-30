@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA802A35C3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2019 13:33:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C7EEA35D5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2019 13:37:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727455AbfH3Lcu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Aug 2019 07:32:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48884 "EHLO mx1.suse.de"
+        id S1727984AbfH3LgP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Aug 2019 07:36:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50260 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727958AbfH3Lcl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 30 Aug 2019 07:32:41 -0400
+        id S1727620AbfH3LgO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 30 Aug 2019 07:36:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5AD9BB0BF;
-        Fri, 30 Aug 2019 11:32:39 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B1A55AEBD;
+        Fri, 30 Aug 2019 11:36:13 +0000 (UTC)
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
         Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v3 12/12] btrfs-progs: add test-case for mkfs with xxhash64
-Date:   Fri, 30 Aug 2019 13:32:34 +0200
-Message-Id: <20190830113234.16615-13-jthumshirn@suse.de>
+Subject: [PATCH v5 0/4] btrfs: support xxhash64 checksums
+Date:   Fri, 30 Aug 2019 13:36:07 +0200
+Message-Id: <20190830113611.16865-1-jthumshirn@suse.de>
 X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20190830113234.16615-1-jthumshirn@suse.de>
-References: <20190830113234.16615-1-jthumshirn@suse.de>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add test-cases for creating a file-system xxhash64 as checksumming
-algorithm.
+Now that Nikolay's XXHASH64 support for the Crypto API has landed and BTRFS is
+prepared for an easy addition of new checksums, this patchset implements
+XXHASH64 as a second, fast but not cryptographically secure checksum hash.
 
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
----
- tests/mkfs-tests/001-basic-profiles/test.sh | 2 ++
- 1 file changed, 2 insertions(+)
+For changelogs, please see the individual patches.
 
-diff --git a/tests/mkfs-tests/001-basic-profiles/test.sh b/tests/mkfs-tests/001-basic-profiles/test.sh
-index 6e295274119d..3fa3c8ad42d1 100755
---- a/tests/mkfs-tests/001-basic-profiles/test.sh
-+++ b/tests/mkfs-tests/001-basic-profiles/test.sh
-@@ -46,6 +46,8 @@ test_mkfs_single  -d  single  -m  dup
- test_mkfs_single  -d  dup     -m  single
- test_mkfs_single  -d  dup     -m  dup
- test_mkfs_single  -d  dup     -m  dup     --mixed
-+test_mkfs_single  -C xxhash64
-+test_mkfs_single  -C xxhash
- 
- test_mkfs_multi
- test_mkfs_multi   -d  single  -m  single
+David Sterba (1):
+  btrfs: sysfs: export supported checksums
+
+Johannes Thumshirn (3):
+  btrfs: turn checksum type define into a enum
+  btrfs: create structure to encode checksum type and length
+  btrfs: add xxhash64 to checksumming algorithms
+
+ fs/btrfs/Kconfig                |  1 +
+ fs/btrfs/ctree.c                | 23 +++++++++++++++++++++++
+ fs/btrfs/ctree.h                | 20 ++------------------
+ fs/btrfs/disk-io.c              |  1 +
+ fs/btrfs/super.c                |  1 +
+ fs/btrfs/sysfs.c                | 29 +++++++++++++++++++++++++++++
+ include/uapi/linux/btrfs_tree.h |  5 ++++-
+ 7 files changed, 61 insertions(+), 19 deletions(-)
+
 -- 
 2.16.4
 
