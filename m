@@ -2,106 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F53A29E0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2019 00:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A5A0A2B6C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2019 02:29:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728492AbfH2Wle (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 29 Aug 2019 18:41:34 -0400
-Received: from smtp.domeneshop.no ([194.63.252.55]:34807 "EHLO
-        smtp.domeneshop.no" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728480AbfH2Wle (ORCPT
+        id S1727234AbfH3A3p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 29 Aug 2019 20:29:45 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:46998 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727182AbfH3A3p (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 29 Aug 2019 18:41:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=dirtcellar.net; s=ds201810;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Reply-To; bh=c4r2g6u62XDnS1hPmD3lB2vdEDi+XMdJWmkpDjN6IhY=;
-        b=bDPT9mDkDyI3GEL30YNbr9/8/lLXsTx4tMs/JC2r5Ef2L70yYboZ56rjDf8hZd4aAzAiRR3DDFYuhWXg9JgiMKkLy4mOecnw/iyxDnWdZNN5VeknfYozFLbol6l1/yYTtRXTGdDk1bEPLxtQzSsgrDUjVZAXEW8qedAqajHaQuOG7M5GfiS3IgG2Xs7r+Sn1whVYVY60xUBJuqYn5kkaI2lWJPLy3uQREBOz5YCh2eakztjtBlpSCHQzNtFUNjGx0Gc6BUEWzXZxJzQkBTVe+6neb1RGiaexQfftKEi5mamzvRZE97F5nvMkLOjCL12Cle2JSLfIgGbaPjXf+rF7hg==;
-Received: from 254.79-160-170.customer.lyse.net ([79.160.170.254]:1467 helo=[10.0.0.10])
-        by smtp.domeneshop.no with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.84_2)
-        (envelope-from <waxhead@dirtcellar.net>)
-        id 1i3T6h-0008AC-GM; Fri, 30 Aug 2019 00:41:31 +0200
-Reply-To: waxhead@dirtcellar.net
-Subject: Re: Spare Volume Features
-To:     Sean Greenslade <sean@seangreenslade.com>,
-        Marc Oggier <marc.oggier@megavolts.ch>,
+        Thu, 29 Aug 2019 20:29:45 -0400
+Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 319E743EA68;
+        Fri, 30 Aug 2019 10:29:37 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1i3UnH-0001yY-Mw; Fri, 30 Aug 2019 10:29:35 +1000
+Date:   Fri, 30 Aug 2019 10:29:35 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Christopher Lameter <cl@linux.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
         linux-btrfs@vger.kernel.org
-References: <0b7bfde0-0711-cee3-1ed8-a37b1a62bf5e@megavolts.ch>
- <CD4A10E4-5342-4F72-862A-3A2C3877EC36@seangreenslade.com>
-From:   waxhead <waxhead@dirtcellar.net>
-Message-ID: <a15fadad-9d78-d1a2-a7a6-e6fc33c417b8@dirtcellar.net>
-Date:   Fri, 30 Aug 2019 00:41:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Firefox/52.0 SeaMonkey/2.49.4
+Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
+ kmalloc(power-of-two)
+Message-ID: <20190830002935.GX1119@dread.disaster.area>
+References: <20190826111627.7505-1-vbabka@suse.cz>
+ <20190826111627.7505-3-vbabka@suse.cz>
+ <0100016cd98bb2c1-a2af7539-706f-47ba-a68e-5f6a91f2f495-000000@email.amazonses.com>
+ <20190828194607.GB6590@bombadil.infradead.org>
+ <20190828222422.GL1119@dread.disaster.area>
+ <be70bf94-a63f-cc19-4958-0e7eed10859b@suse.cz>
 MIME-Version: 1.0
-In-Reply-To: <CD4A10E4-5342-4F72-862A-3A2C3877EC36@seangreenslade.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be70bf94-a63f-cc19-4958-0e7eed10859b@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
+        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=FmdZ9Uzk2mMA:10
+        a=7-415B0cAAAA:8 a=3jipp7y0vy340d0hbX8A:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-Sean Greenslade wrote:
-> On August 28, 2019 5:51:02 PM PDT, Marc Oggier <marc.oggier@megavolts.ch> wrote:
->> Hi All,
->>
->> I am currently buidling a small data server for an experiment.
->>
->> I was wondering if the features of the spare volume introduced a couple
->>
->> of years ago (ttps://patchwork.kernel.org/patch/8687721/) would be
->> release soon. I think this would be awesome to have a drive installed,
->> that can be used as a spare if one drive of an array died to avoid
->> downtime.
->>
->> Does anyone have news about it, and when it will be officially in the
->> kernel/btrfs-progs ?
->>
->> Marc
->>
->> P.S. It took me a long time to switch to btrfs. I did it less than a
->> year ago, and I love it.  Keep the great job going, y'all
+On Thu, Aug 29, 2019 at 09:56:13AM +0200, Vlastimil Babka wrote:
+> On 8/29/19 12:24 AM, Dave Chinner wrote:
+> > On Wed, Aug 28, 2019 at 12:46:08PM -0700, Matthew Wilcox wrote:
+> >> On Wed, Aug 28, 2019 at 06:45:07PM +0000, Christopher Lameter wrote:
+> >>> I still think implicit exceptions to alignments are a bad idea. Those need
+> >>> to be explicity specified and that is possible using kmem_cache_create().
+> >>
+> >> I swear we covered this last time the topic came up, but XFS would need
+> >> to create special slab caches for each size between 512 and PAGE_SIZE.
+> >> Potentially larger, depending on whether the MM developers are willing to
+> >> guarantee that kmalloc(PAGE_SIZE * 2, GFP_KERNEL) will return a PAGE_SIZE
+> >> aligned block of memory indefinitely.
+> > 
+> > Page size alignment of multi-page heap allocations is ncessary. The
+> > current behaviour w/ KASAN is to offset so a 8KB allocation spans 3
+> > pages and is not page aligned. That causes just as much in way
+> > of alignment problems as unaligned objects in multi-object-per-page
+> > slabs.
 > 
-> I've been thinking about this issue myself, and I have an (untested) idea for how to accomplish something similar. My file server has three disks in a btrfs raid1. I added a fourth disk to the array as just a normal, participating disk. I keep an eye on the usage to make sure that I never exceed 3 disk's worth of usage. That way, if one disk dies, there are still enough disks to mount RW (though I may still need to do an explicit degraded mount, not sure). In that scenario, I can just trigger an online full balance to rebuild the missing raid copies on the remaining disks. In theory, minimal to no downtime.
+> Ugh, multi-page (power of two) allocations *at the page allocator level*
+> simply have to be aligned, as that's how the buddy allocator has always
+> worked, and it would be madness to try relax that guarantee and require
+> an explicit flag at this point. The kmalloc wrapper with SLUB will pass
+> everything above 8KB directly to the page allocator, so that's fine too.
+> 4k and 8k are the only (multi-)page sizes still managed as SLUB objects.
+
+On a 4kB page size box, yes.
+
+On a 64kB page size system, 4/8kB allocations are still sub-page
+objects and will have alignment issues. Hence right now we can't
+assume a 4/8/16/32kB allocation will be page size aligned
+anywhere, because they are heap allocations on 64kB page sized
+machines.
+
+> I would say that these sizes are the most striking example that it's
+> wrong not to align them without extra flags or special API variant.
+
+Yup, just pointing out that they aren't guaranteed alignment right
+now on x86-64.
+
+> > As I said in the lastest discussion of this problem on XFS (pmem
+> > devices w/ KASAN enabled), all we -need- is a GFP flag that tells the
+> > slab allocator to give us naturally aligned object or fail if it
+> > can't. I don't care how that gets implemented (e.g. another set of
+> > heap slabs like the -rcl slabs), I just don't want every high level
 > 
-> I'm curious if anyone can see any problems with this idea. I've never tested it, and my offsite backups are thorough enough to survive downtime anyway.
-> 
-> --Sean
-> 
-I'm just a regular btrfs user, but I see tons of problems with this.
+> Given alignment is orthogonal to -rcl and dma-, would that be another
+> three sets? Or we assume that dma- would want it always, and complicate
+> the rules further? Funilly enough, SLOB would be the simplest case here.
 
-When BTRFS introduce per-subvolume (or even per file) "RAID" or 
-redundancy levels a spare device an quickly become a headache. While you 
-can argue that a spare device of equal or large size than the largest 
-device in the pool would suffice in most cases I don't think it is very 
-practical.
+Not my problem. :) All I'm pointing out is that the minimum
+functionality we require is specifying individual allocations as
+needing alignment. I've just implemented that API in XFS, so
+whatever happens in the allocation infrastructure from this point
+onwards is really just implementation optimisation for us now....
 
-What BTRFS needs to do (IMHO) is to reserve spare-space instead. This 
-means that many smaller devices can be used in case a large device keels 
-over.
+Cheers,
 
-The spare space also of course needs to be as large or larger than the 
-largest device in the pool, but you would have more flexibility.
-
-For example spare space COULD be pre-populated with the most important 
-data (hot data tracking) and serve as a speed-up for read operations. 
-What is the point of having idle space just waiting to be used when you 
-in fact can just use it for useful things such as obvious ideas like 
-increased read speed, extra redundancy for stuff like single, dup or 
-even raid0 chunks. Using the spare space for SOME potential for recovery 
-is better than not using the spare space for anything.
-
-When the spare space is needed you can either simply discard the data on 
-the device that is broken if the spare space already holds the data 
-(which makes for superfast recovery) or drop any caches it is used for 
-and repopulate by restoring non-redundant data to it as soon as you hit 
-a certain error count on another device etc...
-
-Just like Linux uses memory I think that BTRFS is better off using the 
-spare space for something rather than nothing. This should of course be 
-configurable just for the record.
-
-Anyway - that is how I, a humble user without the detailed know-how 
-think it should be implemented... :)
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
