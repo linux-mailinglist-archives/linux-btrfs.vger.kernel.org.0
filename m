@@ -2,102 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D10A35BB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2019 13:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BC9EA35B9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 30 Aug 2019 13:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbfH3Lcn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 30 Aug 2019 07:32:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48820 "EHLO mx1.suse.de"
+        id S1727936AbfH3Lck (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 30 Aug 2019 07:32:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48832 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727170AbfH3Lck (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1727884AbfH3Lck (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Fri, 30 Aug 2019 07:32:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id ABB8EAD43;
+        by mx1.suse.de (Postfix) with ESMTP id C726EAE79;
         Fri, 30 Aug 2019 11:32:38 +0000 (UTC)
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
         Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [PATCH v3 00/12] btrfs-progs: support xxhash64 checksums
-Date:   Fri, 30 Aug 2019 13:32:22 +0200
-Message-Id: <20190830113234.16615-1-jthumshirn@suse.de>
+Subject: [PATCH v3 01/12] btrfs-progs: don't blindly assume crc32c in csum_tree_block_size()
+Date:   Fri, 30 Aug 2019 13:32:23 +0200
+Message-Id: <20190830113234.16615-2-jthumshirn@suse.de>
 X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20190830113234.16615-1-jthumshirn@suse.de>
+References: <20190830113234.16615-1-jthumshirn@suse.de>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Now that Nikolay's XXHASH64 support for the Crypto API has landed and BTRFS is
-prepared for an easy addition of new checksums, this patchset implements
-XXHASH64 as a second, fast but not cryptographically secure checksum hash.
+The callers of csum_tree_block_size() blindly assume we're only having
+crc32c as a possible checksum and thus pass in
+btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32] for the size argument of
+csum_tree_block_size().
 
-For changes since v2, please see the individual patches. Additionally a patch
-moving the CRC32C implementation from kernel-lib/ to crypto/ was added.
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+---
+ mkfs/common.c | 14 +++++++-------
+ mkfs/common.h |  2 ++
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
-For changes since v1, please see the individual patches. Additionally a unit
-test was added for regression testing this series.
-
-David Sterba (3):
-  btrfs-progs: update checksumming api
-  btrfs-progs: add xxhash sources
-  btrfs-progs: add xxhash64 as checksum algorithm
-
-Johannes Thumshirn (9):
-  btrfs-progs: don't blindly assume crc32c in csum_tree_block_size()
-  btrfs-progs: cache csum_type in recover_control
-  btrfs-progs: add checksum type to checksumming functions
-  btrfs-progs: don't assume checksums are always 4 bytes
-  btrfs-progs: pass checksum type to
-    btrfs_csum_data()/btrfs_csum_final()
-  btrfs-progs: simplify update_block_csum() in btrfs-sb-mod.c
-  btrfs-progs: add option for checksum type to mkfs
-  btrfs-progs: move crc32c implementation to crypto/
-  btrfs-progs: add test-case for mkfs with xxhash64
-
- Android.mk                                  |    4 +-
- Makefile                                    |    7 +-
- btrfs-corrupt-block.c                       |    3 +-
- btrfs-crc.c                                 |    2 +-
- btrfs-find-root.c                           |    2 +-
- btrfs-sb-mod.c                              |   32 +-
- btrfs.c                                     |    2 +-
- check/main.c                                |   20 +-
- cmds/inspect-dump-super.c                   |   38 +-
- cmds/rescue-chunk-recover.c                 |   25 +-
- cmds/rescue-super-recover.c                 |    2 +-
- common/utils.c                              |    2 +-
- convert/common.c                            |   14 +-
- convert/main.c                              |    5 +-
- {kernel-lib => crypto}/crc32c.c             |    2 +-
- {kernel-lib => crypto}/crc32c.h             |    0
- crypto/hash.c                               |   16 +
- crypto/hash.h                               |   10 +
- crypto/xxhash.c                             | 1024 +++++++++++++++++++++++++++
- crypto/xxhash.h                             |  445 ++++++++++++
- ctree.h                                     |   18 +-
- disk-io.c                                   |   82 ++-
- disk-io.h                                   |    8 +-
- extent-tree.c                               |    2 +-
- file-item.c                                 |   13 +-
- free-space-cache.c                          |    4 +-
- hash.h                                      |    2 +-
- image/main.c                                |    9 +-
- image/sanitize.c                            |    2 +-
- library-test.c                              |    2 +-
- mkfs/common.c                               |   23 +-
- mkfs/common.h                               |    2 +
- mkfs/main.c                                 |   29 +-
- send-stream.c                               |    2 +-
- tests/mkfs-tests/001-basic-profiles/test.sh |    2 +
- 35 files changed, 1709 insertions(+), 146 deletions(-)
- rename {kernel-lib => crypto}/crc32c.c (99%)
- rename {kernel-lib => crypto}/crc32c.h (100%)
- create mode 100644 crypto/hash.c
- create mode 100644 crypto/hash.h
- create mode 100644 crypto/xxhash.c
- create mode 100644 crypto/xxhash.h
-
+diff --git a/mkfs/common.c b/mkfs/common.c
+index caca5e707233..b6e549b19272 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -101,7 +101,7 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+ 	}
+ 
+ 	/* generate checksum */
+-	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0);
++	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0);
+ 
+ 	/* write back root tree */
+ 	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_ROOT_TREE]);
+@@ -292,7 +292,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_EXTENT_TREE]);
+ 	btrfs_set_header_owner(buf, BTRFS_EXTENT_TREE_OBJECTID);
+ 	btrfs_set_header_nritems(buf, nritems);
+-	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0);
++	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0);
+ 	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_EXTENT_TREE]);
+ 	if (ret != cfg->nodesize) {
+ 		ret = (ret < 0 ? -errno : -EIO);
+@@ -380,7 +380,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_CHUNK_TREE]);
+ 	btrfs_set_header_owner(buf, BTRFS_CHUNK_TREE_OBJECTID);
+ 	btrfs_set_header_nritems(buf, nritems);
+-	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0);
++	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0);
+ 	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_CHUNK_TREE]);
+ 	if (ret != cfg->nodesize) {
+ 		ret = (ret < 0 ? -errno : -EIO);
+@@ -420,7 +420,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_DEV_TREE]);
+ 	btrfs_set_header_owner(buf, BTRFS_DEV_TREE_OBJECTID);
+ 	btrfs_set_header_nritems(buf, nritems);
+-	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0);
++	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0);
+ 	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_DEV_TREE]);
+ 	if (ret != cfg->nodesize) {
+ 		ret = (ret < 0 ? -errno : -EIO);
+@@ -433,7 +433,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_FS_TREE]);
+ 	btrfs_set_header_owner(buf, BTRFS_FS_TREE_OBJECTID);
+ 	btrfs_set_header_nritems(buf, 0);
+-	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0);
++	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0);
+ 	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_FS_TREE]);
+ 	if (ret != cfg->nodesize) {
+ 		ret = (ret < 0 ? -errno : -EIO);
+@@ -445,7 +445,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_CSUM_TREE]);
+ 	btrfs_set_header_owner(buf, BTRFS_CSUM_TREE_OBJECTID);
+ 	btrfs_set_header_nritems(buf, 0);
+-	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0);
++	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0);
+ 	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_CSUM_TREE]);
+ 	if (ret != cfg->nodesize) {
+ 		ret = (ret < 0 ? -errno : -EIO);
+@@ -456,7 +456,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	memset(buf->data, 0, BTRFS_SUPER_INFO_SIZE);
+ 	memcpy(buf->data, &super, sizeof(super));
+ 	buf->len = BTRFS_SUPER_INFO_SIZE;
+-	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0);
++	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0);
+ 	ret = pwrite(fd, buf->data, BTRFS_SUPER_INFO_SIZE,
+ 			cfg->blocks[MKFS_SUPER_BLOCK]);
+ 	if (ret != BTRFS_SUPER_INFO_SIZE) {
+diff --git a/mkfs/common.h b/mkfs/common.h
+index 28912906d0a9..1ca71a4fcce5 100644
+--- a/mkfs/common.h
++++ b/mkfs/common.h
+@@ -53,6 +53,8 @@ struct btrfs_mkfs_config {
+ 	u64 features;
+ 	/* Size of the filesystem in bytes */
+ 	u64 num_bytes;
++	/* checksum algorithm to use */
++	enum btrfs_csum_type csum_type;
+ 
+ 	/* Output fields, set during creation */
+ 
 -- 
 2.16.4
 
