@@ -2,95 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D34AA46AD
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Sep 2019 02:52:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38982A46FD
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Sep 2019 05:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728555AbfIAAwM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 31 Aug 2019 20:52:12 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:56238 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726150AbfIAAwL (ORCPT
+        id S1728652AbfIAD3A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 31 Aug 2019 23:29:00 -0400
+Received: from fenrir.routify.me ([155.94.238.126]:43254 "EHLO
+        fenrir.routify.me" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726903AbfIAD27 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 31 Aug 2019 20:52:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=jXXM66EKtvmEAYvb1Llji9/A136eINaxlL5uqBe0OBY=; b=eBz5M1QVpKJZMQDzXUQ9MXhMT
-        rIK2EkzUbSraojFclMxJ7OU+sf7tbq9mwzo0REl3yaDUt2YpbGdUBXr1PBULu2aic9sZuNzSPwoCp
-        owngjkSk9HrwVrtscNCYj+aZ/17/cGG88hXmrwj3PKy0BJCvg4ElKAVolJU/MnnAZSwlpMqAmc62e
-        AMUhgpKdATQQ056Kf77qv58BUxrXE6ktixwa0beiRV9gpk+ZAtbCCa1VAH88gCyyf5jTc6PxLSazv
-        wV7o8Fq43JPBfe5nZRIUcQcvYRvRzMraHjUnFk9kNgyg6rLAwcalK0UgYckSGwX3KhjlxftyTplES
-        EIwb3V+yg==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1i4E69-0007JD-OE; Sun, 01 Sep 2019 00:52:05 +0000
-Date:   Sat, 31 Aug 2019 17:52:05 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christopher Lameter <cl@linux.com>
-Cc:     Michal Hocko <mhocko@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
- kmalloc(power-of-two)
-Message-ID: <20190901005205.GA2431@bombadil.infradead.org>
-References: <20190826111627.7505-1-vbabka@suse.cz>
- <20190826111627.7505-3-vbabka@suse.cz>
- <0100016cd98bb2c1-a2af7539-706f-47ba-a68e-5f6a91f2f495-000000@email.amazonses.com>
- <20190828194607.GB6590@bombadil.infradead.org>
- <20190829073921.GA21880@dhcp22.suse.cz>
- <0100016ce39e6bb9-ad20e033-f3f4-4e6d-85d6-87e7d07823ae-000000@email.amazonses.com>
+        Sat, 31 Aug 2019 23:28:59 -0400
+Received: from coach (unknown [50.236.75.50])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by fenrir.routify.me (Postfix) with ESMTPSA id 0C0A84000F;
+        Sun,  1 Sep 2019 03:28:59 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.10.3 fenrir.routify.me 0C0A84000F
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seangreenslade.com;
+        s=fenrir-outgoing; t=1567308539;
+        bh=J6l+dGngtHIeQB2zW7qwZrzObo1pQdT+9ByONXM/rp0=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=N4m5iwQabVRP7qstjiEuO1RICg6A0tgXvlg2WMwbxg7ZtXvai3MH2Wied/+gqRWyL
+         h7v7WSE70+L8s7ZXlWHlcxBYXZlIs7bMgXWQ7FjkImZ5f27TvsTRhnZScua+8IMtXk
+         TEst+Th2I+yR+W9MtozCie9sLyyheGCCao+hSBM4=
+Date:   Sat, 31 Aug 2019 20:28:55 -0700
+From:   Sean Greenslade <sean@seangreenslade.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: Spare Volume Features
+Message-ID: <20190901032855.GA5604@coach>
+References: <0b7bfde0-0711-cee3-1ed8-a37b1a62bf5e@megavolts.ch>
+ <CD4A10E4-5342-4F72-862A-3A2C3877EC36@seangreenslade.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <0100016ce39e6bb9-ad20e033-f3f4-4e6d-85d6-87e7d07823ae-000000@email.amazonses.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CD4A10E4-5342-4F72-862A-3A2C3877EC36@seangreenslade.com>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Aug 30, 2019 at 05:41:46PM +0000, Christopher Lameter wrote:
-> On Thu, 29 Aug 2019, Michal Hocko wrote:
-> > > There are many places in the kernel which assume alignment.  They break
-> > > when it's not supplied.  I believe we have a better overall system if
-> > > the MM developers provide stronger guarantees than the MM consumers have
-> > > to work around only weak guarantees.
+On Wed, Aug 28, 2019 at 07:21:14PM -0700, Sean Greenslade wrote:
+> On August 28, 2019 5:51:02 PM PDT, Marc Oggier <marc.oggier@megavolts.ch> wrote:
+> >Hi All,
 > >
-> > I absolutely agree. A hypothetical benefit of a new implementation
-> > doesn't outweigh the complexity the existing code has to jump over or
-> > worse is not aware of and it is broken silently. My general experience
-> > is that the later is more likely with a large variety of drivers we have
-> > in the tree and odd things they do in general.
+> >I am currently buidling a small data server for an experiment.
+> >
+> >I was wondering if the features of the spare volume introduced a couple
+> >
+> >of years ago (ttps://patchwork.kernel.org/patch/8687721/) would be 
+> >release soon. I think this would be awesome to have a drive installed, 
+> >that can be used as a spare if one drive of an array died to avoid
+> >downtime.
+> >
+> >Does anyone have news about it, and when it will be officially in the 
+> >kernel/btrfs-progs ?
+> >
+> >Marc
+> >
+> >P.S. It took me a long time to switch to btrfs. I did it less than a 
+> >year ago, and I love it.  Keep the great job going, y'all
 > 
-> The current behavior without special alignment for these caches has been
-> in the wild for over a decade. And this is now coming up?
+> I've been thinking about this issue myself, and I have an (untested)
+> idea for how to accomplish something similar. My file server has three
+> disks in a btrfs raid1. I added a fourth disk to the array as just a
+> normal, participating disk. I keep an eye on the usage to make sure
+> that I never exceed 3 disk's worth of usage. That way, if one disk
+> dies, there are still enough disks to mount RW (though I may still
+> need to do an explicit degraded mount, not sure). In that scenario, I
+> can just trigger an online full balance to rebuild the missing raid
+> copies on the remaining disks. In theory, minimal to no downtime.
+> 
+> I'm curious if anyone can see any problems with this idea. I've never
+> tested it, and my offsite backups are thorough enough to survive
+> downtime anyway.
+> 
+> --Sean
 
-In the wild ... and rarely enabled.  When it is enabled, it may or may
-not be noticed as data corruption, or tripping other debugging asserts.
-Users then turn off the rare debugging option.
+I decided to do a bit of experimentation to test this theory. The
+primary goal was to see if a filesystem could suffer a failed disk and
+have that disk removed and rebalanced among the remaining disks without
+the filesystem losing data or going read-only. Tested on kernel
+5.2.5-arch1-1-ARCH, progs: v5.2.1.
 
-> There is one case now it seems with a broken hardware that has issues and
-> we now move to an alignment requirement from the slabs with exceptions and
-> this and that?
+I was actually quite impressed. When I ripped one of the block devices
+out from under btrfs, the kernel started spewing tons of BTRFS errors,
+but seemed to keep on trucking. I didn't leave it in this state for too
+long, but I was reading, writing, and syncing the fs without issue.
+After performing a btrfs device delete <MISSING_DEVID>, the filesystem
+rebalanced and stopped reporting errors. Looks like this may be a viable
+strategy for high-availability filesystems assuming you have adequate
+monitoring in place to catch the disk failures quickly. I personally
+wouldn't want to fully automate the disk deletion, but it's certainly
+possible.
 
-Perhaps you could try reading what hasa been written instead of sticking
-to a strawman of your own invention?
+--Sean
 
-> If there is an exceptional alignment requirement then that needs to be
-> communicated to the allocator. A special flag or create a special
-> kmem_cache or something.
-
-The only way I'd agree to that is if we deliberately misalign every
-allocation that doesn't have this special flag set.  Because right now,
-breakage happens everywhere when these debug options are enabled, and
-the very people who need to be helped are being hurt by the debugging.
