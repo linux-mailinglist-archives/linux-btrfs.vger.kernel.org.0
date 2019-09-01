@@ -2,164 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14783A4BCC
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Sep 2019 22:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17589A4C0C
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Sep 2019 22:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729111AbfIAUft (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 1 Sep 2019 16:35:49 -0400
-Received: from augustus.math.duke.edu ([152.3.25.8]:43384 "EHLO math.duke.edu"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729043AbfIAUfp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 1 Sep 2019 16:35:45 -0400
-X-Virus-Scanned: amavisd-new at math.duke.edu
-Received: from [192.168.101.7] (cpe-76-182-105-20.nc.res.rr.com [76.182.105.20])
-        (authenticated bits=0)
-        by math.duke.edu (8.14.4/8.14.4) with ESMTP id x81KZeMi019282
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES128-GCM-SHA256 bits=128 verify=NO);
-        Sun, 1 Sep 2019 16:35:40 -0400
-Message-ID: <c608faa6a5dc9ec81b894d18c7761dac7a823ab7.camel@math.duke.edu>
-Subject: Re: block corruption
-From:   Rann Bar-On <rann@math.duke.edu>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Date:   Sun, 01 Sep 2019 16:35:40 -0400
-In-Reply-To: <CAJCQCtR9feFgGtOZ0Wik2y1oQ69V5z5Q-voFtYPLtnbnbWo7TA@mail.gmail.com>
-References: <bdd368bc2e910523525c54844c5c47dd877f1a0d.camel@math.duke.edu>
-         <98252ab04af29eecf51b6c9ecb7f258df56c93ba.camel@math.duke.edu>
-         <CAJCQCtQRDfMb6=RtT5rNDSj_QT_nJXYx3C-Zzi9baPykHTrDDA@mail.gmail.com>
-         <cab4c26799caa8f4f9516124b5448840245a2811.camel@math.duke.edu>
-         <b3ec20d5-e9b1-4688-297b-b102b5a8fa10@gmx.com>
-         <b855969a3108e7ef9be2e758eb8bd2f3539e5af0.camel@math.duke.edu>
-         <CAJCQCtR9feFgGtOZ0Wik2y1oQ69V5z5Q-voFtYPLtnbnbWo7TA@mail.gmail.com>
-Organization: Duke University Mathematics Department
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        id S1729094AbfIAUwM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 1 Sep 2019 16:52:12 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57076 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728941AbfIAUwM (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 1 Sep 2019 16:52:12 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x81KoZ36145046;
+        Sun, 1 Sep 2019 20:52:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=T13dADbf1q95VgbF95ANzVgEzppqg/4k5uqljZkMYl4=;
+ b=ozfJwS3GxhIayAi6CPLokpTO7YpPik02SnV4YOJlxZ9cXIfPRlxwYnabwLn+/TvUP7Zq
+ VpbzzRJUUwCZCVIewV7BEYFHOnDIKC+xzCRmdVyRKp/F3pQFQF16R+STTsGxwWMdjPFB
+ yck0BraUEXaFaP4V9/lJfbsew1Xs2EmKxEke3tGnRTDZPbj0FYRk6ntskn1+Rt2DPfdo
+ GxdXIK1vGdzuYMYAM77S9Qi42FNKTPxzoqoTCeYB1eVg3TOBag+OGmsvISSHeH/6je8m
+ liCsclyRvcDK9DbUcOcYOSsKh53Y2RQWRKCQ99dEuPLNl2H54TJU5luyeU+IzYBpFho+ zA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2urnar8081-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 01 Sep 2019 20:52:01 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x81Km69v070340;
+        Sun, 1 Sep 2019 20:50:01 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2uqg827muq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 01 Sep 2019 20:50:01 +0000
+Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x81Knxij004583;
+        Sun, 1 Sep 2019 20:49:59 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sun, 01 Sep 2019 13:49:59 -0700
+Date:   Sun, 1 Sep 2019 13:50:01 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        hch@lst.de, david@fromorbit.com, riteshh@linux.ibm.com,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 01/15] iomap: Introduce CONFIG_FS_IOMAP_DEBUG
+Message-ID: <20190901205001.GB568270@magnolia>
+References: <20190901200836.14959-1-rgoldwyn@suse.de>
+ <20190901200836.14959-2-rgoldwyn@suse.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190901200836.14959-2-rgoldwyn@suse.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9367 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1909010239
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9367 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1909010240
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sun, Sep 01, 2019 at 03:08:22PM -0500, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> To improve debugging abilities, especially invalid option
+> asserts.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> ---
+>  fs/Kconfig            |  3 +++
+>  include/linux/iomap.h | 11 +++++++++++
+>  2 files changed, 14 insertions(+)
+> 
+> diff --git a/fs/Kconfig b/fs/Kconfig
+> index bfb1c6095c7a..4bed5df9b55f 100644
+> --- a/fs/Kconfig
+> +++ b/fs/Kconfig
+> @@ -19,6 +19,9 @@ if BLOCK
+>  
+>  config FS_IOMAP
+>  	bool
+> +config FS_IOMAP_DEBUG
+> +	bool "Debugging for the iomap code"
+> +	depends on FS_IOMAP
+>  
+>  source "fs/ext2/Kconfig"
+>  source "fs/ext4/Kconfig"
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index bc499ceae392..209b6c93674e 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -18,6 +18,17 @@ struct page;
+>  struct vm_area_struct;
+>  struct vm_fault;
+>  
+> +#ifdef CONFIG_FS_IOMAP_DEBUG
+> +#define iomap_assert(expr) \
+> +	if(!(expr)) { \
+> +		printk( "Assertion failed! %s,%s,%s,line=%d\n",\
+> +#expr,__FILE__,__func__,__LINE__); \
+> +		BUG(); \
 
--- 
-Rann Bar-On
-Senior Lecturer
-Dept of Mathematics
-Duke University
+Hmm, this log message ought to have a priority level, right?
 
-Pronouns: he/him/his
+#define IOMAP_ASSERT(expr) do { WARN_ON(!(expr)); } while(0)
 
-On Sun, 2019-09-01 at 14:09 -0600, Chris Murphy wrote:
-> On Sun, Sep 1, 2019 at 11:39 AM Rann Bar-On <rann@math.duke.edu>
-> wrote:
-> > On Sun, 2019-09-01 at 07:48 +0800, Qu Wenruo wrote:
-> > > On 2019/9/1 上午7:39, Rann Bar-On wrote:
-> > > > On Sat, 2019-08-31 at 17:04 -0600, Chris Murphy wrote:
-> > > > > On Sat, Aug 31, 2019 at 2:26 PM Rann Bar-On <
-> > > > > rann@math.duke.edu>
-> > > > > wrote:
-> > > > > > I just downgraded to kernel 4.19, and the supposed
-> > > > > > corruption
-> > > > > > vanished.
-> > > > > > This may be related to
-> > > > > > 
-> > > > > > https://www.spinics.net/lists/linux-btrfs/msg91046.html
-> > > > > > 
-> > > > > > If I can provide information that would help fix this
-> > > > > > issue,
-> > > > > > I'd be
-> > > > > > glad to, but I cannot upgrade back to kernel 5.2, as I
-> > > > > > can't
-> > > > > > risk
-> > > > > > this
-> > > > > > system.
-> > > > > 
-> > > > > 5.2 has more strict checks for corruption, exposing the rare
-> > > > > case
-> > > > > where metadata in a leaf is corrupt but the checksum was
-> > > > > properly
-> > > > > computed.
-> > > 
-> > > Exactly.
-> > > 
-> > > Although for your case, it's some older kernel doing something
-> > > bad.
-> > > 
-> > > It's also reported once for the same problem, some older kernel
-> > > doesn't
-> > > set the mode member properly.
-> > > > > > > Btrfs v3.17
-> > > > > 
-> > > > > This is old. I suggest finding a newer version of btrfs-
-> > > > > progs,
-> > > > > ideally
-> > > > > latest stable version is 5.2.1. Definitely don't use --repair
-> > > > > with
-> > > > > this version. It's safe to use check --readonly (which is the
-> > > > > default)
-> > > > > with this version but probably not that helpful to devs.
-> > > > > 
-> > > > 
-> > > > Not really sure why that said 3.17:
-> > > > 
-> > > > $ btrfs --version
-> > > > btrfs-progs v5.2.1
-> > > > 
-> > > > Anyway, running btrfs --repair on the file system didn't do
-> > > > anything to
-> > > > fix the above errors.
-> > > 
-> > > That's what we need to enhance next.
-> > > 
-> > > > I removed at least one of the corrupt files (the only one that
-> > > > was
-> > > > mode
-> > > > 0) using kernel 4.19.
-> > > > 
-> > > > Happy to help further if I can. What would you suggest as far
-> > > > as
-> > > > fixing
-> > > > this or reporting it usefully? If you believe 5.2 isn't causing
-> > > > the
-> > > > corruption, but rather, just exposing it, I'm more than happy
-> > > > to
-> > > > experiment with it.
-> > > 
-> > > Deleting the offending inodes would be enough to fix the alert.
-> > > 
-> > 
-> > I deleted the file using the older kernel. I rebooted into the new
-> > kernel, and things seem good for now.
-> > 
-> > Note: The newer one wouldn't let me access the file to delete it,
-> > nor
-> > did any btrfs repair tool do anything at all. This is a big problem
-> > IMO!
-> 
-> The current behavior is an improvement over propagating corruption
-> and
-> never detecting it because the leaf is assumed to be correct only
-> because the checksum matches. The next step is figuring out ways to
-> work around such rare detected corruptions, hopefully automatically
-> and while online.
-> 
-> I don't consider it user responsibility to have to do this, but I'm
-> vaguely curious if it's possible to delete the offending file in a
-> snapshot, then delete the original subvolume. i.e.
-> 
-> 1.
-> snapshot the subvolume containing the file (default rw snapshot)
-> 2.
-> delete the bad file(s) in the snapshot
-> 3.
-> delete the original subvolume (snapshot's parent)
-> 
-> I'm curious if either 2 or 3 are permitted.
-> 
-> 
+(or crib ASSERT/ass{fail,warn} from XFS? :D)
 
-Wish I could help, but I already deleted the file. If there's something
-I can do to move this forward, I'd be glad to.
+> +	}
+> +#else
+> +#define iomap_assert(expr)
 
+((void)0)
+
+So we don't just have stray semicolons in the code stream?
+
+--D
+
+> +#endif
+> +
+>  /*
+>   * Types of block ranges for iomap mappings:
+>   */
+> -- 
+> 2.16.4
+> 
