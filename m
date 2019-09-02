@@ -2,66 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AB8A5A6C
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 17:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48089A5B43
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 18:22:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731966AbfIBPUJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Sep 2019 11:20:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42938 "EHLO mx1.suse.de"
+        id S1726023AbfIBQWN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Sep 2019 12:22:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42062 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729902AbfIBPUJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Sep 2019 11:20:09 -0400
+        id S1725988AbfIBQWM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Sep 2019 12:22:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EA8EFB671;
-        Mon,  2 Sep 2019 15:20:07 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 5A98EAC1C;
+        Mon,  2 Sep 2019 16:22:11 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 5FCCEDA796; Mon,  2 Sep 2019 17:20:28 +0200 (CEST)
-Date:   Mon, 2 Sep 2019 17:20:28 +0200
+        id 4D663DA796; Mon,  2 Sep 2019 18:22:31 +0200 (CEST)
+Date:   Mon, 2 Sep 2019 18:22:30 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v3 11/12] btrfs-progs: move crc32c implementation to
- crypto/
-Message-ID: <20190902152028.GX2752@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
+Message-ID: <20190902162230.GY2752@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20190830113234.16615-1-jthumshirn@suse.de>
- <20190830113234.16615-12-jthumshirn@suse.de>
- <f7a30c93-58f0-c6db-9325-ed2933c11be4@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190628022611.2844-1-anand.jain@oracle.com>
+ <20190703132158.GV20977@twin.jikos.cz>
+ <e2ab1be9-8b83-987f-0d88-c1f5547060d4@oracle.com>
+ <51c42306-b4ae-a243-ac96-fb3acb1a317c@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f7a30c93-58f0-c6db-9325-ed2933c11be4@suse.com>
+In-Reply-To: <51c42306-b4ae-a243-ac96-fb3acb1a317c@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 02, 2019 at 03:40:57PM +0300, Nikolay Borisov wrote:
+On Mon, Sep 02, 2019 at 04:01:56PM +0800, Anand Jain wrote:
 > 
+> David,
 > 
-> On 30.08.19 г. 14:32 ч., Johannes Thumshirn wrote:
-> > With the introduction of xxhash64 to btrfs-progs we created a crypto/
-> > directory for all the hashes used in btrfs (although no
-> > cryptographically secure hash is there yet).
-> > 
-> > Move the crc32c implementation from kernel-lib/ to crypto/ as well so we
-> > have all hashes consolidated.
-> > 
-> > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> 
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-> 
-> Although in the future we might want to collapse everything to a single
-> crypto.h/hash.h/whatever.h header and include only that.
+>   I don't see this patch is integrated. Can you please integrated this 
+> patch thanks.
 
-I did that in my prototype code, Johannes is peeling off the bits to the
-series so we'll get there eventually.
+I don't know why but the patch got lost somewhere, adding to devel
+again.
