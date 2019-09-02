@@ -2,50 +2,42 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 48089A5B43
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 18:22:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 775FFA5B68
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 18:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726023AbfIBQWN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Sep 2019 12:22:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42062 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725988AbfIBQWM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Sep 2019 12:22:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5A98EAC1C;
-        Mon,  2 Sep 2019 16:22:11 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4D663DA796; Mon,  2 Sep 2019 18:22:31 +0200 (CEST)
-Date:   Mon, 2 Sep 2019 18:22:30 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
-Message-ID: <20190902162230.GY2752@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190628022611.2844-1-anand.jain@oracle.com>
- <20190703132158.GV20977@twin.jikos.cz>
- <e2ab1be9-8b83-987f-0d88-c1f5547060d4@oracle.com>
- <51c42306-b4ae-a243-ac96-fb3acb1a317c@oracle.com>
+        id S1726439AbfIBQ3i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Sep 2019 12:29:38 -0400
+Received: from verein.lst.de ([213.95.11.211]:51506 "EHLO verein.lst.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726070AbfIBQ3i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Sep 2019 12:29:38 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 7D62768AFE; Mon,  2 Sep 2019 18:29:34 +0200 (CEST)
+Date:   Mon, 2 Sep 2019 18:29:34 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        darrick.wong@oracle.com, hch@lst.de, david@fromorbit.com,
+        riteshh@linux.ibm.com, Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 01/15] iomap: Introduce CONFIG_FS_IOMAP_DEBUG
+Message-ID: <20190902162934.GA6263@lst.de>
+References: <20190901200836.14959-1-rgoldwyn@suse.de> <20190901200836.14959-2-rgoldwyn@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <51c42306-b4ae-a243-ac96-fb3acb1a317c@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20190901200836.14959-2-rgoldwyn@suse.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 02, 2019 at 04:01:56PM +0800, Anand Jain wrote:
+On Sun, Sep 01, 2019 at 03:08:22PM -0500, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
 > 
-> David,
-> 
->   I don't see this patch is integrated. Can you please integrated this 
-> patch thanks.
+> To improve debugging abilities, especially invalid option
+> asserts.
 
-I don't know why but the patch got lost somewhere, adding to devel
-again.
+Looking at the code I'd much rather have unconditional WARN_ON_ONCE
+statements in most places.  Including returning an error when we see
+something invalid in most cases.
