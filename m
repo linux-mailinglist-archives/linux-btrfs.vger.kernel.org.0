@@ -2,25 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DF73A5656
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 14:40:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD081A5662
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 14:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729878AbfIBMje (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Sep 2019 08:39:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57448 "EHLO mx1.suse.de"
+        id S1729962AbfIBMlB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Sep 2019 08:41:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58182 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729658AbfIBMje (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Sep 2019 08:39:34 -0400
+        id S1729489AbfIBMlA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Sep 2019 08:41:00 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B97BEB03C;
-        Mon,  2 Sep 2019 12:39:32 +0000 (UTC)
-Subject: Re: [PATCH v3 10/12] btrfs-progs: add xxhash64 as checksum algorithm
+        by mx1.suse.de (Postfix) with ESMTP id DCC49AF90;
+        Mon,  2 Sep 2019 12:40:58 +0000 (UTC)
+Subject: Re: [PATCH v3 11/12] btrfs-progs: move crc32c implementation to
+ crypto/
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20190830113234.16615-1-jthumshirn@suse.de>
- <20190830113234.16615-11-jthumshirn@suse.de>
+ <20190830113234.16615-12-jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -65,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <cfc67a63-2319-9f24-2672-aaa92fb41457@suse.com>
-Date:   Mon, 2 Sep 2019 15:39:30 +0300
+Message-ID: <f7a30c93-58f0-c6db-9325-ed2933c11be4@suse.com>
+Date:   Mon, 2 Sep 2019 15:40:57 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190830113234.16615-11-jthumshirn@suse.de>
+In-Reply-To: <20190830113234.16615-12-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,136 +83,16 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.08.19 г. 14:32 ч., Johannes Thumshirn wrote:
-> From: David Sterba <dsterba@suse.com>
+> With the introduction of xxhash64 to btrfs-progs we created a crypto/
+> directory for all the hashes used in btrfs (although no
+> cryptographically secure hash is there yet).
 > 
-> Add xxhash64 as another checksumming algorithm.
+> Move the crc32c implementation from kernel-lib/ to crypto/ as well so we
+> have all hashes consolidated.
 > 
-> Signed-off-by: David Sterba <dsterba@suse.com>
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> 
-> ---
-> Changes to v2:
-> - Integrated comments from Nikolay
-> ---
->  Makefile                  |  3 ++-
->  cmds/inspect-dump-super.c | 24 +++++++++++++++---------
->  convert/common.c          |  2 +-
->  convert/main.c            |  2 +-
->  crypto/hash.c             | 16 ++++++++++++++++
->  crypto/hash.h             | 10 ++++++++++
->  crypto/xxhash.c           |  1 -
->  ctree.h                   | 14 ++++++++++----
->  disk-io.c                 |  7 +++++--
->  image/main.c              |  5 +++--
->  mkfs/common.c             | 14 +++++++-------
->  mkfs/main.c               |  6 +++++-
->  12 files changed, 75 insertions(+), 29 deletions(-)
->  create mode 100644 crypto/hash.c
->  create mode 100644 crypto/hash.h
-> 
-> diff --git a/Makefile b/Makefile
-> index 370e0c37ff65..45530749e2b9 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -151,7 +151,8 @@ cmds_objects = cmds/subvolume.o cmds/filesystem.o cmds/device.o cmds/scrub.o \
->  	       mkfs/common.o check/mode-common.o check/mode-lowmem.o
->  libbtrfs_objects = send-stream.o send-utils.o kernel-lib/rbtree.o btrfs-list.o \
->  		   kernel-lib/crc32c.o common/messages.o \
-> -		   uuid-tree.o utils-lib.o common/rbtree-utils.o
-> +		   uuid-tree.o utils-lib.o common/rbtree-utils.o \
-> +		   crypto/hash.o crypto/xxhash.o
->  libbtrfs_headers = send-stream.h send-utils.h send.h kernel-lib/rbtree.h btrfs-list.h \
->  	       kernel-lib/crc32c.h kernel-lib/list.h kerncompat.h \
->  	       kernel-lib/radix-tree.h kernel-lib/sizes.h kernel-lib/raid56.h \
-> diff --git a/cmds/inspect-dump-super.c b/cmds/inspect-dump-super.c
-> index 58bf82b0bbd3..2e2175fe9223 100644
-> --- a/cmds/inspect-dump-super.c
-> +++ b/cmds/inspect-dump-super.c
-> @@ -311,6 +311,17 @@ static void print_readable_super_flag(u64 flag)
->  				     super_flags_num, BTRFS_SUPER_FLAG_SUPP);
->  }
->  
-> +static bool is_valid_csum_type(u16 csum_type)
-> +{
-> +	switch (csum_type) {
-> +	case BTRFS_CSUM_TYPE_CRC32:
-> +	case BTRFS_CSUM_TYPE_XXHASH:
-> +		return true;
-> +	default:
-> +		return false;
-> +	}
-> +}
-> +
->  static void dump_superblock(struct btrfs_super_block *sb, int full)
->  {
->  	int i;
-> @@ -326,15 +337,11 @@ static void dump_superblock(struct btrfs_super_block *sb, int full)
->  	csum_type = btrfs_super_csum_type(sb);
->  	csum_size = BTRFS_CSUM_SIZE;
->  	printf("csum_type\t\t%hu (", csum_type);
-> -	if (csum_type >= ARRAY_SIZE(btrfs_csum_sizes)) {
-> +	if (is_valid_csum_type(csum_type)) {
 
-if (!is_valid_csum_type)
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
->  		printf("INVALID");
->  	} else {
-> -		if (csum_type == BTRFS_CSUM_TYPE_CRC32) {
-> -			printf("crc32c");
-> -			csum_size = btrfs_csum_sizes[csum_type];
-> -		} else {
-> -			printf("unknown");
-> -		}
-> +		printf("%s", btrfs_csums[csum_type].name);
-> +		csum_size = btrfs_csums[csum_type].size;
->  	}
->  	printf(")\n");
->  	printf("csum_size\t\t%llu\n", (unsigned long long)csum_size);
-> @@ -342,8 +349,7 @@ static void dump_superblock(struct btrfs_super_block *sb, int full)
->  	printf("csum\t\t\t0x");
->  	for (i = 0, p = sb->csum; i < csum_size; i++)
->  		printf("%02x", p[i]);
-> -	if (csum_type != BTRFS_CSUM_TYPE_CRC32 ||
-> -	    csum_size != btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32])
-> +	if (is_valid_csum_type(csum_type))
-
-ditto
-
->  		printf(" [UNKNOWN CSUM TYPE OR SIZE]");
->  	else if (check_csum_sblock(sb, csum_size, csum_type))
->  		printf(" [match]");
-
-<snip>
-
-> diff --git a/crypto/hash.h b/crypto/hash.h
-> new file mode 100644
-> index 000000000000..45c1ef17bc57
-> --- /dev/null
-> +++ b/crypto/hash.h
-> @@ -0,0 +1,10 @@
-> +#ifndef CRYPTO_HASH_H
-> +#define CRYPTO_HASH_H
-> +
-> +#include "../kerncompat.h"
-> +
-> +#define CRYPTO_HASH_SIZE_MAX	32
-> +
-> +int hash_xxhash(const u8 *buf, size_t length, u8 *out);
-> +
-> +#endif
-> diff --git a/crypto/xxhash.c b/crypto/xxhash.c
-> index 58bb749d3078..7f381c8b56a0 100644
-> --- a/crypto/xxhash.c
-> +++ b/crypto/xxhash.c
-> @@ -1021,5 +1021,4 @@ XXH_PUBLIC_API XXH64_hash_t XXH64_hashFromCanonical(const XXH64_canonical_t* src
->  /* #include "xxh3.h" */
->  
->  
-> -
-
-unrelated whitespace fix
-
->  #endif  /* XXH_NO_LONG_LONG */
-
-<snip>
-> 
+Although in the future we might want to collapse everything to a single
+crypto.h/hash.h/whatever.h header and include only that.
