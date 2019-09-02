@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD081A5662
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 14:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B049A5680
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 14:45:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729962AbfIBMlB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Sep 2019 08:41:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58182 "EHLO mx1.suse.de"
+        id S1729839AbfIBMol (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Sep 2019 08:44:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59498 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729489AbfIBMlA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Sep 2019 08:41:00 -0400
+        id S1729571AbfIBMok (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Sep 2019 08:44:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DCC49AF90;
-        Mon,  2 Sep 2019 12:40:58 +0000 (UTC)
-Subject: Re: [PATCH v3 11/12] btrfs-progs: move crc32c implementation to
- crypto/
+        by mx1.suse.de (Postfix) with ESMTP id 019ACAF56;
+        Mon,  2 Sep 2019 12:44:39 +0000 (UTC)
+Subject: Re: [PATCH v3 12/12] btrfs-progs: add test-case for mkfs with
+ xxhash64
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20190830113234.16615-1-jthumshirn@suse.de>
- <20190830113234.16615-12-jthumshirn@suse.de>
+ <20190830113234.16615-13-jthumshirn@suse.de>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -66,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <f7a30c93-58f0-c6db-9325-ed2933c11be4@suse.com>
-Date:   Mon, 2 Sep 2019 15:40:57 +0300
+Message-ID: <c2a6a4ce-524c-62cb-6877-2fe3ca910bd3@suse.com>
+Date:   Mon, 2 Sep 2019 15:44:37 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190830113234.16615-12-jthumshirn@suse.de>
+In-Reply-To: <20190830113234.16615-13-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,16 +83,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 30.08.19 г. 14:32 ч., Johannes Thumshirn wrote:
-> With the introduction of xxhash64 to btrfs-progs we created a crypto/
-> directory for all the hashes used in btrfs (although no
-> cryptographically secure hash is there yet).
-> 
-> Move the crc32c implementation from kernel-lib/ to crypto/ as well so we
-> have all hashes consolidated.
+> Add test-cases for creating a file-system xxhash64 as checksumming
+> algorithm.
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>, one improvement to
+testing could be to include new test under cli-tests to test for invalid
+values to -C param. But it's not critical.
 
-Although in the future we might want to collapse everything to a single
-crypto.h/hash.h/whatever.h header and include only that.
+> ---
+>  tests/mkfs-tests/001-basic-profiles/test.sh | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/tests/mkfs-tests/001-basic-profiles/test.sh b/tests/mkfs-tests/001-basic-profiles/test.sh
+> index 6e295274119d..3fa3c8ad42d1 100755
+> --- a/tests/mkfs-tests/001-basic-profiles/test.sh
+> +++ b/tests/mkfs-tests/001-basic-profiles/test.sh
+> @@ -46,6 +46,8 @@ test_mkfs_single  -d  single  -m  dup
+>  test_mkfs_single  -d  dup     -m  single
+>  test_mkfs_single  -d  dup     -m  dup
+>  test_mkfs_single  -d  dup     -m  dup     --mixed
+> +test_mkfs_single  -C xxhash64
+> +test_mkfs_single  -C xxhash
+>  
+>  test_mkfs_multi
+>  test_mkfs_multi   -d  single  -m  single
+> 
