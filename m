@@ -2,27 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5412CA4EDB
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 07:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C11DA4F2E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Sep 2019 08:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbfIBFdi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Sep 2019 01:33:38 -0400
-Received: from mout.gmx.net ([212.227.15.18]:53809 "EHLO mout.gmx.net"
+        id S1728329AbfIBG1y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Sep 2019 02:27:54 -0400
+Received: from mout.gmx.net ([212.227.17.20]:59587 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725839AbfIBFdh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 2 Sep 2019 01:33:37 -0400
+        id S1726099AbfIBG1y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 2 Sep 2019 02:27:54 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1567402412;
-        bh=eJBlVVSGOiJSkGotFXUnkGW/qfMUKjhNvIW2Rst6hzo=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=I9xFNemLGTmj2b1vdfTU27/WppCMxQM/Gxlci8VVSdGx6a9f6FlW1MCz7qltGg7MI
-         WS5n4Pjb/1ULg1qY4GSfe1eRhYTbTfVWkkSt+BRjabVHvMef746NHatjJU83ZXODwN
-         4nEksiWZ0QCwtqZbPXZAdHSXJDuuag9sTNqbSDQc=
+        s=badeba3b8450; t=1567405668;
+        bh=s82DwtA8W4vtdSby5bkeJcvWhzlDwe5/JMP+ws5Oiqo=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:References:Date:In-Reply-To;
+        b=S5lPk2R0XlA54+YM5ENxocP6iQ+XItLEiGMV6yiV2LT9dxZFrEH+zCsfdwqXKmmkX
+         axto8eg7Kc8QpIVIAgW95MgahxXzjG8oLnfSFSJcaYbQtCQZ5kLM1KZ14uBCaGvZiZ
+         oySLCY89a5D6bXiIzQii2AemXeGQ9XjxfnSyOiVc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mk0JW-1iSg2V2bCy-00kQYk; Mon, 02
- Sep 2019 07:33:32 +0200
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N8ofO-1iHCDd3PmA-015pmb; Mon, 02
+ Sep 2019 08:27:48 +0200
 Subject: Re: block corruption
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 To:     Rann Bar-On <rann@math.duke.edu>,
         Chris Murphy <lists@colorremedies.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
@@ -34,7 +35,7 @@ References: <bdd368bc2e910523525c54844c5c47dd877f1a0d.camel@math.duke.edu>
  <b855969a3108e7ef9be2e758eb8bd2f3539e5af0.camel@math.duke.edu>
  <CAJCQCtR9feFgGtOZ0Wik2y1oQ69V5z5Q-voFtYPLtnbnbWo7TA@mail.gmail.com>
  <c608faa6a5dc9ec81b894d18c7761dac7a823ab7.camel@math.duke.edu>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+ <270df1b2-0564-53a6-3cb0-e8d4245c6ed6@gmx.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -60,51 +61,51 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <270df1b2-0564-53a6-3cb0-e8d4245c6ed6@gmx.com>
-Date:   Mon, 2 Sep 2019 13:33:27 +0800
+Message-ID: <2cb3f9b8-c265-a421-4c5a-1c92eff8de49@gmx.com>
+Date:   Mon, 2 Sep 2019 14:27:43 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <c608faa6a5dc9ec81b894d18c7761dac7a823ab7.camel@math.duke.edu>
+In-Reply-To: <270df1b2-0564-53a6-3cb0-e8d4245c6ed6@gmx.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="zXkESiiYEzixbz46qyIeyXb7E4ZMKuoGQ"
-X-Provags-ID: V03:K1:aPg72ICp3tgkfpX8gYA6l7ylNMMAq80dCqCPwOg0GrOmcogdjhA
- caN9D9/JeeWLSolvRCYKGrOcDl6/NyQ0PqyEH9OZ5/qej7hv9igjwjWf2HzDdT7dMvx/NEz
- x3J8dbuserXIxqLJD8vFbeRWEtLoEc5/GlNsFiFdalW3XwZIwZA9sNoEeNzHa/4Zfkph39z
- WqvwiX0f4I1v1KjM/8njg==
+ boundary="ErO0aEyhKoX7D4mCB9YA6dmNQjgshvGcb"
+X-Provags-ID: V03:K1:uTxq7fets2pugyQCNxB/5UOdE1qprPHEeYB181rzpwVFYe2l5Co
+ MS+GK4gFszDLY4JmuV74agP+4LpeOze6rX8hQdpSItBZVU2R4brbV1V6NTrLhRllys4b1tG
+ LB+6J/LOx36ij72e5L/z59KozbTgZcBoZTexpvzLo5GIAPV6GbtzUOAzBDmrGiVVWsUsUZb
+ 070AYLQl0OdUY2479jrbA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:caThLRAFzww=:L/OtRZvcCcdP9VZzRVQOIX
- ulW1/FkJqXNyledF5Anu6y8xL9S2/SK6vCxn3Db7aTtxPpjGVgE5Rl1yx/I/KlvxgUON+DSwk
- Q9grXhB1Qf+oEl8K9Yqcev7L1KTtaRVPXESQfVY2mRMxk4ygrQAENHsu7e3ymW10bNPatV/dL
- GLRxjTpZczIctvwSbycDNtgpvZlQvUTGIg9FrG8MHgcu8M0ZVenRqkLfA0kiLukB/GXSEehxm
- 6stAjfy0oi3kGRke9GQJnKHrvrUe59G9IUGvJTBofzfkLHmd1UX/JtwhWBPvP0CKAok47idZC
- XiMjYZzf92xai7SjpwTKXyj33pdSf513kVdt2yybr0ep7LosbfuKHqbBQHas37w0wdvAGEx+I
- MbBGyi86nok7T3mxjg04CiCmVlQ8kJ5WX26YnTH6DBOrb96uNEM0E7oDmRaqCOfR9e2faLR5N
- 4RHCGyU11ydAIFEPYlJKS8tkVHcGXuDWFXAL7qjF9/VNRqzEKFppDkvPRgwAmZj8cweJw+DmG
- VaUmcrQsKO1fgHqmgEw5HBmO1y4dkm50KpNZWxH1OLLOW6GAy33Gzz4DtN3UpET5XabEGU1vO
- 11f61ofd60AZuV12CtgMfg0oOhFeGCNaSOnf6gwKj2jLR2rCv62DfVpb4r2w34iQ1tWafQ8D0
- l+125kv7aAAs1kOlcYJzyo4PZ8d0fiYryQ77w995EMSyqYzvlorpzXGxxnij91IL+iu4HRrGB
- Ceni86/NrU2+A7o17nMYg2KUKlpKcBlSg6L2Xhh3WHu8ZqpQ000tSKesQ0+qE+MaUg8CMUQjB
- DhDlXvWK4z0scZzWn4z2wm30LkpzN/l3bp+v5Ox67Wux6geXLMrWHl/pluAiTtCGAl0BapUC8
- enm6ud1RFfAS9YtGKysJeYIF4xrDmuPtvwoKGTaKy8q7FeC2/WdYlV89ezgYJOwzLOW9niQoH
- EtYdrjwFzh1f4BdOFP6iSngTiYH0xzJbuUhN9+DDuK60bDWIkVfhCpUHR9wog1LIEHsU+tmn8
- Y3rO21Lu61w3O2WUkIcj4onlUlFoxg+NbKZXwprJkRP2NLhGe3dZdXJsE+fvyjO0cFcgVDCa5
- F4RtZeBLAOiSgnPkBd5MVJWdUs4BAMGM67bCRrmbXtX77RjrpILfuIIZvFeCiH/fsTZ7YD7xw
- Q2OKb/92IVnCVtUaza1EZgo7siohnu3tecDZRFTC527dhT8w==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+tDbj1wZv6o=:1NfyT/C3KPSCQUbYJUzNMv
+ HLNJH29KeHno9ddXKMh8RfVrAGUtW8LB/Nzm2XFq72EwIV3SaSPDldm3PLzysYz3GxF+jEoQw
+ XnqoDym6TfrQYP4YnNdOOe0OgY3KQlM9cyMGLQY+HwnI7JOajfHPTTKpGcb65AIPK/9ZVNA1R
+ abHZ2ZYHUM0/RrFC+W3tQSgy5IEjvwiYF9KEE5EmCSeTcD/aqjXEl+K7xpB7F98Pai8MiMEiG
+ PPf7P3OpbrKK0lIeO/JPzOobnffMT032Inc3hF+1+rAqOKEStt3GuuskTohBTs1bcczrnAWCB
+ Prrar6YrsEhtDjkn/xHB5XWtzmUPtLAFgLloYuKJyeOF/7e+Zyc4037a9fsYaGzyc0HWfwRFo
+ nxkdzO81XFQ1ii9Oe0+QxQfXi47+AgMDuT0JXVeiyRcBsYr4tFrYWlg16OF8lyxqcWYYYN9QO
+ kHpXHUcgzINz8RtMPhrePEd/3vd696ziGcXuVstGgZcWyPjL3ViPSyHhzw/LbuMF5ka2vOYiv
+ vYoWX/MQXGd57i4SDT9CuLVXBiR3KzHgVCFmUGMa2B6PDxLH91Lgo65za84vqw5gaxaaXLE/0
+ 6ahAXu6KUJcqeZ5LhlWCdfTsnNThtcT1qlJHL8iIJuzNjOPurEdYaZkIc4pvs9PFa0unCF7JX
+ YnKogsTMhkRJ/cvfZHSSippB5QsBbm+QCJJBicDlxFLiBG6HsIIybdGmvyDd7xkKKEGdw/hka
+ 6CbptM4uwZCUu4EvWrICqpLUCZJ3TRZW9XEQdn5VuPV7aOnZ9egOq0yKaUwkTVWaPvUaMEuKw
+ /e4jCYkNqFCeHsmdxs9+jrPTcJjtGaDuTnwCElGgz2yKvh1xxntVRDtE9J3o+6UtgbRJb0Xzd
+ RB18ZkjZUeE/ox6LvhSqU5DFBWH94OMeXmyugywzrHfegDjav2e77er0yeOKn20OSeZV90Ghp
+ Bc77kUZfY5KBUshAqhiX4hC6KPXOM6M6R0LQj8eZ+q5F21vD0W2ddOgRU0Wk9FKUtd+uczpzp
+ 4kXHS5RT6eNyyURykBL2cojuI+ZAFbcZfip09/3SK70vgU7x2scu/5xbOrZyvHUpYsGQuJ7Pn
+ OLtuCr9YC+OCNLqI4osw4V7AH3LhQcuF9NK0gICE1YTuTX+g4WDjvScXIBhrsX3PbTJnQl4wE
+ dVzaaXmTiJLEdJScZUpAD132L4R1vT3+zFq4wLnq+kszRFXQ==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---zXkESiiYEzixbz46qyIeyXb7E4ZMKuoGQ
-Content-Type: multipart/mixed; boundary="XduRn5wwgBUBmxtyiSjmQFcNIACphZYTu";
+--ErO0aEyhKoX7D4mCB9YA6dmNQjgshvGcb
+Content-Type: multipart/mixed; boundary="Ic5yMNbRflI4PTOUbduufVL1S9QzLyFBI";
  protected-headers="v1"
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 To: Rann Bar-On <rann@math.duke.edu>, Chris Murphy <lists@colorremedies.com>
 Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <270df1b2-0564-53a6-3cb0-e8d4245c6ed6@gmx.com>
+Message-ID: <2cb3f9b8-c265-a421-4c5a-1c92eff8de49@gmx.com>
 Subject: Re: block corruption
 References: <bdd368bc2e910523525c54844c5c47dd877f1a0d.camel@math.duke.edu>
  <98252ab04af29eecf51b6c9ecb7f258df56c93ba.camel@math.duke.edu>
@@ -114,59 +115,77 @@ References: <bdd368bc2e910523525c54844c5c47dd877f1a0d.camel@math.duke.edu>
  <b855969a3108e7ef9be2e758eb8bd2f3539e5af0.camel@math.duke.edu>
  <CAJCQCtR9feFgGtOZ0Wik2y1oQ69V5z5Q-voFtYPLtnbnbWo7TA@mail.gmail.com>
  <c608faa6a5dc9ec81b894d18c7761dac7a823ab7.camel@math.duke.edu>
-In-Reply-To: <c608faa6a5dc9ec81b894d18c7761dac7a823ab7.camel@math.duke.edu>
+ <270df1b2-0564-53a6-3cb0-e8d4245c6ed6@gmx.com>
+In-Reply-To: <270df1b2-0564-53a6-3cb0-e8d4245c6ed6@gmx.com>
 
---XduRn5wwgBUBmxtyiSjmQFcNIACphZYTu
+--Ic5yMNbRflI4PTOUbduufVL1S9QzLyFBI
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-[...]
+
+
+On 2019/9/2 =E4=B8=8B=E5=8D=881:33, Qu Wenruo wrote:
+> [...]
+>>>
+>>> I'm curious if either 2 or 3 are permitted.
+>>>
+>>>
 >>
->> I'm curious if either 2 or 3 are permitted.
->>
+>> Wish I could help, but I already deleted the file. If there's somethin=
+g
+>> I can do to move this forward, I'd be glad to.
 >>
 >=20
-> Wish I could help, but I already deleted the file. If there's something=
-
-> I can do to move this forward, I'd be glad to.
+> Maybe it's too late to mention, in fact "btrfs check" has the ability t=
+o
+> find such problem.
 >=20
+> "btrfs check" has two modes, original mode (the default one) and lowmem=
 
-Maybe it's too late to mention, in fact "btrfs check" has the ability to
-find such problem.
+> mode.
+> The latter is mostly written from scratch, thus it has more strict chec=
+k
+> rules (not to mention it uses less memory while will be much slower as
+> it causes more IO).
+>=20
+> If you're not sure if those inodes are the only offending ones, then yo=
+u
+> can try "btrfs check --mode=3Dlowmem --readonly" to verify.
+>=20
+> The support for original mode will come very soon.
 
-"btrfs check" has two modes, original mode (the default one) and lowmem
-mode.
-The latter is mostly written from scratch, thus it has more strict check
-rules (not to mention it uses less memory while will be much slower as
-it causes more IO).
+Wait for a minute, that report and repair functionality is already added
+in v5.1 btrfs-progs.
 
-If you're not sure if those inodes are the only offending ones, then you
-can try "btrfs check --mode=3Dlowmem --readonly" to verify.
+Are you using some too old btrfs-progs?
 
-The support for original mode will come very soon.
-
-Thanks,
+THanks,
 Qu
 
+>=20
+> Thanks,
+> Qu
+>=20
 
---XduRn5wwgBUBmxtyiSjmQFcNIACphZYTu--
 
---zXkESiiYEzixbz46qyIeyXb7E4ZMKuoGQ
+--Ic5yMNbRflI4PTOUbduufVL1S9QzLyFBI--
+
+--ErO0aEyhKoX7D4mCB9YA6dmNQjgshvGcb
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1sqacACgkQwj2R86El
-/qi5egf/RHTU42xZWM31aFO5EryvzvOPrwR7tSmH7B7oGEMhWqsO1xiShMS5KD/6
-EU9OWaIGZaUWu1SYCFmJ5G46KLhMiDnAxVU1BAPfoRxOKS/ACwA+2Ra6+f9uBzgc
-V5roFyG7dNvkCzPDSgJtcnetiAONJ6kovSA4piHo7NH52LRnpERMGhK7HpIaloDZ
-bxd/zs+zmOLh+ioa1E4sXZVmydPUW55cXFE5gdB4RuMpOPCYezdjPI0ghF2aP/az
-pJKnExKq6S5t42QipCgajQ66WmvLUouT7HZEC2qkXdrtZkv6AbnR+9NcBoxSGmUz
-jLPiBrQ1D6c05E6ysJTvDbJkqbf9Hw==
-=wY43
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl1stl8ACgkQwj2R86El
+/qivUQgAg5Z0JWNGEZ4sD4Jumypky97RinU72rjKtUeTLL199ZwOuBfQe0gnuWw4
+YEtF9H14FzN/2rlc0UxXh1pW8Vxg+lbVjEYFC5f6UfdFYDQFtklf3E7M/nPLcOou
+bhYULVdL6hGlGZ/05CGAVWv7dGWHtcMO5Q+dftnMU2d0TQjo85IzYH+oe/OSxmBQ
+CHwG0/FZnp116KSYe4Odb4XW1N2ri9tuDHRZzg5DOq6Fs6s+WOGhGjWSJVQKeRU1
+68k69JChrQuvnESi77Fcl13m4UJi+j6ishdpGmiXUp2VLhcRMw2X1i+cdsZXDadN
+tJG788T4bi4F2sCbpz8L4ZoGN0fgDA==
+=4dbp
 -----END PGP SIGNATURE-----
 
---zXkESiiYEzixbz46qyIeyXb7E4ZMKuoGQ--
+--ErO0aEyhKoX7D4mCB9YA6dmNQjgshvGcb--
