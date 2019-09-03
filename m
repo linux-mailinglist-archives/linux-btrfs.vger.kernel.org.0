@@ -2,94 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFC6A5FD2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 05:37:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C94A5FA8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 05:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbfICDhp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Sep 2019 23:37:45 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:46874 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbfICDhp (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Sep 2019 23:37:45 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x833ZY17129753;
-        Tue, 3 Sep 2019 03:37:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=50XNFIb8h061K6T8DCq0QS3N4O01GqXcj1NG5px4GVs=;
- b=GUTJYJUMoXH4BodIu3KX9fib8fpg3gxsyf9V2USXVqY3SVW/2wlzZNZrX4b5RycCiOve
- 45X1cQsj4YeB+NWl/98FZgjCe2cK4obGBuwQ0te1uX3wLpywVcxML2nA18JnaCRr/QAY
- BiF8job8ePXLmK3l0IJfLJRm6XjDLiloenNPfHi6ty/FWNmtvdGxp2TkmxzacRo/Wls/
- N8qHZixz/AyDdkMsXOFioHFbn7p+WvH37WwDJ7MLR+XSSHiE6NeLVW1fzvMkeiLtPHfp
- LfV1+b8en1uQSLlxh5Q7USh49OvEGkOx+x2oHedzztRcAkJL3h9BSmss+ekpHFeLhB1w dA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 2usgdg0086-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Sep 2019 03:37:32 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8338FIS044496;
-        Tue, 3 Sep 2019 03:18:45 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2uryv60nce-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Sep 2019 03:18:45 +0000
-Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x833IhfI026999;
-        Tue, 3 Sep 2019 03:18:43 GMT
-Received: from localhost (/10.159.255.57)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 02 Sep 2019 20:18:42 -0700
-Date:   Mon, 2 Sep 2019 20:18:43 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        david@fromorbit.com, riteshh@linux.ibm.com,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Subject: Re: [PATCH 02/15] iomap: Use a IOMAP_COW/srcmap for a
- read-modify-write I/O
-Message-ID: <20190903031843.GC5340@magnolia>
-References: <20190901200836.14959-1-rgoldwyn@suse.de>
- <20190901200836.14959-3-rgoldwyn@suse.de>
- <20190902163104.GB6263@lst.de>
+        id S1726385AbfICDa0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Sep 2019 23:30:26 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:43613 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbfICDaY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Sep 2019 23:30:24 -0400
+Received: by mail-pf1-f193.google.com with SMTP id d15so380860pfo.10;
+        Mon, 02 Sep 2019 20:30:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding:user-agent;
+        bh=qLqPgNPPOtAuqly/y/WrIiw3//xdfCK2UaIc05HwaDc=;
+        b=i9zMLnEndimQEPM23G3jZaulRBWHxJMHfHVyLq3l+6EK7LTME1+lgichvWRKS4c+Bx
+         XisUTod0mLsoEzFl5kHiXekdasvsKpWIeEyLaXCnO4HLWITBfavtVB8A/BeHqGgjlL0z
+         Fl2y0TAlmtIFP0GuMm60GwcepRgOzVr4qwUZOT6+NVw8evZmP93AlCxNmc34P3aRQd+g
+         mv2v4rF7iz+mFe57PygbK7olDzYGBz4aPKWPnYIlsazIh02bmSQZQbu6hYR+Bbli/AH/
+         s9nijMNOSvZPmA+Cc69q9JQMfdlg2qKEndhgLu85FuuuGkUbKUD54ATMw9/MCCuap7ev
+         JSJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding:user-agent;
+        bh=qLqPgNPPOtAuqly/y/WrIiw3//xdfCK2UaIc05HwaDc=;
+        b=ndDkP2sd2Bt29gXqmMzfpaTCbveNdEu+X1rEtNcYdwGLNiHN1gLjV+rFQg3cLoJ2up
+         MkSDIL0sf6wmt102TQZIrjoAnE8QHQr+jyWMPD9VVBs74I2BlowlKoABYR5UjgaoSWg/
+         AvKah82CtD1SBq1Acp9DMO3ukXIJbw8T5ZRvjBCqXal1DncwpRpvAa46UXXEvblLKpgh
+         pYpe7r1sd7DZfuHEZGbAidQfDOYlhR1H769QEHPieKS5MNAaBF1fy2Xee4vjDdjIQaRl
+         8TorpPWRsE7Xq/bD4KPOq/NcRMICeosuvRCaWFuqfD/6xJH+i8/aAJoDjHIKFftldF4P
+         LRuQ==
+X-Gm-Message-State: APjAAAUoWqidT9zrYeP2wG/0CsYVDyQTCuJVFQJqf7FXl0fj+146J1Io
+        YWpF8S3AGXkBDcvyO1yGH9Y=
+X-Google-Smtp-Source: APXvYqxsLgSdmhCiUYEXvMIOSWHbXYJGJ1fy+gfGMw3fPBeAYf2G2r9dHLJ2wFbBeajOcDDx7/Bb2g==
+X-Received: by 2002:a63:6d8d:: with SMTP id i135mr27826429pgc.303.1567481424024;
+        Mon, 02 Sep 2019 20:30:24 -0700 (PDT)
+Received: from LGEARND20B15 ([27.122.242.75])
+        by smtp.gmail.com with ESMTPSA id l123sm21092519pfl.9.2019.09.02.20.30.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Sep 2019 20:30:23 -0700 (PDT)
+Date:   Tue, 3 Sep 2019 12:30:19 +0900
+From:   Austin Kim <austindh.kim@gmail.com>
+To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        austindh.kim@gmail.com
+Subject: [PATCH] btrfs: fix Wmaybe-uninitialized warning
+Message-ID: <20190903033019.GA149622@LGEARND20B15>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190902163104.GB6263@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9368 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1909030034
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9368 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909030037
+Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 02, 2019 at 06:31:04PM +0200, Christoph Hellwig wrote:
-> On Sun, Sep 01, 2019 at 03:08:23PM -0500, Goldwyn Rodrigues wrote:
-> > --- a/include/linux/iomap.h
-> > +++ b/include/linux/iomap.h
-> > @@ -37,6 +37,7 @@ struct vm_fault;
-> >  #define IOMAP_MAPPED	0x03	/* blocks allocated at @addr */
-> >  #define IOMAP_UNWRITTEN	0x04	/* blocks allocated at @addr in unwritten state */
-> >  #define IOMAP_INLINE	0x05	/* data inline in the inode */
-> > +#define IOMAP_COW	0x06	/* copy data from srcmap before writing */
-> 
-> I don't think IOMAP_COW can be a type - it is a flag given that we
-> can do COW operations that allocate normal written extents (e.g. for
-> direct I/O or DAX) and for delayed allocations.
+gcc throws warning message as below:
 
-If iomap_apply always zeros out @srcmap before calling ->iomap_begin, do
-we even need a flag/type code?  Or does it suffice to check that
-srcmap.length > 0 and use it appropriately?
+‘clone_src_i_size’ may be used uninitialized in this function
+[-Wmaybe-uninitialized]
+ #define IS_ALIGNED(x, a)  (((x) & ((typeof(x))(a) - 1)) == 0)
+                       ^
+fs/btrfs/send.c:5088:6: note: ‘clone_src_i_size’ was declared here
+ u64 clone_src_i_size;
+   ^
+The clone_src_i_size is only used as call-by-reference
+in a call to get_inode_info().
 
---D
+Silence the warning by initializing clone_src_i_size to 0.
+
+Signed-off-by: Austin Kim <austindh.kim@gmail.com>
+---
+ fs/btrfs/send.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index f856d6c..197536b 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -5085,7 +5085,7 @@ static int clone_range(struct send_ctx *sctx,
+ 	struct btrfs_path *path;
+ 	struct btrfs_key key;
+ 	int ret;
+-	u64 clone_src_i_size;
++	u64 clone_src_i_size = 0;
+ 
+ 	/*
+ 	 * Prevent cloning from a zero offset with a length matching the sector
+-- 
+2.6.2
+
