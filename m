@@ -2,219 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52A2EA6F1E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 18:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D86BAA7176
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 19:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730704AbfICQ2n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Sep 2019 12:28:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731145AbfICQ2m (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Sep 2019 12:28:42 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD22523950;
-        Tue,  3 Sep 2019 16:28:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567528121;
-        bh=YUuJLB9+ZbZ+SHPzLepDH1/qbV8uMayU5AvVGuDFpNM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ViCRrUOgzfUtOdvflZdSvtDQO//pRHGmFZsDFxLqJzDgRQIhNGlwQKg7+WGcHRvST
-         Wo9wQcFlZcP3cViA07wOpRiWOULJuWPs3t6TZEQ5cZR+FurvN2D9drpmota6h66pMd
-         0XtaEz/2ywG4CE7qM32FKJyf+0D2ePIFLBnEuzlM=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 118/167] Btrfs: fix race between block group removal and block group allocation
-Date:   Tue,  3 Sep 2019 12:24:30 -0400
-Message-Id: <20190903162519.7136-118-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190903162519.7136-1-sashal@kernel.org>
-References: <20190903162519.7136-1-sashal@kernel.org>
+        id S1729746AbfICRPE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Sep 2019 13:15:04 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:35347 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729113AbfICRPE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 3 Sep 2019 13:15:04 -0400
+Received: by mail-pl1-f193.google.com with SMTP id gn20so8160285plb.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Sep 2019 10:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=wzg+gL3ba+m0Il6NeK2a/dpmm1pr4NSURsq6Id0+oFg=;
+        b=GVwyYdp9X6i9LJ+jF65J204XJk9L0/tmJKvbYP6TomG4oeMPDbn0MTpDoV337hCoKp
+         GFZ/yaXs93FqYrR8GiA8n32QvwBcQW2wQ4Pznudps3CdimkSkty7YVP7PGYLB0YOQc0G
+         YfMJNLBvUtu6YkOWGfMoe7Xy0RV7Fsg9u3lejZdjz0YTfa9SnII4WW2qwsCiC4/0iJJm
+         R7PphS/6ORgipn68ihD9MJ7Yi4CDYrjvKMKP0xySzlQGimWkBgUGTJNDVNM/yZmrpIw0
+         NKZo/Ojtd36ZUj0Sll1FhwX9zo+Yz+2UgA7hRyoH1ABMFa9B4u6Ne1sy1COYxyHoDQhK
+         ZMDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=wzg+gL3ba+m0Il6NeK2a/dpmm1pr4NSURsq6Id0+oFg=;
+        b=nZjJvyB5yCYmfop5HcDgQyWdR6Ws0Za5XqoQkyfJl1k5xL0jfXClwXs9B6zqEJl2p4
+         M4v9z9eS+SX8yqKP/Nje8KsZXHiFoQahkBFQl2lWquWldL6318x6p+tAMXYtHRT2dTAj
+         aikemBNFl0ZZxhdjwIWJXcDY5qLJocI/MTsuRK9LvMp70Rt3VDDW9lqrrzgwK0KaftC4
+         egCG7+wUUMoGSq1E5XQCQL2Zr8eVXCYBQcufuXZqrGGjLeGE/eaHISmukWZVFd4mBv76
+         K7L5r9I4i7PHbfDSMVQbXsZjqzbnT6Zn9/R5YsKl6v5jtSwSpx3nxcuHOXfNSd2iFRHX
+         jwRA==
+X-Gm-Message-State: APjAAAWn7+bpv6Y9i2DUaXm2BuuWhDgXE8qZjO5yamAObZoCaYkyfjtT
+        jCi1fZj0xAPTY9x26d1qFhDHRw==
+X-Google-Smtp-Source: APXvYqw10JHONbT8zCvg5QyDa/QomLo5VBNJtKgHX8vWNYLivfN1GolqavwIyCTFCP5Z2CDCfMz0dg==
+X-Received: by 2002:a17:902:2b87:: with SMTP id l7mr29172872plb.226.1567530903060;
+        Tue, 03 Sep 2019 10:15:03 -0700 (PDT)
+Received: from vader ([2620:10d:c090:200::3:6d6d])
+        by smtp.gmail.com with ESMTPSA id x5sm9294589pfi.165.2019.09.03.10.15.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Sep 2019 10:15:02 -0700 (PDT)
+Date:   Tue, 3 Sep 2019 10:14:58 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [RFC PATCH 5/5] Btrfs: add ioctl for directly writing compressed
+ data
+Message-ID: <20190903171458.GA7452@vader>
+References: <cover.1565900769.git.osandov@fb.com>
+ <78747c3028ce91db9856e7fbd98ccbb2609acdc6.1565900769.git.osandov@fb.com>
+ <20190828120650.GZ2752@twin.jikos.cz>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190828120650.GZ2752@twin.jikos.cz>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Aug 28, 2019 at 02:06:50PM +0200, David Sterba wrote:
+> On Thu, Aug 15, 2019 at 02:04:06PM -0700, Omar Sandoval wrote:
+> >  #define BTRFS_IOC_SEND_32 _IOW(BTRFS_IOCTL_MAGIC, 38, \
+> >  			       struct btrfs_ioctl_send_args_32)
+> > +
+> > +struct btrfs_ioctl_compressed_pwrite_args_32 {
+> > +	__u64 offset;		/* in */
+> > +	__u32 compressed_len;	/* in */
+> > +	__u32 orig_len;		/* in */
+> > +	__u32 compress_type;	/* in */
+> > +	__u32 reserved[9];
+> > +	compat_uptr_t buf;	/* in */
+> > +} __attribute__ ((__packed__));
+> > +
+> > +#define BTRFS_IOC_COMPRESSED_PWRITE_32 _IOW(BTRFS_IOCTL_MAGIC, 63, \
+> > +				 struct btrfs_ioctl_compressed_pwrite_args_32)
+> 
+> Note that the _32 is a workaround for a mistake in the send ioctl
+> definitions that slipped trhough. Any pointer in the structure changes
+> the ioctl number on 32bit and 64bit.
+> 
+> But as the raw data ioctl is new there's point to copy the mistake. The
+> alignment and width can be forced eg. like
+> 
+> > +	void __user *buf;	/* in */
+> 
+> 	union {
+> 		void __user *buf;
+> 		__u64 __buf_alignment;
+> 	};
+> 
+> This allows to user buf as a buffer without casts to a intermediate
+> type.
 
-[ Upstream commit 8eaf40c0e24e98899a0f3ac9d25a33aafe13822a ]
+I don't think this works on big-endian architectures. Let's say a 32-bit
+application does:
 
-If a task is removing the block group that currently has the highest start
-offset amongst all existing block groups, there is a short time window
-where it races with a concurrent block group allocation, resulting in a
-transaction abort with an error code of EEXIST.
+struct btrfs_ioctl_compressed_pwrite_args_32 {
+	.buf = 0x12345678,
+};
 
-The following diagram explains the race in detail:
+The pointer will be in the first 4 bytes of the 8-byte union:
 
-      Task A                                                        Task B
+0    1    2    3    4    5    6    7
+0x12 0x34 0x56 0x78 0x00 0x00 0x00 0x00
 
- btrfs_remove_block_group(bg offset X)
-
-   remove_extent_mapping(em offset X)
-     -> removes extent map X from the
-        tree of extent maps
-        (fs_info->mapping_tree), so the
-        next call to find_next_chunk()
-        will return offset X
-
-                                                   btrfs_alloc_chunk()
-                                                     find_next_chunk()
-                                                       --> returns offset X
-
-                                                     __btrfs_alloc_chunk(offset X)
-                                                       btrfs_make_block_group()
-                                                         btrfs_create_block_group_cache()
-                                                           --> creates btrfs_block_group_cache
-                                                               object with a key corresponding
-                                                               to the block group item in the
-                                                               extent, the key is:
-                                                               (offset X, BTRFS_BLOCK_GROUP_ITEM_KEY, 1G)
-
-                                                         --> adds the btrfs_block_group_cache object
-                                                             to the list new_bgs of the transaction
-                                                             handle
-
-                                                   btrfs_end_transaction(trans handle)
-                                                     __btrfs_end_transaction()
-                                                       btrfs_create_pending_block_groups()
-                                                         --> sees the new btrfs_block_group_cache
-                                                             in the new_bgs list of the transaction
-                                                             handle
-                                                         --> its call to btrfs_insert_item() fails
-                                                             with -EEXIST when attempting to insert
-                                                             the block group item key
-                                                             (offset X, BTRFS_BLOCK_GROUP_ITEM_KEY, 1G)
-                                                             because task A has not removed that key yet
-                                                         --> aborts the running transaction with
-                                                             error -EEXIST
-
-   btrfs_del_item()
-     -> removes the block group's key from
-        the extent tree, key is
-        (offset X, BTRFS_BLOCK_GROUP_ITEM_KEY, 1G)
-
-A sample transaction abort trace:
-
-  [78912.403537] ------------[ cut here ]------------
-  [78912.403811] BTRFS: Transaction aborted (error -17)
-  [78912.404082] WARNING: CPU: 2 PID: 20465 at fs/btrfs/extent-tree.c:10551 btrfs_create_pending_block_groups+0x196/0x250 [btrfs]
-  (...)
-  [78912.405642] CPU: 2 PID: 20465 Comm: btrfs Tainted: G        W         5.0.0-btrfs-next-46 #1
-  [78912.405941] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.11.2-0-gf9626ccb91-prebuilt.qemu-project.org 04/01/2014
-  [78912.406586] RIP: 0010:btrfs_create_pending_block_groups+0x196/0x250 [btrfs]
-  (...)
-  [78912.407636] RSP: 0018:ffff9d3d4b7e3b08 EFLAGS: 00010282
-  [78912.407997] RAX: 0000000000000000 RBX: ffff90959a3796f0 RCX: 0000000000000006
-  [78912.408369] RDX: 0000000000000007 RSI: 0000000000000001 RDI: ffff909636b16860
-  [78912.408746] RBP: ffff909626758a58 R08: 0000000000000000 R09: 0000000000000000
-  [78912.409144] R10: ffff9095ff462400 R11: 0000000000000000 R12: ffff90959a379588
-  [78912.409521] R13: ffff909626758ab0 R14: ffff9095036c0000 R15: ffff9095299e1158
-  [78912.409899] FS:  00007f387f16f700(0000) GS:ffff909636b00000(0000) knlGS:0000000000000000
-  [78912.410285] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [78912.410673] CR2: 00007f429fc87cbc CR3: 000000014440a004 CR4: 00000000003606e0
-  [78912.411095] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [78912.411496] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [78912.411898] Call Trace:
-  [78912.412318]  __btrfs_end_transaction+0x5b/0x1c0 [btrfs]
-  [78912.412746]  btrfs_inc_block_group_ro+0xcf/0x160 [btrfs]
-  [78912.413179]  scrub_enumerate_chunks+0x188/0x5b0 [btrfs]
-  [78912.413622]  ? __mutex_unlock_slowpath+0x100/0x2a0
-  [78912.414078]  btrfs_scrub_dev+0x2ef/0x720 [btrfs]
-  [78912.414535]  ? __sb_start_write+0xd4/0x1c0
-  [78912.414963]  ? mnt_want_write_file+0x24/0x50
-  [78912.415403]  btrfs_ioctl+0x17fb/0x3120 [btrfs]
-  [78912.415832]  ? lock_acquire+0xa6/0x190
-  [78912.416256]  ? do_vfs_ioctl+0xa2/0x6f0
-  [78912.416685]  ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
-  [78912.417116]  do_vfs_ioctl+0xa2/0x6f0
-  [78912.417534]  ? __fget+0x113/0x200
-  [78912.417954]  ksys_ioctl+0x70/0x80
-  [78912.418369]  __x64_sys_ioctl+0x16/0x20
-  [78912.418812]  do_syscall_64+0x60/0x1b0
-  [78912.419231]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-  [78912.419644] RIP: 0033:0x7f3880252dd7
-  (...)
-  [78912.420957] RSP: 002b:00007f387f16ed68 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-  [78912.421426] RAX: ffffffffffffffda RBX: 000055f5becc1df0 RCX: 00007f3880252dd7
-  [78912.421889] RDX: 000055f5becc1df0 RSI: 00000000c400941b RDI: 0000000000000003
-  [78912.422354] RBP: 0000000000000000 R08: 00007f387f16f700 R09: 0000000000000000
-  [78912.422790] R10: 00007f387f16f700 R11: 0000000000000246 R12: 0000000000000000
-  [78912.423202] R13: 00007ffda49c266f R14: 0000000000000000 R15: 00007f388145e040
-  [78912.425505] ---[ end trace eb9bfe7c426fc4d3 ]---
-
-Fix this by calling remove_extent_mapping(), at btrfs_remove_block_group(),
-only at the very end, after removing the block group item key from the
-extent tree (and removing the free space tree entry if we are using the
-free space tree feature).
-
-Fixes: 04216820fe83d5 ("Btrfs: fix race between fs trimming and block group remove/allocation")
-CC: stable@vger.kernel.org # 4.4+
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/extent-tree.c | 34 ++++++++++++++++++----------------
- 1 file changed, 18 insertions(+), 16 deletions(-)
-
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 0cc800d22a081..88c939f7aad96 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -10478,22 +10478,6 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
- 	}
- 	spin_unlock(&block_group->lock);
- 
--	if (remove_em) {
--		struct extent_map_tree *em_tree;
--
--		em_tree = &fs_info->mapping_tree.map_tree;
--		write_lock(&em_tree->lock);
--		/*
--		 * The em might be in the pending_chunks list, so make sure the
--		 * chunk mutex is locked, since remove_extent_mapping() will
--		 * delete us from that list.
--		 */
--		remove_extent_mapping(em_tree, em);
--		write_unlock(&em_tree->lock);
--		/* once for the tree */
--		free_extent_map(em);
--	}
--
- 	mutex_unlock(&fs_info->chunk_mutex);
- 
- 	ret = remove_block_group_free_space(trans, block_group);
-@@ -10510,6 +10494,24 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
- 		goto out;
- 
- 	ret = btrfs_del_item(trans, root, path);
-+	if (ret)
-+		goto out;
-+
-+	if (remove_em) {
-+		struct extent_map_tree *em_tree;
-+
-+		em_tree = &fs_info->mapping_tree.map_tree;
-+		write_lock(&em_tree->lock);
-+		/*
-+		 * The em might be in the pending_chunks list, so make sure the
-+		 * chunk mutex is locked, since remove_extent_mapping() will
-+		 * delete us from that list.
-+		 */
-+		remove_extent_mapping(em_tree, em);
-+		write_unlock(&em_tree->lock);
-+		/* once for the tree */
-+		free_extent_map(em);
-+	}
- out:
- 	btrfs_free_path(path);
- 	return ret;
--- 
-2.20.1
-
+But, the 64-bit kernel will read buf as 0x1234567800000000. Let me know
+if I messed up my analysis, but I think we need the compat stuff.
