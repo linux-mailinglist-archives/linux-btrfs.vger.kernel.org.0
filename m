@@ -2,34 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B9AF2A6EA5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 18:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F026CA6EE0
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 18:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730936AbfICQ1p (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Sep 2019 12:27:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49238 "EHLO mail.kernel.org"
+        id S1731325AbfICQ3O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Sep 2019 12:29:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51900 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730512AbfICQ1o (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Sep 2019 12:27:44 -0400
+        id S1730543AbfICQ3O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Sep 2019 12:29:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DFF14238C5;
-        Tue,  3 Sep 2019 16:27:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD0C223878;
+        Tue,  3 Sep 2019 16:29:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567528063;
-        bh=K2zEh8HBO4tXSDQGVU8dQEtEWMQXYEZ9OIiPIbCR+Mg=;
+        s=default; t=1567528153;
+        bh=aGJe2y9Umr0W/BxjMHiEkbskoXmGiz/uQ/rgvE8G7so=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nHPLRYM/rzO/oTp06xz4RfAa7Bvye2PMHIjFf8aSHTqK4Ctn0VCVKsyjTklt1q68n
-         6EuHIKZp37zrbTKWsQ7Hit2dNKRYfwPMyN0MlqfAiB67XuCilAXXkoSddiH5mwBdA0
-         fsnxqnTP5YCM3KmIivIATLAUmfo5hWfYxk1VjBxM=
+        b=cXZ6paLKg1v1S4ymMi/mg6U2qvJVEI7vY2PaaGA9VPKwe16/0csKsBK0UQ6UdG9xC
+         mv1OsvvnYmw1QD3Bh+3FRnor434/nDfPRBgb3jq0uERHGT2mwBGqttsZImT50jos8N
+         drLa+bPBtVF62yE+CgXJNZnEL8pV7ecbQENYFOMk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>, Sasha Levin <sashal@kernel.org>,
-        linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 078/167] btrfs: scrub: move scrub_setup_ctx allocation out of device_list_mutex
-Date:   Tue,  3 Sep 2019 12:23:50 -0400
-Message-Id: <20190903162519.7136-78-sashal@kernel.org>
+Cc:     Johannes Thumshirn <jthumshirn@suse.de>,
+        Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 141/167] btrfs: correctly validate compression type
+Date:   Tue,  3 Sep 2019 12:24:53 -0400
+Message-Id: <20190903162519.7136-141-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190903162519.7136-1-sashal@kernel.org>
 References: <20190903162519.7136-1-sashal@kernel.org>
@@ -42,109 +44,169 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: David Sterba <dsterba@suse.com>
+From: Johannes Thumshirn <jthumshirn@suse.de>
 
-[ Upstream commit 0e94c4f45d14cf89d1f40c91b0a8517e791672a7 ]
+[ Upstream commit aa53e3bfac7205fb3a8815ac1c937fd6ed01b41e ]
 
-The scrub context is allocated with GFP_KERNEL and called from
-btrfs_scrub_dev under the fs_info::device_list_mutex. This is not safe
-regarding reclaim that could try to flush filesystem data in order to
-get the memory. And the device_list_mutex is held during superblock
-commit, so this would cause a lockup.
+Nikolay reported the following KASAN splat when running btrfs/048:
 
-Move the alocation and initialization before any changes that require
-the mutex.
+[ 1843.470920] ==================================================================
+[ 1843.471971] BUG: KASAN: slab-out-of-bounds in strncmp+0x66/0xb0
+[ 1843.472775] Read of size 1 at addr ffff888111e369e2 by task btrfs/3979
 
+[ 1843.473904] CPU: 3 PID: 3979 Comm: btrfs Not tainted 5.2.0-rc3-default #536
+[ 1843.475009] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+[ 1843.476322] Call Trace:
+[ 1843.476674]  dump_stack+0x7c/0xbb
+[ 1843.477132]  ? strncmp+0x66/0xb0
+[ 1843.477587]  print_address_description+0x114/0x320
+[ 1843.478256]  ? strncmp+0x66/0xb0
+[ 1843.478740]  ? strncmp+0x66/0xb0
+[ 1843.479185]  __kasan_report+0x14e/0x192
+[ 1843.479759]  ? strncmp+0x66/0xb0
+[ 1843.480209]  kasan_report+0xe/0x20
+[ 1843.480679]  strncmp+0x66/0xb0
+[ 1843.481105]  prop_compression_validate+0x24/0x70
+[ 1843.481798]  btrfs_xattr_handler_set_prop+0x65/0x160
+[ 1843.482509]  __vfs_setxattr+0x71/0x90
+[ 1843.483012]  __vfs_setxattr_noperm+0x84/0x130
+[ 1843.483606]  vfs_setxattr+0xac/0xb0
+[ 1843.484085]  setxattr+0x18c/0x230
+[ 1843.484546]  ? vfs_setxattr+0xb0/0xb0
+[ 1843.485048]  ? __mod_node_page_state+0x1f/0xa0
+[ 1843.485672]  ? _raw_spin_unlock+0x24/0x40
+[ 1843.486233]  ? __handle_mm_fault+0x988/0x1290
+[ 1843.486823]  ? lock_acquire+0xb4/0x1e0
+[ 1843.487330]  ? lock_acquire+0xb4/0x1e0
+[ 1843.487842]  ? mnt_want_write_file+0x3c/0x80
+[ 1843.488442]  ? debug_lockdep_rcu_enabled+0x22/0x40
+[ 1843.489089]  ? rcu_sync_lockdep_assert+0xe/0x70
+[ 1843.489707]  ? __sb_start_write+0x158/0x200
+[ 1843.490278]  ? mnt_want_write_file+0x3c/0x80
+[ 1843.490855]  ? __mnt_want_write+0x98/0xe0
+[ 1843.491397]  __x64_sys_fsetxattr+0xba/0xe0
+[ 1843.492201]  ? trace_hardirqs_off_thunk+0x1a/0x1c
+[ 1843.493201]  do_syscall_64+0x6c/0x230
+[ 1843.493988]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[ 1843.495041] RIP: 0033:0x7fa7a8a7707a
+[ 1843.495819] Code: 48 8b 0d 21 de 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 be 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ee dd 2b 00 f7 d8 64 89 01 48
+[ 1843.499203] RSP: 002b:00007ffcb73bca38 EFLAGS: 00000202 ORIG_RAX: 00000000000000be
+[ 1843.500210] RAX: ffffffffffffffda RBX: 00007ffcb73bda9d RCX: 00007fa7a8a7707a
+[ 1843.501170] RDX: 00007ffcb73bda9d RSI: 00000000006dc050 RDI: 0000000000000003
+[ 1843.502152] RBP: 00000000006dc050 R08: 0000000000000000 R09: 0000000000000000
+[ 1843.503109] R10: 0000000000000002 R11: 0000000000000202 R12: 00007ffcb73bda91
+[ 1843.504055] R13: 0000000000000003 R14: 00007ffcb73bda82 R15: ffffffffffffffff
+
+[ 1843.505268] Allocated by task 3979:
+[ 1843.505771]  save_stack+0x19/0x80
+[ 1843.506211]  __kasan_kmalloc.constprop.5+0xa0/0xd0
+[ 1843.506836]  setxattr+0xeb/0x230
+[ 1843.507264]  __x64_sys_fsetxattr+0xba/0xe0
+[ 1843.507886]  do_syscall_64+0x6c/0x230
+[ 1843.508429]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+[ 1843.509558] Freed by task 0:
+[ 1843.510188] (stack is not available)
+
+[ 1843.511309] The buggy address belongs to the object at ffff888111e369e0
+                which belongs to the cache kmalloc-8 of size 8
+[ 1843.514095] The buggy address is located 2 bytes inside of
+                8-byte region [ffff888111e369e0, ffff888111e369e8)
+[ 1843.516524] The buggy address belongs to the page:
+[ 1843.517561] page:ffff88813f478d80 refcount:1 mapcount:0 mapping:ffff88811940c300 index:0xffff888111e373b8 compound_mapcount: 0
+[ 1843.519993] flags: 0x4404000010200(slab|head)
+[ 1843.520951] raw: 0004404000010200 ffff88813f48b008 ffff888119403d50 ffff88811940c300
+[ 1843.522616] raw: ffff888111e373b8 000000000016000f 00000001ffffffff 0000000000000000
+[ 1843.524281] page dumped because: kasan: bad access detected
+
+[ 1843.525936] Memory state around the buggy address:
+[ 1843.526975]  ffff888111e36880: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.528479]  ffff888111e36900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.530138] >ffff888111e36980: fc fc fc fc fc fc fc fc fc fc fc fc 02 fc fc fc
+[ 1843.531877]                                                        ^
+[ 1843.533287]  ffff888111e36a00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.534874]  ffff888111e36a80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.536468] ==================================================================
+
+This is caused by supplying a too short compression value ('lz') in the
+test-case and comparing it to 'lzo' with strncmp() and a length of 3.
+strncmp() read past the 'lz' when looking for the 'o' and thus caused an
+out-of-bounds read.
+
+Introduce a new check 'btrfs_compress_is_valid_type()' which not only
+checks the user-supplied value against known compression types, but also
+employs checks for too short values.
+
+Reported-by: Nikolay Borisov <nborisov@suse.com>
+Fixes: 272e5326c783 ("btrfs: prop: fix vanished compression property after failed set")
+CC: stable@vger.kernel.org # 5.1+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/scrub.c | 30 ++++++++++++++++++------------
- 1 file changed, 18 insertions(+), 12 deletions(-)
+ fs/btrfs/compression.c | 16 ++++++++++++++++
+ fs/btrfs/compression.h |  1 +
+ fs/btrfs/props.c       |  6 +-----
+ 3 files changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index efaad3e1b295a..56c4d2236484f 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3837,13 +3837,18 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 		return -EINVAL;
- 	}
- 
-+	/* Allocate outside of device_list_mutex */
-+	sctx = scrub_setup_ctx(fs_info, is_dev_replace);
-+	if (IS_ERR(sctx))
-+		return PTR_ERR(sctx);
- 
- 	mutex_lock(&fs_info->fs_devices->device_list_mutex);
- 	dev = btrfs_find_device(fs_info, devid, NULL, NULL);
- 	if (!dev || (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) &&
- 		     !is_dev_replace)) {
- 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
--		return -ENODEV;
-+		ret = -ENODEV;
-+		goto out_free_ctx;
- 	}
- 
- 	if (!is_dev_replace && !readonly &&
-@@ -3851,7 +3856,8 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
- 		btrfs_err_in_rcu(fs_info, "scrub: device %s is not writable",
- 				rcu_str_deref(dev->name));
--		return -EROFS;
-+		ret = -EROFS;
-+		goto out_free_ctx;
- 	}
- 
- 	mutex_lock(&fs_info->scrub_lock);
-@@ -3859,7 +3865,8 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &dev->dev_state)) {
- 		mutex_unlock(&fs_info->scrub_lock);
- 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
--		return -EIO;
-+		ret = -EIO;
-+		goto out_free_ctx;
- 	}
- 
- 	btrfs_dev_replace_read_lock(&fs_info->dev_replace);
-@@ -3869,7 +3876,8 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 		btrfs_dev_replace_read_unlock(&fs_info->dev_replace);
- 		mutex_unlock(&fs_info->scrub_lock);
- 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
--		return -EINPROGRESS;
-+		ret = -EINPROGRESS;
-+		goto out_free_ctx;
- 	}
- 	btrfs_dev_replace_read_unlock(&fs_info->dev_replace);
- 
-@@ -3877,16 +3885,9 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	if (ret) {
- 		mutex_unlock(&fs_info->scrub_lock);
- 		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
--		return ret;
-+		goto out_free_ctx;
- 	}
- 
--	sctx = scrub_setup_ctx(fs_info, is_dev_replace);
--	if (IS_ERR(sctx)) {
--		mutex_unlock(&fs_info->scrub_lock);
--		mutex_unlock(&fs_info->fs_devices->device_list_mutex);
--		scrub_workers_put(fs_info);
--		return PTR_ERR(sctx);
--	}
- 	sctx->readonly = readonly;
- 	dev->scrub_ctx = sctx;
- 	mutex_unlock(&fs_info->fs_devices->device_list_mutex);
-@@ -3939,6 +3940,11 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 
- 	scrub_put_ctx(sctx);
- 
-+	return ret;
-+
-+out_free_ctx:
-+	scrub_free_ctx(sctx);
-+
- 	return ret;
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 9bfa66592aa7b..c71e534ca7ef6 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -42,6 +42,22 @@ const char* btrfs_compress_type2str(enum btrfs_compression_type type)
+ 	return NULL;
  }
  
++bool btrfs_compress_is_valid_type(const char *str, size_t len)
++{
++	int i;
++
++	for (i = 1; i < ARRAY_SIZE(btrfs_compress_types); i++) {
++		size_t comp_len = strlen(btrfs_compress_types[i]);
++
++		if (len < comp_len)
++			continue;
++
++		if (!strncmp(btrfs_compress_types[i], str, comp_len))
++			return true;
++	}
++	return false;
++}
++
+ static int btrfs_decompress_bio(struct compressed_bio *cb);
+ 
+ static inline int compressed_bio_size(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index ddda9b80bf204..f97d90a1fa531 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -127,6 +127,7 @@ extern const struct btrfs_compress_op btrfs_lzo_compress;
+ extern const struct btrfs_compress_op btrfs_zstd_compress;
+ 
+ const char* btrfs_compress_type2str(enum btrfs_compression_type type);
++bool btrfs_compress_is_valid_type(const char *str, size_t len);
+ 
+ int btrfs_compress_heuristic(struct inode *inode, u64 start, u64 end);
+ 
+diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+index 61d22a56c0ba4..6980a0e13f18e 100644
+--- a/fs/btrfs/props.c
++++ b/fs/btrfs/props.c
+@@ -366,11 +366,7 @@ int btrfs_subvol_inherit_props(struct btrfs_trans_handle *trans,
+ 
+ static int prop_compression_validate(const char *value, size_t len)
+ {
+-	if (!strncmp("lzo", value, 3))
+-		return 0;
+-	else if (!strncmp("zlib", value, 4))
+-		return 0;
+-	else if (!strncmp("zstd", value, 4))
++	if (btrfs_compress_is_valid_type(value, len))
+ 		return 0;
+ 
+ 	return -EINVAL;
 -- 
 2.20.1
 
