@@ -2,107 +2,264 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 623F4A63C9
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 10:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC39A6470
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 10:56:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728150AbfICIYT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Sep 2019 04:24:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53194 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728128AbfICIYS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Sep 2019 04:24:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id CC3B1B63F
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2019 08:24:16 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/4] btrfs-progs: tests/fsck: Add new images for inode mode repair functionality
-Date:   Tue,  3 Sep 2019 16:24:07 +0800
-Message-Id: <20190903082407.13927-5-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190903082407.13927-1-wqu@suse.com>
-References: <20190903082407.13927-1-wqu@suse.com>
-MIME-Version: 1.0
+        id S1728312AbfICI4X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Sep 2019 04:56:23 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:60938 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725888AbfICI4W (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Sep 2019 04:56:22 -0400
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x838q4iE092234;
+        Tue, 3 Sep 2019 04:55:12 -0400
+Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2usmcc1njb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Sep 2019 04:55:11 -0400
+Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
+        by ppma02dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x838pn2k017636;
+        Tue, 3 Sep 2019 08:55:10 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma02dal.us.ibm.com with ESMTP id 2uqgh6wn5c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 03 Sep 2019 08:55:10 +0000
+Received: from b01ledav006.gho.pok.ibm.com (b01ledav006.gho.pok.ibm.com [9.57.199.111])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x838t95R54460892
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 3 Sep 2019 08:55:09 GMT
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A8464AC059;
+        Tue,  3 Sep 2019 08:55:09 +0000 (GMT)
+Received: from b01ledav006.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 32736AC05B;
+        Tue,  3 Sep 2019 08:55:07 +0000 (GMT)
+Received: from [9.124.31.200] (unknown [9.124.31.200])
+        by b01ledav006.gho.pok.ibm.com (Postfix) with ESMTP;
+        Tue,  3 Sep 2019 08:55:06 +0000 (GMT)
+Message-ID: <1567500907.5082.12.camel@abdul>
+Subject: [mainline][BUG][PPC][btrfs][bisected 00801a] kernel BUG at
+ fs/btrfs/locking.c:71!
+From:   Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+To:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>, nborisov@suse.com,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org,
+        chandan <chandan@linux.vnet.ibm.com>, josef@toxicpanda.com,
+        mpe <mpe@ellerman.id.au>, sachinp <sachinp@linux.vnet.ibm.com>,
+        Brian King <brking@linux.vnet.ibm.com>
+Date:   Tue, 03 Sep 2019 14:25:07 +0530
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu1 
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-03_01:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1909030094
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add new test image for imode repair in subvolume trees.
+Greeting's
 
-Also rename the existing test case 039-bad-free-space-cache-inode-mode
-to 039-bad-inode-mode, since now we can fix all bad imode.
+Mainline kernel panics with LTP/fs_fill-dir tests for btrfs file system on my P9 box running mainline kernel 5.3.0-rc5
 
-And add the beacon file for lowmem test.
+BUG_ON was first introduced by below commit
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- .../039-bad-inode-mode/.lowmem_repairable        |   0
- .../bad_free_space_cache_imode.raw.xz}           | Bin
- .../bad_regular_file_imode.img.xz                | Bin 0 -> 2060 bytes
- 3 files changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 tests/fsck-tests/039-bad-inode-mode/.lowmem_repairable
- rename tests/fsck-tests/{039-bad-free-space-cache-inode-mode/test.raw.xz => 039-bad-inode-mode/bad_free_space_cache_imode.raw.xz} (100%)
- create mode 100644 tests/fsck-tests/039-bad-inode-mode/bad_regular_file_imode.img.xz
+commit 00801ae4bb2be5f5af46502ef239ac5f4b536094
+Author: David Sterba <dsterba@suse.com>
+Date:   Thu May 2 16:53:47 2019 +0200
 
-diff --git a/tests/fsck-tests/039-bad-inode-mode/.lowmem_repairable b/tests/fsck-tests/039-bad-inode-mode/.lowmem_repairable
-new file mode 100644
-index 000000000000..e69de29bb2d1
-diff --git a/tests/fsck-tests/039-bad-free-space-cache-inode-mode/test.raw.xz b/tests/fsck-tests/039-bad-inode-mode/bad_free_space_cache_imode.raw.xz
-similarity index 100%
-rename from tests/fsck-tests/039-bad-free-space-cache-inode-mode/test.raw.xz
-rename to tests/fsck-tests/039-bad-inode-mode/bad_free_space_cache_imode.raw.xz
-diff --git a/tests/fsck-tests/039-bad-inode-mode/bad_regular_file_imode.img.xz b/tests/fsck-tests/039-bad-inode-mode/bad_regular_file_imode.img.xz
-new file mode 100644
-index 0000000000000000000000000000000000000000..bbdd17de1fb9e59d26d2b0502fff326f019be011
-GIT binary patch
-literal 2060
-zcmV+n2=n*-H+ooF000E$*0e?f03iV!0000G&sfah5B~?rT>wRyj;C3^v%$$4d1oRm
-zhA1@4!K86y=JF%i%5FwXCo1%)6gh&*5vGw=-Bj#y{x65M*-1+G4!lf`bW+BqyX<nI
-zX>0#KDM;y(0T@FT;0J$&unGzx5VPj~*lxWv?pH4e3>)mmv4?lb0ocO~C8+S@`kgat
-z91vZ;`v*9#EUF{=4NuC!E&oT`>E^~9dAS)tCUIor_@+y!<YSP>^G{j*i;LP1iJ3HZ
-zhJHIrdnKRlC=rZGe3RyEt5&kZu;FB**-BspaqNBpGT}!X^+6~Y3bJ;(UPEFMhAq+w
-zlILfo586KJT53zTWcBehL$SZAS8IYWDIoueT3wZWIGy!CsO@@ag2c833P~k7qvO{O
-zF{y99tegz900OE+h4%!{IpqjVN4nb<;*|=aFX_DOnItK<l5wBY4?Jn+rX#hq6ACV^
-zzy}R5JPb>mGi}Vh1wv5ddUBexpxV>&nQ!6;C5YM!ofWvH^HoQzwcz!%{r`zl%&Tr+
-zI*Joz5WZ2XIS;$uV>0`ZQ0lI<G~+|%%h3CcjOP*Q)-!p1?s&Wc{(dM!(IC{UvLkGv
-zxpV_Emu6~0v!GHHxr0ob;;LpM$JF?&H;&d|umK4k$~odM=`WX#_DOHaa{g&j&4fA#
-zD}rHi)}Zk4?Wxd<L5#6<o{T6E0+>$%+Sfe0;%dehBQdp18OfsmF<4f3N=o_**GS2%
-zxwKW$JcC0H97RoRkwZ4r5!NiI?O|Vwj)=U(o-$t#EbiwCO<?^1VkT}ECpy;+VD6fw
-zgW_jd{(NT4^0ptVU?h}G^wjEWh(K+<q~wdk7t&KbCQNaXi+B8hpx>x~5%BX<dlv$K
-z==)s!J7x&BAVR3^>&r8)W}5)Gk?jtGoiw%)fpQT?)=|fti!8$9S-$>BU}`H5*xycG
-zV@sq5nuWMb8C9X(e(B4zIp5WtHmmmM^VPgzaKx1*z4$DXGVUbB&?h_{hmG35m(BhF
-zIJHz)7dT%kyn!v5qmjYb;hd(*q&D@-IBBQ_%IM{U4P0K{ANn0KHB?Cun)R28fzw$i
-z)Nv7&;F{omy*<$vpc}Mw$Zrw@oMe;aSl>PDFoTZZw8WA`hvuIu*2zTN+-oH&P}aA9
-zE@J=fvLIYM{)|4h3|t(lFK4DdpE_h`L}g;tY<?v5z(K4eW(-65*QVVxC}PkSG+Q(>
-zp@IvIq83TK7Cu%efxZc5-BF|+_H3^8^O=1kyx<Qn*KFm#e|<t;KG8yI4$l^zU*%Km
-zxeIB3Gx5(@p>QXhJww)q0g_}55`xsdcWe1{(Iohyh@IN!!mtp5y(+Uwe%tM>13W@F
-zMs|@j``W4CEJS)W0ylf&8d=JFw1E5D@+-7&lxdW(Cv3R}Mvu0X(~8Sj^<N9=Z0~~u
-z>J$tG6lZJfB$wbXVN=HJjy#ch5-!2l<iD3*ZhI^@g_Zc`C&CJ$Z>8|LBft<ARU8)|
-zz;y;ai}bD+G8d2|!fBi~O@>(pm;z*|J|=aH9O~1)c#G@N3hP(Y^g5t3<`r|2ij}IC
-z29yEU`W12ApHuTY8CHL$QJ;ENl3iAvsMCO~tW}YVelOso6!VPND7pQWfWyd{>=>+Y
-z{V}{KXqtMAfWaX7xgeW_4wFGgFl9uSVi2d8DjMve%9l;m^#&{=+U993Mg~fr_BktZ
-z-2~61uNMNp5`dsSV>AB2lHM61C75J&sW*8zaj3LJ=z)T-mo)|ZJl%Y}qL;Bx?0(5f
-zUMUX%MeZ1<Lq^Gtbf4}HmpH%p;II1_4aA<OC*jPRmE}St;Rt~w+Gv|uIgo$f$Lecc
-z?nHVcG9gVAj>N6A(U)uvA$)U+iu`;38hXZ|D^!{(NKMDUK^Hg_4LRbCgD)0~^}jnU
-zNkES-dD|N9WrZ~RyRmuEC$MbO7@u`o>X92HiH^PA*AIzl;WFPpGkhnuh$r7c7P*eO
-z<yCbrKge#qAEl|xN2toOGPCOG0-A9D%g=P%y7kfy17gd-jZzxflTBq|Ctk?boWGkU
-z0gN7_^L@PUdsKWd^=Zar#}KJ1n#3~|_Rt2O85ho2m`2lcLwi%IyC2^pBBP7vr&htq
-z8<<MvK8tQw^^f-TXgqa}0batcF~ZuJNh|5PAVIvcETxbk*R`xK??-mxfPeJJCV|oP
-z>8$;CRw@4nMlwN-^Vlq?Auh*t*(b9HZQl8OL#h&1@0x@5MW38n5DJ)e9F??$47by;
-zpW_6%iNOK^u~92%wFLV5PIetrV23i^IDi4<ba%=gQ{NJ|6_lT^r{*~n7{&pz1G?>o
-z$VbC7U_;WALf6$n`=3l>Jgm+dg^m-k2^k+=6-ZJdx`H6>bi||dv&=m%z&P>VqaKSz
-zMqC{6maun1Jdy)}yZ(!I$};ywt@h4YfRm2$#9S~}4}`@UPVn)n;pZ$uI}rgWpR;|X
-zEf><ioEs~-Tm;tsr`|^wKaGAtZ_&Tu+$|~$Ey2XtZBLI+ca?cHHSp!Lw{N|zFmLZC
-z@vF0yGxls@bPTA#Qc~d`I1Xm@9|50%Zz(pP#wE}XKC03pXEh&LidD52YmYc*kk}~g
-zKLtwh*04AM(45<!VI6K!sarjD0hoYABdHI}yj})3m1(_Yverl$<Fsw1a{)b`Dr8RK
-qm|_3`0000$H3dx@SJO%W0p$;XAOHa7IhfM1#Ao{g000001X)^qgznh@
+    btrfs: switch extent_buffer write_locks from atomic to int
+    
+    The write_locks is either 0 or 1 and always updated under the lock,
+    so we don't need the atomic_t semantics.
+    
+    Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+    Signed-off-by: David Sterba <dsterba@suse.com>
 
-literal 0
-HcmV?d00001
+diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+index 2706676279..98fccce420 100644
+--- a/fs/btrfs/locking.c
++++ b/fs/btrfs/locking.c
+@@ -58,17 +58,17 @@ static void btrfs_assert_tree_read_locked(struct
+extent_buffer *eb)
+ 
+ static void btrfs_assert_tree_write_locks_get(struct extent_buffer *eb)
+ {
+-       atomic_inc(&eb->write_locks);
++       eb->write_locks++;
+ }
+ 
+ static void btrfs_assert_tree_write_locks_put(struct extent_buffer *eb)
+ {
+-       atomic_dec(&eb->write_locks);
++       eb->write_locks--;
+ }
+ 
+ void btrfs_assert_tree_locked(struct extent_buffer *eb)
+ {
+-       BUG_ON(!atomic_read(&eb->write_locks));
++       BUG_ON(!eb->write_locks);
+ }
+ 
+
+tests logs:
+avocado-misc-tests/io/disk/ltp_fs.py:LtpFs.test_fs_run;fs_fill-dir-ext3-61cd:  [ 3376.022096] EXT4-fs (nvme0n1): mounting ext3 file system using the ext4 subsystem
+EXT4-fs (nvme0n1): mounted filesystem with ordered data mode. Opts: (null)
+EXT4-fs (loop1): mounting ext2 file system using the ext4 subsystem
+EXT4-fs (loop1): mounted filesystem without journal. Opts: (null)
+EXT4-fs (loop1): mounting ext3 file system using the ext4 subsystem
+EXT4-fs (loop1): mounted filesystem with ordered data mode. Opts: (null)
+EXT4-fs (loop1): mounted filesystem with ordered data mode. Opts: (null)
+XFS (loop1): Mounting V5 Filesystem
+XFS (loop1): Ending clean mount
+XFS (loop1): Unmounting Filesystem
+BTRFS: device fsid 7c08f81b-6642-4a06-9182-2884e80d56ee devid 1 transid 5 /dev/loop1
+BTRFS info (device loop1): disk space caching is enabled
+BTRFS info (device loop1): has skinny extents
+BTRFS info (device loop1): enabling ssd optimizations
+BTRFS info (device loop1): creating UUID tree
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/locking.c:71!
+Oops: Exception in kernel mode, sig: 5 [#1]
+LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Modules linked in: fuse(E) vfat(E) fat(E) btrfs(E) xor(E)
+zstd_decompress(E) zstd_compress(E) raid6_pq(E) xfs(E) raid0(E)
+linear(E) dm_round_robin(E) dm_queue_length(E) dm_service_time(E)
+dm_multipath(E) loop(E) rpadlpar_io(E) rpaphp(E) lpfc(E) bnx2x(E)
+xt_CHECKSUM(E) xt_MASQUERADE(E) tun(E) bridge(E) stp(E) llc(E) kvm_pr(E)
+kvm(E) tcp_diag(E) udp_diag(E) inet_diag(E) unix_diag(E)
+af_packet_diag(E) netlink_diag(E) ip6t_rpfilter(E) ipt_REJECT(E)
+nf_reject_ipv4(E) ip6t_REJECT(E) nf_reject_ipv6(E) xt_conntrack(E)
+ip_set(E) nfnetlink(E) ebtable_nat(E) ebtable_broute(E) ip6table_nat(E)
+ip6table_mangle(E) ip6table_security(E) ip6table_raw(E) iptable_nat(E)
+nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E)
+iptable_mangle(E) iptable_security(E) iptable_raw(E) ebtable_filter(E)
+ebtables(E) ip6table_filter(E) ip6_tables(E) iptable_filter(E) sunrpc(E)
+raid10(E) xts(E) pseries_rng(E) vmx_crypto(E) sg(E) uio_pdrv_genirq(E)
+uio(E) binfmt_misc(E) sch_fq_codel(E) ip_tables(E)
+ ext4(E) mbcache(E) jbd2(E) sr_mod(E) cdrom(E) sd_mod(E) ibmvscsi(E)
+scsi_transport_srp(E) ibmveth(E) nvmet_fc(E) nvmet(E) nvme_fc(E)
+nvme_fabrics(E) scsi_transport_fc(E) mdio(E) libcrc32c(E) ptp(E)
+pps_core(E) nvme(E) nvme_core(E) dm_mirror(E) dm_region_hash(E)
+dm_log(E) dm_mod(E) [last unloaded: lpfc]
+CPU: 14 PID: 1803 Comm: kworker/u32:8 Tainted: G            E     5.3.0-rc5-autotest-autotest #1
+Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+NIP:  c00800000164dd70 LR: c00800000164df00 CTR: c000000000a817a0
+REGS: c00000000260b5d0 TRAP: 0700   Tainted: G            E      (5.3.0-rc5-autotest-autotest)
+MSR:  8000000102029033 <SF,VEC,EE,ME,IR,DR,RI,LE,TM[E]>  CR: 22444082  XER: 00000000
+CFAR: c00800000164defc IRQMASK: 0
+GPR00: c0080000015c55f4 c00000000260b860 c008000001703b00 c000000267a29af0
+GPR04: 0000000000000000 0000000000000001 0000000000000000 0000000000000000
+GPR08: 0000000000000000 0000000000000001 0000000000000000 0000000000000004
+GPR12: 0000000000004000 c00000001ec58e00 0000000000000000 0000000000000000
+GPR16: 0000000000010000 0000000000000004 0000000000000001 0000000000000001
+GPR20: 0000000000000000 0000000000000001 000000003e0f83e1 c00000025a7cbef0
+GPR24: c00000000260ba26 0000000040000000 c0000000014a26e8 0000000000000003
+GPR28: 0000000000000004 c00000025f2010a0 c000000267a29af0 0000000000000000
+NIP [c00800000164dd70] btrfs_assert_tree_locked+0x10/0x20 [btrfs]
+LR [c00800000164df00] btrfs_set_lock_blocking_write+0x60/0x100 [btrfs]
+Call Trace:
+[c00000000260b860] [c00000000260b8e0] 0xc00000000260b8e0 (unreliable)
+[c00000000260b890] [c0080000015c55f4] btrfs_set_path_blocking+0xb4/0xc0 [btrfs]
+[c00000000260b8e0] [c0080000015cb808] btrfs_search_slot+0x8e8/0xb80 [btrfs]
+[c00000000260ba00] [c0080000015eb348] btrfs_csum_file_blocks+0x518/0x6e0 [btrfs]
+[c00000000260bad0] [c0080000015fd34c] add_pending_csums+0x8c/0x100 [btrfs]
+[c00000000260bb20] [c0080000016093b0] btrfs_finish_ordered_io+0x550/0xe00 [btrfs]
+[c00000000260bc10] [c008000001641aa4] normal_work_helper+0xf4/0x5a0 [btrfs]
+[c00000000260bc80] [c00000000013c8a0] process_one_work+0x1c0/0x490
+[c00000000260bd20] [c00000000013cbf8] worker_thread+0x88/0x570
+[c00000000260bdb0] [c0000000001444d8] kthread+0x158/0x1a0
+[c00000000260be20] [c00000000000b760] ret_from_kernel_thread+0x5c/0x7c
+Instruction dump:
+81430108 7d490034 5529d97e 69290001 0b090000 394a0001 91430108 4e800020
+81230114 7d290034 5529d97e 79290020 <0b090000> 4e800020 60000000 60420000
+---[ end trace 7890aa8e373f5bfa ]---
+
+Kernel panic - not syncing: Fatal exception
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+------------[ cut here ]------------
+WARNING: CPU: 14 PID: 1803 at drivers/tty/vt/vt.c:4256 do_unblank_screen+0x1ec/0x260
+Modules linked in: fuse(E) vfat(E) fat(E) btrfs(E) xor(E)
+zstd_decompress(E) zstd_compress(E) raid6_pq(E) xfs(E) raid0(E)
+linear(E) dm_round_robin(E) dm_queue_length(E) dm_service_time(E)
+dm_multipath(E) loop(E) rpadlpar_io(E) rpaphp(E) lpfc(E) bnx2x(E)
+xt_CHECKSUM(E) xt_MASQUERADE(E) tun(E) bridge(E) stp(E) llc(E) kvm_pr(E)
+kvm(E) tcp_diag(E) udp_diag(E) inet_diag(E) unix_diag(E)
+af_packet_diag(E) netlink_diag(E) ip6t_rpfilter(E) ipt_REJECT(E)
+nf_reject_ipv4(E) ip6t_REJECT(E) nf_reject_ipv6(E) xt_conntrack(E)
+ip_set(E) nfnetlink(E) ebtable_nat(E) ebtable_broute(E) ip6table_nat(E)
+ip6table_mangle(E) ip6table_security(E) ip6table_raw(E) iptable_nat(E)
+nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E)
+iptable_mangle(E) iptable_security(E) iptable_raw(E) ebtable_filter(E)
+ebtables(E) ip6table_filter(E) ip6_tables(E) iptable_filter(E) sunrpc(E)
+raid10(E) xts(E) pseries_rng(E) vmx_crypto(E) sg(E) uio_pdrv_genirq(E)
+uio(E) binfmt_misc(E) sch_fq_codel(E) ip_tables(E)
+ ext4(E) mbcache(E) jbd2(E) sr_mod(E) cdrom(E) sd_mod(E) ibmvscsi(E)
+scsi_transport_srp(E) ibmveth(E) nvmet_fc(E) nvmet(E) nvme_fc(E)
+nvme_fabrics(E) scsi_transport_fc(E) mdio(E) libcrc32c(E) ptp(E)
+pps_core(E) nvme(E) nvme_core(E) dm_mirror(E) dm_region_hash(E)
+dm_log(E) dm_mod(E) [last unloaded: lpfc]
+CPU: 14 PID: 1803 Comm: kworker/u32:8 Tainted: G      D     E     5.3.0-rc5-autotest-autotest #1
+Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+NIP:  c00000000064f79c LR: c00000000064f798 CTR: 000000000083cf60
+REGS: c00000000260b0c0 TRAP: 0700   Tainted: G      D     E      (5.3.0-rc5-autotest-autotest)
+MSR:  8000000000021033 <SF,ME,IR,DR,RI,LE>  CR: 42442022  XER: 00000005
+CFAR: c0000000001998f4 IRQMASK: 3
+GPR00: c00000000064f798 c00000000260b350 c0000000012f2000 0000000000000024
+GPR04: 0000000000000001 0000000000000000 00041dab23bc8187 00000000000000ee
+GPR08: 0000000000000001 0000000000000007 0000000000000006 00000000000012cc
+GPR12: 0000000000002000 c00000001ec58e00 0000000000000000 0000000000000000
+GPR16: 0000000000010000 0000000000000004 0000000000000001 0000000000000001
+GPR20: 0000000000000000 0000000000000001 000000003e0f83e1 c00000025a7cbef0
+GPR24: c00000000260ba26 0000000040000000 c0000000011c2678 c0000000014c6720
+GPR28: c0000000014c66f8 0000000000000000 c000000000c9cbc0 c0000000015d5170
+NIP [c00000000064f79c] do_unblank_screen+0x1ec/0x260
+LR [c00000000064f798] do_unblank_screen+0x1e8/0x260
+Call Trace:
+[c00000000260b350] [c00000000064f798] do_unblank_screen+0x1e8/0x260 (unreliable)
+[c00000000260b3d0] [c000000000112fcc] panic+0x1d4/0x3f8
+[c00000000260b460] [c00000000002a8b8] oops_end+0x1b8/0x1c0
+[c00000000260b4e0] [c00000000002d26c] program_check_exception+0x2ac/0x3b0
+[c00000000260b560] [c000000000008e14] program_check_common+0x134/0x140
+--- interrupt: 700 at btrfs_assert_tree_locked+0x10/0x20 [btrfs]
+    LR = btrfs_set_lock_blocking_write+0x60/0x100 [btrfs]
+[c00000000260b860] [c00000000260b8e0] 0xc00000000260b8e0 (unreliable)
+[c00000000260b890] [c0080000015c55f4] btrfs_set_path_blocking+0xb4/0xc0 [btrfs]
+[c00000000260b8e0] [c0080000015cb808] btrfs_search_slot+0x8e8/0xb80 [btrfs]
+[c00000000260ba00] [c0080000015eb348] btrfs_csum_file_blocks+0x518/0x6e0 [btrfs]
+[c00000000260bad0] [c0080000015fd34c] add_pending_csums+0x8c/0x100 [btrfs]
+[c00000000260bb20] [c0080000016093b0] btrfs_finish_ordered_io+0x550/0xe00 [btrfs]
+[c00000000260bc10] [c008000001641aa4] normal_work_helper+0xf4/0x5a0 [btrfs]
+[c00000000260bc80] [c00000000013c8a0] process_one_work+0x1c0/0x490
+[c00000000260bd20] [c00000000013cbf8] worker_thread+0x88/0x570
+[c00000000260bdb0] [c0000000001444d8] kthread+0x158/0x1a0
+[c00000000260be20] [c00000000000b760] ret_from_kernel_thread+0x5c/0x7c
+Instruction dump:
+60420000 4bb44c49 60000000 2fa30000 409efe80 813f0000 2f890000 409efe74
+3c62ff9b 38639d78 4bb4a121 60000000 <0fe00000> 4bfffe5c 60000000 60000000
+---[ end trace 7890aa8e373f5bfb ]---
+Rebooting in 10 seconds..
+
+!!! 01FT700� FCode, Copyright (c) 2000-2017 Emulex !!!  Version 4.03a12
+
 
 -- 
-2.23.0
+Regard's
+
+Abdul Haleem
+IBM Linux Technology Centre
+
+
 
