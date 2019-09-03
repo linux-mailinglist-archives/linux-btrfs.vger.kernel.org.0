@@ -2,56 +2,68 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF80A6CEB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 17:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CE6CA6D9D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 18:09:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729357AbfICPeO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Sep 2019 11:34:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54212 "EHLO mx1.suse.de"
+        id S1729169AbfICQJY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Sep 2019 12:09:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45758 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725782AbfICPeO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Sep 2019 11:34:14 -0400
+        id S1728679AbfICQJX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Sep 2019 12:09:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 67496B0BE;
-        Tue,  3 Sep 2019 15:34:13 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B9EF9AE74;
+        Tue,  3 Sep 2019 16:09:22 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EB328DA876; Tue,  3 Sep 2019 17:34:29 +0200 (CEST)
-Date:   Tue, 3 Sep 2019 17:34:29 +0200
+        id 1B30BDA876; Tue,  3 Sep 2019 18:09:43 +0200 (CEST)
+Date:   Tue, 3 Sep 2019 18:09:43 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Adam Borowski <kilobyte@angband.pl>
-Cc:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-Subject: Re: docbook45 is gone
-Message-ID: <20190903153429.GD2752@twin.jikos.cz>
+To:     Johannes Thumshirn <jthumshirn@suse.de>
+Cc:     David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs-progs: fix zstd compression test on a kernel
+ without ztsd support
+Message-ID: <20190903160942.GE2752@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Adam Borowski <kilobyte@angband.pl>,
-        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
-References: <20190903081704.GA6277@angband.pl>
+Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <20190903122721.9865-1-jthumshirn@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190903081704.GA6277@angband.pl>
+In-Reply-To: <20190903122721.9865-1-jthumshirn@suse.de>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 03, 2019 at 10:17:04AM +0200, Adam Borowski wrote:
-> I'm afraid that asciidoctor 2.0 dropped support for docbook45.  The
-> explanation given is here:
-> https://github.com/asciidoctor/asciidoctor/issues/3005
+On Tue, Sep 03, 2019 at 02:27:21PM +0200, Johannes Thumshirn wrote:
+> The test-case 'misc-tests/025-zstd-compression' is failing on a kernel
+> without zstd compression support.
 > 
-> This makes btrfs-progs fail to build unless docs are off, with:
-> asciidoctor: FAILED: missing converter for backend 'docbook45'. Processing aborted.
+> Check if zstd compression is supported by the kernel and if not skip the
+> test-case.
 > 
-> Naively bumping the backend to docbook5 makes the output fail to pass
-> validation.
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> ---
+>  tests/misc-tests/025-zstd-compression/test.sh | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/tests/misc-tests/025-zstd-compression/test.sh b/tests/misc-tests/025-zstd-compression/test.sh
+> index 22795d27500e..f9ff1d089fd5 100755
+> --- a/tests/misc-tests/025-zstd-compression/test.sh
+> +++ b/tests/misc-tests/025-zstd-compression/test.sh
+> @@ -6,6 +6,11 @@ source "$TEST_TOP/common"
+>  check_prereq btrfs
+>  check_global_prereq md5sum
+>  
+> +if ! [ -f "/sys/fs/btrfs/features/compress_zstd" ]; then
+> +       _not_run "kernel does not support zstd compression feature"
 
-As a workaround you can do
-
-XMLTO_EXTRA += --skip-validation
-
-it builds and the result looks correct from the few samples I tried.
-Proper conversion to docbook5 will need to happen anyway, I'll open an
-issue for 5.3 target. Thanks for the report.
+Sorry, I misled you with this check. The test needs to detect zstd
+support in 'btrfs restore'. The only thing I see right now is to grep
+for zstd in output of 'ldd', because unlike for btrfs-convert, the help
+does not list the optional features.
