@@ -2,36 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3829A7050
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 18:39:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0CAA704D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 18:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731404AbfICQiB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Sep 2019 12:38:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47238 "EHLO mail.kernel.org"
+        id S1730981AbfICQiA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Sep 2019 12:38:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47316 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730617AbfICQ0X (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Sep 2019 12:26:23 -0400
+        id S1730151AbfICQ0Z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Sep 2019 12:26:25 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 77B1C238CD;
-        Tue,  3 Sep 2019 16:26:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E955D23950;
+        Tue,  3 Sep 2019 16:26:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1567527982;
-        bh=ClO/bzDIhLULGWnpUsHftP3fg5PSJ+uoh92az27gGyo=;
+        s=default; t=1567527984;
+        bh=UkABqeVisaqgrxZN86IYbyP7ntuQZtygLb/rJADdP10=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HBmA00I9XkZo6h7TqjneVvk7mIibSb4lLK9IZG82sphmA0Mi22k5Q2LxzC8vLCLwy
-         GUhTGh03Eb8ODNLjsw9xgV4F405iS5W89wr69GsYA1ZngXfT1q1wrWRLvuPmiuzs4X
-         kwvSEsp5La3r0uAcdy/6xW6zCs+inyTkCIS8ecnA=
+        b=uLjYCPntUQ/eNj9zwq/smjKcmxjhdC8UOUW5aov/wUdNOa22FnOSy4MyldVnHZdC1
+         D/TrzIkGRbwFEwq1PYDpWnTkTG3kVlDSF8Id+9uwljMAoJT3fh1B7SVZxD9CG7k3qx
+         VSVYLLJBypwe4NKH4UobdumIyEjVaiuM5Xhof9u8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 037/167] Btrfs: fix deadlock with memory reclaim during scrub
-Date:   Tue,  3 Sep 2019 12:23:09 -0400
-Message-Id: <20190903162519.7136-37-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 039/167] btrfs: Fix error handling in btrfs_cleanup_ordered_extents
+Date:   Tue,  3 Sep 2019 12:23:11 -0400
+Message-Id: <20190903162519.7136-39-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20190903162519.7136-1-sashal@kernel.org>
 References: <20190903162519.7136-1-sashal@kernel.org>
@@ -44,125 +44,131 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+From: Nikolay Borisov <nborisov@suse.com>
 
-[ Upstream commit a5fb11429167ee6ddeeacc554efaf5776b36433a ]
+[ Upstream commit d1051d6ebf8ef3517a5a3cf82bba8436d190f1c2 ]
 
-When a transaction commit starts, it attempts to pause scrub and it blocks
-until the scrub is paused. So while the transaction is blocked waiting for
-scrub to pause, we can not do memory allocation with GFP_KERNEL from scrub,
-otherwise we risk getting into a deadlock with reclaim.
+Running btrfs/124 in a loop hung up on me sporadically with the
+following call trace:
 
-Checking for scrub pause requests is done early at the beginning of the
-while loop of scrub_stripe() and later in the loop, scrub_extent() and
-scrub_raid56_parity() are called, which in turn call scrub_pages() and
-scrub_pages_for_parity() respectively. These last two functions do memory
-allocations using GFP_KERNEL. Same problem could happen while scrubbing
-the super blocks, since it calls scrub_pages().
+	btrfs           D    0  5760   5324 0x00000000
+	Call Trace:
+	 ? __schedule+0x243/0x800
+	 schedule+0x33/0x90
+	 btrfs_start_ordered_extent+0x10c/0x1b0 [btrfs]
+	 ? wait_woken+0xa0/0xa0
+	 btrfs_wait_ordered_range+0xbb/0x100 [btrfs]
+	 btrfs_relocate_block_group+0x1ff/0x230 [btrfs]
+	 btrfs_relocate_chunk+0x49/0x100 [btrfs]
+	 btrfs_balance+0xbeb/0x1740 [btrfs]
+	 btrfs_ioctl_balance+0x2ee/0x380 [btrfs]
+	 btrfs_ioctl+0x1691/0x3110 [btrfs]
+	 ? lockdep_hardirqs_on+0xed/0x180
+	 ? __handle_mm_fault+0x8e7/0xfb0
+	 ? _raw_spin_unlock+0x24/0x30
+	 ? __handle_mm_fault+0x8e7/0xfb0
+	 ? do_vfs_ioctl+0xa5/0x6e0
+	 ? btrfs_ioctl_get_supported_features+0x30/0x30 [btrfs]
+	 do_vfs_ioctl+0xa5/0x6e0
+	 ? entry_SYSCALL_64_after_hwframe+0x3e/0xbe
+	 ksys_ioctl+0x3a/0x70
+	 __x64_sys_ioctl+0x16/0x20
+	 do_syscall_64+0x60/0x1b0
+	 entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-We also can not have any of the worker tasks, created by the scrub task,
-doing GFP_KERNEL allocations, because before pausing, the scrub task waits
-for all the worker tasks to complete (also done at scrub_stripe()).
+This happens because during page writeback it's valid for
+writepage_delalloc to instantiate a delalloc range which doesn't belong
+to the page currently being written back.
 
-So make sure GFP_NOFS is used for the memory allocations because at any
-time a scrub pause request can happen from another task that started to
-commit a transaction.
+The reason this case is valid is due to find_lock_delalloc_range
+returning any available range after the passed delalloc_start and
+ignoring whether the page under writeback is within that range.
 
-Fixes: 58c4e173847a ("btrfs: scrub: use GFP_KERNEL on the submission path")
-CC: stable@vger.kernel.org # 4.6+
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
+In turn ordered extents (OE) are always created for the returned range
+from find_lock_delalloc_range. If, however, a failure occurs while OE
+are being created then the clean up code in btrfs_cleanup_ordered_extents
+will be called.
+
+Unfortunately the code in btrfs_cleanup_ordered_extents doesn't consider
+the case of such 'foreign' range being processed and instead it always
+assumes that the range OE are created for belongs to the page. This
+leads to the first page of such foregin range to not be cleaned up since
+it's deliberately missed and skipped by the current cleaning up code.
+
+Fix this by correctly checking whether the current page belongs to the
+range being instantiated and if so adjsut the range parameters passed
+for cleaning up. If it doesn't, then just clean the whole OE range
+directly.
+
+Fixes: 524272607e88 ("btrfs: Handle delalloc error correctly to avoid ordered extent hang")
+CC: stable@vger.kernel.org # 4.14+
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/btrfs/scrub.c | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
+ fs/btrfs/inode.c | 29 ++++++++++++++++++++---------
+ 1 file changed, 20 insertions(+), 9 deletions(-)
 
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index 4bcc275f76128..5a2d10ba747f7 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -322,6 +322,7 @@ static struct full_stripe_lock *insert_full_stripe_lock(
- 	struct rb_node *parent = NULL;
- 	struct full_stripe_lock *entry;
- 	struct full_stripe_lock *ret;
-+	unsigned int nofs_flag;
- 
- 	lockdep_assert_held(&locks_root->lock);
- 
-@@ -339,8 +340,17 @@ static struct full_stripe_lock *insert_full_stripe_lock(
- 		}
- 	}
- 
--	/* Insert new lock */
-+	/*
-+	 * Insert new lock.
-+	 *
-+	 * We must use GFP_NOFS because the scrub task might be waiting for a
-+	 * worker task executing this function and in turn a transaction commit
-+	 * might be waiting the scrub task to pause (which needs to wait for all
-+	 * the worker tasks to complete before pausing).
-+	 */
-+	nofs_flag = memalloc_nofs_save();
- 	ret = kmalloc(sizeof(*ret), GFP_KERNEL);
-+	memalloc_nofs_restore(nofs_flag);
- 	if (!ret)
- 		return ERR_PTR(-ENOMEM);
- 	ret->logical = fstripe_logical;
-@@ -1622,8 +1632,19 @@ static int scrub_add_page_to_wr_bio(struct scrub_ctx *sctx,
- 	mutex_lock(&sctx->wr_lock);
- again:
- 	if (!sctx->wr_curr_bio) {
-+		unsigned int nofs_flag;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index bfacce295ef1e..98c535ae038da 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -110,17 +110,17 @@ static void __endio_write_update_ordered(struct inode *inode,
+  * extent_clear_unlock_delalloc() to clear both the bits EXTENT_DO_ACCOUNTING
+  * and EXTENT_DELALLOC simultaneously, because that causes the reserved metadata
+  * to be released, which we want to happen only when finishing the ordered
+- * extent (btrfs_finish_ordered_io()). Also note that the caller of
+- * btrfs_run_delalloc_range already does proper cleanup for the first page of
+- * the range, that is, it invokes the callback writepage_end_io_hook() for the
+- * range of the first page.
++ * extent (btrfs_finish_ordered_io()).
+  */
+ static inline void btrfs_cleanup_ordered_extents(struct inode *inode,
+-						 const u64 offset,
+-						 const u64 bytes)
++						 struct page *locked_page,
++						 u64 offset, u64 bytes)
+ {
+ 	unsigned long index = offset >> PAGE_SHIFT;
+ 	unsigned long end_index = (offset + bytes - 1) >> PAGE_SHIFT;
++	u64 page_start = page_offset(locked_page);
++	u64 page_end = page_start + PAGE_SIZE - 1;
 +
-+		/*
-+		 * We must use GFP_NOFS because the scrub task might be waiting
-+		 * for a worker task executing this function and in turn a
-+		 * transaction commit might be waiting the scrub task to pause
-+		 * (which needs to wait for all the worker tasks to complete
-+		 * before pausing).
-+		 */
-+		nofs_flag = memalloc_nofs_save();
- 		sctx->wr_curr_bio = kzalloc(sizeof(*sctx->wr_curr_bio),
- 					      GFP_KERNEL);
-+		memalloc_nofs_restore(nofs_flag);
- 		if (!sctx->wr_curr_bio) {
- 			mutex_unlock(&sctx->wr_lock);
- 			return -ENOMEM;
-@@ -3775,6 +3796,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	struct scrub_ctx *sctx;
- 	int ret;
- 	struct btrfs_device *dev;
-+	unsigned int nofs_flag;
+ 	struct page *page;
  
- 	if (btrfs_fs_closing(fs_info))
- 		return -EINVAL;
-@@ -3878,6 +3900,16 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	atomic_inc(&fs_info->scrubs_running);
- 	mutex_unlock(&fs_info->scrub_lock);
- 
+ 	while (index <= end_index) {
+@@ -131,8 +131,18 @@ static inline void btrfs_cleanup_ordered_extents(struct inode *inode,
+ 		ClearPagePrivate2(page);
+ 		put_page(page);
+ 	}
+-	return __endio_write_update_ordered(inode, offset + PAGE_SIZE,
+-					    bytes - PAGE_SIZE, false);
++
 +	/*
-+	 * In order to avoid deadlock with reclaim when there is a transaction
-+	 * trying to pause scrub, make sure we use GFP_NOFS for all the
-+	 * allocations done at btrfs_scrub_pages() and scrub_pages_for_parity()
-+	 * invoked by our callees. The pausing request is done when the
-+	 * transaction commit starts, and it blocks the transaction until scrub
-+	 * is paused (done at specific points at scrub_stripe() or right above
-+	 * before incrementing fs_info->scrubs_running).
++	 * In case this page belongs to the delalloc range being instantiated
++	 * then skip it, since the first page of a range is going to be
++	 * properly cleaned up by the caller of run_delalloc_range
 +	 */
-+	nofs_flag = memalloc_nofs_save();
- 	if (!is_dev_replace) {
- 		/*
- 		 * by holding device list mutex, we can
-@@ -3890,6 +3922,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
++	if (page_start >= offset && page_end <= (offset + bytes - 1)) {
++		offset += PAGE_SIZE;
++		bytes -= PAGE_SIZE;
++	}
++
++	return __endio_write_update_ordered(inode, offset, bytes, false);
+ }
  
- 	if (!ret)
- 		ret = scrub_enumerate_chunks(sctx, dev, start, end);
-+	memalloc_nofs_restore(nofs_flag);
+ static int btrfs_dirty_inode(struct inode *inode);
+@@ -1629,7 +1639,8 @@ int btrfs_run_delalloc_range(void *private_data, struct page *locked_page,
+ 					   write_flags);
+ 	}
+ 	if (ret)
+-		btrfs_cleanup_ordered_extents(inode, start, end - start + 1);
++		btrfs_cleanup_ordered_extents(inode, locked_page, start,
++					      end - start + 1);
+ 	return ret;
+ }
  
- 	wait_event(sctx->list_wait, atomic_read(&sctx->bios_in_flight) == 0);
- 	atomic_dec(&fs_info->scrubs_running);
 -- 
 2.20.1
 
