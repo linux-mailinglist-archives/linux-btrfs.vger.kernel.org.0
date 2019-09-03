@@ -2,86 +2,64 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71CE6A63C4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 10:23:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73E61A63C5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 10:24:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728109AbfICIX0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Sep 2019 04:23:26 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:40920 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726631AbfICIX0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Sep 2019 04:23:26 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 268E5308FEDF;
-        Tue,  3 Sep 2019 08:23:26 +0000 (UTC)
-Received: from localhost (unknown [10.43.2.12])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C32E55D9E1;
-        Tue,  3 Sep 2019 08:23:25 +0000 (UTC)
-Date:   Tue, 3 Sep 2019 10:23:23 +0200
-From:   Stanislaw Gruszka <sgruszka@redhat.com>
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs-progs: print procentage of used space
-Message-ID: <20190903082322.GA3298@redhat.com>
-References: <1567070045-10592-1-git-send-email-sgruszka@redhat.com>
- <20190902183919.GZ2752@twin.jikos.cz>
+        id S1726840AbfICIYN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Sep 2019 04:24:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53106 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726452AbfICIYN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Sep 2019 04:24:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6DB61AE07
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2019 08:24:12 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/4] btrfs-progs: check: Repair invalid inode mode in subvolume trees
+Date:   Tue,  3 Sep 2019 16:24:03 +0800
+Message-Id: <20190903082407.13927-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190902183919.GZ2752@twin.jikos.cz>
-User-Agent: Mutt/1.5.20 (2009-12-10)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Tue, 03 Sep 2019 08:23:26 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 02, 2019 at 08:39:19PM +0200, David Sterba wrote:
-> On Thu, Aug 29, 2019 at 11:14:05AM +0200, Stanislaw Gruszka wrote:
-> > This patch adds -p option for 'fi df' and 'fi show' commands to print
-> > procentate of used space. Output with the option will look like on
-> > example below:
-> > 
-> > Data, single: total=43.99GiB, used=37.25GiB (84.7%)
-> > System, single: total=4.00MiB, used=12.00KiB (0.3%)
-> > Metadata, single: total=1.01GiB, used=511.23MiB (49.5%)
-> > GlobalReserve, single: total=92.50MiB, used=0.00B (0.0%)
-> > 
-> > I considered to change the prints by default without extra option,
-> > but not sure if that would not break existing scripts that could parse
-> > the output.
-> 
-> Would it be sufficient for your usecase to print the % values in the
-> 'btrfs fi usage' command?
->
-> After the summary, the's listing of the chunks with the same values and
-> slightly different format:
-> 
->   Data,single: Size:296.00GiB, Used:166.99GiB
-> 
->   Metadata,single: Size:5.00GiB, Used:2.74GiB
-> 
->   System,single: Size:32.00MiB, Used:48.00KiB
-> 
-> 
-> For reference, this is from 'fi df':
-> 
->   Data, single: total=296.00GiB, used=166.99GiB
->   System, single: total=32.00MiB, used=48.00KiB
->   Metadata, single: total=5.00GiB, used=2.74GiB
->   GlobalReserve, single: total=368.48MiB, used=0.00B
-> 
-> I'd rather not extend the output of 'fi df' as this was supposed to be a
-> debugging tool and 'fi usage' is gives better and more complete
-> overview, so the % seem more logical to be put there.
+Before this patch, btrfs check can only repair bad free space cache
+inode mode (as it was the first case detected by tree-checker and reported)
 
-It would be sufficient for me to print percentage in 'fi usage' command.
-I assume without extra -p option, just change the default output ?
+But now what may happen finally happened, we have user reorting bad
+inode mode in subvolumes trees.
 
-What you think about adding percentage option to 'fi show'? It's not
-super needed, but I somehow got use to have that information from
-standard df tool.
+Although the reported get the fs fixed by removing the offending old
+files, it's still a bad thing that "btrfs check" can't fix it.
 
-Stanislaw
+This patch will bring the repair functionality to all inodes, along with
+needed test image.
+
+Qu Wenruo (4):
+  btrfs-progs: check/common: Make repair_imode_common() to handle inodes
+    in subvolume trees
+  btrfs-progs: check/lowmem: Repair bad imode early
+  btrfs-progs: check/original: Fix inode mode in subvolume trees
+  btrfs-progs: tests/fsck: Add new images for inode mode repair
+    functionality
+
+ check/main.c                                  |  32 ++++--
+ check/mode-common.c                           |  96 +++++++++++++++---
+ check/mode-common.h                           |   2 +
+ check/mode-lowmem.c                           |  39 +++++++
+ .../039-bad-inode-mode/.lowmem_repairable     |   0
+ .../bad_free_space_cache_imode.raw.xz}        | Bin
+ .../bad_regular_file_imode.img.xz             | Bin 0 -> 2060 bytes
+ 7 files changed, 147 insertions(+), 22 deletions(-)
+ create mode 100644 tests/fsck-tests/039-bad-inode-mode/.lowmem_repairable
+ rename tests/fsck-tests/{039-bad-free-space-cache-inode-mode/test.raw.xz => 039-bad-inode-mode/bad_free_space_cache_imode.raw.xz} (100%)
+ create mode 100644 tests/fsck-tests/039-bad-inode-mode/bad_regular_file_imode.img.xz
+
+-- 
+2.23.0
+
