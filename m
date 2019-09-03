@@ -2,55 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F56A680F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 14:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765F5A6892
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 14:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728288AbfICMFo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Sep 2019 08:05:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34786 "EHLO mx1.suse.de"
+        id S1728122AbfICM1Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Sep 2019 08:27:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51874 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726936AbfICMFo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Sep 2019 08:05:44 -0400
+        id S1726631AbfICM1Y (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Sep 2019 08:27:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4662FAF30;
-        Tue,  3 Sep 2019 12:05:43 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9564ADA8CD; Tue,  3 Sep 2019 14:06:03 +0200 (CEST)
-Date:   Tue, 3 Sep 2019 14:06:03 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
-Message-ID: <20190903120603.GB2752@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190628022611.2844-1-anand.jain@oracle.com>
- <20190703132158.GV20977@twin.jikos.cz>
- <e2ab1be9-8b83-987f-0d88-c1f5547060d4@oracle.com>
- <51c42306-b4ae-a243-ac96-fb3acb1a317c@oracle.com>
- <20190902162230.GY2752@twin.jikos.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190902162230.GY2752@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        by mx1.suse.de (Postfix) with ESMTP id 42713AB91;
+        Tue,  3 Sep 2019 12:27:23 +0000 (UTC)
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: [PATCH] btrfs-progs: fix zstd compression test on a kernel without ztsd support
+Date:   Tue,  3 Sep 2019 14:27:21 +0200
+Message-Id: <20190903122721.9865-1-jthumshirn@suse.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 02, 2019 at 06:22:30PM +0200, David Sterba wrote:
-> On Mon, Sep 02, 2019 at 04:01:56PM +0800, Anand Jain wrote:
-> > 
-> > David,
-> > 
-> >   I don't see this patch is integrated. Can you please integrated this 
-> > patch thanks.
-> 
-> I don't know why but the patch got lost somewhere, adding to devel
-> again.
+The test-case 'misc-tests/025-zstd-compression' is failing on a kernel
+without zstd compression support.
 
-Not lost, but dropped, misc-tests/021 fails. So dropped again, please
-fix it and test before posting again. Thanks.
+Check if zstd compression is supported by the kernel and if not skip the
+test-case.
+
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+---
+ tests/misc-tests/025-zstd-compression/test.sh | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/tests/misc-tests/025-zstd-compression/test.sh b/tests/misc-tests/025-zstd-compression/test.sh
+index 22795d27500e..f9ff1d089fd5 100755
+--- a/tests/misc-tests/025-zstd-compression/test.sh
++++ b/tests/misc-tests/025-zstd-compression/test.sh
+@@ -6,6 +6,11 @@ source "$TEST_TOP/common"
+ check_prereq btrfs
+ check_global_prereq md5sum
+ 
++if ! [ -f "/sys/fs/btrfs/features/compress_zstd" ]; then
++       _not_run "kernel does not support zstd compression feature"
++       exit
++fi
++
+ # Extract the test image
+ image=$(extract_image compress.raw.xz)
+ 
+-- 
+2.16.4
+
