@@ -2,91 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D457A5F04
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 03:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFC6A5FD2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 05:37:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726014AbfICB7y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 2 Sep 2019 21:59:54 -0400
-Received: from mailgw-02.dd24.net ([193.46.215.43]:37052 "EHLO
-        mailgw-02.dd24.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbfICB7y (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Sep 2019 21:59:54 -0400
-Received: from mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-01.live.igb.homer.key-systems.net [192.168.1.26])
-        by mailgw-02.dd24.net (Postfix) with ESMTP id 93F9C5FDB6
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2019 01:59:52 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at
-        mailpolicy-01.live.igb.homer.key-systems.net
-Received: from smtp.dd24.net ([192.168.1.36])
-        by mailpolicy-01.live.igb.homer.key-systems.net (mailpolicy-01.live.igb.homer.key-systems.net [192.168.1.25]) (amavisd-new, port 10236)
-        with ESMTP id P3oFrMpvDfKX for <linux-btrfs@vger.kernel.org>;
-        Tue,  3 Sep 2019 01:59:50 +0000 (UTC)
-Received: from heisenberg.fritz.box (ppp-188-174-103-80.dynamic.mnet-online.de [188.174.103.80])
-        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtp.dd24.net (Postfix) with ESMTPSA
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2019 01:59:50 +0000 (UTC)
-Message-ID: <3d9835a24d818c8e0aae09be628ed96262d8f3df.camel@scientia.net>
-Subject: Re: BTRFS state on kernel 5.2
-From:   Christoph Anton Mitterer <calestyo@scientia.net>
-To:     linux-btrfs@vger.kernel.org
-Date:   Tue, 03 Sep 2019 03:59:49 +0200
-In-Reply-To: <704e10b8-b609-281c-07cd-51fcc6f78445@georgianit.com>
-References: <204b3c8c-2f29-2319-b69e-37426cf5c792@dirtcellar.net>
-         <704e10b8-b609-281c-07cd-51fcc6f78445@georgianit.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-1.1 
+        id S1726053AbfICDhp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 2 Sep 2019 23:37:45 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:46874 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbfICDhp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 2 Sep 2019 23:37:45 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x833ZY17129753;
+        Tue, 3 Sep 2019 03:37:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=50XNFIb8h061K6T8DCq0QS3N4O01GqXcj1NG5px4GVs=;
+ b=GUTJYJUMoXH4BodIu3KX9fib8fpg3gxsyf9V2USXVqY3SVW/2wlzZNZrX4b5RycCiOve
+ 45X1cQsj4YeB+NWl/98FZgjCe2cK4obGBuwQ0te1uX3wLpywVcxML2nA18JnaCRr/QAY
+ BiF8job8ePXLmK3l0IJfLJRm6XjDLiloenNPfHi6ty/FWNmtvdGxp2TkmxzacRo/Wls/
+ N8qHZixz/AyDdkMsXOFioHFbn7p+WvH37WwDJ7MLR+XSSHiE6NeLVW1fzvMkeiLtPHfp
+ LfV1+b8en1uQSLlxh5Q7USh49OvEGkOx+x2oHedzztRcAkJL3h9BSmss+ekpHFeLhB1w dA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 2usgdg0086-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Sep 2019 03:37:32 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8338FIS044496;
+        Tue, 3 Sep 2019 03:18:45 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 2uryv60nce-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Sep 2019 03:18:45 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x833IhfI026999;
+        Tue, 3 Sep 2019 03:18:43 GMT
+Received: from localhost (/10.159.255.57)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 02 Sep 2019 20:18:42 -0700
+Date:   Mon, 2 Sep 2019 20:18:43 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        david@fromorbit.com, riteshh@linux.ibm.com,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 02/15] iomap: Use a IOMAP_COW/srcmap for a
+ read-modify-write I/O
+Message-ID: <20190903031843.GC5340@magnolia>
+References: <20190901200836.14959-1-rgoldwyn@suse.de>
+ <20190901200836.14959-3-rgoldwyn@suse.de>
+ <20190902163104.GB6263@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190902163104.GB6263@lst.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9368 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1909030034
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9368 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1909030037
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, 2019-09-02 at 20:10 -0400, Remi Gauvin wrote:
-> AFAIK, checksum and Nocow files is technically not possible
+On Mon, Sep 02, 2019 at 06:31:04PM +0200, Christoph Hellwig wrote:
+> On Sun, Sep 01, 2019 at 03:08:23PM -0500, Goldwyn Rodrigues wrote:
+> > --- a/include/linux/iomap.h
+> > +++ b/include/linux/iomap.h
+> > @@ -37,6 +37,7 @@ struct vm_fault;
+> >  #define IOMAP_MAPPED	0x03	/* blocks allocated at @addr */
+> >  #define IOMAP_UNWRITTEN	0x04	/* blocks allocated at @addr in unwritten state */
+> >  #define IOMAP_INLINE	0x05	/* data inline in the inode */
+> > +#define IOMAP_COW	0x06	/* copy data from srcmap before writing */
+> 
+> I don't think IOMAP_COW can be a type - it is a flag given that we
+> can do COW operations that allocate normal written extents (e.g. for
+> direct I/O or DAX) and for delayed allocations.
 
-While this has been claimed numerous times, I still don't see any
-reason why it should be true.
-I even used to have a off-the-list conversation with Chris Mason about
-just that:
+If iomap_apply always zeros out @srcmap before calling ->iomap_begin, do
+we even need a flag/type code?  Or does it suffice to check that
+srcmap.length > 0 and use it appropriately?
 
-me asking:
->> - nodatacow => no checksumming
->>   Breaks IMO one of the big core features of btrfs (i.e. data is either
->>   valid or one gets an error)
->>   I brought that up 1-2 times at the list, but none of the core
->>   developers ever respeonded, and just a few list regulars said it
->>   wouldn't be possible, though I don't quite understand why not...
->>   The meta-data is still CoWed anyway... and the worst that could
->>   happen is that in case of crash, data is actually valid on disk, but
->>   the checksums weren't yet... which is IMO far less likely than the
->>   other cases.
-
-he replying:
->The reason why is because we need a way to atomically update both the
->data block and the crc.  You're right that after a crash the valid data 
->on disk wouldn't match checksums, which for new file data would be 
->unexpected, but not the end of the world.  Still, XFS caught a lot of 
->heat for this because they would allow new files to be zero filled >after 
->a crash.
->
->In our case it would be much worse.  You could have a file that was 10 
->years old, write 4K in the middle, crash, and those 4K would give
->EIOs instead of either the new or old data.
-
-
-So yes, it's quite clear one could not atomically update checksums and
-data the same time,... but so what?
-This problem anyway just matters in the case of a crash,... and in this
-case it's anyway pretty likely that the data is garbage.
-Only for the case where the data would have been properly written
-before the crash, but not the checksum, we'd have the case that valid
-data would be considered invalid.
-
-People would however have at least a chance to notice and recover from
-this.
-
-
-Cheers,
-Chris.
-
+--D
