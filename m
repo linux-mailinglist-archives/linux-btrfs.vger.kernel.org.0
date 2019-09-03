@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECFBFA63C8
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 10:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 623F4A63C9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Sep 2019 10:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728146AbfICIYR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 3 Sep 2019 04:24:17 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53174 "EHLO mx1.suse.de"
+        id S1728150AbfICIYT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 3 Sep 2019 04:24:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53194 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727077AbfICIYR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 3 Sep 2019 04:24:17 -0400
+        id S1728128AbfICIYS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 3 Sep 2019 04:24:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B5B0CAF61
-        for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2019 08:24:15 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id CC3B1B63F
+        for <linux-btrfs@vger.kernel.org>; Tue,  3 Sep 2019 08:24:16 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/4] btrfs-progs: check/original: Fix inode mode in subvolume trees
-Date:   Tue,  3 Sep 2019 16:24:06 +0800
-Message-Id: <20190903082407.13927-4-wqu@suse.com>
+Subject: [PATCH 4/4] btrfs-progs: tests/fsck: Add new images for inode mode repair functionality
+Date:   Tue,  3 Sep 2019 16:24:07 +0800
+Message-Id: <20190903082407.13927-5-wqu@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190903082407.13927-1-wqu@suse.com>
 References: <20190903082407.13927-1-wqu@suse.com>
@@ -30,107 +30,79 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-To make original mode to repair imode error in subvolume trees, this
-patch will do:
-- Remove the show-stopper checks for root->objectid.
-  Now repair_imode_original() will accept inodes in subvolume trees.
+Add new test image for imode repair in subvolume trees.
 
-- Export detect_imode() for original mode
-  Due to the call requirement, original mode must use an existing trans
-  handler to do the repair, thus we need to re-implement most of the
-  work done in repair_imode_common().
+Also rename the existing test case 039-bad-free-space-cache-inode-mode
+to 039-bad-inode-mode, since now we can fix all bad imode.
 
-- Make repair_imode_original() to use detect_imode.
+And add the beacon file for lowmem test.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/main.c        | 32 +++++++++++++++++++++++---------
- check/mode-common.c |  4 ++--
- check/mode-common.h |  2 ++
- 3 files changed, 27 insertions(+), 11 deletions(-)
+ .../039-bad-inode-mode/.lowmem_repairable        |   0
+ .../bad_free_space_cache_imode.raw.xz}           | Bin
+ .../bad_regular_file_imode.img.xz                | Bin 0 -> 2060 bytes
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 tests/fsck-tests/039-bad-inode-mode/.lowmem_repairable
+ rename tests/fsck-tests/{039-bad-free-space-cache-inode-mode/test.raw.xz => 039-bad-inode-mode/bad_free_space_cache_imode.raw.xz} (100%)
+ create mode 100644 tests/fsck-tests/039-bad-inode-mode/bad_regular_file_imode.img.xz
 
-diff --git a/check/main.c b/check/main.c
-index 2e16b4e6f05b..8987d13c72e0 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -2771,18 +2771,31 @@ static int repair_imode_original(struct btrfs_trans_handle *trans,
- 				 struct btrfs_path *path,
- 				 struct inode_record *rec)
- {
-+	struct btrfs_key key;
- 	int ret;
- 	u32 imode;
- 
--	if (root->root_key.objectid != BTRFS_ROOT_TREE_OBJECTID)
--		return -ENOTTY;
--	if (rec->ino != BTRFS_ROOT_TREE_DIR_OBJECTID || !is_fstree(rec->ino))
--		return -ENOTTY;
-+	key.objectid = rec->ino;
-+	key.type = BTRFS_INODE_ITEM_KEY;
-+	key.offset = 0;
- 
--	if (rec->ino == BTRFS_ROOT_TREE_DIR_OBJECTID)
--		imode = 040755;
--	else
--		imode = 0100600;
-+	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
-+	if (ret > 0)
-+		ret = -ENOENT;
-+	if (ret < 0)
-+		return ret;
-+
-+	if (root->objectid == BTRFS_ROOT_TREE_OBJECTID) {
-+		/* In root tree we only have two possible imode */
-+		if (rec->ino == BTRFS_ROOT_TREE_OBJECTID)
-+			imode = S_IFDIR | 0755;
-+		else
-+			imode = S_IFREG | 0600;
-+	} else {
-+		detect_imode(root, path, &imode);
-+		/* Ignore error returned, just use the default value returned */
-+	}
-+	btrfs_release_path(path);
- 	ret = reset_imode(trans, root, path, rec->ino, imode);
- 	if (ret < 0)
- 		return ret;
-@@ -2810,7 +2823,8 @@ static int try_repair_inode(struct btrfs_root *root, struct inode_record *rec)
- 			     I_ERR_FILE_NBYTES_WRONG |
- 			     I_ERR_INLINE_RAM_BYTES_WRONG |
- 			     I_ERR_MISMATCH_DIR_HASH |
--			     I_ERR_UNALIGNED_EXTENT_REC)))
-+			     I_ERR_UNALIGNED_EXTENT_REC |
-+			     I_ERR_INVALID_IMODE)))
- 		return rec->errors;
- 
- 	/*
-diff --git a/check/mode-common.c b/check/mode-common.c
-index 807d7daf98a6..ab451749e20c 100644
---- a/check/mode-common.c
-+++ b/check/mode-common.c
-@@ -836,8 +836,8 @@ int reset_imode(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 	return ret;
- }
- 
--static int detect_imode(struct btrfs_root *root, struct btrfs_path *path,
--			u32 *imode_ret)
-+int detect_imode(struct btrfs_root *root, struct btrfs_path *path,
-+		 u32 *imode_ret)
- {
- 	struct btrfs_key key;
- 	struct btrfs_inode_item *iitem;
-diff --git a/check/mode-common.h b/check/mode-common.h
-index 161b84a8deb0..67db89f20edb 100644
---- a/check/mode-common.h
-+++ b/check/mode-common.h
-@@ -126,6 +126,8 @@ int delete_corrupted_dir_item(struct btrfs_trans_handle *trans,
- 			      struct btrfs_root *root,
- 			      struct btrfs_key *di_key, char *namebuf,
- 			      u32 namelen);
-+int detect_imode(struct btrfs_root *root, struct btrfs_path *path,
-+		 u32 *imode_ret);
- int reset_imode(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		struct btrfs_path *path, u64 ino, u32 mode);
- int repair_imode_common(struct btrfs_root *root, struct btrfs_path *path);
+diff --git a/tests/fsck-tests/039-bad-inode-mode/.lowmem_repairable b/tests/fsck-tests/039-bad-inode-mode/.lowmem_repairable
+new file mode 100644
+index 000000000000..e69de29bb2d1
+diff --git a/tests/fsck-tests/039-bad-free-space-cache-inode-mode/test.raw.xz b/tests/fsck-tests/039-bad-inode-mode/bad_free_space_cache_imode.raw.xz
+similarity index 100%
+rename from tests/fsck-tests/039-bad-free-space-cache-inode-mode/test.raw.xz
+rename to tests/fsck-tests/039-bad-inode-mode/bad_free_space_cache_imode.raw.xz
+diff --git a/tests/fsck-tests/039-bad-inode-mode/bad_regular_file_imode.img.xz b/tests/fsck-tests/039-bad-inode-mode/bad_regular_file_imode.img.xz
+new file mode 100644
+index 0000000000000000000000000000000000000000..bbdd17de1fb9e59d26d2b0502fff326f019be011
+GIT binary patch
+literal 2060
+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
+
+literal 0
+HcmV?d00001
+
 -- 
 2.23.0
 
