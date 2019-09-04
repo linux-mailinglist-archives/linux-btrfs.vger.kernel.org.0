@@ -2,75 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 126D8A9257
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 21:41:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CD5AA92D1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 22:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730491AbfIDTbd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 15:31:33 -0400
-Received: from a9-54.smtp-out.amazonses.com ([54.240.9.54]:43374 "EHLO
-        a9-54.smtp-out.amazonses.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729803AbfIDTbd (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Sep 2019 15:31:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
-        s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1567625491;
-        h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:MIME-Version:Content-Type:Feedback-ID;
-        bh=PcFJmgXphXAgMTzEqtGAmyZoYWFr5XRnp0kHdbyqz4s=;
-        b=GwHMsNh0TlGnNbVoMm7+dx7dxoBn/weDacqBs00YnSm/6FPhetXhaKq4djrf5Unz
-        rYFSYQZdou6MsJEjMIKrMRLWImApiZkCjzrC6D96ACCVw+/tdIOrAjBncyGYXS5n0Lj
-        /4YdNYH/kmEZmxPCMoUxC3iDBf/wOYGWtdPgu+z4=
-Date:   Wed, 4 Sep 2019 19:31:31 +0000
-From:   Christopher Lameter <cl@linux.com>
-X-X-Sender: cl@nuc-kabylake
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Michal Hocko <mhocko@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
- kmalloc(power-of-two)
-In-Reply-To: <20190903205312.GK29434@bombadil.infradead.org>
-Message-ID: <0100016cfdc2b4a1-355182af-3d27-4ae8-94f3-e3b6e8cc6814-000000@email.amazonses.com>
-References: <20190826111627.7505-1-vbabka@suse.cz> <20190826111627.7505-3-vbabka@suse.cz> <0100016cd98bb2c1-a2af7539-706f-47ba-a68e-5f6a91f2f495-000000@email.amazonses.com> <20190828194607.GB6590@bombadil.infradead.org> <20190829073921.GA21880@dhcp22.suse.cz>
- <0100016ce39e6bb9-ad20e033-f3f4-4e6d-85d6-87e7d07823ae-000000@email.amazonses.com> <20190901005205.GA2431@bombadil.infradead.org> <0100016cf8c3033d-bbcc9ba3-2d59-4654-a7c2-8ba094f8a7de-000000@email.amazonses.com>
- <20190903205312.GK29434@bombadil.infradead.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1728197AbfIDUJp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 16:09:45 -0400
+Received: from 6.mo1.mail-out.ovh.net ([46.105.43.205]:35365 "EHLO
+        6.mo1.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727809AbfIDUJp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 16:09:45 -0400
+X-Greylist: delayed 26704 seconds by postgrey-1.27 at vger.kernel.org; Wed, 04 Sep 2019 16:09:44 EDT
+Received: from player755.ha.ovh.net (unknown [10.108.57.141])
+        by mo1.mail-out.ovh.net (Postfix) with ESMTP id 934A3189B66
+        for <linux-btrfs@vger.kernel.org>; Wed,  4 Sep 2019 16:04:49 +0200 (CEST)
+Received: from grubelek.pl (31-178-94-81.dynamic.chello.pl [31.178.94.81])
+        (Authenticated sender: szarpaj@grubelek.pl)
+        by player755.ha.ovh.net (Postfix) with ESMTPSA id E0242987EF23;
+        Wed,  4 Sep 2019 14:04:45 +0000 (UTC)
+Received: by teh mailsystemz
+        id 7B36D171D7E5; Wed,  4 Sep 2019 16:04:44 +0200 (CEST)
+Date:   Wed, 4 Sep 2019 16:04:44 +0200
+From:   Piotr Szymaniak <szarpaj@grubelek.pl>
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     =?utf-8?B?U3fDom1p?= Petaramesh <swami@petaramesh.org>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Michel Bouissou <michel@bouissou.net>
+Subject: Re: Cloning / getting a full backup of a BTRFS filesystem
+Message-ID: <20190904140444.GH31890@pontus.sran>
+References: <7d044ff7-1381-91c8-2491-944df8315305@petaramesh.org>
+ <CAA91j0VLnOB1pZAbi-Gr2sNUJMj56LbBU7=NLYGfrPs7T_GpNA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-SES-Outgoing: 2019.09.04-54.240.9.54
-Feedback-ID: 1.us-east-1.fQZZZ0Xtj2+TD7V5apTT/NrT6QKuPgzCT/IC7XYgDKI=:AmazonSES
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAA91j0VLnOB1pZAbi-Gr2sNUJMj56LbBU7=NLYGfrPs7T_GpNA@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-Ovh-Tracer-Id: 14159598704614577792
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduvddrudejhedgieelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddm
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, 3 Sep 2019, Matthew Wilcox wrote
+On Wed, Sep 04, 2019 at 12:03:10PM +0300, Andrei Borzenkov wrote:
+> On Wed, Sep 4, 2019 at 9:16 AM Swâmi Petaramesh <swami@petaramesh.org> wrote:
+> >
+> > Hi list,
+> >
+> > Is there an advised way to completely “clone” a complete BTRFS
+> > filesystem, I mean to get an exact copy of a BTRFS filesystem including
+> > subvolumes (even readonly snapshots) and complete file attributes
+> > including extended attributes, ACLs and so, to another storage pool,
+> > possibly defined with a different RAID geometry or compression ?
+> >
+> 
+> As long as you do not use top level subvolume directly (all data is
+> located in subolumes), send/receive should work.
+> 
+> > The question boils down to getting an exact backup replica of a given
+> > BTRFS filesystem that could be restored to something logically
+> > absolutely identical.
+> >
+> > The usual backup tools have no clue about share extents, snapshots and
+> > the like, and using btrfs send/receive for individual subvols is a real
+> > pain in a BTRFS filesystem that may contain hundreds of snapshots of
+> > different BTRFS subvols plus deduplication etc.
+> >
+> 
+> Shared extents could be challenging. You can provide this information
+> to "btrfs send", but for one, there is no direct visibility into which
+> subvolumes share extents with given subvolume, so no way to build
+> corresponding list for "btrfs send". I do not even know if this
+> information can be obtained without exhaustive search over all
+> extents. Second, btrfs send/receive only allows sharing of full
+> extents which means there is no guarantee of identical structure on
+> receiving side.
 
-> > Its enabled in all full debug session as far as I know. Fedora for
-> > example has been running this for ages to find breakage in device drivers
-> > etc etc.
->
-> Are you telling me nobody uses the ramdisk driver on fedora?  Because
-> that's one of the affected drivers.
+So right now the only answer is: use good old dd?
 
-How do I know? I dont run these tests.
 
-> > decade now) I am having a hard time believing the stories of great
-> > breakage here. These drivers were not tested with debugging on before?
-> > Never ran with a debug kernel?
->
-> Whatever is being done is clearly not enough to trigger the bug.  So how
-> about it?  Create an option to slab/slub to always return misaligned
-> memory.
-
-It already exists
-
-Add "slub_debug" on the kernel command line.
-
+Piotr Szymaniak.
+-- 
+Jedyne  napisy,  które rozumie każdy  Amerykanin,  to  "Wyprzedaż", "Za
+darmo" i "Seks".  Kiedyś  widziałem w Arizonie tablicę  "Seks za darmo.
+Ograniczenie prędkości do 60 km/h".
+  -- Nelson DeMille, "The Lion's Game"
