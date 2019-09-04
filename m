@@ -2,91 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6D1EA93C9
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 22:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CDD8A9413
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 22:48:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728717AbfIDUfm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 16:35:42 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:46418 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727544AbfIDUfm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 16:35:42 -0400
-Received: by mail-pl1-f196.google.com with SMTP id t1so59707plq.13
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 13:35:42 -0700 (PDT)
+        id S1729727AbfIDUso (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 16:48:44 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:32961 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbfIDUso (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 16:48:44 -0400
+Received: by mail-wm1-f65.google.com with SMTP id r17so3386896wme.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 13:48:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8D8XsKLExa+oAXXNHD7yk7Q5aNTg99foxjb/576FXkU=;
-        b=SvHIEswQv6I5QfqgtxTAHeLmFZzoub0TysWfAHEj7ZwOdrX4lma6CVhkpUbMHh1Nem
-         plU6Y59gFsRg97aTAEOIxOSVIgts4v4OvFNiMBd2VG5Jgku0GrY4Sm8KjJJS6ojc5HPB
-         xiY/Mq5Ma9RMbJYt1FJmZ+m0ntCgs9PkSLfA9M0ykXXfo9GnCBVrV5f9gkTW03vT5H9q
-         dF6aSyjSGdFQNQk5Zn+n3wT6LLNS6Y1fG9UYQDMdhJ7xrf6Tbb6HSLJehe/kk4RyPK3q
-         1upEqNrOA5zSBM1wNXPijDbL4H3WMxZ7d/we9hhyVIWM8UN/bFHrHtot49+JPJfoRsGv
-         Z/Sg==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=q000UqLfLO13JClMleJOjv7ZSefyKSkN+q2KexWL+Us=;
+        b=ANSEnXx0Xqy2AUEnsNTMiNpdHiStNKklkurSmv99EWjGMuPN24YmLlbM+7Hm2wzGTc
+         jbWpSx5OAyZ/eS932FwR1TIAFBx+VEtNCW3fkQzCGC0dlUwi30/6m7iESqaqoyjK8MDJ
+         8R0RilMjCnqSJxnOY+YHfRXzxy8PUyTvhCUMlagy/JDb7zA0tsxPn60D+t9UIjkN1Ilg
+         2kHLrY2VogjAq7IHau3Ti7OuGuHUBmdPvCwyTc8hw2lUMkn5QFKw0NQUME3fUbuTdl2N
+         IXn4Nx3GOQTaekbneNBRTecSawRjQQwTXL2Hxk1XaUMjynY3gzWXhM8DgWYjRo8uo2gU
+         EiFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8D8XsKLExa+oAXXNHD7yk7Q5aNTg99foxjb/576FXkU=;
-        b=m+HxhJSkezVFZpzyTYiPQGFxG4H9uFCAdLG/kQHQoDQ5qYrelwtvC5ySB1gGnTsQaN
-         JAwnsykkddRV/Y7B4AQlplhePSem14ve7+JFw1/iE4G/3P9Kn2laJcmhbmUSXsaYasXh
-         7hsdzIaA+vnHwjLUpFLwzItu7hXlaWmrwtRRRxeA0Pyr44PaMuiqmtBReqrtvjVCq7ku
-         0FjUI+oo7StLGFzzsYwBayWIoz4Zz/l2BA8w6K3pGvZDu0iQhCzIvO0l1DBcAqlffamr
-         7MN1Oee4p1zkDtnk8Sq58NagiFiYSOirnOLxkU0cX4r1t9zMkOhWYO5J7Fh3XOgFrJdS
-         T7vw==
-X-Gm-Message-State: APjAAAUQm4V14Ixi7HNpId14ITBNuOYctpSx3D/A7yKjruOEP9x0Bkrw
-        Wyx+yMjRv2UqLks5ZoIRJuqMKd7DTMo=
-X-Google-Smtp-Source: APXvYqwy2BqT1mkDaWxn7r+yJLpEvqyZj3eBLPq+jxwn/DWLoMt8nk6ATbV0QVSCeB93QB6pCvJLTw==
-X-Received: by 2002:a17:902:b604:: with SMTP id b4mr10028461pls.94.1567629341407;
-        Wed, 04 Sep 2019 13:35:41 -0700 (PDT)
-Received: from vader ([2620:10d:c090:180::3502])
-        by smtp.gmail.com with ESMTPSA id z12sm14484234pfj.41.2019.09.04.13.35.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Sep 2019 13:35:40 -0700 (PDT)
-Date:   Wed, 4 Sep 2019 13:35:39 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     kernel-team@fb.com
-Subject: Re: [PATCH v2 0/4] btrfs-progs: fix clone from wrong subvolume
-Message-ID: <20190904203539.GF7452@vader>
-References: <cover.1563822638.git.osandov@fb.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:content-transfer-encoding;
+        bh=q000UqLfLO13JClMleJOjv7ZSefyKSkN+q2KexWL+Us=;
+        b=Z61yPYJqgrvzwKy4vMGPNueVL8XiDirqIEH5aq0cff7wdnFXlTwOtNMiGyjxYq5LBJ
+         Vh0jhl+C9CzN96q1Rua7t9Ee9PlWdvDVTPGtmOq0lz0jsO90kB3gO6UafsfJINbpMbeB
+         N7qo/5j20Zi5QECYvYC++bo0L2EhiGG46m9q2NUe0htNPNtTGj4anDHfMzC+xOd+aicy
+         BXMPg7MRuiixoNGjOQfAA8cMg+/6UtwOCOphOoQeytNfj9FE5xiEIhjUXA8f96meM1ah
+         yXuGNPQh1+YntJPCZGp6U7XFAjEo/CYPb6I8mEIgvpstjdVmiTbsnmKWDfbvXpVtjFKl
+         h8BA==
+X-Gm-Message-State: APjAAAXLwum+9r0K9+OU9hREl8F12mr4kuZ6tu7PVroSUlYc2Z5uD/qG
+        HfSylYr/BRYnSs/MJJ2w2Pm1FeCJbQA3rmEhMjD78g==
+X-Google-Smtp-Source: APXvYqz+WFreqNwXK8YkyH8EEdRnnuRBP7Y3jW91zzL8iiC7izbVfyebqdTIhtXOKvggybrg1EK8j4bPeC/QLK92H4w=
+X-Received: by 2002:a1c:e709:: with SMTP id e9mr136340wmh.65.1567630122380;
+ Wed, 04 Sep 2019 13:48:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1563822638.git.osandov@fb.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <7d044ff7-1381-91c8-2491-944df8315305@petaramesh.org>
+ <CAA91j0VLnOB1pZAbi-Gr2sNUJMj56LbBU7=NLYGfrPs7T_GpNA@mail.gmail.com>
+ <20190904140444.GH31890@pontus.sran> <20190904202012.GF2488@savella.carfax.org.uk>
+In-Reply-To: <20190904202012.GF2488@savella.carfax.org.uk>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 4 Sep 2019 14:48:31 -0600
+Message-ID: <CAJCQCtQoKOL68yMWSBfeDKsp4qCci1WQiv4YwCpf15JWF++upg@mail.gmail.com>
+Subject: Re: Cloning / getting a full backup of a BTRFS filesystem
+To:     Hugo Mills <hugo@carfax.org.uk>,
+        Piotr Szymaniak <szarpaj@grubelek.pl>,
+        Andrei Borzenkov <arvidjaar@gmail.com>,
+        =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Michel Bouissou <michel@bouissou.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Jul 22, 2019 at 12:15:01PM -0700, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> This is v2 of [1]. Changes from v1:
-> 
-> - Split out removing commented-out code to new patch 1 and removed a
->   related comment block.
-> - Made subvol_path const char * in patch 2.
-> - Added test case as patch 4.
-> - Fixed wrong signed-off-by.
-> 
-> Thanks,
-> Omar
-> 
-> 1: https://lore.kernel.org/linux-btrfs/cover.1563600688.git.osandov@fb.com/T/#u
-> 
-> Omar Sandoval (4):
->   btrfs-progs: receive: remove commented out transid checks
->   btrfs-progs: receive: get rid of unnecessary strdup()
->   btrfs-progs: receive: don't lookup clone root for received subvolume
->   btrfs-progs: tests: add test for receiving clone from duplicate
->     subvolume
-> 
->  cmds/receive.c                                | 50 ++++---------------
->  .../test.sh                                   | 34 +++++++++++++
->  2 files changed, 45 insertions(+), 39 deletions(-)
->  create mode 100755 tests/misc-tests/038-receive-clone-from-current-subvolume/test.sh
+On Wed, Sep 4, 2019 at 2:20 PM Hugo Mills <hugo@carfax.org.uk> wrote:
+>
+> On Wed, Sep 04, 2019 at 04:04:44PM +0200, Piotr Szymaniak wrote:
+> > On Wed, Sep 04, 2019 at 12:03:10PM +0300, Andrei Borzenkov wrote:
+> > > On Wed, Sep 4, 2019 at 9:16 AM Sw=C3=A2mi Petaramesh <swami@petarames=
+h.org> wrote:
+> > > >
+> > > > Hi list,
+> > > >
+> > > > Is there an advised way to completely =E2=80=9Cclone=E2=80=9D a com=
+plete BTRFS
+> > > > filesystem, I mean to get an exact copy of a BTRFS filesystem inclu=
+ding
+> > > > subvolumes (even readonly snapshots) and complete file attributes
+> > > > including extended attributes, ACLs and so, to another storage pool=
+,
+> > > > possibly defined with a different RAID geometry or compression ?
+> > > >
+> > >
+> > > As long as you do not use top level subvolume directly (all data is
+> > > located in subolumes), send/receive should work.
+> > >
+> > > > The question boils down to getting an exact backup replica of a giv=
+en
+> > > > BTRFS filesystem that could be restored to something logically
+> > > > absolutely identical.
+> > > >
+> > > > The usual backup tools have no clue about share extents, snapshots =
+and
+> > > > the like, and using btrfs send/receive for individual subvols is a =
+real
+> > > > pain in a BTRFS filesystem that may contain hundreds of snapshots o=
+f
+> > > > different BTRFS subvols plus deduplication etc.
+> > > >
+> > >
+> > > Shared extents could be challenging. You can provide this information
+> > > to "btrfs send", but for one, there is no direct visibility into whic=
+h
+> > > subvolumes share extents with given subvolume, so no way to build
+> > > corresponding list for "btrfs send". I do not even know if this
+> > > information can be obtained without exhaustive search over all
+> > > extents. Second, btrfs send/receive only allows sharing of full
+> > > extents which means there is no guarantee of identical structure on
+> > > receiving side.
+> >
+> > So right now the only answer is: use good old dd?
+>
+>    If you want an exact copy, including all of the exact UUIDs, yes.
+>
+>    Be aware of the problems of making block-level copies of btrfs
+> filesystems, though:
+> https://btrfs.wiki.kernel.org/index.php/Gotchas#Block-level_copies_of_dev=
+ices
 
-Ping. Looks like only patch 2 is in the devel branch.
+
+This might be fixed now. Anyone want to test it? With a recent kernel of co=
+urse.
+
+*runs away fast in case it isn't*
+
+
+--=20
+Chris Murphy
