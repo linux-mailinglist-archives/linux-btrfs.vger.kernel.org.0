@@ -2,103 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC46A898B
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 21:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B2AA8D2E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 21:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730200AbfIDPbY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 11:31:24 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:32924 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729773AbfIDPbY (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 11:31:24 -0400
-Received: by mail-wr1-f68.google.com with SMTP id u16so21777475wrr.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 08:31:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hNDP5FkW4t0d9CDT1RYgZdJB2++b05QV5TCD4osOxnI=;
-        b=WeS4KJNQ2qX88OwmXYJ4EoKNU9ZSu5Xhfr1gB7L9tBkSNPc3SSDEU9lpn+HR0y9yUZ
-         gv89NDxAhaQowpVrd+3Sck+KluoGetRodlibxRjJRouK+XKiwZG+5Wtmx/q5T3/9m3qr
-         wSQFXxJF95/mRmlLNCFVSCPtmibctPzAa1o/32UJLdGoeZ1VGaqnd8u4NmNTe7gD8hpF
-         8ahCqkB+0frXkWt9NwCoCM09xBVc6NDjnJfyHKWDv1USjZmqi8Lr4WIMzDxn3pp/khY+
-         t7sOqE6LGpBGy3ZoaDgQEqrPhRA9eMJVkd+xXunzvAleyKBM+oVuFzZdybNahgC04xpE
-         +sNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hNDP5FkW4t0d9CDT1RYgZdJB2++b05QV5TCD4osOxnI=;
-        b=jCZeRiHVOzdbp8j96kOocHl0G0RXpcC3F+nYrZXHSiU9g4TxEfTanFv2CwdPZ1E/DH
-         iuc3N8vhmEv1Vi+Lzj8GA3l/dWHr4jx4OweLUjgyKe8WZnPYU6iW2y1s+FqmJ+Aum2go
-         mUVb41wVEY6BmvB6MGQ0zH1rOomoNwPVnVU9mzSemngvXEhwDhfPlsiceMUU1RyKBftZ
-         RPzuGzPcpFfs3dZpUyEfj+3gMcQ1x3/xpBEYH4mZ6yxkWOYWG4sJfzQbE/R+Y9q1aPjR
-         f32l74Szrwyd7MoIwmlQGCWnBYe1kWRknV9VUE8hPUSUL8rQ08t8ZvwiBW2bUY8V65f/
-         XMcQ==
-X-Gm-Message-State: APjAAAUZiDB/uFdk2CBq4agM9OztDwJT9ZIdYetDEnnq/AV3SlZS6H11
-        ACHtsY3hz9fVc6brHaQcS69DT9sr79f1ZdlSS81+68j2
-X-Google-Smtp-Source: APXvYqz9Dp0Nv/LQcbkrY/iKYSQBVtiYsETgct2YaC/f9RqB10GlcDlqadoOl8n8Y6gcxRH/vpG/nPmDipvF8URcRmo=
-X-Received: by 2002:adf:dc03:: with SMTP id t3mr13636994wri.80.1567611082648;
- Wed, 04 Sep 2019 08:31:22 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190904081802.8985-1-jthumshirn@suse.de>
-In-Reply-To: <20190904081802.8985-1-jthumshirn@suse.de>
-From:   Noah Massey <noah.massey@gmail.com>
-Date:   Wed, 4 Sep 2019 11:30:46 -0400
-Message-ID: <CADfjVriTtGZmhcXRS14gmS27g278zkvpgpUJ8g5VY4m+ryP4kA@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs-progs: fix zstd compression test on a kernel
- without ztsd support
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1731868AbfIDQeD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 12:34:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33016 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731571AbfIDQeD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Sep 2019 12:34:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E666CABD9;
+        Wed,  4 Sep 2019 16:34:01 +0000 (UTC)
+From:   Nikolay Borisov <nborisov@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>
+Subject: [PATCH] btrfs: Relinquish CPUs in btrfs_compare_trees
+Date:   Wed,  4 Sep 2019 19:33:58 +0300
+Message-Id: <20190904163358.11591-1-nborisov@suse.com>
+X-Mailer: git-send-email 2.17.1
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 4, 2019 at 4:19 AM Johannes Thumshirn <jthumshirn@suse.de> wrote:
->
-> The test-case 'misc-tests/025-zstd-compression' is failing on a kernel or
-> btrfs binary built without zstd compression support.
->
-> Check if zstd compression is supported by either the kernel or the btrfs
-> binary and if not skip the test-case.
->
+When doing any form of incremental send the parent and the child trees
+need to be compared via btrfs_compare_trees. This  can result in long
+loop chains without ever relinquishing the CPU. This causes softlockup
+detector to trigger when comparing trees with a lot of items. Example
+report:
 
-s/either/both/; s/or/and/
+watchdog: BUG: soft lockup - CPU#0 stuck for 24s! [snapperd:16153]
+CPU: 0 PID: 16153 Comm: snapperd Not tainted 5.2.9-1-default #1 openSUSE Tumbleweed (unreleased)
+Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
+pstate: 40000005 (nZcv daif -PAN -UAO)
+pc : __ll_sc_arch_atomic_sub_return+0x14/0x20
+lr : btrfs_release_extent_buffer_pages+0xe0/0x1e8 [btrfs]
+sp : ffff00001273b7e0
+Call trace:
+ __ll_sc_arch_atomic_sub_return+0x14/0x20
+ release_extent_buffer+0xdc/0x120 [btrfs]
+ free_extent_buffer.part.0+0xb0/0x118 [btrfs]
+ free_extent_buffer+0x24/0x30 [btrfs]
+ btrfs_release_path+0x4c/0xa0 [btrfs]
+ btrfs_free_path.part.0+0x20/0x40 [btrfs]
+ btrfs_free_path+0x24/0x30 [btrfs]
+ get_inode_info+0xa8/0xf8 [btrfs]
+ finish_inode_if_needed+0xe0/0x6d8 [btrfs]
+ changed_cb+0x9c/0x410 [btrfs]
+ btrfs_compare_trees+0x284/0x648 [btrfs]
+ send_subvol+0x33c/0x520 [btrfs]
+ btrfs_ioctl_send+0x8a0/0xaf0 [btrfs]
+ btrfs_ioctl+0x199c/0x2288 [btrfs]
+ do_vfs_ioctl+0x4b0/0x820
+ ksys_ioctl+0x84/0xb8
+ __arm64_sys_ioctl+0x28/0x38
+ el0_svc_common.constprop.0+0x7c/0x188
+ el0_svc_handler+0x34/0x90
+ el0_svc+0x8/0xc
 
+Fix this by adding a call to cond_resched at the beginning of the main
+loop in btrfs_compare_trees.
 
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
->
-> ---
-> Changes to v1:
-> - Also check $TOP/btrfs not just the kernel for zstd support (Dave)
-> ---
->  tests/misc-tests/025-zstd-compression/test.sh | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/tests/misc-tests/025-zstd-compression/test.sh b/tests/misc-tests/025-zstd-compression/test.sh
-> index 22795d27500e..d967e358fcb2 100755
-> --- a/tests/misc-tests/025-zstd-compression/test.sh
-> +++ b/tests/misc-tests/025-zstd-compression/test.sh
-> @@ -6,6 +6,16 @@ source "$TEST_TOP/common"
->  check_prereq btrfs
->  check_global_prereq md5sum
->
-> +if ! [ -f "/sys/fs/btrfs/features/compress_zstd" ]; then
-> +       _not_run "kernel does not support zstd compression feature"
-> +       exit
-> +fi
-> +
-> +if ! ldd "$TOP/btrfs" | grep -q zstd; then
-> +       _not_run "btrfs is not compiled with zstd compression support"
-> +       exit
-> +fi
-> +
->  # Extract the test image
->  image=$(extract_image compress.raw.xz)
->
-> --
-> 2.16.4
->
+Fixes: 7069830a9e38 ("Btrfs: add btrfs_compare_trees function")
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+---
+ fs/btrfs/send.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index f856d6ca3771..f3215028235c 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -6757,6 +6757,7 @@ static int btrfs_compare_trees(struct btrfs_root *left_root,
+ 	advance_left = advance_right = 0;
+ 
+ 	while (1) {
++		cond_resched();
+ 		if (advance_left && !left_end_reached) {
+ 			ret = tree_advance(left_path, &left_level,
+ 					left_root_level,
+-- 
+2.17.1
+
