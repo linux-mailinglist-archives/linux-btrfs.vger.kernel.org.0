@@ -2,89 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6EA9A9231
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 21:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E358DA9236
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 21:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388032AbfIDTHR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 15:07:17 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:34843 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731778AbfIDTHQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 15:07:16 -0400
-Received: by mail-wm1-f68.google.com with SMTP id n10so5084580wmj.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 12:07:15 -0700 (PDT)
+        id S1731505AbfIDTNf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 15:13:35 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:34154 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730209AbfIDTNf (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 15:13:35 -0400
+Received: by mail-pf1-f196.google.com with SMTP id r12so1698611pfh.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 12:13:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0UVmnp4aAKCdi1MURsL39WoXD27IuZRhOEIrb/pWKrQ=;
-        b=hoHXal8qSYokh2CHHnMqCilW6tgh+xg6q8EYOg/BjSp51t+vZE0PebmsSiDsH6xpbE
-         iAMmcM/k69eEbOdbWWN/7FTyvbcjsJvlI1hRANlmnQNWD3TF9MxdabLS/gq/Y5Py//hW
-         NsK05SxVpZOUr7H6M5JCTBzujyL9aBWK/GVyhZu/DGmZAtMmxMv9xUpxFgWKwXHOBaCP
-         iuWuqIzaS3F57Il39058lAFXcwq/AnTvLu/W0/PdSKf4jW9V53bdWyumVnReWnAvVGN2
-         GjddT7AvxiGs7Dx9t4wdPt4bYqEwDpaThzNx+8J56M2LlL1WRguX2zbnkGs9F5RZ4eS4
-         eozw==
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/0qCfpVmwLo+l4YOiBkxSGSTV+/gvK2d3wrMLWkVpM8=;
+        b=hyH0VN+UQo7dZoz67h/mYdLydOeJ32uZGxayR17tGjjLTtOzRq+RQJDrASWHDjrqza
+         gnA5oRHvwir9u9ZAMdSoXQQJDCWaKRp5xvKxLsT5Cjg3SL4sKpOORGp6OtBYRbP56+2C
+         CKAvGXyoDZC7mvvi8CkRZAfkMn5exeSA8BJnUpjIkNOZZY1q6WFTjUtYBtG+Nhj9G9Um
+         rOvt2A3tzijBiPWXzmQG/YV5E5UufgTsQXGLgGeszUbJEBDeApxRSrChx4QnnfKverFU
+         a5FiVSKhy7wH2fMBo4wyvVhcGHtDP1PRADPnDs5KkUJ7Mp8lG3QvwTbMlSOBAU9DjNzv
+         Dyug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0UVmnp4aAKCdi1MURsL39WoXD27IuZRhOEIrb/pWKrQ=;
-        b=AK4ELnQjYuGD238SWsrs7e+AWg4ncJNgAoZeK2U88TEREUflGBi6v7JldU6uFyToIW
-         n84gisyHwznOupYEDl8NTeA7bMuMO3L6lWC1fzKMn5xiwopojzib5h+h1wpw7W4on2HK
-         RxijJ0Xl+y/p1tAPAkcqzkdbDn+3eP8GCl6Qr9GkoPi6GRNdTwT/hayIkYN5zZn+zj2E
-         O9xnSyXfNOw/Gzq+AjojCPi1fsz+1PvmRXkcK7t8sjdEgkcdZD2BcBcNVRhOgDkM5p/L
-         HIlDCc6W1y0iJksUrDA6+zfvHf9vzzxdH0OzP/8gvzIptTTRcigsBVweneB/O/rwfCy1
-         HOkA==
-X-Gm-Message-State: APjAAAVek3Pn3xywn+iWyKVuj2pBU+yncp7/5YLtM7nZ6usTg8asgSsZ
-        JDhWaQvHna1zH7rlsFXfjgxie/L8AXmjtyaPmFqFj0crNPE=
-X-Google-Smtp-Source: APXvYqzt4BQj8hiHpkfLCtyXqc2eykh0oc85XA0zKCemDAj9TnOK3t64Gz6+VdabbYRQVP7x4aMtArfgPTvyBIeFkLo=
-X-Received: by 2002:a1c:e709:: with SMTP id e9mr5818065wmh.65.1567624034579;
- Wed, 04 Sep 2019 12:07:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/0qCfpVmwLo+l4YOiBkxSGSTV+/gvK2d3wrMLWkVpM8=;
+        b=BYbdSDwTDI4K8a/56zPKwlyTNLysxesidp11iPqyFZ8FnQLGrvKpruDR61xlUtjAAV
+         SIbiBXdhHfpi9TlcfoWnbJmBnnXZyBsUFpemNABrJ3KGUX0k3fbgGaXSKYx4j77Ym05m
+         gMJqJ6kgT9WwZI8eWQRsgYKp2IK6e6vmlX3QH+28IBcFJJ8gLZiV4T1U5/5Z6k2a7YVo
+         4ZP7+S4xiB/D6vzGjhbnVQmqvYtC+Kad2V1aRbn4tbCU72DYZrLVH9bTdnoFcXTieZjP
+         4/EQETOJI1Md+DXRa3VMX74tpTVaPKFjMjplHRKCHlqBHjd2ptdL8F8ncQGWS+4C8Z9u
+         4SmA==
+X-Gm-Message-State: APjAAAV4rcwBKtgBuTiuG8cl81swHaYpcUEPlPQrQRWmGG5KI5dTkjyp
+        TpGm/HTPxS93flzmsEISD7q/mxCn8Gw=
+X-Google-Smtp-Source: APXvYqw996dVGUdgjYqIQqtvftnsO8gPy38Tb+8FfxHGYwVHzuxtFH2eALmc9rdlTl4CIQ4+6GhqeA==
+X-Received: by 2002:a17:90a:983:: with SMTP id 3mr6749888pjo.57.1567624414181;
+        Wed, 04 Sep 2019 12:13:34 -0700 (PDT)
+Received: from vader.thefacebook.com ([2620:10d:c090:180::3502])
+        by smtp.gmail.com with ESMTPSA id w6sm5495661pfw.84.2019.09.04.12.13.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Sep 2019 12:13:33 -0700 (PDT)
+From:   Omar Sandoval <osandov@osandov.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com, linux-fsdevel@vger.kernel.org
+Subject: [PATCH 0/2] Btrfs: add interface for writing compressed extents directly
+Date:   Wed,  4 Sep 2019 12:13:24 -0700
+Message-Id: <cover.1567623877.git.osandov@fb.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <b729e524-3c63-cf90-7115-02dcf2fda003@gmail.com>
- <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
- <f22229eb-ab68-fecb-f10a-6e40c0b0e1ef@gmail.com> <CAJCQCtRPUi3BLeSVqELopjC7ZvihOBi321_nxqcUG1jpgwq9Ag@mail.gmail.com>
- <423454bc-aa78-daba-d217-343e266c15ee@georgianit.com>
-In-Reply-To: <423454bc-aa78-daba-d217-343e266c15ee@georgianit.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Wed, 4 Sep 2019 13:07:03 -0600
-Message-ID: <CAJCQCtSG9W93dWwH7++dBGh94s6UGGbugrW8y17OmycC5wP8kw@mail.gmail.com>
-Subject: Re: No files in snapshot
-To:     Remi Gauvin <remi@georgianit.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 4, 2019 at 12:24 PM Remi Gauvin <remi@georgianit.com> wrote:
->
-> On 2019-09-04 1:36 p.m., Chris Murphy wrote:
->
-> >>
-> >
-> > I don't really know how snapper works.
-> >
-> > The way 'btrfs subvolume snapshot' works,  you must point it to a
-> > subvolume. It won't snapshot a regular directory and from what you
-> > posted above, there are no subvolumes in /var or /var/lib which means
-> > trying to snapshot /var/lib/ceph/osd/ceph-....  would fail. So maybe
-> > it's failing but snapper doesn't show the error. I'm not really sure.
-> >
->
-> In this case, his snapshots are all of the root.
->
-> I don't know how Ceph works, but since we already confirmed that there
-> are no subvolumes under /var, the only other explanation is that
-> /var/lib/ceph/osd/ceph-<n> is a submount
->
-> What is the the result of running:
-> mount | grep /var
->
+From: Omar Sandoval <osandov@fb.com>
 
-Yep.
+Hi,
 
+This is an update of my RFC series [1]. Patch 1 is a VFS patch to export
+some permission checks. Patch 2 is the actual change.
+
+Changes from the RFC:
+
+- Rebased on misc-next, which now has the cleanups from patches 1-3.
+- Generalized the interface to "raw writes" so that we can support,
+  e.g., encrypted writes in the future.
+
+Note that I kept the compat ioctl implementation the same based on the
+discussion in [2].
+
+1: https://lore.kernel.org/linux-btrfs/cover.1565900769.git.osandov@fb.com/
+2: https://lore.kernel.org/linux-btrfs/20190903171458.GA7452@vader/
+
+Omar Sandoval (2):
+  fs: export rw_verify_area()
+  btrfs: add ioctl for directly writing compressed data
+
+ fs/btrfs/compression.c     |   6 +-
+ fs/btrfs/compression.h     |  14 +--
+ fs/btrfs/ctree.h           |   6 ++
+ fs/btrfs/file.c            |  13 ++-
+ fs/btrfs/inode.c           | 192 ++++++++++++++++++++++++++++++++++++-
+ fs/btrfs/ioctl.c           |  95 ++++++++++++++++++
+ fs/internal.h              |   5 -
+ fs/read_write.c            |   1 +
+ include/linux/fs.h         |   1 +
+ include/uapi/linux/btrfs.h |  69 +++++++++++++
+ 10 files changed, 382 insertions(+), 20 deletions(-)
 
 -- 
-Chris Murphy
+2.23.0
+
