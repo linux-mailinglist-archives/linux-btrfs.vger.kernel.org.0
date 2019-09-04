@@ -2,125 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3052A7F3F
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 11:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4D7A80A8
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 12:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727787AbfIDJY1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 05:24:27 -0400
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:37009 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725938AbfIDJY1 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 05:24:27 -0400
-Received: by mail-wm1-f43.google.com with SMTP id r195so2780921wme.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 02:24:25 -0700 (PDT)
+        id S1729122AbfIDKsq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 06:48:46 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:34284 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725840AbfIDKsq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 06:48:46 -0400
+Received: by mail-qt1-f194.google.com with SMTP id a13so23819343qtj.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 03:48:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=zoarTvLv9Yo2UvKO7hOkiz6yho8U/lNrsl7k0570wUE=;
-        b=h7rsGJcB8VoWT7XGpppLcx97OckGLepeFA+wK2UwIVEv1JHwdN4Pb+Q4pZVmczr96W
-         I05HNCuaGlfmAiZ5gj/8WrpWfFKiy8zVG/okculdf8Iyj97CPJGiNvHylPpMrKLeBFgW
-         5lDnCLEPZm2bZJTDX38A5YUmZwmkvHbC4SH8eCiykSNm3qdN3PeVi9cpTmiqmcGgCtBH
-         5Dceiin49DtWgJ0m2xLkje7y7fhK99AwDjRV0KWZszDJBhK5GFCcywOKzU9Xm9OSmplD
-         FSOrCFT6q9w7HXJlEPow3bNZwcyih7rVyz6zu8XjqJEMFNnhs+0e7+V4APjJ09sSRytR
-         mOIg==
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=MP/Ddwx2H57lHXI8hI3UOtaNzy0Sj2Wk0zQyjASbdA8=;
+        b=0VpSv91PzgwLYgwJ8y79l7OWEl6fe2CyF1UNm5H3MXAY2/OZ1lsCTClL+sl3y7uHox
+         Y488BneV4nanJ5b4fppLKH5CptMky1kot1u75wBkIKlm0S0ndGR10iQO8Coedx9HoY04
+         52aY9YXX5xL3i+/eYth+dHcahW0LJm55lFFYncUeFJu66TE/Nv4s2MafbVrpI+OAkLGH
+         7PCnkHxzEDwm4Njl4KGgEOy6fopSy9LqvFgaLWiM4QR2qv6Rhqh2qAGen0zx32aPxrYn
+         MbJpu9xZR8ufbhKDbqG9VtlhIkyOMRaXcu+pO+cb+iIEORjyKPofb7T0BJMPj5Qv49tN
+         qaOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=zoarTvLv9Yo2UvKO7hOkiz6yho8U/lNrsl7k0570wUE=;
-        b=L6PoO17/X1OBlLprVQjz2NaVHyMO7JH8Fs50Rud3yQYFg8c+ZpUGf3i7cxzQ5RrBfr
-         OR8C+JJzrPaddWNLAQrBkbtihPebEJ5O64KwxFCbsMu6C/mhK0FKsvlKZDSLqsOI07wb
-         snF9RWrT5B7U5znpsAQSekzJAQ3PnZGNuLy2Y/RDSJbwL8bQj8k2b++aInDtdDdJzFpd
-         kF9ErzVZIqhPL8u5M2Wl0uL8f0RgyPPZ5i3JrBcAyJOyc4PKucWm5RDVtTU9qc2oKka8
-         WA1ceqSvHkYUqvThukKpaFy7E5O+pkApcR138DsFjj0CAFqKq0Nf4egX24UmAL9Q9VrJ
-         W8cg==
-X-Gm-Message-State: APjAAAUx4u5RtztSdiWiesQ4ndAOS7+n5KUbFAV12wGeHO/SbsDlOyvP
-        0+XL7UV40sVMMuOrjJ4hVqFM7b6N
-X-Google-Smtp-Source: APXvYqybj1mdRT77KPlnCcsz/bkjM31zi/ELgoiDMCCcoa8nwCbxrGN1Za4p42iAIOuPdhGhNumafA==
-X-Received: by 2002:a05:600c:2181:: with SMTP id e1mr3468845wme.117.1567589064533;
-        Wed, 04 Sep 2019 02:24:24 -0700 (PDT)
-Received: from [10.19.90.60] ([193.16.224.12])
-        by smtp.gmail.com with ESMTPSA id b1sm2496199wmj.4.2019.09.04.02.24.23
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=MP/Ddwx2H57lHXI8hI3UOtaNzy0Sj2Wk0zQyjASbdA8=;
+        b=KrBBCBx7SReNyGEnxVZbUbO/pmXLZVRGDUpVfBwpuUuSOOdyC1uJwtV/wfLgcNgTQc
+         8FrDxx+uUHIl4cIgF9fb1aQ3WvAZ4pVFG4VCuYaN8kOar8FEJBuj2kYgLNDr8wD3F21W
+         i7P3Fn9Ig4Swo9i59OobGULowxF/2Z4ZNAX90pir5mCXFwCD/i+e/cakx2cPo84jPmhc
+         lNmLaDl1d0djJQSCfDEbpntbvcjE84B9SnavrjTO+LIESh9GjA3DB3Lcflh9pJJJGssG
+         CrFSIfcynogmo7/RebeeSj8aY3KYm4ZSNamzr5tCsQJ/kwV9dRqesCKVvAEduJY9neb8
+         OUCg==
+X-Gm-Message-State: APjAAAVtt/bXuTmemQK9PpfSPFNaPNh23LYBPJBdtHl4PhNw8SbE832I
+        1oEzU72biaVG3Q8pjZIjNsznSA==
+X-Google-Smtp-Source: APXvYqy9YQ0/2reW/VTGMpa4DXBhBkGNEzIVdalaRtiveZv63Qt93WqHFW4lXIHIBl+Qp7GKVG9S9Q==
+X-Received: by 2002:ac8:2d8b:: with SMTP id p11mr28963753qta.220.1567594125444;
+        Wed, 04 Sep 2019 03:48:45 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::48d2])
+        by smtp.gmail.com with ESMTPSA id e7sm4095977qto.43.2019.09.04.03.48.44
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 04 Sep 2019 02:24:23 -0700 (PDT)
-From:   Thomas Schneider <74cmonty@gmail.com>
-Subject: Re: No files in snapshot
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <b729e524-3c63-cf90-7115-02dcf2fda003@gmail.com>
- <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
-Message-ID: <2ba86d8c-8849-eb61-5d9d-dfe024e13127@gmail.com>
-Date:   Wed, 4 Sep 2019 11:24:22 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Wed, 04 Sep 2019 03:48:44 -0700 (PDT)
+Date:   Wed, 4 Sep 2019 06:48:42 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     "Hongzhi, Song" <hongzhi.song@windriver.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        josef@toxicpanda.com
+Subject: Re: Bug?: unlink cause btrfs error but other fs don't
+Message-ID: <20190904104841.nrdocb7smfporu7m@macbook-pro-91.dhcp.thefacebook.com>
+References: <49edadc4-9191-da89-3e3b-ca495f582a4d@windriver.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <49edadc4-9191-da89-3e3b-ca495f582a4d@windriver.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Can you share any update on this issue?
+On Wed, Sep 04, 2019 at 04:02:24PM +0800, Hongzhi, Song wrote:
+> Hi ,
+> 
+> 
+> *Kernel:*
+> 
+>     After v5.2-rc1, qemux86-64
+> 
+>     make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc
+>     use qemu to bootup kernel
+> 
+> 
+> *Reproduce:*
+> 
+>     There is a test case failed on btrfs but success on other fs(ext4,ext3),
+> see attachment.
+> 
+> 
+>     Download attachments:
+> 
+>         gcc test.c -o myout -Wall -lpthread
+> 
+>         copy myout and run.sh to your qemu same directory.
+> 
+>         on qemu:
+> 
+>             ./run.sh
+> 
+> 
+>     I found the block device size with btrfs set 512M will cause the error.
+>     256M and 1G all success.
+> 
+> 
+> *Error info:*
+> 
+>     "BTRFS warning (device loop0): could not allocate space for a delete;
+> will truncate on mount"
+> 
+> 
+> *Related patch:*
+> 
+>     I use git bisect to find the following patch introduces the issue.
+> 
+>     commit c8eaeac7b734347c3afba7008b7af62f37b9c140
+>     Author: Josef Bacik <josef@toxicpanda.com>
+>     Date:   Wed Apr 10 15:56:10 2019 -0400
+> 
+>         btrfs: reserve delalloc metadata differently
+>         ...
+> 
+> 
 
--------------------------------
+I meant to reply to this but couldn't find the original thread.  The patches I
+wrote for this merge window were to address this issue.  Thanks,
 
-Hi,
-
-I was thinking of this, too. But it does not apply.
-root@ld5507:~# btrfs su list -to /var/lib
-IDÂ Â Â Â Â  genÂ Â Â Â  top levelÂ Â Â Â Â Â  path
---Â Â Â Â Â  ---Â Â Â Â  ---------Â Â Â Â Â Â  ----
-root@ld5507:~# btrfs su list -to /var
-IDÂ Â Â Â Â  genÂ Â Â Â  top levelÂ Â Â Â Â Â  path
---Â Â Â Â Â  ---Â Â Â Â  ---------Â Â Â Â Â Â  ----
-
-And there are files in other directories:
-root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mgr/ceph-ld5507/
-insgesamt 4
--rw-r--r-- 1 ceph ceph 61 Mai 28 14:33 keyring
-
-root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mon/ceph-ld5507/
-insgesamt 12
--rw------- 1 ceph cephÂ  77 Mai 28 14:33 keyring
--rw-r--r-- 1 ceph cephÂ Â  8 Mai 28 14:33 kv_backend
--rw-r--r-- 1 ceph cephÂ Â  3 Aug 23 09:41 min_mon_release
-drwxr-xr-x 1 ceph ceph 244 Aug 26 18:37 store.db
-
-Only this directories 
-/.snapshots/158/snapshot/var/lib/ceph/osd/ceph-<id>/ are empty:
-root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/osd/ceph-219/
-insgesamt 0
-
-To create a snapshot I run this command:
-snapper create --type single --description "validate 
-/var/lib/ceph/osd/ceph-<n>"
-
-
-
-Am 28.08.2019 um 00:24 schrieb Chris Murphy:
-> On Tue, Aug 27, 2019 at 3:33 AM Thomas Schneider <74cmonty@gmail.com> 
-> wrote:
->> However, I run into an issue and need to restore various files.
->>
->> I thought that I could simply take the files from a snapshot created 
->> before.
->> However, the files required don't exist in any snapshot!
->>
->> Therefore I have created a new snapshot manually to verify if the files
->> will be included, but there's nothing.
-> Snapshots are not recursive on Btrfs. The snapshot will not extend
-> into nested subvolumes. Check to see if you are snapshotting the
-> proper subvolume.
->
-> # btrfs sub list -to /var/lib
-> # btrfs sub list -to /var/
->
-> In some sense these are redundant, I'm not sure if your /var/lib is a
-> subvolume or not. Also please include the exact snapshot command
-> you're making.
->
-
-
+Josef
