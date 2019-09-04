@@ -2,119 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADFBFA7B33
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 08:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96251A7B63
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 08:15:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728108AbfIDGIr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 02:08:47 -0400
-Received: from mail-eopbgr150135.outbound.protection.outlook.com ([40.107.15.135]:21521
-        "EHLO EUR01-DB5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726045AbfIDGIq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Sep 2019 02:08:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Qes1IVYELz1K/u2KRDdMaxPMxuA8JlzdjO+tHM85mSe00vIBxZnerjVRQEhJP5v603kaT0fRICezKFYIALZEDNvTRY/7t8K+HS6qGAlkDos+JeQN7x1MIvc+6I9rOieJ8oumKxq5AOdmakk7Hnu9cAiLWatRsB5g7WuZsAFkhLjNtV2zIpuIZ/uYKVMqt574BponvlgHp1svo39WatvUJrVpfxeHQBahTJxchuc+MD3kYSXZsiX0MfF9M5Ncyza3FQyxhsYtiKkGn/WeiNYXsXIv0iB2enos7vjISMRkatiftW+us5GxUjx2cJw59m4UY38lTl08Ed+DilpXjbRZDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0rGgxg4kHcBJ2dEs7hMKCI8EsIiLgQcQrJ8vgV2FqMQ=;
- b=BIDUk10bInnijw+YoXI50bhEdRWf6hAKShSoHjwu/ihzC9N09NLfJLO8gcj9RuTsZ1LSqqCxMD4r1VGn8lyQkFtbDXM5i+iMv1dARkREEXbEuhwTtWGKmH6obrK8ButRT+s51VzX8gwIT21aB5vCNIIm/k46lmhJA+1eE/Npiq6axJzQ+AjoCHE9TNoD/QZ5f5tS6diXJEFmni3wzQH0/Bs4a6DWG18OLZnHaE05HHhlNNKL9RjYCbkOLZ272Hxpi6Uv3fWmsDim9v7vhCYC9uaebm6hXT38isNCjl20/5dU33gzM/jneG29tEtME+sqOU4Z1S8Ny74ZZWTv+H2C3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cirsa.com; dmarc=pass action=none header.from=cirsa.com;
- dkim=pass header.d=cirsa.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirsa.onmicrosoft.com;
- s=selector2-cirsa-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0rGgxg4kHcBJ2dEs7hMKCI8EsIiLgQcQrJ8vgV2FqMQ=;
- b=aJ9Y+zHuc1fnHXT1rPgN8A/XO7OQgLyEC0Jr7iVD0HDypyOKI3cn5vS4ABnAlywFh57pMSsAn1D/xpY0cly6SsnPipb9bkb6RT1NgKdPfoEOzakR699pPoaVpjQICHpPeRlp5LsrOfXNhIujs0adIfRvnlEMww4GQKJYf0EZAWw=
-Received: from AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM (10.255.123.23) by
- AM6PR10MB2327.EURPRD10.PROD.OUTLOOK.COM (20.177.115.142) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2220.22; Wed, 4 Sep 2019 06:08:42 +0000
-Received: from AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6864:7679:ad13:ea98]) by AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::6864:7679:ad13:ea98%6]) with mapi id 15.20.2220.022; Wed, 4 Sep 2019
- 06:08:42 +0000
-From:   Jorge Fernandez Monteagudo <jorgefm@cirsa.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: RE: btrfs and checksum
-Thread-Topic: btrfs and checksum
-Thread-Index: AQHVYuV0Bwq6n8twVEGqFBAVEg/N3w==
-Date:   Wed, 4 Sep 2019 06:08:42 +0000
-Message-ID: <AM6PR10MB3399AD2694BEC12D6C262309A1B80@AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM>
-Accept-Language: es-ES, en-US
-Content-Language: es-ES
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=jorgefm@cirsa.com; 
-x-originating-ip: [185.180.48.110]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: dee47e03-42d3-4d23-30ae-08d730fe5680
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:AM6PR10MB2327;
-x-ms-traffictypediagnostic: AM6PR10MB2327:
-x-microsoft-antispam-prvs: <AM6PR10MB232706D3A2DBF4BE7A0A4B82A1B80@AM6PR10MB2327.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-forefront-prvs: 0150F3F97D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(346002)(366004)(396003)(39860400002)(199004)(189003)(54014002)(2501003)(52536014)(2906002)(66066001)(33656002)(476003)(478600001)(486006)(14454004)(26005)(7696005)(99286004)(86362001)(186003)(102836004)(110136005)(6506007)(316002)(3480700005)(25786009)(55016002)(6246003)(66946007)(76116006)(7736002)(305945005)(66476007)(66556008)(64756008)(66446008)(74316002)(81156014)(6436002)(71190400001)(71200400001)(256004)(14444005)(81166006)(8936002)(5660300002)(3846002)(53936002)(7116003)(9686003)(229853002)(8676002)(6116002);DIR:OUT;SFP:1102;SCL:1;SRVR:AM6PR10MB2327;H:AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: cirsa.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: WVoYdQWuoL73hQBwIIIeTMLW6GKqwAN/DrPlzXdtoku4hiT5MYapIzUTtFQJ3yfDueoCJRdMucrTQHiFrtp9dlClKesBJtmSmSVBr9Er6JS3XKGWUuJwOsAJ9fzuvILrAniDjdqxF4xh0uA1qhNc9pwmHJPWqWEhIkOXj+6vMrKQzrDkEYpAzoxxeDalTiySwJW2D/Ij6nhdYnuQQ9lWD+gkfDZ8n/LoDZ9MGHFh9P2tbncMi9bpkSJkuA7fhPjzGXBD3bTU1BfNFqBPsCRaVxnLAjEfS+RhZDJEXcp6WCApK06vH9PzIVA49U8jewOeN4FbORV6ZCGrzAKuXa8lEAvqF7mHYSjATADMqsWW0s498ug/tPLVSwc2Hxb4xX5bgUp6lw9UkzUu0QeJy6GiUq2M/wduJlmbP/Y/xy+mqQA=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S1728624AbfIDGPz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 02:15:55 -0400
+Received: from relay4-d.mail.gandi.net ([217.70.183.196]:42769 "EHLO
+        relay4-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbfIDGPy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 02:15:54 -0400
+X-Originating-IP: 88.191.131.7
+Received: from [192.168.1.167] (unknown [88.191.131.7])
+        (Authenticated sender: swami@petaramesh.org)
+        by relay4-d.mail.gandi.net (Postfix) with ESMTPSA id DE346E0004;
+        Wed,  4 Sep 2019 06:15:51 +0000 (UTC)
+To:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Michel Bouissou <michel@bouissou.net>
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Subject: Cloning / getting a full backup of a BTRFS filesystem
+Openpgp: preference=signencrypt
+Autocrypt: addr=swami@petaramesh.org; prefer-encrypt=mutual; keydata=
+ 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
+ BtUAN08OPA==
+Message-ID: <7d044ff7-1381-91c8-2491-944df8315305@petaramesh.org>
+Date:   Wed, 4 Sep 2019 08:15:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-X-OriginatorOrg: cirsa.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dee47e03-42d3-4d23-30ae-08d730fe5680
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Sep 2019 06:08:42.5553
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: e6d255d9-7bfe-42f2-a01e-09634cc3a03b
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: HqzSImtqeuz6rMumXJBMLdvcmJXoVD4WQncjHFGRseDigMGgUygP5szx/qTeodkDJj87qgReqQJOkY3ho0FFyA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR10MB2327
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr-FR
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu, thanks for answering!=0A=
-=0A=
->RO of the ext4, and still get corruption? Definitely looks like a=0A=
->hardware problem to me.=0A=
-=0A=
-It's a weird error, because rebooting the machine the previous error disape=
-ars and the file could be read ok, then we know that the info in disk is ok=
-. Then, the suspects list grows up: disk, RAM memory, kernel error (block l=
-ayer?, filesystem layer?).... It's not a frequent bug so it's difficult to =
-debug it.=0A=
-=0A=
-=0A=
->For btrfs, as long as you're using data csum (default), btrfs can detect=
-=0A=
->such corruption.=0A=
->=0A=
->For v5.2 kernel, btrfs can even detects some easy to expose memory=0A=
->corruption.=0A=
->=0A=
->But please keep in mind that, due to the fact btrfs (at least least=0A=
->version) is very picky about corrupted on-disk data or memory, if you=0A=
->find something wrong, you need to check dmesg to see what's going wrong.=
-=0A=
->=0A=
->Furthermore, if your ssd is not reliable, especially when it lies about=0A=
->FLUSH/FUA, btrfs can be easier to be corrupted, as btrfs completely=0A=
->relies on FLUSH/FUA and metadata COW to ensure its safety against=0A=
->powerloss, it's way easier to get corrupted if FLUSH/FUA is not=0A=
->implemented corrected.=0A=
->=0A=
->(On the other hand, btrfs is more robust against data corruption, so as=0A=
->long as your SSD is OK, you may find a better experience using btrfs)=0A=
-=0A=
-Then, it's advised to change the ext4 to btrfs or it's better to change the=
- ISO packages filesytem to btrfs?=0A=
-=0A=
-Thanks!=0A=
-Jorge=
+Hi list,
+
+Is there an advised way to completely “clone” a complete BTRFS
+filesystem, I mean to get an exact copy of a BTRFS filesystem including
+subvolumes (even readonly snapshots) and complete file attributes
+including extended attributes, ACLs and so, to another storage pool,
+possibly defined with a different RAID geometry or compression ?
+
+The question boils down to getting an exact backup replica of a given
+BTRFS filesystem that could be restored to something logically
+absolutely identical.
+
+The usual backup tools have no clue about share extents, snapshots and
+the like, and using btrfs send/receive for individual subvols is a real
+pain in a BTRFS filesystem that may contain hundreds of snapshots of
+different BTRFS subvols plus deduplication etc.
+
+So on a practical standpoint, how can one backup and restore a full
+BTRFS structure ?
+
+(I know of tools like partclone that may or may not do the job as they
+usually lack behind recent BTRFS features, and may not be able to clone
+BTRFS RAID setups for example...)
+
+TIA.
+
+ॐ
+
+-- 
+Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
