@@ -2,76 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F19A8D9E
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 21:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05692A8DC2
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 21:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731609AbfIDRXC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 13:23:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50850 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731447AbfIDRXC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Sep 2019 13:23:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 67ACEB024;
-        Wed,  4 Sep 2019 17:23:01 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2] btrfs: Don't assign retval of btrfs_try_tree_write_lock/btrfs_tree_read_lock_atomic
-Date:   Wed,  4 Sep 2019 20:22:39 +0300
-Message-Id: <20190904172239.14276-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190904171635.13783-1-nborisov@suse.com>
-References: <20190904171635.13783-1-nborisov@suse.com>
+        id S1731648AbfIDRgV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 13:36:21 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:37257 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727809AbfIDRgU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 13:36:20 -0400
+Received: by mail-wr1-f66.google.com with SMTP id z11so22175674wrt.4
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 10:36:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d44qtIqdHRg7B2Giu7yG0QxOK6Knn2kRmBFh+A/9fTM=;
+        b=wbOTFPEageldGTsbCglpapdUoFlsrz+h1H4BXdO0e7aMQQeF/LzC+itdBf5a43njCl
+         z/8BVAPN/whY+PsyGxeFKlXJZ0Dywq4mXEQltlJdUHmrWNU3T8GLRg8vy+tQfw/0uHhp
+         dxtNe2i9B6kgmq1ZZQbLqv/GnSBbW5TwIrmtkFgkXXha+110Tgi/DiCHFJXBziwrSpX6
+         Q8HGsbs5tm7gFdMdJxBXHS/9LvQtlhcvbFrbnGMIQZLVT2JuSHgX11gzYHOpb/Vy6z5B
+         80FTpoSliZTPQZSflycbj2puVnGZyGB9XV7KQ3MIqPdSAncGy64SYMiJeLIk5WZ8ZhE5
+         DVTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d44qtIqdHRg7B2Giu7yG0QxOK6Knn2kRmBFh+A/9fTM=;
+        b=tfH302UhGer5QLAbEbLVVDAE4fOg0bDKiDYhnBnQXBIbwxSimgMshg6C1OX33+PQs+
+         MPlchF6MWzVRhAoOGM5/MMbWzcIrCOVT9fB9B+60zY3ORVW9CNCHlLw9YNTIIZR3AtNn
+         MWWvFcoY96IxBLiDX8aBcOc18e85hll7yBo/ZTlwHQ+EMSuOavUn1HyvhRY/AhyqHP94
+         2XyjLBuhgwIBtVjcFew5XbKsXdqiFaAKhX/+QV/8nizINRb5aEg+aKrxbVoYCjbZFAm2
+         gnDikQKxrsA5rsXwK4QYj6f+F6cKoaFWrdDpm/3QhoQnFsSL77UHBhUg7qK0KREs8C7y
+         kc1A==
+X-Gm-Message-State: APjAAAVN5RV02WAtR5zFI+1+j7MbZgEEi0iVCSHoyhEV3B69ycwUyZJp
+        YGRdTFa07mVv4RXIR6DIzBtL5mRAkvqmsgNDq1MNqJmZBhY=
+X-Google-Smtp-Source: APXvYqw8l9JOPzL9+zzHw7vlADaviRX+QMjpGr8Rv4kEn6JvZ9NDrMGZpjtg/K3fe7b/x7RQ0uFyqh53TrAx4DukvKY=
+X-Received: by 2002:a5d:46cb:: with SMTP id g11mr3150068wrs.268.1567618578587;
+ Wed, 04 Sep 2019 10:36:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <b729e524-3c63-cf90-7115-02dcf2fda003@gmail.com>
+ <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com> <f22229eb-ab68-fecb-f10a-6e40c0b0e1ef@gmail.com>
+In-Reply-To: <f22229eb-ab68-fecb-f10a-6e40c0b0e1ef@gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 4 Sep 2019 11:36:07 -0600
+Message-ID: <CAJCQCtRPUi3BLeSVqELopjC7ZvihOBi321_nxqcUG1jpgwq9Ag@mail.gmail.com>
+Subject: Re: No files in snapshot
+To:     Thomas Schneider <74cmonty@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Those function are simple boolean predicates there is no need to assign
-their return values to interim variables. Use them directly as
-predicates. No functional changes.
+On Wed, Aug 28, 2019 at 8:45 AM Thomas Schneider <74cmonty@gmail.com> wrote:
+>
+> Hi,
+>
+> I was thinking of this, too. But it does not apply.
+> root@ld5507:~# btrfs su list -to /var/lib
+> ID      gen     top level       path
+> --      ---     ---------       ----
+> root@ld5507:~# btrfs su list -to /var
+> ID      gen     top level       path
+> --      ---     ---------       ----
+>
+> And there are files in other directories:
+> root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mgr/ceph-ld5507/
+> insgesamt 4
+> -rw-r--r-- 1 ceph ceph 61 Mai 28 14:33 keyring
+>
+> root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mon/ceph-ld5507/
+> insgesamt 12
+> -rw------- 1 ceph ceph  77 Mai 28 14:33 keyring
+> -rw-r--r-- 1 ceph ceph   8 Mai 28 14:33 kv_backend
+> -rw-r--r-- 1 ceph ceph   3 Aug 23 09:41 min_mon_release
+> drwxr-xr-x 1 ceph ceph 244 Aug 26 18:37 store.db
+>
+> Only this directories
+> /.snapshots/158/snapshot/var/lib/ceph/osd/ceph-<id>/ are empty:
+> root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/osd/ceph-219/
+> insgesamt 0
+>
+> To create a snapshot I run this command:
+> snapper create --type single --description "validate
+> /var/lib/ceph/osd/ceph-<n>"
+>
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
-V2: 
- * Missed one call site in btrfs_search_old_slot.
- fs/btrfs/ctree.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+I don't really know how snapper works.
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 98f741c85905..e59cde204b2f 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -2913,15 +2913,13 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 			if (!p->skip_locking) {
- 				level = btrfs_header_level(b);
- 				if (level <= write_lock_level) {
--					err = btrfs_try_tree_write_lock(b);
--					if (!err) {
-+					if (!btrfs_try_tree_write_lock(b)) {
- 						btrfs_set_path_blocking(p);
- 						btrfs_tree_lock(b);
- 					}
- 					p->locks[level] = BTRFS_WRITE_LOCK;
- 				} else {
--					err = btrfs_tree_read_lock_atomic(b);
--					if (!err) {
-+					if (!btrfs_tree_read_lock_atomic(b)) {
- 						btrfs_set_path_blocking(p);
- 						btrfs_tree_read_lock(b);
- 					}
-@@ -3055,8 +3053,7 @@ int btrfs_search_old_slot(struct btrfs_root *root, const struct btrfs_key *key,
- 			}
- 
- 			level = btrfs_header_level(b);
--			err = btrfs_tree_read_lock_atomic(b);
--			if (!err) {
-+			if (!btrfs_tree_read_lock_atomic(b)) {
- 				btrfs_set_path_blocking(p);
- 				btrfs_tree_read_lock(b);
- 			}
+The way 'btrfs subvolume snapshot' works,  you must point it to a
+subvolume. It won't snapshot a regular directory and from what you
+posted above, there are no subvolumes in /var or /var/lib which means
+trying to snapshot /var/lib/ceph/osd/ceph-....  would fail. So maybe
+it's failing but snapper doesn't show the error. I'm not really sure.
+
 -- 
-2.17.1
-
+Chris Murphy
