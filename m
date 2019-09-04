@@ -2,321 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39CD8A7D42
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 10:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 436C4A7D40
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 10:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbfIDIDS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 04:03:18 -0400
-Received: from mail5.windriver.com ([192.103.53.11]:44648 "EHLO mail5.wrs.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725267AbfIDIDQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Sep 2019 04:03:16 -0400
-Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
-        by mail5.wrs.com (8.15.2/8.15.2) with ESMTPS id x8482cDn016609
-        (version=TLSv1 cipher=AES128-SHA bits=128 verify=FAIL);
-        Wed, 4 Sep 2019 01:02:49 -0700
-Received: from [128.224.162.188] (128.224.162.188) by ALA-HCA.corp.ad.wrs.com
- (147.11.189.50) with Microsoft SMTP Server (TLS) id 14.3.468.0; Wed, 4 Sep
- 2019 01:02:27 -0700
-From:   "Hongzhi, Song" <hongzhi.song@windriver.com>
-Subject: Bug?: unlink cause btrfs error but other fs don't
-To:     <linux-btrfs@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <josef@toxicpanda.com>
-Message-ID: <49edadc4-9191-da89-3e3b-ca495f582a4d@windriver.com>
-Date:   Wed, 4 Sep 2019 16:02:24 +0800
+        id S1728909AbfIDIDP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 04:03:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55334 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725267AbfIDIDO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 4 Sep 2019 04:03:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 8A7E5B022;
+        Wed,  4 Sep 2019 08:03:11 +0000 (UTC)
+Subject: Re: Bug Report: Btrfs can't allocate space for delete when block size
+ arounds 512M
+To:     "Hongzhi, Song" <hongzhi.song@windriver.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>, josef@toxicpanda.com
+References: <b501bcff-8be0-4303-8789-363fda4658e5@windriver.com>
+ <3eca92d0-5a57-3fff-63e1-edd3217341d5@windriver.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4c4f6620-66e5-8c1f-d894-c9175163bf03@suse.com>
+Date:   Wed, 4 Sep 2019 11:03:09 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-        boundary="------------935A56B25A949F598160A930"
+In-Reply-To: <3eca92d0-5a57-3fff-63e1-edd3217341d5@windriver.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [128.224.162.188]
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---------------935A56B25A949F598160A930
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
 
-Hi ,
 
+On 4.09.19 г. 5:36 ч.,  Hongzhi, Song  wrote:
+> Anybody notice this?
+> 
 
-*Kernel:*
+There were multiple fixes from Josef recently improving btrfs enospc
+handling with tiny filesystems (which is generally not the targeted use
+case of btrfs). The code lives in
+https://github.com/kdave/btrfs-devel/commits/misc-next should you want
+to test it. Otherwise re-test after next merge windows when those
+patches are supposed to be merged for 5.4
 
-     After v5.2-rc1, qemux86-64
 
-     make -j40 ARCH=x86_64 CROSS_COMPILE=x86-64-gcc
-     use qemu to bootup kernel
-
-
-*Reproduce:*
-
-     There is a test case failed on btrfs but success on other 
-fs(ext4,ext3), see attachment.
-
-
-     Download attachments:
-
-         gcc test.c -o myout -Wall -lpthread
-
-         copy myout and run.sh to your qemu same directory.
-
-         on qemu:
-
-             ./run.sh
-
-
-     I found the block device size with btrfs set 512M will cause the error.
-     256M and 1G all success.
-
-
-*Error info:*
-
-     "BTRFS warning (device loop0): could not allocate space for a 
-delete; will truncate on mount"
-
-
-*Related patch:*
-
-     I use git bisect to find the following patch introduces the issue.
-
-     commit c8eaeac7b734347c3afba7008b7af62f37b9c140
-     Author: Josef Bacik <josef@toxicpanda.com>
-     Date:   Wed Apr 10 15:56:10 2019 -0400
-
-         btrfs: reserve delalloc metadata differently
-         ...
-
-
-Anyone's reply will be appreciated.
-
---Hongzhi
-
-
---------------935A56B25A949F598160A930
-Content-Type: application/x-shellscript; name="run.sh"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="run.sh"
-
-IyBjaGVjayBwZXJtaXNzaW9uCkNVUl9VU0VSPWBlbnYgfCBncmVwIFVTRVI9IHwgY3V0IC1k
-ICI9IiAtZiAyYApmb3IgaSBpbiAkQ1VSX1VTRVIKZG8KICAgIGlmIFsgJGkgPSAicm9vdCIg
-XTt0aGVuCiAgICAgICAgYnJlYWsKICAgIGVsc2UKICAgICAgICBlY2hvICJyZXF1aXJlIHJv
-b3QgcGVybWlzc2lvbihyb290L3N1ZG8pIgogICAgICAgIGV4aXQKICAgIGZpCmRvbmUKCiMg
-Y3JlYXRlIGJ0cmZzIGJsb2NrIGRldmljZSBhbmQgbW91bnQKQkxPQ0tfU0laRT1gZXhwciA1
-MTIgXCogMTAyNGAKCmRkIGlmPS9kZXYvemVybyBvZj0kSE9NRS90ZXN0LmltZyBicz0xMDI0
-IGNvdW50PSRCTE9DS19TSVpFCm1rZnMuYnRyZnMgLWYgJEhPTUUvdGVzdC5pbWcKCmlmIFsg
-ISAtZCAiJEhPTUUvdG1wbW50IiBdOyB0aGVuCglta2RpciAkSE9NRS90bXBtbnQKZWxzZQoJ
-cm0gLXJmICRIT01FL3RtcG1udAoJbWtkaXIgJEhPTUUvdG1wbW50CmZpCgptb3VudCAkSE9N
-RS90ZXN0LmltZyAkSE9NRS90bXBtbnQKCiMgaW1wbGVtZW50IHRlc3QgY2FzZQouL215b3V0
-Cgp1bW91bnQgJEhPTUUvdG1wbW50CnJtIC1yZiAkSE9NRS90bXBtbnQKcm0gLXJmICRIT01F
-L3Rlc3QuaW1nCg==
---------------935A56B25A949F598160A930
-Content-Type: text/x-csrc; name="test.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="test.c"
-
-/**
- * mount a 512M btrfs block device.
- * and then fill the block device to the full with multi threads(ncpus+2).
- * and then unlink the files in the block device with multi threads.
- * 
- */
-
-
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/mman.h>
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <sys/stat.h>
-#include <sys/vfs.h>
-#include <fcntl.h>
-#include <libgen.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <unistd.h>
-#include <dirent.h>
-#include <grp.h>
-#include <sys/ioctl.h>     
-#include <dirent.h>
-#include <stdio.h>
-#include <errno.h>
-#include <pthread.h>
-#include <string.h>
-
-//#define PATH_MAX 512
-
-unsigned int nthreads;
-static volatile int run;
-struct worker *workers;
-static int enospc_cnt;	//no space count
-const char *homepath;
-
-struct worker {
-    char dir[PATH_MAX];
-};
-
-#define MIN(a, b) ({\
-    typeof(a) _a = (a); \
-    typeof(b) _b = (b); \
-    _a < _b ? _a : _b; \
-})
-
-#define pr_err(a) do{\
-    printf("%s:%d:\n", __FILE__, __LINE__); \
-    perror(a); \
-}while(0)
-
-unsigned int get_ncpus_conf()
-{
-	unsigned int ncpus_conf = -1;
-
-	if ( (ncpus_conf = sysconf(_SC_NPROCESSORS_CONF)) == -1 ) {
-		pr_err("Fail to get ncpus!");
-		exit(1);
-	}
-
-	return ncpus_conf;
-}
-
-void fill_fs(const char *path)
-{
-    int i = 0;
-    char file[PATH_MAX];
-    char buf[4096];
-    size_t len;
-    ssize_t ret;
-    int fd;
-
-    for (;;) {
-        len = random() % (1024 * 102400);
-
-        snprintf(file, sizeof(file), "%s/file%i", path, i++);
-        printf("%s \n", file);
-
-        fd = open(file, O_WRONLY | O_CREAT, 0700);
-        if (fd == -1) {
-            if (errno != ENOSPC)
-                pr_err("Fail to open()");
-				exit(1);
-
-            printf("No space to open() \n");
-            return;
-        }
-
-        while (len) {
-            ret = write(fd, buf, MIN(len, sizeof(buf)));
-
-            if (ret < 0) {
-                close(fd);
-
-                if (errno != ENOSPC)
-                    pr_err("Fail to write()");
-
-                printf("No space to write() \n");
-                return;
-            }
-
-            len -= ret;
-        }
-
-        close(fd);
-    }
-}
-
-static void *worker(void *p)
-{
-
-    struct worker *w = p;
-    DIR *d;
-    struct dirent *ent;
-    char file[2*PATH_MAX];
-
-    while (run) {
-        fill_fs(w->dir);
-
-         __atomic_fetch_add(&enospc_cnt, 1, __ATOMIC_SEQ_CST);
-
-        d = opendir(w->dir);
-        while ((ent = readdir(d))) {
-
-            if (!strcmp(ent->d_name, ".") || !strcmp(ent->d_name, ".."))
-                continue;
-
-            snprintf(file, sizeof(file), "%s/%s", w->dir, ent->d_name);
-
-            printf("Unlinking %s \n", file);
-
-            if( unlink(file) ) {
-				pr_err("Fail to unlink");
-			}
-            break;
-        }
-        closedir(d);
-    }
-
-    return NULL;
-}
-
-
-int main()
-{
-	unsigned int i, ms;
-
-    homepath = getenv("HOME");
-
-	nthreads = get_ncpus_conf() + 2;
-    pthread_t threads[nthreads];
-
-	workers = malloc(sizeof(struct worker) * nthreads);
-	if (!workers) {
-		pr_err("Fail to malloc workers!");
-		exit(1);
-	}
-
-	for (i = 0; i < nthreads; i++) {
-        snprintf(workers[i].dir, sizeof(workers[i].dir), \
-        "%s/tmpmnt/thread%i", homepath, i + 1);
-
-        if( mkdir(workers[i].dir, 0700) ){
-			pr_err("Fail to mkdir workerdir");
-			exit(1);
-		}
-    }
-
-	printf("Running %d writer threads \n", nthreads);
-
-	run = 1;
-    for (i = 0; i < nthreads; i++) {
-        if( pthread_create(&threads[i], NULL, worker, &workers[i]) ) {
-			pr_err("Fail to create pthread");
-			exit(1);
-		}
-    }
-
-    for (ms = 0; ; ms++) {
-        usleep(1000);
-
-        if (ms >= 1000 && enospc_cnt)
-            break;
-
-        if (enospc_cnt > 100)
-            break;
-    }
-
-    run = 0;
-    for (i = 0; i < nthreads; i++){
-        if( pthread_join(threads[i], NULL) ) {
-			pr_err("Fail to pthread_join");
-		}
-    }
-
-    printf("Got %d ENOSPC runtime %dms \n", enospc_cnt, ms);
-	
-	return 0;
-}
-
---------------935A56B25A949F598160A930--
