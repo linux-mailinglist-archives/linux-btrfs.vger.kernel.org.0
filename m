@@ -2,106 +2,125 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A7C0A7EBE
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 11:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3052A7F3F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 11:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727447AbfIDJDX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 05:03:23 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:34922 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727387AbfIDJDX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 05:03:23 -0400
-Received: by mail-ot1-f43.google.com with SMTP id 100so19900838otn.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 02:03:22 -0700 (PDT)
+        id S1727787AbfIDJY1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 05:24:27 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:37009 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725938AbfIDJY1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 05:24:27 -0400
+Received: by mail-wm1-f43.google.com with SMTP id r195so2780921wme.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 02:24:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=PLHGmyHqFkzdOkZTmXwhEFcqiFZwwzZ6b7SLngTltRs=;
-        b=N51nkzo04i2MlwZ5n57LyN+9a1x+gpgLrmE9esQ2t2b9pwhVwPar5XVmeVZc8hScQ/
-         iqgwTKwDKLER76hzEdFFXfzjgpuccQIAzQVPyZgnzFnKQ64ES564F6sunvYcar0+Sqhg
-         Z14Y7zV5Ll6P1juPUDQNy7XoAc8ACzKUo3KnZU4VleD6C9z/UwbkqmfC31qb34mkD9Qu
-         CGBaiN7d+sACBXNLXJo8PuLyBWcrzrwEZrfZmazTTY6rkFjJSfIhDepZSE3SopWdIxTH
-         CZU1xGeCIJragmuBWnV8IB+sahCJZdkLV1FWRoC61MisfvLKpVeHxCgAyH+dSifulJOo
-         lfgg==
+        h=from:subject:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=zoarTvLv9Yo2UvKO7hOkiz6yho8U/lNrsl7k0570wUE=;
+        b=h7rsGJcB8VoWT7XGpppLcx97OckGLepeFA+wK2UwIVEv1JHwdN4Pb+Q4pZVmczr96W
+         I05HNCuaGlfmAiZ5gj/8WrpWfFKiy8zVG/okculdf8Iyj97CPJGiNvHylPpMrKLeBFgW
+         5lDnCLEPZm2bZJTDX38A5YUmZwmkvHbC4SH8eCiykSNm3qdN3PeVi9cpTmiqmcGgCtBH
+         5Dceiin49DtWgJ0m2xLkje7y7fhK99AwDjRV0KWZszDJBhK5GFCcywOKzU9Xm9OSmplD
+         FSOrCFT6q9w7HXJlEPow3bNZwcyih7rVyz6zu8XjqJEMFNnhs+0e7+V4APjJ09sSRytR
+         mOIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=PLHGmyHqFkzdOkZTmXwhEFcqiFZwwzZ6b7SLngTltRs=;
-        b=BQ9hE694VCre/M52+g7+0ve1N/ZwppVSHnOuh3EPf4J8AQ5vcxUtOzXpmid5Y+jxZ0
-         1worobt6SEIIrevF6+DS/8dAoWXI/NTTGwOQYKOTdI3bXMTzALFwdUJL3lNt5EvAKlC8
-         f76+hAzSjdAF7sLSd1xaNLGq3tisJEW5YBEEx+0dv8rcakD95YMB3j+mvYlbhsuiomSu
-         JH3rxy+j+xOIPHGmCOsvzrFWbhYvyz8TIYuG9pUYVi9wOcXfr6q27J+vFnc6Q+Fepgm6
-         C8O4EWcC4K9FcT4h9yTTQFW6NN106mV1U4G0VaMBT0C6b31Oz+8dCBWd+g60XiDFpTa4
-         FASA==
-X-Gm-Message-State: APjAAAU5GQz1I2mdaT5PH2E92iNSLQY4dnoVjBeF5ee9Ostffeo2Rj2W
-        UOm02rwg7X5g/pbN0BtRed0kovp3GCGeSL+ToTxkoEqU
-X-Google-Smtp-Source: APXvYqytTOaj0HQ0WrphE07RL2cQlBNCZuCGzmJF/rR/CJbH3i2V3V+ZoFqpEhwkT7b1gz+U2P4loCeL86nXfIDx44E=
-X-Received: by 2002:a9d:4d0e:: with SMTP id n14mr7421821otf.285.1567587802331;
- Wed, 04 Sep 2019 02:03:22 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=zoarTvLv9Yo2UvKO7hOkiz6yho8U/lNrsl7k0570wUE=;
+        b=L6PoO17/X1OBlLprVQjz2NaVHyMO7JH8Fs50Rud3yQYFg8c+ZpUGf3i7cxzQ5RrBfr
+         OR8C+JJzrPaddWNLAQrBkbtihPebEJ5O64KwxFCbsMu6C/mhK0FKsvlKZDSLqsOI07wb
+         snF9RWrT5B7U5znpsAQSekzJAQ3PnZGNuLy2Y/RDSJbwL8bQj8k2b++aInDtdDdJzFpd
+         kF9ErzVZIqhPL8u5M2Wl0uL8f0RgyPPZ5i3JrBcAyJOyc4PKucWm5RDVtTU9qc2oKka8
+         WA1ceqSvHkYUqvThukKpaFy7E5O+pkApcR138DsFjj0CAFqKq0Nf4egX24UmAL9Q9VrJ
+         W8cg==
+X-Gm-Message-State: APjAAAUx4u5RtztSdiWiesQ4ndAOS7+n5KUbFAV12wGeHO/SbsDlOyvP
+        0+XL7UV40sVMMuOrjJ4hVqFM7b6N
+X-Google-Smtp-Source: APXvYqybj1mdRT77KPlnCcsz/bkjM31zi/ELgoiDMCCcoa8nwCbxrGN1Za4p42iAIOuPdhGhNumafA==
+X-Received: by 2002:a05:600c:2181:: with SMTP id e1mr3468845wme.117.1567589064533;
+        Wed, 04 Sep 2019 02:24:24 -0700 (PDT)
+Received: from [10.19.90.60] ([193.16.224.12])
+        by smtp.gmail.com with ESMTPSA id b1sm2496199wmj.4.2019.09.04.02.24.23
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 04 Sep 2019 02:24:23 -0700 (PDT)
+From:   Thomas Schneider <74cmonty@gmail.com>
+Subject: Re: No files in snapshot
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <b729e524-3c63-cf90-7115-02dcf2fda003@gmail.com>
+ <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
+Message-ID: <2ba86d8c-8849-eb61-5d9d-dfe024e13127@gmail.com>
+Date:   Wed, 4 Sep 2019 11:24:22 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <7d044ff7-1381-91c8-2491-944df8315305@petaramesh.org>
-In-Reply-To: <7d044ff7-1381-91c8-2491-944df8315305@petaramesh.org>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Date:   Wed, 4 Sep 2019 12:03:10 +0300
-Message-ID: <CAA91j0VLnOB1pZAbi-Gr2sNUJMj56LbBU7=NLYGfrPs7T_GpNA@mail.gmail.com>
-Subject: Re: Cloning / getting a full backup of a BTRFS filesystem
-To:     =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        Michel Bouissou <michel@bouissou.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 4, 2019 at 9:16 AM Sw=C3=A2mi Petaramesh <swami@petaramesh.org>=
- wrote:
+Can you share any update on this issue?
+
+-------------------------------
+
+Hi,
+
+I was thinking of this, too. But it does not apply.
+root@ld5507:~# btrfs su list -to /var/lib
+ID      gen     top level       path
+--      ---     ---------       ----
+root@ld5507:~# btrfs su list -to /var
+ID      gen     top level       path
+--      ---     ---------       ----
+
+And there are files in other directories:
+root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mgr/ceph-ld5507/
+insgesamt 4
+-rw-r--r-- 1 ceph ceph 61 Mai 28 14:33 keyring
+
+root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/mon/ceph-ld5507/
+insgesamt 12
+-rw------- 1 ceph ceph  77 Mai 28 14:33 keyring
+-rw-r--r-- 1 ceph ceph   8 Mai 28 14:33 kv_backend
+-rw-r--r-- 1 ceph ceph   3 Aug 23 09:41 min_mon_release
+drwxr-xr-x 1 ceph ceph 244 Aug 26 18:37 store.db
+
+Only this directories 
+/.snapshots/158/snapshot/var/lib/ceph/osd/ceph-<id>/ are empty:
+root@ld5507:~# ls -l /.snapshots/158/snapshot/var/lib/ceph/osd/ceph-219/
+insgesamt 0
+
+To create a snapshot I run this command:
+snapper create --type single --description "validate 
+/var/lib/ceph/osd/ceph-<n>"
+
+
+
+Am 28.08.2019 um 00:24 schrieb Chris Murphy:
+> On Tue, Aug 27, 2019 at 3:33 AM Thomas Schneider <74cmonty@gmail.com> 
+> wrote:
+>> However, I run into an issue and need to restore various files.
+>>
+>> I thought that I could simply take the files from a snapshot created 
+>> before.
+>> However, the files required don't exist in any snapshot!
+>>
+>> Therefore I have created a new snapshot manually to verify if the files
+>> will be included, but there's nothing.
+> Snapshots are not recursive on Btrfs. The snapshot will not extend
+> into nested subvolumes. Check to see if you are snapshotting the
+> proper subvolume.
 >
-> Hi list,
+> # btrfs sub list -to /var/lib
+> # btrfs sub list -to /var/
 >
-> Is there an advised way to completely =E2=80=9Cclone=E2=80=9D a complete =
-BTRFS
-> filesystem, I mean to get an exact copy of a BTRFS filesystem including
-> subvolumes (even readonly snapshots) and complete file attributes
-> including extended attributes, ACLs and so, to another storage pool,
-> possibly defined with a different RAID geometry or compression ?
+> In some sense these are redundant, I'm not sure if your /var/lib is a
+> subvolume or not. Also please include the exact snapshot command
+> you're making.
 >
 
-As long as you do not use top level subvolume directly (all data is
-located in subolumes), send/receive should work.
 
-> The question boils down to getting an exact backup replica of a given
-> BTRFS filesystem that could be restored to something logically
-> absolutely identical.
->
-> The usual backup tools have no clue about share extents, snapshots and
-> the like, and using btrfs send/receive for individual subvols is a real
-> pain in a BTRFS filesystem that may contain hundreds of snapshots of
-> different BTRFS subvols plus deduplication etc.
->
-
-Shared extents could be challenging. You can provide this information
-to "btrfs send", but for one, there is no direct visibility into which
-subvolumes share extents with given subvolume, so no way to build
-corresponding list for "btrfs send". I do not even know if this
-information can be obtained without exhaustive search over all
-extents. Second, btrfs send/receive only allows sharing of full
-extents which means there is no guarantee of identical structure on
-receiving side.
-
-> So on a practical standpoint, how can one backup and restore a full
-> BTRFS structure ?
->
-> (I know of tools like partclone that may or may not do the job as they
-> usually lack behind recent BTRFS features, and may not be able to clone
-> BTRFS RAID setups for example...)
->
-> TIA.
->
-> =E0=A5=90
->
-> --
-> Sw=C3=A2mi Petaramesh <swami@petaramesh.org> PGP 9076E32E
