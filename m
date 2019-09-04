@@ -2,86 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B64A83FA
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 15:48:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77471A844D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Sep 2019 15:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbfIDMyR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 08:54:17 -0400
-Received: from mail-qt1-f170.google.com ([209.85.160.170]:43208 "EHLO
-        mail-qt1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbfIDMyR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 08:54:17 -0400
-Received: by mail-qt1-f170.google.com with SMTP id l22so11956706qtp.10
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 05:54:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=K2Yo0LRj16H2ONDkEAV5P8S8gYYBaazExzOwwvRrqrU=;
-        b=PzRmGpzixbHFEMc+EFPLqbrB3YfREB5dFkpRXivYhfjGOqDN62Mkqq50KFVKpwQoZ6
-         Uoa7h4vVXpTOjU6X+SuYOJsHaaQFb3Is8liALexnkDpr11rmJye37pliTmQWQF4U2gU9
-         4TyOd/tgCiSiKX6zv11bV2rDMczeQBgoPB3hgE+L1zb9872pWN3HQz5kYt7qXOGp74Hk
-         IrwAfsb0xQDogzlCZXetPCqjc+gFUiw8AOostAXgc68W9Pp+Vv9zqpUUEsE2nN9Na6u3
-         EO+VZgvBXRRYjwg7suM/J26VL73HncEZTOGCutnRcIAchMLe6uk+QqOWZdtU984A8Dfc
-         3OXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=K2Yo0LRj16H2ONDkEAV5P8S8gYYBaazExzOwwvRrqrU=;
-        b=UmMyVODQuQUwhW6mN5N6JT4rurSkSEqnNlzu532WJOVLcxTN03NjcNQ1ldbv0VjMvM
-         GpfPzpYkrEwGnZcwxoSIfazFXBvPRPceBEOva6Qm0xKUIHxIsKgIzAndKrD019iO9m8H
-         9H2L8Cvg82nySyy4IRtq1WvOZ2gMLTgWp/VAVefpVCui+XSMej7CF3FmRXKhoeFQYwCA
-         S70lYcKO7GeaWDx67Iq/VCj1y6uVgAuXKg4epCRSRE/A4rAdLjzIlAjcz756j5+Dkiw1
-         dccVpDYhBEoc6toyi7r8cMkDQRFehkQ+ORVtiM2hkvkJY9/oRz6foWvjO3zgLeyBJWBr
-         pH0Q==
-X-Gm-Message-State: APjAAAWDOUfiPK5dTYthp8Zzc1wgR/1YJTOsFXCdHcrmT721W9PVn1kj
-        /rl/48ht6ebV9l+lUl5whqa+qKqEGeE=
-X-Google-Smtp-Source: APXvYqzh0UDgvaH/Iq9GhQWL7KmmL+UwjVKKuM0D+E3+Cn0yf8ckMMy/4QgKUICY5CikyU/0pBHAmg==
-X-Received: by 2002:ac8:2d2c:: with SMTP id n41mr12575942qta.335.1567601655909;
-        Wed, 04 Sep 2019 05:54:15 -0700 (PDT)
-Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
-        by smtp.gmail.com with ESMTPSA id 27sm10961480qtv.96.2019.09.04.05.54.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Sep 2019 05:54:15 -0700 (PDT)
-Subject: Re: crypted btrfs in a file
-To:     Jorge Fernandez Monteagudo <jorgefm@cirsa.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <AM6PR10MB3399F318A3BAA232A0BCAA48A1B80@AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM>
- <effe8460-808b-e94f-33f5-b7a5ea4ec8f8@gmail.com>
- <AM6PR10MB33994032ED7F1C041BE060E8A1B80@AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM>
-From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Message-ID: <56acd398-7730-9a5b-356c-d6c7aa63e346@gmail.com>
-Date:   Wed, 4 Sep 2019 08:54:14 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.0
+        id S1730253AbfIDNR3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 09:17:29 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:55646 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729804AbfIDNR3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 09:17:29 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x84DHP2L117837;
+        Wed, 4 Sep 2019 13:17:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2019-08-05;
+ bh=gXXgJtoysaTr8zwIJghiDlw9J852M/zUhdcxvKk8jiY=;
+ b=C0Oq3pHboDQjUyJVOEAkPl4MZ+50Glkt9Uk9CWqD7AtV6oHzxjdWkXOn44bgGrSkNVqM
+ KtJHI2SzjZkXYo/lj9Uer8d7ImovnOsZYs1y0rKMfXxBpQ6X+yzgjxyMUHCNjpDAhDPj
+ PWma7ZDMpdwt75cyXHOxWUzX7qWHoa3gkkAtTLhuqhVG5XE2YlOhmQz87Gx29TdYO9hL
+ JuayCeADauhEquKNt0PRxvkbwKnxexiPiCkQSAkhz9VmjOPHV1uv+9RvmsE7fYxZbmRB
+ /Xz/Y12glsfsq8ICt3hIuzPg781MeBj1up5KAcwB6fYCN/k9BChFu7TtKM4pg4b0YHlQ QQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2ute11g01t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Sep 2019 13:17:25 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x84CqVrl119000;
+        Wed, 4 Sep 2019 12:55:07 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2usu51txfg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 04 Sep 2019 12:55:07 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x84Ct6na003930;
+        Wed, 4 Sep 2019 12:55:06 GMT
+Received: from localhost.localdomain (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 04 Sep 2019 05:55:06 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     jthumshirn@suse.de, dsterba@suse.cz
+Subject: [PATCH] btrfs: misc-tests-021 fix restore overlapped on disk's stale data
+Date:   Wed,  4 Sep 2019 20:54:57 +0800
+Message-Id: <20190904125457.787-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-120)
+In-Reply-To: <23f82b13-5050-0acd-49fb-1ecd06811b8d@suse.de>
+References: <23f82b13-5050-0acd-49fb-1ecd06811b8d@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <AM6PR10MB33994032ED7F1C041BE060E8A1B80@AM6PR10MB3399.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1909040129
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1909040133
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019-09-04 08:46, Jorge Fernandez Monteagudo wrote:
-> Hi Austin!
->   
->> What you want here is mkfs.btrfs with the `-r` and `--shrink` options.
->>
->> So, for your specific example, replace the genisoimage command from your
->> first example with this and update the file names appropriately:
->>
->> # mkfs.btrfs -r <dir_to_put_in_the_image> --shrink btrfs.img
->>
->> Note that you don't need and shouldn't use a loop mount for the target
->> file for the `mkfs` command.  It will generate the file at the
->> appropriate size automatically (and as a general rule, `mkfs` for any
->> filesystem works just fine without a loop mount, you just need to have a
->> file of the right size for most of them).
-> 
-> And is there someway to generate a crypted btrfs directly or is it better to do it using cryptsetup as I'm doing in the example?
+As misc-tests/021 image dump is restored on the same original loop
+device, this overlaps with the stale data and makes the test pass
+falsely.
 
-You'll have to do it like you're doing in the sample.
+Fix this by using a new device for restore.
+
+And also, the btrfs-image dump and restore doesn't not collect the data,
+so any read on the files should be avoided. So instead of file data use
+file stat data for the md5sum.
+
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+Reported-by: Johannes Thumshirn <jthumshirn@suse.de>
+---
+ tests/misc-tests/021-image-multi-devices/test.sh | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/tests/misc-tests/021-image-multi-devices/test.sh b/tests/misc-tests/021-image-multi-devices/test.sh
+index b1013b5d2596..5ed8f4b01457 100755
+--- a/tests/misc-tests/021-image-multi-devices/test.sh
++++ b/tests/misc-tests/021-image-multi-devices/test.sh
+@@ -10,17 +10,18 @@ check_prereq btrfs
+ 
+ setup_root_helper
+ 
+-setup_loopdevs 2
++setup_loopdevs 3
+ prepare_loopdevs
+ loop1=${loopdevs[1]}
+ loop2=${loopdevs[2]}
++loop3=${loopdevs[3]}
+ 
+ # Create the test file system.
+ 
+ run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$loop1" "$loop2"
+ run_check $SUDO_HELPER mount "$loop1" "$TEST_MNT"
+ run_check $SUDO_HELPER dd bs=1M count=1 if=/dev/zero of="$TEST_MNT/foobar"
+-orig_md5=$(run_check_stdout md5sum "$TEST_MNT/foobar" | cut -d ' ' -f 1)
++orig_md5=$(run_check_stdout stat "$TEST_MNT/foobar" | md5sum | cut -d ' ' -f 1)
+ run_check $SUDO_HELPER umount "$TEST_MNT"
+ 
+ # Create the image to restore later.
+@@ -32,13 +33,13 @@ run_check $SUDO_HELPER "$TOP/btrfs-image" "$loop1" "$IMAGE"
+ run_check $SUDO_HELPER wipefs -a "$loop1"
+ run_check $SUDO_HELPER wipefs -a "$loop2"
+ 
+-run_check $SUDO_HELPER "$TOP/btrfs-image" -r "$IMAGE" "$loop1"
++run_check $SUDO_HELPER "$TOP/btrfs-image" -r "$IMAGE" "$loop3"
+ 
+ # Run check to make sure there is nothing wrong for the recovered image
+-run_check $SUDO_HELPER "$TOP/btrfs" check "$loop1"
++run_check $SUDO_HELPER "$TOP/btrfs" check "$loop3"
+ 
+-run_check $SUDO_HELPER mount "$loop1" "$TEST_MNT"
+-new_md5=$(run_check_stdout md5sum "$TEST_MNT/foobar" | cut -d ' ' -f 1)
++run_check $SUDO_HELPER mount "$loop3" "$TEST_MNT"
++new_md5=$(run_check_stdout stat "$TEST_MNT/foobar" | md5sum | cut -d ' ' -f 1)
+ run_check $SUDO_HELPER umount "$TEST_MNT"
+ 
+ cleanup_loopdevs
+-- 
+1.8.3.1
+
