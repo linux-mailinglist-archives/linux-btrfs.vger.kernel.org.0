@@ -2,81 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A4716AA75E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2019 17:31:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39092AA76B
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2019 17:37:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733240AbfIEPb1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Sep 2019 11:31:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47168 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732723AbfIEPb1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Sep 2019 11:31:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 51CD1AF65;
-        Thu,  5 Sep 2019 15:31:26 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id D3818DA8F3; Thu,  5 Sep 2019 17:31:51 +0200 (CEST)
-Date:   Thu, 5 Sep 2019 17:31:51 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Relinquish CPUs in btrfs_compare_trees
-Message-ID: <20190905153151.GC2850@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190904163358.11591-1-nborisov@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190904163358.11591-1-nborisov@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S2390477AbfIEPhI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Sep 2019 11:37:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34016 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388335AbfIEPhI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Sep 2019 11:37:08 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9823E20828;
+        Thu,  5 Sep 2019 15:37:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1567697828;
+        bh=+W1BY/EtR8a9G4Jb7Qnox9TwmniLLAShERHFTDWN7T4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=s5bXNhvBzsvWzxj/knlY8QXtsh6cIGCBaGouow4o76RQBSmYE0FJ+QEL8AeDkPrNB
+         iavJk045DLQ9Kv6fsN3FVe6r7tyrO63F99VBZoX+oNMRNpE5bUx+tUYxfrWE0w1zK3
+         iJ123w1D/o/ZMw5YoCDqFQrgm2IuSAChVLRkxnag=
+From:   fdmanana@kernel.org
+To:     fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH] btrfs/048: fix test failure when fs mounted with v2 space cache option
+Date:   Thu,  5 Sep 2019 16:37:00 +0100
+Message-Id: <20190905153700.21284-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 04, 2019 at 07:33:58PM +0300, Nikolay Borisov wrote:
-> When doing any form of incremental send the parent and the child trees
-> need to be compared via btrfs_compare_trees. This  can result in long
-> loop chains without ever relinquishing the CPU. This causes softlockup
-> detector to trigger when comparing trees with a lot of items. Example
-> report:
-> 
-> watchdog: BUG: soft lockup - CPU#0 stuck for 24s! [snapperd:16153]
-> CPU: 0 PID: 16153 Comm: snapperd Not tainted 5.2.9-1-default #1 openSUSE Tumbleweed (unreleased)
-> Hardware name: QEMU KVM Virtual Machine, BIOS 0.0.0 02/06/2015
-> pstate: 40000005 (nZcv daif -PAN -UAO)
-> pc : __ll_sc_arch_atomic_sub_return+0x14/0x20
-> lr : btrfs_release_extent_buffer_pages+0xe0/0x1e8 [btrfs]
-> sp : ffff00001273b7e0
-> Call trace:
->  __ll_sc_arch_atomic_sub_return+0x14/0x20
->  release_extent_buffer+0xdc/0x120 [btrfs]
->  free_extent_buffer.part.0+0xb0/0x118 [btrfs]
->  free_extent_buffer+0x24/0x30 [btrfs]
->  btrfs_release_path+0x4c/0xa0 [btrfs]
->  btrfs_free_path.part.0+0x20/0x40 [btrfs]
->  btrfs_free_path+0x24/0x30 [btrfs]
->  get_inode_info+0xa8/0xf8 [btrfs]
->  finish_inode_if_needed+0xe0/0x6d8 [btrfs]
->  changed_cb+0x9c/0x410 [btrfs]
->  btrfs_compare_trees+0x284/0x648 [btrfs]
->  send_subvol+0x33c/0x520 [btrfs]
->  btrfs_ioctl_send+0x8a0/0xaf0 [btrfs]
->  btrfs_ioctl+0x199c/0x2288 [btrfs]
->  do_vfs_ioctl+0x4b0/0x820
->  ksys_ioctl+0x84/0xb8
->  __arm64_sys_ioctl+0x28/0x38
->  el0_svc_common.constprop.0+0x7c/0x188
->  el0_svc_handler+0x34/0x90
->  el0_svc+0x8/0xc
-> 
-> Fix this by adding a call to cond_resched at the beginning of the main
-> loop in btrfs_compare_trees.
-> 
-> Fixes: 7069830a9e38 ("Btrfs: add btrfs_compare_trees function")
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+From: Filipe Manana <fdmanana@suse.com>
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+In order to check that the filesystem generation does not change after
+failure to set a property, the test expects a specific generation number
+of 7 in its golden output. That currently works except when using the
+v2 space cache mount option (MOUNT_OPTIONS="-o space_cache=v2"), since
+the filesystem generation is 8 because creating a v2 space cache adds
+an additional transaction commit. So update the test to not hardcode
+specific generation numbers in its golden output and just output an
+unexpected message if the generation number changes.
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ tests/btrfs/048     | 5 +++--
+ tests/btrfs/048.out | 2 --
+ 2 files changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/tests/btrfs/048 b/tests/btrfs/048
+index 7294f231..7c9eaa05 100755
+--- a/tests/btrfs/048
++++ b/tests/btrfs/048
+@@ -221,10 +221,11 @@ $BTRFS_UTIL_PROG property get $SCRATCH_MNT compression
+ 
+ echo -e "\nTesting generation is unchanged after failed validation"
+ $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
+-$BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep '^generation'
++gen_before=$($BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep '^generation')
+ $BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'lz' 2>&1 | _filter_scratch
+ $BTRFS_UTIL_PROG filesystem sync $SCRATCH_MNT
+-$BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep '^generation'
++gen_after=$($BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV | grep '^generation')
++[ "$gen_after" == "$gen_before" ] || echo "filesystem generation changed"
+ 
+ echo -e "\nTesting argument validation with options"
+ $BTRFS_UTIL_PROG property set $SCRATCH_MNT compression 'zlib:3'
+diff --git a/tests/btrfs/048.out b/tests/btrfs/048.out
+index 0923b00c..cc12e329 100644
+--- a/tests/btrfs/048.out
++++ b/tests/btrfs/048.out
+@@ -89,9 +89,7 @@ ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
+ compression=lzo
+ 
+ Testing generation is unchanged after failed validation
+-generation		7
+ ERROR: failed to set compression for SCRATCH_MNT: Invalid argument
+-generation		7
+ 
+ Testing argument validation with options
+ ***
+-- 
+2.11.0
+
