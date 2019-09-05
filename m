@@ -2,102 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 462C1A9D23
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2019 10:37:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BE2A9D83
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2019 10:50:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732323AbfIEIhN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Sep 2019 04:37:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50336 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731518AbfIEIhM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Sep 2019 04:37:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E4458AC93;
-        Thu,  5 Sep 2019 08:37:10 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: Relinquish CPUs in btrfs_compare_trees
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190904163358.11591-1-nborisov@suse.com>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <327304ec-81e7-7152-3d92-d815008e7f23@suse.de>
-Date:   Thu, 5 Sep 2019 10:37:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+        id S1731351AbfIEIuM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Sep 2019 04:50:12 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:38488 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731215AbfIEIuL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Sep 2019 04:50:11 -0400
+Received: by mail-wr1-f65.google.com with SMTP id l11so1720047wrx.5
+        for <linux-btrfs@vger.kernel.org>; Thu, 05 Sep 2019 01:50:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=3MDY27FOEg4bWkuA96DSCxnn0Fyrdt7HT14mK5VOesE=;
+        b=Xu2pUhIV7ChgmLBel9FSxQr8TSYz8W+kubUguLNkrTnBuqNQcW57qOOXw/lG0iLSOh
+         qkSsK5CtOHpzwLjRp4IVsDhp1+ilKrXnJnF/mCFLXTGwksJ1YISBrJN3M4opaLWC45K5
+         Zk8g7tOa5zZkZV9/+SJutdYC5q/iIhsgG2/Mhq/W7NydKgtqtagmyYWaijZzJkoEjRmx
+         IonYcQrGiw/+QkzhvGka2yEfh7Mkn3i/YSWu7O5HpUpjNnRSR7GXKZLINzUSpJaJCyam
+         Ajw+zzndK+00wkB1VA/8PbrmxVbtJhAQi3QpBtshchi7GsS7XeMg5Fij/d/huat98VCV
+         tRCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=3MDY27FOEg4bWkuA96DSCxnn0Fyrdt7HT14mK5VOesE=;
+        b=kv8XFhDryGdeGsrn3hdcMmDvmnQdHqRI78O2IUjSN9Ezio401f5/cXx8azyZnhlS61
+         cNaVBUi1sH/g6TlKdy28TXzkkDrr37QcX6noMahT2RNYVX7bR5LtntFqhFj/HItvKeIv
+         Nes2jKw+qdfB8eI+TQ71j0IPaykmjDZEuzgCFtjoCKFMv2qmT62te1gLkBejXmenb5iQ
+         bh/dLafTUl2OMcE/dO3n+areQ+KQepy98yzQgQFdSN9auMHKMBtbo97ZrFAwUuzQmPO6
+         +OMR79zPwFBDyuMQZILYR3u3DVSHKqWxWprKTrZiIoblB1Xj4rwc8wU0JnXVbzw6mt1s
+         FF5Q==
+X-Gm-Message-State: APjAAAXsh2V+eP/basECZcLqj+BRwrG4OPSIuHQU6xpk3I8vg3Ei+AIN
+        DlXaHskJ7mph4kfDq43UKLu5GAYx
+X-Google-Smtp-Source: APXvYqyLXJaLXozgvv9tD60/Y7hhBuOFmWjlJhYt9Od/WI+gyjqTY8NTiMSxc6Qp0vhuv6rVXDaYGQ==
+X-Received: by 2002:a5d:43cc:: with SMTP id v12mr1730364wrr.75.1567673408091;
+        Thu, 05 Sep 2019 01:50:08 -0700 (PDT)
+Received: from [10.19.90.60] ([193.16.224.12])
+        by smtp.gmail.com with ESMTPSA id q19sm1414043wra.89.2019.09.05.01.50.07
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Sep 2019 01:50:07 -0700 (PDT)
+Subject: Re: No files in snapshot
+To:     Oliver Freyermuth <o.freyermuth@googlemail.com>,
+        Chris Murphy <lists@colorremedies.com>,
+        Remi Gauvin <remi@georgianit.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <b729e524-3c63-cf90-7115-02dcf2fda003@gmail.com>
+ <CAJCQCtTs4jBw_mz3PqfMAhuHci+UxjtMNYD7U4LJtCoZxgUdCg@mail.gmail.com>
+ <f22229eb-ab68-fecb-f10a-6e40c0b0e1ef@gmail.com>
+ <CAJCQCtRPUi3BLeSVqELopjC7ZvihOBi321_nxqcUG1jpgwq9Ag@mail.gmail.com>
+ <423454bc-aa78-daba-d217-343e266c15ee@georgianit.com>
+ <CAJCQCtSG9W93dWwH7++dBGh94s6UGGbugrW8y17OmycC5wP8kw@mail.gmail.com>
+ <a6b8e96a-6b66-be0e-e44d-2b65ab7cb2b9@googlemail.com>
+From:   Thomas Schneider <74cmonty@gmail.com>
+Message-ID: <dd2b4a48-662f-67dd-594c-482f25899d65@gmail.com>
+Date:   Thu, 5 Sep 2019 10:50:06 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190904163358.11591-1-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <a6b8e96a-6b66-be0e-e44d-2b65ab7cb2b9@googlemail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,
-Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+Hi,
 
--- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 247165, AG München)
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+I would agree with Oliver's conclusion:
+the relevant directories are all tmpfs mounts.
+
+root@ld5505:~# mount | grep /var
+/dev/sdbq3 on /var/cache type btrfs 
+(rw,noatime,compress=lzo,ssd,space_cache=v2,subvolid=260,subvol=/@cache)
+/dev/sdbq3 on /var/lib/vz/images type btrfs 
+(rw,noatime,compress=lzo,ssd,space_cache=v2,subvolid=262,subvol=/@images)
+lxcfs on /var/lib/lxcfs type fuse.lxcfs 
+(rw,nosuid,nodev,relatime,user_id=0,group_id=0,allow_other)
+tmpfs on /var/lib/ceph/osd/ceph-122 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-123 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-105 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-92 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-112 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-77 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-76 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-87 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-119 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-79 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-115 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-98 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-100 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-89 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-108 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-120 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-82 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-118 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-104 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-95 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-1 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-96 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-117 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-116 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-99 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-106 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-110 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-97 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-81 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-121 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-88 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-0 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-94 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-113 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-107 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-101 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-78 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-93 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-85 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-103 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-102 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-109 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-114 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-80 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-111 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-83 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-86 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-91 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-84 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-90 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-8 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-9 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-10 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-11 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-12 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-13 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-14 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-15 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-16 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-17 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-18 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-19 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-20 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-21 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-22 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-23 type tmpfs (rw,relatime)
+tmpfs on /var/lib/ceph/osd/ceph-24 type tmpfs (rw,relatime)
+
+
+Am 04.09.2019 um 22:52 schrieb Oliver Freyermuth:
+> Am 04.09.19 um 21:07 schrieb Chris Murphy:
+>> On Wed, Sep 4, 2019 at 12:24 PM Remi Gauvin <remi@georgianit.com> wrote:
+>>> On 2019-09-04 1:36 p.m., Chris Murphy wrote:
+>>>
+>>>> I don't really know how snapper works.
+>>>>
+>>>> The way 'btrfs subvolume snapshot' works,  you must point it to a
+>>>> subvolume. It won't snapshot a regular directory and from what you
+>>>> posted above, there are no subvolumes in /var or /var/lib which means
+>>>> trying to snapshot /var/lib/ceph/osd/ceph-....  would fail. So maybe
+>>>> it's failing but snapper doesn't show the error. I'm not really sure.
+>>>>
+>>> In this case, his snapshots are all of the root.
+>>>
+>>> I don't know how Ceph works, but since we already confirmed that there
+>>> are no subvolumes under /var, the only other explanation is that
+>>> /var/lib/ceph/osd/ceph-<n> is a submount
+>>>
+>>> What is the the result of running:
+>>> mount | grep /var
+>>>
+>> Yep.
+>>
+>>
+> Looking at Thomas' mail on the Ceph-users list:
+> http://lists.ceph.com/pipermail/ceph-users-ceph.com/2019-August/036679.html
+> I deduce he is using Ceph with the Bluestore backend, which indeed means that /var/lib/ceph/osd/ceph.<n>
+> are tmpfs mounts which are completeley ephemeral and are created from LVM metadata of the actual Ceph OSD disks.
+>
+> That would of course also explain why they are not part of any btrfs snapshot of / (and that also means there is no need to backup anything).
+
