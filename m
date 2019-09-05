@@ -2,20 +2,21 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B25C8AA2D2
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2019 14:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A582DAA381
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2019 14:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731943AbfIEMQk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Sep 2019 08:16:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51656 "EHLO mx1.suse.de"
+        id S2387993AbfIEMv0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Sep 2019 08:51:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43736 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731196AbfIEMQk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Sep 2019 08:16:40 -0400
+        id S1730864AbfIEMvZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Sep 2019 08:51:25 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 15106AB9D;
-        Thu,  5 Sep 2019 12:16:38 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 9D270B642;
+        Thu,  5 Sep 2019 12:51:22 +0000 (UTC)
 Subject: Re: [PATCH 2/2] btrfs: add ioctl for directly writing compressed data
+From:   Johannes Thumshirn <jthumshirn@suse.de>
 To:     Dave Chinner <david@fromorbit.com>,
         Omar Sandoval <osandov@osandov.com>
 Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
@@ -23,7 +24,7 @@ Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
 References: <cover.1567623877.git.osandov@fb.com>
  <8eae56abb90c0fe87c350322485ce8674e135074.1567623877.git.osandov@fb.com>
  <20190905021012.GL7777@dread.disaster.area>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
+ <8acbff04-aee0-9f88-b2cd-a85bb7b94df8@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  xsFNBFTTwPEBEADOadCyru0ZmVLaBn620Lq6WhXUlVhtvZF5r1JrbYaBROp8ZpiaOc9YpkN3
@@ -80,12 +81,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <8acbff04-aee0-9f88-b2cd-a85bb7b94df8@suse.de>
-Date:   Thu, 5 Sep 2019 14:16:37 +0200
+Message-ID: <026f0c89-2a31-6a87-12d6-884818164a63@suse.de>
+Date:   Thu, 5 Sep 2019 14:51:22 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190905021012.GL7777@dread.disaster.area>
+In-Reply-To: <8acbff04-aee0-9f88-b2cd-a85bb7b94df8@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -94,61 +95,91 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 05/09/2019 04:10, Dave Chinner wrote:
-> On Wed, Sep 04, 2019 at 12:13:26PM -0700, Omar Sandoval wrote:
->> From: Omar Sandoval <osandov@fb.com>
+On 05/09/2019 14:16, Johannes Thumshirn wrote:
+> On 05/09/2019 04:10, Dave Chinner wrote:
+>> On Wed, Sep 04, 2019 at 12:13:26PM -0700, Omar Sandoval wrote:
+>>> From: Omar Sandoval <osandov@fb.com>
+>>>
+>>> This adds an API for writing compressed data directly to the filesystem.
+>>> The use case that I have in mind is send/receive: currently, when
+>>> sending data from one compressed filesystem to another, the sending side
+>>> decompresses the data and the receiving side recompresses it before
+>>> writing it out. This is wasteful and can be avoided if we can just send
+>>> and write compressed extents. The send part will be implemented in a
+>>> separate series, as this ioctl can stand alone.
+>>>
+>>> The interface is essentially pwrite(2) with some extra information:
+>>>
+>>> - The input buffer contains the compressed data.
+>>> - Both the compressed and decompressed sizes of the data are given.
+>>> - The compression type (zlib, lzo, or zstd) is given.
 >>
->> This adds an API for writing compressed data directly to the filesystem.
->> The use case that I have in mind is send/receive: currently, when
->> sending data from one compressed filesystem to another, the sending side
->> decompresses the data and the receiving side recompresses it before
->> writing it out. This is wasteful and can be avoided if we can just send
->> and write compressed extents. The send part will be implemented in a
->> separate series, as this ioctl can stand alone.
+>> So why can't you do this with pwritev2()? Heaps of flags, and
+>> use a second iovec to hold the decompressed size of the previous
+>> iovec. i.e.
 >>
->> The interface is essentially pwrite(2) with some extra information:
+>> 	iov[0].iov_base = compressed_data;
+>> 	iov[0].iov_len = compressed_size;
+>> 	iov[1].iov_base = NULL;
+>> 	iov[1].iov_len = uncompressed_size;
+>> 	pwritev2(fd, iov, 2, offset, RWF_COMPRESSED_ZLIB);
 >>
->> - The input buffer contains the compressed data.
->> - Both the compressed and decompressed sizes of the data are given.
->> - The compression type (zlib, lzo, or zstd) is given.
+>> And you don't need to reinvent pwritev() with some whacky ioctl that
+>> is bound to be completely screwed up is ways not noticed until
+>> someone else tries to use it...
+>>
+>> I'd also suggest atht if we are going to be able to write compressed
+>> data directly, then we should be able to read them as well directly
+>> via preadv2()....
 > 
-> So why can't you do this with pwritev2()? Heaps of flags, and
-> use a second iovec to hold the decompressed size of the previous
-> iovec. i.e.
 > 
-> 	iov[0].iov_base = compressed_data;
-> 	iov[0].iov_len = compressed_size;
-> 	iov[1].iov_base = NULL;
-> 	iov[1].iov_len = uncompressed_size;
-> 	pwritev2(fd, iov, 2, offset, RWF_COMPRESSED_ZLIB);
+> While I'm with you on this from a design PoV, one question remains:
+> What to do with the file systems that do not support compression?
 > 
-> And you don't need to reinvent pwritev() with some whacky ioctl that
-> is bound to be completely screwed up is ways not noticed until
-> someone else tries to use it...
+> Currently there's only a kernel global check for known RWF_* flags in
+> kiocb_set_rw_flags().
 > 
-> I'd also suggest atht if we are going to be able to write compressed
-> data directly, then we should be able to read them as well directly
-> via preadv2()....
+> So we need a way for the individual file systems to opt into the new
+> RWF_COMPRESSED_* flags and fail early if they're not supported, that
+> will cause a lot of code churn if we cannot do it in the vfs layer.
+> 
+> From the 52 ->write_iter callbacks in fs/ 32 are not using
+> generic_file_write_iter(). So we'd have to patch 33 functions (+/- 1-2
+> because my grep | wc fu isn't the best).
+> 
+
+This (from Anthony Iliopoulos) should be sufficient:
+
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 58a18ed11546..86f7ff0387d7 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -3299,7 +3299,7 @@ static loff_t btrfs_file_llseek(struct file *file,
+
+ static int btrfs_file_open(struct inode *inode, struct file *filp)
+ {
+-       filp->f_mode |= FMODE_NOWAIT;
++       filp->f_mode |= (FMODE_NOWAIT|FMODE_CAN_COMPRESS);
+        return generic_file_open(inode, filp);
+ }
+
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 997a530ff4e9..1b59e795f448 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -3357,6 +3357,11 @@ static inline int kiocb_set_rw_flags(struct kiocb
+                ki->ki_flags |= (IOCB_DSYNC | IOCB_SYNC);
+        if (flags & RWF_APPEND)
+                ki->ki_flags |= IOCB_APPEND;
++       if (flags & RWF_COMPRESSED) {
++               if (!(ki->ki_filp->fmode & FMODE_CAN_COMPRESS))
++                       return -EOPNOTSUPP;
++               ki->ki_flags |= IOCB_COMPRESSED;
++       }
+        return 0;
+ }
 
 
-While I'm with you on this from a design PoV, one question remains:
-What to do with the file systems that do not support compression?
-
-Currently there's only a kernel global check for known RWF_* flags in
-kiocb_set_rw_flags().
-
-So we need a way for the individual file systems to opt into the new
-RWF_COMPRESSED_* flags and fail early if they're not supported, that
-will cause a lot of code churn if we cannot do it in the vfs layer.
-
-From the 52 ->write_iter callbacks in fs/ 32 are not using
-generic_file_write_iter(). So we'd have to patch 33 functions (+/- 1-2
-because my grep | wc fu isn't the best).
-
-Any ideas?
-
-Byte,
-	Johannes
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
