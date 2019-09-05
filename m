@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C915A9C6E
+	by mail.lfdr.de (Postfix) with ESMTP id E87DBA9C70
 	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2019 09:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731880AbfIEH6S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Sep 2019 03:58:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48042 "EHLO mx1.suse.de"
+        id S1731895AbfIEH6U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Sep 2019 03:58:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48058 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731732AbfIEH6R (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 5 Sep 2019 03:58:17 -0400
+        id S1731889AbfIEH6U (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 5 Sep 2019 03:58:20 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D5208AD07
-        for <linux-btrfs@vger.kernel.org>; Thu,  5 Sep 2019 07:58:16 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 70440AD07
+        for <linux-btrfs@vger.kernel.org>; Thu,  5 Sep 2019 07:58:18 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/6] btrfs-progs: check/lowmem: Repair bad imode early
-Date:   Thu,  5 Sep 2019 15:57:58 +0800
-Message-Id: <20190905075800.1633-5-wqu@suse.com>
+Subject: [PATCH v2 5/6] btrfs-progs: check/original: Fix inode mode in subvolume trees
+Date:   Thu,  5 Sep 2019 15:57:59 +0800
+Message-Id: <20190905075800.1633-6-wqu@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190905075800.1633-1-wqu@suse.com>
 References: <20190905075800.1633-1-wqu@suse.com>
@@ -30,77 +30,110 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For lowmem mode, if we hit a bad inode mode, normally it is reported
-when we checking the DIR_INDEX/DIR_ITEM of the parent inode.
+To make original mode to repair imode error in subvolume trees, this
+patch will do:
+- Remove the show-stopper checks for root->objectid.
+  Now repair_imode_original() will accept inodes in subvolume trees.
 
-If we didn't repair at that timing, the error will be recorded even we
-fixed it later.
+- Export detect_imode() for original mode
+  Due to the call requirement, original mode must use an existing trans
+  handler to do the repair, thus we need to re-implement most of the
+  work done in repair_imode_common().
 
-So this patch will check for INODE_ITEM_MISMATCH error type, and if it's
-really caused by invalid imode, repair it and clear the error.
+- Make repair_imode_original() to use detect_imode.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/mode-lowmem.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+ check/main.c        | 35 ++++++++++++++++++++++++++---------
+ check/mode-common.c |  4 ++--
+ check/mode-common.h |  2 ++
+ 3 files changed, 30 insertions(+), 11 deletions(-)
 
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 5f7f101daab1..5d0c520217fa 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -1550,6 +1550,35 @@ static int lowmem_delete_corrupted_dir_item(struct btrfs_root *root,
- 	return ret;
- }
- 
-+static int try_repair_imode(struct btrfs_root *root, u64 ino)
-+{
-+	struct btrfs_inode_item *iitem;
-+	struct btrfs_path path;
+diff --git a/check/main.c b/check/main.c
+index 902279740589..11d296b19ab9 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -2756,18 +2756,34 @@ static int repair_imode_original(struct btrfs_trans_handle *trans,
+ 				 struct btrfs_path *path,
+ 				 struct inode_record *rec)
+ {
 +	struct btrfs_key key;
-+	int ret;
-+
-+	key.objectid = ino;
+ 	int ret;
+ 	u32 imode;
+ 
+-	if (root->root_key.objectid != BTRFS_ROOT_TREE_OBJECTID)
+-		return -ENOTTY;
+-	if (rec->ino != BTRFS_ROOT_TREE_DIR_OBJECTID || !is_fstree(rec->ino))
+-		return -ENOTTY;
++	key.objectid = rec->ino;
 +	key.type = BTRFS_INODE_ITEM_KEY;
 +	key.offset = 0;
-+	btrfs_init_path(&path);
-+
-+	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+ 
+-	if (rec->ino == BTRFS_ROOT_TREE_DIR_OBJECTID)
+-		imode = 040755;
+-	else
+-		imode = 0100600;
++	ret = btrfs_search_slot(NULL, root, &key, path, 0, 0);
 +	if (ret > 0)
 +		ret = -ENOENT;
 +	if (ret < 0)
-+		goto out;
-+	iitem = btrfs_item_ptr(path.nodes[0], path.slots[0],
-+			       struct btrfs_inode_item);
-+	if (!is_valid_imode(btrfs_inode_mode(path.nodes[0], iitem))) {
-+		ret = repair_imode_common(root, &path);
++		return ret;
++
++	if (root->objectid == BTRFS_ROOT_TREE_OBJECTID) {
++		/* In root tree we only have two possible imode */
++		if (rec->ino == BTRFS_ROOT_TREE_OBJECTID)
++			imode = S_IFDIR | 0755;
++		else
++			imode = S_IFREG | 0600;
 +	} else {
-+		ret = -ENOTTY;
++		ret = detect_imode(root, path, &imode);
++		if (ret < 0) {
++			btrfs_release_path(path);
++			return ret;
++		}
 +	}
-+out:
-+	btrfs_release_path(&path);
-+	return ret;
-+}
-+
- /*
-  * Call repair_inode_item_missing and repair_ternary_lowmem to repair
-  *
-@@ -1574,6 +1603,16 @@ static int repair_dir_item(struct btrfs_root *root, struct btrfs_key *di_key,
- 			err &= ~(INODE_ITEM_MISMATCH | INODE_ITEM_MISSING);
- 	}
++	btrfs_release_path(path);
+ 	ret = reset_imode(trans, root, path, rec->ino, imode);
+ 	if (ret < 0)
+ 		return ret;
+@@ -2795,7 +2811,8 @@ static int try_repair_inode(struct btrfs_root *root, struct inode_record *rec)
+ 			     I_ERR_FILE_NBYTES_WRONG |
+ 			     I_ERR_INLINE_RAM_BYTES_WRONG |
+ 			     I_ERR_MISMATCH_DIR_HASH |
+-			     I_ERR_UNALIGNED_EXTENT_REC)))
++			     I_ERR_UNALIGNED_EXTENT_REC |
++			     I_ERR_INVALID_IMODE)))
+ 		return rec->errors;
  
-+	if (err & INODE_ITEM_MISMATCH) {
-+		/*
-+		 * INODE_ITEM mismatch can be caused by bad imode,
-+		 * so check if it's a bad imode, then repair if possible.
-+		 */
-+		ret = try_repair_imode(root, ino);
-+		if (!ret)
-+			err &= ~INODE_ITEM_MISMATCH;
-+	}
-+
- 	if (err & ~(INODE_ITEM_MISMATCH | INODE_ITEM_MISSING)) {
- 		ret = repair_ternary_lowmem(root, dirid, ino, index, namebuf,
- 					    name_len, filetype, err);
+ 	/*
+diff --git a/check/mode-common.c b/check/mode-common.c
+index abea2ceda4c4..d0a6917ea863 100644
+--- a/check/mode-common.c
++++ b/check/mode-common.c
+@@ -935,8 +935,8 @@ out:
+ 	return ret;
+ }
+ 
+-static int detect_imode(struct btrfs_root *root, struct btrfs_path *path,
+-			u32 *imode_ret)
++int detect_imode(struct btrfs_root *root, struct btrfs_path *path,
++		 u32 *imode_ret)
+ {
+ 	struct btrfs_key key;
+ 	struct btrfs_inode_item iitem;
+diff --git a/check/mode-common.h b/check/mode-common.h
+index 6c8d6d7578a6..edf9257edaf0 100644
+--- a/check/mode-common.h
++++ b/check/mode-common.h
+@@ -126,6 +126,8 @@ int delete_corrupted_dir_item(struct btrfs_trans_handle *trans,
+ 			      struct btrfs_root *root,
+ 			      struct btrfs_key *di_key, char *namebuf,
+ 			      u32 namelen);
++int detect_imode(struct btrfs_root *root, struct btrfs_path *path,
++		 u32 *imode_ret);
+ int reset_imode(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 		struct btrfs_path *path, u64 ino, u32 mode);
+ int repair_imode_common(struct btrfs_root *root, struct btrfs_path *path);
 -- 
 2.23.0
 
