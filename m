@@ -2,108 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21083A983C
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2019 04:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 064EAA9887
+	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Sep 2019 04:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730447AbfIECKR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 4 Sep 2019 22:10:17 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:40588 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726240AbfIECKR (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 4 Sep 2019 22:10:17 -0400
-Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 6FE0A361436;
-        Thu,  5 Sep 2019 12:10:13 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92)
-        (envelope-from <david@fromorbit.com>)
-        id 1i5hDw-0001DN-C6; Thu, 05 Sep 2019 12:10:12 +1000
-Date:   Thu, 5 Sep 2019 12:10:12 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: add ioctl for directly writing compressed data
-Message-ID: <20190905021012.GL7777@dread.disaster.area>
-References: <cover.1567623877.git.osandov@fb.com>
- <8eae56abb90c0fe87c350322485ce8674e135074.1567623877.git.osandov@fb.com>
+        id S1730524AbfIECrk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 4 Sep 2019 22:47:40 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:35876 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726240AbfIECrk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 4 Sep 2019 22:47:40 -0400
+Received: by mail-wr1-f66.google.com with SMTP id y19so840591wrd.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Sep 2019 19:47:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9FTeSVW0iifcqiACGODvasQU8ER7yLB2qGEZPTGBQZQ=;
+        b=kkKbCgli4WZBwWxXK17HGB9S6YwpFdyL8cT7g858nFs6FAIP6yoEDgj9FTfOIrD6aw
+         +cJrwEYliEYYeWjWmCAPGilBVoRWHykhliYGYIJeFCM7vG45ZB5Zof0PvXcqW9sjgq03
+         jqEahEkHXFHc38E0zNf7AGQKW5hM4K4tbKJTL/PFSnL/g61AcFHT1flvms9XtyL+y6SB
+         jFM/qzfi6GshP8l/WD5kZNWrHl/g+9uxhmR3QtPkUvM4h0PRgksnPznggWCqEsPZaZ04
+         8IiyOXnwatXrMWMIIQs5MsZalxOmr9pvwuV/W7nCusPzgFQ2bSbqwWirIWgXoaYbyPC7
+         rHIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9FTeSVW0iifcqiACGODvasQU8ER7yLB2qGEZPTGBQZQ=;
+        b=hPQGxww8IfSc+6WgXwbTrYr+F1HtDxSDD7v62aIC968JiXAMLFbX1pBm5b4AT5n0zK
+         1l+IxsPfPg/VUtjMi9E1uCouUP+ZrqXZPV90Euh1iZSGn3sW7NpN3PDfULvUQKQTV6XI
+         BMlFBDd86s14uzo0gXN5fj+FN8yOKejzuLgiThFTQBfYI50kZ5fl+x9ePHaesNZoJKx0
+         eO9Iev5SFbhdVqFSieRRR6c43jObraluekyKgPPtV4b62yjmsb3zrvKqNVYorf3zVMsw
+         lHrMBJxuZtKb3dd+RxRMrs249e0ckGMXgsBrEoizPmW7LjzHkysTQqAaFsf2w2T4m3ir
+         Sqyw==
+X-Gm-Message-State: APjAAAUbFaUbSaaqbxie7/CMpkSY1LtvJXP9LTpjh3/Gd0aPu68ysuaZ
+        HWAx1jpDJ6xSo//j/2UdghNsLYF9bq8x3/Xj8hifPA==
+X-Google-Smtp-Source: APXvYqwS8MEkPYp5f1jYUobtb+iQRWPrJL3UR6wwOv24NxTqhU4lj0dGdxalHePHRTbyjzzDvW38+8rxaPPEXWV1Z8E=
+X-Received: by 2002:adf:e390:: with SMTP id e16mr542006wrm.29.1567651658684;
+ Wed, 04 Sep 2019 19:47:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8eae56abb90c0fe87c350322485ce8674e135074.1567623877.git.osandov@fb.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
-        a=FOH2dFAWAAAA:8 a=7-415B0cAAAA:8 a=GfyUhzXjdq-z9Q1-x_UA:9
-        a=CjuIK1q_8ugA:10 a=i3VuKzQdj-NEYjvDI-p3:22 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <7d044ff7-1381-91c8-2491-944df8315305@petaramesh.org>
+ <CAA91j0VLnOB1pZAbi-Gr2sNUJMj56LbBU7=NLYGfrPs7T_GpNA@mail.gmail.com>
+ <20190904140444.GH31890@pontus.sran> <20190904202012.GF2488@savella.carfax.org.uk>
+ <CAJCQCtQoKOL68yMWSBfeDKsp4qCci1WQiv4YwCpf15JWF++upg@mail.gmail.com>
+ <5b5cc1fd-1e68-53c5-97bd-876c5cf08683@petaramesh.org> <DB7P191MB0377435B086CBC80B5713B1192B80@DB7P191MB0377.EURP191.PROD.OUTLOOK.COM>
+In-Reply-To: <DB7P191MB0377435B086CBC80B5713B1192B80@DB7P191MB0377.EURP191.PROD.OUTLOOK.COM>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 4 Sep 2019 20:47:27 -0600
+Message-ID: <CAJCQCtTJ36JR7xbr1kO5hARn3Tsm3Far8JWzLo+xMUNXhptswQ@mail.gmail.com>
+Subject: Re: Cloning / getting a full backup of a BTRFS filesystem
+To:     Alberto Bursi <alberto.bursi@outlook.it>
+Cc:     =?UTF-8?Q?Sw=C3=A2mi_Petaramesh?= <swami@petaramesh.org>,
+        Chris Murphy <lists@colorremedies.com>,
+        Piotr Szymaniak <szarpaj@grubelek.pl>,
+        Andrei Borzenkov <arvidjaar@gmail.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 04, 2019 at 12:13:26PM -0700, Omar Sandoval wrote:
-> From: Omar Sandoval <osandov@fb.com>
-> 
-> This adds an API for writing compressed data directly to the filesystem.
-> The use case that I have in mind is send/receive: currently, when
-> sending data from one compressed filesystem to another, the sending side
-> decompresses the data and the receiving side recompresses it before
-> writing it out. This is wasteful and can be avoided if we can just send
-> and write compressed extents. The send part will be implemented in a
-> separate series, as this ioctl can stand alone.
-> 
-> The interface is essentially pwrite(2) with some extra information:
-> 
-> - The input buffer contains the compressed data.
-> - Both the compressed and decompressed sizes of the data are given.
-> - The compression type (zlib, lzo, or zstd) is given.
+On Wed, Sep 4, 2019 at 4:14 PM Alberto Bursi <alberto.bursi@outlook.it> wrote:
+>
+> There is a python-based tool that can clone a btrfs volume by sending
+> subvolumes to the new filesystem,
+> one at a time. I never tried it, but it has a bunch of options, a decent
+> readme and it's still maintained so
+> you may ask its developer too about your case.
+>
+> https://github.com/mwilck/btrfs-clone
 
-So why can't you do this with pwritev2()? Heaps of flags, and
-use a second iovec to hold the decompressed size of the previous
-iovec. i.e.
+Wow this is really cool! Just reading the readme is enlightening.
 
-	iov[0].iov_base = compressed_data;
-	iov[0].iov_len = compressed_size;
-	iov[1].iov_base = NULL;
-	iov[1].iov_len = uncompressed_size;
-	pwritev2(fd, iov, 2, offset, RWF_COMPRESSED_ZLIB);
 
-And you don't need to reinvent pwritev() with some whacky ioctl that
-is bound to be completely screwed up is ways not noticed until
-someone else tries to use it...
-
-I'd also suggest atht if we are going to be able to write compressed
-data directly, then we should be able to read them as well directly
-via preadv2()....
-
-> The interface is general enough that it can be extended to encrypted or
-> otherwise encoded extents in the future. A more detailed description,
-> including restrictions and edge cases, is included in
-> include/uapi/linux/btrfs.h.
-
-No thanks, that bit us on the arse -hard- with the clone interfaces
-we lifted to the VFS from btrfs. Let's do it through the existing IO
-paths and write a bunch of fstests to exercise it and verify the
-interface's utility and the filesystem implementation correctness
-before anything is merged.
-
-> The implementation is similar to direct I/O: we have to flush any
-> ordered extents, invalidate the page cache, and do the io
-> tree/delalloc/extent map/ordered extent dance.
-
-Which, to me, says that this should be a small bit of extra code
-in the direct IO path that skips the compression/decompression code
-and sets a few extra flags in the iocb that is passed down to the
-direct IO code.
-
-We don't need a whole new IO path just to skip a data transformation
-step in the direct IO path....
-
-Cheers,
-
-Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+Chris Murphy
