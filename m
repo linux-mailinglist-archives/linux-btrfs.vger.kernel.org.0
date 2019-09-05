@@ -2,169 +2,418 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3021AAE8F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 00:33:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEFFFAAF1A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 01:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388258AbfIEWdn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 5 Sep 2019 18:33:43 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:37657 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388057AbfIEWdm (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Sep 2019 18:33:42 -0400
-Received: by mail-wm1-f48.google.com with SMTP id r195so4871067wme.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 05 Sep 2019 15:33:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kL8JPTVYR8ClCZhWJmSBU2KorTlXt3n/bzkaLjb2dos=;
-        b=sRWqIbpCl4l2kL/7XKKILf/j3oyvJ9vCjLfdpR2ZesbXc5TNxOIQ8ol+hsAnjoALe+
-         qdt9m2jjGCpL9n5MReY/kL9ZwySs+M56o7A7/9rgiK9pL7gyaRJSO2RvwrNdhm2PEv/1
-         DO9PprVnUfyl5D1hmFbHXdNt2TFdJYDfeqQPDL94Wu4jCWjxEPh48ZEjgev1AH0PAd8j
-         FTV+Hm/D7QRltB/ghKRY7JwLurk3vMW0puV6faGxhgkRhF5nwDJmGT63hTzbhzzQrYLG
-         cReDGcHFaj538ee0vJglTY/EaUrMZ8CsW9jOpZWnFwF2NllWyVW7kyPAYuRd8DaztITY
-         dp4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kL8JPTVYR8ClCZhWJmSBU2KorTlXt3n/bzkaLjb2dos=;
-        b=BBdkFA36pvCIMQbpSieR4Hhifze5g+u1ISkumJHOVh6Cx9C9jKsJ7xj/pIPsfLx1k3
-         UmFg0woUAeyLQx8Vb+v358oDSb83OObH8qsp++xzp1pKPdu7i/qVIHShCPD8mczMleVi
-         Thf5o9KvWJg/0GA7NrQ/lFUzpLiJLpIUHAZOi/lCPXh6VG1jnelYmB+6RIMl+q7H092H
-         q33h1fNKZTxoeR03RILWGAVw8Inh/MIYrjyDnFevE9pCMoBqqp53/ZSb7EMR89ynAJuy
-         j3F7jOAFiwjOpaKs+cuK4aPABf+BH+Oo5FAfz3aaXM2/91TI9rReMJtxKidmGO0Zh9eS
-         Suaw==
-X-Gm-Message-State: APjAAAX0wSr+QZw1wC84vQk/JGmkiJYoG4xL2DlUOYrkotVPDD//NWju
-        2Az+Bqwy5qBzXRLf9ibcbCnqMp8jokJZ0QZjRhfFuVrQgPy2DA==
-X-Google-Smtp-Source: APXvYqzN5Gd2Jucm4mbgaNtWa0vuEjc6WnApZtpwuRGD1SURPwf70GzwaWZIC7qgfNpQ8yf6/iDmu9+YEGU+VbofRLQ=
-X-Received: by 2002:a7b:ce8f:: with SMTP id q15mr4581142wmj.106.1567722819695;
- Thu, 05 Sep 2019 15:33:39 -0700 (PDT)
+        id S1733113AbfIEXZo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 5 Sep 2019 19:25:44 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:52726 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732754AbfIEXZo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 5 Sep 2019 19:25:44 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x85NPWa1097626;
+        Thu, 5 Sep 2019 23:25:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=8jPKjaRqMeHQcCliH8xFD1y5nGXM0xqVYEtJwlF7K2U=;
+ b=P+etzJAdzXRD8xg0JtF/bcS7/T3fy9zDQElipBjjshMksTNtqgLrr3/sD6ShfQbYCBol
+ GpzVzZ01a81dD0x03abAPZtUdGPbb906lIU87oGJY9I3qRUPexPEE2ZnOo9snDZgz9QA
+ 1TpbzIyq2nrh31B10mfp2Ht6NU1K8lWdqYxhw5+LLb8UV/f7hxgexA9H6pyWQkhW8Evu
+ JRIHOcfE9fUL0TUicFZAoY+jwJE0POq3iWVafhgybW9PLb/qYROku8k4tQTCZ+VODIoP
+ in+hrosFNY/W9azDvahHLYm+VZ/ExY3Nb4bkLwl5n0cAIStkLO8GEMfiLaEBq7LjUZjB 8A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2uuby800g9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Sep 2019 23:25:33 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x85NNnli019721;
+        Thu, 5 Sep 2019 23:25:01 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 2utvr4c5fd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 05 Sep 2019 23:23:50 +0000
+Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x85NNjIM007423;
+        Thu, 5 Sep 2019 23:23:45 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 05 Sep 2019 16:23:44 -0700
+Date:   Thu, 5 Sep 2019 16:23:42 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        hch@lst.de, linux-xfs@vger.kernel.org,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 01/15] iomap: Use a srcmap for a read-modify-write I/O
+Message-ID: <20190905232342.GJ2229799@magnolia>
+References: <20190905150650.21089-1-rgoldwyn@suse.de>
+ <20190905150650.21089-2-rgoldwyn@suse.de>
 MIME-Version: 1.0
-References: <f58d5ec1-4b38-ad8b-068d-d3bb1f616ec2@liland.com>
- <CAJCQCtTqetLF1sMmgoPyN=2FOHu+MSSW-MGsN6NairLPdNmK+g@mail.gmail.com>
- <c57b8314-4914-628c-f62b-c5291a6be53c@liland.com> <CAJCQCtT5WecG26YXE6EVwhv52xSY_sm8GqgLDoQbZBUom4Pw7Q@mail.gmail.com>
- <51d54d67-bfd3-ee18-d612-330d07d9f714@liland.com> <CAJCQCtSAmCmonFBSBiMCrn+1X__WHDvHgLwWFyScvnfOGRD_4w@mail.gmail.com>
- <6d535ae3-fac4-8fca-4823-2eeceb80529c@liland.com>
-In-Reply-To: <6d535ae3-fac4-8fca-4823-2eeceb80529c@liland.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 5 Sep 2019 16:33:28 -0600
-Message-ID: <CAJCQCtQiw-DOPSpc=qdQa01=4iQHRq2gx-kR==uDduHUYn=sRw@mail.gmail.com>
-Subject: Re: Unmountable degraded BTRFS RAID6 filesystem
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Edmund Urbani <edmund.urbani@liland.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190905150650.21089-2-rgoldwyn@suse.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9371 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1909050217
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9371 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1909050217
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 5, 2019 at 2:44 PM Edmund Urbani <edmund.urbani@liland.com> wrote:
->
-> I did not need the degraded option. And so far I see no HW I/O errors in
-> dmesg. I have encountered a few errors while copying files and found
-> these in the log:
->
-> [ 3560.273634] btrfs_print_data_csum_error: 50 callbacks suppressed
-> [ 3560.273639] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0x98f94189 expected csum 0xcb3af09a mirror 1
+On Thu, Sep 05, 2019 at 10:06:36AM -0500, Goldwyn Rodrigues wrote:
+> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> A preparation patch for copy-on-write (CoW).
+> The srcmap is used to identify where the read is to be performed
+> from. This is passed to iomap->begin() of the respective
+> filesystem, which is supposed to put in the details for
+> reading before performing the copy for CoW.
+> 
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-Not a bit flip
-0x98f94189
-10011000111110010100000110001001
-0xcb3af09a
-11001011001110101111000010011010
+Looks ok,
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
 
+--D
 
-> [ 3560.825942] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0xc0248289 expected csum 0xcb3af09a mirror 2
-> [ 3560.826588] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0xc0248289 expected csum 0xcb3af09a mirror 3
-> [ 3560.827813] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0xc0248289 expected csum 0xcb3af09a mirror 4
-> [ 3560.829063] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0xc0248289 expected csum 0xcb3af09a mirror 5
-> [ 3560.830366] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0xc0248289 expected csum 0xcb3af09a mirror 6
-> [ 3560.831559] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0xc0248289 expected csum 0xcb3af09a mirror 7
-> [ 3560.832998] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0xc0248289 expected csum 0xcb3af09a mirror 8
-> [ 3560.834649] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0xc0248289 expected csum 0xcb3af09a mirror 9
-> [ 3560.836188] BTRFS warning (device sdg1): csum failed root 262 ino
-> 1838364 off 14467072 csum 0xc0248289 expected csum 0xcb3af09a mirror 10
-
-Also not a bit flip.
-0xc0248289
-11000000001001001000001010001001
-0xcb3af09a
-11001011001110101111000010011010
-
-I'm not sure what it means or suggests has happened, that all the
-copies are wrong. Plausible with raid5 metadata. But seems unlikely
-with raid6 metadata, and also with all devices accounted for.
-
-The file itself is probably fine - these look like metadata
-complaints. If you find the file this inode belongs to, either
-duplicating it or deleting it is fine, should cause this bad leaf to
-just go away. Make sure you delete the correct file, each subvolume
-has its own list of inodes, this one is in subvol id 262.
-
->
-> and also:
->
-> [ 3889.813300] btree_readpage_end_io_hook: 1860 callbacks suppressed
-> [ 3889.813304] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 0
-> [ 3889.825732] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 12157064991241308972
-> [ 3889.826375] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 12157064991241308972
-> [ 3889.828149] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 12157064991241308972
-> [ 3889.829649] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 12157064991241308972
-> [ 3889.831592] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 12157064991241308972
-> [ 3889.833436] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 12157064991241308972
-> [ 3889.835458] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 12157064991241308972
-> [ 3889.836968] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 12157064991241308972
-> [ 3889.848545] BTRFS error (device sdg1): bad tree block start, want
-> 34958548107264 have 12157064991241308972
-
-I'm skeptical that a scrub will fix these things, because Btrfs is
-passively scrubbing on reads, so any checksum mismatches should get
-fixed up, if they can be fixed, from reconstruction, on the fly as
-well as scrub. This is a different problem, I'm not sure how serious
-it is.
-
-I would still do the full scrub. And then unmount it and run 'btrfs
-check --mode=lowmem'. On a file system of this size it will take a
-long time. So maybe do it over a weekend
-
->
-> I think that Input/output error btrfsck is showing is actually a
-> filesystem checksum error and not triggered by faulty hardware (not
-> anymore, I hope). If there actually are any more failing drives here, I
-> will most likely do the ddrescue thing again. Currently there are no
-> free SATA ports in that system to connect an additional drive, so I
-> cannot simply add one (at least not without also installing an
-> additional SATA controller).
-
-I suggest start planning how to migrate the data to a new Btrfs
-volume. If the problems can't be repaired, this becomes inevitable. A
-reasonable strategy is to take read-only snapshots of each subvolume
-you want to preserve. And either 'btrfs send/receive' or 'rsync' to
-new storage. That way you can keep using the volume rw in the
-meantime. Once that completes, do another read only snapshot of each
-subvolume, and do an incremental 'send -p' or rsync to migrate the
-much smaller changes.
-
-
--- 
-Chris Murphy
+> ---
+>  fs/dax.c               |  8 +++++---
+>  fs/ext2/inode.c        |  2 +-
+>  fs/ext4/inode.c        |  2 +-
+>  fs/gfs2/bmap.c         |  3 ++-
+>  fs/iomap/apply.c       |  5 +++--
+>  fs/iomap/buffered-io.c | 14 +++++++-------
+>  fs/iomap/direct-io.c   |  2 +-
+>  fs/iomap/fiemap.c      |  4 ++--
+>  fs/iomap/seek.c        |  4 ++--
+>  fs/iomap/swapfile.c    |  3 ++-
+>  fs/xfs/xfs_iomap.c     |  9 ++++++---
+>  include/linux/iomap.h  |  5 +++--
+>  12 files changed, 35 insertions(+), 26 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 6bf81f931de3..e961d8dc23ef 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -1090,7 +1090,7 @@ EXPORT_SYMBOL_GPL(__dax_zero_page_range);
+>  
+>  static loff_t
+>  dax_iomap_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> -		struct iomap *iomap)
+> +		struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct block_device *bdev = iomap->bdev;
+>  	struct dax_device *dax_dev = iomap->dax_dev;
+> @@ -1248,6 +1248,7 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>  	unsigned long vaddr = vmf->address;
+>  	loff_t pos = (loff_t)vmf->pgoff << PAGE_SHIFT;
+>  	struct iomap iomap = { 0 };
+> +	struct iomap srcmap = { 0 };
+>  	unsigned flags = IOMAP_FAULT;
+>  	int error, major = 0;
+>  	bool write = vmf->flags & FAULT_FLAG_WRITE;
+> @@ -1292,7 +1293,7 @@ static vm_fault_t dax_iomap_pte_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>  	 * the file system block size to be equal the page size, which means
+>  	 * that we never have to deal with more than a single extent here.
+>  	 */
+> -	error = ops->iomap_begin(inode, pos, PAGE_SIZE, flags, &iomap);
+> +	error = ops->iomap_begin(inode, pos, PAGE_SIZE, flags, &iomap, &srcmap);
+>  	if (iomap_errp)
+>  		*iomap_errp = error;
+>  	if (error) {
+> @@ -1472,6 +1473,7 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>  	struct inode *inode = mapping->host;
+>  	vm_fault_t result = VM_FAULT_FALLBACK;
+>  	struct iomap iomap = { 0 };
+> +	struct iomap srcmap = { 0 };
+>  	pgoff_t max_pgoff;
+>  	void *entry;
+>  	loff_t pos;
+> @@ -1546,7 +1548,7 @@ static vm_fault_t dax_iomap_pmd_fault(struct vm_fault *vmf, pfn_t *pfnp,
+>  	 * to look up our filesystem block.
+>  	 */
+>  	pos = (loff_t)xas.xa_index << PAGE_SHIFT;
+> -	error = ops->iomap_begin(inode, pos, PMD_SIZE, iomap_flags, &iomap);
+> +	error = ops->iomap_begin(inode, pos, PMD_SIZE, iomap_flags, &iomap, &srcmap);
+>  	if (error)
+>  		goto unlock_entry;
+>  
+> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+> index 7004ce581a32..467c13ff6b40 100644
+> --- a/fs/ext2/inode.c
+> +++ b/fs/ext2/inode.c
+> @@ -801,7 +801,7 @@ int ext2_get_block(struct inode *inode, sector_t iblock,
+>  
+>  #ifdef CONFIG_FS_DAX
+>  static int ext2_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+> -		unsigned flags, struct iomap *iomap)
+> +		unsigned flags, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	unsigned int blkbits = inode->i_blkbits;
+>  	unsigned long first_block = offset >> blkbits;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 420fe3deed39..918f94eff799 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3453,7 +3453,7 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
+>  }
+>  
+>  static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+> -			    unsigned flags, struct iomap *iomap)
+> +			    unsigned flags, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+>  	unsigned int blkbits = inode->i_blkbits;
+> diff --git a/fs/gfs2/bmap.c b/fs/gfs2/bmap.c
+> index 4f8b5fd6c81f..0189262989f2 100644
+> --- a/fs/gfs2/bmap.c
+> +++ b/fs/gfs2/bmap.c
+> @@ -1164,7 +1164,8 @@ static int gfs2_iomap_begin_write(struct inode *inode, loff_t pos,
+>  }
+>  
+>  static int gfs2_iomap_begin(struct inode *inode, loff_t pos, loff_t length,
+> -			    unsigned flags, struct iomap *iomap)
+> +			    unsigned flags, struct iomap *iomap,
+> +			    struct iomap *srcmap)
+>  {
+>  	struct gfs2_inode *ip = GFS2_I(inode);
+>  	struct metapath mp = { .mp_aheight = 1, };
+> diff --git a/fs/iomap/apply.c b/fs/iomap/apply.c
+> index 54c02aecf3cd..6cdb362fff36 100644
+> --- a/fs/iomap/apply.c
+> +++ b/fs/iomap/apply.c
+> @@ -24,6 +24,7 @@ iomap_apply(struct inode *inode, loff_t pos, loff_t length, unsigned flags,
+>  		const struct iomap_ops *ops, void *data, iomap_actor_t actor)
+>  {
+>  	struct iomap iomap = { 0 };
+> +	struct iomap srcmap = { 0 };
+>  	loff_t written = 0, ret;
+>  
+>  	/*
+> @@ -38,7 +39,7 @@ iomap_apply(struct inode *inode, loff_t pos, loff_t length, unsigned flags,
+>  	 * expose transient stale data. If the reserve fails, we can safely
+>  	 * back out at this point as there is nothing to undo.
+>  	 */
+> -	ret = ops->iomap_begin(inode, pos, length, flags, &iomap);
+> +	ret = ops->iomap_begin(inode, pos, length, flags, &iomap, &srcmap);
+>  	if (ret)
+>  		return ret;
+>  	if (WARN_ON(iomap.offset > pos))
+> @@ -58,7 +59,7 @@ iomap_apply(struct inode *inode, loff_t pos, loff_t length, unsigned flags,
+>  	 * we can do the copy-in page by page without having to worry about
+>  	 * failures exposing transient data.
+>  	 */
+> -	written = actor(inode, pos, length, data, &iomap);
+> +	written = actor(inode, pos, length, data, &iomap, &srcmap);
+>  
+>  	/*
+>  	 * Now the data has been copied, commit the range we've copied.  This
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index e25901ae3ff4..f27756c0b31c 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -205,7 +205,7 @@ iomap_read_inline_data(struct inode *inode, struct page *page,
+>  
+>  static loff_t
+>  iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> -		struct iomap *iomap)
+> +		struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct iomap_readpage_ctx *ctx = data;
+>  	struct page *page = ctx->cur_page;
+> @@ -351,7 +351,7 @@ iomap_next_page(struct inode *inode, struct list_head *pages, loff_t pos,
+>  
+>  static loff_t
+>  iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
+> -		void *data, struct iomap *iomap)
+> +		void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct iomap_readpage_ctx *ctx = data;
+>  	loff_t done, ret;
+> @@ -371,7 +371,7 @@ iomap_readpages_actor(struct inode *inode, loff_t pos, loff_t length,
+>  			ctx->cur_page_in_bio = false;
+>  		}
+>  		ret = iomap_readpage_actor(inode, pos + done, length - done,
+> -				ctx, iomap);
+> +				ctx, iomap, srcmap);
+>  	}
+>  
+>  	return done;
+> @@ -736,7 +736,7 @@ iomap_write_end(struct inode *inode, loff_t pos, unsigned len,
+>  
+>  static loff_t
+>  iomap_write_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> -		struct iomap *iomap)
+> +		struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct iov_iter *i = data;
+>  	long status = 0;
+> @@ -853,7 +853,7 @@ __iomap_read_page(struct inode *inode, loff_t offset)
+>  
+>  static loff_t
+>  iomap_dirty_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> -		struct iomap *iomap)
+> +		struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	long status = 0;
+>  	ssize_t written = 0;
+> @@ -942,7 +942,7 @@ static int iomap_dax_zero(loff_t pos, unsigned offset, unsigned bytes,
+>  
+>  static loff_t
+>  iomap_zero_range_actor(struct inode *inode, loff_t pos, loff_t count,
+> -		void *data, struct iomap *iomap)
+> +		void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	bool *did_zero = data;
+>  	loff_t written = 0;
+> @@ -1011,7 +1011,7 @@ EXPORT_SYMBOL_GPL(iomap_truncate_page);
+>  
+>  static loff_t
+>  iomap_page_mkwrite_actor(struct inode *inode, loff_t pos, loff_t length,
+> -		void *data, struct iomap *iomap)
+> +		void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct page *page = data;
+>  	int ret;
+> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
+> index 1fc28c2da279..e3ccbf7daaae 100644
+> --- a/fs/iomap/direct-io.c
+> +++ b/fs/iomap/direct-io.c
+> @@ -358,7 +358,7 @@ iomap_dio_inline_actor(struct inode *inode, loff_t pos, loff_t length,
+>  
+>  static loff_t
+>  iomap_dio_actor(struct inode *inode, loff_t pos, loff_t length,
+> -		void *data, struct iomap *iomap)
+> +		void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct iomap_dio *dio = data;
+>  
+> diff --git a/fs/iomap/fiemap.c b/fs/iomap/fiemap.c
+> index f26fdd36e383..690ef2d7c6c8 100644
+> --- a/fs/iomap/fiemap.c
+> +++ b/fs/iomap/fiemap.c
+> @@ -44,7 +44,7 @@ static int iomap_to_fiemap(struct fiemap_extent_info *fi,
+>  
+>  static loff_t
+>  iomap_fiemap_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
+> -		struct iomap *iomap)
+> +		struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	struct fiemap_ctx *ctx = data;
+>  	loff_t ret = length;
+> @@ -111,7 +111,7 @@ EXPORT_SYMBOL_GPL(iomap_fiemap);
+>  
+>  static loff_t
+>  iomap_bmap_actor(struct inode *inode, loff_t pos, loff_t length,
+> -		void *data, struct iomap *iomap)
+> +		void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	sector_t *bno = data, addr;
+>  
+> diff --git a/fs/iomap/seek.c b/fs/iomap/seek.c
+> index c04bad4b2b43..89f61d93c0bc 100644
+> --- a/fs/iomap/seek.c
+> +++ b/fs/iomap/seek.c
+> @@ -119,7 +119,7 @@ page_cache_seek_hole_data(struct inode *inode, loff_t offset, loff_t length,
+>  
+>  static loff_t
+>  iomap_seek_hole_actor(struct inode *inode, loff_t offset, loff_t length,
+> -		      void *data, struct iomap *iomap)
+> +		      void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	switch (iomap->type) {
+>  	case IOMAP_UNWRITTEN:
+> @@ -165,7 +165,7 @@ EXPORT_SYMBOL_GPL(iomap_seek_hole);
+>  
+>  static loff_t
+>  iomap_seek_data_actor(struct inode *inode, loff_t offset, loff_t length,
+> -		      void *data, struct iomap *iomap)
+> +		      void *data, struct iomap *iomap, struct iomap *srcmap)
+>  {
+>  	switch (iomap->type) {
+>  	case IOMAP_HOLE:
+> diff --git a/fs/iomap/swapfile.c b/fs/iomap/swapfile.c
+> index 152a230f668d..a648dbf6991e 100644
+> --- a/fs/iomap/swapfile.c
+> +++ b/fs/iomap/swapfile.c
+> @@ -76,7 +76,8 @@ static int iomap_swapfile_add_extent(struct iomap_swapfile_info *isi)
+>   * distinction between written and unwritten extents.
+>   */
+>  static loff_t iomap_swapfile_activate_actor(struct inode *inode, loff_t pos,
+> -		loff_t count, void *data, struct iomap *iomap)
+> +		loff_t count, void *data, struct iomap *iomap,
+> +		struct iomap *srcmap)
+>  {
+>  	struct iomap_swapfile_info *isi = data;
+>  	int error;
+> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> index 3a4310d7cb59..8321733c16c3 100644
+> --- a/fs/xfs/xfs_iomap.c
+> +++ b/fs/xfs/xfs_iomap.c
+> @@ -922,7 +922,8 @@ xfs_file_iomap_begin(
+>  	loff_t			offset,
+>  	loff_t			length,
+>  	unsigned		flags,
+> -	struct iomap		*iomap)
+> +	struct iomap		*iomap,
+> +	struct iomap		*srcmap)
+>  {
+>  	struct xfs_inode	*ip = XFS_I(inode);
+>  	struct xfs_mount	*mp = ip->i_mount;
+> @@ -1145,7 +1146,8 @@ xfs_seek_iomap_begin(
+>  	loff_t			offset,
+>  	loff_t			length,
+>  	unsigned		flags,
+> -	struct iomap		*iomap)
+> +	struct iomap		*iomap,
+> +	struct iomap		*srcmap)
+>  {
+>  	struct xfs_inode	*ip = XFS_I(inode);
+>  	struct xfs_mount	*mp = ip->i_mount;
+> @@ -1231,7 +1233,8 @@ xfs_xattr_iomap_begin(
+>  	loff_t			offset,
+>  	loff_t			length,
+>  	unsigned		flags,
+> -	struct iomap		*iomap)
+> +	struct iomap		*iomap,
+> +	struct iomap		*srcmap)
+>  {
+>  	struct xfs_inode	*ip = XFS_I(inode);
+>  	struct xfs_mount	*mp = ip->i_mount;
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index 7aa5d6117936..9782a79dde59 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -110,7 +110,8 @@ struct iomap_ops {
+>  	 * The actual length is returned in iomap->length.
+>  	 */
+>  	int (*iomap_begin)(struct inode *inode, loff_t pos, loff_t length,
+> -			unsigned flags, struct iomap *iomap);
+> +			unsigned flags, struct iomap *iomap,
+> +			struct iomap *srcmap);
+>  
+>  	/*
+>  	 * Commit and/or unreserve space previous allocated using iomap_begin.
+> @@ -126,7 +127,7 @@ struct iomap_ops {
+>   * Main iomap iterator function.
+>   */
+>  typedef loff_t (*iomap_actor_t)(struct inode *inode, loff_t pos, loff_t len,
+> -		void *data, struct iomap *iomap);
+> +		void *data, struct iomap *iomap, struct iomap *srcmap);
+>  
+>  loff_t iomap_apply(struct inode *inode, loff_t pos, loff_t length,
+>  		unsigned flags, const struct iomap_ops *ops, void *data,
+> -- 
+> 2.16.4
+> 
