@@ -2,201 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE39AAC1F7
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 23:27:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92ABDAC211
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 23:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389419AbfIFV1N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Sep 2019 17:27:13 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:38555 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388545AbfIFV1M (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Sep 2019 17:27:12 -0400
-Received: by mail-pg1-f194.google.com with SMTP id d10so4230151pgo.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Sep 2019 14:27:12 -0700 (PDT)
+        id S2404184AbfIFVfo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Sep 2019 17:35:44 -0400
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:44386 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731199AbfIFVfn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Sep 2019 17:35:43 -0400
+Received: by mail-wr1-f49.google.com with SMTP id 30so7935435wrk.11
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Sep 2019 14:35:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=zp8c9FLNMZEWCL0gNT+yehsPSnrA53ER9UiJIJvS9kA=;
-        b=wX83E0tAgpuMSlrvnQlUEHKcpX5XUX5HJzrMkrU3esWVFeEgDzrhtcRT2QsymIDQOL
-         xCt83E1f6ryxUP4gLRCutSrzRr/Tna7ygXnmUSDT9yN8LpuQvBVrXFGQdmUIsjcpk/b0
-         zXv4wfPyEd18BNo3Xd+r0eYL/BjjJR3JgebuUMHkk4PTTtC6HWix/kD59iw7Ic702cgn
-         nBRQMdQkY/5HHpGkbLtMEjwW/KHT9uSBbduiQRJ6PIrQ9VRHSs/Cr7A2OQD0JAO1K7I8
-         QilkiX5g6C1AR/39podaVYWxBZildqnNLP+HkigAwuSw7WPQvP92rJZEl9QWQvkumq8J
-         0ZLQ==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=54Klza3LjXKhzW3sUGC9/V5PJf1/zmXbTf2GpxfPDNs=;
+        b=FE340TXuLZLp9fVnIm+mhpWwt4nAU4QR1mw7ga0u/hGsCiM+IZkixSEGugiz/1Yot8
+         301cFESz1JiKBrq1XTtWzygtpRwzjuiosW7JWVBPAM6/m0hzWrWgNJYh887SlTRyRpsU
+         Z5At+nEC+hYJRt6f10Xlq4QWnRlcTLOie/xHD7TpG+N0d/PV1SKVxJhFGBmiDZcD0wvP
+         Hy6xOew/naQ1HEwOz7AsXn2Oeu3ZN0VV6bEkqdHux/ZFSY6QYl/zLj53TB4mkLk0wzqC
+         h0Pd/+U5xsG70hlBsjzfS5gKKgBBsilsVHB2q4NIqPQKBHzUeYOiK1YKZz+sZ+ksO7BG
+         6dGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=zp8c9FLNMZEWCL0gNT+yehsPSnrA53ER9UiJIJvS9kA=;
-        b=sbQk6fo555lEaGG93lHxY1fE3+NRWi22ujcdW3s5dIyESswxPNJFYSz8pLpxG+fJz3
-         3PKs4dWooSt0varGaboq4/CNR054MNuBOTASc/QIzGXsYkVzXkUaZqP0AgZmaygHTYYp
-         wZ0+e+86p46ZMvEtTtG2qtCj1UWPn61yy7iFlRCjGvSt0EhUpReEDiqEz6S/St5GyI/7
-         kWhP6yKOl46xNBO97Th6gPL2IzhixJ55hvhdnHB+X4fH8n6d9h+JWf/1O5ykcdz6uhmv
-         kjhyu4eVXFFmUPBDbGE16mfkAyHYMmVLbkUtbNiTO463bzcJzMYL8JOLPa/As3xWF6hR
-         5KQQ==
-X-Gm-Message-State: APjAAAULBQDy0MCPYpGiuHTnkiCdMiyl+Br5vHvVavISnRthpggZuErv
-        W8VEjlxpC9xxhCpxt9/FoBEtfA==
-X-Google-Smtp-Source: APXvYqyUm6quYg3c6vRJijWkBpXGA45Rp2tgZqej7qLENQJHh5dHW8BIZnRuebMhjYIUsW66JyYq7A==
-X-Received: by 2002:a65:4786:: with SMTP id e6mr9584057pgs.448.1567805231533;
-        Fri, 06 Sep 2019 14:27:11 -0700 (PDT)
-Received: from vader ([2620:10d:c090:200::3:4069])
-        by smtp.gmail.com with ESMTPSA id y15sm8992813pfp.111.2019.09.06.14.27.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Sep 2019 14:27:10 -0700 (PDT)
-Date:   Fri, 6 Sep 2019 14:27:10 -0700
-From:   Omar Sandoval <osandov@osandov.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs: add ioctl for directly writing compressed data
-Message-ID: <20190906212710.GI7452@vader>
-References: <cover.1567623877.git.osandov@fb.com>
- <8eae56abb90c0fe87c350322485ce8674e135074.1567623877.git.osandov@fb.com>
- <20190905021012.GL7777@dread.disaster.area>
- <20190906181949.GG7452@vader>
- <20190906210717.GN7777@dread.disaster.area>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=54Klza3LjXKhzW3sUGC9/V5PJf1/zmXbTf2GpxfPDNs=;
+        b=l1QDsawP9H9zgZ94A81k7j6ig8ciuc7rek5LEBem7SvPkZJqPXrOezu89T+jehXhVw
+         u2yuIkSXdFL8bTZV5SVX4vWnAknYfsqknlWRSWgNMC64lp+/syjDdK9C73567XCpA3ib
+         wq/KWIIEyEwf3im2QZgeVukPEqAq3ZVEMmSH1bDAVY1lHk6XJsc5bPt9T5yCU45aMJ4D
+         nIeque1gMIGwRG5QGMrx4FMlWi7X0foJD8VQNJxYTxmKKUImTCqNMbpqzhgd/1adIy++
+         0HqQhem/BOenRZQrenzw5pIam6PlW60dfZvrnCnZZhpp5uJp6r5VTVyhG1bC0d/tgSIB
+         Wmhw==
+X-Gm-Message-State: APjAAAXyPXg+diJ7w/ltSFIE4E7+723QTkT4MeogR4LBgX13repdayij
+        sraZooc87RZZYftRH6VoE3LEUtFg1RVeTctgWkOLsQ==
+X-Google-Smtp-Source: APXvYqxOFRvn1/q1Kl98oqid6K/JkPramW8rEZd4eSGVqvgOXPNEgFKOb9WmL/v3F2fsAdORf+895c4+olzKsXCJ/xY=
+X-Received: by 2002:a5d:54cd:: with SMTP id x13mr8742716wrv.12.1567805741582;
+ Fri, 06 Sep 2019 14:35:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190906210717.GN7777@dread.disaster.area>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <4d97a9bb-864a-edd1-1aff-bdc9c8204100@redhat.com>
+In-Reply-To: <4d97a9bb-864a-edd1-1aff-bdc9c8204100@redhat.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Fri, 6 Sep 2019 15:35:30 -0600
+Message-ID: <CAJCQCtSm0rv=-zoAReP7+kjdvV1ihgi7tx1sh9YM=on_fZLKNg@mail.gmail.com>
+Subject: Re: LTP fs_fill test results in BTRFS warning (device loop0): could
+ not allocate space for a delete; will truncate on mount warnings
+To:     Rachel Sibley <rasibley@redhat.com>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Jan Stancek <jstancek@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 07, 2019 at 07:07:17AM +1000, Dave Chinner wrote:
-> On Fri, Sep 06, 2019 at 11:19:49AM -0700, Omar Sandoval wrote:
-> > On Thu, Sep 05, 2019 at 12:10:12PM +1000, Dave Chinner wrote:
-> > > On Wed, Sep 04, 2019 at 12:13:26PM -0700, Omar Sandoval wrote:
-> > > > From: Omar Sandoval <osandov@fb.com>
-> > > > 
-> > > > This adds an API for writing compressed data directly to the filesystem.
-> > > > The use case that I have in mind is send/receive: currently, when
-> > > > sending data from one compressed filesystem to another, the sending side
-> > > > decompresses the data and the receiving side recompresses it before
-> > > > writing it out. This is wasteful and can be avoided if we can just send
-> > > > and write compressed extents. The send part will be implemented in a
-> > > > separate series, as this ioctl can stand alone.
-> > > > 
-> > > > The interface is essentially pwrite(2) with some extra information:
-> > > > 
-> > > > - The input buffer contains the compressed data.
-> > > > - Both the compressed and decompressed sizes of the data are given.
-> > > > - The compression type (zlib, lzo, or zstd) is given.
-> > 
-> > Hi, Dave,
-> > 
-> > > So why can't you do this with pwritev2()? Heaps of flags, and
-> > > use a second iovec to hold the decompressed size of the previous
-> > > iovec. i.e.
-> > > 
-> > > 	iov[0].iov_base = compressed_data;
-> > > 	iov[0].iov_len = compressed_size;
-> > > 	iov[1].iov_base = NULL;
-> > > 	iov[1].iov_len = uncompressed_size;
-> > > 	pwritev2(fd, iov, 2, offset, RWF_COMPRESSED_ZLIB);
-> > > 
-> > > And you don't need to reinvent pwritev() with some whacky ioctl that
-> > > is bound to be completely screwed up is ways not noticed until
-> > > someone else tries to use it...
-> > 
-> > This is a good suggestion, thanks. I hadn't considered (ab?)using iovecs
-> > in this way.
-> 
-> Yeah, it is a bit of API abuse to pass per-iovec context in the next
-> iovec, but ISTR it being proposed in past times for other
-> mechanisms. I think it's far better than a whole new filesystem
-> private ioctl interface and structure to do what is effectively
-> direct IO...
-> 
-> > One modification I'd make would be to put the encoding into the second
-> > iovec and use a single RWF_ENCODED flag so that we don't have to keep
-> > stealing from RWF_* every time we add a new compression
-> > algorithm/encryption type/whatever:
-> > 
-> >  	iov[0].iov_base = compressed_data;
-> >  	iov[0].iov_len = compressed_size;
-> >  	iov[1].iov_base = (void *)IOV_ENCODING_ZLIB;
-> >  	iov[1].iov_len = uncompressed_size;
-> >  	pwritev2(fd, iov, 2, offset, RWF_ENCODED);
-> > 
-> > Making every other iovec a metadata iovec in this way would be a major
-> > pain to plumb through the iov_iter and VFS code, though. Instead, we
-> > could put the metadata in iov[0] and the encoded data in iov[1..iovcnt -
-> > 1]:
-> > 
-> > 	iov[0].iov_base = (void *)IOV_ENCODING_ZLIB;
-> > 	iov[0].iov_len = unencoded_len;
-> > 	iov[1].iov_base = encoded_data1;
-> > 	iov[1].iov_len = encoded_size1;
-> > 	iov[2].iov_base = encoded_data2;
-> > 	iov[2].iov_len = encoded_size2;
-> >  	pwritev2(fd, iov, 3, offset, RWF_ENCODED);
-> > 
-> > In my opinion, these are both reasonable interfaces. The former allows
-> > the user to write multiple encoded "extents" at once, while the latter
-> > allows writing a single encoded extent from scattered buffers. The
-> > latter is much simpler to implement ;) Thoughts?
-> 
-> Both reasonable, and I have no real concern about how it is done as
-> long as the format is well documented and works for both read and
-> write.
-> 
-> The only other thing I think we need to be careful of is that
-> interface works with AIO (via the RWF flag) and the new uioring async
-> interface  - I think thw RWF flag is all that is needed there). I
-> think that's another good reason for taking the preadv2/pwritev2
-> path, as that should all largely just work with the right iocb
-> frobbing in the syscall context...
+On Fri, Sep 6, 2019 at 1:21 PM Rachel Sibley <rasibley@redhat.com> wrote:
+>
+> Hello,
+>
+> While running LTP [1] as part of CKI [2] testing, we noticed the fs_fill
+> test fails pretty
+> consistently with BTRFS warnings seen below, this is seen with recent
+> kernel (5.2.12).
+> I have included the logs below for reference.
 
-A symmetric interface for preadv2 would look something like this:
+I'm only 6 for 6, but  so far can't get it to trigger with 5.3.0-rc7
 
-	iov[1].iov_base = encoded_data1;
-	iov[1].iov_len = encoded_size1;
-	iov[2].iov_base = encoded_data2;
-	iov[2].iov_len = encoded_size2;
-	preadv2(fd, iov, 3, offset, RWF_ENCODED);
-	/*
-	 * iov[0].iov_base gets filled in with the encoding flags,
-	 * iov[0].iov_len gets filled in with unencoded length.
-	 */
 
-But, iov is passed as a const struct iovec *, so it'd be nasty to write
-to it in the RWF_ENCODED case. Maybe we actually want to pass the
-encoding information through an extra indirection. Something along the
-lines of this for writes:
-
-	struct encoded_rw {
-		size_t unencoded_len;
-		int compression;
-		int encryption;
-		...
-	};
-	
-	struct encoded_rw encoded = {
-		unencoded_len,
-		ENCODED_RW_ZLIB,
-	};
-	iov[0].iov_base = &encoded;
-	iov[0].iov_len = sizeof(encoded);
-	iov[1].iov_base = encoded_data1;
-	iov[1].iov_len = encoded_size1;
-	iov[2].iov_base = encoded_data2;
-	iov[2].iov_len = encoded_size2;
-	pwritev2(fd, iov, 3, offset, RWF_ENCODED);
-
-And similar for reads:
-
-	struct encoded_rw encoded;
-	iov[0].iov_base = &encoded;
-	iov[0].iov_len = sizeof(encoded);
-	iov[1].iov_base = encoded_data1;
-	iov[1].iov_len = encoded_size1;
-	iov[2].iov_base = encoded_data2;
-	iov[2].iov_len = encoded_size2;
-	preadv2(fd, iov, 3, offset, RWF_ENCODED);
-	/* encoded gets filled in with the encoding information. */
-
-I'll draft something with this interface.
+-- 
+Chris Murphy
