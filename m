@@ -2,293 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BD7BAB25A
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 08:17:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1917EAB324
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 09:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387865AbfIFGRq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Sep 2019 02:17:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43998 "EHLO mx1.suse.de"
+        id S2392442AbfIFHVg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Sep 2019 03:21:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44104 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732433AbfIFGRp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 6 Sep 2019 02:17:45 -0400
+        id S2391837AbfIFHVg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Sep 2019 03:21:36 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E10BBAE6F
-        for <linux-btrfs@vger.kernel.org>; Fri,  6 Sep 2019 06:17:42 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v4 2/2] btrfs: Introduce new mount option to skip block group items scan
-Date:   Fri,  6 Sep 2019 14:17:34 +0800
-Message-Id: <20190906061734.21704-3-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190906061734.21704-1-wqu@suse.com>
-References: <20190906061734.21704-1-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 46F2AAE52;
+        Fri,  6 Sep 2019 07:21:34 +0000 (UTC)
+Subject: Re: [PATCH] btrfs-progs: drop unique uuid test for btrfstune -M
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <20190906005025.2678-1-anand.jain@oracle.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <f3d33e1d-803e-34a5-4dfa-7eeceec6177c@suse.com>
+Date:   Fri, 6 Sep 2019 10:21:32 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <20190906005025.2678-1-anand.jain@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[PROBLEM]
-There are some reports of corrupted fs which can't be mounted due to
-corrupted extent tree.
 
-However under such situation, it's more likely the fs/subvolume trees
-are still fine.
 
-For such case we normally go btrfs-restore and salvage as much as we
-can. However btrfs-restore can't list subvolumes as "btrfs subv list",
-making it harder to restore a fs.
+On 6.09.19 г. 3:50 ч., Anand Jain wrote:
+> It's common to copy/snapshot an OS image to run another instance of the OS.
+> A duplicate fsid can't be mounted on the same system unless the fsid is
+> changed by using btrfstune -m.
+> 
+> However in some circumstances the image needs to go back to the original
+> fsid /metadata_uuid.
+> 
+> As of now btrfstune -M fails if the specified uuid isn't unique, as show
+> below.
+> 
+> btrfstune -M $(btrfs in dump-super ./2-2g.img | grep metadata_uuid | \
+> 					awk '{print $2}') ./2-2g.img
+> ERROR: fsid 87f8d9c5-a8b7-438e-a890-17bbe11c95e5 is not unique
 
-[ENHANCEMENT]
-This patch will introduce a new mount option "rescue=skipbg" to skip
-the mount time block group scan, and use chunk info solely to populate
-fake block group cache.
+NAK.
 
-The mount option has the following dependency:
-- RO mount
-  Obviously.
+This is intended. Otherwise it's an open avenue for the user to shoot
+themselves in the foot. If you know what you are doing and are
+absolutely sure the original fs is no longer present - then just flush
+libblkid cache and you'll be able to set the FSID back to the original one.
 
-- No dirty log.
-  Either there is no log, or use rescue=no_log_replay mount option.
 
-- No way to remoutn RW
-  Similar to rescue=nologreplay option.
 
-This allow kernel to accept all extent tree corruption, even when the
-whole extent tree is corrupted, and allow user to salvage data and
-subvolume info.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ctree.h       |  1 +
- fs/btrfs/disk-io.c     | 29 ++++++++++++++++++++----
- fs/btrfs/extent-tree.c | 50 ++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/super.c       | 25 ++++++++++++++++++++-
- fs/btrfs/volumes.c     |  7 ++++++
- 5 files changed, 107 insertions(+), 5 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 94660063a162..7729a6ab433e 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -1353,6 +1353,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
- #define BTRFS_MOUNT_FREE_SPACE_TREE	(1 << 26)
- #define BTRFS_MOUNT_NOLOGREPLAY		(1 << 27)
- #define BTRFS_MOUNT_REF_VERIFY		(1 << 28)
-+#define BTRFS_MOUNT_SKIP_BG		(1 << 29)
- 
- #define BTRFS_DEFAULT_COMMIT_INTERVAL	(30)
- #define BTRFS_DEFAULT_MAX_INLINE	(2048)
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 97beb351a10c..b9f0380e909a 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2345,11 +2345,15 @@ static int btrfs_read_roots(struct btrfs_fs_info *fs_info)
- 
- 	root = btrfs_read_tree_root(tree_root, &location);
- 	if (IS_ERR(root)) {
--		ret = PTR_ERR(root);
--		goto out;
-+		if (!btrfs_test_opt(fs_info, SKIP_BG)) {
-+			ret = PTR_ERR(root);
-+			goto out;
-+		}
-+		fs_info->extent_root = NULL;
-+	} else {
-+		set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
-+		fs_info->extent_root = root;
- 	}
--	set_bit(BTRFS_ROOT_TRACK_DIRTY, &root->state);
--	fs_info->extent_root = root;
- 
- 	location.objectid = BTRFS_DEV_TREE_OBJECTID;
- 	root = btrfs_read_tree_root(tree_root, &location);
-@@ -2991,6 +2995,23 @@ int open_ctree(struct super_block *sb,
- 		goto fail_csum;
- 	}
- 
-+	/* Skip bg needs RO and no log tree replay */
-+	if (btrfs_test_opt(fs_info, SKIP_BG)) {
-+		if (!sb_rdonly(sb)) {
-+			btrfs_err(fs_info,
-+		"skip_bg mount option can only be used with read-only mount");
-+			err = -EINVAL;
-+			goto fail_alloc;
-+		}
-+		if (btrfs_super_log_root(disk_super) &&
-+		    !btrfs_test_opt(fs_info, NOTREELOG)) {
-+			btrfs_err(fs_info,
-+	"skip_bg must be used with notreelog mount option for dirty log");
-+			err = -EINVAL;
-+			goto fail_alloc;
-+		}
-+	}
-+
- 	ret = btrfs_init_workqueues(fs_info, fs_devices);
- 	if (ret) {
- 		err = ret;
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 8b7eb22d508a..2266a34d73d5 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -8035,6 +8035,53 @@ static int check_chunk_block_group_mappings(struct btrfs_fs_info *fs_info)
- 	return ret;
- }
- 
-+static int fill_dummy_bgs(struct btrfs_fs_info *fs_info)
-+{
-+	struct extent_map_tree *em_tree = &fs_info->mapping_tree;
-+	struct extent_map *em;
-+	struct map_lookup *map;
-+	struct btrfs_block_group_cache *cache;
-+	struct btrfs_space_info *space_info;
-+	struct rb_node *node;
-+	int ret = 0;
-+
-+	read_lock(&em_tree->lock);
-+	for (node = rb_first_cached(&em_tree->map); node;
-+	     node = rb_next(node)) {
-+		em = rb_entry(node, struct extent_map, rb_node);
-+		map = em->map_lookup;
-+		cache = btrfs_create_block_group_cache(fs_info, em->start,
-+						       em->len);
-+		if (!cache) {
-+			ret = -ENOMEM;
-+			goto out;
-+		}
-+
-+		/* Fill dummy cache as FULL */
-+		cache->flags = map->type;
-+		cache->last_byte_to_unpin = (u64)-1;
-+		cache->cached = BTRFS_CACHE_FINISHED;
-+		btrfs_set_block_group_used(&cache->item, em->len);
-+		btrfs_set_block_group_chunk_objectid(&cache->item, em->start);
-+		btrfs_set_block_group_flags(&cache->item, map->type);
-+		ret = btrfs_add_block_group_cache(fs_info, cache);
-+		if (ret) {
-+			btrfs_remove_free_space_cache(cache);
-+			btrfs_put_block_group(cache);
-+			goto out;
-+		}
-+		btrfs_update_space_info(fs_info, cache->flags, em->len, em->len,
-+					0, &space_info);
-+		cache->space_info = space_info;
-+		link_block_group(cache);
-+
-+		set_avail_alloc_bits(fs_info, cache->flags);
-+	}
-+out:
-+	read_unlock(&em_tree->lock);
-+	return ret;
-+}
-+
- int btrfs_read_block_groups(struct btrfs_fs_info *info)
- {
- 	struct btrfs_path *path;
-@@ -8049,6 +8096,9 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
- 	u64 feature;
- 	int mixed;
- 
-+	if (btrfs_test_opt(info, SKIP_BG))
-+		return fill_dummy_bgs(info);
-+
- 	feature = btrfs_super_incompat_flags(info->super_copy);
- 	mixed = !!(feature & BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS);
- 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 13907a6d2a87..d7236d7c978f 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -326,10 +326,11 @@ enum {
- 	Opt_treelog, Opt_notreelog,
- 	Opt_user_subvol_rm_allowed,
- 
--	/* Rescue options */
-+	/* Rescue options, Opt_rescue_* is only for rescue= mount options */
- 	Opt_rescue,
- 	Opt_usebackuproot,
- 	Opt_nologreplay,
-+	Opt_rescue_skip_bg,
- 
- 	/* Deprecated options */
- 	Opt_alloc_start,
-@@ -426,6 +427,7 @@ static const match_table_t tokens = {
- static const match_table_t rescue_tokens = {
- 	{Opt_usebackuproot, "usebackuproot"},
- 	{Opt_nologreplay, "nologreplay"},
-+	{Opt_rescue_skip_bg, "skipbg"},
- 	{Opt_err, NULL},
- };
- 
-@@ -458,6 +460,10 @@ static int parse_rescue_options(struct btrfs_fs_info *info, const char *options)
- 			btrfs_set_and_info(info, NOLOGREPLAY,
- 					   "disabling log replay at mount time");
- 			break;
-+		case Opt_rescue_skip_bg:
-+			btrfs_set_and_info(info, SKIP_BG,
-+				"skip mount time block group searching");
-+			break;
- 		case Opt_err:
- 			btrfs_info(info, "unrecognized rescue option '%s'", p);
- 			ret = -EINVAL;
-@@ -1381,6 +1387,8 @@ static int btrfs_show_options(struct seq_file *seq, struct dentry *dentry)
- 		seq_puts(seq, ",notreelog");
- 	if (btrfs_test_opt(info, NOLOGREPLAY))
- 		seq_puts(seq, ",rescue=no_log_replay");
-+	if (btrfs_test_opt(info, SKIP_BG))
-+		seq_puts(seq, ",rescue=skip_bg");
- 	if (btrfs_test_opt(info, FLUSHONCOMMIT))
- 		seq_puts(seq, ",flushoncommit");
- 	if (btrfs_test_opt(info, DISCARD))
-@@ -1808,6 +1816,14 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 	if (ret)
- 		goto restore;
- 
-+	if (btrfs_test_opt(fs_info, SKIP_BG) !=
-+	    (old_opts & BTRFS_MOUNT_SKIP_BG)) {
-+		btrfs_err(fs_info,
-+		"rescue=skip_bg mount option can't be changed during remount");
-+		ret = -EINVAL;
-+		goto restore;
-+	}
-+
- 	btrfs_remount_begin(fs_info, old_opts, *flags);
- 	btrfs_resize_thread_pool(fs_info,
- 		fs_info->thread_pool_size, old_thread_pool_size);
-@@ -1869,6 +1885,13 @@ static int btrfs_remount(struct super_block *sb, int *flags, char *data)
- 			goto restore;
- 		}
- 
-+		if (btrfs_test_opt(fs_info, SKIP_BG)) {
-+			btrfs_err(fs_info,
-+		"remounting read-write with rescue=skip_bg is not allowed");
-+			ret = -EINVAL;
-+			goto restore;
-+		}
-+
- 		ret = btrfs_cleanup_fs_roots(fs_info);
- 		if (ret)
- 			goto restore;
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a447d3ec48d5..a9b2c6e31782 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7769,6 +7769,13 @@ int btrfs_verify_dev_extents(struct btrfs_fs_info *fs_info)
- 	u64 prev_dev_ext_end = 0;
- 	int ret = 0;
- 
-+	/*
-+	 * For rescue=skip_bg mount option, we're already RO and are salvaging
-+	 * data, no need for such strict check.
-+	 */
-+	if (btrfs_test_opt(fs_info, SKIP_BG))
-+		return 0;
-+
- 	key.objectid = 1;
- 	key.type = BTRFS_DEV_EXTENT_KEY;
- 	key.offset = 0;
--- 
-2.23.0
-
+> 
+> But as we are changing the fsid of an unmounted image, so its ok to
+> leave it to the users choice if the fsid is not unique, so that the
+> image can be sent back the system where it was used with that fsid.
+> 
+> So this patch drops the check test_uuid_unique() for btrfstune -M|m.
+> Thanks.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+>  btrfstune.c | 4 ----
+>  1 file changed, 4 deletions(-)
+> 
+> diff --git a/btrfstune.c b/btrfstune.c
+> index afa3aae35412..4befcadef8b1 100644
+> --- a/btrfstune.c
+> +++ b/btrfstune.c
+> @@ -570,10 +570,6 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+>  			error("could not parse UUID: %s", new_fsid_str);
+>  			return 1;
+>  		}
+> -		if (!test_uuid_unique(new_fsid_str)) {
+> -			error("fsid %s is not unique", new_fsid_str);
+> -			return 1;
+> -		}
+>  	}
+>  
+>  	fd = open(device, O_RDWR);
+> 
