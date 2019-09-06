@@ -2,83 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A186AC240
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 23:56:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261DAAC304
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Sep 2019 01:28:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404805AbfIFV41 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Sep 2019 17:56:27 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:37191 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404615AbfIFV40 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Sep 2019 17:56:26 -0400
-Received: by mail-wr1-f68.google.com with SMTP id i1so7422389wro.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 06 Sep 2019 14:56:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6sfmAhjDDvKglfpukNd4+2Xk4zEwbSmYlXycBa4UscY=;
-        b=0Jaqh6Mzjiw8xinY7VlDEoe4Iix/bXwL5ZT2xPijz31oliYuEVFQFUKA5B+K8aEQfK
-         C0TiIBhnProreretQaOlvdDJWN7IxzHfGdiy0apFEh1HmnlHPrJ4YKKkW3g+SJJx6uwF
-         9W6mGYxc13fTj4ymjn8S3M62NH0rLXJ5xFyhxlIuCc+mKXCNHnV8hmQwAEWYTrtcQbFB
-         m4qCNn01ddDDxFl5LtyXW1y2RRBj6h/4+KOrCi1vQ7OsHxQLhvJJ8XEp0K9/qihQZhzR
-         lfpr3no9662K7TuqQWVx8nATW+vrD198ANNW/qpXZVM4Do8DN6YdNJCMH/lO+lsjSXiw
-         o1ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6sfmAhjDDvKglfpukNd4+2Xk4zEwbSmYlXycBa4UscY=;
-        b=Sw0WLM+ZsVu9j4dX86Ofae5mf20+oHMlbwtWyGK4LT4Mq2IpTJUDZrn4LhnyjuKRoj
-         JhjFta76AysPV9VX5TjrczdD80rZb3Vj2inZuRU9ZZXINu+kEOQ0hRrtUo4IkFTbN7MV
-         by9hvdoJCEMu+30q3jhZ0pW/HH1K6lcOWdHxl9WZ7+ABFDcCca9dz5zFKRKZrNjaGpOP
-         IDwBrObXWQEIbVw7u5rG8bb/v0A4f1RhiiGdilGMLet6tgppW4yho3uHo/kih800fLn2
-         MIMvEuG01fNLLhqB9CEq0nTulcKais9mRzQtctAzBLtnscq9m+vUSvvO2HRZAyCgbHAl
-         GQwQ==
-X-Gm-Message-State: APjAAAV1iJv/JK38nezkZ9BJ3kyJRk8BKivoBb6MvMig7X85mGWl3k4R
-        DB9MPcHDaep/JpBolol16+pdpqCf0LFdMbfyli7qcQ==
-X-Google-Smtp-Source: APXvYqx0cYAG5eNzatE3l2zSy8c+C7TMoRzbw2NBhOzfMKRErQZW87zrCo1i6EuRmLl2LZdUVDIzP6caUH73809snSo=
-X-Received: by 2002:adf:e390:: with SMTP id e16mr9280799wrm.29.1567806984645;
- Fri, 06 Sep 2019 14:56:24 -0700 (PDT)
+        id S2405361AbfIFX2R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Sep 2019 19:28:17 -0400
+Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:60386 "EHLO
+        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2405045AbfIFX2R (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 6 Sep 2019 19:28:17 -0400
+Received: from dread.disaster.area (pa49-181-255-194.pa.nsw.optusnet.com.au [49.181.255.194])
+        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id D5462360F92;
+        Sat,  7 Sep 2019 09:28:13 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92)
+        (envelope-from <david@fromorbit.com>)
+        id 1i6NeG-0004os-7p; Sat, 07 Sep 2019 09:28:12 +1000
+Date:   Sat, 7 Sep 2019 09:28:12 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 15/15] xfs: Use the new iomap infrastructure for CoW
+Message-ID: <20190906232812.GB16973@dread.disaster.area>
+References: <20190905150650.21089-1-rgoldwyn@suse.de>
+ <20190905150650.21089-16-rgoldwyn@suse.de>
+ <20190906165507.GA12842@lst.de>
 MIME-Version: 1.0
-References: <4d97a9bb-864a-edd1-1aff-bdc9c8204100@redhat.com> <CAJCQCtSm0rv=-zoAReP7+kjdvV1ihgi7tx1sh9YM=on_fZLKNg@mail.gmail.com>
-In-Reply-To: <CAJCQCtSm0rv=-zoAReP7+kjdvV1ihgi7tx1sh9YM=on_fZLKNg@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Fri, 6 Sep 2019 15:56:13 -0600
-Message-ID: <CAJCQCtS0=-9RouGbn-hWKJrUT56mJT=3ij5_wC5jujLwrS95=g@mail.gmail.com>
-Subject: Re: LTP fs_fill test results in BTRFS warning (device loop0): could
- not allocate space for a delete; will truncate on mount warnings
-To:     Rachel Sibley <rasibley@redhat.com>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Jan Stancek <jstancek@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190906165507.GA12842@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
+        a=YO9NNpcXwc8z/SaoS+iAiA==:117 a=YO9NNpcXwc8z/SaoS+iAiA==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
+        a=JfrnYn6hAAAA:8 a=7-415B0cAAAA:8 a=kd9TP_cp1AsMHmmDf5oA:9
+        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 6, 2019 at 3:35 PM Chris Murphy <lists@colorremedies.com> wrote:
->
-> On Fri, Sep 6, 2019 at 1:21 PM Rachel Sibley <rasibley@redhat.com> wrote:
-> >
-> > Hello,
-> >
-> > While running LTP [1] as part of CKI [2] testing, we noticed the fs_fill
-> > test fails pretty
-> > consistently with BTRFS warnings seen below, this is seen with recent
-> > kernel (5.2.12).
-> > I have included the logs below for reference.
->
-> I'm only 6 for 6, but  so far can't get it to trigger with 5.3.0-rc7
+On Fri, Sep 06, 2019 at 06:55:07PM +0200, Christoph Hellwig wrote:
+> On Thu, Sep 05, 2019 at 10:06:50AM -0500, Goldwyn Rodrigues wrote:
+> > diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> > index 8321733c16c3..13495d8a1ee2 100644
+> > --- a/fs/xfs/xfs_iomap.c
+> > +++ b/fs/xfs/xfs_iomap.c
+> > @@ -1006,7 +1006,10 @@ xfs_file_iomap_begin(
+> >  		 */
+> >  		if (directio || imap.br_startblock == HOLESTARTBLOCK)
+> >  			imap = cmap;
+> > +		else
+> > +			xfs_bmbt_to_iomap(ip, srcmap, &cmap, false);
+> >  
+> > +		iomap->flags |= IOMAP_F_COW;
+> 
+> I don't think this is correct.  We should only set IOMAP_F_COW
+> when we actually fill out the srcmap.  Which is a very good agument
+> for Darrick's suggestion to check for a non-emptry srcmap.
+> 
+> Also this is missing the actually interesting part in
+> xfs_file_iomap_begin_delay.
+> 
+> I ended up spending the better half of the day trying to implement
+> that and did run into a few bugs in the core iomap changes, mostly
+> due to a confusion which iomap to use.  So I ended up reworking those
+> a bit to:
+> 
+>   a) check srcmap->type to see if there is a valid srcmap
+>   b) set the srcmap pointer to iomap so that it doesn't need to
+>      be special cased all over
+>   c) fixed up a few more places to use the srcmap
+> 
+> This now at least survives xfstests -g quick on a 4k xfs file system
+> for.  Here is my current tree:
+> 
+> http://git.infradead.org/users/hch/xfs.git/shortlog/refs/heads/xfs-cow-iomap
 
-Also cannot reproduce, 10 for 10 with 5.2.13-200.fc30.x86_64 which was
-just built in koji, same as 5.2.12 which was quickly replaced with a
-single unrelated revert for touchpads.
+That looks somewhat reasonable. The XFS mapping function is turning
+into spagetti and getting really hard to follow again, though.
+Perhaps we should consider splitting the shared/COW path out of
+it...
 
-But comparing fs_fill logs, yours has a ton more writer threads (~6x)
-and ENOSPC counts. Possibly related?
+Cheers,
 
+Dave.
 -- 
-Chris Murphy
+Dave Chinner
+david@fromorbit.com
