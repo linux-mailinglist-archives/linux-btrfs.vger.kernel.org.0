@@ -2,94 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6E44AB4E1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 11:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08277AB54A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 12:04:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392864AbfIFJ13 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Sep 2019 05:27:29 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:53822 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbfIFJ13 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Sep 2019 05:27:29 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x869O48i004154;
-        Fri, 6 Sep 2019 09:27:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=4vtA4TrCDSrAfXnJgvttGzQEl5OpH712NFRkuSuYZdE=;
- b=ngA7m4GTNdTa1pnsnQDclopna/1uO0ddWAHWoF4VF+9l+kkIpcVMbl6V2vHrlrzsn2aw
- JRMo3Wq5NZdFONpNs9CYyQmeyTkZsSgI9UcjbqgLDRLC+QfN3z2KwXz/erF+au2q3UWE
- oKPeqg6GCn3ITUsXIT+PWjgGXgaBi2I84gNJMdslVTKRYDLAeyKxpPD+JsT3Zh6zNdlP
- L6WcguEJzJsYL8rzIsVZYW13zGjaUTD0jZjgrJJ5qMpA4N3NvDa6W2lRSFb517Iivaw4
- e7BBDPX3cKuVFGY5v8MLaB1qXpHN+9I1EkENGViJmucFvp1Bd5UtrAvcUj82bR5/6PwB cw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2uumbp87tt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Sep 2019 09:27:03 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x869NTgG105179;
-        Fri, 6 Sep 2019 09:27:02 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2uud7pb8hy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 06 Sep 2019 09:27:02 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x869R1WT006760;
-        Fri, 6 Sep 2019 09:27:01 GMT
-Received: from [10.186.51.128] (/10.186.51.128)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 06 Sep 2019 02:27:00 -0700
-Subject: Re: [PATCH] btrfs-progs: drop unique uuid test for btrfstune -M
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190906005025.2678-1-anand.jain@oracle.com>
- <f3d33e1d-803e-34a5-4dfa-7eeceec6177c@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <232bccd3-3623-8ee9-18db-98edf7cd2e25@oracle.com>
-Date:   Fri, 6 Sep 2019 17:27:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1732020AbfIFKEK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Sep 2019 06:04:10 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:53103 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731802AbfIFKEJ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Sep 2019 06:04:09 -0400
+Received: by mail-wm1-f67.google.com with SMTP id t17so5855659wmi.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Sep 2019 03:04:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=8mVb62Vguj9zE4LtxWZIBWFQF5Gp4AyZfvi/jCxubWQ=;
+        b=b697VWhwqC0S8sl4G/WpkPD8CrNhEUw2OVm5weWznoorsOur6f9pZQJOWzG7TRPh3w
+         r2lhOKuDkMTfTcC43BS/VQolGVStBHAY+fW4gsh/UhA/uyaVZvegqdvG06JBj9SUs0mM
+         3JTnFX8R8c3TWfJqaamnDNHPoeNP70QNHFgA9B0QoDRdAo8+PIy+jqpJnB9xcDIAebmT
+         odOSYs9/Xpu1A5/douJcA5xAqfVdXDRTG/RBC6ZmdHEB1yuNJfMFFgPGe6TnumbYSjBg
+         qFTPlropCK3aPXlcQ/tg5rof758ogOVKMOcZ+gBM6ATPfw+qDuPVaxZhUZFEkWM3RRCO
+         VFKg==
+X-Gm-Message-State: APjAAAWzv90ZjuYk97atQw6wVq9smBE6D/KDHXpXo+7HrBGee/+7aTeC
+        4jjG81Pp6loW/+YcfI6lkAv7YvVOoEg=
+X-Google-Smtp-Source: APXvYqysmxUwuzaUb0VfAUnJpdV/McnAOxPKtlt5JIrjl6QmLWYx42HaykTRz8DkhijeNjnKViV2dQ==
+X-Received: by 2002:a7b:c458:: with SMTP id l24mr2883357wmi.167.1567764247833;
+        Fri, 06 Sep 2019 03:04:07 -0700 (PDT)
+Received: from home.thecybershadow.net ([89.28.117.31])
+        by smtp.gmail.com with ESMTPSA id f75sm5000750wmf.2.2019.09.06.03.04.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Sep 2019 03:04:07 -0700 (PDT)
+From:   Vladimir Panteleev <git@vladimir.panteleev.md>
+To:     linux-btrfs@vger.kernel.org
+Cc:     Vladimir Panteleev <git@vladimir.panteleev.md>
+Subject: [PATCH] btrfs-progs: mkfs: fix xattr enumeration
+Date:   Fri,  6 Sep 2019 09:58:46 +0000
+Message-Id: <20190906095846.30592-1-git@vladimir.panteleev.md>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <f3d33e1d-803e-34a5-4dfa-7eeceec6177c@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9371 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1909060098
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9371 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909060098
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Use the return value of listxattr instead of tokenizing.
 
-<snip>
+The end of the extended attribute list is indicated by the return
+value, not an empty list item (two consecutive NULs). Using strtok
+in this way thus sometimes caused add_xattr_item to reuse stack data
+in xattr_list from the previous invocation, thus querying attributes
+that are not actually in the file's xattr list.
 
-> This is intended. Otherwise it's an open avenue for the user to shoot
-> themselves in the foot.
+Issue: #194
+Signed-off-by: Vladimir Panteleev <git@vladimir.panteleev.md>
+---
+ mkfs/rootdir.c | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
-  I don't understand how?
+diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+index 51411e02..c86159e7 100644
+--- a/mkfs/rootdir.c
++++ b/mkfs/rootdir.c
+@@ -228,10 +228,9 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
+ 	int ret;
+ 	int cur_name_len;
+ 	char xattr_list[XATTR_LIST_MAX];
++	char *xattr_list_end;
+ 	char *cur_name;
+ 	char cur_value[XATTR_SIZE_MAX];
+-	char delimiter = '\0';
+-	char *next_location = xattr_list;
+ 
+ 	ret = llistxattr(file_name, xattr_list, XATTR_LIST_MAX);
+ 	if (ret < 0) {
+@@ -243,10 +242,10 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
+ 	if (ret == 0)
+ 		return ret;
+ 
+-	cur_name = strtok(xattr_list, &delimiter);
+-	while (cur_name != NULL) {
++	xattr_list_end = xattr_list + ret;
++	cur_name = xattr_list;
++	while (cur_name < xattr_list_end) {
+ 		cur_name_len = strlen(cur_name);
+-		next_location += cur_name_len + 1;
+ 
+ 		ret = lgetxattr(file_name, cur_name, cur_value, XATTR_SIZE_MAX);
+ 		if (ret < 0) {
+@@ -266,7 +265,7 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
+ 					file_name);
+ 		}
+ 
+-		cur_name = strtok(next_location, &delimiter);
++		cur_name += cur_name_len + 1;
+ 	}
+ 
+ 	return ret;
+-- 
+2.23.0
 
-> If you know what you are doing and are
-> absolutely sure the original fs is no longer present 
-> - then just flush
-> libblkid cache and you'll be able to set the FSID back to the original one.
-> 
-<snip>
-
-  No no its not about the stale cache holding the original fsid. The use
-  case is - a golden copy of the bootable OS image is being used and
-  shares the same fsid on multiple hosts.
-  Now if you want to mount another copy it for some changes, you need to
-  btrfstune -m on the copy. And later if you want to boot it
-  successfully, it needs its original fsid back.
-
-HTH, Anand
