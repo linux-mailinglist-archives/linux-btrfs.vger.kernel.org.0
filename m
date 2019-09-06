@@ -2,101 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97665ABEF3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 19:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 988DDABF4A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Sep 2019 20:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391958AbfIFRrJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 6 Sep 2019 13:47:09 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:37849 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726626AbfIFRrJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Sep 2019 13:47:09 -0400
-Received: by mail-qk1-f196.google.com with SMTP id u184so3513513qkd.4;
-        Fri, 06 Sep 2019 10:47:09 -0700 (PDT)
+        id S2395326AbfIFSTw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 6 Sep 2019 14:19:52 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:34086 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392018AbfIFSTv (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 6 Sep 2019 14:19:51 -0400
+Received: by mail-pg1-f194.google.com with SMTP id n9so3941475pgc.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Sep 2019 11:19:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:subject:message-id:references:mime-version
+        d=osandov-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=EWIhvlIYQYgSNiR0JTK+22rY1hmZeqOgk/eFbmgddQ8=;
-        b=bgFCB1+Xb3oPlPNkF9mxMixq6tix1sDigEgne7DbcjtoTb8LtQM7bLEI8c6fEXGCEr
-         QaHWSZoj3I9DLutfVeqVeVjKk01MvMzmnJ5RN6ksDEMplQnSb10hgSbKLM5rfMhtdKMs
-         Oe+ChhyonTqOb55VzVqfon+xG8M4HF5Iy0nBxlBctV5XMCK8HXTlb1IZAdRVPTm2Inhk
-         heOaX5Le/iwR2acsfOMZeV59m5BrRXaierEsmimERyzjDxzbL1Ja4pVjyENMtzpn0ECh
-         4zhTX6QX5XA0QAOF9ucUmOXK2eQOVaULfQkgVrWNM9YsAzt0IiQ0NUKimVeRI9CRlWP7
-         UAwA==
+        bh=EUmWS9lL8CScD6T71EGXevEnPMn/Vfly3HdRvbtdM8U=;
+        b=HYJ9De48qK6Y+6o4uucU+lgCjbliE0cb1V0eNmJ3NOyygFQ2gZjZ6+GGbk+eP20ffc
+         h58gYfzMLss0hx278f3xXWJrg/1kQkc0WoEOuFFVdvNKBIVxW06ESDETybb3ixFaMJhE
+         LuwhaiPabUwxYGIE4Ckcfe7Js0S/OwJMDyl9QtwsWbk1lSD+UjTu4EOtf699punllEto
+         pTKvCvkWlcZvjfldZaONWi77OugbZ+8GaBYAsdo9eNm7AdT2cQIwa/Xwns47sQdOt6kv
+         JB66a+HSXAeInkGn8xcxnCJ/ZOLB0d+nZKz9IeNfI+lOZT/lQ2Z5vHW+HE6NdkFbEEWi
+         sXRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EWIhvlIYQYgSNiR0JTK+22rY1hmZeqOgk/eFbmgddQ8=;
-        b=McFnKFrS5udd3vNj9qfwvXUY7dlGKHuC9znr7Sz6umXSSPgs95VFqxyqbQHTEnPaxT
-         ZT8WmjVdhcSkM0catLmaUGy8HpfW4aS7gku0iYg0wYtQJj1d6USauKVKBTKzuZP4e7sM
-         5+3Gm718HDiRY/Zdq3Ey8q+066cNiMO7cA8TgbIL0Pi+VCM+sF14cJIZ4tVs7VssncsS
-         OjSBNqqvbC9kiqXU/egiOAZjrAz9Zh0VmVp3ja6xqd2/n+R+jPHTHxzGl2AbMKl6CS0C
-         qWzT3u0AHoD2urdqq8rg2/mJ+OM9g+bNzDgwC2pKYzeoSwuyOxog4UTviMFali9xSjmF
-         GvAQ==
-X-Gm-Message-State: APjAAAUOHU8xMPhWROldFQlmv0kc7m3u5CBCR+Fil4Q7a8ZXqCoEhbYM
-        yytFnexBjp2rr2oKt0xLLzM=
-X-Google-Smtp-Source: APXvYqyKeb8cLLEFnQco06qMeCCL5Perec1oC4sldCMUV05jBqrPKdkNMhRLpGPNtvuqKqZkFjgCYQ==
-X-Received: by 2002:a05:620a:15f4:: with SMTP id p20mr9769193qkm.282.1567792028327;
-        Fri, 06 Sep 2019 10:47:08 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::e7cb])
-        by smtp.gmail.com with ESMTPSA id m92sm2801385qte.50.2019.09.06.10.46.59
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Sep 2019 10:47:05 -0700 (PDT)
-Date:   Fri, 6 Sep 2019 10:46:56 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     dsterba@suse.cz, josef@toxicpanda.com, clm@fb.com,
-        dsterba@suse.com, axboe@kernel.dk, jack@suse.cz,
-        linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCHSET v3 btrfs/for-next] btrfs: fix cgroup writeback support
-Message-ID: <20190906174656.GQ2263813@devbig004.ftw2.facebook.com>
-References: <20190710192818.1069475-1-tj@kernel.org>
- <20190726151321.GF2868@twin.jikos.cz>
- <20190905115937.GA2850@twin.jikos.cz>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EUmWS9lL8CScD6T71EGXevEnPMn/Vfly3HdRvbtdM8U=;
+        b=glfLjeRwdSYJprW7C/WD7B942TKeze4zog6pCt1o1RIv5JaDwuaxNQ+mGE0v2BPt2f
+         LfDSO1bq9haVdoH8CdOqeMjBH+yy6J+/gogy/krbyuOvStAnh6+R+8FyPzTjzIqUxtye
+         KiqMZHR/BVeE+w6v8i3ZMtSJJLOCp3CIWhhFylhng+RO6UOqNLs8vYOmTXln+pqt4g/U
+         kyLh/uASwrWbElOi/m0bD1CrIRgK/N08Qce/2iKDtnYPhfcYPPV4sbfdDH0T1ciaS5SE
+         5+o83caEgwRx98zfBNzqSf7fwgDjQZOSHsopBWcXO5Bx6aYzxBrhwTyHPgvuBRd+fDYG
+         bcAQ==
+X-Gm-Message-State: APjAAAXoM1FonZbi/9UHWWN5Xu5wIrn7wntBWY/y5Mc5NwW6d0fcjpsD
+        lIjMW1MpwY9Hm6cItuZZdglX+Q==
+X-Google-Smtp-Source: APXvYqyYJOpis5AFTUOCiGhdeIEZS0XBc4BSrxFv1Y3FisMf/4EDKY7vAw/hGsS3bpyPbosA9RhSWg==
+X-Received: by 2002:a17:90a:284c:: with SMTP id p12mr11382801pjf.87.1567793990407;
+        Fri, 06 Sep 2019 11:19:50 -0700 (PDT)
+Received: from vader ([2620:10d:c090:200::3:4069])
+        by smtp.gmail.com with ESMTPSA id c6sm4773763pgd.66.2019.09.06.11.19.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Sep 2019 11:19:49 -0700 (PDT)
+Date:   Fri, 6 Sep 2019 11:19:49 -0700
+From:   Omar Sandoval <osandov@osandov.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 2/2] btrfs: add ioctl for directly writing compressed data
+Message-ID: <20190906181949.GG7452@vader>
+References: <cover.1567623877.git.osandov@fb.com>
+ <8eae56abb90c0fe87c350322485ce8674e135074.1567623877.git.osandov@fb.com>
+ <20190905021012.GL7777@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190905115937.GA2850@twin.jikos.cz>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190905021012.GL7777@dread.disaster.area>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello, David.
-
-On Thu, Sep 05, 2019 at 01:59:37PM +0200, David Sterba wrote:
-> On Fri, Jul 26, 2019 at 05:13:21PM +0200, David Sterba wrote:
-> > On Wed, Jul 10, 2019 at 12:28:13PM -0700, Tejun Heo wrote:
-> > > Hello,
-> > > 
-> > > This patchset contains only the btrfs part of the following patchset.
-> > > 
-> > >   [1] [PATCHSET v2 btrfs/for-next] blkcg, btrfs: fix cgroup writeback support
-> > > 
-> > > The block part has already been applied to
-> > > 
-> > >   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/ for-linus
-> > > 
-> > > with some naming changes.  This patchset has been updated accordingly.
+On Thu, Sep 05, 2019 at 12:10:12PM +1000, Dave Chinner wrote:
+> On Wed, Sep 04, 2019 at 12:13:26PM -0700, Omar Sandoval wrote:
+> > From: Omar Sandoval <osandov@fb.com>
 > > 
-> > I'm going to add this patchset to for-next to get some testing coverage,
-> > there are some comments pending, but that are changelog updates and
-> > refactoring.
+> > This adds an API for writing compressed data directly to the filesystem.
+> > The use case that I have in mind is send/receive: currently, when
+> > sending data from one compressed filesystem to another, the sending side
+> > decompresses the data and the receiving side recompresses it before
+> > writing it out. This is wasteful and can be avoided if we can just send
+> > and write compressed extents. The send part will be implemented in a
+> > separate series, as this ioctl can stand alone.
+> > 
+> > The interface is essentially pwrite(2) with some extra information:
+> > 
+> > - The input buffer contains the compressed data.
+> > - Both the compressed and decompressed sizes of the data are given.
+> > - The compression type (zlib, lzo, or zstd) is given.
+
+Hi, Dave,
+
+> So why can't you do this with pwritev2()? Heaps of flags, and
+> use a second iovec to hold the decompressed size of the previous
+> iovec. i.e.
 > 
-> No updates, so patchset stays in for-next, closest merge target is 5.5.
+> 	iov[0].iov_base = compressed_data;
+> 	iov[0].iov_len = compressed_size;
+> 	iov[1].iov_base = NULL;
+> 	iov[1].iov_len = uncompressed_size;
+> 	pwritev2(fd, iov, 2, offset, RWF_COMPRESSED_ZLIB);
+> 
+> And you don't need to reinvent pwritev() with some whacky ioctl that
+> is bound to be completely screwed up is ways not noticed until
+> someone else tries to use it...
 
-Sorry about dropping the ball.  It looked like Chris and Nikolay
-weren't agreeing so I wasn't sure what the next step should be and
-then forgot about it.  The following is the discussion.
+This is a good suggestion, thanks. I hadn't considered (ab?)using iovecs
+in this way.
 
-  https://lore.kernel.org/linux-btrfs/c2419d01-5c84-3fb4-189e-4db519d08796@suse.com/
+One modification I'd make would be to put the encoding into the second
+iovec and use a single RWF_ENCODED flag so that we don't have to keep
+stealing from RWF_* every time we add a new compression
+algorithm/encryption type/whatever:
 
-What do you think about the exchange?
+ 	iov[0].iov_base = compressed_data;
+ 	iov[0].iov_len = compressed_size;
+ 	iov[1].iov_base = (void *)IOV_ENCODING_ZLIB;
+ 	iov[1].iov_len = uncompressed_size;
+ 	pwritev2(fd, iov, 2, offset, RWF_ENCODED);
 
-Thanks.
+Making every other iovec a metadata iovec in this way would be a major
+pain to plumb through the iov_iter and VFS code, though. Instead, we
+could put the metadata in iov[0] and the encoded data in iov[1..iovcnt -
+1]:
 
--- 
-tejun
+	iov[0].iov_base = (void *)IOV_ENCODING_ZLIB;
+	iov[0].iov_len = unencoded_len;
+	iov[1].iov_base = encoded_data1;
+	iov[1].iov_len = encoded_size1;
+	iov[2].iov_base = encoded_data2;
+	iov[2].iov_len = encoded_size2;
+ 	pwritev2(fd, iov, 3, offset, RWF_ENCODED);
+
+In my opinion, these are both reasonable interfaces. The former allows
+the user to write multiple encoded "extents" at once, while the latter
+allows writing a single encoded extent from scattered buffers. The
+latter is much simpler to implement ;) Thoughts?
+
+> I'd also suggest atht if we are going to be able to write compressed
+> data directly, then we should be able to read them as well directly
+> via preadv2()....
+> 
+> > The interface is general enough that it can be extended to encrypted or
+> > otherwise encoded extents in the future. A more detailed description,
+> > including restrictions and edge cases, is included in
+> > include/uapi/linux/btrfs.h.
+> 
+> No thanks, that bit us on the arse -hard- with the clone interfaces
+> we lifted to the VFS from btrfs. Let's do it through the existing IO
+> paths and write a bunch of fstests to exercise it and verify the
+> interface's utility and the filesystem implementation correctness
+> before anything is merged.
+> 
+> > The implementation is similar to direct I/O: we have to flush any
+> > ordered extents, invalidate the page cache, and do the io
+> > tree/delalloc/extent map/ordered extent dance.
+> 
+> Which, to me, says that this should be a small bit of extra code
+> in the direct IO path that skips the compression/decompression code
+> and sets a few extra flags in the iocb that is passed down to the
+> direct IO code.
+> 
+> We don't need a whole new IO path just to skip a data transformation
+> step in the direct IO path....
+
+Eh, at least for Btrfs, it's much hairier to retrofit this onto the mess
+of callbacks that is __blockdev_direct_IO() than it is to have a
+separate path. But that doesn't affect the interface, and other
+filesystems may be able to share more code with the direct IO path.
