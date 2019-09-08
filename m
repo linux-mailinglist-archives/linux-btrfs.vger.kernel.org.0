@@ -2,70 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AD11ACBDC
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Sep 2019 11:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E470AD048
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Sep 2019 19:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbfIHJsJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 8 Sep 2019 05:48:09 -0400
-Received: from mail02.iobjects.de ([188.40.134.68]:39744 "EHLO
-        mail02.iobjects.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727941AbfIHJsJ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Sep 2019 05:48:09 -0400
-Received: from tux.wizards.de (pD9EBF359.dip0.t-ipconnect.de [217.235.243.89])
-        by mail02.iobjects.de (Postfix) with ESMTPSA id 90D4B416A139;
-        Sun,  8 Sep 2019 11:48:07 +0200 (CEST)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.wizards.de (Postfix) with ESMTP id 4EC11F015AB;
-        Sun,  8 Sep 2019 11:48:07 +0200 (CEST)
-Subject: Re: Balance conversion to metadata RAID1, data RAID1 leaves some
- metadata as DUP
-To:     Pete <pete@petezilla.co.uk>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <eda2fb2a-c657-5e4a-8d08-1bf57b57dd3b@petezilla.co.uk>
- <94bca1e6-6b6a-10fb-9e44-ae9a2202187d@applied-asynchrony.com>
- <c00a206b-ac20-9312-498f-6fbf1ffd1295@petezilla.co.uk>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <05971f6b-4b4f-c20b-2a1d-fb61a200a16b@applied-asynchrony.com>
-Date:   Sun, 8 Sep 2019 11:48:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1730554AbfIHR6U (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 8 Sep 2019 13:58:20 -0400
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:53600 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730531AbfIHR6U (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sun, 8 Sep 2019 13:58:20 -0400
+Received: by mail-wm1-f43.google.com with SMTP id q19so11303335wmc.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 08 Sep 2019 10:58:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=XaZNTlC9KgmJHY7VWLtbf27AzyORqd1g5Gm00PIMu4M=;
+        b=MU2yNoQZvT9wO/T3cVwbBfNF6jfpd8mBl2m63P3IexRXeyReitYVb5bsVOvoaPgANa
+         AuRMPOuRny0AxMftQxZe3Svp1kbJu/H0rsNy9lm7VaCADVZUZlJ/J265/RwaW/i5tjCU
+         EkWO2MkZDDhrPO4FLdoRcUGBEcMXT6zMo+ALx2g8gWFhUTAt+7kDvyPFHg4WAflw088W
+         Ajr9wgDLnbzuzeRnr8LfK1NgnQvvFEO3YdnMJWdtEZhmp8XWaMXmXFq1NjK1Wi2IDkBq
+         saoLPIsv99zYp1yWowln9nsDmdXarHhgZmChy1s0ONOevgAcOf0yjr3MRVNcvcTKNxD2
+         o23Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=XaZNTlC9KgmJHY7VWLtbf27AzyORqd1g5Gm00PIMu4M=;
+        b=VXXcqXb87bnagoDq96TNyQk/H7njLOY3tusQNVdCnu+yIiviABBlueqkBXKeg1NTKW
+         JA02pZyb04BjnQHvkW6+Ohv6jsmjpRwxD8RGsc8mYMTm6dzU58ejYd0nXy3fJLA2tZ/H
+         CP7uvZwaYVVyHqSSgn+aotAlYtUyqGoD7tjCUrTTgaSmjr+d+WKKJWUgVYVwFYedLRPa
+         H0Yq5XjjBjBcwW8kjymV78OT8NPGTqKA7hsrAftXRhPhemdlXwGRa2p2c2LZMEIRE+eX
+         mHfOUnJv94hzeUsuefEnbXA2u3kxjiy7e89nruN+E5pjFULDnogPqEL8z9YZND9pN2Pc
+         4Jqg==
+X-Gm-Message-State: APjAAAUtI1944b8HHKDuYDk/F8bXbvcjDfIQSJOidznDPagRZU5JhusZ
+        M4tFJayv+4JdBhq5ytJVpkc7E6BzB+eBhgt4usk7doAedJFduQ==
+X-Google-Smtp-Source: APXvYqz33LVPApeoUtsjdblDAx0nEH1IW5x6B9icrDKwfgIQgPLj9jsSpDZ/oaxarZ3ZLZLxdLBDm5qwv+u7imSycmc=
+X-Received: by 2002:a1c:d10b:: with SMTP id i11mr15845545wmg.8.1567965498003;
+ Sun, 08 Sep 2019 10:58:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <c00a206b-ac20-9312-498f-6fbf1ffd1295@petezilla.co.uk>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sun, 8 Sep 2019 11:58:07 -0600
+Message-ID: <CAJCQCtQueeFf=4m0Y2t3Qxzh_qT=PKwY5CPe4MmBb1wx3xyDfg@mail.gmail.com>
+Subject: user_subvol_rm_allowed vs rmdir_subvol
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/8/19 11:18 AM, Pete wrote:
-> On 9/8/19 8:57 AM, Holger Hoffstätte wrote:
->> On 9/8/19 9:09 AM, Pete wrote:
->> (snip)
->>> I presume running another balance will fix this, but surely all metadata
->>> should have been converted?  Is there a way to only balance the DUP
->>> metadata?
->>
->> Adding "soft" to -mconvert should do exactly that; it will then skip
->> any chunks that are already in the target profile.
->>
->> -h
-> 
-> Appreciated.  Fixed it, very rapidly, with:
-> 
-> btrfs bal start -mconvert=raid1,soft  /home_data
-> 
-> I think a few examples on the wiki page would be helpful.  As I don't do
-> this sort of maintenance every day I looked at the filter section on the
-> wiki / man pages online following your prompting and was adding
-> 'type=soft' in various places with no success and it was about the 3rd
-> reading of the relevant area where I cam up with the above which worked.
+Came across this podman issue yesterday
+https://github.com/containers/libpod/issues/3963
 
-IMHO 'soft' should just be the implicit default behaviour for convert,
-since it almost always does what one would expect when converting.
-I can't think of a good reason why it shouldn't be, but maybe there is
-one - Dave?
 
--h
+Question 1: For unprivileged use case, is it intentional that the user
+creates a subvolume/snapshot using 'btrfs sub create' and that the
+user delete it with 'rm -rf' ?
+
+And is the consequence of this performance? Because I see rm -rf must
+individually remove all files and dirs from the subvolume first,
+before rmdir() is called to remove the subvolume. Where as 'btrfs sub
+del' calls BTRFS_IOC_SNAP_DESTROY ioctl which is pretty much
+immediate, with cleanup happening in the background.
+
+
+Question 2:
+
+As it relates to the podman issue, what do Btrfs developers recommend?
+If kernel > 4.18, and if unprivileged, then use 'rm -rf' to delete
+subvolumes? Otherwise use 'btrfs sub del' with root privilege?
+
+
+Question 3:
+man 5 btrfs has a confusing note for user_subvol_rm_allowed mount option:
+
+               Note
+               historically, any user could create a snapshot even if
+he was not owner of the source subvolume, the subvolume deletion has
+been restricted
+               for that reason. The subvolume creation has been
+restricted but this mount option is still required. This is a
+usability issue.
+
+2nd sentence "subvolume creation has been restricted"  I can't parse
+that. Is it an error, or can it be worded differently?
+
+
+-- 
+Chris Murphy
