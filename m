@@ -2,24 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CE9EADB2B
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 16:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A63FADB40
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 16:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727275AbfIIO2P (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 10:28:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36786 "EHLO mx1.suse.de"
+        id S1727488AbfIIOeN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 10:34:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40332 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726774AbfIIO2P (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 10:28:15 -0400
+        id S1727112AbfIIOeM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 10:34:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D0C71B653;
-        Mon,  9 Sep 2019 14:28:12 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: nofs inode allocations
-To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
+        by mx1.suse.de (Postfix) with ESMTP id 6FEC7ABBE;
+        Mon,  9 Sep 2019 14:34:10 +0000 (UTC)
+Subject: Re: [PATCH v2 2/6] btrfs-progs: check/common: Introduce a function to
+ find imode using INODE_REF
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, WenRuo Qu <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-Cc:     Zdenek Sojka <zsojka@seznam.cz>
-References: <20190909141204.24557-1-josef@toxicpanda.com>
+References: <20190905075800.1633-1-wqu@suse.com>
+ <20190905075800.1633-3-wqu@suse.com>
+ <4e7099d2-5b4c-1fa3-ffdf-2b3332ed0b88@suse.com>
+ <37228196-3617-e253-6ad1-125e72e6628c@gmx.com>
+Cc:     David Sterba <dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +68,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <a4f375b2-b610-ed0b-4dcf-147da15065ef@suse.com>
-Date:   Mon, 9 Sep 2019 17:28:11 +0300
+Message-ID: <9e38c008-6a3e-cf90-4e65-26066710060e@suse.com>
+Date:   Mon, 9 Sep 2019 17:34:08 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190909141204.24557-1-josef@toxicpanda.com>
+In-Reply-To: <37228196-3617-e253-6ad1-125e72e6628c@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,111 +84,118 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 9.09.19 г. 17:12 ч., Josef Bacik wrote:
-> A user reported a lockdep splat
+On 9.09.19 г. 17:24 ч., Qu Wenruo wrote:
 > 
->  ======================================================
->  WARNING: possible circular locking dependency detected
->  5.2.11-gentoo #2 Not tainted
->  ------------------------------------------------------
->  kswapd0/711 is trying to acquire lock:
->  000000007777a663 (sb_internal){.+.+}, at: start_transaction+0x3a8/0x500
 > 
-> but task is already holding lock:
->  000000000ba86300 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x0/0x30
+> On 2019/9/9 下午9:25, Nikolay Borisov wrote:
+>>
+>>
+>> On 5.09.19 г. 10:57 ч., Qu Wenruo wrote:
+>>> Introduce a function, find_file_type(), to find filetype using
+>>> INODE_REF.
+>>>
+>>> This function will:
+>>> - Search DIR_INDEX first
+>>>   DIR_INDEX is easier since there is only one item in it.
+>>>
+>>> - Valid the DIR_INDEX item
+>>>   If the DIR_INDEX is valid, use the filetype and call it a day.
+>>>
+>>> - Search DIR_ITEM then
+>>>
+>>> - Valide the DIR_ITEM
+>>>   If valid, call it a day. Or return -ENOENT;
+>>>
+>>> This would be used as the primary method to determine the imode in later
+>>> imode repair code.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>>> ---
+>>>  check/mode-common.c | 99 +++++++++++++++++++++++++++++++++++++++++++++
+>>>  1 file changed, 99 insertions(+)
+>>>
+>>> diff --git a/check/mode-common.c b/check/mode-common.c
+>>> index 195b6efaa7aa..c0ddc50a1dd0 100644
+>>> --- a/check/mode-common.c
+>>> +++ b/check/mode-common.c
+>>> @@ -16,6 +16,7 @@
+>>>
+>>>  #include <time.h>
+>>>  #include "ctree.h"
+>>> +#include "hash.h"
+>>>  #include "common/internal.h"
+>>>  #include "common/messages.h"
+>>>  #include "transaction.h"
+>>> @@ -836,6 +837,104 @@ int reset_imode(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+>>>  	return ret;
+>>>  }
+>>>
+>>> +static int find_file_type(struct btrfs_root *root, u64 ino, u64 dirid,
+>>> +			  u64 index, const char *name, u32 name_len,
+>>> +			  u32 *imode_ret)
+>>> +{
+>>> +	struct btrfs_path path;
+>>> +	struct btrfs_key location;
+>>> +	struct btrfs_key key;
+>>> +	struct btrfs_dir_item *di;
+>>> +	char namebuf[BTRFS_NAME_LEN] = {0};
+>>> +	unsigned long cur;
+>>> +	unsigned long end;
+>>> +	bool found = false;
+>>> +	u8 filetype;
+>>> +	u32 len;
+>>> +	int ret;
+>>> +
+>>> +	btrfs_init_path(&path);
+>>> +
+>>> +	/* Search DIR_INDEX first */
+>>> +	key.objectid = dirid;
+>>> +	key.offset = index;
+>>> +	key.type = BTRFS_DIR_INDEX_KEY;
+>>> +
+>>> +	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+>>> +	if (ret > 0)
+>>> +		ret = -ENOENT;
+>>
+>> Even if it returns 1 meaning there is no DIR_INDEX item perhaps it still
+>> makes sense to go to dir_item: label to search for DIR_ITEM, what if the
+>> corruption has affected just the DIR_INDEX item?
 > 
-> which lock already depends on the new lock.
+> I didn't get the point.
 > 
-> the existing dependency chain (in reverse order) is:
-> 
-> -> #1 (fs_reclaim){+.+.}:
->  kmem_cache_alloc+0x1f/0x1c0
->  btrfs_alloc_inode+0x1f/0x260
->  alloc_inode+0x16/0xa0
->  new_inode+0xe/0xb0
->  btrfs_new_inode+0x70/0x610
->  btrfs_symlink+0xd0/0x420
->  vfs_symlink+0x9c/0x100
->  do_symlinkat+0x66/0xe0
->  do_syscall_64+0x55/0x1c0
->  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> 
-> -> #0 (sb_internal){.+.+}:
->  __sb_start_write+0xf6/0x150
->  start_transaction+0x3a8/0x500
->  btrfs_commit_inode_delayed_inode+0x59/0x110
->  btrfs_evict_inode+0x19e/0x4c0
->  evict+0xbc/0x1f0
->  inode_lru_isolate+0x113/0x190
->  __list_lru_walk_one.isra.4+0x5c/0x100
->  list_lru_walk_one+0x32/0x50
->  prune_icache_sb+0x36/0x80
->  super_cache_scan+0x14a/0x1d0
->  do_shrink_slab+0x131/0x320
->  shrink_node+0xf7/0x380
->  balance_pgdat+0x2d5/0x640
->  kswapd+0x2ba/0x5e0
->  kthread+0x147/0x160
->  ret_from_fork+0x24/0x30
-> 
-> other info that might help us debug this:
-> 
->  Possible unsafe locking scenario:
-> 
->  CPU0 CPU1
->  ---- ----
->  lock(fs_reclaim);
->  lock(sb_internal);
->  lock(fs_reclaim);
->  lock(sb_internal);
-> *** DEADLOCK ***
-> 
->  3 locks held by kswapd0/711:
->  #0: 000000000ba86300 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x0/0x30
->  #1: 000000004a5100f8 (shrinker_rwsem){++++}, at: shrink_node+0x9a/0x380
->  #2: 00000000f956fa46 (&type->s_umount_key#30){++++}, at: super_cache_scan+0x35/0x1d0
-> 
-> stack backtrace:
->  CPU: 7 PID: 711 Comm: kswapd0 Not tainted 5.2.11-gentoo #2
->  Hardware name: Dell Inc. Precision Tower 3620/0MWYPT, BIOS 2.4.2 09/29/2017
->  Call Trace:
->  dump_stack+0x85/0xc7
->  print_circular_bug.cold.40+0x1d9/0x235
->  __lock_acquire+0x18b1/0x1f00
->  lock_acquire+0xa6/0x170
->  ? start_transaction+0x3a8/0x500
->  __sb_start_write+0xf6/0x150
->  ? start_transaction+0x3a8/0x500
->  start_transaction+0x3a8/0x500
->  btrfs_commit_inode_delayed_inode+0x59/0x110
->  btrfs_evict_inode+0x19e/0x4c0
->  ? var_wake_function+0x20/0x20
->  evict+0xbc/0x1f0
->  inode_lru_isolate+0x113/0x190
->  ? discard_new_inode+0xc0/0xc0
->  __list_lru_walk_one.isra.4+0x5c/0x100
->  ? discard_new_inode+0xc0/0xc0
->  list_lru_walk_one+0x32/0x50
->  prune_icache_sb+0x36/0x80
->  super_cache_scan+0x14a/0x1d0
->  do_shrink_slab+0x131/0x320
->  shrink_node+0xf7/0x380
->  balance_pgdat+0x2d5/0x640
->  kswapd+0x2ba/0x5e0
->  ? __wake_up_common_lock+0x90/0x90
->  kthread+0x147/0x160
->  ? balance_pgdat+0x640/0x640
->  ? __kthread_create_on_node+0x160/0x160
->  ret_from_fork+0x24/0x30
-> 
-> This is because btrfs_new_inode() calls new_inode() under the
-> transaction.  We could probably move the new_inode() outside of this but
-> for now just wrap it in memalloc_nofs_save().
+> The next line is just going to do dir_item search, just as you mentioned.
 
-If I'm understanding correctly what happens here is that symlinking
-wants to instantiate a new inode
-(new_inode->btrfs_alloc_inode->kmem_cache_alloc with GFP_KERNEL) but it
-triggers background reclaim, hence goes to sleep, while holding a
-transaction. At the same time background reclaim joins the same
-transaction which is now blocked by the symlinking thread, hence it's
-prone to deadlock ?
+You are right, however, this is somewhat subtle and the fact I missed it
+just proves the point. The following will be much better (and explicit):
+
+if (ret)
+   goto dir_item
+
+In fact setting the -ENOENT on ret > 0 is only needed because of the
+awkward way the return value of btrfs_search_slot is handled. So yeah,
+I'm even more convinced that a simple if (ret) goto dir_item (or call a
+function) is the way to go here.
+
+>>
+>>> +	if (ret < 0)
+>>> +		goto dir_item;
+>> nit: Use elseif to make it more explicit it is a single construct.
+> 
+> Not sure such usage is recommened, but I see a lot of usage like:
+> 	ret = btrfs_search_slot();
+> 	if (ret > 0)
+> 		ret = -ENOENT;
+> 	if (ret < 0)
+> 		goto error;
+> 
+> So I just followed this practice.
+> 
+
+I guess this is debatable. You are right that most of the retval
+handling is as you say but I think the more "purist" (so to say) way
+should be an if {} else if {}. Because ultimately you are handling one
+thing - the return value of btrfs_search_slot.
+
+ David, what is your take on that ?
+
+<snip>
