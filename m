@@ -2,131 +2,234 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3FEBAE177
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 01:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFC8AE18C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 01:44:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730250AbfIIXZQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 19:25:16 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:35527 "EHLO
-        server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730138AbfIIXZQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 19:25:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
-         s=default; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Reply-to:
-        In-Reply-To:References:Subject:Cc:To:From:Message-ID:Date:Sender:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=j0bhePdfD0/vnNvoUnIU2xgJjnNfPtiyrZLTSAe85ks=; b=tU+rYiBF13RKe2W2jgFbEGdRYF
-        CVwH06oYVuXWgVFVo91gP3CCfG3UjXSjk676uAzOO6RUl03oJZLFBepJzP3CIXzOXRTQObYQYXFRX
-        cHfDs+P6sjVG9ERf3zZw1DRwMqyukvj1RCTDJ7yQJzAFlwJHq3Hdi9vhs/+fxnXudLKV/HnVvgU7x
-        vuOda1gZSI4zbDNV0PJMghXWAIQIeCo9ZVvbYr5lQk0U76h97eSK/nWWZs2qCiJRhFRURzayrK8gL
-        4Qy8qW3tbfGGlCatn7MisOW/SrXmxFhrNRBvyhRHfa7BErtbm4cZZM0vPHy8xHFFjygzPMH/2Xhqc
-        r9qiAwyQ==;
-Received: from [::1] (port=56658 helo=server53.web-hosting.com)
-        by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <webmaster@zedlx.com>)
-        id 1i7T1y-0003Qq-Rw; Mon, 09 Sep 2019 19:25:15 -0400
-Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Mon, 09 Sep 2019 19:25:10 -0400
-Date:   Mon, 09 Sep 2019 19:25:10 -0400
-Message-ID: <20190909192510.Horde.TcPhEiaioP0455GTkXqxE4Q@server53.web-hosting.com>
-From:   webmaster@zedlx.com
-To:     Graham Cobb <g.btrfs@cobb.uk.net>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+        id S1730644AbfIIXoz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 19:44:55 -0400
+Received: from mout.gmx.net ([212.227.17.21]:57839 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729036AbfIIXoy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 19:44:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1568072679;
+        bh=OWw1RB14VD1Put2dQqKkV1j+c+NzbDOo19kwS2GMnSA=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=YR3WALO7xDF/LP4fR00QobFARtbp/uFxdf96kMaycsv8P0v5gQ4w0t3/GJZvaKIRh
+         1PWB32+O8qcPSYYFMavvYAaZ94g9wKI2KhoD/8AIvAb/9aX4fI0nnuysNPPA695O7e
+         OChaQSTB8sv/nMsk9oZgumi865YnE2F+cyDPFA/s=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2V4J-1iGrfd2Cqt-013xHW; Tue, 10
+ Sep 2019 01:44:39 +0200
 Subject: Re: Feature requests: online backup - defrag - change RAID level
+To:     webmaster@zedlx.com, linux-btrfs@vger.kernel.org
 References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
  <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
  <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
  <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
- <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
-In-Reply-To: <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
-Reply-to: webmaster@zedlx.com
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+ <20190909123818.Horde.dbl-yi_cNi8aKDaW_QYXVij@server53.web-hosting.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <ba5f9d6c-aa6c-c9b2-76d2-3ca56606fcc5@gmx.com>
+Date:   Tue, 10 Sep 2019 07:44:35 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.0
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server53.web-hosting.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - zedlx.com
-X-Get-Message-Sender-Via: server53.web-hosting.com: authenticated_id: zedlryqc/from_h
-X-Authenticated-Sender: server53.web-hosting.com: webmaster@zedlx.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-From-Rewrite: unmodified, already matched
+In-Reply-To: <20190909123818.Horde.dbl-yi_cNi8aKDaW_QYXVij@server53.web-hosting.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Ng5lBzeMsGA87Pr5syGs7tl05Ip7HpUMd"
+X-Provags-ID: V03:K1:NgsncNsC00U0j1l6nbpdk5zKp2QC1scTrpTaiiJ0Oxp3qG3J049
+ sZpP0HY5ka2P5oUwu+FxDKLH56jJU14HTTMRkk/7ObcDGQhbHUDLlXKIIfMromsjCF8GoGF
+ 28mQIf3mWezMChiX8C8z5JPWfQtW99fuFq7X8cs2GPpvvtKnrWTbAocEfEBtY3DWV4hMDHq
+ xmMKt8hNZGB+Cg2dXGxMg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:T+Sd+Vg2NSw=:nGkrExqXlNFXXObUlUCXIF
+ b0AVThmxG18rPW7lW4HWeFI+v8sCpwgfNW72jCghBCn7BGKlL4uFCk7JmGrOHzSxYS7wGyuJK
+ 676D+dcHxcNZXxYBHVkCZItVw8xkL1VydJKLNGyyc2FRIXqFkk78ZjfPoTW/QGRJs+0NkolRW
+ JcCVYw1amo7FNTD7HyL/1RlGZlh4s8sN1WCrUXUdOmZPJzOQho7i+gb8i51orU0cuBXrJtOup
+ 9d4xVV5VCgFDdijT07bG2t/s5LsQcS/H1LflYls6ediZLUdntwBEFp+yRxwo1XRNLj8tLY027
+ EvgOJRTqLGNLaLvEDrZTY8gdmUOBV3s81x88Uk868nFqLboJ1o3/JFtxTbEqFtHmoeS+Jsqkh
+ AL1O7cMelbkw9A78Tn9LfR/x7YiWRliVQkscZAR7Lxom2ySSiSOM5TVql7mBrDiL6wglJZpq0
+ 5rH4MZmCRZSV5wlbC8CUE9GJzjH9MIFAM/56v1C2Kr8oGGg9d1E2XGfvpdnu9cHSrbXwhSeZc
+ qZZMONaQuX6ekjiYrwyP5uRUyYW8R6cEHA9uXEKmU7QZjAt1ho6chvD3uuiiHsZs0z3r6Fzpu
+ vbgDRZ06OLU4+6eXo9hli7MXJWPjVyYoidmlsws/LCfGsGYjBs0EMva3hGSCaqV8uaMx72uXh
+ A2RbhsDa8Mx0oOzjeZ+asHVqI4d4rb7y/NhLC9tpHIhS6NJbWsmH8zjrHR5HrVd4LDueRRWTb
+ 7vICGnfDY5XDiPnEB1BsYEpwkFck6AvukVn49gUXzRvPyTFg+DbHi3Jx+70gnQh6IsGN3hz3Q
+ WnZw3q4A/p4GjYr/DspF0e/ITxvCHjMsHTgF4wRjd2m88CD8fbOkRmKCQPODVEokSSNlNRJ5D
+ Vw1otv0kCcz4WUZMzqi3RzkjzmL0EdDlG+zkUAJA8XS3z5LMObG4Dftowwxkt4tu/d3KdPiZB
+ kHcbij+wmm771KBvIvGnk1jz9lBCXi+ptuCs+RVBaz53VSRotPY0zFVI1zgCr+Ui5vPcfUIrc
+ T1JaOll1byec2GqLo1n1MLRiV34fHu61T6XbWYVgq+/ZogwcUDuT7ryqdkkqiiS9t4yMF9Pvy
+ us8948k2y0d6qxOLRvlnUXbkLqxNKxNisVmaGxhanlcO6VRhkT2BuV2MehTWOvJfVuJxYvSq2
+ gpyZgDVsC6c3Cn83SOlLIFvhUMLeelL+6/rOwO+yUZPxyLIq9SI123o+K4049h7nKlNisbXz+
+ ZVTeK189UIN5+datf
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Ng5lBzeMsGA87Pr5syGs7tl05Ip7HpUMd
+Content-Type: multipart/mixed; boundary="0wwyANo3i85Y18V0E18VE3Tai2gywuWxh"
 
-Quoting Graham Cobb <g.btrfs@cobb.uk.net>:
+--0wwyANo3i85Y18V0E18VE3Tai2gywuWxh
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> On 09/09/2019 13:18, Qu Wenruo wrote:
+
+
+On 2019/9/10 =E4=B8=8A=E5=8D=8812:38, webmaster@zedlx.com wrote:
+>=20
+> Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
+>=20
+>>>>> 2) Sensible defrag
+>>>>> The defrag is currently a joke.
+>>>
+>>> Maybe there are such cases, but I would say that a vast majority of
+>>> users (99,99%) in a vast majority of cases (99,99%) don't want the
+>>> defrag operation to reduce free disk space.
+>>>
+>>>> What's wrong with current file based defrag?
+>>>> If you want to defrag a subvolume, just iterate through all files.
+>>>
+>>> I repeat: The defrag should not decrease free space. That's the 'norm=
+al'
+>>> expectation.
 >>
+>> Since you're talking about btrfs, it's going to do CoW for metadata no=
+t
+>> matter whatever, as long as you're going to change anything, btrfs wil=
+l
+>> cause extra space usage.
+>> (Although the final result may not cause extra used disk space as free=
+d
+>> space is as large as newly allocated space, but to maintain CoW, newly=
+
+>> allocated space can't overlap with old data)
+>=20
+> It is OK for defrag to temporarily decrease free space while defrag
+> operation is in progress. That's normal.
+>=20
+>> Further more, talking about snapshots with space wasted by extent
+>> booking, it's definitely possible user want to break the shared extent=
+s:
 >>
->> On 2019/9/9 下午7:25, zedlryqc@server53.web-hosting.com wrote:
->>> What I am complaining about is that at one point in time, after issuing
->>> the command:
->>>     btrfs balance start -dconvert=single -mconvert=single
->>> and before issuing the 'btrfs delete', the system could be in a too
->>> fragile state, with extents unnecesarily spread out over two drives,
->>> which is both a completely unnecessary operation, and it also seems to
->>> me that it could be dangerous in some situations involving potentially
->>> malfunctioning drives.
+>> Subvol 257, inode 257 has the following file extents:
+>> (257 EXTENT_DATA 0)
+>> disk bytenr X len 16M
+>> offset 0 num_bytes 4k=C2=A0 << Only 4k is referred in the whole 16M ex=
+tent.
 >>
->> In that case, you just need to replace that malfunctioning device other
->> than fall back to SINGLE.
->
-> Actually, this case is the (only) one of the three that I think would be
-> very useful (backup is better handled by having a choice of userspace
-> tools to choose from - I use btrbk - and does anyone really care about
-> defrag any more?).
->
-> I did, recently, have a case where I had started to move my main data
-> disk to a raid1 setup but my new disk started reporting errors. I didn't
-> have a spare disk (and didn't have a spare SCSI slot for another disk
-> anyway). So, I wanted to stop using the new disk and revert to my former
-> (m=dup, d=single) setup as quickly as possible.
->
-> I spent time trying to find a way to do that balance without risking the
-> single copy of some of the data being stored on the failing disk between
-> starting the balance and completing the remove. That has two problems:
-> obviously having the single copy on the failing disk is bad news but,
-> also, it increases the time taken for the subsequent remove which has to
-> copy that data back to the remaining disk (where there used to be a
-> perfectly good copy which was subsequently thrown away during the balance).
->
-> In the end, I took the risk and the time of the two steps. In my case, I
-> had good backups, and actually most of my data was still in a single
-> profile on the old disk (because the errors starting happening before I
-> had done the balance to change the profile of all the old data from
-> single to raid1).
->
-> But a balance -dconvert=single-but-force-it-to-go-on-disk-1 would have
-> been useful. (Actually a "btrfs device mark-for-removal" command would
-> be better - allow a failing device to be retained for a while, and used
-> to provide data, but ignore it when looking to store data).
->
-> Graham
+>> Subvol 258, inode 257 has the following file extents:
+>> (257 EXTENT_DATA 0)
+>> disk bytenr X len 16M
+>> offset 0 num_bytes 4K=C2=A0 << Shared with that one in subv 257
+>> (257 EXTENT_DATA 4K)
+>> disk bytenr Y len 16M
+>> offset 0 num_bytes 4K=C2=A0 << Similar case, only 4K of 16M is used.
+>>
+>> In that case, user definitely want to defrag file in subvol 258, as if=
 
-Thank you. I like your very nice example/story/use case, and I also  
-like the solution: btrfs device mark-for-removal.
+>> that extent at bytenr Y can be freed, we can free up 16M, and allocate=
+ a
+>> new 8K extent for subvol 258, ino 257.
+>> (And will also want to defrag the extent in subvol 257 ino 257 too)
+>=20
+> You are confusing the actual defrag with a separate concern, let's call=
 
-Of course, you didn't have the spare drive. I guess most users don't  
-have it. I don't. They buy it when one of the drives in RAID1 fails.
+> it 'reserved space optimization'. It is about partially used extents.
+> The actual name 'reserved space optimization' doesn't matter, I just
+> made it up.
 
-I was thinking of a more general solution, so I proposed RAID level  
-change feature, but this suggestion of yours covers most of the use  
-cases. Maybe the case of RAID10 level downgrade should also be  
-considered, in case of circumstances similar to what you described.
+Then when it's not snapshotted, it's plain defrag.
+
+How things go from "reserved space optimization" to "plain defrag" just
+because snapshots?
+
+>=20
+> 'reserved space optimization' is usually performed as a part of the
+> defrag operation, but it doesn't have to be, as the actual defrag is
+> something separate.
+>=20
+> Yes, 'reserved space optimization' can break up extents.
+>=20
+> 'reserved space optimization' can either decrease or increase the free
+> space. If the algorithm determines that more space should be reserved,
+> than free space will decrease. If the algorithm determines that less
+> space should be reserved, than free space will increase.
+>=20
+> The 'reserved space optimization' can be accomplished such that the fre=
+e
+> space does not decrease, if such behavior is needed.
+>=20
+> Also, the defrag operation can join some extents. In my original exampl=
+e,
+> the extents e33 and e34 can be fused into one.
+
+Btrfs defrag works by creating new extents containing the old data.
+
+So if btrfs decides to defrag, no old extents will be used.
+It will all be new extents.
+
+That's why your proposal is freaking strange here.
+
+>=20
+>> That's why knowledge in btrfs tech details can make a difference.
+>> Sometimes you may find some ideas are brilliant and why btrfs is not
+>> implementing it, but if you understand btrfs to some extent, you will
+>> know the answer by yourself.
+>=20
+> Yes, it is true, but what you are posting so far are all 'red
+> herring'-type arguments. It's just some irrelevant concerns, and you
+> just got me explaining thinks like I would to a little baby. I don't
+> know whether I stumbled on some rookie member of btrfs project, or you
+> are just lazy and you don't want to think or consider my proposals.
+
+Go check my name in git log.
 
 
+--0wwyANo3i85Y18V0E18VE3Tai2gywuWxh--
 
+--Ng5lBzeMsGA87Pr5syGs7tl05Ip7HpUMd
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl124+MACgkQwj2R86El
+/qin4QgAl289rvKE0M6x4XqTdAB5xhTk7kOVRFiJwWfhAJCHP5/2Vq2WROxu6/Dg
+ihFP3kG2xdNllcnyBAFaBl6UsGPaxfrk3qceyT50UzVhSfivD7c2zD8Ey2qHftBh
+M0EnKtutOVXFTxRN/U8k5HAWaZ17PR5vxuFFpRa5NGIFxhCYi+kc1598zOrTbO1F
+lPSYhEHWJRaFRSUJdk5fQdbrJAZ42r8Bda+XPNJkM1yqiDIDo2xQJOl1T4yhVkrE
+TwjNcniq2RNAz/QAMv9Mv4QdR2qxeblYwEZB3qI1sXbQG8qi2AnnUk5c5eRYHRGF
+1oS972a5mnm21QVhnQlqNpbSCi6oRQ==
+=winc
+-----END PGP SIGNATURE-----
+
+--Ng5lBzeMsGA87Pr5syGs7tl05Ip7HpUMd--
