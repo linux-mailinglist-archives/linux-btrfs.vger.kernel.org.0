@@ -2,27 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 564E9ADB48
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 16:35:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF22ADB8B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 16:55:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727927AbfIIOfd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 10:35:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40930 "EHLO mx1.suse.de"
+        id S1727464AbfIIOzt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 10:55:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53606 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726519AbfIIOfd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 10:35:33 -0400
+        id S1726164AbfIIOzs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 10:55:48 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 49E8CAE84;
-        Mon,  9 Sep 2019 14:35:31 +0000 (UTC)
-Subject: Re: [PATCH v2 2/6] btrfs-progs: check/common: Introduce a function to
- find imode using INODE_REF
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, WenRuo Qu <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
+        by mx1.suse.de (Postfix) with ESMTP id 61187B692;
+        Mon,  9 Sep 2019 14:55:47 +0000 (UTC)
+Subject: Re: [PATCH v2 4/6] btrfs-progs: check/lowmem: Repair bad imode early
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20190905075800.1633-1-wqu@suse.com>
- <20190905075800.1633-3-wqu@suse.com>
- <1b8af49c-97b2-0119-002e-4736380fc6c2@suse.com>
- <d7dcd61e-2c9a-4f1f-3627-f1697433ae02@gmx.com>
+ <20190905075800.1633-5-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -67,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <f6136a44-27bc-5e8f-8cdb-0d0358b283ce@suse.com>
-Date:   Mon, 9 Sep 2019 17:35:30 +0300
+Message-ID: <b009d821-ed65-014f-bc17-2f141dfc5147@suse.com>
+Date:   Mon, 9 Sep 2019 17:55:45 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <d7dcd61e-2c9a-4f1f-3627-f1697433ae02@gmx.com>
+In-Reply-To: <20190905075800.1633-5-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,35 +79,63 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 9.09.19 г. 17:26 ч., Qu Wenruo wrote:
+On 5.09.19 г. 10:57 ч., Qu Wenruo wrote:
+> For lowmem mode, if we hit a bad inode mode, normally it is reported
+> when we checking the DIR_INDEX/DIR_ITEM of the parent inode.
 > 
+> If we didn't repair at that timing, the error will be recorded even we
+> fixed it later.
 > 
-> On 2019/9/9 下午9:42, Nikolay Borisov wrote:
->>
->>
->> On 5.09.19 г. 10:57 ч., Qu Wenruo wrote:
->>> Introduce a function, find_file_type(), to find filetype using
->>> INODE_REF.
->>
->> This is confusing, there is not a single reference to INODE_REF in the
->> code. I guess you must replace this with DIR_ITEM/DIR_INDEX ?
+> So this patch will check for INODE_ITEM_MISMATCH error type, and if it's
+> really caused by invalid imode, repair it and clear the error.
 > 
-> Don't forget how you get the @dirid @index,@name,@namelen from.
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  check/mode-lowmem.c | 39 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 39 insertions(+)
 > 
-> All these info are from INODE_REF item.
-> 
-> But I totally understand your concern, it's sometimes really easy to get
-> confused about 1) what we are searching for 2) what the search indexes
-> are from.
+> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+> index 5f7f101daab1..5d0c520217fa 100644
+> --- a/check/mode-lowmem.c
+> +++ b/check/mode-lowmem.c
+> @@ -1550,6 +1550,35 @@ static int lowmem_delete_corrupted_dir_item(struct btrfs_root *root,
+>  	return ret;
+>  }
+>  
+> +static int try_repair_imode(struct btrfs_root *root, u64 ino)
+> +{
+> +	struct btrfs_inode_item *iitem;
+> +	struct btrfs_path path;
+> +	struct btrfs_key key;
+> +	int ret;
+> +
+> +	key.objectid = ino;
+> +	key.type = BTRFS_INODE_ITEM_KEY;
+> +	key.offset = 0;
+> +	btrfs_init_path(&path);
+> +
+> +	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+> +	if (ret > 0)
+> +		ret = -ENOENT;
+> +	if (ret < 0)
+> +		goto out;
+> +	iitem = btrfs_item_ptr(path.nodes[0], path.slots[0],
+> +			       struct btrfs_inode_item);
+> +	if (!is_valid_imode(btrfs_inode_mode(path.nodes[0], iitem))) {
 
-Yes but that is only apparent when one reads the next patch. When you
-take this function in isolation it really gets input data and based on
-that tries to search for relevant DIR_ITEM/DIR_INDEX. Think about
-someone stumbling on this commit 6 months from now, without necessarily
-having reviewed the whole series.
+INODE_ITEM_MISMATCH is only set if:
 
-> 
-> Thanks,
-> Qu
-> 
-> 
+1. The first inode item is not a directory (it should always be)
+2. There is a mismatch between the filetype in the inode item and in the
+dir/index item pointing to it.
+
+By using this check you could possibly miss case 1 above, if the first
+inode has a valid type e.g. regular whereas it should really be a
+directory.
+
+I'm not entirely sure whether it makes sense to handle this situation,
+since admittedly, it would require a perfect storm to get such a
+corruption.
+
+
+<snip>
