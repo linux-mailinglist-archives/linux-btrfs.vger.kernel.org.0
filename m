@@ -2,144 +2,216 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA28AD7D2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 13:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B669AAD7D6
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 13:25:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729915AbfIILWd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 07:22:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43962 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729339AbfIILWd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 07:22:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 675AFABB2;
-        Mon,  9 Sep 2019 11:22:31 +0000 (UTC)
-Subject: Re: [PATCH] btrfs-progs: mkfs: fix xattr enumeration
-To:     Vladimir Panteleev <git@vladimir.panteleev.md>,
-        linux-btrfs@vger.kernel.org
-References: <20190906095846.30592-1-git@vladimir.panteleev.md>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <d8d7aef1-0d28-127e-ea5d-9ad1623afde7@suse.com>
-Date:   Mon, 9 Sep 2019 14:22:29 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2391011AbfIILZY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 07:25:24 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:37124 "EHLO
+        server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730361AbfIILZY (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 07:25:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
+         s=default; h=MIME-Version:Content-Type:In-Reply-To:References:Subject:To:
+        From:Message-ID:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=rEVVnlasduRIXZnzXW81KLLY+HurRycSYCACsfnh99w=; b=JgnrH+6ZpBhFdhQfh/b/JfQwEN
+        mmD6nsRm3EZHV3MEcs6QRUCboo6cfHZdadHNa2NashXgu4cesMXK8OY8S6+W/8KQWHlaqpoV/wLJR
+        9HtbUyEhjlPaEnTpQ2I8IrN6e9a5LKUiRReTSzGV2jUwdfQfl2TPh5IPM0vzt/Iq/F2epuXHhOv3s
+        r78P447lxy02KJjpfj0fYkoTMLRr//d7x//Qm3Ugki+1wqtXiBT6jKYfOHburiR1lnOOGKNr2rhzK
+        NcU1RPDlluOn1j//J8O5smss+jVirxDWt2efxNvXNDyhymu1+3+3l6wcIYW7144EOtiGEiaojuwaU
+        6Xcm/bRw==;
+Received: from [::1] (port=48790 helo=server53.web-hosting.com)
+        by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <zedlryqc@server53.web-hosting.com>)
+        id 1i7HnK-003AUu-SH
+        for linux-btrfs@vger.kernel.org; Mon, 09 Sep 2019 07:25:23 -0400
+Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
+ (Horde Framework) with HTTPS; Mon, 09 Sep 2019 07:25:18 -0400
+Date:   Mon, 09 Sep 2019 07:25:18 -0400
+Message-ID: <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+From:   zedlryqc@server53.web-hosting.com
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+In-Reply-To: <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-In-Reply-To: <20190906095846.30592-1-git@vladimir.panteleev.md>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server53.web-hosting.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - server53.web-hosting.com
+X-Get-Message-Sender-Via: server53.web-hosting.com: authenticated_id: zedlryqc/primary_hostname/system user
+X-Authenticated-Sender: server53.web-hosting.com: zedlryqc
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-From-Rewrite: unmodified, actual sender is the system user
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
+>> 1) Full online backup (or copy, whatever you want to call it)
+>> btrfs backup <filesystem name> <partition name> [-f]
+>> - backups a btrfs filesystem given by <filesystem name> to a partition
+>> <partition name> (with all subvolumes).
+>
+> Why not just btrfs send?
+>
+> Or you want to keep the whole subvolume structures/layout?
 
-On 6.09.19 г. 12:58 ч., Vladimir Panteleev wrote:
-> Use the return value of listxattr instead of tokenizing.
-> 
-> The end of the extended attribute list is indicated by the return
-> value, not an empty list item (two consecutive NULs). Using strtok
-> in this way thus sometimes caused add_xattr_item to reuse stack data
-> in xattr_list from the previous invocation, thus querying attributes
-> that are not actually in the file's xattr list.
-> 
-> Issue: #194
-> Signed-off-by: Vladimir Panteleev <git@vladimir.panteleev.md>
+Yes, I want to keep the whole subvolume structures/layout. I want to  
+keep everything. Usually, when I want to backup a partition, I want to  
+keep everything, and I suppose most other people have a similar idea.
 
-Can you elaborate how to trigger this? I tried by creating a folder with
-2 files and set 5 xattr to the first file and 1 to the second. Then I
-run mkfs.btrfs -r /path/to/dir /dev/vdc and stepped through the code
-with gdb and didn't see any issues. Ideally I'd like to see a regression
-test for this issue.
+> I'd say current send/receive is more flex.
 
-Your code looks correct.
+Um, 'flexibility' has nothing to do with it. Send/receive is a  
+completely different use case.
+So, each one has some benefits and some drawbacks, but 'send/receive'  
+cannot replace 'full online backup'
 
-> ---
->  mkfs/rootdir.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
-> index 51411e02..c86159e7 100644
-> --- a/mkfs/rootdir.c
-> +++ b/mkfs/rootdir.c
-> @@ -228,10 +228,9 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
->  	int ret;
->  	int cur_name_len;
->  	char xattr_list[XATTR_LIST_MAX];
-> +	char *xattr_list_end;
->  	char *cur_name;
->  	char cur_value[XATTR_SIZE_MAX];
-> -	char delimiter = '\0';
-> -	char *next_location = xattr_list;
->  
->  	ret = llistxattr(file_name, xattr_list, XATTR_LIST_MAX);
->  	if (ret < 0) {
-> @@ -243,10 +242,10 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
->  	if (ret == 0)
->  		return ret;
->  
-> -	cur_name = strtok(xattr_list, &delimiter);
-> -	while (cur_name != NULL) {
-> +	xattr_list_end = xattr_list + ret;
-> +	cur_name = xattr_list;
-> +	while (cur_name < xattr_list_end) {
->  		cur_name_len = strlen(cur_name);
-> -		next_location += cur_name_len + 1;
->  
->  		ret = lgetxattr(file_name, cur_name, cur_value, XATTR_SIZE_MAX);
->  		if (ret < 0) {
-> @@ -266,7 +265,7 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
->  					file_name);
->  		}
->  
-> -		cur_name = strtok(next_location, &delimiter);
-> +		cur_name += cur_name_len + 1;
->  	}
->  
->  	return ret;
-> 
+Here is where send/receive is lacking:
+	- too complicated to do if many subvolumes are involved
+	- may require recursive subvolume enumeration in order to emulate  
+'full online backup'
+	- may require extra storage space
+	- is not mountable, not easy to browse the backup contents
+	- not easy to recover just a few selected files from backup
+There's probably more things where send/receive is lacking, but I  
+think I have given sufficient number of important differences which  
+show that send/receive cannot successfully replace the functionality  
+of 'full online backup'.
+
+> And you also needs to understand btrfs also integrates volume
+> management, thus it's not just <partition name>, you also needs RAID
+> level and things like that.
+
+This is a minor point. So, please, let's not get into too many  
+irrelevant details here.
+
+There can be a sensible default to 'single data, DUP metadata', and a  
+way for a user to override this default, but that feature is  
+not-so-important. If the user wants to change the RAID level, he can  
+easily do it later by mounting the backup.
+
+>
+> All can be done already by send/receive, although at subvolume level.
+
+Yeah, maybe I should manually type it all for all subvolumes, one by  
+one. Also must be carefull to do it in the correct order if I want it  
+not to consume extra space.
+And the backup is not mountable.
+
+This proposal (workaround) of yours appears to me as too complicated,  
+too error prone,
+missing important features.
+
+But, I just thought, you can actually emulate 'full online backup'  
+with this send/receive. Here is how.
+You do a script which does the following:
+	- makes a temporary snapshot of every subvolume
+	- use 'btrfs send' to send all the temporary snapshots, on-the-fly  
+(maybe via pipe), in the correct order, to a proces running a 'brtfs  
+receive', which should then immediately write it all to the  
+destination partition. All the buffers can stay in-memory.
+	- when all the snapshots are received and written to destination, fix  
+subvol IDs
+	- delete temporary snapshots from source
+Of course, this script should then be a part of standard btrfs tools.
+
+> Please check if send/receive is suitable for your use case.
+
+No. Absolutely not.
+
+
+>> 2) Sensible defrag
+>> The defrag is currently a joke.
+
+>> How to do it:
+>> - The extents must not be unshared, but just shuffled a bit. Unsharing
+>> the extents is, in most situations, not tolerable.
+
+> I definitely see cases unsharing extents makes sense, so at least we
+> should let user to determine what they want.
+
+Maybe there are such cases, but I would say that a vast majority of  
+users (99,99%) in a vast majority of cases (99,99%) don't want the  
+defrag operation to reduce free disk space.
+
+> What's wrong with current file based defrag?
+> If you want to defrag a subvolume, just iterate through all files.
+
+I repeat: The defrag should not decrease free space. That's the  
+'normal' expectation.
+
+>> - I think it would be wrong to use a general deduplication algorithm for
+>> this. Instead, the information about the shared extents should be
+>> analyzed given the starting state of the filesystem, and than the
+>> algorithm should produce an optimal solution based on the currently
+>> shared extents.
+>
+> Please be more specific, like giving an example for it.
+
+Let's say that there is a file FFF with extents e11, e12, e13, e22,  
+e23, e33, e34
+- in subvolA the file FFF consists of e11, e12, e13
+- in subvolB the file FFF consists of e11, e22, e23
+- in subvolC the file FFF consists of e11, e22, e33, e34
+
+After defrag, where 'selected subvolume' is subvolC, the extents are  
+ordered on disk as follows:
+
+e11,e22,e33,e34 - e23 - e12,e13
+
+In the list above, the comma denotes neighbouring extents, the dash  
+indicates that there can be a possible gap.
+As you can see in the list, the file FFF is fully defragmented in  
+subvolC, since its extents are occupying neighbouring disk sectors.
+
+
+>> 3) Downgrade to 'single' or 'DUP' (also, general easy way to switch
+>> between RAID levels)
+>>  Currently, as much as I gather, user has to do a "btrfs balance start
+>> -dconvert=single -mconvert=single
+>> ", than delete a drive, which is a bit ridiculous sequence of operations.
+
+> That's a shortcut for chunk profile change.
+> My first idea of this is, it could cause more problem than benefit.
+> (It only benefits profile downgrade, thus only makes sense for
+> RAID1->SINGLE, DUP->SINGLE, and RAID10->RAID0, nothing else)
+
+Those listed cases are exactly the ones I judge to be most important.  
+Three important cases.
+
+> I still prefer the safer allocate-new-chunk way to convert chunks, even
+> at a cost of extra IO.
+
+I don't mind whether it allocates new chunks or not. It is better, in  
+my opinion, if new chunks are not allocated, but both ways are  
+essentially OK.
+
+What I am complaining about is that at one point in time, after  
+issuing the command:
+	btrfs balance start -dconvert=single -mconvert=single
+and before issuing the 'btrfs delete', the system could be in a too  
+fragile state, with extents unnecesarily spread out over two drives,  
+which is both a completely unnecessary operation, and it also seems to  
+me that it could be dangerous in some situations involving potentially  
+malfunctioning drives.
+
+Please reconsider.
+
+
