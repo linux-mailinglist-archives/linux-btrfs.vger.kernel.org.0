@@ -2,19 +2,19 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A68AD9EF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 15:26:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C9BADA2B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 15:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730274AbfIIN0A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 09:26:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52544 "EHLO mx1.suse.de"
+        id S1729765AbfIINmv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 09:42:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37012 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729836AbfIIN0A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 09:26:00 -0400
+        id S1729438AbfIINmv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 09:42:51 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BCE39AF8E;
-        Mon,  9 Sep 2019 13:25:57 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B2562AE2F;
+        Mon,  9 Sep 2019 13:42:49 +0000 (UTC)
 Subject: Re: [PATCH v2 2/6] btrfs-progs: check/common: Introduce a function to
  find imode using INODE_REF
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
@@ -64,8 +64,8 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <4e7099d2-5b4c-1fa3-ffdf-2b3332ed0b88@suse.com>
-Date:   Mon, 9 Sep 2019 16:25:56 +0300
+Message-ID: <1b8af49c-97b2-0119-002e-4736380fc6c2@suse.com>
+Date:   Mon, 9 Sep 2019 16:42:48 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
@@ -83,169 +83,7 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 On 5.09.19 г. 10:57 ч., Qu Wenruo wrote:
 > Introduce a function, find_file_type(), to find filetype using
 > INODE_REF.
-> 
-> This function will:
-> - Search DIR_INDEX first
->   DIR_INDEX is easier since there is only one item in it.
-> 
-> - Valid the DIR_INDEX item
->   If the DIR_INDEX is valid, use the filetype and call it a day.
-> 
-> - Search DIR_ITEM then
-> 
-> - Valide the DIR_ITEM
->   If valid, call it a day. Or return -ENOENT;
-> 
-> This would be used as the primary method to determine the imode in later
-> imode repair code.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  check/mode-common.c | 99 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 99 insertions(+)
-> 
-> diff --git a/check/mode-common.c b/check/mode-common.c
-> index 195b6efaa7aa..c0ddc50a1dd0 100644
-> --- a/check/mode-common.c
-> +++ b/check/mode-common.c
-> @@ -16,6 +16,7 @@
->  
->  #include <time.h>
->  #include "ctree.h"
-> +#include "hash.h"
->  #include "common/internal.h"
->  #include "common/messages.h"
->  #include "transaction.h"
-> @@ -836,6 +837,104 @@ int reset_imode(struct btrfs_trans_handle *trans, struct btrfs_root *root,
->  	return ret;
->  }
->  
-> +static int find_file_type(struct btrfs_root *root, u64 ino, u64 dirid,
-> +			  u64 index, const char *name, u32 name_len,
-> +			  u32 *imode_ret)
-> +{
-> +	struct btrfs_path path;
-> +	struct btrfs_key location;
-> +	struct btrfs_key key;
-> +	struct btrfs_dir_item *di;
-> +	char namebuf[BTRFS_NAME_LEN] = {0};
-> +	unsigned long cur;
-> +	unsigned long end;
-> +	bool found = false;
-> +	u8 filetype;
-> +	u32 len;
-> +	int ret;
-> +
-> +	btrfs_init_path(&path);
-> +
-> +	/* Search DIR_INDEX first */
-> +	key.objectid = dirid;
-> +	key.offset = index;
-> +	key.type = BTRFS_DIR_INDEX_KEY;
-> +
-> +	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
-> +	if (ret > 0)
-> +		ret = -ENOENT;
 
-Even if it returns 1 meaning there is no DIR_INDEX item perhaps it still
-makes sense to go to dir_item: label to search for DIR_ITEM, what if the
-corruption has affected just the DIR_INDEX item?
+This is confusing, there is not a single reference to INODE_REF in the
+code. I guess you must replace this with DIR_ITEM/DIR_INDEX ?
 
-> +	if (ret < 0)
-> +		goto dir_item;
-nit: Use elseif to make it more explicit it is a single construct.
-
-> +	di = btrfs_item_ptr(path.nodes[0], path.slots[0],
-> +			       struct btrfs_dir_item);
-> +	btrfs_dir_item_key_to_cpu(path.nodes[0], di, &location);
-> +
-> +	/* Various basic check */
-> +	if (location.objectid != ino || location.type != BTRFS_INODE_ITEM_KEY ||
-> +	    location.offset != 0)
-> +		goto dir_item;
-> +	filetype = btrfs_dir_type(path.nodes[0], di);
-> +	if (filetype >= BTRFS_FT_MAX || filetype == BTRFS_FT_UNKNOWN)
-> +		goto dir_item;
-> +	len = min_t(u32, btrfs_item_size_nr(path.nodes[0], path.slots[0]) -
-> +			 sizeof(*di), BTRFS_NAME_LEN);
-> +	len = min_t(u32, len, btrfs_dir_name_len(path.nodes[0], di));
-> +	read_extent_buffer(path.nodes[0], namebuf, (unsigned long)(di + 1), len);
-> +	if (name_len != len || memcmp(namebuf, name, len))
-> +		goto dir_item;
-> +
-> +	/* Got a correct filetype */
-> +	found = true;
-> +	*imode_ret = btrfs_type_to_imode(filetype);
-> +	ret = 0;
-> +	goto out;
-> +
-> +dir_item:
-
-This function is needlessly structured in an awkward way. E.g. there is
-no dependence between "searching by DIR INDEX item" and "searching by
-DIR_ITEM". I think the best way is to have 3 function:
-
-Top level find_file_type which will call find_file_type_by_dir_index if
-the reeturn value is negative -> call 2nd function
-find_file_type_by_dir_item. This will result in 3 fairly short and easy
-to read/parse functions.
-
-> +	btrfs_release_path(&path);
-> +	key.objectid = dirid;
-> +	key.offset = btrfs_name_hash(name, name_len);
-> +
-> +	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
-> +	if (ret > 0)
-> +		ret = -ENOENT;
-> +	if (ret < 0) {
-> +		btrfs_release_path(&path);
-> +		return ret;
-> +	}
-
-ditto about the else if construct
-
-> +	cur = btrfs_item_ptr_offset(path.nodes[0], path.slots[0]);
-> +	end = cur + btrfs_item_size_nr(path.nodes[0], path.slots[0]);
-> +	while (cur < end) {
-
-Just checking : this is needed in case we have items whose names create
-a crc32 collision in the DIR_ITEM offset?
-
-> +		di = (struct btrfs_dir_item *)cur;
-> +		btrfs_dir_item_key_to_cpu(path.nodes[0], di, &location);
-> +		/* Various basic check */
-> +		if (location.objectid != ino ||
-> +		    location.type != BTRFS_INODE_ITEM_KEY ||
-> +		    location.offset != 0)
-> +			goto next;> +		filetype = btrfs_dir_type(path.nodes[0], di);
-> +		if (filetype >= BTRFS_FT_MAX || filetype == BTRFS_FT_UNKNOWN)
-> +			goto next;
-> +		len = min_t(u32, BTRFS_NAME_LEN,
-> +			    btrfs_item_size_nr(path.nodes[0], path.slots[0]) -
-> +			    sizeof(*di));
-> +		len = min_t(u32, len, btrfs_dir_name_len(path.nodes[0], di));
-> +		read_extent_buffer(path.nodes[0], namebuf,
-> +				   (unsigned long)(di + 1), len);
-> +		if (name_len != len || memcmp(namebuf, name, len))
-> +			goto next;
-> +		*imode_ret = btrfs_type_to_imode(filetype);
-> +		found = true;
-> +		goto out;
-> +next:
-> +		cur += btrfs_dir_name_len(path.nodes[0], di) + sizeof(*di);
-
-If this line is moved right after assigning to 'di' instead of having a
-'next' label you can simply use the 'continue' keyword
-
-> +	}
-> +out:
-> +	btrfs_release_path(&path);
-> +	if (!found && !ret)
-> +		ret = -ENOENT;
-> +	return ret;
-> +}
-> +
->  /*
->   * Reset the inode mode of the inode specified by @path.
->   *
-> 
