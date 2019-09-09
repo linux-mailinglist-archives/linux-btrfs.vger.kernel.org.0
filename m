@@ -2,95 +2,256 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F65ADC38
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 17:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E74ADD62
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 18:38:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388476AbfIIPhz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 11:37:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49356 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388474AbfIIPhz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 11:37:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0BA8FACB9;
-        Mon,  9 Sep 2019 15:37:53 +0000 (UTC)
-Subject: Re: [PATCH v2 6/6] btrfs-progs: tests/fsck: Add new images for inode
- mode repair functionality
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190905075800.1633-1-wqu@suse.com>
- <20190905075800.1633-7-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <9c772db6-74e2-6760-54bc-18b09294dc30@suse.com>
-Date:   Mon, 9 Sep 2019 18:37:51 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1728786AbfIIQib (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 12:38:31 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:52557 "EHLO
+        server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727953AbfIIQia (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 12:38:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
+         s=default; h=MIME-Version:Content-Type:Reply-to:In-Reply-To:References:
+        Subject:To:From:Message-ID:Date:Sender:Cc:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=p+xfhS5zaiDw7FhVFE/bX+C04aiqGXDBEVjNn5zgzZo=; b=NbpFRyLRJ/9G9HVLrn2cDutIFe
+        NzpagFaEuQ/uIlYrAVNryboKt6GWM6anb67cA9znYdQ2ugEniZ7GAKfve8NnuWPnShJByZJx6ldJb
+        OGj5EbgQUzqt4JjMkga9wLI32aea9QQFszQb/LhytKV7w5SceqFDsPCtjW2Ek+To5eZEZdAhZYWZ+
+        N9NzMuvE+7gtvh2QGjFx41GH8azyjQUuvPs+UNBntGoy0CRqNwAtVTrWL2pLFskkSjP/tnKAstS0F
+        5FaHcnC9a2myc9Ae8s6GxQbGScg+yImU8xPe77Bl3wuvSMEdidQwykoVjHH3fkyMIkupVCfp6vsRm
+        SdVJ+xVQ==;
+Received: from [::1] (port=58904 helo=server53.web-hosting.com)
+        by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <webmaster@zedlx.com>)
+        id 1i7MgE-001KhY-JJ
+        for linux-btrfs@vger.kernel.org; Mon, 09 Sep 2019 12:38:25 -0400
+Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
+ (Horde Framework) with HTTPS; Mon, 09 Sep 2019 12:38:18 -0400
+Date:   Mon, 09 Sep 2019 12:38:18 -0400
+Message-ID: <20190909123818.Horde.dbl-yi_cNi8aKDaW_QYXVij@server53.web-hosting.com>
+From:   webmaster@zedlx.com
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+ <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+In-Reply-To: <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+Reply-to: webmaster@zedlx.com
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-In-Reply-To: <20190905075800.1633-7-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server53.web-hosting.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - zedlx.com
+X-Get-Message-Sender-Via: server53.web-hosting.com: authenticated_id: zedlryqc/from_h
+X-Authenticated-Sender: server53.web-hosting.com: webmaster@zedlx.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-From-Rewrite: unmodified, already matched
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
 
-On 5.09.19 г. 10:58 ч., Qu Wenruo wrote:
-> Add new test image for imode repair in subvolume trees.
-> 
-> Also rename the existing test case 039-bad-free-space-cache-inode-mode
-> to 039-bad-inode-mode, since now we can fix all bad imode.
-> 
-> And add the beacon file for lowmem test.
-> 
+>>>> 2) Sensible defrag
+>>>> The defrag is currently a joke.
+>>
+>> Maybe there are such cases, but I would say that a vast majority of
+>> users (99,99%) in a vast majority of cases (99,99%) don't want the
+>> defrag operation to reduce free disk space.
+>>
+>>> What's wrong with current file based defrag?
+>>> If you want to defrag a subvolume, just iterate through all files.
+>>
+>> I repeat: The defrag should not decrease free space. That's the 'normal'
+>> expectation.
+>
+> Since you're talking about btrfs, it's going to do CoW for metadata not
+> matter whatever, as long as you're going to change anything, btrfs will
+> cause extra space usage.
+> (Although the final result may not cause extra used disk space as freed
+> space is as large as newly allocated space, but to maintain CoW, newly
+> allocated space can't overlap with old data)
 
-What kind of corruption does the image have? Ideally it should have
-cases where both DIR_ITEM and DIR_INDEX is used. As well as DIR_ITEM
-containing collisions.
+It is OK for defrag to temporarily decrease free space while defrag  
+operation is in progress. That's normal.
 
-<split>
+> Further more, talking about snapshots with space wasted by extent
+> booking, it's definitely possible user want to break the shared extents:
+>
+> Subvol 257, inode 257 has the following file extents:
+> (257 EXTENT_DATA 0)
+> disk bytenr X len 16M
+> offset 0 num_bytes 4k  << Only 4k is referred in the whole 16M extent.
+>
+> Subvol 258, inode 257 has the following file extents:
+> (257 EXTENT_DATA 0)
+> disk bytenr X len 16M
+> offset 0 num_bytes 4K  << Shared with that one in subv 257
+> (257 EXTENT_DATA 4K)
+> disk bytenr Y len 16M
+> offset 0 num_bytes 4K  << Similar case, only 4K of 16M is used.
+>
+> In that case, user definitely want to defrag file in subvol 258, as if
+> that extent at bytenr Y can be freed, we can free up 16M, and allocate a
+> new 8K extent for subvol 258, ino 257.
+> (And will also want to defrag the extent in subvol 257 ino 257 too)
+
+You are confusing the actual defrag with a separate concern, let's  
+call it 'reserved space optimization'. It is about partially used  
+extents. The actual name 'reserved space optimization' doesn't matter,  
+I just made it up.
+
+'reserved space optimization' is usually performed as a part of the  
+defrag operation, but it doesn't have to be, as the actual defrag is  
+something separate.
+
+Yes, 'reserved space optimization' can break up extents.
+
+'reserved space optimization' can either decrease or increase the free  
+space. If the algorithm determines that more space should be reserved,  
+than free space will decrease. If the algorithm determines that less  
+space should be reserved, than free space will increase.
+
+The 'reserved space optimization' can be accomplished such that the  
+free space does not decrease, if such behavior is needed.
+
+Also, the defrag operation can join some extents. In my original example,
+the extents e33 and e34 can be fused into one.
+
+> That's why knowledge in btrfs tech details can make a difference.
+> Sometimes you may find some ideas are brilliant and why btrfs is not
+> implementing it, but if you understand btrfs to some extent, you will
+> know the answer by yourself.
+
+Yes, it is true, but what you are posting so far are all 'red  
+herring'-type arguments. It's just some irrelevant concerns, and you  
+just got me explaining thinks like I would to a little baby. I don't  
+know whether I stumbled on some rookie member of btrfs project, or you  
+are just lazy and you don't want to think or consider my proposals.
+
+When I post an explanation, please try to UNDERSTAND HOW IT CAN WORK,  
+fill in the missing gaps, because there are tons of them, because I  
+can't explain everything via three e-mail posts. Don't just come up  
+with some half-baked, forced, illogical reason why things are better  
+as they are.
+
+>>>> - I think it would be wrong to use a general deduplication algorithm for
+>>>> this. Instead, the information about the shared extents should be
+>>>> analyzed given the starting state of the filesystem, and than the
+>>>> algorithm should produce an optimal solution based on the currently
+>>>> shared extents.
+>>>
+>>> Please be more specific, like giving an example for it.
+>>
+>> Let's say that there is a file FFF with extents e11, e12, e13, e22, e23,
+>> e33, e34
+>> - in subvolA the file FFF consists of e11, e12, e13
+>> - in subvolB the file FFF consists of e11, e22, e23
+>> - in subvolC the file FFF consists of e11, e22, e33, e34
+>>
+>> After defrag, where 'selected subvolume' is subvolC, the extents are
+>> ordered on disk as follows:
+>>
+>> e11,e22,e33,e34 - e23 - e12,e13
+>
+> Inode FFF in different subvolumes are different inodes. They have no
+> knowledge of other inodes in other subvolumes.
+
+You can easily notice that, if necessary, the defrag algorithm can  
+work without this knowledge, that is, without knowledge of other  
+versions of FFF.
+
+This time I'm leaving it to you to figure out how.
+
+Another red herring.
+
+> If FFF in subvol C is e11, e22, e33, e34, then that's it.
+> I didn't see the point still.
+
+Now I need to explain like I would to a baby.
+
+If the extents e11, e22, e33, e34 are stored in neighbouring sectors,  
+then the disk data reads are faster because they become sequential, as  
+opposed to spread out.
+
+So, while the file FFF in subvolC still has 4 extents like it had  
+before defrag, reading of those 4 extents is much faster than before  
+because the read can be sequential.
+
+So, the defrag can actually be performed without fusing any extents.  
+It would still have a noticeable performance benefit.
+
+As I have already said, the defrag operation can join(fuse) some  
+extents. In my original example,
+the extents e33 and e34 can be fused into one.
+
+> And what's the on-disk bytenr of all these extents? Which has larger
+> bytenr and length?
+
+For the sake of simplicity, let's say that all the extents in the  
+example have equal length (so, you can choose ANY size), and are fully  
+used.
+
+> Please provide a better description like xfs_io -c "fiemap -v" output
+> before and after.
+
+No. My example is simple and clear. Nit-picking, like this you are  
+doing, is not helpful. Concentrate, think, try to figure it out.
+
+>>> That's a shortcut for chunk profile change.
+>>> My first idea of this is, it could cause more problem than benefit.
+>>> (It only benefits profile downgrade, thus only makes sense for
+>>> RAID1->SINGLE, DUP->SINGLE, and RAID10->RAID0, nothing else)
+>>
+>> Those listed cases are exactly the ones I judge to be most important.
+>> Three important cases.
+>
+> I'd argue it's downgrade, not that important. As most users want to
+> replace the missing/bad device and maintain the raid profile.
+>
+>> What I am complaining about is that at one point in time, after issuing
+>> the command:
+>>     btrfs balance start -dconvert=single -mconvert=single
+>> and before issuing the 'btrfs delete', the system could be in a too
+>> fragile state, with extents unnecesarily spread out over two drives,
+>> which is both a completely unnecessary operation, and it also seems to
+>> me that it could be dangerous in some situations involving potentially
+>> malfunctioning drives.
+>
+> In that case, you just need to replace that malfunctioning device other
+> than fall back to SINGLE.
+
+You are assuming that user has the time and money to replace the  
+malfunctioning drive. In A LOT of cases, this is not true.
+
+What if the drive is failing, but the user has some important work to  
+do finish.
+He has a presentation to perform. He doesn't want the presentation to  
+be interrupted by a failing disk drive.
+
+What if the user doesn't have any spare SATA cables on hand?
+
+What if user doesn't have any space space in the case? What if it is a  
+laptop computer?
+
+While a user might want to maintain a RAID1 long-term, in the short  
+term he might want to perform a downgrade.
+
+
+
+
