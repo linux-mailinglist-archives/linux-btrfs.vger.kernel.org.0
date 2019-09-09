@@ -2,403 +2,250 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EA33AD907
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 14:29:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A68AD9EF
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 15:26:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726926AbfIIM3v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 08:29:51 -0400
-Received: from mout.gmx.net ([212.227.15.18]:45385 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726002AbfIIM3v (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 08:29:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1568032145;
-        bh=lQx4ZhTrdp97aGauIf3C3IgX0szprpHiDY0pUDAgq0w=;
-        h=X-UI-Sender-Class:Subject:From:To:References:Date:In-Reply-To;
-        b=L6859bFnTMLv//+myw5XYwKbiEmeQe8wxZCe5AIkO8iw/K+j2IuwJCHKekchphTxp
-         vLt4IfA3OuUqEpRTYGtviY4lBC0qOUAJCgnZic5oG/O9ECj8Q83EzTHJZAh8ImHVvs
-         dznZGIHCXq0XXF3wKL5LdYAe1EvBnSSob+q9IJbE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N7i8O-1iBH3S14Wg-014guA; Mon, 09
- Sep 2019 14:29:05 +0200
-Subject: Re: Feature requests: online backup - defrag - change RAID level
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-To:     zedlryqc@server53.web-hosting.com, linux-btrfs@vger.kernel.org
-References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
- <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
- <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
- <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <083a7b76-3c30-f311-1e23-606050cfc412@gmx.com>
-Date:   Mon, 9 Sep 2019 20:28:59 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.0
+        id S1730274AbfIIN0A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 09:26:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52544 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729836AbfIIN0A (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 09:26:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id BCE39AF8E;
+        Mon,  9 Sep 2019 13:25:57 +0000 (UTC)
+Subject: Re: [PATCH v2 2/6] btrfs-progs: check/common: Introduce a function to
+ find imode using INODE_REF
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20190905075800.1633-1-wqu@suse.com>
+ <20190905075800.1633-3-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <4e7099d2-5b4c-1fa3-ffdf-2b3332ed0b88@suse.com>
+Date:   Mon, 9 Sep 2019 16:25:56 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="1GAplw03O5xsIACx3WRo5pCuRZhPU48IM"
-X-Provags-ID: V03:K1:mCY1sC676ADfHFEY+NQuvjuXKI+pa8SV3EyBOTSY8qh8cukoDAj
- TlsrM1wa2e5duL6Wwh4Z/B80vRUeOzcbbYU5vyyJ6i9c5k6CHGSYYT9styiAMZmpmj7eYE9
- RLd1PLVE5/LFCF2iolMOj3mxnFXhZFlTNgBmyBugQGcuBt+S4Qgio61dnzG3+dpLqUb6wp7
- acH4WiXQkglS6+jinu2ZA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Hf9+inoX0Nk=:GGSQmsqmzA8IjEBXFSvKIL
- lXnJ1Mx4G2O/MQoF9rLhZRsZ9zPpgz9f+KjsPf6DAVd1RlpjG6mefzf5ZmhRnHsLbO8SLhARb
- cUxLB27T3TloQ9+cfBRbC1wbwcbkehVMHgtViqydy8j8DjF3neD2Dv3CkYB9jdmZ3ZLuNj49W
- pGn8y/p5LVTik714kvKJEA5IOJKvYoYmgqpCF+C83Q5cikYXPoGqSkPv2L7G9HFIlUD7jL6Yf
- cOMCD2AYWF9koWFxz0fekx2n4rX1UfH5WTXJnzGullApz0FCfqnrhVYVaHnGinWPIuOnZd7lM
- Qhl9Nr1+hhv2jTVUuRZ2+iSL6oPd6pm/H7WZ8bBE6ZDya30qJJH9vdGuhPmwEEwWpVkQsIG8h
- KhkMzf5umizqVJ3fu0L4YabhJAxK93ydYLVX7HnWHL9si1HGOC6YSOsYyUU317O3M0rAnDXOj
- coHdn3dea61ilsWHmTcrr7I6MCJwc7aFaCR3KbOTJFktKIm8/sr6hFSaQ8jowIFcKvuz6o8N8
- DhC9190WB6SU3rV5VVBLTZMWUI4YFcAeEQj9PRBFWFvNhH2uEMZ4dZEaD2f0cZbuChZ9dvnFE
- H14YRxsA/jrLYiSQsxB+OpymoKyBNcRSuEsIq2KuQCPFrvmvpNTD4koMmMOY7dLc3OY7Czp2I
- iumBUBmdYH3zCcvl/Ub5ZcBo12yWvmLerKjKCegpatU8wLm7xAnJse/XAX442liNXAD1+LYIP
- G4S99pdJI3nvacD2YUibGeacaTWyCR2E3haA/vKRX9DHxcd1Rf7nFj/XSMmtKDNs63mvPrDeV
- zr9z04zQ/J3HxznefFVo/UUrT03xIqTOuhTIieK9jcdxhj+JaE19ZHUau/ZsRqS9mSf2nEyfa
- 6VhDMoOn4mVW6XQTmEAFbbWlAEeiJLvI8iUMygdksZkUP4HlnlA44NMUeeZ1jDfPD5ZmK6QYU
- ZJNky1HliJ1whkitaMEJBbpyqIIgTn0WhtrhYtOpCLEsFyBI562jNB/e+7KL2DJuniXh4wMnu
- oFhz0dkICSKEvnXG1UweC+4i+VnmpUGiYX+DylDuTehngfcuqpu7zfwOYZRHoZTJ2baP6USgV
- 18ppnmODsKXN0JPTDAfhuxYg/GO5LjbNuHFQxKsyGn404v19+MUXDD9ryHu1GUzlQxq7Kq6f1
- KwLzWc22dtXflR8JTeLZlAcrsnoqA+bw3tWtYuWQFkXXXQGhxR2VSrnj4oLlJamBh5qaoLBTv
- ikUSfJ8GffaM4pmY/
+In-Reply-To: <20190905075800.1633-3-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---1GAplw03O5xsIACx3WRo5pCuRZhPU48IM
-Content-Type: multipart/mixed; boundary="gR5zvtLDb7KMey3wGwLHjK1TXrJK2JcB4"
-
---gR5zvtLDb7KMey3wGwLHjK1TXrJK2JcB4
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
+On 5.09.19 г. 10:57 ч., Qu Wenruo wrote:
+> Introduce a function, find_file_type(), to find filetype using
+> INODE_REF.
+> 
+> This function will:
+> - Search DIR_INDEX first
+>   DIR_INDEX is easier since there is only one item in it.
+> 
+> - Valid the DIR_INDEX item
+>   If the DIR_INDEX is valid, use the filetype and call it a day.
+> 
+> - Search DIR_ITEM then
+> 
+> - Valide the DIR_ITEM
+>   If valid, call it a day. Or return -ENOENT;
+> 
+> This would be used as the primary method to determine the imode in later
+> imode repair code.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  check/mode-common.c | 99 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 99 insertions(+)
+> 
+> diff --git a/check/mode-common.c b/check/mode-common.c
+> index 195b6efaa7aa..c0ddc50a1dd0 100644
+> --- a/check/mode-common.c
+> +++ b/check/mode-common.c
+> @@ -16,6 +16,7 @@
+>  
+>  #include <time.h>
+>  #include "ctree.h"
+> +#include "hash.h"
+>  #include "common/internal.h"
+>  #include "common/messages.h"
+>  #include "transaction.h"
+> @@ -836,6 +837,104 @@ int reset_imode(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+>  	return ret;
+>  }
+>  
+> +static int find_file_type(struct btrfs_root *root, u64 ino, u64 dirid,
+> +			  u64 index, const char *name, u32 name_len,
+> +			  u32 *imode_ret)
+> +{
+> +	struct btrfs_path path;
+> +	struct btrfs_key location;
+> +	struct btrfs_key key;
+> +	struct btrfs_dir_item *di;
+> +	char namebuf[BTRFS_NAME_LEN] = {0};
+> +	unsigned long cur;
+> +	unsigned long end;
+> +	bool found = false;
+> +	u8 filetype;
+> +	u32 len;
+> +	int ret;
+> +
+> +	btrfs_init_path(&path);
+> +
+> +	/* Search DIR_INDEX first */
+> +	key.objectid = dirid;
+> +	key.offset = index;
+> +	key.type = BTRFS_DIR_INDEX_KEY;
+> +
+> +	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+> +	if (ret > 0)
+> +		ret = -ENOENT;
 
-On 2019/9/9 =E4=B8=8B=E5=8D=888:18, Qu Wenruo wrote:
->=20
->=20
-> On 2019/9/9 =E4=B8=8B=E5=8D=887:25, zedlryqc@server53.web-hosting.com w=
-rote:
->>
->> Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
->>>> 1) Full online backup (or copy, whatever you want to call it)
->>>> btrfs backup <filesystem name> <partition name> [-f]
->>>> - backups a btrfs filesystem given by <filesystem name> to a partiti=
-on
->>>> <partition name> (with all subvolumes).
->>>
->>> Why not just btrfs send?
->>>
->>> Or you want to keep the whole subvolume structures/layout?
->>
->> Yes, I want to keep the whole subvolume structures/layout. I want to
->> keep everything. Usually, when I want to backup a partition, I want to=
+Even if it returns 1 meaning there is no DIR_INDEX item perhaps it still
+makes sense to go to dir_item: label to search for DIR_ITEM, what if the
+corruption has affected just the DIR_INDEX item?
 
->> keep everything, and I suppose most other people have a similar idea.
->>
->>> I'd say current send/receive is more flex.
->>
->> Um, 'flexibility' has nothing to do with it. Send/receive is a
->> completely different use case.
->> So, each one has some benefits and some drawbacks, but 'send/receive'
->> cannot replace 'full online backup'
->>
->> Here is where send/receive is lacking:
->> =C2=A0=C2=A0=C2=A0=C2=A0- too complicated to do if many subvolumes are=
- involved
->> =C2=A0=C2=A0=C2=A0=C2=A0- may require recursive subvolume enumeration =
-in order to emulate
->> 'full online backup'
->> =C2=A0=C2=A0=C2=A0=C2=A0- may require extra storage space
->> =C2=A0=C2=A0=C2=A0=C2=A0- is not mountable, not easy to browse the bac=
-kup contents
->> =C2=A0=C2=A0=C2=A0=C2=A0- not easy to recover just a few selected file=
-s from backup
->> There's probably more things where send/receive is lacking, but I thin=
-k
->> I have given sufficient number of important differences which show tha=
-t
->> send/receive cannot successfully replace the functionality of 'full
->> online backup'.
+> +	if (ret < 0)
+> +		goto dir_item;
+nit: Use elseif to make it more explicit it is a single construct.
 
-Forgot to mention this part.
+> +	di = btrfs_item_ptr(path.nodes[0], path.slots[0],
+> +			       struct btrfs_dir_item);
+> +	btrfs_dir_item_key_to_cpu(path.nodes[0], di, &location);
+> +
+> +	/* Various basic check */
+> +	if (location.objectid != ino || location.type != BTRFS_INODE_ITEM_KEY ||
+> +	    location.offset != 0)
+> +		goto dir_item;
+> +	filetype = btrfs_dir_type(path.nodes[0], di);
+> +	if (filetype >= BTRFS_FT_MAX || filetype == BTRFS_FT_UNKNOWN)
+> +		goto dir_item;
+> +	len = min_t(u32, btrfs_item_size_nr(path.nodes[0], path.slots[0]) -
+> +			 sizeof(*di), BTRFS_NAME_LEN);
+> +	len = min_t(u32, len, btrfs_dir_name_len(path.nodes[0], di));
+> +	read_extent_buffer(path.nodes[0], namebuf, (unsigned long)(di + 1), len);
+> +	if (name_len != len || memcmp(namebuf, name, len))
+> +		goto dir_item;
+> +
+> +	/* Got a correct filetype */
+> +	found = true;
+> +	*imode_ret = btrfs_type_to_imode(filetype);
+> +	ret = 0;
+> +	goto out;
+> +
+> +dir_item:
 
-If your primary objective is to migrate your data to another device
-online (mounted, without unmount any of the fs).
+This function is needlessly structured in an awkward way. E.g. there is
+no dependence between "searching by DIR INDEX item" and "searching by
+DIR_ITEM". I think the best way is to have 3 function:
 
-Then I could say, you can still add a new device, then remove the old
-device to do that.
+Top level find_file_type which will call find_file_type_by_dir_index if
+the reeturn value is negative -> call 2nd function
+find_file_type_by_dir_item. This will result in 3 fairly short and easy
+to read/parse functions.
 
-That would be even more efficient than LVM (not thin provisioned one),
-as we only move used space.
+> +	btrfs_release_path(&path);
+> +	key.objectid = dirid;
+> +	key.offset = btrfs_name_hash(name, name_len);
+> +
+> +	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+> +	if (ret > 0)
+> +		ret = -ENOENT;
+> +	if (ret < 0) {
+> +		btrfs_release_path(&path);
+> +		return ret;
+> +	}
 
-If your objective is to create a full copy as backup, then I'd say my
-new patchset of btrfs-image data dump may be your best choice.
+ditto about the else if construct
 
-The only down side is, you need to at least mount the source fs to RO mod=
-e.
+> +	cur = btrfs_item_ptr_offset(path.nodes[0], path.slots[0]);
+> +	end = cur + btrfs_item_size_nr(path.nodes[0], path.slots[0]);
+> +	while (cur < end) {
 
-The true on-line backup is not that easy, especially any write can screw
-up your backup process, so it must be done unmounted.
+Just checking : this is needed in case we have items whose names create
+a crc32 collision in the DIR_ITEM offset?
 
-Even btrfs send handles this by forcing the source subvolume to be RO,
-so I can't find an easy solution to address that.
+> +		di = (struct btrfs_dir_item *)cur;
+> +		btrfs_dir_item_key_to_cpu(path.nodes[0], di, &location);
+> +		/* Various basic check */
+> +		if (location.objectid != ino ||
+> +		    location.type != BTRFS_INODE_ITEM_KEY ||
+> +		    location.offset != 0)
+> +			goto next;> +		filetype = btrfs_dir_type(path.nodes[0], di);
+> +		if (filetype >= BTRFS_FT_MAX || filetype == BTRFS_FT_UNKNOWN)
+> +			goto next;
+> +		len = min_t(u32, BTRFS_NAME_LEN,
+> +			    btrfs_item_size_nr(path.nodes[0], path.slots[0]) -
+> +			    sizeof(*di));
+> +		len = min_t(u32, len, btrfs_dir_name_len(path.nodes[0], di));
+> +		read_extent_buffer(path.nodes[0], namebuf,
+> +				   (unsigned long)(di + 1), len);
+> +		if (name_len != len || memcmp(namebuf, name, len))
+> +			goto next;
+> +		*imode_ret = btrfs_type_to_imode(filetype);
+> +		found = true;
+> +		goto out;
+> +next:
+> +		cur += btrfs_dir_name_len(path.nodes[0], di) + sizeof(*di);
 
-Thanks,
-Qu
+If this line is moved right after assigning to 'di' instead of having a
+'next' label you can simply use the 'continue' keyword
 
->>
->>> And you also needs to understand btrfs also integrates volume
->>> management, thus it's not just <partition name>, you also needs RAID
->>> level and things like that.
->>
->> This is a minor point. So, please, let's not get into too many
->> irrelevant details here.
->>
->> There can be a sensible default to 'single data, DUP metadata', and a
->> way for a user to override this default, but that feature is
->> not-so-important. If the user wants to change the RAID level, he can
->> easily do it later by mounting the backup.
->>
->>>
->>> All can be done already by send/receive, although at subvolume level.=
-
->>
->> Yeah, maybe I should manually type it all for all subvolumes, one by
->> one. Also must be carefull to do it in the correct order if I want it
->> not to consume extra space.
->> And the backup is not mountable.
->>
->> This proposal (workaround) of yours appears to me as too complicated,
->> too error prone,
->> missing important features.
->>
->> But, I just thought, you can actually emulate 'full online backup' wit=
-h
->> this send/receive. Here is how.
->> You do a script which does the following:
->> =C2=A0=C2=A0=C2=A0=C2=A0- makes a temporary snapshot of every subvolum=
-e
->> =C2=A0=C2=A0=C2=A0=C2=A0- use 'btrfs send' to send all the temporary s=
-napshots, on-the-fly
->> (maybe via pipe), in the correct order, to a proces running a 'brtfs
->> receive', which should then immediately write it all to the destinatio=
-n
->> partition. All the buffers can stay in-memory.
->> =C2=A0=C2=A0=C2=A0=C2=A0- when all the snapshots are received and writ=
-ten to destination,
->> fix subvol IDs
->> =C2=A0=C2=A0=C2=A0=C2=A0- delete temporary snapshots from source
->> Of course, this script should then be a part of standard btrfs tools.
->>
->>> Please check if send/receive is suitable for your use case.
->>
->> No. Absolutely not.
->>
->>
->>>> 2) Sensible defrag
->>>> The defrag is currently a joke.
->>
->>>> How to do it:
->>>> - The extents must not be unshared, but just shuffled a bit. Unshari=
-ng
->>>> the extents is, in most situations, not tolerable.
->>
->>> I definitely see cases unsharing extents makes sense, so at least we
->>> should let user to determine what they want.
->>
->> Maybe there are such cases, but I would say that a vast majority of
->> users (99,99%) in a vast majority of cases (99,99%) don't want the
->> defrag operation to reduce free disk space.
->>
->>> What's wrong with current file based defrag?
->>> If you want to defrag a subvolume, just iterate through all files.
->>
->> I repeat: The defrag should not decrease free space. That's the 'norma=
-l'
->> expectation.
->=20
-> Since you're talking about btrfs, it's going to do CoW for metadata not=
-
-> matter whatever, as long as you're going to change anything, btrfs will=
-
-> cause extra space usage.
-> (Although the final result may not cause extra used disk space as freed=
-
-> space is as large as newly allocated space, but to maintain CoW, newly
-> allocated space can't overlap with old data)
->=20
-> Further more, talking about snapshots with space wasted by extent
-> booking, it's definitely possible user want to break the shared extents=
-:
->=20
-> Subvol 257, inode 257 has the following file extents:
-> (257 EXTENT_DATA 0)
-> disk bytenr X len 16M
-> offset 0 num_bytes 4k  << Only 4k is referred in the whole 16M extent.
->=20
-> Subvol 258, inode 257 has the following file extents:
-> (257 EXTENT_DATA 0)
-> disk bytenr X len 16M
-> offset 0 num_bytes 4K  << Shared with that one in subv 257
-> (257 EXTENT_DATA 4K)
-> disk bytenr Y len 16M
-> offset 0 num_bytes 4K  << Similar case, only 4K of 16M is used.
->=20
-> In that case, user definitely want to defrag file in subvol 258, as if
-> that extent at bytenr Y can be freed, we can free up 16M, and allocate =
-a
-> new 8K extent for subvol 258, ino 257.
-> (And will also want to defrag the extent in subvol 257 ino 257 too)
->=20
-> That's why knowledge in btrfs tech details can make a difference.
-> Sometimes you may find some ideas are brilliant and why btrfs is not
-> implementing it, but if you understand btrfs to some extent, you will
-> know the answer by yourself.
->=20
->=20
->>
->>>> - I think it would be wrong to use a general deduplication algorithm=
- for
->>>> this. Instead, the information about the shared extents should be
->>>> analyzed given the starting state of the filesystem, and than the
->>>> algorithm should produce an optimal solution based on the currently
->>>> shared extents.
->>>
->>> Please be more specific, like giving an example for it.
->>
->> Let's say that there is a file FFF with extents e11, e12, e13, e22, e2=
-3,
->> e33, e34
->> - in subvolA the file FFF consists of e11, e12, e13
->> - in subvolB the file FFF consists of e11, e22, e23
->> - in subvolC the file FFF consists of e11, e22, e33, e34
->>
->> After defrag, where 'selected subvolume' is subvolC, the extents are
->> ordered on disk as follows:
->>
->> e11,e22,e33,e34 - e23 - e12,e13
->=20
-> Inode FFF in different subvolumes are different inodes. They have no
-> knowledge of other inodes in other subvolumes.
->=20
-> If FFF in subvol C is e11, e22, e33, e34, then that's it.
-> I didn't see the point still.
->=20
-> And what's the on-disk bytenr of all these extents? Which has larger
-> bytenr and length?
->=20
-> Please provide a better description like xfs_io -c "fiemap -v" output
-> before and after.
->=20
->>
->> In the list above, the comma denotes neighbouring extents, the dash
->> indicates that there can be a possible gap.
->> As you can see in the list, the file FFF is fully defragmented in
->> subvolC, since its extents are occupying neighbouring disk sectors.
->>
->>
->>>> 3) Downgrade to 'single' or 'DUP' (also, general easy way to switch
->>>> between RAID levels)
->>>> =C2=A0Currently, as much as I gather, user has to do a "btrfs balanc=
-e start
->>>> -dconvert=3Dsingle -mconvert=3Dsingle
->>>> ", than delete a drive, which is a bit ridiculous sequence of
->>>> operations.
->>
->>> That's a shortcut for chunk profile change.
->>> My first idea of this is, it could cause more problem than benefit.
->>> (It only benefits profile downgrade, thus only makes sense for
->>> RAID1->SINGLE, DUP->SINGLE, and RAID10->RAID0, nothing else)
->>
->> Those listed cases are exactly the ones I judge to be most important.
->> Three important cases.
->=20
-> I'd argue it's downgrade, not that important. As most users want to
-> replace the missing/bad device and maintain the raid profile.
->=20
->>
->>> I still prefer the safer allocate-new-chunk way to convert chunks, ev=
-en
->>> at a cost of extra IO.
->>
->> I don't mind whether it allocates new chunks or not. It is better, in =
-my
->> opinion, if new chunks are not allocated, but both ways are essentiall=
-y OK.
->>
->> What I am complaining about is that at one point in time, after issuin=
-g
->> the command:
->> =C2=A0=C2=A0=C2=A0=C2=A0btrfs balance start -dconvert=3Dsingle -mconve=
-rt=3Dsingle
->> and before issuing the 'btrfs delete', the system could be in a too
->> fragile state, with extents unnecesarily spread out over two drives,
->> which is both a completely unnecessary operation, and it also seems to=
-
->> me that it could be dangerous in some situations involving potentially=
-
->> malfunctioning drives.
->=20
-> In that case, you just need to replace that malfunctioning device other=
-
-> than fall back to SINGLE.
->=20
-> Thanks,
-> Qu
->=20
->>
->> Please reconsider.
->>
->>
->=20
-
-
---gR5zvtLDb7KMey3wGwLHjK1TXrJK2JcB4--
-
---1GAplw03O5xsIACx3WRo5pCuRZhPU48IM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl12RYsACgkQwj2R86El
-/qjyUAf+KZ7hkMz0stfdh20QqLR61sUn0t9Dw0DFWcyVabU0JjARKcAzAPzVaYg/
-P2FZvMGVTzUqQ+QyBpwfpsAiTTcmNr6alnftBBSyVaUVV3UVjfyzSKh9C0Dn7wsb
-oA9KLzkXIguR4ilmHyQz20cTmKfZBLD/TTULBGhy9ALO0Wn3GY/LZFWBvE1a0nOD
-woIz3yZ3dpyDeo6vHfRGMHX+cmg5kNRJ2uqzQT4+V1+7ElatO3tiLxb5kvz4mM8L
-4VTan1VjcZZufznYNUFyFfefSRqdiKhuiOFZ74WnOCCODNcesCgzYO5ncpO5AvXX
-EE6tuN0z7e/UFpbzvbdbmYu6fwp48g==
-=bKsh
------END PGP SIGNATURE-----
-
---1GAplw03O5xsIACx3WRo5pCuRZhPU48IM--
+> +	}
+> +out:
+> +	btrfs_release_path(&path);
+> +	if (!found && !ret)
+> +		ret = -ENOENT;
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Reset the inode mode of the inode specified by @path.
+>   *
+> 
