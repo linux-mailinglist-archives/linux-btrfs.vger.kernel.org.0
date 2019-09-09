@@ -2,182 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07BB2ADDD3
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 19:11:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFE7ADDFA
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 19:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728567AbfIIRLN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 13:11:13 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:55363 "EHLO
-        server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727423AbfIIRLN (ORCPT
+        id S2389441AbfIIRYj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 13:24:39 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:36329 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726864AbfIIRYj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 13:11:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
-         s=default; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Reply-to:
-        In-Reply-To:References:Subject:Cc:To:From:Message-ID:Date:Sender:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=fqQPcJ1LDJkMeAwhFwP+7abgWQ9XdVfN9t5nSXMjrUg=; b=5Fgt0VJG5JWoqVBdTsxjm1G19I
-        bbZKI2pS5D6jRPM7Du3aP0BOQBCnym9d0VyaKMtuRIokVy49ZYnOcVGu1KgUTgwpMO5ewJd8dpfkK
-        FVjLYZgM7z5jjK4xFW4OsUTwOLt7UpiSX+MpQGk09XYxVyyJjXtHDvDM7bAxKQnbhduy8iUvUI3rJ
-        gZDaARWwWHiPa3vglL90IaiCSZAEkFhtYcXnO24HLzW4vgulmxWUQcyLq21p7C05s8HpR+nPdF6ss
-        q+ExT0T7aahnQ5/HQmW+0zBas1tecCEB8eJp3E4a98Pa8HKQcttwtjhqJTWBPRWOUtsgESQ7dM4+1
-        BB0+5ipg==;
-Received: from [::1] (port=52040 helo=server53.web-hosting.com)
-        by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <webmaster@zedlx.com>)
-        id 1i7NC0-001bR7-Gt
-        for linux-btrfs@vger.kernel.org; Mon, 09 Sep 2019 13:11:12 -0400
-Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Mon, 09 Sep 2019 13:11:08 -0400
-Date:   Mon, 09 Sep 2019 13:11:08 -0400
-Message-ID: <20190909131108.Horde.64FzJYflQ6j0CbjYFLqBEz0@server53.web-hosting.com>
-From:   webmaster@zedlx.com
-To:     linux-btrfs@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
+        Mon, 9 Sep 2019 13:24:39 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3D17D2212F
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Sep 2019 13:24:38 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 09 Sep 2019 13:24:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type; s=fm3; bh=ZaHKw9Ax4sxmcWIqqfzAlT5hvcg
+        ZFUzWQcCHp8Qzob8=; b=au9IRjSuyEsMujWXzCaqoRTYo2EZQoODcn6Bty4qIOi
+        VwsD2ArlQbBbfdRKhux0/ahWFPa3UOamVmjucQjPVfQ7Y2XBOt286zUsjhegDHB3
+        62gq8jCpEXFl5j4wFLzi2EWpCT1EbvRGweJzmGaml97qYLzpD9ICU9yGj0kt37pN
+        irfKaya5IfOlOfg3xKYYaD9xH6b3VMVmoEPlVnpSVUIPjODHK9w8ehK6xDeIzYy2
+        JSCkowQ1zo1s+5LVo75soWotKmXUyI+CDz14BzqJ1KXijoy2lu3b9YbvVk312i8F
+        pJEw+eq9G5wVTU+GRhiAeTJFLXifvOOvUOxOcJVhaYA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=ZaHKw9
+        Ax4sxmcWIqqfzAlT5hvcgZFUzWQcCHp8Qzob8=; b=VoV0aG+AhmaoXBnN3B6mGn
+        UkdV/6muUMoTZrfUtjKKgF7/jbQ1emtwGFkE5d4nPRUzi6aa2cN92C+Vn4yY1ZnZ
+        UeBTfYHhNnj0MefGG8ze0h72adncRgawoKv4rW0/ZlffBtlzSN4s/NLgp05yyaqI
+        eeMpdeGLuOxmnGAjTSHCyzHDFS6X69VCU1i50FPIvJGm0QGt0cDU/9mhHH0vs0YM
+        75ux30IER53vwjL5TimgGhcSgYPGBUtavTcFrD7h8uA6jSz3DDHSRu2DNapWeN+P
+        HUgw/d/Ng1fDOFQBPD7NidujugeCjgEBK+kCjZ3Mh0UwBk9ZndI4zRFnzJkXf//w
+        ==
+X-ME-Sender: <xms:1op2XScJwMBFb1C89c4q__3_DlsU9kk1GRNrTpMKDg167XfoZIUxcg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduvddrudekiedguddutdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtsehgtd
+    erofdtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhg
+    ihgrnhhithdrtghomheqnecukfhppedufeehrddvfedrvdegiedrudefudenucfrrghrrg
+    hmpehmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomhenucevlhhu
+    shhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:1op2XSNB2Vp33EBJ7GYOv2vuWTtSXXDHvrkVIyi5ZpdUP3pnKokElA>
+    <xmx:1op2Xf8WR_ha2HrtMA_xfvSWEHTipjeHB4foPJ8vaRPn4VXg09JQXQ>
+    <xmx:1op2XVgFb15TzbvNIYQh9k9SGmaPQaWM1KETgE3Od1xE5tR72fGWEw>
+    <xmx:1op2XYfMgufhe-HFDSQRGMP4xJmRcSi-gpf-tuWI-Vdr37oMW98hxw>
+Received: from [10.0.0.6] (135-23-246-131.cpe.pppoe.ca [135.23.246.131])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 8F3748005B
+        for <linux-btrfs@vger.kernel.org>; Mon,  9 Sep 2019 13:24:37 -0400 (EDT)
 Subject: Re: Feature requests: online backup - defrag - change RAID level
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
 References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
  <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
  <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
  <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
- <083a7b76-3c30-f311-1e23-606050cfc412@gmx.com>
-In-Reply-To: <083a7b76-3c30-f311-1e23-606050cfc412@gmx.com>
-Reply-to: webmaster@zedlx.com
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+From:   Remi Gauvin <remi@georgianit.com>
+Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
+Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
+ keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
+ CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
+ sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
+ t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
+ 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
+ AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
+ IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
+ OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
+ 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
+ WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
+ k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
+ Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
+ R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
+ WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
+ QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
+ jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
+ oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
+ BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
+ XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
+ r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
+ phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
+ nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
+ SY9JJa155sI=
+Message-ID: <f74dd133-e300-344a-9cd4-e21a2c17eb7a@georgianit.com>
+Date:   Mon, 9 Sep 2019 13:24:36 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server53.web-hosting.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - zedlx.com
-X-Get-Message-Sender-Via: server53.web-hosting.com: authenticated_id: zedlryqc/from_h
-X-Authenticated-Sender: server53.web-hosting.com: webmaster@zedlx.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-From-Rewrite: unmodified, already matched
+In-Reply-To: <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="9T6TIhqvwgdgSH9Di6T5IPbsng94nNsRf"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--9T6TIhqvwgdgSH9Di6T5IPbsng94nNsRf
+Content-Type: multipart/mixed; boundary="nO3tb5tKZDArMO5zG34Ogr5kmc4RWuOq7";
+ protected-headers="v1"
+From: Remi Gauvin <remi@georgianit.com>
+To: linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <f74dd133-e300-344a-9cd4-e21a2c17eb7a@georgianit.com>
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+ <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+In-Reply-To: <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
 
-Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
+--nO3tb5tKZDArMO5zG34Ogr5kmc4RWuOq7
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> On 2019/9/9 下午8:18, Qu Wenruo wrote:
->>
->>
->> On 2019/9/9 下午7:25, zedlryqc@server53.web-hosting.com wrote:
->>>
->>> Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
->>>>> 1) Full online backup (or copy, whatever you want to call it)
->>>>> btrfs backup <filesystem name> <partition name> [-f]
->>>>> - backups a btrfs filesystem given by <filesystem name> to a partition
->>>>> <partition name> (with all subvolumes).
->>>>
->>>> Why not just btrfs send?
->>>>
->>>> Or you want to keep the whole subvolume structures/layout?
->>>
->>> Yes, I want to keep the whole subvolume structures/layout. I want to
->>> keep everything. Usually, when I want to backup a partition, I want to
->>> keep everything, and I suppose most other people have a similar idea.
->>>
->>>> I'd say current send/receive is more flex.
->>>
->>> Um, 'flexibility' has nothing to do with it. Send/receive is a
->>> completely different use case.
->>> So, each one has some benefits and some drawbacks, but 'send/receive'
->>> cannot replace 'full online backup'
->>>
->>> Here is where send/receive is lacking:
->>>     - too complicated to do if many subvolumes are involved
->>>     - may require recursive subvolume enumeration in order to emulate
->>> 'full online backup'
->>>     - may require extra storage space
->>>     - is not mountable, not easy to browse the backup contents
->>>     - not easy to recover just a few selected files from backup
->>> There's probably more things where send/receive is lacking, but I think
->>> I have given sufficient number of important differences which show that
->>> send/receive cannot successfully replace the functionality of 'full
->>> online backup'.
->
-> Forgot to mention this part.
->
-> If your primary objective is to migrate your data to another device
-> online (mounted, without unmount any of the fs).
+On 2019-09-09 11:29 a.m., Graham Cobb wrote:
 
-This is not the primary objective. The primary objective is to produce  
-a full, online, easy-to-use, robust backup. But let's say we need to  
-do migration...
->
-> Then I could say, you can still add a new device, then remove the old
-> device to do that.
-
-If the source filesystem already uses RAID1, then, yes, you could do  
-it, but it would be too slow, it would need a lot of user  
-intervention, so many commands typed, so many ways to do it wrong, to  
-make a mistake.
-
-Too cumbersome. Too wastefull of time and resources.
-
-> That would be even more efficient than LVM (not thin provisioned one),
-> as we only move used space.
-
-In fact, you can do this kind of full-online-backup with the help of  
-mdadm RAID, or some other RAID solution. It can already be done, no  
-need to add 'btrfs backup'.
-
-But, again, to cumbersome, too inflexible, too many problems, and, the  
-user would have to setup a downgraded mdadm RAID in front and run with  
-a degraded mdadm RAID all the time (since btrfs RAID would be actually  
-protecting the data).
-
-> If your objective is to create a full copy as backup, then I'd say my
-> new patchset of btrfs-image data dump may be your best choice.
-
-It should be mountable. It should be performed online. Never heard of  
-btrfs-image, i need the docs to see whether this btrfs-image is good  
-enough.
-
-> The only down side is, you need to at least mount the source fs to RO mode.
-
-No. That's not really an online backup. Not good enough.
-
-> The true on-line backup is not that easy, especially any write can screw
-> up your backup process, so it must be done unmounted.
-
-Nope, I disagree.
-
-First, there is the RAID1-alike solution, which is easy to perform  
-(just send all new writes to both source and destination). It's the  
-same thing that mdadm RAID1 would do (like I mentioned a few  
-paragraphs above).
-But, this solution may have a performance concern, when the  
-destination drive is too slow.
-
-Fortunately, with btrfs, an online backup is easier tha usual. To  
-produce a frozen snapshot of the entire filesystem, just create a  
-read-only snapshot of every subvolume (this is not 100% consistent, I  
-know, but it is good enough).
-
-But I'm just repeating myself, I already wrote this in the first email.
-
-So, in conclusion I disagree that true on-line backup is not easy.
-
-> Even btrfs send handles this by forcing the source subvolume to be RO,
-> so I can't find an easy solution to address that.
-
-This is a digression, but I would say that you first make a temporary  
-RO snapshot of the source subvolume, then use 'btrfs send' on the  
-temporary snapshot, then delete the temporary snapshot.
-
-Oh, my.
+>  and does anyone really care about
+> defrag any more?).
+>=20
 
 
+Err, yes, yes absolutely.
+
+I don't have any issues with the current btrfs defrag implementions, but
+it's *vital* for btrfs. (which works just as the OP requested, as far as
+I can tell, recursively for a subvolume)
+
+Just booting Windows on a BTRFS virtual image, for example, will create
+almost 20,000 file fragments.  Even on SSD's, you get into problems
+trying to work with files that are over 200,000 fragments.
+
+Another huge problem is rsync --inplace.  which is perfect backup
+solution to take advantage of BTRFS snapshots, but fragments larges
+files into tiny pieces (and subsequently creates files that are very
+slow to read.).. for some reason, autodefrag doesn't catch that one eithe=
+r.
+
+But the wiki could do a beter job of trying to explain that the snapshot
+duplication of defrag only affects the fragmented portions.  As I
+understand, it's really only a problem when using defrag to change
+compression.
+
+
+
+
+
+--nO3tb5tKZDArMO5zG34Ogr5kmc4RWuOq7--
+
+--9T6TIhqvwgdgSH9Di6T5IPbsng94nNsRf
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQEcBAEBCAAGBQJddorUAAoJEO9Tn/JHRWptbmYH/iypZIviPr+zNCsiR9fkNLCD
+kBHk7XuDxmGBTMUh/8eRQw3/DZbppJA+PITYpoZ/qPEppFEXn+chMspakTDXDM1Z
+WXF4UngpI2fMoasEOIW+XTMHmZXxoe0xP6RhTqFk6opqc0E6YWH32FmzCEuiSSwH
+0O66IyidWFiyNFcPklPbaqP5ZHn28sQe7i074ph5Tdj/exeBaufFopAamIhzCpOb
+OUBcf2YvnUp1cFEr8W5p08b/tHT2vh6HZ4J3Uwnjk/MQtTzrkBB6lyMldnajHAp6
+stg49yx4nD5fAMDkIdLYPEqUsKRXY0vpaIDKS5fIA26/TeC/0nTYoPwZQ7EIzJc=
+=WE6G
+-----END PGP SIGNATURE-----
+
+--9T6TIhqvwgdgSH9Di6T5IPbsng94nNsRf--
