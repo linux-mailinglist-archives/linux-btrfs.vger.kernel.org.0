@@ -2,154 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E088ADC2A
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 17:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95F65ADC38
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 17:38:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388351AbfIIPfV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 11:35:21 -0400
-Received: from zaphod.cobb.me.uk ([213.138.97.131]:42548 "EHLO
-        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726581AbfIIPfU (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Sep 2019 11:35:20 -0400
-X-Greylist: delayed 338 seconds by postgrey-1.27 at vger.kernel.org; Mon, 09 Sep 2019 11:35:18 EDT
-Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
-        id 270AB142BC4; Mon,  9 Sep 2019 16:29:39 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1568042979;
-        bh=cPOtf85m2JiX2HEaBZlbAl007OlVNmy1m4WkK/YOcPc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=NLIjy4WvtzhIeRUILla0gYKLIcgkjjUOOQ1JWoJ3wdGK9dyM+2q08aCnzM4zCyTlw
-         xkYSkl905fjj6XjXD0RNfgR0BunLGTmWJfKtgmeupztFWFNdB7CkGHOaPZzQEQaumy
-         9eG3fnqTy1No/7tkI7aUUgOx5f94RdrB7kWXxUkUvrajB47R8M/jr+JNO0ckHAfhUe
-         1ItUHnMmQTaZw2RYJ4Rlp+ZW2PEOF/pC/iK2P/Ik8/i/VjaquvL+tlH/QekrryfOIn
-         WoT1EZTZsxnn1544++Y7VydeEJcHmePnpIz0zRsH3oC6mKPueH74OCcFkqUlaxQLCF
-         uY/L9m17CdMMA==
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
-X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
-        DKIM_SIGNED autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: 
-X-Spam-Bar: 
-Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
-        by zaphod.cobb.me.uk (Postfix) with ESMTP id 3F6C3142BC3;
-        Mon,  9 Sep 2019 16:29:37 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
-        s=201703; t=1568042977;
-        bh=cPOtf85m2JiX2HEaBZlbAl007OlVNmy1m4WkK/YOcPc=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=WxOZPkgFfYhSctc8PKxwUlohIPtLoD+w3pUUrcs5N6qja3+NyGARKM4WsH6XQRp7A
-         FyzDnR7f3lmKdLMF0UJYxDOm1lWEZPU1Jf5Wj+edOFLoY6prYcz7qtmjizVRsv1WFD
-         kHYrm+Y7fLJhiZQTd6SxvXOq3i6KQfLGBIxYAfmZ8I3lRirGMiVsJSJT2DB46ceAc1
-         5V+HFFagsYBVzJ2BnZHSc70hcZdwLDHOTI/B1/FAGy4/nHbotqaRAVC7EbCsiEQ4IH
-         KxdXIN0xeAWgOva9+x5azxrKxMEKUSWnXbfW+vEqKLw83XaygOYu+LqqkvCiscdA9N
-         rsCpJ2PAqAS4Q==
-Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
-        by black.home.cobb.me.uk (Postfix) with ESMTPS id 03CB04384C;
-        Mon,  9 Sep 2019 16:29:36 +0100 (BST)
-Subject: Re: Feature requests: online backup - defrag - change RAID level
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        zedlryqc@server53.web-hosting.com, linux-btrfs@vger.kernel.org
-References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
- <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
- <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
- <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
-From:   Graham Cobb <g.btrfs@cobb.uk.net>
+        id S2388476AbfIIPhz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 11:37:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49356 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388474AbfIIPhz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 11:37:55 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 0BA8FACB9;
+        Mon,  9 Sep 2019 15:37:53 +0000 (UTC)
+Subject: Re: [PATCH v2 6/6] btrfs-progs: tests/fsck: Add new images for inode
+ mode repair functionality
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20190905075800.1633-1-wqu@suse.com>
+ <20190905075800.1633-7-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
-Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
- mQINBFaetnIBEAC5cHHbXztbmZhxDof6rYh/Dd5otxJXZ1p7cjE2GN9hCH7gQDOq5EJNqF9c
- VtD9rIywYT1i3qpHWyWo0BIwkWvr1TyFd3CioBe7qfo/8QoeA9nnXVZL2gcorI85a2GVRepb
- kbE22X059P1Z1Cy7c29dc8uDEzAucCILyfrNdZ/9jOTDN9wyyHo4GgPnf9lW3bKqF+t//TSh
- SOOis2+xt60y2In/ls29tD3G2ANcyoKF98JYsTypKJJiX07rK3yKTQbfqvKlc1CPWOuXE2x8
- DdI3wiWlKKeOswdA2JFHJnkRjfrX9AKQm9Nk5JcX47rLxnWMEwlBJbu5NKIW5CUs/5UYqs5s
- 0c6UZ3lVwinFVDPC/RO8ixVwDBa+HspoSDz1nJyaRvTv6FBQeiMISeF/iRKnjSJGlx3AzyET
- ZP8bbLnSOiUbXP8q69i2epnhuap7jCcO38HA6qr+GSc7rpl042mZw2k0bojfv6o0DBsS/AWC
- DPFExfDI63On6lUKgf6E9vD3hvr+y7FfWdYWxauonYI8/i86KdWB8yaYMTNWM/+FAKfbKRCP
- dMOMnw7bTbUJMxN51GknnutQlB3aDTz4ze/OUAsAOvXEdlDYAj6JqFNdZW3k9v/QuQifTslR
- JkqVal4+I1SUxj8OJwQWOv/cAjCKJLr5g6UfUIH6rKVAWjEx+wARAQABtDNHcmFoYW0gQ29i
- YiAoUGVyc29uYWwgYWRkcmVzcykgPGdyYWhhbUBjb2JiLnVrLm5ldD6JAlEEEwECADsCGwEG
- CwkIBwMCBhUIAgkKCwQWAgMBAh4BAheAAhkBBQJWnr9UFRhoa3A6Ly9rZXlzLmdudXBnLm5l
- dAAKCRBv35GGXfm3Tte8D/45+/dnVdvzPsKgnrdoXpmvhImGaSctn9bhAKvng7EkrQjgV3cf
- C9GMgK0vEJu+4f/sqWA7hPKUq/jW5vRETcvqEp7v7z+56kqq5LUQE5+slsEb/A4lMP4ppwd+
- TPwwDrtVlKNqbKJOM0kPkpj7GRy3xeOYh9D7DtFj2vlmaAy6XvKav/UUU4PoUdeCRyZCRfl0
- Wi8pQBh0ngQWfW/VqI7VsG3Qov5Xt7cTzLuP/PhvzM2c5ltZzEzvz7S/jbB1+pnV9P7WLMYd
- EjhCYzJweCgXyQHCaAWGiHvBOpmxjbHXwX/6xTOJA5CGecDeIDjiK3le7ubFwQAfCgnmnzEj
- pDG+3wq7co7SbtGLVM3hBsYs27M04Oi2aIDUN1RSb0vsB6c07ECT52cggIZSOCvntl6n+uMl
- p0WDrl1i0mJUbztQtDzGxM7nw+4pJPV4iX1jJYbWutBwvC+7F1n2F6Niu/Y3ew9a3ixV2+T6
- aHWkw7/VQvXGnLHfcFbIbzNoAvI6RNnuEqoCnZHxplEr7LuxLR41Z/XAuCkvK41N/SOI9zzT
- GLgUyQVOksdbPaxTgBfah9QlC9eXOKYdw826rGXQsvG7h67nqi67bp1I5dMgbM/+2quY9xk0
- hkWSBKFP7bXYu4kjXZUaYsoRFEfL0gB53eF21777/rR87dEhptCnaoXeqbkBDQRWnrnDAQgA
- 0fRG36Ul3Y+iFs82JPBHDpFJjS/wDK+1j7WIoy0nYAiciAtfpXB6hV+fWurdjmXM4Jr8x73S
- xHzmf9yhZSTn3nc5GaK/jjwy3eUdoXu9jQnBIIY68VbgGaPdtD600QtfWt2zf2JC+3CMIwQ2
- fK6joG43sM1nXiaBBHrr0IadSlas1zbinfMGVYAd3efUxlIUPpUK+B1JA12ZCD2PCTdTmVDe
- DPEsYZKuwC8KJt60MjK9zITqKsf21StwFe9Ak1lqX2DmJI4F12FQvS/E3UGdrAFAj+3HGibR
- yfzoT+w9UN2tHm/txFlPuhGU/LosXYCxisgNnF/R4zqkTC1/ao7/PQARAQABiQIlBBgBAgAP
- BQJWnrnDAhsMBQkJZgGAAAoJEG/fkYZd+bdO9b4P/0y3ADmZkbtme4+Bdp68uisDzfI4c/qo
- XSLTxY122QRVNXxn51yRRTzykHtv7/Zd/dUD5zvwj2xXBt9wk4V060wtqh3lD6DE5mQkCVar
- eAfHoygGMG+/mJDUIZD56m5aXN5Xiq77SwTeqJnzc/lYAyZXnTAWfAecVSdLQcKH21p/0AxW
- GU9+IpIjt8XUEGThPNsCOcdemC5u0I1ZeVRXAysBj2ymH0L3EW9B6a0airCmJ3Yctm0maqy+
- 2MQ0Q6Jw8DWXbwynmnmzLlLEaN8wwAPo5cb3vcNM3BTcWMaEUHRlg82VR2O+RYpbXAuPOkNo
- 6K8mxta3BoZt3zYGwtqc/cpVIHpky+e38/5yEXxzBNn8Rn1xD6pHszYylRP4PfolcgMgi0Ny
- 72g40029WqQ6B7bogswoiJ0h3XTX7ipMtuVIVlf+K7r6ca/pX2R9B/fWNSFqaP4v0qBpyJdJ
- LO/FP87yHpEDbbKQKW6Guf6/TKJ7iaG3DDpE7CNCNLfFG/skhrh5Ut4zrG9SjA+0oDkfZ4dI
- B8+QpH3mP9PxkydnxGiGQxvLxI5Q+vQa+1qA5TcCM9SlVLVGelR2+Wj2In+t2GgigTV3PJS4
- tMlN++mrgpjfq4DMYv1AzIBi6/bSR6QGKPYYOOjbk+8Sfao0fmjQeOhj1tAHZuI4hoQbowR+ myxb
-Message-ID: <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
-Date:   Mon, 9 Sep 2019 16:29:36 +0100
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <9c772db6-74e2-6760-54bc-18b09294dc30@suse.com>
+Date:   Mon, 9 Sep 2019 18:37:51 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+In-Reply-To: <20190905075800.1633-7-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 09/09/2019 13:18, Qu Wenruo wrote:
+
+
+On 5.09.19 г. 10:58 ч., Qu Wenruo wrote:
+> Add new test image for imode repair in subvolume trees.
 > 
+> Also rename the existing test case 039-bad-free-space-cache-inode-mode
+> to 039-bad-inode-mode, since now we can fix all bad imode.
 > 
-> On 2019/9/9 下午7:25, zedlryqc@server53.web-hosting.com wrote:
->> What I am complaining about is that at one point in time, after issuing
->> the command:
->>     btrfs balance start -dconvert=single -mconvert=single
->> and before issuing the 'btrfs delete', the system could be in a too
->> fragile state, with extents unnecesarily spread out over two drives,
->> which is both a completely unnecessary operation, and it also seems to
->> me that it could be dangerous in some situations involving potentially
->> malfunctioning drives.
+> And add the beacon file for lowmem test.
 > 
-> In that case, you just need to replace that malfunctioning device other
-> than fall back to SINGLE.
 
-Actually, this case is the (only) one of the three that I think would be
-very useful (backup is better handled by having a choice of userspace
-tools to choose from - I use btrbk - and does anyone really care about
-defrag any more?).
+What kind of corruption does the image have? Ideally it should have
+cases where both DIR_ITEM and DIR_INDEX is used. As well as DIR_ITEM
+containing collisions.
 
-I did, recently, have a case where I had started to move my main data
-disk to a raid1 setup but my new disk started reporting errors. I didn't
-have a spare disk (and didn't have a spare SCSI slot for another disk
-anyway). So, I wanted to stop using the new disk and revert to my former
-(m=dup, d=single) setup as quickly as possible.
-
-I spent time trying to find a way to do that balance without risking the
-single copy of some of the data being stored on the failing disk between
-starting the balance and completing the remove. That has two problems:
-obviously having the single copy on the failing disk is bad news but,
-also, it increases the time taken for the subsequent remove which has to
-copy that data back to the remaining disk (where there used to be a
-perfectly good copy which was subsequently thrown away during the balance).
-
-In the end, I took the risk and the time of the two steps. In my case, I
-had good backups, and actually most of my data was still in a single
-profile on the old disk (because the errors starting happening before I
-had done the balance to change the profile of all the old data from
-single to raid1).
-
-But a balance -dconvert=single-but-force-it-to-go-on-disk-1 would have
-been useful. (Actually a "btrfs device mark-for-removal" command would
-be better - allow a failing device to be retained for a while, and used
-to provide data, but ignore it when looking to store data).
-
-Graham
+<split>
