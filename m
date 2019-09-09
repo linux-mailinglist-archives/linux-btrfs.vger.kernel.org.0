@@ -2,33 +2,34 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB36CAE175
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 01:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9854AE178
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 01:25:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389897AbfIIXW2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 19:22:28 -0400
-Received: from mout.gmx.net ([212.227.17.21]:57705 "EHLO mout.gmx.net"
+        id S2389957AbfIIXZm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 19:25:42 -0400
+Received: from mout.gmx.net ([212.227.17.21]:39921 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389827AbfIIXW2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 19:22:28 -0400
+        id S1730138AbfIIXZm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 19:25:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1568071342;
-        bh=arUJvIcKnIwsa0Pcg0Yii1f1unOqGWehmk05O+wMf9E=;
+        s=badeba3b8450; t=1568071492;
+        bh=WYhRzM3pwcKAg3U0xfyEybh6EsjrqJIskyjmtl9pUSc=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=BHNcvX8/1N/WC3M2ztM7N9fp6+86x2KwbtT+I0Up2i35eQF0z7kolwbpybsf7JVtn
-         lmIMz09daMvDXDKbmC9bFHZSCoep1zDPgIYcWJgA7v8bnWEZ4S1PsegfkyI0ZTvOpS
-         W3xxa0717noEoaH5AWkmwFtgIg+23O0s9WM87Kz8=
+        b=Th6alO4c2yM4NoPqBj4pl4z3DThzR5bTeRV6oRVqP7hfWIBN1HOHdSHu84aW2ALTM
+         2caU8Y9iR8XkqdTESj5jS+uSUZDAmEeID7Ypb9IDG4Puq+mHXFufBBY2GOTDbvdbdj
+         VnQEcaSi7io4z/fQbx5h366c5WdZX0dHbgu+FXEE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx102
- [212.227.17.174]) with ESMTPSA (Nemesis) id 0Ls7MZ-1iGu9K0moJ-013x2k; Tue, 10
- Sep 2019 01:22:21 +0200
-Subject: Re: [PATCH v2 6/6] btrfs-progs: tests/fsck: Add new images for inode
- mode repair functionality
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190905075800.1633-1-wqu@suse.com>
- <20190905075800.1633-7-wqu@suse.com>
- <9c772db6-74e2-6760-54bc-18b09294dc30@suse.com>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MDysm-1hxb8a060C-009v1I; Tue, 10
+ Sep 2019 01:24:52 +0200
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+To:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        zedlryqc@server53.web-hosting.com, linux-btrfs@vger.kernel.org
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+ <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,75 +55,150 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <b72730b8-b658-51ee-3d4d-3b2aec7be8d8@gmx.com>
-Date:   Tue, 10 Sep 2019 07:22:17 +0800
+Message-ID: <e6712117-f002-b7d8-6a5e-9e5735f04090@gmx.com>
+Date:   Tue, 10 Sep 2019 07:24:47 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.0
 MIME-Version: 1.0
-In-Reply-To: <9c772db6-74e2-6760-54bc-18b09294dc30@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:2BmlQyVrbTnArGvI45Dl/MFFmnko5/7epAiylqrQH5q9axwbTX9
- fk1vw346/uQG4naTS52gByCQEw2qrLqPcXok6RXhqmvgUcs7YDHbZmtLtwx9vMVihJbRRpb
- SuKcLvqSKxVXEPreKB5G/KMEmMSSiUKlNVqbbnKCitipnU9UYHyp5EkSHEiizcrfePD8Ycs
- un4DYsHSb2lzyJawyEl1A==
+In-Reply-To: <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="bOIiqhmpfGARxY7ZDwEKQlojWKGotdSn3"
+X-Provags-ID: V03:K1:JCi3BxJHgWV4DJSxiKrObjw37+XGILGVBDvH0RnfuxYlWvOro7t
+ YJgIdwekV/LNQKrspvDplO1WInwwuGe9vLN3UhygG4Rqsi335Dpmbh2eDwRDy9MDjlhy6aL
+ h3qk+UEKREX6lnrV9P3aUEUpev1ZoUxwmuquVsvEITypkR/RWz6YAZl/GC5VyHCSY+Q0Rdy
+ Wdobs5hO+4ptGT9A8mXLQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XW5Y+GxclXY=:XkOfP6+tVfiG6J3NNIs5BH
- wbLbqHzX/8CGYx0Gq2m97nzep41FT6R88Uz7LJSXs5rwOV4SQ+Ww4G4TZcm6qTMLu6gV6ZvxK
- XDVCTvGfpKu+B0qQ/jdfczatC6Vvk2oyVAFCJKKB5eM7JSBvJDc+6sq4CKfk1R0e/JOmpZn5A
- zki14hOlh5XX2Oeex8s+H3moBqpS5/0F22tS/ey3H1F+KBhdLjPr8SQIBt6BaGkTrXv63Y4ww
- 6DDlRgF/ShyUH/AnIFcNXe/4f9j7/42QcDdpA3Foc/T7mBuS+rcFSFGoIvIeS2gKBptmR0jVZ
- TTcPmItCIFLRg33sbIT1kq55ku4/Ox2wQNmaeOej+/mFC6l7AM3BZAmEqSHtkFs2LGOtHaOHl
- GvBAd+PdiIwFfwhcx38ZVZWYZn0Xa8Tv69srJYwo/EY7po6Z1Nzge4OXbhQMo/AvTxd/OClj1
- HctLWax3IJ5j+NM05O1sOaOvo5XZ9dRswPBcvgICbsnXZ1lvgwPrSIQ/CdexRuTCMRFPliUe+
- 2IJw5jD0mU+B7jAEp/9B4a5dUth+QRfX7E/LZvt6s7Sr8zgQoGkUcodCZw469PQNIp4XFFBdg
- QL2xeJOKxPSFohiAYiabvEXKvh5g5EqPXZCXQP1DFQ5bM/R/LxSFR1ddFrKZWQ2ZzggsQUxOA
- fKtNb6uHBlDQ7KzHmZACFJG9MQxfNvXHvrbaS0SXrLaW0QjMtXSRlSBbDZwTnjVjCb0YI3yn7
- 1V14CDcgl2eOjXKMkaK9w96kW6PY08WPW62+2pKEGA7yDmhjUWhxxPPldM3B+IqOHgjn98J8E
- mHalWlMcPBn8Jvj7cPYABwvB0UsbvzV/lIgPgdxPTw+c2NYiL0O3uj/Q3/Yp2zdnN6fbnJVql
- n3kdSNJf6eGydidPSThhk//WvIL9/TfFFsYQH/dskIR2YXdH5s8gJYWsr0nAyYadyb09U2XHz
- uTTUwlBdBAKA/L6tOQN7HI02mdPibtT6NlNnHlBiHedq8zHOybCKpPE0Fx+OURhkQOAz+v0DH
- cFU372jFx311KIttPMVpTIyDetHItDs9hKFj5jtARzO4FoINazqAV7M5X9Z+/XOyWHGxeItjT
- 5N4oZW5mab5bLmukMjrwzvGOp0iGvIItv8R6SyPFVWtLoh5xxgZL6RZRoSzzivTBrC5vdxZ8b
- LR0mcPUIqdlijmD+tj11DfEn/wO3OVpD/55H9ZzHGU78oUtRWLyfHc2zT01z3+7I+O6r65qzd
- myvvHEcoLyUiFA0qt
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2rmpxZu2MYw=:Rg4poXfqBP2+OPIYsq6o5m
+ zQW9X//SRh42/LqVAVHCEKXczDQB0S7c7bLeqBcNVbSs/FBM1IvANxQA7gb8m/NM7hQIik2pa
+ 240T118RiI5vJrIceEgtSq5s6er9+OyWGt5jM79uLREJiewxlMCTyZH02j/6VTHlWjiggYc1p
+ 1DVVKbgJEXzAgfdS0aYoi6IMUGb1lu8MmNpBVIcP74j1fh0vjlzoC2X/dHN1Q8z/8CDzO4b3r
+ 4Fuvn5rJU4o/ietV48SOda0+/PQrbkf5P3Ty8bd1XHdLl5MltUmfXdgM5Pw1yEOZmSqeufSlo
+ oRbiTEsKZSwqKhIz6cSLdZqzdkhRezgVJxsGCGC2OLm0332NuSK0XpgV6jkhcFmXOmFXsHQwv
+ moZ+8pI8nzmuh0L6m2cb+0eRP+12dcRcGUjJCGY0MUll0f5Nu8uVtzeub5voMz6fFtb6U7SqN
+ j9b9j6hN0SVARgEirzRlUvndcOBVPUnHX7wpulZ/awqXQw5uOs2F5eoR+zxHT0EePC6m+GIJ3
+ osRgugD1PcOCHNvFJOQduK0LrZQxkT22pKdYbZqAE0wFA6Ft1PNFLN82OHYrnwIJvlClTzbSa
+ U5smU4FA++dnRW/DNBtGAUatnq07WiBcR/v7YPYnEFv22L3Ft9roUKwB5TM3pFKixXZoIxRha
+ LJIEEGCmcWRNNSjiTfrsJhSybTkkRDU+X7ksj/c93tX/VS5RO5x8hwn9hijAIzKBoKyXH2gKR
+ 1Iax614TBEvtWnpcptmORiJgoyCfP1gdjauW9KTBlB0pwLB6GblbKHSadBFxnrkf8GZy5EO8W
+ H7a7Q1LGLqTSGKqa25ZDJRT8eyKDHUgXvTfTa/UtXGEwzxpQL652v8ya0n7aA7UCS6TP0OeWQ
+ GrqY+9LXGOA1IeX1DxTeVJwZeBJS2HCnBFycVaCBJ+S/WVW3PdMOwfnNqT2S0EQaszThOsxIZ
+ nTYmBVvG1LKOiKc5bCgtt9lLy4Ub6EjfNO37CK7qM1EZDGdLj3ODiGwWpp9YxAV/A5L3dLYzo
+ 8v0qCj4Vk0brB91oJoykXrj0uLDjigKZV7ecilCveqfQCSyvtlO0AszpmUST2qWljZroB+/U5
+ RsjJo7+MC7MCyb6rm9bkUFjplAqJqoV2FYX9yTWlKO7c9jd84peEaDQqJtYYT9oFq4rJJlUuO
+ joO+gLHKOuCN6tcF1DjYffGNtZ/dP+vXa78EwA38XdHffiNhGF+fCfb793MbOZegmT4OnfIbR
+ AjOD/YYN09MFnEKaI
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--bOIiqhmpfGARxY7ZDwEKQlojWKGotdSn3
+Content-Type: multipart/mixed; boundary="B2m9z4sjgsloo25tJJcPkZ8dgd3oRtcv6"
+
+--B2m9z4sjgsloo25tJJcPkZ8dgd3oRtcv6
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2019/9/9 =E4=B8=8B=E5=8D=8811:37, Nikolay Borisov wrote:
->
->
-> On 5.09.19 =D0=B3. 10:58 =D1=87., Qu Wenruo wrote:
->> Add new test image for imode repair in subvolume trees.
+
+On 2019/9/9 =E4=B8=8B=E5=8D=8811:29, Graham Cobb wrote:
+> On 09/09/2019 13:18, Qu Wenruo wrote:
 >>
->> Also rename the existing test case 039-bad-free-space-cache-inode-mode
->> to 039-bad-inode-mode, since now we can fix all bad imode.
 >>
->> And add the beacon file for lowmem test.
+>> On 2019/9/9 =E4=B8=8B=E5=8D=887:25, zedlryqc@server53.web-hosting.com =
+wrote:
+>>> What I am complaining about is that at one point in time, after issui=
+ng
+>>> the command:
+>>> =C2=A0=C2=A0=C2=A0=C2=A0btrfs balance start -dconvert=3Dsingle -mconv=
+ert=3Dsingle
+>>> and before issuing the 'btrfs delete', the system could be in a too
+>>> fragile state, with extents unnecesarily spread out over two drives,
+>>> which is both a completely unnecessary operation, and it also seems t=
+o
+>>> me that it could be dangerous in some situations involving potentiall=
+y
+>>> malfunctioning drives.
 >>
->
-> What kind of corruption does the image have?
+>> In that case, you just need to replace that malfunctioning device othe=
+r
+>> than fall back to SINGLE.
+>=20
+> Actually, this case is the (only) one of the three that I think would b=
+e
+> very useful (backup is better handled by having a choice of userspace
+> tools to choose from - I use btrbk - and does anyone really care about
+> defrag any more?).
+>=20
+> I did, recently, have a case where I had started to move my main data
+> disk to a raid1 setup but my new disk started reporting errors. I didn'=
+t
+> have a spare disk (and didn't have a spare SCSI slot for another disk
+> anyway). So, I wanted to stop using the new disk and revert to my forme=
+r
+> (m=3Ddup, d=3Dsingle) setup as quickly as possible.
+>=20
+> I spent time trying to find a way to do that balance without risking th=
+e
+> single copy of some of the data being stored on the failing disk betwee=
+n
+> starting the balance and completing the remove. That has two problems:
+> obviously having the single copy on the failing disk is bad news but,
+> also, it increases the time taken for the subsequent remove which has t=
+o
+> copy that data back to the remaining disk (where there used to be a
+> perfectly good copy which was subsequently thrown away during the balan=
+ce).
+>=20
+> In the end, I took the risk and the time of the two steps. In my case, =
+I
+> had good backups, and actually most of my data was still in a single
+> profile on the old disk (because the errors starting happening before I=
 
-Just bad imode, all 0.
+> had done the balance to change the profile of all the old data from
+> single to raid1).
+>=20
+> But a balance -dconvert=3Dsingle-but-force-it-to-go-on-disk-1 would hav=
+e
+> been useful. (Actually a "btrfs device mark-for-removal" command would
+> be better - allow a failing device to be retained for a while, and used=
 
-> Ideally it should have
-> cases where both DIR_ITEM and DIR_INDEX is used. As well as DIR_ITEM
-> containing collisions.
+> to provide data, but ignore it when looking to store data).
 
-Yes, that's the best case, but in that case, we will have more failure
-modes, e.g. we need to repair that missing DIR_ITEM before we use
-DIR_INDEX to regenerate the filetype.
+Indeed, it makes sense.
 
-So I'm just sticking to one test image for one corruption.
+It would be some user-defined chunk allocation behavior, in that case,
+we need to double think about the interface first.
+
+BTW, have you tried to mark the malfunctioning disk RO and mount it?
 
 Thanks,
 Qu
+>=20
+> Graham
+>=20
 
->
-> <split>
->
+
+--B2m9z4sjgsloo25tJJcPkZ8dgd3oRtcv6--
+
+--bOIiqhmpfGARxY7ZDwEKQlojWKGotdSn3
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl123z8ACgkQwj2R86El
+/qhG3wf/ZxAj7wS0GeOHBdXeLUTdmwyyVHY1zr9dDiB7epylNU5TiElN5RTLH7dJ
+J4rlYUvj1aFwIFYQ63a7MfB7mFBmpSS8h+MhcRgf8MmyDr7g2fDFBLDeD1bRA3vV
+oW+3wTEY7HfA6MGS1DTprbFYVYS8Oga95ZxRecvUGHSgO9wPV6TqDraowuNpr3kY
+stbIn8ALnozfVFiye9Lm5S3TvGyjtYQ4rnR9NA6iWmyVjzbaGRgmbsIwngBH5Nz/
+4usaIw+TEaaAkcgX6ZeI7jvXgibo08jn0beLxTeEIgwO2BHjPWeHPpU5J7RRuL4A
+lVB20LFl+72mzFqDGNsP5tZnN+HVOw==
+=9lqT
+-----END PGP SIGNATURE-----
+
+--bOIiqhmpfGARxY7ZDwEKQlojWKGotdSn3--
