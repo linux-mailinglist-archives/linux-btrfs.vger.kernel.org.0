@@ -2,26 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 15794AD80F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 13:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05EBAAD8B5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 14:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404163AbfIILka (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 07:40:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50626 "EHLO mx1.suse.de"
+        id S2404804AbfIIMQV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 08:16:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40576 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729627AbfIILka (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 07:40:30 -0400
+        id S1727476AbfIIMQV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 08:16:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 121A2B628;
-        Mon,  9 Sep 2019 11:40:28 +0000 (UTC)
-Subject: Re: [PATCH] btrfs-progs: drop unique uuid test for btrfstune -M
-To:     Anand Jain <anand.jain@oracle.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190906005025.2678-1-anand.jain@oracle.com>
- <f3d33e1d-803e-34a5-4dfa-7eeceec6177c@suse.com>
- <232bccd3-3623-8ee9-18db-98edf7cd2e25@oracle.com>
+        by mx1.suse.de (Postfix) with ESMTP id E3CBBAD29;
+        Mon,  9 Sep 2019 12:16:19 +0000 (UTC)
+Subject: Re: [PATCH] btrfs-progs: mkfs: fix xattr enumeration
+To:     Vladimir Panteleev <git@vladimir.panteleev.md>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <20190906095846.30592-1-git@vladimir.panteleev.md>
+ <d8d7aef1-0d28-127e-ea5d-9ad1623afde7@suse.com>
+ <CAHhfkvyj6=aK2Jv8nXBFKnLhH7fgGfjhG-DVi6_Dmt2K6F1pDg@mail.gmail.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -66,12 +65,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <673ba386-debc-96e9-311e-4c3c0abd89d0@suse.com>
-Date:   Mon, 9 Sep 2019 14:40:26 +0300
+Message-ID: <84e6b0ed-6b02-37a9-ea0d-39d0e77e9de0@suse.com>
+Date:   Mon, 9 Sep 2019 15:16:18 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <232bccd3-3623-8ee9-18db-98edf7cd2e25@oracle.com>
+In-Reply-To: <CAHhfkvyj6=aK2Jv8nXBFKnLhH7fgGfjhG-DVi6_Dmt2K6F1pDg@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,33 +81,35 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 6.09.19 г. 12:27 ч., Anand Jain wrote:
+On 9.09.19 г. 14:32 ч., Vladimir Panteleev wrote:
+> Hi Nikolay,
 > 
-> <snip>
+> Unfortunately, as I mentioned in the issue, I have also been unable to
+> reproduce this issue locally.
 > 
->> This is intended. Otherwise it's an open avenue for the user to shoot
->> themselves in the foot.
+> Please see here:
+> https://github.com/kdave/btrfs-progs/issues/194
 > 
->  I don't understand how?
+> The reporter tested the patch and confirmed that it worked.
+> Additionally, they have provided strace output which appears to
+> confirm that the bug description in the patch commit message indeed
+> corresponds to the behavior they are observing on their machine.
 > 
->> If you know what you are doing and are
->> absolutely sure the original fs is no longer present - then just flush
->> libblkid cache and you'll be able to set the FSID back to the original
->> one.
->>
-> <snip>
-> 
->  No no its not about the stale cache holding the original fsid. The use
+> Perhaps the issue might be reproducible in an environment closer to
+> the reporter's (looks like some Fedora distro judging by the uname).
 
-Then this is worst. UUID, by definition, are Unique. What you want to is
-to toss the Unique part, meaning we'll really be left with some sort of
-ID. What's more - the UUID is used by libblkid to populate the available
-devices so not making it unique can cause subtle bugs.
 
->  case is - a golden copy of the bootable OS image is being used and
->  shares the same fsid on multiple hosts.
->  Now if you want to mount another copy it for some changes, you need to
->  btrfstune -m on the copy. And later if you want to boot it
->  successfully, it needs its original fsid back.
-> 
-> HTH, Anand
+
+Right, looking at the kernel portion listxattr just copies the attribute
+names into the passed user pointer. So if the data copied is less than
+XATTR_LIST_MAX then the data beyond the return value of llistxattr is
+undefined which could cause the described problem.
+
+
+I agree that your code is more correct as it handles data only in the
+range [0...ret].
+
+
+Consider this patch:
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
