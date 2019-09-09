@@ -2,117 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99434AD4DA
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 10:28:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA28AD7D2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 13:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388818AbfIII2N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 04:28:13 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:34661 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388756AbfIII2M (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Sep 2019 04:28:12 -0400
-Received: by mail-oi1-f182.google.com with SMTP id g128so9846155oib.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Sep 2019 01:28:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ajJLqri6wucyTkVUdz1/YNbVRy8tdPYBQ0qHFpGLMZ8=;
-        b=hyoJfk7P41ekvr/9a+zXqDTBDc30nKtZ4G3ni0Wh9jb8V1ntz9gdGsiCJE1fqKez1I
-         6RQkHTumMehJbM3iU7GdS4CYL71LhimQ/lKeBDwNwZXfF4HrMTI4jIzjdum683chXwUf
-         8Kp6YLpAM6tDK21niuA5FGuWqYlz/lhFSK/dGuSfKcQIhY1YmNvG5UuchvgKs4ad2UHJ
-         mQrYkGS7Y51YlVjaY4Hye8lYp0cXVLTNgwWCjPpx0YIKjQKMzaOqtJYYXgRd2/D2f6FZ
-         vNAf6RJfpJdVwgXQhKzXHkxgVh/y0C/FWXMdS3eRpUql5vQDS/y4KP5a/AJJkO8GYOVS
-         qJuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ajJLqri6wucyTkVUdz1/YNbVRy8tdPYBQ0qHFpGLMZ8=;
-        b=nWq7ZOGrs3SoWzIgmNMw8YqcokfXPBvbObKW/7cwGwgWc3ywdmfA++3tD74XfLtfvg
-         9nzMUT+NWEEls2cNjzoYOnawn32kr7jY/pLpvr6LvTwk80qTykBNYgHbgfBDCpKB+ovC
-         ugjVLDXoHGkAj3s/qoCTzncA8uwE87Nv2naium4h8VQ0KkC5ngBlELSuctplnQfYY+3R
-         yHJF9ExpGRFeZx3qML46l/NUyMn5YNkTkDRqRPCyyxLjD3bMOSNMv9tSCSf6F2QdLq6i
-         9py/Fy337NurjhPqEER6dXQZF6RMLbCEUEW3aUF/MNz/jsqxdjuQzX4vblKx0MjWbS6M
-         vC6g==
-X-Gm-Message-State: APjAAAW2ctlpc2PwUTV5f5BUPYeLpjVKxKvj0++Ba/Acmb9fpOIOodA+
-        iI0QBMZgmpY6RnhU8MbQQRsWZbwB0iHUWuecprYTeoyD
-X-Google-Smtp-Source: APXvYqxJUKf4MkxyaUHCJZo1CtgIdr/WQic1Nr2Tj+w3Bgg/Z+j5Etv45tWDOmYFOjJravcEm1qeN0QoSvC5bzHz5zM=
-X-Received: by 2002:aca:b1c1:: with SMTP id a184mr15573919oif.2.1568017691920;
- Mon, 09 Sep 2019 01:28:11 -0700 (PDT)
+        id S1729915AbfIILWd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 07:22:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43962 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729339AbfIILWd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 07:22:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 675AFABB2;
+        Mon,  9 Sep 2019 11:22:31 +0000 (UTC)
+Subject: Re: [PATCH] btrfs-progs: mkfs: fix xattr enumeration
+To:     Vladimir Panteleev <git@vladimir.panteleev.md>,
+        linux-btrfs@vger.kernel.org
+References: <20190906095846.30592-1-git@vladimir.panteleev.md>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <d8d7aef1-0d28-127e-ea5d-9ad1623afde7@suse.com>
+Date:   Mon, 9 Sep 2019 14:22:29 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <eda2fb2a-c657-5e4a-8d08-1bf57b57dd3b@petezilla.co.uk>
-In-Reply-To: <eda2fb2a-c657-5e4a-8d08-1bf57b57dd3b@petezilla.co.uk>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Date:   Mon, 9 Sep 2019 11:28:00 +0300
-Message-ID: <CAA91j0W1V0oRTKNy8BYDBbUbZEfbTZaxpqQnUm2tZBGxV1nV+Q@mail.gmail.com>
-Subject: Re: Balance conversion to metadata RAID1, data RAID1 leaves some
- metadata as DUP
-To:     Pete <pete@petezilla.co.uk>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20190906095846.30592-1-git@vladimir.panteleev.md>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 9, 2019 at 11:03 AM Pete <pete@petezilla.co.uk> wrote:
->
-> I recently recovered created a fresh filesystem on one disk and
-> recovered from backups with data as SINGLE and metadata as DUP.  I added
-> a second disk yesterday and ran a balance with -dconvert=raid1
-> -mconvert=raid1.  I did reboot during the process for a couple of
-> reasons, putting the sides on the PC case, putting it back under the
-> desk and I updated the kernel from 5.3.9 to 5.2.13 at some point during
-> this process. Balance resumed as one would expect.  Balance has now
-> completed:
->
-> root@phoenix:~# btrfs balance status /home_data
-> No balance found on '/home_data'
->
-> However, some metadata remains as DUP which does not seem right:
->
-> root@phoenix:~# btrfs fi usage  /home_data/
-> Overall:
->     Device size:                  10.92TiB
->     Device allocated:              4.69TiB
->     Device unallocated:            6.23TiB
->     Device missing:                  0.00B
->     Used:                          4.61TiB
->     Free (estimated):              3.15TiB      (min: 3.15TiB)
->     Data ratio:                       2.00
->     Metadata ratio:                   2.00
->     Global reserve:              512.00MiB      (used: 0.00B)
->
-> Data,RAID1: Size:2.34TiB, Used:2.30TiB
->    /dev/mapper/data_disk_ESFH      2.34TiB
->    /dev/mapper/data_disk_EVPC      2.34TiB
->
-> Metadata,RAID1: Size:7.00GiB, Used:4.48GiB
->    /dev/mapper/data_disk_ESFH      7.00GiB
->    /dev/mapper/data_disk_EVPC      7.00GiB
->
-> Metadata,DUP: Size:1.00GiB, Used:257.22MiB
->    /dev/mapper/data_disk_ESFH      2.00GiB
->
-> System,RAID1: Size:32.00MiB, Used:368.00KiB
->    /dev/mapper/data_disk_ESFH     32.00MiB
->    /dev/mapper/data_disk_EVPC     32.00MiB
->
-> Unallocated:
->    /dev/mapper/data_disk_ESFH      3.11TiB
->    /dev/mapper/data_disk_EVPC      3.11TiB
-> root@phoenix:~#
->
-> root@phoenix:~# btrfs --version
-> btrfs-progs v5.1
->
->
-> I presume running another balance will fix this, but surely all metadata
-> should have been converted?  Is there a way to only balance the DUP
-> metadata?
 
 
-btrfs balance start -m convert=raid1,soft
+On 6.09.19 г. 12:58 ч., Vladimir Panteleev wrote:
+> Use the return value of listxattr instead of tokenizing.
+> 
+> The end of the extended attribute list is indicated by the return
+> value, not an empty list item (two consecutive NULs). Using strtok
+> in this way thus sometimes caused add_xattr_item to reuse stack data
+> in xattr_list from the previous invocation, thus querying attributes
+> that are not actually in the file's xattr list.
+> 
+> Issue: #194
+> Signed-off-by: Vladimir Panteleev <git@vladimir.panteleev.md>
 
-should do it.
+Can you elaborate how to trigger this? I tried by creating a folder with
+2 files and set 5 xattr to the first file and 1 to the second. Then I
+run mkfs.btrfs -r /path/to/dir /dev/vdc and stepped through the code
+with gdb and didn't see any issues. Ideally I'd like to see a regression
+test for this issue.
+
+Your code looks correct.
+
+> ---
+>  mkfs/rootdir.c | 11 +++++------
+>  1 file changed, 5 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+> index 51411e02..c86159e7 100644
+> --- a/mkfs/rootdir.c
+> +++ b/mkfs/rootdir.c
+> @@ -228,10 +228,9 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
+>  	int ret;
+>  	int cur_name_len;
+>  	char xattr_list[XATTR_LIST_MAX];
+> +	char *xattr_list_end;
+>  	char *cur_name;
+>  	char cur_value[XATTR_SIZE_MAX];
+> -	char delimiter = '\0';
+> -	char *next_location = xattr_list;
+>  
+>  	ret = llistxattr(file_name, xattr_list, XATTR_LIST_MAX);
+>  	if (ret < 0) {
+> @@ -243,10 +242,10 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
+>  	if (ret == 0)
+>  		return ret;
+>  
+> -	cur_name = strtok(xattr_list, &delimiter);
+> -	while (cur_name != NULL) {
+> +	xattr_list_end = xattr_list + ret;
+> +	cur_name = xattr_list;
+> +	while (cur_name < xattr_list_end) {
+>  		cur_name_len = strlen(cur_name);
+> -		next_location += cur_name_len + 1;
+>  
+>  		ret = lgetxattr(file_name, cur_name, cur_value, XATTR_SIZE_MAX);
+>  		if (ret < 0) {
+> @@ -266,7 +265,7 @@ static int add_xattr_item(struct btrfs_trans_handle *trans,
+>  					file_name);
+>  		}
+>  
+> -		cur_name = strtok(next_location, &delimiter);
+> +		cur_name += cur_name_len + 1;
+>  	}
+>  
+>  	return ret;
+> 
