@@ -2,51 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 46E74ADD62
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 18:38:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07BB2ADDD3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 19:11:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728786AbfIIQib (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 12:38:31 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:52557 "EHLO
+        id S1728567AbfIIRLN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 13:11:13 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:55363 "EHLO
         server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727953AbfIIQia (ORCPT
+        by vger.kernel.org with ESMTP id S1727423AbfIIRLN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 12:38:30 -0400
+        Mon, 9 Sep 2019 13:11:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
-         s=default; h=MIME-Version:Content-Type:Reply-to:In-Reply-To:References:
-        Subject:To:From:Message-ID:Date:Sender:Cc:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=p+xfhS5zaiDw7FhVFE/bX+C04aiqGXDBEVjNn5zgzZo=; b=NbpFRyLRJ/9G9HVLrn2cDutIFe
-        NzpagFaEuQ/uIlYrAVNryboKt6GWM6anb67cA9znYdQ2ugEniZ7GAKfve8NnuWPnShJByZJx6ldJb
-        OGj5EbgQUzqt4JjMkga9wLI32aea9QQFszQb/LhytKV7w5SceqFDsPCtjW2Ek+To5eZEZdAhZYWZ+
-        N9NzMuvE+7gtvh2QGjFx41GH8azyjQUuvPs+UNBntGoy0CRqNwAtVTrWL2pLFskkSjP/tnKAstS0F
-        5FaHcnC9a2myc9Ae8s6GxQbGScg+yImU8xPe77Bl3wuvSMEdidQwykoVjHH3fkyMIkupVCfp6vsRm
-        SdVJ+xVQ==;
-Received: from [::1] (port=58904 helo=server53.web-hosting.com)
+         s=default; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Reply-to:
+        In-Reply-To:References:Subject:Cc:To:From:Message-ID:Date:Sender:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=fqQPcJ1LDJkMeAwhFwP+7abgWQ9XdVfN9t5nSXMjrUg=; b=5Fgt0VJG5JWoqVBdTsxjm1G19I
+        bbZKI2pS5D6jRPM7Du3aP0BOQBCnym9d0VyaKMtuRIokVy49ZYnOcVGu1KgUTgwpMO5ewJd8dpfkK
+        FVjLYZgM7z5jjK4xFW4OsUTwOLt7UpiSX+MpQGk09XYxVyyJjXtHDvDM7bAxKQnbhduy8iUvUI3rJ
+        gZDaARWwWHiPa3vglL90IaiCSZAEkFhtYcXnO24HLzW4vgulmxWUQcyLq21p7C05s8HpR+nPdF6ss
+        q+ExT0T7aahnQ5/HQmW+0zBas1tecCEB8eJp3E4a98Pa8HKQcttwtjhqJTWBPRWOUtsgESQ7dM4+1
+        BB0+5ipg==;
+Received: from [::1] (port=52040 helo=server53.web-hosting.com)
         by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <webmaster@zedlx.com>)
-        id 1i7MgE-001KhY-JJ
-        for linux-btrfs@vger.kernel.org; Mon, 09 Sep 2019 12:38:25 -0400
+        id 1i7NC0-001bR7-Gt
+        for linux-btrfs@vger.kernel.org; Mon, 09 Sep 2019 13:11:12 -0400
 Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Mon, 09 Sep 2019 12:38:18 -0400
-Date:   Mon, 09 Sep 2019 12:38:18 -0400
-Message-ID: <20190909123818.Horde.dbl-yi_cNi8aKDaW_QYXVij@server53.web-hosting.com>
+ (Horde Framework) with HTTPS; Mon, 09 Sep 2019 13:11:08 -0400
+Date:   Mon, 09 Sep 2019 13:11:08 -0400
+Message-ID: <20190909131108.Horde.64FzJYflQ6j0CbjYFLqBEz0@server53.web-hosting.com>
 From:   webmaster@zedlx.com
 To:     linux-btrfs@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: Feature requests: online backup - defrag - change RAID level
 References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
  <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
  <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
  <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
-In-Reply-To: <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <083a7b76-3c30-f311-1e23-606050cfc412@gmx.com>
+In-Reply-To: <083a7b76-3c30-f311-1e23-606050cfc412@gmx.com>
 Reply-to: webmaster@zedlx.com
 User-Agent: Horde Application Framework 5
 Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-OutGoing-Spam-Status: No, score=-1.0
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - server53.web-hosting.com
@@ -67,191 +70,114 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
 
->>>> 2) Sensible defrag
->>>> The defrag is currently a joke.
+> On 2019/9/9 下午8:18, Qu Wenruo wrote:
 >>
->> Maybe there are such cases, but I would say that a vast majority of
->> users (99,99%) in a vast majority of cases (99,99%) don't want the
->> defrag operation to reduce free disk space.
 >>
->>> What's wrong with current file based defrag?
->>> If you want to defrag a subvolume, just iterate through all files.
->>
->> I repeat: The defrag should not decrease free space. That's the 'normal'
->> expectation.
->
-> Since you're talking about btrfs, it's going to do CoW for metadata not
-> matter whatever, as long as you're going to change anything, btrfs will
-> cause extra space usage.
-> (Although the final result may not cause extra used disk space as freed
-> space is as large as newly allocated space, but to maintain CoW, newly
-> allocated space can't overlap with old data)
-
-It is OK for defrag to temporarily decrease free space while defrag  
-operation is in progress. That's normal.
-
-> Further more, talking about snapshots with space wasted by extent
-> booking, it's definitely possible user want to break the shared extents:
->
-> Subvol 257, inode 257 has the following file extents:
-> (257 EXTENT_DATA 0)
-> disk bytenr X len 16M
-> offset 0 num_bytes 4k  << Only 4k is referred in the whole 16M extent.
->
-> Subvol 258, inode 257 has the following file extents:
-> (257 EXTENT_DATA 0)
-> disk bytenr X len 16M
-> offset 0 num_bytes 4K  << Shared with that one in subv 257
-> (257 EXTENT_DATA 4K)
-> disk bytenr Y len 16M
-> offset 0 num_bytes 4K  << Similar case, only 4K of 16M is used.
->
-> In that case, user definitely want to defrag file in subvol 258, as if
-> that extent at bytenr Y can be freed, we can free up 16M, and allocate a
-> new 8K extent for subvol 258, ino 257.
-> (And will also want to defrag the extent in subvol 257 ino 257 too)
-
-You are confusing the actual defrag with a separate concern, let's  
-call it 'reserved space optimization'. It is about partially used  
-extents. The actual name 'reserved space optimization' doesn't matter,  
-I just made it up.
-
-'reserved space optimization' is usually performed as a part of the  
-defrag operation, but it doesn't have to be, as the actual defrag is  
-something separate.
-
-Yes, 'reserved space optimization' can break up extents.
-
-'reserved space optimization' can either decrease or increase the free  
-space. If the algorithm determines that more space should be reserved,  
-than free space will decrease. If the algorithm determines that less  
-space should be reserved, than free space will increase.
-
-The 'reserved space optimization' can be accomplished such that the  
-free space does not decrease, if such behavior is needed.
-
-Also, the defrag operation can join some extents. In my original example,
-the extents e33 and e34 can be fused into one.
-
-> That's why knowledge in btrfs tech details can make a difference.
-> Sometimes you may find some ideas are brilliant and why btrfs is not
-> implementing it, but if you understand btrfs to some extent, you will
-> know the answer by yourself.
-
-Yes, it is true, but what you are posting so far are all 'red  
-herring'-type arguments. It's just some irrelevant concerns, and you  
-just got me explaining thinks like I would to a little baby. I don't  
-know whether I stumbled on some rookie member of btrfs project, or you  
-are just lazy and you don't want to think or consider my proposals.
-
-When I post an explanation, please try to UNDERSTAND HOW IT CAN WORK,  
-fill in the missing gaps, because there are tons of them, because I  
-can't explain everything via three e-mail posts. Don't just come up  
-with some half-baked, forced, illogical reason why things are better  
-as they are.
-
->>>> - I think it would be wrong to use a general deduplication algorithm for
->>>> this. Instead, the information about the shared extents should be
->>>> analyzed given the starting state of the filesystem, and than the
->>>> algorithm should produce an optimal solution based on the currently
->>>> shared extents.
+>> On 2019/9/9 下午7:25, zedlryqc@server53.web-hosting.com wrote:
 >>>
->>> Please be more specific, like giving an example for it.
->>
->> Let's say that there is a file FFF with extents e11, e12, e13, e22, e23,
->> e33, e34
->> - in subvolA the file FFF consists of e11, e12, e13
->> - in subvolB the file FFF consists of e11, e22, e23
->> - in subvolC the file FFF consists of e11, e22, e33, e34
->>
->> After defrag, where 'selected subvolume' is subvolC, the extents are
->> ordered on disk as follows:
->>
->> e11,e22,e33,e34 - e23 - e12,e13
+>>> Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
+>>>>> 1) Full online backup (or copy, whatever you want to call it)
+>>>>> btrfs backup <filesystem name> <partition name> [-f]
+>>>>> - backups a btrfs filesystem given by <filesystem name> to a partition
+>>>>> <partition name> (with all subvolumes).
+>>>>
+>>>> Why not just btrfs send?
+>>>>
+>>>> Or you want to keep the whole subvolume structures/layout?
+>>>
+>>> Yes, I want to keep the whole subvolume structures/layout. I want to
+>>> keep everything. Usually, when I want to backup a partition, I want to
+>>> keep everything, and I suppose most other people have a similar idea.
+>>>
+>>>> I'd say current send/receive is more flex.
+>>>
+>>> Um, 'flexibility' has nothing to do with it. Send/receive is a
+>>> completely different use case.
+>>> So, each one has some benefits and some drawbacks, but 'send/receive'
+>>> cannot replace 'full online backup'
+>>>
+>>> Here is where send/receive is lacking:
+>>>     - too complicated to do if many subvolumes are involved
+>>>     - may require recursive subvolume enumeration in order to emulate
+>>> 'full online backup'
+>>>     - may require extra storage space
+>>>     - is not mountable, not easy to browse the backup contents
+>>>     - not easy to recover just a few selected files from backup
+>>> There's probably more things where send/receive is lacking, but I think
+>>> I have given sufficient number of important differences which show that
+>>> send/receive cannot successfully replace the functionality of 'full
+>>> online backup'.
 >
-> Inode FFF in different subvolumes are different inodes. They have no
-> knowledge of other inodes in other subvolumes.
-
-You can easily notice that, if necessary, the defrag algorithm can  
-work without this knowledge, that is, without knowledge of other  
-versions of FFF.
-
-This time I'm leaving it to you to figure out how.
-
-Another red herring.
-
-> If FFF in subvol C is e11, e22, e33, e34, then that's it.
-> I didn't see the point still.
-
-Now I need to explain like I would to a baby.
-
-If the extents e11, e22, e33, e34 are stored in neighbouring sectors,  
-then the disk data reads are faster because they become sequential, as  
-opposed to spread out.
-
-So, while the file FFF in subvolC still has 4 extents like it had  
-before defrag, reading of those 4 extents is much faster than before  
-because the read can be sequential.
-
-So, the defrag can actually be performed without fusing any extents.  
-It would still have a noticeable performance benefit.
-
-As I have already said, the defrag operation can join(fuse) some  
-extents. In my original example,
-the extents e33 and e34 can be fused into one.
-
-> And what's the on-disk bytenr of all these extents? Which has larger
-> bytenr and length?
-
-For the sake of simplicity, let's say that all the extents in the  
-example have equal length (so, you can choose ANY size), and are fully  
-used.
-
-> Please provide a better description like xfs_io -c "fiemap -v" output
-> before and after.
-
-No. My example is simple and clear. Nit-picking, like this you are  
-doing, is not helpful. Concentrate, think, try to figure it out.
-
->>> That's a shortcut for chunk profile change.
->>> My first idea of this is, it could cause more problem than benefit.
->>> (It only benefits profile downgrade, thus only makes sense for
->>> RAID1->SINGLE, DUP->SINGLE, and RAID10->RAID0, nothing else)
->>
->> Those listed cases are exactly the ones I judge to be most important.
->> Three important cases.
+> Forgot to mention this part.
 >
-> I'd argue it's downgrade, not that important. As most users want to
-> replace the missing/bad device and maintain the raid profile.
+> If your primary objective is to migrate your data to another device
+> online (mounted, without unmount any of the fs).
+
+This is not the primary objective. The primary objective is to produce  
+a full, online, easy-to-use, robust backup. But let's say we need to  
+do migration...
 >
->> What I am complaining about is that at one point in time, after issuing
->> the command:
->>     btrfs balance start -dconvert=single -mconvert=single
->> and before issuing the 'btrfs delete', the system could be in a too
->> fragile state, with extents unnecesarily spread out over two drives,
->> which is both a completely unnecessary operation, and it also seems to
->> me that it could be dangerous in some situations involving potentially
->> malfunctioning drives.
->
-> In that case, you just need to replace that malfunctioning device other
-> than fall back to SINGLE.
+> Then I could say, you can still add a new device, then remove the old
+> device to do that.
 
-You are assuming that user has the time and money to replace the  
-malfunctioning drive. In A LOT of cases, this is not true.
+If the source filesystem already uses RAID1, then, yes, you could do  
+it, but it would be too slow, it would need a lot of user  
+intervention, so many commands typed, so many ways to do it wrong, to  
+make a mistake.
 
-What if the drive is failing, but the user has some important work to  
-do finish.
-He has a presentation to perform. He doesn't want the presentation to  
-be interrupted by a failing disk drive.
+Too cumbersome. Too wastefull of time and resources.
 
-What if the user doesn't have any spare SATA cables on hand?
+> That would be even more efficient than LVM (not thin provisioned one),
+> as we only move used space.
 
-What if user doesn't have any space space in the case? What if it is a  
-laptop computer?
+In fact, you can do this kind of full-online-backup with the help of  
+mdadm RAID, or some other RAID solution. It can already be done, no  
+need to add 'btrfs backup'.
 
-While a user might want to maintain a RAID1 long-term, in the short  
-term he might want to perform a downgrade.
+But, again, to cumbersome, too inflexible, too many problems, and, the  
+user would have to setup a downgraded mdadm RAID in front and run with  
+a degraded mdadm RAID all the time (since btrfs RAID would be actually  
+protecting the data).
 
+> If your objective is to create a full copy as backup, then I'd say my
+> new patchset of btrfs-image data dump may be your best choice.
 
+It should be mountable. It should be performed online. Never heard of  
+btrfs-image, i need the docs to see whether this btrfs-image is good  
+enough.
+
+> The only down side is, you need to at least mount the source fs to RO mode.
+
+No. That's not really an online backup. Not good enough.
+
+> The true on-line backup is not that easy, especially any write can screw
+> up your backup process, so it must be done unmounted.
+
+Nope, I disagree.
+
+First, there is the RAID1-alike solution, which is easy to perform  
+(just send all new writes to both source and destination). It's the  
+same thing that mdadm RAID1 would do (like I mentioned a few  
+paragraphs above).
+But, this solution may have a performance concern, when the  
+destination drive is too slow.
+
+Fortunately, with btrfs, an online backup is easier tha usual. To  
+produce a frozen snapshot of the entire filesystem, just create a  
+read-only snapshot of every subvolume (this is not 100% consistent, I  
+know, but it is good enough).
+
+But I'm just repeating myself, I already wrote this in the first email.
+
+So, in conclusion I disagree that true on-line backup is not easy.
+
+> Even btrfs send handles this by forcing the source subvolume to be RO,
+> so I can't find an easy solution to address that.
+
+This is a digression, but I would say that you first make a temporary  
+RO snapshot of the source subvolume, then use 'btrfs send' on the  
+temporary snapshot, then delete the temporary snapshot.
+
+Oh, my.
 
 
