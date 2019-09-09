@@ -2,56 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 844A1AD4BC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 10:22:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99434AD4DA
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Sep 2019 10:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726946AbfIIIW3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 04:22:29 -0400
-Received: from mail-io1-f48.google.com ([209.85.166.48]:34849 "EHLO
-        mail-io1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726217AbfIIIW3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Sep 2019 04:22:29 -0400
-Received: by mail-io1-f48.google.com with SMTP id f4so25979865ion.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Sep 2019 01:22:27 -0700 (PDT)
+        id S2388818AbfIII2N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 04:28:13 -0400
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:34661 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388756AbfIII2M (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 9 Sep 2019 04:28:12 -0400
+Received: by mail-oi1-f182.google.com with SMTP id g128so9846155oib.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Sep 2019 01:28:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=constantinescu-eu.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=TaQUe1uKTL7eSgRtUhFVV1GBJ6s6+ZAfjU5ORA+p20c=;
-        b=sbk76K84aIRo+o8GK1m/89zNNdtagla0Ne+rWpQqJZINM3PHlH/ZdAPA+Rr2XBrL+1
-         GYeabG1UncXG+IwLUzBKXRJI6p3IzV/vw15zZI6jmctg50dIGjhHXaP8RzqXUkwORxGG
-         92ZfM+SgWTMHrIDlQmOsHXfld3m8GB7wi2Ees5JtV/+9d7t+m8xHd9rn+kSriiC0G72+
-         5IOsMl69NQR/s/rcM8tJRmWUHBIyb+OhkG1uebo6nHGoJma2RYjz30UOebjvYuK7Cec8
-         sLr2hr5lXVJNyNYwnY+nDKPed3cxDnPFLavhpDhm+sWMsCY7DBbxhE0kFFs8t4Vfiz35
-         8YeQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ajJLqri6wucyTkVUdz1/YNbVRy8tdPYBQ0qHFpGLMZ8=;
+        b=hyoJfk7P41ekvr/9a+zXqDTBDc30nKtZ4G3ni0Wh9jb8V1ntz9gdGsiCJE1fqKez1I
+         6RQkHTumMehJbM3iU7GdS4CYL71LhimQ/lKeBDwNwZXfF4HrMTI4jIzjdum683chXwUf
+         8Kp6YLpAM6tDK21niuA5FGuWqYlz/lhFSK/dGuSfKcQIhY1YmNvG5UuchvgKs4ad2UHJ
+         mQrYkGS7Y51YlVjaY4Hye8lYp0cXVLTNgwWCjPpx0YIKjQKMzaOqtJYYXgRd2/D2f6FZ
+         vNAf6RJfpJdVwgXQhKzXHkxgVh/y0C/FWXMdS3eRpUql5vQDS/y4KP5a/AJJkO8GYOVS
+         qJuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=TaQUe1uKTL7eSgRtUhFVV1GBJ6s6+ZAfjU5ORA+p20c=;
-        b=lm9325jNNke5SrzsFkas5cdQ1Rt/DkPT3kLM1sJyxWJizu3DTJg9sYbBAvOxDZ1SSC
-         G4ByrbejjN9kaSJIkWnf9YK5sM61tamiuTFS33bdFtBi9DTsXfmnSKlTP/OdiWaJQ7du
-         yHYjNYzbXIgqeMbo9LO5490RaD9iTb7e9r0lQmjU2TH95h2K/yflYNguLolQDUgjX1A+
-         tLmWR5zA6uKmPgBjnjqsALOvR199JmFRnYDNvRQn1t/lqTD2g7H8g56KBDPGpYmV83WZ
-         vjvfjAiwpX0RHtWequgWMLr0oP9I6+MEM/0M4dvXnruu56osj9bqvxOpetMz5kWR2Y7D
-         Bw0w==
-X-Gm-Message-State: APjAAAXOMZG2dq0VIi8RFhu9xQAp2GDukxTTobv/tqsAau+kJD9YP/M3
-        sRXVk2aZi3VYJWgoa0BE1cVV8WCG6jl67xdKOYstXdYrbzMoLA==
-X-Google-Smtp-Source: APXvYqzC+Xbld21RIPYozHZQrr+zgjOqHuOQWJ0DfDmkI5ysMNRlfMsvz8RmjlY+Iy2enNwrY3BqvnmYNzUkHS3MZ7M=
-X-Received: by 2002:a02:5dca:: with SMTP id w193mr11641187jaa.94.1568017345642;
- Mon, 09 Sep 2019 01:22:25 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ajJLqri6wucyTkVUdz1/YNbVRy8tdPYBQ0qHFpGLMZ8=;
+        b=nWq7ZOGrs3SoWzIgmNMw8YqcokfXPBvbObKW/7cwGwgWc3ywdmfA++3tD74XfLtfvg
+         9nzMUT+NWEEls2cNjzoYOnawn32kr7jY/pLpvr6LvTwk80qTykBNYgHbgfBDCpKB+ovC
+         ugjVLDXoHGkAj3s/qoCTzncA8uwE87Nv2naium4h8VQ0KkC5ngBlELSuctplnQfYY+3R
+         yHJF9ExpGRFeZx3qML46l/NUyMn5YNkTkDRqRPCyyxLjD3bMOSNMv9tSCSf6F2QdLq6i
+         9py/Fy337NurjhPqEER6dXQZF6RMLbCEUEW3aUF/MNz/jsqxdjuQzX4vblKx0MjWbS6M
+         vC6g==
+X-Gm-Message-State: APjAAAW2ctlpc2PwUTV5f5BUPYeLpjVKxKvj0++Ba/Acmb9fpOIOodA+
+        iI0QBMZgmpY6RnhU8MbQQRsWZbwB0iHUWuecprYTeoyD
+X-Google-Smtp-Source: APXvYqxJUKf4MkxyaUHCJZo1CtgIdr/WQic1Nr2Tj+w3Bgg/Z+j5Etv45tWDOmYFOjJravcEm1qeN0QoSvC5bzHz5zM=
+X-Received: by 2002:aca:b1c1:: with SMTP id a184mr15573919oif.2.1568017691920;
+ Mon, 09 Sep 2019 01:28:11 -0700 (PDT)
 MIME-Version: 1.0
-From:   Alexandru-Iulian Constantinescu <iulian@constantinescu.eu>
-Date:   Mon, 9 Sep 2019 11:21:48 +0300
-Message-ID: <CA+y2nj-M31yEVrW4cFkSsEDQBGD5ub5Wfm6M-8rB-KgVgko=VQ@mail.gmail.com>
-Subject: Direct IO and CRCs gotchas
-To:     linux-btrfs@vger.kernel.org
+References: <eda2fb2a-c657-5e4a-8d08-1bf57b57dd3b@petezilla.co.uk>
+In-Reply-To: <eda2fb2a-c657-5e4a-8d08-1bf57b57dd3b@petezilla.co.uk>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Date:   Mon, 9 Sep 2019 11:28:00 +0300
+Message-ID: <CAA91j0W1V0oRTKNy8BYDBbUbZEfbTZaxpqQnUm2tZBGxV1nV+Q@mail.gmail.com>
+Subject: Re: Balance conversion to metadata RAID1, data RAID1 leaves some
+ metadata as DUP
+To:     Pete <pete@petezilla.co.uk>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The issue is described here
-https://forum.proxmox.com/threads/how-to-setup-kernel-stable-pages-parameter.57403/
-( including rationale for not posting full content here).
+On Mon, Sep 9, 2019 at 11:03 AM Pete <pete@petezilla.co.uk> wrote:
+>
+> I recently recovered created a fresh filesystem on one disk and
+> recovered from backups with data as SINGLE and metadata as DUP.  I added
+> a second disk yesterday and ran a balance with -dconvert=raid1
+> -mconvert=raid1.  I did reboot during the process for a couple of
+> reasons, putting the sides on the PC case, putting it back under the
+> desk and I updated the kernel from 5.3.9 to 5.2.13 at some point during
+> this process. Balance resumed as one would expect.  Balance has now
+> completed:
+>
+> root@phoenix:~# btrfs balance status /home_data
+> No balance found on '/home_data'
+>
+> However, some metadata remains as DUP which does not seem right:
+>
+> root@phoenix:~# btrfs fi usage  /home_data/
+> Overall:
+>     Device size:                  10.92TiB
+>     Device allocated:              4.69TiB
+>     Device unallocated:            6.23TiB
+>     Device missing:                  0.00B
+>     Used:                          4.61TiB
+>     Free (estimated):              3.15TiB      (min: 3.15TiB)
+>     Data ratio:                       2.00
+>     Metadata ratio:                   2.00
+>     Global reserve:              512.00MiB      (used: 0.00B)
+>
+> Data,RAID1: Size:2.34TiB, Used:2.30TiB
+>    /dev/mapper/data_disk_ESFH      2.34TiB
+>    /dev/mapper/data_disk_EVPC      2.34TiB
+>
+> Metadata,RAID1: Size:7.00GiB, Used:4.48GiB
+>    /dev/mapper/data_disk_ESFH      7.00GiB
+>    /dev/mapper/data_disk_EVPC      7.00GiB
+>
+> Metadata,DUP: Size:1.00GiB, Used:257.22MiB
+>    /dev/mapper/data_disk_ESFH      2.00GiB
+>
+> System,RAID1: Size:32.00MiB, Used:368.00KiB
+>    /dev/mapper/data_disk_ESFH     32.00MiB
+>    /dev/mapper/data_disk_EVPC     32.00MiB
+>
+> Unallocated:
+>    /dev/mapper/data_disk_ESFH      3.11TiB
+>    /dev/mapper/data_disk_EVPC      3.11TiB
+> root@phoenix:~#
+>
+> root@phoenix:~# btrfs --version
+> btrfs-progs v5.1
+>
+>
+> I presume running another balance will fix this, but surely all metadata
+> should have been converted?  Is there a way to only balance the DUP
+> metadata?
 
-Thanks!
+
+btrfs balance start -m convert=raid1,soft
+
+should do it.
