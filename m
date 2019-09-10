@@ -2,164 +2,158 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAACAF1CF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 21:22:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D31EAAF2F5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 00:35:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728549AbfIJTWJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Sep 2019 15:22:09 -0400
-Received: from mail-io1-f54.google.com ([209.85.166.54]:36583 "EHLO
-        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727780AbfIJTWJ (ORCPT
+        id S1725965AbfIJWfw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Sep 2019 18:35:52 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:38765 "EHLO
+        server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725942AbfIJWfw (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Sep 2019 15:22:09 -0400
-Received: by mail-io1-f54.google.com with SMTP id b136so40226347iof.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2019 12:22:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=QWY/a85omGFRTZSjLBK9oAy0ghb78NiGv/9/WBVzfgA=;
-        b=uxZBgSnVOrMyfrfsVpRbCyWkjZ39v1TvhICBdUdGGUpNs+mgMosk26O9TFJLEAWR7U
-         RIzStRHcZJWYjKOVovLCLfTOYhiMjOGSOs94PmoGjcWAYA+FmfkRzesVz4V67MUYOuRd
-         WQmUJREtvSAlc//yTv67DkiggpbaEYpOlfGVMJNUlCIzU98qMP045zYHKN5Ws/90FynR
-         EXZnXKZSBgaEj/h/5wXWK5MurT6miQPQ90+XBRRCV1goYf90X43+mGGH3ZiAkZoWpLQS
-         Lz+Ud//rtY/ua4Zcvax2ue+jRy2xELzlDsGRVhZRLHdNjft+uHaxQltH3TozEjqTXYgx
-         mQBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=QWY/a85omGFRTZSjLBK9oAy0ghb78NiGv/9/WBVzfgA=;
-        b=WWFqUWzcVITzSY3CQF+k1WrJewi/rVi5Uchh8sRTU4O8Mh+FNggBVA+klYim07Ts6l
-         BUvlhoXNZ8q03tDVh4Phbb6kyHqNaRqLOG6atkXoyi+EHDPVvXyQHyCxcQPNibIWSLI8
-         aWkMuGi/Wgtwj5odC42wWE2BhEmhtjvO1V0Qi7rvBcoBMXU3icWpwwDU4BiAxhn0AK9Q
-         1BA5YEpW/zGjIMCW0K/TgmOu1w5dmBXAHjM+s0Hri5gL06sMUoGWCJrUtNLI1Q3xpMUV
-         brsDOTMmYoTBE18btI4tdRomLR3h4MmsK96umIFttrricXBwcg+K70flSHn33tzvzoQI
-         TffQ==
-X-Gm-Message-State: APjAAAUW1A5qKmc49gJ3NMy3FFGHEXlJIT2Iv1s5TNxJu0mUWLahUAlw
-        qtV1VIB4AkUTVi2IU3IEBxfIfskg+5g=
-X-Google-Smtp-Source: APXvYqwgz51e6H1D4kW+flZvQoAH7ANTNgvMByOMh0Kfcx/NxljabkOlnh29cQzUFvT9RRUbsF4PIQ==
-X-Received: by 2002:a6b:5a09:: with SMTP id o9mr1920005iob.45.1568143327684;
-        Tue, 10 Sep 2019 12:22:07 -0700 (PDT)
-Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
-        by smtp.gmail.com with ESMTPSA id k11sm7823153ioa.20.2019.09.10.12.22.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Sep 2019 12:22:07 -0700 (PDT)
+        Tue, 10 Sep 2019 18:35:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
+         s=default; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Reply-to:
+        In-Reply-To:References:Subject:Cc:To:From:Message-ID:Date:Sender:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=y+SmcSIhT98aOwyS6ipyF/8BpHjMmcNydVHNu5Vk5IE=; b=PTjOIhghKGcD8btPE0O1RaB1xs
+        j21oJRzYIyM5ZXNhLs3wlScvB1mCrm9V2EUvU8E/IjDCvmYLV0jF1KhGq80zceZFDDQ0qB88NYSwe
+        sCE23Kykl/oqvgdvMtTpMzFHShIaFi/OllrDncFcN8hkYy5CW/Coc7x6j3NAW2B5NNZ3dQtj7WKko
+        P+SB8BH9AgCHjoNuRho/gqOteJH78Xj8UzaL04BfFboDuf0z8s/viNNXpyP0lp+634PbPhs6bErE4
+        FG3rlPAvS9s2tVg1wNXDZ83X2AR69h0wK9uXrGPWEDGGRVNAJxo4qk18B6tIk554qkTp6QTXXZWum
+        4hmJ1fDw==;
+Received: from [::1] (port=53992 helo=server53.web-hosting.com)
+        by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <webmaster@zedlx.com>)
+        id 1i7oji-002hzq-EW; Tue, 10 Sep 2019 18:35:51 -0400
+Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
+ (Horde Framework) with HTTPS; Tue, 10 Sep 2019 18:35:46 -0400
+Date:   Tue, 10 Sep 2019 18:35:46 -0400
+Message-ID: <20190910183546.Horde.QoJ4NOAAxdCw46gLRejnHRv@server53.web-hosting.com>
+From:   webmaster@zedlx.com
+To:     Nikolay Borisov <n.borisov.lkml@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: Feature requests: online backup - defrag - change RAID level
-To:     webmaster@zedlx.com, linux-btrfs@vger.kernel.org
 References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
  <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
  <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
  <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
- <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
- <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
-From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Message-ID: <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
-Date:   Tue, 10 Sep 2019 15:22:04 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.0
+ <20190909123818.Horde.dbl-yi_cNi8aKDaW_QYXVij@server53.web-hosting.com>
+ <ba5f9d6c-aa6c-c9b2-76d2-3ca56606fcc5@gmx.com>
+ <20190909200638.Horde.GlzWP3_SqKPkxpAfp05Rsz7@server53.web-hosting.com>
+ <3666d54b-76f7-9eee-4fb6-36c1dcc37fe9@gmx.com>
+ <20190909212434.Horde.S2TAotDdK47dqQU5ejS2402@server53.web-hosting.com>
+ <3978da3b-bb62-4995-bc46-785446d59265@gmx.com>
+ <20190909233248.Horde.lTF4WXM9AzBZdWueqc2vsIZ@server53.web-hosting.com>
+ <0450e0d8-6c37-dc72-5987-bf92eeb8c4ef@gmail.com>
+In-Reply-To: <0450e0d8-6c37-dc72-5987-bf92eeb8c4ef@gmail.com>
+Reply-to: webmaster@zedlx.com
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-In-Reply-To: <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server53.web-hosting.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - zedlx.com
+X-Get-Message-Sender-Via: server53.web-hosting.com: authenticated_id: zedlryqc/from_h
+X-Authenticated-Sender: server53.web-hosting.com: webmaster@zedlx.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-From-Rewrite: unmodified, already matched
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019-09-09 15:26, webmaster@zedlx.com wrote:
-> This post is a reply to Remi Gauvin's post, but the email got lost so I 
-> can't reply to him directly.
-> 
-> Remi Gauvin wrote on 2019-09-09 17:24 :
->>
->> On 2019-09-09 11:29 a.m., Graham Cobb wrote:
->>
->>>  and does anyone really care about
->>> defrag any more?).
+
+Quoting Nikolay Borisov <n.borisov.lkml@gmail.com>:
+
+
 >>>
+>>> You're exactly in the pitfall of btrfs backref walk.
+>>>
+>>> For btrfs, it's definitely not an easy work to do backref walk.
+>>> btrfs uses hidden backref, that means, under most case, one extent
+>>> shared by 1000 snapshots, in extent tree (shows the backref) it can
+>>> completely be possible to only have one ref, for the initial subvolume.
+>>>
+>>> For btrfs, you need to walk up the tree to find how it's shared.
+>>>
+>>> It has to be done like that, that's why we call it backref-*walk*.
+>>>
+>>> E.g
+>>>           A (subvol 257)     B (Subvol 258, snapshot of 257)
+>>>           |    \        /    |
+>>>           |        X         |
+>>>           |    /        \    |
+>>>           C                  D
+>>>          / \                / \
+>>>         E   F              G   H
+>>>
+>>> In extent tree, E is only referred by subvol 257.
+>>> While C has two referencers, 257 and 258.
+>>>
+>>> So in reality, you need to:
+>>> 1) Do a tree search from subvol 257
+>>>    You got a path, E -> C -> A
+>>> 2) Check each node to see if it's shared.
+>>>    E is only referred by C, no extra referencer.
+>>>    C is refered by two new tree blocks, A and B.
+>>>    A is refered by subvol 257.
+>>>    B is refered by subvol 258.
+>>>    So E is shared by 257 and 258.
+>>>
+>>> Now, you see how things would go mad, for each extent you must go that
+>>> way to determine the real owner of each extent, not to mention we can
+>>> have at most 8 levels, tree blocks at level 0~7 can all be shared.
+>>>
+>>> If it's shared by 1000 subvolumes, hope you had a good day then.
 >>
+>> Ok, let's do just this issue for the time being. One issue at a time. It
+>> will be easier.
 >>
->> Err, yes, yes absolutely.
+>> The solution is to temporarily create a copy of the entire backref-tree
+>> in memory. To create this copy, you just do a preorder depth-first
+>> traversal following only forward references.
 >>
->> I don't have any issues with the current btrfs defrag implementions, but
->> it's *vital* for btrfs. (which works just as the OP requested, as far as
->> I can tell, recursively for a subvolume)
+>> So this preorder depth-first traversal would visit the nodes in the
+>> following order:
+>> A,C,E,F,D,G,H,B
 >>
->> Just booting Windows on a BTRFS virtual image, for example, will create
->> almost 20,000 file fragments.  Even on SSD's, you get into problems
->> trying to work with files that are over 200,000 fragments.
+>> Oh, it is not a tree, it is a DAG in that example of yours. OK, preorder
+>> is possible on DAG, too. But how did you get a DAG, shouldn't it be all
+>> trees?
 >>
->> Another huge problem is rsync --inplace.  which is perfect backup
->> solution to take advantage of BTRFS snapshots, but fragments larges
->> files into tiny pieces (and subsequently creates files that are very
->> slow to read.).. for some reason, autodefrag doesn't catch that one 
->> either.
+>> When you have the entire backref-tree (backref-DAG?) in memory, doing a
+>> backref-walk is a piece of cake.
 >>
->> But the wiki could do a beter job of trying to explain that the snapshot
->> duplication of defrag only affects the fragmented portions.  As I
->> understand, it's really only a problem when using defrag to change
->> compression.
-> 
-> 
-> Ok, a few things.
-> 
-> First, my defrag suggestion doesn't EVER unshare extents. The defrag 
-> should never unshare, not even a single extent. Why? Because it violates 
-> the expectation that defrag would not decrease free space.
-No, it should by default not unshare, but still allow the possibility of 
-unsharing extents.  Sometimes completely removing all fragmentation is 
-more important than space usage.
-> 
-> Defrag may break up extents. Defrag may fuse extents. But it shouln't 
-> ever unshare extents.
-Actually, spitting or merging extents will unshare them in a large 
-majority of cases.
-> 
-> Therefore, I doubt that the current defrag does "just as the OP 
-> requested". Nonsense. The current implementation does the unsharing all 
-> the time.
-> 
-> Second, I never used btrfs defrag in my life, despite mananging at least 
-> 10 btrfs filesystems. I can't. Because, all my btrfs volumes have lot of 
-> subvolumes, so I'm afraid that defrag will unshare much more than I can 
-> tolerate. In my subvolumes, over 90% of data is shared. If all 
-> subvolumes were to be unshared, the disk usage would likely increase 
-> tenfold, and that I cannot afford.
-> 
-> I agree that btrfs defrag is vital. But currently, it's unusable for 
-> many use cases.
-> 
-> Also, I don't quite understand what the poster means by "the snapshot 
-> duplication of defrag only affects the fragmented portions". Possibly it 
-> means approximately: if a file wasn't modified in the current (latest) 
-> subvolume, it doesn't need to be unshared. But, that would still unshare 
-> all the log files, for example, even all files that have been appended, 
-> etc... that's quite bad. Even if just one byte was appended to a log 
-> file, then defrag will unshare the entire file (I suppose).
-> 
-What it means is that defrag will only ever touch a file if that file 
-has extents that require defragmentation, and will then only touch 
-extents that are smaller than the target extent size (32M by default, 
-configurable at run-time with the `-t` option for the defrag command) 
-and possibly those directly adjacent to such extents (because it might 
-merge the small extents into larger neighbors, which will in turn 
-rewrite the larger extent too).
+>> Of course, this in-memory backref tree has to be kept in sync with the
+>> filesystem, that is it has to be updated whenever there is a write to
+>> disk. That's not so hard.
+>
+> Great, now that you have devised a solution and have plenty of
+> experience writing code why not try and contribute to btrfs?
 
-This, in turn, leads to a couple of interesting behaviors:
+First, that is what I'm just doing. I'm contributing to discussion on  
+most needed features of btrfs. I'm helping you to get on the right  
+track and waste less time on unimportant stuff.
 
-* If you have a subvolume with snapshots , it may or may not break 
-reflinks between that subvolume and it's snapshots, but will not break 
-any of the reflinks between the snapshots themselves.
-* When dealing with append-only files that are significantly larger than 
-the target extent size which are defragmented regularly, only extents 
-near the end of the file are likely to be unshared by the operation.
-* If you fully defragment a subvolume, then snapshot it, then defrag it 
-again, the second defrag will not unshare anything unless you were 
-writing to the subvolume or snapshot while the second defrag was running.
-* There's almost no net benefit to not defragmenting when dealing with 
-very large files that mostly see internal rewrites (VM disk images, 
-large databases, etc) because every internal rewrite will implicitly 
-unshare extents anyway.
+You might appreciate my help, or not, but I am trying to help.
+
+What you probaby wanted to say is that you would like me to contribute  
+by writing code, pro bono. Unfortunately, I work for money as does the  
+99% of the population. Why not contribute for free? For the same  
+reason why the rest of the population doesn't work for free. And, I'm  
+not going from door to door and buggin everyone with "why don't you  
+work for free", "why don't you help this noble cause..." blah. Makes  
+no sense to me.
+
+
