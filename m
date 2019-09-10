@@ -2,86 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10ACAAF092
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 19:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AAACAF1CF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 21:22:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437037AbfIJRju (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Sep 2019 13:39:50 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:34380 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436916AbfIJRju (ORCPT
+        id S1728549AbfIJTWJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Sep 2019 15:22:09 -0400
+Received: from mail-io1-f54.google.com ([209.85.166.54]:36583 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727780AbfIJTWJ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Sep 2019 13:39:50 -0400
-Received: by mail-lj1-f181.google.com with SMTP id h2so10813707ljk.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2019 10:39:48 -0700 (PDT)
+        Tue, 10 Sep 2019 15:22:09 -0400
+Received: by mail-io1-f54.google.com with SMTP id b136so40226347iof.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2019 12:22:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=d8ZRbBY4bC73mbSjScCOXrCe8vsJ7Lt1O5dt6e4i7wU=;
-        b=X+UnXNzlEMIbMK+ZsfLyBaWz5/6pkLxp3xpu4jt6cVmha1dbnuGH+dTdrEQDRjcnES
-         uboV9qGiewnXwQZPMHT9mtElaXhoL1NTOrC5FrYNwo3E7VNHVWx0544xa2/C8MzeqxBa
-         LwykMJsYOX58t3BbeqjvfdMyEV6p1n0nGUepP8F/c/XNXbODfL/ya32/HEJfV3OPqjkF
-         JaL5PYot65lGx5MDQ58TPu6nqk0mONaiupH63W9CSkeHMzkNB7YIfveHi8NcWG86y3h1
-         +9ZS1I/vylRkMEqdoYSsobXqJIeMW1eclpkM2LwOIFOEaptAcOHGhfI1KtQyuf/vQILl
-         pESA==
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=QWY/a85omGFRTZSjLBK9oAy0ghb78NiGv/9/WBVzfgA=;
+        b=uxZBgSnVOrMyfrfsVpRbCyWkjZ39v1TvhICBdUdGGUpNs+mgMosk26O9TFJLEAWR7U
+         RIzStRHcZJWYjKOVovLCLfTOYhiMjOGSOs94PmoGjcWAYA+FmfkRzesVz4V67MUYOuRd
+         WQmUJREtvSAlc//yTv67DkiggpbaEYpOlfGVMJNUlCIzU98qMP045zYHKN5Ws/90FynR
+         EXZnXKZSBgaEj/h/5wXWK5MurT6miQPQ90+XBRRCV1goYf90X43+mGGH3ZiAkZoWpLQS
+         Lz+Ud//rtY/ua4Zcvax2ue+jRy2xELzlDsGRVhZRLHdNjft+uHaxQltH3TozEjqTXYgx
+         mQBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=d8ZRbBY4bC73mbSjScCOXrCe8vsJ7Lt1O5dt6e4i7wU=;
-        b=VuFHJg4BT4jXHFlo3FGvuMjg9NYfXvHcJmYYhhsnSk6HTNXyqRJC8g+LD2FC9JvAEG
-         xH4O3uz0h3VKv0XJR9izjlAp5hTfUc4ylPKQxXz8u8CMvuz6Y/58h4RDKfTNlsa3Gx88
-         /On+v+8DnsgiZgvKlluy2gRuBtITiJA+yPWGzdtqmR3/Wsl3JnPj0QRPssdQ6skhexiT
-         ON5ek4/BT+XUla/Hxsud6q2PrSFA6NUrjaXOYF6cO9vOcqnHQGFz5JyTa5etrRvv9+MU
-         PBCtKpA1tPyqJcSRDb85sE0JE+pto/mMsdSR+1kVW+OGYI71j7pN2aJcQsOQSsnjbS/D
-         wq9g==
-X-Gm-Message-State: APjAAAWZ8wi3/hI1JoY+9Vkn2w9xFrY+7F4/i2ggzGsCSnZZb6Lvb3Ld
-        mITi26VvpZ/4aG4KI0ce5IrD12KFOAc=
-X-Google-Smtp-Source: APXvYqzDSBtly9ScR6xGp7RmoCJJJljO4nwbMZHrnf+NVsiHCnEiDiEX2xo1ybd27te0zV/1+d13/g==
-X-Received: by 2002:a05:651c:95:: with SMTP id 21mr13231660ljq.128.1568137187043;
-        Tue, 10 Sep 2019 10:39:47 -0700 (PDT)
-Received: from [192.168.1.5] (109-252-54-49.nat.spd-mgts.ru. [109.252.54.49])
-        by smtp.gmail.com with ESMTPSA id u25sm4354984lfm.64.2019.09.10.10.39.45
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Sep 2019 10:39:46 -0700 (PDT)
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QWY/a85omGFRTZSjLBK9oAy0ghb78NiGv/9/WBVzfgA=;
+        b=WWFqUWzcVITzSY3CQF+k1WrJewi/rVi5Uchh8sRTU4O8Mh+FNggBVA+klYim07Ts6l
+         BUvlhoXNZ8q03tDVh4Phbb6kyHqNaRqLOG6atkXoyi+EHDPVvXyQHyCxcQPNibIWSLI8
+         aWkMuGi/Wgtwj5odC42wWE2BhEmhtjvO1V0Qi7rvBcoBMXU3icWpwwDU4BiAxhn0AK9Q
+         1BA5YEpW/zGjIMCW0K/TgmOu1w5dmBXAHjM+s0Hri5gL06sMUoGWCJrUtNLI1Q3xpMUV
+         brsDOTMmYoTBE18btI4tdRomLR3h4MmsK96umIFttrricXBwcg+K70flSHn33tzvzoQI
+         TffQ==
+X-Gm-Message-State: APjAAAUW1A5qKmc49gJ3NMy3FFGHEXlJIT2Iv1s5TNxJu0mUWLahUAlw
+        qtV1VIB4AkUTVi2IU3IEBxfIfskg+5g=
+X-Google-Smtp-Source: APXvYqwgz51e6H1D4kW+flZvQoAH7ANTNgvMByOMh0Kfcx/NxljabkOlnh29cQzUFvT9RRUbsF4PIQ==
+X-Received: by 2002:a6b:5a09:: with SMTP id o9mr1920005iob.45.1568143327684;
+        Tue, 10 Sep 2019 12:22:07 -0700 (PDT)
+Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
+        by smtp.gmail.com with ESMTPSA id k11sm7823153ioa.20.2019.09.10.12.22.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 10 Sep 2019 12:22:07 -0700 (PDT)
 Subject: Re: Feature requests: online backup - defrag - change RAID level
 To:     webmaster@zedlx.com, linux-btrfs@vger.kernel.org
 References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
  <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
  <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
  <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
- <083a7b76-3c30-f311-1e23-606050cfc412@gmx.com>
- <20190909131108.Horde.64FzJYflQ6j0CbjYFLqBEz0@server53.web-hosting.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
- BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
- 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
- 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
- KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
- nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
- gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
- vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
- AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <610e9567-2f17-c7c3-01aa-0e1215be44d0@gmail.com>
-Date:   Tue, 10 Sep 2019 20:39:45 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+ <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
+Date:   Tue, 10 Sep 2019 15:22:04 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.0
 MIME-Version: 1.0
-In-Reply-To: <20190909131108.Horde.64FzJYflQ6j0CbjYFLqBEz0@server53.web-hosting.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -89,90 +69,97 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-09.09.2019 20:11, webmaster@zedlx.com пишет:
-...
+On 2019-09-09 15:26, webmaster@zedlx.com wrote:
+> This post is a reply to Remi Gauvin's post, but the email got lost so I 
+> can't reply to him directly.
+> 
+> Remi Gauvin wrote on 2019-09-09 17:24 :
 >>
->> Forgot to mention this part.
+>> On 2019-09-09 11:29 a.m., Graham Cobb wrote:
 >>
->> If your primary objective is to migrate your data to another device
->> online (mounted, without unmount any of the fs).
-> 
-> This is not the primary objective. The primary objective is to produce a
-> full, online, easy-to-use, robust backup. But let's say we need to do
-> migration...
+>>>  and does anyone really care about
+>>> defrag any more?).
+>>>
 >>
->> Then I could say, you can still add a new device, then remove the old
->> device to do that.
+>>
+>> Err, yes, yes absolutely.
+>>
+>> I don't have any issues with the current btrfs defrag implementions, but
+>> it's *vital* for btrfs. (which works just as the OP requested, as far as
+>> I can tell, recursively for a subvolume)
+>>
+>> Just booting Windows on a BTRFS virtual image, for example, will create
+>> almost 20,000 file fragments.  Even on SSD's, you get into problems
+>> trying to work with files that are over 200,000 fragments.
+>>
+>> Another huge problem is rsync --inplace.  which is perfect backup
+>> solution to take advantage of BTRFS snapshots, but fragments larges
+>> files into tiny pieces (and subsequently creates files that are very
+>> slow to read.).. for some reason, autodefrag doesn't catch that one 
+>> either.
+>>
+>> But the wiki could do a beter job of trying to explain that the snapshot
+>> duplication of defrag only affects the fragmented portions.  As I
+>> understand, it's really only a problem when using defrag to change
+>> compression.
 > 
-> If the source filesystem already uses RAID1, then, yes, you could do it,
+> 
+> Ok, a few things.
+> 
+> First, my defrag suggestion doesn't EVER unshare extents. The defrag 
+> should never unshare, not even a single extent. Why? Because it violates 
+> the expectation that defrag would not decrease free space.
+No, it should by default not unshare, but still allow the possibility of 
+unsharing extents.  Sometimes completely removing all fragmentation is 
+more important than space usage.
+> 
+> Defrag may break up extents. Defrag may fuse extents. But it shouln't 
+> ever unshare extents.
+Actually, spitting or merging extents will unshare them in a large 
+majority of cases.
+> 
+> Therefore, I doubt that the current defrag does "just as the OP 
+> requested". Nonsense. The current implementation does the unsharing all 
+> the time.
+> 
+> Second, I never used btrfs defrag in my life, despite mananging at least 
+> 10 btrfs filesystems. I can't. Because, all my btrfs volumes have lot of 
+> subvolumes, so I'm afraid that defrag will unshare much more than I can 
+> tolerate. In my subvolumes, over 90% of data is shared. If all 
+> subvolumes were to be unshared, the disk usage would likely increase 
+> tenfold, and that I cannot afford.
+> 
+> I agree that btrfs defrag is vital. But currently, it's unusable for 
+> many use cases.
+> 
+> Also, I don't quite understand what the poster means by "the snapshot 
+> duplication of defrag only affects the fragmented portions". Possibly it 
+> means approximately: if a file wasn't modified in the current (latest) 
+> subvolume, it doesn't need to be unshared. But, that would still unshare 
+> all the log files, for example, even all files that have been appended, 
+> etc... that's quite bad. Even if just one byte was appended to a log 
+> file, then defrag will unshare the entire file (I suppose).
+> 
+What it means is that defrag will only ever touch a file if that file 
+has extents that require defragmentation, and will then only touch 
+extents that are smaller than the target extent size (32M by default, 
+configurable at run-time with the `-t` option for the defrag command) 
+and possibly those directly adjacent to such extents (because it might 
+merge the small extents into larger neighbors, which will in turn 
+rewrite the larger extent too).
 
-You could do it with any profile.
+This, in turn, leads to a couple of interesting behaviors:
 
-> but it would be too slow, it would need a lot of user intervention, so
-> many commands typed, so many ways to do it wrong, to make a mistake.
-> 
-
-It requires exactly two commands - one to add new device, another to
-remove old device.
-
-> Too cumbersome. Too wastefull of time and resources.
-> 
-
-Do you mean your imaginary full backup will not read full filesystem?
-Otherwise how can it take less time and resources?
-
->> That would be even more efficient than LVM (not thin provisioned one),
->> as we only move used space.
-> 
-> In fact, you can do this kind of full-online-backup with the help of
-> mdadm RAID, or some other RAID solution. It can already be done, no need
-> to add 'btrfs backup'.
-> 
-> But, again, to cumbersome, too inflexible, too many problems, and, the
-> user would have to setup a downgraded mdadm RAID in front and run with a
-> degraded mdadm RAID all the time (since btrfs RAID would be actually
-> protecting the data).
-> 
->> If your objective is to create a full copy as backup, then I'd say my
->> new patchset of btrfs-image data dump may be your best choice.
-> 
-> It should be mountable. It should be performed online. Never heard of
-> btrfs-image, i need the docs to see whether this btrfs-image is good
-> enough.
-> 
->> The only down side is, you need to at least mount the source fs to RO
->> mode.
-> 
-> No. That's not really an online backup. Not good enough.
-> 
->> The true on-line backup is not that easy, especially any write can screw
->> up your backup process, so it must be done unmounted.
-> 
-> Nope, I disagree.
-> 
-> First, there is the RAID1-alike solution, which is easy to perform (just
-> send all new writes to both source and destination). It's the same thing
-> that mdadm RAID1 would do (like I mentioned a few paragraphs above).
-> But, this solution may have a performance concern, when the destination
-> drive is too slow.
-> 
-> Fortunately, with btrfs, an online backup is easier tha usual. To
-> produce a frozen snapshot of the entire filesystem, just create a
-> read-only snapshot of every subvolume (this is not 100% consistent, I
-> know, but it is good enough).
-> 
-> But I'm just repeating myself, I already wrote this in the first email.
-> 
-> So, in conclusion I disagree that true on-line backup is not easy.
-> 
->> Even btrfs send handles this by forcing the source subvolume to be RO,
->> so I can't find an easy solution to address that.
-> 
-> This is a digression, but I would say that you first make a temporary RO
-> snapshot of the source subvolume, then use 'btrfs send' on the temporary
-> snapshot, then delete the temporary snapshot.
-> 
-> Oh, my.
-> 
-> 
-
+* If you have a subvolume with snapshots , it may or may not break 
+reflinks between that subvolume and it's snapshots, but will not break 
+any of the reflinks between the snapshots themselves.
+* When dealing with append-only files that are significantly larger than 
+the target extent size which are defragmented regularly, only extents 
+near the end of the file are likely to be unshared by the operation.
+* If you fully defragment a subvolume, then snapshot it, then defrag it 
+again, the second defrag will not unshare anything unless you were 
+writing to the subvolume or snapshot while the second defrag was running.
+* There's almost no net benefit to not defragmenting when dealing with 
+very large files that mostly see internal rewrites (VM disk images, 
+large databases, etc) because every internal rewrite will implicitly 
+unshare extents anyway.
