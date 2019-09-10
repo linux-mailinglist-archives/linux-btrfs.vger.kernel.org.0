@@ -2,91 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C8CDAE592
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 10:31:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B697AE5C7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 10:42:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728035AbfIJIbd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Sep 2019 04:31:33 -0400
-Received: from mout.gmx.net ([212.227.15.15]:50803 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726948AbfIJIbd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Sep 2019 04:31:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1568104287;
-        bh=aeegeEcJSR0X/Roe9/NPVxArdx4jgIRRB5/DwlOhJwM=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=b+OuUCQKsEHRJ3miggXMpfN+jRo2UdLXi4pMS35N6C8te/JyQRaZ3stEQtgTW6iaJ
-         RlYppJX1yuLbzN546ksp6xF0Jywmct3VXb/S7KGFJnK3+AhGjYgYaxlbVoKBNadES6
-         CRDUnPhrprUbFgjx+3t5hr4KgXEIrOqT4tieX78I=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx003
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0MU1MP-1hgtbj0fiL-00Qo55; Tue, 10
- Sep 2019 10:31:26 +0200
+        id S1727131AbfIJImw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Sep 2019 04:42:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53008 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726496AbfIJImw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Sep 2019 04:42:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 7251DB7F2;
+        Tue, 10 Sep 2019 08:42:49 +0000 (UTC)
 Subject: Re: [PATCH 1/3] btrfs: ctree: Reduce one indent level for
  btrfs_search_slot()
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, WenRuo Qu <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20190910074019.23158-1-wqu@suse.com>
  <20190910074019.23158-2-wqu@suse.com>
  <c5db2dfd-19df-685c-71fb-e7e0e59a0b85@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <cd8d32b6-77fa-6d7c-c610-00e126904375@gmx.com>
-Date:   Tue, 10 Sep 2019 16:31:21 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.0
+ <cd8d32b6-77fa-6d7c-c610-00e126904375@gmx.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <04fc077c-3184-0ba8-9a12-c7b1fd08df7c@suse.com>
+Date:   Tue, 10 Sep 2019 11:42:47 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <c5db2dfd-19df-685c-71fb-e7e0e59a0b85@suse.com>
+In-Reply-To: <cd8d32b6-77fa-6d7c-c610-00e126904375@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:f/o+7ysms2ssmwRDkIdXk0sd3X//v6qvAqA/3jCcSUR4GP02l2x
- 2JCSqbgqAaRU2CA3dcOWqiITpOUBAJskskd1AMMz8pQYROyotrK/Ve0ubQD7nWds3f6UIqe
- 4oEFUFoA/ZaOvZmg+GCmfxrX4yKDkls8d9UxhBZqUYu4PxDmWGVid6LCpvriS8TOhRYIiCc
- +REVxYIaRvKDn1xFAbW8g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:FIrLImKUBuo=:u2qH1cUTM9cvHiPG0n/pVn
- nJCxQVxTqxnBqjdhJjMgGVSF9ND6tjdoQ3zaJ9rG8KZObxmcZGm2ew7QQihF4TSxoj1qXibsb
- QCctApQE1Qs5aT2ysmAZIm3bmQ4iXibPjgpcXg9btSs37B8jcNz0NcG8TxSLJd2eTpMvf6Z5O
- Dd9Tsk0JnHDZ9gdCc67dpvUSBVVYP9Fq7Wn0b63sKaze2pRe8AJcwK9h2JH8qXrXI9SOjBwbe
- FCg92rpyMG6rFzi1Ssn4MHf5gvQAFZPp7NCWB8W6Teu8HKRoeFEPRK4RSxuh+BzxPvqIw07VO
- 43/XyY7EncmYciIt07Dwkwx/cCSojM4v3pgvYNMQkusl5lTDbuItzMxWWkD4B8WZL0m5h9I77
- IDECQWXnf7LOmY4octdBgCh8dIitZ1ggqA+nmZmyREBoo4Hj5fyWC7T14bP8fn1JOkGw1GOyb
- QBZKQC4XVa7yhXOCvBLkHuoBsroHabDYOhiy2glXnAlpuXo6E2d/xvHlNt53psG/N6wMe7d/V
- ldfwAYlP8rXJEHw1rovjesgS1TgbO5+sBW94v8EJLl7QHRb/SOpfnhLWwnriu5EtZihiULVHv
- xt09ECy3gCRqZUfeHVjD8pwR2YqlGiWPvAtzZWHIFbYsYOWtvIwSZ1Nk5Gz5Yil2vXj1Sk94x
- ikxVgKm+BagRwxCCDvF4qdIcqsgwJhXAzQ8J34ukWWiwhbNhpm1/TtzEmchaw1tzGNxyMSaQ8
- jvJwqFFWYW7R9yzvJFAlp6EUnqYsieooTVOsS/HPjj647yVZInrHOck1PVomcEzk3hMeDfR2S
- ihToaEe5PpkFmZVFIARr9XnGc6m3/Vdv9LV9CuEcoVna6YWWQh3vuCHjL6Driz+VCi8JZrUK0
- 2GSSrAsh//qTc4Jck8fRBurrvw5rgBsDUiEvelpXTTYOyzKHJlnSShxiH+anX+kMqvNqYanOY
- 1XhQkxYR/IHnO7Lg1i6GGXuFL5BmEoiGCufimzeSuKJH1TSjopZQpwuYQSmwDhoYKmAI4Im5g
- 6k2NVWcN4LENLsCgwOFF4Xe0BybqmpDvqKGA7kJXZew2o3yKNzfbX5ObW4Ndhb8PhSW4SEshV
- +tSUROFGOty9t/K9SBisN2HSmIGFxZwL8rSU90iEOl938fYm/Jf23R2T0ys1RdQAecUlKcBr7
- S9EoFhpy87/y2w+qbWlLAr9J5TqTGzml70VTrs7Q317l7MyllePPRhE9CFBqhHlwhRkQ/Jt7p
- xs9HJ9S8Qdsurm7ei
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -94,47 +83,53 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 2019/9/10 =E4=B8=8B=E5=8D=884:24, Nikolay Borisov wrote:
->
->
-> On 10.09.19 =D0=B3. 10:40 =D1=87., Qu Wenruo wrote:
->> In btrfs_search_slot(), we something like:
+On 10.09.19 г. 11:31 ч., Qu Wenruo wrote:
+> 
+> 
+> On 2019/9/10 下午4:24, Nikolay Borisov wrote:
 >>
->> 	if (level !=3D 0) {
->> 		/* Do search inside tree nodes*/
->> 	} else {
->> 		/* Do search inside tree leaves */
->> 		goto done;
->> 	}
 >>
->> This caused extra indent for tree node search code.
->> Change it to something like:
+>> On 10.09.19 г. 10:40 ч., Qu Wenruo wrote:
+>>> In btrfs_search_slot(), we something like:
+>>>
+>>> 	if (level != 0) {
+>>> 		/* Do search inside tree nodes*/
+>>> 	} else {
+>>> 		/* Do search inside tree leaves */
+>>> 		goto done;
+>>> 	}
+>>>
+>>> This caused extra indent for tree node search code.
+>>> Change it to something like:
+>>>
+>>> 	if (level == 0) {
+>>> 		/* Do search inside tree leaves */
+>>> 		goto done'
+>>> 	}
+>>> 	/* Do search inside tree nodes */
+>>>
+>>> So we have more space to maneuver our code, this is especially useful as
+>>> the tree nodes search code is more complex than the leaves search code.
+>>>
+>>> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >>
->> 	if (level =3D=3D 0) {
->> 		/* Do search inside tree leaves */
->> 		goto done'
->> 	}
->> 	/* Do search inside tree nodes */
->>
->> So we have more space to maneuver our code, this is especially useful a=
-s
->> the tree nodes search code is more complex than the leaves search code.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> I actually thing this patch makes comprehending the function worse.
+>> I actually thing this patch makes comprehending the function worse.
+> 
+> If the level == 0 lines is over 50 lines, maybe.
+> 
+> But it's just 22 lines.
+>> Because the else is now somewhat implicit. E.g. one has to pay careful
+>> attention to the contents inside the first if and especially the
+>> unconditional 'goto done' to be able to understand the code after the
+>> 'if' construct.
+> 
+> That's the same for the original code, you need to go a level upper to
+> see we're in level > 0 branch.
 
-If the level =3D=3D 0 lines is over 50 lines, maybe.
+But that's explicit with the 'if'
 
-But it's just 22 lines.
-> Because the else is now somewhat implicit. E.g. one has to pay careful
-> attention to the contents inside the first if and especially the
-> unconditional 'goto done' to be able to understand the code after the
-> 'if' construct.
-
-That's the same for the original code, you need to go a level upper to
-see we're in level > 0 branch.
-
-Thanks,
-Qu
->
+> 
+> Thanks,
+> Qu
+>>
+> 
