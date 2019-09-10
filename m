@@ -2,106 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 24AC6AEFBD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 18:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 656E0AF06A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 19:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436853AbfIJQjO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Sep 2019 12:39:14 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:34893 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436800AbfIJQjL (ORCPT
+        id S2437090AbfIJRZl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Sep 2019 13:25:41 -0400
+Received: from p3plsmtpout003.prod.phx3.secureserver.net ([208.109.80.53]:41644
+        "EHLO p3plsmtpout003.prod.phx3.secureserver.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2436916AbfIJRZl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Sep 2019 12:39:11 -0400
-Received: by mail-qk1-f193.google.com with SMTP id d26so17765339qkk.2;
-        Tue, 10 Sep 2019 09:39:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lpZWq94qrk679Y3vz/0HnxpCxOg4F7I7xKpKBxCXn0s=;
-        b=HjT3JYoyNzN4qhLK9VFybMhJawQHZpS3NfF/hEOoe+j2Uu4cLMM4NrQ/kHbqJipnZc
-         2jQ+Bc2jdQke1G4uXkFNei+1HYOFGWW/GDNnQkn+xgiBBLp7GJ7NUFQHrmNDHpo0zbXT
-         xds5eJAa8XFFktRc9p42mz0dOJHQTQhv1XIkWo65mblo0ahWNTSTVsitsU3LGcAGLX9R
-         fhg+TIPBY8alRNY/Fq3KPJqVvTjXnpJaFgbCEAJ5bPtFM9z31P9anvb3e84l2JoGJmCG
-         2v5LPPDJixPwT0oB+uuCbzzhrxRQn/58geab8xNNfm6+5//B7QkugCaWJfrtoDByVfjN
-         bOGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lpZWq94qrk679Y3vz/0HnxpCxOg4F7I7xKpKBxCXn0s=;
-        b=c5M2X8wBjNWl+IL3tj6Sx45MopLoPIdmMt/V5ffOzI2+umxeM3Wc4E+olOo/4YR/OU
-         qBSffYjWSg6BXFrHwYYCRkYMGr30V2DMsa1kUW+D0wsZigHIk7+ZXwk/bI20FG764NPu
-         NUliKduW12xZfCMg19yii0sVCfnuNNBzlRJzZ2ltzORmM5wIKdKaPGgYR0oUUVm6JClh
-         /jb8rDs0gV44aOa7tHQHI330Xb1E6fhYM7E2hmsFU7bVsTyOe8aUKINpwnozE2cCr9zC
-         1BXuC9kYpNLBkM/X2n0iUYg7Yf2uIf3hUAdvY3U2iSroJvIJAH3xP2YxgLgphfPNwnSW
-         jkgQ==
-X-Gm-Message-State: APjAAAV/1k7kDJQw/iCBT9/kn9Ze0iViXmxOuXt8yA0xwbtx53u/sRGG
-        sPMTcH8TqvrlmGNM3Zkf3/3RpqKkcXiuifMeZuQ=
-X-Google-Smtp-Source: APXvYqzuYDTPkcD5G8eMEjdj1wRJTupI9im3I0ZWo5MrhxMrpw94COPRbtz42FtpofglGXvXTSIoDortHdMzxHvAU+8=
-X-Received: by 2002:a37:7086:: with SMTP id l128mr12804031qkc.433.1568133548629;
- Tue, 10 Sep 2019 09:39:08 -0700 (PDT)
+        Tue, 10 Sep 2019 13:25:41 -0400
+X-Greylist: delayed 675 seconds by postgrey-1.27 at vger.kernel.org; Tue, 10 Sep 2019 13:25:41 EDT
+Received: from perfimage01.perfimage.com ([104.238.102.132])
+        by : HOSTING RELAY : with ESMTP
+        id 7jikiyT0q2P9c7jikivUxM; Tue, 10 Sep 2019 10:14:26 -0700
+x-originating-ip: 104.238.102.132
+x_spam_cmae: v=2.3 cv=I+kbu+og c=1 sm=1 tr=0 p=5HPRdc_lb6EA:10
+ p=PvtU3B-7AAAA:8 a=39k3V5282Q3EN1nZiekm2w==:117 a=39k3V5282Q3EN1nZiekm2w==:17
+ a=IkcTkHD0fZMA:10 a=nlsf9r7PvdsA:10 a=65Lj2kn8Lx8A:10 a=J70Eh1EUuV4A:10
+ a=vZ4gOKCRAAAA:8 a=9xzDq3H1NwAxflPLSlEA:9 a=QEXdDO2ut3YA:10 a=hq03bN_A0_oA:10
+ a=9WD3C1qP_iwA:10 a=2FpHOG7LiCKVnL3MyRLy:22 a=7h2OsKTt7HN8wfd2FuYc:22
+ a=Z5ABNNGmrOfJ6cZ5bIyy:22 a=bWyr8ysk75zN3GCy5bjg:22
+Received: from marfc by perfimage01.perfimage.com with local (Exim 4.92)
+        (envelope-from <marfc@perfimage01.perfimage.com>)
+        id 1i7jik-0003WC-CR
+        for linux-btrfs@vger.kernel.org; Tue, 10 Sep 2019 13:14:26 -0400
+To:     linux-btrfs@vger.kernel.org
+Subject: How to invest in bitcoins $ 15000 - get a return of up to 2000%
+X-PHP-Script: www.marfc.org/index.php for 161.129.66.242
+X-PHP-Originating-Script: 516:class-phpmailer.php
+Date:   Tue, 10 Sep 2019 17:14:26 +0000
+From:   MARFC Webmaster <webmaster@marfc.org>
+Message-ID: <f97a9e8b9ab4baa5337d5258a367e8ad@www.marfc.org>
+X-Mailer: PHPMailer 5.2.22 (https://github.com/PHPMailer/PHPMailer)
 MIME-Version: 1.0
-References: <20190903033019.GA149622@LGEARND20B15>
-In-Reply-To: <20190903033019.GA149622@LGEARND20B15>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Wed, 11 Sep 2019 01:39:03 +0900
-Message-ID: <CADLLry6vC_bPEq9VLhz3_EXrDPZP1XDFLocnT3zxYEcCaX0QYw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix Wmaybe-uninitialized warning
-To:     clm@fb.com, Josef Bacik <josef@toxicpanda.com>, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+X-CMAE-Envelope: MS4wfLSbsLIUZX4U4YYxAsOJGVQzGFCgShNnK3s8rjVIOHLejUIOh6L6OQZPNVi75lrdDzRaAKZ0YoG4JXGhfT2udUArfVls2esX2gWSzy4blXlV9/W0NhjS
+ PSFlqVwV30uyVxfVu4YS72Lsamcgn/M7h8Jlmo0Q08YpUvtuvCRLj+PWYz7OAPxJUQQVp0eOTGGviqvHzXb6ol7Id0nLZ0DK1CQIxuGS5KlTD+pFFC9GKAz/
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello, maintainers.
+Message body:
+Paid Surveys: Earn $30,000 Or More Per Week: https://chogoon.com/srt/ildbo?&wvest=SA4v8
 
-If you are available, please review this patch and share the feedback.
+--
+This mail is sent via contact form on Michigan Automobile Racing Fan Club http://www.marfc.org
 
-Thanks,
-Austin Kim
-
-2019=EB=85=84 9=EC=9B=94 3=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 12:30, A=
-ustin Kim <austindh.kim@gmail.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> gcc throws warning message as below:
->
-> =E2=80=98clone_src_i_size=E2=80=99 may be used uninitialized in this func=
-tion
-> [-Wmaybe-uninitialized]
->  #define IS_ALIGNED(x, a)  (((x) & ((typeof(x))(a) - 1)) =3D=3D 0)
->                        ^
-> fs/btrfs/send.c:5088:6: note: =E2=80=98clone_src_i_size=E2=80=99 was decl=
-ared here
->  u64 clone_src_i_size;
->    ^
-> The clone_src_i_size is only used as call-by-reference
-> in a call to get_inode_info().
->
-> Silence the warning by initializing clone_src_i_size to 0.
->
-> Signed-off-by: Austin Kim <austindh.kim@gmail.com>
-> ---
->  fs/btrfs/send.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index f856d6c..197536b 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -5085,7 +5085,7 @@ static int clone_range(struct send_ctx *sctx,
->         struct btrfs_path *path;
->         struct btrfs_key key;
->         int ret;
-> -       u64 clone_src_i_size;
-> +       u64 clone_src_i_size =3D 0;
->
->         /*
->          * Prevent cloning from a zero offset with a length matching the =
-sector
-> --
-> 2.6.2
->
