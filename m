@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9875AF360
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 01:32:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29D2AAF382
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 01:59:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726694AbfIJXc0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Sep 2019 19:32:26 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:45717 "EHLO
+        id S1725965AbfIJX6k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Sep 2019 19:58:40 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:44563 "EHLO
         server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726657AbfIJXcZ (ORCPT
+        by vger.kernel.org with ESMTP id S1725876AbfIJX6j (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Sep 2019 19:32:25 -0400
+        Tue, 10 Sep 2019 19:58:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
          s=default; h=MIME-Version:Content-Type:Reply-to:In-Reply-To:References:
         Subject:Cc:To:From:Message-ID:Date:Sender:Content-Transfer-Encoding:
         Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
         Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
         List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=uYrPOl0yUy7Xz0vgaLKNlkTKLHcrBZvAwya2C9Pybhs=; b=UtCxPfP/iCZjcvzIkKClzvlvVq
-        8fux0uWHh0WKl/t932wW5xCkuIGTj8WJQt/kfujsMrYMiGaIjRKf3BRU+uETvRmBXdd+f+NrE+ThC
-        Fjr8KJSg5KTD+UZIztp1dQIYKyzFByssPXIPmBrossQKR5B5n1WCVY6OEZz+TAaN4ezPDIitrHIvY
-        Z1lUF8qi+kOANNqbL0EexxSc+uG4V5yX5KEEp7hy7nmhsFxn6QRzIV+Biy6BOnt2CM58Y+sNFjaR9
-        RSzw4KO4hv7jzbJFSje5GKuJ4H7kksNs8i3Y76ItbBwcEvYa9zmWJAc5GWoSGtEv79RZZk7HE+Mdo
-        oSMwhywA==;
-Received: from [::1] (port=38130 helo=server53.web-hosting.com)
+        bh=q6M1n7HFWRx0/qGDhxuuFSSG470IvII6OFMBHac086o=; b=lN49EeRndW82nc/1/Oj7e8t7K0
+        Rt0TNl7qct7p8BnKwV9kW+J8otKJvxifXbkqjnRMBuVnN0YXecfrcl3+ELR/xLxAkuEwlhp4Rl0Db
+        eyZOPAPm62hwuyw9Nhuz4m/hqVAUHEH2kMVea8vncEpoJuVBvNOAWWoaE96kt6j2PaDDAO67VW5Zb
+        ZyfoxoQkbnLf7QjKLZJECcRUqG6YsA19K2L0c9QZ6rbhGIslEOFx42E0tnGvjbPWKVB2m2/ZNknuy
+        6titSbPrkp0HqE+DaQbdj9oxokjnKZ4cdplQJo4hGdsC6Oel/MGZbGtLi1JljdXZjGg4x7UUfbACr
+        u327vBuQ==;
+Received: from [::1] (port=35540 helo=server53.web-hosting.com)
         by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <webmaster@zedlx.com>)
-        id 1i7pcT-003C0V-7b; Tue, 10 Sep 2019 19:32:25 -0400
+        id 1i7q1q-003OLH-6b; Tue, 10 Sep 2019 19:58:38 -0400
 Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Tue, 10 Sep 2019 19:32:21 -0400
-Date:   Tue, 10 Sep 2019 19:32:21 -0400
-Message-ID: <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+ (Horde Framework) with HTTPS; Tue, 10 Sep 2019 19:58:34 -0400
+Date:   Tue, 10 Sep 2019 19:58:34 -0400
+Message-ID: <20190910195834.Horde.nY4PVqoyBbYA17I11YfHH5a@server53.web-hosting.com>
 From:   webmaster@zedlx.com
 To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
 Cc:     linux-btrfs@vger.kernel.org
@@ -70,28 +70,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
 
+>> Also, I don't quite understand what the poster means by "the  
+>> snapshot duplication of defrag only affects the fragmented  
+>> portions". Possibly it means approximately: if a file wasn't  
+>> modified in the current (latest) subvolume, it doesn't need to be  
+>> unshared. But, that would still unshare all the log files, for  
+>> example, even all files that have been appended, etc... that's  
+>> quite bad. Even if just one byte was appended to a log file, then  
+>> defrag will unshare the entire file (I suppose).
+>>
+> What it means is that defrag will only ever touch a file if that  
+> file has extents that require defragmentation, and will then only  
+> touch extents that are smaller than the target extent size (32M by  
+> default, configurable at run-time with the `-t` option for the  
+> defrag command) and possibly those directly adjacent to such extents  
+> (because it might merge the small extents into larger neighbors,  
+> which will in turn rewrite the larger extent too).
 
->> Defrag may break up extents. Defrag may fuse extents. But it  
->> shouln't ever unshare extents.
+Umm... it seems to me that it's quite a poor defrag you got there.
 
-> Actually, spitting or merging extents will unshare them in a large  
-> majority of cases.
+> * There's almost no net benefit to not defragmenting when dealing  
+> with very large files that mostly see internal rewrites (VM disk  
+> images, large databases, etc) because every internal rewrite will  
+> implicitly unshare extents anyway.
 
-Ok, this point seems to be repeated over and over without any proof,  
-and it is illogical to me.
+Ok, so if you have a database, and then you snapshot its subvolume,  
+you might be in trouble because of all the in-place writes that  
+databases do, right?
 
-About merging extents: a defrag should merge extents ONLY when both  
-extents are shared by the same files (and when those extents are  
-neighbours in both files). In other words, defrag should always merge  
-without unsharing. Let's call that operation "fusing extents", so that  
-there are no more misunderstandings.
+It would almost be better if you could, manually, order the database  
+file to be unshared and defragmented. So, that would be the use-case  
+for defrag-unsharing. Interesting. Ok, I would agree with that. So,  
+there needs to be the operation called defrag-unshare, but that has  
+nothing to do with the real defrag.
 
-=== I CHALLENGE you and anyone else on this mailing list: ===
+I mean, this defrag-unsharing is just a glorified copy operation, but  
+there are a few twists, because it must be consistent, as opposed to  
+online copy, which would fail the consistency criteria.
 
-  - Show me an exaple where splitting an extent requires unsharing,  
-and this split is needed to defrag.
-
-Make it clear, write it yourself, I don't want any machine-made outputs.
+But, you and other developers here seem to be confusing this  
+defrag-unshare with the real defrag. I bet you haven't even considered  
+what it means to "defrag without usharing" in terms of: what the final  
+result of such defrag should be, when it is done perfectly.
 
 
 
