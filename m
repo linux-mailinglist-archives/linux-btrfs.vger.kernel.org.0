@@ -2,177 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F84AE291
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 05:32:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37B1CAE2CA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 06:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728598AbfIJDcy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 23:32:54 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:50608 "EHLO
-        server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728293AbfIJDcx (ORCPT
+        id S1731800AbfIJEQQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Sep 2019 00:16:16 -0400
+Received: from mail-yb1-f171.google.com ([209.85.219.171]:39111 "EHLO
+        mail-yb1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729294AbfIJEQP (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 23:32:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
-         s=default; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Reply-to:
-        In-Reply-To:References:Subject:Cc:To:From:Message-ID:Date:Sender:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=9eHukiT5Ju9repXCK1qTYBaSG8oq+mlU5fRJ422aXBk=; b=u387b29VQgzbSXo4j0DjBGZpSk
-        lFiG5N26i++KVKAurRYVLwjXp4AI4HvcnIqxZt2kOZ0kbUqghruOaA5uZaEBxEI2cwZejoJJcVkeh
-        z3T9gWaE2Ohf1VYzkTyTOc3gqZU0hQX+a9dwInCshyvu9nKhV+Rd9DSmvvWzO94kxfDvR9cHHBq/k
-        aVb7iLpx/2e1fCbaBHDxHoseXABKOKY45LhZq+Q1+BW+4XF9L+NGJZXWvaETa6K1owRRtopdbBuOe
-        sagsXBvML+Bt3NyZj0dQtnodZNvxIhEv8bPc7tT4ygNB1anCBTr+8zwWVqZqVWjMHhafDTH+ItZU4
-        lFib9EOA==;
-Received: from [::1] (port=40694 helo=server53.web-hosting.com)
-        by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <webmaster@zedlx.com>)
-        id 1i7Wtc-001wsg-H5; Mon, 09 Sep 2019 23:32:52 -0400
-Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Mon, 09 Sep 2019 23:32:48 -0400
-Date:   Mon, 09 Sep 2019 23:32:48 -0400
-Message-ID: <20190909233248.Horde.lTF4WXM9AzBZdWueqc2vsIZ@server53.web-hosting.com>
-From:   webmaster@zedlx.com
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: Feature requests: online backup - defrag - change RAID level
-References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
- <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
- <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
- <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
- <20190909123818.Horde.dbl-yi_cNi8aKDaW_QYXVij@server53.web-hosting.com>
- <ba5f9d6c-aa6c-c9b2-76d2-3ca56606fcc5@gmx.com>
- <20190909200638.Horde.GlzWP3_SqKPkxpAfp05Rsz7@server53.web-hosting.com>
- <3666d54b-76f7-9eee-4fb6-36c1dcc37fe9@gmx.com>
- <20190909212434.Horde.S2TAotDdK47dqQU5ejS2402@server53.web-hosting.com>
- <3978da3b-bb62-4995-bc46-785446d59265@gmx.com>
-In-Reply-To: <3978da3b-bb62-4995-bc46-785446d59265@gmx.com>
-Reply-to: webmaster@zedlx.com
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        Tue, 10 Sep 2019 00:16:15 -0400
+Received: by mail-yb1-f171.google.com with SMTP id o80so2816683ybc.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Sep 2019 21:16:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=tNr8raXSt7YpmhUyACalCZOw3le5r4R36kcLA03618g=;
+        b=gofYfGy0wKnNW2P4rPqCo76sV200PWEQQvAs+RVkFMIz/m1klA5awE5Z2BC8G6ZAtn
+         yuSewecGMeT8Cxbydc91HaVgsIvAe5n6wHnX3r65Hw758WVxi5ZHiQ2nfXNMB9d1E1eL
+         M7Lg9XbKFm4US3fHHgcrAYajZ32AF0RAigw+zGy79fjQ6s4lKYc8qJQLIZ2kGw1KOZaG
+         rV4wp3K7ucmSn9IejIjhFxEnlS3cEzolciPDw57E66JWDIyeA7tqyoWTfHRuavhqSIri
+         j0+UpKh1tRq5yVhTLsw1dZsW6X6L2XbSpSVk7Qv+5OALFVjK2/C7U0+SbGhWYEJrxWMG
+         gF3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=tNr8raXSt7YpmhUyACalCZOw3le5r4R36kcLA03618g=;
+        b=QS6evlZhu6SD2O7eZF3iXKxcNrI6bcIJtXxgtXHG6WClS1wROQ7jBjGBgWkPbpIFzB
+         YUObSZVw9o2dzuSOJerN+T0pw6KuwIZ7Dsao183rAs39bsxTRnWJGa4q3bwMaOlc9vsx
+         j4KzPHsKtrY0JRy5iZP2Yc6NaOj6DHlWH1egwjQ4eMvSWyUVKwBGNuDKzmbxGszzPLci
+         CS9u1wAzy2vKGYwW7FpkjOF625Kn79kbBBWnM0MSPGf/RQVzDyqLE6gRL+dWwCRGegDP
+         iNt/rIv1fgZzNf3/TdvrJP3M/6DLM1OSQobx70nzxrCoe3gv71xZDPqzWwy9Zxsr6rk2
+         JU7g==
+X-Gm-Message-State: APjAAAX9wZTSabRi5lkIEd+bSl4sLbBn6lytGA3voCsPZnqqzYJY9OOn
+        wSFrqHiP2kq8RYRG0644sg3XgTE+C0f8D/6Bc4QMc8Y=
+X-Google-Smtp-Source: APXvYqxZmR3iJbSjvd5uzhPGs1EYHuEd3EBu9e1Uyp+ruJd1zMB7pzOBujNxTMiTsSlLpfEpT2Y/BKis/8AyRoSx5Qw=
+X-Received: by 2002:a25:3844:: with SMTP id f65mr17990871yba.220.1568088973364;
+ Mon, 09 Sep 2019 21:16:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server53.web-hosting.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - zedlx.com
-X-Get-Message-Sender-Via: server53.web-hosting.com: authenticated_id: zedlryqc/from_h
-X-Authenticated-Sender: server53.web-hosting.com: webmaster@zedlx.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-From-Rewrite: unmodified, already matched
+From:   Daniel Martinez <danielsmartinez@gmail.com>
+Date:   Tue, 10 Sep 2019 01:15:36 -0300
+Message-ID: <CAMmfObZuWx0HR48VNnN2M1jguBsfUmyXTQ-KN5J9iCySxRapHw@mail.gmail.com>
+Subject: btrfs reported used space doesn't correspond with space occupied by
+ the files themselves
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
-Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
+I've recently converted my root 32GB ext4 partition to btrfs (using
+btrfs-progs 5.2). After that was done, I made a snapshot and tried to
+update the system. Unfortunately I didn't have enough free space to
+fit the whole update on that small partition, so it failed. I then
+realized my mistake and deleted not only that newly made snapshot, but
+also ext2_saved and some random files on the filesystem, totaling
+about 5GB. For my surprise, the update still failed due to ENOSPC.
 
-> On 2019/9/10 上午9:24, webmaster@zedlx.com wrote:
->>
->> Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
->>
->>>>> Btrfs defrag works by creating new extents containing the old data.
->>>>>
->>>>> So if btrfs decides to defrag, no old extents will be used.
->>>>> It will all be new extents.
->>>>>
->>>>> That's why your proposal is freaking strange here.
->>>>
->>>> Ok, but: can the NEW extents still be shared?
->>>
->>> Can only be shared by reflink.
->>> Not automatically, so if btrfs decides to defrag, it will not be shared
->>> at all.
->>>
->>>> If you had an extent E88
->>>> shared by 4 files in different subvolumes, can it be copied to another
->>>> place and still be shared by the original 4 files?
->>>
->>> Not for current btrfs.
->>>
->>>> I guess that the
->>>> answer is YES. And, that's the only requirement for a good defrag
->>>> algorithm that doesn't shrink free space.
->>>
->>> We may go that direction.
->>>
->>> The biggest burden here is, btrfs needs to do expensive full-backref
->>> walk to determine how many files are referring to this extent.
->>> And then change them all to refer to the new extent.
->>
->> YES! That! Exactly THAT. That is what needs to be done.
->>
->> I mean, you just create an (perhaps associative) array which links an
->> extent (the array index contains the extent ID) to all the files that
->> reference that extent.
->
-> You're exactly in the pitfall of btrfs backref walk.
->
-> For btrfs, it's definitely not an easy work to do backref walk.
-> btrfs uses hidden backref, that means, under most case, one extent
-> shared by 1000 snapshots, in extent tree (shows the backref) it can
-> completely be possible to only have one ref, for the initial subvolume.
->
-> For btrfs, you need to walk up the tree to find how it's shared.
->
-> It has to be done like that, that's why we call it backref-*walk*.
->
-> E.g
->           A (subvol 257)     B (Subvol 258, snapshot of 257)
->           |    \        /    |
->           |        X         |
->           |    /        \    |
->           C                  D
->          / \                / \
->         E   F              G   H
->
-> In extent tree, E is only referred by subvol 257.
-> While C has two referencers, 257 and 258.
->
-> So in reality, you need to:
-> 1) Do a tree search from subvol 257
->    You got a path, E -> C -> A
-> 2) Check each node to see if it's shared.
->    E is only referred by C, no extra referencer.
->    C is refered by two new tree blocks, A and B.
->    A is refered by subvol 257.
->    B is refered by subvol 258.
->    So E is shared by 257 and 258.
->
-> Now, you see how things would go mad, for each extent you must go that
-> way to determine the real owner of each extent, not to mention we can
-> have at most 8 levels, tree blocks at level 0~7 can all be shared.
->
-> If it's shared by 1000 subvolumes, hope you had a good day then.
+At this point, I tried running a balance, but it also failed with
+ENOSPC. I tried the balance -dusage X with X increasing from zero, but
+to my surprise again, it also failed.
 
-Ok, let's do just this issue for the time being. One issue at a time.  
-It will be easier.
+Data, single: total=28.54GiB, used=28.34GiB
+System, single: total=32.00MiB, used=16.00KiB
+Metadata, single: total=1.00GiB, used=807.45MiB
+GlobalReserve, single: total=41.44MiB, used=0.00B
 
-The solution is to temporarily create a copy of the entire  
-backref-tree in memory. To create this copy, you just do a preorder  
-depth-first traversal following only forward references.
+Looking at btrfs filesystem df, it looks like those 5GB of data I
+deleted are still occupying space. In fact, ncdu claims all the files
+on that drive sum up to only 19GB.
 
-So this preorder depth-first traversal would visit the nodes in the  
-following order:
-A,C,E,F,D,G,H,B
+I tried adding a second 2GB drive but that still wasn't enough to run
+a full data balance (metadata runs fine).
 
-Oh, it is not a tree, it is a DAG in that example of yours. OK,  
-preorder is possible on DAG, too. But how did you get a DAG, shouldn't  
-it be all trees?
+This is what filesystem usage looks like:
 
-When you have the entire backref-tree (backref-DAG?) in memory, doing  
-a backref-walk is a piece of cake.
+Overall:
+    Device size:                  31.59GiB
+    Device allocated:             29.57GiB
+    Device unallocated:            2.03GiB
+    Device missing:                  0.00B
+    Used:                         29.13GiB
+    Free (estimated):              2.22GiB      (min: 2.22GiB)
+    Data ratio:                       1.00
+    Metadata ratio:                   1.00
+    Global reserve:               41.44MiB      (used: 0.00B)
 
-Of course, this in-memory backref tree has to be kept in sync with the  
-filesystem, that is it has to be updated whenever there is a write to  
-disk. That's not so hard.
+Data,single: Size:28.54GiB, Used:28.34GiB
+   /dev/sda7     768.00MiB
+   /dev/sdb1      27.79GiB
+
+Metadata,single: Size:1.00GiB, Used:807.45MiB
+   /dev/sdb1       1.00GiB
+
+System,single: Size:32.00MiB, Used:16.00KiB
+   /dev/sdb1      32.00MiB
+
+Unallocated:
+   /dev/sda7       1.03GiB
+   /dev/sdb1       1.00GiB
 
 
+I then made a read-only snapshot of the root filesystem and used btrfs
+send/receive to transfer it to another btrfs filesystem, and when it
+got there its also only occupying 19GB.
 
+So there seems 10GB got lost somewhere in the process and I can't find
+a way to get them back (other thank mkfs'ing and restoring a backup),
+which in this case is about 30% of the available disk space.
+
+What may be causing this?
+
+Thanks,
+Daniel.
