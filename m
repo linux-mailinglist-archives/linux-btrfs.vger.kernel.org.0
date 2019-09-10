@@ -2,352 +2,173 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1C98AE226
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 03:53:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97CF7AE25E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 04:36:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403855AbfIJBxV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 9 Sep 2019 21:53:21 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37738 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2403791AbfIJBxV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 9 Sep 2019 21:53:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 64797AD79;
-        Tue, 10 Sep 2019 01:53:18 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: [PATCH v4] fstests: btrfs: Check snapshot creation and deletion with dm-logwrites
-Date:   Tue, 10 Sep 2019 09:53:11 +0800
-Message-Id: <20190910015311.14688-1-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
+        id S2389533AbfIJCgF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 9 Sep 2019 22:36:05 -0400
+Received: from mout.gmx.net ([212.227.17.20]:43965 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727298AbfIJCgE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 9 Sep 2019 22:36:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1568082937;
+        bh=bNvUQKINinpk+SeusSLHVmPsZF2O183vXTTiAbklgoI=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=WeMHgwZhaYv3hvTeJvTMnzqX+nbYJ+e9DBHAaeNtmPSthiZLYPe09f5UsUHQeq+rb
+         sHTyH5sQOjxohaEEYGbR7HSRNRxrlhHmrnFDHt1t191aeUs9M+EJjFr8hYAn0d0Kte
+         D1Q0bxXTKiV9qODxD02+5zxs9OiBXIBj1Pp/snII=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MzQgC-1iKw9H0pX6-00vRTS; Tue, 10
+ Sep 2019 04:35:37 +0200
+Subject: Re: [PATCH v2 4/6] btrfs-progs: check/lowmem: Repair bad imode early
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190905075800.1633-1-wqu@suse.com>
+ <20190905075800.1633-5-wqu@suse.com>
+ <b009d821-ed65-014f-bc17-2f141dfc5147@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <e4aa1307-dba0-7a71-9fae-5bebe59b3a81@gmx.com>
+Date:   Tue, 10 Sep 2019 10:35:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <b009d821-ed65-014f-bc17-2f141dfc5147@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:w/r7jN0C7dYESJG+ScgFY4rt2rE3In2JJfOXNY0hkFnoqU7QJHl
+ Ywldad/NjcjvFgnrXeYxd9wBs14bYbZj6i7AB6d16gdLCRkwrwE/yZ1SKIZ1xTZki5Uzftr
+ 9DldR5teKC8Wt22dJ3ZBemkr7D8DFbaNq4mIHoDWk8fMcYok+Ik+6Y154N3kOd/cehVpZ8N
+ 8OMQVEWCld8fzT3EVI8Kg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:VJ/3SeYvbnw=:K9g7pji6tZik1L4uK51pcn
+ k0CSwKLUOzk362Ibh0OymeoZ8YqU+ZuaT+QkOQFbZYF0bO0ZM53yi698Fyf7uUDFYFRkFTnpi
+ Ug+dP2cxF1C+sjQjKIvZHU2vq01nqg5e2sCPfD3u4Mqa2N0TMjzwYCucItH5xom17RFRLu8t8
+ bpTsBQttX4eHgplwPmdhmFND1k8rIKaDHH7fY7QYqXPGvcjfEAunWiEQ9Iw01zD+IGSRi8MJi
+ PcYYZ5jr8cOpJXwOt4bGAPrpAQfrMDfh2lPWArpxnURzkPMlIv6Jli0qIlfPJW9zHncoKhsUA
+ aIIHabPV2l3R0tep8z1JkRqAXLrwqEq9VW/RHwAnmfCQnxG3+zuFBV9npoW76jI7bW6aQPOLw
+ awEZJCmHFkPDFsbs4U2bmW0l0RZj+GRQnSexWFqhclwBGPBcn1dcsJbpzFG/DFRJczfANMz5L
+ 0unzR5pE99h2yCia/CqkQHAFKR0ked0UExJa013VCc3o3C8Z0EV8gHllLnBbd3vGR3EsJ2w6l
+ 5quxQVjuvp7gW3BVueP3+OSkEjPyjkK7HvaO970VWyYjRkqYvykfCO6uU6TPCTqYq5V+NkA5C
+ d6MQhjs6XglqCe6Vx1yc1EbFqPuW7v8OzU9uk0hsCUMiURtAYR+tNb7ikthPuky/JJvDrDVhh
+ 1SBbVjn8jTC0V+VS6NWde5c/mMsyyov9KRerZo6xkmCMVxPBe6s529JtFsQAwFTcjQEzpL7fU
+ b1BpT6CtDNwyHNcMDUgzinhrjuCxnHNm9Nm1F2Jn0CU0DflVFh1nt+gQza9XrmjT5eiGGO+Pc
+ KeWmxWEvoniEsaruq4U2aOueWPHM8T9EP94VvtXW9s9z4CXtD0n9tKD5HTFyCnV56V/2D8PlU
+ Yf91tV+djKbt78MfS6GYl1LaCus4cFvQI3WQ7tHYtoKzf994v7hWy80KSdoq/W+tebiao1Wse
+ c/hTtm+8LFaadms4zSqZoJfahuIMijwcC7Lz/LpUDTNJVvEcl1hwEtwUt3S2kLZSzR7XiILOa
+ UThPqpZ6bxU3JlVA8qedZOk73ZIZ91iklK1HqjR6aP2ryJfeRQYm1I+LLEicOIJxre+a6yMGK
+ OhwA3nuiMDCQSfV+tqBCqIaElVaBu5wl6lxadWQcOWCx6hKPmWfseQQDZpTdDMJ5V+GrnlI/h
+ LTwMpOIQpnoZCHKJpUhk0LKafHdqjoB3eR3d7Y1waLTdiBpdZ/3a+jwjRltHfK32A8PLBYypq
+ Nv+Ndx1V+MHAs+lrn
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have generic dm-logwrites with fsstress test case (generic/482), but
-it doesn't cover fs specific operations like btrfs snapshot creation and
-deletion.
 
-Furthermore, that test is not heavy enough to bump btrfs tree height by
-its short runtime.
 
-And finally, btrfs check doesn't consider dirty log as an error, unlike
-ext*/xfs, that's to say we don't need to mount the fs to replay the log,
-but just running btrfs check on the fs is enough.
+On 2019/9/9 =E4=B8=8B=E5=8D=8810:55, Nikolay Borisov wrote:
+>
+>
+> On 5.09.19 =D0=B3. 10:57 =D1=87., Qu Wenruo wrote:
+>> For lowmem mode, if we hit a bad inode mode, normally it is reported
+>> when we checking the DIR_INDEX/DIR_ITEM of the parent inode.
+>>
+>> If we didn't repair at that timing, the error will be recorded even we
+>> fixed it later.
+>>
+>> So this patch will check for INODE_ITEM_MISMATCH error type, and if it'=
+s
+>> really caused by invalid imode, repair it and clear the error.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>  check/mode-lowmem.c | 39 +++++++++++++++++++++++++++++++++++++++
+>>  1 file changed, 39 insertions(+)
+>>
+>> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+>> index 5f7f101daab1..5d0c520217fa 100644
+>> --- a/check/mode-lowmem.c
+>> +++ b/check/mode-lowmem.c
+>> @@ -1550,6 +1550,35 @@ static int lowmem_delete_corrupted_dir_item(stru=
+ct btrfs_root *root,
+>>  	return ret;
+>>  }
+>>
+>> +static int try_repair_imode(struct btrfs_root *root, u64 ino)
+>> +{
+>> +	struct btrfs_inode_item *iitem;
+>> +	struct btrfs_path path;
+>> +	struct btrfs_key key;
+>> +	int ret;
+>> +
+>> +	key.objectid =3D ino;
+>> +	key.type =3D BTRFS_INODE_ITEM_KEY;
+>> +	key.offset =3D 0;
+>> +	btrfs_init_path(&path);
+>> +
+>> +	ret =3D btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+>> +	if (ret > 0)
+>> +		ret =3D -ENOENT;
+>> +	if (ret < 0)
+>> +		goto out;
+>> +	iitem =3D btrfs_item_ptr(path.nodes[0], path.slots[0],
+>> +			       struct btrfs_inode_item);
+>> +	if (!is_valid_imode(btrfs_inode_mode(path.nodes[0], iitem))) {
+>
+> INODE_ITEM_MISMATCH is only set if:
+>
+> 1. The first inode item is not a directory (it should always be)
+> 2. There is a mismatch between the filetype in the inode item and in the
+> dir/index item pointing to it.
+>
+> By using this check you could possibly miss case 1 above, if the first
+> inode has a valid type e.g. regular whereas it should really be a
+> directory.
 
-So introduce a similar test case but for btrfs only.
+That's indeed a special rare case.
 
-The test case will stress btrfs by:
-- Use small nodesize to bump tree height
-- Create a base tree which is already high enough
-- Trim tree blocks to find possible trim bugs
-- Call snapshot creation and deletion along with fsstress
+>
+> I'm not entirely sure whether it makes sense to handle this situation,
+> since admittedly, it would require a perfect storm to get such a
+> corruption.
 
-Also it includes certain workaround for btrfs:
-- Allow _log_writes_mkfs to accept extra mkfs options
-- Use no-holes feature
-  To avoid missing hole file extents.
-  Although that behavior doesn't follow the on-disk format spec, it
-  doesn't cause data loss. And will follow the new on-disk format spec
-  of no-holes feature, so it's better to workaround it.
+Let's wait to see if this could happen.
+If it happened, we can easily modify the code to handle it anyway.
 
-And an optimization for btrfs only:
-- Use replay-log --fsck/--check command
-  Since dm-log-writes records bios sequentially, there is no way to
-  locate certain entry unless we iterate all entries.
-  This is becoming a big performance penalty if we replay certain a
-  range, check the fs, then re-execute replay-log to replay another
-  range.
+On the other hand, let's just focus on the real corruption where some
+old 2014 kernel screwed up the imode of some inodes.
 
-  We need to records the previous entry location, or we need to
-  re-iterate all previous entries.
+Thanks,
+Qu
 
-  Thankfully, replay-log has already address it by providing --fsck and
-  --check command, thus we don't need to break replay-log command.
-
-Please note, for fast storage (e.g. fast NVME or unsafe cache mode),
-it's recommended to use log devices larger than 15G, or we can't record
-the full log of just 30s fsstress run.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-For the log devices size problem, I have submitted dm-logwrites bio flag
-filter support, to filter out data bios.
-
-But that is not yet merged into kernel, thus we need a large log device
-for short run.
-
-For reference, if using unsafe cache mode for all test devices, on a
-system with 32G dual-channel DDR4 3200 RAM, 5G log device will be
-filled up in less than 15 seconds.
-So to ensure dm-log-writes covers all the operations, one needs at least
-15G log device, and even more if using RAM with more channels.
-
-Changelog:
-v2
-- Better expression/words for comment
-- Add requirement for no-holes features
-- Use xattr to bump up tree height
-  So no need for max_inline mount option
-- Coding style fixes for function definition
-- Add -f for rm to avoid user alias setting
-- Add new workload (update time stamp and create new files) for snapshot
-  workload
-- Remove an unnecessary sync call
-- Get rid of wrong 2>&1 redirection
-- Add to group "snapshot" and "stress"
-
-v3:
-- Add '_require_attrs' and source common/attr
-- Introduce '_require_fsck_not_report_dirty_logs_as_error'
-- Add comment for the replay-log code fix
-- Wait after killing all background fsstress
-- Use $BLKDISCARD_PROG instead of plain 'blkdiscard'
-- Add trap for snapshot and delete workload
-
-v4:
-- Comment polishment
-- Remove unnecessary fix in replay-log
-- Catch the return value from replay-log properly
-- Move the fast log replay function local as it's only used by btrfs yet
-- Allow _log_writes_mkfs to accept extra options
----
- common/config       |   1 +
- common/dmlogwrites  |   2 +-
- tests/btrfs/192     | 175 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/192.out |   2 +
- tests/btrfs/group   |   1 +
- 5 files changed, 180 insertions(+), 1 deletion(-)
- create mode 100755 tests/btrfs/192
- create mode 100644 tests/btrfs/192.out
-
-diff --git a/common/config b/common/config
-index bd64be62..4c86a492 100644
---- a/common/config
-+++ b/common/config
-@@ -183,6 +183,7 @@ export LOGGER_PROG="$(type -P logger)"
- export DBENCH_PROG="$(type -P dbench)"
- export DMSETUP_PROG="$(type -P dmsetup)"
- export WIPEFS_PROG="$(type -P wipefs)"
-+export BLKDISCARD_PROG="$(type -P blkdiscard)"
- export DUMP_PROG="$(type -P dump)"
- export RESTORE_PROG="$(type -P restore)"
- export LVM_PROG="$(type -P lvm)"
-diff --git a/common/dmlogwrites b/common/dmlogwrites
-index ae2cbc6a..2a7ff612 100644
---- a/common/dmlogwrites
-+++ b/common/dmlogwrites
-@@ -69,7 +69,7 @@ _log_writes_mark()
- _log_writes_mkfs()
- {
- 	_scratch_options mkfs
--	_mkfs_dev $SCRATCH_OPTIONS $LOGWRITES_DMDEV
-+	_mkfs_dev $SCRATCH_OPTIONS $@ $LOGWRITES_DMDEV
- 	_log_writes_mark mkfs
- }
- 
-diff --git a/tests/btrfs/192 b/tests/btrfs/192
-new file mode 100755
-index 00000000..4414ee67
---- /dev/null
-+++ b/tests/btrfs/192
-@@ -0,0 +1,175 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 192
-+#
-+# Test btrfs consistency after each FUA for a workload with snapshot creation
-+# and removal
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	kill -q $pid1 &> /dev/null
-+	kill -q $pid2 &> /dev/null
-+	"$KILLALL_PROG" -q $FSSTRESS_PROG &> /dev/null
-+	wait
-+	_log_writes_cleanup &> /dev/null
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/attr
-+. ./common/dmlogwrites
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_supported_os Linux
-+
-+_require_command "$KILLALL_PROG" killall
-+_require_command "$BLKDISCARD_PROG" blkdiscard
-+_require_btrfs_fs_feature "no_holes"
-+_require_btrfs_mkfs_feature "no-holes"
-+_require_log_writes
-+_require_scratch
-+_require_attrs
-+
-+# We require a 4K nodesize to ensure the test isn't too slow
-+if [ $(get_page_size) -ne 4096 ]; then
-+	_notrun "This test doesn't support non-4K page size yet"
-+fi
-+
-+runtime=30
-+nr_cpus=$("$here/src/feature" -o)
-+# cap nr_cpus to 8 to avoid spending too much time on hosts with many cpus
-+if [ $nr_cpus -gt 8 ]; then
-+	nr_cpus=8
-+fi
-+fsstress_args=$(_scale_fsstress_args -w -d $SCRATCH_MNT -n 99999 -p $nr_cpus \
-+		$FSSTRESS_AVOID)
-+_log_writes_init $SCRATCH_DEV
-+
-+# Discard the whole devices so when some tree pointer is wrong, it won't point
-+# to some older valid tree blocks, so we can detect it.
-+$BLKDISCARD_PROG $LOGWRITES_DMDEV > /dev/null 2>&1
-+
-+# Use no-holes to avoid warnings of missing file extent items (expected
-+# for holes due to mix of buffered and direct IO writes).
-+# And use 4K nodesize to bump tree height.
-+_log_writes_mkfs -O no-holes -n 4k >> $seqres.full
-+_log_writes_mount
-+
-+$BTRFS_UTIL_PROG subvolume create $SCRATCH_MNT/src > /dev/null
-+mkdir -p $SCRATCH_MNT/snapshots
-+mkdir -p $SCRATCH_MNT/src/padding
-+
-+random_file()
-+{
-+	local basedir=$1
-+	echo "$basedir/$(ls $basedir | sort -R | tail -1)"
-+}
-+
-+snapshot_workload()
-+{
-+	trap "wait; exit" SIGTERM
-+
-+	local i=0
-+	while true; do
-+		$BTRFS_UTIL_PROG subvolume snapshot \
-+			$SCRATCH_MNT/src $SCRATCH_MNT/snapshots/$i \
-+			> /dev/null
-+		# Do something small to make snapshots different
-+		rm -f "$(random_file $SCRATCH_MNT/src/padding)"
-+		rm -f "$(random_file $SCRATCH_MNT/src/padding)"
-+		touch "$(random_file $SCRATCH_MNT/src/padding)"
-+		touch "$SCRATCH_MNT/src/padding/random_$RANDOM"
-+
-+		i=$(($i + 1))
-+		sleep 1
-+	done
-+}
-+
-+delete_workload()
-+{
-+	trap "wait; exit" SIGTERM
-+
-+	while true; do
-+		sleep 2
-+		$BTRFS_UTIL_PROG subvolume delete \
-+			"$(random_file $SCRATCH_MNT/snapshots)" \
-+			> /dev/null 2>&1
-+	done
-+}
-+
-+# Replay and check each fua/flush (specified by $2) point.
-+#
-+# Since dm-log-writes records bio sequentially, even just replaying a range
-+# still needs to iterate all records before the end point.
-+# When number of records grows, it will be unacceptably slow, thus we need
-+# to use relay-log itself to trigger fsck, avoid unnecessary seek.
-+_log_writes_fast_replay_check()
-+{
-+	local check_point=$1
-+	local blkdev=$2
-+	local fsck_command="$BTRFS_UTIL_PROG check $blkdev"
-+	local ret
-+
-+	[ -z "$check_point" -o -z "$blkdev" ] && _fail \
-+	"check_point and blkdev must be specified for _log_writes_fast_replay_check"
-+
-+	$here/src/log-writes/replay-log --log $LOGWRITES_DEV \
-+		--replay $blkdev --check $check_point --fsck "$fsck_command" \
-+		&> $tmp.full_fsck
-+	ret=$?
-+	tail -n 150 $tmp.full_fsck > $seqres.full
-+	[ $ret -ne 0 ] && _fail "fsck failed during replay"
-+}
-+
-+xattr_value=$(printf '%0.sX' $(seq 1 3800))
-+
-+# Bumping tree height to level 2.
-+for ((i = 0; i < 64; i++)); do
-+	touch "$SCRATCH_MNT/src/padding/$i"
-+	$SETFATTR_PROG -n 'user.x1' -v $xattr_value "$SCRATCH_MNT/src/padding/$i"
-+done
-+
-+_log_writes_mark prepare
-+
-+snapshot_workload &
-+pid1=$!
-+delete_workload &
-+pid2=$!
-+
-+"$FSSTRESS_PROG" $fsstress_args > /dev/null &
-+sleep $runtime
-+
-+"$KILLALL_PROG" -q "$FSSTRESS_PROG" &> /dev/null
-+kill $pid1 &> /dev/null
-+kill $pid2 &> /dev/null
-+wait
-+_log_writes_unmount
-+_log_writes_remove
-+
-+_log_writes_fast_replay_check fua "$SCRATCH_DEV"
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/192.out b/tests/btrfs/192.out
-new file mode 100644
-index 00000000..6779aa77
---- /dev/null
-+++ b/tests/btrfs/192.out
-@@ -0,0 +1,2 @@
-+QA output created by 192
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index 2474d43e..cab10d19 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -194,3 +194,4 @@
- 189 auto quick send clone
- 190 auto quick replay balance qgroup
- 191 auto quick send dedupe
-+192 auto replay snapshot stress
--- 
-2.22.0
-
+>
+>
+> <snip>
+>
