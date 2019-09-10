@@ -2,277 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE9DAEF51
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 18:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41819AEF97
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Sep 2019 18:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436639AbfIJQOO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Sep 2019 12:14:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33364 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2436575AbfIJQON (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Sep 2019 12:14:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B48E9B6D1;
-        Tue, 10 Sep 2019 16:14:10 +0000 (UTC)
-Subject: Re: [PATCH v2 3/6] btrfs-progs: check/common: Make
- repair_imode_common() to handle inodes in subvolume trees
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190905075800.1633-1-wqu@suse.com>
- <20190905075800.1633-4-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <d78eb326-5441-94ab-f5ee-01f5526a97e5@suse.com>
-Date:   Tue, 10 Sep 2019 19:14:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2436784AbfIJQc7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Sep 2019 12:32:59 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:51636 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729580AbfIJQc7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 10 Sep 2019 12:32:59 -0400
+Received: by mail-wm1-f54.google.com with SMTP id 7so290632wme.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 10 Sep 2019 09:32:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lBgs1vTripQPGETOC9BrXmidAXKYBlUt6OidX02raiY=;
+        b=EL9dCYqc6petwcm0LT6waXHG65axMs/ijCtx4SA7s42tb2EHtokGu5kIoZDIOCvr57
+         scAcErvktMMgO86mR+JGVPYnnuneVnb0pD4w9KhuEWxj31zlS0G5txDeyn/EJvmTWZtM
+         et6y0jwWj54Oc3opco2bSw9ajcp4mO6isHlOk+DcCM+DaelRdj8cVpSjkvLmv96T+qUV
+         CY6Gvbv1dLWDyrGi/MzJ3cCegGAq7FUaH3S6TbXE2LrGoGHpS2Zdw351HKeiKm8zfYZi
+         7AAgiBjbPOmG71DwmQMZBRqtt8oCDE5pfrUv953B+EwUIplW5WlZgF32V8v6Y3Av0L5h
+         5OZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lBgs1vTripQPGETOC9BrXmidAXKYBlUt6OidX02raiY=;
+        b=mzgfaQvE/inOLmb6Xa1wlwkDZHkiPOscGNUYXq/lE0a8LZI2B2KXVMm0ec0VMVF5Ol
+         oXoAofKb38PP5CXBeQdz/8i0esY0lCnqLv+lhlpmy5MlAD8mmRIz/XZCOZ3XMEPy+rzD
+         Pi/E+fwPLQV8i6Z74ZBE0F9P7MRfC68l4uvulWQzJehXBe5kM/c2uBTCYy7qUcTy7j7e
+         2A60TBlBSRHpxrZ0/3Vr6SYj6zzGK3PIYLOOnUdiCptKsb5zY/h5+WPERCjrS0q55Qlf
+         l+JiUv92HikhinIhM7H2wXi/4CacYE07ioLzv19+dZAkTyNUAb+i5nb9Bt5d/gCvV5IY
+         YGYQ==
+X-Gm-Message-State: APjAAAU2IhqDS9CktHJMZj34PH6ItfSQDEfhGx89z9AXLeVdt/jLZZ1k
+        BUc0078aOI9QbHcHsNuk0ZQu8Pqv1RFTC09gClvd3gJksBk=
+X-Google-Smtp-Source: APXvYqyS5uYCDKG5NkBrFx5UcgbU0/9AMS+GUJnlw1HXT4HcoEcK/caXbOiIa7QbHf9GL78fRFVL6AOKmZy40PzN6BM=
+X-Received: by 2002:a1c:d10b:: with SMTP id i11mr305647wmg.8.1568133176544;
+ Tue, 10 Sep 2019 09:32:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190905075800.1633-4-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAJCQCtQueeFf=4m0Y2t3Qxzh_qT=PKwY5CPe4MmBb1wx3xyDfg@mail.gmail.com>
+ <OSBPR01MB3367B6E4521888148EB778BFE5B60@OSBPR01MB3367.jpnprd01.prod.outlook.com>
+In-Reply-To: <OSBPR01MB3367B6E4521888148EB778BFE5B60@OSBPR01MB3367.jpnprd01.prod.outlook.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 10 Sep 2019 10:32:45 -0600
+Message-ID: <CAJCQCtQZBdXcLdgF9yShz=7iT9E2krC=U8MrcPYkW7g=CeB2Hg@mail.gmail.com>
+Subject: Re: user_subvol_rm_allowed vs rmdir_subvol
+To:     "misono.tomohiro@fujitsu.com" <misono.tomohiro@fujitsu.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Super. Thanks for the reply!
+
+On Tue, Sep 10, 2019 at 3:29 AM misono.tomohiro@fujitsu.com
+<misono.tomohiro@fujitsu.com> wrote:
+>
+> Hello,
+>
+> (It seems that you already have answers but anyway...)
+>
+> > Came across this podman issue yesterday
+> > https://github.com/containers/libpod/issues/3963
+> >
+> >
+> > Question 1: For unprivileged use case, is it intentional that the user creates a subvolume/snapshot using 'btrfs sub
+> > create' and that the user delete it with 'rm -rf' ?
+>
+> Yes. The problem with "btrfs sub delete" is that the permission check is only performed to the top directory(subvolume).
+> Terefore unless user_subvol_rm_allowed mount option is used, "bttrfs sub delete" command is restricted for unprivileged user.
+>
+> >
+> > And is the consequence of this performance? Because I see rm -rf must individually remove all files and dirs from the
+> > subvolume first, before rmdir() is called to remove the subvolume. Where as 'btrfs sub del' calls BTRFS_IOC_SNAP_DESTROY
+> > ioctl which is pretty much immediate, with cleanup happening in the background.
+>
+> Yes.
+>
+> >
+> >
+> > Question 2:
+> >
+> > As it relates to the podman issue, what do Btrfs developers recommend?
+> > If kernel > 4.18, and if unprivileged, then use 'rm -rf' to delete subvolumes? Otherwise use 'btrfs sub del' with root
+> > privilege?
+>
+> - "btrfs sub delete" if mounted with subvol_rm_allowed
+> - "rm -r" if not mounted with subvol_rm_allowed
+>
+> > Question 3:
+> > man 5 btrfs has a confusing note for user_subvol_rm_allowed mount option:
+> >
+> >                Note
+> >                historically, any user could create a snapshot even if he was not owner of the source subvolume, the
+> > subvolume deletion has been restricted
+> >                for that reason. The subvolume creation has been restricted but this mount option is still required.
+> > This is a usability issue.
+> >
+> > 2nd sentence "subvolume creation has been restricted"  I can't parse that. Is it an error, or can it be worded differently?
+>
+> You cannot create a snapshot of a subvolume which is owned by other user now (apparently old btrfs allowed this).
+>
+> In summary, subvolume deletion by unprivileged user is restricted by default because:
+>  1. a user could create a snapshot which was not owned by the user in old btrfs.
+>  2. BTRFS_IOC_SNAP_DESTROY ioctl only performs permission check to the top directory.
+>
+> I think 1 is not a problem anymore, byt 2 still remains.
+>
+> Thanks.
 
 
-On 5.09.19 г. 10:57 ч., Qu Wenruo wrote:
-> Before this patch, repair_imode_common() can only handle two types of
-> inodes:
-> - Free space cache inodes
-> - ROOT DIR inodes
-> 
-> For inodes in subvolume trees, the core complexity is how to determine the
-> correct imode, thus it was not implemented.
-> 
-> However there are more reports of incorrect imode in subvolume trees, we
-> need to support such fix.
-> 
-> So this patch adds a new function, detect_imode(), to detect imode for
-> inodes in subvolume trees.
-> 
-> That function will determine imode by:
-> - Search for INODE_REF
->   If we have INODE_REF, we will then try to find DIR_ITEM/DIR_INDEX.
->   As long as one valid DIR_ITEM or DIR_INDEX can be found, we convert
->   the BTRFS_FT_* to imode, then call it a day.
->   This should be the most accurate way.
-> 
-> - Search for DIR_INDEX/DIR_ITEM
->   If above search fails, we falls back to locate the DIR_INDEX/DIR_ITEM
->   just after the INODE_ITEM.
->   If any can be found, it's definitely a directory.
 
-This needs an explicit satement that it will only work for non-empty files and directories
-> 
-> - Search for EXTENT_DATA
->   If EXTENT_DATA can be found, it's either REG or LNK.
->   For this case, we default to REG, as user can inspect the file to
->   determine if it's a file or just a path.
-> 
-> - Use rdev to detect BLK/CHR
->   If all above fails, but INODE_ITEM has non-zero rdev, then it's either
->   a BLK or CHR file. Then we default to BLK.
-> 
-> - Fail out if none of above methods succeeded
->   No educated guess to make things worse.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  check/mode-common.c | 130 +++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 117 insertions(+), 13 deletions(-)
-> 
-> diff --git a/check/mode-common.c b/check/mode-common.c
-> index c0ddc50a1dd0..abea2ceda4c4 100644
-> --- a/check/mode-common.c
-> +++ b/check/mode-common.c
-> @@ -935,6 +935,113 @@ out:
->  	return ret;
->  }
->  
-> +static int detect_imode(struct btrfs_root *root, struct btrfs_path *path,
-> +			u32 *imode_ret)
-> +{
-> +	struct btrfs_key key;
-> +	struct btrfs_inode_item iitem;
-> +	const u32 priv = 0700;
-> +	bool found = false;
-> +	u64 ino;
-> +	u32 imode;
-> +	int ret = 0;
-> +
-> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> +	ino = key.objectid;
-> +	read_extent_buffer(path->nodes[0], &iitem,
-> +			btrfs_item_ptr_offset(path->nodes[0], path->slots[0]),
-> +			sizeof(iitem));
-> +	/* root inode */
-> +	if (ino == BTRFS_FIRST_FREE_OBJECTID) {
-> +		imode = S_IFDIR;
-> +		found = true;
-> +		goto out;
-> +	}
-> +
-> +	while (1) {
-> +		struct btrfs_inode_ref *iref;
-> +		struct extent_buffer *leaf;
-> +		unsigned long cur;
-> +		unsigned long end;
-> +		char namebuf[BTRFS_NAME_LEN] = {0};
-> +		u64 index;
-> +		u32 namelen;
-> +		int slot;
-> +
-> +		ret = btrfs_next_item(root, path);
-> +		if (ret > 0) {
-> +			/* falls back to rdev check */
-> +			ret = 0;
-> +			goto out;
-> +		}
-
-In my testing if an inode is the last one in the leaf and it doesn't have 
-an INODE_REF item then it won't be repaired. But e.g. it can have perfectly 
-valid DIR_ITEM/DIR_INDEX entries which describe this inode as being a file. E.g. 
-
-	item 2 key (256 DIR_ITEM 388586943) itemoff 16076 itemsize 35
-		location key (260 INODE_ITEM 0) type FILE
-		transid 7 data_len 0 name_len 5
-		name: file3
-
-	.....
-	item 15 key (260 INODE_ITEM 0) itemoff 15184 itemsize 160
-		generation 7 transid 7 size 0 nbytes 0
-		block group 0 mode 26772225102 links 1 uid 0 gid 0 rdev 0
-		sequence 1 flags 0x0(none)
-		atime 1568127261.284993602 (2019-09-10 14:54:21)
-		ctime 1568127261.284993602 (2019-09-10 14:54:21)
-		mtime 1568127261.284993602 (2019-09-10 14:54:21)
-		otime 1568127261.284993602 (2019-09-10 14:54:21)
-
-I have intentionally deleted INODE_REF too see what's happening. Is this intended?
-
-
-> +		if (ret < 0)
-> +			goto out;
-> +		leaf = path->nodes[0];
-> +		slot = path->slots[0];
-> +		btrfs_item_key_to_cpu(leaf, &key, slot);
-> +		if (key.objectid != ino)
-> +			goto out;
-> +
-> +		/*
-> +		 * We ignore some types to make life easier:
-> +		 * - XATTR
-> +		 *   Both REG and DIR can have xattr, so not useful
-> +		 */
-> +		switch (key.type) {
-> +		case BTRFS_INODE_REF_KEY:
-> +			/* The most accurate way to determine filetype */
-> +			cur = btrfs_item_ptr_offset(leaf, slot);
-> +			end = cur + btrfs_item_size_nr(leaf, slot);
-> +			while (cur < end) {
-> +				iref = (struct btrfs_inode_ref *)cur;
-> +				namelen = min_t(u32, end - cur - sizeof(&iref),
-> +					btrfs_inode_ref_name_len(leaf, iref));
-> +				index = btrfs_inode_ref_index(leaf, iref);
-> +				read_extent_buffer(leaf, namebuf,
-> +					(unsigned long)(iref + 1), namelen);
-> +				ret = find_file_type(root, ino, key.offset,
-> +						index, namebuf, namelen,
-> +						&imode);
-> +				if (ret == 0) {
-> +					found = true;
-> +					goto out;
-> +				}
-> +				cur += sizeof(*iref) + namelen;
-> +			}
-> +			break;
-> +		case BTRFS_DIR_ITEM_KEY:
-> +		case BTRFS_DIR_INDEX_KEY:
-> +			imode = S_IFDIR;
-
-You should set found here. Otherwise this function returns ENOENT in those 2 branches. 
-BTW in relation to out private conversation I found this while trying to create test 
-cases which will trigger all branches. The fact it found bugs proves we should strive 
-for as much testing coverage as possible. 
-
-> +			goto out;
-> +		case BTRFS_EXTENT_DATA_KEY:
-> +			/*
-> +			 * Both REG and LINK could have EXTENT_DATA.
-> +			 * We just fall back to REG as user can inspect the
-> +			 * content.
-> +			 */
-> +			imode = S_IFREG;
-ditto
-
-> +			goto out;
-> +		}
-> +	}
-> +
-> +out:
-> +	/*
-> +	 * Both CHR and BLK uses rdev, no way to distinguish them, so fall back
-> +	 * to BLK. But either way it doesn't really matter, as CHR/BLK on btrfs
-> +	 * should be pretty rare, and no real data will be lost.
-> +	 */
-> +	if (!found && btrfs_stack_inode_rdev(&iitem) != 0) {
-> +		imode = S_IFBLK;
-> +		found = true;
-> +	}
-> +
-> +	if (found)
-> +		*imode_ret = (imode | priv);
-> +	else
-> +		ret = -ENOENT;
-> +	return ret;
-> +}
-> +
->  /*
->   * Reset the inode mode of the inode specified by @path.
-
-<snip>
+-- 
+Chris Murphy
