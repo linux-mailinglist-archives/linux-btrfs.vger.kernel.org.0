@@ -2,39 +2,40 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E11AF306
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 00:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB813AF329
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 01:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726192AbfIJWsx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 10 Sep 2019 18:48:53 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:41535 "EHLO
+        id S1725937AbfIJXOO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 10 Sep 2019 19:14:14 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:43992 "EHLO
         server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725937AbfIJWsx (ORCPT
+        by vger.kernel.org with ESMTP id S1725916AbfIJXOO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 10 Sep 2019 18:48:53 -0400
+        Tue, 10 Sep 2019 19:14:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
          s=default; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Reply-to:
-        In-Reply-To:References:Subject:To:From:Message-ID:Date:Sender:Cc:Content-ID:
+        In-Reply-To:References:Subject:Cc:To:From:Message-ID:Date:Sender:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=vPXNuZpRc0jlCuxv+qdZuRR8K1ADlxVlgXhcsSnP8lA=; b=lfyHJg6qtlWCTLRyCi6qzAPVfD
-        RAPx22RTNh4yXOm41x4pt7tLckwM+so0BrxvuB67+qnF2yv2e4HVFercqOwl19WsOBPlk29Kgnon5
-        CnGjU0au8yJUFyYWV3BsyppEBza+uE/Z30A9MexCsytv8D1E3M863jRVJnP5Hvg9OUGi2yP3u0Dit
-        GbWLpRyg3q9lmwZ99hFIodQYqH9P+f6nwHmG6AFTQc2A6i2egd8V0IVQe9L/UZNfV9XxTrqsI0qYL
-        dN3yK7twPdG17i/WstH2tqqAgOgFxjLbKGWZaxjdoIarpWgg91VJV+QiAYClkuj0/FSE38cfjh/Y8
-        BZgv8vDg==;
-Received: from [::1] (port=56090 helo=server53.web-hosting.com)
+        bh=nmRaVol3HwuiUVAgi3QxHVMKjf8eKbseQoBQ4uNotWw=; b=M3f+bSLglWqh2wEN0QI28r3cxF
+        uXBMLtTD8+eX5+nS5/KFXSXC4PXOaytGGtg0UJbAJOTiwSOm29/ijvCgacKrRGbo8RmquDxsZZttH
+        uhS4oF2ZIj0AhQnTduL8QBjQG2hD6RSiYIV472bj/pWVpAU/I3jP0khAlEkyecKsNfdydEfsajxrz
+        7n47z1WqjyUQiAbusO9w0A3fRsF3lQ9sq2b0kWmnvbIw8CDGw2SvGSFsuKDD8mYKQu1FjAqZ0SuIF
+        M1RBhpAjyG7WUfOTMPrp0PuB480RvQnkJ4Wi7absBFwkmATE6e0m4DJHT3KgWZw0vAm07mKgPm6jT
+        BrmJQ8hA==;
+Received: from [::1] (port=48296 helo=server53.web-hosting.com)
         by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <webmaster@zedlx.com>)
-        id 1i7owK-002pbw-I2; Tue, 10 Sep 2019 18:48:52 -0400
+        id 1i7pKq-0031vY-S5; Tue, 10 Sep 2019 19:14:13 -0400
 Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Tue, 10 Sep 2019 18:48:48 -0400
-Date:   Tue, 10 Sep 2019 18:48:48 -0400
-Message-ID: <20190910184848.Horde.rBGwfijOZ6nuE9QjuRAmbp4@server53.web-hosting.com>
+ (Horde Framework) with HTTPS; Tue, 10 Sep 2019 19:14:08 -0400
+Date:   Tue, 10 Sep 2019 19:14:08 -0400
+Message-ID: <20190910191408.Horde.APH6UgFmn857ecvizpk_Ijb@server53.web-hosting.com>
 From:   webmaster@zedlx.com
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: Feature requests: online backup - defrag - change RAID level
 References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
  <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
@@ -46,8 +47,7 @@ References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.c
  <3666d54b-76f7-9eee-4fb6-36c1dcc37fe9@gmx.com>
  <20190909212434.Horde.S2TAotDdK47dqQU5ejS2402@server53.web-hosting.com>
  <3978da3b-bb62-4995-bc46-785446d59265@gmx.com>
- <20190909233248.Horde.lTF4WXM9AzBZdWueqc2vsIZ@server53.web-hosting.com>
-In-Reply-To: <20190909233248.Horde.lTF4WXM9AzBZdWueqc2vsIZ@server53.web-hosting.com>
+In-Reply-To: <3978da3b-bb62-4995-bc46-785446d59265@gmx.com>
 Reply-to: webmaster@zedlx.com
 User-Agent: Horde Application Framework 5
 Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
@@ -72,125 +72,89 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-Quoting webmaster@zedlx.com:
+Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
 
-> Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
+>>> So here what we could do is: (From easy to hard)
+>>> - Introduce an interface to allow defrag not to touch shared extents
+>>>   it shouldn't be that difficult compared to other work we are going
+>>>   to do.
+>>>   At least, user has their choice.
+>>
+>> That defrag wouldn't acomplish much. You can call it defrag, but it is
+>> more like nothing happens.
 >
->> On 2019/9/10 上午9:24, webmaster@zedlx.com wrote:
->>>
->>> Quoting Qu Wenruo <quwenruo.btrfs@gmx.com>:
->>>
->>>>>> Btrfs defrag works by creating new extents containing the old data.
->>>>>>
->>>>>> So if btrfs decides to defrag, no old extents will be used.
->>>>>> It will all be new extents.
->>>>>>
->>>>>> That's why your proposal is freaking strange here.
->>>>>
->>>>> Ok, but: can the NEW extents still be shared?
->>>>
->>>> Can only be shared by reflink.
->>>> Not automatically, so if btrfs decides to defrag, it will not be shared
->>>> at all.
->>>>
->>>>> If you had an extent E88
->>>>> shared by 4 files in different subvolumes, can it be copied to another
->>>>> place and still be shared by the original 4 files?
->>>>
->>>> Not for current btrfs.
->>>>
->>>>> I guess that the
->>>>> answer is YES. And, that's the only requirement for a good defrag
->>>>> algorithm that doesn't shrink free space.
->>>>
->>>> We may go that direction.
->>>>
->>>> The biggest burden here is, btrfs needs to do expensive full-backref
->>>> walk to determine how many files are referring to this extent.
->>>> And then change them all to refer to the new extent.
->>>
->>> YES! That! Exactly THAT. That is what needs to be done.
->>>
->>> I mean, you just create an (perhaps associative) array which links an
->>> extent (the array index contains the extent ID) to all the files that
->>> reference that extent.
->>
->> You're exactly in the pitfall of btrfs backref walk.
->>
->> For btrfs, it's definitely not an easy work to do backref walk.
->> btrfs uses hidden backref, that means, under most case, one extent
->> shared by 1000 snapshots, in extent tree (shows the backref) it can
->> completely be possible to only have one ref, for the initial subvolume.
->>
->> For btrfs, you need to walk up the tree to find how it's shared.
->>
->> It has to be done like that, that's why we call it backref-*walk*.
->>
->> E.g
->>          A (subvol 257)     B (Subvol 258, snapshot of 257)
->>          |    \        /    |
->>          |        X         |
->>          |    /        \    |
->>          C                  D
->>         / \                / \
->>        E   F              G   H
->>
->> In extent tree, E is only referred by subvol 257.
->> While C has two referencers, 257 and 258.
->>
->> So in reality, you need to:
->> 1) Do a tree search from subvol 257
->>   You got a path, E -> C -> A
->> 2) Check each node to see if it's shared.
->>   E is only referred by C, no extra referencer.
->>   C is refered by two new tree blocks, A and B.
->>   A is refered by subvol 257.
->>   B is refered by subvol 258.
->>   So E is shared by 257 and 258.
->>
->> Now, you see how things would go mad, for each extent you must go that
->> way to determine the real owner of each extent, not to mention we can
->> have at most 8 levels, tree blocks at level 0~7 can all be shared.
->>
->> If it's shared by 1000 subvolumes, hope you had a good day then.
->
-> Ok, let's do just this issue for the time being. One issue at a  
-> time. It will be easier.
->
-> The solution is to temporarily create a copy of the entire  
-> backref-tree in memory. To create this copy, you just do a preorder  
-> depth-first traversal following only forward references.
->
-> So this preorder depth-first traversal would visit the nodes in the  
-> following order:
-> A,C,E,F,D,G,H,B
->
-> Oh, it is not a tree, it is a DAG in that example of yours. OK,  
-> preorder is possible on DAG, too. But how did you get a DAG,  
-> shouldn't it be all trees?
->
-> When you have the entire backref-tree (backref-DAG?) in memory,  
-> doing a backref-walk is a piece of cake.
->
-> Of course, this in-memory backref tree has to be kept in sync with  
-> the filesystem, that is it has to be updated whenever there is a  
-> write to disk. That's not so hard.
+> If one subvolume is not shared by snapshots or reflinks at all, I'd say
+> that's exactly what user want.
 
-Oh, I get why you have a DAG there. Because there are multiple trees,  
-one for each subvolume. Each subvolume is a tree, but when you combine  
-all subvolumes it is not a tree anymore.
+If one subvolume is not shared by snapshots, the super-duper defrag  
+would produce the same result concering that subvolume.
 
-So, I guess this solves this big performance-problem.
+Therefore, it is a waste of time to consider this case separately and  
+to go writing the code to cover just this case.
 
-I would make this backref-tree an associative array. So, for your  
-example, it would contain:
+>>> - Introduce different levels for defrag
+>>>   Allow btrfs to do some calculation and space usage policy to
+>>>   determine if it's a good idea to defrag some shared extents.
+>>>   E.g. my extreme case, unshare the extent would make it possible to
+>>>   defrag the other subvolume to free a huge amount of space.
+>>>   A compromise, let user to choose if they want to sacrifice some space.
+>>
+>> Meh. You can always defrag one chosen subvolume perfectly, without
+>> unsharing any file extents.
+>
+> If the subvolume is shared by another snapshot, you always need to face
+> the decision whether to unshare.
+> It's unavoidable.
 
-backref['A'] = {subvol 257}
-backref['C'] = {'A','B'}
-backref['E'] = {'C'}
-backref['F'] = {'C'}
-backref['D'] = {'A','B'}
-backref['G'] = {'D'}
-backref['H'] = {'D'}
-backref['B'] = {subvol 258}
+In my opinion, unsharing is a very bad thing to do. If the user orders  
+it, then OK, but I think it that it is rarely required.
+
+Unsharing can be done manually by just copying the data to another  
+place (partition). So, if someone really wants to unshare, he can  
+always easily do it.
+
+When you unshare, it is hard to go back. Unsharing is a one-way road.  
+When you unshare, you lose free space. Therefore, the defrag should  
+not unshare.
+
+In my view, the only real decision that needs to be left to the user  
+is: what to defrag?
+
+In terms of full or partial defrag:
+* Everything
+     - rarely; waste of time and resources, and it wears out SSDs
+     - perhaps this shouldn't be allowed at all
+* 2% od most fragmented files (2% ot total space used, by size in bytes)
+     - good idea for daily or weekly defrag
+     - good default
+* Let the user choose between 0.01% and 10%  (by size in bytes)
+     - the best
+
+Options by scope:
+   - One file (when necessary)
+   - One subvolume (when necessary)
+   - A list of subvolumes (with priority from first to last; the first  
+one on the list would be defragmented best)
+   - All subvolumes
+   - All subvolumes, with one exclusion list, and one priority list
+   - option to include or exclude RO subvolumes - as you said, this is  
+probably the hardest and implementation should be postponed
+
+Therefore, making a super-duper defrag which can defrag one file  
+(without unsharing!!!) is a good starting point, instead of wasing  
+time on your proposal "Introduce different levels for defrag".
+
+>> So, since it can be done perfectly without unsharing, why unshare at all?
+>
+> No, you can't.
+>
+> Go check my initial "red-herring" case.
+
+I might check it, but I think that you can't be right. You are  
+thinking too low-level. If you can split extents and fuse extents and  
+create new extents that are shared by multiple files, than what you  
+are saying is simply not possible. The operations I listed are  
+sufficient to produce a perfect full defrag. Always.
+
+
 
