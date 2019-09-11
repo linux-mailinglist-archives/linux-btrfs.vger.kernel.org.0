@@ -2,32 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FBCEAF775
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 10:09:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D0BAF785
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 10:16:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbfIKIJk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 04:09:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39176 "EHLO mx1.suse.de"
+        id S1727096AbfIKIQh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 04:16:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43852 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727151AbfIKIJj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 04:09:39 -0400
+        id S1727090AbfIKIQh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 04:16:37 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 56F70B04C;
-        Wed, 11 Sep 2019 08:09:37 +0000 (UTC)
-Subject: Re: [mainline][BUG][PPC][btrfs][bisected 00801a] kernel BUG at
- fs/btrfs/locking.c:71!
-To:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>
-Cc:     mpe <mpe@ellerman.id.au>, Brian King <brking@linux.vnet.ibm.com>,
-        chandan <chandan@linux.vnet.ibm.com>,
-        sachinp <sachinp@linux.vnet.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        David Sterba <dsterba@suse.com>, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <1567500907.5082.12.camel@abdul>
- <7139ac07-db63-b984-c416-d1c94337c9bf@suse.com>
- <1568188807.30609.6.camel@abdul.in.ibm.com>
+        by mx1.suse.de (Postfix) with ESMTP id 5C556AEEC;
+        Wed, 11 Sep 2019 08:16:35 +0000 (UTC)
+Subject: Re: possible circular locking dependency detected
+ (sb_internal/fs_reclaim)
+To:     Zdenek Sojka <zsojka@seznam.cz>, linux-btrfs@vger.kernel.org
+References: <GZb.2yo4.6GbOlvQ7LF7.1TUAXC@seznam.cz>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -72,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <c51e672f-c5b2-13d9-afa4-8f44a1e8580a@suse.com>
-Date:   Wed, 11 Sep 2019 11:09:34 +0300
+Message-ID: <ec419309-2903-aeed-8776-065920e65e7b@suse.com>
+Date:   Wed, 11 Sep 2019 11:16:34 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1568188807.30609.6.camel@abdul.in.ibm.com>
+In-Reply-To: <GZb.2yo4.6GbOlvQ7LF7.1TUAXC@seznam.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -88,46 +79,27 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 11.09.19 г. 11:00 ч., Abdul Haleem wrote:
-> On Tue, 2019-09-03 at 13:39 +0300, Nikolay Borisov wrote:
->>
-
-<split>
-
->> corresponds to?
+On 11.09.19 г. 10:54 ч.,  Zdenek Sojka  wrote:
+> Hello,
 > 
-> btrfs_search_slot+0x8e8/0xb80 maps to fs/btrfs/ctree.c:2751
->                 write_lock_level = BTRFS_MAX_LEVEL;
+> this is my fourth attempt to post this message to the mailing list; this time, without any attached kernel config (because it has over 100KiB). I also tried contacting the kernel btrfs maintainers directly by email, but they probably also didn't receive the message...
+> 
+> I am running kernel with lock debugging enabled since I am quite often encountering various lockups and hung tasks. Several of the problems have been fixed recently, but not all; I don't know if the following backtrace is related to the hangups, or if it is just a false positive.
+> 
+> $ uname -a
+> Linux zso 5.2.11-gentoo #2 SMP Fri Aug 30 07:18:03 CEST 2019 x86_64 Intel(R) Core(TM) i7-6700 CPU @ 3.40GHz GenuineIntel GNU/Linux
+> 
+> The kernel has a distro patchset applied (which should not affect this, but you can never say that for sure) and I am compiling at -O3 -fipa-pta -march=native instead of default -O2 (gcc-8.3.0).
+> 
+> Please let me know if I can provide any more information.
+> 
+> Best regards,
+> Zdenek Sojka
+> 
+> The dmesg warning I recently triggered:
 
-That doesn't make sense, presumably btrfs_search_slot+0x8e8/0xb80 should
-point at or right after the instruction which called
-btrfs_set_path_blocking. So either line 2796, 2894, 2901 or 2918 .
+This already received a patch in [PATCH] btrfs: nofs inode allocations
+It's just not reviewed/merged yet. Care to test that patch if you can
+reliably reproduce this?
 
->     9a70:       08 00 40 39     li      r10,8
->     9a74:       08 00 a0 3a     li      r21,8
->>   9a78:       6c 00 41 91     stw     r10,108(r1)
->     9a7c:       1c f8 ff 4b     b       9298 <btrfs_search_slot+0x108>
->                 b = btrfs_root_node(root);
-> 
-> 
-> and btrfs_assert_tree_locked+0x10/0x20 maps to ./fs/btrfs/locking.c:71
-> 
-> void btrfs_assert_tree_locked(struct extent_buffer *eb)
-> {
->         BUG_ON(!eb->write_locks);
->       80:       14 01 23 81     lwz     r9,276(r3)
->       84:       34 00 29 7d     cntlzw  r9,r9
->       88:       7e d9 29 55     rlwinm  r9,r9,27,5,31
->       8c:       20 00 29 79     clrldi  r9,r9,32
->>     90:       00 00 09 0b     tdnei   r9,0
->       94:       20 00 80 4e     blr
->       98:       00 00 00 60     nop
->       9c:       00 00 42 60     ori     r2,r2,0
-> 
-> I have sent direct message attaching vmlinux and the obj dump for
-> ctree.c and locking.c
-> 
-
-I just got a message from : InterScan Messaging Security Suite about
-some policy being broken and no vmscan.
-
+<snip>
