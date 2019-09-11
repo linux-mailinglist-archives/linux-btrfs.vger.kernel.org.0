@@ -2,174 +2,220 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C29AF76F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 10:08:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0F1AF762
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 10:00:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbfIKIIT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 04:08:19 -0400
-Received: from mxc1.seznam.cz ([77.75.79.23]:58756 "EHLO mxc1.seznam.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725379AbfIKIIT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 04:08:19 -0400
-X-Greylist: delayed 799 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Sep 2019 04:08:18 EDT
-Received: from email.seznam.cz
-        by email-smtpc10a.ko.seznam.cz (email-smtpc10a.ko.seznam.cz [10.53.11.45])
-        id 6f18a9217f90131d6f128460;
-        Wed, 11 Sep 2019 10:08:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
-        t=1568189296; bh=Y0odnW9rjPSgnBjGiH1Dk1DhQB/OXGJZ38pJExJE0RU=;
-        h=Received:From:To:Subject:Date:Message-Id:Mime-Version:X-Mailer:
-         Content-Type:Content-Transfer-Encoding;
-        b=S9Lj/p3q0FBpGEAvhprnDgSZazk2mEArOAJE5LGyjtF3LKQBUAhZ3W3KaAMB4iVaI
-         zHniNkZOeXDnLaj5SvLfw9j+6T95cqZvhA+2hsktNXFDZILc3+yVepFodfqEw5ogVi
-         D0vjZo4d7LWoDlE/Jb4ze3dzK8i9KCEk0OU/2CJc=
-Received: from unknown ([::ffff:62.24.65.155])
-        by email.seznam.cz (szn-ebox-4.5.361) with HTTP;
-        Wed, 11 Sep 2019 09:54:52 +0200 (CEST)
-From:   "Zdenek Sojka" <zsojka@seznam.cz>
-To:     <linux-btrfs@vger.kernel.org>
-Subject: =?utf-8?q?possible_circular_locking_dependency_detected_=28sb=5Fi?=
-        =?utf-8?q?nternal/fs=5Freclaim=29?=
-Date:   Wed, 11 Sep 2019 09:54:52 +0200 (CEST)
-Message-Id: <GZb.2yo4.6GbOlvQ7LF7.1TUAXC@seznam.cz>
-Mime-Version: 1.0 (szn-mime-2.0.45)
-X-Mailer: szn-ebox-4.5.361
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1726838AbfIKIAn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 04:00:43 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:65362 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726657AbfIKIAn (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 04:00:43 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x8B7vV2Q044782;
+        Wed, 11 Sep 2019 04:00:26 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2uxc00d8mv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Sep 2019 04:00:25 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.27/8.16.0.27) with SMTP id x8B7saxg007677;
+        Wed, 11 Sep 2019 08:00:14 GMT
+Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
+        by ppma03dal.us.ibm.com with ESMTP id 2uv468ht5h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 11 Sep 2019 08:00:13 +0000
+Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
+        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x8B80CP334865604
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 11 Sep 2019 08:00:12 GMT
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA2C46E05D;
+        Wed, 11 Sep 2019 08:00:11 +0000 (GMT)
+Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D57F96E07D;
+        Wed, 11 Sep 2019 08:00:08 +0000 (GMT)
+Received: from [9.124.31.108] (unknown [9.124.31.108])
+        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Wed, 11 Sep 2019 08:00:08 +0000 (GMT)
+Message-ID: <1568188807.30609.6.camel@abdul.in.ibm.com>
+Subject: Re: [mainline][BUG][PPC][btrfs][bisected 00801a] kernel BUG at
+ fs/btrfs/locking.c:71!
+From:   Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        mpe <mpe@ellerman.id.au>, Brian King <brking@linux.vnet.ibm.com>,
+        chandan <chandan@linux.vnet.ibm.com>,
+        sachinp <sachinp@linux.vnet.ibm.com>,
+        David Sterba <dsterba@suse.com>, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Wed, 11 Sep 2019 13:30:07 +0530
+In-Reply-To: <7139ac07-db63-b984-c416-d1c94337c9bf@suse.com>
+References: <1567500907.5082.12.camel@abdul>
+         <7139ac07-db63-b984-c416-d1c94337c9bf@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu1 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-09-11_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1906280000 definitions=main-1909110074
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
+On Tue, 2019-09-03 at 13:39 +0300, Nikolay Borisov wrote:
+> 
+> On 3.09.19 г. 11:55 ч., Abdul Haleem wrote:
+> > Greeting's
+> > 
+> > Mainline kernel panics with LTP/fs_fill-dir tests for btrfs file system on my P9 box running mainline kernel 5.3.0-rc5
+> > 
+> > BUG_ON was first introduced by below commit
+> > 
+> > commit 00801ae4bb2be5f5af46502ef239ac5f4b536094
+> > Author: David Sterba <dsterba@suse.com>
+> > Date:   Thu May 2 16:53:47 2019 +0200
+> > 
+> >     btrfs: switch extent_buffer write_locks from atomic to int
+> >     
+> >     The write_locks is either 0 or 1 and always updated under the lock,
+> >     so we don't need the atomic_t semantics.
+> >     
+> >     Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> >     Signed-off-by: David Sterba <dsterba@suse.com>
+> > 
+> > diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+> > index 2706676279..98fccce420 100644
+> > --- a/fs/btrfs/locking.c
+> > +++ b/fs/btrfs/locking.c
+> > @@ -58,17 +58,17 @@ static void btrfs_assert_tree_read_locked(struct
+> > extent_buffer *eb)
+> >  
+> >  static void btrfs_assert_tree_write_locks_get(struct extent_buffer *eb)
+> >  {
+> > -       atomic_inc(&eb->write_locks);
+> > +       eb->write_locks++;
+> >  }
+> >  
+> >  static void btrfs_assert_tree_write_locks_put(struct extent_buffer *eb)
+> >  {
+> > -       atomic_dec(&eb->write_locks);
+> > +       eb->write_locks--;
+> >  }
+> >  
+> >  void btrfs_assert_tree_locked(struct extent_buffer *eb)
+> >  {
+> > -       BUG_ON(!atomic_read(&eb->write_locks));
+> > +       BUG_ON(!eb->write_locks);
+> >  }
+> >  
+> > 
+> > tests logs:
+> > avocado-misc-tests/io/disk/ltp_fs.py:LtpFs.test_fs_run;fs_fill-dir-ext3-61cd:  [ 3376.022096] EXT4-fs (nvme0n1): mounting ext3 file system using the ext4 subsystem
+> > EXT4-fs (nvme0n1): mounted filesystem with ordered data mode. Opts: (null)
+> > EXT4-fs (loop1): mounting ext2 file system using the ext4 subsystem
+> > EXT4-fs (loop1): mounted filesystem without journal. Opts: (null)
+> > EXT4-fs (loop1): mounting ext3 file system using the ext4 subsystem
+> > EXT4-fs (loop1): mounted filesystem with ordered data mode. Opts: (null)
+> > EXT4-fs (loop1): mounted filesystem with ordered data mode. Opts: (null)
+> > XFS (loop1): Mounting V5 Filesystem
+> > XFS (loop1): Ending clean mount
+> > XFS (loop1): Unmounting Filesystem
+> > BTRFS: device fsid 7c08f81b-6642-4a06-9182-2884e80d56ee devid 1 transid 5 /dev/loop1
+> > BTRFS info (device loop1): disk space caching is enabled
+> > BTRFS info (device loop1): has skinny extents
+> > BTRFS info (device loop1): enabling ssd optimizations
+> > BTRFS info (device loop1): creating UUID tree
+> > ------------[ cut here ]------------
+> > kernel BUG at fs/btrfs/locking.c:71!
+> > Oops: Exception in kernel mode, sig: 5 [#1]
+> > LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+> > Dumping ftrace buffer:
+> >    (ftrace buffer empty)
+> > Modules linked in: fuse(E) vfat(E) fat(E) btrfs(E) xor(E)
+> > zstd_decompress(E) zstd_compress(E) raid6_pq(E) xfs(E) raid0(E)
+> > linear(E) dm_round_robin(E) dm_queue_length(E) dm_service_time(E)
+> > dm_multipath(E) loop(E) rpadlpar_io(E) rpaphp(E) lpfc(E) bnx2x(E)
+> > xt_CHECKSUM(E) xt_MASQUERADE(E) tun(E) bridge(E) stp(E) llc(E) kvm_pr(E)
+> > kvm(E) tcp_diag(E) udp_diag(E) inet_diag(E) unix_diag(E)
+> > af_packet_diag(E) netlink_diag(E) ip6t_rpfilter(E) ipt_REJECT(E)
+> > nf_reject_ipv4(E) ip6t_REJECT(E) nf_reject_ipv6(E) xt_conntrack(E)
+> > ip_set(E) nfnetlink(E) ebtable_nat(E) ebtable_broute(E) ip6table_nat(E)
+> > ip6table_mangle(E) ip6table_security(E) ip6table_raw(E) iptable_nat(E)
+> > nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E)
+> > iptable_mangle(E) iptable_security(E) iptable_raw(E) ebtable_filter(E)
+> > ebtables(E) ip6table_filter(E) ip6_tables(E) iptable_filter(E) sunrpc(E)
+> > raid10(E) xts(E) pseries_rng(E) vmx_crypto(E) sg(E) uio_pdrv_genirq(E)
+> > uio(E) binfmt_misc(E) sch_fq_codel(E) ip_tables(E)
+> >  ext4(E) mbcache(E) jbd2(E) sr_mod(E) cdrom(E) sd_mod(E) ibmvscsi(E)
+> > scsi_transport_srp(E) ibmveth(E) nvmet_fc(E) nvmet(E) nvme_fc(E)
+> > nvme_fabrics(E) scsi_transport_fc(E) mdio(E) libcrc32c(E) ptp(E)
+> > pps_core(E) nvme(E) nvme_core(E) dm_mirror(E) dm_region_hash(E)
+> > dm_log(E) dm_mod(E) [last unloaded: lpfc]
+> > CPU: 14 PID: 1803 Comm: kworker/u32:8 Tainted: G            E     5.3.0-rc5-autotest-autotest #1
+> > Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+> > NIP:  c00800000164dd70 LR: c00800000164df00 CTR: c000000000a817a0
+> > REGS: c00000000260b5d0 TRAP: 0700   Tainted: G            E      (5.3.0-rc5-autotest-autotest)
+> > MSR:  8000000102029033 <SF,VEC,EE,ME,IR,DR,RI,LE,TM[E]>  CR: 22444082  XER: 00000000
+> > CFAR: c00800000164defc IRQMASK: 0
+> > GPR00: c0080000015c55f4 c00000000260b860 c008000001703b00 c000000267a29af0
+> > GPR04: 0000000000000000 0000000000000001 0000000000000000 0000000000000000
+> > GPR08: 0000000000000000 0000000000000001 0000000000000000 0000000000000004
+> > GPR12: 0000000000004000 c00000001ec58e00 0000000000000000 0000000000000000
+> > GPR16: 0000000000010000 0000000000000004 0000000000000001 0000000000000001
+> > GPR20: 0000000000000000 0000000000000001 000000003e0f83e1 c00000025a7cbef0
+> > GPR24: c00000000260ba26 0000000040000000 c0000000014a26e8 0000000000000003
+> > GPR28: 0000000000000004 c00000025f2010a0 c000000267a29af0 0000000000000000
+> > NIP [c00800000164dd70] btrfs_assert_tree_locked+0x10/0x20 [btrfs]
+> > LR [c00800000164df00] btrfs_set_lock_blocking_write+0x60/0x100 [btrfs]
+> > Call Trace:
+> > [c00000000260b860] [c00000000260b8e0] 0xc00000000260b8e0 (unreliable)
+> > [c00000000260b890] [c0080000015c55f4] btrfs_set_path_blocking+0xb4/0xc0 [btrfs]
+> > [c00000000260b8e0] [c0080000015cb808] btrfs_search_slot+0x8e8/0xb80 [btrfs]
+> 
+> Can you provide the line numbers btrfs_search_slot+0x8e8/0xb80
+> corresponds to?
 
-this is my fourth attempt to post this message to the mailing list; this t=
-ime, without any attached kernel config (because it has over 100KiB). I al=
-so tried contacting the kernel btrfs maintainers directly by email, but th=
-ey probably also didn't receive the message...
+btrfs_search_slot+0x8e8/0xb80 maps to fs/btrfs/ctree.c:2751
+                write_lock_level = BTRFS_MAX_LEVEL;
+    9a70:       08 00 40 39     li      r10,8
+    9a74:       08 00 a0 3a     li      r21,8
+>   9a78:       6c 00 41 91     stw     r10,108(r1)
+    9a7c:       1c f8 ff 4b     b       9298 <btrfs_search_slot+0x108>
+                b = btrfs_root_node(root);
 
-I am running kernel with lock debugging enabled since I am quite often enc=
-ountering various lockups and hung tasks. Several of the problems have bee=
-n fixed recently, but not all; I don't know if the following backtrace is =
-related to the hangups, or if it is just a false positive.
 
-$ uname -a
-Linux zso 5.2.11-gentoo #2 SMP Fri Aug 30 07:18:03 CEST 2019 x86_64 Intel(=
-R) Core(TM) i7-6700 CPU @ 3.40GHz GenuineIntel GNU/Linux
+and btrfs_assert_tree_locked+0x10/0x20 maps to ./fs/btrfs/locking.c:71
 
-The kernel has a distro patchset applied (which should not affect this, bu=
-t you can never say that for sure) and I am compiling at -O3 -fipa-pta -ma=
-rch=3Dnative instead of default -O2 (gcc-8.3.0).
+void btrfs_assert_tree_locked(struct extent_buffer *eb)
+{
+        BUG_ON(!eb->write_locks);
+      80:       14 01 23 81     lwz     r9,276(r3)
+      84:       34 00 29 7d     cntlzw  r9,r9
+      88:       7e d9 29 55     rlwinm  r9,r9,27,5,31
+      8c:       20 00 29 79     clrldi  r9,r9,32
+>     90:       00 00 09 0b     tdnei   r9,0
+      94:       20 00 80 4e     blr
+      98:       00 00 00 60     nop
+      9c:       00 00 42 60     ori     r2,r2,0
 
-Please let me know if I can provide any more information.
+I have sent direct message attaching vmlinux and the obj dump for
+ctree.c and locking.c
 
-Best regards,
-Zdenek Sojka
+-- 
+Regard's
 
-The dmesg warning I recently triggered:
+Abdul Haleem
+IBM Linux Technology Centre
 
-[30560.303721] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[30560.303722] WARNING: possible circular locking dependency detected
-[30560.303723] 5.2.11-gentoo #2 Not tainted
-[30560.303724] ------------------------------------------------------
-[30560.303725] kswapd0/711 is trying to acquire lock:
-[30560.303726] 000000007777a663 (sb_internal){.+.+}, at: start_transaction=
-+0x3a8/0x500
-[30560.303731]
-but task is already holding lock:
-[30560.303732] 000000000ba86300 (fs_reclaim){+.+.}, at: __fs_reclaim_acqui=
-re+0x0/0x30
-[30560.303735]
-which lock already depends on the new lock.
 
-[30560.303736]
-the existing dependency chain (in reverse order) is:
-[30560.303737]
--> #1 (fs_reclaim){+.+.}:
-[30560.303740] kmem_cache_alloc+0x1f/0x1c0
-[30560.303742] btrfs_alloc_inode+0x1f/0x260
-[30560.303744] alloc_inode+0x16/0xa0
-[30560.303745] new_inode+0xe/0xb0
-[30560.303747] btrfs_new_inode+0x70/0x610
-[30560.303749] btrfs_symlink+0xd0/0x420
-[30560.303750] vfs_symlink+0x9c/0x100
-[30560.303751] do_symlinkat+0x66/0xe0
-[30560.303753] do_syscall_64+0x55/0x1c0
-[30560.303756] entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[30560.303756]
--> #0 (sb_internal){.+.+}:
-[30560.303758] __sb_start_write+0xf6/0x150
-[30560.303759] start_transaction+0x3a8/0x500
-[30560.303760] btrfs_commit_inode_delayed_inode+0x59/0x110
-[30560.303761] btrfs_evict_inode+0x19e/0x4c0
-[30560.303763] evict+0xbc/0x1f0
-[30560.303763] inode_lru_isolate+0x113/0x190
-[30560.303765] __list_lru_walk_one.isra.4+0x5c/0x100
-[30560.303766] list_lru_walk_one+0x32/0x50
-[30560.303766] prune_icache_sb+0x36/0x80
-[30560.303768] super_cache_scan+0x14a/0x1d0
-[30560.303769] do_shrink_slab+0x131/0x320
-[30560.303770] shrink_node+0xf7/0x380
-[30560.303772] balance_pgdat+0x2d5/0x640
-[30560.303773] kswapd+0x2ba/0x5e0
-[30560.303774] kthread+0x147/0x160
-[30560.303775] ret_from_fork+0x24/0x30
-[30560.303776]
-other info that might help us debug this:
 
-[30560.303776] Possible unsafe locking scenario:
-
-[30560.303777] CPU0 CPU1
-[30560.303777] ---- ----
-[30560.303778] lock(fs_reclaim);
-[30560.303778] lock(sb_internal);
-[30560.303779] lock(fs_reclaim);
-[30560.303780] lock(sb_internal);
-[30560.303780]
-*** DEADLOCK ***
-
-[30560.303781] 3 locks held by kswapd0/711:
-[30560.303782] #0: 000000000ba86300 (fs_reclaim){+.+.}, at: __fs_reclaim_a=
-cquire+0x0/0x30
-[30560.303784] #1: 000000004a5100f8 (shrinker_rwsem){++++}, at: shrink_nod=
-e+0x9a/0x380
-[30560.303786] #2: 00000000f956fa46 (&type->s_umount_key#30){++++}, at: su=
-per_cache_scan+0x35/0x1d0
-[30560.303788]
-stack backtrace:
-[30560.303789] CPU: 7 PID: 711 Comm: kswapd0 Not tainted 5.2.11-gentoo #2=
-
-[30560.303790] Hardware name: Dell Inc. Precision Tower 3620/0MWYPT, BIOS =
-2.4.2 09/29/2017
-[30560.303791] Call Trace:
-[30560.303793] dump_stack+0x85/0xc7
-[30560.303795] print_circular_bug.cold.40+0x1d9/0x235
-[30560.303796] __lock_acquire+0x18b1/0x1f00
-[30560.303797] lock_acquire+0xa6/0x170
-[30560.303798] ? start_transaction+0x3a8/0x500
-[30560.303799] __sb_start_write+0xf6/0x150
-[30560.303800] ? start_transaction+0x3a8/0x500
-[30560.303801] start_transaction+0x3a8/0x500
-[30560.303802] btrfs_commit_inode_delayed_inode+0x59/0x110
-[30560.303804] btrfs_evict_inode+0x19e/0x4c0
-[30560.303805] ? var_wake_function+0x20/0x20
-[30560.303806] evict+0xbc/0x1f0
-[30560.303807] inode_lru_isolate+0x113/0x190
-[30560.303808] ? discard_new_inode+0xc0/0xc0
-[30560.303809] __list_lru_walk_one.isra.4+0x5c/0x100
-[30560.303810] ? discard_new_inode+0xc0/0xc0
-[30560.303811] list_lru_walk_one+0x32/0x50
-[30560.303812] prune_icache_sb+0x36/0x80
-[30560.303813] super_cache_scan+0x14a/0x1d0
-[30560.303815] do_shrink_slab+0x131/0x320
-[30560.303816] shrink_node+0xf7/0x380
-[30560.303817] balance_pgdat+0x2d5/0x640
-[30560.303819] kswapd+0x2ba/0x5e0
-[30560.303820] ? __wake_up_common_lock+0x90/0x90
-[30560.303822] kthread+0x147/0x160
-[30560.303823] ? balance_pgdat+0x640/0x640
-[30560.303824] ? __kthread_create_on_node+0x160/0x160
-[30560.303826] ret_from_fork+0x24/0x30
