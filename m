@@ -2,77 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 692F5AFB58
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 13:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8A7AFC15
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 14:03:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726781AbfIKL1I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 07:27:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44210 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725616AbfIKL1I (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 07:27:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4FDEFAEB8;
-        Wed, 11 Sep 2019 11:27:05 +0000 (UTC)
-Subject: Re: [mainline][BUG][PPC][btrfs][bisected 00801a] kernel BUG at
- fs/btrfs/locking.c:71!
-To:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+        id S1727888AbfIKMCr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 08:02:47 -0400
+Received: from mail-yw1-f44.google.com ([209.85.161.44]:39173 "EHLO
+        mail-yw1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726702AbfIKMCq (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 08:02:46 -0400
+Received: by mail-yw1-f44.google.com with SMTP id n11so7710861ywn.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 05:02:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kk5dAnKTj+Qc1sUQptQ2wthgUbnWawKjTy/AoVBEqIw=;
+        b=vbIlleAgXzGeY8VZmThC25nOZ1RV9vnhRXIUUVnuOXGL+xFEz8QXKAlxrDqOI1ix8h
+         UvAyWgWG3VOD430c7IoJPAGWSgpFqgDLwzJ1zMu0bC2w9YL+h/yplbkvPb+WYQ11p4Ql
+         B0/td1BjiW+tJ/fpjyZV9O0Yva14ue3Smck1uLRhEtamnkgNwi9QpJHW1DFPELWlPJgU
+         kudnlgPt4SPlQVhMDrKGrBQrNxqba9zrcqyhPJ8O9nPJ+HiZBKIRgfFvQ5jPKe5/mIQe
+         /dwTjVXHiRNqeLqzBdN4uF/7MbHtbbJGSUC81rK9PPmvcnSDx59zNJJmiz4VDHwIaAS2
+         NmcA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kk5dAnKTj+Qc1sUQptQ2wthgUbnWawKjTy/AoVBEqIw=;
+        b=XMnsjHb1nq7ceaGV3wWUod1UYV4RCGWJF0saSjDnLojjyBxsH+1gQTet3pkJ9ISdCs
+         sVMDlmkgrbH2d4MjLHamWM/ARuM7Te5ABFRGoHEwaXuThFGib+CLhIVhH2IhjXq7kDDP
+         zISSa+wpVV3KB1nbhNxxJApSVMd3mHNJ6OLC5LY4CJlRnLGCifw/Mox9RyjtxfFK8Dj9
+         HwNZQarptTO4IhlPPFBqV6JBveTOKkagf5+teeNn54Az1g/CbKMx4eCAiFWKEk16AvGx
+         PsvMwQoHECaomszhuGFVxnqktFy2CoTNupScgjrOkCwskQzGcAspI5DH5Tb2EjUp86mE
+         jQmQ==
+X-Gm-Message-State: APjAAAWv2aF5jAGcBBReIr/ck1zN+mRcOqbu6Fs/O5aK3u0K4izG/8Su
+        OFW3tp0/p/IMTMpK2np13PlQQVNGes8=
+X-Google-Smtp-Source: APXvYqyersIa770Ia/tGda0nZ0sjJsiymBgDmPoK2bo5LQXAzcHQ1jBGAyMyUVY44FhALJdbq3SRBQ==
+X-Received: by 2002:a81:3583:: with SMTP id c125mr23401425ywa.278.1568203364067;
+        Wed, 11 Sep 2019 05:02:44 -0700 (PDT)
+Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
+        by smtp.gmail.com with ESMTPSA id g40sm4415025ywk.14.2019.09.11.05.02.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Sep 2019 05:02:43 -0700 (PDT)
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+To:     webmaster@zedlx.com
 Cc:     linux-btrfs@vger.kernel.org
-References: <1567500907.5082.12.camel@abdul>
- <7139ac07-db63-b984-c416-d1c94337c9bf@suse.com>
- <1568188807.30609.6.camel@abdul.in.ibm.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <41400da7-0f3b-0c45-4870-114526e59c67@suse.com>
-Date:   Wed, 11 Sep 2019 14:27:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+ <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+ <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
+ <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
+ <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
+Date:   Wed, 11 Sep 2019 08:02:40 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.0
 MIME-Version: 1.0
-In-Reply-To: <1568188807.30609.6.camel@abdul.in.ibm.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -80,131 +72,93 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 11.09.19 г. 11:00 ч., Abdul Haleem wrote:
-> On Tue, 2019-09-03 at 13:39 +0300, Nikolay Borisov wrote:
->>
->> On 3.09.19 г. 11:55 ч., Abdul Haleem wrote:
->>> Greeting's
->>>
->>> Mainline kernel panics with LTP/fs_fill-dir tests for btrfs file system on my P9 box running mainline kernel 5.3.0-rc5
->>>
->>> BUG_ON was first introduced by below commit
->>>
->>> commit 00801ae4bb2be5f5af46502ef239ac5f4b536094
->>> Author: David Sterba <dsterba@suse.com>
->>> Date:   Thu May 2 16:53:47 2019 +0200
->>>
->>>     btrfs: switch extent_buffer write_locks from atomic to int
->>>     
->>>     The write_locks is either 0 or 1 and always updated under the lock,
->>>     so we don't need the atomic_t semantics.
->>>     
->>>     Reviewed-by: Nikolay Borisov <nborisov@suse.com>
->>>     Signed-off-by: David Sterba <dsterba@suse.com>
->>>
->>> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
->>> index 2706676279..98fccce420 100644
->>> --- a/fs/btrfs/locking.c
->>> +++ b/fs/btrfs/locking.c
->>> @@ -58,17 +58,17 @@ static void btrfs_assert_tree_read_locked(struct
->>> extent_buffer *eb)
->>>  
->>>  static void btrfs_assert_tree_write_locks_get(struct extent_buffer *eb)
->>>  {
->>> -       atomic_inc(&eb->write_locks);
->>> +       eb->write_locks++;
->>>  }
->>>  
->>>  static void btrfs_assert_tree_write_locks_put(struct extent_buffer *eb)
->>>  {
->>> -       atomic_dec(&eb->write_locks);
->>> +       eb->write_locks--;
->>>  }
->>>  
->>>  void btrfs_assert_tree_locked(struct extent_buffer *eb)
->>>  {
->>> -       BUG_ON(!atomic_read(&eb->write_locks));
->>> +       BUG_ON(!eb->write_locks);
->>>  }
->>>  
->>>
->>> tests logs:
->>> avocado-misc-tests/io/disk/ltp_fs.py:LtpFs.test_fs_run;fs_fill-dir-ext3-61cd:  [ 3376.022096] EXT4-fs (nvme0n1): mounting ext3 file system using the ext4 subsystem
->>> EXT4-fs (nvme0n1): mounted filesystem with ordered data mode. Opts: (null)
->>> EXT4-fs (loop1): mounting ext2 file system using the ext4 subsystem
->>> EXT4-fs (loop1): mounted filesystem without journal. Opts: (null)
->>> EXT4-fs (loop1): mounting ext3 file system using the ext4 subsystem
->>> EXT4-fs (loop1): mounted filesystem with ordered data mode. Opts: (null)
->>> EXT4-fs (loop1): mounted filesystem with ordered data mode. Opts: (null)
->>> XFS (loop1): Mounting V5 Filesystem
->>> XFS (loop1): Ending clean mount
->>> XFS (loop1): Unmounting Filesystem
->>> BTRFS: device fsid 7c08f81b-6642-4a06-9182-2884e80d56ee devid 1 transid 5 /dev/loop1
->>> BTRFS info (device loop1): disk space caching is enabled
->>> BTRFS info (device loop1): has skinny extents
->>> BTRFS info (device loop1): enabling ssd optimizations
->>> BTRFS info (device loop1): creating UUID tree
->>> ------------[ cut here ]------------
->>> kernel BUG at fs/btrfs/locking.c:71!
->>> Oops: Exception in kernel mode, sig: 5 [#1]
->>> LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
->>> Dumping ftrace buffer:
->>>    (ftrace buffer empty)
->>> Modules linked in: fuse(E) vfat(E) fat(E) btrfs(E) xor(E)
->>> zstd_decompress(E) zstd_compress(E) raid6_pq(E) xfs(E) raid0(E)
->>> linear(E) dm_round_robin(E) dm_queue_length(E) dm_service_time(E)
->>> dm_multipath(E) loop(E) rpadlpar_io(E) rpaphp(E) lpfc(E) bnx2x(E)
->>> xt_CHECKSUM(E) xt_MASQUERADE(E) tun(E) bridge(E) stp(E) llc(E) kvm_pr(E)
->>> kvm(E) tcp_diag(E) udp_diag(E) inet_diag(E) unix_diag(E)
->>> af_packet_diag(E) netlink_diag(E) ip6t_rpfilter(E) ipt_REJECT(E)
->>> nf_reject_ipv4(E) ip6t_REJECT(E) nf_reject_ipv6(E) xt_conntrack(E)
->>> ip_set(E) nfnetlink(E) ebtable_nat(E) ebtable_broute(E) ip6table_nat(E)
->>> ip6table_mangle(E) ip6table_security(E) ip6table_raw(E) iptable_nat(E)
->>> nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E)
->>> iptable_mangle(E) iptable_security(E) iptable_raw(E) ebtable_filter(E)
->>> ebtables(E) ip6table_filter(E) ip6_tables(E) iptable_filter(E) sunrpc(E)
->>> raid10(E) xts(E) pseries_rng(E) vmx_crypto(E) sg(E) uio_pdrv_genirq(E)
->>> uio(E) binfmt_misc(E) sch_fq_codel(E) ip_tables(E)
->>>  ext4(E) mbcache(E) jbd2(E) sr_mod(E) cdrom(E) sd_mod(E) ibmvscsi(E)
->>> scsi_transport_srp(E) ibmveth(E) nvmet_fc(E) nvmet(E) nvme_fc(E)
->>> nvme_fabrics(E) scsi_transport_fc(E) mdio(E) libcrc32c(E) ptp(E)
->>> pps_core(E) nvme(E) nvme_core(E) dm_mirror(E) dm_region_hash(E)
->>> dm_log(E) dm_mod(E) [last unloaded: lpfc]
->>> CPU: 14 PID: 1803 Comm: kworker/u32:8 Tainted: G            E     5.3.0-rc5-autotest-autotest #1
->>> Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
->>> NIP:  c00800000164dd70 LR: c00800000164df00 CTR: c000000000a817a0
->>> REGS: c00000000260b5d0 TRAP: 0700   Tainted: G            E      (5.3.0-rc5-autotest-autotest)
->>> MSR:  8000000102029033 <SF,VEC,EE,ME,IR,DR,RI,LE,TM[E]>  CR: 22444082  XER: 00000000
->>> CFAR: c00800000164defc IRQMASK: 0
->>> GPR00: c0080000015c55f4 c00000000260b860 c008000001703b00 c000000267a29af0
->>> GPR04: 0000000000000000 0000000000000001 0000000000000000 0000000000000000
->>> GPR08: 0000000000000000 0000000000000001 0000000000000000 0000000000000004
->>> GPR12: 0000000000004000 c00000001ec58e00 0000000000000000 0000000000000000
->>> GPR16: 0000000000010000 0000000000000004 0000000000000001 0000000000000001
->>> GPR20: 0000000000000000 0000000000000001 000000003e0f83e1 c00000025a7cbef0
->>> GPR24: c00000000260ba26 0000000040000000 c0000000014a26e8 0000000000000003
->>> GPR28: 0000000000000004 c00000025f2010a0 c000000267a29af0 0000000000000000
->>> NIP [c00800000164dd70] btrfs_assert_tree_locked+0x10/0x20 [btrfs]
->>> LR [c00800000164df00] btrfs_set_lock_blocking_write+0x60/0x100 [btrfs]
->>> Call Trace:
->>> [c00000000260b860] [c00000000260b8e0] 0xc00000000260b8e0 (unreliable)
->>> [c00000000260b890] [c0080000015c55f4] btrfs_set_path_blocking+0xb4/0xc0 [btrfs]
->>> [c00000000260b8e0] [c0080000015cb808] btrfs_search_slot+0x8e8/0xb80 [btrfs]
->>
->> Can you provide the line numbers btrfs_search_slot+0x8e8/0xb80
->> corresponds to?
+On 2019-09-10 19:32, webmaster@zedlx.com wrote:
 > 
-> btrfs_search_slot+0x8e8/0xb80 maps to fs/btrfs/ctree.c:2751
->                 write_lock_level = BTRFS_MAX_LEVEL;
->     9a70:       08 00 40 39     li      r10,8
->     9a74:       08 00 a0 3a     li      r21,8
->>   9a78:       6c 00 41 91     stw     r10,108(r1)
->     9a7c:       1c f8 ff 4b     b       9298 <btrfs_search_slot+0x108>
->                 b = btrfs_root_node(root);
+> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+> 
+> 
+>>> Defrag may break up extents. Defrag may fuse extents. But it shouln't 
+>>> ever unshare extents.
+> 
+>> Actually, spitting or merging extents will unshare them in a large 
+>> majority of cases.
+> 
+> Ok, this point seems to be repeated over and over without any proof, and 
+> it is illogical to me.
+> 
+> About merging extents: a defrag should merge extents ONLY when both 
+> extents are shared by the same files (and when those extents are 
+> neighbours in both files). In other words, defrag should always merge 
+> without unsharing. Let's call that operation "fusing extents", so that 
+> there are no more misunderstandings.
+And I reiterate: defrag only operates on the file it's passed in.  It 
+needs to for efficiency reasons (we had a reflink aware defrag for a 
+while a few years back, it got removed because performance limitations 
+meant it was unusable in the cases where you actually needed it). 
+Defrag doesn't even know that there are reflinks to the extents it's 
+operating on.
 
-Can you print the output of 'l *(btrfs_search_slot+0x8e8)' in gdb or
- scripts/faddr2line . Because neither this nor the sent objdump is of
-much help.
+Now factor in that _any_ write will result in unsharing the region being 
+written to, rounded to the nearest full filesystem block in both 
+directions (this is mandatory, it's a side effect of the copy-on-write 
+nature of BTRFS, and is why files that experience heavy internal 
+rewrites get fragmented very heavily and very quickly on BTRFS).
 
+Given this, defrag isn't willfully unsharing anything, it's just a 
+side-effect of how it works (since it's rewriting the block layout of 
+the file in-place).
+> 
+> === I CHALLENGE you and anyone else on this mailing list: ===
+> 
+>   - Show me an exaple where splitting an extent requires unsharing, and 
+> this split is needed to defrag.
+> 
+> Make it clear, write it yourself, I don't want any machine-made outputs.
+> 
+Start with the above comment about all writes unsharing the region being 
+written to.
+
+Now, extrapolating from there:
+
+Assume you have two files, A and B, each consisting of 64 filesystem 
+blocks in single shared extent.  Now assume somebody writes a few bytes 
+to the middle of file B, right around the boundary between blocks 31 and 
+32, and that you get similar writes to file A straddling blocks 14-15 
+and 47-48.
+
+After all of that, file A will be 5 extents:
+
+* A reflink to blocks 0-13 of the original extent.
+* A single isolated extent consisting of the new blocks 14-15
+* A reflink to blocks 16-46 of the original extent.
+* A single isolated extent consisting of the new blocks 47-48
+* A reflink to blocks 49-63 of the original extent.
+
+And file B will be 3 extents:
+
+* A reflink to blocks 0-30 of the original extent.
+* A single isolated extent consisting of the new blocks 31-32.
+* A reflink to blocks 32-63 of the original extent.
+
+Note that there are a total of four contiguous sequences of blocks that 
+are common between both files:
+
+* 0-13
+* 16-30
+* 32-46
+* 49-63
+
+There is no way to completely defragment either file without splitting 
+the original extent (which is still there, just not fully referenced by 
+either file) unless you rewrite the whole file to a new single extent 
+(which would, of course, completely unshare the whole file).  In fact, 
+if you want to ensure that those shared regions stay reflinked, there's 
+no way to defragment either file without _increasing_ the number of 
+extents in that file (either file would need 7 extents to properly share 
+only those 4 regions), and even then only one of the files could be 
+fully defragmented.
+
+Such a situation generally won't happen if you're just dealing with 
+read-only snapshots, but is not unusual when dealing with regular files 
+that are reflinked (which is not an uncommon situation on some systems, 
+as a lot of people have `cp` aliased to reflink things whenever possible).
