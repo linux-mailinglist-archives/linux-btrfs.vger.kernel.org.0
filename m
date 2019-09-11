@@ -2,347 +2,302 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9146DB02C5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 19:37:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 134BDB0376
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 20:19:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbfIKRh2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 13:37:28 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:37549 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729349AbfIKRh1 (ORCPT
+        id S1729887AbfIKSTM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 14:19:12 -0400
+Received: from mail-qk1-f176.google.com ([209.85.222.176]:36357 "EHLO
+        mail-qk1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728198AbfIKSTM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 13:37:27 -0400
-Received: by mail-wr1-f68.google.com with SMTP id i1so24949631wro.4
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 10:37:24 -0700 (PDT)
+        Wed, 11 Sep 2019 14:19:12 -0400
+Received: by mail-qk1-f176.google.com with SMTP id s18so21839582qkj.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 11:19:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=i1T19SkPU+cFnelKdy9GHyeldabdUHMUXqyEchdHFpc=;
+        b=CFOnNSq7QCWS7sNw3xCh+nQ1D4lB4c/PdzIlqiwUUDTK151rSu/hNWoVTs+BIuIuDT
+         FZArvqhgBN5imEh54rWjeYLvY13bP72Lg1ctBRlWjR3ONBhBkwHIDaD1IH+tJ79Ak2MK
+         vq2isH51aMEVROUpHRGk2lXlGsIEdToUOKe1PcYb6el9yLOViLfZSIqOG6pG1UUw2n45
+         T53Shzt3ee3qRD3qT+PujigaMQhSs3kLOQz2XrFbnfxTt5EvKn797UqvOsB5g4wZDMG+
+         O8DyT0YiZYqCFaGJ7AXmQM+vdc5kXqAgArxE7xpzRMV3vbYjbeeX0aaiK73qfLYHGzvF
+         05wg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=gjNVWadsGNgJSWN7v06v9qP15hsIqlrGUmyAJzT80VA=;
-        b=iZZCS+FZI8k5VxDu6HZTaw1S+K783wSrWW8LSWue9MNAmTI3v6U3U001bjD8vErhUV
-         85Pbiq1sbj7hLUEUoogPKNeMPVjDr3jjqbwm/tq1jTP9jo2lmEkFPzjaUG8DrHo9apaX
-         Cihj58eqanNYkIu1eLnhlx5jOQop2sjydCPrjFJqu7AOk+d689hBfleyAHQ33bOxfQ8T
-         s7gXLQNMqFh8PDQwmYv8UCon1AvBRwwfoKyR0DnLCYKDuLulu4VPkr6zXGmLwv5lSBgt
-         lNYNVI914Ax9upTK4HzHiRe4qfvy8lMnsqcNOWYHZxhWsVgdL4xJUL/XeqMpOn5DDm1d
-         dMdg==
-X-Gm-Message-State: APjAAAVNYI5LpdgYWJnZJJ6iy+j1oIePmp8o+t4X/eI+utnFG1Cqtgay
-        WaUR6dCAfbtCHVbzwAvAEhw=
-X-Google-Smtp-Source: APXvYqzs1O/GMTJoVPHC5hP/kblLwMHOGrij9hm02c2K1I31K66hzfP5qQlcoM6uKqRHxtlbgj68Nw==
-X-Received: by 2002:a5d:548d:: with SMTP id h13mr14878607wrv.215.1568223443719;
-        Wed, 11 Sep 2019 10:37:23 -0700 (PDT)
-Received: from dennisz-mbp ([2620:10d:c092:180::1:f90f])
-        by smtp.gmail.com with ESMTPSA id a205sm6257518wmd.44.2019.09.11.10.37.22
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Sep 2019 10:37:22 -0700 (PDT)
-Date:   Wed, 11 Sep 2019 18:37:20 +0100
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     Dennis Zhou <dennis@kernel.org>, Chris Mason <clm@fb.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-        Dennis Zhou <dennisz@fb.com>
-Subject: Re: [PATCH] Btrfs: fix unwritten extent buffers and hangs on future
- writeback attempts
-Message-ID: <20190911173720.GA21720@dennisz-mbp>
-References: <20190911145542.1125-1-fdmanana@kernel.org>
- <18E989C2-3E39-4C87-907D-EA671099C4AE@fb.com>
- <CAL3q7H6kg+S+UwiLvsEKvCtsCuALMw7NfDnkWQEqk=AUn65SMg@mail.gmail.com>
- <20190911165422.GA17854@dennisz-mbp>
- <CAL3q7H7ucW=MNRV=FphAHujHQ6NFNaDJ2xkeYM5RRMU+kaeBmA@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=i1T19SkPU+cFnelKdy9GHyeldabdUHMUXqyEchdHFpc=;
+        b=FApvcMel8XABQ6IAVtSPSeG9G92WoP4nTE8E3OcAQY6az/nL+5M8pVo4XjRPuEbmmN
+         TZj/AVVqZRNoTSr6+xjPZCqA+eoIFpnJjCQVduk1a8dJKyVE4Yz1gNLDWXtZklZA5n5f
+         42bbvse5PaFXn83MIvNwi4cdlkXsclYcoxkqabPRSBMKcW1d9oDbvpC0YvBFKEzn6Fzt
+         PjIwgTGK03kJov2Ze66pjlk8GJ7GSm8E6mLjAGpFfyvSN7z68xo/NzbsBOCtEiD7CS+Q
+         5hOZq26vi2mjf0C03Blp4hsT3xz+eEA4TGY5rfUlvyxQHpEciCaiJw0ESHs8/7q8XUVX
+         H+tQ==
+X-Gm-Message-State: APjAAAX4nWQiOxpqdDqIwX5qqtYg+UlHQ/EhNn8e4fDekHmAoXa2+FP0
+        nmPagTRGhtY/tALL/eFRhAtXjTHK+I0=
+X-Google-Smtp-Source: APXvYqwUBCevTlRddNxEVVZei0TMBak6FeWvix+x29Ir6lB53wtdT3gWBnyxT/eXBCUuoygHH+0tPQ==
+X-Received: by 2002:a37:b981:: with SMTP id j123mr32921517qkf.201.1568225949604;
+        Wed, 11 Sep 2019 11:19:09 -0700 (PDT)
+Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
+        by smtp.gmail.com with ESMTPSA id x5sm9784150qkn.102.2019.09.11.11.19.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 11 Sep 2019 11:19:09 -0700 (PDT)
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+To:     webmaster@zedlx.com
+Cc:     linux-btrfs@vger.kernel.org
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+ <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+ <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
+ <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
+ <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+ <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
+ <20190911132053.Horde._wJd24LqxxXx9ujl2r5i7PQ@server53.web-hosting.com>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <c8da6684-6c16-fc80-8e10-1afc1871d512@gmail.com>
+Date:   Wed, 11 Sep 2019 14:19:06 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL3q7H7ucW=MNRV=FphAHujHQ6NFNaDJ2xkeYM5RRMU+kaeBmA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190911132053.Horde._wJd24LqxxXx9ujl2r5i7PQ@server53.web-hosting.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 11, 2019 at 06:02:58PM +0100, Filipe Manana wrote:
-> On Wed, Sep 11, 2019 at 5:54 PM Dennis Zhou <dennis@kernel.org> wrote:
-> >
-> > On Wed, Sep 11, 2019 at 05:13:15PM +0100, Filipe Manana wrote:
-> > > On Wed, Sep 11, 2019 at 5:04 PM Chris Mason <clm@fb.com> wrote:
-> > > >
-> > > > On 11 Sep 2019, at 15:55, fdmanana@kernel.org wrote:
-> > > >
-> > > > > From: Filipe Manana <fdmanana@suse.com>
-> > > > >
-> > > > > So fix this by not overwriting the return value (ret) with the result
-> > > > > from flush_write_bio(). We also need to clear the
-> > > > > EXTENT_BUFFER_WRITEBACK
-> > > > > bit in case flush_write_bio() returns an error, otherwise it will hang
-> > > > > any future attempts to writeback the extent buffer.
-> > > > >
-> > > > > This is a regression introduced in the 5.2 kernel.
-> > > > >
-> > > > > Fixes: 2e3c25136adfb ("btrfs: extent_io: add proper error handling to
-> > > > > lock_extent_buffer_for_io()")
-> > > > > Fixes: f4340622e0226 ("btrfs: extent_io: Move the BUG_ON() in
-> > > > > flush_write_bio() one level up")
-> > > > > Reported-by: Zdenek Sojka <zsojka@seznam.cz>
-> > > > > Link:
-> > > > > https://lore.kernel.org/linux-btrfs/GpO.2yos.3WGDOLpx6t%7D.1TUDYM@seznam.cz/T/#u
-> > > > > Reported-by: Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
-> > > > > Link:
-> > > > > https://lore.kernel.org/linux-btrfs/5c4688ac-10a7-fb07-70e8-c5d31a3fbb38@profihost.ag/T/#t
-> > > > > Reported-by: Drazen Kacar <drazen.kacar@oradian.com>
-> > > > > Link:
-> > > > > https://lore.kernel.org/linux-btrfs/DB8PR03MB562876ECE2319B3E579590F799C80@DB8PR03MB5628.eurprd03.prod.outlook.com/
-> > > > > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204377
-> > > > > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > > > > ---
-> > > > >  fs/btrfs/extent_io.c | 23 ++++++++++++++---------
-> > > > >  1 file changed, 14 insertions(+), 9 deletions(-)
-> > > > >
-> > > > > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > > > > index 1ff438fd5bc2..1311ba0fc031 100644
-> > > > > --- a/fs/btrfs/extent_io.c
-> > > > > +++ b/fs/btrfs/extent_io.c
-> > > > > @@ -3628,6 +3628,13 @@ void wait_on_extent_buffer_writeback(struct
-> > > > > extent_buffer *eb)
-> > > > >                      TASK_UNINTERRUPTIBLE);
-> > > > >  }
-> > > > >
-> > > > > +static void end_extent_buffer_writeback(struct extent_buffer *eb)
-> > > > > +{
-> > > > > +     clear_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
-> > > > > +     smp_mb__after_atomic();
-> > > > > +     wake_up_bit(&eb->bflags, EXTENT_BUFFER_WRITEBACK);
-> > > > > +}
-> > > > > +
-> > > > >  /*
-> > > > >   * Lock eb pages and flush the bio if we can't the locks
-> > > > >   *
-> > > > > @@ -3699,8 +3706,11 @@ static noinline_for_stack int
-> > > > > lock_extent_buffer_for_io(struct extent_buffer *eb
-> > > > >
-> > > > >               if (!trylock_page(p)) {
-> > > > >                       if (!flush) {
-> > > > > -                             ret = flush_write_bio(epd);
-> > > > > -                             if (ret < 0) {
-> > > > > +                             int err;
-> > > > > +
-> > > > > +                             err = flush_write_bio(epd);
-> > > > > +                             if (err < 0) {
-> > > > > +                                     ret = err;
-> > > > >                                       failed_page_nr = i;
-> > > > >                                       goto err_unlock;
-> > > > >                               }
-> > > >
-> > > >
-> > > > Dennis (cc'd) has been trying a similar fix against this in production,
-> > > > but sending it was interrupted by plumbing conferences.  I think he
-> > > > found that it needs to undo this as well:
-> > > >
-> > > >                  percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
-> > > >                                           -eb->len,
-> > > >                                           fs_info->dirty_metadata_batch);
-> > > >
-> > > > With the IO errors, we should end up aborting the FS.  This function
-> > > > also flips the the extent buffer written and dirty flags, and his patch
-> > > > resets them as well.  Given that we're aborting anyway, it's not
-> > > > critical, but it's probably a good idea to fix things up in the goto
-> > > > err_unlock just to make future bugs less likely.
-> > >
-> > > Yes, I considered that at some point (undo everything done so far,
-> > > under the locks, etc) and thought it was pointless as well because we
-> > > abort.
-> > >
-> > > But we may not abort - if we never start the writeback for an eb
-> > > because we returned error from flush_write_bio(), we can leave
-> > > btree_write_cache_pages() without noticing the error.
-> > > Since writeback never started, and btree_write_cache_pages() didn't
-> > > return the error, the transaction commit path may never get an error
-> > > from filemap_fdatawrite_range,
-> > > and we can commit the transaction despite failure to start writeback
-> > > for some extent buffer.
-> > >
-> > > A problem that existed before that regression in 5.2 anyway. Sending
-> > > it as separate.
-> > >
-> > > I'll include the undo of all operations in patch however, it doesn't
-> > > hurt for sure.
-> > >
-> > > Thanks.
-> > >
-> > > >
-> > > > -chris
-> >
-> > Hello,
-> >
-> > I should have pushed this upstream sooner, I was hoping to have one of
-> > my test hosts hit my WARN_ON() in a separate patch, but it hasn't.
-> >
-> > The following is what I have to unblock 5.2 testing.
-> >
-> > I think your patch is missing resetting the header bits + the percpu
-> > metadata counter.
+On 2019-09-11 13:20, webmaster@zedlx.com wrote:
 > 
-> Yes, even though it's not a problem since we will end up aborting the
-> transaction later.
-> The v2 I sent some minutes ago does it:
-> https://patchwork.kernel.org/patch/11141559/
+> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
 > 
+>> On 2019-09-10 19:32, webmaster@zedlx.com wrote:
+>>>
+>>> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+>>>
+> 
+>>>
+>>> === I CHALLENGE you and anyone else on this mailing list: ===
+>>>
+>>>  - Show me an exaple where splitting an extent requires unsharing, 
+>>> and this split is needed to defrag.
+>>>
+>>> Make it clear, write it yourself, I don't want any machine-made outputs.
+>>>
+>> Start with the above comment about all writes unsharing the region 
+>> being written to.
+>>
+>> Now, extrapolating from there:
+>>
+>> Assume you have two files, A and B, each consisting of 64 filesystem 
+>> blocks in single shared extent.  Now assume somebody writes a few 
+>> bytes to the middle of file B, right around the boundary between 
+>> blocks 31 and 32, and that you get similar writes to file A straddling 
+>> blocks 14-15 and 47-48.
+>>
+>> After all of that, file A will be 5 extents:
+>>
+>> * A reflink to blocks 0-13 of the original extent.
+>> * A single isolated extent consisting of the new blocks 14-15
+>> * A reflink to blocks 16-46 of the original extent.
+>> * A single isolated extent consisting of the new blocks 47-48
+>> * A reflink to blocks 49-63 of the original extent.
+>>
+>> And file B will be 3 extents:
+>>
+>> * A reflink to blocks 0-30 of the original extent.
+>> * A single isolated extent consisting of the new blocks 31-32.
+>> * A reflink to blocks 32-63 of the original extent.
+>>
+>> Note that there are a total of four contiguous sequences of blocks 
+>> that are common between both files:
+>>
+>> * 0-13
+>> * 16-30
+>> * 32-46
+>> * 49-63
+>>
+>> There is no way to completely defragment either file without splitting 
+>> the original extent (which is still there, just not fully referenced 
+>> by either file) unless you rewrite the whole file to a new single 
+>> extent (which would, of course, completely unshare the whole file).  
+>> In fact, if you want to ensure that those shared regions stay 
+>> reflinked, there's no way to defragment either file without 
+>> _increasing_ the number of extents in that file (either file would 
+>> need 7 extents to properly share only those 4 regions), and even then 
+>> only one of the files could be fully defragmented.
+>>
+>> Such a situation generally won't happen if you're just dealing with 
+>> read-only snapshots, but is not unusual when dealing with regular 
+>> files that are reflinked (which is not an uncommon situation on some 
+>> systems, as a lot of people have `cp` aliased to reflink things 
+>> whenever possible).
+> 
+> Well, thank you very much for writing this example. Your example is 
+> certainly not minimal, as it seems to me that one write to the file A 
+> and one write to file B would be sufficient to prove your point, so 
+> there we have one extra write in the example, but that's OK.
+> 
+> Your example proves that I was wrong. I admit: it is impossible to 
+> perfectly defrag one subvolume (in the way I imagined it should be done).
+> Why? Because, as in your example, there can be files within a SINGLE 
+> subvolume which share their extents with each other. I didn't consider 
+> such a case.
+> 
+> On the other hand, I judge this issue to be mostly irrelevant. Why? 
+> Because most of the file sharing will be between subvolumes, not within 
+> a subvolume.
+Not necessarily. Even ignoring the case of data deduplication (which 
+needs to be considered if you care at all about enterprise usage, and is 
+part of the whole point of using a CoW filesystem), there are existing 
+applications that actively use reflinks, either directly or indirectly 
+(via things like the `copy_file_range` system call), and the number of 
+such applications is growing.
 
-I saw it as I refreshed the page after I sent my email :).
+> When a user creates a reflink to a file in the same 
+> subvolume, he is willingly denying himself the assurance of a perfect 
+> defrag. Because, as your example proves, if there are a few writes to 
+> BOTH files, it gets impossible to defrag perfectly. So, if the user 
+> creates such reflinks, it's his own whish and his own fault.
+The same argument can be made about snapshots.  It's an invalid argument 
+in both cases though because it's not always the user who's creating the 
+reflinks or snapshots.
+> 
+> Such situations will occur only in some specific circumstances:
+> a) when the user is reflinking manually
+> b) when a file is copied from one subvolume into a different file in a 
+> different subvolume.
+> 
+> The situation a) is unusual in normal use of the filesystem. Even when 
+> it occurs, it is the explicit command given by the user, so he should be 
+> willing to accept all the consequences, even the bad ones like imperfect 
+> defrag.
+> 
+> The situation b) is possible, but as far as I know copies are currently 
+> not done that way in btrfs. There should probably be the option to 
+> reflink-copy files fron another subvolume, that would be good.
+> 
+> But anyway, it doesn't matter. Because most of the sharing will be 
+> between subvolumes, not within subvolume. So, if there is some 
+> in-subvolume sharing, the defrag wont be 100% perfect, that a minor 
+> point. Unimportant.
+You're focusing too much on your own use case here.  Not everybody uses 
+snapshots, and there are many people who are using reflinks very 
+actively within subvolumes, either for deduplication or because it saves 
+time and space when dealing with multiple copies of mostly identical 
+tress of files.
+> 
+>>> About merging extents: a defrag should merge extents ONLY when both 
+>>> extents are shared by the same files (and when those extents are 
+>>> neighbours in both files). In other words, defrag should always merge 
+>>> without unsharing. Let's call that operation "fusing extents", so 
+>>> that there are no more misunderstandings.
+> 
+>> And I reiterate: defrag only operates on the file it's passed in.  It 
+>> needs to for efficiency reasons (we had a reflink aware defrag for a 
+>> while a few years back, it got removed because performance limitations 
+>> meant it was unusable in the cases where you actually needed it). 
+>> Defrag doesn't even know that there are reflinks to the extents it's 
+>> operating on.
+> 
+> If the defrag doesn't know about all reflinks, that's bad in my view. 
+> That is a bad defrag. If you had a reflink-aware defrag, and it was 
+> slow, maybe that happened because the implementation was bad. Because, I 
+> don't see any reason why it should be slow. So, you will have to explain 
+> to me what was causing this performance problems.
+> 
+>> Given this, defrag isn't willfully unsharing anything, it's just a 
+>> side-effect of how it works (since it's rewriting the block layout of 
+>> the file in-place).
+> 
+> The current defrag has to unshare because, as you said, because it is 
+> unaware of the full reflink structure. If it doesn't know about all 
+> reflinks, it has to unshare, there is no way around that.
+> 
+>> Now factor in that _any_ write will result in unsharing the region 
+>> being written to, rounded to the nearest full filesystem block in both 
+>> directions (this is mandatory, it's a side effect of the copy-on-write 
+>> nature of BTRFS, and is why files that experience heavy internal 
+>> rewrites get fragmented very heavily and very quickly on BTRFS).
+> 
+> You mean: when defrag performs a write, the new data is unshared because 
+> every write is unshared? Really?
+> 
+> Consider there is an extent E55 shared by two files A and B. The defrag 
+> has to move E55 to another location. In order to do that, defrag creates 
+> a new extent E70. It makes it belong to file A by changing the reflink 
+> of extent E55 in file A to point to E70.
+> 
+> Now, to retain the original sharing structure, the defrag has to change 
+> the reflink of extent E55 in file B to point to E70. You are telling me 
+> this is not possible? Bullshit!
+> 
+> Please explain to me how this 'defrag has to unshare' story of yours 
+> isn't an intentional attempt to mislead me.
+As mentioned in the previous email, we actually did have a (mostly) 
+working reflink-aware defrag a few years back.  It got removed because 
+it had serious performance issues.  Note that we're not talking a few 
+seconds of extra time to defrag a full tree here, we're talking 
+double-digit _minutes_ of extra time to defrag a moderate sized (low 
+triple digit GB) subvolume with dozens of snapshots, _if you were lucky_ 
+(if you weren't, you would be looking at potentially multiple _hours_ of 
+runtime for the defrag).  The performance scaled inversely proportionate 
+to the number of reflinks involved and the total amount of data in the 
+subvolume being defragmented, and was pretty bad even in the case of 
+only a couple of snapshots.
 
-> > I think on error we should break out of
-> > btree_write_cache_pages() and return it too.
-> 
-> Yes, but that's a separate change.
-> It makes the code clear but it doesn't fix any problem, the errors
-> will be marked in the end io callback and transaction and log commits
-> will see them and abort.
-> Sent a patch for that as well some minutes ago:
-> https://patchwork.kernel.org/patch/11141561/
-> 
-> >
-> > Thanks,
-> > Dennis
-> >
-> > -----
-> > From 1a57b5ee6e52c63bf7c8e3ae969c0df406e3cf69 Mon Sep 17 00:00:00 2001
-> > From: Dennis Zhou <dennis@kernel.org>
-> > Date: Wed, 4 Sep 2019 10:49:53 -0700
-> > Subject: [PATCH] btrfs: fix stall on writeback bit extent buffer
-> >
-> > In lock_extent_buffer_for_io(), if we encounter a blocking action, we
-> > try and flush the currently held onto bio. The failure mode here used to
-> > be a BUG_ON(). f4340622e022 changed this to move BUG_ON() up and
-> > incorrectly reset the current ret code. However,
-> > lock_extent_buffer_for_io() returns 1 on we should write out the pages.
-> > This caused the buffer to be skipped while keeping the writeback bit
-> > set.
-> >
-> > Now that we can fail here, we also need to fix up dirty_metadata_bytes,
-> > clear BTRFS_HEADER_FLAG_WRITTEN and EXTENT_BUFFER_WRITEBACK, and set
-> > EXTENT_BUFFER_DIRTY again.
-> >
-> > Fixes: f4340622e022 ("btrfs: extent_io: Move the BUG_ON() in flush_write_bio() one level up")
-> > Signed-off-by: Dennis Zhou <dennis@kernel.org>
-> > ---
-> >  fs/btrfs/extent_io.c | 52 ++++++++++++++++++++++++++++++++++++--------
-> >  1 file changed, 43 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> > index 43af8245c06e..4ba3cd972a2a 100644
-> > --- a/fs/btrfs/extent_io.c
-> > +++ b/fs/btrfs/extent_io.c
-> > @@ -3636,6 +3636,13 @@ void wait_on_extent_buffer_writeback(struct extent_buffer *eb)
-> >                        TASK_UNINTERRUPTIBLE);
-> >  }
-> >
-> > +static void end_extent_buffer_writeback(struct extent_buffer *eb)
-> > +{
-> > +       clear_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
-> > +       smp_mb__after_atomic();
-> > +       wake_up_bit(&eb->bflags, EXTENT_BUFFER_WRITEBACK);
-> > +}
-> > +
-> >  /*
-> >   * Lock eb pages and flush the bio if we can't the locks
-> >   *
-> > @@ -3707,9 +3714,11 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
-> >
-> >                 if (!trylock_page(p)) {
-> >                         if (!flush) {
-> > -                               ret = flush_write_bio(epd);
-> > -                               if (ret < 0) {
-> > +                               int flush_ret = flush_write_bio(epd);
-> > +
-> > +                               if (flush_ret < 0) {
-> >                                         failed_page_nr = i;
-> > +                                       ret = flush_ret;
-> >                                         goto err_unlock;
-> >                                 }
-> >                                 flush = 1;
-> > @@ -3723,24 +3732,45 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
-> >         /* Unlock already locked pages */
-> >         for (i = 0; i < failed_page_nr; i++)
-> >                 unlock_page(eb->pages[i]);
-> > -       return ret;
-> > -}
-> >
-> > -static void end_extent_buffer_writeback(struct extent_buffer *eb)
-> > -{
-> > -       clear_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
-> > -       smp_mb__after_atomic();
-> > -       wake_up_bit(&eb->bflags, EXTENT_BUFFER_WRITEBACK);
-> > +       /* undo the above above because we failed */
-> > +       btrfs_tree_lock(eb);
-> > +
-> > +       percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
-> > +                                        eb->len,
-> > +                                        fs_info->dirty_metadata_batch);
-> > +
-> > +       btrfs_clear_header_flag(eb, BTRFS_HEADER_FLAG_WRITTEN);
-> > +
-> > +       spin_lock(&eb->refs_lock);
-> > +       set_bit(EXTENT_BUFFER_DIRTY, &eb->bflags);
-> > +       spin_unlock(&eb->refs_lock);
-> 
-> Clearing the writeback bit should also be done while holding eb->refs_lock.
-> Everything else is equivalent to what I sent in v2.
-> 
-> > +
-> > +       btrfs_tree_unlock(eb);
-> > +
-> > +       end_extent_buffer_writeback(eb);
-> > +
-> > +       return ret;
-> >  }
-> >
-> >  static void set_btree_ioerr(struct page *page)
-> >  {
-> >         struct extent_buffer *eb = (struct extent_buffer *)page->private;
-> > +       struct btrfs_fs_info *fs_info;
-> >
-> >         SetPageError(page);
-> >         if (test_and_set_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags))
-> >                 return;
-> >
-> > +       /*
-> > +        * We just marked the extent as bad, that means we need retry
-> > +        * in the future, so fix up the dirty_metadata_bytes accounting.
-> > +        */
-> > +       fs_info = eb->fs_info;
-> > +       percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
-> > +                                eb->len,
-> > +                                fs_info->dirty_metadata_batch);
-> > +
-> 
-> This is a separate change from the 5.2 regression. Should be separate
-> patch with a specific changelog IMHO.
-> Can you please submit that?
-> 
+Ultimately, there are a couple of issues at play here:
 
-Will do.
+* Online defrag has to maintain consistency during operation.  The 
+current implementation does this by rewriting the regions being 
+defragmented (which causes them to become a single new extent (most of 
+the time)), which avoids a whole lot of otherwise complicated logic 
+required to make sure things happen correctly, and also means that only 
+the file being operated on is impacted and only the parts being modified 
+need to be protected against concurrent writes.  Properly handling 
+reflinks means that _every_ file that shares some part of an extent with 
+the file being operated on needs to have the reflinked regions locked 
+for the defrag operation, which has a huge impact on performance. Using 
+your example, the update to E55 in both files A and B has to happen as 
+part of the same commit, which can contain no other writes in that 
+region of the file, otherwise you run the risk of losing writes to file 
+B that occur while file A is being defragmented.  It's not horrible when 
+it's just a small region in two files, but it becomes a big issue when 
+dealing with lots of files and/or particularly large extents (extents in 
+BTRFS can get into the GB range in terms of size when dealing with 
+really big files).
 
-> >         /*
-> >          * If writeback for a btree extent that doesn't belong to a log tree
-> >          * failed, increment the counter transaction->eb_write_errors.
-> > @@ -3977,6 +4007,10 @@ int btree_write_cache_pages(struct address_space *mapping,
-> >                         if (!ret) {
-> >                                 free_extent_buffer(eb);
-> >                                 continue;
-> > +                       } else if (ret < 0) {
-> > +                               done = 1;
-> > +                               free_extent_buffer(eb);
-> > +                               break;
-> >                         }
-> 
-> Separate change as well, not cause by the 5.2 regression. So separate
-> patch with a specific changelog as well IMHO.
-> Anyway, this hunk is exactly like the separate patch I sent some minutes ago.
-> 
-> Thanks!
-> 
-> >
-> >                         ret = write_one_eb(eb, wbc, &epd);
-> > --
-> > 2.17.1
-> >
+* Reflinks can reference partial extents.  This means, ultimately, that 
+you may end up having to split extents in odd ways during defrag if you 
+want to preserve reflinks, and might have to split extents _elsewhere_ 
+that are only tangentially related to the region being defragmented. 
+See the example in my previous email for a case like this, maintaining 
+the shared regions as being shared when you defragment either file to a 
+single extent will require splitting extents in the other file (in 
+either case, whichever file you don't defragment to a single extent will 
+end up having 7 extents if you try to force the one that's been 
+defragmented to be the canonical version).  Once you consider that a 
+given extent can have multiple ranges reflinked from multiple other 
+locations, it gets even more complicated.
 
-Thanks,
-Dennis
+* If you choose to just not handle the above point by not letting defrag 
+split extents, you put a hard lower limit on the amount of fragmentation 
+present in a file if you want to preserve reflinks.  IOW, you can't 
+defragment files past a certain point.  If we go this way, neither of 
+the two files in the example from my previous email could be 
+defragmented any further than they already are, because doing so would 
+require splitting extents.
+
+* Determining all the reflinks to a given region of a given extent is 
+not a cheap operation, and the information may immediately be stale 
+(because an operation right after you fetch the info might change 
+things).  We could work around this by locking the extent somehow, but 
+doing so would be expensive because you would have to hold the lock for 
+the entire defrag operation.
