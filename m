@@ -2,218 +2,183 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D0EAF915
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 11:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B3BCAF921
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 11:39:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726930AbfIKJhk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 05:37:40 -0400
-Received: from mail-ua1-f68.google.com ([209.85.222.68]:34835 "EHLO
-        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726857AbfIKJhk (ORCPT
+        id S1727482AbfIKJjc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 05:39:32 -0400
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:43853 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726657AbfIKJjb (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 05:37:40 -0400
-Received: by mail-ua1-f68.google.com with SMTP id u18so6564662uap.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 02:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=f9yGeHuHWi7tjsE2H0wZkeYkFEXJpBx2FUkcJHP53DI=;
-        b=n37v7DtrwHURwsSs0SjVrymdyKv2mGl4B+xHf531bHoOVHrxeKFB5zJbhukiY7DfSl
-         g/VchNe9CW8lbZCVB+PCTtr/knptZ4l14fa1OBR8Xf5Hqg9MQBiXhH0s5T4rWFd/9DpO
-         9XwtecMr1yqOMOCJUs5C8w+aA35PZfUcnmYnK9qru+s0YTTQNpBYUHX78JqezVMKoYLI
-         mcPVzj3OEIx5rA75SdjX8Dq1wYlGqOLCJxCtkqEHVRXMFkj89WzHtPP4xaR9SD8t0714
-         HWzSsiyOutwYVqKmgDDKb9zkMBPoTSKOU/m5V5U9rxEYFfdxvyYQtVOWih1+HaLxWOPk
-         v6Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=f9yGeHuHWi7tjsE2H0wZkeYkFEXJpBx2FUkcJHP53DI=;
-        b=GpAcZbgsdCHCo32rjkP44xrr9Op6EHt6ccqg7qlxIJM319UsLpgHqL/k1lQm9PMIIC
-         nC7fQkDGFMZBCg2zRq2KdPBtgdQ7Ae2jcj29tri7hmNmVWUksufz7YPn2KqLbeP+XAoB
-         roglnPafVAcvGaBOD5su0m5i7V346gYpn8B4dmfTfKbXGYthCNxwkIJ+IUnAOIOKuZFA
-         dyYOIDD/NU9o5v9fHNomBzI2VJsbB/+XZsRW4Hnt5vX9uFylNiZhus7AuDRwVbDykRaA
-         AVfLzrBddC3Pyf6ojTKWi/Om5/LyPnWoWL+jQtegMAGDkeOV4s1zfFuwppRCeE1nRnTy
-         F+Vw==
-X-Gm-Message-State: APjAAAULfY70RrCOuckImoUVmBK3rIExQFfzrkToapQATwdjeVpuThcL
-        RfOUVMfthYx2lF2Vw91P43XoUU8O9g35RlRz04o=
-X-Google-Smtp-Source: APXvYqyLm2zWUI1jm1cZpu3bb5SXOg9oBxMJNIHnduHBvCkOQAG+S6g/7lWA5ho0Llfd8Oa3GpSuYXTV7rQGETlr2tc=
-X-Received: by 2002:ab0:2410:: with SMTP id f16mr16280976uan.83.1568194658428;
- Wed, 11 Sep 2019 02:37:38 -0700 (PDT)
+        Wed, 11 Sep 2019 05:39:31 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 80E0B614;
+        Wed, 11 Sep 2019 05:39:29 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Wed, 11 Sep 2019 05:39:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=anarazel.de; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm2; bh=mvzKeifSnTSILTn0qraq+rN4Cry
+        GTOsIEYJQEQ6OnYg=; b=mtiyobYXM4j9EFSIKWpelWpgZOm+amyEdDeS0EUXrQI
+        Dr0Gjx7szmVtnduulUVe3O6G9B/UhKhaeTGAU24JR8WcsrwcdUfodTMHaj+pj++b
+        JxqwoCNsMr4xy3pxI6ewV6CcL2UbOFSEBRgxQv90tZqs6Bqln4/D7Zl8jXpyjki3
+        iZIaoGsBbkcWJbdo/wlOnO+k2OrkprPrRM6TZqlqvKNeUrC0X4GIV7fwr0LYlkrB
+        eybjaBdLKN4LXUJQY6nhVPvF0cP0VOACC1LgVeII6B0YqSvVFgwsfqvh0Vy1/Hr+
+        qiTFfwY4QjLy3hkLKplwva/42/wK9CCTaZ2r/cLROTA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=mvzKei
+        fSnTSILTn0qraq+rN4CryGTOsIEYJQEQ6OnYg=; b=k5SckXFxB6PoUTEitBhdke
+        SomEjIEWYKhC9eJGnnHcLsihzDA6TTEPgFNZxqdrbW0LQ7g5IJVRoLT0nHfSMunH
+        YHB0yZzjViLeZXMx7HVyNyK3QD0LvjInmNX0KJ0Y1MjRL5HBkNu0sd28Kwq3aJC6
+        ReUfbuvPshNdoCpzAeh7zV/O61lWLHUtx1Jw+7NKlda7PE/brwHXFG4jUooiHJAm
+        wGaBut55D2tCZ/ky0okQNzJZXVSDO/ENtn4Edn+rrxQLp8miV4T8a0xqvLOtsuc3
+        0Q9IRtnvSHs106V5mK+ujB3P2U0jwcs4EiKqX/T8Bv1yC3VpqLr0f4AEHLqoDj4g
+        ==
+X-ME-Sender: <xms:0MB4XcggKqjOEYVJZd9qevP_wUbxPncN_tBAWi6-Fg0PqZClExk1ww>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrtddvgddujecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomheptehnughrvghs
+    ucfhrhgvuhhnugcuoegrnhgurhgvshesrghnrghrrgiivghlrdguvgeqnecukfhppeduge
+    ekrdeiledrkeehrdefkeenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvghssegr
+    nhgrrhgriigvlhdruggvnecuvehluhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:0MB4XRpJpoY7c-KRT-ghH_eG4kEn_6fgDEkd0OK8br23501TAjiBSw>
+    <xmx:0MB4XVGmwottXAZ-O2b07rrASsS8h2xpuOWgU6TE044_p6rIXVcopA>
+    <xmx:0MB4XZPdbMNAKKH1rn1JYLUGjXKSbhslMId2-QvU1f7ug0CD0uthzQ>
+    <xmx:0cB4XfDWFcyGBy2d-xOSQdZbxxMjaKqwUXHgqpQHGNcAAkWhylQ-MA>
+Received: from intern.anarazel.de (unknown [148.69.85.38])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 2563CD60062;
+        Wed, 11 Sep 2019 05:39:28 -0400 (EDT)
+Date:   Wed, 11 Sep 2019 02:39:26 -0700
+From:   Andres Freund <andres@anarazel.de>
+To:     Dave Chinner <david@fromorbit.com>, David Sterba <dsterba@suse.com>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, jack@suse.com, hch@infradead.org,
+        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: Odd locking pattern introduced as part of "nowait aio support"
+Message-ID: <20190911093926.pfkkx25mffzeuo32@alap3.anarazel.de>
+References: <20190910223327.mnegfoggopwqqy33@alap3.anarazel.de>
+ <20190911040420.GB27547@dread.disaster.area>
 MIME-Version: 1.0
-References: <20190909141204.24557-1-josef@toxicpanda.com>
-In-Reply-To: <20190909141204.24557-1-josef@toxicpanda.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 11 Sep 2019 10:37:27 +0100
-Message-ID: <CAL3q7H5CYhEqs9URKnnXejt+kFydFn4AoExrrwjvO022bzoN8w@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: nofs inode allocations
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     kernel-team@fb.com, linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Zdenek Sojka <zsojka@seznam.cz>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190911040420.GB27547@dread.disaster.area>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 10, 2019 at 7:22 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> A user reported a lockdep splat
->
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
->  WARNING: possible circular locking dependency detected
->  5.2.11-gentoo #2 Not tainted
->  ------------------------------------------------------
->  kswapd0/711 is trying to acquire lock:
->  000000007777a663 (sb_internal){.+.+}, at: start_transaction+0x3a8/0x500
->
-> but task is already holding lock:
->  000000000ba86300 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x0/0x30
->
-> which lock already depends on the new lock.
->
-> the existing dependency chain (in reverse order) is:
->
-> -> #1 (fs_reclaim){+.+.}:
->  kmem_cache_alloc+0x1f/0x1c0
->  btrfs_alloc_inode+0x1f/0x260
->  alloc_inode+0x16/0xa0
->  new_inode+0xe/0xb0
->  btrfs_new_inode+0x70/0x610
->  btrfs_symlink+0xd0/0x420
->  vfs_symlink+0x9c/0x100
->  do_symlinkat+0x66/0xe0
->  do_syscall_64+0x55/0x1c0
->  entry_SYSCALL_64_after_hwframe+0x49/0xbe
->
-> -> #0 (sb_internal){.+.+}:
->  __sb_start_write+0xf6/0x150
->  start_transaction+0x3a8/0x500
->  btrfs_commit_inode_delayed_inode+0x59/0x110
->  btrfs_evict_inode+0x19e/0x4c0
->  evict+0xbc/0x1f0
->  inode_lru_isolate+0x113/0x190
->  __list_lru_walk_one.isra.4+0x5c/0x100
->  list_lru_walk_one+0x32/0x50
->  prune_icache_sb+0x36/0x80
->  super_cache_scan+0x14a/0x1d0
->  do_shrink_slab+0x131/0x320
->  shrink_node+0xf7/0x380
->  balance_pgdat+0x2d5/0x640
->  kswapd+0x2ba/0x5e0
->  kthread+0x147/0x160
->  ret_from_fork+0x24/0x30
->
-> other info that might help us debug this:
->
->  Possible unsafe locking scenario:
->
->  CPU0 CPU1
->  ---- ----
->  lock(fs_reclaim);
->  lock(sb_internal);
->  lock(fs_reclaim);
->  lock(sb_internal);
-> *** DEADLOCK ***
->
->  3 locks held by kswapd0/711:
->  #0: 000000000ba86300 (fs_reclaim){+.+.}, at: __fs_reclaim_acquire+0x0/0x=
-30
->  #1: 000000004a5100f8 (shrinker_rwsem){++++}, at: shrink_node+0x9a/0x380
->  #2: 00000000f956fa46 (&type->s_umount_key#30){++++}, at: super_cache_sca=
-n+0x35/0x1d0
->
-> stack backtrace:
->  CPU: 7 PID: 711 Comm: kswapd0 Not tainted 5.2.11-gentoo #2
->  Hardware name: Dell Inc. Precision Tower 3620/0MWYPT, BIOS 2.4.2 09/29/2=
-017
->  Call Trace:
->  dump_stack+0x85/0xc7
->  print_circular_bug.cold.40+0x1d9/0x235
->  __lock_acquire+0x18b1/0x1f00
->  lock_acquire+0xa6/0x170
->  ? start_transaction+0x3a8/0x500
->  __sb_start_write+0xf6/0x150
->  ? start_transaction+0x3a8/0x500
->  start_transaction+0x3a8/0x500
->  btrfs_commit_inode_delayed_inode+0x59/0x110
->  btrfs_evict_inode+0x19e/0x4c0
->  ? var_wake_function+0x20/0x20
->  evict+0xbc/0x1f0
->  inode_lru_isolate+0x113/0x190
->  ? discard_new_inode+0xc0/0xc0
->  __list_lru_walk_one.isra.4+0x5c/0x100
->  ? discard_new_inode+0xc0/0xc0
->  list_lru_walk_one+0x32/0x50
->  prune_icache_sb+0x36/0x80
->  super_cache_scan+0x14a/0x1d0
->  do_shrink_slab+0x131/0x320
->  shrink_node+0xf7/0x380
->  balance_pgdat+0x2d5/0x640
->  kswapd+0x2ba/0x5e0
->  ? __wake_up_common_lock+0x90/0x90
->  kthread+0x147/0x160
->  ? balance_pgdat+0x640/0x640
->  ? __kthread_create_on_node+0x160/0x160
->  ret_from_fork+0x24/0x30
->
-> This is because btrfs_new_inode() calls new_inode() under the
-> transaction.  We could probably move the new_inode() outside of this but
-> for now just wrap it in memalloc_nofs_save().
->
-> Reported-by: Zdenek Sojka <zsojka@seznam.cz>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Hi,
 
-To aid the stable team figure out to where to backport things, adding
-a Fixes tag (Fixes: 712e36c5f2a7fa ("btrfs: use GFP_KERNEL in
-btrfs_alloc_inode")) or a " CC: stable@vger.kernel.org #  4.16+" would
-help.
+On 2019-09-11 14:04:20 +1000, Dave Chinner wrote:
+> On Tue, Sep 10, 2019 at 03:33:27PM -0700, Andres Freund wrote:
+> > Hi,
+> > 
+> > Especially with buffered io it's fairly easy to hit contention on the
+> > inode lock, during writes. With something like io_uring, it's even
+> > easier, because it currently (but see [1]) farms out buffered writes to
+> > workers, which then can easily contend on the inode lock, even if only
+> > one process submits writes.  But I've seen it in plenty other cases too.
+> > 
+> > Looking at the code I noticed that several parts of the "nowait aio
+> > support" (cf 728fbc0e10b7f3) series introduced code like:
+> > 
+> > static ssize_t
+> > ext4_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+> > {
+> > ...
+> > 	if (!inode_trylock(inode)) {
+> > 		if (iocb->ki_flags & IOCB_NOWAIT)
+> > 			return -EAGAIN;
+> > 		inode_lock(inode);
+> > 	}
+> 
+> The ext4 code is just buggy here - we don't support RWF_NOWAIT on
+> buffered writes.
 
-> ---
->  fs/btrfs/inode.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index aece5dd0e7a8..bf40d1085e4e 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -6291,13 +6291,16 @@ static struct inode *btrfs_new_inode(struct btrfs=
-_trans_handle *trans,
->         u32 sizes[2];
->         int nitems =3D name ? 2 : 1;
->         unsigned long ptr;
-> +       unsigned long nofs_flag;
+But both buffered and non-buffered writes go through
+ext4_file_write_iter(). And there's a preceding check, at least these
+days, preventing IOCB_NOWAIT to apply to buffered writes:
 
-Should be unsigned int (it's what memalloc_nofs_save() returns exactly).
-
-Anyway, the change itself looks good to me.
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
->         int ret;
->
->         path =3D btrfs_alloc_path();
->         if (!path)
->                 return ERR_PTR(-ENOMEM);
->
-> +       nofs_flag =3D memalloc_nofs_save();
->         inode =3D new_inode(fs_info->sb);
-> +       memalloc_nofs_restore(nofs_flag);
->         if (!inode) {
->                 btrfs_free_path(path);
->                 return ERR_PTR(-ENOMEM);
-> --
-> 2.21.0
->
+	if (!o_direct && (iocb->ki_flags & IOCB_NOWAIT))
+		return -EOPNOTSUPP;
 
 
---=20
-Filipe David Manana,
+I do really wish buffered NOWAIT was supported... The overhead of having
+to do async buffered writes through the workqueue in io_uring, even if
+an already existing page is targeted, is quite noticable. Even if it
+failed with EAGAIN as soon as the buffered write's target isn't in the
+page cache, it'd be worthwhile.
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+
+> > isn't trylocking and then locking in a blocking fashion an inefficient
+> > pattern? I.e. I think this should be
+> > 
+> > 	if (iocb->ki_flags & IOCB_NOWAIT) {
+> > 		if (!inode_trylock(inode))
+> > 			return -EAGAIN;
+> > 	}
+> >         else
+> >         	inode_lock(inode);
+> 
+> Yes, you are right.
+> 
+> History: commit 91f9943e1c7b ("fs: support RWF_NOWAIT
+> for buffered reads") which introduced the first locking pattern
+> you describe in XFS.
+
+Seems, as part of the nowait work, the pattern was introduced in ext4,
+xfs and btrfs. And fixed in xfs.
+
+
+> That was followed soon after by:
+> 
+> commit 942491c9e6d631c012f3c4ea8e7777b0b02edeab
+> Author: Christoph Hellwig <hch@lst.de>
+> Date:   Mon Oct 23 18:31:50 2017 -0700
+> 
+>     xfs: fix AIM7 regression
+>     
+>     Apparently our current rwsem code doesn't like doing the trylock, then
+>     lock for real scheme.  So change our read/write methods to just do the
+>     trylock for the RWF_NOWAIT case.  This fixes a ~25% regression in
+>     AIM7.
+>     
+>     Fixes: 91f9943e ("fs: support RWF_NOWAIT for buffered reads")
+>     Reported-by: kernel test robot <xiaolong.ye@intel.com>
+>     Signed-off-by: Christoph Hellwig <hch@lst.de>
+>     Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+>     Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+> 
+> Which changed all the trylock/eagain/lock patterns to the second
+> form you quote. None of the other filesystems had AIM7 regressions
+> reported against them, so nobody changed them....
+
+:(
+
+
+> > Obviously this isn't going to improve scalability to a very significant
+> > degree. But not unnecessarily doing two atomic ops on a contended lock
+> > can't hurt scalability either. Also, the current code just seems
+> > confusing.
+> > 
+> > Am I missing something?
+> 
+> Just that the sort of performance regression testing that uncovers
+> this sort of thing isn't widely done, and most filesystems are
+> concurrency limited in some way before they hit inode lock
+> scalability issues. Hence filesystem concurrency foccussed
+> benchmarks that could uncover it (like aim7) won't because the inode
+> locks don't end up stressed enough to make a difference to
+> benchmark performance.
+
+Ok.  Goldwyn, do you want to write a patch, or do you want me to write
+one up?
+
+
+Greetings,
+
+Andres Freund
