@@ -2,107 +2,181 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A5CB01B7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 18:37:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADCB1B01D5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 18:42:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729002AbfIKQhi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 12:37:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57704 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728794AbfIKQhi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 12:37:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id CD04FADFE;
-        Wed, 11 Sep 2019 16:37:35 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id C1222DA7D9; Wed, 11 Sep 2019 18:37:58 +0200 (CEST)
-Date:   Wed, 11 Sep 2019 18:37:58 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC v2 0/2]  readmirror feature
-Message-ID: <20190911163758.GG2850@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190826090438.7044-1-anand.jain@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190826090438.7044-1-anand.jain@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+        id S1729278AbfIKQmG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 12:42:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38118 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728896AbfIKQmG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 12:42:06 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED7F4206CD
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 16:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1568220124;
+        bh=oBHEeBE5oM2IqUbUSZjfavqIbws/zdeW/QUNVMj7Fj4=;
+        h=From:To:Subject:Date:In-Reply-To:References:From;
+        b=mINrPpBgwy+/zMBpIBR96WeC7TUmXWHbyJbL1IFO2fkdXnp9a7dzeS6E7ViuV0bjN
+         SU3R+zvRk+vTb3L2/dO+9ELnnyhMz/5DnyXvPe2tKjs53Pevgd+bPPak+kBZgeDVvi
+         KUreNDKpjsKFvKo6VcauOkg03bK/F5yA2i2FbiGk=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] Btrfs: fix unwritten extent buffers and hangs on future writeback attempts
+Date:   Wed, 11 Sep 2019 17:42:00 +0100
+Message-Id: <20190911164200.21448-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
+In-Reply-To: <20190911145542.1125-1-fdmanana@kernel.org>
+References: <20190911145542.1125-1-fdmanana@kernel.org>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 26, 2019 at 05:04:36PM +0800, Anand Jain wrote:
-> Function call chain  __btrfs_map_block()->find_live_mirror() uses
-> thread pid to determine the %mirror_num when the mirror_num=0.
-> 
-> This patch introduces a framework so that we can add policies to determine
-> the %mirror_num. And also adds the devid as the readmirror policy.
-> 
-> The new property is stored as an item in the device tree as show below.
->     (BTRFS_READMIRROR_OBJECTID, BTRFS_PERSISTENT_ITEM_KEY, devid)
-> 
-> To be able to set and get this new property also introduces new ioctls
-> BTRFS_IOC_GET_READMIRROR and BTRFS_IOC_SET_READMIRROR. The ioctl argument
-> is defined as
->         struct btrfs_ioctl_readmirror_args {
->                 __u64 type; /* RW */
->                 __u64 device_bitmap; /* RW */
->         }
+From: Filipe Manana <fdmanana@suse.com>
 
-I don't remember if there was a suggestion to use ioctls for read
-mirror, but the property interface should be sufficient. Besides this
-ioctl interafce is quite an anti-pattern: narrow use, non-extensible
-structure, alternative and more convenient interface already available.
+The lock_extent_buffer_io() returns 1 to the caller to tell it everything
+went fine and the callers needs to start writeback for the extent buffer
+(submit a bio, etc), 0 to tell the caller everything went fine but it does
+not need to start writeback for the extent buffer, and a negative value if
+some error happened.
 
-> An usage example as follows:
->         btrfs property set /btrfs readmirror devid:1,3
->         btrfs property get /btrfs readmirror
->           readmirror devid:1 3
->         btrfs property set /btrfs readmirror ""
->         btrfs property get /btrfs readmirror
->           readmirror default
-> 
-> This patchset has been tested completely, however marked as RFC for the 
-> following reasons and comments on them (or any other) are appreciated as
-> usual.
->  . The new objectid is defined as
->       #define BTRFS_READMIRROR_OBJECTID -1ULL
->    Need consent we are fine to use this value, and with this value it
->    shall be placed just before the DEV_STATS_OBJECTID item which is more
->    frequently used only during the device errors.
+When it's about to return 1 it tries to lock all pages, and if a try lock
+on a page fails, and we didn't flush any existing bio in our "epd", it
+calls flush_write_bio(epd) and overwrites the return value of 1 to 0 or
+an error. The page might have been locked elsewhere, not with the goal
+of starting writeback of the extent buffer, and even by some code other
+than btrfs, like page migration for example, so it does not mean the
+writeback of the extent buffer was already started by some other task,
+so returning a 0 tells the caller (btree_write_cache_pages()) to not
+start writeback for the extent buffer. Note that epd might currently have
+either no bio, so flush_write_bio() returns 0 (success) or it might have
+a bio for another extent buffer with a lower index (logical address).
 
--1 can be considered a special value in other cases, not necessarily
-here but if the ordering of items is the only reason I'd say no. The
-keys/items will most likely land in the same node so there's no point
-forcing the order.
+Since we return 0 with the EXTENT_BUFFER_WRITEBACK bit set on the
+extent buffer and writeback is never started for the extent buffer,
+future attempts to writeback the extent buffer will hang forever waiting
+on that bit to be cleared, since it can only be cleared after writeback
+completes. Such hang is reported with a trace like the following:
 
-> .  I am using a u64 bitmap to represent the devices id, so the max device
->    id that we could represent is 63, its a kind of limitation which should
->    be addressed before integration, I wonder if there is any suggestion?
+  [49887.347053] INFO: task btrfs-transacti:1752 blocked for more than 122 seconds.
+  [49887.347059]       Not tainted 5.2.13-gentoo #2
+  [49887.347060] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+  [49887.347062] btrfs-transacti D    0  1752      2 0x80004000
+  [49887.347064] Call Trace:
+  [49887.347069]  ? __schedule+0x265/0x830
+  [49887.347071]  ? bit_wait+0x50/0x50
+  [49887.347072]  ? bit_wait+0x50/0x50
+  [49887.347074]  schedule+0x24/0x90
+  [49887.347075]  io_schedule+0x3c/0x60
+  [49887.347077]  bit_wait_io+0x8/0x50
+  [49887.347079]  __wait_on_bit+0x6c/0x80
+  [49887.347081]  ? __lock_release.isra.29+0x155/0x2d0
+  [49887.347083]  out_of_line_wait_on_bit+0x7b/0x80
+  [49887.347084]  ? var_wake_function+0x20/0x20
+  [49887.347087]  lock_extent_buffer_for_io+0x28c/0x390
+  [49887.347089]  btree_write_cache_pages+0x18e/0x340
+  [49887.347091]  do_writepages+0x29/0xb0
+  [49887.347093]  ? kmem_cache_free+0x132/0x160
+  [49887.347095]  ? convert_extent_bit+0x544/0x680
+  [49887.347097]  filemap_fdatawrite_range+0x70/0x90
+  [49887.347099]  btrfs_write_marked_extents+0x53/0x120
+  [49887.347100]  btrfs_write_and_wait_transaction.isra.4+0x38/0xa0
+  [49887.347102]  btrfs_commit_transaction+0x6bb/0x990
+  [49887.347103]  ? start_transaction+0x33e/0x500
+  [49887.347105]  transaction_kthread+0x139/0x15c
 
-Uh 63, so now an implementation detail is posing a global limit? That
-sounds backwards.
+So fix this by not overwriting the return value (ret) with the result
+from flush_write_bio(). We also need to clear the EXTENT_BUFFER_WRITEBACK
+bit in case flush_write_bio() returns an error, otherwise it will hang
+any future attempts to writeback the extent buffer, and undo all work
+done before (set back EXTENT_BUFFER_DIRTY, etc).
 
->    Kindly note that, multiple ioctls with each time representing a set of
->    device(s) is not a choice because we need to make sure the readmirror
->    changes happens in a commit transaction.
+This is a regression introduced in the 5.2 kernel.
 
-I believe this can be guaranteed by the properties interface, ie. single
-value gets processed at once and with some locking around the state of
-devices can be updated atomically.
+Fixes: 2e3c25136adfb ("btrfs: extent_io: add proper error handling to lock_extent_buffer_for_io()")
+Fixes: f4340622e0226 ("btrfs: extent_io: Move the BUG_ON() in flush_write_bio() one level up")
+Reported-by: Zdenek Sojka <zsojka@seznam.cz>
+Link: https://lore.kernel.org/linux-btrfs/GpO.2yos.3WGDOLpx6t%7D.1TUDYM@seznam.cz/T/#u
+Reported-by: Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
+Link: https://lore.kernel.org/linux-btrfs/5c4688ac-10a7-fb07-70e8-c5d31a3fbb38@profihost.ag/T/#t
+Reported-by: Drazen Kacar <drazen.kacar@oradian.com>
+Link: https://lore.kernel.org/linux-btrfs/DB8PR03MB562876ECE2319B3E579590F799C80@DB8PR03MB5628.eurprd03.prod.outlook.com/
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204377
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
 
-The open question is still how to store the readmirror property
-per-device, it could be either an item or bit inside the device
-structure.
+V2: Also set back EXTENT_BUFFER_DIRTY on error and undo all work done previously.
 
-Besides the interface, I'm kind of missing the usecase description what
-is expected from the read mirror policies and how they could affect
-various scenarios. Maybe it was in some of the previous iterations, it's
-hard too track everything so this should be part of the cover letter (or
-at leat linked if it's too much text).
+ fs/btrfs/extent_io.c | 35 ++++++++++++++++++++++++++---------
+ 1 file changed, 26 insertions(+), 9 deletions(-)
+
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 13a683da71d2..3aae319fe9f5 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -3628,6 +3628,13 @@ void wait_on_extent_buffer_writeback(struct extent_buffer *eb)
+ 		       TASK_UNINTERRUPTIBLE);
+ }
+ 
++static void end_extent_buffer_writeback(struct extent_buffer *eb)
++{
++	clear_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
++	smp_mb__after_atomic();
++	wake_up_bit(&eb->bflags, EXTENT_BUFFER_WRITEBACK);
++}
++
+ /*
+  * Lock eb pages and flush the bio if we can't the locks
+  *
+@@ -3699,8 +3706,11 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
+ 
+ 		if (!trylock_page(p)) {
+ 			if (!flush) {
+-				ret = flush_write_bio(epd);
+-				if (ret < 0) {
++				int err;
++
++				err = flush_write_bio(epd);
++				if (err < 0) {
++					ret = err;
+ 					failed_page_nr = i;
+ 					goto err_unlock;
+ 				}
+@@ -3715,16 +3725,23 @@ static noinline_for_stack int lock_extent_buffer_for_io(struct extent_buffer *eb
+ 	/* Unlock already locked pages */
+ 	for (i = 0; i < failed_page_nr; i++)
+ 		unlock_page(eb->pages[i]);
++	/*
++	 * Clear EXTENT_BUFFER_WRITEBACK and wake up anyone waiting on it.
++	 * Also set back EXTENT_BUFFER_DIRTY so future attempts to this eb can
++	 * be made and undo everything done before.
++	 */
++	btrfs_tree_lock(eb);
++	spin_lock(&eb->refs_lock);
++	set_bit(EXTENT_BUFFER_DIRTY, &eb->bflags);
++	end_extent_buffer_writeback(eb);
++	spin_unlock(&eb->refs_lock);
++	percpu_counter_add_batch(&fs_info->dirty_metadata_bytes, eb->len,
++				 fs_info->dirty_metadata_batch);
++	btrfs_clear_header_flag(eb, BTRFS_HEADER_FLAG_WRITTEN);
++	btrfs_tree_unlock(eb);
+ 	return ret;
+ }
+ 
+-static void end_extent_buffer_writeback(struct extent_buffer *eb)
+-{
+-	clear_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
+-	smp_mb__after_atomic();
+-	wake_up_bit(&eb->bflags, EXTENT_BUFFER_WRITEBACK);
+-}
+-
+ static void set_btree_ioerr(struct page *page)
+ {
+ 	struct extent_buffer *eb = (struct extent_buffer *)page->private;
+-- 
+2.11.0
+
