@@ -2,328 +2,225 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FCFB05E2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 01:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98F8EB060E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 01:38:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728289AbfIKXVi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 19:21:38 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:36992 "EHLO
-        server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727093AbfIKXVi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 19:21:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
-         s=default; h=Content-Transfer-Encoding:MIME-Version:Content-Type:Reply-to:
-        In-Reply-To:References:Subject:Cc:To:From:Message-ID:Date:Sender:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=AWRBnqvt80CZAA2o7rG5kHMGdJN5usUTDP40rVuj42g=; b=M83QQ0kc7qFI+3Bw0isL/ODuwB
-        yycKoKuVRamvYCofA15TmCVjV2cA/2NWnR9VJJX4ssMFcAAmtjiJXBImxSNukyOp53Ik4g8q4XZ4B
-        8jTJxT96+A1y4LtFnSXeCc7BcKtKR9jzBuKdzK1VW5HVY5WSpiwDXOXvT2YaAHlVjAWh1BJqxSCr0
-        zyxXKHXjZJzCyBKhCDlJWl5nDbVQxtzKKYhW3y4UPQJV0ilq+750nLw+lM8ctH+U1fiUNEoax6D1t
-        dEoVerJia6DFwQ/LGzSYw82ExGu+m64qFMez/9oJ79cGAjUMXun583g4EAuCuedujrxT7soT8QSjK
-        pt09Qoew==;
-Received: from [::1] (port=40678 helo=server53.web-hosting.com)
-        by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <webmaster@zedlx.com>)
-        id 1i8BvX-001QnO-4T; Wed, 11 Sep 2019 19:21:35 -0400
-Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Wed, 11 Sep 2019 19:21:31 -0400
-Date:   Wed, 11 Sep 2019 19:21:31 -0400
-Message-ID: <20190911192131.Horde.2lTVSt-Ln94dqLGQKg_USXQ@server53.web-hosting.com>
-From:   webmaster@zedlx.com
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: Feature requests: online backup - defrag - change RAID level
-References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
- <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
- <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
- <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
- <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
- <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
- <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
- <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
- <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
- <20190911132053.Horde._wJd24LqxxXx9ujl2r5i7PQ@server53.web-hosting.com>
- <20190911213704.GB22121@hungrycats.org>
-In-Reply-To: <20190911213704.GB22121@hungrycats.org>
-Reply-to: webmaster@zedlx.com
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        id S1729345AbfIKXir (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 19:38:47 -0400
+Received: from mout.gmx.net ([212.227.15.15]:44929 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729003AbfIKXiq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 19:38:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1568245099;
+        bh=AdCH9BjX1bH9K1ChzM+LtFvABWT2t72uPkOLGfvi0+8=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=TUi3ywxygmVvnHQV/KTxFyXKnyIMBYPrIPtCEdz2UeI7T8rFYIcSxXXv3v1QOFbrC
+         eubRfascN9ulBoByjQpasL9vGt3kM1tN1NHYGjfz1tBdF0rB69Ixr+Lpsq8474ij3B
+         LO3MEOzZkLBItubxnjPMYT4q24DydgwKWMzQDVVs=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MCsPy-1hzQkM27XM-008tsh; Thu, 12
+ Sep 2019 01:38:19 +0200
+Subject: Re: [PATCH RFC] btrfs: Introduce btrfs child tree block verification
+ system
+To:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <20190911074624.27322-1-wqu@suse.com>
+ <20190911160202.wtprsigurzfxwtic@MacBook-Pro-91.local>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <3993aeab-a695-3bd1-88d6-48e9743ab597@gmx.com>
+Date:   Thu, 12 Sep 2019 07:38:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.0
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-OutGoing-Spam-Status: No, score=-1.0
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server53.web-hosting.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - zedlx.com
-X-Get-Message-Sender-Via: server53.web-hosting.com: authenticated_id: zedlryqc/from_h
-X-Authenticated-Sender: server53.web-hosting.com: webmaster@zedlx.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-From-Rewrite: unmodified, already matched
+In-Reply-To: <20190911160202.wtprsigurzfxwtic@MacBook-Pro-91.local>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="cZvbWbGDYYZOrFTpyZygrzcpBGU6AqypL"
+X-Provags-ID: V03:K1:1OWGqgEgCK02YwJbugDVBRSz5nWZwQjLDA0ugACp432/Oo6T1sZ
+ klCQz/60J//zxTRf21FoRw89Hfro3tSNbKWo2uOyq/kGKrY77h16hNC8HIZZixe0y8Mkefi
+ vv3gYTjhmZnjGGQSpzOz5FiVMob/bBs+fSuT5elvn9zJjFo/4x0aextAxoQRV3kUPh+8zKM
+ 37QFCdvYDR1Db4fSGwuIw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RFThwHhirGU=:PJSxQniOsosY+WS4ilTgYf
+ eeR5UX2+ybPWqlvkmZv7SnSrP1jta+1ttxpxW+RD1uIDg+bCb59toAyYTN/XZbZ2LgiPdv6Il
+ jWFi+o+E01TyVyd+uzJLE2x3AxVw3GPKOfL0peBocmoF4C7klKcr1TYCtIxcGNGzF+7Jsluf+
+ /HdnmQEibUZpR5J5sdqqtD4KZEk+IY9GMfFxsom3QmWrqXfsY+h1XKoyYtxGL7aEQnbzU91SZ
+ 3t4rlaNH6L2uTv9/B5MfwQXB3NxGVSKAcXxyuDpwEcAlsXzVsGhPez6NgKXNqQSjvk3lagOwQ
+ obDUWd/kr5Ld3efYUD8NcVLNozKzRMj5W4I4lXltMb4QbOyUcbiXHxbevwa5jwB9lmsoEwhQB
+ Qew7ABUVU9nRD0xoO2tLbhfG9delv6m7bN6dtz+u+k4+lIX7mamXbKigXnNoWI+YAObLKhMjl
+ F+mqRyNq+cspmuYjsajpEROWmED7htVdP+JqfzoE36oUH7G8pr67Bkz8bQROOPmibl6+wG/sn
+ SH/+VdofA6GYUSoXqurFZw+EG/9hGJpVTNcvuhsYg3eakW1DXFvE/y/TNoNxW+g+d3oKzYeEd
+ i3hEBFywfkKwOSfOaS3V8K42cRYSx+vgNYiwBrWxF8yaQ+117XQhelwi5ROSp8ELvt+pZXqQj
+ n/k8a0Nx/8WpdUEzlcQ3mDhHfCOLqed23itPqbXk7mgoIQkOtPig3T/gKGMCccJVn938u08o0
+ 05XptHPyWj7k+UMx5cRcXguNm6R2jCmUTj6V7SCk+dVDvCHxH1E6lpMyv8Y2I1XlhBHi8adUc
+ AH69fD+sBNUKN9lVjFYunaaUhmOXmBqmwfl+YKQjBOR3k2BiT9nSusMb2fJCGKlJJGL55k1fK
+ Ui8ii8PdWpCtLFScmCOLujT4WRPWZcknjCmOoEcAPvaRQ70G+RqW7gPW2HnJ9niVKd5apaGCD
+ D86oo40M/GWG2JrCHoyjC2cZTH8StApfcdlV0h0psH/VQewGf9MFIe+wxA/0It507LzoYcy4W
+ +cnOs4xlqXHUupLXZ+RobZl88D8JAiGRm9hNkxdYuLSvzkVvv0+dfryaeJB0YOD243GyuUj7N
+ Sq+RdevThXcmB2xY0+xi1clQIAzCkvFMb/remSV1YuoGHE193Zp/xbOmxH2diW0qG/X+cbz6I
+ xmvM7B2LkDwhzeQScvzus9cHI9Och8u7VCcibboOV00qtoizh8v/gxhKQV8deChJBcsj3oPuL
+ waEiGKTSwEL3albtQ
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cZvbWbGDYYZOrFTpyZygrzcpBGU6AqypL
+Content-Type: multipart/mixed; boundary="BxIxyUgV82eL6XO8cQyqpgDqm2q0qtmXU"
 
-Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
+--BxIxyUgV82eL6XO8cQyqpgDqm2q0qtmXU
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> On Wed, Sep 11, 2019 at 01:20:53PM -0400, webmaster@zedlx.com wrote:
+
+
+On 2019/9/12 =E4=B8=8A=E5=8D=8812:02, Josef Bacik wrote:
+> On Wed, Sep 11, 2019 at 03:46:24PM +0800, Qu Wenruo wrote:
+>> Although we have btrfs_verify_level_key() function to check the first
+>> key and level at tree block read time, it has its limitation due to tr=
+ee
+>> lock context, it's not reliable handling new tree blocks.
 >>
->> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+>=20
+> How is it not reliable with new tree blocks?
+
+Current btrfs_verify_level_key() skips first_key verification for any
+tree blocks newer than last committed.
+
+>=20
+>> So btrfs_verify_level_key() is good as a pre-check, but it can't ensur=
+e
+>> new tree blocks are still sane at runtime.
 >>
->> > On 2019-09-10 19:32, webmaster@zedlx.com wrote:
->> > >
->> > > Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
->> > >
->>
->> > >
->> > > === I CHALLENGE you and anyone else on this mailing list: ===
->> > >
->> > >  - Show me an exaple where splitting an extent requires unsharing,
->> > > and this split is needed to defrag.
->> > >
->> > > Make it clear, write it yourself, I don't want any machine-made outputs.
->> > >
->> > Start with the above comment about all writes unsharing the region being
->> > written to.
->> >
->> > Now, extrapolating from there:
->> >
->> > Assume you have two files, A and B, each consisting of 64 filesystem
->> > blocks in single shared extent.  Now assume somebody writes a few bytes
->> > to the middle of file B, right around the boundary between blocks 31 and
->> > 32, and that you get similar writes to file A straddling blocks 14-15
->> > and 47-48.
->> >
->> > After all of that, file A will be 5 extents:
->> >
->> > * A reflink to blocks 0-13 of the original extent.
->> > * A single isolated extent consisting of the new blocks 14-15
->> > * A reflink to blocks 16-46 of the original extent.
->> > * A single isolated extent consisting of the new blocks 47-48
->> > * A reflink to blocks 49-63 of the original extent.
->> >
->> > And file B will be 3 extents:
->> >
->> > * A reflink to blocks 0-30 of the original extent.
->> > * A single isolated extent consisting of the new blocks 31-32.
->> > * A reflink to blocks 32-63 of the original extent.
->> >
->> > Note that there are a total of four contiguous sequences of blocks that
->> > are common between both files:
->> >
->> > * 0-13
->> > * 16-30
->> > * 32-46
->> > * 49-63
->> >
->> > There is no way to completely defragment either file without splitting
->> > the original extent (which is still there, just not fully referenced by
->> > either file) unless you rewrite the whole file to a new single extent
->> > (which would, of course, completely unshare the whole file).  In fact,
->> > if you want to ensure that those shared regions stay reflinked, there's
->> > no way to defragment either file without _increasing_ the number of
->> > extents in that file (either file would need 7 extents to properly share
->> > only those 4 regions), and even then only one of the files could be
->> > fully defragmented.
->> >
->> > Such a situation generally won't happen if you're just dealing with
->> > read-only snapshots, but is not unusual when dealing with regular files
->> > that are reflinked (which is not an uncommon situation on some systems,
->> > as a lot of people have `cp` aliased to reflink things whenever
->> > possible).
->>
->> Well, thank you very much for writing this example. Your example is
->> certainly not minimal, as it seems to me that one write to the file A and
->> one write to file B would be sufficient to prove your point, so there we
->> have one extra write in the example, but that's OK.
->>
->> Your example proves that I was wrong. I admit: it is impossible to perfectly
->> defrag one subvolume (in the way I imagined it should be done).
->> Why? Because, as in your example, there can be files within a SINGLE
->> subvolume which share their extents with each other. I didn't consider such
->> a case.
->>
->> On the other hand, I judge this issue to be mostly irrelevant. Why? Because
->> most of the file sharing will be between subvolumes, not within a subvolume.
->> When a user creates a reflink to a file in the same subvolume, he is
->> willingly denying himself the assurance of a perfect defrag. Because, as
->> your example proves, if there are a few writes to BOTH files, it gets
->> impossible to defrag perfectly. So, if the user creates such reflinks, it's
->> his own whish and his own fault.
->>
->> Such situations will occur only in some specific circumstances:
->> a) when the user is reflinking manually
->> b) when a file is copied from one subvolume into a different file in a
->> different subvolume.
->>
->> The situation a) is unusual in normal use of the filesystem. Even when it
->> occurs, it is the explicit command given by the user, so he should be
->> willing to accept all the consequences, even the bad ones like imperfect
->> defrag.
->>
->> The situation b) is possible, but as far as I know copies are currently not
->> done that way in btrfs. There should probably be the option to reflink-copy
->> files fron another subvolume, that would be good.
->
-> Reflink copies across subvolumes have been working for years.  They are
-> an important component that makes dedupe work when snapshots are present.
+>=20
+> I mean I guess this is good, but we have to keep the parent locked when=
+ we're
+> adding new blocks anyway, so I'm not entirely sure what this gains us?
 
-I take that what you say is true, but what I said is that when a user  
-(or application) makes a
-normal copy from one subvolume to another, then it won't be a  
-reflink-copy. To make such a reflink-copy, you need btrfs-aware cp or  
-btrfs-aware applications.
+For cases like tree search on current node, where all tree blocks can be
+newly CoWed tree blocks.
 
-So, the reflik-copy is a special case, usually explicitly requested by  
-the user.
+If bit flip happens affecting those new tree blocks, we can detect them
+at runtime, and that's the only time we can catch such error.
 
->> But anyway, it doesn't matter. Because most of the sharing will be between
->> subvolumes, not within subvolume.
->
-> Heh.  I'd like you to meet one of my medium-sized filesystems:
->
-> 	Physical size:  8TB
-> 	Logical size:  16TB
-> 	Average references per extent:  2.03 (not counting snapshots)
-> 	Workload:  CI build server, VM host
->
-> That's a filesystem where over half of the logical data is reflinks to the
-> other physical data, and 94% of that data is in a single subvol.  7.5TB of
-> data is unique, the remaining 500GB is referenced an average of 17 times.
->
-> We use ordinary applications to make ordinary copies of files, and do
-> tarball unpacks and source checkouts with reckless abandon, all day long.
-> Dedupe turns the copies into reflinks as we go, so every copy becomes
-> a reflink no matter how it was created.
->
-> For the VM filesystem image files, it's not uncommon to see a high
-> reflink rate within a single file as well as reflinks to other files
-> (like the binary files in the build directories that the VM images are
-> constructed from).  Those reference counts can go into the millions.
+Write time tree checker doesn't go beyond single leave/node, thus has no
+way to detect such parent-child mismatch case.
 
-OK, but that cannot be helped: either you retain the sharing structure  
-with imperfect defrag, or you unshare and produce a perfect defrag  
-which should have somewhat better performance (and pray that the disk  
-doesn't fill up).
+>  You are
+> essentially duplicating the checks that we already do on reads, and the=
+n adding
+> the first_key check.
+>=20
+> I'll go along with the first_key check being relatively useful, but why=
+ exactly
+> do we need all this infrastructure when we can just check it as we walk=
+ down the
+> tree?
 
->> So, if there is some in-subvolume sharing,
->> the defrag wont be 100% perfect, that a minor point. Unimportant.
->
-> It's not unimportant; however, the implementation does have to take this
-> into account, and make sure that defrag can efficiently skip extents that
-> are too expensive to relocate.  If we plan to read an extent fewer than
-> 100 times, it makes no sense to update 20000 references to it--we spend
-> less total time just doing the 100 slower reads.
+You can't really do the nritems and first key check at the current
+timing of btrfs_verify_level_key() for new tree blocks due to lock contex=
+t.
 
-Not necesarily. Because you can defrag in the time-of-day when there  
-is a low pressure on the disk IO, so updating 20000 references is  
-esentially free.
+That's the only reason the new infrastructure is here, to block the only
+hole of btrfs_verify_level_key().
 
-You are just making those later 100 reads faster.
+>=20
+> <snip>
+>=20
+>> @@ -2887,24 +2982,28 @@ int btrfs_search_slot(struct btrfs_trans_handl=
+e *trans, struct btrfs_root *root,
+>>  			}
+>> =20
+>>  			if (!p->skip_locking) {
+>> -				level =3D btrfs_header_level(b);
+>> -				if (level <=3D write_lock_level) {
+>> +				if (level - 1 <=3D write_lock_level) {
+>>  					err =3D btrfs_try_tree_write_lock(b);
+>>  					if (!err) {
+>>  						btrfs_set_path_blocking(p);
+>>  						btrfs_tree_lock(b);
+>>  					}
+>> -					p->locks[level] =3D BTRFS_WRITE_LOCK;
+>> +					p->locks[level - 1] =3D BTRFS_WRITE_LOCK;
+>>  				} else {
+>>  					err =3D btrfs_tree_read_lock_atomic(b);
+>>  					if (!err) {
+>>  						btrfs_set_path_blocking(p);
+>>  						btrfs_tree_read_lock(b);
+>>  					}
+>> -					p->locks[level] =3D BTRFS_READ_LOCK;
+>> +					p->locks[level - 1] =3D BTRFS_READ_LOCK;
+>>  				}
+>> -				p->nodes[level] =3D b;
+>> +				p->nodes[level - 1] =3D b;
+>>  			}
+>=20
+> This makes no sense to me.  Why do we need to change how we do level he=
+re just
+> for the btrfs_verify_child() check?
 
-OK, you are right, there is some limit, but this is such a rare case,  
-that such a heavily-referenced extents are best left untouched.
-I suggest something along these lines: if there are more than XX  
-(where XX defaults to 1000) reflinks to an extent, then one or more  
-copies of the extent should be made such that each has less than XX  
-reflinks to it. The number XX should be user-configurable.
+Because we can't trust the level from @b unless we have verified it.
 
-> If the numbers are
-> reversed then it's better to defrag the extent--100 reference updates
-> are easily outweighed by 20000 faster reads.  The kernel doesn't have
-> enough information to make good decisions about this.
+(Although level is always checked in btrfs_verify_level_key(), but that
+function is not 100% sure to be kept as is).
 
-So, just make the number XX user-provided.
+Thanks,
+Qu
 
-> Dedupe has a similar problem--it's rarely worth doing a GB of IO to
-> save 4K of space, so in practical implementations, a lot of duplicate
-> blocks have to remain duplicate.
->
-> There are some ways to make the kernel dedupe and defrag API process
-> each reference a little more efficiently, but none will get around this
-> basic physical problem:  some extents are just better off where they are.
-
-OK. If you don't touch those extents, they are still shared. That's  
-what I wanted.
-
-> Userspace has access to some extra data from the user, e.g.  "which
-> snapshots should have their references excluded from defrag because
-> the entire snapshot will be deleted in a few minutes."  That will allow
-> better defrag cost-benefit decisions than any in-kernel implementation
-> can make by itself.
-
-Yes, but I think that we are going into too much details which are  
-diverting the attention from the overall picture and from big problems.
-
-And the big problem here is: what do we want defrag to do in general,  
-most common cases. Because we haven't still agreed on that one since  
-many of the people here are ardent followers of the  
-defrag-by-unsharing ideology.
-
-> 'btrfs fi defrag' is just one possible userspace implementation, which
-> implements the "throw entire files at the legacy kernel defrag API one
-> at a time" algorithm.  Unfortunately, nobody seems to have implemented
-> any other algorithms yet, other than a few toy proof-of-concept demos.
-
-I really don't have a clue what's happening, but if I were to start  
-working on it (which I won't), then the first things should be:
-- creating a way for btrfs to split large extents into smaller ones  
-(for easier defrag, as first phase).
-- creating a way for btrfs to merge small adjanced extents shared by  
-the same files into larger extents (as the last phase of defragmenting  
-a file).
-- create a structure (associative array) for defrag that can track  
-backlinks. Keep the structure updated with each filesystem change, by  
-placing hooks in filesystem-update routines.
-
-You can't go wrong with this. Whatever details change about defrag  
-operation, the given three things will be needed by defrag.
-
->> Now, to retain the original sharing structure, the defrag has to change the
->> reflink of extent E55 in file B to point to E70. You are telling me this is
->> not possible? Bullshit!
->
-> This is already possible today and userspace tools can do it--not as
-> efficiently as possible, but without requiring more than 128M of temporary
-> space.  'btrfs fi defrag' is not one of those tools.
->
->> Please explain to me how this 'defrag has to unshare' story of yours isn't
->> an intentional attempt to mislead me.
->
-> Austin is talking about the btrfs we have, not the btrfs we want.
-
-OK, but then, you agree with me that current defrag is a joke. I mean,  
-something is better than nothing, and the current defrag isn't  
-completely useless, but it is in most circumstances either unusable or  
-not good enough.
-
-I mean, the snapshots are a prime feature of btrfs. If not, then why  
-bother with b-trees? If you wanted subvolumes, checksums and RAID,  
-then you should have made ext5. B-trees are in btrfs so that there can  
-be snapshots. But, the current defrag works bad with snaphots. It  
-doesn't defrag them well, it also unshares data. Bad bad bad.
-
-And if you wanted to be honest to your users, why don't you place this  
-info in the wiki? Ok, the wiki says "defrag will unshare", but it  
-doesn't say that it also doesn't defragment well.
-
-For example, lets examine the typical home user. If he is using btrfs,  
-it means he probably wants snapshots of his data. And, after a few  
-snapshots, his data is fragmented, and the current defrag can't help  
-because it does a terrible job in this particualr case.
-
-So why don't you write on the wiki "the defrag is practically unusable  
-in case you use snapshots". Because that is the truth. Be honest.
+>  We've already init'ed verify further up,
+> and we're not changing b here, so messing with level here just makes th=
+e code
+> less clear.  Thanks,
+>=20
+> Josef
+>=20
 
 
+--BxIxyUgV82eL6XO8cQyqpgDqm2q0qtmXU--
 
+--cZvbWbGDYYZOrFTpyZygrzcpBGU6AqypL
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl15hWYACgkQwj2R86El
+/qjGLggAm5DwMfjZNdHwufKixsnpmalWIg3PF9518Y4Jjijq+V03liG56nHKAGxo
+MsLmOldwMMTUHp0CH01/2biWpSPGyvJ2KD/lRCeBvl3xh6ZqmTZ004sF+vXkVDz4
+5zUqaVCcbkC0YyciJ9gj3Lu+ymoPOWvkA8+1YA9D+OPrFYlEx9g8BhPcszGMO/RA
+pME/dKenQvKNfjL4Kmi2xFkQWiHN2nKxgPkUx1Xe/6rQZYsEqIhQPT1fhnRnGKnj
+CEGpDDIUgIQEVtraU58GCKg6KV7xLR9JLQgNYoxf/8nh07YrjlzgJEx/6yzqM2c5
+90yfzV2KlPqk4LRpsQjmiauvmp0AhQ==
+=U05N
+-----END PGP SIGNATURE-----
+
+--cZvbWbGDYYZOrFTpyZygrzcpBGU6AqypL--
