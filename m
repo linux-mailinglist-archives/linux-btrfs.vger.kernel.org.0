@@ -2,129 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 569CEB03C6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 20:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13CF6B03C7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 20:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbfIKSme (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 14:42:34 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:39754 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728285AbfIKSme (ORCPT
+        id S1730008AbfIKSnT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 14:43:19 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:42180 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729975AbfIKSnT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 14:42:34 -0400
-Received: by mail-qk1-f193.google.com with SMTP id 4so21832504qki.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 11:42:33 -0700 (PDT)
+        Wed, 11 Sep 2019 14:43:19 -0400
+Received: by mail-qt1-f196.google.com with SMTP id c17so7193128qtv.9
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 11:43:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=K39UN7J0CZJeSxYvraU6LdD7Jz5Wm3XdCY6+tL3u6do=;
-        b=QRKZfpZwzIM8SVzYLv8CoOT4zNQOIlOIzcZD4lcBvLH8vZH+sTcmzpuhLghLmZeo1g
-         6BZ7e+g4HqIFQplkuw2rvr3vAe7ABmzJa+tGa6wapOhu6/YYsi5cOM+ASmQrKZpCcqyQ
-         8LWi6Z5A3HBIkGoXeuqq9B7laYDGbGRbQ7pQYIb/DLzMNqURHFNlg5X4VRYGXrMzuIbs
-         3cVwRafah5FoDDlTcC69L/XgffPwSo5dMkTGWwZ6XN/o81F1lIPJD2IxSKvjBj9Bttye
-         P+Q6Cv/MW6+rZYoCUda/vP//6uXiJv+pXR40YluDEHmacNeHTglYJU54GJHSyK9VI9QQ
-         FvLg==
+        bh=Slxu4uoo+Zmzumy/BkMxF3YmBPycJLj5V2xEG3Usynw=;
+        b=aB6smhdFTezl3uxNAaRGrw9/SV4+28l02ruRZfT8u1yh/x2S8KAeku8vRljj/7/NBz
+         9ew45p2pxU5F1j3eX7L51U728CgVDWNLIWuT613SOL9dS1blfwU/M3xAmx52VGOQsCvK
+         GnUwo86+zpo++nu3j2Q784YPd1BwJqR+fl/AbnnqWMEQQIFmtHWJzWUQgsPIFSSWkCcd
+         BMxMVUA2Myeq9PLmrWxLemXvnDd3kcuCasJQyXnBtDPtcVCfGW6T2CsYBRP5Rw9eev4u
+         IPfySfmMW+Ffj9QIATEqaCq9H9ks3Kmq3vx0GBgzESWMz1H8KnITJ3kcSrYEErHWxS3N
+         LZzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=K39UN7J0CZJeSxYvraU6LdD7Jz5Wm3XdCY6+tL3u6do=;
-        b=K5u/v978Afm/+eVn4iSJP8hvGoWRWpZb5kvXgVUr8M6xOH0ePUUHeAz8fdk6hYMnvm
-         gG+yIhgwqfjxsOst+Fd7CPo6ZVWWDkOJQNlUd2XiwHDXj/07w/IpmB57Rf7pMS+lbGwo
-         Nbub9pOJIBSC/ex6lZqbpcBKdu4xvZ5a7IQiTkFWliIHgduib46XirLu13TPm5cXfyTz
-         ffFZTE2cX0Mk6bqwiWEouZ7M58y0oflfv6iyLg1yKNZIPOxLZAPTzseOHHs0ojGWZqMJ
-         ypXuiGy5PlfLkqnTJaRwsn29nZyxGUtQSsWfL3g2ISNLvaHgXHUQe11FE2mxNAYL9YZs
-         BbKQ==
-X-Gm-Message-State: APjAAAUqC67ThZSoSBrfTDdj+aSOdAiJjSyP0Vl0CXtYzZAxwbBGJSum
-        l2OKeRxg+d7Tl2efz0bT796OMw==
-X-Google-Smtp-Source: APXvYqy32VIj6gfYHrQa7K007YDKFCi0mVSMzonBabDDSZD12WAeZaWp9aZWhr/uEsw0rC3Goqvv4w==
-X-Received: by 2002:ae9:ee1a:: with SMTP id i26mr36700096qkg.112.1568227353096;
-        Wed, 11 Sep 2019 11:42:33 -0700 (PDT)
+        bh=Slxu4uoo+Zmzumy/BkMxF3YmBPycJLj5V2xEG3Usynw=;
+        b=inLJ1aEZYE+h3q4eRIyCJ4T5b43BWG4WuO5jdhfLTpRLuAycmx70nUazaWga9Bg/8J
+         3g4RQPPx+OuUX3WtQSiBn27KVzb90NHez7IGCxJ1Wv3Vd3XO4537rMySE/8zTUrnjo6W
+         bNivEKtfYDFGGUwvzdeauAnha6jx4sG1IwA3wsB7MYTAZ1lSftqsyHQmXMpgVcX0cvpc
+         dkRGa+BI/BOpQmqTPgLdC9gHkYslgJ1G3XhbrWlmtoHCgqgnB9PG0AQANmYMV50eoQPY
+         73fJjmQutzQlo8zANJui3jQJbr6h7ZRKPKu0qRnwOCEUjQe1lImUZahOyg0hMaxNYAAA
+         H/Gw==
+X-Gm-Message-State: APjAAAXi6zAm1KuQWQlu5LLIGrEZv3bK+cwViHpvjVEE6UqZGeHG9SlF
+        O20YJyH+h7R7tzj/zUHfP6CYcQ==
+X-Google-Smtp-Source: APXvYqy/vzkSerD7blvkUYnv+MqtTIssAo0nqUQEz0FWEDgn7us2ji3nRUoRPFhFg0xwY7Yc3B2EKA==
+X-Received: by 2002:a0c:e946:: with SMTP id n6mr23626300qvo.214.1568227398714;
+        Wed, 11 Sep 2019 11:43:18 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::87bd])
-        by smtp.gmail.com with ESMTPSA id h10sm13813973qtk.18.2019.09.11.11.42.32
+        by smtp.gmail.com with ESMTPSA id g12sm9409007qkm.25.2019.09.11.11.43.17
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Sep 2019 11:42:32 -0700 (PDT)
-Date:   Wed, 11 Sep 2019 14:42:31 -0400
+        Wed, 11 Sep 2019 11:43:17 -0700 (PDT)
+Date:   Wed, 11 Sep 2019 14:43:16 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Anand Jain <anand.jain@oracle.com>
+To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC v2 0/2]  readmirror feature
-Message-ID: <20190911184229.gl7tu3igtuuepcvm@macbook-pro-91.dhcp.thefacebook.com>
-References: <20190826090438.7044-1-anand.jain@oracle.com>
+Subject: Re: [PATCH] Btrfs: fix missing error return if writeback for extent
+ buffer never started
+Message-ID: <20190911184315.g3c7kbibbvqox5pn@macbook-pro-91.dhcp.thefacebook.com>
+References: <20190911164228.13507-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190826090438.7044-1-anand.jain@oracle.com>
+In-Reply-To: <20190911164228.13507-1-fdmanana@kernel.org>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 26, 2019 at 05:04:36PM +0800, Anand Jain wrote:
-> Function call chain  __btrfs_map_block()->find_live_mirror() uses
-> thread pid to determine the %mirror_num when the mirror_num=0.
+On Wed, Sep 11, 2019 at 05:42:28PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> This patch introduces a framework so that we can add policies to determine
-> the %mirror_num. And also adds the devid as the readmirror policy.
+> If lock_extent_buffer_for_io() fails, it returns a negative value, but its
+> caller btree_write_cache_pages() ignores such error. This means that a
+> call to flush_write_bio(), from lock_extent_buffer_for_io(), might have
+> failed. We should make btree_write_cache_pages() notice such error values
+> and stop immediatelly, making sure filemap_fdatawrite_range() returns an
+> error to the transaction commit path. A failure from flush_write_bio()
+> should also result in the endio callback end_bio_extent_buffer_writepage()
+> being invoked, which sets the BTRFS_FS_*_ERR bits appropriately, so that
+> there's no risk a transaction or log commit doesn't catch a writeback
+> failure.
 > 
-> The new property is stored as an item in the device tree as show below.
->     (BTRFS_READMIRROR_OBJECTID, BTRFS_PERSISTENT_ITEM_KEY, devid)
-> 
-> To be able to set and get this new property also introduces new ioctls
-> BTRFS_IOC_GET_READMIRROR and BTRFS_IOC_SET_READMIRROR. The ioctl argument
-> is defined as
->         struct btrfs_ioctl_readmirror_args {
->                 __u64 type; /* RW */
->                 __u64 device_bitmap; /* RW */
->         }
-> 
-> An usage example as follows:
->         btrfs property set /btrfs readmirror devid:1,3
->         btrfs property get /btrfs readmirror
->           readmirror devid:1 3
->         btrfs property set /btrfs readmirror ""
->         btrfs property get /btrfs readmirror
->           readmirror default
-> 
-> This patchset has been tested completely, however marked as RFC for the 
-> following reasons and comments on them (or any other) are appreciated as
-> usual.
->  . The new objectid is defined as
->       #define BTRFS_READMIRROR_OBJECTID -1ULL
->    Need consent we are fine to use this value, and with this value it
->    shall be placed just before the DEV_STATS_OBJECTID item which is more
->    frequently used only during the device errors.
-> 
-> .  I am using a u64 bitmap to represent the devices id, so the max device
->    id that we could represent is 63, its a kind of limitation which should
->    be addressed before integration, I wonder if there is any suggestion?
->    Kindly note that, multiple ioctls with each time representing a set of
->    device(s) is not a choice because we need to make sure the readmirror
->    changes happens in a commit transaction.
-> 
-> v1->RFC v2:
->   . Property is stored as a dev-tree item instead of root inode extended
->     attribute.
->   . Rename BTRFS_DEV_STATE_READ_OPRIMIZED to BTRFS_DEV_STATE_READ_PREFERRED.
->   . Changed format specifier from devid1,2,3.. to devid:1,2,3..
-> 
-> RFC->v1:
->   Drops pid as one of the readmirror policy choices and as usual remains
->   as default. And when the devid is reset the readmirror policy falls back
->   to pid.
->   Drops the mount -o readmirror idea, it can be added at a later point of
->   time.
->   Property now accepts more than 1 devid as readmirror device. As shown
->   in the example above.
-> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-This is a lot of infrastructure to just change which mirror we read to based on
-some arbitrary user policy.  I assume this is to solve the case where you have
-slow and fast disks, so you can always read from the fast disk?  And then it's
-only used in RAID1, so the very narrow usecase of having a RAID1 setup with a
-SSD and a normal disk?  I'm not seeing a point to this much code for one
-particular obscure setup.  Thanks,
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
 
 Josef
