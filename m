@@ -2,55 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4446BAFA32
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 12:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2D8AFA3B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 12:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727490AbfIKKTa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 06:19:30 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:58840 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727406AbfIKKTa (ORCPT
+        id S1726696AbfIKKVZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 06:21:25 -0400
+Received: from hawking.davidnewall.com ([203.20.69.83]:41549 "EHLO
+        hawking.rebel.net.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726579AbfIKKVZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 06:19:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=wVr5sXcwDs6pnyhJohgaa7TVQtRp5amDWn72nY3VOS4=; b=kUsENYAA0wKG3iKP/bPbzw9x4
-        cIVr6LHCib8ChTdJHF3ZSbXA4zBihQhTzEhTgywimqtu73bzaTBgVyUPMgXC6BZ1WN10MIngw6aLP
-        E9j4kOjV7990HBXfU9wOQNBIdtnWLpQRCMpLNprHwGNmBvhkcBySa7TVCqb3G8QekTBHP/MRkd1sE
-        CP4Zkz+7K1/ve3J2YRSgt79KpNOqQbQf1D7qe3UW3ofOv6IMAuRNCTPuuK7JdHtEPUKwAwzSA2UFY
-        HHKxXrLgMwNt/fA4fKPgsUysoXlX2TZCck3b/4V2oI7J3RnBm2zBeiql9YBvnkeL6icnNjRP+95zl
-        5ZgeH9L5A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92 #3 (Red Hat Linux))
-        id 1i7zic-0001bm-0O; Wed, 11 Sep 2019 10:19:22 +0000
-Date:   Wed, 11 Sep 2019 03:19:21 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Andres Freund <andres@anarazel.de>
-Cc:     Dave Chinner <david@fromorbit.com>,
-        David Sterba <dsterba@suse.com>,
-        Goldwyn Rodrigues <rgoldwyn@suse.de>,
-        linux-fsdevel@vger.kernel.org, jack@suse.com, hch@infradead.org,
-        linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: Odd locking pattern introduced as part of "nowait aio support"
-Message-ID: <20190911101921.GA6095@infradead.org>
-References: <20190910223327.mnegfoggopwqqy33@alap3.anarazel.de>
- <20190911040420.GB27547@dread.disaster.area>
- <20190911093926.pfkkx25mffzeuo32@alap3.anarazel.de>
+        Wed, 11 Sep 2019 06:21:25 -0400
+Received: from [172.30.0.109] (ppp14-2-96-129.adl-apt-pir-bras32.tpg.internode.on.net [::ffff:14.2.96.129])
+  (AUTH: PLAIN davidn, SSL: TLSv1/SSLv3,128bits,AES128-SHA)
+  by hawking.rebel.net.au with ESMTPSA; Wed, 11 Sep 2019 19:51:23 +0930
+  id 0000000000064FBC.5D78CAA3.00003E4A
+Subject: Re: Mount/df/PAM login hangs during rsync to btrfs subvolume, or
+ maybe doing btrfs subvolume snapshot
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <c00dfaf7-81a4-5e79-6279-b4af53f7f928@davidnewall.com>
+ <1a651f17-ba40-2f17-403e-69999e927b2d@suse.com>
+From:   David Newall <btrfs@davidnewall.com>
+Message-ID: <cfc872b2-ea1e-57b4-f548-48679daad069@davidnewall.com>
+Date:   Wed, 11 Sep 2019 19:51:22 +0930
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190911093926.pfkkx25mffzeuo32@alap3.anarazel.de>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1a651f17-ba40-2f17-403e-69999e927b2d@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-AU
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 11, 2019 at 02:39:26AM -0700, Andres Freund wrote:
-> I do really wish buffered NOWAIT was supported...
+> echo w > /proc/sysrq-trigger
 
-Send a patch..
+Interesting.
+
+One material point which I failed to mention is that the btrfs volume is 
+on an encrypted volume (cryptsetup luksOpen /dev/vdc backups).
+
+The first step, "mount -r /dev/vg/ext2fs-snapshot 
+/btrfs-backup-volume/local-snapshot", seemed to trigger the problem.  
+When I did the echo to sysrq-trigger, it seemed to stop blocking, but 
+that might have been a coincidence.  After the echo, kernel output 
+exceeded 100KB, so I saved it to https://davidnewall.com/kern.1
+
+During rsync (--archive --one-file-system --hard-links --inplace 
+--numeric-ids --delete /btrfs-backup-volume/local-snapshot/ 
+/btrfs-backup-volume/data/), initially there was no problem, but, then 
+it (df) seemed to hang again.  The rsync took a long time to complete, 
+and before it did finish, I did the echo to sysrq-trigger again; kernel 
+output is saved to https://davidnewall.com/kern.2
+
+The rsync finished not long after the echo to sysrq-trigger, but that's 
+probably also a coincidence.  After rsync completed, df still hung.  I 
+did another echo to sysrq-trigger, and saved kernel output to 
+https://davidnewall.com/kern.3
+
+I tried a minor change in procedure to see if it would bring the system 
+back to normal response.  Normally I'd do "btrfs subvolume snapshot", 
+but I tried unmounting the lvm2 snapshot first (umount 
+/btrfs-backup-volume/local-snapshot).  It did not complete within the 
+expected time, and another echo to sysrq-trigger resulted in 
+https://davidnewall.com/kern.4
+
+Eventually the umount completed and system came back to normal response.
+
+I did the btrfs subvolume snapshot, and it completed faster than I could 
+notice without causing any issues.
+
+After unmounting the btrfs volume, I tried each step again, and 
+everything completed within expected times without causing any hang.
+
+Something which I did previously mention, but I'll repeat because it 
+might well be important, is that the base ext2 filesystem is on a 
+drbd-replicated volume.  I don't know if it's part of the problem, and I 
+observe that the hang condition was not triggered at the point of 
+creating the lvm2 snapshot.
+
+I greatly appreciate your advice and help.
+
+Thanks,
+
+David
+
