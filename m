@@ -2,531 +2,631 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 830A4AF66D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 09:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27A1EAF71E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 09:46:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726893AbfIKHJ6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 03:09:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50660 "EHLO mx1.suse.de"
+        id S1726579AbfIKHqd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 03:46:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41602 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726761AbfIKHJ6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 03:09:58 -0400
+        id S1725379AbfIKHqc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 03:46:32 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 82E37AC19;
-        Wed, 11 Sep 2019 07:09:52 +0000 (UTC)
-Date:   Wed, 11 Sep 2019 09:09:51 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>, l.roehrs@profihost.ag,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: 5.3-rc-8 hung task in IO (was: Re: lot of MemAvailable but falling
- cache and raising PSI)
-Message-ID: <20190911070951.GL4023@dhcp22.suse.cz>
-References: <132e1fd0-c392-c158-8f3a-20e340e542f0@profihost.ag>
- <20190910090241.GM2063@dhcp22.suse.cz>
- <743a047e-a46f-32fa-1fe4-a9bd8f09ed87@profihost.ag>
- <20190910110741.GR2063@dhcp22.suse.cz>
- <364d4c2e-9c9a-d8b3-43a8-aa17cccae9c7@profihost.ag>
- <20190910125756.GB2063@dhcp22.suse.cz>
- <d7448f13-899a-5805-bd36-8922fa17b8a9@profihost.ag>
- <b1fe902f-fce6-1aa9-f371-ceffdad85968@profihost.ag>
- <20190910132418.GC2063@dhcp22.suse.cz>
- <d07620d9-4967-40fe-fa0f-be51f2459dc5@profihost.ag>
+        by mx1.suse.de (Postfix) with ESMTP id D83CAAF85
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 07:46:28 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC] btrfs: Introduce btrfs child tree block verification system
+Date:   Wed, 11 Sep 2019 15:46:24 +0800
+Message-Id: <20190911074624.27322-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d07620d9-4967-40fe-fa0f-be51f2459dc5@profihost.ag>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This smells like IO/Btrfs issue to me. Cc some more people.
+Although we have btrfs_verify_level_key() function to check the first
+key and level at tree block read time, it has its limitation due to tree
+lock context, it's not reliable handling new tree blocks.
 
-On Wed 11-09-19 08:12:28, Stefan Priebe - Profihost AG wrote:
-[...]
-> Sadly i'm running into issues with btrfs on 5.3-rc8 - the rsync process
-> on backup disk completely hangs / is blocked at 100% i/o:
-> [54739.065906] INFO: task rsync:9830 blocked for more than 120 seconds.
-> [54739.066973]       Not tainted 5.3.0-rc8 #1
-> [54739.067988] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [54739.069065] rsync           D    0  9830   9829 0x00004002
-> [54739.070146] Call Trace:
-> [54739.071183]  ? __schedule+0x3cf/0x680
-> [54739.072202]  ? bit_wait+0x50/0x50
-> [54739.073196]  schedule+0x39/0xa0
-> [54739.074213]  io_schedule+0x12/0x40
-> [54739.075219]  bit_wait_io+0xd/0x50
-> [54739.076227]  __wait_on_bit+0x66/0x90
-> [54739.077239]  ? bit_wait+0x50/0x50
-> [54739.078273]  out_of_line_wait_on_bit+0x8b/0xb0
-> [54739.078741]  ? init_wait_var_entry+0x40/0x40
-> [54739.079162]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [54739.079557]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [54739.079956]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [54739.080357]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [54739.080748]  do_writepages+0x1a/0x60
-> [54739.081140]  __filemap_fdatawrite_range+0xc8/0x100
-> [54739.081558]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [54739.081985]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [54739.082412]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [54739.082847]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [54739.083280]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [54739.083725]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [54739.084170]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [54739.084608]  ? retarget_shared_pending+0x70/0x70
-> [54739.085049]  do_fsync+0x38/0x60
-> [54739.085494]  __x64_sys_fdatasync+0x13/0x20
-> [54739.085944]  do_syscall_64+0x55/0x1a0
-> [54739.086395]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [54739.086850] RIP: 0033:0x7f1db3fc85f0
-> [54739.087310] Code: Bad RIP value.
-> [54739.087772] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [54739.088249] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [54739.088733] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [54739.089234] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [54739.089722] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [54739.090205] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> [54859.899715] INFO: task rsync:9830 blocked for more than 241 seconds.
-> [54859.900863]       Not tainted 5.3.0-rc8 #1
-> [54859.901885] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [54859.902909] rsync           D    0  9830   9829 0x00004002
-> [54859.903930] Call Trace:
-> [54859.904888]  ? __schedule+0x3cf/0x680
-> [54859.905831]  ? bit_wait+0x50/0x50
-> [54859.906751]  schedule+0x39/0xa0
-> [54859.907653]  io_schedule+0x12/0x40
-> [54859.908535]  bit_wait_io+0xd/0x50
-> [54859.909441]  __wait_on_bit+0x66/0x90
-> [54859.910306]  ? bit_wait+0x50/0x50
-> [54859.911177]  out_of_line_wait_on_bit+0x8b/0xb0
-> [54859.912043]  ? init_wait_var_entry+0x40/0x40
-> [54859.912727]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [54859.913113]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [54859.913501]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [54859.913894]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [54859.914276]  do_writepages+0x1a/0x60
-> [54859.914656]  __filemap_fdatawrite_range+0xc8/0x100
-> [54859.915052]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [54859.915449]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [54859.915855]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [54859.916256]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [54859.916658]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [54859.917078]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [54859.917497]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [54859.917903]  ? retarget_shared_pending+0x70/0x70
-> [54859.918307]  do_fsync+0x38/0x60
-> [54859.918707]  __x64_sys_fdatasync+0x13/0x20
-> [54859.919106]  do_syscall_64+0x55/0x1a0
-> [54859.919482]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [54859.919866] RIP: 0033:0x7f1db3fc85f0
-> [54859.920243] Code: Bad RIP value.
-> [54859.920614] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [54859.920997] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [54859.921383] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [54859.921773] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [54859.922165] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [54859.922551] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> [54980.733463] INFO: task rsync:9830 blocked for more than 362 seconds.
-> [54980.734061]       Not tainted 5.3.0-rc8 #1
-> [54980.734619] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [54980.735209] rsync           D    0  9830   9829 0x00004002
-> [54980.735802] Call Trace:
-> [54980.736473]  ? __schedule+0x3cf/0x680
-> [54980.737054]  ? bit_wait+0x50/0x50
-> [54980.737664]  schedule+0x39/0xa0
-> [54980.738243]  io_schedule+0x12/0x40
-> [54980.738712]  bit_wait_io+0xd/0x50
-> [54980.739171]  __wait_on_bit+0x66/0x90
-> [54980.739623]  ? bit_wait+0x50/0x50
-> [54980.740073]  out_of_line_wait_on_bit+0x8b/0xb0
-> [54980.740548]  ? init_wait_var_entry+0x40/0x40
-> [54980.741033]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [54980.741579]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [54980.742076]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [54980.742560]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [54980.743045]  do_writepages+0x1a/0x60
-> [54980.743516]  __filemap_fdatawrite_range+0xc8/0x100
-> [54980.744019]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [54980.744513]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [54980.745026]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [54980.745563]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [54980.746073]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [54980.746575]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [54980.747074]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [54980.747575]  ? retarget_shared_pending+0x70/0x70
-> [54980.748059]  do_fsync+0x38/0x60
-> [54980.748539]  __x64_sys_fdatasync+0x13/0x20
-> [54980.749012]  do_syscall_64+0x55/0x1a0
-> [54980.749512]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [54980.749995] RIP: 0033:0x7f1db3fc85f0
-> [54980.750368] Code: Bad RIP value.
-> [54980.750735] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [54980.751117] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [54980.751505] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [54980.751895] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [54980.752291] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [54980.752680] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> [55101.567251] INFO: task rsync:9830 blocked for more than 483 seconds.
-> [55101.567775]       Not tainted 5.3.0-rc8 #1
-> [55101.568218] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [55101.568649] rsync           D    0  9830   9829 0x00004002
-> [55101.569101] Call Trace:
-> [55101.569609]  ? __schedule+0x3cf/0x680
-> [55101.570052]  ? bit_wait+0x50/0x50
-> [55101.570504]  schedule+0x39/0xa0
-> [55101.570938]  io_schedule+0x12/0x40
-> [55101.571404]  bit_wait_io+0xd/0x50
-> [55101.571934]  __wait_on_bit+0x66/0x90
-> [55101.572601]  ? bit_wait+0x50/0x50
-> [55101.573235]  out_of_line_wait_on_bit+0x8b/0xb0
-> [55101.573599]  ? init_wait_var_entry+0x40/0x40
-> [55101.574008]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [55101.574394]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [55101.574783]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [55101.575184]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [55101.575580]  do_writepages+0x1a/0x60
-> [55101.575959]  __filemap_fdatawrite_range+0xc8/0x100
-> [55101.576351]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [55101.576746]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [55101.577144]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [55101.577543]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55101.577939]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55101.578343]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [55101.578746]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [55101.579139]  ? retarget_shared_pending+0x70/0x70
-> [55101.579543]  do_fsync+0x38/0x60
-> [55101.579928]  __x64_sys_fdatasync+0x13/0x20
-> [55101.580312]  do_syscall_64+0x55/0x1a0
-> [55101.580706]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [55101.581086] RIP: 0033:0x7f1db3fc85f0
-> [55101.581463] Code: Bad RIP value.
-> [55101.581834] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [55101.582219] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [55101.582607] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [55101.582998] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [55101.583397] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [55101.583784] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> [55222.405056] INFO: task rsync:9830 blocked for more than 604 seconds.
-> [55222.405773]       Not tainted 5.3.0-rc8 #1
-> [55222.406456] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [55222.407158] rsync           D    0  9830   9829 0x00004002
-> [55222.407776] Call Trace:
-> [55222.408450]  ? __schedule+0x3cf/0x680
-> [55222.409206]  ? bit_wait+0x50/0x50
-> [55222.409942]  schedule+0x39/0xa0
-> [55222.410658]  io_schedule+0x12/0x40
-> [55222.411346]  bit_wait_io+0xd/0x50
-> [55222.411946]  __wait_on_bit+0x66/0x90
-> [55222.412572]  ? bit_wait+0x50/0x50
-> [55222.413249]  out_of_line_wait_on_bit+0x8b/0xb0
-> [55222.413944]  ? init_wait_var_entry+0x40/0x40
-> [55222.414675]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [55222.415362]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [55222.416085]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [55222.416796]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [55222.417505]  do_writepages+0x1a/0x60
-> [55222.418243]  __filemap_fdatawrite_range+0xc8/0x100
-> [55222.418969]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [55222.419713]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [55222.420453]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [55222.421206]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55222.421925]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55222.422656]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [55222.423400]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [55222.424140]  ? retarget_shared_pending+0x70/0x70
-> [55222.424861]  do_fsync+0x38/0x60
-> [55222.425581]  __x64_sys_fdatasync+0x13/0x20
-> [55222.426308]  do_syscall_64+0x55/0x1a0
-> [55222.427025]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [55222.427732] RIP: 0033:0x7f1db3fc85f0
-> [55222.428396] Code: Bad RIP value.
-> [55222.429087] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [55222.429757] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [55222.430451] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [55222.431159] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [55222.431856] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [55222.432544] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> [55343.234863] INFO: task rsync:9830 blocked for more than 724 seconds.
-> [55343.235887]       Not tainted 5.3.0-rc8 #1
-> [55343.236611] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [55343.237213] rsync           D    0  9830   9829 0x00004002
-> [55343.237766] Call Trace:
-> [55343.238353]  ? __schedule+0x3cf/0x680
-> [55343.238971]  ? bit_wait+0x50/0x50
-> [55343.239592]  schedule+0x39/0xa0
-> [55343.240173]  io_schedule+0x12/0x40
-> [55343.240721]  bit_wait_io+0xd/0x50
-> [55343.241266]  __wait_on_bit+0x66/0x90
-> [55343.241835]  ? bit_wait+0x50/0x50
-> [55343.242418]  out_of_line_wait_on_bit+0x8b/0xb0
-> [55343.242938]  ? init_wait_var_entry+0x40/0x40
-> [55343.243496]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [55343.244090]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [55343.244720]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [55343.245296]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [55343.245843]  do_writepages+0x1a/0x60
-> [55343.246407]  __filemap_fdatawrite_range+0xc8/0x100
-> [55343.247014]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [55343.247631]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [55343.248186]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [55343.248743]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55343.249326]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55343.249931]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [55343.250562]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [55343.251139]  ? retarget_shared_pending+0x70/0x70
-> [55343.251628]  do_fsync+0x38/0x60
-> [55343.252208]  __x64_sys_fdatasync+0x13/0x20
-> [55343.252702]  do_syscall_64+0x55/0x1a0
-> [55343.253212]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [55343.253798] RIP: 0033:0x7f1db3fc85f0
-> [55343.254294] Code: Bad RIP value.
-> [55343.254821] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [55343.255404] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [55343.255989] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [55343.256521] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [55343.257073] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [55343.257649] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> [55464.068704] INFO: task rsync:9830 blocked for more than 845 seconds.
-> [55464.069701]       Not tainted 5.3.0-rc8 #1
-> [55464.070655] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [55464.071637] rsync           D    0  9830   9829 0x00004002
-> [55464.072637] Call Trace:
-> [55464.073623]  ? __schedule+0x3cf/0x680
-> [55464.074604]  ? bit_wait+0x50/0x50
-> [55464.075577]  schedule+0x39/0xa0
-> [55464.076531]  io_schedule+0x12/0x40
-> [55464.077480]  bit_wait_io+0xd/0x50
-> [55464.078400]  __wait_on_bit+0x66/0x90
-> [55464.079300]  ? bit_wait+0x50/0x50
-> [55464.080184]  out_of_line_wait_on_bit+0x8b/0xb0
-> [55464.081107]  ? init_wait_var_entry+0x40/0x40
-> [55464.082047]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [55464.083001]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [55464.083963]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [55464.084944]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [55464.085456]  do_writepages+0x1a/0x60
-> [55464.085840]  __filemap_fdatawrite_range+0xc8/0x100
-> [55464.086231]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [55464.086625]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [55464.087019]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [55464.087417]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55464.087814]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55464.088219]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [55464.088652]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [55464.089043]  ? retarget_shared_pending+0x70/0x70
-> [55464.089429]  do_fsync+0x38/0x60
-> [55464.089811]  __x64_sys_fdatasync+0x13/0x20
-> [55464.090190]  do_syscall_64+0x55/0x1a0
-> [55464.090568]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [55464.090944] RIP: 0033:0x7f1db3fc85f0
-> [55464.091321] Code: Bad RIP value.
-> [55464.091693] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [55464.092078] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [55464.092467] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [55464.092863] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [55464.093254] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [55464.093643] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> [55584.902564] INFO: task rsync:9830 blocked for more than 966 seconds.
-> [55584.903748]       Not tainted 5.3.0-rc8 #1
-> [55584.904868] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [55584.906023] rsync           D    0  9830   9829 0x00004002
-> [55584.907207] Call Trace:
-> [55584.908355]  ? __schedule+0x3cf/0x680
-> [55584.909507]  ? bit_wait+0x50/0x50
-> [55584.910682]  schedule+0x39/0xa0
-> [55584.911230]  io_schedule+0x12/0x40
-> [55584.911666]  bit_wait_io+0xd/0x50
-> [55584.912092]  __wait_on_bit+0x66/0x90
-> [55584.912510]  ? bit_wait+0x50/0x50
-> [55584.912924]  out_of_line_wait_on_bit+0x8b/0xb0
-> [55584.913343]  ? init_wait_var_entry+0x40/0x40
-> [55584.913795]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [55584.914242]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [55584.914698]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [55584.915152]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [55584.915588]  do_writepages+0x1a/0x60
-> [55584.916022]  __filemap_fdatawrite_range+0xc8/0x100
-> [55584.916474]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [55584.916928]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [55584.917386]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [55584.917844]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55584.918300]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55584.918772]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [55584.919233]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [55584.919679]  ? retarget_shared_pending+0x70/0x70
-> [55584.920122]  do_fsync+0x38/0x60
-> [55584.920559]  __x64_sys_fdatasync+0x13/0x20
-> [55584.920996]  do_syscall_64+0x55/0x1a0
-> [55584.921429]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [55584.921865] RIP: 0033:0x7f1db3fc85f0
-> [55584.922298] Code: Bad RIP value.
-> [55584.922734] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [55584.923174] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [55584.923568] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [55584.923982] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [55584.924378] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [55584.924774] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> [55705.736285] INFO: task rsync:9830 blocked for more than 1087 seconds.
-> [55705.736999]       Not tainted 5.3.0-rc8 #1
-> [55705.737694] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [55705.738411] rsync           D    0  9830   9829 0x00004002
-> [55705.739072] Call Trace:
-> [55705.739455]  ? __schedule+0x3cf/0x680
-> [55705.739837]  ? bit_wait+0x50/0x50
-> [55705.740215]  schedule+0x39/0xa0
-> [55705.740610]  io_schedule+0x12/0x40
-> [55705.741243]  bit_wait_io+0xd/0x50
-> [55705.741897]  __wait_on_bit+0x66/0x90
-> [55705.742524]  ? bit_wait+0x50/0x50
-> [55705.743131]  out_of_line_wait_on_bit+0x8b/0xb0
-> [55705.743750]  ? init_wait_var_entry+0x40/0x40
-> [55705.744128]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [55705.744766]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [55705.745440]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [55705.746118]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [55705.746753]  do_writepages+0x1a/0x60
-> [55705.747411]  __filemap_fdatawrite_range+0xc8/0x100
-> [55705.748106]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [55705.748807]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [55705.749495]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [55705.750190]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55705.750890]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55705.751580]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [55705.752293]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [55705.752981]  ? retarget_shared_pending+0x70/0x70
-> [55705.753686]  do_fsync+0x38/0x60
-> [55705.754340]  __x64_sys_fdatasync+0x13/0x20
-> [55705.755012]  do_syscall_64+0x55/0x1a0
-> [55705.755678]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [55705.756375] RIP: 0033:0x7f1db3fc85f0
-> [55705.757042] Code: Bad RIP value.
-> [55705.757690] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [55705.758300] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [55705.758678] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [55705.759107] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [55705.759785] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [55705.760471] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> [55826.570182] INFO: task rsync:9830 blocked for more than 1208 seconds.
-> [55826.571349]       Not tainted 5.3.0-rc8 #1
-> [55826.572469] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> disables this message.
-> [55826.573618] rsync           D    0  9830   9829 0x00004002
-> [55826.574790] Call Trace:
-> [55826.575932]  ? __schedule+0x3cf/0x680
-> [55826.577079]  ? bit_wait+0x50/0x50
-> [55826.578233]  schedule+0x39/0xa0
-> [55826.579350]  io_schedule+0x12/0x40
-> [55826.580451]  bit_wait_io+0xd/0x50
-> [55826.581527]  __wait_on_bit+0x66/0x90
-> [55826.582596]  ? bit_wait+0x50/0x50
-> [55826.583178]  out_of_line_wait_on_bit+0x8b/0xb0
-> [55826.583550]  ? init_wait_var_entry+0x40/0x40
-> [55826.583953]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> [55826.584356]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> [55826.584755]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> [55826.585155]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> [55826.585547]  do_writepages+0x1a/0x60
-> [55826.585937]  __filemap_fdatawrite_range+0xc8/0x100
-> [55826.586352]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> [55826.586761]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> [55826.587171]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> [55826.587581]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55826.587990]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> [55826.588406]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> [55826.588818]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> [55826.589219]  ? retarget_shared_pending+0x70/0x70
-> [55826.589617]  do_fsync+0x38/0x60
-> [55826.590011]  __x64_sys_fdatasync+0x13/0x20
-> [55826.590411]  do_syscall_64+0x55/0x1a0
-> [55826.590798]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [55826.591185] RIP: 0033:0x7f1db3fc85f0
-> [55826.591572] Code: Bad RIP value.
-> [55826.591952] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> 000000000000004b
-> [55826.592347] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> 00007f1db3fc85f0
-> [55826.592743] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> 0000000000000001
-> [55826.593143] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> 0000000081c492ca
-> [55826.593543] R10: 0000000000000008 R11: 0000000000000246 R12:
-> 0000000000000028
-> [55826.593941] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> 0000000000000000
-> 
-> 
-> Greets,
-> Stefan
+So btrfs_verify_level_key() is good as a pre-check, but it can't ensure
+new tree blocks are still sane at runtime.
 
+This patch will introduce the following things to address it:
+- struct btrfs_child_verify
+  To record needed info. It's mostly the old first_key + level
+  combined into one structure.
+
+- btrfs_init_child_verify()
+  To fill needed info from @parent and @slot.
+  It should be called at the same timing we fill existing first_key.
+
+- btrfs_verify_child()
+  The different part is, it must be called after we locked the tree
+  blocks.
+
+Compared to old btrfs_verify_level_key(), the following new checks are
+added:
+- Generation independent check on first_key, level and generation
+  Even newly allocated tree blocks will still go through the check,
+  preventing runtime corruptions.
+
+- Empty tree check
+  It's causing false alert in previous attempts, but with proper
+  tree lock context, it shouldn't cause problem.
+
+There are several exceptions which can't be verified by such facility:
+- btrfs_search_old_slot()
+- btrfs_next_old_leaf()
+
+Those functions uses rewinded tree blocks, thus may not follow the
+restrict first-key-must-match rule.
+
+Since now the verification is done with tree lock hold, it's more safe
+and we can verify all tree blocks no matter whatever, providing full
+runtime cover for parent-child verification.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+The old btrfs_verify_level_key() is still kept as is for now.
+The plan for old btrfs_verify_key_level() is to only keep the level
+check.
+
+The reason for RFC is, although the patch survived several rounds of
+xfstests, David has proved again and again that my VM setup is really
+bad at catch race related bugs, so I'd keep the patch as RFC for some more
+tests.
+---
+ fs/btrfs/ctree.c      | 136 ++++++++++++++++++++++++++++++++++++++++--
+ fs/btrfs/ctree.h      |  18 ++++++
+ fs/btrfs/qgroup.c     |  35 +++++++++--
+ fs/btrfs/ref-verify.c |   9 +++
+ 4 files changed, 187 insertions(+), 11 deletions(-)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 5df76c17775a..60bb7d23c12d 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -288,6 +288,59 @@ struct tree_mod_elem {
+ 	struct tree_mod_root old_root;
+ };
+ 
++int btrfs_verify_child(struct extent_buffer *child,
++		       struct btrfs_child_verify *verify)
++{
++	struct btrfs_fs_info *fs_info = child->fs_info;
++	int found_level;
++	struct btrfs_key found_key;
++	int ret;
++
++	found_level = btrfs_header_level(child);
++	if (found_level != verify->level) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err(fs_info,
++"tree level mismatch detected, bytenr=%llu level expected=%u has=%u",
++			  child->start, verify->level, found_level);
++		return -EUCLEAN;
++	}
++
++	if (btrfs_header_generation(child) != verify->gen) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err(fs_info,
++"generation mismatch detected, bytenr=%llu gen expected=%llu has=%llu",
++			  child->start, verify->gen,
++			  btrfs_header_generation(child));
++		return -EUCLEAN;
++	}
++	/* We have first key, the tree block should not be empty */
++	if (btrfs_header_nritems(child) == 0) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err(fs_info,
++		"invalid empty tree block, parent has key (%llu %u %llu)",
++			  verify->first_key.objectid, verify->first_key.type,
++			  verify->first_key.offset);
++		return -EUCLEAN;
++	}
++
++	if (found_level)
++		btrfs_node_key_to_cpu(child, &found_key, 0);
++	else
++		btrfs_item_key_to_cpu(child, &found_key, 0);
++	ret = btrfs_comp_cpu_keys(&verify->first_key, &found_key);
++
++	if (ret) {
++		WARN_ON(IS_ENABLED(CONFIG_BTRFS_DEBUG));
++		btrfs_err(fs_info,
++"tree first key mismatch detected, bytenr=%llu key expected=(%llu,%u,%llu) has=(%llu,%u,%llu)",
++			  child->start, verify->first_key.objectid,
++			  verify->first_key.type, verify->first_key.offset,
++			  found_key.objectid, found_key.type,
++			  found_key.offset);
++	}
++	return ret;
++}
++
+ /*
+  * Pull a new tree mod seq number for our operation.
+  */
+@@ -1598,6 +1651,7 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+ 	btrfs_set_lock_blocking_write(parent);
+ 
+ 	for (i = start_slot; i <= end_slot; i++) {
++		struct btrfs_child_verify verify;
+ 		struct btrfs_key first_key;
+ 		int close = 1;
+ 
+@@ -1609,6 +1663,7 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+ 		blocknr = btrfs_node_blockptr(parent, i);
+ 		gen = btrfs_node_ptr_generation(parent, i);
+ 		btrfs_node_key_to_cpu(parent, &first_key, i);
++		btrfs_init_child_verify(parent, i, &verify);
+ 		if (last_block == 0)
+ 			last_block = blocknr;
+ 
+@@ -1655,6 +1710,12 @@ int btrfs_realloc_node(struct btrfs_trans_handle *trans,
+ 
+ 		btrfs_tree_lock(cur);
+ 		btrfs_set_lock_blocking_write(cur);
++		if (btrfs_verify_child(cur, &verify)) {
++			err = -EUCLEAN;
++			btrfs_tree_unlock(cur);
++			free_extent_buffer(cur);
++			break;
++		}
+ 		err = __btrfs_cow_block(trans, root, cur, parent, i,
+ 					&cur, search_start,
+ 					min(16 * blocksize,
+@@ -1824,6 +1885,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 			 struct btrfs_path *path, int level)
+ {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
++	struct btrfs_child_verify verify;
+ 	struct extent_buffer *right = NULL;
+ 	struct extent_buffer *mid;
+ 	struct extent_buffer *left = NULL;
+@@ -1859,6 +1921,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 		if (btrfs_header_nritems(mid) != 1)
+ 			return 0;
+ 
++		btrfs_init_child_verify(mid, 0, &verify);
+ 		/* promote the child to a root */
+ 		child = read_node_slot(mid, 0);
+ 		if (IS_ERR(child)) {
+@@ -1869,6 +1932,12 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 
+ 		btrfs_tree_lock(child);
+ 		btrfs_set_lock_blocking_write(child);
++		if (btrfs_verify_child(child, &verify)) {
++			ret = -EUCLEAN;
++			btrfs_tree_unlock(child);
++			free_extent_buffer(child);
++			goto enospc;
++		}
+ 		ret = btrfs_cow_block(trans, root, child, mid, 0, &child);
+ 		if (ret) {
+ 			btrfs_tree_unlock(child);
+@@ -1900,6 +1969,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 	    BTRFS_NODEPTRS_PER_BLOCK(fs_info) / 4)
+ 		return 0;
+ 
++	btrfs_init_child_verify(parent, pslot - 1, &verify);
+ 	left = read_node_slot(parent, pslot - 1);
+ 	if (IS_ERR(left))
+ 		left = NULL;
+@@ -1907,6 +1977,10 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 	if (left) {
+ 		btrfs_tree_lock(left);
+ 		btrfs_set_lock_blocking_write(left);
++		if (btrfs_verify_child(left, &verify)) {
++			ret = -EUCLEAN;
++			goto enospc;
++		}
+ 		wret = btrfs_cow_block(trans, root, left,
+ 				       parent, pslot - 1, &left);
+ 		if (wret) {
+@@ -1915,6 +1989,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 		}
+ 	}
+ 
++	btrfs_init_child_verify(parent, pslot + 1, &verify);
+ 	right = read_node_slot(parent, pslot + 1);
+ 	if (IS_ERR(right))
+ 		right = NULL;
+@@ -1922,6 +1997,10 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 	if (right) {
+ 		btrfs_tree_lock(right);
+ 		btrfs_set_lock_blocking_write(right);
++		if (btrfs_verify_child(right, &verify)) {
++			ret = -EUCLEAN;
++			goto enospc;
++		}
+ 		wret = btrfs_cow_block(trans, root, right,
+ 				       parent, pslot + 1, &right);
+ 		if (wret) {
+@@ -2056,6 +2135,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
+ 	struct extent_buffer *mid;
+ 	struct extent_buffer *left = NULL;
+ 	struct extent_buffer *parent = NULL;
++	struct btrfs_child_verify verify;
+ 	int ret = 0;
+ 	int wret;
+ 	int pslot;
+@@ -2075,6 +2155,7 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
+ 	if (!parent)
+ 		return 1;
+ 
++	btrfs_init_child_verify(parent, pslot - 1, &verify);
+ 	left = read_node_slot(parent, pslot - 1);
+ 	if (IS_ERR(left))
+ 		left = NULL;
+@@ -2085,6 +2166,11 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
+ 
+ 		btrfs_tree_lock(left);
+ 		btrfs_set_lock_blocking_write(left);
++		if (btrfs_verify_child(left, &verify)) {
++			btrfs_tree_unlock(left);
++			free_extent_buffer(left);
++			return -EUCLEAN;
++		}
+ 
+ 		left_nr = btrfs_header_nritems(left);
+ 		if (left_nr >= BTRFS_NODEPTRS_PER_BLOCK(fs_info) - 1) {
+@@ -2127,6 +2213,8 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
+ 		btrfs_tree_unlock(left);
+ 		free_extent_buffer(left);
+ 	}
++
++	btrfs_init_child_verify(parent, pslot + 1, &verify);
+ 	right = read_node_slot(parent, pslot + 1);
+ 	if (IS_ERR(right))
+ 		right = NULL;
+@@ -2140,6 +2228,11 @@ static noinline int push_nodes_for_insert(struct btrfs_trans_handle *trans,
+ 		btrfs_tree_lock(right);
+ 		btrfs_set_lock_blocking_write(right);
+ 
++		if (btrfs_verify_child(right, &verify)) {
++			btrfs_tree_unlock(right);
++			free_extent_buffer(right);
++			return -EUCLEAN;
++		}
+ 		right_nr = btrfs_header_nritems(right);
+ 		if (right_nr >= BTRFS_NODEPTRS_PER_BLOCK(fs_info) - 1) {
+ 			wret = 1;
+@@ -2761,6 +2854,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 	}
+ 
+ 	while (b) {
++		struct btrfs_child_verify verify;
+ 		level = btrfs_header_level(b);
+ 
+ 		/*
+@@ -2868,6 +2962,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 				goto again;
+ 			}
+ 
++			btrfs_init_child_verify(b, slot, &verify);
+ 			unlock_up(p, level, lowest_unlock,
+ 				  min_write_lock_level, &write_lock_level);
+ 
+@@ -2887,24 +2982,28 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 			}
+ 
+ 			if (!p->skip_locking) {
+-				level = btrfs_header_level(b);
+-				if (level <= write_lock_level) {
++				if (level - 1 <= write_lock_level) {
+ 					err = btrfs_try_tree_write_lock(b);
+ 					if (!err) {
+ 						btrfs_set_path_blocking(p);
+ 						btrfs_tree_lock(b);
+ 					}
+-					p->locks[level] = BTRFS_WRITE_LOCK;
++					p->locks[level - 1] = BTRFS_WRITE_LOCK;
+ 				} else {
+ 					err = btrfs_tree_read_lock_atomic(b);
+ 					if (!err) {
+ 						btrfs_set_path_blocking(p);
+ 						btrfs_tree_read_lock(b);
+ 					}
+-					p->locks[level] = BTRFS_READ_LOCK;
++					p->locks[level - 1] = BTRFS_READ_LOCK;
+ 				}
+-				p->nodes[level] = b;
++				p->nodes[level - 1] = b;
+ 			}
++			if (btrfs_verify_child(b, &verify)) {
++				ret = -EUCLEAN;
++				goto done;
++ 			}
++			level = btrfs_header_level(b);
+ 		} else {
+ 			p->slots[level] = slot;
+ 			if (ins_len > 0 &&
+@@ -3021,6 +3120,11 @@ int btrfs_search_old_slot(struct btrfs_root *root, const struct btrfs_key *key,
+ 				goto done;
+ 			}
+ 
++			/*
++			 * Here we don't verify the tree blocks, as @b can be
++			 * already rewinded, thus its key may not match child
++			 * by nature.
++			 */
+ 			err = read_block_for_search(root, p, &b, level,
+ 						    slot, key);
+ 			if (err == -EAGAIN)
+@@ -3763,6 +3867,7 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+ 			   int min_data_size, int data_size,
+ 			   int empty, u32 min_slot)
+ {
++	struct btrfs_child_verify verify;
+ 	struct extent_buffer *left = path->nodes[0];
+ 	struct extent_buffer *right;
+ 	struct extent_buffer *upper;
+@@ -3781,6 +3886,7 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+ 
+ 	btrfs_assert_tree_locked(path->nodes[1]);
+ 
++	btrfs_init_child_verify(upper, slot + 1, &verify);
+ 	right = read_node_slot(upper, slot + 1);
+ 	/*
+ 	 * slot + 1 is not valid or we fail to read the right node,
+@@ -3792,6 +3898,12 @@ static int push_leaf_right(struct btrfs_trans_handle *trans, struct btrfs_root
+ 	btrfs_tree_lock(right);
+ 	btrfs_set_lock_blocking_write(right);
+ 
++	if (btrfs_verify_child(right, &verify)) {
++		btrfs_tree_unlock(right);
++		free_extent_buffer(right);
++		return -EUCLEAN;
++	}
++
+ 	free_space = btrfs_leaf_free_space(right);
+ 	if (free_space < data_size)
+ 		goto out_unlock;
+@@ -3996,6 +4108,7 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
+ 			  *root, struct btrfs_path *path, int min_data_size,
+ 			  int data_size, int empty, u32 max_slot)
+ {
++	struct btrfs_child_verify verify;
+ 	struct extent_buffer *right = path->nodes[0];
+ 	struct extent_buffer *left;
+ 	int slot;
+@@ -4015,6 +4128,7 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
+ 
+ 	btrfs_assert_tree_locked(path->nodes[1]);
+ 
++	btrfs_init_child_verify(path->nodes[1], slot - 1, &verify);
+ 	left = read_node_slot(path->nodes[1], slot - 1);
+ 	/*
+ 	 * slot - 1 is not valid or we fail to read the left node,
+@@ -4025,6 +4139,10 @@ static int push_leaf_left(struct btrfs_trans_handle *trans, struct btrfs_root
+ 
+ 	btrfs_tree_lock(left);
+ 	btrfs_set_lock_blocking_write(left);
++	if (btrfs_verify_child(left, &verify)) {
++		ret = -EUCLEAN;
++		goto out;
++	}
+ 
+ 	free_space = btrfs_leaf_free_space(left);
+ 	if (free_space < data_size) {
+@@ -5164,6 +5282,8 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
+ 		goto out;
+ 	}
+ 	while (1) {
++		struct btrfs_child_verify verify;
++
+ 		nritems = btrfs_header_nritems(cur);
+ 		level = btrfs_header_level(cur);
+ 		sret = btrfs_bin_search(cur, min_key, level, &slot);
+@@ -5222,6 +5342,7 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
+ 			goto out;
+ 		}
+ 		btrfs_set_path_blocking(path);
++		btrfs_init_child_verify(cur, slot, &verify);
+ 		cur = read_node_slot(cur, slot);
+ 		if (IS_ERR(cur)) {
+ 			ret = PTR_ERR(cur);
+@@ -5229,6 +5350,11 @@ int btrfs_search_forward(struct btrfs_root *root, struct btrfs_key *min_key,
+ 		}
+ 
+ 		btrfs_tree_read_lock(cur);
++		if (btrfs_verify_child(cur, &verify)) {
++			ret = -EUCLEAN;
++			btrfs_tree_read_unlock(cur);
++			goto out;
++		}
+ 
+ 		path->locks[level - 1] = BTRFS_READ_LOCK;
+ 		path->nodes[level - 1] = cur;
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 94660063a162..13e406c293ea 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -1283,6 +1283,13 @@ struct btrfs_file_private {
+ 	void *filldir_buf;
+ };
+ 
++/* Used to store all needed info to verify child tree block */
++struct btrfs_child_verify {
++	struct btrfs_key first_key;
++	u64 gen;
++	int level;
++};
++
+ static inline u32 btrfs_inode_sectorsize(const struct inode *inode)
+ {
+ 	return btrfs_sb(inode->i_sb)->sectorsize;
+@@ -2915,6 +2922,8 @@ int btrfs_drop_subtree(struct btrfs_trans_handle *trans,
+ 			struct btrfs_root *root,
+ 			struct extent_buffer *node,
+ 			struct extent_buffer *parent);
++int btrfs_verify_child(struct extent_buffer *child,
++		       struct btrfs_child_verify *verify);
+ static inline int btrfs_fs_closing(struct btrfs_fs_info *fs_info)
+ {
+ 	/*
+@@ -3744,4 +3753,13 @@ static inline void cond_wake_up_nomb(struct wait_queue_head *wq)
+ 		wake_up(wq);
+ }
+ 
++static inline void btrfs_init_child_verify(struct extent_buffer *parent,
++					   int slot,
++					   struct btrfs_child_verify *verify)
++{
++	btrfs_node_key_to_cpu(parent, &verify->first_key, slot);
++	verify->level = btrfs_header_level(parent) - 1;
++	verify->gen = btrfs_node_ptr_generation(parent, slot);
++}
++
+ #endif
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index f8a3c1b0a15a..2891b57b9e1e 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1810,6 +1810,7 @@ static int qgroup_trace_extent_swap(struct btrfs_trans_handle* trans,
+ 		struct btrfs_key dst_key;
+ 
+ 		if (src_path->nodes[cur_level] == NULL) {
++			struct btrfs_child_verify verify;
+ 			struct btrfs_key first_key;
+ 			struct extent_buffer *eb;
+ 			int parent_slot;
+@@ -1821,6 +1822,7 @@ static int qgroup_trace_extent_swap(struct btrfs_trans_handle* trans,
+ 			child_bytenr = btrfs_node_blockptr(eb, parent_slot);
+ 			child_gen = btrfs_node_ptr_generation(eb, parent_slot);
+ 			btrfs_node_key_to_cpu(eb, &first_key, parent_slot);
++			btrfs_init_child_verify(eb, parent_slot, &verify);
+ 
+ 			eb = read_tree_block(fs_info, child_bytenr, child_gen,
+ 					     cur_level, &first_key);
+@@ -1833,10 +1835,16 @@ static int qgroup_trace_extent_swap(struct btrfs_trans_handle* trans,
+ 				goto out;
+ 			}
+ 
+-			src_path->nodes[cur_level] = eb;
+ 
+ 			btrfs_tree_read_lock(eb);
+ 			btrfs_set_lock_blocking_read(eb);
++			if (btrfs_verify_child(eb, &verify)) {
++				ret = -EUCLEAN;
++				btrfs_tree_unlock(eb);
++				free_extent_buffer(eb);
++				goto out;
++			}
++			src_path->nodes[cur_level] = eb;
+ 			src_path->locks[cur_level] = BTRFS_READ_LOCK_BLOCKING;
+ 		}
+ 
+@@ -1932,6 +1940,7 @@ static int qgroup_trace_new_subtree_blocks(struct btrfs_trans_handle* trans,
+ 
+ 	/* Read the tree block if needed */
+ 	if (dst_path->nodes[cur_level] == NULL) {
++		struct btrfs_child_verify verify;
+ 		struct btrfs_key first_key;
+ 		int parent_slot;
+ 		u64 child_gen;
+@@ -1957,6 +1966,7 @@ static int qgroup_trace_new_subtree_blocks(struct btrfs_trans_handle* trans,
+ 		child_bytenr = btrfs_node_blockptr(eb, parent_slot);
+ 		child_gen = btrfs_node_ptr_generation(eb, parent_slot);
+ 		btrfs_node_key_to_cpu(eb, &first_key, parent_slot);
++		btrfs_init_child_verify(eb, parent_slot, &verify);
+ 
+ 		/* This node is old, no need to trace */
+ 		if (child_gen < last_snapshot)
+@@ -1973,11 +1983,16 @@ static int qgroup_trace_new_subtree_blocks(struct btrfs_trans_handle* trans,
+ 			goto out;
+ 		}
+ 
+-		dst_path->nodes[cur_level] = eb;
+-		dst_path->slots[cur_level] = 0;
+-
+ 		btrfs_tree_read_lock(eb);
+ 		btrfs_set_lock_blocking_read(eb);
++		if (btrfs_verify_child(eb, &verify)) {
++			ret = -EUCLEAN;
++			btrfs_tree_read_unlock(eb);
++			free_extent_buffer(eb);
++			goto out;
++		}
++		dst_path->nodes[cur_level] = eb;
++		dst_path->slots[cur_level] = 0;
+ 		dst_path->locks[cur_level] = BTRFS_READ_LOCK_BLOCKING;
+ 		need_cleanup = true;
+ 	}
+@@ -2122,6 +2137,7 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans_handle *trans,
+ 	level = root_level;
+ 	while (level >= 0) {
+ 		if (path->nodes[level] == NULL) {
++			struct btrfs_child_verify verify;
+ 			struct btrfs_key first_key;
+ 			int parent_slot;
+ 			u64 child_gen;
+@@ -2136,6 +2152,7 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans_handle *trans,
+ 			child_bytenr = btrfs_node_blockptr(eb, parent_slot);
+ 			child_gen = btrfs_node_ptr_generation(eb, parent_slot);
+ 			btrfs_node_key_to_cpu(eb, &first_key, parent_slot);
++			btrfs_init_child_verify(eb, parent_slot, &verify);
+ 
+ 			eb = read_tree_block(fs_info, child_bytenr, child_gen,
+ 					     level, &first_key);
+@@ -2148,11 +2165,17 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans_handle *trans,
+ 				goto out;
+ 			}
+ 
+-			path->nodes[level] = eb;
+-			path->slots[level] = 0;
+ 
+ 			btrfs_tree_read_lock(eb);
+ 			btrfs_set_lock_blocking_read(eb);
++			if (btrfs_verify_child(eb, &verify)) {
++				ret = -EUCLEAN;
++				btrfs_tree_read_unlock(eb);
++				free_extent_buffer(eb);
++				goto out;
++			}
++			path->nodes[level] = eb;
++			path->slots[level] = 0;
+ 			path->locks[level] = BTRFS_READ_LOCK_BLOCKING;
+ 
+ 			ret = btrfs_qgroup_trace_extent(trans, child_bytenr,
+diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
+index e87cbdad02a3..1447235e845d 100644
+--- a/fs/btrfs/ref-verify.c
++++ b/fs/btrfs/ref-verify.c
+@@ -556,6 +556,7 @@ static int walk_down_tree(struct btrfs_root *root, struct btrfs_path *path,
+ 
+ 	while (level >= 0) {
+ 		if (level) {
++			struct btrfs_child_verify verify;
+ 			struct btrfs_key first_key;
+ 
+ 			block_bytenr = btrfs_node_blockptr(path->nodes[level],
+@@ -564,6 +565,9 @@ static int walk_down_tree(struct btrfs_root *root, struct btrfs_path *path,
+ 							path->slots[level]);
+ 			btrfs_node_key_to_cpu(path->nodes[level], &first_key,
+ 					      path->slots[level]);
++			btrfs_init_child_verify(path->nodes[level],
++						path->slots[level], &verify);
++
+ 			eb = read_tree_block(fs_info, block_bytenr, gen,
+ 					     level - 1, &first_key);
+ 			if (IS_ERR(eb))
+@@ -574,6 +578,11 @@ static int walk_down_tree(struct btrfs_root *root, struct btrfs_path *path,
+ 			}
+ 			btrfs_tree_read_lock(eb);
+ 			btrfs_set_lock_blocking_read(eb);
++			if (btrfs_verify_child(eb, &verify)) {
++				btrfs_tree_unlock(eb);
++				free_extent_buffer(eb);
++				return -EUCLEAN;
++			}
+ 			path->nodes[level-1] = eb;
+ 			path->slots[level-1] = 0;
+ 			path->locks[level-1] = BTRFS_READ_LOCK_BLOCKING;
 -- 
-Michal Hocko
-SUSE Labs
+2.23.0
+
