@@ -2,589 +2,190 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 36B5CB0177
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 18:20:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71238B01AF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 18:33:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729081AbfIKQTq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 12:19:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60638 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728825AbfIKQTq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 12:19:46 -0400
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CEC522168B;
-        Wed, 11 Sep 2019 16:19:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568218784;
-        bh=kHSIUjaR6Wz4eeYazVS+74sQMsyfIG0UKMd3sFGkxwk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=DoLmp5Sv5v63uEQTT0s/QVRAvGK8gd7vj1ZjgR0V4jpqCGcjoK4/A7joEHSH3z4SB
-         9QXm/qtAj/g94629lg/bO6CGaamLIhsQjJxbjelsbqIr+RYEtKqrWraG5VjR72ilIs
-         V1PYzTPpq/0cGvJIMx73Q3OqN39COOy/3YMIZB0A=
-Received: by mail-vk1-f176.google.com with SMTP id d126so2383879vkb.1;
-        Wed, 11 Sep 2019 09:19:43 -0700 (PDT)
-X-Gm-Message-State: APjAAAX4sFMSMP3Nzl0Za0O9x2Db1n2Rq+j2KwerkEcTM0MrPdOyQvuu
-        VAH5xmULrDL+spHWLDLQL/mI/YVO89S8StLed/E=
-X-Google-Smtp-Source: APXvYqzliBK2pDBx6rVedEs+yjIZrVazQbQpBE5uAJwI+DE0PX/779GF7DvhX3mH7xu51EQ0zLUQh0UmUNjbL8mndQw=
-X-Received: by 2002:a1f:f2cd:: with SMTP id q196mr17306507vkh.31.1568218782468;
- Wed, 11 Sep 2019 09:19:42 -0700 (PDT)
+        id S1728897AbfIKQdu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 12:33:50 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:34634 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728828AbfIKQdu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 12:33:50 -0400
+X-Greylist: delayed 443 seconds by postgrey-1.27 at vger.kernel.org; Wed, 11 Sep 2019 12:33:50 EDT
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id C8634420431; Wed, 11 Sep 2019 12:26:05 -0400 (EDT)
+Date:   Wed, 11 Sep 2019 12:26:05 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Cc:     webmaster@zedlx.com, linux-btrfs@vger.kernel.org
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+Message-ID: <20190911162605.GA22121@hungrycats.org>
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+ <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+ <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
+ <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
+ <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+ <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
 MIME-Version: 1.0
-References: <132e1fd0-c392-c158-8f3a-20e340e542f0@profihost.ag>
- <20190910090241.GM2063@dhcp22.suse.cz> <743a047e-a46f-32fa-1fe4-a9bd8f09ed87@profihost.ag>
- <20190910110741.GR2063@dhcp22.suse.cz> <364d4c2e-9c9a-d8b3-43a8-aa17cccae9c7@profihost.ag>
- <20190910125756.GB2063@dhcp22.suse.cz> <d7448f13-899a-5805-bd36-8922fa17b8a9@profihost.ag>
- <b1fe902f-fce6-1aa9-f371-ceffdad85968@profihost.ag> <20190910132418.GC2063@dhcp22.suse.cz>
- <d07620d9-4967-40fe-fa0f-be51f2459dc5@profihost.ag> <20190911070951.GL4023@dhcp22.suse.cz>
- <CAL3q7H5GZPoXTBqGtU8g9cEuxjbn4F0E80cZ9SW_GOyFSiTeoQ@mail.gmail.com>
- <6F49D228-4B9B-409E-9D9D-6D24F80CED8C@profihost.ag> <CAL3q7H7hOOHwgDraF9F_EQwtoEAph4E5yYh_Wpuv02DZGmQzdw@mail.gmail.com>
- <17089f14-a54c-0d0d-77b2-5b083fbb32a8@profihost.ag>
-In-Reply-To: <17089f14-a54c-0d0d-77b2-5b083fbb32a8@profihost.ag>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Wed, 11 Sep 2019 17:19:31 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5CBmx4tfjFLDM==H5oGvkXWQHP98=jSwmEFne1H_6pDQ@mail.gmail.com>
-Message-ID: <CAL3q7H5CBmx4tfjFLDM==H5oGvkXWQHP98=jSwmEFne1H_6pDQ@mail.gmail.com>
-Subject: Re: 5.3-rc-8 hung task in IO (was: Re: lot of MemAvailable but
- falling cache and raising PSI)
-To:     Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>, l.roehrs@profihost.ag,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        linux-block@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="n8g4imXOkfNTN/H1"
+Content-Disposition: inline
+In-Reply-To: <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 11, 2019 at 5:15 PM Stefan Priebe - Profihost AG
-<s.priebe@profihost.ag> wrote:
->
-> Am 11.09.19 um 17:56 schrieb Filipe Manana:
-> > On Wed, Sep 11, 2019 at 4:39 PM Stefan Priebe - Profihost AG
-> > <s.priebe@profihost.ag> wrote:
-> >>
-> >> Thanks! Is this the same as for the 5.3-rc8 I tested? Stacktrace looked different to me.
+
+--n8g4imXOkfNTN/H1
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Sep 11, 2019 at 08:02:40AM -0400, Austin S. Hemmelgarn wrote:
+> On 2019-09-10 19:32, webmaster@zedlx.com wrote:
+> >=20
+> > Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+> >=20
+> >=20
+> > > > Defrag may break up extents. Defrag may fuse extents. But it
+> > > > shouln't ever unshare extents.
+> >=20
+> > > Actually, spitting or merging extents will unshare them in a large
+> > > majority of cases.
+> >=20
+> > Ok, this point seems to be repeated over and over without any proof, and
+> > it is illogical to me.
+> >=20
+> > About merging extents: a defrag should merge extents ONLY when both
+> > extents are shared by the same files (and when those extents are
+> > neighbours in both files). In other words, defrag should always merge
+> > without unsharing. Let's call that operation "fusing extents", so that
+> > there are no more misunderstandings.
+> And I reiterate: defrag only operates on the file it's passed in.  It nee=
+ds
+> to for efficiency reasons (we had a reflink aware defrag for a while a few
+> years back, it got removed because performance limitations meant it was
+> unusable in the cases where you actually needed it). Defrag doesn't even
+> know that there are reflinks to the extents it's operating on.
+>=20
+> Now factor in that _any_ write will result in unsharing the region being
+> written to, rounded to the nearest full filesystem block in both directio=
+ns
+> (this is mandatory, it's a side effect of the copy-on-write nature of BTR=
+FS,
+> and is why files that experience heavy internal rewrites get fragmented v=
+ery
+> heavily and very quickly on BTRFS).
+>=20
+> Given this, defrag isn't willfully unsharing anything, it's just a
+> side-effect of how it works (since it's rewriting the block layout of the
+> file in-place).
+> >=20
+> > =3D=3D=3D I CHALLENGE you and anyone else on this mailing list: =3D=3D=
+=3D
+> >=20
+> >  =A0- Show me an exaple where splitting an extent requires unsharing, a=
+nd
+> > this split is needed to defrag.
 > >
-> > I don't know, I can't see that backtrace. The thread was split and
-> > I've only seen the one sent to the btrfs list.
->
-> Hi,
->
-> strange.
->
-> This is the 5.3-rc8 stacktrace:
-> https://lore.kernel.org/linux-mm/d07620d9-4967-40fe-fa0f-be51f2459dc5@profihost.ag/
+> > Make it clear, write it yourself, I don't want any machine-made outputs.
+> >=20
+> Start with the above comment about all writes unsharing the region being
+> written to.
+>=20
+> Now, extrapolating from there:
+>=20
+> Assume you have two files, A and B, each consisting of 64 filesystem bloc=
+ks
+> in single shared extent.  Now assume somebody writes a few bytes to the
+> middle of file B, right around the boundary between blocks 31 and 32, and
+> that you get similar writes to file A straddling blocks 14-15 and 47-48.
+>=20
+> After all of that, file A will be 5 extents:
+>=20
+> * A reflink to blocks 0-13 of the original extent.
+> * A single isolated extent consisting of the new blocks 14-15
+> * A reflink to blocks 16-46 of the original extent.
+> * A single isolated extent consisting of the new blocks 47-48
+> * A reflink to blocks 49-63 of the original extent.
+>=20
+> And file B will be 3 extents:
+>=20
+> * A reflink to blocks 0-30 of the original extent.
+> * A single isolated extent consisting of the new blocks 31-32.
+> * A reflink to blocks 32-63 of the original extent.
+>=20
+> Note that there are a total of four contiguous sequences of blocks that a=
+re
+> common between both files:
+>=20
+> * 0-13
+> * 16-30
+> * 32-46
+> * 49-63
+>=20
+> There is no way to completely defragment either file without splitting the
+> original extent (which is still there, just not fully referenced by either
+> file) unless you rewrite the whole file to a new single extent (which wou=
+ld,
+> of course, completely unshare the whole file).  In fact, if you want to
+> ensure that those shared regions stay reflinked, there's no way to
+> defragment either file without _increasing_ the number of extents in that
+> file (either file would need 7 extents to properly share only those 4
+> regions), and even then only one of the files could be fully defragmented.
 
-It's the same.
+Arguably, the kernel's defrag ioctl should go ahead and do the extent
+relocation and update all the reflinks at once, using the file given
+in the argument as the "canonical" block order, i.e. the fd and offset
+range you pass in is checked, and if it's not physically contiguous,
+the extents in the range are copied to a single contiguous extent, then
+all the other references to the old extent(s) within the offset range are
+rewritten to point to the new extent, then the old extent is discarded.
 
->
-> and this the 5.2.14:
-> https://lore.kernel.org/linux-mm/289fbe71-0472-520f-64e2-b6d07ced5436@profihost.ag/
->
-> Greets,
-> Stefan
->
-> >>
-> >> Stefan
-> >>
-> >>> Am 11.09.2019 um 16:56 schrieb Filipe Manana <fdmanana@kernel.org>:
-> >>>
-> >>>> On Wed, Sep 11, 2019 at 8:10 AM Michal Hocko <mhocko@kernel.org> wrote:
-> >>>>
-> >>>> This smells like IO/Btrfs issue to me. Cc some more people.
-> >>>>
-> >>>>> On Wed 11-09-19 08:12:28, Stefan Priebe - Profihost AG wrote:
-> >>>>> [...]
-> >>>>> Sadly i'm running into issues with btrfs on 5.3-rc8 - the rsync process
-> >>>>> on backup disk completely hangs / is blocked at 100% i/o:
-> >>>>> [54739.065906] INFO: task rsync:9830 blocked for more than 120 seconds.
-> >>>>> [54739.066973]       Not tainted 5.3.0-rc8 #1
-> >>>>> [54739.067988] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [54739.069065] rsync           D    0  9830   9829 0x00004002
-> >>>>> [54739.070146] Call Trace:
-> >>>>> [54739.071183]  ? __schedule+0x3cf/0x680
-> >>>>> [54739.072202]  ? bit_wait+0x50/0x50
-> >>>>> [54739.073196]  schedule+0x39/0xa0
-> >>>>> [54739.074213]  io_schedule+0x12/0x40
-> >>>>> [54739.075219]  bit_wait_io+0xd/0x50
-> >>>>> [54739.076227]  __wait_on_bit+0x66/0x90
-> >>>>> [54739.077239]  ? bit_wait+0x50/0x50
-> >>>>> [54739.078273]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [54739.078741]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [54739.079162]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [54739.079557]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [54739.079956]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [54739.080357]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [54739.080748]  do_writepages+0x1a/0x60
-> >>>>> [54739.081140]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [54739.081558]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [54739.081985]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [54739.082412]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [54739.082847]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [54739.083280]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [54739.083725]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [54739.084170]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [54739.084608]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [54739.085049]  do_fsync+0x38/0x60
-> >>>>> [54739.085494]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [54739.085944]  do_syscall_64+0x55/0x1a0
-> >>>>> [54739.086395]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [54739.086850] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [54739.087310] Code: Bad RIP value.
-> >>>
-> >>> It's a regression introduced in 5.2
-> >>> Fix just sent: https://lore.kernel.org/linux-btrfs/20190911145542.1125-1-fdmanana@kernel.org/T/#u
-> >>>
-> >>> Thanks.
-> >>>
-> >>>>> [54739.087772] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [54739.088249] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [54739.088733] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [54739.089234] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [54739.089722] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [54739.090205] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>> [54859.899715] INFO: task rsync:9830 blocked for more than 241 seconds.
-> >>>>> [54859.900863]       Not tainted 5.3.0-rc8 #1
-> >>>>> [54859.901885] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [54859.902909] rsync           D    0  9830   9829 0x00004002
-> >>>>> [54859.903930] Call Trace:
-> >>>>> [54859.904888]  ? __schedule+0x3cf/0x680
-> >>>>> [54859.905831]  ? bit_wait+0x50/0x50
-> >>>>> [54859.906751]  schedule+0x39/0xa0
-> >>>>> [54859.907653]  io_schedule+0x12/0x40
-> >>>>> [54859.908535]  bit_wait_io+0xd/0x50
-> >>>>> [54859.909441]  __wait_on_bit+0x66/0x90
-> >>>>> [54859.910306]  ? bit_wait+0x50/0x50
-> >>>>> [54859.911177]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [54859.912043]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [54859.912727]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [54859.913113]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [54859.913501]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [54859.913894]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [54859.914276]  do_writepages+0x1a/0x60
-> >>>>> [54859.914656]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [54859.915052]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [54859.915449]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [54859.915855]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [54859.916256]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [54859.916658]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [54859.917078]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [54859.917497]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [54859.917903]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [54859.918307]  do_fsync+0x38/0x60
-> >>>>> [54859.918707]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [54859.919106]  do_syscall_64+0x55/0x1a0
-> >>>>> [54859.919482]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [54859.919866] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [54859.920243] Code: Bad RIP value.
-> >>>>> [54859.920614] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [54859.920997] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [54859.921383] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [54859.921773] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [54859.922165] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [54859.922551] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>> [54980.733463] INFO: task rsync:9830 blocked for more than 362 seconds.
-> >>>>> [54980.734061]       Not tainted 5.3.0-rc8 #1
-> >>>>> [54980.734619] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [54980.735209] rsync           D    0  9830   9829 0x00004002
-> >>>>> [54980.735802] Call Trace:
-> >>>>> [54980.736473]  ? __schedule+0x3cf/0x680
-> >>>>> [54980.737054]  ? bit_wait+0x50/0x50
-> >>>>> [54980.737664]  schedule+0x39/0xa0
-> >>>>> [54980.738243]  io_schedule+0x12/0x40
-> >>>>> [54980.738712]  bit_wait_io+0xd/0x50
-> >>>>> [54980.739171]  __wait_on_bit+0x66/0x90
-> >>>>> [54980.739623]  ? bit_wait+0x50/0x50
-> >>>>> [54980.740073]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [54980.740548]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [54980.741033]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [54980.741579]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [54980.742076]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [54980.742560]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [54980.743045]  do_writepages+0x1a/0x60
-> >>>>> [54980.743516]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [54980.744019]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [54980.744513]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [54980.745026]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [54980.745563]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [54980.746073]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [54980.746575]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [54980.747074]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [54980.747575]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [54980.748059]  do_fsync+0x38/0x60
-> >>>>> [54980.748539]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [54980.749012]  do_syscall_64+0x55/0x1a0
-> >>>>> [54980.749512]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [54980.749995] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [54980.750368] Code: Bad RIP value.
-> >>>>> [54980.750735] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [54980.751117] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [54980.751505] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [54980.751895] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [54980.752291] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [54980.752680] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>> [55101.567251] INFO: task rsync:9830 blocked for more than 483 seconds.
-> >>>>> [55101.567775]       Not tainted 5.3.0-rc8 #1
-> >>>>> [55101.568218] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [55101.568649] rsync           D    0  9830   9829 0x00004002
-> >>>>> [55101.569101] Call Trace:
-> >>>>> [55101.569609]  ? __schedule+0x3cf/0x680
-> >>>>> [55101.570052]  ? bit_wait+0x50/0x50
-> >>>>> [55101.570504]  schedule+0x39/0xa0
-> >>>>> [55101.570938]  io_schedule+0x12/0x40
-> >>>>> [55101.571404]  bit_wait_io+0xd/0x50
-> >>>>> [55101.571934]  __wait_on_bit+0x66/0x90
-> >>>>> [55101.572601]  ? bit_wait+0x50/0x50
-> >>>>> [55101.573235]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [55101.573599]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [55101.574008]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [55101.574394]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [55101.574783]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [55101.575184]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [55101.575580]  do_writepages+0x1a/0x60
-> >>>>> [55101.575959]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [55101.576351]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [55101.576746]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [55101.577144]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [55101.577543]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55101.577939]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55101.578343]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [55101.578746]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [55101.579139]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [55101.579543]  do_fsync+0x38/0x60
-> >>>>> [55101.579928]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [55101.580312]  do_syscall_64+0x55/0x1a0
-> >>>>> [55101.580706]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [55101.581086] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [55101.581463] Code: Bad RIP value.
-> >>>>> [55101.581834] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [55101.582219] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [55101.582607] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [55101.582998] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [55101.583397] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [55101.583784] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>> [55222.405056] INFO: task rsync:9830 blocked for more than 604 seconds.
-> >>>>> [55222.405773]       Not tainted 5.3.0-rc8 #1
-> >>>>> [55222.406456] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [55222.407158] rsync           D    0  9830   9829 0x00004002
-> >>>>> [55222.407776] Call Trace:
-> >>>>> [55222.408450]  ? __schedule+0x3cf/0x680
-> >>>>> [55222.409206]  ? bit_wait+0x50/0x50
-> >>>>> [55222.409942]  schedule+0x39/0xa0
-> >>>>> [55222.410658]  io_schedule+0x12/0x40
-> >>>>> [55222.411346]  bit_wait_io+0xd/0x50
-> >>>>> [55222.411946]  __wait_on_bit+0x66/0x90
-> >>>>> [55222.412572]  ? bit_wait+0x50/0x50
-> >>>>> [55222.413249]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [55222.413944]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [55222.414675]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [55222.415362]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [55222.416085]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [55222.416796]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [55222.417505]  do_writepages+0x1a/0x60
-> >>>>> [55222.418243]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [55222.418969]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [55222.419713]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [55222.420453]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [55222.421206]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55222.421925]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55222.422656]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [55222.423400]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [55222.424140]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [55222.424861]  do_fsync+0x38/0x60
-> >>>>> [55222.425581]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [55222.426308]  do_syscall_64+0x55/0x1a0
-> >>>>> [55222.427025]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [55222.427732] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [55222.428396] Code: Bad RIP value.
-> >>>>> [55222.429087] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [55222.429757] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [55222.430451] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [55222.431159] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [55222.431856] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [55222.432544] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>> [55343.234863] INFO: task rsync:9830 blocked for more than 724 seconds.
-> >>>>> [55343.235887]       Not tainted 5.3.0-rc8 #1
-> >>>>> [55343.236611] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [55343.237213] rsync           D    0  9830   9829 0x00004002
-> >>>>> [55343.237766] Call Trace:
-> >>>>> [55343.238353]  ? __schedule+0x3cf/0x680
-> >>>>> [55343.238971]  ? bit_wait+0x50/0x50
-> >>>>> [55343.239592]  schedule+0x39/0xa0
-> >>>>> [55343.240173]  io_schedule+0x12/0x40
-> >>>>> [55343.240721]  bit_wait_io+0xd/0x50
-> >>>>> [55343.241266]  __wait_on_bit+0x66/0x90
-> >>>>> [55343.241835]  ? bit_wait+0x50/0x50
-> >>>>> [55343.242418]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [55343.242938]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [55343.243496]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [55343.244090]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [55343.244720]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [55343.245296]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [55343.245843]  do_writepages+0x1a/0x60
-> >>>>> [55343.246407]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [55343.247014]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [55343.247631]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [55343.248186]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [55343.248743]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55343.249326]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55343.249931]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [55343.250562]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [55343.251139]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [55343.251628]  do_fsync+0x38/0x60
-> >>>>> [55343.252208]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [55343.252702]  do_syscall_64+0x55/0x1a0
-> >>>>> [55343.253212]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [55343.253798] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [55343.254294] Code: Bad RIP value.
-> >>>>> [55343.254821] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [55343.255404] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [55343.255989] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [55343.256521] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [55343.257073] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [55343.257649] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>> [55464.068704] INFO: task rsync:9830 blocked for more than 845 seconds.
-> >>>>> [55464.069701]       Not tainted 5.3.0-rc8 #1
-> >>>>> [55464.070655] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [55464.071637] rsync           D    0  9830   9829 0x00004002
-> >>>>> [55464.072637] Call Trace:
-> >>>>> [55464.073623]  ? __schedule+0x3cf/0x680
-> >>>>> [55464.074604]  ? bit_wait+0x50/0x50
-> >>>>> [55464.075577]  schedule+0x39/0xa0
-> >>>>> [55464.076531]  io_schedule+0x12/0x40
-> >>>>> [55464.077480]  bit_wait_io+0xd/0x50
-> >>>>> [55464.078400]  __wait_on_bit+0x66/0x90
-> >>>>> [55464.079300]  ? bit_wait+0x50/0x50
-> >>>>> [55464.080184]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [55464.081107]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [55464.082047]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [55464.083001]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [55464.083963]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [55464.084944]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [55464.085456]  do_writepages+0x1a/0x60
-> >>>>> [55464.085840]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [55464.086231]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [55464.086625]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [55464.087019]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [55464.087417]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55464.087814]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55464.088219]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [55464.088652]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [55464.089043]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [55464.089429]  do_fsync+0x38/0x60
-> >>>>> [55464.089811]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [55464.090190]  do_syscall_64+0x55/0x1a0
-> >>>>> [55464.090568]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [55464.090944] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [55464.091321] Code: Bad RIP value.
-> >>>>> [55464.091693] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [55464.092078] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [55464.092467] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [55464.092863] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [55464.093254] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [55464.093643] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>> [55584.902564] INFO: task rsync:9830 blocked for more than 966 seconds.
-> >>>>> [55584.903748]       Not tainted 5.3.0-rc8 #1
-> >>>>> [55584.904868] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [55584.906023] rsync           D    0  9830   9829 0x00004002
-> >>>>> [55584.907207] Call Trace:
-> >>>>> [55584.908355]  ? __schedule+0x3cf/0x680
-> >>>>> [55584.909507]  ? bit_wait+0x50/0x50
-> >>>>> [55584.910682]  schedule+0x39/0xa0
-> >>>>> [55584.911230]  io_schedule+0x12/0x40
-> >>>>> [55584.911666]  bit_wait_io+0xd/0x50
-> >>>>> [55584.912092]  __wait_on_bit+0x66/0x90
-> >>>>> [55584.912510]  ? bit_wait+0x50/0x50
-> >>>>> [55584.912924]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [55584.913343]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [55584.913795]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [55584.914242]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [55584.914698]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [55584.915152]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [55584.915588]  do_writepages+0x1a/0x60
-> >>>>> [55584.916022]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [55584.916474]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [55584.916928]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [55584.917386]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [55584.917844]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55584.918300]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55584.918772]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [55584.919233]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [55584.919679]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [55584.920122]  do_fsync+0x38/0x60
-> >>>>> [55584.920559]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [55584.920996]  do_syscall_64+0x55/0x1a0
-> >>>>> [55584.921429]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [55584.921865] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [55584.922298] Code: Bad RIP value.
-> >>>>> [55584.922734] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [55584.923174] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [55584.923568] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [55584.923982] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [55584.924378] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [55584.924774] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>> [55705.736285] INFO: task rsync:9830 blocked for more than 1087 seconds.
-> >>>>> [55705.736999]       Not tainted 5.3.0-rc8 #1
-> >>>>> [55705.737694] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [55705.738411] rsync           D    0  9830   9829 0x00004002
-> >>>>> [55705.739072] Call Trace:
-> >>>>> [55705.739455]  ? __schedule+0x3cf/0x680
-> >>>>> [55705.739837]  ? bit_wait+0x50/0x50
-> >>>>> [55705.740215]  schedule+0x39/0xa0
-> >>>>> [55705.740610]  io_schedule+0x12/0x40
-> >>>>> [55705.741243]  bit_wait_io+0xd/0x50
-> >>>>> [55705.741897]  __wait_on_bit+0x66/0x90
-> >>>>> [55705.742524]  ? bit_wait+0x50/0x50
-> >>>>> [55705.743131]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [55705.743750]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [55705.744128]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [55705.744766]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [55705.745440]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [55705.746118]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [55705.746753]  do_writepages+0x1a/0x60
-> >>>>> [55705.747411]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [55705.748106]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [55705.748807]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [55705.749495]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [55705.750190]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55705.750890]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55705.751580]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [55705.752293]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [55705.752981]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [55705.753686]  do_fsync+0x38/0x60
-> >>>>> [55705.754340]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [55705.755012]  do_syscall_64+0x55/0x1a0
-> >>>>> [55705.755678]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [55705.756375] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [55705.757042] Code: Bad RIP value.
-> >>>>> [55705.757690] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [55705.758300] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [55705.758678] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [55705.759107] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [55705.759785] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [55705.760471] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>> [55826.570182] INFO: task rsync:9830 blocked for more than 1208 seconds.
-> >>>>> [55826.571349]       Not tainted 5.3.0-rc8 #1
-> >>>>> [55826.572469] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs"
-> >>>>> disables this message.
-> >>>>> [55826.573618] rsync           D    0  9830   9829 0x00004002
-> >>>>> [55826.574790] Call Trace:
-> >>>>> [55826.575932]  ? __schedule+0x3cf/0x680
-> >>>>> [55826.577079]  ? bit_wait+0x50/0x50
-> >>>>> [55826.578233]  schedule+0x39/0xa0
-> >>>>> [55826.579350]  io_schedule+0x12/0x40
-> >>>>> [55826.580451]  bit_wait_io+0xd/0x50
-> >>>>> [55826.581527]  __wait_on_bit+0x66/0x90
-> >>>>> [55826.582596]  ? bit_wait+0x50/0x50
-> >>>>> [55826.583178]  out_of_line_wait_on_bit+0x8b/0xb0
-> >>>>> [55826.583550]  ? init_wait_var_entry+0x40/0x40
-> >>>>> [55826.583953]  lock_extent_buffer_for_io+0x10b/0x2c0 [btrfs]
-> >>>>> [55826.584356]  btree_write_cache_pages+0x17d/0x350 [btrfs]
-> >>>>> [55826.584755]  ? btrfs_set_token_32+0x72/0x130 [btrfs]
-> >>>>> [55826.585155]  ? merge_state.part.47+0x3f/0x160 [btrfs]
-> >>>>> [55826.585547]  do_writepages+0x1a/0x60
-> >>>>> [55826.585937]  __filemap_fdatawrite_range+0xc8/0x100
-> >>>>> [55826.586352]  ? convert_extent_bit+0x2e8/0x580 [btrfs]
-> >>>>> [55826.586761]  btrfs_write_marked_extents+0x141/0x160 [btrfs]
-> >>>>> [55826.587171]  btrfs_write_and_wait_transaction.isra.26+0x58/0xb0 [btrfs]
-> >>>>> [55826.587581]  ? btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55826.587990]  btrfs_commit_transaction+0x752/0x9d0 [btrfs]
-> >>>>> [55826.588406]  ? btrfs_log_dentry_safe+0x54/0x70 [btrfs]
-> >>>>> [55826.588818]  btrfs_sync_file+0x395/0x3e0 [btrfs]
-> >>>>> [55826.589219]  ? retarget_shared_pending+0x70/0x70
-> >>>>> [55826.589617]  do_fsync+0x38/0x60
-> >>>>> [55826.590011]  __x64_sys_fdatasync+0x13/0x20
-> >>>>> [55826.590411]  do_syscall_64+0x55/0x1a0
-> >>>>> [55826.590798]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> >>>>> [55826.591185] RIP: 0033:0x7f1db3fc85f0
-> >>>>> [55826.591572] Code: Bad RIP value.
-> >>>>> [55826.591952] RSP: 002b:00007ffe6f827db8 EFLAGS: 00000246 ORIG_RAX:
-> >>>>> 000000000000004b
-> >>>>> [55826.592347] RAX: ffffffffffffffda RBX: 0000000000000001 RCX:
-> >>>>> 00007f1db3fc85f0
-> >>>>> [55826.592743] RDX: 00007f1db4aa6060 RSI: 0000000000000003 RDI:
-> >>>>> 0000000000000001
-> >>>>> [55826.593143] RBP: 0000000000000001 R08: 0000000000000000 R09:
-> >>>>> 0000000081c492ca
-> >>>>> [55826.593543] R10: 0000000000000008 R11: 0000000000000246 R12:
-> >>>>> 0000000000000028
-> >>>>> [55826.593941] R13: 00007ffe6f827e40 R14: 0000000000000000 R15:
-> >>>>> 0000000000000000
-> >>>>>
-> >>>>>
-> >>>>> Greets,
-> >>>>> Stefan
-> >>>>
-> >>>> --
-> >>>> Michal Hocko
-> >>>> SUSE Labs
-> >>
+It is possible to do this from userspace now using a mix of data copies
+and dedupe, but it's much more efficient to use the facilities available
+in the kernel:  in particular, the kernel can lock the extent in question
+while all of this is going on, and the kernel can update shared snapshot
+metadata pages directly instead of duplicating them and doing identical
+updates on each copy.
+
+This sort of extent reference manipulation, particularly of extents
+referenced by readonly snapshots, used to break a lot of things (btrfs
+send in particular) but the same issues came up again for dedupe,
+and they now seem to be fixed as of 5.3 or so.  Maybe it's time to try
+shared-extent-aware defrag again.
+
+In practice, such an improved defrag ioctl would probably need some
+more limit parameters, e.g.  "just skip over any extent with more than
+1000 references" or "do a two-pass algorithm and relocate data only if
+every reference to the data is logically contiguous" to avoid getting
+bogged down on extents which require more iops to defrag in the present
+than can possibly be saved by using the defrag result in the future.
+That makes the defrag API even uglier, with even more magic baked-in
+behavior to get in the way of users who know what they're doing, but
+some stranger on a mailing list requested it, so why not...  :-P
+
+> Such a situation generally won't happen if you're just dealing with
+> read-only snapshots, but is not unusual when dealing with regular files t=
+hat
+> are reflinked (which is not an uncommon situation on some systems, as a l=
+ot
+> of people have `cp` aliased to reflink things whenever possible).
+
+--n8g4imXOkfNTN/H1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXXkgEwAKCRCB+YsaVrMb
+nAUzAKC/uFvuT+IVG6TehqpINvx1kGmu4ACdH99pM/vn1ksXa9UrXs//A8tsghw=
+=DTjN
+-----END PGP SIGNATURE-----
+
+--n8g4imXOkfNTN/H1--
