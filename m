@@ -2,79 +2,155 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE48B0102
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 18:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01402B0107
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 18:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbfIKQLV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 12:11:21 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:40531 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728672AbfIKQLV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 12:11:21 -0400
-Received: by mail-qt1-f196.google.com with SMTP id g4so25946072qtq.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 09:11:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=G52quSDaZVj644THB1KVk3dVg8g0io86ahQNm8+fomQ=;
-        b=H/DjKM/FcEVCU6LQAzKi+tUUpMWpWwaHnYILk5yr2CFggEmZ6/jtraJifIcYtOJoG3
-         eJfScuBnwRg7rZ1lQYYpLvFvjMgp0yk0LUDaMetZgZJncAUt55ncf+IEi8HsadAe6ZDa
-         P5+dsD1lYeRHEkTgB3SOPA5sBqD6j2kyZSkEWYh3+p5jsSuLcOp6eghZdta7lqHiJv+R
-         aE4RpwqtnGDUgWTn3MclDeTxbQeAUh+lHLxnGJIxrUihK747F8jtfQtYre62d7XBp+lP
-         a6t+x2ZjMuv9uC1xxcxe8eEvaCfmJ/r0Nj9Ma5ddwnYCL0XXiM2JMv1NWp9v6i2I5pXn
-         5noQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=G52quSDaZVj644THB1KVk3dVg8g0io86ahQNm8+fomQ=;
-        b=pBMH2aDA5mR4V+qk0y67ShwvTDX3MUdIQUbB1kmgMx+Q9nogsAKuH/ImKm5NXH4sI9
-         j552CLkgfQcPlyK3ypQD8niUs+pae5yaPIArBWJOSAMcjK1XeIxLj9UePPG4K0+kfCBz
-         l2Qz1vEJpME32tT7/HtRsvFLja4UOtr+IPjAC9Dy8ffk2kp6Wk1qGX1mJgR9nKIaJjKB
-         TptwGOQpmQg/7G1vAOYJ4elMv0Ja9gT7elwjmj0LOHf9uSiUbf40yoGykBiIPRxA81ab
-         BUO5dqVTcOHo2zUqFB2lYH8SKaedn+E/tnzipFy1BtvI1tQkWJiPaKL9/AtgvvtrN7VS
-         aA3Q==
-X-Gm-Message-State: APjAAAV9zsefyXLiU8Z3dyJ26EKUeVf4megYKELnh09PgP9lUJQjlEYJ
-        Zd4q/6w0y7i6spoKRkI1/+giksE/y84XiQ==
-X-Google-Smtp-Source: APXvYqwbknvLjk5IUajKWr1zgjdTlwb8W/RcFuChDSpHNCyLSXzEkAmKky/LAbCxS8aTlZrOlDb/ew==
-X-Received: by 2002:a05:6214:15d1:: with SMTP id p17mr23161388qvz.74.1568218279920;
-        Wed, 11 Sep 2019 09:11:19 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id t73sm10106610qke.113.2019.09.11.09.11.19
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 11 Sep 2019 09:11:19 -0700 (PDT)
-Date:   Wed, 11 Sep 2019 12:11:18 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Mark Fasheh <mfasheh@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Mark Fasheh <mfasheh@suse.de>
-Subject: Re: [PATCH 3/3] btrfs: move useless node processing out of
- build_backref_cache
-Message-ID: <20190911161117.cmrgxnuvze46kwc7@MacBook-Pro-91.local>
-References: <20190906171533.618-1-mfasheh@suse.com>
- <20190906171533.618-4-mfasheh@suse.com>
+        id S1728897AbfIKQN2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 12:13:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57448 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728825AbfIKQN2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 12:13:28 -0400
+Received: from mail-ua1-f42.google.com (mail-ua1-f42.google.com [209.85.222.42])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4B94C20863
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 16:13:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1568218407;
+        bh=/i/D7IWNKgFBFeRyXp88n15uUa7dgrKAdzJKMFVQkfU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=j6NFIk94OMOLBEGPtFFLhEJBmGs/AnKxZBYoRSm5YdVUeJLhao1MXXoY4V58mYe9q
+         EzzR9lq62vgELo7cQxYh7tqidIo5Ov3YAd7CLpCVvf7EVIqM9Vr04/VByTW7+pbGXZ
+         i+8FxDTJP6I8DEQWvQeBb6c60EarQUnKNn+U2/YY=
+Received: by mail-ua1-f42.google.com with SMTP id u18so6976780uap.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 09:13:27 -0700 (PDT)
+X-Gm-Message-State: APjAAAX/dxFqjZfjg/38+8BR8BdjV/mOLpxF9TnS/SSXo3O3y92b1mGH
+        I4Cbtc0OdAL5X6MLvBFswOp5IcUtOWvQmcPV8vo=
+X-Google-Smtp-Source: APXvYqyP8wz4mWDNXvVtE6wjvlD3AcHv479nnTQpTjBuQl/f4tOt+XO2zjq9gbfW01qGcPZU9MhA7y/uoRKgIrffjI0=
+X-Received: by 2002:ab0:2410:: with SMTP id f16mr17318666uan.83.1568218406277;
+ Wed, 11 Sep 2019 09:13:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190906171533.618-4-mfasheh@suse.com>
-User-Agent: NeoMutt/20180716
+References: <20190911145542.1125-1-fdmanana@kernel.org> <18E989C2-3E39-4C87-907D-EA671099C4AE@fb.com>
+In-Reply-To: <18E989C2-3E39-4C87-907D-EA671099C4AE@fb.com>
+From:   Filipe Manana <fdmanana@kernel.org>
+Date:   Wed, 11 Sep 2019 17:13:15 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H6kg+S+UwiLvsEKvCtsCuALMw7NfDnkWQEqk=AUn65SMg@mail.gmail.com>
+Message-ID: <CAL3q7H6kg+S+UwiLvsEKvCtsCuALMw7NfDnkWQEqk=AUn65SMg@mail.gmail.com>
+Subject: Re: [PATCH] Btrfs: fix unwritten extent buffers and hangs on future
+ writeback attempts
+To:     Chris Mason <clm@fb.com>
+Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Dennis Zhou <dennisz@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 06, 2019 at 10:15:33AM -0700, Mark Fasheh wrote:
-> From: Mark Fasheh <mfasheh@suse.de>
-> 
-> The backref cache has to clean up nodes referring to tree leaves. It is
-> trivial to pull that code into it's own function, which is what I do here.
-> 
-> Signed-off-by: Mark Fasheh <mfasheh@suse.de>
-> ---
+On Wed, Sep 11, 2019 at 5:04 PM Chris Mason <clm@fb.com> wrote:
+>
+> On 11 Sep 2019, at 15:55, fdmanana@kernel.org wrote:
+>
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > So fix this by not overwriting the return value (ret) with the result
+> > from flush_write_bio(). We also need to clear the
+> > EXTENT_BUFFER_WRITEBACK
+> > bit in case flush_write_bio() returns an error, otherwise it will hang
+> > any future attempts to writeback the extent buffer.
+> >
+> > This is a regression introduced in the 5.2 kernel.
+> >
+> > Fixes: 2e3c25136adfb ("btrfs: extent_io: add proper error handling to
+> > lock_extent_buffer_for_io()")
+> > Fixes: f4340622e0226 ("btrfs: extent_io: Move the BUG_ON() in
+> > flush_write_bio() one level up")
+> > Reported-by: Zdenek Sojka <zsojka@seznam.cz>
+> > Link:
+> > https://lore.kernel.org/linux-btrfs/GpO.2yos.3WGDOLpx6t%7D.1TUDYM@seznam.cz/T/#u
+> > Reported-by: Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
+> > Link:
+> > https://lore.kernel.org/linux-btrfs/5c4688ac-10a7-fb07-70e8-c5d31a3fbb38@profihost.ag/T/#t
+> > Reported-by: Drazen Kacar <drazen.kacar@oradian.com>
+> > Link:
+> > https://lore.kernel.org/linux-btrfs/DB8PR03MB562876ECE2319B3E579590F799C80@DB8PR03MB5628.eurprd03.prod.outlook.com/
+> > Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204377
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >  fs/btrfs/extent_io.c | 23 ++++++++++++++---------
+> >  1 file changed, 14 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> > index 1ff438fd5bc2..1311ba0fc031 100644
+> > --- a/fs/btrfs/extent_io.c
+> > +++ b/fs/btrfs/extent_io.c
+> > @@ -3628,6 +3628,13 @@ void wait_on_extent_buffer_writeback(struct
+> > extent_buffer *eb)
+> >                      TASK_UNINTERRUPTIBLE);
+> >  }
+> >
+> > +static void end_extent_buffer_writeback(struct extent_buffer *eb)
+> > +{
+> > +     clear_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags);
+> > +     smp_mb__after_atomic();
+> > +     wake_up_bit(&eb->bflags, EXTENT_BUFFER_WRITEBACK);
+> > +}
+> > +
+> >  /*
+> >   * Lock eb pages and flush the bio if we can't the locks
+> >   *
+> > @@ -3699,8 +3706,11 @@ static noinline_for_stack int
+> > lock_extent_buffer_for_io(struct extent_buffer *eb
+> >
+> >               if (!trylock_page(p)) {
+> >                       if (!flush) {
+> > -                             ret = flush_write_bio(epd);
+> > -                             if (ret < 0) {
+> > +                             int err;
+> > +
+> > +                             err = flush_write_bio(epd);
+> > +                             if (err < 0) {
+> > +                                     ret = err;
+> >                                       failed_page_nr = i;
+> >                                       goto err_unlock;
+> >                               }
+>
+>
+> Dennis (cc'd) has been trying a similar fix against this in production,
+> but sending it was interrupted by plumbing conferences.  I think he
+> found that it needs to undo this as well:
+>
+>                  percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
+>                                           -eb->len,
+>                                           fs_info->dirty_metadata_batch);
+>
+> With the IO errors, we should end up aborting the FS.  This function
+> also flips the the extent buffer written and dirty flags, and his patch
+> resets them as well.  Given that we're aborting anyway, it's not
+> critical, but it's probably a good idea to fix things up in the goto
+> err_unlock just to make future bugs less likely.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Yes, I considered that at some point (undo everything done so far,
+under the locks, etc) and thought it was pointless as well because we
+abort.
 
-Thanks,
+But we may not abort - if we never start the writeback for an eb
+because we returned error from flush_write_bio(), we can leave
+btree_write_cache_pages() without noticing the error.
+Since writeback never started, and btree_write_cache_pages() didn't
+return the error, the transaction commit path may never get an error
+from filemap_fdatawrite_range,
+and we can commit the transaction despite failure to start writeback
+for some extent buffer.
 
-Josef
+A problem that existed before that regression in 5.2 anyway. Sending
+it as separate.
+
+I'll include the undo of all operations in patch however, it doesn't
+hurt for sure.
+
+Thanks.
+
+>
+> -chris
