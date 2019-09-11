@@ -2,55 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04769AFFEF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 17:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46FC7AFFF1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 17:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728387AbfIKP0Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 11:26:16 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:40704 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726762AbfIKP0Q (ORCPT
+        id S1728487AbfIKP0T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 11:26:19 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:36275 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726762AbfIKP0T (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 11:26:16 -0400
-Received: by mail-qk1-f194.google.com with SMTP id y144so13130085qkb.7
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 08:26:15 -0700 (PDT)
+        Wed, 11 Sep 2019 11:26:19 -0400
+Received: by mail-qt1-f193.google.com with SMTP id o12so25779710qtf.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 08:26:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=lNb7DbbrBs4Q/sjx+irj78rxpSw/TMwuHd+gxwka/Es=;
-        b=IKFSk14SH5Gv6JjXUQ3YqE4nVGzmcITl5dsrkwq1JXp9tVFi+8mUrn/aBcuuT3wyuv
-         zLkQDer7yyB0fO6dJZvDB1WrTMR6ihL9sWhqrJ+DPer6XDkTQAlm90p3Xi4qKRsVvv59
-         thr+n2mnd8nBfM/BddsmoWsUh0/5BbJEDUrL5M9GfswKaqtqCY5Ha9hQTZ98I+7I/+f2
-         5g/T2FDqBJwW1g3uIuYAwKQZK1U7oiJRp49RzvCmp9LImWF1CI2cA3K5aMQeDlzWVE3P
-         Rrvq60Hu3yRyJKX9ff5DSGvKLKoF/tcNAd8H5palwOR06AxCN2AJh4nGd6h1B84laiqM
-         ovmg==
+        bh=gO+w/U8hMDaFUu707WWbHk/4OoJIRUYRlEDKwVJjTag=;
+        b=KEzj8n751DTKS9eivR/Xfdx6ubLsz9JqTG0zKBAGMt6EgEdjZM9ynz9KiHONnFt04H
+         OsEU2rbsxblo9sc5Ua4I26I7h794IxVtA8bmYmzqHFsaFDOFe7C4nD8RQBr2fYc9upPU
+         HYYiW4lNZ5pRoruX2aHh36dQBhvqziTT/PXz9RtDtdcgYVa+Uy0/JqDdPq2AD2qGdqbf
+         5nc3vtDX9LgjrD3iBkr66+ScvBsyYWADk/cM9Cw9bxLuEUbRIxXKOZajZG0rOX2hkgw9
+         KfMFmnw+UCP9guZAhf9Hzvw5ZQlaiKSKtziLhDs50HannIVacjKWxxGujQJc+Hxt8FR/
+         4z/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lNb7DbbrBs4Q/sjx+irj78rxpSw/TMwuHd+gxwka/Es=;
-        b=dwlIKD3wt/ZGn//BwDLLrKt/dQgijLn+ms/bhbvGsffsj256rKJPpYn+wh4XNkmcaP
-         yXod1NhUZ9OMSkbEDbu2FmUTYeopfw2wXelcU15JUQrjyTJbes7Wc5W6ttMHWLeBet+I
-         0sCAW6JcEtjqz6Cqa+I4S2fkLfXfjsRROBh9aBjFOu0V2YG87zhTRObubxaNSzdhnBEp
-         C6cfH/U4Fu+HKuoTHaN9EDAQ10wGq2dHeueex7dporRJ2iQTxlbkXDZBhPVOUNH9vWfR
-         eX1cJSorrwtyp4koE5L8JB+V4H3W6WqJT7aQLuc5ek3JUCUrcsd79Fm+cQ9uEt7MJSoY
-         4oOA==
-X-Gm-Message-State: APjAAAXczuODN5En74JsfOuGNNsBw2lCSpLs+fTxbg2eJuwHsxjGTGUs
-        WAmmj4rcjWl2APpEvsdJLNsWYuS/TR8oeg==
-X-Google-Smtp-Source: APXvYqwOCDm8uKeRsK2baHTVwHNNcV/dsdXjncFeEgI03T/Gng+dSsx/lzGzIHx1s/qIuN58T5g5tw==
-X-Received: by 2002:a37:6dc7:: with SMTP id i190mr36397919qkc.12.1568215574859;
-        Wed, 11 Sep 2019 08:26:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gO+w/U8hMDaFUu707WWbHk/4OoJIRUYRlEDKwVJjTag=;
+        b=CmCXZ3P5xcpRQY1u6hAMXOtrddoA5AeC+MmEeSQJQIIxBIVzGd+rtkLPRHlKUdTzV3
+         LVULExizvx4yU1TKCx3SYi6We1YTeeGeSKS2gCRg5W77OmctXQXQj2IEM0Qf/FtwtYbW
+         FT6ZEmindOIQcdn44vJudxJ9+MwpndJlhRsUstwCd/9OnBqki8C0cgSuvd7iV4ZTmYSF
+         0e4njhakXmTF0sVjsCKb/BboDWW+xg7qiWFxesfneNCctuwNTb+z5I392izNix/eyjE7
+         N7V8y8ns2uEZtlthOAqUeHX3exJkFVuoeZa+4utk2ojE9aLcvKbW1aqx8IRz3iXfgcDf
+         rXMg==
+X-Gm-Message-State: APjAAAUtnOCaG5m0MpQE9AspfabYd2UikKX5rP8JfI664xwLmnzfx0kZ
+        R6+qKlpBzlIScnNaGvQKgz7q5ET2qc5RJw==
+X-Google-Smtp-Source: APXvYqwC9Bzr1a8oMIUJgKFqi46/GHdKfyNYyCvQHix6ooKTcYjM8yduye5FVohME4G8QWMM5sZhvQ==
+X-Received: by 2002:a0c:9369:: with SMTP id e38mr22730127qve.25.1568215576505;
+        Wed, 11 Sep 2019 08:26:16 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id i25sm10045061qkl.99.2019.09.11.08.26.13
+        by smtp.gmail.com with ESMTPSA id m19sm10749954qke.22.2019.09.11.08.26.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Sep 2019 08:26:14 -0700 (PDT)
+        Wed, 11 Sep 2019 08:26:15 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 0/9] btrfs: break up extent_io.c a little bit
-Date:   Wed, 11 Sep 2019 11:26:02 -0400
-Message-Id: <20190911152611.3393-1-josef@toxicpanda.com>
+Subject: [PATCH 1/9] btrfs: separate out the extent leak code
+Date:   Wed, 11 Sep 2019 11:26:03 -0400
+Message-Id: <20190911152611.3393-2-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190911152611.3393-1-josef@toxicpanda.com>
+References: <20190911152611.3393-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -58,31 +60,74 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently extent_io.c includes all of the extent-io-tree code, the extent buffer
-code, the code to do IO on extent buffers and data extents, as well as a bunch
-of other random stuff.  The random stuff just needs to be cleaned up, and is
-probably too invasive for this point in the development cycle.  Instead I simply
-tackled moving the big obvious things out into their own files.  I will follow
-up with cleanups for the rest of the stuff, but those can probably wait until
-the next cycle as they are going to be slightly more risky.  As usual I didn't
-try to change anything, I simply moved code around.  Any time I needed to make
-actual changes to functions I made a separate patch for that work, so for
-example breaking up the init/exit functions for extent-io-tree.  Everything else
-is purely cut and paste into new files.  The diffstat is as follows
+We check both extent buffer and extent state leaks in the same function,
+separate these two functions out so we can move them around.
 
- fs/btrfs/Makefile         |    3 +-
- fs/btrfs/ctree.h          |    3 +-
- fs/btrfs/disk-io.h        |    2 +
- fs/btrfs/extent-buffer.c  | 1266 ++++++++
- fs/btrfs/extent-buffer.h  |  152 +
- fs/btrfs/extent-io-tree.c | 1955 ++++++++++++
- fs/btrfs/extent-io-tree.h |  248 ++
- fs/btrfs/extent_io.c      | 7555 +++++++++++++--------------------------------
- fs/btrfs/extent_io.h      |  372 +--
- fs/btrfs/super.c          |   16 +-
- 10 files changed, 5843 insertions(+), 5729 deletions(-)
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/extent_io.c | 28 +++++++++++++++++-----------
+ 1 file changed, 17 insertions(+), 11 deletions(-)
 
-Thanks,
-
-Josef
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index 4dc5e6939856..b4b786a9d870 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -60,7 +60,19 @@ void btrfs_leak_debug_del(struct list_head *entry)
+ }
+ 
+ static inline
+-void btrfs_leak_debug_check(void)
++void btrfs_extent_buffer_leak_debug_check()
++{
++	while (!list_empty(&buffers)) {
++		eb = list_entry(buffers.next, struct extent_buffer, leak_list);
++		pr_err("BTRFS: buffer leak start %llu len %lu refs %d bflags %lu\n",
++		       eb->start, eb->len, atomic_read(&eb->refs), eb->bflags);
++		list_del(&eb->leak_list);
++		kmem_cache_free(extent_buffer_cache, eb);
++	}
++}
++
++static inline
++void btrfs_extent_state_leak_debug_check(void)
+ {
+ 	struct extent_state *state;
+ 	struct extent_buffer *eb;
+@@ -74,14 +86,6 @@ void btrfs_leak_debug_check(void)
+ 		list_del(&state->leak_list);
+ 		kmem_cache_free(extent_state_cache, state);
+ 	}
+-
+-	while (!list_empty(&buffers)) {
+-		eb = list_entry(buffers.next, struct extent_buffer, leak_list);
+-		pr_err("BTRFS: buffer leak start %llu len %lu refs %d bflags %lu\n",
+-		       eb->start, eb->len, atomic_read(&eb->refs), eb->bflags);
+-		list_del(&eb->leak_list);
+-		kmem_cache_free(extent_buffer_cache, eb);
+-	}
+ }
+ 
+ #define btrfs_debug_check_extent_io_range(tree, start, end)		\
+@@ -105,7 +109,8 @@ static inline void __btrfs_debug_check_extent_io_range(const char *caller,
+ #else
+ #define btrfs_leak_debug_add(new, head)	do {} while (0)
+ #define btrfs_leak_debug_del(entry)	do {} while (0)
+-#define btrfs_leak_debug_check()	do {} while (0)
++#define btrfs_extent_buffer_leak_debug_check()	do {} while (0)
++#define btrfs_extent_state_leak_debug_check()	do {} while (0)
+ #define btrfs_debug_check_extent_io_range(c, s, e)	do {} while (0)
+ #endif
+ 
+@@ -235,7 +240,8 @@ int __init extent_io_init(void)
+ 
+ void __cold extent_io_exit(void)
+ {
+-	btrfs_leak_debug_check();
++	btrfs_extent_buffer_leak_debug_check();
++	btrfs_extent_state_leak_debug_check();
+ 
+ 	/*
+ 	 * Make sure all delayed rcu free are flushed before we
+-- 
+2.21.0
 
