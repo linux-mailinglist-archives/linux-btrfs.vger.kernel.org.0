@@ -2,74 +2,45 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE44DB01D9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 18:43:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09AFB01E2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 18:45:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729130AbfIKQml (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 12:42:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38272 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729061AbfIKQml (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 12:42:41 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A6681206CD
-        for <linux-btrfs@vger.kernel.org>; Wed, 11 Sep 2019 16:42:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568220161;
-        bh=Ch0YZyEE8nlezfSkGZExaAxguJ/6ZcEVWq4oLzdnTWo=;
-        h=From:To:Subject:Date:From;
-        b=oLyA/SNhx1rXAKALBrEihUq9Hgi+HK6AzG2Gf5/iMWl60zhvwUVH1FQLECBWWHYmu
-         SG6Mji2Gcgmfyb6eR3KjmZAS8Nsok6vTcxniIyQeWchiAf9ljI2MtoCuPW6nKTovlx
-         Ddo62VKrrj7qbgFspphbPC9kWWnOgIYTiwJn/nxs=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: make btrfs_wait_extents() static
-Date:   Wed, 11 Sep 2019 17:42:38 +0100
-Message-Id: <20190911164238.19524-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1729145AbfIKQp0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 12:45:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34382 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728896AbfIKQp0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 12:45:26 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 9FA22AF81;
+        Wed, 11 Sep 2019 16:45:24 +0000 (UTC)
+From:   Goldwyn Rodrigues <rgoldwyn@suse.de>
+To:     linux-fsdevel@vger.kernel.org
+Cc:     linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        hch@infradead.org, andres@anarazel.de, david@fromorbit.com,
+        riteshh@linux.ibm.com, linux-f2fs-devel@lists.sourceforge.net
+Subject: Fix inode sem regression for nowait
+Date:   Wed, 11 Sep 2019 11:45:14 -0500
+Message-Id: <20190911164517.16130-1-rgoldwyn@suse.de>
+X-Mailer: git-send-email 2.16.4
+In-Reply-To: <20190911093926.pfkkx25mffzeuo32@alap3.anarazel.de>
+References: <20190911093926.pfkkx25mffzeuo32@alap3.anarazel.de>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+This changes the way we acquire the inode semaphore when
+the I/O is marked with IOCB_NOWAIT. The regression was discovered
+in AIM7 and later by Andres in ext4. This has been fixed in
+XFS by 942491c9e6d6 ("xfs: fix AIM7 regression")
 
-It's not used ouside of transaction.c
+I realized f2fs and btrfs also have the same code and need to
+be updated.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/transaction.c | 2 +-
- fs/btrfs/transaction.h | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
+Regards,
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index e3adb714c04b..84a42e388aa4 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -988,7 +988,7 @@ static int __btrfs_wait_marked_extents(struct btrfs_fs_info *fs_info,
- 	return werr;
- }
- 
--int btrfs_wait_extents(struct btrfs_fs_info *fs_info,
-+static int btrfs_wait_extents(struct btrfs_fs_info *fs_info,
- 		       struct extent_io_tree *dirty_pages)
- {
- 	bool errors = false;
-diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-index 2c5a6f6e5bb0..c51135d9b448 100644
---- a/fs/btrfs/transaction.h
-+++ b/fs/btrfs/transaction.h
-@@ -218,8 +218,6 @@ int btrfs_record_root_in_trans(struct btrfs_trans_handle *trans,
- 				struct btrfs_root *root);
- int btrfs_write_marked_extents(struct btrfs_fs_info *fs_info,
- 				struct extent_io_tree *dirty_pages, int mark);
--int btrfs_wait_extents(struct btrfs_fs_info *fs_info,
--		       struct extent_io_tree *dirty_pages);
- int btrfs_wait_tree_log_extents(struct btrfs_root *root, int mark);
- int btrfs_transaction_blocked(struct btrfs_fs_info *info);
- int btrfs_transaction_in_commit(struct btrfs_fs_info *info);
 -- 
-2.11.0
+Goldwyn
 
