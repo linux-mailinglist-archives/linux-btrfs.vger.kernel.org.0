@@ -2,572 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B75AFB48
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 13:21:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 692F5AFB58
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Sep 2019 13:27:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727576AbfIKLVF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 07:21:05 -0400
-Received: from mxc1.seznam.cz ([77.75.79.23]:60744 "EHLO mxc1.seznam.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726724AbfIKLVE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 07:21:04 -0400
-Received: from email.seznam.cz
-        by email-smtpc14a.ko.seznam.cz (email-smtpc14a.ko.seznam.cz [10.53.11.165])
-        id 26c300e6364bbada26c92da7;
-        Wed, 11 Sep 2019 13:21:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=seznam.cz; s=beta;
-        t=1568200861; bh=PYaM3pWclCfvT8ffPh4aO8a8itxR6Yq/8VdewArVQXA=;
-        h=Received:From:To:Subject:Date:Message-Id:Mime-Version:X-Mailer:
-         Content-Type:Content-Transfer-Encoding;
-        b=T+7S7gWq4pj0uIZ26f+WW/xGZXq48k6rZq7dxFxng3l8Y2Doq9tCVLRRs32h0rgZl
-         L2GB65zlanNHfva0VrO0uieL2jgkKsJjKJBpjf35f+F/uUzex1b/79nfAMHA1T/vdW
-         w8EH3H4BSEH+BLETaysR+YbFSlsas3Gfd8JcsqFc=
-Received: from unknown ([::ffff:62.24.65.155])
-        by email.seznam.cz (szn-ebox-4.5.361) with HTTP;
-        Wed, 11 Sep 2019 13:20:54 +0200 (CEST)
-From:   "Zdenek Sojka" <zsojka@seznam.cz>
-To:     <linux-btrfs@vger.kernel.org>
-Subject: task btrfs-transacti:1752 blocked for more than 122 seconds.
-Date:   Wed, 11 Sep 2019 13:20:54 +0200 (CEST)
-Message-Id: <GpO.2yos.3WGDOLpx6t}.1TUDYM@seznam.cz>
-Mime-Version: 1.0 (szn-mime-2.0.45)
-X-Mailer: szn-ebox-4.5.361
-Content-Type: text/plain;
-        charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1726781AbfIKL1I (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 07:27:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44210 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725616AbfIKL1I (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 07:27:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 4FDEFAEB8;
+        Wed, 11 Sep 2019 11:27:05 +0000 (UTC)
+Subject: Re: [mainline][BUG][PPC][btrfs][bisected 00801a] kernel BUG at
+ fs/btrfs/locking.c:71!
+To:     Abdul Haleem <abdhalee@linux.vnet.ibm.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <1567500907.5082.12.camel@abdul>
+ <7139ac07-db63-b984-c416-d1c94337c9bf@suse.com>
+ <1568188807.30609.6.camel@abdul.in.ibm.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <41400da7-0f3b-0c45-4870-114526e59c67@suse.com>
+Date:   Wed, 11 Sep 2019 14:27:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <1568188807.30609.6.camel@abdul.in.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello,
-
-I am getting task hangups from time to time, mostly when doing fstrim or d=
-edupe while there is other IO ongoing. The following error triggered while=
- I was doing a fstrim, but it might be unrelated.
-
-When this hangup happens, I am unable to reboot the computer normally; tas=
-ks are stuck, and at least some further changes done to the FS are not vis=
-ible after (hard) reboot (sysrq+REISUB). 
-
-The related dmesg log follows. Hope it helps with btrfs development. I am =
-running with lock debugging enabled. Please let me know if I can provide m=
-ore information. I will post output of sysrq+w next time this triggers.
 
 
-Best regards,
-Zdenek Sojka
+On 11.09.19 г. 11:00 ч., Abdul Haleem wrote:
+> On Tue, 2019-09-03 at 13:39 +0300, Nikolay Borisov wrote:
+>>
+>> On 3.09.19 г. 11:55 ч., Abdul Haleem wrote:
+>>> Greeting's
+>>>
+>>> Mainline kernel panics with LTP/fs_fill-dir tests for btrfs file system on my P9 box running mainline kernel 5.3.0-rc5
+>>>
+>>> BUG_ON was first introduced by below commit
+>>>
+>>> commit 00801ae4bb2be5f5af46502ef239ac5f4b536094
+>>> Author: David Sterba <dsterba@suse.com>
+>>> Date:   Thu May 2 16:53:47 2019 +0200
+>>>
+>>>     btrfs: switch extent_buffer write_locks from atomic to int
+>>>     
+>>>     The write_locks is either 0 or 1 and always updated under the lock,
+>>>     so we don't need the atomic_t semantics.
+>>>     
+>>>     Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+>>>     Signed-off-by: David Sterba <dsterba@suse.com>
+>>>
+>>> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+>>> index 2706676279..98fccce420 100644
+>>> --- a/fs/btrfs/locking.c
+>>> +++ b/fs/btrfs/locking.c
+>>> @@ -58,17 +58,17 @@ static void btrfs_assert_tree_read_locked(struct
+>>> extent_buffer *eb)
+>>>  
+>>>  static void btrfs_assert_tree_write_locks_get(struct extent_buffer *eb)
+>>>  {
+>>> -       atomic_inc(&eb->write_locks);
+>>> +       eb->write_locks++;
+>>>  }
+>>>  
+>>>  static void btrfs_assert_tree_write_locks_put(struct extent_buffer *eb)
+>>>  {
+>>> -       atomic_dec(&eb->write_locks);
+>>> +       eb->write_locks--;
+>>>  }
+>>>  
+>>>  void btrfs_assert_tree_locked(struct extent_buffer *eb)
+>>>  {
+>>> -       BUG_ON(!atomic_read(&eb->write_locks));
+>>> +       BUG_ON(!eb->write_locks);
+>>>  }
+>>>  
+>>>
+>>> tests logs:
+>>> avocado-misc-tests/io/disk/ltp_fs.py:LtpFs.test_fs_run;fs_fill-dir-ext3-61cd:  [ 3376.022096] EXT4-fs (nvme0n1): mounting ext3 file system using the ext4 subsystem
+>>> EXT4-fs (nvme0n1): mounted filesystem with ordered data mode. Opts: (null)
+>>> EXT4-fs (loop1): mounting ext2 file system using the ext4 subsystem
+>>> EXT4-fs (loop1): mounted filesystem without journal. Opts: (null)
+>>> EXT4-fs (loop1): mounting ext3 file system using the ext4 subsystem
+>>> EXT4-fs (loop1): mounted filesystem with ordered data mode. Opts: (null)
+>>> EXT4-fs (loop1): mounted filesystem with ordered data mode. Opts: (null)
+>>> XFS (loop1): Mounting V5 Filesystem
+>>> XFS (loop1): Ending clean mount
+>>> XFS (loop1): Unmounting Filesystem
+>>> BTRFS: device fsid 7c08f81b-6642-4a06-9182-2884e80d56ee devid 1 transid 5 /dev/loop1
+>>> BTRFS info (device loop1): disk space caching is enabled
+>>> BTRFS info (device loop1): has skinny extents
+>>> BTRFS info (device loop1): enabling ssd optimizations
+>>> BTRFS info (device loop1): creating UUID tree
+>>> ------------[ cut here ]------------
+>>> kernel BUG at fs/btrfs/locking.c:71!
+>>> Oops: Exception in kernel mode, sig: 5 [#1]
+>>> LE PAGE_SIZE=64K MMU=Hash SMP NR_CPUS=2048 NUMA pSeries
+>>> Dumping ftrace buffer:
+>>>    (ftrace buffer empty)
+>>> Modules linked in: fuse(E) vfat(E) fat(E) btrfs(E) xor(E)
+>>> zstd_decompress(E) zstd_compress(E) raid6_pq(E) xfs(E) raid0(E)
+>>> linear(E) dm_round_robin(E) dm_queue_length(E) dm_service_time(E)
+>>> dm_multipath(E) loop(E) rpadlpar_io(E) rpaphp(E) lpfc(E) bnx2x(E)
+>>> xt_CHECKSUM(E) xt_MASQUERADE(E) tun(E) bridge(E) stp(E) llc(E) kvm_pr(E)
+>>> kvm(E) tcp_diag(E) udp_diag(E) inet_diag(E) unix_diag(E)
+>>> af_packet_diag(E) netlink_diag(E) ip6t_rpfilter(E) ipt_REJECT(E)
+>>> nf_reject_ipv4(E) ip6t_REJECT(E) nf_reject_ipv6(E) xt_conntrack(E)
+>>> ip_set(E) nfnetlink(E) ebtable_nat(E) ebtable_broute(E) ip6table_nat(E)
+>>> ip6table_mangle(E) ip6table_security(E) ip6table_raw(E) iptable_nat(E)
+>>> nf_nat(E) nf_conntrack(E) nf_defrag_ipv6(E) nf_defrag_ipv4(E)
+>>> iptable_mangle(E) iptable_security(E) iptable_raw(E) ebtable_filter(E)
+>>> ebtables(E) ip6table_filter(E) ip6_tables(E) iptable_filter(E) sunrpc(E)
+>>> raid10(E) xts(E) pseries_rng(E) vmx_crypto(E) sg(E) uio_pdrv_genirq(E)
+>>> uio(E) binfmt_misc(E) sch_fq_codel(E) ip_tables(E)
+>>>  ext4(E) mbcache(E) jbd2(E) sr_mod(E) cdrom(E) sd_mod(E) ibmvscsi(E)
+>>> scsi_transport_srp(E) ibmveth(E) nvmet_fc(E) nvmet(E) nvme_fc(E)
+>>> nvme_fabrics(E) scsi_transport_fc(E) mdio(E) libcrc32c(E) ptp(E)
+>>> pps_core(E) nvme(E) nvme_core(E) dm_mirror(E) dm_region_hash(E)
+>>> dm_log(E) dm_mod(E) [last unloaded: lpfc]
+>>> CPU: 14 PID: 1803 Comm: kworker/u32:8 Tainted: G            E     5.3.0-rc5-autotest-autotest #1
+>>> Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+>>> NIP:  c00800000164dd70 LR: c00800000164df00 CTR: c000000000a817a0
+>>> REGS: c00000000260b5d0 TRAP: 0700   Tainted: G            E      (5.3.0-rc5-autotest-autotest)
+>>> MSR:  8000000102029033 <SF,VEC,EE,ME,IR,DR,RI,LE,TM[E]>  CR: 22444082  XER: 00000000
+>>> CFAR: c00800000164defc IRQMASK: 0
+>>> GPR00: c0080000015c55f4 c00000000260b860 c008000001703b00 c000000267a29af0
+>>> GPR04: 0000000000000000 0000000000000001 0000000000000000 0000000000000000
+>>> GPR08: 0000000000000000 0000000000000001 0000000000000000 0000000000000004
+>>> GPR12: 0000000000004000 c00000001ec58e00 0000000000000000 0000000000000000
+>>> GPR16: 0000000000010000 0000000000000004 0000000000000001 0000000000000001
+>>> GPR20: 0000000000000000 0000000000000001 000000003e0f83e1 c00000025a7cbef0
+>>> GPR24: c00000000260ba26 0000000040000000 c0000000014a26e8 0000000000000003
+>>> GPR28: 0000000000000004 c00000025f2010a0 c000000267a29af0 0000000000000000
+>>> NIP [c00800000164dd70] btrfs_assert_tree_locked+0x10/0x20 [btrfs]
+>>> LR [c00800000164df00] btrfs_set_lock_blocking_write+0x60/0x100 [btrfs]
+>>> Call Trace:
+>>> [c00000000260b860] [c00000000260b8e0] 0xc00000000260b8e0 (unreliable)
+>>> [c00000000260b890] [c0080000015c55f4] btrfs_set_path_blocking+0xb4/0xc0 [btrfs]
+>>> [c00000000260b8e0] [c0080000015cb808] btrfs_search_slot+0x8e8/0xb80 [btrfs]
+>>
+>> Can you provide the line numbers btrfs_search_slot+0x8e8/0xb80
+>> corresponds to?
+> 
+> btrfs_search_slot+0x8e8/0xb80 maps to fs/btrfs/ctree.c:2751
+>                 write_lock_level = BTRFS_MAX_LEVEL;
+>     9a70:       08 00 40 39     li      r10,8
+>     9a74:       08 00 a0 3a     li      r21,8
+>>   9a78:       6c 00 41 91     stw     r10,108(r1)
+>     9a7c:       1c f8 ff 4b     b       9298 <btrfs_search_slot+0x108>
+>                 b = btrfs_root_node(root);
 
+Can you print the output of 'l *(btrfs_search_slot+0x8e8)' in gdb or
+ scripts/faddr2line . Because neither this nor the sent objdump is of
+much help.
 
-
-[49887.347053] INFO: task btrfs-transacti:1752 blocked for more than 122 s=
-econds.
-[49887.347059]       Not tainted 5.2.13-gentoo #2
-[49887.347060] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[49887.347062] btrfs-transacti D    0  1752      2 0x80004000
-[49887.347064] Call Trace:
-[49887.347069]  ? __schedule+0x265/0x830
-[49887.347071]  ? bit_wait+0x50/0x50
-[49887.347072]  ? bit_wait+0x50/0x50
-[49887.347074]  schedule+0x24/0x90
-[49887.347075]  io_schedule+0x3c/0x60
-[49887.347077]  bit_wait_io+0x8/0x50
-[49887.347079]  __wait_on_bit+0x6c/0x80
-[49887.347081]  ? __lock_release.isra.29+0x155/0x2d0
-[49887.347083]  out_of_line_wait_on_bit+0x7b/0x80
-[49887.347084]  ? var_wake_function+0x20/0x20
-[49887.347087]  lock_extent_buffer_for_io+0x28c/0x390
-[49887.347089]  btree_write_cache_pages+0x18e/0x340
-[49887.347091]  do_writepages+0x29/0xb0
-[49887.347093]  ? kmem_cache_free+0x132/0x160
-[49887.347095]  ? convert_extent_bit+0x544/0x680
-[49887.347097]  filemap_fdatawrite_range+0x70/0x90
-[49887.347099]  btrfs_write_marked_extents+0x53/0x120
-[49887.347100]  btrfs_write_and_wait_transaction.isra.4+0x38/0xa0
-[49887.347102]  btrfs_commit_transaction+0x6bb/0x990
-[49887.347103]  ? start_transaction+0x33e/0x500
-[49887.347105]  transaction_kthread+0x139/0x15c
-[49887.347106]  kthread+0x147/0x160
-[49887.347108]  ? open_ctree+0x1ee0/0x1ee0
-[49887.347109]  ? __kthread_create_on_node+0x160/0x160
-[49887.347111]  ret_from_fork+0x24/0x30
-[49887.347144] INFO: task mozStorage #2:3504 blocked for more than 122 sec=
-onds.
-[49887.347145]       Not tainted 5.2.13-gentoo #2
-[49887.347146] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[49887.347147] mozStorage #2   D    0  3504      1 0x00004000
-[49887.347149] Call Trace:
-[49887.347151]  ? __schedule+0x265/0x830
-[49887.347153]  ? btrfs_log_inode_parent+0x382/0xc10
-[49887.347154]  schedule+0x24/0x90
-[49887.347156]  schedule_preempt_disabled+0x5/0x10
-[49887.347158]  __mutex_lock+0x2be/0x8f0
-[49887.347159]  ? btrfs_log_inode_parent+0xb6/0xc10
-[49887.347161]  ? btrfs_log_inode_parent+0x382/0xc10
-[49887.347162]  btrfs_log_inode_parent+0x382/0xc10
-[49887.347164]  ? sched_clock+0x5/0x10
-[49887.347165]  ? sched_clock_cpu+0xc/0xb0
-[49887.347167]  ? __lock_release.isra.29+0x155/0x2d0
-[49887.347169]  ? dget_parent+0x6c/0x270
-[49887.347170]  btrfs_log_dentry_safe+0x45/0x60
-[49887.347172]  btrfs_sync_file+0x1cc/0x410
-[49887.347174]  __x64_sys_fsync+0x51/0xa0
-[49887.347175]  ? lockdep_hardirqs_on+0xef/0x180
-[49887.347177]  do_syscall_64+0x55/0x1c0
-[49887.347179]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[49887.347180] RIP: 0033:0x7f15a181e707
-[49887.347184] Code: Bad RIP value.
-[49887.347185] RSP: 002b:00007f15798fe750 EFLAGS: 00000293 ORIG_RAX: 00000=
-0000000004a
-[49887.347187] RAX: ffffffffffffffda RBX: 0000000000000024 RCX: 00007f15a1=
-81e707
-[49887.347188] RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000=
-000024
-[49887.347189] RBP: 00007f1595e33088 R08: 00007ffd825ca0b0 R09: 00007ffd82=
-5ca080
-[49887.347190] R10: 000000000097760e R11: 0000000000000293 R12: 00007f1556=
-80d3c0
-[49887.347191] R13: 0000000000000010 R14: 00007f158c5e2ed0 R15: 00007f1579=
-8fe938
-[49887.347197] INFO: task ThreadPoolForeg:24214 blocked for more than 122 =
-seconds.
-[49887.347199]       Not tainted 5.2.13-gentoo #2
-[49887.347200] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[49887.347201] ThreadPoolForeg D    0 24214   3614 0x00004000
-[49887.347202] Call Trace:
-[49887.347204]  ? __schedule+0x265/0x830
-[49887.347206]  ? btrfs_log_inode_parent+0xe3/0xc10
-[49887.347207]  schedule+0x24/0x90
-[49887.347209]  schedule_preempt_disabled+0x5/0x10
-[49887.347210]  __mutex_lock+0x2be/0x8f0
-[49887.347212]  ? btrfs_log_inode_parent+0xb6/0xc10
-[49887.347213]  ? btrfs_log_inode_parent+0xe3/0xc10
-[49887.347214]  btrfs_log_inode_parent+0xe3/0xc10
-[49887.347216]  ? sched_clock+0x5/0x10
-[49887.347217]  ? sched_clock_cpu+0xc/0xb0
-[49887.347219]  ? __lock_release.isra.29+0x155/0x2d0
-[49887.347220]  ? dget_parent+0x6c/0x270
-[49887.347222]  btrfs_log_dentry_safe+0x45/0x60
-[49887.347223]  btrfs_sync_file+0x1cc/0x410
-[49887.347224]  __x64_sys_fdatasync+0x41/0x80
-[49887.347226]  ? lockdep_hardirqs_on+0xef/0x180
-[49887.347227]  do_syscall_64+0x55/0x1c0
-[49887.347229]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[49887.347230] RIP: 0033:0x7f32114fbd97
-[49887.347232] Code: Bad RIP value.
-[49887.347233] RSP: 002b:00007f320a9e9f60 EFLAGS: 00000293 ORIG_RAX: 00000=
-0000000004b
-[49887.347234] RAX: ffffffffffffffda RBX: 00000000000000ac RCX: 00007f3211=
-4fbd97
-[49887.347236] RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000=
-0000ac
-[49887.347237] RBP: 00007f320a9e9fa0 R08: 0000000000000008 R09: 0000000000=
-0005c0
-[49887.347238] R10: 0000000000001000 R11: 0000000000000293 R12: 0000000000=
-000000
-[49887.347239] R13: 0000000000000000 R14: 0000000000001000 R15: 0000000000=
-000000
-[49887.347317] 
-               Showing all locks held in the system:
-[49887.347322] 1 lock held by khungtaskd/52:
-[49887.347323]  #0: 00000000c1b69c21 (rcu_read_lock){....}, at: debug_show=
-_all_locks+0x15/0x169
-[49887.347334] 2 locks held by btrfs-transacti/1752:
-[49887.347335]  #0: 0000000053aca418 (&fs_info->transaction_kthread_mutex)=
-{+.+.}, at: transaction_kthread+0x43/0x15c
-[49887.347338]  #1: 000000002ab92d01 (&fs_info->tree_log_mutex){+.+.}, at:=
- btrfs_commit_transaction+0x44b/0x990
-[49887.347359] 5 locks held by mozStorage #2/3504:
-[49887.347360]  #0: 000000000d2e416a (&sb->s_type->i_mutex_key#7){+.+.}, a=
-t: btrfs_sync_file+0xd5/0x410
-[49887.347363]  #1: 000000005a0ab1ef (&ei->dio_sem){+.+.}, at: btrfs_sync_=
-file+0xf4/0x410
-[49887.347365]  #2: 00000000cf98f4aa (sb_internal){.+.+}, at: start_transa=
-ction+0x3a8/0x500
-[49887.347368]  #3: 00000000229971f0 (&root->log_mutex){+.+.}, at: btrfs_l=
-og_inode_parent+0xe3/0xc10
-[49887.347371]  #4: 000000002ab92d01 (&fs_info->tree_log_mutex){+.+.}, at:=
- btrfs_log_inode_parent+0x382/0xc10
-[49887.347376] 4 locks held by ThreadPoolForeg/24214:
-[49887.347377]  #0: 00000000fe52cdd5 (&sb->s_type->i_mutex_key#7){+.+.}, a=
-t: btrfs_sync_file+0xd5/0x410
-[49887.347379]  #1: 000000005d7ce368 (&ei->dio_sem){+.+.}, at: btrfs_sync_=
-file+0xf4/0x410
-[49887.347381]  #2: 00000000cf98f4aa (sb_internal){.+.+}, at: start_transa=
-ction+0x3a8/0x500
-[49887.347384]  #3: 00000000229971f0 (&root->log_mutex){+.+.}, at: btrfs_l=
-og_inode_parent+0xe3/0xc10
-
-[49887.347426] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-
-[50010.227100] INFO: task btrfs-transacti:1752 blocked for more than 245 s=
-econds.
-[50010.227102]       Not tainted 5.2.13-gentoo #2
-[50010.227103] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[50010.227105] btrfs-transacti D    0  1752      2 0x80004000
-[50010.227107] Call Trace:
-[50010.227112]  ? __schedule+0x265/0x830
-[50010.227114]  ? bit_wait+0x50/0x50
-[50010.227115]  ? bit_wait+0x50/0x50
-[50010.227117]  schedule+0x24/0x90
-[50010.227119]  io_schedule+0x3c/0x60
-[50010.227120]  bit_wait_io+0x8/0x50
-[50010.227122]  __wait_on_bit+0x6c/0x80
-[50010.227124]  ? __lock_release.isra.29+0x155/0x2d0
-[50010.227126]  out_of_line_wait_on_bit+0x7b/0x80
-[50010.227128]  ? var_wake_function+0x20/0x20
-[50010.227130]  lock_extent_buffer_for_io+0x28c/0x390
-[50010.227132]  btree_write_cache_pages+0x18e/0x340
-[50010.227134]  do_writepages+0x29/0xb0
-[50010.227136]  ? kmem_cache_free+0x132/0x160
-[50010.227138]  ? convert_extent_bit+0x544/0x680
-[50010.227140]  filemap_fdatawrite_range+0x70/0x90
-[50010.227142]  btrfs_write_marked_extents+0x53/0x120
-[50010.227144]  btrfs_write_and_wait_transaction.isra.4+0x38/0xa0
-[50010.227145]  btrfs_commit_transaction+0x6bb/0x990
-[50010.227147]  ? start_transaction+0x33e/0x500
-[50010.227148]  transaction_kthread+0x139/0x15c
-[50010.227150]  kthread+0x147/0x160
-[50010.227151]  ? open_ctree+0x1ee0/0x1ee0
-[50010.227153]  ? __kthread_create_on_node+0x160/0x160
-[50010.227154]  ret_from_fork+0x24/0x30
-[50010.227190] INFO: task mozStorage #2:3504 blocked for more than 245 sec=
-onds.
-[50010.227191]       Not tainted 5.2.13-gentoo #2
-[50010.227192] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[50010.227194] mozStorage #2   D    0  3504      1 0x00004000
-[50010.227195] Call Trace:
-[50010.227198]  ? __schedule+0x265/0x830
-[50010.227199]  ? btrfs_log_inode_parent+0x382/0xc10
-[50010.227201]  schedule+0x24/0x90
-[50010.227203]  schedule_preempt_disabled+0x5/0x10
-[50010.227204]  __mutex_lock+0x2be/0x8f0
-[50010.227206]  ? btrfs_log_inode_parent+0xb6/0xc10
-[50010.227207]  ? btrfs_log_inode_parent+0x382/0xc10
-[50010.227208]  btrfs_log_inode_parent+0x382/0xc10
-[50010.227211]  ? sched_clock+0x5/0x10
-[50010.227213]  ? sched_clock_cpu+0xc/0xb0
-[50010.227214]  ? __lock_release.isra.29+0x155/0x2d0
-[50010.227216]  ? dget_parent+0x6c/0x270
-[50010.227218]  btrfs_log_dentry_safe+0x45/0x60
-[50010.227219]  btrfs_sync_file+0x1cc/0x410
-[50010.227221]  __x64_sys_fsync+0x51/0xa0
-[50010.227222]  ? lockdep_hardirqs_on+0xef/0x180
-[50010.227224]  do_syscall_64+0x55/0x1c0
-[50010.227226]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[50010.227228] RIP: 0033:0x7f15a181e707
-[50010.227231] Code: Bad RIP value.
-[50010.227232] RSP: 002b:00007f15798fe750 EFLAGS: 00000293 ORIG_RAX: 00000=
-0000000004a
-[50010.227234] RAX: ffffffffffffffda RBX: 0000000000000024 RCX: 00007f15a1=
-81e707
-[50010.227235] RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000=
-000024
-[50010.227236] RBP: 00007f1595e33088 R08: 00007ffd825ca0b0 R09: 00007ffd82=
-5ca080
-[50010.227237] R10: 000000000097760e R11: 0000000000000293 R12: 00007f1556=
-80d3c0
-[50010.227238] R13: 0000000000000010 R14: 00007f158c5e2ed0 R15: 00007f1579=
-8fe938
-[50010.227245] INFO: task ThreadPoolForeg:24214 blocked for more than 245 =
-seconds.
-[50010.227246]       Not tainted 5.2.13-gentoo #2
-[50010.227247] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[50010.227248] ThreadPoolForeg D    0 24214   3614 0x00004000
-[50010.227250] Call Trace:
-[50010.227252]  ? __schedule+0x265/0x830
-[50010.227253]  ? btrfs_log_inode_parent+0xe3/0xc10
-[50010.227255]  schedule+0x24/0x90
-[50010.227257]  schedule_preempt_disabled+0x5/0x10
-[50010.227258]  __mutex_lock+0x2be/0x8f0
-[50010.227259]  ? btrfs_log_inode_parent+0xb6/0xc10
-[50010.227261]  ? btrfs_log_inode_parent+0xe3/0xc10
-[50010.227262]  btrfs_log_inode_parent+0xe3/0xc10
-[50010.227263]  ? sched_clock+0x5/0x10
-[50010.227265]  ? sched_clock_cpu+0xc/0xb0
-[50010.227266]  ? __lock_release.isra.29+0x155/0x2d0
-[50010.227268]  ? dget_parent+0x6c/0x270
-[50010.227269]  btrfs_log_dentry_safe+0x45/0x60
-[50010.227270]  btrfs_sync_file+0x1cc/0x410
-[50010.227272]  __x64_sys_fdatasync+0x41/0x80
-[50010.227273]  ? lockdep_hardirqs_on+0xef/0x180
-[50010.227275]  do_syscall_64+0x55/0x1c0
-[50010.227276]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[50010.227277] RIP: 0033:0x7f32114fbd97
-[50010.227279] Code: Bad RIP value.
-[50010.227280] RSP: 002b:00007f320a9e9f60 EFLAGS: 00000293 ORIG_RAX: 00000=
-0000000004b
-[50010.227282] RAX: ffffffffffffffda RBX: 00000000000000ac RCX: 00007f3211=
-4fbd97
-[50010.227283] RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000=
-0000ac
-[50010.227284] RBP: 00007f320a9e9fa0 R08: 0000000000000008 R09: 0000000000=
-0005c0
-[50010.227285] R10: 0000000000001000 R11: 0000000000000293 R12: 0000000000=
-000000
-[50010.227286] R13: 0000000000000000 R14: 0000000000001000 R15: 0000000000=
-000000
-[50010.227364] 
-               Showing all locks held in the system:
-[50010.227369] 1 lock held by khungtaskd/52:
-[50010.227370]  #0: 00000000c1b69c21 (rcu_read_lock){....}, at: debug_show=
-_all_locks+0x15/0x169
-[50010.227380] 2 locks held by btrfs-transacti/1752:
-[50010.227381]  #0: 0000000053aca418 (&fs_info->transaction_kthread_mutex)=
-{+.+.}, at: transaction_kthread+0x43/0x15c
-[50010.227384]  #1: 000000002ab92d01 (&fs_info->tree_log_mutex){+.+.}, at:=
- btrfs_commit_transaction+0x44b/0x990
-[50010.227403] 5 locks held by mozStorage #2/3504:
-[50010.227404]  #0: 000000000d2e416a (&sb->s_type->i_mutex_key#7){+.+.}, a=
-t: btrfs_sync_file+0xd5/0x410
-[50010.227408]  #1: 000000005a0ab1ef (&ei->dio_sem){+.+.}, at: btrfs_sync_=
-file+0xf4/0x410
-[50010.227411]  #2: 00000000cf98f4aa (sb_internal){.+.+}, at: start_transa=
-ction+0x3a8/0x500
-[50010.227415]  #3: 00000000229971f0 (&root->log_mutex){+.+.}, at: btrfs_l=
-og_inode_parent+0xe3/0xc10
-[50010.227419]  #4: 000000002ab92d01 (&fs_info->tree_log_mutex){+.+.}, at:=
- btrfs_log_inode_parent+0x382/0xc10
-[50010.227424] 4 locks held by ThreadPoolForeg/10938:
-[50010.227425]  #0: 000000005904b6af (&sb->s_type->i_mutex_key#7){+.+.}, a=
-t: btrfs_sync_file+0xd5/0x410
-[50010.227428]  #1: 0000000052d60a14 (&ei->dio_sem){+.+.}, at: btrfs_sync_=
-file+0xf4/0x410
-[50010.227430]  #2: 00000000cf98f4aa (sb_internal){.+.+}, at: start_transa=
-ction+0x3a8/0x500
-[50010.227432]  #3: 00000000229971f0 (&root->log_mutex){+.+.}, at: btrfs_l=
-og_inode_parent+0xe3/0xc10
-[50010.227435] 4 locks held by ThreadPoolForeg/24214:
-[50010.227436]  #0: 00000000fe52cdd5 (&sb->s_type->i_mutex_key#7){+.+.}, a=
-t: btrfs_sync_file+0xd5/0x410
-[50010.227439]  #1: 000000005d7ce368 (&ei->dio_sem){+.+.}, at: btrfs_sync_=
-file+0xf4/0x410
-[50010.227441]  #2: 00000000cf98f4aa (sb_internal){.+.+}, at: start_transa=
-ction+0x3a8/0x500
-[50010.227443]  #3: 00000000229971f0 (&root->log_mutex){+.+.}, at: btrfs_l=
-og_inode_parent+0xe3/0xc10
-[50010.227485] 2 locks held by riscv64-unknown/25333:
-[50010.227487] 1 lock held by riscv64-unknown/25348:
-
-[50010.227489] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
-
-[50133.107067] INFO: task btrfs-transacti:1752 blocked for more than 368 s=
-econds.
-[50133.107071]       Not tainted 5.2.13-gentoo #2
-[50133.107073] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[50133.107076] btrfs-transacti D    0  1752      2 0x80004000
-[50133.107079] Call Trace:
-[50133.107086]  ? __schedule+0x265/0x830
-[50133.107088]  ? bit_wait+0x50/0x50
-[50133.107090]  ? bit_wait+0x50/0x50
-[50133.107093]  schedule+0x24/0x90
-[50133.107096]  io_schedule+0x3c/0x60
-[50133.107098]  bit_wait_io+0x8/0x50
-[50133.107101]  __wait_on_bit+0x6c/0x80
-[50133.107103]  ? __lock_release.isra.29+0x155/0x2d0
-[50133.107106]  out_of_line_wait_on_bit+0x7b/0x80
-[50133.107109]  ? var_wake_function+0x20/0x20
-[50133.107113]  lock_extent_buffer_for_io+0x28c/0x390
-[50133.107117]  btree_write_cache_pages+0x18e/0x340
-[50133.107120]  do_writepages+0x29/0xb0
-[50133.107123]  ? kmem_cache_free+0x132/0x160
-[50133.107126]  ? convert_extent_bit+0x544/0x680
-[50133.107129]  filemap_fdatawrite_range+0x70/0x90
-[50133.107132]  btrfs_write_marked_extents+0x53/0x120
-[50133.107134]  btrfs_write_and_wait_transaction.isra.4+0x38/0xa0
-[50133.107137]  btrfs_commit_transaction+0x6bb/0x990
-[50133.107139]  ? start_transaction+0x33e/0x500
-[50133.107141]  transaction_kthread+0x139/0x15c
-[50133.107144]  kthread+0x147/0x160
-[50133.107146]  ? open_ctree+0x1ee0/0x1ee0
-[50133.107149]  ? __kthread_create_on_node+0x160/0x160
-[50133.107152]  ret_from_fork+0x24/0x30
-[50133.107198] INFO: task mozStorage #2:3504 blocked for more than 368 sec=
-onds.
-[50133.107200]       Not tainted 5.2.13-gentoo #2
-[50133.107202] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[50133.107203] mozStorage #2   D    0  3504      1 0x00004000
-[50133.107206] Call Trace:
-[50133.107210]  ? __schedule+0x265/0x830
-[50133.107212]  ? btrfs_log_inode_parent+0x382/0xc10
-[50133.107215]  schedule+0x24/0x90
-[50133.107218]  schedule_preempt_disabled+0x5/0x10
-[50133.107220]  __mutex_lock+0x2be/0x8f0
-[50133.107222]  ? btrfs_log_inode_parent+0xb6/0xc10
-[50133.107224]  ? btrfs_log_inode_parent+0x382/0xc10
-[50133.107226]  btrfs_log_inode_parent+0x382/0xc10
-[50133.107229]  ? sched_clock+0x5/0x10
-[50133.107232]  ? sched_clock_cpu+0xc/0xb0
-[50133.107234]  ? __lock_release.isra.29+0x155/0x2d0
-[50133.107237]  ? dget_parent+0x6c/0x270
-[50133.107240]  btrfs_log_dentry_safe+0x45/0x60
-[50133.107243]  btrfs_sync_file+0x1cc/0x410
-[50133.107246]  __x64_sys_fsync+0x51/0xa0
-[50133.107249]  ? lockdep_hardirqs_on+0xef/0x180
-[50133.107252]  do_syscall_64+0x55/0x1c0
-[50133.107254]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[50133.107257] RIP: 0033:0x7f15a181e707
-[50133.107261] Code: Bad RIP value.
-[50133.107263] RSP: 002b:00007f15798fe750 EFLAGS: 00000293 ORIG_RAX: 00000=
-0000000004a
-[50133.107266] RAX: ffffffffffffffda RBX: 0000000000000024 RCX: 00007f15a1=
-81e707
-[50133.107268] RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000=
-000024
-[50133.107269] RBP: 00007f1595e33088 R08: 00007ffd825ca0b0 R09: 00007ffd82=
-5ca080
-[50133.107271] R10: 000000000097760e R11: 0000000000000293 R12: 00007f1556=
-80d3c0
-[50133.107272] R13: 0000000000000010 R14: 00007f158c5e2ed0 R15: 00007f1579=
-8fe938
-[50133.107279] INFO: task ThreadPoolForeg:10938 blocked for more than 122 =
-seconds.
-[50133.107281]       Not tainted 5.2.13-gentoo #2
-[50133.107282] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[50133.107284] ThreadPoolForeg D    0 10938      1 0x00004000
-[50133.107286] Call Trace:
-[50133.107290]  ? __schedule+0x265/0x830
-[50133.107292]  ? btrfs_log_inode_parent+0xe3/0xc10
-[50133.107294]  schedule+0x24/0x90
-[50133.107297]  schedule_preempt_disabled+0x5/0x10
-[50133.107299]  __mutex_lock+0x2be/0x8f0
-[50133.107302]  ? sched_clock+0x5/0x10
-[50133.107304]  ? sched_clock_cpu+0xc/0xb0
-[50133.107306]  ? btrfs_log_inode_parent+0xb6/0xc10
-[50133.107309]  ? btrfs_log_inode_parent+0xe3/0xc10
-[50133.107310]  btrfs_log_inode_parent+0xe3/0xc10
-[50133.107313]  ? sched_clock+0x5/0x10
-[50133.107315]  ? sched_clock_cpu+0xc/0xb0
-[50133.107317]  ? __lock_release.isra.29+0x155/0x2d0
-[50133.107319]  ? dget_parent+0x6c/0x270
-[50133.107321]  btrfs_log_dentry_safe+0x45/0x60
-[50133.107324]  btrfs_sync_file+0x1cc/0x410
-[50133.107326]  __x64_sys_fdatasync+0x41/0x80
-[50133.107329]  ? lockdep_hardirqs_on+0xef/0x180
-[50133.107331]  do_syscall_64+0x55/0x1c0
-[50133.107333]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[50133.107335] RIP: 0033:0x7f9d48a38d97
-[50133.107338] Code: Bad RIP value.
-[50133.107339] RSP: 002b:00007f9d344732d0 EFLAGS: 00000293 ORIG_RAX: 00000=
-0000000004b
-[50133.107342] RAX: ffffffffffffffda RBX: 000000000000011a RCX: 00007f9d48=
-a38d97
-[50133.107343] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000=
-00011a
-[50133.107345] RBP: 00007f9d34473350 R08: 0000000000000000 R09: 00007ffd71=
-1f8080
-[50133.107347] R10: 00000000009879d2 R11: 0000000000000293 R12: 00007f9d34=
-473310
-[50133.107348] R13: 00007f9d344732f0 R14: 000020d38bece438 R15: 0000000000=
-000000
-[50133.107351] INFO: task ThreadPoolForeg:24214 blocked for more than 368 =
-seconds.
-[50133.107353]       Not tainted 5.2.13-gentoo #2
-[50133.107354] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables=
- this message.
-[50133.107356] ThreadPoolForeg D    0 24214   3614 0x00004000
-[50133.107358] Call Trace:
-[50133.107361]  ? __schedule+0x265/0x830
-[50133.107363]  ? btrfs_log_inode_parent+0xe3/0xc10
-[50133.107366]  schedule+0x24/0x90
-[50133.107368]  schedule_preempt_disabled+0x5/0x10
-[50133.107370]  __mutex_lock+0x2be/0x8f0
-[50133.107372]  ? btrfs_log_inode_parent+0xb6/0xc10
-[50133.107374]  ? btrfs_log_inode_parent+0xe3/0xc10
-[50133.107376]  btrfs_log_inode_parent+0xe3/0xc10
-[50133.107379]  ? sched_clock+0x5/0x10
-[50133.107381]  ? sched_clock_cpu+0xc/0xb0
-[50133.107383]  ? __lock_release.isra.29+0x155/0x2d0
-[50133.107385]  ? dget_parent+0x6c/0x270
-[50133.107388]  btrfs_log_dentry_safe+0x45/0x60
-[50133.107390]  btrfs_sync_file+0x1cc/0x410
-[50133.107391]  __x64_sys_fdatasync+0x41/0x80
-[50133.107393]  ? lockdep_hardirqs_on+0xef/0x180
-[50133.107395]  do_syscall_64+0x55/0x1c0
-[50133.107397]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[50133.107400] RIP: 0033:0x7f32114fbd97
-[50133.107402] Code: Bad RIP value.
-[50133.107404] RSP: 002b:00007f320a9e9f60 EFLAGS: 00000293 ORIG_RAX: 00000=
-0000000004b
-[50133.107406] RAX: ffffffffffffffda RBX: 00000000000000ac RCX: 00007f3211=
-4fbd97
-[50133.107407] RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000=
-0000ac
-[50133.107409] RBP: 00007f320a9e9fa0 R08: 0000000000000008 R09: 0000000000=
-0005c0
-[50133.107411] R10: 0000000000001000 R11: 0000000000000293 R12: 0000000000=
-000000
-[50133.107413] R13: 0000000000000000 R14: 0000000000001000 R15: 0000000000=
-000000
-[50133.107496] 
-               Showing all locks held in the system:
-[50133.107503] 1 lock held by khungtaskd/52:
-[50133.107504]  #0: 00000000c1b69c21 (rcu_read_lock){....}, at: debug_show=
-_all_locks+0x15/0x169
-[50133.107519] 2 locks held by btrfs-transacti/1752:
-[50133.107520]  #0: 0000000053aca418 (&fs_info->transaction_kthread_mutex)=
-{+.+.}, at: transaction_kthread+0x43/0x15c
-[50133.107525]  #1: 000000002ab92d01 (&fs_info->tree_log_mutex){+.+.}, at:=
- btrfs_commit_transaction+0x44b/0x990
-[50133.107557] 7 locks held by Cache2 I/O/3476:
-[50133.107559]  #0: 000000003db3d26c (sb_writers#3){.+.+}, at: mnt_want_wr=
-ite+0x17/0x80
-[50133.107564]  #1: 000000002a2f5930 (&type->s_vfs_rename_key){+.+.}, at: =
-lock_rename+0x2a/0x100
-[50133.107569]  #2: 000000001a0603f5 (&type->i_mutex_dir_key#3/1){+.+.}, a=
-t: lock_rename+0xc1/0x100
-[50133.107574]  #3: 000000004bfe85ee (&type->i_mutex_dir_key#3/5){+.+.}, a=
-t: lock_rename+0xd6/0x100
-[50133.107579]  #4: 00000000a68a154b (&sb->s_type->i_mutex_key#7/4){+.+.},=
- at: vfs_rename+0x422/0x8b0
-[50133.107583]  #5: 00000000cf98f4aa (sb_internal){.+.+}, at: start_transa=
-ction+0x3a8/0x500
-[50133.107587]  #6: 00000000229971f0 (&root->log_mutex){+.+.}, at: btrfs_p=
-in_log_trans+0x16/0x30
-[50133.107594] 5 locks held by mozStorage #2/3504:
-[50133.107595]  #0: 000000000d2e416a (&sb->s_type->i_mutex_key#7){+.+.}, a=
-t: btrfs_sync_file+0xd5/0x410
-[50133.107599]  #1: 000000005a0ab1ef (&ei->dio_sem){+.+.}, at: btrfs_sync_=
-file+0xf4/0x410
-[50133.107603]  #2: 00000000cf98f4aa (sb_internal){.+.+}, at: start_transa=
-ction+0x3a8/0x500
-[50133.107607]  #3: 00000000229971f0 (&root->log_mutex){+.+.}, at: btrfs_l=
-og_inode_parent+0xe3/0xc10
-[50133.107611]  #4: 000000002ab92d01 (&fs_info->tree_log_mutex){+.+.}, at:=
- btrfs_log_inode_parent+0x382/0xc10
-[50133.107617] 4 locks held by ThreadPoolForeg/10938:
-[50133.107618]  #0: 000000005904b6af (&sb->s_type->i_mutex_key#7){+.+.}, a=
-t: btrfs_sync_file+0xd5/0x410
-[50133.107622]  #1: 0000000052d60a14 (&ei->dio_sem){+.+.}, at: btrfs_sync_=
-file+0xf4/0x410
-[50133.107625]  #2: 00000000cf98f4aa (sb_internal){.+.+}, at: start_transa=
-ction+0x3a8/0x500
-[50133.107628]  #3: 00000000229971f0 (&root->log_mutex){+.+.}, at: btrfs_l=
-og_inode_parent+0xe3/0xc10
-[50133.107633] 4 locks held by ThreadPoolForeg/24214:
-[50133.107634]  #0: 00000000fe52cdd5 (&sb->s_type->i_mutex_key#7){+.+.}, a=
-t: btrfs_sync_file+0xd5/0x410
-[50133.107638]  #1: 000000005d7ce368 (&ei->dio_sem){+.+.}, at: btrfs_sync_=
-file+0xf4/0x410
-[50133.107642]  #2: 00000000cf98f4aa (sb_internal){.+.+}, at: start_transa=
-ction+0x3a8/0x500
-[50133.107646]  #3: 00000000229971f0 (&root->log_mutex){+.+.}, at: btrfs_l=
-og_inode_parent+0xe3/0xc10
-[50133.107701] no locks held by riscv64-unknown/19546.
-
-[50133.107705] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D
