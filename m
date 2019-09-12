@@ -2,211 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79A87B0BE9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 11:50:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A17CB0C19
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 11:59:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730829AbfILJu2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 05:50:28 -0400
-Received: from mail-yw1-f66.google.com ([209.85.161.66]:36393 "EHLO
-        mail-yw1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730618AbfILJu2 (ORCPT
+        id S1730581AbfILJ7S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 05:59:18 -0400
+Received: from mail-yb1-f194.google.com ([209.85.219.194]:34589 "EHLO
+        mail-yb1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730185AbfILJ7S (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 05:50:28 -0400
-Received: by mail-yw1-f66.google.com with SMTP id x64so8913522ywg.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 02:50:27 -0700 (PDT)
+        Thu, 12 Sep 2019 05:59:18 -0400
+Received: by mail-yb1-f194.google.com with SMTP id u68so8455099ybg.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 02:59:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=0WVqWa+CQ6KBO7qcJGccvfEb1mGXQKGcoGeUP40DvXA=;
-        b=N7HDKonLLIbBVljivsZMsYyfzlgAK9RgAMLOUSzC8Bz8bLltXy4sTTg5RjTpLmaMRR
-         idR+2RG4wwBti5mA2+4J3zwl4gp9WvLAm63iHtzCC4QMAckpRGQ1p8XWgROQITUxq6JG
-         GQRAKFSHPK60eCPg/dkl4ndT+5sU+zDeln9idz8SPQ1snER+yvOl5E7AKV6ptKgevdni
-         mLKcheRrX//GEAuTaPFr6gkmqywgFKxEK3TrFPnatrqSYJ86rMBxk2lboUUEG7ZOj0V+
-         CgZjx1XoN4RJFZaibOvLW+FiTMhU2PlkwnFisZhTW8rEokIg1ES7q56bOzRwbjWlUBi3
-         b6Fg==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=jKOuFDI22DBoQF6Vb7bxMGfg3IrMf7N9WrpqdZkwcGg=;
+        b=NqvaDTjo/C9q1yJaKkCAEbRO/XygiSJE6b8QZUBwaiZhy7gN9Xo+ISzP3ZxDA/P32e
+         lc0VL8j9sDzRGikC1N+hKgMUwW9f3WbKZI+cAoHMT818qnoN/RmhphvzfRit0IRq/TJn
+         sVolQd8ibcnOC16hb8HrPRAsG3UNIeMV5hPWtxwIXemMT0VDFnvLrYTRTLvlCS/cgMLj
+         8UIF4mifasshNwECELIr4+5txgXk3gjhoK8Qr4oEUzmqu4WxoO/LBiNpGcGP9l53aRFn
+         9zS9eECJzxhrqB7fzIkaBWZFH6LTP6ek5/tnW2ytZLbHxSFYv3shGaO59OL8zCHGCb2r
+         I+dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=0WVqWa+CQ6KBO7qcJGccvfEb1mGXQKGcoGeUP40DvXA=;
-        b=p5plrVHjuPeyFYran7NXUwk3LZ4sTRvVE4D6EnvsE0zR5ieNzLc4Oc58wCXFgs7E91
-         nDZPLuKlTuacQiy90x/2lTAtTQnidZ1datRK3vYAuv5fnvhzI6HARGbkTYQK079CfHyO
-         uB/pxOpzmX1KUEcnKbWCuITBIQ6P7VenqXEeQ30GnmbxXqMeHk1pWDBRMeZqUQPTQHf0
-         takq4PGJ+9hwR4VzqCvBCB5gARqD/N2WQjWU3FOql6VFqWXiCu84GKx26BhGewYy/gOH
-         JYojPKKxEJSL5AhDvXO8AKdyQLG/4wS+gnHS0owNoK02LTO9Ya0kjPQFw7T9/nZnMY34
-         4B5A==
-X-Gm-Message-State: APjAAAXSslnqyt9JGD1umn3cgGWMiyz/344svPTVW/+rts+ixuL4WSfZ
-        3+u0nTFa3EfYCNsaDMdj0eAOJw==
-X-Google-Smtp-Source: APXvYqwPlVls0+OdC+fpxFnkPZQI8Wl8gWPeJMPHbMb31mJ3YKa+yv+IWIroJp5SYgFfy9zPd2ZL7A==
-X-Received: by 2002:a81:7d8b:: with SMTP id y133mr25326480ywc.377.1568281827267;
-        Thu, 12 Sep 2019 02:50:27 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=jKOuFDI22DBoQF6Vb7bxMGfg3IrMf7N9WrpqdZkwcGg=;
+        b=rUZsxK89tZrI2wvVQZzOgsWrQ0g6i/nlrW+j0VCJd9efDHCObfFipqoL/S4sZmPzX/
+         YWerEjsCyHLsiiwtdBZq0sZHdWmWSYRYU0bW+TcaAg1WDeLP8CqqLTrgb1mBYsD1wmNR
+         3r61EMs9XtEMbldZvRQbBwfesDNNF4d5eRmclz5//+MW83eiP3pwAwB9qhbjJhwlVC0v
+         4dvAbU/dTgI5x+tQBq4isrpxo8djFlDkIhhdh7PSjlC0sXtYg5jypAMdY+Vs9EOXCMz8
+         z3fxXk5OcRqI7hYode/cmTxoDNDnjI6jIMqJeGKC8PVINY8sD/iVNJJpt2x43ehzdzyo
+         2S2g==
+X-Gm-Message-State: APjAAAWHOV/uBf7zBXDeH0yMdLzYAeX8zu6cir8hLWnLl7mngA1v901E
+        Jp5ckaz2ZdxMkPL4wsBGGU7xC1XHoA8GVFu3
+X-Google-Smtp-Source: APXvYqy1XustzP4o+esWh/rYBaFtj0SOoflCDER8ctEeEJntqcB2pQfPkUbu8dgUx+Ab//ORV7IZFQ==
+X-Received: by 2002:a25:55d6:: with SMTP id j205mr949510ybb.503.1568282356733;
+        Thu, 12 Sep 2019 02:59:16 -0700 (PDT)
 Received: from localhost ([2600:380:9c1c:691f:cb4:3daf:a71a:adbc])
-        by smtp.gmail.com with ESMTPSA id t12sm4964438ywf.43.2019.09.12.02.50.25
+        by smtp.gmail.com with ESMTPSA id w188sm4460591ywa.110.2019.09.12.02.59.15
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 12 Sep 2019 02:50:26 -0700 (PDT)
-Date:   Thu, 12 Sep 2019 05:50:23 -0400
+        Thu, 12 Sep 2019 02:59:15 -0700 (PDT)
+Date:   Thu, 12 Sep 2019 05:59:14 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>, Eli V <eliventer@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH RFC v2 0/2] readmirror feature
-Message-ID: <20190912095021.htmpvvowdprc2jhv@MacBook-Pro-91.local>
-References: <20190826090438.7044-1-anand.jain@oracle.com>
- <20190911184229.gl7tu3igtuuepcvm@macbook-pro-91.dhcp.thefacebook.com>
- <CAJtFHUQ4wq02_6qLGjMWyOt-1eqKyxSLxw=EsR63LnBuZfh4mw@mail.gmail.com>
- <20190911191656.mrmfyhvy3latjwid@macbook-pro-91.dhcp.thefacebook.com>
- <2f10bebf-bc63-fe9e-d7d3-06b3113bc95c@oracle.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH RFC] btrfs: Introduce btrfs child tree block verification
+ system
+Message-ID: <20190912095913.gql6vbf4d6jj5p6m@MacBook-Pro-91.local>
+References: <20190911074624.27322-1-wqu@suse.com>
+ <20190911160202.wtprsigurzfxwtic@MacBook-Pro-91.local>
+ <3993aeab-a695-3bd1-88d6-48e9743ab597@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2f10bebf-bc63-fe9e-d7d3-06b3113bc95c@oracle.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3993aeab-a695-3bd1-88d6-48e9743ab597@gmx.com>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 03:41:42PM +0800, Anand Jain wrote:
+On Thu, Sep 12, 2019 at 07:38:14AM +0800, Qu Wenruo wrote:
 > 
 > 
-> Thanks for the comments. More below.
-> 
-> On 12/9/19 3:16 AM, Josef Bacik wrote:
-> > On Wed, Sep 11, 2019 at 03:13:21PM -0400, Eli V wrote:
-> > > On Wed, Sep 11, 2019 at 2:46 PM Josef Bacik <josef@toxicpanda.com> wrote:
-> > > > 
-> > > > On Mon, Aug 26, 2019 at 05:04:36PM +0800, Anand Jain wrote:
-> > > > > Function call chain  __btrfs_map_block()->find_live_mirror() uses
-> > > > > thread pid to determine the %mirror_num when the mirror_num=0.
-> > > > > 
-> > > > > This patch introduces a framework so that we can add policies to determine
-> > > > > the %mirror_num. And also adds the devid as the readmirror policy.
-> > > > > 
-> > > > > The new property is stored as an item in the device tree as show below.
-> > > > >      (BTRFS_READMIRROR_OBJECTID, BTRFS_PERSISTENT_ITEM_KEY, devid)
-> > > > > 
-> > > > > To be able to set and get this new property also introduces new ioctls
-> > > > > BTRFS_IOC_GET_READMIRROR and BTRFS_IOC_SET_READMIRROR. The ioctl argument
-> > > > > is defined as
-> > > > >          struct btrfs_ioctl_readmirror_args {
-> > > > >                  __u64 type; /* RW */
-> > > > >                  __u64 device_bitmap; /* RW */
-> > > > >          }
-> > > > > 
-> > > > > An usage example as follows:
-> > > > >          btrfs property set /btrfs readmirror devid:1,3
-> > > > >          btrfs property get /btrfs readmirror
-> > > > >            readmirror devid:1 3
-> > > > >          btrfs property set /btrfs readmirror ""
-> > > > >          btrfs property get /btrfs readmirror
-> > > > >            readmirror default
-> > > > > 
-> > > > > This patchset has been tested completely, however marked as RFC for the
-> > > > > following reasons and comments on them (or any other) are appreciated as
-> > > > > usual.
-> > > > >   . The new objectid is defined as
-> > > > >        #define BTRFS_READMIRROR_OBJECTID -1ULL
-> > > > >     Need consent we are fine to use this value, and with this value it
-> > > > >     shall be placed just before the DEV_STATS_OBJECTID item which is more
-> > > > >     frequently used only during the device errors.
-> > > > > 
-> > > > > .  I am using a u64 bitmap to represent the devices id, so the max device
-> > > > >     id that we could represent is 63, its a kind of limitation which should
-> > > > >     be addressed before integration, I wonder if there is any suggestion?
-> > > > >     Kindly note that, multiple ioctls with each time representing a set of
-> > > > >     device(s) is not a choice because we need to make sure the readmirror
-> > > > >     changes happens in a commit transaction.
-> > > > > 
-> > > > > v1->RFC v2:
-> > > > >    . Property is stored as a dev-tree item instead of root inode extended
-> > > > >      attribute.
-> > > > >    . Rename BTRFS_DEV_STATE_READ_OPRIMIZED to BTRFS_DEV_STATE_READ_PREFERRED.
-> > > > >    . Changed format specifier from devid1,2,3.. to devid:1,2,3..
-> > > > > 
-> > > > > RFC->v1:
-> > > > >    Drops pid as one of the readmirror policy choices and as usual remains
-> > > > >    as default. And when the devid is reset the readmirror policy falls back
-> > > > >    to pid.
-> > > > >    Drops the mount -o readmirror idea, it can be added at a later point of
-> > > > >    time.
-> > > > >    Property now accepts more than 1 devid as readmirror device. As shown
-> > > > >    in the example above.
-> > > > > 
-> > > > 
-> > > > This is a lot of infrastructure
-> 
->   Ok. Any idea on a better implementation?
->   How about extended attribute approach? v1 patches proposed
->   it, but it abused the extended attribute as commented here [1]
->   and v2 got changed to an item-key.
-> 
-> [1]
-> https://lore.kernel.org/linux-btrfs/be68e6ea-00bc-b750-25e1-9c584b99308f@gmx.com/
->
-
-That's a NAK on the prop interface.  This is a fs wide policy, not a
-directory/inode policy.
- 
-> 
-> > > > to just change which mirror we read to based on
-> > > > some arbitrary user policy.  I assume this is to solve the case where you have
-> > > > slow and fast disks, so you can always read from the fast disk?  And then it's
-> > > > only used in RAID1, so the very narrow usecase of having a RAID1 setup with a
-> > > > SSD and a normal disk?  I'm not seeing a point to this much code for one
-> > > > particular obscure setup.  Thanks,
-> > > > 
-> > > > Josef
-> > > 
-> > > Not commenting on the code itself, but as a user I see this SSD RAID1
-> > > acceleration as a future much have feature. It's only obscure at the
-> > > moment because we don't have code to take advantage of it. But on
-> > > large btrfs filesystems with hundreds of GB of metadata, like I have
-> > > for backups, the usability of the filesystem is dramatically improved
-> > > having the metadata on an SSD( though currently only half of the time
-> > > due to the even/odd pid distribution.)
+> On 2019/9/12 上午12:02, Josef Bacik wrote:
+> > On Wed, Sep 11, 2019 at 03:46:24PM +0800, Qu Wenruo wrote:
+> >> Although we have btrfs_verify_level_key() function to check the first
+> >> key and level at tree block read time, it has its limitation due to tree
+> >> lock context, it's not reliable handling new tree blocks.
+> >>
 > > 
-> > But that's different from a mirror.  100% it would be nice to say "put my
-> > metadata on the ssd, data elsewhere".  That's not what this patch is about, this
-> > patch is specifically about changing which drive we choose in a mirrored setup,
-> > which is super unlikely to mirror a SSD with a slow drive, cause it's just going
-> > to be slow no matter what.  Sure we could make it so reads always go to the SSD,
-> > but we can accomplish that by just adding a check for nonrotational in the code,
-> > and then we don't have to encode all this nonsense in the file system.  Thanks,
+> > How is it not reliable with new tree blocks?
 > 
->  I wrote about the readmirror policy framework here[2],
->  I forgot to link it here, sorry about that, my mistake.
+> Current btrfs_verify_level_key() skips first_key verification for any
+> tree blocks newer than last committed.
 > 
->  [2]
+> > 
+> >> So btrfs_verify_level_key() is good as a pre-check, but it can't ensure
+> >> new tree blocks are still sane at runtime.
+> >>
+> > 
+> > I mean I guess this is good, but we have to keep the parent locked when we're
+> > adding new blocks anyway, so I'm not entirely sure what this gains us?
 > 
-> https://lore.kernel.org/linux-btrfs/1552989624-29577-1-git-send-email-anand.jain@oracle.com/
-> 
->  Readmirror policy is for raid1, raid10 and future N way mirror.
->  Yes for now its only for raid1.
-> 
->  Here the idea is to create a framework so that readmirror policy
->  can be configured as needed. And nonrotational can be one such policy.
-> 
->  The example of hard-coded nonrotational policy does not work in case
->  of ssd and a remote iscsi ssd, OR in case of local ssd and a NVME block
->  device, as all these are still nonrotational devices. So hard-coded
->  policy is not a good idea. If we have to hardcode then there is Q-depth
->  based readmirror routing is better (patch in the ML), but that is
->  not good enough, because some configs wants it based on the disk-LBA
->  so that SAN storage target cache is balanced and not duplicated.
->  So in short it must be a configurable policy.
+> For cases like tree search on current node, where all tree blocks can be
+> newly CoWed tree blocks.
 > 
 
-Again, if you are mixing disk types you likely always want non-rotational, but
-still mixing different speed devices in a mirror setup is just asking for weird
-latency problems.  I don't think solving this use case is necessary.  If you mix
-ssd + network device in a serious production setup then you probably should be
-fired cause you don't know what you are doing.  Having the generic
-"nonrotational gets priority" is going to cover 99% of the actual use cases that
-make sense.
+But again we have the parent locked in these cases, so we can still do the check
+even if the parent has been cow'ed, so I'm not clear what the point is?  Like
+for sure add an extra check during search to check the first_key I guess, but
+all the extra checks seem superflous.
 
-The SAN usecase I can sort of see, but again I don't feel like it's a problem we
-need to solve with on-disk format.  Add a priority to sysfs so you can change it
-with udev or something on the fly.  Thanks,
+> If bit flip happens affecting those new tree blocks, we can detect them
+> at runtime, and that's the only time we can catch such error.
+> 
+
+Sure but we can't really detect bitflips in lots of places.  I'm not sure that
+justifies this extra infrastructure.
+
+> Write time tree checker doesn't go beyond single leave/node, thus has no
+> way to detect such parent-child mismatch case.
+> 
+
+Yeah that I'll give you.  But again as long as we check while we're searching
+we'll be fine.  The only case we'll miss is if there's a bitflip in between the
+time we modified the thing and we write it out.  Your code doesn't catch this
+case either, cause frankly it's kind of impossible without actually walking and
+verifying at writeout time.
+
+> >  You are
+> > essentially duplicating the checks that we already do on reads, and then adding
+> > the first_key check.
+> > 
+> > I'll go along with the first_key check being relatively useful, but why exactly
+> > do we need all this infrastructure when we can just check it as we walk down the
+> > tree?
+> 
+> You can't really do the nritems and first key check at the current
+> timing of btrfs_verify_level_key() for new tree blocks due to lock context.
+> 
+> That's the only reason the new infrastructure is here, to block the only
+> hole of btrfs_verify_level_key().
+> 
+> > 
+> > <snip>
+> > 
+> >> @@ -2887,24 +2982,28 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+> >>  			}
+> >>  
+> >>  			if (!p->skip_locking) {
+> >> -				level = btrfs_header_level(b);
+> >> -				if (level <= write_lock_level) {
+> >> +				if (level - 1 <= write_lock_level) {
+> >>  					err = btrfs_try_tree_write_lock(b);
+> >>  					if (!err) {
+> >>  						btrfs_set_path_blocking(p);
+> >>  						btrfs_tree_lock(b);
+> >>  					}
+> >> -					p->locks[level] = BTRFS_WRITE_LOCK;
+> >> +					p->locks[level - 1] = BTRFS_WRITE_LOCK;
+> >>  				} else {
+> >>  					err = btrfs_tree_read_lock_atomic(b);
+> >>  					if (!err) {
+> >>  						btrfs_set_path_blocking(p);
+> >>  						btrfs_tree_read_lock(b);
+> >>  					}
+> >> -					p->locks[level] = BTRFS_READ_LOCK;
+> >> +					p->locks[level - 1] = BTRFS_READ_LOCK;
+> >>  				}
+> >> -				p->nodes[level] = b;
+> >> +				p->nodes[level - 1] = b;
+> >>  			}
+> > 
+> > This makes no sense to me.  Why do we need to change how we do level here just
+> > for the btrfs_verify_child() check?
+> 
+> Because we can't trust the level from @b unless we have verified it.
+> 
+> (Although level is always checked in btrfs_verify_level_key(), but that
+> function is not 100% sure to be kept as is).
+
+But we have the level at the time we read the block, which we verify, so it'll
+already be correct here right?  So we're just adding the first_key check here.
+Thanks,
 
 Josef
