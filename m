@@ -2,178 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E207AB09B1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 09:48:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50096B09B6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 09:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728393AbfILHsQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 03:48:16 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:57004 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726308AbfILHsQ (ORCPT
+        id S1728558AbfILHuj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 03:50:39 -0400
+Received: from mail-ua1-f65.google.com ([209.85.222.65]:39558 "EHLO
+        mail-ua1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727186AbfILHuj (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 03:48:16 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8C7i1PT187345;
-        Thu, 12 Sep 2019 07:48:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=IGjLnVINfveFiecUer9XPRhDat9TVbcKxftPu7H0x1Y=;
- b=eWt/XSLl6UCqgc5pjg73dx8prQ4XYGQhoz9rJGjsdIbfPklsQKbsHpP8xDwDmI49S8sA
- kcLHfEbuD+phK9umicMK2MDJRFZMMYWHoMDVwQ9J0ibao4v/7KWK3zgA0kpeEGEVLkhp
- PzfqPm9Uyt3rbf5gQVxW96VBRPwm1cd0rjTdOEJEhM3UqhLMKFEFpObn/P7TadfuOiqK
- 5HKP09rSsa1WPciWOVi9tKsHXFS+iJKT7QJgHeLSH2ISPH4j1dKdWwdkMQ5KsLfl9XTj
- xtUQUlKTOsrw0oubEKRnWAGgiXP2IGpzuL/X7/xxOUfV4uhVT4pPW+eFQiFtb7t04hMB xA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2uw1jyen4j-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Sep 2019 07:48:12 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8C7hQ84116668;
-        Thu, 12 Sep 2019 07:48:12 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 2uyew4wau3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Sep 2019 07:48:11 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x8C7mBL2031723;
-        Thu, 12 Sep 2019 07:48:11 GMT
-Received: from [10.190.130.61] (/192.188.170.109)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Sep 2019 00:48:10 -0700
-Subject: Re: [PATCH RFC v2 0/2] readmirror feature
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <20190826090438.7044-1-anand.jain@oracle.com>
- <20190911163758.GG2850@twin.jikos.cz>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <5813d7aa-bfa0-698d-5c51-cf29e7c5c945@oracle.com>
-Date:   Thu, 12 Sep 2019 15:48:07 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+        Thu, 12 Sep 2019 03:50:39 -0400
+Received: by mail-ua1-f65.google.com with SMTP id s15so7684644uaq.6
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 00:50:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=UrkrffaHaqGGy48vaWZOcyEMaZruRLQSfbk6V/OnIxE=;
+        b=Jqx7db+BhdiRzp+FB6buRLYtdATKGk2ZnvG3JVJ4ZDlmCVMJSfBQPrhXM4QjxYpj6X
+         RV73fensLJOrxMSh31KIRmOYY8MFLzRgEgx1R5zFLfScK+B4OjaL3Ad7+cum9F73fxkM
+         y1PgRPOwJu9YqRhWnWCV51pDT9blnQvKUZntDUDM1rMkVhF3ZM0sR1TD098Z2xaPumNz
+         Lyc+H1myWxyP34ZiUy/12nXcknOqAaWnEBdYy8qvrLV62RJj4P2WEjvzJgyA3ctoV30n
+         CzSW5FOkgoO3IwmKw471lcWI9+u1g5az4r7iH3NZVX5w4Oi2YqAsTLYLEp5MVc+W8JqC
+         ydxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=UrkrffaHaqGGy48vaWZOcyEMaZruRLQSfbk6V/OnIxE=;
+        b=AJnsmojxd56Du0qlW+GNERnrWqsU/XwHXcqcqXAEoGY8xktyJkO3Z6+orvIc7okrBr
+         sTAqaIfsYmawGgTnkkIAzltRTA/eI51lhom32v+iMi3XLi5C8ysX5wP2VflVikqhlfJM
+         Z6ZxgNWRRGiMNIkTSwHVPn6tsQkkP0sZpvGfH0WPAjefWAoc0FzucrpPDnAUFD2zxpU+
+         u1+oPMeQlPriZDUDo4HXV4lhPKZoRA6lMzdGMui5rGac39gd7ka06XNOdUDpSy6NX6uC
+         zRP75fEiYCgg1G/TRMp1KqzsodOZibdXKbfb+yJLqLGZoYCAKtgsYOLlLI+YKszghT8C
+         G53Q==
+X-Gm-Message-State: APjAAAWJGwsfkcNlJzzTppM8qiQJidDYFTHyaEE+uZn0NuVi2+eqDQ1t
+        Ho7D39ETG4wzuabk0WZJok7/DkFyQt4PG3OhIPtDP7L0nl0=
+X-Google-Smtp-Source: APXvYqyvZVtHgG0m9Sg+KEnyPO5TV3Si8U0L3rDE8pyAT7tlGKJfkkMvV3w80yunWcpqOtuoj72qSJfZIMqwZMN6JE0=
+X-Received: by 2002:ab0:30ef:: with SMTP id d15mr18706610uam.135.1568274637783;
+ Thu, 12 Sep 2019 00:50:37 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190911163758.GG2850@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9377 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1909120083
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9377 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909120083
+References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
+In-Reply-To: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Thu, 12 Sep 2019 08:50:26 +0100
+Message-ID: <CAL3q7H4peDv_bQa5vGJeOM=V--yq1a1=aHat5qcsXjbnDoSkDQ@mail.gmail.com>
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     Christoph Anton Mitterer <calestyo@scientia.net>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/9/19 12:37 AM, David Sterba wrote:
-> On Mon, Aug 26, 2019 at 05:04:36PM +0800, Anand Jain wrote:
->> Function call chain  __btrfs_map_block()->find_live_mirror() uses
->> thread pid to determine the %mirror_num when the mirror_num=0.
->>
->> This patch introduces a framework so that we can add policies to determine
->> the %mirror_num. And also adds the devid as the readmirror policy.
->>
->> The new property is stored as an item in the device tree as show below.
->>      (BTRFS_READMIRROR_OBJECTID, BTRFS_PERSISTENT_ITEM_KEY, devid)
->>
->> To be able to set and get this new property also introduces new ioctls
->> BTRFS_IOC_GET_READMIRROR and BTRFS_IOC_SET_READMIRROR. The ioctl argument
->> is defined as
->>          struct btrfs_ioctl_readmirror_args {
->>                  __u64 type; /* RW */
->>                  __u64 device_bitmap; /* RW */
->>          }
-> 
-> I don't remember if there was a suggestion to use ioctls for read
-> mirror, but the property interface should be sufficient. Besides this
-> ioctl interafce is quite an anti-pattern: narrow use, non-extensible
-> structure, alternative and more convenient interface already available.
+On Sat, Aug 24, 2019 at 6:53 PM Christoph Anton Mitterer
+<calestyo@scientia.net> wrote:
+>
+> Hey.
+>
+> Anything new about the issue described here:
+> https://www.spinics.net/lists/linux-btrfs/msg91046.html
+>
+> It was said that it might be a regression in 5.2 actually and not a
+> hardware thing... so I just wonder whether I can safely move to 5.2?
 
-  Extended attribute interface f(get/set)attr is inode bound, but
-  the readmirror property is filesystem bound. For the readmirror we
-  can still use the extended attribute, but it might be considered as
-  abuse which we haven't done so far, here below [1] is the list of
-  property with the interface it uses and where the property is saved.
+So we definitely have a serious regression introduced on 5.2.
+I sent out a fix for it yesterday:  https://patchwork.kernel.org/patch/1114=
+1559/
 
-[1]
-  property      interface  save-as
-  ro            ioctl      root-item
-  label         ioctl      super-block
-  compression   xattr      xattr
-  v1:readmirror xattr      xattr
-  v2:readmirror ioctl      dev-tree-item
+Two things can happen:
 
-  You are asking for the combination of
-    property   interface  save-as
-    readmirror xattr      dev-tree-item
+1) either a hang when committing a transaction, reported by several
+users recently and hit it myself too twice when running fstests (test
+case generic/475 and generic/561) after I upgradaded my development
+branch from a 5.1.x kernel to a 5.3-rcX kernel. If this happens you
+risk no corruption, still the hang is very inconvenient of course, as
+you have to reboot.
 
-  I can give a try.
+2) writeback for some btree nodes may never be started and we end up
+committing a transaction without noticing that. This is really serious
+and that will lead to the "parent transid verify failed on ..."
+messages.
 
->> An usage example as follows:
->>          btrfs property set /btrfs readmirror devid:1,3
->>          btrfs property get /btrfs readmirror
->>            readmirror devid:1 3
->>          btrfs property set /btrfs readmirror ""
->>          btrfs property get /btrfs readmirror
->>            readmirror default
->>
->> This patchset has been tested completely, however marked as RFC for the
->> following reasons and comments on them (or any other) are appreciated as
->> usual.
->>   . The new objectid is defined as
->>        #define BTRFS_READMIRROR_OBJECTID -1ULL
->>     Need consent we are fine to use this value, and with this value it
->>     shall be placed just before the DEV_STATS_OBJECTID item which is more
->>     frequently used only during the device errors.
-> 
-> -1 can be considered a special value in other cases, not necessarily
-> here but if the ordering of items is the only reason I'd say no. The
-> keys/items will most likely land in the same node so there's no point
-> forcing the order.
+Until the fix gets merged to 5.2 kernels (and 5.3), I don't really
+recommend running 5.2 or 5.3.
 
-  Agreed. Any suggestion on the value for the BTRFS_READMIRROR_OBJECTID.
+>
+>
+> Cheers,
+> Chris.
+>
 
->> .  I am using a u64 bitmap to represent the devices id, so the max device
->>     id that we could represent is 63, its a kind of limitation which should
->>     be addressed before integration, I wonder if there is any suggestion?
-> 
-> Uh 63, so now an implementation detail is posing a global limit? That
-> sounds backwards.
 
-   Yes. And I was thinking of u64 array but that doesn't scale as well.
-   Anyways I have in the list to try using xattr interface which may
-   address this issue.
+--=20
+Filipe David Manana,
 
->>     Kindly note that, multiple ioctls with each time representing a set of
->>     device(s) is not a choice because we need to make sure the readmirror
->>     changes happens in a commit transaction.
-> 
-> I believe this can be guaranteed by the properties interface, ie. single
-> value gets processed at once and with some locking around the state of
-> devices can be updated atomically.
-> 
-> The open question is still how to store the readmirror property
-> per-device, it could be either an item or bit inside the device
-> structure.
-
-  We discussed that before here.
-
- 
-https://lore.kernel.org/linux-btrfs/8d31c3a2-3fb0-63af-3173-948ed0e84de3@oracle.com/
-
-> Besides the interface, I'm kind of missing the usecase description what
-> is expected from the read mirror policies and how they could affect
-> various scenarios. Maybe it was in some of the previous iterations, it's
-> hard too track everything so this should be part of the cover letter (or
-> at leat linked if it's too much text).
-> 
-
-  Yep. My mistake I missed it link it. Sorry about that.
-
-Thanks, Anand
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
