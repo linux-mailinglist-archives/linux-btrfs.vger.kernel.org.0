@@ -2,110 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF4BB0D2E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 12:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F254B0D3D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 12:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731144AbfILKsg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 06:48:36 -0400
-Received: from m9a0001g.houston.softwaregrp.com ([15.124.64.66]:53720 "EHLO
-        m9a0001g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730470AbfILKsf (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 06:48:35 -0400
-Received: FROM m9a0001g.houston.softwaregrp.com (15.121.0.191) BY m9a0001g.houston.softwaregrp.com WITH ESMTP;
- Thu, 12 Sep 2019 10:47:36 +0000
-Received: from M9W0067.microfocus.com (2002:f79:be::f79:be) by
- M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Thu, 12 Sep 2019 10:32:15 +0000
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (15.124.72.13) by
- M9W0067.microfocus.com (15.121.0.190) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Thu, 12 Sep 2019 10:32:15 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kW4MoBxAGfqJEF879Wu5Ctlyqlfm2yJxYnTgosV8NgLj+0UZfPoscSCmAl8gfj7huSAd6ybmzoW7DmaBXwJRYR9Yq6sQyS/25QiAGdnxn1n5pt9azwXKJGvHIQvgVqrTnp4CKmwWZS/6g7KmfO8wLvZv4gCRUrVfSPrvqWbbZJRyDBK/S/bNzyraaL5HVw72Iy6iWpO3VBELgY2mJY1gVqdEdpiwV7XT80SDDcg15y2hRsZpxC8o3gDGyDjYgVGqctjN7oGgl0Hb7e0Xzn1Z+rw5ze7O4zE1lYuyFCf7l7vxwABDDETJqgvA+aKABeC90TT75PyZlIHc6RcSQ0QDTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OClLW7gpKbCu0KuDjAZTSlkUoyHWEcpV4743RO6+SUM=;
- b=V8tS3/y33xqFaZOwHEFtWhygznS/OLNGDMTC7YrN7F1ozQquG3H2460nbhIELrnjrfRFkzNNKRkDoHBUTv0FTBJ0PNDqf+AYeVpMGzmvnIBAQRBcgktqCIK+C1tHOmdChvBVW8v371Jjsax6xNZnf42A2fi5iTrGM0Va9YyqWGyqXBU0x2OJPkQwISLZ50p3kpRiIO3NGC6jM2XbvFaXRyaXGTPTKY9xREw7ojEl9xVBhzJLKIybbc2XT4xNtx+sNsWpUBZYiSgUeR9RMKxkyUdmOguk5mZwKbuSf+jpKXxwSgpuhetauuvI066MG9p7PetizVwJ64tnPYqibg/CCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3090.namprd18.prod.outlook.com (10.255.138.10) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2263.17; Thu, 12 Sep 2019 10:32:09 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::3993:1f66:bd4:83cc]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::3993:1f66:bd4:83cc%5]) with mapi id 15.20.2263.016; Thu, 12 Sep 2019
- 10:32:09 +0000
-From:   WenRuo Qu <wqu@suse.com>
-To:     Anand Jain <anand.jain@oracle.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] btrfs: volumes: Allow missing devices to be writeable
-Thread-Topic: [PATCH] btrfs: volumes: Allow missing devices to be writeable
-Thread-Index: AQHVaVSrv5HVTv4sg0OdBx9N7oyxYqcn1+yA
-Date:   Thu, 12 Sep 2019 10:32:09 +0000
-Message-ID: <25e93ff4-6252-1e39-f60a-89134129c00d@suse.com>
-References: <20190829071731.11521-1-wqu@suse.com>
- <7e9294de-1859-886a-3ac3-9659e70463d7@oracle.com>
-In-Reply-To: <7e9294de-1859-886a-3ac3-9659e70463d7@oracle.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: TYCPR01CA0108.jpnprd01.prod.outlook.com
- (2603:1096:405:4::24) To BY5PR18MB3266.namprd18.prod.outlook.com
- (2603:10b6:a03:1a1::15)
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [13.231.109.76]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: a949bc1d-d3e8-4b96-288d-08d7376c7748
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR18MB3090;
-x-ms-traffictypediagnostic: BY5PR18MB3090:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <BY5PR18MB309004C169E33C544E4BC623D6B00@BY5PR18MB3090.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-forefront-prvs: 01583E185C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(39860400002)(346002)(136003)(366004)(396003)(199004)(189003)(36756003)(86362001)(31696002)(31686004)(5660300002)(966005)(2501003)(256004)(6436002)(6486002)(4744005)(6512007)(6306002)(99286004)(81166006)(81156014)(8676002)(229853002)(486006)(476003)(446003)(11346002)(8936002)(2616005)(6506007)(386003)(25786009)(102836004)(76176011)(52116002)(53936002)(478600001)(71200400001)(186003)(71190400001)(26005)(66066001)(66446008)(66946007)(64756008)(66556008)(66476007)(305945005)(316002)(7736002)(2906002)(110136005)(6116002)(3846002)(14454004)(6246003);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3090;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 5Pf5C9n7r5ca83+e8Cq0YZQTZTY2cJljqRu23YG9n751O/HvZkDSTbXnCY7Jl2tIoz3zNg/pMuKcrRNuhdb0eeXskWOvVRAUW3y2zn/a2+i6OVGtMNyDr8fMDDeoxY0P1jSkbHJBSViIGY6j/f+s93BFSqn3W3lqyBxukWwXTGCaJk3Fu1hTj+HRxBxYwAF+8Kbpi6ErpFGQYv6/rLK+594ozRWIfYKwVfIw6VBfZk0wWq7p4sw/+jVoRkhbWeX6jKoqvclinAfoEX0ekZi6dvT+frGGME/4E0ab5IEsHIj6nTtGof8FLC+BU8X7FbSVAAzmA9QthLSjqvDOIcpRSviE+gIjG7e1WE8WmDrAAPTwOXdpiB0RZOiVqVKuCw4S/xiJGGvQUVv7GZP76Q/8z2An/YiKuEed4fH61YwfNy0=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9469BBD1282CD54C9592BF139E2737F4@namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1731239AbfILKwU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 06:52:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731218AbfILKwU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Sep 2019 06:52:20 -0400
+Received: from localhost (unknown [148.69.85.38])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 096D820678;
+        Thu, 12 Sep 2019 10:52:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1568285538;
+        bh=FG0wlmvwJ52zKOcfojakrhjRCLZkbsr1odTsy7hLJGg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZneDnPDMVf5jVPIpR5e6lWjHCfdst55bqO0Gaz6OuvH0vXaepUqCWRX5b9xJwsO9x
+         Nj2PPVyaVOxSwSdKE4XoFGI50A0lGd6DRii5auTD38FG34XTbMlF5KKEbOw1mV+7j8
+         Vn/avwq058NnCjTRA5kOuJJNzlouLlWgJEV148OY=
+Date:   Thu, 12 Sep 2019 06:52:15 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Johannes Thumshirn <jthumshirn@suse.de>
+Cc:     stable@vger.kernel.org,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH for-4.19.x ] btrfs: correctly validate compression type
+Message-ID: <20190912105215.GC1546@sasha-vm>
+References: <20190912100259.7784-1-jthumshirn@suse.de>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: a949bc1d-d3e8-4b96-288d-08d7376c7748
-X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Sep 2019 10:32:09.5126
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: shGprCIPEUh6NB5K3HnPpDB+wAIPzTK6gDSsGYI062BT417y1TKu2Cux4Qa4mNph
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3090
-X-OriginatorOrg: suse.com
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20190912100259.7784-1-jthumshirn@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMTkvOS8xMiDkuIvljYg2OjI3LCBBbmFuZCBKYWluIHdyb3RlOg0KPiANCj4gDQo+
-IFRoZXJlIGlzIHByZXZpb3VzIHdvcmsgWzFdDQo+IA0KPiBbMV0NCj4gaHR0cHM6Ly9sb3JlLmtl
-cm5lbC5vcmcvbGludXgtYnRyZnMvMTQ2MTgxMjc4MC01MzgtMS1naXQtc2VuZC1lbWFpbC1hbmFu
-ZC5qYWluQG9yYWNsZS5jb20vDQo+IA0KPiANCj4gDQo+IEkgZ3Vlc3MgaXQgd2FzIG9uIHB1cnBv
-c2UgdGhhdCBtaXNzaW5nIGRldmljZSBpcyBub3QgcGFydCBvZg0KPiBhbGxvYyBjaHVuaywgc28g
-dG8gaGF2ZSBsZXNzZXIgaW1wYWN0IGR1ZSB0byB3cml0ZWhvbGUgYnVnLg0KPiBNeSB0YXJnZXQg
-aXMgdG8gZml4IHRoZSB3cml0ZWhvbGUgZmlyc3QsIGFuZCB0aGVuIHRoaXMgYW5kDQo+IG90aGVy
-IGJ1Z3MuDQo+IA0KPj4gW0ZJWF0NCj4+IEp1c3QgY29uc2lkZXIgdGhlIG1pc3NpbmcgZGV2aWNl
-cyBhcyBXUklUQUJMRSwgc28gd2UgYWxsb2NhdGUgbmV3IGNodW5rcw0KPj4gb24gdGhlbSB0byBt
-YWludGFpbiBvbGQgcHJvZmlsZXMuDQo+IA0KPiDCoElNTy4gSW4gYSAzLWRpc2tzIHJhaWQxIHdo
-ZW4gb25lIG9mIHRoZSBkaXNrIGZhaWxzLCB3ZSBzdGlsbA0KPiDCoG5lZWQgdGhlIF9uZXcgd3Jp
-dGVzXyBub3QgdG8gYmUgZGVncmFkZWQuIEp1c3QgdXNlIHR3byBhdmFpbGFibGUNCj4gwqBkaXNr
-cy4gVGhpcyBmaXggZmFpbHMgdGhhdCBpZGVhIHdoaWNoIGlzIGJlaW5nIGZvbGxvd2VkIG5vdy4N
-Cg0KU28gcHJpb3JpdHkgY29tZXMsIHVzZSBleGlzdGluZywgYW5kIG9ubHkgd2hlbiBpdCdzIGlt
-cG9zc2libGUsIGNvbnNpZGVyDQpkZWdyYWRlZC9taXNzaW5nIGRldmljZT8NCg0KPiANCj4gVGhh
-bmtzLCBBbmFuZA0KPiANCg==
+On Thu, Sep 12, 2019 at 12:02:59PM +0200, Johannes Thumshirn wrote:
+>[ Upstream commit aa53e3bfac7205fb3a8815ac1c937fd6ed01b41e ]
+>
+>Nikolay reported the following KASAN splat when running btrfs/048:
+>
+>[ 1843.470920] ==================================================================
+>[ 1843.471971] BUG: KASAN: slab-out-of-bounds in strncmp+0x66/0xb0
+>[ 1843.472775] Read of size 1 at addr ffff888111e369e2 by task btrfs/3979
+>
+>[ 1843.473904] CPU: 3 PID: 3979 Comm: btrfs Not tainted 5.2.0-rc3-default #536
+>[ 1843.475009] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+>[ 1843.476322] Call Trace:
+>[ 1843.476674]  dump_stack+0x7c/0xbb
+>[ 1843.477132]  ? strncmp+0x66/0xb0
+>[ 1843.477587]  print_address_description+0x114/0x320
+>[ 1843.478256]  ? strncmp+0x66/0xb0
+>[ 1843.478740]  ? strncmp+0x66/0xb0
+>[ 1843.479185]  __kasan_report+0x14e/0x192
+>[ 1843.479759]  ? strncmp+0x66/0xb0
+>[ 1843.480209]  kasan_report+0xe/0x20
+>[ 1843.480679]  strncmp+0x66/0xb0
+>[ 1843.481105]  prop_compression_validate+0x24/0x70
+>[ 1843.481798]  btrfs_xattr_handler_set_prop+0x65/0x160
+>[ 1843.482509]  __vfs_setxattr+0x71/0x90
+>[ 1843.483012]  __vfs_setxattr_noperm+0x84/0x130
+>[ 1843.483606]  vfs_setxattr+0xac/0xb0
+>[ 1843.484085]  setxattr+0x18c/0x230
+>[ 1843.484546]  ? vfs_setxattr+0xb0/0xb0
+>[ 1843.485048]  ? __mod_node_page_state+0x1f/0xa0
+>[ 1843.485672]  ? _raw_spin_unlock+0x24/0x40
+>[ 1843.486233]  ? __handle_mm_fault+0x988/0x1290
+>[ 1843.486823]  ? lock_acquire+0xb4/0x1e0
+>[ 1843.487330]  ? lock_acquire+0xb4/0x1e0
+>[ 1843.487842]  ? mnt_want_write_file+0x3c/0x80
+>[ 1843.488442]  ? debug_lockdep_rcu_enabled+0x22/0x40
+>[ 1843.489089]  ? rcu_sync_lockdep_assert+0xe/0x70
+>[ 1843.489707]  ? __sb_start_write+0x158/0x200
+>[ 1843.490278]  ? mnt_want_write_file+0x3c/0x80
+>[ 1843.490855]  ? __mnt_want_write+0x98/0xe0
+>[ 1843.491397]  __x64_sys_fsetxattr+0xba/0xe0
+>[ 1843.492201]  ? trace_hardirqs_off_thunk+0x1a/0x1c
+>[ 1843.493201]  do_syscall_64+0x6c/0x230
+>[ 1843.493988]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>[ 1843.495041] RIP: 0033:0x7fa7a8a7707a
+>[ 1843.495819] Code: 48 8b 0d 21 de 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 be 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ee dd 2b 00 f7 d8 64 89 01 48
+>[ 1843.499203] RSP: 002b:00007ffcb73bca38 EFLAGS: 00000202 ORIG_RAX: 00000000000000be
+>[ 1843.500210] RAX: ffffffffffffffda RBX: 00007ffcb73bda9d RCX: 00007fa7a8a7707a
+>[ 1843.501170] RDX: 00007ffcb73bda9d RSI: 00000000006dc050 RDI: 0000000000000003
+>[ 1843.502152] RBP: 00000000006dc050 R08: 0000000000000000 R09: 0000000000000000
+>[ 1843.503109] R10: 0000000000000002 R11: 0000000000000202 R12: 00007ffcb73bda91
+>[ 1843.504055] R13: 0000000000000003 R14: 00007ffcb73bda82 R15: ffffffffffffffff
+>
+>[ 1843.505268] Allocated by task 3979:
+>[ 1843.505771]  save_stack+0x19/0x80
+>[ 1843.506211]  __kasan_kmalloc.constprop.5+0xa0/0xd0
+>[ 1843.506836]  setxattr+0xeb/0x230
+>[ 1843.507264]  __x64_sys_fsetxattr+0xba/0xe0
+>[ 1843.507886]  do_syscall_64+0x6c/0x230
+>[ 1843.508429]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>
+>[ 1843.509558] Freed by task 0:
+>[ 1843.510188] (stack is not available)
+>
+>[ 1843.511309] The buggy address belongs to the object at ffff888111e369e0
+>                which belongs to the cache kmalloc-8 of size 8
+>[ 1843.514095] The buggy address is located 2 bytes inside of
+>                8-byte region [ffff888111e369e0, ffff888111e369e8)
+>[ 1843.516524] The buggy address belongs to the page:
+>[ 1843.517561] page:ffff88813f478d80 refcount:1 mapcount:0 mapping:ffff88811940c300 index:0xffff888111e373b8 compound_mapcount: 0
+>[ 1843.519993] flags: 0x4404000010200(slab|head)
+>[ 1843.520951] raw: 0004404000010200 ffff88813f48b008 ffff888119403d50 ffff88811940c300
+>[ 1843.522616] raw: ffff888111e373b8 000000000016000f 00000001ffffffff 0000000000000000
+>[ 1843.524281] page dumped because: kasan: bad access detected
+>
+>[ 1843.525936] Memory state around the buggy address:
+>[ 1843.526975]  ffff888111e36880: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>[ 1843.528479]  ffff888111e36900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>[ 1843.530138] >ffff888111e36980: fc fc fc fc fc fc fc fc fc fc fc fc 02 fc fc fc
+>[ 1843.531877]                                                        ^
+>[ 1843.533287]  ffff888111e36a00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>[ 1843.534874]  ffff888111e36a80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+>[ 1843.536468] ==================================================================
+>
+>This is caused by supplying a too short compression value ('lz') in the
+>test-case and comparing it to 'lzo' with strncmp() and a length of 3.
+>strncmp() read past the 'lz' when looking for the 'o' and thus caused an
+>out-of-bounds read.
+>
+>Introduce a new check 'btrfs_compress_is_valid_type()' which not only
+>checks the user-supplied value against known compression types, but also
+>employs checks for too short values.
+>
+>Reported-by: Nikolay Borisov <nborisov@suse.com>
+>Fixes: 272e5326c783 ("btrfs: prop: fix vanished compression property after failed set")
+>CC: stable@vger.kernel.org # 5.1+
+>Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+>Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+>Reviewed-by: David Sterba <dsterba@suse.com>
+>Signed-off-by: David Sterba <dsterba@suse.com>
+
+It's already sitting in the queue, thank you :)
+
+--
+Thanks,
+Sasha
