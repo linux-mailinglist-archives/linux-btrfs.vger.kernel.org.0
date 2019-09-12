@@ -2,70 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4BAB0AF8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 11:09:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA886B0B54
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 11:26:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730268AbfILJJK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 05:09:10 -0400
-Received: from mail02.iobjects.de ([188.40.134.68]:51896 "EHLO
-        mail02.iobjects.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725940AbfILJJK (ORCPT
+        id S1730765AbfILJ0W (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 05:26:22 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:45930 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730386AbfILJ0W (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 05:09:10 -0400
-Received: from tux.wizards.de (pD9EBF359.dip0.t-ipconnect.de [217.235.243.89])
-        by mail02.iobjects.de (Postfix) with ESMTPSA id EA7FD4162722;
-        Thu, 12 Sep 2019 11:09:08 +0200 (CEST)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.wizards.de (Postfix) with ESMTP id A8EF8EEB932;
-        Thu, 12 Sep 2019 11:09:08 +0200 (CEST)
-Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     James Harvey <jamespharvey20@gmail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
- <CAL3q7H4peDv_bQa5vGJeOM=V--yq1a1=aHat5qcsXjbnDoSkDQ@mail.gmail.com>
- <CA+X5Wn7GCed+bWNq7jkTHgDc5dT-OHyUkTRxfa1eHv=25_ijrQ@mail.gmail.com>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <3b972dc4-9dc6-620e-9bf8-79ec2df5cec7@applied-asynchrony.com>
-Date:   Thu, 12 Sep 2019 11:09:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 12 Sep 2019 05:26:22 -0400
+Received: by mail-pg1-f194.google.com with SMTP id 4so13138970pgm.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 02:26:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mbobrowski-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=dt0j6/Dbs+dwW1SIPthaW+qziOAlFsuqXt20b4c12nE=;
+        b=12hCQat9jUcgSa47++/HQI/Kl7LxMpOdcs5vqzMW95pKZMUHEhyw9ZMTKknS+6Z2Rx
+         K9qJNKmsGVjwgxprs5gDVl8K+aUT2VnsLU60nF0AzZqv5zXtsCwN++iPfEVHgWC+J7j+
+         dzo27W3kuN+k10OHxZQp4JFaIL0RYtJn0rAoEKVV3Tjp/yso+xeP3PIyvRGhxb2KSfST
+         ffoFGuMIjtreThdQ+W41KGD+0jkLetWQM+B1FTVLAr6v++nXXRuC0Pw6a6KKqO9IL1Es
+         KlgfJcVrWGFzhtJHgrA+FEtA/80mCRFIS7z+ma8tpq3q4vca8MZ/qHfHgMp7DzPy84Ad
+         FAkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=dt0j6/Dbs+dwW1SIPthaW+qziOAlFsuqXt20b4c12nE=;
+        b=j267qBqIsQWI1Iz6IASbdp7qxiDFf9L4rkpYwgYPbEiqBGCk7UvDfDM7A/Oapc86lb
+         KgPNUBXlCWoT3W6Rr1KcV9Qenl61ZcwxS24gSCOxH0LEFdNIJ513t77IfsPKDii+v/Ve
+         gygQeyGjsvfkcPVoN0uEq1BIhnK1/JivIffGLSjFmVMa6veBB4lmtbTlNKFk75OtGGj9
+         I+wiubFaTuLX+SsRpJGilYuAp0vaz3jvGPJnoDbYwxObBzsagrmv4htNocy0FRohq9ls
+         0tpBkNo1enVHbfnGZZbjws+3NUAgNCIUj8GwiJDAhMQ1p/ILpk4StIH5zIjHcJfkBR5W
+         xf5g==
+X-Gm-Message-State: APjAAAW6Db1XSY6AL7QaodzyYhLrp5jAhEn5m+ly7VF3crgOjN2F2cP4
+        gVUE0CSkL7dYTLwDyEC2nNYG
+X-Google-Smtp-Source: APXvYqwyIDlF1caDTpNVqUKoLG7l8JslVWsCl4azAP5rgYV6Wp1tuclPnO2lsBQan2QfColr2D8A2g==
+X-Received: by 2002:a63:211c:: with SMTP id h28mr36886434pgh.438.1568280381146;
+        Thu, 12 Sep 2019 02:26:21 -0700 (PDT)
+Received: from bobrowski ([110.232.114.101])
+        by smtp.gmail.com with ESMTPSA id c62sm29491396pfa.92.2019.09.12.02.26.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Sep 2019 02:26:20 -0700 (PDT)
+Date:   Thu, 12 Sep 2019 19:26:14 +1000
+From:   Matthew Bobrowski <mbobrowski@mbobrowski.org>
+To:     Ritesh Harjani <riteshh@linux.ibm.com>
+Cc:     Goldwyn Rodrigues <rgoldwyn@suse.de>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-btrfs@vger.kernel.org, hch@infradead.org, andres@anarazel.de,
+        david@fromorbit.com, linux-f2fs-devel@lists.sourceforge.net,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        aneesh.kumar@linux.ibm.com
+Subject: Re: [PATCH 2/3] ext4: fix inode rwsem regression
+Message-ID: <20190912092614.GB9747@bobrowski>
+References: <20190911093926.pfkkx25mffzeuo32@alap3.anarazel.de>
+ <20190911164517.16130-1-rgoldwyn@suse.de>
+ <20190911164517.16130-3-rgoldwyn@suse.de>
+ <20190912085236.7C51642042@d06av24.portsmouth.uk.ibm.com>
 MIME-Version: 1.0
-In-Reply-To: <CA+X5Wn7GCed+bWNq7jkTHgDc5dT-OHyUkTRxfa1eHv=25_ijrQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190912085236.7C51642042@d06av24.portsmouth.uk.ibm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/12/19 10:24 AM, James Harvey wrote:
-> On Thu, Sep 12, 2019 at 3:51 AM Filipe Manana <fdmanana@gmail.com> wrote:
->> ...
->>
->> Until the fix gets merged to 5.2 kernels (and 5.3), I don't really
->> recommend running 5.2 or 5.3.
+On Thu, Sep 12, 2019 at 02:22:35PM +0530, Ritesh Harjani wrote:
+> cc'd Matthew as well.
 > 
-> What is your recommendation for distributions that have been shipping
-> 5.2.x for quite some time, where a distro-wide downgrade to 5.1.x
-> isn't really an option that will be considered, especially because
-> many users aren't using BTRFS?  Can/should your patch be backported to
-> 5.2.13/5.2.14?  Or, does it really need to be applied to 5.3rc or git
-> master?  Or, is it possibly not the right fix for the corruption risk,
-> and should a flashing neon sign be given to users to just run 5.1.x
-> even though the distribution repos have 5.2.x?
+> > This is similar to 942491c9e6d6 ("xfs: fix AIM7 regression")
+> > Apparently our current rwsem code doesn't like doing the trylock, then
+> > lock for real scheme.  So change our read/write methods to just do the
+> > trylock for the RWF_NOWAIT case.
+> > 
+> > Fixes: 728fbc0e10b7 ("ext4: nowait aio support")
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> 
+> This patch will conflict with recent iomap patch series.
+> So if this is getting queued up before, so iomap patch series will
+> need to rebase and factor these changes in the new APIs.
 
-It applies and works just fine in 5.2.x, I have it running in .14.
-If your distribution doesn't apply patches or just ships a random
-release-of-the month kernel, well.. ¯\(ツ)/¯
+Noted. I've been keeping my eye on this thread, so I'm aware of this.
 
-> What is your recommendation for users who have been running 5.2.x and
-> running into a lot of hangs?  Would you say to apply your patch to a
-> custom-compiled kernel, or to downgrade to 5.1.x?
-
-5.1.x is EOL upstream and you might be missing other critical things
-like security fixes. Considering how easy it is to build a custom kernel
-from an existing configuration, the former.
-
--h
+--<M>--
