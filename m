@@ -2,284 +2,192 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D84B0C24
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 12:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C6E1B0C28
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 12:03:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730776AbfILKCc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 06:02:32 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:60772 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730450AbfILKCb (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 06:02:31 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8C9x2lo149465;
-        Thu, 12 Sep 2019 10:02:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2019-08-05; bh=gOS/JzpofuPWWnz1j6wS+PSjm6MNZh5a4XhX3Ypy+ZY=;
- b=heWEJ4AWfHiC7ERcqVPusKcviC/iKyCxAdXvHoe9DL3ZCzZIcrBFddnweqhbZRxskK4V
- 3wZUHvWyihY2zIwyiiIstxhEO4kGOIHPWC0w7nv5m3Mq5/YK6YFdVj7rj2MSQNL8h+fp
- gMwnoB5n30WssnmcwKYQkdpTF/02cjU9A+nlbFTycDRmei2nrebA3lItqUr8I1gGJawJ
- y4Cz6q7yh4c3UyGj3j/cixW5U4fYmp+eiCOAWKr+/NxpL0WnVupvw5s+2DSfZkrOFJdd
- IczNcVeY5UO9eROm0Vy2cGgZxx1wEp+0Z6LuX24Y1by79UQ8iv7QVp5xLf55Xg1RLQn2 oQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2uw1jkqd7a-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Sep 2019 10:02:28 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8C9x4uT105042;
-        Thu, 12 Sep 2019 10:00:28 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2uy33c1nhy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 12 Sep 2019 10:00:27 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8CA0QdN021870;
-        Thu, 12 Sep 2019 10:00:26 GMT
-Received: from [10.190.130.61] (/192.188.170.109)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 12 Sep 2019 03:00:26 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH RFC v2 0/2] readmirror feature
-From:   Anand Jain <anand.jain@oracle.com>
-In-Reply-To: <20190912095021.htmpvvowdprc2jhv@MacBook-Pro-91.local>
-Date:   Thu, 12 Sep 2019 18:00:21 +0800
-Cc:     Anand Jain <anand.jain@oracle.com>, Eli V <eliventer@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <B10B8AC4-5BDB-40B0-B76C-44B22BBF3095@oracle.com>
-References: <20190826090438.7044-1-anand.jain@oracle.com>
- <20190911184229.gl7tu3igtuuepcvm@macbook-pro-91.dhcp.thefacebook.com>
- <CAJtFHUQ4wq02_6qLGjMWyOt-1eqKyxSLxw=EsR63LnBuZfh4mw@mail.gmail.com>
- <20190911191656.mrmfyhvy3latjwid@macbook-pro-91.dhcp.thefacebook.com>
- <2f10bebf-bc63-fe9e-d7d3-06b3113bc95c@oracle.com>
- <20190912095021.htmpvvowdprc2jhv@MacBook-Pro-91.local>
-To:     Josef Bacik <josef@toxicpanda.com>
-X-Mailer: Apple Mail (2.3445.104.11)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9377 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1909120105
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9377 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909120105
+        id S1730516AbfILKDD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 06:03:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58864 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730580AbfILKDC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Sep 2019 06:03:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 28718AF24;
+        Thu, 12 Sep 2019 10:03:00 +0000 (UTC)
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     stable@vger.kernel.org
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: [PATCH for-4.19.x ] btrfs: correctly validate compression type
+Date:   Thu, 12 Sep 2019 12:02:59 +0200
+Message-Id: <20190912100259.7784-1-jthumshirn@suse.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+[ Upstream commit aa53e3bfac7205fb3a8815ac1c937fd6ed01b41e ]
 
+Nikolay reported the following KASAN splat when running btrfs/048:
 
-> On 12 Sep 2019, at 5:50 PM, Josef Bacik <josef@toxicpanda.com> wrote:
->=20
-> On Thu, Sep 12, 2019 at 03:41:42PM +0800, Anand Jain wrote:
->>=20
->>=20
->> Thanks for the comments. More below.
->>=20
->> On 12/9/19 3:16 AM, Josef Bacik wrote:
->>> On Wed, Sep 11, 2019 at 03:13:21PM -0400, Eli V wrote:
->>>> On Wed, Sep 11, 2019 at 2:46 PM Josef Bacik <josef@toxicpanda.com> =
-wrote:
->>>>>=20
->>>>> On Mon, Aug 26, 2019 at 05:04:36PM +0800, Anand Jain wrote:
->>>>>> Function call chain  __btrfs_map_block()->find_live_mirror() uses
->>>>>> thread pid to determine the %mirror_num when the mirror_num=3D0.
->>>>>>=20
->>>>>> This patch introduces a framework so that we can add policies to =
-determine
->>>>>> the %mirror_num. And also adds the devid as the readmirror =
-policy.
->>>>>>=20
->>>>>> The new property is stored as an item in the device tree as show =
-below.
->>>>>>     (BTRFS_READMIRROR_OBJECTID, BTRFS_PERSISTENT_ITEM_KEY, devid)
->>>>>>=20
->>>>>> To be able to set and get this new property also introduces new =
-ioctls
->>>>>> BTRFS_IOC_GET_READMIRROR and BTRFS_IOC_SET_READMIRROR. The ioctl =
-argument
->>>>>> is defined as
->>>>>>         struct btrfs_ioctl_readmirror_args {
->>>>>>                 __u64 type; /* RW */
->>>>>>                 __u64 device_bitmap; /* RW */
->>>>>>         }
->>>>>>=20
->>>>>> An usage example as follows:
->>>>>>         btrfs property set /btrfs readmirror devid:1,3
->>>>>>         btrfs property get /btrfs readmirror
->>>>>>           readmirror devid:1 3
->>>>>>         btrfs property set /btrfs readmirror ""
->>>>>>         btrfs property get /btrfs readmirror
->>>>>>           readmirror default
->>>>>>=20
->>>>>> This patchset has been tested completely, however marked as RFC =
-for the
->>>>>> following reasons and comments on them (or any other) are =
-appreciated as
->>>>>> usual.
->>>>>>  . The new objectid is defined as
->>>>>>       #define BTRFS_READMIRROR_OBJECTID -1ULL
->>>>>>    Need consent we are fine to use this value, and with this =
-value it
->>>>>>    shall be placed just before the DEV_STATS_OBJECTID item which =
-is more
->>>>>>    frequently used only during the device errors.
->>>>>>=20
->>>>>> .  I am using a u64 bitmap to represent the devices id, so the =
-max device
->>>>>>    id that we could represent is 63, its a kind of limitation =
-which should
->>>>>>    be addressed before integration, I wonder if there is any =
-suggestion?
->>>>>>    Kindly note that, multiple ioctls with each time representing =
-a set of
->>>>>>    device(s) is not a choice because we need to make sure the =
-readmirror
->>>>>>    changes happens in a commit transaction.
->>>>>>=20
->>>>>> v1->RFC v2:
->>>>>>   . Property is stored as a dev-tree item instead of root inode =
-extended
->>>>>>     attribute.
->>>>>>   . Rename BTRFS_DEV_STATE_READ_OPRIMIZED to =
-BTRFS_DEV_STATE_READ_PREFERRED.
->>>>>>   . Changed format specifier from devid1,2,3.. to devid:1,2,3..
->>>>>>=20
->>>>>> RFC->v1:
->>>>>>   Drops pid as one of the readmirror policy choices and as usual =
-remains
->>>>>>   as default. And when the devid is reset the readmirror policy =
-falls back
->>>>>>   to pid.
->>>>>>   Drops the mount -o readmirror idea, it can be added at a later =
-point of
->>>>>>   time.
->>>>>>   Property now accepts more than 1 devid as readmirror device. As =
-shown
->>>>>>   in the example above.
->>>>>>=20
->>>>>=20
->>>>> This is a lot of infrastructure
->>=20
->>  Ok. Any idea on a better implementation?
->>  How about extended attribute approach? v1 patches proposed
->>  it, but it abused the extended attribute as commented here [1]
->>  and v2 got changed to an item-key.
->>=20
->> [1]
->> =
-https://lore.kernel.org/linux-btrfs/be68e6ea-00bc-b750-25e1-9c584b99308f@g=
-mx.com/
->>=20
->=20
-> That's a NAK on the prop interface.  This is a fs wide policy, not a
-> directory/inode policy.
->=20
->>=20
->>>>> to just change which mirror we read to based on
->>>>> some arbitrary user policy.  I assume this is to solve the case =
-where you have
->>>>> slow and fast disks, so you can always read from the fast disk?  =
-And then it's
->>>>> only used in RAID1, so the very narrow usecase of having a RAID1 =
-setup with a
->>>>> SSD and a normal disk?  I'm not seeing a point to this much code =
-for one
->>>>> particular obscure setup.  Thanks,
->>>>>=20
->>>>> Josef
->>>>=20
->>>> Not commenting on the code itself, but as a user I see this SSD =
-RAID1
->>>> acceleration as a future much have feature. It's only obscure at =
-the
->>>> moment because we don't have code to take advantage of it. But on
->>>> large btrfs filesystems with hundreds of GB of metadata, like I =
-have
->>>> for backups, the usability of the filesystem is dramatically =
-improved
->>>> having the metadata on an SSD( though currently only half of the =
-time
->>>> due to the even/odd pid distribution.)
->>>=20
->>> But that's different from a mirror.  100% it would be nice to say =
-"put my
->>> metadata on the ssd, data elsewhere".  That's not what this patch is =
-about, this
->>> patch is specifically about changing which drive we choose in a =
-mirrored setup,
->>> which is super unlikely to mirror a SSD with a slow drive, cause =
-it's just going
->>> to be slow no matter what.  Sure we could make it so reads always go =
-to the SSD,
->>> but we can accomplish that by just adding a check for nonrotational =
-in the code,
->>> and then we don't have to encode all this nonsense in the file =
-system.  Thanks,
->>=20
->> I wrote about the readmirror policy framework here[2],
->> I forgot to link it here, sorry about that, my mistake.
->>=20
->> [2]
->>=20
->> =
-https://lore.kernel.org/linux-btrfs/1552989624-29577-1-git-send-email-anan=
-d.jain@oracle.com/
->>=20
->> Readmirror policy is for raid1, raid10 and future N way mirror.
->> Yes for now its only for raid1.
->>=20
->> Here the idea is to create a framework so that readmirror policy
->> can be configured as needed. And nonrotational can be one such =
-policy.
->>=20
->> The example of hard-coded nonrotational policy does not work in case
->> of ssd and a remote iscsi ssd, OR in case of local ssd and a NVME =
-block
->> device, as all these are still nonrotational devices. So hard-coded
->> policy is not a good idea. If we have to hardcode then there is =
-Q-depth
->> based readmirror routing is better (patch in the ML), but that is
->> not good enough, because some configs wants it based on the disk-LBA
->> so that SAN storage target cache is balanced and not duplicated.
->> So in short it must be a configurable policy.
->>=20
->=20
-> Again, if you are mixing disk types you likely always want =
-non-rotational, but
-> still mixing different speed devices in a mirror setup is just asking =
-for weird
-> latency problems.  I don't think solving this use case is necessary.  =
-If you mix
-> ssd + network device in a serious production setup then you probably =
-should be
-> fired cause you don't know what you are doing.  Having the generic
-> "nonrotational gets priority" is going to cover 99% of the actual use =
-cases that
-> make sense.
->=20
-> The SAN usecase I can sort of see, but again I don't feel like it's a =
-problem we
-> need to solve with on-disk format.  Add a priority to sysfs so you can =
-change it
-> with udev or something on the fly.  Thanks,
->=20
-=20
- Ok.
- Sysfs is fine however we need configuration to be persistent across =
-reboots.
- Any idea?
+[ 1843.470920] ==================================================================
+[ 1843.471971] BUG: KASAN: slab-out-of-bounds in strncmp+0x66/0xb0
+[ 1843.472775] Read of size 1 at addr ffff888111e369e2 by task btrfs/3979
 
-Thanks, Anand
+[ 1843.473904] CPU: 3 PID: 3979 Comm: btrfs Not tainted 5.2.0-rc3-default #536
+[ 1843.475009] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.10.2-1ubuntu1 04/01/2014
+[ 1843.476322] Call Trace:
+[ 1843.476674]  dump_stack+0x7c/0xbb
+[ 1843.477132]  ? strncmp+0x66/0xb0
+[ 1843.477587]  print_address_description+0x114/0x320
+[ 1843.478256]  ? strncmp+0x66/0xb0
+[ 1843.478740]  ? strncmp+0x66/0xb0
+[ 1843.479185]  __kasan_report+0x14e/0x192
+[ 1843.479759]  ? strncmp+0x66/0xb0
+[ 1843.480209]  kasan_report+0xe/0x20
+[ 1843.480679]  strncmp+0x66/0xb0
+[ 1843.481105]  prop_compression_validate+0x24/0x70
+[ 1843.481798]  btrfs_xattr_handler_set_prop+0x65/0x160
+[ 1843.482509]  __vfs_setxattr+0x71/0x90
+[ 1843.483012]  __vfs_setxattr_noperm+0x84/0x130
+[ 1843.483606]  vfs_setxattr+0xac/0xb0
+[ 1843.484085]  setxattr+0x18c/0x230
+[ 1843.484546]  ? vfs_setxattr+0xb0/0xb0
+[ 1843.485048]  ? __mod_node_page_state+0x1f/0xa0
+[ 1843.485672]  ? _raw_spin_unlock+0x24/0x40
+[ 1843.486233]  ? __handle_mm_fault+0x988/0x1290
+[ 1843.486823]  ? lock_acquire+0xb4/0x1e0
+[ 1843.487330]  ? lock_acquire+0xb4/0x1e0
+[ 1843.487842]  ? mnt_want_write_file+0x3c/0x80
+[ 1843.488442]  ? debug_lockdep_rcu_enabled+0x22/0x40
+[ 1843.489089]  ? rcu_sync_lockdep_assert+0xe/0x70
+[ 1843.489707]  ? __sb_start_write+0x158/0x200
+[ 1843.490278]  ? mnt_want_write_file+0x3c/0x80
+[ 1843.490855]  ? __mnt_want_write+0x98/0xe0
+[ 1843.491397]  __x64_sys_fsetxattr+0xba/0xe0
+[ 1843.492201]  ? trace_hardirqs_off_thunk+0x1a/0x1c
+[ 1843.493201]  do_syscall_64+0x6c/0x230
+[ 1843.493988]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+[ 1843.495041] RIP: 0033:0x7fa7a8a7707a
+[ 1843.495819] Code: 48 8b 0d 21 de 2b 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 be 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d ee dd 2b 00 f7 d8 64 89 01 48
+[ 1843.499203] RSP: 002b:00007ffcb73bca38 EFLAGS: 00000202 ORIG_RAX: 00000000000000be
+[ 1843.500210] RAX: ffffffffffffffda RBX: 00007ffcb73bda9d RCX: 00007fa7a8a7707a
+[ 1843.501170] RDX: 00007ffcb73bda9d RSI: 00000000006dc050 RDI: 0000000000000003
+[ 1843.502152] RBP: 00000000006dc050 R08: 0000000000000000 R09: 0000000000000000
+[ 1843.503109] R10: 0000000000000002 R11: 0000000000000202 R12: 00007ffcb73bda91
+[ 1843.504055] R13: 0000000000000003 R14: 00007ffcb73bda82 R15: ffffffffffffffff
 
-> Josef
+[ 1843.505268] Allocated by task 3979:
+[ 1843.505771]  save_stack+0x19/0x80
+[ 1843.506211]  __kasan_kmalloc.constprop.5+0xa0/0xd0
+[ 1843.506836]  setxattr+0xeb/0x230
+[ 1843.507264]  __x64_sys_fsetxattr+0xba/0xe0
+[ 1843.507886]  do_syscall_64+0x6c/0x230
+[ 1843.508429]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+[ 1843.509558] Freed by task 0:
+[ 1843.510188] (stack is not available)
+
+[ 1843.511309] The buggy address belongs to the object at ffff888111e369e0
+                which belongs to the cache kmalloc-8 of size 8
+[ 1843.514095] The buggy address is located 2 bytes inside of
+                8-byte region [ffff888111e369e0, ffff888111e369e8)
+[ 1843.516524] The buggy address belongs to the page:
+[ 1843.517561] page:ffff88813f478d80 refcount:1 mapcount:0 mapping:ffff88811940c300 index:0xffff888111e373b8 compound_mapcount: 0
+[ 1843.519993] flags: 0x4404000010200(slab|head)
+[ 1843.520951] raw: 0004404000010200 ffff88813f48b008 ffff888119403d50 ffff88811940c300
+[ 1843.522616] raw: ffff888111e373b8 000000000016000f 00000001ffffffff 0000000000000000
+[ 1843.524281] page dumped because: kasan: bad access detected
+
+[ 1843.525936] Memory state around the buggy address:
+[ 1843.526975]  ffff888111e36880: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.528479]  ffff888111e36900: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.530138] >ffff888111e36980: fc fc fc fc fc fc fc fc fc fc fc fc 02 fc fc fc
+[ 1843.531877]                                                        ^
+[ 1843.533287]  ffff888111e36a00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.534874]  ffff888111e36a80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
+[ 1843.536468] ==================================================================
+
+This is caused by supplying a too short compression value ('lz') in the
+test-case and comparing it to 'lzo' with strncmp() and a length of 3.
+strncmp() read past the 'lz' when looking for the 'o' and thus caused an
+out-of-bounds read.
+
+Introduce a new check 'btrfs_compress_is_valid_type()' which not only
+checks the user-supplied value against known compression types, but also
+employs checks for too short values.
+
+Reported-by: Nikolay Borisov <nborisov@suse.com>
+Fixes: 272e5326c783 ("btrfs: prop: fix vanished compression property after failed set")
+CC: stable@vger.kernel.org # 5.1+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/compression.c | 16 ++++++++++++++++
+ fs/btrfs/compression.h |  1 +
+ fs/btrfs/props.c       |  6 +-----
+ 3 files changed, 18 insertions(+), 5 deletions(-)
+
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 9bfa66592aa7..c71e534ca7ef 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -42,6 +42,22 @@ const char* btrfs_compress_type2str(enum btrfs_compression_type type)
+ 	return NULL;
+ }
+ 
++bool btrfs_compress_is_valid_type(const char *str, size_t len)
++{
++	int i;
++
++	for (i = 1; i < ARRAY_SIZE(btrfs_compress_types); i++) {
++		size_t comp_len = strlen(btrfs_compress_types[i]);
++
++		if (len < comp_len)
++			continue;
++
++		if (!strncmp(btrfs_compress_types[i], str, comp_len))
++			return true;
++	}
++	return false;
++}
++
+ static int btrfs_decompress_bio(struct compressed_bio *cb);
+ 
+ static inline int compressed_bio_size(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index ddda9b80bf20..f97d90a1fa53 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -127,6 +127,7 @@ extern const struct btrfs_compress_op btrfs_lzo_compress;
+ extern const struct btrfs_compress_op btrfs_zstd_compress;
+ 
+ const char* btrfs_compress_type2str(enum btrfs_compression_type type);
++bool btrfs_compress_is_valid_type(const char *str, size_t len);
+ 
+ int btrfs_compress_heuristic(struct inode *inode, u64 start, u64 end);
+ 
+diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
+index 61d22a56c0ba..6980a0e13f18 100644
+--- a/fs/btrfs/props.c
++++ b/fs/btrfs/props.c
+@@ -366,11 +366,7 @@ int btrfs_subvol_inherit_props(struct btrfs_trans_handle *trans,
+ 
+ static int prop_compression_validate(const char *value, size_t len)
+ {
+-	if (!strncmp("lzo", value, 3))
+-		return 0;
+-	else if (!strncmp("zlib", value, 4))
+-		return 0;
+-	else if (!strncmp("zstd", value, 4))
++	if (btrfs_compress_is_valid_type(value, len))
+ 		return 0;
+ 
+ 	return -EINVAL;
+-- 
+2.16.4
 
