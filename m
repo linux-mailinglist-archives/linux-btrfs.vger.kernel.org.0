@@ -2,197 +2,187 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A67D4B0618
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 01:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA54BB0627
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 02:10:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728482AbfIKXje (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 11 Sep 2019 19:39:34 -0400
-Received: from mout.gmx.net ([212.227.15.18]:35479 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727093AbfIKXje (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 11 Sep 2019 19:39:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1568245146;
-        bh=jWkhHoYN2sdo/ngFGaXihO9HkNduht/kf6XZtmXhoZw=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=fkhyqBtvfEMyG5ESZIblRoSA06J2ueEaJDjp1/5VJP4bBaMj+2s60fuvDqk8uYgwP
-         J18lG9AjQuLGBIVqscuNdMSFOq7SMq6+1KptUhgI70GmaKqHNl6J1cxr5eSKNcaOHE
-         A9I55lpKpOOMNkQidBnVCpwXNuO9QYJTBCmamQM0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx002
- [212.227.17.184]) with ESMTPSA (Nemesis) id 0Meg8W-1hk5lh3pm4-00OEWU; Thu, 12
- Sep 2019 01:39:06 +0200
-Subject: Re: [PATCH] btrfs: volumes: Allow missing devices to be writeable
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190829071731.11521-1-wqu@suse.com>
- <20190911171748.GI2850@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <2e291872-bf36-5db8-9d3a-4540e6e1ae7f@gmx.com>
-Date:   Thu, 12 Sep 2019 07:39:01 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.0
+        id S1728094AbfILAKQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 11 Sep 2019 20:10:16 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:60541 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727477AbfILAKP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 11 Sep 2019 20:10:15 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2345E2260E;
+        Wed, 11 Sep 2019 20:10:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 11 Sep 2019 20:10:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type; s=fm3; bh=LXnPcXFz3wJxdF5fTpbmehN7bps
+        ZFLe+qW+mPhJu3iw=; b=fBsebRWQ5BcITJEn0B/TXR4zERoaKaEJM60e/n7QCUT
+        AagC4v2NWu10UE1T6KJqoCTEe0s5S1+evjmG+NxLEEwYGG8vlxGsT2z6HM9M/7tr
+        D7FIE4RBCI++Y0jSG6ePiF3pKR6YLeeT2m51HWpLbt7kxrzF0YMHJLe5Z19rM4VP
+        RAkR51nhrKfh3tfMLHogCgn+fRNjsyxILT4+VRd3l8MTZoADbrTU4DrNmHR1tupK
+        9Ef2Hb6e91HgAFWHQbu4aRNNO2WqlqexCPpWNRityoPg6dVPXdAbG0dbnXuPwVkx
+        +4gyIJp3DcZLGcv5QVG/3z/TMaZ677YEt6H0S2TABuA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=LXnPcX
+        Fz3wJxdF5fTpbmehN7bpsZFLe+qW+mPhJu3iw=; b=QNdoF3bWR2GLrIiJ8oCbkm
+        yOnbXLPbFdOBNMQPvqM7yvzP52L3vgK8V/6mJYwUD5WRHBTZ4Eb4v+5kopjytvPd
+        C5hxufJ+VSgwd8uUcie5g1hKfwjmAGlMoNYnaBJBEyuj4wmc2HKc7GUNdMbdR/lS
+        KbQ7ToEs61HFtxMyRLL6QJ0pyRj9sSZKaA5bUxDbfSJ9OM7t8VS7dq0u1oDGuxf0
+        kPIwDJdk4uNsaA4D2bFV5rrkk8P3gm0Ta8ggtOE18pADWq3krolySCmpzkmPUjo9
+        uDeTcRfUxDbnxykdZYj97Z5fFSGG4Phl46P+s2UZL6Ne0GFmABzDAwh2VOaWsebg
+        ==
+X-ME-Sender: <xms:5Yx5XRQT5BMosQn8t4D4xj19nvsQJfh0iybvRhEcI5O-LDRLbcPX8g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrtdeggdefvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhepuffvfhfhkffffgggjggtsehgtderof
+    dtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgr
+    nhhithdrtghomheqnecukfhppedufeehrddvfedrvdegiedrudefudenucfrrghrrghmpe
+    hmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomhenucevlhhushht
+    vghrufhiiigvpedt
+X-ME-Proxy: <xmx:5Yx5XaeFaPGLJrJL504CB1zgY2FUaZ6jkRI7zIVSGMScuEZrskgOQQ>
+    <xmx:5Yx5XcykJqiCMUkVBls4awEUkhtBpUbTp4M9vqlYhoUVcCNgt-jS1A>
+    <xmx:5Yx5XTQvO1yj1b_bMbn9ijiPKZS5I2ZvFGHeUDbF33Uwxijjn4t8iw>
+    <xmx:5ox5XY6BxRrfmDL_AoXHqX29ugzuECQasYtMNUK4PtKLts_A2BUUaw>
+Received: from [10.0.0.6] (135-23-246-131.cpe.pppoe.ca [135.23.246.131])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 5C8EB80069;
+        Wed, 11 Sep 2019 20:10:13 -0400 (EDT)
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+To:     webmaster@zedlx.com, linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+ <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+ <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
+ <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
+ <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+ <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
+ <20190911132053.Horde._wJd24LqxxXx9ujl2r5i7PQ@server53.web-hosting.com>
+ <20190911213704.GB22121@hungrycats.org>
+ <20190911192131.Horde.2lTVSt-Ln94dqLGQKg_USXQ@server53.web-hosting.com>
+From:   Remi Gauvin <remi@georgianit.com>
+Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
+Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
+ keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
+ CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
+ sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
+ t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
+ 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
+ AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
+ IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
+ OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
+ 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
+ WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
+ k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
+ Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
+ R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
+ WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
+ QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
+ jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
+ oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
+ BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
+ XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
+ r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
+ phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
+ nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
+ SY9JJa155sI=
+Message-ID: <dafd460c-91fc-31c0-ce1f-e020278987e5@georgianit.com>
+Date:   Wed, 11 Sep 2019 20:10:12 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-In-Reply-To: <20190911171748.GI2850@twin.jikos.cz>
+In-Reply-To: <20190911192131.Horde.2lTVSt-Ln94dqLGQKg_USXQ@server53.web-hosting.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="smJDr7zOljyebEJV1REDz24NVmJ9rYKJh"
-X-Provags-ID: V03:K1:iSixsqxSA3LkJILjyqcuKSOlo21aiqgPb8iqNSKN/+PeQLNsx3a
- pj9dkp/8uXMB4qyM4bgvMKb0ZhtavAIkMUrfmZOzcAp+8eVjfBU12Gapv7yIBY2G26MLe8S
- iTAhLWplsp0uygfslyzq3r8/GB7bO7tFT+/VrocB026d6ukO2GgGem/lVBVdbCMyVYAP3Uv
- /zx2FUYdZqYVZERjglyxQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:JvH5qRGScSg=:JgS8+Kh5STT1lWB8tsW+2y
- HEcVGU7HG92aVvonXG+d9mbbLo81rbaKlQ7YEqXKJ9XAI/wf1IwqVC8x2Eo6mykRAZg45l5aX
- C5tKkmS/v6GJzQKRPMF4ecDLdDGXQ1FzKsbilq9Jbre26pVK4WZ+pksqN6wsDvnTg0v1qGvjw
- 1XBegM+UpJCigJeer0L5p/niZsHwiYBaDRYfVuM7wvq0EZkFu6V7XI3XyWkdL96Og9hDQlYA0
- LSgFv1D7KARQ+wgGXZn3RY/b6uZvtEQfrBz7LhNrdXVW5sKtjsdMZqEHgMCFbPIy8QepNsdTP
- JdVt2et1HRY4f9gBi2QWO1MdWwCVHvcYG51VSjBxSGQjuxVQRaTL989gzruF/0JlE6vYn38ip
- 5o0X3cnEKMoTlwJyNnPWALNEMVbnMV0FRQcQsJQreYsj+7+GQF4i0hLJYLoz9h1Mqn2euoVPf
- /rNVUSypvYJGQ3W/vD4EDR9Nk67NrXl9X8sWDO/tK9cmenBkrxIaoUK+tXKlFnSh785DeglA1
- rTyvppA2JXFbijTsm0DmidaA+ElcogBdHq8vwfzmcio4k3UWNsL+k8GGCuWPFNLvEC2y3IAW8
- Uu2U8PiieoSQDgFuJJ1da3ML4c0watAwRqHrO43I8mJdXP5jwV85Q6TY0VfDR5RQaBEcqCCU/
- sYtSrURj2XZgpfjk409espx+Qag2HO2b/vOXOg1SV99+sUn+WXCzurDQ7Bx0gDeU/+i+B7Z0v
- bTDergs5L7y9v4BVNctE6N4sc18ainaUOoiVWJCAyqO1cH2POtb26bo1YoGNloe3cisSTWIez
- hrWqSoOd7IzXph6Q9n7xEz97JLdHLRfjrbbe1aJ0q2OPblDEkQ/A5zcFqI7IX5g1Dg2gOD8sj
- aLHU003Nrq4Y/XoFRAZGYQyKLGuwTMIeC0V/jqDmbWMK1oT7ICijL4H2kBVbTrnjFKAt2oV7V
- f/iiDh3IOphawx1cklDqlYLscsF/gas0MZ6cVMCZ/v2c5AaIDVYzQFlN+aEtbfE/G+8f5ay03
- +HIc2u+aWK3XCkHY1YNOKnWMNXBxyNcoyLaUaTOfLqWb3jGhrlDzSZgbSyJ1lhcDa2OP49A3N
- dxUEDsb/ijTjgF2M2MOM6gGuesO+VBbHxXjQJiyxK9c9AnT9K49ktVm9AxnFF834PM1wwt5bZ
- 3jEfwLeHmRJEOkcqLcrSqtwj6vaPUipTn/yc4cdk5hd0NJYiGq+k9p/RUGF8rNKpWoFDtf5WV
- fdraoZ5C1yNXCdiN1
+ boundary="RW8cDceBxXX4qErlsuJPVueGf0Nb5TDD8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---smJDr7zOljyebEJV1REDz24NVmJ9rYKJh
-Content-Type: multipart/mixed; boundary="05mHBW1T0n4bh5ontkZvxGpJR8dd0Waw9"
+--RW8cDceBxXX4qErlsuJPVueGf0Nb5TDD8
+Content-Type: multipart/mixed; boundary="PSGRcfIXhGwBzfNBulOJEuxw6dRu5THYs";
+ protected-headers="v1"
+From: Remi Gauvin <remi@georgianit.com>
+To: webmaster@zedlx.com, linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <dafd460c-91fc-31c0-ce1f-e020278987e5@georgianit.com>
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+ <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+ <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
+ <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
+ <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+ <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
+ <20190911132053.Horde._wJd24LqxxXx9ujl2r5i7PQ@server53.web-hosting.com>
+ <20190911213704.GB22121@hungrycats.org>
+ <20190911192131.Horde.2lTVSt-Ln94dqLGQKg_USXQ@server53.web-hosting.com>
+In-Reply-To: <20190911192131.Horde.2lTVSt-Ln94dqLGQKg_USXQ@server53.web-hosting.com>
 
---05mHBW1T0n4bh5ontkZvxGpJR8dd0Waw9
+--PSGRcfIXhGwBzfNBulOJEuxw6dRu5THYs
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
+On 2019-09-11 7:21 p.m., webmaster@zedlx.com wrote:
 
 
-On 2019/9/12 =E4=B8=8A=E5=8D=881:17, David Sterba wrote:
-> On Thu, Aug 29, 2019 at 03:17:31PM +0800, Qu Wenruo wrote:
->> [BUG]
->> There is a long existing bug that degraded mounted btrfs can allocate =
-new
->> SINGLE/DUP chunks on a RAID1 fs:
->>   #!/bin/bash
->>
->>   dev1=3D/dev/test/scratch1
->>   dev2=3D/dev/test/scratch2
->>   mnt=3D/mnt/btrfs
->>
->>   umount $mnt &> /dev/null
->>   umount $dev1 &> /dev/null
->>   umount $dev2 &> /dev/null
->>
->>   dmesg -C
->>   mkfs.btrfs -f -m raid1 -d raid1 $dev1 $dev2
->>
->>   wipefs -fa $dev2
->>
->>   mount -o degraded $dev1 $mnt
->>   btrfs balance start --full $mnt
->>   umount $mnt
->>   echo "=3D=3D=3D chunk after degraded mount =3D=3D=3D"
->>   btrfs ins dump-tree -t chunk $dev1 | grep stripe_len.*type
->>
->> The result fs will have chunks with SINGLE and DUP only:
->>   =3D=3D=3D chunk after degraded mount =3D=3D=3D
->>                   length 33554432 owner 2 stripe_len 65536 type SYSTEM=
-
->>                   length 1073741824 owner 2 stripe_len 65536 type DATA=
-
->>                   length 1073741824 owner 2 stripe_len 65536 type DATA=
-|DUP
->>                   length 219676672 owner 2 stripe_len 65536 type METAD=
-ATA|DUP
->>                   length 33554432 owner 2 stripe_len 65536 type SYSTEM=
-|DUP
->>
->> This behavior greatly breaks the RAID1 tolerance.
->>
->> Even with missing device replaced, if the device with DUP/SINGLE chunk=
-s
->> on them get missing, the whole fs can't be mounted RW any more.
->> And we already have reports that user even can't mount the fs as some
->> essential tree blocks got written to those DUP chunks.
->>
->> [CAUSE]
->> The cause is pretty simple, we treat missing devices as non-writable.
->> Thus when we need to allocate chunks, we can only fall back to single
->> device profiles (SINGLE and DUP).
->>
->> [FIX]
->> Just consider the missing devices as WRITABLE, so we allocate new chun=
-ks
->> on them to maintain old profiles.
 >=20
-> I'm not sure this is the best way to fix it, it makes the meaning of
-> rw_devices ambiguous. A missing device is by definition not readable no=
-r
-> writeable.
+> For example, lets examine the typical home user. If he is using btrfs,
+> it means he probably wants snapshots of his data. And, after a few
+> snapshots, his data is fragmented, and the current defrag can't help
+> because it does a terrible job in this particualr case.
 >=20
-> This should be tracked separatelly, ie. counting real devices that can
-> be written and devices that can be considered for allocation (with a
-> documented meaning that even missing devices are included).
->=20
-Indeed this sounds much better.
 
-I'd go that direction.
+I shouldn't be replying to your provocative posts, but this is just
+nonsense.
 
-Thanks,
-Qu
+ Not to say that Defragmentation can't be better, smarter,, it happens
+to work very well for typical use.
+
+This sounds like you're implying that snapshots fragment data... can you
+explain that?  as far as I know, snapshotting has nothing to do with
+fragmentation of data.  All data is COW, and all files that are subject
+to random read write will be fragmented, with or without snapshots.
+
+And running defrag on your system regularly works just fine.  There's a
+little overhead of space if you are taking regular snapshots, (say
+hourly snapshots with snapper.)  If you have more control/liberty when
+you take your snapshots, ideally, you would defrag before taking the
+snaptshop/reflink copy.  Again, this only matters to files that are
+subject to fragmentation in the first place.
+
+I suspect if you actually tried using the btrfs defrag, you would find
+you are making a mountain of a molehill.. There are lots of far more
+important problems to solve.
 
 
---05mHBW1T0n4bh5ontkZvxGpJR8dd0Waw9--
+--PSGRcfIXhGwBzfNBulOJEuxw6dRu5THYs--
 
---smJDr7zOljyebEJV1REDz24NVmJ9rYKJh
+--RW8cDceBxXX4qErlsuJPVueGf0Nb5TDD8
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl15hZUACgkQwj2R86El
-/qj9tAgAl9n94gT6bt7HZwM6WUxvwzEQwkEcPi2h6gbNaLtTR0R3p/oJj4H100jn
-LLJjIpVFRaaMcgNzmyvK+XXQVNqB8Wr+a2n2J5bpjVX0A3GiXN9JbDmtvuHenf/T
-XnO4nrbFpDhHSL9PYyHoWr1dFQNChfpltrwkdvrB1IMLBXTcnYDyiCAFdLtNds73
-u+vKDs4gGP9PvmRL/kdsz2ThtdtTfD+kIBcCLHSvLN+G0pkIeVTbN8IB06damtca
-UniDM2IakelhLDB5V/EevGWA70HLyPp3Zpm1bnlKRGEDHY9/50G2o+5/YiWxzjIn
-X05BlOBjEDArBVf5y4XWeiqUwmZP4w==
-=cSSJ
+iQEcBAEBCAAGBQJdeYzkAAoJEO9Tn/JHRWptwuIIAInSA+jbBy/UM2Zric0x4KT2
+sWybn/YN3+Om7zu2GA1lhNWk3Puoegu+ihqU8tweLt6z9OnXg9JUO1I99ff0UiiR
+Ge8uu51c7eGuWsJhSPjDzt41lkvcZwLa0lERFJ45ImcxKe5L+cAvr+9fDVro/ZmG
+cHP4XysAAHbBJGAplrOCZFhrWtaTgOBxkeBUH4ZjBH3HnnZYVuuYHYPZrihpZ4Mw
+FlHucxZvZFIjLXCJs8G57h7zeIlWbGcpOKAumjiIKPgq3668rNYEig7GP4xdO8A9
+q5B5Nqks9f4TFbl+J+0HxXaGZ78dDsz3eW8DnHAT2EsDqP7WHX8aDbzgOlC1YlQ=
+=fdUL
 -----END PGP SIGNATURE-----
 
---smJDr7zOljyebEJV1REDz24NVmJ9rYKJh--
+--RW8cDceBxXX4qErlsuJPVueGf0Nb5TDD8--
