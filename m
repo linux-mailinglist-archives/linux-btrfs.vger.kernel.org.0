@@ -2,173 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADFFB09D6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 10:02:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2B94B0A2F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 10:24:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729284AbfILICe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 04:02:34 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:40843 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726952AbfILICe (ORCPT
+        id S1730180AbfILIYO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 04:24:14 -0400
+Received: from mail-ua1-f54.google.com ([209.85.222.54]:44017 "EHLO
+        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730178AbfILIYO (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 04:02:34 -0400
-Received: by mail-vs1-f66.google.com with SMTP id v10so12348537vsc.7;
-        Thu, 12 Sep 2019 01:02:32 -0700 (PDT)
+        Thu, 12 Sep 2019 04:24:14 -0400
+Received: by mail-ua1-f54.google.com with SMTP id h23so7716439uao.10
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 01:24:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=1lVBv82Gu5rmTemp9Ig/cpf4GsO//XxO5mHh0N3v/qI=;
-        b=XgGxAR4R7kOPC/ut8+KftBSdNKs9fmo8ThIytNU5YcMw7100Vn3EBECwqF2zPPgf7o
-         r5lUP2GZIxH5Cyn4wj6kdlEWIKDQ5MsylLInPL9xt+on85bqTGGnkA1lF9rn5gRct3xL
-         qL2gEFQ60JzYuJIfm9bbPgzPn49wypihn1iXSdR9uv0pgat+3ZiVhk4W65X1dlGTB9l7
-         Q0hHSMbPxmo+68ZMt9V4CJn1NM+iC0378QvpbrHnh0M1P7d46eiMhrV6+SDP7NIuXi2m
-         pMsCMuIe+svgLop4cXBf3UprQqKJibDKREDk0OLygmFHFrYdbeoLgEx2hvXhTOMmBamf
-         igBw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=vvN1oj5Uvd7TKjy6jymfvyrHCREAW1XrjRxV9mG0FNU=;
+        b=pA0lTVGVvS8IG1YNQOZLu4Rt9jNjz+xgwdW4gDpYmym6YFJkzFdkqJdWp84E8oRzph
+         bGq0DZ588gT649eF90CGC3zxwdnU3a8bszlClRXciMbYRS+H/5RM8Zm4QOrwXn6unsGJ
+         p7Op1T+LN5t04GAEpKsfx67pw9XrftoxYYntvBXJAmFb7G3af9eJbcMl3Q/BdHA8OoED
+         WpVgc0nmSWyXnWMXwmavcy5YALT6DDBh49Qyblcgi1Xz16KSjyZt76gTFsyVDC4FZp3/
+         CvfHAHhTP0SewU86YDMzBkQvXyzRppSpsPUq+A5YLRdfn+e0p7YrPmZn9ygdGWve1w3r
+         4Q3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=1lVBv82Gu5rmTemp9Ig/cpf4GsO//XxO5mHh0N3v/qI=;
-        b=mV7x6G/ZNybTrN3A5PMRrob1dcklcYY3+NOqw8ns+xJzPvt8qupTAb6WxRTb99GfX+
-         Kf/q9ly1yCt/L44pnGoS8CcTGeGqi+THtKEoWPGJEWMC+sYjAmo/lwquTKPvnUA+HoMh
-         Z/A491tsv3z0usRU1S3Ifo5K3LAeixpNVOh/0Bjm8D9QBNjiKlm8uwIGxl4gfOTjuedC
-         dobz63rPM/sXtqNYF0rEfTgxSEwPTfYj01/3i6/n+zRSC4Bka4lUZjF/bhzf0mX6Bri/
-         LOizRxlH3Mn9XMPg93B+wcYVnWadh9afYxuUULcFk0oDYdbfpfQJt3qAhnnZ75wLF42Q
-         h7+g==
-X-Gm-Message-State: APjAAAVwct8jaWfKmEGbKujUhaSnKmSwN5nkmxeE+DZHk32dnWd5XEzD
-        odJKMTV0JNF/beIWV4wDk+6JUu1QKuGWHDpU5kA=
-X-Google-Smtp-Source: APXvYqwbqwXd5gyK6jObNOaHSdvhVybQ19jrZSyKEP0jv4lf5tEXn718c/EOsOT/v4cysPBKvtFaaVVgz//KMdVKBls=
-X-Received: by 2002:a67:5c4:: with SMTP id 187mr22117899vsf.14.1568275351648;
- Thu, 12 Sep 2019 01:02:31 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=vvN1oj5Uvd7TKjy6jymfvyrHCREAW1XrjRxV9mG0FNU=;
+        b=mbYRza0+3A1CJFYKSBWgqr10PSAzdkDi06R7xUg4Z7jkP6OFu20jGUJ0gA/EdwpVYa
+         liOXhrIAM1xs65WeJ5eslu9zYEnwhnuoDDvqfPMQiF/D0NczVcDoWn4Uh9qldeNAj3Zj
+         90y2VNoxx5gOhEtD294CbaTdbB/wIXh/mfI+33BsfBnextIdkg+1N4lHIHZ3iXazre2p
+         u7VHdWjnn+QL2pLYmsd1mQ8Awdnnfv6WiIAzJ9fdG52TTKx9O3sQk+kAFJ61C1pf5GsE
+         U1jn6MxG/roe0NB4s41tkd0/pX3laZUEMIHfie/m1jKbRj5SZFW2ySIb+WpC6GaPFbq3
+         mayQ==
+X-Gm-Message-State: APjAAAX3g6ZClgdi7ztbZ9cbHcrU3o+CUAn/0btthRW4PahchJ6g2Aro
+        TGYLKkBtfDIugZs4ICeFr27VZhhQe8VaIYca76c=
+X-Google-Smtp-Source: APXvYqxlJCN/wgc+LJlW3TEt9gIeJ5BKVY6jkJ2ljpTRprGRf/Oiue2SHdnrw+5nR0b3jvANP0sXDpRtleC0m63EFS4=
+X-Received: by 2002:ab0:602e:: with SMTP id n14mr4863842ual.17.1568276652917;
+ Thu, 12 Sep 2019 01:24:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190910142649.19808-1-fdmanana@kernel.org> <20190912073046.47C2020830@mail.kernel.org>
-In-Reply-To: <20190912073046.47C2020830@mail.kernel.org>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 12 Sep 2019 09:02:20 +0100
-Message-ID: <CAL3q7H56hhre36hgMW6kLFqpbgxXN4hpDwww67ZqQuqOwqQ54A@mail.gmail.com>
-Subject: Re: [PATCH] Btrfs: fix assertion failure during fsync and use of
- stale transaction
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>, stable@vger.kernel.org
+References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net> <CAL3q7H4peDv_bQa5vGJeOM=V--yq1a1=aHat5qcsXjbnDoSkDQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H4peDv_bQa5vGJeOM=V--yq1a1=aHat5qcsXjbnDoSkDQ@mail.gmail.com>
+From:   James Harvey <jamespharvey20@gmail.com>
+Date:   Thu, 12 Sep 2019 04:24:00 -0400
+Message-ID: <CA+X5Wn7GCed+bWNq7jkTHgDc5dT-OHyUkTRxfa1eHv=25_ijrQ@mail.gmail.com>
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     fdmanana@gmail.com
+Cc:     Christoph Anton Mitterer <calestyo@scientia.net>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        David Sterba <dsterba@suse.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 8:32 AM Sasha Levin <sashal@kernel.org> wrote:
+On Thu, Sep 12, 2019 at 3:51 AM Filipe Manana <fdmanana@gmail.com> wrote:
+> ...
 >
-> Hi,
->
-> [This is an automated email]
->
-> This commit has been processed because it contains a -stable tag.
-> The stable tag indicates that it's relevant for the following trees: 4.4+
->
-> The bot has tested the following trees: v5.2.14, v4.19.72, v4.14.143, v4.=
-9.192, v4.4.192.
->
-> v5.2.14: Build OK!
-> v4.19.72: Failed to apply! Possible dependencies:
->     6b5fc433a7ad ("Btrfs: fix fsync after succession of renames of differ=
-ent files")
->     a3baaf0d786e ("Btrfs: fix fsync after succession of renames and unlin=
-k/rmdir")
->     b8aa330d2acb ("Btrfs: improve performance on fsync of files with mult=
-iple hardlinks")
->
-> v4.14.143: Failed to apply! Possible dependencies:
->     0d836392cadd ("Btrfs: fix mount failure after fsync due to hard link =
-recreation")
->     1f250e929a9c ("Btrfs: fix log replay failure after unlink and link co=
-mbination")
->     6b5fc433a7ad ("Btrfs: fix fsync after succession of renames of differ=
-ent files")
->     8d9e220ca084 ("btrfs: simplify IS_ERR/PTR_ERR checks")
->     a3baaf0d786e ("Btrfs: fix fsync after succession of renames and unlin=
-k/rmdir")
->     b8aa330d2acb ("Btrfs: improve performance on fsync of files with mult=
-iple hardlinks")
->
-> v4.9.192: Failed to apply! Possible dependencies:
->     0b246afa62b0 ("btrfs: root->fs_info cleanup, add fs_info convenience =
-variables")
->     0d836392cadd ("Btrfs: fix mount failure after fsync due to hard link =
-recreation")
->     1f250e929a9c ("Btrfs: fix log replay failure after unlink and link co=
-mbination")
->     4791c8f19c45 ("btrfs: Make btrfs_check_ref_name_override take btrfs_i=
-node")
->     6b5fc433a7ad ("Btrfs: fix fsync after succession of renames of differ=
-ent files")
->     a3baaf0d786e ("Btrfs: fix fsync after succession of renames and unlin=
-k/rmdir")
->     cf8cddd38bab ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block"=
-)
->     da17066c4047 ("btrfs: pull node/sector/stripe sizes out of root and i=
-nto fs_info")
->     db0a669fb002 ("btrfs: Make btrfs_add_link take btrfs_inode")
->     de143792253e ("btrfs: struct btrfsic_state->root should be an fs_info=
-")
->     fb456252d3d9 ("btrfs: root->fs_info cleanup, use fs_info->dev_root ev=
-erywhere")
->
-> v4.4.192: Failed to apply! Possible dependencies:
->     0132761017e0 ("btrfs: fix string and comment grammatical issues and t=
-ypos")
->     09cbfeaf1a5a ("mm, fs: get rid of PAGE_CACHE_* and page_cache_{get,re=
-lease} macros")
->     0b246afa62b0 ("btrfs: root->fs_info cleanup, add fs_info convenience =
-variables")
->     0d836392cadd ("Btrfs: fix mount failure after fsync due to hard link =
-recreation")
->     0e749e54244e ("dax: increase granularity of dax_clear_blocks() operat=
-ions")
->     1f250e929a9c ("Btrfs: fix log replay failure after unlink and link co=
-mbination")
->     44f714dae50a ("Btrfs: improve performance on fsync against new inode =
-after rename/unlink")
->     4791c8f19c45 ("btrfs: Make btrfs_check_ref_name_override take btrfs_i=
-node")
->     52db400fcd50 ("pmem, dax: clean up clear_pmem()")
->     6b5fc433a7ad ("Btrfs: fix fsync after succession of renames of differ=
-ent files")
->     781feef7e6be ("Btrfs: fix lockdep warning about log_mutex")
->     a3baaf0d786e ("Btrfs: fix fsync after succession of renames and unlin=
-k/rmdir")
->     b2e0d1625e19 ("dax: fix lifetime of in-kernel dax mappings with dax_m=
-ap_atomic()")
->     bb7ab3b92e46 ("btrfs: Fix misspellings in comments.")
->     cf8cddd38bab ("btrfs: don't abuse REQ_OP_* flags for btrfs_map_block"=
-)
->     d1a5f2b4d8a1 ("block: use DAX for partition table reads")
->     db0a669fb002 ("btrfs: Make btrfs_add_link take btrfs_inode")
->     de143792253e ("btrfs: struct btrfsic_state->root should be an fs_info=
-")
->
->
-> NOTE: The patch will not be queued to stable trees until it is upstream.
->
-> How should we proceed with this patch?
+> Until the fix gets merged to 5.2 kernels (and 5.3), I don't really
+> recommend running 5.2 or 5.3.
 
-After it lands on Linus' tree, I'll try to send patch versions that
-apply to different kernel releases.
+What is your recommendation for distributions that have been shipping
+5.2.x for quite some time, where a distro-wide downgrade to 5.1.x
+isn't really an option that will be considered, especially because
+many users aren't using BTRFS?  Can/should your patch be backported to
+5.2.13/5.2.14?  Or, does it really need to be applied to 5.3rc or git
+master?  Or, is it possibly not the right fix for the corruption risk,
+and should a flashing neon sign be given to users to just run 5.1.x
+even though the distribution repos have 5.2.x?
 
-Thanks.
-
->
-> --
-> Thanks,
-> Sasha
-
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+What is your recommendation for users who have been running 5.2.x and
+running into a lot of hangs?  Would you say to apply your patch to a
+custom-compiled kernel, or to downgrade to 5.1.x?
