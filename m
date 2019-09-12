@@ -2,338 +2,260 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 106F3B0DBD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 13:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326C1B0DD8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 13:32:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731355AbfILLYu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 07:24:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44532 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731139AbfILLYu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 07:24:50 -0400
-Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com [209.85.221.176])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 569E82081B
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 11:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568287488;
-        bh=52ZrdvN9umHv0BYMf+FPkxH8Nzgr4j2n/VhVG0par+g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cYAXvGPBmIIUi9ft/7pQrhry4ee3YNLq2snELCFMVwxrKvbfL/zhmD5iUxh2l2SBP
-         APT3hVc/tkWqNj93cTPv9YQV6fs4RzqNU5aLobXnsA0W5Y/7djXNlYNmoFLjjuycrL
-         u2d3IPKowDjFofOslKaHEdqH2KZcy4leZ8FY52to=
-Received: by mail-vk1-f176.google.com with SMTP id d66so5068530vka.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 04:24:48 -0700 (PDT)
-X-Gm-Message-State: APjAAAWSAG63Hu046hN+lQR7kHtfEbtKybKus4rKp+soTsbugW4lnCWB
-        44dbDE3DCFZ+7oFwC742ZeG60nHBtMmKxRDElec=
-X-Google-Smtp-Source: APXvYqw7bHWFPVY3wiLAO/T9FaSTZpy7bJ8GfyMq22WK5V2iyqPQoZcBTBds/HPlGt+mYv5+SfTM2P0cmNejaLzNvtk=
-X-Received: by 2002:a1f:f2cd:: with SMTP id q196mr19419877vkh.31.1568287487360;
- Thu, 12 Sep 2019 04:24:47 -0700 (PDT)
+        id S1731430AbfILLb4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 07:31:56 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]:45438 "EHLO
+        mail-qk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731375AbfILLbz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Sep 2019 07:31:55 -0400
+Received: by mail-qk1-f174.google.com with SMTP id z67so24000505qkb.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 04:31:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=APTd2I+NkT/5rKFjF+7+phoFHmQvKKUjMQGDRneGxh4=;
+        b=ZM45HCsmRrEHe1z4t4vdCi1gTQO4ANXwXif5hhAfjx3VKcMwhiuXGrrDFvtsSXxvG+
+         XnjfH7m4nsPAaPYwGwwcfaYUrQksRrrdM/KjyY85UweVJWsIkhobnGsx3KkdpBQqsAKs
+         8b8dRKcOpxuzP0bazitJmi4RbXd19TDu5081nKaR6hsnOq6XE+TZzi81o2wCQifMWfzO
+         dMXnf6yL7HJRxF+GKgOj7FeLa9fUgnn00yC0AqkSyDLgGAVaFSrbNwfyVKevGzdq45oZ
+         vIIBm2m6sUzXBot0qdVKOeXzHQDl7Hlyhizc47eg9djAi2tk9sYVe6ql10FIzB/ff57J
+         Pk8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=APTd2I+NkT/5rKFjF+7+phoFHmQvKKUjMQGDRneGxh4=;
+        b=GdKbV5zeM7brotIA5175y7hJ5vrhrK7KWEo8yY8HvyJsF/iJqoHCapv+ofi5nV3rwu
+         PlK5bF5KSq9OEf5r88Y8diwlgxF82eckqOWgcgl1sySX4ZXbQCPUaHzRB1cOoPTU1RW5
+         85009unuiVnBAoKxKlsODus4blPg9v7LfJXvqvip/GEV3hkZaJHvGSX/yjlZCk/O17QP
+         DQK/jMHwa51lPmz97eJpmkbYx7xiLtI26XEyndskIs5Y8BRi4Iazj+r7Cd5AkkLtzY/3
+         UqMwqEVPktBm7YWz9Ig/AGT3jSgPxie5VsyOhIkb8n58kuxCuLAm5Kb8efbEIX5bpVEQ
+         Ujrw==
+X-Gm-Message-State: APjAAAWOrQT7u9NAoRuErihNi/jlAh7P7JBJhiZfGT1OAgj4dTDdUGuc
+        6VniMe868ol3g3pqG8Pi6MBa9ySuAtE=
+X-Google-Smtp-Source: APXvYqw87jq6Qn28Tvy2C8RSD2RmuGTL9268I9HnPcb84qvmjrA3elc/RaNkdyTiRm0EnRX9G+gXEw==
+X-Received: by 2002:a37:f50b:: with SMTP id l11mr4036341qkk.347.1568287913555;
+        Thu, 12 Sep 2019 04:31:53 -0700 (PDT)
+Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
+        by smtp.gmail.com with ESMTPSA id a11sm11998117qkc.123.2019.09.12.04.31.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Sep 2019 04:31:52 -0700 (PDT)
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+To:     webmaster@zedlx.com
+Cc:     linux-btrfs@vger.kernel.org
+References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
+ <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
+ <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+ <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
+ <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
+ <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+ <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
+ <20190911132053.Horde._wJd24LqxxXx9ujl2r5i7PQ@server53.web-hosting.com>
+ <c8da6684-6c16-fc80-8e10-1afc1871d512@gmail.com>
+ <20190911173725.Horde.aRGy9hKzg3scN15icIxdbco@server53.web-hosting.com>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <81f4870e-3ee9-7780-13aa-918d24ca10d8@gmail.com>
+Date:   Thu, 12 Sep 2019 07:31:50 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.0
 MIME-Version: 1.0
-References: <20190910142649.19808-1-fdmanana@kernel.org> <b171e10f-6f1f-4711-4fa6-67e2ffbe8378@suse.com>
-In-Reply-To: <b171e10f-6f1f-4711-4fa6-67e2ffbe8378@suse.com>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 12 Sep 2019 12:24:36 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H7-ARvEp+gXE6XYK3KRLuwYO8HdSP_0C+fW5ekCE8-goQ@mail.gmail.com>
-Message-ID: <CAL3q7H7-ARvEp+gXE6XYK3KRLuwYO8HdSP_0C+fW5ekCE8-goQ@mail.gmail.com>
-Subject: Re: [PATCH] Btrfs: fix assertion failure during fsync and use of
- stale transaction
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20190911173725.Horde.aRGy9hKzg3scN15icIxdbco@server53.web-hosting.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 12:10 PM Nikolay Borisov <nborisov@suse.com> wrote:
->
->
->
-> On 10.09.19 =D0=B3. 17:26 =D1=87., fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Sometimes when fsync'ing a file we need to log that other inodes exist =
-and
-> > when we need to do that we acquire a reference on the inodes and then d=
-rop
-> > that reference using iput() after logging them.
-> >
-> > That generally is not a problem except if we end up doing the final ipu=
-t()
-> > (dropping the last reference) on the inode and that inode has a link co=
-unt
-> > of 0, which can happen in a very short time window if the logging path
-> > gets a reference on the inode while it's being unlinked.
-> >
-> > In that case we end up getting the eviction callback, btrfs_evict_inode=
-(),
-> > invoked through the iput() call chain which needs to drop all of the
-> > inode's items from its subvolume btree, and in order to do that, it nee=
-ds
-> > to join a transaction at the helper function evict_refill_and_join().
-> > However because the task previously started a transaction at the fsync
-> > handler, btrfs_sync_file(), it has current->journal_info already pointi=
-ng
-> > to a transaction handle and therefore evict_refill_and_join() will get
-> > that transaction handle from btrfs_join_transaction(). From this point =
-on,
-> > two different problems can happen:
-> >
-> > 1) evict_refill_and_join() will often change the transaction handle's
-> >    block reserve (->block_rsv) and set its ->bytes_reserved field to a
-> >    value greater than 0. If evict_refill_and_join() never commits the
-> >    transaction, the eviction handler ends up decreasing the reference
-> >    count (->use_count) of the transaction handle through the call to
-> >    btrfs_end_transaction(), and after that point we have a transaction
-> >    handle with a NULL ->block_rsv (which is the value prior to the
-> >    transaction join from evict_refill_and_join()) and a ->bytes_reserve=
-d
-> >    value greater than 0. If after the eviction/iput completes the inode
-> >    logging path hits an error or it decides that it must fallback to a
-> >    transaction commit, the btrfs fsync handle, btrfs_sync_file(), gets =
-a
-> >    non-zero value from btrfs_log_dentry_safe(), and because of that
-> >    non-zero value it tries to commit the transaction using a handle wit=
-h
-> >    a NULL ->block_rsv and a non-zero ->bytes_reserved value. This makes
-> >    the transaction commit hit an assertion failure at
-> >    btrfs_trans_release_metadata() because ->bytes_reserved is not zero =
-but
-> >    the ->block_rsv is NULL. The produced stack trace for that is like t=
-he
-> >    following:
-> >
-> >    [192922.917158] assertion failed: !trans->bytes_reserved, file: fs/b=
-trfs/transaction.c, line: 816
-> >    [192922.917553] ------------[ cut here ]------------
-> >    [192922.917922] kernel BUG at fs/btrfs/ctree.h:3532!
-> >    [192922.918310] invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC PTI
-> >    [192922.918666] CPU: 2 PID: 883 Comm: fsstress Tainted: G        W  =
-       5.1.4-btrfs-next-47 #1
-> >    [192922.919035] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996=
-), BIOS rel-1.11.2-0-gf9626ccb91-prebuilt.qemu-project.org 04/01/2014
-> >    [192922.919801] RIP: 0010:assfail.constprop.25+0x18/0x1a [btrfs]
-> >    (...)
-> >    [192922.920925] RSP: 0018:ffffaebdc8a27da8 EFLAGS: 00010286
-> >    [192922.921315] RAX: 0000000000000051 RBX: ffff95c9c16a41c0 RCX: 000=
-0000000000000
-> >    [192922.921692] RDX: 0000000000000000 RSI: ffff95cab6b16838 RDI: fff=
-f95cab6b16838
-> >    [192922.922066] RBP: ffff95c9c16a41c0 R08: 0000000000000000 R09: 000=
-0000000000000
-> >    [192922.922442] R10: ffffaebdc8a27e70 R11: 0000000000000000 R12: fff=
-f95ca731a0980
-> >    [192922.922820] R13: 0000000000000000 R14: ffff95ca84c73338 R15: fff=
-f95ca731a0ea8
-> >    [192922.923200] FS:  00007f337eda4e80(0000) GS:ffff95cab6b00000(0000=
-) knlGS:0000000000000000
-> >    [192922.923579] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> >    [192922.923948] CR2: 00007f337edad000 CR3: 00000001e00f6002 CR4: 000=
-00000003606e0
-> >    [192922.924329] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 000=
-0000000000000
-> >    [192922.924711] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 000=
-0000000000400
-> >    [192922.925105] Call Trace:
-> >    [192922.925505]  btrfs_trans_release_metadata+0x10c/0x170 [btrfs]
-> >    [192922.925911]  btrfs_commit_transaction+0x3e/0xaf0 [btrfs]
-> >    [192922.926324]  btrfs_sync_file+0x44c/0x490 [btrfs]
-> >    [192922.926731]  do_fsync+0x38/0x60
-> >    [192922.927138]  __x64_sys_fdatasync+0x13/0x20
-> >    [192922.927543]  do_syscall_64+0x60/0x1c0
-> >    [192922.927939]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> >    (...)
-> >    [192922.934077] ---[ end trace f00808b12068168f ]---
-> >
-> > 2) If evict_refill_and_join() decides to commit the transaction, it wil=
-l
-> evict_refill_and_join only ever calls btrfs_join_transaction so it
-> cannot ever commit the transaction.
+On 2019-09-11 17:37, webmaster@zedlx.com wrote:
+> 
+> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+> 
+>> On 2019-09-11 13:20, webmaster@zedlx.com wrote:
+>>>
+>>> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+>>>
+>>>> On 2019-09-10 19:32, webmaster@zedlx.com wrote:
+>>>>>
+>>>>> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+>>>>>
+> 
+>>>> Given this, defrag isn't willfully unsharing anything, it's just a 
+>>>> side-effect of how it works (since it's rewriting the block layout 
+>>>> of the file in-place).
+>>>
+>>> The current defrag has to unshare because, as you said, because it is 
+>>> unaware of the full reflink structure. If it doesn't know about all 
+>>> reflinks, it has to unshare, there is no way around that.
+>>>
+>>>> Now factor in that _any_ write will result in unsharing the region 
+>>>> being written to, rounded to the nearest full filesystem block in 
+>>>> both directions (this is mandatory, it's a side effect of the 
+>>>> copy-on-write nature of BTRFS, and is why files that experience 
+>>>> heavy internal rewrites get fragmented very heavily and very quickly 
+>>>> on BTRFS).
+>>>
+>>> You mean: when defrag performs a write, the new data is unshared 
+>>> because every write is unshared? Really?
+>>>
+>>> Consider there is an extent E55 shared by two files A and B. The 
+>>> defrag has to move E55 to another location. In order to do that, 
+>>> defrag creates a new extent E70. It makes it belong to file A by 
+>>> changing the reflink of extent E55 in file A to point to E70.
+>>>
+>>> Now, to retain the original sharing structure, the defrag has to 
+>>> change the reflink of extent E55 in file B to point to E70. You are 
+>>> telling me this is not possible? Bullshit!
+>>>
+>>> Please explain to me how this 'defrag has to unshare' story of yours 
+>>> isn't an intentional attempt to mislead me.
+> 
+>> As mentioned in the previous email, we actually did have a (mostly) 
+>> working reflink-aware defrag a few years back.  It got removed because 
+>> it had serious performance issues.  Note that we're not talking a few 
+>> seconds of extra time to defrag a full tree here, we're talking 
+>> double-digit _minutes_ of extra time to defrag a moderate sized (low 
+>> triple digit GB) subvolume with dozens of snapshots, _if you were 
+>> lucky_ (if you weren't, you would be looking at potentially multiple 
+>> _hours_ of runtime for the defrag).  The performance scaled inversely 
+>> proportionate to the number of reflinks involved and the total amount 
+>> of data in the subvolume being defragmented, and was pretty bad even 
+>> in the case of only a couple of snapshots.
+> 
+> You cannot ever make the worst program, because an even worse program 
+> can be made by slowing down the original by a factor of 2.
+> So, you had a badly implemented defrag. At least you got some 
+> experience. Let's see what went wrong.
+> 
+>> Ultimately, there are a couple of issues at play here:
+>>
+>> * Online defrag has to maintain consistency during operation.  The 
+>> current implementation does this by rewriting the regions being 
+>> defragmented (which causes them to become a single new extent (most of 
+>> the time)), which avoids a whole lot of otherwise complicated logic 
+>> required to make sure things happen correctly, and also means that 
+>> only the file being operated on is impacted and only the parts being 
+>> modified need to be protected against concurrent writes.  Properly 
+>> handling reflinks means that _every_ file that shares some part of an 
+>> extent with the file being operated on needs to have the reflinked 
+>> regions locked for the defrag operation, which has a huge impact on 
+>> performance. Using your example, the update to E55 in both files A and 
+>> B has to happen as part of the same commit, which can contain no other 
+>> writes in that region of the file, otherwise you run the risk of 
+>> losing writes to file B that occur while file A is being defragmented.
+> 
+> Nah. I think there is a workaround. You can first (atomically) update A, 
+> then whatever, then you can update B later. I know, your yelling "what 
+> if E55 gets updated in B". Doesn't matter. The defrag continues later by 
+> searching for reflink to E55 in B. Then it checks the data contained in 
+> E55. If the data matches the E70, then it can safely update the reflink 
+> in B. Or the defrag can just verify that neither E55 nor E70 have been 
+> written to in the meantime. That means they still have the same data.
+So, IOW, you don't care if the total space used by the data is 
+instantaneously larger than what you started with?  That seems to be at 
+odds with your previous statements, but OK, if we allow for that then 
+this is indeed a non-issue.
 
-It can:
+> 
+>> It's not horrible when it's just a small region in two files, but it 
+>> becomes a big issue when dealing with lots of files and/or 
+>> particularly large extents (extents in BTRFS can get into the GB range 
+>> in terms of size when dealing with really big files).
+> 
+> You must just split large extents in a smart way. So, in the beginning, 
+> the defrag can split large extents (2GB) into smaller ones (32MB) to 
+> facilitate more responsive and easier defrag.
+> 
+> If you have lots of files, update them one-by one. It is possible. Or 
+> you can update in big batches. Whatever is faster.
+Neither will solve this though.  Large numbers of files are an issue 
+because the operation is expensive and has to be done on each file, not 
+because the number of files somehow makes the operation more espensive. 
+It's O(n) relative to files, not higher time complexity.
+> 
+> The point is that the defrag can keep a buffer of a "pending 
+> operations". Pending operations are those that should be performed in 
+> order to keep the original sharing structure. If the defrag gets 
+> interrupted, then files in "pending operations" will be unshared. But 
+> this should really be some important and urgent interrupt, as the 
+> "pending operations" buffer needs at most a second or two to complete 
+> its operations.
+Depending on the exact situation, it can take well more than a few 
+seconds to complete stuff. Especially if there are lots of reflinks.
+> 
+>> * Reflinks can reference partial extents.  This means, ultimately, 
+>> that you may end up having to split extents in odd ways during defrag 
+>> if you want to preserve reflinks, and might have to split extents 
+>> _elsewhere_ that are only tangentially related to the region being 
+>> defragmented. See the example in my previous email for a case like 
+>> this, maintaining the shared regions as being shared when you 
+>> defragment either file to a single extent will require splitting 
+>> extents in the other file (in either case, whichever file you don't 
+>> defragment to a single extent will end up having 7 extents if you try 
+>> to force the one that's been defragmented to be the canonical 
+>> version).  Once you consider that a given extent can have multiple 
+>> ranges reflinked from multiple other locations, it gets even more 
+>> complicated.
+> 
+> I think that this problem can be solved, and that it can be solved 
+> perfectly (the result is a perfectly-defragmented file). But, if it is 
+> so hard to do, just skip those problematic extents in initial version of 
+> defrag.
+> 
+> Ultimately, in the super-duper defrag, those partially-referenced 
+> extents should be split up by defrag.
+> 
+>> * If you choose to just not handle the above point by not letting 
+>> defrag split extents, you put a hard lower limit on the amount of 
+>> fragmentation present in a file if you want to preserve reflinks.  
+>> IOW, you can't defragment files past a certain point.  If we go this 
+>> way, neither of the two files in the example from my previous email 
+>> could be defragmented any further than they already are, because doing 
+>> so would require splitting extents.
+> 
+> Oh, you're reading my thoughts. That's good.
+> 
+> Initial implementation of defrag might be not-so-perfect. It would still 
+> be better than the current defrag.
+> 
+> This is not a one-way street. Handling of partially-used extents can be 
+> improved in later versions.
+> 
+>> * Determining all the reflinks to a given region of a given extent is 
+>> not a cheap operation, and the information may immediately be stale 
+>> (because an operation right after you fetch the info might change 
+>> things).  We could work around this by locking the extent somehow, but 
+>> doing so would be expensive because you would have to hold the lock 
+>> for the entire defrag operation.
+> 
+> No. DO NOT LOCK TO RETRIEVE REFLINKS.
+> 
+> Instead, you have to create a hook in every function that updates the 
+> reflink structure or extents (for exaple, write-to-file operation). So, 
+> when a reflink gets changed, the defrag is immediately notified about 
+> this. That way the defrag can keep its data about reflinks in-sync with 
+> the filesystem.
+This doesn't get around the fact that it's still an expensive operation 
+to enumerate all the reflinks for a given region of a file or extent.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/=
-btrfs/inode.c?h=3Dv5.3-rc8#n5399
+It also allows a very real possibility of a user functionally delaying 
+the defrag operation indefinitely (by triggering a continuous stream of 
+operations that would cause reflink changes for a file being operated on 
+by defrag) if not implemented very carefully.
+> 
+> Also note, this defrag should run as a part of the kernel, not in 
+> userspace. Defrag-from-userspace is a nightmare. Defrag has to serialize 
+> its operations properly, and it must have knowledge of all other 
+> operations in progress. So, it can only operate efficiently as part of 
+> the kernel.
+Agreed on this point.
 
->  Let's look into its sole caller,
-> btrfs_evict_inode, I see 3 cases where transactions handle is involved
-> in that function:
->
-> 1. btrfs_commit_inode_delayed_inode - iot calls trans_join +
-> end_transaction =3D> use_count =3D 2 -> no commit
->
-> 2. btrfs_truncate_inode_items -> never calls end/commit transaction
->
-> 3. btrfs_evict_inode itself only ever calls btrfs_end_transaction on a
-> handle that's obtained via btrfs_join_transaction, meaning that trans
-> handle's ->use_count will be 2. This in turn will hit:
->
->  if (refcount_read(&trans->use_count) > 1) {
->                   refcount_dec(&trans->use_count);
->
->                   trans->block_rsv =3D trans->orig_rsv;
->
->                   return 0;
->
-> }
->
-> in __btrfs_end_transaction. That code is in direct contradiction with
-> what you describe next?
-
-No, it isn't.
-
-I explicitly mention it in point 1):
-
-"... the eviction handler ends up decreasing the reference
-count (->use_count) of the transaction handle through the call to
-btrfs_end_transaction(), and after that point we have a transaction
-handle with a NULL ->block_rsv (which is the value prior to the
-transaction join from evict_refill_and_join()) and a ->bytes_reserved
-value greater than 0."
-
-
->  Am I missing something here? If my analysis is
-> correct this implies case 1) above also cannot happen because
-> trans->block_rsv is set to NULL in __btrfs_end_transaction only if
-> use_count =3D=3D 1.
-
-Again, go read the change log and the code more carefully.
-
-Thanks.
-
->
-> >    be able to do it, since the nested transaction join only increments =
-the
-> >    transaction handle's ->use_count reference counter and it does not
-> >    prevent the transaction from getting committed. This means that afte=
-r
-> >    eviction completes, the fsync logging path will be using a transacti=
-on
-> >    handle that refers to an already committed transaction. What happens
-> >    when using such a stale transaction can be unpredictable, we are at
-> >    least having a use-after-free on the transaction handle itself, sinc=
-e
-> >    the transaction commit will call kmem_cache_free() against the handl=
-e
-> >    regardless of its ->use_count value, or we can end up silently losin=
-g
-> >    all the updates to the log tree after that iput() in the logging pat=
-h,
-> >    or using a transaction handle that in the meanwhile was allocated to
-> >    another task for a new transaction, etc, pretty much unpredictable
-> >    what can happen.
-> >
-> > In order to fix both of them, instead of using iput() during logging, u=
-se
-> > btrfs_add_delayed_iput(), so that the logging path of fsync never drops
-> > the last reference on an inode, that step is offloaded to a safe contex=
-t
-> > (usually the cleaner kthread).
-> >
-> > The assertion failure issue was sporadically triggered by the test case
-> > generic/475 from fstests, which loads the dm error target while fsstres=
-s
-> > is running, which lead to fsync failing while logging inodes with -EIO
-> > errors and then trying later to commit the transaction, triggering the
-> > assertion failure.
-> >
-> > CC: stable@vger.kernel.org # 4.4+
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> > ---
-> >  fs/btrfs/tree-log.c | 16 ++++++++--------
-> >  1 file changed, 8 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-> > index 6c8297bcfeb7..1bfd7e34f31e 100644
-> > --- a/fs/btrfs/tree-log.c
-> > +++ b/fs/btrfs/tree-log.c
-> > @@ -4985,7 +4985,7 @@ static int log_conflicting_inodes(struct btrfs_tr=
-ans_handle *trans,
-> >                                                     BTRFS_I(inode),
-> >                                                     LOG_OTHER_INODE_ALL=
-,
-> >                                                     0, LLONG_MAX, ctx);
-> > -                                     iput(inode);
-> > +                                     btrfs_add_delayed_iput(inode);
-> >                               }
-> >                       }
-> >                       continue;
-> > @@ -5000,7 +5000,7 @@ static int log_conflicting_inodes(struct btrfs_tr=
-ans_handle *trans,
-> >               ret =3D btrfs_log_inode(trans, root, BTRFS_I(inode),
-> >                                     LOG_OTHER_INODE, 0, LLONG_MAX, ctx)=
-;
-> >               if (ret) {
-> > -                     iput(inode);
-> > +                     btrfs_add_delayed_iput(inode);
-> >                       continue;
-> >               }
-> >
-> > @@ -5009,7 +5009,7 @@ static int log_conflicting_inodes(struct btrfs_tr=
-ans_handle *trans,
-> >               key.offset =3D 0;
-> >               ret =3D btrfs_search_slot(NULL, root, &key, path, 0, 0);
-> >               if (ret < 0) {
-> > -                     iput(inode);
-> > +                     btrfs_add_delayed_iput(inode);
-> >                       continue;
-> >               }
-> >
-> > @@ -5056,7 +5056,7 @@ static int log_conflicting_inodes(struct btrfs_tr=
-ans_handle *trans,
-> >                       }
-> >                       path->slots[0]++;
-> >               }
-> > -             iput(inode);
-> > +             btrfs_add_delayed_iput(inode);
-> >       }
-> >
-> >       return ret;
-> > @@ -5689,7 +5689,7 @@ static int log_new_dir_dentries(struct btrfs_tran=
-s_handle *trans,
-> >                       }
-> >
-> >                       if (btrfs_inode_in_log(BTRFS_I(di_inode), trans->=
-transid)) {
-> > -                             iput(di_inode);
-> > +                             btrfs_add_delayed_iput(di_inode);
-> >                               break;
-> >                       }
-> >
-> > @@ -5701,7 +5701,7 @@ static int log_new_dir_dentries(struct btrfs_tran=
-s_handle *trans,
-> >                       if (!ret &&
-> >                           btrfs_must_commit_transaction(trans, BTRFS_I(=
-di_inode)))
-> >                               ret =3D 1;
-> > -                     iput(di_inode);
-> > +                     btrfs_add_delayed_iput(di_inode);
-> >                       if (ret)
-> >                               goto next_dir_inode;
-> >                       if (ctx->log_new_dentries) {
-> > @@ -5848,7 +5848,7 @@ static int btrfs_log_all_parents(struct btrfs_tra=
-ns_handle *trans,
-> >                       if (!ret && ctx && ctx->log_new_dentries)
-> >                               ret =3D log_new_dir_dentries(trans, root,
-> >                                                  BTRFS_I(dir_inode), ct=
-x);
-> > -                     iput(dir_inode);
-> > +                     btrfs_add_delayed_iput(dir_inode);
-> >                       if (ret)
-> >                               goto out;
-> >               }
-> > @@ -5891,7 +5891,7 @@ static int log_new_ancestors(struct btrfs_trans_h=
-andle *trans,
-> >                       ret =3D btrfs_log_inode(trans, root, BTRFS_I(inod=
-e),
-> >                                             LOG_INODE_EXISTS,
-> >                                             0, LLONG_MAX, ctx);
-> > -             iput(inode);
-> > +             btrfs_add_delayed_iput(inode);
-> >               if (ret)
-> >                       return ret;
-> >
-> >
