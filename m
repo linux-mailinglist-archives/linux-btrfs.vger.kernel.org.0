@@ -2,40 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC7CB166F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 00:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45646B1681
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 00:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbfILWrZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 18:47:25 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:32845 "EHLO
+        id S1726957AbfILW5b (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 18:57:31 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:56625 "EHLO
         server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726032AbfILWrZ (ORCPT
+        by vger.kernel.org with ESMTP id S1726099AbfILW5b (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 18:47:25 -0400
+        Thu, 12 Sep 2019 18:57:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
-         s=default; h=Content-Transfer-Encoding:MIME-Version:Content-Type:In-Reply-To
-        :References:Subject:Cc:To:From:Message-ID:Date:Sender:Reply-To:Content-ID:
+         s=default; h=MIME-Version:Content-Type:In-Reply-To:References:Subject:Cc:To:
+        From:Message-ID:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=0YN3BUWktvubW85d06iNYwSgoxAglwKrW8AEd5tVKtE=; b=SvImK0jz82TUcXDhoFIW8HNTGD
-        3iH6ShOMBze+r754HnOH6dhK4DG74ooBnDQX+iBO5u3K/6/IjUbBNzxYL+Ik9vIe+gZ2nGTcY9GRQ
-        gsRmfn+9k9dVY0JopRePVW4wy5TaRCNoDO05Wx67wNs3fmKKu3SNBsg9iaQJzFSSgkKyXm38STrGj
-        QoiEqryqfDz+19zmf34Ug464vSF9fd+MLR9W2HQQ5ngx1KqYxtcrT6cbYWpPc4Z9xduK05AKt8kRS
-        CgcgReoSvpQbfMtlcRk8hX2/KraVBrNXw4Ou3MSMTzti2pNLhW49VgpHuLLSMK4TB8EaX9mGy8a7p
-        RyfwGYRw==;
-Received: from [::1] (port=36886 helo=server53.web-hosting.com)
+        bh=7mq8qzX1mhL4fnmrVTYMF318f9bKXjOdTw7q0doqtAE=; b=w/gEFq9Q1hecPUVZ0WzS188yXx
+        nF8eN7GER704EqkYZVsbUZd/GUJX6t0JmYKpAAbDtN7XFuSfbELfZ80lLNkRKf3+Dy+UyxTEDX/3u
+        uw4QnC1+bWguVz2uy2gXh13y36rlVT7NkAWC7c1xf25Yd+5FwI8d3rivSkQxoSE8TMW18rDynu/yN
+        CuU1rUQhyhn/EWOBQa0AdGxHJ2d8dse1e4lV3EPJ+mxDzb0yrkO9leSEftub6J7XksB5VIGmr8A3G
+        81GAX/vK63cFPkdltZ2c3B7VJtO1uIUkjhBu7R7Std2FyTHL7+Ml7lgYSVqNrD+FfVwxmllBDVL+m
+        ZGgUDJRQ==;
+Received: from [::1] (port=53094 helo=server53.web-hosting.com)
         by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <general-zed@zedlx.com>)
-        id 1i8Xrz-003zXu-My; Thu, 12 Sep 2019 18:47:24 -0400
+        id 1i8Y1m-0043zs-Aw; Thu, 12 Sep 2019 18:57:31 -0400
 Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Thu, 12 Sep 2019 18:47:19 -0400
-Date:   Thu, 12 Sep 2019 18:47:19 -0400
-Message-ID: <20190912184719.Horde.Hl_ez-nVt2rCMxFVw4Zy7XQ@server53.web-hosting.com>
+ (Horde Framework) with HTTPS; Thu, 12 Sep 2019 18:57:26 -0400
+Date:   Thu, 12 Sep 2019 18:57:26 -0400
+Message-ID: <20190912185726.Horde.HMciH9Z16kV4fK10AfUeRA8@server53.web-hosting.com>
 From:   General Zed <general-zed@zedlx.com>
-To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Subject: Re: Feature requests: online backup - defrag - change RAID level
 References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
  <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
@@ -51,13 +52,14 @@ References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.c
  <20190911173725.Horde.aRGy9hKzg3scN15icIxdbco@server53.web-hosting.com>
  <81f4870e-3ee9-7780-13aa-918d24ca10d8@gmail.com>
  <20190912151841.Horde.-wdqt-14W0sbNwBxzhWVB6B@server53.web-hosting.com>
- <5e25ea36-0c96-2770-d3b9-56b1b9f4066d@gmail.com>
-In-Reply-To: <5e25ea36-0c96-2770-d3b9-56b1b9f4066d@gmail.com>
+ <CAJCQCtQbRCdVOknOo6vusG+fQu1SB3=h8r=qDcZHUu+EFe480A@mail.gmail.com>
+ <20190912173440.Horde.WmxNqLlw7nsFNa-Ux9TTgbz@server53.web-hosting.com>
+ <CAJCQCtS8i5rTOYgEM2DFjoiZJBFsL6sgOGwp-1shMs859-r=qg@mail.gmail.com>
+In-Reply-To: <CAJCQCtS8i5rTOYgEM2DFjoiZJBFsL6sgOGwp-1shMs859-r=qg@mail.gmail.com>
 User-Agent: Horde Application Framework 5
 Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 X-OutGoing-Spam-Status: No, score=-1.0
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
 X-AntiAbuse: Primary Hostname - server53.web-hosting.com
@@ -76,125 +78,63 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
-Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+Quoting Chris Murphy <lists@colorremedies.com>:
 
-> On 2019-09-12 15:18, webmaster@zedlx.com wrote:
+> On Thu, Sep 12, 2019 at 3:34 PM General Zed <general-zed@zedlx.com> wrote:
 >>
->> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
 >>
->>> On 2019-09-11 17:37, webmaster@zedlx.com wrote:
->>>>
->>>> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
->>>>
->>>>> On 2019-09-11 13:20, webmaster@zedlx.com wrote:
->>>>>>
->>>>>> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
->>>>>>
->>>>>>> On 2019-09-10 19:32, webmaster@zedlx.com wrote:
->>>>>>>>
->>>>>>>> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
->>>>>>>>
->>>>
-
->>>>> * Reflinks can reference partial extents.  This means,  
->>>>> ultimately, that you may end up having to split extents in odd  
->>>>> ways during defrag if you want to preserve reflinks, and might  
->>>>> have to split extents _elsewhere_ that are only tangentially  
->>>>> related to the region being defragmented. See the example in my  
->>>>> previous email for a case like this, maintaining the shared  
->>>>> regions as being shared when you defragment either file to a  
->>>>> single extent will require splitting extents in the other file  
->>>>> (in either case, whichever file you don't defragment to a single  
->>>>> extent will end up having 7 extents if you try to force the one  
->>>>> that's been defragmented to be the canonical version).  Once you  
->>>>> consider that a given extent can have multiple ranges reflinked  
->>>>> from multiple other locations, it gets even more complicated.
->>>>
->>>> I think that this problem can be solved, and that it can be  
->>>> solved perfectly (the result is a perfectly-defragmented file).  
->>>> But, if it is so hard to do, just skip those problematic extents  
->>>> in initial version of defrag.
->>>>
->>>> Ultimately, in the super-duper defrag, those partially-referenced  
->>>> extents should be split up by defrag.
->>>>
->>>>> * If you choose to just not handle the above point by not  
->>>>> letting defrag split extents, you put a hard lower limit on the  
->>>>> amount of fragmentation present in a file if you want to  
->>>>> preserve reflinks.  IOW, you can't defragment files past a  
->>>>> certain point.  If we go this way, neither of the two files in  
->>>>> the example from my previous email could be defragmented any  
->>>>> further than they already are, because doing so would require  
->>>>> splitting extents.
->>>>
->>>> Oh, you're reading my thoughts. That's good.
->>>>
->>>> Initial implementation of defrag might be not-so-perfect. It  
->>>> would still be better than the current defrag.
->>>>
->>>> This is not a one-way street. Handling of partially-used extents  
->>>> can be improved in later versions.
->>>>
->>>>> * Determining all the reflinks to a given region of a given  
->>>>> extent is not a cheap operation, and the information may  
->>>>> immediately be stale (because an operation right after you fetch  
->>>>> the info might change things).  We could work around this by  
->>>>> locking the extent somehow, but doing so would be expensive  
->>>>> because you would have to hold the lock for the entire defrag  
->>>>> operation.
->>>>
->>>> No. DO NOT LOCK TO RETRIEVE REFLINKS.
->>>>
->>>> Instead, you have to create a hook in every function that updates  
->>>> the reflink structure or extents (for exaple, write-to-file  
->>>> operation). So, when a reflink gets changed, the defrag is  
->>>> immediately notified about this. That way the defrag can keep its  
->>>> data about reflinks in-sync with the filesystem.
+>> Quoting Chris Murphy <lists@colorremedies.com>:
 >>
->>> This doesn't get around the fact that it's still an expensive  
->>> operation to enumerate all the reflinks for a given region of a  
->>> file or extent.
+>> > On Thu, Sep 12, 2019 at 1:18 PM <webmaster@zedlx.com> wrote:
+>> >>
+>> >> It is normal and common for defrag operation to use some disk space
+>> >> while it is running. I estimate that a reasonable limit would be to
+>> >> use up to 1% of total partition size. So, if a partition size is 100
+>> >> GB, the defrag can use 1 GB. Lets call this "defrag operation space".
+>> >
+>> > The simplest case of a file with no shared extents, the minimum free
+>> > space should be set to the potential maximum rewrite of the file, i.e.
+>> > 100% of the file size. Since Btrfs is COW, the entire operation must
+>> > succeed or fail, no possibility of an ambiguous in between state, and
+>> > this does apply to defragment.
+>> >
+>> > So if you're defragging a 10GiB file, you need 10GiB minimum free
+>> > space to COW those extents to a new, mostly contiguous, set of exents,
 >>
->> No, you are wrong.
+>> False.
 >>
->> In order to enumerate all the reflinks in a region, the defrag  
->> needs to have another array, which is also kept in memory and in  
->> sync with the filesystem. It is the easiest to divide the disk into  
->> regions of equal size, where each region is a few MB large. Lets  
->> call this array "regions-to-extents" array. This array doesn't need  
->> to be associative, it is a plain array.
->> This in-memory array links regions of disk to extents that are in  
->> the region. The array in initialized when defrag starts.
->>
->> This array makes the operation of finding all extents of a region  
->> extremely fast.
-> That has two issues:
+>> You can defragment just 1 GB of that file, and then just write out to
+>> disk (in new extents) an entire new version of b-trees.
+>> Of course, you don't really need to do all that, as usually only a
+>> small part of the b-trees need to be updated.
 >
-> * That's going to be a _lot_ of memory.  You still need to be able  
-> to defragment big (dozens plus TB) arrays without needing multiple  
-> GB of RAM just for the defrag operation, otherwise it's not  
-> realistically useful (remember, it was big arrays that had issues  
-> with the old reflink-aware defrag too).
+> The `-l` option allows the user to choose a maximum amount to
+> defragment. Setting up a default defragment behavior that has a
+> variable outcome is not idempotent and probably not a good idea.
 
-> * You still have to populate the array in the first place.  A sane  
-> implementation wouldn't be keeping it in memory even when defrag is  
-> not running (no way is anybody going to tolerate even dozens of MB  
-> of memory overhead for this), so you're not going to get around the  
-> need to enumerate all the reflinks for a file at least once (during  
-> startup, or when starting to process that file), so you're just  
-> moving the overhead around instead of eliminating it.
+We are talking about a future, imagined defrag. It has no -l option  
+yet, as we haven't discussed it yet.
 
-Nope, I'm not just "moving the overhead around instead of eliminating  
-it", I am eliminating it.
+> As for kernel behavior, it presumably could defragment in portions,
+> but it would have to completely update all affected metadata after
+> each e.g. 1GiB section, translating into 10 separate rewrites of file
+> metadata, all affected nodes, all the way up the tree to the super.
+> There is no such thing as metadata overwrites in Btrfs. You're
+> familiar with the wandering trees problem?
 
-The only overhead is at defrag startup, when the entire b-tree  
-structure has to be loaded and examined. That happens in a few seconds.
+No, but it doesn't matter.
 
-After this point, there is no more "overhead" because the running  
-defrag is always notified of any changes to the b-trees (by hookc in  
-b-tree update routines). Whenever there is such a change,  
-region-extents array gets updated. Since this region-extents array is  
-in-memory, the update is so fast that it can be considered a zero  
-overhead.
+At worst, it just has to completely write-out "all metadata", all the  
+way up to the super. It needs to be done just once, because what's the  
+point of writing it 10 times over? Then, the super is updated as the  
+final commit.
+
+On my comouter the ENTIRE METADATA is 1 GB. That would be very  
+tolerable and doable.
+
+But that is a very bad case, because usually not much metadata has to  
+be updated or written out to disk.
+
+So, there is no problem.
 
 
