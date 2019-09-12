@@ -2,586 +2,608 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59509B1659
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 00:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA4AB164C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 00:32:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726961AbfILWg5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 18:36:57 -0400
-Received: from mail-pl1-f178.google.com ([209.85.214.178]:41384 "EHLO
-        mail-pl1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726032AbfILWg5 (ORCPT
+        id S1726780AbfILWct (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 18:32:49 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:39079 "EHLO
+        server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726032AbfILWcs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 18:36:57 -0400
-Received: by mail-pl1-f178.google.com with SMTP id m9so12397293pls.8
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 15:36:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:message-id:mime-version;
-        bh=J0cEIta0BgevKk5KIEr0Z9HtqrD1P4I9a+WCvW+XXWo=;
-        b=dRsTE9Wmrr5II+Q7KohT9s1MCkDt9xMdxvF6VDl3K5ZTUIsl9u8sWs6LYEwAXzWrHb
-         5vlkvd7zcgfJRMvFtmLUp0462g4p/k50oZesifzVSFyWppEe+B6Gn0dPdbcIpvlAree2
-         rnJCI4kZfbVMSa10yBrdk4f1mYvmP6XXRyc5bEbNGyQbSeXM6tp8OA1OEy9nIYv1qJOx
-         BXypzXTRm+p4PElqv4paKBoIGvPgLUuFC6wFIytpyllTVH51YPMxxGvuMzNc651o976y
-         LXzBQ/bQkN8UlLcr0tNIUCdRG+GG5TFw4XR3vAa+7DAml18hIMKJKI2O6ZoLrHG2mP6O
-         d7Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:message-id:mime-version;
-        bh=J0cEIta0BgevKk5KIEr0Z9HtqrD1P4I9a+WCvW+XXWo=;
-        b=FM3KELWX4yKOMfbuLy8Zl2SZmjjHbk5sqlVPKkrKVkobCDbCLiku5ufo6XNI7TmHlf
-         Ah+9aaTzWlo+pZvcHRuDjlTWnT5DfRiC9dNBTI9YDxQsUQdSDqUdrTGqcA6rc9nu9muQ
-         vQf6kjKOxUpdcAXCJHClDKGN0ZGAKCX8x0Mx2oteykD0bOAGdyr3lVdjTZ8bl4W/W6uM
-         FkoPyTMGLT6ELfinsVrlpQ5JGd6+52+SSG3Hichv4ALqVwIvytT6802yLa4C1YbdlaUW
-         1b4WmMBz3nH+VFmaf+YVedC+iaT1DGWsR6ayBzgKg3IdgknR68ey5GbV2uufR6dC+rY4
-         tlNg==
-X-Gm-Message-State: APjAAAWXAP6NQlrQ3A7SI9xp+nhff2wxPSfC9BrIf+yik8Vc7ztVNOp2
-        qjDbVE5i8qUMwk+ubrKNUyCrMrgM
-X-Google-Smtp-Source: APXvYqyMifqL98ZjC1f8HSzffJa1dBuU/kzuI5h+c/J+X1vC6OAGOhhiXPg/nZCZ522+KCKOF3JZAA==
-X-Received: by 2002:a17:902:b685:: with SMTP id c5mr6748889pls.16.1568327815190;
-        Thu, 12 Sep 2019 15:36:55 -0700 (PDT)
-Received: from CloudChaser ([129.138.153.17])
-        by smtp.gmail.com with ESMTPSA id x5sm29241147pfi.165.2019.09.12.15.36.49
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Sep 2019 15:36:53 -0700 (PDT)
-Date:   Thu, 12 Sep 2019 15:09:41 -0600
-From:   Rachel Powers <powers.e.rachel@gmail.com>
-Subject: btrfs forced readonly | error in btrfs_run_delayed_refs:2907:
- errno=-17 Object already exists
-To:     linux-btrfs@vger.kernel.org
-Message-Id: <1568322581.2591.1@gmail.com>
-X-Mailer: geary/3.32.2
+        Thu, 12 Sep 2019 18:32:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
+         s=default; h=Content-Transfer-Encoding:MIME-Version:Content-Type:In-Reply-To
+        :References:Subject:Cc:To:From:Message-ID:Date:Sender:Reply-To:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=xgySnzaBA+1M0PXpMervUhNSthlgiAZURvcWh7/aHUg=; b=RZIr0GNSx3+zfMZbA5tNbAQGf+
+        5qk9XfL+aieCIcMRiy1rHQ2vHMy/yEHg8aCTh4s1bAwAHbTORdUrnf23Yatn7U5zxeg48X44Z5yIo
+        uHClIDKh569j5Hpu0aiGAB/OkRcOwdKEOe500NgUJLnZr+MkwscJGKdiE27QU4NgE9mVpaBkVvSeO
+        tKPpnPwaWcMp3WUVdgHUyR2i4b/blZJTk8ICSKaSEmrHrbB6rGz0UMBUxxLF4KzKYSGNBCEXTA/UI
+        9kVBch6S317pe4kyYzXAQfDFh759xE2jSS4ymnj46DVeMJ/A2/fGMdvC6GnDCHKUiW5dVqrIZTh5g
+        1bY/6MOg==;
+Received: from [::1] (port=33234 helo=server53.web-hosting.com)
+        by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <general-zed@zedlx.com>)
+        id 1i8WYj-003MNf-G5; Thu, 12 Sep 2019 17:23:26 -0400
+Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
+ (Horde Framework) with HTTPS; Thu, 12 Sep 2019 17:23:21 -0400
+Date:   Thu, 12 Sep 2019 17:23:21 -0400
+Message-ID: <20190912172321.Horde.oyDNseL4IVWz-QYWBqgXqjO@server53.web-hosting.com>
+From:   General Zed <general-zed@zedlx.com>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+References: <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
+ <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
+ <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
+ <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
+ <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
+ <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+ <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
+ <20190911132053.Horde._wJd24LqxxXx9ujl2r5i7PQ@server53.web-hosting.com>
+ <20190911213704.GB22121@hungrycats.org>
+ <20190911192131.Horde.2lTVSt-Ln94dqLGQKg_USXQ@server53.web-hosting.com>
+ <20190912051904.GD22121@hungrycats.org>
+In-Reply-To: <20190912051904.GD22121@hungrycats.org>
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-i1iLw3BxM/Iq3TNZXktP"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server53.web-hosting.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - zedlx.com
+X-Get-Message-Sender-Via: server53.web-hosting.com: authenticated_id: zedlryqc/from_h
+X-Authenticated-Sender: server53.web-hosting.com: general-zed@zedlx.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-From-Rewrite: unmodified, already matched
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---=-i1iLw3BxM/Iq3TNZXktP
-Content-Type: text/plain; charset=us-ascii; format=flowed
 
-I've tried using -o usebackuproot but the error persists as soon as I
-try to modify the filesystem
+Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
 
-a btrfs scrub fails almost immediately, errors are in the dmesg log
-a btrfs-check (no --repair) also fails almost imediatly
+> On Wed, Sep 11, 2019 at 07:21:31PM -0400, webmaster@zedlx.com wrote:
+>>
+>> Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
+>>
+>> > On Wed, Sep 11, 2019 at 01:20:53PM -0400, webmaster@zedlx.com wrote:
+>> > >
+>> > > Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+>> > >
+>> > > > On 2019-09-10 19:32, webmaster@zedlx.com wrote:
+>> > > > >
+>> > > > > Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
+>> > > > >
+>> > >
+>> > > > >
+>> > > > > === I CHALLENGE you and anyone else on this mailing list: ===
+>> > > > >
+>> > > > >  - Show me an exaple where splitting an extent requires unsharing,
+>> > > > > and this split is needed to defrag.
+>> > > > >
+>> > > > > Make it clear, write it yourself, I don't want any  
+>> machine-made outputs.
+>> > > > >
+>> > > > Start with the above comment about all writes unsharing the  
+>> region being
+>> > > > written to.
+>> > > >
+>> > > > Now, extrapolating from there:
+>> > > >
+>> > > > Assume you have two files, A and B, each consisting of 64 filesystem
+>> > > > blocks in single shared extent.  Now assume somebody writes a  
+>> few bytes
+>> > > > to the middle of file B, right around the boundary between  
+>> blocks 31 and
+>> > > > 32, and that you get similar writes to file A straddling blocks 14-15
+>> > > > and 47-48.
+>> > > >
+>> > > > After all of that, file A will be 5 extents:
+>> > > >
+>> > > > * A reflink to blocks 0-13 of the original extent.
+>> > > > * A single isolated extent consisting of the new blocks 14-15
+>> > > > * A reflink to blocks 16-46 of the original extent.
+>> > > > * A single isolated extent consisting of the new blocks 47-48
+>> > > > * A reflink to blocks 49-63 of the original extent.
+>> > > >
+>> > > > And file B will be 3 extents:
+>> > > >
+>> > > > * A reflink to blocks 0-30 of the original extent.
+>> > > > * A single isolated extent consisting of the new blocks 31-32.
+>> > > > * A reflink to blocks 32-63 of the original extent.
+>> > > >
+>> > > > Note that there are a total of four contiguous sequences of  
+>> blocks that
+>> > > > are common between both files:
+>> > > >
+>> > > > * 0-13
+>> > > > * 16-30
+>> > > > * 32-46
+>> > > > * 49-63
+>> > > >
+>> > > > There is no way to completely defragment either file without splitting
+>> > > > the original extent (which is still there, just not fully  
+>> referenced by
+>> > > > either file) unless you rewrite the whole file to a new single extent
+>> > > > (which would, of course, completely unshare the whole file).  In fact,
+>> > > > if you want to ensure that those shared regions stay  
+>> reflinked, there's
+>> > > > no way to defragment either file without _increasing_ the number of
+>> > > > extents in that file (either file would need 7 extents to  
+>> properly share
+>> > > > only those 4 regions), and even then only one of the files could be
+>> > > > fully defragmented.
+>> > > >
+>> > > > Such a situation generally won't happen if you're just dealing with
+>> > > > read-only snapshots, but is not unusual when dealing with  
+>> regular files
+>> > > > that are reflinked (which is not an uncommon situation on  
+>> some systems,
+>> > > > as a lot of people have `cp` aliased to reflink things whenever
+>> > > > possible).
+>> > >
+>> > > Well, thank you very much for writing this example. Your example is
+>> > > certainly not minimal, as it seems to me that one write to the  
+>> file A and
+>> > > one write to file B would be sufficient to prove your point, so there we
+>> > > have one extra write in the example, but that's OK.
+>> > >
+>> > > Your example proves that I was wrong. I admit: it is impossible  
+>> to perfectly
+>> > > defrag one subvolume (in the way I imagined it should be done).
+>> > > Why? Because, as in your example, there can be files within a SINGLE
+>> > > subvolume which share their extents with each other. I didn't  
+>> consider such
+>> > > a case.
+>> > >
+>> > > On the other hand, I judge this issue to be mostly irrelevant.  
+>> Why? Because
+>> > > most of the file sharing will be between subvolumes, not within  
+>> a subvolume.
+>> > > When a user creates a reflink to a file in the same subvolume, he is
+>> > > willingly denying himself the assurance of a perfect defrag. Because, as
+>> > > your example proves, if there are a few writes to BOTH files, it gets
+>> > > impossible to defrag perfectly. So, if the user creates such  
+>> reflinks, it's
+>> > > his own whish and his own fault.
+>> > >
+>> > > Such situations will occur only in some specific circumstances:
+>> > > a) when the user is reflinking manually
+>> > > b) when a file is copied from one subvolume into a different file in a
+>> > > different subvolume.
+>> > >
+>> > > The situation a) is unusual in normal use of the filesystem.  
+>> Even when it
+>> > > occurs, it is the explicit command given by the user, so he should be
+>> > > willing to accept all the consequences, even the bad ones like imperfect
+>> > > defrag.
+>> > >
+>> > > The situation b) is possible, but as far as I know copies are  
+>> currently not
+>> > > done that way in btrfs. There should probably be the option to  
+>> reflink-copy
+>> > > files fron another subvolume, that would be good.
+>> >
+>> > Reflink copies across subvolumes have been working for years.  They are
+>> > an important component that makes dedupe work when snapshots are present.
+>>
+>> I take that what you say is true, but what I said is that when a user (or
+>> application) makes a
+>> normal copy from one subvolume to another, then it won't be a reflink-copy.
+>> To make such a reflink-copy, you need btrfs-aware cp or btrfs-aware
+>> applications.
+>
+> It's the default for GNU coreutils, and for 'mv' across subvols there
+> is currently no option to turn reflink copies off.  Maybe for 'cp'
+> you still have to explicitly request reflink, but that will presumably
+> change at some point as more filesystems get the CLONE_RANGE ioctl and
+> more users expect it to just work by default.
 
-Opening filesystem to check...
-Checking filesystem on /dev/sda4
-UUID: 31b1c345-9fff-4172-b979-fdb670d89349
-[1/7] checking root items
-parent transid verify failed on 37470208 wanted 6149 found 6150
-parent transid verify failed on 37470208 wanted 6149 found 6150
-parent transid verify failed on 37470208 wanted 6149 found 6150
-Ignoring transid failure
-ERROR: child eb corrupted: parent bytenr=31391744 item=5 parent
-level=1 child level=1
-ERROR: failed to repair root items: Input/output error
+Yes, thank you for posting another batch of arguments that support the  
+use of my vision of defrag instead of the current one.
 
-$ uname -a
+The defrag that I'm proposing will preserve all those reflinks that  
+were painstakingly created by the user. Therefore, I take that you  
+agree with me on the utmost importance of implementing this new defrag  
+that I'm proposing.
 
-Linux 5.2.11-arch1-1-ARCH #1 SMP PREEMPT Thu Aug 29 08:09:36 UTC 2019
-x86_64 GNU/Linux
+>> So, the reflik-copy is a special case, usually explicitly requested by the
+>> user.
+>>
+>> > > But anyway, it doesn't matter. Because most of the sharing will  
+>> be between
+>> > > subvolumes, not within subvolume.
+>> >
+>> > Heh.  I'd like you to meet one of my medium-sized filesystems:
+>> >
+>> > 	Physical size:  8TB
+>> > 	Logical size:  16TB
+>> > 	Average references per extent:  2.03 (not counting snapshots)
+>> > 	Workload:  CI build server, VM host
+>> >
+>> > That's a filesystem where over half of the logical data is reflinks to the
+>> > other physical data, and 94% of that data is in a single subvol.  7.5TB of
+>> > data is unique, the remaining 500GB is referenced an average of 17 times.
+>> >
+>> > We use ordinary applications to make ordinary copies of files, and do
+>> > tarball unpacks and source checkouts with reckless abandon, all day long.
+>> > Dedupe turns the copies into reflinks as we go, so every copy becomes
+>> > a reflink no matter how it was created.
+>> >
+>> > For the VM filesystem image files, it's not uncommon to see a high
+>> > reflink rate within a single file as well as reflinks to other files
+>> > (like the binary files in the build directories that the VM images are
+>> > constructed from).  Those reference counts can go into the millions.
+>>
+>> OK, but that cannot be helped: either you retain the sharing structure with
+>> imperfect defrag, or you unshare and produce a perfect defrag which should
+>> have somewhat better performance (and pray that the disk doesn't fill up).
+>
+> One detail that might not have been covered in the rest of the discussion
+> is that btrfs extents are immutable.  e.g. if you create a 128MB file,
+> then truncate it to 4K, it still takes 128MB on disk because that 4K
+> block at the beginning holds a reference to the whole immutable 128MB
+> extent.  This holds even if the extent is not shared.  The 127.996MB of
+> unreferenced extent blocks are unreachable until the last 4K reference
+> is removed from the filesystem (deleted or overwritten).
+>
+> There is no "split extent in place" operation on btrfs because the
+> assumption that extents are immutable is baked into the code.  Changing
+> this has been discussed a few times.  The gotcha is that some fairly
+> ordinary write cases can trigger updates of all extent references if
+> extents were split automatically as soon as blocks become unreachable.
+> There's non-trivial CPU overhead to determine whether blocks are
+> unreachable, making it unsuitable to run the garbage collector during
+> ordinary writes.  So for now, the way to split an extent is to copy the
+> data you want to keep from the extent into some new extents, then remove
+> all references to the old extent.
 
-$ btrfs --version
+There, I don't even need to write a solution. You are getting better.
 
-btrfs-progs v5.2.1
+I suggest that btrfs should first try to determine whether it can  
+split an extent in-place, or not. If it can't do that, then it should  
+create new extents to split the old one.
 
-$ btrfs fi show
+> To maintain btrfs storage efficiency you have to do a *garbage collection*
+> operation that there is currently no tool for.  This tool would find
+> unreachable blocks and split extents around them, releasing the entire
+> extent (including unreachable blocks) back to the filesystem.  Defrag is
+> sometimes used for its accidental garbage collection side-effects (it
+> will copy all the remaining reachable blocks to new extents and reduce
+> total space usage if the extens were not shared), but the current defrag
+> is not designed for GC, and doesn't do a good job.
 
-Label: 'Arch Linux' uuid: 5495bf63-5357-453b-a8ff-d39c32fe48b0
-Total devices 1 FS bytes used 21.12GiB
-devid 1 size 200.00GiB used 26.02GiB path /dev/sda2
+Yes, you have to determine which blocks are unused, and to do that you  
+have to analyze all the b-trees. Only the defrag can do this. And, it  
+should do this.
 
-Label: 'Arch Home' uuid: 4ec029f4-3394-4408-baa3-6160956e1ef5
-Total devices 1 FS bytes used 11.32GiB
-devid 1 size 100.00GiB used 14.02GiB path /dev/sda3
+Notice that doing this garbage collection gets much easier when the  
+defrag has created, in-memory, the two arrays I described in another  
+part of this discussion, namely:
+  - "extent-backref" associative array
+  - "region-extents" plain array
 
-Label: 'storage' uuid: 31b1c345-9fff-4172-b979-fdb670d89349
-Total devices 1 FS bytes used 148.98GiB
-devid 1 size 3.34TiB used 153.07GiB path /dev/sda4
+Since defrag is supposed to have this two arrays always in memory and  
+always valid and in-sync, doing this "garbage collection" becomes  
+quite easy, even trivial.
 
-$ btrfs fi df /mnt/storage
+Therefore, the defrag can free unused parts of any extent, and then  
+the extent can be split is necessary. In fact, both these operations  
+can be done simultaneously.
 
-Data, single: total=149.01GiB, used=148.47GiB
-System, DUP: total=32.00MiB, used=48.00KiB
-Metadata, DUP: total=2.00GiB, used=523.53MiB
-GlobalReserve, single: total=215.11MiB, used=0.00B
+> Dedupe on btrfs also requires the ability to split and merge extents;
+> otherwise, we can't dedupe an extent that contains a combination of
+> unique and duplicate data.  If we try to just move references around
+> without splitting extents into all-duplicate and all-unique extents,
+> the duplicate blocks become unreachable, but are not deallocated.  If we
+> only split extents, fragmentation overhead gets bad.  Before creating
+> thousands of references to an extent, it is worthwhile to merge it with
+> as many of its neighbors as possible, ideally by picking the biggest
+> existing garbage-free extents available so we don't have to do defrag.
+> As we examine each extent in the filesystem, it may be best to send
+> to defrag, dedupe, or garbage collection--sometimes more than one of
+> those.
+
+This is sovled simply by always running defrag before dedupe.
+
+> As extents get bigger, the seeking and overhead to read them gets smaller.
+> I'd want to defrag many consecutive 4K extents, but I wouldn't bother
+> touching 256K extents unless they were in high-traffic files, nor would I
+> bother combining only 2 or 3 4K extents together (there would be around
+> 400K of metadata IO overhead to do so--likely more than what is saved
+> unless the file is very frequently read sequentially).  The incremental
+> gains are inversely proportional to size, while the defrag cost is
+> directly proportional to size.
+
+"the defrag cost is directly proportional to size" - this is wrong.  
+The defrag cost is proportional to file size, not to extent size.
+
+Before a file is defragmented, the defrag should split its extents so  
+that each one is sufficiently small, let's say 32 MB at most. That  
+fixes the issue. This was mentioned in my answer to Austin S.  
+Hemmelgarn.
+
+Then, as the final stage of the defrag, the extents should be merged  
+into bigger ones of desired size.
+
+>> > > So, if there is some in-subvolume sharing,
+>> > > the defrag wont be 100% perfect, that a minor point. Unimportant.
+>> >
+>> > It's not unimportant; however, the implementation does have to take this
+>> > into account, and make sure that defrag can efficiently skip extents that
+>> > are too expensive to relocate.  If we plan to read an extent fewer than
+>> > 100 times, it makes no sense to update 20000 references to it--we spend
+>> > less total time just doing the 100 slower reads.
+>>
+>> Not necesarily. Because you can defrag in the time-of-day when there is a
+>> low pressure on the disk IO, so updating 20000 references is esentially
+>> free.
+>>
+>> You are just making those later 100 reads faster.
+>>
+>> OK, you are right, there is some limit, but this is such a rare case, that
+>> such a heavily-referenced extents are best left untouched.
+>
+> For you it's rare.  For other users, it's expected behavior--dedupe is
+> just a thing many different filesystems do now.
+
+This is a tiny detail not worthy of consideration at this stage of  
+planning. It can be solved.
+
+> Also, quite a few heavily-fragmented files only ever get read once,
+> or are read only during low-cost IO times (e.g. log files during
+> maintenance windows).  For those, a defrag is pure wasted iops.
+
+You don't know that because you can't predict the future. Therefore,  
+defrag is never a waste because the future is unknown.
+
+>> I suggest something along these lines: if there are more than XX (where XX
+>> defaults to 1000) reflinks to an extent, then one or more copies of the
+>> extent should be made such that each has less than XX reflinks to it. The
+>> number XX should be user-configurable.
+>
+> That would depend on where those extents are, how big the references
+> are, etc.  In some cases a million references are fine, in other cases
+> even 20 is too many.  After doing the analysis for each extent in a
+> filesystem, you'll probably get an average around some number, but
+> setting the number first is putting the cart before the horse.
+
+This is a tiny detail not worthy of consideration at this stage of  
+planning. It can be solved.
+
+>> > If the numbers are
+>> > reversed then it's better to defrag the extent--100 reference updates
+>> > are easily outweighed by 20000 faster reads.  The kernel doesn't have
+>> > enough information to make good decisions about this.
+>>
+>> So, just make the number XX user-provided.
+>>
+>> > Dedupe has a similar problem--it's rarely worth doing a GB of IO to
+>> > save 4K of space, so in practical implementations, a lot of duplicate
+>> > blocks have to remain duplicate.
+>> >
+>> > There are some ways to make the kernel dedupe and defrag API process
+>> > each reference a little more efficiently, but none will get around this
+>> > basic physical problem:  some extents are just better off where they are.
+>>
+>> OK. If you don't touch those extents, they are still shared. That's what I
+>> wanted.
+>>
+>> > Userspace has access to some extra data from the user, e.g.  "which
+>> > snapshots should have their references excluded from defrag because
+>> > the entire snapshot will be deleted in a few minutes."  That will allow
+>> > better defrag cost-benefit decisions than any in-kernel implementation
+>> > can make by itself.
+>>
+>> Yes, but I think that we are going into too much details which are diverting
+>> the attention from the overall picture and from big problems.
+>>
+>> And the big problem here is: what do we want defrag to do in general, most
+>> common cases. Because we haven't still agreed on that one since many of the
+>> people here are ardent followers of the defrag-by-unsharing ideology.
+>
+> Well, that's the current implementation, so most people are familiar with it.
+>
+> I have a userspace library that lets applications work in terms of extents
+> and their sequential connections to logical neighbors, which it extracts
+> from the reference data in the filesystem trees.  The caller says "move
+> extent A50..A70, B10..B20, and C90..C110 to a new physically contiguous
+> location" and the library translates that into calls to the current kernel
+> API to update all the references to those extents, at least one of which
+> is a single contiguous reference to the entire new extent.  To defrag,
+> it walks over extent adjacency DAGs and connects short extents together
+> into longer ones, and if it notices opportunities to get rid of extents
+> entirely by dedupe then it does that instead of defrag.  Extents with
+> unreachable blocks are garbage collected.  If I ever get it done, I'll
+> propose the kernel provide the library's top-level interface directly,
+> then drop the userspace emulation layer when that kernel API appears.
+
+Actually, many of the problems that you wrote about so far in this  
+thread are not problems in my imagined implementation of defrag, which  
+can solves them all. The problems you wrote about are mostly problems  
+of this implementation/library of yours.
+
+So yes, you can do things that way as in your library, but that is  
+inferior to real defrag.
+
+>> > 'btrfs fi defrag' is just one possible userspace implementation, which
+>> > implements the "throw entire files at the legacy kernel defrag API one
+>> > at a time" algorithm.  Unfortunately, nobody seems to have implemented
+>> > any other algorithms yet, other than a few toy proof-of-concept demos.
+>>
+>> I really don't have a clue what's happening, but if I were to start working
+>> on it (which I won't), then the first things should be:
+>
+>> - creating a way for btrfs to split large extents into smaller ones (for
+>> easier defrag, as first phase).
+>
+>> - creating a way for btrfs to merge small adjanced extents shared by the
+>> same files into larger extents (as the last phase of defragmenting a file).
+>
+> Those were the primitives I found useful as well.  Well, primitive,
+> singular--in the absence of the ability to split an extent in place,
+> the same function can do both split and merge operations.  Input is a
+> list of block ranges, output is one extent containing data from those
+> block ranges, side effect is to replace all the references to the old
+> data with references to the new data.
+
+Great, so there already exists an implementation, or at least a similar one.
+
+Now, that split and merge just have to be moved into kernel.
+  - I would keep merge and split as separate operations.
+  - If a split cannot be performed due to problems you mention, then  
+it should just return and do nothing. Same with merge.
+
+Eventually, when a real defrag starts to be written, those two (split  
+and merge) can be updated to make use of "extent-backref" associative  
+array and "region-extents" plain array, so that they can be performed  
+more efficiently and so that they always succeed.
+
+> Add an operation to replace references to data at extent A with
+> references to data at extent B, and an operation to query extent reference
+> structure efficiently, and you have all the ingredients of an integrated
+> dedupe/defrag/garbage collection tool for btrfs (analogous to the XFS
+> "fsr" process).
+
+Obviously, some very usefull code. That is good, but perhaps it would  
+be better for that code to serve as an example of how it can be done.
+In my imagined defrag, this updating-of-references happens as part of  
+flushing the "pending operations buffer", so it will have to be  
+rewritten such that it fits into that framework.
+
+The problem of your defrag is that it is not holistic enough. It has a  
+view of only small parts of the filesystem, so it can never be as good  
+as a real defrag, which also doesn't unshare extents.
+
+>> - create a structure (associative array) for defrag that can track
+>> backlinks. Keep the structure updated with each filesystem change, by
+>> placing hooks in filesystem-update routines.
+>
+> No need.  btrfs already maintains backrefs--they power the online  
+> device shrink
+> feature and the LOGICAL_TO_INO ioctl.
+
+Another person said that it is complicated to trace backreferences. So  
+now you are saying that it is not.
+Anyway, such a structure must be available to defrag.
+So, just in case to avoid misunderstandings, this "extent-backrefs"  
+associative array would be in-memory, it would cover all extents, the  
+entire filesystem structure, and it would be kept in-sync with the  
+filesystem during the defrag operation.
+
+>> You can't go wrong with this. Whatever details change about defrag
+>> operation, the given three things will be needed by defrag.
+>
+> I agree about 70% with what you said.  ;)
+
+Ok, thanks, finally someone agrees with me, at least 70%. I feel like  
+I'm on the shooting range here carrying a target on my back and  
+running around.
+
+>> > > Now, to retain the original sharing structure, the defrag has  
+>> to change the
+>> > > reflink of extent E55 in file B to point to E70. You are  
+>> telling me this is
+>> > > not possible? Bullshit!
+>> >
+>> > This is already possible today and userspace tools can do it--not as
+>> > efficiently as possible, but without requiring more than 128M of temporary
+>> > space.  'btrfs fi defrag' is not one of those tools.
+>> >
+>> > > Please explain to me how this 'defrag has to unshare' story of  
+>> yours isn't
+>> > > an intentional attempt to mislead me.
+>> >
+>> > Austin is talking about the btrfs we have, not the btrfs we want.
+>>
+>> OK, but then, you agree with me that current defrag is a joke. I mean,
+>> something is better than nothing, and the current defrag isn't completely
+>> useless, but it is in most circumstances either unusable or not good enough.
+>
+> I agree that the current defrag is almost useless.  Where we might
+> disagree is that I don't think the current defrag can ever be useful,
+> even if it did update all the references simultaneously.
+>
+>> I mean, the snapshots are a prime feature of btrfs. If not, then why bother
+>> with b-trees? If you wanted subvolumes, checksums and RAID, then you should
+>> have made ext5. B-trees are in btrfs so that there can be snapshots. But,
+>> the current defrag works bad with snaphots. It doesn't defrag them well, it
+>> also unshares data. Bad bad bad.
+>>
+>> And if you wanted to be honest to your users, why don't you place this info
+>> in the wiki? Ok, the wiki says "defrag will unshare", but it doesn't say
+>> that it also doesn't defragment well.
+>
+> "Well" is the first thing users have trouble with.  They generally
+> overvalue defragmentation because they don't consider the costs.
+>
+> There's a lower bound _and_ an upper bound on how big fragments can
+> usefully be.  The lower bound is somewhere around 100K (below that size
+> there is egregious seek and metadata overhead), and the upper bound is
+> a few MB at most, with a few special exceptions like torrent downloads
+> (where a large file is written in random order, then rearranged into
+> contiguous extents and never written again).  If you strictly try to
+> minimize the number of fragments, you can make a lot of disk space
+> unreachable without garbage collection.  Up to 32768 times the logical
+> file size can theoretically be wasted, though 25-200% is more common
+> in practice.  The bigger your target extent size, the more frequently
+> you have to defrag to maintain disk space usage at reasonable levels,
+> and the less benefit you get from each defrag run.
+>
+>> For example, lets examine the typical home user. If he is using btrfs, it
+>> means he probably wants snapshots of his data. And, after a few snapshots,
+>> his data is fragmented, and the current defrag can't help because it does a
+>> terrible job in this particualr case.
+>
+> I'm not sure I follow.  Snapshots don't cause data fragmentation.
+
+I disagree. I might explain my thoughts in aother place (this post is  
+getting too long).
+
+> Discontiguous writes do (unless the filesystem is very full and the
+> only available free areas are small--see below).  The data will be
+> fragmented or not depending on the write pattern, not the presence or
+> absence of snapshots.
+
+> On the other hand, if snapshots are present, then
+> (overly aggressive) defrag will consume a large amount of disk space.
+> Maybe that's what you're getting at.
+
+Yes. But, any defrag which is based on unsharing will fail in such a  
+situation, in one way or another. The arguments for current defrag  
+always mention the ways in which it won't fail, forgetting to mention  
+that it will ALWAYS fail in at least one, sometimes disastrous way.  
+But always a different one. Really, it is an inhonest debate.
+
+> If the filesystem is very full and all free space areas are small,
+> you want to use balance to move all the data closer together so that
+> free space areas get bigger.  Defrag is the wrong tool for this.
+> Balance handles shared extent references just fine.
+>
+>> So why don't you write on the wiki "the defrag is practically unusable in
+>> case you use snapshots". Because that is the truth. Be honest.
+>
+> It depends on the size of the defragmented data.  If the only thing
+> you need to defrag is systemd journal files and the $HOME/.thunderbird
+> directory, then you can probably afford to store a few extra copies of
+> those on the disk.  It won't be possible to usefully defrag files like
+> those while they have shared extents anyway--too many small overlaps.
+>
+> If you have a filesystem full of big VM image files then there's no
+> good solution yet.
 
 
-Any help that could be provided in repairing this file system would be 
-great.
-Also it would be great to know how this might of happened so I can
-avoid it in the future.
-
-None of the data is exactly precious, in fact most of it is backed up
-elsewhere either in dropbox or on an external drive. but I'd like to
-avoid needing to restore it as my internet speed is atrocious.
-
-
-
---=-i1iLw3BxM/Iq3TNZXktP
-Content-Type: application/gzip
-Content-Disposition: attachment; filename=dmesg.log.gz
-Content-Transfer-Encoding: base64
-
-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
-qM/+BaLqFV+WuAEA
-
---=-i1iLw3BxM/Iq3TNZXktP--
 
