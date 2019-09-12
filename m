@@ -2,60 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B75B1424
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 19:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9703B1493
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 20:52:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbfILRxm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 13:53:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41844 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726386AbfILRxm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 13:53:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4CAAEAE99;
-        Thu, 12 Sep 2019 17:53:40 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DE7A9DA835; Thu, 12 Sep 2019 19:54:02 +0200 (CEST)
-Date:   Thu, 12 Sep 2019 19:54:02 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
-Message-ID: <20190912175402.GM2850@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20190628022611.2844-1-anand.jain@oracle.com>
- <20190703132158.GV20977@twin.jikos.cz>
- <e2ab1be9-8b83-987f-0d88-c1f5547060d4@oracle.com>
- <51c42306-b4ae-a243-ac96-fb3acb1a317c@oracle.com>
- <20190902162230.GY2752@twin.jikos.cz>
- <20190903120603.GB2752@twin.jikos.cz>
+        id S1727443AbfILSwK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 14:52:10 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:43907 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725995AbfILSwK (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Sep 2019 14:52:10 -0400
+X-Originating-IP: 88.191.131.7
+Received: from [192.168.1.156] (unknown [88.191.131.7])
+        (Authenticated sender: swami@petaramesh.org)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 73EFB240003;
+        Thu, 12 Sep 2019 18:52:07 +0000 (UTC)
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     Zdenek Kaspar <zkaspar82@gmail.com>,
+        Christoph Anton Mitterer <calestyo@scientia.net>,
+        fdmanana@gmail.com
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
+ <CAL3q7H4peDv_bQa5vGJeOM=V--yq1a1=aHat5qcsXjbnDoSkDQ@mail.gmail.com>
+ <ce6a9b8274f5af89d9378aa84e934ce3f3354acd.camel@scientia.net>
+ <CAL3q7H5qNE4rizN14qmgrAwtju9KRHspKxo3S-PoTcSUvXYuew@mail.gmail.com>
+ <41d5dae3587efa5c19262a230e3c459f8e14159b.camel@scientia.net>
+ <2cfe8d20-43f1-ae88-0712-60bb9d6d4dc0@petaramesh.org>
+ <d92a1321-7e79-e3a9-7dd0-c82d9545b3a0@gmail.com>
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Message-ID: <7d7468b3-36af-8fbb-3e27-84d6c78a2862@petaramesh.org>
+Date:   Thu, 12 Sep 2019 20:52:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190903120603.GB2752@twin.jikos.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <d92a1321-7e79-e3a9-7dd0-c82d9545b3a0@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 03, 2019 at 02:06:03PM +0200, David Sterba wrote:
-> On Mon, Sep 02, 2019 at 06:22:30PM +0200, David Sterba wrote:
-> > On Mon, Sep 02, 2019 at 04:01:56PM +0800, Anand Jain wrote:
-> > > 
-> > > David,
-> > > 
-> > >   I don't see this patch is integrated. Can you please integrated this 
-> > > patch thanks.
-> > 
-> > I don't know why but the patch got lost somewhere, adding to devel
-> > again.
-> 
-> Not lost, but dropped, misc-tests/021 fails. So dropped again, please
-> fix it and test before posting again. Thanks.
+Le 12/09/2019 à 18:21, Zdenek Kaspar a écrit :
+> On 9/12/19 4:57 PM, Swâmi Petaramesh wrote:
+>
+>> However having read that the bug is diagnosed, confirmed and fixed by
+>> Filipe, I seriously consider downgrading my kernel back to 5.1 on the 2
+>> Manjaro machines as it is rather straightforward, and maybe my Arch as
+>> well... Until I'm sure that the fix made it to said distro kernels.
+>
+> It's included in [testing] right now...
+>
+> https://git.archlinux.org/linux.git/log/?h=v5.2.14-arch2
+> Z.
 
-With the test misc/021 updated, this patch has been added to devel.
-Thanks.
+
+:)
+
+
+ॐ
+-- 
+Swâmi Petaramesh <swami@petaramesh.org> OpenPGP ID 0x1BFFD850
+
