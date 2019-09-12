@@ -2,56 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F88B1402
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 19:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B75B1424
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 19:53:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726444AbfILRtU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 13:49:20 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39534 "EHLO mx1.suse.de"
+        id S1726718AbfILRxm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 13:53:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41844 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726132AbfILRtU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 13:49:20 -0400
+        id S1726386AbfILRxm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Sep 2019 13:53:42 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1CDE6B823;
-        Thu, 12 Sep 2019 17:49:18 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 4CAAEAE99;
+        Thu, 12 Sep 2019 17:53:40 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3F497DA835; Thu, 12 Sep 2019 19:49:35 +0200 (CEST)
-Date:   Thu, 12 Sep 2019 19:49:35 +0200
+        id DE7A9DA835; Thu, 12 Sep 2019 19:54:02 +0200 (CEST)
+Date:   Thu, 12 Sep 2019 19:54:02 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     linux-btrfs@vger.kernel.org, jthumshirn@suse.de, dsterba@suse.cz
-Subject: Re: [PATCH Fix-title-prefix] btrfs-progs: misc-tests-021 fix restore
- overlapped on disk's stale data
-Message-ID: <20190912174935.GL2850@twin.jikos.cz>
+To:     dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs_progs: mkfs: match devid order to the stripe index
+Message-ID: <20190912175402.GM2850@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org, jthumshirn@suse.de
-References: <23f82b13-5050-0acd-49fb-1ecd06811b8d@suse.de>
- <20190904132947.1232-1-anand.jain@oracle.com>
+        linux-btrfs@vger.kernel.org
+References: <20190628022611.2844-1-anand.jain@oracle.com>
+ <20190703132158.GV20977@twin.jikos.cz>
+ <e2ab1be9-8b83-987f-0d88-c1f5547060d4@oracle.com>
+ <51c42306-b4ae-a243-ac96-fb3acb1a317c@oracle.com>
+ <20190902162230.GY2752@twin.jikos.cz>
+ <20190903120603.GB2752@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190904132947.1232-1-anand.jain@oracle.com>
+In-Reply-To: <20190903120603.GB2752@twin.jikos.cz>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 04, 2019 at 09:29:47PM +0800, Anand Jain wrote:
-> As misc-tests/021 image dump is restored on the same original loop
-> device, this overlaps with the stale data and makes the test pass
-> falsely.
+On Tue, Sep 03, 2019 at 02:06:03PM +0200, David Sterba wrote:
+> On Mon, Sep 02, 2019 at 06:22:30PM +0200, David Sterba wrote:
+> > On Mon, Sep 02, 2019 at 04:01:56PM +0800, Anand Jain wrote:
+> > > 
+> > > David,
+> > > 
+> > >   I don't see this patch is integrated. Can you please integrated this 
+> > > patch thanks.
+> > 
+> > I don't know why but the patch got lost somewhere, adding to devel
+> > again.
 > 
-> Fix this by using a new device for restore.
-> 
-> And also, the btrfs-image dump and restore doesn't not collect the data,
-> so any read on the files should be avoided. So instead of file data use
-> file stat data for the md5sum.
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> Reported-by: Johannes Thumshirn <jthumshirn@suse.de>
-> ---
+> Not lost, but dropped, misc-tests/021 fails. So dropped again, please
+> fix it and test before posting again. Thanks.
 
-Applied, thanks.
+With the test misc/021 updated, this patch has been added to devel.
+Thanks.
