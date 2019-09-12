@@ -2,41 +2,41 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E39FBB0FB1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 15:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DC2EB0FB7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 15:20:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731896AbfILNSC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 09:18:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53350 "EHLO mail.kernel.org"
+        id S1731788AbfILNUQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 09:20:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731788AbfILNSB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 09:18:01 -0400
-Received: from mail-vs1-f50.google.com (mail-vs1-f50.google.com [209.85.217.50])
+        id S1731787AbfILNUQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Sep 2019 09:20:16 -0400
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 00B7B20856
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 13:18:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 616A220856
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 13:20:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568294280;
-        bh=An5syCvJ7CCEKCH1uuq7/Gv+AlRKQJicBnTMb1qeGHk=;
+        s=default; t=1568294415;
+        bh=bu05zgwV8Q911cjKm+S/M9rhu9BBLfhe/TdtR3y7Ub4=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=oI1kYjDtCYPkxB1Fc11Oj8K38pdg8XNRFtT0wkoyX3O4ukJIPoBNJeC0+bOqCMtsi
-         pXTzE5YcSSrEMlgeTwGfDzrvmfiwJniD0j/ZHhED7Jglbw58aL21+f869rVle996qU
-         UUnGMeEU4eQQSnPtOSkOgCtaQM6YsQTpOIxpMQYQ=
-Received: by mail-vs1-f50.google.com with SMTP id w195so16129268vsw.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 06:17:59 -0700 (PDT)
-X-Gm-Message-State: APjAAAUjkv3c5UKA/9KqJzBmvEuDE3sUu5WYyIiAinSNN+Pw9Hb/NaKb
-        low5KiVzmhA54YhZJP4uOKMSakztwjgHsYZtwPI=
-X-Google-Smtp-Source: APXvYqyUZFHITENAsj/181Tk4V4S4J6gUWn5ewZdYNidssOSQjwOb/yLG2JXXuC9okknlyOTqbVh80h18zsE6IRdC2U=
-X-Received: by 2002:a67:2d13:: with SMTP id t19mr19730929vst.99.1568294278962;
- Thu, 12 Sep 2019 06:17:58 -0700 (PDT)
+        b=mgsGahlJSeYCrck3a/iREvjg4pkXoDHUtz56OeX76LuwslUyRocZ98KKlB3VYEaW/
+         bGxF2zqEqcEzSfw7qnrbOoDm+IV20p6WxENtfnTXvvuU3plB52beqPIp9Trlzpjm7J
+         kkf/ul1QAsjHdGPgRYJOAjgJ2WGluOjNKSp8pAYA=
+Received: by mail-vk1-f172.google.com with SMTP id q186so5140145vkb.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 06:20:15 -0700 (PDT)
+X-Gm-Message-State: APjAAAWw9T1490THV24MGAG95NAzrPM0S8CZrZm3vALhyPhYyQ7ZFTeA
+        3/Q94T82+Rj8Mr9ZTWZnTP1L326Ibf54+rl3RGA=
+X-Google-Smtp-Source: APXvYqwjAlqFyABuLxa2vpladETuMD6ApzKFvfgT3gamfY9uwgwUv/Df4iBhXSmy4TkWcZIda/CXwXd/JQBQehAYeKk=
+X-Received: by 2002:a1f:c2c3:: with SMTP id s186mr123796vkf.88.1568294406386;
+ Thu, 12 Sep 2019 06:20:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190910142649.19808-1-fdmanana@kernel.org> <20190912115843.5a2wqft7a47pbrhr@MacBook-Pro-91.local>
-In-Reply-To: <20190912115843.5a2wqft7a47pbrhr@MacBook-Pro-91.local>
+References: <20190910142649.19808-1-fdmanana@kernel.org> <20190912121757.hw2osz4sejlzsrrq@MacBook-Pro-91.local>
+In-Reply-To: <20190912121757.hw2osz4sejlzsrrq@MacBook-Pro-91.local>
 From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 12 Sep 2019 14:17:48 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5XcYzbYDNAsi-OY3sMAdcyjH7W70tSq10H=db2h3yaLQ@mail.gmail.com>
-Message-ID: <CAL3q7H5XcYzbYDNAsi-OY3sMAdcyjH7W70tSq10H=db2h3yaLQ@mail.gmail.com>
+Date:   Thu, 12 Sep 2019 14:19:55 +0100
+X-Gmail-Original-Message-ID: <CAL3q7H4tTsZaz0Nr+yWBkDfHmj=M0JszZtaTaaM9LP2oeWLu3w@mail.gmail.com>
+Message-ID: <CAL3q7H4tTsZaz0Nr+yWBkDfHmj=M0JszZtaTaaM9LP2oeWLu3w@mail.gmail.com>
 Subject: Re: [PATCH] Btrfs: fix assertion failure during fsync and use of
  stale transaction
 To:     Josef Bacik <josef@toxicpanda.com>
@@ -47,7 +47,7 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 12:59 PM Josef Bacik <josef@toxicpanda.com> wrote:
+On Thu, Sep 12, 2019 at 1:18 PM Josef Bacik <josef@toxicpanda.com> wrote:
 >
 > On Tue, Sep 10, 2019 at 03:26:49PM +0100, fdmanana@kernel.org wrote:
 > > From: Filipe Manana <fdmanana@suse.com>
@@ -124,15 +124,31 @@ On Thu, Sep 12, 2019 at 12:59 PM Josef Bacik <josef@toxicpanda.com> wrote:
 > >    be able to do it, since the nested transaction join only increments the
 > >    transaction handle's ->use_count reference counter and it does not
 > >    prevent the transaction from getting committed. This means that after
+> >    eviction completes, the fsync logging path will be using a transaction
+> >    handle that refers to an already committed transaction. What happens
+> >    when using such a stale transaction can be unpredictable, we are at
+> >    least having a use-after-free on the transaction handle itself, since
+> >    the transaction commit will call kmem_cache_free() against the handle
+> >    regardless of its ->use_count value, or we can end up silently losing
+> >    all the updates to the log tree after that iput() in the logging path,
+> >    or using a transaction handle that in the meanwhile was allocated to
+> >    another task for a new transaction, etc, pretty much unpredictable
+> >    what can happen.
+> >
 >
-> This brings up a good point, we should probably not allow the commit in this
-> case, or add an ASSERT(use_count == 1) or something, cause this would be bad.
-> Thanks,
+> And talking it over with Nikolay I realized that since we're doing the commit
+> through the flushing this doesn't actually happen anymore.
+> may_commit_transaction() returns -EGAIN if we already have a trans handle open,
+> so hooray I made it safer by accident!  But we definitely should follow up and
+> add an assert in btrfs_commit_transaction() to catch this case, cause holy shit
+> that's bad.  Thanks,
 
-Yes, that should be separate change however.
-I had warn_on(trans->use_count > 1) in the commit locally during
-testing (didn't trigger in 4 days of fstests).
+Yep, but problem 1) (assertion failure) is still valid after your
+recent changes in misc-next.
+Either way, this fix has to be added to stable releases to fix both
+problems there.
 
 Thanks.
+
 >
 > Josef
