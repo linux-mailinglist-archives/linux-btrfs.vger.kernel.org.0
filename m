@@ -2,186 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DFCB0A61
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 10:32:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2E5B0A97
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 10:48:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730184AbfILIcq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 04:32:46 -0400
-Received: from mout.gmx.net ([212.227.17.20]:42469 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730126AbfILIcp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 04:32:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1568277158;
-        bh=ERoFHcsDmkxYkdv7iK7RBqOu7iRQj3yI6ISXCBwQWYk=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=bPHBGBtx3SCisBFM1SsVYj/B0Z1xRhGozNwMLJiKtJqRaGxmXsj8ShxlhXWwQ/1hJ
-         Ne19ygW3bpqnR7nKBTei6KQv1bF/7rVVYJQUMG9WkLEXH9eqyTPXdo5GI2/MqAvBse
-         52h9qwc9oLGuIy8jWseWT5A8PcPNE36F0iT5Gj9g=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5wLT-1i1TqQ39bP-007WLM; Thu, 12
- Sep 2019 10:32:38 +0200
-Subject: Re: [PATCH] btrfs: qgroup: Fix the wrong io_tree when freeing
- reserved data space
-To:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
+        id S1730131AbfILIsP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 04:48:15 -0400
+Received: from relay9-d.mail.gandi.net ([217.70.183.199]:36185 "EHLO
+        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726159AbfILIsO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Sep 2019 04:48:14 -0400
+X-Originating-IP: 37.173.105.227
+Received: from [10.137.0.38] (unknown [37.173.105.227])
+        (Authenticated sender: swami@petaramesh.org)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 7A91CFF81B;
+        Thu, 12 Sep 2019 08:48:11 +0000 (UTC)
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     fdmanana@gmail.com,
+        Christoph Anton Mitterer <calestyo@scientia.net>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Josef Bacik <josef@toxicpanda.com>
-References: <20190912011306.14858-1-wqu@suse.com>
- <CAL3q7H7aycs+JooiFhGec38UK4coVbpjB491vdEGqwHhP_n5bg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <86d4a5fd-9790-4ebf-a899-2b2ad5a24694@gmx.com>
-Date:   Thu, 12 Sep 2019 16:32:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.0
+        David Sterba <dsterba@suse.com>
+References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
+ <CAL3q7H4peDv_bQa5vGJeOM=V--yq1a1=aHat5qcsXjbnDoSkDQ@mail.gmail.com>
+From:   =?UTF-8?Q?Sw=c3=a2mi_Petaramesh?= <swami@petaramesh.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=swami@petaramesh.org; keydata=
+ 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
+ BtUAN08OPA==
+Message-ID: <9731b0e7-81f3-4ee5-6f89-b4fd8d981736@petaramesh.org>
+Date:   Thu, 12 Sep 2019 10:48:09 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H7aycs+JooiFhGec38UK4coVbpjB491vdEGqwHhP_n5bg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="hhy1MTMZaS8sXQiiBnkTSQn3naBksP2ig"
-X-Provags-ID: V03:K1:cMrJ2gpSpraD/q20XQlpAi5yoVh7vZmVmExMlG1zkEThevEs1QW
- pYQMwkOeKUXl8IGShl3xXkYqq7XmmXuBxKNJd25ePNEYIDYfyPSVsZKzQAn9Ucc9YNrJEn3
- aajxgoPUAUfZlVr7e7CY0I+/wNEzRXFbn0iTCW8wPEaKIhAfJNfDAAae2A9mf2718ogvN5W
- OYmP98/XLAcBJlvIzhJlw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kTBGBYL/hxw=:nU3a3d9n6iOzOZVDFLIQP1
- zf+tGvZDGioNBBrx68xec/i1orJ7dfAwBCOAaOJNjlQXNgYnS2cJAHkisCRUTTw4fTuCAeDpx
- m9BT0+OARasutp3bMl58t5AOM4LLZW4dbLMOvVNnv8t9OWEpKZF5IkN9k6ksEBIceQsND2RfO
- k75FOUXg8m4N6s3Vi0iGYWphJI+AedMqbXu3g0D1KVsMZeViwo4XVvf1S9NnuMc2t56izBlRF
- tTn+Gv/uS7chFWBDHvfF2PbEqEecsZycq5DXGQ4YjdgthnQ7Q+0Hkfj594F7dq85acb8JNnb4
- rnwRjpGNoZPOUUnjDAoOcrO7GrAto2MKillTn4AXLJVsz5w+5Jg4nz3GvtDrW0uUXeB8yQl+u
- 4ByLqfjojRrKqFrRKm3HKXSNJftCittIY5gVPDLxhGEohjBvMqXTRXMAsjLYU/JyMD3og4DZa
- SVwygaxpJ3cfLN81ralM3hhdhIefnvzXR+40kPQEs0lOpddBck4E6ljHEX/APiS9+cOX/azWt
- YaSgljDP6KAzxHrzxv9PEm86LggEv3SAJ5WzZh9K0hZaFdepQYOaQybaU/MF0uRupHiq+STpw
- nADZP+x5Xc3CUVREvE0TJriLS6aOaEhAmsfHvCA8TFZFyhVQybD0wvxZGDRevAcwXQtX2MAwU
- t/jMfBF7fAOH2/8ozjQQ9mab1YPMJEAEtvzF0eCzyTU2KAXsw9wNXYXArpYb6WauKyKMO9XsJ
- j76dFr03JarHw9k+rv7HNeF3Fqx1VNOUgMjQfnOmIfTNnVzChdAFC1HIZMypqVNbi/NQXSufl
- +y0SwGrLOu4sNz7+lKDUkqe/ppPL7/olYtiIRwmWOMmiP/MpYB+DV/ZIpmSAZG3lHSrVpI2kY
- bVCgdbQP+IG5u33pRn0vrCxJz8lCOgt0MTFgtOtLraXLDreHjIcAAssXWBKkeu3DiE70Sr219
- yx8LKEJgp+bZc32eLNY7nHeGVcXlCQqdnI1gFK2jd2ggWPPMXtKS6hmlUN4+aRMZA9g8l5wvD
- fVdqv+izTKKWFE+gG0yhSDTR8Nt80PVkulrKDlpUiJBmjkWt/xvLOtTJtbNEx2EBGh0bApku/
- htgLnbT8NLgwAOIp4laRKwvDnSZ8Cfar+6Bbgz9qp2hYRtCyYH/2cI3mIzGKz+O0gSUUI5C+g
- tYaOkFbKrcFhhgR6MSwHq+B+EsZMaOUiWFm8a2o8l7XRp4CJA9CFY9EHKDNJm4jPytG/8=
+In-Reply-To: <CAL3q7H4peDv_bQa5vGJeOM=V--yq1a1=aHat5qcsXjbnDoSkDQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: fr-FR
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---hhy1MTMZaS8sXQiiBnkTSQn3naBksP2ig
-Content-Type: multipart/mixed; boundary="YA3L91Wq2apeZCyokk96PbkIcdGglmxQS"
+Hi Filipe,
 
---YA3L91Wq2apeZCyokk96PbkIcdGglmxQS
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On 9/12/19 9:50 AM, Filipe Manana wrote:
+> So we definitely have a serious regression introduced on 5.2.
+> I sent out a fix for it yesterday:  https://patchwork.kernel.org/patch/11141559/
 
+Many thanks for having found and patched it.
 
+Kind regards.
 
-On 2019/9/12 =E4=B8=8B=E5=8D=883:53, Filipe Manana wrote:
-> On Thu, Sep 12, 2019 at 2:31 AM Qu Wenruo <wqu@suse.com> wrote:
->>
->> Commit bc42bda22345 ("btrfs: qgroup: Fix qgroup reserved space underfl=
-ow by
->> only freeing reserved ranges") is freeing wrong range in
->> BTRFS_I()->io_failure_tree, which should be BTRFS_I()->io_tree.
->=20
-> I think you meant wrong tree and not wrong range, since the code
-> doesn't change the range, only the target tree.
+ॐ
 
-Right, wrong tree.
+-- 
+Swâmi Petaramesh <swami@petaramesh.org> PGP 9076E32E
 
->=20
-> Also, for the sake of completeness, and no matter how obvious you
-> think it is, can you explicitly mention what's the consequence? I
-> presume it's a qgroup reserved space leak or underflow.
-
-Yes, qgroup reserved space leak for some error path.
-
-I'll enhance the comment, and also craft a test case for it.
-
-Thanks,
-Qu
-
->=20
-> Thanks.
->=20
->>
->> Just fix it.
->>
->> Reported-by: Josef Bacik <josef@toxicpanda.com>
->> Fixes: bc42bda22345 ("btrfs: qgroup: Fix qgroup reserved space underfl=
-ow by only freeing reserved ranges")
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>  fs/btrfs/qgroup.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
->> index 2891b57b9e1e..64bdc3e3652d 100644
->> --- a/fs/btrfs/qgroup.c
->> +++ b/fs/btrfs/qgroup.c
->> @@ -3492,7 +3492,7 @@ static int qgroup_free_reserved_data(struct inod=
-e *inode,
->>                  * EXTENT_QGROUP_RESERVED, we won't double free.
->>                  * So not need to rush.
->>                  */
->> -               ret =3D clear_record_extent_bits(&BTRFS_I(inode)->io_f=
-ailure_tree,
->> +               ret =3D clear_record_extent_bits(&BTRFS_I(inode)->io_t=
-ree,
->>                                 free_start, free_start + free_len - 1,=
-
->>                                 EXTENT_QGROUP_RESERVED, &changeset);
->>                 if (ret < 0)
->> --
->> 2.23.0
->>
->=20
->=20
-
-
---YA3L91Wq2apeZCyokk96PbkIcdGglmxQS--
-
---hhy1MTMZaS8sXQiiBnkTSQn3naBksP2ig
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl16Ap4ACgkQwj2R86El
-/qjB6Qf+Ill2RMe0aLm2NBhUO2kMtwAGRnxMRc75LrPDaknsJ2eMja6afIE4usxA
-yH1sd+FhtJoGvf3LQepleKDL+XZYMRypw9IPNhDDfibvnYuK/okHAjVBW7ndusnI
-darTd/UQkaJOXlvqFGyaHoVTDnyz1wvs5e4JrdVgkC3wkpVC19fsmuOFQuskA8e6
-Aw7hE0mKzadi+1JfBymrTpsOsi4142Vzy8d7VjRq+iEceben8IsEK8rdTw+gSdcy
-6xfF4wA73Z0uqzf9uRuu06rNUPEYVoodoJkH1AgmTMGX5wOw4558QjjPPe6QXeck
-04mgGGamDFNNqoqhzH/tfsANDCqj0g==
-=I0Oj
------END PGP SIGNATURE-----
-
---hhy1MTMZaS8sXQiiBnkTSQn3naBksP2ig--
