@@ -2,73 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 326C1B0DD8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 13:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6B1B0DF5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Sep 2019 13:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731430AbfILLb4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 07:31:56 -0400
-Received: from mail-qk1-f174.google.com ([209.85.222.174]:45438 "EHLO
-        mail-qk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731375AbfILLbz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 07:31:55 -0400
-Received: by mail-qk1-f174.google.com with SMTP id z67so24000505qkb.12
-        for <linux-btrfs@vger.kernel.org>; Thu, 12 Sep 2019 04:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=APTd2I+NkT/5rKFjF+7+phoFHmQvKKUjMQGDRneGxh4=;
-        b=ZM45HCsmRrEHe1z4t4vdCi1gTQO4ANXwXif5hhAfjx3VKcMwhiuXGrrDFvtsSXxvG+
-         XnjfH7m4nsPAaPYwGwwcfaYUrQksRrrdM/KjyY85UweVJWsIkhobnGsx3KkdpBQqsAKs
-         8b8dRKcOpxuzP0bazitJmi4RbXd19TDu5081nKaR6hsnOq6XE+TZzi81o2wCQifMWfzO
-         dMXnf6yL7HJRxF+GKgOj7FeLa9fUgnn00yC0AqkSyDLgGAVaFSrbNwfyVKevGzdq45oZ
-         vIIBm2m6sUzXBot0qdVKOeXzHQDl7Hlyhizc47eg9djAi2tk9sYVe6ql10FIzB/ff57J
-         Pk8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=APTd2I+NkT/5rKFjF+7+phoFHmQvKKUjMQGDRneGxh4=;
-        b=GdKbV5zeM7brotIA5175y7hJ5vrhrK7KWEo8yY8HvyJsF/iJqoHCapv+ofi5nV3rwu
-         PlK5bF5KSq9OEf5r88Y8diwlgxF82eckqOWgcgl1sySX4ZXbQCPUaHzRB1cOoPTU1RW5
-         85009unuiVnBAoKxKlsODus4blPg9v7LfJXvqvip/GEV3hkZaJHvGSX/yjlZCk/O17QP
-         DQK/jMHwa51lPmz97eJpmkbYx7xiLtI26XEyndskIs5Y8BRi4Iazj+r7Cd5AkkLtzY/3
-         UqMwqEVPktBm7YWz9Ig/AGT3jSgPxie5VsyOhIkb8n58kuxCuLAm5Kb8efbEIX5bpVEQ
-         Ujrw==
-X-Gm-Message-State: APjAAAWOrQT7u9NAoRuErihNi/jlAh7P7JBJhiZfGT1OAgj4dTDdUGuc
-        6VniMe868ol3g3pqG8Pi6MBa9ySuAtE=
-X-Google-Smtp-Source: APXvYqw87jq6Qn28Tvy2C8RSD2RmuGTL9268I9HnPcb84qvmjrA3elc/RaNkdyTiRm0EnRX9G+gXEw==
-X-Received: by 2002:a37:f50b:: with SMTP id l11mr4036341qkk.347.1568287913555;
-        Thu, 12 Sep 2019 04:31:53 -0700 (PDT)
-Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
-        by smtp.gmail.com with ESMTPSA id a11sm11998117qkc.123.2019.09.12.04.31.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Sep 2019 04:31:52 -0700 (PDT)
-Subject: Re: Feature requests: online backup - defrag - change RAID level
-To:     webmaster@zedlx.com
-Cc:     linux-btrfs@vger.kernel.org
-References: <20190908225508.Horde.51Idygc4ykmhqRn316eLdRO@server53.web-hosting.com>
- <5e6a9092-b9f9-58d2-d638-9e165d398747@gmx.com>
- <20190909072518.Horde.c4SobsfDkO6FUtKo3e_kKu0@server53.web-hosting.com>
- <fb80b97a-9bcd-5d13-0026-63e11e1a06b5@gmx.com>
- <c4f05241-77d4-3ae4-9773-795351a26a8e@cobb.uk.net>
- <20190909152625.Horde.fICzOssZXCnCZS2vVHBK-sn@server53.web-hosting.com>
- <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
- <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
- <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
- <20190911132053.Horde._wJd24LqxxXx9ujl2r5i7PQ@server53.web-hosting.com>
- <c8da6684-6c16-fc80-8e10-1afc1871d512@gmail.com>
- <20190911173725.Horde.aRGy9hKzg3scN15icIxdbco@server53.web-hosting.com>
-From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Message-ID: <81f4870e-3ee9-7780-13aa-918d24ca10d8@gmail.com>
-Date:   Thu, 12 Sep 2019 07:31:50 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.0
+        id S1731333AbfILLfn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 07:35:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49828 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730923AbfILLfn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Sep 2019 07:35:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 7A4EFAF61;
+        Thu, 12 Sep 2019 11:35:40 +0000 (UTC)
+Subject: Re: [PATCH] Btrfs: fix assertion failure during fsync and use of
+ stale transaction
+To:     Filipe Manana <fdmanana@kernel.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <20190910142649.19808-1-fdmanana@kernel.org>
+ <b171e10f-6f1f-4711-4fa6-67e2ffbe8378@suse.com>
+ <CAL3q7H7-ARvEp+gXE6XYK3KRLuwYO8HdSP_0C+fW5ekCE8-goQ@mail.gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <438d699e-21bf-5bb2-7c02-0efa87e92086@suse.com>
+Date:   Thu, 12 Sep 2019 14:35:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190911173725.Horde.aRGy9hKzg3scN15icIxdbco@server53.web-hosting.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAL3q7H7-ARvEp+gXE6XYK3KRLuwYO8HdSP_0C+fW5ekCE8-goQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -76,186 +80,93 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019-09-11 17:37, webmaster@zedlx.com wrote:
-> 
-> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
-> 
->> On 2019-09-11 13:20, webmaster@zedlx.com wrote:
->>>
->>> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
->>>
->>>> On 2019-09-10 19:32, webmaster@zedlx.com wrote:
->>>>>
->>>>> Quoting "Austin S. Hemmelgarn" <ahferroin7@gmail.com>:
->>>>>
-> 
->>>> Given this, defrag isn't willfully unsharing anything, it's just a 
->>>> side-effect of how it works (since it's rewriting the block layout 
->>>> of the file in-place).
->>>
->>> The current defrag has to unshare because, as you said, because it is 
->>> unaware of the full reflink structure. If it doesn't know about all 
->>> reflinks, it has to unshare, there is no way around that.
->>>
->>>> Now factor in that _any_ write will result in unsharing the region 
->>>> being written to, rounded to the nearest full filesystem block in 
->>>> both directions (this is mandatory, it's a side effect of the 
->>>> copy-on-write nature of BTRFS, and is why files that experience 
->>>> heavy internal rewrites get fragmented very heavily and very quickly 
->>>> on BTRFS).
->>>
->>> You mean: when defrag performs a write, the new data is unshared 
->>> because every write is unshared? Really?
->>>
->>> Consider there is an extent E55 shared by two files A and B. The 
->>> defrag has to move E55 to another location. In order to do that, 
->>> defrag creates a new extent E70. It makes it belong to file A by 
->>> changing the reflink of extent E55 in file A to point to E70.
->>>
->>> Now, to retain the original sharing structure, the defrag has to 
->>> change the reflink of extent E55 in file B to point to E70. You are 
->>> telling me this is not possible? Bullshit!
->>>
->>> Please explain to me how this 'defrag has to unshare' story of yours 
->>> isn't an intentional attempt to mislead me.
-> 
->> As mentioned in the previous email, we actually did have a (mostly) 
->> working reflink-aware defrag a few years back.  It got removed because 
->> it had serious performance issues.  Note that we're not talking a few 
->> seconds of extra time to defrag a full tree here, we're talking 
->> double-digit _minutes_ of extra time to defrag a moderate sized (low 
->> triple digit GB) subvolume with dozens of snapshots, _if you were 
->> lucky_ (if you weren't, you would be looking at potentially multiple 
->> _hours_ of runtime for the defrag).  The performance scaled inversely 
->> proportionate to the number of reflinks involved and the total amount 
->> of data in the subvolume being defragmented, and was pretty bad even 
->> in the case of only a couple of snapshots.
-> 
-> You cannot ever make the worst program, because an even worse program 
-> can be made by slowing down the original by a factor of 2.
-> So, you had a badly implemented defrag. At least you got some 
-> experience. Let's see what went wrong.
-> 
->> Ultimately, there are a couple of issues at play here:
+
+
+On 12.09.19 г. 14:24 ч., Filipe Manana wrote:
+> On Thu, Sep 12, 2019 at 12:10 PM Nikolay Borisov <nborisov@suse.com> wrote:
 >>
->> * Online defrag has to maintain consistency during operation.  The 
->> current implementation does this by rewriting the regions being 
->> defragmented (which causes them to become a single new extent (most of 
->> the time)), which avoids a whole lot of otherwise complicated logic 
->> required to make sure things happen correctly, and also means that 
->> only the file being operated on is impacted and only the parts being 
->> modified need to be protected against concurrent writes.  Properly 
->> handling reflinks means that _every_ file that shares some part of an 
->> extent with the file being operated on needs to have the reflinked 
->> regions locked for the defrag operation, which has a huge impact on 
->> performance. Using your example, the update to E55 in both files A and 
->> B has to happen as part of the same commit, which can contain no other 
->> writes in that region of the file, otherwise you run the risk of 
->> losing writes to file B that occur while file A is being defragmented.
+>>
+>>
+>> On 10.09.19 г. 17:26 ч., fdmanana@kernel.org wrote:
+>>> From: Filipe Manana <fdmanana@suse.com>
+>>>
+>>> Sometimes when fsync'ing a file we need to log that other inodes exist and
+>>> when we need to do that we acquire a reference on the inodes and then drop
+>>> that reference using iput() after logging them.
+>>>
+>>> That generally is not a problem except if we end up doing the final iput()
+>>> (dropping the last reference) on the inode and that inode has a link count
+>>> of 0, which can happen in a very short time window if the logging path
+>>> gets a reference on the inode while it's being unlinked.
+>>>
+>>> In that case we end up getting the eviction callback, btrfs_evict_inode(),
+>>> invoked through the iput() call chain which needs to drop all of the
+>>> inode's items from its subvolume btree, and in order to do that, it needs
+>>> to join a transaction at the helper function evict_refill_and_join().
+>>> However because the task previously started a transaction at the fsync
+>>> handler, btrfs_sync_file(), it has current->journal_info already pointing
+>>> to a transaction handle and therefore evict_refill_and_join() will get
+>>> that transaction handle from btrfs_join_transaction(). From this point on,
+>>> two different problems can happen:
+>>>
+>>> 1) evict_refill_and_join() will often change the transaction handle's
+>>>    block reserve (->block_rsv) and set its ->bytes_reserved field to a
+>>>    value greater than 0. If evict_refill_and_join() never commits the
+>>>    transaction, the eviction handler ends up decreasing the reference
+>>>    count (->use_count) of the transaction handle through the call to
+>>>    btrfs_end_transaction(), and after that point we have a transaction
+>>>    handle with a NULL ->block_rsv (which is the value prior to the
+>>>    transaction join from evict_refill_and_join()) and a ->bytes_reserved
+>>>    value greater than 0. If after the eviction/iput completes the inode
+>>>    logging path hits an error or it decides that it must fallback to a
+>>>    transaction commit, the btrfs fsync handle, btrfs_sync_file(), gets a
+>>>    non-zero value from btrfs_log_dentry_safe(), and because of that
+>>>    non-zero value it tries to commit the transaction using a handle with
+>>>    a NULL ->block_rsv and a non-zero ->bytes_reserved value. This makes
+>>>    the transaction commit hit an assertion failure at
+>>>    btrfs_trans_release_metadata() because ->bytes_reserved is not zero but
+>>>    the ->block_rsv is NULL. The produced stack trace for that is like the
+>>>    following:
+>>>
+>>>    [192922.917158] assertion failed: !trans->bytes_reserved, file: fs/btrfs/transaction.c, line: 816
+>>>    [192922.917553] ------------[ cut here ]------------
+>>>    [192922.917922] kernel BUG at fs/btrfs/ctree.h:3532!
+>>>    [192922.918310] invalid opcode: 0000 [#1] SMP DEBUG_PAGEALLOC PTI
+>>>    [192922.918666] CPU: 2 PID: 883 Comm: fsstress Tainted: G        W         5.1.4-btrfs-next-47 #1
+>>>    [192922.919035] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.11.2-0-gf9626ccb91-prebuilt.qemu-project.org 04/01/2014
+>>>    [192922.919801] RIP: 0010:assfail.constprop.25+0x18/0x1a [btrfs]
+>>>    (...)
+>>>    [192922.920925] RSP: 0018:ffffaebdc8a27da8 EFLAGS: 00010286
+>>>    [192922.921315] RAX: 0000000000000051 RBX: ffff95c9c16a41c0 RCX: 0000000000000000
+>>>    [192922.921692] RDX: 0000000000000000 RSI: ffff95cab6b16838 RDI: ffff95cab6b16838
+>>>    [192922.922066] RBP: ffff95c9c16a41c0 R08: 0000000000000000 R09: 0000000000000000
+>>>    [192922.922442] R10: ffffaebdc8a27e70 R11: 0000000000000000 R12: ffff95ca731a0980
+>>>    [192922.922820] R13: 0000000000000000 R14: ffff95ca84c73338 R15: ffff95ca731a0ea8
+>>>    [192922.923200] FS:  00007f337eda4e80(0000) GS:ffff95cab6b00000(0000) knlGS:0000000000000000
+>>>    [192922.923579] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>>>    [192922.923948] CR2: 00007f337edad000 CR3: 00000001e00f6002 CR4: 00000000003606e0
+>>>    [192922.924329] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>>>    [192922.924711] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>>>    [192922.925105] Call Trace:
+>>>    [192922.925505]  btrfs_trans_release_metadata+0x10c/0x170 [btrfs]
+>>>    [192922.925911]  btrfs_commit_transaction+0x3e/0xaf0 [btrfs]
+>>>    [192922.926324]  btrfs_sync_file+0x44c/0x490 [btrfs]
+>>>    [192922.926731]  do_fsync+0x38/0x60
+>>>    [192922.927138]  __x64_sys_fdatasync+0x13/0x20
+>>>    [192922.927543]  do_syscall_64+0x60/0x1c0
+>>>    [192922.927939]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>>>    (...)
+>>>    [192922.934077] ---[ end trace f00808b12068168f ]---
+>>>
+>>> 2) If evict_refill_and_join() decides to commit the transaction, it will
+>> evict_refill_and_join only ever calls btrfs_join_transaction so it
+>> cannot ever commit the transaction.
 > 
-> Nah. I think there is a workaround. You can first (atomically) update A, 
-> then whatever, then you can update B later. I know, your yelling "what 
-> if E55 gets updated in B". Doesn't matter. The defrag continues later by 
-> searching for reflink to E55 in B. Then it checks the data contained in 
-> E55. If the data matches the E70, then it can safely update the reflink 
-> in B. Or the defrag can just verify that neither E55 nor E70 have been 
-> written to in the meantime. That means they still have the same data.
-So, IOW, you don't care if the total space used by the data is 
-instantaneously larger than what you started with?  That seems to be at 
-odds with your previous statements, but OK, if we allow for that then 
-this is indeed a non-issue.
+> It can:
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/btrfs/inode.c?h=v5.3-rc8#n5399
 
-> 
->> It's not horrible when it's just a small region in two files, but it 
->> becomes a big issue when dealing with lots of files and/or 
->> particularly large extents (extents in BTRFS can get into the GB range 
->> in terms of size when dealing with really big files).
-> 
-> You must just split large extents in a smart way. So, in the beginning, 
-> the defrag can split large extents (2GB) into smaller ones (32MB) to 
-> facilitate more responsive and easier defrag.
-> 
-> If you have lots of files, update them one-by one. It is possible. Or 
-> you can update in big batches. Whatever is faster.
-Neither will solve this though.  Large numbers of files are an issue 
-because the operation is expensive and has to be done on each file, not 
-because the number of files somehow makes the operation more espensive. 
-It's O(n) relative to files, not higher time complexity.
-> 
-> The point is that the defrag can keep a buffer of a "pending 
-> operations". Pending operations are those that should be performed in 
-> order to keep the original sharing structure. If the defrag gets 
-> interrupted, then files in "pending operations" will be unshared. But 
-> this should really be some important and urgent interrupt, as the 
-> "pending operations" buffer needs at most a second or two to complete 
-> its operations.
-Depending on the exact situation, it can take well more than a few 
-seconds to complete stuff. Especially if there are lots of reflinks.
-> 
->> * Reflinks can reference partial extents.  This means, ultimately, 
->> that you may end up having to split extents in odd ways during defrag 
->> if you want to preserve reflinks, and might have to split extents 
->> _elsewhere_ that are only tangentially related to the region being 
->> defragmented. See the example in my previous email for a case like 
->> this, maintaining the shared regions as being shared when you 
->> defragment either file to a single extent will require splitting 
->> extents in the other file (in either case, whichever file you don't 
->> defragment to a single extent will end up having 7 extents if you try 
->> to force the one that's been defragmented to be the canonical 
->> version).  Once you consider that a given extent can have multiple 
->> ranges reflinked from multiple other locations, it gets even more 
->> complicated.
-> 
-> I think that this problem can be solved, and that it can be solved 
-> perfectly (the result is a perfectly-defragmented file). But, if it is 
-> so hard to do, just skip those problematic extents in initial version of 
-> defrag.
-> 
-> Ultimately, in the super-duper defrag, those partially-referenced 
-> extents should be split up by defrag.
-> 
->> * If you choose to just not handle the above point by not letting 
->> defrag split extents, you put a hard lower limit on the amount of 
->> fragmentation present in a file if you want to preserve reflinks.  
->> IOW, you can't defragment files past a certain point.  If we go this 
->> way, neither of the two files in the example from my previous email 
->> could be defragmented any further than they already are, because doing 
->> so would require splitting extents.
-> 
-> Oh, you're reading my thoughts. That's good.
-> 
-> Initial implementation of defrag might be not-so-perfect. It would still 
-> be better than the current defrag.
-> 
-> This is not a one-way street. Handling of partially-used extents can be 
-> improved in later versions.
-> 
->> * Determining all the reflinks to a given region of a given extent is 
->> not a cheap operation, and the information may immediately be stale 
->> (because an operation right after you fetch the info might change 
->> things).  We could work around this by locking the extent somehow, but 
->> doing so would be expensive because you would have to hold the lock 
->> for the entire defrag operation.
-> 
-> No. DO NOT LOCK TO RETRIEVE REFLINKS.
-> 
-> Instead, you have to create a hook in every function that updates the 
-> reflink structure or extents (for exaple, write-to-file operation). So, 
-> when a reflink gets changed, the defrag is immediately notified about 
-> this. That way the defrag can keep its data about reflinks in-sync with 
-> the filesystem.
-This doesn't get around the fact that it's still an expensive operation 
-to enumerate all the reflinks for a given region of a file or extent.
+Right, in 5.3 branch yes but in misc-next evict_and_join looks
+completely different, that's where the confusion stems from. Thanks
 
-It also allows a very real possibility of a user functionally delaying 
-the defrag operation indefinitely (by triggering a continuous stream of 
-operations that would cause reflink changes for a file being operated on 
-by defrag) if not implemented very carefully.
-> 
-> Also note, this defrag should run as a part of the kernel, not in 
-> userspace. Defrag-from-userspace is a nightmare. Defrag has to serialize 
-> its operations properly, and it must have knowledge of all other 
-> operations in progress. So, it can only operate efficiently as part of 
-> the kernel.
-Agreed on this point.
-
+<snip>
