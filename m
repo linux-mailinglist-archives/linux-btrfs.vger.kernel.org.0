@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 83817B17DC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 07:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2CB6B17E0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 07:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725817AbfIMFF6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Sep 2019 01:05:58 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:51086 "EHLO
+        id S1725933AbfIMFWa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Sep 2019 01:22:30 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:35910 "EHLO
         server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725446AbfIMFF5 (ORCPT
+        by vger.kernel.org with ESMTP id S1725775AbfIMFW3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Sep 2019 01:05:57 -0400
+        Fri, 13 Sep 2019 01:22:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
          s=default; h=MIME-Version:Content-Type:In-Reply-To:References:Subject:Cc:To:
         From:Message-ID:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=viSfbLG2J+Ev01+ThMjzIHF7kRhKU8XmatfyJ8TE0kA=; b=lPmMHazi7Dfva2Xc43iBlFK+9h
-        cbgRQ3jaPjPgML3yscn7/ijT2XUwAV3yB3yJqIrPhev71wFLBru95rdw3oXtqaSeFozVD6unpq0zJ
-        RX6mzAFv2t6wo3So2giSMU1sWgLBb+hYCr4XmNp6Po7eefJIGAEDO+DkWoctwPRu+eC+pmf0nz3+o
-        ah8l5niN3zWBpXHnycZ1OK4MalFtAvlJo2GCiykYpGRWN7uIxYvLLfjEKVZN0XOG16KArfII8cpPT
-        38yc81vDLLJyuvWuWaqd94OynL7qytPwiZDjMOH32WlnUBPRtEvcicSE9z2jSa+QAa4KNsHMza5lH
-        PSDum3RA==;
-Received: from [::1] (port=60308 helo=server53.web-hosting.com)
+        bh=iuDoMDXolMnYr4Qd1x+FhMMq1DU7jbKtuIg65AeCuuY=; b=Zim5kmY6eeYLN983K8eF0P0/cf
+        A1ETQ9Bt73zA4+sW3ZxHioSrFGhGDpeW3Or9bxtpfu3jt+KOaHimz56vMSn6FP5g8B4C7rwwJufJb
+        fAuM4cFfngGUTGNBoOwQ2lfJsjp44YDRBmHn5DYIJXsVmWWFHgJgzVZp1hdrout4YwfbYIGef1aER
+        MgC09cdDUDplGtqLydQWxEpRq8hGw7IEqGpRspLNSquLUz1sO+x+W1WJb56dV9+9fwk+upSOkFUCo
+        9GayfSav5L0dpBqWIGTuzvMU4nivzWkFRRbU1KOlrWNJGo+gtUj0VFQdfS6B6mz4ESkdN1m+8pKTX
+        Gs46AzVg==;
+Received: from [::1] (port=35048 helo=server53.web-hosting.com)
         by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <general-zed@zedlx.com>)
-        id 1i8dmK-002ZZc-B6; Fri, 13 Sep 2019 01:05:56 -0400
+        id 1i8e2L-002icC-0J; Fri, 13 Sep 2019 01:22:29 -0400
 Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Fri, 13 Sep 2019 01:05:52 -0400
-Date:   Fri, 13 Sep 2019 01:05:52 -0400
-Message-ID: <20190913010552.Horde.cUL303XsYbqREB5g0iiCDKd@server53.web-hosting.com>
+ (Horde Framework) with HTTPS; Fri, 13 Sep 2019 01:22:24 -0400
+Date:   Fri, 13 Sep 2019 01:22:24 -0400
+Message-ID: <20190913012224.Horde.29BsHKRl-F2PB5EG-U0wHMA@server53.web-hosting.com>
 From:   General Zed <general-zed@zedlx.com>
 To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Cc:     Chris Murphy <lists@colorremedies.com>,
@@ -79,6 +79,42 @@ Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
 >>
 >> Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
 >>
+>> You mean: all metadata size is 156 GB on one of your systems. However, you
+>> don't typically have to put ALL metadata in RAM.
+>> You need just some parts needed for defrag operation. So, for defrag, what
+>> you really need is just some large metadata cache present in RAM. I would
+>> say that if such a metadata cache is using 128 MB (for 2 TB disk) to 2 GB
+>> (for 156 GB disk), than the defrag will run sufficiently fast.
+>
+> You're missing something (metadata requirement for delete?) in those
+> estimates.
+>
+> Total metadata size does not affect how much metadata cache you need
+> to defragment one extent quickly.  That number is a product of factors
+> including input and output and extent size ratio, the ratio of various
+> metadata item sizes to the metadata page size, and the number of trees you
+> have to update (number of reflinks + 3 for extent, csum, and free space
+> trees).
+>
+> It follows from the above that if you're joining just 2 unshared extents
+> together, the total metadata required is well under a MB.
+>
+> If you're defragging a 128MB journal file with 32768 4K extents, it can
+> create several GB of new metadata and spill out of RAM cache (which is
+> currently capped at 512MB for assorted reasons).  Add reflinks and you
+> might need more cache, or take a performance hit.  Yes, a GB might be
+> the total size of all your metadata, but if you run defrag on a 128MB
+> log file you could rewrite all of your filesystem's metadata in a single
+> transaction (almost...you probably won't need to update the device or
+> uuid trees).
+>
+> If you want to pipeline multiple extents per commit to avoid seeking,
+> you need to multiply the above numbers by the size of the pipeline.
+>
+> You can also reduce the metadata cache requirement by reducing the output
+> extent size.  A 16MB target extent size requires only 64MB of cache for
+> the logfile case.
+>
 >> > Don't forget you have to write new checksum and free space tree pages.
 >> > In the worst case, you'll need about 1GB of new metadata pages for each
 >> > 128MB you defrag (though you get to delete 99.5% of them immediately
@@ -107,45 +143,22 @@ Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
 > is consumed by the metadata update of a single extent defrag.
 >
 
-I can't believe I am considering this case.
+In fact, I overcomplicated it in my previous answer.
 
 So, we have a 1TB log file "ultralog" split into 256 million 4 KB  
 extents randomly over the entire disk. We have 512 GB free RAM and 2%  
 free disk space. The file needs to be defragmented.
 
-In order to do that, defrag needs to be able to copy-move multiple  
-extents in one batch, and update the metadata.
+We select some (any) consecutive 512 MB of file segments. They are  
+certainly localized in the metadata, because we are talking about an  
+ordered b-tree. We write those 512 MB of file extents to another place  
+on the partition, defragmented (don't update b-tree yet). Then defrag  
+calculates the fuse (merge) operation on those written extents. Then  
+it calculates which metadata updates are necessary. Since we have  
+selected (at the start) consecutive 512 MB of file segments, the  
+updates to metadata are certainly localazed. The defrag writes out, in  
+new extents, the required changes to metadata, then updates the super  
+to commit.
 
-The metadata has a total of at least 256 million entries, each of some  
-size, but each one should hold at least a pointer to the extent (8  
-bytes) and a checksum (8 bytes): In reality, it could be that there is  
-a lot of other data there per entry.
-
-The metadata is organized as a b-tree. Therefore, nearby nodes should  
-contain data of consecutive file extents.
-
-The trick, in this case, is to select one part of "ultralog" which is  
-localized in the metadata, and defragment it. Repeating this step will  
-ultimately defragment the entire file.
-
-So, the defrag selects some part of metadata which is entirely a  
-descendant of some b-tree node not far from the bottom of b-tree. It  
-selects it such that the required update to the metadata is less than,  
-let's say, 64 MB, and simultaneously the affected "ultralog" file  
-fragments total less han 512 MB (therefore, less than 128 thousand  
-metadata leaf entries, each pointing to a 4 KB fragment). Then it  
-finds all the file extents pointed to by that part of metadata. They  
-are consecutive (as file fragments), because we have selected such  
-part of metadata. Now the defrag can safely copy-move those fragments  
-to a new area and update the metadata.
-
-In order to quickly select that small part of metadata, the defrag  
-needs a metatdata cache that can hold somewhat more than 128 thousand  
-localized metadata leaf entries. That fits into 128 MB RAM definitely.
-
-Of course, there are many other small issues there, but this outlines  
-the general procedure.
-
-Problem solved?
-
+Easy.
 
