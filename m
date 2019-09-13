@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2CB6B17E0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 07:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34006B1825
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 08:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725933AbfIMFWa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Sep 2019 01:22:30 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:35910 "EHLO
+        id S1727758AbfIMGQv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Sep 2019 02:16:51 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:42059 "EHLO
         server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725775AbfIMFW3 (ORCPT
+        by vger.kernel.org with ESMTP id S1726516AbfIMGQv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Sep 2019 01:22:29 -0400
+        Fri, 13 Sep 2019 02:16:51 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
          s=default; h=MIME-Version:Content-Type:In-Reply-To:References:Subject:Cc:To:
         From:Message-ID:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=iuDoMDXolMnYr4Qd1x+FhMMq1DU7jbKtuIg65AeCuuY=; b=Zim5kmY6eeYLN983K8eF0P0/cf
-        A1ETQ9Bt73zA4+sW3ZxHioSrFGhGDpeW3Or9bxtpfu3jt+KOaHimz56vMSn6FP5g8B4C7rwwJufJb
-        fAuM4cFfngGUTGNBoOwQ2lfJsjp44YDRBmHn5DYIJXsVmWWFHgJgzVZp1hdrout4YwfbYIGef1aER
-        MgC09cdDUDplGtqLydQWxEpRq8hGw7IEqGpRspLNSquLUz1sO+x+W1WJb56dV9+9fwk+upSOkFUCo
-        9GayfSav5L0dpBqWIGTuzvMU4nivzWkFRRbU1KOlrWNJGo+gtUj0VFQdfS6B6mz4ESkdN1m+8pKTX
-        Gs46AzVg==;
-Received: from [::1] (port=35048 helo=server53.web-hosting.com)
+        bh=qRf5rTWBx47wfNqZUZWms6GPOgBnKBeA0kZRnb5/DqI=; b=3LqTDAwICXXNBjigZi9pNT59bd
+        Y1RWjk+UeXTj0d8OT0zYv+PUJjEB2v630a4dYCfynicGhClVEtWWiig2FZy78T1NmyGXmeOlmoL8A
+        UzFQneMzbLofXdorJG+TErRpArXfgRNiQ5AKs6jn2TZM6yp4EuG406TfJkoWqtV/MxlZTJyZdC68C
+        jpz/ZVFvJMxivSfG77daPH1TxmymJ9sB9RTerA4YIypbWXFLD8pjnfzYlnKm4wp28h8SYwGVGAa3u
+        wXiPt5HpCzoZYeXDqCAKV/2xVWL/OOsrQdIiKH0nUwWXDFUqTTruqRHRAvfL14WiMOKPwWs46uSh1
+        aQwRnwEg==;
+Received: from [::1] (port=57780 helo=server53.web-hosting.com)
         by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <general-zed@zedlx.com>)
-        id 1i8e2L-002icC-0J; Fri, 13 Sep 2019 01:22:29 -0400
+        id 1i8esw-003Dqi-Gq; Fri, 13 Sep 2019 02:16:50 -0400
 Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Fri, 13 Sep 2019 01:22:24 -0400
-Date:   Fri, 13 Sep 2019 01:22:24 -0400
-Message-ID: <20190913012224.Horde.29BsHKRl-F2PB5EG-U0wHMA@server53.web-hosting.com>
+ (Horde Framework) with HTTPS; Fri, 13 Sep 2019 02:16:46 -0400
+Date:   Fri, 13 Sep 2019 02:16:46 -0400
+Message-ID: <20190913021646.Horde.IH4ZUtW3z0NG3BZcxWDnU6Q@server53.web-hosting.com>
 From:   General Zed <general-zed@zedlx.com>
 To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Cc:     Chris Murphy <lists@colorremedies.com>,
@@ -107,58 +107,12 @@ Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
 > log file you could rewrite all of your filesystem's metadata in a single
 > transaction (almost...you probably won't need to update the device or
 > uuid trees).
->
-> If you want to pipeline multiple extents per commit to avoid seeking,
-> you need to multiply the above numbers by the size of the pipeline.
->
-> You can also reduce the metadata cache requirement by reducing the output
-> extent size.  A 16MB target extent size requires only 64MB of cache for
-> the logfile case.
->
->> > Don't forget you have to write new checksum and free space tree pages.
->> > In the worst case, you'll need about 1GB of new metadata pages for each
->> > 128MB you defrag (though you get to delete 99.5% of them immediately
->> > after).
->>
->> Yes, here we are debating some worst-case scenaraio which is actually
->> imposible in practice due to various reasons.
->
-> No, it's quite possible.  A log file written slowly on an active
-> filesystem above a few TB will do that accidentally.  Every now and then
-> I hit that case.  It can take several hours to do a logrotate on spinning
-> arrays because of all the metadata fetches and updates associated with
-> worst-case file delete.  Long enough to watch the delete happen, and
-> even follow along in the source code.
->
-> I guess if I did a proactive defrag every few hours, it might take less
-> time to do the logrotate, but that would mean spreading out all the
-> seeky IO load during the day instead of getting it all done at night.
-> Logrotate does the same job as defrag in this case (replacing a file in
-> thousands of fragments spread across the disk with a few large fragments
-> close together), except logrotate gets better compression.
->
-> To be more accurate, the example I gave above is the worst case you
-> can expect from normal user workloads.  If I throw in some reflinks
-> and snapshots, I can make it arbitrarily worse, until the entire disk
-> is consumed by the metadata update of a single extent defrag.
->
 
-In fact, I overcomplicated it in my previous answer.
+I can't see how that can happen. If you are defragmenting a single 128  
+MB journal file, the metadata that points to it is certainly a small  
+part of the entire b-tree (because the tree is ordered). If that part  
+of the b-tree is to completely change, al the way up to super, the  
+entire update of b-tree (written into new exents) can't be more than a  
+tenth of the filesize (128 MB). So, there is no big overhead.
 
-So, we have a 1TB log file "ultralog" split into 256 million 4 KB  
-extents randomly over the entire disk. We have 512 GB free RAM and 2%  
-free disk space. The file needs to be defragmented.
-
-We select some (any) consecutive 512 MB of file segments. They are  
-certainly localized in the metadata, because we are talking about an  
-ordered b-tree. We write those 512 MB of file extents to another place  
-on the partition, defragmented (don't update b-tree yet). Then defrag  
-calculates the fuse (merge) operation on those written extents. Then  
-it calculates which metadata updates are necessary. Since we have  
-selected (at the start) consecutive 512 MB of file segments, the  
-updates to metadata are certainly localazed. The defrag writes out, in  
-new extents, the required changes to metadata, then updates the super  
-to commit.
-
-Easy.
 
