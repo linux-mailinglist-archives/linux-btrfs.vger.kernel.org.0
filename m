@@ -2,27 +2,25 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA3CB1715
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 03:51:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02998B1716
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 03:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbfIMBvd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 12 Sep 2019 21:51:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40846 "EHLO mx1.suse.de"
+        id S1726676AbfIMBv5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 12 Sep 2019 21:51:57 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40886 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726262AbfIMBvd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 12 Sep 2019 21:51:33 -0400
+        id S1726262AbfIMBv5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 12 Sep 2019 21:51:57 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 23538AD6F
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2019 01:51:32 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 286F5AD6F;
+        Fri, 13 Sep 2019 01:51:55 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: qgroup: Fix reserved data space leak if we have multiple reserve calls
-Date:   Fri, 13 Sep 2019 09:51:27 +0800
-Message-Id: <20190913015127.14953-2-wqu@suse.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: [PATCH] fstests: btrfs: Verify falloc on multiple holes won't cause qgroup reserved data space leak
+Date:   Fri, 13 Sep 2019 09:51:51 +0800
+Message-Id: <20190913015151.15076-1-wqu@suse.com>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190913015127.14953-1-wqu@suse.com>
-References: <20190913015127.14953-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -30,82 +28,136 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-The following script can cause btrfs qgroup data space leak:
+Add a test case where falloc is called on multiple holes with qgroup
+enabled.
 
-  mkfs.btrfs -f $dev
-  mount $dev -o nospace_cache $mnt
+This can cause qgroup reserved data space leak and false EDQUOT error
+even we're not reaching the limit.
 
-  btrfs subv create $mnt/subv
-  btrfs quota en $mnt
-  btrfs quota rescan -w $mnt
-  btrfs qgroup limit 128m $mnt/subv
+The fix is titled:
+"btrfs: qgroup: Fix the wrong target io_tree when freeing
+ reserved data space"
 
-  for (( i = 0; i < 3; i++)); do
-          # Create 3 64M holes for latter fallocate to fail
-          truncate -s 192m $mnt/subv/file
-          xfs_io -c "pwrite 64m 4k" $mnt/subv/file > /dev/null
-          xfs_io -c "pwrite 128m 4k" $mnt/subv/file > /dev/null
-          sync
-
-          # it's supposed to fail, and each failure will leak at least 64M
-          # data space
-          xfs_io -f -c "falloc 0 192m" $mnt/subv/file &> /dev/null
-          rm $mnt/subv/file
-          sync
-  done
-
-  # Shouldn't fail after we removed the file
-  xfs_io -f -c "falloc 0 64m" $mnt/subv/file
-
-[CAUSE]
-Btrfs qgroup data reserve code allows multiple reserve happen on a
-single extent_changeset:
-
-The only usage is in btrfs_fallocate():
-	struct extent_changeset *data_reserved = NULL;
-	btrfs_qgroup_reserve_data(inode, &data_reserved,
-				  range_start, range_len);
-	...
-	btrfs_qgroup_reserve_data(inode, &data_reserved,
-				  new_range_start, new_range_len);
-	extent_changeset_free(data_reserved);
-
-However in btrfs_qgroup_reserve_data(), if one of the call failed, it
-will cleanup all reserved space.
-The cleanup itself is OK, but it only cleans up all
-EXTENT_QGROUP_RESERVED flag, forget to release the reserved bytes.
-
-So if multiple btrfs_qgroup_reserve_data() get called, and the last one
-failed, then previously reserved data space will get leaked.
-
-And due to the fact that EXTENT_QGROUP_RESERVED flag is cleaned
-correctly, btrfs_qgroup_check_reserved_leak() won't catch the leakage.
-
-[FIX]
-Also free previously reserved data bytes when btrfs_qgroup_reserve_data
-fails.
-
-Fixes: 524725537023 ("btrfs: qgroup: Introduce btrfs_qgroup_reserve_data function")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/qgroup.c | 3 +++
- 1 file changed, 3 insertions(+)
+ tests/btrfs/192     | 72 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/192.out | 18 ++++++++++++
+ tests/btrfs/group   |  1 +
+ 3 files changed, 91 insertions(+)
+ create mode 100755 tests/btrfs/192
+ create mode 100644 tests/btrfs/192.out
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 64bdc3e3652d..59f6a9981087 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3448,6 +3448,9 @@ int btrfs_qgroup_reserve_data(struct inode *inode,
- 	while ((unode = ulist_next(&reserved->range_changed, &uiter)))
- 		clear_extent_bit(&BTRFS_I(inode)->io_tree, unode->val,
- 				 unode->aux, EXTENT_QGROUP_RESERVED, 0, 0, NULL);
-+	/* Also free data bytes of already reserved one */
-+	btrfs_qgroup_free_refroot(root->fs_info, root->root_key.objectid,
-+				  orig_reserved, BTRFS_QGROUP_RSV_DATA);
- 	extent_changeset_release(reserved);
- 	return ret;
- }
+diff --git a/tests/btrfs/192 b/tests/btrfs/192
+new file mode 100755
+index 00000000..361b6d92
+--- /dev/null
++++ b/tests/btrfs/192
+@@ -0,0 +1,72 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 192
++#
++# Test if btrfs is going to leak qgroup reserved data space when
++# falloc on multiple holes fails.
++# The fix is titled:
++# "btrfs: qgroup: Fix the wrong target io_tree when freeing reserved data space"
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_supported_os Linux
++_require_scratch
++_require_xfs_io_command falloc
++
++_scratch_mkfs > /dev/null
++_scratch_mount
++
++$BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT" > /dev/null
++$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" > /dev/null
++$BTRFS_UTIL_PROG qgroup limit -e 256M "$SCRATCH_MNT"
++
++for i in $(seq 3); do
++	# Create a file with the following layout:
++	# 0         128M      256M      384M
++	# |  Hole   |4K| Hole |4K| Hole |
++	# The total hole size will be 384M - 8k
++	truncate -s 384m "$SCRATCH_MNT/file"
++	$XFS_IO_PROG -c "pwrite 128m 4k" -c "pwrite 256m 4k" \
++		"$SCRATCH_MNT/file" | _filter_xfs_io
++
++	# Falloc 0~384M range, it's going to fail due to the qgroup limit
++	$XFS_IO_PROG -c "falloc 0 384m" "$SCRATCH_MNT/file" |\
++		_filter_xfs_io_error
++	rm "$SCRATCH_MNT/file"
++
++	# Ensure above delete reaches disk and free some space
++	sync
++done
++
++# We should be able to write at least 3/4 of the limit
++$XFS_IO_PROG -f -c "pwrite 0 192m" "$SCRATCH_MNT/file" | _filter_xfs_io
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/192.out b/tests/btrfs/192.out
+new file mode 100644
+index 00000000..13bc6036
+--- /dev/null
++++ b/tests/btrfs/192.out
+@@ -0,0 +1,18 @@
++QA output created by 192
++wrote 4096/4096 bytes at offset 134217728
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 4096/4096 bytes at offset 268435456
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++fallocate: Disk quota exceeded
++wrote 4096/4096 bytes at offset 134217728
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 4096/4096 bytes at offset 268435456
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++fallocate: Disk quota exceeded
++wrote 4096/4096 bytes at offset 134217728
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++wrote 4096/4096 bytes at offset 268435456
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
++fallocate: Disk quota exceeded
++wrote 201326592/201326592 bytes at offset 0
++XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index 2474d43e..160fe927 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -194,3 +194,4 @@
+ 189 auto quick send clone
+ 190 auto quick replay balance qgroup
+ 191 auto quick send dedupe
++192 auto qgroup fast enospc limit
 -- 
-2.23.0
+2.22.0
 
