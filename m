@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 066EFB188C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 08:58:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55ED8B1931
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 09:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728297AbfIMG6i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Sep 2019 02:58:38 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:59672 "EHLO
+        id S1728324AbfIMHvr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Sep 2019 03:51:47 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:39830 "EHLO
         server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726647AbfIMG6i (ORCPT
+        by vger.kernel.org with ESMTP id S1726822AbfIMHvq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Sep 2019 02:58:38 -0400
+        Fri, 13 Sep 2019 03:51:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
          s=default; h=MIME-Version:Content-Type:In-Reply-To:References:Subject:Cc:To:
         From:Message-ID:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=WlRhf8EvLUPitp/9vQZxksB/PCkhdYgFC72r2Cinkik=; b=jyI/Zpr165/k8qtLYQc6ujYt5F
-        F76XQ2VSDV3qVqimXkugVTGQ0kBeJC14nt0eHKlYqE8MEHb7yRG5QabPYCsuI8aeVlE5gVoutq7Eq
-        izpeNrppdQg0oU21nc9eipyGLwd0lOocZtOu+xnmyyIWlA/PaXDX4Mzzz2bZRadUMEP6OL1AQdrZO
-        6/3+xq/FtgPiYiUT4e+5gxDHTvTC0m3F5z2mapHM//E349L1GAHKlYVeguebYQ3S5vnt0yLLGtIQT
-        giuErQWutTvhT4uQ+BKxunPORoBgPkK6Q9P2/B8YznbDxzKKoJZ4ixTdqGwuB806mqd4FJc7Iepdw
-        Zan3Zapw==;
-Received: from [::1] (port=38370 helo=server53.web-hosting.com)
+        bh=OxRwm8RXhFubALPdyyPixNZhF0Z3tgVD6VXc9L9BXu8=; b=uS2GI20bx5F93GyNWyETeXsIFn
+        3SwYOuZ91hOLqKXCmQ2iBG2XLdEvasAZIijBPHjEL6gPIjQBu1s/JTVAPU3yVvlUMWlLELiUU6CAQ
+        u0q9+0a7mPdLWFf3gMODIHmXvRwd8+7Lt3snM+VkoO5l97A1pCZhHIquQioqqbw7LU6yuf1icQQ9s
+        QE/ORDzbAOWOscVR7PKV0YECnIZ3jz7HuS5hPg+/U4gZm0mFzpkhMaJECWrELtDeauf+i060+iczW
+        niQCG0zGKcH8YMF3p4Ms7f50BTrZyo5Iasz4joAPl51qPjuf/4djP8QqRTlQeheuUyClpF58FvKye
+        5d7UTsIw==;
+Received: from [::1] (port=57818 helo=server53.web-hosting.com)
         by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <general-zed@zedlx.com>)
-        id 1i8fXM-003ZHK-S2; Fri, 13 Sep 2019 02:58:37 -0400
+        id 1i8gMm-0043ZY-El; Fri, 13 Sep 2019 03:51:44 -0400
 Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Fri, 13 Sep 2019 02:58:32 -0400
-Date:   Fri, 13 Sep 2019 02:58:32 -0400
-Message-ID: <20190913025832.Horde.Bwn_M-5buBYcgGbqhc_wDkU@server53.web-hosting.com>
+ (Horde Framework) with HTTPS; Fri, 13 Sep 2019 03:51:40 -0400
+Date:   Fri, 13 Sep 2019 03:51:40 -0400
+Message-ID: <20190913035140.Horde.k8lI3sTYGIOTQdvJaEBUlpG@server53.web-hosting.com>
 From:   General Zed <general-zed@zedlx.com>
 To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Cc:     Chris Murphy <lists@colorremedies.com>,
@@ -80,6 +80,64 @@ Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
 >> Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
 >>
 >> > On Thu, Sep 12, 2019 at 06:57:26PM -0400, General Zed wrote:
+>> > >
+>> > > Quoting Chris Murphy <lists@colorremedies.com>:
+>> > >
+>> > > > On Thu, Sep 12, 2019 at 3:34 PM General Zed  
+>> <general-zed@zedlx.com> wrote:
+>> > > > >
+>> > > > >
+>> > > > > Quoting Chris Murphy <lists@colorremedies.com>:
+>> > > > >
+>> > > > > > On Thu, Sep 12, 2019 at 1:18 PM <webmaster@zedlx.com> wrote:
+>> > > > > >>
+>> > > > > >> It is normal and common for defrag operation to use some  
+>> disk space
+>> > > > > >> while it is running. I estimate that a reasonable limit  
+>> would be to
+>> > > > > >> use up to 1% of total partition size. So, if a partition  
+>> size is 100
+>> > > > > >> GB, the defrag can use 1 GB. Lets call this "defrag  
+>> operation space".
+>> > > > > >
+>> > > > > > The simplest case of a file with no shared extents, the  
+>> minimum free
+>> > > > > > space should be set to the potential maximum rewrite of  
+>> the file, i.e.
+>> > > > > > 100% of the file size. Since Btrfs is COW, the entire  
+>> operation must
+>> > > > > > succeed or fail, no possibility of an ambiguous in  
+>> between state, and
+>> > > > > > this does apply to defragment.
+>> > > > > >
+>> > > > > > So if you're defragging a 10GiB file, you need 10GiB minimum free
+>> > > > > > space to COW those extents to a new, mostly contiguous,  
+>> set of exents,
+>> > > > >
+>> > > > > False.
+>> > > > >
+>> > > > > You can defragment just 1 GB of that file, and then just  
+>> write out to
+>> > > > > disk (in new extents) an entire new version of b-trees.
+>> > > > > Of course, you don't really need to do all that, as usually only a
+>> > > > > small part of the b-trees need to be updated.
+>> > > >
+>> > > > The `-l` option allows the user to choose a maximum amount to
+>> > > > defragment. Setting up a default defragment behavior that has a
+>> > > > variable outcome is not idempotent and probably not a good idea.
+>> > >
+>> > > We are talking about a future, imagined defrag. It has no -l  
+>> option yet, as
+>> > > we haven't discussed it yet.
+>> > >
+>> > > > As for kernel behavior, it presumably could defragment in portions,
+>> > > > but it would have to completely update all affected metadata after
+>> > > > each e.g. 1GiB section, translating into 10 separate rewrites of file
+>> > > > metadata, all affected nodes, all the way up the tree to the super.
+>> > > > There is no such thing as metadata overwrites in Btrfs. You're
+>> > > > familiar with the wandering trees problem?
+>> > >
+>> > > No, but it doesn't matter.
 >> > >
 >> > > At worst, it just has to completely write-out "all metadata",  
 >> all the way up
@@ -143,31 +201,31 @@ Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
 > push data from one fragmented location to a different fragmented location,
 > or bail out with "sorry, can't defrag that."
 
-Nope.
+If the filesystem starts to get low on space during a defrag, it  
+should abort and notify the user. The only question is: how low amount  
+of free space can be tolerated?
 
-Each defrag "cycle" consists of two parts:
-      1) move-out part
-      2) move-in part
+Forcing commits too often (and having a smaller operation area / move  
+in area) increases the number of metadata updates.
 
-The move-out part select one contiguous area of the disk. Almost any  
-area will do, but some smart choices are better. It then moves-out all  
-data from that contiguous area into whatever holes there are left  
-empty on the disk. The biggest problem is actually updating the  
-metadata, since the updates are not localized.
-Anyway, this part can even be skipped.
+Technically, you don't really need to have a big enough contiguous  
+free areas, those areas can be quite 'dirty', and the defrag will  
+still work, albeit at a slower pace.
 
-The move-in part now populates the completely free contiguous area  
-with defragmented data.
+The question you are posing here is a question of minimal free space  
+required in order to not slow down the defrag significantly.  
+Unfortunately, there is no simple answer about how to calculate that  
+minimal free space. There should be some experimentation, some  
+experience.
 
-In the case that the move-out part needs to be skipped because the  
-defrag estimates that the update to metatada will be too big (like in  
-the pathological case of a disk with 156 GB of metadata), it can  
-sucessfully defrag by performing only the move-in part. In that case,  
-the move-in area is not free of data and "defragmented" data won't be  
-fully defragmented. Also, there should be at least 20% free disk space  
-in this case in order to avoid defrag turning pathological.
+Certainly, a good idea would be to give the user some options.
 
-But, these are all some pathological cases. They should be considered  
-in some other discussion.
+For example, if the defrag estimates that it is twice as slow as it  
+could be due to low free space, than it should proceed only if the  
+user has supplied the option --lowFreeSpace. If the defrag estimates  
+that it is six times as slow as it could be due to low free space,  
+than it should proceed only if the user has supplied the option  
+--veryLowFreeSpace.
+
 
 
