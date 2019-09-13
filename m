@@ -2,82 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80963B23E1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 18:12:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DCFCB23E5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 18:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730601AbfIMQMi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Sep 2019 12:12:38 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:39082 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730578AbfIMQMi (ORCPT
+        id S1730641AbfIMQON (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Sep 2019 12:14:13 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:40784 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730622AbfIMQOM (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Sep 2019 12:12:38 -0400
-Received: by mail-pf1-f193.google.com with SMTP id i1so9530229pfa.6
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2019 09:12:37 -0700 (PDT)
+        Fri, 13 Sep 2019 12:14:12 -0400
+Received: by mail-pf1-f195.google.com with SMTP id x127so18366128pfb.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2019 09:14:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=P0eqX5XkxFRyZW4qragBiwA9n55gIZYCPdhHAEdE0Cg=;
-        b=URHojBhRU3LUY4auj+Sjj+XApWZeqhNAg1R8atiNWkSpMPfd/6gNqm/tusSZgd/5Bx
-         Tyd3uyZhY713CSDYegz15IfYRBhiQrP4PSY8NmoeXQmVIcW9fEfKSh/pOin6lNkHD6Gk
-         b+GrJ+tJtH8lS/NEtLCXcHveISDzQkdCTJfqDd41Dw8P/PkK1q+32hh8JpGy00SZOm7H
-         WBJaWfe0ztJuV+ofZTvg89ZDoqe0RwBdmdOQIVXyqXcRdb5Iyf5rSUCosijpzT9OK0g8
-         5D10LyGtf7MoZA5HwS9e9bJu5XXc+lZGYBFLB7goZZfaLVWMhVoqUHJSsdpcPyPaleHZ
-         p+oA==
+        bh=Bob543yc4RAEtrwQvBCY/KawWpcBEGA5iqhVmu7uiBw=;
+        b=01Xhx/MIIGxJ7Rt8yQSDiduPE/zfRGgpUDAlOVZ1YDa5vBB+IrqEhJM1pAJH/afAs1
+         ykDMJVpn5TSYTQ7cX6xwHvtKcDXnWveBouiELo5WX0ebkcqvtqGrRlH8KVVbn7lSWpff
+         M9YIa4PtOlpxKKyE0VYOqtqeDWvDba4Xl3NcTn/maNbAtd+FtNDpoVDmTI/DNMdH/Jaa
+         TSa6oLxUbmGq0yrMx9hxiuU6fymiEpkugBhlQvNZCcCor/YupVVujjw15z6c8zOzqmZy
+         FnH+psGXR3t1xpy+B2+FTPhqHMg727njM/+MLxEvVJI0u9kiAhZty5nxuQMgrtWC5rDR
+         NujQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=P0eqX5XkxFRyZW4qragBiwA9n55gIZYCPdhHAEdE0Cg=;
-        b=PN5ffDvVu/noHFs3Rvn4cvqI3KvH/M+GBZRj63BreMfPkGcLuTFx5c+ZYiDlHbsxrv
-         I2It81zWCs7WbDp2mGIOEMN6uJLTZxXa1sZQpGxcEcWtLIXBDdmQrvFR9XMpbnkim9f8
-         PWQEK+n39X4L30eWaJF69RiCPjh/G8pRQjKvnIGMf17bXeY1nxC/GYT9AYI+0+dY83e6
-         B0Su5Svy+F1okGVXgGm9OtLS9R74ZsOTlVn4zLWqyES0fkSC/9oitKN9hAnLr43EweIZ
-         2BGJcVcKVb4U/geu4H+Mobi6fNXxEGzckyzjsJ2vvaltuJvzci9HF/2fm+P9Ln6Hqyf1
-         RTaQ==
-X-Gm-Message-State: APjAAAVcKUO5WrDCTcROANx2JI0R5+9S5fNdBweXaAZ2VOGB2O6qRJ6Q
-        Ia9zdq/wXRJceew2K+X1Kdzh1A==
-X-Google-Smtp-Source: APXvYqzE8N6bQo5dU9iLjuZz6/nxbkouDRI1jHZsX+SKzi71M1QIG56j8Unn9PSLNaZeQrYB37clig==
-X-Received: by 2002:a17:90a:9ab:: with SMTP id 40mr6141615pjo.38.1568391157443;
-        Fri, 13 Sep 2019 09:12:37 -0700 (PDT)
+        bh=Bob543yc4RAEtrwQvBCY/KawWpcBEGA5iqhVmu7uiBw=;
+        b=VywzhDJXSlrPcp3XVKH07DfVW1Jbw/mwA6c58mwpgwp3Dru3CDg/pNGXbjYAv6htkn
+         1mP/fZsGNmHaRkisCDhHp9UnvSY77UdRRgcIgIgV/eJFg+k7EkNYvuFadBByrpoG9Pl4
+         QKQj1ZoyFODO5VGQvHc2ccU4C0FxXdJ8iHTyTyRM8Rd6S9QtLnQS0vNS2UST7hjuS17h
+         YUuQsG2QMyhwEz833Y4RK+S1IjC4s/P78Zdd3pb00yezpHQ2uSJjlSC27Rmp4tcmiXBj
+         ovM7CTqi68dHdAcNiXwdn5jaPLljGV5LHqyUL+FmS/FZO1ojQ6QgM9cufzHDXkx1n+zm
+         QY9Q==
+X-Gm-Message-State: APjAAAXI/RntFJtiZ8rE+IDlEcrNyeHKXvZK3qUIFvC2+z+w+dZH7wPy
+        2lL0z9X4CnGXLlhLF8aMiTrlFo4MjRjZnQ==
+X-Google-Smtp-Source: APXvYqxtIdylWkANKXMTN0RW1brzqXHIq0nQjd2E81Bol5ZZs2JBu40Ij4AnsRozEJY/PHFP0aYbeg==
+X-Received: by 2002:a63:6193:: with SMTP id v141mr44942693pgb.263.1568391250625;
+        Fri, 13 Sep 2019 09:14:10 -0700 (PDT)
 Received: from localhost ([2620:10d:c090:200::1d1c])
-        by smtp.gmail.com with ESMTPSA id r10sm13082734pfh.1.2019.09.13.09.12.36
+        by smtp.gmail.com with ESMTPSA id r18sm26966041pfc.3.2019.09.13.09.14.10
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 13 Sep 2019 09:12:36 -0700 (PDT)
-Date:   Fri, 13 Sep 2019 09:12:35 -0700
+        Fri, 13 Sep 2019 09:14:10 -0700 (PDT)
+Date:   Fri, 13 Sep 2019 09:14:08 -0700
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fstests: btrfs: Verify falloc on multiple holes won't
- cause qgroup reserved data space leak
-Message-ID: <20190913161234.jfkyopccbohz5njz@macbook-pro-91.dhcp.thefacebook.com>
-References: <20190913015151.15076-1-wqu@suse.com>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix balance convert to single on 32-bit host CPUs
+Message-ID: <20190913161408.fs3i4apgrcmajmev@macbook-pro-91.dhcp.thefacebook.com>
+References: <20190912235507.3DE794232AF@james.kirk.hungrycats.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190913015151.15076-1-wqu@suse.com>
+In-Reply-To: <20190912235507.3DE794232AF@james.kirk.hungrycats.org>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 13, 2019 at 09:51:51AM +0800, Qu Wenruo wrote:
-> Add a test case where falloc is called on multiple holes with qgroup
-> enabled.
+On Thu, Sep 12, 2019 at 07:55:01PM -0400, Zygo Blaxell wrote:
+> Currently, the command:
 > 
-> This can cause qgroup reserved data space leak and false EDQUOT error
-> even we're not reaching the limit.
+> 	btrfs balance start -dconvert=single,soft .
 > 
-> The fix is titled:
-> "btrfs: qgroup: Fix the wrong target io_tree when freeing
->  reserved data space"
+> on a Raspberry Pi produces the following kernel message:
 > 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> 	BTRFS error (device mmcblk0p2): balance: invalid convert data profile single
+> 
+> This fails because we use is_power_of_2(unsigned long) to validate
+> the new data profile, the constant for 'single' profile uses bit 48,
+> and there are only 32 bits in a long on ARM.
+> 
+> Fix by open-coding the check using u64 variables.
+> 
+> Tested by completing the original balance command on several Raspberry
+> Pis.
+> 
+> Signed-off-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
+Honestly I'd rather we fixed is_power_of_2 to work on 32bit, that way any other
+users don't get bitten by the same problem.  Thanks,
 
 Josef
