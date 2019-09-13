@@ -2,115 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2855B23A0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 17:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AA8B23DF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Sep 2019 18:11:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388050AbfIMPqW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Sep 2019 11:46:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387971AbfIMPqW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Sep 2019 11:46:22 -0400
-Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com [209.85.217.44])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5A0932081B
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2019 15:46:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1568389581;
-        bh=8YSugib4m1RYqKqc2sc+NLf3cqag7NZTz5luU1dFKNs=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=VZxYvJsfT/Hg5eP7l8jPMK7THFumXVgpMLWGKQa229wlNZ5yEgivZQDQSDbnB6iLC
-         MF0IRSQV3CTUd04RHAp9cQNNZJ+m1ICaiFgYtnVR9ZWyCMZq0nomOU8EsCb3XSY4+c
-         KBWXtWQaG0vNxB95QpRMnTI6eGNVB/KLV7x9KauU=
-Received: by mail-vs1-f44.google.com with SMTP id g14so13384096vsp.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2019 08:46:21 -0700 (PDT)
-X-Gm-Message-State: APjAAAWEtCPqg3NutH82wm4tn6UxDHh4ia4RSl7gv8+QAXFSKRhdw1A4
-        Auq8ZwIiP5PkEbBS3sbpWAUvGH5eRqJprL8HE4o=
-X-Google-Smtp-Source: APXvYqxc3Bkge03cSgOAL7m1sQHQX3O3OjSqJ+zuar/caJaYIQZzEWlv9YRBM8ogZVxqhcUMozLWZhsKVszOAf4z3MA=
-X-Received: by 2002:a67:fd08:: with SMTP id f8mr26037399vsr.90.1568389580484;
- Fri, 13 Sep 2019 08:46:20 -0700 (PDT)
+        id S1730570AbfIMQLb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Sep 2019 12:11:31 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:45998 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726558AbfIMQLb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 13 Sep 2019 12:11:31 -0400
+Received: by mail-pf1-f196.google.com with SMTP id y72so18334405pfb.12
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Sep 2019 09:11:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YWe0ZZ0IXaRH+sh0PL+wEaOINivVRBqqrjGgRfDIXUI=;
+        b=uWEeTnyo0jPB9qYZiIPIzr0BStfVVaqaKivJUitve+eh6/If4gCgUM8X11X8Dl4nBV
+         amRf9b2oF4X4bhgU+MX2jLSe+49DKPvslccMPxa/P6IoNC6gCE2Uf3lsJlpWcayxJeM4
+         6Dg0HnXVNvK888NI0K9Gt0HxjvoFkxq5dXKm3s8fWfkS8vB6HLjv7UMzHy9JdQQS+Axf
+         Yye9UN0HtYo60dkWaItot65xLfOTmeJBFH0WG3Rap7bIl7h1MNK7AAbypUS/Kn7ku1sV
+         Mqdv4lzCQNDtmST40jeKDbWpdsJfCWSDYz5A1NHYocNHfjX63XVk4f6PYWg9kbdQiDZy
+         o/0A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YWe0ZZ0IXaRH+sh0PL+wEaOINivVRBqqrjGgRfDIXUI=;
+        b=aWHH5svg2+xg1Yh/jB3NTij9A2utEZrm0PurTxh6tNfDTP7zTw4INH/TdBTyPv2YGv
+         pqIpK1ZQWib+OG4mv537G/XbVJP1ElyFqhNsYS2x1jDC/y563zcPuYe40SEuKrb5EGgA
+         LTZdrF5bttTSgumdZAs7OVqCN5IQw5NXAx/Ii2Foa8k0IA7V1dmH956F1xjS6aCdpyZC
+         VAXDwnA0mBb+HsX2Zf4yocmrsAxn9e/1Icrz76tii1wZqnQoCwDbtC9+TzhvefSeZEBF
+         Qcp5BSFcakr8uzY0gUn6NDngzDeXuXlvgdKRArJkh654wfwdBwLsa+pa7bv9SsSg6GEE
+         ZBZQ==
+X-Gm-Message-State: APjAAAXR2To7moCVpjoViv0rRufDbjqu3Kq3Ss0oV+SIS2DL3QJQr+MO
+        OAxjOm0mVQ2qCxnIstN8pnsINh4u4K125A==
+X-Google-Smtp-Source: APXvYqxDstX47ziAB6ReNrQTINgsmKHIuBbM/fEMUzZzMkc8RtfrcivNG3ksvKL7UZtwfk945O12mg==
+X-Received: by 2002:a17:90a:65c9:: with SMTP id i9mr5844608pjs.54.1568391089086;
+        Fri, 13 Sep 2019 09:11:29 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:200::1d1c])
+        by smtp.gmail.com with ESMTPSA id q13sm14149060pfn.150.2019.09.13.09.11.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 13 Sep 2019 09:11:28 -0700 (PDT)
+Date:   Fri, 13 Sep 2019 09:11:26 -0700
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Add assert to catch nested transaction commit
+Message-ID: <20190913161125.n35ihlpgrhk5iqzi@macbook-pro-91.dhcp.thefacebook.com>
+References: <20190912153144.26638-1-nborisov@suse.com>
 MIME-Version: 1.0
-References: <20190913135407.99353-1-dennis@kernel.org>
-In-Reply-To: <20190913135407.99353-1-dennis@kernel.org>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Fri, 13 Sep 2019 16:46:09 +0100
-X-Gmail-Original-Message-ID: <CAL3q7H5GzhL9CG-zTPK_iVFvp4qThmQS82HaaX7KrOwP12YJHQ@mail.gmail.com>
-Message-ID: <CAL3q7H5GzhL9CG-zTPK_iVFvp4qThmQS82HaaX7KrOwP12YJHQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: extent_io read eb to dirty_metadata_bytes on ioerr
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>, kernel-team@fb.com,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190912153144.26638-1-nborisov@suse.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 13, 2019 at 2:54 PM Dennis Zhou <dennis@kernel.org> wrote:
->
-> Before, if a eb failed to write out, we would end up triggering a
-> BUG_ON(). As of f4340622e0226 ("btrfs: extent_io: Move the BUG_ON() in
-> flush_write_bio() one level up"), we no longer BUG_ON(), so we should
-> make life consistent and add back the unwritten bytes to
-> dirty_metadata_bytes.
->
-> Signed-off-by: Dennis Zhou <dennis@kernel.org>
-> Cc: Filipe Manana <fdmanana@kernel.org>
+On Thu, Sep 12, 2019 at 06:31:44PM +0300, Nikolay Borisov wrote:
+> A recent patch to btrfs showed that there was at least 1 case where a
+> nesed transaction was committed. Nested transaction in this case  means
+> a code which has a transaction handle calls some function which in turn
+> obtains a copy of the same transaction handle. In such cases the correct
+> thing to do is for the lower callee to call btrfs_end_transaction which
+> contains appropriate checks so as to not commit the transaction which
+> will result in stale trans handler for the caller.
+> 
+> To catch such cases add an assert in btrfs_commit_transaction ensuring
+> btrfs_trans_handle::use_count is always 1.
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
-Looks good.
-However I find the subject very confusing and misleading.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-"extent_io read eb to dirty_metadata_bytes on ioerr"
+Thanks,
 
-That gives the idea of reading the eb (like from disk? or its content,
-reading from its pages?), and the "to dirty_metadata_bytes" also find
-it confusing.
-Something like:
-
- "btrfs: adjust dirty_metadata_bytes after writeback failure of extent buffer"
-
-would make it clear and not confusing IMHO.
-Perhaps it's something David can change when he picks the patch
-(either to that or some other more clear subject).
-
-Anyway, for the change itself,
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks!
-
-> ---
->  fs/btrfs/extent_io.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 1ff438fd5bc2..b67133a23652 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3728,11 +3728,21 @@ static void end_extent_buffer_writeback(struct extent_buffer *eb)
->  static void set_btree_ioerr(struct page *page)
->  {
->         struct extent_buffer *eb = (struct extent_buffer *)page->private;
-> +       struct btrfs_fs_info *fs_info;
->
->         SetPageError(page);
->         if (test_and_set_bit(EXTENT_BUFFER_WRITE_ERR, &eb->bflags))
->                 return;
->
-> +       /*
-> +        * If we error out, we should add back the dirty_metadata_bytes
-> +        * to make it consistent.
-> +        */
-> +       fs_info = eb->fs_info;
-> +       percpu_counter_add_batch(&fs_info->dirty_metadata_bytes,
-> +                                eb->len,
-> +                                fs_info->dirty_metadata_batch);
-> +
->         /*
->          * If writeback for a btree extent that doesn't belong to a log tree
->          * failed, increment the counter transaction->eb_write_errors.
-> --
-> 2.17.1
->
+Josef
