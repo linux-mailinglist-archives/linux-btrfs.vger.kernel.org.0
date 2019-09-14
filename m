@@ -2,37 +2,37 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C069B2957
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2019 03:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C59D5B2958
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2019 03:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730642AbfINBun (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Sep 2019 21:50:43 -0400
-Received: from server53-3.web-hosting.com ([198.54.126.113]:50287 "EHLO
+        id S1730756AbfINB4r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 13 Sep 2019 21:56:47 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:53732 "EHLO
         server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730588AbfINBun (ORCPT
+        by vger.kernel.org with ESMTP id S1730680AbfINB4r (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Sep 2019 21:50:43 -0400
+        Fri, 13 Sep 2019 21:56:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
          s=default; h=MIME-Version:Content-Type:In-Reply-To:References:Subject:Cc:To:
         From:Message-ID:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
         Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
         :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
         List-Post:List-Owner:List-Archive;
-        bh=RfDvxsSQl4RYeqgTFbkc6lZ3ha0e1QwrsgwGX+F6ZtU=; b=IRJkJKLeVAOL7g9wQ/yx7W+ZCu
-        mOqGaR3X6WSL5p3nj0CRk1WBMdbbOssWJJuZKVBTG5Zkzu39fa//lWm+BFlrpuIrTkRhdWDl1m6Lv
-        6xvi306ZgPeNXyro/QSHlcKCkYf+WVs8oRt9mgXwnpc7K+x1q6BXEucD6xVJfDLxVJQWfw0lEK8jr
-        9V/BpckR7Pv7x4FqfFwvJ2DSCjqPzR24AvsIE8HRNZyNmNfq5k683LNcUYWVkcC9tTPN+ATNCiAl+
-        1R1lhL5NZpju/dQ/yYepov7TxSPa12H/CAbEWupJrDBhgZScovZKC/jgPel1MH8iS53jR3VyAZhhn
-        1u9adXuQ==;
-Received: from [::1] (port=34676 helo=server53.web-hosting.com)
+        bh=UZIU+BLozaUtLR5PIhsUWlGnw530mWEthzzxV+k/69s=; b=rVlkhPDDJzN95LkxdVsmuHpHZg
+        5SrYwe1iwZOlaYx4xSvzkYkfpD3Z5ustT0yr+AIlqj3MYtuu/8SHkpuCD6In7xHcqgAyabzvgXieI
+        Kh62zztJI16XSxv2rKpoAag7hyWihXIzEshUzWtJMkfoFSbVtX4u2qUfvHJsZEJcHrnKBSjBb10TP
+        xWBdzYrpjqI4itVO/53UbWGxIfiR0p+CCcS9hl4cwkbfs9YCFjzRuv+OitDRXzzZtLp+iLZjW60/9
+        dimFHGqwpHLpAz85gyn/BxiuB4TX0jF5UUWKqYNdUdySwh2Xlre5fH6qBhGuH2xKFywYaAgiFENOS
+        XpN6iw2Q==;
+Received: from [::1] (port=43850 helo=server53.web-hosting.com)
         by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
         (Exim 4.92)
         (envelope-from <general-zed@zedlx.com>)
-        id 1i8xCw-004G80-6a; Fri, 13 Sep 2019 21:50:42 -0400
+        id 1i8xIo-004IkC-8O; Fri, 13 Sep 2019 21:56:46 -0400
 Received: from [95.178.242.92] ([95.178.242.92]) by server53.web-hosting.com
- (Horde Framework) with HTTPS; Fri, 13 Sep 2019 21:50:38 -0400
-Date:   Fri, 13 Sep 2019 21:50:38 -0400
-Message-ID: <20190913215038.Horde.gsxNyK9aSRLm6Qsl5sUNhf0@server53.web-hosting.com>
+ (Horde Framework) with HTTPS; Fri, 13 Sep 2019 21:56:42 -0400
+Date:   Fri, 13 Sep 2019 21:56:42 -0400
+Message-ID: <20190913215642.Horde.MvjbFry-r1RYjoGFfEha7aE@server53.web-hosting.com>
 From:   General Zed <general-zed@zedlx.com>
 To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 Cc:     Chris Murphy <lists@colorremedies.com>,
@@ -127,56 +127,20 @@ Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
 >
 > It's about 48KB per 4K extent, plus a few hundred bytes on average for each
 > reference.
-
-Sorry, could you be more clear there? An file fragment/extent that  
-holds file data can be any
-size up to 128 MB. What metadata is there per every file fragment/extent?
-
-Because "48 KB per 4 K extent" ... cannot decode what you mean.
-
-Another question is: what is the average size of metadata extents?
-
+>
 >> The metadata is organized as a b-tree. Therefore, nearby nodes should
 >> contain data of consecutive file extents.
 >
-> It's 48KB per item.
-
-What's the "item"?
-
-> As you remove the original data extents, you will
+> It's 48KB per item.  As you remove the original data extents, you will
 > be touching a 16KB page in three trees for each extent that is removed:
 > Free space tree, csum tree, and extent tree.  This happens after the
 > merged extent is created.  It is part of the cleanup operation that
 > gets rid of the original 4K extents.
-
-Ok, but how big are free space tree and csum tree?
-
-Also, when moving a file to defragment it, there should still be some  
-locality even in free space tree.
-
-And the csum tree, it should be ordered similar to free space tree, right?
-
+>
 > Because the file was written very slowly on a big filesystem, the extents
 > are scattered pessimally all over the virtual address space, not packed
 > close together.  If there are a few hundred extent allocations between
 > each log extent, then they will all occupy separate metadata pages.
-
-Ok, now you are talking about your pathological case. Let's consider it.
-
-Note that there is very little that can be in this case that you are  
-describing. In order to defrag such a file, either the defrag will  
-take many small steps and therefore it will be slow (because each step  
-needs to perform an update to the metadata), or the defrag can do it  
-in one big step and use a huge amount of RAM.
-
-So, the best thing to be done in this situation is to allow the user  
-to specify the amount of RAM that defrag is allowed to use, so that  
-the user decides which of the two (slow defrag or lots of RAM) he wants.
-
-There is no way around it. There is no better defrag than the one that  
-has ALL information at hand, that one will be the fastest and the best  
-defrag.
-
 > When it is time to remove them, each of these pages must be updated.
 > This can be hit in a number of places in btrfs, including overwrite
 > and delete.
@@ -188,24 +152,12 @@ defrag.
 > updated subvol metadata pages, so we can expect maybe 5 pages to remain
 > including root and interior nodes).  I haven't been unlucky enough to
 > get a "natural" 12GB, but I got over 1GB a few times recently.
-
-The thing that I figured out (and I have already written it down in  
-another post) is that the defrag can CHOOSE AT WILL how large update  
-to metadata it wants to perform (within the limit of available RAM).  
-The defrag can select, by itself, the most efficient way to proceed  
-while still honoring the user-supplied limit on RAM.
-
+>
 > Reflinks can be used to multiply that 12GB arbitrarily--you only get
 > locality if the reflinks are consecutive in (inode, offset) space,
 > so if the reflinks are scattered across subvols or files, they won't
 > share pages.
-
-OK.
-
-Yes, given a sufficiently pathological case, the defrag will take  
-forever. There is nothing unexpected there. I agree on that point. The  
-defrag always functions within certain prerequisites.
-
+>
 >> The trick, in this case, is to select one part of "ultralog" which is
 >> localized in the metadata, and defragment it. Repeating this step will
 >> ultimately defragment the entire file.
@@ -228,10 +180,37 @@ defrag always functions within certain prerequisites.
 >> general procedure.
 >>
 >> Problem solved?
-
+>
 > Problem missed completely.  The forward reference updates were the only
 > easy part.
+>
+> My solution is to detect this is happening in real time, and merge the
+> extents while they're still too few to be a problem.  Now you might be
+> thinking "but doesn't that mean you'll merge the same data blocks over
+> and over, wasting iops?" but really it's a perfectly reasonable trade
+> considering the interest rates those unspent iops can collect on btrfs.
+> If the target minimum extent size is 192K, you turn this 12GB problem into
+> a 250MB one, and the 1GB problem that actually occurs becomes trivial.
+>
+> Another solution would be to get the allocator to reserve some space
+> near growing files reserved for use by those files, so that the small
+> fragments don't explode across the address space.  Then we'd get locality
+> in all four btrees.  Other filesystems have heuristics all over their
+> allocators to do things like this--btrfs seems to have a very minimal
+> allocator that could stand much improvement.
 
-Oh, I'll reply in another mail, this one is getting too tireing.
+Ok, a fine solution. Basically, you improve the autodefrag to detect  
+this specific situation.
+
+Another way to solve this issue is to run the on-demand defrag  
+sufficiently often. You order the defrag to  defragment only that one  
+specific file, or you order it to find and defrag only 0.1% of most  
+fragmented files (and the pathological file should fall within those  
+0.1%).
+
+But, this is a very specific and rare case that we are talking about here.
+
+So, that's it.
+
 
 
