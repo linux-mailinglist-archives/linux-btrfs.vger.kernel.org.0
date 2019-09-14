@@ -2,28 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5100AB2935
-	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2019 02:58:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3C1B2936
+	for <lists+linux-btrfs@lfdr.de>; Sat, 14 Sep 2019 02:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729228AbfINA5e (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 13 Sep 2019 20:57:34 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:45794 "EHLO
+        id S1729564AbfINA7n convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 13 Sep 2019 20:59:43 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:45926 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728789AbfINA5d (ORCPT
+        by vger.kernel.org with ESMTP id S1728789AbfINA7n (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 13 Sep 2019 20:57:33 -0400
+        Fri, 13 Sep 2019 20:59:43 -0400
 Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 6DE5F425719; Fri, 13 Sep 2019 20:56:55 -0400 (EDT)
-Date:   Fri, 13 Sep 2019 20:56:55 -0400
+        id 1D4A442572B; Fri, 13 Sep 2019 20:59:41 -0400 (EDT)
+Date:   Fri, 13 Sep 2019 20:59:31 -0400
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
 To:     General Zed <general-zed@zedlx.com>
 Cc:     Chris Murphy <lists@colorremedies.com>,
         "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
         Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Subject: Re: Feature requests: online backup - defrag - change RAID level
-Message-ID: <20190914005655.GH22121@hungrycats.org>
-References: <81f4870e-3ee9-7780-13aa-918d24ca10d8@gmail.com>
- <20190912151841.Horde.-wdqt-14W0sbNwBxzhWVB6B@server53.web-hosting.com>
+Message-ID: <20190914005931.GI22121@hungrycats.org>
+References: <20190912151841.Horde.-wdqt-14W0sbNwBxzhWVB6B@server53.web-hosting.com>
  <CAJCQCtQbRCdVOknOo6vusG+fQu1SB3=h8r=qDcZHUu+EFe480A@mail.gmail.com>
  <20190912173440.Horde.WmxNqLlw7nsFNa-Ux9TTgbz@server53.web-hosting.com>
  <CAJCQCtS8i5rTOYgEM2DFjoiZJBFsL6sgOGwp-1shMs859-r=qg@mail.gmail.com>
@@ -31,137 +30,170 @@ References: <81f4870e-3ee9-7780-13aa-918d24ca10d8@gmail.com>
  <20190912235427.GE22121@hungrycats.org>
  <20190912202604.Horde.2Cvnicewbvpdb39q5eBASP7@server53.web-hosting.com>
  <20190913031242.GF22121@hungrycats.org>
- <20190913010552.Horde.cUL303XsYbqREB5g0iiCDKd@server53.web-hosting.com>
+ <20190913025832.Horde.Bwn_M-5buBYcgGbqhc_wDkU@server53.web-hosting.com>
+ <20190913052520.Horde.TXpSDI4drVhkIzGxF7ZVMA8@server53.web-hosting.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190913010552.Horde.cUL303XsYbqREB5g0iiCDKd@server53.web-hosting.com>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20190913052520.Horde.TXpSDI4drVhkIzGxF7ZVMA8@server53.web-hosting.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 13, 2019 at 01:05:52AM -0400, General Zed wrote:
+On Fri, Sep 13, 2019 at 05:25:20AM -0400, General Zed wrote:
 > 
-> Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
+> Quoting General Zed <general-zed@zedlx.com>:
 > 
-> > On Thu, Sep 12, 2019 at 08:26:04PM -0400, General Zed wrote:
+> > Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
+> > 
+> > > On Thu, Sep 12, 2019 at 08:26:04PM -0400, General Zed wrote:
+> > > > 
+> > > > Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
+> > > > 
+> > > > > On Thu, Sep 12, 2019 at 06:57:26PM -0400, General Zed wrote:
+> > > > > >
+> > > > > > At worst, it just has to completely write-out "all
+> > > > > metadata", all the way up
+> > > > > > to the super. It needs to be done just once, because what's the point of
+> > > > > > writing it 10 times over? Then, the super is updated as
+> > > > > the final commit.
+> > > > > 
+> > > > > This is kind of a silly discussion.  The biggest extent possible on
+> > > > > btrfs is 128MB, and the incremental gains of forcing 128MB extents to
+> > > > > be consecutive are negligible.  If you're defragging a 10GB file, you're
+> > > > > just going to end up doing 80 separate defrag operations.
+> > > > 
+> > > > Ok, then the max extent is 128 MB, that's fine. Someone here
+> > > > previously said
+> > > > that it is 2 GB, so he has disinformed me (in order to further his false
+> > > > argument).
 > > > 
-> > > Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
+> > > If the 128MB limit is removed, you then hit the block group size limit,
+> > > which is some number of GB from 1 to 10 depending on number of disks
+> > > available and raid profile selection (the striping raid profiles cap
+> > > block group sizes at 10 disks, and single/raid1 profiles always use 1GB
+> > > block groups regardless of disk count).  So 2GB is _also_ a valid extent
+> > > size limit, just not the first limit that is relevant for defrag.
 > > > 
-> > > > Don't forget you have to write new checksum and free space tree pages.
-> > > > In the worst case, you'll need about 1GB of new metadata pages for each
-> > > > 128MB you defrag (though you get to delete 99.5% of them immediately
-> > > > after).
+> > > A lot of people get confused by 'filefrag -v' output, which coalesces
+> > > physically adjacent but distinct extents.  So if you use that tool,
+> > > it can _seem_ like there is a 2.5GB extent in a file, but it is really
+> > > 20 distinct 128MB extents that start and end at adjacent addresses.
+> > > You can see the true structure in 'btrfs ins dump-tree' output.
 > > > 
-> > > Yes, here we are debating some worst-case scenaraio which is actually
-> > > imposible in practice due to various reasons.
+> > > That also brings up another reason why 10GB defrags are absurd on btrfs:
+> > > extent addresses are virtual.  There's no guarantee that a pair of extents
+> > > that meet at a block group boundary are physically adjacent, and after
+> > > operations like RAID array reorganization or free space defragmentation,
+> > > they are typically quite far apart physically.
+> > > 
+> > > > I didn't ever said that I would force extents larger than 128 MB.
+> > > > 
+> > > > If you are defragging a 10 GB file, you'll likely have to do it
+> > > > in 10 steps,
+> > > > because the defrag is usually allowed to only use a limited amount of disk
+> > > > space while in operation. That has nothing to do with the extent size.
+> > > 
+> > > Defrag is literally manipulating the extent size.  Fragments and extents
+> > > are the same thing in btrfs.
+> > > 
+> > > Currently a 10GB defragment will work in 80 steps, but doesn't necessarily
+> > > commit metadata updates after each step, so more than 128MB of temporary
+> > > space may be used (especially if your disks are fast and empty,
+> > > and you start just after the end of the previous commit interval).
+> > > There are some opportunities to coalsce metadata updates, occupying up
+> > > to a (arbitrary) limit of 512MB of RAM (or when memory pressure forces
+> > > a flush, whichever comes first), but exploiting those opportunities
+> > > requires more space for uncommitted data.
+> > > 
+> > > If the filesystem starts to get low on space during a defrag, it can
+> > > inject commits to force metadata updates to happen more often, which
+> > > reduces the amount of temporary space needed (we can't delete the original
+> > > fragmented extents until their replacement extent is committed); however,
+> > > if the filesystem is so low on space that you're worried about running
+> > > out during a defrag, then you probably don't have big enough contiguous
+> > > free areas to relocate data into anyway, i.e. the defrag is just going to
+> > > push data from one fragmented location to a different fragmented location,
+> > > or bail out with "sorry, can't defrag that."
 > > 
-> > No, it's quite possible.  A log file written slowly on an active
-> > filesystem above a few TB will do that accidentally.  Every now and then
-> > I hit that case.  It can take several hours to do a logrotate on spinning
-> > arrays because of all the metadata fetches and updates associated with
-> > worst-case file delete.  Long enough to watch the delete happen, and
-> > even follow along in the source code.
+> > Nope.
 > > 
-> > I guess if I did a proactive defrag every few hours, it might take less
-> > time to do the logrotate, but that would mean spreading out all the
-> > seeky IO load during the day instead of getting it all done at night.
-> > Logrotate does the same job as defrag in this case (replacing a file in
-> > thousands of fragments spread across the disk with a few large fragments
-> > close together), except logrotate gets better compression.
+> > Each defrag "cycle" consists of two parts:
+> >      1) move-out part
+> >      2) move-in part
 > > 
-> > To be more accurate, the example I gave above is the worst case you
-> > can expect from normal user workloads.  If I throw in some reflinks
-> > and snapshots, I can make it arbitrarily worse, until the entire disk
-> > is consumed by the metadata update of a single extent defrag.
+> > The move-out part select one contiguous area of the disk. Almost any
+> > area will do, but some smart choices are better. It then moves-out all
+> > data from that contiguous area into whatever holes there are left empty
+> > on the disk. The biggest problem is actually updating the metadata,
+> > since the updates are not localized.
+> > Anyway, this part can even be skipped.
 > > 
+> > The move-in part now populates the completely free contiguous area with
+> > defragmented data.
+> > 
+> > In the case that the move-out part needs to be skipped because the
+> > defrag estimates that the update to metatada will be too big (like in
+> > the pathological case of a disk with 156 GB of metadata), it can
+> > sucessfully defrag by performing only the move-in part. In that case,
+> > the move-in area is not free of data and "defragmented" data won't be
+> > fully defragmented. Also, there should be at least 20% free disk space
+> > in this case in order to avoid defrag turning pathological.
+> > 
+> > But, these are all some pathological cases. They should be considered in
+> > some other discussion.
 > 
-> I can't believe I am considering this case.
+> I know how to do this pathological case. Figured it out!
 > 
-> So, we have a 1TB log file "ultralog" split into 256 million 4 KB extents
-> randomly over the entire disk. We have 512 GB free RAM and 2% free disk
-> space. The file needs to be defragmented.
+> Yeah, always ask General Zed, he knows the best!!!
 > 
-> In order to do that, defrag needs to be able to copy-move multiple extents
-> in one batch, and update the metadata.
+> The move-in phase is not a problem, because this phase generally affects a
+> low number of files.
 > 
-> The metadata has a total of at least 256 million entries, each of some size,
-> but each one should hold at least a pointer to the extent (8 bytes) and a
-> checksum (8 bytes): In reality, it could be that there is a lot of other
-> data there per entry.
-
-It's about 48KB per 4K extent, plus a few hundred bytes on average for each
-reference.
-
-> The metadata is organized as a b-tree. Therefore, nearby nodes should
-> contain data of consecutive file extents.
-
-It's 48KB per item.  As you remove the original data extents, you will
-be touching a 16KB page in three trees for each extent that is removed:
-Free space tree, csum tree, and extent tree.  This happens after the
-merged extent is created.  It is part of the cleanup operation that
-gets rid of the original 4K extents.
-
-Because the file was written very slowly on a big filesystem, the extents
-are scattered pessimally all over the virtual address space, not packed
-close together.  If there are a few hundred extent allocations between
-each log extent, then they will all occupy separate metadata pages.
-When it is time to remove them, each of these pages must be updated.
-This can be hit in a number of places in btrfs, including overwrite
-and delete.
-
-There's also 60ish bytes per extent in any subvol trees the file
-actually appears in, but you do get locality in that one (the key is
-inode and offset, so nothing can get between them and space them apart).
-That's 12GB and change (you'll probably completely empty most of the
-updated subvol metadata pages, so we can expect maybe 5 pages to remain
-including root and interior nodes).  I haven't been unlucky enough to
-get a "natural" 12GB, but I got over 1GB a few times recently.
-
-Reflinks can be used to multiply that 12GB arbitrarily--you only get
-locality if the reflinks are consecutive in (inode, offset) space,
-so if the reflinks are scattered across subvols or files, they won't
-share pages.
-
-> The trick, in this case, is to select one part of "ultralog" which is
-> localized in the metadata, and defragment it. Repeating this step will
-> ultimately defragment the entire file.
+> So, let's consider the move-out phase. The main concern here is that the
+> move-out area may contain so many different files and fragments that the
+> move-out forces a practically undoable metadata update.
 > 
-> So, the defrag selects some part of metadata which is entirely a descendant
-> of some b-tree node not far from the bottom of b-tree. It selects it such
-> that the required update to the metadata is less than, let's say, 64 MB, and
-> simultaneously the affected "ultralog" file fragments total less han 512 MB
-> (therefore, less than 128 thousand metadata leaf entries, each pointing to a
-> 4 KB fragment). Then it finds all the file extents pointed to by that part
-> of metadata. They are consecutive (as file fragments), because we have
-> selected such part of metadata. Now the defrag can safely copy-move those
-> fragments to a new area and update the metadata.
-> 
-> In order to quickly select that small part of metadata, the defrag needs a
-> metatdata cache that can hold somewhat more than 128 thousand localized
-> metadata leaf entries. That fits into 128 MB RAM definitely.
-> 
-> Of course, there are many other small issues there, but this outlines the
-> general procedure.
-> 
-> Problem solved?
+> So, the way to do it is to select files for move-out, one by one (or even
+> more granular, by fragments of files), while keeping track of the size of
+> the necessary metadata update. When the metadata update exceeds a certain
+> amount (let's say 128 MB, an amount that can easily fit into RAM), the
+> move-out is performed with only currently selected files (file fragments).
+> (The move-out often doesn't affect a whole file since only a part of each
+> file lies within the move-out area).
 
-Problem missed completely.  The forward reference updates were the only
-easy part.
+This move-out phase sounds like a reinvention of btrfs balance.  Balance
+already does something similar, and python-btrfs gives you a script to
+target block groups with high free space fragmentation for balancing.
+It moves extents (and their references) away from their block group.
+You get GB-sized (or multi-GB-sized) contiguous free space areas into
+which you can then allocate big extents.
 
-My solution is to detect this is happening in real time, and merge the
-extents while they're still too few to be a problem.  Now you might be
-thinking "but doesn't that mean you'll merge the same data blocks over
-and over, wasting iops?" but really it's a perfectly reasonable trade
-considering the interest rates those unspent iops can collect on btrfs.
-If the target minimum extent size is 192K, you turn this 12GB problem into
-a 250MB one, and the 1GB problem that actually occurs becomes trivial.
+> Now the defrag has to decide: whether to continue with another round of the
+> move-out to get a cleaner move-in area (by repeating the same procedure
+> above), or should it continue with a move-in into a partialy dirty area. I
+> can't tell you what's better right now, as this can be determined only by
+> experiments.
+> 
+> Lastly, the move-in phase is performed (can be done whether the move-in area
+> is dirty or completely clean). Again, the same trick can be used: files can
+> be selected one by one until the calculated metadata update exceeds 128 MB.
+> However, it is more likely that the size of move-in area will be exhausted
+> before this happens.
+> 
+> This algorithm will work even if you have only 3% free disk space left.
 
-Another solution would be to get the allocator to reserve some space
-near growing files reserved for use by those files, so that the small
-fragments don't explode across the address space.  Then we'd get locality
-in all four btrees.  Other filesystems have heuristics all over their
-allocators to do things like this--btrfs seems to have a very minimal
-allocator that could stand much improvement.
+I was thinking more like "you have less than 1GB free on a 1TB filesystem
+and you want to defrag 128MB things", i.e. <0.1% free space.  If you don't
+have all the metadata block group free space you need allocated already
+by that point, you can run out of metadata space and the filesystem goes
+read-only.  Happens quite often to people.  They don't like it very much.
+
+> This algorithm will also work if you have metadata of huge size, but in that
+> case it is better to have much more free disk space (20%) to avoid
+> significantly slowing down the defrag operation.
+> 
+> 
