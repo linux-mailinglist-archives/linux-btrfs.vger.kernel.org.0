@@ -2,123 +2,217 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF79B2FF8
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Sep 2019 14:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 024AAB3015
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Sep 2019 15:13:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728757AbfIOMq2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 15 Sep 2019 08:46:28 -0400
-Received: from mail-vs1-f46.google.com ([209.85.217.46]:43208 "EHLO
-        mail-vs1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726246AbfIOMq2 (ORCPT
+        id S1729503AbfIONNl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 Sep 2019 09:13:41 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:43987 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725845AbfIONNl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 15 Sep 2019 08:46:28 -0400
-Received: by mail-vs1-f46.google.com with SMTP id b1so652392vsr.10
-        for <linux-btrfs@vger.kernel.org>; Sun, 15 Sep 2019 05:46:27 -0700 (PDT)
+        Sun, 15 Sep 2019 09:13:41 -0400
+Received: by mail-pf1-f196.google.com with SMTP id a2so1816990pfo.10;
+        Sun, 15 Sep 2019 06:13:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=kW5OGpTDZKDWQpmSPqdav8AYElfky36XCL6u9/+qwtI=;
-        b=A1YOpptLr7FiHXOBtwJJpazlxRqguiPnAXF1SCPTBcoOXGwbWT+7OFglVTEKW++INb
-         VLqnFQY56UsvGfY6JRWjBP44xUmT/WpbvBWFN4Hy15TkIgEfcp5AWciIBmNyAjPEmZ2s
-         TjsnrPphlMdqL2gRgxnbO1eQrKpYQafC4uWSo9cmI4y6X8JEeWt/argJoqSjf5ugz9kZ
-         LujJTBDelQ3Du8Zw+AQnPQvw6HXulBFlnYteD1CC9qkUV4SYOlA3s2EgCwidZAQknH6h
-         pd8hk1UFeW2tTsrO3lSwO0W723WC6tNdrUeB9ZGKdZFfd1nU4N1/lRrNxMPJF1zpHQxA
-         wc8w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YIUT/32yTApttdMrTxCBa55st5kr2zzIpAz2t9mlHKo=;
+        b=MTaEdGfT0M4U/0CKrzt8QrKXiEQ9O3weuGRA8hhMkq0Vjewon96RHqa6MB1UCigsSz
+         CZvNWkFc+5NW+llESzvvYR7qcDv5bgRQprjJJJ6rh4mzBglM9mWvafFKQKWVzuQtzCoS
+         cNHISPlydL3HorwriesushLiEJdI/zDkEu+SfHGOwIzm3Fd5fb+1+C3NhQ2Hiohrj59y
+         niEcYay1n6FrwdSGpaa9mh6wEVfqu7DG6XZZM5rJASjIU204he40M84YdyNkCMUhYKK0
+         WOQc+Osn0jQuMItCAqkYdju5WqVGUtp4XuKSbjtchI/tHHlzOSvAIqC4rK0IsiiiALoh
+         m6pA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=kW5OGpTDZKDWQpmSPqdav8AYElfky36XCL6u9/+qwtI=;
-        b=YiDjzFOUQyEgqPh4KABJa0bGEJnMdlunStOqGhWD4uA1tvIq3zLCInaMDSslcBTT18
-         lb8aXfUot7E1165CiKkNU5Bg+EjFAiutkDcePrRDhDyF8eu/N8s9vfyLcPzVOnl4KP9o
-         phLJebBhy55cOcmdBTCYrzvUjwTMeeLJ7+3yKAu3LIvNFB2yjKxO0POkcAZL1Uv/iXrM
-         QMKabAjomiVFQ8aSqY3e3S7vhcFmysLqDnRFT6A1sIU8LZKpcSF27nu5389pICSQzS4V
-         IgEuDPtGgpjbr4YNSQ3Qh2gOxkezClMoJHAqREy3J+l4Pt3qGmVfsetMNaZnW5qxqL7S
-         B7zQ==
-X-Gm-Message-State: APjAAAX60x0T13dkQjtqB2u3KHQ6C5nbAnjy0tn57mpr7EZq7PrC3Jid
-        66ZLpZnjghsa3krWhup3k7HS3OjzY0JVQaFIOyskMVdZ
-X-Google-Smtp-Source: APXvYqyqag/oFS7CxDwYQbRVTHIiLmBYYHq2VAa6NX6VjuDuBLgd5fFtORRT1YCbCV1TkoAIYKsI6qEIDITKml8gWH0=
-X-Received: by 2002:a67:5f45:: with SMTP id t66mr19701693vsb.204.1568551587479;
- Sun, 15 Sep 2019 05:46:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YIUT/32yTApttdMrTxCBa55st5kr2zzIpAz2t9mlHKo=;
+        b=gJe3O/BY2GeGPyvuYdbjJ8XpSflrbsQA1fHqxKL9C92WA/6On/4SRvFJD1x0eM/WUV
+         tQlBhDNYg9n0/6uXDO69DzFNUSwpbyRLBi8nmUWbfZNnta6Jr3A8gNqdmcRNe5uyCgkS
+         k35UmxNuVqCzf/q1HlT/xW3ou6aHn8o0Tj7EVKdXkW/IJZn0Kns/QFZ6+XtpUK2/i6Ag
+         HjQAy1NOf69V3uWxiwF86K3r5FNFkhIs9SWuOWwAX2EdmYdynlg07ILFHTZcXX1Gkulz
+         KuUrXUVaNorn9SWhUu/yrhCAU7BUNYN03LM9eF5NGNINCMeTdTFvqM+v1SSPV+IaObhP
+         PtAA==
+X-Gm-Message-State: APjAAAVIeoiek+1lF7yUOr++39v3YIEMy7XKDV0YeS4mWqPcobtLSMx3
+        vbCthu1gOPFvz64r2icCOiG1rUqa
+X-Google-Smtp-Source: APXvYqzWQXcFZ9Z4kKVtw9QnPYdlie6lc0UdouQHfvJuslCYs0gZ+76ZRBRfW6kaLoG/LsNoiDM5Ow==
+X-Received: by 2002:a17:90a:c58e:: with SMTP id l14mr15960146pjt.46.1568553220428;
+        Sun, 15 Sep 2019 06:13:40 -0700 (PDT)
+Received: from localhost ([178.128.102.47])
+        by smtp.gmail.com with ESMTPSA id 19sm25856271pfn.102.2019.09.15.06.13.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Sep 2019 06:13:39 -0700 (PDT)
+Date:   Sun, 15 Sep 2019 21:13:33 +0800
+From:   Eryu Guan <guaneryu@gmail.com>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Qu Wenruo <wqu@suse.com>, fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2] fstests: btrfs: Verify falloc on multiple holes won't
+ cause qgroup reserved data space leak
+Message-ID: <20190915131319.GM2622@desktop>
+References: <20190915072230.25732-1-wqu@suse.com>
+ <CAL3q7H5w03tHwMa2-yv3A3zXdavhF=Ej0xEM++VReoSxX+NaEA@mail.gmail.com>
 MIME-Version: 1.0
-From:   James Harvey <jamespharvey20@gmail.com>
-Date:   Sun, 15 Sep 2019 08:46:16 -0400
-Message-ID: <CA+X5Wn7Rtw4rTqXTG8wrEc883uFV7JpGo-zD8FhhD9gM+_Vpfg@mail.gmail.com>
-Subject: WITH regression patch, still btrfs-transacti blocked for... (forever)
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
-        Filipe Manana <fdmanana@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H5w03tHwMa2-yv3A3zXdavhF=Ej0xEM++VReoSxX+NaEA@mail.gmail.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For several weeks, I've had an enormous amount of frustration when
-under heavy I/O load with a filesystem putting processes using it into
-permanent uninterruptible sleep.  Sometimes the filesystem allows
-reads and only locks up writing processes, sometimes it locks up both.
+On Sun, Sep 15, 2019 at 10:21:14AM +0100, Filipe Manana wrote:
+> On Sun, Sep 15, 2019 at 8:32 AM Qu Wenruo <wqu@suse.com> wrote:
+> >
+> > Add a test case where falloc is called on multiple holes with qgroup
+> > enabled.
+> >
+> > This can cause qgroup reserved data space leak and false EDQUOT error
+> > even we're not reaching the limit.
+> >
+> > The fix is titled:
+> > "btrfs: qgroup: Fix the wrong target io_tree when freeing
+> >  reserved data space"
+> >
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > ---
+> > changelog:
+> > v2:
+> > - Remove the unnecessary loop
+> >   The loop itself is just to ensure we leak as much space as possible.
+> >   However even one loop is already enough to fail the final
+> >   verification write, so remove the loop and modify the golden output.
+> > ---
+> >  tests/btrfs/192     | 70 +++++++++++++++++++++++++++++++++++++++++++++
+> >  tests/btrfs/192.out |  8 ++++++
+> >  tests/btrfs/group   |  1 +
+> >  3 files changed, 79 insertions(+)
+> >  create mode 100755 tests/btrfs/192
+> >  create mode 100644 tests/btrfs/192.out
+> >
+> > diff --git a/tests/btrfs/192 b/tests/btrfs/192
+> > new file mode 100755
+> > index 00000000..1abd7838
+> > --- /dev/null
+> > +++ b/tests/btrfs/192
+> > @@ -0,0 +1,70 @@
+> > +#! /bin/bash
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
+> > +#
+> > +# FS QA Test 192
+> > +#
+> > +# Test if btrfs is going to leak qgroup reserved data space when
+> > +# falloc on multiple holes fails.
+> > +# The fix is titled:
+> > +# "btrfs: qgroup: Fix the wrong target io_tree when freeing reserved data space"
+> > +#
+> > +seq=`basename $0`
+> > +seqres=$RESULT_DIR/$seq
+> > +echo "QA output created by $seq"
+> > +
+> > +here=`pwd`
+> > +tmp=/tmp/$$
+> > +status=1       # failure is the default!
+> > +trap "_cleanup; exit \$status" 0 1 2 3 15
+> > +
+> > +_cleanup()
+> > +{
+> > +       cd /
+> > +       rm -f $tmp.*
+> > +}
+> > +
+> > +# get standard environment, filters and checks
+> > +. ./common/rc
+> > +. ./common/filter
+> > +
+> > +# remove previous $seqres.full before test
+> > +rm -f $seqres.full
+> > +
+> > +# real QA test starts here
+> > +
+> > +# Modify as appropriate.
+> > +_supported_fs btrfs
+> > +_supported_os Linux
+> > +_require_scratch
+> > +_require_xfs_io_command falloc
+> > +
+> > +_scratch_mkfs > /dev/null
+> > +_scratch_mount
+> > +
+> > +$BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT" > /dev/null
+> > +$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" > /dev/null
+> > +$BTRFS_UTIL_PROG qgroup limit -e 256M "$SCRATCH_MNT"
+> > +
+> > +# Create a file with the following layout:
+> > +# 0         128M      256M      384M
+> > +# |  Hole   |4K| Hole |4K| Hole |
+> > +# The total hole size will be 384M - 8k
+> > +truncate -s 384m "$SCRATCH_MNT/file"
+> > +$XFS_IO_PROG -c "pwrite 128m 4k" -c "pwrite 256m 4k" \
+> > +       "$SCRATCH_MNT/file" | _filter_xfs_io
+> > +
+> > +# Falloc 0~384M range, it's going to fail due to the qgroup limit
+> > +$XFS_IO_PROG -c "falloc 0 384m" "$SCRATCH_MNT/file" |\
+> > +       _filter_xfs_io_error
+> 
+> This can be in a single line, as it doesn't go beyond 80 characters.
+> It doesn't hurt, but the use of the error filter isn't necessary here
+> at the moment.
+> 
+> > +rm "$SCRATCH_MNT/file"
+> 
+> rm -f, in case one has  " alias rm='rm -i' " in its environment.
+> 
+> > +
+> > +# Ensure above delete reaches disk and free some space
+> > +sync
+> > +
+> > +# We should be able to write at least 3/4 of the limit
+> > +$XFS_IO_PROG -f -c "pwrite 0 192m" "$SCRATCH_MNT/file" | _filter_xfs_io
+> > +
+> > +# success, all done
+> > +status=0
+> > +exit
+> > diff --git a/tests/btrfs/192.out b/tests/btrfs/192.out
+> > new file mode 100644
+> > index 00000000..654adf48
+> > --- /dev/null
+> > +++ b/tests/btrfs/192.out
+> > @@ -0,0 +1,8 @@
+> > +QA output created by 192
+> > +wrote 4096/4096 bytes at offset 134217728
+> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > +wrote 4096/4096 bytes at offset 268435456
+> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > +fallocate: Disk quota exceeded
+> > +wrote 201326592/201326592 bytes at offset 0
+> > +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> > diff --git a/tests/btrfs/group b/tests/btrfs/group
+> > index 2474d43e..160fe927 100644
+> > --- a/tests/btrfs/group
+> > +++ b/tests/btrfs/group
+> > @@ -194,3 +194,4 @@
+> >  189 auto quick send clone
+> >  190 auto quick replay balance qgroup
+> >  191 auto quick send dedupe
+> > +192 auto qgroup fast enospc limit
+> 
+> fast -> quick?
+> (we don't have a group named "fast" yet)
 
-I really, really want this fixed, so will be happy to perform further
-diagnostics.
+Yeah, I've changed it to 'quick' on commit. And I can fix your other
+comments on commit as well.
 
-I've ruled out hardware.  I have two identical Xeon/ECC machines that
-have been functioning perfectly for years (other amdgpu crashes and a
-btrfs encryption kernel crash that Qu patched.)  I can replicate this
-on both machines, using completely separate hardware.
+> 
+> Anyway, small things that can be fixed at commit time.
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-I am running into this within QEMU, and originally thought it must be
-a virtio issue.  But, I believe I've ruled that out.  Within the VM,
-after a filesystem lock condition starts, I have always been able to
-dd the entire block device to /dev/null, and I have always been able
-to dd part of the block device to /tmp, and re-write it back onto
-itself.  Additionally, as a test, I created a new LVM volume, and
-within the VM setup LVM and 2 btrfs volumes within it.  When the heavy
-I/O volume locked up, I could still properly use the other "dummy"
-volume that was (from the VM's perspective) on the same underlying
-block device.
+Thanks for the review!
 
-I've also had a few VM's under minimal I/O load have BTRFS related
-"blocked for" problems for several minutes, then come out of it.
-
-The VM is actually given two LVM partitions, one for the btrfs root
-filesystem, and one for the btrfs heavy I/O filesystem.  Its root
-filesystem doesn't also start having trouble, so it doesn't lock up
-the entire VM.  Since I saw someone else mention this, I'll mention
-that no fstrim or dedupe has been involved with me.
-
-I started to report this as a BTRFS issue about 4 days ago, but saw it
-had already been reported and a proposed patch was given for a
-"serious regression" in the 5.2 kernel.
-
-Because the heavy I/O involves mongodb, and it really doesn't do well
-in a crash, and I wasn't sure if there could be any residual
-filesystem corruption, I just decided to create a new VM and rebuild
-the database from its source material.
-
-Running a custom compiled 5.2.14 WITH Filipe Manana's "fix unwritten
-extent buffers and hangs on future writeback attempts" patch, it ran
-for about a day under heavy I/O.  And, then, it went into a state
-where anything reading or writing goes to uninterruptible sleep.
-
-Here is everything logged near the beginning of the lockup in the VM.
-The host has never logged a single thing related to any of these
-issues.
-
-Host and VM are up to date Arch Linux, linux 5.2.14 with Filipe's
-patch, and QEMU 4.1.0.
-
-The physical drive is a Samsung 970 EVO 1TB NVMe, and a host LVM
-partition is given to QEMU.  I've used both virtio-blk and
-virtio-scsi.  I don't use QEMU drive caching, because with this drive,
-I've found it's faster not to.
-
-
-View relevant journalctl here: http://ix.io/1VeT
-
-
-You'll see they're different looking backtraces than without the
-patch, so I don't actually know if it's related to the original
-regression that several others reported or not.
-
-After that, everything that was reading/writing is hung, and anything
-new that tries to do so is also hung.  It doesn't report more "task...
-blocked" messages, even for new processes attempting reads/writes.
+Eryu
