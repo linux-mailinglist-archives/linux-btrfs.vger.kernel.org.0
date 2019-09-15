@@ -2,161 +2,207 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A69B2D59
-	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Sep 2019 01:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02228B2E2B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 15 Sep 2019 06:37:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726077AbfINXjO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Sat, 14 Sep 2019 19:39:14 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:45558 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725795AbfINXjO (ORCPT
+        id S1725788AbfIOEgX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 15 Sep 2019 00:36:23 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:39860 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbfIOEgX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 14 Sep 2019 19:39:14 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 45A7F427226; Sat, 14 Sep 2019 19:39:12 -0400 (EDT)
-Date:   Sat, 14 Sep 2019 19:39:12 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
-        General Zed <general-zed@zedlx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Feature requests: online backup - defrag - change RAID level
-Message-ID: <20190914233912.GA24379@hungrycats.org>
-References: <20190911173725.Horde.aRGy9hKzg3scN15icIxdbco@server53.web-hosting.com>
- <81f4870e-3ee9-7780-13aa-918d24ca10d8@gmail.com>
- <20190912151841.Horde.-wdqt-14W0sbNwBxzhWVB6B@server53.web-hosting.com>
- <CAJCQCtQbRCdVOknOo6vusG+fQu1SB3=h8r=qDcZHUu+EFe480A@mail.gmail.com>
- <20190912173440.Horde.WmxNqLlw7nsFNa-Ux9TTgbz@server53.web-hosting.com>
- <CAJCQCtS8i5rTOYgEM2DFjoiZJBFsL6sgOGwp-1shMs859-r=qg@mail.gmail.com>
- <20190912185726.Horde.HMciH9Z16kV4fK10AfUeRA8@server53.web-hosting.com>
- <20190912235427.GE22121@hungrycats.org>
- <fdec5a56-8337-4cfb-4d07-425e8785102d@gmail.com>
- <CAJCQCtQ9729my4i2hdqwyTD-PVhsQk8cRaTg9vbDT4Yn2s7SAA@mail.gmail.com>
+        Sun, 15 Sep 2019 00:36:23 -0400
+Received: by mail-pf1-f194.google.com with SMTP id i1so11585317pfa.6;
+        Sat, 14 Sep 2019 21:36:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3nNq7LHU3QqqsQk9p0onC2EDsswEjjpq97N/L9TB2bI=;
+        b=ovI00x4MzJi+D1YJCZO2CEMQRBHjCsZFSk7yNjQBgNnc8RWfXXCbQeF1uYPaPhN4ly
+         u9H/yTZkMvIJdXifVYQHni54XXK6bxexkW/uLyjBuRPYjNM51X1ZhS7EqHZ9jn8h1Tsb
+         RS8BUwroRnPAwH4KBwLB7G5VNl3l17Bsgs7A90h5R1bU4nrUIjHX8Mp5W9znJgKyZBcJ
+         HzAC7wOvQYtstD0jEaPSYbadPwUmz2FWTguOl0tFKaFh8c/vMgbKxbh5hYZYNY1p4gr2
+         UT3hrnvStTFtqFwyuYLqGNvaTCuqgdaeqJOLxyBHK12oiJE6Uyp1IN7hbcxbMzApk6eA
+         8N1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3nNq7LHU3QqqsQk9p0onC2EDsswEjjpq97N/L9TB2bI=;
+        b=edjXY/dvNU0P4sef/LeQW3MNeIEMw8gZB+DDtwvXCdGtIkLqXYGu1qFjiKDLjhOafg
+         EiCMFdIyGs9LB7gQQAekGZn8i2Gzk2BR1YY/jz6+PgKtUx0SFArDHK8bzBz7fH7sHGBc
+         W0GIIxIrbJyFBmhi/tnRau2cRkzMp35Km/DhMOn88LHpe5B/3/n6wpwK108rGNXMuNvd
+         n/3mMeqPJlSkC5q0FqxQIvj9w+4kbPsIQMTUcqINyaobHpsXWkChnRb8E3v+tnkRXr6Q
+         7f+79vZEqmwx12ClEM1u+ASZtqMhKaw+gvixlbojsfxC/KFT2xiCvs+JN4PjtbKP4A7S
+         qivQ==
+X-Gm-Message-State: APjAAAVHrmZy4xZLJI/yQv6vCEcPNLYZabpIW+BXZ2uABzCWYLR6OyKN
+        jjrs6bxx2ZLaNZEy+XT2oug=
+X-Google-Smtp-Source: APXvYqwTa5ZBfHWSgFVH4PJjk+ShRwPE259VCe9D3lKe5QNR4uCVbbuTkSJilAEzXerv2sFygr2rTg==
+X-Received: by 2002:a65:64c5:: with SMTP id t5mr29978962pgv.168.1568522181696;
+        Sat, 14 Sep 2019 21:36:21 -0700 (PDT)
+Received: from localhost ([178.128.102.47])
+        by smtp.gmail.com with ESMTPSA id f23sm33903344pfn.22.2019.09.14.21.36.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 14 Sep 2019 21:36:20 -0700 (PDT)
+Date:   Sun, 15 Sep 2019 12:36:14 +0800
+From:   Eryu Guan <guaneryu@gmail.com>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] fstests: btrfs: Verify falloc on multiple holes won't
+ cause qgroup reserved data space leak
+Message-ID: <20190915043614.GK2622@desktop>
+References: <20190913015151.15076-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <CAJCQCtQ9729my4i2hdqwyTD-PVhsQk8cRaTg9vbDT4Yn2s7SAA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190913015151.15076-1-wqu@suse.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 14, 2019 at 12:29:09PM -0600, Chris Murphy wrote:
-> On Fri, Sep 13, 2019 at 5:04 AM Austin S. Hemmelgarn
-> <ahferroin7@gmail.com> wrote:
-> >
-> > Do you have a source for this claim of a 128MB max extent size?  Because
-> > everything I've seen indicates the max extent size is a full data chunk
-> > (so 1GB for the common case, potentially up to about 5GB for really big
-> > filesystems)
+On Fri, Sep 13, 2019 at 09:51:51AM +0800, Qu Wenruo wrote:
+> Add a test case where falloc is called on multiple holes with qgroup
+> enabled.
 > 
-> Yeah a block group can be a kind of "super extent". I think the
-> EXTENT_DATA maxes out at 128M but they are often contiguous, for
-> example
+> This can cause qgroup reserved data space leak and false EDQUOT error
+> even we're not reaching the limit.
 > 
->     item 308 key (5741459 EXTENT_DATA 0) itemoff 39032 itemsize 53
->         generation 241638 type 1 (regular)
->         extent data disk byte 193851400192 nr 134217728
->         extent data offset 0 nr 134217728 ram 134217728
->         extent compression 0 (none)
->     item 309 key (5741459 EXTENT_DATA 134217728) itemoff 38979 itemsize 53
->         generation 241638 type 1 (regular)
->         extent data disk byte 193985617920 nr 134217728
->         extent data offset 0 nr 134217728 ram 134217728
->         extent compression 0 (none)
->     item 310 key (5741459 EXTENT_DATA 268435456) itemoff 38926 itemsize 53
->         generation 241638 type 1 (regular)
->         extent data disk byte 194119835648 nr 134217728
->         extent data offset 0 nr 134217728 ram 134217728
->         extent compression 0 (none)
+> The fix is titled:
+> "btrfs: qgroup: Fix the wrong target io_tree when freeing
+>  reserved data space"
 > 
-> Where FIEMAP has a different view (via filefrag -v)
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/192     | 72 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/192.out | 18 ++++++++++++
+>  tests/btrfs/group   |  1 +
+>  3 files changed, 91 insertions(+)
+>  create mode 100755 tests/btrfs/192
+>  create mode 100644 tests/btrfs/192.out
 > 
->  ext:     logical_offset:        physical_offset: length:   expected: flags:
->    0:        0..  131071:   47327002..  47458073: 131072:
->    1:   131072..  294911:   47518701..  47682540: 163840:   47458074:
->    2:   294912..  360447:   50279681..  50345216:  65536:   47682541:
->    3:   360448..  499871:   50377984..  50517407: 139424:   50345217: last,eof
-> Fedora-Workstation-Live-x86_64-31_Beta-1.1.iso: 4 extents found
-> 
-> Those extents are all bigger than 128M. But they're each made up of
-> contiguous EXTENT_DATA items.
-> 
-> Also, the EXTENT_DATA size goes to a 128K max for any compressed
-> files, so you get an explosive number of EXTENT_DATA items on
-> compressed file systems, and thus metadata to rewrite.
+> diff --git a/tests/btrfs/192 b/tests/btrfs/192
+> new file mode 100755
+> index 00000000..361b6d92
+> --- /dev/null
+> +++ b/tests/btrfs/192
+> @@ -0,0 +1,72 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 192
+> +#
+> +# Test if btrfs is going to leak qgroup reserved data space when
+> +# falloc on multiple holes fails.
+> +# The fix is titled:
+> +# "btrfs: qgroup: Fix the wrong target io_tree when freeing reserved data space"
+> +#
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=`pwd`
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +	cd /
+> +	rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_supported_os Linux
+> +_require_scratch
+> +_require_xfs_io_command falloc
+> +
+> +_scratch_mkfs > /dev/null
+> +_scratch_mount
+> +
+> +$BTRFS_UTIL_PROG quota enable "$SCRATCH_MNT" > /dev/null
+> +$BTRFS_UTIL_PROG quota rescan -w "$SCRATCH_MNT" > /dev/null
+> +$BTRFS_UTIL_PROG qgroup limit -e 256M "$SCRATCH_MNT"
+> +
+> +for i in $(seq 3); do
 
-The compressed extents tend to be physically contiguous as well, so
-quantitatively they aren't much of a problem.  There's more space used in
-metadata, but that is compensated by less space in data.  In the subvol
-trees, logically contiguous extents are always logically contiguous by
-key order, so they are packed densely in subvol metadata pages.
+Why do we need to loop 3 times? Some comments would be good, or we could
+just remove the loop?
 
-In extent, csum, and free space trees, when there is physical
-contiguity--or just proximity--the extent's items are packed into the
-same metadata pages, keeping their costs down.  That's true of all
-small extents, not just compressed ones.  Note that contiguity isn't
-necessary for metadata space efficiency--the extents just have to be
-close together, they don't need to be seamless, or in order (at least
-not for this reason).
+Other than that the test looks fine to me.
 
-Writes that are separated in _time_ are a different problem, and
-potentially much worse than the compression case.  If you have a file that
-consists of lots of extents that were written with significant allocations
-to other files between them, that file becomes a metadata monster that
-can create massive commit latencies when it is deleted or modified.
-If you unpack tarballs or build sources or rsync backup trees or really
-any two or more writing tasks at the same time on a big btrfs filesystem,
-you can run into cases where the metadata:data ratio goes above 1.0 during
-updates _and_ the metadata is randomly distributed physically.  Commits
-after a big delete run for hours.
+Thanks,
+Eryu
 
-> I wonder if instead of a rewrite of defragmenting, if there could be
-> improvements to the allocator to write bigger extents. I guess the
-> problem really comes from file appends? Smarter often means slower but
-> perhaps it could be a variation on autodefrag?
-
-Physically dispersed files can be fixed by defrag, but directory trees
-are a little different.  The current defrag doesn't look at the physical
-distances between files, only the extents within a single file, so it
-doesn't help when you have a big fragmented directory tree of many small
-not-fragmented files.  IOW defrag helps with 'rm -f' performance but not
-'rm -rf' performance.
-
-Other filesystems have allocator heuristics that reserve space near
-growing files, or try to pre-divide the free space to spread out
-files belonging to different directories or created by two processes.
-This is an attempt to fix the problem before it occurs, and sometimes
-it works; however, the heuristics have to match the reality or it just
-makes things worse, and extra complexity breeds bugs, e.g. the fix
-recently for a bug which tried to give every thread its own block group
-for allocation--i.e. 20 threads writing 4K each could ENOSPC if there
-was less than 20GB of unallocated space.
-
-I think the best approach may be to attack the problem quantitatively
-with an autodefrag agent:  keep the write path fast and simple, but
-detect areas where problems are occurring--i.e. where the ratio of extent
-metadata locality to physical locality is low--and clean them up with
-some minimal data relocation.  Note that's somewhat different from what
-the current kernel autodefrag does.
-
-In absolute terms autodefrag is worse--ideally we'd just put the data
-in the right place from the start, not write it in the wrong place
-then spend more iops fixing it later--but not all iops have equal cost.
-In some cases there is an opportunity to trade cheap iops at one time
-for expensive iops at a different time, and a userspace agent can invest
-more time, memory, and code complexity on that trade than the kernel.
-
-Some back-of-the-envelope math says we don't need to do very much
-post-processing work to deal with the very worst cases:  keep extent
-sizes over a few hundred KB, and keep small files not more than about
-5-10 metadata items away from their logical neighbors, and we avoid the
-worst-case 12.0 metadata-to-data ratios during updates.  Compared to
-those, other inefficiencies are trivial.
-
-> 
+> +	# Create a file with the following layout:
+> +	# 0         128M      256M      384M
+> +	# |  Hole   |4K| Hole |4K| Hole |
+> +	# The total hole size will be 384M - 8k
+> +	truncate -s 384m "$SCRATCH_MNT/file"
+> +	$XFS_IO_PROG -c "pwrite 128m 4k" -c "pwrite 256m 4k" \
+> +		"$SCRATCH_MNT/file" | _filter_xfs_io
+> +
+> +	# Falloc 0~384M range, it's going to fail due to the qgroup limit
+> +	$XFS_IO_PROG -c "falloc 0 384m" "$SCRATCH_MNT/file" |\
+> +		_filter_xfs_io_error
+> +	rm "$SCRATCH_MNT/file"
+> +
+> +	# Ensure above delete reaches disk and free some space
+> +	sync
+> +done
+> +
+> +# We should be able to write at least 3/4 of the limit
+> +$XFS_IO_PROG -f -c "pwrite 0 192m" "$SCRATCH_MNT/file" | _filter_xfs_io
+> +
+> +# success, all done
+> +status=0
+> +exit
+> diff --git a/tests/btrfs/192.out b/tests/btrfs/192.out
+> new file mode 100644
+> index 00000000..13bc6036
+> --- /dev/null
+> +++ b/tests/btrfs/192.out
+> @@ -0,0 +1,18 @@
+> +QA output created by 192
+> +wrote 4096/4096 bytes at offset 134217728
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +wrote 4096/4096 bytes at offset 268435456
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +fallocate: Disk quota exceeded
+> +wrote 4096/4096 bytes at offset 134217728
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +wrote 4096/4096 bytes at offset 268435456
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +fallocate: Disk quota exceeded
+> +wrote 4096/4096 bytes at offset 134217728
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +wrote 4096/4096 bytes at offset 268435456
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> +fallocate: Disk quota exceeded
+> +wrote 201326592/201326592 bytes at offset 0
+> +XXX Bytes, X ops; XX:XX:XX.X (XXX YYY/sec and XXX ops/sec)
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index 2474d43e..160fe927 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -194,3 +194,4 @@
+>  189 auto quick send clone
+>  190 auto quick replay balance qgroup
+>  191 auto quick send dedupe
+> +192 auto qgroup fast enospc limit
 > -- 
-> Chris Murphy
+> 2.22.0
 > 
