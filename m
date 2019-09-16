@@ -2,108 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D154B41E1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2019 22:32:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98D1CB42E9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Sep 2019 23:20:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733208AbfIPUcC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Sep 2019 16:32:02 -0400
-Received: from mail.robco.com ([64.119.213.201]:48385 "EHLO mail.robco.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733017AbfIPUcC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Sep 2019 16:32:02 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.robco.com (Postfix) with ESMTP id 0920E18DC
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2019 16:32:01 -0400 (EDT)
-Received: from mail.robco.com ([127.0.0.1])
-        by localhost (mail.robco.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id jXg_DjwwePcs for <linux-btrfs@vger.kernel.org>;
-        Mon, 16 Sep 2019 16:32:00 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.robco.com (Postfix) with ESMTP id D23481C17
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2019 16:32:00 -0400 (EDT)
-X-Virus-Scanned: amavisd-new at robco.com
-Received: from mail.robco.com ([127.0.0.1])
-        by localhost (mail.robco.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 3rZtLl9ivIh8 for <linux-btrfs@vger.kernel.org>;
-        Mon, 16 Sep 2019 16:32:00 -0400 (EDT)
-Received: from mail.robco.com (localhost [127.0.0.1])
-        by mail.robco.com (Postfix) with ESMTP id A7BDD18DC
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2019 16:32:00 -0400 (EDT)
-Date:   Mon, 16 Sep 2019 16:32:00 -0400 (EDT)
-From:   Lai Wei-Hwa <whlai@robco.com>
+        id S2391790AbfIPVU2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Sep 2019 17:20:28 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:35796 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728810AbfIPVU2 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 16 Sep 2019 17:20:28 -0400
+Received: by mail-qk1-f196.google.com with SMTP id w2so1580854qkf.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2019 14:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
+         :mime-version:content-transfer-encoding;
+        bh=bksU6qnJjmCwMxnHVelpXjOY7cjbT2qxfJfQ5o++/Og=;
+        b=GEPA2BOP80WgYu+VhQ2TSpL9OKq84+2+UTpSaQuMS8xtppemOOlC+e3OjEDHJ03vP9
+         Zy/Fb7zpzSfHJSdeIe49kbb+h/9Dyx9iTaEpg6dz6KXp5qsapIjif/7EM1xHvFIOZfsE
+         +L9m8NjOzfz91gZSHWLKDe0lik8QEmm574Dqs9iK6TFWSfjVJJ3+F9Csvux4O5UYFa3w
+         ct+caOA5PHU689o84cZ7X2VS+SwLjn1+Anqwwe8spX3zX3MiSugC0UaLBpKeV1S251Vm
+         vE0FrCzDgPD8+pDdguG85GyXEIFP9/0sUw7KK5yk/K7pJF3vL+xQ7x2v2QOY+drocHRW
+         7biQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=bksU6qnJjmCwMxnHVelpXjOY7cjbT2qxfJfQ5o++/Og=;
+        b=TlZmpRctQTaK78qacTysruxcuzLuU5O0SnGQB+WfVY07GyXlXvmzaGs3ahbqI2YHrU
+         tDZgGC1iP8/e2LOiMCBS0CwWpu6PPlpxV63dqA6dornF02hAYJBDDhxq6lWplqZ3+HUG
+         x5HY7faFXZ469+RW5hrmPI33FS/JeS9lHYJjISXOVQ6+labF+u649yeDYMoO67jPWjo6
+         XaDxDRpD/Jaa9+N8xvhWCZ9asPrCy6+YdGK4dy9Sm4ss7SDxSwL35ErANBXgQeQTrUcu
+         naoU8BeF0Xf62wQs8EHjXFy/jTK9/eYHZVaGY0CcNNfPNlZCWymoXLvL/mpg67UnQxYr
+         6bJA==
+X-Gm-Message-State: APjAAAUhN96yg0GTD7wCmBxYmRI683Vtx4zRaJjOyPW0K0Mq03OngNZ5
+        iSJZ6OSH0CTr9xBrQSpyQsXdjOU+
+X-Google-Smtp-Source: APXvYqwjcU7zfsd6aAIyTBFTEWDilsiGCcKV4778aJ7ZnpcZqbfwEloRb8thfNERko+rGCt4ozdXnQ==
+X-Received: by 2002:a37:a503:: with SMTP id o3mr367626qke.115.1568668827021;
+        Mon, 16 Sep 2019 14:20:27 -0700 (PDT)
+Received: from ?IPv6:2604:6000:1014:c7c6:b5f7:9f14:2fec:eee0? ([2604:6000:1014:c7c6:b5f7:9f14:2fec:eee0])
+        by smtp.gmail.com with ESMTPSA id b4sm50813qkd.121.2019.09.16.14.20.26
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Sep 2019 14:20:26 -0700 (PDT)
+Message-ID: <6476e5f02a4bdf26c8f342db11f6dc1675c94394.camel@gmail.com>
+Subject: Re: while (1) in btrfs_relocate_block_group didn't end
+From:   Cebtenzzre <cebtenzzre@gmail.com>
 To:     linux-btrfs@vger.kernel.org
-Message-ID: <79984309.572916.1568665920098.JavaMail.zimbra@robco.com>
-In-Reply-To: <591580482.537773.1568655046847.JavaMail.zimbra@robco.com>
-References: <591580482.537773.1568655046847.JavaMail.zimbra@robco.com>
-Subject: btrfs scrub resulting in readonly filesystem
+Date:   Mon, 16 Sep 2019 17:20:25 -0400
+In-Reply-To: <ef805fda2976d3b89b80204f8d119a9342176bae.camel@gmail.com>
+References: <ef805fda2976d3b89b80204f8d119a9342176bae.camel@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.0 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.1.2.144]
-X-Mailer: Zimbra 8.7.11_GA_3800 (ZimbraWebClient - FF69 (Linux)/8.7.11_GA_3800)
-Thread-Topic: btrfs scrub resulting in readonly filesystem
-Thread-Index: aXvGEVu6aioDPTVwKLyXdAlKgw4O15/CHLDp
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi There, 
+On Sat, 2019-09-14 at 17:36 -0400, Cebtenzzre wrote:
+> Hi,
+> 
+> I started a balance of one block group, and I saw this in dmesg:
+> 
+> BTRFS info (device sdi1): balance: start -dvrange=2236714319872..2236714319873
+> BTRFS info (device sdi1): relocating block group 2236714319872 flags data|raid0
+> BTRFS info (device sdi1): found 1 extents
+> BTRFS info (device sdi1): found 1 extents
+> BTRFS info (device sdi1): found 1 extents
+> BTRFS info (device sdi1): found 1 extents
+> BTRFS info (device sdi1): found 1 extents
+> 
+> It continued like that for a total of 754 lines until I rebooted. Before
+> that, I captured some debug info. I ran this in my shell for a few
+> seconds, where PID is the pid of the process that called the balance
+> ioctl:
+> 
+> integer i=0; while true; do sudo cat /proc/PID/stack >stack$i; sleep .01010101; i+=1; done
+> 
+> Which effectively gave me stack samples at (close to) 99Hz. Maybe not
+> ideal, but I was in a hurry and I didn't want my disks to sustain such
+> heavy, repetitive I/O for too long.
+> 
+> I've attached the stack samples as stacks.tar.gz. A few of them are
+> empty. To me, it looks like the kernel never left the while (1) loop in
+> btrfs_relocate_block_group. The kernel messages seem to confirm this.
+> 
+> I am using Arch Linux with kernel version 5.2.14-arch2, and I specified
+> "slub_debug=P,kmalloc-2k" in the kernel cmdline to detect and protect
+> against a use-after-free that I found when I had KASAN enabled. Would
+> that kernel parameter result in a silent retry if it hit the use-after-
+> free?
 
-Found a host with readonly filesystem. This is the output from dmesg which occurred right after a cron job was executed to scrub. 
+Please disregard the quoted message. This behavior does appear to be a
+result of using the slub_debug option instead of KASAN. It is not
+directly caused by BTRFS.
+-- 
+Cebtenzzre <cebtenzzre@gmail.com>
 
-
-
-[Sep14 20:02] ------------[ cut here ]------------ 
-[ +0.000042] WARNING: CPU: 18 PID: 28882 at /build/linux-TSOhpZ/linux-4.4.0/fs/btrfs/extent-tree.c:10046 btrfs_create_pending_block_groups+0x144/0x1f0 [btrfs]() 
-[ +0.000002] BTRFS: Transaction aborted (error -27) 
-[ +0.000002] Modules linked in: ip6t_REJECT nf_reject_ipv6 nf_log_ipv6 nf_log_common xt_LOG xt_limit xt_tcpudp xt_hl ip6t_rt nf_conntrack_ipv6 nf_defrag_ipv6 xt_conntrack nf_conntrack ip6table_filter ip6_tables x_tables ufs qnx4 hfsplus hfs minix ntfs msdos jfs xfs cpuid unix_diag veth bridge stp llc bonding binfmt_misc zfs(PO) zunicode(PO) zcommon(PO) znvpair(PO) spl(O) zavl(PO) intel_powerclamp coretemp kvm_intel kvm irqbypass crct10dif_pclmul crc32_pclmul ipmi_devintf ipmi_ssif ghash_clmulni_intel aesni_intel aes_x86_64 lrw gf128mul dcdbas glue_helper input_leds ablk_helper ipmi_si gpio_ich serio_raw i7core_edac joydev 8250_fintek acpi_power_meter mac_hid ipmi_msghandler shpchp edac_core cryptd lpc_ich ib_iser rdma_cm iw_cm ib_cm ib_sa ib_mad ib_core ib_addr iscsi_tcp libiscsi_tcp libiscsi scsi_transport_iscsi 
-[ +0.000047] autofs4 btrfs raid10 raid456 async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 multipath linear ses enclosure scsi_transport_sas uas hid_generic usbhid usb_storage wmi psmouse hid pata_acpi megaraid_sas bnx2 fjes 
-[ +0.000019] CPU: 18 PID: 28882 Comm: btrfs Tainted: P IO 4.4.0-157-generic #185-Ubuntu 
-[ +0.000002] Hardware name: Dell Inc. PowerEdge R610/0F0XJ6, BIOS 6.4.0 07/23/2013 
-[ +0.000001] 0000000000000286 1faf5c66f8e16e90 ffff8802adbcfa18 ffffffff8140c9a1 
-[ +0.000003] ffff8802adbcfa60 ffffffffc024d588 ffff8802adbcfa50 ffffffff810864d2 
-[ +0.000002] ffff880697e29720 ffff880c11881da0 ffff880c0f6e6800 ffff880697e29640 
-[ +0.000002] Call Trace: 
-[ +0.000008] [<ffffffff8140c9a1>] dump_stack+0x63/0x82 
-[ +0.000007] [<ffffffff810864d2>] warn_slowpath_common+0x82/0xc0 
-[ +0.000002] [<ffffffff8108656c>] warn_slowpath_fmt+0x5c/0x80 
-[ +0.000014] [<ffffffffc01f31c4>] ? btrfs_finish_chunk_alloc+0x204/0x5a0 [btrfs] 
-[ +0.000011] [<ffffffffc01b1d24>] btrfs_create_pending_block_groups+0x144/0x1f0 [btrfs] 
-[ +0.000012] [<ffffffffc01c7ed3>] __btrfs_end_transaction+0x93/0x340 [btrfs] 
-[ +0.000013] [<ffffffffc01c8190>] btrfs_end_transaction+0x10/0x20 [btrfs] 
-[ +0.000010] [<ffffffffc01b5a4d>] btrfs_inc_block_group_ro+0xed/0x1b0 [btrfs] 
-[ +0.000014] [<ffffffffc02253bf>] scrub_enumerate_chunks+0x21f/0x580 [btrfs] 
-[ +0.000004] [<ffffffff810cb700>] ? wake_atomic_t_function+0x60/0x60 
-[ +0.000013] [<ffffffffc0226d0c>] btrfs_scrub_dev+0x1bc/0x530 [btrfs] 
-[ +0.000004] [<ffffffff8123f306>] ? __mnt_want_write+0x56/0x60 
-[ +0.000013] [<ffffffffc0202408>] btrfs_ioctl+0x1ac8/0x28c0 [btrfs] 
-[ +0.000003] [<ffffffff8119a3b9>] ? unlock_page+0x69/0x70 
-[ +0.000002] [<ffffffff8119a654>] ? filemap_map_pages+0x224/0x230 
-[ +0.000004] [<ffffffff811cdb77>] ? handle_mm_fault+0x10f7/0x1b80 
-[ +0.000002] [<ffffffff811fb77b>] ? kmem_cache_alloc_node+0xbb/0x210 
-[ +0.000003] [<ffffffff813e13e3>] ? create_task_io_context+0x23/0x100 
-[ +0.000003] [<ffffffff812318ef>] do_vfs_ioctl+0x2af/0x4b0 
-[ +0.000002] [<ffffffff813e1510>] ? get_task_io_context+0x50/0x90 
-[ +0.000003] [<ffffffff813f0936>] ? set_task_ioprio+0x86/0xa0 
-[ +0.000002] [<ffffffff81231b69>] SyS_ioctl+0x79/0x90 
-[ +0.000004] [<ffffffff81864f1b>] entry_SYSCALL_64_fastpath+0x22/0xcb 
-[ +0.000002] ---[ end trace 13fce4e84d9b6aed ]--- 
-[ +0.000003] BTRFS: error (device sda1) in btrfs_create_pending_block_groups:10046: errno=-27 unknown 
-[ +0.003942] BTRFS info (device sda1): forced readonly 
-[ +0.000193] pending csums is 28672 
-[ +0.002295] BTRFS warning (device sda1): failed setting block group ro, ret=-30 
-
-[ +7.197271] BTRFS warning (device sda1): failed setting block group ro, ret=-30 
-
-
-
-What's the cause here? 
-
-
-Best Regards, 
-
-Lai Wei-Hwa
-
-Thanks! 
-Lai
