@@ -2,2660 +2,551 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8280DB5590
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2019 20:44:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE7CCB5756
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2019 23:05:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729501AbfIQSoI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Sep 2019 14:44:08 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:35779 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728655AbfIQSoI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Sep 2019 14:44:08 -0400
-Received: by mail-qt1-f196.google.com with SMTP id m15so5727680qtq.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Sep 2019 11:44:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
-         :content-transfer-encoding;
-        bh=Ia2od0WlNoKzPcglkXLc0qZQ+IrnT50pxDcxsYipwZ0=;
-        b=GKjb2EnQwI0bcOLxmhzB1RssPKzvcaQNPtI8ATBZcz7r119uLcZG0im7PVO0jL+9D/
-         muXCyfiMHrj5JRRCiJLpf5SQwClUBgBwokVXN5G3I2mTPUEStKmnNXa+tmk9GMfBsBwS
-         GwxTnttmFaplT0KTTIVLoNsvdzWxJtIEM5s4Y6LF6agxVmeEAd3soNwOJA9BZVhDMkj3
-         2TJfqAukbQscW/OtgpYAt4mN7bcoUED+7R6q26ll1fUNF1ltZf7Ve8N60xKMeD3sf0FY
-         7LGtUX7jaFflUTMLZftWOrE8+JQuaKGi6mDdSANole5FPiBNeY/4Blx1ipBmJQkHtfpb
-         Vo1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Ia2od0WlNoKzPcglkXLc0qZQ+IrnT50pxDcxsYipwZ0=;
-        b=VKJQ5HZ/SxwwKXag6jDvX6voP1w5VIQInuxGhRQ3eznCKEfw92c+j6DHainNjFBua8
-         SguRZF3sJJTTZnJsQQU0n2BCB9uuvagAMqU/mz/D0JNhsf8deoVeE6I0uTAo7+6fe/N0
-         zrmVAv5+UarZOzcg3RDx0A8f6atkDoeFpDJnJuZMu3QNOZ0YYhY12HdrOV1EqcUL2Wsu
-         hO8OYLwmh5xZm47NpWsmGX2SispR3Im8Ae33u25+pZqx1sFedWAUzWg1e/SeFkSzkuIs
-         Y8SiBuizhrKP09+rziQ/wQhyafHt/ZHIhvuFKu+x1bFfiXuHBG4jVSWnczATSm9embN9
-         KK2g==
-X-Gm-Message-State: APjAAAWJ4+aCKiCAByJY8H0E+aHmI7kHldPhp5SbeoSvQ5PjuJ/cVJ2D
-        x+btLlqo7pAc9w6CXATQdFDE41sdaZHNWQ==
-X-Google-Smtp-Source: APXvYqxCKHInmdiIZHVVnk7xpOSZqL0FNYyDItJdE5SkKe9e9NC2DxRcDFgxihgSh/q+NuLViNKaDw==
-X-Received: by 2002:a05:6214:2b0:: with SMTP id m16mr4520162qvv.45.1568745844194;
-        Tue, 17 Sep 2019 11:44:04 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u43sm2121499qte.19.2019.09.17.11.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Sep 2019 11:44:03 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 9/9] btrfs: move the extent-buffer code
-Date:   Tue, 17 Sep 2019 14:43:43 -0400
-Message-Id: <20190917184344.13155-10-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190917184344.13155-1-josef@toxicpanda.com>
-References: <20190917184344.13155-1-josef@toxicpanda.com>
+        id S1726335AbfIQVFs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Sep 2019 17:05:48 -0400
+Received: from mga11.intel.com ([192.55.52.93]:58582 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726030AbfIQVFr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Sep 2019 17:05:47 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Sep 2019 14:05:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,518,1559545200"; 
+   d="gz'50?scan'50,208,50";a="386677092"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Sep 2019 14:05:44 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1iAKfP-000IBB-MP; Wed, 18 Sep 2019 05:05:43 +0800
+Date:   Wed, 18 Sep 2019 05:05:41 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     kbuild-all@01.org, linux-btrfs@vger.kernel.org
+Subject: [josef-btrfs:extent-io-rearranging 9/9]
+ fs/btrfs/extent-buffer.c:40:6: error: function declaration isn't a prototype
+Message-ID: <201909180538.ljcBFT1U%lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="fsdq4ximrtcmj5qw"
+Content-Disposition: inline
+X-Patchwork-Hint: ignore
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This moves the extent buffer code into its own file.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+--fsdq4ximrtcmj5qw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+tree:   https://kernel.googlesource.com/pub/scm/linux/kernel/git/josef/btrfs-next.git extent-io-rearranging
+head:   1bc667ac329c91f3825a8ab987333915cad26c4b
+commit: 1bc667ac329c91f3825a8ab987333915cad26c4b [9/9] btrfs: move the extent-buffer code
+config: x86_64-randconfig-f002-201937 (attached as .config)
+compiler: gcc-7 (Debian 7.4.0-11) 7.4.0
+reproduce:
+        git checkout 1bc667ac329c91f3825a8ab987333915cad26c4b
+        # save the attached .config to linux build tree
+        make ARCH=x86_64 
+
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
+
+All errors (new ones prefixed by >>):
+
+>> fs/btrfs/extent-buffer.c:40:6: error: function declaration isn't a prototype [-Werror=strict-prototypes]
+    void btrfs_extent_buffer_leak_debug_check()
+         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/btrfs/extent-buffer.c: In function 'btrfs_extent_buffer_leak_debug_check':
+>> fs/btrfs/extent-buffer.c:43:3: error: 'eb' undeclared (first use in this function); did you mean 'mb'?
+      eb = list_entry(buffers.next, struct extent_buffer, leak_list);
+      ^~
+      mb
+   fs/btrfs/extent-buffer.c:43:3: note: each undeclared identifier is reported only once for each function it appears in
+   cc1: some warnings being treated as errors
+
+vim +40 fs/btrfs/extent-buffer.c
+
+    38	
+    39	static inline
+  > 40	void btrfs_extent_buffer_leak_debug_check()
+    41	{
+    42		while (!list_empty(&buffers)) {
+  > 43			eb = list_entry(buffers.next, struct extent_buffer, leak_list);
+    44			pr_err("BTRFS: buffer leak start %llu len %lu refs %d bflags %lu\n",
+    45			       eb->start, eb->len, atomic_read(&eb->refs), eb->bflags);
+    46			list_del(&eb->leak_list);
+    47			kmem_cache_free(extent_buffer_cache, eb);
+    48		}
+    49	}
+    50	#else
+    51	#define btrfs_leak_debug_add(new, head)	do {} while (0)
+    52	#define btrfs_leak_debug_del(entry)	do {} while (0)
+    53	#define btrfs_extent_buffer_leak_debug_check()	do {} while (0)
+    54	#endif
+    55	
+
 ---
- fs/btrfs/Makefile        |    3 +-
- fs/btrfs/extent-buffer.c | 1266 ++++++++++++++++++++++++++++++++++++++
- fs/btrfs/extent_io.c     | 1255 -------------------------------------
- 3 files changed, 1268 insertions(+), 1256 deletions(-)
- create mode 100644 fs/btrfs/extent-buffer.c
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
-diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-index 7ce7202f5fe8..4d669c1d09fa 100644
---- a/fs/btrfs/Makefile
-+++ b/fs/btrfs/Makefile
-@@ -11,7 +11,8 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
- 	   compression.o delayed-ref.o relocation.o delayed-inode.o scrub.o \
- 	   reada.o backref.o ulist.o qgroup.o send.o dev-replace.o raid56.o \
- 	   uuid-tree.o props.o free-space-tree.o tree-checker.o space-info.o \
--	   block-rsv.o delalloc-space.o block-group.o extent-io-tree.o
-+	   block-rsv.o delalloc-space.o block-group.o extent-io-tree.o \
-+	   extent-buffer.o
- 
- btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
- btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
-diff --git a/fs/btrfs/extent-buffer.c b/fs/btrfs/extent-buffer.c
-new file mode 100644
-index 000000000000..f03e67de34c2
---- /dev/null
-+++ b/fs/btrfs/extent-buffer.c
-@@ -0,0 +1,1266 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#include <linux/fs.h>
-+#include <linux/mm.h>
-+#include <linux/slab.h>
-+#include <linux/swap.h>
-+#include <linux/sched.h>
-+#include <linux/radix-tree.h>
-+#include <linux/wait_bit.h>
-+#include "ctree.h"
-+#include "extent-buffer.h"
-+
-+static struct kmem_cache *extent_buffer_cache;
-+
-+#ifdef CONFIG_BTRFS_DEBUG
-+static LIST_HEAD(buffers);
-+
-+static DEFINE_SPINLOCK(leak_lock);
-+
-+static inline
-+void btrfs_leak_debug_add(struct list_head *new, struct list_head *head)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&leak_lock, flags);
-+	list_add(new, head);
-+	spin_unlock_irqrestore(&leak_lock, flags);
-+}
-+
-+static inline
-+void btrfs_leak_debug_del(struct list_head *entry)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&leak_lock, flags);
-+	list_del(entry);
-+	spin_unlock_irqrestore(&leak_lock, flags);
-+}
-+
-+static inline
-+void btrfs_extent_buffer_leak_debug_check()
-+{
-+	while (!list_empty(&buffers)) {
-+		eb = list_entry(buffers.next, struct extent_buffer, leak_list);
-+		pr_err("BTRFS: buffer leak start %llu len %lu refs %d bflags %lu\n",
-+		       eb->start, eb->len, atomic_read(&eb->refs), eb->bflags);
-+		list_del(&eb->leak_list);
-+		kmem_cache_free(extent_buffer_cache, eb);
-+	}
-+}
-+#else
-+#define btrfs_leak_debug_add(new, head)	do {} while (0)
-+#define btrfs_leak_debug_del(entry)	do {} while (0)
-+#define btrfs_extent_buffer_leak_debug_check()	do {} while (0)
-+#endif
-+
-+int __init extent_buffer_init(void)
-+{
-+	extent_buffer_cache = kmem_cache_create("btrfs_extent_buffer",
-+			sizeof(struct extent_buffer), 0,
-+			SLAB_MEM_SPREAD, NULL);
-+	if (!extent_buffer_cache)
-+		return -ENOMEM;
-+	return 0;
-+}
-+
-+void __cold extent_buffer_exit(void)
-+{
-+	btrfs_extent_buffer_leak_debug_check();
-+
-+	/*
-+	 * Make sure all delayed rcu free are flushed before we
-+	 * destroy caches.
-+	 */
-+	rcu_barrier();
-+	kmem_cache_destroy(extent_buffer_cache);
-+}
-+
-+void wait_on_extent_buffer_writeback(struct extent_buffer *eb)
-+{
-+	wait_on_bit_io(&eb->bflags, EXTENT_BUFFER_WRITEBACK,
-+		       TASK_UNINTERRUPTIBLE);
-+}
-+
-+static void __free_extent_buffer(struct extent_buffer *eb)
-+{
-+	btrfs_leak_debug_del(&eb->leak_list);
-+	kmem_cache_free(extent_buffer_cache, eb);
-+}
-+
-+int extent_buffer_under_io(struct extent_buffer *eb)
-+{
-+	return (atomic_read(&eb->io_pages) ||
-+		test_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags) ||
-+		test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
-+}
-+
-+/*
-+ * Release all pages attached to the extent buffer.
-+ */
-+static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
-+{
-+	int i;
-+	int num_pages;
-+	int mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-+
-+	BUG_ON(extent_buffer_under_io(eb));
-+
-+	num_pages = num_extent_pages(eb);
-+	for (i = 0; i < num_pages; i++) {
-+		struct page *page = eb->pages[i];
-+
-+		if (!page)
-+			continue;
-+		if (mapped)
-+			spin_lock(&page->mapping->private_lock);
-+		/*
-+		 * We do this since we'll remove the pages after we've
-+		 * removed the eb from the radix tree, so we could race
-+		 * and have this page now attached to the new eb.  So
-+		 * only clear page_private if it's still connected to
-+		 * this eb.
-+		 */
-+		if (PagePrivate(page) &&
-+		    page->private == (unsigned long)eb) {
-+			BUG_ON(test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
-+			BUG_ON(PageDirty(page));
-+			BUG_ON(PageWriteback(page));
-+			/*
-+			 * We need to make sure we haven't be attached
-+			 * to a new eb.
-+			 */
-+			ClearPagePrivate(page);
-+			set_page_private(page, 0);
-+			/* One for the page private */
-+			put_page(page);
-+		}
-+
-+		if (mapped)
-+			spin_unlock(&page->mapping->private_lock);
-+
-+		/* One for when we allocated the page */
-+		put_page(page);
-+	}
-+}
-+
-+/*
-+ * Helper for releasing the extent buffer.
-+ */
-+static inline void btrfs_release_extent_buffer(struct extent_buffer *eb)
-+{
-+	btrfs_release_extent_buffer_pages(eb);
-+	__free_extent_buffer(eb);
-+}
-+
-+static struct extent_buffer *
-+__alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
-+		      unsigned long len)
-+{
-+	struct extent_buffer *eb = NULL;
-+
-+	eb = kmem_cache_zalloc(extent_buffer_cache, GFP_NOFS|__GFP_NOFAIL);
-+	eb->start = start;
-+	eb->len = len;
-+	eb->fs_info = fs_info;
-+	eb->bflags = 0;
-+	rwlock_init(&eb->lock);
-+	atomic_set(&eb->blocking_readers, 0);
-+	eb->blocking_writers = 0;
-+	eb->lock_nested = false;
-+	init_waitqueue_head(&eb->write_lock_wq);
-+	init_waitqueue_head(&eb->read_lock_wq);
-+
-+	btrfs_leak_debug_add(&eb->leak_list, &buffers);
-+
-+	spin_lock_init(&eb->refs_lock);
-+	atomic_set(&eb->refs, 1);
-+	atomic_set(&eb->io_pages, 0);
-+
-+	/*
-+	 * Sanity checks, currently the maximum is 64k covered by 16x 4k pages
-+	 */
-+	BUILD_BUG_ON(BTRFS_MAX_METADATA_BLOCKSIZE
-+		> MAX_INLINE_EXTENT_BUFFER_SIZE);
-+	BUG_ON(len > MAX_INLINE_EXTENT_BUFFER_SIZE);
-+
-+#ifdef CONFIG_BTRFS_DEBUG
-+	eb->spinning_writers = 0;
-+	atomic_set(&eb->spinning_readers, 0);
-+	atomic_set(&eb->read_locks, 0);
-+	eb->write_locks = 0;
-+#endif
-+
-+	return eb;
-+}
-+
-+static void attach_extent_buffer_page(struct extent_buffer *eb,
-+				      struct page *page)
-+{
-+	if (!PagePrivate(page)) {
-+		SetPagePrivate(page);
-+		get_page(page);
-+		set_page_private(page, (unsigned long)eb);
-+	} else {
-+		WARN_ON(page->private != (unsigned long)eb);
-+	}
-+}
-+
-+struct extent_buffer *btrfs_clone_extent_buffer(struct extent_buffer *src)
-+{
-+	int i;
-+	struct page *p;
-+	struct extent_buffer *new;
-+	int num_pages = num_extent_pages(src);
-+
-+	new = __alloc_extent_buffer(src->fs_info, src->start, src->len);
-+	if (new == NULL)
-+		return NULL;
-+
-+	for (i = 0; i < num_pages; i++) {
-+		p = alloc_page(GFP_NOFS);
-+		if (!p) {
-+			btrfs_release_extent_buffer(new);
-+			return NULL;
-+		}
-+		attach_extent_buffer_page(new, p);
-+		WARN_ON(PageDirty(p));
-+		SetPageUptodate(p);
-+		new->pages[i] = p;
-+		copy_page(page_address(p), page_address(src->pages[i]));
-+	}
-+
-+	set_bit(EXTENT_BUFFER_UPTODATE, &new->bflags);
-+	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
-+
-+	return new;
-+}
-+
-+struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
-+						  u64 start, unsigned long len)
-+{
-+	struct extent_buffer *eb;
-+	int num_pages;
-+	int i;
-+
-+	eb = __alloc_extent_buffer(fs_info, start, len);
-+	if (!eb)
-+		return NULL;
-+
-+	num_pages = num_extent_pages(eb);
-+	for (i = 0; i < num_pages; i++) {
-+		eb->pages[i] = alloc_page(GFP_NOFS);
-+		if (!eb->pages[i])
-+			goto err;
-+	}
-+	set_extent_buffer_uptodate(eb);
-+	btrfs_set_header_nritems(eb, 0);
-+	set_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
-+
-+	return eb;
-+err:
-+	for (; i > 0; i--)
-+		__free_page(eb->pages[i - 1]);
-+	__free_extent_buffer(eb);
-+	return NULL;
-+}
-+
-+struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
-+						u64 start)
-+{
-+	return __alloc_dummy_extent_buffer(fs_info, start, fs_info->nodesize);
-+}
-+
-+static void check_buffer_tree_ref(struct extent_buffer *eb)
-+{
-+	int refs;
-+	/* the ref bit is tricky.  We have to make sure it is set
-+	 * if we have the buffer dirty.   Otherwise the
-+	 * code to free a buffer can end up dropping a dirty
-+	 * page
-+	 *
-+	 * Once the ref bit is set, it won't go away while the
-+	 * buffer is dirty or in writeback, and it also won't
-+	 * go away while we have the reference count on the
-+	 * eb bumped.
-+	 *
-+	 * We can't just set the ref bit without bumping the
-+	 * ref on the eb because free_extent_buffer might
-+	 * see the ref bit and try to clear it.  If this happens
-+	 * free_extent_buffer might end up dropping our original
-+	 * ref by mistake and freeing the page before we are able
-+	 * to add one more ref.
-+	 *
-+	 * So bump the ref count first, then set the bit.  If someone
-+	 * beat us to it, drop the ref we added.
-+	 */
-+	refs = atomic_read(&eb->refs);
-+	if (refs >= 2 && test_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
-+		return;
-+
-+	spin_lock(&eb->refs_lock);
-+	if (!test_and_set_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
-+		atomic_inc(&eb->refs);
-+	spin_unlock(&eb->refs_lock);
-+}
-+
-+static void mark_extent_buffer_accessed(struct extent_buffer *eb,
-+		struct page *accessed)
-+{
-+	int num_pages, i;
-+
-+	check_buffer_tree_ref(eb);
-+
-+	num_pages = num_extent_pages(eb);
-+	for (i = 0; i < num_pages; i++) {
-+		struct page *p = eb->pages[i];
-+
-+		if (p != accessed)
-+			mark_page_accessed(p);
-+	}
-+}
-+
-+struct extent_buffer *find_extent_buffer(struct btrfs_fs_info *fs_info,
-+					 u64 start)
-+{
-+	struct extent_buffer *eb;
-+
-+	rcu_read_lock();
-+	eb = radix_tree_lookup(&fs_info->buffer_radix,
-+			       start >> PAGE_SHIFT);
-+	if (eb && atomic_inc_not_zero(&eb->refs)) {
-+		rcu_read_unlock();
-+		/*
-+		 * Lock our eb's refs_lock to avoid races with
-+		 * free_extent_buffer. When we get our eb it might be flagged
-+		 * with EXTENT_BUFFER_STALE and another task running
-+		 * free_extent_buffer might have seen that flag set,
-+		 * eb->refs == 2, that the buffer isn't under IO (dirty and
-+		 * writeback flags not set) and it's still in the tree (flag
-+		 * EXTENT_BUFFER_TREE_REF set), therefore being in the process
-+		 * of decrementing the extent buffer's reference count twice.
-+		 * So here we could race and increment the eb's reference count,
-+		 * clear its stale flag, mark it as dirty and drop our reference
-+		 * before the other task finishes executing free_extent_buffer,
-+		 * which would later result in an attempt to free an extent
-+		 * buffer that is dirty.
-+		 */
-+		if (test_bit(EXTENT_BUFFER_STALE, &eb->bflags)) {
-+			spin_lock(&eb->refs_lock);
-+			spin_unlock(&eb->refs_lock);
-+		}
-+		mark_extent_buffer_accessed(eb, NULL);
-+		return eb;
-+	}
-+	rcu_read_unlock();
-+
-+	return NULL;
-+}
-+
-+#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-+struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
-+					u64 start)
-+{
-+	struct extent_buffer *eb, *exists = NULL;
-+	int ret;
-+
-+	eb = find_extent_buffer(fs_info, start);
-+	if (eb)
-+		return eb;
-+	eb = alloc_dummy_extent_buffer(fs_info, start);
-+	if (!eb)
-+		return NULL;
-+	eb->fs_info = fs_info;
-+again:
-+	ret = radix_tree_preload(GFP_NOFS);
-+	if (ret)
-+		goto free_eb;
-+	spin_lock(&fs_info->buffer_lock);
-+	ret = radix_tree_insert(&fs_info->buffer_radix,
-+				start >> PAGE_SHIFT, eb);
-+	spin_unlock(&fs_info->buffer_lock);
-+	radix_tree_preload_end();
-+	if (ret == -EEXIST) {
-+		exists = find_extent_buffer(fs_info, start);
-+		if (exists)
-+			goto free_eb;
-+		else
-+			goto again;
-+	}
-+	check_buffer_tree_ref(eb);
-+	set_bit(EXTENT_BUFFER_IN_TREE, &eb->bflags);
-+
-+	return eb;
-+free_eb:
-+	btrfs_release_extent_buffer(eb);
-+	return exists;
-+}
-+#endif
-+
-+struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
-+					  u64 start)
-+{
-+	unsigned long len = fs_info->nodesize;
-+	int num_pages;
-+	int i;
-+	unsigned long index = start >> PAGE_SHIFT;
-+	struct extent_buffer *eb;
-+	struct extent_buffer *exists = NULL;
-+	struct page *p;
-+	struct address_space *mapping = fs_info->btree_inode->i_mapping;
-+	int uptodate = 1;
-+	int ret;
-+
-+	if (!IS_ALIGNED(start, fs_info->sectorsize)) {
-+		btrfs_err(fs_info, "bad tree block start %llu", start);
-+		return ERR_PTR(-EINVAL);
-+	}
-+
-+	eb = find_extent_buffer(fs_info, start);
-+	if (eb)
-+		return eb;
-+
-+	eb = __alloc_extent_buffer(fs_info, start, len);
-+	if (!eb)
-+		return ERR_PTR(-ENOMEM);
-+
-+	num_pages = num_extent_pages(eb);
-+	for (i = 0; i < num_pages; i++, index++) {
-+		p = find_or_create_page(mapping, index, GFP_NOFS|__GFP_NOFAIL);
-+		if (!p) {
-+			exists = ERR_PTR(-ENOMEM);
-+			goto free_eb;
-+		}
-+
-+		spin_lock(&mapping->private_lock);
-+		if (PagePrivate(p)) {
-+			/*
-+			 * We could have already allocated an eb for this page
-+			 * and attached one so lets see if we can get a ref on
-+			 * the existing eb, and if we can we know it's good and
-+			 * we can just return that one, else we know we can just
-+			 * overwrite page->private.
-+			 */
-+			exists = (struct extent_buffer *)p->private;
-+			if (atomic_inc_not_zero(&exists->refs)) {
-+				spin_unlock(&mapping->private_lock);
-+				unlock_page(p);
-+				put_page(p);
-+				mark_extent_buffer_accessed(exists, p);
-+				goto free_eb;
-+			}
-+			exists = NULL;
-+
-+			/*
-+			 * Do this so attach doesn't complain and we need to
-+			 * drop the ref the old guy had.
-+			 */
-+			ClearPagePrivate(p);
-+			WARN_ON(PageDirty(p));
-+			put_page(p);
-+		}
-+		attach_extent_buffer_page(eb, p);
-+		spin_unlock(&mapping->private_lock);
-+		WARN_ON(PageDirty(p));
-+		eb->pages[i] = p;
-+		if (!PageUptodate(p))
-+			uptodate = 0;
-+
-+		/*
-+		 * We can't unlock the pages just yet since the extent buffer
-+		 * hasn't been properly inserted in the radix tree, this
-+		 * opens a race with btree_releasepage which can free a page
-+		 * while we are still filling in all pages for the buffer and
-+		 * we could crash.
-+		 */
-+	}
-+	if (uptodate)
-+		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
-+again:
-+	ret = radix_tree_preload(GFP_NOFS);
-+	if (ret) {
-+		exists = ERR_PTR(ret);
-+		goto free_eb;
-+	}
-+
-+	spin_lock(&fs_info->buffer_lock);
-+	ret = radix_tree_insert(&fs_info->buffer_radix,
-+				start >> PAGE_SHIFT, eb);
-+	spin_unlock(&fs_info->buffer_lock);
-+	radix_tree_preload_end();
-+	if (ret == -EEXIST) {
-+		exists = find_extent_buffer(fs_info, start);
-+		if (exists)
-+			goto free_eb;
-+		else
-+			goto again;
-+	}
-+	/* add one reference for the tree */
-+	check_buffer_tree_ref(eb);
-+	set_bit(EXTENT_BUFFER_IN_TREE, &eb->bflags);
-+
-+	/*
-+	 * Now it's safe to unlock the pages because any calls to
-+	 * btree_releasepage will correctly detect that a page belongs to a
-+	 * live buffer and won't free them prematurely.
-+	 */
-+	for (i = 0; i < num_pages; i++)
-+		unlock_page(eb->pages[i]);
-+	return eb;
-+
-+free_eb:
-+	WARN_ON(!atomic_dec_and_test(&eb->refs));
-+	for (i = 0; i < num_pages; i++) {
-+		if (eb->pages[i])
-+			unlock_page(eb->pages[i]);
-+	}
-+
-+	btrfs_release_extent_buffer(eb);
-+	return exists;
-+}
-+
-+static inline void btrfs_release_extent_buffer_rcu(struct rcu_head *head)
-+{
-+	struct extent_buffer *eb =
-+			container_of(head, struct extent_buffer, rcu_head);
-+
-+	__free_extent_buffer(eb);
-+}
-+
-+static int release_extent_buffer(struct extent_buffer *eb)
-+{
-+	lockdep_assert_held(&eb->refs_lock);
-+
-+	WARN_ON(atomic_read(&eb->refs) == 0);
-+	if (atomic_dec_and_test(&eb->refs)) {
-+		if (test_and_clear_bit(EXTENT_BUFFER_IN_TREE, &eb->bflags)) {
-+			struct btrfs_fs_info *fs_info = eb->fs_info;
-+
-+			spin_unlock(&eb->refs_lock);
-+
-+			spin_lock(&fs_info->buffer_lock);
-+			radix_tree_delete(&fs_info->buffer_radix,
-+					  eb->start >> PAGE_SHIFT);
-+			spin_unlock(&fs_info->buffer_lock);
-+		} else {
-+			spin_unlock(&eb->refs_lock);
-+		}
-+
-+		/* Should be safe to release our pages at this point */
-+		btrfs_release_extent_buffer_pages(eb);
-+#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
-+		if (unlikely(test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags))) {
-+			__free_extent_buffer(eb);
-+			return 1;
-+		}
-+#endif
-+		call_rcu(&eb->rcu_head, btrfs_release_extent_buffer_rcu);
-+		return 1;
-+	}
-+	spin_unlock(&eb->refs_lock);
-+
-+	return 0;
-+}
-+
-+void free_extent_buffer(struct extent_buffer *eb)
-+{
-+	int refs;
-+	int old;
-+	if (!eb)
-+		return;
-+
-+	while (1) {
-+		refs = atomic_read(&eb->refs);
-+		if ((!test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) && refs <= 3)
-+		    || (test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) &&
-+			refs == 1))
-+			break;
-+		old = atomic_cmpxchg(&eb->refs, refs, refs - 1);
-+		if (old == refs)
-+			return;
-+	}
-+
-+	spin_lock(&eb->refs_lock);
-+	if (atomic_read(&eb->refs) == 2 &&
-+	    test_bit(EXTENT_BUFFER_STALE, &eb->bflags) &&
-+	    !extent_buffer_under_io(eb) &&
-+	    test_and_clear_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
-+		atomic_dec(&eb->refs);
-+
-+	/*
-+	 * I know this is terrible, but it's temporary until we stop tracking
-+	 * the uptodate bits and such for the extent buffers.
-+	 */
-+	release_extent_buffer(eb);
-+}
-+
-+void free_extent_buffer_stale(struct extent_buffer *eb)
-+{
-+	if (!eb)
-+		return;
-+
-+	spin_lock(&eb->refs_lock);
-+	set_bit(EXTENT_BUFFER_STALE, &eb->bflags);
-+
-+	if (atomic_read(&eb->refs) == 2 && !extent_buffer_under_io(eb) &&
-+	    test_and_clear_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
-+		atomic_dec(&eb->refs);
-+	release_extent_buffer(eb);
-+}
-+
-+void clear_extent_buffer_dirty(struct extent_buffer *eb)
-+{
-+	int i;
-+	int num_pages;
-+	struct page *page;
-+
-+	num_pages = num_extent_pages(eb);
-+
-+	for (i = 0; i < num_pages; i++) {
-+		page = eb->pages[i];
-+		if (!PageDirty(page))
-+			continue;
-+
-+		lock_page(page);
-+		WARN_ON(!PagePrivate(page));
-+
-+		clear_page_dirty_for_io(page);
-+		xa_lock_irq(&page->mapping->i_pages);
-+		if (!PageDirty(page))
-+			__xa_clear_mark(&page->mapping->i_pages,
-+					page_index(page), PAGECACHE_TAG_DIRTY);
-+		xa_unlock_irq(&page->mapping->i_pages);
-+		ClearPageError(page);
-+		unlock_page(page);
-+	}
-+	WARN_ON(atomic_read(&eb->refs) == 0);
-+}
-+
-+bool set_extent_buffer_dirty(struct extent_buffer *eb)
-+{
-+	int i;
-+	int num_pages;
-+	bool was_dirty;
-+
-+	check_buffer_tree_ref(eb);
-+
-+	was_dirty = test_and_set_bit(EXTENT_BUFFER_DIRTY, &eb->bflags);
-+
-+	num_pages = num_extent_pages(eb);
-+	WARN_ON(atomic_read(&eb->refs) == 0);
-+	WARN_ON(!test_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags));
-+
-+	if (!was_dirty)
-+		for (i = 0; i < num_pages; i++)
-+			set_page_dirty(eb->pages[i]);
-+
-+#ifdef CONFIG_BTRFS_DEBUG
-+	for (i = 0; i < num_pages; i++)
-+		ASSERT(PageDirty(eb->pages[i]));
-+#endif
-+
-+	return was_dirty;
-+}
-+
-+void clear_extent_buffer_uptodate(struct extent_buffer *eb)
-+{
-+	int i;
-+	struct page *page;
-+	int num_pages;
-+
-+	clear_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
-+	num_pages = num_extent_pages(eb);
-+	for (i = 0; i < num_pages; i++) {
-+		page = eb->pages[i];
-+		if (page)
-+			ClearPageUptodate(page);
-+	}
-+}
-+
-+void set_extent_buffer_uptodate(struct extent_buffer *eb)
-+{
-+	int i;
-+	struct page *page;
-+	int num_pages;
-+
-+	set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
-+	num_pages = num_extent_pages(eb);
-+	for (i = 0; i < num_pages; i++) {
-+		page = eb->pages[i];
-+		SetPageUptodate(page);
-+	}
-+}
-+
-+void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
-+			unsigned long start, unsigned long len)
-+{
-+	size_t cur;
-+	size_t offset;
-+	struct page *page;
-+	char *kaddr;
-+	char *dst = (char *)dstv;
-+	size_t start_offset = offset_in_page(eb->start);
-+	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
-+
-+	if (start + len > eb->len) {
-+		WARN(1, KERN_ERR "btrfs bad mapping eb start %llu len %lu, wanted %lu %lu\n",
-+		     eb->start, eb->len, start, len);
-+		memset(dst, 0, len);
-+		return;
-+	}
-+
-+	offset = offset_in_page(start_offset + start);
-+
-+	while (len > 0) {
-+		page = eb->pages[i];
-+
-+		cur = min(len, (PAGE_SIZE - offset));
-+		kaddr = page_address(page);
-+		memcpy(dst, kaddr + offset, cur);
-+
-+		dst += cur;
-+		len -= cur;
-+		offset = 0;
-+		i++;
-+	}
-+}
-+
-+int read_extent_buffer_to_user(const struct extent_buffer *eb,
-+			       void __user *dstv,
-+			       unsigned long start, unsigned long len)
-+{
-+	size_t cur;
-+	size_t offset;
-+	struct page *page;
-+	char *kaddr;
-+	char __user *dst = (char __user *)dstv;
-+	size_t start_offset = offset_in_page(eb->start);
-+	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
-+	int ret = 0;
-+
-+	WARN_ON(start > eb->len);
-+	WARN_ON(start + len > eb->start + eb->len);
-+
-+	offset = offset_in_page(start_offset + start);
-+
-+	while (len > 0) {
-+		page = eb->pages[i];
-+
-+		cur = min(len, (PAGE_SIZE - offset));
-+		kaddr = page_address(page);
-+		if (copy_to_user(dst, kaddr + offset, cur)) {
-+			ret = -EFAULT;
-+			break;
-+		}
-+
-+		dst += cur;
-+		len -= cur;
-+		offset = 0;
-+		i++;
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * return 0 if the item is found within a page.
-+ * return 1 if the item spans two pages.
-+ * return -EINVAL otherwise.
-+ */
-+int map_private_extent_buffer(const struct extent_buffer *eb,
-+			      unsigned long start, unsigned long min_len,
-+			      char **map, unsigned long *map_start,
-+			      unsigned long *map_len)
-+{
-+	size_t offset;
-+	char *kaddr;
-+	struct page *p;
-+	size_t start_offset = offset_in_page(eb->start);
-+	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
-+	unsigned long end_i = (start_offset + start + min_len - 1) >>
-+		PAGE_SHIFT;
-+
-+	if (start + min_len > eb->len) {
-+		WARN(1, KERN_ERR "btrfs bad mapping eb start %llu len %lu, wanted %lu %lu\n",
-+		       eb->start, eb->len, start, min_len);
-+		return -EINVAL;
-+	}
-+
-+	if (i != end_i)
-+		return 1;
-+
-+	if (i == 0) {
-+		offset = start_offset;
-+		*map_start = 0;
-+	} else {
-+		offset = 0;
-+		*map_start = ((u64)i << PAGE_SHIFT) - start_offset;
-+	}
-+
-+	p = eb->pages[i];
-+	kaddr = page_address(p);
-+	*map = kaddr + offset;
-+	*map_len = PAGE_SIZE - offset;
-+	return 0;
-+}
-+
-+int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
-+			 unsigned long start, unsigned long len)
-+{
-+	size_t cur;
-+	size_t offset;
-+	struct page *page;
-+	char *kaddr;
-+	char *ptr = (char *)ptrv;
-+	size_t start_offset = offset_in_page(eb->start);
-+	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
-+	int ret = 0;
-+
-+	WARN_ON(start > eb->len);
-+	WARN_ON(start + len > eb->start + eb->len);
-+
-+	offset = offset_in_page(start_offset + start);
-+
-+	while (len > 0) {
-+		page = eb->pages[i];
-+
-+		cur = min(len, (PAGE_SIZE - offset));
-+
-+		kaddr = page_address(page);
-+		ret = memcmp(ptr, kaddr + offset, cur);
-+		if (ret)
-+			break;
-+
-+		ptr += cur;
-+		len -= cur;
-+		offset = 0;
-+		i++;
-+	}
-+	return ret;
-+}
-+
-+void write_extent_buffer_chunk_tree_uuid(struct extent_buffer *eb,
-+		const void *srcv)
-+{
-+	char *kaddr;
-+
-+	WARN_ON(!PageUptodate(eb->pages[0]));
-+	kaddr = page_address(eb->pages[0]);
-+	memcpy(kaddr + offsetof(struct btrfs_header, chunk_tree_uuid), srcv,
-+			BTRFS_FSID_SIZE);
-+}
-+
-+void write_extent_buffer_fsid(struct extent_buffer *eb, const void *srcv)
-+{
-+	char *kaddr;
-+
-+	WARN_ON(!PageUptodate(eb->pages[0]));
-+	kaddr = page_address(eb->pages[0]);
-+	memcpy(kaddr + offsetof(struct btrfs_header, fsid), srcv,
-+			BTRFS_FSID_SIZE);
-+}
-+
-+void write_extent_buffer(struct extent_buffer *eb, const void *srcv,
-+			 unsigned long start, unsigned long len)
-+{
-+	size_t cur;
-+	size_t offset;
-+	struct page *page;
-+	char *kaddr;
-+	char *src = (char *)srcv;
-+	size_t start_offset = offset_in_page(eb->start);
-+	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
-+
-+	WARN_ON(start > eb->len);
-+	WARN_ON(start + len > eb->start + eb->len);
-+
-+	offset = offset_in_page(start_offset + start);
-+
-+	while (len > 0) {
-+		page = eb->pages[i];
-+		WARN_ON(!PageUptodate(page));
-+
-+		cur = min(len, PAGE_SIZE - offset);
-+		kaddr = page_address(page);
-+		memcpy(kaddr + offset, src, cur);
-+
-+		src += cur;
-+		len -= cur;
-+		offset = 0;
-+		i++;
-+	}
-+}
-+
-+void memzero_extent_buffer(struct extent_buffer *eb, unsigned long start,
-+		unsigned long len)
-+{
-+	size_t cur;
-+	size_t offset;
-+	struct page *page;
-+	char *kaddr;
-+	size_t start_offset = offset_in_page(eb->start);
-+	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
-+
-+	WARN_ON(start > eb->len);
-+	WARN_ON(start + len > eb->start + eb->len);
-+
-+	offset = offset_in_page(start_offset + start);
-+
-+	while (len > 0) {
-+		page = eb->pages[i];
-+		WARN_ON(!PageUptodate(page));
-+
-+		cur = min(len, PAGE_SIZE - offset);
-+		kaddr = page_address(page);
-+		memset(kaddr + offset, 0, cur);
-+
-+		len -= cur;
-+		offset = 0;
-+		i++;
-+	}
-+}
-+
-+void copy_extent_buffer_full(struct extent_buffer *dst,
-+			     struct extent_buffer *src)
-+{
-+	int i;
-+	int num_pages;
-+
-+	ASSERT(dst->len == src->len);
-+
-+	num_pages = num_extent_pages(dst);
-+	for (i = 0; i < num_pages; i++)
-+		copy_page(page_address(dst->pages[i]),
-+				page_address(src->pages[i]));
-+}
-+
-+void copy_extent_buffer(struct extent_buffer *dst, struct extent_buffer *src,
-+			unsigned long dst_offset, unsigned long src_offset,
-+			unsigned long len)
-+{
-+	u64 dst_len = dst->len;
-+	size_t cur;
-+	size_t offset;
-+	struct page *page;
-+	char *kaddr;
-+	size_t start_offset = offset_in_page(dst->start);
-+	unsigned long i = (start_offset + dst_offset) >> PAGE_SHIFT;
-+
-+	WARN_ON(src->len != dst_len);
-+
-+	offset = offset_in_page(start_offset + dst_offset);
-+
-+	while (len > 0) {
-+		page = dst->pages[i];
-+		WARN_ON(!PageUptodate(page));
-+
-+		cur = min(len, (unsigned long)(PAGE_SIZE - offset));
-+
-+		kaddr = page_address(page);
-+		read_extent_buffer(src, kaddr + offset, src_offset, cur);
-+
-+		src_offset += cur;
-+		len -= cur;
-+		offset = 0;
-+		i++;
-+	}
-+}
-+
-+/*
-+ * eb_bitmap_offset() - calculate the page and offset of the byte containing the
-+ * given bit number
-+ * @eb: the extent buffer
-+ * @start: offset of the bitmap item in the extent buffer
-+ * @nr: bit number
-+ * @page_index: return index of the page in the extent buffer that contains the
-+ * given bit number
-+ * @page_offset: return offset into the page given by page_index
-+ *
-+ * This helper hides the ugliness of finding the byte in an extent buffer which
-+ * contains a given bit.
-+ */
-+static inline void eb_bitmap_offset(struct extent_buffer *eb,
-+				    unsigned long start, unsigned long nr,
-+				    unsigned long *page_index,
-+				    size_t *page_offset)
-+{
-+	size_t start_offset = offset_in_page(eb->start);
-+	size_t byte_offset = BIT_BYTE(nr);
-+	size_t offset;
-+
-+	/*
-+	 * The byte we want is the offset of the extent buffer + the offset of
-+	 * the bitmap item in the extent buffer + the offset of the byte in the
-+	 * bitmap item.
-+	 */
-+	offset = start_offset + start + byte_offset;
-+
-+	*page_index = offset >> PAGE_SHIFT;
-+	*page_offset = offset_in_page(offset);
-+}
-+
-+/**
-+ * extent_buffer_test_bit - determine whether a bit in a bitmap item is set
-+ * @eb: the extent buffer
-+ * @start: offset of the bitmap item in the extent buffer
-+ * @nr: bit number to test
-+ */
-+int extent_buffer_test_bit(struct extent_buffer *eb, unsigned long start,
-+			   unsigned long nr)
-+{
-+	u8 *kaddr;
-+	struct page *page;
-+	unsigned long i;
-+	size_t offset;
-+
-+	eb_bitmap_offset(eb, start, nr, &i, &offset);
-+	page = eb->pages[i];
-+	WARN_ON(!PageUptodate(page));
-+	kaddr = page_address(page);
-+	return 1U & (kaddr[offset] >> (nr & (BITS_PER_BYTE - 1)));
-+}
-+
-+/**
-+ * extent_buffer_bitmap_set - set an area of a bitmap
-+ * @eb: the extent buffer
-+ * @start: offset of the bitmap item in the extent buffer
-+ * @pos: bit number of the first bit
-+ * @len: number of bits to set
-+ */
-+void extent_buffer_bitmap_set(struct extent_buffer *eb, unsigned long start,
-+			      unsigned long pos, unsigned long len)
-+{
-+	u8 *kaddr;
-+	struct page *page;
-+	unsigned long i;
-+	size_t offset;
-+	const unsigned int size = pos + len;
-+	int bits_to_set = BITS_PER_BYTE - (pos % BITS_PER_BYTE);
-+	u8 mask_to_set = BITMAP_FIRST_BYTE_MASK(pos);
-+
-+	eb_bitmap_offset(eb, start, pos, &i, &offset);
-+	page = eb->pages[i];
-+	WARN_ON(!PageUptodate(page));
-+	kaddr = page_address(page);
-+
-+	while (len >= bits_to_set) {
-+		kaddr[offset] |= mask_to_set;
-+		len -= bits_to_set;
-+		bits_to_set = BITS_PER_BYTE;
-+		mask_to_set = ~0;
-+		if (++offset >= PAGE_SIZE && len > 0) {
-+			offset = 0;
-+			page = eb->pages[++i];
-+			WARN_ON(!PageUptodate(page));
-+			kaddr = page_address(page);
-+		}
-+	}
-+	if (len) {
-+		mask_to_set &= BITMAP_LAST_BYTE_MASK(size);
-+		kaddr[offset] |= mask_to_set;
-+	}
-+}
-+
-+
-+/**
-+ * extent_buffer_bitmap_clear - clear an area of a bitmap
-+ * @eb: the extent buffer
-+ * @start: offset of the bitmap item in the extent buffer
-+ * @pos: bit number of the first bit
-+ * @len: number of bits to clear
-+ */
-+void extent_buffer_bitmap_clear(struct extent_buffer *eb, unsigned long start,
-+				unsigned long pos, unsigned long len)
-+{
-+	u8 *kaddr;
-+	struct page *page;
-+	unsigned long i;
-+	size_t offset;
-+	const unsigned int size = pos + len;
-+	int bits_to_clear = BITS_PER_BYTE - (pos % BITS_PER_BYTE);
-+	u8 mask_to_clear = BITMAP_FIRST_BYTE_MASK(pos);
-+
-+	eb_bitmap_offset(eb, start, pos, &i, &offset);
-+	page = eb->pages[i];
-+	WARN_ON(!PageUptodate(page));
-+	kaddr = page_address(page);
-+
-+	while (len >= bits_to_clear) {
-+		kaddr[offset] &= ~mask_to_clear;
-+		len -= bits_to_clear;
-+		bits_to_clear = BITS_PER_BYTE;
-+		mask_to_clear = ~0;
-+		if (++offset >= PAGE_SIZE && len > 0) {
-+			offset = 0;
-+			page = eb->pages[++i];
-+			WARN_ON(!PageUptodate(page));
-+			kaddr = page_address(page);
-+		}
-+	}
-+	if (len) {
-+		mask_to_clear &= BITMAP_LAST_BYTE_MASK(size);
-+		kaddr[offset] &= ~mask_to_clear;
-+	}
-+}
-+
-+static inline bool areas_overlap(unsigned long src, unsigned long dst, unsigned long len)
-+{
-+	unsigned long distance = (src > dst) ? src - dst : dst - src;
-+	return distance < len;
-+}
-+
-+static void copy_pages(struct page *dst_page, struct page *src_page,
-+		       unsigned long dst_off, unsigned long src_off,
-+		       unsigned long len)
-+{
-+	char *dst_kaddr = page_address(dst_page);
-+	char *src_kaddr;
-+	int must_memmove = 0;
-+
-+	if (dst_page != src_page) {
-+		src_kaddr = page_address(src_page);
-+	} else {
-+		src_kaddr = dst_kaddr;
-+		if (areas_overlap(src_off, dst_off, len))
-+			must_memmove = 1;
-+	}
-+
-+	if (must_memmove)
-+		memmove(dst_kaddr + dst_off, src_kaddr + src_off, len);
-+	else
-+		memcpy(dst_kaddr + dst_off, src_kaddr + src_off, len);
-+}
-+
-+void memcpy_extent_buffer(struct extent_buffer *dst, unsigned long dst_offset,
-+			   unsigned long src_offset, unsigned long len)
-+{
-+	struct btrfs_fs_info *fs_info = dst->fs_info;
-+	size_t cur;
-+	size_t dst_off_in_page;
-+	size_t src_off_in_page;
-+	size_t start_offset = offset_in_page(dst->start);
-+	unsigned long dst_i;
-+	unsigned long src_i;
-+
-+	if (src_offset + len > dst->len) {
-+		btrfs_err(fs_info,
-+			"memmove bogus src_offset %lu move len %lu dst len %lu",
-+			 src_offset, len, dst->len);
-+		BUG();
-+	}
-+	if (dst_offset + len > dst->len) {
-+		btrfs_err(fs_info,
-+			"memmove bogus dst_offset %lu move len %lu dst len %lu",
-+			 dst_offset, len, dst->len);
-+		BUG();
-+	}
-+
-+	while (len > 0) {
-+		dst_off_in_page = offset_in_page(start_offset + dst_offset);
-+		src_off_in_page = offset_in_page(start_offset + src_offset);
-+
-+		dst_i = (start_offset + dst_offset) >> PAGE_SHIFT;
-+		src_i = (start_offset + src_offset) >> PAGE_SHIFT;
-+
-+		cur = min(len, (unsigned long)(PAGE_SIZE -
-+					       src_off_in_page));
-+		cur = min_t(unsigned long, cur,
-+			(unsigned long)(PAGE_SIZE - dst_off_in_page));
-+
-+		copy_pages(dst->pages[dst_i], dst->pages[src_i],
-+			   dst_off_in_page, src_off_in_page, cur);
-+
-+		src_offset += cur;
-+		dst_offset += cur;
-+		len -= cur;
-+	}
-+}
-+
-+void memmove_extent_buffer(struct extent_buffer *dst, unsigned long dst_offset,
-+			   unsigned long src_offset, unsigned long len)
-+{
-+	struct btrfs_fs_info *fs_info = dst->fs_info;
-+	size_t cur;
-+	size_t dst_off_in_page;
-+	size_t src_off_in_page;
-+	unsigned long dst_end = dst_offset + len - 1;
-+	unsigned long src_end = src_offset + len - 1;
-+	size_t start_offset = offset_in_page(dst->start);
-+	unsigned long dst_i;
-+	unsigned long src_i;
-+
-+	if (src_offset + len > dst->len) {
-+		btrfs_err(fs_info,
-+			  "memmove bogus src_offset %lu move len %lu len %lu",
-+			  src_offset, len, dst->len);
-+		BUG();
-+	}
-+	if (dst_offset + len > dst->len) {
-+		btrfs_err(fs_info,
-+			  "memmove bogus dst_offset %lu move len %lu len %lu",
-+			  dst_offset, len, dst->len);
-+		BUG();
-+	}
-+	if (dst_offset < src_offset) {
-+		memcpy_extent_buffer(dst, dst_offset, src_offset, len);
-+		return;
-+	}
-+	while (len > 0) {
-+		dst_i = (start_offset + dst_end) >> PAGE_SHIFT;
-+		src_i = (start_offset + src_end) >> PAGE_SHIFT;
-+
-+		dst_off_in_page = offset_in_page(start_offset + dst_end);
-+		src_off_in_page = offset_in_page(start_offset + src_end);
-+
-+		cur = min_t(unsigned long, len, src_off_in_page + 1);
-+		cur = min(cur, dst_off_in_page + 1);
-+		copy_pages(dst->pages[dst_i], dst->pages[src_i],
-+			   dst_off_in_page - cur + 1,
-+			   src_off_in_page - cur + 1, cur);
-+
-+		dst_end -= cur;
-+		src_end -= cur;
-+		len -= cur;
-+	}
-+}
-+
-+int try_release_extent_buffer(struct page *page)
-+{
-+	struct extent_buffer *eb;
-+
-+	/*
-+	 * We need to make sure nobody is attaching this page to an eb right
-+	 * now.
-+	 */
-+	spin_lock(&page->mapping->private_lock);
-+	if (!PagePrivate(page)) {
-+		spin_unlock(&page->mapping->private_lock);
-+		return 1;
-+	}
-+
-+	eb = (struct extent_buffer *)page->private;
-+	BUG_ON(!eb);
-+
-+	/*
-+	 * This is a little awful but should be ok, we need to make sure that
-+	 * the eb doesn't disappear out from under us while we're looking at
-+	 * this page.
-+	 */
-+	spin_lock(&eb->refs_lock);
-+	if (atomic_read(&eb->refs) != 1 || extent_buffer_under_io(eb)) {
-+		spin_unlock(&eb->refs_lock);
-+		spin_unlock(&page->mapping->private_lock);
-+		return 0;
-+	}
-+	spin_unlock(&page->mapping->private_lock);
-+
-+	/*
-+	 * If tree ref isn't set then we know the ref on this eb is a real ref,
-+	 * so just return, this page will likely be freed soon anyway.
-+	 */
-+	if (!test_and_clear_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags)) {
-+		spin_unlock(&eb->refs_lock);
-+		return 0;
-+	}
-+
-+	return release_extent_buffer(eb);
-+}
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index db85c79e2f90..a6a659d91192 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -25,51 +25,8 @@
- #include "backref.h"
- #include "disk-io.h"
- 
--static struct kmem_cache *extent_buffer_cache;
- static struct bio_set btrfs_bioset;
- 
--#ifdef CONFIG_BTRFS_DEBUG
--static LIST_HEAD(buffers);
--
--static DEFINE_SPINLOCK(leak_lock);
--
--static inline
--void btrfs_leak_debug_add(struct list_head *new, struct list_head *head)
--{
--	unsigned long flags;
--
--	spin_lock_irqsave(&leak_lock, flags);
--	list_add(new, head);
--	spin_unlock_irqrestore(&leak_lock, flags);
--}
--
--static inline
--void btrfs_leak_debug_del(struct list_head *entry)
--{
--	unsigned long flags;
--
--	spin_lock_irqsave(&leak_lock, flags);
--	list_del(entry);
--	spin_unlock_irqrestore(&leak_lock, flags);
--}
--
--static inline
--void btrfs_extent_buffer_leak_debug_check()
--{
--	while (!list_empty(&buffers)) {
--		eb = list_entry(buffers.next, struct extent_buffer, leak_list);
--		pr_err("BTRFS: buffer leak start %llu len %lu refs %d bflags %lu\n",
--		       eb->start, eb->len, atomic_read(&eb->refs), eb->bflags);
--		list_del(&eb->leak_list);
--		kmem_cache_free(extent_buffer_cache, eb);
--	}
--}
--#else
--#define btrfs_leak_debug_add(new, head)	do {} while (0)
--#define btrfs_leak_debug_del(entry)	do {} while (0)
--#define btrfs_extent_buffer_leak_debug_check()	do {} while (0)
--#endif
--
- struct extent_page_data {
- 	struct bio *bio;
- 	struct extent_io_tree *tree;
-@@ -148,28 +105,6 @@ int __init extent_io_init(void)
- 	return 0;
- }
- 
--int __init extent_buffer_init(void)
--{
--	extent_buffer_cache = kmem_cache_create("btrfs_extent_buffer",
--			sizeof(struct extent_buffer), 0,
--			SLAB_MEM_SPREAD, NULL);
--	if (!extent_buffer_cache)
--		return -ENOMEM;
--	return 0;
--}
--
--void __cold extent_buffer_exit(void)
--{
--	btrfs_extent_buffer_leak_debug_check();
--
--	/*
--	 * Make sure all delayed rcu free are flushed before we
--	 * destroy caches.
--	 */
--	rcu_barrier();
--	kmem_cache_destroy(extent_buffer_cache);
--}
--
- void __cold extent_io_exit(void)
- {
- 	bioset_exit(&btrfs_bioset);
-@@ -1089,18 +1024,6 @@ static int submit_extent_page(unsigned int opf, struct extent_io_tree *tree,
- 	return ret;
- }
- 
--static void attach_extent_buffer_page(struct extent_buffer *eb,
--				      struct page *page)
--{
--	if (!PagePrivate(page)) {
--		SetPagePrivate(page);
--		get_page(page);
--		set_page_private(page, (unsigned long)eb);
--	} else {
--		WARN_ON(page->private != (unsigned long)eb);
--	}
--}
--
- void set_page_extent_mapped(struct page *page)
- {
- 	if (!PagePrivate(page)) {
-@@ -1718,12 +1641,6 @@ static int __extent_writepage(struct page *page, struct writeback_control *wbc,
- 	return 0;
- }
- 
--void wait_on_extent_buffer_writeback(struct extent_buffer *eb)
--{
--	wait_on_bit_io(&eb->bflags, EXTENT_BUFFER_WRITEBACK,
--		       TASK_UNINTERRUPTIBLE);
--}
--
- /*
-  * Lock eb pages and flush the bio if we can't the locks
-  *
-@@ -2867,603 +2784,6 @@ int extent_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
- 	return ret;
- }
- 
--static void __free_extent_buffer(struct extent_buffer *eb)
--{
--	btrfs_leak_debug_del(&eb->leak_list);
--	kmem_cache_free(extent_buffer_cache, eb);
--}
--
--int extent_buffer_under_io(struct extent_buffer *eb)
--{
--	return (atomic_read(&eb->io_pages) ||
--		test_bit(EXTENT_BUFFER_WRITEBACK, &eb->bflags) ||
--		test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
--}
--
--/*
-- * Release all pages attached to the extent buffer.
-- */
--static void btrfs_release_extent_buffer_pages(struct extent_buffer *eb)
--{
--	int i;
--	int num_pages;
--	int mapped = !test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
--
--	BUG_ON(extent_buffer_under_io(eb));
--
--	num_pages = num_extent_pages(eb);
--	for (i = 0; i < num_pages; i++) {
--		struct page *page = eb->pages[i];
--
--		if (!page)
--			continue;
--		if (mapped)
--			spin_lock(&page->mapping->private_lock);
--		/*
--		 * We do this since we'll remove the pages after we've
--		 * removed the eb from the radix tree, so we could race
--		 * and have this page now attached to the new eb.  So
--		 * only clear page_private if it's still connected to
--		 * this eb.
--		 */
--		if (PagePrivate(page) &&
--		    page->private == (unsigned long)eb) {
--			BUG_ON(test_bit(EXTENT_BUFFER_DIRTY, &eb->bflags));
--			BUG_ON(PageDirty(page));
--			BUG_ON(PageWriteback(page));
--			/*
--			 * We need to make sure we haven't be attached
--			 * to a new eb.
--			 */
--			ClearPagePrivate(page);
--			set_page_private(page, 0);
--			/* One for the page private */
--			put_page(page);
--		}
--
--		if (mapped)
--			spin_unlock(&page->mapping->private_lock);
--
--		/* One for when we allocated the page */
--		put_page(page);
--	}
--}
--
--/*
-- * Helper for releasing the extent buffer.
-- */
--static inline void btrfs_release_extent_buffer(struct extent_buffer *eb)
--{
--	btrfs_release_extent_buffer_pages(eb);
--	__free_extent_buffer(eb);
--}
--
--static struct extent_buffer *
--__alloc_extent_buffer(struct btrfs_fs_info *fs_info, u64 start,
--		      unsigned long len)
--{
--	struct extent_buffer *eb = NULL;
--
--	eb = kmem_cache_zalloc(extent_buffer_cache, GFP_NOFS|__GFP_NOFAIL);
--	eb->start = start;
--	eb->len = len;
--	eb->fs_info = fs_info;
--	eb->bflags = 0;
--	rwlock_init(&eb->lock);
--	atomic_set(&eb->blocking_readers, 0);
--	eb->blocking_writers = 0;
--	eb->lock_nested = false;
--	init_waitqueue_head(&eb->write_lock_wq);
--	init_waitqueue_head(&eb->read_lock_wq);
--
--	btrfs_leak_debug_add(&eb->leak_list, &buffers);
--
--	spin_lock_init(&eb->refs_lock);
--	atomic_set(&eb->refs, 1);
--	atomic_set(&eb->io_pages, 0);
--
--	/*
--	 * Sanity checks, currently the maximum is 64k covered by 16x 4k pages
--	 */
--	BUILD_BUG_ON(BTRFS_MAX_METADATA_BLOCKSIZE
--		> MAX_INLINE_EXTENT_BUFFER_SIZE);
--	BUG_ON(len > MAX_INLINE_EXTENT_BUFFER_SIZE);
--
--#ifdef CONFIG_BTRFS_DEBUG
--	eb->spinning_writers = 0;
--	atomic_set(&eb->spinning_readers, 0);
--	atomic_set(&eb->read_locks, 0);
--	eb->write_locks = 0;
--#endif
--
--	return eb;
--}
--
--struct extent_buffer *btrfs_clone_extent_buffer(struct extent_buffer *src)
--{
--	int i;
--	struct page *p;
--	struct extent_buffer *new;
--	int num_pages = num_extent_pages(src);
--
--	new = __alloc_extent_buffer(src->fs_info, src->start, src->len);
--	if (new == NULL)
--		return NULL;
--
--	for (i = 0; i < num_pages; i++) {
--		p = alloc_page(GFP_NOFS);
--		if (!p) {
--			btrfs_release_extent_buffer(new);
--			return NULL;
--		}
--		attach_extent_buffer_page(new, p);
--		WARN_ON(PageDirty(p));
--		SetPageUptodate(p);
--		new->pages[i] = p;
--		copy_page(page_address(p), page_address(src->pages[i]));
--	}
--
--	set_bit(EXTENT_BUFFER_UPTODATE, &new->bflags);
--	set_bit(EXTENT_BUFFER_UNMAPPED, &new->bflags);
--
--	return new;
--}
--
--struct extent_buffer *__alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
--						  u64 start, unsigned long len)
--{
--	struct extent_buffer *eb;
--	int num_pages;
--	int i;
--
--	eb = __alloc_extent_buffer(fs_info, start, len);
--	if (!eb)
--		return NULL;
--
--	num_pages = num_extent_pages(eb);
--	for (i = 0; i < num_pages; i++) {
--		eb->pages[i] = alloc_page(GFP_NOFS);
--		if (!eb->pages[i])
--			goto err;
--	}
--	set_extent_buffer_uptodate(eb);
--	btrfs_set_header_nritems(eb, 0);
--	set_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags);
--
--	return eb;
--err:
--	for (; i > 0; i--)
--		__free_page(eb->pages[i - 1]);
--	__free_extent_buffer(eb);
--	return NULL;
--}
--
--struct extent_buffer *alloc_dummy_extent_buffer(struct btrfs_fs_info *fs_info,
--						u64 start)
--{
--	return __alloc_dummy_extent_buffer(fs_info, start, fs_info->nodesize);
--}
--
--static void check_buffer_tree_ref(struct extent_buffer *eb)
--{
--	int refs;
--	/* the ref bit is tricky.  We have to make sure it is set
--	 * if we have the buffer dirty.   Otherwise the
--	 * code to free a buffer can end up dropping a dirty
--	 * page
--	 *
--	 * Once the ref bit is set, it won't go away while the
--	 * buffer is dirty or in writeback, and it also won't
--	 * go away while we have the reference count on the
--	 * eb bumped.
--	 *
--	 * We can't just set the ref bit without bumping the
--	 * ref on the eb because free_extent_buffer might
--	 * see the ref bit and try to clear it.  If this happens
--	 * free_extent_buffer might end up dropping our original
--	 * ref by mistake and freeing the page before we are able
--	 * to add one more ref.
--	 *
--	 * So bump the ref count first, then set the bit.  If someone
--	 * beat us to it, drop the ref we added.
--	 */
--	refs = atomic_read(&eb->refs);
--	if (refs >= 2 && test_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
--		return;
--
--	spin_lock(&eb->refs_lock);
--	if (!test_and_set_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
--		atomic_inc(&eb->refs);
--	spin_unlock(&eb->refs_lock);
--}
--
--static void mark_extent_buffer_accessed(struct extent_buffer *eb,
--		struct page *accessed)
--{
--	int num_pages, i;
--
--	check_buffer_tree_ref(eb);
--
--	num_pages = num_extent_pages(eb);
--	for (i = 0; i < num_pages; i++) {
--		struct page *p = eb->pages[i];
--
--		if (p != accessed)
--			mark_page_accessed(p);
--	}
--}
--
--struct extent_buffer *find_extent_buffer(struct btrfs_fs_info *fs_info,
--					 u64 start)
--{
--	struct extent_buffer *eb;
--
--	rcu_read_lock();
--	eb = radix_tree_lookup(&fs_info->buffer_radix,
--			       start >> PAGE_SHIFT);
--	if (eb && atomic_inc_not_zero(&eb->refs)) {
--		rcu_read_unlock();
--		/*
--		 * Lock our eb's refs_lock to avoid races with
--		 * free_extent_buffer. When we get our eb it might be flagged
--		 * with EXTENT_BUFFER_STALE and another task running
--		 * free_extent_buffer might have seen that flag set,
--		 * eb->refs == 2, that the buffer isn't under IO (dirty and
--		 * writeback flags not set) and it's still in the tree (flag
--		 * EXTENT_BUFFER_TREE_REF set), therefore being in the process
--		 * of decrementing the extent buffer's reference count twice.
--		 * So here we could race and increment the eb's reference count,
--		 * clear its stale flag, mark it as dirty and drop our reference
--		 * before the other task finishes executing free_extent_buffer,
--		 * which would later result in an attempt to free an extent
--		 * buffer that is dirty.
--		 */
--		if (test_bit(EXTENT_BUFFER_STALE, &eb->bflags)) {
--			spin_lock(&eb->refs_lock);
--			spin_unlock(&eb->refs_lock);
--		}
--		mark_extent_buffer_accessed(eb, NULL);
--		return eb;
--	}
--	rcu_read_unlock();
--
--	return NULL;
--}
--
--#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
--struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
--					u64 start)
--{
--	struct extent_buffer *eb, *exists = NULL;
--	int ret;
--
--	eb = find_extent_buffer(fs_info, start);
--	if (eb)
--		return eb;
--	eb = alloc_dummy_extent_buffer(fs_info, start);
--	if (!eb)
--		return NULL;
--	eb->fs_info = fs_info;
--again:
--	ret = radix_tree_preload(GFP_NOFS);
--	if (ret)
--		goto free_eb;
--	spin_lock(&fs_info->buffer_lock);
--	ret = radix_tree_insert(&fs_info->buffer_radix,
--				start >> PAGE_SHIFT, eb);
--	spin_unlock(&fs_info->buffer_lock);
--	radix_tree_preload_end();
--	if (ret == -EEXIST) {
--		exists = find_extent_buffer(fs_info, start);
--		if (exists)
--			goto free_eb;
--		else
--			goto again;
--	}
--	check_buffer_tree_ref(eb);
--	set_bit(EXTENT_BUFFER_IN_TREE, &eb->bflags);
--
--	return eb;
--free_eb:
--	btrfs_release_extent_buffer(eb);
--	return exists;
--}
--#endif
--
--struct extent_buffer *alloc_extent_buffer(struct btrfs_fs_info *fs_info,
--					  u64 start)
--{
--	unsigned long len = fs_info->nodesize;
--	int num_pages;
--	int i;
--	unsigned long index = start >> PAGE_SHIFT;
--	struct extent_buffer *eb;
--	struct extent_buffer *exists = NULL;
--	struct page *p;
--	struct address_space *mapping = fs_info->btree_inode->i_mapping;
--	int uptodate = 1;
--	int ret;
--
--	if (!IS_ALIGNED(start, fs_info->sectorsize)) {
--		btrfs_err(fs_info, "bad tree block start %llu", start);
--		return ERR_PTR(-EINVAL);
--	}
--
--	eb = find_extent_buffer(fs_info, start);
--	if (eb)
--		return eb;
--
--	eb = __alloc_extent_buffer(fs_info, start, len);
--	if (!eb)
--		return ERR_PTR(-ENOMEM);
--
--	num_pages = num_extent_pages(eb);
--	for (i = 0; i < num_pages; i++, index++) {
--		p = find_or_create_page(mapping, index, GFP_NOFS|__GFP_NOFAIL);
--		if (!p) {
--			exists = ERR_PTR(-ENOMEM);
--			goto free_eb;
--		}
--
--		spin_lock(&mapping->private_lock);
--		if (PagePrivate(p)) {
--			/*
--			 * We could have already allocated an eb for this page
--			 * and attached one so lets see if we can get a ref on
--			 * the existing eb, and if we can we know it's good and
--			 * we can just return that one, else we know we can just
--			 * overwrite page->private.
--			 */
--			exists = (struct extent_buffer *)p->private;
--			if (atomic_inc_not_zero(&exists->refs)) {
--				spin_unlock(&mapping->private_lock);
--				unlock_page(p);
--				put_page(p);
--				mark_extent_buffer_accessed(exists, p);
--				goto free_eb;
--			}
--			exists = NULL;
--
--			/*
--			 * Do this so attach doesn't complain and we need to
--			 * drop the ref the old guy had.
--			 */
--			ClearPagePrivate(p);
--			WARN_ON(PageDirty(p));
--			put_page(p);
--		}
--		attach_extent_buffer_page(eb, p);
--		spin_unlock(&mapping->private_lock);
--		WARN_ON(PageDirty(p));
--		eb->pages[i] = p;
--		if (!PageUptodate(p))
--			uptodate = 0;
--
--		/*
--		 * We can't unlock the pages just yet since the extent buffer
--		 * hasn't been properly inserted in the radix tree, this
--		 * opens a race with btree_releasepage which can free a page
--		 * while we are still filling in all pages for the buffer and
--		 * we could crash.
--		 */
--	}
--	if (uptodate)
--		set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
--again:
--	ret = radix_tree_preload(GFP_NOFS);
--	if (ret) {
--		exists = ERR_PTR(ret);
--		goto free_eb;
--	}
--
--	spin_lock(&fs_info->buffer_lock);
--	ret = radix_tree_insert(&fs_info->buffer_radix,
--				start >> PAGE_SHIFT, eb);
--	spin_unlock(&fs_info->buffer_lock);
--	radix_tree_preload_end();
--	if (ret == -EEXIST) {
--		exists = find_extent_buffer(fs_info, start);
--		if (exists)
--			goto free_eb;
--		else
--			goto again;
--	}
--	/* add one reference for the tree */
--	check_buffer_tree_ref(eb);
--	set_bit(EXTENT_BUFFER_IN_TREE, &eb->bflags);
--
--	/*
--	 * Now it's safe to unlock the pages because any calls to
--	 * btree_releasepage will correctly detect that a page belongs to a
--	 * live buffer and won't free them prematurely.
--	 */
--	for (i = 0; i < num_pages; i++)
--		unlock_page(eb->pages[i]);
--	return eb;
--
--free_eb:
--	WARN_ON(!atomic_dec_and_test(&eb->refs));
--	for (i = 0; i < num_pages; i++) {
--		if (eb->pages[i])
--			unlock_page(eb->pages[i]);
--	}
--
--	btrfs_release_extent_buffer(eb);
--	return exists;
--}
--
--static inline void btrfs_release_extent_buffer_rcu(struct rcu_head *head)
--{
--	struct extent_buffer *eb =
--			container_of(head, struct extent_buffer, rcu_head);
--
--	__free_extent_buffer(eb);
--}
--
--static int release_extent_buffer(struct extent_buffer *eb)
--{
--	lockdep_assert_held(&eb->refs_lock);
--
--	WARN_ON(atomic_read(&eb->refs) == 0);
--	if (atomic_dec_and_test(&eb->refs)) {
--		if (test_and_clear_bit(EXTENT_BUFFER_IN_TREE, &eb->bflags)) {
--			struct btrfs_fs_info *fs_info = eb->fs_info;
--
--			spin_unlock(&eb->refs_lock);
--
--			spin_lock(&fs_info->buffer_lock);
--			radix_tree_delete(&fs_info->buffer_radix,
--					  eb->start >> PAGE_SHIFT);
--			spin_unlock(&fs_info->buffer_lock);
--		} else {
--			spin_unlock(&eb->refs_lock);
--		}
--
--		/* Should be safe to release our pages at this point */
--		btrfs_release_extent_buffer_pages(eb);
--#ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
--		if (unlikely(test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags))) {
--			__free_extent_buffer(eb);
--			return 1;
--		}
--#endif
--		call_rcu(&eb->rcu_head, btrfs_release_extent_buffer_rcu);
--		return 1;
--	}
--	spin_unlock(&eb->refs_lock);
--
--	return 0;
--}
--
--void free_extent_buffer(struct extent_buffer *eb)
--{
--	int refs;
--	int old;
--	if (!eb)
--		return;
--
--	while (1) {
--		refs = atomic_read(&eb->refs);
--		if ((!test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) && refs <= 3)
--		    || (test_bit(EXTENT_BUFFER_UNMAPPED, &eb->bflags) &&
--			refs == 1))
--			break;
--		old = atomic_cmpxchg(&eb->refs, refs, refs - 1);
--		if (old == refs)
--			return;
--	}
--
--	spin_lock(&eb->refs_lock);
--	if (atomic_read(&eb->refs) == 2 &&
--	    test_bit(EXTENT_BUFFER_STALE, &eb->bflags) &&
--	    !extent_buffer_under_io(eb) &&
--	    test_and_clear_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
--		atomic_dec(&eb->refs);
--
--	/*
--	 * I know this is terrible, but it's temporary until we stop tracking
--	 * the uptodate bits and such for the extent buffers.
--	 */
--	release_extent_buffer(eb);
--}
--
--void free_extent_buffer_stale(struct extent_buffer *eb)
--{
--	if (!eb)
--		return;
--
--	spin_lock(&eb->refs_lock);
--	set_bit(EXTENT_BUFFER_STALE, &eb->bflags);
--
--	if (atomic_read(&eb->refs) == 2 && !extent_buffer_under_io(eb) &&
--	    test_and_clear_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags))
--		atomic_dec(&eb->refs);
--	release_extent_buffer(eb);
--}
--
--void clear_extent_buffer_dirty(struct extent_buffer *eb)
--{
--	int i;
--	int num_pages;
--	struct page *page;
--
--	num_pages = num_extent_pages(eb);
--
--	for (i = 0; i < num_pages; i++) {
--		page = eb->pages[i];
--		if (!PageDirty(page))
--			continue;
--
--		lock_page(page);
--		WARN_ON(!PagePrivate(page));
--
--		clear_page_dirty_for_io(page);
--		xa_lock_irq(&page->mapping->i_pages);
--		if (!PageDirty(page))
--			__xa_clear_mark(&page->mapping->i_pages,
--					page_index(page), PAGECACHE_TAG_DIRTY);
--		xa_unlock_irq(&page->mapping->i_pages);
--		ClearPageError(page);
--		unlock_page(page);
--	}
--	WARN_ON(atomic_read(&eb->refs) == 0);
--}
--
--bool set_extent_buffer_dirty(struct extent_buffer *eb)
--{
--	int i;
--	int num_pages;
--	bool was_dirty;
--
--	check_buffer_tree_ref(eb);
--
--	was_dirty = test_and_set_bit(EXTENT_BUFFER_DIRTY, &eb->bflags);
--
--	num_pages = num_extent_pages(eb);
--	WARN_ON(atomic_read(&eb->refs) == 0);
--	WARN_ON(!test_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags));
--
--	if (!was_dirty)
--		for (i = 0; i < num_pages; i++)
--			set_page_dirty(eb->pages[i]);
--
--#ifdef CONFIG_BTRFS_DEBUG
--	for (i = 0; i < num_pages; i++)
--		ASSERT(PageDirty(eb->pages[i]));
--#endif
--
--	return was_dirty;
--}
--
--void clear_extent_buffer_uptodate(struct extent_buffer *eb)
--{
--	int i;
--	struct page *page;
--	int num_pages;
--
--	clear_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
--	num_pages = num_extent_pages(eb);
--	for (i = 0; i < num_pages; i++) {
--		page = eb->pages[i];
--		if (page)
--			ClearPageUptodate(page);
--	}
--}
--
--void set_extent_buffer_uptodate(struct extent_buffer *eb)
--{
--	int i;
--	struct page *page;
--	int num_pages;
--
--	set_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
--	num_pages = num_extent_pages(eb);
--	for (i = 0; i < num_pages; i++) {
--		page = eb->pages[i];
--		SetPageUptodate(page);
--	}
--}
--
- int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
- {
- 	int i;
-@@ -3571,578 +2891,3 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num)
- 	}
- 	return ret;
- }
--
--void read_extent_buffer(const struct extent_buffer *eb, void *dstv,
--			unsigned long start, unsigned long len)
--{
--	size_t cur;
--	size_t offset;
--	struct page *page;
--	char *kaddr;
--	char *dst = (char *)dstv;
--	size_t start_offset = offset_in_page(eb->start);
--	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
--
--	if (start + len > eb->len) {
--		WARN(1, KERN_ERR "btrfs bad mapping eb start %llu len %lu, wanted %lu %lu\n",
--		     eb->start, eb->len, start, len);
--		memset(dst, 0, len);
--		return;
--	}
--
--	offset = offset_in_page(start_offset + start);
--
--	while (len > 0) {
--		page = eb->pages[i];
--
--		cur = min(len, (PAGE_SIZE - offset));
--		kaddr = page_address(page);
--		memcpy(dst, kaddr + offset, cur);
--
--		dst += cur;
--		len -= cur;
--		offset = 0;
--		i++;
--	}
--}
--
--int read_extent_buffer_to_user(const struct extent_buffer *eb,
--			       void __user *dstv,
--			       unsigned long start, unsigned long len)
--{
--	size_t cur;
--	size_t offset;
--	struct page *page;
--	char *kaddr;
--	char __user *dst = (char __user *)dstv;
--	size_t start_offset = offset_in_page(eb->start);
--	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
--	int ret = 0;
--
--	WARN_ON(start > eb->len);
--	WARN_ON(start + len > eb->start + eb->len);
--
--	offset = offset_in_page(start_offset + start);
--
--	while (len > 0) {
--		page = eb->pages[i];
--
--		cur = min(len, (PAGE_SIZE - offset));
--		kaddr = page_address(page);
--		if (copy_to_user(dst, kaddr + offset, cur)) {
--			ret = -EFAULT;
--			break;
--		}
--
--		dst += cur;
--		len -= cur;
--		offset = 0;
--		i++;
--	}
--
--	return ret;
--}
--
--/*
-- * return 0 if the item is found within a page.
-- * return 1 if the item spans two pages.
-- * return -EINVAL otherwise.
-- */
--int map_private_extent_buffer(const struct extent_buffer *eb,
--			      unsigned long start, unsigned long min_len,
--			      char **map, unsigned long *map_start,
--			      unsigned long *map_len)
--{
--	size_t offset;
--	char *kaddr;
--	struct page *p;
--	size_t start_offset = offset_in_page(eb->start);
--	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
--	unsigned long end_i = (start_offset + start + min_len - 1) >>
--		PAGE_SHIFT;
--
--	if (start + min_len > eb->len) {
--		WARN(1, KERN_ERR "btrfs bad mapping eb start %llu len %lu, wanted %lu %lu\n",
--		       eb->start, eb->len, start, min_len);
--		return -EINVAL;
--	}
--
--	if (i != end_i)
--		return 1;
--
--	if (i == 0) {
--		offset = start_offset;
--		*map_start = 0;
--	} else {
--		offset = 0;
--		*map_start = ((u64)i << PAGE_SHIFT) - start_offset;
--	}
--
--	p = eb->pages[i];
--	kaddr = page_address(p);
--	*map = kaddr + offset;
--	*map_len = PAGE_SIZE - offset;
--	return 0;
--}
--
--int memcmp_extent_buffer(const struct extent_buffer *eb, const void *ptrv,
--			 unsigned long start, unsigned long len)
--{
--	size_t cur;
--	size_t offset;
--	struct page *page;
--	char *kaddr;
--	char *ptr = (char *)ptrv;
--	size_t start_offset = offset_in_page(eb->start);
--	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
--	int ret = 0;
--
--	WARN_ON(start > eb->len);
--	WARN_ON(start + len > eb->start + eb->len);
--
--	offset = offset_in_page(start_offset + start);
--
--	while (len > 0) {
--		page = eb->pages[i];
--
--		cur = min(len, (PAGE_SIZE - offset));
--
--		kaddr = page_address(page);
--		ret = memcmp(ptr, kaddr + offset, cur);
--		if (ret)
--			break;
--
--		ptr += cur;
--		len -= cur;
--		offset = 0;
--		i++;
--	}
--	return ret;
--}
--
--void write_extent_buffer_chunk_tree_uuid(struct extent_buffer *eb,
--		const void *srcv)
--{
--	char *kaddr;
--
--	WARN_ON(!PageUptodate(eb->pages[0]));
--	kaddr = page_address(eb->pages[0]);
--	memcpy(kaddr + offsetof(struct btrfs_header, chunk_tree_uuid), srcv,
--			BTRFS_FSID_SIZE);
--}
--
--void write_extent_buffer_fsid(struct extent_buffer *eb, const void *srcv)
--{
--	char *kaddr;
--
--	WARN_ON(!PageUptodate(eb->pages[0]));
--	kaddr = page_address(eb->pages[0]);
--	memcpy(kaddr + offsetof(struct btrfs_header, fsid), srcv,
--			BTRFS_FSID_SIZE);
--}
--
--void write_extent_buffer(struct extent_buffer *eb, const void *srcv,
--			 unsigned long start, unsigned long len)
--{
--	size_t cur;
--	size_t offset;
--	struct page *page;
--	char *kaddr;
--	char *src = (char *)srcv;
--	size_t start_offset = offset_in_page(eb->start);
--	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
--
--	WARN_ON(start > eb->len);
--	WARN_ON(start + len > eb->start + eb->len);
--
--	offset = offset_in_page(start_offset + start);
--
--	while (len > 0) {
--		page = eb->pages[i];
--		WARN_ON(!PageUptodate(page));
--
--		cur = min(len, PAGE_SIZE - offset);
--		kaddr = page_address(page);
--		memcpy(kaddr + offset, src, cur);
--
--		src += cur;
--		len -= cur;
--		offset = 0;
--		i++;
--	}
--}
--
--void memzero_extent_buffer(struct extent_buffer *eb, unsigned long start,
--		unsigned long len)
--{
--	size_t cur;
--	size_t offset;
--	struct page *page;
--	char *kaddr;
--	size_t start_offset = offset_in_page(eb->start);
--	unsigned long i = (start_offset + start) >> PAGE_SHIFT;
--
--	WARN_ON(start > eb->len);
--	WARN_ON(start + len > eb->start + eb->len);
--
--	offset = offset_in_page(start_offset + start);
--
--	while (len > 0) {
--		page = eb->pages[i];
--		WARN_ON(!PageUptodate(page));
--
--		cur = min(len, PAGE_SIZE - offset);
--		kaddr = page_address(page);
--		memset(kaddr + offset, 0, cur);
--
--		len -= cur;
--		offset = 0;
--		i++;
--	}
--}
--
--void copy_extent_buffer_full(struct extent_buffer *dst,
--			     struct extent_buffer *src)
--{
--	int i;
--	int num_pages;
--
--	ASSERT(dst->len == src->len);
--
--	num_pages = num_extent_pages(dst);
--	for (i = 0; i < num_pages; i++)
--		copy_page(page_address(dst->pages[i]),
--				page_address(src->pages[i]));
--}
--
--void copy_extent_buffer(struct extent_buffer *dst, struct extent_buffer *src,
--			unsigned long dst_offset, unsigned long src_offset,
--			unsigned long len)
--{
--	u64 dst_len = dst->len;
--	size_t cur;
--	size_t offset;
--	struct page *page;
--	char *kaddr;
--	size_t start_offset = offset_in_page(dst->start);
--	unsigned long i = (start_offset + dst_offset) >> PAGE_SHIFT;
--
--	WARN_ON(src->len != dst_len);
--
--	offset = offset_in_page(start_offset + dst_offset);
--
--	while (len > 0) {
--		page = dst->pages[i];
--		WARN_ON(!PageUptodate(page));
--
--		cur = min(len, (unsigned long)(PAGE_SIZE - offset));
--
--		kaddr = page_address(page);
--		read_extent_buffer(src, kaddr + offset, src_offset, cur);
--
--		src_offset += cur;
--		len -= cur;
--		offset = 0;
--		i++;
--	}
--}
--
--/*
-- * eb_bitmap_offset() - calculate the page and offset of the byte containing the
-- * given bit number
-- * @eb: the extent buffer
-- * @start: offset of the bitmap item in the extent buffer
-- * @nr: bit number
-- * @page_index: return index of the page in the extent buffer that contains the
-- * given bit number
-- * @page_offset: return offset into the page given by page_index
-- *
-- * This helper hides the ugliness of finding the byte in an extent buffer which
-- * contains a given bit.
-- */
--static inline void eb_bitmap_offset(struct extent_buffer *eb,
--				    unsigned long start, unsigned long nr,
--				    unsigned long *page_index,
--				    size_t *page_offset)
--{
--	size_t start_offset = offset_in_page(eb->start);
--	size_t byte_offset = BIT_BYTE(nr);
--	size_t offset;
--
--	/*
--	 * The byte we want is the offset of the extent buffer + the offset of
--	 * the bitmap item in the extent buffer + the offset of the byte in the
--	 * bitmap item.
--	 */
--	offset = start_offset + start + byte_offset;
--
--	*page_index = offset >> PAGE_SHIFT;
--	*page_offset = offset_in_page(offset);
--}
--
--/**
-- * extent_buffer_test_bit - determine whether a bit in a bitmap item is set
-- * @eb: the extent buffer
-- * @start: offset of the bitmap item in the extent buffer
-- * @nr: bit number to test
-- */
--int extent_buffer_test_bit(struct extent_buffer *eb, unsigned long start,
--			   unsigned long nr)
--{
--	u8 *kaddr;
--	struct page *page;
--	unsigned long i;
--	size_t offset;
--
--	eb_bitmap_offset(eb, start, nr, &i, &offset);
--	page = eb->pages[i];
--	WARN_ON(!PageUptodate(page));
--	kaddr = page_address(page);
--	return 1U & (kaddr[offset] >> (nr & (BITS_PER_BYTE - 1)));
--}
--
--/**
-- * extent_buffer_bitmap_set - set an area of a bitmap
-- * @eb: the extent buffer
-- * @start: offset of the bitmap item in the extent buffer
-- * @pos: bit number of the first bit
-- * @len: number of bits to set
-- */
--void extent_buffer_bitmap_set(struct extent_buffer *eb, unsigned long start,
--			      unsigned long pos, unsigned long len)
--{
--	u8 *kaddr;
--	struct page *page;
--	unsigned long i;
--	size_t offset;
--	const unsigned int size = pos + len;
--	int bits_to_set = BITS_PER_BYTE - (pos % BITS_PER_BYTE);
--	u8 mask_to_set = BITMAP_FIRST_BYTE_MASK(pos);
--
--	eb_bitmap_offset(eb, start, pos, &i, &offset);
--	page = eb->pages[i];
--	WARN_ON(!PageUptodate(page));
--	kaddr = page_address(page);
--
--	while (len >= bits_to_set) {
--		kaddr[offset] |= mask_to_set;
--		len -= bits_to_set;
--		bits_to_set = BITS_PER_BYTE;
--		mask_to_set = ~0;
--		if (++offset >= PAGE_SIZE && len > 0) {
--			offset = 0;
--			page = eb->pages[++i];
--			WARN_ON(!PageUptodate(page));
--			kaddr = page_address(page);
--		}
--	}
--	if (len) {
--		mask_to_set &= BITMAP_LAST_BYTE_MASK(size);
--		kaddr[offset] |= mask_to_set;
--	}
--}
--
--
--/**
-- * extent_buffer_bitmap_clear - clear an area of a bitmap
-- * @eb: the extent buffer
-- * @start: offset of the bitmap item in the extent buffer
-- * @pos: bit number of the first bit
-- * @len: number of bits to clear
-- */
--void extent_buffer_bitmap_clear(struct extent_buffer *eb, unsigned long start,
--				unsigned long pos, unsigned long len)
--{
--	u8 *kaddr;
--	struct page *page;
--	unsigned long i;
--	size_t offset;
--	const unsigned int size = pos + len;
--	int bits_to_clear = BITS_PER_BYTE - (pos % BITS_PER_BYTE);
--	u8 mask_to_clear = BITMAP_FIRST_BYTE_MASK(pos);
--
--	eb_bitmap_offset(eb, start, pos, &i, &offset);
--	page = eb->pages[i];
--	WARN_ON(!PageUptodate(page));
--	kaddr = page_address(page);
--
--	while (len >= bits_to_clear) {
--		kaddr[offset] &= ~mask_to_clear;
--		len -= bits_to_clear;
--		bits_to_clear = BITS_PER_BYTE;
--		mask_to_clear = ~0;
--		if (++offset >= PAGE_SIZE && len > 0) {
--			offset = 0;
--			page = eb->pages[++i];
--			WARN_ON(!PageUptodate(page));
--			kaddr = page_address(page);
--		}
--	}
--	if (len) {
--		mask_to_clear &= BITMAP_LAST_BYTE_MASK(size);
--		kaddr[offset] &= ~mask_to_clear;
--	}
--}
--
--static inline bool areas_overlap(unsigned long src, unsigned long dst, unsigned long len)
--{
--	unsigned long distance = (src > dst) ? src - dst : dst - src;
--	return distance < len;
--}
--
--static void copy_pages(struct page *dst_page, struct page *src_page,
--		       unsigned long dst_off, unsigned long src_off,
--		       unsigned long len)
--{
--	char *dst_kaddr = page_address(dst_page);
--	char *src_kaddr;
--	int must_memmove = 0;
--
--	if (dst_page != src_page) {
--		src_kaddr = page_address(src_page);
--	} else {
--		src_kaddr = dst_kaddr;
--		if (areas_overlap(src_off, dst_off, len))
--			must_memmove = 1;
--	}
--
--	if (must_memmove)
--		memmove(dst_kaddr + dst_off, src_kaddr + src_off, len);
--	else
--		memcpy(dst_kaddr + dst_off, src_kaddr + src_off, len);
--}
--
--void memcpy_extent_buffer(struct extent_buffer *dst, unsigned long dst_offset,
--			   unsigned long src_offset, unsigned long len)
--{
--	struct btrfs_fs_info *fs_info = dst->fs_info;
--	size_t cur;
--	size_t dst_off_in_page;
--	size_t src_off_in_page;
--	size_t start_offset = offset_in_page(dst->start);
--	unsigned long dst_i;
--	unsigned long src_i;
--
--	if (src_offset + len > dst->len) {
--		btrfs_err(fs_info,
--			"memmove bogus src_offset %lu move len %lu dst len %lu",
--			 src_offset, len, dst->len);
--		BUG();
--	}
--	if (dst_offset + len > dst->len) {
--		btrfs_err(fs_info,
--			"memmove bogus dst_offset %lu move len %lu dst len %lu",
--			 dst_offset, len, dst->len);
--		BUG();
--	}
--
--	while (len > 0) {
--		dst_off_in_page = offset_in_page(start_offset + dst_offset);
--		src_off_in_page = offset_in_page(start_offset + src_offset);
--
--		dst_i = (start_offset + dst_offset) >> PAGE_SHIFT;
--		src_i = (start_offset + src_offset) >> PAGE_SHIFT;
--
--		cur = min(len, (unsigned long)(PAGE_SIZE -
--					       src_off_in_page));
--		cur = min_t(unsigned long, cur,
--			(unsigned long)(PAGE_SIZE - dst_off_in_page));
--
--		copy_pages(dst->pages[dst_i], dst->pages[src_i],
--			   dst_off_in_page, src_off_in_page, cur);
--
--		src_offset += cur;
--		dst_offset += cur;
--		len -= cur;
--	}
--}
--
--void memmove_extent_buffer(struct extent_buffer *dst, unsigned long dst_offset,
--			   unsigned long src_offset, unsigned long len)
--{
--	struct btrfs_fs_info *fs_info = dst->fs_info;
--	size_t cur;
--	size_t dst_off_in_page;
--	size_t src_off_in_page;
--	unsigned long dst_end = dst_offset + len - 1;
--	unsigned long src_end = src_offset + len - 1;
--	size_t start_offset = offset_in_page(dst->start);
--	unsigned long dst_i;
--	unsigned long src_i;
--
--	if (src_offset + len > dst->len) {
--		btrfs_err(fs_info,
--			  "memmove bogus src_offset %lu move len %lu len %lu",
--			  src_offset, len, dst->len);
--		BUG();
--	}
--	if (dst_offset + len > dst->len) {
--		btrfs_err(fs_info,
--			  "memmove bogus dst_offset %lu move len %lu len %lu",
--			  dst_offset, len, dst->len);
--		BUG();
--	}
--	if (dst_offset < src_offset) {
--		memcpy_extent_buffer(dst, dst_offset, src_offset, len);
--		return;
--	}
--	while (len > 0) {
--		dst_i = (start_offset + dst_end) >> PAGE_SHIFT;
--		src_i = (start_offset + src_end) >> PAGE_SHIFT;
--
--		dst_off_in_page = offset_in_page(start_offset + dst_end);
--		src_off_in_page = offset_in_page(start_offset + src_end);
--
--		cur = min_t(unsigned long, len, src_off_in_page + 1);
--		cur = min(cur, dst_off_in_page + 1);
--		copy_pages(dst->pages[dst_i], dst->pages[src_i],
--			   dst_off_in_page - cur + 1,
--			   src_off_in_page - cur + 1, cur);
--
--		dst_end -= cur;
--		src_end -= cur;
--		len -= cur;
--	}
--}
--
--int try_release_extent_buffer(struct page *page)
--{
--	struct extent_buffer *eb;
--
--	/*
--	 * We need to make sure nobody is attaching this page to an eb right
--	 * now.
--	 */
--	spin_lock(&page->mapping->private_lock);
--	if (!PagePrivate(page)) {
--		spin_unlock(&page->mapping->private_lock);
--		return 1;
--	}
--
--	eb = (struct extent_buffer *)page->private;
--	BUG_ON(!eb);
--
--	/*
--	 * This is a little awful but should be ok, we need to make sure that
--	 * the eb doesn't disappear out from under us while we're looking at
--	 * this page.
--	 */
--	spin_lock(&eb->refs_lock);
--	if (atomic_read(&eb->refs) != 1 || extent_buffer_under_io(eb)) {
--		spin_unlock(&eb->refs_lock);
--		spin_unlock(&page->mapping->private_lock);
--		return 0;
--	}
--	spin_unlock(&page->mapping->private_lock);
--
--	/*
--	 * If tree ref isn't set then we know the ref on this eb is a real ref,
--	 * so just return, this page will likely be freed soon anyway.
--	 */
--	if (!test_and_clear_bit(EXTENT_BUFFER_TREE_REF, &eb->bflags)) {
--		spin_unlock(&eb->refs_lock);
--		return 0;
--	}
--
--	return release_extent_buffer(eb);
--}
--- 
-2.21.0
+--fsdq4ximrtcmj5qw
+Content-Type: application/gzip
+Content-Disposition: attachment; filename=".config.gz"
+Content-Transfer-Encoding: base64
 
+H4sICLdGgV0AAy5jb25maWcAlDzbcty2ku/5iinnJalTTiRZUby7pQeQBDnIkAQNgKPLC0uR
+x47qWJJ3JJ3Yf7/dAC8A2BxlU6lEg27cGn1Hgz/+8OOKvTw/3t88393efPnyffV597Db3zzv
+Pq4+3X3Z/c8qk6tamhXPhPkFkMu7h5dvv357f9adna5+++XdL0dv97e/rza7/cPuyyp9fPh0
+9/kF+t89Pvzw4w/w74/QeP8Vhtr/9+rz7e3b31c/Zbs/724eVr//cgq9j49/dn8BbirrXBRd
+mnZCd0Wann8fmuBHt+VKC1mf/350enQ04pasLkbQkTdEyuquFPVmGgQa10x3TFddIY2cAS6Y
+qruKXSW8a2tRCyNYKa555iHKWhvVpkYqPbUK9aG7kMqbKWlFmRlR8Y5fGpaUvNNSmQlu1oqz
+rBN1LuE/nWEaO1tqFZb+X1ZPu+eXrxNNcDkdr7cdUwVsqxLm/N0JEndYWNUImMZwbVZ3T6uH
+x2ccYUJYw3xczeA9tJQpKwcivnlDNXes9Ulmd9hpVhoPf822vNtwVfOyK65FM6H7kAQgJzSo
+vK4YDbm8XuohlwCnEyBc00gUf0Ek1bxlHYJfXh/uLQ+DT4kTyXjO2tJ0a6lNzSp+/uanh8eH
+3c8jrfUFC/air/RWNCk5UyO1uOyqDy1vOTFXqqTWXcUrqa46ZgxL1/7IrealSMiBWQtqgRjR
+HgRT6dphwNqAkcqBxUFeVk8vfz59f3re3U8sXvCaK5FacWqUTLgn/h5Ir+UFDeF5zlMjcOo8
+B0HWmzlew+tM1FZm6UEqUShmUA5IcLr22RpbMlkxUYdtWlQUUrcWXCFZrhbmZkbBQQGpQPBA
+x9BYimuutnaNXSUzHs6US5XyrNcwsNMJqhumNO93Ph6hP3LGk7bIdXjUu4ePq8dP0aFN6lem
+Gy1bmBPUp0nXmfRmtBzgo2TMsANgVHKesvUgW9DE0Jl3JdOmS6/SkuAOq3C3E7NFYDse3/La
+6IPALlGSZSlMdBitggNl2R8tiVdJ3bUNLnngenN3v9s/UYxvRLrpZM2Bs72hatmtr1GxV5YX
+J01+DUyshMxESkie6yUyS5+xj2vN27IkxdiCKTEWxRrZzVLWWryRHWa78bSN4rxqDIxac1od
+9QhbWba1YeqKmLrHmcgxdEol9Jk1O3l17kbT/mpunv69eoYlrm5guU/PN89Pq5vb28eXh+e7
+h88R5aFDx1I7rpOXcaFboUwExhMmlovSY9kvGMjXhjpdg1iybRELYKIzVHcpBx0MvWnzjR6C
+NsxomqBakDL7D0jhuRCwT6FlaRWLP5ylqkrblZ6z7nAqAPb3BD/B8wE2pYyDdsjDzmCEuAk3
+2wVNOCDsvywngfAgNQfSal6kSSmsNI4UCJcdOi+JqE88F1Ns3B/zFns8/vbExrlTmnSlcPwc
+zJTIzfnJkd+OJK7YpQc/PpkoKWqzAY8q59EYx+8CRmrBBXUupeUoq5EG3te3f+0+voCvvfq0
+u3l+2e+ebHNPDAIaqGLdNg24qbqr24p1CQPXOg0Y2WJdsNoA0NjZ27piTWfKpMvLVq8j1HFA
+2NrxyXtPtRdKto2nhhtWcCfa3LN64JKkRfRz5vhMreAfI2Ey4lSSctNPGi+iu1DC8ISlmxnE
+EnhqzZlQXQiZhCcHs8Hq7EJkZk3KKGgSry/lhTlwIzI9W4nKrF88Teeac5Cda67I+XqUdVtw
+OB5qvgYcO98UIpfj9D2EmC/jW5GSHqSDQ0fUYLPlgyLIZ43W2fDMHTi54KGAGgx8T+RGSsxg
+hQog3uph4f7vmpvgN1A93TQSOBEtGjhXngPR62YIcAYW8d1qONqMg6IDl4w8OMVL5jl0yGpA
+KOvMKI997G9WwWjOp/HiJpVF4RI0RFEStITBETT4MZGFy+i3FwFBiCvBTFYQz6KLaI9Eqgok
+PHAUYjQNf1AqHHws47lY7jeo/JRbWwxanaUega3ialLdbGBmsDA4tUexxuMOZzY8oYcoSOBp
+B6cCTI3+fdc7e/QSkdSjM+ifKK51uWe+BkH2/UsXPo0+UKCw499dXQk/Sg78CV7moOQURdFl
+4jDw2dFz8xRRa/hl9BP436NhI318LYqalbnHi3YvfoN1af0GvQa96qlzIQMDKLsWtlsQG2HZ
+VsCKe/J69ILxEqaU8BX8BlGuKj1v6QIXfmpNwEOB/SL/grYhMCy9UCQxEAz8rCY/cOjIYTbi
+9olgjRhmhqa1wxB1ag8x8Hc0/0BqYejHs4xUG04mYNYujklsIyyo21Y2FPQg6fHR6WDs+5xb
+s9t/etzf3zzc7lb8P7sH8O8Y2PsUPTxw0T1fjZrLamFqxtFr+IfTeF5z5WYZ7DmlvjFfxcCN
+sEmzSTRLRucZdNlSJkyXMon7w1kp8CX6/Ak92rrNc3CgrNMxBtsLoYrMRRlx+kiaMFc3rOrs
+NPHD2EubKw1++0bB5RNRZ2Y8hWjekw7ZmqY1ndXT5vzN7suns9O3396fvT07fROwKGy2913f
+3Oxv/8L07K+3NhX71Kdqu4+7T67FT+5twK4NTpon+gacIavA57CqaiPxqNABVDW60y4mPj95
+fwiBXWLikkQYmGIYaGGcAA2GOz6Lo+/AsfAaR73QWUcgUOdj5M5KkShMNWShXR+VAXrxONAl
+BWPgSmDamVvTSWAAO8HEXVMAa3mEdTEiN85bckGn4p69tzHOALJqBYZSmAxZt36SO8CzHE6i
+ufWIhKvaZZLAyGmRlPGSdasxZbYEtsGAJR0rB19zQrmWQAdwXd95joxNCNrOS8FCr5Jg6ZH2
+c5LU6apZ6travKF3qjkYbs5UeZVissy3aE3hoqgSdBWYqVPPUcJj0gyPECUBz4mnLhtn9W6z
+f7zdPT097lfP37+6sDqItqLNU3rL3wHuKufMtIo7J9jXaAi8PGENmetBYNXYrF6Q0ZNllgu9
+Jl1VA64BcGc4veNocItUGQL4pYHDR4aa/JJgbVvYCqk4EUgtJEBAGSy7stGUiUAEVk1T99FH
+6IbovKsSQWt569TLCrgtB797lHnKFF+BwIDbAg5v0XI/nwfEZZgF8mcd2hyj0mZjQNGNqG0a
+k6YBmUvagAEdljGNuKXJiMhOYOK8bbyUKD1F+aAD6pBTGAf5g4lyLdFBsAuj7wJSVR8AV5v3
+dHuj6UuLCp0s+loGzKGsiA2MOtz3DAdGUzVY115Bu8TKmY9SHi/DjI60UFo1l+m6iMw6Zn23
+YQuYMVG1lZWwnFWivDo/O/UR7NlBPFLpIMDpE4IYgfGSp1QaDYcExeeEyAv0+mYQnXnj+qrw
+c2dDcwreGmvVHHC9ZvLSv9xYN9xxkoec2YhnUj8MOEhI8BTovAQrAePqAAbY9EirDKbNGjXd
+KVaDWUt4gc4GDQStdf7b8QzYe4XeGfQQr8XpDV35HpFtqtJ5C0Z9Mjxye2naocqOeFAOjYEO
+VFxJDGgw2k6U3PC6S6Q0mCVeUBrIVmEWxpklz0G/f3y4e37cB7luz/3vFW9bp0EaZI6hWFMe
+gqeYk14YwepuedEH7r3HvLBIn07DBQ44OW053MRNKv/9huCMSqQgMMFd2Ng0CsjEYCMI1kiz
+4IgBJsxpj5yl9G2GPQ9NmZXetIrs/D5E/806HQs9MqFA4LsiQQ9Ix4aaoVNihDYi9WB+oAq8
+n6qrJrAeeBYeiL4EaklfxTlY1slwIzDCSRzBg4BFcKvDhhtmvLP0uEqUJS9AYnrzjFd9LT8/
++vZxd/PxyPsnJGGDs2HHlLo9srTChB9ECVJjuK7aJmYlREJRQ7NXDYubUN0AC4O7O1jM1F+g
+6pgYxyg6kLR0AN2UhYYrWIyGCOcVX6mtxGsoYJpew3Bb7R1b3OqGX9HKhueCoIDmKQZhPjHX
+193x0RFdenLdnfy2CHoX9gqGO/IMz/U5NoT6d63wAs9fxoZfcspVtu0Ye1EhmQM2rSowD3A1
+Gw/Li0R+hXk02qQppiEIb0mj1ayvtECLAHILfuTRt+OenUeX3OYfeqmaMkqWVTANiwmtQ+NC
+vFrUMO5JMOwa+Lpsi94VmpJgI797CNQBOJ/SR5oI58QuVtTB8mOUS1mXVyTxYszFW+O0ymxc
+DVugb7FBr+AplZk5kOezcXYptrzBG6zANB0I62Ysw7Ksi/SzhTn1OEhYTz4aRzclhCYNWknj
+3+E1j3/v9iswkTefd/e7h2e7EpY2YvX4FcvqgiCzD89p4ZqiezoyoFxo9KCLmY4Oo2xcjAeb
+/RrO1DK1Bh0pN20csleiWJu+Tgi7NFkaDQJnaEDHWxfCGj0YaspHeWEH4FpuLRZuwtxoTarc
+gigbZxfdiPnA6Ifn2i1iqaPi206CilAi41SeBHFAifTFNRGApb5zYJsSZsAOUmbNgVtjfCfe
+NuasnhNFkubLwmw8oviHDmLvaKgp9Ii9uwgsstk206ZJQbqSpT5Re6ik6FlYUShuFTMQykcx
+a64qVnqto3BasBWytikUy+JlHoIN15IRH6QCs81UHOY2LiGCAu20tEMhY9/fcWVCZT5cT//q
+2c3Ragh7QbeYtcxmQymetVj4tWYqu2AKPNcljWvR4a/lwj3LmA33xDpsDy+5CPQJs1jzGctj
+Oxf1H9GBunbMVbozGKFZY/I+lBjbGnDRO9kAa4iZMLi/88h3bqoxcJ3UZ+jeDPVDq3y/+9+X
+3cPt99XT7c2XIIwaJCcMlq0sFXKL5ZMYs5sF8LycawSjsNGGb8AYakJxIO/+9v/RCWmo4Sj/
+eRe8F7PX8v+8i6wzDgsjaxwofID1BY3hhR2JbB2/1gjKtgeUXrrgDnD+GT0W6UAhDrufWDVi
+gFc2u7jJkTk/xcy5+ri/+09w1QdojnIhH/ZtNqWa8ShV5WKDJtL5VnLSdOgdx0+DMUHYQqgE
+DgrPwJS7NJMStZxIY0c/dflGcDnO790un/662e8+ev4OORzamfug2I2Q25Fq4uOXXSjFcZHk
+0GaPoAQPjzT5AVbF6zaU9BFkuPS9y3EJY9hryT2uYXBCX3X+7IaSl6ehYfUT2KbV7vn2l5+9
+XA+YK5dH8HIz0FZV7od/oYd/YG7y+Cio+kb0tE5OjmA/H1qhNqSMCM3AIaFjR4RlFcOsF2Xk
+wPGtk5DRsGYj8cmxsE9Hg7uHm/33Fb9/+XIz84sFe3cyJZAW4+HLd1GCeZh3NrYdPL/b3/8N
+rLnKYoHjmSfw8KOTuVfTkgtVWZsMcUEVVq9llRCUpoR2V8IS5FlBMzB8opKuMRKCUAkDdDi8
+suwL2MZx84suzfsqGHL7hZRFycelUSUROHba+D7N2BTeYmPrcMs2hDFm93l/s/o0UMypKL8a
+cQFhAM9oHbgim613lYd3Fi0+1ZllCwGN3PwWn1VgiRixbQfTqRbTidq26Gf/bALfE+BLIxvy
+nEePePA2/u55d4tR5NuPu6+wNxTqmWJzGYQwG+tSD2Hb4E4G2WlLEOkqFTzcoQWdtbnns3E3
+pcT+/2gr0K0s8eM/m3NMbZoIk3m5CS7J7AJ4notUYNlHW9uUBFbUpejER5Ef3iJhAa4RdZf0
+xZz+QAJ2jFf9xP34Jr7eda14q0kBZEO398OAqe5yqlAtb2uXFoOYDuOc+g+XJovQAid4evFi
+R1xDzBsBURVimCCKVrZE4YEGslvr4Z5uEHkq8GeMzUO5+sE5AvidfephAdjnlqsZ0d3K3as0
+V5HSXawFWCih42QuXvnrLruqGbrgxlbh2R7RkOCaQyhWZ+4WvecFNAYxnvad6fAA8LHbYse0
+jEm8vugS2IIr84xglbgEjpzA2i4wQrJVpcBOrapBuwKxg2q1uGKL4ACMvtCZsfWtrmwgqn6d
+BiHmH+qwVE80zClSJ0XJKAX1C+ECmqdtHwRjCfGMWRxzu1r0/qozpr1rdZddC7BMtkEiZFpg
+nz/ua2E8NbPQ7vVEspRwhhFwVqkxKNa+miMA2xxjoNzCvlN4GHYDNpfkxfm0vgthwDT3p2fL
+DuIjRhXAL41VE5v5M5GFJyexjnz1uUklkZ38O+BAQ9V4ZYPKGmt2MJH5T/G6piXHRDhWD8Z5
+PlsgZIGY6dQgHzRHyNxqJ3M120c23DHxFOTRyxICqMX8IhoUrKxFXifoxC+FQVVv3+WZoM5/
+1I22+5Bxp9YXFLHFlg8nIJV22Guqi+sZobkaVK4p40EdB/XP3ua2B/YqXBZ5LNabMHqnPFSZ
+tirRMg21Pzy5mDpU22RNIJIDI9G/YVUXl748LYLi7u4Iye4UaOyusOAxeAc2tESl0tMOGyAZ
+xAT9dQtQlPJLwHgGzsd0SwE63a9q1bPIvEjl9u2fN08Qt/7bVcx+3T9+uguTR4jUE4bYlYUO
+Xlv4hPEwxFWIdqfd737wdGhFY1AI3iS+SwV/Nk3P33z+17/Cx9z47t7h+B5L0NjvPl19/fLy
++c73aic8fLFp6zZLFJbghs1DwkukGl+5g55t6Nylh43y6hwPujbXX1FcsPuKXz4yFbAhFtf7
+StzWl2ssk56+NtBrIn9bPfva17jAPWyhzsBhtfUhjP4BPh3G9SNolY7v9BceeQ6YC5eYPRgP
+SXGyIG/Qt/bFXnypk/RXWOPPjQ2hQN4+hBV1w/OYRBdkY3B7ML2lMbxQwhDPbLDMMsiGDwBQ
+rdKYuHbbQxouFG3xgoqHuEjobOz0kgwiFcuxZAWCW4Wry4sX7VrHlfskw4rFho0v5Zub/fMd
+8uTKfP+682v5GYQCzkXOtpjjjC4EJDiwIw59CyAuX8HA4spXxqhEwWicAcMwJSaMQEJYerBr
+pTOp6a74ZDYTemN93IUCnhr2p9vk0Az42FUJ7bKQ1DwtDGLzNocnK7PqFULpQryC0Zb26f8r
+w7QLpzoE9QzsQLCVHoAJGqIZvxlx9p7euycd1IqGfGXEoD4zVx8wiRgyOLShh2tr5ty3IOT0
+LNXjb8AT0hV5ZOAg9SXL0/FO4M1VQuZpB3iSf5gSN/CjG2Q3et2JoOhl4vTtg2CRkwxGnzPQ
+9fE0FX5Bxr0DaMBYtXWoH6MLdSMxllaV92ELa3hcZ5ByeRHcLaoLzasloPVVFmCjp2O/BZJN
+9ckTyjIk7qwu6K6z9sntGx5PdQnP8X8Y64bfsPBwXUHIhWKNS0JahuHfdrcvzzd/ftnZDxSt
+bDnhs8c6iajzyqBL7/F/mYeJtB5Jp0qElXI9oBKaKiPCQfqYfGSOpQXZ1Va7+8f991U1JfRn
+ub+DxXFTZV3F6pZRkDhgGoq7uOa+g+yV8F2CBffDgAm0dQnqWZXfDGM+qXUAOltjPYfn+NWO
+oo3fbXs1MpR6dgUytjjGFel6hXb2EVC6oAexNgpLdFRn4tdYrhReYnzkL2ajqWKY4eLR0sR9
+7iNT56dH/3U29aSC5KUySpc6M+umC/OeacnBhmP1ub+mXElAv1ioCUwXPkmEhzRF08RKrhsp
+PT66TvyA/vpdLkvvKuNaew8CB+r2L2eAKM3sZVzUb3arPfjxfdLT3hoMKV9/EiA9V4qP2Uib
+e8An1JSqz4bHfPOkyqhOGvuiaxtNs65AsgSmeekSKfvKtFv+8gbwNKiyOl1XTJHFNv70NoXB
+Sl95LOuHYYTa1hJYZVLvnv9+3P8bb3yJUjAQhw15oYFezESQ1jpGafCSx7ZlgtFnacqFQvRc
+VVaB0+XEHFMAFAOKOvy4gGjcI2/84g59kdiMXm5ni+VJew9Be+1/msn+7rJ12kSTYbOtg1ya
+DBEUUzQc9yWahSpcByzQY+RVe0ks02F0pq1rHj1LhygZgirBaWq7jltDP3ZCaC7p9xQ9bJp2
+4boW8Rj9ysjCuF6gmFsaauSF05626zciw0VNJm2G5nD4NmuWGdRiKHbxCgZC4Vwwi0snF3B2
++LMYuY3YzoiTtomfjBxMxQA/f3P78ufd7Ztw9Cr7LYq/R67bnoVsuj3reR1Neb7AqoDkPteA
+7wG6bCGHgLs/O3S0ZwfP9ow43HAN1f+x9iXNjeNMovf3K3R60R0xNa3FslWHPkAgKaHEzQS1
+1YWhttVVirYtP9s1X9f8+skEuABgQupv4h1qUWZiIdZEriK/9WOdNWuipCh7Xw2w6ragxl6h
+U3iLccVnlPs87JXWK+1CV/GkyVHLpoxTLxCq0ffjZbi4reLttfYUGdwOtI8bjK7/WQlIjCqJ
+WhH3dunRAMejZLtwUyXeSxmItWaFFmzkF5BwdgSce09MyT2naRHQQ1z6QhWyktbYx2NPC/NC
+BCTHpdVYuO+lFTunBtF2ATFLq9lwPKKjOQQhd2wGuv7FnPZVhCdiTM/dbjylq2I5HQUhX2a+
+5m/jbJszWmogwjDEb5re+FZFPyZR98mcCrwQpCiDlxkGBzXtl+cwfUzJpGiJUh6mG7kVJafP
+oo3E6HoeVgv3ikhX/kM+yT03mw4FRDe5lH72RfcUmEYvRTzBMJN4SF+iSrmkTsDCDIBVRCr6
+m3lJ7nLriVILJ7BCdDqkHwUdDY+ZlKRpkbotMQiZhGeiFShmfm+xJBgx5QvJcSuWApZcHYnW
+5k8HH8f3OsyeNQz5qnSC57VscK+kgzBZXmPuWFKwwDcUnt3gEeuyCMak8B1KUbXi1ANxKwp4
+vUt7nqIF7rZRT0PUIl6Ox8f3wcd58McRvhMlB48oNRjALaEIDDFYDcEXCD4jlip8nIosYfjD
+bQVA6eM3WgnSDQbn47PBLevfjWzu2Z64z/kFV3fOBM2d8DBfVr7AsWnkiVQrGSqJ/BxwROOo
+i7g5q9BUq35bN6+2IoPu6ehE3XObiRjdOHxXSVhvh2a1B8f/Oj0QpoCaWEhDMlj/apvC33DX
+zHEjJ7SCQpGgDSZdVlu8AYeY0ctZUaloEr7PsUSz7o86Xq01PgAOUVzpM/dU9qXkQYcYZULq
+1ncpggI6XJRk1B9EoUwIN15t6+/WKzL6NEYcjLkfx+gjUzVZm9t0x09tjId2qe5eR9jD+eXj
+7fyE8RY7A219Ehwej+gBDVRHgwzDqb6+nt8+rGc9DDus3yCEB4nS05IH6NUa7e+MSvjb56+J
+BMrAsRbS+IjCaoehkXa9jw+O76dvL1s03sRx4Gf4jzS+rO7zRbJWwUAPZDvI4cvj6/n04g4Z
+mmUqMy9aa2EWbKt6/9fp4+E7PW32utzWrEEZcm/9/tq6RcVZEdhLN+GCcsJGQi2xrHv76eHw
+9jj44+30+M2OOrPHUA70XcBy4VyWna3q6aE+yAaZK59ea7OHZRg7psAGGDZOuTQCGgI3VCZ5
+ZO33BlYlaEBByXtLlgYszmxVD7x+VUOtDbUK3tr7itZc+OkMW+Gt6360Vep3s+soAGdthdjt
+7hJoqLUVnv46cjg7Skpl3jdjrvvVcg5oF4VqakOl0HAbMXJWNM6BGoOLSuWgEBtPd2uCcFOQ
+V4JGo1lvXQmw92hC1rWscEwpcGoKHaO9FRUbwVdUKE1PCHdEb9YxRoyaw/FRCtO4oggXlvJA
+/65kbhpa1sCtoWyrQUliBuOogU24ZdMEpL/cW7eKR3WtW3FzTbDB32TAcHBf4LhFSttQlIZw
+HX6oYZU2yNS8OqgsaqHds6dEC7k7jehfRK2C9vXw9m7rWKEgrCQVbYRoq0Fpm2FU1Wgbj08j
+u22rCmX8rSysSOlZnx7N39BT0Zyifp/Vp6zhv4PkjFpYHXuwfDu8vGsHjUF8+Nn7uHm8ggXv
+fJb+CGf8tPKqyIguR2Vs8cPw2yMpczAtCx64dUgZBZR2USY1pTnjWd6bba9OCJGtvh7j06i3
+aW9NFCz5rciS36KnwzvcUN9Pr30PMrUQI+E2/SUMQq52tmd2YZu3B4NVEipDuYCSV2ZkSF+k
+wg07Z/DKV4GUq5GhD+9jxxexNzYW2xcjAjYmYOibBbeEsy/xCxJ4TgR9ONxdrA9FFz5nU7HE
+HZjCExFE7es5KnHJi+XCJGrN8+H11fANVA9MRXV4wDAHzkxr07xGpWdbsuGiWu7d4CTmepzz
+arHbuR/m8MUWTnu/bdAUm3pwqeIxK5vharRlV75Jx0A/Pv35Cdmuw+kFHtZQVX14U+ycaijh
+0+nI922x7oM1GD0Q/HFhGGOjzEoM/IHPdaU0trFwA8o6TORoPCMOpDH2vcdcn97/+pS9fOL4
+3b03qFVJkPHFhFw818fI/LqUqaibRW9PwyGT0o6+bbGQc+SXlyzBh649agQBnIHc3o+o10m1
+P63Vtll4bssT9SF3+NdvcH0cgPV+Gqhe/ql3Svc4sveAqhCeWSzunXoGyl3VHqqgJOvgLPId
+nAq/yEVGjFEbfbH2j01O7w9E5/EvzDxDtQysV0ZFhOw6LuQqS1V6G/LrW7Q+3i/pyC4VCpBT
+NoVXFPF8Xqqo/L1JjXOoYPB/9b9jeAclg2etQffsbV2A2gLXq7KOAQyZYIagMIDKJOpG6Wns
+vGCIT8pVdb9mAfy/K4wIfQJqcMcZmAjPUnNouqVhffh67lumKtglPia7+AqlseeyyDz8geFc
+p6L0pA0DbBRjxAPThwiAq2z+xQLU3mIWrFkLJszKygS/UzOQQhY1OgcLhjK7fqBeI75MruxM
+3bgxNYgS9qTW00pZEajnUQLdxZg/fSb77fxxfjg/mQa6aW4HxqnNkilL5XQdx/iDllfXRChw
+kRKvGpFPxjta3vsV7pWLtayT8DJBDAznRYKgmNOaovZrruDl6gp+RwcKbfC+T+QBsEOoZODB
+hm6BlUytlir05OjQ4u+rU3FtBAq56wvF0k0SGlKw5jkB0F40+XYksQghu8cyWo+NUpefFjxi
+88IKDaih3AGUrFiYe8sAqiVAYzzVAFyVMZ9JBrZ09caNbscckfZesx7gzQG1TpI9Hg70y2ue
+YE5Hj8qUpaWHwUajbJFxWitaiijx5WoIU/heifGaMZSHcFKWLPNKxLROSvrWrimx9OVo1MLW
+SgZRyI04OJucpebJysd2xHb9G4YQ2mZFNR5Nhw0bEYY5Pj4IobPGVJ8nfHdLzp1T1NiF87vR
+sDdwdUSAvw/vA/Hy/vH241klEKjjfHzgOx7rGTwBOzp4hFVwesX/ml0q8ZFF9uV/Ua+qmD19
+HN8OgyhfMCMMwflfLyiqGzwrQcPgF4wocno7QgNj/qsVYqKOpUg/clpslXiMSFqCckdTbLS8
+c5MQ+gXx8gFsLVypwMG8HZ9UvtZuHh0SlF8FXfwFuwMqMn7/SpNcRJ6CiCLLbODqoIsAhizR
+9XF5fv/oCjpIjsJuG6n656U/v7bB/OQHDI5pYPkLz2Tyq/Fmavse9GJUXBpmQ9YXptt78qDg
+S0uZilblFYs5OoX7HsdIUpRy56VYsjlLWcXolG/WEWop/ERgW0sF/R2KHlvNQ/DdvaqUO5cO
+0lNDCiYCFfDK4CXtuBmqTGCmLVIQlWkqatUZqtm6PR188RfYq3/9x+Dj8Hr8jwEPPsFZY0S3
+aTkF61HIl4WG+v22FJoM6tOUNV6oLYwvnQ9qz3+LdUcMx/zALPVYsCiSOFssaJWvQqsAL0rM
+bo1O2Rxl786E4BugmQK7oYhrhL8rQv3dI7Kqx3B6ZPWIicUc/vGWLXKjbCN5cL6mNzpbX2xk
+vZasGEU1qCoCj31dQ6As7i9ShMnlGli8ZuSGo/ZM+xIpDaEgcp/AfM4zdFdHi3PjxQKo+rXQ
+NYzA3La61Eeqod391+njO2BfPskoGrwcPuD8GpwwH8+fhwfr9lS1saXnSGmx7XOSGH+F5+HG
+/CQE3WeFuLeWB9YmgCkZ3Y7pZ4puD5WaV/okRTym+TOFjSKin0nQe3QhrHu5Byo/CyssEJ5l
+wx5k1If0iW6mt9YhH3TMOdm9SlkK7w2vtJ7rh4b0zSNsdH0KSTeVXvtUS5pAOxTO7HOQeNtS
+lUS2UVBDXutNEriPFvCswh/00YaVwMMqL4TMUkPwkKCHhRRS+X0HeruYrWCuy0LkPttE4NC9
+4cwBKVOWY05dH16F6oC7aCPQcdrbcz07zy6kksm9BVUiq4bYbCcsaI18cNH3BLC4uug+fQ2L
+zGq8ew+S0Oo+9iBk2ZvZmNH28Yhck28TnCqlpjc01QnKhlbh3moXI2mrpW9WqoFV5FpTGDPZ
+sxntcJgsVQ29tFrqXMZNqPa5biH1C7WWbTdADqUbNaEBw+AL9j5AaC65m33XwKIVwZjoN76X
+MWRb8xA3KtW3sobTlgdrSWXoRTPfwWjy+WbwSwQPli38+ZV620WiCNFuka67RlZpJvfkfXex
+mfaQYxzGP8Oo6MpWwFYoMY6h+RLMJzMvKf+9NCx1sh8nn2dPUJKpZO70qkGZAYkJ71WwuAt+
+Sx7jROWhEnqe8PBVaD1Ov/VyL2qz82HQYMITmXThsYWHPkjPJoK+I3OaeWwryzXdCYBXGzX0
+Ktidp/TmikDNZ7WexokvskDhWtrrJYzGpt2z3jGrC07vH2+nP37gK01q8ytmBPqwdASNDdo/
+LNK+6DDqtCWVxsGBky+AN92EZ5ZbXRhP6FHJijKkOaNyny8z0qfVaIcFLIebxmyqBqkkA5Eg
+pVZmBXBbWxspLEeTkc9drSkUM65uOJsFjwW8p6k3gFW0DDMnQHkIDCI99eiEwqqSzHpgVpqw
+r2YwAwtlh8NIgtloNPKKfXNca24k0K5stVuQ5g5mg3CkpKWwDHXZvcc72SxXcPoDcJll1qnJ
+ytjnYBKPvAh6vyLGN/jXVsEa+BX7OxWkSuezGZnKwyg8LzIWOJtkfkMz+HOe4AnoecynO3ow
+uG9VlWKRpfR2xMo87xSVgsBVE5kFfc4R3QdzZstd5ill4GmUqW19nRuTMoS2Cm3E2hrXcrlO
+0ToRBqTKaQt9k2RznWS+8JxZBk3hodH9q3LPxRWL+7VrnEp85DKMpZ2IuAZVJb0FWjQ98y2a
+XoIdekM9NM2eARtvBxTgcvb57yvbgQOrZ32NeyYSRTAEaGrtv0WIwW7am4n+kl2F6ctpRokO
+g2s0Gth3jXbojQWZos0ohd5alo1qPKb1ahLWjxvIvl8fRnNWaa+7rRSOr/Y9/KpMGsxBVpAq
+zWX9cE100LFrNemAyeRxvbRjCuSjawfhcs22Zr4EAyVm4+luR6PcRGYh3VBYp06y6IYeNcSC
+dtABuOdIEDtfEfee7DA33tbp0/oLrfjshiJhxSa087onm8TnCyZXC7p9udpTrzOzIWiFpZm1
+7pJ4d1O5nmwdbtpTf5lYub2IjrZX+iN4YS+ClZzNpiMoS9ulruTX2eymp06ga87czQLffncz
+ucITqJIyTOgFnewLS7CJv0dDz4REIYvTK82lrKwb644kDaIfGXI2mY2vbEj4b1g4EbDk2LOc
+NjvS4diursjSLKGPi9TuuwAGM/z3zqLZ5PPQPpLHq+sznG7gjrXuDhWeMAhJQaVRMFtZPcYE
+NFfuKR2MBL5kIVJHPc5U+HpyYPchuj5E4grXfB9nCzuZzn3MJjuPTcx97GUK72PPMoTGdmFa
+ecuRZm9mD9eo5Usshuyeszs4hqs187CT91ACbjmPKqNIrq6KIrAGpbgd3lxZ9kWIry3rlp6N
+Jp89jv6IKjN6TxSz0e3na43BUmCS3BIFOn4XJEqyBBgEy8VP4k3jPueIkqEZWdxEYOC/CP5Y
+XLb0iH0AjikW+LXHnBSxnYVL8s/j4YSyLLZKWdsDfn72+OUBavT5yoTKRFprIMwF9/n5Ie3n
+0cjz9EHkzbVjU2YcPQ12tDxElupmsD6vTJT47+rUrVP70MjzfQKL1cc/LjxmbRyd4FPPxSDW
+VzqxT7Mc3oAWE7vl1S5eOLu0X7YMl+vSOjU15EopuwTm2gB+AYN7SE+QkNIRH/br3NhHPvys
+Ckwf4hHYoZIyhmklY4cZ1W7FVyeOk4ZU26lvwbUEdM5Po3Jt62RWXls/sZ3wH5E1TRzDWPto
+oiDwmFWIPPfHVpJzZKFppg24zjo3PS1dWu59XvB5Th+00nlcKYklWsh8ej89HgdrOW/NJZDq
+eHysIwggpomlwB4Prx/Ht74hx9Y5ppogBtU2oOR4SN5JHhN9XVC40hIMom7J794N2KmPY7Er
+TcyQGCbKECYR2OZtTaCchOkuqoBz3Dp7Mll6/K1Qn5nYYVWISru3CoUMgSXzjmnB6kc0hWvv
+bgopBY0wQzGb8NJD/3UfmFe2iVIyzzBV0ghtT6hiWQy2JwxH8Us/dMevGPPi/XgcfHxvqAiz
+/a1PU5LsUExL7+r1F1HKdeWPnYaOgIK+I5TGhwj+0L1SZUCesRuLv4OfVe6YDtd2aa8/Prxm
+VSLN18acqJ9VFGEcx9gyj9cYDNhipW7TYB2gc4XOs882JmEYWHil3WpbP8onzCvWWoq8O92p
+lG6OaKaBY5yO9c6LlfBGBfZ59/toOL65TLP//e7W8H3SRF+yvRNPx0KHG8eQvgE7p40x+r5g
+HbrkKtzPM+2LX8MbCJx4nIKWqzlFHa9ouO3XY4HVjNrhu1u8njtiHFqKNNyWTsqrBoXBllDS
+QJ3pLVHDXPf7Jstsy7ZsT6HWKX7mM9UorDPqPGwJdp6Rm/Okt3JxqXSk6icsvLFlbNMAKxbn
+dND6hmC+twa5Q+BrEv713MUdHbCDLC8Fv9wM3+e2W4vRkIjCuU4MRVSvYpcSMSt6hGGM564n
+hJbR3RDvOVKgbDSarflyZUfh67ARZvf5B01tEvV/b0syLJq4pxYcuPo4VF240ACsjOnnO1pC
+ryk2Et7+jFKraHy9+5xS7XRWyDX5zho4iqSbZL6BVSxlsHhoCWZLM6GNlzqCgGKCWjTP5oVh
+ctfCF9F4RYEL24HPQlRkhM6OZC3gKErMtGstTnFGjFMoKYJwK1AFRDZcJoFHyNvWrcRQl2m2
+rCiEx1KqJUrYQolrL32kSuKaFXOyrwo5pzPHd0SYbskUVnSfuhUB/CAwX5dhulxT84h3nRPM
+o8Xtck9Ez5Yi3xXUBtdrV4W4tLa2huCCRw0899RuUokceMxrVEuWAtfmiR7cka3m8OMaUR4u
+mPSEmKrJ9HECSwK4f/pcqL8fTxbNZ1yg8oR6LxJx42RfVKBoOOlDVJcyBz4O8Ay2sp5r+tGo
+Bxm7kMmwB7mxhHsKNrUiSOpn4uHtUXmyiN+ygWsxbveScJR0KNTPSsyGN2MXCH/bjkYazMvZ
+mN+NLOm0xsBjD+4KYqQ1Gt7IeLf3ihWM0ohoXG0q4vAEdXNyjEaO/rIFr3SDNjifE1DNqJnw
+tTNSC5aE9ng0kCqV0+mMgMfWhLbgMFmPhitan90SRcls6JDUFk3U/HfuLMRLRL+9vh/eDg8o
+Lujc75pNZ+dr2vhCjH+eVXlpC8t0UlQF9swDbONU+0wEFv+t5MGlGlDTxWPPYxaQHG2S7Zh+
+2cfmtCiwTFidcqRbI/uU49PaE9W4QVcLj+Fa9jXzqJsEGQIvrZZBbGvRq4XHZ1Flc/MHOtdo
+iXKB9jZRHsSlbVgbq0DJGInJm1wK4+GHdOKDzUqnlqhDarydDk/9IDH1DBqpf23EbDwdkkBo
+ALhkFSWoCQhD01kh3U1EhHO9onFcGzp6ajRDHZqIcMcKGpPAOzXhcxqZFkqjg8kpCGyByRmT
+8BJJuCtDYJ4CT9ssxSitRekZIKbyoVcbbMBwUzIoVM7FNgoWOReY39J1r6U+xoxpadWwdc/f
+tkg5ns2oF6xJBC83z9clIvD1Gnc2vXc1EYbKIpxZtC/2+eUTVgIQtbCVJLXv8KYrwpGNRdlf
+Tg3Cu95agnaNjBwKm78wgEad7od98RwbNVqKSGyop1iD5zzd5US9GtE07K+gvnS/lGxBLroa
+fw2HkWz1unZ3hUk0Z+uggGPi99FoOh4Oe52uRf657KlVnToL3u8McAAwM7oTo17VRe5jVgAZ
+yRiWrfrG/kh2yOujyVF9pmIBioXgcFQXRIV9IqpitxQeW19HkynJJjhHutOrhJdFrN/N7upU
+afrWlj8gXDwoCk9LKgPKctMEDOyqqs3CmzVuOj/kicDnRBDTgXi3dZrWbjJbkM5xLjK8twis
+lvoTCJZYoqwOsSFDcZr4OlhycwlvMAaUqQLJc7SO9vgLbBm5TVUeCz1enaMZ22k4RrMbT43s
+Q8ucNAqAEVzwZYhP0jrxezNVHP7k9PDltv0oUgqK1UJMKrntCLPQqhoPuYD/paHp+oVQrl7h
+BmADfUCHrJ0hdYRZ43buNBgFm9OGQyDez82c6g2kiWbTRMntcbnGg6oehWItVQLmviB5zCl3
+GgRTG8wkN6gnHhuDnA71YyUYl/aPSklOYWjbZHoAdOJbdeCnE4ZGMMJUo7vy0vSCzO1Ig/Cz
+r8DT4W5y2dTXvzWxGPDOaMe00ovvmUAp5tRtrcbhsUO2+U1lb/04W4GSNbbMoUfnh7/ICMpl
+Xo2ms1ml1lGv5lprVatpUS/iTaphqK8Oj48qRCWcoarh9/803Ur6/WnHQKR4thrPwTouao3Q
+6QmNpQzwxFS1GPQAr6J1yh3+GWuC/9FNWAjtxNnrUtMVZrrSNkB4eCxsvqTBZDyMM+o0agjm
+bA+PF0G0BGdVUew3Itwaq6XGOeratjI4Jkp1ovQ6wlkKj0p0PqS1tg1ZCG9O4A+pW6uhCcIU
+TuLSfNu0E6XsrrEVos8wFIjoFYrDrZDzdbHol5HrtBAyVBqAfsEEQw2zfikub+7i2ZQYUkR8
+Np5fuK2s5Lo1QCXnU66gOpnDdDRuKICHtnkAJQex41o1tcDzoTYetRYXUV7upZkTV8HqJdoc
+ZHVatOfD6+vxcaAOhN7jU5W7u9ntdNjfZ7uPiod0O54EeenACG8LBQ+2viwsCo2PRWLZKFxU
+4j/D0ZD+RjJkmyYo3KPPxi/jLf2OV1hBOsgqVLwHzr5eV3ahZD67lXfUA02jw/TraHznDK5k
+CZsGY1hq2Xzdn1xuKyQVeLOb2bJKE1lb+zy7k1VFta+ZnSyPWhX6FoCD9lONRenXhXUzGt5U
+aLdzMwuddhGDrijV6JbGQJne50V3I+eZ68ysGkxK0qKnrpzd9VaD9GjFGuRkRHrsKfRWpOgb
+63zAVo5uOfTeCMdxccj0VowCDT3+/QqXo2OsoepdhUkeUxax+rOdk0sBy/tkN7u1JrffThuZ
+/0r7tX+ff7Tm5cxjHKx7CAd2dmGwVUYJvSQuEoWayhOxQlEVAZ+MPSaXemKzgG1QDUcylcRg
+2GMNDM7aMAHZjpoTdfTpX6e3owrPlBzeP1ybm1GTxwhNDjJqXXUkgRxtE7ONBtHqWeveEm2a
+fZFPh/8yBc1QkYxRD4GeTKZZVwOX1tOuBQdyfDOc+hAzL0LFHkcnfKIppBhNfEWteB8Wakzb
+J5k0syF1EFq1TEaelicTT18nE3hNcR9yRiPuZkMfYmQecVbvw+ENuTTtSW25kWwLC4Nt7Mwv
+CogJikluUWExN3ZsaFJNqBvvxMItt4l9/+QB0xTUAVVfySzgmLsMFrGl61A5D3xla3o1XrfG
+QJrwmQ8+6sPjcAF8xWbSx8zvx3c7O762g6qWASW8bagSthvdwbFjh8vCCBO44Xezz0Off6Sm
+cdmSXhUq/os5cg0qLie3ZGztZprMn9VGBC5Ic5E1Z6mFtzrMEaGMQF2rrNhclOvFuljbgjQH
+SX9wQ7aaod/vZZLR8CpNxJLRdNlfQf1uoSGMTMikAA2JEvRT3xSEMbweEp9UWBOJ6QruScrO
+pe0s8DDDqfE6NBGzcbToYzTvw9I+RiC76u7Eri9T0gC8waMAHMfWVirUZYFVulAUV/rnO6rR
+nM/uJrceTwiD5mZ8d5EmLbm+oIT05f5oSXl5ezubXOguUtzdTan+pjlP7na06qTu7TahB18u
+yxFZpxRyOv1MXT8tRSL5zV0yIksr3Hzy+dIEoAMBz9e+6QP07eyWkqu2FOVoPCLb35Sz8YTm
+8hqS7WxyO75bUt7aNkm4JBb6Dq+D5pjBVy5lntzuR47Rt6/v7HI1HI2o1a4WkW0VV4NUvnGV
+0pcUv9ZEYRLCEZuifh17kUWRDt1UJVZ89YZc7cYL1WXGgDQwDKukUr1jEC5J9bRJe7zIMPBi
+mMPLg7QDpOgjJgqtnbxWs8rFpGyzaIU5UaRmPHQuGjLHRFOq1xUC334ajZ6zdKH+otFd96kP
+/We9xbRJ3YppgCr8GrGQgnATFeF9g7o4auhXzzyhShoaW8KiIv4ZzRrRVz++H9+eKVMBHW1W
+fSePmW3vVkezz3gVlJLqc7chgXRyM9wR7Zi1IQn97TWzerEut2M5X16sjP5y411nMJmXJmTL
+MNtsRoYGRcO4TEoxd1TCpOXqnCfMJDfAZtBBIFJp/lTiQ5K6xVNgmC8H3OQF45YXm0LJKGae
+DLxmUfSrq3jiydxqEtIcqSapXwdafPHj6eP054+XB5UlqpcIpi6XREEvuBjClE6riuJw51Xj
+tVTLmHsMXVXtRSarkDTGjoJORmKXQRHuiE4S3eIn1HXeYk3JcAu0fcc7MB1SB/FLcXszHlU5
+RkImePmSq8yZfOJ+gd5A92tWrFBR1pu2zlgp564A08JJUrjZNaFMSJ5puBZYkz1TaG8oZiD7
+wtKvsCAzOjYNUmjhl1t9Ut46fJKFviQGQrxMpq55X41l8x0wz77I9KpsI4E1YCVmrppMpnAq
+So4uLdZQGcI4A+oT2RZKFJN3CYEaAd6lndYWDhd429hWDi3QG4S0o4jEDs2dsriEJ6cRirol
+aFLjAkKuk9DTEF7J6kZu6S62Cg/cMsup5mz9RgcH5pwCKx//XjrDputKDdc1wl37Y15pB69u
+awjS/BsIg5BnQWhmoxEYlqJFWPCCT1v4swW/Nei7a7GovmzammgrSPQNT/cUjUHB0n3maQCZ
+sfxaEwnM32oeXCPbJWRNHYHQkgZqYJLEGJluIfHa45e2U1dOnUog5YQO0wlX3w6v308PZLZf
+tqA8NDYLVrHCUN3VAGUYssjX8veRYROCSB0wFV4F9HEbFPRtBvAqgK1tX1Sa/YIiRG5ME9yw
+aYNf2I/H03nAz3kThv9XDFv95+nbjzeVrtGq4R8V0Ele3w7Px8EfP/788/hWu/QZl3g0b1Jn
+dgMFsDQrRbQ3QeZSa9PKwpRRKgyoQGWr3ISynVGreg5/IhHHmCSzh+BZvofKWQ8h0FVlHgu7
+CBzddF2IIOtCBF1XBEeHWKSYVkTY/t7qk8pljfF8s1jQJaGZEh6El8qqr8hMGwYAwtssLAo4
+us3jEuDLkK/nzGkE7tuwzr1LvYCBohSx+mR0xWlYPWt1fG/M4IkXAs6BCthG7gHA5gnNCmHB
+/TwsxkNSfgVoHdDRLAB8UQxD5QnliytBll4kbGVb52SgQmkvhfTGFpvg4C4oSQsgWt9Q81DD
+qRsFI28gHWxDRRDyYYE19+LE3Q0te8M1Fc6G0zs66xOuhp5KymoUWGdPEFkc/XI/GntrZiUd
+IRhHwuNoDhi2Yb7oVXMUsXkHL8xgpwpPXIp5tdoX9GkNuEkQeUdgk2VBltHsIqLL2a1HLYUb
+qRBBL8WouZ5p5y+1SbyVcrgVnAgjxkqYJ9ViV95Mh0Nr/daMW8eA4NQbcbSsJTGHb/IvUykw
+nakXm9yNnP3dJOum7hedGfrw8NfT6dv3D8wYyIO+N3/HknF4TsFjV16KCYJax1g5XvlJm+TT
+l1tuBivOFsbBir8wy8F6B2dpSiPU2UJieLwux+MbUzvf41kMGUS2TvtpSpdwm/ZsA5eWfkcE
+rYJKlkWYLsxkZoAt2Lb7vcayppmuCBrBSq9t+Xp8QONm7ANx/GNRduN1a1ZoXqzp1aWweU6a
+dCvcGuNyOF8ZxiszBwPCtMWbuaw1VMAv+lBS+Gy9YDSfi+iEcRbHVOAeVVixpb0m973k9QYW
+JmGRKbs0K2Z/C63IFBxYMkyAC4jc1sI49ElSFPrrKvR//SJM5qKguDSFjUyjAYRAXcoF1IHu
+Q3chbVlcZhTjjUi0SoS3jDAezaq5faGkpjZUqHC/TvVOJlMD84XNTSs1BJVbkS5Z6n5JinaX
+jr0jYmLu10EofJhmG/paUehsIdydYC0ouK+cOAwaHuPB7AL3SspnjwjwfGq1uCtBB43MIvrq
+URQZ+pxfWA8qiUUvfIBBkJpRbRCAgddXbk9y4M5gN8aZd2nlYcnQhs7+shxdMXhAAvUrg4AD
+49lrH+M5FLjCfLswL4DHd1qXTFgOcBrmRPNQQNQb22GEFBgzGfRAYYxuHjZfqFDrNI/Xvv4V
+iTPOC/S5Bs7XNPtqQPpUMOtG98wv2R4bsHSGBtx/zpRik9kfDFtZhmHvtiiXaNqvTZU8daGv
+0bbK5cTu4E6kSWaDMP+K6q8xlw3M31cMpsR7+0arCqvlet4bdY3h0G8UG6lfvnsnrhV0jX8P
+cQcaehohl84V7Sg9gADrvaDw6FXReiAbwPb6lvDowGxR1vvRuN4B33tdqwAE6KO+ZLJacsv4
+gY7ZoQIIKPWDjnQERFSiCITn33++nx5ghOLDT3QI6fMJaZarCnc8FBvyEEKsNm+du4/Jeiwu
+tORUwwJfvpdyn3uSemDBIoPh7OfHsWjWcS7c/IsNemuJQ+BntV3SKc4T22FjW8jwHq550mql
+xmpG3JA2J7xyMuu0ILgRUkyfPWuVXmhMabsRIjEaZf3eJEJP+G8y+A0pdQbJLjmaEeupk8sl
+/EJMOsTKwJePTDWNSWElbYONeJX81ItF0wgZJJ5Ec0ixhubFLcyovxJ+f7GDmVyKOfMlqQeK
+pDTHHpg0FdymB3GUaMrwWn6cHv4iE603hdapZFGIln1rMoB3IvMi6y0A2UJ6jf2TOW0aV5OT
++ASyNdEXxXak1cRjrd0SFlOPOiwNt8BUBXQ7jPMQFakiFh7RgvKEgylKKV4jhOuhYnDWC9R4
+FWuDh1Co3glZlLyyfDoQkPDRze1sNKsxndAacOq5SYt+UQfZE2nrvDoJm6+jJoqfZQyzT7nK
+i0Uefk45Y5jWu0DI3Mkz1hxBdqSGNTppCOpGRUweFBt8B6J7+7NdKIC5rFH0wYiW476DVQc4
+4ZlHDLSurcKJF6hFg3GkfT0HbkS6fU6i2zEVPg1lI1Qqrc082y3WdL7o1j21o9Zut0mY9r0b
+k9PD2/n9/OfHYPnz9fj2aTP49uMIm49gEJZwHxUbcsav1dIe7SVbCNNcBh6F8DjtDgX92zX0
+baHazgcWF9wwX1EH9Pt4eDO7QAbss0lp2EfVxCrvbj3CxGDWVEIyahpqbM7juxFl7Grgxze9
+j1TgWxI8GVLg2WhMgy27dBMxu9SpZKJ75ZZkcHdz9JIZD4f45eQqt2hzPp7c/mPS24lLahPC
+Yp0N+wOgwP0BgPORhMrRbTKi4MMZNk+XIEYD4HR+I6Mc1V2A395QPSvHsyHRMQCPPOD+0lHg
+KQ2+oz4CEGPqRGrwSTIZs7JXYRRPiTXH8AQV2WhczUicEIXtRtXsIlx1YjxccaKL/HaHUQ5o
+kUWzWXNOn5NN48H9aDwnKk8x3XHFxqPphZmsiTJf+YQ2hrcpRrdB77sBF7M5WroQ6w72IQvI
+/ZsEzJVX90gu9gnwa0F9jhKg3FMGyjWBnI7pM0VcPytn42l/wQKwv1wRWBFDstL/IhtD7l/v
+AFuq+jL2hd8uSvi+4ax3FwoYzPePwzcMXey8HNnDwxEY0fPzsXWhatTYNkZTvxyezt/Qbfzx
+9O30gb7i5xeorlf2Ep1ZU4P+4/Tp8fR21KY2Vp0NhxWUd5P6HLMbuVaFvukPr4cHIHt5OF7v
+/XXiOjsjtgb/aLT8+fLx/fh+ctIxemi050cT2Ry+5Od/H9/+YyCeX4+PqmFOdu0flqinVvmV
+YIyBbz8HahpxAQhuz7KPSFEVx/fzE9R6fdCuUbayFmItutos+zBrVCCHv368YpXQznHw/no8
+Pnw3O+ChMHh7zaNpY5a+OcjL49v59GivYg3qV6ECVZBbcCGrKF8wNLGg+ORUyL3E2NYWD4jW
+OjxeVbs4RWXVavu1MPN7Z2aMc/xVcSdetALS6VQUKhCJFVFwJe+GpA3/ogjrwCPdF2mQshop
+MtLlt6ZwNFoNOCYtgDusThxsCVYVRukBug9vwFqL1mtlI+aFa2re/4ZCBIswwEAYvQWwOLz/
+dfywTIKcWV8wiTmAooIl4TZzFcmNYtGupqtlJ2LM9oAGMRHNDKDPA6BJCxERxgF+gRXDfJnI
+iqX4ZbJyZo0VfFfj0CIQZi72RCCCOnJoWDjJL1bA0PoyROxmt63TP2U3VpPliX78Wy+LJayh
+sC3tk27oHGVkwLOmoniFkZtg+aCDcDckaMyJeykvQthmIbXPGikQPz8/w13BVVwTpSrHs9Wc
+eaxoKQMqoIaxbbVppMlTNBht3OkyM91FQ3eg/ZatzEVaxwrS3VKU8vzjjTL6hhbDTakS7hkC
+f/WzsiMOAeU8DlrKrkNU/e1JwkQ8z4zILe0SSJZG1IScG2b0deizxCpXV6QFn6aVJAzc2mtl
+WByfzx/H17fzQ//LCwzyHMIy5iaDQJTQNb0+v3+j5H5Fnsg6bdVCRcsEAM1oKUItfiBn1m6i
+lRKgZQFmJ2nmE0b65REzjhvGfxqR8cEv8uf7x/F5kMEK+X56/RVvtIfTn6cHQ2qor65n4IMA
+LM+cSglNoXU5vCIfvcX6WG058nY+PD6cn33lSLxmd3b5b9Hb8fj+cID7+f78Ju59lVwjVbSn
+/0x2vgp6OIW8/3F4gq55+07iu9njOquIKrE7PZ1e/nYq6o56DOK34WtzOVIlWublH813d7A2
+DlFNb+qfg8UZCF/OZmca1ynl9qXUF1WWBmHCzHAaJlEeYhChBBOYWjYSJglezZKO92bStVbp
+npYwmdUmdD+il9Si+94q3IRmNKFwh1ngmwrCvz+A+/PmxtDEym3pixUloUbYpu81sNYeomvV
+Z+PlX2MTtptMppZvao1pVGk+qXxWULJiYfYAfY7n6yiybLhbWMUtYbiBWG4vOQEg4Qp5ECS3
+Ky4LscBM6gHZrP6vGenIKNMjVc1LXEwtydgkkduaczAM9DW4q5F+odbU84SPMF4s56FjnlRr
+mRWmmgR2A7XfUo3VAZ0tvmcng8/kmf6/eBC3j9e726GxePTvSkTorwFcCgPezLAT5Jjhbjiq
+U7V0CyvFRGZ5WMe39bC6yx0tstXBM2ezyvKWUXfdBneE5lrM9lrXjkqwgNKJdgQbp6sdBhCk
+e7ZKRIN20bX3TBfLtNyNhoacpfP0sTq+iW5HQxtUn7o7Dfz3ZRHR2/nlYxC+PJpenhjiJpSc
+1W6Kdp1Gifoifn2CA7t3/7ZQzWx8Pz4r9bk8wkvVPufgXTacmL3vEWtjxNNjDVDvac1HWmaJ
+zSbQu1FN7bMH3ew3o1W6fs2ZyLxBtc1211gPWUtK9MDDHBz0yFG7hKOOi1myriDPSoRR2iC1
+AJDemJeLDbWisMcfz88/6zvYnupgnSR7uGMWYeocS/riVHg/Rt9O0j2WLRJ9stJmKG7fai+A
+4//7cXx5+NlKj/4bvmYQBPK3PI4bHlBz7osmoORvwen94+30xw/XOeUinY5P9f3wfvwUAxlw
+f/H5/Dr4Bdr5dfBn2493ox9m3f9uyc5K+eIXWkvo28+38/vD+fUIQ9fsHsrEaLEvssrNVOOs
+kn5denMdD08f343d2UDfPgbF4eM4SM4vp4+z/e0k2kCaNer6fjyfHk8fP6nvCJYleYZbxlWJ
+CEQdIL9pxq2yto+C9Y+WU8/Hw/uPt+PzEc6sH9BFq/8XqBRZrCy2ib6qsBEsph/yPJncktGh
+zGs6luTRhGFzza+ze6B1vIdvL8cPfSFfWQ8JW6RhmSWYFtu3Lsjq/k/rdP36dPzbDgGAuuf1
+zjyALMJ6+B+A7e/1kTiKVYaGtofkmGiOqSqysjHVNSaQaEf1oHw7ffuGG+oTCl5fHuFcfDla
+BnIY26ZQsW2by8DDN6qkScU6L41Lw+QF0QMABXo0WsXJNNi7tu90D619/wov+Rc4pPp6Cg8F
+WRpq/7hYWBPoc/Dt+I474eKk6dRopq+0nN6Se/drzsaTsaXA6LXQ7bQXFI+bK9rcBBay7uv5
+79Mzbn0M9/t4etfKi17PZRENb+wuXCz4/1cHoFfj8fkV7x57ZKkt249G1SwXooquhrSklWOb
+JPSYDFquzRiEqAnoatgGJioIflTS8iDEX3S97wh8KRzQqucBnv1EQk03EC1G5BfclKdhsIWq
+MRlqDgS3wrY+zGXvhrzXSQtLpcb2xZRS4fJFnvHSE/BDRcDziJv1Ol3uB/LHH+9K0NF9YRtI
+dmm4tRrAKhFwyQQa3XWZJ9UqSxk+tceuSL8ZdyhcR8SF8pa5p4VZ0sZtSITzLpLdLLn32Ojq
+Du7gNUl2E9H5jlXjWZpgkHLSutSkwc/p9TTnLHfbtygSlufLLA2rJEhubz1ziIQ6qjVOZ+B6
+ezeHgjVLRmkV7IZRfiWJLYyAnz6TTcDESqGtF8Tx7c/z27M6dJ4132RZaDU9ukBmLD/mybK2
+XGMyv3kW96XKptqv2V5pUGQeS/G+SjAW83QTCDIWbsAMqXe60QmIzJ9u6OgmFEWIsuykGaTl
+dvDxdnhQp34vp0uZmG9nlW2gzKo5Ri+hEOjLXNoI51GDIJmtC97lbKFwy5AV5TxkVj4rLSwr
+l+TYEZ/RqrfyBfvdVRrkwBPlTsSIHkodqJYzJVRVJYuiIeUbar0qKq0N7FUeFWH4NWywxtc1
+uVkKFUFhndMKNVV1ES4sV6osouEKGERxH1JFSUhD8essN2cTp3tNbgOLTnfE132kYtGabIXe
+15G0ItLAT2VYjCq6NAs8HQIiI9IuXWtDob1JDLjkWeI2Keehq11tzh20DIIZ23WCRYNXJ43A
+17sLAtz1zq/Woyo2RNlZbgUL0zYB1UYAz9Pzumj2nSBDGMtYJFaaEARo4ZudAEHx7fD/VMdh
+MFSV67T0SCMcKbqWRZzQsELdC6aGgTO+DKtthomklcF41/KGxSJgZQjTU6mU3oakGEAi03m8
+GxHnrhxXNutVg6odK0tquwF+gkWerSIT1V4mxQ56RCVxaWhkyNeFKPdWH276Fd78gwr/p7In
+aW4j1/n+foXLp/eqJpNIVhz7kEOrF6mj3tyLJPvS5TiaRDWxnfJS3+T9+g8AyW4uYCfvkHIE
+oLmCIEhiWUwUaBn+flpGmvkh/rIpoKh8SQNrGH/FKQyhYyUw4D/5DAj2hNAHFiFXHZwkPdRD
+Z8c2IdhMEIWQssAQJcK+31OW1TcEBQ10BPPUt7p38Spp5tbgl6GAMUUvWzEU40gqCNf6AScS
+CeGaWMmZGnVKRVN3BYbzATQ9U/trt7omgKJzfMFx0m9BsU14jbNIM293k7kziQTC6JqTX4jF
+o/HW3B0ks0iNkXnRPR/G0cOJohiyV0+LT3HoCciII6hrSfzUxZRZTdeUFES6WpnRWdIsJoMH
+wyIfHzzxqeHaxms7SA/Hgfq68rZ1CL0zXtUJEHdfIjD0BmrUErifjA8n9oI0MWjjRYYJJNAT
+K36oThm2xqRi1sykWfgmS6A9PIS5xfU1Fnam83wJ7IxhWhPX0Sa8vftmRDRqHIkmQcTEHk6S
+FGsMULyqA/4Irqj87nCKolwiO4LiznqZEA1yiCGERuhEBRqRp62DgSkNixii6A2o+m+jbUS7
+67i5jkp1U17CiY6fnS5KlLxUhfMFivuwsnkLEvdt0VqVDbzZGlOdN/CFJY+3iVfaAEL5qGCE
+sQoj2i3OPgxHntaS1gSwBCjB6p3xqsO3Whwgnw+vXx5P/uJ6g/ZAlrwk0MYTbJCQGG2w1dMz
+IRB7gu77aasnvyZUuE6zqI4L+wt0YUZXX+RrXUXbxHWhCzLrBNjmldliAvCah0Xj05DW3Qqk
+xlKvRYKoX5qEjEVgzzjQk4MODsurdBUUbRpaX4k/486kjuzuxAz1oGsSrZNrUO1zo7tlHRSr
+2K/gBJFPTgVJYrNqTMLcV9TaVxIghNu7NmLL2NY0Ymbzd/ZntyeDojZoOhZEFqp5dA0YDF8d
+uw+IBlkDp/mg1tTP4WtLCRjgrBYwYDk1wKCB0wbdgsOeqaU+tgq6sVwWDGR2U7pf0HuER8cl
+fLdMuU1aNooirhVlEbslC1xVp6VXvdEJ0c3ul0RJsC27GjrC7SiwDZhcISBCdYETMn/ku+qC
+Zs3yznbvcDpmbtvznFbmicnK68pi5ativ7BoAHTuVCKB/g2wlnVxshWTC+j54+g3bhdZQBmH
+BRMZslqQwKAOaP5SU9EtWDqHah2O1d1b6IvFXG+Libxp2siPneiC3Uu1S/5uMxU9U7TeYK5Y
+m97ow6/b4bTg9Pt/F9/uTh0yK2G0hKOZrAOs9TAtsAVsLZnZ+XhIpbE0tw6FtDgYf2/n1u8z
+vR4B8RznCWk4kSKk2QV8ghRB3vMx62qMt1l4diH8EjVsYYkG5wm255IIlYc4QyKrI2yysprM
+yzCFsBaljGSO9RN7agzUYAymZqkr6iq0f/cr8+1TQicU5Lha81Mbpqaowd/iSMDlrCYsJhfY
+wUGINqiYseQjql0coIE+KjB8OBGi6iqMM+bH+1QrQiolwPyEoB4vxwGPd+8VhvXymE8Q4W+0
+Tx5teIIyCrzalF/Ruqw8izDTF1mmSYbj8+PFxfvLN7NTjTWzZjgK9HAU4AscST6cabkZTcyH
+9x7Mxft3Zos0zNz7zXtjbZs4Ps65SeTJvGMRcZYAFsnc35BzPliDRcRn57OI+KD7FhEXmdUi
+ufQM9eXZuWeoL73Tc3k292EWvnouPixMDJyOket6I4el8clszjpH2zQzu4CgCVP+NV+v1zfD
+Cj+3i1UIzktZxy/M8VRgh28Vgk/lqFP4Vp/CX/I1zs58XZhxLusGgbVmN2V60dcMrDMnFbNm
+gDJpBmtWiDDO4BTq7a0gKdq4qzltfCCpy6DFkF33Dua6TrMsDe2BRtwqiLOUe8EfCOo43nBf
+UgZlNkjOQFF0act1mEaCj06tSNqu3qR6pEJEdG1irIoo4x6puyLFZTBOgATA6Qkzu6Q3ZGoG
+58AskZGqRsNN/TlIWAcf7l6f0JxojK0jS8VNzrCzh999HV9hsJfe2b2UxhjXTQqKHuZej2Fa
+ipVRxlKWw3xJae/jSFQ7em2I690Rrjenj9YYR1pEweTKVEdhjMTTkLVLW6d6YHP37UdBTA13
+KEhqtFzPUSqJXFWwmEQ+I7YITHTNX3eWNd0/i/d6rjtoRBjS/TSeYUV4cq3pHJqq+3j69vnz
+8eHt6/Ph6f7xy+HNt8P3H4enU6Z1DTAnH3B5IGnLvLzmX1kHmqCqAmgFp4INNFkZRFXKD5LE
+wfzDqHhCGA/E10HOX8GPvQoStHSybUQk2fCwxFmEyOvRkZUCTa3Omvzj6c/b+9s/vj/efvlx
+fPjj+favA3x+/PLH8eHl8BWX1qlYaZvD08PhO4WFP5BB4Lji/jVGHTs5PhzRrPf4X5WmYGhk
+2uIUhxvnlmQVYkrvbgXjBQzehW2GOjTyAdtdnnx5XcfJ/0rfW0ou9wUGmoYPDD4VIFjzgYi6
+R3c2H2fvtDu0kQpDcFuRSRmquivwAqqP0gYXIfu+AyOI7mSY5GyYWHOVKho0KdFIeKsBfsIU
+2j/fg/OFLXtVS/dlLe6aNEkYUKQzmfLGgOVxHlbXNnSv++gIUHVlQ+ogjc5BLoblVnsuQolb
+KqOL8Onnj5fHk7vHp8PJ49OJkByaDwgRw5iugkoLwWqA5y48DiIW6JIus02YVmtd0NkY9yM8
+PLJAl7Q2goANMJZQu9axmu5ticLYw9tvqsql3lSVWwJe6bikY8pbFm5osRJlSwT2Q7WAxCu6
+U/wqmc0v8i5zEEWX8UC36RX9dcD0h2GLrl2DGsD0p+XDzklsk+ZuYausU3k9epFxysTHxQqz
+tyhjx9fP3493b/4+/Dy5o2XwFYPQ/zQCDkjm8EUcE+iIiw+tqtTd7wdY5PJvHNYRxSgSdpCv
+L9/QAv7u9uXw5SR+oAZiJJ3/O758Owmenx/vjoSKbl9unfUahrnDkSsGFq5B0Qvm76oyu56d
+6TnOh0W7ShtgCWY1C0Rm3BJpuPl77vRqfQ3/aYq0b5qYY+ihDo3sF2VCrWaZ1iIoQQ09X7xz
++qkQxEHezyYKhWa+82MmiiX0dLl9sN276Ca+SrcMF60D2OW2Sr4vyb8MtcJnl0uWLmuGelxx
+BWtrZnZC1ghnaIZbTFbvHFiZLJ25qLh27RlhBWeEXR24IrVYa/xsN3tEOvw0QYozMMF6GGu6
+7UYD4dvnb74xz4PQ6fE6DzgBuIeB8Fe6FSUpv5rD84tbWR2ezbmSBUKYB/trICrf1xj3ETYK
+/9f7PbtNw8ft7F2UJn6MLNqV7msj+L9iFzXXzj6kJg/D45wv3PUVLVw5EL1nOpynsKrIn4C/
+5lC7RB5ZuYBc/LkrewAMYosDn81dmdKsgxkLBHZu4jMOhUJRIO06APl+NvcjsV1MgRirkQEz
+lecMrAXle1m6alm7qmeXc6cZu8oMDanxQk98glH5iJMHnfb445vpyax2CFeGAAyDiLj7XuNj
+G0QNNTrfFd0ydWvJUgo07/KbBNqcBKeDXZI2E2qFonCehmy8pxdhgEGd9PwJFuJXH8ptFgTj
+71POFalbKV468T1BHCfICa7VPyHHgNLlY4JOtT9i2AVgZ30cxeM3drMS+utvzGYd3FhxOOW6
+CLIGVLGJbkhljZPIEvXLoaC8Fa4mUVcYxcURAAJO+6Rv5hSNNo4TJP5icm4s23hS7W535fQi
+kQROwAUL7WmTie7PdsE1M22KimfEf8m4Zj/QtdS48BkYikwRmM77jFcIebFwJXB24/aB7BYc
+KBodKGFZ3z58ebw/KV7vPx+eVCACFaTAFm5N2ocVnJT9DYvqJcU26dylgxiPpiNwwdRcEknY
+uidiRDjATynm/YrR8bG6ZirEs3IfVOnEO7RF2MiT/m8RW0PkpcM7EX+XaYtLi6R0urfecYMY
+YwSnCC+WJg+rQBaGvNmERnKFxqPri8v3/4STSo+iDb1pHW3C8/lv0anKt/y1JVf9b5JCA7Zc
+vH+Nbohtz40d6C/jjATNdS6uMOnNAnOp6HOjoatumUmqplsiIW8DMH7RVrmPXCxPjBHxF90R
+PJ/8hT6Yx68Pwg/77tvh7u/jw1d9GQsbHf0pBl9wuDt8QbjMKItgMzz2aJe8NgXxKv7v4+np
+eAX6Ow2UTvafn26ffp48Pb6+HB/0c5O4w9TvNhWkX8ZFCAKl1i6f0ZXaaOgyBXUT40hrU6Y8
+mUETLcLquk/qMlduAQxJFhcebBG3fdemugWGQiVpEWHuXxiapZ44NyzrSPcEFa9bhsuN8rMO
+U9sdS6EsMFkEozlSmFf7cC2MiOo4sSjQZjhBRUv63qXm9WIInA1SU+f5cHZuUrgnN2hM2/XG
+bV94Nrd+mo+VJgaWRLy85k9NGoGlHhAmqHdB6zGyIQoYeb5cU9sz9fLwg/YAlC65M3TINXc4
+7452ZkERlbnWfeYr3sARoejTasPRbBd3hMywCCfoqEiotmt2mmP/EMqVrFtr6tS8dSZSs+3j
+LTIJzNHvbxCsj5mAoCbFDbFAkt+7bv4m4WlgauQSHHhykY/odt3lvCe/pMEI0dxVjEQvw09O
+YyS7S+DY+X51o8eO0BBLQMxZTHaTByxif+OhLz3whStM6L0sMBwpYIOL+qbMSuM8pkPx5f7C
+g4IKJ1C6SAmapgxTkIDbGKahDrSHehRWIOZ0D30BQjez3hB/CI/0ASqoSso4hOkpjbSvhEME
+FEFP6rZnBeKCKKr7FlR5Q3Q3u7RsMyOuAhFXqWtiqT5ZZWJ8DflRdXnQbPoySeh9kxNRVdfX
+RiejK32LyMql+WuUsGNPM9O/IK2v8EpMKyZKcyO3E/xIIq2EkrJrrmBTr7X3R4rorJhnGzWl
+y1KruMXH2jKJ9ClNSjxLOhnuEXrxj84WBEIXuAazueozgDEvysyaMZz/CoM3GE+UA6oTLtB9
+knXNWri7mUQ0Cbsg09+wYeKN4UfLkmLFGt04qotpDqC0MIL+eDo+vPwtYvvcH56/umY5FdTT
+Yq4xMyW1BKPVKf/IJwy+MbZ7BupONjxlfvBSXHVp3H5cKHwOY4Q2Lk4JC82+Bw2nZVOi2Mqu
+NS6K6yLABGOM3bEcMu8wDMfl4/fDm5fjvVQTn4n0TsCf3EETtrvmSWmEYYbYLoyN7I4atgFN
+iNuZNZJoF9TJwvP9svXYVURL9MFOK/adJC7oFTbv8OIL/XY19sd49j1UWYikU5o1BJQGQhPD
+lORcoTUcJ6lYoBnL6wrQDSP8Zlnqqqrog+GJEmPkogaNuNtAlxQKoVo6NAkdjHLMe5Wi0zl/
+mhD1NMLlGJ3N8qANDUXJxlHn0Y+dM9kRRjIyjkGqb1CyQ2hRJO3MMSpv1X3UI6r/LnMN6wIz
+FON5p74aa9KAgxmJmNGP7/6ZjR3T6US8Ju/4CFcCl8fQOc85+EnblOjw+fXrV+uUR5Zq8b7F
+jM62aYtRMhLS5sT7p2Ax5a5gxQ0hqzLFtNX6acuE90UpffYNUWbSYFLbiUbWJcxy4LMFEDTC
+gdjhbAlmtkYTnxjneRNHQfi8JaOtoDtjCluHHS2cX7Ub2RQ3fBn8w1eZlBhKLM+M/VjyEOyC
+0hjLapPC+JcnraquMVxJBWqbu+Vtc3p/9JiJDjT10i2sr1ZwUlk1zFYtSdK67fQTsQ22VwgF
+7ybbLm9bpCRArU+XdwEpnlD7Jmj0bMFhSO0hqNJqRqwA04h9nDkGY+OidPq3QUMsuxIoC8Bk
+LAfrwtAUkX5ibTRrK/WkeAvG+k8w6uvrDyHb1rcPX80EKmXS4h1BV7Gxq4fRqSNJJSJL4GKA
+XudGuByNajIOtkD26w7WfAvqL1Ph7goEP4j/qFzpItvXIV2kFCBm0d+1rFhfQx2PW0cHctpE
+kr7atSO4gT5HtkOxAJqKBsHINcqmE2sqLiJ33xQTiJVu4ria2jfh5BbnZE4lLsrQnGNgsZN/
+P/84PqCJx/MfJ/evL4d/DvCfw8vdn3/++Z9RP6KQHFQc5c0ZdXBNvyy3QwwOpi1UAnbSXpV4
+GOvaeB87QlLLlWIu14HcGo3dTuD6Jit3thm1WemuMXwNBZTaqE5bWrujuHIrkwhvFSpJbhb7
+vsaRpIcBub1wjEdNghXRokeceSMw9nbcnsYzxf8wy4ZeRFJEby9pUjAomDoZjr7AleJWakKs
+bMSO82sK0DdhT2n8OwD822Kcv8bZU+im2IJVHLBZuaNP8VpSKzegRROC0h8XbWpFQhZPXmFn
+qE7yQ2OexvsL2MUxAwcD5icWMbjVkAo9yJX5zPjSniYExlesL7eK5Wo02hwkEJxC661Hfdec
+CGJEUArxBYOfWWzyumzRrlvci6i4oZyXi5yAPq5ripQs4wkZ8fXQ7NhPbbjkxK2IS8fQ8a4U
+vwxjhFehRXjdltoZnl7dxlXiXkWQOpB0hTiMEFHtw67qoFrzNOr8m6hZ9iP7Xdqu8Y7FVkok
+OiedkIayjiwSDIxCHIaUoE8XrVMIvn9eW8BQliaKHpGiwtCU2Aj07BiihfzRATaTNILTwzpM
+Z2eXC7om86hnyq4f15BIBlgY/JttIk+MX/yC5AioMzXPJ0TixS5HTgAR7BwxxrW5RIulCbx+
+w+mloghRoHr004XJs4DnvCN2pfMF+6Ci2/x7y6chWcd7dHSeGDNx3SUsqT1BXCVdE1b8NRAR
+bICiZWMlEprukhJ9vgksbt/8pQKeEvD5KbrO4wxE2D1dNvvxGEErASXET1HjW09re6JYo+wz
+LSBsGnGB/gRTb4xAmgSD05b3qC56jNItLKcmY1nxN1UCiU+565JOmPyhg540YejHd1d/aUla
+56B6TIyOiOs00R/ngtFkPHKGs70GBc/l5cTcG4dJPxl63QTAoBMNQBVQfx9Q35lQAJiaA53p
+i56uNUAQY/R+25cQM5izGRy1A+sqMl4i8DcnMIZb8CWdWfE2Bq/rjNs9wumFucTsQAmyAv2A
+0lUBkptNsUpEA4Wz1gk/1XJgR7zcT2WECd1+TUhvOATThYK7oaM9llRA6e66M1T5OKiza3md
+zT/+YVrN1isppe7FCbeo7EA0ODFi5KkvW9JbhG9+MY6traGM20gpbt77d/sLPuKBRhF7HCIV
+hXeNDRS2L6JUJ+kdIKgDT77QsAq8T2KiBEszkXp9njKXdTgL8mbXVG2rDr35cEv0VtYVuxRD
+jfegHRsMruDirp20J49p10C66pyAR7YroHjr+X/1hgmv83ABAA==
+
+--fsdq4ximrtcmj5qw--
