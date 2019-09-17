@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4810DB5589
+	by mail.lfdr.de (Postfix) with ESMTP id BA592B558A
 	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2019 20:44:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729510AbfIQSn5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Sep 2019 14:43:57 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:34734 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729422AbfIQSn4 (ORCPT
+        id S1729513AbfIQSn6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Sep 2019 14:43:58 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:38497 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729501AbfIQSn6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Sep 2019 14:43:56 -0400
-Received: by mail-qk1-f195.google.com with SMTP id q203so5168263qke.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Sep 2019 11:43:54 -0700 (PDT)
+        Tue, 17 Sep 2019 14:43:58 -0400
+Received: by mail-qt1-f193.google.com with SMTP id j31so5721018qta.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Sep 2019 11:43:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=1GMqWVBKJc3QOWMl5pxrGiyb3GprPkQHBSR+0/PEQJ4=;
-        b=Bj55mCb7COz8qRloOxjS2fbgsenvfD37QnUIJwltlOm5ZCWUoxk3nUDAPsi6lUA1px
-         EaSb8b7+VgekQvVBtXqqdV/aNMu+zroqHXvlXPZHcJZL/XeqvqEiKXBc1uO9vro4GeY9
-         g8+LA7uuEm5I6Z31dRUWxbpjweBNmSW7+g6sZT9IW+8V94pMcYzcCbH1VpBujIqj/K6Q
-         UUQCmJKGMxxL03SZOGl9tBWMntGFfoi2AZTx7cKCWs21hfMyohyTE4fInazJ6mnE4kvA
-         oNew3j2Rr6RqE6JEaaN/c2iLTX6mSF5ZuLfhyrPqQKPlvYNwOyQBoXtvfOl+3i0TLisH
-         pofA==
+        bh=q3yCz3OWSJKt06THdJjHiLFdaX0q0cm8at0obtbzLB4=;
+        b=rwA0L9RwNm5Dz6EMDmD1THUMiJ5FvlNmk/fFLpXZ0IIvqs+F/+bPkn3x48CeZPRBO0
+         DF2H8xEpA524dty6IFXv/rktlHwU0oNfMi9m2AU4Ai7QIWVUQ6ICJ5lIxtHxJ59FZwkC
+         GFVjX4vsjvgjkcPdvYuW9JuKt0e2/opI37o0OL//1yL9w4yciHXTvaWOY94XPWvV43w5
+         4+NxWV/KK1jAyHa7RojN2/UDTR1NbteY+b6UNcVOX7LiSRg/S56QEpz+WD+6Mcshfxbg
+         l180ahiKn9RPNxhbUF7YtWKXn4cyUU6ZPoUmO7chi7dqIIHQTO+JcWvbwvBViQLatmks
+         d7Mg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1GMqWVBKJc3QOWMl5pxrGiyb3GprPkQHBSR+0/PEQJ4=;
-        b=HtGBMh6+Hw+x3J4OY5WzeLxqIN8heH8vLZYWBjh1P5V8RCAyP1qsIr/Nakbp0LZPYf
-         +39Umm3q84reZO5k/FK7MDstvvb4zPUV3AQrKvYwfXfT18vSnEW500+1b6sLfN78S9Hw
-         Johf1djla+KKpbmpDVzulSMCMnK1qUFcgT3od1MtinStcvBvRMcTC3vD0indYgJEvOXH
-         Kn/ftbtC8eoWfze/CeCozQ6vlgVkZe3TSPSgZD6DmD22Xm4OnyvoRcnqape+6/8HrYFG
-         fMl3zeSmIuJ1prt6MnP7FFJye+FyFIbay1PmyPAxsdPFjs4NDDbTN8ZaPaTRVCyY4BC1
-         unyA==
-X-Gm-Message-State: APjAAAVnpQxTyl6jzDRbD0P+4JZcJY5iBAvphRviBHLUjDIJwOTHcQtT
-        jz2Sm++eylX0coUzmGILOrrPn7RLj4MVsg==
-X-Google-Smtp-Source: APXvYqy1amvOuoe9WuXHUSYQpCTUfaKClIljy9ZNbXW1VaQNVUDe+32bwaKfX4reWG70/uxkc3tz/A==
-X-Received: by 2002:ae9:e902:: with SMTP id x2mr5537500qkf.293.1568745833950;
-        Tue, 17 Sep 2019 11:43:53 -0700 (PDT)
+        bh=q3yCz3OWSJKt06THdJjHiLFdaX0q0cm8at0obtbzLB4=;
+        b=Z8jZ80WBdkN661T2whWBMRU1Sm21Uh1siBF4fLGTPxMd/c+aYWB6yfPyDBe2RF7kiK
+         MojTlBaFiY6k9zvtRzCFZRx8o17nsOwf/CO2H4OKN1lgysSwaNlZ7p6tCCQT+BIOQlxG
+         Z+/1UD63Nr/lBj5zckeER1PGx0BuZnyd5i3OdA96vA9BqGIyR/ARUDI77QsGsFa+bO/V
+         kPC2k0qDflddn6RHp3FXrA8OaWE90mw+UaKE4ANLhYBYHBe0E8VQicUzzi+Q9+DXp/W+
+         i7mw4OxguZvb4Pujr4ueiBb+GBPUi/MY3SYIq5f7kQxIen9gsoS+BZA/IMLQOUY5swTG
+         I4/g==
+X-Gm-Message-State: APjAAAV5qPr/MJFRDt62jvSZZNc/Y4/JwLs0uHxBx0Gcb4rt8EJbDw/C
+        X4uXCQuYLxSqSyfohvz0b72G4JMBlbnvcQ==
+X-Google-Smtp-Source: APXvYqxWWvwbE7WyY/oeQyUnRrIUVvgVmjavspmbniZFXg8UAU7U3t6Mveh8bgFSLn6h3+RirhHjWA==
+X-Received: by 2002:ac8:2eaa:: with SMTP id h39mr166015qta.389.1568745835889;
+        Tue, 17 Sep 2019 11:43:55 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id a190sm1830381qkf.118.2019.09.17.11.43.53
+        by smtp.gmail.com with ESMTPSA id u27sm337737qta.90.2019.09.17.11.43.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Sep 2019 11:43:53 -0700 (PDT)
+        Tue, 17 Sep 2019 11:43:55 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 4/9] btrfs: export find_delalloc_range
-Date:   Tue, 17 Sep 2019 14:43:38 -0400
-Message-Id: <20190917184344.13155-5-josef@toxicpanda.com>
+Subject: [PATCH 5/9] btrfs: move the failrec tree stuff into extent-io-tree.h
+Date:   Tue, 17 Sep 2019 14:43:39 -0400
+Message-Id: <20190917184344.13155-6-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190917184344.13155-1-josef@toxicpanda.com>
 References: <20190917184344.13155-1-josef@toxicpanda.com>
@@ -60,56 +60,114 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This utilizes internal stuff to the extent_io_tree, so we need to export
-it before we move it.
+This needs to be cleaned up in the future, but for now it belongs to the
+extent-io-tree stuff since it uses the internal tree search code.
+Needed to export get_state_failrec and set_state_failrec as well since
+we're not going to move the actual IO part of the failrec stuff out at
+this point.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent-io-tree.h |  3 +++
- fs/btrfs/extent_io.c      | 10 +++++-----
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ fs/btrfs/extent-io-tree.h | 18 ++++++++++++++++++
+ fs/btrfs/extent_io.c      |  8 ++++----
+ fs/btrfs/extent_io.h      | 11 -----------
+ 3 files changed, 22 insertions(+), 15 deletions(-)
 
 diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
-index 6f53387445ca..02fbb0d4fa88 100644
+index 02fbb0d4fa88..0ba3222ee1f0 100644
 --- a/fs/btrfs/extent-io-tree.h
 +++ b/fs/btrfs/extent-io-tree.h
-@@ -223,5 +223,8 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
- 				 u64 *start_ret, u64 *end_ret, unsigned bits);
- int extent_invalidatepage(struct extent_io_tree *tree,
- 			  struct page *page, unsigned long offset);
-+bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
-+			       u64 *end, u64 max_bytes,
-+			       struct extent_state **cached_state);
+@@ -4,6 +4,7 @@
+ #define BTRFS_EXTENT_IO_TREE_H
  
+ struct extent_changeset;
++struct io_failure_record;
+ 
+ /* bits for the extent state */
+ #define EXTENT_DIRTY		(1U << 0)
+@@ -227,4 +228,21 @@ bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
+ 			       u64 *end, u64 max_bytes,
+ 			       struct extent_state **cached_state);
+ 
++/* This should be reworked in the future and put elsewhere. */
++int get_state_failrec(struct extent_io_tree *tree, u64 start,
++		      struct io_failure_record **failrec);
++int set_state_failrec(struct extent_io_tree *tree, u64 start,
++		      struct io_failure_record *failrec);
++void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start,
++		u64 end);
++int btrfs_get_io_failure_record(struct inode *inode, u64 start, u64 end,
++				struct io_failure_record **failrec_ret);
++int free_io_failure(struct extent_io_tree *failure_tree,
++		    struct extent_io_tree *io_tree,
++		    struct io_failure_record *rec);
++int clean_io_failure(struct btrfs_fs_info *fs_info,
++		     struct extent_io_tree *failure_tree,
++		     struct extent_io_tree *io_tree, u64 start,
++		     struct page *page, u64 ino, unsigned int pg_offset);
++
  #endif /* BTRFS_EXTENT_IO_TREE_H */
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index f5945f0a06da..c47cc2586b37 100644
+index c47cc2586b37..f8134e319b60 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -1687,9 +1687,9 @@ void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
-  *
-  * true is returned if we find something, false if nothing was in the tree
+@@ -2025,8 +2025,8 @@ u64 count_range_bits(struct extent_io_tree *tree,
+  * set the private field for a given byte offset in the tree.  If there isn't
+  * an extent_state there already, this does nothing.
   */
--static noinline bool find_delalloc_range(struct extent_io_tree *tree,
--					u64 *start, u64 *end, u64 max_bytes,
--					struct extent_state **cached_state)
-+bool btrfs_find_delalloc_range(struct extent_io_tree *tree, u64 *start,
-+			       u64 *end, u64 max_bytes,
-+			       struct extent_state **cached_state)
+-static noinline int set_state_failrec(struct extent_io_tree *tree, u64 start,
+-		struct io_failure_record *failrec)
++int set_state_failrec(struct extent_io_tree *tree, u64 start,
++		      struct io_failure_record *failrec)
  {
  	struct rb_node *node;
  	struct extent_state *state;
-@@ -1807,8 +1807,8 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
- 	/* step one, find a bunch of delalloc bytes starting at start */
- 	delalloc_start = *start;
- 	delalloc_end = 0;
--	found = find_delalloc_range(tree, &delalloc_start, &delalloc_end,
--				    max_bytes, &cached_state);
-+	found = btrfs_find_delalloc_range(tree, &delalloc_start, &delalloc_end,
-+					  max_bytes, &cached_state);
- 	if (!found || delalloc_end <= *start) {
- 		*start = delalloc_start;
- 		*end = delalloc_end;
+@@ -2053,8 +2053,8 @@ static noinline int set_state_failrec(struct extent_io_tree *tree, u64 start,
+ 	return ret;
+ }
+ 
+-static noinline int get_state_failrec(struct extent_io_tree *tree, u64 start,
+-		struct io_failure_record **failrec)
++int get_state_failrec(struct extent_io_tree *tree, u64 start,
++		      struct io_failure_record **failrec)
+ {
+ 	struct rb_node *node;
+ 	struct extent_state *state;
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 8c782d061132..e22045cef89b 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -296,10 +296,6 @@ struct btrfs_inode;
+ int repair_io_failure(struct btrfs_fs_info *fs_info, u64 ino, u64 start,
+ 		      u64 length, u64 logical, struct page *page,
+ 		      unsigned int pg_offset, int mirror_num);
+-int clean_io_failure(struct btrfs_fs_info *fs_info,
+-		     struct extent_io_tree *failure_tree,
+-		     struct extent_io_tree *io_tree, u64 start,
+-		     struct page *page, u64 ino, unsigned int pg_offset);
+ void end_extent_writepage(struct page *page, int err, u64 start, u64 end);
+ int btrfs_repair_eb_io_failure(struct extent_buffer *eb, int mirror_num);
+ 
+@@ -323,19 +319,12 @@ struct io_failure_record {
+ };
+ 
+ 
+-void btrfs_free_io_failure_record(struct btrfs_inode *inode, u64 start,
+-		u64 end);
+-int btrfs_get_io_failure_record(struct inode *inode, u64 start, u64 end,
+-				struct io_failure_record **failrec_ret);
+ bool btrfs_check_repairable(struct inode *inode, unsigned failed_bio_pages,
+ 			    struct io_failure_record *failrec, int fail_mirror);
+ struct bio *btrfs_create_repair_bio(struct inode *inode, struct bio *failed_bio,
+ 				    struct io_failure_record *failrec,
+ 				    struct page *page, int pg_offset, int icsum,
+ 				    bio_end_io_t *endio_func, void *data);
+-int free_io_failure(struct extent_io_tree *failure_tree,
+-		    struct extent_io_tree *io_tree,
+-		    struct io_failure_record *rec);
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ bool find_lock_delalloc_range(struct inode *inode,
+ 			     struct page *locked_page, u64 *start,
 -- 
 2.21.0
 
