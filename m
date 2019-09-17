@@ -2,206 +2,285 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 425E9B4551
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2019 03:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80B9AB4582
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2019 04:30:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391790AbfIQBor (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 16 Sep 2019 21:44:47 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:54477 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728211AbfIQBoq (ORCPT
+        id S2390612AbfIQCaq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 16 Sep 2019 22:30:46 -0400
+Received: from server53-3.web-hosting.com ([198.54.126.113]:46942 "EHLO
+        server53-3.web-hosting.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728639AbfIQCaq (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 16 Sep 2019 21:44:46 -0400
-Received: by mail-wm1-f66.google.com with SMTP id p7so1254413wmp.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 16 Sep 2019 18:44:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Du516svBTm1z04yIBym5ytnXrUA5DoBOG81mRETrTzM=;
-        b=ZwRmvQscCIcK1x9dbnl9J2GcFRgvwTc9DJMg58ixyxfjtu2r7C1fPev5XJV0Ls/K0D
-         hgvShJAE3I6NRyjUouBGHQBOBdgI0a6GUETuauZWbYQashz5PARAf7TI8tvQLSarswHi
-         AS5iQolBoLTa/mgKcjOrDMcKN9JQYWISW1wt8LbQTcC4wB8UyFOifM5s2Kr6iwJVtFvS
-         WCVtU21CsRYZcj4ZgyjwO1QsPtxsQpEpbHumAxexSoQFL21WJmFMLzMhY+6Veqo94G8x
-         9WZxNcIwm3ujFJwEw4TV1eJddO5I1K1jvD2kDRu0j5eIEkSE2GP1mTWKBOwlL1KfdbU7
-         ORwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Du516svBTm1z04yIBym5ytnXrUA5DoBOG81mRETrTzM=;
-        b=GaZsqRF+sJT368f8Z0VcbCyuCly4sL1LhLRtg4rMLeb6NMhMs3FBP98VU0QMo4ToJv
-         5r+M4t0eRPwFDyxRRWIjb7jwljxSG/EsCEW7CdKaAQIkEyse+iRuOj/zIYEBIXgYkIC4
-         zafPmG0qUV55LAXz2wjNo6inIYPYV4im5u4LMSKf2sc3QFfzXlazymRHziZEJAAf5g5j
-         AZmVu/VYOGotSP0yZL+4MTpbfaIrqmTxKXVZqIugA1z5c+0B52wmtkhiLwai3ZA0rQLs
-         gA/vufeDFN5p9/CS3Xbbs4NZSwjKCFz0yxOapTFZGKR3v8bbJHEY6pahHNPJh4IAV/68
-         3PpQ==
-X-Gm-Message-State: APjAAAUqRieXRENSDXIapb3QrkerCQt/Q+yl9FaZJri8KswFjBRA4vIc
-        RM+45PtiKiV7KCEVAxrZzzHbARDwsdY0rdei6zBary+am8Z0Zw==
-X-Google-Smtp-Source: APXvYqw/fE7+xnAXnV1ai5xlpdDNqKBNrkkV6AIfwP/CmMvlDbxuiscqC4S9GAs4oCU6apZdzTXrnIHKaxzD7N3hJsU=
-X-Received: by 2002:a7b:ce08:: with SMTP id m8mr1248225wmc.106.1568684683948;
- Mon, 16 Sep 2019 18:44:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJCQCtS8i5rTOYgEM2DFjoiZJBFsL6sgOGwp-1shMs859-r=qg@mail.gmail.com>
- <20190912185726.Horde.HMciH9Z16kV4fK10AfUeRA8@server53.web-hosting.com>
- <20190912235427.GE22121@hungrycats.org> <20190912202604.Horde.2Cvnicewbvpdb39q5eBASP7@server53.web-hosting.com>
- <20190913031242.GF22121@hungrycats.org> <20190913010552.Horde.cUL303XsYbqREB5g0iiCDKd@server53.web-hosting.com>
- <20190914005655.GH22121@hungrycats.org> <20190913215038.Horde.gsxNyK9aSRLm6Qsl5sUNhf0@server53.web-hosting.com>
- <20190914044219.GL22121@hungrycats.org> <20190915135407.Horde.qqs07Bais-BPrjIVxyrrIfo@server53.web-hosting.com>
- <20190916225126.GB24379@hungrycats.org> <20190916210317.Horde.CLwHiAXP00_WIX7YMxFiew3@server53.web-hosting.com>
-In-Reply-To: <20190916210317.Horde.CLwHiAXP00_WIX7YMxFiew3@server53.web-hosting.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 16 Sep 2019 19:44:31 -0600
-Message-ID: <CAJCQCtRW8ObeQ5nL_Q9t-7rXDtOk5TQLcZnhH6bGRMA-puUVNw@mail.gmail.com>
+        Mon, 16 Sep 2019 22:30:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=zedlx.com;
+         s=default; h=MIME-Version:Content-Type:In-Reply-To:References:Subject:Cc:To:
+        From:Message-ID:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=IPSG0Cs9YbFI78Mf3p4fUE2ze18XYbL4rjyf3N6az6Y=; b=VqI3+fYdJJztnCCJdBeAeHkYv1
+        EW2jrIZktzd92kpJx2nGHi8sLWphzgVCJXwjn62khdxdHlNgu0VQ8iPxGw7Ifxy5Nw7N50Gv93J7k
+        GuJZwPBX0mLJKdmqHLKVj5nG+XIfvXu3hXMhpYrb41IpoqdK1RpFuALvVl7evhmGhv1CVaVRs+P8L
+        LYQZflPviE8La8TPKidW2XQuTyrwdWaqSUAMd0D5jI6DgYGpi35MzCwxu/kmKXqOKcznfc6R1wfOA
+        1XlMKt4Z3V/82qtodt4wCwPHQFnfxh6AOW3JLG6nEdAFnx85T3cjLxnK3kbyMhANVhgd08hGzWEAB
+        2ona6Amg==;
+Received: from [::1] (port=50090 helo=server53.web-hosting.com)
+        by server53.web-hosting.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <general-zed@zedlx.com>)
+        id 1iA3GJ-0009LL-Bj; Mon, 16 Sep 2019 22:30:43 -0400
+Received: from [95.178.242.132] ([95.178.242.132]) by
+ server53.web-hosting.com (Horde Framework) with HTTPS; Mon, 16 Sep 2019
+ 22:30:39 -0400
+Date:   Mon, 16 Sep 2019 22:30:39 -0400
+Message-ID: <20190916223039.Horde.HZvhrBkQsN12DF6IDemvio6@server53.web-hosting.com>
+From:   General Zed <general-zed@zedlx.com>
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
 Subject: Re: Feature requests: online backup - defrag - change RAID level
-To:     General Zed <general-zed@zedlx.com>
-Cc:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <fc81fcf2-f8e9-1a08-52f8-136503e40494@gmail.com>
+ <20190910193221.Horde.HYrKYqNVgQ10jshWWA1Gxxu@server53.web-hosting.com>
+ <d958659e-6dc0-fa0a-7da9-2d88df4588f5@gmail.com>
+ <20190911132053.Horde._wJd24LqxxXx9ujl2r5i7PQ@server53.web-hosting.com>
+ <20190911213704.GB22121@hungrycats.org>
+ <20190911192131.Horde.2lTVSt-Ln94dqLGQKg_USXQ@server53.web-hosting.com>
+ <20190912051904.GD22121@hungrycats.org>
+ <20190912172321.Horde.oyDNseL4IVWz-QYWBqgXqjO@server53.web-hosting.com>
+ <20190914041255.GJ22121@hungrycats.org>
+ <20190916074251.Horde.bsBwDU_QYlFY0p-a1JzxZrm@server53.web-hosting.com>
+ <20190917004916.GD24379@hungrycats.org>
+In-Reply-To: <20190917004916.GD24379@hungrycats.org>
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+MIME-Version: 1.0
+Content-Disposition: inline
+X-OutGoing-Spam-Status: No, score=-1.0
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - server53.web-hosting.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - zedlx.com
+X-Get-Message-Sender-Via: server53.web-hosting.com: authenticated_id: zedlryqc/from_h
+X-Authenticated-Sender: server53.web-hosting.com: general-zed@zedlx.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-From-Rewrite: unmodified, already matched
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 7:03 PM General Zed <general-zed@zedlx.com> wrote:
+
+Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
+
+> On Mon, Sep 16, 2019 at 07:42:51AM -0400, General Zed wrote:
+>>
+>> Quoting Zygo Blaxell <ce3g8jdj@umail.furryterror.org>:
+>> > Your defrag ideas are interesting, but you should spend a lot more
+>> > time learning the btrfs fundamentals before continuing.  Right now
+>> > you do not understand what btrfs is capable of doing easily, and what
+>> > requires such significant rework in btrfs to implement that the result
+>> > cannot be considered the same filesystem.  This is impairing the quality
+>> > of your design proposals and reducing the value of your contribution
+>> > significantly.
+>>
+>> Ok, that was a shot at me; and I admit, guilty as charged. I barely have a
+>> clue about btrfs.
+>> Now it's my turn to shoot. Apparently, the people which are implementing the
+>> btrfs defrag, or at least the ones that responded to my post, seem to have
+>> no clue about how on-demand defrag solutions typically work. I had to
+>> explain the usual tricks involved in the defragmentation, and it was like
+>> talking to complete rookies. None of you even considered a full-featured
+>> defrag solution, all that you are doing are some partial solutions.
 >
-> Ok, so a reflink contains a virtual address. Did I get that right?
+> Take a look at btrfs RAID5/6 some time, if you want to see rookie mistakes...
 >
-> All extent ref items are reflinks which contain a 4 KB aligned address
-> because the extents have that same alignment. Did I get that right?
+>> And, you all got lost in implementation details. How many times have I been
+>> told here that some operation cannot be performed, and then it turned out
+>> the opposite. You have all sunk into some strange state of mind where every
+>> possible excuse is being made in order not to start working on a better,
+>> hollistic defrag solution.
+>>
+>> And you even misunderstood me when I said "hollistic defrag", you thought I
+>> was talking about a full defrag. No. A full defrag is a defrag performed on
+>> all the data. A holistic defrag can be performed on only some data, but it
+>> is hollistic in the sense that it uses whole information about a filesystem,
+>> not just a partial view of it. A holistic defrag is better than a partial
+>> defrag: it is faster and produces better results, and it can defrag a wider
+>> spectrum of cases. Why? Because a holistic defrag takes everything into
+>> account.
 >
-> Virtual addresses are 8-bytes in size?
+> What I'm looking for is a quantitative approach.  Sort the filesystem
+> regions by how bad they are (in terms of measurable negative outcomes
+> like poor read performance, pathological metadata updates, and future
+> allocation performance), then apply mitigation in increasing order of
+> cost-benefit ratio (or at least filter by cost-benefit ratio if you can't
+> sort without reading the whole filesystem) until a minimum threshold
+> is reached, then stop.  This lets the mitigation scale according to
+> the available maintenance window, i.e. if you have 5% of a day for
+> maintenance, you attack the worst 5% of the filesystem, then stop.
+
+Any good defrag solution should be able to prioritize to work on most  
+fragmented parts of the filesystem. That's a given.
+
+> In that respect I think we might be coming toward the same point, but
+> from different directions:  you seem to think the problem is easy to
+> solve at scale,
+
+Yes!
+
+> and I think that's impossible so I start from designs
+> that make forward progress with a fixed allocation of resources.
+
+Well, that's not useless, but it's kind of meh. Waste of time. Solve  
+the problem like a real man! Shoot with thermonuclear weapons only!
+
+>> So I think you should all inform yourself a little better about various
+>> defrag algorithms and solutions that exist. Apparently, you all lost the
+>> sight of the big picture. You can't see the wood from the trees.
 >
-> I hope that virtual addresses are not wasteful of address space (that
-> is, many top bits in an 8 bit virtual address are all zero).
+> I can see the woods, but any solution that starts with "enumerate all
+> the trees" will be met with extreme skepticism, unless it can do that
+> enumeration incrementally.
 
-All addresses in Btrfs are in linear address space. This is actually a
-lot easier for everyone if you've familiarized yourself with some
-things:
+I think that I'm close to a solution that only needs to scan the  
+free-space tree in the entirety at start. All other trees can be only  
+partially scanned. I mean, at start. As the defrag progresses, it will  
+go through all the trees (except in case of defragging only a part of  
+the partition). If a partition is to be only partially defragged, then  
+the trees do not need to be red in entirety. Only the free space tree  
+needs to be red in entirety at start (and the virtual-physical address  
+translation trees, which are small, I guess).
 
-https://btrfs.wiki.kernel.org/index.php/On-disk_Format
-
-You probably don't need to know the literal on disk format at a sector
-level. There is a human readable form available with 'btrfs
-inspect-internal dump-tree'. Create a Btrfs file system, and dump the
-tree so you can see what it looks like totally empty. Mount it. Copy
-over a file. Unmount it. Dump tree. You don't actually have to unmount
-it, but it will keep Btrfs from regular commit intervals making things
-move around. Make a directory. Dump tree. Add file to directory. Dump
-tree. Move the file. Dump tree.
-
-You'll see the relationship between the superblock, and all the trees.
-You'll see nodes and leaves, and figure out the difference between
-them.
-
-Make a reflink. Dump tree. Make a snapshot. Dump tree.
-
-
-> > Extent data items are stored in a single tree (with other trees using
-> > the same keys) that just lists which parts of the filesystem are occupied,
-> > how long they are, and what data/metadata they contain.  Each extent
-> > item contains a list of references to one of four kinds of object that
-> > refers to the extent item (aka backrefs).  The free space tree is the
-> > inverse of the extent data tree.
+>> Well, no. Perhaps the word "defrag" can have a wider and narrower sense. So
+>> in a narrower sense, "defrag" means what you just wrote. In that sense, the
+>> word "defrag" means practically the same as "merge", so why not just use the
+>> word "merge" to remove any ambiguities. The "merge" is the only operation
+>> that decreases the number of fragments (besides "delete"). Perhaps you meant
+>> move&merge. But, commonly, the word "defrag" is used in a wider sense, which
+>> is not the one you described.
 >
-> Ok, so there is an "extent tree" keyed by virtual addresses. Items
-> there contain extent data.
+> This is fairly common on btrfs:  the btrfs words don't mean the same as
+> other words, causing confusion.  How many copies are there in a btrfs
+> 4-disk raid1 array?
+
+2 copies of everything, except the superblock which has 2-6 copies.
 >
-> But, how are nodes in this extent tree addressed (how do you travel
-> from the parent to the child)? I guess by full virtual address, i.e.
-> by a reflink, but this reflink can point within-extent, meaning its
-> address is not 4 KB aligned.
+>> > > > Dedupe on btrfs also requires the ability to split and merge extents;
+>> > > > otherwise, we can't dedupe an extent that contains a combination of
+>> > > > unique and duplicate data.  If we try to just move references around
+>> > > > without splitting extents into all-duplicate and all-unique extents,
+>> > > > the duplicate blocks become unreachable, but are not  
+>> deallocated.  If we
+>> > > > only split extents, fragmentation overhead gets bad.  Before creating
+>> > > > thousands of references to an extent, it is worthwhile to  
+>> merge it with
+>> > > > as many of its neighbors as possible, ideally by picking the biggest
+>> > > > existing garbage-free extents available so we don't have to do defrag.
+>> > > > As we examine each extent in the filesystem, it may be best to send
+>> > > > to defrag, dedupe, or garbage collection--sometimes more than one of
+>> > > > those.
+>> > >
+>> > > This is sovled simply by always running defrag before dedupe.
+>> >
+>> > Defrag and dedupe in separate passes is nonsense on btrfs.
+>>
+>> Defrag can be run without dedupe.
 >
-> Or, an alternative explanation:
-> each whole metadata extent is a single node. Each node is often
-> half-full to allow for various tree operations to be performed. Due to
-> there being many items per each node, there is additional CPU
-> processing effort required when updating a node.
+> Yes, but if you're planning to run both on the same filesystem, they
+> had better be aware of each other.
 
-Reflinks are like a file based snapshot, they're a file with its own
-inode and other metadata you expect for a file, but points to the same
-extents as another file. Off hand I'm not sure other than age if
-there's any difference between the structure of the original file and
-a reflink of that file. Find out. Make a reflink, dump tree. Delete
-the original file. Dump tree.
+On-demand defrag doesn't need to be aware of on-demand dedupe. Or,  
+only in the sense that dedupe should be shut down while defrag is  
+running.
 
+Perhaps you were referring to an on-the-fly dedupe. In that case, yes.
 
-
-
+>> Now, how to organize dedupe? I didn't think about it yet. I'll leave it to
+>> you, but it seems to me that defrag should be involved there. And, my defrag
+>> solution would help there very, very much.
 >
-> > Each extent ref item is a reference to an extent data item, but it
-> > also contains all the information required to access the data.  For
-> > normal read operations the extent data tree can be ignored (though
-> > you still need to do a lookup in the csum tree to verify csums.
+> I can't see defrag in isolation as anything but counterproductive to
+> dedupe (and vice versa).
+
+Share-preserving defrag can't be harmful to dedupe.
+
+> A critical feature of the dedupe is to do extent splits along duplicate
+> content boundaries, so that you're not limited to deduping only
+> whole-extent matches.  This is especially necessary on btrfs because
+> you can't split an extent in place--if you find a partial match,
+> you have to find a new home for the unique data, which means you
+> get a lot of little fragments that are inevitably distant from their
+> logically adjacent neighbors which themselves were recently replaced
+> with a physically distant identical extent.
 >
-> So, for normal reads, the information in subvol tree is sufficient.
-
-A subvolume is a file tree. A snapshot is a prepopulated subvolume.
-It's interesting to snapshot a subvolume. Dump tree. Modify just one
-thing in the snapshot. Dump tree.
-
-
-
+> Sometimes both copies of the data suck (both have many fragments
+> or uncollected garbage), and at that point you want to do some
+> preprocessing--copy the data to make the extent you want, then use
+> dedupe to replace both bad extents with your new good one.  That's an
+> opportunistic extent merge and it needs some defrag logic to do proper
+> cost estimation.
 >
-> >> So, you are saying that backrefs are already in the extent tree (or
-> >> reachable from it). I didn't know that, that information makes my defrag
-> >> much simpler to implement and describe. Someone in this thread has
-> >> previously mislead me to believe that backref information is not easily
-> >> available.
-> >
-> > The backref isn't a precise location--it just tells you which metadata
-> > blocks are holding at least one reference to the extent.  Some CPU
-> > and linear searching has to be done to resolve that fully to an (inode,
-> > offset) pair in the subvol tree(s).  It's a tradeoff to make normal POSIX
-> > go faster, because you don't need to update the extent tree again when
-> > you do some operations on the forward ref side, even though they add or
-> > remove references.  e.g. creating a snapshot does not change the backrefs
-> > list on individual extents--it creates two roots sharing a subset of the
-> > subvol trees' branches.
+> If you have to copy 64MB of unique data to dedupe a 512K match, the extent
+> split cost is far higher than if you have a 2MB extent with 512K match.
+> So there should be sysadmin-tunable parameters that specify how much
+> to spend on diminishing returns:  maybe you don't deduplicate anything
+> that saves less than 1% of the required copy bytes, because you have
+> lots of duplicates in the filesystem and you are willing to spend 1% of
+> your disk space to not be running dedupe all day.  Similarly you don't
+> defragment (or move for any reason) extents unless that move gives you
+> significantly better read performance or consolidate diffuse allocations
+> across metadata pages, because there are millions of extents to choose
+> from and it's not necessary to optimize them all.
 >
-> This reads like a mayor fu**** to me.
+> On the other hand, if you find you _must_ move the 64MB of data for
+> other reasons (e.g. to consolidate free space) then you do want to do
+> the dedupe because it will make the extent move slightly faster (63.5MB
+> of data + reflink instead of 64MB copy).  So you definitely want one
+> program looking at both things.
 >
-> I don't get it. If a backref doesn't point to an exact item, than CPU
-> has to scan the entire 16 KB metadata extent to find the matching
-> reflink. However, this would imply that all the items in a metadata
-> extent are always valid (not stale from older versions of metadata).
-> This then implies that, when an item of a metadata extent is updated,
-> all the parents of all the items in the same extent have to be
-> updated. Now, that would be such a waste, wouldn't it? Especially if
-> the metadata extent is allowed to contain stale items.
+> Maybe there's a way to plug opportunistic dedupe into a defrag algorithm
+> the same way there's a way to plug opportunistic defrag into a dedupe
+> algorithm.  I don't know, I'm coming at this from the dedupe side.
+> If the solution looks anything like "run both separately" then I'm
+> not interested.
+
+I would suggest one of the two following simple solutions:
+    a) the on-demand defrag should be run BEFORE AND AFTER the  
+on-demand dedupe.
+or b) the on-demand defrag should be run BEFORE the on-demand dedupe,  
+and on-demand dedupe uses defrag functionality to defrag while dedupe  
+is in progress.
+
+So I guess you were thinking about the solution b) all the time when  
+you said that dedupe and defrag need to be related.
+
+>> > Extent splitting in-place is not possible on btrfs, so extent boundary
+>> > changes necessarily involve data copies.  Reference counting is done
+>> > by extent in btrfs, so it is only possible to free complete extents.
+>>
+>> Great, there is reference counting in btrfs. That helps. Good design.
 >
-> An alternative explanation: all the b-trees have 16 KB nodes, where
-> each node matches a metadata extent. Therefore, the entire node has a
-> single parent in a particular tree.
->
-> This means all virtual addresses are always 4 K aligned, furthermore,
-> all virtual addresses that point to metadata extents are 16 K aligned.
->
-> 16 KB is a pretty big for a tree node. I wonder why was this size
-> selected vs. 4 KB nodes? But, it doesn't matter.
+> Well, I say "reference counting" because I'm simplifying for an audience
+> that does not yet all know the low-level details.  The counter, such as
+> it is, gives values "zero" or "more than zero."  You never know exactly
+> how many references there are without doing the work to enumerate them.
+> The "is extent unique" function in btrfs runs the enumeration loop until
+> the second reference is found or the supply of references is exhausted,
+> whichever comes first.  It's a tradeoff to make snapshots fast.
 
-4KiB used to be the default. It was benchmarked and found to be
-faster. They can optionally be 32K or 64k on x86.
+Well, that's a disappointment.
 
-Btrfs filesystem sector size must match arch pagesize. And nodesize
-can't be smaller than filesystem sector size. And leaf size must be
-the same as nodesize.
+> When a reference is created to a new extent, it refers to the entire
+> extent.  References can refer to parts of extents (the reference has an
+> offset and length field), so when an extent is partially overwritten, the
+> extent is not modified.  Only the reference is modified, to make it refer
+> to a subset of the extent (references in other snapshots are not changed,
+> and the extent data itself is immutable).  This makes POSIX fast, but it
+> creates some headaches related to garbage collection, dedupe, defrag, etc.
 
-> So, I guess that the virtual-to-physical address translation tables
-> are always loaded in memory and that this translation is very fast?
-> And the translation in the opposite direction, too.
+Ok, got it. Thaks.
 
-That's the job of the chunk tree and device tree. And that's how
-multiple device support magic happens where files and extent
-information don't have to deal with where the data is, that's the job
-of other trees.
 
-Add device. Dump tree. Do a balance convert to change to raid1 for
-data and metadata. Dump tree.
 
-It's sometimes also useful to dump the super which is in a sense the
-top most part of the tree.
-
--- 
-Chris Murphy
