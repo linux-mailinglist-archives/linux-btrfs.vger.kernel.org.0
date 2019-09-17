@@ -2,60 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8F9B49BB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2019 10:45:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35F0B4B98
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2019 12:09:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730285AbfIQIot (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Sep 2019 04:44:49 -0400
-Received: from mail.linuxsystems.it ([79.7.78.67]:50701 "EHLO
-        mail.linuxsystems.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726564AbfIQIot (ORCPT
+        id S1727053AbfIQKJT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 17 Sep 2019 06:09:19 -0400
+Received: from mail.11d03.mspz7.gob.ec ([190.214.23.250]:53420 "EHLO
+        mail.11d03.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726820AbfIQKJT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Sep 2019 04:44:49 -0400
-X-Greylist: delayed 471 seconds by postgrey-1.27 at vger.kernel.org; Tue, 17 Sep 2019 04:44:48 EDT
-Received: by mail.linuxsystems.it (Postfix, from userid 33)
-        id 0CFFE20BBCB; Tue, 17 Sep 2019 10:31:04 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxsystems.it;
-        s=linuxsystems.it; t=1568709064;
-        bh=I5oaN5TAGEsbEDIIgg9L/aXXWJNqNuIChdsTPTUBw2g=;
-        h=To:Subject:Date:From:Cc:From;
-        b=lWAyIBaXbppABnDidEdOJTmgmTHFNB9cndohan34AMB4cgzILjzo2tlMGnHLA7R1I
-         SD3KrV20vSPoPG+syYZ0f/6CnU/1KRFve3Zd076D0Sh26q6aCjx2kI0/dHWUGW9zM2
-         BGuHHHDsCrwuZTerECCHCFT4d4/AZUJiKctMdxoY=
-To:     linux-btrfs@vger.kernel.org
-Subject: Subpagesize-blocksize: Allow I/O on blocks whose size is less than  page size
-X-PHP-Originating-Script: 0:rcube.php
+        Tue, 17 Sep 2019 06:09:19 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTP id 9BDD6405CEF1A;
+        Mon, 16 Sep 2019 23:59:49 -0500 (-05)
+Received: from mail.11d03.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d03.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id t1ZnbgyVgBsT; Mon, 16 Sep 2019 23:59:49 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTP id 4F94B405CC314;
+        Mon, 16 Sep 2019 23:59:07 -0500 (-05)
+X-Virus-Scanned: amavisd-new at 11d03.mspz7.gob.ec
+Received: from mail.11d03.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d03.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Jnz_q2tU81Bd; Mon, 16 Sep 2019 23:59:07 -0500 (-05)
+Received: from [10.33.79.142] (unknown [105.4.0.133])
+        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTPSA id 4DAE0405CD2E6;
+        Mon, 16 Sep 2019 23:58:15 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 17 Sep 2019 10:31:04 +0200
-From:   =?UTF-8?Q?Niccol=C3=B2_Belli?= <darkbasic@linuxsystems.it>
-Cc:     Chandan Rajendra <chandan@linux.vnet.ibm.com>
-Message-ID: <5e481d4f4f323226a2c81caf5e2f78ae@linuxsystems.it>
-X-Sender: darkbasic@linuxsystems.it
-User-Agent: Roundcube Webmail/1.1.5
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
+To:     Recipients <vicenta.sinche@11d03.mspz7.gob.ec>
+From:   ''Tayeb souami'' <vicenta.sinche@11d03.mspz7.gob.ec>
+Date:   Tue, 17 Sep 2019 06:58:05 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20190917045816.4DAE0405CD2E6@mail.11d03.mspz7.gob.ec>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
-What happened to the subpagesize-blocksize patchset? It seems to be 
-untouched since 3 years.
-I'm currently stuck on Fedora ppc64le because it ships with a 64k page 
-size, but I need it to be 4k in order to be able to chroot into foreign 
-architectures (like x86_64) with qemu-user.
+Lieber Freund,
 
-If I try to mount my btrfs partition with a kernel with page size set to 
-4k I get the following error:
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite unten.
 
-sectorsize 65536 not supported yet, only support 4094
+UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
 
-I didn't try the patchset, because it doesn't support compression and my 
-whole fs is compressed.
+Das ist dein Spendencode: [TS530342018]
 
-It looked like an awesome work, why didn't it get merged?
+Antworten Sie mit dem SPENDE-CODE an diese 
 
-Bests,
-Niccolo'
+E-Mail:Tayebsouam.spende@gmail.com
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+Herr Tayeb Souami
