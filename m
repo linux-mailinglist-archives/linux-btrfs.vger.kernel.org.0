@@ -2,198 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE128B542C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2019 19:28:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D6AB5559
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Sep 2019 20:32:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731044AbfIQR1l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 17 Sep 2019 13:27:41 -0400
-Received: from mail.robco.com ([64.119.213.201]:47284 "EHLO mail.robco.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727683AbfIQR1l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 17 Sep 2019 13:27:41 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.robco.com (Postfix) with ESMTP id 202D98CB;
-        Tue, 17 Sep 2019 13:27:40 -0400 (EDT)
-Received: from mail.robco.com ([127.0.0.1])
-        by localhost (mail.robco.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id XqMBNQvvhNFg; Tue, 17 Sep 2019 13:27:40 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.robco.com (Postfix) with ESMTP id EFB9DCC6;
-        Tue, 17 Sep 2019 13:27:39 -0400 (EDT)
-X-Virus-Scanned: amavisd-new at robco.com
-Received: from mail.robco.com ([127.0.0.1])
-        by localhost (mail.robco.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id N80V1fg4knQq; Tue, 17 Sep 2019 13:27:39 -0400 (EDT)
-Received: from mail.robco.com (localhost [127.0.0.1])
-        by mail.robco.com (Postfix) with ESMTP id CEBB48CB;
-        Tue, 17 Sep 2019 13:27:39 -0400 (EDT)
-Date:   Tue, 17 Sep 2019 13:27:39 -0400 (EDT)
-From:   Lai Wei-Hwa <whlai@robco.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <337881026.86319.1568741259357.JavaMail.zimbra@robco.com>
-In-Reply-To: <20190917065730.28788-1-wqu@suse.com>
-References: <20190917065730.28788-1-wqu@suse.com>
-Subject: Re: [PATCH RFC] btrfs: volumes: Check if we're hitting sys chunk
- array size limit before allocating new sys chunks
+        id S1727429AbfIQScC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 17 Sep 2019 14:32:02 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:35529 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726353AbfIQScC (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 17 Sep 2019 14:32:02 -0400
+Received: by mail-wr1-f68.google.com with SMTP id v8so4267183wrt.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Sep 2019 11:32:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WkXQL4GyvDNf/lDw0pXPxwN8EXbGCsbQagXm0hsy5Mg=;
+        b=SF/0rk1MFGUNCnQYcKEKhoEbuFNVXm0QWHSaMfV0TYb71CqTIT1TGVlsEabCpcsPAT
+         MhzmWvmAktEzg4eJJwns2d3SES+Zk2wz/W9GaokWGawBLKKjiD/lrpuIo8Rjirx8Kwsb
+         CUK/gRQREOovbxMfH86k3p6OIqefRphgx8USdZgTL8lT8EElUIg/OA00x6Qg0psjQ4T5
+         m3KUAbxEnQZ+GFjOG3lOHdoFwW8CrwGf0i7xLCo2R7JmBWyMDj2ZkWySt6k/vVUn/yJO
+         ZAys/IidVD3e3XONBAs5Ujzi+BWTPTV9/Ap8nGgNBa23kp6hJpTT7cu4qZaWISjtlO6l
+         /yvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WkXQL4GyvDNf/lDw0pXPxwN8EXbGCsbQagXm0hsy5Mg=;
+        b=ZWSsyHkpn4UuAr+Y9UsjhjLLVyoZYVlLlRujXYwcIarMh6RJiXT0lxYdFaqcDb3mdF
+         yhobxAbFBLk8cDwG3EKnNj0L31B0GXqEJajq+IT8WBrcqd3BoxKHZaY7JB5pNVEdVZ6b
+         eE/EqQyw30t0UrLF0UAg4KtAQAFW53y8oq8Aes/TjbB9+o9km34jVzud7u/KgmIsAgC7
+         wgK9h7bJzokuaBFKeKOoXjzNeY2vh+57QGG0c6VRd6gwdFXeh2/HEo8asT1o6hn8UCew
+         FzAKxIjX/9aUTYMPhTRzMP7Y7dEo+mCnwI9d0zlKLxxHfFQHOHh8YdqVp77lRtNmJGbb
+         wK2w==
+X-Gm-Message-State: APjAAAXduqtq9Y0tWH+86hInx9BqlJGH4cnEoLEf85OnbBlM56osjCNX
+        REQUFEDO0IGy/0DadHw7XRPqsM8DCdhbukuAd4Y=
+X-Google-Smtp-Source: APXvYqyHJU2q6h5yj9fk702989h3kVcEQ7Jzltj6JzN0jQKZOlcV60d6kFntDOyiSoytmhPhzha0PJLLLhLRQO6azRY=
+X-Received: by 2002:adf:ed05:: with SMTP id a5mr24673wro.35.1568745120172;
+ Tue, 17 Sep 2019 11:32:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.1.2.144]
-X-Mailer: Zimbra 8.7.11_GA_3800 (ZimbraWebClient - FF69 (Linux)/8.7.11_GA_3800)
-Thread-Topic: btrfs: volumes: Check if we're hitting sys chunk array size limit before allocating new sys chunks
-Thread-Index: zE/c44d5vFrYhnZuqIAPKs/JxfbIXA==
+References: <591580482.537773.1568655046847.JavaMail.zimbra@robco.com>
+ <79984309.572916.1568665920098.JavaMail.zimbra@robco.com> <289cd208-49cf-8194-d4df-5d0423b6b73d@gmx.com>
+In-Reply-To: <289cd208-49cf-8194-d4df-5d0423b6b73d@gmx.com>
+From:   Patrik Lundquist <patrik.lundquist@gmail.com>
+Date:   Tue, 17 Sep 2019 20:31:48 +0200
+Message-ID: <CAA7pwKOF+DayHi+gRHusMzJ11_0aQtw88PWugzZJY_yU5uOJZA@mail.gmail.com>
+Subject: Re: btrfs scrub resulting in readonly filesystem
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Lai Wei-Hwa <whlai@robco.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-After upgrading to 18.04 4.15.0-62-generic, the problem disappears. 
+On Tue, 17 Sep 2019 at 10:21, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> On 2019/9/17 =E4=B8=8A=E5=8D=884:32, Lai Wei-Hwa wrote:
+> > [ +0.000019] CPU: 18 PID: 28882 Comm: btrfs Tainted: P IO 4.4.0-157-gen=
+eric #185-Ubuntu
+>
+> Although your old kernel is not causing the problem of this case, it's
+> still recommended to upgrade to a newer kernel for btrfs usage.
 
-Thanks! 
-Lai
-
------ Original Message -----
-From: "Qu Wenruo" <wqu@suse.com>
-To: "linux-btrfs" <linux-btrfs@vger.kernel.org>
-Cc: "Lai Wei-Hwa" <whlai@robco.com>
-Sent: Tuesday, September 17, 2019 2:57:30 AM
-Subject: [PATCH RFC] btrfs: volumes: Check if we're hitting sys chunk array size limit before allocating new sys chunks
-
-[BUG]
-There is a user reporting strange EFBIG error causing transaction to be
-aborted.
-
-[Sep14 20:02] ------------[ cut here ]------------
-[ +0.000042] WARNING: CPU: 18 PID: 28882 at linux-4.4.0/fs/btrfs/extent-tree.c:10046 btrfs_create_pending_block_groups+0x144/0x1f0 [btrfs]()
-[ +0.000002] BTRFS: Transaction aborted (error -27)
-[ +0.000002] Call Trace:
-[ +0.000008] [<ffffffff8140c9a1>] dump_stack+0x63/0x82
-[ +0.000007] [<ffffffff810864d2>] warn_slowpath_common+0x82/0xc0
-[ +0.000002] [<ffffffff8108656c>] warn_slowpath_fmt+0x5c/0x80
-[ +0.000014] [<ffffffffc01f31c4>] ? btrfs_finish_chunk_alloc+0x204/0x5a0 [btrfs]
-[ +0.000011] [<ffffffffc01b1d24>] btrfs_create_pending_block_groups+0x144/0x1f0 [btrfs]
-[ +0.000012] [<ffffffffc01c7ed3>] __btrfs_end_transaction+0x93/0x340 [btrfs]
-[ +0.000013] [<ffffffffc01c8190>] btrfs_end_transaction+0x10/0x20 [btrfs]
-[ +0.000010] [<ffffffffc01b5a4d>] btrfs_inc_block_group_ro+0xed/0x1b0 [btrfs]
-[ +0.000014] [<ffffffffc02253bf>] scrub_enumerate_chunks+0x21f/0x580 [btrfs]
-[ +0.000004] [<ffffffff810cb700>] ? wake_atomic_t_function+0x60/0x60
-[ +0.000013] [<ffffffffc0226d0c>] btrfs_scrub_dev+0x1bc/0x530 [btrfs]
-[ +0.000004] [<ffffffff8123f306>] ? __mnt_want_write+0x56/0x60
-[ +0.000013] [<ffffffffc0202408>] btrfs_ioctl+0x1ac8/0x28c0 [btrfs]
-[ +0.000003] [<ffffffff8119a3b9>] ? unlock_page+0x69/0x70
-[ +0.000002] [<ffffffff8119a654>] ? filemap_map_pages+0x224/0x230
-[ +0.000004] [<ffffffff811cdb77>] ? handle_mm_fault+0x10f7/0x1b80
-[ +0.000002] [<ffffffff811fb77b>] ? kmem_cache_alloc_node+0xbb/0x210
-[ +0.000003] [<ffffffff813e13e3>] ? create_task_io_context+0x23/0x100
-[ +0.000003] [<ffffffff812318ef>] do_vfs_ioctl+0x2af/0x4b0
-[ +0.000002] [<ffffffff813e1510>] ? get_task_io_context+0x50/0x90
-[ +0.000003] [<ffffffff813f0936>] ? set_task_ioprio+0x86/0xa0
-[ +0.000002] [<ffffffff81231b69>] SyS_ioctl+0x79/0x90
-[ +0.000004] [<ffffffff81864f1b>] entry_SYSCALL_64_fastpath+0x22/0xcb
-[ +0.000002] ---[ end trace 13fce4e84d9b6aed ]---
-[ +0.000003] BTRFS: error (device sda1) in btrfs_create_pending_block_groups:10046: errno=-27 unknown
-[ +0.003942] BTRFS info (device sda1): forced readonly
-
-[CAUSE]
-From the backtrace, the EFBIG is from btrfs_add_system_chunk() where the
-new system chunk is unable to be inserted in super block.
-
-Indeed we can't do much to help such problem, but at least we can avoid
-such situation when allocating new chunk.
-
-[FIX]
-At chunk allocation time, we iterate through the new_bgs list which
-records all new chunks allocated in current transaction.
-
-And account all new system chunks and its space to be used in super block,
-along with the size of the to-be-allocated chunk to see if it exceeds
-the sys chunk size limit.
-
-Such early check will make __btrfs_alloc_chunk() return -EFBIG, and
-prevent transaction abort in btrfs_create_pending_block_groups().
-
-Reported-by: Lai Wei-Hwa <whlai@robco.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Reason for RFC:
-This patch is only to provide early graceful exit, the root reason for
-the initial report is still not fully discovered.
-
-So I keep the RFC tag until the initial report can be solved.
----
- fs/btrfs/volumes.c | 52 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a447d3ec48d5..05d328ce229f 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4901,6 +4901,51 @@ static void check_raid56_incompat_flag(struct btrfs_fs_info *info, u64 type)
- 	btrfs_set_fs_incompat(info, RAID56);
- }
- 
-+static bool check_syschunk_array_size(struct btrfs_trans_handle *trans,
-+				      int num_stripes)
-+{
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
-+	struct btrfs_block_group_cache *cache;
-+	u32 sb_array_size;
-+	u32 needed = 0;
-+
-+	lockdep_assert_held(&fs_info->chunk_mutex);
-+	sb_array_size = btrfs_super_sys_array_size(fs_info->super_copy);
-+
-+	/*
-+	 * Check and calculate all existing sys chunks in new_bgs.
-+	 * As new system chunks will take up sys chunk array in super block, we
-+	 * want to error out early before we ate up all sys chunk array.
-+	 *
-+	 * This list is only modified by btrfs_make_block_group() and
-+	 * btrfs_create_pending_block_groups().
-+	 *
-+	 * The former is only called in __btrfs_alloc_chunk() and protected
-+	 * by fs_info->chunk_mutex.
-+	 * The later is called when the last trans handle get ended in
-+	 * __btrfs_end_transaction() or btrfs_commit_transaction(), thus there
-+	 * is no race as long as we hold a trans handle.
-+	 */
-+	list_for_each_entry(cache, &trans->new_bgs, bg_list) {
-+		if (cache->flags & BTRFS_BLOCK_GROUP_SYSTEM) {
-+			struct extent_map *em;
-+
-+			em = btrfs_get_chunk_map(fs_info, cache->key.objectid,
-+						 1);
-+			/* Can't get a chunk map? It's a problem by all means */
-+			if (IS_ERR(em))
-+				return false;
-+			needed += btrfs_chunk_item_size(
-+					em->map_lookup->num_stripes);
-+			needed += sizeof(struct btrfs_disk_key);
-+			free_extent_map(em);
-+		}
-+	}
-+	if (sb_array_size + needed > BTRFS_SYSTEM_CHUNK_ARRAY_SIZE)
-+		return false;
-+	return true;
-+}
-+
- static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
- 			       u64 start, u64 type)
- {
-@@ -5071,6 +5116,13 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
- 	stripe_size = div_u64(devices_info[ndevs - 1].max_avail, dev_stripes);
- 	num_stripes = ndevs * dev_stripes;
- 
-+	if (type & BTRFS_BLOCK_GROUP_SYSTEM &&
-+	    !check_syschunk_array_size(trans, num_stripes)) {
-+		/* Use the unique errno to distinguish from ordinary ENOSPC */
-+		ret = -EFBIG;
-+		goto error;
-+	}
-+
- 	/*
- 	 * this will have to be fixed for RAID1 and RAID10 over
- 	 * more drives
--- 
-2.23.0
+https://wiki.ubuntu.com/Kernel/LTSEnablementStack
