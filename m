@@ -2,262 +2,157 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CAD7CB6341
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2019 14:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AAC6B6A28
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Sep 2019 20:00:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729506AbfIRMbd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 18 Sep 2019 08:31:33 -0400
-Received: from mout.gmx.net ([212.227.15.19]:51507 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725902AbfIRMbd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 18 Sep 2019 08:31:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1568809888;
-        bh=TiMYuIUkC6uLu1ukU8EQMrGTSkB1f14jo3fNnNJZmYQ=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=VTjSNCnBXa02ODu1NVqMfjMWp8oDQP17pgisrMCygII0EfFNNswb30Cg2jNcoImt2
-         C/btj4MCLOlhpDmzPnBJCY/vfHK68K0bqE2kfEf+G+QIPLHc8Y/UfL8QqUPrQRyizY
-         tsx2w8d54vUJ7aXeV3dybBxlLeiZA2n7D3QWkS3Y=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWAOW-1ih4VB2rNa-00XdOH; Wed, 18
- Sep 2019 14:31:28 +0200
-Subject: Re: [PATCH] Btrfs: fix selftests failure due to uninitialized i_mode
- in test inodes
-To:     Filipe Manana <fdmanana@kernel.org>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20190918120852.764-1-fdmanana@kernel.org>
- <35dbd7db-ab20-111b-3ba4-01a0cd947f58@gmx.com>
- <CAL3q7H44rF04QKQni_Su1O1wBm=2kkDjdE6oqTA0oB6bzT6Ubw@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <f3765129-96f4-54e2-9255-bfc5c8c8df88@gmx.com>
-Date:   Wed, 18 Sep 2019 20:31:23 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S1730078AbfIRSAu convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Wed, 18 Sep 2019 14:00:50 -0400
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:48734 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727000AbfIRSAu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 18 Sep 2019 14:00:50 -0400
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id ACF24430D88; Wed, 18 Sep 2019 14:00:49 -0400 (EDT)
+Date:   Wed, 18 Sep 2019 14:00:49 -0400
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     General Zed <general-zed@zedlx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Feature requests: online backup - defrag - change RAID level
+Message-ID: <20190918180049.GI24379@hungrycats.org>
+References: <20190912051904.GD22121@hungrycats.org>
+ <20190912172321.Horde.oyDNseL4IVWz-QYWBqgXqjO@server53.web-hosting.com>
+ <20190914041255.GJ22121@hungrycats.org>
+ <20190916074251.Horde.bsBwDU_QYlFY0p-a1JzxZrm@server53.web-hosting.com>
+ <20190917004916.GD24379@hungrycats.org>
+ <20190916223039.Horde.HZvhrBkQsN12DF6IDemvio6@server53.web-hosting.com>
+ <20190917053055.GG24379@hungrycats.org>
+ <20190917060724.Horde.2JvifSdoEgszEJI8_4CFSH8@server53.web-hosting.com>
+ <20190917234044.GH24379@hungrycats.org>
+ <20190918003742.Horde.uCadf9qXuYdCVqBfASzDeuN@server53.web-hosting.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H44rF04QKQni_Su1O1wBm=2kkDjdE6oqTA0oB6bzT6Ubw@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="NF0DMStqly69ITagGmlJJc4nj2WAExCbu"
-X-Provags-ID: V03:K1:41gIHBnlGx+rKAIM9on4Bn57oSOi0OLybIPIvooyL9UX9LjBKVG
- oBsE0M9BeIG/xlOdynSAGf7QphKEPmskvt4LLNUlKhNw2tlnks9scgjKNmiYTbECBRJWm9y
- sakE5VwN6iTf+dwBpf1n1GQcbzy/V/yNvDY5+r0EZ3A7SigUZNJ2XRsp+mZhrX1LNRmY/1V
- j1VvzYsViTeVH1yPdWJJQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:WYthiIupJVo=:KrtLYPK/M7s9NKzcY7v/t8
- Nb7GYixFDyJYmFWjXZS4rZZJwQ8MchK8MEaqk6M6hxvAhUlqwc4y23N4u12LHHzlaCQtHU8dR
- MABTHrLYBy7/n2jq7rxEuFLkpLPBzwszI5iRGeiVD7bpTtvuwYwpfSWPizxYXJMr+O0qy4IQP
- ETdnwFmr5cNrtqOpka8pNgNzrf3h+yh6IoxTYUiyd77+QA4EzAGTMB3dfx2jiWLsCrqc4spT2
- 8mwDjvpuYgNt0LG2RoSfe57B5e/diosEa3IFVbHJtxeepmr32UkxgMjxv9waWwtHQ/dak94Wa
- F7AgWP8dp1xyUdoXqwra8GpLGUHbMNQ91UiUsTdI+oQLsQvleL3+VtoSjxKexmTQrVbJkoPFS
- RbyW6y12axbl74Xd08eYnHnZh+6dZWZLaCdjbvX6JtFagUUDigiAM5uOACWZmEo7B+tvy9oqW
- 0TEr+A8CyJiyj7s1feluz8utKn+6IJ+8lY1rjy2dJPtEovs8lyVznC/d8fNw0tcIniSHxk6Ao
- 16PHReyhaTO2LroptaDy/cQHqODvSjdjy9HNhuHdeWdCuoO4WVYKexwETYqdou/gzq/5O8m1N
- J5Sqnz/K90luWCA9B3MU2H8onHNKzbRctZUJAmAOUCYNh0Gruig02fwg9d61tIJdUpF6alPVH
- cJ2NSwgKdZoL/yYlLK8qfSOFFX999p7rtkY7faAejZOM/g72laibBDTYzR0ON4f/6cIurvjBX
- /ofnD+Fb4wFnRoMcB33H4XpovzTz+gnLKH8v4p1gKU/sKvFXQpEsfFvxH3Ha2fWKj2gydL1Qr
- k+4kPeN5TAyOEJ88NLpy35uumhzvDuLInhnsLWVJ+ObcsWmz9ep49iAaeFPa4u1zjR2INMo4b
- HzpawNxfH51P0MnRHznfioRpgbYgC2AyBQ419t/BjMIUx5Zks/1aesDrrWv/NsMn6kdpzusEg
- HWc1E7hHAK4jgkIzzX5QychMhJL7mopUso1ikijXAwF4tMPQG/Gppthzc/UXQswtxDKMQ0024
- QYkz7uI2HzjzZhvefKOWZYylFkXF2DMj+Q5cApOiyKYCF1d2KDtODe4zWLqkekQgEv3j/BJK8
- xi5ixQbplLQ8DB22p94pCwagGx8W65InSFspQqbrT9EBNSS3eQnCwZSxtFS+cYN5JRiFs3mjY
- xErfI5Z1aD4Pc4UbTYef+NmkMM4JsEEs9lJ3ywcS2P7q6rCUWAhzwzA728dUWfosnDUi8UYzn
- ZggTt+PTqP6we+FruQ9AmBcuaX769jMFeGLJCQYnR058Wdq8artGab5p9XNY=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20190918003742.Horde.uCadf9qXuYdCVqBfASzDeuN@server53.web-hosting.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---NF0DMStqly69ITagGmlJJc4nj2WAExCbu
-Content-Type: multipart/mixed; boundary="TubVE2GP0l2eFH7zqTxHsVyzgIZsZVzWg"
+On Wed, Sep 18, 2019 at 12:37:42AM -0400, General Zed wrote:
+> It just postpones the inevitable, but you missed the point. The point of
+> shutting down dedupe is to avoid nasty bugs caused by dedupe-defrag
+> interaction.
 
---TubVE2GP0l2eFH7zqTxHsVyzgIZsZVzWg
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+They are the same bugs you'll have to fix anyway.  Dedupe isn't
+particularly special or different from the way that other btrfs write
+operations work, and nobody wants to be locked out of their filesystem
+during a big data relocation operation.  Even balance doesn't prevent
+concurrent filesystem modification--it allows concurrent changes, and
+restarts processing to take care of them when necessary.
 
+> The share-preserving defrag shouldn't interfere with dedupe because defrag
+> is run on-demand, and it should then shut down dedupe until it has
+> completed. Therefore, the issues it causes to dedupe are only temporary (and
+> minor, really).
 
+On big filesystems fragmentation is a _continuous_ problem that gets
+more expensive to fix the longer it is neglected.  So I'd naturally
+expect both dedupe and defrag agents to be active at the same time,
+or very closely interleaved, with concurrent data updates as well.
+VM images and database files are hotspots for all three activities.
 
-On 2019/9/18 =E4=B8=8B=E5=8D=888:27, Filipe Manana wrote:
-> On Wed, Sep 18, 2019 at 1:22 PM Qu Wenruo <quwenruo.btrfs@gmx.com> wrot=
-e:
->>
->>
->>
->> On 2019/9/18 =E4=B8=8B=E5=8D=888:08, fdmanana@kernel.org wrote:
->>> From: Filipe Manana <fdmanana@suse.com>
->>>
->>> Some of the self tests create a test inode, setup some extents and th=
-en do
->>> calls to btrfs_get_extent() to test that the corresponding extent map=
-s
->>> exist and are correct. However btrfs_get_extent(), since the 5.2 merg=
-e
->>> window, now errors out when it finds a regular or prealloc extent for=
- an
->>> inode that does not correspond to a regular file (its ->i_mode is not=
+I'd expect a sysadmin interface more like balance, where the interface
+looks like "run defrag now, relocating at most 20GB of data" and defrag
+decides (possibly with hints from the admin) which 20GB of data out of
+50TB of filesystem that should be.  Or I'd set the defrag limit to 1GB
+per run, and run it as many times as possible in a maintenance window
+until either the time runs out or defrag says "no further optimization
+is practical or possible, you can stop looping now."
 
->>> S_IFREG). This causes the self tests to fail sometimes, specially whe=
-n
->>> KASAN, slub_debug and page poisoning are enabled:
->>>
->>>   $ modprobe btrfs
->>>   modprobe: ERROR: could not insert 'btrfs': Invalid argument
->>>
->>>   $ dmesg
->>>   [ 9414.691648] Btrfs loaded, crc32c=3Dcrc32c-intel, debug=3Don, ass=
-ert=3Don, integrity-checker=3Don, ref-verify=3Don
->>>   [ 9414.692655] BTRFS: selftest: sectorsize: 4096  nodesize: 4096
->>>   [ 9414.692658] BTRFS: selftest: running btrfs free space cache test=
-s
->>>   [ 9414.692918] BTRFS: selftest: running extent only tests
->>>   [ 9414.693061] BTRFS: selftest: running bitmap only tests
->>>   [ 9414.693366] BTRFS: selftest: running bitmap and extent tests
->>>   [ 9414.696455] BTRFS: selftest: running space stealing from bitmap =
-to extent tests
->>>   [ 9414.697131] BTRFS: selftest: running extent buffer operation tes=
-ts
->>>   [ 9414.697133] BTRFS: selftest: running btrfs_split_item tests
->>>   [ 9414.697564] BTRFS: selftest: running extent I/O tests
->>>   [ 9414.697583] BTRFS: selftest: running find delalloc tests
->>>   [ 9415.081125] BTRFS: selftest: running find_first_clear_extent_bit=
- test
->>>   [ 9415.081278] BTRFS: selftest: running extent buffer bitmap tests
->>>   [ 9415.124192] BTRFS: selftest: running inode tests
->>>   [ 9415.124195] BTRFS: selftest: running btrfs_get_extent tests
->>>   [ 9415.127909] BTRFS: selftest: running hole first btrfs_get_extent=
- test
->>>   [ 9415.128343] BTRFS critical (device (efault)): regular/prealloc e=
-xtent found for non-regular inode 256
->>>   [ 9415.131428] BTRFS: selftest: fs/btrfs/tests/inode-tests.c:904 ex=
-pected a real extent, got 0
->>>
->>> This happens because the test inodes are created without ever initial=
-izing
->>> the i_mode field of the inode, and neither VFS's new_inode() nor the =
-btrfs
->>> callback btrfs_alloc_inode() initialize the i_mode. Initialization of=
- the
->>> i_mode is done through the various callbacks used by the VFS to creat=
-e
->>> new inodes (regular files, directories, symlinks, tmpfiles, etc), whi=
-ch
->>> all call btrfs_new_inode() which in turn calls inode_init_owner(), wh=
-ich
->>> sets the inode's i_mode. Since the tests only uses new_inode() to cre=
-ate
->>> the test inodes, the i_mode was never initialized.
->>>
->>> This always happens on a VM I used with kasan, slub_debug and many ot=
-her
->>> debug facilities enabled. It also happened to someone who reported th=
-is
->>> on bugzilla (on a 5.3-rc).
->>>
->>> Fix this by setting i_mode to S_IFREG at btrfs_new_test_inode().
->>>
->>> Fixes: 6bf9e4bd6a2778 ("btrfs: inode: Verify inode mode to avoid NULL=
- pointer dereference")
->>> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=3D204397
->>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
->>
->> Reviewed-by: Qu Wenruo <wqu@suse.com>
->>
->> However I'm interested why it doesn't get triggered reliably.
->> As I have selftest compiled in everytime.
->>
->> Is there anything racy caused the bug?
->=20
-> Nop (otherwise I would have noted that in the changelog).
->=20
-> It's just garbage due to uninitialized memory.
-> In this case, btrfs is a module and only used for testing, since a
-> btrfs inode was never allocated before attempting to load the module
-> and run the selftests, we get the garbage.
+For small systems it doesn't matter--admin says "relocate at most
+1TB of data" and new-and-improved defrag says "easy, that's the whole
+filesystem."  But small systems are not very interesting.  On small
+systems I can just run the current reflink-breaking file-oriented
+recursive defrag and dedupe at the same time.  Dedupe can put the sharing
+back almost as fast as current reflink-breaking defrag can break it,
+the whole thing finishes in minutes, and I don't even bother calculating
+how many iops were wasted because they were all free.
 
-That makes sense.
+> > I guess the extent-merge call could be augmented with an address hint
+> > for allocation, but experiments so far have indicated that the possible
+> > gains are marginal at best given the current btrfs allocator behaviour,
+> > so I haven't bothered pursuing that.
+> 
+> The "batch-update" from defrag should certainly trumps any "extent-merge".
+> The defrag will do it all for you, you just supply the defrag with a list of
+> extents that need to be defragmented.
 
-Thanks for the fix!
-Qu
+Sure...either way, it's an ioctl that takes a list of extents to be
+defragmented as an argument, and produces an output locally optimized
+for minimal fragmentation, updating and removing references to the old
+locations, etc.  Maybe it's a single list input and single extent output;
+maybe it's a list of lists which produces multiple extent outputs; maybe
+you can call it multiple times per commit and the kernel batches them up
+when it does a flush; maybe it takes allocation hints in the argument
+because the user already knows the best free space location; maybe it
+finds its own contiguous space; maybe you pass it a file descriptor and
+offset to a O_TMPFILE file where you already allocated the destination
+area with fallocate; maybe there's two separate ioctls, one sets up the
+destination area and the other moves extent data into it.  You can call
+that ioctl(s) 'batch-update' or 'extent-merge' or whatever you like.
+Figure out the requirements and make a proposal, we can see where the
+proposals overlap or decompose them into common components.
 
-> If we had a non-testing
-> inode allocated and freed before running the tests, the i_mode of the
-> test inode would match the one from previously freed inode.
->=20
->>
->> Thanks,
->> Qu
->>
->>> ---
->>>  fs/btrfs/tests/btrfs-tests.c | 8 +++++++-
->>>  1 file changed, 7 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-test=
-s.c
->>> index b5e80563efaa..99fe9bf3fdac 100644
->>> --- a/fs/btrfs/tests/btrfs-tests.c
->>> +++ b/fs/btrfs/tests/btrfs-tests.c
->>> @@ -52,7 +52,13 @@ static struct file_system_type test_type =3D {
->>>
->>>  struct inode *btrfs_new_test_inode(void)
->>>  {
->>> -     return new_inode(test_mnt->mnt_sb);
->>> +     struct inode *inode;
->>> +
->>> +     inode =3D new_inode(test_mnt->mnt_sb);
->>> +     if (inode)
->>> +             inode_init_owner(inode, NULL, S_IFREG);
->>> +
->>> +     return inode;
->>>  }
->>>
->>>  static int btrfs_init_test_fs(void)
->>>
->>
+Other questions you've asked indicate you are thinking of doing the bulk
+of the defrag work in the kernel.  This is not a good idea.  It's hard
+to allocate and effectively use large amounts of memory in the kernel
+(for developers and users alike), and the in-kernel btrfs maintenance
+tools so far have proven to make desirable administrative functions like
+IO bandwidth management difficult to impossible.  Once code is integrated
+into the kernel, it has to be kept around more or less forever, even if
+it is half-finished, obviously awful, and nobody can use it seriously
+without major redesign.  The current defrag ioctl is a prime example
+of that, but balance and send are also good examples of things that
+would have been better outside the kernel if the right interfaces had
+been available at the time they were designed.  (Balance could also be
+implemented in userspace with a batch-update data relocation ioctl, and
+could easily avoid several problems with the current kernel implementation
+in the process.)
 
+It's much easier to do big-memory operations in userspace (not just the
+technical operations themselves, but also getting the code accepted
+in the kernel).  There are already interfaces for rapid ingestion
+of the necessary metadata from userspace, so defrag's needs are
+covered there.  What is currently missing is good kernel interfaces
+for rapid implementation of the output of data relocation algorithms
+(i.e.  ioctls to move extent data precisely as instructed and don't
+break references).  Leave the kernel to physically move the data and
+update metadata once userspace knows where it should go, but don't make
+the kernel try to plan stuff or make decisions on its own--that doesn't
+end well.  Minimizing the kernel code footprint will also make it much
+easier to avoid crashes and deadlocks (or at least make them harmless
+should they occur).  btrfs has had more deadlock bugs than any two
+other filesystems on Linux combined, so designs that minimize the risk
+of adding new deadlocks will be preferred.
 
---TubVE2GP0l2eFH7zqTxHsVyzgIZsZVzWg--
+I don't think you can gain much by throwing kernel memory at
+predetermining extent moves, given the current on-disk structure of btrfs.
+Existing sharing-preserving extent move operations in btrfs are currently
+dominated by _read_ IO times--the writes are fast mostly-contiguous
+flushes, while the reads are slow random accesses.  The kernel already
+caches reads well already, there are just a lot of them to do when
+doing anything related to extent backrefs.  On small filesystems the
+whole metadata fits comfortably in 10% of RAM (below default page cache
+eviction thresholds), and on filesystems of that size you can already
+do full balances in minutes, there is no problem to be solved there.
+You can prefetch metadata into cache RAM by running TREE_SEARCH_V2 on it,
+if you think that will help.
 
---NF0DMStqly69ITagGmlJJc4nj2WAExCbu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2CI5sACgkQwj2R86El
-/qjMDQf/cEtZsrs7hnrJAL85FG4DFjLy2ZtyEovCJpcc8j1sJKIJAJFFNhWkc5k1
-El4WgGJBljwrPtIjO/Dad2+wI2EEikOCGajVmbkmkDRnFJk45sXl8alIYix3T3fZ
-DhYxNntD2vdybTUf1edRh4tqDNC8q6Fl2aY0nK2ttmpCji8MIGDVTGAWChDOGejA
-mYA3RTK3oDyN7akXnH0LzFiS64VmzWBbncgB4P0FOoCl5h+0ZzSrephqJSysYE5h
-lijzOuDFIVzL6sc/oyP2ShgHYb4o3BRarftKQM1Isr6sYU8nHQmsoMDjHTvrD2OV
-RvQjafeA8FERyu5T3bedryEtzkTv8A==
-=omvP
------END PGP SIGNATURE-----
-
---NF0DMStqly69ITagGmlJJc4nj2WAExCbu--
+Consider the XFS kernel interfaces for defrag.  It may be possible to
+implement those on btrfs, then make minor modifications to xfs_fsr so it
+can do defrag on btrfs (probably not efficiently--xfs_fsr likely assumes
+extent splits are possible without moving data--but it's a good example
+of a kernel interface designed for defrag nonetheless).
