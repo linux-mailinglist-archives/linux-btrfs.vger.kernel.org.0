@@ -2,450 +2,225 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12260B738D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2019 08:54:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D21D1B73F4
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Sep 2019 09:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731678AbfISGyF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Sep 2019 02:54:05 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:41737 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731738AbfISGyD (ORCPT
+        id S1731780AbfISHVZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 19 Sep 2019 03:21:25 -0400
+Received: from m9a0002g.houston.softwaregrp.com ([15.124.64.67]:58977 "EHLO
+        m9a0002g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727435AbfISHVZ (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Sep 2019 02:54:03 -0400
-Received: by mail-pl1-f193.google.com with SMTP id t10so1139839plr.8
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Sep 2019 23:54:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wDCHZomv4g4lpTHlYPFO3tywHDdATr8alzdqaJYaWNY=;
-        b=cCt4oDbq6PuI+fVUq0QVDExYwTKfkTSLnCpVk5iZ4mhjZqSkD0yqJIso+i4VunvBnT
-         xBQIcWxHgTOZe6AZCysRYiLBGRYqda6g2cR1g1JkOzXYfqSW5M+aCU9dFQ9sxfTP9p0l
-         YXW+bU0wRDQokVNOqfBdxkgrkm44z/XV9zsqcmL3S1BcBSc6siFvjp6bPbtAZaCfniIJ
-         w+RcY9V1EgsXpbL9cHzc5n5S15X1KUYT0Ot86GiepCaLlVc6SqC7HFLw/qOcKNg0+xc1
-         M0I0fC0YhndC2FuydV0aRUE7CMuGDOo5/m3PDokFQGlXMxJ4x529JqCGqwo5wpmOFauW
-         KQBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wDCHZomv4g4lpTHlYPFO3tywHDdATr8alzdqaJYaWNY=;
-        b=RbA5BDWDbxF+no/LupOb18NmfCO4/w9HLpjbu5bF0/sQ6asSBD9JiA+IHcAzHVafu9
-         QFwbF90xR4AyxiMQLciOcoY+ZkMjMHfflvE2T/ufxJoIHQ/HlDXebPpAQZsRtBPHgS3/
-         CnFbRbhuCgXWAJX347fyoS2tEzPderk0hA0YcQ0zcgIfgsuQpU2oe+ZGwOLLJK6P1sk9
-         3MZWpt+2ZkYliBVSNu0awNg6hon1HAGDQX3vKZirV0Vm8QkFuO5xMlhfKhhz83KW/oa4
-         9JlN3WQdd5W7X8zRnh7x2wQzkIL9kSjMjmxwMr8tFneE028GcejdEnLemN+opuyWDoRq
-         rItg==
-X-Gm-Message-State: APjAAAXYMsCYwJ1RSaKeB97b0dJdcFp4hwM2eATyDd7WQX6FKbCoNt+P
-        dm0CADuNYMnEcJc/ERd74u9YEPnLmGw=
-X-Google-Smtp-Source: APXvYqwa+YGyPmC6c48S1pn3GXaAwATNzRmMm7plE7XA59xzKeNx+caxtUJygezndazeysE0goVn4w==
-X-Received: by 2002:a17:902:8645:: with SMTP id y5mr8303800plt.191.1568876040867;
-        Wed, 18 Sep 2019 23:54:00 -0700 (PDT)
-Received: from vader.thefacebook.com ([2620:10d:c090:180::332b])
-        by smtp.gmail.com with ESMTPSA id m24sm6623615pgj.71.2019.09.18.23.53.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Sep 2019 23:54:00 -0700 (PDT)
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc:     Dave Chinner <david@fromorbit.com>, linux-api@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [RFC PATCH 3/3] btrfs: implement encoded (compressed) writes
-Date:   Wed, 18 Sep 2019 23:53:47 -0700
-Message-Id: <17fd5172adea93180afc8066cc8dfc37d827637f.1568875700.git.osandov@fb.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <cover.1568875700.git.osandov@fb.com>
-References: <cover.1568875700.git.osandov@fb.com>
+        Thu, 19 Sep 2019 03:21:25 -0400
+Received: FROM m9a0002g.houston.softwaregrp.com (15.121.0.190) BY m9a0002g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-btrfs@vger.kernel.org;
+ Thu, 19 Sep 2019 07:20:23 +0000
+Received: from M4W0335.microfocus.com (2002:f78:1193::f78:1193) by
+ M9W0067.microfocus.com (2002:f79:be::f79:be) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Thu, 19 Sep 2019 07:19:55 +0000
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com (15.124.8.13) by
+ M4W0335.microfocus.com (15.120.17.147) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Thu, 19 Sep 2019 07:19:55 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MB0cjXqyBNMdWb0b+XVRQwJ/wSj8zoZ3rhwBEGJX8UxSGTGNjosP8j5sEPiEVaSTyY5IMvD9DpFf5BvGEFDt6stmrwKtUHQHWH/yB6M1kL3fZ8+O2wjyXPysMDwGMHekZuSEcdsQFLW+miBp6pxnGMZxIv9fFfJ8x1FwGEcBF08cUwAgYqW4b5MEjELt8C/aZoPQ2snleIiBq+/IGHknsGlub3IZZmK5gUMbq0VnK6n+7GA9EOhA7VLlXYu/kNt1MB42aHUQURGek0kiNpdXGg664ujN+O/4yF9CmfLVEtaUFFaZiYuWwVTgbPElT0HM1CQIlpuTGxRufs/PPCaHMQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PkFly++jVEF68O0fIyRl2hLgBgmqPg7TX4YUkU6G/+I=;
+ b=nhFKcvczEyDS9/nobpGs0eq6vggLX+rRfBqN6Ey2733VvOY5GBpOTQsDH2hCZCqS6oJH/s7lPamTxyN8CIfmJ95lEQw/5u9+5GGcYa9RnjcH9a1rprY912lZ4/+y6EAobvOjIY4OOK9vw2PAvkdK3CZdjDgIcz/W+tHVFj/rBe7PQ8AaShHBZDbfrkfd9OsiYLDGqNtAmGpPcrJKcKNEi91c8R74om6LqYcrVF8R49Aj0m7VzMy0l2l+0NllVzxm68AQSUo66Ho52hBXcPHJgeiho/F/WnludPITcNvT5tXi2zvlm1Uoyi4nECjbX6oRbga+/A0kbkMMLtvtxzoZPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
+ BY5PR18MB3396.namprd18.prod.outlook.com (10.255.138.22) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.20; Thu, 19 Sep 2019 07:19:48 +0000
+Received: from BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::3993:1f66:bd4:83cc]) by BY5PR18MB3266.namprd18.prod.outlook.com
+ ([fe80::3993:1f66:bd4:83cc%5]) with mapi id 15.20.2263.023; Thu, 19 Sep 2019
+ 07:19:48 +0000
+From:   WenRuo Qu <wqu@suse.com>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2.1 00/10] btrfs-progs: image: Enhancement with new data
+ dump feature
+Thread-Topic: [PATCH v2.1 00/10] btrfs-progs: image: Enhancement with new data
+ dump feature
+Thread-Index: AQHVbrqeG5ki3Ct79ki9jQbiiHnHHw==
+Date:   Thu, 19 Sep 2019 07:19:48 +0000
+Message-ID: <8e533879-f048-fd28-6d88-2222a4c8f019@suse.com>
+References: <20190704061103.20096-1-wqu@suse.com>
+In-Reply-To: <20190704061103.20096-1-wqu@suse.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: TY2PR0101CA0013.apcprd01.prod.exchangelabs.com
+ (2603:1096:404:92::25) To BY5PR18MB3266.namprd18.prod.outlook.com
+ (2603:10b6:a03:1a1::15)
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [13.231.109.76]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 3c337049-61aa-42f1-9a42-08d73cd1c102
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(49563074)(7193020);SRVR:BY5PR18MB3396;
+x-ms-traffictypediagnostic: BY5PR18MB3396:
+x-microsoft-antispam-prvs: <BY5PR18MB33962AC7C3CF2638AB0EABA4D6890@BY5PR18MB3396.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 016572D96D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(396003)(366004)(376002)(136003)(346002)(39860400002)(54534003)(189003)(199004)(2616005)(476003)(229853002)(11346002)(66066001)(446003)(305945005)(25786009)(14454004)(6246003)(486006)(36756003)(7736002)(5640700003)(478600001)(6486002)(71200400001)(6512007)(6436002)(6916009)(14444005)(71190400001)(86362001)(8676002)(81156014)(81166006)(8936002)(2501003)(256004)(99286004)(2906002)(5660300002)(316002)(66616009)(52116002)(2351001)(3846002)(99936001)(64756008)(66556008)(31696002)(102836004)(386003)(66446008)(26005)(66476007)(6116002)(186003)(6506007)(66946007)(76176011)(31686004);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3396;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: naXQi+XHIr2tNHMf8lyd1b9U1EmCoKKzeqVxaQfqwLDGpdpKL7GZF272nIgrK81ed1cgQQc0oTQbwPm5qcj/Lnrv8hp5Y94/R0m90/jPkIAVZDuYD7FcEJIikqdgXFo9aRt/kwsEePmNWsY18FDA2uidd5v+0XyJfdBYbekvp7lAWsJTWYT3RjpNy1vxAMPxpGr0XnwdHEyoIcz+apEfIb2BQ7EIyAtwOfNpls6NPUOpZ8KMC5wfm+J7KUOMYVSgS3AUhfoztFXdfxIbUjeVQBmcJKst+n80VlKfGhS31KOLFGmDLKBAzb6RJY/sFVwQ2FlgewvsliOgRX2SXS59L53akGZtZWF5oB4u90M3BcefTNoShbDS0dRKoP7k9uGYuU/soI8WndP6K3Cvs3I/HrYZNY09+6wpPbE5sTjnd6c=
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature";
+        boundary="sTnhQjlQ97Af4MJBn4tJhMiMI5Ni18uZt"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3c337049-61aa-42f1-9a42-08d73cd1c102
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Sep 2019 07:19:48.7514
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: s7rnveMr7MTNIUb715RKwB0WXV70wOSqHu3KA6ERNV34/Gt78XJfTbAtIWquZmwH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3396
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+--sTnhQjlQ97Af4MJBn4tJhMiMI5Ni18uZt
+Content-Type: multipart/mixed; boundary="ZvAUyehlJ6alCGfiHOBmnFW7InifzeYjK"
 
-This adds support to Btrfs for the RWF_ENCODED flag to pwritev2(). The
-implementation is similar to direct I/O: we have to flush any ordered
-extents, invalidate the page cache, and do the io tree/delalloc/extent
-map/ordered extent dance. From there, we can reuse the compression code
-with a minor modification to distinguish the write from writeback.
+--ZvAUyehlJ6alCGfiHOBmnFW7InifzeYjK
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
- fs/btrfs/compression.c |   6 +-
- fs/btrfs/compression.h |   5 +-
- fs/btrfs/ctree.h       |   4 +
- fs/btrfs/file.c        |  40 +++++++--
- fs/btrfs/inode.c       | 190 ++++++++++++++++++++++++++++++++++++++++-
- 5 files changed, 232 insertions(+), 13 deletions(-)
+Gentle ping?
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index b05b361e2062..6632dd8d2e4d 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -276,7 +276,8 @@ static void end_compressed_bio_write(struct bio *bio)
- 			bio->bi_status == BLK_STS_OK);
- 	cb->compressed_pages[0]->mapping = NULL;
- 
--	end_compressed_writeback(inode, cb);
-+	if (cb->writeback)
-+		end_compressed_writeback(inode, cb);
- 	/* note, our inode could be gone now */
- 
- 	/*
-@@ -311,7 +312,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 				 unsigned long compressed_len,
- 				 struct page **compressed_pages,
- 				 unsigned long nr_pages,
--				 unsigned int write_flags)
-+				 unsigned int write_flags, bool writeback)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct bio *bio = NULL;
-@@ -336,6 +337,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 	cb->mirror_num = 0;
- 	cb->compressed_pages = compressed_pages;
- 	cb->compressed_len = compressed_len;
-+	cb->writeback = writeback;
- 	cb->orig_bio = NULL;
- 	cb->nr_pages = nr_pages;
- 
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 4cb8be9ff88b..d4176384ec15 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -47,6 +47,9 @@ struct compressed_bio {
- 	/* the compression algorithm for this bio */
- 	int compress_type;
- 
-+	/* Whether this is a write for writeback. */
-+	bool writeback;
-+
- 	/* number of compressed pages in the array */
- 	unsigned long nr_pages;
- 
-@@ -93,7 +96,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 				  unsigned long compressed_len,
- 				  struct page **compressed_pages,
- 				  unsigned long nr_pages,
--				  unsigned int write_flags);
-+				  unsigned int write_flags, bool writeback);
- blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 				 int mirror_num, unsigned long bio_flags);
- 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 19d669d12ca1..76962d319316 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2905,6 +2905,10 @@ int btrfs_run_delalloc_range(struct inode *inode, struct page *locked_page,
- int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
- void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
- 					  u64 end, int uptodate);
-+
-+ssize_t btrfs_encoded_write(struct kiocb *iocb, struct iov_iter *from,
-+			    struct encoded_iov *encoded);
-+
- extern const struct dentry_operations btrfs_dentry_operations;
- 
- /* ioctl.c */
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 8fe4eb7e5045..068b7f2cc243 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1872,8 +1872,7 @@ static void update_time_for_write(struct inode *inode)
- 		inode_inc_iversion(inode);
- }
- 
--static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
--				    struct iov_iter *from)
-+static ssize_t btrfs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file_inode(file);
-@@ -1883,14 +1882,22 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 	u64 end_pos;
- 	ssize_t num_written = 0;
- 	const bool sync = iocb->ki_flags & IOCB_DSYNC;
-+	struct encoded_iov encoded;
- 	ssize_t err;
- 	loff_t pos;
- 	size_t count;
- 	loff_t oldsize;
- 	int clean_page = 0;
- 
--	if (!(iocb->ki_flags & IOCB_DIRECT) &&
--	    (iocb->ki_flags & IOCB_NOWAIT))
-+	if (iocb->ki_flags & IOCB_ENCODED) {
-+		err = import_encoded_write(iocb, &encoded, from);
-+		if (err)
-+			return err;
-+	}
-+
-+	if ((iocb->ki_flags & IOCB_NOWAIT) &&
-+	    (!(iocb->ki_flags & IOCB_DIRECT) ||
-+	     (iocb->ki_flags & IOCB_ENCODED)))
- 		return -EOPNOTSUPP;
- 
- 	if (!inode_trylock(inode)) {
-@@ -1899,14 +1906,27 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 		inode_lock(inode);
- 	}
- 
--	err = generic_write_checks(iocb, from);
--	if (err <= 0) {
-+	if (iocb->ki_flags & IOCB_ENCODED) {
-+		err = generic_encoded_write_checks(iocb, &encoded);
-+		if (err) {
-+			inode_unlock(inode);
-+			return err;
-+		}
-+		count = encoded.unencoded_len;
-+	} else {
-+		err = generic_write_checks(iocb, from);
-+		if (err < 0) {
-+			inode_unlock(inode);
-+			return err;
-+		}
-+		count = iov_iter_count(from);
-+	}
-+	if (count == 0) {
- 		inode_unlock(inode);
- 		return err;
- 	}
- 
- 	pos = iocb->ki_pos;
--	count = iov_iter_count(from);
- 	if (iocb->ki_flags & IOCB_NOWAIT) {
- 		/*
- 		 * We will allocate space in case nodatacow is not set,
-@@ -1965,7 +1985,9 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 	if (sync)
- 		atomic_inc(&BTRFS_I(inode)->sync_writers);
- 
--	if (iocb->ki_flags & IOCB_DIRECT) {
-+	if (iocb->ki_flags & IOCB_ENCODED) {
-+		num_written = btrfs_encoded_write(iocb, from, &encoded);
-+	} else if (iocb->ki_flags & IOCB_DIRECT) {
- 		num_written = __btrfs_direct_write(iocb, from);
- 	} else {
- 		num_written = btrfs_buffered_write(iocb, from);
-@@ -3440,7 +3462,7 @@ static loff_t btrfs_file_llseek(struct file *file, loff_t offset, int whence)
- 
- static int btrfs_file_open(struct inode *inode, struct file *filp)
- {
--	filp->f_mode |= FMODE_NOWAIT;
-+	filp->f_mode |= FMODE_NOWAIT | FMODE_ENCODED_IO;
- 	return generic_file_open(inode, filp);
- }
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index a0546401bc0a..90ca8537df8e 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -865,7 +865,7 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
- 				    ins.objectid,
- 				    ins.offset, async_extent->pages,
- 				    async_extent->nr_pages,
--				    async_chunk->write_flags)) {
-+				    async_chunk->write_flags, true)) {
- 			struct page *p = async_extent->pages[0];
- 			const u64 start = async_extent->start;
- 			const u64 end = start + async_extent->ram_size - 1;
-@@ -10590,6 +10590,194 @@ void btrfs_set_range_writeback(struct extent_io_tree *tree, u64 start, u64 end)
- 	}
- }
- 
-+ssize_t btrfs_encoded_write(struct kiocb *iocb, struct iov_iter *from,
-+			    struct encoded_iov *encoded)
-+{
-+	struct file *file = iocb->ki_filp;
-+	struct inode *inode = file_inode(file);
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_root *root = BTRFS_I(inode)->root;
-+	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
-+	struct extent_changeset *data_reserved = NULL;
-+	struct extent_state *cached_state = NULL;
-+	int compression;
-+	u64 disk_num_bytes, num_bytes;
-+	u64 start, end;
-+	unsigned long nr_pages, i;
-+	struct page **pages;
-+	struct btrfs_key ins;
-+	struct extent_map *em;
-+	ssize_t ret;
-+
-+	switch (encoded->compression) {
-+	case ENCODED_IOV_COMPRESSION_ZLIB:
-+		compression = BTRFS_COMPRESS_ZLIB;
-+		break;
-+	case ENCODED_IOV_COMPRESSION_LZO:
-+		compression = BTRFS_COMPRESS_LZO;
-+		break;
-+	case ENCODED_IOV_COMPRESSION_ZSTD:
-+		compression = BTRFS_COMPRESS_ZSTD;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	disk_num_bytes = iov_iter_count(from);
-+
-+	/* The extent size must be sane. */
-+	if (encoded->unencoded_len > BTRFS_MAX_UNCOMPRESSED ||
-+	    disk_num_bytes > BTRFS_MAX_COMPRESSED ||
-+	    disk_num_bytes == 0)
-+		return -EINVAL;
-+
-+	/*
-+	 * The compressed data on disk must be sector-aligned. For convenience,
-+	 * we extend the compressed data with zeroes if it isn't.
-+	 */
-+	disk_num_bytes = ALIGN(disk_num_bytes, fs_info->sectorsize);
-+	/*
-+	 * The extent in the file must also be sector-aligned. However, we allow
-+	 * a write which ends at or extends i_size to have an unaligned length;
-+	 * we round up the extent size and set i_size to the given length.
-+	 */
-+	start = iocb->ki_pos;
-+	if (!IS_ALIGNED(start, fs_info->sectorsize))
-+		return -EINVAL;
-+	if (start + encoded->unencoded_len >= inode->i_size) {
-+		num_bytes = ALIGN(encoded->unencoded_len, fs_info->sectorsize);
-+	} else {
-+		num_bytes = encoded->unencoded_len;
-+		if (!IS_ALIGNED(num_bytes, fs_info->sectorsize))
-+			return -EINVAL;
-+	}
-+	end = start + num_bytes - 1;
-+
-+	/*
-+	 * It's valid for compressed data to be larger than or the same size as
-+	 * the decompressed data. However, for buffered I/O, we never write out
-+	 * a compressed extent unless it's smaller than the decompressed data,
-+	 * so for now, let's not allow creating such extents explicity, either.
-+	 */
-+	if (disk_num_bytes >= num_bytes)
-+		return -EINVAL;
-+
-+	nr_pages = (disk_num_bytes + PAGE_SIZE - 1) >> PAGE_SHIFT;
-+	pages = kvcalloc(nr_pages, sizeof(struct page *), GFP_USER);
-+	if (!pages)
-+		return -ENOMEM;
-+	for (i = 0; i < nr_pages; i++) {
-+		size_t bytes;
-+		char *kaddr;
-+
-+		pages[i] = alloc_page(GFP_USER);
-+		if (!pages[i]) {
-+			ret = -ENOMEM;
-+			goto out_pages;
-+		}
-+		kaddr = kmap(pages[i]);
-+		bytes = min_t(size_t, PAGE_SIZE, iov_iter_count(from));
-+		if (copy_from_iter(kaddr, bytes, from) != bytes) {
-+			kunmap(pages[i]);
-+			ret = -EFAULT;
-+			goto out_pages;
-+		}
-+		if (bytes < PAGE_SIZE)
-+			memset(kaddr + bytes, 0, PAGE_SIZE - bytes);
-+		kunmap(pages[i]);
-+	}
-+
-+	for (;;) {
-+		struct btrfs_ordered_extent *ordered;
-+
-+		lock_extent_bits(io_tree, start, end, &cached_state);
-+		ordered = btrfs_lookup_ordered_range(BTRFS_I(inode), start,
-+						     end - start + 1);
-+		if (!ordered &&
-+		    !filemap_range_has_page(inode->i_mapping, start, end))
-+			break;
-+		if (ordered)
-+			btrfs_put_ordered_extent(ordered);
-+		unlock_extent_cached(&BTRFS_I(inode)->io_tree, start, end,
-+				     &cached_state);
-+		cond_resched();
-+		ret = btrfs_wait_ordered_range(inode, start, end);
-+		if (ret)
-+			goto out_pages;
-+		ret = invalidate_inode_pages2_range(inode->i_mapping,
-+						    start >> PAGE_SHIFT,
-+						    end >> PAGE_SHIFT);
-+		if (ret)
-+			goto out_pages;
-+	}
-+
-+	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, start,
-+					   num_bytes);
-+	if (ret)
-+		goto out_unlock;
-+
-+	ret = btrfs_reserve_extent(root, num_bytes, disk_num_bytes,
-+				   disk_num_bytes, 0, 0, &ins, 1, 1);
-+	if (ret)
-+		goto out_delalloc_release;
-+
-+	em = create_io_em(inode, start, num_bytes, start, ins.objectid,
-+			  ins.offset, ins.offset, num_bytes, compression,
-+			  BTRFS_ORDERED_COMPRESSED);
-+	if (IS_ERR(em)) {
-+		ret = PTR_ERR(em);
-+		goto out_free_reserve;
-+	}
-+	free_extent_map(em);
-+
-+	ret = btrfs_add_ordered_extent_compress(inode, start, ins.objectid,
-+						num_bytes, ins.offset,
-+						BTRFS_ORDERED_COMPRESSED,
-+						compression);
-+	if (ret) {
-+		btrfs_drop_extent_cache(BTRFS_I(inode), start, end, 0);
-+		goto out_free_reserve;
-+	}
-+	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
-+
-+	if (start + encoded->unencoded_len > inode->i_size)
-+		i_size_write(inode, start + encoded->unencoded_len);
-+
-+	unlock_extent_cached(io_tree, start, end, &cached_state);
-+
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), num_bytes, false);
-+
-+	if (btrfs_submit_compressed_write(inode, start, num_bytes, ins.objectid,
-+					  ins.offset, pages, nr_pages, 0,
-+					  false)) {
-+		struct page *page = pages[0];
-+
-+		page->mapping = inode->i_mapping;
-+		btrfs_writepage_endio_finish_ordered(page, start, end, 0);
-+		page->mapping = NULL;
-+		ret = -EIO;
-+		goto out_pages;
-+	}
-+	iocb->ki_pos += encoded->unencoded_len;
-+	return encoded->unencoded_len;
-+
-+out_free_reserve:
-+	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
-+	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 1);
-+out_delalloc_release:
-+	btrfs_delalloc_release_space(inode, data_reserved, start, num_bytes,
-+				     true);
-+out_unlock:
-+	unlock_extent_cached(io_tree, start, end, &cached_state);
-+out_pages:
-+	for (i = 0; i < nr_pages; i++) {
-+		if (pages[i])
-+			put_page(pages[i]);
-+	}
-+	kvfree(pages);
-+	return ret;
-+}
-+
- #ifdef CONFIG_SWAP
- /*
-  * Add an entry indicating a block group or device which is pinned by a
--- 
-2.23.0
+This feature should be pretty useful for both full fs backup and debug
+purpose.
 
+Any feedback?
+It can still be applied to latest stable branch without any conflict.
+
+Thanks,
+Qu
+
+On 2019/7/4 =E4=B8=8B=E5=8D=882:10, Qu Wenruo wrote:
+> This updated patchset is rebased on devel branch, whose HEAD is:
+> commit 73289664917ad7c73f3f3393593e93a118228ad8 (david/devel)
+> Author: David Sterba <dsterba@suse.com>
+> Date:   Thu Jul 4 01:42:15 2019 +0200
+>=20
+>     btrfs-progs: kerncompat: define __always_inline conditionally
+>=20
+> This updated patchset includes the following features:
+>=20
+> - Small fixes to improve btrfs-image error report
+>   * Output error message for chunk tree build error
+>   * Fix error output to show correct return value
+>   Patch 1 and 2.
+>=20
+> - Reduce memory usage when decompress super block
+>   Independent change, for current btrfs-image, it will reduce buffer
+>   size from 256K to fixed 4K.
+>   Patch 3.
+>=20
+> - Rework how we search chunk tree blocks
+>   Instead of iterating clusters again and again for each chunk tree
+>   block, record system chunk array and iterate clusters once for all
+>   chunk tree blocks.
+>   This should reduce restore time for large image dump.
+>   Patch 4, 5 and 6.
+>=20
+> - Introduce data dump feature to dump the whole fs.
+>   This will introduce a new magic number to prevent old btrfs-image to
+>   hit failure as the item size limit is enlarged.
+>   Patch 7 and 8.
+>=20
+> - Reduce memory usage for data dump restore
+>   This is mostly due to the fact that we have much larger
+>   max_pending_size introduced by data dump(256K -> 256M).
+>   Using 4 * max_pending_size for each decompress thread as buffer is wa=
+y
+>   too expensive now.
+>   Use proper inflate() to replace uncompress() calls.
+>   Patch 9 and 10.
+>=20
+> Changelog:
+> v2:
+> - New small fixes:
+>   * Fix a confusing error message due to unpopulated errno
+>   * Output error message for chunk tree build error
+>  =20
+> - Fix a regression of previous version
+>   Patch "btrfs-progs: image: Rework how we search chunk tree blocks"
+>   deleted a "ret =3D 0" line which could cause false early exit.
+>=20
+> - Reduce memory usage for data dump
+>=20
+> v2.1:
+> - Rebased to devel branch
+>   Removing 4 already merged patches from the patchset.
+>=20
+> - Re-order the patchset
+>   Put small and independent patches at the top of queue, and put the
+>   data dump related feature at the end.
+>=20
+> - Fix -Wmaybe-uninitialized warnings
+>   Strangely, D=3D1 won't trigger these warnings thus they sneak into v2=
+
+>   without being detected.
+>=20
+> - Fix FROM: line
+>   Reverted to old smtp setup. The new setup will override FROM: line,
+>   messing up the name of author.
+>=20
+> Qu Wenruo (10):
+>   btrfs-progs: image: Output error message for chunk tree build error
+>   btrfs-progs: image: Fix error output to show correct return value
+>   btrfs-progs: image: Don't waste memory when we're just extracting
+>     super block
+>   btrfs-progs: image: Allow restore to record system chunk ranges for
+>     later usage
+>   btrfs-progs: image: Introduce helper to determine if a tree block is
+>     in the range of system chunks
+>   btrfs-progs: image: Rework how we search chunk tree blocks
+>   btrfs-progs: image: Introduce framework for more dump versions
+>   btrfs-progs: image: Introduce -d option to dump data
+>   btrfs-progs: image: Reduce memory requirement for decompression
+>   btrfs-progs: image: Reduce memory usage for chunk tree search
+>=20
+>  image/main.c     | 866 +++++++++++++++++++++++++++++++++++------------=
+
+>  image/metadump.h |  13 +-
+>  2 files changed, 654 insertions(+), 225 deletions(-)
+>=20
+
+
+--ZvAUyehlJ6alCGfiHOBmnFW7InifzeYjK--
+
+--sTnhQjlQ97Af4MJBn4tJhMiMI5Ni18uZt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2DLAoACgkQwj2R86El
+/qhq5wf/eG5H76ZtZtQY9PRSEI9ZSMlVZgbL7vpT6QNZVD6vF/DD6n2A/p7p53bj
+3aWUfmk88pml0kDXGyN423AGL3G24SKhqsk81o0nmvgaRbRbkDFYWMLcMj2Opldw
+Aat8Cazq4rWCIsgqE2EiX8azPSkktYmtpKaUt762Byz83dpzJUFROQqMsWf/a3EF
+HuOlLZklOziRnF4P6h8maHeZ+O9/gxPb4qMxOEt8FjAuZTaqqAsgOH7yZJ/o6Kxy
+sA4rHBth9iwhdg3MXURVfH6m/eRPFYp/6UK6G+3Ot5g3eRt/KDJoG2vZfNIVbAC3
+UFrmf/uaNWbgKCTab1D8sLPH60IcHw==
+=Z78y
+-----END PGP SIGNATURE-----
+
+--sTnhQjlQ97Af4MJBn4tJhMiMI5Ni18uZt--
