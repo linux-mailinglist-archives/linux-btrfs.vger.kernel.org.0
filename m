@@ -2,237 +2,230 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCEA4B8975
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Sep 2019 04:41:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03BBFB9236
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Sep 2019 16:30:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394685AbfITCl6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 19 Sep 2019 22:41:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50012 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389717AbfITCl6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 19 Sep 2019 22:41:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5D40FAC8B;
-        Fri, 20 Sep 2019 02:41:55 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Cebtenzzre <cebtenzzre@gmail.com>
-Subject: [PATCH] btrfs: relocation: Fix KASAN report about use-after-free due to dead reloc tree cleanup race
-Date:   Fri, 20 Sep 2019 10:41:50 +0800
-Message-Id: <20190920024150.17911-1-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
+        id S2390790AbfITOae (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 20 Sep 2019 10:30:34 -0400
+Received: from know-smtprelay-omd-8.server.virginmedia.net ([81.104.62.40]:38864
+        "EHLO know-smtprelay-omd-8.server.virginmedia.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390757AbfITOac (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 20 Sep 2019 10:30:32 -0400
+Received: from [172.16.100.1] ([86.12.75.74])
+        by cmsmtp with ESMTPA
+        id BJvYinxJYrx5ABJvYiQxOP; Fri, 20 Sep 2019 15:30:29 +0100
+X-Originating-IP: [86.12.75.74]
+X-Authenticated-User: peter.chant@ntlworld.com
+X-Spam: 0
+X-Authority: v=2.3 cv=Te64SyYh c=1 sm=1 tr=0 a=RxXffCTTaIU9mOmmEQ6aGA==:117
+ a=RxXffCTTaIU9mOmmEQ6aGA==:17 a=IkcTkHD0fZMA:10 a=6s0VX7ivN6RIie3_96YA:9
+ a=QEXdDO2ut3YA:10
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+From:   Pete <pete@petezilla.co.uk>
+Subject: Balance ENOSPC during balance despite additional storage added
+Message-ID: <94ebf95b-c8c2-e2d5-8db6-77a74c19644a@petezilla.co.uk>
+Date:   Fri, 20 Sep 2019 15:29:32 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfGAvMAvh/iEOUFVGGQ/7Ou0BCO5e6i5l+r0VYg9AVcqC+s4YM6OuaAWCd9DZHiHahFf14Lo4t5ZZs5A+QBNMDovFbLD44oxsb7bAHlv9pcRFQOw5elqs
+ dmHUKc9eiCNTtPW/B9vqplVtZWFkfHhpxaW70e58uAPq+hI4+ATGzr1NAf44EDW8o30ADMusO4J+Mg==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-One user reported a reproduciable KASAN report about use-after-free:
-  BTRFS info (device sdi1): balance: start -dvrange=1256811659264..1256811659265
-  BTRFS info (device sdi1): relocating block group 1256811659264 flags data|raid0
-  ==================================================================
-  BUG: KASAN: use-after-free in btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
-  Write of size 8 at addr ffff88856f671710 by task kworker/u24:10/261579
+I have a btrfs that is on top of an lvm logical volume on top of 
+dm-crypt on a single nvme drive (Samsung 870 Pro 512GB).
 
-  CPU: 2 PID: 261579 Comm: kworker/u24:10 Tainted: P           OE     5.2.11-arch1-1-kasan #4
-  Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./X99 Extreme4, BIOS P3.80 04/06/2018
-  Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
-  Call Trace:
-   dump_stack+0x7b/0xba
-   print_address_description+0x6c/0x22e
-   ? btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
-   __kasan_report.cold+0x1b/0x3b
-   ? btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
-   kasan_report+0x12/0x17
-   __asan_report_store8_noabort+0x17/0x20
-   btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
-   record_root_in_trans+0x2a0/0x370 [btrfs]
-   btrfs_record_root_in_trans+0xf4/0x140 [btrfs]
-   start_transaction+0x1ab/0xe90 [btrfs]
-   btrfs_join_transaction+0x1d/0x20 [btrfs]
-   btrfs_finish_ordered_io+0x7bf/0x18a0 [btrfs]
-   ? lock_repin_lock+0x400/0x400
-   ? __kmem_cache_shutdown.cold+0x140/0x1ad
-   ? btrfs_unlink_subvol+0x9b0/0x9b0 [btrfs]
-   finish_ordered_fn+0x15/0x20 [btrfs]
-   normal_work_helper+0x1bd/0xca0 [btrfs]
-   ? process_one_work+0x819/0x1720
-   ? kasan_check_read+0x11/0x20
-   btrfs_endio_write_helper+0x12/0x20 [btrfs]
-   process_one_work+0x8c9/0x1720
-   ? pwq_dec_nr_in_flight+0x2f0/0x2f0
-   ? worker_thread+0x1d9/0x1030
-   worker_thread+0x98/0x1030
-   kthread+0x2bb/0x3b0
-   ? process_one_work+0x1720/0x1720
-   ? kthread_park+0x120/0x120
-   ret_from_fork+0x35/0x40
+I added a second logical volume to give more space to get rid of ENOSPC 
+errors during balance, but to no avail.  This was after I started 
+getting enospc during balance.  Without this additional logical device, 
+before balance, I had run out of space owning to some unfortunate 
+scripting interacting with lxc snapshots (non btrfs backed in the 
+config, so a copy) and some copying.  I was performing a balance, 
+following some deletions, when trying to get things back to a better state.
 
-  Allocated by task 369692:
-   __kasan_kmalloc.part.0+0x44/0xc0
-   __kasan_kmalloc.constprop.0+0xba/0xc0
-   kasan_kmalloc+0x9/0x10
-   kmem_cache_alloc_trace+0x138/0x260
-   btrfs_read_tree_root+0x92/0x360 [btrfs]
-   btrfs_read_fs_root+0x10/0xb0 [btrfs]
-   create_reloc_root+0x47d/0xa10 [btrfs]
-   btrfs_init_reloc_root+0x1e2/0x340 [btrfs]
-   record_root_in_trans+0x2a0/0x370 [btrfs]
-   btrfs_record_root_in_trans+0xf4/0x140 [btrfs]
-   start_transaction+0x1ab/0xe90 [btrfs]
-   btrfs_start_transaction+0x1e/0x20 [btrfs]
-   __btrfs_prealloc_file_range+0x1c2/0xa00 [btrfs]
-   btrfs_prealloc_file_range+0x13/0x20 [btrfs]
-   prealloc_file_extent_cluster+0x29f/0x570 [btrfs]
-   relocate_file_extent_cluster+0x193/0xc30 [btrfs]
-   relocate_data_extent+0x1f8/0x490 [btrfs]
-   relocate_block_group+0x600/0x1060 [btrfs]
-   btrfs_relocate_block_group+0x3a0/0xa00 [btrfs]
-   btrfs_relocate_chunk+0x9e/0x180 [btrfs]
-   btrfs_balance+0x14e4/0x2fc0 [btrfs]
-   btrfs_ioctl_balance+0x47f/0x640 [btrfs]
-   btrfs_ioctl+0x119d/0x8380 [btrfs]
-   do_vfs_ioctl+0x9f5/0x1060
-   ksys_ioctl+0x67/0x90
-   __x64_sys_ioctl+0x73/0xb0
-   do_syscall_64+0xa5/0x370
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+root@phoenix:/var/lib/lxc# btrfs balance start /var/lib/lxc
+WARNING:
 
-  Freed by task 369692:
-   __kasan_slab_free+0x14f/0x210
-   kasan_slab_free+0xe/0x10
-   kfree+0xd8/0x270
-   btrfs_drop_snapshot+0x154c/0x1eb0 [btrfs]
-   clean_dirty_subvols+0x227/0x340 [btrfs]
-   relocate_block_group+0x972/0x1060 [btrfs]
-   btrfs_relocate_block_group+0x3a0/0xa00 [btrfs]
-   btrfs_relocate_chunk+0x9e/0x180 [btrfs]
-   btrfs_balance+0x14e4/0x2fc0 [btrfs]
-   btrfs_ioctl_balance+0x47f/0x640 [btrfs]
-   btrfs_ioctl+0x119d/0x8380 [btrfs]
-   do_vfs_ioctl+0x9f5/0x1060
-   ksys_ioctl+0x67/0x90
-   __x64_sys_ioctl+0x73/0xb0
-   do_syscall_64+0xa5/0x370
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+         Full balance without filters requested. This operation is very
+         intense and takes potentially very long. It is recommended to
+         use the balance filters to narrow down the scope of balance.
+         Use 'btrfs balance start --full-balance' option to skip this
+         warning. The operation will start in 10 seconds.
+         Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1
+Starting balance without any filters.
+ERROR: error during balancing '/var/lib/lxc': No space left on device
+There may be more info in syslog - try dmesg | tail
+root@phoenix:/var/lib/lxc#
 
-  The buggy address belongs to the object at ffff88856f671100
-   which belongs to the cache kmalloc-4k of size 4096
-  The buggy address is located 1552 bytes inside of
-   4096-byte region [ffff88856f671100, ffff88856f672100)
-  The buggy address belongs to the page:
-  page:ffffea0015bd9c00 refcount:1 mapcount:0 mapping:ffff88864400e600 index:0x0 compound_mapcount: 0
-  flags: 0x2ffff0000010200(slab|head)
-  raw: 02ffff0000010200 dead000000000100 dead000000000200 ffff88864400e600
-  raw: 0000000000000000 0000000000070007 00000001ffffffff 0000000000000000
-  page dumped because: kasan: bad access detected
+I can still write to the filesystem.
 
-  Memory state around the buggy address:
-   ffff88856f671600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-   ffff88856f671680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  >ffff88856f671700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                           ^
-   ffff88856f671780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-   ffff88856f671800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ==================================================================
-  BTRFS info (device sdi1): 1 enospc errors during balance
-  BTRFS info (device sdi1): balance: ended with status: -28
 
-[CAUSE]
-The problem happens when finish_ordered_io() get called with balance
-still running, while the reloc root of that subvolume is already dead.
-(tree swap already done, but tree not yet deleted for possible qgroup
-usage)
+Kernel 5.1.21 (downgraded from 5.2.12)
 
-That means root->reloc_root still exists, but that reloc_root can be
-under btrfs_drop_snapshot(), thus we shouldn't access it.
+root@phoenix:/var/lib/lxc# btrfs --version
+btrfs-progs v5.1
 
-The following race could cause the use-after-free problem:
+root@phoenix:/var/lib/lxc# btrfs fi show /var/lib/lxc
+Label: 'LXC_BTRFS'  uuid: 6b0245ec-bdd4-4076-b800-2243d466b174
+         Total devices 2 FS bytes used 79.74GiB
+         devid    1 size 250.00GiB used 93.03GiB path 
+/dev/mapper/nvme0_vg-lxc
+         devid    2 size 80.00GiB used 0.00B path 
+/dev/mapper/nvme0_vg-tempdel
 
-                CPU1              |                CPU2
---------------------------------------------------------------------------
-                                  | relocate_block_group()
-                                  | |- unset_reloc_control(rc)
-                                  | |- btrfs_commit_transaction()
-btrfs_finish_ordered_io()         | |- clean_dirty_subvols()
-|- btrfs_join_transaction()       |    |
-   |- record_root_in_trans()      |    |
-      |- btrfs_init_reloc_root()  |    |
-         |- if (root->reloc_root) |    |
-         |                        |    |- root->reloc_root = NULL
-         |                        |    |- btrfs_drop_snapshot(reloc_root);
-         |- reloc_root->last_trans|
-                 = trans->transid |
-	    ^^^^^^^^^^^^^^^^^^^^^^
-            Use after free
+root@phoenix:/var/lib/lxc# btrfs fi u /var/lib/lxc
+Overall:
+     Device size:                 330.00GiB
+     Device allocated:             93.03GiB
+     Device unallocated:          236.97GiB
+     Device missing:                  0.00B
+     Used:                         79.74GiB
+     Free (estimated):            237.70GiB      (min: 237.70GiB)
+     Data ratio:                       1.00
+     Metadata ratio:                   1.00
+     Global reserve:              512.00MiB      (used: 0.00B)
 
-It looks like the race window is pretty small so that it's not that easy
-to trigger without the extra validation overhead introduced by KASAN.
+Data,single: Size:71.00GiB, Used:70.26GiB
+    /dev/mapper/nvme0_vg-lxc       71.00GiB
 
-[FIX]
-Fix it by the following modifications:
-- Test if the root has dead reloc tree before accessing root->reloc_root
-  If the root has BTRFS_ROOT_DEAD_RELOC_TREE, then we don't need to
-  create or update root->reloc_tree
+Metadata,single: Size:22.00GiB, Used:9.48GiB
+    /dev/mapper/nvme0_vg-lxc       22.00GiB
 
-- Clear the BTRFS_ROOT_DEAD_RELOC_TREE flag until we have fully dropped
-  reloc tree
-  To co-operate with above modification, so as long as
-  BTRFS_ROOT_DEAD_RELOC_TREE is still set, we won't try to re-create
-  reloc tree at record_root_in_trans().
+System,single: Size:32.00MiB, Used:16.00KiB
+    /dev/mapper/nvme0_vg-lxc       32.00MiB
 
-Reported-by: Cebtenzzre <cebtenzzre@gmail.com>
-Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/relocation.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+Unallocated:
+    /dev/mapper/nvme0_vg-lxc      156.97GiB
+    /dev/mapper/nvme0_vg-tempdel   80.00GiB
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 7f219851fa23..d60993a8b2ae 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -1434,16 +1434,19 @@ int btrfs_init_reloc_root(struct btrfs_trans_handle *trans,
- 	int clear_rsv = 0;
- 	int ret;
- 
--	if (root->reloc_root) {
-+	if (!test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state) &&
-+	    root->reloc_root) {
- 		reloc_root = root->reloc_root;
- 		reloc_root->last_trans = trans->transid;
- 		return 0;
- 	}
- 
- 	if (!rc || !rc->create_reloc_tree ||
--	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID)
-+	    root->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID ||
-+	    test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
- 		return 0;
- 
-+
- 	if (!trans->reloc_reserved) {
- 		rsv = trans->block_rsv;
- 		trans->block_rsv = rc->block_rsv;
-@@ -2186,7 +2189,6 @@ static int clean_dirty_subvols(struct reloc_control *rc)
- 			/* Merged subvolume, cleanup its reloc root */
- 			struct btrfs_root *reloc_root = root->reloc_root;
- 
--			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
- 			list_del_init(&root->reloc_dirty_list);
- 			root->reloc_root = NULL;
- 			if (reloc_root) {
-@@ -2195,6 +2197,7 @@ static int clean_dirty_subvols(struct reloc_control *rc)
- 				if (ret2 < 0 && !ret)
- 					ret = ret2;
- 			}
-+			clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state);
- 			btrfs_put_fs_root(root);
- 		} else {
- 			/* Orphan reloc tree, just clean it up */
--- 
-2.23.0
+btrfs fi df /var/lib/lxc
+Data, single: total=71.00GiB, used=70.26GiB
+System, single: total=32.00MiB, used=16.00KiB
+Metadata, single: total=22.00GiB, used=9.48GiB
+GlobalReserve, single: total=512.00MiB, used=0.00B
+root@phoenix:/var/lib/lxc#
+
+
+
+An unfiltered balance shows ENOSPC errors:
+btrfs balance start /var/lib/lxc
+
+Last bit of:
+dmesg | tail -n 100
+
+
+[  920.915627] BTRFS info (device dm-4): found 67520 extents
+[  922.037071] BTRFS info (device dm-4): relocating block group 
+1703106576384 flags data
+[  924.742432] BTRFS info (device dm-4): found 57082 extents
+[  927.245236] BTRFS info (device dm-4): found 57082 extents
+[  928.371624] BTRFS info (device dm-4): relocating block group 
+1702032834560 flags data
+[  931.230841] BTRFS info (device dm-4): found 60454 extents
+[  933.373249] BTRFS info (device dm-4): found 60454 extents
+[  934.336628] BTRFS info (device dm-4): relocating block group 
+1700959092736 flags data
+[  937.330097] BTRFS info (device dm-4): found 67151 extents
+[  940.296250] BTRFS info (device dm-4): found 67151 extents
+[  941.524664] BTRFS info (device dm-4): relocating block group 
+1699885350912 flags data
+[  944.264618] BTRFS info (device dm-4): found 54931 extents
+[  945.910666] BTRFS info (device dm-4): found 54931 extents
+[  946.796308] BTRFS info (device dm-4): relocating block group 
+1698811609088 flags data
+[  949.426823] BTRFS info (device dm-4): found 55428 extents
+[  950.880553] BTRFS info (device dm-4): found 55428 extents
+[  951.622569] BTRFS info (device dm-4): relocating block group 
+1697737867264 flags data
+[  955.223382] BTRFS info (device dm-4): found 52897 extents
+[  956.544084] BTRFS info (device dm-4): found 52897 extents
+[  957.300021] BTRFS info (device dm-4): relocating block group 
+1696664125440 flags data
+[  959.936585] BTRFS info (device dm-4): found 48407 extents
+[  961.421771] BTRFS info (device dm-4): found 48407 extents
+[  962.203680] BTRFS info (device dm-4): relocating block group 
+1695590383616 flags data
+[  964.281128] BTRFS info (device dm-4): found 28238 extents
+[  965.325130] BTRFS info (device dm-4): found 28238 extents
+[  965.886794] BTRFS info (device dm-4): relocating block group 
+1694516641792 flags data
+[  968.999507] BTRFS info (device dm-4): found 46060 extents
+[  970.447815] BTRFS info (device dm-4): found 46060 extents
+[  971.276287] BTRFS info (device dm-4): relocating block group 
+1693442899968 flags data
+[  974.914746] BTRFS info (device dm-4): found 55159 extents
+[  976.914228] BTRFS info (device dm-4): found 55159 extents
+[  977.758643] BTRFS info (device dm-4): relocating block group 
+1692369158144 flags data
+[  980.081069] BTRFS info (device dm-4): found 36859 extents
+[  981.630065] BTRFS info (device dm-4): found 36859 extents
+[  982.498586] BTRFS info (device dm-4): relocating block group 
+1691295416320 flags data
+[  984.929101] BTRFS info (device dm-4): found 50062 extents
+[  986.440469] BTRFS info (device dm-4): found 50062 extents
+[  987.281364] BTRFS info (device dm-4): 11 enospc errors during balance
+[  987.281365] BTRFS info (device dm-4): balance: ended with status: -28
+
+Unfortunately I don't seem to have any more info in dmesg of the enospc 
+errors:
+
+root@phoenix:/var/lib/lxc# dmesg | grep enospc
+[  987.281364] BTRFS info (device dm-4): 11 enospc errors during balance
+
+root@phoenix:/var/lib/lxc# dmesg | grep ENOSPC
+root@phoenix:/var/lib/lxc#
+
+I've seen something a little odd in /var/log/messages, not sure it is 
+related.:
+Sep 20 13:05:07 phoenix named[1805]: zone 30.20.10.in-addr.arpa/IN: not 
+loaded due to errors.
+Sep 20 13:05:08 phoenix kernel: [    0.500023]  PPR NX GT IA GA PC GA_vAPIC
+Sep 20 13:05:09 phoenix kernel: [    0.827723] Loading Adaptec I2O RAID: 
+Version 2.4 Build 5go
+Sep 20 13:05:09 phoenix kernel: [    0.829457] GDT-HA: Storage RAID 
+Controller Driver. Version: 3.05
+Sep 20 13:05:09 phoenix kernel: [    0.829615] 3ware Storage Controller 
+device driver for Linux v1.26.02.003.
+Sep 20 13:05:09 phoenix kernel: [    0.829766] 3ware 9000 Storage 
+Controller device driver for Linux v2.26.02.014.
+Sep 20 13:05:09 phoenix kernel: [    1.039111] nvme nvme0: missing or 
+invalid SUBNQN field.
+Sep 20 13:05:09 phoenix kernel: [    5.430984] ata5.00: supports DRM 
+functions and may not be fully accessible
+Sep 20 13:05:09 phoenix kernel: [   77.750030] RAX: ffffffffffffffda 
+RBX: 00005648284a1610 RCX: 00007fc76dd7736f
+Sep 20 13:05:09 phoenix kernel: [   77.750031] RDX: 0000000000000002 
+RSI: 0000000000000080 RDI: 00005648284a16ac
+Sep 20 13:05:09 phoenix kernel: [   77.750031] RBP: 00007fc7671e8e90 
+R08: 00005648284a1600 R09: 0000000000000000
+Sep 20 13:05:09 phoenix kernel: [   77.750032] R10: 0000000000000000 
+R11: 0000000000000246 R12: 00007fc7671e8e88
+Sep 20 13:05:09 phoenix kernel: [   77.750033] R13: 00007fc7671e8e80 
+R14: 00007fc7671e8e98 R15: 00005648284a1610
+Sep 20 13:05:09 phoenix kernel: [   77.750035] Call Trace:
+Sep 20 13:05:09 phoenix kernel: [   77.750036]  ? __schedule+0x211/0x820
+Sep 20 13:05:09 phoenix kernel: [   77.750038]  schedule+0x32/0x70
+Sep 20 13:05:09 phoenix kernel: [   77.750040] 
+futex_wait_queue_me+0xce/0x140
+Sep 20 13:05:09 phoenix kernel: [   77.750041]  futex_wait+0xef/0x240
+Sep 20 13:05:09 phoenix kernel: [   77.750043]  do_futex+0x17d/0xce0
+Sep 20 13:05:09 phoenix kernel: [   77.750045]  ? __switch_to_asm+0x41/0x70
+
+
+After no issues in quite a while I seem to be hitting a fair few at 
+present.  No idea if I am doing something new.
+
+Pete
+
+
+
+
 
