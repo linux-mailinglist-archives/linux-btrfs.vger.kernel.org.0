@@ -2,29 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA5ADBA1B3
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Sep 2019 12:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 356A4BA1B5
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Sep 2019 12:06:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728102AbfIVJvE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Sep 2019 05:51:04 -0400
-Received: from mout.gmx.net ([212.227.17.22]:43443 "EHLO mout.gmx.net"
+        id S1727943AbfIVKCc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Sep 2019 06:02:32 -0400
+Received: from mout.gmx.net ([212.227.17.21]:59949 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727492AbfIVJvD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Sep 2019 05:51:03 -0400
+        id S1727741AbfIVKCc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 22 Sep 2019 06:02:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1569145862;
-        bh=VoY7ge3+bjLqT58gG6YJhKQLaYr7uDaYrYtm4K1Vgqk=;
+        s=badeba3b8450; t=1569146545;
+        bh=n43olt5KwLZ/YljwgTTkd8sJ5x3TMUNXX5Y32CukxSk=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=j5jOpmAYWZEjas3RoZ6rALeRa+tXn8IHfhZ8iEnhXkA/LIP88sVSJXSMfIN+XpARm
-         zlf6VvYNCx6COjZTakIpDDsAOyuIVbOUbl3kYLPJ7O81jmX0dLCa/QCTSrKAdNa/xd
-         MFSVsPEPSM2ZnDR+RQpDTHwM0eH8e/Fn5r2vhvFM=
+        b=KyEfmFt5qyYvXECzpai+iIE+VRVumOUBHFh9CbO8fqo/OqJJBPAoAY6w7MurqqFom
+         BcBaT4ZxRNy0qK0XlTuGnpDees0bBzr9Jl/4u8ixS7v99TLW5+lx274oJEeaMpDqtl
+         fPB2Oj4r9aSmsZUEcz0f68IWYp+Ak7ZIyie9xjt4=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0X8u-1hxl5d1RIK-00wYa2; Sun, 22
- Sep 2019 11:51:02 +0200
-Subject: Re: help needed with unmountable btrfs-filesystem
-To:     Felix Koop <fdp@fkoop.de>, linux-btrfs@vger.kernel.org
-References: <57e3a3a2c40fe7ea33ff85aec59ffaefdd20f3e6.camel@fkoop.de>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIdeX-1iNqn52TaP-00Eb6W; Sun, 22
+ Sep 2019 12:02:25 +0200
+Subject: Re: btrfs filesystem not mountable after unclear shutdown
+To:     Kenneth Topp <toppk@bllue.org>, linux-btrfs@vger.kernel.org
+References: <e9073c1dc608dc8d50ee8d131bc86887@bllue.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -50,109 +50,165 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <1af945c1-0e58-a6e0-477f-59e0900a0e6f@gmx.com>
-Date:   Sun, 22 Sep 2019 17:50:55 +0800
+Message-ID: <aa88fe5f-51f9-cfca-6193-cc2cf0d3ead5@gmx.com>
+Date:   Sun, 22 Sep 2019 18:02:18 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <57e3a3a2c40fe7ea33ff85aec59ffaefdd20f3e6.camel@fkoop.de>
+In-Reply-To: <e9073c1dc608dc8d50ee8d131bc86887@bllue.org>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="xRyZI2dVeqVrDw7iUPVOLS3JkspHeICqN"
-X-Provags-ID: V03:K1:U9JgPqzbXiKyHIvrvUVIFsej+Slw+vB8iYAyVItvVQIcppsSPYA
- 84EazI4gxUgXQizQmZH7MllHEzXpr4j9kcGkYVGqPZQ5lq0FVnzPDjrsr8Pmx+8o8gZTDZI
- L0KOn3BNAJDCmsYPRw0bCsobghT1fCQgVz46unbcsKDYiPDtKfs0eYVoq/F1EwJ1RXPjwdi
- ZA2de6fGJ874BgnL2zLIQ==
+ boundary="srdVFtyFIzfZDrxnAKeMTYPOzNYq2suBJ"
+X-Provags-ID: V03:K1:jGRwxLR37KlIuFcDB1ty5EIFCYSzOa+N2wXXc258kHL83xvJ2aZ
+ DLVZsi/lIMkR7xnqpQ9DWpI9Ly9RlVMFVf1EtZn2I58F2JyvJNxvy4VfykvQErS6wF0Q68J
+ Ue4Vm5HrfUJcKwFGUqr3m75/0NOsTQxIJqXwTmlbeLpH3kFJ89aKq+f4NPr14fLuspFIqId
+ UGTB/N8HrPo/CsQ9pjr7w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:YkC04OYX/CY=:Y0P62WwooKY/u8AtM8fDy3
- y3Pwe4I7ChyBwuKgeSZfKAdRc01k26nm8xkekczRbzf5uhx5p0YvEka1LtlugtOw9MlU+uXIk
- ZozLWYvbTAsKkxd6bUnNNEhwmSDX4PBjiNIEoYoOWxDZe1vzOp+FWirqKplBZX0jrtwTCeGu4
- IiB5hlClT5IF48G+ftPzBv8XUKcQ/HIts+PXOc/8h76uxccvZHAfDp+itnxBUnVlC9DizMlQc
- //vZo1C4EW6JVUajsuKJnAyfTE+dmpXCVbHWVGf98VUiaRspwJaPqcr4+mcmONbYsOInw1dNn
- HacDC24qGmrECWYyMugvomPtCnlmMYtAC9YruV9YsyIXQhCvcyHItOwyCPZRM6yvEsAAmk8tL
- S+uKN0Ux4Yb+PM3z+Ul0aReeseNBl6vEYBgHyrlfOVaZAZZYjQd/YmYyOF2JOJHJPC5VieFHc
- alRovV9P+mXcbjw5i0W05H0MBhLpn3gZY4uD+e5zWEX6id8NS8gVzWVTs92ZfFY0TU0ZVIdFt
- TvDKd8z/6OdILvWyTD2Wh0GWyq60NpWQdtadR13FzjpVYEWHb/00MTNCwPnZdow1w0cfgnT2f
- SY4GxvX3Vr7zw8MOBNWn1gCW+K7lXUvieYlkF34tpYZS4TpuzUHru/IXsZ7Qm9kntlyB/xq6F
- sXkq0rOQrgEw+RbxLhbi10mQ2s2OuD5XrsqipFRwsIYDCoLTlldF8LfKELtY9KTnLfpWBl6NI
- GqTF7kMI+z+GzACfYcDo2EmewhRxlC11iCZZViZ8RfnnUn+R1kc+oxI3Dw4sRM50fggBqiBic
- 8vSScNZERTZ8F/7WyjOrjRqI2RXDUXcKn1acOpAVlP/Tfr7zU8FaAni4DFrZDaXLsoA/QNYIw
- 2WvpNtJDm/fsnH2jGpD9uHMKpSfsja06BSLXp3MS8wagv3zGq1oxMzEit7Kvmqa9OV/HZ7SUi
- mL/gf24pz/IFKzwWd8UBjbOirPIajQ3q0tA+hvBgqQtIVPMfZJ2KCmpNA5fO1ulPvfZNRjDuu
- Pyaw/6lsA1ZFxAbnSh+7QivSrVtgp9AJs/kcQLPdawLmMV5wztGR/EJFQtd7fd+YjDILbgoAh
- 9Pkrbe9HGqK+6SboW9aWBHOHaya86l64IvrUJIolsEMaIzgu0NZ3DpN943tPN8WENJmnPc/f9
- R0EMRxP3Y3ix1BcxYHJqmGtdZDu3guGTQVOn3Pa4+hDKQPmFm0QJfhSlJgFE9eb+xj5NksDUq
- SfnpNsLNIkMd4BLjKc466T8t7KmuyUNLwwNPxEv9njV5vhCmGLtVmLntD4Zw=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:2pSw11zgpxo=:qQqUzVPcyRV0S2AOQjrZhC
+ mceRInZufd+quc63kHf4XfE58yB0ITpqNsGQ4M+S0Vu7ZjBsQ3uBVrws3m/rDMxSHj2V+sC9L
+ VvGeuEBc610YvF9/7cxLwBWN7eogTLWEGhd0PefPJPFRQnjttgFxPw8sWgJg5uJ70tyWon+6C
+ PhpghkMBR7okC0UkQeG0esOffAJPb1zoCVTZ/P8X240/VNkGDvYJk9ma9Rk3g7RbvXE5UOel6
+ KpU5+1hHwdsWzTjuc+/JFSZ0KA629Sh4Zm440GNyrmymKLYG3hPtnCtTis7rxeS5+22MBmoyt
+ yjg03tvs8vAWGBLIHQYylaY7Qu/TZtWPNqbiFGjWuqMEO9+ICGiPOebAoS8MPVAOy4eX8+0lP
+ mcrbFMAuDWRvE1zOTMi8W0XaFm1p56gkUur4bxmP51y+nkICGPDkXd0mUMtDunpNBHmS+p3PE
+ 1O/xs1UF34Q9n5Raw34GmKU4XPhcOXrwFjj7YtczpVMeDecBsxEUFfQoWY2gPoVzUzH/4o5EJ
+ 6QsxhzRgSZtYQQUCLl1l8ZjfeQ2/vA4f66Iq36t9XChO0tfPKA37J/WVzfoLodCBDfHmkqIEU
+ BQCYi61VTZIuDIgl5WC6vplGUX/vHH6KcUKrPDUNDln15kkt88OEqbLKQ/IlXQjgYL0nkbxCw
+ bHSZh5CZjWvrEIqZKBn085rtiDz/yDQz1mwHOGJSU07kgij08Pasylg9cEFYG0/i5Sy/8mz7y
+ 5pt49Joi59vkaPEGqxwqmCs7Uk6hdZh/5RExuPD5svK6Ru8heqSK0XOaOXAUX1j45xrs7wCcj
+ ek0J8BqB6HZbpFrH8IrgEBSPf+CWE73kFNF9u0+j1YQHdY8/f12IN2yTvnnjfxqJ6pD3iKzT/
+ mz2XT3H0UDlqr5Wr4DN6d7DMMVw//7pXNTlDOvaZRyb51brto/nb9NFERd/XLXr2LCMam4V+i
+ +0G8pUoDLpo7YmwWwY7icPuG2Iw24H8QyNxuP4Ozc4XN4Q8wZ4xYrkTyEjwhAqVGFrASy+1SL
+ X1IRPSv1c1PhkJvnYsZe0LT/1m6OD7kHOGAXMzr2FrM6YpoX6Uan4V/vpYiTXukZk+tnI34lV
+ kbdqR2fj2GefnGf/HWP/qbb83ILuinSA2lCeE5W9jTZcBg9B4ZkcN75eC6fLGgZJao+VKBnXG
+ OwLBhcDAynTZAebxrdnMhZ/+4TjIzSEYRf1+/whm/s0jQJYlldf0cM+kWoItQ358IIAktkBBw
+ sKvJnLh5XpLpXfd1znagT3vP0gS9WXkOUy2UfFLDCAaOfa+X816pQL+oX8aE=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---xRyZI2dVeqVrDw7iUPVOLS3JkspHeICqN
-Content-Type: multipart/mixed; boundary="QLSK1ktdhby202hZBssqXOZqYyLbYviTV"
+--srdVFtyFIzfZDrxnAKeMTYPOzNYq2suBJ
+Content-Type: multipart/mixed; boundary="j6blXezVSqWcPdJ0R2YjX3eYKDhATZntT"
 
---QLSK1ktdhby202hZBssqXOZqYyLbYviTV
+--j6blXezVSqWcPdJ0R2YjX3eYKDhATZntT
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/9/22 =E4=B8=8B=E5=8D=882:34, Felix Koop wrote:
-> Hello,
+On 2019/9/22 =E4=B8=8A=E5=8D=889:12, Kenneth Topp wrote:
+> after a couple unclean reboots, this filesystem became un-mountable.=C2=
+=A0
+> btrfs check didn't help either.=C2=A0 This should be a raid 1 metadata/=
+raid 0
+> data volume.=C2=A0 I've had this filesystem for several years, but I th=
+ink it
+> was after any major on disk options.
 >=20
-> I need help accessing a btrfs-filesystem. When I try to mount the fs, I=
+> I tend to run a current kernel.=C2=A0=C2=A0 I got to 5.2.15 quickly aft=
+er the
+> btrfs bug report, and just was switching to 5.2.17 when things died.=C2=
+=A0 I
+> still have these disks as they are, but will wipe them out tomorrow and=
 
-> get the following error:
+> restore from backups unless someone has any further diagnostics they'd
+> like me to run.
 >=20
-> # mount -t btrfs /dev/md/1 /mnt
-> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/md1,
-> missing codepage or helper program, or other error.
+> On a related subject, are there any tips for creating a new filesystem,=
 
-dmesg please.
-
+> I think I used to specify "-l 16K -n 16K" during mkfs.=C2=A0 I'll be
+> switching to 4kn soon, and but currently using 512e, any notes regardin=
+g
+> using 4kn disks?
 >=20
-> When I then try to check the fs, this is what I get:
 >=20
-> # btrfs check /dev/md/1
+> here are some diagnostics:
+>=20
+> [toppk@static ~]$ cat btrfs-failure.txt
+> # btrfs filesystem show /dev/mapper/cprt-47
+> Label: 'tm'=C2=A0 uuid: 2f8c681b-1973-4fe6-a6b6-0be182944528
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Total devices 2 FS bytes use=
+d 17.16TiB
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 si=
+ze 9.09TiB used 8.65TiB path /dev/mapper/cprt-46
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 2 si=
+ze 9.09TiB used 8.65TiB path /dev/mapper/cprt-47
+> # btrfs check /dev/mapper/cprt-46
 > Opening filesystem to check...
-> No valid Btrfs found on /dev/md/1
-> ERROR: cannot open file system
+> parent transid verify failed on 6751397658624 wanted 2012643 found 2012=
+295
+> parent transid verify failed on 6751397658624 wanted 2012643 found 2012=
+295
+> parent transid verify failed on 6751397658624 wanted 2012643 found 2012=
+295
 
-As it said, it can't find the primary superblock.
+Well, this transid mismatch looks exactly the bug introduced in v5.2-rc.
 
-Please provide the following output.
+Kernel mount dmesg please, it would help us to determine which tree is
+causing the problem.
 
-# btrfs ins dump-super -fFa /dev/md/1
-
-And kernel and btrfs-progs version please.
+But please keep in mind, we can only salvage data from the fs, not
+really fix it to RW mountable status.
 
 Thanks,
 Qu
+
+> Ignoring transid failure
+> ERROR: child eb corrupted: parent bytenr=3D7267733438464 item=3D33 pare=
+nt
+> level=3D2 child level=3D0
+> [root@static ~]# btrfs check -b /dev/mapper/cprt-46
+> Opening filesystem to check...
+> parent transid verify failed on 6751304908800 wanted 2012643 found 2012=
+294
+> parent transid verify failed on 6751305105408 wanted 2012643 found 2012=
+295
+> parent transid verify failed on 6751381258240 wanted 2012643 found 2012=
+295
+> parent transid verify failed on 6751397658624 wanted 2012643 found 2012=
+295
+> parent transid verify failed on 6751397658624 wanted 2012643 found 2012=
+295
+> parent transid verify failed on 6751397658624 wanted 2012643 found 2012=
+295
+> Ignoring transid failure
+> ERROR: child eb corrupted: parent bytenr=3D6751265570816 item=3D33 pare=
+nt
+> level=3D2 child level=3D0
+> ERROR: cannot open file system
+> [root@static ~]#=C2=A0=C2=A0 uname -a
+> Linux static.bllue.org 5.2.17-200.fc30.x86_64 #1 SMP Sat Sep 21 16:13:2=
+7
+> EDT 2019 x86_64 x86_64 x86_64 GNU/Linux
+> [root@static ~]#=C2=A0=C2=A0 btrfs --version
+> btrfs-progs v5.2.1
 >=20
-> Can anybody help me how to recover my data?
 >=20
+> Thanks,
 >=20
+> Ken
 
 
---QLSK1ktdhby202hZBssqXOZqYyLbYviTV--
+--j6blXezVSqWcPdJ0R2YjX3eYKDhATZntT--
 
---xRyZI2dVeqVrDw7iUPVOLS3JkspHeICqN
+--srdVFtyFIzfZDrxnAKeMTYPOzNYq2suBJ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2HQ/8ACgkQwj2R86El
-/qi5TAgAhU6TQFsKhixKLO9mjXeMgtjVUMxViFbizu8xNne4/YHI/Qv+I3MFySuE
-XESuORCqJNCnFKnvPMvoTo8Cfp1o9QvPEDmDNkxJNxnaxNLLE/NG9YYtEQLFvkv9
-5y8qxDKAP1CnB1oTQ+FyfV8EO5Fy2SSsC6L3qOwaWSfU6UHUny+8S4mEtvPcOY3k
-0dSiCODL8IM4i+JuhyeKG+GMjsOtjNezu6wIgFTLr9ygQ/LcrCNDZkotv1e0vak8
-f1fpZKD6A18Q0o39U0DPe5mgZoMZ+jmiMEsuAyHcnS5NDqvivD7VwUTZ0F8A6e5n
-vY07QxmstdjhEjRQE6cAVfewMqv7og==
-=AmOP
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2HRqoACgkQwj2R86El
+/qh4hgf+OfQ3B6DFD4pBuklIhB+CCdQBxHZP/2lEvNsFy+59JVRpx0NGRRMfb1Gy
+VwHfgdTfZYryMJJ2ed+wEo8Kh5zdNTedC24GsS44NxGYhPncq/3egJ1RH6plF6+x
+gh7SWTe60yYofyw7lF/zOcbtR1mbbwH5mYNTRYvUy+qfXEGVKkMfiJMYTplFtBxZ
+sXEZz47FnM0JXc/vvoQ9DLteM0lEGr8bgAVNs9PKhzjpYXDxH1jz3KP1MYuflI8W
+bUMdFZiHPAEhkvgmNN4cukJnnb4ePeLYkPojbx8bMn48MHB6izX7n55+YMjoNKog
+6jDiorbR1CxTXTHTj9OmecSUOGQ8ZA==
+=vsvf
 -----END PGP SIGNATURE-----
 
---xRyZI2dVeqVrDw7iUPVOLS3JkspHeICqN--
+--srdVFtyFIzfZDrxnAKeMTYPOzNYq2suBJ--
