@@ -2,160 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E707B99AE
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Sep 2019 00:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40CEFBA01B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Sep 2019 03:20:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393841AbfITWah (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 20 Sep 2019 18:30:37 -0400
-Received: from ppagent3.llumc.edu ([143.197.222.71]:53624 "EHLO
-        ppagent3.llumc.edu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393715AbfITWah (ORCPT
+        id S1726962AbfIVBUZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 21 Sep 2019 21:20:25 -0400
+Received: from cdptpa-outbound-snat.email.rr.com ([107.14.166.225]:55988 "EHLO
+        cdptpa-cmomta03.email.rr.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726944AbfIVBUY (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 20 Sep 2019 18:30:37 -0400
-Received: from pps.filterd (ppagent3.mc.llumc.edu [127.0.0.1])
-        by ppagent3.mc.llumc.edu (8.16.0.27/8.16.0.27) with SMTP id x8KMRoHw011710
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Sep 2019 15:30:36 -0700
-Received: from cgmtaccs ([10.192.102.81])
-        by ppagent3.mc.llumc.edu with ESMTP id 2v56eur40n-1
-        (version=TLSv1 cipher=AES256-SHA bits=256 verify=NOT)
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Sep 2019 15:30:36 -0700
-Received: from CGMTACCS (localhost.localdomain [127.0.0.1])
-        by CGMTACCS (Postfix) with ESMTP id 53C9461
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Sep 2019 22:30:36 +0000 (GMT)
-Received: from excvhtsp02.mc.ad.lluahsc.org (unknown [10.192.100.142])
-        by CGMTACCS (Postfix) with ESMTP id 3545161
-        for <linux-btrfs@vger.kernel.org>; Fri, 20 Sep 2019 22:30:36 +0000 (GMT)
-Received: from MCDBS2A.mc.ad.lluahsc.org ([fe80::ed15:3fcd:605b:9f7e]) by
- excvhtsp02.mc.ad.lluahsc.org ([::1]) with mapi id 14.03.0351.000; Fri, 20 Sep
- 2019 15:30:36 -0700
-From:   "Barnes, Samuel" <SABarnes@llu.edu>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: Unable to delete directory: input/output error and corrupt leaf
-Thread-Topic: Unable to delete directory: input/output error and corrupt leaf
-Thread-Index: AdVwAwVr8HXEEr8GQ6KSE5NlsreuNg==
-Date:   Fri, 20 Sep 2019 22:30:36 +0000
-Message-ID: <4DF2D58151C4C8499907B16D8F72881901CEC46B00@MCDBS2A.mc.ad.lluahsc.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.250.68.15]
-Content-Transfer-Encoding: base64
+        Sat, 21 Sep 2019 21:20:24 -0400
+X-Greylist: delayed 487 seconds by postgrey-1.27 at vger.kernel.org; Sat, 21 Sep 2019 21:20:23 EDT
+Received: from static.bllue.org ([66.65.51.108])
+        by cmsmtp with ESMTP
+        id BqQ8ial4lYkhNBqQBiawOV; Sun, 22 Sep 2019 01:12:15 +0000
+Received: from bllue.org (localhost.localdomain [127.0.0.1])
+        by static.bllue.org (Postfix) with ESMTP id 418E8C6C3C
+        for <linux-btrfs@vger.kernel.org>; Sat, 21 Sep 2019 21:12:11 -0400 (EDT)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9386 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1909200185
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 21 Sep 2019 21:12:11 -0400
+From:   Kenneth Topp <toppk@bllue.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: btrfs filesystem not mountable after unclear shutdown
+User-Agent: Roundcube Webmail/1.4-rc2
+Message-ID: <e9073c1dc608dc8d50ee8d131bc86887@bllue.org>
+X-Sender: toppk@bllue.org
+X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,HEXHASH_WORD,
+        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: *
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on static.bllue.org
+X-CMAE-Envelope: MS4wfFZ9sL4ulL6izxm/6j3bjf3yPqGswgolLXK9EFVemKr8AQ6IGvZHuzpEAPSf1wP/gZXW3ScazOGa+ESPHXtPNvmppCBiven8c7tEiNOTqnxMus/3+SfT
+ 0Bm4HZygKimV9N/aK7oMAyKPOqvgE4tlgR1zUOp7ye25LAHgIQwiOMZthFdn6ouub1pdXsZUzzwLKw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-QnVtbWVyLCB0aGFua3MgZm9yIHRoZSBoZWxwLg0KDQpTYW11ZWwgQmFybmVzDQoNCg0KLS0tLS1P
-cmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFF1IFdlbnJ1byBbbWFpbHRvOnF1d2VucnVvLmJ0
-cmZzQGdteC5jb21dIA0KU2VudDogVGh1cnNkYXksIFNlcHRlbWJlciAxOSwgMjAxOSAzOjM3IFBN
-DQpUbzogQmFybmVzLCBTYW11ZWw7IGxpbnV4LWJ0cmZzQHZnZXIua2VybmVsLm9yZw0KU3ViamVj
-dDogW0VYVEVSTkFMXSBSZTogVW5hYmxlIHRvIGRlbGV0ZSBkaXJlY3Rvcnk6IGlucHV0L291dHB1
-dCBlcnJvciBhbmQgY29ycnVwdCBsZWFmDQoNCg0KDQpPbiAyMDE5LzkvMjAg5LiK5Y2IMTozOCwg
-QmFybmVzLCBTYW11ZWwgd3JvdGU6DQo+IEkgaGF2ZSBhIGJ0cmZzIGRyaXZlIHRoYXQgc3RhcnRl
-ZCBoYXZlIHByb2JsZW1zLCBJIGZpcnN0IG5vdGljZWQgc29tZSBvZiBteSBvbGQgYmFja3VwIGRp
-cmVjdG9yaWVzIGNvdWxkbid0IGJlIGRlbGV0ZWQsIHRoZSBhdXRvbWF0ZWQgZGVsZXRlIGNvbW1h
-bmRzIHJlbW92ZWQgYWxsIHRoZSBmaWxlcywgYnV0IGdvdCBzdHVjayBvbiB0aGUgZGlyZWN0b3Jp
-ZXMuIE5vdyBpZiBJIHRyeSB0byBkZWxldGUgSSBnZXQgaW5wdXQvb3V0cHV0IGVycm9yOg0KPiAN
-Cj4gcm0gLXJmIDIwMTkwODA2LTAyMDAwMS00MTIvDQo+IHJtOiBjYW5ub3QgcmVtb3ZlIA0KPiAn
-MjAxOTA4MDYtMDIwMDAxLTQxMi9iYWNrdXAvbWVkaWEvbmV0d29ya19tcmlwaHlzaWNzL0hBVF9k
-YXRhL1BoYW50b21zDQo+IC9QZW5uIFN0YXRlIENvbGwgVGltZTEnOiBJbnB1dC9vdXRwdXQgZXJy
-b3INCj4gDQo+IGRtZXNnIHNob3dzIHRoZSBmb2xsb3dpbmcgZXJyb3JzOg0KPiANCj4gWzExNjU1
-LjAyMjcyNF0gQlRSRlMgY3JpdGljYWwgKGRldmljZSBzZGMxKTogY29ycnVwdCBsZWFmOiByb290
-PTUgDQo+IGJsb2NrPTEzOTkyODA2NDgxOTIgc2xvdD02OSBpbm89ODkwNDQ1NCwgbmFtZSBoYXNo
-IG1pc21hdGNoIHdpdGgga2V5LCANCj4gaGF2ZSAweDAwMDAwMDAwZDg2NDkxNzMgZXhwZWN0IDB4
-MDAwMDAwMDBmODhkMmFjMyBbMTE2NTUuMDI3NjI5XSBCVFJGUyANCj4gY3JpdGljYWwgKGRldmlj
-ZSBzZGMxKTogY29ycnVwdCBsZWFmOiByb290PTUgYmxvY2s9MTM5OTI4MDY0ODE5MiANCj4gc2xv
-dD02OSBpbm89ODkwNDQ1NCwgbmFtZSBoYXNoIG1pc21hdGNoIHdpdGgga2V5LCBoYXZlIA0KPiAw
-eDAwMDAwMDAwZDg2NDkxNzMgZXhwZWN0IDB4MDAwMDAwMDBmODhkMmFjMyBbMTE2NTUuMDI3OTkw
-XSBCVFJGUyANCj4gY3JpdGljYWwgKGRldmljZSBzZGMxKTogY29ycnVwdCBsZWFmOiByb290PTUg
-YmxvY2s9MTM5OTI4MDY0ODE5MiANCj4gc2xvdD02OSBpbm89ODkwNDQ1NCwgbmFtZSBoYXNoIG1p
-c21hdGNoIHdpdGgga2V5LCBoYXZlIA0KPiAweDAwMDAwMDAwZDg2NDkxNzMgZXhwZWN0IDB4MDAw
-MDAwMDBmODhkMmFjMyBbMTE2NTUuMDI4MzExXSBCVFJGUyANCj4gY3JpdGljYWwgKGRldmljZSBz
-ZGMxKTogY29ycnVwdCBsZWFmOiByb290PTUgYmxvY2s9MTM5OTI4MDY0ODE5MiANCj4gc2xvdD02
-OSBpbm89ODkwNDQ1NCwgbmFtZSBoYXNoIG1pc21hdGNoIHdpdGgga2V5LCBoYXZlIA0KPiAweDAw
-MDAwMDAwZDg2NDkxNzMgZXhwZWN0IDB4MDAwMDAwMDBmODhkMmFjMw0KDQpTb21lIG9sZCBrZXJu
-ZWwgc2NyZXdlZCB1cCB0aGUgbGVhZi4NCk9uZSBJVEVNX0RJUiBoYXMgYmFkIGhhc2guIE5vcm1h
-bGx5IGl0IHNob3VsZCBiZSBmaXhlZCBieSBidHJmcyBjaGVjaywgYnV0Li4uDQoNCj4gDQo+IEkg
-aGF2ZSB0cmllZCBhIHNjcnViLCBubyBlcnJvcnM6DQo+IA0KPiBzdWRvIC4vYnRyZnMgc2NydWIg
-c3RhdHVzIC9kZXYvc2RjMQ0KPiBVVUlEOsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkNDYyYWVh
-OC1hNGU4LTQ3YTAtYjVlNy1hYjhlYzkxYWY4MmENCj4gU2NydWIgc3RhcnRlZDrCoMKgwqAgVHVl
-IFNlcCAxNyAxMDo0MzoyMCAyMDE5DQo+IFN0YXR1czrCoMKgwqDCoMKgwqDCoMKgwqDCoCBmaW5p
-c2hlZA0KPiBEdXJhdGlvbjrCoMKgwqDCoMKgwqDCoMKgIDE6NDY6MjkNCj4gVG90YWwgdG8gc2Ny
-dWI6wqDCoCAxLjE4VGlCDQo+IFJhdGU6wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDE5My40Nk1p
-Qi9zDQo+IEVycm9yIHN1bW1hcnk6wqDCoMKgIG5vIGVycm9ycyBmb3VuZA0KPiANCj4gYSBidHJm
-cyBjaGVjayBnaXZlcyBhIHZlcnkgdmVyeSBsb25nIGxpc3Qgb2YgZXJyb3JzIG1vc3QgaW5jbHVk
-ZSAibGluayBjb3VudCB3cm9uZyIgc3VjaCBhczoNCg0KVGhhdCdzIGluIGZhY3Qgbm90IHRoZSBi
-aWdnZXN0IHByb2JsZW0uDQoNCj4gDQo+IHJvb3QgNSBpbm9kZSA1MjAyMTA5IGVycm9ycyAyMDAw
-LCBsaW5rIGNvdW50IHdyb25nDQo+IMKgwqDCoCB1bnJlc29sdmVkIHJlZiBkaXIgNzQyNDU1MiBp
-bmRleCAxOSBuYW1lbGVuIDkgbmFtZSAxMi0yNS5kY20gDQo+IGZpbGV0eXBlIDAgZXJyb3JzIDMs
-IG5vIGRpciBpdGVtLCBubyBkaXIgaW5kZXgNCj4gwqDCoMKgIHVucmVzb2x2ZWQgcmVmIGRpciA4
-NDU0OTQyIGluZGV4IDE5IG5hbWVsZW4gOSBuYW1lIDEyLTI1LmRjbSANCj4gZmlsZXR5cGUgMCBl
-cnJvcnMgMywgbm8gZGlyIGl0ZW0sIG5vIGRpciBpbmRleA0KPiDCoMKgwqAgdW5yZXNvbHZlZCBy
-ZWYgZGlyIDg2MTY2NTEgaW5kZXggMTkgbmFtZWxlbiA5IG5hbWUgMTItMjUuZGNtIA0KPiBmaWxl
-dHlwZSAwIGVycm9ycyAzLCBubyBkaXIgaXRlbSwgbm8gZGlyIGluZGV4DQo+IA0KPiBhbm90aGVy
-IGV4YW1wbGU6DQo+IA0KPiByb290IDUgaW5vZGUgNzQyMjcwOSBlcnJvcnMgMjAwMSwgbm8gaW5v
-ZGUgaXRlbSwgbGluayBjb3VudCB3cm9uZw0KPiDCoMKgwqAgdW5yZXNvbHZlZCByZWYgZGlyIDI2
-MSBpbmRleCAxODIgbmFtZWxlbiAxOSBuYW1lIA0KPiAyMDE5MDYzMC0wMjAwMDEtNzE1IGZpbGV0
-eXBlIDIgZXJyb3JzIDQsIG5vIGlub2RlIHJlZg0KPiANCj4gSSByYW4gYSBiYWxhbmNlLCB0aGF0
-IGRpZG4ndCBoZWxwLCBhbmQgaW50ZXJlc3RpbmdseSBpZiBJIHJ1biBjaGVjayAtLXJlcGFpciBp
-dCBhYm9ydHM6DQo+IA0KPiBzdWRvIC4vYnRyZnMgY2hlY2sgLS1yZXBhaXIgL2Rldi9zZGMxDQo+
-IGVuYWJsaW5nIHJlcGFpciBtb2RlDQo+IE9wZW5pbmcgZmlsZXN5c3RlbSB0byBjaGVjay4uLg0K
-PiBDaGVja2luZyBmaWxlc3lzdGVtIG9uIC9kZXYvc2RjMQ0KPiBVVUlEOiBkNDYyYWVhOC1hNGU4
-LTQ3YTAtYjVlNy1hYjhlYzkxYWY4MmENCj4gWzEvN10gY2hlY2tpbmcgcm9vdCBpdGVtcw0KPiBG
-aXhlZCAwIHJvb3RzLg0KPiBbMi83XSBjaGVja2luZyBleHRlbnRzDQo+IGluY29ycmVjdCBvZmZz
-ZXRzIDkxOTEgNjcxMTgwNTUNCj4gaW5jb3JyZWN0IG9mZnNldHMgOTE5MSA2NzExODA1NQ0KPiBp
-bmNvcnJlY3Qgb2Zmc2V0cyA5MTkxIDY3MTE4MDU1DQo+IGluY29ycmVjdCBvZmZzZXRzIDkxOTEg
-NjcxMTgwNTUNCg0KQW5kIHRoaXMgaXMgdGhlIGJpZ2dlc3QgcHJvYmxlbS4NCg0KWW91IGhhdmUg
-YmFkIGV4dGVudCB0cmVlIG9mZnNldHMsIHRoYXQncyBhIGJpZ2dlciBwcm9ibGVtLg0KSW4gdGhh
-dCBjYXNlLCB0aGUgY29ycnVwdGlvbiBpcyBwcmV0dHkgYmV5b25kIHJlcGFpciwgYWx0aG91Z2gg
-SSdtIG5vdCBzdXJlIGhvdyB0aGlzIGhhcHBlbmVkLCBpdCdzIGRlZmluaXRlbHkgbm90IGEgZ29v
-ZCBzaWduIHRvIHlvdXIgZnMuDQoNCkknZCByZWNvbW1lbmQgdG8gc2FsdmFnZSB5b3VyIGRhdGEg
-YW5kIHJlYnVpbGQgdGhlIGZzLg0KDQpUaGFua3MsDQpRdQ0KDQo+IGl0ZW1zIG92ZXJsYXAsIGNh
-bid0IGZpeA0KPiBjaGVjay9tYWluLmM6NDI2NTogZml4X2l0ZW1fb2Zmc2V0OiBCVUdfT04gYHJl
-dGAgdHJpZ2dlcmVkLCB2YWx1ZSAtNSANCj4gLi9idHJmcygrMHg1ZTJmMClbMHg1NTdiMWUzYzYy
-ZjBdIC4vYnRyZnMoKzB4NWUzOTYpWzB4NTU3YjFlM2M2Mzk2XSANCj4gLi9idHJmcygrMHg2OTUx
-YilbMHg1NTdiMWUzZDE1MWJdIC4vYnRyZnMoKzB4NmE0NWEpWzB4NTU3YjFlM2QyNDVhXSANCj4g
-Li9idHJmcygrMHg2Y2YwOSlbMHg1NTdiMWUzZDRmMDldIC4vYnRyZnMobWFpbisweDk1KVsweDU1
-N2IxZTM3YzY5MF0NCj4gL2xpYi94ODZfNjQtbGludXgtZ251L2xpYmMuc28uNihfX2xpYmNfc3Rh
-cnRfbWFpbisweGU3KVsweDdmN2FlYzQ1MmI5Nw0KPiBdDQo+IC4vYnRyZnMoX3N0YXJ0KzB4MmEp
-WzB4NTU3YjFlMzdjMWVhXQ0KPiBBYm9ydGVkDQo+IA0KPiBkZXYgc3RhdHMgZG9lc24ndCBzaG93
-IGFueSBjb3JydXB0aW9uIGVycm9yczoNCj4gDQo+IHN1ZG8gLi9idHJmcyBkZXYgc3RhdHMgL2Rl
-di9zZGMxDQo+IFsvZGV2L3NkYzFdLndyaXRlX2lvX2VycnPCoMKgwqAgMA0KPiBbL2Rldi9zZGMx
-XS5yZWFkX2lvX2VycnPCoMKgwqDCoCAwDQo+IFsvZGV2L3NkYzFdLmZsdXNoX2lvX2VycnPCoMKg
-wqAgMA0KPiBbL2Rldi9zZGMxXS5jb3JydXB0aW9uX2VycnPCoCAwDQo+IFsvZGV2L3NkYzFdLmdl
-bmVyYXRpb25fZXJyc8KgIDANCj4gDQo+IFNNQVJUIGRvZXNuJ3Qgc2hvdyBhbnkgcHJvYmxlbXMu
-IEkgdXBkYXRlZCBteSBrZXJuZWwgdG8gNS4wIGFuZCBidWlsdCB0aGUgbGF0ZXN0IHZlcnNpb24g
-b2YgYnRyZnMtcHJvZyAoNS4yLjIpIGFuZCBoYXZlIGJlZW4gdXNpbmcgdGhhdC4gSSBjYW4ndCBm
-aW5kIGFueXRoaW5nIGVsc2UgdG8gdHJ5LCB0aGVzZSBhcmUgaW5jcmVtZW50YWwgYmFja3VwcyBz
-byBpdCB3b3VsZCBiZSBuaWNlIHRvIHNhdmUgdGhlbSBpZiBwb3NzaWJsZS4gQW55IGhlbHAgbXVj
-aCBhcHByZWNpYXRlZCEhIFZlcnNpb24gYW5kIG90aGVyIGluZm8gbGlzdGVkIGJlbG93Og0KPiAN
-Cj4gdW5hbWUgLWENCj4gTGludXggbXJpc3BlYyA1LjAuMC0yNy1nZW5lcmljICMyOH4xOC4wNC4x
-LVVidW50dSBTTVAgVGh1IEF1ZyAyMiANCj4gMDM6MDA6MzIgVVRDIDIwMTkgeDg2XzY0IHg4Nl82
-NCB4ODZfNjQgR05VL0xpbnV4DQo+IA0KPiAuL2J0cmZzIC0tdmVyc2lvbg0KPiBidHJmcy1wcm9n
-cyB2NS4yLjINCj4gDQo+IHN1ZG8gLi9idHJmcyBmaSBzaG93DQo+IExhYmVsOiAnYmFja3VwJ8Kg
-IHV1aWQ6IGQ0NjJhZWE4LWE0ZTgtNDdhMC1iNWU3LWFiOGVjOTFhZjgyYQ0KPiDCoMKgwqAgVG90
-YWwgZGV2aWNlcyAxIEZTIGJ5dGVzIHVzZWQgMS4xN1RpQg0KPiDCoMKgwqAgZGV2aWTCoMKgwqAg
-MSBzaXplIDkuMDlUaUIgdXNlZCAxLjE4VGlCIHBhdGggL2Rldi9zZGMxDQo+IA0KPiBzdWRvIC4v
-YnRyZnMgZmkgZGYgL21lZGlhL21yaXNwZWMvYmFja3VwLyBEYXRhLCBzaW5nbGU6IHRvdGFsPTEu
-MTZUaUIsIA0KPiB1c2VkPTEuMTZUaUIgU3lzdGVtLCBEVVA6IHRvdGFsPTguMDBNaUIsIHVzZWQ9
-MTYwLjAwS2lCIE1ldGFkYXRhLCBEVVA6IA0KPiB0b3RhbD0xMS4wMEdpQiwgdXNlZD04LjMzR2lC
-IEdsb2JhbFJlc2VydmUsIHNpbmdsZTogdG90YWw9NTEyLjAwTWlCLCANCj4gdXNlZD0wLjAwQg0K
-PiANCj4gDQo+IA0KPiANCj4gDQoNCgpDT05GSURFTlRJQUxJVFkgTk9USUNFOiBUaGlzIGUtbWFp
-bCBjb21tdW5pY2F0aW9uIGFuZCBhbnkgYXR0YWNobWVudHMgbWF5IGNvbnRhaW4gY29uZmlkZW50
-aWFsIGFuZCBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIGZvciB0aGUgdXNlIG9mIHRoZSBkZXNpZ25h
-dGVkIHJlY2lwaWVudHMgbmFtZWQgYWJvdmUuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCBy
-ZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQgeW91IGhhdmUgcmVjZWl2ZWQg
-dGhpcyBjb21tdW5pY2F0aW9uIGluIGVycm9yIGFuZCB0aGF0IGFueSByZXZpZXcsIGRpc2Nsb3N1
-cmUsIGRpc3NlbWluYXRpb24sIGRpc3RyaWJ1dGlvbiBvciBjb3B5aW5nIG9mIGl0IG9yIGl0cyBj
-b250ZW50cyBpcyBwcm9oaWJpdGVkLiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGNvbW11bmlj
-YXRpb24gaW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgbWUgaW1tZWRpYXRlbHkgYnkgcmVwbHlpbmcg
-dG8gdGhpcyBtZXNzYWdlIGFuZCBkZXN0cm95IGFsbCBjb3BpZXMgb2YgdGhpcyBjb21tdW5pY2F0
-aW9uIGFuZCBhbnkgYXR0YWNobWVudHMuIFRoYW5rIHlvdS4K
+after a couple unclean reboots, this filesystem became un-mountable.  
+btrfs check didn't help either.  This should be a raid 1 metadata/raid 0 
+data volume.  I've had this filesystem for several years, but I think it 
+was after any major on disk options.
+
+I tend to run a current kernel.   I got to 5.2.15 quickly after the 
+btrfs bug report, and just was switching to 5.2.17 when things died.  I 
+still have these disks as they are, but will wipe them out tomorrow and 
+restore from backups unless someone has any further diagnostics they'd 
+like me to run.
+
+On a related subject, are there any tips for creating a new filesystem, 
+I think I used to specify "-l 16K -n 16K" during mkfs.  I'll be 
+switching to 4kn soon, and but currently using 512e, any notes regarding 
+using 4kn disks?
+
+
+here are some diagnostics:
+
+[toppk@static ~]$ cat btrfs-failure.txt
+# btrfs filesystem show /dev/mapper/cprt-47
+Label: 'tm'  uuid: 2f8c681b-1973-4fe6-a6b6-0be182944528
+         Total devices 2 FS bytes used 17.16TiB
+         devid    1 size 9.09TiB used 8.65TiB path /dev/mapper/cprt-46
+         devid    2 size 9.09TiB used 8.65TiB path /dev/mapper/cprt-47
+# btrfs check /dev/mapper/cprt-46
+Opening filesystem to check...
+parent transid verify failed on 6751397658624 wanted 2012643 found 
+2012295
+parent transid verify failed on 6751397658624 wanted 2012643 found 
+2012295
+parent transid verify failed on 6751397658624 wanted 2012643 found 
+2012295
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=7267733438464 item=33 parent 
+level=2 child level=0
+[root@static ~]# btrfs check -b /dev/mapper/cprt-46
+Opening filesystem to check...
+parent transid verify failed on 6751304908800 wanted 2012643 found 
+2012294
+parent transid verify failed on 6751305105408 wanted 2012643 found 
+2012295
+parent transid verify failed on 6751381258240 wanted 2012643 found 
+2012295
+parent transid verify failed on 6751397658624 wanted 2012643 found 
+2012295
+parent transid verify failed on 6751397658624 wanted 2012643 found 
+2012295
+parent transid verify failed on 6751397658624 wanted 2012643 found 
+2012295
+Ignoring transid failure
+ERROR: child eb corrupted: parent bytenr=6751265570816 item=33 parent 
+level=2 child level=0
+ERROR: cannot open file system
+[root@static ~]#   uname -a
+Linux static.bllue.org 5.2.17-200.fc30.x86_64 #1 SMP Sat Sep 21 16:13:27 
+EDT 2019 x86_64 x86_64 x86_64 GNU/Linux
+[root@static ~]#   btrfs --version
+btrfs-progs v5.2.1
+
+
+Thanks,
+
+Ken
