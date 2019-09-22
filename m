@@ -2,106 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40CEFBA01B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Sep 2019 03:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F8ECBA141
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Sep 2019 08:35:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726962AbfIVBUZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 21 Sep 2019 21:20:25 -0400
-Received: from cdptpa-outbound-snat.email.rr.com ([107.14.166.225]:55988 "EHLO
-        cdptpa-cmomta03.email.rr.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726944AbfIVBUY (ORCPT
+        id S1727648AbfIVGfB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Sep 2019 02:35:01 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:40663 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727645AbfIVGfB (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 21 Sep 2019 21:20:24 -0400
-X-Greylist: delayed 487 seconds by postgrey-1.27 at vger.kernel.org; Sat, 21 Sep 2019 21:20:23 EDT
-Received: from static.bllue.org ([66.65.51.108])
-        by cmsmtp with ESMTP
-        id BqQ8ial4lYkhNBqQBiawOV; Sun, 22 Sep 2019 01:12:15 +0000
-Received: from bllue.org (localhost.localdomain [127.0.0.1])
-        by static.bllue.org (Postfix) with ESMTP id 418E8C6C3C
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Sep 2019 21:12:11 -0400 (EDT)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Sat, 21 Sep 2019 21:12:11 -0400
-From:   Kenneth Topp <toppk@bllue.org>
+        Sun, 22 Sep 2019 02:35:01 -0400
+Received: from jupiter.fkoop.de ([79.231.199.16]) by mrelayeu.kundenserver.de
+ (mreue010 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MOz8O-1iZ52t2CgG-00PKPp for <linux-btrfs@vger.kernel.org>; Sun, 22 Sep 2019
+ 08:34:59 +0200
+Message-ID: <57e3a3a2c40fe7ea33ff85aec59ffaefdd20f3e6.camel@fkoop.de>
+Subject: help needed with unmountable btrfs-filesystem
+From:   Felix Koop <fdp@fkoop.de>
 To:     linux-btrfs@vger.kernel.org
-Subject: btrfs filesystem not mountable after unclear shutdown
-User-Agent: Roundcube Webmail/1.4-rc2
-Message-ID: <e9073c1dc608dc8d50ee8d131bc86887@bllue.org>
-X-Sender: toppk@bllue.org
-X-Spam-Status: No, score=1.1 required=5.0 tests=BAYES_00,HEXHASH_WORD,
-        UNPARSEABLE_RELAY autolearn=no autolearn_force=no version=3.4.2
-X-Spam-Level: *
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on static.bllue.org
-X-CMAE-Envelope: MS4wfFZ9sL4ulL6izxm/6j3bjf3yPqGswgolLXK9EFVemKr8AQ6IGvZHuzpEAPSf1wP/gZXW3ScazOGa+ESPHXtPNvmppCBiven8c7tEiNOTqnxMus/3+SfT
- 0Bm4HZygKimV9N/aK7oMAyKPOqvgE4tlgR1zUOp7ye25LAHgIQwiOMZthFdn6ouub1pdXsZUzzwLKw==
+Date:   Sun, 22 Sep 2019 08:34:40 +0200
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:U5XWyDmXymBA6OTHBcImBsM5DJPzzP2Lmr6ViFxCvA0MbTbS4RD
+ E51zPvAe3FmAqJIk4q6Ya9GcNDRX1Dxyw9jP1SRHHXB4I3iLN8iBBeGd/uV5ffcuzhup62G
+ kZbK4CUqkKcbUqp3oid7v7+NYhiUnxjKyUYaCZYhWP5PAoBiQ7gliEPlj9JV5qtGTsPAnLN
+ uS4p7Cbnk6jOeBkZvAsLQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zoiRjCSW2zQ=:UIo6CUYiMVxS4Wkw0VXdYL
+ B9eyeiLVLMtwT96I5VDpatnOe8xuAO0JwGZLn27YJFNsgwhYccsUTDkOLHzFKAVyhEVn/Sxxn
+ iZb6q2pJ/+Ovu44KZAZIs0IDO1QuRzD2/89TrS7A7Zx3ksELn/f+dDF1rt1ZSy+v0SvqB77MO
+ GWYDi4EXauwjFqae9ALEgSTghRDxOtiST5GmhrxHejqxwOXv8+mX5p2F2+8r7GsmGPmlhqWg8
+ eYkn1Ul+ecNEIwWt0AEOT4wrClBJGYwb7/od0kyuuMDnGKbzHlEeHV1A3XJfNcLbttqBSYUQS
+ nSXGWTaPc9CsDLy1ZV8F6gavFLlHfJtzY5x5a+F3rQ3R2ITvby5/My/uBGIfW9uwW0eL8db3J
+ ku1z1bGU5PkojnKz2sa+D3Vfw35lgjSZTwYKlYhl5w+JTxzcxOIh8VNnHzcANI2lQin1x+6kp
+ dxWsxvwDayFSbzhxp55yzQMwXEfVyifUqNatvGuFv6k4yeRtT86sSBPU1LfIfWJfXi5jTvoKR
+ mqsX82yBWbxslCg7pC9JmBuIZXTDWCIHqP6Y+fadufAN8miLuEQVh/RI6r3f2Eo502R4trC6x
+ JXeINiZmFiKFJfMuBdAYQfuH7n7cucwtU+SqGLw1uV9hQbEgL2jZv5NOYI3Y2/mM4z5klhhPN
+ sIHfmngO2x2VHnYoVd7+/4ueNan9xH2Lrc44EDrnYE4XrKZb3ROW0qvKjLTsM33uICG3x0LFe
+ 9xtdhHlByXUxtRCB6EjrsM92X0VrjhXRao4ecuZTAXZPu3urzIm8LhukHuFc4VG8vmDN9GtVT
+ HiKFsmF3xjI4pz8gHJBbOFmpxF44dno5F4cor4Me/9mRBqfJIGhhxSRNPMmHR7ef7kGWA6bC+
+ LNC5U/mUtW3Xl5tBk64fWDhIvUFwTFlFtViQDjMDm/tpYXKqZPX4wqNiSR1rdSMzvKm1R6iX9
+ X1M9kxg7focTJk2v4Scu+WuxxE0QmQQo=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-after a couple unclean reboots, this filesystem became un-mountable.  
-btrfs check didn't help either.  This should be a raid 1 metadata/raid 0 
-data volume.  I've had this filesystem for several years, but I think it 
-was after any major on disk options.
+Hello,
 
-I tend to run a current kernel.   I got to 5.2.15 quickly after the 
-btrfs bug report, and just was switching to 5.2.17 when things died.  I 
-still have these disks as they are, but will wipe them out tomorrow and 
-restore from backups unless someone has any further diagnostics they'd 
-like me to run.
+I need help accessing a btrfs-filesystem. When I try to mount the fs, I
+get the following error:
 
-On a related subject, are there any tips for creating a new filesystem, 
-I think I used to specify "-l 16K -n 16K" during mkfs.  I'll be 
-switching to 4kn soon, and but currently using 512e, any notes regarding 
-using 4kn disks?
+# mount -t btrfs /dev/md/1 /mnt
+mount: /mnt: wrong fs type, bad option, bad superblock on /dev/md1,
+missing codepage or helper program, or other error.
 
+When I then try to check the fs, this is what I get:
 
-here are some diagnostics:
-
-[toppk@static ~]$ cat btrfs-failure.txt
-# btrfs filesystem show /dev/mapper/cprt-47
-Label: 'tm'  uuid: 2f8c681b-1973-4fe6-a6b6-0be182944528
-         Total devices 2 FS bytes used 17.16TiB
-         devid    1 size 9.09TiB used 8.65TiB path /dev/mapper/cprt-46
-         devid    2 size 9.09TiB used 8.65TiB path /dev/mapper/cprt-47
-# btrfs check /dev/mapper/cprt-46
+# btrfs check /dev/md/1
 Opening filesystem to check...
-parent transid verify failed on 6751397658624 wanted 2012643 found 
-2012295
-parent transid verify failed on 6751397658624 wanted 2012643 found 
-2012295
-parent transid verify failed on 6751397658624 wanted 2012643 found 
-2012295
-Ignoring transid failure
-ERROR: child eb corrupted: parent bytenr=7267733438464 item=33 parent 
-level=2 child level=0
-[root@static ~]# btrfs check -b /dev/mapper/cprt-46
-Opening filesystem to check...
-parent transid verify failed on 6751304908800 wanted 2012643 found 
-2012294
-parent transid verify failed on 6751305105408 wanted 2012643 found 
-2012295
-parent transid verify failed on 6751381258240 wanted 2012643 found 
-2012295
-parent transid verify failed on 6751397658624 wanted 2012643 found 
-2012295
-parent transid verify failed on 6751397658624 wanted 2012643 found 
-2012295
-parent transid verify failed on 6751397658624 wanted 2012643 found 
-2012295
-Ignoring transid failure
-ERROR: child eb corrupted: parent bytenr=6751265570816 item=33 parent 
-level=2 child level=0
+No valid Btrfs found on /dev/md/1
 ERROR: cannot open file system
-[root@static ~]#   uname -a
-Linux static.bllue.org 5.2.17-200.fc30.x86_64 #1 SMP Sat Sep 21 16:13:27 
-EDT 2019 x86_64 x86_64 x86_64 GNU/Linux
-[root@static ~]#   btrfs --version
-btrfs-progs v5.2.1
+
+Can anybody help me how to recover my data?
 
 
-Thanks,
+-- 
+Mit freundlichen Grüßen
 
-Ken
+Felix Koop
+fkoop@fkoop.de
+
