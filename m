@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0E7BA568
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Sep 2019 20:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE64BA7AC
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Sep 2019 21:48:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394805AbfIVS5Q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 22 Sep 2019 14:57:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59722 "EHLO mail.kernel.org"
+        id S2394441AbfIVS7h (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 22 Sep 2019 14:59:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2393622AbfIVS5O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 22 Sep 2019 14:57:14 -0400
+        id S2438879AbfIVS7c (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 22 Sep 2019 14:59:32 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6BC56208C2;
-        Sun, 22 Sep 2019 18:57:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id BF771208C2;
+        Sun, 22 Sep 2019 18:59:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569178633;
-        bh=u4jJoFxstkACUpvEvOQXcOr7ujV/T47HCtoPgXtVEIA=;
+        s=default; t=1569178771;
+        bh=J3w6PSQJMXIgywixiduIInZgrhJkt1JWfKks4ipTZzk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gN6aKPgpUpp1tI+iCuGc5bBKQ9rptb/KYJizzepkjVhkF0qZiQOqseEudiIt+nUKV
-         wH3yyvq3Sr0i7I3gWJWcS2boZuP2K+32OUypwUMCe3njfGzVkSzEvK8B4eu/a3I0jt
-         zcbjO+nta/OfafV8+7i0B7MbI4XV60viR0LVjkes=
+        b=riqFGmmWYcSQEDMc4L6aHt+L3bjCNNG1umsokhGVhP4wYWWEQTiNyerxTDxFZ6Gq2
+         tESidhtEKE8LS6drW9J2/pqQa0NHEblvmLVyCkViiMQtljbuABWNmlkg92/TYfsR4Z
+         wKsTI8GRPn4dD6uc+de+rfkz939vDW5m9ipYUboI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Qu Wenruo <wqu@suse.com>, Jungyeon Yoon <jungyeon.yoon@gmail.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 128/128] btrfs: extent-tree: Make sure we only allocate extents from block groups with the same type
-Date:   Sun, 22 Sep 2019 14:54:18 -0400
-Message-Id: <20190922185418.2158-128-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 89/89] btrfs: extent-tree: Make sure we only allocate extents from block groups with the same type
+Date:   Sun, 22 Sep 2019 14:57:17 -0400
+Message-Id: <20190922185717.3412-89-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190922185418.2158-1-sashal@kernel.org>
-References: <20190922185418.2158-1-sashal@kernel.org>
+In-Reply-To: <20190922185717.3412-1-sashal@kernel.org>
+References: <20190922185717.3412-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -131,10 +131,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 8 insertions(+)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 88c939f7aad96..e49e29288049a 100644
+index 49766721b2b14..10dee82455581 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -7367,6 +7367,14 @@ static noinline int find_free_extent(struct btrfs_fs_info *fs_info,
+@@ -7706,6 +7706,14 @@ static noinline int find_free_extent(struct btrfs_fs_info *fs_info,
  			 */
  			if ((flags & extra) && !(block_group->flags & extra))
  				goto loop;
