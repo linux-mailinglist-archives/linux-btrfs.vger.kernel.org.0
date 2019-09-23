@@ -2,157 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65AEDBBD78
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 22:59:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA289BBDAF
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 23:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502894AbfIWU7V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Sep 2019 16:59:21 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:38741 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502893AbfIWU7V (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Sep 2019 16:59:21 -0400
-Received: by mail-wm1-f66.google.com with SMTP id 3so10736312wmi.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2019 13:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AfG+/CtktRAjWIxxkOJwXVeko0RkG6PAKfhEVpcMCeo=;
-        b=eXMfPeXbjQauk963salqeBj9B8IxnQVQaBdBQJ1OlogHUYKMxQYYyreNHpzHRKWZOy
-         mv+ZH718WwGArRr2u9ij/6BiCPa7ObkYx2b4xSzA+uvTE94KK7BfBAP3O9MJ4HE+VX6J
-         g0QwxxmGdJHruqno9bT9ePuk89fh4ffUbJoH0f+JXUnAsmffZW+fc84wOXAJZS5citl/
-         XQEcxTjailrOiXIflNu/+7+8iosLznprwav3ROsC/p3OW7C5yF7aBbshJx8luQV0gujy
-         /ism2G9HpvCQf3+ud3gJJNNLPipubzH8e/lLrQ/AboAZtrxp6YIccGRBd6ePj4TdyFNh
-         r3Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AfG+/CtktRAjWIxxkOJwXVeko0RkG6PAKfhEVpcMCeo=;
-        b=tJ5gYjyZml07gAe27c1nSPhipByvAOuVjRkzMcqWegyUcpYqCBbbqFvx0FBuiHDAre
-         yQ519NY2dxhHc+RvL6z+OJX2TXKCXB/S+9eqlpfMnthqr4I3h7Jn5HB87WvXXuQc5oFz
-         e6PiC+M+bGbe0Eax+xKn9GxQHMizWZ6YLxPfJvRzztsMdEFFp5DdEtflkDz/XHuqIpZL
-         Jc1xYk6XbdZzzGAHZ0bPUS4togwd/CQnAFWx3poGM1vrKKKw6S9WxsAMJ84ZejXUHqJt
-         296kb/46q46Ab46YRVkVIE1EQjTt/xwvEu/y+4XowHpyvgU373Ew/EtnNFCMR/g5b7c/
-         gH0w==
-X-Gm-Message-State: APjAAAU88ohoFgOa9Cr1EtbVtDCvOO7kgX0ws0B1v+QIs3vLQV5hvt+n
-        F09V/bg8ssJsoLc6BNBYUuFDYzWoWsr1D0BK5q+aQw==
-X-Google-Smtp-Source: APXvYqwdwVoIcmnRhC9C+Yv85hi8GYr9LeLeLR/NZSmjprimIM0Oi8+KUt5JD6dG4jEw7ETp2LskVWl9Y5I4aVHkuj8=
-X-Received: by 2002:a1c:4102:: with SMTP id o2mr1095292wma.66.1569272359278;
- Mon, 23 Sep 2019 13:59:19 -0700 (PDT)
+        id S2388220AbfIWVRM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Sep 2019 17:17:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51488 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387617AbfIWVRM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Sep 2019 17:17:12 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 0D9A7AD26;
+        Mon, 23 Sep 2019 21:17:10 +0000 (UTC)
+Subject: Re: Subpagesize-blocksize: Allow I/O on blocks whose size is less
+ than page size
+To:     =?UTF-8?Q?Niccol=c3=b2_Belli?= <darkbasic@linuxsystems.it>,
+        linux-btrfs@vger.kernel.org
+Cc:     Chandan Rajendra <chandan@linux.vnet.ibm.com>
+References: <5e481d4f4f323226a2c81caf5e2f78ae@linuxsystems.it>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <520c69ed-7624-4334-2fea-b21dbbd951f4@suse.com>
+Date:   Tue, 24 Sep 2019 00:17:08 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <000f01d5723b$6e3d0f70$4ab72e50$@gmail.com> <CAJCQCtSCJTsk1oFrWObUBpw-MXArQJHoJV3BeBk0Nfv_-AoS8g@mail.gmail.com>
- <003f01d5724c$f1adae30$d5090a90$@gmail.com>
-In-Reply-To: <003f01d5724c$f1adae30$d5090a90$@gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 23 Sep 2019 14:59:08 -0600
-Message-ID: <CAJCQCtTwjUok145SqnbwfBYKipVhcV7J94HX9Lx4mgaFV3FaBA@mail.gmail.com>
-Subject: Re: BTRFS checksum mismatch - false positives
-To:     hoegge@gmail.com
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <5e481d4f4f323226a2c81caf5e2f78ae@linuxsystems.it>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 23, 2019 at 2:24 PM <hoegge@gmail.com> wrote:
->
-> Hi Chris
->
-> uname:
-> Linux MHPNAS 3.10.105 #24922 SMP Wed Jul 3 16:37:24 CST 2019 x86_64 GNU/L=
-inux synology_avoton_1815+
->
-> btrfs --version
-> btrfs-progs v4.0
->
-> ash-4.3# btrfs device stats .
-> [/dev/mapper/vg1-volume_1].write_io_errs   0
-> [/dev/mapper/vg1-volume_1].read_io_errs    0
-> [/dev/mapper/vg1-volume_1].flush_io_errs   0
-> [/dev/mapper/vg1-volume_1].corruption_errs 1014
-> [/dev/mapper/vg1-volume_1].generation_errs 0
-
-I'm pretty sure these values are per 4KiB block on x86. If that's
-correct, this is ~4MiB of corruption.
 
 
-> Concerning self healing? Synology run BTRFS on top of their SHR - which m=
-eans, this where there is redundancy (like RAID5 / RAID6). I don't think th=
-ey use any BTRFS RAID  (likely due to the RAID5/6 issues with BTRFS). Does =
-that then mean, there is no redundancy / self-healing available for data?
+On 17.09.19 г. 11:31 ч., Niccolò Belli  wrote:
+> Hi,
+> What happened to the subpagesize-blocksize patchset? It seems to be
+> untouched since 3 years.
+> I'm currently stuck on Fedora ppc64le because it ships with a 64k page
+> size, but I need it to be 4k in order to be able to chroot into foreign
+> architectures (like x86_64) with qemu-user.
+> 
+> If I try to mount my btrfs partition with a kernel with page size set to
+> 4k I get the following error:
+> 
+> sectorsize 65536 not supported yet, only support 4094
+> 
+> I didn't try the patchset, because it doesn't support compression and my
+> whole fs is compressed.
+> 
+> It looked like an awesome work, why didn't it get merged?
 
-That's correct. What do you get for
+TLDR: It's not ready and likely won't be in the upcoming months.
 
-# btrfs fi show
-# btrfs fi df <mountpoint>
+There are a bunch of stuff that need to happen before subpage blocksize
+support can land in. Namely, the btree inode needs to be removed. Josef
+has a WIP branch doing that but it in turn is dependent on a new
+mechanism to support proper writeback throttling of metadata from the
+superblock. OTOH I have an idea of how to remove the btree indoe by
+exploiting the existing shrinkers mechanism but that's only a concept
+and there are some reservations whether it's doable (It is but there are
+concerns shrinker infrastructure cannot cope with the rate of dirty
+metadata that btrfs produces.)
 
-mountpoint is for the btrfs volume - any location it's mounted on will do
-
-
-
-> How would you like the log files - in private mail. I assume it is the ke=
-rn.log. To make them useful, I suppose I should also pinpoint which files s=
-eem to be intact?
-
-You could do a firefox send which will encrypt it locally and allow
-you to put a limit on the number of times it can be downloaded if you
-want to avoid bots from seeing it. *shrug*
-
->
-> I gather it is the "BTRFS: (null) at logical ... " line that indicate mis=
-match errors ? Not sure why the state "(null"). Like:
->
-> 2019-09-22T16:52:09+02:00 MHPNAS kernel: [1208505.999676] BTRFS: (null) a=
-t logical 1123177283584 on dev /dev/vg1/volume_1, sector 2246150816, root 2=
-59, inode 305979, offset 1316306944, length 4096, links 1 (path: Backup/Vir=
-tual Machines/Kan slettes/Smaller Clone of Windows 7 x64 for win 10 upgrade=
-.vmwarevm/Windows 7 x64-cl1.vmdk)
-
-If they're all like this one, this is strictly a data corruption
-issue. You can resolve it by replacing it with a known good copy. Or
-you can unmount the Btrfs file system and use 'btrfs restore' to
-scrape out the "bad" copy. Whenever there's a checksum error like this
-on Btrfs, it will EIO to user space, it will not let you copy out this
-file if it thinks it's corrupt. Whereas 'btrfs restore' will let you
-do it. That particular version you have, I'm not sure if it'll
-complain, but if so, there's a flag to make it ignore errors so you
-can still get that file out. Then remount, and copy that file right on
-top of itself. Of course this isn't fixing corruption if it's real, it
-just makes the checksum warnings go away.
-
-I'm gonna guess Synology has a way to do a scrub and check the results
-but I don't know how it works, whether it does a Btrfs only scrub or
-also an md scrub. You'd need to ask them or infer it from how this
-whole stack is assembled and what processes get used. But you can do
-an md scrub on your own. From 'man 4 md'
-
- "      md arrays can be scrubbed by writing either check or repair to
-the file md/sync_action in the sysfs directory for the device."
-
-You'd probably want to do a check. If you write repair, then md
-assumes data chunks are good, and merely rewrites all new parity
-chunks. The check will compare data chunks to parity chunks and report
-any mismatch in
-
-"       A count of mismatches is recorded in the sysfs file
-md/mismatch_cnt.  This is set to zero when a scrub starts and is
-incremented whenever a  sector "
-
-That should be 0.
-
-If that is not a 0 then there's a chance there's been some form of
-silent data corruption since that file was originally copied to the
-NAS. But offhand I can't account for why they trigger checksum
-mismatches on Btrfs and yet md5 matches the original files elsewhere.
-
-Are you sharing the vmdk over the network to a VM? Or is it static and
-totally unused while on the NAS?
-
-
-
-Chris Murphy
+> 
+> Bests,
+> Niccolo'
+> 
