@@ -2,177 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA76BBE58
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 00:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A38ABBE86
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 00:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407693AbfIWWLw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Sep 2019 18:11:52 -0400
-Received: from know-smtprelay-omd-9.server.virginmedia.net ([81.104.62.41]:59244
-        "EHLO know-smtprelay-omd-9.server.virginmedia.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390688AbfIWWLw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Sep 2019 18:11:52 -0400
-Received: from [172.16.100.1] ([86.12.75.74])
-        by cmsmtp with ESMTPA
-        id CWYeifJdoVaV8CWYeit1tI; Mon, 23 Sep 2019 23:11:49 +0100
-X-Originating-IP: [86.12.75.74]
-X-Authenticated-User: peter.chant@ntlworld.com
-X-Spam: 0
-X-Authority: v=2.3 cv=PcnReBpd c=1 sm=1 tr=0 a=RxXffCTTaIU9mOmmEQ6aGA==:117
- a=RxXffCTTaIU9mOmmEQ6aGA==:17 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19
- a=IkcTkHD0fZMA:10 a=pOTRmfe1pl5FEBUjtEIA:9 a=2giLpwy7-SPO-fEY:21
- a=bujH5BNsQ7q_NwJk:21 a=QEXdDO2ut3YA:10
-Subject: Re: Balance ENOSPC during balance despite additional storage added
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <94ebf95b-c8c2-e2d5-8db6-77a74c19644a@petezilla.co.uk>
- <CAJCQCtRAnJR+Z8Z8Bq91YXiMpfmwOiHK0tQ+9zAJvSVvexHnxg@mail.gmail.com>
- <54fa8ba3-0d02-7153-ce47-80f10732ef14@petezilla.co.uk>
- <CAJCQCtQLk1m8yAxPPDLVZBr3MehdDD3EpNZ6O_OCRsO-FFzRNw@mail.gmail.com>
- <eb9fdaee-ec76-5285-4384-7a615d3cd5c1@petezilla.co.uk>
- <00be81e2-bca2-3906-c27d-68f252a6ffe1@petezilla.co.uk>
- <CAJCQCtRbjz138p_DVX4=v0e38rtDFjpqrOhBTc4o7Mc=s_zcEw@mail.gmail.com>
-From:   Pete <pete@petezilla.co.uk>
-Message-ID: <fe29580c-3239-f338-6a27-28739fbe7415@petezilla.co.uk>
-Date:   Mon, 23 Sep 2019 23:10:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
-MIME-Version: 1.0
-In-Reply-To: <CAJCQCtRbjz138p_DVX4=v0e38rtDFjpqrOhBTc4o7Mc=s_zcEw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfHdmzO6ncBOb0RP1FXzx8NFLqeW6alcbj9qmvHhhj2I3AtFJSeUpvjwOw5D+cFJGQLAzGnS/DNo5w+irLuPv6DJ/hzgmH5b9++nIbpp8ZBKwO4PhPyO2
- oFePDKLJcYdFGevhLflj5bDomYXERIe/0Tj9fbpvRVW8W09tDzudx1PGGxgM9M65BS/ycfpO8UJM3lx5t86jnCbHQQcpY81WeAA=
+        id S2503339AbfIWWeu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Sep 2019 18:34:50 -0400
+Received: from mail-io1-f67.google.com ([209.85.166.67]:43933 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387989AbfIWWeu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Sep 2019 18:34:50 -0400
+Received: by mail-io1-f67.google.com with SMTP id v2so37507208iob.10;
+        Mon, 23 Sep 2019 15:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/ESXrds+UkbTh1Hy7rleyJrIt8yDroZEYMnOKz1oS1U=;
+        b=HUBbFfCSh3vMKfJOM8EaCOEnkHZDGxdVvmoOY3dAzyrsy4bmK8BZ7QGPOMIU4v7nNA
+         rKwmr3kzUtLSwlPT1BuPo4/Rh3b7F79zhv6ae6MkXRa09REgi4WPQQ+mKQAepk2pn/Hg
+         QDxfNWHLZInpMGMhHRYVMm1IHcjZLLubt4ECohLul24/9Mb3b3idj7fb2kcgdLhB4uPQ
+         undfL9R2nOSOr41BxGN+1/afcmiFwdhahA9aLxSRVoH29TEEu9XnwGGWbfy0VPHSo2Xg
+         boTqbcE+7yVyvjQmoCOJqeKecn2lBpDwYzdvmGm2EkNOJsTCS/szPmB+X3FkyVtD2G1V
+         0CZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/ESXrds+UkbTh1Hy7rleyJrIt8yDroZEYMnOKz1oS1U=;
+        b=BwTU26zN0rq/3yq73DZ8tSpEbNUWeDjpMYh0ONGz+7tCOqKqDdSk4jqB2biPO9y+Km
+         ZpMVsdOgkQmQVVNLcGw176Ml1AnKThMTBvSTFczFOnBjVZYwnw/BcgdATrxIXDxpBOJj
+         7nu7PlW7j6vR/zhra1wAs48IxmfchmGIzN+V/C9cBzdcL1bz2nE9OmUtPblfhPHvjYGx
+         hC0gRO6ggyuBMJMAbHmoP56ELDUJOKe/bQhz8RrW0ER2n1aApV5LzbdRKZRxfN/isRin
+         xjle5JO7DIjdQSGbuj9Lxx0d+/vz3p+7yHwcDBcDfrdBAw8+NS4x3cO/8Y9jR57L1GOv
+         k8hg==
+X-Gm-Message-State: APjAAAVKWHINEQ9FFOUiA36zM4D0xJ5seB854QW9lYWi1tH7JFqcuGM8
+        DZZ2K6h17P14bpq+o4Ti8LA=
+X-Google-Smtp-Source: APXvYqyGvXsuCTYv2evhg0d0GRcR+CafHX246r1/RS/Iuf+TGdu/sqYNTm7XV+cXHM0OxEVesAe58Q==
+X-Received: by 2002:a5d:8908:: with SMTP id b8mr2026998ion.237.1569278089305;
+        Mon, 23 Sep 2019 15:34:49 -0700 (PDT)
+Received: from cs-dulles.cs.umn.edu (cs-dulles.cs.umn.edu. [128.101.35.54])
+        by smtp.googlemail.com with ESMTPSA id f5sm11689832ioh.87.2019.09.23.15.34.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Sep 2019 15:34:48 -0700 (PDT)
+From:   Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc:     emamd001@umn.edu, smccaman@umn.edu, kjlu@umn.edu,
+        Navid Emamdoost <navid.emamdoost@gmail.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: prevent memory leak
+Date:   Mon, 23 Sep 2019 17:34:36 -0500
+Message-Id: <20190923223437.11086-1-navid.emamdoost@gmail.com>
+X-Mailer: git-send-email 2.17.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 9/23/19 10:52 PM, Chris Murphy wrote:
-> What features do you have set?
-> 
-> # btrfs insp dump-s /dev/
-> 
+In btrfsic_mount if btrfsic_dev_state_alloc fails the allocated state
+will be leaked. It needs to be released on error handling path.
 
-root@phoenix:/var/lib/lxc# btrfs insp dump-s /dev/nvme0_vg/lxc
-superblock: bytenr=65536, device=/dev/nvme0_vg/lxc
----------------------------------------------------------
-csum_type               0 (crc32c)
-csum_size               4
-csum                    0xae110928 [match]
-bytenr                  65536
-flags                   0x1
-                        ( WRITTEN )
-magic                   _BHRfS_M [match]
-fsid                    6b0245ec-bdd4-4076-b800-2243d466b174
-metadata_uuid           6b0245ec-bdd4-4076-b800-2243d466b174
-label                   LXC_BTRFS
-generation              548017
-root                    1957019598848
-sys_array_size          97
-chunk_root_generation   547983
-root_level              1
-chunk_root              1949798760448
-chunk_root_level        0
-log_root                0
-log_root_transid        0
-log_root_level          0
-total_bytes             354334801920
-bytes_used              92528005120
-sectorsize              4096
-nodesize                16384
-leafsize (deprecated)   16384
-stripesize              4096
-root_dir                6
-num_devices             2
-compat_flags            0x0
-compat_ro_flags         0x0
-incompat_flags          0x161
-                        ( MIXED_BACKREF |
-                          BIG_METADATA |
-                          EXTENDED_IREF |
-                          SKINNY_METADATA )
-cache_generation        548017
-uuid_tree_generation    548017
-dev_item.uuid           0766ea5f-6e0a-4946-a74c-aea3be78c087
-dev_item.fsid           6b0245ec-bdd4-4076-b800-2243d466b174 [match]
-dev_item.type           0
-dev_item.total_bytes    268435456000
-dev_item.bytes_used     100965285888
-dev_item.io_align       4096
-dev_item.io_width       4096
-dev_item.sector_size    4096
-dev_item.devid          1
-dev_item.dev_group      0
-dev_item.seek_speed     0
-dev_item.bandwidth      0
-dev_item.generation     0
+Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+---
+ fs/btrfs/check-integrity.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-root@phoenix:/var/lib/lxc#
-
-Just for good measure the device I added as a temporary measure to clear
-enospc, I assume this would give the same result (but I am wrong, at
-least in detail):
-
-root@phoenix:/var/lib/lxc# btrfs insp dump-s /dev/nvme0_vg/tempdel
-superblock: bytenr=65536, device=/dev/nvme0_vg/tempdel
----------------------------------------------------------
-csum_type               0 (crc32c)
-csum_size               4
-csum                    0xb2dad359 [match]
-bytenr                  65536
-flags                   0x1
-                        ( WRITTEN )
-magic                   _BHRfS_M [match]
-fsid                    6b0245ec-bdd4-4076-b800-2243d466b174
-metadata_uuid           6b0245ec-bdd4-4076-b800-2243d466b174
-label                   LXC_BTRFS
-generation              548017
-root                    1957019598848
-sys_array_size          97
-chunk_root_generation   547983
-root_level              1
-chunk_root              1949798760448
-chunk_root_level        0
-log_root                0
-log_root_transid        0
-log_root_level          0
-total_bytes             354334801920
-bytes_used              92528005120
-sectorsize              4096
-nodesize                16384
-leafsize (deprecated)   16384
-stripesize              4096
-root_dir                6
-num_devices             2
-compat_flags            0x0
-compat_ro_flags         0x0
-incompat_flags          0x161
-                        ( MIXED_BACKREF |
-                          BIG_METADATA |
-                          EXTENDED_IREF |
-                          SKINNY_METADATA )
-cache_generation        548017
-uuid_tree_generation    548017
-dev_item.uuid           85b9c239-83ab-486b-b84c-f5d4336f913d
-dev_item.fsid           6b0245ec-bdd4-4076-b800-2243d466b174 [match]
-dev_item.type           0
-dev_item.total_bytes    85899345920
-dev_item.bytes_used     0
-dev_item.io_align       4096
-dev_item.io_width       4096
-dev_item.sector_size    4096
-dev_item.devid          2
-dev_item.dev_group      0
-dev_item.seek_speed     0
-dev_item.bandwidth      0
-dev_item.generation     0
-
-root@phoenix:/var/lib/lxc#
-
-
-
-
-
+diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
+index 0b52ab4cb964..8a77b0cb2db3 100644
+--- a/fs/btrfs/check-integrity.c
++++ b/fs/btrfs/check-integrity.c
+@@ -2941,6 +2941,7 @@ int btrfsic_mount(struct btrfs_fs_info *fs_info,
+ 		if (NULL == ds) {
+ 			pr_info("btrfs check-integrity: kmalloc() failed!\n");
+ 			mutex_unlock(&btrfsic_mutex);
++			kvfree(state);
+ 			return -ENOMEM;
+ 		}
+ 		ds->bdev = device->bdev;
+-- 
+2.17.1
 
