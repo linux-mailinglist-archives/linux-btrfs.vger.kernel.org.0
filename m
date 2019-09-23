@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C15BB62F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 16:05:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C992FBB630
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 16:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405379AbfIWOFe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Sep 2019 10:05:34 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:43295 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404990AbfIWOFd (ORCPT
+        id S2407196AbfIWOFh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Sep 2019 10:05:37 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:40792 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404990AbfIWOFh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Sep 2019 10:05:33 -0400
-Received: by mail-qt1-f194.google.com with SMTP id c3so17224024qtv.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2019 07:05:33 -0700 (PDT)
+        Mon, 23 Sep 2019 10:05:37 -0400
+Received: by mail-qk1-f196.google.com with SMTP id y144so15466298qkb.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2019 07:05:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=kwptywQUOqrBKAV0n02cPezllmiMOzJTAQJwnm6sx3w=;
-        b=mt/ueceNjN/8Xa+iThmgsnCyn3RcnrJOgMkTS2eI1m3dDfDrSp+xhz5BCa4h/FvI+D
-         HVfgCK+F7s9hehIpJa0mVK+Hw1/gEdlzGBAdLK8i2yn81CxSqYdR/1COUoa6e0TQEnLi
-         RESCezBaoULObfr6M15gkba23nn6FDg4hDk51KLbaHaOCT9REJ372Pih4kL0yNX6I9W2
-         clZLXBiUegsSl7UIPMpinzzhQW13stBEw4XvhE4W2Anrb3nObEQxtrt20ICA0yT1PvfU
-         zTqwz2+pMJsN85+k+xctQlp+1XeB7QOSFq5smIRg/IrhvXaYyjKLSEZ5eA24cjfRpiim
-         h/Ig==
+        bh=5LcEzH6mIj7L+vjDcSSgOcJkbfezlnhB/H/JEZCEkjg=;
+        b=xgc01aK+uN5iSv6pv+SAwv7CJnsV7sfjz49i1xdmLR3fjhEGuwefWojGhggSdEsnSy
+         s/M28Cg6ylgxrL2t39rthwXDKOnu9Rgeje3Zc+kMt/6DMqIVEOnGJleNw4VhV1Hs3rtI
+         MqlczQwD1porLtnSNjgPpj4VRsPrpid9hgjWbl9EvgZYScfv6gLnYa0cOD5NXw/mSOgf
+         jDEDuW3fMk78siJPYgispqeAX2UqgmLQXrbpSH+/QIBNAokTLOAI7Q4V4o32LzxO8qg8
+         YJs3b7pNKjzjkUYgT9v9SjB+QCn3Uq/rNiYD3Duyo7ISRUMWuAaB0pvZImJX4FgaLnLH
+         nkvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=kwptywQUOqrBKAV0n02cPezllmiMOzJTAQJwnm6sx3w=;
-        b=Izw9jNzAaqyzwq2vWTGFCPzXmNX22hy8tu0a3945sG7JiVRhlGkrsVl0xG/D3YS93n
-         oKY9JkTk7ZPQizXSlVru1attK82KTUAwHe4TilfVNmnFOTG1KKCL7vuSgyCx1SUWK4OC
-         t9RbnDE11BFU9gv48lxnRVA8rBqB1yNFDw/jaxkDgnUWAgnPI6GdSjnnd0FkXVqcUvmx
-         92BMmeoV8dGKpitSLhLUMw+F2wHPbvnueBLormpwimCRis/4RLm6aG8DopH08FrKN0WG
-         dj0zUi8wby/W2omuh6EYlj+OrBgVfWXT1rGTOQm3/2gy3zRzIljE1tpAkXaahMAA1Mwn
-         J6JA==
-X-Gm-Message-State: APjAAAVdoO058WPxNBjXg9QJaMkrzKYWYWbQjxgceXjRUGdfnlxp1DLT
-        LO+Z2S98PDRadYMkkMV4ade6E337NH4HOA==
-X-Google-Smtp-Source: APXvYqw6cL05uQjvWIOletjs+qfPITrzkWttC1qnnU9P5qTtTalGlJf2pl3P08LT+rRfAXDsR0hOng==
-X-Received: by 2002:a0c:b4d2:: with SMTP id h18mr24751296qvf.208.1569247532316;
-        Mon, 23 Sep 2019 07:05:32 -0700 (PDT)
+        bh=5LcEzH6mIj7L+vjDcSSgOcJkbfezlnhB/H/JEZCEkjg=;
+        b=CXZU8Vd2v6ccQzw0PEpiGNOkDa2KH/UfcqTPtRvRi7Vq0j55XhYv7JFgdQ7SMFHlmf
+         jjniJQXP3ku8vk+Mhg2oBs/iC/wSe6yCHMyj03PEJ2BUfjGUTWSkioZjKOC9AlvTJ/8S
+         xel/0WF/K6FHF3ebCrU5bMFdXl+fzOsB7mm/hdKxGxrmcPsE1sjM+IJgJmcZfEoMUZIk
+         Ulo6hvswZyPoItpyVmb3HNImZgsYtnpIgcUzJLYNV28hxBIRSGvEtB3omOhT0ghWoczD
+         +IVe1Cm8TtVbCyyL8hRiCz0mQKKhrj6kZVxLhO6gFlFaPndfSIacvFntZZ0lDQkjx18l
+         Y5iw==
+X-Gm-Message-State: APjAAAUByFKY1gWJ44zg3BiBfTMQCPxq7M5HoPyV7/3bjzUEIWBATLn9
+        Wn7qp20fugfdV2LZR0L5RNzqq/oTjrHDyA==
+X-Google-Smtp-Source: APXvYqwiXeRzdrPKo7x6NwsknVtnZQkD0exTPwNlohC7WTfedYJuWt4cPobIXW6YklezNReUTPQVLg==
+X-Received: by 2002:a37:4e84:: with SMTP id c126mr16540509qkb.334.1569247534418;
+        Mon, 23 Sep 2019 07:05:34 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id 139sm5411332qkf.14.2019.09.23.07.05.31
+        by smtp.gmail.com with ESMTPSA id n44sm5322928qtf.51.2019.09.23.07.05.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Sep 2019 07:05:31 -0700 (PDT)
+        Mon, 23 Sep 2019 07:05:33 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 2/9] btrfs: separate out the extent io init function
-Date:   Mon, 23 Sep 2019 10:05:18 -0400
-Message-Id: <20190923140525.14246-3-josef@toxicpanda.com>
+Subject: [PATCH 3/9] btrfs: move extent_io_tree defs to their own header
+Date:   Mon, 23 Sep 2019 10:05:19 -0400
+Message-Id: <20190923140525.14246-4-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190923140525.14246-1-josef@toxicpanda.com>
 References: <20190923140525.14246-1-josef@toxicpanda.com>
@@ -60,124 +60,538 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We are moving extent_io_tree into it's on file, so separate out the
-extent_state init stuff from extent_io_tree_init().
+extent_io.c/h are huge, encompassing a bunch of different things.  The
+extent_io_tree code can live on its own, so separate this out.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/extent_io.c | 18 +++++++++++-------
- fs/btrfs/extent_io.h |  2 ++
- fs/btrfs/super.c     |  9 ++++++++-
- 3 files changed, 21 insertions(+), 8 deletions(-)
+ fs/btrfs/ctree.h          |   1 +
+ fs/btrfs/extent-io-tree.h | 227 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/extent_io.c      |   1 +
+ fs/btrfs/extent_io.h      | 217 +-----------------------------------
+ 4 files changed, 230 insertions(+), 216 deletions(-)
+ create mode 100644 fs/btrfs/extent-io-tree.h
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 8db378fa14da..ca763b99aa27 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -202,19 +202,23 @@ static int __must_check flush_write_bio(struct extent_page_data *epd)
- 	return ret;
- }
- 
--int __init extent_io_init(void)
-+int __init extent_state_cache_init(void)
- {
- 	extent_state_cache = kmem_cache_create("btrfs_extent_state",
- 			sizeof(struct extent_state), 0,
- 			SLAB_MEM_SPREAD, NULL);
- 	if (!extent_state_cache)
- 		return -ENOMEM;
-+	return 0;
-+}
- 
-+int __init extent_io_init(void)
-+{
- 	extent_buffer_cache = kmem_cache_create("btrfs_extent_buffer",
- 			sizeof(struct extent_buffer), 0,
- 			SLAB_MEM_SPREAD, NULL);
- 	if (!extent_buffer_cache)
--		goto free_state_cache;
-+		return -ENOMEM;
- 
- 	if (bioset_init(&btrfs_bioset, BIO_POOL_SIZE,
- 			offsetof(struct btrfs_io_bio, bio),
-@@ -232,24 +236,24 @@ int __init extent_io_init(void)
- free_buffer_cache:
- 	kmem_cache_destroy(extent_buffer_cache);
- 	extent_buffer_cache = NULL;
-+	return -ENOMEM;
-+}
- 
--free_state_cache:
-+void __cold extent_state_cache_exit(void)
-+{
-+	btrfs_extent_state_leak_debug_check();
- 	kmem_cache_destroy(extent_state_cache);
--	extent_state_cache = NULL;
--	return -ENOMEM;
- }
- 
- void __cold extent_io_exit(void)
- {
- 	btrfs_extent_buffer_leak_debug_check();
--	btrfs_extent_state_leak_debug_check();
- 
- 	/*
- 	 * Make sure all delayed rcu free are flushed before we
- 	 * destroy caches.
- 	 */
- 	rcu_barrier();
--	kmem_cache_destroy(extent_state_cache);
- 	kmem_cache_destroy(extent_buffer_cache);
- 	bioset_exit(&btrfs_bioset);
- }
-diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-index cf3424d58fec..e813f593202d 100644
---- a/fs/btrfs/extent_io.h
-+++ b/fs/btrfs/extent_io.h
-@@ -556,4 +556,6 @@ bool find_lock_delalloc_range(struct inode *inode,
- struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
- 					       u64 start);
- 
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 19d669d12ca1..5e7ff169683c 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -28,6 +28,7 @@
+ #include <linux/dynamic_debug.h>
+ #include <linux/refcount.h>
+ #include <linux/crc32c.h>
++#include "extent-io-tree.h"
+ #include "extent_io.h"
+ #include "extent_map.h"
+ #include "async-thread.h"
+diff --git a/fs/btrfs/extent-io-tree.h b/fs/btrfs/extent-io-tree.h
+new file mode 100644
+index 000000000000..6f53387445ca
+--- /dev/null
++++ b/fs/btrfs/extent-io-tree.h
+@@ -0,0 +1,227 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef BTRFS_EXTENT_IO_TREE_H
++#define BTRFS_EXTENT_IO_TREE_H
++
++struct extent_changeset;
++
++/* bits for the extent state */
++#define EXTENT_DIRTY		(1U << 0)
++#define EXTENT_UPTODATE		(1U << 1)
++#define EXTENT_LOCKED		(1U << 2)
++#define EXTENT_NEW		(1U << 3)
++#define EXTENT_DELALLOC		(1U << 4)
++#define EXTENT_DEFRAG		(1U << 5)
++#define EXTENT_BOUNDARY		(1U << 6)
++#define EXTENT_NODATASUM	(1U << 7)
++#define EXTENT_CLEAR_META_RESV	(1U << 8)
++#define EXTENT_NEED_WAIT	(1U << 9)
++#define EXTENT_DAMAGED		(1U << 10)
++#define EXTENT_NORESERVE	(1U << 11)
++#define EXTENT_QGROUP_RESERVED	(1U << 12)
++#define EXTENT_CLEAR_DATA_RESV	(1U << 13)
++#define EXTENT_DELALLOC_NEW	(1U << 14)
++#define EXTENT_DO_ACCOUNTING    (EXTENT_CLEAR_META_RESV | \
++				 EXTENT_CLEAR_DATA_RESV)
++#define EXTENT_CTLBITS		(EXTENT_DO_ACCOUNTING)
++
++/*
++ * Redefined bits above which are used only in the device allocation tree,
++ * shouldn't be using EXTENT_LOCKED / EXTENT_BOUNDARY / EXTENT_CLEAR_META_RESV
++ * / EXTENT_CLEAR_DATA_RESV because they have special meaning to the bit
++ * manipulation functions
++ */
++#define CHUNK_ALLOCATED EXTENT_DIRTY
++#define CHUNK_TRIMMED   EXTENT_DEFRAG
++
++enum {
++	IO_TREE_FS_INFO_FREED_EXTENTS0,
++	IO_TREE_FS_INFO_FREED_EXTENTS1,
++	IO_TREE_INODE_IO,
++	IO_TREE_INODE_IO_FAILURE,
++	IO_TREE_RELOC_BLOCKS,
++	IO_TREE_TRANS_DIRTY_PAGES,
++	IO_TREE_ROOT_DIRTY_LOG_PAGES,
++	IO_TREE_SELFTEST,
++};
++
++struct extent_io_tree {
++	struct rb_root state;
++	struct btrfs_fs_info *fs_info;
++	void *private_data;
++	u64 dirty_bytes;
++	bool track_uptodate;
++
++	/* Who owns this io tree, should be one of IO_TREE_* */
++	u8 owner;
++
++	spinlock_t lock;
++	const struct extent_io_ops *ops;
++};
++
++struct extent_state {
++	u64 start;
++	u64 end; /* inclusive */
++	struct rb_node rb_node;
++
++	/* ADD NEW ELEMENTS AFTER THIS */
++	wait_queue_head_t wq;
++	refcount_t refs;
++	unsigned state;
++
++	struct io_failure_record *failrec;
++
++#ifdef CONFIG_BTRFS_DEBUG
++	struct list_head leak_list;
++#endif
++};
++
 +int __init extent_state_cache_init(void);
 +void __cold extent_state_cache_exit(void);
- #endif
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 1b151af25772..843015b9a11e 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -2360,10 +2360,14 @@ static int __init init_btrfs_fs(void)
- 	if (err)
- 		goto free_cachep;
- 
--	err = extent_map_init();
-+	err = extent_state_cache_init();
- 	if (err)
- 		goto free_extent_io;
- 
-+	err = extent_map_init();
-+	if (err)
-+		goto free_extent_state_cache;
 +
- 	err = ordered_data_init();
- 	if (err)
- 		goto free_extent_map;
-@@ -2422,6 +2426,8 @@ static int __init init_btrfs_fs(void)
- 	ordered_data_exit();
- free_extent_map:
- 	extent_map_exit();
-+free_extent_state_cache:
-+	extent_state_cache_exit();
- free_extent_io:
- 	extent_io_exit();
- free_cachep:
-@@ -2442,6 +2448,7 @@ static void __exit exit_btrfs_fs(void)
- 	btrfs_prelim_ref_exit();
- 	ordered_data_exit();
- 	extent_map_exit();
-+	extent_state_cache_exit();
- 	extent_io_exit();
- 	btrfs_interface_exit();
- 	btrfs_end_io_wq_exit();
++void extent_io_tree_init(struct btrfs_fs_info *fs_info,
++			 struct extent_io_tree *tree, unsigned int owner,
++			 void *private_data);
++void extent_io_tree_release(struct extent_io_tree *tree);
++
++int lock_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
++		     struct extent_state **cached);
++
++static inline int lock_extent(struct extent_io_tree *tree, u64 start, u64 end)
++{
++	return lock_extent_bits(tree, start, end, NULL);
++}
++
++int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end);
++
++int __init extent_io_init(void);
++void __cold extent_io_exit(void);
++
++u64 count_range_bits(struct extent_io_tree *tree,
++		     u64 *start, u64 search_end,
++		     u64 max_bytes, unsigned bits, int contig);
++
++void free_extent_state(struct extent_state *state);
++int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
++		   unsigned bits, int filled,
++		   struct extent_state *cached_state);
++int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
++		unsigned bits, struct extent_changeset *changeset);
++int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
++		     unsigned bits, int wake, int delete,
++		     struct extent_state **cached);
++int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
++		     unsigned bits, int wake, int delete,
++		     struct extent_state **cached, gfp_t mask,
++		     struct extent_changeset *changeset);
++
++static inline int unlock_extent(struct extent_io_tree *tree, u64 start, u64 end)
++{
++	return clear_extent_bit(tree, start, end, EXTENT_LOCKED, 1, 0, NULL);
++}
++
++static inline int unlock_extent_cached(struct extent_io_tree *tree, u64 start,
++		u64 end, struct extent_state **cached)
++{
++	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, 1, 0, cached,
++				GFP_NOFS, NULL);
++}
++
++static inline int unlock_extent_cached_atomic(struct extent_io_tree *tree,
++		u64 start, u64 end, struct extent_state **cached)
++{
++	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, 1, 0, cached,
++				GFP_ATOMIC, NULL);
++}
++
++static inline int clear_extent_bits(struct extent_io_tree *tree, u64 start,
++		u64 end, unsigned bits)
++{
++	int wake = 0;
++
++	if (bits & EXTENT_LOCKED)
++		wake = 1;
++
++	return clear_extent_bit(tree, start, end, bits, wake, 0, NULL);
++}
++
++int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
++			   unsigned bits, struct extent_changeset *changeset);
++int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
++		   unsigned bits, u64 *failed_start,
++		   struct extent_state **cached_state, gfp_t mask);
++int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start, u64 end,
++			   unsigned bits);
++
++static inline int set_extent_bits(struct extent_io_tree *tree, u64 start,
++		u64 end, unsigned bits)
++{
++	return set_extent_bit(tree, start, end, bits, NULL, NULL, GFP_NOFS);
++}
++
++static inline int clear_extent_uptodate(struct extent_io_tree *tree, u64 start,
++		u64 end, struct extent_state **cached_state)
++{
++	return __clear_extent_bit(tree, start, end, EXTENT_UPTODATE, 0, 0,
++				cached_state, GFP_NOFS, NULL);
++}
++
++static inline int set_extent_dirty(struct extent_io_tree *tree, u64 start,
++		u64 end, gfp_t mask)
++{
++	return set_extent_bit(tree, start, end, EXTENT_DIRTY, NULL,
++			      NULL, mask);
++}
++
++static inline int clear_extent_dirty(struct extent_io_tree *tree, u64 start,
++				     u64 end, struct extent_state **cached)
++{
++	return clear_extent_bit(tree, start, end,
++				EXTENT_DIRTY | EXTENT_DELALLOC |
++				EXTENT_DO_ACCOUNTING, 0, 0, cached);
++}
++
++int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
++		       unsigned bits, unsigned clear_bits,
++		       struct extent_state **cached_state);
++
++static inline int set_extent_delalloc(struct extent_io_tree *tree, u64 start,
++				      u64 end, unsigned int extra_bits,
++				      struct extent_state **cached_state)
++{
++	return set_extent_bit(tree, start, end,
++			      EXTENT_DELALLOC | EXTENT_UPTODATE | extra_bits,
++			      NULL, cached_state, GFP_NOFS);
++}
++
++static inline int set_extent_defrag(struct extent_io_tree *tree, u64 start,
++		u64 end, struct extent_state **cached_state)
++{
++	return set_extent_bit(tree, start, end,
++			      EXTENT_DELALLOC | EXTENT_UPTODATE | EXTENT_DEFRAG,
++			      NULL, cached_state, GFP_NOFS);
++}
++
++static inline int set_extent_new(struct extent_io_tree *tree, u64 start,
++		u64 end)
++{
++	return set_extent_bit(tree, start, end, EXTENT_NEW, NULL, NULL,
++			GFP_NOFS);
++}
++
++static inline int set_extent_uptodate(struct extent_io_tree *tree, u64 start,
++		u64 end, struct extent_state **cached_state, gfp_t mask)
++{
++	return set_extent_bit(tree, start, end, EXTENT_UPTODATE, NULL,
++			      cached_state, mask);
++}
++
++int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
++			  u64 *start_ret, u64 *end_ret, unsigned bits,
++			  struct extent_state **cached_state);
++void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
++				 u64 *start_ret, u64 *end_ret, unsigned bits);
++int extent_invalidatepage(struct extent_io_tree *tree,
++			  struct page *page, unsigned long offset);
++
++#endif /* BTRFS_EXTENT_IO_TREE_H */
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index ca763b99aa27..577b920ed4b9 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -14,6 +14,7 @@
+ #include <linux/prefetch.h>
+ #include <linux/cleancache.h>
+ #include "extent_io.h"
++#include "extent-io-tree.h"
+ #include "extent_map.h"
+ #include "ctree.h"
+ #include "btrfs_inode.h"
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index e813f593202d..8c782d061132 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -7,35 +7,6 @@
+ #include <linux/refcount.h>
+ #include "ulist.h"
+ 
+-/* bits for the extent state */
+-#define EXTENT_DIRTY		(1U << 0)
+-#define EXTENT_UPTODATE		(1U << 1)
+-#define EXTENT_LOCKED		(1U << 2)
+-#define EXTENT_NEW		(1U << 3)
+-#define EXTENT_DELALLOC		(1U << 4)
+-#define EXTENT_DEFRAG		(1U << 5)
+-#define EXTENT_BOUNDARY		(1U << 6)
+-#define EXTENT_NODATASUM	(1U << 7)
+-#define EXTENT_CLEAR_META_RESV	(1U << 8)
+-#define EXTENT_NEED_WAIT	(1U << 9)
+-#define EXTENT_DAMAGED		(1U << 10)
+-#define EXTENT_NORESERVE	(1U << 11)
+-#define EXTENT_QGROUP_RESERVED	(1U << 12)
+-#define EXTENT_CLEAR_DATA_RESV	(1U << 13)
+-#define EXTENT_DELALLOC_NEW	(1U << 14)
+-#define EXTENT_DO_ACCOUNTING    (EXTENT_CLEAR_META_RESV | \
+-				 EXTENT_CLEAR_DATA_RESV)
+-#define EXTENT_CTLBITS		(EXTENT_DO_ACCOUNTING)
+-
+-/*
+- * Redefined bits above which are used only in the device allocation tree,
+- * shouldn't be using EXTENT_LOCKED / EXTENT_BOUNDARY / EXTENT_CLEAR_META_RESV
+- * / EXTENT_CLEAR_DATA_RESV because they have special meaning to the bit
+- * manipulation functions
+- */
+-#define CHUNK_ALLOCATED EXTENT_DIRTY
+-#define CHUNK_TRIMMED   EXTENT_DEFRAG
+-
+ /*
+  * flags for bio submission. The high bits indicate the compression
+  * type for this bio
+@@ -89,12 +60,11 @@ enum {
+ #define BITMAP_LAST_BYTE_MASK(nbits) \
+ 	(BYTE_MASK >> (-(nbits) & (BITS_PER_BYTE - 1)))
+ 
+-struct extent_state;
+ struct btrfs_root;
+ struct btrfs_inode;
+ struct btrfs_io_bio;
+ struct io_failure_record;
+-
++struct extent_io_tree;
+ 
+ typedef blk_status_t (extent_submit_bio_start_t)(void *private_data,
+ 		struct bio *bio, u64 bio_offset);
+@@ -111,47 +81,6 @@ struct extent_io_ops {
+ 				    int mirror);
+ };
+ 
+-enum {
+-	IO_TREE_FS_INFO_FREED_EXTENTS0,
+-	IO_TREE_FS_INFO_FREED_EXTENTS1,
+-	IO_TREE_INODE_IO,
+-	IO_TREE_INODE_IO_FAILURE,
+-	IO_TREE_RELOC_BLOCKS,
+-	IO_TREE_TRANS_DIRTY_PAGES,
+-	IO_TREE_ROOT_DIRTY_LOG_PAGES,
+-	IO_TREE_SELFTEST,
+-};
+-
+-struct extent_io_tree {
+-	struct rb_root state;
+-	struct btrfs_fs_info *fs_info;
+-	void *private_data;
+-	u64 dirty_bytes;
+-	bool track_uptodate;
+-
+-	/* Who owns this io tree, should be one of IO_TREE_* */
+-	u8 owner;
+-
+-	spinlock_t lock;
+-	const struct extent_io_ops *ops;
+-};
+-
+-struct extent_state {
+-	u64 start;
+-	u64 end; /* inclusive */
+-	struct rb_node rb_node;
+-
+-	/* ADD NEW ELEMENTS AFTER THIS */
+-	wait_queue_head_t wq;
+-	refcount_t refs;
+-	unsigned state;
+-
+-	struct io_failure_record *failrec;
+-
+-#ifdef CONFIG_BTRFS_DEBUG
+-	struct list_head leak_list;
+-#endif
+-};
+ 
+ #define INLINE_EXTENT_BUFFER_PAGES 16
+ #define MAX_INLINE_EXTENT_BUFFER_SIZE (INLINE_EXTENT_BUFFER_PAGES * PAGE_SIZE)
+@@ -259,152 +188,11 @@ typedef struct extent_map *(get_extent_t)(struct btrfs_inode *inode,
+ 					  u64 start, u64 len,
+ 					  int create);
+ 
+-void extent_io_tree_init(struct btrfs_fs_info *fs_info,
+-			 struct extent_io_tree *tree, unsigned int owner,
+-			 void *private_data);
+-void extent_io_tree_release(struct extent_io_tree *tree);
+ int try_release_extent_mapping(struct page *page, gfp_t mask);
+ int try_release_extent_buffer(struct page *page);
+-int lock_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
+-		     struct extent_state **cached);
+ 
+-static inline int lock_extent(struct extent_io_tree *tree, u64 start, u64 end)
+-{
+-	return lock_extent_bits(tree, start, end, NULL);
+-}
+-
+-int try_lock_extent(struct extent_io_tree *tree, u64 start, u64 end);
+ int extent_read_full_page(struct extent_io_tree *tree, struct page *page,
+ 			  get_extent_t *get_extent, int mirror_num);
+-int __init extent_io_init(void);
+-void __cold extent_io_exit(void);
+-
+-u64 count_range_bits(struct extent_io_tree *tree,
+-		     u64 *start, u64 search_end,
+-		     u64 max_bytes, unsigned bits, int contig);
+-
+-void free_extent_state(struct extent_state *state);
+-int test_range_bit(struct extent_io_tree *tree, u64 start, u64 end,
+-		   unsigned bits, int filled,
+-		   struct extent_state *cached_state);
+-int clear_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
+-		unsigned bits, struct extent_changeset *changeset);
+-int clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+-		     unsigned bits, int wake, int delete,
+-		     struct extent_state **cached);
+-int __clear_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+-		     unsigned bits, int wake, int delete,
+-		     struct extent_state **cached, gfp_t mask,
+-		     struct extent_changeset *changeset);
+-
+-static inline int unlock_extent(struct extent_io_tree *tree, u64 start, u64 end)
+-{
+-	return clear_extent_bit(tree, start, end, EXTENT_LOCKED, 1, 0, NULL);
+-}
+-
+-static inline int unlock_extent_cached(struct extent_io_tree *tree, u64 start,
+-		u64 end, struct extent_state **cached)
+-{
+-	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, 1, 0, cached,
+-				GFP_NOFS, NULL);
+-}
+-
+-static inline int unlock_extent_cached_atomic(struct extent_io_tree *tree,
+-		u64 start, u64 end, struct extent_state **cached)
+-{
+-	return __clear_extent_bit(tree, start, end, EXTENT_LOCKED, 1, 0, cached,
+-				GFP_ATOMIC, NULL);
+-}
+-
+-static inline int clear_extent_bits(struct extent_io_tree *tree, u64 start,
+-		u64 end, unsigned bits)
+-{
+-	int wake = 0;
+-
+-	if (bits & EXTENT_LOCKED)
+-		wake = 1;
+-
+-	return clear_extent_bit(tree, start, end, bits, wake, 0, NULL);
+-}
+-
+-int set_record_extent_bits(struct extent_io_tree *tree, u64 start, u64 end,
+-			   unsigned bits, struct extent_changeset *changeset);
+-int set_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+-		   unsigned bits, u64 *failed_start,
+-		   struct extent_state **cached_state, gfp_t mask);
+-int set_extent_bits_nowait(struct extent_io_tree *tree, u64 start, u64 end,
+-			   unsigned bits);
+-
+-static inline int set_extent_bits(struct extent_io_tree *tree, u64 start,
+-		u64 end, unsigned bits)
+-{
+-	return set_extent_bit(tree, start, end, bits, NULL, NULL, GFP_NOFS);
+-}
+-
+-static inline int clear_extent_uptodate(struct extent_io_tree *tree, u64 start,
+-		u64 end, struct extent_state **cached_state)
+-{
+-	return __clear_extent_bit(tree, start, end, EXTENT_UPTODATE, 0, 0,
+-				cached_state, GFP_NOFS, NULL);
+-}
+-
+-static inline int set_extent_dirty(struct extent_io_tree *tree, u64 start,
+-		u64 end, gfp_t mask)
+-{
+-	return set_extent_bit(tree, start, end, EXTENT_DIRTY, NULL,
+-			      NULL, mask);
+-}
+-
+-static inline int clear_extent_dirty(struct extent_io_tree *tree, u64 start,
+-				     u64 end, struct extent_state **cached)
+-{
+-	return clear_extent_bit(tree, start, end,
+-				EXTENT_DIRTY | EXTENT_DELALLOC |
+-				EXTENT_DO_ACCOUNTING, 0, 0, cached);
+-}
+-
+-int convert_extent_bit(struct extent_io_tree *tree, u64 start, u64 end,
+-		       unsigned bits, unsigned clear_bits,
+-		       struct extent_state **cached_state);
+-
+-static inline int set_extent_delalloc(struct extent_io_tree *tree, u64 start,
+-				      u64 end, unsigned int extra_bits,
+-				      struct extent_state **cached_state)
+-{
+-	return set_extent_bit(tree, start, end,
+-			      EXTENT_DELALLOC | EXTENT_UPTODATE | extra_bits,
+-			      NULL, cached_state, GFP_NOFS);
+-}
+-
+-static inline int set_extent_defrag(struct extent_io_tree *tree, u64 start,
+-		u64 end, struct extent_state **cached_state)
+-{
+-	return set_extent_bit(tree, start, end,
+-			      EXTENT_DELALLOC | EXTENT_UPTODATE | EXTENT_DEFRAG,
+-			      NULL, cached_state, GFP_NOFS);
+-}
+-
+-static inline int set_extent_new(struct extent_io_tree *tree, u64 start,
+-		u64 end)
+-{
+-	return set_extent_bit(tree, start, end, EXTENT_NEW, NULL, NULL,
+-			GFP_NOFS);
+-}
+-
+-static inline int set_extent_uptodate(struct extent_io_tree *tree, u64 start,
+-		u64 end, struct extent_state **cached_state, gfp_t mask)
+-{
+-	return set_extent_bit(tree, start, end, EXTENT_UPTODATE, NULL,
+-			      cached_state, mask);
+-}
+-
+-int find_first_extent_bit(struct extent_io_tree *tree, u64 start,
+-			  u64 *start_ret, u64 *end_ret, unsigned bits,
+-			  struct extent_state **cached_state);
+-void find_first_clear_extent_bit(struct extent_io_tree *tree, u64 start,
+-				 u64 *start_ret, u64 *end_ret, unsigned bits);
+-int extent_invalidatepage(struct extent_io_tree *tree,
+-			  struct page *page, unsigned long offset);
+ int extent_write_full_page(struct page *page, struct writeback_control *wbc);
+ int extent_write_locked_range(struct inode *inode, u64 start, u64 end,
+ 			      int mode);
+@@ -555,7 +343,4 @@ bool find_lock_delalloc_range(struct inode *inode,
+ #endif
+ struct extent_buffer *alloc_test_extent_buffer(struct btrfs_fs_info *fs_info,
+ 					       u64 start);
+-
+-int __init extent_state_cache_init(void);
+-void __cold extent_state_cache_exit(void);
+ #endif
 -- 
 2.21.0
 
