@@ -2,53 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2999CBB7D2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 17:24:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9D9BB7F0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 17:30:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727426AbfIWPYc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Sep 2019 11:24:32 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50202 "EHLO mx1.suse.de"
+        id S1726585AbfIWPax (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Sep 2019 11:30:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52204 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726586AbfIWPYb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Sep 2019 11:24:31 -0400
+        id S1725951AbfIWPax (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Sep 2019 11:30:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 756D7AD2A;
-        Mon, 23 Sep 2019 15:24:30 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id E45C4AB98;
+        Mon, 23 Sep 2019 15:30:51 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 90CCBDA871; Mon, 23 Sep 2019 17:24:50 +0200 (CEST)
-Date:   Mon, 23 Sep 2019 17:24:50 +0200
+        id C0139DA871; Mon, 23 Sep 2019 17:31:10 +0200 (CEST)
+Date:   Mon, 23 Sep 2019 17:31:09 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
+To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: Add assert to catch nested transaction commit
-Message-ID: <20190923152450.GE2751@twin.jikos.cz>
+Subject: Re: [PATCH] Btrfs: fix missing error return if writeback for extent
+ buffer never started
+Message-ID: <20190923153109.GF2751@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
         linux-btrfs@vger.kernel.org
-References: <20190912153144.26638-1-nborisov@suse.com>
+References: <20190911164228.13507-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190912153144.26638-1-nborisov@suse.com>
+In-Reply-To: <20190911164228.13507-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 12, 2019 at 06:31:44PM +0300, Nikolay Borisov wrote:
-> A recent patch to btrfs showed that there was at least 1 case where a
-> nesed transaction was committed. Nested transaction in this case  means
-> a code which has a transaction handle calls some function which in turn
-> obtains a copy of the same transaction handle. In such cases the correct
-> thing to do is for the lower callee to call btrfs_end_transaction which
-> contains appropriate checks so as to not commit the transaction which
-> will result in stale trans handler for the caller.
+On Wed, Sep 11, 2019 at 05:42:28PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> To catch such cases add an assert in btrfs_commit_transaction ensuring
-> btrfs_trans_handle::use_count is always 1.
+> If lock_extent_buffer_for_io() fails, it returns a negative value, but its
+> caller btree_write_cache_pages() ignores such error. This means that a
+> call to flush_write_bio(), from lock_extent_buffer_for_io(), might have
+> failed. We should make btree_write_cache_pages() notice such error values
+> and stop immediatelly, making sure filemap_fdatawrite_range() returns an
+> error to the transaction commit path. A failure from flush_write_bio()
+> should also result in the endio callback end_bio_extent_buffer_writepage()
+> being invoked, which sets the BTRFS_FS_*_ERR bits appropriately, so that
+> there's no risk a transaction or log commit doesn't catch a writeback
+> failure.
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Added to misc-next, thanks.
