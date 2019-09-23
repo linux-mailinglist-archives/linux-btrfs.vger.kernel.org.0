@@ -2,71 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B18FFBBBEA
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 20:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B93BBC11
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 21:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732315AbfIWS5r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Sep 2019 14:57:47 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:39690 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731880AbfIWS5q (ORCPT
+        id S1733118AbfIWTLv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Sep 2019 15:11:51 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:32932 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726127AbfIWTLv (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Sep 2019 14:57:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=wu+Vz9bwwQ8XY+ZG0DU7WreZpAj7L+s+8VYRLKVH1mo=; b=YRtXCfihHwuAXZy0F1ATYoqqt
-        wWyRWoqCsyWErW6HQfrFL+k/XiqQR704A88WoAHlPci2b9DzEG4oH1Ig935Y+SPf2R6tiT/iPozRL
-        F1BaKlDeG5mECEwnjjxmkrl7aeRt1qSHYD3lLD+SXYajGapg5yTtEg3CXxIwePVYT2EQG6LnguZnv
-        Bq8kjO4qmPLMnR6xrb7WHMaN9qdmEkodkcMDqc3q+u9+UMo707HkfFodhqsXxWdQay+WIyVllGafX
-        zPdu9VwSGmS5V/jJeqJBKJSZwdVYsp7xhxlQ8TUgFkdopeTPybr9UIbzxaBRGEMzNbU3tebwTmuVR
-        dapYaV+Sw==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iCTWp-0004z8-Na; Mon, 23 Sep 2019 18:57:43 +0000
-Date:   Mon, 23 Sep 2019 11:57:43 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
- kmalloc(power-of-two)
-Message-ID: <20190923185743.GA1855@bombadil.infradead.org>
-References: <20190826111627.7505-1-vbabka@suse.cz>
- <20190826111627.7505-3-vbabka@suse.cz>
+        Mon, 23 Sep 2019 15:11:51 -0400
+Received: by mail-wr1-f53.google.com with SMTP id b9so15267368wrs.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2019 12:11:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MIVXt08T2+KUoN34R6EGryYxo7sA6EiIQGG8WzoKDR4=;
+        b=vaciwl81f5ddaztNl9t8TI3X2KytIp47hgtQfXL7QaE5wpRodpgZLdtwJxWGurJLYP
+         2y71EW0rwmkXCYvO0sam34zjcwuIGEQCT8vktGm5pM3SexX6nFoJ45GXnACeeJplLRm/
+         55L/8bBwayx3aRpE7ULnpdRwk2O3kVCo0mnxogXgaaI+T9nXxtfvHfzuWrIan+iR8hrN
+         nb2eaAAoTE4jMNhnmGrrDVLKBjpTsqe0a4NH0v9a20OXEzOfhXXEflWeUKc3J1OE+zA3
+         /UFcaoS/YFvudTdcyw4vyaQm3iYFm2Y7p9jsuHC0O6scTSiSaJx1T/CMpCOsmSA6TVqB
+         Zimg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MIVXt08T2+KUoN34R6EGryYxo7sA6EiIQGG8WzoKDR4=;
+        b=WqBx6+JkuR4bhacG+kTqUVwI/4flNb81foN6k5mNRMNOeO2BSwSzj2iCVVbLAHKwI9
+         0H24wLxZMxTQL1DpoPMEXX1emVgaVfn6pyIDrRwIKhwH5ef6eYf84qyWhWAqoUoXP/bv
+         nI5qZXUA8iGvehQda6S/JHAWALLvYVbf9AwDuy7Y23iqKEDswHimIsYEUpoYPPNLyLxg
+         hewoz2tnBUONi2HnozvIsp8u0p7ktauY27AR3XyzBSUAY0lmX3cKKx1O2y/4pgKIFmOQ
+         /Ae14uURxgDNqHdViupbD1CHYaeJVSiCJ2+RJgXwVulRvtNPGHcYkjdNeT0J6W4MFhe5
+         /8qA==
+X-Gm-Message-State: APjAAAVsvWjSmdXNfN4RCaCInYKDSrFfSQbqacCzaENwTG3MEdHadaff
+        xDUfunwPsfqDhUCRUFtBoxO50AQp7p8Pho1g+huMyg==
+X-Google-Smtp-Source: APXvYqxdZu1xRV/de1xqBDkYE4e1aiKroa2nChdiVlx6uhSaOW6f9V0vGfBXgODjHhB9FydrnGcGVSrBiRCyO1iMvEM=
+X-Received: by 2002:adf:efcb:: with SMTP id i11mr689501wrp.69.1569265909427;
+ Mon, 23 Sep 2019 12:11:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190826111627.7505-3-vbabka@suse.cz>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <000f01d5723b$6e3d0f70$4ab72e50$@gmail.com>
+In-Reply-To: <000f01d5723b$6e3d0f70$4ab72e50$@gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 23 Sep 2019 13:11:38 -0600
+Message-ID: <CAJCQCtSCJTsk1oFrWObUBpw-MXArQJHoJV3BeBk0Nfv_-AoS8g@mail.gmail.com>
+Subject: Re: BTRFS checksum mismatch - false positives
+To:     hoegge@gmail.com
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Aug 26, 2019 at 01:16:27PM +0200, Vlastimil Babka wrote:
-> @@ -98,6 +98,10 @@ limited. The actual limit depends on the hardware and the kernel
->  configuration, but it is a good practice to use `kmalloc` for objects
->  smaller than page size.
->  
-> +The address of a chunk allocated with `kmalloc` is aligned to at least
-> +ARCH_KMALLOC_MINALIGN bytes. For sizes of power of two bytes, the
+On Mon, Sep 23, 2019 at 12:19 PM <hoegge@gmail.com> wrote:
+>
+> Dear BTRFS mailing list,
+>
+> I'm running BTRFS on my Synology Diskstation and they have referred me to
+> the BTRFS developers.
 
-"For sizes which are a power of two, the"
+If it's a generic question that's fine, but all the development
+happening on this list is very recent kernels and btrfs-progs, which
+is not typically the case with distribution specific products.
 
-> +alignment is also guaranteed to be at least to the respective size.
+>
+> For a while I have had quite a few (tens - not hundreds) checksum mismatch
+> errors on my device (around 6 TB data). It runs BTRFS on SHR (Synology
+> Hybrid Raid). Most of these checksum mismatches, though, do not seem "real".
+> Most of the files are identical to the original files (checked by binary
+> comparison and by recalculated MD5 hashes).
+>
+> What can explain that problem? I thought BTRFS only reported checksum
+> mismatch errors, when it cannot self-heal the files?
 
-s/to //
+It'll report them in any case, and also report if they're fixed. There
+are different checksum errors depending on whether metadata or data
+are affected (both are checksummed). Btrfs can only self-heal with
+redundant copies available. By default metadata is duplicated and
+should be able to self-heal, but data is not redundant by default. So
+it'd depend on how the storage stack layout is created.
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+We need logs though. It's better to have more than less, if you can go
+back ~5 minutes from the first report of checksum mismatch error,
+that's better than too aggressive log trimming. Also possibly useful:
+
+# uname -a
+# btrfs --version
+
+
+-- 
+Chris Murphy
