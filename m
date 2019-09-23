@@ -2,227 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F32BB5B8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 15:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 753B8BB62D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 16:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730967AbfIWNs1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Sep 2019 09:48:27 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38506 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725782AbfIWNs0 (ORCPT
+        id S2387984AbfIWOF3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Sep 2019 10:05:29 -0400
+Received: from mail-qt1-f169.google.com ([209.85.160.169]:40019 "EHLO
+        mail-qt1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729899AbfIWOF3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Sep 2019 09:48:26 -0400
-Received: by mail-qt1-f193.google.com with SMTP id j31so17195570qta.5
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2019 06:48:25 -0700 (PDT)
+        Mon, 23 Sep 2019 10:05:29 -0400
+Received: by mail-qt1-f169.google.com with SMTP id x5so17259550qtr.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2019 07:05:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=nsDDU/+jvx5JnlFijwt0cNhqf0tggkLOrO5YqTayCjw=;
-        b=x7a3VEHSTT4ZmfNvm+t+OJVB9Qfu2yxjxfpi/le0Fy7WLEksONsXHqYHSlFipYBeV4
-         ytXjjY7QSu88PACwisRh1DeP56tZYjlPEMM+Ijj0t7/KpIiR0tfaLPjeQLff0VORDNti
-         lJn+y9tGVuaOAfzLnCakaxWVLxLKgy2bn7nRTwPmTv2damoCMDy7uCFNsJHuevijERFj
-         KJIQVo/WcoJ015cpu1bG0k6/+LJzKDaewDOYctU8YsI9/cYI0mjDTh/u9ZhAFyqlMxdd
-         cPZSH0hhjJJsxJs7jYk3zy12ZbkW3jS9oiveDBk0ATOl5kzVRClGHmTxBZ4kulOklDyU
-         Fvdg==
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dfXQZNd5a88XnHq976IxtlJmvRQLRIMpenCWs060Rmo=;
+        b=mR12qYBpbW8AaaAnqdn1ltVg5BsNV0o8ffNfTewK2eZPvFwyTm/Oqwtqg9Hawr4Oz/
+         YZXPko6Oup/2kGNBuhE5zMFyigdfSS+9VO8AmCk+orzt+WhTfJiIKGT9EQMR8Fv5vgAl
+         SezZyoLxVj7re8Vz/x82TCv8sjWUgm6zoKC7r4Ed8J94LXPWHz8uXPnd0kG3p07g70Ag
+         81wFgar00XWQ/bpTkWRddQ3k8GHfkXLa6X8CLxB7SFSH+7mLAt7dsROjnFSku2AJuJHh
+         u6uyEyYO3OXPbOUoxPrcs5u1zS6RrzNRiQJ4YW9oEDhMmBJms5jarxNGVZ3eQbGx8eL0
+         SYBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nsDDU/+jvx5JnlFijwt0cNhqf0tggkLOrO5YqTayCjw=;
-        b=bGZ1QsH6wuB0mdWWPrIR0EwbFuKwpSWeRNcTMd2tftR8RXFYZbiWUENUjIXoWFT85+
-         eTUaEsInIq9g0LUbnLRGw7teqgt7Iz5GAG+iZMl6kZNBDPLL/FpSRrSn7JR0sugQTIGy
-         Ql8e/bGQOkgAGn8A37qckdTBS+FMDG7lGNs32AJpt1ky9ZCNkT+MtQHJAKAUvkDByeij
-         nRJrg79wHwwtQPdFA2boZMxmJ0KBJwYp8BYZN0/fSH7T+BjKT37oH4Qs8XozU7Hns+20
-         BwWl11dwqcomi6pCHhWd7r4vH2FPP2yFYPKoCIgrd4WhiXCsAA2eHSqP8EKfcLHbH1iH
-         gzJQ==
-X-Gm-Message-State: APjAAAXb5Kv1cwR+i/HH/d8RoFtctypwuZxIUiYtmhrhj0Kf8Acm2OF+
-        VSSLeYYMkKE2NXkkkwrCVgGJL7KZvQZBdg==
-X-Google-Smtp-Source: APXvYqwI0RxB2AUQ06Yac4ePjmHbq9dCsH9Mcoj+WeWPRjyVn5LgGsPNUMPvMFhgtHlAY8/JHJ6Z/g==
-X-Received: by 2002:aed:2f42:: with SMTP id l60mr16632161qtd.315.1569246504938;
-        Mon, 23 Sep 2019 06:48:24 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dfXQZNd5a88XnHq976IxtlJmvRQLRIMpenCWs060Rmo=;
+        b=heR9KHdT6eqyz/tZMXDJ7IJM/xE/4jHbuIoxEn2V1B7mxauYlIMMX1lz61KnhSmNWn
+         YEb1S/IYCIbhgeVKJGPmk4LNxdFUjkk5l1L64TeTNPwZOXdjwuNxit3SjmNaym1XJwXW
+         nJS0JQIj0clNiIw9skiFWkNnQ9nEMG5q/A7b7wZ7Py38H+cGMiIqZ6v+Rmqaanw3Qj8y
+         8WoO9k/jHh+5N6ycSnRiGxI45SjpJ+befFEuLbhcFfVEFmADwH9yKet8mK/NAmZkxJgA
+         ugXqVmr15nHsZsT2XJptd/qXZWSqO1R1ShqEO2OvpsSMMr+aHWRyGGROuSPClk9pAQ+X
+         QMUA==
+X-Gm-Message-State: APjAAAVzXy1UN7Jl21N3WNPG1rJIBdysjEP7PmrNqESj2rZWyuCuwfkF
+        dKAiXgOqH8uD/9bS6RRRGjVVmNak5bbMHA==
+X-Google-Smtp-Source: APXvYqwDvWQC1O+OQ/dYc7nbNACnfaua5GhXTgtVYt/MoKqT7V4VeZZNEX4t24snQMDSJvFh3PMDnw==
+X-Received: by 2002:ac8:68c:: with SMTP id f12mr70306qth.252.1569247528042;
+        Mon, 23 Sep 2019 07:05:28 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id 33sm6739645qtr.62.2019.09.23.06.48.23
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 23 Sep 2019 06:48:23 -0700 (PDT)
-Date:   Mon, 23 Sep 2019 09:48:22 -0400
+        by smtp.gmail.com with ESMTPSA id p53sm5995668qtk.23.2019.09.23.07.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Sep 2019 07:05:27 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Cebtenzzre <cebtenzzre@gmail.com>
-Subject: Re: [PATCH v2] btrfs: relocation: Fix KASAN report about
- use-after-free due to dead reloc tree cleanup race
-Message-ID: <20190923134821.hivgvdmi7qf6pzur@MacBook-Pro-91.local>
-References: <20190923065614.22481-1-wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/9][V3] btrfs: break up extent_io.c a little bit
+Date:   Mon, 23 Sep 2019 10:05:16 -0400
+Message-Id: <20190923140525.14246-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190923065614.22481-1-wqu@suse.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 23, 2019 at 02:56:14PM +0800, Qu Wenruo wrote:
-> [BUG]
-> One user reported a reproduciable KASAN report about use-after-free:
->   BTRFS info (device sdi1): balance: start -dvrange=1256811659264..1256811659265
->   BTRFS info (device sdi1): relocating block group 1256811659264 flags data|raid0
->   ==================================================================
->   BUG: KASAN: use-after-free in btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
->   Write of size 8 at addr ffff88856f671710 by task kworker/u24:10/261579
-> 
->   CPU: 2 PID: 261579 Comm: kworker/u24:10 Tainted: P           OE     5.2.11-arch1-1-kasan #4
->   Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./X99 Extreme4, BIOS P3.80 04/06/2018
->   Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
->   Call Trace:
->    dump_stack+0x7b/0xba
->    print_address_description+0x6c/0x22e
->    ? btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
->    __kasan_report.cold+0x1b/0x3b
->    ? btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
->    kasan_report+0x12/0x17
->    __asan_report_store8_noabort+0x17/0x20
->    btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
->    record_root_in_trans+0x2a0/0x370 [btrfs]
->    btrfs_record_root_in_trans+0xf4/0x140 [btrfs]
->    start_transaction+0x1ab/0xe90 [btrfs]
->    btrfs_join_transaction+0x1d/0x20 [btrfs]
->    btrfs_finish_ordered_io+0x7bf/0x18a0 [btrfs]
->    ? lock_repin_lock+0x400/0x400
->    ? __kmem_cache_shutdown.cold+0x140/0x1ad
->    ? btrfs_unlink_subvol+0x9b0/0x9b0 [btrfs]
->    finish_ordered_fn+0x15/0x20 [btrfs]
->    normal_work_helper+0x1bd/0xca0 [btrfs]
->    ? process_one_work+0x819/0x1720
->    ? kasan_check_read+0x11/0x20
->    btrfs_endio_write_helper+0x12/0x20 [btrfs]
->    process_one_work+0x8c9/0x1720
->    ? pwq_dec_nr_in_flight+0x2f0/0x2f0
->    ? worker_thread+0x1d9/0x1030
->    worker_thread+0x98/0x1030
->    kthread+0x2bb/0x3b0
->    ? process_one_work+0x1720/0x1720
->    ? kthread_park+0x120/0x120
->    ret_from_fork+0x35/0x40
-> 
->   Allocated by task 369692:
->    __kasan_kmalloc.part.0+0x44/0xc0
->    __kasan_kmalloc.constprop.0+0xba/0xc0
->    kasan_kmalloc+0x9/0x10
->    kmem_cache_alloc_trace+0x138/0x260
->    btrfs_read_tree_root+0x92/0x360 [btrfs]
->    btrfs_read_fs_root+0x10/0xb0 [btrfs]
->    create_reloc_root+0x47d/0xa10 [btrfs]
->    btrfs_init_reloc_root+0x1e2/0x340 [btrfs]
->    record_root_in_trans+0x2a0/0x370 [btrfs]
->    btrfs_record_root_in_trans+0xf4/0x140 [btrfs]
->    start_transaction+0x1ab/0xe90 [btrfs]
->    btrfs_start_transaction+0x1e/0x20 [btrfs]
->    __btrfs_prealloc_file_range+0x1c2/0xa00 [btrfs]
->    btrfs_prealloc_file_range+0x13/0x20 [btrfs]
->    prealloc_file_extent_cluster+0x29f/0x570 [btrfs]
->    relocate_file_extent_cluster+0x193/0xc30 [btrfs]
->    relocate_data_extent+0x1f8/0x490 [btrfs]
->    relocate_block_group+0x600/0x1060 [btrfs]
->    btrfs_relocate_block_group+0x3a0/0xa00 [btrfs]
->    btrfs_relocate_chunk+0x9e/0x180 [btrfs]
->    btrfs_balance+0x14e4/0x2fc0 [btrfs]
->    btrfs_ioctl_balance+0x47f/0x640 [btrfs]
->    btrfs_ioctl+0x119d/0x8380 [btrfs]
->    do_vfs_ioctl+0x9f5/0x1060
->    ksys_ioctl+0x67/0x90
->    __x64_sys_ioctl+0x73/0xb0
->    do_syscall_64+0xa5/0x370
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
->   Freed by task 369692:
->    __kasan_slab_free+0x14f/0x210
->    kasan_slab_free+0xe/0x10
->    kfree+0xd8/0x270
->    btrfs_drop_snapshot+0x154c/0x1eb0 [btrfs]
->    clean_dirty_subvols+0x227/0x340 [btrfs]
->    relocate_block_group+0x972/0x1060 [btrfs]
->    btrfs_relocate_block_group+0x3a0/0xa00 [btrfs]
->    btrfs_relocate_chunk+0x9e/0x180 [btrfs]
->    btrfs_balance+0x14e4/0x2fc0 [btrfs]
->    btrfs_ioctl_balance+0x47f/0x640 [btrfs]
->    btrfs_ioctl+0x119d/0x8380 [btrfs]
->    do_vfs_ioctl+0x9f5/0x1060
->    ksys_ioctl+0x67/0x90
->    __x64_sys_ioctl+0x73/0xb0
->    do_syscall_64+0xa5/0x370
->    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
->   The buggy address belongs to the object at ffff88856f671100
->    which belongs to the cache kmalloc-4k of size 4096
->   The buggy address is located 1552 bytes inside of
->    4096-byte region [ffff88856f671100, ffff88856f672100)
->   The buggy address belongs to the page:
->   page:ffffea0015bd9c00 refcount:1 mapcount:0 mapping:ffff88864400e600 index:0x0 compound_mapcount: 0
->   flags: 0x2ffff0000010200(slab|head)
->   raw: 02ffff0000010200 dead000000000100 dead000000000200 ffff88864400e600
->   raw: 0000000000000000 0000000000070007 00000001ffffffff 0000000000000000
->   page dumped because: kasan: bad access detected
-> 
->   Memory state around the buggy address:
->    ffff88856f671600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->    ffff88856f671680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->   >ffff88856f671700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->                            ^
->    ffff88856f671780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->    ffff88856f671800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->   ==================================================================
->   BTRFS info (device sdi1): 1 enospc errors during balance
->   BTRFS info (device sdi1): balance: ended with status: -28
-> 
-> [CAUSE]
-> The problem happens when finish_ordered_io() get called with balance
-> still running, while the reloc root of that subvolume is already dead.
-> (tree swap already done, but tree not yet deleted for possible qgroup
-> usage)
-> 
-> That means root->reloc_root still exists, but that reloc_root can be
-> under btrfs_drop_snapshot(), thus we shouldn't access it.
-> 
-> The following race could cause the use-after-free problem:
-> 
->                 CPU1              |                CPU2
-> --------------------------------------------------------------------------
->                                   | relocate_block_group()
->                                   | |- unset_reloc_control(rc)
->                                   | |- btrfs_commit_transaction()
-> btrfs_finish_ordered_io()         | |- clean_dirty_subvols()
-> |- btrfs_join_transaction()       |    |
->    |- record_root_in_trans()      |    |
->       |- btrfs_init_reloc_root()  |    |
->          |- if (root->reloc_root) |    |
->          |                        |    |- root->reloc_root = NULL
->          |                        |    |- btrfs_drop_snapshot(reloc_root);
->          |- reloc_root->last_trans|
->                  = trans->transid |
-> 	    ^^^^^^^^^^^^^^^^^^^^^^
->             Use after free
-> 
-> [FIX]
-> Fix it by the following modifications:
-> - Test if the root has dead reloc tree before accessing root->reloc_root
->   If the root has BTRFS_ROOT_DEAD_RELOC_TREE, then we don't need to
->   create or update root->reloc_tree
-> 
-> - Clear the BTRFS_ROOT_DEAD_RELOC_TREE flag until we have fully dropped
->   reloc tree
->   To co-operate with above modification, so as long as
->   BTRFS_ROOT_DEAD_RELOC_TREE is still set, we won't try to re-create
->   reloc tree at record_root_in_trans().
-> 
-> Reported-by: Cebtenzzre <cebtenzzre@gmail.com>
-> Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after merge_reloc_roots")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
+v1->v2:
+- renamed find_delalloc_range to btrfs_find_delalloc_range for now.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+-- Original email --
+
+Currently extent_io.c includes all of the extent-io-tree code, the extent buffer
+code, the code to do IO on extent buffers and data extents, as well as a bunch
+of other random stuff.  The random stuff just needs to be cleaned up, and is
+probably too invasive for this point in the development cycle.  Instead I simply
+tackled moving the big obvious things out into their own files.  I will follow
+up with cleanups for the rest of the stuff, but those can probably wait until
+the next cycle as they are going to be slightly more risky.  As usual I didn't
+try to change anything, I simply moved code around.  Any time I needed to make
+actual changes to functions I made a separate patch for that work, so for
+example breaking up the init/exit functions for extent-io-tree.  Everything else
+is purely cut and paste into new files.  The diffstat is as follows
+
+ fs/btrfs/Makefile         |    3 +-
+ fs/btrfs/ctree.h          |    3 +-
+ fs/btrfs/disk-io.h        |    2 +
+ fs/btrfs/extent-buffer.c  | 1266 ++++++++
+ fs/btrfs/extent-buffer.h  |  152 +
+ fs/btrfs/extent-io-tree.c | 1955 ++++++++++++
+ fs/btrfs/extent-io-tree.h |  248 ++
+ fs/btrfs/extent_io.c      | 7555 +++++++++++++--------------------------------
+ fs/btrfs/extent_io.h      |  372 +--
+ fs/btrfs/super.c          |   16 +-
+ 10 files changed, 5843 insertions(+), 5729 deletions(-)
 
 Thanks,
 
 Josef
+
