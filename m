@@ -2,116 +2,262 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CA289BBDAF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 23:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6FB5BBDFE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Sep 2019 23:34:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388220AbfIWVRM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Sep 2019 17:17:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51488 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387617AbfIWVRM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Sep 2019 17:17:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0D9A7AD26;
-        Mon, 23 Sep 2019 21:17:10 +0000 (UTC)
-Subject: Re: Subpagesize-blocksize: Allow I/O on blocks whose size is less
- than page size
-To:     =?UTF-8?Q?Niccol=c3=b2_Belli?= <darkbasic@linuxsystems.it>,
-        linux-btrfs@vger.kernel.org
-Cc:     Chandan Rajendra <chandan@linux.vnet.ibm.com>
-References: <5e481d4f4f323226a2c81caf5e2f78ae@linuxsystems.it>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <520c69ed-7624-4334-2fea-b21dbbd951f4@suse.com>
-Date:   Tue, 24 Sep 2019 00:17:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2390054AbfIWVeI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 23 Sep 2019 17:34:08 -0400
+Received: from know-smtprelay-omd-9.server.virginmedia.net ([81.104.62.41]:39581
+        "EHLO know-smtprelay-omd-9.server.virginmedia.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729120AbfIWVeH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 23 Sep 2019 17:34:07 -0400
+Received: from [172.16.100.1] ([86.12.75.74])
+        by cmsmtp with ESMTPA
+        id CVy8if8gSVaV8CVy8it0Jr; Mon, 23 Sep 2019 22:34:04 +0100
+X-Originating-IP: [86.12.75.74]
+X-Authenticated-User: peter.chant@ntlworld.com
+X-Spam: 0
+X-Authority: v=2.3 cv=PcnReBpd c=1 sm=1 tr=0 a=RxXffCTTaIU9mOmmEQ6aGA==:117
+ a=RxXffCTTaIU9mOmmEQ6aGA==:17 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19
+ a=IkcTkHD0fZMA:10 a=yeImiaDjqKufKzWRaMYA:9 a=Qbr2Dyur14vGXd6u:21
+ a=FWhdp3n6k_Q4SbSP:21 a=QEXdDO2ut3YA:10
+Subject: Re: Balance ENOSPC during balance despite additional storage added
+From:   Peter Chant <pete@petezilla.co.uk>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <94ebf95b-c8c2-e2d5-8db6-77a74c19644a@petezilla.co.uk>
+ <CAJCQCtRAnJR+Z8Z8Bq91YXiMpfmwOiHK0tQ+9zAJvSVvexHnxg@mail.gmail.com>
+ <54fa8ba3-0d02-7153-ce47-80f10732ef14@petezilla.co.uk>
+ <CAJCQCtQLk1m8yAxPPDLVZBr3MehdDD3EpNZ6O_OCRsO-FFzRNw@mail.gmail.com>
+ <eb9fdaee-ec76-5285-4384-7a615d3cd5c1@petezilla.co.uk>
+Message-ID: <00be81e2-bca2-3906-c27d-68f252a6ffe1@petezilla.co.uk>
+Date:   Mon, 23 Sep 2019 22:33:07 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <5e481d4f4f323226a2c81caf5e2f78ae@linuxsystems.it>
+In-Reply-To: <eb9fdaee-ec76-5285-4384-7a615d3cd5c1@petezilla.co.uk>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfGI+Si94TUh6yRWTEyHENw1EWsbvIYPhqaKjgjaZvG4u0rZwc32zgv71hcqpO4Nb/xxcJlt7lhQWysp69O0BND8RUNcv3LJ0heqFwzQU//IVVP7kHElo
+ 9sIjN16Kvt6Tnr2slq64fYiU/Ol8mFIDOV2CteOzf6bS0MfqN4X4BZ4DpebE6jf5B5NQHWFAeC+sRGNZ1/C1bL1OdKYya/wSSSg=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On 9/23/19 7:55 PM, Pete wrote:
+
+> I'm not sure the balance is resolving anything.  The filesystem has not
+> gone read only.  I'll try an unfiltered balance now to see how that goes.
+> 
+
+OK, result of unfiltered balance:
+
+root@phoenix:/var/lib/lxc# btrfs bal start /var/lib/lxc
+WARNING:
+
+        Full balance without filters requested. This operation is very
+        intense and takes potentially very long. It is recommended to
+        use the balance filters to narrow down the scope of balance.
+        Use 'btrfs balance start --full-balance' option to skip this
+        warning. The operation will start in 10 seconds.
+        Use Ctrl-C to stop it.
+10 9 8 7 6 5 4 3 2 1
+Starting balance without any filters.
+ERROR: error during balancing '/var/lib/lxc': No space left on device
+There may be more info in syslog - try dmesg | tail
+root@phoenix:/var/lib/lxc#
+
+OK, here is the output in the last 100 lines of dmesg.  The line 'unable
+to make block group nnnnnnnnnnnnnnn ro' is repeated, I presume that is
+relevant.  I'm noting no other ill effects, if I'd not tried the balance
+I would not know anything is amiss.
+
+root@phoenix:/var/lib/lxc# dmesg | tail -n 100
+[ 1880.155026] BTRFS info (device dm-4): sinfo_used=19522584576
+bg_num_bytes=54394880 min_allocable=1048576
+[ 1880.155027] BTRFS info (device dm-4): space_info 4 has
+18446744065997733888 free, is not full
+[ 1880.155029] BTRFS info (device dm-4): space_info total=11811160064,
+used=10509664256, pinned=0, reserved=131072, may_use=9013182464, readonly=0
+[ 1880.155029] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155030] BTRFS info (device dm-4): trans_block_rsv: size 262144
+reserved 262144
+[ 1880.155031] BTRFS info (device dm-4): chunk_block_rsv: size 0 reserved 0
+[ 1880.155031] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155032] BTRFS info (device dm-4): delayed_refs_rsv: size
+17514102784 reserved 8475983872
+[ 1880.155049] BTRFS info (device dm-4): unable to make block group
+1608583741440 ro
+[ 1880.155050] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=54394880 min_allocable=1048576
+[ 1880.155051] BTRFS info (device dm-4): space_info 4 has
+18446744067071213568 free, is not full
+[ 1880.155052] BTRFS info (device dm-4): space_info total=12884901888,
+used=10509664256, pinned=0, reserved=131072, may_use=9013444608, readonly=0
+[ 1880.155053] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155053] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155054] BTRFS info (device dm-4): chunk_block_rsv: size 393216
+reserved 393216
+[ 1880.155054] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155055] BTRFS info (device dm-4): delayed_refs_rsv: size
+17515151360 reserved 8476639232
+[ 1880.155080] BTRFS info (device dm-4): unable to make block group
+1607509999616 ro
+[ 1880.155081] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=78774272 min_allocable=1048576
+[ 1880.155081] BTRFS info (device dm-4): space_info 4 has
+18446744067071213568 free, is not full
+[ 1880.155083] BTRFS info (device dm-4): space_info total=12884901888,
+used=10509664256, pinned=0, reserved=163840, may_use=9013411840, readonly=0
+[ 1880.155083] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155084] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155085] BTRFS info (device dm-4): chunk_block_rsv: size 0 reserved 0
+[ 1880.155086] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155087] BTRFS info (device dm-4): delayed_refs_rsv: size
+17515937792 reserved 8476606464
+[ 1880.155097] BTRFS info (device dm-4): unable to make block group
+1607509999616 ro
+[ 1880.155098] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=78774272 min_allocable=1048576
+[ 1880.155098] BTRFS info (device dm-4): space_info 4 has
+18446744068144955392 free, is not full
+[ 1880.155099] BTRFS info (device dm-4): space_info total=13958643712,
+used=10509664256, pinned=0, reserved=163840, may_use=9013411840, readonly=0
+[ 1880.155100] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155100] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155101] BTRFS info (device dm-4): chunk_block_rsv: size 393216
+reserved 393216
+[ 1880.155101] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155101] BTRFS info (device dm-4): delayed_refs_rsv: size
+17516199936 reserved 8476606464
+[ 1880.155106] BTRFS info (device dm-4): unable to make block group
+1606436257792 ro
+[ 1880.155106] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=183910400 min_allocable=1048576
+[ 1880.155107] BTRFS info (device dm-4): space_info 4 has
+18446744068144955392 free, is not full
+[ 1880.155107] BTRFS info (device dm-4): space_info total=13958643712,
+used=10509664256, pinned=0, reserved=163840, may_use=9013411840, readonly=0
+[ 1880.155108] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155108] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155109] BTRFS info (device dm-4): chunk_block_rsv: size 0 reserved 0
+[ 1880.155109] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155110] BTRFS info (device dm-4): delayed_refs_rsv: size
+17515937792 reserved 8476606464
+[ 1880.155116] BTRFS info (device dm-4): unable to make block group
+1606436257792 ro
+[ 1880.155116] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=183910400 min_allocable=1048576
+[ 1880.155117] BTRFS info (device dm-4): space_info 4 has
+18446744069218697216 free, is not full
+[ 1880.155118] BTRFS info (device dm-4): space_info total=15032385536,
+used=10509664256, pinned=0, reserved=163840, may_use=9013411840, readonly=0
+[ 1880.155118] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155118] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155119] BTRFS info (device dm-4): chunk_block_rsv: size 393216
+reserved 393216
+[ 1880.155119] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155120] BTRFS info (device dm-4): delayed_refs_rsv: size
+17516199936 reserved 8476606464
+[ 1880.155123] BTRFS info (device dm-4): unable to make block group
+1605362515968 ro
+[ 1880.155124] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=14385152 min_allocable=1048576
+[ 1880.155124] BTRFS info (device dm-4): space_info 4 has
+18446744069218697216 free, is not full
+[ 1880.155125] BTRFS info (device dm-4): space_info total=15032385536,
+used=10509664256, pinned=0, reserved=163840, may_use=9013411840, readonly=0
+[ 1880.155126] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155126] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155126] BTRFS info (device dm-4): chunk_block_rsv: size 0 reserved 0
+[ 1880.155127] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155127] BTRFS info (device dm-4): delayed_refs_rsv: size
+17515937792 reserved 8476606464
+[ 1880.155133] BTRFS info (device dm-4): unable to make block group
+1605362515968 ro
+[ 1880.155134] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=14385152 min_allocable=1048576
+[ 1880.155134] BTRFS info (device dm-4): space_info 4 has
+18446744070292439040 free, is not full
+[ 1880.155135] BTRFS info (device dm-4): space_info total=16106127360,
+used=10509664256, pinned=0, reserved=163840, may_use=9013411840, readonly=0
+[ 1880.155136] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155136] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155136] BTRFS info (device dm-4): chunk_block_rsv: size 393216
+reserved 393216
+[ 1880.155137] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155137] BTRFS info (device dm-4): delayed_refs_rsv: size
+17516199936 reserved 8476606464
+[ 1880.155141] BTRFS info (device dm-4): unable to make block group
+1525872066560 ro
+[ 1880.155141] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=303333376 min_allocable=1048576
+[ 1880.155142] BTRFS info (device dm-4): space_info 4 has
+18446744070292439040 free, is not full
+[ 1880.155143] BTRFS info (device dm-4): space_info total=16106127360,
+used=10509664256, pinned=0, reserved=163840, may_use=9013411840, readonly=0
+[ 1880.155143] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155144] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155144] BTRFS info (device dm-4): chunk_block_rsv: size 0 reserved 0
+[ 1880.155144] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155145] BTRFS info (device dm-4): delayed_refs_rsv: size
+17515937792 reserved 8476606464
+[ 1880.155150] BTRFS info (device dm-4): unable to make block group
+1525872066560 ro
+[ 1880.155151] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=303333376 min_allocable=1048576
+[ 1880.155151] BTRFS info (device dm-4): space_info 4 has
+18446744071366180864 free, is not full
+[ 1880.155152] BTRFS info (device dm-4): space_info total=17179869184,
+used=10509664256, pinned=0, reserved=163840, may_use=9013411840, readonly=0
+[ 1880.155152] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155153] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155153] BTRFS info (device dm-4): chunk_block_rsv: size 393216
+reserved 393216
+[ 1880.155154] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155154] BTRFS info (device dm-4): delayed_refs_rsv: size
+17516199936 reserved 8476606464
+[ 1880.155157] BTRFS info (device dm-4): unable to make block group
+1524798324736 ro
+[ 1880.155158] BTRFS info (device dm-4): sinfo_used=19523239936
+bg_num_bytes=105562112 min_allocable=1048576
+[ 1880.155158] BTRFS info (device dm-4): space_info 4 has
+18446744071366180864 free, is not full
+[ 1880.155159] BTRFS info (device dm-4): space_info total=17179869184,
+used=10509664256, pinned=0, reserved=163840, may_use=9013411840, readonly=0
+[ 1880.155159] BTRFS info (device dm-4): global_block_rsv: size
+536870912 reserved 536805376
+[ 1880.155160] BTRFS info (device dm-4): trans_block_rsv: size 0 reserved 0
+[ 1880.155160] BTRFS info (device dm-4): chunk_block_rsv: size 0 reserved 0
+[ 1880.155161] BTRFS info (device dm-4): delayed_block_rsv: size 0
+reserved 0
+[ 1880.155161] BTRFS info (device dm-4): delayed_refs_rsv: size
+17515937792 reserved 8476606464
+[ 1880.155167] BTRFS info (device dm-4): unable to make block group
+1524798324736 ro
 
 
-On 17.09.19 г. 11:31 ч., Niccolò Belli  wrote:
-> Hi,
-> What happened to the subpagesize-blocksize patchset? It seems to be
-> untouched since 3 years.
-> I'm currently stuck on Fedora ppc64le because it ships with a 64k page
-> size, but I need it to be 4k in order to be able to chroot into foreign
-> architectures (like x86_64) with qemu-user.
-> 
-> If I try to mount my btrfs partition with a kernel with page size set to
-> 4k I get the following error:
-> 
-> sectorsize 65536 not supported yet, only support 4094
-> 
-> I didn't try the patchset, because it doesn't support compression and my
-> whole fs is compressed.
-> 
-> It looked like an awesome work, why didn't it get merged?
 
-TLDR: It's not ready and likely won't be in the upcoming months.
-
-There are a bunch of stuff that need to happen before subpage blocksize
-support can land in. Namely, the btree inode needs to be removed. Josef
-has a WIP branch doing that but it in turn is dependent on a new
-mechanism to support proper writeback throttling of metadata from the
-superblock. OTOH I have an idea of how to remove the btree indoe by
-exploiting the existing shrinkers mechanism but that's only a concept
-and there are some reservations whether it's doable (It is but there are
-concerns shrinker infrastructure cannot cope with the rate of dirty
-metadata that btrfs produces.)
-
-> 
-> Bests,
-> Niccolo'
-> 
