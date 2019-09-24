@@ -2,68 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8C9BC935
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 15:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EBDBBC9CA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 16:07:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440956AbfIXNxp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 09:53:45 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:43645 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726915AbfIXNxo (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 09:53:44 -0400
-Received: by mail-qk1-f196.google.com with SMTP id h126so1787129qke.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 06:53:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=d6LBwq62XbjOYBzay2wfOTQgO/PNLesBz5q6Ewi+6Q4=;
-        b=ed5uQEJwZTyE0PtV6xY8iSLPjLAbfTRCJPVApxamt90LH9uR6+QxHMWksUIfT4nWdC
-         WlAcMuHfpxzENG6oGRzRVNVNCNwfLKhWt1B7r7Os3vk3cDY8Y39NyAwOB6lnyz/ChQG7
-         jDPqoVB426mmi34YqC+nAgmhXeKPD8tQUXiWbdRvMTYh4aEjUkyniSwyFUuwo2/EcqVm
-         TXR+oOmgzMX5d8pwWfwf9MZNV53BnbhLdKqNXOp3BTIDkyFe6ml4Px5qQjUZqfH5J2D/
-         Azq0FZhMYVjeME6+bVE+4H9wjai6CY8L38GKT2L3MkC7J7xD7Iav16sGU1RVtcMuwss8
-         fiQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=d6LBwq62XbjOYBzay2wfOTQgO/PNLesBz5q6Ewi+6Q4=;
-        b=k2ADghDK9LUqyK382OaJS9fE6tvN9TRxH3k75vxUcVOkhme5zpjDgCCSpAzIc7duQy
-         qIN0jx8rwJgEnsmZxNe11RHlPiG5miVYZ+s3c9t2ZLIeJMopWZwbSk74z7Vz6pEs0jLS
-         M5Qejb2d+6wvYF1q65J9CY8QJRuoUr9Yo/a/Yza1Xnf1+m7tYU3WeC+kejUIaXnC/wQK
-         ztvJKc5iPB3CX6x7ybyDJS72npKfY3WdqY6aygfhQlOosIpwtmTZeNeURJS0GpkvCeWR
-         f13+RVFegXlnLk6BVcE5Zzq8RtS9Qln2hySt7rO+wVpOQv5dkQuZ6dQj0z0A1aWTJkwa
-         LMpA==
-X-Gm-Message-State: APjAAAUyj67+O+zjAjyTD13+0wNw8Xvd8GMFTK/LitPhJCpyRsvUiSg7
-        b5rgZV6ueS8A2A0dtoj746epZA==
-X-Google-Smtp-Source: APXvYqz76ZeThw0P5pmjoP6WMz08lykCFYV2+ACLmRppcgKRml5dQsHzjzfNl6axQqu50+Veh8L1Dw==
-X-Received: by 2002:a37:804:: with SMTP id 4mr2336019qki.97.1569333223212;
-        Tue, 24 Sep 2019 06:53:43 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::b7c9])
-        by smtp.gmail.com with ESMTPSA id x59sm1114549qte.20.2019.09.24.06.53.41
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Sep 2019 06:53:42 -0700 (PDT)
-Date:   Tue, 24 Sep 2019 09:53:40 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
+        id S1730642AbfIXOHF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 10:07:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53852 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727005AbfIXOHF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 10:07:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id D28D5AEC1;
+        Tue, 24 Sep 2019 14:07:02 +0000 (UTC)
 Subject: Re: [PATCH] Btrfs: fix race setting up and completing qgroup rescan
  workers
-Message-ID: <20190924135339.2we3mcdlc22sczhx@macbook-pro-91.dhcp.thefacebook.com>
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
 References: <20190924094954.1304-1-fdmanana@kernel.org>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <a257514b-dd6a-ed01-f10b-3b198bf92aa7@suse.com>
+Date:   Tue, 24 Sep 2019 17:07:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <20190924094954.1304-1-fdmanana@kernel.org>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 10:49:54AM +0100, fdmanana@kernel.org wrote:
+
+
+On 24.09.19 г. 12:49 ч., fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
 > There is a race between setting up a qgroup rescan worker and completing
@@ -177,45 +193,10 @@ On Tue, Sep 24, 2019 at 10:49:54AM +0100, fdmanana@kernel.org wrote:
 > Fix this by clearing BTRFS_QGROUP_STATUS_FLAG_RESCAN and setting
 > fs_info->qgroup_rescan_running to false in the same critical section,
 > delimited by the mutex fs_info->qgroup_rescan_lock, as well as doing
-> the call to complete_all() in that same critical section. This gives
-> the protection needed to avoid rescan wait ioctl callers not waiting
-> for a running rescan worker and the lost wake ups problem, since
-> setting that rescan flag and boolean as well as initializing the wait
-> queue is done already in a critical section delimited by that mutex
-> (at qgroup_rescan_init()).
-> 
-> Fixes: 57254b6ebce4ce ("Btrfs: add ioctl to wait for qgroup rescan completion")
-> Fixes: d2c609b834d62f ("btrfs: properly track when rescan worker is running")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  fs/btrfs/qgroup.c | 33 +++++++++++++++++++--------------
->  1 file changed, 19 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 8d3bd799ac7d..52701c1be109 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -3166,9 +3166,6 @@ static void btrfs_qgroup_rescan_worker(struct btrfs_work *work)
->  	btrfs_free_path(path);
->  
->  	mutex_lock(&fs_info->qgroup_rescan_lock);
-> -	if (!btrfs_fs_closing(fs_info))
-> -		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
-> -
 
-Can't we accomplish the same thing by just moving this down into the "done"
-section below, and adding the complete_all under the qgruop_rescan_lock?  That
-way avoid all this extra code?  Just delete the above and have 
+Why do we need both the RESCAN flag and qgroup_rescan_running having
+them both and having btrfs_qgroup_wait_for_completion rely on
+qgroup[_rescan_running just makes it easier to screw up. IMO it makes
+sense to remove qgroup_rescan_running in this patch as well and the code
+should only use RESCAN flag.
 
-done:
-	mutex_lock(&fs_info->qgroup_rescan_lock);
-	if (!btrfs_fs_closing(fs_info))
-		fs_info->qgroup_flags &= ~BTRFS_QGROUP_STATUS_FLAG_RESCAN;
-	fs_info->qgroup_rescan_running = false;
-	complete_all(&fs_info->qgroup_rescan_completion);
-	mutex_unlock(&fs_info->qgroup_rescan_lock);
-
-Or am I missing something?  I don't see a reason why update_qgroup_status_item()
-needs to be done under the qgroup_rescan_lock.  Thanks,
-
-Josef
