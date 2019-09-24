@@ -2,139 +2,420 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BED21BC557
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 11:58:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABED9BC550
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 11:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504431AbfIXJ6u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 05:58:50 -0400
-Received: from m4a0041g.houston.softwaregrp.com ([15.124.2.87]:55728 "EHLO
-        m4a0041g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2504402AbfIXJ6t (ORCPT
+        id S2440677AbfIXJ5m convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-btrfs@lfdr.de>); Tue, 24 Sep 2019 05:57:42 -0400
+Received: from mout.kundenserver.de ([217.72.192.75]:43205 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394079AbfIXJ5m (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 05:58:49 -0400
-Received: FROM m4a0041g.houston.softwaregrp.com (15.120.17.146) BY m4a0041g.houston.softwaregrp.com WITH ESMTP
- FOR linux-btrfs@vger.kernel.org;
- Tue, 24 Sep 2019 09:56:54 +0000
-Received: from M9W0067.microfocus.com (2002:f79:be::f79:be) by
- M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Tue, 24 Sep 2019 09:19:57 +0000
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (15.124.72.12) by
- M9W0067.microfocus.com (15.121.0.190) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Tue, 24 Sep 2019 09:19:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ibEoJZSmT+Xp09I4YWr1TmzvI+kvj6OqJ/C/I4pPxRT5X+hSkkoGbTK5bzbEmXyDgVZDFqLs4dbHNOq06K2IU/eIkTWL81L8+Xfyjk3YcZq4gZ51CR7J9GIo/If3ISHwwNulDq8f0duqbfQiOUaE3XBYseaBjdP2M76Gftp1XcdPDNgBEKY0kkq160jvAewgKerVs8YlLCWC/7TWna+5X+OrSx3obbFcsy4OsIwZe1BoQbM23fWQobUen3Y2T6SZuUTKVhBktv7PwX4psxnLkdeHp1mkFORHFsn8XHDMY07k+nU72Bmoji677MWZXRWl07IjoJvZHt2AJfBEgqoiUw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WqFCiUZHRNaeVNuaCXFB9kClvlXvW3dnJXFxjvXfHLk=;
- b=V5HjMmGGE/aK9ZSdCG7hbs2xqmvNT0FNo6dRp3uMbCioS+enxUVjo4nbEt8KG5HXIk82tP2MhAXuK9xpGnd8+aBRfSCszB4QNEMaZxYWgDaKsLhvPnnomNRc+oXP41lsZsWY/cY2E3y4PzpCl3hgVUALE5Cv7fSnMPaFkpioqC/rEYA1uSWd04GOjy493aj/Hsw696jg3dlSQYdQsPjh6kZyb1F5/27GEi3Sg3zp8vjlrns8Wlxm/0Y1c3Mdsnr/vZOGK6ICM3yWJU1cR+kHeHEZqv0HU0KqYLVrlG6zKw3/+qo5y4qxHZEbY85q9RC3JR2HSrKxaHk2NjHWPKpAWw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3218.namprd18.prod.outlook.com (10.255.137.97) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2284.19; Tue, 24 Sep 2019 09:19:55 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::3993:1f66:bd4:83cc]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::3993:1f66:bd4:83cc%5]) with mapi id 15.20.2284.023; Tue, 24 Sep 2019
- 09:19:55 +0000
-From:   Qu WenRuo <wqu@suse.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v3 1/6] btrfs-progs: check: Export btrfs_type_to_imode
-Thread-Topic: [PATCH v3 1/6] btrfs-progs: check: Export btrfs_type_to_imode
-Thread-Index: AQHVcrP4OMjtwOUYMES2NZyGcLTcFKc6jQEA
-Date:   Tue, 24 Sep 2019 09:19:55 +0000
-Message-ID: <3d3cfcfb-d55b-a0fa-c182-a52c138c6b65@suse.com>
-References: <20190912031135.79696-1-wqu@suse.com>
- <20190912031135.79696-2-wqu@suse.com>
- <8bce1985-0bd7-2476-8276-530ab08a00d6@suse.com>
-In-Reply-To: <8bce1985-0bd7-2476-8276-530ab08a00d6@suse.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: TYAPR01CA0099.jpnprd01.prod.outlook.com
- (2603:1096:404:2a::15) To BY5PR18MB3266.namprd18.prod.outlook.com
- (2603:10b6:a03:1a1::15)
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [13.231.109.76]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 338f3112-556c-479b-898c-08d740d05d0a
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BY5PR18MB3218;
-x-ms-traffictypediagnostic: BY5PR18MB3218:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BY5PR18MB32180D8D978864F1D9B3AAF9D6840@BY5PR18MB3218.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0170DAF08C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(396003)(39860400002)(376002)(346002)(366004)(136003)(189003)(199004)(36756003)(26005)(6436002)(14454004)(6506007)(446003)(99286004)(3846002)(76176011)(25786009)(386003)(52116002)(229853002)(478600001)(486006)(476003)(8936002)(2616005)(6486002)(102836004)(81166006)(81156014)(8676002)(11346002)(186003)(5660300002)(31686004)(2906002)(31696002)(110136005)(66476007)(66446008)(66556008)(316002)(6246003)(64756008)(2501003)(66946007)(305945005)(7736002)(256004)(86362001)(6512007)(71190400001)(71200400001)(6116002)(66066001);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3218;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: mJoj9mgfqm9hynjbmqpblSjqoIVgANU/qfEgVX7x1bB9XSvDJO4Ei0wxon4zVIh7wzhjnYal7sRln4jI08fYwAgcMgqLE46NgJav8RdhJEoFcKFtDjDtd9lYtSds17sJuOjx+q2yZpE/mVK9+qExMNAY9zelnABL5jNjjIIj30HLhKUD6qRwGUv5nlsk14xqeoWMWSpXD1n/1m1qsaqL5nzDXqd0HUKIpyIUCH0L/ZqrZ7/xvVLkET9dMwAU3jX9pUpV1tD1I4bvvXU0aAWljoa4nZKzR2/3MYziWEwK5irGODYQghRiGbhDydvkDxk3W0dAF0AMjL6U0HiohSuSxpDL1PAZ4kXaWCYWAODwaDzfUcNmZax3Lt8jo4i7Pfiizj7m9pKXvt6XiWGHeNxsSkP3vzi3Ohl7y+iR/7AqXRg=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D40B6CFB4BAEB54A8AA0DFCF8EEEBE3C@namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Tue, 24 Sep 2019 05:57:42 -0400
+Received: from oxbsltgw62.schlund.de ([172.19.249.152]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MvbJw-1hwYKr2Ely-00scqQ; Tue, 24 Sep 2019 11:57:39 +0200
+Date:   Tue, 24 Sep 2019 11:57:39 +0200 (CEST)
+From:   Felix Koop <fdp@fkoop.de>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Message-ID: <763051326.179345.1569319059433@email.ionos.de>
+In-Reply-To: <eac5b055-3ec5-47e2-bf6e-d317595240ce@gmx.com>
+References: <57e3a3a2c40fe7ea33ff85aec59ffaefdd20f3e6.camel@fkoop.de>
+ <1af945c1-0e58-a6e0-477f-59e0900a0e6f@gmx.com>
+ <1746580228.276165.1569313641249@email.ionos.de>
+ <7ab6805a-f372-d5e2-04c9-51dc7cf51fbc@gmx.com>
+ <1393339585.178213.1569316691139@email.ionos.de>
+ <eac5b055-3ec5-47e2-bf6e-d317595240ce@gmx.com>
+Subject: Re: help needed with unmountable btrfs-filesystem
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 338f3112-556c-479b-898c-08d740d05d0a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2019 09:19:55.6630
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mDE46CKWAivV2Oz3PLy2fiOetttTS7Vh++ZTJspU4nUP1xXSIjMR9eckAytoIKej
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3218
-X-OriginatorOrg: suse.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-Priority: 3
+Importance: Medium
+X-Mailer: Open-Xchange Mailer v7.8.4-Rev60
+X-Originating-Client: open-xchange-appsuite
+X-Provags-ID: V03:K1:GHgvpLYwVJQqwJF49u+BDGd/nY1XWYH5LrcMEQZXgSMm9xSVI3s
+ RbZkeqrmTtaw4H81Fsqft1+o7GNeaj+HgtI84oJjfg5C85D0QPeG1Ik6EnQuAVL5hmBWAVl
+ X5c77H6PN+O/osvoBKTzRgRVTx7BME7bVtwV168JEQskqB9zyNH3YDa16/q0v0mI+4clLdK
+ Zf7uhnVJr1NP28mqpw9bw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:1/EaC2o6zRU=:kg7bcfa0LlxZWvfcqtQ7vi
+ xtl+LxGB6pVtnhUXD4fFqnMLS8p+8BPuvGz5jGb8g2mdJgoB0o2qEB1v8V8SgB4nC7Pxmzbdu
+ rlB62FhiZGOoI34v00mOarAsZ1Qp6soflLmLmtQP6dC7rn3V+3x3yeRSaFij6OL9Dm2aE6B2B
+ 6afLVC30jczPaVUEtJRL1qq1ert5GXv1mu3EOy/V7y/9PUDDwuu+uPbZnUCh4LAwj5v15ZIZZ
+ 1JHL8VzzUq8Ey7v0d6XqblydMKNuoqMwMf+xX/QwA8QSNEmBjQw2al6S3prKk8nm9f5BpMPEX
+ 1QU0T0dLXZcbQGYHCAXTBRtepJ/TO+cOt1UIf6vq6Vu7kTj0nlxOzfNHmqg44YVQR4LOk7kNC
+ mY+uye5aDde0DpruzsrEsppmq1gTbo01Gf889MVabLj43jltgLrOTCpvB0eNdTWcwLUqp1oPu
+ QmN7uTSe4pBaZVi7oiKIe4yK/tZRA0JbYtbpcZ43VEp2hCmWCCJGkexZuDLJcrfLZcdpm9Yh6
+ zcDxZdja6pG+aAg9MbwuyBrD3hyZXENl/c0I2CPv33tZirDn1qX2DK9nIFOvJFmv5/4EELSUX
+ kEFljxY3su2qgKwbq4JWBnJRJlD2F4vgd8B6HoIJaqjpIC0n0it1+dzm+mjhmKFqF2CMyWJuq
+ wRM/Y7Vg4UU8c03GdlT+XMmy3oY2ZXLHqWMqwMfxpDb+M5PdJYgiAJMQ1AGZ5uABD+D/lqmzJ
+ bjRx7dWkXbA89aGNJsLOSIvuDAu4PQWSlSpuKR83y9pS97nsJyUNocAJYK8LaCe7M/w6sTXLE
+ M62k4mg8osmrGW7dTtxS8BvT7ENY8t/SDfmYVs9V4aZ9MX/5u+K63be47X7WkxfVEwukQ9Ntg
+ vWRiF895EO/XshM8b/Yg==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMTkvOS8yNCDkuIvljYg0OjQxLCBOaWtvbGF5IEJvcmlzb3Ygd3JvdGU6DQo+IA0K
-PiANCj4gT24gMTIuMDkuMTkg0LMuIDY6MTEg0YcuLCBRdSBXZW5ydW8gd3JvdGU6DQo+PiBUaGlz
-IGZ1bmN0aW9uIHdpbGwgYmUgbGF0ZXIgdXNlZCBieSBjb21tb24gbW9kZSBjb2RlLCBzbyBleHBv
-cnQgaXQuDQo+Pg0KPj4gU2lnbmVkLW9mZi1ieTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+DQo+
-IA0KPiBSZXZpZXdlZC1ieTogTmlrb2xheSBCb3Jpc292IDxuYm9yaXNvdkBzdXNlLmNvbT4gYnV0
-IHNlZSBvbmUgbml0IGJlbG93Lg0KPiANCj4+IC0tLQ0KPj4gIGNoZWNrL21haW4uYyAgICAgICAg
-fCAxNSAtLS0tLS0tLS0tLS0tLS0NCj4+ICBjaGVjay9tb2RlLWNvbW1vbi5oIHwgMTUgKysrKysr
-KysrKysrKysrDQo+PiAgMiBmaWxlcyBjaGFuZ2VkLCAxNSBpbnNlcnRpb25zKCspLCAxNSBkZWxl
-dGlvbnMoLSkNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvY2hlY2svbWFpbi5jIGIvY2hlY2svbWFpbi5j
-DQo+PiBpbmRleCAyZTE2YjRlNmYwNWIuLjkwMjI3OTc0MDU4OSAxMDA2NDQNCj4+IC0tLSBhL2No
-ZWNrL21haW4uYw0KPj4gKysrIGIvY2hlY2svbWFpbi5jDQo+PiBAQCAtMjQ0OCwyMSArMjQ0OCw2
-IEBAIG91dDoNCj4+ICAJcmV0dXJuIHJldDsNCj4+ICB9DQo+PiAgDQo+PiAtc3RhdGljIHUzMiBi
-dHJmc190eXBlX3RvX2ltb2RlKHU4IHR5cGUpDQo+PiAtew0KPj4gLQlzdGF0aWMgdTMyIGltb2Rl
-X2J5X2J0cmZzX3R5cGVbXSA9IHsNCj4+IC0JCVtCVFJGU19GVF9SRUdfRklMRV0JPSBTX0lGUkVH
-LA0KPj4gLQkJW0JUUkZTX0ZUX0RJUl0JCT0gU19JRkRJUiwNCj4+IC0JCVtCVFJGU19GVF9DSFJE
-RVZdCT0gU19JRkNIUiwNCj4+IC0JCVtCVFJGU19GVF9CTEtERVZdCT0gU19JRkJMSywNCj4+IC0J
-CVtCVFJGU19GVF9GSUZPXQkJPSBTX0lGSUZPLA0KPj4gLQkJW0JUUkZTX0ZUX1NPQ0tdCQk9IFNf
-SUZTT0NLLA0KPj4gLQkJW0JUUkZTX0ZUX1NZTUxJTktdCT0gU19JRkxOSywNCj4+IC0JfTsNCj4+
-IC0NCj4+IC0JcmV0dXJuIGltb2RlX2J5X2J0cmZzX3R5cGVbKHR5cGUpXTsNCj4+IC19DQo+PiAt
-DQo+PiAgc3RhdGljIGludCByZXBhaXJfaW5vZGVfbm9faXRlbShzdHJ1Y3QgYnRyZnNfdHJhbnNf
-aGFuZGxlICp0cmFucywNCj4+ICAJCQkJc3RydWN0IGJ0cmZzX3Jvb3QgKnJvb3QsDQo+PiAgCQkJ
-CXN0cnVjdCBidHJmc19wYXRoICpwYXRoLA0KPj4gZGlmZiAtLWdpdCBhL2NoZWNrL21vZGUtY29t
-bW9uLmggYi9jaGVjay9tb2RlLWNvbW1vbi5oDQo+PiBpbmRleCAxNjFiODRhOGRlYjAuLjZjOGQ2
-ZDc1NzhhNiAxMDA2NDQNCj4+IC0tLSBhL2NoZWNrL21vZGUtY29tbW9uLmgNCj4+ICsrKyBiL2No
-ZWNrL21vZGUtY29tbW9uLmgNCj4+IEBAIC0xNTYsNCArMTU2LDE5IEBAIHN0YXRpYyBpbmxpbmUg
-Ym9vbCBpc192YWxpZF9pbW9kZSh1MzIgaW1vZGUpDQo+PiAgfQ0KPj4gIA0KPj4gIGludCByZWNv
-d19leHRlbnRfYnVmZmVyKHN0cnVjdCBidHJmc19yb290ICpyb290LCBzdHJ1Y3QgZXh0ZW50X2J1
-ZmZlciAqZWIpOw0KPj4gKw0KPj4gK3N0YXRpYyBpbmxpbmUgdTMyIGJ0cmZzX3R5cGVfdG9faW1v
-ZGUodTggdHlwZSkNCj4+ICt7DQo+PiArCXN0YXRpYyB1MzIgaW1vZGVfYnlfYnRyZnNfdHlwZVtd
-ID0gew0KPj4gKwkJW0JUUkZTX0ZUX1JFR19GSUxFXQk9IFNfSUZSRUcsDQo+PiArCQlbQlRSRlNf
-RlRfRElSXQkJPSBTX0lGRElSLA0KPj4gKwkJW0JUUkZTX0ZUX0NIUkRFVl0JPSBTX0lGQ0hSLA0K
-Pj4gKwkJW0JUUkZTX0ZUX0JMS0RFVl0JPSBTX0lGQkxLLA0KPj4gKwkJW0JUUkZTX0ZUX0ZJRk9d
-CQk9IFNfSUZJRk8sDQo+PiArCQlbQlRSRlNfRlRfU09DS10JCT0gU19JRlNPQ0ssDQo+PiArCQlb
-QlRSRlNfRlRfU1lNTElOS10JPSBTX0lGTE5LLA0KPj4gKwl9Ow0KPiANCj4gbml0OiBJZiB0aGUg
-YXJyYXkgaXMgZGVmaW5lZCBpbiBhIGZ1bmN0aW9uIGluIGEgaGVhZGVyIHRoaXMgbWVhbnMgaXQN
-Cj4gd2lsbCBiZSBjb3BpZWQgdG8gZXZlcnkgb2JqZWN0IGZpbGUgdGhpcyBoZWFkZXIgaXMgaW5j
-bHVkZWQgc28gaXQgd2lsbA0KPiByZXN1bHQgaW4gYSBtaW5vciBibG9hdCBvZiBzaXplLiBJdCBt
-aWdodCBiZXR0ZXIgdG8gaGF2ZSBpdCBkZWZpbmVkIGluDQo+IGNoZWNrL21haW4uYyBhbmQgaGF2
-ZSBpdCBkZWNsYXJlZCBleHRlcm4gaW4gbW9kZS1jb21tb24uaA0KDQpJJ20gd29uZGVyaW5nIHdo
-YXQgaGFwcGVucyBpbiB0aGUgZmluYWwgYmluYXJ5Lg0KDQpJSVJDIHRoZXJlIHNob3VsZCBiZSBv
-bmx5IG9uZSBjb3B5IG9mIHRoZSBzdGF0aWMgY29uc3QgYXJyYXkgaW4gLmRhdGENCnNlZ21lbnQu
-DQoNClNvIHRoYXQgc2hvdWxkIGJlIG1vc3RseSBPSyBJIGd1ZXNzPw0KDQpUaGFua3MsDQpRdQ0K
-DQo+IA0KPj4gKw0KPj4gKwlyZXR1cm4gaW1vZGVfYnlfYnRyZnNfdHlwZVsodHlwZSldOw0KPj4g
-K30NCj4+ICAjZW5kaWYNCj4+DQo=
+This fs is on a RAID 6 md device, where 1 or 2 devices had problems. This should not have had an effect with the fs. Now I think it might have.
+
+Mit freundlichen Grüßen/Kind regards
+
+
+Felix Koop
+
+
+> Qu Wenruo <quwenruo.btrfs@gmx.com> hat am 24. September 2019 um 11:23 geschrieben:
+> 
+> 
+> 
+> 
+> On 2019/9/24 下午5:18, Felix Koop wrote:
+> > Hi Qu,
+> > 
+> > this is what I got:
+> > 
+> > root@tuxedo:~# btrfs rescue super-recover /dev/md/1
+> > Make sure this is a btrfs disk otherwise the tool will destroy other fs, Are you sure? [y/N]: y
+> > checksum verify failed on 340721664 found EACFB938 wanted 24037BC4
+> > checksum verify failed on 340721664 found EACFB938 wanted 24037BC4
+> > checksum verify failed on 340721664 found CBE54D32 wanted 6010C3E7
+> > checksum verify failed on 340721664 found EACFB938 wanted 24037BC4
+> > bad tree block 340721664, bytenr mismatch, want=340721664, have=14969249826309169724
+> 
+> This means your root tree is also corrupted.
+> 
+> Any idea how is the fs corrupted?
+> 
+> 
+> It should be very rare to corrupt the first superblock already.
+> Then more csum corruption is even more rare.
+> 
+> It looks like the underlying device or encryption or whatever is corrupted.
+> 
+> If a fs is corrupted to this extent, it's pretty hard to do any more.
+> 
+> Thanks,
+> Qu
+> 
+> > Couldn't read tree root
+> > Failed to recover bad superblocks
+> > root@tuxedo:~# btrfs check --readonly /dev/md/1
+> > Opening filesystem to check...
+> > No valid Btrfs found on /dev/md/1
+> > ERROR: cannot open file system
+> > 
+> > Additional tips?
+> > 
+> > 
+> > Mit freundlichen Grüßen/Kind regards
+> > 
+> > 
+> > Felix Koop
+> > 
+> > 
+> >> Qu Wenruo <quwenruo.btrfs@gmx.com> hat am 24. September 2019 um 11:11 geschrieben:
+> >>
+> >>
+> >>
+> >>
+> >> On 2019/9/24 下午4:27, Felix Koop wrote:
+> >>> Hi Qu,
+> >>>
+> >>> unfortunately nothing under dmesg.
+> >>>
+> >>> ~# btrfs ins dump-super -fFa /dev/md/1
+> >>> superblock: bytenr=65536, device=/dev/md/1
+> >>> ---------------------------------------------------------
+> >>> csum_type               48250 (INVALID)
+> >>> csum_size               32
+> >>> csum                    0x8e5542eb70bced2a96808253fcb7a73c6085b6e754cbc8e2fb89674e9f738238 [UNKNOWN CSUM TYPE OR SIZE]
+> >>
+> >> So the first super block is completely garbage, no wonder neither kernel
+> >> nor the btrfs-progs detects the fs.
+> >>
+> >> [...]
+> >>>
+> >>>
+> >>> superblock: bytenr=67108864, device=/dev/md/1
+> >>> ---------------------------------------------------------
+> >>> csum_type               0 (crc32c)
+> >>> csum_size               4
+> >>> csum                    0x636f9da3 [match]
+> >>> bytenr                  67108864
+> >>> flags                   0x1
+> >>>                         ( WRITTEN )
+> >>> magic                   _BHRfS_M [match]
+> >>
+> >> Still have a good backup.
+> >>
+> >> I'm not sure what makes the first super block completely garbage. It can
+> >> be bad trim or whatever something wrong.
+> >>
+> >> But anyway, you can try to fix it by "btrfs rescue super-recover
+> >> /dev/md/1" to at least recover the superblock so that kernel and
+> >> btrfs-progs can recognize the system.
+> >>
+> >> Then you may like to run a "btrfs check --readonly /dev/md/1" to make
+> >> sure nothing else is corrupted.
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>> fsid                    6bd5c974-2565-4736-815d-fe071f560e68
+> >>> metadata_uuid           6bd5c974-2565-4736-815d-fe071f560e68
+> >>> label
+> >>> generation              168
+> >>> root                    340721664
+> >>> sys_array_size          129
+> >>> chunk_root_generation   156
+> >>> root_level              1
+> >>> chunk_root              22020096
+> >>> chunk_root_level        1
+> >>> log_root                0
+> >>> log_root_transid        0
+> >>> log_root_level          0
+> >>> total_bytes             375567417344
+> >>> bytes_used              243939692544
+> >>> sectorsize              4096
+> >>> nodesize                16384
+> >>> leafsize (deprecated)   16384
+> >>> stripesize              4096
+> >>> root_dir                6
+> >>> num_devices             1
+> >>> compat_flags            0x0
+> >>> compat_ro_flags         0x0
+> >>> incompat_flags          0x161
+> >>>                         ( MIXED_BACKREF |
+> >>>                           BIG_METADATA |
+> >>>                           EXTENDED_IREF |
+> >>>                           SKINNY_METADATA )
+> >>> cache_generation        168
+> >>> uuid_tree_generation    168
+> >>> dev_item.uuid           d71e03b8-b353-4242-a65a-dc9d60bc46a6
+> >>> dev_item.fsid           6bd5c974-2565-4736-815d-fe071f560e68 [match]
+> >>> dev_item.type           0
+> >>> dev_item.total_bytes    375567417344
+> >>> dev_item.bytes_used     248059527168
+> >>> dev_item.io_align       4096
+> >>> dev_item.io_width       4096
+> >>> dev_item.sector_size    4096
+> >>> dev_item.devid          1
+> >>> dev_item.dev_group      0
+> >>> dev_item.seek_speed     0
+> >>> dev_item.bandwidth      0
+> >>> dev_item.generation     0
+> >>> sys_chunk_array[2048]:
+> >>>         item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
+> >>>                 length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
+> >>>                 io_align 65536 io_width 65536 sector_size 4096
+> >>>                 num_stripes 2 sub_stripes 0
+> >>>                         stripe 0 devid 1 offset 22020096
+> >>>                         dev_uuid d71e03b8-b353-4242-a65a-dc9d60bc46a6
+> >>>                         stripe 1 devid 1 offset 30408704
+> >>>                         dev_uuid d71e03b8-b353-4242-a65a-dc9d60bc46a6
+> >>> backup_roots[4]:
+> >>>         backup 0:
+> >>>                 backup_tree_root:       350814208       gen: 166        level: 1
+> >>>                 backup_chunk_root:      22020096        gen: 156        level: 1
+> >>>                 backup_extent_root:     340721664       gen: 166        level: 2
+> >>>                 backup_fs_root:         338608128       gen: 166        level: 2
+> >>>                 backup_dev_root:        354140160       gen: 166        level: 1
+> >>>                 backup_csum_root:       353402880       gen: 166        level: 2
+> >>>                 backup_total_bytes:     375567417344
+> >>>                 backup_bytes_used:      243939692544
+> >>>                 backup_num_devices:     1
+> >>>
+> >>>         backup 1:
+> >>>                 backup_tree_root:       57311232        gen: 167        level: 1
+> >>>                 backup_chunk_root:      22020096        gen: 156        level: 1
+> >>>                 backup_extent_root:     69419008        gen: 167        level: 2
+> >>>                 backup_fs_root:         338608128       gen: 166        level: 2
+> >>>                 backup_dev_root:        317472768       gen: 167        level: 1
+> >>>                 backup_csum_root:       345784320       gen: 167        level: 2
+> >>>                 backup_total_bytes:     375567417344
+> >>>                 backup_bytes_used:      243939692544
+> >>>                 backup_num_devices:     1
+> >>>
+> >>>         backup 2:
+> >>>                 backup_tree_root:       340721664       gen: 168        level: 1
+> >>>                 backup_chunk_root:      22020096        gen: 156        level: 1
+> >>>                 backup_extent_root:     340738048       gen: 168        level: 2
+> >>>                 backup_fs_root:         338608128       gen: 166        level: 2
+> >>>                 backup_dev_root:        345358336       gen: 168        level: 1
+> >>>                 backup_csum_root:       353320960       gen: 168        level: 2
+> >>>                 backup_total_bytes:     375567417344
+> >>>                 backup_bytes_used:      243939692544
+> >>>                 backup_num_devices:     1
+> >>>
+> >>>         backup 3:
+> >>>                 backup_tree_root:       57311232        gen: 165        level: 1
+> >>>                 backup_chunk_root:      22020096        gen: 156        level: 1
+> >>>                 backup_extent_root:     69419008        gen: 165        level: 2
+> >>>                 backup_fs_root:         352387072       gen: 157        level: 2
+> >>>                 backup_dev_root:        317325312       gen: 165        level: 1
+> >>>                 backup_csum_root:       343932928       gen: 165        level: 2
+> >>>                 backup_total_bytes:     375567417344
+> >>>                 backup_bytes_used:      243939692544
+> >>>                 backup_num_devices:     1
+> >>>
+> >>>
+> >>> superblock: bytenr=274877906944, device=/dev/md/1
+> >>> ---------------------------------------------------------
+> >>> csum_type               0 (crc32c)
+> >>> csum_size               4
+> >>> csum                    0x9ee8cb92 [match]
+> >>> bytenr                  274877906944
+> >>> flags                   0x1
+> >>>                         ( WRITTEN )
+> >>> magic                   _BHRfS_M [match]
+> >>> fsid                    6bd5c974-2565-4736-815d-fe071f560e68
+> >>> metadata_uuid           6bd5c974-2565-4736-815d-fe071f560e68
+> >>> label
+> >>> generation              168
+> >>> root                    340721664
+> >>> sys_array_size          129
+> >>> chunk_root_generation   156
+> >>> root_level              1
+> >>> chunk_root              22020096
+> >>> chunk_root_level        1
+> >>> log_root                0
+> >>> log_root_transid        0
+> >>> log_root_level          0
+> >>> total_bytes             375567417344
+> >>> bytes_used              243939692544
+> >>> sectorsize              4096
+> >>> nodesize                16384
+> >>> leafsize (deprecated)   16384
+> >>> stripesize              4096
+> >>> root_dir                6
+> >>> num_devices             1
+> >>> compat_flags            0x0
+> >>> compat_ro_flags         0x0
+> >>> incompat_flags          0x161
+> >>>                         ( MIXED_BACKREF |
+> >>>                           BIG_METADATA |
+> >>>                           EXTENDED_IREF |
+> >>>                           SKINNY_METADATA )
+> >>> cache_generation        168
+> >>> uuid_tree_generation    168
+> >>> dev_item.uuid           d71e03b8-b353-4242-a65a-dc9d60bc46a6
+> >>> dev_item.fsid           6bd5c974-2565-4736-815d-fe071f560e68 [match]
+> >>> dev_item.type           0
+> >>> dev_item.total_bytes    375567417344
+> >>> dev_item.bytes_used     248059527168
+> >>> dev_item.io_align       4096
+> >>> dev_item.io_width       4096
+> >>> dev_item.sector_size    4096
+> >>> dev_item.devid          1
+> >>> dev_item.dev_group      0
+> >>> dev_item.seek_speed     0
+> >>> dev_item.bandwidth      0
+> >>> dev_item.generation     0
+> >>> sys_chunk_array[2048]:
+> >>>         item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
+> >>>                 length 8388608 owner 2 stripe_len 65536 type SYSTEM|DUP
+> >>>                 io_align 65536 io_width 65536 sector_size 4096
+> >>>                 num_stripes 2 sub_stripes 0
+> >>>                         stripe 0 devid 1 offset 22020096
+> >>>                         dev_uuid d71e03b8-b353-4242-a65a-dc9d60bc46a6
+> >>>                         stripe 1 devid 1 offset 30408704
+> >>>                         dev_uuid d71e03b8-b353-4242-a65a-dc9d60bc46a6
+> >>> backup_roots[4]:
+> >>>         backup 0:
+> >>>                 backup_tree_root:       350814208       gen: 166        level: 1
+> >>>                 backup_chunk_root:      22020096        gen: 156        level: 1
+> >>>                 backup_extent_root:     340721664       gen: 166        level: 2
+> >>>                 backup_fs_root:         338608128       gen: 166        level: 2
+> >>>                 backup_dev_root:        354140160       gen: 166        level: 1
+> >>>                 backup_csum_root:       353402880       gen: 166        level: 2
+> >>>                 backup_total_bytes:     375567417344
+> >>>                 backup_bytes_used:      243939692544
+> >>>                 backup_num_devices:     1
+> >>>
+> >>>         backup 1:
+> >>>                 backup_tree_root:       57311232        gen: 167        level: 1
+> >>>                 backup_chunk_root:      22020096        gen: 156        level: 1
+> >>>                 backup_extent_root:     69419008        gen: 167        level: 2
+> >>>                 backup_fs_root:         338608128       gen: 166        level: 2
+> >>>                 backup_dev_root:        317472768       gen: 167        level: 1
+> >>>                 backup_csum_root:       345784320       gen: 167        level: 2
+> >>>                 backup_total_bytes:     375567417344
+> >>>                 backup_bytes_used:      243939692544
+> >>>                 backup_num_devices:     1
+> >>>
+> >>>         backup 2:
+> >>>                 backup_tree_root:       340721664       gen: 168        level: 1
+> >>>                 backup_chunk_root:      22020096        gen: 156        level: 1
+> >>>                 backup_extent_root:     340738048       gen: 168        level: 2
+> >>>                 backup_fs_root:         338608128       gen: 166        level: 2
+> >>>                 backup_dev_root:        345358336       gen: 168        level: 1
+> >>>                 backup_csum_root:       353320960       gen: 168        level: 2
+> >>>                 backup_total_bytes:     375567417344
+> >>>                 backup_bytes_used:      243939692544
+> >>>                 backup_num_devices:     1
+> >>>
+> >>>         backup 3:
+> >>>                 backup_tree_root:       57311232        gen: 165        level: 1
+> >>>                 backup_chunk_root:      22020096        gen: 156        level: 1
+> >>>                 backup_extent_root:     69419008        gen: 165        level: 2
+> >>>                 backup_fs_root:         352387072       gen: 157        level: 2
+> >>>                 backup_dev_root:        317325312       gen: 165        level: 1
+> >>>                 backup_csum_root:       343932928       gen: 165        level: 2
+> >>>                 backup_total_bytes:     375567417344
+> >>>                 backup_bytes_used:      243939692544
+> >>>                 backup_num_devices:     1
+> >>>
+> >>>
+> >>>
+> >>>
+> >>>
+> >>> Mit freundlichen Grüßen/Kind regards
+> >>>
+> >>>
+> >>> Felix Koop
+> >>>
+> >>>
+> >>>> Qu Wenruo <quwenruo.btrfs@gmx.com> hat am 22. September 2019 um 11:50 geschrieben:
+> >>>>
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 2019/9/22 下午2:34, Felix Koop wrote:
+> >>>>> Hello,
+> >>>>>
+> >>>>> I need help accessing a btrfs-filesystem. When I try to mount the fs, I
+> >>>>> get the following error:
+> >>>>>
+> >>>>> # mount -t btrfs /dev/md/1 /mnt
+> >>>>> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/md1,
+> >>>>> missing codepage or helper program, or other error.
+> >>>>
+> >>>> dmesg please.
+> >>>>
+> >>>>>
+> >>>>> When I then try to check the fs, this is what I get:
+> >>>>>
+> >>>>> # btrfs check /dev/md/1
+> >>>>> Opening filesystem to check...
+> >>>>> No valid Btrfs found on /dev/md/1
+> >>>>> ERROR: cannot open file system
+> >>>>
+> >>>> As it said, it can't find the primary superblock.
+> >>>>
+> >>>> Please provide the following output.
+> >>>>
+> >>>> # btrfs ins dump-super -fFa /dev/md/1
+> >>>>
+> >>>> And kernel and btrfs-progs version please.
+> >>>>
+> >>>> Thanks,
+> >>>> Qu
+> >>>>>
+> >>>>> Can anybody help me how to recover my data?
+> >>>>>
+> >>>>>
+> >>>>
+> >>
+>
