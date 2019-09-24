@@ -2,127 +2,146 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4AA8BD4CC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 00:06:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEC3BD4DB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 00:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442025AbfIXWGA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 18:06:00 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:43239 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387542AbfIXWGA (ORCPT
+        id S2405168AbfIXWYC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 18:24:02 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35260 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387532AbfIXWYC (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 18:06:00 -0400
-Received: by mail-wr1-f68.google.com with SMTP id q17so3801435wrx.10
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 15:05:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pFLw3dOLxeFgzYiPL8w1yRI/k1zaMjRSFNs6w7fx+lg=;
-        b=MksNmbY6OTWNWpOAtt/ab+ytvcuYW/GPUy9eQMcbTeTBfOHDoWiSTRjTHYX1yhA1r5
-         G0QRk6EnoLFS5FvE/8WYFqa9G1A+X7ldkuqbwzLjJdxDtUCJ9hRty+TcaR2PuV7A5dV5
-         pEkPl5J42uiKtTjci08ppnL1Tg1cEVxnL80BddWhAj6vs8ADqDdwE5FwY40c2GKYx+ob
-         FYYxp9vfmN7Ja9RM2vu0qqkQ5MnTSWCHaVBgK0uIvhk7qhxoueGDQcPdw3VQXcRnI0rE
-         kgTXFMCzSQOY3iCVLvos7jP+Zw0xjte9PEI9/e4ZMK9aS03ZQP5ihA5Xfz0W08ru4+a6
-         F3dw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pFLw3dOLxeFgzYiPL8w1yRI/k1zaMjRSFNs6w7fx+lg=;
-        b=Va1ttM7opWfBWYYS/QDCBm38NBJDUaqkQddQfu46CopBykVDrbDTvkYkkYLJPqKIyW
-         TyeH8IGD9psSPKe4c8eOybOFnPO+0SDzVGZdYePlbN0ArkJihF9Jqnthk8OC5GD+5Qvf
-         WTFJ4QPFNxTV8ViTx/fqeGpFtQrdcS/3O8SHICXUDwav84fQudx77Oaka56kBh3zkrlf
-         pXEIRChnCtCmEK9C22nYsfuh8fTzSmW2zvmjbHXHwnzLghlahw5kE6cvSfLGbcKjdylJ
-         oDjgrbyMcANdENj3CJ3o9297Kp8wCwnfEU114KB0Th5cjLxbYAUQds+p5umW+OQL7mds
-         U0Bw==
-X-Gm-Message-State: APjAAAUPLVuuczuTfx/Zy02i22YIapr1ThLKvpUX8WprnwzXlMwB1ylD
-        +ZrYUofsa8uol/Ah+0g9pjvcIRGQ9LZpf2jvebujXA==
-X-Google-Smtp-Source: APXvYqzH5i0nvYUY+Mpxd4OamygpysyqHPNFTYttdsaNYxk5Ld8zwyTmINYNLaUr9CgYAiXPNZS/zgJu31bqlF9SU0I=
-X-Received: by 2002:a5d:4241:: with SMTP id s1mr5102615wrr.101.1569362756754;
- Tue, 24 Sep 2019 15:05:56 -0700 (PDT)
+        Tue, 24 Sep 2019 18:24:02 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8OLxmTP104494;
+        Tue, 24 Sep 2019 22:23:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=WCg8CK8lWdtRYaIcgzqcnsusbOJTcVFGgkO6t2EG+yM=;
+ b=TH0vkSgaVbdxJ4htA7j/eU4CoH5fDJ6p+VtmqQ4waz0NODS3hQDMUA4w1mRJSmm1uzMw
+ /Ugg2Z6l5c87eWnHiNiA0ZLk+VUyvRh8IzdHKJ5Be+wk/sYp3KZ9INQKYknE7lpoymDj
+ jEFg8CzdInss05LIgC81XalDPsg3dD432VNBULeKRHnYqiQi0/t6CfFSgm9bwT3q8iZl
+ PUYFAbDoDmo/6RthhD2XWmJzFhEEzwPcTDqqc+wKOYPflaS2wNvmX8kkgy0u+EOovCdC
+ lIvZJB7nHlngQJ7Q9/MRCYWpPwM/r5oLsN1+FRR3gj9tK/VsU5AteBT8SKlSwRhM2cfm Ow== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2v5cgr111h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Sep 2019 22:23:13 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8OLxWpG053203;
+        Tue, 24 Sep 2019 22:21:13 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2v6yvptu7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Sep 2019 22:21:12 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x8OML5SN017569;
+        Tue, 24 Sep 2019 22:21:06 GMT
+Received: from localhost (/10.159.232.132)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 24 Sep 2019 15:21:05 -0700
+Date:   Tue, 24 Sep 2019 15:21:03 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>, dsterba@suse.cz,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-btrfs@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
+ kmalloc(power-of-two)
+Message-ID: <20190924222103.GB2229799@magnolia>
+References: <20190826111627.7505-1-vbabka@suse.cz>
+ <20190826111627.7505-3-vbabka@suse.cz>
+ <df8d1cf4-ff8f-1ee1-12fb-cfec39131b32@suse.cz>
+ <20190923171710.GN2751@twin.jikos.cz>
+ <20190923175146.GT2229799@magnolia>
+ <172b2ed8-f260-6041-5e10-502d1c91f88c@suse.cz>
+ <20190924215353.GG16973@dread.disaster.area>
 MIME-Version: 1.0
-References: <000f01d5723b$6e3d0f70$4ab72e50$@gmail.com> <CAJCQCtSCJTsk1oFrWObUBpw-MXArQJHoJV3BeBk0Nfv_-AoS8g@mail.gmail.com>
- <003f01d5724c$f1adae30$d5090a90$@gmail.com> <CAJCQCtTwjUok145SqnbwfBYKipVhcV7J94HX9Lx4mgaFV3FaBA@mail.gmail.com>
- <005301d572dd$e378c7a0$aa6a56e0$@gmail.com>
-In-Reply-To: <005301d572dd$e378c7a0$aa6a56e0$@gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 24 Sep 2019 16:05:45 -0600
-Message-ID: <CAJCQCtSZA+nT9813paB=AGFH2yf7mT1i+vErotL8ur_UiYzjqw@mail.gmail.com>
-Subject: Re: BTRFS checksum mismatch - false positives
-To:     hoegge@gmail.com
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190924215353.GG16973@dread.disaster.area>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9390 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1909240178
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9390 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1909240178
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 7:42 AM <hoegge@gmail.com> wrote:
->
-> Sorry forgot root when issuing commands:
->
-> ash-4.3# btrfs fi show
-> Label: '2016.05.06-09:13:52 v7321'  uuid: 63121c18-2bed-4c81-a514-77be2fba7ab8
-> Total devices 1 FS bytes used 4.31TiB
-> devid    1 size 9.97TiB used 4.55TiB path /dev/mapper/vg1-volume_1
+On Wed, Sep 25, 2019 at 07:53:53AM +1000, Dave Chinner wrote:
+> On Tue, Sep 24, 2019 at 11:19:29PM +0200, Vlastimil Babka wrote:
+> > On 9/23/19 7:51 PM, Darrick J. Wong wrote:
+> > > On Mon, Sep 23, 2019 at 07:17:10PM +0200, David Sterba wrote:
+> > >> On Mon, Sep 23, 2019 at 06:36:32PM +0200, Vlastimil Babka wrote:
+> > >>> So if anyone thinks this is a good idea, please express it (preferably
+> > >>> in a formal way such as Acked-by), otherwise it seems the patch will be
+> > >>> dropped (due to a private NACK, apparently).
+> > > 
+> > > Oh, I didn't realize  ^^^^^^^^^^^^ that *some* of us are allowed the
+> > > privilege of gutting a patch via private NAK without any of that open
+> > > development discussion incovenience. <grumble>
+> > > 
+> > > As far as XFS is concerned I merged Dave's series that checks the
+> > > alignment of io memory allocations and falls back to vmalloc if the
+> > > alignment won't work, because I got tired of scrolling past the endless
+> > > discussion and bug reports and inaction spanning months.
+> > 
+> > I think it's a big fail of kmalloc API that you have to do that, and
+> > especially with vmalloc, which has the overhead of setting up page
+> > tables, and it's a waste for allocation requests smaller than page size.
+> > I wish we could have nice things.
+> 
+> I don't think the problem here is the code. The problem here is that
+> we have a dysfunctional development community and there are no
+> processes we can follow to ensure architectural problems in core
+> subsystems are addressed in a timely manner...
+> 
+> And this criticism isn't just of the mm/ here - this alignment
+> problem is exacerbated by exactly the same issue on the block layer
+> side. i.e. the block layer and drivers have -zero- bounds checking
+> to catch these sorts of things and the block layer maintainer will
+> not accept patches for runtime checks that would catch these issues
+> and make them instantly visible to us.
+> 
+> These are not code problems: we can fix the problems with code (and
+> I have done so to demonstrate "this is how we do what you say is
+> impossible").  The problem here is people in positions of
+> control/power are repeatedly demonstrating an inability to
+> compromise to reach a solution that works for everyone.
+> 
+> It's far better for us just to work around bullshit like this in XFS
+> now, then when the core subsystems get they act together years down
+> the track we can remove the workaround from XFS. Users don't care
+> how we fix the problem, they just want it fixed. If that means we
+> have to route around dysfunctional developer groups, then we'll just
+> have to do that....
 
-OK so you can do
-# pvs
+Seconded.
 
-And that should show what makes up that logical volume. And you can
-also double check with
+--D
 
-# cat /proc/mdstat
-
-
-> Data, single: total=4.38TiB, used=4.30TiB
-> System, DUP: total=8.00MiB, used=96.00KiB
-> System, single: total=4.00MiB, used=0.00B
-> Metadata, DUP: total=89.50GiB, used=6.63GiB
-> Metadata, single: total=8.00MiB, used=0.00B
-> GlobalReserve, single: total=512.00MiB, used=0.00B
-
-Yeah there's a couple of issues there that aren't problems per se. But
-with the older kernel, it's probably a good idea to reduce the large
-number of unused metadata block groups:
-
-# btrfs balance start -mconvert=dup,soft /mountpoint/    ##no idea
-where the mount point is for your btrfs volume
-
-that command will get rid of those empty single profile system and
-metadata block groups. It should complete almost instantly.
-
-# btrfs balance start -musage=25 /mountpoint
-
-That will find block groups with 25% or less usage, move and
-consolidate their extents into new metadata block groups and then
-delete the old ones. 25% is pretty conservative. There's ~89GiB
-allocated to metadata, but only ~7GiB is used. So this command will
-find the tiny bits of metadata strewn out over those 89GiB and
-consolidate them, and basically it'll free up a bunch of space.
-
-It's not really necessary to do this, you've got a ton of free space
-left, only 1/2 the pool is used
-
-9.97TiB used 4.55TiB
-
->
-> Synology indicates that BTRFS can do self healing of data using RAID information? Is that really the case if it is not a "BTRFS raid" but a MD or SHR raid?
-
-Btrfs will only self heal the metadata in this file system, because
-there's two copies of metadata. It can't do self heal on data. That'd
-be up to whatever lower layer is providing the RAID capability and
-whether md or lvm based, it depends on the drive itself spitting out
-some kind of discrete read or write error in order for md/lvm to know
-what to do. There are no checksums available to it, so it has no idea
-if the data is corrupt. It only knows if a drive complains, it needs
-to attempt reconstruction. If that reconstruction produces corrupt
-data, Btrfs still detects it and will report on it, but it can't fix
-it.
-
-
-
--- 
-Chris Murphy
+> Cheers,
+> 
+> Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
