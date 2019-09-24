@@ -2,114 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FCFBD474
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 23:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F47BD4B2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 23:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727799AbfIXVqR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 17:46:17 -0400
-Received: from mail-wm1-f48.google.com ([209.85.128.48]:50779 "EHLO
-        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437852AbfIXVqR (ORCPT
+        id S2633528AbfIXVyD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 17:54:03 -0400
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:42653 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728183AbfIXVyD (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 17:46:17 -0400
-Received: by mail-wm1-f48.google.com with SMTP id 5so2050218wmg.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 14:46:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=cDy6FqKVBQAkyMpruiTZXRFv62yD0TO5lPBsB4vWP8w=;
-        b=Z0XmXPnM4M59NK3YqZ57I+oEGiXrvghe3eEIE8mDLk1vgW3S3RVeJIoHvpwtGP5Ez6
-         Ao/yOu1dTX8prSjm3TzEvr4GMxXwIxEzoeb30kcIfe0WedmcJsD1MAgyFVe47x0WFQmg
-         KRKtJEpq1xrBBepa0vJXXqBQDWAzyXAYWyBEQWrToeCD5+CG+e1FdPl/yycIwzpj3RFp
-         2PFvoghaxrBi58xPlHeeNJ24b7f9t7FT8PqL1qHJmMVCKEsGhXwCD1sc4irg5MVT5s9C
-         qdj8QTjD7GAyt531fswGWgvmYMx6+WSvrQHCste6dLzr5y1SvAe+hAOkia6k7gFlA3hM
-         wMUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=cDy6FqKVBQAkyMpruiTZXRFv62yD0TO5lPBsB4vWP8w=;
-        b=RHzVyserBEgTEleGa1o/eAxHSTQ1mZyFHMX74qP7he8CkLV47ZzWtBu+PApEZ/Tyci
-         dhpl4ctRCyq2RZL51qxkUCYtEvQPYXbCLUuUU8iZRgETwdY3DYdMHUZFRS93dZcA+6Nu
-         nBaQl9elr2/aavpea1kwZo/9K0tZaanhXm1BUFVvhGhhVUe50SzOGIQU7ENixULX5XX4
-         TOL30PgW6Xdz7rtufxtpdpbzSFGvIQxkV5PP8rtigciMq1cdvooZcnh5JKNEqLcvKIgu
-         KGYM7Y1+oO/lPzIoMkiqVYBnOTIpWdf+e2ZTS9A7tLC1DVm5H6C6aYbYpEgksUy/pf5Q
-         nx3A==
-X-Gm-Message-State: APjAAAUUNnc818sebkl1ICAXOQfoeZ+ik3Z0Dj79fS5RGNNDKHd+z96T
-        oqEpgHCW2Axe8H8FMPkxC9trgzHgXDT2prHClf9bVfHaPUpN/A==
-X-Google-Smtp-Source: APXvYqy27FKbxB7VKHOw/vjr8slTIGvlCs+nrD8w1oi3l3j2GU75qVPPQUrVawsL0fO/vcqQCt+vQQ/cwKGz+5aLvGs=
-X-Received: by 2002:a1c:4886:: with SMTP id v128mr2789875wma.176.1569361575716;
- Tue, 24 Sep 2019 14:46:15 -0700 (PDT)
+        Tue, 24 Sep 2019 17:54:03 -0400
+Received: from dread.disaster.area (pa49-181-226-196.pa.nsw.optusnet.com.au [49.181.226.196])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 1A2C543EFAD;
+        Wed, 25 Sep 2019 07:53:55 +1000 (AEST)
+Received: from dave by dread.disaster.area with local (Exim 4.92.2)
+        (envelope-from <david@fromorbit.com>)
+        id 1iCskr-0005bn-N3; Wed, 25 Sep 2019 07:53:53 +1000
+Date:   Wed, 25 Sep 2019 07:53:53 +1000
+From:   Dave Chinner <david@fromorbit.com>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>, dsterba@suse.cz,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-btrfs@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
+ kmalloc(power-of-two)
+Message-ID: <20190924215353.GG16973@dread.disaster.area>
+References: <20190826111627.7505-1-vbabka@suse.cz>
+ <20190826111627.7505-3-vbabka@suse.cz>
+ <df8d1cf4-ff8f-1ee1-12fb-cfec39131b32@suse.cz>
+ <20190923171710.GN2751@twin.jikos.cz>
+ <20190923175146.GT2229799@magnolia>
+ <172b2ed8-f260-6041-5e10-502d1c91f88c@suse.cz>
 MIME-Version: 1.0
-References: <000f01d5723b$6e3d0f70$4ab72e50$@gmail.com> <CAJCQCtSCJTsk1oFrWObUBpw-MXArQJHoJV3BeBk0Nfv_-AoS8g@mail.gmail.com>
- <003f01d5724c$f1adae30$d5090a90$@gmail.com> <CAJCQCtTwjUok145SqnbwfBYKipVhcV7J94HX9Lx4mgaFV3FaBA@mail.gmail.com>
- <001601d572ba$90591b60$b10b5220$@gmail.com>
-In-Reply-To: <001601d572ba$90591b60$b10b5220$@gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 24 Sep 2019 15:46:04 -0600
-Message-ID: <CAJCQCtTjWAHd=tu8TuURGEYBMP0=RCeYaJ=-r1KY9YjdEUpNNQ@mail.gmail.com>
-Subject: Re: BTRFS checksum mismatch - false positives
-To:     hoegge@gmail.com
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <172b2ed8-f260-6041-5e10-502d1c91f88c@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.2 cv=P6RKvmIu c=1 sm=1 tr=0
+        a=dRuLqZ1tmBNts2YiI0zFQg==:117 a=dRuLqZ1tmBNts2YiI0zFQg==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
+        a=7-415B0cAAAA:8 a=8DDTXLWI6Pjby6uLqAQA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 3:29 AM <hoegge@gmail.com> wrote:
->
-> # btrfs fi show
-> gives no result - not when adding path either
->
-> # btrfs fi df /volume1
-> Data, single: total=3D4.38TiB, used=3D4.30TiB
-> System, DUP: total=3D8.00MiB, used=3D96.00KiB
-> System, single: total=3D4.00MiB, used=3D0.00B
-> Metadata, DUP: total=3D89.50GiB, used=3D6.63GiB
-> Metadata, single: total=3D8.00MiB, used=3D0.00B
-> GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
->
-> Here is the log:
-> https://send.firefox.com/download/5a19aee66a42c04e/#PTt0UkT53Wrxe9EjCQfrW=
-A (password in separate e-mail)
-> I have removed a few mac-addresses and things before a certain data (that=
- contained all other kinds of info). Let me know if it is too little.
+On Tue, Sep 24, 2019 at 11:19:29PM +0200, Vlastimil Babka wrote:
+> On 9/23/19 7:51 PM, Darrick J. Wong wrote:
+> > On Mon, Sep 23, 2019 at 07:17:10PM +0200, David Sterba wrote:
+> >> On Mon, Sep 23, 2019 at 06:36:32PM +0200, Vlastimil Babka wrote:
+> >>> So if anyone thinks this is a good idea, please express it (preferably
+> >>> in a formal way such as Acked-by), otherwise it seems the patch will be
+> >>> dropped (due to a private NACK, apparently).
+> > 
+> > Oh, I didn't realize  ^^^^^^^^^^^^ that *some* of us are allowed the
+> > privilege of gutting a patch via private NAK without any of that open
+> > development discussion incovenience. <grumble>
+> > 
+> > As far as XFS is concerned I merged Dave's series that checks the
+> > alignment of io memory allocations and falls back to vmalloc if the
+> > alignment won't work, because I got tired of scrolling past the endless
+> > discussion and bug reports and inaction spanning months.
+> 
+> I think it's a big fail of kmalloc API that you have to do that, and
+> especially with vmalloc, which has the overhead of setting up page
+> tables, and it's a waste for allocation requests smaller than page size.
+> I wish we could have nice things.
 
-I think they were having problems, I kept getting 502 errors, and then
-reached the download retries limit I bet.
+I don't think the problem here is the code. The problem here is that
+we have a dysfunctional development community and there are no
+processes we can follow to ensure architectural problems in core
+subsystems are addressed in a timely manner...
 
+And this criticism isn't just of the mm/ here - this alignment
+problem is exacerbated by exactly the same issue on the block layer
+side. i.e. the block layer and drivers have -zero- bounds checking
+to catch these sorts of things and the block layer maintainer will
+not accept patches for runtime checks that would catch these issues
+and make them instantly visible to us.
 
+These are not code problems: we can fix the problems with code (and
+I have done so to demonstrate "this is how we do what you say is
+impossible").  The problem here is people in positions of
+control/power are repeatedly demonstrating an inability to
+compromise to reach a solution that works for everyone.
 
->
-> Concerning restoring files - I should have all originals backed up, so as=
-sume I can just delete the bad ones and restore the originals. That would t=
-ake care also of all the checksums, right? But BTRFS does not do anything t=
-o prevent the bad blocks from being used again, right?
+It's far better for us just to work around bullshit like this in XFS
+now, then when the core subsystems get they act together years down
+the track we can remove the workaround from XFS. Users don't care
+how we fix the problem, they just want it fixed. If that means we
+have to route around dysfunctional developer groups, then we'll just
+have to do that....
 
-We don't know if they're bad sectors or not yet. That would be shown
-by libata as a read or write error. A read error, md will handle by
-reconstructing the data from parity and write it back to the drive.
-And at that time the drive firmware will determine if the write
-succeeds or not and if not it'll internally mark that physical sector
-as bad and remap the LBA for that sector to a different reserve
-physical sector.
+Cheers,
 
-
-> I'll ask Synology about their stack.
->
-> I can't find sysfs on the system - should it be mounted uner /sys ? This =
-is what I have:
-
-# echo check > /sys/block/mdX/md/sync_action
-
-replace the X with the raid you're checking - this is a bit different
-if they're using LVM raid.
-
-
-
---=20
-Chris Murphy
+Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
