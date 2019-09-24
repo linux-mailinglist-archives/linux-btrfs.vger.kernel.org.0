@@ -2,93 +2,117 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC12BC8B6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 15:18:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E09FBC8C7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 15:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389339AbfIXNSy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 09:18:54 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:37451 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729826AbfIXNSy (ORCPT
+        id S2505044AbfIXNVX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 09:21:23 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:33902 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505041AbfIXNVX (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 09:18:54 -0400
-Received: by mail-qt1-f193.google.com with SMTP id d2so2064225qtr.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 06:18:52 -0700 (PDT)
+        Tue, 24 Sep 2019 09:21:23 -0400
+Received: by mail-qk1-f194.google.com with SMTP id q203so1720393qke.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 06:21:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=wbKhRwJkuGlflXcl4Dv0BRBq3BZXRyGBalBLJf/LYKY=;
-        b=gUwR6MSyPVwvVBD1uftHTLGej5ZAjviknVESmTmfn6XCFK3QSPtmmDyL4oCkWWPWcs
-         /ezapct0rM0iKuxrkeR0w0NSrltJrShhRH2jN9zq2ofrBz4ntd9h5g9lhREQ+QyD/lzI
-         m05/jafzrRHB9W3sM0SxlVL2mBHfql7rA9Z9RaV/5MHIac5MUpi1sDd3tIyWpH+ZFrNq
-         PGa378yyej+gmmJmVxXKGUXrloV+fVyMlu9rdHum+qc2Mnzb5seqDsLHbLlZApqWrfG3
-         c/uZsaZoddRgtHMrMVDlLLBh/bHYUO9u8TpYdgPE8A4aSTNFp5srLFLnFoQbDXHRSZ2j
-         NbfA==
+        bh=OTsuLTZ/FRMZyfy0BZfU4pYmxBxgwTorMU5kJlW3azw=;
+        b=U6K+xYGy4MU0zYmUKhVbNdiAYTjlmKboPcBo+D/Gyxfdy2ZG6rLKsIsubIMPBFE+Tl
+         mBcsF0b064ty9lE0m0uER2jv07ZLzexVVhlD7GsfEawrXD406wI50IGZFRS1oUyJlh/y
+         sHn4R1cA7zvCIiiJkYjjQeH4Xju6nE9XJqO4zdJrP+SeOrmGSDbmaPTiOWCucftfHR3O
+         IpmpnzuCUDURhUaiIL5hSvkg1cMuJZqaG2z152VijaJw+SZT2N/MY1thT4IXUMhSNfhm
+         axvrmTMMiReiWFswxiuM89HrAFzzbuNoNCUmsA9Y/iV7as7EneZZJjq/qR4BdO+7EQuN
+         VPZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=wbKhRwJkuGlflXcl4Dv0BRBq3BZXRyGBalBLJf/LYKY=;
-        b=OZqoN7HqTQdd5eD1TM03aZlII8VZcwAeQ83E4g9xJ4eslgnn2LPWNjdQ3+bew0sPiv
-         gYXjIm3xJAnQnITs0FcFNX2XPxMKrcosLvOvH70VZV72LXk9C4UE8V/KjHGqoaFZ5uJO
-         ZugnFfb2Vde4GsSiSyI3GDsGIzGLI55oxTLzAz7JNOeQywNk0FgB76pb50JZC6x+VYnA
-         HdipSOSRQ7jmqELVNZr9LFdK+J66PBGiqgIjswISXSD0W5ZpRMu/0Wh+EvIH+85L0DZf
-         oiGu6XZXFmr5pCE7wgjfWILdbjeBc2ArdOY14L7ZMWK55MpAIcbY1CgX/EdKQoSqcXyh
-         vs/g==
-X-Gm-Message-State: APjAAAW039ijPPOCTaGqFrppDJDaNWCIEIjIeSEGpSEoaRfruXNLJ1kR
-        1tG0FICzltpUFMpo8z9ySHkRUh2WcMSj7Q==
-X-Google-Smtp-Source: APXvYqyZGCtzpxeWyrEIucHSAFrrvO+ijhpjKcByDrKd/UNWYk04kSPMeBZs4AbwDz4O6yvbUUKXLQ==
-X-Received: by 2002:a0c:e948:: with SMTP id n8mr2367679qvo.113.1569331131881;
-        Tue, 24 Sep 2019 06:18:51 -0700 (PDT)
+        bh=OTsuLTZ/FRMZyfy0BZfU4pYmxBxgwTorMU5kJlW3azw=;
+        b=Mn3ItyAkudZvi5KInksm391PZak60+viwTfIFK7Vj91eHzdPz10noR1C3LlMr3mkhV
+         vjj3qa8r+CER2STnwfWVXRV9E0cvxz7mahhwWjqvSgRkACCrTvRj9HPx1iYhp6fkHjCO
+         +Frr5C1Aw0QcK7JhKS2ViP2Tts4mO2TzeOQI9c/POCuCLvwghdFgz1ajtThT+/gNhPn6
+         XJlPMOnhj+5Hu4nVLyZP9WtItyGxsDPMFBHHF+qdoqkLxESgEOj7clXh1/Q4BigBAs6u
+         8sANylD/HgkOM6VChbmibVUvq9xQ5oZg0A/+5U6vbdy6pwwOq8dBwiPphmFt8yUYWtli
+         1O8Q==
+X-Gm-Message-State: APjAAAWVojLvpKwG28UN4U2zk1zGP3IvaS7BrfXzhoIyJIWMNf1Uv7S0
+        7jjKhh3iIx+hnp02nx8a21XCyQ==
+X-Google-Smtp-Source: APXvYqwcqybgQw6cUHPMIhB66HrmgN0QaOkCMYxkmK+cRE0WqqlPX71eQ9d1q8NiFsjXARskyD4n9A==
+X-Received: by 2002:a05:620a:7da:: with SMTP id 26mr2113272qkb.119.1569331281989;
+        Tue, 24 Sep 2019 06:21:21 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::b7c9])
-        by smtp.gmail.com with ESMTPSA id f18sm864040qkl.55.2019.09.24.06.18.50
+        by smtp.gmail.com with ESMTPSA id o52sm1122890qtf.56.2019.09.24.06.21.21
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Sep 2019 06:18:51 -0700 (PDT)
-Date:   Tue, 24 Sep 2019 09:18:49 -0400
+        Tue, 24 Sep 2019 06:21:21 -0700 (PDT)
+Date:   Tue, 24 Sep 2019 09:21:20 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 0/9][V3] btrfs: break up extent_io.c a little bit
-Message-ID: <20190924131848.idms3hljiz2exm2w@macbook-pro-91.dhcp.thefacebook.com>
-References: <20190923140525.14246-1-josef@toxicpanda.com>
- <20190923170101.GM2751@twin.jikos.cz>
- <20190923182103.kokip2qevnaqzov4@MacBook-Pro-91.local>
- <20190924074615.GO2751@twin.jikos.cz>
+To:     James Harvey <jamespharvey20@gmail.com>
+Cc:     Filipe Manana <fdmanana@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: WITH regression patch, still btrfs-transacti blocked for...
+ (forever)
+Message-ID: <20190924132118.egtvk6mxmh37wl3h@macbook-pro-91.dhcp.thefacebook.com>
+References: <CA+X5Wn7Rtw4rTqXTG8wrEc883uFV7JpGo-zD8FhhD9gM+_Vpfg@mail.gmail.com>
+ <CAL3q7H41BpuVTHOAMOFcVvVsJuc4iR10KKPDVfgEsG=ZEpwmWw@mail.gmail.com>
+ <CAL3q7H4wDdzfA+H0HPk7oKNO3PDiN1nYHpRu5v6rRXvxQFVLbQ@mail.gmail.com>
+ <CA+X5Wn4ZmwnJry0zjyAYow-jEU7PSdE16ROSqfaKyGavLoGVQQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190924074615.GO2751@twin.jikos.cz>
+In-Reply-To: <CA+X5Wn4ZmwnJry0zjyAYow-jEU7PSdE16ROSqfaKyGavLoGVQQ@mail.gmail.com>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 09:46:15AM +0200, David Sterba wrote:
-> On Mon, Sep 23, 2019 at 02:21:04PM -0400, Josef Bacik wrote:
-> > > I got some strange merge conflicts, it turns out patch 6/9 did not make
-> > > it to the mailinglist (nor patchwork where I could pick it eventually).
-> > > For that it's useful to have the list of commits too along with the
-> > > diffstat, ie. what format-patch generates.
-> > 
-> > Huh weird.  I see you merged up through patch 5, I'll rebase and resend and
-> > maybe this time the ML will take it.
+On Tue, Sep 24, 2019 at 07:07:41AM -0400, James Harvey wrote:
+> On Tue, Sep 24, 2019 at 5:58 AM Filipe Manana <fdmanana@gmail.com> wrote:
+> >
+> > On Sun, Sep 15, 2019 at 2:55 PM Filipe Manana <fdmanana@gmail.com> wrote:
+> > >
+> > > On Sun, Sep 15, 2019 at 1:46 PM James Harvey <jamespharvey20@gmail.com> wrote:
+> > > > ...
+> > > > You'll see they're different looking backtraces than without the
+> > > > patch, so I don't actually know if it's related to the original
+> > > > regression that several others reported or not.
+> > >
+> > > It's a different problem.
+> >
+> > So the good news is that on upcoming 5.4 the problem can't happen, due
+> > to a large patch series from Josef regarding space reservation
+> > handling which, as a side effect, solves that problem and doesn't
+> > introduce new ones with concurrent fsyncs.
+> >
+> > However that's a large patch set which depends on a lot of previous
+> > cleanups, some of which landed in the 5.3 merge window,
+> > Backporting all those patches is against the backport policies for
+> > stable release [1], since many of the dependencies are cleanup patches
+> > and many are large (well over the 100 lines limit).
+> >
+> > On the other it's not possible to send a fix for stable releases that
+> > doesn't land on Linus' tree first, as there's nothing to fix on the
+> > current merge window (5.4) since that deadlock can't happen there.
+> >
+> > So it seems like a dead end to me.
+> >
+> > Fortunately, as you told me privately, you only hit this once and it's
+> > not a frequent issue for you (unlike the 5.2 regression which
+> > caused you the hang very often). You can workaround it by mounting the
+> > fs with "-o notreelog", which makes fsyncs more expensive,
+> > so you'll likely see some performance degradation for your
+> > applications (higher latency, less throughput).
+> >
+> > [1] https://www.kernel.org/doc/html/v4.15/process/stable-kernel-rules.html
 > 
-> Yeah I merged what I had, even some of the 7-9 applied but that could
-> cause conflicts after your changes.
 > 
-> > How about I start sending pull requests through github for everything in
-> > addition to sending stuff to the mailinglist, that way it's easier to track the
-> > bigger things?  Thanks,
-> 
-> You can always send a link to git branch with the patches, not only for
-> cases like that, but we also want the mailig list copy. I almost always
-> process the mailinglist to send replies and to check previous
-> iterations. IOW, git branch is for convenience.
+> All understood, thanks for letting me know.  Not a problem.  I have
+> still only ran into this crash once, about 9 days ago.  I haven't had
+> another btrfs problem since then, unlike the hourly hangs on 5.2 with
+> heavy I/O.
 
-Yeah I'm not saying replace the mailinglist stuff, but augment it with a github
-PR to make sure things don't get lost.  I'll follow up with that shortly.
+We are seeing this crash internally on our testing tier, we're still running it
+down but it's pretty elusive.  I'll CC you when we find it and fix it.  Thanks,
 
 Josef
