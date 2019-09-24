@@ -2,55 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5754CBD3CB
+	by mail.lfdr.de (Postfix) with ESMTP id C17AABD3CC
 	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 22:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731269AbfIXUut (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 16:50:49 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:41045 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726528AbfIXUus (ORCPT
+        id S1731285AbfIXUuu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 16:50:50 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:36222 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbfIXUuu (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 16:50:48 -0400
-Received: by mail-qt1-f196.google.com with SMTP id x4so3884300qtq.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 13:50:46 -0700 (PDT)
+        Tue, 24 Sep 2019 16:50:50 -0400
+Received: by mail-qk1-f193.google.com with SMTP id y189so3295353qkc.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 13:50:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=pYG9tHVTBzRT0V80MeUINJkZehbuS8dbRF42/XmhSDo=;
-        b=EwELSTZH/+3EPj1e/N+MwkV47P2Y9vRzc82DZLkWaldflLBIaqEgR0mZCr4SNy0JJZ
-         B3apvSId6UOZMjBrwVOyzQdDLUq6LGl/vT2PjG5gYb/eeitmwGQtrfVG83C5q6+Pj6k0
-         mdObrYzSBKSKTrB8bqLIe9etvONuiD0DvTtwIgBbEBs3+KgqAMz9DKirnpeW4C0SY3cb
-         9wOaKKHcsEcrMY8pR2CfbjjVNDbgOpD9tmmET5HiG50+comVLOPI2ypFq+sNtm4KnvJQ
-         THKgp29TPrxjrP/tdFK+kc8OBOLto8ihNW4vSXaYMiDXpdXdRHQkjNad/JNMnf10bYt+
-         PyLQ==
+        bh=QkJ9CHxApOUnXEifyT4dHaurfifVgyWe+EFM6lvayeo=;
+        b=kTEiyD1c1KFEPaW9x24NGjPgmYNtNCMQgnEXTx2riOBHazYZAiHvVj10f8P0HL2Z/k
+         PGvnib1D0bPEnGiuctdAbk3Zbt62cCB0HnNC8co7xRx9YwloAAMNKBOBqa1lPNtb420m
+         8yZ2xy+UXnDbzEeElT2jVjolkDNQaGmgSknfgOasy5KmqpGXL4ltDJ/26J98AIY1ZzfS
+         G0pNAGOkhiJ+2q8Bpa+QvFHUfH7+m9biJaMYJYGxA/1c0TI9IsMyn4z3h3u3yNMkULZw
+         eBjBdRCiQRDk8or8Po7/ixooaoofSfH3LnN6dWRMd9+vje2/Mu44JxD3anPiLzRFrqDw
+         wJpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pYG9tHVTBzRT0V80MeUINJkZehbuS8dbRF42/XmhSDo=;
-        b=orG8bB9kE93imbmi8p+xcyGgqS3NwLrXy9iq3m64kKZt4w2mgHaMDhYW35MSDEhrCq
-         JHOR6DD5bigFAYbEvoJ4utmjPB8SPTdKXxDWE+UYd26csGYFmy2oWK+j+3iQaLMf6stv
-         Niq/W+RuwDyzpZPTc5MO7nan24O7V2pimEy49Sv9VewN/MqW3YNNRqytOhaPSlEFG8EW
-         m6R/NMI2dwBmDQGu2QgZo9s14rm8rSQEyfTwUqQbiV+yaKzY/rxv1aQPOMiHF7z1UCm5
-         ZDCV9h77ot3XlqYxyE+US4e6UiKR0p9aTnwWWb6OL+MDqUxBa6DBR2dzV4Zs4GcVbpFs
-         4dJQ==
-X-Gm-Message-State: APjAAAXd5PotPJb9dcVg6oUL4JCitxK/U72YGl5QYpdBsm4lMmMnBlsB
-        e/1xs7Z14UgpqCpwQ9GTlia3Vgm8WjxR4Q==
-X-Google-Smtp-Source: APXvYqz6v99GwpeuLYPugoAaDDyvpKzwJhKgdTl/74R9WRsFxhRrY0ii6ssbB7Eo3r7bcl9PrAINAA==
-X-Received: by 2002:aed:3103:: with SMTP id 3mr4929495qtg.76.1569358246146;
-        Tue, 24 Sep 2019 13:50:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=QkJ9CHxApOUnXEifyT4dHaurfifVgyWe+EFM6lvayeo=;
+        b=GXpmWEWfIdXeQeogDcYv0IGdq4wv9H3On1Z35wPFPkS9fFwAk8CXQr2qk/hfj2PXCD
+         kPsAI/nu2KUMIGBT6DF9QGttoEPv+wP8CJRZ9qz4PPm1rJNUc5haGbGglkylfuIKrT1S
+         2lD7maIuaEND4uY9sdmrVXUS3CpMqh2ylpkB534zBVZxmrbWJaTlz/9KDLOrrYwHnb8N
+         u/OWebPGUF9jn5zTUMymzHH5ncK+8cg5GSP6NETl7NLLwBHx5xDk4muIomV+/BWl1WT8
+         MXYWI6fXUrJsfweMEu4exhYLf7hPflmGWlDNBizOzrjnuQoxORE+UODnmr+iZyIwNpua
+         I5bw==
+X-Gm-Message-State: APjAAAUQQKME/f0L1QPzdCv0eUe2nJZ3n77Z3uxbZIuyKQU5WNVQPRZl
+        qehV+0oVqAQHHDhDU42+pyceay9eH0+Gww==
+X-Google-Smtp-Source: APXvYqz5YOXc3IZURlh2S+biuE/LT4y5O6jKpO9EmrAocnGBX7RgnlxA46HeQHsinbpEyjnLiKB0Jw==
+X-Received: by 2002:a37:6fc1:: with SMTP id k184mr14515qkc.237.1569358247883;
+        Tue, 24 Sep 2019 13:50:47 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u39sm1831390qtj.34.2019.09.24.13.50.45
+        by smtp.gmail.com with ESMTPSA id b50sm2050056qte.48.2019.09.24.13.50.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Sep 2019 13:50:45 -0700 (PDT)
+        Tue, 24 Sep 2019 13:50:47 -0700 (PDT)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 1/2] btrfs: check page->mapping when loading free space cache
-Date:   Tue, 24 Sep 2019 16:50:43 -0400
-Message-Id: <20190924205044.31830-1-josef@toxicpanda.com>
+Subject: [PATCH 2/2] btrfs: use btrfs_block_group_cache_done in update_block_group
+Date:   Tue, 24 Sep 2019 16:50:44 -0400
+Message-Id: <20190924205044.31830-2-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190924205044.31830-1-josef@toxicpanda.com>
+References: <20190924205044.31830-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -58,59 +60,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-While testing 5.2 we ran into the following panic
+When free'ing extents in a block group we check to see if the block
+group is not cached, and then cache it if we need to.  However we'll
+just carry on as long as we're loading the cache.  This is problematic
+because we are dirtying the block group here.  If we are fast enough we
+could do a transaction commit and clear the free space cache while we're
+still loading the space cache in another thread.  This truncates the
+free space inode, which will keep it from loading the space cache.
 
-[52238.017028] BUG: kernel NULL pointer dereference, address: 0000000000000001
-[52238.105608] RIP: 0010:drop_buffers+0x3d/0x150
-[52238.304051] Call Trace:
-[52238.308958]  try_to_free_buffers+0x15b/0x1b0
-[52238.317503]  shrink_page_list+0x1164/0x1780
-[52238.325877]  shrink_inactive_list+0x18f/0x3b0
-[52238.334596]  shrink_node_memcg+0x23e/0x7d0
-[52238.342790]  ? do_shrink_slab+0x4f/0x290
-[52238.350648]  shrink_node+0xce/0x4a0
-[52238.357628]  balance_pgdat+0x2c7/0x510
-[52238.365135]  kswapd+0x216/0x3e0
-[52238.371425]  ? wait_woken+0x80/0x80
-[52238.378412]  ? balance_pgdat+0x510/0x510
-[52238.386265]  kthread+0x111/0x130
-[52238.392727]  ? kthread_create_on_node+0x60/0x60
-[52238.401782]  ret_from_fork+0x1f/0x30
-
-The page we were trying to drop had a page->private, but had no
-page->mapping and so called drop_buffers, assuming that we had a
-buffer_head on the page, and then panic'ed trying to deref 1, which is
-our page->private for data pages.
-
-This is happening because we're truncating the free space cache while
-we're trying to load the free space cache.  This isn't supposed to
-happen, and I'll fix that in a followup patch.  However we still
-shouldn't allow those sort of mistakes to result in messing with pages
-that do not belong to us.  So add the page->mapping check to verify that
-we still own this page after dropping and re-acquiring the page lock.
+Fix this by using the btrfs_block_group_cache_done helper so that we try
+to load the space cache unconditionally here, which will result in the
+caller waiting for the fast caching to complete and keep us from
+truncating the free space inode.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/free-space-cache.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ fs/btrfs/block-group.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index d54dcd0ab230..d86ada9c3c54 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -385,6 +385,12 @@ static int io_ctl_prepare_pages(struct btrfs_io_ctl *io_ctl, struct inode *inode
- 		if (uptodate && !PageUptodate(page)) {
- 			btrfs_readpage(NULL, page);
- 			lock_page(page);
-+			if (page->mapping != inode->i_mapping) {
-+				btrfs_err(BTRFS_I(inode)->root->fs_info,
-+					  "free space cache page truncated");
-+				io_ctl_drop_pages(io_ctl);
-+				return -EIO;
-+			}
- 			if (!PageUptodate(page)) {
- 				btrfs_err(BTRFS_I(inode)->root->fs_info,
- 					   "error reading free space cache");
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index bf7e3f23bba7..d7b3a516f27a 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -2661,7 +2661,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 		 * is because we need the unpinning stage to actually add the
+ 		 * space back to the block group, otherwise we will leak space.
+ 		 */
+-		if (!alloc && cache->cached == BTRFS_CACHE_NO)
++		if (!alloc && !btrfs_block_group_cache_done(cache))
+ 			btrfs_cache_block_group(cache, 1);
+ 
+ 		byte_in_group = bytenr - cache->key.objectid;
 -- 
 2.21.0
 
