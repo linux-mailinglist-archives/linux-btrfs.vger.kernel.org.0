@@ -2,24 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E001FBC22C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 09:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F18BC23E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 09:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405126AbfIXHB3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 03:01:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52444 "EHLO mx1.suse.de"
+        id S2405412AbfIXHGe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 03:06:34 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54908 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388209AbfIXHB3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 03:01:29 -0400
+        id S2393722AbfIXHGe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 03:06:34 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 08C22B63F;
-        Tue, 24 Sep 2019 07:01:27 +0000 (UTC)
-Subject: Re: [PATCH] btrfs compression: check string length
-To:     Pavel Machek <pavel@ucw.cz>, clm@fb.com,
-        David Sterba <dsterba@suse.com>, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20190924061452.GA31397@amd>
+        by mx1.suse.de (Postfix) with ESMTP id EF2D4AEBB;
+        Tue, 24 Sep 2019 07:06:31 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: prevent memory leak
+To:     Navid Emamdoost <navid.emamdoost@gmail.com>
+Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, emamd001@umn.edu,
+        kjlu@umn.edu, smccaman@umn.edu, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20190923223437.11086-1-navid.emamdoost@gmail.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,13 +66,13 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <0755d158-c219-4d22-f6d4-cb7e5e1cb170@suse.com>
-Date:   Tue, 24 Sep 2019 10:01:25 +0300
+Message-ID: <87868186-c4a9-88fb-bcd3-c5f226c50e59@suse.com>
+Date:   Tue, 24 Sep 2019 10:06:30 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190924061452.GA31397@amd>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20190923223437.11086-1-navid.emamdoost@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -80,29 +82,37 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 24.09.19 г. 9:14 ч., Pavel Machek wrote:
-> AFAICT, with current code user could pass something like "lzox" and
-> still get "lzo" compression. Check string lengths to prevent that.
+On 24.09.19 г. 1:34 ч., Navid Emamdoost wrote:
+> In btrfsic_mount if btrfsic_dev_state_alloc fails the allocated state
+> will be leaked. It needs to be released on error handling path.
 > 
-> Signed-off-by: Pavel Machek <pavel@denx.de>
+> Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
+
+NAK.
+
+The allocated state could have been added to a btrfsic_dev_state which
+in turn is linked by btrfsic_dev_state_hashtable_add. So when later
+ds->state is dereferenced it will case a UAF and likely result in crash.
+
+Looking at the integrity code I also don't like how it's structured e.g.
+if a memory error occurs then only some devices will be added to the
+btrfsic_dev_State_hashtable and the super block is not going to be
+validated at all.
+
+> ---
+>  fs/btrfs/check-integrity.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index b05b361..1083ab4 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -51,7 +51,7 @@ bool btrfs_compress_is_valid_type(const char *str, size_t len)
->  	for (i = 1; i < ARRAY_SIZE(btrfs_compress_types); i++) {
->  		size_t comp_len = strlen(btrfs_compress_types[i]);
->  
-> -		if (len < comp_len)
-> +		if (len != comp_len)
->  			continue;
-
-It's like that so that we can support compression strings such as
-zlib:9. In fact the initial version was written like you suggest:
-
-https://www.mail-archive.com/linux-btrfs@vger.kernel.org/msg88216.html
-
->  
->  		if (!strncmp(btrfs_compress_types[i], str, comp_len))
+> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
+> index 0b52ab4cb964..8a77b0cb2db3 100644
+> --- a/fs/btrfs/check-integrity.c
+> +++ b/fs/btrfs/check-integrity.c
+> @@ -2941,6 +2941,7 @@ int btrfsic_mount(struct btrfs_fs_info *fs_info,
+>  		if (NULL == ds) {
+>  			pr_info("btrfs check-integrity: kmalloc() failed!\n");
+>  			mutex_unlock(&btrfsic_mutex);
+> +			kvfree(state);
+>  			return -ENOMEM;
+>  		}
+>  		ds->bdev = device->bdev;
 > 
