@@ -2,70 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ECCBCC81
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 18:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBE0BD043
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 19:09:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387938AbfIXQdH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 12:33:07 -0400
-Received: from zeniv.linux.org.uk ([195.92.253.2]:52086 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725208AbfIXQdH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 12:33:07 -0400
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iCnkL-0005pD-Ec; Tue, 24 Sep 2019 16:33:01 +0000
-Date:   Tue, 24 Sep 2019 17:33:01 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "zhengbin (A)" <zhengbin13@huawei.com>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "zhangyi (F)" <yi.zhang@huawei.com>, renxudong1@huawei.com,
-        Hou Tao <houtao1@huawei.com>, linux-btrfs@vger.kernel.org,
-        "Yan, Zheng" <zyan@redhat.com>, linux-cifs@vger.kernel.org,
-        Steve French <sfrench@us.ibm.com>
-Subject: Re: [PATCH] Re: Possible FS race condition between iterate_dir and
- d_alloc_parallel
-Message-ID: <20190924163301.GG26530@ZenIV.linux.org.uk>
-References: <CAHk-=wjcZBB2GpGP-cxXppzW=M0EuFnSLoTXHyqJ4BtffYrCXw@mail.gmail.com>
- <20190915160236.GW1131@ZenIV.linux.org.uk>
- <CAHk-=whjNE+_oSBP_o_9mquUKsJn4gomL2f0MM79gxk_SkYLRw@mail.gmail.com>
- <20190921140731.GQ1131@ZenIV.linux.org.uk>
- <20190924025215.GA9941@ZenIV.linux.org.uk>
- <20190924133025.jeh7ond2svm3lsub@macbook-pro-91.dhcp.thefacebook.com>
- <20190924145104.GE26530@ZenIV.linux.org.uk>
- <20190924150144.6yqukmzwc3xlnfql@macbook-pro-91.dhcp.thefacebook.com>
- <20190924151107.GF26530@ZenIV.linux.org.uk>
- <20190924152627.kmbvxb4elpxfoybf@macbook-pro-91.dhcp.thefacebook.com>
+        id S1732477AbfIXRJC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 13:09:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51160 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730515AbfIXRJC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 13:09:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id BB590AD5F;
+        Tue, 24 Sep 2019 17:08:59 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 68295DA835; Tue, 24 Sep 2019 19:09:20 +0200 (CEST)
+Date:   Tue, 24 Sep 2019 19:09:20 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/3] btrfs: Properly handle backref_in_log retval
+Message-ID: <20190924170920.GB2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190830144449.23882-1-nborisov@suse.com>
+ <20190830144449.23882-3-nborisov@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190924152627.kmbvxb4elpxfoybf@macbook-pro-91.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190830144449.23882-3-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 11:26:28AM -0400, Josef Bacik wrote:
-> On Tue, Sep 24, 2019 at 04:11:07PM +0100, Al Viro wrote:
-> > On Tue, Sep 24, 2019 at 11:01:45AM -0400, Josef Bacik wrote:
-> > 
-> > > Sorry I mis-read the code a little bit.  This is purely for the subvolume link
-> > > directories.  We haven't wandered down into this directory yet.  If the
-> > > subvolume is being deleted and we still have the fake directory entry for it
-> > > then we just populate it with this dummy inode and then we can't lookup anything
-> > > underneath it.  Thanks,
-> > 
-> > Umm...  OK, I guess my question would be better stated a bit differently: we
-> > have a directory inode, with btrfs_lookup() for lookups in it *and* with
-> > dcache_readdir() called when you try to do getdents(2) on that thing.
-> > How does that work?
+On Fri, Aug 30, 2019 at 05:44:48PM +0300, Nikolay Borisov wrote:
+> This function can return a negative error value if btrfs_search_slot
+> errors for whatever reason or if btrfs_alloc_path runs out of memory.
+> This is currently problemattic because backref_in_log is treated by its
+> callers as if it returns boolean.
 > 
-> Sorry I hadn't read through the context.  We won't end up with things under this
-> directory.  The lookup will try to look up into the subvolume, see that it's
-> empty, and just return nothing.  There should never be any entries that end up
-> under this dummy entry.  Thanks,
+> Fix this by adding proper error handling in callers. That also enables
+> the function to return the direct error code from btrfs_search_slot.
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  fs/btrfs/tree-log.c | 32 +++++++++++++++++++-------------
+>  1 file changed, 19 insertions(+), 13 deletions(-)
+> 
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 369046a754b0..ca294ff463de 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -952,10 +952,8 @@ static noinline int backref_in_log(struct btrfs_root *log,
+>  		return -ENOMEM;
+>  
+>  	ret = btrfs_search_slot(NULL, log, key, path, 0, 0);
+> -	if (ret != 0) {
+> -		ret = 0;
+> +	if (ret != 0)
+>  		goto out;
+> -	}
 
-Er...  Then why not use simple_lookup() in there?  Confused...
+Is this correct? Before: nonzero -> zero, after the nonzero value is
+returned from the function. The return value is checked by the callers
+but this obscures the fact that it comes from btrfs_search_slot and is
+not just 0 or < 0.
+
+Because search slot returns 1 in case it does not find the key, which
+is translated to ENOENT in some contexts. Here it would be "false", as
+the reference is not found. So logically the return code of search slot
+and find backref is inverted.
+
+Due to this inverted logic I'd rather avoid propagating the semantics of
+search slot error value and always make it obvious that it follows the
+natural expectations after reading the code like:
+
+	ret = backref_in_log()
+	if (ret < 0)
+		return ...;
+	if (ret == 0)
+		/* no, backref is not in log */
+	if (ret > 0)
+		/* yes, backref is in the log */
+
+>  	if (key->type == BTRFS_INODE_EXTREF_KEY)
+>  		ret = !!btrfs_find_name_in_ext_backref(path->nodes[0],
+> @@ -1026,10 +1024,13 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
+>  					   (unsigned long)(victim_ref + 1),
+>  					   victim_name_len);
+>  
+> -			if (!backref_in_log(log_root, &search_key,
+> -					    parent_objectid,
+> -					    victim_name,
+> -					    victim_name_len)) {
+> +			ret = backref_in_log(log_root, &search_key,
+> +					     parent_objectid, victim_name,
+> +					     victim_name_len);
+> +			if (ret < 0) {
+> +				kfree(victim_name);
+> +				return ret;
+> +			} else if (!ret) {
+>  				inc_nlink(&inode->vfs_inode);
+>  				btrfs_release_path(path);
+>  
+> @@ -1091,10 +1092,12 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
+>  			search_key.offset = btrfs_extref_hash(parent_objectid,
+>  							      victim_name,
+>  							      victim_name_len);
+> -			ret = 0;
+> -			if (!backref_in_log(log_root, &search_key,
+> -					    parent_objectid, victim_name,
+> -					    victim_name_len)) {
+> +			ret = backref_in_log(log_root, &search_key,
+> +					     parent_objectid, victim_name,
+> +					     victim_name_len);
+> +			if (ret < 0) {
+> +				return ret;
+> +			} else if (!ret) {
+>  				ret = -ENOENT;
+>  				victim_parent = read_one_inode(root,
+>  						parent_objectid);
+> @@ -1869,16 +1872,19 @@ static bool name_in_log_ref(struct btrfs_root *log_root,
+>  			    const u64 dirid, const u64 ino)
+>  {
+>  	struct btrfs_key search_key;
+> +	int ret;
+>  
+>  	search_key.objectid = ino;
+>  	search_key.type = BTRFS_INODE_REF_KEY;
+>  	search_key.offset = dirid;
+> -	if (backref_in_log(log_root, &search_key, dirid, name, name_len))
+> +	ret = backref_in_log(log_root, &search_key, dirid, name, name_len);
+> +	if (ret == 1)
+>  		return true;
+>  
+>  	search_key.type = BTRFS_INODE_EXTREF_KEY;
+>  	search_key.offset = btrfs_extref_hash(dirid, name, name_len);
+> -	if (backref_in_log(log_root, &search_key, dirid, name, name_len))
+> +	ret = backref_in_log(log_root, &search_key, dirid, name, name_len);
+> +	if (ret == 1)
+>  		return true;
+
+The error handling in the code snippets above seems to follow the
+exptected logic but I don't see that it's correct due to the search slot
+value inversion.
