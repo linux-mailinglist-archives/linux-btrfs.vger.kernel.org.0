@@ -2,121 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BA62BD37B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 22:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A977BD39F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 22:33:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404603AbfIXUWh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 16:22:37 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39027 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392177AbfIXUWh (ORCPT
+        id S2437482AbfIXUc6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 16:32:58 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:45487 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726156AbfIXUc6 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 16:22:37 -0400
-Received: from lmontsouris-656-1-55-152.w80-15.abo.wanadoo.fr ([80.15.152.152] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1iCrKQ-0001E2-Pq; Tue, 24 Sep 2019 20:22:31 +0000
-Date:   Tue, 24 Sep 2019 22:22:29 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     Omar Sandoval <osandov@osandov.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [RFC PATCH 2/3] fs: add RWF_ENCODED for writing compressed data
-Message-ID: <20190924202229.mjvjigpnrskjtk5n@wittgenstein>
-References: <cover.1568875700.git.osandov@fb.com>
- <230a76e65372a8fb3ec62ce167d9322e5e342810.1568875700.git.osandov@fb.com>
- <CAG48ez2GKv15Uj6Wzv0sG5v2bXyrSaCtRTw5Ok_ovja_CiO_fQ@mail.gmail.com>
- <20190924171513.GA39872@vader>
- <20190924193513.GA45540@vader>
- <CAG48ez1NQBNR1XeVQYGoopEk=g_KedUr+7jxLQTaO+V8JCeweQ@mail.gmail.com>
+        Tue, 24 Sep 2019 16:32:58 -0400
+Received: by mail-qt1-f195.google.com with SMTP id c21so3792869qtj.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 13:32:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pBFqZ0mJjpLkpbOupsagM8Jl+uHVMZdrENsKttYrEYc=;
+        b=z0p4ayr/LXenta8/AVOjOn7Hmwi7u4/UVjRdaQr5SqYt/1yeXb0Yl2jlSOmgf+Whlm
+         MtHPV4H5qN/4CuFe7Iz+SjVlh7+gzwEv/nUrkXnk2ZSJVonPS+HGSa4tf6vpxLoYIHY2
+         MtehqjAKsv8sV3cU4mPOJRGrUPUMQzPD9gIUSK+3+vWADR2JGRkYZMHBxqCzSHWRjeJm
+         9gSReAHx6D7P4q6bns04qx5pxjmG+3KYMxXHxRUZtDO6EYQARWauItLyMeuyHmgMe9H9
+         OTtc8ImS0japGzBep54T5wp8R5lgpn3rmIIkrDi3CIZqGknQPcqzxoMHuG71YNLSfnkU
+         Aqhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pBFqZ0mJjpLkpbOupsagM8Jl+uHVMZdrENsKttYrEYc=;
+        b=Wq8NeZntZdKGy5w/gRvN75mTaEpS0fJU1M7SjR/bGiq+7lUWfF7411EDrpMe231GGE
+         A/7SJS50+8s/gIphKHe+kgdAo4VfZgYTqxb9cJTAUDDmFP/E7wfArWRU4TvYc3t6FrUN
+         3lX5H+AKUTG4Xpbsy2S7v/lrB27cj3HBBvT70u4Z1FHdl5LDb7Ip3b1lwE/zvX7vtpsN
+         KKLfeMVw/LfXqe/9IPPLIxOnvzCRZ/DKdRPDTV9jHpRBdnJskm5KjAoZ6V8CIAniWoHV
+         v8yHOZKP4nR62tBJIOUmzKCna6Vdgb7ZLHxiJoTAGmXusGXDFcGECh3D5YhTzX+BREVd
+         ajAw==
+X-Gm-Message-State: APjAAAUYunoNfL2sH6HAEfU3Iwl84g2TTQJCxLoaxXQPhnx2DDJdoCDj
+        l77/lvNAnpGQuOjNr2AhWCdJtNzN8nx2JQ==
+X-Google-Smtp-Source: APXvYqy6iAFlwri6z4Dwo+5yEoIMHIjGPs+tSL+/PmjblZFbkAlwunWiAhdKRHthxAILGg1s77pi9w==
+X-Received: by 2002:a0c:fe0c:: with SMTP id x12mr4314510qvr.134.1569357175719;
+        Tue, 24 Sep 2019 13:32:55 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id y17sm1450336qtb.82.2019.09.24.13.32.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Sep 2019 13:32:54 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH 0/4] The remaining extent_io.c split code
+Date:   Tue, 24 Sep 2019 16:32:48 -0400
+Message-Id: <20190924203252.30505-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAG48ez1NQBNR1XeVQYGoopEk=g_KedUr+7jxLQTaO+V8JCeweQ@mail.gmail.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 10:01:41PM +0200, Jann Horn wrote:
-> On Tue, Sep 24, 2019 at 9:35 PM Omar Sandoval <osandov@osandov.com> wrote:
-> > On Tue, Sep 24, 2019 at 10:15:13AM -0700, Omar Sandoval wrote:
-> > > On Thu, Sep 19, 2019 at 05:44:12PM +0200, Jann Horn wrote:
-> > > > On Thu, Sep 19, 2019 at 8:54 AM Omar Sandoval <osandov@osandov.com> wrote:
-> > > > > Btrfs can transparently compress data written by the user. However, we'd
-> > > > > like to add an interface to write pre-compressed data directly to the
-> > > > > filesystem. This adds support for so-called "encoded writes" via
-> > > > > pwritev2().
-> > > > >
-> > > > > A new RWF_ENCODED flags indicates that a write is "encoded". If this
-> > > > > flag is set, iov[0].iov_base points to a struct encoded_iov which
-> > > > > contains metadata about the write: namely, the compression algorithm and
-> > > > > the unencoded (i.e., decompressed) length of the extent. iov[0].iov_len
-> > > > > must be set to sizeof(struct encoded_iov), which can be used to extend
-> > > > > the interface in the future. The remaining iovecs contain the encoded
-> > > > > extent.
-> > > > >
-> > > > > A similar interface for reading encoded data can be added to preadv2()
-> > > > > in the future.
-> > > > >
-> > > > > Filesystems must indicate that they support encoded writes by setting
-> > > > > FMODE_ENCODED_IO in ->file_open().
-> > > > [...]
-> > > > > +int import_encoded_write(struct kiocb *iocb, struct encoded_iov *encoded,
-> > > > > +                        struct iov_iter *from)
-> > > > > +{
-> > > > > +       if (iov_iter_single_seg_count(from) != sizeof(*encoded))
-> > > > > +               return -EINVAL;
-> > > > > +       if (copy_from_iter(encoded, sizeof(*encoded), from) != sizeof(*encoded))
-> > > > > +               return -EFAULT;
-> > > > > +       if (encoded->compression == ENCODED_IOV_COMPRESSION_NONE &&
-> > > > > +           encoded->encryption == ENCODED_IOV_ENCRYPTION_NONE) {
-> > > > > +               iocb->ki_flags &= ~IOCB_ENCODED;
-> > > > > +               return 0;
-> > > > > +       }
-> > > > > +       if (encoded->compression > ENCODED_IOV_COMPRESSION_TYPES ||
-> > > > > +           encoded->encryption > ENCODED_IOV_ENCRYPTION_TYPES)
-> > > > > +               return -EINVAL;
-> > > > > +       if (!capable(CAP_SYS_ADMIN))
-> > > > > +               return -EPERM;
-> > > >
-> > > > How does this capable() check interact with io_uring? Without having
-> > > > looked at this in detail, I suspect that when an encoded write is
-> > > > requested through io_uring, the capable() check might be executed on
-> > > > something like a workqueue worker thread, which is probably running
-> > > > with a full capability set.
-> > >
-> > > I discussed this more with Jens. You're right, per-IO permission checks
-> > > aren't going to work. In fully-polled mode, we never get an opportunity
-> > > to check capabilities in right context. So, this will probably require a
-> > > new open flag.
-> >
-> > Actually, file_ns_capable() accomplishes the same thing without a new
-> > open flag. Changing the capable() check to file_ns_capable() in
-> > init_user_ns should be enough.
-> 
-> +Aleksa for openat2() and open() space
-> 
-> Mmh... but if the file descriptor has been passed through a privilege
-> boundary, it isn't really clear whether the original opener of the
-> file intended for this to be possible. For example, if (as a
-> hypothetical example) the init process opens a service's logfile with
-> root privileges, then passes the file descriptor to that logfile to
-> the service on execve(), that doesn't mean that the service should be
-> able to perform compressed writes into that file, I think.
+Hopefully all of it makes it this time, if you want you can pull from
 
-I think we should even generalize this: for most new properties a given
-file descriptor can carry we would want it to be explicitly enabled such
-that passing the fd around amounts to passing that property around. At
-least as soon as we consider it to be associated with some privilege
-boundary. I don't think we have done this generally. But I would very
-much support moving to such a model.
+git://git.kernel.org/pub/scm/linux/kernel/git/josef/btrfs-next.git \
+	extent-io-rearranging
 
-Christian
+I've rebased on top of misc-next and fixed up all the conflicts.  Thanks,
+
+Josef
+
+
