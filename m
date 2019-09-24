@@ -2,29 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AB940BC84B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 14:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59AF4BC890
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 15:06:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441047AbfIXM4E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 08:56:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35830 "EHLO mx1.suse.de"
+        id S1729796AbfIXNGZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 09:06:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41350 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2395416AbfIXM4E (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 08:56:04 -0400
+        id S1727930AbfIXNGZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 09:06:25 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8EA69AEF8;
-        Tue, 24 Sep 2019 12:56:02 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id D6E58B027;
+        Tue, 24 Sep 2019 13:06:23 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 3CF6BDA959; Tue, 24 Sep 2019 14:56:22 +0200 (CEST)
-Date:   Tue, 24 Sep 2019 14:56:22 +0200
+        id B148EDA959; Tue, 24 Sep 2019 15:06:44 +0200 (CEST)
+Date:   Tue, 24 Sep 2019 15:06:44 +0200
 From:   David Sterba <dsterba@suse.cz>
 To:     Johannes Thumshirn <jthumshirn@suse.de>
 Cc:     David Sterba <dsterba@suse.com>,
         Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 Subject: Re: [PATCH v4 01/12] btrfs-progs: don't blindly assume crc32c in
  csum_tree_block_size()
-Message-ID: <20190924125622.GP2751@twin.jikos.cz>
+Message-ID: <20190924130644.GQ2751@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>,
@@ -49,16 +49,21 @@ On Tue, Sep 03, 2019 at 05:00:35PM +0200, Johannes Thumshirn wrote:
 > 
 > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 > Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> ---
+>  mkfs/common.c | 14 +++++++-------
+>  mkfs/common.h |  2 ++
+>  2 files changed, 9 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mkfs/common.c b/mkfs/common.c
+> index caca5e707233..b6e549b19272 100644
+> --- a/mkfs/common.c
+> +++ b/mkfs/common.c
+> @@ -101,7 +101,7 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+>  	}
+>  
+>  	/* generate checksum */
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0);
+> +	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0);
 
-> index 28912906d0a9..1ca71a4fcce5 100644
-> --- a/mkfs/common.h
-> +++ b/mkfs/common.h
-> @@ -53,6 +53,8 @@ struct btrfs_mkfs_config {
->  	u64 features;
->  	/* Size of the filesystem in bytes */
->  	u64 num_bytes;
-> +	/* checksum algorithm to use */
-> +	enum btrfs_csum_type csum_type;
-
-This is defined in the following patch so the compilation breaks here,
-I'll see if reordering 1 and 2 fixes that.
+I don't see where cfg->csum_type is initialized. The tests pass so
+there's probably some implicit initialization to 0 that makes it work.
