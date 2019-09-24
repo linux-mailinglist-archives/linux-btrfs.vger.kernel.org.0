@@ -2,76 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC9ABCA96
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 16:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B5C1BCA9F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 16:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731154AbfIXOtB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 10:49:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54542 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726130AbfIXOtA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 10:49:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 783F8AC84;
-        Tue, 24 Sep 2019 14:48:59 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 48C0ADA835; Tue, 24 Sep 2019 16:49:20 +0200 (CEST)
-Date:   Tue, 24 Sep 2019 16:49:20 +0200
-From:   David Sterba <dsterba@suse.cz>
+        id S1731145AbfIXOvL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 10:51:11 -0400
+Received: from zeniv.linux.org.uk ([195.92.253.2]:50448 "EHLO
+        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725865AbfIXOvL (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 10:51:11 -0400
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.2 #3 (Red Hat Linux))
+        id 1iCm9g-0002aV-7b; Tue, 24 Sep 2019 14:51:04 +0000
+Date:   Tue, 24 Sep 2019 15:51:04 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
 To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Mark Fasheh <mfasheh@suse.com>, linux-btrfs@vger.kernel.org,
-        Mark Fasheh <mfasheh@suse.de>
-Subject: Re: [PATCH 2/3] btrfs: move ref finding machinery out of
- build_backref_tree()
-Message-ID: <20190924144920.GX2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        Mark Fasheh <mfasheh@suse.com>, linux-btrfs@vger.kernel.org,
-        Mark Fasheh <mfasheh@suse.de>
-References: <20190906171533.618-1-mfasheh@suse.com>
- <20190906171533.618-3-mfasheh@suse.com>
- <20190911160928.47qzqcj332k7bgw2@MacBook-Pro-91.local>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "zhengbin (A)" <zhengbin13@huawei.com>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "zhangyi (F)" <yi.zhang@huawei.com>, renxudong1@huawei.com,
+        Hou Tao <houtao1@huawei.com>, linux-btrfs@vger.kernel.org,
+        "Yan, Zheng" <zyan@redhat.com>, linux-cifs@vger.kernel.org,
+        Steve French <sfrench@us.ibm.com>
+Subject: Re: [PATCH] Re: Possible FS race condition between iterate_dir and
+ d_alloc_parallel
+Message-ID: <20190924145104.GE26530@ZenIV.linux.org.uk>
+References: <CAHk-=wiPv+yo86GpA+Gd_et0KS2Cydk4gSbEj3p4S4tEb1roKw@mail.gmail.com>
+ <20190914200412.GU1131@ZenIV.linux.org.uk>
+ <CAHk-=whpoQ_hX2KeqjQs3DeX6Wb4Tmb8BkHa5zr-Xu=S55+ORg@mail.gmail.com>
+ <20190915005046.GV1131@ZenIV.linux.org.uk>
+ <CAHk-=wjcZBB2GpGP-cxXppzW=M0EuFnSLoTXHyqJ4BtffYrCXw@mail.gmail.com>
+ <20190915160236.GW1131@ZenIV.linux.org.uk>
+ <CAHk-=whjNE+_oSBP_o_9mquUKsJn4gomL2f0MM79gxk_SkYLRw@mail.gmail.com>
+ <20190921140731.GQ1131@ZenIV.linux.org.uk>
+ <20190924025215.GA9941@ZenIV.linux.org.uk>
+ <20190924133025.jeh7ond2svm3lsub@macbook-pro-91.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190911160928.47qzqcj332k7bgw2@MacBook-Pro-91.local>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20190924133025.jeh7ond2svm3lsub@macbook-pro-91.dhcp.thefacebook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 11, 2019 at 12:09:29PM -0400, Josef Bacik wrote:
-> On Fri, Sep 06, 2019 at 10:15:32AM -0700, Mark Fasheh wrote:
-> > From: Mark Fasheh <mfasheh@suse.de>
-> > 
-> > build_backref_tree() is walking extent refs in what is an otherwise self
-> > contained chunk of code.  We can shrink the total number of lines in
-> > build_backref_tree() *and* make it more readable by moving that walk into
-> > its own subroutine.
-> > 
-> > Signed-off-by: Mark Fasheh <mfasheh@suse.de>
-> > ---
-> >  fs/btrfs/backref-cache.c | 110 +++++++++++++++++++++++----------------
-> >  1 file changed, 65 insertions(+), 45 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/backref-cache.c b/fs/btrfs/backref-cache.c
-> > index d0f6530f23b8..ff0d49ca6e26 100644
-> > --- a/fs/btrfs/backref-cache.c
-> > +++ b/fs/btrfs/backref-cache.c
-> > @@ -336,6 +336,61 @@ int find_inline_backref(struct extent_buffer *leaf, int slot,
-> >  	return 0;
-> >  }
-> >  
-> > +#define SEARCH_COMPLETE	1
-> > +#define SEARCH_NEXT	2
-> > +static int find_next_ref(struct btrfs_root *extent_root, u64 cur_bytenr,
-> > +			 struct btrfs_path *path, unsigned long *ptr,
-> > +			 unsigned long *end, struct btrfs_key *key, bool exist)
-> 
-> I'd rather we do an enum here, so it's clear what we're expecting in the code
-> context.  Thanks,
+On Tue, Sep 24, 2019 at 09:30:26AM -0400, Josef Bacik wrote:
 
-The function also returns errors (< 0), so do you mean enum for the
-SEARCH_* values only for for the function as well?
+> > We pass next->d_name.name to dir_emit() (i.e. potentially to
+> > copy_to_user()).  And we have no warranty that it's not a long
+> > (== separately allocated) name, that will be freed while
+> > copy_to_user() is in progress.  Sure, it'll get an RCU delay
+> > before freeing, but that doesn't help us at all.
+> > 
+> > I'm not familiar with those areas in btrfs or cifs; could somebody
+> > explain what's going on there and can we indeed end up finding aliases
+> > to those suckers?
+> 
+> We can't for the btrfs case.  This is used for the case where we have a link to
+> a subvolume but the root has disappeared already, so we add in that dummy inode.
+> We completely drop the dcache from that root downards when we drop the
+> subvolume, so we're not going to find aliases underneath those things.  Is that
+> what you're asking?  Thanks,
+
+Umm...  Completely drop, you say?  What happens if something had been opened
+in there at that time?
+
+Could you give a bit more background?  How much of that subvolume remains
+and what does btrfs_lookup() have to work with?
