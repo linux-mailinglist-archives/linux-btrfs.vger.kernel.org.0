@@ -2,159 +2,394 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BCB0BCA21
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 16:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B48BCA20
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 16:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394211AbfIXOXT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 10:23:19 -0400
-Received: from mail-vk1-f194.google.com ([209.85.221.194]:33715 "EHLO
-        mail-vk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389459AbfIXOXS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 10:23:18 -0400
-Received: by mail-vk1-f194.google.com with SMTP id q186so441334vkb.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 07:23:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=B1yqv7XmdxdzOQN6EKETSu5O6DxQlDV6R/ZHZ1cKepI=;
-        b=soxWLw5pSm/ysmCR8kZT51HpFSvhnRT5RLKV9EPzXxZxuyaMoXY9NAZEb5fALjwqER
-         jHjy6vk+BH6iJSsnpe+sXsXbg4nI8FBLH4J0SYOWvaJJAEmw2Bnk3uZ5hRx49QZMl4HF
-         yHbE8g6OL2eIG/ipXwyLdWozs5GiAnNWmwWS8ZvjwpeFBk94tbvcXG1QNdgHaXTWLBIf
-         kwgJYjq47srMX+BwJDcXXV0dNmWHcNzek/4uZ2oNBWnhaV8AYa1yKXzKzxOEjdnZj+xl
-         cHc8R3bBsl98cnzAfIr84Dtqey1RHVJGBztRuz+7z3izlJaAFqgzDGi+tRJzlC78MQNe
-         rkEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=B1yqv7XmdxdzOQN6EKETSu5O6DxQlDV6R/ZHZ1cKepI=;
-        b=akWhS7PqLmA8AsfFYg0c3vN8bHAcUhgNz4VJldxvzTnS//PUokl+cf89p1t7qSeID7
-         7e+QWT09MMUACPPJn4MaoEoRZCug/tTFiTSX3DZBPCCZ41mhphFyDGj5ALaMbhQbIt3g
-         7HFf8URR5ov2UJTncILyCMQfua+Ron/ppRgwJ1nRNNqcBFdkbHYqu7+/7b2PgcobfeWa
-         AnhKsngdrzMyi8Lcwb4pb0rimFsvSab7IGxKEWYqAOVbWYePYkRAVpwa3Zw0LLpT2PRz
-         sJKOqjJno2I/STgCX7y2w/KfXOkdh1XoQorJ3VYjcidUqvP8u2CqBCyjFCPGaSFvraSw
-         yCaw==
-X-Gm-Message-State: APjAAAVauTtokg9fFap9FRTZy66QRxMyAnF+K1016+VVH3NB0bWkz9Ub
-        wggbxGCFZ2QoButJbGpZlz6nTewJKoycouTDsLQ=
-X-Google-Smtp-Source: APXvYqxbAfDYaoTw/ilccX9pjX4kwbsrJf3QH+yfqi6dzE5fS0jQtOVhXfqSD5OuyJ+JB7kyWgXd8QrIJ1xaDOCOH1I=
-X-Received: by 2002:a1f:c2c3:: with SMTP id s186mr1609259vkf.88.1569334997695;
- Tue, 24 Sep 2019 07:23:17 -0700 (PDT)
+        id S2392451AbfIXOW7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 10:22:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37298 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2389459AbfIXOW6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 10:22:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 1CA7EAC4A;
+        Tue, 24 Sep 2019 14:22:55 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D430CDA835; Tue, 24 Sep 2019 16:23:15 +0200 (CEST)
+Date:   Tue, 24 Sep 2019 16:23:15 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <jthumshirn@suse.de>
+Cc:     David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v4 10/12] btrfs-progs: add xxhash64 as checksum algorithm
+Message-ID: <20190924142315.GR2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <20190903150046.14926-1-jthumshirn@suse.de>
+ <20190903150046.14926-11-jthumshirn@suse.de>
 MIME-Version: 1.0
-References: <CA+X5Wn7Rtw4rTqXTG8wrEc883uFV7JpGo-zD8FhhD9gM+_Vpfg@mail.gmail.com>
- <CAL3q7H41BpuVTHOAMOFcVvVsJuc4iR10KKPDVfgEsG=ZEpwmWw@mail.gmail.com>
- <CAL3q7H4wDdzfA+H0HPk7oKNO3PDiN1nYHpRu5v6rRXvxQFVLbQ@mail.gmail.com>
- <CA+X5Wn4ZmwnJry0zjyAYow-jEU7PSdE16ROSqfaKyGavLoGVQQ@mail.gmail.com>
- <20190924132118.egtvk6mxmh37wl3h@macbook-pro-91.dhcp.thefacebook.com>
- <CAL3q7H4ZUdhZEyUsVFOmzF=L7890MxHndrXwJ=KPR1vwdNQPWQ@mail.gmail.com> <20190924141935.2qsfljijmv76door@macbook-pro-91.dhcp.thefacebook.com>
-In-Reply-To: <20190924141935.2qsfljijmv76door@macbook-pro-91.dhcp.thefacebook.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Tue, 24 Sep 2019 15:23:06 +0100
-Message-ID: <CAL3q7H7GHui8hdMO_grffhsoVo8mbDFK=mvbf8usHrFqxxNgcA@mail.gmail.com>
-Subject: Re: WITH regression patch, still btrfs-transacti blocked for... (forever)
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     James Harvey <jamespharvey20@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190903150046.14926-11-jthumshirn@suse.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 3:19 PM Josef Bacik <josef@toxicpanda.com> wrote:
->
-> On Tue, Sep 24, 2019 at 03:16:56PM +0100, Filipe Manana wrote:
-> > On Tue, Sep 24, 2019 at 2:21 PM Josef Bacik <josef@toxicpanda.com> wrot=
-e:
-> > >
-> > > On Tue, Sep 24, 2019 at 07:07:41AM -0400, James Harvey wrote:
-> > > > On Tue, Sep 24, 2019 at 5:58 AM Filipe Manana <fdmanana@gmail.com> =
-wrote:
-> > > > >
-> > > > > On Sun, Sep 15, 2019 at 2:55 PM Filipe Manana <fdmanana@gmail.com=
-> wrote:
-> > > > > >
-> > > > > > On Sun, Sep 15, 2019 at 1:46 PM James Harvey <jamespharvey20@gm=
-ail.com> wrote:
-> > > > > > > ...
-> > > > > > > You'll see they're different looking backtraces than without =
-the
-> > > > > > > patch, so I don't actually know if it's related to the origin=
-al
-> > > > > > > regression that several others reported or not.
-> > > > > >
-> > > > > > It's a different problem.
-> > > > >
-> > > > > So the good news is that on upcoming 5.4 the problem can't happen=
-, due
-> > > > > to a large patch series from Josef regarding space reservation
-> > > > > handling which, as a side effect, solves that problem and doesn't
-> > > > > introduce new ones with concurrent fsyncs.
-> > > > >
-> > > > > However that's a large patch set which depends on a lot of previo=
-us
-> > > > > cleanups, some of which landed in the 5.3 merge window,
-> > > > > Backporting all those patches is against the backport policies fo=
-r
-> > > > > stable release [1], since many of the dependencies are cleanup pa=
-tches
-> > > > > and many are large (well over the 100 lines limit).
-> > > > >
-> > > > > On the other it's not possible to send a fix for stable releases =
-that
-> > > > > doesn't land on Linus' tree first, as there's nothing to fix on t=
-he
-> > > > > current merge window (5.4) since that deadlock can't happen there=
-.
-> > > > >
-> > > > > So it seems like a dead end to me.
-> > > > >
-> > > > > Fortunately, as you told me privately, you only hit this once and=
- it's
-> > > > > not a frequent issue for you (unlike the 5.2 regression which
-> > > > > caused you the hang very often). You can workaround it by mountin=
-g the
-> > > > > fs with "-o notreelog", which makes fsyncs more expensive,
-> > > > > so you'll likely see some performance degradation for your
-> > > > > applications (higher latency, less throughput).
-> > > > >
-> > > > > [1] https://www.kernel.org/doc/html/v4.15/process/stable-kernel-r=
-ules.html
-> > > >
-> > > >
-> > > > All understood, thanks for letting me know.  Not a problem.  I have
-> > > > still only ran into this crash once, about 9 days ago.  I haven't h=
-ad
-> > > > another btrfs problem since then, unlike the hourly hangs on 5.2 wi=
-th
-> > > > heavy I/O.
-> > >
-> > > We are seeing this crash internally on our testing tier, we're still =
-running it
-> > > down but it's pretty elusive.  I'll CC you when we find it and fix it=
-.  Thanks,
-> >
-> > Which crash?
-> > There are 2 different deadlocks being mentioned in this thread.
-> >
->
-> The BUG_ON(!PageLocked(page)) crash, we're hunting that guy right now.  T=
-hanks,
+On Tue, Sep 03, 2019 at 05:00:44PM +0200, Johannes Thumshirn wrote:
+> From: David Sterba <dsterba@suse.com>
+> 
+> Add xxhash64 as another checksumming algorithm.
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> 
+> ---
+> Changes to v3:
+> - Fix usage of is_valid_csum_type() (Nikolay)
+> - Remove unrelated whitespace change (Nikolay)
+> 
+> Changes to v2:
+> - Integrated comments from Nikolay
+> ---
+>  Makefile                  |  3 ++-
+>  cmds/inspect-dump-super.c | 24 +++++++++++++++---------
+>  convert/common.c          |  2 +-
+>  convert/main.c            |  2 +-
+>  crypto/hash.c             | 16 ++++++++++++++++
+>  crypto/hash.h             | 10 ++++++++++
+>  ctree.h                   | 14 ++++++++++----
+>  disk-io.c                 |  7 +++++--
+>  image/main.c              |  5 +++--
+>  mkfs/common.c             | 14 +++++++-------
+>  mkfs/main.c               |  6 +++++-
+>  11 files changed, 75 insertions(+), 28 deletions(-)
+>  create mode 100644 crypto/hash.c
+>  create mode 100644 crypto/hash.h
+> 
+> diff --git a/Makefile b/Makefile
+> index 370e0c37ff65..45530749e2b9 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -151,7 +151,8 @@ cmds_objects = cmds/subvolume.o cmds/filesystem.o cmds/device.o cmds/scrub.o \
+>  	       mkfs/common.o check/mode-common.o check/mode-lowmem.o
+>  libbtrfs_objects = send-stream.o send-utils.o kernel-lib/rbtree.o btrfs-list.o \
+>  		   kernel-lib/crc32c.o common/messages.o \
+> -		   uuid-tree.o utils-lib.o common/rbtree-utils.o
+> +		   uuid-tree.o utils-lib.o common/rbtree-utils.o \
+> +		   crypto/hash.o crypto/xxhash.o
+>  libbtrfs_headers = send-stream.h send-utils.h send.h kernel-lib/rbtree.h btrfs-list.h \
+>  	       kernel-lib/crc32c.h kernel-lib/list.h kerncompat.h \
+>  	       kernel-lib/radix-tree.h kernel-lib/sizes.h kernel-lib/raid56.h \
+> diff --git a/cmds/inspect-dump-super.c b/cmds/inspect-dump-super.c
+> index 58bf82b0bbd3..f9f38751f429 100644
+> --- a/cmds/inspect-dump-super.c
+> +++ b/cmds/inspect-dump-super.c
+> @@ -311,6 +311,17 @@ static void print_readable_super_flag(u64 flag)
+>  				     super_flags_num, BTRFS_SUPER_FLAG_SUPP);
+>  }
+>  
+> +static bool is_valid_csum_type(u16 csum_type)
 
-I'm confused.
-Where is that BUG_ON() mentioned in this thread? Only 2 deadlocks are
-mentioned, neither of them involves page locks nor a BUG_ON().
+Please split generic infrastructure updates to a separate patch, and add
+the next hash on top of that.
 
->
-> Josef
+> +{
+> +	switch (csum_type) {
+> +	case BTRFS_CSUM_TYPE_CRC32:
+> +	case BTRFS_CSUM_TYPE_XXHASH:
+> +		return true;
+> +	default:
+> +		return false;
+> +	}
+> +}
+> +
+>  static void dump_superblock(struct btrfs_super_block *sb, int full)
+>  {
+>  	int i;
+> @@ -326,15 +337,11 @@ static void dump_superblock(struct btrfs_super_block *sb, int full)
+>  	csum_type = btrfs_super_csum_type(sb);
+>  	csum_size = BTRFS_CSUM_SIZE;
+>  	printf("csum_type\t\t%hu (", csum_type);
+> -	if (csum_type >= ARRAY_SIZE(btrfs_csum_sizes)) {
+> +	if (!is_valid_csum_type(csum_type)) {
+>  		printf("INVALID");
+>  	} else {
+> -		if (csum_type == BTRFS_CSUM_TYPE_CRC32) {
+> -			printf("crc32c");
+> -			csum_size = btrfs_csum_sizes[csum_type];
+> -		} else {
+> -			printf("unknown");
+> -		}
+> +		printf("%s", btrfs_csums[csum_type].name);
+> +		csum_size = btrfs_csums[csum_type].size;
+>  	}
+>  	printf(")\n");
+>  	printf("csum_size\t\t%llu\n", (unsigned long long)csum_size);
+> @@ -342,8 +349,7 @@ static void dump_superblock(struct btrfs_super_block *sb, int full)
+>  	printf("csum\t\t\t0x");
+>  	for (i = 0, p = sb->csum; i < csum_size; i++)
+>  		printf("%02x", p[i]);
+> -	if (csum_type != BTRFS_CSUM_TYPE_CRC32 ||
+> -	    csum_size != btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32])
+> +	if (!is_valid_csum_type(csum_type))
+>  		printf(" [UNKNOWN CSUM TYPE OR SIZE]");
+>  	else if (check_csum_sblock(sb, csum_size, csum_type))
+>  		printf(" [match]");
+> diff --git a/convert/common.c b/convert/common.c
+> index 2e2318a5863e..5dd1a2644bf6 100644
+> --- a/convert/common.c
+> +++ b/convert/common.c
+> @@ -224,7 +224,7 @@ static inline int write_temp_extent_buffer(int fd, struct extent_buffer *buf,
+>  {
+>  	int ret;
+>  
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0,
+> +	csum_tree_block_size(buf, btrfs_csums[cfg->csum_type].size, 0,
+>  			     cfg->csum_type);
+>  
+>  	/* Temporary extent buffer is always mapped 1:1 on disk */
+> diff --git a/convert/main.c b/convert/main.c
+> index 5e6b12431f59..5eb2a59fb68a 100644
+> --- a/convert/main.c
+> +++ b/convert/main.c
+> @@ -1058,7 +1058,7 @@ static int migrate_super_block(int fd, u64 old_bytenr)
+>  	BUG_ON(btrfs_super_bytenr(super) != old_bytenr);
+>  	btrfs_set_super_bytenr(super, BTRFS_SUPER_INFO_OFFSET);
+>  
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32], 0,
+> +	csum_tree_block_size(buf, btrfs_csums[BTRFS_CSUM_TYPE_CRC32].size, 0,
+>  			     btrfs_super_csum_type(super));
+>  	ret = pwrite(fd, buf->data, BTRFS_SUPER_INFO_SIZE,
+>  		BTRFS_SUPER_INFO_OFFSET);
+> diff --git a/crypto/hash.c b/crypto/hash.c
+> new file mode 100644
+> index 000000000000..fda7fc4e9f23
+> --- /dev/null
+> +++ b/crypto/hash.c
+> @@ -0,0 +1,16 @@
+> +#include "crypto/hash.h"
+> +#include "crypto/xxhash.h"
+> +
+> +int hash_xxhash(const u8 *buf, size_t length, u8 *out)
+> +{
+> +	XXH64_hash_t hash;
+> +
+> +	hash = XXH64(buf, length, 0);
+> +	/* NOTE: we're not taking the canonical form here but the plain hash to
+> +	 * be compatible with the kernel implementation!
+> +	 */
 
+/*
+ * Comment
+ */
 
+> +	memcpy(out, &hash, 8);
+> +
+> +	return 0;
+> +}
+> +
+> diff --git a/crypto/hash.h b/crypto/hash.h
+> new file mode 100644
+> index 000000000000..45c1ef17bc57
+> --- /dev/null
+> +++ b/crypto/hash.h
+> @@ -0,0 +1,10 @@
+> +#ifndef CRYPTO_HASH_H
+> +#define CRYPTO_HASH_H
+> +
+> +#include "../kerncompat.h"
+> +
+> +#define CRYPTO_HASH_SIZE_MAX	32
+> +
+> +int hash_xxhash(const u8 *buf, size_t length, u8 *out);
+> +
+> +#endif
+> diff --git a/ctree.h b/ctree.h
+> index 870d9f4948de..4ded8161d149 100644
+> --- a/ctree.h
+> +++ b/ctree.h
+> @@ -167,10 +167,16 @@ struct btrfs_free_space_ctl;
+>  /* csum types */
+>  enum btrfs_csum_type {
+>  	BTRFS_CSUM_TYPE_CRC32	= 0,
+> +	BTRFS_CSUM_TYPE_XXHASH	= 1,
+>  };
+>  
+> -/* four bytes for CRC32 */
+> -static int btrfs_csum_sizes[] = { 4 };
+> +static struct btrfs_csum {
+> +	u16 size;
+> +	const char *name;
+> +} btrfs_csums[] = {
+> +	[BTRFS_CSUM_TYPE_CRC32] = { 4, "crc32c" },
+> +	[BTRFS_CSUM_TYPE_XXHASH] = { 8, "xxhash64" },
+> +};
 
---=20
-Filipe David Manana,
+This should probably go to .c, same as in kernel so we don't have the
+defintion copied in all object files that inclde ctree.h.
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+>  #define BTRFS_EMPTY_DIR_SIZE 0
+>  
+> @@ -2266,8 +2272,8 @@ BTRFS_SETGET_STACK_FUNCS(super_magic, struct btrfs_super_block, magic, 64);
+>  static inline int btrfs_super_csum_size(struct btrfs_super_block *s)
+>  {
+>  	int t = btrfs_super_csum_type(s);
+> -	BUG_ON(t >= ARRAY_SIZE(btrfs_csum_sizes));
+> -	return btrfs_csum_sizes[t];
+> +	BUG_ON(t >= ARRAY_SIZE(btrfs_csums));
+> +	return btrfs_csums[t].size;
+>  }
+>  
+>  static inline unsigned long btrfs_leaf_data(struct extent_buffer *l)
+> diff --git a/disk-io.c b/disk-io.c
+> index 810c2e14294a..ce0b746f4db9 100644
+> --- a/disk-io.c
+> +++ b/disk-io.c
+> @@ -34,6 +34,7 @@
+>  #include "print-tree.h"
+>  #include "common/rbtree-utils.h"
+>  #include "common/device-scan.h"
+> +#include "crypto/hash.h"
+>  
+>  /* specified errno for check_tree_block */
+>  #define BTRFS_BAD_BYTENR		(-1)
+> @@ -148,6 +149,8 @@ int btrfs_csum_data(u16 csum_type, const u8 *data, u8 *out, size_t len)
+>  		crc = crc32c(crc, data, len);
+>  		put_unaligned_le32(~crc, out);
+>  		return 0;
+> +	case BTRFS_CSUM_TYPE_XXHASH:
+> +		return hash_xxhash(data, len, out);
+>  	default:
+>  		fprintf(stderr, "ERROR: unknown csum type: %d\n", csum_type);
+>  		ASSERT(0);
+> @@ -1376,11 +1379,11 @@ int btrfs_check_super(struct btrfs_super_block *sb, unsigned sbflags)
+>  	}
+>  
+>  	csum_type = btrfs_super_csum_type(sb);
+> -	if (csum_type >= ARRAY_SIZE(btrfs_csum_sizes)) {
+> +	if (csum_type >= ARRAY_SIZE(btrfs_csums)) {
+>  		error("unsupported checksum algorithm %u", csum_type);
+>  		return -EIO;
+>  	}
+> -	csum_size = btrfs_csum_sizes[csum_type];
+> +	csum_size = btrfs_csums[csum_type].size;
+>  
+>  	btrfs_csum_data(csum_type, (u8 *)sb + BTRFS_CSUM_SIZE,
+>  			result, BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
+> diff --git a/image/main.c b/image/main.c
+> index 0c8ffede56f5..1265152cf524 100644
+> --- a/image/main.c
+> +++ b/image/main.c
+> @@ -121,11 +121,12 @@ static struct extent_buffer *alloc_dummy_eb(u64 bytenr, u32 size);
+>  
+>  static void csum_block(u8 *buf, size_t len)
+>  {
+> -	u8 result[btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32]];
+> +	u16 csum_size = btrfs_csums[BTRFS_CSUM_TYPE_CRC32].size;
+> +	u8 result[csum_size];
+>  	u32 crc = ~(u32)0;
+>  	crc = crc32c(crc, buf + BTRFS_CSUM_SIZE, len - BTRFS_CSUM_SIZE);
+>  	put_unaligned_le32(~crc, result);
+> -	memcpy(buf, result, btrfs_csum_sizes[BTRFS_CSUM_TYPE_CRC32]);
+> +	memcpy(buf, result, csum_size);
+>  }
+>  
+>  static int has_name(struct btrfs_key *key)
+> diff --git a/mkfs/common.c b/mkfs/common.c
+> index 4a417bd7a306..939be5eb2dc2 100644
+> --- a/mkfs/common.c
+> +++ b/mkfs/common.c
+> @@ -101,7 +101,7 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+>  	}
+>  
+>  	/* generate checksum */
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0,
+> +	csum_tree_block_size(buf, btrfs_csums[cfg->csum_type].size, 0,
+>  			     cfg->csum_type);
+>  
+>  	/* write back root tree */
+> @@ -293,7 +293,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+>  	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_EXTENT_TREE]);
+>  	btrfs_set_header_owner(buf, BTRFS_EXTENT_TREE_OBJECTID);
+>  	btrfs_set_header_nritems(buf, nritems);
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0,
+> +	csum_tree_block_size(buf, btrfs_csums[cfg->csum_type].size, 0,
+>  			     cfg->csum_type);
+>  	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_EXTENT_TREE]);
+>  	if (ret != cfg->nodesize) {
+> @@ -382,7 +382,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+>  	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_CHUNK_TREE]);
+>  	btrfs_set_header_owner(buf, BTRFS_CHUNK_TREE_OBJECTID);
+>  	btrfs_set_header_nritems(buf, nritems);
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0,
+> +	csum_tree_block_size(buf, btrfs_csums[cfg->csum_type].size, 0,
+>  			     cfg->csum_type);
+>  	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_CHUNK_TREE]);
+>  	if (ret != cfg->nodesize) {
+> @@ -423,7 +423,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+>  	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_DEV_TREE]);
+>  	btrfs_set_header_owner(buf, BTRFS_DEV_TREE_OBJECTID);
+>  	btrfs_set_header_nritems(buf, nritems);
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0,
+> +	csum_tree_block_size(buf, btrfs_csums[cfg->csum_type].size, 0,
+>  			     cfg->csum_type);
+>  	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_DEV_TREE]);
+>  	if (ret != cfg->nodesize) {
+> @@ -437,7 +437,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+>  	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_FS_TREE]);
+>  	btrfs_set_header_owner(buf, BTRFS_FS_TREE_OBJECTID);
+>  	btrfs_set_header_nritems(buf, 0);
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0,
+> +	csum_tree_block_size(buf, btrfs_csums[cfg->csum_type].size, 0,
+>  			     cfg->csum_type);
+>  	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_FS_TREE]);
+>  	if (ret != cfg->nodesize) {
+> @@ -450,7 +450,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+>  	btrfs_set_header_bytenr(buf, cfg->blocks[MKFS_CSUM_TREE]);
+>  	btrfs_set_header_owner(buf, BTRFS_CSUM_TREE_OBJECTID);
+>  	btrfs_set_header_nritems(buf, 0);
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0,
+> +	csum_tree_block_size(buf, btrfs_csums[cfg->csum_type].size, 0,
+>  			     cfg->csum_type);
+>  	ret = pwrite(fd, buf->data, cfg->nodesize, cfg->blocks[MKFS_CSUM_TREE]);
+>  	if (ret != cfg->nodesize) {
+> @@ -462,7 +462,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+>  	memset(buf->data, 0, BTRFS_SUPER_INFO_SIZE);
+>  	memcpy(buf->data, &super, sizeof(super));
+>  	buf->len = BTRFS_SUPER_INFO_SIZE;
+> -	csum_tree_block_size(buf, btrfs_csum_sizes[cfg->csum_type], 0,
+> +	csum_tree_block_size(buf, btrfs_csums[cfg->csum_type].size, 0,
+>  			     cfg->csum_type);
+>  	ret = pwrite(fd, buf->data, BTRFS_SUPER_INFO_SIZE,
+>  			cfg->blocks[MKFS_SUPER_BLOCK]);
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index e96cbc5399a2..64806dac7706 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -391,6 +391,9 @@ static enum btrfs_csum_type parse_csum_type(const char *s)
+>  {
+>  	if (strcasecmp(s, "crc32c") == 0) {
+>  		return BTRFS_CSUM_TYPE_CRC32;
+> +	} else if (strcasecmp(s, "xxhash64") == 0 ||
+> +		   strcasecmp(s, "xxhash") == 0) {
+> +		return BTRFS_CSUM_TYPE_XXHASH;
+>  	} else {
+>  		error("unknown csum type %s", s);
+>  		exit(1);
+> @@ -1376,7 +1379,8 @@ raid_groups:
+>  			pretty_size(allocation.system));
+>  		printf("SSD detected:       %s\n", ssd ? "yes" : "no");
+>  		btrfs_parse_features_to_string(features_buf, features);
+> -		printf("Incompat features:  %s", features_buf);
+> +		printf("Incompat features:  %s\n", features_buf);
+> +		printf("Checksum:           %s", btrfs_csums[csum_type].name);
+>  		printf("\n");
+>  
+>  		list_all_devices(root);
+> -- 
+> 2.16.4
