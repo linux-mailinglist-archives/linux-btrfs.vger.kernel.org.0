@@ -2,101 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6380CBC06C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 04:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F078CBC0DB
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 06:08:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388759AbfIXCwX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 23 Sep 2019 22:52:23 -0400
-Received: from zeniv.linux.org.uk ([195.92.253.2]:41660 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728992AbfIXCwX (ORCPT
+        id S1726261AbfIXEID (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 00:08:03 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:42998 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbfIXEID (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 23 Sep 2019 22:52:23 -0400
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iCaw3-000329-O6; Tue, 24 Sep 2019 02:52:15 +0000
-Date:   Tue, 24 Sep 2019 03:52:15 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "zhengbin (A)" <zhengbin13@huawei.com>, Jan Kara <jack@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "zhangyi (F)" <yi.zhang@huawei.com>, renxudong1@huawei.com,
-        Hou Tao <houtao1@huawei.com>, linux-btrfs@vger.kernel.org,
-        "Yan, Zheng" <zyan@redhat.com>, linux-cifs@vger.kernel.org,
-        Steve French <sfrench@us.ibm.com>
-Subject: Re: [PATCH] Re: Possible FS race condition between iterate_dir and
- d_alloc_parallel
-Message-ID: <20190924025215.GA9941@ZenIV.linux.org.uk>
-References: <CAHk-=whpKgNTxjrenAed2sNkegrpCCPkV77_pWKbqo+c7apCOw@mail.gmail.com>
- <20190914170146.GT1131@ZenIV.linux.org.uk>
- <CAHk-=wiPv+yo86GpA+Gd_et0KS2Cydk4gSbEj3p4S4tEb1roKw@mail.gmail.com>
- <20190914200412.GU1131@ZenIV.linux.org.uk>
- <CAHk-=whpoQ_hX2KeqjQs3DeX6Wb4Tmb8BkHa5zr-Xu=S55+ORg@mail.gmail.com>
- <20190915005046.GV1131@ZenIV.linux.org.uk>
- <CAHk-=wjcZBB2GpGP-cxXppzW=M0EuFnSLoTXHyqJ4BtffYrCXw@mail.gmail.com>
- <20190915160236.GW1131@ZenIV.linux.org.uk>
- <CAHk-=whjNE+_oSBP_o_9mquUKsJn4gomL2f0MM79gxk_SkYLRw@mail.gmail.com>
- <20190921140731.GQ1131@ZenIV.linux.org.uk>
+        Tue, 24 Sep 2019 00:08:03 -0400
+Received: by mail-wr1-f65.google.com with SMTP id n14so228559wrw.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 23 Sep 2019 21:08:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YIpujRMeUEWn20aHGT4yiW1FsOVk4PbhP4W7UzQ33dI=;
+        b=Pc6hKfKYHIm9REZzqUiD1NRMS6QC1vbnsEWdEM11XP9Vcq4LxKit9Goqa53g0nILRN
+         wU6kNZY7UDD2GT7gPWPMOfmXYpCmWK72BEAmQF4cs/Z3TE7aQ7+OtUNnLq3zNEKXH06s
+         eGi2X98i5rXD/nBejppzY4Xrl6n5S37z3oK9RX3O4yoafhWLeQDrUew+HYUUIFAkED/z
+         V6PmSLAs9d8KfJEigbgofUlp6TF5jUUV0wU7mpSh/+xW+JPcbdgR7HiXCplwOJV0OfJK
+         jHGnPZwA7F56omTqY7TzUQdl5sbEolg7vCCc6FnYKNSSH8iDLeiPAUiBMHteAfVoHIcF
+         H2ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YIpujRMeUEWn20aHGT4yiW1FsOVk4PbhP4W7UzQ33dI=;
+        b=aJ6TDAEW22nbFzKgNlqZ7etgZWSN3s05CKXSyUMRpqE5t8qtWqmPfyi7hDVcxB9x8D
+         fXhUzzDpsaF2v3/ZT9e08n23elSd80oozWdi760qXWkvkGAPIqNpw1xckqCBzjBb50ow
+         nBNlHb4DPmLeAVzF+2lutqiAhfLWojiIKO+UcYfcY7kizodwXXUrSVyShRb7sGYEQZD7
+         G46MuWsluyenkxsxsk3b6EaxTrU+ePdFy68Eo3Xw67iyX6XCMD55rwifDOcP1EeBdAPF
+         tGhhmbM8WiFS6REagHy6jZSXJKgsExxwCbpL8FgpkvYRX3aGSB8JfiJvSoRcNuA1T2gp
+         dUWg==
+X-Gm-Message-State: APjAAAXmU0Un+46PSmwNfpiSlRL2EMJPtR0+8G77cf7aOM4yjyOwULKI
+        KhGa+k6zbLQSPcj1RiKMk1saHy0Vmo33gkkJAOGZ9g==
+X-Google-Smtp-Source: APXvYqz+AiwEP+Pw5C/aDWyDs3UP3RHmwzeVOHmQ4CGJoNYXbc3NBhFdj26Qx+feUY61YVgYVdt8uPsQRmCkWTICnPY=
+X-Received: by 2002:adf:efcb:: with SMTP id i11mr511824wrp.69.1569298081601;
+ Mon, 23 Sep 2019 21:08:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190921140731.GQ1131@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <CAFN5=-NhtmJ5NTePqdyUPaWm2r0oTbbCrmC0dOhC5fm2EtWwHA@mail.gmail.com>
+In-Reply-To: <CAFN5=-NhtmJ5NTePqdyUPaWm2r0oTbbCrmC0dOhC5fm2EtWwHA@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 23 Sep 2019 22:07:50 -0600
+Message-ID: <CAJCQCtSUFcpCX_w-iWqsrjK3O5bpT=PMfmQk23mVeYrz1jo8Mg@mail.gmail.com>
+Subject: Re: Tree checker
+To:     Charles Wright <charles.v.wright@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[btrfs and cifs folks Cc'd]
+On Mon, Sep 23, 2019 at 6:35 PM Charles Wright
+<charles.v.wright@gmail.com> wrote:
+>
+> if I boot the 5.0.0-30 kernel and enter the "dwhelper" directory and
+> do "dmesg" their is this
+>
+> [  199.522886] ata2.00: exception Emask 0x10 SAct 0x8000 SErr 0x2d0100
+> action 0x6 frozen
+> [  199.522891] ata2.00: irq_stat 0x08000000, interface fatal error
+> [  199.522893] ata2: SError: { UnrecovData PHYRdyChg CommWake 10B8B BadCRC }
+> [  199.522897] ata2.00: failed command: READ FPDMA QUEUED
+> [  199.522902] ata2.00: cmd 60/08:78:a8:57:f3/00:00:12:00:00/40 tag 15
+> ncq dma 4096 in
+>                         res 50/00:08:a8:57:f3/00:00:12:00:00/40 Emask
+> 0x10 (ATA bus error)
+> [  199.522904] ata2.00: status: { DRDY }
+> [  199.522908] ata2: hard resetting link
+> [  199.837384] ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+> [  199.840579] ata2.00: configured for UDMA/133
+> [  199.840771] ata2: EH complete
 
-On Sat, Sep 21, 2019 at 03:07:31PM +0100, Al Viro wrote:
+This is a hardware problem. I suggest swapping out the cable between
+the drive and controller.
 
-> No "take cursors out of the list" parts yet.
+"interface fatal error"
+"BadCRC"
 
-Argh...  The things turned interesting.  The tricky part is
-where do we handle switching cursors away from something
-that gets moved.
+>
+> but all works  as in I can access the files as normal
 
-What I hoped for was "just do it in simple_rename()".  Which is
-almost OK; there are 3 problematic cases.  One is shmem -
-there we have a special ->rename(), which handles things
-like RENAME_EXCHANGE et.al.  Fair enough - some of that
-might've been moved into simple_rename(), but some (whiteouts)
-won't be that easy.  Fair enough - we can make kicking the
-cursors outs a helper called by simple_rename() and by that.
-Exchange case is going to cause a bit of headache (the
-pathological case is when the entries being exchanged are
-next to each other in the same directory), but it's not
-that bad.
+It's not normal to having the ATA link hard reset due to CRC errors.
+That blows away the entire command queue on SATA drives. There's
+nothing any file system can do about this.
 
-Two other cases, though, might be serious trouble.  Those are
-btrfs new_simple_dir() and this in cifs_root_iget():
-        if (rc && tcon->pipe) {
-                cifs_dbg(FYI, "ipc connection - fake read inode\n");
-                spin_lock(&inode->i_lock);
-                inode->i_mode |= S_IFDIR;
-                set_nlink(inode, 2);
-                inode->i_op = &cifs_ipc_inode_ops;
-                inode->i_fop = &simple_dir_operations;
-                inode->i_uid = cifs_sb->mnt_uid;
-                inode->i_gid = cifs_sb->mnt_gid;
-                spin_unlock(&inode->i_lock);
-	}
-The trouble is, it looks like d_splice_alias() from a lookup elsewhere
-might find an alias of some subdirectory in those.  And in that case
-we'll end up with a child of those (dcache_readdir-using) directories
-being ripped out and moved elsewhere.  With no calls of ->rename() in
-sight, of course, *AND* with only shared lock on the parent.  The
-last part is really nasty.  And not just for hanging cursors off the
-dentries they point to - it's a problem for dcache_readdir() itself
-even in the mainline and with all the lockless crap reverted.
 
-We pass next->d_name.name to dir_emit() (i.e. potentially to
-copy_to_user()).  And we have no warranty that it's not a long
-(== separately allocated) name, that will be freed while
-copy_to_user() is in progress.  Sure, it'll get an RCU delay
-before freeing, but that doesn't help us at all.
 
-I'm not familiar with those areas in btrfs or cifs; could somebody
-explain what's going on there and can we indeed end up finding aliases
-to those suckers?
+-- 
+Chris Murphy
