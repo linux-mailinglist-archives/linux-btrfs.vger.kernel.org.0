@@ -2,77 +2,91 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CE052BC48F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 11:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E337ABC49D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 11:15:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729961AbfIXJMj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 05:12:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41456 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729948AbfIXJMi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 05:12:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7A451AE4D;
-        Tue, 24 Sep 2019 09:12:36 +0000 (UTC)
+        id S1729803AbfIXJP7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 05:15:59 -0400
+Received: from mout.gmx.net ([212.227.17.20]:45613 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727531AbfIXJP6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 05:15:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1569316552;
+        bh=EGyaIJH0Q9SavyEItv0Hqxeaa3fVeHojFhemihO8oyM=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=hWpH6Z3HH3x5u4uYWuhXQCRdz6nplxk4wkKcrTfCOWTyUoXoIZkD+AC3AEh8ULbD2
+         iTfObKw75yH/lHqC1HP2gPhIlzoRwMwxrQDNWBCDTpHg9TkR1WV9N2qMBXW5DximwS
+         3hGiyfQne9Haht3xMCWnB3Ifp9s909gpqqELAZ/c=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N7iCg-1i8eLa07ec-014mmt; Tue, 24
+ Sep 2019 11:15:52 +0200
 Subject: Re: [PATCH v2 2/2] btrfs: qgroup: Fix reserved data space leak if we
  have multiple reserve calls
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
 References: <20190916120239.12570-1-wqu@suse.com>
  <20190916120239.12570-2-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <dd942faa-e3b4-fc96-6678-3f4513c67731@suse.com>
-Date:   Tue, 24 Sep 2019 12:12:35 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <dd942faa-e3b4-fc96-6678-3f4513c67731@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <09c8a889-ead0-c447-2b1f-e2b6f29afdac@gmx.com>
+Date:   Tue, 24 Sep 2019 17:15:47 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <20190916120239.12570-2-wqu@suse.com>
+In-Reply-To: <dd942faa-e3b4-fc96-6678-3f4513c67731@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:nHPcDAo80Ps4eWp5n7A3Wd8XQRct4q/OJyfJa+g8ag1H4FAg3VV
+ P8msdl1gExhhaDHf8ZL9WtCjAqB2LsHR02GnZp1ix/v2zo2AO57ZQXy+Fz9XthxVxXfHojI
+ hhRoPd55MwbzTaSOei012zBgr3OLgCb9ehsr/mcw8FAYjJqzUb4u9LXSdxOaCX4R8VbPREJ
+ L/kFs/AnQJ+pFWS3itaNg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:w4Y3EoswFvM=:z8rKeyxq984T7bvWalm28k
+ glDWc0YA/2I7cxEVyPfYdPCHVxh3nZH6v7jkEWoDVqgIdo2iAPw/qPWwfYHPsNAy92ylH+D6J
+ AAZIfFyKM679TLJLgjPnx7QXHimL3ypvN84FA7ocnar+5yq9T/7peOy/TFLbT9xA7fcGXHjkg
+ gwzFyE6IDlR3WpB6rBi0CL8eCezreN8Jf2lHUrckDnd8KRg3z6SSshmtY7sPn8xhwlypzaWHt
+ NXaMB2/Yi/Y4FlrwNZ3GcRywN3AhruScJShV/jFT3dIcM0ZBQr9UXkPIM51of3aAwYe7YUPQn
+ cNID0+PJlJoujmxzvUxT4kYNWtjOO/FokUlOir4doUI3iUp+dQvRNilh6J+HVkb5yP45aJJSC
+ F8hqQpAiCOUnMUJW8UWj7AD8yHoXf60P5YY89UIdhjQwbMh5xAdgaX7YeZZ09KNBXIVX7W8GM
+ 3TPsK0PGLL5z3RDoOeoVMuCwjoGjCOeJXAopKXWpv+QyaXLFGrkr3cmMptmfICICTV6ZX04Kb
+ 1aUPjir/QL/aIWxPKC7rYPYSkuGkUD8HVWRMmlIUuNYqT15QP3/9ODNqeQj3H9kZ2v1xe9aGL
+ fuOEghY5Vmy7EeDuJpz+ro9iFxW12+mZWaMjZithoxfUScgPW5Dg4jRlWvlFPtZyJAUUpO9SX
+ x0YiNZoz+FmQiPXVnRP8agpFOT6V4Tv+wEHzfVC9pWiEUmabMRzN75U0AdO3urOe7A32el94i
+ kZ4UAZIfMVyJXYhi730MFJe2+Nn2ZyOBvlT9/rsUF381xX6b7xDPRESOR/PRcn7tomQj+OYyV
+ rhrb54hYnIX0xR1c2HX05IMAotqKSwwfG7WeP+Sx1TD57Wo55ctvU0OzbdRO0obetvhIZ4Iy9
+ rvG1FLGx/zMFkuikMyZdoir0X5l+arxbd14s8pZqGbfWhTto+/jYREHnONF7hHAfSa1Sbtaox
+ p5g0tFkeGonkQqCBxvg1v8r4mocL7tyU7EIgE/MLUCtyoDpGpdNT2fiCP/yLKiUYIMCjIZLne
+ rH7mZHlTDjpAvdTz8ip6cg2SDzBj72pTzQt0iMFJRvIoEcQ2QfKUKd+yZ4ReIHgD5rMCWRT7X
+ fi3dZV9mPhvOpTvgVr2UtxWvFfdkF1s6DmVjeH9lslmEfeezDeHXLumk79zBmhSqlpDiFpRb3
+ uq6/0DBalfzwjVi/Kk606Vnxi7vm3JIf1U7hbUv/VqdxC92DgCNPi8Md5f0nfxLPJqRAVbi4F
+ bYrDevpUALaOvLe1XE3Jnoq6QCG8bahZp9f+OTw54nxHm5zxbR8mvvgOLg38=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -80,35 +94,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 16.09.19 г. 15:02 ч., Qu Wenruo wrote:
-> [BUG]
-> The following script can cause btrfs qgroup data space leak:
-> 
->   mkfs.btrfs -f $dev
->   mount $dev -o nospace_cache $mnt
-> 
->   btrfs subv create $mnt/subv
->   btrfs quota en $mnt
->   btrfs quota rescan -w $mnt
->   btrfs qgroup limit 128m $mnt/subv
-> 
->   for (( i = 0; i < 3; i++)); do
->           # Create 3 64M holes for latter fallocate to fail
->           truncate -s 192m $mnt/subv/file
->           xfs_io -c "pwrite 64m 4k" $mnt/subv/file > /dev/null
->           xfs_io -c "pwrite 128m 4k" $mnt/subv/file > /dev/null
->           sync
-> 
->           # it's supposed to fail, and each failure will leak at least 64M
->           # data space
->           xfs_io -f -c "falloc 0 192m" $mnt/subv/file &> /dev/null
->           rm $mnt/subv/file
->           sync
->   done
-> 
->   # Shouldn't fail after we removed the file
->   xfs_io -f -c "falloc 0 64m" $mnt/subv/file
+On 2019/9/24 =E4=B8=8B=E5=8D=885:12, Nikolay Borisov wrote:
+>
+>
+> On 16.09.19 =D0=B3. 15:02 =D1=87., Qu Wenruo wrote:
+>> [BUG]
+>> The following script can cause btrfs qgroup data space leak:
+>>
+>>   mkfs.btrfs -f $dev
+>>   mount $dev -o nospace_cache $mnt
+>>
+>>   btrfs subv create $mnt/subv
+>>   btrfs quota en $mnt
+>>   btrfs quota rescan -w $mnt
+>>   btrfs qgroup limit 128m $mnt/subv
+>>
+>>   for (( i =3D 0; i < 3; i++)); do
+>>           # Create 3 64M holes for latter fallocate to fail
+>>           truncate -s 192m $mnt/subv/file
+>>           xfs_io -c "pwrite 64m 4k" $mnt/subv/file > /dev/null
+>>           xfs_io -c "pwrite 128m 4k" $mnt/subv/file > /dev/null
+>>           sync
+>>
+>>           # it's supposed to fail, and each failure will leak at least =
+64M
+>>           # data space
+>>           xfs_io -f -c "falloc 0 192m" $mnt/subv/file &> /dev/null
+>>           rm $mnt/subv/file
+>>           sync
+>>   done
+>>
+>>   # Shouldn't fail after we removed the file
+>>   xfs_io -f -c "falloc 0 64m" $mnt/subv/file
+>
+> Was this sent as a separate fstest case?
 
-Was this sent as a separate fstest case?
+Yep.
 
-<snip>
+https://patchwork.kernel.org/patch/11145871/
+
+Thanks,
+Qu
+
+>
+> <snip>
+>
