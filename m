@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F3A87BC432
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 10:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F2B2BC466
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 11:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440680AbfIXImC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 04:42:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53878 "EHLO mx1.suse.de"
+        id S1729649AbfIXJDF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 05:03:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35534 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2439012AbfIXImC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 04:42:02 -0400
+        id S1729647AbfIXJDF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 05:03:05 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 79D8BB668;
-        Tue, 24 Sep 2019 08:42:00 +0000 (UTC)
-Subject: Re: [PATCH v3 1/6] btrfs-progs: check: Export btrfs_type_to_imode
+        by mx1.suse.de (Postfix) with ESMTP id A655FB66B;
+        Tue, 24 Sep 2019 09:03:02 +0000 (UTC)
+Subject: Re: [PATCH v2 1/2] btrfs: qgroup: Fix the wrong target io_tree when
+ freeing reserved data space
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190912031135.79696-1-wqu@suse.com>
- <20190912031135.79696-2-wqu@suse.com>
+Cc:     Josef Bacik <josef@toxicpanda.com>
+References: <20190916120239.12570-1-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <8bce1985-0bd7-2476-8276-530ab08a00d6@suse.com>
-Date:   Tue, 24 Sep 2019 11:41:59 +0300
+Message-ID: <af9d0f8a-8425-b994-8e6a-08e80f18a218@suse.com>
+Date:   Tue, 24 Sep 2019 12:03:01 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190912031135.79696-2-wqu@suse.com>
+In-Reply-To: <20190916120239.12570-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,72 +80,83 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 12.09.19 г. 6:11 ч., Qu Wenruo wrote:
-> This function will be later used by common mode code, so export it.
+On 16.09.19 г. 15:02 ч., Qu Wenruo wrote:
+> [BUG]
+> Under the follow case with qgroup enabled, if some error happened after
+> we have reserved delalloc space, then in error handling path, we could
+> cause qgroup data space leakage:
 > 
+> From btrfs_truncate_block() in inode.c:
+> 
+> 	ret = btrfs_delalloc_reserve_space(inode, &data_reserved,
+> 					   block_start, blocksize);
+> 	if (ret)
+> 		goto out;
+> 
+> again:
+> 	page = find_or_create_page(mapping, index, mask);
+> 	if (!page) {
+> 		btrfs_delalloc_release_space(inode, data_reserved,
+> 					     block_start, blocksize, true);
+> 		btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize, true);
+> 		ret = -ENOMEM;
+> 		goto out;
+> 	}
+> 
+> [CAUSE]
+> In above case, btrfs_delalloc_reserve_space() will call
+> btrfs_qgroup_reserve_data() and mark the io_tree range with
+> EXTENT_QGROUP_RESERVED flag.
+> 
+> In the error handling path, we have the following call stack:
+> btrfs_delalloc_release_space()
+> |- btrfs_free_reserved_data_space()
+>    |- btrsf_qgroup_free_data()
+>       |- __btrfs_qgroup_release_data(reserved=@reserved, free=1)
+>          |- qgroup_free_reserved_data(reserved=@reserved)
+>             |- clear_record_extent_bits();
+>             |- freed += changeset.bytes_changed;
+> 
+> However due to a completion bug, qgroup_free_reserved_data() will clear
+> EXTENT_QGROUP_RESERVED flag in BTRFS_I(inode)->io_failure_tree, other
+> than the correct BTRFS_I(inode)->io_tree.
+> Since io_failure_tree is never marked with that flag,
+> btrfs_qgroup_free_data() will not free any data reserved space at all,
+> causing a leakage.
+> 
+> This type of error handling can only be triggered by errors outside of
+> qgroup code. So EDQUOT error from qgroup can't trigger it.
+> 
+> [FIX]
+> Fix the wrong target io_tree.
+> 
+> Reported-by: Josef Bacik <josef@toxicpanda.com>
+> Fixes: bc42bda22345 ("btrfs: qgroup: Fix qgroup reserved space underflow by only freeing reserved ranges")
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com> but see one nit below.
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
->  check/main.c        | 15 ---------------
->  check/mode-common.h | 15 +++++++++++++++
->  2 files changed, 15 insertions(+), 15 deletions(-)
+> Changelog:
+> v2:
+> - Commit message polishment
+>   Use proper call chain to describe the error, as it's pretty deep.
+>   And rephrase how to trigger the bug.
+> ---
+>  fs/btrfs/qgroup.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/check/main.c b/check/main.c
-> index 2e16b4e6f05b..902279740589 100644
-> --- a/check/main.c
-> +++ b/check/main.c
-> @@ -2448,21 +2448,6 @@ out:
->  	return ret;
->  }
->  
-> -static u32 btrfs_type_to_imode(u8 type)
-> -{
-> -	static u32 imode_by_btrfs_type[] = {
-> -		[BTRFS_FT_REG_FILE]	= S_IFREG,
-> -		[BTRFS_FT_DIR]		= S_IFDIR,
-> -		[BTRFS_FT_CHRDEV]	= S_IFCHR,
-> -		[BTRFS_FT_BLKDEV]	= S_IFBLK,
-> -		[BTRFS_FT_FIFO]		= S_IFIFO,
-> -		[BTRFS_FT_SOCK]		= S_IFSOCK,
-> -		[BTRFS_FT_SYMLINK]	= S_IFLNK,
-> -	};
-> -
-> -	return imode_by_btrfs_type[(type)];
-> -}
-> -
->  static int repair_inode_no_item(struct btrfs_trans_handle *trans,
->  				struct btrfs_root *root,
->  				struct btrfs_path *path,
-> diff --git a/check/mode-common.h b/check/mode-common.h
-> index 161b84a8deb0..6c8d6d7578a6 100644
-> --- a/check/mode-common.h
-> +++ b/check/mode-common.h
-> @@ -156,4 +156,19 @@ static inline bool is_valid_imode(u32 imode)
->  }
->  
->  int recow_extent_buffer(struct btrfs_root *root, struct extent_buffer *eb);
-> +
-> +static inline u32 btrfs_type_to_imode(u8 type)
-> +{
-> +	static u32 imode_by_btrfs_type[] = {
-> +		[BTRFS_FT_REG_FILE]	= S_IFREG,
-> +		[BTRFS_FT_DIR]		= S_IFDIR,
-> +		[BTRFS_FT_CHRDEV]	= S_IFCHR,
-> +		[BTRFS_FT_BLKDEV]	= S_IFBLK,
-> +		[BTRFS_FT_FIFO]		= S_IFIFO,
-> +		[BTRFS_FT_SOCK]		= S_IFSOCK,
-> +		[BTRFS_FT_SYMLINK]	= S_IFLNK,
-> +	};
-
-nit: If the array is defined in a function in a header this means it
-will be copied to every object file this header is included so it will
-result in a minor bloat of size. It might better to have it defined in
-check/main.c and have it declared extern in mode-common.h
-
-> +
-> +	return imode_by_btrfs_type[(type)];
-> +}
->  #endif
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 2891b57b9e1e..64bdc3e3652d 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -3492,7 +3492,7 @@ static int qgroup_free_reserved_data(struct inode *inode,
+>  		 * EXTENT_QGROUP_RESERVED, we won't double free.
+>  		 * So not need to rush.
+>  		 */
+> -		ret = clear_record_extent_bits(&BTRFS_I(inode)->io_failure_tree,
+> +		ret = clear_record_extent_bits(&BTRFS_I(inode)->io_tree,
+>  				free_start, free_start + free_len - 1,
+>  				EXTENT_QGROUP_RESERVED, &changeset);
+>  		if (ret < 0)
 > 
