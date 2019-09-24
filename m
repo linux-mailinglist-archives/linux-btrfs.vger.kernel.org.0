@@ -2,80 +2,142 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DAE2BC8CD
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 15:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADDCBC8F0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 15:30:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505040AbfIXNWW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 09:22:22 -0400
-Received: from mail-qk1-f175.google.com ([209.85.222.175]:45975 "EHLO
-        mail-qk1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727930AbfIXNWW (ORCPT
+        id S2505060AbfIXNaa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 09:30:30 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45368 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504934AbfIXNa3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 09:22:22 -0400
-Received: by mail-qk1-f175.google.com with SMTP id z67so1661144qkb.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 06:22:20 -0700 (PDT)
+        Tue, 24 Sep 2019 09:30:29 -0400
+Received: by mail-qt1-f196.google.com with SMTP id c21so2075217qtj.12
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 06:30:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=1nJ3hJgxUDeB/eDZ/37tOSrHXptXXPDIIIYZ3WNTRoM=;
-        b=d4wS9RRq5xL5lka3efKR8kO6KhZ+UmTCCn6z1asiej/kURKNtm/ma3gkUAXQEUD8CW
-         RrGAWn8/xkySy1Tp+rUu3lEYNMK8+s6fU+8BsXbJXT8m2bVNMRKjpT84nW5NVyQUO8bN
-         2tsx2BK6v+HMWgEv6cwrq7YMvav4fixOmV1ZDcvDyqYFC85DBPRQsckILstYVIO5lbg3
-         fp1uc2TcZbNBEhdL98M1oI1nDzKE1wb/B4m/StrP3F01cb3nO78LYrgYJnPtaOBVxd2c
-         5fC15UTPnREXH2fP8/JaQHxs1W4nm4WCEauQJuNExY9J/yzesTuFbEEA9rasWH0+chdY
-         Yw9g==
+        bh=5MMdmEI5E3YGr18eOY+CzA36GDQKBSr573ORf++OIig=;
+        b=ux/4VDyHuy/J1rXbaFWi7pE86io9QNhjmComOk8cMBBOnRq+ypAy5jXyK6J4quq4m3
+         bxWvfnfgVEkiES1wLPmv0DY8yS0YqWEGzh18RgfRTLCtvF/pUN25LfZmlJn+1NHQQdGT
+         0EQ7Y1tvTprvs+E+Mj0oemTj5V9Yizq5/SmUrDdkHuQ1U+fh/UeTErWEQssMZljcX9l6
+         Dc/ej2E4wVuCvihnRc9jv8Y2QCm7emT0L8d9uVBw1Ren0DWNKHj4KdIAU4cV9jPSeBie
+         sx/8GbD/8Sgp4xpevPnX1Xwn/3a111uB5vj0xkXE9oyzdCU8u/SH4Be5UsbrKo9O3iOJ
+         Mfsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1nJ3hJgxUDeB/eDZ/37tOSrHXptXXPDIIIYZ3WNTRoM=;
-        b=fAuq2Yc5llcU1eGhKuXtMF8aNKo262VRWKqNE6C/3bqNJKdanUEtOSK2oJJPn7ibUE
-         ZV5SdpFn3aIdXNoLGSwOFNfQRKtE3cKLL+K3aoppvhM7kSO/LKHQJhi/nq5yFF/TxuFB
-         7y2lKrS+BowfkPnY7YJ0di4w6PNakuUrqreY6Qdhbh3X0epmXanPk3sUN0EwF6Jpy0G9
-         xA5ccGpoOonr/BzwkPzF8ve1uyFJa6az5kXniIQ/mF/rBa4J4PRUB0J/OW0bgASaCv8j
-         WgOcjjNauiItg8x4ku0Jku397FEangCGaMIIEtSXdNiZJyRMmZ+xceA0HKnkiVrHEVK0
-         MtcQ==
-X-Gm-Message-State: APjAAAXbH2ji5+NlWejun+uRDA4u6Edgid2blO49wJ82n3VVRAuEi4/w
-        XOhkC9eMURhYHDcjforXkK7mkAQbrH6gIw==
-X-Google-Smtp-Source: APXvYqwBBVjC/nT7Dj8CCzyXflps2PQH87gKl3Rnzpxy8ts5a5gQjFWBxcPAr2vkCLN/zfH636RkoQ==
-X-Received: by 2002:a05:620a:6cf:: with SMTP id 15mr2316454qky.112.1569331340321;
-        Tue, 24 Sep 2019 06:22:20 -0700 (PDT)
+        bh=5MMdmEI5E3YGr18eOY+CzA36GDQKBSr573ORf++OIig=;
+        b=U7sPxeLoimVRNW0mMPMrARjUVhKsHZTuBggMT3J8Hz4wQEl3MRj6Ze8eWp/sSdyvbt
+         3prUv1POCKLJdn/zsiSoxWQvugfUsIfH/uKXma8Yyh6i8+lmUIdqmcw6BZQJZOCkzwjv
+         BxFio4r1ZoaXgD7e/QybZX+cAfr527GmQpCxtahteMzNzTmiG/JYqPAJY7NoIyi4WLvQ
+         e3S0q0Dx1wSNApI1AYmRQdU0uWKGhc5neL1y8gs1ep9/uIvZW9Tm79MWep2sQ/7WKhR4
+         iHeEot/fpzw4IEwKeZ3+BNAmUlZxv8v5nJ0jypXHWA2CeGT+tWnN9KyNkDbTAJUJrtx7
+         Y0Fg==
+X-Gm-Message-State: APjAAAUEc3ZvAS2+s11fLobL2rmoiduNMnDHrpMI5Q7FCecvxoVfrU9S
+        t1oSDPNgBKN08kC4x0NXJxPaw9KUZNrccd9g
+X-Google-Smtp-Source: APXvYqzjyxB9ym582W5hkail5QrvOGDSjAstiMeIulH4RPqRz7KSnnBtvmkpRJW3vuDrKCbF7rRPHg==
+X-Received: by 2002:ad4:458d:: with SMTP id x13mr2442272qvu.85.1569331828635;
+        Tue, 24 Sep 2019 06:30:28 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::b7c9])
-        by smtp.gmail.com with ESMTPSA id g33sm972294qtd.12.2019.09.24.06.22.19
+        by smtp.gmail.com with ESMTPSA id p22sm856947qkk.92.2019.09.24.06.30.27
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 24 Sep 2019 06:22:19 -0700 (PDT)
-Date:   Tue, 24 Sep 2019 09:22:18 -0400
+        Tue, 24 Sep 2019 06:30:27 -0700 (PDT)
+Date:   Tue, 24 Sep 2019 09:30:26 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Pete <pete@petezilla.co.uk>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Balance ENOSPC during balance despite additional storage added
-Message-ID: <20190924132217.44jhtgrk7f7bwysb@macbook-pro-91.dhcp.thefacebook.com>
-References: <94ebf95b-c8c2-e2d5-8db6-77a74c19644a@petezilla.co.uk>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "zhengbin (A)" <zhengbin13@huawei.com>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "zhangyi (F)" <yi.zhang@huawei.com>, renxudong1@huawei.com,
+        Hou Tao <houtao1@huawei.com>, linux-btrfs@vger.kernel.org,
+        "Yan, Zheng" <zyan@redhat.com>, linux-cifs@vger.kernel.org,
+        Steve French <sfrench@us.ibm.com>
+Subject: Re: [PATCH] Re: Possible FS race condition between iterate_dir and
+ d_alloc_parallel
+Message-ID: <20190924133025.jeh7ond2svm3lsub@macbook-pro-91.dhcp.thefacebook.com>
+References: <20190914170146.GT1131@ZenIV.linux.org.uk>
+ <CAHk-=wiPv+yo86GpA+Gd_et0KS2Cydk4gSbEj3p4S4tEb1roKw@mail.gmail.com>
+ <20190914200412.GU1131@ZenIV.linux.org.uk>
+ <CAHk-=whpoQ_hX2KeqjQs3DeX6Wb4Tmb8BkHa5zr-Xu=S55+ORg@mail.gmail.com>
+ <20190915005046.GV1131@ZenIV.linux.org.uk>
+ <CAHk-=wjcZBB2GpGP-cxXppzW=M0EuFnSLoTXHyqJ4BtffYrCXw@mail.gmail.com>
+ <20190915160236.GW1131@ZenIV.linux.org.uk>
+ <CAHk-=whjNE+_oSBP_o_9mquUKsJn4gomL2f0MM79gxk_SkYLRw@mail.gmail.com>
+ <20190921140731.GQ1131@ZenIV.linux.org.uk>
+ <20190924025215.GA9941@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <94ebf95b-c8c2-e2d5-8db6-77a74c19644a@petezilla.co.uk>
+In-Reply-To: <20190924025215.GA9941@ZenIV.linux.org.uk>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 20, 2019 at 03:29:32PM +0100, Pete wrote:
-> I have a btrfs that is on top of an lvm logical volume on top of dm-crypt on
-> a single nvme drive (Samsung 870 Pro 512GB).
+On Tue, Sep 24, 2019 at 03:52:15AM +0100, Al Viro wrote:
+> [btrfs and cifs folks Cc'd]
 > 
-> I added a second logical volume to give more space to get rid of ENOSPC
-> errors during balance, but to no avail.  This was after I started getting
-> enospc during balance.  Without this additional logical device, before
-> balance, I had run out of space owning to some unfortunate scripting
-> interacting with lxc snapshots (non btrfs backed in the config, so a copy)
-> and some copying.  I was performing a balance, following some deletions,
-> when trying to get things back to a better state.
+> On Sat, Sep 21, 2019 at 03:07:31PM +0100, Al Viro wrote:
 > 
+> > No "take cursors out of the list" parts yet.
+> 
+> Argh...  The things turned interesting.  The tricky part is
+> where do we handle switching cursors away from something
+> that gets moved.
+> 
+> What I hoped for was "just do it in simple_rename()".  Which is
+> almost OK; there are 3 problematic cases.  One is shmem -
+> there we have a special ->rename(), which handles things
+> like RENAME_EXCHANGE et.al.  Fair enough - some of that
+> might've been moved into simple_rename(), but some (whiteouts)
+> won't be that easy.  Fair enough - we can make kicking the
+> cursors outs a helper called by simple_rename() and by that.
+> Exchange case is going to cause a bit of headache (the
+> pathological case is when the entries being exchanged are
+> next to each other in the same directory), but it's not
+> that bad.
+> 
+> Two other cases, though, might be serious trouble.  Those are
+> btrfs new_simple_dir() and this in cifs_root_iget():
+>         if (rc && tcon->pipe) {
+>                 cifs_dbg(FYI, "ipc connection - fake read inode\n");
+>                 spin_lock(&inode->i_lock);
+>                 inode->i_mode |= S_IFDIR;
+>                 set_nlink(inode, 2);
+>                 inode->i_op = &cifs_ipc_inode_ops;
+>                 inode->i_fop = &simple_dir_operations;
+>                 inode->i_uid = cifs_sb->mnt_uid;
+>                 inode->i_gid = cifs_sb->mnt_gid;
+>                 spin_unlock(&inode->i_lock);
+> 	}
+> The trouble is, it looks like d_splice_alias() from a lookup elsewhere
+> might find an alias of some subdirectory in those.  And in that case
+> we'll end up with a child of those (dcache_readdir-using) directories
+> being ripped out and moved elsewhere.  With no calls of ->rename() in
+> sight, of course, *AND* with only shared lock on the parent.  The
+> last part is really nasty.  And not just for hanging cursors off the
+> dentries they point to - it's a problem for dcache_readdir() itself
+> even in the mainline and with all the lockless crap reverted.
+> 
+> We pass next->d_name.name to dir_emit() (i.e. potentially to
+> copy_to_user()).  And we have no warranty that it's not a long
+> (== separately allocated) name, that will be freed while
+> copy_to_user() is in progress.  Sure, it'll get an RCU delay
+> before freeing, but that doesn't help us at all.
+> 
+> I'm not familiar with those areas in btrfs or cifs; could somebody
+> explain what's going on there and can we indeed end up finding aliases
+> to those suckers?
 
-Just popping in to let you know I've been seeing this internally as well, I plan
-to dig into it after we've run down the panic we're chasing currently.  Thanks,
+We can't for the btrfs case.  This is used for the case where we have a link to
+a subvolume but the root has disappeared already, so we add in that dummy inode.
+We completely drop the dcache from that root downards when we drop the
+subvolume, so we're not going to find aliases underneath those things.  Is that
+what you're asking?  Thanks,
 
 Josef
