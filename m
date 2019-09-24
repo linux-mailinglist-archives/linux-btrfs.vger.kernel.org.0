@@ -2,26 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F18BC23E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 09:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867B1BC2E4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 09:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405412AbfIXHGe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 03:06:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54908 "EHLO mx1.suse.de"
+        id S2440599AbfIXHnV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 03:43:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49316 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2393722AbfIXHGe (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 03:06:34 -0400
+        id S2438532AbfIXHnU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 03:43:20 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EF2D4AEBB;
-        Tue, 24 Sep 2019 07:06:31 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: prevent memory leak
+        by mx1.suse.de (Postfix) with ESMTP id 81C35AFA5;
+        Tue, 24 Sep 2019 07:43:18 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: prevent memory leak in super.c
 To:     Navid Emamdoost <navid.emamdoost@gmail.com>
 Cc:     Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
         Josef Bacik <josef@toxicpanda.com>, emamd001@umn.edu,
         kjlu@umn.edu, smccaman@umn.edu, linux-btrfs@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20190923223437.11086-1-navid.emamdoost@gmail.com>
+References: <20190923225713.13381-1-navid.emamdoost@gmail.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -66,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <87868186-c4a9-88fb-bcd3-c5f226c50e59@suse.com>
-Date:   Tue, 24 Sep 2019 10:06:30 +0300
+Message-ID: <210dd390-386e-27e0-b3a5-86f4a28da80a@suse.com>
+Date:   Tue, 24 Sep 2019 10:43:16 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190923223437.11086-1-navid.emamdoost@gmail.com>
+In-Reply-To: <20190923225713.13381-1-navid.emamdoost@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,37 +82,32 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 24.09.19 г. 1:34 ч., Navid Emamdoost wrote:
-> In btrfsic_mount if btrfsic_dev_state_alloc fails the allocated state
-> will be leaked. It needs to be released on error handling path.
+On 24.09.19 г. 1:57 ч., Navid Emamdoost wrote:
+> In btrfs_mount_root the last error checking was not going to the error
+> handling path. Fixed it.
 > 
 > Signed-off-by: Navid Emamdoost <navid.emamdoost@gmail.com>
 
-NAK.
+NAK
 
-The allocated state could have been added to a btrfsic_dev_state which
-in turn is linked by btrfsic_dev_state_hashtable_add. So when later
-ds->state is dereferenced it will case a UAF and likely result in crash.
-
-Looking at the integrity code I also don't like how it's structured e.g.
-if a memory error occurs then only some devices will be added to the
-btrfsic_dev_State_hashtable and the super block is not going to be
-validated at all.
+deactivate_locked_super actually calls btrfs_kill_super which in turn
+calls generic_shutdown_super which does the required shutdown sequence.
 
 > ---
->  fs/btrfs/check-integrity.c | 1 +
->  1 file changed, 1 insertion(+)
+>  fs/btrfs/super.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/check-integrity.c b/fs/btrfs/check-integrity.c
-> index 0b52ab4cb964..8a77b0cb2db3 100644
-> --- a/fs/btrfs/check-integrity.c
-> +++ b/fs/btrfs/check-integrity.c
-> @@ -2941,6 +2941,7 @@ int btrfsic_mount(struct btrfs_fs_info *fs_info,
->  		if (NULL == ds) {
->  			pr_info("btrfs check-integrity: kmalloc() failed!\n");
->  			mutex_unlock(&btrfsic_mutex);
-> +			kvfree(state);
->  			return -ENOMEM;
->  		}
->  		ds->bdev = device->bdev;
+> diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+> index 1b151af25772..9f3f62c000fa 100644
+> --- a/fs/btrfs/super.c
+> +++ b/fs/btrfs/super.c
+> @@ -1565,7 +1565,7 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
+>  	security_free_mnt_opts(&new_sec_opts);
+>  	if (error) {
+>  		deactivate_locked_super(s);
+> -		return ERR_PTR(error);
+> +		goto error_close_devices;
+>  	}
+>  
+>  	return dget(s->s_root);
 > 
