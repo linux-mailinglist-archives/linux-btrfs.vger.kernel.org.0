@@ -2,537 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D85C4BC4C0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 11:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2DB2BC4D8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 11:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504181AbfIXJXy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 05:23:54 -0400
-Received: from mout.gmx.net ([212.227.17.21]:49721 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725884AbfIXJXy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 05:23:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1569317031;
-        bh=NhDZtgBwtjUJzSif6iUQyEm8yln4wghl2LBGkcImPWY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=TRFQ1LGrDkvTh7D/VxewlS2/l3Gg3J1QpOymrnpVNgqdB8RL0oGmgyG4LGVOPgMCq
-         X0X95tvDhvCJLv22rEmdUyRrlm+sJojYAZuZL8v1QSjgsGKbhh8uPFx+iW33+HfT1X
-         /HJPSGzqRn5maubCvDUZu9kCrQVMF/7lKITQr+Eo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1My32F-1hyUor1nTT-00zXhm; Tue, 24
- Sep 2019 11:23:51 +0200
-Subject: Re: help needed with unmountable btrfs-filesystem
-To:     Felix Koop <fdp@fkoop.de>, linux-btrfs@vger.kernel.org
-References: <57e3a3a2c40fe7ea33ff85aec59ffaefdd20f3e6.camel@fkoop.de>
- <1af945c1-0e58-a6e0-477f-59e0900a0e6f@gmx.com>
- <1746580228.276165.1569313641249@email.ionos.de>
- <7ab6805a-f372-d5e2-04c9-51dc7cf51fbc@gmx.com>
- <1393339585.178213.1569316691139@email.ionos.de>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <eac5b055-3ec5-47e2-bf6e-d317595240ce@gmx.com>
-Date:   Tue, 24 Sep 2019 17:23:46 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S2504204AbfIXJ3c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 05:29:32 -0400
+Received: from mail-lj1-f174.google.com ([209.85.208.174]:36578 "EHLO
+        mail-lj1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504186AbfIXJ3c (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 05:29:32 -0400
+Received: by mail-lj1-f174.google.com with SMTP id v24so1152834ljj.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 02:29:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=ijPkrpIz1VZeCuM6JMRGi8KaPrk48cdPCWW1x/wy/Bc=;
+        b=BpYuu8yBsAKICB96LE4XZ6Utzl7jS/LMMcnj2RZW6JUytn2+K8JvXptMfwOj5dzC4H
+         GruHDFuh1YtIER5n43xS4EUjoVHu9XSzQ/nVRfdfj53KgjWK7gE7GjeKDQYsRabpAQ5g
+         QYsQhIJC7qjOstx1dZSM9FtQg+MEdwprgHjbT2+B6qDmoo7U/U6G/ViUF6Ropejhwfzg
+         A7AboW1mSjRilLq4FI34T8qqQUflpE4noN7WVplHKzYbza58OE8l+WVtS+iJcGPP0fnf
+         ogCnkeL6939ydkogzkWbfKyNyTeavPQDqCxDhOar7hvg4RaWsX73UXSOQnmcN/tSTP+A
+         qOdQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:content-transfer-encoding:thread-index
+         :content-language;
+        bh=ijPkrpIz1VZeCuM6JMRGi8KaPrk48cdPCWW1x/wy/Bc=;
+        b=St+a+pK4zK+yB/AG1taYlnT5kgG+7IDwczntLbAdfRhO3EgKHTCHDNeHf3cH0rz7nx
+         vARQMeN76WLBcQdV0ia8+upzoDQBtxYmeX2BI3S4cwnaea1JxooYqCxA8Bt5qwUFos56
+         i/knrg6Hn2aFG10Pur5rtNgs3MjkmaXMGy3ggxVs1BfRvD3GqV1eHiByVLmyjgq0APuR
+         hbja56vJG0Fuq3ONNmEARIVXLB1dgCtJpBp0crNq6Oj699ek0TndAjg+XCTkjXwOfppn
+         rlkLffrHY7Z5NUTnlsu+rFGiVIxR9zbvtFSCW03bFHwTdDu818pzcnkh1+slfbAvxal0
+         4Hhg==
+X-Gm-Message-State: APjAAAWWSBCcD2tZZ2PU6cvsJ4Q19tqmgsrTEXfW0yfJK7rI02IN6/ZO
+        PGroMXoJBBhyOLypCjkjlu91AqqcBRo=
+X-Google-Smtp-Source: APXvYqxVc1RvaSyFmGMuMStPPh9Evctay1yyVPlKLnQupRCSiNh9leEvEoAUYrezxR83bwbS9H0N7Q==
+X-Received: by 2002:a2e:7c17:: with SMTP id x23mr1292145ljc.210.1569317368994;
+        Tue, 24 Sep 2019 02:29:28 -0700 (PDT)
+Received: from MHPlaptop ([86.48.99.210])
+        by smtp.gmail.com with ESMTPSA id x6sm348302ljh.99.2019.09.24.02.29.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Sep 2019 02:29:28 -0700 (PDT)
+From:   <hoegge@gmail.com>
+To:     "'Chris Murphy'" <lists@colorremedies.com>
+Cc:     "'Btrfs BTRFS'" <linux-btrfs@vger.kernel.org>
+References: <000f01d5723b$6e3d0f70$4ab72e50$@gmail.com> <CAJCQCtSCJTsk1oFrWObUBpw-MXArQJHoJV3BeBk0Nfv_-AoS8g@mail.gmail.com> <003f01d5724c$f1adae30$d5090a90$@gmail.com> <CAJCQCtTwjUok145SqnbwfBYKipVhcV7J94HX9Lx4mgaFV3FaBA@mail.gmail.com>
+In-Reply-To: <CAJCQCtTwjUok145SqnbwfBYKipVhcV7J94HX9Lx4mgaFV3FaBA@mail.gmail.com>
+Subject: RE: BTRFS checksum mismatch - false positives
+Date:   Tue, 24 Sep 2019 11:29:28 +0200
+Message-ID: <001601d572ba$90591b60$b10b5220$@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1393339585.178213.1569316691139@email.ionos.de>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="V6Mc3rjUwsZpCBpUr0rWI5c6DemYIHssL"
-X-Provags-ID: V03:K1:rY5h4ZeJKjd6D86/psSOtYPbUbHDgOOMHW+hpOQHI4tH+kfnvXk
- xF73B4iAlY+L5McvGoJGlizSfSvd92oh+/Y9CBySyTNR0NfoPmBiQYlhTeX5hRdA+NVmp95
- +ULTmI23beIIUxFxgtb4mCivvYbcObKw/zIpSY4B8UA5OTXI353gEVqTaGaFmTYCv0Jtba+
- FpC+bSZ/lyzvIiti2y8pg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:189tIossYuA=:dMZuJXmfZea8RxvvFyD5m/
- UmWEdmY9yyZOLJXh9ZgIzmoktzJhLvRpQQftMSXn+e20tjfbymHVFTxKekoohcvGr2VbGipG9
- dKEDoBZxy8lWCco/CuH8pPSsDXzUwjgoXgQmEzkTxWaznZS8G39YOVuXZgCnlHUl/r4DXlHmd
- nQMJ1Ex7Loz/13eR96O0dsQDYfCT+sp8/xqFV0WW9TNoI61JfzikOeZeNQznxoeU6vlNhTajg
- lfj/nvlg2cIE90CkqpLKaGwpzfDlbeCHqFIAJf08FCCE4oziqFZE01OVzd1kllV9FhAzxO/BL
- wrOJEZxz0to8KriS9UX98dfP/iw0WRWjwwEia+KHEXEe95yrce8Osg/p5RnEkKyvcyHNW2IHQ
- LcI8N1zIPI2DouuE6fhEKZOxy0jF0mU8R49qHzaaMLo7rSj5i89jmpBZw+MOy6L/4/aVrQkjj
- DFi9AMMDaCCmTTMpOUwmLCXY57Pz4PtcdSSvt9Jty/UQcOZ86Dp6mViJvxiOMZ/5+WbrEwTTG
- yL/faUkzha435imZnwJzoccQN5TW+Kzbh3siEu9zlYcbbpo4F7nUf4ckqYrQtbftr/WvBeJnY
- hnNPOVJS3YO0v/hjSu5/zGF0cdGYZBliGPGy1DFpmwqyVSqrG29VgaNhPgoErCk1tVQa7+KCU
- YPakV12tKXc8I85cw7v7YLY00nPM474YWo9bAWLiW2HpDQ8XOMqKDMsPRTQypnkWR8s/c9onc
- /hIKqJ1bGcf1XmM41pdgIEEgHexxVL6UreK8xnOdbx/S9dMZJ/77yQIHjpylNebWmS7fPVHup
- UgfA7x8XCRTSVsmXdCmBAr7MItHKIGUu/CTQQJfPvrMthOSqvu7LK2/eMaJNWih4HgdEhSOcv
- 3asrsoY7fhlZNhHcU2IkITWFiacCZ9kCup6HRR5Y8HhLbyOsfZyep8TQsHlC7SgRsug5x25VU
- BXh1C5050uHDNU4wGnifkEM2tVZxmB8JkIKJXzKs9NRgtgiB2wvf6ggtcKVZWYQOxZtR5MSkE
- Fz4h8r63cM22dSbU+R9R52HkMMqocI1RTnWTlBPnvb3u2L8gcJN2s7Az7ewb5umV9nUpobAyc
- 2YSvAMGOw5MyVRixp5GeuZgPzdRt3RtGEzLriTXCtIMwEObSshqRxqrZYa/FAUOdg6k22K90S
- ZZtnaBf+py9UpApaakwp6AzsJAfMGZXavk3clOTdGzOkMphTFW1zeyeXNWL+j90z0UmyTcuer
- uK7eeOpwMv1v+Wv8zLFDMA9wb8dIgFbSN4redB4WcXKNyf7+Am0OCMlf1QVg=
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQDC/7g4S9J6FUg0YRCQl8sHX15RDgIzZwHmAUBixXoBtxE1ZKk2GkpQ
+Content-Language: en-us
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---V6Mc3rjUwsZpCBpUr0rWI5c6DemYIHssL
-Content-Type: multipart/mixed; boundary="WfHgCp36q0rFx9r1kO6cw7okPMkIuEbwq"
+# btrfs fi show
+gives no result - not when adding path either
 
---WfHgCp36q0rFx9r1kO6cw7okPMkIuEbwq
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+# btrfs fi df /volume1
+Data, single: total=3D4.38TiB, used=3D4.30TiB
+System, DUP: total=3D8.00MiB, used=3D96.00KiB
+System, single: total=3D4.00MiB, used=3D0.00B
+Metadata, DUP: total=3D89.50GiB, used=3D6.63GiB
+Metadata, single: total=3D8.00MiB, used=3D0.00B
+GlobalReserve, single: total=3D512.00MiB, used=3D0.00B
 
+Here is the log:
+https://send.firefox.com/download/5a19aee66a42c04e/#PTt0UkT53Wrxe9EjCQfrW=
+A (password in separate e-mail)
+I have removed a few mac-addresses and things before a certain data =
+(that contained all other kinds of info). Let me know if it is too =
+little.
 
+Concerning restoring files - I should have all originals backed up, so =
+assume I can just delete the bad ones and restore the originals. That =
+would take care also of all the checksums, right? But BTRFS does not do =
+anything to prevent the bad blocks from being used again, right?
+I'll ask Synology about their stack.
 
-On 2019/9/24 =E4=B8=8B=E5=8D=885:18, Felix Koop wrote:
-> Hi Qu,
->=20
-> this is what I got:
->=20
-> root@tuxedo:~# btrfs rescue super-recover /dev/md/1
-> Make sure this is a btrfs disk otherwise the tool will destroy other fs=
-, Are you sure? [y/N]: y
-> checksum verify failed on 340721664 found EACFB938 wanted 24037BC4
-> checksum verify failed on 340721664 found EACFB938 wanted 24037BC4
-> checksum verify failed on 340721664 found CBE54D32 wanted 6010C3E7
-> checksum verify failed on 340721664 found EACFB938 wanted 24037BC4
-> bad tree block 340721664, bytenr mismatch, want=3D340721664, have=3D149=
-69249826309169724
-
-This means your root tree is also corrupted.
-
-Any idea how is the fs corrupted?
-
-
-It should be very rare to corrupt the first superblock already.
-Then more csum corruption is even more rare.
-
-It looks like the underlying device or encryption or whatever is corrupte=
-d.
-
-If a fs is corrupted to this extent, it's pretty hard to do any more.
-
-Thanks,
-Qu
-
-> Couldn't read tree root
-> Failed to recover bad superblocks
-> root@tuxedo:~# btrfs check --readonly /dev/md/1
-> Opening filesystem to check...
-> No valid Btrfs found on /dev/md/1
-> ERROR: cannot open file system
->=20
-> Additional tips?
->=20
->=20
-> Mit freundlichen Gr=C3=BC=C3=9Fen/Kind regards
->=20
->=20
-> Felix Koop
->=20
->=20
->> Qu Wenruo <quwenruo.btrfs@gmx.com> hat am 24. September 2019 um 11:11 =
-geschrieben:
->>
->>
->>
->>
->> On 2019/9/24 =E4=B8=8B=E5=8D=884:27, Felix Koop wrote:
->>> Hi Qu,
->>>
->>> unfortunately nothing under dmesg.
->>>
->>> ~# btrfs ins dump-super -fFa /dev/md/1
->>> superblock: bytenr=3D65536, device=3D/dev/md/1
->>> ---------------------------------------------------------
->>> csum_type               48250 (INVALID)
->>> csum_size               32
->>> csum                    0x8e5542eb70bced2a96808253fcb7a73c6085b6e754c=
-bc8e2fb89674e9f738238 [UNKNOWN CSUM TYPE OR SIZE]
->>
->> So the first super block is completely garbage, no wonder neither kern=
-el
->> nor the btrfs-progs detects the fs.
->>
->> [...]
->>>
->>>
->>> superblock: bytenr=3D67108864, device=3D/dev/md/1
->>> ---------------------------------------------------------
->>> csum_type               0 (crc32c)
->>> csum_size               4
->>> csum                    0x636f9da3 [match]
->>> bytenr                  67108864
->>> flags                   0x1
->>>                         ( WRITTEN )
->>> magic                   _BHRfS_M [match]
->>
->> Still have a good backup.
->>
->> I'm not sure what makes the first super block completely garbage. It c=
-an
->> be bad trim or whatever something wrong.
->>
->> But anyway, you can try to fix it by "btrfs rescue super-recover
->> /dev/md/1" to at least recover the superblock so that kernel and
->> btrfs-progs can recognize the system.
->>
->> Then you may like to run a "btrfs check --readonly /dev/md/1" to make
->> sure nothing else is corrupted.
->>
->> Thanks,
->> Qu
->>
->>> fsid                    6bd5c974-2565-4736-815d-fe071f560e68
->>> metadata_uuid           6bd5c974-2565-4736-815d-fe071f560e68
->>> label
->>> generation              168
->>> root                    340721664
->>> sys_array_size          129
->>> chunk_root_generation   156
->>> root_level              1
->>> chunk_root              22020096
->>> chunk_root_level        1
->>> log_root                0
->>> log_root_transid        0
->>> log_root_level          0
->>> total_bytes             375567417344
->>> bytes_used              243939692544
->>> sectorsize              4096
->>> nodesize                16384
->>> leafsize (deprecated)   16384
->>> stripesize              4096
->>> root_dir                6
->>> num_devices             1
->>> compat_flags            0x0
->>> compat_ro_flags         0x0
->>> incompat_flags          0x161
->>>                         ( MIXED_BACKREF |
->>>                           BIG_METADATA |
->>>                           EXTENDED_IREF |
->>>                           SKINNY_METADATA )
->>> cache_generation        168
->>> uuid_tree_generation    168
->>> dev_item.uuid           d71e03b8-b353-4242-a65a-dc9d60bc46a6
->>> dev_item.fsid           6bd5c974-2565-4736-815d-fe071f560e68 [match]
->>> dev_item.type           0
->>> dev_item.total_bytes    375567417344
->>> dev_item.bytes_used     248059527168
->>> dev_item.io_align       4096
->>> dev_item.io_width       4096
->>> dev_item.sector_size    4096
->>> dev_item.devid          1
->>> dev_item.dev_group      0
->>> dev_item.seek_speed     0
->>> dev_item.bandwidth      0
->>> dev_item.generation     0
->>> sys_chunk_array[2048]:
->>>         item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
->>>                 length 8388608 owner 2 stripe_len 65536 type SYSTEM|D=
-UP
->>>                 io_align 65536 io_width 65536 sector_size 4096
->>>                 num_stripes 2 sub_stripes 0
->>>                         stripe 0 devid 1 offset 22020096
->>>                         dev_uuid d71e03b8-b353-4242-a65a-dc9d60bc46a6=
-
->>>                         stripe 1 devid 1 offset 30408704
->>>                         dev_uuid d71e03b8-b353-4242-a65a-dc9d60bc46a6=
-
->>> backup_roots[4]:
->>>         backup 0:
->>>                 backup_tree_root:       350814208       gen: 166     =
-   level: 1
->>>                 backup_chunk_root:      22020096        gen: 156     =
-   level: 1
->>>                 backup_extent_root:     340721664       gen: 166     =
-   level: 2
->>>                 backup_fs_root:         338608128       gen: 166     =
-   level: 2
->>>                 backup_dev_root:        354140160       gen: 166     =
-   level: 1
->>>                 backup_csum_root:       353402880       gen: 166     =
-   level: 2
->>>                 backup_total_bytes:     375567417344
->>>                 backup_bytes_used:      243939692544
->>>                 backup_num_devices:     1
->>>
->>>         backup 1:
->>>                 backup_tree_root:       57311232        gen: 167     =
-   level: 1
->>>                 backup_chunk_root:      22020096        gen: 156     =
-   level: 1
->>>                 backup_extent_root:     69419008        gen: 167     =
-   level: 2
->>>                 backup_fs_root:         338608128       gen: 166     =
-   level: 2
->>>                 backup_dev_root:        317472768       gen: 167     =
-   level: 1
->>>                 backup_csum_root:       345784320       gen: 167     =
-   level: 2
->>>                 backup_total_bytes:     375567417344
->>>                 backup_bytes_used:      243939692544
->>>                 backup_num_devices:     1
->>>
->>>         backup 2:
->>>                 backup_tree_root:       340721664       gen: 168     =
-   level: 1
->>>                 backup_chunk_root:      22020096        gen: 156     =
-   level: 1
->>>                 backup_extent_root:     340738048       gen: 168     =
-   level: 2
->>>                 backup_fs_root:         338608128       gen: 166     =
-   level: 2
->>>                 backup_dev_root:        345358336       gen: 168     =
-   level: 1
->>>                 backup_csum_root:       353320960       gen: 168     =
-   level: 2
->>>                 backup_total_bytes:     375567417344
->>>                 backup_bytes_used:      243939692544
->>>                 backup_num_devices:     1
->>>
->>>         backup 3:
->>>                 backup_tree_root:       57311232        gen: 165     =
-   level: 1
->>>                 backup_chunk_root:      22020096        gen: 156     =
-   level: 1
->>>                 backup_extent_root:     69419008        gen: 165     =
-   level: 2
->>>                 backup_fs_root:         352387072       gen: 157     =
-   level: 2
->>>                 backup_dev_root:        317325312       gen: 165     =
-   level: 1
->>>                 backup_csum_root:       343932928       gen: 165     =
-   level: 2
->>>                 backup_total_bytes:     375567417344
->>>                 backup_bytes_used:      243939692544
->>>                 backup_num_devices:     1
->>>
->>>
->>> superblock: bytenr=3D274877906944, device=3D/dev/md/1
->>> ---------------------------------------------------------
->>> csum_type               0 (crc32c)
->>> csum_size               4
->>> csum                    0x9ee8cb92 [match]
->>> bytenr                  274877906944
->>> flags                   0x1
->>>                         ( WRITTEN )
->>> magic                   _BHRfS_M [match]
->>> fsid                    6bd5c974-2565-4736-815d-fe071f560e68
->>> metadata_uuid           6bd5c974-2565-4736-815d-fe071f560e68
->>> label
->>> generation              168
->>> root                    340721664
->>> sys_array_size          129
->>> chunk_root_generation   156
->>> root_level              1
->>> chunk_root              22020096
->>> chunk_root_level        1
->>> log_root                0
->>> log_root_transid        0
->>> log_root_level          0
->>> total_bytes             375567417344
->>> bytes_used              243939692544
->>> sectorsize              4096
->>> nodesize                16384
->>> leafsize (deprecated)   16384
->>> stripesize              4096
->>> root_dir                6
->>> num_devices             1
->>> compat_flags            0x0
->>> compat_ro_flags         0x0
->>> incompat_flags          0x161
->>>                         ( MIXED_BACKREF |
->>>                           BIG_METADATA |
->>>                           EXTENDED_IREF |
->>>                           SKINNY_METADATA )
->>> cache_generation        168
->>> uuid_tree_generation    168
->>> dev_item.uuid           d71e03b8-b353-4242-a65a-dc9d60bc46a6
->>> dev_item.fsid           6bd5c974-2565-4736-815d-fe071f560e68 [match]
->>> dev_item.type           0
->>> dev_item.total_bytes    375567417344
->>> dev_item.bytes_used     248059527168
->>> dev_item.io_align       4096
->>> dev_item.io_width       4096
->>> dev_item.sector_size    4096
->>> dev_item.devid          1
->>> dev_item.dev_group      0
->>> dev_item.seek_speed     0
->>> dev_item.bandwidth      0
->>> dev_item.generation     0
->>> sys_chunk_array[2048]:
->>>         item 0 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096)
->>>                 length 8388608 owner 2 stripe_len 65536 type SYSTEM|D=
-UP
->>>                 io_align 65536 io_width 65536 sector_size 4096
->>>                 num_stripes 2 sub_stripes 0
->>>                         stripe 0 devid 1 offset 22020096
->>>                         dev_uuid d71e03b8-b353-4242-a65a-dc9d60bc46a6=
-
->>>                         stripe 1 devid 1 offset 30408704
->>>                         dev_uuid d71e03b8-b353-4242-a65a-dc9d60bc46a6=
-
->>> backup_roots[4]:
->>>         backup 0:
->>>                 backup_tree_root:       350814208       gen: 166     =
-   level: 1
->>>                 backup_chunk_root:      22020096        gen: 156     =
-   level: 1
->>>                 backup_extent_root:     340721664       gen: 166     =
-   level: 2
->>>                 backup_fs_root:         338608128       gen: 166     =
-   level: 2
->>>                 backup_dev_root:        354140160       gen: 166     =
-   level: 1
->>>                 backup_csum_root:       353402880       gen: 166     =
-   level: 2
->>>                 backup_total_bytes:     375567417344
->>>                 backup_bytes_used:      243939692544
->>>                 backup_num_devices:     1
->>>
->>>         backup 1:
->>>                 backup_tree_root:       57311232        gen: 167     =
-   level: 1
->>>                 backup_chunk_root:      22020096        gen: 156     =
-   level: 1
->>>                 backup_extent_root:     69419008        gen: 167     =
-   level: 2
->>>                 backup_fs_root:         338608128       gen: 166     =
-   level: 2
->>>                 backup_dev_root:        317472768       gen: 167     =
-   level: 1
->>>                 backup_csum_root:       345784320       gen: 167     =
-   level: 2
->>>                 backup_total_bytes:     375567417344
->>>                 backup_bytes_used:      243939692544
->>>                 backup_num_devices:     1
->>>
->>>         backup 2:
->>>                 backup_tree_root:       340721664       gen: 168     =
-   level: 1
->>>                 backup_chunk_root:      22020096        gen: 156     =
-   level: 1
->>>                 backup_extent_root:     340738048       gen: 168     =
-   level: 2
->>>                 backup_fs_root:         338608128       gen: 166     =
-   level: 2
->>>                 backup_dev_root:        345358336       gen: 168     =
-   level: 1
->>>                 backup_csum_root:       353320960       gen: 168     =
-   level: 2
->>>                 backup_total_bytes:     375567417344
->>>                 backup_bytes_used:      243939692544
->>>                 backup_num_devices:     1
->>>
->>>         backup 3:
->>>                 backup_tree_root:       57311232        gen: 165     =
-   level: 1
->>>                 backup_chunk_root:      22020096        gen: 156     =
-   level: 1
->>>                 backup_extent_root:     69419008        gen: 165     =
-   level: 2
->>>                 backup_fs_root:         352387072       gen: 157     =
-   level: 2
->>>                 backup_dev_root:        317325312       gen: 165     =
-   level: 1
->>>                 backup_csum_root:       343932928       gen: 165     =
-   level: 2
->>>                 backup_total_bytes:     375567417344
->>>                 backup_bytes_used:      243939692544
->>>                 backup_num_devices:     1
->>>
->>>
->>>
->>>
->>>
->>> Mit freundlichen Gr=C3=BC=C3=9Fen/Kind regards
->>>
->>>
->>> Felix Koop
->>>
->>>
->>>> Qu Wenruo <quwenruo.btrfs@gmx.com> hat am 22. September 2019 um 11:5=
-0 geschrieben:
->>>>
->>>>
->>>>
->>>>
->>>> On 2019/9/22 =E4=B8=8B=E5=8D=882:34, Felix Koop wrote:
->>>>> Hello,
->>>>>
->>>>> I need help accessing a btrfs-filesystem. When I try to mount the f=
-s, I
->>>>> get the following error:
->>>>>
->>>>> # mount -t btrfs /dev/md/1 /mnt
->>>>> mount: /mnt: wrong fs type, bad option, bad superblock on /dev/md1,=
-
->>>>> missing codepage or helper program, or other error.
->>>>
->>>> dmesg please.
->>>>
->>>>>
->>>>> When I then try to check the fs, this is what I get:
->>>>>
->>>>> # btrfs check /dev/md/1
->>>>> Opening filesystem to check...
->>>>> No valid Btrfs found on /dev/md/1
->>>>> ERROR: cannot open file system
->>>>
->>>> As it said, it can't find the primary superblock.
->>>>
->>>> Please provide the following output.
->>>>
->>>> # btrfs ins dump-super -fFa /dev/md/1
->>>>
->>>> And kernel and btrfs-progs version please.
->>>>
->>>> Thanks,
->>>> Qu
->>>>>
->>>>> Can anybody help me how to recover my data?
->>>>>
->>>>>
->>>>
->>
+I can't find sysfs on the system - should it be mounted uner /sys ? This =
+is what I have:
+morten@MHPNAS:/$ cd sys
+morten@MHPNAS:/sys$ ls
+block  bus  class  dev  devices  firmware  fs  kernel  module  power
+morten@MHPNAS:/sys$ cd fs
+morten@MHPNAS:/sys/fs$ ls
+btrfs  cgroup  ecryptfs  ext4  fuse  pstore
+morten@MHPNAS:/sys/fs$
 
 
---WfHgCp36q0rFx9r1kO6cw7okPMkIuEbwq--
+With respect to the vmdk, I only store it on the NAS for backup.=20
 
---V6Mc3rjUwsZpCBpUr0rWI5c6DemYIHssL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Thanks a lot
 
------BEGIN PGP SIGNATURE-----
+Best=20
+Hoegge
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2J4KIACgkQwj2R86El
-/qhnywf+OIzdduYXMvoMXEKJF712nrvyBQaR8XrGhLNBAkIGGf9zVyvBV1mgtRPu
-zFc1cTV8PX3TrMyGxncdLHpF2uNPLKkPyL3Ky2kfD+PziKV/4Sh6Te2DTDOLcdQ4
-LMSA1vN85wWIs7F4we8TY00vRgFpQW/Zsu4kVDmSW+/1Y/d4H4Rei57JjVJAD3OZ
-90RXc2pJZ7YdAxH6T1Ux5o2iAfkfuseXBVUeSWZdwclFQO25nAU5kd9ZUvpmEGlO
-8IYuKpTktf/I38gaGxVxH8ABo9rFpsG3kDBH/VIjMpupcN9CYJy6STmvGri2VCtG
-LpJZnjDs9QrPM3Sgc0gM4cGxaEpe/A==
-=vT1u
------END PGP SIGNATURE-----
+-----Original Message-----
+From: Chris Murphy <lists@colorremedies.com>=20
+Sent: 2019-09-23 22:59
+To: hoegge@gmail.com
+Cc: Chris Murphy <lists@colorremedies.com>; Btrfs BTRFS =
+<linux-btrfs@vger.kernel.org>
+Subject: Re: BTRFS checksum mismatch - false positives
 
---V6Mc3rjUwsZpCBpUr0rWI5c6DemYIHssL--
+On Mon, Sep 23, 2019 at 2:24 PM <hoegge@gmail.com> wrote:
+>
+> Hi Chris
+>
+> uname:
+> Linux MHPNAS 3.10.105 #24922 SMP Wed Jul 3 16:37:24 CST 2019 x86_64=20
+> GNU/Linux synology_avoton_1815+
+>
+> btrfs --version
+> btrfs-progs v4.0
+>
+> ash-4.3# btrfs device stats .
+> [/dev/mapper/vg1-volume_1].write_io_errs   0
+> [/dev/mapper/vg1-volume_1].read_io_errs    0
+> [/dev/mapper/vg1-volume_1].flush_io_errs   0
+> [/dev/mapper/vg1-volume_1].corruption_errs 1014=20
+> [/dev/mapper/vg1-volume_1].generation_errs 0
+
+I'm pretty sure these values are per 4KiB block on x86. If that's =
+correct, this is ~4MiB of corruption.
+
+
+> Concerning self healing? Synology run BTRFS on top of their SHR - =
+which means, this where there is redundancy (like RAID5 / RAID6). I =
+don't think they use any BTRFS RAID  (likely due to the RAID5/6 issues =
+with BTRFS). Does that then mean, there is no redundancy / self-healing =
+available for data?
+
+That's correct. What do you get for
+
+# btrfs fi show
+# btrfs fi df <mountpoint>
+
+mountpoint is for the btrfs volume - any location it's mounted on will =
+do
+
+
+
+> How would you like the log files - in private mail. I assume it is the =
+kern.log. To make them useful, I suppose I should also pinpoint which =
+files seem to be intact?
+
+You could do a firefox send which will encrypt it locally and allow you =
+to put a limit on the number of times it can be downloaded if you want =
+to avoid bots from seeing it. *shrug*
+
+>
+> I gather it is the "BTRFS: (null) at logical ... " line that indicate =
+mismatch errors ? Not sure why the state "(null"). Like:
+>
+> 2019-09-22T16:52:09+02:00 MHPNAS kernel: [1208505.999676] BTRFS:=20
+> (null) at logical 1123177283584 on dev /dev/vg1/volume_1, sector=20
+> 2246150816, root 259, inode 305979, offset 1316306944, length 4096,=20
+> links 1 (path: Backup/Virtual Machines/Kan slettes/Smaller Clone of=20
+> Windows 7 x64 for win 10 upgrade.vmwarevm/Windows 7 x64-cl1.vmdk)
+
+If they're all like this one, this is strictly a data corruption issue. =
+You can resolve it by replacing it with a known good copy. Or you can =
+unmount the Btrfs file system and use 'btrfs restore' to scrape out the =
+"bad" copy. Whenever there's a checksum error like this on Btrfs, it =
+will EIO to user space, it will not let you copy out this file if it =
+thinks it's corrupt. Whereas 'btrfs restore' will let you do it. That =
+particular version you have, I'm not sure if it'll complain, but if so, =
+there's a flag to make it ignore errors so you can still get that file =
+out. Then remount, and copy that file right on top of itself. Of course =
+this isn't fixing corruption if it's real, it just makes the checksum =
+warnings go away.
+
+I'm gonna guess Synology has a way to do a scrub and check the results =
+but I don't know how it works, whether it does a Btrfs only scrub or =
+also an md scrub. You'd need to ask them or infer it from how this whole =
+stack is assembled and what processes get used. But you can do an md =
+scrub on your own. From 'man 4 md'
+
+ "      md arrays can be scrubbed by writing either check or repair to
+the file md/sync_action in the sysfs directory for the device."
+
+You'd probably want to do a check. If you write repair, then md assumes =
+data chunks are good, and merely rewrites all new parity chunks. The =
+check will compare data chunks to parity chunks and report any mismatch =
+in
+
+"       A count of mismatches is recorded in the sysfs file
+md/mismatch_cnt.  This is set to zero when a scrub starts and is =
+incremented whenever a  sector "
+
+That should be 0.
+
+If that is not a 0 then there's a chance there's been some form of =
+silent data corruption since that file was originally copied to the NAS. =
+But offhand I can't account for why they trigger checksum mismatches on =
+Btrfs and yet md5 matches the original files elsewhere.
+
+Are you sharing the vmdk over the network to a VM? Or is it static and =
+totally unused while on the NAS?
+
+
+
+Chris Murphy
+
