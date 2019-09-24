@@ -2,114 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67CFABC5AC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 12:30:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C60BC641
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 13:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408192AbfIXK37 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 06:29:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51112 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387644AbfIXK37 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 06:29:59 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EDA06AE79;
-        Tue, 24 Sep 2019 10:29:56 +0000 (UTC)
-Subject: Re: [PATCH 2/2] btrfs: add ioctl for directly writing compressed data
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-References: <cover.1567623877.git.osandov@fb.com>
- <8eae56abb90c0fe87c350322485ce8674e135074.1567623877.git.osandov@fb.com>
- <652f5971-2c82-e766-fde4-2076e65cf948@suse.com>
- <20190919061404.GA105652@vader>
- <625001e7-dd04-0550-cbb0-7437fe901944@suse.com>
- <20190919075952.GA121676@vader>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <58c674d0-5786-c258-9b69-d5bbbf613af8@suse.com>
-Date:   Tue, 24 Sep 2019 13:29:54 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2504544AbfIXLIQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 07:08:16 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:41562 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504517AbfIXLIP (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 07:08:15 -0400
+Received: by mail-vs1-f67.google.com with SMTP id l2so1016418vsr.8
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 04:08:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ndctJhoRHCC+qxNgc9m3CnahrITUysjKelj0cqBG3Lc=;
+        b=mqvGHQ8BF5JR4SMDnfliR/XtLWqazPTpqLNx2lxRNYqfNSk1GwLP9q9Ie3I+E86wv3
+         TwTeK1fUNX5sdgVU6UO+JjekYazh+Es8KcUA3oNa1JjEB4Mu0eHFu6aVm/s5eQFn/AKo
+         pJxxOARhEeMLz/4Xo+skuZ50GlVlCJYnVC7utCH9vbWHDzf/AjcZYjTeaECyKRReQgzV
+         6VeBvjYHJ1F2r0WfEV8pFTAFCY4d2SMEKjAgI4I51gjsgpq087313UvmpMqbMW5whujY
+         iFqcxATFwevgHuf+QJftDorHVputwYERN9ZnqGtTb3IeUmXQtxssU6gEU1QMydt5IBfK
+         Efvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ndctJhoRHCC+qxNgc9m3CnahrITUysjKelj0cqBG3Lc=;
+        b=lBT1qtT/OnKuLNqbUNN0vfjbFqw+dWoYiSnh/bV+a0mQRax+NGRAh+HB5Eon9iSdx0
+         XBZgaXJOYG6VE3BaU5+5lP437cSq7py1Vvb+bBdrtY3m/UO6ORyA8qlJ9yRW7rnRBX/q
+         aEw7s5cMV5QCrVkM3HZjE2Yhj1LiayXr3OpUehCMmwDLC5Gcl1SvNetDf6TQ/RBAvWjF
+         mYojvxfn01LdloYFJWbXyOk0t9KanRRNNyTM8fTdTIBIb30hNbNbgs88Ga1aGEFXbSN+
+         D02Ivq+oYvxxXl6qfABjNamsF4O7pZNA4Cx4iGgf3ZB0IKSdE4w3Qr/bd3cGUAzvbV3V
+         xbqA==
+X-Gm-Message-State: APjAAAV7ubqirBfrQQMTea7IDgD6dA0nDv7UDgwPWgwFysUCzD2JUByx
+        Q8rL25JBzS20mDcNKlTiD6TuDRS1h2Sridpdpls=
+X-Google-Smtp-Source: APXvYqyMBQUMFYfFU/aSyrz8U84Uz5TwOlvlEtuH8RUerGMIbKiFJ+98WmR0xr4YcpAxOCHVEvkjtW2xyE8LenBNg+M=
+X-Received: by 2002:a67:2d95:: with SMTP id t143mr1102634vst.47.1569323294538;
+ Tue, 24 Sep 2019 04:08:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190919075952.GA121676@vader>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CA+X5Wn7Rtw4rTqXTG8wrEc883uFV7JpGo-zD8FhhD9gM+_Vpfg@mail.gmail.com>
+ <CAL3q7H41BpuVTHOAMOFcVvVsJuc4iR10KKPDVfgEsG=ZEpwmWw@mail.gmail.com> <CAL3q7H4wDdzfA+H0HPk7oKNO3PDiN1nYHpRu5v6rRXvxQFVLbQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H4wDdzfA+H0HPk7oKNO3PDiN1nYHpRu5v6rRXvxQFVLbQ@mail.gmail.com>
+From:   James Harvey <jamespharvey20@gmail.com>
+Date:   Tue, 24 Sep 2019 07:07:41 -0400
+Message-ID: <CA+X5Wn4ZmwnJry0zjyAYow-jEU7PSdE16ROSqfaKyGavLoGVQQ@mail.gmail.com>
+Subject: Re: WITH regression patch, still btrfs-transacti blocked for... (forever)
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Tue, Sep 24, 2019 at 5:58 AM Filipe Manana <fdmanana@gmail.com> wrote:
+>
+> On Sun, Sep 15, 2019 at 2:55 PM Filipe Manana <fdmanana@gmail.com> wrote:
+> >
+> > On Sun, Sep 15, 2019 at 1:46 PM James Harvey <jamespharvey20@gmail.com> wrote:
+> > > ...
+> > > You'll see they're different looking backtraces than without the
+> > > patch, so I don't actually know if it's related to the original
+> > > regression that several others reported or not.
+> >
+> > It's a different problem.
+>
+> So the good news is that on upcoming 5.4 the problem can't happen, due
+> to a large patch series from Josef regarding space reservation
+> handling which, as a side effect, solves that problem and doesn't
+> introduce new ones with concurrent fsyncs.
+>
+> However that's a large patch set which depends on a lot of previous
+> cleanups, some of which landed in the 5.3 merge window,
+> Backporting all those patches is against the backport policies for
+> stable release [1], since many of the dependencies are cleanup patches
+> and many are large (well over the 100 lines limit).
+>
+> On the other it's not possible to send a fix for stable releases that
+> doesn't land on Linus' tree first, as there's nothing to fix on the
+> current merge window (5.4) since that deadlock can't happen there.
+>
+> So it seems like a dead end to me.
+>
+> Fortunately, as you told me privately, you only hit this once and it's
+> not a frequent issue for you (unlike the 5.2 regression which
+> caused you the hang very often). You can workaround it by mounting the
+> fs with "-o notreelog", which makes fsyncs more expensive,
+> so you'll likely see some performance degradation for your
+> applications (higher latency, less throughput).
+>
+> [1] https://www.kernel.org/doc/html/v4.15/process/stable-kernel-rules.html
 
 
-On 19.09.19 г. 10:59 ч., Omar Sandoval wrote:
-> On Thu, Sep 19, 2019 at 09:46:31AM +0200, Nikolay Borisov wrote:
->>
->>
->> On 19.09.19 г. 9:14 ч., Omar Sandoval wrote:
->>> On Thu, Sep 05, 2019 at 01:33:56PM +0300, Nikolay Borisov wrote:
->>
->> <snip>
->>
->>>>
->>>> Won't btrfs_lock_and_flush_ordered_range suffice here? Perhaps call that
->>>> function + invalidate_inode_pages2_range ?
->>>
->>> No, btrfs_lock_and_flush_ordered_range() doesn't write out dirty pages,
->>> so it's not sufficient here.
->>
->> But it does - it calls btrfs_start_ordered_extent which calls
->> filemap_fdatawrite_range.
-> 
-> It only calls that for ranges which already have an ordered extent,
-> which we don't create until we're writing the dirty pages out (take a
-> look at where we call btrfs_add_ordered_extent()).
-
-Right, btrfs_wait_ordered_range actually does btrfs_fdatawrite_range to
-instantiate any pending ranges and then does the lookup_first_ordered_
-extent/start_ordered_extent loop.
-
-> 
+All understood, thanks for letting me know.  Not a problem.  I have
+still only ran into this crash once, about 9 days ago.  I haven't had
+another btrfs problem since then, unlike the hourly hangs on 5.2 with
+heavy I/O.
