@@ -2,101 +2,151 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A8C60BC641
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 13:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 720D5BC691
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 13:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504544AbfIXLIQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 07:08:16 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:41562 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504517AbfIXLIP (ORCPT
+        id S2409605AbfIXLVT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 07:21:19 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:37792 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388125AbfIXLVT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 07:08:15 -0400
-Received: by mail-vs1-f67.google.com with SMTP id l2so1016418vsr.8
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 04:08:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ndctJhoRHCC+qxNgc9m3CnahrITUysjKelj0cqBG3Lc=;
-        b=mqvGHQ8BF5JR4SMDnfliR/XtLWqazPTpqLNx2lxRNYqfNSk1GwLP9q9Ie3I+E86wv3
-         TwTeK1fUNX5sdgVU6UO+JjekYazh+Es8KcUA3oNa1JjEB4Mu0eHFu6aVm/s5eQFn/AKo
-         pJxxOARhEeMLz/4Xo+skuZ50GlVlCJYnVC7utCH9vbWHDzf/AjcZYjTeaECyKRReQgzV
-         6VeBvjYHJ1F2r0WfEV8pFTAFCY4d2SMEKjAgI4I51gjsgpq087313UvmpMqbMW5whujY
-         iFqcxATFwevgHuf+QJftDorHVputwYERN9ZnqGtTb3IeUmXQtxssU6gEU1QMydt5IBfK
-         Efvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ndctJhoRHCC+qxNgc9m3CnahrITUysjKelj0cqBG3Lc=;
-        b=lBT1qtT/OnKuLNqbUNN0vfjbFqw+dWoYiSnh/bV+a0mQRax+NGRAh+HB5Eon9iSdx0
-         XBZgaXJOYG6VE3BaU5+5lP437cSq7py1Vvb+bBdrtY3m/UO6ORyA8qlJ9yRW7rnRBX/q
-         aEw7s5cMV5QCrVkM3HZjE2Yhj1LiayXr3OpUehCMmwDLC5Gcl1SvNetDf6TQ/RBAvWjF
-         mYojvxfn01LdloYFJWbXyOk0t9KanRRNNyTM8fTdTIBIb30hNbNbgs88Ga1aGEFXbSN+
-         D02Ivq+oYvxxXl6qfABjNamsF4O7pZNA4Cx4iGgf3ZB0IKSdE4w3Qr/bd3cGUAzvbV3V
-         xbqA==
-X-Gm-Message-State: APjAAAV7ubqirBfrQQMTea7IDgD6dA0nDv7UDgwPWgwFysUCzD2JUByx
-        Q8rL25JBzS20mDcNKlTiD6TuDRS1h2Sridpdpls=
-X-Google-Smtp-Source: APXvYqyMBQUMFYfFU/aSyrz8U84Uz5TwOlvlEtuH8RUerGMIbKiFJ+98WmR0xr4YcpAxOCHVEvkjtW2xyE8LenBNg+M=
-X-Received: by 2002:a67:2d95:: with SMTP id t143mr1102634vst.47.1569323294538;
- Tue, 24 Sep 2019 04:08:14 -0700 (PDT)
+        Tue, 24 Sep 2019 07:21:19 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8OBJPAt141948;
+        Tue, 24 Sep 2019 11:21:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
+ references : message-id : date : mime-version : in-reply-to : content-type
+ : content-transfer-encoding; s=corp-2019-08-05;
+ bh=X3vwedJndxgTA+uum+8XCK6v/YiRQvUR8UYW9vIgMz8=;
+ b=VdhY+DYNOPRCBBjwEqXbyRsIo4JHy7zgRVwfIkVd5PLqLyYznE/HRn394kuTcuqnjWVB
+ XI0hs27CV9or0OmE3gXLERgETUsytT0MFEeu50fccq8BLmIEoflQ7koF1VOEyZUd2mer
+ +JJWI9WMmPeSZ9hsTmcp6DOO4bhJVHWi1TT9C3qsYBIN29avoVzG67KvCHS0tQ8SXygb
+ cvIm7Yy6SzNqheepd0BgqnqLBJzyHM55xrj146p2MVafQS3/sTR061ID38fOmZuF65Iq
+ jqaZjttrGmsqpZJP5QJYB/DLhiePmXQ5LWqpSgfi5LW6fPpVh6oe6I/rrfBVfrSgGXfL sw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2v5cgqwagt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Sep 2019 11:21:11 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8OBIIix025350;
+        Tue, 24 Sep 2019 11:21:10 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2v6yvrg19g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 24 Sep 2019 11:21:10 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8OBL9Bd026579;
+        Tue, 24 Sep 2019 11:21:09 GMT
+Received: from [192.168.1.145] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 24 Sep 2019 04:21:09 -0700
+Subject: Re: [PATCH] btrfs-progs: drop unique uuid test for btrfstune -M
+From:   Anand Jain <anand.jain@oracle.com>
+To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20190906005025.2678-1-anand.jain@oracle.com>
+ <f3d33e1d-803e-34a5-4dfa-7eeceec6177c@suse.com>
+ <232bccd3-3623-8ee9-18db-98edf7cd2e25@oracle.com>
+ <673ba386-debc-96e9-311e-4c3c0abd89d0@suse.com>
+ <41b5b682-e67f-40d6-93cb-75e4889a4b06@oracle.com>
+ <20190911170139.GH2850@twin.jikos.cz>
+ <1cd24402-40dd-86f0-ac47-91cad78ef5fe@oracle.com>
+Message-ID: <faa13b5c-38f9-980b-eb6e-5311a7437b0d@oracle.com>
+Date:   Tue, 24 Sep 2019 19:20:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <CA+X5Wn7Rtw4rTqXTG8wrEc883uFV7JpGo-zD8FhhD9gM+_Vpfg@mail.gmail.com>
- <CAL3q7H41BpuVTHOAMOFcVvVsJuc4iR10KKPDVfgEsG=ZEpwmWw@mail.gmail.com> <CAL3q7H4wDdzfA+H0HPk7oKNO3PDiN1nYHpRu5v6rRXvxQFVLbQ@mail.gmail.com>
-In-Reply-To: <CAL3q7H4wDdzfA+H0HPk7oKNO3PDiN1nYHpRu5v6rRXvxQFVLbQ@mail.gmail.com>
-From:   James Harvey <jamespharvey20@gmail.com>
-Date:   Tue, 24 Sep 2019 07:07:41 -0400
-Message-ID: <CA+X5Wn4ZmwnJry0zjyAYow-jEU7PSdE16ROSqfaKyGavLoGVQQ@mail.gmail.com>
-Subject: Re: WITH regression patch, still btrfs-transacti blocked for... (forever)
-To:     Filipe Manana <fdmanana@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1cd24402-40dd-86f0-ac47-91cad78ef5fe@oracle.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1909240115
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1909240115
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 5:58 AM Filipe Manana <fdmanana@gmail.com> wrote:
->
-> On Sun, Sep 15, 2019 at 2:55 PM Filipe Manana <fdmanana@gmail.com> wrote:
-> >
-> > On Sun, Sep 15, 2019 at 1:46 PM James Harvey <jamespharvey20@gmail.com> wrote:
-> > > ...
-> > > You'll see they're different looking backtraces than without the
-> > > patch, so I don't actually know if it's related to the original
-> > > regression that several others reported or not.
-> >
-> > It's a different problem.
->
-> So the good news is that on upcoming 5.4 the problem can't happen, due
-> to a large patch series from Josef regarding space reservation
-> handling which, as a side effect, solves that problem and doesn't
-> introduce new ones with concurrent fsyncs.
->
-> However that's a large patch set which depends on a lot of previous
-> cleanups, some of which landed in the 5.3 merge window,
-> Backporting all those patches is against the backport policies for
-> stable release [1], since many of the dependencies are cleanup patches
-> and many are large (well over the 100 lines limit).
->
-> On the other it's not possible to send a fix for stable releases that
-> doesn't land on Linus' tree first, as there's nothing to fix on the
-> current merge window (5.4) since that deadlock can't happen there.
->
-> So it seems like a dead end to me.
->
-> Fortunately, as you told me privately, you only hit this once and it's
-> not a frequent issue for you (unlike the 5.2 regression which
-> caused you the hang very often). You can workaround it by mounting the
-> fs with "-o notreelog", which makes fsyncs more expensive,
-> so you'll likely see some performance degradation for your
-> applications (higher latency, less throughput).
->
-> [1] https://www.kernel.org/doc/html/v4.15/process/stable-kernel-rules.html
+
+David, ping on this patch.
 
 
-All understood, thanks for letting me know.  Not a problem.  I have
-still only ran into this crash once, about 9 days ago.  I haven't had
-another btrfs problem since then, unlike the hourly hangs on 5.2 with
-heavy I/O.
+
+On 9/12/19 8:45 AM, Anand Jain wrote:
+> 
+> thanks for the comments, more inline below.
+> 
+>>> - btrfstume -M <uuid> isn't the place to check if the fsid is a
+>>>     duplicate. Because, libblkid will be unaware of the complete list of
+>>>     fs images with its fsid.
+>>
+>> I don't understand this part. Blkid tracks the device iformation, like
+>> the uuid, and the cache gets updated. So what does 'will be unaware of
+>> the complete list' mean?
+>>
+>> If it's on the same host it's a matter of keeping the cache in sync with
+>> the actual devices.
+> 
+> In case of vm guest images copied from the golden image there is no
+> physical device or loop device or nbd device until its configured on
+> the host when required, so check for duplicate fsid at the time of
+> btrfstune -M is not convincing or a very limited approach.
+> 
+>>> - As I said before, its a genuine use-case here where the user wants to
+>>>     revert the fsid change, so that btrfs fs root image can be booted.
+>>>     Its up-to the user if fsid is duplicate in the user space, as btrfs
+>>>     kernel rightly fails the mount if its duplicate fsid anyways.
+>>
+>> Reverting the uuid is fine 
+> 
+> ok thanks.
+> 
+>> and requiring the uuids to be unique is
+>> preventing the users doing stupid things unknowingly.
+> 
+> Right it should be done. But..
+> btrfstune -M is a wrong place. Because it can't avoid all the
+> cases of fsid getting duplicated.
+> Even after btrfstune -M, the fsid can be duplicated by the user.
+> So what's the point in restricting the btrfstune -M and fail to
+> undo the changed fsid.
+> 
+>> You seem to have a
+>> usecase where even duplicate uuids are required but I'm afraid it's not
+>> all clear how is it supposed to work. A few more examples or commands
+>> would be helpful.
+>>
+> 
+> In the use case here, even the host is also running a copy of the golden
+> image (same fsid as vm guest) and because of duplicate fsid you can
+> only mount a vm guest image on the host after the btrfstune -m command
+> on the vm guest image. But after you have done that, as the vm guest
+> fsid is changed, it fails to boot, unfortunately changed fsid can not
+> be undone without this patch.
+> 
+> The fsid can be duplicate by many different other ways anyways. So in
+> this case how does it matter if btrfstune -M tries to ensure that fsid
+> is unique among the blkid known set of devices, which may change any
+> time after btrfstune -M as well (just copy a vm guest and map it to
+> a loop device). So btrfstune -M should be free from this check and
+> help the use case as above.
+> 
+> And if we are concerned about the duplicate fsid as I asked Nikolay
+> before, we need to know what are problems in specifies, so that it can
+> be fixed in separate patches, but definitely not in btrfstune -M as
+> it can't fix the duplicate fsid problem completely as vm images can
+> be copied and mapped to a loop/nbd device anytime even after
+> btrfstune -M.
+> 
+> Thanks, Anand
+
