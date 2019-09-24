@@ -2,22 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5C1BCA9F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 16:51:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0DB7BCAC5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 17:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731145AbfIXOvL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 10:51:11 -0400
-Received: from zeniv.linux.org.uk ([195.92.253.2]:50448 "EHLO
-        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725865AbfIXOvL (ORCPT
+        id S2409775AbfIXPBs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 11:01:48 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:44714 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390565AbfIXPBs (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 10:51:11 -0400
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iCm9g-0002aV-7b; Tue, 24 Sep 2019 14:51:04 +0000
-Date:   Tue, 24 Sep 2019 15:51:04 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Tue, 24 Sep 2019 11:01:48 -0400
+Received: by mail-qk1-f196.google.com with SMTP id u22so2057181qkk.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 08:01:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FOa/V+VntQaxe6cyhiD9mxNSODNZG0ZUXo9TwH3+2Fg=;
+        b=B2mD1wnwbao8ORe3QLXAZhyWVogsJryfQS182d+JA+tox4LubIZ8Qn39tT+620T97E
+         gx17H9QKkmTA5FP3mScCfjlNm+Cn44dUbmH+DJe7J45ubNMzVHQxlxwDUwmBeME/MSJd
+         QvsSUP28Esvumu0AqFvpso9ychH0BM4CGj2ZHfx11QxTGksBXSm4Ru9V1BoN+wyFaSKM
+         ged6EwjhZnTH4dr1v7pTxPkUxtuudMsyaITrZfU5WySMq/vcAIvVu7ks//IuvJZOQ+f0
+         ObyxeIk+Zq0Er9pGwW04Q1zw9e5uW2iHa5gOpw4a1R9oLh1WsBIL6UX9F7q2+TpYm4q2
+         38XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FOa/V+VntQaxe6cyhiD9mxNSODNZG0ZUXo9TwH3+2Fg=;
+        b=YKpMhJKIB2y6tv8e/acjBdS6tR7w0GlxSs4eobklUo9KXBC7gBEA6N+kn4oU3+RwIW
+         kUEbTp/Y3ySANicL/Xy3+zMREOQSSQH/SIsVdT7+1rYF/tM6R55s7cXaP7kGF22NLXo3
+         wg4yzSL3ti11+i90pWM1hMQ+oZqLtIAvZX5auktQqoDyFhm5osaOsHQJfD8s76XjgOBb
+         H2rHhBgh9whdZKkd8d6Wqmj3zD9GfALUD0531/xKeJUoVwwZPB1rfSBKSo2VEyZkFEDs
+         LKL40ATH/RDQf6q3iaWfoAi718sDF/BhB62GkUNe/pkS8mEt+RtevtXDgqaIDztgqy88
+         fq3Q==
+X-Gm-Message-State: APjAAAWGpKtEziruS96z8iuAgd88yH9D3R9gCOjf+NJ1GeVkspP2iIWR
+        6pjjqeLqLcylNpKlOTFXMXmr1w==
+X-Google-Smtp-Source: APXvYqyHeKUl7f12o9qYxa/ZDC1DpFuyhKwYgAvs9sdcn4F04bu5aNvO7sGNU8cOA2gAqaY36wTRVQ==
+X-Received: by 2002:a37:714:: with SMTP id 20mr2905542qkh.32.1569337307456;
+        Tue, 24 Sep 2019 08:01:47 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::b7c9])
+        by smtp.gmail.com with ESMTPSA id z5sm1096672qtb.49.2019.09.24.08.01.46
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Sep 2019 08:01:46 -0700 (PDT)
+Date:   Tue, 24 Sep 2019 11:01:45 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         "zhengbin (A)" <zhengbin13@huawei.com>, Jan Kara <jack@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>,
         linux-fsdevel <linux-fsdevel@vger.kernel.org>,
@@ -27,9 +59,8 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Steve French <sfrench@us.ibm.com>
 Subject: Re: [PATCH] Re: Possible FS race condition between iterate_dir and
  d_alloc_parallel
-Message-ID: <20190924145104.GE26530@ZenIV.linux.org.uk>
-References: <CAHk-=wiPv+yo86GpA+Gd_et0KS2Cydk4gSbEj3p4S4tEb1roKw@mail.gmail.com>
- <20190914200412.GU1131@ZenIV.linux.org.uk>
+Message-ID: <20190924150144.6yqukmzwc3xlnfql@macbook-pro-91.dhcp.thefacebook.com>
+References: <20190914200412.GU1131@ZenIV.linux.org.uk>
  <CAHk-=whpoQ_hX2KeqjQs3DeX6Wb4Tmb8BkHa5zr-Xu=S55+ORg@mail.gmail.com>
  <20190915005046.GV1131@ZenIV.linux.org.uk>
  <CAHk-=wjcZBB2GpGP-cxXppzW=M0EuFnSLoTXHyqJ4BtffYrCXw@mail.gmail.com>
@@ -38,36 +69,46 @@ References: <CAHk-=wiPv+yo86GpA+Gd_et0KS2Cydk4gSbEj3p4S4tEb1roKw@mail.gmail.com>
  <20190921140731.GQ1131@ZenIV.linux.org.uk>
  <20190924025215.GA9941@ZenIV.linux.org.uk>
  <20190924133025.jeh7ond2svm3lsub@macbook-pro-91.dhcp.thefacebook.com>
+ <20190924145104.GE26530@ZenIV.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190924133025.jeh7ond2svm3lsub@macbook-pro-91.dhcp.thefacebook.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190924145104.GE26530@ZenIV.linux.org.uk>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 09:30:26AM -0400, Josef Bacik wrote:
-
-> > We pass next->d_name.name to dir_emit() (i.e. potentially to
-> > copy_to_user()).  And we have no warranty that it's not a long
-> > (== separately allocated) name, that will be freed while
-> > copy_to_user() is in progress.  Sure, it'll get an RCU delay
-> > before freeing, but that doesn't help us at all.
-> > 
-> > I'm not familiar with those areas in btrfs or cifs; could somebody
-> > explain what's going on there and can we indeed end up finding aliases
-> > to those suckers?
+On Tue, Sep 24, 2019 at 03:51:04PM +0100, Al Viro wrote:
+> On Tue, Sep 24, 2019 at 09:30:26AM -0400, Josef Bacik wrote:
 > 
-> We can't for the btrfs case.  This is used for the case where we have a link to
-> a subvolume but the root has disappeared already, so we add in that dummy inode.
-> We completely drop the dcache from that root downards when we drop the
-> subvolume, so we're not going to find aliases underneath those things.  Is that
-> what you're asking?  Thanks,
+> > > We pass next->d_name.name to dir_emit() (i.e. potentially to
+> > > copy_to_user()).  And we have no warranty that it's not a long
+> > > (== separately allocated) name, that will be freed while
+> > > copy_to_user() is in progress.  Sure, it'll get an RCU delay
+> > > before freeing, but that doesn't help us at all.
+> > > 
+> > > I'm not familiar with those areas in btrfs or cifs; could somebody
+> > > explain what's going on there and can we indeed end up finding aliases
+> > > to those suckers?
+> > 
+> > We can't for the btrfs case.  This is used for the case where we have a link to
+> > a subvolume but the root has disappeared already, so we add in that dummy inode.
+> > We completely drop the dcache from that root downards when we drop the
+> > subvolume, so we're not going to find aliases underneath those things.  Is that
+> > what you're asking?  Thanks,
+> 
+> Umm...  Completely drop, you say?  What happens if something had been opened
+> in there at that time?
+> 
+> Could you give a bit more background?  How much of that subvolume remains
+> and what does btrfs_lookup() have to work with?
 
-Umm...  Completely drop, you say?  What happens if something had been opened
-in there at that time?
+Sorry I mis-read the code a little bit.  This is purely for the subvolume link
+directories.  We haven't wandered down into this directory yet.  If the
+subvolume is being deleted and we still have the fake directory entry for it
+then we just populate it with this dummy inode and then we can't lookup anything
+underneath it.  Thanks,
 
-Could you give a bit more background?  How much of that subvolume remains
-and what does btrfs_lookup() have to work with?
+Josef
