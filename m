@@ -2,43 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7698BCC55
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 18:22:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05ECCBCC81
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Sep 2019 18:33:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441377AbfIXQWY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 12:22:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57908 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2439190AbfIXQWY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 12:22:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 94B3DAC32;
-        Tue, 24 Sep 2019 16:22:23 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 66BB6DA835; Tue, 24 Sep 2019 18:22:44 +0200 (CEST)
-Date:   Tue, 24 Sep 2019 18:22:44 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-Subject: Re: [PATCH v2 1/2] btrfs: qgroup: Fix the wrong target io_tree when
- freeing reserved data space
-Message-ID: <20190924162244.GA2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>
-References: <20190916120239.12570-1-wqu@suse.com>
+        id S2387938AbfIXQdH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 12:33:07 -0400
+Received: from zeniv.linux.org.uk ([195.92.253.2]:52086 "EHLO
+        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725208AbfIXQdH (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 12:33:07 -0400
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.2 #3 (Red Hat Linux))
+        id 1iCnkL-0005pD-Ec; Tue, 24 Sep 2019 16:33:01 +0000
+Date:   Tue, 24 Sep 2019 17:33:01 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "zhengbin (A)" <zhengbin13@huawei.com>, Jan Kara <jack@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "zhangyi (F)" <yi.zhang@huawei.com>, renxudong1@huawei.com,
+        Hou Tao <houtao1@huawei.com>, linux-btrfs@vger.kernel.org,
+        "Yan, Zheng" <zyan@redhat.com>, linux-cifs@vger.kernel.org,
+        Steve French <sfrench@us.ibm.com>
+Subject: Re: [PATCH] Re: Possible FS race condition between iterate_dir and
+ d_alloc_parallel
+Message-ID: <20190924163301.GG26530@ZenIV.linux.org.uk>
+References: <CAHk-=wjcZBB2GpGP-cxXppzW=M0EuFnSLoTXHyqJ4BtffYrCXw@mail.gmail.com>
+ <20190915160236.GW1131@ZenIV.linux.org.uk>
+ <CAHk-=whjNE+_oSBP_o_9mquUKsJn4gomL2f0MM79gxk_SkYLRw@mail.gmail.com>
+ <20190921140731.GQ1131@ZenIV.linux.org.uk>
+ <20190924025215.GA9941@ZenIV.linux.org.uk>
+ <20190924133025.jeh7ond2svm3lsub@macbook-pro-91.dhcp.thefacebook.com>
+ <20190924145104.GE26530@ZenIV.linux.org.uk>
+ <20190924150144.6yqukmzwc3xlnfql@macbook-pro-91.dhcp.thefacebook.com>
+ <20190924151107.GF26530@ZenIV.linux.org.uk>
+ <20190924152627.kmbvxb4elpxfoybf@macbook-pro-91.dhcp.thefacebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190916120239.12570-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20190924152627.kmbvxb4elpxfoybf@macbook-pro-91.dhcp.thefacebook.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 16, 2019 at 08:02:38PM +0800, Qu Wenruo wrote:
-[...]
+On Tue, Sep 24, 2019 at 11:26:28AM -0400, Josef Bacik wrote:
+> On Tue, Sep 24, 2019 at 04:11:07PM +0100, Al Viro wrote:
+> > On Tue, Sep 24, 2019 at 11:01:45AM -0400, Josef Bacik wrote:
+> > 
+> > > Sorry I mis-read the code a little bit.  This is purely for the subvolume link
+> > > directories.  We haven't wandered down into this directory yet.  If the
+> > > subvolume is being deleted and we still have the fake directory entry for it
+> > > then we just populate it with this dummy inode and then we can't lookup anything
+> > > underneath it.  Thanks,
+> > 
+> > Umm...  OK, I guess my question would be better stated a bit differently: we
+> > have a directory inode, with btrfs_lookup() for lookups in it *and* with
+> > dcache_readdir() called when you try to do getdents(2) on that thing.
+> > How does that work?
+> 
+> Sorry I hadn't read through the context.  We won't end up with things under this
+> directory.  The lookup will try to look up into the subvolume, see that it's
+> empty, and just return nothing.  There should never be any entries that end up
+> under this dummy entry.  Thanks,
 
-1 and 2 added to misc-next, thanks.
+Er...  Then why not use simple_lookup() in there?  Confused...
