@@ -2,147 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B95BBE73E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 23:32:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82C40BE7F7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 00:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726845AbfIYVcj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 17:32:39 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:44421 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726831AbfIYVcj (ORCPT
+        id S1726991AbfIYWBt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 18:01:49 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:37923 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728048AbfIYV5H (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 17:32:39 -0400
-Received: by mail-io1-f66.google.com with SMTP id j4so718330iog.11
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2019 14:32:38 -0700 (PDT)
+        Wed, 25 Sep 2019 17:57:07 -0400
+Received: by mail-wr1-f67.google.com with SMTP id l11so383114wrx.5
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2019 14:57:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=pallissard.net; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=j9G377CW/Ww+ABoaDkO3lj+n2byT7t0eYmIIpvSSIRE=;
-        b=C1C7R54FENjSKXgx/RD5TeLUEbZ9xivCVgGqqAgQFuTmiUx/B1BTHGUvsuHG6TO3vl
-         BUld9JCAh55L9uztZILiziQgUJwBcfWKT0VSIKOhsBR2zZrBS/UMgkTe09BPD3GksYSg
-         jyzbAaDJSgsoIqC2s4UTsWgOgvJwEFSFAMfN1rWQXg5TOsVvW49i7EQQoGzmSNMneNSr
-         CiFUqq09+6N7Q6gnSBNOwXDiR5hpDYbLy2Iod9a+C9kgjVafj/1MymUsPubUe11i54gd
-         5pg1pPMbQzt04lyCYLp2jW5pK2py0+azkEfbcuXAR+1ZI9D1wWsttx9Y80HjEBD7QfXH
-         gf0g==
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=VRaL0+YS5rj6s+2XnqIZFcFwIDExpIG/qJHDXItzUKw=;
+        b=xLGUnUUTW/AFOH8bv0esc8BsDDEijeCUO7SivRzYvv+VSEOj8fCWlQbMn7z1REhwdl
+         yxu/+LzbYXHTdSK6P6spjTPh3YoawmSpVjPnNDjk2Kvdnz0ZIVZmdCf+9WiXwkBe8UkA
+         n+wWHafWfcr190aYgSRBiflP6/VbwfJQtk61/az8UHtG33LKQfVV9fQeblWbl/rYMTbt
+         Wr54gHrzLB26JxIXTni61Io1+LYyhr1dXpmfAVCsyXqKOLkDqWTma4QT12gig9fSrKtc
+         6BpAAhLguV20n5OfJkB/BsHX5Rm8diJaGd2dwaiDs8ndd2SKaQpYNgJEb5+vq9DBOdA9
+         ns8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=j9G377CW/Ww+ABoaDkO3lj+n2byT7t0eYmIIpvSSIRE=;
-        b=nZ73T4mUh2ombQyLESoPHYhwj1Y3f/SKl0f0fs4jlROa4J7gn31V8J27VkGuqnSTkB
-         g5qrPRcahcLKFlU37Kt7ExOen7chSLt7wp1lpZaSWefhpJT00ilfJcsXjXPWIRLdenhA
-         Hib7qbW6VoX6oW/ZZE2O557anVALJ7kn+spoDPkOcNSA84ecRimF0O0s7qUOTXAMfhyE
-         Pf1yTZ+mRQP2/1yv2oLJtIvqZpb7/3zCxH5XQPy/xPDTT/rdxFOhgOpRuD8R6spxyANv
-         MtpTXwpFn8JsSIRQm26wHREAO23y57e/2fzmOS10y/GHhSxknJAjNY22qq09fuMndIvC
-         uGig==
-X-Gm-Message-State: APjAAAXw7iwDJHxVBwDcwrwjyKVoeaE42ggYb7jPi6azzmyZX9bLOZKf
-        BAZ+1oOSVlGgf4QEgNIqzmA28kSTP48=
-X-Google-Smtp-Source: APXvYqyLZv65ObJ3wakv+BUCNgfxpgzgLnorRl6NnwXimzEWEyNf3Ekpj0LHVvyho6UBoeDPZETIsg==
-X-Received: by 2002:a02:716a:: with SMTP id n42mr454681jaf.38.1569447157092;
-        Wed, 25 Sep 2019 14:32:37 -0700 (PDT)
-Received: from mail.matt.pallissard.net (149.174.239.35.bc.googleusercontent.com. [35.239.174.149])
-        by smtp.gmail.com with ESMTPSA id v3sm561127ioh.51.2019.09.25.14.32.36
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Sep 2019 14:32:36 -0700 (PDT)
-Date:   Wed, 25 Sep 2019 14:32:31 -0700
-From:   "Pallissard, Matthew" <matt@pallissard.net>
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: errors found in extent allocation tree or chunk allocation after
- power failure
-Message-ID: <20190925213231.kaqlq4ph3kgfgs5q@matt-laptop-p01>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=VRaL0+YS5rj6s+2XnqIZFcFwIDExpIG/qJHDXItzUKw=;
+        b=TkXFD8EaWMe/mtvYqrqa9BFj/thTnKNuumDTTI38rWAmVU70LOv28f+y4xMN3c23Df
+         LJqpXuTeA0tf0F1wXIJrQdqwhqAUlYodylSe3Vbr7gIwhOrVyjzvVh1YWVZLLcEXH+gj
+         N8GdxxZ7SX9tcoA6vTQwfU77UYVLQIsLq8U4CJNvHOQzNvjt2OwfeHcKkoAHzvoI3GJl
+         1zwYFt2Bkcwpu7B/anlq730+AiwhyQFXeyIP0lSVuzHNFcirGg9JVVay+hij6hhkPHwO
+         fQsngMnjelvEpjCWkTdlj1E4O/AT0zQlyQ83aU2NHXRMkh9/PNo6FY9p3c1DTFFRn9+T
+         KaRQ==
+X-Gm-Message-State: APjAAAWq86uWEpSnhA9L+LNikmPh4cwdR8Du3nxo+Pri6bsl9B7fPkdz
+        QyuY87cHaC4drbmxmL4acW/KpzD1+bCYXcPEgDp3Sw==
+X-Google-Smtp-Source: APXvYqxbRvD+MkfxjIxR0Dhj+KvraWa0yFzTytmESqndZOwPS693FMXyzGHpGZSy/sceB/c9RX06hYM1KWrfLF+CQUk=
+X-Received: by 2002:a5d:4241:: with SMTP id s1mr343615wrr.101.1569448625740;
+ Wed, 25 Sep 2019 14:57:05 -0700 (PDT)
+MIME-Version: 1.0
 References: <20190925144959.p4xyyhn2d2sajxjj@matt-laptop-p01>
  <CAJCQCtQwHRVs+XwnnUcktGcaRabZGG-UxS4o=g9y_MCiD4yG9Q@mail.gmail.com>
- <20190925193434.ieyj4oo6vkxmjtnw@matt-laptop-p01>
- <CAJCQCtQKypCbxksq5+XCwRy8enPkfZBaOgzS0SN2un+A1GELtA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="axzddf7khvybwhhq"
-Content-Disposition: inline
-In-Reply-To: <CAJCQCtQKypCbxksq5+XCwRy8enPkfZBaOgzS0SN2un+A1GELtA@mail.gmail.com>
+ <20190925193434.ieyj4oo6vkxmjtnw@matt-laptop-p01> <CAJCQCtQKypCbxksq5+XCwRy8enPkfZBaOgzS0SN2un+A1GELtA@mail.gmail.com>
+ <20190925213231.kaqlq4ph3kgfgs5q@matt-laptop-p01>
+In-Reply-To: <20190925213231.kaqlq4ph3kgfgs5q@matt-laptop-p01>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Wed, 25 Sep 2019 15:56:54 -0600
+Message-ID: <CAJCQCtTyxZA6Lf+q16mkbzHdP7B1p07u8RnLdTEFsQRRLjAmcQ@mail.gmail.com>
+Subject: Re: errors found in extent allocation tree or chunk allocation after
+ power failure
+To:     "Pallissard, Matthew" <matt@pallissard.net>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
---axzddf7khvybwhhq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On 2019-09-25T15:05:44, Chris Murphy wrote:
-> On Wed, Sep 25, 2019 at 1:34 PM Pallissard, Matthew <matt@pallissard.net> wrote:
-> > On 2019-09-25T13:08:34, Chris Murphy wrote:
-> > > On Wed, Sep 25, 2019 at 8:50 AM Pallissard, Matthew <matt@pallissard.net> wrote:
-> > > >
-> > > > Version:
-> > > > Kernel: 5.2.2-arch1-1-ARCH #1 SMP PREEMPT Sun Jul 21 19:18:34 UTC 2019 x86_64 GNU/Linux
-> > >
-> > > You need to upgrade to arch kernel 5.2.14 or newer (they backported the fix first appearing in stable 5.2.15). Or you need to downgrade to 5.1 series.
-> > > https://lore.kernel.org/linux-btrfs/20190911145542.1125-1-fdmanana@kernel.org/T/#u
-> > >
-> > > That's a nasty bug. I don't offhand see evidence that you've hit this bug. But I'm not certain. So first thing should be to use a different kernel.
-> >
-> > Interesting, I'll go ahead with a kernel upgrade as that easy enough.
-> > However, that looks like it's related to a stacktrace regarding a hung process.  Which is not the original problem I had.
-> > Based on the output in my previous email, I've been working under the assumption that there is a problem on-disk.  Is that not correct?
+On Wed, Sep 25, 2019 at 3:32 PM Pallissard, Matthew <matt@pallissard.net> w=
+rote:
 >
-> That bug does cause filesystem corruption that is not repairable.
-> Whether you have that problem or a different problem, I'm not sure.
-> But it's best to avoid combining problems.
+> On 2019-09-25T15:05:44, Chris Murphy wrote:
+> > Definitely deal with the timing issue first. If by chance there are bad=
+ sectors on any of the drives, they must be properly reported by the drive =
+with a discrete read error in order for Btrfs to do a proper fixup. If the =
+times are mismatched, then Linux can get tired waiting, and do a link reset=
+ on the drive before the read error happens. And now the whole command queu=
+e is lost and the problem isn't fixed.
 >
-> The file system mounts rw now? Or still only mounts ro?
-
-It mounts RW, but I have yet to attempt an actual write.
-
-
-> I think most of the errors reported by btrfs check, if they still exist after doing a scrub, should be repaired by 'btrfs check --repair' but I don't advise that until later. I'm not a developer, maybe Qu can offer some advise on those errors.
-
-
-> > > Next, anytime there is a crash or powerfailur with Btrfs raid56, you need to do a complete scrub of the volume. Obviously will take time but that's what needs to be done first.
-> >
-> > I'm using raid 10, not 5 or 6.
+> Good to know, that seems like a critical piece of information.  A few sea=
+rches turned up this page, https://wiki.debian.org/Btrfs#FAQ.
 >
-> Same advice, but it's not as important to raid10 because it doesn't have the write hole problem.
+> Should this be noted on the 'gotchas' or 'getting started page as well?  =
+I'd be happy to make edits should the powers that be allow it.
 
+Should what be noted as a gotcha? The timing stuff? That's not Btrfs
+specific. It's just a default that's become shitty because if the
+crazy amount of time consumer drives can take doing "deep recovery"
+for bad sectors that can exceed a minute. It's incredible how slow
+that is and how many attempts are being made. But I guess on rare
+occasion this does cause a recovery, while also making your computer
+slow as balls. Anyway, this 30 second timer is obsolete but kernel
+developers so far refuse to change it, arguing every distribution that
+cares about desktop users, and users who use consumer drives for data
+storage, should change the timer default for their users using a udev
+rule. Except no distro I know of does that. This affects everyone with
+consumer drives that have deep recoveries, mostly common with hard
+drives. But it's especially negative on large data storage stacks
+using any kind of RAID. You'll find this problem all over the
+linux-raid@ achive, it comes up all the time. Still.
 
-> > > OK actually, before the scrub you need to confirm that each drive's SCT ERC time is *less* than the kernel's SCSI command timer. e.g.
-> >
-> > I gather that I should probably do this before any scrub, be it raid 5, 6, or 10.  But, Is a scrub the operation I should attempt on this raid 10 array to repair the specific errors mentioned in my previous email?
->
-> Definitely deal with the timing issue first. If by chance there are bad sectors on any of the drives, they must be properly reported by the drive with a discrete read error in order for Btrfs to do a proper fixup. If the times are mismatched, then Linux can get tired waiting, and do a link reset on the drive before the read error happens. And now the whole command queue is lost and the problem isn't fixed.
+https://raid.wiki.kernel.org/index.php/Timeout_Mismatch
 
-Good to know, that seems like a critical piece of information.  A few searches turned up this page, https://wiki.debian.org/Btrfs#FAQ.
-
-Should this be noted on the 'gotchas' or 'getting started page as well?  I'd be happy to make edits should the powers that be allow it.
-
-
-> There are myriad errors and the advice I'm giving to scrub is a safe first step to make sure the storage stack is sane - or at least we know where the simpler problems are. And then move to the less simple ones that have higher risk.  It also changed the volume the least. Everything else, like balance and chunk recover and btrfs check --repair - all make substantial changes to the file system and have higher risk of making things worse.
-
-This sounds sensible.
-
-
-> In theory if the storage stack does exactly what Btrfs says, then at worst you should lose some data, but the file system itself should be consistent. And that includes power failures. The fact there's problems reported suggests a bug somewhere - it could be Btrfs, it could be device mapper, it could be controller or drive firmware.
-
-I'll go ahead with a kernel upgrade/make sure the timing issues are squared away.  Then I'll kick off a scrub.
-
-I'll report back when the scrub is complete or something interesting happens.  Whichever comes first.
-
-Thanks again.
-
-
-Matt Pallissard
-
---axzddf7khvybwhhq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHQEABYIAB0WIQTvIUMPApUGn6YFkXl1uof+t048SQUCXYvc6wAKCRB1uof+t048
-Sbx2APQPgYEQgFL6HP39bRBoBa4OtSwsScVXCnpNN365zqTUAQDXLnw/NhbZfctE
-4yhSS1vv7oPTo4gFyiDe8W3aGtzxCQ==
-=aD0M
------END PGP SIGNATURE-----
-
---axzddf7khvybwhhq--
+--=20
+Chris Murphy
