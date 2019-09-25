@@ -2,128 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A9CC4BDF6C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 15:50:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D2DBDF74
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 15:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406687AbfIYNu5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 09:50:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45710 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2406057AbfIYNu5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 09:50:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 332E1AF57;
-        Wed, 25 Sep 2019 13:50:55 +0000 (UTC)
-Subject: Re: [PATCH v5 1/7] btrfs-progs: add option for checksum type to mkfs
-To:     David Sterba <dsterba@suse.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20190925133728.18027-1-jthumshirn@suse.de>
- <20190925133728.18027-2-jthumshirn@suse.de>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <2cf167d7-eafc-b538-c254-525140e65ce3@suse.de>
-Date:   Wed, 25 Sep 2019 15:50:54 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S2407087AbfIYNxJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 09:53:09 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:32982 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407078AbfIYNxI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Sep 2019 09:53:08 -0400
+Received: by mail-qt1-f194.google.com with SMTP id r5so6644511qtd.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2019 06:53:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ZF84i4CGU3CtKKBNF3niOR3REIcPYNptYnGn87PU/1I=;
+        b=ztoJ47muMu4kNqCazLQ4VcFSZb2+1d497jc3ovJTEBzGC64vLRTtcY51FHG/nQb6bv
+         gVXe+INQa4QL6eKnpKrwpRuXY7qA6xSTMYxO/j3RwoZafx4q5zsvr5ZJwZoA2hAvjNg1
+         5gEcfxffAC4H7tk/9AcaZKVF0jjlTLSnsMxgdBE005k0aoO8EPzSiGAJLP6BdVBeaqLo
+         gCgiylKhb4hvSoVuzlinFD2rkiwkCYD6xqWxHUFZhQpexlPcfWyjLsGKLbIzXj72/Hvi
+         tjF87DQVMKNZMVzAbaFvpuAJeI9KB4z1vW4djDMqPzm2LKdpMsQlw3+JpeuZEcElA8G4
+         GFnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZF84i4CGU3CtKKBNF3niOR3REIcPYNptYnGn87PU/1I=;
+        b=cigGYZ1Z0t0z5LtVzYrxmYx4fDn1+g2LcTcRC+YepgKSKyz1P4XAhxtARq0865vOtU
+         jmhjomfzfssZDisVz8xy8QtrcFINmzp1Zd6zDfzDL1PkUTXLs+z1ZoUNh7bye88z3h8J
+         XtT//3UDZIga8TMKaO+RDb/ZnJHRmh2O4tytCgnYoM+utmlp1Z+ReRZM17SukZrceCXm
+         SROTXR63vN2DzD7sYq+wljzcpq2is75rxq74YR8CJ+ROI/47UsK+z/spv3AJHxQuwcsN
+         WHjsLUd0HC7RlLm8LMdF7fVR9Bq9+zq978SAg2suPkmE1NdkVdGCGQWW109A71MGCVNU
+         GC1w==
+X-Gm-Message-State: APjAAAXKw/lNFKUojwZCHyoDwZfEMCR7gu75ZdCW7WrBEfrL5cpoOuAf
+        MJxwHtU2QYMNeK2J1FXCO3VDJQ==
+X-Google-Smtp-Source: APXvYqx+8UL5T/sdJmhrDjGhHsBehF4oBgG0FTIR+hxA9aDUifkyuPPdhnq58jIkg4l1Zcm7bs/5fQ==
+X-Received: by 2002:ac8:7604:: with SMTP id t4mr8911055qtq.34.1569419586345;
+        Wed, 25 Sep 2019 06:53:06 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::db91])
+        by smtp.gmail.com with ESMTPSA id 62sm3275075qki.130.2019.09.25.06.53.05
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 25 Sep 2019 06:53:05 -0700 (PDT)
+Date:   Wed, 25 Sep 2019 09:53:04 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 0/4] The remaining extent_io.c split code
+Message-ID: <20190925135302.wyv5foxhy5tku6li@MacBook-Pro-91.local>
+References: <20190924203252.30505-1-josef@toxicpanda.com>
+ <20190925134747.GG2751@twin.jikos.cz>
 MIME-Version: 1.0
-In-Reply-To: <20190925133728.18027-2-jthumshirn@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190925134747.GG2751@twin.jikos.cz>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 25/09/2019 15:37, Johannes Thumshirn wrote:
-> Add an option to mkfs to specify which checksum algorithm will be used for
-> the filesystem.
+On Wed, Sep 25, 2019 at 03:47:47PM +0200, David Sterba wrote:
+> On Tue, Sep 24, 2019 at 04:32:48PM -0400, Josef Bacik wrote:
+> > Hopefully all of it makes it this time, if you want you can pull from
+> > 
+> > git://git.kernel.org/pub/scm/linux/kernel/git/josef/btrfs-next.git \
+> > 	extent-io-rearranging
 > 
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
-> ---
->  mkfs/main.c | 1 +
->  1 file changed, 1 insertion(+)
+> The size of the exported patch 1/4 is 109066 bytes and the diff itself
+> is incomprehensible to even see what code moves where and what is new.
 > 
-> diff --git a/mkfs/main.c b/mkfs/main.c
-> index 7a7b6417a947..61184c8e7525 100644
-> --- a/mkfs/main.c
-> +++ b/mkfs/main.c
-> @@ -354,6 +354,7 @@ static void print_usage(int ret)
->  	printf("\t--shrink                (with --rootdir) shrink the filled filesystem to minimal size\n");
->  	printf("\t-K|--nodiscard          do not perform whole device TRIM\n");
->  	printf("\t-f|--force              force overwrite of existing filesystem\n");
-> +	printf("\t--checksum              checksum algorithm to use (default: crc32c)\n");
->  	printf("  general:\n");
->  	printf("\t-q|--quiet              no messages except errors\n");
->  	printf("\t-V|--version            print the mkfs.btrfs version and exit\n");
-> 
+> I'm still thinking if this is a good idea to apply a monster patch, even
+> it's just moving code around. The previous series splitting
+> extent-tree.c were better so I'd rather take that approach again. Some
+> of the functions belong logically together and won't break compilation
+> and would actually make it possible for a human to review.
 
-This looks like it's a rebasing error. I'll investigate what went wrong
-here.
+extent-tree.c was way different because a bunch of things had to be renamed and
+exported.  Also extent-tree.c got split into many more files, so there was less
+bulk being moved around.  extent_io.c is different because basically everything
+is exported already, so it's really just move definitions, move code.  I
+literally just split vim'ed, cut and paste between the two files.
 
--- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 247165, AG München)
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+Things like this are going to be impossible to review.  It's a one time pain for
+more readability and better decisions down the road.  I did my best to keep the
+logical changes to their own patch, but the fact is we have _a lot_ of code for
+each of these different logical things.  I can turn it into 45 patches moving
+one function at a time, but who's going to go and check each individual patch?
+
+Josef
