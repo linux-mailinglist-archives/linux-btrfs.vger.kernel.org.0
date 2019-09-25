@@ -2,109 +2,249 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DB2DBD621
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 03:37:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EBA4BD62E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 03:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411295AbfIYBht (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 24 Sep 2019 21:37:49 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:37867 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392412AbfIYBht (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 24 Sep 2019 21:37:49 -0400
-Received: by mail-io1-f65.google.com with SMTP id b19so9409682iob.4
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 18:37:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zx8jYMtXzSIBAreBPaiSkIOAkhKzOQvqziESi10CWk4=;
-        b=JxeABiuWZjuLh8E6mIA4OAy9RD2KEkiqg/kFL6ub3y3N3JnVmqr7d7eAndVROwhP3s
-         E5XHXDlGb/xifuk+thR0Xg3r58meA7M89djyLBkX0ehWueVC0Ka/yVHgptcHg1X5tEcF
-         NwvC9moVQrO9eaoPAaQ/4yuLr2r+LbFpwf6SFkeysM+ZIpF7F7h+juc61V0DMJLVvS1e
-         12f8/4MUv0YKNmo0pWkTMoieQxVwXMFWsVujHlDmH5JPXJVTTGNxRSfQZ5RPjq053JBw
-         IZ7KlzMTZ5AeMObLLPzTRfONGBX5oVWgLqf5ZIWxpcwse81VkTFNTHNW2UmtSR8hukti
-         eTgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zx8jYMtXzSIBAreBPaiSkIOAkhKzOQvqziESi10CWk4=;
-        b=WuG/u7lcFJLanF06VxzqHvMqossqwLn2AhqxfFABbLazZQfB7k/7we5BhCknGzf6vL
-         1Nt+9vzmJJDK6myGg5likU5VrGWBSsLXeyfJxIgUT4aJ493EmY71CUxAL6PguaFh0CzD
-         UqAWKDLDQr0nhzf8dhi+VbYQltF6eWq1iukUgeaETzqrczWPBfver/FA5GREIZ5BvJKT
-         Mn0YHJLPsmPdqc+Rp4Ze8VZ8vCaPGVGFAclYthW1Mpuo4kazsXZt3HofqDZteJaq1w3d
-         YpTywYw5gfjVHXpOaYxH/Qa9E2l5OnK0bUrrQt+VB5d0KMKn7lnOy1bk9yXYw56/3Tw8
-         mEeg==
-X-Gm-Message-State: APjAAAXyEv9EMvt7KiE1yUxQO+OiAevaP8yaDiabj4r9KZeZuzCPVtp/
-        fPI4WhKKNVrYt3CrSBMieHoJtdDy3wyqMf271XM=
-X-Google-Smtp-Source: APXvYqwcuX7PXjsCj9N1vx1YgEiD4i5ponXiVKL8axIAiyfkRnl562HmeGE4SryMBsV8ZQU53YaDOxloO9qIVVPCsOw=
-X-Received: by 2002:a6b:6b06:: with SMTP id g6mr2668438ioc.72.1569375468283;
- Tue, 24 Sep 2019 18:37:48 -0700 (PDT)
+        id S2633672AbfIYBsU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 24 Sep 2019 21:48:20 -0400
+Received: from mout.gmx.net ([212.227.15.18]:41973 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727329AbfIYBsU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 24 Sep 2019 21:48:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1569376098;
+        bh=KcGuKj+cIHlmSQWAja9z+COF8pSv9V5nt2X4ow1dN/w=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=TCMTYyBpfl19pVy4kXNxkDpaj28eVsyWcT0ZtRhldyuTnP8SbexNrnDZUU2K3x8ZF
+         AFuMEHANhPU2GEokl0qRjaG6FURMKawjh2V/jbyLdj5dFtnkEF3isgM0oy25Yt7CA6
+         DPBCddptXvFFC53X4gGP63AU+0ltHR6pj4S7Z9b0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MzQkE-1hzYMj0dHM-00vM4G; Wed, 25
+ Sep 2019 03:48:18 +0200
+Subject: Re: error: invalid convert data profile single
+To:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtS6uHcH3CmM5WpTOGrZ8EFPkFr8Xo92X+Q+VxvBiaW4ug@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
+ bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
+ ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
+ rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
+ FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
+ 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
+ ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
+ CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
+ f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
+ mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
+ 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
+ h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
+Message-ID: <dd2ed71d-df70-28e2-206d-afd16dad64a6@gmx.com>
+Date:   Wed, 25 Sep 2019 09:48:12 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-References: <CAFN5=-NhtmJ5NTePqdyUPaWm2r0oTbbCrmC0dOhC5fm2EtWwHA@mail.gmail.com>
- <CAJCQCtSUFcpCX_w-iWqsrjK3O5bpT=PMfmQk23mVeYrz1jo8Mg@mail.gmail.com>
-In-Reply-To: <CAJCQCtSUFcpCX_w-iWqsrjK3O5bpT=PMfmQk23mVeYrz1jo8Mg@mail.gmail.com>
-From:   Charles Wright <charles.v.wright@gmail.com>
-Date:   Tue, 24 Sep 2019 21:37:37 -0400
-Message-ID: <CAFN5=-NrfZs8d=H8iTJtKM2is2E_XbZ8eewN+C=tHQxUX4knsg@mail.gmail.com>
-Subject: Re: Tree checker
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAJCQCtS6uHcH3CmM5WpTOGrZ8EFPkFr8Xo92X+Q+VxvBiaW4ug@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="OHITWCYjaq234IOYQzHFoMtpgtLiRJZ6l"
+X-Provags-ID: V03:K1:LgjdOafoKbvqB7tZT8FcVxucKJTDhVD+XIwvj21rZsaKUdubuAe
+ L0Hm1RlX5N5NO8F/l+aoyJkq1BA8lK0E0Ste2UGseflS5eXhQdb6aRSGBzedwUT2uf0OmCJ
+ JyR8OQDGWUYdjkFS3RrzDpVa6quYFFrThdZn0H/wv9XDKS1uhZPFsW9MdIRoPvMrenF/iO2
+ T6kmN4kxxRBEkeSoBzkqg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xU8yPIUENJQ=:aXt2iEAhniqa6e9bFfQWhl
+ 9C9uj3mnqtt99a1vKBAPrEKCxlHfbaBFZbLyVL4NmTPKxZzYM61XA/fU2aLoowh/wMcFoASpl
+ jd6Jly16a4mchJYegAq2S7WHOZm1uGcIZT3uGeFqOZQVQfS+2Y/SOOPnmzanQw5G7tV7FZSyG
+ GoddXCNmA0GsX1N3YnHLfGkUmPvE2QGsF1X49c+hBui2AxkBtoBuNvLJUXKlF5cb/+4t20nCY
+ fzUzQSVUldkMh2n/8EN7mKXekRiKqF9riNmkgTw7V24afF0z/+PR0y+pAkj1nQODtxh7sm+ZQ
+ fOPxU+agsHIxHbq1W8Ewr7GTApui6hLCuPtf7i5TKaohxL9bsk67gVM26edUQyCOopUKRRSr3
+ XiNMqsG2znqEerH8pfZ6L+GNZCFYDGSEx58HC0s5XqcGCgV3w5/joOjLp/TTm2/6buoXrvc0m
+ g1kMMdnVReSDwf8A6pp/Ol35tkwGRAXf8jvlPZB88FLNRtJy1m1SiuAPZBqLHM0LqtjYaJy50
+ GB3V1M5fwzNxHzxh1LhjWDsihY0HdPe+5o6GxAfy1XutmDZzyLJKX+Q5C9pULXbW3jN5aUp+T
+ jTkQOUFjDeKdZNPh5CWz4RNbRCPg8L/ytiiJKjr0zR8gp60rX3o5bFDpyU74/1gDvyZLWWEnI
+ IljP3IR6pHsxLyV5WsqPeq2NzhF34rgl5BoaKLw0b1WfmXeHWsFvGnykx6rQR1AV70fejYMgG
+ b8Iee3PM38Jkfah8CQJqc58gifLdTERXoVUzFiJzb1na81nrlzV9iF1HXRrPUoNcYS9sB4b+w
+ ad0j/aaTMHaNtazVzh8kWsvuWFZedXaJX+um3yuX3bAitJdN7axYJutz5YJ3vtbvR/Eh1cGnX
+ GguGGuMEMAT1h6sLmW4aLMGDP5a9k8NV3XWwozfQ1LFcF79sxC5zEQh8IGWyD8FSgTrwfDjsl
+ Qb6cvDEjWnX0NnCORrA9Bgp95fFrpGwDMHnZLtvS3blRmsofrtLwCmjdZPcfQ7kjiNnMD8Wi4
+ BaTgRNXHQyxCGoNUH4OTk1O74sPvgKUuRZ8rgZ/yR29WKI/L+CbVXO2QU8mb8AlLF6SbZzgzO
+ sxczWP3V4/lc06lSzngiLSugNusQjHvKj40fygeBmaNeP67cL4XZryX7PoMa2Us7eC09oFkYJ
+ eyVUr83kh/b5qPZJbUgmGOQTRxFRVngEgwcJ0BO50PasInWsRCegZritZJiPFYp6hR0ev0+xt
+ 2mVJOKaVp01LYbTs0MZzkXW5afJHRrf9r8/yWH6gjputCwai/ynERC9UXVJg=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Ok, I'll check it out.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--OHITWCYjaq234IOYQzHFoMtpgtLiRJZ6l
+Content-Type: multipart/mixed; boundary="NMf5vLDkvueHfQuePLvIqqNQRjbNteYk0"
 
-I think I'v tracked down all the files with bad "atime" and cleared
-all the BTRFS errors by cp -r , deleting the originals and moving the
-copies in .
-
-thanks a bunch .
-
-Charles Wright
+--NMf5vLDkvueHfQuePLvIqqNQRjbNteYk0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On Tue, Sep 24, 2019 at 12:08 AM Chris Murphy <lists@colorremedies.com> wrote:
->
-> On Mon, Sep 23, 2019 at 6:35 PM Charles Wright
-> <charles.v.wright@gmail.com> wrote:
-> >
-> > if I boot the 5.0.0-30 kernel and enter the "dwhelper" directory and
-> > do "dmesg" their is this
-> >
-> > [  199.522886] ata2.00: exception Emask 0x10 SAct 0x8000 SErr 0x2d0100
-> > action 0x6 frozen
-> > [  199.522891] ata2.00: irq_stat 0x08000000, interface fatal error
-> > [  199.522893] ata2: SError: { UnrecovData PHYRdyChg CommWake 10B8B BadCRC }
-> > [  199.522897] ata2.00: failed command: READ FPDMA QUEUED
-> > [  199.522902] ata2.00: cmd 60/08:78:a8:57:f3/00:00:12:00:00/40 tag 15
-> > ncq dma 4096 in
-> >                         res 50/00:08:a8:57:f3/00:00:12:00:00/40 Emask
-> > 0x10 (ATA bus error)
-> > [  199.522904] ata2.00: status: { DRDY }
-> > [  199.522908] ata2: hard resetting link
-> > [  199.837384] ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
-> > [  199.840579] ata2.00: configured for UDMA/133
-> > [  199.840771] ata2: EH complete
->
-> This is a hardware problem. I suggest swapping out the cable between
-> the drive and controller.
->
-> "interface fatal error"
-> "BadCRC"
->
-> >
-> > but all works  as in I can access the files as normal
->
-> It's not normal to having the ATA link hard reset due to CRC errors.
-> That blows away the entire command queue on SATA drives. There's
-> nothing any file system can do about this.
->
->
->
-> --
-> Chris Murphy
+
+On 2019/9/25 =E4=B8=8A=E5=8D=889:26, Chris Murphy wrote:
+> kernel 5.3.0-1.fc31.x86_64
+> btrfs-progs-5.2.1-1.fc31.x86_64
+>=20
+>  sudo btrfs balance start -dconvert=3Dsingle,soft /
+> ERROR: error during balancing '/': Invalid argument
+> There may be more info in syslog - try dmesg | tail
+> $ sudo btrfs balance start -dconvert=3Dsingle /
+> ERROR: error during balancing '/': Invalid argument
+> There may be more info in syslog - try dmesg | tail
+>=20
+>=20
+> [372342.643440] BTRFS error (device sdb3): balance: invalid convert
+> data profile single
+> [372378.271689] BTRFS error (device sdb3): balance: invalid convert
+> data profile single
+>=20
+> Huh? I had just today accidentally started converting data to DUP. I
+> had intended to change metadata to DUP. I cancelled the data DUP
+> convert pretty early on. But now I appear stuck.
+
+Oh, this indeed looks like a bug, even with -f, it still fails on v5.3
+kernel.
+
+I'll take a look into this bug.
+
+Thanks for the report,
+Qu
+
+>=20
+> $ sudo btrfs fi us /
+> Overall:
+>     Device size:                  25.00GiB
+>     Device allocated:             19.57GiB
+>     Device unallocated:            5.43GiB
+>     Device missing:                  0.00B
+>     Used:                         11.15GiB
+>     Free (estimated):              7.82GiB      (min: 5.52GiB)
+>     Data ratio:                       1.08
+>     Metadata ratio:                   2.00
+>     Global reserve:               43.34MiB      (used: 0.00B)
+>=20
+> Data,single: Size:11.01GiB, Used:8.98GiB
+>    /dev/sdb3      11.01GiB
+>=20
+> Data,DUP: Size:1.00GiB, Used:508.62MiB
+>    /dev/sdb3       2.00GiB
+>=20
+> Metadata,DUP: Size:3.25GiB, Used:603.25MiB
+>    /dev/sdb3       6.50GiB
+>=20
+> System,DUP: Size:32.00MiB, Used:32.00KiB
+>    /dev/sdb3      64.00MiB
+>=20
+> Unallocated:
+>    /dev/sdb3       5.43GiB
+> $ sudo btrfs balance start -v -dconvert=3Dsingle,soft /
+> Dumping filters: flags 0x1, state 0x0, force is off
+>   DATA (flags 0x300): converting, target=3D281474976710656, soft is on
+> ERROR: error during balancing '/': Invalid argument
+> There may be more info in syslog - try dmesg | tail
+> $ sudo btrfs balance start -v -f -dconvert=3Dsingle,soft /
+> Dumping filters: flags 0x9, state 0x0, force is on
+>   DATA (flags 0x300): converting, target=3D281474976710656, soft is on
+> ERROR: error during balancing '/': Invalid argument
+> There may be more info in syslog - try dmesg | tail
+> $ sudo btrfs insp dump-s /dev/sdb3
+> superblock: bytenr=3D65536, device=3D/dev/sdb3
+> ---------------------------------------------------------
+> csum_type        0 (crc32c)
+> csum_size        4
+> csum            0xabe229b9 [match]
+> bytenr            65536
+> flags            0x1
+>             ( WRITTEN )
+> magic            _BHRfS_M [match]
+> fsid            3d93d834-ab33-40d1-8468-26fdc3eac4e0
+> metadata_uuid        3d93d834-ab33-40d1-8468-26fdc3eac4e0
+> label            fedoraFIT
+> generation        96541
+> root            18306990080
+> sys_array_size        129
+> chunk_root_generation    96449
+> root_level        0
+> chunk_root        18141446144
+> chunk_root_level    0
+> log_root        0
+> log_root_transid    0
+> log_root_level        0
+> total_bytes        26843545600
+> bytes_used        10804428800
+> sectorsize        4096
+> nodesize        32768
+> leafsize (deprecated)    32768
+> stripesize        4096
+> root_dir        6
+> num_devices        1
+> compat_flags        0x0
+> compat_ro_flags        0x3
+>             ( FREE_SPACE_TREE |
+>               FREE_SPACE_TREE_VALID )
+> incompat_flags        0x171
+>             ( MIXED_BACKREF |
+>               COMPRESS_ZSTD |
+>               BIG_METADATA |
+>               EXTENDED_IREF |
+>               SKINNY_METADATA )
+> cache_generation    7
+> uuid_tree_generation    86563
+> dev_item.uuid        f695e038-833e-4600-9a0c-0a13fb4d9f0e
+> dev_item.fsid        3d93d834-ab33-40d1-8468-26fdc3eac4e0 [match]
+> dev_item.type        0
+> dev_item.total_bytes    26843545600
+> dev_item.bytes_used    21021851648
+> dev_item.io_align    4096
+> dev_item.io_width    4096
+> dev_item.sector_size    4096
+> dev_item.devid        1
+> dev_item.dev_group    0
+> dev_item.seek_speed    0
+> dev_item.bandwidth    0
+> dev_item.generation    0
+> $
+>=20
+>=20
+>=20
+
+
+--NMf5vLDkvueHfQuePLvIqqNQRjbNteYk0--
+
+--OHITWCYjaq234IOYQzHFoMtpgtLiRJZ6l
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2Kx1wACgkQwj2R86El
+/qjtHwf/bmdZ9FYV6LQ/L/wrj7vanLPUt7GXg1zKTNSkH/u6jnyPA30QA9fqrpZ8
+OsZ31cxUoAOsMAnPoB1DrGyz9uW6jWwxqOvxh61zZb8D2gRWPqPyaXpQCZHdZcPN
+CfNQaPmiXNVuiMPEuHY/NGvMV1VGmiK6Abto67Gt0XTUkumSan4ZSpVs/Q+Kirz4
+W5CHFHGV3Qi0VQVvmrEhIZIYPACnzkhv8qUGJqljYhabx5gqHlXnoZrn4mmRyphW
+gicAXHKfvubS35OSr9GfoFLyVdGT3kvykd4RIxEza2pzF4G3u8JQwSZbGPhOfA8t
+XkYNrp+O7SCC+aBzOWjng1Toi/ZUnA==
+=dOTD
+-----END PGP SIGNATURE-----
+
+--OHITWCYjaq234IOYQzHFoMtpgtLiRJZ6l--
