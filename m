@@ -2,92 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61DE3BDF1E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 15:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 106FCBDF63
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 15:47:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406645AbfIYNhr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 09:37:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35680 "EHLO mx1.suse.de"
+        id S2406977AbfIYNr2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 09:47:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43486 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2406639AbfIYNhq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 09:37:46 -0400
+        id S2405102AbfIYNr2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Sep 2019 09:47:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 18829B644;
-        Wed, 25 Sep 2019 13:37:44 +0000 (UTC)
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     David Sterba <dsterba@suse.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [RFC PATCH v5 7/7] btrfs-progs: add test override for mkfs to use different checksums
-Date:   Wed, 25 Sep 2019 15:37:28 +0200
-Message-Id: <20190925133728.18027-8-jthumshirn@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20190925133728.18027-1-jthumshirn@suse.de>
-References: <20190925133728.18027-1-jthumshirn@suse.de>
+        by mx1.suse.de (Postfix) with ESMTP id 00085AFCC;
+        Wed, 25 Sep 2019 13:47:26 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 3AED3DA835; Wed, 25 Sep 2019 15:47:47 +0200 (CEST)
+Date:   Wed, 25 Sep 2019 15:47:47 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 0/4] The remaining extent_io.c split code
+Message-ID: <20190925134747.GG2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20190924203252.30505-1-josef@toxicpanda.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190924203252.30505-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Similar to check's test overrides add an override for mkfs tests so we can
-specify different mkfs flags.
+On Tue, Sep 24, 2019 at 04:32:48PM -0400, Josef Bacik wrote:
+> Hopefully all of it makes it this time, if you want you can pull from
+> 
+> git://git.kernel.org/pub/scm/linux/kernel/git/josef/btrfs-next.git \
+> 	extent-io-rearranging
 
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
----
- tests/common                                | 10 ++++++++--
- tests/mkfs-tests/001-basic-profiles/test.sh |  8 +++++++-
- 2 files changed, 15 insertions(+), 3 deletions(-)
+The size of the exported patch 1/4 is 109066 bytes and the diff itself
+is incomprehensible to even see what code moves where and what is new.
 
-diff --git a/tests/common b/tests/common
-index 75e5540155cc..5148820bef58 100644
---- a/tests/common
-+++ b/tests/common
-@@ -473,16 +473,22 @@ prepare_test_dev()
- # $1-$n: optional, default is -f
- run_check_mkfs_test_dev()
- {
-+	MKFS_ARGS="$@"
-+
- 	setup_root_helper
- 
- 	# check accidental files/devices passed
--	for opt in "$@"; do
-+	for opt in "$MKFS_ARGS"; do
- 		if [ -f "$opt" -o -b "$opt" ]; then
- 			_fail "ERROR: unexpected option for run_check_mkfs_test_dev: device"
- 		fi
- 	done
- 
--	run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$@" "$TEST_DEV"
-+	if [ "$TEST_ENABLE_OVERRIDE" = 'true' ]; then
-+		MKFS_ARGS="$TEST_ARGS_MKFS $MKFS_ARGS"
-+	fi
-+
-+	run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$MKFS_ARGS" "$TEST_DEV"
- }
- 
- run_check_mount_test_dev()
-diff --git a/tests/mkfs-tests/001-basic-profiles/test.sh b/tests/mkfs-tests/001-basic-profiles/test.sh
-index 6e295274119d..e0110c722555 100755
---- a/tests/mkfs-tests/001-basic-profiles/test.sh
-+++ b/tests/mkfs-tests/001-basic-profiles/test.sh
-@@ -21,7 +21,13 @@ test_get_info()
- }
- test_do_mkfs()
- {
--	run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$@"
-+	MKFS_ARGS="$@"
-+
-+	if [ "$TEST_ENABLE_OVERRIDE" = 'true' ]; then
-+		MKFS_ARGS="$TEST_ARGS_MKFS $MKFS_ARGS"
-+	fi
-+
-+	run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$MKFS_ARGS"
- }
- 
- test_mkfs_single()
--- 
-2.16.4
-
+I'm still thinking if this is a good idea to apply a monster patch, even
+it's just moving code around. The previous series splitting
+extent-tree.c were better so I'd rather take that approach again. Some
+of the functions belong logically together and won't break compilation
+and would actually make it possible for a human to review.
