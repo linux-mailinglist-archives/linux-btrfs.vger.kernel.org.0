@@ -2,123 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA5ABDC9B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 13:03:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3BDBDDAC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 14:04:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729598AbfIYLDJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 07:03:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57502 "EHLO mx1.suse.de"
+        id S2405314AbfIYMEV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 08:04:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55344 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728040AbfIYLDJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 07:03:09 -0400
+        id S2388199AbfIYMEV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Sep 2019 08:04:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 4FDDCAFDB;
-        Wed, 25 Sep 2019 11:03:07 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id D722DAD3E
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2019 12:04:18 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH v2] btrfs: Properly handle backref_in_log retval
-Date:   Wed, 25 Sep 2019 14:03:03 +0300
-Message-Id: <20190925110303.20466-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20190924170920.GB2751@twin.jikos.cz>
-References: <20190924170920.GB2751@twin.jikos.cz>
+Subject: [PATCH v2] fstests: btrfs/011: Fill the fs to ensure we have enough data for dev-replace
+Date:   Wed, 25 Sep 2019 20:04:14 +0800
+Message-Id: <20190925120414.115458-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This function can return a negative error value if btrfs_search_slot
-errors for whatever reason or if btrfs_alloc_path runs out of memory.
-This is currently problemattic because backref_in_log is treated by its
-callers as if it returns boolean.
+[BUG]
+When btrfs/011 is executed on a fast enough system (fully memory backed
+VM, with test device has unsafe cache mode), the test can fail like
+this:
 
-Fix this by adding proper error handling in callers. That also enables
-the function to return the direct error code from btrfs_search_slot.
+  btrfs/011 43s ... [failed, exit status 1]- output mismatch (see /home/adam/xfstests-dev/results//btrfs/011.out.bad)
+    --- tests/btrfs/011.out     2019-07-22 14:13:44.643333326 +0800
+    +++ /home/adam/xfstests-dev/results//btrfs/011.out.bad      2019-09-18 14:49:28.308798022 +0800
+    @@ -1,3 +1,4 @@
+     QA output created by 011
+     *** test btrfs replace
+    -*** done
+    +failed: '/usr/bin/btrfs replace cancel /mnt/scratch'
+    +(see /home/adam/xfstests-dev/results//btrfs/011.full for details)
+    ...
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+[CAUSE]
+Looking into the full output, it shows:
+  ...
+  Replace from /dev/mapper/test-scratch1 to /dev/mapper/test-scratch2
+
+  # /usr/bin/btrfs replace start -f /dev/mapper/test-scratch1 /dev/mapper/test-scratch2 /mnt/scratch
+  # /usr/bin/btrfs replace cancel /mnt/scratch
+  INFO: ioctl(DEV_REPLACE_CANCEL)"/mnt/scratch": not started
+  failed: '/usr/bin/btrfs replace cancel /mnt/scratch'
+
+So this means the replace is already finished before we cancel it.
+For fast system, it's very common.
+
+[FIX]
+In fill_scratch() after all the original file creations, do a timer
+based direct IO write.
+The extra write will take 2 * $wait_time, utilizing direct IO with 64K
+block size, the write performance should be very comparable (although a
+little faster) to replace performance.
+
+So later cancel should be able to really cancel the dev-replace without
+it finished too early.
+
+Also, do extra check about the above write. If we hit ENOSPC we just
+skip the test as the system is really too fast and the fs is not large
+enough.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
+changelog
+v2:
+- Remove one confusing comment
+- Change the _notrun message to focus on too small fs
+---
+ tests/btrfs/011 | 42 +++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 35 insertions(+), 7 deletions(-)
 
-v2: 
- * Return 0 from backref_in_log in case btrfs_search_slot returns 1 (meaning it 
- didn't find appropriate item in the btree). 
-
- fs/btrfs/tree-log.c | 32 +++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 11 deletions(-)
-
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 7cac09a6f007..7332f7a00790 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -952,7 +952,9 @@ static noinline int backref_in_log(struct btrfs_root *log,
- 		return -ENOMEM;
+diff --git a/tests/btrfs/011 b/tests/btrfs/011
+index 89bb4d11..de424f87 100755
+--- a/tests/btrfs/011
++++ b/tests/btrfs/011
+@@ -34,7 +34,7 @@ _cleanup()
+ 		kill -TERM $noise_pid
+ 	fi
+ 	wait
+-	rm -f $tmp.tmp
++	rm -f $tmp.*
+ 	# we need this umount and couldn't rely on _require_scratch to umount
+ 	# it from next test, because we would replace SCRATCH_DEV, which is
+ 	# needed by _require_scratch, and make it umounted.
+@@ -54,13 +54,17 @@ _require_scratch_dev_pool_equal_size
+ _require_command "$WIPEFS_PROG" wipefs
  
- 	ret = btrfs_search_slot(NULL, log, key, path, 0, 0);
--	if (ret != 0) {
-+	if (ret < 0) {
-+		goto out;
-+	} else if (ret == 1) {
- 		ret = 0;
- 		goto out;
- 	}
-@@ -1026,10 +1028,13 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
- 					   (unsigned long)(victim_ref + 1),
- 					   victim_name_len);
+ rm -f $seqres.full
+-rm -f $tmp.tmp
++rm -f $tmp.*
  
--			if (!backref_in_log(log_root, &search_key,
--					    parent_objectid,
--					    victim_name,
--					    victim_name_len)) {
-+			ret = backref_in_log(log_root, &search_key,
-+					     parent_objectid, victim_name,
-+					     victim_name_len);
-+			if (ret < 0) {
-+				kfree(victim_name);
-+				return ret;
-+			} else if (!ret) {
- 				inc_nlink(&inode->vfs_inode);
- 				btrfs_release_path(path);
+ echo "*** test btrfs replace"
  
-@@ -1091,10 +1096,12 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
- 			search_key.offset = btrfs_extref_hash(parent_objectid,
- 							      victim_name,
- 							      victim_name_len);
--			ret = 0;
--			if (!backref_in_log(log_root, &search_key,
--					    parent_objectid, victim_name,
--					    victim_name_len)) {
-+			ret = backref_in_log(log_root, &search_key,
-+					     parent_objectid, victim_name,
-+					     victim_name_len);
-+			if (ret < 0) {
-+				return ret;
-+			} else if (!ret) {
- 				ret = -ENOENT;
- 				victim_parent = read_one_inode(root,
- 						parent_objectid);
-@@ -1869,16 +1876,19 @@ static bool name_in_log_ref(struct btrfs_root *log_root,
- 			    const u64 dirid, const u64 ino)
++# In seconds
++wait_time=1
++
+ fill_scratch()
  {
- 	struct btrfs_key search_key;
-+	int ret;
+ 	local fssize=$1
++	local filler_pid
  
- 	search_key.objectid = ino;
- 	search_key.type = BTRFS_INODE_REF_KEY;
- 	search_key.offset = dirid;
--	if (backref_in_log(log_root, &search_key, dirid, name, name_len))
-+	ret = backref_in_log(log_root, &search_key, dirid, name, name_len);
-+	if (ret == 1)
- 		return true;
+ 	# Fill inline extents.
+ 	for i in `seq 1 500`; do
+@@ -75,6 +79,30 @@ fill_scratch()
+ 	for i in `seq $fssize`; do
+ 		cp $SCRATCH_MNT/t0 $SCRATCH_MNT/t$i || _fail "cp failed"
+ 	done > /dev/null 2>> $seqres.full
++
++	# Ensure we have enough data so that dev-replace would take at least
++	# 2 * $wait_time, allowing we cancel the running replace.
++	# Some extra points:
++	# - Use XFS_IO_PROG instead of dd
++	#   fstests wraps dd, making it pretty hard to kill the real dd pid
++	# - Use 64K block size with Direct IO
++	#   64K is the same stripe size used in replace/scrub. Using Direct IO
++	#   ensure the IO speed is near device limit and comparable to replace
++	#   speed.
++	$XFS_IO_PROG -f -d -c "pwrite -b 64k 0 1E" "$SCRATCH_MNT/t_filler" &>\
++		$tmp.filler_result &
++	filler_pid=$!
++	sleep $((2 * $wait_time))
++	kill -KILL $filler_pid &> /dev/null
++	wait $filler_pid &> /dev/null
++
++	# If the system is too fast and the fs is too small, then skip the test
++	if grep -q "No space left" $tmp.filler_result; then
++		ls -alh $SCRATCH_MNT >> $seqres.full
++		cat $tmp.filler_result >> $seqres.full
++		_notrun "fs too small for this test"
++	fi
++	cat $tmp.filler_result
+ 	sync; sync
+ }
  
- 	search_key.type = BTRFS_INODE_EXTREF_KEY;
- 	search_key.offset = btrfs_extref_hash(dirid, name, name_len);
--	if (backref_in_log(log_root, &search_key, dirid, name, name_len))
-+	ret = backref_in_log(log_root, &search_key, dirid, name, name_len);
-+	if (ret == 1)
- 		return true;
+@@ -147,7 +175,7 @@ btrfs_replace_test()
+ 	if [ "${with_cancel}Q" = "cancelQ" ]; then
+ 		# background the replace operation (no '-B' option given)
+ 		_run_btrfs_util_prog replace start -f $replace_options $source_dev $target_dev $SCRATCH_MNT
+-		sleep 1
++		sleep $wait_time
+ 		_run_btrfs_util_prog replace cancel $SCRATCH_MNT
  
- 	return false;
+ 		# 'replace status' waits for the replace operation to finish
+@@ -157,10 +185,10 @@ btrfs_replace_test()
+ 		grep -q canceled $tmp.tmp || _fail "btrfs replace status (canceled) failed"
+ 	else
+ 		if [ "${quick}Q" = "thoroughQ" ]; then
+-			# On current hardware, the thorough test runs
+-			# more than a second. This is a chance to force
+-			# a sync in the middle of the replace operation.
+-			(sleep 1; sync) > /dev/null 2>&1 &
++			# The thorough test runs around 2 * $wait_time seconds.
++			# This is a chance to force a sync in the middle of the
++			# replace operation.
++			(sleep $wait_time; sync) > /dev/null 2>&1 &
+ 		fi
+ 		_run_btrfs_util_prog replace start -Bf $replace_options $source_dev $target_dev $SCRATCH_MNT
+ 
 -- 
-2.17.1
+2.22.0
 
