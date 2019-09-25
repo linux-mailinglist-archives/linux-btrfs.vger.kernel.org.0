@@ -2,151 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB50BD8D0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 09:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EED20BD8E7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 09:17:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442525AbfIYHLj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 03:11:39 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:50015 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2442450AbfIYHLi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 03:11:38 -0400
-Received: from dread.disaster.area (pa49-181-226-196.pa.nsw.optusnet.com.au [49.181.226.196])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 0F58E43E145;
-        Wed, 25 Sep 2019 17:11:31 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.2)
-        (envelope-from <david@fromorbit.com>)
-        id 1iD1ST-0000d6-DP; Wed, 25 Sep 2019 17:11:29 +1000
-Date:   Wed, 25 Sep 2019 17:11:29 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jann Horn <jannh@google.com>
-Cc:     Omar Sandoval <osandov@osandov.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs@vger.kernel.org, Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [RFC PATCH 2/3] fs: add RWF_ENCODED for writing compressed data
-Message-ID: <20190925071129.GB804@dread.disaster.area>
-References: <cover.1568875700.git.osandov@fb.com>
- <230a76e65372a8fb3ec62ce167d9322e5e342810.1568875700.git.osandov@fb.com>
- <CAG48ez2GKv15Uj6Wzv0sG5v2bXyrSaCtRTw5Ok_ovja_CiO_fQ@mail.gmail.com>
- <20190924171513.GA39872@vader>
- <20190924193513.GA45540@vader>
- <CAG48ez1NQBNR1XeVQYGoopEk=g_KedUr+7jxLQTaO+V8JCeweQ@mail.gmail.com>
+        id S2442322AbfIYHRx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 03:17:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58042 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2437028AbfIYHRw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Sep 2019 03:17:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 3D10CB641;
+        Wed, 25 Sep 2019 07:17:49 +0000 (UTC)
+Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
+ kmalloc(power-of-two)
+To:     Andrew Morton <akpm@linux-foundation.org>, cl@linux.com
+Cc:     David Sterba <dsterba@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-btrfs@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+References: <20190826111627.7505-1-vbabka@suse.cz>
+ <20190826111627.7505-3-vbabka@suse.cz>
+ <df8d1cf4-ff8f-1ee1-12fb-cfec39131b32@suse.cz>
+ <20190923171710.GN2751@twin.jikos.cz>
+ <alpine.DEB.2.21.1909242048020.17661@www.lameter.com>
+ <20190924165425.a79a2dafbaf37828a931df2b@linux-foundation.org>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <34a45e87-5bad-5f01-7dcb-8a3f6cf37281@suse.cz>
+Date:   Wed, 25 Sep 2019 09:17:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG48ez1NQBNR1XeVQYGoopEk=g_KedUr+7jxLQTaO+V8JCeweQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=D+Q3ErZj c=1 sm=1 tr=0
-        a=dRuLqZ1tmBNts2YiI0zFQg==:117 a=dRuLqZ1tmBNts2YiI0zFQg==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
-        a=-uoBkjAQAAAA:8 a=7-415B0cAAAA:8 a=4zo7HAFyputdoMmBiIYA:9
-        a=CjuIK1q_8ugA:10 a=y0wLjPFBLyexm0soFTcm:22 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20190924165425.a79a2dafbaf37828a931df2b@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 10:01:41PM +0200, Jann Horn wrote:
-> On Tue, Sep 24, 2019 at 9:35 PM Omar Sandoval <osandov@osandov.com> wrote:
-> > On Tue, Sep 24, 2019 at 10:15:13AM -0700, Omar Sandoval wrote:
-> > > On Thu, Sep 19, 2019 at 05:44:12PM +0200, Jann Horn wrote:
-> > > > On Thu, Sep 19, 2019 at 8:54 AM Omar Sandoval <osandov@osandov.com> wrote:
-> > > > > Btrfs can transparently compress data written by the user. However, we'd
-> > > > > like to add an interface to write pre-compressed data directly to the
-> > > > > filesystem. This adds support for so-called "encoded writes" via
-> > > > > pwritev2().
-> > > > >
-> > > > > A new RWF_ENCODED flags indicates that a write is "encoded". If this
-> > > > > flag is set, iov[0].iov_base points to a struct encoded_iov which
-> > > > > contains metadata about the write: namely, the compression algorithm and
-> > > > > the unencoded (i.e., decompressed) length of the extent. iov[0].iov_len
-> > > > > must be set to sizeof(struct encoded_iov), which can be used to extend
-> > > > > the interface in the future. The remaining iovecs contain the encoded
-> > > > > extent.
-> > > > >
-> > > > > A similar interface for reading encoded data can be added to preadv2()
-> > > > > in the future.
-> > > > >
-> > > > > Filesystems must indicate that they support encoded writes by setting
-> > > > > FMODE_ENCODED_IO in ->file_open().
-> > > > [...]
-> > > > > +int import_encoded_write(struct kiocb *iocb, struct encoded_iov *encoded,
-> > > > > +                        struct iov_iter *from)
-> > > > > +{
-> > > > > +       if (iov_iter_single_seg_count(from) != sizeof(*encoded))
-> > > > > +               return -EINVAL;
-> > > > > +       if (copy_from_iter(encoded, sizeof(*encoded), from) != sizeof(*encoded))
-> > > > > +               return -EFAULT;
-> > > > > +       if (encoded->compression == ENCODED_IOV_COMPRESSION_NONE &&
-> > > > > +           encoded->encryption == ENCODED_IOV_ENCRYPTION_NONE) {
-> > > > > +               iocb->ki_flags &= ~IOCB_ENCODED;
-> > > > > +               return 0;
-> > > > > +       }
-> > > > > +       if (encoded->compression > ENCODED_IOV_COMPRESSION_TYPES ||
-> > > > > +           encoded->encryption > ENCODED_IOV_ENCRYPTION_TYPES)
-> > > > > +               return -EINVAL;
-> > > > > +       if (!capable(CAP_SYS_ADMIN))
-> > > > > +               return -EPERM;
-> > > >
-> > > > How does this capable() check interact with io_uring? Without having
-> > > > looked at this in detail, I suspect that when an encoded write is
-> > > > requested through io_uring, the capable() check might be executed on
-> > > > something like a workqueue worker thread, which is probably running
-> > > > with a full capability set.
-> > >
-> > > I discussed this more with Jens. You're right, per-IO permission checks
-> > > aren't going to work. In fully-polled mode, we never get an opportunity
-> > > to check capabilities in right context. So, this will probably require a
-> > > new open flag.
-> >
-> > Actually, file_ns_capable() accomplishes the same thing without a new
-> > open flag. Changing the capable() check to file_ns_capable() in
-> > init_user_ns should be enough.
+On 9/25/19 1:54 AM, Andrew Morton wrote:
+> On Tue, 24 Sep 2019 20:52:52 +0000 (UTC) cl@linux.com wrote:
 > 
-> +Aleksa for openat2() and open() space
+>> On Mon, 23 Sep 2019, David Sterba wrote:
+>>
+>>> As a user of the allocator interface in filesystem, I'd like to see a
+>>> more generic way to address the alignment guarantees so we don't have to
+>>> apply workarounds like 3acd48507dc43eeeb each time we find that we
+>>> missed something. (Where 'missed' might be another sort of weird memory
+>>> corruption hard to trigger.)
+>>
+>> The alignment guarantees are clearly documented and objects are misaligned
+>> in debugging kernels.
+>>
+>> Looking at 3acd48507dc43eeeb:Looks like no one tested that patch with a
+>> debug kernel or full debugging on until it hit mainline. Not good.
+>>
+>> The consequence for the lack of proper testing is to make the production
+>> kernel contain the debug measures?
 > 
-> Mmh... but if the file descriptor has been passed through a privilege
-> boundary, it isn't really clear whether the original opener of the
-> file intended for this to be possible. For example, if (as a
-> hypothetical example) the init process opens a service's logfile with
-> root privileges, then passes the file descriptor to that logfile to
-> the service on execve(), that doesn't mean that the service should be
-> able to perform compressed writes into that file, I think.
+> This isn't a debug measure - it's making the interface do that which
+> people evidently expect it to do.  Minor point.
 
-Where's the privilege boundary that is being crossed?
+Yes, detecting issues due to misalignment is one thing, but then there
+are the workarounds necessary to achieve it (for multiple sizes, so no
+single kmem_cache_create(..., alignment)), as XFS folks demonstrated.
 
-We're talking about user data read/write access here, not some
-special security capability. Access to the data has already been
-permission checked, so why should the format that the data is
-supplied to the kernel in suddenly require new privilege checks?
+> I agree it's a bit regrettable to do this but it does appear that the
+> change will make the kernel overall a better place given the reality of
+> kernel development.
 
-i.e. writing encoded data to a file requires exactly the same
-access permissions as writing cleartext data to the file. The only
-extra information here is whether the _filesystem_ supports encoded
-data, and that doesn't change regardless of what the open file gets
-passed to. Hence the capability is either there or it isn't, it
-doesn't transform not matter what privilege boundary the file is
-passed across. Similarly, we have permission to access the data
-or we don't through the struct file, it doesn't transform either.
+Thanks.
 
-Hence I don't see why CAP_SYS_ADMIN or any special permissions are
-needed for an application with access permissions to file data to
-use these RWF_ENCODED IO interfaces. I am inclined to think the
-permission check here is wrong and should be dropped, and then all
-these issues go away.
+> Given this, have you reviewed the patch for overall implementation
+> correctness?
+> 
+> I'm wondering if we can avoid at least some of the patch's overhead if
+> slab debugging is disabled - the allocators are already returning
+> suitably aligned memory, so why add the new code in that case?
 
-Yes, the app that is going to use this needs root perms because it
-accesses all data in the fs (it's a backup app!), but that doesn't
-mean you can only use RWF_ENCODED if you have root perms.
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Most of the new code is for SLOB, which has no debugging and yet
+misaligns. For SLUB and SLAB, it's just passing alignment argument to
+kmem_cache_create() for kmalloc caches, which means just extra few
+instructions during boot, and no extra code during kmalloc/kfree itself.
