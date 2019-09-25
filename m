@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97411BDDEF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 14:15:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1F6BDDF0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 14:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405577AbfIYMON (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 08:14:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59732 "EHLO mx1.suse.de"
+        id S2405588AbfIYMOP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 08:14:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59720 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405560AbfIYMON (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 08:14:13 -0400
+        id S2405574AbfIYMOO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Sep 2019 08:14:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 28236ABCE
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2019 12:14:11 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B8616B019
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2019 12:14:12 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 09/10] btrfs-progs: image: Reduce memory requirement for decompression
-Date:   Wed, 25 Sep 2019 20:13:55 +0800
-Message-Id: <20190925121356.118038-10-wqu@suse.com>
+Subject: [PATCH v3 10/10] btrfs-progs: image: Reduce memory usage for chunk tree search
+Date:   Wed, 25 Sep 2019 20:13:56 +0800
+Message-Id: <20190925121356.118038-11-wqu@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20190925121356.118038-1-wqu@suse.com>
 References: <20190925121356.118038-1-wqu@suse.com>
@@ -30,307 +30,227 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-With recent change to enlarge max_pending_size to 256M for data dump,
-the decompress code requires quite a lot of memory space. (256M * 4).
+Just like original restore_worker, search_for_chunk_blocks() will also
+use a lot of memory for restoring large uncompressed extent or
+compressed extent with data dump.
 
-The main reason behind it is, we're using wrapped uncompress() function
-call, which needs the buffer to be large enough to contain the
-decompressed data.
+Reduce the memory usage by:
+- Use fixed buffer size for uncompressed extent
+  Now we will use fixed 512K as buffer size for reading uncompressed
+  extent.
 
-This patch will re-work the decompress work to use inflate() which can
-resume it decompression so that we can use a much smaller buffer size.
+  Now chunk tree search will read out 512K data at most, then search
+  chunk trees in the buffer.
 
-This patch choose to use 512K buffer size.
+  Reduce the memory usage from as large as item size, to fixed 512K.
 
-Now the memory consumption for restore is reduced to
- Cluster data size + 512K * nr_running_threads
+- Use inflate() for compressed extent
+  For compressed extent, we need two buffers, one for compressed data,
+  and one for uncompressed data.
+  For compressed data, we will use the item size as buffer size, since
+  compressed extent should be small enough.
+  For uncompressed data, we use 512K as buffer size.
 
-Instead of the original one:
- Cluster data size + 1G * nr_running_threads
+  Now chunk tree search will fill the first 512K, then search chunk
+  trees blocks in the uncompressed 512K buffer, then loop until the
+  compressed data is exhausted.
+
+  Reduce the memory usage from as large as 256M * 2 to 512K + compressed
+  extent size.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- image/main.c | 220 +++++++++++++++++++++++++++++++++------------------
- 1 file changed, 145 insertions(+), 75 deletions(-)
+ image/main.c | 159 ++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 126 insertions(+), 33 deletions(-)
 
 diff --git a/image/main.c b/image/main.c
-index 8c5f1a8e79d4..ec8dacd6c1c5 100644
+index ec8dacd6c1c5..13cd621eb92c 100644
 --- a/image/main.c
 +++ b/image/main.c
-@@ -1349,128 +1349,198 @@ static void write_backup_supers(int fd, u8 *buf)
- 	}
+@@ -1959,6 +1959,126 @@ static int read_chunk_block(struct mdrestore_struct *mdres, u8 *buffer,
+ 	return ret;
  }
  
--static void *restore_worker(void *data)
-+/*
-+ * Restore one item.
-+ *
-+ * For uncompressed data, it's just reading from work->buf then write to output.
-+ * For compressed data, since we can have very large decompressed data
-+ * (up to 256M), we need to consider memory usage. So here we will fill buffer
-+ * then write the decompressed buffer to output.
-+ */
-+static int restore_one_work(struct mdrestore_struct *mdres,
-+			    struct async_work *async, u8 *buffer, int bufsize)
- {
--	struct mdrestore_struct *mdres = (struct mdrestore_struct *)data;
--	struct async_work *async;
--	size_t size;
--	u8 *buffer;
--	u8 *outbuf;
--	int outfd;
-+	z_stream strm;
-+	int buf_offset = 0;	/* offset inside work->buffer */
-+	int out_offset = 0;	/* offset for output */
-+	int out_len;
-+	int outfd = fileno(mdres->out);
-+	int compress_method = mdres->compress_method;
- 	int ret;
--	int compress_size = current_version->max_pending_size * 4;
- 
--	outfd = fileno(mdres->out);
--	buffer = malloc(compress_size);
--	if (!buffer) {
--		error("not enough memory for restore worker buffer");
--		pthread_mutex_lock(&mdres->mutex);
--		if (!mdres->error)
--			mdres->error = -ENOMEM;
--		pthread_mutex_unlock(&mdres->mutex);
--		pthread_exit(NULL);
-+	ASSERT(is_power_of_2(bufsize));
++static int search_chunk_uncompressed(struct mdrestore_struct *mdres,
++				     struct meta_cluster_item *item,
++				     u64 current_cluster)
++{
++	u32 item_size = le32_to_cpu(item->size);
++	u64 item_bytenr = le64_to_cpu(item->bytenr);
++	int bufsize = SZ_512K;
++	int read_size;
++	u32 offset = 0;
++	u8 *buffer;
++	int ret = 0;
 +
-+	if (compress_method == COMPRESS_ZLIB) {
-+		strm.zalloc = Z_NULL;
-+		strm.zfree = Z_NULL;
-+		strm.opaque = Z_NULL;
-+		strm.avail_in = async->bufsize;
-+		strm.next_in = async->buffer;
-+		strm.avail_out = 0;
-+		strm.next_out = Z_NULL;
-+		ret = inflateInit(&strm);
-+		if (ret != Z_OK) {
-+			error("failed to initialize decompress parameters: %d",
-+				ret);
-+			return ret;
++	ASSERT(mdres->compress_method == COMPRESS_NONE);
++	buffer = malloc(bufsize);
++	if (!buffer)
++		return -ENOMEM;
++
++	while (offset < item_size) {
++		read_size = min_t(u32, bufsize, item_size - offset);
++		ret = fread(buffer, read_size, 1, mdres->in);
++		if (ret != 1) {
++			error("read error: %m");
++			ret = -EIO;
++			goto out;
 +		}
- 	}
-+	while (buf_offset < async->bufsize) {
-+		bool compress_end = false;
-+		int read_size = min_t(u64, async->bufsize - buf_offset,
-+				      bufsize);
- 
--	while (1) {
--		u64 bytenr, physical_dup;
--		off_t offset = 0;
--		int err = 0;
--
--		pthread_mutex_lock(&mdres->mutex);
--		while (!mdres->nodesize || list_empty(&mdres->list)) {
--			if (mdres->done) {
--				pthread_mutex_unlock(&mdres->mutex);
--				goto out;
-+		/* Read part */
-+		if (compress_method == COMPRESS_ZLIB) {
-+			if (strm.avail_out == 0) {
-+				strm.avail_out = bufsize;
-+				strm.next_out = buffer;
- 			}
--			pthread_cond_wait(&mdres->cond, &mdres->mutex);
--		}
--		async = list_entry(mdres->list.next, struct async_work, list);
--		list_del_init(&async->list);
--
--		if (mdres->compress_method == COMPRESS_ZLIB) {
--			size = compress_size;
- 			pthread_mutex_unlock(&mdres->mutex);
--			ret = uncompress(buffer, (unsigned long *)&size,
--					 async->buffer, async->bufsize);
-+			ret = inflate(&strm, Z_NO_FLUSH);
- 			pthread_mutex_lock(&mdres->mutex);
--			if (ret != Z_OK) {
--				error("decompression failed with %d", ret);
--				err = -EIO;
-+			switch (ret) {
-+			case Z_NEED_DICT:
-+				ret = Z_DATA_ERROR; /* fallthrough */
-+				__attribute__ ((fallthrough));
-+			case Z_DATA_ERROR:
-+			case Z_MEM_ERROR:
-+				goto out;
-+			}
-+			if (ret == Z_STREAM_END) {
-+				ret = 0;
-+				compress_end = true;
- 			}
--			outbuf = buffer;
-+			out_len = bufsize - strm.avail_out;
- 		} else {
--			outbuf = async->buffer;
--			size = async->bufsize;
-+			/* No compress, read as many data as possible */
-+			memcpy(buffer, async->buffer + buf_offset, read_size);
-+
-+			buf_offset += read_size;
-+			out_len = read_size;
- 		}
- 
-+		/* Fixup part */
- 		if (!mdres->multi_devices) {
- 			if (async->start == BTRFS_SUPER_INFO_OFFSET) {
- 				if (mdres->old_restore) {
--					update_super_old(outbuf);
-+					update_super_old(buffer);
- 				} else {
--					ret = update_super(mdres, outbuf);
--					if (ret)
--						err = ret;
-+					ret = update_super(mdres, buffer);
-+					if (ret < 0) 
-+						goto out;
- 				}
- 			} else if (!mdres->old_restore) {
--				ret = fixup_chunk_tree_block(mdres, async, outbuf, size);
-+				ret = fixup_chunk_tree_block(mdres, async,
-+							     buffer, out_len);
- 				if (ret)
--					err = ret;
-+					goto out;
- 			}
- 		}
- 
-+		/* Write part */
- 		if (!mdres->fixup_offset) {
-+			int size = out_len;
-+			off_t offset = 0;
-+
- 			while (size) {
-+				u64 logical = async->start + out_offset + offset;
- 				u64 chunk_size = size;
--				physical_dup = 0;
-+				u64 physical_dup = 0;
-+				u64 bytenr;
-+
- 				if (!mdres->multi_devices && !mdres->old_restore)
- 					bytenr = logical_to_physical(mdres,
--						     async->start + offset,
--						     &chunk_size,
--						     &physical_dup);
-+							logical, &chunk_size,
-+							&physical_dup);
- 				else
--					bytenr = async->start + offset;
-+					bytenr = logical;
- 
--				ret = pwrite64(outfd, outbuf+offset, chunk_size,
--					       bytenr);
-+				ret = pwrite64(outfd, buffer + offset, chunk_size, bytenr);
- 				if (ret != chunk_size)
--					goto error;
-+					goto write_error;
- 
- 				if (physical_dup)
--					ret = pwrite64(outfd, outbuf+offset,
--						       chunk_size,
--						       physical_dup);
-+					ret = pwrite64(outfd, buffer + offset,
-+						       chunk_size, physical_dup);
- 				if (ret != chunk_size)
--					goto error;
-+					goto write_error;
- 
- 				size -= chunk_size;
- 				offset += chunk_size;
- 				continue;
--
--error:
--				if (ret < 0) {
--					error("unable to write to device: %m");
--					err = errno;
--				} else {
--					error("short write");
--					err = -EIO;
--				}
- 			}
- 		} else if (async->start != BTRFS_SUPER_INFO_OFFSET) {
--			ret = write_data_to_disk(mdres->info, outbuf, async->start, size, 0);
-+			ret = write_data_to_disk(mdres->info, buffer,
-+						 async->start, out_len, 0);
- 			if (ret) {
- 				error("failed to write data");
- 				exit(1);
- 			}
- 		}
- 
--
- 		/* backup super blocks are already there at fixup_offset stage */
--		if (!mdres->multi_devices && async->start == BTRFS_SUPER_INFO_OFFSET)
--			write_backup_supers(outfd, outbuf);
-+		if (async->start == BTRFS_SUPER_INFO_OFFSET &&
-+		    !mdres->multi_devices)
-+			write_backup_supers(outfd, buffer);
-+		out_offset += out_len;
-+		if (compress_end) {
-+			inflateEnd(&strm);
-+			break;
++		ret = read_chunk_block(mdres, buffer, item_bytenr, read_size,
++					current_cluster);
++		if (ret < 0) {
++			error(
++	"failed to search tree blocks in item bytenr %llu size %u",
++				item_bytenr, item_size);
++			goto out;
 +		}
-+	}
-+	return ret;
-+
-+write_error:
-+	if (ret < 0) {
-+		error("unable to write to device: %m");
-+		ret = -errno;
-+	} else {
-+		error("short write");
-+		ret = -EIO;
++		offset += read_size;
 +	}
 +out:
-+	if (compress_method == COMPRESS_ZLIB)
-+		inflateEnd(&strm);
++	free(buffer);
 +	return ret;
 +}
 +
-+static void *restore_worker(void *data)
++static int search_chunk_compressed(struct mdrestore_struct *mdres,
++				   struct meta_cluster_item *item,
++				   u64 current_cluster)
 +{
-+	struct mdrestore_struct *mdres = (struct mdrestore_struct *)data;
-+	struct async_work *async;
-+	u8 *buffer;
++	z_stream strm;
++	u32 item_size = le32_to_cpu(item->size);
++	u64 item_bytenr = le64_to_cpu(item->bytenr);
++	int bufsize = SZ_512K;
++	int read_size;
++	u8 *out_buf = NULL;	/* uncompressed data */
++	u8 *in_buf = NULL;	/* compressed data */
++	bool end = false;
 +	int ret;
-+	int buffer_size = SZ_512K;
 +
-+	buffer = malloc(buffer_size);
-+	if (!buffer) {
-+		error("not enough memory for restore worker buffer");
-+		pthread_mutex_lock(&mdres->mutex);
-+		if (!mdres->error)
-+			mdres->error = -ENOMEM;
-+		pthread_mutex_unlock(&mdres->mutex);
-+		pthread_exit(NULL);
++	ASSERT(mdres->compress_method != COMPRESS_NONE);
++	strm.zalloc = Z_NULL;
++	strm.zfree = Z_NULL;
++	strm.opaque = Z_NULL;
++	strm.avail_in = 0;
++	strm.next_in = Z_NULL;
++	strm.avail_out = 0;
++	strm.next_out = Z_NULL;
++	ret = inflateInit(&strm);
++	if (ret != Z_OK) {
++		error("failed to initialize decompress parameters: %d", ret);
++		return ret;
 +	}
 +
-+	while (1) {
-+		pthread_mutex_lock(&mdres->mutex);
-+		while (!mdres->nodesize || list_empty(&mdres->list)) {
-+			if (mdres->done) {
-+				pthread_mutex_unlock(&mdres->mutex);
-+				goto out;
-+			}
-+			pthread_cond_wait(&mdres->cond, &mdres->mutex);
++	out_buf = malloc(bufsize);
++	in_buf = malloc(item_size);
++	if (!in_buf || !out_buf) {
++		ret = -ENOMEM;
++		goto out;
++	}
++
++	ret = fread(in_buf, item_size, 1, mdres->in);
++	if (ret != 1) {
++		error("read error: %m");
++		ret = -EIO;
++		goto out;
++	}
++	strm.avail_in = item_size;
++	strm.next_in = in_buf;
++	while (!end) {
++		if (strm.avail_out == 0) {
++			strm.avail_out = bufsize;
++			strm.next_out = out_buf;
 +		}
-+		async = list_entry(mdres->list.next, struct async_work, list);
-+		list_del_init(&async->list);
- 
--		if (err && !mdres->error)
--			mdres->error = err;
-+		ret = restore_one_work(mdres, async, buffer, buffer_size);
-+		if (ret < 0) {
-+			mdres->error = ret;
-+			pthread_mutex_unlock(&mdres->mutex);
++		ret = inflate(&strm, Z_NO_FLUSH);
++		switch (ret) {
++		case Z_NEED_DICT:
++			ret = Z_DATA_ERROR; /* fallthrough */
++			__attribute__ ((fallthrough));
++		case Z_DATA_ERROR:
++		case Z_MEM_ERROR:
 +			goto out;
 +		}
- 		mdres->num_items--;
- 		pthread_mutex_unlock(&mdres->mutex);
++		if (ret == Z_STREAM_END) {
++			ret = 0;
++			end = true;
++		}
++		read_size = bufsize - strm.avail_out;
++
++		ret = read_chunk_block(mdres, out_buf, item_bytenr, read_size,
++					current_cluster);
++		if (ret < 0) {
++			error(
++	"failed to search tree blocks in item bytenr %llu size %u",
++				item_bytenr, item_size);
++			goto out;
++		}
++	}
++
++out:
++	free(in_buf);
++	free(out_buf);
++	inflateEnd(&strm);
++	return ret;
++}
++
+ /*
+  * This function will try to find all chunk items in the dump image.
+  *
+@@ -2044,8 +2164,6 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
  
+ 		/* Search items for tree blocks in sys chunks */
+ 		for (i = 0; i < nritems; i++) {
+-			size_t size;
+-
+ 			item = &cluster->items[i];
+ 			bufsize = le32_to_cpu(item->size);
+ 			item_bytenr = le64_to_cpu(item->bytenr);
+@@ -2070,41 +2188,16 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
+ 			}
+ 
+ 			if (mdres->compress_method == COMPRESS_ZLIB) {
+-				ret = fread(tmp, bufsize, 1, mdres->in);
+-				if (ret != 1) {
+-					error("read error: %m");
+-					ret = -EIO;
+-					goto out;
+-				}
+-
+-				size = max_size;
+-				ret = uncompress(buffer,
+-						 (unsigned long *)&size, tmp,
+-						 bufsize);
+-				if (ret != Z_OK) {
+-					error("decompression failed with %d",
+-							ret);
+-					ret = -EIO;
+-					goto out;
+-				}
++				ret = search_chunk_compressed(mdres, item,
++						current_cluster);
+ 			} else {
+-				ret = fread(buffer, bufsize, 1, mdres->in);
+-				if (ret != 1) {
+-					error("read error: %m");
+-					ret = -EIO;
+-					goto out;
+-				}
+-				size = bufsize;
++				ret = search_chunk_uncompressed(mdres, item,
++						current_cluster);
+ 			}
+-			ret = 0;
+-
+-			ret = read_chunk_block(mdres, buffer,
+-					       item_bytenr, size,
+-					       current_cluster);
+ 			if (ret < 0) {
+ 				error(
+-	"failed to search tree blocks in item bytenr %llu size %lu",
+-					item_bytenr, size);
++	"failed to search tree blocks in item bytenr %llu size %u",
++					item_bytenr, bufsize);
+ 				goto out;
+ 			}
+ 			bytenr += bufsize;
 -- 
 2.23.0
 
