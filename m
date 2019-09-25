@@ -2,57 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3334BDB64
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 11:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 278FCBDB91
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 11:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729213AbfIYJsw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 05:48:52 -0400
-Received: from mail-vk1-f196.google.com ([209.85.221.196]:34665 "EHLO
-        mail-vk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728683AbfIYJsv (ORCPT
+        id S1731651AbfIYJ6C (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 05:58:02 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:39337 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727540AbfIYJ6C (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 05:48:51 -0400
-Received: by mail-vk1-f196.google.com with SMTP id d126so476708vkb.1;
-        Wed, 25 Sep 2019 02:48:49 -0700 (PDT)
+        Wed, 25 Sep 2019 05:58:02 -0400
+Received: by mail-ua1-f68.google.com with SMTP id b14so1560157uap.6
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2019 02:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:reply-to:from:date:message-id
          :subject:to:cc:content-transfer-encoding;
-        bh=C3pD7QgSaSom3lT5YXHrmzSF6OFni/ZLBZy9dAlM7EU=;
-        b=n6brwEmW21ulV06P0/kIB394yZn+dL2my3AlGD+pF5QclJfsieYMZBaIN9IlVI2fud
-         tTdXgybz8X3m6sZSqhz51ruSPpSabFOaxIKwxgEtvWKrjC7/DRJLloP61LRdLICnlJVd
-         jJ3XETKHcc3Muo3sG17W2imMbBoXg5JlRt/c0cRKokhTq70mFKN2R3519YcxbBS8N6yx
-         5ao5aiWNIExKreE/+hBXEU9LqI7SDJzlgKdQxOW/dThfIOYrNR4bm0sSOf5P1mGpcjXx
-         5etdGlc6DoaZhjd2tKk8S9NS9hfNSCdEYexLMuZ4lp/2HsR949Uhv9jkeaQSDbw6DjLm
-         k1vA==
+        bh=wS+bALd21QNdsXAyH8jt4i0PSZRzi9q+VClZwR2zI3g=;
+        b=qh75j13EqUcg53KrmHPtevvwarpQ71qi4NAwPaK/UdBs+c9lvqTaH8wV6uB0Z1qS1p
+         fTjt547vSmLmm8nUQ4PEHfZc1JiihmqbOXfDdOGZpGyRBIRSi3UyTOAAiLYCxN/LPuGm
+         ufJulwF4qRcGaGH8tOnjpgmtOWz7emBgpz8SiHzf8YmOZMDQ/emXRqRdDDdVKGQkfgbw
+         yIwr2W4a4BQFdGG3c0IYnzYo1TdkbUlcYz1It0l+sW94zsocY9Mt91MvMV9tNXe0BchY
+         5bWuziaOPrEM/y9JExSnVAnzmzu4F5nArQYkXIxXYZ0/Rc0OUOFFQEqoHVVNnf7Gc/o3
+         o2Cw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
          :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=C3pD7QgSaSom3lT5YXHrmzSF6OFni/ZLBZy9dAlM7EU=;
-        b=D4LT+GkpNfjf/CZuHiTigbbXlpGm6pOYMIJBpxvYqw1KeSra/RKHNBhqdx7eSInl6N
-         lyl5En8idlfZt99i+fl3wk04b8NhYU5Ewd1dWvXJcLtX93a0GEdNmm88WlxOoz1Hx5q7
-         cxbSZ9Z61IZgozmUZRptLJ6tYO3qEyP3xckEcPc/0suROkogmPLh9+KXl0qQr9+HJwC7
-         836VDnYsA924VF8mpti1h/+V3ylMNIpo2u3TBsyiJLtFj6zRFVCxFuN/d/5LFy0jEIh1
-         lKq3BD7P3OHyv3Bh6GbAaiXsciu1eV7eY42DqI17rK+VH1YQSfFZ0Pofrq6pK5mVjavN
-         dRTw==
-X-Gm-Message-State: APjAAAXEVUls4GerKJOTo5dyPhV5r2lfnm9FBvMKejkaeAjHemHpqJ9B
-        27/JG5uPre2FoCKucGNpTk6W/jvOBV+I4WZVp2U/cg==
-X-Google-Smtp-Source: APXvYqwzYkBLQmYQURRr0+lrf6tsX3ipqoHUWJYvFyKxqyOQD2xEcjNcHr3rzEjCPa5MGQSGJPBVacMSvAPqA7OCIG4=
-X-Received: by 2002:a1f:5e4f:: with SMTP id s76mr1854495vkb.4.1569404928914;
- Wed, 25 Sep 2019 02:48:48 -0700 (PDT)
+        bh=wS+bALd21QNdsXAyH8jt4i0PSZRzi9q+VClZwR2zI3g=;
+        b=LQ1DAqL6nj3XYGTRxBpijBclLH1O6xzV2Mwi6xxEbUxsfwULC6UfzndT1Bncq38+6h
+         hGNcgd+C/IcSwowCKUuwBfHdw2csoD5mLNlji6qQ5kfAR+/qG5ZsL+vmzl4z1be4g5HX
+         JpdCiGZm3vtHDguHIJyHU61RuKiCkQFNz3LgPro2Kx+MUYv/h0fFiOIlSvskNlfqFqFm
+         cvcFzBBCD0aAj7znkwtPKQkcb+2S8h/sCAE5ZuHuCVdAEbNije3FIWHDxszgD+BqF0uC
+         EEbmYPeFFtpONfPw3bMzLAOYVsc/zWIPH5eZwAaVEz1KJifWQn646NeFoq4EGJ6ndjTR
+         ZQiw==
+X-Gm-Message-State: APjAAAUhBd1AIJUYfMVjaQfghAQS6cn0z4QLnl8AGhGiJMAnY/FnPBuF
+        JXxStdy/1N9tsiIV8qilxvhEMKYkhcyWaxI7j1c=
+X-Google-Smtp-Source: APXvYqynGsFIqKeYfxWkk825AsIlXieEJCDGG0MVsu/qhLGksuGqIcLplCc6BQd4yiEX9Qz70fkevROXbsPa19F59vA=
+X-Received: by 2002:ab0:70a2:: with SMTP id q2mr3945574ual.83.1569405480386;
+ Wed, 25 Sep 2019 02:58:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190923124347.30850-1-wqu@suse.com>
-In-Reply-To: <20190923124347.30850-1-wqu@suse.com>
+References: <20190923065614.22481-1-wqu@suse.com>
+In-Reply-To: <20190923065614.22481-1-wqu@suse.com>
 Reply-To: fdmanana@gmail.com
 From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 25 Sep 2019 10:48:38 +0100
-Message-ID: <CAL3q7H6Fo+79a36Bp1kRpfyczK5diRwtgkcNLewEY1Fj=dTPiQ@mail.gmail.com>
-Subject: Re: [PATCH] fstests: btrfs/011: Fill the fs to ensure we have enough
- data for dev-replace
+Date:   Wed, 25 Sep 2019 10:57:49 +0100
+Message-ID: <CAL3q7H7s8to6yYjymkSuMpifZxJko+RVOXRf7abMuVO5SjS6BQ@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: relocation: Fix KASAN report about
+ use-after-free due to dead reloc tree cleanup race
 To:     Qu Wenruo <wqu@suse.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Cebtenzzre <cebtenzzre@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -60,184 +60,240 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 6:02 PM Qu Wenruo <wqu@suse.com> wrote:
+On Wed, Sep 25, 2019 at 5:21 AM Qu Wenruo <wqu@suse.com> wrote:
 >
 > [BUG]
-> When btrfs/011 is executed on a fast enough system (fully memory backed
-> VM, with test device has unsafe cache mode), the test can fail like
-> this:
+> One user reported a reproduciable KASAN report about use-after-free:
+>   BTRFS info (device sdi1): balance: start -dvrange=3D1256811659264..1256=
+811659265
+>   BTRFS info (device sdi1): relocating block group 1256811659264 flags da=
+ta|raid0
+>   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>   BUG: KASAN: use-after-free in btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
+>   Write of size 8 at addr ffff88856f671710 by task kworker/u24:10/261579
 >
->   btrfs/011 43s ... [failed, exit status 1]- output mismatch (see /home/a=
-dam/xfstests-dev/results//btrfs/011.out.bad)
->     --- tests/btrfs/011.out     2019-07-22 14:13:44.643333326 +0800
->     +++ /home/adam/xfstests-dev/results//btrfs/011.out.bad      2019-09-1=
-8 14:49:28.308798022 +0800
->     @@ -1,3 +1,4 @@
->      QA output created by 011
->      *** test btrfs replace
->     -*** done
->     +failed: '/usr/bin/btrfs replace cancel /mnt/scratch'
->     +(see /home/adam/xfstests-dev/results//btrfs/011.full for details)
->     ...
+>   CPU: 2 PID: 261579 Comm: kworker/u24:10 Tainted: P           OE     5.2=
+.11-arch1-1-kasan #4
+>   Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./X99 Extrem=
+e4, BIOS P3.80 04/06/2018
+>   Workqueue: btrfs-endio-write btrfs_endio_write_helper [btrfs]
+>   Call Trace:
+>    dump_stack+0x7b/0xba
+>    print_address_description+0x6c/0x22e
+>    ? btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
+>    __kasan_report.cold+0x1b/0x3b
+>    ? btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
+>    kasan_report+0x12/0x17
+>    __asan_report_store8_noabort+0x17/0x20
+>    btrfs_init_reloc_root+0x2cd/0x340 [btrfs]
+>    record_root_in_trans+0x2a0/0x370 [btrfs]
+>    btrfs_record_root_in_trans+0xf4/0x140 [btrfs]
+>    start_transaction+0x1ab/0xe90 [btrfs]
+>    btrfs_join_transaction+0x1d/0x20 [btrfs]
+>    btrfs_finish_ordered_io+0x7bf/0x18a0 [btrfs]
+>    ? lock_repin_lock+0x400/0x400
+>    ? __kmem_cache_shutdown.cold+0x140/0x1ad
+>    ? btrfs_unlink_subvol+0x9b0/0x9b0 [btrfs]
+>    finish_ordered_fn+0x15/0x20 [btrfs]
+>    normal_work_helper+0x1bd/0xca0 [btrfs]
+>    ? process_one_work+0x819/0x1720
+>    ? kasan_check_read+0x11/0x20
+>    btrfs_endio_write_helper+0x12/0x20 [btrfs]
+>    process_one_work+0x8c9/0x1720
+>    ? pwq_dec_nr_in_flight+0x2f0/0x2f0
+>    ? worker_thread+0x1d9/0x1030
+>    worker_thread+0x98/0x1030
+>    kthread+0x2bb/0x3b0
+>    ? process_one_work+0x1720/0x1720
+>    ? kthread_park+0x120/0x120
+>    ret_from_fork+0x35/0x40
+>
+>   Allocated by task 369692:
+>    __kasan_kmalloc.part.0+0x44/0xc0
+>    __kasan_kmalloc.constprop.0+0xba/0xc0
+>    kasan_kmalloc+0x9/0x10
+>    kmem_cache_alloc_trace+0x138/0x260
+>    btrfs_read_tree_root+0x92/0x360 [btrfs]
+>    btrfs_read_fs_root+0x10/0xb0 [btrfs]
+>    create_reloc_root+0x47d/0xa10 [btrfs]
+>    btrfs_init_reloc_root+0x1e2/0x340 [btrfs]
+>    record_root_in_trans+0x2a0/0x370 [btrfs]
+>    btrfs_record_root_in_trans+0xf4/0x140 [btrfs]
+>    start_transaction+0x1ab/0xe90 [btrfs]
+>    btrfs_start_transaction+0x1e/0x20 [btrfs]
+>    __btrfs_prealloc_file_range+0x1c2/0xa00 [btrfs]
+>    btrfs_prealloc_file_range+0x13/0x20 [btrfs]
+>    prealloc_file_extent_cluster+0x29f/0x570 [btrfs]
+>    relocate_file_extent_cluster+0x193/0xc30 [btrfs]
+>    relocate_data_extent+0x1f8/0x490 [btrfs]
+>    relocate_block_group+0x600/0x1060 [btrfs]
+>    btrfs_relocate_block_group+0x3a0/0xa00 [btrfs]
+>    btrfs_relocate_chunk+0x9e/0x180 [btrfs]
+>    btrfs_balance+0x14e4/0x2fc0 [btrfs]
+>    btrfs_ioctl_balance+0x47f/0x640 [btrfs]
+>    btrfs_ioctl+0x119d/0x8380 [btrfs]
+>    do_vfs_ioctl+0x9f5/0x1060
+>    ksys_ioctl+0x67/0x90
+>    __x64_sys_ioctl+0x73/0xb0
+>    do_syscall_64+0xa5/0x370
+>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+>   Freed by task 369692:
+>    __kasan_slab_free+0x14f/0x210
+>    kasan_slab_free+0xe/0x10
+>    kfree+0xd8/0x270
+>    btrfs_drop_snapshot+0x154c/0x1eb0 [btrfs]
+>    clean_dirty_subvols+0x227/0x340 [btrfs]
+>    relocate_block_group+0x972/0x1060 [btrfs]
+>    btrfs_relocate_block_group+0x3a0/0xa00 [btrfs]
+>    btrfs_relocate_chunk+0x9e/0x180 [btrfs]
+>    btrfs_balance+0x14e4/0x2fc0 [btrfs]
+>    btrfs_ioctl_balance+0x47f/0x640 [btrfs]
+>    btrfs_ioctl+0x119d/0x8380 [btrfs]
+>    do_vfs_ioctl+0x9f5/0x1060
+>    ksys_ioctl+0x67/0x90
+>    __x64_sys_ioctl+0x73/0xb0
+>    do_syscall_64+0xa5/0x370
+>    entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>
+>   The buggy address belongs to the object at ffff88856f671100
+>    which belongs to the cache kmalloc-4k of size 4096
+>   The buggy address is located 1552 bytes inside of
+>    4096-byte region [ffff88856f671100, ffff88856f672100)
+>   The buggy address belongs to the page:
+>   page:ffffea0015bd9c00 refcount:1 mapcount:0 mapping:ffff88864400e600 in=
+dex:0x0 compound_mapcount: 0
+>   flags: 0x2ffff0000010200(slab|head)
+>   raw: 02ffff0000010200 dead000000000100 dead000000000200 ffff88864400e60=
+0
+>   raw: 0000000000000000 0000000000070007 00000001ffffffff 000000000000000=
+0
+>   page dumped because: kasan: bad access detected
+>
+>   Memory state around the buggy address:
+>    ffff88856f671600: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>    ffff88856f671680: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>   >ffff88856f671700: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                            ^
+>    ffff88856f671780: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>    ffff88856f671800: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>   =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>   BTRFS info (device sdi1): 1 enospc errors during balance
+>   BTRFS info (device sdi1): balance: ended with status: -28
 >
 > [CAUSE]
-> Looking into the full output, it shows:
->   ...
->   Replace from /dev/mapper/test-scratch1 to /dev/mapper/test-scratch2
+> The problem happens when finish_ordered_io() get called with balance
+> still running, while the reloc root of that subvolume is already dead.
+> (tree swap already done, but tree not yet deleted for possible qgroup
+> usage)
 >
->   # /usr/bin/btrfs replace start -f /dev/mapper/test-scratch1 /dev/mapper=
-/test-scratch2 /mnt/scratch
->   # /usr/bin/btrfs replace cancel /mnt/scratch
->   INFO: ioctl(DEV_REPLACE_CANCEL)"/mnt/scratch": not started
->   failed: '/usr/bin/btrfs replace cancel /mnt/scratch'
+> That means root->reloc_root still exists, but that reloc_root can be
+> under btrfs_drop_snapshot(), thus we shouldn't access it.
 >
-> So this means the replace is already finished before we cancel it.
-> For fast system, it's very common.
+> The following race could cause the use-after-free problem:
+>
+>                 CPU1              |                CPU2
+> -------------------------------------------------------------------------=
+-
+>                                   | relocate_block_group()
+>                                   | |- unset_reloc_control(rc)
+>                                   | |- btrfs_commit_transaction()
+> btrfs_finish_ordered_io()         | |- clean_dirty_subvols()
+> |- btrfs_join_transaction()       |    |
+>    |- record_root_in_trans()      |    |
+>       |- btrfs_init_reloc_root()  |    |
+>          |- if (root->reloc_root) |    |
+>          |                        |    |- root->reloc_root =3D NULL
+>          |                        |    |- btrfs_drop_snapshot(reloc_root)=
+;
+>          |- reloc_root->last_trans|
+>                  =3D trans->transid |
+>             ^^^^^^^^^^^^^^^^^^^^^^
+>             Use after free
 >
 > [FIX]
-> In fill_scratch() after all the original file creations, do a timer
-> based direct IO write.
-> The extra write will take 2 * $wait_time, utilizing direct IO with 64K
-> block size, the write performance should be very comparable (although a
-> little faster) to replace performance.
+> Fix it by the following modifications:
+> - Test if the root has dead reloc tree before accessing root->reloc_root
+>   If the root has BTRFS_ROOT_DEAD_RELOC_TREE, then we don't need to
+>   create or update root->reloc_tree
 >
-> So later cancel should be able to really cancel the dev-replace without
-> it finished too early.
+> - Clear the BTRFS_ROOT_DEAD_RELOC_TREE flag until we have fully dropped
+>   reloc tree
+>   To co-operate with above modification, so as long as
+>   BTRFS_ROOT_DEAD_RELOC_TREE is still set, we won't try to re-create
+>   reloc tree at record_root_in_trans().
 >
-> Also, do extra check about the above write. If we hit ENOSPC we just
-> skip the test as the system is really too fast and the fs is not large
-> enough.
->
+> Reported-by: Cebtenzzre <cebtenzzre@gmail.com>
+> Fixes: d2311e698578 ("btrfs: relocation: Delay reloc tree deletion after =
+merge_reloc_roots")
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Instead of such a long subject "btrfs: relocation: Fix KASAN report
+about use-after-free due to dead reloc tree cleanup race", I would use
+something smaller like "btrfs: fix use-after-free on dead relocation roots"=
+.
+You don't need to mention in the subject that KASAN detected it, as
+well as the reason for the problem, both can be left in the changelog.
+
+Other than that it looks good to me, thanks.
+
 > ---
->  tests/btrfs/011 | 45 ++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 38 insertions(+), 7 deletions(-)
+> changelog:
+> v2:
+> - Make the common BTRFS_ROOT_DEAD_RELOC_TREE check the first check
+> - Remove one random newline caused by editing
+> ---
+>  fs/btrfs/relocation.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
 >
-> diff --git a/tests/btrfs/011 b/tests/btrfs/011
-> index 89bb4d11..dc86539c 100755
-> --- a/tests/btrfs/011
-> +++ b/tests/btrfs/011
-> @@ -34,7 +34,7 @@ _cleanup()
->                 kill -TERM $noise_pid
->         fi
->         wait
-> -       rm -f $tmp.tmp
-> +       rm -f $tmp.*
->         # we need this umount and couldn't rely on _require_scratch to um=
-ount
->         # it from next test, because we would replace SCRATCH_DEV, which =
-is
->         # needed by _require_scratch, and make it umounted.
-> @@ -54,13 +54,17 @@ _require_scratch_dev_pool_equal_size
->  _require_command "$WIPEFS_PROG" wipefs
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 7f219851fa23..655f1d5a8c27 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -1434,6 +1434,13 @@ int btrfs_init_reloc_root(struct btrfs_trans_handl=
+e *trans,
+>         int clear_rsv =3D 0;
+>         int ret;
 >
->  rm -f $seqres.full
-> -rm -f $tmp.tmp
-> +rm -f $tmp.*
->
->  echo "*** test btrfs replace"
->
-> +# In seconds
-> +wait_time=3D1
+> +       /*
+> +        * The subvolume has reloc tree but the swap is finished,
+> +        * no need to create/update the dead reloc tree
+> +        */
+> +       if (test_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->state))
+> +               return 0;
 > +
->  fill_scratch()
->  {
->         local fssize=3D$1
-> +       local filler_pid
+>         if (root->reloc_root) {
+>                 reloc_root =3D root->reloc_root;
+>                 reloc_root->last_trans =3D trans->transid;
+> @@ -2186,7 +2193,6 @@ static int clean_dirty_subvols(struct reloc_control=
+ *rc)
+>                         /* Merged subvolume, cleanup its reloc root */
+>                         struct btrfs_root *reloc_root =3D root->reloc_roo=
+t;
 >
->         # Fill inline extents.
->         for i in `seq 1 500`; do
-> @@ -75,6 +79,33 @@ fill_scratch()
->         for i in `seq $fssize`; do
->                 cp $SCRATCH_MNT/t0 $SCRATCH_MNT/t$i || _fail "cp failed"
->         done > /dev/null 2>> $seqres.full
-> +
-> +       # Ensure we have enough data so that dev-replace would take at le=
-ast
-> +       # 2 * $wait_time, allowing we cancel the running replace.
-> +       # Some extra points:
-> +       # - Use XFS_IO_PROG instead of dd
-> +       #   fstests wraps dd, making it pretty hard to kill the real dd p=
-id
-> +       # - Use 64K block size with Direct IO
-> +       #   64K is the same stripe size used in replace/scrub. Using Dire=
-ct IO
-> +       #   ensure the IO speed is near device limit and comparable to re=
-place
-> +       #   speed.
-> +       $XFS_IO_PROG -f -d -c "pwrite -b 64k 0 1E" "$SCRATCH_MNT/t_filler=
-" &>\
-> +               $tmp.filler_result &
-> +       filler_pid=3D$!
-> +       sleep $((2 * $wait_time))
-> +       kill -KILL $filler_pid &> /dev/null
-> +       wait $filler_pid &> /dev/null
-> +
-> +       # If the system is too fast and the fs is too small, then skip th=
-e test
-> +       if grep -q "No space left" $tmp.filler_result; then
-> +               ls -alh $SCRATCH_MNT >> $seqres.full
-> +               cat $tmp.filler_result >> $seqres.full
-> +               _notrun "system too fast and/or too small fs"
-
-It would probably be better to require so minimal size for the
-filesystem instead.
-
-> +       fi
-> +       # If killed properly, this file should be empty.
-
-Confusing comment for me. If killed properly? How does that influence
-the file being empty?
-What influences the file being empty is that it's impossible (in
-practice) for xfs_io to complete the write in less then 2 seconds,
-assuming the fs isn't very small and it hits ENOSPC in less than 2
-seconds.
-
-I would rephrase that or remove that line.
-
-Other than that it looks ok to me.
-
-Thanks
-
-> +       # If something other than ENOSPC happened, output to make sure we=
- can
-> +       # detect the error
-> +       cat $tmp.filler_result
->         sync; sync
->  }
->
-> @@ -147,7 +178,7 @@ btrfs_replace_test()
->         if [ "${with_cancel}Q" =3D "cancelQ" ]; then
->                 # background the replace operation (no '-B' option given)
->                 _run_btrfs_util_prog replace start -f $replace_options $s=
-ource_dev $target_dev $SCRATCH_MNT
-> -               sleep 1
-> +               sleep $wait_time
->                 _run_btrfs_util_prog replace cancel $SCRATCH_MNT
->
->                 # 'replace status' waits for the replace operation to fin=
-ish
-> @@ -157,10 +188,10 @@ btrfs_replace_test()
->                 grep -q canceled $tmp.tmp || _fail "btrfs replace status =
-(canceled) failed"
->         else
->                 if [ "${quick}Q" =3D "thoroughQ" ]; then
-> -                       # On current hardware, the thorough test runs
-> -                       # more than a second. This is a chance to force
-> -                       # a sync in the middle of the replace operation.
-> -                       (sleep 1; sync) > /dev/null 2>&1 &
-> +                       # The thorough test runs around 2 * $wait_time se=
-conds.
-> +                       # This is a chance to force a sync in the middle =
-of the
-> +                       # replace operation.
-> +                       (sleep $wait_time; sync) > /dev/null 2>&1 &
->                 fi
->                 _run_btrfs_util_prog replace start -Bf $replace_options $=
-source_dev $target_dev $SCRATCH_MNT
->
+> -                       clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->stat=
+e);
+>                         list_del_init(&root->reloc_dirty_list);
+>                         root->reloc_root =3D NULL;
+>                         if (reloc_root) {
+> @@ -2195,6 +2201,7 @@ static int clean_dirty_subvols(struct reloc_control=
+ *rc)
+>                                 if (ret2 < 0 && !ret)
+>                                         ret =3D ret2;
+>                         }
+> +                       clear_bit(BTRFS_ROOT_DEAD_RELOC_TREE, &root->stat=
+e);
+>                         btrfs_put_fs_root(root);
+>                 } else {
+>                         /* Orphan reloc tree, just clean it up */
 > --
-> 2.22.0
+> 2.23.0
 >
 
 
