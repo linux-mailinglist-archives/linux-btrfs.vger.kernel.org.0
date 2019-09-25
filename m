@@ -2,84 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62536BDDC4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 14:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E643FBDDDA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 14:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405387AbfIYMHr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 08:07:47 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:45313 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388199AbfIYMHr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 08:07:47 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1EAC6224DC;
-        Wed, 25 Sep 2019 08:07:45 -0400 (EDT)
-Received: from imap37 ([10.202.2.87])
-  by compute3.internal (MEProxy); Wed, 25 Sep 2019 08:07:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=on/VQ5
-        eHbmJCO8XUQdTV6gYockvWAtQkQ7buFdi82FM=; b=S/A9tkO1+QkKiB5znDHlq8
-        H6/wVx6EMzl6lBe7ObWrK6yTjHBb6LN73+6646CZyI4sgnMsH59AWYALMGMYC9ix
-        GVHpqWtsMubRypHQUMCWnWlu3Pdezyd8LQZ9zl33wJF77kFmS6ZJTNRY4RchnHVU
-        OGGX4YCuUcsv/zI5NyqjEL7j9wvikwWh+Jn1CxMquJ3OL8HqgzKatkdrCJTgQ0Eh
-        hA8+Bvj6pZXH6MpQ9Js8Ropbu8z30Qp2VqhfiQWBKA5tglagGiFPd9NXUlMQMcKJ
-        OZ0U2amNLxysIPTXwBLjO3W/CBve7betm5xPWToxzii2H2Y8HBQGa/E/0HkEhdxw
-        ==
-X-ME-Sender: <xms:j1iLXSwLcZtO1Ub7uyg0b8JTSf05e3KZXEOW3-nWuimip6w9E1W2UQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrfedvgdeglecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfveholhhi
-    nhcuhggrlhhtvghrshdfuceofigrlhhtvghrshesvhgvrhgsuhhmrdhorhhgqeenucfrrg
-    hrrghmpehmrghilhhfrhhomhepfigrlhhtvghrshesvhgvrhgsuhhmrdhorhhgnecuvehl
-    uhhsthgvrhfuihiivgeptd
-X-ME-Proxy: <xmx:j1iLXdNO5sdbDAC6kbfd5R3DJgB5zKfNgeLkp562IIrIowsynjKmVA>
-    <xmx:j1iLXQaVD-Dj7A_4FySHrX2y_1xFjK1U6ld69wAww6RUCh6Sn5bzkA>
-    <xmx:j1iLXcBH8Vyu0Pir3ym0hDoERNsFhYCra5X2Yi7N5ZJdMmtVsMoA2g>
-    <xmx:kViLXSV--n8ttvJraT682_1-H3h05BIi6zDhmpHoLzbhjyXqyS4Umw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 89255684005E; Wed, 25 Sep 2019 08:07:43 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.1.7-305-g4111847-fmstable-20190924v1
-Mime-Version: 1.0
-Message-Id: <60c48ac5-b215-44e1-a628-6145d84a4ce3@www.fastmail.com>
-In-Reply-To: <20190925071129.GB804@dread.disaster.area>
-References: <cover.1568875700.git.osandov@fb.com>
- <230a76e65372a8fb3ec62ce167d9322e5e342810.1568875700.git.osandov@fb.com>
- <CAG48ez2GKv15Uj6Wzv0sG5v2bXyrSaCtRTw5Ok_ovja_CiO_fQ@mail.gmail.com>
- <20190924171513.GA39872@vader> <20190924193513.GA45540@vader>
- <CAG48ez1NQBNR1XeVQYGoopEk=g_KedUr+7jxLQTaO+V8JCeweQ@mail.gmail.com>
- <20190925071129.GB804@dread.disaster.area>
-Date:   Wed, 25 Sep 2019 08:07:12 -0400
-From:   "Colin Walters" <walters@verbum.org>
-To:     "Dave Chinner" <david@fromorbit.com>,
-        "Jann Horn" <jannh@google.com>
-Cc:     "Omar Sandoval" <osandov@osandov.com>,
-        "Aleksa Sarai" <cyphar@cyphar.com>, "Jens Axboe" <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs@vger.kernel.org,
-        "Linux API" <linux-api@vger.kernel.org>,
-        "Kernel Team" <kernel-team@fb.com>,
-        "Andy Lutomirski" <luto@kernel.org>
-Subject: Re: [RFC PATCH 2/3] fs: add RWF_ENCODED for writing compressed data
-Content-Type: text/plain
+        id S2405458AbfIYMOC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 08:14:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59682 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2405177AbfIYMOC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Sep 2019 08:14:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id B2DECB626
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2019 12:14:00 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 00/10] btrfs-progs: image: Enhancement with new data dump feature
+Date:   Wed, 25 Sep 2019 20:13:46 +0800
+Message-Id: <20190925121356.118038-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This patchset includes the following features:
 
+- Small fixes to improve btrfs-image error report
+  * Output error message for chunk tree build error
+  * Fix error output to show correct return value
+  Patch 1 and 2.
 
-On Wed, Sep 25, 2019, at 3:11 AM, Dave Chinner wrote:
->
-> We're talking about user data read/write access here, not some
-> special security capability. Access to the data has already been
-> permission checked, so why should the format that the data is
-> supplied to the kernel in suddenly require new privilege checks?
+- Reduce memory usage when decompress super block
+  Independent change, for current btrfs-image, it will reduce buffer
+  size from 256K to fixed 4K.
+  Patch 3.
 
-What happens with BTRFS today if userspace provides invalid compressed data via this interface?  Does that show up as filesystem corruption later?  If the data is verified at write time, wouldn't that be losing most of the speed advantages of providing pre-compressed data?
+- Rework how we search chunk tree blocks
+  Instead of iterating clusters again and again for each chunk tree
+  block, record system chunk array and iterate clusters once for all
+  chunk tree blocks.
+  This should reduce restore time for large image dump.
+  Patch 4, 5 and 6.
 
-Ability for a user to cause fsck errors later would be a new thing that would argue for a privilege check I think.
+- Introduce data dump feature to dump the whole fs.
+  This will introduce a new magic number to prevent old btrfs-image to
+  hit failure as the item size limit is enlarged.
+  Patch 7 and 8.
+
+- Reduce memory usage for data dump restore
+  This is mostly due to the fact that we have much larger
+  max_pending_size introduced by data dump(256K -> 256M).
+  Using 4 * max_pending_size for each decompress thread as buffer is way
+  too expensive now.
+  Use proper inflate() to replace uncompress() calls.
+  Patch 9 and 10.
+
+Changelog:
+v2:
+- New small fixes:
+  * Fix a confusing error message due to unpopulated errno
+  * Output error message for chunk tree build error
+  
+- Fix a regression of previous version
+  Patch "btrfs-progs: image: Rework how we search chunk tree blocks"
+  deleted a "ret = 0" line which could cause false early exit.
+
+- Reduce memory usage for data dump
+
+v2.1:
+- Rebased to devel branch
+  Removing 4 already merged patches from the patchset.
+
+- Re-order the patchset
+  Put small and independent patches at the top of queue, and put the
+  data dump related feature at the end.
+
+- Fix -Wmaybe-uninitialized warnings
+  Strangely, D=1 won't trigger these warnings thus they sneak into v2
+  without being detected.
+
+- Fix FROM: line
+  Reverted to old smtp setup. The new setup will override FROM: line,
+  messing up the name of author.
+
+v3:
+- Fix a wrong option in error string
+- Fix a bug that we always dump data extents
+
+Qu Wenruo (10):
+  btrfs-progs: image: Output error message for chunk tree build error
+  btrfs-progs: image: Fix error output to show correct return value
+  btrfs-progs: image: Don't waste memory when we're just extracting
+    super block
+  btrfs-progs: image: Allow restore to record system chunk ranges for
+    later usage
+  btrfs-progs: image: Introduce helper to determine if a tree block is
+    in the range of system chunks
+  btrfs-progs: image: Rework how we search chunk tree blocks
+  btrfs-progs: image: Introduce framework for more dump versions
+  btrfs-progs: image: Introduce -d option to dump data
+  btrfs-progs: image: Reduce memory requirement for decompression
+  btrfs-progs: image: Reduce memory usage for chunk tree search
+
+ image/main.c     | 866 +++++++++++++++++++++++++++++++++++------------
+ image/metadump.h |  13 +-
+ 2 files changed, 654 insertions(+), 225 deletions(-)
+
+-- 
+2.23.0
+
