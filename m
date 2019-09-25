@@ -2,255 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1F6BDDF0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 14:15:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F32DBDEE0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 15:24:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405588AbfIYMOP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 08:14:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59720 "EHLO mx1.suse.de"
+        id S2406023AbfIYNXy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 09:23:54 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57026 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405574AbfIYMOO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 08:14:14 -0400
+        id S2405963AbfIYNXx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Sep 2019 09:23:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B8616B019
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Sep 2019 12:14:12 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 10/10] btrfs-progs: image: Reduce memory usage for chunk tree search
-Date:   Wed, 25 Sep 2019 20:13:56 +0800
-Message-Id: <20190925121356.118038-11-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20190925121356.118038-1-wqu@suse.com>
-References: <20190925121356.118038-1-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 4DA16AFCC;
+        Wed, 25 Sep 2019 13:23:52 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id A34FCDA835; Wed, 25 Sep 2019 15:24:12 +0200 (CEST)
+Date:   Wed, 25 Sep 2019 15:24:12 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Filipe Manana <fdmanana@gmail.com>
+Cc:     Qu Wenruo <wqu@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Cebtenzzre <cebtenzzre@gmail.com>
+Subject: Re: [PATCH v2] btrfs: relocation: Fix KASAN report about
+ use-after-free due to dead reloc tree cleanup race
+Message-ID: <20190925132412.GF2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Filipe Manana <fdmanana@gmail.com>,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Cebtenzzre <cebtenzzre@gmail.com>
+References: <20190923065614.22481-1-wqu@suse.com>
+ <CAL3q7H7s8to6yYjymkSuMpifZxJko+RVOXRf7abMuVO5SjS6BQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL3q7H7s8to6yYjymkSuMpifZxJko+RVOXRf7abMuVO5SjS6BQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just like original restore_worker, search_for_chunk_blocks() will also
-use a lot of memory for restoring large uncompressed extent or
-compressed extent with data dump.
+On Wed, Sep 25, 2019 at 10:57:49AM +0100, Filipe Manana wrote:
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> 
+> Instead of such a long subject "btrfs: relocation: Fix KASAN report
+> about use-after-free due to dead reloc tree cleanup race", I would use
+> something smaller like "btrfs: fix use-after-free on dead relocation roots".
+> You don't need to mention in the subject that KASAN detected it, as
+> well as the reason for the problem, both can be left in the changelog.
 
-Reduce the memory usage by:
-- Use fixed buffer size for uncompressed extent
-  Now we will use fixed 512K as buffer size for reading uncompressed
-  extent.
-
-  Now chunk tree search will read out 512K data at most, then search
-  chunk trees in the buffer.
-
-  Reduce the memory usage from as large as item size, to fixed 512K.
-
-- Use inflate() for compressed extent
-  For compressed extent, we need two buffers, one for compressed data,
-  and one for uncompressed data.
-  For compressed data, we will use the item size as buffer size, since
-  compressed extent should be small enough.
-  For uncompressed data, we use 512K as buffer size.
-
-  Now chunk tree search will fill the first 512K, then search chunk
-  trees blocks in the uncompressed 512K buffer, then loop until the
-  compressed data is exhausted.
-
-  Reduce the memory usage from as large as 256M * 2 to 512K + compressed
-  extent size.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- image/main.c | 159 ++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 126 insertions(+), 33 deletions(-)
-
-diff --git a/image/main.c b/image/main.c
-index ec8dacd6c1c5..13cd621eb92c 100644
---- a/image/main.c
-+++ b/image/main.c
-@@ -1959,6 +1959,126 @@ static int read_chunk_block(struct mdrestore_struct *mdres, u8 *buffer,
- 	return ret;
- }
- 
-+static int search_chunk_uncompressed(struct mdrestore_struct *mdres,
-+				     struct meta_cluster_item *item,
-+				     u64 current_cluster)
-+{
-+	u32 item_size = le32_to_cpu(item->size);
-+	u64 item_bytenr = le64_to_cpu(item->bytenr);
-+	int bufsize = SZ_512K;
-+	int read_size;
-+	u32 offset = 0;
-+	u8 *buffer;
-+	int ret = 0;
-+
-+	ASSERT(mdres->compress_method == COMPRESS_NONE);
-+	buffer = malloc(bufsize);
-+	if (!buffer)
-+		return -ENOMEM;
-+
-+	while (offset < item_size) {
-+		read_size = min_t(u32, bufsize, item_size - offset);
-+		ret = fread(buffer, read_size, 1, mdres->in);
-+		if (ret != 1) {
-+			error("read error: %m");
-+			ret = -EIO;
-+			goto out;
-+		}
-+		ret = read_chunk_block(mdres, buffer, item_bytenr, read_size,
-+					current_cluster);
-+		if (ret < 0) {
-+			error(
-+	"failed to search tree blocks in item bytenr %llu size %u",
-+				item_bytenr, item_size);
-+			goto out;
-+		}
-+		offset += read_size;
-+	}
-+out:
-+	free(buffer);
-+	return ret;
-+}
-+
-+static int search_chunk_compressed(struct mdrestore_struct *mdres,
-+				   struct meta_cluster_item *item,
-+				   u64 current_cluster)
-+{
-+	z_stream strm;
-+	u32 item_size = le32_to_cpu(item->size);
-+	u64 item_bytenr = le64_to_cpu(item->bytenr);
-+	int bufsize = SZ_512K;
-+	int read_size;
-+	u8 *out_buf = NULL;	/* uncompressed data */
-+	u8 *in_buf = NULL;	/* compressed data */
-+	bool end = false;
-+	int ret;
-+
-+	ASSERT(mdres->compress_method != COMPRESS_NONE);
-+	strm.zalloc = Z_NULL;
-+	strm.zfree = Z_NULL;
-+	strm.opaque = Z_NULL;
-+	strm.avail_in = 0;
-+	strm.next_in = Z_NULL;
-+	strm.avail_out = 0;
-+	strm.next_out = Z_NULL;
-+	ret = inflateInit(&strm);
-+	if (ret != Z_OK) {
-+		error("failed to initialize decompress parameters: %d", ret);
-+		return ret;
-+	}
-+
-+	out_buf = malloc(bufsize);
-+	in_buf = malloc(item_size);
-+	if (!in_buf || !out_buf) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
-+	ret = fread(in_buf, item_size, 1, mdres->in);
-+	if (ret != 1) {
-+		error("read error: %m");
-+		ret = -EIO;
-+		goto out;
-+	}
-+	strm.avail_in = item_size;
-+	strm.next_in = in_buf;
-+	while (!end) {
-+		if (strm.avail_out == 0) {
-+			strm.avail_out = bufsize;
-+			strm.next_out = out_buf;
-+		}
-+		ret = inflate(&strm, Z_NO_FLUSH);
-+		switch (ret) {
-+		case Z_NEED_DICT:
-+			ret = Z_DATA_ERROR; /* fallthrough */
-+			__attribute__ ((fallthrough));
-+		case Z_DATA_ERROR:
-+		case Z_MEM_ERROR:
-+			goto out;
-+		}
-+		if (ret == Z_STREAM_END) {
-+			ret = 0;
-+			end = true;
-+		}
-+		read_size = bufsize - strm.avail_out;
-+
-+		ret = read_chunk_block(mdres, out_buf, item_bytenr, read_size,
-+					current_cluster);
-+		if (ret < 0) {
-+			error(
-+	"failed to search tree blocks in item bytenr %llu size %u",
-+				item_bytenr, item_size);
-+			goto out;
-+		}
-+	}
-+
-+out:
-+	free(in_buf);
-+	free(out_buf);
-+	inflateEnd(&strm);
-+	return ret;
-+}
-+
- /*
-  * This function will try to find all chunk items in the dump image.
-  *
-@@ -2044,8 +2164,6 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
- 
- 		/* Search items for tree blocks in sys chunks */
- 		for (i = 0; i < nritems; i++) {
--			size_t size;
--
- 			item = &cluster->items[i];
- 			bufsize = le32_to_cpu(item->size);
- 			item_bytenr = le64_to_cpu(item->bytenr);
-@@ -2070,41 +2188,16 @@ static int search_for_chunk_blocks(struct mdrestore_struct *mdres)
- 			}
- 
- 			if (mdres->compress_method == COMPRESS_ZLIB) {
--				ret = fread(tmp, bufsize, 1, mdres->in);
--				if (ret != 1) {
--					error("read error: %m");
--					ret = -EIO;
--					goto out;
--				}
--
--				size = max_size;
--				ret = uncompress(buffer,
--						 (unsigned long *)&size, tmp,
--						 bufsize);
--				if (ret != Z_OK) {
--					error("decompression failed with %d",
--							ret);
--					ret = -EIO;
--					goto out;
--				}
-+				ret = search_chunk_compressed(mdres, item,
-+						current_cluster);
- 			} else {
--				ret = fread(buffer, bufsize, 1, mdres->in);
--				if (ret != 1) {
--					error("read error: %m");
--					ret = -EIO;
--					goto out;
--				}
--				size = bufsize;
-+				ret = search_chunk_uncompressed(mdres, item,
-+						current_cluster);
- 			}
--			ret = 0;
--
--			ret = read_chunk_block(mdres, buffer,
--					       item_bytenr, size,
--					       current_cluster);
- 			if (ret < 0) {
- 				error(
--	"failed to search tree blocks in item bytenr %llu size %lu",
--					item_bytenr, size);
-+	"failed to search tree blocks in item bytenr %llu size %u",
-+					item_bytenr, bufsize);
- 				goto out;
- 			}
- 			bytenr += bufsize;
--- 
-2.23.0
-
+Patch subject updated, thanks.
