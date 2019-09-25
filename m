@@ -2,155 +2,141 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D370FBD77F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 06:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 092A7BD7FA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Sep 2019 07:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406536AbfIYEyA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 00:54:00 -0400
-Received: from mout.gmx.net ([212.227.17.20]:49989 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406354AbfIYEx7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 00:53:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1569387237;
-        bh=w4/RNZlqsXeM+glUAm5K4s8g3U+YT40xekr3Gh5t6B0=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=guaM2jRfMylO+PoIuNFVie18hqId6F84HIF87vutP/FXbaIdjRZ+1lMh0aZdzJxd1
-         mUso4RlR5EfHxwzxrLK+4OO1XWWiYnEDWdak9YcA/pA+ntTnSBzpnTw2awqsqXBAWi
-         z1iKsdQE26ZCrEtI/1rCGHwkXNaG0MaA1HAyv7HM=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M8QWG-1iHN243soq-004P0S; Wed, 25
- Sep 2019 06:53:57 +0200
-Subject: Re: error: invalid convert data profile single
-To:     Chris Murphy <lists@colorremedies.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtS6uHcH3CmM5WpTOGrZ8EFPkFr8Xo92X+Q+VxvBiaW4ug@mail.gmail.com>
- <dd2ed71d-df70-28e2-206d-afd16dad64a6@gmx.com>
- <CAJCQCtQBTPTF2i+e_wKPdX5gC3RiKJs-yqNnrswepkmLMnxMKQ@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <5a454f9f-86c7-834d-0b6a-21b3d7bfa3e0@gmx.com>
-Date:   Wed, 25 Sep 2019 12:53:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S1729881AbfIYFzW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 01:55:22 -0400
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:40862 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729231AbfIYFzW (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Sep 2019 01:55:22 -0400
+Received: by mail-wm1-f68.google.com with SMTP id b24so2913354wmj.5
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Sep 2019 22:55:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EOXRSrHJANALyHp80lf0LJsVhPrkIlc0AAKn6PESh3U=;
+        b=sA9MLWIKt+M/Q9fqPukeyGZ3TX5LRTsCFRJF2YC36Z7PQKCgGI2/3i2CeLXGAIMuQW
+         SBee7fIlpNwAIu8F2wMiDmZPBQgK1sRp5KAR8kwJ2mWtCAhyEneqicbU8CJIYXho5r3g
+         BnJceIqoBHjjem1Ozm7NGZgUYgc7PQDcPDG0jGDcq6LC34TlYoWvbxACXENoCo5wjYnC
+         Cerdsb3v6giwHLyrxsr5drqH0+U10UhF1hzkcVSgiu9+FcJEMm8TNjSOU30m0vWyaqFJ
+         V/8UQkLxvogMaS6rOcPrQmRR4HYwuA2RMwk1TwXSJQJgFDWyOsyLnDOIhqee1icOJ29H
+         +VoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EOXRSrHJANALyHp80lf0LJsVhPrkIlc0AAKn6PESh3U=;
+        b=QCfqLGgWiWAmqrXqriRFHgQx7E7Kh69lfvyeoiHF8kKuVf8H0e2ymcwCncF8/MBted
+         LBxlr2Dfl76QQWbwGHILaXfM0Bcw/tumgKlUryReh5Oe7+TnlnDiw0rRNBgAyXwiGTjl
+         TByTVxCjf3YdpDs0k5OxHIB6ZHZGIq+1d948fEYHgRdJ+iEIeGyPaKbHHxHa3uLCkcXF
+         gi83M7NNpEL/gI2UL49O1wntbl41S1gRhIqj8/F5zrCG21zbfa2CRk0ngq7EE4o19NWG
+         s0aSIsM6CbjrpOsRjRE4WYvJ9FqxilBPqiHBsvf/Cywn41+IxzmmBuJhKGnkn8hFtBnv
+         C0Yw==
+X-Gm-Message-State: APjAAAUYLT9021FcGzUCl3lGek1N4R92MTt9lAldBAyGTMK6LPGbAbZH
+        hqj6RKg57yrAqu9OCahZmh2JtrhHabfGvLRgAmzckw==
+X-Google-Smtp-Source: APXvYqxuuZpkmvV6VTWNHn2l0DX0xYm5F0+eh6ccmEzFjBWgVZZuegcJN77FYOpQUfNfYkajk8+5xyaYwFhjb4adRTE=
+X-Received: by 2002:a7b:ce08:: with SMTP id m8mr5118175wmc.106.1569390919943;
+ Tue, 24 Sep 2019 22:55:19 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtQBTPTF2i+e_wKPdX5gC3RiKJs-yqNnrswepkmLMnxMKQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="9SMrNFZf70Rxd58HYmtjdA8Xun9sAN3G2"
-X-Provags-ID: V03:K1:i1O6AGbHH1oKTO7aOW8l4VFsQ6avTpELCU8swf/2SuD7pRrftll
- fO4SxEQBWolj0n0w9AnOGPVKv6u/JMJdLIsfrJw1yvZYHmJ+ICniDoEMY19IAoB6OA3hoBi
- i9AHyBMS6J9A5ikDa8QTM8ZSpsKtAIVXG+C+3/5xRusRZt2g3CQdTsi5dV1Z3JUm8c+PDoK
- EboYdEU+CsfncXO4a8Swg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:B6IzCqppoks=:FO0ULa8q3MHzJ1soCrxRRH
- ZtFkhd7TL0uD42O0Oh6iK5QnCfK8WrA1BM+cQPtD/ixloniZJexs0WSUHHBDB/i7cB9Q48+Bc
- F67LOqt2u5btRFNQId2HFmswboJ9vQTqKiQUApKCshoP9oFiKacjJhUZupKIxvlTawkDHiSES
- duZEhWDjpc6Elo0CIuypdh8tCnBg3xgovmREDEgE1SaurojqWElBbRxX79ABgFBdwu1lt8KIO
- c/BFxP94V8Qv3s2mJttO7KKu+VMo+YRxLLVARkw81mD95+BHEUJBuRded+T3XZzbbe1dtgpTo
- 0PUhJZZEqJ5T4csYKlvnDgtamcBQrgJozQXXhRKz132+XOP07f1AxEFMoWICNgpxU0ckDApJZ
- fI1GzGSJcPUDTKGrO5bNOH5cGjqFgRniMfbMC4Hcz7hE1YIIvGK1ymZBICfAqXwoHSePl6jkI
- QvMd4/GlMRoSJZ8ooRLaKlU6B4qNnTKJRnEIFpMpTpcnxbQzdrQBHlVCrFydVgeL45OnrYinY
- IbWM8w4SupuomAL7lm2H8S+3sCA1VPJ214ir+BTF0KEcVyLb9nhESHayBFJX5Jy10Kvvqm106
- uzAo0Zvk7PyoaRNBkCh2S4NZm4y/BU9AQlyKmfE+f8lzsnQgxg0ctfJ+6mbaO3pQwGs7IsIqg
- HqHM7iAOh1bZmHAyiYg/kYdSiaazNUvXCeFgYOfTvKN6wbP+ZKaVLXf1rJIv33pI10ZhR+nJ5
- 212hE7tYBOgfghwNcPFfrE9leU29RVBaLy8Q8Bi6lTT9y4PsFnUAsJ5PGzqMFzdwmz9leBK1J
- AGJYrEG2zV7VlDhwBGw4CoC39wetKuJJOnng8IRK1rdXZ0iu27wUhop67qvjGMTL9pV3HxR/n
- fBJ96xQ32tEKYmGHVhxdi4Z9+cTTEyW5ALwHvjEjGLQBBR2PgqX2Zf3gVPvd1+YKokYlvIjg4
- 4THXhALHNaVmqoV0xMkisBAu0CgZzR6ybEx/C4Ji8CIntezM0Ov8Ctv0HcoTbalSe0JmYtaig
- AKVMzOsb698CfBN6pXko8jcXjKewpE+/VRu07+o77Vo6t6Hcc1NHO1qTRS2P8F71Gwu6W+089
- Uoeqe5504puy70p4ysPlRoAwDgdgK2tEyExBhMSQnWND4L8r3rTFmx0rS8TJQgaayoI1VRLiL
- roEBfZXpH+aI9ZgGv7U93RceCddOO0MZe0esy21dh/aBFeaIjqUXCbzomGzeYNlGxAdvX+Tij
- fkz+pfZIFiNhAt/2HU6IqXoQi/6rYrWkHfmtKqQW5vdkr9Ds8q1m0IZPAWmM=
+References: <CADyTPEwDifK+YA6-kh6F8Wpf9C0+acQjkxGBJhf1ATTpZbMSYg@mail.gmail.com>
+ <CAJCQCtQM_Pn4SubsJw9t0TjF8WNoqguxVf--UYH6K82Ch8Dm9Q@mail.gmail.com> <CADyTPEw=g7y+DroBt+CO-=8T3=8kO5Muj6Ts3LrkwDtKx2=zcQ@mail.gmail.com>
+In-Reply-To: <CADyTPEw=g7y+DroBt+CO-=8T3=8kO5Muj6Ts3LrkwDtKx2=zcQ@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 24 Sep 2019 23:55:08 -0600
+Message-ID: <CAJCQCtRGm4vD3a6xqa8mihutYgFxfYOJDtA31KD-Ctu5Hi+kKA@mail.gmail.com>
+Subject: Re: Btrfs filesystem trashed after OOM scenario
+To:     Nick Bowler <nbowler@draconx.ca>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>,
+        Filipe Manana <fdmanana@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---9SMrNFZf70Rxd58HYmtjdA8Xun9sAN3G2
-Content-Type: multipart/mixed; boundary="JcFxznhpnek1GfzGIy8oKUOxINmB2Krcz"
+On Tue, Sep 24, 2019 at 10:25 PM Nick Bowler <nbowler@draconx.ca> wrote:
+>
+> On Tue, Sep 24, 2019, 18:34 Chris Murphy, <lists@colorremedies.com> wrote:
+> > On Tue, Sep 24, 2019 at 4:04 PM Nick Bowler <nbowler@draconx.ca> wrote:
+> > > - Running Linux 5.2.14, I pushed this system to OOM; the oom killer
+> > > ran and killed some userspace tasks.  At this point many of the
+> > > remaining tasks were stuck in uninterruptible sleeps.  Not really
+> > > worried, I turned the machine off and on again to just get everything
+> > > back to normal.  But I guess now that everything had gone horribly
+> > > wrong already at this point...
+> >
+> > Yeah the kernel oomkiller is pretty much only about kernel
+> > preservation, not user space preservation.
+>
+> Indeed I am not bothered at all by needing to turn it off and on again
+> in this situation.  But filesystems being completely trashed is
+> another matter...
 
---JcFxznhpnek1GfzGIy8oKUOxINmB2Krcz
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Yep I agree. Maybe Filipe will chime in whether you hit this or if
+there's some other issue.
+
+> > So if you're willing to blow shit up again, you can try to reproduce
+> > with one of those.
+>
+> Well I could try but it sounds like this might be hard to reproduce...
+
+If you're using 5.2.15+ you won't hit the fixed bug. But if there's
+some other cause you might still hit that and it's worth knowing about
+under controlled test conditions than some unexpected time.
+
+> > I was also doing oomkiller blow shit up tests a few weeks ago with
+> > these same problem kernels and never hit this bug, or any others. I
+> > also had to do a LOT of force power offs because the system just
+> > became totally wedged in and I had no way of estimating how long it
+> > would be for recovery so after 30 minutes I hit the power button. Many
+> > times. Zero corruptions. That's with a single Samsung 840 EVO in a
+> > laptop relegated to such testing.
+>
+> Just a thought... the system was alive but I was able to briefly
+> inspect the situation and notice that tasks were blocked and
+> unkillable... until my shell hung too and then I was hosed.  But I
+> didn't hit the power button but rather rebooted with sysrq+e, sysrq+u,
+> sysrq+b.  Not sure if that makes a difference.
+
+Dunno.
+
+Basically what I've discovered is you want to avoid depending on
+oomkiller, it's just not suitable for maintaining user space
+interactivity at all. I've used this:
+https://github.com/rfjakob/earlyoom
+
+And that monitors both swap and memory use, and will trigger oom much
+sooner than the kernel's oomkiller. The system responsiveness takes a
+hit, so I can't call it a good user experience. But the recovery is
+faster and with almost no testing off hand it's consistently killing
+the largest and most offending program, where oomkiller might
+sometimes kill some small unrelated daemon and that will free up just
+enough memory that the kernel will be happy for a long time while user
+space is totally blocked.
 
 
+>
+> > Might be a different bug. Not sure. But also, this is with
+> >
+> > > [  347.551595] CPU: 3 PID: 1143 Comm: mount Not tainted 4.19.34-1-lts #1
+> >
+> > So I don't know how an older kernel will report on the problem caused
+> > by the 5.2 bug.
+>
+> This is the kernel from systemrescuecd.  I can try taking a disk image
+> and mounting on another machine with a newer linux version.
 
-On 2019/9/25 =E4=B8=8B=E5=8D=8812:15, Chris Murphy wrote:
-> $ sudo btrfs balance start -dconvert=3Dsingle,soft /
->=20
-> It's definitely a 5.3.0 regression, it works without -f on 5.2.15.
-> Super slow. The media should be able to write at 20M/s.
-
-Already pinned down and send the fix (CCed to you)
-https://patchwork.kernel.org/patch/11159927/
-
-Will send out a test case soon too.
-
-Thanks,
-Qu
-
->=20
-> Total DISK READ :       0.00 B/s | Total DISK WRITE :       0.00 B/s
-> Actual DISK READ:       0.00 B/s | Actual DISK WRITE:    1418.15 K/s
->     TID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO>
-> COMMAND
->    1138 be/4 root        0.00 B/s    0.00 B/s  0.00 % 99.18 % btrfs
-> balance start -dconvert single soft /
->     402 be/4 root        0.00 B/s    0.00 B/s  0.00 %  3.09 %
-> [kworker/0:2-events]
->=20
-> But anyway, it completed without error.
->=20
->=20
-> ---
-> Chris Murphy
->=20
+Try btrfs check --readonly and report back the results. I suggest
+btrfs-progs 5.0 or higher, 5.2.2 if you can muster it. That might help
+clarify if you hit the 5.2 regression bug. But btrfs check can't fix
+it if that's what you hit. So it's 'btrfs restore' to scrape out what
+you can, and then create a new file system.
 
 
---JcFxznhpnek1GfzGIy8oKUOxINmB2Krcz--
-
---9SMrNFZf70Rxd58HYmtjdA8Xun9sAN3G2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2K8uEACgkQwj2R86El
-/qgx5AgAjeSw8Bh52poB4ygHVieMs+/v3E+3wNoKe4WQJr8vWuZ5C3YUtosPkOja
-csbn1etc6HlWIKy6qhe2VIG0g+nF6IoDFa1FwezGqBv9nMWarmBeck0gVbPwuTHV
-AAECfjUB8H6TCn06+wKsbWWVS5Qa3GFRefIEnZkhtFvgdI4xFNhSE6Bg+Y663MY/
-qIaP+mB0tVSDqsGXUkxk1dktfDr976+akFK2aSW7ojJxQJC8m1Fekvw4lgCs60yw
-Hn6qjR1bI0UWHJQtUN8yUWbtRk74v8brRjIHSv+FN8UsOVKO45sTqc+Mv1vAsK9L
-PvtIazZZPMFY/fHf83faFPMXvjR4Mw==
-=KY4U
------END PGP SIGNATURE-----
-
---9SMrNFZf70Rxd58HYmtjdA8Xun9sAN3G2--
+-- 
+Chris Murphy
