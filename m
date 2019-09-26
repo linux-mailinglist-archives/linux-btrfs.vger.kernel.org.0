@@ -2,159 +2,191 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A98BF0E9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 13:13:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDAFCBF13C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 13:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725851AbfIZLNt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Sep 2019 07:13:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39126 "EHLO mx1.suse.de"
+        id S1726098AbfIZLYY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Sep 2019 07:24:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42638 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725280AbfIZLNt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Sep 2019 07:13:49 -0400
+        id S1725787AbfIZLYY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Sep 2019 07:24:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 27A7DAF87;
-        Thu, 26 Sep 2019 11:13:47 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: use refcount_inc_not_zero in kill_all_nodes
-To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <20190926105427.5978-1-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <fd4f351d-b02a-d820-c27d-f08b0105ab5e@suse.com>
-Date:   Thu, 26 Sep 2019 14:13:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        by mx1.suse.de (Postfix) with ESMTP id D98CBAE0C;
+        Thu, 26 Sep 2019 11:24:21 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E5AE9DA7D9; Thu, 26 Sep 2019 13:24:41 +0200 (CEST)
+Date:   Thu, 26 Sep 2019 13:24:41 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Johannes Thumshirn <jthumshirn@suse.de>
+Cc:     David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v5 5/7] btrfs-progs: add xxhash64 to mkfs
+Message-ID: <20190926112441.GN2751@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <20190925133728.18027-1-jthumshirn@suse.de>
+ <20190925133728.18027-6-jthumshirn@suse.de>
+ <24e53bb4-7dd0-7016-8e06-ba271cdeb6c1@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <20190926105427.5978-1-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <24e53bb4-7dd0-7016-8e06-ba271cdeb6c1@suse.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 26.09.19 г. 13:54 ч., Josef Bacik wrote:
-> We hit the following warning while running down a different problem
+On Thu, Sep 26, 2019 at 12:06:53PM +0200, Johannes Thumshirn wrote:
+> On 25/09/2019 15:37, Johannes Thumshirn wrote:
+> > Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> > ---
+> >  Makefile                  |  3 ++-
+> >  cmds/inspect-dump-super.c |  1 +
+> >  crypto/hash.c             | 17 +++++++++++++++++
+> >  crypto/hash.h             | 10 ++++++++++
+> >  ctree.h                   |  3 ++-
+> >  disk-io.c                 |  3 +++
+> >  mkfs/main.c               |  3 +++
+> >  7 files changed, 38 insertions(+), 2 deletions(-)
+> >  create mode 100644 crypto/hash.c
+> >  create mode 100644 crypto/hash.h
+> > 
+> > diff --git a/Makefile b/Makefile
+> > index 370e0c37ff65..45530749e2b9 100644
+> > --- a/Makefile
+> > +++ b/Makefile
+> > @@ -151,7 +151,8 @@ cmds_objects = cmds/subvolume.o cmds/filesystem.o cmds/device.o cmds/scrub.o \
+> >  	       mkfs/common.o check/mode-common.o check/mode-lowmem.o
+> >  libbtrfs_objects = send-stream.o send-utils.o kernel-lib/rbtree.o btrfs-list.o \
+> >  		   kernel-lib/crc32c.o common/messages.o \
+> > -		   uuid-tree.o utils-lib.o common/rbtree-utils.o
+> > +		   uuid-tree.o utils-lib.o common/rbtree-utils.o \
+> > +		   crypto/hash.o crypto/xxhash.o
+> >  libbtrfs_headers = send-stream.h send-utils.h send.h kernel-lib/rbtree.h btrfs-list.h \
+> >  	       kernel-lib/crc32c.h kernel-lib/list.h kerncompat.h \
+> >  	       kernel-lib/radix-tree.h kernel-lib/sizes.h kernel-lib/raid56.h \
+> > diff --git a/cmds/inspect-dump-super.c b/cmds/inspect-dump-super.c
+> > index bf380ad2b56a..73e986ed8ee8 100644
+> > --- a/cmds/inspect-dump-super.c
+> > +++ b/cmds/inspect-dump-super.c
+> > @@ -315,6 +315,7 @@ static bool is_valid_csum_type(u16 csum_type)
+> >  {
+> >  	switch (csum_type) {
+> >  	case BTRFS_CSUM_TYPE_CRC32:
+> > +	case BTRFS_CSUM_TYPE_XXHASH:
+> >  		return true;
+> >  	default:
+> >  		return false;
+> > diff --git a/crypto/hash.c b/crypto/hash.c
+> > new file mode 100644
+> > index 000000000000..58a3890bd467
+> > --- /dev/null
+> > +++ b/crypto/hash.c
+> > @@ -0,0 +1,17 @@
+> > +#include "crypto/hash.h"
+> > +#include "crypto/xxhash.h"
+> > +
+> > +int hash_xxhash(const u8 *buf, size_t length, u8 *out)
+> > +{
+> > +	XXH64_hash_t hash;
+> > +
+> > +	hash = XXH64(buf, length, 0);
+> > +	/*
+> > +	 * NOTE: we're not taking the canonical form here but the plain hash to
+> > +	 * be compatible with the kernel implementation!
+> > +	 */
+> > +	memcpy(out, &hash, 8);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > diff --git a/crypto/hash.h b/crypto/hash.h
+> > new file mode 100644
+> > index 000000000000..45c1ef17bc57
+> > --- /dev/null
+> > +++ b/crypto/hash.h
+> > @@ -0,0 +1,10 @@
+> > +#ifndef CRYPTO_HASH_H
+> > +#define CRYPTO_HASH_H
+> > +
+> > +#include "../kerncompat.h"
+> > +
+> > +#define CRYPTO_HASH_SIZE_MAX	32
+> > +
+> > +int hash_xxhash(const u8 *buf, size_t length, u8 *out);
+> > +
+> > +#endif
+> > diff --git a/ctree.h b/ctree.h
+> > index f70271dc658e..144c89eb4a36 100644
+> > --- a/ctree.h
+> > +++ b/ctree.h
+> > @@ -166,7 +166,8 @@ struct btrfs_free_space_ctl;
+> >  
+> >  /* csum types */
+> >  enum btrfs_csum_type {
+> > -	BTRFS_CSUM_TYPE_CRC32   = 0,
+> > +	BTRFS_CSUM_TYPE_CRC32	= 0,
+> > +	BTRFS_CSUM_TYPE_XXHASH	= 1,
+> >  };
+> >  
+> >  #define BTRFS_EMPTY_DIR_SIZE 0
+> > diff --git a/disk-io.c b/disk-io.c
+> > index 72c672919cf9..59e297e2039c 100644
+> > --- a/disk-io.c
+> > +++ b/disk-io.c
+> > @@ -34,6 +34,7 @@
+> >  #include "print-tree.h"
+> >  #include "common/rbtree-utils.h"
+> >  #include "common/device-scan.h"
+> > +#include "crypto/hash.h"
+> >  
+> >  /* specified errno for check_tree_block */
+> >  #define BTRFS_BAD_BYTENR		(-1)
+> > @@ -149,6 +150,8 @@ int btrfs_csum_data(u16 csum_type, const u8 *data, u8 *out, size_t len)
+> >  		crc = crc32c(crc, data, len);
+> >  		put_unaligned_le32(~crc, out);
+> >  		return 0;
+> > +	case BTRFS_CSUM_TYPE_XXHASH:
+> > +		return hash_xxhash(data, len, out);
+> >  	default:
+> >  		fprintf(stderr, "ERROR: unknown csum type: %d\n", csum_type);
+> >  		ASSERT(0);
+> > diff --git a/mkfs/main.c b/mkfs/main.c
+> > index 04509e788a52..da40e958fe0a 100644
+> > --- a/mkfs/main.c
+> > +++ b/mkfs/main.c
+> > @@ -393,6 +393,9 @@ static enum btrfs_csum_type parse_csum_type(const char *s)
+> >  {
+> >  	if (strcasecmp(s, "crc32c") == 0) {
+> >  		return BTRFS_CSUM_TYPE_CRC32;
+> > +	} else if (strcasecmp(s, "xxhash64") == 0 ||
+> > +		   strcasecmp(s, "xxhash") == 0) {
+> > +		return BTRFS_CSUM_TYPE_XXHASH;
+> >  	} else {
+> >  		error("unknown csum type %s", s);
+> >  		exit(1);
+> > 
 > 
-> [ 6197.175850] ------------[ cut here ]------------
-> [ 6197.185082] refcount_t: underflow; use-after-free.
-> [ 6197.194704] WARNING: CPU: 47 PID: 966 at lib/refcount.c:190 refcount_sub_and_test_checked+0x53/0x60
-> [ 6197.521792] Call Trace:
-> [ 6197.526687]  __btrfs_release_delayed_node+0x76/0x1c0
-> [ 6197.536615]  btrfs_kill_all_delayed_nodes+0xec/0x130
-> [ 6197.546532]  ? __btrfs_btree_balance_dirty+0x60/0x60
-> [ 6197.556482]  btrfs_clean_one_deleted_snapshot+0x71/0xd0
-> [ 6197.566910]  cleaner_kthread+0xfa/0x120
-> [ 6197.574573]  kthread+0x111/0x130
-> [ 6197.581022]  ? kthread_create_on_node+0x60/0x60
-> [ 6197.590086]  ret_from_fork+0x1f/0x30
-> [ 6197.597228] ---[ end trace 424bb7ae00509f56 ]---
+> This one lost this hunk in ctree.c:
 > 
-> This is because we're unconditionally grabbing a ref to every node, but
-> there could be nodes with a 0 refcount.  Fix this to instead use
-> refcount_inc_not_zero() and only process the list for the nodes we get a
-> refcount on.
-
-
-I'd also add the detail that __btrfs_release_delayed_node actually does
-the refcount_dec_and_test outside of &root->inode_lock which allows this
-scenario.
-
-And this bug seems rather old, ever since :
-
-16cdcec736cd ("btrfs: implement delayed inode items operation")
-
-
+> diff --git a/ctree.c b/ctree.c
+> index 5ad291d0f4ac..91d685ff90a4 100644
+> --- a/ctree.c
+> +++ b/ctree.c
+> @@ -43,6 +43,7 @@ static const struct btrfs_csum {
+>         const char name[14];
+>  } btrfs_csums[] = {
+>         [BTRFS_CSUM_TYPE_CRC32] = { 4, "crc32c" },
+> +       [BTRFS_CSUM_TYPE_XXHASH] = { 8, "xxhash64" },
+>  };
 > 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/delayed-inode.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index 1f7f39b10bd0..320503750896 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1936,7 +1936,7 @@ void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
->  {
->  	u64 inode_id = 0;
->  	struct btrfs_delayed_node *delayed_nodes[8];
-> -	int i, n;
-> +	int i, n, count;
->  
->  	while (1) {
->  		spin_lock(&root->inode_lock);
-> @@ -1948,13 +1948,16 @@ void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
->  			break;
->  		}
->  
-> -		inode_id = delayed_nodes[n - 1]->inode_id + 1;
-> -
-> -		for (i = 0; i < n; i++)
-> -			refcount_inc(&delayed_nodes[i]->refs);
-> +		count = 0;
-> +		for (i = 0; i < n; i++) {
-> +			if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
-> +				break;
-> +			count++;
+>  u16 btrfs_super_csum_size(const struct btrfs_super_block *sb)
 
-This is buggy, if the very first inode in the gang causes the break
-statement then the code does delayed_nodes[0 - 1]->inode_id. E.g. the
-increment should be before the refcount_inc_not_zero.
-
-> +		}
-> +		inode_id = delayed_nodes[count - 1]->inode_id + 1;
->  		spin_unlock(&root->inode_lock);
->  
-> -		for (i = 0; i < n; i++) {
-> +		for (i = 0; i < count; i++) {
->  			__btrfs_kill_delayed_node(delayed_nodes[i]);
->  			btrfs_release_delayed_node(delayed_nodes[i]);
->  		}
-> 
+Folded to the patch and lightly tested. Thanks.
