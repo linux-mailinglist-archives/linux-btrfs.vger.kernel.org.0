@@ -2,96 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EED94BE883
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 00:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E148BE962
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 02:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729937AbfIYWww (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 25 Sep 2019 18:52:52 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:56809 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729604AbfIYWww (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 25 Sep 2019 18:52:52 -0400
-Received: from dread.disaster.area (pa49-181-226-196.pa.nsw.optusnet.com.au [49.181.226.196])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id A96B2362AFF;
-        Thu, 26 Sep 2019 08:52:44 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.2)
-        (envelope-from <david@fromorbit.com>)
-        id 1iDG9L-0006ca-Lw; Thu, 26 Sep 2019 08:52:43 +1000
-Date:   Thu, 26 Sep 2019 08:52:43 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Colin Walters <walters@verbum.org>
-Cc:     Jann Horn <jannh@google.com>, Omar Sandoval <osandov@osandov.com>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        linux-btrfs@vger.kernel.org, Linux API <linux-api@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Andy Lutomirski <luto@kernel.org>
-Subject: Re: [RFC PATCH 2/3] fs: add RWF_ENCODED for writing compressed data
-Message-ID: <20190925225243.GF804@dread.disaster.area>
-References: <cover.1568875700.git.osandov@fb.com>
- <230a76e65372a8fb3ec62ce167d9322e5e342810.1568875700.git.osandov@fb.com>
- <CAG48ez2GKv15Uj6Wzv0sG5v2bXyrSaCtRTw5Ok_ovja_CiO_fQ@mail.gmail.com>
- <20190924171513.GA39872@vader>
- <20190924193513.GA45540@vader>
- <CAG48ez1NQBNR1XeVQYGoopEk=g_KedUr+7jxLQTaO+V8JCeweQ@mail.gmail.com>
- <20190925071129.GB804@dread.disaster.area>
- <60c48ac5-b215-44e1-a628-6145d84a4ce3@www.fastmail.com>
+        id S2387711AbfIZAOp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 25 Sep 2019 20:14:45 -0400
+Received: from gentwo.org ([3.19.106.255]:49630 "EHLO gentwo.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1733141AbfIZAOp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 25 Sep 2019 20:14:45 -0400
+Received: by gentwo.org (Postfix, from userid 1002)
+        id 17D1D3EEC6; Thu, 26 Sep 2019 00:14:44 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by gentwo.org (Postfix) with ESMTP id 150213E86C;
+        Thu, 26 Sep 2019 00:14:44 +0000 (UTC)
+Date:   Thu, 26 Sep 2019 00:14:44 +0000 (UTC)
+From:   Christopher Lameter <cl@linux.com>
+X-X-Sender: cl@www.lameter.com
+To:     Andrew Morton <akpm@linux-foundation.org>
+cc:     David Sterba <dsterba@suse.cz>, Vlastimil Babka <vbabka@suse.cz>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        linux-btrfs@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
+ kmalloc(power-of-two)
+In-Reply-To: <20190924165425.a79a2dafbaf37828a931df2b@linux-foundation.org>
+Message-ID: <alpine.DEB.2.21.1909260005060.1508@www.lameter.com>
+References: <20190826111627.7505-1-vbabka@suse.cz> <20190826111627.7505-3-vbabka@suse.cz> <df8d1cf4-ff8f-1ee1-12fb-cfec39131b32@suse.cz> <20190923171710.GN2751@twin.jikos.cz> <alpine.DEB.2.21.1909242048020.17661@www.lameter.com>
+ <20190924165425.a79a2dafbaf37828a931df2b@linux-foundation.org>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <60c48ac5-b215-44e1-a628-6145d84a4ce3@www.fastmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.2 cv=FNpr/6gs c=1 sm=1 tr=0
-        a=dRuLqZ1tmBNts2YiI0zFQg==:117 a=dRuLqZ1tmBNts2YiI0zFQg==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=J70Eh1EUuV4A:10
-        a=7-415B0cAAAA:8 a=ao4zJSXK-2lq-feLaEsA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain; charset=US-ASCII
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Sep 25, 2019 at 08:07:12AM -0400, Colin Walters wrote:
-> 
-> 
-> On Wed, Sep 25, 2019, at 3:11 AM, Dave Chinner wrote:
-> >
-> > We're talking about user data read/write access here, not some
-> > special security capability. Access to the data has already been
-> > permission checked, so why should the format that the data is
-> > supplied to the kernel in suddenly require new privilege checks?
-> 
-> What happens with BTRFS today if userspace provides invalid compressed
-> data via this interface?
+On Tue, 24 Sep 2019, Andrew Morton wrote:
 
-Then the filesystem returns EIO or ENODATA on read because it can't
-decompress it.
+> I agree it's a bit regrettable to do this but it does appear that the
+> change will make the kernel overall a better place given the reality of
+> kernel development.
 
-User can read it back in compressed format (i.e. same way they wrote
-it), try to fix it themselves.
+No it wont.
 
-> Does that show up as filesystem corruption later?
+- It will only work for special cases like the kmalloc array
+without extras like metadata at the end of objects.
 
-Nope. Just bad user data.
+- It will be an inconsistency in the alignments provided by the allocator.
 
-> If the data is verified at write time, wouldn't that be losing most of the speed advantages of providing pre-compressed data?
+- It will cause us in the future to constantly consider these exceptional
+alignments in the maintenance of the allocators.
 
-It's a direct IO interface. User writes garbage, then they get
-garbage back. The user can still retreive the compressed data
-directly, so the data is not lost....
+- These alignments are only needed in exceptional cases but with the patch
+we will provide the alignment by default even if the allocating subsystem
+does not need it.
 
-> Ability for a user to cause fsck errors later would be a new thing
-> that would argue for a privilege check I think.
+- We have mechanisms to detect alignment problems using debug kernels and
+debug options that have been available for years. These were not used for
+testing in these cases it seems before the patches hit mainline. Once in
+mainly someone ran a debug kernel and found the issue.
 
-fsck doesn't validate the correctness of user data - it validates
-the filesystem structure is consistent. i.e. user data in unreadable
-format != corrupt filesystem structure.
+> Given this, have you reviewed the patch for overall implementation
+> correctness?
 
-Cheers,
+Yes, the patch is fine.
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> I'm wondering if we can avoid at least some of the patch's overhead if
+> slab debugging is disabled - the allocators are already returning
+> suitably aligned memory, so why add the new code in that case?
+
+As far as I know this patch is not needed given that we have had the
+standards for alignments for a long time now.
+
+Why would the allocators provide specially aligned memory just based on
+the size of an object? This is weird and unexpected behavior.
