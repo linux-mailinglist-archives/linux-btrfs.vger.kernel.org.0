@@ -2,23 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45D2CBF261
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 14:02:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D891BF26B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 14:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726105AbfIZMCi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Sep 2019 08:02:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54092 "EHLO mx1.suse.de"
+        id S1726079AbfIZMEE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Sep 2019 08:04:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54778 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725815AbfIZMCi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Sep 2019 08:02:38 -0400
+        id S1726029AbfIZMED (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Sep 2019 08:04:03 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 56291AF32;
-        Thu, 26 Sep 2019 12:02:36 +0000 (UTC)
-Subject: Re: [PATCH 2/3] btrfs: Simplify btrfs_file_llseek
+        by mx1.suse.de (Postfix) with ESMTP id 80832AED5;
+        Thu, 26 Sep 2019 12:04:01 +0000 (UTC)
+Subject: Re: [PATCH 3/3] btrfs: Return offset from find_desired_extent
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20190926113953.19569-1-nborisov@suse.com>
- <20190926113953.19569-3-nborisov@suse.com>
+ <20190926113953.19569-4-nborisov@suse.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -76,12 +76,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <d23385b6-cd9a-ff23-d06f-34e2722774ff@suse.de>
-Date:   Thu, 26 Sep 2019 14:02:35 +0200
+Message-ID: <669cd745-3ad6-0416-d4e7-8f0b9800a283@suse.de>
+Date:   Thu, 26 Sep 2019 14:04:01 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190926113953.19569-3-nborisov@suse.com>
+In-Reply-To: <20190926113953.19569-4-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -90,17 +90,8 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 26/09/2019 13:39, Nikolay Borisov wrote:
-> Handle SEEK_END/SEEK_CUR in a single 'default' case by directly
-> returning from generic_file_llsee. This makes the 'out' label redundant.
-    generic_file_llseek ~^
-> Finally return directly the vale from vfs_setpos. No semantic changesl.
-                                                        changes. ~^
-
-Otherwise looks good:
+Looks good,
 Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
-
-
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
