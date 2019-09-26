@@ -2,115 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CC1BECDE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 09:50:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01406BED1A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 10:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731386AbfIZHuf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Sep 2019 03:50:35 -0400
-Received: from mout.gmx.net ([212.227.17.21]:48965 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729340AbfIZHuf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Sep 2019 03:50:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1569484228;
-        bh=6MfDNRptN8K2Bs18EWNLZ3XhmXurEXGGWMbHO3J48fc=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ckBUMQgtWZPMxWLBELopSXzlytaTFrnzNywhHviUHM0hlYwxBXxvEBBv1z096PpbS
-         ple47qx4GwvAGpa35dZiDNpcfWPEHy9zQYcGifKuaX71WK3MLIC7JAWopcXrvc06ve
-         UMPEqnqZcDhYGRUrKxOi2/zfgLaE5ACP0RPY/nOo=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MPXdC-1iZtTd1PrW-00MYJw; Thu, 26
- Sep 2019 09:50:28 +0200
+        id S1729364AbfIZIMl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Sep 2019 04:12:41 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:43131 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726257AbfIZIMk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Sep 2019 04:12:40 -0400
+Received: by mail-pg1-f194.google.com with SMTP id v27so1113219pgk.10;
+        Thu, 26 Sep 2019 01:12:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7h/Ek76QcPz6SQy9iyM21ULaECKE/xap1PTS1m34nno=;
+        b=L+3DCOVYjo6021vg7X7u2yyVOO/9u0OX+2EPpa/AXYH8oSz2DCj09eS1IoP7NdyOli
+         SXiE8i/020G0cPpflTzztVEfH9/9wU7+UBmXZRsxcyz/sNGIFf7PcwKnL4NhKrMHw77X
+         xF9+7CKwGxqy+lr3RIThd53OS99aMaFdV97DavJKOYRZ6DVm2NihQbAdjFT+5Xwl9LCO
+         LWMi0DVeBgtAYWIVRFQ1Ttbhr1wYJh/23tl+4DZlkOGLmG7S7KEWe1XEKqJJTbqQkIEL
+         c5YuWHF4IehizBZozjNJLXVaFpTdEW9WqZEF13aVDT4WFJwU+xXAphgvAJFR0yB9NETL
+         HR+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7h/Ek76QcPz6SQy9iyM21ULaECKE/xap1PTS1m34nno=;
+        b=UuKwf9bCgXNikeHclYiP1j3/tkMQvPfrHEIwGcxrsaBHjMmWIrb1bleQbGuf5vjlQi
+         ZLTeG0EBAMdq+MJp9YxVXjT/9E6lGJjIcfbdYvWCcB8ZaxMYuYJTXfxSsmrAafob09Fx
+         OXnD7qDtP+CvwQzDLrtaKchnW+e6EAEzpwayf6CIAzsJQzomfCL0XQFMejJ7V390Gmjm
+         0pOZl+PB4FAPsJO8zyMCIydAD6Cx0xKYV2KcfsB55OUGnLGUyXf66X7dpSvzA+17rRRF
+         /vAR8Y9ooppMLfZU7qDnHCI1r6w/+gm3SKATpjMkt4sj1aFXrRx+/CHqD9Cv3a9YnvBP
+         XV4g==
+X-Gm-Message-State: APjAAAW+ugltejV+mP5m9QhGb7bdgrlnIb/HPFR8os40xtyGPdvbqLFU
+        YHhYei4D4rjKafKxR3YeeX+K9I6nBN7qlw==
+X-Google-Smtp-Source: APXvYqy0itwxUckmdyDruJPYoOSKoerQNyL03ufdmbo/RDMYQjpC2iIgarcl21Rckj57J1YvvNAHZA==
+X-Received: by 2002:a63:d909:: with SMTP id r9mr2085723pgg.381.1569485558885;
+        Thu, 26 Sep 2019 01:12:38 -0700 (PDT)
+Received: from localhost ([178.128.102.47])
+        by smtp.gmail.com with ESMTPSA id 197sm2887775pge.39.2019.09.26.01.12.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2019 01:12:38 -0700 (PDT)
+Date:   Thu, 26 Sep 2019 16:12:32 +0800
+From:   Eryu Guan <guaneryu@gmail.com>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, wqu@suse.com
 Subject: Re: [PATCH] btrfs: Add regression test for SINGLE profile conversion
-To:     Nikolay Borisov <nborisov@suse.com>, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, wqu@suse.com, guaneryu@gmail.com
+Message-ID: <20190926081230.GX2622@desktop>
 References: <20190926072635.9310-1-nborisov@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <6a8d0118-86a6-b187-1183-4e47a260b0a6@gmx.com>
-Date:   Thu, 26 Sep 2019 15:50:22 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20190926072635.9310-1-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:a4nSiV5G0p7xE6KTxHb0y26vpeSBRuhmrOTLJwmhUyUSBhZ09T9
- h83EMZLTmEi4LsB/f1fMU5N5zgr8VvE0yvfC5/XT2vCBN2loisKyyv0zjn3LQ4ta3Nbj1/1
- GkoVMMkGJysTEEs0e259W8SeUp56eW1XqqFfuIw/t4PmDVH8i6QcpcnIZ2UMoNdPCiEfjJE
- eDq4UcgYH+1TP5IoVEOKQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tTocKF6HpwU=:q2YSiw8oMSLdfD8d01ia2g
- 2K5zmpRnn6it+Une+NaUWTNbUFfhLeT1GdybsVlUSwZb0C+nVqJDNUmJh0oVNXOn/TwMFuZ7U
- FtdSH2eHkFMQ9aSbi0o7S5h7Zk6COVPmQFpsIrpMrgp+f7DEgguvMyXCMxOI5yN/13TlMNei7
- +aQKmXmOHcRVF9YVgFq5+jqGdWi7AhYxmTstfzQzcx49ftOBcOjm+QmXTUdmhXRdY9LLqvHMb
- F68gCemcdoE0tYx58odo9bt8HeZ2rAfHkcaENKbMJNmrW4Rv6Imh7tNCfspDzkFV0Kf2ZDtb+
- G7gf+XRdtD0Za4TFyujk49MPtm5xgTyiyhk8OA0jhKYdW9CoVSW9lOrQokVQMJXfkJ99dVaFe
- 0cWPVfjvmuaK47bGh3zuYfZI2gx/dwswbNI6RAPKyy9X7LGz6YJUEizfwAuEmo2ZjDbMWSQKG
- wwmlZq1NT280lN+UzIGAqfF3Cfqlciev0x20PrgNmhAuSL9NipUwNtHIZqR+nt/45YYXwPus2
- fXcl02gR9QcAtuuPaQwsFP1XjOpnUIXL1plS9DEUvQkfuUEk6qn5QvXrUhiBKQhi3sFcfBHXB
- 0WXtpbHdfcd453bScculMSfOhvJYJ1gDqpIoWLpfQDyQ2/2ebPA6uq8iZQxI3v4ECBg+tYbPx
- SZbzDUzT7uPUYqiEBnqRmQztSQAAEtF5Tv4F7Cx6Mg7Sf0pSqBgkPGpvrRwiz6mululZIWx5k
- korlSBj/TDtNXTIWFg5NaoRcwQqUkrGxwkufpY7AjmViYkmR5WJ7NEngerAFZ0rTyMhma4MmR
- 1lHMeQKdJjSULpvRvt/D7a71PA0K1vSfgRUEpHLPNNcTHW0fO5qmUegyoT+AgXdsfVSKPo73o
- FljxE2LCeYWhJTsigAswsUykLdADPFAnvCoBYxMp842hQymZksobGLcHW0RVlO7Kv2Fz+Yent
- F9B/d4bAisQhtPfJXz0VwynL7uCbTHrZupP/QuZcB0hvBg+XEEUnuv1MZhKMn44mXFhHfp1PQ
- BKmd1CKIHC9Fb1ufsoelgtRafTvSEONURfr4S8dzWo+SkkzleVDTbRWPTaKAR02BLnf4Ti41k
- vZ4/L1AauZIEJcc+JsbkbD6926jISAbMTgb3tV5e/JN/A0YKdFoJHZBi142vMUDatUZ7iWt2/
- C+tJl23gYxk7UlUi2mojsmp/mNJSIQS47zwdR8KK8E4PNLn1Z+WW/bFPlV90uiYiVv8P9KKHj
- xEzcUgMkR3Lm5ndkyZDYi9I9O7HKNwmzRBKXan286LXFlF8twsCIbP7YsVa8=
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 2019/9/26 =E4=B8=8B=E5=8D=883:26, Nikolay Borisov wrote:
+On Thu, Sep 26, 2019 at 10:26:35AM +0300, Nikolay Borisov wrote:
 > This is a regression test for the bug fixed by
 > 'btrfs: Fix a regression which we can't convert to SINGLE profile'
->
+> 
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
 > ---
->  tests/btrfs/194     | 52 ++++++++++++++++++++++++++++++++++++++++++++++=
-++++++
+>  tests/btrfs/194     | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++++
 >  tests/btrfs/194.out |  2 ++
 >  tests/btrfs/group   |  1 +
 >  3 files changed, 55 insertions(+)
 >  create mode 100755 tests/btrfs/194
 >  create mode 100644 tests/btrfs/194.out
->
+> 
 > diff --git a/tests/btrfs/194 b/tests/btrfs/194
 > new file mode 100755
 > index 000000000000..8935defd3f5e
@@ -123,18 +87,16 @@ Qu
 > +#
 > +# FS QA Test 194
 > +#
-> +# Test that block groups profile can be converted to SINGLE. This is a =
-regression
-> +# test for 'btrfs: Fix a regression which we can't convert to SINGLE pr=
-ofile'
+> +# Test that block groups profile can be converted to SINGLE. This is a regression
+> +# test for 'btrfs: Fix a regression which we can't convert to SINGLE profile'
 > +#
-> +seq=3D`basename $0`
-> +seqres=3D$RESULT_DIR/$seq
+> +seq=`basename $0`
+> +seqres=$RESULT_DIR/$seq
 > +echo "QA output created by $seq"
 > +
-> +here=3D`pwd`
-> +tmp=3D/tmp/$$
-> +status=3D1	# failure is the default!
+> +here=`pwd`
+> +tmp=/tmp/$$
+> +status=1	# failure is the default!
 > +trap "_cleanup; exit \$status" 0 1 2 3 15
 > +
 > +_cleanup()
@@ -160,17 +122,65 @@ ofile'
 > +_scratch_dev_pool_get 2
 > +_scratch_pool_mkfs -draid1
 > +
-> +_scratch_mount
+> +_scratch_mount 
 > +
-> +$BTRFS_UTIL_PROG balance start -dconvert=3Dsingle $SCRATCH_MNT > $seqre=
-s.full 2>&1
+> +$BTRFS_UTIL_PROG balance start -dconvert=single $SCRATCH_MNT > $seqres.full 2>&1
 > +[ $? -eq 0 ] || _fail "Convert failed"
+
+This indicates we're missing profile conversion tests in fstests. I
+think it's better to add a test framework/helpers and a full set of
+profile conversion tests instead of this raid1->single special case.
+
+e.g.
+
+Define a test case array, which describes what's the src/dst of this
+conversion and how many devices this case requires, e.g.
+
+test_cases=(
+        # $nr_dev_min:$metadata:$data:$metadata_convert:$data_convert
+        "2:single:single:raid0:raid0"
+        "2:single:single:raid1:raid1"
+        "2:single:single:raid1:raid0"
+        "3:single:single:raid5:raid5"
+        "4:single:single:raid6:raid6"
+        "4:single:single:raid10:raid10"
+        "2:raid0:raid0:raid1:raid0"
+        "2:raid0:raid0:raid1:raid1"
+        "3:raid0:raid0:raid5:raid5"
+        "4:raid0:raid0:raid6:raid6"
+        "4:raid0:raid0:raid10:raid10"
+        "2:raid1:raid0:raid1:raid1"
+        "3:raid1:raid0:raid5:raid5"
+        "4:raid1:raid0:raid6:raid6"
+        "4:raid1:raid1:raid10:raid10"
+        "4:raid5:raid5:raid1:raid1"
+        "4:raid5:raid5:raid6:raid6"
+        "4:raid5:raid5:raid10:raid10"
+        "4:raid6:raid6:raid1:raid1"
+        "4:raid6:raid6:raid5:raid5"
+        "4:raid6:raid6:raid10:raid10"
+        "4:raid10:raid10:raid5:raid5"
+        "4:raid10:raid10:raid6:raid6"
+	<adding more cases>
+)
+
+Then, create btrfs in source profile and populate fs with different
+kinds of files, compute sha1 digests of these files(fssum?), start
+conversion, after conversion compare sha1 digests.
+
+And perhaps we could split the test cases into group and add them to
+different tests, in case putting all cases in a single test makes the
+test time too long.
+
+Thanks,
+Eryu
+
 > +
 > +_scratch_umount
 > +_scratch_dev_pool_put
 > +
 > +echo "Silence is golden"
-> +status=3D0
+> +status=0
 > +exit
 > diff --git a/tests/btrfs/194.out b/tests/btrfs/194.out
 > new file mode 100644
@@ -189,4 +199,6 @@ s.full 2>&1
 >  192 auto replay snapshot stress
 >  193 auto quick qgroup enospc limit
 > +194 auto quick volume balance
->
+> -- 
+> 2.7.4
+> 
