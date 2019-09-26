@@ -2,116 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D5FBF289
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 14:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F54BF2CA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 14:18:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726075AbfIZMIc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Sep 2019 08:08:32 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:33207 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725886AbfIZMIc (ORCPT
+        id S1726309AbfIZMSV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Sep 2019 08:18:21 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:33037 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725768AbfIZMSV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Sep 2019 08:08:32 -0400
-Received: by mail-qt1-f195.google.com with SMTP id r5so2566273qtd.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2019 05:08:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dF+9/0+JN98tJwIQLNB350UnToDA3GpPjpj26h4ArR0=;
-        b=AA2auC8d3oLCuDMbpOZH39e0CP+4rfaHtRMAigPM9nZx6woZGX2INS6mzgaeRl8bXU
-         qO/AFeAMAbLEQT/TXZrOSJuR3+G3GBtVn5DVz4LH2HSbEoZAWovQvp6TQMSkqL6Iwe1I
-         ZLgRemA+K/erWo36AwfKJ3DQOdofrGo/YfvzOK17fgXsJVMPq0p9EJOQseEIkItPRS/W
-         J9hw3DgERTCo9JTvDqxUJXrWKWOCqdQYCywUbgvlwrVRrp7iylVXkpJn8DO5w23ZbbTh
-         bEpXaUUyi4MVQfwcLslN2JE0NLbLYqJ56yxrE2PBDj1mDTGCT7wOywKKLkM1GaExzJ12
-         f++Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dF+9/0+JN98tJwIQLNB350UnToDA3GpPjpj26h4ArR0=;
-        b=nqUw6BrxouT3+mnyaAcOuglSZm/bod6B224gnaLK6860defBJJKUKaA8Jj0IGe6ilc
-         gQhozKsecpyA/fcvQBO9Dl3etCUldmhLmFgNPYBWFgqAtJBJROR2frCNSfVQKqlc4iNw
-         j6X9y++kqQHVniRzFAtJSK8p1Gg24dJIcUHJrM/Jm9o73zdD6tfDkxCAbGcI6EDWC3+U
-         iIPIxJyEycA6DozP5M/gyUh504+5E4i5ThxPr+aZcXVaYcxB2B/MoBvexCaXSwJhYCmG
-         TAn5t/PDFN80kzcby3FemdW5txbtXtYQmr8z8441OK9AWTCZ7PdXIFQuEfmsLOB0rhk+
-         ggHA==
-X-Gm-Message-State: APjAAAWCchleu66rnhOIhFq2pGgj3jvtZt/iCd1tIAtYNiIqtLtnZLMp
-        lr9kQa3dz0P7Ea2Jzd2hxWhHnG+bZTp0RQ==
-X-Google-Smtp-Source: APXvYqwbMvZZ6EAz4NWr0+1fvNIQxuJSr1ZEY4upEvNDU2wjc/4QPwULaEPvtKI2BR/ybFQi/et/aQ==
-X-Received: by 2002:ac8:739a:: with SMTP id t26mr3506330qtp.176.1569499711058;
-        Thu, 26 Sep 2019 05:08:31 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id 16sm383024qky.93.2019.09.26.05.08.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Sep 2019 05:08:30 -0700 (PDT)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH][v2] btrfs: use refcount_inc_not_zero in kill_all_nodes
-Date:   Thu, 26 Sep 2019 08:08:29 -0400
-Message-Id: <20190926120829.7229-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 26 Sep 2019 08:18:21 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 5D3012F12;
+        Thu, 26 Sep 2019 08:18:20 -0400 (EDT)
+Received: from imap37 ([10.202.2.87])
+  by compute3.internal (MEProxy); Thu, 26 Sep 2019 08:18:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=TF2e2v
+        5QJWANq2RvA+l4zDSrT7f1zxrbP1wF6DFeYtk=; b=COZ7Z/I6Ef2JAcktyDpH1t
+        fr6D5NZkAOJUOLF0SGltqlpNJX9DU06wPkTMsVjm1d6bEWTCS9mG5zCqEQxCe7I9
+        BBLG13s6cvcu3jCb13mdtr+BjtxsubwtiC7UJhIIaCgwHhBW7s5bH1vr3mcXIswT
+        6BzHiKqaWo8cJip2TD46PETshG3/wCRgoPr0VR6rQwop8UddmV8d2AkL+IaxSd/Z
+        qsA3kz4tM3ev0ilBWmzDyytZjhj5/slzUSDbFfgqM9R8PZfraY3R14edkYN/hvQJ
+        XvVa2UExj6XdVyXxmrnhz4yeCGzCKo+22/z/j/a8BZmjB3uFxvDvMgAp53Vb1Xsg
+        ==
+X-ME-Sender: <xms:i6yMXSKaUZVQZ7rWMip8-_zkAm-iCIFY0LqoKU_m0rFjl1V61HQtnw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrfeeggdehtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfveholhhi
+    nhcuhggrlhhtvghrshdfuceofigrlhhtvghrshesvhgvrhgsuhhmrdhorhhgqeenucfrrg
+    hrrghmpehmrghilhhfrhhomhepfigrlhhtvghrshesvhgvrhgsuhhmrdhorhhgnecuvehl
+    uhhsthgvrhfuihiivgeptd
+X-ME-Proxy: <xmx:i6yMXbagZiMTzWbLhoZzfgOzY8whui0r9xdyVl-mcfPJeVU66BQiyQ>
+    <xmx:i6yMXfxO8N17h4AOgUB9dnnNE5y1la8eneUmL_ilk5AfvrEiY9JvBQ>
+    <xmx:i6yMXaYLvJGpAeq6bAVXDICDDPMPoKY2ERyALyDJ-wa1tjryBXhpVg>
+    <xmx:jKyMXWWhcAHq6sUJsEsGjfthlIK4MdOW_S_MoHC_J1grcEJCbRm2Og>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6954C684005E; Thu, 26 Sep 2019 08:18:19 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.1.7-305-g4111847-fmstable-20190924v1
+Mime-Version: 1.0
+Message-Id: <4e6e03c1-b2f4-4841-99af-cbb75f33c14d@www.fastmail.com>
+In-Reply-To: <FF3F534F-B40D-4D7D-956B-F1B63C4751CC@fb.com>
+References: <cover.1568875700.git.osandov@fb.com>
+ <230a76e65372a8fb3ec62ce167d9322e5e342810.1568875700.git.osandov@fb.com>
+ <CAG48ez2GKv15Uj6Wzv0sG5v2bXyrSaCtRTw5Ok_ovja_CiO_fQ@mail.gmail.com>
+ <20190924171513.GA39872@vader> <20190924193513.GA45540@vader>
+ <CAG48ez1NQBNR1XeVQYGoopEk=g_KedUr+7jxLQTaO+V8JCeweQ@mail.gmail.com>
+ <20190925071129.GB804@dread.disaster.area>
+ <60c48ac5-b215-44e1-a628-6145d84a4ce3@www.fastmail.com>
+ <FF3F534F-B40D-4D7D-956B-F1B63C4751CC@fb.com>
+Date:   Thu, 26 Sep 2019 08:17:12 -0400
+From:   "Colin Walters" <walters@verbum.org>
+To:     "Chris Mason" <clm@fb.com>
+Cc:     "Dave Chinner" <david@fromorbit.com>,
+        "Jann Horn" <jannh@google.com>,
+        "Omar Sandoval" <osandov@osandov.com>,
+        "Aleksa Sarai" <cyphar@cyphar.com>, "Jens Axboe" <axboe@kernel.dk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        "Linux API" <linux-api@vger.kernel.org>,
+        "Kernel Team" <Kernel-team@fb.com>,
+        "Andy Lutomirski" <luto@kernel.org>
+Subject: Re: [RFC PATCH 2/3] add RWF_ENCODED for writing compressed data
+Content-Type: text/plain
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We hit the following warning while running down a different problem
 
-[ 6197.175850] ------------[ cut here ]------------
-[ 6197.185082] refcount_t: underflow; use-after-free.
-[ 6197.194704] WARNING: CPU: 47 PID: 966 at lib/refcount.c:190 refcount_sub_and_test_checked+0x53/0x60
-[ 6197.521792] Call Trace:
-[ 6197.526687]  __btrfs_release_delayed_node+0x76/0x1c0
-[ 6197.536615]  btrfs_kill_all_delayed_nodes+0xec/0x130
-[ 6197.546532]  ? __btrfs_btree_balance_dirty+0x60/0x60
-[ 6197.556482]  btrfs_clean_one_deleted_snapshot+0x71/0xd0
-[ 6197.566910]  cleaner_kthread+0xfa/0x120
-[ 6197.574573]  kthread+0x111/0x130
-[ 6197.581022]  ? kthread_create_on_node+0x60/0x60
-[ 6197.590086]  ret_from_fork+0x1f/0x30
-[ 6197.597228] ---[ end trace 424bb7ae00509f56 ]---
 
-This is because the free side drops the ref without the lock, and then
-takes the lock if our refcount is 0.  So you can have nodes on the tree
-that have a refcount of 0.  Fix this by zero'ing out that element in our
-temporary array so we don't try to kill it again.
+On Wed, Sep 25, 2019, at 10:56 AM, Chris Mason wrote:
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
-v1->v2:
-- I'm an idiot.
+> The data is verified while being decompressed, but that's a fairly large 
+> fuzzing surface (all of zstd, zlib, and lzo).  A lot of people will 
+> correctly argue that we already have that fuzzing surface today, but I'd 
+> rather not make a really easy way to stuff arbitrary bytes through the 
+> kernel decompression code until all the projects involved sign off.
 
- fs/btrfs/delayed-inode.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+Right.  So maybe have this start of as a BTRFS ioctl and require
+privileges?   I assume that's sufficient for what Omar wants.
 
-diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-index 1f7f39b10bd0..81b2fd46886f 100644
---- a/fs/btrfs/delayed-inode.c
-+++ b/fs/btrfs/delayed-inode.c
-@@ -1948,13 +1948,16 @@ void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
- 			break;
- 		}
- 
--		inode_id = delayed_nodes[n - 1]->inode_id + 1;
--
--		for (i = 0; i < n; i++)
--			refcount_inc(&delayed_nodes[i]->refs);
-+		for (i = 0; i < n; i++) {
-+			inode_id = delayed_nodes[i]->inode_id + 1;
-+			if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
-+				delayed_nodes[i] = NULL;
-+		}
- 		spin_unlock(&root->inode_lock);
- 
- 		for (i = 0; i < n; i++) {
-+			if (!delayed_nodes[i])
-+				continue;
- 			__btrfs_kill_delayed_node(delayed_nodes[i]);
- 			btrfs_release_delayed_node(delayed_nodes[i]);
- 		}
--- 
-2.21.0
-
+(Are there actually any other popular Linux filesystems that do transparent compression anyways?)
