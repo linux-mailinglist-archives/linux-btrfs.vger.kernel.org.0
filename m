@@ -2,79 +2,110 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A3E0BF92C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 20:29:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A1A5BF935
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 20:33:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727931AbfIZS27 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Sep 2019 14:28:59 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:44124 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726029AbfIZS27 (ORCPT
+        id S1728234AbfIZSdo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Sep 2019 14:33:44 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:33356 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726029AbfIZSdn (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Sep 2019 14:28:59 -0400
-Received: by mail-qt1-f196.google.com with SMTP id u40so4045638qth.11
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2019 11:28:57 -0700 (PDT)
+        Thu, 26 Sep 2019 14:33:43 -0400
+Received: by mail-qt1-f193.google.com with SMTP id r5so4151950qtd.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2019 11:33:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=9feDFC1CEhLXRFlh1hAk1Xj2AaHVm4GnUnjjvfUvFbQ=;
-        b=cM4NSKDj5J/yi64EaofwS80L9WmPM7bvoGyP0pE3OfXFktg0ZGZM1o7v302fbHZQyA
-         pBFnaQ6aRxsHflHhKwV9xpEowEwPigY0aLxf7Mv+7uV5TkmLkHpAtiA9u3eq2PFGeDca
-         Tz7Wcet1EQnWI7d338pHjOWlsBOxw8IdFN+acILXDAOyupgtfezxn+B/BTsNNhnFZWSS
-         m1+ASkNw8e3fgWUgAZVrP7acaJ5NSI1DL+TRN+3195k7vd43njlP+Slwc3nBgrSOZx6x
-         IKqxvHt4AwKUnazlOPw5rK8UHSUS/k9v/qnRhmjnxGVLsBS8aHTwCd63osGHELQFMB2t
-         50xQ==
+        bh=yw2YUjU2wyGFm12ix3imaT/vhDKor/qR243JvrEnR8I=;
+        b=mDIIqHc2uODVCX+gVDHtI3ioGiFH8XaR5UBsMBKtjSwgBspcjpl773hjgg6GPmxaip
+         NC+1kCikkkBho5Ny20DnP/O5VUb3jt1v2KK1KjhCLg6yxBjMh8IRgGurcDPpvsvsABVS
+         lkvRO1CcxsCctt3tOv9myz6V8IEa7nyUi+CII9vvQOZ7QrXgm3FU8T+d8xevlOj95T/G
+         IKmLkiwLf3VTWwNIjDUtpzKg5KN/nbZufaImwy1pcPvzWC6D4WRiZV8NFf7ZpAGxGqWz
+         B7hlirmFS26yJ186o87eJjxqpE2Scj95+M1wizXIo9TQAiiT9Xpid+na78RFOVeBWGLG
+         eKPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9feDFC1CEhLXRFlh1hAk1Xj2AaHVm4GnUnjjvfUvFbQ=;
-        b=jmWmm3TLCkszFtI0NeB3bEG941lzK+HfnbbHsNaVWUbGo/Yt0UqG8Zzp0/fzSYKRim
-         AJhakVwgM7Of3UiiI1OaZw/2J9Q+dBJ3f7QwcD7H91lbU2RidEOBkmooG7nnlmDiBGgx
-         34aKPqTT2oD606Qh7kTtl9iuGNXUAiRwgcPF+rDP4UFQn1I/CIyFk9eEJc4IlQvKxEq0
-         6nNCyG7DGJGQb19CcuZtbyI2E3FITym40yOmR8CXsuaj2J44d7EGvTgVOyYR6HtC0sUH
-         UXy/WVTZ1hQqWbJN7Mio1SKYvoZ453zd4Te7vEC+baXMe58STzOCAk4jrQh0KMJIWuy8
-         g7Kw==
-X-Gm-Message-State: APjAAAWHnDnPcIKuhuI6WruhkEbpOF8/A9perQnjbcdsBOL30yvf7zut
-        MUXfIt6gTLLWyY4CwmZuO142WAdQEhw9qg==
-X-Google-Smtp-Source: APXvYqz9Jo4ei0uvAP9/kmkagHvRi3MhAnwqoc5GtwPcpFnhmpCuJN88ce3LGMSnAzM/eYAUrGPI3A==
-X-Received: by 2002:a0c:c590:: with SMTP id a16mr4104933qvj.144.1569522536757;
-        Thu, 26 Sep 2019 11:28:56 -0700 (PDT)
+        bh=yw2YUjU2wyGFm12ix3imaT/vhDKor/qR243JvrEnR8I=;
+        b=adRcvtSAe18/hZ2fh5sAucf+EWM+RNfbYH6z3C/Tu8Vt/6WJatEcgYqnqUKnDJzQSS
+         +Jq1eybgt678UXa3Twe4cipdFAI+ffhK2jwLTzX3+cpOY997H4Ao8a9qXfYsRE4YP8hJ
+         FEcuVmy0RhhIq0Lq3EcNjvdi/pLXWwDpuuiH5dso8yGuVZT09QIoNDqrp1VOBjdHQuh0
+         PL9qJfoWIzAdsXDkAU9lgfndHX9rrssksblrOgnvLPRxU9i/728PV+tuhPpAJ7vUSOE8
+         0WiBNDwUuKI36SxdJCefC/NyAQ/oOY3QYRrmobLpiSNnye1uukphL43LJCKDRg3O1NOq
+         //+Q==
+X-Gm-Message-State: APjAAAUqVQiLwkOv5DHwedvjUVKoliqmWBvyRYKH5/7YdQilfuwA5jt3
+        3R2E1D4APKSy7asVRb1nvEL5IQ==
+X-Google-Smtp-Source: APXvYqwvTZ27nm9FvGwl+K8SeFgM8TWPzyh2bjwPk8cbAAAOGPqhX1tR3teMaAbfXdDqBRqwD2N/zg==
+X-Received: by 2002:ac8:550a:: with SMTP id j10mr5678629qtq.230.1569522821370;
+        Thu, 26 Sep 2019 11:33:41 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::c9a9])
-        by smtp.gmail.com with ESMTPSA id v13sm1215262qtp.61.2019.09.26.11.28.55
+        by smtp.gmail.com with ESMTPSA id 131sm31896qkg.1.2019.09.26.11.33.40
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 26 Sep 2019 11:28:56 -0700 (PDT)
-Date:   Thu, 26 Sep 2019 14:28:54 -0400
+        Thu, 26 Sep 2019 11:33:40 -0700 (PDT)
+Date:   Thu, 26 Sep 2019 14:33:39 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Nikolay Borisov <nborisov@suse.com>
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] btrfs: Return offset from find_desired_extent
-Message-ID: <20190926182853.be53llywifww6nve@macbook-pro-91.dhcp.thefacebook.com>
-References: <20190926113953.19569-1-nborisov@suse.com>
- <20190926113953.19569-4-nborisov@suse.com>
+Subject: Re: [PATCH RFC] btrfs: relocation: Hunt down BUG_ON() in
+ merge_reloc_roots()
+Message-ID: <20190926183338.uwylopkth7pal5zd@macbook-pro-91.dhcp.thefacebook.com>
+References: <20190926063545.20403-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190926113953.19569-4-nborisov@suse.com>
+In-Reply-To: <20190926063545.20403-1-wqu@suse.com>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Sep 26, 2019 at 02:39:53PM +0300, Nikolay Borisov wrote:
-> Instead of using an input pointer parameter as the return value and have
-> an int as the return type of find_desired_extent, rework the function
-> to directly return the found offset. Doing that the 'ret' variable in
-> btrfs_llseek_file can be removed. Additional (subjective) benefit is
-> that btrfs' llseek function now resemebles those of the other major
-> filesystems.
+On Thu, Sep 26, 2019 at 02:35:45PM +0800, Qu Wenruo wrote:
+> [BUG]
+> There is one BUG_ON() report where a transaction is aborted during
+> balance, then kernel BUG_ON() in merge_reloc_roots():
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+>   void merge_reloc_roots(struct reloc_control *rc)
+>   {
+> 	...
+> 	BUG_ON(!RB_EMPTY_ROOT(&rc->reloc_root_tree.rb_root)); <<<
+>   }
+> 
+> [CAUSE]
+> It's still uncertain why we can get to such situation.
+> As all __add_reloc_root() calls will also link that reloc root to
+> rc->reloc_roots, and in merge_reloc_roots() we cleanup rc->reloc_roots.
+> 
+> So the root cause is still uncertain.
+> 
+> [FIX]
+> But we can still hunt down all the BUG_ON() in merge_reloc_roots().
+> 
+> There are 3 BUG_ON()s in it:
+> - BUG_ON() for read_fs_root() result
+> - BUG_ON() for root->reloc_root != reloc_root case
+> - BUG_ON() for the non-empty reloc_root_tree
+> 
+> For the first two, just grab the return value and goto out tag for
+> cleanup.
+> 
+> For the last one, make it more graceful by:
+> - grab the lock before doing read/write
+> - warn instead of panic
+> - cleanup the nodes in rc->reloc_root_tree
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+If we're going to do these things we might as well add the ability to error
+inject and add an xfstest to verify they don't break anything.  The
+BUG_ON(root->reloc_root != reloc_root) isn't able to be tested, but you can at
+least make read_fs_root() and merge_reloc_root() and then test this patch by
+triggering errors in these paths.
 
-Thanks,
+If you do that I'm ok with not being able to explain the leaking nodes, getting
+rid of the BUG_ON()'s is good enough reason.  Thanks,
 
 Josef
