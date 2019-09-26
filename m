@@ -2,119 +2,81 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC92EBEC84
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 09:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E327BEC98
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 09:35:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729048AbfIZH0j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Sep 2019 03:26:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46918 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726521AbfIZH0j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Sep 2019 03:26:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DDD7FAF30;
-        Thu, 26 Sep 2019 07:26:37 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, wqu@suse.com, guaneryu@gmail.com,
-        Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH] btrfs: Add regression test for SINGLE profile conversion
-Date:   Thu, 26 Sep 2019 10:26:35 +0300
-Message-Id: <20190926072635.9310-1-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
+        id S1729906AbfIZHfO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Sep 2019 03:35:14 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45274 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728240AbfIZHfO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Sep 2019 03:35:14 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8Q7YS6V062036;
+        Thu, 26 Sep 2019 07:35:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=kDvzriFvgLgDzsCphtMAGUpv8k/ad40Ph+cMqKRwfy8=;
+ b=o0DURz/F7BzsARrGr/obxC7Fzeybtiuu4NgN4KjcQLrTGmf7s70Sr28ZecwYldGPT5OD
+ L0UCTclArtF9Zk6DKPlYaf8fdADJo2In49Toj6gIg0vQKDXa45xEikSA+5o4PacDvxn2
+ J5ii9Z1DD/i+PEIJ5lgd76HQCIAMaB7lW6u32YQD1YeuNbjrlmBL5cWme3BO4cPhS4gu
+ DtSqiV+rf0d3jQJESFrKf8IyNFcWBxYSURPDZjm5aA/JfaTCkL26hTxm0ew3uTm6KV9v
+ ATRe83WjySJiuAQBuUZ2HUMDBRVdSjPA+m6nSmLU7sV4leKmDJ3nao33sbL3RUg/g8AG wA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2v5btq9sjk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Sep 2019 07:35:09 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8Q7XWml090186;
+        Thu, 26 Sep 2019 07:35:08 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2v82qbntys-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 26 Sep 2019 07:35:08 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x8Q7Z7HT025933;
+        Thu, 26 Sep 2019 07:35:07 GMT
+Received: from [10.186.52.87] (/10.186.52.87)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 26 Sep 2019 00:35:07 -0700
+Subject: Re: [PATCH] btrfs: Add regression test for SINGLE profile conversion
+To:     Nikolay Borisov <nborisov@suse.com>, fstests@vger.kernel.org
+Cc:     linux-btrfs@vger.kernel.org, wqu@suse.com, guaneryu@gmail.com
+References: <20190926072635.9310-1-nborisov@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <87fd085e-c193-ef1e-f644-60eac1fd3c98@oracle.com>
+Date:   Thu, 26 Sep 2019 15:34:57 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20190926072635.9310-1-nborisov@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9391 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=988
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1909260073
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9391 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1909260073
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a regression test for the bug fixed by
-'btrfs: Fix a regression which we can't convert to SINGLE profile'
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
----
- tests/btrfs/194     | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/194.out |  2 ++
- tests/btrfs/group   |  1 +
- 3 files changed, 55 insertions(+)
- create mode 100755 tests/btrfs/194
- create mode 100644 tests/btrfs/194.out
 
-diff --git a/tests/btrfs/194 b/tests/btrfs/194
-new file mode 100755
-index 000000000000..8935defd3f5e
---- /dev/null
-+++ b/tests/btrfs/194
-@@ -0,0 +1,52 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 194
-+#
-+# Test that block groups profile can be converted to SINGLE. This is a regression
-+# test for 'btrfs: Fix a regression which we can't convert to SINGLE profile'
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_supported_os Linux
-+_require_scratch_dev_pool 2
-+
-+_scratch_dev_pool_get 2
-+_scratch_pool_mkfs -draid1
-+
-+_scratch_mount 
-+
-+$BTRFS_UTIL_PROG balance start -dconvert=single $SCRATCH_MNT > $seqres.full 2>&1
-+[ $? -eq 0 ] || _fail "Convert failed"
-+
-+_scratch_umount
-+_scratch_dev_pool_put
-+
-+echo "Silence is golden"
-+status=0
-+exit
-diff --git a/tests/btrfs/194.out b/tests/btrfs/194.out
-new file mode 100644
-index 000000000000..7bfd50ffb5a4
---- /dev/null
-+++ b/tests/btrfs/194.out
-@@ -0,0 +1,2 @@
-+QA output created by 194
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index b92cb12ca66f..6a11eb1b8230 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -196,3 +196,4 @@
- 191 auto quick send dedupe
- 192 auto replay snapshot stress
- 193 auto quick qgroup enospc limit
-+194 auto quick volume balance
--- 
-2.7.4
+On 9/26/19 3:26 PM, Nikolay Borisov wrote:
+> This is a regression test for the bug fixed by
+> 'btrfs: Fix a regression which we can't convert to SINGLE profile'
+> 
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
