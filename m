@@ -2,102 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D891BF26B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 14:04:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06D5FBF289
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 14:08:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726079AbfIZMEE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Sep 2019 08:04:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54778 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726029AbfIZMED (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Sep 2019 08:04:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 80832AED5;
-        Thu, 26 Sep 2019 12:04:01 +0000 (UTC)
-Subject: Re: [PATCH 3/3] btrfs: Return offset from find_desired_extent
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20190926113953.19569-1-nborisov@suse.com>
- <20190926113953.19569-4-nborisov@suse.com>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <669cd745-3ad6-0416-d4e7-8f0b9800a283@suse.de>
-Date:   Thu, 26 Sep 2019 14:04:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726075AbfIZMIc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Sep 2019 08:08:32 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:33207 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725886AbfIZMIc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Sep 2019 08:08:32 -0400
+Received: by mail-qt1-f195.google.com with SMTP id r5so2566273qtd.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2019 05:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dF+9/0+JN98tJwIQLNB350UnToDA3GpPjpj26h4ArR0=;
+        b=AA2auC8d3oLCuDMbpOZH39e0CP+4rfaHtRMAigPM9nZx6woZGX2INS6mzgaeRl8bXU
+         qO/AFeAMAbLEQT/TXZrOSJuR3+G3GBtVn5DVz4LH2HSbEoZAWovQvp6TQMSkqL6Iwe1I
+         ZLgRemA+K/erWo36AwfKJ3DQOdofrGo/YfvzOK17fgXsJVMPq0p9EJOQseEIkItPRS/W
+         J9hw3DgERTCo9JTvDqxUJXrWKWOCqdQYCywUbgvlwrVRrp7iylVXkpJn8DO5w23ZbbTh
+         bEpXaUUyi4MVQfwcLslN2JE0NLbLYqJ56yxrE2PBDj1mDTGCT7wOywKKLkM1GaExzJ12
+         f++Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dF+9/0+JN98tJwIQLNB350UnToDA3GpPjpj26h4ArR0=;
+        b=nqUw6BrxouT3+mnyaAcOuglSZm/bod6B224gnaLK6860defBJJKUKaA8Jj0IGe6ilc
+         gQhozKsecpyA/fcvQBO9Dl3etCUldmhLmFgNPYBWFgqAtJBJROR2frCNSfVQKqlc4iNw
+         j6X9y++kqQHVniRzFAtJSK8p1Gg24dJIcUHJrM/Jm9o73zdD6tfDkxCAbGcI6EDWC3+U
+         iIPIxJyEycA6DozP5M/gyUh504+5E4i5ThxPr+aZcXVaYcxB2B/MoBvexCaXSwJhYCmG
+         TAn5t/PDFN80kzcby3FemdW5txbtXtYQmr8z8441OK9AWTCZ7PdXIFQuEfmsLOB0rhk+
+         ggHA==
+X-Gm-Message-State: APjAAAWCchleu66rnhOIhFq2pGgj3jvtZt/iCd1tIAtYNiIqtLtnZLMp
+        lr9kQa3dz0P7Ea2Jzd2hxWhHnG+bZTp0RQ==
+X-Google-Smtp-Source: APXvYqwbMvZZ6EAz4NWr0+1fvNIQxuJSr1ZEY4upEvNDU2wjc/4QPwULaEPvtKI2BR/ybFQi/et/aQ==
+X-Received: by 2002:ac8:739a:: with SMTP id t26mr3506330qtp.176.1569499711058;
+        Thu, 26 Sep 2019 05:08:31 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id 16sm383024qky.93.2019.09.26.05.08.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2019 05:08:30 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH][v2] btrfs: use refcount_inc_not_zero in kill_all_nodes
+Date:   Thu, 26 Sep 2019 08:08:29 -0400
+Message-Id: <20190926120829.7229-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20190926113953.19569-4-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,
-Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+We hit the following warning while running down a different problem
+
+[ 6197.175850] ------------[ cut here ]------------
+[ 6197.185082] refcount_t: underflow; use-after-free.
+[ 6197.194704] WARNING: CPU: 47 PID: 966 at lib/refcount.c:190 refcount_sub_and_test_checked+0x53/0x60
+[ 6197.521792] Call Trace:
+[ 6197.526687]  __btrfs_release_delayed_node+0x76/0x1c0
+[ 6197.536615]  btrfs_kill_all_delayed_nodes+0xec/0x130
+[ 6197.546532]  ? __btrfs_btree_balance_dirty+0x60/0x60
+[ 6197.556482]  btrfs_clean_one_deleted_snapshot+0x71/0xd0
+[ 6197.566910]  cleaner_kthread+0xfa/0x120
+[ 6197.574573]  kthread+0x111/0x130
+[ 6197.581022]  ? kthread_create_on_node+0x60/0x60
+[ 6197.590086]  ret_from_fork+0x1f/0x30
+[ 6197.597228] ---[ end trace 424bb7ae00509f56 ]---
+
+This is because the free side drops the ref without the lock, and then
+takes the lock if our refcount is 0.  So you can have nodes on the tree
+that have a refcount of 0.  Fix this by zero'ing out that element in our
+temporary array so we don't try to kill it again.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+v1->v2:
+- I'm an idiot.
+
+ fs/btrfs/delayed-inode.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 1f7f39b10bd0..81b2fd46886f 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1948,13 +1948,16 @@ void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
+ 			break;
+ 		}
+ 
+-		inode_id = delayed_nodes[n - 1]->inode_id + 1;
+-
+-		for (i = 0; i < n; i++)
+-			refcount_inc(&delayed_nodes[i]->refs);
++		for (i = 0; i < n; i++) {
++			inode_id = delayed_nodes[i]->inode_id + 1;
++			if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
++				delayed_nodes[i] = NULL;
++		}
+ 		spin_unlock(&root->inode_lock);
+ 
+ 		for (i = 0; i < n; i++) {
++			if (!delayed_nodes[i])
++				continue;
+ 			__btrfs_kill_delayed_node(delayed_nodes[i]);
+ 			btrfs_release_delayed_node(delayed_nodes[i]);
+ 		}
 -- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 247165, AG München)
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+2.21.0
+
