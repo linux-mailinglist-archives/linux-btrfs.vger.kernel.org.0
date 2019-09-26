@@ -2,110 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 13238BF0D2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 13:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E48B6BF0E8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 13:13:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725953AbfIZLHK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Sep 2019 07:07:10 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:35835 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725843AbfIZLHK (ORCPT
+        id S1725820AbfIZLNf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Sep 2019 07:13:35 -0400
+Received: from m4a0041g.houston.softwaregrp.com ([15.124.2.87]:45541 "EHLO
+        m4a0041g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725280AbfIZLNf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Sep 2019 07:07:10 -0400
-Received: by mail-qk1-f193.google.com with SMTP id w2so1389874qkf.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2019 04:07:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=lL+vwsDLOtnxVPit6G+a8XbG20+AO9Q0pA7Bn9KvSZA=;
-        b=g1Hwnk/aIwNiRpwUw2boWKF7ZJ2BdA1NIlRfFiSf5fxlMLu097ap9L7ld+HxWUYgbb
-         qN3I5YMmkq4NvLgBLR7ExeYNSXYP79PKNhxjjHZfBIJ64CLgznd/pugG3mCKzTXeZ6UU
-         dKDA5F6LsVC1ZvpVfdCTXsWIv6lGDpn/74dMXNq74hXK0rlbR24ztg3wpwjqZVm9HaE9
-         iNR5JNKAStVbvdOPRhzaPCq61fJd3+I7E7J0L/ClhvRKBb9bsZzhfpKBe7/ehMQhGseS
-         l1t1lfQZ7bKLeVVk+VQ7n/ViDvDWd+j6mhKm+XmGSqnaY6Idr7glgwccjoP30f/DZEbz
-         OwMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=lL+vwsDLOtnxVPit6G+a8XbG20+AO9Q0pA7Bn9KvSZA=;
-        b=kmM+i1aB3vJpjjh44UfA9zBndtUGSps+YNxVrz8DjdXMZV1HB7A595MgtoYWxYPKsf
-         SFufxs4uAfSdAXKr5EuBfHsAVaVWck6GCtOgA1HWPMKcZSQqFv/t/yZnBrsMyYxTWO+p
-         V1BYUGco/dajZlG4XqxH1Qer7Xql+4tf0GQqBWbu9QdSof8TWrzi2Ak+gDFr7WT8B1rZ
-         TPgazJYPb41Mf80NiYU/vK+vKD3hQh+J4ckp7ZGgidKigGXILHSJo+Wug2JwwdstIxVc
-         zOQxWfWdifbvGjEhjjbPHUErCP0onw95FaYWMp5QtSnlIrLTaid8LMdROp4oO0+a12Or
-         7YiQ==
-X-Gm-Message-State: APjAAAVgJqjPnk4YFsBlOVOVa+7+XWp4KONpr+dsAEu/z3ePaiUabupc
-        V/p7WJbZjXF2vHX+iKhY1f03OWkENjRuXA==
-X-Google-Smtp-Source: APXvYqzD8DWLaw+0TuGiGJ1ut5s7lviHY491i+f6NBaoO2Tuq6AXvhptnT8yyI7Q6E7P3m5pvyC5bA==
-X-Received: by 2002:a37:a503:: with SMTP id o3mr2553739qke.115.1569496027984;
-        Thu, 26 Sep 2019 04:07:07 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::cafc])
-        by smtp.gmail.com with ESMTPSA id b4sm846108qkd.121.2019.09.26.04.07.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 26 Sep 2019 04:07:07 -0700 (PDT)
-Date:   Thu, 26 Sep 2019 07:07:05 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Josef Bacik <josef@toxicpanda.com>, Mark Fasheh <mfasheh@suse.com>,
-        linux-btrfs@vger.kernel.org, Mark Fasheh <mfasheh@suse.de>
-Subject: Re: [PATCH 2/3] btrfs: move ref finding machinery out of
- build_backref_tree()
-Message-ID: <20190926110703.ixjtybnmetuz4atu@macbook-pro-91.dhcp.thefacebook.com>
-References: <20190906171533.618-1-mfasheh@suse.com>
- <20190906171533.618-3-mfasheh@suse.com>
- <20190911160928.47qzqcj332k7bgw2@MacBook-Pro-91.local>
- <20190924144920.GX2751@twin.jikos.cz>
+        Thu, 26 Sep 2019 07:13:35 -0400
+Received: FROM m4a0041g.houston.softwaregrp.com (15.120.17.146) BY m4a0041g.houston.softwaregrp.com WITH ESMTP
+ FOR linux-btrfs@vger.kernel.org;
+ Thu, 26 Sep 2019 11:11:37 +0000
+Received: from M9W0067.microfocus.com (2002:f79:be::f79:be) by
+ M4W0334.microfocus.com (2002:f78:1192::f78:1192) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10; Thu, 26 Sep 2019 11:12:45 +0000
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com (15.124.72.12) by
+ M9W0067.microfocus.com (15.121.0.190) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1591.10 via Frontend Transport; Thu, 26 Sep 2019 11:12:44 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=E3LWVrg2b5lh4r4LkB5gzaizg/ZCl5DtdZmBQcYGYc8ri74Y3Txghd1QSgC0gLEEgehYh3ptfn20c+0NLviRvRVyhGf/b8w06FqCzm5za4CKsHXy2MCP9UKJoou+xKSNcSo+lSK8TFT7WiBKD+sYS+Q5V2FiUFIKOTVx28RVLH73bfw2Nkw+slFdadkLO3us2v30nxRJ+kbZuQAcioWMyoHXkmw1ZLFpoiC2V3ZV9Zj0bgMkPHsZnGFslf9DcY9sm8m2lhU2g5w7jlLqhb72+DwRfhA7FLyC4KjMSsJEMIhiBP8eCm+0D8aU7v51PtXzjuNLcZxpZLacaQRBXJZWmg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iZQvoXN8U78ceDFWTHpyZpPdvyACDRBOGC/RpXfXlmI=;
+ b=BZaA/G7vELwaqT58hoskB1KBtJ99h1hS3uNLHMz7c0cY+JgtX0O1CozbxCPvJfGRq929UW8CuH0/Z1JVvWAa9n5PVQMnbB/Z30RHv5Wls3FK5lWLJoCzZ1Dbl+vEnmFiMo0xgq2VUK+fKk/ulxabDgCsoGTWUTL8NoK2nAEsNsVmXCwHSf2cNX2sUn5ACE5TbQSkK9kGdWvF73lkPbVNWYWpLMFrVK2f1+hPQGWLs3eMmTqyuqJrqBXEzS3qivtKyl3Lwf7UeLpWh9t/d7KEUjarAV/HDVNH4BFQQIYW0b8BA5Ldz0QWjjPvdhVvYjVg387xh406dQaRTy1cfdy4Ww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Received: from DM5PR18MB1290.namprd18.prod.outlook.com (10.173.209.136) by
+ DM5PR18MB2277.namprd18.prod.outlook.com (52.132.143.164) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.19; Thu, 26 Sep 2019 11:12:44 +0000
+Received: from DM5PR18MB1290.namprd18.prod.outlook.com
+ ([fe80::4c1d:a9d6:e170:5ac9]) by DM5PR18MB1290.namprd18.prod.outlook.com
+ ([fe80::4c1d:a9d6:e170:5ac9%6]) with mapi id 15.20.2305.017; Thu, 26 Sep 2019
+ 11:12:43 +0000
+From:   Long An <lan@suse.com>
+To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: [PATCH] btrfs-progs: add clean-test.sh to testsuite-files
+Thread-Topic: [PATCH] btrfs-progs: add clean-test.sh to testsuite-files
+Thread-Index: AQHVdFtRp0XfIUjtDEimTyC0s0AsoA==
+Date:   Thu, 26 Sep 2019 11:12:43 +0000
+Message-ID: <1569496362.4199.11.camel@suse.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is ) smtp.mailfrom=lan@suse.com; 
+x-originating-ip: [45.122.156.254]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 9c033f46-ff26-4752-fc32-08d742727435
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:DM5PR18MB2277;
+x-ms-traffictypediagnostic: DM5PR18MB2277:
+x-microsoft-antispam-prvs: <DM5PR18MB227703377764471CDAFAFEB9C6860@DM5PR18MB2277.namprd18.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-forefront-prvs: 0172F0EF77
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(376002)(346002)(366004)(396003)(136003)(39860400002)(199004)(189003)(25786009)(26005)(102836004)(64756008)(316002)(99286004)(66446008)(7736002)(76116006)(71200400001)(91956017)(66476007)(2616005)(6506007)(476003)(66066001)(486006)(186003)(305945005)(6916009)(36756003)(2906002)(256004)(86362001)(3846002)(66946007)(71190400001)(8936002)(6486002)(2501003)(103116003)(6512007)(66556008)(8676002)(81166006)(81156014)(2351001)(14454004)(5660300002)(4744005)(6116002)(478600001)(5640700003)(6436002);DIR:OUT;SFP:1102;SCL:1;SRVR:DM5PR18MB2277;H:DM5PR18MB1290.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: suse.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: ey1t/9tU4GrxV76QMAoV3jcf7vB5fc2vuMGcOm4nf+5JYiKh48mBgqDORUHwdMeuGhqoPqltFoi9YFR6nlbItBH/cK8tMqb19LCskNGut8Q3d3oVxsyJsp/n/M1qFv6NDuTWU/WU9P3CRt+szNJYxsc1qG5QyaAu1W0wLLFEEpmNT7yowp4Q/ruATGgUWQvC9u3Syz2mAWRn1sbvCpUJ4Gekx+IFA/94h6lw84cad9wG4kNEQ/xvE0xn3NIxR0dkOJAul/FypSdhHzLCUlX05/fa3W53g+JDzjIKx+I/1O+8Aa8Zm8xMFh94JzVZO/wJ7rGN+czvCN4oPwo+OPZYlLraiC0P5CHv2IEAytfPebT5MRndjZPOUqnM9UHCsVzC1oQe6lyOlRXnTTA7B2h95UYnw6gvWqJBz/BA2Om2rVI=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7E8B68072B06B147BE60503BFCE600CD@namprd18.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190924144920.GX2751@twin.jikos.cz>
-User-Agent: NeoMutt/20180716
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9c033f46-ff26-4752-fc32-08d742727435
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Sep 2019 11:12:43.7135
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 039sDbGCV4/C5F6maTZMEh25mwfvRBwSt3YENOpn4ARDYi19mNiyNu7wiaRkGTPL
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR18MB2277
+X-OriginatorOrg: suse.com
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 04:49:20PM +0200, David Sterba wrote:
-> On Wed, Sep 11, 2019 at 12:09:29PM -0400, Josef Bacik wrote:
-> > On Fri, Sep 06, 2019 at 10:15:32AM -0700, Mark Fasheh wrote:
-> > > From: Mark Fasheh <mfasheh@suse.de>
-> > > 
-> > > build_backref_tree() is walking extent refs in what is an otherwise self
-> > > contained chunk of code.  We can shrink the total number of lines in
-> > > build_backref_tree() *and* make it more readable by moving that walk into
-> > > its own subroutine.
-> > > 
-> > > Signed-off-by: Mark Fasheh <mfasheh@suse.de>
-> > > ---
-> > >  fs/btrfs/backref-cache.c | 110 +++++++++++++++++++++++----------------
-> > >  1 file changed, 65 insertions(+), 45 deletions(-)
-> > > 
-> > > diff --git a/fs/btrfs/backref-cache.c b/fs/btrfs/backref-cache.c
-> > > index d0f6530f23b8..ff0d49ca6e26 100644
-> > > --- a/fs/btrfs/backref-cache.c
-> > > +++ b/fs/btrfs/backref-cache.c
-> > > @@ -336,6 +336,61 @@ int find_inline_backref(struct extent_buffer *leaf, int slot,
-> > >  	return 0;
-> > >  }
-> > >  
-> > > +#define SEARCH_COMPLETE	1
-> > > +#define SEARCH_NEXT	2
-> > > +static int find_next_ref(struct btrfs_root *extent_root, u64 cur_bytenr,
-> > > +			 struct btrfs_path *path, unsigned long *ptr,
-> > > +			 unsigned long *end, struct btrfs_key *key, bool exist)
-> > 
-> > I'd rather we do an enum here, so it's clear what we're expecting in the code
-> > context.  Thanks,
-> 
-> The function also returns errors (< 0), so do you mean enum for the
-> SEARCH_* values only for for the function as well?
-
-Blah I didn't notice that, in that case you can add
-
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-
-Thanks,
-
-Josef
+ICAgIGJ0cmZzLXByb2dzOiBhZGQgY2xlYW4tdGVzdC5zaCB0byB0ZXN0c3VpdGUtZmlsZXMNCiAg
+ICANCiAgICBJZiBnZW5lcmF0ZSB0ZXN0c3VpdGUgdGFyYmFsbCBieSAnbWFrZSB0ZXN0c3VpdGUn
+LCB0aGVyZSBpcyBubw0KICAgIGNsZWFuLXRlc3Quc2ggaW4gaXQuIEJ1dCBzb21lIHRlc3RzIG5l
+ZWQgY2xlYW51cCBpZiBhIHRlc3RjYXNlDQpmYWlsZWQuDQoNClNpZ25lZC1vZmYtYnk6IEFuIExv
+bmcgPGxhbkBzdXNlLmNvbT4NCi0tLQ0KIHRlc3RzL3Rlc3RzdWl0ZS1maWxlcyB8IDEgKw0KIDEg
+ZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigrKQ0KDQoNCmRpZmYgLS1naXQgYS90ZXN0cy90ZXN0
+c3VpdGUtZmlsZXMgYi90ZXN0cy90ZXN0c3VpdGUtZmlsZXMNCmluZGV4IGQ3NWUyMzU2Li4wOWRm
+NjI5OCAxMDA2NDQNCi0tLSBhL3Rlc3RzL3Rlc3RzdWl0ZS1maWxlcw0KKysrIGIvdGVzdHMvdGVz
+dHN1aXRlLWZpbGVzDQpAQCAtMjAsMyArMjAsNCBAQCBHIHRlc3RzL21rZnMtdGVzdHMvDQogRiBt
+a2ZzLXRlc3RzLnNoDQogRiBzY2FuLXJlc3VsdHMuc2gNCiBGIHRlc3QtY29uc29sZS5zaA0KK0Yg
+Y2xlYW4tdGVzdHMuc2gNCg0K
