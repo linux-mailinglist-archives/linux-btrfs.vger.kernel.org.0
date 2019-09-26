@@ -2,190 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 067FDBEFD2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 12:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88D9DBF092
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Sep 2019 12:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725804AbfIZKkD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 26 Sep 2019 06:40:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56882 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725536AbfIZKkD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 26 Sep 2019 06:40:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7C3ABAF5A;
-        Thu, 26 Sep 2019 10:40:00 +0000 (UTC)
-Subject: Re: [PATCH v2] btrfs: Properly handle backref_in_log retval
-To:     fdmanana@gmail.com
-Cc:     dsterba@suse.cz, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20190924170920.GB2751@twin.jikos.cz>
- <20190925110303.20466-1-nborisov@suse.com>
- <CAL3q7H6mZTNN2NuZ8dudR=F=MHVsjbyK6=3ELCOhnQJb_AFhWg@mail.gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <93c09683-2a67-a6e5-8853-9092912d48f7@suse.com>
-Date:   Thu, 26 Sep 2019 13:39:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726359AbfIZKya (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 26 Sep 2019 06:54:30 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:32926 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725936AbfIZKya (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 26 Sep 2019 06:54:30 -0400
+Received: by mail-qk1-f194.google.com with SMTP id x134so1372307qkb.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Sep 2019 03:54:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AvkyMxSl3KkhqKaG7Xc8v2lRB7TKAWSi0YoQdWVK35g=;
+        b=O0rxiwlv+TExWoJEZF2fZ/GEFg/99SR69GXcrmONh0Ej3yBxm/AT3c51Lx8RG9XBle
+         C49yix9Sns9QCuIWqnk94b+lCpLx522JpWncRH4gGgf8yKyGfy0ScTCRUfBtUbsjzEaP
+         KsK42sOXyXYWKRtti9dzUy89WKOVhhFk6h7zgOBlQA3PpqJC1A7oplyZtp0C5RSpBgpO
+         tRwPVbanOvLS3Yx/QJxirVY5VDwgajnrtGcmDiTvPN33wrbjTAYfFKix13vhA9dUvK+e
+         ej2lxhtfHnUs/SMtDObVz89+7vwbBhLc5XkENtuB+1THbdUg4kbgTFE41FJm5bnbSQDr
+         V5Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=AvkyMxSl3KkhqKaG7Xc8v2lRB7TKAWSi0YoQdWVK35g=;
+        b=PZLIcD77k4EXPE+mC7n4n7/fE7XMrQ7aa4eqgIAWzpHzOL3bF657pHOUNhYnhkbo84
+         gYpqRLjTFmnnQzBc6Co9RrAgDRDUjNjKyYpGyDqvTwsIJU4SIPeFwIuBXmxUjzNQzPGr
+         9O1tMIYanrD/6nmsX7vmnzq3kwnEsY12SiKzHbJL+ZEnZ6lSyT/7h37Fd89VpxzwZJGG
+         1KcS4rzP1cOudbn7HyBEEDdiIa9vfz1xdZm5aV0iM5+lhLTX+P5zmWedxMn8zgr4MF/9
+         M+s0Y3L0kpbwn9SjW3DtpZtPJirY+z/HrTWxWGSYbY/23wU6jUPXJo2lXXu9+cd2N7dw
+         3Jng==
+X-Gm-Message-State: APjAAAXbxDwFsoU3LZACZs7ubdQw/7xpGOBkrM/wcBn0S5wyvbZfzT/b
+        xTuI0Xp093c+MKThVzNxQcbJZw==
+X-Google-Smtp-Source: APXvYqzxWvFjPbNn7Be54vvrvarIr1cLQvNEjPuXnfuRLKMglKKDIPv7p82cUsnrRu4ELmHq6qrVBA==
+X-Received: by 2002:a37:a550:: with SMTP id o77mr2626075qke.205.1569495269209;
+        Thu, 26 Sep 2019 03:54:29 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id l23sm1229904qta.53.2019.09.26.03.54.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Sep 2019 03:54:28 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: use refcount_inc_not_zero in kill_all_nodes
+Date:   Thu, 26 Sep 2019 06:54:27 -0400
+Message-Id: <20190926105427.5978-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <CAL3q7H6mZTNN2NuZ8dudR=F=MHVsjbyK6=3ELCOhnQJb_AFhWg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+We hit the following warning while running down a different problem
 
+[ 6197.175850] ------------[ cut here ]------------
+[ 6197.185082] refcount_t: underflow; use-after-free.
+[ 6197.194704] WARNING: CPU: 47 PID: 966 at lib/refcount.c:190 refcount_sub_and_test_checked+0x53/0x60
+[ 6197.521792] Call Trace:
+[ 6197.526687]  __btrfs_release_delayed_node+0x76/0x1c0
+[ 6197.536615]  btrfs_kill_all_delayed_nodes+0xec/0x130
+[ 6197.546532]  ? __btrfs_btree_balance_dirty+0x60/0x60
+[ 6197.556482]  btrfs_clean_one_deleted_snapshot+0x71/0xd0
+[ 6197.566910]  cleaner_kthread+0xfa/0x120
+[ 6197.574573]  kthread+0x111/0x130
+[ 6197.581022]  ? kthread_create_on_node+0x60/0x60
+[ 6197.590086]  ret_from_fork+0x1f/0x30
+[ 6197.597228] ---[ end trace 424bb7ae00509f56 ]---
 
-On 26.09.19 г. 12:31 ч., Filipe Manana wrote:
-> On Thu, Sep 26, 2019 at 10:27 AM Nikolay Borisov <nborisov@suse.com> wrote:
->>
->> This function can return a negative error value if btrfs_search_slot
->> errors for whatever reason or if btrfs_alloc_path runs out of memory.
->> This is currently problemattic because backref_in_log is treated by its
->> callers as if it returns boolean.
->>
->> Fix this by adding proper error handling in callers. That also enables
->> the function to return the direct error code from btrfs_search_slot.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->> ---
->>
->> v2:
->>  * Return 0 from backref_in_log in case btrfs_search_slot returns 1 (meaning it
->>  didn't find appropriate item in the btree).
->>
->>  fs/btrfs/tree-log.c | 32 +++++++++++++++++++++-----------
->>  1 file changed, 21 insertions(+), 11 deletions(-)
->>
->> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
->> index 7cac09a6f007..7332f7a00790 100644
->> --- a/fs/btrfs/tree-log.c
->> +++ b/fs/btrfs/tree-log.c
->> @@ -952,7 +952,9 @@ static noinline int backref_in_log(struct btrfs_root *log,
->>                 return -ENOMEM;
->>
->>         ret = btrfs_search_slot(NULL, log, key, path, 0, 0);
->> -       if (ret != 0) {
->> +       if (ret < 0) {
->> +               goto out;
->> +       } else if (ret == 1) {
->>                 ret = 0;
->>                 goto out;
->>         }
->> @@ -1026,10 +1028,13 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
->>                                            (unsigned long)(victim_ref + 1),
->>                                            victim_name_len);
->>
->> -                       if (!backref_in_log(log_root, &search_key,
->> -                                           parent_objectid,
->> -                                           victim_name,
->> -                                           victim_name_len)) {
->> +                       ret = backref_in_log(log_root, &search_key,
->> +                                            parent_objectid, victim_name,
->> +                                            victim_name_len);
->> +                       if (ret < 0) {
->> +                               kfree(victim_name);
->> +                               return ret;
->> +                       } else if (!ret) {
->>                                 inc_nlink(&inode->vfs_inode);
->>                                 btrfs_release_path(path);
->>
->> @@ -1091,10 +1096,12 @@ static inline int __add_inode_ref(struct btrfs_trans_handle *trans,
->>                         search_key.offset = btrfs_extref_hash(parent_objectid,
->>                                                               victim_name,
->>                                                               victim_name_len);
->> -                       ret = 0;
->> -                       if (!backref_in_log(log_root, &search_key,
->> -                                           parent_objectid, victim_name,
->> -                                           victim_name_len)) {
->> +                       ret = backref_in_log(log_root, &search_key,
->> +                                            parent_objectid, victim_name,
->> +                                            victim_name_len);
->> +                       if (ret < 0) {
->> +                               return ret;
->> +                       } else if (!ret) {
->>                                 ret = -ENOENT;
->>                                 victim_parent = read_one_inode(root,
->>                                                 parent_objectid);
->> @@ -1869,16 +1876,19 @@ static bool name_in_log_ref(struct btrfs_root *log_root,
->>                             const u64 dirid, const u64 ino)
->>  {
->>         struct btrfs_key search_key;
->> +       int ret;
->>
->>         search_key.objectid = ino;
->>         search_key.type = BTRFS_INODE_REF_KEY;
->>         search_key.offset = dirid;
->> -       if (backref_in_log(log_root, &search_key, dirid, name, name_len))
->> +       ret = backref_in_log(log_root, &search_key, dirid, name, name_len);
->> +       if (ret == 1)
->>                 return true;
->>
->>         search_key.type = BTRFS_INODE_EXTREF_KEY;
->>         search_key.offset = btrfs_extref_hash(dirid, name, name_len);
->> -       if (backref_in_log(log_root, &search_key, dirid, name, name_len))
->> +       ret = backref_in_log(log_root, &search_key, dirid, name, name_len);
->> +       if (ret == 1)
->>                 return true;
-> 
-> This function also needs to be able to return errors and its caller
-> check for errors.
+This is because we're unconditionally grabbing a ref to every node, but
+there could be nodes with a 0 refcount.  Fix this to instead use
+refcount_inc_not_zero() and only process the list for the nodes we get a
+refcount on.
 
-Yes but this is for a follow up patch. The current patch does not make
-the code any more broken than it currently is.
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+ fs/btrfs/delayed-inode.c | 15 +++++++++------
+ 1 file changed, 9 insertions(+), 6 deletions(-)
 
-> 
-> Thanks.
-> 
->>
->>         return false;
->> --
->> 2.17.1
->>
-> 
-> 
+diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+index 1f7f39b10bd0..320503750896 100644
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1936,7 +1936,7 @@ void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
+ {
+ 	u64 inode_id = 0;
+ 	struct btrfs_delayed_node *delayed_nodes[8];
+-	int i, n;
++	int i, n, count;
+ 
+ 	while (1) {
+ 		spin_lock(&root->inode_lock);
+@@ -1948,13 +1948,16 @@ void btrfs_kill_all_delayed_nodes(struct btrfs_root *root)
+ 			break;
+ 		}
+ 
+-		inode_id = delayed_nodes[n - 1]->inode_id + 1;
+-
+-		for (i = 0; i < n; i++)
+-			refcount_inc(&delayed_nodes[i]->refs);
++		count = 0;
++		for (i = 0; i < n; i++) {
++			if (!refcount_inc_not_zero(&delayed_nodes[i]->refs))
++				break;
++			count++;
++		}
++		inode_id = delayed_nodes[count - 1]->inode_id + 1;
+ 		spin_unlock(&root->inode_lock);
+ 
+-		for (i = 0; i < n; i++) {
++		for (i = 0; i < count; i++) {
+ 			__btrfs_kill_delayed_node(delayed_nodes[i]);
+ 			btrfs_release_delayed_node(delayed_nodes[i]);
+ 		}
+-- 
+2.21.0
+
