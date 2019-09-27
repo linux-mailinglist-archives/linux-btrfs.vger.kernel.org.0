@@ -2,147 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A479AC01A2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2019 11:02:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83081C02C8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2019 11:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726016AbfI0JCp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Sep 2019 05:02:45 -0400
-Received: from mout.gmx.net ([212.227.15.19]:54097 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725882AbfI0JCo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Sep 2019 05:02:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1569574957;
-        bh=rAzwa1wWHv9Jg5/rlGJTefjcz9e7XKt26QpmAa+MpDI=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=dBEMGgJG+4AZ56YXwk+9MQ9EdKm1Oz0yGoDsKosECPz7yhF7wUEQYVwrU19UXAgqz
-         aY18mfHbxRKYgLmgWsckkf4dUuXf66E4awiFGkF08cCqwzDQGrtycgZSOYDQLZ4jqp
-         SmnPJursCmk7rIQ1Y9KxBa636w2YR2nyY0B0Q+j0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWics-1igKZw3nS4-00X1Vp; Fri, 27
- Sep 2019 11:02:37 +0200
-Subject: Re: [PATCH v2.1] btrfs: Detect unbalanced tree with empty leaf before
- crashing btree operations
-To:     dsterba@suse.cz, Qu WenRuo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20190822021415.9425-1-wqu@suse.com>
- <dbd46651-de06-ed81-29b2-ea547b77269e@suse.com>
- <20190927085245.GT2751@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <10379193-b628-3208-35a0-4f0246922c0d@gmx.com>
-Date:   Fri, 27 Sep 2019 17:02:32 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S1727112AbfI0J6u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Sep 2019 05:58:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50144 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725946AbfI0J6t (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 27 Sep 2019 05:58:49 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 49830AB87;
+        Fri, 27 Sep 2019 09:58:47 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] fstests: btrfs/011: Fill the fs to ensure we have enough data for dev-replace
+Date:   Fri, 27 Sep 2019 17:58:43 +0800
+Message-Id: <20190927095843.20595-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20190927085245.GT2751@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="bQPd5bYpKVUVqgzXgG6cIh4fQ1o2fy9Zm"
-X-Provags-ID: V03:K1:WeK5F/p+D4iOUJbwRAnyYLlvCirPfxzMqA6/LfdJJD9QGx0yzAv
- RGB9Zi8ECDE+2LaD6QtwzdK+w3Mj4hio/7bmiKJrnD2vFdIU21OcRPcyhbJ4qML07Uw78RL
- tK6MbiGO8/XlHFdWY5jHMZEQrtnbFcdazOWstKFgk1zewrL+x8A/uxSn9VMPMPRpakT/cGO
- 9rVi+km40Ib5kZs6Ggeyg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+P0tBf2K9Rc=:BiB6zy028geQu5jp6Q41Y8
- cyhNpuh5YPK9xL8VaIRKndk2MMAjYVp9e4BjPViWtL6eB81Dmb41SJmkGGOHgGYPlooUv6Tju
- 0zzdCwd+jQO8dFKh/THWr2ZCqCTOaQs+5gpxgtWmdXPHzt1FwUJdSbTKzLKeVChOgQF5rfG1F
- 20oSjnoVIzf3X0lodn9j9itywqRfaLHHq0om/GxoUkQ3K8b2K/chGrgbKYaX7nFbdCM6w3+zc
- HNPkVvox7Ygy2EdJmPN2JH73X2X3RVOG77iN3Sb/qfkdO8mAFKOw0zncDr8oAMXvc6VQ8Dyth
- ESvIAVM00TGwByNl4LIq2LJ8Pwi70/Wsl/8p54ftOU0I4AxZue08ccEMf5C+mX0zF9XrX/j1G
- ghvCvX3ZFanutNY/90wfSLOhlhaXigQ01ZD5c2Wb/aA+OuMamVtkHdhH7BFUZL5nCIxuS3bQI
- /PjlhtEb5aeXNMBaHce9TedDrwEYymabrua5O6k3fD55ACqV5iYX6HSf2UuMDE2srTV/YlNQs
- sHp6NekwqNR4ztHU1GEXsL6XlKyk++vledViHLfdKnvBTf7MB3Y9/+XGhYD0NVD3jcBb0ncLg
- dDKk1qSbxb4YZURxgdiOZTXh8aelasYdYPt32g7CSJjU3LanxsjfO0Vw1QT/0E8UrNHL2RQv0
- xAdeeDJ/Naogqfrm5z+nYhHjoIaQLtdchoxdEef8BVpicHmTW/Z+mZaquF8lxks1ENHMdG445
- lm1ve2oQpH1crCZbH0uiQr06V1i+2LGFRV/PaWR+bE2vk8srNbb5yd2FqtsqsgDsw4vf09xi2
- drZjT7vYupXfb6qqSSaEBUkBtQhuAD/jh0eQaNc5dgPRZdUITwAaeVeaA9ljWIrN7keOFycvY
- TgVmDPFerHyj2lU6Yj8ddbr7/M9qmef8+xZuF8EiWYv0SB1aSXPs0dHByC3CvEKOTCtefLyPI
- OVu11SMN4Wlq+iE+A6ocgv8+8y35lFk+sZL90oiHQ23AKTSOl2QkhV+D21l+wbJ2i0oBVmYyi
- 9l0DokGKxP+gBKZU9ULlf5P+nJDeYDe3hUjz++PFALBBO+/qL/LFxhMuX41ftayNiY3+UhE7a
- Pb9kIxVAAvnBNt2GlVcVx+26SWlbyrx2b9xNtPkKPio39YbTRYhK4QArf6Jntv3TNdu94/Atl
- RNMuNqo5x4rHM4xb8OUIAZ8h790Xem+4pR1xgtDB93IBSzW4aOt6InYwVTU8FjOawbefabZw0
- O+gVgqCmKftYH6oT3cfuY10xve4mG+dm0gxcDj3+FWNKlLEFIxqZdHPCTVus=
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---bQPd5bYpKVUVqgzXgG6cIh4fQ1o2fy9Zm
-Content-Type: multipart/mixed; boundary="tUxn6gZnwKeHw3tlJchgtHHRHvwnlA2o1"
+[BUG]
+When btrfs/011 is executed on a fast enough system (fully memory backed
+VM, with test device has unsafe cache mode), the test can fail like
+this:
 
---tUxn6gZnwKeHw3tlJchgtHHRHvwnlA2o1
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+  btrfs/011 43s ... [failed, exit status 1]- output mismatch (see /home/adam/xfstests-dev/results//btrfs/011.out.bad)
+    --- tests/btrfs/011.out     2019-07-22 14:13:44.643333326 +0800
+    +++ /home/adam/xfstests-dev/results//btrfs/011.out.bad      2019-09-18 14:49:28.308798022 +0800
+    @@ -1,3 +1,4 @@
+     QA output created by 011
+     *** test btrfs replace
+    -*** done
+    +failed: '/usr/bin/btrfs replace cancel /mnt/scratch'
+    +(see /home/adam/xfstests-dev/results//btrfs/011.full for details)
+    ...
 
+[CAUSE]
+Looking into the full output, it shows:
+  ...
+  Replace from /dev/mapper/test-scratch1 to /dev/mapper/test-scratch2
 
+  # /usr/bin/btrfs replace start -f /dev/mapper/test-scratch1 /dev/mapper/test-scratch2 /mnt/scratch
+  # /usr/bin/btrfs replace cancel /mnt/scratch
+  INFO: ioctl(DEV_REPLACE_CANCEL)"/mnt/scratch": not started
+  failed: '/usr/bin/btrfs replace cancel /mnt/scratch'
 
-On 2019/9/27 =E4=B8=8B=E5=8D=884:52, David Sterba wrote:
-> On Fri, Sep 27, 2019 at 07:28:23AM +0000, Qu WenRuo wrote:
->> I see you have pushed the patch to mainline.
->>
->> However I still remember you have hit several false alerts even with
->> this version.
->> Did you still see such false alerts anymore?
->=20
-> I have to check again. I know you sent an updated version, we might nee=
-d
-> an incremental fix. The original version was kept due to close time to
-> merge window. Thanks.
->=20
+So this means the replace is already finished before we cancel it.
+For fast system, it's very common.
 
-No worry, I'm just not sure if previous false alerts are still reproducib=
-le.
+[FIX]
+In fill_scratch() after all the original file creations, do a timer
+based direct IO write.
+The extra write will take 2 * $wait_time, utilizing direct IO with 64K
+block size, the write performance should be very comparable (although a
+little faster) to replace performance.
 
-Anyway, I'll update the incremental fix just in case.
+So later cancel should be able to really cancel the dev-replace without
+it finished too early.
 
-Thanks,
-Qu
+Also, do extra check about the above write. If we hit ENOSPC we just
+skip the test as the system is really too fast and the fs is not large
+enough.
 
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+changelog
+v2:
+- Remove one confusing comment
+- Change the _notrun message to focus on too small fs
+---
+ tests/btrfs/011 | 42 +++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 35 insertions(+), 7 deletions(-)
 
---tUxn6gZnwKeHw3tlJchgtHHRHvwnlA2o1--
+diff --git a/tests/btrfs/011 b/tests/btrfs/011
+index 89bb4d11..de424f87 100755
+--- a/tests/btrfs/011
++++ b/tests/btrfs/011
+@@ -34,7 +34,7 @@ _cleanup()
+ 		kill -TERM $noise_pid
+ 	fi
+ 	wait
+-	rm -f $tmp.tmp
++	rm -f $tmp.*
+ 	# we need this umount and couldn't rely on _require_scratch to umount
+ 	# it from next test, because we would replace SCRATCH_DEV, which is
+ 	# needed by _require_scratch, and make it umounted.
+@@ -54,13 +54,17 @@ _require_scratch_dev_pool_equal_size
+ _require_command "$WIPEFS_PROG" wipefs
+ 
+ rm -f $seqres.full
+-rm -f $tmp.tmp
++rm -f $tmp.*
+ 
+ echo "*** test btrfs replace"
+ 
++# In seconds
++wait_time=1
++
+ fill_scratch()
+ {
+ 	local fssize=$1
++	local filler_pid
+ 
+ 	# Fill inline extents.
+ 	for i in `seq 1 500`; do
+@@ -75,6 +79,30 @@ fill_scratch()
+ 	for i in `seq $fssize`; do
+ 		cp $SCRATCH_MNT/t0 $SCRATCH_MNT/t$i || _fail "cp failed"
+ 	done > /dev/null 2>> $seqres.full
++
++	# Ensure we have enough data so that dev-replace would take at least
++	# 2 * $wait_time, allowing we cancel the running replace.
++	# Some extra points:
++	# - Use XFS_IO_PROG instead of dd
++	#   fstests wraps dd, making it pretty hard to kill the real dd pid
++	# - Use 64K block size with Direct IO
++	#   64K is the same stripe size used in replace/scrub. Using Direct IO
++	#   ensure the IO speed is near device limit and comparable to replace
++	#   speed.
++	$XFS_IO_PROG -f -d -c "pwrite -b 64k 0 1E" "$SCRATCH_MNT/t_filler" &>\
++		$tmp.filler_result &
++	filler_pid=$!
++	sleep $((2 * $wait_time))
++	kill -KILL $filler_pid &> /dev/null
++	wait $filler_pid &> /dev/null
++
++	# If the system is too fast and the fs is too small, then skip the test
++	if grep -q "No space left" $tmp.filler_result; then
++		ls -alh $SCRATCH_MNT >> $seqres.full
++		cat $tmp.filler_result >> $seqres.full
++		_notrun "fs too small for this test"
++	fi
++	cat $tmp.filler_result
+ 	sync; sync
+ }
+ 
+@@ -147,7 +175,7 @@ btrfs_replace_test()
+ 	if [ "${with_cancel}Q" = "cancelQ" ]; then
+ 		# background the replace operation (no '-B' option given)
+ 		_run_btrfs_util_prog replace start -f $replace_options $source_dev $target_dev $SCRATCH_MNT
+-		sleep 1
++		sleep $wait_time
+ 		_run_btrfs_util_prog replace cancel $SCRATCH_MNT
+ 
+ 		# 'replace status' waits for the replace operation to finish
+@@ -157,10 +185,10 @@ btrfs_replace_test()
+ 		grep -q canceled $tmp.tmp || _fail "btrfs replace status (canceled) failed"
+ 	else
+ 		if [ "${quick}Q" = "thoroughQ" ]; then
+-			# On current hardware, the thorough test runs
+-			# more than a second. This is a chance to force
+-			# a sync in the middle of the replace operation.
+-			(sleep 1; sync) > /dev/null 2>&1 &
++			# The thorough test runs around 2 * $wait_time seconds.
++			# This is a chance to force a sync in the middle of the
++			# replace operation.
++			(sleep $wait_time; sync) > /dev/null 2>&1 &
+ 		fi
+ 		_run_btrfs_util_prog replace start -Bf $replace_options $source_dev $target_dev $SCRATCH_MNT
+ 
+-- 
+2.22.0
 
---bQPd5bYpKVUVqgzXgG6cIh4fQ1o2fy9Zm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2N0CgACgkQwj2R86El
-/qg+ogf7BD+Ff/0yG75WSIN9ncsq0lzAbnYmoX9+B/921SkDkeobe12fUE7XKcKV
-dixymkB7CWHhGB5TMFnySC7NTNHSZ8h+vK5pVkE3z10x8uSqMiiUQ3/mZKEHYQph
-syhEOcIdnEVnWLiMC50EPb1o34xmewTJHBGpRpTU3y2Y1KHk722PxkVHjQdx0K2j
-s31sCJU3q9A+sbCT5DFnHRNgfgHyZGyCKBoaOOSjS+EU9azYYkQb/rOWi4bt73WE
-tjFoX6at2vqiFQiPkqxDEshxDlK4GhTj+DDmNjaz9b+reMOD5gpazIbR88X7Mqz3
-0qDVog+Fe/dJcZrApZfdJUC7EExp3w==
-=vdWn
------END PGP SIGNATURE-----
-
---bQPd5bYpKVUVqgzXgG6cIh4fQ1o2fy9Zm--
