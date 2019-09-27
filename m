@@ -2,87 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D4EC07CC
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2019 16:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B20F0C08CB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2019 17:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727466AbfI0OnQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Sep 2019 10:43:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47010 "EHLO mx1.suse.de"
+        id S1727666AbfI0Pm2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Sep 2019 11:42:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50592 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727124AbfI0OnQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Sep 2019 10:43:16 -0400
+        id S1727207AbfI0Pm2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 27 Sep 2019 11:42:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1A3B1B137;
-        Fri, 27 Sep 2019 14:43:15 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 0F685AC31;
+        Fri, 27 Sep 2019 15:42:27 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7F61BDA897; Fri, 27 Sep 2019 16:43:34 +0200 (CEST)
-Date:   Fri, 27 Sep 2019 16:43:34 +0200
+        id 86D49DA897; Fri, 27 Sep 2019 17:42:45 +0200 (CEST)
+Date:   Fri, 27 Sep 2019 17:42:45 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Mark Fasheh <mfasheh@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Mark Fasheh <mfasheh@suse.de>
-Subject: Re: [PATCH 1/3] btrfs: Move backref cache code out of relocation.c
-Message-ID: <20190927144334.GW2751@twin.jikos.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     David Sterba <dsterba@suse.cz>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 0/4] The remaining extent_io.c split code
+Message-ID: <20190927154244.GX2751@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Mark Fasheh <mfasheh@suse.com>,
-        linux-btrfs@vger.kernel.org, Mark Fasheh <mfasheh@suse.de>
-References: <20190906171533.618-1-mfasheh@suse.com>
- <20190906171533.618-2-mfasheh@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20190924203252.30505-1-josef@toxicpanda.com>
+ <20190925134747.GG2751@twin.jikos.cz>
+ <20190925135302.wyv5foxhy5tku6li@MacBook-Pro-91.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190906171533.618-2-mfasheh@suse.com>
+In-Reply-To: <20190925135302.wyv5foxhy5tku6li@MacBook-Pro-91.local>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 06, 2019 at 10:15:31AM -0700, Mark Fasheh wrote:
-> From: Mark Fasheh <mfasheh@suse.de>
+On Wed, Sep 25, 2019 at 09:53:04AM -0400, Josef Bacik wrote:
+> On Wed, Sep 25, 2019 at 03:47:47PM +0200, David Sterba wrote:
+> > On Tue, Sep 24, 2019 at 04:32:48PM -0400, Josef Bacik wrote:
+> > > Hopefully all of it makes it this time, if you want you can pull from
+> > > 
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/josef/btrfs-next.git \
+> > > 	extent-io-rearranging
+> > 
+> > The size of the exported patch 1/4 is 109066 bytes and the diff itself
+> > is incomprehensible to even see what code moves where and what is new.
+> > 
+> > I'm still thinking if this is a good idea to apply a monster patch, even
+> > it's just moving code around. The previous series splitting
+> > extent-tree.c were better so I'd rather take that approach again. Some
+> > of the functions belong logically together and won't break compilation
+> > and would actually make it possible for a human to review.
 > 
-> No functional changes are made here, we simply move the backref cache out of
-> relocation.c and into it's own file, backref-cache.c.  We also add the
-> headers relocation.h and backref-cache.h.
+> extent-tree.c was way different because a bunch of things had to be renamed and
+> exported.  Also extent-tree.c got split into many more files, so there was less
+> bulk being moved around.  extent_io.c is different because basically everything
+> is exported already, so it's really just move definitions, move code.  I
+> literally just split vim'ed, cut and paste between the two files.
 > 
-> Signed-off-by: Mark Fasheh <mfasheh@suse.de>
-> ---
->  fs/btrfs/Makefile        |    2 +-
->  fs/btrfs/backref-cache.c |  883 ++++++++++++++++++++++++++++++++
->  fs/btrfs/backref-cache.h |  113 +++++
->  fs/btrfs/relocation.c    | 1027 +-------------------------------------
->  fs/btrfs/relocation.h    |   85 ++++
->  5 files changed, 1090 insertions(+), 1020 deletions(-)
->  create mode 100644 fs/btrfs/backref-cache.c
->  create mode 100644 fs/btrfs/backref-cache.h
->  create mode 100644 fs/btrfs/relocation.h
-> 
-> diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-> index 76a843198bcb..197eed65e051 100644
-> --- a/fs/btrfs/Makefile
-> +++ b/fs/btrfs/Makefile
-> @@ -11,7 +11,7 @@ btrfs-y += super.o ctree.o extent-tree.o print-tree.o root-tree.o dir-item.o \
->  	   compression.o delayed-ref.o relocation.o delayed-inode.o scrub.o \
->  	   reada.o backref.o ulist.o qgroup.o send.o dev-replace.o raid56.o \
->  	   uuid-tree.o props.o free-space-tree.o tree-checker.o space-info.o \
-> -	   block-rsv.o delalloc-space.o
-> +	   block-rsv.o delalloc-space.o backref-cache.o
->  
->  btrfs-$(CONFIG_BTRFS_FS_POSIX_ACL) += acl.o
->  btrfs-$(CONFIG_BTRFS_FS_CHECK_INTEGRITY) += check-integrity.o
-> diff --git a/fs/btrfs/backref-cache.c b/fs/btrfs/backref-cache.c
-> new file mode 100644
-> index 000000000000..d0f6530f23b8
-> --- /dev/null
-> +++ b/fs/btrfs/backref-cache.c
-> @@ -0,0 +1,883 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2009 Oracle.  All rights reserved.
-> + */
+> Things like this are going to be impossible to review.  It's a one time pain for
+> more readability and better decisions down the road.  I did my best to keep the
+> logical changes to their own patch, but the fact is we have _a lot_ of code for
+> each of these different logical things.  I can turn it into 45 patches moving
+> one function at a time, but who's going to go and check each individual patch?
 
-We don't need the (c) headers since the SPDX tags have been established,
-so I've removed it.
+I'm not talking about 45 patches but somethig like 2-4. One of the
+patches in extent-tree split has 65K, and I basically redone it (and
+several others) by hand due to small changes in the original code. This
+counts as a review, even though the patch was large, but with the
+difference that I was able to do that in one go per patch. The 100K
+scares me from the beginning, thus my question.
 
-Otherwise, I fixed some whitespace damage and took the opportunity to
-update comments and other minor coding style in the +part of the code.
+If you say that 'this is going to be impossible to review' then, well we
+can't merge it in that form. And from past experience, monster patches
+are never one time pain and come up as a reminder of low patch
+standards. The bad thing is that it's never the patch author who has to
+suffer.
+
+The idea for split is to do eg. the following groups:
+
+- extent leak detection functions
+- state bit manipulation functions (set_extent_bit etc)
+- other io tree functions
+
+I'm looking for an achievable long-term strategy to do those large code
+movements and find the balance between writing the patches and reviewing
+them.
