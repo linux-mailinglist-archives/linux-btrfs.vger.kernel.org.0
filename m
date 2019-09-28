@@ -2,158 +2,212 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CDF4C0C0A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Sep 2019 21:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA475C0ECE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Sep 2019 02:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726539AbfI0TZ1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 27 Sep 2019 15:25:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52496 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725802AbfI0TZ1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 27 Sep 2019 15:25:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 88339AE35;
-        Fri, 27 Sep 2019 19:25:24 +0000 (UTC)
-Subject: Re: [PATCH v2 1/3] btrfs: Speed up btrfs_file_llseek
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <20190927102318.12830-1-nborisov@suse.com>
- <20190927102318.12830-2-nborisov@suse.com>
- <20190927171051.bfkt575rhg36v4hm@macbook-pro-91.dhcp.thefacebook.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <37b2382d-8c4f-fd27-374c-edf02180592f@suse.com>
-Date:   Fri, 27 Sep 2019 22:25:22 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726357AbfI1ABe (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 27 Sep 2019 20:01:34 -0400
+Received: from mail-io1-f65.google.com ([209.85.166.65]:35745 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726116AbfI1ABd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 27 Sep 2019 20:01:33 -0400
+Received: by mail-io1-f65.google.com with SMTP id q10so21215916iop.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Sep 2019 17:01:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pallissard.net; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+v9TSJjajiT/bRB5NTPXDTAR5ymgJW0VvacBThnAUwU=;
+        b=QhsRLjHlLnbc8+CGrgTxE2evVIEq1u01VWQtPrlHywGRxu2ARRNN2WTuOwJ7JNYAEK
+         Lzx66QyLtXzdw2MCw8vV1xcLDXpHk597ekF7cycW26WoGNYi4ncH0nHmpb5f0N+3tui2
+         Hiil2pFV90gK0S85OAYHUA2BDFAB7dxIG35unvUKBGqlVqffoIrWbKjg4ObEiN3PLbwL
+         ChxQnPQPA3AzLss7Pw1OKOC0WqrS8QdktBAKgbz6IniVx8kd/+Z8RB60gDKwchHdWpMh
+         ZGMrdZjmrzV8ytseXjbSnGvwpMJwSFELB08cC5vN525Nbi2p5IwgD3IkrLni4G6N5PRo
+         5Diw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+v9TSJjajiT/bRB5NTPXDTAR5ymgJW0VvacBThnAUwU=;
+        b=kaQLsOC/qUW15W0m+e0sjiG+mdD5h513CnRCNTugDbRNmrpQ1f9gaqE0BvwyV0ri+F
+         fnlKMl8pBKp7ZjWtqC3diCr5l15tWYCFlXEOOUf2UpFRGeJswcVVO0KgFG2c2vmZJp/j
+         i/429OKP6dc3zMy7+jvx52iZwxlaJgl0kknUf29Y1KyLj3rrzT9X2boP7TIcvB0yky/m
+         L1hcgeCl5jwFIFaqtsz7DjjbEUkXUHjVPdlVC8Ydwl+W3CQPbp99Z7jvRBv9aqS9e0ek
+         1shZu9auCMYgX5mi8FPXNAFcszkrAhZW8OENmTj/YbJ41tAqml8H0mckys1geOBqP3cE
+         sk0Q==
+X-Gm-Message-State: APjAAAUf0XdpB0FOA6OR4C9Nt3UDMpzWl40PzG1Qpd/bIboGkho0+uwq
+        0yavg4Tw9Y3b0ynbpeheiLezHwiytJ8=
+X-Google-Smtp-Source: APXvYqypEq7ZA0aLOEg/b8cnrF7cXgVkkjNuAbW2xGEZwhW/whNGHlfcM7xiitHN8DRUYdZUUcOl0Q==
+X-Received: by 2002:a02:b60f:: with SMTP id h15mr10699402jam.73.1569628892039;
+        Fri, 27 Sep 2019 17:01:32 -0700 (PDT)
+Received: from mail.matt.pallissard.net (149.174.239.35.bc.googleusercontent.com. [35.239.174.149])
+        by smtp.gmail.com with ESMTPSA id a13sm1678908ilh.65.2019.09.27.17.01.30
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Sep 2019 17:01:31 -0700 (PDT)
+Date:   Fri, 27 Sep 2019 17:01:27 -0700
+From:   "Pallissard, Matthew" <matt@pallissard.net>
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: [UNRESOLVED] Re: errors found in extent allocation tree or chunk
+ allocation after power failure
+Message-ID: <20190928000127.gnd5i4q4jqz4ompy@matt-laptop-p01>
+References: <20190925144959.p4xyyhn2d2sajxjj@matt-laptop-p01>
+ <CAJCQCtQwHRVs+XwnnUcktGcaRabZGG-UxS4o=g9y_MCiD4yG9Q@mail.gmail.com>
+ <20190925193434.ieyj4oo6vkxmjtnw@matt-laptop-p01>
+ <CAJCQCtQKypCbxksq5+XCwRy8enPkfZBaOgzS0SN2un+A1GELtA@mail.gmail.com>
+ <20190925213231.kaqlq4ph3kgfgs5q@matt-laptop-p01>
 MIME-Version: 1.0
-In-Reply-To: <20190927171051.bfkt575rhg36v4hm@macbook-pro-91.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="tvjpgbxnyyvagxfp"
+Content-Disposition: inline
+In-Reply-To: <20190925213231.kaqlq4ph3kgfgs5q@matt-laptop-p01>
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
+--tvjpgbxnyyvagxfp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 27.09.19 г. 20:10 ч., Josef Bacik wrote:
-> On Fri, Sep 27, 2019 at 01:23:16PM +0300, Nikolay Borisov wrote:
->> Modifying the file position is done on a per-file basis. This renders
->> holding the inode lock for writing useless and makes the performance of
->> concurrent llseek's abysmal.
->>
->> Fix this by holding the inode for read. This provides protection against
->> concurrent truncates and find_desired_extent already includes proper
->> extent locking for the range which ensures proper locking against
->> concurrent writes. SEEK_CUR and SEEK_END can be done lockessly.
->> The former is synchronized by file::f_lock spinlock. SEEK_END is not
->> synchronized but atomic, but that's OK since there is not guarantee
->> that SEEK_END will always be at the end of the file in the face of
->> tail modifications.
->>
->> This change brings ~82% performance improvement when doing a lot of
->> parallel fseeks. The workload essentially does:
->>
->>                     for (d=0; d<num_seek_read; d++)
->>                       {
->>                         /* offset %= 16777216; */
->>                         fseek (f, 256 * d % 16777216, SEEK_SET);
->>                         fread (buffer, 64, 1, f);
->>                       }
->>
->> Without patch:
->>
->> num workprocesses = 16
->> num fseek/fread = 8000000
->> step = 256
->> fork 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
->>
->> real	0m41.412s
->> user	0m28.777s
->> sys	2m16.510s
->>
->> With patch:
->>
->> num workprocesses = 16
->> num fseek/fread = 8000000
->> step = 256
->> fork 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15
->>
->> real	0m11.479s
->> user	0m27.629s
->> sys	0m21.040s
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
->> ---
->>  fs/btrfs/file.c | 26 ++++++++++----------------
->>  1 file changed, 10 insertions(+), 16 deletions(-)
->>
->> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
->> index 12688ae6e6f2..000b7bd89bf0 100644
->> --- a/fs/btrfs/file.c
->> +++ b/fs/btrfs/file.c
->> @@ -3347,13 +3347,14 @@ static int find_desired_extent(struct inode *inode, loff_t *offset, int whence)
->>  	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->>  	struct extent_map *em = NULL;
->>  	struct extent_state *cached_state = NULL;
->> +	loff_t i_size = inode->i_size;
-> 
-> We don't actually need to do all this now that we're holding the inode_lock
-> right?  Also I've gone through and looked at stuff and we're good with just a
-> shared lock here, the only thing that adjusts i_size outsize of the extent lock
-> is truncate, so we're safe.  Thanks,
 
-Yeah, holding the shared inode lock means we can just do inode->i_size
-but dunno if the multiple dereferences gets optimised. Though at this
-point we are entering into microoptimisation territory. For the sake of
-completeness I will check on monday what's the difference in assembly
-and if there is none I'll revert the code back to accessing inode->i_size.
+On 2019-09-25T14:32:31, Pallissard, Matthew wrote:
+> On 2019-09-25T15:05:44, Chris Murphy wrote:
+> > On Wed, Sep 25, 2019 at 1:34 PM Pallissard, Matthew <matt@pallissard.ne=
+t> wrote:
+> > > On 2019-09-25T13:08:34, Chris Murphy wrote:
+> > > > On Wed, Sep 25, 2019 at 8:50 AM Pallissard, Matthew <matt@pallissar=
+d.net> wrote:
+> > > > >
+> > > > > Version:
+> > > > > Kernel: 5.2.2-arch1-1-ARCH #1 SMP PREEMPT Sun Jul 21 19:18:34 UTC=
+ 2019 x86_64 GNU/Linux
+> > > >
+> > > > You need to upgrade to arch kernel 5.2.14 or newer (they backported=
+ the fix first appearing in stable 5.2.15). Or you need to downgrade to 5.1=
+ series.
+> > > > https://lore.kernel.org/linux-btrfs/20190911145542.1125-1-fdmanana@=
+kernel.org/T/#u
+> > > >
+> > > > That's a nasty bug. I don't offhand see evidence that you've hit th=
+is bug. But I'm not certain. So first thing should be to use a different ke=
+rnel.
+> > >
+> > > Interesting, I'll go ahead with a kernel upgrade as that easy enough.
+> > > However, that looks like it's related to a stacktrace regarding a hun=
+g process.  Which is not the original problem I had.
+> > > Based on the output in my previous email, I've been working under the=
+ assumption that there is a problem on-disk.  Is that not correct?
+> >
+> > That bug does cause filesystem corruption that is not repairable.
+> > Whether you have that problem or a different problem, I'm not sure.
+> > But it's best to avoid combining problems.
+> >
+> > The file system mounts rw now? Or still only mounts ro?
+>=20
+> It mounts RW, but I have yet to attempt an actual write.
+>=20
+>=20
+> > I think most of the errors reported by btrfs check, if they still exist=
+ after doing a scrub, should be repaired by 'btrfs check --repair' but I do=
+n't advise that until later. I'm not a developer, maybe Qu can offer some a=
+dvise on those errors.
+>=20
+>=20
+> > > > Next, anytime there is a crash or powerfailur with Btrfs raid56, yo=
+u need to do a complete scrub of the volume. Obviously will take time but t=
+hat's what needs to be done first.
+> > >
+> > > I'm using raid 10, not 5 or 6.
+> >
+> > Same advice, but it's not as important to raid10 because it doesn't hav=
+e the write hole problem.
+>=20
+>=20
+> > > > OK actually, before the scrub you need to confirm that each drive's=
+ SCT ERC time is *less* than the kernel's SCSI command timer. e.g.
+> > >
+> > > I gather that I should probably do this before any scrub, be it raid =
+5, 6, or 10.  But, Is a scrub the operation I should attempt on this raid 1=
+0 array to repair the specific errors mentioned in my previous email?
+> >
+> > Definitely deal with the timing issue first. If by chance there are bad=
+ sectors on any of the drives, they must be properly reported by the drive =
+with a discrete read error in order for Btrfs to do a proper fixup. If the =
+times are mismatched, then Linux can get tired waiting, and do a link reset=
+ on the drive before the read error happens. And now the whole command queu=
+e is lost and the problem isn't fixed.
+>=20
+> Good to know, that seems like a critical piece of information.  A few sea=
+rches turned up this page, https://wiki.debian.org/Btrfs#FAQ.
+>=20
+> Should this be noted on the 'gotchas' or 'getting started page as well?  =
+I'd be happy to make edits should the powers that be allow it.
+>=20
+>=20
+> > There are myriad errors and the advice I'm giving to scrub is a safe fi=
+rst step to make sure the storage stack is sane - or at least we know where=
+ the simpler problems are. And then move to the less simple ones that have =
+higher risk.  It also changed the volume the least. Everything else, like b=
+alance and chunk recover and btrfs check --repair - all make substantial ch=
+anges to the file system and have higher risk of making things worse.
+>=20
+> This sounds sensible.
+>=20
+>=20
+> > In theory if the storage stack does exactly what Btrfs says, then at wo=
+rst you should lose some data, but the file system itself should be consist=
+ent. And that includes power failures. The fact there's problems reported s=
+uggests a bug somewhere - it could be Btrfs, it could be device mapper, it =
+could be controller or drive firmware.
+>=20
+> I'll go ahead with a kernel upgrade/make sure the timing issues are squar=
+ed away.  Then I'll kick off a scrub.
+>=20
+> I'll report back when the scrub is complete or something interesting happ=
+ens.  Whichever comes first.
 
-> 
-> Josef
-> 
+As a followup;
+1. I took care of the timing issues
+2. ran a scrub.
+3. I ran a balance, it kept failing with about 20% left
+  - stacktraces in dmesg showed spinlock stuff
+
+3. got I/O errors on one file during my final backup, (
+  - post-backup hashsums of everything else checked out
+  - the errors during the copy were csum mismatches should anyone care
+
+4. ran a bunch of potentially disruptive btrfs check commands in alphabetic=
+al order because "why not at this point?"
+  - they had zero affect as far as I can tell, all the same files were read=
+able, the btrfs check errors looked identical (admittedly I didn't put them=
+ side by side)
+
+5. re-provisioned the array, restored from backups.
+
+As I thought about it, it may have not been an issue with the original powe=
+r outage.  I only ran a check after the power outage.  My array could have =
+had an issue due to a previous bug. I was on a 5.2x kernel for several week=
+s under high load.  Anyway, there are enough unknowns to make a root cause =
+analysis not worth my time.
+
+Marking this as unresolved folks in the future who may be looking for answe=
+rs.
+
+Matt Pallissard
+
+--tvjpgbxnyyvagxfp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQTvIUMPApUGn6YFkXl1uof+t048SQUCXY6i1AAKCRB1uof+t048
+SXmrAP9woPs8oXkzKybcLZwmPZiaXa/K+Z048VDbATCwAVQl5QEAlwkxhBsGf574
+DU4VnJ1ANG4K5a8yOdz27LASRNuUBww=
+=Vnu6
+-----END PGP SIGNATURE-----
+
+--tvjpgbxnyyvagxfp--
