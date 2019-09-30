@@ -2,215 +2,135 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 037DBC1EF1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 12:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E7F9C1EF9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 12:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730704AbfI3Kdt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 06:33:49 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:38124 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728214AbfI3Kdt (ORCPT
+        id S1730756AbfI3Kfo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 06:35:44 -0400
+Received: from syrinx.knorrie.org ([82.94.188.77]:50446 "EHLO
+        syrinx.knorrie.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730345AbfI3Kfm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 06:33:49 -0400
-Received: by mail-vs1-f67.google.com with SMTP id b123so6394350vsb.5;
-        Mon, 30 Sep 2019 03:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=bCGscPt1hwXu4Sog2iwtoW1gzZpbXzmRUrtd6xcWnrs=;
-        b=c3SYlzBuoO3b+Q9El/Eh16IE/uNBjMHF86CxLBkprfegNbyg6LbKRzN9mod447Y5xn
-         jEBleVqYAFu8Ydk5Rrh9ZNrSsu8KS+eS6LThipZ3kEfAzt8Mu/XPSYcghqwlqVqM6ej0
-         QpL+6t1oYPpwQylYix4hc+XDWKW2lrMS7tYWjQ1sJ+rULVUQiEdy7kvkMEc9v/3pZcc6
-         f2DOkoUGuK/LOA8BLDX5XpiVo5FDjhKV/12rP79SGc7QJ882295jvVWEU0z4OIuSLVWH
-         JchyHu3jZW3yTF5W1XjYoFZ8rmlZq3Njh+22yUITzwzC7neUDz0AQI1uR7uM/sxoEnPX
-         6I7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=bCGscPt1hwXu4Sog2iwtoW1gzZpbXzmRUrtd6xcWnrs=;
-        b=uhPZfqY2gZgAP07DUIhlBwpco+UeatfwdVIayngOqQcVLuas011kxw2/I2tv3TL62Z
-         NZ+OvOItBDCVruVJpN7V4Lw8PbqFq+XuDOrTUNP/CC8jsowy9klhsIccFhM9N1NPU5gO
-         6fjry6rnAr0T6QZM476iNlHqQtpGkJ36YjR8mw30hQjt4bzeOLYivVG8k9yNIj7ba33Z
-         yrfKgbnr0KWk56nkp9vp83JTVqFB1/Kn0T+wUlhEdEnvhM/ZNv1fI8vhgwXMRCxlqm0H
-         AQi2ziF9DvcPZaHX5Cuv1IjfIi4cOpHF1lcJLz9LJecdWPXpXlLwO/RPwM0PoFq8tP+C
-         o9PA==
-X-Gm-Message-State: APjAAAX+Je9+Jbq6soWZMZIJ+qED6vUduO6McQHw7/R+SjCv1sLTcJk1
-        raYPA++2JdmpBk5jKR/FasS1x+bAX/3ZFHqOmk6kgijl
-X-Google-Smtp-Source: APXvYqyBUa/b92IGgFJzN8NnMN2qO+KcY5QG0cx0Pnd72e06qn4374E8j7CXl3W4M3gwstzpWgZTfYLypqbI+JtTojA=
-X-Received: by 2002:a67:6044:: with SMTP id u65mr8808809vsb.95.1569839626646;
- Mon, 30 Sep 2019 03:33:46 -0700 (PDT)
+        Mon, 30 Sep 2019 06:35:42 -0400
+Received: from [IPv6:2001:980:4a41:fb::12] (unknown [IPv6:2001:980:4a41:fb::12])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by syrinx.knorrie.org (Postfix) with ESMTPSA id 91D59549198E0;
+        Mon, 30 Sep 2019 12:35:39 +0200 (CEST)
+Subject: Re: Btrfs partition mount error
+To:     Andrey Ivanov <andrey-ivanov-ml@yandex.ru>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <79466812-e999-32d8-ce20-0589fb64a433@yandex.ru>
+ <85cb7aff-5fa4-c7f7-c277-04069954d7fe@gmx.com>
+ <170d6f2f-65aa-3437-be21-61ac8499460b@yandex.ru>
+ <4be73e38-c8b1-8220-1e5a-c0a1287df61d@gmx.com>
+ <31560d49-0d03-1e26-bb55-755a4365dce7@yandex.ru>
+ <70eaf85f-751a-f540-7fde-bb489a0bb528@gmx.com>
+ <e5383397-3556-1c9c-7483-79ad6d74de49@yandex.ru>
+ <c9d71bdd-7fe2-faaf-23c0-ede163c1d04a@gmx.com>
+ <c3ecfeb9-2900-3406-4d92-e40021753310@yandex.ru>
+ <1ca0434b-3ae6-bbbe-efd3-06cab9089782@gmx.com>
+ <fb259ee2-c9e2-f44d-ce5b-b3f688565c28@yandex.ru>
+From:   Hans van Kranenburg <hans@knorrie.org>
+Openpgp: preference=signencrypt
+Autocrypt: addr=hans@knorrie.org; keydata=
+ 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
+Message-ID: <b1a34211-a1eb-5ff6-29ab-49272caa93aa@knorrie.org>
+Date:   Mon, 30 Sep 2019 12:35:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <20190930083735.21284-1-wqu@suse.com>
-In-Reply-To: <20190930083735.21284-1-wqu@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 30 Sep 2019 11:33:35 +0100
-Message-ID: <CAL3q7H5mVHUQJ31wANwM8hXbbumwcUNrxSCebv46zpgEGYA2zw@mail.gmail.com>
-Subject: Re: [PATCH] fstests: btrfs: Add regression test to check if btrfs can
- handle high devid
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <fb259ee2-c9e2-f44d-ce5b-b3f688565c28@yandex.ru>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Sep 30, 2019 at 9:39 AM Qu Wenruo <wqu@suse.com> wrote:
->
-> Add a regression test to check if btrfs can handle high devid.
->
-> The test will add and remove devices to a btrfs fs, so that the devid
-> will increase to uncommon but still valid values.
->
-> The regression is introduced by kernel commit ab4ba2e13346 ("btrfs:
-> tree-checker: Verify dev item").
-> The fix is titled "btrfs: tree-checker: Fix wrong check on max devid".
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  tests/btrfs/194     | 73 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/194.out |  2 ++
->  tests/btrfs/group   |  1 +
->  3 files changed, 76 insertions(+)
->  create mode 100755 tests/btrfs/194
->  create mode 100644 tests/btrfs/194.out
->
-> diff --git a/tests/btrfs/194 b/tests/btrfs/194
-> new file mode 100755
-> index 00000000..7a52ed86
-> --- /dev/null
-> +++ b/tests/btrfs/194
-> @@ -0,0 +1,73 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 194
-> +#
-> +# Test if btrfs can handle large device ids.
-> +#
-> +# The regression is introduced by kernel commit ab4ba2e13346 ("btrfs:
-> +# tree-checker: Verify dev item").
-> +# The fix is titlted: "btrfs: tree-checker: Fix wrong check on max devid=
-"
+On 9/30/19 12:23 PM, Andrey Ivanov wrote:
+> 
+> # /home/andrey/devel/src/btrfs/btrfs-progs-dirty_fix/btrfs-corrupt-block -X /dev/sdc1
+> key (613019873280 EXTENT_ITEM 1048576)slot end outside of leaf 1073755934 > 16283
+> Open ctree failed
+> 
+> [...]
+bin(1073755934)
+'0b1000000000000000011011100011110'
 
-type, titlted -> titled
+Your system is really flippin' bits all over the place.
 
-> +#
-> +seq=3D`basename $0`
-> +seqres=3D$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=3D`pwd`
-> +tmp=3D/tmp/$$
-> +status=3D1       # failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +       cd /
-> +       rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_supported_os Linux
-> +_require_scratch_dev_pool 2
-> +_scratch_dev_pool_get 2
-> +
-> +# The wrong check limit is based on node size, to reduce runtime, we onl=
-y
-> +# support 4K page size system for now
-> +if [ $(get_page_size) !=3D 4096 ]; then
-> +       _notrun "This test need 4k page size"
-> +fi
-> +
-> +device_1=3D$(echo $SCRATCH_DEV_POOL | awk '{print $1}')
-> +device_2=3D$(echo $SCRATCH_DEV_POOL | awk '{print $2}')
-> +
-> +echo device_1=3D$device_1 device_2=3D$device_2 >> $seqres.full
-> +
-> +# Use 4K nodesize to reduce runtime
-
-How does the node size reduces runtime?
-It's obvious when one wants to create deeper/larger trees for some
-purpose, but this test doesn't populate the filesystem, it uses an
-empty filesystem.
-So that deserves an explanation of how the node size influences the
-test's running time.
-
-> +_scratch_mkfs -n 4k >> $seqres.full
-> +_scratch_mount
-> +
-> +# Add and remove device in a loop, one loop will increase devid by 2.
-
-" ... one loop will ..." -> "... each iteration will ..."
-
-> +# for 4k nodesize, the wrong check will be triggered at devid 123.
-
-Why 123? It's not clear to me why, the test case doesn't explain and
-neither does the btrfs patch that fixes the regression.
-If it's related to the value of the constants/functions
-BTRFS_MAX_DEVS and BTRFS_MAX_DEVS_SYS_CHUNK, it should be mentioned
-here.
-
-> +# here 64 is enough to trigger such regression
-> +for (( i =3D 0; i < 64; i++ )); do
-> +       $BTRFS_UTIL_PROG device add -f $device_2 $SCRATCH_MNT
-> +       $BTRFS_UTIL_PROG device del $device_1 $SCRATCH_MNT
-> +       $BTRFS_UTIL_PROG device add -f $device_1 $SCRATCH_MNT
-> +       $BTRFS_UTIL_PROG device del $device_2 $SCRATCH_MNT
-> +done
-> +_scratch_dev_pool_put
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/194.out b/tests/btrfs/194.out
-> new file mode 100644
-> index 00000000..7bfd50ff
-> --- /dev/null
-> +++ b/tests/btrfs/194.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 194
-> +Silence is golden
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index b92cb12c..ef1f0e1b 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -196,3 +196,4 @@
->  191 auto quick send dedupe
->  192 auto replay snapshot stress
->  193 auto quick qgroup enospc limit
-> +194 auto
-
-Maybe volume group as well.
-
-Thanks Qu.
-
-> --
-> 2.22.0
->
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+Hans
