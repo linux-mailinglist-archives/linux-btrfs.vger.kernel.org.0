@@ -2,433 +2,208 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 802E1C25A5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 19:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C50BDC276F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 22:56:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730476AbfI3RFg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 13:05:36 -0400
-Received: from p3nlsmtpcp01-04.prod.phx3.secureserver.net ([184.168.200.145]:33800
-        "EHLO p3nlsmtpcp01-04.prod.phx3.secureserver.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726425AbfI3RFf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 13:05:35 -0400
-X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Sep 2019 13:05:35 EDT
-Received: from p3plcpnl0639.prod.phx3.secureserver.net ([50.62.176.166])
-        by : HOSTING RELAY : with ESMTP
-        id EyyuigJEk7wBxEyyuiJB60; Mon, 30 Sep 2019 09:57:04 -0700
-Received: from [45.116.115.51] (port=4433 helo=giis.co.in)
-        by p3plcpnl0639.prod.phx3.secureserver.net with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <lakshmipathi.ganapathi@collabora.com>)
-        id 1iEyyr-00AOXT-Hw; Mon, 30 Sep 2019 09:57:04 -0700
-Date:   Mon, 30 Sep 2019 22:26:54 +0530
-From:   "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.com, thecybershadow@gmail.com, wqu@suse.com,
-        lakshmipathi.g@giis.co.in
-Subject: [PATCH] Setup GitLab-CI for btrfs-progs
-Message-ID: <20190930165622.GA25114@giis.co.in>
+        id S1729833AbfI3U4J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 16:56:09 -0400
+Received: from out1-smtp.messagingengine.com ([66.111.4.25]:55377 "EHLO
+        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726314AbfI3U4I (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 16:56:08 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5815920F60
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2019 15:57:30 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Mon, 30 Sep 2019 15:57:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
+         h=to:from:subject:message-id:date:mime-version:content-type
+        :content-transfer-encoding; s=fm1; bh=0ow5gPSu36aBnmNwISyYIecsnX
+        Xnhr3BV7zSh4mkbAs=; b=qFgzOMTceSdLtmnqS0tDUQ11SW81he0YF6JsscQvRX
+        Dq7L93c4GIheY+RukB6Egv4iuPtuqJrWlsf3gQgLW93HvTq6lKHlxWs5qv1ZstB2
+        eLQ3ZH+Z15uF1f5To/CUdwsK5JIaZMVai0v8j4OfCFMr9uPZekbwr+qfeQJhG5KU
+        tlbHofDBdmxdDiDYtva1YWcFQyasIAg9hqCwnTDwFOIOM+SH2SBJQ7YFpNAGzwwL
+        rei/aaK56R4ptqI10mk/efUkgW2nwA6D9UnCKHWI+a1HKN4NgyZ10EpQw0VaQxnj
+        PqPp+TCDJNomkz3Iprigf0qYfF7wNjgnDxTfEm1KE4Zg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=0ow5gP
+        Su36aBnmNwISyYIecsnXXnhr3BV7zSh4mkbAs=; b=drrz/8a4/vIi4r5w2vDZpO
+        Bsrej3aoz45RXVsGiKDROHPfnXZ/yru8ynb/YlelRUqfBuOfmnUmkvEsXZd9P3Kf
+        ItIXNmhNT/CXrVzg2N48xTIOcXQ+yUBq22noWFGJE/Rt/ITFaq6PVhiIkP1jHPys
+        FHRuIUjuwC6QS6+YE8XUx8TPvKVAXzAAUF1f1G3lgMXzO9I7V9nBDzIoykrbBnjk
+        DNvqa72SmDrAk8OLdWMvr+3NbcskafysTxwC6UbP85QYvrqzglBgxOp4bFXQPJ03
+        oMd+0B80z/hvBDTChUhLeOLq7MJ63WObWL5sU/I/wozthQM/vWnee7C51q+11RMQ
+        ==
+X-ME-Sender: <xms:Kl6SXcyiPwA7WMQfwfO-ZM2DIUpJGITIh96IkEODl9SeuwmHF5EkXw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrgedvgddugedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefvhffukffffgggtgfgsehtjeertd
+    dtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgr
+    nhhithdrtghomheqnecukfhppedufeehrddvfedrvdegiedrudefudenucfrrghrrghmpe
+    hmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomhenucevlhhushht
+    vghrufhiiigvpedt
+X-ME-Proxy: <xmx:Kl6SXZ2QOaDq0GwNqYriCNuXslev9VJ3S1HgvmpPt2C8sezz4qr2uQ>
+    <xmx:Kl6SXZyDuETYvLxEW5PoUcJfLZV5NJUKev8ty_2wa1FgZAuzGm9zWw>
+    <xmx:Kl6SXZNy_6NNGHGB_PmP_XglcBifa30mQbeV2UKMkMvspNZQOK-k_g>
+    <xmx:Kl6SXQNfu91foVMTcGbBbn4GGlOpN92y_uLYKak34T3Xk7vhd2fDjg>
+Received: from [10.0.0.6] (135-23-246-131.cpe.pppoe.ca [135.23.246.131])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E15B7D6005E
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2019 15:57:29 -0400 (EDT)
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   Remi Gauvin <remi@georgianit.com>
+Subject: BTRFS corruption, mounts but comes read-only
+Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
+Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
+ keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
+ CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
+ sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
+ t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
+ 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
+ AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
+ IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
+ OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
+ 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
+ WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
+ k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
+ Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
+ R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
+ WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
+ QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
+ jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
+ oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
+ BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
+ XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
+ r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
+ phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
+ nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
+ SY9JJa155sI=
+Message-ID: <1d65213e-6237-2c5b-4820-81a0d3bd3e53@georgianit.com>
+Date:   Mon, 30 Sep 2019 15:57:29 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - p3plcpnl0639.prod.phx3.secureserver.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - collabora.com
-X-Get-Message-Sender-Via: p3plcpnl0639.prod.phx3.secureserver.net: authenticated_id: hello@giis.co.in
-X-Authenticated-Sender: p3plcpnl0639.prod.phx3.secureserver.net: hello@giis.co.in
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-CMAE-Envelope: MS4wfICSW3SemQDHmf5J6jnwv9+9eiJW50USlzJf69d8/AS2gqketw07xH3kEZ3wd8J6TIoYxVqESwzgybjsYZRtekp1znxoDemUl6AHr/zyKURbWYXFQHRL
- wymRyGl9osErK/SOsb+2QJI8XAMZt6OmRqNgeLhP4BlxuxDRwBALZgnjiLPPf0tsEZLnRJMpsluKUYy4V7IJ53k8whnRoqDmd3qakhmjIaRRshl2MgtbPI2V
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Make use of GitLab-CI nested virutal environment to start QEMU instance inside containers
-and perform btrfs-progs build, execute unit test cases and save the logs.
+Quick history, the system was rejecting ssh connections, and was not
+responding to ACPI shutdown, so I had to force power off.
 
-More details can be found at https://github.com/kdave/btrfs-progs/issues/171
+On restart, everything looked ok, but when I did a scrub, the system
+quickly reached a point of forced read-only., (kernel Ubuntu 4.15.0-52)
 
-Signed-off-by: Lakshmipathi.G <lakshmipathi.ganapathi@collabora.com>
----
- .gitlab-ci.yml                        | 181 ++++++++++++++++++++++++++++++++++
- gitlab-ci/Dockerfile                  |   3 +
- gitlab-ci/btrfs-progs-tests.service   |  13 +++
- gitlab-ci/build_or_run_btrfs-progs.sh |  37 +++++++
- gitlab-ci/kernel_build.sh             |  30 ++++++
- gitlab-ci/run_tests.sh                |   9 ++
- gitlab-ci/setup_image.sh              |  42 ++++++++
- 7 files changed, 315 insertions(+)
- create mode 100644 .gitlab-ci.yml
- create mode 100644 gitlab-ci/Dockerfile
- create mode 100644 gitlab-ci/btrfs-progs-tests.service
- create mode 100755 gitlab-ci/build_or_run_btrfs-progs.sh
- create mode 100755 gitlab-ci/kernel_build.sh
- create mode 100755 gitlab-ci/run_tests.sh
- create mode 100755 gitlab-ci/setup_image.sh
+I installed a current Arch for recovery, (kernel 5.3.1 and btrfs-progs
+5.2.2)
 
-diff --git a/.gitlab-ci.yml b/.gitlab-ci.yml
-new file mode 100644
-index 0000000..2afde50
---- /dev/null
-+++ b/.gitlab-ci.yml
-@@ -0,0 +1,181 @@
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public
-+# License v2 as published by the Free Software Foundation.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+# General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public
-+# License along with this program; if not, write to the
-+# Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-+# Boston, MA 021110-1307, USA.
-+#
-+
-+image: docker:18.09.7
-+
-+services:
-+    - docker:18.09.7-dind
-+
-+variables:
-+  DOCKER_DRIVER: overlay2
-+
-+stages:
-+  - build
-+  - btrfs-progs build
-+  - test
-+
-+variables:
-+  DOCKER_DRIVER: overlay2
-+  IMAGE_TAG: registry.gitlab.com/$CI_PROJECT_NAMESPACE/btrfs-progs:gitlab-ci
-+
-+before_script:
-+   - docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD $CI_REGISTRY
-+
-+docker build:
-+  stage: build
-+  script:
-+    - cd gitlab-ci
-+    - docker pull $IMAGE_TAG > /dev/null && echo "Downloaded image" || ( docker build -t $IMAGE_TAG . && docker push $IMAGE_TAG )
-+    - cd ..
-+
-+## To enable or disable Kernel Build set BUILD_KERNEL: "1" or BUILD_KERNEL: "0" 
-+## If you disable Kernel Build, make sure PREBUILT_KERNEL_ID points to previously built the kernel job id.
-+
-+kernel build:
-+  variables:
-+    BUILD_KERNEL: "1"
-+    PREBUILT_KERNEL_ID: "288159334"
-+  before_script:
-+    - apk add curl unzip 
-+  stage: build
-+  services:
-+    - docker:18.09.7-dind
-+  script:
-+     - if [ "$BUILD_KERNEL" == "1" ]; then
-+         docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/gitlab-ci/kernel_build.sh;
-+       else
-+         curl -o bzImage.zip --location --header "JOB-TOKEN:$CI_JOB_TOKEN"  "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/jobs/$PREBUILT_KERNEL_ID/artifacts" && unzip bzImage.zip;
-+       fi;
-+  artifacts:
-+    when: always
-+    paths:
-+      - bzImage
-+
-+# To enable or disable image build update BUILD_IMAGE value to "1" or "0".
-+# If you disable Image Build, make sure PREBUILT_IMAGE_ID points to previously built rootfs job id.
-+ 
-+image build:
-+  variables:
-+    BUILD_IMAGE: "1"
-+    PREBUILT_IMAGE_ID: "288506168"
-+  before_script:
-+    - apk add curl unzip 
-+  stage: build
-+  services:
-+    - docker:18.09.7-dind
-+  script:
-+     - if [ "$BUILD_IMAGE" == "1" ]; then
-+          docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/gitlab-ci/setup_image.sh;
-+       else
-+          curl  -o qemu-image.img.zip --location --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/jobs/$PREBUILT_IMAGE_ID/artifacts" && unzip qemu-image.img.zip;
-+       fi;
-+  artifacts:
-+    when: always
-+    paths:
-+      - qemu-image.img
-+
-+btrfs-progs build:
-+  stage: btrfs-progs build
-+  services:
-+    - docker:18.09.7-dind
-+  script:
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/gitlab-ci/run_tests.sh
-+  artifacts:
-+    expire_in: 1 week
-+    when: always
-+    paths:
-+      - qemu-image.img
-+
-+cli tests:
-+  stage: test
-+  services:
-+    - docker:18.09.7-dind
-+  script:
-+     - echo "./cli-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/gitlab-ci/run_tests.sh
-+     - test -e "result" || exit 1 # If result doesn't exists, job failed.
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-+convert tests:
-+  only: 
-+    - devel
-+  stage: test
-+  services:
-+    - docker:18.09.7-dind
-+  script:
-+     - echo "./convert-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/gitlab-ci/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-+fsck tests:
-+  stage: test
-+  services:
-+    - docker:18.09.7-dind
-+  script:
-+     - echo "./fsck-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/gitlab-ci/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+      - error.log
-+
-+fuzz tests:
-+  stage: test
-+  services:
-+    - docker:18.09.7-dind
-+  script:
-+     - echo "./fuzz-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/gitlab-ci/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-+misc tests:
-+  stage: test
-+  services:
-+    - docker:18.09.7-dind
-+  script:
-+     - echo "./misc-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/gitlab-ci/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-+mkfs tests:
-+  stage: test
-+  services:
-+    - docker:18.09.7-dind
-+  script:
-+     - echo "./mkfs-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/gitlab-ci/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-diff --git a/gitlab-ci/Dockerfile b/gitlab-ci/Dockerfile
-new file mode 100644
-index 0000000..356a21f
---- /dev/null
-+++ b/gitlab-ci/Dockerfile
-@@ -0,0 +1,3 @@
-+FROM debian:stretch-slim
-+
-+RUN apt-get update && apt-get install -y --no-install-recommends ovmf qemu-system qemu-efi
-diff --git a/gitlab-ci/btrfs-progs-tests.service b/gitlab-ci/btrfs-progs-tests.service
-new file mode 100644
-index 0000000..d255d77
---- /dev/null
-+++ b/gitlab-ci/btrfs-progs-tests.service
-@@ -0,0 +1,13 @@
-+[Unit]
-+Description=Execute build_or_run_btrfs-progs.sh on console
-+
-+[Service]
-+ExecStart=/usr/bin/build_or_run_btrfs-progs.sh
-+StandardInput=tty
-+StandardOutput=tty
-+TTYPath=/dev/ttyS0
-+Type=idle
-+
-+[Install]
-+WantedBy=getty.target
-+After=multi-user.target
-diff --git a/gitlab-ci/build_or_run_btrfs-progs.sh b/gitlab-ci/build_or_run_btrfs-progs.sh
-new file mode 100755
-index 0000000..081e83c
---- /dev/null
-+++ b/gitlab-ci/build_or_run_btrfs-progs.sh
-@@ -0,0 +1,37 @@
-+#!/bin/bash
-+#
-+# Build or Run btrfs-progs tests.
-+#
-+set -x
-+
-+BTRFS_BIN="btrfs"
-+MNT_DIR="/mnt/"
-+BUILD_DIR="/btrfs/"
-+test_cmd=$(cat ${MNT_DIR}/cmd)
-+
-+rm -f ${MNT_DIR}/result
-+${BTRFS_BIN} --version
-+
-+if [ $? -ne 0 ]
-+then
-+    echo "=========================== Builb btrfs-progs ================"
-+    echo " Image doesn't have ${BTRFS_BIN} - start build process"
-+    cd ${MNT_DIR} && ./autogen.sh && ./configure --disable-documentation --disable-backtrace && make -j`nproc` && make install && make testsuite
-+    echo "================= Prepare Testsuite =========================="
-+    mkdir -p ${BUILD_DIR}
-+    cp tests/btrfs-progs-tests.tar.gz ${BUILD_DIR}
-+    poweroff
-+else
-+    echo "================= Run Tests  ================================="
-+    cd ${BUILD_DIR} && tar -xvf btrfs-progs-tests.tar.gz && ${test_cmd}
-+
-+    # check test result status
-+    if [ $? -ne 0 ]; then
-+       cd ${BUILD_DIR} && cp *tests-results.txt ${MNT_DIR}
-+       poweroff
-+    else
-+       cd ${BUILD_DIR} && cp *tests-results.txt ${MNT_DIR}
-+       touch ${MNT_DIR}/result
-+       poweroff
-+    fi
-+fi
-diff --git a/gitlab-ci/kernel_build.sh b/gitlab-ci/kernel_build.sh
-new file mode 100755
-index 0000000..189dec1
---- /dev/null
-+++ b/gitlab-ci/kernel_build.sh
-@@ -0,0 +1,30 @@
-+#!/usr/bin/env bash
-+#
-+# Setup BTRFS kernel options and build kernel 
-+set -x
-+
-+apt-get update
-+apt-get -y install build-essential libncurses-dev bison flex libssl-dev libelf-dev unzip wget bc 
-+
-+# Build kernel
-+wget https://github.com/kdave/btrfs-devel/archive/misc-next.zip
-+unzip -qq  misc-next.zip
-+cd btrfs-devel-misc-next/ && make x86_64_defconfig && make kvmconfig 
-+
-+# BTRFS specific entires
-+cat <<EOF >> .config
-+CONFIG_BTRFS_FS=y
-+CONFIG_BTRFS_FS_POSIX_ACL=y
-+CONFIG_BTRFS_FS_CHECK_INTEGRITY=n
-+CONFIG_BTRFS_FS_RUN_SANITY_TESTS=n
-+CONFIG_BTRFS_DEBUG=y
-+CONFIG_BTRFS_ASSERT=y
-+CONFIG_BTRFS_FS_REF_VERIFY=y
-+CONFIG_RAID6_PQ_BENCHMARK=y
-+CONFIG_LIBCRC32C=y
-+EOF
-+
-+make -j8
-+
-+# Store file to shared dir
-+cp -v arch/x86/boot/bzImage /repo
-diff --git a/gitlab-ci/run_tests.sh b/gitlab-ci/run_tests.sh
-new file mode 100755
-index 0000000..c53d09e
---- /dev/null
-+++ b/gitlab-ci/run_tests.sh
-@@ -0,0 +1,9 @@
-+#!/usr/bin/env bash
-+#
-+# Install and start qemu instance with custom kernel while exporting btrfs-progs src over 9p
-+#
-+set -x
-+
-+qemu-system-x86_64 -m 512 -nographic -kernel /repo/bzImage -drive file=/repo/qemu-image.img,index=0,media=disk,format=raw \
-+-fsdev local,id=btrfs-progs,path=/repo,security_model=mapped -device virtio-9p-pci,fsdev=btrfs-progs,mount_tag=btrfs-progs \
-+-append "console=tty1 root=/dev/sda rw" 
-diff --git a/gitlab-ci/setup_image.sh b/gitlab-ci/setup_image.sh
-new file mode 100755
-index 0000000..1e0418a
---- /dev/null
-+++ b/gitlab-ci/setup_image.sh
-@@ -0,0 +1,42 @@
-+#!/usr/bin/env bash
-+#
-+# Setup debian image via debootstrap and include systemd service file.
-+set -x
-+
-+apt-get update
-+apt-get -y install debootstrap wget unzip
-+
-+# Setup rootfs
-+IMG="/qemu-image.img"
-+DIR="/target"
-+truncate -s2G $IMG
-+mkfs.ext4 $IMG
-+mkdir -p $DIR
-+for i in {0..7};do
-+mknod -m 0660 "/dev/loop$i" b 7 "$i"
-+done
-+
-+# mount the image file
-+mount -o loop $IMG $DIR
-+
-+# Install required pacakges
-+debootstrap --arch=amd64  --include=git,autoconf,automake,gcc,make,pkg-config,e2fslibs-dev,libblkid-dev,zlib1g-dev,liblzo2-dev,asciidoc,xmlto,libzstd-dev,python3.5,python3.5-dev,python3-dev,python3-setuptools,python-setuptools,xz-utils,acl,attr stretch $DIR http://ftp.de.debian.org/debian/
-+
-+## Setup 9p mount
-+echo "btrfs-progs /mnt           9p             trans=virtio    0       0" > $DIR/etc/fstab
-+
-+#Setup autologin 
-+sed -i 's/9600/9600 --autologin root/g' $DIR/lib/systemd/system/serial-getty@.service
-+
-+# Setup systemd service
-+cp -v /repo/gitlab-ci/build_or_run_btrfs-progs.sh $DIR/usr/bin/
-+cp -v /repo/gitlab-ci/btrfs-progs-tests.service $DIR/etc/systemd/system/
-+
-+## Enable service
-+ln -s $DIR/etc/systemd/system/btrfs-progs-tests.service $DIR/etc/systemd/system/getty.target.wants/btrfs-progs-tests.service 
-+
-+cd /
-+umount $DIR
-+rmdir $DIR
-+
-+cp -v $IMG /repo
--- 
-2.7.4
+Here is the result of btrfs check
 
+btrfs check /dev/sdd4
+Opening filesystem to check...
+Checking filesystem on /dev/sdd4
+UUID: cd54199e-753f-4bac-862d-c9d353d3e155
+[1/7] checking root items
+[2/7] checking extents
+corrupt extent record: key [5126707298304,169,16384]
+incorrect local backref count on 5126707298304 root 5890615246848 owner
+1507958538109110 offset 386035672063981056 found 0 wanted 11927552 back
+0x55737707d980
+backref disk bytenr does not match extent record, bytenr=5126707298304,
+ref bytenr=0
+tree backref 5126707298304 parent 5890436890624 root 5890436890624 not
+found in extent tree
+tree backref 5126707298304 parent 5890463039488 root 5890463039488 not
+found in extent tree
+tree backref 5126707298304 parent 5125855133696 root 5125855133696 not
+found in extent tree
+tree backref 5126707298304 parent 4717386399744 root 4717386399744 not
+found in extent tree
+tree backref 5126707298304 parent 5125777653760 root 5125777653760 not
+found in extent tree
+tree backref 5126707298304 parent 5126231179264 root 5126231179264 not
+found in extent tree
+tree backref 5126707298304 parent 4716869992448 root 4716869992448 not
+found in extent tree
+tree backref 5126707298304 parent 4716547129344 root 4716547129344 not
+found in extent tree
+tree backref 5126707298304 parent 4716575670272 root 4716575670272 not
+found in extent tree
+tree backref 5126707298304 parent 4418457927680 root 4418457927680 not
+found in extent tree
+tree backref 5126707298304 parent 4418653339648 root 4418653339648 not
+found in extent tree
+tree backref 5126707298304 parent 4716604555264 root 4716604555264 not
+found in extent tree
+tree backref 5126707298304 parent 4716953616384 root 4716953616384 not
+found in extent tree
+tree backref 5126707298304 parent 5890615246848 root 5890615246848 not
+found in extent tree
+tree backref 5126707298304 parent 4134522355712 root 4134522355712 not
+found in extent tree
+tree backref 5126707298304 parent 4418052734976 root 4418052734976 not
+found in extent tree
+tree backref 5126707298304 parent 4034125447168 root 4034125447168 not
+found in extent tree
+tree backref 5126707298304 parent 4034188083200 root 4034188083200 not
+found in extent tree
+tree backref 5126707298304 parent 4133585420288 root 4133585420288 not
+found in extent tree
+tree backref 5126707298304 parent 4034073935872 root 4034073935872 not
+found in extent tree
+tree backref 5126707298304 parent 4032730021888 root 4032730021888 not
+found in extent tree
+tree backref 5126707298304 parent 4033156546560 root 4033156546560 not
+found in extent tree
+tree backref 5126707298304 parent 4031949127680 root 4031949127680 not
+found in extent tree
+tree backref 5126707298304 parent 4032101384192 root 4032101384192 not
+found in extent tree
+tree backref 5126707298304 parent 4032197132288 root 4032197132288 not
+found in extent tree
+tree backref 5126707298304 parent 4034077949952 root 4034077949952 not
+found in extent tree
+tree backref 5126707298304 parent 4031202394112 root 4031202394112 not
+found in extent tree
+tree backref 5126707298304 parent 4030981292032 root 4030981292032 not
+found in extent tree
+tree backref 5126707298304 parent 3874566619136 root 3874566619136 not
+found in extent tree
+tree backref 5126707298304 parent 3874229714944 root 3874229714944 not
+found in extent tree
+tree backref 5126707298304 parent 3873657765888 root 3873657765888 not
+found in extent tree
+tree backref 5126707298304 parent 3874460270592 root 3874460270592 not
+found in extent tree
+tree backref 5126707298304 parent 4030556012544 root 4030556012544 not
+found in extent tree
+tree backref 5126707298304 parent 4031297765376 root 4031297765376 not
+found in extent tree
+tree backref 5126707298304 parent 4418354544640 root 4418354544640 not
+found in extent tree
+backpointer mismatch on [5126707298304 16384]
+bad extent [5126707298304, 5126707314688), type mismatch with chunk
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space tree
+cache and super generation don't match, space cache will be invalidated
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 4501017206864 bytes used, error(s) found
+total csum bytes: 4386928432
+total tree bytes: 9074900992
+total fs tree bytes: 3698982912
+total extent tree bytes: 377012224
+btree space waste bytes: 1430502412
+file data blocks allocated: 16729280847872
+ referenced 8948709453824
+
+
+
+Thank you.
