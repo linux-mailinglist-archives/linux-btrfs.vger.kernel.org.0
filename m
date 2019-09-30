@@ -2,81 +2,215 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F2CC1EDE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 12:24:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 037DBC1EF1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 12:34:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730595AbfI3KYC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 06:24:02 -0400
-Received: from forward103j.mail.yandex.net ([5.45.198.246]:59350 "EHLO
-        forward103j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730419AbfI3KYB (ORCPT
+        id S1730704AbfI3Kdt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 06:33:49 -0400
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:38124 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728214AbfI3Kdt (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 06:24:01 -0400
-Received: from forward102q.mail.yandex.net (forward102q.mail.yandex.net [IPv6:2a02:6b8:c0e:1ba:0:640:516:4e7d])
-        by forward103j.mail.yandex.net (Yandex) with ESMTP id A33AC674124D;
-        Mon, 30 Sep 2019 13:23:58 +0300 (MSK)
-Received: from mxback12q.mail.yandex.net (mxback12q.mail.yandex.net [IPv6:2a02:6b8:c0e:1b3:0:640:3818:d096])
-        by forward102q.mail.yandex.net (Yandex) with ESMTP id 9F2F07F20016;
-        Mon, 30 Sep 2019 13:23:58 +0300 (MSK)
-Received: from vla1-f6c1f80fae19.qloud-c.yandex.net (vla1-f6c1f80fae19.qloud-c.yandex.net [2a02:6b8:c0d:d87:0:640:f6c1:f80f])
-        by mxback12q.mail.yandex.net (nwsmtp/Yandex) with ESMTP id lGqTXCUwg8-Nw4OZuxg;
-        Mon, 30 Sep 2019 13:23:58 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1569839038;
-        bh=6wY+4Mwu7d+icnvSzS701ByVMFMQ7IrwZOfVfXI+6Fs=;
-        h=In-Reply-To:From:Date:References:To:Subject:Message-ID;
-        b=N1tvQvBvLYHIwPYwwT4dySFJoaXirJQEn+PHe37xdA8V6Xf5f8B9FARcPhbLUKhTq
-         X2E5LWuWd1H5bGBqlFLER26rOftmjLpZtw6KlRBpqLfCZ0nOaSlLUFjbFUZ/KHmMQs
-         9mN0q898K7N/prDvreKoDdaDehzkMn//LnXO2wJo=
-Authentication-Results: mxback12q.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by vla1-f6c1f80fae19.qloud-c.yandex.net (nwsmtp/Yandex) with ESMTPSA id UTwr5aIjh5-NvpaBFMM;
-        Mon, 30 Sep 2019 13:23:57 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: Btrfs partition mount error
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <79466812-e999-32d8-ce20-0589fb64a433@yandex.ru>
- <85cb7aff-5fa4-c7f7-c277-04069954d7fe@gmx.com>
- <170d6f2f-65aa-3437-be21-61ac8499460b@yandex.ru>
- <4be73e38-c8b1-8220-1e5a-c0a1287df61d@gmx.com>
- <31560d49-0d03-1e26-bb55-755a4365dce7@yandex.ru>
- <70eaf85f-751a-f540-7fde-bb489a0bb528@gmx.com>
- <e5383397-3556-1c9c-7483-79ad6d74de49@yandex.ru>
- <c9d71bdd-7fe2-faaf-23c0-ede163c1d04a@gmx.com>
- <c3ecfeb9-2900-3406-4d92-e40021753310@yandex.ru>
- <1ca0434b-3ae6-bbbe-efd3-06cab9089782@gmx.com>
-From:   Andrey Ivanov <andrey-ivanov-ml@yandex.ru>
-Message-ID: <fb259ee2-c9e2-f44d-ce5b-b3f688565c28@yandex.ru>
-Date:   Mon, 30 Sep 2019 13:23:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Mon, 30 Sep 2019 06:33:49 -0400
+Received: by mail-vs1-f67.google.com with SMTP id b123so6394350vsb.5;
+        Mon, 30 Sep 2019 03:33:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=bCGscPt1hwXu4Sog2iwtoW1gzZpbXzmRUrtd6xcWnrs=;
+        b=c3SYlzBuoO3b+Q9El/Eh16IE/uNBjMHF86CxLBkprfegNbyg6LbKRzN9mod447Y5xn
+         jEBleVqYAFu8Ydk5Rrh9ZNrSsu8KS+eS6LThipZ3kEfAzt8Mu/XPSYcghqwlqVqM6ej0
+         QpL+6t1oYPpwQylYix4hc+XDWKW2lrMS7tYWjQ1sJ+rULVUQiEdy7kvkMEc9v/3pZcc6
+         f2DOkoUGuK/LOA8BLDX5XpiVo5FDjhKV/12rP79SGc7QJ882295jvVWEU0z4OIuSLVWH
+         JchyHu3jZW3yTF5W1XjYoFZ8rmlZq3Njh+22yUITzwzC7neUDz0AQI1uR7uM/sxoEnPX
+         6I7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=bCGscPt1hwXu4Sog2iwtoW1gzZpbXzmRUrtd6xcWnrs=;
+        b=uhPZfqY2gZgAP07DUIhlBwpco+UeatfwdVIayngOqQcVLuas011kxw2/I2tv3TL62Z
+         NZ+OvOItBDCVruVJpN7V4Lw8PbqFq+XuDOrTUNP/CC8jsowy9klhsIccFhM9N1NPU5gO
+         6fjry6rnAr0T6QZM476iNlHqQtpGkJ36YjR8mw30hQjt4bzeOLYivVG8k9yNIj7ba33Z
+         yrfKgbnr0KWk56nkp9vp83JTVqFB1/Kn0T+wUlhEdEnvhM/ZNv1fI8vhgwXMRCxlqm0H
+         AQi2ziF9DvcPZaHX5Cuv1IjfIi4cOpHF1lcJLz9LJecdWPXpXlLwO/RPwM0PoFq8tP+C
+         o9PA==
+X-Gm-Message-State: APjAAAX+Je9+Jbq6soWZMZIJ+qED6vUduO6McQHw7/R+SjCv1sLTcJk1
+        raYPA++2JdmpBk5jKR/FasS1x+bAX/3ZFHqOmk6kgijl
+X-Google-Smtp-Source: APXvYqyBUa/b92IGgFJzN8NnMN2qO+KcY5QG0cx0Pnd72e06qn4374E8j7CXl3W4M3gwstzpWgZTfYLypqbI+JtTojA=
+X-Received: by 2002:a67:6044:: with SMTP id u65mr8808809vsb.95.1569839626646;
+ Mon, 30 Sep 2019 03:33:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1ca0434b-3ae6-bbbe-efd3-06cab9089782@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: ru-RU
-Content-Transfer-Encoding: 7bit
+References: <20190930083735.21284-1-wqu@suse.com>
+In-Reply-To: <20190930083735.21284-1-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 30 Sep 2019 11:33:35 +0100
+Message-ID: <CAL3q7H5mVHUQJ31wANwM8hXbbumwcUNrxSCebv46zpgEGYA2zw@mail.gmail.com>
+Subject: Re: [PATCH] fstests: btrfs: Add regression test to check if btrfs can
+ handle high devid
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     fstests <fstests@vger.kernel.org>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 30.09.2019 13:10, Qu Wenruo wrote:
->> I had built and run it:
->>
->> # /home/andrey/devel/src/btrfs/btrfs-progs-dirty_fix/btrfs-corrupt-block
->> -X /dev/sdc1
->> incorrect offsets 15223 15287
->> Open ctree failed
-> 
-> That branch updated to skip the item offset check completely.
-> 
-> But please keep in mind that, that check itself still makes sense, so
-> please use the original "btrfs check" to check the fs.
+On Mon, Sep 30, 2019 at 9:39 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> Add a regression test to check if btrfs can handle high devid.
+>
+> The test will add and remove devices to a btrfs fs, so that the devid
+> will increase to uncommon but still valid values.
+>
+> The regression is introduced by kernel commit ab4ba2e13346 ("btrfs:
+> tree-checker: Verify dev item").
+> The fix is titled "btrfs: tree-checker: Fix wrong check on max devid".
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  tests/btrfs/194     | 73 +++++++++++++++++++++++++++++++++++++++++++++
+>  tests/btrfs/194.out |  2 ++
+>  tests/btrfs/group   |  1 +
+>  3 files changed, 76 insertions(+)
+>  create mode 100755 tests/btrfs/194
+>  create mode 100644 tests/btrfs/194.out
+>
+> diff --git a/tests/btrfs/194 b/tests/btrfs/194
+> new file mode 100755
+> index 00000000..7a52ed86
+> --- /dev/null
+> +++ b/tests/btrfs/194
+> @@ -0,0 +1,73 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
+> +#
+> +# FS QA Test 194
+> +#
+> +# Test if btrfs can handle large device ids.
+> +#
+> +# The regression is introduced by kernel commit ab4ba2e13346 ("btrfs:
+> +# tree-checker: Verify dev item").
+> +# The fix is titlted: "btrfs: tree-checker: Fix wrong check on max devid=
+"
 
-# /home/andrey/devel/src/btrfs/btrfs-progs-dirty_fix/btrfs-corrupt-block -X /dev/sdc1
-key (613019873280 EXTENT_ITEM 1048576)slot end outside of leaf 1073755934 > 16283
-Open ctree failed
+type, titlted -> titled
 
-# btrfs check /dev/sdc1
-Opening filesystem to check...
-incorrect offsets 15223 15287
-ERROR: cannot open file system
+> +#
+> +seq=3D`basename $0`
+> +seqres=3D$RESULT_DIR/$seq
+> +echo "QA output created by $seq"
+> +
+> +here=3D`pwd`
+> +tmp=3D/tmp/$$
+> +status=3D1       # failure is the default!
+> +trap "_cleanup; exit \$status" 0 1 2 3 15
+> +
+> +_cleanup()
+> +{
+> +       cd /
+> +       rm -f $tmp.*
+> +}
+> +
+> +# get standard environment, filters and checks
+> +. ./common/rc
+> +. ./common/filter
+> +
+> +# remove previous $seqres.full before test
+> +rm -f $seqres.full
+> +
+> +# real QA test starts here
+> +
+> +# Modify as appropriate.
+> +_supported_fs btrfs
+> +_supported_os Linux
+> +_require_scratch_dev_pool 2
+> +_scratch_dev_pool_get 2
+> +
+> +# The wrong check limit is based on node size, to reduce runtime, we onl=
+y
+> +# support 4K page size system for now
+> +if [ $(get_page_size) !=3D 4096 ]; then
+> +       _notrun "This test need 4k page size"
+> +fi
+> +
+> +device_1=3D$(echo $SCRATCH_DEV_POOL | awk '{print $1}')
+> +device_2=3D$(echo $SCRATCH_DEV_POOL | awk '{print $2}')
+> +
+> +echo device_1=3D$device_1 device_2=3D$device_2 >> $seqres.full
+> +
+> +# Use 4K nodesize to reduce runtime
+
+How does the node size reduces runtime?
+It's obvious when one wants to create deeper/larger trees for some
+purpose, but this test doesn't populate the filesystem, it uses an
+empty filesystem.
+So that deserves an explanation of how the node size influences the
+test's running time.
+
+> +_scratch_mkfs -n 4k >> $seqres.full
+> +_scratch_mount
+> +
+> +# Add and remove device in a loop, one loop will increase devid by 2.
+
+" ... one loop will ..." -> "... each iteration will ..."
+
+> +# for 4k nodesize, the wrong check will be triggered at devid 123.
+
+Why 123? It's not clear to me why, the test case doesn't explain and
+neither does the btrfs patch that fixes the regression.
+If it's related to the value of the constants/functions
+BTRFS_MAX_DEVS and BTRFS_MAX_DEVS_SYS_CHUNK, it should be mentioned
+here.
+
+> +# here 64 is enough to trigger such regression
+> +for (( i =3D 0; i < 64; i++ )); do
+> +       $BTRFS_UTIL_PROG device add -f $device_2 $SCRATCH_MNT
+> +       $BTRFS_UTIL_PROG device del $device_1 $SCRATCH_MNT
+> +       $BTRFS_UTIL_PROG device add -f $device_1 $SCRATCH_MNT
+> +       $BTRFS_UTIL_PROG device del $device_2 $SCRATCH_MNT
+> +done
+> +_scratch_dev_pool_put
+> +
+> +echo "Silence is golden"
+> +
+> +# success, all done
+> +status=3D0
+> +exit
+> diff --git a/tests/btrfs/194.out b/tests/btrfs/194.out
+> new file mode 100644
+> index 00000000..7bfd50ff
+> --- /dev/null
+> +++ b/tests/btrfs/194.out
+> @@ -0,0 +1,2 @@
+> +QA output created by 194
+> +Silence is golden
+> diff --git a/tests/btrfs/group b/tests/btrfs/group
+> index b92cb12c..ef1f0e1b 100644
+> --- a/tests/btrfs/group
+> +++ b/tests/btrfs/group
+> @@ -196,3 +196,4 @@
+>  191 auto quick send dedupe
+>  192 auto replay snapshot stress
+>  193 auto quick qgroup enospc limit
+> +194 auto
+
+Maybe volume group as well.
+
+Thanks Qu.
+
+> --
+> 2.22.0
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
