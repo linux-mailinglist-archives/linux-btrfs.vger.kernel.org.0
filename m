@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65BFEC2003
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 13:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F00EC2032
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 13:54:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729404AbfI3Lgk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 07:36:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52380 "EHLO mx1.suse.de"
+        id S1727106AbfI3LxQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 07:53:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58078 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727215AbfI3Lgk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 07:36:40 -0400
+        id S1726952AbfI3LxQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 07:53:16 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 134C0AD79;
-        Mon, 30 Sep 2019 11:36:37 +0000 (UTC)
-Subject: Re: [PATCH 1/3] btrfs-progs: check/lowmem: Add check and repair for
- invalid inode generation
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     Charles Wright <charles.v.wright@gmail.com>
-References: <20190924081120.6283-1-wqu@suse.com>
- <20190924081120.6283-2-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id EB70DB126;
+        Mon, 30 Sep 2019 11:53:13 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: removed unused return variable
+To:     Aliasgar Surti <aliasgar.surti500@gmail.com>, clm@fb.com,
+        David Sterba <dsterba@suse.com>, josef@toxicpanda.com,
+        linux-btrfs@vger.kernel.org
+References: <1569842265-32084-1-git-send-email-aliasgar.surti500@gmail.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -65,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <373ac9c6-ecdc-7688-5c28-791131b67f92@suse.com>
-Date:   Mon, 30 Sep 2019 14:36:35 +0300
+Message-ID: <ba5b0d77-5780-f883-f491-52505b2bd8a5@suse.com>
+Date:   Mon, 30 Sep 2019 14:53:12 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190924081120.6283-2-wqu@suse.com>
+In-Reply-To: <1569842265-32084-1-git-send-email-aliasgar.surti500@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,159 +80,49 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 24.09.19 г. 11:11 ч., Qu Wenruo wrote:
-> There are at least two bug reports of kernel tree-checker complaining
-> about invalid inode generation.
+On 30.09.19 г. 14:17 ч., Aliasgar Surti wrote:
+> From: Aliasgar Surti <aliasgar.surti500@gmail.com>
 > 
-> All offending inodes seem to be caused by old kernel around 2014, with
-> inode generation overflow.
+> Removed unused return variable and replaced it with returning
+> the value directly
 > 
-> So add such check and repair ability to lowmem mode check first.
-> 
-> This involves:
-> - Calculate the inode generation upper limit
->   If it's an inode from log tree, then the upper limit is
->   super_generation + 1, otherwise it's super_generation.
-> 
-> - Check if the inode generation is larger than the upper limit
-> 
-> - Repair by resetting inode generation to current transaction
->   generation
-> 
-> Reported-by: Charles Wright <charles.v.wright@gmail.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Aliasgar Surti <aliasgar.surti500@gmail.com>
 
-Tested-by: Nikolay Borisov <nborisov@suse.com>
-
-There is one small nit with the assert once rectified you can add:
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Actually this function should be turned to void and even the declaration
+at the top of disk-io can be removed.
 
 > ---
->  check/mode-lowmem.c | 76 +++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 76 insertions(+)
+>  fs/btrfs/disk-io.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-> index 5f7f101d..7af29ba9 100644
-> --- a/check/mode-lowmem.c
-> +++ b/check/mode-lowmem.c
-> @@ -2472,6 +2472,59 @@ static bool has_orphan_item(struct btrfs_root *root, u64 ino)
->  	return false;
->  }
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 044981c..c80fa67 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4255,7 +4255,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+>  	struct rb_node *node;
+>  	struct btrfs_delayed_ref_root *delayed_refs;
+>  	struct btrfs_delayed_ref_node *ref;
+> -	int ret = 0;
 >  
-> +static int repair_inode_gen_lowmem(struct btrfs_root *root,
-> +				   struct btrfs_path *path)
-> +{
-> +	struct btrfs_trans_handle *trans;
-> +	struct btrfs_inode_item *ii;
-> +	struct btrfs_key key;
-> +	u64 transid;
-> +	int ret;
-> +
-> +	trans = btrfs_start_transaction(root, 1);
-> +	if (IS_ERR(trans)) {
-> +		ret = PTR_ERR(trans);
-> +		errno = -ret;
-> +		error("failed to start transaction for inode gen repair: %m");
-> +		return ret;
-> +	}
-> +	transid = trans->transid;
-
-> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> +	ASSERT(key.type == BTRFS_INODE_ITEM_KEY);
-
-nit: This function's sole caller, check_inode_item, is guaranteed to be
-called with a path pointing to BTRFS_INODE_ITEM_KEY thanks to the logic
-in the 'for' loop in process_one_leaf. This renders the assert
-redundant. At the very least I think it should be moved to
-check_inode_item.
-
-> +
-> +	btrfs_release_path(path);
-> +
-> +	ret = btrfs_search_slot(trans, root, &key, path, 0, 1);
-> +	if (ret > 0) {
-> +		ret = -ENOENT;
-> +		error("no inode item found for ino %llu", key.objectid);
-> +		goto error;
-> +	}
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to find inode item for ino %llu: %m",
-> +		      key.objectid);
-> +		goto error;
-> +	}
-> +	ii = btrfs_item_ptr(path->nodes[0], path->slots[0],
-> +			    struct btrfs_inode_item);
-> +	btrfs_set_inode_generation(path->nodes[0], ii, trans->transid);
-> +	btrfs_mark_buffer_dirty(path->nodes[0]);
-> +	ret = btrfs_commit_transaction(trans, root);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to commit transaction: %m");
-> +		goto error;
-> +	}
-> +	printf("reseting inode generation to %llu for ino %llu\n",
-> +		transid, key.objectid);
-> +	return ret;
-> +
-> +error:
-> +	btrfs_abort_transaction(trans, ret);
-> +	return ret;
-> +}
-> +
->  /*
->   * Check INODE_ITEM and related ITEMs (the same inode number)
->   * 1. check link count
-> @@ -2487,6 +2540,7 @@ static int check_inode_item(struct btrfs_root *root, struct btrfs_path *path)
->  	struct btrfs_inode_item *ii;
->  	struct btrfs_key key;
->  	struct btrfs_key last_key;
-> +	struct btrfs_super_block *super = root->fs_info->super_copy;
->  	u64 inode_id;
->  	u32 mode;
->  	u64 flags;
-> @@ -2497,6 +2551,8 @@ static int check_inode_item(struct btrfs_root *root, struct btrfs_path *path)
->  	u64 refs = 0;
->  	u64 extent_end = 0;
->  	u64 extent_size = 0;
-> +	u64 generation;
-> +	u64 gen_uplimit;
->  	unsigned int dir;
->  	unsigned int nodatasum;
->  	bool is_orphan = false;
-> @@ -2527,6 +2583,7 @@ static int check_inode_item(struct btrfs_root *root, struct btrfs_path *path)
->  	flags = btrfs_inode_flags(node, ii);
->  	dir = imode_to_type(mode) == BTRFS_FT_DIR;
->  	nlink = btrfs_inode_nlink(node, ii);
-> +	generation = btrfs_inode_generation(node, ii);
->  	nodatasum = btrfs_inode_flags(node, ii) & BTRFS_INODE_NODATASUM;
+>  	delayed_refs = &trans->delayed_refs;
 >  
->  	if (!is_valid_imode(mode)) {
-> @@ -2540,6 +2597,25 @@ static int check_inode_item(struct btrfs_root *root, struct btrfs_path *path)
->  		}
+> @@ -4263,7 +4262,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+>  	if (atomic_read(&delayed_refs->num_entries) == 0) {
+>  		spin_unlock(&delayed_refs->lock);
+>  		btrfs_info(fs_info, "delayed_refs has NO entry");
+> -		return ret;
+> +		return 0;
 >  	}
 >  
-> +	if (btrfs_super_log_root(super) != 0 &&
-> +	    root->objectid == BTRFS_TREE_LOG_OBJECTID)
-> +		gen_uplimit = btrfs_super_generation(super) + 1;
-> +	else
-> +		gen_uplimit = btrfs_super_generation(super);
-> +
-> +	if (generation > gen_uplimit) {
-> +		error(
-> +	"invalid inode generation for ino %llu, have %llu expect [0, %llu)",
-> +		      inode_id, generation, gen_uplimit);
-> +		if (repair) {
-> +			ret = repair_inode_gen_lowmem(root, path);
-> +			if (ret < 0)
-> +				err |= INVALID_GENERATION;
-> +		} else {
-> +			err |= INVALID_GENERATION;
-> +		}
-> +
-> +	}
->  	if (S_ISLNK(mode) &&
->  	    flags & (BTRFS_INODE_IMMUTABLE | BTRFS_INODE_APPEND)) {
->  		err |= INODE_FLAGS_ERROR;
+>  	while ((node = rb_first_cached(&delayed_refs->href_root)) != NULL) {
+> @@ -4307,7 +4306,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
+>  
+>  	spin_unlock(&delayed_refs->lock);
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
 > 
