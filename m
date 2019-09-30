@@ -2,77 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F70C28C7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 23:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38709C28DD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 23:35:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732166AbfI3V0H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 17:26:07 -0400
-Received: from forward102j.mail.yandex.net ([5.45.198.243]:55952 "EHLO
-        forward102j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732210AbfI3V0H (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 17:26:07 -0400
-Received: from mxback27o.mail.yandex.net (mxback27o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::78])
-        by forward102j.mail.yandex.net (Yandex) with ESMTP id 9E402F20C49;
-        Tue,  1 Oct 2019 00:26:04 +0300 (MSK)
-Received: from myt5-7474ca8e6aca.qloud-c.yandex.net (myt5-7474ca8e6aca.qloud-c.yandex.net [2a02:6b8:c12:1d21:0:640:7474:ca8e])
-        by mxback27o.mail.yandex.net (nwsmtp/Yandex) with ESMTP id NaCdOmBsHe-Q4CW3I25;
-        Tue, 01 Oct 2019 00:26:04 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1569878764;
-        bh=Dx4SzCwoTNLlt7P/eGx79lTD0IJlULAc0E+rrFXXJ4Y=;
-        h=In-Reply-To:From:Date:References:To:Subject:Message-ID;
-        b=ScCMgIf3WoBwu5QUGvswgXOzjNtjm1E55iqHoOK5Y4qbrgoHBx5hdRoth5kR5rTCt
-         bIDR3aTC1/7Cf54k71DZvSXHg0I82e3DxonPgsY9N6nMMtqZZ7pcyjhbNoaiaFStK3
-         QyqurN1IYjLVOdAXAdSxNeAyb+uX9ASlUp65WqVY=
-Authentication-Results: mxback27o.mail.yandex.net; dkim=pass header.i=@yandex.ru
-Received: by myt5-7474ca8e6aca.qloud-c.yandex.net (nwsmtp/Yandex) with ESMTPSA id Ksbqdz7aMa-Q4IKcKO9;
-        Tue, 01 Oct 2019 00:26:04 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: Btrfs partition mount error
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
-References: <79466812-e999-32d8-ce20-0589fb64a433@yandex.ru>
- <85cb7aff-5fa4-c7f7-c277-04069954d7fe@gmx.com>
- <170d6f2f-65aa-3437-be21-61ac8499460b@yandex.ru>
- <4be73e38-c8b1-8220-1e5a-c0a1287df61d@gmx.com>
- <31560d49-0d03-1e26-bb55-755a4365dce7@yandex.ru>
- <70eaf85f-751a-f540-7fde-bb489a0bb528@gmx.com>
- <e5383397-3556-1c9c-7483-79ad6d74de49@yandex.ru>
- <c9d71bdd-7fe2-faaf-23c0-ede163c1d04a@gmx.com>
- <c3ecfeb9-2900-3406-4d92-e40021753310@yandex.ru>
- <1ca0434b-3ae6-bbbe-efd3-06cab9089782@gmx.com>
- <fb259ee2-c9e2-f44d-ce5b-b3f688565c28@yandex.ru>
- <bf5265b7-96a1-5f98-07f8-947b981ac364@gmx.com>
- <245b13f7-20c9-3ab4-6e9f-0ed32f4d1c79@gmx.com>
- <27515deb-5225-4349-2406-132b5190f7cb@yandex.ru>
- <84e7ff9e-9c47-41c5-8457-bba4d9ec1f86@gmx.com>
-From:   Andrey Ivanov <andrey-ivanov-ml@yandex.ru>
-Message-ID: <86293d43-390e-83fb-6d8e-42e0313d52c5@yandex.ru>
-Date:   Tue, 1 Oct 2019 00:26:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1729326AbfI3Vdu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 17:33:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55220 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727720AbfI3Vdu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 17:33:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 564A5B15D;
+        Mon, 30 Sep 2019 18:12:36 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 93675DA88C; Mon, 30 Sep 2019 20:12:54 +0200 (CEST)
+Date:   Mon, 30 Sep 2019 20:12:54 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] Btrfs: fix memory leak due to concurrent append writes
+ with fiemap
+Message-ID: <20190930181254.GC2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20190930092025.31118-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <84e7ff9e-9c47-41c5-8457-bba4d9ec1f86@gmx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: ru-RU
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190930092025.31118-1-fdmanana@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 30.09.2019 15:27, Qu Wenruo wrote:
->>> We have another report internally about a similar corruption (multiple
->>> bit flips in a single fs), and they are also using VMware, along with
->>> VMware guest kernel modules.
->>>
->>> Would you mind to migrate to KVM based hypervisor to see if the
->>> corruption happens again?
->>
->> I had this problem with btrfs after more than a year of using btrfs and
->> vmware.
+On Mon, Sep 30, 2019 at 10:20:25AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> So it looks like some regression, although still not sure who is to blame.
+> When we have a buffered write that starts at an offset greater than or
+> equals to the file's size happening concurrently with a full ranged
+> fiemap, we can end up leaking an extent state structure.
+> 
+> Suppose we have a file with a size of 1Mb, and before the buffered write
+> and fiemap are performed, it has a single extent state in its io tree
+> representing the range from 0 to 1Mb, with the EXTENT_DELALLOC bit set.
+> 
+> The following sequence diagram shows how the memory leak happens if a
+> fiemap a buffered write, starting at offset 1Mb and with a length of
+> 4Kb, are performed concurrently.
+> 
+>           CPU 1                                                  CPU 2
+> 
+>   extent_fiemap()
+>     --> it's a full ranged fiemap
+>         range from 0 to LLONG_MAX - 1
+>         (9223372036854775807)
+> 
+>     --> locks range in the inode's
+>         io tree
+>       --> after this we have 2 extent
+>           states in the io tree:
+>           --> 1 for range [0, 1Mb[ with
+>               the bits EXTENT_LOCKED and
+>               EXTENT_DELALLOC_BITS set
+>           --> 1 for the range
+>               [1Mb, LLONG_MAX[ with
+>               the EXTENT_LOCKED bit set
+> 
+>                                                   --> start buffered write at offset
+>                                                       1Mb with a length of 4Kb
+> 
+>                                                   btrfs_file_write_iter()
+> 
+>                                                     btrfs_buffered_write()
+>                                                       --> cached_state is NULL
+> 
+>                                                       lock_and_cleanup_extent_if_need()
+>                                                         --> returns 0 and does not lock
+>                                                             range because it starts
+>                                                             at current i_size / eof
+> 
+>                                                       --> cached_state remains NULL
+> 
+>                                                       btrfs_dirty_pages()
+>                                                         btrfs_set_extent_delalloc()
+>                                                           (...)
+>                                                           __set_extent_bit()
+> 
+>                                                             --> splits extent state for range
+>                                                                 [1Mb, LLONG_MAX[ and now we
+>                                                                 have 2 extent states:
+> 
+>                                                                 --> one for the range
+>                                                                     [1Mb, 1Mb + 4Kb[ with
+>                                                                     EXTENT_LOCKED set
+>                                                                 --> another one for the range
+>                                                                     [1Mb + 4Kb, LLONG_MAX[ with
+>                                                                     EXTENT_LOCKED set as well
+> 
+>                                                             --> sets EXTENT_DELALLOC on the
+>                                                                 extent state for the range
+>                                                                 [1Mb, 1Mb + 4Kb[
+>                                                             --> caches extent state
+>                                                                 [1Mb, 1Mb + 4Kb[ into
+>                                                                 @cached_state because it has
+>                                                                 the bit EXTENT_LOCKED set
+> 
+>                                                     --> btrfs_buffered_write() ends up
+>                                                         with a non-NULL cached_state and
+>                                                         never calls anything to release its
+>                                                         reference on it, resulting in a
+>                                                         memory leak
+> 
+> Fix this by calling free_extent_state() on cached_state if the range was
+> not locked by lock_and_cleanup_extent_if_need().
+> 
+> The same issue can happen if anything else other than fiemap locks a range
+> that covers eof and beyond.
+> 
+> This could be triggered, sporadically, by test case generic/561 from the
+> fstests suite, which makes duperemove run concurrently with fsstress, and
+> duperemove does plenty of calls to fiemap. When CONFIG_BTRFS_DEBUG is set
+> the leak is reported in dmesg/syslog when removing the btrfs module with
+> a message like the following:
+> 
+>   [77100.039461] BTRFS: state leak: start 6574080 end 6582271 state 16402 in tree 0 refs 1
+> 
+> Otherwise (CONFIG_BTRFS_DEBUG not set) detectable with kmemleak.
+> 
+> CC: stable@vger.kernel.org # 4.16+
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-One more clarification. I had this problem with btrfs after switching from
-linux-4.19.52-gentoo kernel to linux-4.19.66-gentoo.
+Nice one, added to 5.4 queue, thanks.
