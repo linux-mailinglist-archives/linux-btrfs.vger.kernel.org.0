@@ -2,208 +2,183 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C50BDC276F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 22:56:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C501C273F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 22:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729833AbfI3U4J (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 16:56:09 -0400
-Received: from out1-smtp.messagingengine.com ([66.111.4.25]:55377 "EHLO
-        out1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726314AbfI3U4I (ORCPT
+        id S1727885AbfI3UvF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 16:51:05 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:46610 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726425AbfI3UvE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 16:56:08 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.nyi.internal (Postfix) with ESMTP id 5815920F60
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2019 15:57:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 30 Sep 2019 15:57:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=georgianit.com;
-         h=to:from:subject:message-id:date:mime-version:content-type
-        :content-transfer-encoding; s=fm1; bh=0ow5gPSu36aBnmNwISyYIecsnX
-        Xnhr3BV7zSh4mkbAs=; b=qFgzOMTceSdLtmnqS0tDUQ11SW81he0YF6JsscQvRX
-        Dq7L93c4GIheY+RukB6Egv4iuPtuqJrWlsf3gQgLW93HvTq6lKHlxWs5qv1ZstB2
-        eLQ3ZH+Z15uF1f5To/CUdwsK5JIaZMVai0v8j4OfCFMr9uPZekbwr+qfeQJhG5KU
-        tlbHofDBdmxdDiDYtva1YWcFQyasIAg9hqCwnTDwFOIOM+SH2SBJQ7YFpNAGzwwL
-        rei/aaK56R4ptqI10mk/efUkgW2nwA6D9UnCKHWI+a1HKN4NgyZ10EpQw0VaQxnj
-        PqPp+TCDJNomkz3Iprigf0qYfF7wNjgnDxTfEm1KE4Zg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:message-id:mime-version:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; bh=0ow5gP
-        Su36aBnmNwISyYIecsnXXnhr3BV7zSh4mkbAs=; b=drrz/8a4/vIi4r5w2vDZpO
-        Bsrej3aoz45RXVsGiKDROHPfnXZ/yru8ynb/YlelRUqfBuOfmnUmkvEsXZd9P3Kf
-        ItIXNmhNT/CXrVzg2N48xTIOcXQ+yUBq22noWFGJE/Rt/ITFaq6PVhiIkP1jHPys
-        FHRuIUjuwC6QS6+YE8XUx8TPvKVAXzAAUF1f1G3lgMXzO9I7V9nBDzIoykrbBnjk
-        DNvqa72SmDrAk8OLdWMvr+3NbcskafysTxwC6UbP85QYvrqzglBgxOp4bFXQPJ03
-        oMd+0B80z/hvBDTChUhLeOLq7MJ63WObWL5sU/I/wozthQM/vWnee7C51q+11RMQ
-        ==
-X-ME-Sender: <xms:Kl6SXcyiPwA7WMQfwfO-ZM2DIUpJGITIh96IkEODl9SeuwmHF5EkXw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedufedrgedvgddugedtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefvhffukffffgggtgfgsehtjeertd
-    dtfeejnecuhfhrohhmpeftvghmihcuifgruhhvihhnuceorhgvmhhisehgvghorhhgihgr
-    nhhithdrtghomheqnecukfhppedufeehrddvfedrvdegiedrudefudenucfrrghrrghmpe
-    hmrghilhhfrhhomheprhgvmhhisehgvghorhhgihgrnhhithdrtghomhenucevlhhushht
-    vghrufhiiigvpedt
-X-ME-Proxy: <xmx:Kl6SXZ2QOaDq0GwNqYriCNuXslev9VJ3S1HgvmpPt2C8sezz4qr2uQ>
-    <xmx:Kl6SXZyDuETYvLxEW5PoUcJfLZV5NJUKev8ty_2wa1FgZAuzGm9zWw>
-    <xmx:Kl6SXZNy_6NNGHGB_PmP_XglcBifa30mQbeV2UKMkMvspNZQOK-k_g>
-    <xmx:Kl6SXQNfu91foVMTcGbBbn4GGlOpN92y_uLYKak34T3Xk7vhd2fDjg>
-Received: from [10.0.0.6] (135-23-246-131.cpe.pppoe.ca [135.23.246.131])
-        by mail.messagingengine.com (Postfix) with ESMTPA id E15B7D6005E
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2019 15:57:29 -0400 (EDT)
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-From:   Remi Gauvin <remi@georgianit.com>
-Subject: BTRFS corruption, mounts but comes read-only
-Openpgp: url=http://www.georgianit.com/pgp/Remi%20Gauvin%20remi%40georgianit.com%20(0xEF539FF247456A6D)%20pub.asc
-Autocrypt: addr=remi@georgianit.com; prefer-encrypt=mutual;
- keydata= mQENBFogjcYBCADvI0pxdYyVkEUAIzT6HwYnZ5CAy2czT87Si5mqk4wL4Ulupwfv9TLzaj3R
- CUgHPNpFsp1n/nKKyOq1ZmE6w5YKx4I8/o9tRl+vjnJr2otfS7XizBaVV7UwziODikOimmT+
- sGNfYGcjdJ+CC567g9aAECbvnyxNlncTyUPUdmazOKhmzB4IvG8+M2u+C4c9nVkX2ucf3OuF
- t/qmeRaF8+nlkCMtAdIVh0F7HBYJzvYG3EPiKbGmbOody3OM55113uEzyw39k8WHRhhaKhi6
- 8QY9nKCPVhRFzk6wUHJa2EKbKxqeFcFzZ1ok7l7vrX3/OBk2dGOAoOJ4UX+ozAtrMqCBABEB
- AAG0IVJlbWkgR2F1dmluIDxyZW1pQGdlb3JnaWFuaXQuY29tPokBPgQTAQIAKAUCWiCNxgIb
- IwUJCWYBgAYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQ71Of8kdFam2V1Qf9Fs6LSx1i
- OoVgOzjWwiI06vJrZznjmtbJkcm/Of5onITZnB4h+tbqEyaMYYsEIk1r4oFMfKB7SDpQbADj
- 9CI2EbpygwZa24Oqv4gWEzb4c7mSJuLKTnrhmwCOtdeDQXO/uu6BZPkazDAaKHUM6XqNEVvt
- WHBaGioaV4dGxzjXALQDpLc4vDreSl9nwlTorwJR9t6u5BlDcdh3VOuYlgXjI4pCk+cihgtY
- k3KZo/El1fWFYmtSTq7m/JPpKZyb77cbzf2AbkxJuLgg9o0iVAg81LjElznI0R5UbYrJcJeh
- Jo4rvXKFYQ1qFwno1jlSXejsFA5F3FQzJe1JUAu2HlYqRrkBDQRaII3GAQgAo0Y6FX84QsDp
- R8kFEqMhpkjeVQpbwYhqBgIFJT5cBMQpZsHmnOgpYU0Jo8P3owHUFu569g6j4+wSubbh2+bt
- WL0QoFZcng0a2/j3qH98g9lAn8ZgohxavmwYINt7b+LEeDoBvq0s/0ZeXx47MOmbjROq8L/g
- QOYbIWoJLO2emyxmVo1Fg00FKkbuCEgJPW8U/7VX4EFYaIhPQv/K3mpnyWXIq5lviiMCHzxE
- jzBh/35DTLwymDdmtzWgcu1rzZ6j2s+4bTxE8mYXd4l2Xonn7v448gwvQmZJ8EPplO/pWe9F
- oISyiNxZnQNCVEO9lManKPFphfVHqJ1WEtYMiLxTkQARAQABiQElBBgBAgAPBQJaII3GAhsM
- BQkJZgGAAAoJEO9Tn/JHRWptnn0H+gOtkumwlKcad2PqLFXCt2SzVJm5rHuYZhPPq4GCdMbz
- XwuCEPXDoECFVXeiXngJmrL8+tLxvUhxUMdXtyYSPusnmFgj/EnCjQdFMLdvgvXI/wF5qj0/
- r6NKJWtx3/+OSLW0E9J/gLfimIc3OF49E3S1c35Wj+4Okx9Tpwor7Tw8KwBVbdZA6TyQF08N
- phFkhgnTK6gl2XqIHaoxPKhI9pKU5oPkg2eI27OICZrpTCppaSh3SGUp0EHPkZuhVfIxg4vF
- nato30VZr+RMHtPtx813VZ/kzj+2pC/DrwZOtqFeaqJfCi6JSik3vX9BQd9GL4mxytQBZKXz
- SY9JJa155sI=
-Message-ID: <1d65213e-6237-2c5b-4820-81a0d3bd3e53@georgianit.com>
-Date:   Mon, 30 Sep 2019 15:57:29 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Mon, 30 Sep 2019 16:51:04 -0400
+Received: by mail-qk1-f195.google.com with SMTP id 201so9085306qkd.13
+        for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2019 13:51:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lGkJf1GTYDU2ae9IJvbSbvh17mHGDRcf4FtC+g4Zhxo=;
+        b=s0C2rE9Wm5SpdA9rwt0bjS9v0xFxk4aipZcIh4ThHfhXcSwQ4Vw8Bl9hUyT2KlmbTB
+         pGJNiY1J9njNmNFP7JfDAyZtj4rfQSxQcXASgObr7LRbSoWIt/zd2absQyRMD6Pjq6eL
+         rvPPR9WAkJYj76RuSqAtWok1mZAYVfKfTDNLTc3RukQKCwJ4QWM0xLNJTBKK4Vvmc17j
+         J4ZLczrA2pYlI28aezrqQZvPe4f2fBzVf2VfQ4guazIW/QveShYCE9/SSaCrEke7ztO0
+         363PadmrqphViC37SJxR6lx/JgaNa5oGKZVrCuu7ugd3cAkfqbn9+2OFbWbkfoml4Wd0
+         OEqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lGkJf1GTYDU2ae9IJvbSbvh17mHGDRcf4FtC+g4Zhxo=;
+        b=KZkmGLHvjrHzu+0y6h68z7vSwYY6MM3sMIXgnEgOWtLGfvAZsyl+tQ2JsnwffiM+EJ
+         EWSyGUDF/CDw2iv+yukqBU19f4vALKis/74IA0w4oIlrCdHFKogWQcTpfk9mC8TG5iz5
+         ReooqUcIwNrIewv8pLOFkxUgYubNY1Itm41/j/zgyzjrXtu08oW8F2JmnKZBgl5v5iy1
+         8A+1OCIWc6aiAdpxLzoTbGaDoB4LN7TiQuvrdv07CqPpabcEKcHClO7V39QmgsoQ/PdN
+         QDwn/WM55TsZBxpIrp7Chooa0JELm3rJZgna0TMAToBGnVAV+b0vXXRFnwJbmR2Dt2+o
+         xvIw==
+X-Gm-Message-State: APjAAAXhHrRhoDT9cito46ZbmCm33nWUfugu5ymtbnydjA37CEtjveB9
+        BJiitd5oyq2hukPUTy6uaW6WmmKB+EduQA==
+X-Google-Smtp-Source: APXvYqwMUsHi77CjHjrgcuOCW4vFVME5QNrUNkmoHGOPjgrdlvQSoWLNypOnpuTQWW+7Qc5BoHVKtQ==
+X-Received: by 2002:a37:a695:: with SMTP id p143mr2213866qke.144.1569875247759;
+        Mon, 30 Sep 2019 13:27:27 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id n21sm6346506qka.83.2019.09.30.13.27.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Sep 2019 13:27:27 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Cc:     stable@vger.kernel.org, Chris Mason <clm@fb.com>
+Subject: [PATCH] btrfs: fix incorrect updating of log root tree
+Date:   Mon, 30 Sep 2019 16:27:25 -0400
+Message-Id: <20190930202725.1317-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Quick history, the system was rejecting ssh connections, and was not
-responding to ACPI shutdown, so I had to force power off.
+We've historically had reports of being unable to mount file systems
+because the tree log root couldn't be read.  Usually this is the "parent
+transid failure", but could be any of the related errors, including
+"fsid mismatch" or "bad tree block", depending on which block got
+allocated.
 
-On restart, everything looked ok, but when I did a scrub, the system
-quickly reached a point of forced read-only., (kernel Ubuntu 4.15.0-52)
+The modification of the individual log root items are serialized on the
+per-log root root_mutex.  This means that any modification to the
+per-subvol log root_item is completely protected.
 
-I installed a current Arch for recovery, (kernel 5.3.1 and btrfs-progs
-5.2.2)
+However we update the root item in the log root tree outside of the log
+root tree log_mutex.  We do this in order to allow multiple subvolumes
+to be updated in each log transaction.
 
-Here is the result of btrfs check
+This is problematic however because when we are writing the log root
+tree out we update the super block with the _current_ log root node
+information.  Since these two operations happen independently of each
+other, you can end up updating the log root tree in between writing out
+the dirty blocks and setting the super block to point at the current
+root.
 
-btrfs check /dev/sdd4
-Opening filesystem to check...
-Checking filesystem on /dev/sdd4
-UUID: cd54199e-753f-4bac-862d-c9d353d3e155
-[1/7] checking root items
-[2/7] checking extents
-corrupt extent record: key [5126707298304,169,16384]
-incorrect local backref count on 5126707298304 root 5890615246848 owner
-1507958538109110 offset 386035672063981056 found 0 wanted 11927552 back
-0x55737707d980
-backref disk bytenr does not match extent record, bytenr=5126707298304,
-ref bytenr=0
-tree backref 5126707298304 parent 5890436890624 root 5890436890624 not
-found in extent tree
-tree backref 5126707298304 parent 5890463039488 root 5890463039488 not
-found in extent tree
-tree backref 5126707298304 parent 5125855133696 root 5125855133696 not
-found in extent tree
-tree backref 5126707298304 parent 4717386399744 root 4717386399744 not
-found in extent tree
-tree backref 5126707298304 parent 5125777653760 root 5125777653760 not
-found in extent tree
-tree backref 5126707298304 parent 5126231179264 root 5126231179264 not
-found in extent tree
-tree backref 5126707298304 parent 4716869992448 root 4716869992448 not
-found in extent tree
-tree backref 5126707298304 parent 4716547129344 root 4716547129344 not
-found in extent tree
-tree backref 5126707298304 parent 4716575670272 root 4716575670272 not
-found in extent tree
-tree backref 5126707298304 parent 4418457927680 root 4418457927680 not
-found in extent tree
-tree backref 5126707298304 parent 4418653339648 root 4418653339648 not
-found in extent tree
-tree backref 5126707298304 parent 4716604555264 root 4716604555264 not
-found in extent tree
-tree backref 5126707298304 parent 4716953616384 root 4716953616384 not
-found in extent tree
-tree backref 5126707298304 parent 5890615246848 root 5890615246848 not
-found in extent tree
-tree backref 5126707298304 parent 4134522355712 root 4134522355712 not
-found in extent tree
-tree backref 5126707298304 parent 4418052734976 root 4418052734976 not
-found in extent tree
-tree backref 5126707298304 parent 4034125447168 root 4034125447168 not
-found in extent tree
-tree backref 5126707298304 parent 4034188083200 root 4034188083200 not
-found in extent tree
-tree backref 5126707298304 parent 4133585420288 root 4133585420288 not
-found in extent tree
-tree backref 5126707298304 parent 4034073935872 root 4034073935872 not
-found in extent tree
-tree backref 5126707298304 parent 4032730021888 root 4032730021888 not
-found in extent tree
-tree backref 5126707298304 parent 4033156546560 root 4033156546560 not
-found in extent tree
-tree backref 5126707298304 parent 4031949127680 root 4031949127680 not
-found in extent tree
-tree backref 5126707298304 parent 4032101384192 root 4032101384192 not
-found in extent tree
-tree backref 5126707298304 parent 4032197132288 root 4032197132288 not
-found in extent tree
-tree backref 5126707298304 parent 4034077949952 root 4034077949952 not
-found in extent tree
-tree backref 5126707298304 parent 4031202394112 root 4031202394112 not
-found in extent tree
-tree backref 5126707298304 parent 4030981292032 root 4030981292032 not
-found in extent tree
-tree backref 5126707298304 parent 3874566619136 root 3874566619136 not
-found in extent tree
-tree backref 5126707298304 parent 3874229714944 root 3874229714944 not
-found in extent tree
-tree backref 5126707298304 parent 3873657765888 root 3873657765888 not
-found in extent tree
-tree backref 5126707298304 parent 3874460270592 root 3874460270592 not
-found in extent tree
-tree backref 5126707298304 parent 4030556012544 root 4030556012544 not
-found in extent tree
-tree backref 5126707298304 parent 4031297765376 root 4031297765376 not
-found in extent tree
-tree backref 5126707298304 parent 4418354544640 root 4418354544640 not
-found in extent tree
-backpointer mismatch on [5126707298304 16384]
-bad extent [5126707298304, 5126707314688), type mismatch with chunk
-ERROR: errors found in extent allocation tree or chunk allocation
-[3/7] checking free space tree
-cache and super generation don't match, space cache will be invalidated
-[4/7] checking fs roots
-[5/7] checking only csums items (without verifying data)
-[6/7] checking root refs
-[7/7] checking quota groups skipped (not enabled on this FS)
-found 4501017206864 bytes used, error(s) found
-total csum bytes: 4386928432
-total tree bytes: 9074900992
-total fs tree bytes: 3698982912
-total extent tree bytes: 377012224
-btree space waste bytes: 1430502412
-file data blocks allocated: 16729280847872
- referenced 8948709453824
+This means we'll point at the new root node that hasn't been written
+out, instead of the one we should be pointing at.  Thus whatever garbage
+or old block we end up pointing at complains when we mount the file
+system later and try to replay the log.
 
+Fix this by copying the log's root item into a local root item copy.
+Then once we're safely under the log_root_tree->log_mutex we update the
+root item in the log_root_tree.  This way we do not modify the
+log_root_tree while we're committing it, fixing the problem.
 
+cc: stable@vger.kernel.org
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Chris Mason <clm@fb.com>
+---
+ fs/btrfs/tree-log.c | 36 +++++++++++++++++++++++++++---------
+ 1 file changed, 27 insertions(+), 9 deletions(-)
 
-Thank you.
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 7cac09a6f007..1d7f22951ef2 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -2908,7 +2908,8 @@ static int walk_log_tree(struct btrfs_trans_handle *trans,
+  * in the tree of log roots
+  */
+ static int update_log_root(struct btrfs_trans_handle *trans,
+-			   struct btrfs_root *log)
++			   struct btrfs_root *log,
++			   struct btrfs_root_item *root_item)
+ {
+ 	struct btrfs_fs_info *fs_info = log->fs_info;
+ 	int ret;
+@@ -2916,10 +2917,10 @@ static int update_log_root(struct btrfs_trans_handle *trans,
+ 	if (log->log_transid == 1) {
+ 		/* insert root item on the first sync */
+ 		ret = btrfs_insert_root(trans, fs_info->log_root_tree,
+-				&log->root_key, &log->root_item);
++				&log->root_key, root_item);
+ 	} else {
+ 		ret = btrfs_update_root(trans, fs_info->log_root_tree,
+-				&log->root_key, &log->root_item);
++				&log->root_key, root_item);
+ 	}
+ 	return ret;
+ }
+@@ -3017,6 +3018,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_root *log = root->log_root;
+ 	struct btrfs_root *log_root_tree = fs_info->log_root_tree;
++	struct btrfs_root_item new_root_item;
+ 	int log_transid = 0;
+ 	struct btrfs_log_ctx root_log_ctx;
+ 	struct blk_plug plug;
+@@ -3080,17 +3082,25 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 		goto out;
+ 	}
+ 
++	/*
++	 * We _must_ update under the root->log_mutex in order to make sure we
++	 * have a consistent view of the log root we are trying to commit at
++	 * this moment.
++	 *
++	 * We _must_ copy this into a local copy, because we are not holding the
++	 * log_root_tree->log_mutex yet.  This is important because when we
++	 * commit the log_root_tree we must have a consistent view of the
++	 * log_root_tree when we update the super block to point at the
++	 * log_root_tree bytenr.  If we update the log_root_tree here we'll race
++	 * with the commit and possibly point at the new block which we may not
++	 * have written out.
++	 */
+ 	btrfs_set_root_node(&log->root_item, log->node);
++	memcpy(&new_root_item, &log->root_item, sizeof(new_root_item));
+ 
+ 	root->log_transid++;
+ 	log->log_transid = root->log_transid;
+ 	root->log_start_pid = 0;
+-	/*
+-	 * Update or create log root item under the root's log_mutex to prevent
+-	 * races with concurrent log syncs that can lead to failure to update
+-	 * log root item because it was not created yet.
+-	 */
+-	ret = update_log_root(trans, log);
+ 	/*
+ 	 * IO has been started, blocks of the log tree have WRITTEN flag set
+ 	 * in their headers. new modifications of the log will be written to
+@@ -3111,6 +3121,14 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
+ 	mutex_unlock(&log_root_tree->log_mutex);
+ 
+ 	mutex_lock(&log_root_tree->log_mutex);
++
++	/*
++	 * Now we are safe to update the log_root_tree because we're under the
++	 * log_mutex, and we're a current writer so we're holding the commit
++	 * open until we drop the log_mutex.
++	 */
++	ret = update_log_root(trans, log, &new_root_item);
++
+ 	if (atomic_dec_and_test(&log_root_tree->log_writers)) {
+ 		/* atomic_dec_and_test implies a barrier */
+ 		cond_wake_up_nomb(&log_root_tree->log_writer_wait);
+-- 
+2.21.0
+
