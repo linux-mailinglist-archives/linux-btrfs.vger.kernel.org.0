@@ -2,23 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EC2EC1B34
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 08:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6160DC1B36
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 08:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729578AbfI3GCA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 02:02:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58690 "EHLO mx1.suse.de"
+        id S1729638AbfI3GDW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 02:03:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60244 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726121AbfI3GB7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 02:01:59 -0400
+        id S1726121AbfI3GDW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 02:03:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 34CD6B15C;
-        Mon, 30 Sep 2019 06:01:57 +0000 (UTC)
-Subject: Re: BTRFS Raid5 error during Scrub.
-To:     Robert Krig <robert.krig@render-wahnsinn.de>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>
-References: <804e7e93a00dfe954222e4f8dc820a075d9ccb79.camel@render-wahnsinn.de>
+        by mx1.suse.de (Postfix) with ESMTP id B47DAAF2B;
+        Mon, 30 Sep 2019 06:03:19 +0000 (UTC)
+Subject: Re: Btrfs volume seems to hang with any kernel newer than 4.20
+To:     Andrew Nelson <andrew.s.nelson@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CAPTELemSEXCsqXUBxh0c=qR2rWP+EUaN9qDYOb5m=g-Ujuyupw@mail.gmail.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <0fdd1282-f370-b55e-0c3f-486ad8673bcd@suse.com>
-Date:   Mon, 30 Sep 2019 09:01:56 +0300
+Message-ID: <b1c52ee1-aca9-651c-6337-b4fd2517f8d4@suse.com>
+Date:   Mon, 30 Sep 2019 09:03:18 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <804e7e93a00dfe954222e4f8dc820a075d9ccb79.camel@render-wahnsinn.de>
+In-Reply-To: <CAPTELemSEXCsqXUBxh0c=qR2rWP+EUaN9qDYOb5m=g-Ujuyupw@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,56 +79,31 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 30.09.19 г. 0:38 ч., Robert Krig wrote:
-> Hi guys. First off, I've got backups so no worries there. I'm just
-> trying to understand what's happening and which files are affected.
-> I've got a scrub running and the kernel dmesg buffer spit out the
-> following:
+On 30.09.19 г. 1:11 ч., Andrew Nelson wrote:
+> This is on a Fedora 30 system. I have tested with both 5.1 and 5.2
+> with the same result. Kernels 4.20 and older have worked fine. Not
+> sure where to start debugging the issue. Here is an example stack of
+> Vim hanging when trying to do a write to the filesystem.
 > 
-> BTRFS warning (device sda): checksum/header error at logical
-> 48781340082176 on dev /dev/sdb, physical 5651115966464: metadata leaf
-> (level 0) in tree 7
-
-This indicates you have corrupted checksum tree blocks. Concretely the
-checksum in the header does not match the data in the block.
-
-> BTRFS warning (device sda): checksum/header error at logical
-> 48781340082176 on dev /dev/sdb, physical 5651115966464: metadata leaf
-> (level 0) in tree 7
-> BTRFS error (device sda): bdev /dev/sdb errs: wr 0, rd 0, flush 0,
-> corrupt 0, gen 1
-> BTRFS error (device sda): unable to fixup (regular) error at logical
-> 48781340082176 on dev /dev/sdb
-> BTRFS warning (device sda): checksum/header error at logical
-> 48781340082176 on dev /dev/sdc, physical 5651115966464: metadata leaf
-> (level 0) in tree 7
-> BTRFS warning (device sda): checksum/header error at logical
-> 48781340082176 on dev /dev/sdc, physical 5651115966464: metadata leaf
-> (level 0) in tree 7
-> BTRFS error (device sda): bdev /dev/sdc errs: wr 0, rd 0, flush 0,
-> corrupt 0, gen 1
-> BTRFS error (device sda): unable to fixup (regular) error at logical
-> 48781340082176 on dev /dev/sdc
+> [<0>] pagecache_get_page+0x196/0x370
+> [<0>] io_ctl_prepare_pages+0x4b/0x140 [btrfs]
+> [<0>] __load_free_space_cache+0x1e1/0x600 [btrfs]
+> [<0>] load_free_space_cache+0xc1/0x170 [btrfs]
+> [<0>] cache_block_group+0x1b4/0x3d0 [btrfs]
+> [<0>] find_free_extent+0x901/0xff0 [btrfs]
+> [<0>] btrfs_reserve_extent+0xea/0x190 [btrfs]
+> [<0>] __btrfs_prealloc_file_range+0x11d/0x490 [btrfs]
+> [<0>] cache_save_setup+0x229/0x3d0 [btrfs]
+> [<0>] btrfs_start_dirty_block_groups+0x1e2/0x4d0 [btrfs]
+> [<0>] btrfs_commit_transaction+0xba/0x9a0 [btrfs]
+> [<0>] btrfs_sync_file+0x32b/0x420 [btrfs]
+> [<0>] do_fsync+0x38/0x70
+> [<0>] __x64_sys_fsync+0x10/0x20
+> [<0>] do_syscall_64+0x5f/0x1a0
+> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 > 
-> Is there any way I can find out which files are affected so that I can
-> just restore them from a backup? 
-> 
-> I'm running Debian Buster with Kernel 5.2.
 
-There was a known corruption issue in 5.2 kernel up to v5.2.15. However
-it could result in partial writes of transaction data whereas your
-report seems to indicate data has been written corrupted on-disk.
+When the hang occurs issue :
 
-As a first step run :
-
-btrfs check repair --readonly
-
-(this is a read only command so it cannot do further damage) and post
-the log to see what else btrfs check finds.
-
-> Btrfs-progs v4.20.1
-> 
-> 
-> Let me know if you need any further info.
-> 
-> 
+"echo w > /proc/sysrq-trigger" then get the output of this command from
+dmesg and post it to the mailing list.
