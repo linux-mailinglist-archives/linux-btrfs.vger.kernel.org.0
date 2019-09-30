@@ -2,90 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2D9C21FE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 15:32:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D19C2209
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 15:34:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730979AbfI3NcI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 09:32:08 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:52226 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728214AbfI3NcI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 09:32:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=jwTg4fslkkXzfCclLjZOgIaOdnKQRQ6WQVeTB5C7GPs=; b=GTsAp7UQvIcIvL7TkWfOBSdUl
-        M6EGMhlYfNT8cjQLHe/X55q53qvVOm4qHmblR+q079BsjQ5IJL6GR7NCHXZopzNuDhg6Olt9GWJZf
-        TuWtjBJdrVKCPCz5dV157Ng6PX7X3d2OWKAE5dWwmbqm+fPiwDYPLZRIsGT9W7P5WF0RA/+YKwg1V
-        ZOHTI5PeaKSpRxD64+n/Vso0SEIefZGFuhgMefh1Jc8e4GkOyMi2owWOVqPMkF1L4tFxZx/S6CMm1
-        CGRE7n3xBfoaoO/5xJs2pNSfHxGZzfESSdFdPlS3AMKKj3NdKP8XJoGmGlhxMVZVMbWyoc+BXXz04
-        KjNnO/TQQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.2 #3 (Red Hat Linux))
-        id 1iEvmW-0007wp-1A; Mon, 30 Sep 2019 13:32:04 +0000
-Date:   Mon, 30 Sep 2019 06:32:03 -0700
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Christopher Lameter <cl@linux.com>
-Cc:     Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Sterba <dsterba@suse.cz>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Ming Lei <ming.lei@redhat.com>,
-        Dave Chinner <david@fromorbit.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        linux-btrfs@vger.kernel.org, Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
- kmalloc(power-of-two)
-Message-ID: <20190930133203.GA26804@bombadil.infradead.org>
-References: <20190826111627.7505-1-vbabka@suse.cz>
- <20190826111627.7505-3-vbabka@suse.cz>
- <df8d1cf4-ff8f-1ee1-12fb-cfec39131b32@suse.cz>
- <20190923171710.GN2751@twin.jikos.cz>
- <alpine.DEB.2.21.1909242048020.17661@www.lameter.com>
- <20190924165425.a79a2dafbaf37828a931df2b@linux-foundation.org>
- <alpine.DEB.2.21.1909260005060.1508@www.lameter.com>
- <6a28a096-0e65-c7ea-9ca9-f72d68948e10@suse.cz>
- <alpine.DEB.2.21.1909272251190.21341@www.lameter.com>
+        id S1731246AbfI3NdS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 09:33:18 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55598 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729738AbfI3NdS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 09:33:18 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 1857BADD5;
+        Mon, 30 Sep 2019 13:33:17 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 49163DA88C; Mon, 30 Sep 2019 15:33:35 +0200 (CEST)
+Date:   Mon, 30 Sep 2019 15:33:35 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Aliasgar Surti <aliasgar.surti500@gmail.com>
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v2] btrfs: removed unused return variable
+Message-ID: <20190930133335.GZ2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Aliasgar Surti <aliasgar.surti500@gmail.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com, linux-btrfs@vger.kernel.org
+References: <1569848421-25978-1-git-send-email-aliasgar.surti500@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.1909272251190.21341@www.lameter.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <1569848421-25978-1-git-send-email-aliasgar.surti500@gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Sep 28, 2019 at 01:12:49AM +0000, Christopher Lameter wrote:
-> However, the layout may be different due to another allocator that prefers
-> to arrange things differently (SLOB puts multiple objects of different
-> types in the same page to save memory), if we need to add data to these
-> objects (debugging info, new metadata about the object, maybe the memcg
-> pointer, maybe other things that may come up), or other innovative
-> approaches (such as putting data of different kmem caches that are
-> commonly used together in the same page to improve locality).
+On Mon, Sep 30, 2019 at 06:30:21PM +0530, Aliasgar Surti wrote:
+> From: Aliasgar Surti <aliasgar.surti500@gmail.com>
+> 
+> Removed unused return variable and replaced it with returning
+> the value directly
 
-If we ever do start putting objects of different sizes that are commonly
-allocated together in the same page (eg inodes & dentries), then those
-aren't going to be random kmalloc() allocation; they're going to be
-special kmem caches that can specify "I don't care about alignment".
+This change has been sent several times and I give the same answer each
+time:
 
-Also, we haven't done that.  We've had a slab allocator for twenty years,
-and nobody's tried to do that.  Maybe the co-allocation would be a net
-loss (I suspect).  Or the gain is too small for the added complexity.
-Whatever way, this is a strawman.
+https://lore.kernel.org/linux-btrfs/20190418154913.GO20156@twin.jikos.cz/
 
-> The cost is an unnecessary petrification of the data layout of the memory
-> allocators.
+"When switching a fuction to return void, please check the whole
+callgraph for functions that do not properly handler errors and do
+BUG_ON. You won't see errors passed from them so this gives the
+impression no error handling is needed in the caller.
 
-Yes, it is.  And it's a cost I'm willing to pay in order to get the
-guarantee of alignment.
+This has been sent in the past, so I can point you to the 2nd paragraph
+in
+https://lore.kernel.org/linux-btrfs/20180815124425.GM24025@twin.jikos.cz/
 
+hint: btrfs_pin_extent"
