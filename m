@@ -2,36 +2,33 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E99CC1D90
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 10:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 365CDC1D9B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 11:00:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbfI3I7N (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 04:59:13 -0400
-Received: from mout.gmx.net ([212.227.17.21]:42299 "EHLO mout.gmx.net"
+        id S1730278AbfI3JA3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 05:00:29 -0400
+Received: from mout.gmx.net ([212.227.17.21]:36771 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729852AbfI3I7N (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 04:59:13 -0400
+        id S1730170AbfI3JA2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 05:00:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1569833951;
-        bh=2yDJslQkNWdGHqQ46HH+Y8T42rj6knREvYDm5Dfs0Dg=;
+        s=badeba3b8450; t=1569834021;
+        bh=xlpiXkqzAu/pz2Y7CnlJy5Crd8lhCZMyZawhjCKnjic=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=Rari+QDMhVYIKir2M+xmSkLiEub/e/PO6UxGl4V4jgNnznP6PtBzPi2F9LMFoGaqM
-         bQMXZzCiEsKCRqRJzqcfL4gs0ZhNEsJHSBmMRoNFIPmhbORb7VTOtENn1mXf9+mlVm
-         iWoz9pnmHz0vd3Lw6xyAd4its16PFHM2SPyxKLG0=
+        b=B8tCFD8bmv8WknRpWi2AMH4tx3KLsjjHz36QvbLIAYVW6+AgKJRT9m/fgs+R4R/sI
+         4yb6dM+jIVJpJSuhnzntTNQtup0W+h1lFroat96ZXWoqJwz2+O1FNtfzIFE3o4awBV
+         e4eXcyFvM+kUuQuAyUyRfzOF/SN/+8h2DrLCFDSA=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MMGRK-1iY2nY315a-00JL5a; Mon, 30
- Sep 2019 10:59:11 +0200
-Subject: Re: Btrfs partition mount error
-To:     Andrey Ivanov <andrey-ivanov-ml@yandex.ru>,
-        linux-btrfs@vger.kernel.org
-References: <79466812-e999-32d8-ce20-0589fb64a433@yandex.ru>
- <85cb7aff-5fa4-c7f7-c277-04069954d7fe@gmx.com>
- <170d6f2f-65aa-3437-be21-61ac8499460b@yandex.ru>
- <4be73e38-c8b1-8220-1e5a-c0a1287df61d@gmx.com>
- <31560d49-0d03-1e26-bb55-755a4365dce7@yandex.ru>
- <70eaf85f-751a-f540-7fde-bb489a0bb528@gmx.com>
- <e5383397-3556-1c9c-7483-79ad6d74de49@yandex.ru>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M2wGi-1iIAOW1ZQy-003OgM; Mon, 30
+ Sep 2019 11:00:21 +0200
+Subject: Re: [PATCH 2/3] btrfs-progs: check/original: Add check and repair for
+ invalid inode generation
+To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.cz>
+References: <20190924081120.6283-1-wqu@suse.com>
+ <20190924081120.6283-3-wqu@suse.com>
+ <a621612d-21b7-cc30-ff5a-2502eee5acc4@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -57,135 +54,215 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
  4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
  h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <c9d71bdd-7fe2-faaf-23c0-ede163c1d04a@gmx.com>
-Date:   Mon, 30 Sep 2019 16:59:07 +0800
+Message-ID: <c7cf2823-91b9-bb09-471c-d43a19a24f05@gmx.com>
+Date:   Mon, 30 Sep 2019 17:00:10 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.0
 MIME-Version: 1.0
-In-Reply-To: <e5383397-3556-1c9c-7483-79ad6d74de49@yandex.ru>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="IoUTHpDvT5TbgynptemSAN4WtIkXFIkNq"
-X-Provags-ID: V03:K1:98ZlC+MRwIBCQYszoUoT8ObN83a41pVd4jTzv80L8iB7xSrI0+n
- kdVkWE1YNke/0VKTF6beoRZ8DOxntN1yLoarUgRPk3lItoU1VuA+kl1McqvPnGo8+YRZYWL
- iOiDewEZsbwIdFXJEFk4kLARmTFfUKcBgpkcjv0OnZSjQCCFiartIdU6pIABXhFWnjSYt+K
- geW9sPDZRtJvT/QL1Z3Kg==
+In-Reply-To: <a621612d-21b7-cc30-ff5a-2502eee5acc4@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:UrkC6YIsdM4Eil6K1bczFe1THRQ9yzF5Hkai0oDAvaf/HgKI1MY
+ hTZchPgeEogUMAbG3w51AtK6V6xvGzE7JlLAh7fSQ/v38RxKe8zOBelLw2VOyysMD3WEy6X
+ IyceQSJeUrET5PQy/Fx4bbe4o+RKfvpL11G93/WxPY8zRFlu9QX+OumPLkXfaMwD6A7R+N3
+ 92a1O7GENOSo1gWS8b83w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:0HGPt/mIrUE=:xQ9R+1IQ3r0ilBxlY5hwi2
- 1PzlrKGXFDewV3CBf99UYdIAkH/JMxcFMNhojn8zOX9FFwFTlVN+RCTesIEfjqRqzIKFgNc9X
- RaXemhjF57QSGjBlN7GFSrvz2UtCQu7pqOX4YG3Mn/sdIyFdQMv8Ir2pj3aDMRS1WoVyB+NWV
- ePVOvr1AvZQ4Bm94dsPVT2l8HFVvbXPA/wxfjmZxYi4zIvSf0ZQq84agZ+SKvipziauRZB+K9
- j8Xj5TUrMMfT6RImkdNaWmHV0DcM6dqwnxdl8MIBobLoAB8dxuaTqtmecLP+01N0K4ixJMD89
- b/FctmrNUTMAaQ3Ibt0eySBouJov8uuaj0mk/pbucxQ/3D+2UiMYVyx2KVDBEKZfVGo7Q1pvA
- OeqhZA0RZ0sALKyE3n7R8wIsFgvTNuMFMw1v4yBLg2iKahrcThszX1vMEkahoe00ospb/x2kL
- Z+aosGbLdwQF9HB79jwvITfzc8RrzY1Wc5GR0gJyBpU1WjTD3HCD/q/mccGlNFNWy+K2uRjnG
- koaOpuxYnmaj+vgZ7wo5KtZqxScHqx763ykt2SmeIbIrubP/U3blAPcEcGLm4tYl0C7obN3FL
- q/+mY9jNaU6nn/uI1YRxUY6eLu48g6Ik+aypvpFr+QH2bJm1xcvYgZFuhht+Lni1+y+RgOzUN
- jRZYOvQwhBdZPL/zhDYZxJh1DLnqfvHNXbrHlyDojv50CMFDRL6XF0ENFplGgXa7CZ6Z0ZErl
- /euAYrNsgWkpC2C9ykcaevJp81EejKpeYGE9i6trdW8TAMCFH8WWTjzHa4d/8T6DXLDcnDdAf
- +0PILu4/Fgm5zQDHDzwx7R6oSvY1O0dufNfdyVMkLFlT0zYJhZuzNhEuXkbzSB2tQgWm9o7Zy
- nXmpVS1ALFhtev/ZoTXS7bbeSJl2r9Tunsj63wfRwOInPJPnRqGNZRlFGl7tsyah7Yq7JaBDN
- +stj+VVkWz1zYGC/87WvmTcGdNupmYwvZuzM7QN82hQJRzkwLhfPKwf12M80bn1UtVKBt9zwb
- 89wIR+6V9g3/Q/d6tsV8ZHSrbVEn6XwUQqhIXI/cDLEFspliQVoZxRfooihbg4/Gqqj0Ni2QD
- UHVhmezGBLpn63BPtPlpWEKUDDvj4hQm5jaX3RZFSoR5LLK21pV3v1rbhqDf/pTeP7e52Qsjg
- cmMNeKqot+vIoPgyofkF7ZR1wNRKEuoXFKl1FA1+rt2Pr4EsoOCO6gsyFzBprF4WIImXJZqgy
- Z2/yhU9zX8cGzXoNxSyxuqEHD7lWW/AxtjAjkRPuEsHWu2kAvLmkEL+2PIbk=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:SrNHRsz4+A0=:ANPREbJgWv4Ckbj+czeKoi
+ UVRR+EupRKR4nqXKtIqyto5Qk5E0lLBnS59hvER/+L2DHjcX488hcQ9FUciTq6a56C+disIWM
+ LiSkw/3rsoXgHHeS0XUa26+gaYsw1V4KWjiFYuP/5dk9iFtPmdWWL3WhZjqWkX2l7B9GlaI1r
+ h0pzfR7AuSp6L8dBFxHgk139p0FV4bnkee1DeQ8maN9bSCzBiqD/TZrcYA/rmF5+Vr8/SP294
+ UFJXTcb2kmKH41etq0KOl245IGaVsC8zyll9lZYNnwvpF71e0UwyI3q1AdTnlFn5/VtWEiJ8r
+ 7CtdqiwiqGAot2SGrFnk8TjEmxicQoVlCjBkQM09NUaxo4qzvInjqags6MkEOPq4CrX+eUCPx
+ 2thZYjrtCXIT8bggtAyd2GPGWu3B7CV98V6aSil93wWHAMqQCiPxQmE4szZTdXKqSxakgFrkP
+ k1YqzUD7Uigb28SAWvoD7qRkHnFG98IUK9Vpm9iinrkqWGAaGlzdK+hqBfb/92oU3ofanhM1W
+ HsFWHmqrHoaI/2IGp03TAcCWymuMdkoccEnxh70KzTvm15EmUM1qlDuC3y3JrQlyY1o8QCbN1
+ g1d6F6vXQYasGVt2Ylt3kNthmSjtOwuZ5IoBlQlV41W4awGHk3vZ2oYyBvdu3t3EOeybOJI9z
+ VuXJmfoigFVI6clxXxjxlorgQtP8ydP3kD0hm6xUaPw+Fo3ZzhtZr1XOdkyLvDioNFelCqVQG
+ jsNh5fRs7STMZZoVRv63SPojfkoYssRv2XCFOg/vDOtR+fKY4VyANIhRTFvPQCIGwRIfdkFbC
+ cwI8tEMyLW7Yfk9KMDm044KBYjXB1xd22Y+bHSArd9LDJ7v5M6TTYNGvzF8M088q5TcOEyL94
+ J/wi78otg6+EWyW1MyjLfNgXMcwsr17vuAYi9FW+2fJbXCnbFlV7oEQ+KSIIEKB348cl69+Zi
+ wmxlNjS60cdMjr9wLtN2BhVIvHWwPf234hvXmP9y6W8S3+w1R/W6NH9gtmqWqNu8TJlI+JzEX
+ 75ROlk/nvdzQATlIcSwKlMuMKWtCmosuC+grEsb/ErW2DklQquQr2xmy/JB7LCRAW0EqTFlbt
+ 5EJuPUSYobD8VSI50BbUdp3To/8oJtQpHMx/SR5uRO36xE+JJY4qID9g0hplApi8O0Zp0nK0g
+ xfbtu/w4Z+NunsOuQ1wRBRpmSvidf4907h3LZ2+CAA2TRy0kfOTxVxQ+ZW6QLbImo4yNDHZYG
+ EJ/+vaMTImy9dnuPDM/gY1YEJ7Q0MFrgk2WetQ1jgncl24fk8txkKHqCaPCI=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---IoUTHpDvT5TbgynptemSAN4WtIkXFIkNq
-Content-Type: multipart/mixed; boundary="7ujBdW20ca3YbBzrq6ifDZN4tmDjwhWyM"
-
---7ujBdW20ca3YbBzrq6ifDZN4tmDjwhWyM
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
 
-
-On 2019/9/30 =E4=B8=8B=E5=8D=884:00, Andrey Ivanov wrote:
-> On 30.09.2019 10:31, Qu Wenruo wrote:
->> For this one, I could help you by just reverting that bit, and then yo=
-u
->> may be able to continue mounting the fs or at least run btrfs check on=
-
->> it.
+On 2019/9/30 =E4=B8=8B=E5=8D=884:41, Nikolay Borisov wrote:
+>
+>
+> On 24.09.19 =D0=B3. 11:11 =D1=87., Qu Wenruo wrote:
+>> There are at least two bug reports of kernel tree-checker complaining
+>> about invalid inode generation.
 >>
->> Please prepare an environment to compile btrfs-progs (at least
->> btrfs-corrupt-block) if you want to try.
->=20
-> Great, I'm ready to do it. Environment is ready.
+>> All offending inodes seem to be caused by old kernel around 2014, with
+>> inode generation overflow.
+>>
+>> So add such check and repair ability to lowmem mode check first.
+>>
+>> This involves:
+>> - Calculate the inode generation upper limit
+>>   Unlike the original mode context, we don't have anyway to determine i=
+f
+>
+> Perhaps you meant "lowmem mode context" since in lowmem you deduce
+> whether it's a log-tree inode or not.
 
-Here it is.
+Oh, right.
 
-https://github.com/adam900710/btrfs-progs/tree/dirty_fix
+Would you mind to fix this in commit time, David?
 
-To use it:
+>
+>>   this inode belongs to log tree.
+>>   So we use super_generation + 1 as upper limit, just like what we did
+>>   in kernel tree checker.
+>>
+>> - Check if the inode generation is larger than the upper limit
+>>
+>> - Repair by resetting inode generation to current transaction
+>>   generation
+>>   The difference is, in original mode, we have a common trans handle fo=
+r
+>>   all repair and reset path for each repair.
+>>
+>> Reported-by: Charles Wright <charles.v.wright@gmail.com>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>
+> I tested that code with the image provided and it does work as expected
+> as well as it's fairly obvious what's happening. So:
+>
+> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+> Tested-by: Nikolay Borisov <nborisov@suse.com>
 
-$ ./btrfs-corrupt-block -X /dev/sdc1
-
-But please keep in mind that, the offending tree block has more problems
-than I originally thought:
-- Bad item size at slot 20
-  The original one reported by kernel.
-
-- Bad key offset at slot 9
-- Bad item size at slot 41
-  All bitflips.
-
-So all 3 bit flips happened in one leaf, it's really too rare.
-
-I really don't have any clue how this could happen.
-
-Anyway, I don't think the dirty fix is enough considering how many
-strange things I have found just in one leaf.
+Thanks for the review and test.
 
 Thanks,
 Qu
->=20
->=20
->>> I did a memtest earlier. All had passed without errors. I can do a
->>> memtest again,
->>> but it seems to me that if the memory was faulty, the system would no=
-t
->>> be stable
->>> and often hung, but the system works fine.
+>
+>> ---
+>>  check/main.c          | 50 ++++++++++++++++++++++++++++++++++++++++++-
+>>  check/mode-original.h |  1 +
+>>  2 files changed, 50 insertions(+), 1 deletion(-)
 >>
->> Indeed, especially considering that there are already two bitflips in
->> one leaf, which should be pretty rare.
+>> diff --git a/check/main.c b/check/main.c
+>> index c2d0f394..018707c8 100644
+>> --- a/check/main.c
+>> +++ b/check/main.c
+>> @@ -604,6 +604,8 @@ static void print_inode_error(struct btrfs_root *ro=
+ot, struct inode_record *rec)
+>>  	if (errors & I_ERR_INVALID_IMODE)
+>>  		fprintf(stderr, ", invalid inode mode bit 0%o",
+>>  			rec->imode & ~07777);
+>> +	if (errors & I_ERR_INVALID_GEN)
+>> +		fprintf(stderr, ", invalid inode generation");
+>>  	fprintf(stderr, "\n");
 >>
->> Any out-of-tree kernel modules?=20
->=20
-> I only have vmware out-of-tree kernel modules.
->=20
->=20
->> Or would you like to try v5.2.15 kernel,
->> which has a self detection for such problem.
->=20
-> If I understand correctly, if I install v5.2.15 or later kernel
-> then I'll fix my /dev/sda4?
-
-
---7ujBdW20ca3YbBzrq6ifDZN4tmDjwhWyM--
-
---IoUTHpDvT5TbgynptemSAN4WtIkXFIkNq
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2Rw9sACgkQwj2R86El
-/qj0AggAgPXEALwghc6oXDVqrx2RGVSol+C+E1hQXI6XTthVsInlOB7s4G69E1KY
-7tHD2bw/wfGZpkGXj0owIde81hwOcZ0eXuT9Unjo8rvmKvTrM9XaVtfFTQOpcRbN
-c5dAtpO85cxuMINkUW815B4CalTkOMN5HwLfEM92ee/SAf3meSBDWywesm49MaOo
-UWaEFXfN8ln0g1jlDYcszPF0hcYpHhdGKNBUTjKrRbXxasaQ9dKVbSIlxMvkttrT
-vpZV4fWsrrpFuZ/cMSQBSJE3aVcdw64xJLNd5idh9awPMPEl+KK2b0Dgrpk19ZPU
-+HtDAAn6xLI50uULG7z+ZlLlL18Q4w==
-=mcmN
------END PGP SIGNATURE-----
-
---IoUTHpDvT5TbgynptemSAN4WtIkXFIkNq--
+>>  	/* Print the holes if needed */
+>> @@ -857,6 +859,7 @@ static int process_inode_item(struct extent_buffer =
+*eb,
+>>  {
+>>  	struct inode_record *rec;
+>>  	struct btrfs_inode_item *item;
+>> +	u64 gen_uplimit;
+>>  	u64 flags;
+>>
+>>  	rec =3D active_node->current;
+>> @@ -879,6 +882,13 @@ static int process_inode_item(struct extent_buffer=
+ *eb,
+>>  	if (S_ISLNK(rec->imode) &&
+>>  	    flags & (BTRFS_INODE_IMMUTABLE | BTRFS_INODE_APPEND))
+>>  		rec->errors |=3D I_ERR_ODD_INODE_FLAGS;
+>> +	/*
+>> +	 * We don't have accurate root info to determine the correct
+>> +	 * inode generation uplimit, use super_generation + 1 anyway
+>> +	 */
+>> +	gen_uplimit =3D btrfs_super_generation(global_info->super_copy) + 1;
+>> +	if (btrfs_inode_generation(eb, item) > gen_uplimit)
+>> +		rec->errors |=3D I_ERR_INVALID_GEN;
+>>  	maybe_free_inode_rec(&active_node->inode_cache, rec);
+>>  	return 0;
+>>  }
+>> @@ -2774,6 +2784,41 @@ static int repair_imode_original(struct btrfs_tr=
+ans_handle *trans,
+>>  	return ret;
+>>  }
+>>
+>> +static int repair_inode_gen_original(struct btrfs_trans_handle *trans,
+>> +				     struct btrfs_root *root,
+>> +				     struct btrfs_path *path,
+>> +				     struct inode_record *rec)
+>> +{
+>> +	struct btrfs_inode_item *ii;
+>> +	struct btrfs_key key;
+>> +	int ret;
+>> +
+>> +	key.objectid =3D rec->ino;
+>> +	key.offset =3D 0;
+>> +	key.type =3D BTRFS_INODE_ITEM_KEY;
+>> +
+>> +	ret =3D btrfs_search_slot(trans, root, &key, path, 0, 1);
+>> +	if (ret > 0) {
+>> +		ret =3D -ENOENT;
+>> +		error("no inode item found for ino %llu", rec->ino);
+>> +		return ret;
+>> +	}
+>> +	if (ret < 0) {
+>> +		errno =3D -ret;
+>> +		error("failed to search inode item for ino %llu: %m", rec->ino);
+>> +		return ret;
+>> +	}
+>> +	ii =3D btrfs_item_ptr(path->nodes[0], path->slots[0],
+>> +			    struct btrfs_inode_item);
+>> +	btrfs_set_inode_generation(path->nodes[0], ii, trans->transid);
+>> +	btrfs_mark_buffer_dirty(path->nodes[0]);
+>> +	btrfs_release_path(path);
+>> +	printf("resetting inode generation to %llu for ino %llu\n",
+>> +		trans->transid, rec->ino);
+>> +	rec->errors &=3D ~I_ERR_INVALID_GEN;
+>> +	return 0;
+>> +}
+>> +
+>>  static int try_repair_inode(struct btrfs_root *root, struct inode_reco=
+rd *rec)
+>>  {
+>>  	struct btrfs_trans_handle *trans;
+>> @@ -2794,7 +2839,8 @@ static int try_repair_inode(struct btrfs_root *ro=
+ot, struct inode_record *rec)
+>>  			     I_ERR_FILE_NBYTES_WRONG |
+>>  			     I_ERR_INLINE_RAM_BYTES_WRONG |
+>>  			     I_ERR_MISMATCH_DIR_HASH |
+>> -			     I_ERR_UNALIGNED_EXTENT_REC)))
+>> +			     I_ERR_UNALIGNED_EXTENT_REC |
+>> +			     I_ERR_INVALID_GEN)))
+>>  		return rec->errors;
+>>
+>>  	/*
+>> @@ -2829,6 +2875,8 @@ static int try_repair_inode(struct btrfs_root *ro=
+ot, struct inode_record *rec)
+>>  		ret =3D repair_unaligned_extent_recs(trans, root, &path, rec);
+>>  	if (!ret && rec->errors & I_ERR_INVALID_IMODE)
+>>  		ret =3D repair_imode_original(trans, root, &path, rec);
+>> +	if (!ret && rec->errors & I_ERR_INVALID_GEN)
+>> +		ret =3D repair_inode_gen_original(trans, root, &path, rec);
+>>  	btrfs_commit_transaction(trans, root);
+>>  	btrfs_release_path(&path);
+>>  	return ret;
+>> diff --git a/check/mode-original.h b/check/mode-original.h
+>> index 78d6bb30..b075a95c 100644
+>> --- a/check/mode-original.h
+>> +++ b/check/mode-original.h
+>> @@ -185,6 +185,7 @@ struct unaligned_extent_rec_t {
+>>  #define I_ERR_INLINE_RAM_BYTES_WRONG	(1 << 17)
+>>  #define I_ERR_MISMATCH_DIR_HASH		(1 << 18)
+>>  #define I_ERR_INVALID_IMODE		(1 << 19)
+>> +#define I_ERR_INVALID_GEN		(1 << 20)
+>>
+>>  struct inode_record {
+>>  	struct list_head backrefs;
+>>
