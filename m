@@ -2,127 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F00EC2032
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 13:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB7EC2079
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 14:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbfI3LxQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 07:53:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58078 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726952AbfI3LxQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 07:53:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EB70DB126;
-        Mon, 30 Sep 2019 11:53:13 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: removed unused return variable
-To:     Aliasgar Surti <aliasgar.surti500@gmail.com>, clm@fb.com,
-        David Sterba <dsterba@suse.com>, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org
-References: <1569842265-32084-1-git-send-email-aliasgar.surti500@gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <ba5b0d77-5780-f883-f491-52505b2bd8a5@suse.com>
-Date:   Mon, 30 Sep 2019 14:53:12 +0300
+        id S1729988AbfI3MRl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 08:17:41 -0400
+Received: from forward101o.mail.yandex.net ([37.140.190.181]:50579 "EHLO
+        forward101o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726784AbfI3MRl (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 08:17:41 -0400
+X-Greylist: delayed 408 seconds by postgrey-1.27 at vger.kernel.org; Mon, 30 Sep 2019 08:17:40 EDT
+Received: from mxback3o.mail.yandex.net (mxback3o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::1d])
+        by forward101o.mail.yandex.net (Yandex) with ESMTP id 69B913C0199C;
+        Mon, 30 Sep 2019 15:10:51 +0300 (MSK)
+Received: from iva7-f08b2a8dca2b.qloud-c.yandex.net (iva7-f08b2a8dca2b.qloud-c.yandex.net [2a02:6b8:c0c:6e00:0:640:f08b:2a8d])
+        by mxback3o.mail.yandex.net (nwsmtp/Yandex) with ESMTP id mt2MDYVJsF-ApJmgFU8;
+        Mon, 30 Sep 2019 15:10:51 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1569845451;
+        bh=QljZ0rZLNbLxvK9+AAf8gBHz/Z0scpWrbTgKp/r7k0A=;
+        h=In-Reply-To:From:Date:References:To:Subject:Message-ID;
+        b=M3sfQmqucOD1CXkmHv6xEzYjssH6a88EWIUhXwMX3EFLfW9Ff3QUcXifZNAZ/wvH+
+         aLgtjd2S9GU1JELH3+73IKI+Tu6EfpBqbmFlZ7QcoanhhVi9gCoAxNmE6/B4smZofZ
+         Byi97sDeK3x0hRl0kehKLFAvj+7ZcChQIPJu0yOE=
+Authentication-Results: mxback3o.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by iva7-f08b2a8dca2b.qloud-c.yandex.net (nwsmtp/Yandex) with ESMTPSA id UVUOILCfaa-Aoru1hTb;
+        Mon, 30 Sep 2019 15:10:50 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: Btrfs partition mount error
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <79466812-e999-32d8-ce20-0589fb64a433@yandex.ru>
+ <85cb7aff-5fa4-c7f7-c277-04069954d7fe@gmx.com>
+ <170d6f2f-65aa-3437-be21-61ac8499460b@yandex.ru>
+ <4be73e38-c8b1-8220-1e5a-c0a1287df61d@gmx.com>
+ <31560d49-0d03-1e26-bb55-755a4365dce7@yandex.ru>
+ <70eaf85f-751a-f540-7fde-bb489a0bb528@gmx.com>
+ <e5383397-3556-1c9c-7483-79ad6d74de49@yandex.ru>
+ <c9d71bdd-7fe2-faaf-23c0-ede163c1d04a@gmx.com>
+ <c3ecfeb9-2900-3406-4d92-e40021753310@yandex.ru>
+ <1ca0434b-3ae6-bbbe-efd3-06cab9089782@gmx.com>
+ <fb259ee2-c9e2-f44d-ce5b-b3f688565c28@yandex.ru>
+ <bf5265b7-96a1-5f98-07f8-947b981ac364@gmx.com>
+ <245b13f7-20c9-3ab4-6e9f-0ed32f4d1c79@gmx.com>
+From:   Andrey Ivanov <andrey-ivanov-ml@yandex.ru>
+Message-ID: <27515deb-5225-4349-2406-132b5190f7cb@yandex.ru>
+Date:   Mon, 30 Sep 2019 15:10:50 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1569842265-32084-1-git-send-email-aliasgar.surti500@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <245b13f7-20c9-3ab4-6e9f-0ed32f4d1c79@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: ru-RU
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 30.09.19 г. 14:17 ч., Aliasgar Surti wrote:
-> From: Aliasgar Surti <aliasgar.surti500@gmail.com>
 > 
-> Removed unused return variable and replaced it with returning
-> the value directly
+> We have another report internally about a similar corruption (multiple
+> bit flips in a single fs), and they are also using VMware, along with
+> VMware guest kernel modules.
 > 
-> Signed-off-by: Aliasgar Surti <aliasgar.surti500@gmail.com>
+> Would you mind to migrate to KVM based hypervisor to see if the
+> corruption happens again?
 
-Actually this function should be turned to void and even the declaration
-at the top of disk-io can be removed.
-
-> ---
->  fs/btrfs/disk-io.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 044981c..c80fa67 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -4255,7 +4255,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
->  	struct rb_node *node;
->  	struct btrfs_delayed_ref_root *delayed_refs;
->  	struct btrfs_delayed_ref_node *ref;
-> -	int ret = 0;
->  
->  	delayed_refs = &trans->delayed_refs;
->  
-> @@ -4263,7 +4262,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
->  	if (atomic_read(&delayed_refs->num_entries) == 0) {
->  		spin_unlock(&delayed_refs->lock);
->  		btrfs_info(fs_info, "delayed_refs has NO entry");
-> -		return ret;
-> +		return 0;
->  	}
->  
->  	while ((node = rb_first_cached(&delayed_refs->href_root)) != NULL) {
-> @@ -4307,7 +4306,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
->  
->  	spin_unlock(&delayed_refs->lock);
->  
-> -	return ret;
-> +	return 0;
->  }
->  
->  static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
-> 
+I had this problem with btrfs after more than a year of using btrfs and vmware.
+If I switch to KVM based hypervisor, then I am not sure that this problem will occur again
+in a short period of time.
+I used virtualbox earlier, but switched to vmware because virtualbox has slow graphics.
