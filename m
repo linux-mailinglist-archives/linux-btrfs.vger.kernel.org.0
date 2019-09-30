@@ -2,52 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21E4CC282E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 23:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B8D2C281B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 23:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732519AbfI3VGB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 17:06:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732517AbfI3VF5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 17:05:57 -0400
-Subject: Re: [GIT PULL] Btrfs fixes for 5.4-rc2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569864625;
-        bh=Lt1tLI/vGjcqVnueWsPgg4QYQ4vOpKjkWPbCcwmMOUU=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=ZpzzFho/T39gxcP5rCXed6xY6D8l6G+HUXIYAeeeaQtQMH3JysMqgfZeptXy/g+bW
-         VtZRW+BGdxkfhrgXgI6MD3i0P2/UmhbueqtVVHhkLfQSPak6cwTdvryz6xfUKKYycr
-         eUBiGX58QquKlDVM2QXnZfDmlom6Q0c8kFNbblTA=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1569852875.git.dsterba@suse.com>
-References: <cover.1569852875.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1569852875.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc1-tag
-X-PR-Tracked-Commit-Id: d4e204948fe3e0dc8e1fbf3f8f3290c9c2823be3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bb48a59135926ece9b1361e8b96b33fc658830bc
-Message-Id: <156986462567.9141.8547553588030012107.pr-tracker-bot@kernel.org>
-Date:   Mon, 30 Sep 2019 17:30:25 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1732472AbfI3VDu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 17:03:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47568 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1732102AbfI3VDu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 17:03:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 9F5FFAC2E;
+        Mon, 30 Sep 2019 17:34:05 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 921CADA88C; Mon, 30 Sep 2019 19:34:23 +0200 (CEST)
+Date:   Mon, 30 Sep 2019 19:34:23 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH][v3] btrfs: use refcount_inc_not_zero in kill_all_nodes
+Message-ID: <20190930173423.GA2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20190926122932.7369-1-josef@toxicpanda.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190926122932.7369-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Mon, 30 Sep 2019 16:25:08 +0200:
+On Thu, Sep 26, 2019 at 08:29:32AM -0400, Josef Bacik wrote:
+> We hit the following warning while running down a different problem
+> 
+> [ 6197.175850] ------------[ cut here ]------------
+> [ 6197.185082] refcount_t: underflow; use-after-free.
+> [ 6197.194704] WARNING: CPU: 47 PID: 966 at lib/refcount.c:190 refcount_sub_and_test_checked+0x53/0x60
+> [ 6197.521792] Call Trace:
+> [ 6197.526687]  __btrfs_release_delayed_node+0x76/0x1c0
+> [ 6197.536615]  btrfs_kill_all_delayed_nodes+0xec/0x130
+> [ 6197.546532]  ? __btrfs_btree_balance_dirty+0x60/0x60
+> [ 6197.556482]  btrfs_clean_one_deleted_snapshot+0x71/0xd0
+> [ 6197.566910]  cleaner_kthread+0xfa/0x120
+> [ 6197.574573]  kthread+0x111/0x130
+> [ 6197.581022]  ? kthread_create_on_node+0x60/0x60
+> [ 6197.590086]  ret_from_fork+0x1f/0x30
+> [ 6197.597228] ---[ end trace 424bb7ae00509f56 ]---
+> 
+> This is because the free side drops the ref without the lock, and then
+> takes the lock if our refcount is 0.  So you can have nodes on the tree
+> that have a refcount of 0.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc1-tag
+This sounds like breaking the assumptions of the refcounts, if the
+object is in the tree it should not be accessible by anything else than
+the freeing code, with refs == 0.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bb48a59135926ece9b1361e8b96b33fc658830bc
+Now the delayed nodes do not follow that and there were bugs where the 0
+was increased again (ec35e48b286959991c "btrfs: fix refcount_t usage
+when deleting btrfs_delayed_nodes").
 
-Thank you!
+Your patch fixes another instance, I still see some other refcount_inc
+that seem to be safe but the call to refcount_inc_not_zero should have a
+comment, like is in the mentioned commit.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+> Fix this by zero'ing out that element in our
+> temporary array so we don't try to kill it again.
+
+The fix looks correct.
