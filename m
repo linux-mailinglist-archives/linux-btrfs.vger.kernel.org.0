@@ -2,156 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A79AEC21D0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 15:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2D9C21FE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 15:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731360AbfI3NVf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 09:21:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51460 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731356AbfI3NVf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 09:21:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8EC93ACA5;
-        Mon, 30 Sep 2019 13:21:33 +0000 (UTC)
-Subject: Re: [PATCH v2] btrfs: removed unused return variable
-To:     Aliasgar Surti <aliasgar.surti500@gmail.com>, clm@fb.com,
-        David Sterba <dsterba@suse.com>, josef@toxicpanda.com,
-        linux-btrfs@vger.kernel.org
-References: <1569848421-25978-1-git-send-email-aliasgar.surti500@gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <8a7b6399-bf90-b6f2-57a0-1ddb42419714@suse.com>
-Date:   Mon, 30 Sep 2019 16:21:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1730979AbfI3NcI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 09:32:08 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:52226 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728214AbfI3NcI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 09:32:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=jwTg4fslkkXzfCclLjZOgIaOdnKQRQ6WQVeTB5C7GPs=; b=GTsAp7UQvIcIvL7TkWfOBSdUl
+        M6EGMhlYfNT8cjQLHe/X55q53qvVOm4qHmblR+q079BsjQ5IJL6GR7NCHXZopzNuDhg6Olt9GWJZf
+        TuWtjBJdrVKCPCz5dV157Ng6PX7X3d2OWKAE5dWwmbqm+fPiwDYPLZRIsGT9W7P5WF0RA/+YKwg1V
+        ZOHTI5PeaKSpRxD64+n/Vso0SEIefZGFuhgMefh1Jc8e4GkOyMi2owWOVqPMkF1L4tFxZx/S6CMm1
+        CGRE7n3xBfoaoO/5xJs2pNSfHxGZzfESSdFdPlS3AMKKj3NdKP8XJoGmGlhxMVZVMbWyoc+BXXz04
+        KjNnO/TQQ==;
+Received: from willy by bombadil.infradead.org with local (Exim 4.92.2 #3 (Red Hat Linux))
+        id 1iEvmW-0007wp-1A; Mon, 30 Sep 2019 13:32:04 +0000
+Date:   Mon, 30 Sep 2019 06:32:03 -0700
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Christopher Lameter <cl@linux.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Sterba <dsterba@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Ming Lei <ming.lei@redhat.com>,
+        Dave Chinner <david@fromorbit.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Christoph Hellwig <hch@lst.de>, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        linux-btrfs@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH v2 2/2] mm, sl[aou]b: guarantee natural alignment for
+ kmalloc(power-of-two)
+Message-ID: <20190930133203.GA26804@bombadil.infradead.org>
+References: <20190826111627.7505-1-vbabka@suse.cz>
+ <20190826111627.7505-3-vbabka@suse.cz>
+ <df8d1cf4-ff8f-1ee1-12fb-cfec39131b32@suse.cz>
+ <20190923171710.GN2751@twin.jikos.cz>
+ <alpine.DEB.2.21.1909242048020.17661@www.lameter.com>
+ <20190924165425.a79a2dafbaf37828a931df2b@linux-foundation.org>
+ <alpine.DEB.2.21.1909260005060.1508@www.lameter.com>
+ <6a28a096-0e65-c7ea-9ca9-f72d68948e10@suse.cz>
+ <alpine.DEB.2.21.1909272251190.21341@www.lameter.com>
 MIME-Version: 1.0
-In-Reply-To: <1569848421-25978-1-git-send-email-aliasgar.surti500@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.1909272251190.21341@www.lameter.com>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Sat, Sep 28, 2019 at 01:12:49AM +0000, Christopher Lameter wrote:
+> However, the layout may be different due to another allocator that prefers
+> to arrange things differently (SLOB puts multiple objects of different
+> types in the same page to save memory), if we need to add data to these
+> objects (debugging info, new metadata about the object, maybe the memcg
+> pointer, maybe other things that may come up), or other innovative
+> approaches (such as putting data of different kmem caches that are
+> commonly used together in the same page to improve locality).
 
+If we ever do start putting objects of different sizes that are commonly
+allocated together in the same page (eg inodes & dentries), then those
+aren't going to be random kmalloc() allocation; they're going to be
+special kmem caches that can specify "I don't care about alignment".
 
-On 30.09.19 г. 16:00 ч., Aliasgar Surti wrote:
-> From: Aliasgar Surti <aliasgar.surti500@gmail.com>
-> 
-> Removed unused return variable and replaced it with returning
-> the value directly
+Also, we haven't done that.  We've had a slab allocator for twenty years,
+and nobody's tried to do that.  Maybe the co-allocation would be a net
+loss (I suspect).  Or the gain is too small for the added complexity.
+Whatever way, this is a strawman.
 
-The changelog could be expanded, something like:
+> The cost is an unnecessary petrification of the data layout of the memory
+> allocators.
 
-btrfs_destroy_delayed_refs always returns 0 so it can be converted to
-void. While at it also remove the unnecessary forward declaration in
-disk-io.c
+Yes, it is.  And it's a cost I'm willing to pay in order to get the
+guarantee of alignment.
 
-> 
-> Signed-off-by: Aliasgar Surti <aliasgar.surti500@gmail.com>
-
-Code wise it's ok:
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-> ---
-> v2: Made btrfs_destroy_delayed_refs() as void and removed its declaration
-> ---
->  fs/btrfs/disk-io.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 044981c..0a8243a 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -52,8 +52,6 @@
->  static const struct extent_io_ops btree_extent_io_ops;
->  static void end_workqueue_fn(struct btrfs_work *work);
->  static void btrfs_destroy_ordered_extents(struct btrfs_root *root);
-> -static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
-> -				      struct btrfs_fs_info *fs_info);
->  static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root);
->  static int btrfs_destroy_marked_extents(struct btrfs_fs_info *fs_info,
->  					struct extent_io_tree *dirty_pages,
-> @@ -4249,13 +4247,12 @@ static void btrfs_destroy_all_ordered_extents(struct btrfs_fs_info *fs_info)
->  	btrfs_wait_ordered_roots(fs_info, U64_MAX, 0, (u64)-1);
->  }
->  
-> -static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
-> +static void btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
->  				      struct btrfs_fs_info *fs_info)
-                                       ^^^^^^
-nit: It's good practice to also adjust the alignment of following lines.
-
->  {
->  	struct rb_node *node;
->  	struct btrfs_delayed_ref_root *delayed_refs;
->  	struct btrfs_delayed_ref_node *ref;
-> -	int ret = 0;
->  
->  	delayed_refs = &trans->delayed_refs;
->  
-> @@ -4263,7 +4260,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
->  	if (atomic_read(&delayed_refs->num_entries) == 0) {
->  		spin_unlock(&delayed_refs->lock);
->  		btrfs_info(fs_info, "delayed_refs has NO entry");
-> -		return ret;
-> +		return;
->  	}
->  
->  	while ((node = rb_first_cached(&delayed_refs->href_root)) != NULL) {
-> @@ -4306,8 +4303,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
->  	}
->  
->  	spin_unlock(&delayed_refs->lock);
-> -
-> -	return ret;
->  }
->  
->  static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
-> 
