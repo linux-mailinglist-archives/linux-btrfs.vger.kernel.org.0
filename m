@@ -2,101 +2,238 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75017C1FE1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 13:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65BFEC2003
+	for <lists+linux-btrfs@lfdr.de>; Mon, 30 Sep 2019 13:36:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730559AbfI3LSH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 07:18:07 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:33396 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730419AbfI3LSH (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 07:18:07 -0400
-Received: by mail-pf1-f194.google.com with SMTP id q10so5441639pfl.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 30 Sep 2019 04:18:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=IPdAp3zoQsgkk/b9hPFlbqP9Kw9IT+uTu0lMeJnX6u0=;
-        b=HwDCVyn8GxrT5PmncN1h0TSIaS7GxNqX6pVgsTxKH9+lqxgV4fV7XumcmOim3Tujnv
-         qvQj1fhSBctBzVugy0BTxzOwDjn9Qf8WACx4jHeNCuByPUAVLetiSjhiW/rPGVXFM2o6
-         2DCvf6jHaPY7/FcwmHav7lQ8IYL1yajnh1m66ipVcCWGS2XtmRUqruxxghHkJDVDYwEg
-         GA73kf1dkns0OTp4d/lQtAXBOm7gu4MuprLEEtV452bAia8t+fnGwn5dxRRGX3+UEqU/
-         5dmwAUh6VE3Y1ePsZEvWNVDUKQIDSKq/ph/6x44u+Dt8tLoqvV++Zg/qVqOz9ssTeVlq
-         TGQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=IPdAp3zoQsgkk/b9hPFlbqP9Kw9IT+uTu0lMeJnX6u0=;
-        b=Tdeq+w792kfkUu5k6BIFgkrjQA/KvVYr1yiFkgjUPBwhPpGqUA1BQfl7WiZMY/id74
-         ZPf8UoArjE2QH00z8flr7dTcM9hWnf+GgoPnvRjOt7koLzT4+3LdhHkq6IiGpmsTqxTa
-         xdevdWJ8k8Vh5ZvM43QRQ2HvnGYEATYpGi18Cue3rOntesTAcvJ1uLSI6twQVJihp963
-         OvtTSrRk9Uj5isH2eMXQ4KCv4xkFiAwztO2wiztmGP1bKWiYhoOj61qweb8LSEDwhWRc
-         ttTQfZcfMI7Iwxy47KNtgT8GnJ8/9ni1GF1sdAtbnKxtqFObGuE9wmmh5m9Jz8Rgl/C3
-         4E/A==
-X-Gm-Message-State: APjAAAWeabSLhXxlZQgr/JNZW7XqEDJQK7oL27eIppkryb8EK2/HSXY3
-        JDt1baTwMx5ib57EL3LCaM4=
-X-Google-Smtp-Source: APXvYqwBk0/89GsDfK82my30yqg+rZ4d0HpTNjLHV63mm71QYd3oGn4zl/iJH3eE5az4LZHjEt7ctw==
-X-Received: by 2002:a63:eb18:: with SMTP id t24mr23495675pgh.214.1569842286345;
-        Mon, 30 Sep 2019 04:18:06 -0700 (PDT)
-Received: from localhost.localdomain ([2401:4900:1951:51d2:46:3a23:6862:a9bf])
-        by smtp.gmail.com with ESMTPSA id 192sm12838996pfb.110.2019.09.30.04.18.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Mon, 30 Sep 2019 04:18:05 -0700 (PDT)
-From:   Aliasgar Surti <aliasgar.surti500@gmail.com>
-X-Google-Original-From: Aliasgar Surti
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-Cc:     Aliasgar Surti <aliasgar.surti500@gmail.com>
-Subject: [PATCH] btrfs: removed unused return variable
-Date:   Mon, 30 Sep 2019 16:47:45 +0530
-Message-Id: <1569842265-32084-1-git-send-email-aliasgar.surti500@gmail.com>
-X-Mailer: git-send-email 2.7.4
+        id S1729404AbfI3Lgk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 30 Sep 2019 07:36:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52380 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727215AbfI3Lgk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 30 Sep 2019 07:36:40 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 134C0AD79;
+        Mon, 30 Sep 2019 11:36:37 +0000 (UTC)
+Subject: Re: [PATCH 1/3] btrfs-progs: check/lowmem: Add check and repair for
+ invalid inode generation
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc:     Charles Wright <charles.v.wright@gmail.com>
+References: <20190924081120.6283-1-wqu@suse.com>
+ <20190924081120.6283-2-wqu@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <373ac9c6-ecdc-7688-5c28-791131b67f92@suse.com>
+Date:   Mon, 30 Sep 2019 14:36:35 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20190924081120.6283-2-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Aliasgar Surti <aliasgar.surti500@gmail.com>
 
-Removed unused return variable and replaced it with returning
-the value directly
 
-Signed-off-by: Aliasgar Surti <aliasgar.surti500@gmail.com>
----
- fs/btrfs/disk-io.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+On 24.09.19 г. 11:11 ч., Qu Wenruo wrote:
+> There are at least two bug reports of kernel tree-checker complaining
+> about invalid inode generation.
+> 
+> All offending inodes seem to be caused by old kernel around 2014, with
+> inode generation overflow.
+> 
+> So add such check and repair ability to lowmem mode check first.
+> 
+> This involves:
+> - Calculate the inode generation upper limit
+>   If it's an inode from log tree, then the upper limit is
+>   super_generation + 1, otherwise it's super_generation.
+> 
+> - Check if the inode generation is larger than the upper limit
+> 
+> - Repair by resetting inode generation to current transaction
+>   generation
+> 
+> Reported-by: Charles Wright <charles.v.wright@gmail.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 044981c..c80fa67 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4255,7 +4255,6 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
- 	struct rb_node *node;
- 	struct btrfs_delayed_ref_root *delayed_refs;
- 	struct btrfs_delayed_ref_node *ref;
--	int ret = 0;
- 
- 	delayed_refs = &trans->delayed_refs;
- 
-@@ -4263,7 +4262,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
- 	if (atomic_read(&delayed_refs->num_entries) == 0) {
- 		spin_unlock(&delayed_refs->lock);
- 		btrfs_info(fs_info, "delayed_refs has NO entry");
--		return ret;
-+		return 0;
- 	}
- 
- 	while ((node = rb_first_cached(&delayed_refs->href_root)) != NULL) {
-@@ -4307,7 +4306,7 @@ static int btrfs_destroy_delayed_refs(struct btrfs_transaction *trans,
- 
- 	spin_unlock(&delayed_refs->lock);
- 
--	return ret;
-+	return 0;
- }
- 
- static void btrfs_destroy_delalloc_inodes(struct btrfs_root *root)
--- 
-2.7.4
+Tested-by: Nikolay Borisov <nborisov@suse.com>
 
+There is one small nit with the assert once rectified you can add:
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  check/mode-lowmem.c | 76 +++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 76 insertions(+)
+> 
+> diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+> index 5f7f101d..7af29ba9 100644
+> --- a/check/mode-lowmem.c
+> +++ b/check/mode-lowmem.c
+> @@ -2472,6 +2472,59 @@ static bool has_orphan_item(struct btrfs_root *root, u64 ino)
+>  	return false;
+>  }
+>  
+> +static int repair_inode_gen_lowmem(struct btrfs_root *root,
+> +				   struct btrfs_path *path)
+> +{
+> +	struct btrfs_trans_handle *trans;
+> +	struct btrfs_inode_item *ii;
+> +	struct btrfs_key key;
+> +	u64 transid;
+> +	int ret;
+> +
+> +	trans = btrfs_start_transaction(root, 1);
+> +	if (IS_ERR(trans)) {
+> +		ret = PTR_ERR(trans);
+> +		errno = -ret;
+> +		error("failed to start transaction for inode gen repair: %m");
+> +		return ret;
+> +	}
+> +	transid = trans->transid;
+
+> +	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+> +	ASSERT(key.type == BTRFS_INODE_ITEM_KEY);
+
+nit: This function's sole caller, check_inode_item, is guaranteed to be
+called with a path pointing to BTRFS_INODE_ITEM_KEY thanks to the logic
+in the 'for' loop in process_one_leaf. This renders the assert
+redundant. At the very least I think it should be moved to
+check_inode_item.
+
+> +
+> +	btrfs_release_path(path);
+> +
+> +	ret = btrfs_search_slot(trans, root, &key, path, 0, 1);
+> +	if (ret > 0) {
+> +		ret = -ENOENT;
+> +		error("no inode item found for ino %llu", key.objectid);
+> +		goto error;
+> +	}
+> +	if (ret < 0) {
+> +		errno = -ret;
+> +		error("failed to find inode item for ino %llu: %m",
+> +		      key.objectid);
+> +		goto error;
+> +	}
+> +	ii = btrfs_item_ptr(path->nodes[0], path->slots[0],
+> +			    struct btrfs_inode_item);
+> +	btrfs_set_inode_generation(path->nodes[0], ii, trans->transid);
+> +	btrfs_mark_buffer_dirty(path->nodes[0]);
+> +	ret = btrfs_commit_transaction(trans, root);
+> +	if (ret < 0) {
+> +		errno = -ret;
+> +		error("failed to commit transaction: %m");
+> +		goto error;
+> +	}
+> +	printf("reseting inode generation to %llu for ino %llu\n",
+> +		transid, key.objectid);
+> +	return ret;
+> +
+> +error:
+> +	btrfs_abort_transaction(trans, ret);
+> +	return ret;
+> +}
+> +
+>  /*
+>   * Check INODE_ITEM and related ITEMs (the same inode number)
+>   * 1. check link count
+> @@ -2487,6 +2540,7 @@ static int check_inode_item(struct btrfs_root *root, struct btrfs_path *path)
+>  	struct btrfs_inode_item *ii;
+>  	struct btrfs_key key;
+>  	struct btrfs_key last_key;
+> +	struct btrfs_super_block *super = root->fs_info->super_copy;
+>  	u64 inode_id;
+>  	u32 mode;
+>  	u64 flags;
+> @@ -2497,6 +2551,8 @@ static int check_inode_item(struct btrfs_root *root, struct btrfs_path *path)
+>  	u64 refs = 0;
+>  	u64 extent_end = 0;
+>  	u64 extent_size = 0;
+> +	u64 generation;
+> +	u64 gen_uplimit;
+>  	unsigned int dir;
+>  	unsigned int nodatasum;
+>  	bool is_orphan = false;
+> @@ -2527,6 +2583,7 @@ static int check_inode_item(struct btrfs_root *root, struct btrfs_path *path)
+>  	flags = btrfs_inode_flags(node, ii);
+>  	dir = imode_to_type(mode) == BTRFS_FT_DIR;
+>  	nlink = btrfs_inode_nlink(node, ii);
+> +	generation = btrfs_inode_generation(node, ii);
+>  	nodatasum = btrfs_inode_flags(node, ii) & BTRFS_INODE_NODATASUM;
+>  
+>  	if (!is_valid_imode(mode)) {
+> @@ -2540,6 +2597,25 @@ static int check_inode_item(struct btrfs_root *root, struct btrfs_path *path)
+>  		}
+>  	}
+>  
+> +	if (btrfs_super_log_root(super) != 0 &&
+> +	    root->objectid == BTRFS_TREE_LOG_OBJECTID)
+> +		gen_uplimit = btrfs_super_generation(super) + 1;
+> +	else
+> +		gen_uplimit = btrfs_super_generation(super);
+> +
+> +	if (generation > gen_uplimit) {
+> +		error(
+> +	"invalid inode generation for ino %llu, have %llu expect [0, %llu)",
+> +		      inode_id, generation, gen_uplimit);
+> +		if (repair) {
+> +			ret = repair_inode_gen_lowmem(root, path);
+> +			if (ret < 0)
+> +				err |= INVALID_GENERATION;
+> +		} else {
+> +			err |= INVALID_GENERATION;
+> +		}
+> +
+> +	}
+>  	if (S_ISLNK(mode) &&
+>  	    flags & (BTRFS_INODE_IMMUTABLE | BTRFS_INODE_APPEND)) {
+>  		err |= INODE_FLAGS_ERROR;
+> 
