@@ -2,95 +2,161 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DFFC3FD6
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 20:29:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF6BFC3FDC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 20:30:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728342AbfJAS2H (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Oct 2019 14:28:07 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:42534 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727537AbfJAS2H (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 1 Oct 2019 14:28:07 -0400
-Received: by mail-qk1-f195.google.com with SMTP id f16so12217794qkl.9
-        for <linux-btrfs@vger.kernel.org>; Tue, 01 Oct 2019 11:28:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jp6HxZcJLw5YfhlsWMDzaXRHAFoWLF9q41S/6Nbbz1U=;
-        b=LLwsBQX5Fx84fXPoo6BAP5Yt3MhQDM/kPhX5lzxKVHYqp5fqITUSH9IuPOB8BvpUBh
-         0uqgTjZ96hA2xDt4H+gSqp1fkqSpDvwSsgqzdrhGblLDAU5WxBS1IG7gn+jzyj7lzLM0
-         +ZQl5xVnjWIUXgsH3s2Smjw6ZfWvnbW/zI6QMUN/BoPzOvhGInQvqtu4wprjj5E8UQSa
-         UBUjppcBOqWA0zstfaZvUdlIe16bX8ZyOSURN5Ul6xGcsqvPbnyntoY/xo2T4O/r0L86
-         m0+qFMrEjVuCw6V0bvMSYhequ8WD5NsEAbmfLBDaw+FZkwhWOui5brBMu9iZm4UVHqIQ
-         Xeeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jp6HxZcJLw5YfhlsWMDzaXRHAFoWLF9q41S/6Nbbz1U=;
-        b=GSAT9mviDMqinA8QeMHT+XG+KD/pS5y3gwhlBZ7wLe2bjGfDABHtRWdX9/pg4KtvgE
-         jgEqMBsIAgPQbjEWWftwtPKYSI1b/BYPZe2e5PLn1IGEgeSu3U1yCpjvEDaxL3U15H+h
-         Kf9FgpgLPJOYBNhP5BIzAmfsdGLmb6/eQvTE98+yswgMdrPyDjLCmZgz5F4iGetS3yRu
-         i+KbaBw2CAhiEpBHuzASEBYC6HJEYa0gKL/T92IQaPaoKrPoIF6iVX4jwa0b+h8+jZbZ
-         fULnLfe0jz13P5OMtE/D06z0pC7R7ZOhnPGMpG6/RZ9BvE+0eMhtM8LAtWUrM5YqOZgw
-         iGgw==
-X-Gm-Message-State: APjAAAWgiXh+MNNO2KWzuZAFUebtz9hvIzCNlIXs+tlc9IYg0DrI/29N
-        zVg3G6if513QCtyVXIbXNMioLw==
-X-Google-Smtp-Source: APXvYqyHY6O+3koWUhDmW4P6w3Syg2S7i9/Y5eEEYyvX3PlxTc9R6nvc4sqHCiddZvTl6tUMuYoQxA==
-X-Received: by 2002:a37:5086:: with SMTP id e128mr7740201qkb.471.1569954485980;
-        Tue, 01 Oct 2019 11:28:05 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::cf71])
-        by smtp.gmail.com with ESMTPSA id o38sm10568079qtc.39.2019.10.01.11.28.04
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 01 Oct 2019 11:28:05 -0700 (PDT)
-Date:   Tue, 1 Oct 2019 14:28:03 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH][v3] btrfs: add a force_chunk_alloc to space_info's sysfs
-Message-ID: <20191001182802.pbywx2wn6uve2onq@macbook-pro-91.dhcp.thefacebook.com>
-References: <20190805183153.22712-1-josef@toxicpanda.com>
- <20191001182350.GH2751@twin.jikos.cz>
+        id S1726002AbfJASaF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Oct 2019 14:30:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42556 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725848AbfJASaF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Oct 2019 14:30:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 337BAAE6D;
+        Tue,  1 Oct 2019 18:30:03 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id F1815DA88C; Tue,  1 Oct 2019 20:30:20 +0200 (CEST)
+Date:   Tue, 1 Oct 2019 20:30:20 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH][v2] btrfs-progs: add a --check-bg-usage option to fsck
+Message-ID: <20191001183020.GI2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <20190802160953.18312-1-josef@toxicpanda.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191001182350.GH2751@twin.jikos.cz>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20190802160953.18312-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 01, 2019 at 08:23:51PM +0200, David Sterba wrote:
-> On Mon, Aug 05, 2019 at 02:31:53PM -0400, Josef Bacik wrote:
-> > In testing various things such as the btrfsck patch to detect over
-> > allocation of chunks, empty block group deletion, and balance I've had
-> > various ways to force chunk allocations for debug purposes.  Add a sysfs
-> > file to enable forcing of chunk allocation for the owning space info in
-> > order to enable us to add testcases in the future to test these various
-> > features easier.
-> > 
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > ---
-> > v2->v3:
-> > - as per Qu's suggestion, moved this to sysfs where it's easier to mess with and
-> >   makes more sense.
-> > - added side-effect is mixed bg forced allocation works with this scheme as
-> >   well.
-> > - had to add get_btrfs_kobj() to get to fs_info, not sure this is better than
-> >   just adding the fs_info to the space_info, am open to other opinions here.
+On Fri, Aug 02, 2019 at 12:09:53PM -0400, Josef Bacik wrote:
+> Sometimes when messing with the chunk allocator code we can end up
+> over-allocating chunks.  Generally speaking I'll notice this when a
+> random xfstest fails with ENOSPC when it shouldn't, but I'm super
+> worried that I won't catch a problem until somebody has a fs completely
+> filled up with empty block groups.  Add a fsck option to check for too
+> many empty block groups.  This way I can set FSCK_OPTIONS="-B" to catch
+> cases where we're too aggressive with the chunk allocator but not so
+> aggressive that it causes problems in xfstests.
 > 
-> I believe v3 is the latest version, but I don't see the new file being
-> added to the debug/ directory (ie. /sys/fs/btrfs/UUID/debug/)
+> Thankfully this doesn't trip up currently, so this will just keep me
+> from regressing us.  Thanks,
 > 
-> As it has been discussed, whether to make the file always visible or
-> only with CONFIG_BTRFS_DEBUG, I'd rather keep it debugging-only. The
-> testing coverage should be sufficient for fstests that are run with the
-> config option and not giving users a knob to paper over allocator
-> problems sounds desirable.
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+> v1->v2:
+> - tested with my alloc chunk ioctl, realized the chunk checker removes the bg
+>   recs from the list, so this wasn't actually doing anything.  Moved the check
+>   so now it properly fails on a bad fs.
 
-Just ignore this one.  The btrfsck patch is more important.
+I sent some comments to v1 that seem to apply to v2 as well.
 
-Josef
+>  static int is_free_space_tree = 0;
+>  int init_extent_tree = 0;
+>  int check_data_csum = 0;
+> +int check_bg_usage = 0;
+>  struct btrfs_fs_info *global_info;
+>  struct task_ctx ctx = { 0 };
+>  struct cache_tree *roots_info_cache = NULL;
+> @@ -5126,6 +5127,7 @@ btrfs_new_block_group_record(struct extent_buffer *leaf, struct btrfs_key *key,
+>  
+>  	ptr = btrfs_item_ptr(leaf, slot, struct btrfs_block_group_item);
+>  	rec->flags = btrfs_disk_block_group_flags(leaf, ptr);
+> +	rec->used = btrfs_disk_block_group_used(leaf, ptr);
+>  
+>  	INIT_LIST_HEAD(&rec->list);
+>  
+> @@ -8522,6 +8524,41 @@ out:
+>  	return ret;
+>  }
+>  
+> +static int check_block_group_usage(struct block_group_tree *block_group_cache)
+> +{
+> +	struct block_group_record *bg_rec;
+> +	int empty_data = 0, empty_metadata = 0, empty_system = 0;
+> +	int ret = 0;
+> +
+> +	list_for_each_entry(bg_rec, &block_group_cache->block_groups, list) {
+> +		if (bg_rec->used)
+> +			continue;
+> +		if (bg_rec->flags & BTRFS_BLOCK_GROUP_DATA)
+> +			empty_data++;
+> +		else if (bg_rec->flags & BTRFS_BLOCK_GROUP_METADATA)
+> +			empty_metadata++;
+> +		else
+> +			empty_system++;
+> +	}
+> +
+> +	if (empty_data > 1) {
+> +		ret = -EINVAL;
+> +		fprintf(stderr, "Too many empty data block groups: %d\n",
+> +			empty_data);
+> +	}
+> +	if (empty_metadata > 1) {
+> +		ret = -EINVAL;
+> +		fprintf(stderr, "Too many empty metadata block groups: %d\n",
+> +			empty_metadata);
+> +	}
+> +	if (empty_system > 1) {
+> +		ret = -EINVAL;
+> +		fprintf(stderr, "Too many empty system block groups: %d\n",
+> +			empty_system);
+
+Can you please add images that trigger each of the above problems?
+
+> +	}
+> +	return ret;
+> +}
+> +
+>  static int check_chunks_and_extents(struct btrfs_fs_info *fs_info)
+>  {
+>  	struct rb_root dev_cache;
+> @@ -8622,6 +8659,13 @@ again:
+>  		goto out;
+>  	}
+>  
+> +	if (check_bg_usage) {
+> +		ret = check_block_group_usage(&block_group_cache);
+> +		if (ret)
+> +			err = ret;
+> +		goto out;
+> +	}
+> +
+>  	ret = check_chunks(&chunk_cache, &block_group_cache,
+>  			   &dev_extent_cache, NULL, NULL, NULL, 0);
+>  	if (ret) {
+> @@ -9810,6 +9854,7 @@ static const char * const cmd_check_usage[] = {
+>  	"       -E|--subvol-extents <subvolid>",
+>  	"                                   print subvolume extents and sharing state",
+>  	"       -p|--progress               indicate progress",
+> +	"       -B|--check-bg-usage         check for too many empty block groups",
+>  	NULL
+>  };
+>  
+> @@ -9841,7 +9886,7 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+>  			GETOPT_VAL_INIT_EXTENT, GETOPT_VAL_CHECK_CSUM,
+>  			GETOPT_VAL_READONLY, GETOPT_VAL_CHUNK_TREE,
+>  			GETOPT_VAL_MODE, GETOPT_VAL_CLEAR_SPACE_CACHE,
+> -			GETOPT_VAL_FORCE };
+> +			GETOPT_VAL_FORCE};
+>  		static const struct option long_options[] = {
+>  			{ "super", required_argument, NULL, 's' },
+>  			{ "repair", no_argument, NULL, GETOPT_VAL_REPAIR },
+> @@ -9864,10 +9909,11 @@ static int cmd_check(const struct cmd_struct *cmd, int argc, char **argv)
+>  			{ "clear-space-cache", required_argument, NULL,
+>  				GETOPT_VAL_CLEAR_SPACE_CACHE},
+>  			{ "force", no_argument, NULL, GETOPT_VAL_FORCE },
+> +			{ "check-bg-usage", no_argument, NULL, 'B' },
+
+The option name does not match the description, it could be something
+like --check-empty-bg-count and certainly should not use the short
+option. That are reserved for most common usecases, I don't think
+this is the case.
