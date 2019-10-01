@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB8DC3D4F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 18:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 649FBC3CBB
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 18:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730974AbfJAQlZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Oct 2019 12:41:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52902 "EHLO mail.kernel.org"
+        id S1732489AbfJAQnM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Oct 2019 12:43:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730941AbfJAQlY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 1 Oct 2019 12:41:24 -0400
+        id S1732482AbfJAQnL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Oct 2019 12:43:11 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C54CB205C9;
-        Tue,  1 Oct 2019 16:41:22 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 69E6620B7C;
+        Tue,  1 Oct 2019 16:43:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569948083;
-        bh=NAi1+Bo0JVBgckqyAVTISXOYMwHPgSPKdbHxAFeiRps=;
+        s=default; t=1569948190;
+        bh=NvOCcBGH4T7KxCOxBszq9UGeeMO4TK4EUencZu5XMOU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s3LYVKxNJhpfXorbc7ajjvVgh5N0LVN9NhRsCp+YOPyp44LsFkDTq11Bn3FZm8tav
-         CUptZYGQcrmp8F50jDXe7SKJxKXyF3aTuE1VVwxciT50Szdq06VJFeLYzlVQfUMM/U
-         L3OO5/u8gO4qWigyeOCZYIrOdfNR7YEgpxR24Wwc=
+        b=ElUAHyvgt/o2Y60iiLEYAyjvMsuyt2JsmwQ0R7ltSTXsE2vGH10PU3a/dosfwWLY5
+         ZIO/G3Mlq+sylr5KBoAzCLZjY3NTNQhmmuenGSO5gTKHbbEpIKLwyN6YYIHV/ADjZC
+         TRi5/QEm0AZWh5caHuE3tdbJSjwxaY4ndmdUnTP0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.3 71/71] Btrfs: fix selftests failure due to uninitialized i_mode in test inodes
-Date:   Tue,  1 Oct 2019 12:39:21 -0400
-Message-Id: <20191001163922.14735-71-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.2 63/63] Btrfs: fix selftests failure due to uninitialized i_mode in test inodes
+Date:   Tue,  1 Oct 2019 12:41:25 -0400
+Message-Id: <20191001164125.15398-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191001163922.14735-1-sashal@kernel.org>
-References: <20191001163922.14735-1-sashal@kernel.org>
+In-Reply-To: <20191001164125.15398-1-sashal@kernel.org>
+References: <20191001164125.15398-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -104,10 +104,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 7 insertions(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
-index 1e3ba49493995..814a918998ece 100644
+index 9238fd4f17340..41f41540382e5 100644
 --- a/fs/btrfs/tests/btrfs-tests.c
 +++ b/fs/btrfs/tests/btrfs-tests.c
-@@ -51,7 +51,13 @@ static struct file_system_type test_type = {
+@@ -48,7 +48,13 @@ static struct file_system_type test_type = {
  
  struct inode *btrfs_new_test_inode(void)
  {
