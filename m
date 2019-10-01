@@ -2,126 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 649FBC3CBB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 18:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 744ECC3EB5
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 19:36:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732489AbfJAQnM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Oct 2019 12:43:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732482AbfJAQnL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 1 Oct 2019 12:43:11 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69E6620B7C;
-        Tue,  1 Oct 2019 16:43:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1569948190;
-        bh=NvOCcBGH4T7KxCOxBszq9UGeeMO4TK4EUencZu5XMOU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ElUAHyvgt/o2Y60iiLEYAyjvMsuyt2JsmwQ0R7ltSTXsE2vGH10PU3a/dosfwWLY5
-         ZIO/G3Mlq+sylr5KBoAzCLZjY3NTNQhmmuenGSO5gTKHbbEpIKLwyN6YYIHV/ADjZC
-         TRi5/QEm0AZWh5caHuE3tdbJSjwxaY4ndmdUnTP0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.2 63/63] Btrfs: fix selftests failure due to uninitialized i_mode in test inodes
-Date:   Tue,  1 Oct 2019 12:41:25 -0400
-Message-Id: <20191001164125.15398-63-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191001164125.15398-1-sashal@kernel.org>
-References: <20191001164125.15398-1-sashal@kernel.org>
+        id S1730867AbfJARgi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Oct 2019 13:36:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55774 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727177AbfJARgi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Oct 2019 13:36:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id C2CAEAFE1;
+        Tue,  1 Oct 2019 17:36:36 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 2A460DA88C; Tue,  1 Oct 2019 19:36:52 +0200 (CEST)
+Date:   Tue, 1 Oct 2019 19:36:51 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix balance convert to single on 32-bit host CPUs
+Message-ID: <20191001173651.GE2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
+        linux-btrfs@vger.kernel.org
+References: <20190912235507.3DE794232AF@james.kirk.hungrycats.org>
+ <20190923151403.GD2751@twin.jikos.cz>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190923151403.GD2751@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Mon, Sep 23, 2019 at 05:14:04PM +0200, David Sterba wrote:
+> On Thu, Sep 12, 2019 at 07:55:01PM -0400, Zygo Blaxell wrote:
+> > Currently, the command:
+> > 
+> > 	btrfs balance start -dconvert=single,soft .
+> > 
+> > on a Raspberry Pi produces the following kernel message:
+> > 
+> > 	BTRFS error (device mmcblk0p2): balance: invalid convert data profile single
+> > 
+> > This fails because we use is_power_of_2(unsigned long) to validate
+> > the new data profile, the constant for 'single' profile uses bit 48,
+> > and there are only 32 bits in a long on ARM.
+> > 
+> > Fix by open-coding the check using u64 variables.
+> > 
+> > Tested by completing the original balance command on several Raspberry
+> > Pis.
+> > 
+> > Signed-off-by: Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+> > ---
+> >  fs/btrfs/volumes.c | 6 +++++-
+> >  1 file changed, 5 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> > index 88a323a453d8..252c6049c6b7 100644
+> > --- a/fs/btrfs/volumes.c
+> > +++ b/fs/btrfs/volumes.c
+> > @@ -3906,7 +3906,11 @@ static int alloc_profile_is_valid(u64 flags, int extended)
+> >  		return !extended; /* "0" is valid for usual profiles */
+> >  
+> >  	/* true if exactly one bit set */
+> > -	return is_power_of_2(flags);
+> > +	/*
+> > +	 * Don't use is_power_of_2(unsigned long) because it won't work
+> > +	 * for the single profile (1ULL << 48) on 32-bit CPUs.
+> > +	 */
+> > +	return flags != 0 && (flags & (flags - 1)) == 0;
+> 
+> I'd rather not open code it again. Based on the discussion, we need a
+> separate helper that takes u64 and possibly has the "value has exactly
+> one bit set" semantics from the beginnin. We now have a file for such
+> helpers (fs/btrfs/misc.h).
+> 
+> There would a few more users of the new helper (now done using the
+> is_power_of_2 helper), that would improve readability.
 
-[ Upstream commit 9f7fec0ba89108b9385f1b9fb167861224912a4a ]
-
-Some of the self tests create a test inode, setup some extents and then do
-calls to btrfs_get_extent() to test that the corresponding extent maps
-exist and are correct. However btrfs_get_extent(), since the 5.2 merge
-window, now errors out when it finds a regular or prealloc extent for an
-inode that does not correspond to a regular file (its ->i_mode is not
-S_IFREG). This causes the self tests to fail sometimes, specially when
-KASAN, slub_debug and page poisoning are enabled:
-
-  $ modprobe btrfs
-  modprobe: ERROR: could not insert 'btrfs': Invalid argument
-
-  $ dmesg
-  [ 9414.691648] Btrfs loaded, crc32c=crc32c-intel, debug=on, assert=on, integrity-checker=on, ref-verify=on
-  [ 9414.692655] BTRFS: selftest: sectorsize: 4096  nodesize: 4096
-  [ 9414.692658] BTRFS: selftest: running btrfs free space cache tests
-  [ 9414.692918] BTRFS: selftest: running extent only tests
-  [ 9414.693061] BTRFS: selftest: running bitmap only tests
-  [ 9414.693366] BTRFS: selftest: running bitmap and extent tests
-  [ 9414.696455] BTRFS: selftest: running space stealing from bitmap to extent tests
-  [ 9414.697131] BTRFS: selftest: running extent buffer operation tests
-  [ 9414.697133] BTRFS: selftest: running btrfs_split_item tests
-  [ 9414.697564] BTRFS: selftest: running extent I/O tests
-  [ 9414.697583] BTRFS: selftest: running find delalloc tests
-  [ 9415.081125] BTRFS: selftest: running find_first_clear_extent_bit test
-  [ 9415.081278] BTRFS: selftest: running extent buffer bitmap tests
-  [ 9415.124192] BTRFS: selftest: running inode tests
-  [ 9415.124195] BTRFS: selftest: running btrfs_get_extent tests
-  [ 9415.127909] BTRFS: selftest: running hole first btrfs_get_extent test
-  [ 9415.128343] BTRFS critical (device (efault)): regular/prealloc extent found for non-regular inode 256
-  [ 9415.131428] BTRFS: selftest: fs/btrfs/tests/inode-tests.c:904 expected a real extent, got 0
-
-This happens because the test inodes are created without ever initializing
-the i_mode field of the inode, and neither VFS's new_inode() nor the btrfs
-callback btrfs_alloc_inode() initialize the i_mode. Initialization of the
-i_mode is done through the various callbacks used by the VFS to create
-new inodes (regular files, directories, symlinks, tmpfiles, etc), which
-all call btrfs_new_inode() which in turn calls inode_init_owner(), which
-sets the inode's i_mode. Since the tests only uses new_inode() to create
-the test inodes, the i_mode was never initialized.
-
-This always happens on a VM I used with kasan, slub_debug and many other
-debug facilities enabled. It also happened to someone who reported this
-on bugzilla (on a 5.3-rc).
-
-Fix this by setting i_mode to S_IFREG at btrfs_new_test_inode().
-
-Fixes: 6bf9e4bd6a2778 ("btrfs: inode: Verify inode mode to avoid NULL pointer dereference")
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=204397
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/tests/btrfs-tests.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
-index 9238fd4f17340..41f41540382e5 100644
---- a/fs/btrfs/tests/btrfs-tests.c
-+++ b/fs/btrfs/tests/btrfs-tests.c
-@@ -48,7 +48,13 @@ static struct file_system_type test_type = {
- 
- struct inode *btrfs_new_test_inode(void)
- {
--	return new_inode(test_mnt->mnt_sb);
-+	struct inode *inode;
-+
-+	inode = new_inode(test_mnt->mnt_sb);
-+	if (inode)
-+		inode_init_owner(inode, NULL, S_IFREG);
-+
-+	return inode;
- }
- 
- static int btrfs_init_test_fs(void)
--- 
-2.20.1
-
+I'll apply the patch as-is so it can go to stable and do the helper and
+other cleanups myself.
