@@ -2,130 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 737AEC36AF
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 16:10:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D33DC3AAD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 18:39:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387897AbfJAOI5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Oct 2019 10:08:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58476 "EHLO mx1.suse.de"
+        id S1727508AbfJAQjM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Oct 2019 12:39:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55574 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727012AbfJAOI5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 1 Oct 2019 10:08:57 -0400
+        id S1725747AbfJAQjL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Oct 2019 12:39:11 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DECA1AC9A;
-        Tue,  1 Oct 2019 14:08:55 +0000 (UTC)
-Subject: Re: [PATCH 2/2] btrfs: use btrfs_block_group_cache_done in
- update_block_group
-To:     Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <20190924205044.31830-1-josef@toxicpanda.com>
- <20190924205044.31830-2-josef@toxicpanda.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
- T7g+RbfPFlmQp+EwFWOtABXlKC54zgSf+uulGwx5JAUFVUIRBmnHOYi/lUiE0yhpnb1KCA7f
- u/W+DkwGerXqhhe9TvQoGwgCKNfzFPZoM+gZrm+kWv03QLUCr210n4cwaCPJ0Nr9Z3c582xc
- bCUVbsjt7BN0CFa2BByulrx5xD9sDAYIqfLCcZetAqsTRGxM7LD0kh5WlKzOeAXj5r8DOrU2
- GdZS33uKZI/kZJZVytSmZpswDsKhnGzRN1BANGP8sC+WD4eRXajOmNh2HL4P+meO1TlM3GLl
- EQd2shHFY0qjEo7wxKZI1RyZZ5AgJnSmehrPCyuIyVY210CbMaIKHUIsTqRgY5GaNME24w7h
- TyyVCy2qAM8fLJ4Vw5bycM/u5xfWm7gyTb9V1TkZ3o1MTrEsrcqFiRrBY94Rs0oQkZvunqia
- c+NprYSaOG1Cta14o94eMH271Kka/reEwSZkC7T+o9hZ4zi2CcLcY0DXj0qdId7vUKSJjEep
- c++s8ncFekh1MPhkOgNj8pk17OAESanmDwksmzh1j12lgA5lTFPrJeRNu6/isC2zyZhTwMWs
- k3LkcTa8ZXxh0RfWAqgx/ogKPk4ZxOXQEZetkEyTFghbRH2BIwARAQABtCNOaWtvbGF5IEJv
- cmlzb3YgPG5ib3Jpc292QHN1c2UuY29tPokCOAQTAQIAIgUCWIo48QIbAwYLCQgHAwIGFQgC
- CQoLBBYCAwECHgECF4AACgkQcb6CRuU/KFc0eg/9GLD3wTQz9iZHMFbjiqTCitD7B6dTLV1C
- ddZVlC8Hm/TophPts1bWZORAmYIihHHI1EIF19+bfIr46pvfTu0yFrJDLOADMDH+Ufzsfy2v
- HSqqWV/nOSWGXzh8bgg/ncLwrIdEwBQBN9SDS6aqsglagvwFD91UCg/TshLlRxD5BOnuzfzI
- Leyx2c6YmH7Oa1R4MX9Jo79SaKwdHt2yRN3SochVtxCyafDlZsE/efp21pMiaK1HoCOZTBp5
- VzrIP85GATh18pN7YR9CuPxxN0V6IzT7IlhS4Jgj0NXh6vi1DlmKspr+FOevu4RVXqqcNTSS
- E2rycB2v6cttH21UUdu/0FtMBKh+rv8+yD49FxMYnTi1jwVzr208vDdRU2v7Ij/TxYt/v4O8
- V+jNRKy5Fevca/1xroQBICXsNoFLr10X5IjmhAhqIH8Atpz/89ItS3+HWuE4BHB6RRLM0gy8
- T7rN6ja+KegOGikp/VTwBlszhvfLhyoyjXI44Tf3oLSFM+8+qG3B7MNBHOt60CQlMkq0fGXd
- mm4xENl/SSeHsiomdveeq7cNGpHi6i6ntZK33XJLwvyf00PD7tip/GUj0Dic/ZUsoPSTF/mG
- EpuQiUZs8X2xjK/AS/l3wa4Kz2tlcOKSKpIpna7V1+CMNkNzaCOlbv7QwprAerKYywPCoOSC
- 7P25Ag0EWIoHPgEQAMiUqvRBZNvPvki34O/dcTodvLSyOmK/MMBDrzN8Cnk302XfnGlW/YAQ
- csMWISKKSpStc6tmD+2Y0z9WjyRqFr3EGfH1RXSv9Z1vmfPzU42jsdZn667UxrRcVQXUgoKg
- QYx055Q2FdUeaZSaivoIBD9WtJq/66UPXRRr4H/+Y5FaUZx+gWNGmBT6a0S/GQnHb9g3nonD
- jmDKGw+YO4P6aEMxyy3k9PstaoiyBXnzQASzdOi39BgWQuZfIQjN0aW+Dm8kOAfT5i/yk59h
- VV6v3NLHBjHVw9kHli3jwvsizIX9X2W8tb1SefaVxqvqO1132AO8V9CbE1DcVT8fzICvGi42
- FoV/k0QOGwq+LmLf0t04Q0csEl+h69ZcqeBSQcIMm/Ir+NorfCr6HjrB6lW7giBkQl6hhomn
- l1mtDP6MTdbyYzEiBFcwQD4terc7S/8ELRRybWQHQp7sxQM/Lnuhs77MgY/e6c5AVWnMKd/z
- MKm4ru7A8+8gdHeydrRQSWDaVbfy3Hup0Ia76J9FaolnjB8YLUOJPdhI2vbvNCQ2ipxw3Y3c
- KhVIpGYqwdvFIiz0Fej7wnJICIrpJs/+XLQHyqcmERn3s/iWwBpeogrx2Lf8AGezqnv9woq7
- OSoWlwXDJiUdaqPEB/HmGfqoRRN20jx+OOvuaBMPAPb+aKJyle8zABEBAAGJAh8EGAECAAkF
- AliKBz4CGwwACgkQcb6CRuU/KFdacg/+M3V3Ti9JYZEiIyVhqs+yHb6NMI1R0kkAmzsGQ1jU
- zSQUz9AVMR6T7v2fIETTT/f5Oout0+Hi9cY8uLpk8CWno9V9eR/B7Ifs2pAA8lh2nW43FFwp
- IDiSuDbH6oTLmiGCB206IvSuaQCp1fed8U6yuqGFcnf0ZpJm/sILG2ECdFK9RYnMIaeqlNQm
- iZicBY2lmlYFBEaMXHoy+K7nbOuizPWdUKoKHq+tmZ3iA+qL5s6Qlm4trH28/fPpFuOmgP8P
- K+7LpYLNSl1oQUr+WlqilPAuLcCo5Vdl7M7VFLMq4xxY/dY99aZx0ZJQYFx0w/6UkbDdFLzN
- upT7NIN68lZRucImffiWyN7CjH23X3Tni8bS9ubo7OON68NbPz1YIaYaHmnVQCjDyDXkQoKC
- R82Vf9mf5slj0Vlpf+/Wpsv/TH8X32ajva37oEQTkWNMsDxyw3aPSps6MaMafcN7k60y2Wk/
- TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
- RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
- 5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <e3350469-b98d-f289-fd1d-bac80b9e10ff@suse.com>
-Date:   Tue, 1 Oct 2019 17:08:53 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        by mx1.suse.de (Postfix) with ESMTP id 07776B0C6;
+        Tue,  1 Oct 2019 16:39:10 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 5C4CDDA882; Tue,  1 Oct 2019 18:39:27 +0200 (CEST)
+Date:   Tue, 1 Oct 2019 18:39:27 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org, Chris Mason <clm@fb.com>
+Subject: Re: [PATCH] btrfs: fix incorrect updating of log root tree
+Message-ID: <20191001163927.GD2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org, Chris Mason <clm@fb.com>
+References: <20190930202725.1317-1-josef@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <20190924205044.31830-2-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190930202725.1317-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
-On 24.09.19 г. 23:50 ч., Josef Bacik wrote:
-> When free'ing extents in a block group we check to see if the block
-> group is not cached, and then cache it if we need to.  However we'll
-> just carry on as long as we're loading the cache.  This is problematic
-> because we are dirtying the block group here.  If we are fast enough we
-> could do a transaction commit and clear the free space cache while we're
-
-This would imply a race condition between loading the space cache and
-running delayed refs - because there where
-__btrfs_free_extent->btrfs_update_blockgroup(alloc=0) is called from, no ?
-
-> still loading the space cache in another thread.  This truncates the
-> free space inode, which will keep it from loading the space cache.
+On Mon, Sep 30, 2019 at 04:27:25PM -0400, Josef Bacik wrote:
+> We've historically had reports of being unable to mount file systems
+> because the tree log root couldn't be read.  Usually this is the "parent
+> transid failure", but could be any of the related errors, including
+> "fsid mismatch" or "bad tree block", depending on which block got
+> allocated.
 > 
-> Fix this by using the btrfs_block_group_cache_done helper so that we try
-> to load the space cache unconditionally here, which will result in the
-> caller waiting for the fast caching to complete and keep us from
-> truncating the free space inode.
-
-So the problem was that cache->cached == BTRFS_CACHE_NO misses other
-interim states e.g. CACHE_STARTED/CACHE_FAST. Which leads to the
-aforementioned race, correct?
-
-
+> The modification of the individual log root items are serialized on the
+> per-log root root_mutex.  This means that any modification to the
+> per-subvol log root_item is completely protected.
 > 
+> However we update the root item in the log root tree outside of the log
+> root tree log_mutex.  We do this in order to allow multiple subvolumes
+> to be updated in each log transaction.
+> 
+> This is problematic however because when we are writing the log root
+> tree out we update the super block with the _current_ log root node
+> information.  Since these two operations happen independently of each
+> other, you can end up updating the log root tree in between writing out
+> the dirty blocks and setting the super block to point at the current
+> root.
+> 
+> This means we'll point at the new root node that hasn't been written
+> out, instead of the one we should be pointing at.  Thus whatever garbage
+> or old block we end up pointing at complains when we mount the file
+> system later and try to replay the log.
+> 
+> Fix this by copying the log's root item into a local root item copy.
+> Then once we're safely under the log_root_tree->log_mutex we update the
+> root item in the log_root_tree.  This way we do not modify the
+> log_root_tree while we're committing it, fixing the problem.
+> 
+> cc: stable@vger.kernel.org
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Based on our offlist discussion:
+> Reviewed-by: Chris Mason <clm@fb.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
-> ---
->  fs/btrfs/block-group.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index bf7e3f23bba7..d7b3a516f27a 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -2661,7 +2661,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
->  		 * is because we need the unpinning stage to actually add the
->  		 * space back to the block group, otherwise we will leak space.
->  		 */
-> -		if (!alloc && cache->cached == BTRFS_CACHE_NO)
-> +		if (!alloc && !btrfs_block_group_cache_done(cache))
->  			btrfs_cache_block_group(cache, 1);
->  
->  		byte_in_group = bytenr - cache->key.objectid;
-> 
+Added to 5.4 queue, thanks.
