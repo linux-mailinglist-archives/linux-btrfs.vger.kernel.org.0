@@ -2,182 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63C36C2BBD
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 03:54:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7322EC2C71
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 06:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726314AbfJAByE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 30 Sep 2019 21:54:04 -0400
-Received: from mout.gmx.net ([212.227.15.18]:45151 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726106AbfJAByE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 30 Sep 2019 21:54:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1569894837;
-        bh=RSfCwL0WdX+4m0w73uqC5eg773CEj5eCzvl5InDLoBk=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=gJouaG69PUPD/XVLkQJMDSj4w/48zaS8Cf1Hbtoe0a6vzc6p9UXfCu4yTzYNkylYQ
-         ZuWt6Hvx4zQlCbHnqPdDtx0NhuB1i2BtdOjV80NEppdGV0XSeeVGIFUPPNDeTNdoy4
-         E2pK2ISIQ0yBLp5+KVqGXJW6TirGhsgBHkPpok6s=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1McYCl-1hjMuf2eKb-00d1m2; Tue, 01
- Oct 2019 03:53:57 +0200
-Subject: Re: BTRFS corruption, mounts but comes read-only
-To:     Remi Gauvin <remi@georgianit.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <1d65213e-6237-2c5b-4820-81a0d3bd3e53@georgianit.com>
- <44df5407-b7c9-bbd1-eae0-d5ebf6ad75d8@georgianit.com>
- <6022d6c9-3022-01fd-3b97-67bd08ce36f1@gmx.com>
- <fe22fa62-7b13-f417-1af8-3ed12bf082f8@georgianit.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAVQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWCnQUJCWYC
- bgAKCRDCPZHzoSX+qAR8B/94VAsSNygx1C6dhb1u1Wp1Jr/lfO7QIOK/nf1PF0VpYjTQ2au8
- ihf/RApTna31sVjBx3jzlmpy+lDoPdXwbI3Czx1PwDbdhAAjdRbvBmwM6cUWyqD+zjVm4RTG
- rFTPi3E7828YJ71Vpda2qghOYdnC45xCcjmHh8FwReLzsV2A6FtXsvd87bq6Iw2axOHVUax2
- FGSbardMsHrya1dC2jF2R6n0uxaIc1bWGweYsq0LXvLcvjWH+zDgzYCUB0cfb+6Ib/ipSCYp
- 3i8BevMsTs62MOBmKz7til6Zdz0kkqDdSNOq8LgWGLOwUTqBh71+lqN2XBpTDu1eLZaNbxSI
- ilaVuQENBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAGJATwEGAEIACYWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCWdWBrwIbDAUJA8JnAAAK
- CRDCPZHzoSX+qA3xB/4zS8zYh3Cbm3FllKz7+RKBw/ETBibFSKedQkbJzRlZhBc+XRwF61mi
- f0SXSdqKMbM1a98fEg8H5kV6GTo62BzvynVrf/FyT+zWbIVEuuZttMk2gWLIvbmWNyrQnzPl
- mnjK4AEvZGIt1pk+3+N/CMEfAZH5Aqnp0PaoytRZ/1vtMXNgMxlfNnb96giC3KMR6U0E+siA
- 4V7biIoyNoaN33t8m5FwEwd2FQDG9dAXWhG13zcm9gnk63BN3wyCQR+X5+jsfBaS4dvNzvQv
- h8Uq/YGjCoV1ofKYh3WKMY8avjq25nlrhzD/Nto9jHp8niwr21K//pXVA81R2qaXqGbql+zo
-Message-ID: <8d765abc-b9f6-066f-8327-bcfc9a156177@gmx.com>
-Date:   Tue, 1 Oct 2019 09:53:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.0
+        id S1725747AbfJAEIp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Oct 2019 00:08:45 -0400
+Received: from forward102j.mail.yandex.net ([5.45.198.243]:42485 "EHLO
+        forward102j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725385AbfJAEIp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Oct 2019 00:08:45 -0400
+Received: from mxback16o.mail.yandex.net (mxback16o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::67])
+        by forward102j.mail.yandex.net (Yandex) with ESMTP id 62922F21574;
+        Tue,  1 Oct 2019 07:08:40 +0300 (MSK)
+Received: from myt1-e9eae5d2de9d.qloud-c.yandex.net (myt1-e9eae5d2de9d.qloud-c.yandex.net [2a02:6b8:c00:1290:0:640:e9ea:e5d2])
+        by mxback16o.mail.yandex.net (nwsmtp/Yandex) with ESMTP id f9p3EB2FCS-8enSI4cv;
+        Tue, 01 Oct 2019 07:08:40 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1569902920;
+        bh=kF1t2Cg/HRptBUW3Y4ze3+AZ80VFNqvwu3opaHjikkQ=;
+        h=In-Reply-To:From:Date:References:To:Subject:Message-ID;
+        b=optd7C15o1sm0UZdt94LyhEOtq35YOObNCV84inhXU4y7ptkozCVXpTOGCk0KxYoW
+         ivg/Rgk2pGDhdFoemo46jD51oOiF5LLNFYs6t30jw8Xb2aVb2VBa4pIaIzE6NYFKUm
+         GWlPnhmpGfHHyy8vaB/zxrnoRvMirxpgvtvRGxnw=
+Authentication-Results: mxback16o.mail.yandex.net; dkim=pass header.i=@yandex.ru
+Received: by myt1-e9eae5d2de9d.qloud-c.yandex.net (nwsmtp/Yandex) with ESMTPSA id 3vJqUlSwGE-8dHSXkqi;
+        Tue, 01 Oct 2019 07:08:39 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: Btrfs partition mount error
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+References: <79466812-e999-32d8-ce20-0589fb64a433@yandex.ru>
+ <85cb7aff-5fa4-c7f7-c277-04069954d7fe@gmx.com>
+ <170d6f2f-65aa-3437-be21-61ac8499460b@yandex.ru>
+ <4be73e38-c8b1-8220-1e5a-c0a1287df61d@gmx.com>
+From:   Andrey Ivanov <andrey-ivanov-ml@yandex.ru>
+Message-ID: <b0ec0862-e08c-677d-8bf4-8a87b74c1ec2@yandex.ru>
+Date:   Tue, 1 Oct 2019 07:08:39 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <fe22fa62-7b13-f417-1af8-3ed12bf082f8@georgianit.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="FDWQv2pF6mZVKEZL6jmYC4sCespg6mEZe"
-X-Provags-ID: V03:K1:GZg2vXTIkj/OIrla/wElYTDt/7CQzpvZP0UUNaL4I0YGE/8P1kI
- nA4fUUDozMWGwHkxUrJtT4qTy0y8X/IPVG802B7H8XO33GIup6W8gIt9AVpKVxFi52RSjbe
- 52gZWzWiFSas2iphWMT0leD1Xb9rhKq6PRDc/1RI533QJ7rsNktdpt3kfpanCy0w1N6ISm4
- ESn3AEHEM9Bz8AwQ+ahrQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:TWCwsfQ3w/g=:5onBdz26T14WlFldsUYc8V
- DyZai+fSoHDVDg62GrJe6Iv9fB/cxumOvYzR19EAb523QPRGBvpuffeaWa5sxZ+VjNsBLTVi8
- PSJ3IBbJKzN15hpkBP1fZtcwdlxYR0v78cnpy+9IsyXT96Y6pUVQ+j5v37QrB1H9sUa9q8odY
- rl6asCOre6Vbe9zQEvJaalR0J6gLPdFIlKA6+jONBvnFyUvR5lscyNprA4GIOYZ/51nGtNjwX
- fIgWbYFzXSazELokn6DFKXEtO0O9ufYZftYJaZa0dyX0i/rGXMxTL3s7KWS6SkC7NaLVQNKvQ
- zx/q7Rg+uo2cMjGImqkeCtdZCzsbJ5HVmbRzAZ7eMARpv2SlHOGD23SMjOhbujDvazadlKCdZ
- OEDuE2qMOnOo1VwP4OR2eAGTSCnzOrvFbbnLRNRsk8Mn/lf7ph+jR8osstJKk5nhcE8Afp/HR
- 03Rs7ZIyd3a/3EaUxJeIsPChBg/QIZkcVNeb+7YpreYJjUTP45cEakRV0IjhhZOihJl/wE7bD
- GKrN2Tyf/oC4sqorjCNKXFO3sKgom7TRZWFqZ/VvUwEiGwrCV/umL+0j2IlP/8XajUU6MoJZb
- t+2GUu0lQLWuUqVVY0HjIwHS7uuQVl7xVzUbPAPdHBaHyq8+de2rILjMUN3qw8Owf3iRCWveq
- 9WvusH39QYOCpeXICTbV9fQGVLz+DmnwpJ1ZVmYc72rR/1NwYjq7kyEMcp3spS+NGq0RvpXGt
- 9Gm7NCB+1blT9F6yJy4UIdV+9wtZskhtZuJtums+aNmewb3KTkSnSzysJE7iiWu4b4Yl2v6SC
- 2kqUNNDbKBYrnwVXzrRy18Ubja+X00hNYrNG5AwKB9RrFFdmKq6H7Q1Eexk4Mwk4txbsNCweH
- LBKXx164tLBmIlyV1YaFXqaKfHJVF1eiEcXGgHJxdgBHWebYaI5yK0omROJeRf9hSGcdcrX2i
- 5+Gg6dIIwC9cyT9clA8fAp7K2/szm7k/O0EvKOm3SMqAjjutKyaABvUtDlsP/ZdZu3K+EgbDh
- Z++rknBp8mAHhPi/2DU6R0B1vWCHKfHCkDEBqZ+qmVzFf9PnUgXPM9/eb2/KMTsfdYRtnEeyF
- ft5IgX029DSCZHlU4JKhlq5zNuamcO8cV2ynxQHs3raZ7SndLC57J4oSW8E3xIb6j0UWVkuGq
- 9X6vWLlKpyoTVAuQofR267rt914OEFYVjm/AXguCcL6hTG8CS1vUtItI0jBpDyH3cj6OJnh9D
- pB9oQRlYguShH4RnARq/U74aIuyw0eTCCRqSNI2CO4VZvKbVjLCs9g6MEnIo=
+In-Reply-To: <4be73e38-c8b1-8220-1e5a-c0a1287df61d@gmx.com>
+Content-Type: multipart/mixed;
+ boundary="------------FDD8E4153616A7790C96F612"
+Content-Language: ru-RU
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---FDWQv2pF6mZVKEZL6jmYC4sCespg6mEZe
-Content-Type: multipart/mixed; boundary="qf0PKutSJXxL6ZRVo0ZVh33mQD3U4KZVD"
+This is a multi-part message in MIME format.
+--------------FDD8E4153616A7790C96F612
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
---qf0PKutSJXxL6ZRVo0ZVh33mQD3U4KZVD
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On 30.09.2019 9:27, Qu Wenruo wrote:
+> I recommend to do a "btrfs check" on all fses.
 
+I had done "btrfs check" on /dev/sda4:
 
+attached btrfs-check-sda4.output
 
-On 2019/10/1 =E4=B8=8A=E5=8D=889:41, Remi Gauvin wrote:
-> On 2019-09-30 9:30 p.m., Qu Wenruo wrote:
->>
->>
->> On 2019/10/1 =E4=B8=8A=E5=8D=885:08, Remi Gauvin wrote:
->>> Mounting the FS after that btrfs check, kernel 5.3.1, here is the dme=
-sg log:
->>
->> As that btrfs check shows, your extent tree is corrupted.
->> Quite some backref is lost, thus no wonder some write opeartion would
->> cause problem.
->>
->> In that case, it looks like only extent tree is corrupted, and no
->> transid error.
->>
->> If you have data backed up, you would like to btrfs check --repair to
->> see if it can repair them.
->>
->> Thanks,
->> Qu
->=20
->=20
-> This is itself a back-up system, but not wishing to tempt fate, I'm
-> going to have to create a working substitute before I do anything risky=
+There are some errors. How to fix them?
 
-> with it.  It would take me several days and lots of travel to re-aquire=
+--------------FDD8E4153616A7790C96F612
+Content-Type: text/plain; charset=UTF-8;
+ name="btrfs-check-sda4.output"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="btrfs-check-sda4.output"
 
-> them.
->=20
-> Any idea what could have happened?
-
-Maybe some existing bugs, since it's an older kernel.
-
-But at least, no tree relationship corruption. So you should be pretty OK=
-=2E
-You could try btrfs check --init-extent-tree, as I see no error report
-from fs tree check.
-
-Since it's extent tree only mismatch, you can in fact mount the fs RO
-and grab all data.
-
->  The data and meta data should be
-> raid1, and none of the drives have any io errors of any kinds in their
-> SMART log.
-
-It's indeed a symptom of btrfs kernel module bug. But at least looks
-repairable.
-
-Thanks,
-Qu
->=20
-> Thank you for your guidance.
->=20
->=20
->=20
->=20
-
-
---qf0PKutSJXxL6ZRVo0ZVh33mQD3U4KZVD--
-
---FDWQv2pF6mZVKEZL6jmYC4sCespg6mEZe
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2Ssa8ACgkQwj2R86El
-/qikkQf/Sg61y+8aLCMK9vBzp5vakDm+IsOEL47OGPw1QzJ/u9Ae04+6zgFx0ya9
-f0E8LqXihHTQyDPR9EEIyl9bVG6AswQffo7/S0QspHV5IJAjpD3rW3/y4Yiw+K23
-PQongbHf12enYttCnzEPbtdhVAC+LnEouKtnOPZ2EZIXeWCLaqWN/jqO9/Nm/79m
-Msmg/+OtDBeOg+dekOVW10LmxvW4tZJjN7bLJBQs0z4VJ9545lpHNDKh3hl8D9OI
-bmLImTtcFQ6PtfLc5ZT3eAGamWHEVIG/zjgkaKbZ25V2A0YqQfs4eIvqU5/SnclE
-o4WG5aKG84rlrTEd+IUYUpNSMLQjCA==
-=y5zm
------END PGP SIGNATURE-----
-
---FDWQv2pF6mZVKEZL6jmYC4sCespg6mEZe--
+WzEvN10gY2hlY2tpbmcgcm9vdCBpdGVtcwpbMi83XSBjaGVja2luZyBleHRlbnRzCmluY29y
+cmVjdCBsb2NhbCBiYWNrcmVmIGNvdW50IG9uIDE1MzM1MzgzMDQgcm9vdCA1IG93bmVyIDc2
+NjI0ODIgb2Zmc2V0IDAgZm91bmQgMSB3YW50ZWQgNDE5NDMwNSBiYWNrIDB4NTViYmIzZjQ4
+MmEwCmJhY2twb2ludGVyIG1pc21hdGNoIG9uIFsxNTMzNTM4MzA0IDE2Mzg0XQpkYXRhIGJh
+Y2tyZWYgMTUzMzc1OTQ4OCByb290IDUgb3duZXIgMTAxMjI2MDkgb2Zmc2V0IDAgbnVtX3Jl
+ZnMgMCBub3QgZm91bmQgaW4gZXh0ZW50IHRyZWUKaW5jb3JyZWN0IGxvY2FsIGJhY2tyZWYg
+Y291bnQgb24gMTUzMzc1OTQ4OCByb290IDUgb3duZXIgMTAxMjI2MDkgb2Zmc2V0IDAgZm91
+bmQgMSB3YW50ZWQgMCBiYWNrIDB4NTViYmIxYzc2ZTQwCmluY29ycmVjdCBsb2NhbCBiYWNr
+cmVmIGNvdW50IG9uIDE1MzM3NTk0ODggcm9vdCAxNjM4OSBvd25lciAxMDEyMjYwOSBvZmZz
+ZXQgMCBmb3VuZCAwIHdhbnRlZCAxIGJhY2sgMHg1NWJiYjNmNDlkMDAKYmFja3JlZiBkaXNr
+IGJ5dGVuciBkb2VzIG5vdCBtYXRjaCBleHRlbnQgcmVjb3JkLCBieXRlbnI9MTUzMzc1OTQ4
+OCwgcmVmIGJ5dGVucj0wCmJhY2twb2ludGVyIG1pc21hdGNoIG9uIFsxNTMzNzU5NDg4IDQw
+OTZdCmRhdGEgYmFja3JlZiAxNTM0NzEzODU2IHJvb3QgNSBvd25lciA3MzEyMzk2IG9mZnNl
+dCA0MDk2IG51bV9yZWZzIDAgbm90IGZvdW5kIGluIGV4dGVudCB0cmVlCmluY29ycmVjdCBs
+b2NhbCBiYWNrcmVmIGNvdW50IG9uIDE1MzQ3MTM4NTYgcm9vdCA1IG93bmVyIDczMTIzOTYg
+b2Zmc2V0IDQwOTYgZm91bmQgMSB3YW50ZWQgMCBiYWNrIDB4NTViYmFjN2U4YWQwCmluY29y
+cmVjdCBsb2NhbCBiYWNrcmVmIGNvdW50IG9uIDE1MzQ3MTM4NTYgcm9vdCAyNzQ4Nzc5MDY5
+NDkgb3duZXIgNzMxMjM5NiBvZmZzZXQgNDA5NiBmb3VuZCAwIHdhbnRlZCAxIGJhY2sgMHg1
+NWJiYjNiZTgzYzAKYmFja3JlZiBkaXNrIGJ5dGVuciBkb2VzIG5vdCBtYXRjaCBleHRlbnQg
+cmVjb3JkLCBieXRlbnI9MTUzNDcxMzg1NiwgcmVmIGJ5dGVucj0wCmJhY2twb2ludGVyIG1p
+c21hdGNoIG9uIFsxNTM0NzEzODU2IDQwOTZdCmJhY2tyZWYgYnl0ZXMgZG8gbm90IG1hdGNo
+IGV4dGVudCBiYWNrcmVmLCBieXRlbnI9MTk4NTA1MjY3MiwgcmVmIGJ5dGVzPTIwNDgwLCBi
+YWNrcmVmIGJ5dGVzPTg2MDE2CmJhY2twb2ludGVyIG1pc21hdGNoIG9uIFsxOTg1MDUyNjcy
+IDIwNDgwXQpFUlJPUjogZXJyb3JzIGZvdW5kIGluIGV4dGVudCBhbGxvY2F0aW9uIHRyZWUg
+b3IgY2h1bmsgYWxsb2NhdGlvbgpbMy83XSBjaGVja2luZyBmcmVlIHNwYWNlIGNhY2hlCls0
+LzddIGNoZWNraW5nIGZzIHJvb3RzCnJvb3QgNSBpbm9kZSA4NDMwNjUgZXJyb3JzIDEwMCwg
+ZmlsZSBleHRlbnQgZGlzY291bnQKRm91bmQgZmlsZSBleHRlbnQgaG9sZXM6CglzdGFydDog
+MCwgbGVuOiA0Mjk0OTcxMzkyCgl1bnJlc29sdmVkIHJlZiBkaXIgODQzMDYzIGluZGV4IDMg
+bmFtZWxlbiAxMyBuYW1lIFRlbXBsYXRlcy5tc2YgZmlsZXR5cGUgMSBlcnJvcnMgNCwgbm8g
+aW5vZGUgcmVmCgl1bnJlc29sdmVkIHJlZiBkaXIgODQzMDYzIGluZGV4IDMgbmFtZWxlbiAx
+MyBuYW1lIFRlbXBsYXRlcy9tc2YgZmlsZXR5cGUgMCBlcnJvcnMgMywgbm8gZGlyIGl0ZW0s
+IG5vIGRpciBpbmRleAoJdW5yZXNvbHZlZCByZWYgZGlyIDg0MzA2MyBpbmRleCA1IG5hbWVs
+ZW4gNiBuYW1lIERyYWZ0cyBmaWxldHlwZSAxIGVycm9ycyA0LCBubyBpbm9kZSByZWYKCXVu
+cmVzb2x2ZWQgcmVmIGRpciA4NDMwNjMgaW5kZXggNSBuYW1lbGVuIDYgbmFtZSBEc2FmdHMg
+ZmlsZXR5cGUgMCBlcnJvcnMgMywgbm8gZGlyIGl0ZW0sIG5vIGRpciBpbmRleApyb290IDUg
+aW5vZGUgODQzMDY4IGVycm9ycyA0MDAsIG5ieXRlcyB3cm9uZwoJdW5yZXNvbHZlZCByZWYg
+ZGlyIDg0MzA2MyBpbmRleCAxNSBuYW1lbGVuIDE0IG5hbWUgZmlsdGVybG9nLmh0bWwgZmls
+ZXR5cGUgMSBlcnJvcnMgMiwgbm8gZGlyIGluZGV4Cgl1bnJlc29sdmVkIHJlZiBkaXIgODQz
+MDYzIGluZGV4IDE4IG5hbWVsZW4gOCBuYW1lIFNlbnQuc2JkIGZpbGV0eXBlIDIgZXJyb3Jz
+IDIsIG5vIGRpciBpbmRleApyb290IDUgaW5vZGUgOTA4NjI0IGVycm9ycyAxLCBubyBpbm9k
+ZSBpdGVtCgl1bnJlc29sdmVkIHJlZiBkaXIgODQzMDYzIGluZGV4IDE1IG5hbWVsZW4gMTQg
+bmFtZSBmaWx0ZXJsb2cuaHRtbCBmaWxldHlwZSAxIGVycm9ycyA1LCBubyBkaXIgaXRlbSwg
+bm8gaW5vZGUgcmVmCnJvb3QgNSBpbm9kZSA5MDg2MjcgZXJyb3JzIDEsIG5vIGlub2RlIGl0
+ZW0KCXVucmVzb2x2ZWQgcmVmIGRpciA4NDMwNjMgaW5kZXggMTggbmFtZWxlbiA4IG5hbWUg
+U2VudC9zYmQgZmlsZXR5cGUgMiBlcnJvcnMgNSwgbm8gZGlyIGl0ZW0sIG5vIGlub2RlIHJl
+Zgpyb290IDUgaW5vZGUgNzI4NzMyOSBlcnJvcnMgMTAwLCBmaWxlIGV4dGVudCBkaXNjb3Vu
+dApGb3VuZCBmaWxlIGV4dGVudCBob2xlczoKCXN0YXJ0OiAwLCBsZW46IDgxOTIKRVJST1I6
+IGVycm9ycyBmb3VuZCBpbiBmcyByb290cwpPcGVuaW5nIGZpbGVzeXN0ZW0gdG8gY2hlY2su
+Li4KQ2hlY2tpbmcgZmlsZXN5c3RlbSBvbiAvZGV2L3NkYTQKVVVJRDogYTk0MmI4ZGEtZTky
+ZC00MzQ4LThkZTktZGVkMWU1ZTA5NWFkCmZvdW5kIDE4NDQ3MTY2MjU5MiBieXRlcyB1c2Vk
+LCBlcnJvcihzKSBmb3VuZAp0b3RhbCBjc3VtIGJ5dGVzOiAxNzg4NDM0MzIKdG90YWwgdHJl
+ZSBieXRlczogMTE3Mjc4MzEwNAp0b3RhbCBmcyB0cmVlIGJ5dGVzOiA5MjE3OTY2MDgKdG90
+YWwgZXh0ZW50IHRyZWUgYnl0ZXM6IDUyMjMyMTkyCmJ0cmVlIHNwYWNlIHdhc3RlIGJ5dGVz
+OiAxODQwNDEwNzgKZmlsZSBkYXRhIGJsb2NrcyBhbGxvY2F0ZWQ6IDUzODU5NzUzOTg0MAog
+cmVmZXJlbmNlZCAxOTA1NTc4MTA2ODgK
+--------------FDD8E4153616A7790C96F612--
