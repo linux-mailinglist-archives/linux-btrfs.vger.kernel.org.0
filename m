@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC716C3F27
-	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 19:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AE3C3F28
+	for <lists+linux-btrfs@lfdr.de>; Tue,  1 Oct 2019 19:57:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731678AbfJAR5T (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 1 Oct 2019 13:57:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33228 "EHLO mx1.suse.de"
+        id S1731668AbfJAR5V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 1 Oct 2019 13:57:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33246 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731668AbfJAR5T (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 1 Oct 2019 13:57:19 -0400
+        id S1731687AbfJAR5V (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 1 Oct 2019 13:57:21 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6F180AF0B;
-        Tue,  1 Oct 2019 17:57:17 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id C11C3AF0B;
+        Tue,  1 Oct 2019 17:57:19 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4C53DDA88C; Tue,  1 Oct 2019 19:57:35 +0200 (CEST)
+        id 9D65FDA88C; Tue,  1 Oct 2019 19:57:37 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 1/3] btrfs: add __cold attribute to more functions
-Date:   Tue,  1 Oct 2019 19:57:35 +0200
-Message-Id: <244616cd0a823e44fcca051a569ff68e0c7dc29e.1569587835.git.dsterba@suse.com>
+Subject: [PATCH 2/3] btrfs: add const function attribute
+Date:   Tue,  1 Oct 2019 19:57:37 +0200
+Message-Id: <543f96a0b47e4856e6adbf3761a56df96480f358.1569587835.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1569587835.git.dsterba@suse.com>
 References: <cover.1569587835.git.dsterba@suse.com>
@@ -33,87 +33,73 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The attribute can mark functions supposed to be called rarely if at all
-and the text can be moved to sections far from the other code. The
-attribute has been added to several functions already, this patch is
-based on hints given by gcc -Wsuggest-attribute=cold.
-
-The net effect of this patch is decrease of btrfs.ko by 1000-1300,
-depending on the config options.
+For some reason the attribute is called __attribute_const__ and not
+__const, marks functions that have no observable effects on program
+state, IOW not reading pointers, just the arguments and calculating a
+value. Allows the compiler to do some optimizations, based on
+-Wsuggest-attribute=const . The effects are rather small, though, about
+60 bytes decrese of btrfs.ko.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/disk-io.c | 4 ++--
- fs/btrfs/disk-io.h | 4 ++--
+ fs/btrfs/ctree.h   | 2 +-
  fs/btrfs/super.c   | 2 +-
  fs/btrfs/volumes.c | 2 +-
- 4 files changed, 6 insertions(+), 6 deletions(-)
+ fs/btrfs/volumes.h | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index e335fa4c4d1d..04d86e11117b 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2583,7 +2583,7 @@ static int btrfs_validate_write_super(struct btrfs_fs_info *fs_info,
- 	return ret;
- }
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index 4bf0433b1179..793085770c84 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -3146,7 +3146,7 @@ __cold
+ void __btrfs_handle_fs_error(struct btrfs_fs_info *fs_info, const char *function,
+ 		     unsigned int line, int errno, const char *fmt, ...);
  
--int open_ctree(struct super_block *sb,
-+int __cold open_ctree(struct super_block *sb,
- 	       struct btrfs_fs_devices *fs_devices,
- 	       char *options)
- {
-@@ -3968,7 +3968,7 @@ int btrfs_commit_super(struct btrfs_fs_info *fs_info)
- 	return btrfs_commit_transaction(trans);
- }
+-const char *btrfs_decode_error(int errno);
++const char * __attribute_const__ btrfs_decode_error(int errno);
  
--void close_ctree(struct btrfs_fs_info *fs_info)
-+void __cold close_ctree(struct btrfs_fs_info *fs_info)
- {
- 	int ret;
- 
-diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
-index a6958103d87e..76f123ebb292 100644
---- a/fs/btrfs/disk-io.h
-+++ b/fs/btrfs/disk-io.h
-@@ -49,10 +49,10 @@ struct extent_buffer *btrfs_find_create_tree_block(
- 						struct btrfs_fs_info *fs_info,
- 						u64 bytenr);
- void btrfs_clean_tree_block(struct extent_buffer *buf);
--int open_ctree(struct super_block *sb,
-+int __cold open_ctree(struct super_block *sb,
- 	       struct btrfs_fs_devices *fs_devices,
- 	       char *options);
--void close_ctree(struct btrfs_fs_info *fs_info);
-+void __cold close_ctree(struct btrfs_fs_info *fs_info);
- int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors);
- struct buffer_head *btrfs_read_dev_super(struct block_device *bdev);
- int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
+ __cold
+ void __btrfs_abort_transaction(struct btrfs_trans_handle *trans,
 diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 843015b9a11e..3da35d8b21a3 100644
+index 3da35d8b21a3..b3e6d7aa3402 100644
 --- a/fs/btrfs/super.c
 +++ b/fs/btrfs/super.c
-@@ -187,7 +187,7 @@ static struct ratelimit_state printk_limits[] = {
- 	RATELIMIT_STATE_INIT(printk_limits[7], DEFAULT_RATELIMIT_INTERVAL, 100),
- };
+@@ -66,7 +66,7 @@ static struct file_system_type btrfs_root_fs_type;
  
--void btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
-+void __cold btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
+ static int btrfs_remount(struct super_block *sb, int *flags, char *data);
+ 
+-const char *btrfs_decode_error(int errno)
++const char * __attribute_const__ btrfs_decode_error(int errno)
  {
- 	char lvl[PRINTK_MAX_SINGLE_HEADER_LEN + 1] = "\0";
- 	struct va_format vaf;
+ 	char *errstr = "unknown";
+ 
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index fed4c9fe2ea2..3fd89aee539d 100644
+index 3fd89aee539d..c343b7cdfb53 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -2048,7 +2048,7 @@ static struct btrfs_device * btrfs_find_next_active_device(
-  * where this function called, there should be always be another device (or
-  * this_dev) which is active.
-  */
--void btrfs_assign_next_active_device(struct btrfs_device *device,
-+void __cold btrfs_assign_next_active_device(struct btrfs_device *device,
- 				     struct btrfs_device *this_dev)
+@@ -297,7 +297,7 @@ static int __btrfs_map_block(struct btrfs_fs_info *fs_info,
+ 
+ DEFINE_MUTEX(uuid_mutex);
+ static LIST_HEAD(fs_uuids);
+-struct list_head *btrfs_get_fs_uuids(void)
++struct list_head * __attribute_const__ btrfs_get_fs_uuids(void)
  {
- 	struct btrfs_fs_info *fs_info = device->fs_info;
+ 	return &fs_uuids;
+ }
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index a7da1f3e3627..0ae0677a8d86 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -571,7 +571,7 @@ static inline enum btrfs_raid_types btrfs_bg_flags_to_raid_index(u64 flags)
+ 
+ void btrfs_commit_device_sizes(struct btrfs_transaction *trans);
+ 
+-struct list_head *btrfs_get_fs_uuids(void);
++struct list_head * __attribute_const__ btrfs_get_fs_uuids(void);
+ void btrfs_set_fs_info_ptr(struct btrfs_fs_info *fs_info);
+ void btrfs_reset_fs_info_ptr(struct btrfs_fs_info *fs_info);
+ bool btrfs_check_rw_degradable(struct btrfs_fs_info *fs_info,
 -- 
 2.23.0
 
