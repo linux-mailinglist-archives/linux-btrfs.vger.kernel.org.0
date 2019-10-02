@@ -2,60 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D39C4656
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2019 06:14:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B7B9C46AF
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2019 06:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbfJBEON (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Oct 2019 00:14:13 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:52616 "EHLO
+        id S1726436AbfJBEpF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Oct 2019 00:45:05 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54864 "EHLO
         userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725799AbfJBEOM (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Oct 2019 00:14:12 -0400
+        with ESMTP id S1726092AbfJBEpE (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Oct 2019 00:45:04 -0400
 Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x924EBbt193107
-        for <linux-btrfs@vger.kernel.org>; Wed, 2 Oct 2019 04:14:11 GMT
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x924j3jI019883
+        for <linux-btrfs@vger.kernel.org>; Wed, 2 Oct 2019 04:45:03 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id; s=corp-2019-08-05;
- bh=rtdR+P7aZBrhf0ZjthW5qMGEisM4ag2dhvnunshkdUU=;
- b=jZgfm+22mwpt8lJtPUu+HgrqpvUZlVG6jxNfJCp9GIVJX7b/nkF54uKBYEjzcQbsvfIz
- mrMPfl8kvvFmCzDC7gfRNmWvyrzuaWIAHLtJt8OROXAt4FJswk5YDEAL5cxJPyf6kYar
- gbJb6MEy+6pCRC8PXxS1wbQjoCq8k6QHAF8yiPVhK0zi3D2GzJEhxzq6Dhm9QgDlc+Cy
- vfUoY1Qm7xI0yayMMraXBJhgXiPmpRZw6RU67ZVXUr0lmyM7pATrP2YmSVmOsWJHmA0H
- rPpOagJIn1h2eRPnQGEeoM4drQsj9EPrUhKTdXDxKpYvt2PGljgNPgNPSRSlz8dHIoO1 zw== 
+ date : message-id : in-reply-to : references; s=corp-2019-08-05;
+ bh=+xlcL8MlMztX1wQsChkc6E1Xr8HPpkCUrRGlEbmUGwg=;
+ b=UyzVSAV0YBaIZx5xVX8FAUHT0YSNKo0ataSPpFhpwBcpmpWo+nBfQt7aP2DH0BKFJ+5W
+ naRXTwtNcawIsHkpBQVJoNrbxPLupbSLp6ykAP3OCtROXuTF17Y5ZmpQ4Y5L5u5UL9Ti
+ 84ap1Yjn0aONDYJCuuHL24f3oC4c3vAYxcz/MYc0jKPWjxaJJ0a+yVEPWNyvCJXABUcP
+ AIV1lDBFbC4XFE9nfVxOxWAUbjrePAhsJ1xazPZEG7Rgx/mu9y5xof6JH7gc26APVGMN
+ djnspEgtgDtPMpiAvfnVYo9zdn+GrSgnBMSb0nBgd9CADMADYtdE3ZNxQq1VLZddLjf5 fQ== 
 Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2v9xxutg7k-1
+        by userp2130.oracle.com with ESMTP id 2v9xxutknt-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Oct 2019 04:14:10 +0000
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Oct 2019 04:45:03 +0000
 Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9248c8s061085
-        for <linux-btrfs@vger.kernel.org>; Wed, 2 Oct 2019 04:12:07 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2vcg60f3s2-1
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x924h8DT135049
+        for <linux-btrfs@vger.kernel.org>; Wed, 2 Oct 2019 04:45:03 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2vcg60gtd4-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Wed, 02 Oct 2019 04:12:07 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x924C6I4022440
-        for <linux-btrfs@vger.kernel.org>; Wed, 2 Oct 2019 04:12:06 GMT
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Oct 2019 04:45:03 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x924j2Rh020272
+        for <linux-btrfs@vger.kernel.org>; Wed, 2 Oct 2019 04:45:02 GMT
 Received: from tp.wifi.oracle.com (/192.188.170.104)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 01 Oct 2019 21:12:06 -0700
+        with ESMTP ; Tue, 01 Oct 2019 21:45:02 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3] btrfs-progs: add verbose option to btrfs device scan
-Date:   Wed,  2 Oct 2019 12:11:52 +0800
-Message-Id: <1569989512-5594-1-git-send-email-anand.jain@oracle.com>
+Subject: [PATCH v3.1] btrfs-progs: add verbose option to btrfs device scan
+Date:   Wed,  2 Oct 2019 12:44:48 +0800
+Message-Id: <1569991488-6578-1-git-send-email-anand.jain@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1569989512-5594-1-git-send-email-anand.jain@oracle.com>
+References: <1569989512-5594-1-git-send-email-anand.jain@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9397 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910020036
+ engine=8.0.1-1908290000 definitions=main-1910020042
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9397 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
  suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910020037
+ definitions=main-1910020042
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -66,21 +68,22 @@ To help debug device scan issues, add verbose option to btrfs device scan.
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 Tested-by: Graham Cobb <g.btrfs@cobb.uk.net>
 ---
+v3.1: Add --help as well. And update the wordings in Documentation.
 v3: Add --verbose long option and update documentation. Thanks Graham.A
     Add Tested-by.
 v2: Use bool instead of int as a btrfs_scan_device() argument.
 
- Documentation/btrfs-device.asciidoc | 2 ++
- cmds/device.c                       | 9 +++++++--
- cmds/filesystem.c                   | 2 +-
- common/device-scan.c                | 4 +++-
- common/device-scan.h                | 3 ++-
- common/utils.c                      | 2 +-
- disk-io.c                           | 2 +-
- 7 files changed, 17 insertions(+), 7 deletions(-)
+ Documentation/btrfs-device.asciidoc |  2 ++
+ cmds/device.c                       | 11 +++++++++--
+ cmds/filesystem.c                   |  2 +-
+ common/device-scan.c                |  4 +++-
+ common/device-scan.h                |  3 ++-
+ common/utils.c                      |  2 +-
+ disk-io.c                           |  2 +-
+ 7 files changed, 19 insertions(+), 7 deletions(-)
 
 diff --git a/Documentation/btrfs-device.asciidoc b/Documentation/btrfs-device.asciidoc
-index 70ce6c5a97f8..a251be9e0fa2 100644
+index 70ce6c5a97f8..cca853e4ea8f 100644
 --- a/Documentation/btrfs-device.asciidoc
 +++ b/Documentation/btrfs-device.asciidoc
 @@ -120,6 +120,8 @@ available.
@@ -88,15 +91,24 @@ index 70ce6c5a97f8..a251be9e0fa2 100644
  Unregister a given device or all stale devices if no path is given, the device
  must be unmounted otherwise it's an error.
 +-v|--verbose::::
-+Be verbose and list the devices scanned.
++List the devices scanned in the current scan and be verbose where needed
  
  *stats* [options] <path>|<device>::
  Read and print the device IO error statistics for all devices of the given
 diff --git a/cmds/device.c b/cmds/device.c
-index 24158308a41b..655b97d83cb7 100644
+index 24158308a41b..8bb44bae7946 100644
 --- a/cmds/device.c
 +++ b/cmds/device.c
-@@ -313,6 +313,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
+@@ -303,6 +303,8 @@ static const char * const cmd_device_scan_usage[] = {
+ 	" -d|--all-devices            enumerate and register all devices, use as a fallback",
+ 	"                             if blkid is not available",
+ 	" -u|--forget [<device>...]   unregister a given device or all stale devices if no path ",
++	" -v|--verbose [<device>...]  stdout the devices that are scanned in the current scan",
++
+ 	NULL
+ };
+ 
+@@ -313,6 +315,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
  	int all = 0;
  	int ret = 0;
  	int forget = 0;
@@ -104,7 +116,7 @@ index 24158308a41b..655b97d83cb7 100644
  
  	optind = 0;
  	while (1) {
-@@ -320,10 +321,11 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
+@@ -320,10 +323,11 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
  		static const struct option long_options[] = {
  			{ "all-devices", no_argument, NULL, 'd'},
  			{ "forget", no_argument, NULL, 'u'},
@@ -117,7 +129,7 @@ index 24158308a41b..655b97d83cb7 100644
  		if (c < 0)
  			break;
  		switch (c) {
-@@ -333,6 +335,9 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
+@@ -333,6 +337,9 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
  		case 'u':
  			forget = 1;
  			break;
@@ -127,7 +139,7 @@ index 24158308a41b..655b97d83cb7 100644
  		default:
  			usage_unknown_option(cmd, argv);
  		}
-@@ -354,7 +359,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
+@@ -354,7 +361,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
  			}
  		} else {
  			printf("Scanning for Btrfs filesystems\n");
