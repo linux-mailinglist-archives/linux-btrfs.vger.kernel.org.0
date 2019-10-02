@@ -2,107 +2,225 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40FD3C8E64
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2019 18:31:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7B4BC9100
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2019 20:41:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726152AbfJBQbh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Oct 2019 12:31:37 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52942 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbfJBQbg (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Oct 2019 12:31:36 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1iFhXJ-00085W-Qa; Wed, 02 Oct 2019 16:31:33 +0000
-Subject: Re: [PATCH] btrfs: fix uninitialized ret in ref-verify
-To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        id S1728000AbfJBSli (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Oct 2019 14:41:38 -0400
+Received: from mail-qk1-f174.google.com ([209.85.222.174]:32800 "EHLO
+        mail-qk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726076AbfJBSli (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 2 Oct 2019 14:41:38 -0400
+Received: by mail-qk1-f174.google.com with SMTP id x134so16110059qkb.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 02 Oct 2019 11:41:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lIVT3jFPw6k+aNp9uTRpNgvLeVg+3uvDlpVSa/R+fEE=;
+        b=B73xyAt7MtyZxC2VKf831r4uBQTyS2qRFV6Q7feHDRlOA2ydnco8WMmbDnGF+cKeYR
+         bQbqJpWZ4iMyr8oG5AsBjJG413kteIbYs4AsJ/MPZ8V5VTTiFLdi2YtpjCX7vnRQUx3B
+         1Eg+EKI3AlGBhl0gT/ftCcuULdKkyrMr/pTolzLwSLj0kHb/iVHXDY9w3KB/aokoWMyU
+         yH5R6WbwHvvcp5OzHh6HaMNDKgTwdpfdSTl9+0I2DAKs9UJQGajaOjJG/DzLqK/XR3Wz
+         UGJvefL/eF/zp+hDbZIAszRII9szDkU47ml7IQwzOSbAqohGpJytlS5szHtRYZXv8nog
+         vgeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=lIVT3jFPw6k+aNp9uTRpNgvLeVg+3uvDlpVSa/R+fEE=;
+        b=ilxeRLDYmsF9bJcpcqqZtcwjB2TjpxPU70EHiHkVCVrhLXzIuwqPqSBiWqXAE1SEve
+         FshXQXgUUvU8SDgsJDlSaxcyEN9hh5r1yTsFm8BCEAEUU2l05xUexkK8NLki/dtn+793
+         zKIE1joM4tg7stHlACCB5658x9V7EcG+nn+sbnMBIj+Awy7G2NHa+R4n9fUF2YUOIfah
+         VasziKAvjxcTvEryijY7jDzxAyTov52CChoF7kSqDGX57MHaU8VEvDtsX4dvImpQz8A3
+         NPhXe4OV9J4gFCeV/62butVksmv+yUNtxUuT5ycvaKGEXaIEfvJHTstYnpYoSY5OwBeW
+         dniQ==
+X-Gm-Message-State: APjAAAWPxwQMRL+5UyIlo8hIOTuNOp5CSrFeII8cg9A54GeygBonMCVW
+        Jf3s8H4biVmFoehJVUBIJsZgZkcP3KrxWA==
+X-Google-Smtp-Source: APXvYqy/FEDPTl7JBDCsOYEzpNTgwB7ohRu1qopl/ntGoS7dQtjaB/x2vOKNSNYnmRAE/cssF4psZA==
+X-Received: by 2002:a37:6156:: with SMTP id v83mr261565qkb.80.1570041695612;
+        Wed, 02 Oct 2019 11:41:35 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id q64sm16224qkb.32.2019.10.02.11.41.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Oct 2019 11:41:34 -0700 (PDT)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
         kernel-team@fb.com
-References: <20191002140336.2338-1-josef@toxicpanda.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=colin.king@canonical.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <174b74be-f9c2-0c5f-f828-369aa039f8c7@canonical.com>
-Date:   Wed, 2 Oct 2019 17:31:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+Subject: [PATCH][v2] btrfs/194: add a test for multi-subvolume fsyncing
+Date:   Wed,  2 Oct 2019 14:41:33 -0400
+Message-Id: <20191002184133.21099-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-In-Reply-To: <20191002140336.2338-1-josef@toxicpanda.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 02/10/2019 15:03, Josef Bacik wrote:
-> Coverity caught a case where we could return with a uninitialized value
-> in ret in process_leaf.  This is actually pretty likely because we could
-> very easily run into a block group item key and have a garbage value in
-> ret and think there was an errror.  Fix this by initializing ret to 0.
-> 
-> Reported-by: Colin Ian King <colin.king@canonical.com>
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> ---
->  fs/btrfs/ref-verify.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/ref-verify.c b/fs/btrfs/ref-verify.c
-> index e87cbdad02a3..b57f3618e58e 100644
-> --- a/fs/btrfs/ref-verify.c
-> +++ b/fs/btrfs/ref-verify.c
-> @@ -500,7 +500,7 @@ static int process_leaf(struct btrfs_root *root,
->  	struct btrfs_extent_data_ref *dref;
->  	struct btrfs_shared_data_ref *sref;
->  	u32 count;
-> -	int i = 0, tree_block_level = 0, ret;
-> +	int i = 0, tree_block_level = 0, ret = 0;
->  	struct btrfs_key key;
->  	int nritems = btrfs_header_nritems(leaf);
->  
-> 
-Thanks Josef.
+I discovered a problem in btrfs where we'd end up pointing at a block we
+hadn't written out yet.  This is triggered by a race when two different
+files on two different subvolumes fsync.  This test exercises this path
+with dm-log-writes, and then replays the log at every FUA to verify the
+file system is still mountable and the log is replayable.
+
+This test is to verify the fix
+
+btrfs: fix incorrect updating of log root tree
+
+actually fixed the problem.
+
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+---
+v1->v2:
+- added the patchname related to this test in the comments and changelog.
+- running fio makes it use 400mib of shared memory, so running 50 of them is
+  impossible on boxes that don't have hundreds of gib of RAM.  Fixed this to
+  just generate a fio config so we can run 1 fio instance with 50 threads which
+  makes it not OOM boxes with tiny amounts of RAM.
+- fixed some formatting things that Filipe pointed out.
+
+ tests/btrfs/194     | 111 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/194.out |   2 +
+ tests/btrfs/group   |   1 +
+ 3 files changed, 114 insertions(+)
+ create mode 100755 tests/btrfs/194
+ create mode 100644 tests/btrfs/194.out
+
+diff --git a/tests/btrfs/194 b/tests/btrfs/194
+new file mode 100755
+index 00000000..b98064e2
+--- /dev/null
++++ b/tests/btrfs/194
+@@ -0,0 +1,111 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2019 Facebook.  All Rights Reserved.
++#
++# FS QA Test 194
++#
++# Test multi subvolume fsync to test a bug where we'd end up pointing at a block
++# we haven't written.  This was fixed by the patch
++#
++# btrfs: fix incorrect updating of log root tree
++#
++# Will do log replay and check the filesystem.
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++fio_config=$tmp.fio
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	_log_writes_cleanup &> /dev/null
++	_dmthin_cleanup
++	rm -f $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++. ./common/dmthin
++. ./common/dmlogwrites
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_supported_os Linux
++
++# Use thin device as replay device, which requires $SCRATCH_DEV
++_require_scratch_nocheck
++# and we need extra device as log device
++_require_log_writes
++_require_dm_target thin-pool
++
++cat >$fio_config <<EOF
++[global]
++readwrite=write
++fallocate=none
++bs=4k
++fsync=1
++size=128k
++EOF
++
++for i in $(seq 0 49); do
++	echo "[foo$i]" >> $fio_config
++	echo "filename=$SCRATCH_MNT/$i/file" >> $fio_config
++done
++
++_require_fio $fio_config
++
++cat $fio_config >> $seqres.full
++
++# Use a thin device to provide deterministic discard behavior. Discards are used
++# by the log replay tool for fast zeroing to prevent out-of-order replay issues.
++_test_unmount
++_dmthin_init $devsize $devsize $csize $lowspace
++_log_writes_init $DMTHIN_VOL_DEV
++_log_writes_mkfs >> $seqres.full 2>&1
++_log_writes_mark mkfs
++
++_log_writes_mount
++
++# First create all the subvolumes
++for i in $(seq 0 49); do
++	$BTRFS_UTIL_PROG subvolume create "$SCRATCH_MNT/$i" > /dev/null
++done
++
++$FIO_PROG $fio_config > /dev/null 2>&1
++_log_writes_unmount
++
++_log_writes_remove
++prev=$(_log_writes_mark_to_entry_number mkfs)
++[ -z "$prev" ] && _fail "failed to locate entry mark 'mkfs'"
++cur=$(_log_writes_find_next_fua $prev)
++[ -z "$cur" ] && _fail "failed to locate next FUA write"
++
++while [ ! -z "$cur" ]; do
++	_log_writes_replay_log_range $cur $DMTHIN_VOL_DEV >> $seqres.full
++
++	# We need to mount the fs because btrfsck won't bother checking the log.
++	_dmthin_mount
++	_dmthin_check_fs
++
++	prev=$cur
++	cur=$(_log_writes_find_next_fua $(($cur + 1)))
++	[ -z "$cur" ] && break
++done
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/194.out b/tests/btrfs/194.out
+new file mode 100644
+index 00000000..7bfd50ff
+--- /dev/null
++++ b/tests/btrfs/194.out
+@@ -0,0 +1,2 @@
++QA output created by 194
++Silence is golden
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index b92cb12c..0d0e1bba 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -196,3 +196,4 @@
+ 191 auto quick send dedupe
+ 192 auto replay snapshot stress
+ 193 auto quick qgroup enospc limit
++194 auto metadata log volume
+-- 
+2.21.0
 
