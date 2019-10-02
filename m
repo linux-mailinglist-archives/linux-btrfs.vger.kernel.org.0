@@ -2,106 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B05DFCC825
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Oct 2019 07:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59A19CC8CC
+	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Oct 2019 10:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726753AbfJEFdp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 5 Oct 2019 01:33:45 -0400
-Received: from sender2-of-o52.zoho.com.cn ([163.53.93.247]:21554 "EHLO
-        sender2-of-o52.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726426AbfJEFdo (ORCPT
+        id S1726134AbfJEIgg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 5 Oct 2019 04:36:36 -0400
+Received: from [157.245.162.8] ([157.245.162.8]:50172 "EHLO
+        4412441624-jhnabhfbn.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725927AbfJEIgf (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 5 Oct 2019 01:33:44 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1570252688; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=p0E5kHJEP+jqUDuo6tPyptfqmyyFtXCBdAK3lhYR+bvCzZYpGptNRs+M7H6lRB8aOO2LvrNiRQIFd8UNxuwP8UkDNlCIhv5J8HIvj+C3XqHbCnx2b6TSmwQ4kgXRz2zS6pgmZyp67uCdQAwvhybDCNyqkYOID+sEULfYJcH80XM=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1570252688; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To:ARC-Authentication-Results; 
-        bh=cuCj8lkW5ZTQMOaX87sqd1zA7ygX45opu+Zre1DkD74=; 
-        b=hFSkpJQtZFch6eEo614NYHZ+qxN4cVu8KTly2f3p05VcWQrJki3QbLiQmRdkec5ukIwDWCunzV/DiBcOqcmPoOaBEP2QAKiD+fQYcdx+vXR80eho/zQIhNgSCUFCU4PDrC6NXY/G6Ux1LEPtBaogezf8GfGtEkjrRfxcqoAb+Q8=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1570252688;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=1664; bh=cuCj8lkW5ZTQMOaX87sqd1zA7ygX45opu+Zre1DkD74=;
-        b=VAiAMPQMrk5vGgxyMA6mV2vHRSXkM58PjTDN1ruQo66Yemw5jYvt/8bucPetlJ2i
-        cT3okPyObu0umh+3hIFU89a7QT3Xm89He3Alsv6Y/qyyu0wZJvbdnZd3BCQJCGj33bW
-        hUC+OD2yEcv6B52axw1nmAYIhly42C+Wv/sLTieQ=
-Received: from localhost.localdomain (116.30.195.234 [116.30.195.234]) by mx.zoho.com.cn
-        with SMTPS id 1570252686586852.6704752914676; Sat, 5 Oct 2019 13:18:06 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191005051736.29857-3-cgxu519@mykernel.net>
-Subject: [PATCH 3/3] btrfs: using enum to replace macro
-Date:   Sat,  5 Oct 2019 13:17:36 +0800
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191005051736.29857-1-cgxu519@mykernel.net>
-References: <20191005051736.29857-1-cgxu519@mykernel.net>
+        Sat, 5 Oct 2019 04:36:35 -0400
+X-Greylist: delayed 90503 seconds by postgrey-1.27 at vger.kernel.org; Sat, 05 Oct 2019 04:36:35 EDT
+Received: from localhost (4412441624-jhnabhfbn [127.0.0.1])
+        by 4412441624-jhnabhfbn.localdomain (Postfix) with SMTP id 8EB371456A5;
+        Wed,  2 Oct 2019 11:07:03 +0000 (UTC)
+Received: from [74.18.222.186] by localhost id <7900188-91875>; Wed, 02 Oct 2019 05:08:24 -0700
+Message-ID: <0dc2---nwdh3-ctk$xs9@18kx.c4jy10xq>
+From:   "RECEIVE AND SECURE THIS MONEY FOR ME" <lawyere34@gmail.com>
+Reply-To: "RECEIVE AND SECURE THIS MONEY FOR ME" <lawyere34@gmail.com>
+To:     lindenroad@schools.tameside.gov.uk
+Subject: RECEIVE THIS MONEY FOR ME IN YOUR BANK ACCOUNT REPLY TO fta447447@gmail.com
+Date:   Wed, 02 Oct 19 05:08:24 GMT
+X-Mailer: The Bat! (v1.52f) Business
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Type: multipart/alternative;
+        boundary="7481__6.F__"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-using enum to replace macro definition for extent
-types.
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
- fs/btrfs/tree-checker.c         |  4 ++--
- include/uapi/linux/btrfs_tree.h | 10 ++++++----
- 2 files changed, 8 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 2d91c34bbf63..9b0c5fdbe04e 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -156,11 +156,11 @@ static int check_extent_data_item(struct extent_buffe=
-r *leaf,
-=20
- =09fi =3D btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
-=20
--=09if (btrfs_file_extent_type(leaf, fi) > BTRFS_FILE_EXTENT_TYPES) {
-+=09if (btrfs_file_extent_type(leaf, fi) >=3D BTRFS_FILE_EXTENT_TYPES) {
- =09=09file_extent_err(leaf, slot,
- =09=09"invalid type for file extent, have %u expect range [0, %u]",
- =09=09=09btrfs_file_extent_type(leaf, fi),
--=09=09=09BTRFS_FILE_EXTENT_TYPES);
-+=09=09=09BTRFS_FILE_EXTENT_TYPES - 1);
- =09=09return -EUCLEAN;
- =09}
-=20
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tre=
-e.h
-index b65c7ee75bc7..34bd09ffc71d 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -737,10 +737,12 @@ struct btrfs_balance_item {
- =09__le64 unused[4];
- } __attribute__ ((__packed__));
-=20
--#define BTRFS_FILE_EXTENT_INLINE 0
--#define BTRFS_FILE_EXTENT_REG 1
--#define BTRFS_FILE_EXTENT_PREALLOC 2
--#define BTRFS_FILE_EXTENT_TYPES=092
-+enum {
-+=09BTRFS_FILE_EXTENT_INLINE,
-+=09BTRFS_FILE_EXTENT_REG,
-+=09BTRFS_FILE_EXTENT_PREALLOC,
-+=09BTRFS_FILE_EXTENT_TYPES
-+};
-=20
- struct btrfs_file_extent_item {
- =09/*
---=20
-2.21.0
-
-
+--7481__6.F__--
 
