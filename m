@@ -2,54 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B439C8917
-	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2019 14:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2930DC8952
+	for <lists+linux-btrfs@lfdr.de>; Wed,  2 Oct 2019 15:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726325AbfJBM6m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 2 Oct 2019 08:58:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50808 "EHLO mx1.suse.de"
+        id S1727078AbfJBNKT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 2 Oct 2019 09:10:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57838 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726087AbfJBM6l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 2 Oct 2019 08:58:41 -0400
+        id S1726297AbfJBNKT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 2 Oct 2019 09:10:19 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 78C77AC11;
-        Wed,  2 Oct 2019 12:58:39 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 31EF4B03C;
+        Wed,  2 Oct 2019 13:10:18 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7DE01DA88C; Wed,  2 Oct 2019 14:58:56 +0200 (CEST)
-Date:   Wed, 2 Oct 2019 14:58:55 +0200
+        id 780AFDA88C; Wed,  2 Oct 2019 15:10:35 +0200 (CEST)
+Date:   Wed, 2 Oct 2019 15:10:35 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Mark Fasheh <mfasheh@suse.com>
+To:     Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] Relocation/backref cache cleanups
-Message-ID: <20191002125855.GM2751@twin.jikos.cz>
+Subject: Re: [PATCH 2/2] btrfs: transaction: Cleanup unused
+ TRANS_STATE_BLOCKED
+Message-ID: <20191002131035.GN2751@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Mark Fasheh <mfasheh@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20190906171533.618-1-mfasheh@suse.com>
+References: <20190822072500.22730-1-wqu@suse.com>
+ <20190822072500.22730-2-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190906171533.618-1-mfasheh@suse.com>
+In-Reply-To: <20190822072500.22730-2-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Sep 06, 2019 at 10:15:30AM -0700, Mark Fasheh wrote:
-> Hi,
+On Thu, Aug 22, 2019 at 03:25:00PM +0800, Qu Wenruo wrote:
+> The state is introduced in commit 4a9d8bdee368 ("Btrfs: make the state
+> of the transaction more readable"), then in commit 302167c50b32
+> ("btrfs: don't end the transaction for delayed refs in throttle") the
+> state is completely removed.
 > 
-> Relocation caches extent backrefs in an rbtree (the 'backref cache').  The
-> following patches move the backref cache code out of relocation.c and into
-> it's own file.  We then do a straight-forward cleanup the main backref cache
-> function, build_backref_tree().  No functionality is changed in these
-> patches.
+> So we can just clean up the state since it's only compared but never
+> set.
 > 
-> These patches are part of a larger series I have, which speeds up qgroup
-> accounting by using the same backref cache facility.  That series is not
-> quite ready, however I wanted to see about getting these cleanup patches
-> upstreamed as they are nicely self contained and benefit the readability of
-> the code.
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Patches 1-3 moved to misc-next.
+Reviewed-by: David Sterba <dsterba@suse.com>
