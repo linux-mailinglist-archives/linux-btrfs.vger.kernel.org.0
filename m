@@ -2,60 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EB4BC9F16
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 15:07:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC4DAC9F5C
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 15:24:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729524AbfJCNHl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Oct 2019 09:07:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55332 "EHLO mx1.suse.de"
+        id S1730303AbfJCNYh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Oct 2019 09:24:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37444 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727221AbfJCNHl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Oct 2019 09:07:41 -0400
+        id S1726039AbfJCNYh (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 3 Oct 2019 09:24:37 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 57ABDAD95;
-        Thu,  3 Oct 2019 13:07:39 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id A9E4CB17C;
+        Thu,  3 Oct 2019 13:24:35 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 62D41DA890; Thu,  3 Oct 2019 15:07:56 +0200 (CEST)
-Date:   Thu, 3 Oct 2019 15:07:56 +0200
+        id 000F2DA890; Thu,  3 Oct 2019 15:24:45 +0200 (CEST)
+Date:   Thu, 3 Oct 2019 15:24:45 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        fdmanana@gmail.com, linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2] btrfs: Properly handle backref_in_log retval
-Message-ID: <20191003130756.GT2751@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: add device scanned-by process name in the scan
+ message
+Message-ID: <20191003132445.GU2751@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        fdmanana@gmail.com, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20190924170920.GB2751@twin.jikos.cz>
- <20190925110303.20466-1-nborisov@suse.com>
- <CAL3q7H6mZTNN2NuZ8dudR=F=MHVsjbyK6=3ELCOhnQJb_AFhWg@mail.gmail.com>
- <93c09683-2a67-a6e5-8853-9092912d48f7@suse.com>
- <20191003125559.GS2751@twin.jikos.cz>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <1570012248-16099-1-git-send-email-anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191003125559.GS2751@twin.jikos.cz>
+In-Reply-To: <1570012248-16099-1-git-send-email-anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 03, 2019 at 02:55:59PM +0200, David Sterba wrote:
-> On Thu, Sep 26, 2019 at 01:39:58PM +0300, Nikolay Borisov wrote:
-> > >> -       if (backref_in_log(log_root, &search_key, dirid, name, name_len))
-> > >> +       ret = backref_in_log(log_root, &search_key, dirid, name, name_len);
-> > >> +       if (ret == 1)
-> > >>                 return true;
-> > > 
-> > > This function also needs to be able to return errors and its caller
-> > > check for errors.
-> > 
-> > Yes but this is for a follow up patch. The current patch does not make
-> > the code any more broken than it currently is.
+On Wed, Oct 02, 2019 at 06:30:48PM +0800, Anand Jain wrote:
+> Its very helpful if we had logged the device scanner process name
+> to debug the race condition between the systemd-udevd scan and the
+> user initiated device forget command.
 > 
-> I'm going to merge the patches, please send the followup patch soon, so
-> we don't forget about adding the proper error handling. Thanks.
+> This patch adds scanned-by process name to the scan message.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-Never mind, the patch 3/3 inlines the function and the error handling is
-integrated to the caller.
+Added to misc-next with the updated message.
