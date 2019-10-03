@@ -2,218 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 772E0C9D23
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 13:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22606C9E33
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 14:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729733AbfJCLYW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Oct 2019 07:24:22 -0400
-Received: from mail-vk1-f194.google.com ([209.85.221.194]:41996 "EHLO
-        mail-vk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729304AbfJCLYW (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Oct 2019 07:24:22 -0400
-Received: by mail-vk1-f194.google.com with SMTP id f1so525292vkh.9;
-        Thu, 03 Oct 2019 04:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=q9rFqSinVXXltMXV3Z5GXcuAqIBK/RVpwpplESCwFis=;
-        b=KuV6eyakgmyxjnbUl92sHJ+AURxaGHr3BJnb4UdyFstRsWwjf0q4qFU5RgXGwPZDyy
-         Wc8plUKgRqdxPYnuWyqukXHjwYSSwt8QiwEW2S3+7TgXJcld4cRRb+IaXAq3cTeQudHr
-         mQL0zi0PF29/MxJIE65ZmODOtq1Z3yvvpVbxZeTzEGvMtXZcRMjE3fK34bns+sRSzl3P
-         SALxrJqRNNh4nQRG3RTsH5auCOc5r7rKGpEoA5x3y7K+PL5yZUXoUlHoqWpKq4dNk7hy
-         XruhqjSM/k9Fj32S9uHiSutXHgwP2ZFnwJRPlgOM2PnhbbXiv06kY/wHcioXWPL5uJnI
-         psrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=q9rFqSinVXXltMXV3Z5GXcuAqIBK/RVpwpplESCwFis=;
-        b=TlK8ClJRGJJbxbbDcdtKCjStMrW+7+VYP2uPQYKaKGqCwJ9NRxPvBXiF69Tfzp8n1q
-         /DHSCmZHEvm3ePc+Hk+A3e+XsUWASzyX4B9gJOgenh5OugQTH5VZbbl+gyew3TcKR4Sj
-         SNjURB8tujfY40xiFMQR9U5vn28Za5vIQgiwYwp4ymiEe9VtHNZn6MVblQJeFvLeFRcx
-         C5KoHf/u1irRabSy3z9h0uoIzmLqL50nRHDHQFmFTkGEsMcS9xU1J/tOis4/EJ6C9PAY
-         AVTW4qTYQ7hB6vfi4iJzceN2lEgQEZS2VCg7DFsbQ7IlK2ZMNBcDaXz6qdyFE9ZYtXPw
-         l3aA==
-X-Gm-Message-State: APjAAAVF7fZILjeO49bEee1VeHHiHKuGozGOY58QXBQhB9BeVepnvjTO
-        +cWPu18HvtTlkOy/DJTfgIkn+Zpau9W5PF5Y6QM=
-X-Google-Smtp-Source: APXvYqzIsz2tqtcMSmp0OGqdVGa1O3gqjFzJy4EJD+ETxTFXHvE/ACdWWr7Ddspj/JMNbNflCkJlUp7vH8Fvwdj1l1k=
-X-Received: by 2002:a1f:6681:: with SMTP id a123mr4704703vkc.81.1570101860692;
- Thu, 03 Oct 2019 04:24:20 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191003075350.36002-1-wqu@suse.com>
-In-Reply-To: <20191003075350.36002-1-wqu@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Thu, 3 Oct 2019 12:24:09 +0100
-Message-ID: <CAL3q7H7Rovqc30gmFW2nXH=T2ffBqn8=WKqGV20XVsx3ngpaAw@mail.gmail.com>
-Subject: Re: [PATCH v2] fstests: btrfs: Add regression test to check if btrfs
- can handle high devid
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     fstests <fstests@vger.kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
+        id S1729386AbfJCMSo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Oct 2019 08:18:44 -0400
+Received: from mail.render-wahnsinn.de ([176.9.37.177]:39062 "EHLO
+        mail.render-wahnsinn.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728095AbfJCMSo (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Oct 2019 08:18:44 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with robert.krig@render-wahnsinn.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=render-wahnsinn.de;
+        s=dkim; t=1570105112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jK3zUHg9GG2rEr4fns1LeqkLAc5l/aq97RevNOqEt6w=;
+        b=GI2/tqweOnFa5gbSKHRH5ll37VQT9+aqqxMBQUC1+Lw2xkFRoodn2+fsLojlKkwETGhrba
+        LHJzLDk+Ke2NBYQFRogD2kUGdWKE4Rc2vRz/gs2YuEk+TKKoJpN/xH48CR7aDxv7eZXtwm
+        FDVZxBo/onACdRFVZm01Mw9pOAra65ZCtBqyyf9T8NbXSzdlo4zHgbDAAgtaR/TEVWHVd5
+        DaRUkehUqC5ACwWwzn6OZT4tiZout7WqP+X8V6x8bVQ4hPV0Tynv1FL+1KqZVaOmyBKS2W
+        Qg8+hHRYP34lisNlS7CGfA02tHojF4Pf5vo0rFUt3XYDrEFdujOtKnXe1bvMVw==
+Message-ID: <498f23ebd3889618cb3faedf04c72ff059553121.camel@render-wahnsinn.de>
+Subject: Re: BTRFS Raid5 error during Scrub.
+From:   Robert Krig <robert.krig@render-wahnsinn.de>
+To:     Linux Btrfs <linux-btrfs@vger.kernel.org>
+Date:   Thu, 03 Oct 2019 14:18:32 +0200
+In-Reply-To: <273d41c4d05283aaa658d9c374e7c43199b0aac3.camel@render-wahnsinn.de>
+References: <804e7e93a00dfe954222e4f8dc820a075d9ccb79.camel@render-wahnsinn.de>
+         <0fdd1282-f370-b55e-0c3f-486ad8673bcd@suse.com>
+         <3616237f8d39c87abcc9b118b8441cfecf36eeb6.camel@render-wahnsinn.de>
+         <CAJCQCtQcKRN09wpbSmguNQ8bSq5VZEk2JNwLOWcsAK7YYJD2YA@mail.gmail.com>
+         <273d41c4d05283aaa658d9c374e7c43199b0aac3.camel@render-wahnsinn.de>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=render-wahnsinn.de; s=dkim; t=1570105114;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jK3zUHg9GG2rEr4fns1LeqkLAc5l/aq97RevNOqEt6w=;
+        b=jLlQhG86dw+8kxNLkNkeucqjqU/LqsM8/157LlUyuU2SbaMz1lW6uJWgbKtjiHJotCHqZA
+        RAjzvb8SLh3fT6o8sS1DRcFPrs9Yeb9CZlNReuarDm0LmZmk483vZfuzF3GO8mhLSVLw5P
+        X4PN1ixJgy2eYedOqhULD5Y0+JOfcpW6gHF79sRIdLnNSAhMQEXyaVW0wmESrivpAwFC2L
+        cUZoAeB2kiMtJwL3VbPbaPtanIpYqxnLm1DCZ85HKLPUmic36mLeY+MKOi0tBF37Nouw8n
+        bBkCPwgaeuYeGtJgdRsJ1+Ag46AErxFq+StnQ3ehp6VbMhtH69ZCdEl/hZDUmg==
+ARC-Seal: i=1; s=dkim; d=render-wahnsinn.de; t=1570105114; a=rsa-sha256;
+        cv=none;
+        b=hC3ehZdfXyV+WinhZ9IyQDWzEdzAUaUjBApsHRKVRmwch1ZE8cFP8GqwGQJDtPtX0ol97I
+        rUBWP/VqurANPuqiRvjEA0GQ4vY9O14AO1aegh6b+UL9d1xSlK06MH8NybVVbBu2SOmxmG
+        iAZtTzjNbPyD9k4WcW5Hmu/zmJ/yhS0+wNjoYwXZcLOq9VKtH+fc2QbowsDutw1anbnr9v
+        BiwCxDNa+bVjV82LPZJ4XG9o7+JG0r4Cy3aPsfvNBPRZuLqZ552beF8pFo3L4irJlywtBF
+        vMbq5kFQcVYQhGWCuCzkF+FUrDE2Tu+OCA7QME7fQSl9ZyaFBkEIvwF9RY2l1Q==
+ARC-Authentication-Results: i=1;
+        mail.render-wahnsinn.de;
+        auth=pass smtp.mailfrom=robert.krig@render-wahnsinn.de
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 3, 2019 at 8:55 AM Qu Wenruo <wqu@suse.com> wrote:
->
-> Add a regression test to check if btrfs can handle high devid.
->
-> The test will add and remove devices to a btrfs fs, so that the devid
-> will increase to uncommon but still valid values.
->
-> The regression is introduced by kernel commit ab4ba2e13346 ("btrfs:
-> tree-checker: Verify dev item").
-> The fix is titled "btrfs: tree-checker: Fix wrong check on max devid".
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks! It's looking much better, the comments really help.
-
-> ---
-> Changelog:
-> v2:
-> - Small comment refinement
-> - Add more comment explaining some details, including:
->   * Why node size affects the runtime
->   * How the triggering threshold is calculated
->   * Why the intermediate number 64 is used as iteration number
-> ---
->  tests/btrfs/194     | 86 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/194.out |  2 ++
->  tests/btrfs/group   |  1 +
->  3 files changed, 89 insertions(+)
->  create mode 100755 tests/btrfs/194
->  create mode 100644 tests/btrfs/194.out
->
-> diff --git a/tests/btrfs/194 b/tests/btrfs/194
-> new file mode 100755
-> index 00000000..b7249f0d
-> --- /dev/null
-> +++ b/tests/btrfs/194
-> @@ -0,0 +1,86 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 194
-> +#
-> +# Test if btrfs can handle large device ids.
-> +#
-> +# The regression is introduced by kernel commit ab4ba2e13346 ("btrfs:
-> +# tree-checker: Verify dev item").
-> +# The fix is titled: "btrfs: tree-checker: Fix wrong check on max devid"
-> +#
-> +seq=3D`basename $0`
-> +seqres=3D$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=3D`pwd`
-> +tmp=3D/tmp/$$
-> +status=3D1       # failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +       cd /
-> +       rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_supported_os Linux
-> +_require_scratch_dev_pool 2
-> +_scratch_dev_pool_get 2
-> +
-> +# Here we use 4k node size to reduce runtime (explained near _scratch_mk=
-fs call)
-> +# To use the minimal node size (4k) we need 4K page size.
-> +if [ $(get_page_size) !=3D 4096 ]; then
-> +       _notrun "This test need 4k page size"
-> +fi
-> +
-> +device_1=3D$(echo $SCRATCH_DEV_POOL | awk '{print $1}')
-> +device_2=3D$(echo $SCRATCH_DEV_POOL | awk '{print $2}')
-> +
-> +echo device_1=3D$device_1 device_2=3D$device_2 >> $seqres.full
-> +
-> +# The wrong check limit is based on the max item size (BTRFS_MAX_DEVS() =
-macro),
-> +# and max item size is based on node size, so smaller node size will res=
-ult
-> +# much shorter runtime. So here we use minimal node size (4K) to reduce =
-runtime.
-> +_scratch_mkfs -n 4k >> $seqres.full
-> +_scratch_mount
-> +
-> +# For 4k nodesize, the wrong limit is calculated by:
-> +# ((4096 - 101 - 25 - 80) / 32) + 1
-> +#    |      |    |    |     |- sizeof(btrfs_stripe)
-> +#    |      |    |    |- sizeof(btrfs_chunk)
-> +#    |      |    |- sizeof(btrfs_item)
-> +#    |      |- sizeof(btrfs_header)
-> +#    |- node size
-> +# Which is 122.
-> +#
-> +# The old limit is wrong because it doesn't take devid holes into consid=
-eration.
-> +# We can have large devid, but still have only 1 device.
-> +#
-> +# Add and remove device in a loop, each iteration will increase devid by=
- 2.
-> +# So by 64 iterations, we will definitely hit that 122 limit.
-> +for (( i =3D 0; i < 64; i++ )); do
-> +       $BTRFS_UTIL_PROG device add -f $device_2 $SCRATCH_MNT
-> +       $BTRFS_UTIL_PROG device del $device_1 $SCRATCH_MNT
-> +       $BTRFS_UTIL_PROG device add -f $device_1 $SCRATCH_MNT
-> +       $BTRFS_UTIL_PROG device del $device_2 $SCRATCH_MNT
-> +done
-> +_scratch_dev_pool_put
-> +
-> +echo "Silence is golden"
-> +
-> +# success, all done
-> +status=3D0
-> +exit
-> diff --git a/tests/btrfs/194.out b/tests/btrfs/194.out
-> new file mode 100644
-> index 00000000..7bfd50ff
-> --- /dev/null
-> +++ b/tests/btrfs/194.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 194
-> +Silence is golden
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index b92cb12c..d8aafe20 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -196,3 +196,4 @@
->  191 auto quick send dedupe
->  192 auto replay snapshot stress
->  193 auto quick qgroup enospc limit
-> +194 auto volume
-> --
-> 2.22.0
->
+By the way, how serious is the error I've encountered?
+I've run a second scrub in the meantime, it aborted when it came close
+to the end, just like the first time. 
+If the files that are corrupt have been deleted is this error going to
+go away?
 
 
---=20
-Filipe David Manana,
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+On Mi, 2019-10-02 at 12:17 +0200, Robert Krig wrote:
+> Here's the output of btrfs insp dump-t -b 48781340082176 /dev/sda
+> 
+> Since /dev/sda is just one device from my RAID5, I'm guessing the
+> command doesn't need to be run separately for each device member of
+> my
+> BTRFS Raid5 setup.
+> 
+> http://paste.debian.net/1103596/
+> 
+> 
+> Am Dienstag, den 01.10.2019, 12:10 -0600 schrieb Chris Murphy:
+> > On Mon, Sep 30, 2019 at 3:37 AM Robert Krig
+> > <robert.krig@render-wahnsinn.de> wrote:
+> > > I've upgraded to btrfs-progs v5.2.1
+> > > Here is the output from btrfs check -p --readonly /dev/sda
+> > > 
+> > > 
+> > > Opening filesystem to check...
+> > > Checking filesystem on /dev/sda
+> > > UUID: f7573191-664f-4540-a830-71ad654d9301
+> > > [1/7] checking root items                      (0:01:17 elapsed,
+> > > 5138533 items checked)
+> > > parent transid verify failed on 48781340082176 wanted 109181
+> > > found
+> > > 109008items checked)
+> > > parent transid verify failed on 48781340082176 wanted 109181
+> > > found
+> > > 109008
+> > > parent transid verify failed on 48781340082176 wanted 109181
+> > > found
+> > > 109008
+> > > Ignoring transid failure
+> > > leaf parent key incorrect 48781340082176
+> > > bad block 48781340082176
+> > > [2/7] checking extents                         (0:03:22 elapsed,
+> > > 1143429 items checked)
+> > > ERROR: errors found in extent allocation tree or chunk allocation
+> > > [3/7] checking free space cache                (0:05:10 elapsed,
+> > > 7236
+> > > items checked)
+> > > parent transid verify failed on 48781340082176 wanted 109181
+> > > found
+> > > 109008ems checked)
+> > > Ignoring transid failure
+> > > root 15197 inode 81781 errors 1000, some csum missing48 elapsed,
+> > > 33952
+> > > items checked)
+> > > [4/7] checking fs roots                        (0:42:53 elapsed,
+> > > 34145
+> > > items checked)
+> > > ERROR: errors found in fs roots
+> > > found 22975533985792 bytes used, error(s) found
+> > > total csum bytes: 16806711120
+> > > total tree bytes: 18733842432
+> > > total fs tree bytes: 130121728
+> > > total extent tree bytes: 466305024
+> > > btree space waste bytes: 1100711497
+> > > file data blocks allocated: 3891333279744
+> > >  referenced 1669470507008
+> > 
+> > What do you get for
+> > # btrfs insp dump-t -b 48781340082176 /dev/
+> > 
+> > It's possible there will be filenames, it's OK to sanitize them by
+> > just deleting the names from the output before posting it.
+> > 
+> > 
+> > 
+
