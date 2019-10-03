@@ -2,67 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EC9FAC9F85
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 15:34:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4096C9F8E
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 15:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730412AbfJCNeQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Oct 2019 09:34:16 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:39142 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730403AbfJCNeQ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Oct 2019 09:34:16 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x93DXasN042164;
-        Thu, 3 Oct 2019 13:34:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=4RMt4aue0ROkIOCxZljju0VtX4nkPm8Gh7jLMr6psK0=;
- b=riUoU+gjTKrV9YW142vnT+SpjLIoFJQiWiXyIpz33zQndGLO6pWcoeOsg5nCJdjVRUYh
- O4t/qZzY6EFr41v6cNm3IJgFJftE1Ep/Gj5TwvWJamEAHPQkLMqsA5PBBKp3dvuOiw7H
- +e6LPVb5y4MLbThuVOy6E0Tqfu2DHCHbR8aM7Y0bbg8IwWSnReKpjf5aJEbyDg9cCuxm
- /RfHuys79KUC4zBUGq9sMX9wPoS9v22FDS1Y1OeUI7R2VshyjsU496QWoLIAUfZNz5NC
- LtZjS+91F7pRDk+ovZAk8ay7gFNkp5YR3/ljEM9vxaA6HX0bLwJgi2crmHsMOl1iYVcv CA== 
+        id S1730487AbfJCNgS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Oct 2019 09:36:18 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58680 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730485AbfJCNgS (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Oct 2019 09:36:18 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x93DXSHc192104
+        for <linux-btrfs@vger.kernel.org>; Thu, 3 Oct 2019 13:36:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=hqlbOe43Gdm2v0CPnw00u8FcfQxrWp+zd+PeZpUT3W4=;
+ b=gcv9GDl/XrhjCUwpncSZ7ieQd9yTq5ud2i43d9KWYE65EleF+TdsMkSmuPuOdFDNTMXx
+ eqUL2z0tYrDTRk/q7EZokAHJHGcEh6GXbXHqQFmLdUkhWTL5rk5BBxF+dUMmPRn7qK0v
+ RBHGz6rUTL0g3rk3ZNPXC4fqbfCf0Y7TzZ1VcAwWGy5ny0dCDv5usVetyJuue5qlPCpM
+ Y1reFw5YJ2np6uRgkDrrEPgH6oX5lSkKAwTPjvNAWaKvdOWOMWSxhfOXIbLI8a4dlEWE
+ +QxV45P95F89jvQKfXsTLM+kpf8wfEAVGArI4Mx8MLr2fkPiGaHAtgh7mq9/7v8CCxIz Sg== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2v9xxv45gh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Oct 2019 13:34:12 +0000
+        by aserp2120.oracle.com with ESMTP id 2v9yfqm3na-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Oct 2019 13:36:17 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x93DXZS9177548;
-        Thu, 3 Oct 2019 13:34:12 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2vckyqsm3n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 03 Oct 2019 13:34:11 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x93DYAc9003437;
-        Thu, 3 Oct 2019 13:34:11 GMT
-Received: from [10.191.60.111] (/10.191.60.111)
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x93DXVdB177469
+        for <linux-btrfs@vger.kernel.org>; Thu, 3 Oct 2019 13:36:16 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2vckyqsqdb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Thu, 03 Oct 2019 13:36:16 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x93DaFB3006348
+        for <linux-btrfs@vger.kernel.org>; Thu, 3 Oct 2019 13:36:15 GMT
+Received: from localhost.localdomain (/39.109.145.141)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Oct 2019 06:34:10 -0700
-Subject: Re: [PATCH] btrfs: add device scanned-by process name in the scan
- message
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <1570012248-16099-1-git-send-email-anand.jain@oracle.com>
- <20191003132445.GU2751@twin.jikos.cz>
+        with ESMTP ; Thu, 03 Oct 2019 06:36:14 -0700
 From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <1cb1de56-cae7-7311-42a1-3f139ecca12b@oracle.com>
-Date:   Thu, 3 Oct 2019 21:33:58 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
- Gecko/20100101 Thunderbird/52.9.1
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: add device scanned-by process name in the scan message
+Date:   Thu,  3 Oct 2019 21:36:11 +0800
+Message-Id: <20191003133611.2900-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20191003132445.GU2751@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9398 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1908290000 definitions=main-1910030128
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9398 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
  definitions=main-1910030128
@@ -71,24 +63,41 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Its very helpful if we had logged the device scanner process name
+to debug the race condition between the systemd-udevd scan and the
+user initiated device forget command.
 
+This patch adds scanned-by process name to the scan message.
 
-On 3/10/19 9:24 PM, David Sterba wrote:
-> On Wed, Oct 02, 2019 at 06:30:48PM +0800, Anand Jain wrote:
->> Its very helpful if we had logged the device scanner process name
->> to debug the race condition between the systemd-udevd scan and the
->> user initiated device forget command.
->>
->> This patch adds scanned-by process name to the scan message.
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> 
-> Added to misc-next with the updated message.
-> 
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+v2: add pid as well
 
-oops I had v2 with pid.
-sorry for the delay I got stuck with a debugging.
+ fs/btrfs/volumes.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Sending it now.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 79e66db2c1a7..3fe0c422f75f 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1005,11 +1005,13 @@ static noinline struct btrfs_device *device_list_add(const char *path,
+ 		*new_device_added = true;
+ 
+ 		if (disk_super->label[0])
+-			pr_info("BTRFS: device label %s devid %llu transid %llu %s\n",
+-				disk_super->label, devid, found_transid, path);
++pr_info("BTRFS: device label %s devid %llu transid %llu %s scanned-by %s(%d)\n",
++				disk_super->label, devid, found_transid, path,
++				current->comm, task_pid_nr(current));
+ 		else
+-			pr_info("BTRFS: device fsid %pU devid %llu transid %llu %s\n",
+-				disk_super->fsid, devid, found_transid, path);
++pr_info("BTRFS: device fsid %pU devid %llu transid %llu %s scanned-by %s(%d)\n",
++				disk_super->fsid, devid, found_transid, path,
++				current->comm, task_pid_nr(current));
+ 
+ 	} else if (!device->name || strcmp(device->name->str, path)) {
+ 		/*
+-- 
+1.8.3.1
 
-Thanks, Anand
