@@ -2,102 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D4096C9F8E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 15:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEE3ECA049
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 16:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730487AbfJCNgS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Oct 2019 09:36:18 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58680 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730485AbfJCNgS (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Oct 2019 09:36:18 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x93DXSHc192104
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Oct 2019 13:36:17 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-transfer-encoding;
- s=corp-2019-08-05; bh=hqlbOe43Gdm2v0CPnw00u8FcfQxrWp+zd+PeZpUT3W4=;
- b=gcv9GDl/XrhjCUwpncSZ7ieQd9yTq5ud2i43d9KWYE65EleF+TdsMkSmuPuOdFDNTMXx
- eqUL2z0tYrDTRk/q7EZokAHJHGcEh6GXbXHqQFmLdUkhWTL5rk5BBxF+dUMmPRn7qK0v
- RBHGz6rUTL0g3rk3ZNPXC4fqbfCf0Y7TzZ1VcAwWGy5ny0dCDv5usVetyJuue5qlPCpM
- Y1reFw5YJ2np6uRgkDrrEPgH6oX5lSkKAwTPjvNAWaKvdOWOMWSxhfOXIbLI8a4dlEWE
- +QxV45P95F89jvQKfXsTLM+kpf8wfEAVGArI4Mx8MLr2fkPiGaHAtgh7mq9/7v8CCxIz Sg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2v9yfqm3na-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Oct 2019 13:36:17 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x93DXVdB177469
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Oct 2019 13:36:16 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2vckyqsqdb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 03 Oct 2019 13:36:16 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x93DaFB3006348
-        for <linux-btrfs@vger.kernel.org>; Thu, 3 Oct 2019 13:36:15 GMT
-Received: from localhost.localdomain (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 03 Oct 2019 06:36:14 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: add device scanned-by process name in the scan message
-Date:   Thu,  3 Oct 2019 21:36:11 +0800
-Message-Id: <20191003133611.2900-1-anand.jain@oracle.com>
-X-Mailer: git-send-email 2.23.0
+        id S1730300AbfJCO1S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Oct 2019 10:27:18 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43126 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726393AbfJCO1S (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Oct 2019 10:27:18 -0400
+Received: by mail-qk1-f196.google.com with SMTP id h126so2513239qke.10;
+        Thu, 03 Oct 2019 07:27:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=QoMfXeCBE2+e9NZxnjQG1SWoCD2staT4ZlOGYZkaxM4=;
+        b=V/ZZwApsQXkPKcYVsPp7lYdZdi8cvMG6jQ8XQetrU9Fq9JcaIIT9bRD+QTBBaUDgSu
+         JfWMPYIAYfgAbejz1js+pgC8JGVrFdrWlksiYLLv2YqMArXBKQlLWBDEeF1AuXh+v1yU
+         EeFDcX2TlJ2ZStwoYZecfp4bjbFB7fqXFbbIvBYge6ehthduNDZvyoTcDiBIXg8lHJUh
+         ERYZh++Cwnw7HbRVMFzsmMqQefKCrhd1eIo0QRIl3wrytXGlV+iwMAIEVPmAc9D9Cx+2
+         1csBowm+1F+TlBAqxsylxbqXVz0r1F+YiyzifhOJ0rM//SvS6ydRyT54B+5iIBVGF1lC
+         GfUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=QoMfXeCBE2+e9NZxnjQG1SWoCD2staT4ZlOGYZkaxM4=;
+        b=raQBFbOM2BKhuqopFfPqYgk5n25VlnquBZqXJvG194B4NRkfU3Nx7W3UnbDG+To5wd
+         gIfRufieTfY3UXqNNt6z41L06hRUDb7tIu5MhhWEM/R639YUDuilhsXfmVunqCnkwslh
+         6sAbWUq5Y+CxrmfpQUCazRe5fL52CniZHIrRL0GI9A3kgruF7NPfVKUOhD4HedVu6N90
+         2MLmwrUJHEeHy2uyW9SXHAgGLNRjNrUueqPoR9zutHEHyqAcW8cbhN379pABM8AzHSSk
+         idK/cpa51raEk0zyw7AkrrGgaV4imbqpqJL5s7A2V+4Nr9jjOKbCD5xcQBldJvYSPwnQ
+         zgOQ==
+X-Gm-Message-State: APjAAAUC8hB/BtTIKUwN+zkhY1nBTT2T2zKCPjNzY4WcOCajZ69q1Sbk
+        noyuU5NXfruN1z7lsclCTtI8/u6tJGw=
+X-Google-Smtp-Source: APXvYqwOxKIiaAX2C3B3METaTMp0USKJlj4RW8SRT/uLyS+USZQGJDU/pkgesWJYHyaOCXFekbPhSw==
+X-Received: by 2002:ae9:f50a:: with SMTP id o10mr1978279qkg.372.1570112835413;
+        Thu, 03 Oct 2019 07:27:15 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::3:9f72])
+        by smtp.gmail.com with ESMTPSA id d23sm1588317qkc.127.2019.10.03.07.27.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Oct 2019 07:27:14 -0700 (PDT)
+Date:   Thu, 3 Oct 2019 07:27:13 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] btrfs: Avoid getting stuck during cyclic writebacks
+Message-ID: <20191003142713.GA2622251@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9398 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910030128
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9398 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910030128
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Its very helpful if we had logged the device scanner process name
-to debug the race condition between the systemd-udevd scan and the
-user initiated device forget command.
+During a cyclic writeback, extent_write_cache_pages() uses done_index
+to update the writeback_index after the current run is over.  However,
+instead of current index + 1, it gets to to the current index itself.
 
-This patch adds scanned-by process name to the scan message.
+Unfortunately, this, combined with returning on EOF instead of looping
+back, can lead to the following pathlogical behavior.
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
+1. There is a single file which has accumulated enough dirty pages to
+   trigger balance_dirty_pages() and the writer appending to the file
+   with a series of short writes.
+
+2. bdp kicks in, wakes up background writeback and sleeps.
+
+3. Writeback kicks in and the cursor is on the last page of the dirty
+   file.  Writeback is started or skipped if already in progress.  As
+   it's EOF, extent_write_cache_pages() returns and the cursor is set
+   to done_index which is pointing to the last page.
+
+4. Writeback is done.  Nothing happens till bdp finishes, at which
+   point we go back to #1.
+
+This can almost completely stall out writing back of the file and keep
+the system over dirty threshold for a long time which can mess up the
+whole system.  We encountered this issue in production with a package
+handling application which can reliably reproduce the issue when
+running under tight memory limits.
+
+Reading the comment in the error handling section, this seems to be to
+avoid accidentally skipping a page in case the write attempt on the
+page doesn't succeed.  However, this concern seems bogus.
+
+On each page, the code either:
+
+* Skips and moves onto the next page.
+
+* Fails issue and sets done_index to index + 1.
+
+* Successfully issues and continue to the next page if budget allows
+  and not EOF.
+
+IOW, as long as it's not EOF and there's budget, the code never
+retries writing back the same page.  Only when a page happens to be
+the last page of a particular run, we end up retrying the page, which
+can't possibly guarantee anything data integrity related.  Besides,
+cyclic writes are only used for non-syncing writebacks meaning that
+there's no data integrity implication to begin with.
+
+Fix it by always setting done_index past the current page being
+processed.
+
+Note that this problem exists in other writepages too.
+
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: stable@vger.kernel.org
 ---
-v2: add pid as well
+ fs/btrfs/extent_io.c |   12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
 
- fs/btrfs/volumes.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 79e66db2c1a7..3fe0c422f75f 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1005,11 +1005,13 @@ static noinline struct btrfs_device *device_list_add(const char *path,
- 		*new_device_added = true;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index cceaf05aada2..4905f48587df 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -4121,7 +4121,7 @@ static int extent_write_cache_pages(struct address_space *mapping,
+ 		for (i = 0; i < nr_pages; i++) {
+ 			struct page *page = pvec.pages[i];
  
- 		if (disk_super->label[0])
--			pr_info("BTRFS: device label %s devid %llu transid %llu %s\n",
--				disk_super->label, devid, found_transid, path);
-+pr_info("BTRFS: device label %s devid %llu transid %llu %s scanned-by %s(%d)\n",
-+				disk_super->label, devid, found_transid, path,
-+				current->comm, task_pid_nr(current));
- 		else
--			pr_info("BTRFS: device fsid %pU devid %llu transid %llu %s\n",
--				disk_super->fsid, devid, found_transid, path);
-+pr_info("BTRFS: device fsid %pU devid %llu transid %llu %s scanned-by %s(%d)\n",
-+				disk_super->fsid, devid, found_transid, path,
-+				current->comm, task_pid_nr(current));
+-			done_index = page->index;
++			done_index = page->index + 1;
+ 			/*
+ 			 * At this point we hold neither the i_pages lock nor
+ 			 * the page lock: the page may be truncated or
+@@ -4156,16 +4156,6 @@ static int extent_write_cache_pages(struct address_space *mapping,
  
- 	} else if (!device->name || strcmp(device->name->str, path)) {
- 		/*
--- 
-1.8.3.1
-
+ 			ret = __extent_writepage(page, wbc, epd);
+ 			if (ret < 0) {
+-				/*
+-				 * done_index is set past this page,
+-				 * so media errors will not choke
+-				 * background writeout for the entire
+-				 * file. This has consequences for
+-				 * range_cyclic semantics (ie. it may
+-				 * not be suitable for data integrity
+-				 * writeout).
+-				 */
+-				done_index = page->index + 1;
+ 				done = 1;
+ 				break;
+ 			}
