@@ -2,338 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF85CAA95
-	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 19:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF9DCADA7
+	for <lists+linux-btrfs@lfdr.de>; Thu,  3 Oct 2019 19:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392104AbfJCRJ0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 3 Oct 2019 13:09:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36020 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2391805AbfJCRJZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 3 Oct 2019 13:09:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C7A6DB201;
-        Thu,  3 Oct 2019 17:09:21 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7C61EDA890; Thu,  3 Oct 2019 19:09:36 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
+        id S1729648AbfJCRvx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 3 Oct 2019 13:51:53 -0400
+Received: from zaphod.cobb.me.uk ([213.138.97.131]:47800 "EHLO
+        zaphod.cobb.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729355AbfJCRvw (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 3 Oct 2019 13:51:52 -0400
+Received: by zaphod.cobb.me.uk (Postfix, from userid 107)
+        id E77BC9BBD0; Thu,  3 Oct 2019 18:51:49 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1570125109;
+        bh=Wz7EMMlFHrNHiABar/wz2Uj5T/p955zHfY3J10Tbrak=;
+        h=To:From:Subject:Date:From;
+        b=X9+tIfFHo2Hb4/e7SPhBys+80sgc1Uig0AF6LvAk96n748uXwF/oHzvrq7CEbnKuw
+         n/KD6VaksE7nFTQhx7qirMslBJa28RvWtS2zoS596MtD5XDS0UMe+5KmRzZHimzTIb
+         P8EOG//P3S+/LDv/McEfO0TOsnpt+YzliXx1W4XxI63e8Kz/+4gQSYZbTW94ZkCxOr
+         /6TMPC4qaZQZhRKnowJsFXLbod38lg0+csrUg6F8k8yPwCW2oZB6Sm80RusjyOR478
+         eoPObJEwuXhP507iQ7cDQWQRdc+mFdAy/8FskIAThFZGJYm5e1U3lcbZqiuU8+P3pY
+         8cotf+bnaKfhw==
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on zaphod.cobb.me.uk
+X-Spam-Status: No, score=-0.8 required=12.0 tests=ALL_TRUSTED,DKIM_INVALID,
+        DKIM_SIGNED autolearn=no autolearn_force=no version=3.4.2
+X-Spam-Level: 
+X-Spam-Bar: 
+Received: from black.home.cobb.me.uk (unknown [192.168.0.205])
+        by zaphod.cobb.me.uk (Postfix) with ESMTP id 3022F9BA47
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2019 18:51:48 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=cobb.uk.net;
+        s=201703; t=1570125108;
+        bh=Wz7EMMlFHrNHiABar/wz2Uj5T/p955zHfY3J10Tbrak=;
+        h=To:From:Subject:Date:From;
+        b=S9itLxxlr90s7uRWp6XWbMhvYcLjkLT0TpSAX9sy7nMeBK/k6sVJI7oUWKjpnpW+W
+         NCtQ+FkyuiHdLwinT57RJpElrJGcVxkU50jShJm8krh1nrNarzTntRzzwj6YIHsfxm
+         VtuAS+2p36NU1Jr0JvYGoYJ7SoM0/9wK7wfcV1pkJkgO6igBi4jVZFruiQjqOGijDx
+         5L9yiKlTJzau3ntv9sEZudH0MCiPjmq3v4uwZ+erEgT/bNfEVYPVc7I7z4MCs4+GkJ
+         eULC5mK5xsXi61QX2OzCGmgcXZRCLiSc2koSRYNclu17RpExn99ROYrFiPs9o5mmQ5
+         5F+lFjKFrZHHQ==
+Received: from [192.168.0.211] (novatech.home.cobb.me.uk [192.168.0.211])
+        by black.home.cobb.me.uk (Postfix) with ESMTPS id C9AD45554F
+        for <linux-btrfs@vger.kernel.org>; Thu,  3 Oct 2019 18:51:47 +0100 (BST)
 To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: drop unused parameter is_new from btrfs_iget
-Date:   Thu,  3 Oct 2019 19:09:35 +0200
-Message-Id: <20191003170935.31399-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.23.0
+From:   Graham Cobb <g.btrfs@cobb.uk.net>
+Subject: Intro to fstests environment?
+Openpgp: preference=signencrypt
+Autocrypt: addr=g.btrfs@cobb.uk.net; prefer-encrypt=mutual; keydata=
+ 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 myxb
+Message-ID: <f788c1c6-8a8b-e724-e3dc-6f1311002307@cobb.uk.net>
+Date:   Thu, 3 Oct 2019 18:51:47 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The parameter is now always set to NULL and could be dropped. The last
-user was get_default_root but that got reworked in 05dbe6837b60 ("Btrfs:
-unify subvol= and subvolid= mounting") and the parameter became unused.
+Hi,
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/ctree.h            |  5 ++---
- fs/btrfs/export.c           |  4 ++--
- fs/btrfs/file.c             |  2 +-
- fs/btrfs/free-space-cache.c |  2 +-
- fs/btrfs/inode.c            | 24 ++++++++++++------------
- fs/btrfs/ioctl.c            |  2 +-
- fs/btrfs/props.c            |  4 ++--
- fs/btrfs/relocation.c       |  4 ++--
- fs/btrfs/send.c             |  2 +-
- fs/btrfs/super.c            |  2 +-
- fs/btrfs/tree-log.c         | 14 ++++++--------
- 11 files changed, 31 insertions(+), 34 deletions(-)
+I seem to have another case where scrub gets confused when it is
+cancelled and restarted many times (or, maybe, it is my error or
+something). I will look into it further but, instead of just hacking
+away at my script to work out what is going on, I thought I might try to
+create a regression test for it this time.
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 117cf26319fc..35dee08de1c5 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2872,10 +2872,9 @@ int btrfs_drop_inode(struct inode *inode);
- int __init btrfs_init_cachep(void);
- void __cold btrfs_destroy_cachep(void);
- struct inode *btrfs_iget_path(struct super_block *s, struct btrfs_key *location,
--			      struct btrfs_root *root, int *new,
--			      struct btrfs_path *path);
-+			      struct btrfs_root *root, struct btrfs_path *path);
- struct inode *btrfs_iget(struct super_block *s, struct btrfs_key *location,
--			 struct btrfs_root *root, int *was_new);
-+			 struct btrfs_root *root);
- struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
- 				    struct page *page, size_t pg_offset,
- 				    u64 start, u64 end, int create);
-diff --git a/fs/btrfs/export.c b/fs/btrfs/export.c
-index ddf28ecf17f9..72e312cae69d 100644
---- a/fs/btrfs/export.c
-+++ b/fs/btrfs/export.c
-@@ -87,7 +87,7 @@ static struct dentry *btrfs_get_dentry(struct super_block *sb, u64 objectid,
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
- 
--	inode = btrfs_iget(sb, &key, root, NULL);
-+	inode = btrfs_iget(sb, &key, root);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
- 		goto fail;
-@@ -214,7 +214,7 @@ static struct dentry *btrfs_get_parent(struct dentry *child)
- 
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
--	return d_obtain_alias(btrfs_iget(fs_info->sb, &key, root, NULL));
-+	return d_obtain_alias(btrfs_iget(fs_info->sb, &key, root));
- fail:
- 	btrfs_free_path(path);
- 	return ERR_PTR(ret);
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 3d151f788177..b01e80eab133 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -296,7 +296,7 @@ static int __btrfs_run_defrag_inode(struct btrfs_fs_info *fs_info,
- 	key.objectid = defrag->ino;
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
--	inode = btrfs_iget(fs_info->sb, &key, inode_root, NULL);
-+	inode = btrfs_iget(fs_info->sb, &key, inode_root);
- 	if (IS_ERR(inode)) {
- 		ret = PTR_ERR(inode);
- 		goto cleanup;
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index d54dcd0ab230..85cd874e7b48 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -78,7 +78,7 @@ static struct inode *__lookup_free_space_inode(struct btrfs_root *root,
- 	 * sure NOFS is set to keep us from deadlocking.
- 	 */
- 	nofs_flag = memalloc_nofs_save();
--	inode = btrfs_iget_path(fs_info->sb, &location, root, NULL, path);
-+	inode = btrfs_iget_path(fs_info->sb, &location, root, path);
- 	btrfs_release_path(path);
- 	memalloc_nofs_restore(nofs_flag);
- 	if (IS_ERR(inode))
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 067cbd6e3923..bceaebec9536 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2659,7 +2659,7 @@ static noinline int relink_extent_backref(struct btrfs_path *path,
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
- 
--	inode = btrfs_iget(fs_info->sb, &key, root, NULL);
-+	inode = btrfs_iget(fs_info->sb, &key, root);
- 	if (IS_ERR(inode)) {
- 		srcu_read_unlock(&fs_info->subvol_srcu, index);
- 		return 0;
-@@ -3510,7 +3510,7 @@ int btrfs_orphan_cleanup(struct btrfs_root *root)
- 		found_key.objectid = found_key.offset;
- 		found_key.type = BTRFS_INODE_ITEM_KEY;
- 		found_key.offset = 0;
--		inode = btrfs_iget(fs_info->sb, &found_key, root, NULL);
-+		inode = btrfs_iget(fs_info->sb, &found_key, root);
- 		ret = PTR_ERR_OR_ZERO(inode);
- 		if (ret && ret != -ENOENT)
- 			goto out;
-@@ -5729,12 +5729,14 @@ static struct inode *btrfs_iget_locked(struct super_block *s,
- 	return inode;
- }
- 
--/* Get an inode object given its location and corresponding root.
-- * Returns in *is_new if the inode was read from disk
-+/*
-+ * Get an inode object given its location and corresponding root.
-+ * Path can be preallocated to prevent recursing back to iget through
-+ * allocator. NULL is also valid but may require an additional allocation
-+ * later.
-  */
- struct inode *btrfs_iget_path(struct super_block *s, struct btrfs_key *location,
--			      struct btrfs_root *root, int *new,
--			      struct btrfs_path *path)
-+			      struct btrfs_root *root, struct btrfs_path *path)
- {
- 	struct inode *inode;
- 
-@@ -5749,8 +5751,6 @@ struct inode *btrfs_iget_path(struct super_block *s, struct btrfs_key *location,
- 		if (!ret) {
- 			inode_tree_add(inode);
- 			unlock_new_inode(inode);
--			if (new)
--				*new = 1;
- 		} else {
- 			iget_failed(inode);
- 			/*
-@@ -5768,9 +5768,9 @@ struct inode *btrfs_iget_path(struct super_block *s, struct btrfs_key *location,
- }
- 
- struct inode *btrfs_iget(struct super_block *s, struct btrfs_key *location,
--			 struct btrfs_root *root, int *new)
-+			 struct btrfs_root *root)
- {
--	return btrfs_iget_path(s, location, root, new, NULL);
-+	return btrfs_iget_path(s, location, root, NULL);
- }
- 
- static struct inode *new_simple_dir(struct super_block *s,
-@@ -5836,7 +5836,7 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
- 		return ERR_PTR(ret);
- 
- 	if (location.type == BTRFS_INODE_ITEM_KEY) {
--		inode = btrfs_iget(dir->i_sb, &location, root, NULL);
-+		inode = btrfs_iget(dir->i_sb, &location, root);
- 		if (IS_ERR(inode))
- 			return inode;
- 
-@@ -5861,7 +5861,7 @@ struct inode *btrfs_lookup_dentry(struct inode *dir, struct dentry *dentry)
- 		else
- 			inode = new_simple_dir(dir->i_sb, &location, sub_root);
- 	} else {
--		inode = btrfs_iget(dir->i_sb, &location, sub_root, NULL);
-+		inode = btrfs_iget(dir->i_sb, &location, sub_root);
- 	}
- 	srcu_read_unlock(&fs_info->subvol_srcu, index);
- 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index de730e56d3f5..f83c9de5dcf3 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2464,7 +2464,7 @@ static int btrfs_search_path_in_tree_user(struct inode *inode,
- 				goto out;
- 			}
- 
--			temp_inode = btrfs_iget(sb, &key2, root, NULL);
-+			temp_inode = btrfs_iget(sb, &key2, root);
- 			if (IS_ERR(temp_inode)) {
- 				ret = PTR_ERR(temp_inode);
- 				goto out;
-diff --git a/fs/btrfs/props.c b/fs/btrfs/props.c
-index 1e664e0b59b8..aac596300c89 100644
---- a/fs/btrfs/props.c
-+++ b/fs/btrfs/props.c
-@@ -416,11 +416,11 @@ int btrfs_subvol_inherit_props(struct btrfs_trans_handle *trans,
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
- 
--	parent_inode = btrfs_iget(sb, &key, parent_root, NULL);
-+	parent_inode = btrfs_iget(sb, &key, parent_root);
- 	if (IS_ERR(parent_inode))
- 		return PTR_ERR(parent_inode);
- 
--	child_inode = btrfs_iget(sb, &key, root, NULL);
-+	child_inode = btrfs_iget(sb, &key, root);
- 	if (IS_ERR(child_inode)) {
- 		iput(parent_inode);
- 		return PTR_ERR(child_inode);
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 077ad3d93639..99d26a765b05 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2548,7 +2548,7 @@ static int delete_block_group_cache(struct btrfs_fs_info *fs_info,
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
- 
--	inode = btrfs_iget(fs_info->sb, &key, root, NULL);
-+	inode = btrfs_iget(fs_info->sb, &key, root);
- 	if (IS_ERR(inode))
- 		return -ENOENT;
- 
-@@ -3234,7 +3234,7 @@ struct inode *create_reloc_inode(struct btrfs_fs_info *fs_info,
- 	key.objectid = objectid;
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
--	inode = btrfs_iget(fs_info->sb, &key, root, NULL);
-+	inode = btrfs_iget(fs_info->sb, &key, root);
- 	BUG_ON(IS_ERR(inode));
- 	BTRFS_I(inode)->index_cnt = group->key.objectid;
- 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index f3215028235c..b8d770979489 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -4779,7 +4779,7 @@ static ssize_t fill_read_buf(struct send_ctx *sctx, u64 offset, u32 len)
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
- 
--	inode = btrfs_iget(fs_info->sb, &key, root, NULL);
-+	inode = btrfs_iget(fs_info->sb, &key, root);
- 	if (IS_ERR(inode))
- 		return PTR_ERR(inode);
- 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 843015b9a11e..c7d78ac64b83 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1219,7 +1219,7 @@ static int btrfs_fill_super(struct super_block *sb,
- 	key.objectid = BTRFS_FIRST_FREE_OBJECTID;
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
--	inode = btrfs_iget(sb, &key, fs_info->fs_root, NULL);
-+	inode = btrfs_iget(sb, &key, fs_info->fs_root);
- 	if (IS_ERR(inode)) {
- 		err = PTR_ERR(inode);
- 		goto fail_close;
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index fa35fb890bf3..30a17143448d 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -559,7 +559,7 @@ static noinline struct inode *read_one_inode(struct btrfs_root *root,
- 	key.objectid = objectid;
- 	key.type = BTRFS_INODE_ITEM_KEY;
- 	key.offset = 0;
--	inode = btrfs_iget(root->fs_info->sb, &key, root, NULL);
-+	inode = btrfs_iget(root->fs_info->sb, &key, root);
- 	if (IS_ERR(inode))
- 		inode = NULL;
- 	return inode;
-@@ -4965,7 +4965,7 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
- 		key.objectid = ino;
- 		key.type = BTRFS_INODE_ITEM_KEY;
- 		key.offset = 0;
--		inode = btrfs_iget(fs_info->sb, &key, root, NULL);
-+		inode = btrfs_iget(fs_info->sb, &key, root);
- 		/*
- 		 * If the other inode that had a conflicting dir entry was
- 		 * deleted in the current transaction, we need to log its parent
-@@ -4975,8 +4975,7 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
- 			ret = PTR_ERR(inode);
- 			if (ret == -ENOENT) {
- 				key.objectid = parent;
--				inode = btrfs_iget(fs_info->sb, &key, root,
--						   NULL);
-+				inode = btrfs_iget(fs_info->sb, &key, root);
- 				if (IS_ERR(inode)) {
- 					ret = PTR_ERR(inode);
- 				} else {
-@@ -5681,7 +5680,7 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
- 				continue;
- 
- 			btrfs_release_path(path);
--			di_inode = btrfs_iget(fs_info->sb, &di_key, root, NULL);
-+			di_inode = btrfs_iget(fs_info->sb, &di_key, root);
- 			if (IS_ERR(di_inode)) {
- 				ret = PTR_ERR(di_inode);
- 				goto next_dir_inode;
-@@ -5807,8 +5806,7 @@ static int btrfs_log_all_parents(struct btrfs_trans_handle *trans,
- 				cur_offset = item_size;
- 			}
- 
--			dir_inode = btrfs_iget(fs_info->sb, &inode_key,
--					       root, NULL);
-+			dir_inode = btrfs_iget(fs_info->sb, &inode_key, root);
- 			/*
- 			 * If the parent inode was deleted, return an error to
- 			 * fallback to a transaction commit. This is to prevent
-@@ -5882,7 +5880,7 @@ static int log_new_ancestors(struct btrfs_trans_handle *trans,
- 		search_key.objectid = found_key.offset;
- 		search_key.type = BTRFS_INODE_ITEM_KEY;
- 		search_key.offset = 0;
--		inode = btrfs_iget(fs_info->sb, &search_key, root, NULL);
-+		inode = btrfs_iget(fs_info->sb, &search_key, root);
- 		if (IS_ERR(inode))
- 			return PTR_ERR(inode);
- 
--- 
-2.23.0
+I have read the kdave/fstests READMEs and the wiki. Is there any other
+documentation or advice I should read? Of course, I will look at
+existing test scripts as well.
 
+I don't suppose anyone has a convenient VM image or similar which I can
+use as a starting point?
+
+Graham
