@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED6BCB5C9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 10:12:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65DC0CB5DA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 10:18:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726331AbfJDIMN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Oct 2019 04:12:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33130 "EHLO mx1.suse.de"
+        id S2387489AbfJDISI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Oct 2019 04:18:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40696 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725730AbfJDIMM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Oct 2019 04:12:12 -0400
+        id S1725730AbfJDISI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Oct 2019 04:18:08 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8D8F3ADDD;
-        Fri,  4 Oct 2019 08:12:10 +0000 (UTC)
-Subject: Re: [PATCH 1/4] btrfs: drop useless goto in open_fs_devices
+        by mx1.suse.de (Postfix) with ESMTP id 59F66AE6D;
+        Fri,  4 Oct 2019 08:18:05 +0000 (UTC)
+Subject: Re: [PATCH 2/4] btrfs: delete identified alien device in
+ open_fs_devices
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 References: <1570175403-4073-1-git-send-email-anand.jain@oracle.com>
- <1570175403-4073-2-git-send-email-anand.jain@oracle.com>
+ <1570175403-4073-3-git-send-email-anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <af174d4b-6f94-6dd2-3ca7-774d29275592@suse.com>
-Date:   Fri, 4 Oct 2019 11:12:09 +0300
+Message-ID: <66defad6-6757-76d2-8819-fd22b9cd1b9e@suse.com>
+Date:   Fri, 4 Oct 2019 11:18:04 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1570175403-4073-2-git-send-email-anand.jain@oracle.com>
+In-Reply-To: <1570175403-4073-3-git-send-email-anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,48 +81,84 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 4.10.19 г. 10:50 ч., Anand Jain wrote:
-> There is no need of goto out in open_fs_devices() as there is nothing
-> special done at %out:. So refactor it.
+> In open_fs_devices() we identify alien device but we don't reset its
+> the device::name. So progs device list does not show the device missing
+> as shown in the script below.
+> 
+> mkfs.btrfs -fq /dev/sdd && mount /dev/sdd /btrfs
+> mkfs.btrfs -fq -draid1 -mraid1 /dev/sdc /dev/sdb
+> sleep 3 # avoid racing with udev's useless scans if needed
+> btrfs dev add -f /dev/sdb /btrfs
+> mount -o degraded /dev/sdc /btrfs1
+> 
+> No missing device:
+> btrfs fi show -m /btrfs1
+> Label: none  uuid: 3eb7cd50-4594-458f-9d68-c243cc49954d
+> 	Total devices 2 FS bytes used 128.00KiB
+> 	devid    1 size 12.00GiB used 1.26GiB path /dev/sdc
+> 	devid    2 size 12.00GiB used 1.26GiB path /dev/sdb
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-
 > ---
->  fs/btrfs/volumes.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
+> PS: Fundamentally its wrong approach that btrfs-progs deduces the device
+> missing state in the userland instead of obtaining it from the kernel.
+> I objected on the patch, but still those patches got merged, this bug is
+> one of its side effects. Ironically I wrote patches to read device_state
+> from the kernel using ioctl, procfs and sysfs but didn't get the due
+> attention till a merger.
+> 
+>  fs/btrfs/volumes.c | 13 ++++++++++---
+>  1 file changed, 10 insertions(+), 3 deletions(-)
 > 
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index e176346afed1..06ec3577c6b4 100644
+> index 06ec3577c6b4..05ade8c7342b 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -1330,7 +1330,6 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+> @@ -803,10 +803,10 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  	disk_super = (struct btrfs_super_block *)bh->b_data;
+>  	devid = btrfs_stack_device_id(&disk_super->dev_item);
+>  	if (devid != device->devid)
+> -		goto error_brelse;
+> +		goto free_alien;
+>  
+>  	if (memcmp(device->uuid, disk_super->dev_item.uuid, BTRFS_UUID_SIZE))
+> -		goto error_brelse;
+> +		goto free_alien;
+>  
+
+Imo a better approach is to return a particular error code and do the
+deletion in open_fs_devices. Otherwise it's not apparent why you use
+list_for_each_entry_safe in one function to delete something in a
+different one (whose name by the way doesn't suggest a deletion is going
+on). Looking at the error I think enodev/enxio is appropriate.
+
+>  	device->generation = btrfs_super_generation(disk_super);
+>  
+> @@ -845,6 +845,11 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>  
+>  	return 0;
+>  
+> +free_alien:
+> +	fs_devices->num_devices--;
+> +	list_del(&device->dev_list);
+> +	btrfs_free_device(device);
+> +
+>  error_brelse:
+>  	brelse(bh);
+>  	blkdev_put(bdev, flags);
+> @@ -1329,11 +1334,13 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+>  				fmode_t flags, void *holder)
 >  {
 >  	struct btrfs_device *device;
+> +	struct btrfs_device *tmp_device;
 >  	struct btrfs_device *latest_dev = NULL;
-> -	int ret = 0;
 >  
 >  	flags |= FMODE_EXCL;
 >  
-> @@ -1343,15 +1342,14 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
->  		    device->generation > latest_dev->generation)
->  			latest_dev = device;
->  	}
-> -	if (fs_devices->open_devices == 0) {
-> -		ret = -EINVAL;
-> -		goto out;
-> -	}
-> +	if (fs_devices->open_devices == 0)
-> +		return -EINVAL;
-> +
->  	fs_devices->opened = 1;
->  	fs_devices->latest_bdev = latest_dev->bdev;
->  	fs_devices->total_rw_bytes = 0;
-> -out:
-> -	return ret;
-> +
-> +	return 0;
->  }
->  
->  static int devid_cmp(void *priv, struct list_head *a, struct list_head *b)
+> -	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+> +	list_for_each_entry_safe(device, tmp_device, &fs_devices->devices,
+> +				 dev_list) {
+>  		/* Just open everything we can; ignore failures here */
+>  		if (btrfs_open_one_device(fs_devices, device, flags, holder))
+>  			continue;
 > 
