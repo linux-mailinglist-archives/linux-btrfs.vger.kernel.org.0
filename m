@@ -2,24 +2,22 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65DC0CB5DA
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 10:18:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88322CB5E0
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 10:19:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387489AbfJDISI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Oct 2019 04:18:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40696 "EHLO mx1.suse.de"
+        id S1729976AbfJDITm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Oct 2019 04:19:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42224 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725730AbfJDISI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Oct 2019 04:18:08 -0400
+        id S1726525AbfJDITm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Oct 2019 04:19:42 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 59F66AE6D;
-        Fri,  4 Oct 2019 08:18:05 +0000 (UTC)
-Subject: Re: [PATCH 2/4] btrfs: delete identified alien device in
- open_fs_devices
+        by mx1.suse.de (Postfix) with ESMTP id C5D6EAEF3;
+        Fri,  4 Oct 2019 08:19:39 +0000 (UTC)
+Subject: Re: [PATCH 0/4] btrfs: fix issues due to alien device
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 References: <1570175403-4073-1-git-send-email-anand.jain@oracle.com>
- <1570175403-4073-3-git-send-email-anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <66defad6-6757-76d2-8819-fd22b9cd1b9e@suse.com>
-Date:   Fri, 4 Oct 2019 11:18:04 +0300
+Message-ID: <4fbd9d31-5813-6479-6b35-94baa7dc7e9a@suse.com>
+Date:   Fri, 4 Oct 2019 11:19:38 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1570175403-4073-3-git-send-email-anand.jain@oracle.com>
+In-Reply-To: <1570175403-4073-1-git-send-email-anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,85 +78,27 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 4.10.19 г. 10:50 ч., Anand Jain wrote:
-> In open_fs_devices() we identify alien device but we don't reset its
-> the device::name. So progs device list does not show the device missing
-> as shown in the script below.
-> 
-> mkfs.btrfs -fq /dev/sdd && mount /dev/sdd /btrfs
-> mkfs.btrfs -fq -draid1 -mraid1 /dev/sdc /dev/sdb
-> sleep 3 # avoid racing with udev's useless scans if needed
-> btrfs dev add -f /dev/sdb /btrfs
-> mount -o degraded /dev/sdc /btrfs1
-> 
-> No missing device:
-> btrfs fi show -m /btrfs1
-> Label: none  uuid: 3eb7cd50-4594-458f-9d68-c243cc49954d
-> 	Total devices 2 FS bytes used 128.00KiB
-> 	devid    1 size 12.00GiB used 1.26GiB path /dev/sdc
-> 	devid    2 size 12.00GiB used 1.26GiB path /dev/sdb
-> 
-> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> ---
-> PS: Fundamentally its wrong approach that btrfs-progs deduces the device
-> missing state in the userland instead of obtaining it from the kernel.
-> I objected on the patch, but still those patches got merged, this bug is
-> one of its side effects. Ironically I wrote patches to read device_state
-> from the kernel using ioctl, procfs and sysfs but didn't get the due
-> attention till a merger.
-> 
->  fs/btrfs/volumes.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 06ec3577c6b4..05ade8c7342b 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -803,10 +803,10 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
->  	disk_super = (struct btrfs_super_block *)bh->b_data;
->  	devid = btrfs_stack_device_id(&disk_super->dev_item);
->  	if (devid != device->devid)
-> -		goto error_brelse;
-> +		goto free_alien;
->  
->  	if (memcmp(device->uuid, disk_super->dev_item.uuid, BTRFS_UUID_SIZE))
-> -		goto error_brelse;
-> +		goto free_alien;
->  
+On 4.10.19 г. 10:49 ч., Anand Jain wrote:
+> Alien device is a device in fs_devices list having a different fsid than
+> the expected fsid. This patch set fixes issues found due to the same.
 
-Imo a better approach is to return a particular error code and do the
-deletion in open_fs_devices. Otherwise it's not apparent why you use
-list_for_each_entry_safe in one function to delete something in a
-different one (whose name by the way doesn't suggest a deletion is going
-on). Looking at the error I think enodev/enxio is appropriate.
+Are you going to submit an fstests patch for this bug ?
 
->  	device->generation = btrfs_super_generation(disk_super);
->  
-> @@ -845,6 +845,11 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
->  
->  	return 0;
->  
-> +free_alien:
-> +	fs_devices->num_devices--;
-> +	list_del(&device->dev_list);
-> +	btrfs_free_device(device);
-> +
->  error_brelse:
->  	brelse(bh);
->  	blkdev_put(bdev, flags);
-> @@ -1329,11 +1334,13 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
->  				fmode_t flags, void *holder)
->  {
->  	struct btrfs_device *device;
-> +	struct btrfs_device *tmp_device;
->  	struct btrfs_device *latest_dev = NULL;
->  
->  	flags |= FMODE_EXCL;
->  
-> -	list_for_each_entry(device, &fs_devices->devices, dev_list) {
-> +	list_for_each_entry_safe(device, tmp_device, &fs_devices->devices,
-> +				 dev_list) {
->  		/* Just open everything we can; ignore failures here */
->  		if (btrfs_open_one_device(fs_devices, device, flags, holder))
->  			continue;
+> 
+> Patch1: is a cleanup patch, not related.
+> Patch2: fixes the missing device not missing in the userland, by
+>         hardening the function btrfs_open_one_device().
+> Patch3: fixes failing to mount a degraded RAID1 (but it can apply
+>         to RAID5/6/10 as well), by hardening the function
+> 	btrfs_free_extra_devids().
+> Patch4: eliminates the source of the alien device in the fs_devices.
+> 
+> Anand Jain (4):
+>   btrfs: drop useless goto in open_fs_devices
+>   btrfs: delete identified alien device in open_fs_devices
+>   btrfs: include non-missing as a qualifier for the latest_bdev
+>   btrfs: free alien device due to device add
+> 
+>  fs/btrfs/volumes.c | 40 ++++++++++++++++++++++++++++++----------
+>  1 file changed, 30 insertions(+), 10 deletions(-)
 > 
