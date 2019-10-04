@@ -2,64 +2,88 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D689CB8D3
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 13:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1406FCB8FC
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 13:19:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730028AbfJDLAv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Oct 2019 07:00:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57506 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725788AbfJDLAv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Oct 2019 07:00:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1D6FDAD12;
-        Fri,  4 Oct 2019 11:00:50 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BAF30DA7D7; Fri,  4 Oct 2019 13:01:06 +0200 (CEST)
-Date:   Fri, 4 Oct 2019 13:01:06 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/3] btrfs: add const function attribute
-Message-ID: <20191004110106.GX2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1569587835.git.dsterba@suse.com>
- <543f96a0b47e4856e6adbf3761a56df96480f358.1569587835.git.dsterba@suse.com>
- <625281f3-90fc-56d8-22e9-76557bb3d410@suse.com>
+        id S1730332AbfJDLTI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Oct 2019 07:19:08 -0400
+Received: from mail-qt1-f181.google.com ([209.85.160.181]:37321 "EHLO
+        mail-qt1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730061AbfJDLTI (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Oct 2019 07:19:08 -0400
+Received: by mail-qt1-f181.google.com with SMTP id l3so8021218qtr.4
+        for <linux-btrfs@vger.kernel.org>; Fri, 04 Oct 2019 04:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=52SdMvMjQtgmCbFkfz6KK/2a3T5WR/jG/PUmZmGuDeY=;
+        b=BtGHvKURqkdmJWK2cYyRoh16lSRBBInRxjuQ34pv4CeMDUQqXppllRAjzE4rkkvKwE
+         Bvv4iO7N27YuB23GzADs1j+FmQv0hutVG5VROjbqDQEL+eAdhBC3WxtFRkEz+3AxFLzf
+         EZUaAB8afDq4OvI6z4YPx5TuO1Sv3Vs1VBVOXIItns+pLG4tUmoZhY/Xd4UT/y/8cbt+
+         XYy7dcEmT7NImXLzaetFDqVKyeP9nH78SIZjTBADWPk/XunSVszVF4HL20dFNe+SZYKX
+         UZCOnKjNmCUFZAWFVEQKIb27xGVqkV4Rg0m+jXK/NDcQjpMhFMc6O9MDHptcdfwhndqF
+         smTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=52SdMvMjQtgmCbFkfz6KK/2a3T5WR/jG/PUmZmGuDeY=;
+        b=bVuWGZScPcVOg8+A2krlUAmMX2dA/+zbDSSpXZruFFGasTvBc9Y0egGVdc1LgmklrS
+         w0aV6RaEGVPhoZaoqJkbtaS7SUxvUQPb/gQcNWZUZxAhOoJ5fhD0n6XYdYQRLbPm2SVD
+         L379QXdRllorw9g31H5oF4nC4L7eQ5pUZx5UdEXXIDdKVJGgEFwgVl1Yzyg3Nl6MAPgH
+         eFEbSbFMnwcbsSTyWQ5tKYaRk+x+0fwMo5Dzxv0dFDLG+0GpotHMvj2odmogZ6/vFy96
+         1YQq1HrYcjK3ir53Df/H2inE+rGtTnp3IQVERL8OWv0LbP2hlO3ICACS9N6jgnGXjgAJ
+         ynFA==
+X-Gm-Message-State: APjAAAVcmuw6Ys73hjwppGfUZVmmf9lxWDeOURPZHC2Tcq3fGhIQzYbU
+        wKT01TBj2dtPeVLkMJX4Y5Y1ru+sTqE=
+X-Google-Smtp-Source: APXvYqwVxFRoqBxklQM+wka/HrJvNwk1aikN2AxmPq5AiyhJdssBgxaKx7FNMdkKmNF90Z+W2Yb93g==
+X-Received: by 2002:ac8:2dd8:: with SMTP id q24mr15427656qta.118.1570187947413;
+        Fri, 04 Oct 2019 04:19:07 -0700 (PDT)
+Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
+        by smtp.gmail.com with ESMTPSA id o14sm3632034qtk.52.2019.10.04.04.19.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 04 Oct 2019 04:19:06 -0700 (PDT)
+Subject: Re: Intro to fstests environment?
+To:     Graham Cobb <g.btrfs@cobb.uk.net>, linux-btrfs@vger.kernel.org
+References: <f788c1c6-8a8b-e724-e3dc-6f1311002307@cobb.uk.net>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <84435945-21e1-ec53-86b1-3924c63691a1@gmail.com>
+Date:   Fri, 4 Oct 2019 07:19:03 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <625281f3-90fc-56d8-22e9-76557bb3d410@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <f788c1c6-8a8b-e724-e3dc-6f1311002307@cobb.uk.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 02, 2019 at 02:07:50PM +0300, Nikolay Borisov wrote:
-> > +struct list_head * __attribute_const__ btrfs_get_fs_uuids(void)
+On 2019-10-03 13:51, Graham Cobb wrote:
+> Hi,
 > 
-> I'm not entirely sure this function is cons. According to the manual:
+> I seem to have another case where scrub gets confused when it is
+> cancelled and restarted many times (or, maybe, it is my error or
+> something). I will look into it further but, instead of just hacking
+> away at my script to work out what is going on, I thought I might try to
+> create a regression test for it this time.
 > 
-> Calls to functions whose return value is not affected by changes to the
-> observable state of the program and that have no observable effects on
-> such state other than to return a value may lend themselves to
-> optimizations such as common subexpression elimination.
+> I have read the kdave/fstests READMEs and the wiki. Is there any other
+> documentation or advice I should read? Of course, I will look at
+> existing test scripts as well.
 > 
-> The const attribute prohibits a function from reading objects that
-> affect its return value between successive invocations. However,
-> functions declared with the attribute can safely read objects that do
-> not change their return value, such as non-volatile constants.
-> 
-> 
-> My doubt stems from the fact this function actually references outside
-> memory, namely gets the ptr to fs_uuids. There is a specific remark not
-> to use const when the function takes a ptr argument but it doesn't say
-> anything when getting a ptr from a global var.
+> I don't suppose anyone has a convenient VM image or similar which I can
+> use as a starting point?
 
-The fs_uuids are a non-volatile constant. It does not change accross the
-lifetime of the module, so all code executed will always see the same
-value.
+Theodore T'so has a project on GitHub called xfstests-bld [1] to 
+automate setup of an environment for GCE or Android or a QEMU VM to run 
+xfstests.  That's probably going to be your best bet as a starting point 
+as it not only has a bunch of the infrastructure needed to build such 
+things, but also has good documentation.
+
+
+[1] https://github.com/tytso/xfstests-bld
