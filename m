@@ -2,194 +2,170 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0EDCB77F
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 11:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8FA5CB7C6
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 12:01:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388271AbfJDJly (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Oct 2019 05:41:54 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:57094 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388266AbfJDJly (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Oct 2019 05:41:54 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x949YKM1154505;
-        Fri, 4 Oct 2019 09:41:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=O1MwdjHwQB62ZdeIHD12UdEtKBn9IsSrLuOk/X6qiNY=;
- b=PXf26yd/Xn8+93PcyUyOUDeivynjbLUsdjtuc9e88Ahrjvv2JEqq+nTPIbmj9tSteBtu
- ffowOPgULbFSGqn3iWQA74kTKM/T3pa3iob9T2uWOXHnnNa3lgqkoX2UaLIuzv1xtuvu
- opZ/M16mwMsqSI09yPNAIe2PEbNF8Noy21tBHY32TML5+oOcfO+wrUi/66nF6x/LysF5
- pyYwf2SHDsGT8SRJfZ9bMQUT27s8AStiutIh7ma7taRHTyNsa9h6r7HrK7W/9mNORhjy
- dSfBY5YugpuLGbSrV1Vej4EViqcS+VypPJaQqT1L/fFl5hrQtM20AdpPm3Ap/vN+m6aw vg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2v9yfqt4sr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Oct 2019 09:41:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x949dUcq172723;
-        Fri, 4 Oct 2019 09:41:49 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2vdk0u5ev0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 04 Oct 2019 09:41:49 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x949flS9006081;
-        Fri, 4 Oct 2019 09:41:47 GMT
-Received: from [10.186.52.87] (/10.186.52.87)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 04 Oct 2019 02:41:47 -0700
-Subject: Re: [bug] strange systemd-udevd scan for btrfs device
-To:     Andrei Borzenkov <arvidjaar@gmail.com>,
-        systemd-devel@lists.freedesktop.org
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <9fe6ad9b-d53f-614c-5651-6de8bad93f1e@oracle.com>
- <CAA91j0UjpNycY0xhGVCzAkUJiwmrBPmk9PU6MpvW7mO0Zgki-g@mail.gmail.com>
- <c520c4f9-8d1c-41f9-0b80-fbff8fa966a3@oracle.com>
- <7256e3a7-1336-9921-05af-dda48ba71375@oracle.com>
- <CAA91j0VbpOE=g0ao4aYJkMje+ri1c+ZhvMghv0MTyW-GLdLYhQ@mail.gmail.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <0cb80d02-8ad6-0a2b-d1f5-e503ca528238@oracle.com>
-Date:   Fri, 4 Oct 2019 17:42:02 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729528AbfJDKBO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Oct 2019 06:01:14 -0400
+Received: from mail.render-wahnsinn.de ([176.9.37.177]:39678 "EHLO
+        mail.render-wahnsinn.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726927AbfJDKBO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Oct 2019 06:01:14 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with robert.krig@render-wahnsinn.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=render-wahnsinn.de;
+        s=dkim; t=1570183263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EUz2WmbFPs5GJpYqdjzuE5m6q+DizCEX9lYyCL3NTeQ=;
+        b=V2Ybsfs7QXuUluKNIeLjVegVKol5jMEZWlcK+kCWckqaBJbiZBm2uN8bdHmHrf0pFpRhnV
+        DkDAk2zD4LuaC5dIzfojWw755F1uMz9ef0HjhuqMnk01aYJgj6r8Ibpe0eHf7LXlxJ0L/g
+        EztunchJ8vD+RgpUFdHR+NL5srCGtZblYeAb1WrCl0E+ooTkp8q0JNPGxwyNDpyPvTtM5o
+        SUVU6+EZ+dAyrDWQpSVltSQc2mQLUgQLW4YhgUwLr9ZAXf/Z1aO5CxkUC6oRa0LzRg3Tn/
+        Y8HBHrUyn6074cvF8XyFWlVsSU8QE/k/JgSRfvf6cHCNNeT/BFgTR7pv8ZbZ0w==
+Message-ID: <acd2ed4f712ab8b5f258e2d61536ccaf572f6629.camel@render-wahnsinn.de>
+Subject: Re: BTRFS Raid5 error during Scrub.
+From:   Robert Krig <robert.krig@render-wahnsinn.de>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Linux Btrfs <linux-btrfs@vger.kernel.org>
+Date:   Fri, 04 Oct 2019 12:00:54 +0200
+In-Reply-To: <CAJCQCtRGCqTOseT2PcHpSv=SOKZBt9trSMkkZ5-KSTZTW4dKog@mail.gmail.com>
+References: <804e7e93a00dfe954222e4f8dc820a075d9ccb79.camel@render-wahnsinn.de>
+         <0fdd1282-f370-b55e-0c3f-486ad8673bcd@suse.com>
+         <3616237f8d39c87abcc9b118b8441cfecf36eeb6.camel@render-wahnsinn.de>
+         <CAJCQCtQcKRN09wpbSmguNQ8bSq5VZEk2JNwLOWcsAK7YYJD2YA@mail.gmail.com>
+         <273d41c4d05283aaa658d9c374e7c43199b0aac3.camel@render-wahnsinn.de>
+         <498f23ebd3889618cb3faedf04c72ff059553121.camel@render-wahnsinn.de>
+         <CAJCQCtRGCqTOseT2PcHpSv=SOKZBt9trSMkkZ5-KSTZTW4dKog@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-In-Reply-To: <CAA91j0VbpOE=g0ao4aYJkMje+ri1c+ZhvMghv0MTyW-GLdLYhQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9399 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910040089
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9399 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910040089
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=render-wahnsinn.de; s=dkim; t=1570183263;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EUz2WmbFPs5GJpYqdjzuE5m6q+DizCEX9lYyCL3NTeQ=;
+        b=mr3Ql4smb+rfivgY3l28FJLUH4QyB51iHuwjdLJ3fdqmyE6vkdXPAlUlKD9IT/6zoCCQk7
+        Bz4wgq0BLOFrJhbasjtfxzpzIfY2bwxFrpH57ucemClpHTQJ0NVEFzRgACmWm+a08GijrX
+        3bAr3hqL5LdcDMYXwY0gXLdSe94VSFfS2yGOQrEHFCRLltFSWTMmHc7ISR/Jl15cYr/W0W
+        UmKD5IIDNDpbMxpePrfa730EjvvI38ElNv5mKZXMkbDYrLjh3lGZHVDXoIu9jSgPtoCo+e
+        kgbKXTBJlzCvMjIeiIhCkWVAIweaRMGY4IUYbsnvKWCXKnwI49gLE/WbvQSBAQ==
+ARC-Seal: i=1; s=dkim; d=render-wahnsinn.de; t=1570183263; a=rsa-sha256;
+        cv=none;
+        b=DdFndJgULPVdHwFMua1CYWD99jzMJiF25BamUH5+oSIV4fiDeXS1FSbm2/T5kWvctuxP1L
+        /5+CmlrVSoi7ax/DGJkfF6q1BkKk3hkwwMxikHu0oeji1nu8O2hFOaa8/FoZ303CNOtXDv
+        wfwJJ4ZCUjxI3oZrAps2Eukqp/lwrMGoTlSlRTKQJsGeiYLp0LPs5gIqV9Cz8fHyo6Xsrg
+        p2Yp+2tfZq4gcU+Oe87/nk+NyZgfmHAFVuSqZvNI+2lqa9YyFcP1ixDaqXEgkNLNk/p6gv
+        aJRB2KGhyHC5ajZvbDAd/dBPX7+d/IL1mHfD93VJ1Dd4L1dZi9Fw3ijKLzQt5A==
+ARC-Authentication-Results: i=1;
+        mail.render-wahnsinn.de;
+        auth=pass smtp.mailfrom=robert.krig@render-wahnsinn.de
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Thank you all for your help so far.
 
-use appropriate ml for systemd bugs
--systemd-bugs@lists.freedesktop.org
-+systemd-devel@lists.freedesktop.org
+I'm doing backups at the moment. My other Server is a ZFS system. I
+think what I'm going to do, is to have this system, that's currently
+BTRFS RAID5 migrated to using ZFS and once that's done, migrate my
+backup system to BTRFS RAID5. That way I can still experiment with
+BTRFS Raid5, but starting from scratch is not so problematic, since
+it's a backup system and not being actively used.
 
-inline below..
+I'm still going to try the steps you mentioned with btrfs check --
+repair and see what that's going to spit out.
 
-On 10/2/19 9:33 PM, Andrei Borzenkov wrote:
-> On Wed, Oct 2, 2019 at 1:19 PM Anand Jain <anand.jain@oracle.com> wrote:
->>
->>
->>
->> On 10/2/19 6:02 PM, Anand Jain wrote:
->>>
->>>
->>> On 10/2/19 5:55 PM, Andrei Borzenkov wrote:
->>>> On Wed, Oct 2, 2019 at 12:27 PM Anand Jain <anand.jain@oracle.com> wrote:
->>>>>
->>>>>
->>>>>
->>>>> I am looking for systemd part of the answers to understand what
->>>>> is triggering a strange problem. Any help is appreciated.
->>>>>
->>>>> After mkfs.btrfs creates btrfs filesystem it scans to register the
->>>>> device in btrfs.ko.
->>>>> And we have 'btrfs dev scan --forget' command to undo the process of
->>>>> register.
->>>>>
->>>>> But the problem is - immediately after 'btrfs dev scan --forget' the
->>>>> systemd-udevd scans the device again, defeating the purpose of the
->>>>> forget as show below (scanned-by).
->>>>>
->>>>> mkfs.btrfs -fq /dev/sdc && btrfs dev scan --forget /dev/sdc
->>>>>
->>>>> -------------------
->>>>> kernel: BTRFS: device fsid 8ea20bb2-888a-4b3b-9f4c-1db9117dc219 devid 1
->>>>> transid 5 /dev/sdc scanned-by mkfs.btrfs
->>>>> kernel: BTRFS: device fsid 8ea20bb2-888a-4b3b-9f4c-1db9117dc219 devid 1
->>>>> transid 5 /dev/sdc scanned-by systemd-udevd
->>>>> -------------------
->>>>>
->>>>> And the problem does _not_ happen if there is a sleep of 3 secs after
->>>>> the mkfs.btrfs, as below.
->>>>>
->>>>> mkfs.btrfs -fq /dev/sdc && sleep 3 && btrfs dev scan --forget /dev/sdc
->>>>>
->>>>> ------------------
->>>>> kernel: BTRFS: device fsid 601bd01a-5e6b-488a-b020-0e7556c83087 devid 1
->>>>> transid 5 /dev/sdc scanned-by mkfs.btrfs
->>>>> ------------------
->>>>>
->>>>> Any idea what happening from the systemd point of view?
->>>>>
->>>>
->>>> run
->>>>
->>>> udevadm monitor -ku
->>>>
->>>> in both cases and post results. My educated guess is that udev scan is
->>>> in response to mkfs and you have unfortunate race condition here.
->>>>
->>>
->>>
->>> Looks like what is happening is ..
->>>
->>>    . Change in fsid (by mkfs.btrfs) notifies and triggers systemd
->>>    . Systemd checks if the device is ready by using
->>>      BTRFS_IOC_DEVICES_READY.
->>>    . However BTRFS_IOC_DEVICES_READY from systemd races with forget
->>>      command and the result depends on who wins the race.
->>>
->>
->>
->> I get this for the command mkfs.btrfs: (for /dev/sdc)
->>
->> KERNEL[185263.634507] change
->> /devices/pci0000:5d/0000:5d:02.0/0000:65:00.0/host0/target0:2:2/0:2:2:0/block/sdc
->> (block)
->> UDEV  [185263.637870] change
->> /devices/pci0000:5d/0000:5d:02.0/0000:65:00.0/host0/target0:2:2/0:2:2:0/block/sdc
->> (block)
->> KERNEL[185263.640572] change
->> /devices/pci0000:5d/0000:5d:02.0/0000:65:00.0/host0/target0:2:2/0:2:2:0/block/sdc
->> (block)
->> KERNEL[185263.641552] change
->> /devices/pci0000:5d/0000:5d:02.0/0000:65:00.0/host0/target0:2:2/0:2:2:0/block/sdc
->> (block)
->> UDEV  [185263.644337] change
->> /devices/pci0000:5d/0000:5d:02.0/0000:65:00.0/host0/target0:2:2/0:2:2:0/block/sdc
->> (block)
->> UDEV  [185263.647656] change
->> /devices/pci0000:5d/0000:5d:02.0/0000:65:00.0/host0/target0:2:2/0:2:2:0/block/sdc
->> (block)
->>
->> And no notification for mkfs.btrfs -fq /dev/sdb
->>
->> Looks like there is some rules set. But I don't find any rules
->> in /etc/udev/rules.d specific to /dev/sdb can it be set somewhere
->> else?
->>
+
+Am Donnerstag, den 03.10.2019, 14:18 -0600 schrieb Chris Murphy:
+> On Thu, Oct 3, 2019 at 6:18 AM Robert Krig
+> <robert.krig@render-wahnsinn.de> wrote:
+> > By the way, how serious is the error I've encountered?
+> > I've run a second scrub in the meantime, it aborted when it came
+> > close
+> > to the end, just like the first time.
+> > If the files that are corrupt have been deleted is this error going
+> > to
+> > go away?
+> 
+> Maybe.
 > 
 > 
-> Default rules are in /usr/lib/udev, but rules can only block udev
-> events (if at all), they have no impact on what kernel does. I guess
-> util-linux would be a better place to ask about mkfs behavior.
+> > > > > Opening filesystem to check...
+> > > > > Checking filesystem on /dev/sda
+> > > > > UUID: f7573191-664f-4540-a830-71ad654d9301
+> > > > > [1/7] checking root items                      (0:01:17
+> > > > > elapsed,
+> > > > > 5138533 items checked)
+> > > > > parent transid verify failed on 48781340082176 wanted 109181
+> > > > > found
+> > > > > 109008items checked)
+> > > > > parent transid verify failed on 48781340082176 wanted 109181
+> > > > > found
+> > > > > 109008
+> > > > > parent transid verify failed on 48781340082176 wanted 109181
+> > > > > found
+> > > > > 109008
+> 
+> These look suspiciously like the 5.2 regression:
+> https://lore.kernel.org/linux-btrfs/20190911145542.1125-1-fdmanana@kernel.org/T/#u
+> 
+> You should either revert to a 5.1 kernel, or use 5.2.15+.
+> 
+> As far as I'm aware it's not possible to fix this kind of corruption,
+> so I suggest refreshing your backups while you can still mount this
+> file system, and prepare to create it from scratch.
+> 
+> 
+> > > > > Ignoring transid failure
+> > > > > leaf parent key incorrect 48781340082176
+> > > > > bad block 48781340082176
+> > > > > [2/7] checking extents                         (0:03:22
+> > > > > elapsed,
+> > > > > 1143429 items checked)
+> > > > > ERROR: errors found in extent allocation tree or chunk
+> > > > > allocation
+> 
+> That's usually not a good sign.
+> 
+> 
+> 
+> > > > > [3/7] checking free space cache                (0:05:10
+> > > > > elapsed,
+> > > > > 7236
+> > > > > items checked)
+> > > > > parent transid verify failed on 48781340082176 wanted 109181
+> > > > > found
+> > > > > 109008ems checked)
+> > > > > Ignoring transid failure
+> > > > > root 15197 inode 81781 errors 1000, some csum missing48
+> > > > > elapsed,
+> 
+> That's inode 81781 in the subvolume with ID 15197. I'm not sure what
+> error 1000 is, but btrfs check is a bit fussy when it enounters files
+> that are marked +C (nocow) but have been compressed. This used to be
+> possible with older kernels when nocow files were defragmented while
+> the file system is mounted with compression enabled. If that sounds
+> like your use case, that might be what's going on here, and it's
+> actually a benign message. It's normal for nocow files to be missing
+> csums. To confirm you can use 'find /pathtosubvol/ -inum 81781' to
+> find the file, then lsattr it and see if +C is set.
+> 
+> You have a few options but the first thing is to refresh backups and
+> prepare to lose this file system:
+> 
+> a. bail now, and just create a new Btrfs from scratch and restore
+> from backup
+> b. try 'btrfs check --repair' to see if the transid problems are
+> fixed; if not
+> c. try 'btrfs check --repair --init-extent-tree' there's a good
+> chance
+> this fails and makes things worse but probably faster to try than
+> restoring from backup
 > 
 
-
-
-In the event of a mkfs.btrfs on a device the udev action to scan
-the device into the btrfs kernel is redundant !. because mkfs.btrfs
-is already doing it.
-
-/usr/lib/udev has quite a lot of rules.
-Now how do I find why udev has an rule for sdc and not for sdb.
-There isn't any obvious things I found in /usr/lib/udev for sdc/sdb.
-
-Thanks, Anand
