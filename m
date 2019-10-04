@@ -2,88 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1406FCB8FC
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 13:19:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FB43CB971
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 13:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730332AbfJDLTI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Oct 2019 07:19:08 -0400
-Received: from mail-qt1-f181.google.com ([209.85.160.181]:37321 "EHLO
-        mail-qt1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730061AbfJDLTI (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Oct 2019 07:19:08 -0400
-Received: by mail-qt1-f181.google.com with SMTP id l3so8021218qtr.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 04 Oct 2019 04:19:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=52SdMvMjQtgmCbFkfz6KK/2a3T5WR/jG/PUmZmGuDeY=;
-        b=BtGHvKURqkdmJWK2cYyRoh16lSRBBInRxjuQ34pv4CeMDUQqXppllRAjzE4rkkvKwE
-         Bvv4iO7N27YuB23GzADs1j+FmQv0hutVG5VROjbqDQEL+eAdhBC3WxtFRkEz+3AxFLzf
-         EZUaAB8afDq4OvI6z4YPx5TuO1Sv3Vs1VBVOXIItns+pLG4tUmoZhY/Xd4UT/y/8cbt+
-         XYy7dcEmT7NImXLzaetFDqVKyeP9nH78SIZjTBADWPk/XunSVszVF4HL20dFNe+SZYKX
-         UZCOnKjNmCUFZAWFVEQKIb27xGVqkV4Rg0m+jXK/NDcQjpMhFMc6O9MDHptcdfwhndqF
-         smTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=52SdMvMjQtgmCbFkfz6KK/2a3T5WR/jG/PUmZmGuDeY=;
-        b=bVuWGZScPcVOg8+A2krlUAmMX2dA/+zbDSSpXZruFFGasTvBc9Y0egGVdc1LgmklrS
-         w0aV6RaEGVPhoZaoqJkbtaS7SUxvUQPb/gQcNWZUZxAhOoJ5fhD0n6XYdYQRLbPm2SVD
-         L379QXdRllorw9g31H5oF4nC4L7eQ5pUZx5UdEXXIDdKVJGgEFwgVl1Yzyg3Nl6MAPgH
-         eFEbSbFMnwcbsSTyWQ5tKYaRk+x+0fwMo5Dzxv0dFDLG+0GpotHMvj2odmogZ6/vFy96
-         1YQq1HrYcjK3ir53Df/H2inE+rGtTnp3IQVERL8OWv0LbP2hlO3ICACS9N6jgnGXjgAJ
-         ynFA==
-X-Gm-Message-State: APjAAAVcmuw6Ys73hjwppGfUZVmmf9lxWDeOURPZHC2Tcq3fGhIQzYbU
-        wKT01TBj2dtPeVLkMJX4Y5Y1ru+sTqE=
-X-Google-Smtp-Source: APXvYqwVxFRoqBxklQM+wka/HrJvNwk1aikN2AxmPq5AiyhJdssBgxaKx7FNMdkKmNF90Z+W2Yb93g==
-X-Received: by 2002:ac8:2dd8:: with SMTP id q24mr15427656qta.118.1570187947413;
-        Fri, 04 Oct 2019 04:19:07 -0700 (PDT)
-Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
-        by smtp.gmail.com with ESMTPSA id o14sm3632034qtk.52.2019.10.04.04.19.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 04 Oct 2019 04:19:06 -0700 (PDT)
-Subject: Re: Intro to fstests environment?
-To:     Graham Cobb <g.btrfs@cobb.uk.net>, linux-btrfs@vger.kernel.org
-References: <f788c1c6-8a8b-e724-e3dc-6f1311002307@cobb.uk.net>
-From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
-Message-ID: <84435945-21e1-ec53-86b1-3924c63691a1@gmail.com>
-Date:   Fri, 4 Oct 2019 07:19:03 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1728767AbfJDLqi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Oct 2019 07:46:38 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:43935 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725826AbfJDLqi (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 4 Oct 2019 07:46:38 -0400
+X-Originating-IP: 163.158.29.153
+Received: from katrien.duckstad.net (153-029-158-163.dynamic.caiway.nl [163.158.29.153])
+        (Authenticated sender: relay@duckstad.net)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 149D02001E;
+        Fri,  4 Oct 2019 11:46:35 +0000 (UTC)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by katrien.duckstad.net (Postfix) with ESMTP id 2C1FA38037;
+        Fri,  4 Oct 2019 13:46:35 +0200 (CEST)
+Received: from katrien.duckstad.net ([127.0.0.1])
+        by localhost (katrien.duckstad.net [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id dUSztWkXQexw; Fri,  4 Oct 2019 13:46:33 +0200 (CEST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by katrien.duckstad.net (Postfix) with ESMTP id 4C7B038038;
+        Fri,  4 Oct 2019 13:46:33 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 katrien.duckstad.net 4C7B038038
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=duckstad.net;
+        s=EEE0E95C-ABE4-11E9-AA35-1FC771689572; t=1570189593;
+        bh=J3KxlZlpyjZzUcXC/s4SPVByjBR5natvhcUfDWwPwZw=;
+        h=Message-ID:From:To:Date:MIME-Version;
+        b=qVYJEdUCRD3llcPggHy2lNcWewLn1lBSavFvEXX8MNA8GU/fApsArHMcDutOSDNKp
+         Zz4bzHwUjC2clSp9Da3wiuY3YcTKDo/DUEAf87Z2tbAzc1sHk5RokjLLWucEKXJ2Hr
+         tUddGC9kornblkdbPpmorX763wSp0OIQO3fGM9gE1FQ1ku6XKiEn6OXauvWklfkpaJ
+         QFmAssswL3dN9nbgZgFPGwUY8wq0f/2MqWbB9Of+JHOFF+xmNxvr90xQPGVVRMewVb
+         Qu3xSc2xtpaRcQX1K0plyVcuKdCA2YjR5w5sxSJcz2+YcHn6JKbX3/q9UviS0IyI4Q
+         VIXlUTOycbjwg==
+X-Virus-Scanned: amavisd-new at katrien.duckstad.net
+Received: from katrien.duckstad.net ([127.0.0.1])
+        by localhost (katrien.duckstad.net [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id KTgaAZzPeJqS; Fri,  4 Oct 2019 13:46:33 +0200 (CEST)
+Received: from bolderbast (unknown [10.4.2.1])
+        by katrien.duckstad.net (Postfix) with ESMTPSA id 240D138037;
+        Fri,  4 Oct 2019 13:46:31 +0200 (CEST)
+Message-ID: <4d29b52c557995897f60effca6e7899d0abacfb8.camel@duckstad.net>
+Subject: Re: BTRFS errors, and won't mount
+From:   Patrick Dijkgraaf <bolderbast@duckstad.net>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, linux-btrfs@vger.kernel.org
+Date:   Fri, 04 Oct 2019 13:46:31 +0200
+In-Reply-To: <2923c00a7460329a673b9b0669480cb568b2848f.camel@duckstad.net>
+References: <2649522a0283fc35ade2218755063f8ff0dc4aa4.camel@duckstad.net>
+         <293de2b3-506a-0fcc-f692-0fc03012941c@gmx.com>
+         <1a5483ba85372d02d898ae9650686e591f82a735.camel@duckstad.net>
+         <2923c00a7460329a673b9b0669480cb568b2848f.camel@duckstad.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.0 
 MIME-Version: 1.0
-In-Reply-To: <f788c1c6-8a8b-e724-e3dc-6f1311002307@cobb.uk.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 2019-10-03 13:51, Graham Cobb wrote:
-> Hi,
-> 
-> I seem to have another case where scrub gets confused when it is
-> cancelled and restarted many times (or, maybe, it is my error or
-> something). I will look into it further but, instead of just hacking
-> away at my script to work out what is going on, I thought I might try to
-> create a regression test for it this time.
-> 
-> I have read the kdave/fstests READMEs and the wiki. Is there any other
-> documentation or advice I should read? Of course, I will look at
-> existing test scripts as well.
-> 
-> I don't suppose anyone has a convenient VM image or similar which I can
-> use as a starting point?
+Hi Qu,
 
-Theodore T'so has a project on GitHub called xfstests-bld [1] to 
-automate setup of an environment for GCE or Android or a QEMU VM to run 
-xfstests.  That's probably going to be your best bet as a starting point 
-as it not only has a bunch of the infrastructure needed to build such 
-things, but also has good documentation.
+Tried it with backup roots and it won't mount. I have a backup of a
+week ago and I'll accept the dataloss.
+
+I'll rebuild (this time without BTRFS RAID5/6) and restore.
+
+Thanks for your help!
+
+-- 
+Groet / Cheers,
+Patrick Dijkgraaf
 
 
-[1] https://github.com/tytso/xfstests-bld
+
+On Fri, 2019-10-04 at 09:59 +0200, Patrick Dijkgraaf wrote:
+> Decided to upgrade my system to the latest and give it a shot:
+> 
+> # btrfs check /dev/sde2
+> Opening filesystem to check...
+> parent transid verify failed on 4314780106752 wanted 470169 found
+> 470107
+> checksum verify failed on 4314780106752 found 7077566E wanted
+> 9494EBD8
+> checksum verify failed on 4314780106752 found 489FC179 wanted
+> 73D057EA
+> checksum verify failed on 4314780106752 found 489FC179 wanted
+> 73D057EA
+> bad tree block 4314780106752, bytenr mismatch, want=4314780106752,
+> have=20212047631104
+> ERROR: cannot open file system
+> 
+> # uname -r
+> 5.3.1-arch1-1-ARCH
+> 
+> # btrfs --version
+> btrfs-progs v5.2.2
+> 
+> Does that help anything?
+> 
+> 
+
