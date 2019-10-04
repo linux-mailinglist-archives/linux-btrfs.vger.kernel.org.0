@@ -2,24 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C238CB5C8
-	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 10:11:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED6BCB5C9
+	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 10:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387397AbfJDILL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Oct 2019 04:11:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60722 "EHLO mx1.suse.de"
+        id S1726331AbfJDIMN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Oct 2019 04:12:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33130 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725826AbfJDILL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Oct 2019 04:11:11 -0400
+        id S1725730AbfJDIMM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Oct 2019 04:12:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 15415B16D;
-        Fri,  4 Oct 2019 08:11:09 +0000 (UTC)
-Subject: Re: [PATCH 3/4] btrfs: include non-missing as a qualifier for the
- latest_bdev
+        by mx1.suse.de (Postfix) with ESMTP id 8D8F3ADDD;
+        Fri,  4 Oct 2019 08:12:10 +0000 (UTC)
+Subject: Re: [PATCH 1/4] btrfs: drop useless goto in open_fs_devices
 To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
 References: <1570175403-4073-1-git-send-email-anand.jain@oracle.com>
- <1570175403-4073-4-git-send-email-anand.jain@oracle.com>
+ <1570175403-4073-2-git-send-email-anand.jain@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <93c711f8-dc77-dcc2-52b0-fc46487ff16e@suse.com>
-Date:   Fri, 4 Oct 2019 11:11:07 +0300
+Message-ID: <af174d4b-6f94-6dd2-3ca7-774d29275592@suse.com>
+Date:   Fri, 4 Oct 2019 11:12:09 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <1570175403-4073-4-git-send-email-anand.jain@oracle.com>
+In-Reply-To: <1570175403-4073-2-git-send-email-anand.jain@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,61 +80,48 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 4.10.19 г. 10:50 ч., Anand Jain wrote:
-> btrfs_free_extra_devids() reorgs fs_devices::latest_bdev
-> to point to the bdev with greatest device::generation number.
-> For a typical-missing device the generation number is zero so
-> fs_devices::latest_bdev will never point to it.
-> 
-> But if the missing device is due to alienating [1], then
-> device::generation is not-zero and if it is >= to rest of
-> device::generation in the list, then fs_devices::latest_bdev
-> ends up pointing to the missing device and reports the error
-> like this [2]
-> 
-> [1]
-> mkfs.btrfs -fq /dev/sdd && mount /dev/sdd /btrfs
-> mkfs.btrfs -fq -draid1 -mraid1 /dev/sdb /dev/sdc
-> sleep 3 # avoid racing with udev's useless scans if needed
-> btrfs dev add -f /dev/sdb /btrfs
-
-Hm, here I think the correct way is to refuse adding /dev/sdb to an
-existing fs if it's detected to be part of a different one. I.e it
-should require wipefs to be done.
-
-> 
-> mount -o degraded /dev/sdc /btrfs1
-> 
-> [2]
-> mount: wrong fs type, bad option, bad superblock on /dev/sdc,
->        missing codepage or helper program, or other error
-> 
->        In some cases useful info is found in syslog - try
->        dmesg | tail or so.
-> 
-> kernel: BTRFS warning (device sdc): devid 1 uuid 072a0192-675b-4d5a-8640-a5cf2b2c704d is missing
-> kernel: BTRFS error (device sdc): failed to read devices
-> kernel: BTRFS error (device sdc): open_ctree failed
-> 
-> Fix the root of the issue, by checking if the the device is not
-> missing before it can be a contender for the fs_devices::latest_bdev
-> title.
+> There is no need of goto out in open_fs_devices() as there is nothing
+> special done at %out:. So refactor it.
 > 
 > Signed-off-by: Anand Jain <anand.jain@oracle.com>
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
 > ---
->  fs/btrfs/volumes.c | 2 ++
->  1 file changed, 2 insertions(+)
+>  fs/btrfs/volumes.c | 12 +++++-------
+>  1 file changed, 5 insertions(+), 7 deletions(-)
 > 
 > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 05ade8c7342b..6c42048ec099 100644
+> index e176346afed1..06ec3577c6b4 100644
 > --- a/fs/btrfs/volumes.c
 > +++ b/fs/btrfs/volumes.c
-> @@ -1186,6 +1186,8 @@ void btrfs_free_extra_devids(struct btrfs_fs_devices *fs_devices, int step)
->  							&device->dev_state)) {
->  			if (!test_bit(BTRFS_DEV_STATE_REPLACE_TGT,
->  			     &device->dev_state) &&
-> +			    !test_bit(BTRFS_DEV_STATE_MISSING,
-> +			     &device->dev_state) &&
->  			     (!latest_dev ||
->  			      device->generation > latest_dev->generation)) {
->  				latest_dev = device;
+> @@ -1330,7 +1330,6 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+>  {
+>  	struct btrfs_device *device;
+>  	struct btrfs_device *latest_dev = NULL;
+> -	int ret = 0;
+>  
+>  	flags |= FMODE_EXCL;
+>  
+> @@ -1343,15 +1342,14 @@ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+>  		    device->generation > latest_dev->generation)
+>  			latest_dev = device;
+>  	}
+> -	if (fs_devices->open_devices == 0) {
+> -		ret = -EINVAL;
+> -		goto out;
+> -	}
+> +	if (fs_devices->open_devices == 0)
+> +		return -EINVAL;
+> +
+>  	fs_devices->opened = 1;
+>  	fs_devices->latest_bdev = latest_dev->bdev;
+>  	fs_devices->total_rw_bytes = 0;
+> -out:
+> -	return ret;
+> +
+> +	return 0;
+>  }
+>  
+>  static int devid_cmp(void *priv, struct list_head *a, struct list_head *b)
 > 
