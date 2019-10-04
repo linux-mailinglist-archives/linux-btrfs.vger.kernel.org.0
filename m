@@ -2,25 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 04087CB75D
+	by mail.lfdr.de (Postfix) with ESMTP id 735DDCB75E
 	for <lists+linux-btrfs@lfdr.de>; Fri,  4 Oct 2019 11:31:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387660AbfJDJbk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 4 Oct 2019 05:31:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39434 "EHLO mx1.suse.de"
+        id S2387710AbfJDJbl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 4 Oct 2019 05:31:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39464 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727451AbfJDJbk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 4 Oct 2019 05:31:40 -0400
+        id S1729093AbfJDJbl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 4 Oct 2019 05:31:41 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0BA4AB14E;
-        Fri,  4 Oct 2019 09:31:38 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 091F5B0A5
+        for <linux-btrfs@vger.kernel.org>; Fri,  4 Oct 2019 09:31:39 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 1/3] btrfs: tree-checker: Fix false alerts on log trees
-Date:   Fri,  4 Oct 2019 17:31:31 +0800
-Message-Id: <20191004093133.83582-2-wqu@suse.com>
+Subject: [PATCH 2/3] btrfs: tree-checker: Refactor prev_key check for ino into a function
+Date:   Fri,  4 Oct 2019 17:31:32 +0800
+Message-Id: <20191004093133.83582-3-wqu@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191004093133.83582-1-wqu@suse.com>
 References: <20191004093133.83582-1-wqu@suse.com>
@@ -31,84 +30,175 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When running btrfs/063 in a loop, we got the following random write time
-tree checker error:
+Refactor the check for prev_key->objectid of the following key types
+into one function, check_prev_ino():
+- EXTENT_DATA
+- INODE_REF
+- DIR_INDEX
+- DIR_ITEM
+- XATTR_ITEM
 
-  BTRFS critical (device dm-4): corrupt leaf: root=18446744073709551610 block=33095680 slot=2 ino=307 file_offset=0, invalid previous key objectid, have 305 expect 307
-  BTRFS info (device dm-4): leaf 33095680 gen 7 total ptrs 47 free space 12146 owner 18446744073709551610
-  BTRFS info (device dm-4): refs 1 lock (w:0 r:0 bw:0 br:0 sw:0 sr:0) lock_owner 0 current 26176
-          item 0 key (305 1 0) itemoff 16123 itemsize 160
-                  inode generation 0 size 0 mode 40777
-          item 1 key (305 12 257) itemoff 16111 itemsize 12
-          item 2 key (307 108 0) itemoff 16058 itemsize 53 <<<
-                  extent data disk bytenr 0 nr 0
-                  extent data offset 0 nr 614400 ram 671744
-          item 3 key (307 108 614400) itemoff 16005 itemsize 53
-                  extent data disk bytenr 195342336 nr 57344
-                  extent data offset 0 nr 53248 ram 57344
-          item 4 key (307 108 667648) itemoff 15952 itemsize 53
-                  extent data disk bytenr 194048000 nr 4096
-                  extent data offset 0 nr 4096 ram 4096
-	  [...]
-  BTRFS error (device dm-4): block=33095680 write time tree block corruption detected
-  BTRFS: error (device dm-4) in btrfs_commit_transaction:2332: errno=-5 IO failure (Error while writing out transaction)
-  BTRFS info (device dm-4): forced readonly
-  BTRFS warning (device dm-4): Skipping commit of aborted transaction.
-  BTRFS info (device dm-4): use zlib compression, level 3
-  BTRFS: error (device dm-4) in cleanup_transaction:1890: errno=-5 IO failure
+Despite the refactor, also add the check of prev_key for INODE_REF.
 
-[CAUSE]
-Commit 59b0d030fb30 ("btrfs: tree-checker: Try to detect missing INODE_ITEM")
-assumes all XATTR_ITEM/DIR_INDEX/DIR_ITEM/INODE_REF/EXTENT_DATA items
-should have previous key with the same objectid as ino.
-
-But it's only true for fs trees. For log-tree, we can get above log tree
-block where an EXTENT_DATA item has no previous key with the same ino.
-As log tree only records modified items, it won't record unmodified
-items like INODE_ITEM.
-
-So this triggers write time tree check warning.
-
-[FIX]
-As a quick fix, check header owner to skip the previous key if it's not
-fs tree (log tree doesn't count as fs tree).
-
-This fix is only to be merged as a quick fix.
-There will be a more comprehensive fix to refactor the common check into
-one function.
-
-Reported-by: David Sterba <dsterba@suse.com>
-Fixes: 59b0d030fb30 ("btrfs: tree-checker: Try to detect missing INODE_ITEM")
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/tree-checker.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ fs/btrfs/tree-checker.c | 113 +++++++++++++++++++++++++---------------
+ 1 file changed, 72 insertions(+), 41 deletions(-)
 
 diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index b8f82d9be9f0..5e34cd5e3e2e 100644
+index 5e34cd5e3e2e..73678393340a 100644
 --- a/fs/btrfs/tree-checker.c
 +++ b/fs/btrfs/tree-checker.c
-@@ -148,7 +148,8 @@ static int check_extent_data_item(struct extent_buffer *leaf,
+@@ -125,6 +125,74 @@ static u64 file_extent_end(struct extent_buffer *leaf,
+ 	return end;
+ }
+ 
++/*
++ * Customized reported for dir_item, only important new info is key->objectid,
++ * which represents inode number
++ */
++__printf(3, 4)
++__cold
++static void dir_item_err(const struct extent_buffer *eb, int slot,
++			 const char *fmt, ...)
++{
++	const struct btrfs_fs_info *fs_info = eb->fs_info;
++	struct btrfs_key key;
++	struct va_format vaf;
++	va_list args;
++
++	btrfs_item_key_to_cpu(eb, &key, slot);
++	va_start(args, fmt);
++
++	vaf.fmt = fmt;
++	vaf.va = &args;
++
++	btrfs_crit(fs_info,
++	"corrupt %s: root=%llu block=%llu slot=%d ino=%llu, %pV",
++		btrfs_header_level(eb) == 0 ? "leaf" : "node",
++		btrfs_header_owner(eb), btrfs_header_bytenr(eb), slot,
++		key.objectid, &vaf);
++	va_end(args);
++}
++
++/*
++ * This functions checks prev_key->objectid, to ensure current key and prev_key
++ * shares the same objectid as ino.
++ *
++ * This is to detect missing INODE_ITEM in subvolume trees.
++ *
++ * Return true if everything is OK or we don't need to check.
++ * Return false if anything is wrong.
++ */
++static bool check_prev_ino(struct extent_buffer *leaf,
++			   struct btrfs_key *key, int slot,
++			   struct btrfs_key *prev_key)
++{
++	/* No prev key, skip check */
++	if (slot == 0)
++		return true;
++
++	/* Only these key->types needs to be checked */
++	ASSERT(key->type == BTRFS_XATTR_ITEM_KEY ||
++	       key->type == BTRFS_INODE_REF_KEY ||
++	       key->type == BTRFS_DIR_INDEX_KEY ||
++	       key->type == BTRFS_DIR_ITEM_KEY ||
++	       key->type == BTRFS_EXTENT_DATA_KEY);
++
++	/*
++	 * Only subvolume trees along with their reloc trees needs this check.
++	 * Things like log tree doesn't follow this ino requirement.
++	 */
++	if (!is_fstree(btrfs_header_owner(leaf)))
++		return true;
++
++	if (key->objectid == prev_key->objectid)
++		return true;
++
++	/* Error found */
++	dir_item_err(leaf, slot,
++		"invalid previous key objectid, have %llu expect %llu",
++		prev_key->objectid, key->objectid);
++	return false;
++}
+ static int check_extent_data_item(struct extent_buffer *leaf,
+ 				  struct btrfs_key *key, int slot,
+ 				  struct btrfs_key *prev_key)
+@@ -148,13 +216,8 @@ static int check_extent_data_item(struct extent_buffer *leaf,
  	 * But if objectids mismatch, it means we have a missing
  	 * INODE_ITEM.
  	 */
--	if (slot > 0 && prev_key->objectid != key->objectid) {
-+	if (slot > 0 && is_fstree(btrfs_header_owner(leaf)) &&
-+	    prev_key->objectid != key->objectid) {
- 		file_extent_err(leaf, slot,
- 		"invalid previous key objectid, have %llu expect %llu",
- 				prev_key->objectid, key->objectid);
-@@ -322,7 +323,8 @@ static int check_dir_item(struct extent_buffer *leaf,
+-	if (slot > 0 && is_fstree(btrfs_header_owner(leaf)) &&
+-	    prev_key->objectid != key->objectid) {
+-		file_extent_err(leaf, slot,
+-		"invalid previous key objectid, have %llu expect %llu",
+-				prev_key->objectid, key->objectid);
++	if (!check_prev_ino(leaf, key, slot, prev_key))
+ 		return -EUCLEAN;
+-	}
+ 
+ 	fi = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
+ 
+@@ -285,34 +348,6 @@ static int check_csum_item(struct extent_buffer *leaf, struct btrfs_key *key,
+ 	return 0;
+ }
+ 
+-/*
+- * Customized reported for dir_item, only important new info is key->objectid,
+- * which represents inode number
+- */
+-__printf(3, 4)
+-__cold
+-static void dir_item_err(const struct extent_buffer *eb, int slot,
+-			 const char *fmt, ...)
+-{
+-	const struct btrfs_fs_info *fs_info = eb->fs_info;
+-	struct btrfs_key key;
+-	struct va_format vaf;
+-	va_list args;
+-
+-	btrfs_item_key_to_cpu(eb, &key, slot);
+-	va_start(args, fmt);
+-
+-	vaf.fmt = fmt;
+-	vaf.va = &args;
+-
+-	btrfs_crit(fs_info,
+-	"corrupt %s: root=%llu block=%llu slot=%d ino=%llu, %pV",
+-		btrfs_header_level(eb) == 0 ? "leaf" : "node",
+-		btrfs_header_owner(eb), btrfs_header_bytenr(eb), slot,
+-		key.objectid, &vaf);
+-	va_end(args);
+-}
+-
+ static int check_dir_item(struct extent_buffer *leaf,
+ 			  struct btrfs_key *key, struct btrfs_key *prev_key,
+ 			  int slot)
+@@ -322,14 +357,8 @@ static int check_dir_item(struct extent_buffer *leaf,
+ 	u32 item_size = btrfs_item_size_nr(leaf, slot);
  	u32 cur = 0;
  
- 	/* Same check as in check_extent_data_item() */
--	if (slot > 0 && prev_key->objectid != key->objectid) {
-+	if (slot > 0 && is_fstree(btrfs_header_owner(leaf)) &&
-+	    prev_key->objectid != key->objectid) {
- 		dir_item_err(leaf, slot,
- 		"invalid previous key objectid, have %llu expect %llu",
- 			     prev_key->objectid, key->objectid);
+-	/* Same check as in check_extent_data_item() */
+-	if (slot > 0 && is_fstree(btrfs_header_owner(leaf)) &&
+-	    prev_key->objectid != key->objectid) {
+-		dir_item_err(leaf, slot,
+-		"invalid previous key objectid, have %llu expect %llu",
+-			     prev_key->objectid, key->objectid);
++	if (!check_prev_ino(leaf, key, slot, prev_key))
+ 		return -EUCLEAN;
+-	}
+ 	di = btrfs_item_ptr(leaf, slot, struct btrfs_dir_item);
+ 	while (cur < item_size) {
+ 		u32 name_len;
+@@ -1266,6 +1295,8 @@ static int check_inode_ref(struct extent_buffer *leaf,
+ 	unsigned long ptr;
+ 	unsigned long end;
+ 
++	if (!check_prev_ino(leaf, key, slot, prev_key))
++		return -EUCLEAN;
+ 	/* namelen can't be 0, so item_size == sizeof() is also invalid */
+ 	if (btrfs_item_size_nr(leaf, slot) <= sizeof(*iref)) {
+ 		inode_ref_err(fs_info, leaf, slot,
 -- 
 2.23.0
 
