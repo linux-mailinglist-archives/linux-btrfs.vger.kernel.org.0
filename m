@@ -2,196 +2,156 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E878CCBD7
-	for <lists+linux-btrfs@lfdr.de>; Sat,  5 Oct 2019 19:54:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D046CCD41
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Oct 2019 01:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728245AbfJERyE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 5 Oct 2019 13:54:04 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:43784 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727466AbfJERyE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Oct 2019 13:54:04 -0400
-Received: by mail-pg1-f193.google.com with SMTP id v27so5581923pgk.10;
-        Sat, 05 Oct 2019 10:54:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=1NK3bFr9WcTGunAh+IYyae+fsnerpgCiQm20MSwF5ak=;
-        b=CwYMjgZREbBR9fI1Ktccb5ffDHuFs0mDeG+KwATznfgqX89rzIZPTqPoWm3K+1qdms
-         VZJjjh+8iSmqEHKSt6l7QSmqvgu36D0RhZ+iY6xWd2oHUyiGoVDDW+UiqGegUj78hv/G
-         2pyCpk7BntsaQziTNQd0Z2jxInjsi8vNAwb3xnm1LEoLgDAwL1O3CbAbl8i8I08f4gDQ
-         dq/jveotOdd2dHHKu/mUEsCFsuSYlGCGYY3ncUBxVV6040ShyhiEcDdTAYwQPAusVWIU
-         Y0CzZoZv+EuEC7yjQH6qo0ZiHP2MjrEqfsuZOGRRJstODvSTB9LsqmCcovv+ox/z9z5q
-         GgOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1NK3bFr9WcTGunAh+IYyae+fsnerpgCiQm20MSwF5ak=;
-        b=nmew7/OyVfnxA4ykUWbi4/AILavq0ZJQBC+XkHG/9fx4tTSXeNMSlcep/a8RkhCoQX
-         WsjNqUs02RHNIEjRstDjjDziRGJgox4oHmeu2IT/P+b+/eOOjl4kLKw940L0rBMZDp40
-         LKvN+mUOfEzk5DobHr16N7qXal+CWzWuNij9sO2irr3/MvBt/9VIb16JDn5H7j7NL+Tc
-         FTqG77C0kxdfm1yAu4somfRydE9XkR/iHuqw0fXydF7sRmhQtM4Uo4yMRXyIsTaqCyjW
-         7j5gSv4bJBC05II3T4uzQoBV4qj45BWqR2S4Tv6LtxrfqwdU3fh72OcZtoVF/GuHQp7r
-         kCWQ==
-X-Gm-Message-State: APjAAAUZCB+u7wglche6mQb0X1b/VqzIykYzInc3qO7cPVbb7hImSdx3
-        NekBkO9bappUCIZZDCXxbnI=
-X-Google-Smtp-Source: APXvYqxXgQWAIVdXWE4RGAzdBvmAHWC4zbhRvaoqsKfY2kCVDEBbpMrMVrEv5gWb6zzt33zQfG1d3Q==
-X-Received: by 2002:a17:90a:a2b:: with SMTP id o40mr24218059pjo.107.1570298043108;
-        Sat, 05 Oct 2019 10:54:03 -0700 (PDT)
-Received: from localhost ([178.128.102.47])
-        by smtp.gmail.com with ESMTPSA id r24sm9745640pfh.69.2019.10.05.10.54.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 05 Oct 2019 10:54:02 -0700 (PDT)
-Date:   Sun, 6 Oct 2019 01:53:57 +0800
-From:   Eryu Guan <guaneryu@gmail.com>
-To:     Nikolay Borisov <nborisov@suse.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] btrfs: Add test for btrfs balance convert
- functionality
-Message-ID: <20191005175354.GD2622@desktop>
-References: <20191001090419.22153-1-nborisov@suse.com>
- <20191001090419.22153-2-nborisov@suse.com>
+        id S1725917AbfJEXSN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 5 Oct 2019 19:18:13 -0400
+Received: from mout.gmx.net ([212.227.15.19]:36405 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725801AbfJEXSN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 5 Oct 2019 19:18:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1570317487;
+        bh=6aWKI2ZK881ulpUMpxAU7ckKFtoYzGOAJsP1lcVauNU=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=f9a9BigOafv0G6wxf0A+lo/xRmL6eXLGQJ2BsfvLJJhtwL1g5Fi8Xp+N8mKxlRFDm
+         Jiu4ki9TZ9Q8WCbbmsB78/RYWU4VXDRAeR9GZK2voqWldCqNBIkXEqMfyxwmccEKCl
+         fQHrJPoxjm2TClUnXglkpws/gC6v6nE9wAAoxjfI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MkYXs-1hq3Ga0yuk-00m4FU; Sun, 06
+ Oct 2019 01:18:06 +0200
+Subject: Re: BTRFS corruption, mounts but comes read-only
+To:     Remi Gauvin <remi@georgianit.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <1d65213e-6237-2c5b-4820-81a0d3bd3e53@georgianit.com>
+ <44df5407-b7c9-bbd1-eae0-d5ebf6ad75d8@georgianit.com>
+ <6022d6c9-3022-01fd-3b97-67bd08ce36f1@gmx.com>
+ <fe22fa62-7b13-f417-1af8-3ed12bf082f8@georgianit.com>
+ <8d765abc-b9f6-066f-8327-bcfc9a156177@gmx.com>
+ <e546074f-4292-32c5-fe6b-170ace2f63f7@georgianit.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <7f0f3aea-febe-022c-400a-8e846b0b17da@gmx.com>
+Date:   Sun, 6 Oct 2019 07:18:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191001090419.22153-2-nborisov@suse.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <e546074f-4292-32c5-fe6b-170ace2f63f7@georgianit.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="By9RijJZLeviTQuMF1tqOkZgowQjqJ3ec"
+X-Provags-ID: V03:K1:g5wOFLYtawsTxwN6I5OuZUuOFlP4iO5dR5hviCEv4R6lk6Zvg++
+ 2wzzWIx84s+pYFbcvDCVAP+4XY765Kr3FT2Vsku5YKoEyeQNq9o77H5MwWJHDWHtv5ooHJz
+ Q5mSv7R71Z9Rc2ofoS31NrJXeGIC5saFW5J1bE0/ASUDc4MRtRjsFAVCsH7bjTyMlFxG5LC
+ Ih3o6SK4ctkrzPMuSfmEA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:7q4vc2aDkdg=:YeA2yxbxEE4ydMo9cPF8ur
+ AZli7BgZeuGHdYr0bPaKx+G7Z8UdlwWTVSqEEVS3cytCWgVDYEN2u163D4zl+cMdPFpupgQaD
+ vhgHlig0BRVp51BsT04aPsiopn2EUCcXcCZOML3qsgVDUryBQY6QzvMwkXm1/b4rI/iKHCWW1
+ 2EhRUh0lmK/gfaU24ZGatyhA39nt6h0WZqiE3Kynv2R5hfEJQO7MyIWwgcTDTqeBtukD2c/uk
+ 1oqtQjDtUe6b8c6qcdCf/vzSEye96UHlEyM9V/oBePvtQM32vxveJecO/fnjEeHdLP6MnrpfP
+ 5HCDFBXJLj26XGwHPigUJhZ2G8qjfiYOoemQlu0MqHROWf0iSOS6R1Kbfcmw8JloYtP6e4nr6
+ i+EO9SxGc6ziIOwxXHMugszYla30AtVqv1LqIAHguPTfn3E+f7lXLu2NjoLdWDgmK4QR803hK
+ +NDV3xN2Axz1wbNoUGCrv72IKaFzQvvTMCCWF87FA7Cnyl+QoS7tMXtqohBI4lRG16mR1+XeT
+ x92/aoQMcMZYvn6/XbXFADlfeRlXfMAnRqj2q7NFDPYFP7cGhF4v3lb7JSkREAhPbxntD7Zuv
+ rIwaRzb/86K7xog8L5NokATN8lGWA1Q7hTiznsoBcRAvfauyDwILcLXVYZKz94jQuoHBQNsRX
+ /tisIqeqqk/z9AxsYf4qb7s+8ZZR99dwKa3bchDkLd8OYUGefi9NxeGpUTXJHRrdAowubqoTY
+ F9dgK+O/T3fPWMNrGg91m9SyG8fCtDS7rt3nGfV6id8ScthQJelwd1BFHqAtQkBvz6ALRM0xG
+ 2oJT6kavS1eihtHzK1mHm9qZ9IDckQLc7HE2vJbK74kQFsICqIl9C+QyxJvkPQCFbiZ5kw3Vv
+ yA6gBHS2DUHyOPJLNAYU7kH1c9ORPJb4BVDiayJPYkjUNrW48eLYG/o3vraLSticS+JomHefS
+ 7p6xyvsjob9bd46bX2G92QyrtWQLQxojuKt10k4h8q7/TSUziRiG8TJ8MkatxPpz1uYmQRtcq
+ z+0y1fTA4QIqIvXQ+HqdKp2oOHuxqG7YmYPby2UhctOuqJE/KExGxKDJTPzHNGxi6im/0cUZn
+ 9k3x7hP72k5e0Pak5xgb7kU10nAPMKGixccXo8Uj5c5pLp0CxJeOm0iIkFD62WzVZPLBdB3ZB
+ ndLxBNo8U4wVZkxRYSjvTm8pGHoTR4ZGpK1NYopO00u1Rorc8oQJpGrHaCSrs/KI+WF8qPidG
+ qcZpZPoLaFzv8XRLQIhcbxuWsSRzpQ3hvJc+y+gnbytxixV+Ogn0QLTl6WvI=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Qu,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--By9RijJZLeviTQuMF1tqOkZgowQjqJ3ec
+Content-Type: multipart/mixed; boundary="7CVpniWDmMN8U8M37OqKlMPxic0DLoBvi"
 
-On Tue, Oct 01, 2019 at 12:04:19PM +0300, Nikolay Borisov wrote:
-> Add basic test to ensure btrfs conversion functionality is tested. This test
-> exercies conversion to all possible types of the data portion. This is sufficient
-> since from the POV of relocation we are only moving blockgroups. 
-> 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+--7CVpniWDmMN8U8M37OqKlMPxic0DLoBvi
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Would you please help review this v2 as well? Thanks a lot!
 
-Eryu
 
-> ---
->  tests/btrfs/194     | 84 +++++++++++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/194.out |  2 ++
->  tests/btrfs/group   |  1 +
->  3 files changed, 87 insertions(+)
->  create mode 100755 tests/btrfs/194
->  create mode 100644 tests/btrfs/194.out
-> 
-> diff --git a/tests/btrfs/194 b/tests/btrfs/194
-> new file mode 100755
-> index 000000000000..39b6e0a969c1
-> --- /dev/null
-> +++ b/tests/btrfs/194
-> @@ -0,0 +1,84 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-> +#
-> +# FS QA Test 194
-> +#
-> +# Test raid profile conversion. It's sufficient to test all dest profiles as 
-> +# source profiles just rely on being able to read the metadata. 
-> +#
-> +seq=`basename $0`
-> +seqres=$RESULT_DIR/$seq
-> +echo "QA output created by $seq"
-> +
-> +here=`pwd`
-> +tmp=/tmp/$$
-> +status=1	# failure is the default!
-> +trap "_cleanup; exit \$status" 0 1 2 3 15
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -f $tmp.*
-> +}
-> +
-> +# get standard environment, filters and checks
-> +. ./common/rc
-> +. ./common/filter
-> +
-> +# remove previous $seqres.full before test
-> +rm -f $seqres.full
-> +
-> +# real QA test starts here
-> +
-> +# Modify as appropriate.
-> +_supported_fs btrfs
-> +_supported_os Linux
-> +_require_scratch_dev_pool 4
-> +
-> +
-> +declare -a TEST_VECTORS=(
-> +# $nr_dev_min:$data:$metadata:$data_convert:$metadata_convert
-> +"4:single:raid1"
-> +"4:single:raid0"
-> +"4:single:raid10"
-> +"4:single:dup"
-> +"4:single:raid5"
-> +"4:single:raid6"
-> +"2:raid1:single"
-> +)
-> +
-> +run_testcase() {
-> +	IFS=':' read -ra args <<< $1
-> +	num_disks=${args[0]}
-> +	src_type=${args[1]}
-> +	dst_type=${args[2]}
-> +
-> +	_scratch_dev_pool_get $num_disks
-> +
-> +	echo "=== Running test: $1 ===" >> $seqres.full 
-> +
-> +	_scratch_pool_mkfs -d$src_type >> $seqres.full 2>&1
-> +	_scratch_mount 
-> +
-> +	# Create random filesystem with 20k write ops
-> +	run_check $FSSTRESS_PROG -d $SCRATCH_MNT -w -n 10000 $FSSTRESS_AVOID
-> +
-> +	$BTRFS_UTIL_PROG balance start -f -dconvert=$dst_type $SCRATCH_MNT >> $seqres.full 2>&1
-> +	[ $? -eq 0 ] || echo "$1: Failed convert"
-> +
-> +	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
-> +	[ $? -eq 0 ] || echo "$1: Scrub failed"
-> +
-> +	_scratch_unmount
-> +	_check_btrfs_filesystem $SCRATCH_DEV
-> +	_scratch_dev_pool_put
-> +}
-> +
-> +for i in "${TEST_VECTORS[@]}"; do 
-> +	run_testcase $i
-> +done
-> +
-> +echo "Silence is golden"
-> +status=0
-> +exit
-> diff --git a/tests/btrfs/194.out b/tests/btrfs/194.out
-> new file mode 100644
-> index 000000000000..7bfd50ffb5a4
-> --- /dev/null
-> +++ b/tests/btrfs/194.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 194
-> +Silence is golden
-> diff --git a/tests/btrfs/group b/tests/btrfs/group
-> index b92cb12ca66f..a2c0ad87d0f6 100644
-> --- a/tests/btrfs/group
-> +++ b/tests/btrfs/group
-> @@ -196,3 +196,4 @@
->  191 auto quick send dedupe
->  192 auto replay snapshot stress
->  193 auto quick qgroup enospc limit
-> +194 auto volume balance
-> -- 
-> 2.7.4
-> 
+On 2019/10/6 =E4=B8=8A=E5=8D=881:14, Remi Gauvin wrote:
+> On 2019-09-30 9:53 p.m., Qu Wenruo wrote:
+>=20
+>>
+>> It's indeed a symptom of btrfs kernel module bug. But at least looks
+>> repairable.
+>>
+>=20
+> As advertised, btrfs --check repair restored the FS to full function.
+
+Yep, btrfs check --repair is getting better and better.
+
+As long as btrfs check (no --repair) after --repair reports no error,
+you're completely OK to go.
+
+But as you already found, btrfs check (by default) only cares metadata,
+while ignores all data, so you still need another scrub to fix data error=
+=2E
+
+In fact you can use --check-data-csum to make btrfs check to
+check/repair data csum error too. (kinda like scrub).
+
+>=20
+> A follow-up scrub even found and corrected some corrupt data on one of
+> the disks, that went  completely unreported by the disk itself.  So,
+> despite this hiccup, BTRFS did it's job admirably.
+>=20
+>=20
+> Whenever I do any further btrfs check after cleanly unmounting the
+> filesystem, I get this error:
+>=20
+> cache and super generation don't match, space cache will be invalidated=
+
+
+It's not an error, just a warning.
+Kernel will just discard that cache.
+
+>=20
+> Even mounting with clear_cache,nospace_cache , (then mounting again wit=
+h
+> space_cache=3Dv2) does not remove this warning.  But it doesn't seem to=
+ be
+> causing any problems.. There are no warnings about the space cache in
+> the dmesg log when the filesystem is mounted.
+
+Clear cache doesn't really clear the cache.
+Only block group got modified will delete its cache file.
+
+To fully clear the cache, you can go btrfs check --clear-space-cache v1.
+
+Thanks,
+Qu
+
+
+--7CVpniWDmMN8U8M37OqKlMPxic0DLoBvi--
+
+--By9RijJZLeviTQuMF1tqOkZgowQjqJ3ec
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2ZJKoXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qgpswf+LKmd7wcnyCMdiuUnrWti51Wq
+tCOnXWX645ovLHUbc3PCA7VNttdEpfMGMUdLITcKZ6MXHUnZwwctiu0vucPckoqs
+Kyj1An6iWCrd/D5XfBMP0HTD9DintdvSOWcinZRqiRsTILTMlA4nNFmjk0qeNlih
+thd/GSzjc8R2vtmA+LZYGQ4t5Zs2nem3nj8Nr/o/o6YS+5T4CmPMPTx0/+17TKd7
+Z8NgdvdgXhtgGodEXhKgSSgnrbzZjVDfvtewroGs/XqRHc9qa6i1Blb/EnJrl56c
+01wzqSGlebyOgV2teO2xRNh9qEKAoFvF3UXUMAh4yKADZnHRvkGeWf0AGAxPEQ==
+=v9W9
+-----END PGP SIGNATURE-----
+
+--By9RijJZLeviTQuMF1tqOkZgowQjqJ3ec--
