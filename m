@@ -2,221 +2,172 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8553CCCD43
-	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Oct 2019 01:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40090CCDF6
+	for <lists+linux-btrfs@lfdr.de>; Sun,  6 Oct 2019 04:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725978AbfJEXVV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 5 Oct 2019 19:21:21 -0400
-Received: from mout.gmx.net ([212.227.17.20]:40047 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725801AbfJEXVU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 5 Oct 2019 19:21:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1570317672;
-        bh=nuzhpWypGPC8RCe0szPiW7TgmqNlnrWdXQpf0fGTnFU=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=lgLpZ4/C+GS71veoMW0Bahnd/DaK03d7LZLS45A+mw1TUTEJ2Xx0x6+TpJ5MJmXrg
-         cSdno5GpibcyH2DEP1SCcL5j3RC87TxNX0kR3BROKPN6ugS57Cr4OvTSICJcTJV2+N
-         X3KgVIzV/0Eist+Nnkjn1n6APeXHreu19zygZo20=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MNbox-1iSGHU3tZT-00P1br; Sun, 06
- Oct 2019 01:21:12 +0200
-Subject: Re: [PATCH v2 2/2] btrfs: Add test for btrfs balance convert
- functionality
-To:     Eryu Guan <guaneryu@gmail.com>, Nikolay Borisov <nborisov@suse.com>
-Cc:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-References: <20191001090419.22153-1-nborisov@suse.com>
- <20191001090419.22153-2-nborisov@suse.com> <20191005175354.GD2622@desktop>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <fc8d4539-116c-5447-9954-569151de582c@gmx.com>
-Date:   Sun, 6 Oct 2019 07:21:07 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1726146AbfJFCrp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 5 Oct 2019 22:47:45 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:54828 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726074AbfJFCrp (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 5 Oct 2019 22:47:45 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x962iYeT108287;
+        Sun, 6 Oct 2019 02:47:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=corp-2019-08-05;
+ bh=RbbMjx4swX8MCfvObDazm1jJGI5ooZfieMESF79BEw8=;
+ b=C4OQgXKrWnh+PVhEA1/21a9W4ezN2ToD3FZNxNyP4kFbMq4brhnmJOTkBamjzJglUQrs
+ IBbMEfegmkhiZE59M1Djmj/kC+w/TyWaFsRplZhJtYrXIIpSsJTFulg5mciuHI90UaD2
+ JQ863IALWvD5fOZCLY2sAOm4+JT/6arXxQCkgOk84So4LjrUrf++0hyBS4g91MlkwLIe
+ BZwbn40gLBtJapDck2WyVlRODs4KlLDWhkSAmwcON2Rbh9TZUcclvG6Nj2iEW0Q5F8ma
+ omJyADpu3sloLqcjF7+AxkT3Fh4vfVnMfaTFUKrOSROkDtHhtAbv0V472tnf3tm1jOcw pw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2vejku2g59-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 06 Oct 2019 02:47:18 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x962i8s3174687;
+        Sun, 6 Oct 2019 02:47:18 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 2vf4n677pm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 06 Oct 2019 02:47:17 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x962lGZ7003508;
+        Sun, 6 Oct 2019 02:47:17 GMT
+Received: from localhost.localdomain (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 05 Oct 2019 19:47:16 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     nborisov@suse.com
+Subject: [PATCH v2 2/4] btrfs: delete identified alien device in open_fs_devices
+Date:   Sun,  6 Oct 2019 10:47:11 +0800
+Message-Id: <20191006024711.4666-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <66defad6-6757-76d2-8819-fd22b9cd1b9e@suse.com>
+References: <66defad6-6757-76d2-8819-fd22b9cd1b9e@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20191005175354.GD2622@desktop>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:7w6P1TD/JFEQ4yUdrLdDtnRPIio7+afG5IGZJN2uxEurHDyk5On
- 9JFSA6Ru6132vj7JCDo2373apIOqwFl68wabWGN0PAeyDysdUNiv6KwoXqajqvwXnI958cI
- Tr9lSk5FxfkJW87QowzyCM6/Yma/R0l/11AuXHj1cWTwWQkULiV0HKr6v0GJD8YvGhMwMGk
- Fq5e3UURgoefqQ8UH2+hg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LyrGhGWPJ4s=:iok5lKoehPIZUCmql+eO2n
- W+4FtMW6+v0i1aFUbnhnPYGvHVnv7adtdwn6YMgY3xSC83w/bttcN0AZrfTxWcG5BRy2zrqY8
- Wtwhp+ya+i7HpFTf1eeZ5/yBlVrZcZz1AT3/biXHc77YjA1ND5qgLJyTZlRvDGgmBl0cQ5hVc
- OtVy0/RUgNHWsYQ8HWCbvw0ckNKXC1QFPmn40mTgwsJiYcJR7rRxcxV3WqUq+psOtVh2H9R/w
- re5wLNO2+OFUA89m+vZUm4EVpIDVDD4IFG7s8w71BcrdNL4XT+vGirbUHlDOgCvPC3gXoA6HJ
- PyekubRa3kmqMvhwZUUsCu5CZRkKPKQiiPU8YXYlFbQcUMquQQItC3E7Yl/YEdVjij+e/+oUp
- 5j9RMNL/tTtJ6bfge5PpXUA5LjbDJ8MK/JEKFBKDT4q8es8xp5qkNH4Qm3KWVdLckbgN//x6L
- wufSXG2KTPWFJ9piVJ8w9LRE6ZLrPvFgWJnINFdYHdkAGXEctgqTYcts4ETdPJKR9qMbBg4AT
- QndrEItZK+4f8wi7BkKJF/SZ6QhncabGvG3sXzmPpEdc/LJ7ZnSM1O3Z8fvgqIIuGAUwxIOb2
- X3Llbeq0uSM7W8A/5dXgC6KK1x3job5Xp1ZNZQV+pkQ/HLOpqhyPh6sQZPaq1XEKvOPi/zHD2
- DzICs4rH+/M0EzYg2wj6qkKnGFEs126lqJLwkpgsR1Kg+AzuwsWxGyPtVWuoMQg8dQlNAWSua
- Rxnz0ly+bc6weDWqYfCBD++WszIJDSAoW7mX+JkX5qelWHA6l7UFHdu1ZO0X0gNQdwEhq3Vjw
- QQS5XygRXzXDbijbPoj1ARI/4A+LWTk72dfIjIj9gXOQQYZLMYSbzC+MAadpKLH9nNUjp46aU
- k9TdAWNbrU4s19VQpVCSxgegNRKSsmhoPYSVPKAxEY/G4AIhMtU8VTFAsHOMahCgNnxBPsbd9
- 42VmLhsEo9HEu6BpCiyHvfPpAXw+Tqcor/iZgYH7IWHiislE+Oz73GWzlrEr2m2NJIfefkVRs
- /2ABs1DY/ihddsD1Aa98f3PcivfVW/UpRGEnZUH3JD8clxnl/8k8WEb4d15QCDjGgGllF8ke2
- v/ytK021WZj2hvJf3Gb27Ob8pgOBbDnYhVlAKl9tlSNZV8JD5v0+y4i6IxcDQqrEhzKmbBat5
- w0F1orxMC6T8y37A2PKdw+rTH23CBhXK892lkCWtqvICNJ71voQ+R1w+cycJOz3WolLCgkXem
- iYLV4m/P85jls0Xrf4VUQDbUyprW6EOeygYwLHYSRRwUOn2fvnCFsaLhy4jU=
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9401 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910060027
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9401 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910060027
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+In open_fs_devices() we identify alien device but we don't reset its
+the device::name. So progs device list does not show the device missing
+as shown in the script below.
 
+mkfs.btrfs -fq /dev/sdd && mount /dev/sdd /btrfs
+mkfs.btrfs -fq -draid1 -mraid1 /dev/sdc /dev/sdb
+sleep 3 # avoid racing with udev's useless scans if needed
+btrfs dev add -f /dev/sdb /btrfs
+mount -o degraded /dev/sdc /btrfs1
 
-On 2019/10/6 =E4=B8=8A=E5=8D=881:53, Eryu Guan wrote:
-> Hi Qu,
->
-> On Tue, Oct 01, 2019 at 12:04:19PM +0300, Nikolay Borisov wrote:
->> Add basic test to ensure btrfs conversion functionality is tested. This=
- test
->> exercies conversion to all possible types of the data portion. This is =
-sufficient
->> since from the POV of relocation we are only moving blockgroups.
->>
->> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+No missing device:
+btrfs fi show -m /btrfs1
+Label: none  uuid: 3eb7cd50-4594-458f-9d68-c243cc49954d
+	Total devices 2 FS bytes used 128.00KiB
+	devid    1 size 12.00GiB used 1.26GiB path /dev/sdc
+	devid    2 size 12.00GiB used 1.26GiB path /dev/sdb
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+v2: Move free alien part to its parent function btrfs_open_one_device.
+    Thanks Nikolay.
 
-Still one small nitpick inlined below (just small wording, can be fixed
-at commit time).
+PS: Fundamentally its wrong approach that btrfs-progs deduces the device
+missing state in the userland instead of obtaining it from the kernel.
+I objected on the patch, but still those patches got merged, this bug is
+one of its side effects. Ironically I wrote patches to read device_state
+from the kernel using ioctl, procfs and sysfs but didn't get the due
+attention till a merger.
 
->
-> Would you please help review this v2 as well? Thanks a lot!
->
-> Eryu
->
->> ---
->>  tests/btrfs/194     | 84 +++++++++++++++++++++++++++++++++++++++++++++=
-++++++++
->>  tests/btrfs/194.out |  2 ++
->>  tests/btrfs/group   |  1 +
->>  3 files changed, 87 insertions(+)
->>  create mode 100755 tests/btrfs/194
->>  create mode 100644 tests/btrfs/194.out
->>
->> diff --git a/tests/btrfs/194 b/tests/btrfs/194
->> new file mode 100755
->> index 000000000000..39b6e0a969c1
->> --- /dev/null
->> +++ b/tests/btrfs/194
->> @@ -0,0 +1,84 @@
->> +#! /bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (c) 2019 SUSE Linux Products GmbH. All Rights Reserved.
->> +#
->> +# FS QA Test 194
->> +#
->> +# Test raid profile conversion. It's sufficient to test all dest profi=
-les as
->> +# source profiles just rely on being able to read the metadata.
+ fs/btrfs/volumes.c | 32 +++++++++++++++++++++++---------
+ 1 file changed, 23 insertions(+), 9 deletions(-)
 
-data and metadata.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index c223a8147bfd..21aaf64c59b2 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -591,13 +591,18 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+ 	if (ret)
+ 		return ret;
+ 
++	ret = -EINVAL;
+ 	disk_super = (struct btrfs_super_block *)bh->b_data;
+ 	devid = btrfs_stack_device_id(&disk_super->dev_item);
+-	if (devid != device->devid)
++	if (devid != device->devid) {
++		ret = -EUCLEAN;
+ 		goto error_brelse;
++	}
+ 
+-	if (memcmp(device->uuid, disk_super->dev_item.uuid, BTRFS_UUID_SIZE))
++	if (memcmp(device->uuid, disk_super->dev_item.uuid, BTRFS_UUID_SIZE)) {
++		ret = -EUCLEAN;
+ 		goto error_brelse;
++	}
+ 
+ 	device->generation = btrfs_super_generation(disk_super);
+ 
+@@ -640,7 +645,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+ 	brelse(bh);
+ 	blkdev_put(bdev, flags);
+ 
+-	return -EINVAL;
++	return ret;
+ }
+ 
+ /*
+@@ -1121,19 +1126,28 @@ int btrfs_close_devices(struct btrfs_fs_devices *fs_devices)
+ static int open_fs_devices(struct btrfs_fs_devices *fs_devices,
+ 				fmode_t flags, void *holder)
+ {
++	int ret;
+ 	struct btrfs_device *device;
++	struct btrfs_device *tmp_device;
+ 	struct btrfs_device *latest_dev = NULL;
+ 
+ 	flags |= FMODE_EXCL;
+ 
+-	list_for_each_entry(device, &fs_devices->devices, dev_list) {
++	list_for_each_entry_safe(device, tmp_device, &fs_devices->devices,
++				 dev_list) {
+ 		/* Just open everything we can; ignore failures here */
+-		if (btrfs_open_one_device(fs_devices, device, flags, holder))
+-			continue;
+-
+-		if (!latest_dev ||
+-		    device->generation > latest_dev->generation)
++		ret = btrfs_open_one_device(fs_devices, device, flags, holder);
++		if (ret == 0 && (!latest_dev ||
++		    device->generation > latest_dev->generation)) {
+ 			latest_dev = device;
++			continue;
++		}
++		if (ret == -EUCLEAN) {
++			/* An alien device. Clean it up */
++			fs_devices->num_devices--;
++			list_del(&device->dev_list);
++			btrfs_free_device(device);
++		}
+ 	}
+ 	if (fs_devices->open_devices == 0)
+ 		return -EINVAL;
+-- 
+2.23.0
 
-In fact in the test case itself it's purely data.
-
-THanks,
-Qu
-
->> +#
->> +seq=3D`basename $0`
->> +seqres=3D$RESULT_DIR/$seq
->> +echo "QA output created by $seq"
->> +
->> +here=3D`pwd`
->> +tmp=3D/tmp/$$
->> +status=3D1	# failure is the default!
->> +trap "_cleanup; exit \$status" 0 1 2 3 15
->> +
->> +_cleanup()
->> +{
->> +	cd /
->> +	rm -f $tmp.*
->> +}
->> +
->> +# get standard environment, filters and checks
->> +. ./common/rc
->> +. ./common/filter
->> +
->> +# remove previous $seqres.full before test
->> +rm -f $seqres.full
->> +
->> +# real QA test starts here
->> +
->> +# Modify as appropriate.
->> +_supported_fs btrfs
->> +_supported_os Linux
->> +_require_scratch_dev_pool 4
->> +
->> +
->> +declare -a TEST_VECTORS=3D(
->> +# $nr_dev_min:$data:$metadata:$data_convert:$metadata_convert
->> +"4:single:raid1"
->> +"4:single:raid0"
->> +"4:single:raid10"
->> +"4:single:dup"
->> +"4:single:raid5"
->> +"4:single:raid6"
->> +"2:raid1:single"
->> +)
->> +
->> +run_testcase() {
->> +	IFS=3D':' read -ra args <<< $1
->> +	num_disks=3D${args[0]}
->> +	src_type=3D${args[1]}
->> +	dst_type=3D${args[2]}
->> +
->> +	_scratch_dev_pool_get $num_disks
->> +
->> +	echo "=3D=3D=3D Running test: $1 =3D=3D=3D" >> $seqres.full
->> +
->> +	_scratch_pool_mkfs -d$src_type >> $seqres.full 2>&1
->> +	_scratch_mount
->> +
->> +	# Create random filesystem with 20k write ops
->> +	run_check $FSSTRESS_PROG -d $SCRATCH_MNT -w -n 10000 $FSSTRESS_AVOID
->> +
->> +	$BTRFS_UTIL_PROG balance start -f -dconvert=3D$dst_type $SCRATCH_MNT =
->> $seqres.full 2>&1
->> +	[ $? -eq 0 ] || echo "$1: Failed convert"
->> +
->> +	$BTRFS_UTIL_PROG scrub start -B $SCRATCH_MNT >>$seqres.full 2>&1
->> +	[ $? -eq 0 ] || echo "$1: Scrub failed"
->> +
->> +	_scratch_unmount
->> +	_check_btrfs_filesystem $SCRATCH_DEV
->> +	_scratch_dev_pool_put
->> +}
->> +
->> +for i in "${TEST_VECTORS[@]}"; do
->> +	run_testcase $i
->> +done
->> +
->> +echo "Silence is golden"
->> +status=3D0
->> +exit
->> diff --git a/tests/btrfs/194.out b/tests/btrfs/194.out
->> new file mode 100644
->> index 000000000000..7bfd50ffb5a4
->> --- /dev/null
->> +++ b/tests/btrfs/194.out
->> @@ -0,0 +1,2 @@
->> +QA output created by 194
->> +Silence is golden
->> diff --git a/tests/btrfs/group b/tests/btrfs/group
->> index b92cb12ca66f..a2c0ad87d0f6 100644
->> --- a/tests/btrfs/group
->> +++ b/tests/btrfs/group
->> @@ -196,3 +196,4 @@
->>  191 auto quick send dedupe
->>  192 auto replay snapshot stress
->>  193 auto quick qgroup enospc limit
->> +194 auto volume balance
->> --
->> 2.7.4
->>
