@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64359CECE9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 21:37:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 612C8CECEA
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 21:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728877AbfJGTh2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Oct 2019 15:37:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44396 "EHLO mx1.suse.de"
+        id S1728983AbfJGTha (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Oct 2019 15:37:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44408 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728079AbfJGTh2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 7 Oct 2019 15:37:28 -0400
+        id S1728971AbfJGTh3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Oct 2019 15:37:29 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 17852AE6E;
-        Mon,  7 Oct 2019 19:37:27 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 67DC7AD7F;
+        Mon,  7 Oct 2019 19:37:28 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 72CDADA7FB; Mon,  7 Oct 2019 21:37:42 +0200 (CEST)
+        id C7FBCDA7FB; Mon,  7 Oct 2019 21:37:43 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 1/5] btrfs: assert extent_map bdevs and lookup_map and split
-Date:   Mon,  7 Oct 2019 21:37:42 +0200
-Message-Id: <e33892bd3aa6d477277ab41af8757dd9797882c0.1570474492.git.dsterba@suse.com>
+Subject: [PATCH 2/5] btrfs: get bdev from latest_dev for dio bh_result
+Date:   Mon,  7 Oct 2019 21:37:43 +0200
+Message-Id: <2ae45bba23d97e0d60d9949d9c65dbab9961cb34.1570474492.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1570474492.git.dsterba@suse.com>
 References: <cover.1570474492.git.dsterba@suse.com>
@@ -33,65 +33,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a preparatory patch for removing extent_map::bdev. There's some
-history behind the code so this is only precaution to catch if things
-break before the actual removal happens.
+To remove use of extent_map::bdev we need to find a replacement, and the
+latest_bdev is the only one we can use here, because inode::i_bdev and
+superblock::s_bdev are NULL.
 
-Logically, comparing a raw low-level block device (bdev) does not make
-sense for extent maps (high-level objects). This had no effect in
-practice but was quite confusing in the code.  The lookup_map is set iff
-EXTENT_FLAG_FS_MAPPING is set.
+The only thing that DIO code uses from the bdev is the blocksize to
+perform alignment checks in do_blockdev_direct_IO, but we do them in
+btrfs code before any call to DIO. We can't pass NULL because there are
+dereferences of bdev in __blockdev_direct_IO, even though it's not going
+to be used later.
 
-The two pointers were stored in the same bytes and used potentially in
-two meanings. Now they're split, so the asserts are in place to check
-that the condition will not change.
-
-The lookup map pointer misused bdev, this has been changed in commit
-95617d69326c ("btrfs: cleanup, stop casting for extent_map->lookup
-everywhere") to the explicit type. But the semantics hasn't changed and
-bdev was not actually used to decide if maps are mergeable.
+So it's safe to pass any valid bdev that's used within the filesystem.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/extent_map.c | 9 ++++++++-
- fs/btrfs/extent_map.h | 2 +-
- 2 files changed, 9 insertions(+), 2 deletions(-)
+ fs/btrfs/inode.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/extent_map.c b/fs/btrfs/extent_map.c
-index 9d30acca55e1..9f99dccbc3ca 100644
---- a/fs/btrfs/extent_map.c
-+++ b/fs/btrfs/extent_map.c
-@@ -214,9 +214,16 @@ static int mergable_maps(struct extent_map *prev, struct extent_map *next)
- 	ASSERT(next->block_start != EXTENT_MAP_DELALLOC &&
- 	       prev->block_start != EXTENT_MAP_DELALLOC);
- 
-+	if (prev->map_lookup || next->map_lookup)
-+		ASSERT(test_bit(EXTENT_FLAG_FS_MAPPING, &prev->flags) &&
-+		       test_bit(EXTENT_FLAG_FS_MAPPING, &next->flags));
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 067cbd6e3923..8e085d21c3c5 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7603,6 +7603,8 @@ static int btrfs_get_blocks_direct_read(struct extent_map *em,
+ 					struct inode *inode,
+ 					u64 start, u64 len)
+ {
++	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
 +
-+	if (prev->bdev || next->bdev)
-+		ASSERT(prev->bdev == next->bdev);
-+
- 	if (extent_map_end(prev) == next->start &&
- 	    prev->flags == next->flags &&
--	    prev->bdev == next->bdev &&
-+	    prev->map_lookup == next->map_lookup &&
- 	    ((next->block_start == EXTENT_MAP_HOLE &&
- 	      prev->block_start == EXTENT_MAP_HOLE) ||
- 	     (next->block_start == EXTENT_MAP_INLINE &&
-diff --git a/fs/btrfs/extent_map.h b/fs/btrfs/extent_map.h
-index 473f039fcd7c..3eb9c596b445 100644
---- a/fs/btrfs/extent_map.h
-+++ b/fs/btrfs/extent_map.h
-@@ -42,7 +42,7 @@ struct extent_map {
- 	u64 block_len;
- 	u64 generation;
- 	unsigned long flags;
--	union {
-+	struct {
- 		struct block_device *bdev;
+ 	if (em->block_start == EXTENT_MAP_HOLE ||
+ 			test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
+ 		return -ENOENT;
+@@ -7612,7 +7614,7 @@ static int btrfs_get_blocks_direct_read(struct extent_map *em,
+ 	bh_result->b_blocknr = (em->block_start + (start - em->start)) >>
+ 		inode->i_blkbits;
+ 	bh_result->b_size = len;
+-	bh_result->b_bdev = em->bdev;
++	bh_result->b_bdev = fs_info->fs_devices->latest_bdev;
+ 	set_buffer_mapped(bh_result);
  
- 		/*
+ 	return 0;
+@@ -7695,7 +7697,7 @@ static int btrfs_get_blocks_direct_write(struct extent_map **map,
+ 	bh_result->b_blocknr = (em->block_start + (start - em->start)) >>
+ 		inode->i_blkbits;
+ 	bh_result->b_size = len;
+-	bh_result->b_bdev = em->bdev;
++	bh_result->b_bdev = fs_info->fs_devices->latest_bdev;
+ 	set_buffer_mapped(bh_result);
+ 
+ 	if (!test_bit(EXTENT_FLAG_PREALLOC, &em->flags))
 -- 
 2.23.0
 
