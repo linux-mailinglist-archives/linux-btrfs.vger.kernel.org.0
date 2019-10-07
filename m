@@ -2,68 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 45470CE9A7
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 18:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B578BCEA08
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 19:02:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728726AbfJGQqY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Oct 2019 12:46:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54622 "EHLO mx1.suse.de"
+        id S1728827AbfJGRCx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Oct 2019 13:02:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58634 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728976AbfJGQqX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 7 Oct 2019 12:46:23 -0400
+        id S1727801AbfJGRCx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Oct 2019 13:02:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2D61DAC38;
-        Mon,  7 Oct 2019 16:46:22 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id A627CACC0;
+        Mon,  7 Oct 2019 17:02:51 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 6795FDA7FB; Mon,  7 Oct 2019 18:46:37 +0200 (CEST)
-Date:   Mon, 7 Oct 2019 18:46:37 +0200
+        id EF2E9DA7FB; Mon,  7 Oct 2019 19:03:06 +0200 (CEST)
+Date:   Mon, 7 Oct 2019 19:03:06 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/3] btrfs: tree-checker: False alerts fixes for log trees
-Message-ID: <20191007164637.GH2751@twin.jikos.cz>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 4/5] btrfs: remove identified alien device in
+ open_fs_devices
+Message-ID: <20191007170306.GI2751@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191004093133.83582-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <20191007094515.925-1-anand.jain@oracle.com>
+ <20191007094515.925-5-anand.jain@oracle.com>
+ <b370fdd7-2d97-877f-88e6-3624205c8617@suse.com>
+ <b8ffd660-5055-d609-4fcd-169090e7914b@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20191004093133.83582-1-wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b8ffd660-5055-d609-4fcd-169090e7914b@gmx.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 04, 2019 at 05:31:30PM +0800, Qu Wenruo wrote:
-> There is a false alerts of tree-checker when running fstests/btrfs/063
-> in a loop.
+On Mon, Oct 07, 2019 at 09:37:49PM +0800, Qu Wenruo wrote:
 > 
-> The bug is caused by commit 59b0d030fb30 ("btrfs: tree-checker: Try to detect
-> missing INODE_ITEM").
-> For the full error analyse, please check the first patch.
 > 
-> The first patch will give it a quick fix, so that it can be addressed in
-> v5.4 release cycle.
+> On 2019/10/7 下午9:30, Nikolay Borisov wrote:
+> >
+> >
+> > On 7.10.19 г. 12:45 ч., Anand Jain wrote:
+> >> Following test case explains it all, even though the degraded mount is
+> >> successful the btrfs-progs fails to report the missing device.
+> >>
+> >>  mkfs.btrfs -fq -draid1 -mraid1 /dev/sdc /dev/sdd && \
+> >>  wipefs -a /dev/sdd && mount -o degraded /dev/sdc /btrfs && \
+> >>  btrfs fi show -m /btrfs
+> >>
+> >>  Label: none  uuid: 2b3b8d92-572b-4d37-b4ee-046d3a538495
+> >> 	Total devices 2 FS bytes used 128.00KiB
+> >> 	devid    1 size 1.09TiB used 2.01GiB path /dev/sdc
+> >> 	devid    2 size 1.09TiB used 2.01GiB path /dev/sdd
+> >>
+> >> This is because btrfs-progs does it fundamentally wrong way that
+> >> it deduces the missing device status in the user land instead of
+> >> refuting from the kernel.
+> >>
+> >> At the same time in the kernel when we know that there is device
+> >> with non-btrfs magic, then remove that device from the list so
+> >> that btrfs-progs or someother userland utility won't be confused.
+> >>
+> >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> >> ---
+> >>  fs/btrfs/disk-io.c | 2 +-
+> >>  1 file changed, 1 insertion(+), 1 deletion(-)
+> >>
+> >> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> >> index 326d5281ad93..e05856432456 100644
+> >> --- a/fs/btrfs/disk-io.c
+> >> +++ b/fs/btrfs/disk-io.c
+> >> @@ -3417,7 +3417,7 @@ int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
+> >>  	if (btrfs_super_bytenr(super) != bytenr ||
+> >>  		    btrfs_super_magic(super) != BTRFS_MAGIC) {
+> >>  		brelse(bh);
+> >> -		return -EINVAL;
+> >> +		return -EUCLEAN;
+> >
+> > This is really non-obvious and you are propagating the special-meaning
+> > of EUCLEAN waaaaaaaay beyond btrfs_open_one_device. In fact what this
+> > patch does is make the following call chain return EUCLAN:
+> >
+> > btrfs_open_one_device <-- finally removing the device in this function
+> >  btrfs_get_bdev_and_sb <-- propagating it to here
+> >   btrfs_read_dev_super
+> >     btrfs_read_dev_one_super <-- you return the EUCLEAN
+> >
+> >
+> > And your commit log doesn't mention anything about that. EUCLEAN
+> > warrants a comment in this case since it changes behavior in
+> > higher-level layers.
 > 
-> The 2nd patch is a more proper patch, with refactor to reduce duplicated
-> code and add the check to INODE_REF item.
-> But it's pretty large (+72, -41), not sure if it's suitbale for late
-> -rc.
 > 
-> Also current write-time tree checker error message is too silent, can't
-> be caught by fstests nor a quick glance of dmesg. And it doesn't contain
-> enough info to debug.
+> And, for most case, EUCLEAN should have a proper kernel message for
+> what's going wrong, the value we hit and the value we expect.
 > 
-> So to enhance the error message, and make it more noisy, the 3rd patch
-> will enhance the error message.
-> 
-> Qu Wenruo (3):
->   btrfs: tree-checker: Fix false alerts on log trees
->   btrfs: tree-checker: Refactor prev_key check for ino into a function
->   btrfs: Enhance the error outputting for write time tree checker
+> And for EUCLEAN, it's more like graceful error out for impossible thing.
+> This is definitely not the case, and I believe the original EINVAL makes
+> more sense than EUCLEAN.
 
-Patch 1 folded to the original patch and 2 and 2 now in misc-next,
-thanks.
+I agree, EUCLEAN is wrong here.
