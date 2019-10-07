@@ -2,46 +2,46 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B7307CED45
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 22:18:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C72FCED46
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 22:18:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729087AbfJGUR6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Oct 2019 16:17:58 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:36527 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728187AbfJGUR5 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Oct 2019 16:17:57 -0400
-Received: by mail-qk1-f194.google.com with SMTP id y189so13946744qkc.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Oct 2019 13:17:57 -0700 (PDT)
+        id S1729134AbfJGUR7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Oct 2019 16:17:59 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:35681 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729119AbfJGUR7 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Oct 2019 16:17:59 -0400
+Received: by mail-qk1-f196.google.com with SMTP id w2so13944801qkf.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 07 Oct 2019 13:17:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=Znc6CSWmUawJXrzFyLl0vEfpwCOgVYbEeV0r3nCJYGY=;
-        b=nqrI4r5/VUzN7BDXK2DDKZ+eaAol1YwxRmzDhpGapQknbUCaE7QaZhrwcBf24dvT+N
-         +SY55/zSWGiBOxhuES9AQiBcWjOyOV7kAFNl2SQVb2JytH/3A3NPuOxzmli2qtp/htFm
-         m/cTVyPL3CoQEgozkL6DF1wy8ZCPvqwKPLyWwJ95dFZ2BvZZuezgkD5L1OP1pPoFy2mD
-         e8e/FWsfRrweoE3Qt8gZldsdJGTf1Qvr6xu2W+t4SixlsIOhwyTKWPMAZ5fCPlZMUVkA
-         9PAsIN2ewaB4IN88Zc8Tr3YbgyY/OT9KEv/9vipctHpqcmvGLSCW1C6a+RcyjO1u5VRo
-         Ya0Q==
-X-Gm-Message-State: APjAAAXGrcEaVO6s2fCAFwyI4I5gA+T2ziowhzIkqpxsB+g6TEGKe3Pl
-        iwLyce4UgTle30d4jDkTznuUX8wo
-X-Google-Smtp-Source: APXvYqyaVktRSqfpjmz00X7Ko3xv12p5JMJeJKpfhFq6ePKxu2O9T/9NSNW8bmEi9gu53N5/kAS5LA==
-X-Received: by 2002:a37:a44f:: with SMTP id n76mr3876807qke.414.1570479476772;
-        Mon, 07 Oct 2019 13:17:56 -0700 (PDT)
+        bh=zZaFBsxjBdS+nCe5yTkYZensX2LGWIFBrdhJ1OshTsY=;
+        b=aZmGDhZfF5GGmpTgif00Kb++lrgUWzifrpCR+98rgaaQxIKJ4bK9AhIkQsqrSDzOc2
+         M5ZBK8wZXQ7NDltuBGPil+rlG6FCEYeOABJ2+4t2DEep+AU1JYsuMKwZF8b66gponY22
+         3mFfW82pQhTj34HjOn/kQRsVuFAOeSbyuVHUhKISboKucNCKr4Kh6jVWH/BaB1iYfcK1
+         3Yl2gFmK2Q4pVWHmSHiGHDr0mQMSz5Uf1jNsaLmXRWZLi09PVGZrawP1hdzv42WunWOR
+         vUq/mChS2q4nLUIUhqDDhMgvBplJeBS3yAemp7TySv2psn9vGlmwSWRUOkmD5W+R18Xu
+         KCZQ==
+X-Gm-Message-State: APjAAAWXk/7xl5//Toa52EH9Ja6cdISSYZOEafkfmRVmiA40CoU7uJq7
+        uPhlCaywhsuUDrkuAYvT2jk=
+X-Google-Smtp-Source: APXvYqx9eaemolPzrCy2gA0+sbdNSmjPgJnbBgvzth6VofedvKVMeUgnbFkjWRYFRqK0sD4F3y2yjA==
+X-Received: by 2002:a37:4d43:: with SMTP id a64mr25945699qkb.408.1570479477881;
+        Mon, 07 Oct 2019 13:17:57 -0700 (PDT)
 Received: from dennisz-mbp.thefacebook.com ([163.114.130.128])
-        by smtp.gmail.com with ESMTPSA id k2sm6904005qtm.42.2019.10.07.13.17.55
+        by smtp.gmail.com with ESMTPSA id k2sm6904005qtm.42.2019.10.07.13.17.56
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Mon, 07 Oct 2019 13:17:56 -0700 (PDT)
+        Mon, 07 Oct 2019 13:17:57 -0700 (PDT)
 From:   Dennis Zhou <dennis@kernel.org>
 To:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         Omar Sandoval <osandov@osandov.com>
 Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org,
         Dennis Zhou <dennis@kernel.org>
-Subject: [PATCH 03/19] btrfs: keep track of which extents have been discarded
-Date:   Mon,  7 Oct 2019 16:17:34 -0400
-Message-Id: <5875088b5f4ada0ef73f097b238935dd583d5b3e.1570479299.git.dennis@kernel.org>
+Subject: [PATCH 04/19] btrfs: keep track of cleanliness of the bitmap
+Date:   Mon,  7 Oct 2019 16:17:35 -0400
+Message-Id: <4cdbe31836b701c2c134c8484bb3531f7024031d.1570479299.git.dennis@kernel.org>
 X-Mailer: git-send-email 2.13.5
 In-Reply-To: <cover.1570479299.git.dennis@kernel.org>
 References: <cover.1570479299.git.dennis@kernel.org>
@@ -52,315 +52,257 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Async discard will use the free space cache as backing knowledge for
-which extents to discard. This patch plumbs knowledge about which
-extents need to be discarded into the free space cache from
-unpin_extent_range().
+There is a cap in btrfs in the amount of free extents that a block group
+can have. When it surpasses that threshold, future extents are placed
+into bitmaps. Instead of keeping track of if a certain bit is trimmed or
+not in a second bitmap, keep track of the relative state of the bitmap.
 
-An untrimmed extent can merge with everything as this is a new region.
-Absorbing trimmed extents is a tradeoff to for greater coalescing which
-makes life better for find_free_extent(). Additionally, it seems the
-size of a trim isn't as problematic as the trim io itself.
+With async discard, trimming bitmaps becomes a more frequent operation.
+As a trade off with simplicity, we keep track of if discarding a bitmap
+is in progress. If we fully scan a bitmap and trim as necessary, the
+bitmap is marked clean. This has some caveats as the min block size may
+skip over regions deemed too small. But this should be a reasonable
+trade off rather than keeping a second bitmap and making allocation
+paths more complex. The downside is we may overtrim, but ideally the min
+block size should prevent us from doing that too often and getting stuck
+trimming
+pathological cases.
 
-When reading in the free space cache from disk, if sync is set, mark all
-extents as trimmed. The current code ensures at transaction commit that
-all free space is trimmed when sync is set, so this reflects that.
+BTRFS_FSC_TRIMMING_BITMAP is added to indicate a bitmap is in the
+process of being trimmed. If additional free space is added to that
+bitmap, the bit is cleared. A bitmap will be marked BTRFS_FSC_TRIMMED if
+the trimming code was able to reach the end of it and the former is
+still set.
 
 Signed-off-by: Dennis Zhou <dennis@kernel.org>
 ---
- fs/btrfs/extent-tree.c      | 15 ++++++++++-----
- fs/btrfs/free-space-cache.c | 38 ++++++++++++++++++++++++++++++-------
- fs/btrfs/free-space-cache.h | 10 +++++++++-
- fs/btrfs/inode-map.c        | 13 +++++++------
- 4 files changed, 57 insertions(+), 19 deletions(-)
+ fs/btrfs/free-space-cache.c | 83 +++++++++++++++++++++++++++++++++----
+ fs/btrfs/free-space-cache.h |  7 ++++
+ 2 files changed, 83 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 77a5904756c5..b9e3bedad878 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -2782,7 +2782,7 @@ fetch_cluster_info(struct btrfs_fs_info *fs_info,
- }
- 
- static int unpin_extent_range(struct btrfs_fs_info *fs_info,
--			      u64 start, u64 end,
-+			      u64 start, u64 end, u32 fsc_flags,
- 			      const bool return_free_space)
- {
- 	struct btrfs_block_group_cache *cache = NULL;
-@@ -2816,7 +2816,9 @@ static int unpin_extent_range(struct btrfs_fs_info *fs_info,
- 		if (start < cache->last_byte_to_unpin) {
- 			len = min(len, cache->last_byte_to_unpin - start);
- 			if (return_free_space)
--				btrfs_add_free_space(cache, start, len);
-+				__btrfs_add_free_space(fs_info,
-+						       cache->free_space_ctl,
-+						       start, len, fsc_flags);
- 		}
- 
- 		start += len;
-@@ -2894,6 +2896,7 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
- 
- 	while (!trans->aborted) {
- 		struct extent_state *cached_state = NULL;
-+		u32 fsc_flags = 0;
- 
- 		mutex_lock(&fs_info->unused_bg_unpin_mutex);
- 		ret = find_first_extent_bit(unpin, 0, &start, &end,
-@@ -2903,12 +2906,14 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
- 			break;
- 		}
- 
--		if (btrfs_test_opt(fs_info, DISCARD_SYNC))
-+		if (btrfs_test_opt(fs_info, DISCARD_SYNC)) {
- 			ret = btrfs_discard_extent(fs_info, start,
- 						   end + 1 - start, NULL);
-+			fsc_flags |= BTRFS_FSC_TRIMMED;
-+		}
- 
- 		clear_extent_dirty(unpin, start, end, &cached_state);
--		unpin_extent_range(fs_info, start, end, true);
-+		unpin_extent_range(fs_info, start, end, fsc_flags, true);
- 		mutex_unlock(&fs_info->unused_bg_unpin_mutex);
- 		free_extent_state(cached_state);
- 		cond_resched();
-@@ -5512,7 +5517,7 @@ u64 btrfs_account_ro_block_groups_free_space(struct btrfs_space_info *sinfo)
- int btrfs_error_unpin_extent_range(struct btrfs_fs_info *fs_info,
- 				   u64 start, u64 end)
- {
--	return unpin_extent_range(fs_info, start, end, false);
-+	return unpin_extent_range(fs_info, start, end, 0, false);
- }
- 
- /*
 diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index d54dcd0ab230..f119895292b8 100644
+index f119895292b8..129b9a164b35 100644
 --- a/fs/btrfs/free-space-cache.c
 +++ b/fs/btrfs/free-space-cache.c
-@@ -747,6 +747,14 @@ static int __load_free_space_cache(struct btrfs_root *root, struct inode *inode,
- 			goto free_cache;
- 		}
+@@ -1975,11 +1975,14 @@ static noinline int remove_from_bitmap(struct btrfs_free_space_ctl *ctl,
  
-+		/*
-+		 * Sync discard ensures that the free space cache is always
-+		 * trimmed.  So when reading this in, the state should reflect
-+		 * that.
-+		 */
-+		if (btrfs_test_opt(fs_info, DISCARD_SYNC))
-+			e->flags |= BTRFS_FSC_TRIMMED;
+ static u64 add_bytes_to_bitmap(struct btrfs_free_space_ctl *ctl,
+ 			       struct btrfs_free_space *info, u64 offset,
+-			       u64 bytes)
++			       u64 bytes, u32 flags)
+ {
+ 	u64 bytes_to_set = 0;
+ 	u64 end;
+ 
++	if (!(flags & BTRFS_FSC_TRIMMED))
++		info->flags &= ~(BTRFS_FSC_TRIMMED | BTRFS_FSC_TRIMMING_BITMAP);
 +
- 		if (!e->bytes) {
- 			kmem_cache_free(btrfs_free_space_cachep, e);
- 			goto free_cache;
-@@ -2165,6 +2173,7 @@ static bool try_merge_free_space(struct btrfs_free_space_ctl *ctl,
- 	bool merged = false;
- 	u64 offset = info->offset;
- 	u64 bytes = info->bytes;
-+	bool is_trimmed = btrfs_free_space_trimmed(info);
+ 	end = info->offset + (u64)(BITS_PER_BITMAP * ctl->unit);
  
- 	/*
- 	 * first we want to see if there is free space adjacent to the range we
-@@ -2178,7 +2187,8 @@ static bool try_merge_free_space(struct btrfs_free_space_ctl *ctl,
- 	else
- 		left_info = tree_search_offset(ctl, offset - 1, 0, 0);
+ 	bytes_to_set = min(end - offset, bytes);
+@@ -2054,10 +2057,12 @@ static int insert_into_bitmap(struct btrfs_free_space_ctl *ctl,
+ 	struct btrfs_block_group_cache *block_group = NULL;
+ 	int added = 0;
+ 	u64 bytes, offset, bytes_added;
++	u32 flags;
+ 	int ret;
  
--	if (right_info && !right_info->bitmap) {
-+	if (right_info && !right_info->bitmap &&
-+	    (!is_trimmed || btrfs_free_space_trimmed(right_info))) {
- 		if (update_stat)
- 			unlink_free_space(ctl, right_info);
- 		else
-@@ -2189,7 +2199,8 @@ static bool try_merge_free_space(struct btrfs_free_space_ctl *ctl,
+ 	bytes = info->bytes;
+ 	offset = info->offset;
++	flags = info->flags;
+ 
+ 	if (!ctl->op->use_bitmap(ctl, info))
+ 		return 0;
+@@ -2093,7 +2098,7 @@ static int insert_into_bitmap(struct btrfs_free_space_ctl *ctl,
+ 
+ 		if (entry->offset == offset_to_bitmap(ctl, offset)) {
+ 			bytes_added = add_bytes_to_bitmap(ctl, entry,
+-							  offset, bytes);
++							  offset, bytes, flags);
+ 			bytes -= bytes_added;
+ 			offset += bytes_added;
+ 		}
+@@ -2112,7 +2117,8 @@ static int insert_into_bitmap(struct btrfs_free_space_ctl *ctl,
+ 		goto new_bitmap;
  	}
  
- 	if (left_info && !left_info->bitmap &&
--	    left_info->offset + left_info->bytes == offset) {
-+	    left_info->offset + left_info->bytes == offset &&
-+	    (!is_trimmed || btrfs_free_space_trimmed(left_info))) {
- 		if (update_stat)
- 			unlink_free_space(ctl, left_info);
- 		else
-@@ -2225,6 +2236,9 @@ static bool steal_from_bitmap_to_end(struct btrfs_free_space_ctl *ctl,
- 	bytes = (j - i) * ctl->unit;
- 	info->bytes += bytes;
- 
-+	if (!btrfs_free_space_trimmed(bitmap))
-+		info->flags &= ~BTRFS_FSC_TRIMMED;
-+
- 	if (update_stat)
- 		bitmap_clear_bits(ctl, bitmap, end, bytes);
- 	else
-@@ -2278,6 +2292,9 @@ static bool steal_from_bitmap_to_front(struct btrfs_free_space_ctl *ctl,
- 	info->offset -= bytes;
- 	info->bytes += bytes;
- 
-+	if (!btrfs_free_space_trimmed(bitmap))
-+		info->flags &= ~BTRFS_FSC_TRIMMED;
-+
- 	if (update_stat)
- 		bitmap_clear_bits(ctl, bitmap, info->offset, bytes);
- 	else
-@@ -2327,7 +2344,7 @@ static void steal_from_bitmap(struct btrfs_free_space_ctl *ctl,
- 
- int __btrfs_add_free_space(struct btrfs_fs_info *fs_info,
- 			   struct btrfs_free_space_ctl *ctl,
--			   u64 offset, u64 bytes)
-+			   u64 offset, u64 bytes, u32 flags)
- {
- 	struct btrfs_free_space *info;
- 	int ret = 0;
-@@ -2338,6 +2355,7 @@ int __btrfs_add_free_space(struct btrfs_fs_info *fs_info,
- 
- 	info->offset = offset;
- 	info->bytes = bytes;
-+	info->flags = flags;
- 	RB_CLEAR_NODE(&info->offset_index);
- 
- 	spin_lock(&ctl->tree_lock);
-@@ -2385,7 +2403,7 @@ int btrfs_add_free_space(struct btrfs_block_group_cache *block_group,
- {
- 	return __btrfs_add_free_space(block_group->fs_info,
- 				      block_group->free_space_ctl,
--				      bytenr, size);
-+				      bytenr, size, 0);
- }
- 
- int btrfs_remove_free_space(struct btrfs_block_group_cache *block_group,
-@@ -2460,8 +2478,11 @@ int btrfs_remove_free_space(struct btrfs_block_group_cache *block_group,
- 			}
- 			spin_unlock(&ctl->tree_lock);
- 
--			ret = btrfs_add_free_space(block_group, offset + bytes,
--						   old_end - (offset + bytes));
-+			ret = __btrfs_add_free_space(block_group->fs_info,
-+						     ctl,
-+						     offset + bytes,
-+						     old_end - (offset + bytes),
-+						     info->flags);
- 			WARN_ON(ret);
- 			goto out;
- 		}
-@@ -2630,6 +2651,7 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block_group_cache *block_group,
- 	u64 ret = 0;
- 	u64 align_gap = 0;
- 	u64 align_gap_len = 0;
-+	u64 align_gap_flags = 0;
- 
- 	spin_lock(&ctl->tree_lock);
- 	entry = find_free_space(ctl, &offset, &bytes_search,
-@@ -2646,6 +2668,7 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block_group_cache *block_group,
- 		unlink_free_space(ctl, entry);
- 		align_gap_len = offset - entry->offset;
- 		align_gap = entry->offset;
-+		align_gap_flags = entry->flags;
- 
- 		entry->offset = offset + bytes;
- 		WARN_ON(entry->bytes < bytes + align_gap_len);
-@@ -2661,7 +2684,8 @@ u64 btrfs_find_space_for_alloc(struct btrfs_block_group_cache *block_group,
- 
- 	if (align_gap_len)
- 		__btrfs_add_free_space(block_group->fs_info, ctl,
--				       align_gap, align_gap_len);
-+				       align_gap, align_gap_len,
-+				       align_gap_flags);
+-	bytes_added = add_bytes_to_bitmap(ctl, bitmap_info, offset, bytes);
++	bytes_added = add_bytes_to_bitmap(ctl, bitmap_info, offset, bytes,
++					  flags);
+ 	bytes -= bytes_added;
+ 	offset += bytes_added;
+ 	added = 0;
+@@ -2146,6 +2152,7 @@ static int insert_into_bitmap(struct btrfs_free_space_ctl *ctl,
+ 		/* allocate the bitmap */
+ 		info->bitmap = kmem_cache_zalloc(btrfs_free_space_bitmap_cachep,
+ 						 GFP_NOFS);
++		info->flags |= BTRFS_FSC_TRIMMED;
+ 		spin_lock(&ctl->tree_lock);
+ 		if (!info->bitmap) {
+ 			ret = -ENOMEM;
+@@ -3295,6 +3302,41 @@ static int trim_no_bitmap(struct btrfs_block_group_cache *block_group,
  	return ret;
  }
  
++/*
++ * If we break out of trimming a bitmap prematurely, we should reset the
++ * trimming bit.  In a rather contrieved case, it's possible to race here so
++ * clear BTRFS_FSC_TRIMMED as well.
++ *
++ * start = start of bitmap
++ * end = near end of bitmap
++ *
++ * Thread 1:			Thread 2:
++ * trim_bitmaps(start)
++ *				trim_bitmaps(end)
++ *				end_trimming_bitmap()
++ * reset_trimming_bitmap()
++ */
++static void reset_trimming_bitmap(struct btrfs_free_space_ctl *ctl, u64 offset)
++{
++	struct btrfs_free_space *info;
++
++	spin_lock(&ctl->tree_lock);
++
++	info = tree_search_offset(ctl, offset, 1, 0);
++	if (info)
++		info->flags &= ~(BTRFS_FSC_TRIMMED | BTRFS_FSC_TRIMMING_BITMAP);
++
++	spin_unlock(&ctl->tree_lock);
++}
++
++static void end_trimming_bitmap(struct btrfs_free_space *entry)
++{
++	if (btrfs_free_space_trimming_bitmap(entry)) {
++		entry->flags |= BTRFS_FSC_TRIMMED;
++		entry->flags &= ~BTRFS_FSC_TRIMMING_BITMAP;
++	}
++}
++
+ static int trim_bitmaps(struct btrfs_block_group_cache *block_group,
+ 			u64 *total_trimmed, u64 start, u64 end, u64 minlen)
+ {
+@@ -3326,9 +3368,26 @@ static int trim_bitmaps(struct btrfs_block_group_cache *block_group,
+ 			goto next;
+ 		}
+ 
++		/*
++		 * Async discard bitmap trimming begins at by setting the start
++		 * to be key.objectid and the offset_to_bitmap() aligns to the
++		 * start of the bitmap.  This lets us know we are fully
++		 * scanning the bitmap rather than only some portion of it.
++		 */
++		if (start == offset)
++			entry->flags |= BTRFS_FSC_TRIMMING_BITMAP;
++
+ 		bytes = minlen;
+ 		ret2 = search_bitmap(ctl, entry, &start, &bytes, false);
+ 		if (ret2 || start >= end) {
++			/*
++			 * This keeps the invariant that all bytes are trimmed
++			 * if BTRFS_FSC_TRIMMED is set on a bitmap.
++			 */
++			if (ret2 && !minlen)
++				end_trimming_bitmap(entry);
++			else
++				entry->flags &= ~BTRFS_FSC_TRIMMING_BITMAP;
+ 			spin_unlock(&ctl->tree_lock);
+ 			mutex_unlock(&ctl->cache_writeout_mutex);
+ 			next_bitmap = true;
+@@ -3337,6 +3396,7 @@ static int trim_bitmaps(struct btrfs_block_group_cache *block_group,
+ 
+ 		bytes = min(bytes, end - start);
+ 		if (bytes < minlen) {
++			entry->flags &= ~BTRFS_FSC_TRIMMING_BITMAP;
+ 			spin_unlock(&ctl->tree_lock);
+ 			mutex_unlock(&ctl->cache_writeout_mutex);
+ 			goto next;
+@@ -3354,18 +3414,21 @@ static int trim_bitmaps(struct btrfs_block_group_cache *block_group,
+ 
+ 		ret = do_trimming(block_group, total_trimmed, start, bytes,
+ 				  start, bytes, &trim_entry);
+-		if (ret)
++		if (ret) {
++			reset_trimming_bitmap(ctl, offset);
+ 			break;
++		}
+ next:
+ 		if (next_bitmap) {
+ 			offset += BITS_PER_BITMAP * ctl->unit;
++			start = offset;
+ 		} else {
+ 			start += bytes;
+-			if (start >= offset + BITS_PER_BITMAP * ctl->unit)
+-				offset += BITS_PER_BITMAP * ctl->unit;
+ 		}
+ 
+ 		if (fatal_signal_pending(current)) {
++			if (start != offset)
++				reset_trimming_bitmap(ctl, offset);
+ 			ret = -ERESTARTSYS;
+ 			break;
+ 		}
+@@ -3419,6 +3482,7 @@ void btrfs_put_block_group_trimming(struct btrfs_block_group_cache *block_group)
+ int btrfs_trim_block_group(struct btrfs_block_group_cache *block_group,
+ 			   u64 *trimmed, u64 start, u64 end, u64 minlen)
+ {
++	struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
+ 	int ret;
+ 
+ 	*trimmed = 0;
+@@ -3436,6 +3500,9 @@ int btrfs_trim_block_group(struct btrfs_block_group_cache *block_group,
+ 		goto out;
+ 
+ 	ret = trim_bitmaps(block_group, trimmed, start, end, minlen);
++	/* if we ended in the middle of a bitmap, reset the trimming flag */
++	if (end % (BITS_PER_BITMAP * ctl->unit))
++		reset_trimming_bitmap(ctl, offset_to_bitmap(ctl, end));
+ out:
+ 	btrfs_put_block_group_trimming(block_group);
+ 	return ret;
+@@ -3620,6 +3687,7 @@ int test_add_free_space_entry(struct btrfs_block_group_cache *cache,
+ 	struct btrfs_free_space_ctl *ctl = cache->free_space_ctl;
+ 	struct btrfs_free_space *info = NULL, *bitmap_info;
+ 	void *map = NULL;
++	u32 flags = 0;
+ 	u64 bytes_added;
+ 	int ret;
+ 
+@@ -3661,7 +3729,8 @@ int test_add_free_space_entry(struct btrfs_block_group_cache *cache,
+ 		info = NULL;
+ 	}
+ 
+-	bytes_added = add_bytes_to_bitmap(ctl, bitmap_info, offset, bytes);
++	bytes_added = add_bytes_to_bitmap(ctl, bitmap_info, offset, bytes,
++					  flags);
+ 
+ 	bytes -= bytes_added;
+ 	offset += bytes_added;
 diff --git a/fs/btrfs/free-space-cache.h b/fs/btrfs/free-space-cache.h
-index 39c32c8fc24f..ab3dfc00abb5 100644
+index ab3dfc00abb5..dc73ec8d34bb 100644
 --- a/fs/btrfs/free-space-cache.h
 +++ b/fs/btrfs/free-space-cache.h
-@@ -6,6 +6,8 @@
- #ifndef BTRFS_FREE_SPACE_CACHE_H
+@@ -7,6 +7,7 @@
  #define BTRFS_FREE_SPACE_CACHE_H
  
-+#define BTRFS_FSC_TRIMMED		(1UL << 0)
-+
+ #define BTRFS_FSC_TRIMMED		(1UL << 0)
++#define BTRFS_FSC_TRIMMING_BITMAP	(1UL << 1)
+ 
  struct btrfs_free_space {
  	struct rb_node offset_index;
- 	u64 offset;
-@@ -13,8 +15,14 @@ struct btrfs_free_space {
- 	u64 max_extent_size;
- 	unsigned long *bitmap;
- 	struct list_head list;
-+	u32 flags;
- };
+@@ -23,6 +24,12 @@ static inline bool btrfs_free_space_trimmed(struct btrfs_free_space *info)
+ 	return (info->flags & BTRFS_FSC_TRIMMED);
+ }
  
-+static inline bool btrfs_free_space_trimmed(struct btrfs_free_space *info)
++static inline
++bool btrfs_free_space_trimming_bitmap(struct btrfs_free_space *info)
 +{
-+	return (info->flags & BTRFS_FSC_TRIMMED);
++	return (info->flags & BTRFS_FSC_TRIMMING_BITMAP);
 +}
 +
  struct btrfs_free_space_ctl {
  	spinlock_t tree_lock;
  	struct rb_root free_space_offset;
-@@ -84,7 +92,7 @@ int btrfs_write_out_ino_cache(struct btrfs_root *root,
- void btrfs_init_free_space_ctl(struct btrfs_block_group_cache *block_group);
- int __btrfs_add_free_space(struct btrfs_fs_info *fs_info,
- 			   struct btrfs_free_space_ctl *ctl,
--			   u64 bytenr, u64 size);
-+			   u64 bytenr, u64 size, u32 flags);
- int btrfs_add_free_space(struct btrfs_block_group_cache *block_group,
- 			 u64 bytenr, u64 size);
- int btrfs_remove_free_space(struct btrfs_block_group_cache *block_group,
-diff --git a/fs/btrfs/inode-map.c b/fs/btrfs/inode-map.c
-index 63cad7865d75..00e225de4fe6 100644
---- a/fs/btrfs/inode-map.c
-+++ b/fs/btrfs/inode-map.c
-@@ -107,7 +107,7 @@ static int caching_kthread(void *data)
- 
- 		if (last != (u64)-1 && last + 1 != key.objectid) {
- 			__btrfs_add_free_space(fs_info, ctl, last + 1,
--					       key.objectid - last - 1);
-+					       key.objectid - last - 1, 0);
- 			wake_up(&root->ino_cache_wait);
- 		}
- 
-@@ -118,7 +118,7 @@ static int caching_kthread(void *data)
- 
- 	if (last < root->highest_objectid - 1) {
- 		__btrfs_add_free_space(fs_info, ctl, last + 1,
--				       root->highest_objectid - last - 1);
-+				       root->highest_objectid - last - 1, 0);
- 	}
- 
- 	spin_lock(&root->ino_cache_lock);
-@@ -175,7 +175,8 @@ static void start_caching(struct btrfs_root *root)
- 	ret = btrfs_find_free_objectid(root, &objectid);
- 	if (!ret && objectid <= BTRFS_LAST_FREE_OBJECTID) {
- 		__btrfs_add_free_space(fs_info, ctl, objectid,
--				       BTRFS_LAST_FREE_OBJECTID - objectid + 1);
-+				       BTRFS_LAST_FREE_OBJECTID - objectid + 1,
-+				       0);
- 		wake_up(&root->ino_cache_wait);
- 	}
- 
-@@ -221,7 +222,7 @@ void btrfs_return_ino(struct btrfs_root *root, u64 objectid)
- 		return;
- again:
- 	if (root->ino_cache_state == BTRFS_CACHE_FINISHED) {
--		__btrfs_add_free_space(fs_info, pinned, objectid, 1);
-+		__btrfs_add_free_space(fs_info, pinned, objectid, 1, 0);
- 	} else {
- 		down_write(&fs_info->commit_root_sem);
- 		spin_lock(&root->ino_cache_lock);
-@@ -234,7 +235,7 @@ void btrfs_return_ino(struct btrfs_root *root, u64 objectid)
- 
- 		start_caching(root);
- 
--		__btrfs_add_free_space(fs_info, pinned, objectid, 1);
-+		__btrfs_add_free_space(fs_info, pinned, objectid, 1, 0);
- 
- 		up_write(&fs_info->commit_root_sem);
- 	}
-@@ -281,7 +282,7 @@ void btrfs_unpin_free_ino(struct btrfs_root *root)
- 		spin_unlock(rbroot_lock);
- 		if (count)
- 			__btrfs_add_free_space(root->fs_info, ctl,
--					       info->offset, count);
-+					       info->offset, count, 0);
- 		kmem_cache_free(btrfs_free_space_cachep, info);
- 	}
- }
 -- 
 2.17.1
 
