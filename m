@@ -2,111 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B578BCEA08
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 19:02:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83D70CEAC2
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 19:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728827AbfJGRCx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Oct 2019 13:02:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58634 "EHLO mx1.suse.de"
+        id S1728079AbfJGRgW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Oct 2019 13:36:22 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38924 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727801AbfJGRCx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 7 Oct 2019 13:02:53 -0400
+        id S1728028AbfJGRgW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Oct 2019 13:36:22 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A627CACC0;
-        Mon,  7 Oct 2019 17:02:51 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 0DC2AAF11;
+        Mon,  7 Oct 2019 17:36:21 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id EF2E9DA7FB; Mon,  7 Oct 2019 19:03:06 +0200 (CEST)
-Date:   Mon, 7 Oct 2019 19:03:06 +0200
+        id 3AEBCDA7FB; Mon,  7 Oct 2019 19:36:36 +0200 (CEST)
+Date:   Mon, 7 Oct 2019 19:36:36 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     Nikolay Borisov <nborisov@suse.com>,
-        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 4/5] btrfs: remove identified alien device in
- open_fs_devices
-Message-ID: <20191007170306.GI2751@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 0/5] btrfs: fix issues due to alien device
+Message-ID: <20191007173635.GJ2751@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
 References: <20191007094515.925-1-anand.jain@oracle.com>
- <20191007094515.925-5-anand.jain@oracle.com>
- <b370fdd7-2d97-877f-88e6-3624205c8617@suse.com>
- <b8ffd660-5055-d609-4fcd-169090e7914b@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b8ffd660-5055-d609-4fcd-169090e7914b@gmx.com>
+In-Reply-To: <20191007094515.925-1-anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 09:37:49PM +0800, Qu Wenruo wrote:
+On Mon, Oct 07, 2019 at 05:45:10PM +0800, Anand Jain wrote:
+> v3: Fix alien device is due to wipefs in Patch4.
+>     Fix a nit in Patch3.
+>     Patches are reordered.
 > 
-> 
-> On 2019/10/7 下午9:30, Nikolay Borisov wrote:
-> >
-> >
-> > On 7.10.19 г. 12:45 ч., Anand Jain wrote:
-> >> Following test case explains it all, even though the degraded mount is
-> >> successful the btrfs-progs fails to report the missing device.
-> >>
-> >>  mkfs.btrfs -fq -draid1 -mraid1 /dev/sdc /dev/sdd && \
-> >>  wipefs -a /dev/sdd && mount -o degraded /dev/sdc /btrfs && \
-> >>  btrfs fi show -m /btrfs
-> >>
-> >>  Label: none  uuid: 2b3b8d92-572b-4d37-b4ee-046d3a538495
-> >> 	Total devices 2 FS bytes used 128.00KiB
-> >> 	devid    1 size 1.09TiB used 2.01GiB path /dev/sdc
-> >> 	devid    2 size 1.09TiB used 2.01GiB path /dev/sdd
-> >>
-> >> This is because btrfs-progs does it fundamentally wrong way that
-> >> it deduces the missing device status in the user land instead of
-> >> refuting from the kernel.
-> >>
-> >> At the same time in the kernel when we know that there is device
-> >> with non-btrfs magic, then remove that device from the list so
-> >> that btrfs-progs or someother userland utility won't be confused.
-> >>
-> >> Signed-off-by: Anand Jain <anand.jain@oracle.com>
-> >> ---
-> >>  fs/btrfs/disk-io.c | 2 +-
-> >>  1 file changed, 1 insertion(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> >> index 326d5281ad93..e05856432456 100644
-> >> --- a/fs/btrfs/disk-io.c
-> >> +++ b/fs/btrfs/disk-io.c
-> >> @@ -3417,7 +3417,7 @@ int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
-> >>  	if (btrfs_super_bytenr(super) != bytenr ||
-> >>  		    btrfs_super_magic(super) != BTRFS_MAGIC) {
-> >>  		brelse(bh);
-> >> -		return -EINVAL;
-> >> +		return -EUCLEAN;
-> >
-> > This is really non-obvious and you are propagating the special-meaning
-> > of EUCLEAN waaaaaaaay beyond btrfs_open_one_device. In fact what this
-> > patch does is make the following call chain return EUCLAN:
-> >
-> > btrfs_open_one_device <-- finally removing the device in this function
-> >  btrfs_get_bdev_and_sb <-- propagating it to here
-> >   btrfs_read_dev_super
-> >     btrfs_read_dev_one_super <-- you return the EUCLEAN
-> >
-> >
-> > And your commit log doesn't mention anything about that. EUCLEAN
-> > warrants a comment in this case since it changes behavior in
-> > higher-level layers.
-> 
-> 
-> And, for most case, EUCLEAN should have a proper kernel message for
-> what's going wrong, the value we hit and the value we expect.
-> 
-> And for EUCLEAN, it's more like graceful error out for impossible thing.
-> This is definitely not the case, and I believe the original EINVAL makes
-> more sense than EUCLEAN.
+> Alien device is a device in fs_devices list having a different fsid than
+> the expected fsid or no btrfs_magic. This patch set fixes issues found due
+> to the same.
 
-I agree, EUCLEAN is wrong here.
+The definition of alien device should be in some of the patches, I see
+it only in the cover letter.
+
+So the sequence of actions
+
+	mkfs A
+	mount A
+	mkfs B C
+	add B to A
+	mount C
+
+leaves the scanned devices in a state that does not match the reality.
+At the time when B is scanned again, the ownership in the in-memory
+structures should be transferred to A (ie. removing B from BC). So far I
+understand the problem.
+
+The fix I'd expect is to fix up the devices at the first occasion, like
+when the device is scanned or attempted for mount.
+
+> Patch1: is a cleanup patch, not related.
+> Patch2: fixes failing to mount a degraded RAIDs (RAID1/5/6/10), by
+> 	hardening the function btrfs_free_extra_devids().
+> Patch3: fixes the missing device (due to alien btrfs-device) not missing in
+> 	the userland, by hardening the function btrfs_open_one_device().
+> Patch4: fixes the missing device (due to alien device) not missing in
+> 	the userland, by returning EUCLEAN in btrfs_read_dev_one_super().
+> Patch5: eliminates the source of the alien device in the fs_devices.
+
+I'm a bit lost in the way it's being fixed. The userspace part is IMO
+irrelevant, the change must happen on the kernel side using the
+information provided (scan, mount).
+
+The error conditions should be propagated in a more fine grained way,
+similar to what you propose with EUCLEAN, but not with EUCLEAN. That has
+a very specific meaning, as has been pointed out.
+
+The distinctions should be like:
+
+ < 0 - error
+   0 - all ok, take the device
+ > 0 - device ok, but not ours
+
+And the callers will decide what to do (remove or ignore).
+
+> PS: Fundamentally its wrong approach that btrfs-progs deduces the device
+> missing state in the userland instead of obtaining it from the kernel.
+> I remember objecting on the btrfs-progs patch which did that, but still
+> it got merged, bugs in p3 and p4 are its side effects. I wrote
+> patches to read device_state from the kernel using ioctl, procfs and
+> sysfs but it didn't get the due attention till a merger.
+
+The state has to be ultimately decided by kernel, userspace can read the
+information from anything but at the time this gets processed, it might
+be stale again. It's been probably very long ago when the above was
+discussed and I don't recall the details, it may be a good idea to
+revisit if there are still things to address.
