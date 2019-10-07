@@ -2,146 +2,202 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94234CE3DC
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 15:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B335ACE42C
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 15:48:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbfJGNiJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Oct 2019 09:38:09 -0400
-Received: from mout.gmx.net ([212.227.15.15]:38715 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727715AbfJGNiI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 7 Oct 2019 09:38:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1570455479;
-        bh=eeN8pWRgOkaf9cnnP7MpaNsQQWbFxwhlK0YcjZccrAg=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=gSq0uUW80DHcJ665TzJlUkzTpfTpsCkTIben9VpfnkelPIoiNJWkJ7DLFCkPmkO6G
-         BGh0dwFSR0eU6xHbtgPc6clAH/kTDMTzrBwfGXH8n5hbdMC2xcIyaU7CIbdD/aD7aa
-         GOh5j7hndLi8J0CZw44i4kqLK1OnlaThzCyeJ2Lk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N4zAs-1i9wCk2Zgy-010sFC; Mon, 07
- Oct 2019 15:37:59 +0200
-Subject: Re: [PATCH 4/5] btrfs: remove identified alien device in
- open_fs_devices
-To:     Nikolay Borisov <nborisov@suse.com>,
-        Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
-References: <20191007094515.925-1-anand.jain@oracle.com>
- <20191007094515.925-5-anand.jain@oracle.com>
- <b370fdd7-2d97-877f-88e6-3624205c8617@suse.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <b8ffd660-5055-d609-4fcd-169090e7914b@gmx.com>
-Date:   Mon, 7 Oct 2019 21:37:49 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        id S1727729AbfJGNs1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Oct 2019 09:48:27 -0400
+Received: from sender3-pp-o92.zoho.com.cn ([124.251.121.251]:25804 "EHLO
+        sender3-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727324AbfJGNs1 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Oct 2019 09:48:27 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1570456072; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=SEeidJTj1+sCGWSgP1POPGiftIuzrVT9eAWrZhYrkquzTOmKhENkZEXwRDFez5A85g2Giogd5uX581rLl2lJEgX7XMpOXWBkN7zDjywiftZo7Tawstxnwf9XdLFn+WnhiJ+DGXYBIxYoJfkWn2/02H2tdmjZdkqqiX8b3j8Vl8g=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1570456072; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To:ARC-Authentication-Results; 
+        bh=PeBL9H7aIqWruIaqRv2yewdKCrTrd0EOYabbDMB6wbs=; 
+        b=HyGCBxNbXLjXbA0KYUNDKtuNyZNWwzJcXYgg9q4iGkO7Dj9T9SFce/3ybn+wRBttFZiaH6+QCsgLZJjVqC1JrirjZ5Q3S5DG7JZkWDR9HLLldbqUXrp0YgXSHvhvWlkCwKjKGy/db5eS+bgqx39paEGpo0J4f6fmTV/Y8rFUzmo=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1570456072;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        l=5322; bh=PeBL9H7aIqWruIaqRv2yewdKCrTrd0EOYabbDMB6wbs=;
+        b=NlKDwffVUgfggrTy0hBIqUR69lv4wn6FcKgtDd5XhQ61CSuvx26ChBrAyFvGCV3X
+        tGB75hXmBDZEl1ah03Xcy3k/7P5+jigE56cYKDdDH8+VuCFA1IeorL5yKW+tejU/NF3
+        hGFR2sqg2OzTqXfWm7/qe54qahqEnj4Nl8bkHIwY=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 15704560715756.927754514769845; Mon, 7 Oct 2019 21:47:51 +0800 (CST)
+Date:   Mon, 07 Oct 2019 21:47:51 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "dsterba" <dsterba@suse.cz>
+Cc:     "clm" <clm@fb.com>, "josef" <josef@toxicpanda.com>,
+        "dsterba" <dsterba@suse.com>,
+        "linux-btrfs" <linux-btrfs@vger.kernel.org>
+Message-ID: <16da679ed94.10b6d7c5824950.6097727071158168841@mykernel.net>
+In-Reply-To: <20191006232834.GY2751@twin.jikos.cz>
+References: <20191005051736.29857-1-cgxu519@mykernel.net>
+ <20191005051736.29857-2-cgxu519@mykernel.net> <20191006232834.GY2751@twin.jikos.cz>
+Subject: Re: [PATCH 2/3] btrfs: code cleanup for compression type
 MIME-Version: 1.0
-In-Reply-To: <b370fdd7-2d97-877f-88e6-3624205c8617@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:YxUj6a/xdduUXMYGDRMsXJw3gYv7P/D78d+kb1hhqtKT3hYkdPj
- WE4uIKnjfqt7rpPJZcjaAloMsW8Gi6yVGj6B98bUsyJQEgTIBEZ1lUotcbFWnSHN3NUL0GS
- cEttGo2GnLm+2AUUSL682i9a8gdO6nrGJENH6p8uVNaz5qklJkwrGk/IpgheqbiZk6T3+ci
- d/s6vxv4Zm+dNUoSxOq2A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:B26wy+arBgg=:qV4yvz7IkqCEBFdBW/fN9f
- SmWpmrPgGAfrxI4wymQtJqk66Wlf5QuNJWsLRXjrSu85ihy7JTrujJVg969/QeUmVOA3/mN/E
- k5Jh+ZzLABskdbfuYNmb3QVssNZrJNB7kyw2UeoThuEJxpNVVZPSHHN9G8e5ypua15HgU2Gm1
- JUU66w22nkLhjLFRWrSV8PCZMDuiRhOlQJaHEdcdbijA5Iw9pYaUqdiDsG90j7ZAKbV8dnfDN
- PI4sLGx7mgJ99V006+jnQZyA6BbtzOniGuArDukWlXZ1NRuh9LUqaHo3Z5JdqDgjmYVHU/0Ey
- 9VbUtVtO8IklXxaOa16XdaNVfT1ZihjenCslBqT8dhphGQo+W3zv7x4OMGWtAhangJ8uxmhup
- maxcTMpGcxmeJblAhsto+ZGwe2NU2u/DsZSHuCMLU6xB/tIBzp/VQjFT0TLU3OdTwwwJqNHgv
- qgstcaHI1KcbrY1h+eBAQgxlO9WiucAhP+Ubb/lQihNgSa7h3h/I1xhs3/krfqBAIZk0WJA9m
- fsxqbgmq0ZAICfM+p/xPL1YNvETbZ0ZsCa6XLWtNLx2nwjST0vQ9jzNLvoaGQOqoTtX9p7gR8
- dSodUVCk/i/aTy1bys8F3jkFxsYlJxa3tkylb2hg/7YhfAc6bOuIVd8HlczKDa8ByvHnwhQ+T
- hz0AfgWVS0dxPAkmRL3COpJbFd63D7HlRRrI4277z/mqKuYUqhNn2CHvmus9/Vk3+paZYjkKr
- /mS9iq7x8SP2BbVR7nPV67IVVV9BjQqC/jj3irIYCsnCxwKmbon5tW9fJ776MnBlnG+mhUrJi
- pYxeVi6Gel1Lsai+Ef6MfCGwdKfrGYJDhFX9ObHAi8a4A49zmu15PGgdncljXp2qCsprqfCqX
- 9l7rm2OJTEg8EBaJ/5UXooy+KZO7LE4aEnWfFTGmJPNusTM9+n8LrxlTYTxLj3SXOXFhi7qND
- 0db/Ca9krpwRr8w0mCfoeQwEQHgvKvFw4ShUgnB6ZCcfeob0/YIt+VMB7cEmbB6QJr3fYdkvj
- u7oqGy9s/Es7ZvazcblLyftxAobGc8wgIPkh0SiF5zenAiX6bMRCkO1igvJcG2fCb/RKGLIA4
- MIgTWDCNtb0XnRYWD4Jc/oIY/dNxstcOUKvFN0kzkbCfGiGpMMsx/hqWYTNFtYx/OlZ1smXJf
- Q9tXBVYIZ+iFOuUD9nA25/em2Bg0dLdn6F1kkAh9nJYHDjR8lusnE3p8GZz0p4219Rvvb4uVF
- 5uecXmFn7cQDWprM6bYUstauqAgrdix1VAQz9vhiQPrsKSDB/gH872X2XwlBZxPRCYKzeQ24d
- OV1zn2H7djPsXf7pt/V+eFJWGwrNLEMt80jAW2c1mTrGj1mlELJSpbz+dur4WwGBJ0VBpewf6
- 0prBaeMHnpOKvAz2wL7fpa6ls6ToCGSlrDZfXxOUst7vhxqlEPV3KUEgou3akUTcMwu0RMgFx
- ZK+/n6KudnSHtBtHrk4IPNagXb4mwSG2v/Ys+oa3JYYNJ9NbHYkIFXVwS71AhNmhwv9jxVanp
- N152A3S7U2SFBO2Rw8AFhcNU=
+X-Priority: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2019-10-07 07:28:32 David Ster=
+ba <dsterba@suse.cz> =E6=92=B0=E5=86=99 ----
+ > On Sat, Oct 05, 2019 at 01:17:35PM +0800, Chengguang Xu wrote:
+ > > Let BTRFS_COMPRESS_TYPES represents the total number
+ > > of cmpressoin types and fix related calling places.
+ > > It will be more safe when adding new compression type
+ > > in the future.
+ >=20
+ > I think we're not going to add a new type anytime soon, zstd provides
+ > the choice between fast and good ratio. This itself is not an objection
+ > to your patch but is not IMO the true reason for the changes.
+ >=20
+ > Can you please describe the motivation behind the patches? Eg. if it's a
+ > general cleanup or if there are other changes planned on top.
+
+Actually, it's just a general cleanup. I found another enum in btrfs code f=
+or RAID types
+and I think that usage makes me(at least :-)) easy to understand the code. =
+So the
+motivation is to keep code style consistency and  make the code a bit more =
+readable.
 
 
-On 2019/10/7 =E4=B8=8B=E5=8D=889:30, Nikolay Borisov wrote:
->
->
-> On 7.10.19 =D0=B3. 12:45 =D1=87., Anand Jain wrote:
->> Following test case explains it all, even though the degraded mount is
->> successful the btrfs-progs fails to report the missing device.
->>
->>  mkfs.btrfs -fq -draid1 -mraid1 /dev/sdc /dev/sdd && \
->>  wipefs -a /dev/sdd && mount -o degraded /dev/sdc /btrfs && \
->>  btrfs fi show -m /btrfs
->>
->>  Label: none  uuid: 2b3b8d92-572b-4d37-b4ee-046d3a538495
->> 	Total devices 2 FS bytes used 128.00KiB
->> 	devid    1 size 1.09TiB used 2.01GiB path /dev/sdc
->> 	devid    2 size 1.09TiB used 2.01GiB path /dev/sdd
->>
->> This is because btrfs-progs does it fundamentally wrong way that
->> it deduces the missing device status in the user land instead of
->> refuting from the kernel.
->>
->> At the same time in the kernel when we know that there is device
->> with non-btrfs magic, then remove that device from the list so
->> that btrfs-progs or someother userland utility won't be confused.
->>
->> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->> ---
->>  fs/btrfs/disk-io.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->> index 326d5281ad93..e05856432456 100644
->> --- a/fs/btrfs/disk-io.c
->> +++ b/fs/btrfs/disk-io.c
->> @@ -3417,7 +3417,7 @@ int btrfs_read_dev_one_super(struct block_device =
-*bdev, int copy_num,
->>  	if (btrfs_super_bytenr(super) !=3D bytenr ||
->>  		    btrfs_super_magic(super) !=3D BTRFS_MAGIC) {
->>  		brelse(bh);
->> -		return -EINVAL;
->> +		return -EUCLEAN;
->
-> This is really non-obvious and you are propagating the special-meaning
-> of EUCLEAN waaaaaaaay beyond btrfs_open_one_device. In fact what this
-> patch does is make the following call chain return EUCLAN:
->
-> btrfs_open_one_device <-- finally removing the device in this function
->  btrfs_get_bdev_and_sb <-- propagating it to here
->   btrfs_read_dev_super
->     btrfs_read_dev_one_super <-- you return the EUCLEAN
->
->
-> And your commit log doesn't mention anything about that. EUCLEAN
-> warrants a comment in this case since it changes behavior in
-> higher-level layers.
+ >=20
+ > > Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
+ > > ---
+ > >  fs/btrfs/compression.c  |  2 ++
+ > >  fs/btrfs/compression.h  | 12 ++++++------
+ > >  fs/btrfs/ioctl.c        |  2 +-
+ > >  fs/btrfs/tree-checker.c |  4 ++--
+ > >  4 files changed, 11 insertions(+), 9 deletions(-)
+ > >=20
+ > > diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+ > > index d70c46407420..93deaf0cc2b8 100644
+ > > --- a/fs/btrfs/compression.c
+ > > +++ b/fs/btrfs/compression.c
+ > > @@ -39,6 +39,8 @@ const char* btrfs_compress_type2str(enum btrfs_compr=
+ession_type type)
+ > >      case BTRFS_COMPRESS_ZSTD:
+ > >      case BTRFS_COMPRESS_NONE:
+ > >          return btrfs_compress_types[type];
+ > > +    default:
+ > > +        break;
+ > >      }
+ > > =20
+ > >      return NULL;
+ > > diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+ > > index dd392278ab3f..091ff3f986e5 100644
+ > > --- a/fs/btrfs/compression.h
+ > > +++ b/fs/btrfs/compression.h
+ > > @@ -101,11 +101,11 @@ blk_status_t btrfs_submit_compressed_read(struct=
+ inode *inode, struct bio *bio,
+ > >  unsigned int btrfs_compress_str2level(unsigned int type, const char *=
+str);
+ > > =20
+ > >  enum btrfs_compression_type {
+ > > -    BTRFS_COMPRESS_NONE  =3D 0,
+ > > -    BTRFS_COMPRESS_ZLIB  =3D 1,
+ > > -    BTRFS_COMPRESS_LZO   =3D 2,
+ > > -    BTRFS_COMPRESS_ZSTD  =3D 3,
+ > > -    BTRFS_COMPRESS_TYPES =3D 3,
+ > > +    BTRFS_COMPRESS_NONE,
+ > > +    BTRFS_COMPRESS_ZLIB,
+ > > +    BTRFS_COMPRESS_LZO,
+ > > +    BTRFS_COMPRESS_ZSTD,
+ > > +    BTRFS_COMPRESS_TYPES
+ >=20
+ > Please note that the on-disk format values should be expressed by the
+ > values, even if it's the same as the automatic enum assignments.
 
+I'll fix in v2.
 
-And, for most case, EUCLEAN should have a proper kernel message for
-what's going wrong, the value we hit and the value we expect.
+ >=20
+ > Regarding change of the BTRFS_COMPRESS_TYPES value, I vaguely remember
+ > we had patches for that but I don't recall why it was not changed. The
+ > progs have an extra BTRFS_COMPRESS_LAST (=3D=3D 4) that would be used th=
+e
+ > same way as you do in this patch.
 
-And for EUCLEAN, it's more like graceful error out for impossible thing.
-This is definitely not the case, and I believe the original EINVAL makes
-more sense than EUCLEAN.
+In previous patch, we had compression type(1-3, skip 0) in the code,
+so there may be a bit of  confusion for BTRFS_COMPRESS_TYPES(=3D=3D4) .=20
+I think it's not a problem now but maybe  change name to BTRFS_NR_COMPRESS_=
+TYPES(like RAID type enum)=20
+is better.
 
-Thanks,
-Qu
+ >=20
+ > BTRFS_COMPRESS_* is not in the public API so changing the value should
+ > be safe, but needs double checking.
+ >=20
+ > >  };
+ > > =20
+ > >  struct workspace_manager {
+ > > @@ -163,7 +163,7 @@ struct btrfs_compress_op {
+ > >  };
+ > > =20
+ > >  /* The heuristic workspaces are managed via the 0th workspace manager=
+ */
+ > > -#define BTRFS_NR_WORKSPACE_MANAGERS    (BTRFS_COMPRESS_TYPES + 1)
+ > > +#define BTRFS_NR_WORKSPACE_MANAGERS    BTRFS_COMPRESS_TYPES
+ > > =20
+ > >  extern const struct btrfs_compress_op btrfs_heuristic_compress;
+ > >  extern const struct btrfs_compress_op btrfs_zlib_compress;
+ > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+ > > index de730e56d3f5..8c7196ed7ae0 100644
+ > > --- a/fs/btrfs/ioctl.c
+ > > +++ b/fs/btrfs/ioctl.c
+ > > @@ -1411,7 +1411,7 @@ int btrfs_defrag_file(struct inode *inode, struc=
+t file *file,
+ > >          return -EINVAL;
+ > > =20
+ > >      if (do_compress) {
+ > > -        if (range->compress_type > BTRFS_COMPRESS_TYPES)
+ > > +        if (range->compress_type >=3D BTRFS_COMPRESS_TYPES)
+ > >              return -EINVAL;
+ > >          if (range->compress_type)
+ > >              compress_type =3D range->compress_type;
+ > > diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+ > > index f28f9725cef1..2d91c34bbf63 100644
+ > > --- a/fs/btrfs/tree-checker.c
+ > > +++ b/fs/btrfs/tree-checker.c
+ > > @@ -168,11 +168,11 @@ static int check_extent_data_item(struct extent_=
+buffer *leaf,
+ > >       * Support for new compression/encryption must introduce incompat=
+ flag,
+ > >       * and must be caught in open_ctree().
+ > >       */
+ > > -    if (btrfs_file_extent_compression(leaf, fi) > BTRFS_COMPRESS_TYPE=
+S) {
+ > > +    if (btrfs_file_extent_compression(leaf, fi) >=3D BTRFS_COMPRESS_T=
+YPES) {
+ > >          file_extent_err(leaf, slot,
+ > >      "invalid compression for file extent, have %u expect range [0, %u=
+]",
+ > >              btrfs_file_extent_compression(leaf, fi),
+ > > -            BTRFS_COMPRESS_TYPES);
+ > > +            BTRFS_COMPRESS_TYPES - 1);
+ > >          return -EUCLEAN;
+ > >      }
+ > >      if (btrfs_file_extent_encryption(leaf, fi)) {
+ > > --=20
+ > > 2.21.0
+ > >=20
+ > >=20
+ > >=20
+ >
 
->
->>  	}
->>
->>  	*bh_ret =3D bh;
->>
