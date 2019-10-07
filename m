@@ -2,98 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D25ECCD9A3
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 01:29:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 225D8CDAC5
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 05:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726414AbfJFX3O (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 6 Oct 2019 19:29:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46158 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726000AbfJFX3O (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 6 Oct 2019 19:29:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A2924B13A;
-        Sun,  6 Oct 2019 23:29:12 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 57D70DA7FB; Mon,  7 Oct 2019 01:29:28 +0200 (CEST)
-Date:   Mon, 7 Oct 2019 01:29:28 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Chengguang Xu <cgxu519@mykernel.net>
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 3/3] btrfs: using enum to replace macro
-Message-ID: <20191006232928.GZ2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Chengguang Xu <cgxu519@mykernel.net>,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org
-References: <20191005051736.29857-1-cgxu519@mykernel.net>
- <20191005051736.29857-3-cgxu519@mykernel.net>
+        id S1726889AbfJGDe3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 6 Oct 2019 23:34:29 -0400
+Received: from p3nlsmtpcp01-04.prod.phx3.secureserver.net ([184.168.200.145]:34928
+        "EHLO p3nlsmtpcp01-04.prod.phx3.secureserver.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726789AbfJGDe3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 6 Oct 2019 23:34:29 -0400
+X-Greylist: delayed 450 seconds by postgrey-1.27 at vger.kernel.org; Sun, 06 Oct 2019 23:34:29 EDT
+Received: from p3plcpnl0639.prod.phx3.secureserver.net ([50.62.176.166])
+        by : HOSTING RELAY : with ESMTP
+        id HJeoiaxDf7wBxHJeoi3vOb; Sun, 06 Oct 2019 20:25:58 -0700
+Received: from [45.116.115.51] (port=44124 helo=giis.co.in)
+        by p3plcpnl0639.prod.phx3.secureserver.net with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <lakshmipathi.g@giis.co.in>)
+        id 1iHJen-00Gmbp-Ep; Sun, 06 Oct 2019 20:25:58 -0700
+Date:   Mon, 7 Oct 2019 08:55:47 +0530
+From:   "Lakshmipathi.G" <lakshmipathi.g@giis.co.in>
+To:     Philipp Hahn <pmhahn+btrfs@pmhahn.de>
+Cc:     "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        thecybershadow@gmail.com, wqu@suse.com
+Subject: Re: [PATCH] Setup GitLab-CI for btrfs-progs
+Message-ID: <20191007032546.GB5135@giis.co.in>
+References: <20190930165622.GA25114@giis.co.in>
+ <1ecbc32d-9f28-b0f5-bf2d-8ceee12d6404@pmhahn.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191005051736.29857-3-cgxu519@mykernel.net>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <1ecbc32d-9f28-b0f5-bf2d-8ceee12d6404@pmhahn.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - p3plcpnl0639.prod.phx3.secureserver.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - giis.co.in
+X-Get-Message-Sender-Via: p3plcpnl0639.prod.phx3.secureserver.net: authenticated_id: lakshmipathi.g@giis.co.in
+X-Authenticated-Sender: p3plcpnl0639.prod.phx3.secureserver.net: lakshmipathi.g@giis.co.in
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-CMAE-Envelope: MS4wfDqidP6qngvUW6bi9Q1maKPoSxbo3pVlEkhQxwpx/6njl45XxNjHKfDmLcvP5KAIa069jVf+sXDN0fZV6acyKT0aQRXAV1cLApHz+s8Ca8ECAbGr4alC
+ E11FqFqqmgtqD11LT4gsyjWmmq44O0TTBaFONIEVqoxu79hBhqqUsOHcr+YCtFGzcmH/Jx+nP9AQ+5wetHL6DIZy4BxEg2WglooVELmLc+Cwn0iOv8UikqTP
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Oct 05, 2019 at 01:17:36PM +0800, Chengguang Xu wrote:
-> using enum to replace macro definition for extent
-> types.
+On Tue, Oct 01, 2019 at 08:02:29AM +0200, Philipp Hahn wrote:
 > 
-> Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
-> ---
->  fs/btrfs/tree-checker.c         |  4 ++--
->  include/uapi/linux/btrfs_tree.h | 10 ++++++----
->  2 files changed, 8 insertions(+), 6 deletions(-)
+> You already have a "variables" section above - merge them?
 > 
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 2d91c34bbf63..9b0c5fdbe04e 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -156,11 +156,11 @@ static int check_extent_data_item(struct extent_buffer *leaf,
->  
->  	fi = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
->  
-> -	if (btrfs_file_extent_type(leaf, fi) > BTRFS_FILE_EXTENT_TYPES) {
-> +	if (btrfs_file_extent_type(leaf, fi) >= BTRFS_FILE_EXTENT_TYPES) {
->  		file_extent_err(leaf, slot,
->  		"invalid type for file extent, have %u expect range [0, %u]",
->  			btrfs_file_extent_type(leaf, fi),
-> -			BTRFS_FILE_EXTENT_TYPES);
-> +			BTRFS_FILE_EXTENT_TYPES - 1);
->  		return -EUCLEAN;
->  	}
->  
-> diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
-> index b65c7ee75bc7..34bd09ffc71d 100644
-> --- a/include/uapi/linux/btrfs_tree.h
-> +++ b/include/uapi/linux/btrfs_tree.h
-> @@ -737,10 +737,12 @@ struct btrfs_balance_item {
->  	__le64 unused[4];
->  } __attribute__ ((__packed__));
->  
-> -#define BTRFS_FILE_EXTENT_INLINE 0
-> -#define BTRFS_FILE_EXTENT_REG 1
-> -#define BTRFS_FILE_EXTENT_PREALLOC 2
-> -#define BTRFS_FILE_EXTENT_TYPES	2
-> +enum {
-> +	BTRFS_FILE_EXTENT_INLINE,
-> +	BTRFS_FILE_EXTENT_REG,
-> +	BTRFS_FILE_EXTENT_PREALLOC,
-> +	BTRFS_FILE_EXTENT_TYPES
-> +};
+> > +  services:
+> > +    - docker:18.09.7-dind
+> 
+> You already have "services" defined globally - no need to repeat that
+> here again.
+> 
+Hi Philipp,
 
-As stated before, using enums is fine and for on-disk structure,s the
-explicit value should be specified as well.
+Thanks for the comments. I ran into some issue while using global section so
+started using job section. Let me try placing them in global and update the 
+results. thanks.
 
->  struct btrfs_file_extent_item {
->  	/*
-> -- 
-> 2.21.0
-> 
-> 
-> 
+Cheers.
+Lakshmipathi.G 
