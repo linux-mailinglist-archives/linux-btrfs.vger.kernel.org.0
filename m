@@ -2,134 +2,232 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38F87CDE6F
-	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 11:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EB7CDFF3
+	for <lists+linux-btrfs@lfdr.de>; Mon,  7 Oct 2019 13:11:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727531AbfJGJpa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Oct 2019 05:45:30 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60046 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727506AbfJGJp3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Oct 2019 05:45:29 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x979cwHl022705
-        for <linux-btrfs@vger.kernel.org>; Mon, 7 Oct 2019 09:45:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=corp-2019-08-05;
- bh=S5KxWtjDjZ7DtCoK3FT7D7HXXLW/68gaDJQL+SHzvFM=;
- b=CWDIzH5QqwPsD+iDWKgRGygiGkKNrgFNEvfVPLMd5Eu7DKPVdRSxlziCrQWxdbTzbvuM
- DEQELuKAkXuAALfFJqBsSioVretSb0J3Dm8BExO8JpFs2rBdh5IWgqUoXbv4oLgI1Yay
- M6kRLYeE2h51ndMkKBYcNOTyssDX+b0L3Don0f7mFFk1jsJokhMnjG32qEUVDnOBMQVc
- ZJOTIqa32Z8u4oFqpkiWL+QSolz7E9epFCbe+Flm8PJTcZx4QxFhFEUpEPWtjxS0TlXQ
- 1s/t8L1CUr5r0eNlTu+CjMr4mNDDESOZ9bcINd6JiqKbT28eU+zANPI1f0tg6cjBu2Qo 2g== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2vek4q5nd3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Oct 2019 09:45:28 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x979cT0N094041
-        for <linux-btrfs@vger.kernel.org>; Mon, 7 Oct 2019 09:45:28 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2vf4ph7a4g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 07 Oct 2019 09:45:28 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x979jRd0004004
-        for <linux-btrfs@vger.kernel.org>; Mon, 7 Oct 2019 09:45:27 GMT
-Received: from localhost.localdomain (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Oct 2019 02:45:26 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/5] btrfs: free alien device due to device add
-Date:   Mon,  7 Oct 2019 17:45:15 +0800
-Message-Id: <20191007094515.925-6-anand.jain@oracle.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191007094515.925-1-anand.jain@oracle.com>
-References: <20191007094515.925-1-anand.jain@oracle.com>
+        id S1727580AbfJGLLa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Oct 2019 07:11:30 -0400
+Received: from mout.gmx.net ([212.227.15.18]:36541 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727518AbfJGLLa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Oct 2019 07:11:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1570446683;
+        bh=l5ySSMr60TLF1NU82YNgGFZFchi9AmOC3IHEIJjxsIo=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=jEIMkUvlYgzV9eEn/coLQlm4RJCtzFXMkHT57m8r4p9TBrT57JDvvTtSgprtgRnhX
+         AlznVAaCLfAOMNUsm6FD8JRgVmiadSTLXzldnAiBFh3EWzb8kwUK3bhYWcx4PW9Xy+
+         HSvni8tTKeN+DEh7306A/uhEQ0NDfrgHFEbrbzEg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mkpf3-1hpGqb1irn-00mNZW; Mon, 07
+ Oct 2019 13:11:23 +0200
+Subject: Re: [PATCH v6] btrfs-progs: add xxhash64 to mkfs
+To:     Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Nikolay Borisov <nborisov@suse.com>
+References: <20190925133728.18027-6-jthumshirn@suse.de>
+ <20190926101123.19486-1-jthumshirn@suse.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <493f3622-e650-59bd-0684-b79a2cb263d4@gmx.com>
+Date:   Mon, 7 Oct 2019 19:11:17 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9402 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910070097
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9402 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910070097
+In-Reply-To: <20190926101123.19486-1-jthumshirn@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:YVXxmKxGVDb8ifHRErGKZWKllIvRMrjMS2HABnMZSE5hIAL/fdM
+ sju6w6CHKB2w62Djvq6+ehrR+dxLgRwrPXJ9xDjsKZEzob/5f3QVrOmB/BUJeEhwviUdI40
+ NYDwyzzNBUOz6GPXhrcHEQ2kkaTfbfKjibBVP2QWpfjtK4FOGIe7dLZXNu3ZBU5H/6Lw7DI
+ 6HRX1peneJts/sKhh7w1g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:gaqSe6UXw+w=:yJgk2H2iBqEa2o28m76uIB
+ v6ZSIaUMtO2wUJ93xuC0sS1llTMnuZVAMvFu97JzrYfG+7CoXaiKBa/Rf7KUm/VDyt/LsrS60
+ tuJrJTNkDjNY/ZWnkTBHk4zbZeVxOZvvldBf+QFLj6SLYJuedGnUQA2lFS3GxePHDI9YdXD5G
+ 6bC8fQs+KGYbCyPsSNZITO7PaQzicugceoBRXKZv988FMS1aWsAqnjglr5clfvQ8+eRStfoBX
+ 5h9boIkgIl6nT2FyCCnSfoPwCsH0I3ArEqEKbLy0CeHMBTfDvD2ARfoJZqBTrz8yx8Xh4VeuQ
+ 8jVeBGK7ZsZiVDjwVLayhWPR5pZYpzbBDztz2q9AgMC9w7DT6em03lilnl5ZStC+Qn6kRXho1
+ nDqB71GUIDLfjRHVI1Wp8E81mWHnxwxU1fFqAjlReywMsJEez24o5iLOOLLaZhBL5AgDVb3Nj
+ SnsF/vQZbF2k1WnL2lF78cpMnfXBfDU0NiSc0yIJ3wyCfioHwPqNc4UcHpQJU5wS3OorXlr1e
+ l9zdmg/vCvTuXWNMRMBoTU0g4AQFiE2W8sigKR9Rk+WXqRPTyR57N4ly3B8AMy0WP0prGlWe2
+ ZgwG7SLwHMVnZLM7n011vuKnRG3VNm0OP6hGwOWG8/OxCkE1SWmjQ+RB6J3FzK72Pu+rEwrWl
+ q0WZwdHoFWs8sDFKSbbAuhfFaxVIn/9lJD8NGqUv3FUA2lLdCk6PXTHTItOb61XdyLf6UBSIA
+ WcuAbd9UXcO8mokBBwnDepME6yNuvebik699t9wSw3YO+eQkMoLjuJf2NNFbyICh8UsKw36nh
+ LJAM2bfpmHpptr9N5Y0+LQix/IVWjQM07VObPqngPxFHTqj+riYHqGzWsGl8Pvuyr0JQXDqVv
+ 0wCuW8JqzpCL9b+2rrj/5joGuXrX955JcvrZCu0x4sjD83yJImtfVN57Tg3uE0zi9KCwyeBy1
+ JgEJ7E2bbCK6bU4OKzcfsKabHLe91c304kWzBOEJp8JbkSLH6xgXZbDUthogP0qBY/umjIcd7
+ RK6A2oy7Fzh5eGkOpE/eiz+/Btua1WvUNifgtctIgU94xgcoTqo68ybcqO15v7N0AhWcod2eh
+ PSosgbOImstGqaGpHiEUcHLWcFRPXc9327r5uNDpLHDq/RHlhJemZufrxZ6gbx2pJcNUaVigP
+ IPf9II1BPeKvNnE48W+jMc1x/YqG+r5LGUxb6XKFA8he6cRds3QyvnUAVjVIakgQ5QS6dcrQt
+ XDXawkRE6jHos05ZafSUmQMmrzLWj7Z9HUZ6hyq18jfSMx8NpgxWkKrYv3qo=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-When the old device has new fsid through btrfs device add -f <dev> our
-fs_devices list has an alien device in one of the fs_devices.
 
-By having an alien device in fs_devices, we have two issues so far
 
-1. missing device is not shows as missing in the userland
+On 2019/9/26 =E4=B8=8B=E5=8D=886:11, Johannes Thumshirn wrote:
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> ---
 
-Which is due to cracks in the function btrfs_open_one_device() and
-hardened by patch
- btrfs: delete identified alien device in open_fs_devices
+Not related to the patchset itself, but it would be pretty nice if we
+check the sysfs interface to guess if we can mount the fs.
 
-2. mount of a degraded fs_devices fails
+And if not supported, a warning (at stdout) will not hurt.
 
-Which is due to cracks in the function btrfs_free_extra_devids() and
-hardened by patch
- btrfs: include non-missing as a qualifier for the latest_bdev
+Thanks,
+Qu
 
-Now the reason for both of this issue is that there is an alien (does not
-contain the intended fsid) device in the fs_devices.
-
-We know a device can be scanned/added through
-btrfs-control::BTRFS_IOC_SCAN_DEV|BTRFS_IOC_DEVICES_READY
-or by
-ioctl::BTRFS_IOC_ADD_DEV
-
-And device coming through btrfs-control is checked against the all other
-devices in btrfs kernel but not coming through BTRFS_IOC_ADD_DEV.
-
-This patch checks if the device add is alienating any other scanned
-device and deletes it.
-
-In fact, this patch fixes both the issues 1 and 2 (above) by eliminating
-the source of the issue, but still they have their own patch as well
-because its the right way to harden the functions and fill the cracks.
-
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- fs/btrfs/volumes.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 81097c80ac4a..4c7e37cd2166 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -2534,6 +2534,19 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
- 
- 	/* Update ctime/mtime for libblkid */
- 	update_dev_time(device_path);
-+
-+	/*
-+	 * Now that we have written a new sb into this device, check all other
-+	 * fs_devices list if it alienates any scanned device.
-+	 */
-+	mutex_lock(&uuid_mutex);
-+	/*
-+	 * Ignore the return as we are successfull in the core task - to added
-+	 * the device
-+	 */
-+	btrfs_free_stale_devices(device_path, NULL);
-+	mutex_unlock(&uuid_mutex);
-+
- 	return ret;
- 
- error_sysfs:
--- 
-1.8.3.1
-
+>
+> Changes since v5:
+> - add xxhash64 to hash table
+>
+>  Makefile                  |  3 ++-
+>  cmds/inspect-dump-super.c |  1 +
+>  crypto/hash.c             | 16 ++++++++++++++++
+>  crypto/hash.h             | 10 ++++++++++
+>  ctree.c                   |  1 +
+>  ctree.h                   |  3 ++-
+>  disk-io.c                 |  3 +++
+>  mkfs/main.c               |  3 +++
+>  8 files changed, 38 insertions(+), 2 deletions(-)
+>  create mode 100644 crypto/hash.c
+>  create mode 100644 crypto/hash.h
+>
+> diff --git a/Makefile b/Makefile
+> index 370e0c37ff65..45530749e2b9 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -151,7 +151,8 @@ cmds_objects =3D cmds/subvolume.o cmds/filesystem.o =
+cmds/device.o cmds/scrub.o \
+>  	       mkfs/common.o check/mode-common.o check/mode-lowmem.o
+>  libbtrfs_objects =3D send-stream.o send-utils.o kernel-lib/rbtree.o btr=
+fs-list.o \
+>  		   kernel-lib/crc32c.o common/messages.o \
+> -		   uuid-tree.o utils-lib.o common/rbtree-utils.o
+> +		   uuid-tree.o utils-lib.o common/rbtree-utils.o \
+> +		   crypto/hash.o crypto/xxhash.o
+>  libbtrfs_headers =3D send-stream.h send-utils.h send.h kernel-lib/rbtre=
+e.h btrfs-list.h \
+>  	       kernel-lib/crc32c.h kernel-lib/list.h kerncompat.h \
+>  	       kernel-lib/radix-tree.h kernel-lib/sizes.h kernel-lib/raid56.h =
+\
+> diff --git a/cmds/inspect-dump-super.c b/cmds/inspect-dump-super.c
+> index bf380ad2b56a..73e986ed8ee8 100644
+> --- a/cmds/inspect-dump-super.c
+> +++ b/cmds/inspect-dump-super.c
+> @@ -315,6 +315,7 @@ static bool is_valid_csum_type(u16 csum_type)
+>  {
+>  	switch (csum_type) {
+>  	case BTRFS_CSUM_TYPE_CRC32:
+> +	case BTRFS_CSUM_TYPE_XXHASH:
+>  		return true;
+>  	default:
+>  		return false;
+> diff --git a/crypto/hash.c b/crypto/hash.c
+> new file mode 100644
+> index 000000000000..8c428cba11f0
+> --- /dev/null
+> +++ b/crypto/hash.c
+> @@ -0,0 +1,16 @@
+> +#include "crypto/hash.h"
+> +#include "crypto/xxhash.h"
+> +
+> +int hash_xxhash(const u8 *buf, size_t length, u8 *out)
+> +{
+> +	XXH64_hash_t hash;
+> +
+> +	hash =3D XXH64(buf, length, 0);
+> +	/*
+> +	 * NOTE: we're not taking the canonical form here but the plain hash t=
+o
+> +	 * be compatible with the kernel implementation!
+> +	 */
+> +	memcpy(out, &hash, 8);
+> +
+> +	return 0;
+> +}
+> diff --git a/crypto/hash.h b/crypto/hash.h
+> new file mode 100644
+> index 000000000000..45c1ef17bc57
+> --- /dev/null
+> +++ b/crypto/hash.h
+> @@ -0,0 +1,10 @@
+> +#ifndef CRYPTO_HASH_H
+> +#define CRYPTO_HASH_H
+> +
+> +#include "../kerncompat.h"
+> +
+> +#define CRYPTO_HASH_SIZE_MAX	32
+> +
+> +int hash_xxhash(const u8 *buf, size_t length, u8 *out);
+> +
+> +#endif
+> diff --git a/ctree.c b/ctree.c
+> index a52ccfe19f94..139ffd613da5 100644
+> --- a/ctree.c
+> +++ b/ctree.c
+> @@ -43,6 +43,7 @@ static struct btrfs_csum {
+>  	const char *name;
+>  } btrfs_csums[] =3D {
+>  	[BTRFS_CSUM_TYPE_CRC32] =3D { 4, "crc32c" },
+> +	[BTRFS_CSUM_TYPE_XXHASH] =3D { 8, "xxhash64" },
+>  };
+>
+>  u16 btrfs_super_csum_size(const struct btrfs_super_block *sb)
+> diff --git a/ctree.h b/ctree.h
+> index f70271dc658e..144c89eb4a36 100644
+> --- a/ctree.h
+> +++ b/ctree.h
+> @@ -166,7 +166,8 @@ struct btrfs_free_space_ctl;
+>
+>  /* csum types */
+>  enum btrfs_csum_type {
+> -	BTRFS_CSUM_TYPE_CRC32   =3D 0,
+> +	BTRFS_CSUM_TYPE_CRC32	=3D 0,
+> +	BTRFS_CSUM_TYPE_XXHASH	=3D 1,
+>  };
+>
+>  #define BTRFS_EMPTY_DIR_SIZE 0
+> diff --git a/disk-io.c b/disk-io.c
+> index 72c672919cf9..59e297e2039c 100644
+> --- a/disk-io.c
+> +++ b/disk-io.c
+> @@ -34,6 +34,7 @@
+>  #include "print-tree.h"
+>  #include "common/rbtree-utils.h"
+>  #include "common/device-scan.h"
+> +#include "crypto/hash.h"
+>
+>  /* specified errno for check_tree_block */
+>  #define BTRFS_BAD_BYTENR		(-1)
+> @@ -149,6 +150,8 @@ int btrfs_csum_data(u16 csum_type, const u8 *data, u=
+8 *out, size_t len)
+>  		crc =3D crc32c(crc, data, len);
+>  		put_unaligned_le32(~crc, out);
+>  		return 0;
+> +	case BTRFS_CSUM_TYPE_XXHASH:
+> +		return hash_xxhash(data, len, out);
+>  	default:
+>  		fprintf(stderr, "ERROR: unknown csum type: %d\n", csum_type);
+>  		ASSERT(0);
+> diff --git a/mkfs/main.c b/mkfs/main.c
+> index f52e8b61a460..a6deddc47c69 100644
+> --- a/mkfs/main.c
+> +++ b/mkfs/main.c
+> @@ -392,6 +392,9 @@ static enum btrfs_csum_type parse_csum_type(const ch=
+ar *s)
+>  {
+>  	if (strcasecmp(s, "crc32c") =3D=3D 0) {
+>  		return BTRFS_CSUM_TYPE_CRC32;
+> +	} else if (strcasecmp(s, "xxhash64") =3D=3D 0 ||
+> +		   strcasecmp(s, "xxhash") =3D=3D 0) {
+> +		return BTRFS_CSUM_TYPE_XXHASH;
+>  	} else {
+>  		error("unknown csum type %s", s);
+>  		exit(1);
+>
