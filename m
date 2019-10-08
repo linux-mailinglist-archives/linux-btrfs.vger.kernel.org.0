@@ -2,111 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 57B6DCF0F3
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 04:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A24ECCF0F8
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 04:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729627AbfJHCxz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Oct 2019 22:53:55 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:58190 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729212AbfJHCxz (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Oct 2019 22:53:55 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x982oBYm070704;
-        Tue, 8 Oct 2019 02:53:50 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=GUvkv5pLPKl7H1ZUwD7JCnWT8Mul643yT2Bazj8V19k=;
- b=iIlJ3bNvgl3o2LTRu5wwnoy1IUwST6JqON37X4H7M8Sy1k+nkqBekuOAuuVZqWzXYF3i
- 0nCRPDBIJinBccUbr3nBEzUBsZuFoWRaM8kL3cCAjcIYHmAakbuzATW6KUxRdI8QLQgB
- dH9lENPq/ZLWdPuNnsb//RmDm+exiVHRE6aAyfkk5UPfx9k0kXYBGM9F5WQarIUGXHv4
- VTnQ+cDNjY0qkBYE8c+CP07rMg3RO1m+l0zGgE2UjTZkJOG4hUUcaEOYnB46Vr+qtqcP
- 71En5GcPfpuYBr0fKK7velGZ3mk8IzqqqLdjuZvP/xw1yb+07mP//WSJarnHtWd0dw+e BQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2vek4qae6v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Oct 2019 02:53:50 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x982rg64096940;
-        Tue, 8 Oct 2019 02:53:49 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 2vg2057nvq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Oct 2019 02:53:49 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x982rjfA026330;
-        Tue, 8 Oct 2019 02:53:48 GMT
-Received: from [10.190.155.136] (/192.188.170.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Oct 2019 19:53:45 -0700
-Subject: Re: [PATCH v3] btrfs-progs: add verbose option to btrfs device scan
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <1569989512-5594-1-git-send-email-anand.jain@oracle.com>
- <20191007174129.GK2751@twin.jikos.cz>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <a9c0a957-e151-32e8-a42e-b5c6d817ed78@oracle.com>
-Date:   Tue, 8 Oct 2019 10:53:37 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1729849AbfJHC5X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Oct 2019 22:57:23 -0400
+Received: from sender3-pp-o92.zoho.com.cn ([124.251.121.251]:25824 "EHLO
+        sender3-pp-o92.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729663AbfJHC5X (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 7 Oct 2019 22:57:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1570503412; cv=none; 
+        d=zoho.com.cn; s=zohoarc; 
+        b=ngWv5qgLiORULTzmLPcC5Kv3KwQCaRQL+5Rsp1tuTkpAkM7QEDRoirR6KyI9OMNsaobTnXyhOjUeLiQoZmYdN7PLnsvAD1Bvez0UD6WUeu3rNDVTnYJZmi8nquMTjWBlieJF22fpA/vkt7PUpMNRZhYKZ0qFIqBDOnEpop4MXHU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
+        t=1570503412; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:Reply-To:References:Subject:To:ARC-Authentication-Results; 
+        bh=e5pMaJvXNsJ4gLwtVkq5uTM/6U77Oyv3p9DS1fh/gmg=; 
+        b=cI3kha0eQD+Bel6+g5xUGwHRKeePNL3Shs9+sTbAvxSof/iAChwcai8ZMdPix7Az2RC3FWFTAUHy48/WVQqjNlYzyIqhrRq2QTKf7ZRG6KNdQv55UILQkCRfEJbeNImkk43alUbQfhCG/HHdR38TKRlbLwtHO2/CkC4PMlnRm8Y=
+ARC-Authentication-Results: i=1; mx.zoho.com.cn;
+        dkim=pass  header.i=mykernel.net;
+        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
+        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1570503412;
+        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
+        h=Date:From:Reply-To:To:Cc:Message-ID:In-Reply-To:References:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        l=767; bh=e5pMaJvXNsJ4gLwtVkq5uTM/6U77Oyv3p9DS1fh/gmg=;
+        b=TnigNCtWp+4UmLKBdqZ0zlnXKQoHLNxTqW3DWH4M/BBI7KO2hQuXcZq7zdPs5fqU
+        IsdITjjozBhJaDU44VYCZVAOyRWKHTZ4ZZj2p2lwKrRBG84tmbQgZ7Aj6o9mjI2e00k
+        XO8ldUa8iBqKVkbEbbu+zTYZewzQpOQmpYEzzV+E=
+Received: from mail.baihui.com by mx.zoho.com.cn
+        with SMTP id 1570503411109698.9186358481302; Tue, 8 Oct 2019 10:56:51 +0800 (CST)
+Date:   Tue, 08 Oct 2019 10:56:51 +0800
+From:   Chengguang Xu <cgxu519@mykernel.net>
+Reply-To: cgxu519@mykernel.net
+To:     "dsterba" <dsterba@suse.cz>
+Cc:     "clm" <clm@fb.com>, "josef" <josef@toxicpanda.com>,
+        "dsterba" <dsterba@suse.com>,
+        "linux-btrfs" <linux-btrfs@vger.kernel.org>
+Message-ID: <16da94c45a3.11fdf8eae27262.1375415460905873066@mykernel.net>
+In-Reply-To: <20191007154452.GE2751@twin.jikos.cz>
+References: <20191005051736.29857-1-cgxu519@mykernel.net> <20191007154452.GE2751@twin.jikos.cz>
+Subject: Re: [PATCH 1/3] btrfs: remove unnecessary hash_init()
 MIME-Version: 1.0
-In-Reply-To: <20191007174129.GK2751@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910080029
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910080029
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Priority: Medium
+User-Agent: ZohoCN Mail
+X-Mailer: ZohoCN Mail
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/8/19 1:41 AM, David Sterba wrote:
-> On Wed, Oct 02, 2019 at 12:11:52PM +0800, Anand Jain wrote:
->> To help debug device scan issues, add verbose option to btrfs device scan.
-> 
-> The common options like --verbose are going to be added into the global
-> command so I'd rather avoid adding them to new subcommands as this would
-> become unnecessary compatibility issue.
+ ---- =E5=9C=A8 =E6=98=9F=E6=9C=9F=E4=B8=80, 2019-10-07 23:44:45 David Ster=
+ba <dsterba@suse.cz> =E6=92=B0=E5=86=99 ----
+ > On Sat, Oct 05, 2019 at 01:17:34PM +0800, Chengguang Xu wrote:
+ > > hash_init() is not necessary in btrfs_props_init(),
+ > > so remove it.
+ >=20
+ > The part that explains why it's not necessary is missing in the
+ > changelo. And looking what hash_init and plain DEFINE_HASHTABLE does I
+ > don't think that removing hash_init is safe or making the code more
+ > clear.
+=20
+Sorry for pool explanation in change log.
 
-> There's an pattern to follow, the output formats (--format). So add a
-> definition for global verbosity options, add new GETOPT_VAL global enum
-> values that do not clash with existing options, add relevant
-> HELPINFO_INSERT_ text string and use it in commands where needed.
-> 
-
-  IMO a debug option should rather be at the top level command.
-  If verbose is the top level it would emit a lot of unwanted messages.
-  Here is how a user is using --verbose option in dev scan.
-
- 
-https://lore.kernel.org/linux-btrfs/2daf15de-d1e7-b56a-be51-a6a3062ad28a@oracle.com/T/#t
-
-------------
-useful to get the list of devices it finds.
-------------
-
-  OR I didn't get the whole idea here. Looks like you are suggesting
-  something like
-
-   btrfs --verbose device scan
-   btrfs --verbose subvolume list <mnt>
-   ::
-
-  How does the user will know if a subcommand will have any verbose
-  or not?
-
-  How would you not emit unwanted messages and keep the output clutter
-  free.
+Look into the code,  DEFINE_HASHTABLE has already included initialization c=
+ode in it and
+I think this is the main difference compare to DECLARE_HASHTABLE which stil=
+l needs hash_init.
 
 
-Thanks, Anand
+Thanks,
+Chengguang
+
