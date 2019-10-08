@@ -2,121 +2,221 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0108CCF3B4
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 09:28:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B319CF4CD
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 10:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730302AbfJHH2L (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Oct 2019 03:28:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35530 "EHLO mx1.suse.de"
+        id S1730506AbfJHIQ4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Oct 2019 04:16:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58948 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729740AbfJHH2K (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Oct 2019 03:28:10 -0400
+        id S1730410AbfJHIQ4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Oct 2019 04:16:56 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 74C01ABA0;
-        Tue,  8 Oct 2019 07:28:08 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: block-group: Rework documentation of
- check_system_chunk function
-To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>, clm@fb.com,
-        David Sterba <dsterba@suse.com>
-Cc:     Josef Bacik <josef@toxicpanda.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20191008005038.12333-1-marcos.souza.org@gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <c120d3a8-2e58-d109-191c-bd75ee8111b7@suse.com>
-Date:   Tue, 8 Oct 2019 10:28:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        by mx1.suse.de (Postfix) with ESMTP id A4CDBAE09
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2019 08:16:53 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2.1 4/7] btrfs-progs: mkfs: Introduce -O bg-tree
+Date:   Tue,  8 Oct 2019 16:16:50 +0800
+Message-Id: <20191008081650.11341-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191008044936.157873-5-wqu@suse.com>
+References: <20191008044936.157873-5-wqu@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20191008005038.12333-1-marcos.souza.org@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This allow mkfs.btrfs to create a btrfs with bg-tree feature.
 
+This patch introduce a global function, btrfs_convert_to_bg_tree() in
+extent-tree.c, to do the work.
 
-On 8.10.19 г. 3:50 ч., Marcos Paulo de Souza wrote:
-> Commit 4617ea3a52cf (" Btrfs: fix necessary chunk tree space calculation
-> when allocating a chunk") removed the is_allocation argument from
-> check_system_chunk, since the formula for reserving the necessary space
-> for allocation or removing a chunk would be the same.
-> 
-> So, rework the comment by removing the mention of is_allocation
-> argument.
-> 
-> Signed-off-by: Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+The workflow is pretty simple:
+- Create a new tree block for bg tree
+- Set the BG_TREE feature for superblock
+- Set the fs_info->convert_to_bg_tree flag
+- Mark all block group items as dirty
+- Commit transaction
+  * With fs_info->convert_to_bg_tree set, we will try to delete the
+    BLOCK_GROUP_ITEM in extent tree first, then write the new
+    BLOCK_GROUP_ITEM into bg tree.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+This btrfs_convert_to_bg_tree() will be used in mkfs after the basic fs
+is created.
 
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2.1->v2:
+- Convert to bg tree after cleaning up temp chunks
+  Exposed by btrfs/157 where a test case grep doesn't work as intented,
+  due to SINGLE chunks.
+---
+ common/fsfeatures.c |  6 ++++++
+ ctree.h             |  1 +
+ extent-tree.c       | 38 ++++++++++++++++++++++++++++++++++++++
+ mkfs/common.c       |  6 ++++--
+ mkfs/main.c         | 25 +++++++++++++++++++++++++
+ transaction.c       |  1 +
+ 6 files changed, 75 insertions(+), 2 deletions(-)
 
-> ---
->  fs/btrfs/block-group.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index bf7e3f23bba7..4910921838db 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -2987,9 +2987,7 @@ static u64 get_profile_num_devs(struct btrfs_fs_info *fs_info, u64 type)
->  }
-> 
->  /*
-> - * If @is_allocation is true, reserve space in the system space info necessary
-> - * for allocating a chunk, otherwise if it's false, reserve space necessary for
-> - * removing a chunk.
-> + * Reserve space in the system space for allocating or removing a chunk
->   */
->  void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
->  {
-> --
-> 2.23.0
-> 
-> 
+diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+index 50934bd161b0..b9bd70a4b3b6 100644
+--- a/common/fsfeatures.c
++++ b/common/fsfeatures.c
+@@ -86,6 +86,12 @@ static const struct btrfs_fs_feature {
+ 		VERSION_TO_STRING2(4,0),
+ 		NULL, 0,
+ 		"no explicit hole extents for files" },
++	{ "bg-tree", BTRFS_FEATURE_INCOMPAT_BG_TREE,
++		"bg_tree",
++		VERSION_TO_STRING2(5, 0),
++		NULL, 0,
++		NULL, 0,
++		"store block group items in dedicated tree" },
+ 	/* Keep this one last */
+ 	{ "list-all", BTRFS_FEATURE_LIST_ALL, NULL }
+ };
+diff --git a/ctree.h b/ctree.h
+index c2a18c8ab72f..3d3992487a53 100644
+--- a/ctree.h
++++ b/ctree.h
+@@ -2856,5 +2856,6 @@ int btrfs_read_file(struct btrfs_root *root, u64 ino, u64 start, int len,
+ 
+ /* extent-tree.c */
+ int btrfs_run_delayed_refs(struct btrfs_trans_handle *trans, unsigned long nr);
++int btrfs_convert_to_bg_tree(struct btrfs_trans_handle *trans);
+ 
+ #endif
+diff --git a/extent-tree.c b/extent-tree.c
+index cb3d7a1add0f..87550ef80e37 100644
+--- a/extent-tree.c
++++ b/extent-tree.c
+@@ -1524,6 +1524,44 @@ int btrfs_dec_ref(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 	return __btrfs_mod_ref(trans, root, buf, record_parent, 0);
+ }
+ 
++int btrfs_convert_to_bg_tree(struct btrfs_trans_handle *trans)
++{
++	struct btrfs_fs_info *fs_info = trans->fs_info;
++	struct btrfs_block_group_cache *bg;
++	struct btrfs_root *bg_root;
++	u64 features = btrfs_super_incompat_flags(fs_info->super_copy);
++	int ret;
++
++	/* create bg tree first */
++	bg_root = btrfs_create_tree(trans, fs_info, BTRFS_BLOCK_GROUP_TREE_OBJECTID);
++	if (IS_ERR(bg_root)) {
++		ret = PTR_ERR(bg_root);
++		errno = -ret;
++		error("failed to create bg tree: %m");
++		return ret;
++	}
++	fs_info->bg_root = bg_root;
++	fs_info->bg_root->track_dirty = 1;
++	fs_info->bg_root->ref_cows = 0;
++
++	/* set BG_TREE feature and mark the fs into bg_tree convert status */
++	btrfs_set_super_incompat_flags(fs_info->super_copy,
++			features | BTRFS_FEATURE_INCOMPAT_BG_TREE);
++	fs_info->convert_to_bg_tree = 1;
++
++	/*
++	 * Mark all block groups dirty so they will get converted to bg tree at
++	 * commit transaction time
++	 */
++	for (bg = btrfs_lookup_first_block_group(fs_info, 0); bg;
++	     bg = btrfs_lookup_first_block_group(fs_info,
++				bg->key.objectid + bg->key.offset))
++		set_extent_bits(&fs_info->block_group_cache, bg->key.objectid,
++				bg->key.objectid + bg->key.offset - 1,
++				BLOCK_GROUP_DIRTY);
++	return 0;
++}
++
+ static int write_one_cache_group(struct btrfs_trans_handle *trans,
+ 				 struct btrfs_path *path,
+ 				 struct btrfs_block_group_cache *cache)
+diff --git a/mkfs/common.c b/mkfs/common.c
+index caca5e707233..876193838612 100644
+--- a/mkfs/common.c
++++ b/mkfs/common.c
+@@ -111,6 +111,9 @@ static int btrfs_create_tree_root(int fd, struct btrfs_mkfs_config *cfg,
+ 	return ret;
+ }
+ 
++/* These features will not be set in the temporary fs */
++#define MASKED_FEATURES		(~(BTRFS_FEATURE_INCOMPAT_BG_TREE))
++
+ /*
+  * @fs_uuid - if NULL, generates a UUID, returns back the new filesystem UUID
+  *
+@@ -204,7 +207,7 @@ int make_btrfs(int fd, struct btrfs_mkfs_config *cfg)
+ 	btrfs_set_super_csum_type(&super, BTRFS_CSUM_TYPE_CRC32);
+ 	btrfs_set_super_chunk_root_generation(&super, 1);
+ 	btrfs_set_super_cache_generation(&super, -1);
+-	btrfs_set_super_incompat_flags(&super, cfg->features);
++	btrfs_set_super_incompat_flags(&super, cfg->features & MASKED_FEATURES);
+ 	if (cfg->label)
+ 		__strncpy_null(super.label, cfg->label, BTRFS_LABEL_SIZE - 1);
+ 
+@@ -824,4 +827,3 @@ int test_minimum_size(const char *file, u64 min_dev_size)
+ 	return 0;
+ }
+ 
+-
+diff --git a/mkfs/main.c b/mkfs/main.c
+index b752da13aba9..55bc4288dc08 100644
+--- a/mkfs/main.c
++++ b/mkfs/main.c
+@@ -1312,6 +1312,31 @@ raid_groups:
+ 		goto out;
+ 	}
+ 
++	/*
++	 * Bg tree are converted after temp chunks cleaned up, or we can
++	 * populate temp chunks.
++	 */
++	if (mkfs_cfg.features & BTRFS_FEATURE_INCOMPAT_BG_TREE) {
++		trans = btrfs_start_transaction(fs_info->tree_root, 1);
++		if (IS_ERR(trans)) {
++			error("failed to start transaction: %d", ret);
++			goto out;
++		}
++		ret = btrfs_convert_to_bg_tree(trans);
++		if (ret < 0) {
++			errno = -ret;
++			error(
++		"bg-tree feature will not be enabled, due to error: %m");
++			btrfs_abort_transaction(trans, ret);
++			goto out;
++		}
++		ret = btrfs_commit_transaction(trans, fs_info->tree_root);
++		if (ret < 0) {
++			error("failed to commit transaction: %d", ret);
++			goto out;
++		}
++	}
++
+ 	if (source_dir_set) {
+ 		ret = btrfs_mkfs_fill_dir(source_dir, root, verbose);
+ 		if (ret) {
+diff --git a/transaction.c b/transaction.c
+index 45bb9e1f9de6..5de967fb015f 100644
+--- a/transaction.c
++++ b/transaction.c
+@@ -225,6 +225,7 @@ commit_tree:
+ 	root->commit_root = NULL;
+ 	fs_info->running_transaction = NULL;
+ 	fs_info->last_trans_committed = transid;
++	fs_info->convert_to_bg_tree = 0;
+ 	list_for_each_entry(sinfo, &fs_info->space_info, list) {
+ 		if (sinfo->bytes_reserved) {
+ 			warning(
+-- 
+2.23.0
+
