@@ -2,186 +2,134 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25978CF13C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 05:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DB5CF1ED
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 06:49:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729868AbfJHD0u (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Oct 2019 23:26:50 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:57944 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729772AbfJHD0t (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Oct 2019 23:26:49 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x983OgNr123547;
-        Tue, 8 Oct 2019 03:26:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=Q4qVmlStYvPn8pQNflc+L8EQH6P35VA9KgbZB7wV9JA=;
- b=ZClYxMEBQQHZM46yr50aMwzS7Y1C8OMyHquurISslrFaGxhsDVyFed393dxW+OB5s5+A
- +bwrVusJVInobB6WUn4owOCw5tdBrdtKZoamdrIZvck5jq7KTZgzYXSI9jAAtGe0M30Q
- KC0DkMOVBabfNGmZkGTVX6BsTIjXFWmmTdULThB8BLdITmZTnfIf5Pyu8uKWJiJTKlBa
- 0nx2mUbDdqsFZWK2PhsP8wD2p9I52K+cCeu9FqcBEpXNTliCgYvDXawLG4a/Vq+lprCF
- GEkE7YAa2zrjnpMcuq5eFKX4NAaBMYd3FNm48G8KeQVx4+izfibdIf2cjpuzSH/jUxPB EA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2vektrabu8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Oct 2019 03:26:39 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9838pB1137923;
-        Tue, 8 Oct 2019 03:26:39 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2vgeuwv85f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 08 Oct 2019 03:26:39 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x983QZ7R008686;
-        Tue, 8 Oct 2019 03:26:36 GMT
-Received: from [10.190.155.136] (/192.188.170.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 07 Oct 2019 20:26:35 -0700
-Subject: Re: [PATCH 4/5] btrfs: remove identified alien device in
- open_fs_devices
-To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191007094515.925-1-anand.jain@oracle.com>
- <20191007094515.925-5-anand.jain@oracle.com>
- <b370fdd7-2d97-877f-88e6-3624205c8617@suse.com>
- <b8ffd660-5055-d609-4fcd-169090e7914b@gmx.com>
- <20191007170306.GI2751@twin.jikos.cz>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <75fd55f3-3c42-8daa-a3e7-26dadce6228f@oracle.com>
-Date:   Tue, 8 Oct 2019 11:26:31 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1729514AbfJHEtQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Oct 2019 00:49:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33542 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729285AbfJHEtQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Oct 2019 00:49:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E49F2AE35
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2019 04:49:13 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/3] btrfs: Introduce new incompat feature BG_TREE to hugely reduce mount time
+Date:   Tue,  8 Oct 2019 12:49:06 +0800
+Message-Id: <20191008044909.157750-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20191007170306.GI2751@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910080032
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910080033
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/8/19 1:03 AM, David Sterba wrote:
-> On Mon, Oct 07, 2019 at 09:37:49PM +0800, Qu Wenruo wrote:
->>
->>
->> On 2019/10/7 下午9:30, Nikolay Borisov wrote:
->>>
->>>
->>> On 7.10.19 г. 12:45 ч., Anand Jain wrote:
->>>> Following test case explains it all, even though the degraded mount is
->>>> successful the btrfs-progs fails to report the missing device.
->>>>
->>>>   mkfs.btrfs -fq -draid1 -mraid1 /dev/sdc /dev/sdd && \
->>>>   wipefs -a /dev/sdd && mount -o degraded /dev/sdc /btrfs && \
->>>>   btrfs fi show -m /btrfs
->>>>
->>>>   Label: none  uuid: 2b3b8d92-572b-4d37-b4ee-046d3a538495
->>>> 	Total devices 2 FS bytes used 128.00KiB
->>>> 	devid    1 size 1.09TiB used 2.01GiB path /dev/sdc
->>>> 	devid    2 size 1.09TiB used 2.01GiB path /dev/sdd
->>>>
->>>> This is because btrfs-progs does it fundamentally wrong way that
->>>> it deduces the missing device status in the user land instead of
->>>> refuting from the kernel.
->>>>
->>>> At the same time in the kernel when we know that there is device
->>>> with non-btrfs magic, then remove that device from the list so
->>>> that btrfs-progs or someother userland utility won't be confused.
->>>>
->>>> Signed-off-by: Anand Jain <anand.jain@oracle.com>
->>>> ---
->>>>   fs/btrfs/disk-io.c | 2 +-
->>>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>>
->>>> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
->>>> index 326d5281ad93..e05856432456 100644
->>>> --- a/fs/btrfs/disk-io.c
->>>> +++ b/fs/btrfs/disk-io.c
->>>> @@ -3417,7 +3417,7 @@ int btrfs_read_dev_one_super(struct block_device *bdev, int copy_num,
->>>>   	if (btrfs_super_bytenr(super) != bytenr ||
->>>>   		    btrfs_super_magic(super) != BTRFS_MAGIC) {
->>>>   		brelse(bh);
->>>> -		return -EINVAL;
->>>> +		return -EUCLEAN;
->>>
->>> This is really non-obvious and you are propagating the special-meaning
->>> of EUCLEAN waaaaaaaay beyond btrfs_open_one_device. In fact what this
->>> patch does is make the following call chain return EUCLAN:
->>>
->>> btrfs_open_one_device <-- finally removing the device in this function
->>>   btrfs_get_bdev_and_sb <-- propagating it to here
->>>    btrfs_read_dev_super
->>>      btrfs_read_dev_one_super <-- you return the EUCLEAN
->>>
->>>
->>> And your commit log doesn't mention anything about that. EUCLEAN
->>> warrants a comment in this case since it changes behavior in
->>> higher-level layers.
+This patchset can be fetched from:
+https://github.com/adam900710/linux/tree/bg_tree
+Which is based on v5.4-rc1 tag.
 
-  Ok. Which means the commit log needs to be fixed.
+This patchset will hugely reduce mount time of large fs by putting all
+block group items into its own tree.
 
->>
->> And, for most case, EUCLEAN should have a proper kernel message for
->> what's going wrong, the value we hit and the value we expect.
+The old behavior will try to read out all block group items at mount
+time, however due to the key of block group items are scattered across
+tons of extent items, we must call btrfs_search_slot() for each block
+group.
 
-  If its a kernel message for EUCLEAN in the context of mounted state,
-  I would say yes, as it indicates a corruption.
-  But here we are still in the unmounted context and moving towards
-  mounted context. Having an alien device in the fs_devices is not
-  something logical bug nor a corruption, it just about a disk whose
-  disk superblock got overwritten by the user operation. And its not
-  a good idea to log the kernel messages arising from the user
-  operation especially in the unmounted context. Otherwise we shall
-  endup cluttering the kernel messages. Moreover if there is an alien
-  device, the user must use -o degraded and we do have the missing
-  kernel messages, and this will suffice to explain the state about the
-  fsid being mounted. And the alien fsid, its a stale we don't worry
-  about it. So no kernel messages.
+It works fine for small fs, but when number of block groups goes beyond
+200, such tree search will become a random read, causing obvious slow
+down.
 
->> And for EUCLEAN, it's more like graceful error out for impossible thing.
->> This is definitely not the case, and I believe the original EINVAL makes
->> more sense than EUCLEAN.
-> 
-> I agree, EUCLEAN is wrong here.
->
+On the other hand, btrfs_read_chunk_tree() is still very fast, since we
+put CHUNK_ITEMS into their own tree and package them next to each other.
 
-   I am ok with any other suitable. It does not matter. And the other
-   choice I have is ESTALE.
+Following this idea, we could do the same thing for block group items,
+so instead of triggering btrfs_search_slot() for each block group, we
+just call btrfs_next_item() and under most case we could finish in
+memory, and hugely speed up mount (see BENCHMARK below).
 
-   But EINVAL is no go because we still want to keep the messed up device
-   unless there is a confirmation that its alien.
+The only disadvantage is, this method introduce an incompatible feature,
+so existing fs can't use this feature directly.
+Either specify it at mkfs time, or use btrfs-progs offline convert tool.
 
-   In the same function we use EINVAL if the device/partition size
-   changed to smaller size after we have scanned the device. Which
-   means we still keep the device in the list. Its the user choice,
-   no need to meddle with it.
+[[Benchmark]]
+Since I have upgraded my rig to all NVME storage, there is no HDD
+test result.
 
-    bytenr = btrfs_sb_offset(copy_num);
-    if (bytenr + BTRFS_SUPER_INFO_SIZE >= i_size_read(bdev->bd_inode))
-           return -EINVAL;
+Physical device:	NVMe SSD
+VM device:		VirtIO block device, backup by sparse file
+Nodesize:		4K  (to bump up tree height)
+Extent data size:	4M
+Fs size used:		1T
 
-   But, EUCLEAN /* structure needs cleaning */ is errno which exactly
-   says whats needed here. Because an alien device is a kind of
-   corruption but it can easily happen due to unplanned device operations
-   in the userland. But as it happened before we assembled the volume so
-   its safe to clean and is not a road block when there is redundancy
-   with degraded option.
+All file extents on disk is in 4M size, preallocated to reduce space usage
+(as the VM uses loopback block device backed by sparse file)
 
-Thanks, Anand
+Without patchset:
+Use ftrace function graph:
+
+ 7)               |  open_ctree [btrfs]() {
+ 7)               |    btrfs_read_block_groups [btrfs]() {
+ 7) @ 805851.8 us |    }
+ 7) @ 911890.2 us |  }
+
+ btrfs_read_block_groups() takes 88% of the total mount time,
+
+With patchset, and use -O bg-tree mkfs option:
+
+ 6)               |  open_ctree [btrfs]() {
+ 6)               |    btrfs_read_block_groups [btrfs]() {
+ 6) * 91204.69 us |    }
+ 6) @ 192039.5 us |  }
+
+  open_ctree() time is only 21% of original mount time.
+  And btrfs_read_block_groups() only takes 47% of total open_ctree()
+  execution time.
+
+The reason is pretty obvious when considering how many tree blocks needs
+to be read from disk:
+- Original extent tree:
+  nodes:	55
+  leaves:	1025
+  total:	1080
+- Block group tree:
+  nodes:	1
+  leaves:	13
+  total:	14
+
+Not to mention all the tree blocks readahead works pretty fine for bg
+tree, as we will read every item.
+While readahead for extent tree will just be a diaster, as all block
+groups are scatter across the whole extent tree.
+
+Changelog:
+v2:
+- Rebase to v5.4-rc1
+  Minor conflicts due to code moved to block-group.c
+- Fix a bug where some block groups will not be loaded at mount time
+  It's a bug in that refactor patch, not exposed by previous round of
+  tests.
+- Add a new patch to remove a dead check
+- Update benchmark to NVMe based result
+  Hardware upgrade is not always a good thing for benchmark.
+
+Qu Wenruo (3):
+  btrfs: block-group: Refactor btrfs_read_block_groups()
+  btrfs: disk-io: Remove unnecessary check before freeing chunk root
+  btrfs: Introduce new incompat feature, BG_TREE, to speed up mount time
+
+ fs/btrfs/block-group.c          | 306 ++++++++++++++++++++------------
+ fs/btrfs/ctree.h                |   5 +-
+ fs/btrfs/disk-io.c              |  16 +-
+ fs/btrfs/sysfs.c                |   2 +
+ include/uapi/linux/btrfs.h      |   1 +
+ include/uapi/linux/btrfs_tree.h |   3 +
+ 6 files changed, 213 insertions(+), 120 deletions(-)
+
+-- 
+2.23.0
 
