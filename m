@@ -2,60 +2,56 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 418B6CF8AB
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 13:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 870F1CF8C1
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 13:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730479AbfJHLjy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Oct 2019 07:39:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49548 "EHLO mx1.suse.de"
+        id S1730561AbfJHLnm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Oct 2019 07:43:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53120 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730371AbfJHLjy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Oct 2019 07:39:54 -0400
+        id S1730530AbfJHLnm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Oct 2019 07:43:42 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 751B9B012;
-        Tue,  8 Oct 2019 11:39:52 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 4CC65AC8C;
+        Tue,  8 Oct 2019 11:43:40 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 7F240DA7FB; Tue,  8 Oct 2019 13:40:07 +0200 (CEST)
-Date:   Tue, 8 Oct 2019 13:40:07 +0200
+        id 50031DA7FB; Tue,  8 Oct 2019 13:43:55 +0200 (CEST)
+Date:   Tue, 8 Oct 2019 13:43:55 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 3/4] btrfs: sysfs: export supported checksums
-Message-ID: <20191008114007.GN2751@twin.jikos.cz>
+To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+Cc:     dsterba@suse.com, clm@fb.com, Josef Bacik <josef@toxicpanda.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: block-group: Rework documentation of
+ check_system_chunk function
+Message-ID: <20191008114355.GO2751@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
-        Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20191007091104.18095-1-jthumshirn@suse.de>
- <20191007091104.18095-4-jthumshirn@suse.de>
- <bb3aa7b2-ee08-a4f2-99f3-1d10750322d4@suse.com>
- <20191007154602.GF2751@twin.jikos.cz>
- <de46a7df-37e6-e04e-6a58-9e8380a39dbd@suse.de>
+Mail-Followup-To: dsterba@suse.cz,
+        Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
+        dsterba@suse.com, clm@fb.com, Josef Bacik <josef@toxicpanda.com>,
+        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20191008005038.12333-1-marcos.souza.org@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <de46a7df-37e6-e04e-6a58-9e8380a39dbd@suse.de>
+In-Reply-To: <20191008005038.12333-1-marcos.souza.org@gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 08, 2019 at 08:47:14AM +0200, Johannes Thumshirn wrote:
-> On 07/10/2019 17:46, David Sterba wrote:
-> [...]
-> >> nit: This function is used only once and the ARRAY_SIZE() macro is
-> >> descriptive enough, why not just remove it and opencoude the call to
-> >> array_size
-> > 
-> > Agreed, ARRAY_SIZE in loops is fine, it's a compile-time constant.
+On Mon, Oct 07, 2019 at 09:50:38PM -0300, Marcos Paulo de Souza wrote:
+> Commit 4617ea3a52cf (" Btrfs: fix necessary chunk tree space calculation
+> when allocating a chunk") removed the is_allocation argument from
+> check_system_chunk, since the formula for reserving the necessary space
+> for allocation or removing a chunk would be the same.
 > 
-> Nope, btrfs_csums[] is defined in ctree.c, so I can't get the size of
-> this array outside of ctree.c. And it was moved to ctree.c from ctree.h
-> on request by David.
+> So, rework the comment by removing the mention of is_allocation
+> argument.
+> 
+> Signed-off-by: Marcos Paulo de Souza <marcos.souza.org@gmail.com>
 
-Ohh, right you are of course.
+Added to misc-next, thanks.
