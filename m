@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A63CF5C5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 11:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 102E6CF5E7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 11:22:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729926AbfJHJOQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Oct 2019 05:14:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56850 "EHLO mx1.suse.de"
+        id S1729831AbfJHJWz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Oct 2019 05:22:55 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60620 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729624AbfJHJOQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Oct 2019 05:14:16 -0400
+        id S1728866AbfJHJWz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Oct 2019 05:22:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 82236ADBF;
-        Tue,  8 Oct 2019 09:14:14 +0000 (UTC)
-Subject: Re: [PATCH v2 0/3] btrfs: Introduce new incompat feature BG_TREE to
- hugely reduce mount time
+        by mx1.suse.de (Postfix) with ESMTP id 565A8B0B7;
+        Tue,  8 Oct 2019 09:22:53 +0000 (UTC)
+Subject: Re: [PATCH v2 1/7] btrfs-progs: Refactor excluded extent functions to
+ use fs_info
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191008044909.157750-1-wqu@suse.com>
-Cc:     felix@feldspaten.org
+References: <20191008044936.157873-1-wqu@suse.com>
+ <20191008044936.157873-2-wqu@suse.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -77,12 +77,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <c47049af-d034-0228-c61c-65187d07e6b4@suse.de>
-Date:   Tue, 8 Oct 2019 11:14:14 +0200
+Message-ID: <700d6eac-8bea-c7f9-a804-c6750b0e3096@suse.de>
+Date:   Tue, 8 Oct 2019 11:22:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191008044909.157750-1-wqu@suse.com>
+In-Reply-To: <20191008044936.157873-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -91,49 +91,8 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> [[Benchmark]]
-> Since I have upgraded my rig to all NVME storage, there is no HDD
-> test result.
-> 
-> Physical device:	NVMe SSD
-> VM device:		VirtIO block device, backup by sparse file
-> Nodesize:		4K  (to bump up tree height)
-> Extent data size:	4M
-> Fs size used:		1T
-> 
-> All file extents on disk is in 4M size, preallocated to reduce space usage
-> (as the VM uses loopback block device backed by sparse file)
-
-Do you have a some additional details about the test setup? I tried to
-do the same (testing) for a bug Felix (added to Cc) reported to my at
-the ALPSS Conference and I couldn't reproduce the issue.
-
-My testing was a 100TB sparse file passed into a VM and running this
-script to touch all blockgroups:
-
-#!/bin/sh
-
-FILE=/mnt/test
-
-add_dirty_bg() {
-        off="$1"
-        len="$2"
-        touch $FILE
-        xfs_io -c "falloc $off $len" $FILE
-        rm $FILE
-}
-
-mkfs.btrfs /dev/vda
-mount /dev/vda /mnt
-
-for ((i = 1; i < 100000; i++)); do
-        add_dirty_bg $i"G" "1G"
-done
-
-umount /mnt
-
-
-
+Looks good,
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
