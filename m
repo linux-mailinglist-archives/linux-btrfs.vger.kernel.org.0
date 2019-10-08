@@ -2,93 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EDA4CF000
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 02:49:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B6DCF0F3
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 04:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729744AbfJHAtD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 7 Oct 2019 20:49:03 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:44357 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729285AbfJHAtD (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Oct 2019 20:49:03 -0400
-Received: by mail-qt1-f195.google.com with SMTP id u40so22240545qth.11;
-        Mon, 07 Oct 2019 17:49:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EHtfWLUB8I149K3I7eRf5PMAiKgBxopKNp3D8j2Gqso=;
-        b=oR004R660FZlGsTve62t/b8jb01RMjBE4OE2Tg8Og4u3fxZ9Lvnc7/X1F7z2OencoR
-         NfhJbjw9rYqqi2b10rwJd3H2DebNOFhxM0WgNK8PZ6YtjP3442+B9+xM6IeY6vseg0Vp
-         LjEKRWnRQwCTRWleVKgDaDfLYGoLAJ+R3QdIO+G9iLvG7hmtYdY3ByLYMYl8bcIYnI75
-         OmGII/0OzB0OnjGzVZKUsjA9l3BSmDGQxcQnyIsBIWfA3lViNcBUWjGsAMR1peAHmlwQ
-         3ohMU9xinTHl5qUvLPd7AHijY+rVRIgVNlrk2V1i5fkoT3gZXsfV3PhaWJHb5xTBxy2i
-         ZiFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EHtfWLUB8I149K3I7eRf5PMAiKgBxopKNp3D8j2Gqso=;
-        b=Q4RLFKYTtRtm/MhmWgHklF8hA8Bbda82d0Dd42ai8cBCnSHAyhEoV9T3SjEElDCyYP
-         IMxXDUD8SrMcuQv0202BjeHHL+GrBBX9eEOtgkB+EyTCEkThquIUE4DJjDt6+QLN35z9
-         Rz72Xt9CLHnd2uxqPWPzVMfyfpApHYnFpWJW2hjqEVVYqlaIU5Od/b7DiJT6Un2Uungk
-         ArpSv9eBVYG04wFvF7pPI334HNhg5yTxN2ITByDlCWSOhqy2exi+giSDH6BCjl/rClJD
-         cFQj5N7bBA7KKEbVMXKfg5nh6Eo8bzjN0WW+fsSEGm2nz85ndlpePoZFwEy1zytFreKs
-         3iIQ==
-X-Gm-Message-State: APjAAAUcsePc4dTGS2YroZY813T6yQ2McPmIr0s3P0I9ax2w2bHydx0h
-        whS3UhZtAFXatQHnLBBibtc=
-X-Google-Smtp-Source: APXvYqzhf0bQbMC69wkWuBzB11d/QtEjStGqsWB2bUVWdY0Hluu5rge1yXOb0yHH4djzyG1N+8r5Ag==
-X-Received: by 2002:ac8:68c:: with SMTP id f12mr32401878qth.252.1570495741914;
-        Mon, 07 Oct 2019 17:49:01 -0700 (PDT)
-Received: from localhost.localdomain (189.26.190.79.dynamic.adsl.gvt.net.br. [189.26.190.79])
-        by smtp.gmail.com with ESMTPSA id u39sm10470538qtj.34.2019.10.07.17.48.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2019 17:49:00 -0700 (PDT)
-From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
-To:     dsterba@suse.com, clm@fb.com
-Cc:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] btrfs: block-group: Rework documentation of check_system_chunk function
-Date:   Mon,  7 Oct 2019 21:50:38 -0300
-Message-Id: <20191008005038.12333-1-marcos.souza.org@gmail.com>
-X-Mailer: git-send-email 2.23.0
+        id S1729627AbfJHCxz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 7 Oct 2019 22:53:55 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:58190 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729212AbfJHCxz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Mon, 7 Oct 2019 22:53:55 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x982oBYm070704;
+        Tue, 8 Oct 2019 02:53:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=GUvkv5pLPKl7H1ZUwD7JCnWT8Mul643yT2Bazj8V19k=;
+ b=iIlJ3bNvgl3o2LTRu5wwnoy1IUwST6JqON37X4H7M8Sy1k+nkqBekuOAuuVZqWzXYF3i
+ 0nCRPDBIJinBccUbr3nBEzUBsZuFoWRaM8kL3cCAjcIYHmAakbuzATW6KUxRdI8QLQgB
+ dH9lENPq/ZLWdPuNnsb//RmDm+exiVHRE6aAyfkk5UPfx9k0kXYBGM9F5WQarIUGXHv4
+ VTnQ+cDNjY0qkBYE8c+CP07rMg3RO1m+l0zGgE2UjTZkJOG4hUUcaEOYnB46Vr+qtqcP
+ 71En5GcPfpuYBr0fKK7velGZ3mk8IzqqqLdjuZvP/xw1yb+07mP//WSJarnHtWd0dw+e BQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 2vek4qae6v-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Oct 2019 02:53:50 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x982rg64096940;
+        Tue, 8 Oct 2019 02:53:49 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2vg2057nvq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 08 Oct 2019 02:53:49 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x982rjfA026330;
+        Tue, 8 Oct 2019 02:53:48 GMT
+Received: from [10.190.155.136] (/192.188.170.104)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 07 Oct 2019 19:53:45 -0700
+Subject: Re: [PATCH v3] btrfs-progs: add verbose option to btrfs device scan
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <1569989512-5594-1-git-send-email-anand.jain@oracle.com>
+ <20191007174129.GK2751@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <a9c0a957-e151-32e8-a42e-b5c6d817ed78@oracle.com>
+Date:   Tue, 8 Oct 2019 10:53:37 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191007174129.GK2751@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910080029
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9403 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910080029
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Commit 4617ea3a52cf (" Btrfs: fix necessary chunk tree space calculation
-when allocating a chunk") removed the is_allocation argument from
-check_system_chunk, since the formula for reserving the necessary space
-for allocation or removing a chunk would be the same.
+On 10/8/19 1:41 AM, David Sterba wrote:
+> On Wed, Oct 02, 2019 at 12:11:52PM +0800, Anand Jain wrote:
+>> To help debug device scan issues, add verbose option to btrfs device scan.
+> 
+> The common options like --verbose are going to be added into the global
+> command so I'd rather avoid adding them to new subcommands as this would
+> become unnecessary compatibility issue.
 
-So, rework the comment by removing the mention of is_allocation
-argument.
+> There's an pattern to follow, the output formats (--format). So add a
+> definition for global verbosity options, add new GETOPT_VAL global enum
+> values that do not clash with existing options, add relevant
+> HELPINFO_INSERT_ text string and use it in commands where needed.
+> 
 
-Signed-off-by: Marcos Paulo de Souza <marcos.souza.org@gmail.com>
----
- fs/btrfs/block-group.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+  IMO a debug option should rather be at the top level command.
+  If verbose is the top level it would emit a lot of unwanted messages.
+  Here is how a user is using --verbose option in dev scan.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index bf7e3f23bba7..4910921838db 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -2987,9 +2987,7 @@ static u64 get_profile_num_devs(struct btrfs_fs_info *fs_info, u64 type)
- }
+ 
+https://lore.kernel.org/linux-btrfs/2daf15de-d1e7-b56a-be51-a6a3062ad28a@oracle.com/T/#t
 
- /*
-- * If @is_allocation is true, reserve space in the system space info necessary
-- * for allocating a chunk, otherwise if it's false, reserve space necessary for
-- * removing a chunk.
-+ * Reserve space in the system space for allocating or removing a chunk
-  */
- void check_system_chunk(struct btrfs_trans_handle *trans, u64 type)
- {
---
-2.23.0
+------------
+useful to get the list of devices it finds.
+------------
 
+  OR I didn't get the whole idea here. Looks like you are suggesting
+  something like
+
+   btrfs --verbose device scan
+   btrfs --verbose subvolume list <mnt>
+   ::
+
+  How does the user will know if a subcommand will have any verbose
+  or not?
+
+  How would you not emit unwanted messages and keep the output clutter
+  free.
+
+
+Thanks, Anand
