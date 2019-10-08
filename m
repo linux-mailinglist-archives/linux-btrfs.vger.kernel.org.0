@@ -2,105 +2,218 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A69CCF7E2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 13:12:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D29CCF825
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 13:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730383AbfJHLMO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Oct 2019 07:12:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58672 "EHLO mx1.suse.de"
+        id S1730372AbfJHL2k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Oct 2019 07:28:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39392 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729790AbfJHLMO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Oct 2019 07:12:14 -0400
+        id S1730316AbfJHL2j (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Oct 2019 07:28:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E82A4B15E;
-        Tue,  8 Oct 2019 11:12:11 +0000 (UTC)
-Subject: Re: [PATCH 02/19] btrfs: rename DISCARD opt to DISCARD_SYNC
-To:     Dennis Zhou <dennis@kernel.org>, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>
-Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-References: <cover.1570479299.git.dennis@kernel.org>
- <e2c7ca7b48bc3a5a219329f7d086ab1cfd7330a3.1570479299.git.dennis@kernel.org>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <8657ed1a-3698-654d-24da-b260705ffacc@suse.de>
-Date:   Tue, 8 Oct 2019 13:12:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        by mx1.suse.de (Postfix) with ESMTP id C4790B28D;
+        Tue,  8 Oct 2019 11:28:36 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E1093DA7FB; Tue,  8 Oct 2019 13:28:49 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: opencode extent_buffer_get
+Date:   Tue,  8 Oct 2019 13:28:47 +0200
+Message-Id: <20191008112847.14359-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <e2c7ca7b48bc3a5a219329f7d086ab1cfd7330a3.1570479299.git.dennis@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,
-Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+The helper is trivial and we can understand what the atomic_inc on
+something named refs does.
+
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+
+quiz: find where and how is the refs are decremented
+
+ fs/btrfs/ctree.c       | 12 ++++++------
+ fs/btrfs/disk-io.c     |  2 +-
+ fs/btrfs/extent-tree.c |  2 +-
+ fs/btrfs/extent_io.h   |  5 -----
+ fs/btrfs/qgroup.c      |  6 +++---
+ fs/btrfs/relocation.c  |  4 ++--
+ fs/btrfs/tree-log.c    |  2 +-
+ 7 files changed, 14 insertions(+), 19 deletions(-)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index f2f9cf1149a4..b6f30f748d7e 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -1100,7 +1100,7 @@ static noinline int __btrfs_cow_block(struct btrfs_trans_handle *trans,
+ 		    btrfs_header_backref_rev(buf) < BTRFS_MIXED_BACKREF_REV)
+ 			parent_start = buf->start;
+ 
+-		extent_buffer_get(cow);
++		atomic_inc(&cow->refs);
+ 		ret = tree_mod_log_insert_root(root->node, cow, 1);
+ 		BUG_ON(ret < 0);
+ 		rcu_assign_pointer(root->node, cow);
+@@ -2011,7 +2011,7 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 	/* update the path */
+ 	if (left) {
+ 		if (btrfs_header_nritems(left) > orig_slot) {
+-			extent_buffer_get(left);
++			atomic_inc(&left->refs);
+ 			/* left was locked after cow */
+ 			path->nodes[level] = left;
+ 			path->slots[level + 1] -= 1;
+@@ -2601,7 +2601,7 @@ static struct extent_buffer *btrfs_search_slot_get_root(struct btrfs_root *root,
+ 
+ 		} else {
+ 			b = root->commit_root;
+-			extent_buffer_get(b);
++			atomic_inc(&b->refs);
+ 		}
+ 		level = btrfs_header_level(b);
+ 		/*
+@@ -3375,7 +3375,7 @@ static noinline int insert_new_root(struct btrfs_trans_handle *trans,
+ 	free_extent_buffer(old);
+ 
+ 	add_root_to_dirty_list(root);
+-	extent_buffer_get(c);
++	atomic_inc(&c->refs);
+ 	path->nodes[level] = c;
+ 	path->locks[level] = BTRFS_WRITE_LOCK_BLOCKING;
+ 	path->slots[level] = 0;
+@@ -4908,7 +4908,7 @@ static noinline void btrfs_del_leaf(struct btrfs_trans_handle *trans,
+ 
+ 	root_sub_used(root, leaf->len);
+ 
+-	extent_buffer_get(leaf);
++	atomic_inc(&leaf->refs);
+ 	btrfs_free_tree_block(trans, root, leaf, 0, 1);
+ 	free_extent_buffer_stale(leaf);
+ }
+@@ -4989,7 +4989,7 @@ int btrfs_del_items(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 			 * for possible call to del_ptr below
+ 			 */
+ 			slot = path->slots[1];
+-			extent_buffer_get(leaf);
++			atomic_inc(&leaf->refs);
+ 
+ 			btrfs_set_path_blocking(path);
+ 			wret = push_leaf_left(trans, root, path, 1, 1,
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 16dc60b4966d..6655daf0b380 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -608,7 +608,7 @@ static int btree_readpage_end_io_hook(struct btrfs_io_bio *io_bio,
+ 	/* the pending IO might have been the only thing that kept this buffer
+ 	 * in memory.  Make sure we have a ref for all this other checks
+ 	 */
+-	extent_buffer_get(eb);
++	atomic_inc(&eb->refs);
+ 
+ 	reads_done = atomic_dec_and_test(&eb->io_pages);
+ 	if (!reads_done)
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 49cb26fa7c63..9e5845548b76 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5436,7 +5436,7 @@ int btrfs_drop_subtree(struct btrfs_trans_handle *trans,
+ 
+ 	btrfs_assert_tree_locked(parent);
+ 	parent_level = btrfs_header_level(parent);
+-	extent_buffer_get(parent);
++	atomic_inc(&parent->refs);
+ 	path->nodes[parent_level] = parent;
+ 	path->slots[parent_level] = btrfs_header_nritems(parent);
+ 
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index e22045cef89b..a8551a1f56e2 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -230,11 +230,6 @@ static inline int num_extent_pages(const struct extent_buffer *eb)
+ 	       (eb->start >> PAGE_SHIFT);
+ }
+ 
+-static inline void extent_buffer_get(struct extent_buffer *eb)
+-{
+-	atomic_inc(&eb->refs);
+-}
+-
+ static inline int extent_buffer_uptodate(struct extent_buffer *eb)
+ {
+ 	return test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags);
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index e734d6d38579..dcb906c4a63d 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1811,7 +1811,7 @@ static int qgroup_trace_extent_swap(struct btrfs_trans_handle* trans,
+ 		btrfs_item_key_to_cpu(dst_path->nodes[dst_level], &key, 0);
+ 
+ 	/* For src_path */
+-	extent_buffer_get(src_eb);
++	atomic_inc(&src_eb->refs);
+ 	src_path->nodes[root_level] = src_eb;
+ 	src_path->slots[root_level] = dst_path->slots[root_level];
+ 	src_path->locks[root_level] = 0;
+@@ -2067,7 +2067,7 @@ static int qgroup_trace_subtree_swap(struct btrfs_trans_handle *trans,
+ 		goto out;
+ 	}
+ 	/* For dst_path */
+-	extent_buffer_get(dst_eb);
++	atomic_inc(&dst_eb->refs);
+ 	dst_path->nodes[level] = dst_eb;
+ 	dst_path->slots[level] = 0;
+ 	dst_path->locks[level] = 0;
+@@ -2126,7 +2126,7 @@ int btrfs_qgroup_trace_subtree(struct btrfs_trans_handle *trans,
+ 	 * walk back up the tree (adjusting slot pointers as we go)
+ 	 * and restart the search process.
+ 	 */
+-	extent_buffer_get(root_eb); /* For path */
++	atomic_inc(&root_eb->refs);	/* For path */
+ 	path->nodes[root_level] = root_eb;
+ 	path->slots[root_level] = 0;
+ 	path->locks[root_level] = 0; /* so release_path doesn't try to unlock */
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 077ad3d93639..10d004f4ca46 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1254,7 +1254,7 @@ static noinline_for_stack int merge_reloc_root(struct reloc_control *rc,
+ 
+ 	if (btrfs_disk_key_objectid(&root_item->drop_progress) == 0) {
+ 		level = btrfs_root_level(root_item);
+-		extent_buffer_get(reloc_root->node);
++		atomic_inc(&reloc_root->node->refs);
+ 		path->nodes[level] = reloc_root->node;
+ 		path->slots[level] = 0;
+ 	} else {
+@@ -3676,7 +3676,7 @@ int btrfs_reloc_cow_block(struct btrfs_trans_handle *trans,
+ 		       node->new_bytenr != buf->start);
+ 
+ 		drop_node_buffer(node);
+-		extent_buffer_get(cow);
++		atomic_inc(&cow->refs);
+ 		node->eb = cow;
+ 		node->new_bytenr = cow->start;
+ 
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index fa35fb890bf3..b9b7b9d406fd 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -2851,7 +2851,7 @@ static int walk_log_tree(struct btrfs_trans_handle *trans,
+ 	level = btrfs_header_level(log->node);
+ 	orig_level = level;
+ 	path->nodes[level] = log->node;
+-	extent_buffer_get(log->node);
++	atomic_inc(&log->node->refs);
+ 	path->slots[level] = 0;
+ 
+ 	while (1) {
 -- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 247165, AG München)
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+2.23.0
+
