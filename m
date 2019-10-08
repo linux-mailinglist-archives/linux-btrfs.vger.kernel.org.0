@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67C81CF1F5
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 06:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D244CF1F7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 06:49:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729734AbfJHEtq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Oct 2019 00:49:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33618 "EHLO mx1.suse.de"
+        id S1729756AbfJHEts (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Oct 2019 00:49:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33608 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729686AbfJHEtq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Oct 2019 00:49:46 -0400
+        id S1729730AbfJHEtr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Oct 2019 00:49:47 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D91B0AF61
-        for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2019 04:49:44 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 8B7B4AF6B
+        for <linux-btrfs@vger.kernel.org>; Tue,  8 Oct 2019 04:49:46 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 5/7] btrfs-progs: dump-tree/dump-super: Introduce support for bg tree
-Date:   Tue,  8 Oct 2019 12:49:34 +0800
-Message-Id: <20191008044936.157873-6-wqu@suse.com>
+Subject: [PATCH v2 6/7] btrfs-progs: check: Introduce support for bg-tree feature
+Date:   Tue,  8 Oct 2019 12:49:35 +0800
+Message-Id: <20191008044936.157873-7-wqu@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191008044936.157873-1-wqu@suse.com>
 References: <20191008044936.157873-1-wqu@suse.com>
@@ -30,66 +30,67 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just a new tree called BLOCK_GROUP_TREE.
+Just some minor modification.
+
+- original mode:
+  * Block group item can occur in extent tree and bg tree.
+- lowmem mode:
+  * search block group items in bg tree if BG_TREE feature is set.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- cmds/inspect-dump-super.c | 3 ++-
- cmds/inspect-dump-tree.c  | 5 +++++
- print-tree.c              | 3 +++
- 3 files changed, 10 insertions(+), 1 deletion(-)
+ check/main.c        | 3 ++-
+ check/mode-lowmem.c | 9 +++++++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-diff --git a/cmds/inspect-dump-super.c b/cmds/inspect-dump-super.c
-index 65fb3506eac6..414d9c2317d8 100644
---- a/cmds/inspect-dump-super.c
-+++ b/cmds/inspect-dump-super.c
-@@ -229,7 +229,8 @@ static struct readable_flag_entry incompat_flags_array[] = {
- 	DEF_INCOMPAT_FLAG_ENTRY(RAID56),
- 	DEF_INCOMPAT_FLAG_ENTRY(SKINNY_METADATA),
- 	DEF_INCOMPAT_FLAG_ENTRY(NO_HOLES),
--	DEF_INCOMPAT_FLAG_ENTRY(METADATA_UUID)
-+	DEF_INCOMPAT_FLAG_ENTRY(METADATA_UUID),
-+	DEF_INCOMPAT_FLAG_ENTRY(BG_TREE)
- };
- static const int incompat_flags_num = sizeof(incompat_flags_array) /
- 				      sizeof(struct readable_flag_entry);
-diff --git a/cmds/inspect-dump-tree.c b/cmds/inspect-dump-tree.c
-index e50130a4a161..def5bea39a2b 100644
---- a/cmds/inspect-dump-tree.c
-+++ b/cmds/inspect-dump-tree.c
-@@ -150,6 +150,7 @@ static u64 treeid_from_string(const char *str, const char **end)
- 		{ "CSUM", BTRFS_CSUM_TREE_OBJECTID },
- 		{ "CHECKSUM", BTRFS_CSUM_TREE_OBJECTID },
- 		{ "QUOTA", BTRFS_QUOTA_TREE_OBJECTID },
-+		{ "BG", BTRFS_BLOCK_GROUP_TREE_OBJECTID },
- 		{ "UUID", BTRFS_UUID_TREE_OBJECTID },
- 		{ "FREE_SPACE", BTRFS_FREE_SPACE_TREE_OBJECTID },
- 		{ "TREE_LOG_FIXUP", BTRFS_TREE_LOG_FIXUP_OBJECTID },
-@@ -661,6 +662,10 @@ again:
- 				if (!skip)
- 					printf("free space");
- 				break;
-+			case BTRFS_BLOCK_GROUP_TREE_OBJECTID:
-+				if (!skip)
-+					printf("block group");
-+				break;
- 			case BTRFS_MULTIPLE_OBJECTIDS:
- 				if (!skip) {
- 					printf("multiple");
-diff --git a/print-tree.c b/print-tree.c
-index e079f1a971d3..e2a43226ff87 100644
---- a/print-tree.c
-+++ b/print-tree.c
-@@ -770,6 +770,9 @@ void print_objectid(FILE *stream, u64 objectid, u8 type)
- 	case BTRFS_FREE_SPACE_TREE_OBJECTID:
- 		fprintf(stream, "FREE_SPACE_TREE");
+diff --git a/check/main.c b/check/main.c
+index 94ffab46cb70..3fd0bb2317bb 100644
+--- a/check/main.c
++++ b/check/main.c
+@@ -6034,7 +6034,8 @@ static int check_type_with_root(u64 rootid, u8 key_type)
+ 	case BTRFS_EXTENT_ITEM_KEY:
+ 	case BTRFS_METADATA_ITEM_KEY:
+ 	case BTRFS_BLOCK_GROUP_ITEM_KEY:
+-		if (rootid != BTRFS_EXTENT_TREE_OBJECTID)
++		if (rootid != BTRFS_EXTENT_TREE_OBJECTID &&
++		    rootid != BTRFS_BLOCK_GROUP_TREE_OBJECTID)
+ 			goto err;
  		break;
-+	case BTRFS_BLOCK_GROUP_TREE_OBJECTID:
-+		fprintf(stream, "BLOCK_GROUP_TREE");
-+		break;
- 	case BTRFS_MULTIPLE_OBJECTIDS:
- 		fprintf(stream, "MULTIPLE");
- 		break;
+ 	case BTRFS_ROOT_ITEM_KEY:
+diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
+index 5f7f101daab1..fcb8210984eb 100644
+--- a/check/mode-lowmem.c
++++ b/check/mode-lowmem.c
+@@ -4365,7 +4365,7 @@ next:
+ static int check_chunk_item(struct btrfs_fs_info *fs_info,
+ 			    struct extent_buffer *eb, int slot)
+ {
+-	struct btrfs_root *extent_root = fs_info->extent_root;
++	struct btrfs_root *root;
+ 	struct btrfs_root *dev_root = fs_info->dev_root;
+ 	struct btrfs_path path;
+ 	struct btrfs_key chunk_key;
+@@ -4387,6 +4387,11 @@ static int check_chunk_item(struct btrfs_fs_info *fs_info,
+ 	int ret;
+ 	int err = 0;
+ 
++	if (btrfs_fs_incompat(fs_info, BG_TREE))
++		root = fs_info->bg_root;
++	else
++		root = fs_info->extent_root;
++
+ 	btrfs_item_key_to_cpu(eb, &chunk_key, slot);
+ 	chunk = btrfs_item_ptr(eb, slot, struct btrfs_chunk);
+ 	length = btrfs_chunk_length(eb, chunk);
+@@ -4406,7 +4411,7 @@ static int check_chunk_item(struct btrfs_fs_info *fs_info,
+ 	bg_key.offset = length;
+ 
+ 	btrfs_init_path(&path);
+-	ret = btrfs_search_slot(NULL, extent_root, &bg_key, &path, 0, 0);
++	ret = btrfs_search_slot(NULL, root, &bg_key, &path, 0, 0);
+ 	if (ret) {
+ 		error(
+ 		"chunk[%llu %llu) did not find the related block group item",
 -- 
 2.23.0
 
