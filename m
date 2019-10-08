@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49ADCCF50B
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 10:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA146CF59F
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 11:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730514AbfJHIa1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Oct 2019 04:30:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36106 "EHLO mx1.suse.de"
+        id S1729847AbfJHJIO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Oct 2019 05:08:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51924 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728866AbfJHIa1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Oct 2019 04:30:27 -0400
+        id S1729375AbfJHJIO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Oct 2019 05:08:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 06144AFA9;
-        Tue,  8 Oct 2019 08:30:25 +0000 (UTC)
-Subject: Re: [PATCH v2 2/3] btrfs: disk-io: Remove unnecessary check before
- freeing chunk root
+        by mx1.suse.de (Postfix) with ESMTP id 2869EAEFB;
+        Tue,  8 Oct 2019 09:08:12 +0000 (UTC)
+Subject: Re: [PATCH v2 1/3] btrfs: block-group: Refactor
+ btrfs_read_block_groups()
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20191008044909.157750-1-wqu@suse.com>
- <20191008044909.157750-3-wqu@suse.com>
+ <20191008044909.157750-2-wqu@suse.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -77,12 +77,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <ff455a82-e44b-50f3-ddce-ef9958ccbac1@suse.de>
-Date:   Tue, 8 Oct 2019 10:30:24 +0200
+Message-ID: <429858f1-e4a2-3c75-0b08-2783bfa6ab11@suse.de>
+Date:   Tue, 8 Oct 2019 11:08:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191008044909.157750-3-wqu@suse.com>
+In-Reply-To: <20191008044909.157750-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -91,8 +91,11 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,
+Looks good, I especially like the consolidation of the
+btrfs_put_block_group(cache) calls.
+
 Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
