@@ -2,27 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7D2FCF667
-	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 11:47:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A69CCF7E2
+	for <lists+linux-btrfs@lfdr.de>; Tue,  8 Oct 2019 13:12:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730043AbfJHJrj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 8 Oct 2019 05:47:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49096 "EHLO mx1.suse.de"
+        id S1730383AbfJHLMO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 8 Oct 2019 07:12:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58672 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728866AbfJHJrj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 8 Oct 2019 05:47:39 -0400
+        id S1729790AbfJHLMO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 8 Oct 2019 07:12:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8305AAC49;
-        Tue,  8 Oct 2019 09:47:36 +0000 (UTC)
-Subject: Re: [PATCH v2 0/3] btrfs: Introduce new incompat feature BG_TREE to
- hugely reduce mount time
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-Cc:     felix@feldspaten.org
-References: <20191008044909.157750-1-wqu@suse.com>
- <c47049af-d034-0228-c61c-65187d07e6b4@suse.de>
- <80fafbd5-b459-26de-6ebb-98eeb41f2064@gmx.com>
+        by mx1.suse.de (Postfix) with ESMTP id E82A4B15E;
+        Tue,  8 Oct 2019 11:12:11 +0000 (UTC)
+Subject: Re: [PATCH 02/19] btrfs: rename DISCARD opt to DISCARD_SYNC
+To:     Dennis Zhou <dennis@kernel.org>, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>
+Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+References: <cover.1570479299.git.dennis@kernel.org>
+ <e2c7ca7b48bc3a5a219329f7d086ab1cfd7330a3.1570479299.git.dennis@kernel.org>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -80,182 +79,28 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <23af48db-c28b-3406-b136-c5da30884a88@suse.de>
-Date:   Tue, 8 Oct 2019 11:47:35 +0200
+Message-ID: <8657ed1a-3698-654d-24da-b260705ffacc@suse.de>
+Date:   Tue, 8 Oct 2019 13:12:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <80fafbd5-b459-26de-6ebb-98eeb41f2064@gmx.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="SVwWnMv8QZhZOVhsDwNdrJlhtY9rmcvxJ"
+In-Reply-To: <e2c7ca7b48bc3a5a219329f7d086ab1cfd7330a3.1570479299.git.dennis@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---SVwWnMv8QZhZOVhsDwNdrJlhtY9rmcvxJ
-Content-Type: multipart/mixed; boundary="wAvvVLV6qv6R1Dg6Hu8K5bVwH7Csx86CT";
- protected-headers="v1"
-From: Johannes Thumshirn <jthumshirn@suse.de>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org
-Cc: felix@feldspaten.org
-Message-ID: <23af48db-c28b-3406-b136-c5da30884a88@suse.de>
-Subject: Re: [PATCH v2 0/3] btrfs: Introduce new incompat feature BG_TREE to
- hugely reduce mount time
-References: <20191008044909.157750-1-wqu@suse.com>
- <c47049af-d034-0228-c61c-65187d07e6b4@suse.de>
- <80fafbd5-b459-26de-6ebb-98eeb41f2064@gmx.com>
-In-Reply-To: <80fafbd5-b459-26de-6ebb-98eeb41f2064@gmx.com>
-
---wAvvVLV6qv6R1Dg6Hu8K5bVwH7Csx86CT
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-
-On 08/10/2019 11:26, Qu Wenruo wrote:
->=20
->=20
-> On 2019/10/8 =E4=B8=8B=E5=8D=885:14, Johannes Thumshirn wrote:
->>> [[Benchmark]]
->>> Since I have upgraded my rig to all NVME storage, there is no HDD
->>> test result.
->>>
->>> Physical device:	NVMe SSD
->>> VM device:		VirtIO block device, backup by sparse file
->>> Nodesize:		4K  (to bump up tree height)
->>> Extent data size:	4M
->>> Fs size used:		1T
->>>
->>> All file extents on disk is in 4M size, preallocated to reduce space =
-usage
->>> (as the VM uses loopback block device backed by sparse file)
->>
->> Do you have a some additional details about the test setup? I tried to=
-
->> do the same (testing) for a bug Felix (added to Cc) reported to my at
->> the ALPSS Conference and I couldn't reproduce the issue.
->>
->> My testing was a 100TB sparse file passed into a VM and running this
->> script to touch all blockgroups:
->=20
-> Here is my test scripts:
-> ---
-> #!/bin/bash
->=20
-> dev=3D"/dev/vdb"
-> mnt=3D"/mnt/btrfs"
->=20
-> nr_subv=3D16
-> nr_extents=3D16384
-> extent_size=3D$((4 * 1024 * 1024)) # 4M
->=20
-> _fail()
-> {
->         echo "!!! FAILED: $@ !!!"
->         exit 1
-> }
->=20
-> fill_one_subv()
-> {
->         path=3D$1
->         if [ -z $path ]; then
->                 _fail "wrong parameter for fill_one_subv"
->         fi
->         btrfs subv create $path || _fail "create subv"
->=20
->         for i in $(seq 0 $((nr_extents - 1))); do
->                 fallocate -o $((i * $extent_size)) -l $extent_size
-> $path/file || _fail "fallocate"
->         done
-> }
->=20
-> declare -a pids
-> umount $mnt &> /dev/null
-> umount $dev &> /dev/null
->=20
-> #~/btrfs-progs/mkfs.btrfs -f -n 4k $dev -O bg-tree
-> mkfs.btrfs -f -n 4k $dev
-> mount $dev $mnt -o nospace_cache
->=20
-> for i in $(seq 1 $nr_subv); do
->         fill_one_subv $mnt/subv_${i} &
->         pids[$i]=3D$!
-> done
->=20
-> for i in $(seq 1 $nr_subv); do
->         wait ${pids[$i]}
-> done
-> sync
-> umount $dev
->=20
-> ---
->=20
->>
->> #!/bin/sh
->>
->> FILE=3D/mnt/test
->>
->> add_dirty_bg() {
->>         off=3D"$1"
->>         len=3D"$2"
->>         touch $FILE
->>         xfs_io -c "falloc $off $len" $FILE
->>         rm $FILE
->> }
->>
->> mkfs.btrfs /dev/vda
->> mount /dev/vda /mnt
->>
->> for ((i =3D 1; i < 100000; i++)); do
->>         add_dirty_bg $i"G" "1G"
->> done
->=20
-> This wont really build a good enough extent tree layout.
->=20
-> 1G fallocate will only cause 8 128M file extents, thus 8 EXTENT_ITEMs.
->=20
-> Thus a leaf (16K by default) can still contain a lot of BLOCK_GROUPS al=
-l
-> together.
->=20
-> To build a case to really show the problem, you'll need a lot of
-> EXTENT_ITEM/METADATA_ITEMS to fill the gaps between BLOCK_GROUPS.
->=20
-> My test scripts did that, but may still not represent the real world, a=
-s
-> real world can cause even smaller extents due to snapshots.
->=20
-
-Ah thanks for the explanation. I'll give your testscript a try.
-
-
---=20
+Looks good,
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+-- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
 SUSE Software Solutions Germany GmbH
 Maxfeldstr. 5
-90409 N=C3=BCrnberg
+90409 Nürnberg
 Germany
-(HRB 247165, AG M=C3=BCnchen)
-Key fingerprint =3D EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
-
-
---wAvvVLV6qv6R1Dg6Hu8K5bVwH7Csx86CT--
-
---SVwWnMv8QZhZOVhsDwNdrJlhtY9rmcvxJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQTHVT2/GDXEB5TC6zbSnvIir4od7gUCXZxbOAAKCRDSnvIir4od
-7gGGAQDBm/evDR3hH1Yk2S2q4YbA/XMaBSEc2YoeY5Afukwr/gD/XXleAiRmoRRZ
-aDAXASK/Uy7djjliIONCrizKljP7tgk=
-=9ycg
------END PGP SIGNATURE-----
-
---SVwWnMv8QZhZOVhsDwNdrJlhtY9rmcvxJ--
+(HRB 247165, AG München)
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
