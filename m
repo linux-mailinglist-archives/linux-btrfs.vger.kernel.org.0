@@ -2,127 +2,195 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69EC1D1460
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2019 18:44:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F04F5D1568
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2019 19:20:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730708AbfJIQo0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Oct 2019 12:44:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56294 "EHLO mail.kernel.org"
+        id S1731451AbfJIRUa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Oct 2019 13:20:30 -0400
+Received: from mail.itouring.de ([188.40.134.68]:47412 "EHLO mail.itouring.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729644AbfJIQo0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 9 Oct 2019 12:44:26 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03746206BB
-        for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2019 16:44:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570639465;
-        bh=nryicaO10T/qEAhNndCA6zs01yN74x7Dz/w517gzzVs=;
-        h=From:To:Subject:Date:From;
-        b=Zx+hQtl5Bt06puJaHkk8l44pax2cHEzrQCQk+k2bJulyhmcRvh7gVIudtB1iEruQg
-         /q8Hv3CfHRaWhAwKQ1XYY1vK3i3IlzQIcnSakF58Ik3dL6Pnb9ylO2nsKVRmgUkQNt
-         0IV4YA13hRCYWEHSIETvEticOx2P1xmAV4OHj6ZY=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: fix negative subv_writers counter and data space leak after buffered write
-Date:   Wed,  9 Oct 2019 17:44:22 +0100
-Message-Id: <20191009164422.7202-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1731417AbfJIRUa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 9 Oct 2019 13:20:30 -0400
+Received: from tux.wizards.de (pD9EBF359.dip0.t-ipconnect.de [217.235.243.89])
+        by mail.itouring.de (Postfix) with ESMTPSA id 62BCD4169EE1;
+        Wed,  9 Oct 2019 19:20:28 +0200 (CEST)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.wizards.de (Postfix) with ESMTP id 17305F01600;
+        Wed,  9 Oct 2019 19:20:28 +0200 (CEST)
+Subject: Re: [PATCH 2/2] Btrfs: keep pages dirty when using
+ btrfs_writepage_fixup_worker
+To:     Chris Mason <clm@fb.com>, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org
+References: <20180620145612.1644763-1-clm@fb.com>
+ <20180620145612.1644763-3-clm@fb.com>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <2b2ce8e7-ffdc-4e1f-67c6-138ccc02c016@applied-asynchrony.com>
+Date:   Wed, 9 Oct 2019 19:20:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <20180620145612.1644763-3-clm@fb.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On 6/20/18 4:56 PM, Chris Mason wrote:
+> For COW, btrfs expects pages dirty pages to have been through a few setup
+> steps.  This includes reserving space for the new block allocations and marking
+> the range in the state tree for delayed allocation.
+> 
+> A few places outside btrfs will dirty pages directly, especially when unmapping
+> mmap'd pages.  In order for these to properly go through COW, we run them
+> through a fixup worker to wait for stable pages, and do the delalloc prep.
+> 
+> 87826df0ec36 added a window where the dirty pages were cleaned, but pending
+> more action from the fixup worker.  During this window, page migration can jump
+> in and relocate the page.  Once our fixup work actually starts, it finds
+> page->mapping is NULL and we end up freeing the page without ever writing it.
+> 
+> This leads to crc errors and other exciting problems, since it screws up the
+> whole statemachine for waiting for ordered extents.  The fix here is to keep
+> the page dirty while we're waiting for the fixup worker to get to work.  This
+> also makes sure the error handling in btrfs_writepage_fixup_worker does the
+> right thing with dirty bits when we run out of space.
+> 
+> Signed-off-by: Chris Mason <clm@fb.com>
 
-When doing a buffered write it's possible to leave the subv_writers
-counter of the root, used for synchronization between buffered nocow
-writers and snapshotting. This happens in an exceptional case like the
-following:
+Chris, is this still relevant? It's not in mainline and seems to work since it
+didn't seem to have eaten data in my tree since last year, but then again I just
+have regular and fairly pedestrian use cases. Dave asked for a clarification [1]
+but nothing ever happened.
 
-1) We fail to allocate data space for the write, since there's not
-   enough available data space nor enough unallocated space for allocating
-   a new data block group;
+It sounds important enough to clarify once and for all, especially in light of
+other recent dirty page handling fixes which may or may not interact with this.
 
-2) Because of that failure, we try to go to NOCOW mode, which succeeds
-   and therefore we set the local variable 'only_release_metadata' to true
-   and set the root's sub_writers counter to 1 through the call to
-   btrfs_start_write_no_snapshotting() made by check_can_nocow();
+thanks!
+Holger
 
-3) The call to btrfs_copy_from_user() returns zero, which is very unlikely
-   to happen but not impossible;
+[1] https://patchwork.kernel.org/patch/10477683/#22699195
 
-4) No pages are copied because btrfs_copy_from_user() returned zero;
-
-5) We call btrfs_end_write_no_snapshotting() which decrements the root's
-   subv_writers counter to 0;
-
-6) We don't set 'only_release_metadata' back to 'false' because we do
-   it only if 'copied', the value returned by btrfs_copy_from_user(), is
-   greater than zero;
-
-7) On the next iteration of the while loop, which processes the same
-   page range, we are now able to allocate data space for the write (we
-   got enough data space released in the meanwhile);
-
-8) After this if we fail at btrfs_delalloc_reserve_metadata(), because
-   now there isn't enough free metadata space, or in some other place
-   further below (prepare_pages(), lock_and_cleanup_extent_if_need(),
-   btrfs_dirty_pages()), we break out of the while loop with
-   'only_release_metadata' having a value of 'true';
-
-9) Because 'only_release_metadata' is 'true' we end up decrementing the
-   root's subv_writers counter to -1, and we also end up not releasing the
-   data space previously reserved through btrfs_check_data_free_space().
-   As a consequence the mechanism for synchronizing NOCOW buffered writes
-   with snapshotting gets broken.
-
-Fix this by always setting 'only_release_metadata' to false whenever it
-currently has a true value, independently of having been able to copy any
-data to the pages.
-
-Fixes: 8257b2dc3c1a10 ("Btrfs: introduce btrfs_{start, end}_nocow_write() for each subvolume")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/file.c | 23 ++++++++++++-----------
- 1 file changed, 12 insertions(+), 11 deletions(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 27e5b269e729..c98c1d10fd3a 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1780,18 +1780,19 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 		}
- 
- 		release_bytes = 0;
--		if (only_release_metadata)
-+		if (only_release_metadata) {
- 			btrfs_end_write_no_snapshotting(root);
--
--		if (only_release_metadata && copied > 0) {
--			lockstart = round_down(pos,
--					       fs_info->sectorsize);
--			lockend = round_up(pos + copied,
--					   fs_info->sectorsize) - 1;
--
--			set_extent_bit(&BTRFS_I(inode)->io_tree, lockstart,
--				       lockend, EXTENT_NORESERVE, NULL,
--				       NULL, GFP_NOFS);
-+			if (copied > 0) {
-+				lockstart = round_down(pos,
-+						       fs_info->sectorsize);
-+				lockend = round_up(pos + copied,
-+						   fs_info->sectorsize) - 1;
-+
-+				set_extent_bit(&BTRFS_I(inode)->io_tree,
-+					       lockstart, lockend,
-+					       EXTENT_NORESERVE, NULL, NULL,
-+					       GFP_NOFS);
-+			}
- 			only_release_metadata = false;
- 		}
- 
--- 
-2.11.0
+> ---
+>   fs/btrfs/inode.c | 67 +++++++++++++++++++++++++++++++++++++++++---------------
+>   1 file changed, 49 insertions(+), 18 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 0b86cf1..5538900 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2100,11 +2100,21 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+>   	page = fixup->page;
+>   again:
+>   	lock_page(page);
+> -	if (!page->mapping || !PageDirty(page) || !PageChecked(page)) {
+> -		ClearPageChecked(page);
+> +
+> +	/*
+> +	 * before we queued this fixup, we took a reference on the page.
+> +	 * page->mapping may go NULL, but it shouldn't be moved to a
+> +	 * different address space.
+> +	 */
+> +	if (!page->mapping || !PageDirty(page) || !PageChecked(page))
+>   		goto out_page;
+> -	}
+>   
+> +	/*
+> +	 * we keep the PageChecked() bit set until we're done with the
+> +	 * btrfs_start_ordered_extent() dance that we do below.  That
+> +	 * drops and retakes the page lock, so we don't want new
+> +	 * fixup workers queued for this page during the churn.
+> +	 */
+>   	inode = page->mapping->host;
+>   	page_start = page_offset(page);
+>   	page_end = page_offset(page) + PAGE_SIZE - 1;
+> @@ -2129,33 +2139,46 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+>   
+>   	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, page_start,
+>   					   PAGE_SIZE);
+> -	if (ret) {
+> -		mapping_set_error(page->mapping, ret);
+> -		end_extent_writepage(page, ret, page_start, page_end);
+> -		ClearPageChecked(page);
+> -		goto out;
+> -	 }
+> +	if (ret)
+> +		goto out_error;
+>   
+>   	ret = btrfs_set_extent_delalloc(inode, page_start, page_end, 0,
+>   					&cached_state, 0);
+> -	if (ret) {
+> -		mapping_set_error(page->mapping, ret);
+> -		end_extent_writepage(page, ret, page_start, page_end);
+> -		ClearPageChecked(page);
+> -		goto out;
+> -	}
+> +	if (ret)
+> +		goto out_error;
+>   
+> -	ClearPageChecked(page);
+> -	set_page_dirty(page);
+>   	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, false);
+> +
+> +	/*
+> +	 * everything went as planned, we're now the proud owners of a
+> +	 * Dirty page with delayed allocation bits set and space reserved
+> +	 * for our COW destination.
+> +	 *
+> +	 * The page was dirty when we started, nothing should have cleaned it.
+> +	 */
+> +	BUG_ON(!PageDirty(page));
+> +
+>   out:
+>   	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
+>   			     &cached_state);
+>   out_page:
+> +	ClearPageChecked(page);
+>   	unlock_page(page);
+>   	put_page(page);
+>   	kfree(fixup);
+>   	extent_changeset_free(data_reserved);
+> +	return;
+> +
+> +out_error:
+> +	/*
+> +	 * We hit ENOSPC or other errors.  Update the mapping and page to
+> +	 * reflect the errors and clean the page.
+> +	 */
+> +	mapping_set_error(page->mapping, ret);
+> +	end_extent_writepage(page, ret, page_start, page_end);
+> +	clear_page_dirty_for_io(page);
+> +	SetPageError(page);
+> +	goto out;
+>   }
+>   
+>   /*
+> @@ -2179,6 +2202,13 @@ static int btrfs_writepage_start_hook(struct page *page, u64 start, u64 end)
+>   	if (TestClearPagePrivate2(page))
+>   		return 0;
+>   
+> +	/*
+> +	 * PageChecked is set below when we create a fixup worker for this page,
+> +	 * don't try to create another one if we're already PageChecked()
+> +	 *
+> +	 * The extent_io writepage code will redirty the page if we send
+> +	 * back EAGAIN.
+> +	 */
+>   	if (PageChecked(page))
+>   		return -EAGAIN;
+>   
+> @@ -2192,7 +2222,8 @@ static int btrfs_writepage_start_hook(struct page *page, u64 start, u64 end)
+>   			btrfs_writepage_fixup_worker, NULL, NULL);
+>   	fixup->page = page;
+>   	btrfs_queue_work(fs_info->fixup_workers, &fixup->work);
+> -	return -EBUSY;
+> +
+> +	return -EAGAIN;
+>   }
+>   
+>   static int insert_reserved_file_extent(struct btrfs_trans_handle *trans,
+> 
 
