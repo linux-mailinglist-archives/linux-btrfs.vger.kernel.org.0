@@ -2,72 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 974A7D1168
-	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2019 16:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 588A5D1459
+	for <lists+linux-btrfs@lfdr.de>; Wed,  9 Oct 2019 18:43:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731460AbfJIOi5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Oct 2019 10:38:57 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45738 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729491AbfJIOi4 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Oct 2019 10:38:56 -0400
-Received: by mail-wr1-f66.google.com with SMTP id r5so3305888wrm.12
-        for <linux-btrfs@vger.kernel.org>; Wed, 09 Oct 2019 07:38:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:subject:from:to:mime-version
-         :content-transfer-encoding;
-        bh=oSgoOzXSMJUV/meWh+4YKR1b/UjVbkB5dxHC4fUF46M=;
-        b=LRk5XIfgDiLRKBp/QR0JkMmoVejX7mb2V+EdYY4xNQopCUF/tTIzWdKQXPfB9qgf3W
-         1EdT1xsYsxKVUT0WEitG3nOvVFarpzPM5IxLvjbtm6eM4TC3SKfi1gJpV9453+YeWt2P
-         /v0F8N52NIF1GKtWAecSqHGrqcS8vRoUqre0/dkyJXs6Si/xN/Ri+FO+K5PuKhHCIlw3
-         MKQb20qoL7mqfbZBzwmU+bEGbpMtBxJb/M1ZNj54UA6mKnvClRGEQWUuxlV49YEue6KY
-         IFDApxCQFs65bQT5DKUM6VbuxaAoAJf+lQJLyA9kgm7ixrb4z+8aTqxeM1SEExxTCh/6
-         wugg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:subject:from:to:mime-version
-         :content-transfer-encoding;
-        bh=oSgoOzXSMJUV/meWh+4YKR1b/UjVbkB5dxHC4fUF46M=;
-        b=ZrnS/aAmsh0F0sn0lLt2nJMS+VsSaIh7h+hPoZBuisFgBTcm4wxSRcGnHYE70u/P/h
-         L4wM5tAzWhudn35sLKmLnjZ5GrXW0b63NSOUwPMuf/pO12mrWbfBho5QA3xcr0gBJzj1
-         kOJAlkBSwyRhIjKB0bNs092y4Q+AjOslDLA1ygZsmDO1AM5h8PYwGWH+D4DgiWu1BXJN
-         4aKFw5ODnlC3Mz6HsKo8+TY9f7t3U/TVnDb4cD3F/p7B8sqGgNJW/wbBWvR+rE2Q5fo5
-         jMpdHCeKHGXfURm8qNmmp3/+TFyC6cWGSMQkvhtjk4Z5ZuWreL84ms10BNpkJsYIdTV7
-         4avQ==
-X-Gm-Message-State: APjAAAVQUML+ynLmI1J9rZKGLqKUmQjWKKitg6FppRBxbZM7ziR6YmnP
-        Ney0NgnZl+ab6AJZfuz01LNn5egU
-X-Google-Smtp-Source: APXvYqw+/j5SdrNWXGq3qLpBhE1sCdFHhFuSl+EuJkFFYL7DblSSAUrqVqjnLTRij+V74kPLsl2kVw==
-X-Received: by 2002:a5d:56c4:: with SMTP id m4mr3095001wrw.195.1570631934414;
-        Wed, 09 Oct 2019 07:38:54 -0700 (PDT)
-Received: from [127.0.0.1] (212095005020.public.telering.at. [212.95.5.20])
-        by smtp.gmail.com with ESMTPSA id y5sm2535193wma.14.2019.10.09.07.38.52
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 09 Oct 2019 07:38:53 -0700 (PDT)
-Message-ID: <2a2f542ad52eaa6aab3fb58ce72e3258@swift.generated>
-Date:   Wed, 09 Oct 2019 16:38:05 +0200
-Subject: Re: Domain eyecamera.de
-From:   Matthias Jung <matzejungmj4@gmail.com>
-To:     "" <linux-btrfs@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S1731538AbfJIQnt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Oct 2019 12:43:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54818 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730708AbfJIQnt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 9 Oct 2019 12:43:49 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 332F821929
+        for <linux-btrfs@vger.kernel.org>; Wed,  9 Oct 2019 16:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1570639428;
+        bh=6IZu/yWdWOBMnzLN8v3g20gmhMity+DI65o8ju+ljXU=;
+        h=From:To:Subject:Date:From;
+        b=JBFM4HXtPlAYftUPavcCTmsIBV2a3e/1lzkoufqBm+JaQRArj4yjy3QGm1Odj6S2y
+         ysN/Ufl8atVMO8slENzVMeacWO0fJDp2I339GBX00h0JiV8rOccbmLTkf6bvbwdPnk
+         d80EXCKsvO3Ks8y6m/tKXs+PWtDQFomEcDByiveQ=
+From:   fdmanana@kernel.org
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH] Btrfs: add missing extents release on file extent cluster relocation error
+Date:   Wed,  9 Oct 2019 17:43:45 +0100
+Message-Id: <20191009164345.23713-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Sehr geehrte Damen und Herren
+From: Filipe Manana <fdmanana@suse.com>
 
-eyecamera.de Domain Name ist jetzt verf=
-=C3=BCgbar und ist jetzt zu verkaufen.
-Ich freue mich auf Ihre Antwort!=
+If we error out when finding a page at relocate_file_extent_cluster(), we
+need to release the outstanding extents counter on the relocation inode,
+set by the previous call to btrfs_delalloc_reserve_metadata(), otherwise
+the inode's block reserve size can never decrease to zero and metadata
+space is leaked. Therefore add a call to btrfs_delalloc_release_extents()
+in case we can't find the target page.
 
+Fixes: 8b62f87bad9cf0 ("Btrfs: rework outstanding_extents")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/relocation.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Es gr=C3=BC=C3=9Ft herzlich
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 00504657b602..88dbc0127793 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -3277,6 +3277,8 @@ static int relocate_file_extent_cluster(struct inode *inode,
+ 			if (!page) {
+ 				btrfs_delalloc_release_metadata(BTRFS_I(inode),
+ 							PAGE_SIZE, true);
++				btrfs_delalloc_release_extents(BTRFS_I(inode),
++							       PAGE_SIZE, true);
+ 				ret = -ENOMEM;
+ 				goto out;
+ 			}
+-- 
+2.11.0
 
-Matthias Jung
-
-_________________=
-__________________________
