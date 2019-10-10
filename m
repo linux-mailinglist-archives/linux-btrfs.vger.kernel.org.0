@@ -2,142 +2,124 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DAB0D1E8B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 04:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46091D1E89
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 04:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732616AbfJJCjg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Oct 2019 22:39:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41152 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726465AbfJJCjf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 9 Oct 2019 22:39:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1E64BAE35
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2019 02:39:33 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
+        id S1732447AbfJJCjd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Oct 2019 22:39:33 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:35450 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726465AbfJJCjd (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Wed, 9 Oct 2019 22:39:33 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9A2ahLx074340
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2019 02:39:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=X253TyGbIdDFM4rkmWF1iNn7iVqrbnhrqrVgdzLVHp8=;
+ b=OLEe1yAdBBflaLMt53uFNUlF8cJ0owdzEhqdZ1Say2i7WnItIRRSd3CfEngph1ZPcxYD
+ 7CIOJVZuvy8TebtzHgyVN1GxA40u/vdEPKi9gK7p+9vg6rOCBDSJvaEutFqv06UF9wLi
+ dHw/mX7kOmoh+3YlMu3bkcFdLE6XACyl3JSzM4qZcQZY8aKH0AUv2PbkbxSjsECn5Xa2
+ atM/ZN3J/6hdgU/m2N+QF6fdPyQls8tYMyLsrYLi7cKtcwvxLXFLdfPMgzujhmTCyCIk
+ Uol98g9+EDF9Z0pi+vIiYo0JoPfpzLKfFUJDD2RrrazLmpcyIQf4GTOFRMIZz9LCFEX8 6A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2vektrr0q1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2019 02:39:31 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9A2c21m017804
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2019 02:39:30 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 2vh5cc3few-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2019 02:39:30 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9A2dTqc029088
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2019 02:39:29 GMT
+Received: from mb.wifi.oracle.com (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 09 Oct 2019 19:39:29 -0700
+From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 0/3] btrfs: Introduce new incompat feature BG_TREE to hugely reduce mount time
+Subject: [PATCH] btrfs: use bool argument in free_root_pointers()
 Date:   Thu, 10 Oct 2019 10:39:25 +0800
-Message-Id: <20191010023928.24586-1-wqu@suse.com>
+Message-Id: <20191010023925.4844-1-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9405 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=865
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910100024
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9405 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=949 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910100024
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This patchset can be fetched from:
-https://github.com/adam900710/linux/tree/bg_tree
-Which is based on v5.4-rc1 tag.
+We don't need int argument bool shall do in free_root_pointers().
+And rename the argument as it confused two people.
 
-This patchset will hugely reduce mount time of large fs by putting all
-block group items into its own tree.
+Signed-off-by: Anand Jain <anand.jain@oracle.com>
+---
+ fs/btrfs/disk-io.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-The old behavior will try to read out all block group items at mount
-time, however due to the key of block group items are scattered across
-tons of extent items, we must call btrfs_search_slot() for each block
-group.
-
-It works fine for small fs, but when number of block groups goes beyond
-200, such tree search will become a random read, causing obvious slow
-down.
-
-On the other hand, btrfs_read_chunk_tree() is still very fast, since we
-put CHUNK_ITEMS into their own tree and package them next to each other.
-
-Following this idea, we could do the same thing for block group items,
-so instead of triggering btrfs_search_slot() for each block group, we
-just call btrfs_next_item() and under most case we could finish in
-memory, and hugely speed up mount (see BENCHMARK below).
-
-The only disadvantage is, this method introduce an incompatible feature,
-so existing fs can't use this feature directly.
-Either specify it at mkfs time, or use btrfs-progs offline convert tool.
-
-[[Benchmark]]
-Since I have upgraded my rig to all NVME storage, there is no HDD
-test result.
-
-Physical device:	NVMe SSD
-VM device:		VirtIO block device, backup by sparse file
-Nodesize:		4K  (to bump up tree height)
-Extent data size:	4M
-Fs size used:		1T
-
-All file extents on disk is in 4M size, preallocated to reduce space usage
-(as the VM uses loopback block device backed by sparse file)
-
-Without patchset:
-Use ftrace function graph:
-
- 7)               |  open_ctree [btrfs]() {
- 7)               |    btrfs_read_block_groups [btrfs]() {
- 7) @ 805851.8 us |    }
- 7) @ 911890.2 us |  }
-
- btrfs_read_block_groups() takes 88% of the total mount time,
-
-With patchset, and use -O bg-tree mkfs option:
-
- 6)               |  open_ctree [btrfs]() {
- 6)               |    btrfs_read_block_groups [btrfs]() {
- 6) * 91204.69 us |    }
- 6) @ 192039.5 us |  }
-
-  open_ctree() time is only 21% of original mount time.
-  And btrfs_read_block_groups() only takes 47% of total open_ctree()
-  execution time.
-
-The reason is pretty obvious when considering how many tree blocks needs
-to be read from disk:
-- Original extent tree:
-  nodes:	55
-  leaves:	1025
-  total:	1080
-- Block group tree:
-  nodes:	1
-  leaves:	13
-  total:	14
-
-Not to mention all the tree blocks readahead works pretty fine for bg
-tree, as we will read every item.
-While readahead for extent tree will just be a diaster, as all block
-groups are scatter across the whole extent tree.
-
-Changelog:
-v2:
-- Rebase to v5.4-rc1
-  Minor conflicts due to code moved to block-group.c
-- Fix a bug where some block groups will not be loaded at mount time
-  It's a bug in that refactor patch, not exposed by previous round of
-  tests.
-- Add a new patch to remove a dead check
-- Update benchmark to NVMe based result
-  Hardware upgrade is not always a good thing for benchmark.
-
-Changelog:
-v3:
-- Add a separate patch to fix possible memory leak
-- Add Reviewed-by tag for the refactor patch
-- Reword the refactor patch to mention the change of use
-  btrfs_fs_incompat()
-
-Qu Wenruo (3):
-  btrfs: block-group: Fix a memory leak due to missing
-    btrfs_put_block_group()
-  btrfs: block-group: Refactor btrfs_read_block_groups()
-  btrfs: Introduce new incompat feature, BG_TREE, to speed up mount time
-
- fs/btrfs/block-group.c          | 306 ++++++++++++++++++++------------
- fs/btrfs/ctree.h                |   5 +-
- fs/btrfs/disk-io.c              |  13 ++
- fs/btrfs/sysfs.c                |   2 +
- include/uapi/linux/btrfs.h      |   1 +
- include/uapi/linux/btrfs_tree.h |   3 +
- 6 files changed, 212 insertions(+), 118 deletions(-)
-
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index f314fa9fc06e..5a0033b6cf2e 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2024,7 +2024,7 @@ static void free_root_extent_buffers(struct btrfs_root *root)
+ }
+ 
+ /* helper to cleanup tree roots */
+-static void free_root_pointers(struct btrfs_fs_info *info, int chunk_root)
++static void free_root_pointers(struct btrfs_fs_info *info, bool free_chunk_root)
+ {
+ 	free_root_extent_buffers(info->tree_root);
+ 
+@@ -2033,7 +2033,7 @@ static void free_root_pointers(struct btrfs_fs_info *info, int chunk_root)
+ 	free_root_extent_buffers(info->csum_root);
+ 	free_root_extent_buffers(info->quota_root);
+ 	free_root_extent_buffers(info->uuid_root);
+-	if (chunk_root)
++	if (free_chunk_root)
+ 		free_root_extent_buffers(info->chunk_root);
+ 	free_root_extent_buffers(info->free_space_root);
+ }
+@@ -3327,7 +3327,7 @@ int __cold open_ctree(struct super_block *sb,
+ 	btrfs_put_block_group_cache(fs_info);
+ 
+ fail_tree_roots:
+-	free_root_pointers(fs_info, 1);
++	free_root_pointers(fs_info, true);
+ 	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
+ 
+ fail_sb_buffer:
+@@ -3359,7 +3359,7 @@ int __cold open_ctree(struct super_block *sb,
+ 	if (!btrfs_test_opt(fs_info, USEBACKUPROOT))
+ 		goto fail_tree_roots;
+ 
+-	free_root_pointers(fs_info, 0);
++	free_root_pointers(fs_info, false);
+ 
+ 	/* don't use the log in recovery mode, it won't be valid */
+ 	btrfs_set_super_log_root(disk_super, 0);
+@@ -4053,7 +4053,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
+ 	btrfs_free_block_groups(fs_info);
+ 
+ 	clear_bit(BTRFS_FS_OPEN, &fs_info->flags);
+-	free_root_pointers(fs_info, 1);
++	free_root_pointers(fs_info, true);
+ 
+ 	iput(fs_info->btree_inode);
+ 
 -- 
 2.23.0
 
