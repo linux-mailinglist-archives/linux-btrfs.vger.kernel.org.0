@@ -2,110 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB74BD2235
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 10:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E29FD2568
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 11:02:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733041AbfJJIAy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Oct 2019 04:00:54 -0400
-Received: from sender2-of-o52.zoho.com.cn ([163.53.93.247]:21340 "EHLO
-        sender2-of-o52.zoho.com.cn" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1732980AbfJJIAx (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Oct 2019 04:00:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1570694428; cv=none; 
-        d=zoho.com.cn; s=zohoarc; 
-        b=ZyCRR6iwDW50qqU+Lcwq4uKxR+cuW7ZfCN8cWRtSwBRoScEyP1YEU3JKvzFjh4GEzBxozRsQaSxescGM7kotvsrNZu0/pnp6uESqf3NKzAAAaua2hw1lHv+rZY8oFAqybQVwAygs61zSuh0FVHGcZSBA7dbSGz7J3pWfC9LTlz4=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zoho.com.cn; s=zohoarc; 
-        t=1570694428; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To:ARC-Authentication-Results; 
-        bh=9pEL0fnUunjkqlpT09iTlLP2vgxeH9ACAgKskBsx378=; 
-        b=m8CZ9yqoojaZVju9lv9e/WDfru82boLzXR/tzPZxSxJi2lNMsT7ATDtxOMJRdX0MjQa6dbkRbSKcurWTwjdKk1iEiuTeWPNHYHgiQVG0MrckPphk7RItPJwKpXpYyUb2D5hv/cowbVs9pj0Si7y2RfWwOPViZzgO1sgXihdHwvo=
-ARC-Authentication-Results: i=1; mx.zoho.com.cn;
-        dkim=pass  header.i=mykernel.net;
-        spf=pass  smtp.mailfrom=cgxu519@mykernel.net;
-        dmarc=pass header.from=<cgxu519@mykernel.net> header.from=<cgxu519@mykernel.net>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1570694428;
-        s=zohomail; d=mykernel.net; i=cgxu519@mykernel.net;
-        h=From:To:Cc:Message-ID:Subject:Date:In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:Content-Type;
-        l=1819; bh=9pEL0fnUunjkqlpT09iTlLP2vgxeH9ACAgKskBsx378=;
-        b=RXY3/6aA+JKHb+JbRMhauyWJtj9Q50gpcGg/KfIJQ7D/Wdwwm6PXpIPtuKEhysKH
-        JKSTkLh9dXfL7u3iNsBJKiseaGgQHLE6nGAb3USCbIhNTlLgBgAXyFSYAfBiygrAuH1
-        ucRHbMUn33YFR2yHTf/tRjvIxf1AA1/S5pODOeC0=
-Received: from localhost.localdomain (218.18.229.179 [218.18.229.179]) by mx.zoho.com.cn
-        with SMTPS id 1570694426276335.8035463421512; Thu, 10 Oct 2019 16:00:26 +0800 (CST)
-From:   Chengguang Xu <cgxu519@mykernel.net>
-To:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com
-Cc:     linux-btrfs@vger.kernel.org, Chengguang Xu <cgxu519@mykernel.net>
-Message-ID: <20191010075958.28346-3-cgxu519@mykernel.net>
-Subject: [PATCH v2 3/3] btrfs: using enum to replace macro
-Date:   Thu, 10 Oct 2019 15:59:58 +0800
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191010075958.28346-1-cgxu519@mykernel.net>
-References: <20191010075958.28346-1-cgxu519@mykernel.net>
+        id S2389043AbfJJI7j (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Oct 2019 04:59:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55130 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388632AbfJJI7i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Oct 2019 04:59:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 536D5B197
+        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2019 08:59:36 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
+Subject: [PULL REQUEST] btrfs-progs: For next merge window
+Date:   Thu, 10 Oct 2019 16:59:32 +0800
+Message-Id: <20191010085932.39105-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-ZohoCNMailClient: External
-Content-Type: text/plain; charset=utf8
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Using enum to replace macro definition
-of extent types.
+This patchset can be fetched from github:
+https://github.com/adam900710/btrfs-progs/tree/for_next
+Which is based on devel branch, with the following HEAD:
 
-Signed-off-by: Chengguang Xu <cgxu519@mykernel.net>
----
-v1->v2:
-- Explicitly specify value for enum.
-- Change the name BTRFS_FILE_EXTENT_TYPES to BTRFS_NR_FILE_EXTENT_TYPES.
+commit d928fcabc8aed32b5ccab71220abcff9bffac377 (david/devel)
+Author: David Sterba <dsterba@suse.com>
+Date:   Mon Oct 7 18:23:52 2019 +0200
 
- fs/btrfs/tree-checker.c         |  4 ++--
- include/uapi/linux/btrfs_tree.h | 10 ++++++----
- 2 files changed, 8 insertions(+), 6 deletions(-)
+    btrfs-progs: add BLAKE2 to hash-speedtest
 
-diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-index 92bde1d5b5d7..0e71085c008a 100644
---- a/fs/btrfs/tree-checker.c
-+++ b/fs/btrfs/tree-checker.c
-@@ -143,11 +143,11 @@ static int check_extent_data_item(struct extent_buffe=
-r *leaf,
-=20
- =09fi =3D btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
-=20
--=09if (btrfs_file_extent_type(leaf, fi) > BTRFS_FILE_EXTENT_TYPES) {
-+=09if (btrfs_file_extent_type(leaf, fi) >=3D BTRFS_NR_FILE_EXTENT_TYPES) {
- =09=09file_extent_err(leaf, slot,
- =09=09"invalid type for file extent, have %u expect range [0, %u]",
- =09=09=09btrfs_file_extent_type(leaf, fi),
--=09=09=09BTRFS_FILE_EXTENT_TYPES);
-+=09=09=09BTRFS_NR_FILE_EXTENT_TYPES - 1);
- =09=09return -EUCLEAN;
- =09}
-=20
-diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tre=
-e.h
-index b65c7ee75bc7..4c8f9ea73191 100644
---- a/include/uapi/linux/btrfs_tree.h
-+++ b/include/uapi/linux/btrfs_tree.h
-@@ -737,10 +737,12 @@ struct btrfs_balance_item {
- =09__le64 unused[4];
- } __attribute__ ((__packed__));
-=20
--#define BTRFS_FILE_EXTENT_INLINE 0
--#define BTRFS_FILE_EXTENT_REG 1
--#define BTRFS_FILE_EXTENT_PREALLOC 2
--#define BTRFS_FILE_EXTENT_TYPES=092
-+enum {
-+=09BTRFS_FILE_EXTENT_INLINE =3D 0,
-+=09BTRFS_FILE_EXTENT_REG =3D 1,
-+=09BTRFS_FILE_EXTENT_PREALLOC =3D 2,
-+=09BTRFS_NR_FILE_EXTENT_TYPES =3D 3
-+};
-=20
- struct btrfs_file_extent_item {
- =09/*
---=20
-2.20.1
+Please note that, for some binary test images, the patch from patchwork
+doesn't apply correctly and would cause empty files. Not sure if it's
+abug of patchwork.
 
+This patchset contains the following changes:
 
+- image
+  * Proper error message for chunk tree build
+  * Fix error message for restore
+  * Reduce memory usage for compressed image restore
+  * Speed up chunk tree build for restore
+
+- check
+  * check and repair bad inode mode in subvolume trees
+  * check and repair inode generation
+
+- receive
+  * Fix receiving clone from duplicate subvolume
+
+- tests
+  * Check kernel and btrfs-progs support for zstd for zstd related tests
+
+For receive and tests part, they are just unmerged patches.
+
+For image, most of the patches from the btrfs-image data dump patchset,
+but they are independent from data dump. So they are included in this batch.
+
+For check, those patches are just result of user reports triggered by
+tree-checker, all include report and repair functionality and test images.
+
+The following selftests pass (with my tsukkomi):
+
+- fsck
+  The fastest test, and everyone loves fast tests.
+
+- mkfs
+  Ordinary but good tests.
+
+- convert
+  Slow and boring. But A good test of one's patience.
+
+- misc
+  The most thrilling tests. No one notices a regression until this test
+  fails.
+
+- fuzz
+  It can always catch you unexpectedly.
+
+Johannes Thumshirn (1):
+  btrfs-progs: fix zstd compression test on a kernel without ztsd
+    support
+
+Omar Sandoval (3):
+  btrfs-progs: receive: remove commented out transid checks
+  btrfs-progs: receive: don't lookup clone root for received subvolume
+  btrfs-progs: tests: add test for receiving clone from duplicate
+    subvolume
+
+Qu Wenruo (15):
+  btrfs-progs: image: Output error message for chunk tree build error
+  btrfs-progs: image: Fix error output to show correct return value
+  btrfs-progs: image: Don't waste memory when we're just extracting
+    super block
+  btrfs-progs: image: Allow restore to record system chunk ranges for
+    later usage
+  btrfs-progs: image: Introduce helper to determine if a tree block is
+    in the range of system chunks
+  btrfs-progs: image: Rework how we search chunk tree blocks
+  btrfs-progs: check: Export btrfs_type_to_imode
+  btrfs-progs: check/common: Introduce a function to find imode using
+    info from INODE_REF item
+  btrfs-progs: check/common: Make repair_imode_common() to handle inodes
+    in subvolume trees
+  btrfs-progs: check/lowmem: Repair bad imode early
+  btrfs-progs: check/original: Fix inode mode in subvolume trees
+  btrfs-progs: tests/fsck: Add new images for inode mode repair
+    functionality
+  btrfs-progs: check/lowmem: Add check and repair for invalid inode
+    generation
+  btrfs-progs: check/original: Add check and repair for invalid inode
+    generation
+  btrfs-progs: fsck-tests: Add test image for invalid inode generation
+    repair
+
+ check/main.c                                  | 104 +++--
+ check/mode-common.c                           | 262 +++++++++++-
+ check/mode-common.h                           |  17 +
+ check/mode-lowmem.c                           | 115 ++++++
+ check/mode-original.h                         |   1 +
+ cmds/receive.c                                |  43 +-
+ image/main.c                                  | 382 +++++++++++++-----
+ .../039-bad-inode-mode/.lowmem_repairable     |   0
+ .../bad_free_space_cache_imode.raw.xz}        | Bin
+ .../bad_imodes_in_subvolume_tree.img.xz       | Bin 0 -> 2956 bytes
+ .../.lowmem_repairable                        |   0
+ .../bad_inode_geneartion.img.xz               | Bin 0 -> 2012 bytes
+ tests/misc-tests/025-zstd-compression/test.sh |  10 +
+ .../test.sh                                   |  34 ++
+ 14 files changed, 790 insertions(+), 178 deletions(-)
+ create mode 100644 tests/fsck-tests/039-bad-inode-mode/.lowmem_repairable
+ rename tests/fsck-tests/{039-bad-free-space-cache-inode-mode/test.raw.xz => 039-bad-inode-mode/bad_free_space_cache_imode.raw.xz} (100%)
+ create mode 100644 tests/fsck-tests/039-bad-inode-mode/bad_imodes_in_subvolume_tree.img.xz
+ create mode 100644 tests/fsck-tests/043-bad-inode-generation/.lowmem_repairable
+ create mode 100644 tests/fsck-tests/043-bad-inode-generation/bad_inode_geneartion.img.xz
+ create mode 100755 tests/misc-tests/038-receive-clone-from-current-subvolume/test.sh
+
+-- 
+2.23.0
 
