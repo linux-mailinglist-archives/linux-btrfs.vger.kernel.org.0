@@ -2,94 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76C16D2CAC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 16:38:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8448CD2CD0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 16:48:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbfJJOid (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Oct 2019 10:38:33 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:40881 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbfJJOid (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Oct 2019 10:38:33 -0400
-Received: by mail-qt1-f194.google.com with SMTP id m61so9022811qte.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2019 07:38:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qD0qJs4tdhaeb/bkU/kFfvUeLlin5sCwoXVjyKsqiTM=;
-        b=XzcICxBk16ptZSYZb+O9CFHv2wBu8YvS3gqR+13to2n5/vdgisxnrvOv+qxk7go2VS
-         uKFLmgmPXMh1MaflB0oN4Rba5nH4honCsj+7wMa1TX87T1WDUz/md8pt53KH6EB8Imvy
-         SzACEjFaSIQo8IvuhGFau5O+2r5YhycY2niusfwDDbbXArHjh9LUqhPNlmqNxUfuCjRw
-         IeYHJuXDF3f3PtTESNaMQAW26fWSibiV0VefftA1gNLehPQAZbOyq3YuUw5uXESZbAop
-         WiXP79BF9ryZaU2XqOjhX4ZTDwiCiWXcxlo1rYa0hvD3Wf8hI0crxMIIixziNkabbDrw
-         W+Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qD0qJs4tdhaeb/bkU/kFfvUeLlin5sCwoXVjyKsqiTM=;
-        b=HaTBEG6oEP4b6mlKHcN+iYE70dPGm6tmWqmHphgSfB76F1OfbeCa3HQ2O0H9c3eSbP
-         sRUSOl4T7i5PvR3iYWAaGvF75zYOdA/awDXQjMPvjT80xZTiX1eO4DYtITLH1eRlET5k
-         5FxxBx+44cjcNUSALqpfKmmryt2AiCWWWydPqwzejT+dCRABqCJuquHwDUwROOxTx1QD
-         LgZ09NlxvV2DHyJ8MEUj6SVzpTfasXqpfXzj8nptpPx/O/0ojHtG84gdQi9nNry58vFK
-         klENSkkYU/PfJVc4ZibHbG/AUoSidCADTRofBkyUIVOwH/QwwUEkRJq1yHksSk6EEvi+
-         QDFQ==
-X-Gm-Message-State: APjAAAVGemypxaMGCVDog8yt999B3Kap7AgkBAq5gP2u4HJi1/mRsXyE
-        CHmkgNyAT54FFyOaIpGU3tqt0w==
-X-Google-Smtp-Source: APXvYqyQKgSBoEEZLFlyGaraOm4/QCBP/QVy8R8i4XxFTr0Wf0CQ+sks53uuS/yJVmJUwX9WGuGsjA==
-X-Received: by 2002:ac8:65cf:: with SMTP id t15mr5635735qto.357.1570718312011;
-        Thu, 10 Oct 2019 07:38:32 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::18ce])
-        by smtp.gmail.com with ESMTPSA id t32sm3610805qtb.64.2019.10.10.07.38.30
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Oct 2019 07:38:31 -0700 (PDT)
-Date:   Thu, 10 Oct 2019 10:38:29 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 05/19] btrfs: add the beginning of async discard, discard
- workqueue
-Message-ID: <20191010143828.adkm6h2ktxfcgr3v@macbook-pro-91.dhcp.thefacebook.com>
-References: <cover.1570479299.git.dennis@kernel.org>
- <b2f59782f8a7b02fee6c3a2994154b01134b09dc.1570479299.git.dennis@kernel.org>
+        id S1726055AbfJJOsn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Oct 2019 10:48:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38094 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725862AbfJJOsn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Oct 2019 10:48:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5B8EBACD7;
+        Thu, 10 Oct 2019 14:48:41 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 47200DA7E3; Thu, 10 Oct 2019 16:48:55 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.4-rc3
+Date:   Thu, 10 Oct 2019 16:48:51 +0200
+Message-Id: <cover.1570718349.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2f59782f8a7b02fee6c3a2994154b01134b09dc.1570479299.git.dennis@kernel.org>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 04:17:36PM -0400, Dennis Zhou wrote:
-> When discard is enabled, everytime a pinned extent is released back to
-> the block_group's free space cache, a discard is issued for the extent.
-> This is an overeager approach when it comes to discarding and helping
-> the SSD maintain enough free space to prevent severe garbage collection
-> situations.
-> 
-> This adds the beginning of async discard. Instead of issuing a discard
-> prior to returning it to the free space, it is just marked as untrimmed.
-> The block_group is then added to a LRU which then feeds into a workqueue
-> to issue discards at a much slower rate. Full discarding of unused block
-> groups is still done and will be address in a future patch in this
-> series.
-> 
-> For now, we don't persist the discard state of extents and bitmaps.
-> Therefore, our failure recovery mode will be to consider extents
-> untrimmed. This lets us handle failure and unmounting as one in the
-> same.
-> 
-> Signed-off-by: Dennis Zhou <dennis@kernel.org>
+Hi,
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+a few more stabitly fixes, one build warning fix.
 
-Thanks,
+Changes:
 
-Josef
+- fix inode allocation under NOFS context
+
+- fix leak in fiemap due to concurrent append writes
+
+- fix log-root tree updates
+
+- fix balance convert of single profile on 32bit architectures
+
+- silence false positive warning on old GCCs (code moved in rc1)
+
+Please pull, thanks.
+
+----------------------------------------------------------------
+The following changes since commit d4e204948fe3e0dc8e1fbf3f8f3290c9c2823be3:
+
+  btrfs: qgroup: Fix reserved data space leak if we have multiple reserve calls (2019-09-27 15:24:34 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc2-tag
+
+for you to fetch changes up to 431d39887d6273d6d84edf3c2eab09f4200e788a:
+
+  btrfs: silence maybe-uninitialized warning in clone_range (2019-10-08 13:14:55 +0200)
+
+----------------------------------------------------------------
+Austin Kim (1):
+      btrfs: silence maybe-uninitialized warning in clone_range
+
+Filipe Manana (1):
+      Btrfs: fix memory leak due to concurrent append writes with fiemap
+
+Josef Bacik (3):
+      btrfs: fix incorrect updating of log root tree
+      btrfs: allocate new inode in NOFS context
+      btrfs: fix uninitialized ret in ref-verify
+
+Zygo Blaxell (1):
+      btrfs: fix balance convert to single on 32-bit host CPUs
+
+ fs/btrfs/file.c       | 13 ++++++++++++-
+ fs/btrfs/inode.c      |  3 +++
+ fs/btrfs/ref-verify.c |  2 +-
+ fs/btrfs/send.c       |  2 +-
+ fs/btrfs/tree-log.c   | 36 +++++++++++++++++++++++++++---------
+ fs/btrfs/volumes.c    |  6 +++++-
+ 6 files changed, 49 insertions(+), 13 deletions(-)
