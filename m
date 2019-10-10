@@ -2,158 +2,165 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECFCD20E5
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 08:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF47BD2157
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 09:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732945AbfJJGmN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Oct 2019 02:42:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42412 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732932AbfJJGmN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Oct 2019 02:42:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 01B4AAC12
-        for <linux-btrfs@vger.kernel.org>; Thu, 10 Oct 2019 06:42:11 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 7/7] btrfs-progs: btrfstune: Allow to enable bg-tree feature offline
-Date:   Thu, 10 Oct 2019 14:41:56 +0800
-Message-Id: <20191010064156.31782-8-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191010064156.31782-1-wqu@suse.com>
-References: <20191010064156.31782-1-wqu@suse.com>
+        id S1732671AbfJJHHK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Oct 2019 03:07:10 -0400
+Received: from mout.gmx.net ([212.227.17.20]:43505 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727080AbfJJHHK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Oct 2019 03:07:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1570691224;
+        bh=a0tG+sdcuSfpSqdeCQTVsls7eMq6k54kpguHb6oxYZA=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=lDFlt+VYvMRvuV1xFqs2cO7GLxJOI58mV30eS+kxOOLiWRheA5zY4ibg/1WP3WTZ/
+         8kvlHg5Zf4gfkbuqlYB8XjbSgFZ4JiIaiDohYN8CT06sJ/zY9ChyUHoBf5GI2MshJt
+         uhq+5h9lnCiVsyUPsKj1NvCXd05bfoMCEJQDxZZI=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M26r3-1iGWjO3QRl-002VIc; Thu, 10
+ Oct 2019 09:07:04 +0200
+Subject: Re: [PATCH v2 0/4] btrfs-progs: fix clone from wrong subvolume
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org
+Cc:     kernel-team@fb.com
+References: <cover.1563822638.git.osandov@fb.com>
+ <20190904203539.GF7452@vader>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <73ec1124-7daa-4ea3-0142-e17e60464496@gmx.com>
+Date:   Thu, 10 Oct 2019 15:06:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190904203539.GF7452@vader>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="nJkUSpzY2r9uBjpHh2E9osZTZ2dd9LISY"
+X-Provags-ID: V03:K1:BVzLCW+deivewAh2GDwj7Q56bp3oI1svA9Lkf5lT9/2Pnp10tKA
+ NbCSsE1z5hL5I7GFPp5OM3XEDdMAZMHsg60+rkCWz5sgKEp1pHCdq/mOr996PrGFisGIKEq
+ 72nRIAz3Ko7zn+QDMKbxASt4BQMke+hZu3UZXOucYNFXWrRmk5abibWZTzaAiMr2vFugeRf
+ XXTycjhMXsdpsCakFVQ5g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:V40cbqHPYnw=:1J9eIURfh/L/P7EtFld2Ox
+ BNA448nE7v8VjYDWaX/yt+8Gf4zwQBLxXCTh0Wmg/agxnataK4jRMAq8HJoH0ALTH/Kr2LI6S
+ ezUB7cIOSwNEKPLJQfXxoPM4W2QJS7R8C2k39RyRY/Xm+goKu8Ajl2XbcdGp/Xx/Z+oCrAdNf
+ dHVlc71buVUMNR1Zoy3ZPRF5qrOZcs2ZcsPlakngGTl8reDNjIX1MRxATRhOw8cdIOpWSxjeH
+ ClrwX/CkFk9MnBHxzhwqXZIgxKqFLOtzYNph91eks74bERF0jQssBXPijBExsAePbUDljLXaV
+ ucPvCbxdbwQhGZDnJRBri3jmTGZyiFcfYsToMf8zEAiT5rk1JATFl0YXdjzkhHsPFBLD1Y2Gy
+ RqkyN6pUFlCR1EGJ+t4eMyVEkePW4Z/R4Jw66rLOE+0xjlGv+44tkiV7tR+iLwFTjZTwC41EK
+ kLuBvQMPM1QT4kd/5SZ4X+Dj0m95o5unGxpjXxmJMy9GARNC4w3lEK4fnKOMGHaXAewNqs6cI
+ 5UIJJBowRLcroskjVrqnEwJ8WzPURUNsZhgYuUOnzE5oLZnZv6iQz9eOonPxrIPIYjeQCvHfT
+ NaY2DQ7KQY+NHVwyHysIwK4aCPMSFLZKC/WQCSHGJRSPnzHCheKkk8xICghhQGHqNaJ6G5mg0
+ U+K0A6upK2WkW15cZnzE++wH+vqMp0mw1ABuKzH05Rox9FYf9B3XCBgFfOZ99g7YgbvH6rgcD
+ imWTv3/evSHu6WV85y6akzxxYtJ/u3K7m6532AllFIMiddD6hCOCl1hDRe20TlbSE9CX4Gjdq
+ xZ/KwQnkq2qr1ESEFB8pzHELi+WiaDNSL15hXrDncYmnLFP6ZPsSu01rcNt8qAj9g9F6oazIx
+ G/g4LmaCDWuo21JcjScmM/zL/I1eJDvUPFX8ACNQctEvu5eOVSJe5xAj9pxN+BfJiiFg6nhWk
+ ObzwjAF8a8+FIhrJt7hEM3fZnP/pp6ncNWt0vGeRgqgyTq6qKDqZIxTc1mvXw8WrY87z7wLTw
+ SCAEo04j6/Y8i9FiNpZRswenxL+QIXW/LyzgEsbJOL8hOcHQfm5+miAB3HKy7HHq9n/PCKEkh
+ Mi/rD7TELs+MtJvmTWLVd7m9E9Wjx+Vzd8rsb0SdY2fPRFpdmINsnONG2iNPvGOE+ckengGxF
+ cridzyYD55t14mr6a+7falySUNgE14MvR4ji5E2GMmrTFjFJw51E1vKyklJ5Dx/UldyyuwYZ0
+ 1jF84Y2JDe//9mX8ojEVCczXoBCuBHXz4Q5Vf6AiAWA5iCMSGItU8vYjvxgA=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add a new option '-b' for btrfstune, to enable bg-tree feature for a
-unmounted fs.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--nJkUSpzY2r9uBjpHh2E9osZTZ2dd9LISY
+Content-Type: multipart/mixed; boundary="avxtKqCEdhRBRTzpDLXyt07PIYRCOC9vS"
 
-This feature will convert all BLOCK_GROUP_ITEMs in extent tree to bg
-tree, by reusing the existing btrfs_convert_to_bg_tree() function.
+--avxtKqCEdhRBRTzpDLXyt07PIYRCOC9vS
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- Documentation/btrfstune.asciidoc |  6 +++++
- btrfstune.c                      | 44 ++++++++++++++++++++++++++++++--
- 2 files changed, 48 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/btrfstune.asciidoc b/Documentation/btrfstune.asciidoc
-index 1d6bc98deed8..ed54c2e1597f 100644
---- a/Documentation/btrfstune.asciidoc
-+++ b/Documentation/btrfstune.asciidoc
-@@ -26,6 +26,12 @@ means.  Please refer to the 'FILESYSTEM FEATURES' in `btrfs`(5).
- OPTIONS
- -------
- 
-+-b::
-+(since kernel: 5.x)
-++
-+enable bg-tree feature (faster mount time for large fs), enabled by mkfs
-+feature 'bg-tree'.
-+
- -f::
- Allow dangerous changes, e.g. clear the seeding flag or change fsid. Make sure
- that you are aware of the dangers.
-diff --git a/btrfstune.c b/btrfstune.c
-index afa3aae35412..aa1ac568aef0 100644
---- a/btrfstune.c
-+++ b/btrfstune.c
-@@ -476,11 +476,39 @@ static void print_usage(void)
- 	printf("\t-m          change fsid in metadata_uuid to a random UUID\n");
- 	printf("\t            (incompat change, more lightweight than -u|-U)\n");
- 	printf("\t-M UUID     change fsid in metadata_uuid to UUID\n");
-+	printf("\t-b          enable bg-tree feature (mkfs: bg-tree, for faster mount time)\n");
- 	printf("  general:\n");
- 	printf("\t-f          allow dangerous operations, make sure that you are aware of the dangers\n");
- 	printf("\t--help      print this help\n");
- }
- 
-+static int convert_to_bg_tree(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_trans_handle *trans;
-+	int ret;
-+
-+	trans = btrfs_start_transaction(fs_info->tree_root, 1);
-+	if (IS_ERR(trans)) {
-+		ret = PTR_ERR(trans);
-+		errno = -ret;
-+		error("failed to start transaction: %m");
-+		return ret;
-+	}
-+	ret = btrfs_convert_to_bg_tree(trans);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to convert: %m");
-+		btrfs_abort_transaction(trans, ret);
-+		return ret;
-+	}
-+	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
-+	if (ret < 0) {
-+		errno = -ret;
-+		error("failed to commit transaction: %m");
-+	}
-+	return ret;
-+}
-+
- int BOX_MAIN(btrfstune)(int argc, char *argv[])
- {
- 	struct btrfs_root *root;
-@@ -491,6 +519,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 	u64 seeding_value = 0;
- 	int random_fsid = 0;
- 	int change_metadata_uuid = 0;
-+	bool to_bg_tree = false;
- 	char *new_fsid_str = NULL;
- 	int ret;
- 	u64 super_flags = 0;
-@@ -501,7 +530,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 			{ "help", no_argument, NULL, GETOPT_VAL_HELP},
- 			{ NULL, 0, NULL, 0 }
- 		};
--		int c = getopt_long(argc, argv, "S:rxfuU:nmM:", long_options, NULL);
-+		int c = getopt_long(argc, argv, "S:rxfuU:nmM:b", long_options, NULL);
- 
- 		if (c < 0)
- 			break;
-@@ -539,6 +568,9 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 			ctree_flags |= OPEN_CTREE_IGNORE_FSID_MISMATCH;
- 			change_metadata_uuid = 1;
- 			break;
-+		case 'b':
-+			to_bg_tree = true;
-+			break;
- 		case GETOPT_VAL_HELP:
- 		default:
- 			print_usage();
-@@ -556,7 +588,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 		return 1;
- 	}
- 	if (!super_flags && !seeding_flag && !(random_fsid || new_fsid_str) &&
--	    !change_metadata_uuid) {
-+	    !change_metadata_uuid && !to_bg_tree) {
- 		error("at least one option should be specified");
- 		print_usage();
- 		return 1;
-@@ -602,6 +634,14 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
- 		return 1;
- 	}
- 
-+	if (to_bg_tree) {
-+		ret = convert_to_bg_tree(root->fs_info);
-+		if (ret < 0) {
-+			errno = -ret;
-+			error("failed to convert to bg-tree feature: %m");
-+			goto out;
-+		}
-+	}
- 	if (seeding_flag) {
- 		if (btrfs_fs_incompat(root->fs_info, METADATA_UUID)) {
- 			fprintf(stderr, "SEED flag cannot be changed on a metadata-uuid changed fs\n");
--- 
-2.23.0
 
+On 2019/9/5 =E4=B8=8A=E5=8D=884:35, Omar Sandoval wrote:
+> On Mon, Jul 22, 2019 at 12:15:01PM -0700, Omar Sandoval wrote:
+>> From: Omar Sandoval <osandov@fb.com>
+>>
+>> This is v2 of [1]. Changes from v1:
+>>
+>> - Split out removing commented-out code to new patch 1 and removed a
+>>   related comment block.
+>> - Made subvol_path const char * in patch 2.
+>> - Added test case as patch 4.
+>> - Fixed wrong signed-off-by.
+>>
+>> Thanks,
+>> Omar
+>>
+>> 1: https://lore.kernel.org/linux-btrfs/cover.1563600688.git.osandov@fb=
+=2Ecom/T/#u
+>>
+>> Omar Sandoval (4):
+>>   btrfs-progs: receive: remove commented out transid checks
+>>   btrfs-progs: receive: get rid of unnecessary strdup()
+>>   btrfs-progs: receive: don't lookup clone root for received subvolume=
+
+>>   btrfs-progs: tests: add test for receiving clone from duplicate
+>>     subvolume
+>>
+>>  cmds/receive.c                                | 50 ++++--------------=
+-
+>>  .../test.sh                                   | 34 +++++++++++++
+>>  2 files changed, 45 insertions(+), 39 deletions(-)
+>>  create mode 100755 tests/misc-tests/038-receive-clone-from-current-su=
+bvolume/test.sh
+>=20
+> Ping. Looks like only patch 2 is in the devel branch.
+>=20
+
+Since it looks good to me, I'll include the remaining patches in my next
+pull to David, and hopes he accepts them.
+
+Thanks,
+Qu
+
+
+--avxtKqCEdhRBRTzpDLXyt07PIYRCOC9vS--
+
+--nJkUSpzY2r9uBjpHh2E9osZTZ2dd9LISY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2e2JMACgkQwj2R86El
+/qgExQf/cKtRa3rHaBgoOUP9khkA3C/rtBAmIGvqb/XUKWX1AnonQYsGHLiqyksH
+FXEo8mmVfHeHRuyp+1OBUaXhh9OtCMA9RzamJAmsjJCoONU6ds6jux+tezx0XOG2
+0jWh7k1OHmG7uj++gf5Mdku1ypCWGw/FV5UwU4svOJro6S/ipn7f0H/Jtz+z76Ef
+FLUDXsUr2kaXgsveKexw3kEOrlj3wH7AI/ViulaYrzcYmRLpuMKTLZ4/PTg2QccS
+luyQdMFxka3BbcrdM5NsPFW9Mr+1Dv+RQ4JC4Zizy8jhuy0Gig6LCWq9oqSIldDr
+emUZdfOsEIB9cNPPpszcpyhfEIm2Fw==
+=qUmG
+-----END PGP SIGNATURE-----
+
+--nJkUSpzY2r9uBjpHh2E9osZTZ2dd9LISY--
