@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 37510D21D0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 09:39:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72086D21E2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 09:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733098AbfJJHiI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Oct 2019 03:38:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40876 "EHLO mx1.suse.de"
+        id S1733105AbfJJHiJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Oct 2019 03:38:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46696 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732759AbfJJHX4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Oct 2019 03:23:56 -0400
+        id S1733078AbfJJHd7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 10 Oct 2019 03:33:59 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C5A7CB126;
-        Thu, 10 Oct 2019 07:23:53 +0000 (UTC)
-Subject: Re: [PATCH] Btrfs: add missing extents release on file extent cluster
- relocation error
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20191009164345.23713-1-fdmanana@kernel.org>
+        by mx1.suse.de (Postfix) with ESMTP id 6FFA3B1E2;
+        Thu, 10 Oct 2019 07:33:56 +0000 (UTC)
+Subject: Re: [PATCH v3 1/3] btrfs: block-group: Fix a memory leak due to
+ missing btrfs_put_block_group()
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20191010023928.24586-1-wqu@suse.com>
+ <20191010023928.24586-2-wqu@suse.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -76,12 +77,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <467212df-c87e-6b71-30cb-3a1e2b0293d1@suse.de>
-Date:   Thu, 10 Oct 2019 09:13:43 +0200
+Message-ID: <45bc8411-8103-25fa-23d4-3d76b3441700@suse.de>
+Date:   Thu, 10 Oct 2019 09:20:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191009164345.23713-1-fdmanana@kernel.org>
+In-Reply-To: <20191010023928.24586-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -90,45 +91,8 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 09/10/2019 18:43, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> If we error out when finding a page at relocate_file_extent_cluster(), we
-> need to release the outstanding extents counter on the relocation inode,
-> set by the previous call to btrfs_delalloc_reserve_metadata(), otherwise
-> the inode's block reserve size can never decrease to zero and metadata
-> space is leaked. Therefore add a call to btrfs_delalloc_release_extents()
-> in case we can't find the target page.
-> 
-> Fixes: 8b62f87bad9cf0 ("Btrfs: rework outstanding_extents")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->  fs/btrfs/relocation.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 00504657b602..88dbc0127793 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -3277,6 +3277,8 @@ static int relocate_file_extent_cluster(struct inode *inode,
->  			if (!page) {
->  				btrfs_delalloc_release_metadata(BTRFS_I(inode),
->  							PAGE_SIZE, true);
-> +				btrfs_delalloc_release_extents(BTRFS_I(inode),
-> +							       PAGE_SIZE, true);
-
-Hmm how about adding a wrapper to combine these two calls similar to
-what btrfs_delalloc_release_space() is doing for
-btrfs_delalloc_release_metadata() and btrfs_free_reserved_data_space()?
-
-I count at least 3 other occurences of this pattern with a simple
-git grep -C 4 btrfs_delalloc_release_metadata fs/btrfs/ | \
-   grep btrfs_delalloc_release_extents
-
-One of them being in the same function.
-
-Otherwise
 Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
