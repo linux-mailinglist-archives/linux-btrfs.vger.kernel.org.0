@@ -2,252 +2,194 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 163C8D1E97
-	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 04:42:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1D40D1E96
+	for <lists+linux-btrfs@lfdr.de>; Thu, 10 Oct 2019 04:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732611AbfJJCmk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 9 Oct 2019 22:42:40 -0400
-Received: from m9a0003g.houston.softwaregrp.com ([15.124.64.68]:54028 "EHLO
-        m9a0003g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726197AbfJJCmk (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 9 Oct 2019 22:42:40 -0400
-Received: FROM m9a0003g.houston.softwaregrp.com (15.121.0.191) BY m9a0003g.houston.softwaregrp.com WITH ESMTP
- FOR linux-btrfs@vger.kernel.org;
- Thu, 10 Oct 2019 02:41:59 +0000
-Received: from M9W0068.microfocus.com (2002:f79:bf::f79:bf) by
- M9W0068.microfocus.com (2002:f79:bf::f79:bf) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Thu, 10 Oct 2019 02:40:50 +0000
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com (15.124.72.13) by
- M9W0068.microfocus.com (15.121.0.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Thu, 10 Oct 2019 02:40:50 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HXAHgWjOM4T6S23duANURelrKbJsO001XcWMoTpNtc26/v60dnvo9oID1r/KnI4p0GgUoCBt++er/ypxpRvAVW+HsJINA78UakjG9CurEvT/36ssA72kHBweVd477ANtLZc6A0X2iBx2fKXauwW9kLeMye9Bbw+iCA/AkcAKi25yVDF4IogM15/n5imKgYwhwzFGomKOBAEC1pNDF6oId9o6PavGQHyNp6KPfJb2dT+xdrxaBOjW2vbKtizsl4UxtakeeHF/57vH3SSCsOOu0P6PzgNBOGeOG0ko7Z4Il1DcctBWmUWoCKGqQ0FCptWnFOCyvxujT8HypyHovM3amg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dcM/zE9nDYnjle5zPTcTpmMpc7TT/jyu3gJ/4TZAHbU=;
- b=IPWGaeyu3ytPkE0G2Dv2vLFTj0k+Dljq3F1A8EV2dQ02awY4Tp6+DE4chx12xKW561U5JgFJViMcDuG2xR2Z2Wv4s/mpJfDm+rLfyzwxv+heWbVG6kqq8b33RKmM3p36eqVlctitq7YPn361i5aktqXHC5d0CQAvNAE9F0J7L2pd5A5iOYBgD4sX4bjGYxVpHS4Euy4hwUSK5Po/w4P/wRlhmTXcJ7EX+c165tD+xL0o7NT1Rle3yYgClzxkE3GA31j+V1vG3QbxEsZOEdQcN1Oo9v65grWtNY6FKYInhjHqwcCDUwuv+ihW20gglY69rFjb6AMDScOlzP/zIi+7Rw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3236.namprd18.prod.outlook.com (10.255.136.223) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2347.16; Thu, 10 Oct 2019 02:40:49 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::5c5:8dae:70ef:a254]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::5c5:8dae:70ef:a254%4]) with mapi id 15.20.2347.016; Thu, 10 Oct 2019
- 02:40:49 +0000
-From:   Qu WenRuo <wqu@suse.com>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v3 0/3] btrfs: Introduce new incompat feature BG_TREE to
- hugely reduce mount time
-Thread-Topic: [PATCH v3 0/3] btrfs: Introduce new incompat feature BG_TREE to
- hugely reduce mount time
-Thread-Index: AQHVfxQf0ZF9fk++QEOmbzPAEZ1tEg==
-Date:   Thu, 10 Oct 2019 02:40:48 +0000
-Message-ID: <115dcff2-1cff-1a33-3b71-20acaa2f2ef9@suse.com>
-References: <20191010023928.24586-1-wqu@suse.com>
-In-Reply-To: <20191010023928.24586-1-wqu@suse.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: yes
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: TY2PR06CA0038.apcprd06.prod.outlook.com
- (2603:1096:404:2e::26) To BY5PR18MB3266.namprd18.prod.outlook.com
- (2603:10b6:a03:1a1::15)
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [13.231.109.76]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 80051c34-d5c8-4b16-eabf-08d74d2b420c
-x-ms-traffictypediagnostic: BY5PR18MB3236:
-x-microsoft-antispam-prvs: <BY5PR18MB3236ABBE225EE1DF480D7E20D6940@BY5PR18MB3236.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 018632C080
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(136003)(376002)(366004)(396003)(39860400002)(346002)(54534003)(189003)(199004)(31696002)(102836004)(6512007)(2501003)(6916009)(5640700003)(66446008)(99936001)(66946007)(76176011)(6436002)(446003)(386003)(6506007)(11346002)(8936002)(66476007)(14454004)(66616009)(64756008)(6486002)(81166006)(186003)(86362001)(66066001)(8676002)(81156014)(52116002)(26005)(25786009)(6246003)(6306002)(66556008)(486006)(71200400001)(2616005)(478600001)(966005)(476003)(99286004)(31686004)(71190400001)(6116002)(3846002)(256004)(14444005)(2351001)(36756003)(316002)(305945005)(229853002)(5660300002)(7736002)(2906002);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3236;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 7IxU3GVTq2f8Huv19QAxCN4qVGufPj8h2WSbD5cnC52j2R4z6UJLv7X5Tcf4rz2kUWjS1AGmcLU50CtVi9KI/IeV1PRb3z0MtHWYhVRC00QQr0wv4UhRc6vlDdddkTKnBm1qnelqeFdtga0A4OG5V6jSIq4hLVq20VDpyZWRnpmuidyKHH19G16ip3jN9FLSJoxhHNOhZanN2s9OLfOXOBRZIidFoYw0PoODCOEL/C4SJchudJxdWXL10S6H8VipKFlOhhAwvs68NwshOOTqOcvvIvdWQPH5SmnHfvGn4hR5zhAIqu4p93SuioMTJyAE3cmG5u/mz9kLSf2uQoiisPInnv8Y1XlGgYm7JqKY9iElJQv4fusiXpZpLjZ6UCSg7PHfpXRBLnfGj06WR3hlX1TPs0ijeMilP8V/7spq7tU=
-x-ms-exchange-transport-forked: True
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature";
-        boundary="EovkCANdpLM4w1CTHALwyAA8H69T4IBC6"
+        id S1732317AbfJJCma (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 9 Oct 2019 22:42:30 -0400
+Received: from mout.gmx.net ([212.227.15.18]:36889 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726197AbfJJCma (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 9 Oct 2019 22:42:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1570675343;
+        bh=dM+OlkJECrH8LJlMXOqHMoXjQmz1rU5CFxgQhHaHJrs=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=arAihibmUIs0VTE7jZH+oRAXQynhf4ROOgaKkk5xuMCoMK1bcWrG1zKeyYdgPm7o2
+         SdwRFrJB9kOgQGpNJ/19z5tV+jBns2fOWpo3czIiTaGKH3/C8Wc5aFccjqtgj829Ic
+         aplMjLnH6iNaiAaMRI334MzXi3uPtAoCV9pFrND8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MybGh-1htHPf3v0H-00yvy8; Thu, 10
+ Oct 2019 04:42:23 +0200
+Subject: Re: [PATCH] btrfs: use bool argument in free_root_pointers()
+To:     Anand Jain <anand.jain@oracle.com>, linux-btrfs@vger.kernel.org
+References: <20191010023925.4844-1-anand.jain@oracle.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <abc83fbe-2cf1-2ca2-5816-29d87c5fff2e@gmx.com>
+Date:   Thu, 10 Oct 2019 10:42:19 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 80051c34-d5c8-4b16-eabf-08d74d2b420c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 Oct 2019 02:40:48.6757
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 7RXYIQA2xlNr/SWoFbxLorU1Xkbxp6nMLrdVSZSJ629mfEfx0qq28RYyyEKF+SMa
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3236
-X-OriginatorOrg: suse.com
+In-Reply-To: <20191010023925.4844-1-anand.jain@oracle.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="c7piHdXfBn6VqX3izUblidaZJJxxgSvIL"
+X-Provags-ID: V03:K1:pTnN501ooyi4JnxI0J08nHt8cN83pOWqDHrF/knwYeNRdup1bsw
+ xjW5YhwWJAVkAQzd+neOemlL1hYgvvYxR2/4CDO/X110JyQ0Bygm7fv/jjAKGwMkPdHnD15
+ Z55zC/IEjz4V0orikFIbRqQE70eATZ3PREs9OLDt/IvwbHGgia2wLia126JDjLL2LGXf0jd
+ KyhKgtPBd6VHju4hmfcaA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:14icuNcsSdw=:LPMD+TKDcRWz+ZU4bxE+fw
+ TDIPTBJM+nzLMKb4QwifxPEhpF2RBR6f6oxR2L15/5NJ1Sah73VHppl/kKaMQNke1m21ntqHH
+ up6CyR09M1cqLjZBfd73nnljJgooyTu6kztwP538uHC0JHDqvQ7WAKL8pY57z51kMoDs05AMb
+ rVe/YJH4zETL2Vb7Ofi9DYcfaw25m3DboVJFacCoYzii+xWYI9WYNmfzwcFCxUIevog+y7gJS
+ 4snO+XPqyttqrKAjYi9qkBEMnpX48xv2tiTFXrHoPNrwO6EqKp1/IitZxuVn70dEKRISUkc0w
+ eyTA1DUUrbwbqwb+DWiuCW7bUfWaOGx+Qs6Rbw3fsBvTW9wpMhPVVXZWbI3rF4QzgHs5lCHQR
+ n+yDOrpYMmIHljxxHKGjzAU0jvjHdq6AjPLWBg06ONhkEhieWd7tIXAMVjrvQBdJGN8j4ag/U
+ rdiualSw2gRer7JI4zZCOytlSryq2NC2WcM2M1xjmMmw2h/0tMWRyx1BH6GHBiKZQdq+ce5yq
+ v4BhRqAYn5vAYTUbsbQ8QrJdXix86roFrquYoCsXw/s8mcnxz2AXvvxuXk3pvFYxI3Z+QnAn3
+ 6rQtgu+4M3/fG4Hv03Nhcz/SgwWF2YxkGYcfMRZfi476refVSzmhVi2Z4s00FtlJkXvIRg5mb
+ NygxAbNv9JJFJKkhvesScvcMTrhbEHy66isKPVwN+NHox0Utz+vIdIimbwy8eeawYSVWJd9yz
+ VlcUT0cIB0R4viwYgL19xYOFwJQArpyKKYlWjtrXHJ4Qcwy6m4z/t3QBeFFswJoOLBmAhnBfy
+ ie6YDedGinKYDDS8N+srN5JqcNjOBamJVhe9TbGsGKSMqSPMBuQ8zHSCTYInP7ia4w9tNFkLl
+ UDLV4JPflCPf/KY0twTY9RbH8ADMh70QNL2CgM/2X/k41NPOMa6NJAZGaXcnlfCHvBewzDNYX
+ bqwqrYLOgwdNLaCzTyTX+VYWLu+3tJkmSdFmki8xowiyumUILND3+wbJvkmA7cyl1/akryflM
+ bxOuxIa3cVrfA8ZxJAN7Izg6P1ZUBj+/AN2laL705jAN8dZ5mk2sL6850c1VYkuQDhWIYcwuh
+ QpxdT3wWa4Uag/gjtRD1DrKeVOz4Z9c9KCz19TBQM0j6UIqz710AVvsOIeJd+sV8d3NC55vd/
+ ckEJ4rDyBRz6KtWhGOfCFiZ6iCyU086UCY3qr2cjWsI1UvHJ3bux26YHh9DIewN/BiYB28Di+
+ 3CuJiemoxojGbZwbvWj3AdDKOFcO1JeLrSAQjnBCMdqADbWuAdFLI6AgIwC8=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---EovkCANdpLM4w1CTHALwyAA8H69T4IBC6
-Content-Type: multipart/mixed; boundary="ZJohNMdz7nzfj854O7x7bLfUwCUQN98Ef"
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--c7piHdXfBn6VqX3izUblidaZJJxxgSvIL
+Content-Type: multipart/mixed; boundary="k3n8u6jY4HwmDbdmEs2vPwUe5FznCXUyB"
 
---ZJohNMdz7nzfj854O7x7bLfUwCUQN98Ef
+--k3n8u6jY4HwmDbdmEs2vPwUe5FznCXUyB
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/10/10 =E4=B8=8A=E5=8D=8810:39, Qu Wenruo wrote:
-> This patchset can be fetched from:
-> https://github.com/adam900710/linux/tree/bg_tree
-> Which is based on v5.4-rc1 tag.
->=20
-> This patchset will hugely reduce mount time of large fs by putting all
-> block group items into its own tree.
->=20
-> The old behavior will try to read out all block group items at mount
-> time, however due to the key of block group items are scattered across
-> tons of extent items, we must call btrfs_search_slot() for each block
-> group.
->=20
-> It works fine for small fs, but when number of block groups goes beyond=
+On 2019/10/10 =E4=B8=8A=E5=8D=8810:39, Anand Jain wrote:
+> We don't need int argument bool shall do in free_root_pointers().
+> And rename the argument as it confused two people.
 
-> 200, such tree search will become a random read, causing obvious slow
-> down.
+Victim here. :)
+Although it's mostly caused by my stupidness. :(
 >=20
-> On the other hand, btrfs_read_chunk_tree() is still very fast, since we=
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
 
-> put CHUNK_ITEMS into their own tree and package them next to each other=
-=2E
->=20
-> Following this idea, we could do the same thing for block group items,
-> so instead of triggering btrfs_search_slot() for each block group, we
-> just call btrfs_next_item() and under most case we could finish in
-> memory, and hugely speed up mount (see BENCHMARK below).
->=20
-> The only disadvantage is, this method introduce an incompatible feature=
-,
-> so existing fs can't use this feature directly.
-> Either specify it at mkfs time, or use btrfs-progs offline convert tool=
-=2E
->=20
-> [[Benchmark]]
-> Since I have upgraded my rig to all NVME storage, there is no HDD
-> test result.
->=20
-> Physical device:	NVMe SSD
-> VM device:		VirtIO block device, backup by sparse file
-> Nodesize:		4K  (to bump up tree height)
-> Extent data size:	4M
-> Fs size used:		1T
->=20
-> All file extents on disk is in 4M size, preallocated to reduce space us=
-age
-> (as the VM uses loopback block device backed by sparse file)
->=20
-> Without patchset:
-> Use ftrace function graph:
->=20
->  7)               |  open_ctree [btrfs]() {
->  7)               |    btrfs_read_block_groups [btrfs]() {
->  7) @ 805851.8 us |    }
->  7) @ 911890.2 us |  }
->=20
->  btrfs_read_block_groups() takes 88% of the total mount time,
->=20
-> With patchset, and use -O bg-tree mkfs option:
->=20
->  6)               |  open_ctree [btrfs]() {
->  6)               |    btrfs_read_block_groups [btrfs]() {
->  6) * 91204.69 us |    }
->  6) @ 192039.5 us |  }
->=20
->   open_ctree() time is only 21% of original mount time.
->   And btrfs_read_block_groups() only takes 47% of total open_ctree()
->   execution time.
->=20
-> The reason is pretty obvious when considering how many tree blocks need=
-s
-> to be read from disk:
-> - Original extent tree:
->   nodes:	55
->   leaves:	1025
->   total:	1080
-> - Block group tree:
->   nodes:	1
->   leaves:	13
->   total:	14
->=20
-> Not to mention all the tree blocks readahead works pretty fine for bg
-> tree, as we will read every item.
-> While readahead for extent tree will just be a diaster, as all block
-> groups are scatter across the whole extent tree.
->=20
-> Changelog:
-> v2:
-> - Rebase to v5.4-rc1
->   Minor conflicts due to code moved to block-group.c
-> - Fix a bug where some block groups will not be loaded at mount time
->   It's a bug in that refactor patch, not exposed by previous round of
->   tests.
-> - Add a new patch to remove a dead check
-> - Update benchmark to NVMe based result
->   Hardware upgrade is not always a good thing for benchmark.
->=20
-> Changelog:
-> v3:
-> - Add a separate patch to fix possible memory leak
-> - Add Reviewed-by tag for the refactor patch
-> - Reword the refactor patch to mention the change of use
->   btrfs_fs_incompat()
-Forgot one:
-
-- Remove one wrong patch which could break usebackuproot mount option.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
+> ---
+>  fs/btrfs/disk-io.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
 >=20
-> Qu Wenruo (3):
->   btrfs: block-group: Fix a memory leak due to missing
->     btrfs_put_block_group()
->   btrfs: block-group: Refactor btrfs_read_block_groups()
->   btrfs: Introduce new incompat feature, BG_TREE, to speed up mount tim=
-e
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index f314fa9fc06e..5a0033b6cf2e 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2024,7 +2024,7 @@ static void free_root_extent_buffers(struct btrfs=
+_root *root)
+>  }
+> =20
+>  /* helper to cleanup tree roots */
+> -static void free_root_pointers(struct btrfs_fs_info *info, int chunk_r=
+oot)
+> +static void free_root_pointers(struct btrfs_fs_info *info, bool free_c=
+hunk_root)
+>  {
+>  	free_root_extent_buffers(info->tree_root);
+> =20
+> @@ -2033,7 +2033,7 @@ static void free_root_pointers(struct btrfs_fs_in=
+fo *info, int chunk_root)
+>  	free_root_extent_buffers(info->csum_root);
+>  	free_root_extent_buffers(info->quota_root);
+>  	free_root_extent_buffers(info->uuid_root);
+> -	if (chunk_root)
+> +	if (free_chunk_root)
+>  		free_root_extent_buffers(info->chunk_root);
+>  	free_root_extent_buffers(info->free_space_root);
+>  }
+> @@ -3327,7 +3327,7 @@ int __cold open_ctree(struct super_block *sb,
+>  	btrfs_put_block_group_cache(fs_info);
+> =20
+>  fail_tree_roots:
+> -	free_root_pointers(fs_info, 1);
+> +	free_root_pointers(fs_info, true);
+>  	invalidate_inode_pages2(fs_info->btree_inode->i_mapping);
+> =20
+>  fail_sb_buffer:
+> @@ -3359,7 +3359,7 @@ int __cold open_ctree(struct super_block *sb,
+>  	if (!btrfs_test_opt(fs_info, USEBACKUPROOT))
+>  		goto fail_tree_roots;
+> =20
+> -	free_root_pointers(fs_info, 0);
+> +	free_root_pointers(fs_info, false);
+> =20
+>  	/* don't use the log in recovery mode, it won't be valid */
+>  	btrfs_set_super_log_root(disk_super, 0);
+> @@ -4053,7 +4053,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_=
+info)
+>  	btrfs_free_block_groups(fs_info);
+> =20
+>  	clear_bit(BTRFS_FS_OPEN, &fs_info->flags);
+> -	free_root_pointers(fs_info, 1);
+> +	free_root_pointers(fs_info, true);
+> =20
+>  	iput(fs_info->btree_inode);
+> =20
 >=20
->  fs/btrfs/block-group.c          | 306 ++++++++++++++++++++------------=
-
->  fs/btrfs/ctree.h                |   5 +-
->  fs/btrfs/disk-io.c              |  13 ++
->  fs/btrfs/sysfs.c                |   2 +
->  include/uapi/linux/btrfs.h      |   1 +
->  include/uapi/linux/btrfs_tree.h |   3 +
->  6 files changed, 212 insertions(+), 118 deletions(-)
->=20
 
 
---ZJohNMdz7nzfj854O7x7bLfUwCUQN98Ef--
+--k3n8u6jY4HwmDbdmEs2vPwUe5FznCXUyB--
 
---EovkCANdpLM4w1CTHALwyAA8H69T4IBC6
+--c7piHdXfBn6VqX3izUblidaZJJxxgSvIL
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2emigACgkQwj2R86El
-/qhMwgf+L8AetxKC/REdun9Zg7bn3afsFAE8kq8oCvyDNzIV5z3JCdnGZ10IcrKM
-v2s+Eqn1aH/GpMZtZThpHDXEQiH4I5qjrrIGlLUAAVdxN1GnIGo7ZRvqgUGVDXpM
-xxUP0yIN4/jfwyQkKKL9cCyrVw9kj8nscBxWeuSmYsK7qCT6FoRCe0Kagdk1aYFl
-fxOOe1F5Pvbj6nxV4AG7XRbLcV49I+ldsWBs5z3ru83oyOP+IIPTrOjx2vzb4FsQ
-9KCkUoS294JTV9eL1U5ZjlSx3yM2XEua3K5RtsUZy53VDdub2f/tn6u9BcQt62+y
-udl6FcF87Bx9g/0zMS4g7TODJhu6ow==
-=/H5O
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2emosACgkQwj2R86El
+/qjVRAf/dJb3kCha6p8LfwIgSVNA8ypSlXR7T5AV2CrNA2e3U6UZSsbn0D3DtF+4
+x4+raYFfj2Bsx2poJnuNzypfCpNKWL4j+Gre24nhkxzl92UoAs7WtoMIWn2FjYIl
+x3n5jOellSyPNJSb4xwUT1BqBeiVeJFD1eh9c/xIP8QOmcBVgUNGAfEXPS126Wn9
+H+6yWVyVs53cChicJyxbuCAlUpXlSVM5STuRspBoaFtTxI7Bd9gkZfto0kU6cdcs
+31b6qhfK5czRGkAJg5ARbEO1nTLHNJiX0qS6pIaXeve2B2UDy1aG9a6Hwrk1+l01
+a7205j0645arz1K72pBYCfQBA7ThgA==
+=w8Mv
 -----END PGP SIGNATURE-----
 
---EovkCANdpLM4w1CTHALwyAA8H69T4IBC6--
+--c7piHdXfBn6VqX3izUblidaZJJxxgSvIL--
