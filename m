@@ -2,181 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 282E3D35B6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 02:24:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3FFD375F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 04:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726725AbfJKAVh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 10 Oct 2019 20:21:37 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:37435 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbfJKAVh (ORCPT
+        id S1727584AbfJKCC0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 10 Oct 2019 22:02:26 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49818 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727369AbfJKCC0 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 10 Oct 2019 20:21:37 -0400
-Received: by mail-ed1-f65.google.com with SMTP id r4so7106895edy.4;
-        Thu, 10 Oct 2019 17:21:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TnvHggbNdZnxLx93jjXuWj1lKLV5ZUH/jWX6zccU648=;
-        b=oC4Fp5S8XZjQ/EHu2XVmd/wB456wr+Y51FM8HgElHSQFEPjS8mEKxHgCD4LDkPFo4+
-         3GASddiWQef8qUYA2hgELKn0G3WQAxTMCWfmTqUT/b39ksZV+WvrIFce152sR4T/qp4b
-         s+xtD9kyspjGotLgEOxG3kUpJAyh+47Rvn36aoTmT5eH/OFIcUpyQMooGH9R3a/hPHmE
-         h819hjMR1f+3bEwrUi4r6gbPGEe8wnb/oq9fIWmyoQr8ZA/RfkPlteh1w+X+5BOshEBI
-         NjxLSopm88N7+/nDBtpR0SWuMz9kXH4g5kNQRkawYbtre/gErwWhtYUg5jOdMmG/pb8L
-         ftjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TnvHggbNdZnxLx93jjXuWj1lKLV5ZUH/jWX6zccU648=;
-        b=FmE4xhCw9zlvVC+Cz+2vZPRIZH+/TahyXe7+clX8m70+yJyIhx1HRAFk0bYfCPLIZ4
-         c7KPkq2Co1zqEPdvd+b0wt+ih5OnL23FBDHJmb6HrV5/5cp8Zze0Wpayfo1eFiyCio0+
-         ULNaSB2QImnZZG9E67HM6gn6yFu7KXOqDpVe+u6Wmj+jhnUlPmI+HiVU5GfrLN1JJ5bz
-         xdZ+0EBcrwj9bB6EzBDHiROchw4ejmEFBNchVib11Oz0LaIVGs2gLjmJGVSBmhAkSoKK
-         iSwGg0s2WdvBCZ8FOVZSuUu0WMi9enO019rTaCEJLbvgWHAJF9qb1F2TQYk1lrH1SVlm
-         X+jQ==
-X-Gm-Message-State: APjAAAWU3NML+rjOAc5f3UUzt6ZlimpYq7CMaRvJ+djSq+twhyM4YcNZ
-        mS2EzOm2pYp+6YFVXre5yYY2e68Gcoc=
-X-Google-Smtp-Source: APXvYqx/5reMp+KKgPRIKqPQawTCneYc8u/1O8vhsGY9L9+jDzKJYaAKqPTkK+11x2lfw/oWLD2LeQ==
-X-Received: by 2002:a05:6402:7ca:: with SMTP id u10mr10850683edy.20.1570753293536;
-        Thu, 10 Oct 2019 17:21:33 -0700 (PDT)
-Received: from continental.suse.de ([191.35.238.90])
-        by smtp.gmail.com with ESMTPSA id 36sm1228582edz.92.2019.10.10.17.21.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Oct 2019 17:21:32 -0700 (PDT)
-From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
-To:     dsterba@suse.com, clm@fb.com
-Cc:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
-        Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org (open list:BTRFS FILE SYSTEM),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] btrfs: ioctl: Try to use btrfs_fs_info instead of *file
-Date:   Thu, 10 Oct 2019 21:23:11 -0300
-Message-Id: <20191011002311.12459-1-marcos.souza.org@gmail.com>
-X-Mailer: git-send-email 2.23.0
+        Thu, 10 Oct 2019 22:02:26 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9B1wxYX019225;
+        Fri, 11 Oct 2019 02:02:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=XiajA+N5h/eZuxn803wF4ngWuaSD2vUxddMOUCZM3mo=;
+ b=X1HZB9sSKY7vqOJO3E++mVQUQ6wkF3+aKDO5VXEoGugRJ1Rr6oEiRTNdY71Nbg9dertu
+ WuuUTqM5mWyqcorD69LE1IUCL8T+glSE10qo5kD9VNktpFMJkEoDOMv/e5xDf4rEA1H8
+ GJ0Sbgypn9U3yHM0HobU8qo35+DhrQx3hoaEuPAaNUEk7oe8gmPKNpJixW7ApIaabsz6
+ M7gQAjs8AXd3KDI+Lx2MberKTLIzzZqdSVMVCgctjuJcbQhLsjSkRI0VHzevm5Dp/9ed
+ yE9L5xxH/p5dCutQai4TEzwWmSJn/jkVYFyRkDmwE59W75lNwFxQFwFXqM27IS9ZQDcx zQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2vektrxcth-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Oct 2019 02:02:20 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9B1wrlH192518;
+        Fri, 11 Oct 2019 02:02:19 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2vjdyjy6ns-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 11 Oct 2019 02:02:19 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9B22IoX002888;
+        Fri, 11 Oct 2019 02:02:18 GMT
+Received: from [10.190.155.136] (/192.188.170.104)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 10 Oct 2019 19:02:18 -0700
+Subject: Re: [PATCH] btrfs: ioctl: Try to use btrfs_fs_info instead of *file
+To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191011002311.12459-1-marcos.souza.org@gmail.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <7d74f317-0e5f-e7a5-28f8-070337bbb9a8@oracle.com>
+Date:   Fri, 11 Oct 2019 10:02:07 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191011002311.12459-1-marcos.souza.org@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9406 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910110014
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9406 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910110014
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Some functions are doing some bikeshedding to reach the btrfs_fs_info
-struct. Change these functions to receive a btrfs_fs_info struct instead
-of a *file.
+(cleaned up cc list - I didn't want to clutter others inboxes with my 
+review).
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- The kernel survived btrfs-progs tests with this patch applied.
+On 10/11/19 8:23 AM, Marcos Paulo de Souza wrote:
+> Some functions are doing some bikeshedding to reach the btrfs_fs_info
+> struct. Change these functions to receive a btrfs_fs_info struct instead
+> of a *file.
+> 
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
- fs/btrfs/ioctl.c | 36 +++++++++++++++---------------------
- 1 file changed, 15 insertions(+), 21 deletions(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index de730e56d3f5..870e5c48b362 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -479,10 +479,9 @@ static int btrfs_ioctl_getversion(struct file *file, int __user *arg)
- 	return put_user(inode->i_generation, arg);
- }
- 
--static noinline int btrfs_ioctl_fitrim(struct file *file, void __user *arg)
-+static noinline int btrfs_ioctl_fitrim(struct btrfs_fs_info *fs_info,
-+					void __user *arg)
- {
--	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_device *device;
- 	struct request_queue *q;
- 	struct fstrim_range range;
-@@ -4960,10 +4959,9 @@ static long btrfs_ioctl_quota_rescan(struct file *file, void __user *arg)
- 	return ret;
- }
- 
--static long btrfs_ioctl_quota_rescan_status(struct file *file, void __user *arg)
-+static long btrfs_ioctl_quota_rescan_status(struct btrfs_fs_info *fs_info,
-+						void __user *arg)
- {
--	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_ioctl_quota_rescan_args *qsa;
- 	int ret = 0;
- 
-@@ -4986,11 +4984,9 @@ static long btrfs_ioctl_quota_rescan_status(struct file *file, void __user *arg)
- 	return ret;
- }
- 
--static long btrfs_ioctl_quota_rescan_wait(struct file *file, void __user *arg)
-+static long btrfs_ioctl_quota_rescan_wait(struct btrfs_fs_info *fs_info,
-+						void __user *arg)
- {
--	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
--
- 	if (!capable(CAP_SYS_ADMIN))
- 		return -EPERM;
- 
-@@ -5162,10 +5158,9 @@ static long btrfs_ioctl_set_received_subvol(struct file *file,
- 	return ret;
- }
- 
--static int btrfs_ioctl_get_fslabel(struct file *file, void __user *arg)
-+static int btrfs_ioctl_get_fslabel(struct btrfs_fs_info *fs_info,
-+					void __user *arg)
- {
--	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	size_t len;
- 	int ret;
- 	char label[BTRFS_LABEL_SIZE];
-@@ -5249,10 +5244,9 @@ int btrfs_ioctl_get_supported_features(void __user *arg)
- 	return 0;
- }
- 
--static int btrfs_ioctl_get_features(struct file *file, void __user *arg)
-+static int btrfs_ioctl_get_features(struct btrfs_fs_info *fs_info,
-+					void __user *arg)
- {
--	struct inode *inode = file_inode(file);
--	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct btrfs_super_block *super_block = fs_info->super_copy;
- 	struct btrfs_ioctl_feature_flags features;
- 
-@@ -5453,11 +5447,11 @@ long btrfs_ioctl(struct file *file, unsigned int
- 	case FS_IOC_GETVERSION:
- 		return btrfs_ioctl_getversion(file, argp);
- 	case FS_IOC_GETFSLABEL:
--		return btrfs_ioctl_get_fslabel(file, argp);
-+		return btrfs_ioctl_get_fslabel(fs_info, argp);
- 	case FS_IOC_SETFSLABEL:
- 		return btrfs_ioctl_set_fslabel(file, argp);
- 	case FITRIM:
--		return btrfs_ioctl_fitrim(file, argp);
-+		return btrfs_ioctl_fitrim(fs_info, argp);
- 	case BTRFS_IOC_SNAP_CREATE:
- 		return btrfs_ioctl_snap_create(file, argp, 0);
- 	case BTRFS_IOC_SNAP_CREATE_V2:
-@@ -5562,15 +5556,15 @@ long btrfs_ioctl(struct file *file, unsigned int
- 	case BTRFS_IOC_QUOTA_RESCAN:
- 		return btrfs_ioctl_quota_rescan(file, argp);
- 	case BTRFS_IOC_QUOTA_RESCAN_STATUS:
--		return btrfs_ioctl_quota_rescan_status(file, argp);
-+		return btrfs_ioctl_quota_rescan_status(fs_info, argp);
- 	case BTRFS_IOC_QUOTA_RESCAN_WAIT:
--		return btrfs_ioctl_quota_rescan_wait(file, argp);
-+		return btrfs_ioctl_quota_rescan_wait(fs_info, argp);
- 	case BTRFS_IOC_DEV_REPLACE:
- 		return btrfs_ioctl_dev_replace(fs_info, argp);
- 	case BTRFS_IOC_GET_SUPPORTED_FEATURES:
- 		return btrfs_ioctl_get_supported_features(argp);
- 	case BTRFS_IOC_GET_FEATURES:
--		return btrfs_ioctl_get_features(file, argp);
-+		return btrfs_ioctl_get_features(fs_info, argp);
- 	case BTRFS_IOC_SET_FEATURES:
- 		return btrfs_ioctl_set_features(file, argp);
- 	case FS_IOC_FSGETXATTR:
--- 
-2.23.0
-
+Thanks for the fix.
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
