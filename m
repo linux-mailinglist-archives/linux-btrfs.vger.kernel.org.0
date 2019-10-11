@@ -2,121 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D7901D4499
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 17:41:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEACD4500
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 18:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726829AbfJKPlm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Oct 2019 11:41:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57504 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726642AbfJKPll (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Oct 2019 11:41:41 -0400
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DE5AC206A1;
-        Fri, 11 Oct 2019 15:41:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1570808500;
-        bh=K6QDyckbXgjWdYMdc/J7V++QIPJcDaEWoSfporUFoQA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M/SC0GiBWoxYLZTDA8wtgZfRnXd9a/qe5lblacJEMt8zJxlvBnKjF8RdEZytoskEI
-         gYFucRDEpkMofnstjTsIvdDzraEzvbwtKD9uQpUnRLQ4NIReWgQtR3AMzR5NuJgrwX
-         WOojcOIlkyRe5FmiJYb/0Myp+3HNEkplUzGdWNec=
-From:   fdmanana@kernel.org
-To:     linux-btrfs@vger.kernel.org
-Cc:     josef@toxicpanda.com, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v2] Btrfs: fix negative subv_writers counter and data space leak after buffered write
-Date:   Fri, 11 Oct 2019 16:41:20 +0100
-Message-Id: <20191011154120.5547-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20191009164422.7202-1-fdmanana@kernel.org>
-References: <20191009164422.7202-1-fdmanana@kernel.org>
+        id S1727399AbfJKQIZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Oct 2019 12:08:25 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:34396 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726666AbfJKQIZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Oct 2019 12:08:25 -0400
+Received: by mail-qk1-f194.google.com with SMTP id q203so9379176qke.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Oct 2019 09:08:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=gDlrtxNNZCau/oXoDlNcEiPgzIFPKDmlb/S4XRQQAyQ=;
+        b=VsLZyMjn4cpAbGHWd7JPsAHWMBO9kF6b2DskQgPMx77a59p7686GWJa8w5u3PI+cJz
+         EUwER5kD2jyJyUD317eftSITsU+0dNbqKRljiBO+tEFOL+3HFeT1b8bLIPNInSLiJaqs
+         tAlwvelHfhz4Q1YIfq0eYBcPWHA4E1sMLasu0St24F7k3SDYYL/qQqYRBtTRjhBHJndn
+         uO2CCvTWeuJPJUrGHJ9WmwMo2L44SFCD5VkvY7f6VtzFq/9fPa/NJIlQOI9iJK2IQjt2
+         TWjXQnURfjjAgT78ml6noTZcGvlhvEtJyKfaH0E0QWPD/txXxj5SC3Uk70Efp3l8h4C6
+         B8Mw==
+X-Gm-Message-State: APjAAAXB/SHxAeTm1Ri14z8lCLx8zreELq63u0buVp7xcsNCWoL7Uiww
+        ZmtJ7yN2eZsH0YWLNHRuMeQ=
+X-Google-Smtp-Source: APXvYqx9PHL7U3kmiTPfA3lc69Y+qnZrsnkE/mOHLGX4AV7puQUNToGqKioEbLjv62gJ7Gyv8Vc48Q==
+X-Received: by 2002:ae9:c307:: with SMTP id n7mr16258572qkg.185.1570810104034;
+        Fri, 11 Oct 2019 09:08:24 -0700 (PDT)
+Received: from dennisz-mbp ([2620:10d:c091:500::2:985b])
+        by smtp.gmail.com with ESMTPSA id x12sm5999428qtb.32.2019.10.11.09.08.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Oct 2019 09:08:23 -0700 (PDT)
+Date:   Fri, 11 Oct 2019 12:08:20 -0400
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Dennis Zhou <dennis@kernel.org>, Chris Mason <clm@fb.com>,
+        Omar Sandoval <osandov@osandov.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 03/19] btrfs: keep track of which extents have been
+ discarded
+Message-ID: <20191011160820.GA29672@dennisz-mbp>
+References: <cover.1570479299.git.dennis@kernel.org>
+ <cover.1570479299.git.dennis@kernel.org>
+ <5875088b5f4ada0ef73f097b238935dd583d5b3e.1570479299.git.dennis@kernel.org>
+ <9ef5c546-7615-7970-ee7a-3200636d905e@suse.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9ef5c546-7615-7970-ee7a-3200636d905e@suse.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Tue, Oct 08, 2019 at 03:46:18PM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 7.10.19 г. 23:17 ч., Dennis Zhou wrote:
+> > Async discard will use the free space cache as backing knowledge for
+> > which extents to discard. This patch plumbs knowledge about which
+> > extents need to be discarded into the free space cache from
+> > unpin_extent_range().
+> > 
+> > An untrimmed extent can merge with everything as this is a new region.
+> > Absorbing trimmed extents is a tradeoff to for greater coalescing which
+> > makes life better for find_free_extent(). Additionally, it seems the
+> > size of a trim isn't as problematic as the trim io itself.
+> > 
+> > When reading in the free space cache from disk, if sync is set, mark all
+> > extents as trimmed. The current code ensures at transaction commit that
+> > all free space is trimmed when sync is set, so this reflects that.
+> > 
+> > Signed-off-by: Dennis Zhou <dennis@kernel.org>
+> 
+> I haven't looked closely into this commit but I already implemented
+> something similar in order to speed up trimming by not discarding an
+> already discarded region twice. The code was introduced by the following
+> series:
+> https://lore.kernel.org/linux-btrfs/20190327122418.24027-1-nborisov@suse.com/
+> in particular patches 13 to 15 .
+> 
+> Can you leverage it ? If not then your code should, at some point,
+> subsume the old one.
+> 
 
-When doing a buffered write it's possible to leave the subv_writers
-counter of the root, used for synchronization between buffered nocow
-writers and snapshotting. This happens in an exceptional case like the
-following:
+I spent some time reading through that. I believe we're tackling two
+separate problems. Correct me if I'm wrong, but your patches are making
+subsequent fitrims faster because it's skipping over free regions that
+were never allocated by the chunk allocator.
 
-1) We fail to allocate data space for the write, since there's not
-   enough available data space nor enough unallocated space for allocating
-   a new data block group;
+This series is aiming to solve intra-block group trim latency as trim is
+handled during transaction commit and consequently also help prevent
+retrimming of the free space that is already trimmed.
 
-2) Because of that failure, we try to go to NOCOW mode, which succeeds
-   and therefore we set the local variable 'only_release_metadata' to true
-   and set the root's sub_writers counter to 1 through the call to
-   btrfs_start_write_no_snapshotting() made by check_can_nocow();
-
-3) The call to btrfs_copy_from_user() returns zero, which is very unlikely
-   to happen but not impossible;
-
-4) No pages are copied because btrfs_copy_from_user() returned zero;
-
-5) We call btrfs_end_write_no_snapshotting() which decrements the root's
-   subv_writers counter to 0;
-
-6) We don't set 'only_release_metadata' back to 'false' because we do
-   it only if 'copied', the value returned by btrfs_copy_from_user(), is
-   greater than zero;
-
-7) On the next iteration of the while loop, which processes the same
-   page range, we are now able to allocate data space for the write (we
-   got enough data space released in the meanwhile);
-
-8) After this if we fail at btrfs_delalloc_reserve_metadata(), because
-   now there isn't enough free metadata space, or in some other place
-   further below (prepare_pages(), lock_and_cleanup_extent_if_need(),
-   btrfs_dirty_pages()), we break out of the while loop with
-   'only_release_metadata' having a value of 'true';
-
-9) Because 'only_release_metadata' is 'true' we end up decrementing the
-   root's subv_writers counter to -1 (through a call to
-   btrfs_end_write_no_snapshotting()), and we also end up not releasing the
-   data space previously reserved through btrfs_check_data_free_space().
-   As a consequence the mechanism for synchronizing NOCOW buffered writes
-   with snapshotting gets broken.
-
-Fix this by always setting 'only_release_metadata' to false at the start
-of each iteration.
-
-Fixes: 8257b2dc3c1a10 ("Btrfs: introduce btrfs_{start, end}_nocow_write() for each subvolume")
-Fixes: 7ee9e4405f264e ("Btrfs: check if we can nocow if we don't have data space")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
-
-V2: Moved assignment of false to only_release_metadata to the beginning of
-    loop instead. And another "Fixes:" tag that corresponds to the data
-    space leak, since the other if for counter dropping to -1 bug.
-
- fs/btrfs/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 27e5b269e729..352928b45d2a 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1636,6 +1636,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 			break;
- 		}
- 
-+		only_release_metadata = false;
- 		sector_offset = pos & (fs_info->sectorsize - 1);
- 		reserve_bytes = round_up(write_bytes + sector_offset,
- 				fs_info->sectorsize);
-@@ -1792,7 +1793,6 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 			set_extent_bit(&BTRFS_I(inode)->io_tree, lockstart,
- 				       lockend, EXTENT_NORESERVE, NULL,
- 				       NULL, GFP_NOFS);
--			only_release_metadata = false;
- 		}
- 
- 		btrfs_drop_pages(pages, num_pages);
--- 
-2.11.0
-
+Thanks,
+Dennis
