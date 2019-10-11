@@ -2,67 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3963D4788
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 20:26:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B1ED47C0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 20:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728772AbfJKS0a (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Oct 2019 14:26:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56592 "EHLO mx1.suse.de"
+        id S1728735AbfJKSim (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Oct 2019 14:38:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35392 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728514AbfJKS0a (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Oct 2019 14:26:30 -0400
+        id S1728603AbfJKSim (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Oct 2019 14:38:42 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D9E87B0C6;
-        Fri, 11 Oct 2019 18:26:28 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 07E9FAB91;
+        Fri, 11 Oct 2019 18:38:41 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 84CE7DA808; Fri, 11 Oct 2019 20:26:42 +0200 (CEST)
-Date:   Fri, 11 Oct 2019 20:26:42 +0200
+        id BC3B9DA808; Fri, 11 Oct 2019 20:38:54 +0200 (CEST)
+Date:   Fri, 11 Oct 2019 20:38:54 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/5] btrfs: get bdev from latest_dev for dio bh_result
-Message-ID: <20191011182642.GH2751@twin.jikos.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] Btrfs: fix metadata space leak on fixup worker failure
+ to set range as delalloc
+Message-ID: <20191011183854.GI2751@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1570474492.git.dsterba@suse.com>
- <2ae45bba23d97e0d60d9949d9c65dbab9961cb34.1570474492.git.dsterba@suse.com>
- <a5312091-5ded-01af-19e5-f87d21de165f@suse.com>
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20191009164359.29642-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a5312091-5ded-01af-19e5-f87d21de165f@suse.com>
+In-Reply-To: <20191009164359.29642-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 09, 2019 at 01:42:00PM +0300, Nikolay Borisov wrote:
+On Wed, Oct 09, 2019 at 05:43:59PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
+> In the fixup worker, if we fail to mark the range as delalloc in the io
+> tree, we must release the previously reserved metadata, as well as update
+> the outstanding extents counter for the inode, otherwise we leak metadata
+> space.
 > 
-> On 7.10.19 г. 22:37 ч., David Sterba wrote:
-> > To remove use of extent_map::bdev we need to find a replacement, and the
-> > latest_bdev is the only one we can use here, because inode::i_bdev and
-> > superblock::s_bdev are NULL.
-> > 
-> > The only thing that DIO code uses from the bdev is the blocksize to
-> > perform alignment checks in do_blockdev_direct_IO, but we do them in
-> > btrfs code before any call to DIO. We can't pass NULL because there are
+> In pratice we can't return an error from btrfs_set_extent_delalloc(),
+> which is just a wrapper around __set_extent_bit(), as for most errors
+> __set_extent_bit() does a BUG_ON() (or panics which hits a BUG_ON() as
+> well) and returning an -EEXIST error doesn't happen in this case since
+> the exclusive bits parameter always has a value of 0 through this code
+> path. Nevertheless, just fix the error handling in the fixup worker,
+> in case one day __set_extent_bit() can return an error to this code
+> path.
 > 
-> nit: This is not entirely correct. In fact map_bh in
-> do_blockdev_direct_IO gets filled in :
-> 
-> do_direct_IO
->   get_more_blocks
->    sdio->get_block() <-- this is btrfs_get_blocks_direct
-> 
-> Subsequently the map_bh->b_dev member is used in
-> clean_bdev_aliases and dio_new_bio to set the bio's bdev to that of the
-> buffer_head. However, because we have provided a submit function
-> dio_bio_submit calls our submission function and ignores the bdev.
+> Fixes: f3038ee3a3f101 ("btrfs: Handle btrfs_set_extent_delalloc failure in fixup worker")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-You're right, and actually I got crashes in clean_bdev_aliases when I
-supplied a NULL bdev, so I'll add it to the changelog. Thanks.
+Added to misc-next, thanks.
+
+> @@ -2201,12 +2201,16 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+>  		mapping_set_error(page->mapping, ret);
+>  		end_extent_writepage(page, ret, page_start, page_end);
+>  		ClearPageChecked(page);
+> -		goto out;
+> +		goto out_reserved;
+>  	}
+>  
+>  	ClearPageChecked(page);
+>  	set_page_dirty(page);
+> -	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, false);
+> +out_reserved:
+> +	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, ret != 0);
+
+This is a shortcut to avoid extra variable to track the status of the
+3rd parameter (qgroup_free) but as the goto and label are only a few
+lines apart, I guess it's ok.
+
+> +	if (ret)
+> +		btrfs_delalloc_release_space(inode, data_reserved, page_start,
+> +					     PAGE_SIZE, true);
