@@ -2,140 +2,121 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DA00D4104
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 15:23:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B2ECD411E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 15:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728198AbfJKNXl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Oct 2019 09:23:41 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:43318 "EHLO
+        id S1728218AbfJKN1q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Oct 2019 09:27:46 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43021 "EHLO
         mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728002AbfJKNXl (ORCPT
+        with ESMTP id S1727589AbfJKN1q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Oct 2019 09:23:41 -0400
-Received: by mail-qt1-f196.google.com with SMTP id t20so8468274qtr.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Oct 2019 06:23:39 -0700 (PDT)
+        Fri, 11 Oct 2019 09:27:46 -0400
+Received: by mail-qt1-f196.google.com with SMTP id t20so8486811qtr.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Oct 2019 06:27:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=nKdLM4gvb6sf8LqgaVTNQkV/XRHRju7FEgEYbdyFdAI=;
-        b=wXravQ3zdVe9+xTrmlp22RApFrIp0rQo44YvD4laLqHj5jTR87o3UsKxYZRpnJq22v
-         MlXntdqh4aWffz4FhItcEZ7r6IuG6YYNcpEtUcEWwQeyR9KD0DwZXrDliuo+a+rW/0nt
-         zbawbzq9H5OrfvEDA3WEwRauE0IKzP9bIM2ZlomA3fHrv+xZrY5ux40ZXHB7ASS+v9dY
-         YTqmf78WbJbiwXzq1PIm9vl9+/O7YzT3B2XWigIpRDLT7r9OpnL/4LDZbLswfBKz0WjR
-         pVsiC92ovkQIT8qHWHJ0yAoF4LNrn5nk1ntEvqthahjbeMKeKX0xfGDGLMQXTnOi0nCy
-         p1bw==
+        bh=t2zFIvIesqyJ/wrPmPi9vCoiYfapR9CDMYp/cRglWb4=;
+        b=dranrffOqx1gUNiXiABDdLViTzoDsNtkddAZ+//IYtb/91qml0grQCu3o83TyW7OqE
+         BFBGUoPA6OwtUxENVhQgi7pC9pdbmFIMWMirrE55TuAGABii13Loz084aoGzEfgcdaeR
+         KpRG1Vmz/R45DCWfpQV7Lzr4fdDPWkMSmDkWUMFhDFjzvEdFn6bOBA5NgBJvXRZqgGJi
+         4YsPYM+yw+FeceE+wGD+6hIb5Xa8zozRF+mLjJYo5hlIO0i6W+AjgyUgE6w9cHDHqT7b
+         lNcFQ4iQl1l7YKuQYblNscy+oBof4F2VTBsOYUQ4BRD6FDwaplEka+vF6FFA02vA/Gdx
+         1/tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=nKdLM4gvb6sf8LqgaVTNQkV/XRHRju7FEgEYbdyFdAI=;
-        b=nyFGF6lUQEasY66ZPKtB6XRpx+pz9dEZApB5hOWRRiiNzbZl8WLcIHXEVgNOL+GNWW
-         /xNsky3gIwXxTRuMVD6cOlFREmslnAnOiKqYIdzic8TTU2hd71wwtOa9afzdLwRtuu5S
-         1MmjqsUtBzg/wpIKzgDxlGy+GxgDP0TjeEu2o9kDYji5SP7WTUOtwzsShzEHqyGli5pB
-         4deJdCkq7NqrEPCc6HBlaV1rvnmI/832K8vcMpSYMQEMg1fodRODFNVcU+GLp4zc+bcx
-         m19VecHb/v8G2/0Fx2NohcJ0Bzd1ejo1msoAX2hcYPvEo3BuqnqAhVlH41m3u0mz0lcN
-         MCQA==
-X-Gm-Message-State: APjAAAVPf2rcxtkz0AvxOJ4KpRMlDbla1uzzXoLqb390GuHassEjExj2
-        QI8ZV+1Cvos0L3eS7vH8cUlp1Ea3q+7WKQ==
-X-Google-Smtp-Source: APXvYqxSdZpRkHWt1AD4+4ZwNnxf/eERpYKbbIxv+JywZN3LpRtK/QIY/23Y6h4urpHZ21BuKjNkVw==
-X-Received: by 2002:ac8:2a83:: with SMTP id b3mr16893970qta.244.1570800218730;
-        Fri, 11 Oct 2019 06:23:38 -0700 (PDT)
+        bh=t2zFIvIesqyJ/wrPmPi9vCoiYfapR9CDMYp/cRglWb4=;
+        b=Fk9jDGNhsPJb/KtO/jdHa4oIrxHdh5UoEbszJsINmeL96FZBP08HUQBv+AL1u9agPn
+         ODsLwaQUTbBWYkycCXMxcj+YnTUAX5Xnwv4Ax0Kzblv8ItE0ypTVvjpMtoFVLh744ZAq
+         xHQYegmnvIewVFeshu9sNUa0llviF+i5k3j5m1TLm/rQJFCtl/S+YDajfIGSwmNkwedS
+         w7MvGm7QZ4AlscJWcflvsXYbnMGmyNaFCdmWLfnRsPPpMz4YD1+DCxcE+yd+84yLtse5
+         sWDOCn1RViWbl6XgnVDrbVzz4YLrO+NVsOryzsSMusygV+YGLhEWEojPmZHEirfAJSkD
+         ZPtg==
+X-Gm-Message-State: APjAAAXC+bTGuRz3A/IUKklSW1vSJpKp53Fj/94NxjRJBOcAQSr/ILQk
+        ZCG2E11gXo11wHn1iGl7FJLXIA==
+X-Google-Smtp-Source: APXvYqwXV5P9WQPwH9lAama4jmsKA/+238MMOKSnIg/aeVCKCg8+wUb2RC3tPt/dXC44vtp0lraLNw==
+X-Received: by 2002:a0c:c58c:: with SMTP id a12mr16133627qvj.235.1570800464303;
+        Fri, 11 Oct 2019 06:27:44 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id 54sm5500579qts.75.2019.10.11.06.23.37
+        by smtp.gmail.com with ESMTPSA id j4sm4240180qkf.116.2019.10.11.06.27.43
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Oct 2019 06:23:38 -0700 (PDT)
-Date:   Fri, 11 Oct 2019 09:23:36 -0400
+        Fri, 11 Oct 2019 06:27:43 -0700 (PDT)
+Date:   Fri, 11 Oct 2019 09:27:42 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
+To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] btrfs: Introduce new incompat feature, BG_TREE,
- to speed up mount time
-Message-ID: <20191011132335.mo2zsapmmjhftezh@MacBook-Pro-91.local>
-References: <20191010023928.24586-1-wqu@suse.com>
- <20191010023928.24586-4-wqu@suse.com>
+Subject: Re: [PATCH] Btrfs: fix negative subv_writers counter and data space
+ leak after buffered write
+Message-ID: <20191011132741.6zrjhv22j4otl6jc@MacBook-Pro-91.local>
+References: <20191009164422.7202-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191010023928.24586-4-wqu@suse.com>
+In-Reply-To: <20191009164422.7202-1-fdmanana@kernel.org>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 10, 2019 at 10:39:28AM +0800, Qu Wenruo wrote:
-> The overall idea of the new BG_TREE is pretty simple:
-> Put BLOCK_GROUP_ITEMS into a separate tree.
+On Wed, Oct 09, 2019 at 05:44:22PM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> This brings one obvious enhancement:
-> - Reduce mount time of large fs
+> When doing a buffered write it's possible to leave the subv_writers
+> counter of the root, used for synchronization between buffered nocow
+> writers and snapshotting. This happens in an exceptional case like the
+> following:
 > 
-> Although it could be possible to accept BLOCK_GROUP_ITEMS in either
-> trees (extent root or bg root), I'll leave that kernel convert as
-> alternatives to offline convert, as next step if there are a lot of
-> interests in that.
+> 1) We fail to allocate data space for the write, since there's not
+>    enough available data space nor enough unallocated space for allocating
+>    a new data block group;
 > 
-> So for now, if an existing fs want to take advantage of BG_TREE feature,
-> btrfs-progs will provide offline convertion tool.
+> 2) Because of that failure, we try to go to NOCOW mode, which succeeds
+>    and therefore we set the local variable 'only_release_metadata' to true
+>    and set the root's sub_writers counter to 1 through the call to
+>    btrfs_start_write_no_snapshotting() made by check_can_nocow();
 > 
-> [[Benchmark]]
-> Physical device:	NVMe SSD
-> VM device:		VirtIO block device, backup by sparse file
-> Nodesize:		4K  (to bump up tree height)
-> Extent data size:	4M
-> Fs size used:		1T
+> 3) The call to btrfs_copy_from_user() returns zero, which is very unlikely
+>    to happen but not impossible;
 > 
-> All file extents on disk is in 4M size, preallocated to reduce space usage
-> (as the VM uses loopback block device backed by sparse file)
+> 4) No pages are copied because btrfs_copy_from_user() returned zero;
 > 
-> Without patchset:
-> Use ftrace function graph:
+> 5) We call btrfs_end_write_no_snapshotting() which decrements the root's
+>    subv_writers counter to 0;
 > 
->  7)               |  open_ctree [btrfs]() {
->  7)               |    btrfs_read_block_groups [btrfs]() {
->  7) @ 805851.8 us |    }
->  7) @ 911890.2 us |  }
+> 6) We don't set 'only_release_metadata' back to 'false' because we do
+>    it only if 'copied', the value returned by btrfs_copy_from_user(), is
+>    greater than zero;
 > 
->  btrfs_read_block_groups() takes 88% of the total mount time,
+> 7) On the next iteration of the while loop, which processes the same
+>    page range, we are now able to allocate data space for the write (we
+>    got enough data space released in the meanwhile);
 > 
-> With patchset, and use -O bg-tree mkfs option:
+> 8) After this if we fail at btrfs_delalloc_reserve_metadata(), because
+>    now there isn't enough free metadata space, or in some other place
+>    further below (prepare_pages(), lock_and_cleanup_extent_if_need(),
+>    btrfs_dirty_pages()), we break out of the while loop with
+>    'only_release_metadata' having a value of 'true';
 > 
->  6)               |  open_ctree [btrfs]() {
->  6)               |    btrfs_read_block_groups [btrfs]() {
->  6) * 91204.69 us |    }
->  6) @ 192039.5 us |  }
+> 9) Because 'only_release_metadata' is 'true' we end up decrementing the
+>    root's subv_writers counter to -1, and we also end up not releasing the
+>    data space previously reserved through btrfs_check_data_free_space().
+>    As a consequence the mechanism for synchronizing NOCOW buffered writes
+>    with snapshotting gets broken.
 > 
->   open_ctree() time is only 21% of original mount time.
->   And btrfs_read_block_groups() only takes 47% of total open_ctree()
->   execution time.
-> 
-> The reason is pretty obvious when considering how many tree blocks needs
-> to be read from disk:
-> - Original extent tree:
->   nodes:	55
->   leaves:	1025
->   total:	1080
-> - Block group tree:
->   nodes:	1
->   leaves:	13
->   total:	14
-> 
-> Not to mention all the tree blocks readahead works pretty fine for bg
-> tree, as we will read every item.
-> While readahead for extent tree will just be a diaster, as all block
-> groups are scatter across the whole extent tree.
-> 
-> The reduction of mount time is already obvious even on super fast NVMe
-> disk with memory cache.
-> It would be even more obvious if the fs is on spinning rust.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Fix this by always setting 'only_release_metadata' to false whenever it
+> currently has a true value, independently of having been able to copy any
+> data to the pages.
 
-You need to add
+Can we accomplish the same thing by just doing
 
-fs_info->bg_root->block_rsv = &fs_info->delayed_refs_rsv;
+only_release_metadata = false;
 
-to btrfs_init_global_block_rsv, otherwise bad things will happen.  Thanks,
+at the start of the loop?  That way we only ever deal with it in its current
+scope?  Thanks,
 
 Josef
