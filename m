@@ -2,121 +2,176 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B2ECD411E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 15:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9C9D4428
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 17:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbfJKN1q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Oct 2019 09:27:46 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:43021 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727589AbfJKN1q (ORCPT
+        id S1726705AbfJKP2k (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Oct 2019 11:28:40 -0400
+Received: from mail-ua1-f68.google.com ([209.85.222.68]:36734 "EHLO
+        mail-ua1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726332AbfJKP2k (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Oct 2019 09:27:46 -0400
-Received: by mail-qt1-f196.google.com with SMTP id t20so8486811qtr.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Oct 2019 06:27:44 -0700 (PDT)
+        Fri, 11 Oct 2019 11:28:40 -0400
+Received: by mail-ua1-f68.google.com with SMTP id r25so3168729uam.3;
+        Fri, 11 Oct 2019 08:28:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=t2zFIvIesqyJ/wrPmPi9vCoiYfapR9CDMYp/cRglWb4=;
-        b=dranrffOqx1gUNiXiABDdLViTzoDsNtkddAZ+//IYtb/91qml0grQCu3o83TyW7OqE
-         BFBGUoPA6OwtUxENVhQgi7pC9pdbmFIMWMirrE55TuAGABii13Loz084aoGzEfgcdaeR
-         KpRG1Vmz/R45DCWfpQV7Lzr4fdDPWkMSmDkWUMFhDFjzvEdFn6bOBA5NgBJvXRZqgGJi
-         4YsPYM+yw+FeceE+wGD+6hIb5Xa8zozRF+mLjJYo5hlIO0i6W+AjgyUgE6w9cHDHqT7b
-         lNcFQ4iQl1l7YKuQYblNscy+oBof4F2VTBsOYUQ4BRD6FDwaplEka+vF6FFA02vA/Gdx
-         1/tg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=gG7it/crfOrZwO0WugIYeE+Eee8dCmrmWscLif2IMEM=;
+        b=PxM3J757a7zoQaxLjfs6l8xTZ7vx40lFsNCG5xyoVnedAOnlT6GeAp3l0n5Bf7o6we
+         m757XFh6KeXan67Fh6uqrtqs8alxAecKi8Wx+8GqsKf2+TKaBsm3JcJJ8JulLTI57JnN
+         gjh0/8yiZ7uSsFidn1sTLndX4bDP4m2LMZEYfem/HX8qxw9qoNz7iIsvN6+Gjr6haCI/
+         3uWBnzQqyH+XpnaBpezajuurhgRi+vpaVsdaKSMFyagZKkx4n+BQCMDHKpr2PH1C59jY
+         BeYwe6FDASHIrDmlYyv8jHRKxdoqIfJFLU4r+8+j0P0lB+x+y+lSKqEVFlF60xCSalr+
+         eFvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=t2zFIvIesqyJ/wrPmPi9vCoiYfapR9CDMYp/cRglWb4=;
-        b=Fk9jDGNhsPJb/KtO/jdHa4oIrxHdh5UoEbszJsINmeL96FZBP08HUQBv+AL1u9agPn
-         ODsLwaQUTbBWYkycCXMxcj+YnTUAX5Xnwv4Ax0Kzblv8ItE0ypTVvjpMtoFVLh744ZAq
-         xHQYegmnvIewVFeshu9sNUa0llviF+i5k3j5m1TLm/rQJFCtl/S+YDajfIGSwmNkwedS
-         w7MvGm7QZ4AlscJWcflvsXYbnMGmyNaFCdmWLfnRsPPpMz4YD1+DCxcE+yd+84yLtse5
-         sWDOCn1RViWbl6XgnVDrbVzz4YLrO+NVsOryzsSMusygV+YGLhEWEojPmZHEirfAJSkD
-         ZPtg==
-X-Gm-Message-State: APjAAAXC+bTGuRz3A/IUKklSW1vSJpKp53Fj/94NxjRJBOcAQSr/ILQk
-        ZCG2E11gXo11wHn1iGl7FJLXIA==
-X-Google-Smtp-Source: APXvYqwXV5P9WQPwH9lAama4jmsKA/+238MMOKSnIg/aeVCKCg8+wUb2RC3tPt/dXC44vtp0lraLNw==
-X-Received: by 2002:a0c:c58c:: with SMTP id a12mr16133627qvj.235.1570800464303;
-        Fri, 11 Oct 2019 06:27:44 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id j4sm4240180qkf.116.2019.10.11.06.27.43
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 11 Oct 2019 06:27:43 -0700 (PDT)
-Date:   Fri, 11 Oct 2019 09:27:42 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Btrfs: fix negative subv_writers counter and data space
- leak after buffered write
-Message-ID: <20191011132741.6zrjhv22j4otl6jc@MacBook-Pro-91.local>
-References: <20191009164422.7202-1-fdmanana@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=gG7it/crfOrZwO0WugIYeE+Eee8dCmrmWscLif2IMEM=;
+        b=rbnyrOdKby78t1gmcS7GrV/VJnWThX27Pxeg7+mVBNVKolKahUALy2/PA+T5Ke59Ub
+         1ZSJHB99tz0XSTysvuUOyyN9Or86zxIcbvIraPXgu8zzhpAluZfo14qzlIFzsT1B5Tc0
+         jm3nNDqBGcoJt+y5MNxo4pbuQRVwrx53/ZUWJgcmyzyUjjIcpZTUmKL+yzV7xAj1YWGh
+         yeYUQRcGEhPjeBgi4EmPmLvalCBbKfIWnmq6Ui+9ajGdWFGnJF9bjpU0e/jr6CfXKUuZ
+         GnrAl9lFJwjodPGI2pj1wEIj4a/7Tm7J5i+30gBisaAoGuTc3mpG8+UQezHAOyQK97q8
+         vN3Q==
+X-Gm-Message-State: APjAAAWgkd1p9n4xpG8DaDhrT+rqWsS5bzmc9ygxiT5g7N9JI/wtylv0
+        iFWvoJ6uCYXnPeEj62S5mzbz+Ln+5/LYTaJVwOU=
+X-Google-Smtp-Source: APXvYqxkzD5RGTz3+egXK16gooND+KNXUG7no83KEAhQpmSD5eXFOnujLhfjXYsLmXx47+ydtbIi3XE3jZFXHFB4Afg=
+X-Received: by 2002:ab0:59ed:: with SMTP id k42mr4195049uad.27.1570807719427;
+ Fri, 11 Oct 2019 08:28:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191009164422.7202-1-fdmanana@kernel.org>
-User-Agent: NeoMutt/20180716
+References: <20191011130354.8232-1-josef@toxicpanda.com>
+In-Reply-To: <20191011130354.8232-1-josef@toxicpanda.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Fri, 11 Oct 2019 16:28:28 +0100
+Message-ID: <CAL3q7H79yipNYZgO2Es-Zn0mBKbWoH07Zdv4P473C5NQv9fEqA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: save i_size in compress_file_range
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>, kernel-team@fb.com,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 09, 2019 at 05:44:22PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> When doing a buffered write it's possible to leave the subv_writers
-> counter of the root, used for synchronization between buffered nocow
-> writers and snapshotting. This happens in an exceptional case like the
-> following:
-> 
-> 1) We fail to allocate data space for the write, since there's not
->    enough available data space nor enough unallocated space for allocating
->    a new data block group;
-> 
-> 2) Because of that failure, we try to go to NOCOW mode, which succeeds
->    and therefore we set the local variable 'only_release_metadata' to true
->    and set the root's sub_writers counter to 1 through the call to
->    btrfs_start_write_no_snapshotting() made by check_can_nocow();
-> 
-> 3) The call to btrfs_copy_from_user() returns zero, which is very unlikely
->    to happen but not impossible;
-> 
-> 4) No pages are copied because btrfs_copy_from_user() returned zero;
-> 
-> 5) We call btrfs_end_write_no_snapshotting() which decrements the root's
->    subv_writers counter to 0;
-> 
-> 6) We don't set 'only_release_metadata' back to 'false' because we do
->    it only if 'copied', the value returned by btrfs_copy_from_user(), is
->    greater than zero;
-> 
-> 7) On the next iteration of the while loop, which processes the same
->    page range, we are now able to allocate data space for the write (we
->    got enough data space released in the meanwhile);
-> 
-> 8) After this if we fail at btrfs_delalloc_reserve_metadata(), because
->    now there isn't enough free metadata space, or in some other place
->    further below (prepare_pages(), lock_and_cleanup_extent_if_need(),
->    btrfs_dirty_pages()), we break out of the while loop with
->    'only_release_metadata' having a value of 'true';
-> 
-> 9) Because 'only_release_metadata' is 'true' we end up decrementing the
->    root's subv_writers counter to -1, and we also end up not releasing the
->    data space previously reserved through btrfs_check_data_free_space().
->    As a consequence the mechanism for synchronizing NOCOW buffered writes
->    with snapshotting gets broken.
-> 
-> Fix this by always setting 'only_release_metadata' to false whenever it
-> currently has a true value, independently of having been able to copy any
-> data to the pages.
+On Fri, Oct 11, 2019 at 2:05 PM Josef Bacik <josef@toxicpanda.com> wrote:
+>
+> We hit a regression while rolling out 5.2 internally where we were
+> hitting the following panic
+>
+> kernel BUG at mm/page-writeback.c:2659!
+> RIP: 0010:clear_page_dirty_for_io+0xe6/0x1f0
+> Call Trace:
+>  __process_pages_contig+0x25a/0x350
+>  ? extent_clear_unlock_delalloc+0x43/0x70
+>  submit_compressed_extents+0x359/0x4d0
+>  normal_work_helper+0x15a/0x330
+>  process_one_work+0x1f5/0x3f0
+>  worker_thread+0x2d/0x3d0
+>  ? rescuer_thread+0x340/0x340
+>  kthread+0x111/0x130
+>  ? kthread_create_on_node+0x60/0x60
+>  ret_from_fork+0x1f/0x30
+>
+> this is happening because the page is not locked when doing
+> clear_page_dirty_for_io.  Looking at the core dump it was because our
+> async_extent had a ram_size of 24576 but our async_chunk range only
+> spanned 20480, so we had a whole extra page in our ram_size for our
+> async_extent.
+>
+> This happened because we try not to compress pages outside of our
+> i_size, however a cleanup patch changed us to do
+>
+> actual_end =3D min_t(u64, i_size_read(inode), end + 1);
+>
+> which is problematic because i_size_read() can evaluate to different
+> values in between checking and assigning.  So either a expanding
+> truncate or a fallocate could increase our i_size while we're doing
 
-Can we accomplish the same thing by just doing
+Well, not just those operations but a write starting at or beyond eof
+could also do it,
+since at writeback time we don't hold the inode's lock and the
+buffered write path doesn't lock the range if it starts at or past
+current i_size.
 
-only_release_metadata = false;
+> writeout and actual_end would end up being past the range we have
+> locked.
+>
+> I confirmed this was what was happening by installing a debug kernel
+> that had
+>
+> actual_end =3D min_t(u64, i_size_read(inode), end + 1);
+> if (actual_end > end + 1) {
+>         printk(KERN_ERR "WE GOT FUCKED\n");
 
-at the start of the loop?  That way we only ever deal with it in its current
-scope?  Thanks,
+I think we coud be more polite on changelogs and mailing lists, or we
+could add a tag in the subjects warning about improper content like
+video games and music records :)
 
-Josef
+>         actual_end =3D end + 1;
+> }
+>
+> and installing it onto 500 boxes of the tier that had been seeing the
+> problem regularly.  Last night I got my debug message and no panic,
+> confirming what I expected.
+>
+> Fixes: 62b37622718c ("btrfs: Remove isize local variable in compress_file=
+_range")
+> cc: stable@vger.kernel.org
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+
+Anyway, looks good to me.
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+> ---
+>  fs/btrfs/inode.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 2eb1d7249f83..9a483d1f61f8 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -474,6 +474,7 @@ static noinline int compress_file_range(struct async_=
+chunk *async_chunk)
+>         u64 start =3D async_chunk->start;
+>         u64 end =3D async_chunk->end;
+>         u64 actual_end;
+> +       loff_t i_size =3D i_size_read(inode);
+>         int ret =3D 0;
+>         struct page **pages =3D NULL;
+>         unsigned long nr_pages;
+> @@ -488,7 +489,13 @@ static noinline int compress_file_range(struct async=
+_chunk *async_chunk)
+>         inode_should_defrag(BTRFS_I(inode), start, end, end - start + 1,
+>                         SZ_16K);
+>
+> -       actual_end =3D min_t(u64, i_size_read(inode), end + 1);
+> +       /*
+> +        * We need to save i_size before now because it could change in b=
+etween
+> +        * us evaluating the size and assigning it.  This is because we l=
+ock and
+> +        * unlock the page in truncate and fallocate, and then modify the=
+ i_size
+> +        * later on.
+> +        */
+> +       actual_end =3D min_t(u64, i_size, end + 1);
+>  again:
+>         will_compress =3D 0;
+>         nr_pages =3D (end >> PAGE_SHIFT) - (start >> PAGE_SHIFT) + 1;
+> --
+> 2.21.0
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
