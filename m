@@ -2,27 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC51D3978
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 08:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1305BD39BE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 09:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbfJKGiP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Oct 2019 02:38:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54314 "EHLO mx1.suse.de"
+        id S1726819AbfJKHAQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Oct 2019 03:00:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40592 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726481AbfJKGiO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Oct 2019 02:38:14 -0400
+        id S1726679AbfJKHAQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Oct 2019 03:00:16 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 98EFDAD49;
-        Fri, 11 Oct 2019 06:38:11 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: ioctl: Try to use btrfs_fs_info instead of *file
-To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>, clm@fb.com,
-        David Sterba <dsterba@suse.com>
-Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        "open list:BTRFS FILE SYSTEM" <linux-btrfs@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20191011002311.12459-1-marcos.souza.org@gmail.com>
+        by mx1.suse.de (Postfix) with ESMTP id 2C1C0AFF9;
+        Fri, 11 Oct 2019 07:00:14 +0000 (UTC)
+Subject: Re: [PATCH] Btrfs: fix metadata space leak on fixup worker failure to
+ set range as delalloc
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20191009164359.29642-1-fdmanana@kernel.org>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -67,12 +63,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <78c54d95-9f8b-9cfb-6c3c-eac228ccaccf@suse.com>
-Date:   Fri, 11 Oct 2019 09:38:09 +0300
+Message-ID: <4f73abf2-a5c1-d8b8-78d6-b05da4639d70@suse.com>
+Date:   Fri, 11 Oct 2019 10:00:12 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191011002311.12459-1-marcos.souza.org@gmail.com>
+In-Reply-To: <20191009164359.29642-1-fdmanana@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -83,124 +79,53 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 11.10.19 г. 3:23 ч., Marcos Paulo de Souza wrote:
-> Some functions are doing some bikeshedding to reach the btrfs_fs_info
-> struct. Change these functions to receive a btrfs_fs_info struct instead
-> of a *file.
+On 9.10.19 г. 19:43 ч., fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
-
-Changes seems pretty self-explanatory so :
+> In the fixup worker, if we fail to mark the range as delalloc in the io
+> tree, we must release the previously reserved metadata, as well as update
+> the outstanding extents counter for the inode, otherwise we leak metadata
+> space.
+> 
+> In pratice we can't return an error from btrfs_set_extent_delalloc(),
+> which is just a wrapper around __set_extent_bit(), as for most errors
+> __set_extent_bit() does a BUG_ON() (or panics which hits a BUG_ON() as
+> well) and returning an -EEXIST error doesn't happen in this case since
+> the exclusive bits parameter always has a value of 0 through this code
+> path. Nevertheless, just fix the error handling in the fixup worker,
+> in case one day __set_extent_bit() can return an error to this code
+> path.
+> 
+> Fixes: f3038ee3a3f101 ("btrfs: Handle btrfs_set_extent_delalloc failure in fixup worker")
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
 
 > ---
->  The kernel survived btrfs-progs tests with this patch applied.
+>  fs/btrfs/inode.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
->  fs/btrfs/ioctl.c | 36 +++++++++++++++---------------------
->  1 file changed, 15 insertions(+), 21 deletions(-)
-> 
-> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-> index de730e56d3f5..870e5c48b362 100644
-> --- a/fs/btrfs/ioctl.c
-> +++ b/fs/btrfs/ioctl.c
-> @@ -479,10 +479,9 @@ static int btrfs_ioctl_getversion(struct file *file, int __user *arg)
->  	return put_user(inode->i_generation, arg);
->  }
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 0f2754eaa05b..f23b14ec743a 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -2201,12 +2201,16 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+>  		mapping_set_error(page->mapping, ret);
+>  		end_extent_writepage(page, ret, page_start, page_end);
+>  		ClearPageChecked(page);
+> -		goto out;
+> +		goto out_reserved;
+>  	}
 >  
-> -static noinline int btrfs_ioctl_fitrim(struct file *file, void __user *arg)
-> +static noinline int btrfs_ioctl_fitrim(struct btrfs_fs_info *fs_info,
-> +					void __user *arg)
->  {
-> -	struct inode *inode = file_inode(file);
-> -	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	struct btrfs_device *device;
->  	struct request_queue *q;
->  	struct fstrim_range range;
-> @@ -4960,10 +4959,9 @@ static long btrfs_ioctl_quota_rescan(struct file *file, void __user *arg)
->  	return ret;
->  }
->  
-> -static long btrfs_ioctl_quota_rescan_status(struct file *file, void __user *arg)
-> +static long btrfs_ioctl_quota_rescan_status(struct btrfs_fs_info *fs_info,
-> +						void __user *arg)
->  {
-> -	struct inode *inode = file_inode(file);
-> -	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	struct btrfs_ioctl_quota_rescan_args *qsa;
->  	int ret = 0;
->  
-> @@ -4986,11 +4984,9 @@ static long btrfs_ioctl_quota_rescan_status(struct file *file, void __user *arg)
->  	return ret;
->  }
->  
-> -static long btrfs_ioctl_quota_rescan_wait(struct file *file, void __user *arg)
-> +static long btrfs_ioctl_quota_rescan_wait(struct btrfs_fs_info *fs_info,
-> +						void __user *arg)
->  {
-> -	struct inode *inode = file_inode(file);
-> -	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-> -
->  	if (!capable(CAP_SYS_ADMIN))
->  		return -EPERM;
->  
-> @@ -5162,10 +5158,9 @@ static long btrfs_ioctl_set_received_subvol(struct file *file,
->  	return ret;
->  }
->  
-> -static int btrfs_ioctl_get_fslabel(struct file *file, void __user *arg)
-> +static int btrfs_ioctl_get_fslabel(struct btrfs_fs_info *fs_info,
-> +					void __user *arg)
->  {
-> -	struct inode *inode = file_inode(file);
-> -	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	size_t len;
->  	int ret;
->  	char label[BTRFS_LABEL_SIZE];
-> @@ -5249,10 +5244,9 @@ int btrfs_ioctl_get_supported_features(void __user *arg)
->  	return 0;
->  }
->  
-> -static int btrfs_ioctl_get_features(struct file *file, void __user *arg)
-> +static int btrfs_ioctl_get_features(struct btrfs_fs_info *fs_info,
-> +					void __user *arg)
->  {
-> -	struct inode *inode = file_inode(file);
-> -	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
->  	struct btrfs_super_block *super_block = fs_info->super_copy;
->  	struct btrfs_ioctl_feature_flags features;
->  
-> @@ -5453,11 +5447,11 @@ long btrfs_ioctl(struct file *file, unsigned int
->  	case FS_IOC_GETVERSION:
->  		return btrfs_ioctl_getversion(file, argp);
->  	case FS_IOC_GETFSLABEL:
-> -		return btrfs_ioctl_get_fslabel(file, argp);
-> +		return btrfs_ioctl_get_fslabel(fs_info, argp);
->  	case FS_IOC_SETFSLABEL:
->  		return btrfs_ioctl_set_fslabel(file, argp);
->  	case FITRIM:
-> -		return btrfs_ioctl_fitrim(file, argp);
-> +		return btrfs_ioctl_fitrim(fs_info, argp);
->  	case BTRFS_IOC_SNAP_CREATE:
->  		return btrfs_ioctl_snap_create(file, argp, 0);
->  	case BTRFS_IOC_SNAP_CREATE_V2:
-> @@ -5562,15 +5556,15 @@ long btrfs_ioctl(struct file *file, unsigned int
->  	case BTRFS_IOC_QUOTA_RESCAN:
->  		return btrfs_ioctl_quota_rescan(file, argp);
->  	case BTRFS_IOC_QUOTA_RESCAN_STATUS:
-> -		return btrfs_ioctl_quota_rescan_status(file, argp);
-> +		return btrfs_ioctl_quota_rescan_status(fs_info, argp);
->  	case BTRFS_IOC_QUOTA_RESCAN_WAIT:
-> -		return btrfs_ioctl_quota_rescan_wait(file, argp);
-> +		return btrfs_ioctl_quota_rescan_wait(fs_info, argp);
->  	case BTRFS_IOC_DEV_REPLACE:
->  		return btrfs_ioctl_dev_replace(fs_info, argp);
->  	case BTRFS_IOC_GET_SUPPORTED_FEATURES:
->  		return btrfs_ioctl_get_supported_features(argp);
->  	case BTRFS_IOC_GET_FEATURES:
-> -		return btrfs_ioctl_get_features(file, argp);
-> +		return btrfs_ioctl_get_features(fs_info, argp);
->  	case BTRFS_IOC_SET_FEATURES:
->  		return btrfs_ioctl_set_features(file, argp);
->  	case FS_IOC_FSGETXATTR:
+>  	ClearPageChecked(page);
+>  	set_page_dirty(page);
+> -	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, false);
+> +out_reserved:
+> +	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, ret != 0);
+> +	if (ret)
+> +		btrfs_delalloc_release_space(inode, data_reserved, page_start,
+> +					     PAGE_SIZE, true);
+>  out:
+>  	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
+>  			     &cached_state);
 > 
