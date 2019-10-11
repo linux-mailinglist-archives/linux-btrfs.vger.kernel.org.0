@@ -2,23 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1305BD39BE
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 09:00:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79EC9D3A48
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 09:49:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbfJKHAQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Oct 2019 03:00:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40592 "EHLO mx1.suse.de"
+        id S1726953AbfJKHt0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Oct 2019 03:49:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37732 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726679AbfJKHAQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Oct 2019 03:00:16 -0400
+        id S1726829AbfJKHt0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Oct 2019 03:49:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2C1C0AFF9;
-        Fri, 11 Oct 2019 07:00:14 +0000 (UTC)
-Subject: Re: [PATCH] Btrfs: fix metadata space leak on fixup worker failure to
- set range as delalloc
-To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <20191009164359.29642-1-fdmanana@kernel.org>
+        by mx1.suse.de (Postfix) with ESMTP id EB9BEB03D;
+        Fri, 11 Oct 2019 07:49:23 +0000 (UTC)
+Subject: Re: [RFC PATCH 00/19] btrfs: async discard support
+To:     Dennis Zhou <dennis@kernel.org>, Chris Mason <clm@fb.com>,
+        Omar Sandoval <osandov@osandov.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>
+Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
+References: <cover.1570479299.git.dennis@kernel.org>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +66,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <4f73abf2-a5c1-d8b8-78d6-b05da4639d70@suse.com>
-Date:   Fri, 11 Oct 2019 10:00:12 +0300
+Message-ID: <a382d536-e836-dba5-a030-41504a2bd827@suse.com>
+Date:   Fri, 11 Oct 2019 10:49:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191009164359.29642-1-fdmanana@kernel.org>
+In-Reply-To: <cover.1570479299.git.dennis@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,53 +82,49 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 9.10.19 г. 19:43 ч., fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On 7.10.19 г. 23:17 ч., Dennis Zhou wrote:
+> Hello,
 > 
-> In the fixup worker, if we fail to mark the range as delalloc in the io
-> tree, we must release the previously reserved metadata, as well as update
-> the outstanding extents counter for the inode, otherwise we leak metadata
-> space.
-> 
-> In pratice we can't return an error from btrfs_set_extent_delalloc(),
-> which is just a wrapper around __set_extent_bit(), as for most errors
-> __set_extent_bit() does a BUG_ON() (or panics which hits a BUG_ON() as
-> well) and returning an -EEXIST error doesn't happen in this case since
-> the exclusive bits parameter always has a value of 0 through this code
-> path. Nevertheless, just fix the error handling in the fixup worker,
-> in case one day __set_extent_bit() can return an error to this code
-> path.
-> 
-> Fixes: f3038ee3a3f101 ("btrfs: Handle btrfs_set_extent_delalloc failure in fixup worker")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+<snip>
 
-> ---
->  fs/btrfs/inode.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 0f2754eaa05b..f23b14ec743a 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -2201,12 +2201,16 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
->  		mapping_set_error(page->mapping, ret);
->  		end_extent_writepage(page, ret, page_start, page_end);
->  		ClearPageChecked(page);
-> -		goto out;
-> +		goto out_reserved;
->  	}
->  
->  	ClearPageChecked(page);
->  	set_page_dirty(page);
-> -	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, false);
-> +out_reserved:
-> +	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, ret != 0);
-> +	if (ret)
-> +		btrfs_delalloc_release_space(inode, data_reserved, page_start,
-> +					     PAGE_SIZE, true);
->  out:
->  	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
->  			     &cached_state);
+> With async discard, we try to emphasize discarding larger regions
+> and reusing the lba (implicit discard). The first is done by using the
+> free space cache to maintain discard state and thus allows us to get
+> coalescing for fairly cheap. A background workqueue is used to scan over
+> an LRU kept list of the block groups. It then uses filters to determine
+> what to discard next hence giving priority to larger discards. While
+> reusing an lba isn't explicitly attempted, it happens implicitly via
+> find_free_extent() which if it happens to find a dirty extent, will
+> grant us reuse of the lba. Additionally, async discarding skips metadata
+
+By 'dirty' I assume you mean not-discarded-yet-but-free extent?
+
+> block groups as these should see a fairly high turnover as btrfs is a
+> self-packing filesystem being stingy with allocating new block groups
+> until necessary.
+> 
+> Preliminary results seem promising as when a lot of freeing is going on,
+> the discarding is delayed allowing for reuse which translates to less
+> discarding (in addition to the slower discarding). This has shown a
+> reduction in p90 and p99 read latencies on a test on our webservers.
+> 
+> I am currently working on tuning the rate at which it discards in the
+> background. I am doing this by evaluating other workloads and drives.
+> The iops and bps rate limits are fairly aggressive right now as my
+> basic survey of a few drives noted that the trim command itself is a
+> significant part of the overhead. So optimizing for larger trims is the
+> right thing to do.
+
+Do you intend on sharing performance results alongside the workloads
+used to obtain them? Since this is a performance improvement patch in
+its core that is of prime importance!
+
+> 
+
+<snip>
+> 
+> Thanks,
+> Dennis
 > 
