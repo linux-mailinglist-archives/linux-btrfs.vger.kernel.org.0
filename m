@@ -2,72 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E04ED4B61
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Oct 2019 02:34:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B110ED4EEA
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Oct 2019 12:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbfJLAei (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Oct 2019 20:34:38 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:35894 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbfJLAei (ORCPT
+        id S1727068AbfJLKGy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Oct 2019 06:06:54 -0400
+Received: from cars-indonesia.com ([139.59.253.132]:46270 "EHLO
+        cars-indonesia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726787AbfJLKGy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Oct 2019 20:34:38 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1iJ5Md-0006Bt-AZ; Fri, 11 Oct 2019 20:34:31 -0400
-Message-ID: <311cb7cc8998b153cfa6a4cf6e3723754d719e0d.camel@surriel.com>
-Subject: Re: [PATCH] fs: use READ_ONCE/WRITE_ONCE with the i_size helpers
-From:   Rik van Riel <riel@surriel.com>
-To:     Josef Bacik <josef@toxicpanda.com>, linux-fsdevel@vger.kernel.org,
-        kernel-team@fb.com, viro@ZenIV.linux.org.uk, jack@suse.cz,
-        linux-btrfs@vger.kernel.org
-Date:   Fri, 11 Oct 2019 20:34:30 -0400
-In-Reply-To: <20191011202050.8656-1-josef@toxicpanda.com>
-References: <20191011202050.8656-1-josef@toxicpanda.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-NKizRVlxhnKsb8IONnHF"
-User-Agent: Evolution 3.34.0 (3.34.0-1.fc31) 
+        Sat, 12 Oct 2019 06:06:54 -0400
+X-Greylist: delayed 11645 seconds by postgrey-1.27 at vger.kernel.org; Sat, 12 Oct 2019 06:06:53 EDT
+Received: from Shop01 (CARs [127.0.0.1])
+        by cars-indonesia.com (Postfix) with SMTP id 866C73CE9;
+        Sat, 12 Oct 2019 00:26:31 +0700 (WIB)
+Received: from [46.101.9.61] by Shop01 id <3282480-28363>; Fri, 11 Oct 2019 22:26:15 +0500
+Message-ID: <v6b1x-$4-6m0$-oj0kp$d$v6@bttyw07>
+From:   "Amy Morton" <amymorton1074@gmail.com>
+Reply-To: "Amy Morton" <amymorton1074@gmail.com>
+To:     m@m3zp.o
+Subject: Your silence not golden
+Date:   Fri, 11 Oct 19 22:26:15 GMT
+X-Mailer: Microsoft Outlook Express 6.00.2462.0000
 MIME-Version: 1.0
+Content-Type: multipart/alternative;
+        boundary="25E__B3D.CF..D7A._.."
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
---=-NKizRVlxhnKsb8IONnHF
-Content-Type: text/plain; charset="UTF-8"
+--25E__B3D.CF..D7A._..
+Content-Type: text/plain;
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2019-10-11 at 16:20 -0400, Josef Bacik wrote:
->=20
-> and this works out properly, we only read the value once and so we
-> won't
-> trip over this problem again.
->=20
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Hi, 
 
-Reviewed-by: Rik van Riel <riel@surriel.com>
---=20
-All Rights Reversed.
+Did you get my last email?? 
 
---=-NKizRVlxhnKsb8IONnHF
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Kindly reply.
 
------BEGIN PGP SIGNATURE-----
+Regards,
 
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl2hH5cACgkQznnekoTE
-3oMtAAf/c3rrD4m+bh26/ghFXZSuR6+H8wnw6B4cBy7wZ+KeNKSuNW/VbYkyHvda
-FCk875pDQcVKhZ0+YkdGPpEj56nzgoBu7m5z+VBqi4soRK4UuVGbpO1CzQ0aPCih
-9ZBusAH2+V7NL84Febb0+03U/RbPVI100h5luVZUk0XlgCRegCD2aGn1qyU4CQjt
-7qFr1l+H9rP9BHFjMFSWxAaeakBfeStBFeVnIuOxoowu/fcXPTrc8A762ZMCzLTZ
-sUuKv/BG6+NLV/T6OlQ50ZAmnSienqvpBKkJr8QAmLAizmREW86TK0xpq0JFtzX7
-CpgaTxf6D50unYe5uRqNB+WKAOrCxg==
-=LWDG
------END PGP SIGNATURE-----
+Amy.
 
---=-NKizRVlxhnKsb8IONnHF--
+--25E__B3D.CF..D7A._..--
 
