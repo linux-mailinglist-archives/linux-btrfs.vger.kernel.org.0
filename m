@@ -2,81 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AD0AD3C1F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 11:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58BE4D3C56
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 11:31:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbfJKJTm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Oct 2019 05:19:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49618 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726585AbfJKJTm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Oct 2019 05:19:42 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E03D5ADDA;
-        Fri, 11 Oct 2019 09:19:38 +0000 (UTC)
-Subject: Re: [PATCH 02/19] btrfs: rename DISCARD opt to DISCARD_SYNC
-To:     Dennis Zhou <dennis@kernel.org>, Chris Mason <clm@fb.com>,
-        Omar Sandoval <osandov@osandov.com>,
-        David Sterba <dsterba@suse.com>,
-        Josef Bacik <josef@toxicpanda.com>
-Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org
-References: <cover.1570479299.git.dennis@kernel.org>
- <cover.1570479299.git.dennis@kernel.org>
- <e2c7ca7b48bc3a5a219329f7d086ab1cfd7330a3.1570479299.git.dennis@kernel.org>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <cb43e6ee-145c-61cc-77bf-b2d0f01c3bb3@suse.com>
-Date:   Fri, 11 Oct 2019 12:19:36 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1727587AbfJKJb1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Oct 2019 05:31:27 -0400
+Received: from mout.gmx.net ([212.227.15.19]:48369 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726788AbfJKJb0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 11 Oct 2019 05:31:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1570786280;
+        bh=H1oAQSM+Agn2MHrh6QHjBI9D2HScNq1mEqrwtYcsI0c=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=kjyqTczLJYS5cd1ulV3s7KKEOk0KkWEcBY3ZwORgT7nNchEN3xA+WRdCvUD7qePbB
+         I2auB+Kh50Wn+Q2LwXzglyvgm3dp2JbMnFAlCLGBkwzRbk0nJIeXqOSzB7aNDxJrT7
+         a07kvDkTQ26o3PBPFwS7+/wwnaNxXuwB6+71TrCE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MORAa-1iieFt0rV8-00Puoj; Fri, 11
+ Oct 2019 11:31:19 +0200
+Subject: Re: [PATCH 1/3] btrfs: Factor out tree roots initialization during
+ mount
+To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
+References: <20191010150647.20940-1-nborisov@suse.com>
+ <20191010150647.20940-2-nborisov@suse.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <f8789a0e-ec6b-51b0-34a5-238eaebf0205@gmx.com>
+Date:   Fri, 11 Oct 2019 17:31:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <e2c7ca7b48bc3a5a219329f7d086ab1cfd7330a3.1570479299.git.dennis@kernel.org>
+In-Reply-To: <20191010150647.20940-2-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:NTtvoExmYJFiMOoehGSnzgNUvqDPh6FU6Rbdpcj6ITJDPnoEh0d
+ rzSZnFjH4Gu6ehZ6Jk8KnamKt6ndSnNbNHm6AkIwkV3EduyTdTQyoSYwoGdHjh9457wz5cz
+ ba3uSMu6S8R4IXuXnmz9z5iq+ILj5qGaV5jCbKzv86FoGePgjXpMXjBT3mojBpkU5nxpwWk
+ iYf/FFU83EPQ0sx1MEkiw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:PRbGUPMpMDY=:fgsXC3e+Cj7GpVWq1Kz1P9
+ 4emKUrJZ3brAw1RE5lszguHcXeGb8e2fXuKocch0U9zo1bEN3gFqQsnc02rrv0iM1Yp/ziPGV
+ U0MLnniz/+FGqOfAoubN2tClJLTMrWX5wL8al6T6uBagIZypfN0mRnBvOV7LSQDIxZn2LR2d0
+ lozli10R3JzdyMP4A21MA3htadv46NwV1cktOAoJLnxzyf5oI44cSK3tyWvAMsubWkHjBOMAo
+ ROytuUoWV/gibq005nGB+ENum/jgSxX340FtEIA0Nhh4NK6QU5tj0YuEwoIri7dNpLnvWfr0Q
+ 9lmyrrnJoprjUCY//x+kNrhjrYTxuWybiii4BGYbC8BBgkcGwQCF6l0AaK7Wco9wuOpwY54sW
+ hxgpop5xx5RR4Zj3ATxAj7RzqeuHN2Tx3zgNk0ma0Im1gO88+SFUwD3K7dB2hr6YUB9z6JQGi
+ bl8Yu5KqdXLtABmY7qwrA0fig7If5M3g7z+3UeN0eoVG9Oyi2pxkO4d4I3jpkKemNTVgZBf0i
+ OD+kBleqPUWB10wQMErcIUbsVANtFE0utjy33crStebInuyKgC1yCi4TWMqZzR82mGZLpua93
+ K9Aoo0YDkciK9zIs1S+BmOfVQchTYHizdEKwFDA773k3wSr04jkzX+zfichDrmgjSFEY3+/1L
+ DpGqMh1j25uTwH845LJmC+2McGssq+krEvcdRk4Tu7STOXoIB4tGeSwsgZchDsLQVtHsUy7B5
+ StwzxhMLjKZJTrFqLJSajr/YNNP2STyYVqi6gMBHwgEmmMmdOXDiOlQ+7YQsE/Ck4Dnn+X0w9
+ D2bAFX6EF4soYMjc06na1khnDuXu2NCc9dxWilhxgNCdebumHTwsrjLSz62yLpEHuEfEzxzWg
+ c1cDwdgZiOslSisyp9W0PyK8zJexigeYmgAJhszHZgDg+dFbvtopeRC4usLvr+gE4hozC6Lmq
+ 8MiUeXd603/WZIvdszqdc8q2qo7kO3+3QY+wK1K7BF7cWIstEsXyI5p9tZlf9l0vvKmuVTFEG
+ TaVF6ko2+99Z5G4IYUUsgjx4tDOd6wSIpCYEKk9eHrFpnHYz3nYVHr5Yh0NH/zMdNymuuQwKt
+ c/DNbRn9oFOphkIb+MyNTdpwWBZ388Zt6B8tNjxqRDESBodODCZdtDl7eZXh563KiRa2/ewZ+
+ 7R5hUXbqQ163lPdJvnvEchZ58FI4x+q8UY1RhpU+mOFFLsBTDEz7Th3vHtY2ayAvN4T709m7I
+ FxBPjrQOqb/gwJuzHprmCTNJ4TpAblzgILDjvq89aOAjgaRQFSdgOjYINgJA=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -84,113 +68,229 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 7.10.19 г. 23:17 ч., Dennis Zhou wrote:
-> This series introduces async discard which will use the flag
-> DISCARD_ASYNC, so rename the original flag to DISCARD_SYNC as it is
-> synchronously done in transaction commit.
-> 
-> Signed-off-by: Dennis Zhou <dennis@kernel.org>
+On 2019/10/10 =E4=B8=8B=E5=8D=8811:06, Nikolay Borisov wrote:
+> The code responsible for reading and initilizing tree roots is
+> scattered in open_ctree among 2 labels, emulating a loop. This is rather
+> confusing to reason about. Instead, factor the code in a new function,
+> init_tree_roots which implements the same logical flow.
+
+
+The refactor itself is great, but maybe we can make it better?
+
+Extra comment inlined below.
+
+>
+> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 > ---
->  fs/btrfs/block-group.c | 2 +-
->  fs/btrfs/ctree.h       | 2 +-
->  fs/btrfs/extent-tree.c | 4 ++--
->  fs/btrfs/super.c       | 8 ++++----
->  4 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index bf7e3f23bba7..afe86028246a 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -1365,7 +1365,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
->  		spin_unlock(&space_info->lock);
->  
->  		/* DISCARD can flip during remount */
-> -		trimming = btrfs_test_opt(fs_info, DISCARD);
-> +		trimming = btrfs_test_opt(fs_info, DISCARD_SYNC);
->  
->  		/* Implicit trim during transaction commit. */
->  		if (trimming)
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 19d669d12ca1..1877586576aa 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -1171,7 +1171,7 @@ static inline u32 BTRFS_MAX_XATTR_SIZE(const struct btrfs_fs_info *info)
->  #define BTRFS_MOUNT_FLUSHONCOMMIT       (1 << 7)
->  #define BTRFS_MOUNT_SSD_SPREAD		(1 << 8)
->  #define BTRFS_MOUNT_NOSSD		(1 << 9)
-> -#define BTRFS_MOUNT_DISCARD		(1 << 10)
-> +#define BTRFS_MOUNT_DISCARD_SYNC	(1 << 10)
->  #define BTRFS_MOUNT_FORCE_COMPRESS      (1 << 11)
->  #define BTRFS_MOUNT_SPACE_CACHE		(1 << 12)
->  #define BTRFS_MOUNT_CLEAR_CACHE		(1 << 13)
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 49cb26fa7c63..77a5904756c5 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -2903,7 +2903,7 @@ int btrfs_finish_extent_commit(struct btrfs_trans_handle *trans)
->  			break;
->  		}
->  
-> -		if (btrfs_test_opt(fs_info, DISCARD))
-> +		if (btrfs_test_opt(fs_info, DISCARD_SYNC))
->  			ret = btrfs_discard_extent(fs_info, start,
->  						   end + 1 - start, NULL);
->  
-> @@ -4146,7 +4146,7 @@ static int __btrfs_free_reserved_extent(struct btrfs_fs_info *fs_info,
->  	if (pin)
->  		pin_down_extent(cache, start, len, 1);
->  	else {
-> -		if (btrfs_test_opt(fs_info, DISCARD))
-> +		if (btrfs_test_opt(fs_info, DISCARD_SYNC))
->  			ret = btrfs_discard_extent(fs_info, start, len, NULL);
+>  fs/btrfs/disk-io.c | 136 ++++++++++++++++++++++++++-------------------
+>  1 file changed, 80 insertions(+), 56 deletions(-)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 2c3fa89702e7..b850988023aa 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2553,6 +2553,82 @@ static int btrfs_validate_write_super(struct btrf=
+s_fs_info *fs_info,
+>  	return ret;
+>  }
+>
+> +int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
+> +{
+> +
+> +	bool should_retry =3D btrfs_test_opt(fs_info, USEBACKUPROOT);
+> +	struct btrfs_super_block *sb =3D fs_info->super_copy;
+> +	struct btrfs_root *tree_root =3D fs_info->tree_root;
+> +	u64 generation;
+> +	int level;
+> +	bool handle_error =3D false;
+> +	int num_backups_tried =3D 0;
+> +	int backup_index =3D 0;
+> +	int ret =3D 0;
+> +
+> +	while (true) {
+> +		if (handle_error) {
 
-Is discard even needed in that function? All but one call of
-btrfs_free_reserved_extent( it calls __btrfs_Free_Reserved_extent with
-pin 0) happen in cleanup code when an extent has just been allocated,
-not written to and potentially it has been discarded.
+This two part doesn't look good enough to me.
 
-In cow_file_range that function is called only if create_io_em fails or
-btrfs_add_ordered_extent fail, both of which happen _before_ any io is
-submitted to the newly reserved range hence I think this can be removed.
+Can we do something like this?
 
-In submit_compressed_extents the code flow is similar - out_free_reserve
-can be called only before btrfs_submit_compressed_write
+/*
+ * change next_root_backup() to:
+ * - Don't modify backup_index parameter
+ * - Accept @index as 0, 1, 2, 3, 4.
+ *   0 is regular sb tree roots, 1~4 is the backup roots, 1 is the best
+candiate
+ *   while 4 is the oldest candidate
+ * - Check if we should try next backup (usebackuproot option)
+ * - Return proper error value other than -1.
+ */
+for (backup_index =3D 0; next_root_backup(fs_info, backup_index) =3D=3D 0;
+backup_index++) {
+	/*
+	 * do the heavy lifting tree reads here
+	 */
+ 	if (some_thing_went_wrong)
+		goto next;
 
-btrfs_new_extent_direct - again, called in case extent_map creation
-fails, before any io happens.
+	/* Everything done correctly */
+	break;
 
-__btrfs_prealloc_file_range - called as a cleanup for a prealloc extent.
+	next:
+	/* Do the cleanup */
+}
 
-btrfs_alloc_tree_block - the metadata extent is allocated but not
-written to yet
+To me, that would look more sane other than strange error handling
+creeping around.
 
-btrfs_finish_ordered_io - here it seems it can be called for an extent
-which could have had some data written to it on disk so discard seems
-like necessary. On the other hand the code contradicts the comment:
+Thanks,
+Qu
 
-"We only free the extent in the truncated case if we didn't write out
-the extent at all. "
-
-Yet the 'if' does:
-
- if ((ret || !logical_len) &&
-     clear_reserved_extent &&
-     !test_bit(BTRFS_ORDERED_NOCOW, &ordered_extent->flags) &&
-     !test_bit(BTRFS_ORDERED_PREALLOC, &ordered_extent->flags))
-
-So even if we have ret non 0 (meaning error) we could still free the
-extent so long it's not before insert_reserved_file_extent returns
-success (the clear_reserved_extent check). This logic is messy, Josef do
-you have any idea what should be the correct behavior?
-
-My point is that if btrfs_free_reserved_extent should only be called in
-finish_ordered_io for a truncated extent, which hasn't been written at
-all then this renders the btrfs_discard_extent call in
-btrfs_free_reserved_extent redundant and can be removed, provided my
-analysis is correct.
-
-What do you think ?
-
-
-
-<snip>
+> +			if (!IS_ERR(tree_root->node))
+> +				free_extent_buffer(tree_root->node);
+> +			tree_root->node =3D NULL;
+> +
+> +			if (!should_retry) {
+> +				break;
+> +			}
+> +			free_root_pointers(fs_info, 0);
+> +
+> +			/* don't use the log in recovery mode, it won't be valid */
+> +			btrfs_set_super_log_root(sb, 0);
+> +
+> +			/* we can't trust the free space cache either */
+> +			btrfs_set_opt(fs_info->mount_opt, CLEAR_CACHE);
+> +
+> +			ret =3D next_root_backup(fs_info, sb, &num_backups_tried,
+> +					       &backup_index);
+> +			if (ret =3D=3D -1)
+> +				return -ESPIPE;
+> +		}
+> +		generation =3D btrfs_super_generation(sb);
+> +		level =3D btrfs_super_root_level(sb);
+> +		tree_root->node =3D read_tree_block(fs_info, btrfs_super_root(sb),
+> +						  generation, level, NULL);
+> +		if (IS_ERR(tree_root->node) ||
+> +		    !extent_buffer_uptodate(tree_root->node)) {
+> +			handle_error =3D true;
+> +			btrfs_warn(fs_info, "failed to read tree root");
+> +			continue;
+> +		}
+> +
+> +		btrfs_set_root_node(&tree_root->root_item, tree_root->node);
+> +		tree_root->commit_root =3D btrfs_root_node(tree_root);
+> +		btrfs_set_root_refs(&tree_root->root_item, 1);
+> +
+> +		mutex_lock(&tree_root->objectid_mutex);
+> +		ret =3D btrfs_find_highest_objectid(tree_root,
+> +						&tree_root->highest_objectid);
+> +		if (ret) {
+> +			mutex_unlock(&tree_root->objectid_mutex);
+> +			handle_error =3D true;
+> +			continue;
+> +		}
+> +
+> +		ASSERT(tree_root->highest_objectid <=3D BTRFS_LAST_FREE_OBJECTID);
+> +		mutex_unlock(&tree_root->objectid_mutex);
+> +
+> +		ret =3D btrfs_read_roots(fs_info);
+> +		if (ret) {
+> +			handle_error =3D true;
+> +			continue;
+> +		}
+> +
+> +		fs_info->generation =3D generation;
+> +		fs_info->last_trans_committed =3D generation;
+> +		break;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+>  int __cold open_ctree(struct super_block *sb,
+>  	       struct btrfs_fs_devices *fs_devices,
+>  	       char *options)
+> @@ -2571,8 +2647,6 @@ int __cold open_ctree(struct super_block *sb,
+>  	struct btrfs_root *chunk_root;
+>  	int ret;
+>  	int err =3D -EINVAL;
+> -	int num_backups_tried =3D 0;
+> -	int backup_index =3D 0;
+>  	int clear_free_space_tree =3D 0;
+>  	int level;
+>
+> @@ -2995,45 +3069,13 @@ int __cold open_ctree(struct super_block *sb,
+>  		goto fail_tree_roots;
+>  	}
+>
+> -retry_root_backup:
+> -	generation =3D btrfs_super_generation(disk_super);
+> -	level =3D btrfs_super_root_level(disk_super);
+> -
+> -	tree_root->node =3D read_tree_block(fs_info,
+> -					  btrfs_super_root(disk_super),
+> -					  generation, level, NULL);
+> -	if (IS_ERR(tree_root->node) ||
+> -	    !extent_buffer_uptodate(tree_root->node)) {
+> -		btrfs_warn(fs_info, "failed to read tree root");
+> -		if (!IS_ERR(tree_root->node))
+> -			free_extent_buffer(tree_root->node);
+> -		tree_root->node =3D NULL;
+> -		goto recovery_tree_root;
+> -	}
+> -
+> -	btrfs_set_root_node(&tree_root->root_item, tree_root->node);
+> -	tree_root->commit_root =3D btrfs_root_node(tree_root);
+> -	btrfs_set_root_refs(&tree_root->root_item, 1);
+> -
+> -	mutex_lock(&tree_root->objectid_mutex);
+> -	ret =3D btrfs_find_highest_objectid(tree_root,
+> -					&tree_root->highest_objectid);
+> +	ret =3D init_tree_roots(fs_info);
+>  	if (ret) {
+> -		mutex_unlock(&tree_root->objectid_mutex);
+> -		goto recovery_tree_root;
+> +		if (ret =3D=3D -ESPIPE)
+> +			goto fail_block_groups;
+> +		goto fail_tree_roots;
+>  	}
+>
+> -	ASSERT(tree_root->highest_objectid <=3D BTRFS_LAST_FREE_OBJECTID);
+> -
+> -	mutex_unlock(&tree_root->objectid_mutex);
+> -
+> -	ret =3D btrfs_read_roots(fs_info);
+> -	if (ret)
+> -		goto recovery_tree_root;
+> -
+> -	fs_info->generation =3D generation;
+> -	fs_info->last_trans_committed =3D generation;
+> -
+>  	ret =3D btrfs_verify_dev_extents(fs_info);
+>  	if (ret) {
+>  		btrfs_err(fs_info,
+> @@ -3327,24 +3369,6 @@ int __cold open_ctree(struct super_block *sb,
+>  	btrfs_free_stripe_hash_table(fs_info);
+>  	btrfs_close_devices(fs_info->fs_devices);
+>  	return err;
+> -
+> -recovery_tree_root:
+> -	if (!btrfs_test_opt(fs_info, USEBACKUPROOT))
+> -		goto fail_tree_roots;
+> -
+> -	free_root_pointers(fs_info, 0);
+> -
+> -	/* don't use the log in recovery mode, it won't be valid */
+> -	btrfs_set_super_log_root(disk_super, 0);
+> -
+> -	/* we can't trust the free space cache either */
+> -	btrfs_set_opt(fs_info->mount_opt, CLEAR_CACHE);
+> -
+> -	ret =3D next_root_backup(fs_info, fs_info->super_copy,
+> -			       &num_backups_tried, &backup_index);
+> -	if (ret =3D=3D -1)
+> -		goto fail_block_groups;
+> -	goto retry_root_backup;
+>  }
+>  ALLOW_ERROR_INJECTION(open_ctree, ERRNO);
+>
+>
