@@ -2,144 +2,140 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A71B3D4062
-	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 15:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA00D4104
+	for <lists+linux-btrfs@lfdr.de>; Fri, 11 Oct 2019 15:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728186AbfJKND7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 11 Oct 2019 09:03:59 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:34527 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727709AbfJKND7 (ORCPT
+        id S1728198AbfJKNXl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 11 Oct 2019 09:23:41 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43318 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728002AbfJKNXl (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 11 Oct 2019 09:03:59 -0400
-Received: by mail-qk1-f196.google.com with SMTP id q203so8795845qke.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 11 Oct 2019 06:03:57 -0700 (PDT)
+        Fri, 11 Oct 2019 09:23:41 -0400
+Received: by mail-qt1-f196.google.com with SMTP id t20so8468274qtr.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 11 Oct 2019 06:23:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sIeAmoQ1tf95dhIrbjTVNmGzOt/oM6I621aHd+sITPA=;
-        b=RSb4qOCFYMqJZc2GceDsE6jeyyA8lgB79phjXK80dJNwSCrOqr5m90tvUHEDn7PfFi
-         2ykYUWZ8j9dyCwg5RsNjSmOUwMubc/LftHnUvE5AJFZEtdLRe855rZnSuKwOXP8gN9PY
-         VFGpPfRgSoJGOVdnJjnKnQrjunv/wZkRZdf1m9vwSbuWfC8Ue7XCCJ7addPQszYDVQh5
-         nHce5IKPe85kE3evPEFtEn+WABZDoUWEAxUfGxAgJU/P1lG6dxkb3W7ORemnMxr4Yey6
-         3A+EZ/PGHG/tuWrQP+L4yLszYCaL9KTwDIPseMr3j1qD3sXRRheXMw6wEPSj2NhesseH
-         MH8g==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nKdLM4gvb6sf8LqgaVTNQkV/XRHRju7FEgEYbdyFdAI=;
+        b=wXravQ3zdVe9+xTrmlp22RApFrIp0rQo44YvD4laLqHj5jTR87o3UsKxYZRpnJq22v
+         MlXntdqh4aWffz4FhItcEZ7r6IuG6YYNcpEtUcEWwQeyR9KD0DwZXrDliuo+a+rW/0nt
+         zbawbzq9H5OrfvEDA3WEwRauE0IKzP9bIM2ZlomA3fHrv+xZrY5ux40ZXHB7ASS+v9dY
+         YTqmf78WbJbiwXzq1PIm9vl9+/O7YzT3B2XWigIpRDLT7r9OpnL/4LDZbLswfBKz0WjR
+         pVsiC92ovkQIT8qHWHJ0yAoF4LNrn5nk1ntEvqthahjbeMKeKX0xfGDGLMQXTnOi0nCy
+         p1bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=sIeAmoQ1tf95dhIrbjTVNmGzOt/oM6I621aHd+sITPA=;
-        b=P6pW3xrP2db4R8s9RJZPO32Q2YCcbFVhLrGHCqVIhuQHZ64zZe5CMGSKvuh0bVbhMo
-         18mKwGoyaGLi/I2+Zlke6NcS8o8BHulQjR3ONZuWaY9VCW4Ztv8EWlnyFniyRhvsnz0H
-         ULYwE17nOOFBwiMMYOYDESfq0N4Wk60CXduJwyJedxydER2KKvNsBlFDrz1Xyy9/6A72
-         CpxE7c9gPgKNacWKuHA/vfeH0ni7IiEqvBVKuP1TEvIJBxZtrMWnNzVZm5jaxzHhSVl4
-         WGwgO2sMZ0McjZ6/WBTUslHVlRvPnp4XWuJVhrQF3JfU2o/RvD2woNhaJ6jgS6021Kct
-         BY7g==
-X-Gm-Message-State: APjAAAUj3SDhFQFBw1h77jnrs3VbKXbkrrb+gVTpF3UP8MKRqQB6GoJR
-        2hgTaauBPKlX1a9Tk3X7mVU0bj/XUVRIlg==
-X-Google-Smtp-Source: APXvYqyj41wFAHlG0lp1iJLbAS8PUasmYyLU8N65mCVeUn/X4FQRRm88MXMwPLzX9uh70bztZpCLOg==
-X-Received: by 2002:a05:620a:20da:: with SMTP id f26mr14928343qka.255.1570799036794;
-        Fri, 11 Oct 2019 06:03:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nKdLM4gvb6sf8LqgaVTNQkV/XRHRju7FEgEYbdyFdAI=;
+        b=nyFGF6lUQEasY66ZPKtB6XRpx+pz9dEZApB5hOWRRiiNzbZl8WLcIHXEVgNOL+GNWW
+         /xNsky3gIwXxTRuMVD6cOlFREmslnAnOiKqYIdzic8TTU2hd71wwtOa9afzdLwRtuu5S
+         1MmjqsUtBzg/wpIKzgDxlGy+GxgDP0TjeEu2o9kDYji5SP7WTUOtwzsShzEHqyGli5pB
+         4deJdCkq7NqrEPCc6HBlaV1rvnmI/832K8vcMpSYMQEMg1fodRODFNVcU+GLp4zc+bcx
+         m19VecHb/v8G2/0Fx2NohcJ0Bzd1ejo1msoAX2hcYPvEo3BuqnqAhVlH41m3u0mz0lcN
+         MCQA==
+X-Gm-Message-State: APjAAAVPf2rcxtkz0AvxOJ4KpRMlDbla1uzzXoLqb390GuHassEjExj2
+        QI8ZV+1Cvos0L3eS7vH8cUlp1Ea3q+7WKQ==
+X-Google-Smtp-Source: APXvYqxSdZpRkHWt1AD4+4ZwNnxf/eERpYKbbIxv+JywZN3LpRtK/QIY/23Y6h4urpHZ21BuKjNkVw==
+X-Received: by 2002:ac8:2a83:: with SMTP id b3mr16893970qta.244.1570800218730;
+        Fri, 11 Oct 2019 06:23:38 -0700 (PDT)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id o52sm5721226qtf.56.2019.10.11.06.03.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 11 Oct 2019 06:03:55 -0700 (PDT)
+        by smtp.gmail.com with ESMTPSA id 54sm5500579qts.75.2019.10.11.06.23.37
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 11 Oct 2019 06:23:38 -0700 (PDT)
+Date:   Fri, 11 Oct 2019 09:23:36 -0400
 From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     stable@vger.kernel.org
-Subject: [PATCH] btrfs: save i_size in compress_file_range
-Date:   Fri, 11 Oct 2019 09:03:54 -0400
-Message-Id: <20191011130354.8232-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.21.0
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] btrfs: Introduce new incompat feature, BG_TREE,
+ to speed up mount time
+Message-ID: <20191011132335.mo2zsapmmjhftezh@MacBook-Pro-91.local>
+References: <20191010023928.24586-1-wqu@suse.com>
+ <20191010023928.24586-4-wqu@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191010023928.24586-4-wqu@suse.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We hit a regression while rolling out 5.2 internally where we were
-hitting the following panic
+On Thu, Oct 10, 2019 at 10:39:28AM +0800, Qu Wenruo wrote:
+> The overall idea of the new BG_TREE is pretty simple:
+> Put BLOCK_GROUP_ITEMS into a separate tree.
+> 
+> This brings one obvious enhancement:
+> - Reduce mount time of large fs
+> 
+> Although it could be possible to accept BLOCK_GROUP_ITEMS in either
+> trees (extent root or bg root), I'll leave that kernel convert as
+> alternatives to offline convert, as next step if there are a lot of
+> interests in that.
+> 
+> So for now, if an existing fs want to take advantage of BG_TREE feature,
+> btrfs-progs will provide offline convertion tool.
+> 
+> [[Benchmark]]
+> Physical device:	NVMe SSD
+> VM device:		VirtIO block device, backup by sparse file
+> Nodesize:		4K  (to bump up tree height)
+> Extent data size:	4M
+> Fs size used:		1T
+> 
+> All file extents on disk is in 4M size, preallocated to reduce space usage
+> (as the VM uses loopback block device backed by sparse file)
+> 
+> Without patchset:
+> Use ftrace function graph:
+> 
+>  7)               |  open_ctree [btrfs]() {
+>  7)               |    btrfs_read_block_groups [btrfs]() {
+>  7) @ 805851.8 us |    }
+>  7) @ 911890.2 us |  }
+> 
+>  btrfs_read_block_groups() takes 88% of the total mount time,
+> 
+> With patchset, and use -O bg-tree mkfs option:
+> 
+>  6)               |  open_ctree [btrfs]() {
+>  6)               |    btrfs_read_block_groups [btrfs]() {
+>  6) * 91204.69 us |    }
+>  6) @ 192039.5 us |  }
+> 
+>   open_ctree() time is only 21% of original mount time.
+>   And btrfs_read_block_groups() only takes 47% of total open_ctree()
+>   execution time.
+> 
+> The reason is pretty obvious when considering how many tree blocks needs
+> to be read from disk:
+> - Original extent tree:
+>   nodes:	55
+>   leaves:	1025
+>   total:	1080
+> - Block group tree:
+>   nodes:	1
+>   leaves:	13
+>   total:	14
+> 
+> Not to mention all the tree blocks readahead works pretty fine for bg
+> tree, as we will read every item.
+> While readahead for extent tree will just be a diaster, as all block
+> groups are scatter across the whole extent tree.
+> 
+> The reduction of mount time is already obvious even on super fast NVMe
+> disk with memory cache.
+> It would be even more obvious if the fs is on spinning rust.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-kernel BUG at mm/page-writeback.c:2659!
-RIP: 0010:clear_page_dirty_for_io+0xe6/0x1f0
-Call Trace:
- __process_pages_contig+0x25a/0x350
- ? extent_clear_unlock_delalloc+0x43/0x70
- submit_compressed_extents+0x359/0x4d0
- normal_work_helper+0x15a/0x330
- process_one_work+0x1f5/0x3f0
- worker_thread+0x2d/0x3d0
- ? rescuer_thread+0x340/0x340
- kthread+0x111/0x130
- ? kthread_create_on_node+0x60/0x60
- ret_from_fork+0x1f/0x30
+You need to add
 
-this is happening because the page is not locked when doing
-clear_page_dirty_for_io.  Looking at the core dump it was because our
-async_extent had a ram_size of 24576 but our async_chunk range only
-spanned 20480, so we had a whole extra page in our ram_size for our
-async_extent.
+fs_info->bg_root->block_rsv = &fs_info->delayed_refs_rsv;
 
-This happened because we try not to compress pages outside of our
-i_size, however a cleanup patch changed us to do
+to btrfs_init_global_block_rsv, otherwise bad things will happen.  Thanks,
 
-actual_end = min_t(u64, i_size_read(inode), end + 1);
-
-which is problematic because i_size_read() can evaluate to different
-values in between checking and assigning.  So either a expanding
-truncate or a fallocate could increase our i_size while we're doing
-writeout and actual_end would end up being past the range we have
-locked.
-
-I confirmed this was what was happening by installing a debug kernel
-that had
-
-actual_end = min_t(u64, i_size_read(inode), end + 1);
-if (actual_end > end + 1) {
-	printk(KERN_ERR "WE GOT FUCKED\n");
-	actual_end = end + 1;
-}
-
-and installing it onto 500 boxes of the tier that had been seeing the
-problem regularly.  Last night I got my debug message and no panic,
-confirming what I expected.
-
-Fixes: 62b37622718c ("btrfs: Remove isize local variable in compress_file_range")
-cc: stable@vger.kernel.org
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/inode.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 2eb1d7249f83..9a483d1f61f8 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -474,6 +474,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
- 	u64 start = async_chunk->start;
- 	u64 end = async_chunk->end;
- 	u64 actual_end;
-+	loff_t i_size = i_size_read(inode);
- 	int ret = 0;
- 	struct page **pages = NULL;
- 	unsigned long nr_pages;
-@@ -488,7 +489,13 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
- 	inode_should_defrag(BTRFS_I(inode), start, end, end - start + 1,
- 			SZ_16K);
- 
--	actual_end = min_t(u64, i_size_read(inode), end + 1);
-+	/*
-+	 * We need to save i_size before now because it could change in between
-+	 * us evaluating the size and assigning it.  This is because we lock and
-+	 * unlock the page in truncate and fallocate, and then modify the i_size
-+	 * later on.
-+	 */
-+	actual_end = min_t(u64, i_size, end + 1);
- again:
- 	will_compress = 0;
- 	nr_pages = (end >> PAGE_SHIFT) - (start >> PAGE_SHIFT) + 1;
--- 
-2.21.0
-
+Josef
