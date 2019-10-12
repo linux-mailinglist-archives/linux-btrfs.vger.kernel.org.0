@@ -2,92 +2,78 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71539D511C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Oct 2019 18:44:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A67D5249
+	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Oct 2019 21:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729444AbfJLQoB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Oct 2019 12:44:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44770 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728338AbfJLQmB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Oct 2019 12:42:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C5E3CB481;
-        Sat, 12 Oct 2019 16:41:59 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 048B2DA7E3; Sat, 12 Oct 2019 18:42:12 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>, stable@vger.kernel.org
-Subject: [PATCH] btrfs: don't needlessly create extent-refs kernel thread
-Date:   Sat, 12 Oct 2019 18:42:10 +0200
-Message-Id: <20191012164210.17081-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.23.0
+        id S1729553AbfJLTrv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Oct 2019 15:47:51 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:43069 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729463AbfJLTru (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 12 Oct 2019 15:47:50 -0400
+Received: by mail-qk1-f193.google.com with SMTP id h126so12068718qke.10
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Oct 2019 12:47:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=LyLgjIQpd9IHkz3jukFR489OfWOpiz1W23vAo9b3S48=;
+        b=Bu4TByBEjhUgCp6r7V1C/g8tBZAQIFowXggjW3dasrbR+2b7f1wjv/VlbgMBa3QQez
+         BoYO/lILpyTFk9wPt3ntCWWfcepTpH09fIFTLc62WyAvXZXJhel4Z6iMaakxz8TPZZXl
+         Qb4apAhwSF5pVEpl3VcKuq2ZghgVStGHv2+AWWArHp68kwqLUzxLbec2zdSw579sXtZT
+         +b1D0/hDV+S7c12B8uz72SSzfzqX8uk6UkWwtC4mDx6e4zen4ZkeTChpQbG8HKWmLCsp
+         X16aD5pC2PXeM02ns3w5I/FTLUkX4kne8FBAAjgsUI2MDYObuJKzpWAewLxBczZhLfSX
+         pL9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=LyLgjIQpd9IHkz3jukFR489OfWOpiz1W23vAo9b3S48=;
+        b=g6soZH6txqRF24t28U7HwreVyRTQPunWb+4Fzn5T1bFl92VbGVjUjLdMW48v5Bwoqo
+         PB5O3Ta8Wap6iEc6kM1XQtk1onS1BIx+xysD3iT068a4u74tvqP2025qzWslhXppXmZl
+         EDMl7zqLNMkGdswn00AYaNCigr2LX3Fp3wzwglyfbJsnPhxCkpT+Ct4Ry6ZUvogwKjon
+         bg7G05wT/F4KbcGiaTh4T+mj7z5Kwm40lj2tQUtpfa8xNQO5ud4b0kcN1xBPfPJ3FUKB
+         SHLB0Uuer8/HTGhS29ELY0yeA3GjbLqMCFYsS9pIxsjr5R6arBkyaI/MwnAcgoaisMpU
+         wGQg==
+X-Gm-Message-State: APjAAAVOy4MhTjkUSdxgl41GBOTF+0fby+D5zp5JVA9uzWxSbW/S9Omq
+        oclWBcLBu4fFijo37X8nXNqGiC90m5Nkdw==
+X-Google-Smtp-Source: APXvYqxLoB1mmC0vI9yOC+XIyA2gW62m9pCQsv2Yj65k640EskHRHLnH9qJYWZbmiiemL1JqVhXyDw==
+X-Received: by 2002:a37:7ec1:: with SMTP id z184mr21279167qkc.76.1570909669635;
+        Sat, 12 Oct 2019 12:47:49 -0700 (PDT)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id g8sm7431783qta.67.2019.10.12.12.47.48
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 12 Oct 2019 12:47:48 -0700 (PDT)
+Date:   Sat, 12 Oct 2019 15:47:47 -0400
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: don't needlessly create extent-refs kernel thread
+Message-ID: <20191012194746.tuphjubvfeimy523@MacBook-Pro-91.local>
+References: <20191012164210.17081-1-dsterba@suse.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191012164210.17081-1-dsterba@suse.com>
+User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The patch 32b593bfcb58 ("Btrfs: remove no longer used function to run
-delayed refs asynchronously") removed the async delayed refs but the
-thread has been created, without any use. Remove it to avoid resource
-consumption.
+On Sat, Oct 12, 2019 at 06:42:10PM +0200, David Sterba wrote:
+> The patch 32b593bfcb58 ("Btrfs: remove no longer used function to run
+> delayed refs asynchronously") removed the async delayed refs but the
+> thread has been created, without any use. Remove it to avoid resource
+> consumption.
+> 
+> Fixes: 32b593bfcb58 ("Btrfs: remove no longer used function to run delayed refs asynchronously")
+> CC: stable@vger.kernel.org # 5.2+
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-Fixes: 32b593bfcb58 ("Btrfs: remove no longer used function to run delayed refs asynchronously")
-CC: stable@vger.kernel.org # 5.2+
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/ctree.h   | 2 --
- fs/btrfs/disk-io.c | 6 ------
- 2 files changed, 8 deletions(-)
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index d17e79a40930..ba7981478558 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -734,8 +734,6 @@ struct btrfs_fs_info {
- 	struct btrfs_workqueue *fixup_workers;
- 	struct btrfs_workqueue *delayed_workers;
- 
--	/* the extent workers do delayed refs on the extent allocation tree */
--	struct btrfs_workqueue *extent_workers;
- 	struct task_struct *transaction_kthread;
- 	struct task_struct *cleaner_kthread;
- 	u32 thread_pool_size;
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 7d6886f70f8f..5d32deb42993 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -2002,7 +2002,6 @@ static void btrfs_stop_all_workers(struct btrfs_fs_info *fs_info)
- 	btrfs_destroy_workqueue(fs_info->readahead_workers);
- 	btrfs_destroy_workqueue(fs_info->flush_workers);
- 	btrfs_destroy_workqueue(fs_info->qgroup_rescan_workers);
--	btrfs_destroy_workqueue(fs_info->extent_workers);
- 	/*
- 	 * Now that all other work queues are destroyed, we can safely destroy
- 	 * the queues used for metadata I/O, since tasks from those other work
-@@ -2198,10 +2197,6 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
- 				      max_active, 2);
- 	fs_info->qgroup_rescan_workers =
- 		btrfs_alloc_workqueue(fs_info, "qgroup-rescan", flags, 1, 0);
--	fs_info->extent_workers =
--		btrfs_alloc_workqueue(fs_info, "extent-refs", flags,
--				      min_t(u64, fs_devices->num_devices,
--					    max_active), 8);
- 
- 	if (!(fs_info->workers && fs_info->delalloc_workers &&
- 	      fs_info->flush_workers &&
-@@ -2212,7 +2207,6 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info,
- 	      fs_info->endio_freespace_worker && fs_info->rmw_workers &&
- 	      fs_info->caching_workers && fs_info->readahead_workers &&
- 	      fs_info->fixup_workers && fs_info->delayed_workers &&
--	      fs_info->extent_workers &&
- 	      fs_info->qgroup_rescan_workers)) {
- 		return -ENOMEM;
- 	}
--- 
-2.23.0
+Thanks,
 
+Josef
