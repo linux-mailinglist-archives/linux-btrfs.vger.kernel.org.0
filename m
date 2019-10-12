@@ -2,78 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A67D5249
-	for <lists+linux-btrfs@lfdr.de>; Sat, 12 Oct 2019 21:47:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD7AFD534E
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Oct 2019 01:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729553AbfJLTrv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 12 Oct 2019 15:47:51 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:43069 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729463AbfJLTru (ORCPT
+        id S1727605AbfJLX3S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 12 Oct 2019 19:29:18 -0400
+Received: from mail-vs1-f53.google.com ([209.85.217.53]:42295 "EHLO
+        mail-vs1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727262AbfJLX3R (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 12 Oct 2019 15:47:50 -0400
-Received: by mail-qk1-f193.google.com with SMTP id h126so12068718qke.10
-        for <linux-btrfs@vger.kernel.org>; Sat, 12 Oct 2019 12:47:50 -0700 (PDT)
+        Sat, 12 Oct 2019 19:29:17 -0400
+Received: by mail-vs1-f53.google.com with SMTP id m22so8574263vsl.9
+        for <linux-btrfs@vger.kernel.org>; Sat, 12 Oct 2019 16:29:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LyLgjIQpd9IHkz3jukFR489OfWOpiz1W23vAo9b3S48=;
-        b=Bu4TByBEjhUgCp6r7V1C/g8tBZAQIFowXggjW3dasrbR+2b7f1wjv/VlbgMBa3QQez
-         BoYO/lILpyTFk9wPt3ntCWWfcepTpH09fIFTLc62WyAvXZXJhel4Z6iMaakxz8TPZZXl
-         Qb4apAhwSF5pVEpl3VcKuq2ZghgVStGHv2+AWWArHp68kwqLUzxLbec2zdSw579sXtZT
-         +b1D0/hDV+S7c12B8uz72SSzfzqX8uk6UkWwtC4mDx6e4zen4ZkeTChpQbG8HKWmLCsp
-         X16aD5pC2PXeM02ns3w5I/FTLUkX4kne8FBAAjgsUI2MDYObuJKzpWAewLxBczZhLfSX
-         pL9Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=d0m61VEzvymd1H++bt6YmOqDors+HSUMSqMfMPaGuLI=;
+        b=Zhi946triwzQUeMy53OWQnhwPIB6mwL4cgApsp1cGdCHNiKflcl74BDwhlOTMQmv/H
+         RlsuZAzYucE9j5i9MBkRu4yPdjm+EOkFY7OCrMimvuVc7aK1lCC4JH6fVT4nZmYV6vyn
+         VE+1rGP6LYVM0eI/ubhufFGXSrTixJFSiRb2jBz0tJyRnLgTulDubLaaXXtOMkcF04XN
+         A5AHcjLeq1OxTIhwWmia4S3ME7aNfc2QY/486K7joZ2IXm3eoO3tcixNoO3sCBloeTvo
+         kVcluEtLRjEwcd5CJdIrMfmELuc3XSxajckCs5GRtw+GoikLA6ZDSA7hJvOhk7V2vqmh
+         AwnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LyLgjIQpd9IHkz3jukFR489OfWOpiz1W23vAo9b3S48=;
-        b=g6soZH6txqRF24t28U7HwreVyRTQPunWb+4Fzn5T1bFl92VbGVjUjLdMW48v5Bwoqo
-         PB5O3Ta8Wap6iEc6kM1XQtk1onS1BIx+xysD3iT068a4u74tvqP2025qzWslhXppXmZl
-         EDMl7zqLNMkGdswn00AYaNCigr2LX3Fp3wzwglyfbJsnPhxCkpT+Ct4Ry6ZUvogwKjon
-         bg7G05wT/F4KbcGiaTh4T+mj7z5Kwm40lj2tQUtpfa8xNQO5ud4b0kcN1xBPfPJ3FUKB
-         SHLB0Uuer8/HTGhS29ELY0yeA3GjbLqMCFYsS9pIxsjr5R6arBkyaI/MwnAcgoaisMpU
-         wGQg==
-X-Gm-Message-State: APjAAAVOy4MhTjkUSdxgl41GBOTF+0fby+D5zp5JVA9uzWxSbW/S9Omq
-        oclWBcLBu4fFijo37X8nXNqGiC90m5Nkdw==
-X-Google-Smtp-Source: APXvYqxLoB1mmC0vI9yOC+XIyA2gW62m9pCQsv2Yj65k640EskHRHLnH9qJYWZbmiiemL1JqVhXyDw==
-X-Received: by 2002:a37:7ec1:: with SMTP id z184mr21279167qkc.76.1570909669635;
-        Sat, 12 Oct 2019 12:47:49 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id g8sm7431783qta.67.2019.10.12.12.47.48
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 12 Oct 2019 12:47:48 -0700 (PDT)
-Date:   Sat, 12 Oct 2019 15:47:47 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     David Sterba <dsterba@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] btrfs: don't needlessly create extent-refs kernel thread
-Message-ID: <20191012194746.tuphjubvfeimy523@MacBook-Pro-91.local>
-References: <20191012164210.17081-1-dsterba@suse.com>
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=d0m61VEzvymd1H++bt6YmOqDors+HSUMSqMfMPaGuLI=;
+        b=Y1dl+JhF9n1xm6arpuLmP08ei6flsCga1O+6lKAe7jB1+kI2t2WuPScBM9bllqxIKr
+         5Brry+Aamp2Z9uhdgan92t8GvOq9UXI46aD5WddrlDe5F5G9e60jbl9oMnu5Yn+oSpyP
+         I9q2wnKBXll+3+fkVaAKg3QZ0RW9o8cSSwhNkXTYOmdN/KlLKTWKrwhQup5zeABmZs2D
+         I0So32HJlYe8rW+c5YtmuwW57aY3MXk8C2jFvmm/3O685dcxET94ESi8S+OGyyoyfoQF
+         hQ6voxd1yFSSCLsOsafoE5sh5PiqCaVFvENz47Bi9lc/zd5VTwZIeuMdbf00mjuA7/qD
+         /d8Q==
+X-Gm-Message-State: APjAAAUrRqB10TC/LACzr/99YfQkueNISdeGd043Cs9osa4YYMpxZr3s
+        WdDvKO2zjVi9uCy8LMgKxyhfKQF34jQ+fILvHkLp32gr
+X-Google-Smtp-Source: APXvYqwGmUhi/pmuetJuPP+u2g2QrqB8/leMsO+xhSqyryz4x/kHxqW69PYIBC9N1Kpp9PsMs6JPZGZOl3I/cZtT0iA=
+X-Received: by 2002:a67:fe47:: with SMTP id m7mr13587155vsr.100.1570922956684;
+ Sat, 12 Oct 2019 16:29:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191012164210.17081-1-dsterba@suse.com>
-User-Agent: NeoMutt/20180716
+From:   James Harvey <jamespharvey20@gmail.com>
+Date:   Sat, 12 Oct 2019 19:29:05 -0400
+Message-ID: <CA+X5Wn72nYqoMLLHAUZeO43_rLL9c=zwjDYG9MKV+rcZ7x6SXw@mail.gmail.com>
+Subject: 5.3.0 deadlock: btrfs_sync_file / btrfs_async_reclaim_metadata_space
+ / btrfs_page_mkwrite
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Oct 12, 2019 at 06:42:10PM +0200, David Sterba wrote:
-> The patch 32b593bfcb58 ("Btrfs: remove no longer used function to run
-> delayed refs asynchronously") removed the async delayed refs but the
-> thread has been created, without any use. Remove it to avoid resource
-> consumption.
-> 
-> Fixes: 32b593bfcb58 ("Btrfs: remove no longer used function to run delayed refs asynchronously")
-> CC: stable@vger.kernel.org # 5.2+
-> Signed-off-by: David Sterba <dsterba@suse.com>
+Was using a temporary BTRFS volume to compile mongodb, which is quite
+intensive and takes quite a bit of time.  The volume has been
+deadlocked for about 12 hours.
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Being a temporary volume, I just used mount without options, so it
+used the defaults:  rw,relatime,ssd,space_cache,subvolid=5,subvol=/
 
-Thanks,
+Apologies if upgrading to 5.3.5+ will fix this.  I didn't see
+discussions of a deadlock looking like this.
 
-Josef
+
+
+See the full sysrq-trigger output here: http://ix.io/1Ysp
+
+
+
+But, for searchability, here is some of it:
+
+systemd-journal D    0   813      1 0x00004320
+Call Trace:
+ ? __schedule+0x27f/0x6d0
+ schedule+0x43/0xd0
+ schedule_timeout+0x299/0x3d0
+ io_schedule_timeout+0x19/0x40
+ wait_for_common_io.constprop.0+0xcf/0x150
+ ? wake_up_q+0x60/0x60
+ write_all_supers+0x87f/0x940 [btrfs]
+ btrfs_sync_log+0x71b/0x9f0 [btrfs]
+ ? dput+0xc9/0x2d0
+ btrfs_sync_file+0x364/0x460 [btrfs]
+ do_fsync+0x38/0x70
+ __x64_sys_fsync+0x10/0x20
+ do_syscall_64+0x5f/0x1c0
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+Call Trace:
+ ? __schedule+0x27f/0x6d0
+ schedule+0x43/0xd0
+ schedule_timeout+0x1cf/0x3d0
+ ? collect_expired_timers+0xb0/0xb0
+ flush_space+0x55c/0x710 [btrfs]
+ btrfs_async_reclaim_metadata_space+0xc4/0x4a0 [btrfs]
+ ? __schedule+0x287/0x6d0
+ process_one_work+0x1d1/0x3a0
+ worker_thread+0x4a/0x3d0
+ kthread+0xfb/0x130
+ ? process_one_work+0x3a0/0x3a0
+ ? kthread_park+0x80/0x80
+ ret_from_fork+0x35/0x40
+
+
+Then 28 of these:
+
+Call Trace:
+ ? __schedule+0x27f/0x6d0
+ schedule+0x43/0xd0
+ wait_reserve_ticket+0x95/0x150 [btrfs]
+ ? wait_woken+0x70/0x70
+ btrfs_reserve_metadata_bytes+0x782/0x920 [btrfs]
+ btrfs_block_rsv_add+0x1f/0x50 [btrfs]
+ start_transaction+0x2c2/0x490 [btrfs]
+ btrfs_dirty_inode+0x9d/0xd0 [btrfs]
+ file_update_time+0xfd/0x150
+ btrfs_page_mkwrite+0xfe/0x4e0 [btrfs]
+ ? lock_page_memcg+0x11/0x90
+ do_page_mkwrite+0x31/0x90
+ do_wp_page+0x2c6/0x660
+ __handle_mm_fault+0xc24/0x15d0
+ ? call_function_single_interrupt+0xa/0x20
+ handle_mm_fault+0xce/0x1f0
+ __do_page_fault+0x216/0x4f0
+ do_page_fault+0x31/0x130
+ page_fault+0x3e/0x50
