@@ -2,61 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56D68D5506
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Oct 2019 09:36:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66469D57E6
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Oct 2019 21:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728592AbfJMHgC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Oct 2019 03:36:02 -0400
-Received: from [206.81.8.171] ([206.81.8.171]:56546 "EHLO varon.localdomain"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728198AbfJMHgB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Oct 2019 03:36:01 -0400
-Received: from 127.0.0.1 (varon [127.0.0.1])
-        by varon.localdomain (Postfix) with SMTP id 290C355D635;
-        Fri, 11 Oct 2019 10:21:17 +0000 (UTC)
-Received: from (HELO 1iqb) [176.71.184.19] by 127.0.0.1 for <linhao63@jlonline.com>; Fri, 11 Oct 2019 03:19:21 -0700
-Message-ID: <4-806$5o5$$r$as6q109r731c@hkg.so2qo8>
-From:   "Mr Barrister Hans Erich" <dave@dbsoundfactory.com>
-Reply-To: "Mr Barrister Hans Erich" <dave@dbsoundfactory.com>
-To:     linhao63@jlonline.com
-Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA ??
-Date:   Fri, 11 Oct 19 03:19:21 GMT
-X-Mailer: Microsoft Outlook IMO, Build 9.0.2416 (9.0.2910.0)
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="C.F387.BA..3D"
-X-Priority: 3
-X-MSMail-Priority: Normal
+        id S1728329AbfJMT5l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Oct 2019 15:57:41 -0400
+Received: from 128.246.226.114.broad.cz.js.dynamic.163data.com.cn ([114.226.246.128]:51369
+        "HELO unknown.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with SMTP id S1727492AbfJMT5l (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 13 Oct 2019 15:57:41 -0400
+X-Greylist: delayed 6090 seconds by postgrey-1.27 at vger.kernel.org; Sun, 13 Oct 2019 15:57:40 EDT
+Received: from xjwy.cn ([127.0.0.1])
+        (envelope-sender <aaaaaa@wjx.cn>)
+        by 127.0.0.1 with ESMTP
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2019 02:16:02 +0800
+X-WM-Sender: aaaaaa@wjx.cn
+X-Priority: 5
+X-Mailer: xIBXuICT 37
+From:   "=?utf-8?Q?aaaaaa?=" <aaaaaa@wjx.cn>
+To:     "=?utf-8?Q?linux-btrfs?=" <linux-btrfs@vger.kernel.org>
+Subject: =?utf-8?Q?aaaaaaaaaaaaaa9?=
+Message-ID: <2f3b8cee1399d099481537c600e49248@wjx.cn>
+Date:   Mon, 14 Oct 2019 02:16:00 +0800
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
---C.F387.BA..3D
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
-
-Greetings
-
-My name is Barrister Hans Erich.
-
-I have a client who is interested to invest in your country, she is a well=
- known politician in her country and deserve a lucrative investment partne=
-rship with you outside her country without any delay   Please can you mana=
-ge such investment please Kindly reply for further details.
-
-Your full nameS -----------
-
-
-Your urgent response will be appreciated
-
-Thank you and God bless you.
-
-Barrister Hans Erich
-
-Yours sincerely,
-Barrister Hans Erich
-
---C.F387.BA..3D--
+  开发瓢   ⅥⅩ：Ⓚⓕⓟ➆➆➅➇
 
