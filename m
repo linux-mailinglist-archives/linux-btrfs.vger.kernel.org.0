@@ -2,36 +2,39 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66469D57E6
-	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Oct 2019 21:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F91D57E5
+	for <lists+linux-btrfs@lfdr.de>; Sun, 13 Oct 2019 21:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728329AbfJMT5l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 13 Oct 2019 15:57:41 -0400
-Received: from 128.246.226.114.broad.cz.js.dynamic.163data.com.cn ([114.226.246.128]:51369
-        "HELO unknown.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with SMTP id S1727492AbfJMT5l (ORCPT
+        id S1729423AbfJMTxz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 13 Oct 2019 15:53:55 -0400
+Received: from [182.35.83.150] ([182.35.83.150]:34932 "EHLO
+        localhost.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728198AbfJMTxz (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 13 Oct 2019 15:57:41 -0400
-X-Greylist: delayed 6090 seconds by postgrey-1.27 at vger.kernel.org; Sun, 13 Oct 2019 15:57:40 EDT
-Received: from xjwy.cn ([127.0.0.1])
-        (envelope-sender <aaaaaa@wjx.cn>)
-        by 127.0.0.1 with ESMTP
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2019 02:16:02 +0800
-X-WM-Sender: aaaaaa@wjx.cn
-X-Priority: 5
-X-Mailer: xIBXuICT 37
-From:   "=?utf-8?Q?aaaaaa?=" <aaaaaa@wjx.cn>
-To:     "=?utf-8?Q?linux-btrfs?=" <linux-btrfs@vger.kernel.org>
-Subject: =?utf-8?Q?aaaaaaaaaaaaaa9?=
-Message-ID: <2f3b8cee1399d099481537c600e49248@wjx.cn>
-Date:   Mon, 14 Oct 2019 02:16:00 +0800
-Content-Type: text/plain;
-        charset="utf-8"
+        Sun, 13 Oct 2019 15:53:55 -0400
+X-Greylist: delayed 431 seconds by postgrey-1.27 at vger.kernel.org; Sun, 13 Oct 2019 15:53:54 EDT
+Received: from localhost (localhost [IPv6:::1])
+        by localhost.localdomain (Postfix) with SMTP id 8457511EB083
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2019 03:46:34 +0800 (CST)
+From:   linux-btrfs@vger.kernel.org
+Reply-To: prodawez@teleworm.us
+To:     linux-btrfs@vger.kernel.org,
+        =?utf-8?Q?=D0=97=D0=B4=D1=80=D0=B0=D0=B2=D1=81=D1=82=D0?=@localhost.localdomain,
+        _=D0=92=D0=B0=D1=81?=@=?utf-8?Q?=B2=D1=83=D0=B9=D1=82=D0=B5.localdomain,
+        =?utf-8?Q?_=D0=B8=D0=BD=D1=82=D0=B5=D1=80=D0=B5=D1=81=D1?=@localhost.localdomain,
+        =?utf-8?Q?=83=D1=8E=D1=82_=D0=BA=D0=BB=D0=B8=D0=B5=D0=BD?=@localhost.localdomain,
+        =?utf-8?Q?=D1=82=D1=81=D0=BA=D0=B8=D0=B5_=D0=B1=D0=B0=D0?=@localhost.localdomain,
+        =?utf-8?Q?=B7=D1=8B_=D0=B4=D0=B0=D0=BD=D0=BD=D1=8B=D1=85?=@localhost.localdomain,
+        =?utf-8?Q?=3F?=@localhost.localdomain
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8";
 Content-Transfer-Encoding: 8bit
+Message-Id: <20191013194634.8457511EB083@localhost.localdomain>
+Date:   Mon, 14 Oct 2019 03:46:34 +0800 (CST)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-  开发瓢   ⅥⅩ：Ⓚⓕⓟ➆➆➅➇
+Здравствуйте! Вас интересуют клиентские базы данных?
 
