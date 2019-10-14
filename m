@@ -2,408 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D9662D68DE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 19:53:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 803E3D68E4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 19:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730619AbfJNRxP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Oct 2019 13:53:15 -0400
-Received: from p3nlsmtpcp01-04.prod.phx3.secureserver.net ([184.168.200.145]:48382
-        "EHLO p3nlsmtpcp01-04.prod.phx3.secureserver.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728941AbfJNRxP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Oct 2019 13:53:15 -0400
-Received: from p3plcpnl0639.prod.phx3.secureserver.net ([50.62.176.166])
-        by : HOSTING RELAY : with ESMTP
-        id K4Vxidsnr7wBxK4VxiucbK; Mon, 14 Oct 2019 10:52:13 -0700
-Received: from [45.116.115.51] (port=33339 helo=giis.co.in)
-        by p3plcpnl0639.prod.phx3.secureserver.net with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <lakshmipathi.ganapathi@collabora.com>)
-        id 1iK4Vw-006IIA-6d; Mon, 14 Oct 2019 10:52:12 -0700
-Date:   Mon, 14 Oct 2019 23:21:59 +0530
-From:   "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.com>
-To:     linux-btrfs@vger.kernel.org, pmhahn+btrfs@pmhahn.de,
-        dsterba@suse.com, lakshmipathi.g@giis.co.in
-Subject: [PATCH v2] Setup GitLab-CI for btrfs-progs
-Message-ID: <20191014175159.GA13501@giis.co.in>
+        id S1730572AbfJNRyu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Oct 2019 13:54:50 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:35383 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729752AbfJNRyu (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Oct 2019 13:54:50 -0400
+Received: by mail-wm1-f65.google.com with SMTP id y21so17627398wmi.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2019 10:54:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mzcwLVmfV/FUmWW2Cu3SOniaKIGNTx91Rv30p0aDkRM=;
+        b=rjsj4eitsK3OxBzLYZoQQyMPvcvN4qe6q9cX9P5EtaPr4CS1Axpxc9AlZGh4voBvx5
+         ea4N4u7wmuxjee7IoGYFhCiIzhkfdM4jSep1yK+oQKDuOeSSqJ3HRqE01nHhV7hwpNKV
+         sgotATzi62nUA+V8JT4RGjEF/nZvbOvLVTuFpxi9Cw7TIFaKuxrrfoTaB3/uKwV71TW2
+         2SNSviygHZaicUq6oDrs4B/4tcCBoxQZ9+9dXEmxQPvNdeCDWb6OvdIHtreE7984YlR+
+         v6TdYYWIFIWPwDW8aMNXPpv77L030oZo6d6hRSCOfg1xtIUevGogGqcMfDADqzN8Mf4o
+         oQIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mzcwLVmfV/FUmWW2Cu3SOniaKIGNTx91Rv30p0aDkRM=;
+        b=sDdtKcxAwYyRAc12dZ6o9GOCu0hMw9MbBtoQBgQA8ss58TyPLH6WObkmSXzfbzCb5Y
+         WjXpRrLwzbOzc4tsPdBoqbMJ4WmG9aLwMUbHjNvHqzazxOeFHt5HTkkwqMtH9+w7aQcN
+         bUyYKFRezP128mPoNU+vEOSjqpx7gnxj0O89vnWlOVsuD7lKvCYK1h8mPvheK13L+Qie
+         SkH16ixnPTd1YZQakUeU5mKevxGBsdZ2rIcJuUeCuXl1V9XFplAJjEXBZtlN55+/Sc+F
+         0sMWzPCBe9N6sxrWwkndgQ28tciwkVhieNiT/I4Kf5+QstyDngOTPotZDddr3IUZ1bqt
+         WADw==
+X-Gm-Message-State: APjAAAWUrkcDhACxjkzWqT9AMfDBFpqkUIGCCJCrPQGN3l5LIT5Oml4d
+        BmK8fC2al51Lch7LUxG7sKiwIKOiRZOmHot7hnYiNPwzotQ=
+X-Google-Smtp-Source: APXvYqwpkJWCud2zvnByv1ZBpBXDsoTpAvN7kvswAhGcKL10/TNBq0YaWAQFhgAm6maYqD1kXWT8C+Ckq8SBAwBpBpw=
+X-Received: by 2002:a7b:c629:: with SMTP id p9mr16328580wmk.65.1571075688403;
+ Mon, 14 Oct 2019 10:54:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - p3plcpnl0639.prod.phx3.secureserver.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - collabora.com
-X-Get-Message-Sender-Via: p3plcpnl0639.prod.phx3.secureserver.net: authenticated_id: lakshmipathi.g@giis.co.in
-X-Authenticated-Sender: p3plcpnl0639.prod.phx3.secureserver.net: lakshmipathi.g@giis.co.in
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-CMAE-Envelope: MS4wfHFBC55/rCjnkbW/GIukMSfGdaa3eO12oYohW7TnSOoGgyAwxlh690bS9BPGbtwIJQTAJUd4LMfqg0qQ5JxxEA89i9TXc66P2bGFvgFv3A7EcF+0XNft
- ojQW32Mm6zGcyk6QTbCXfa3fQur0tRJLZyrHgYy2HIFXoBArck/MLNjvoqcrqCKy+Jd3Oqxks8DfzaCrYb5UMcKovpRQU8rfPRjRj91W2HZErhHhye+mGJ4f
+References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
+ <CAL3q7H4peDv_bQa5vGJeOM=V--yq1a1=aHat5qcsXjbnDoSkDQ@mail.gmail.com>
+ <ce6a9b8274f5af89d9378aa84e934ce3f3354acd.camel@scientia.net>
+ <CAL3q7H5qNE4rizN14qmgrAwtju9KRHspKxo3S-PoTcSUvXYuew@mail.gmail.com>
+ <8c0f8fff-5032-07b6-182c-1663d6f3f94e@petezilla.co.uk> <CACzgC9gvhGwyQAKm5J1smZZjim-ecEix62ZQCY-wwJYVzMmJ3Q@mail.gmail.com>
+ <CACzgC9iSOraUua7YtPz-gsvNRF_6Fp3mvkBenETMsVNwnjvuuQ@mail.gmail.com>
+In-Reply-To: <CACzgC9iSOraUua7YtPz-gsvNRF_6Fp3mvkBenETMsVNwnjvuuQ@mail.gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Mon, 14 Oct 2019 11:54:31 -0600
+Message-ID: <CAJCQCtTmtQQi1BRpzRgRezuFm6ps9S1+BBwNkB4+H5WhcyYyag@mail.gmail.com>
+Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
+To:     Adam Bahe <adambahe@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Make use of GitLab-CI nested virutal environment to start QEMU instance inside containers 
-and perform btrfs-progs build, execute unit test cases and save the logs.
+On Sun, Oct 13, 2019 at 8:07 PM Adam Bahe <adambahe@gmail.com> wrote:
+>
+> > Until the fix gets merged to 5.2 kernels (and 5.3), I don't really recommend running 5.2 or 5.3.
+>
+> I know fixes went in to distro specific kernels. But wanted to verify
+> if the fix went into the vanilla kernel.org kernel? If so, what
+> version should be safe? ex:
+> https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.3.6
+>
+> With 180 raw TB in raid1 I just want to be explicit. Thanks!
 
-More details can be found at https://github.com/kdave/btrfs-progs/issues/171
+It's fixed upstream stable since 5.2.15, and includes all 5.3.x series.
 
-Signed-off-by: Lakshmipathi.G <lakshmipathi.ganapathi@collabora.com>
----
- .gitlab-ci.yml                        | 158 ++++++++++++++++++++++++++++++++++
- ci/gitlab/Dockerfile                  |   3 +
- ci/gitlab/btrfs-progs-tests.service   |  13 +++
- ci/gitlab/build_or_run_btrfs-progs.sh |  37 ++++++++
- ci/gitlab/kernel_build.sh             |  30 +++++++
- ci/gitlab/run_tests.sh                |   9 ++
- ci/gitlab/setup_image.sh              |  42 +++++++++
- 7 files changed, 292 insertions(+)
- create mode 100644 .gitlab-ci.yml
- create mode 100644 ci/gitlab/Dockerfile
- create mode 100644 ci/gitlab/btrfs-progs-tests.service
- create mode 100755 ci/gitlab/build_or_run_btrfs-progs.sh
- create mode 100755 ci/gitlab/kernel_build.sh
- create mode 100755 ci/gitlab/run_tests.sh
- create mode 100755 ci/gitlab/setup_image.sh
 
-diff --git a/.gitlab-ci.yml b/.gitlab-ci.yml
-new file mode 100644
-index 0000000..8ecfc5a
---- /dev/null
-+++ b/.gitlab-ci.yml
-@@ -0,0 +1,158 @@
-+# This program is free software; you can redistribute it and/or
-+# modify it under the terms of the GNU General Public
-+# License v2 as published by the Free Software Foundation.
-+#
-+# This program is distributed in the hope that it will be useful,
-+# but WITHOUT ANY WARRANTY; without even the implied warranty of
-+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+# General Public License for more details.
-+#
-+# You should have received a copy of the GNU General Public
-+# License along with this program; if not, write to the
-+# Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-+# Boston, MA 021110-1307, USA.
-+#
-+
-+image: docker:18.09.7
-+
-+services:
-+    - docker:18.09.7-dind
-+
-+# To enable or disable Kernel Build set BUILD_KERNEL: "1" or BUILD_KERNEL: "0"
-+# If you disable Kernel Build, make sure PREBUILT_KERNEL_ID points to previously built the kernel job id.
-+# To enable or disable image build update BUILD_IMAGE value to "1" or "0".
-+# If you disable Image Build, make sure PREBUILT_IMAGE_ID points to previously built rootfs job id.
-+
-+variables:
-+  DOCKER_DRIVER: overlay2
-+  IMAGE_TAG: registry.gitlab.com/$CI_PROJECT_NAMESPACE/btrfs-progs:gitlab-ci
-+  BUILD_KERNEL: "1"
-+  PREBUILT_KERNEL_ID: "320566224"
-+  BUILD_IMAGE: "1"
-+  PREBUILT_IMAGE_ID: "288506168"
-+
-+stages:
-+  - build
-+  - btrfs-progs build
-+  - test
-+
-+before_script:
-+   - docker login --username $CI_REGISTRY_USER --password $CI_REGISTRY_PASSWORD $CI_REGISTRY
-+
-+docker build:
-+  stage: build
-+  script:
-+    - cd ci/gitlab
-+    - docker pull $IMAGE_TAG > /dev/null && echo "Downloaded image" || ( docker build -t $IMAGE_TAG . && docker push $IMAGE_TAG )
-+
-+
-+kernel build:
-+  before_script:
-+    - apk add curl unzip 
-+  stage: build
-+  script:
-+     - if [ "$BUILD_KERNEL" == "1" ]; then
-+         docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/ci/gitlab/kernel_build.sh;
-+       else
-+         curl -o bzImage.zip --location --header "JOB-TOKEN:$CI_JOB_TOKEN"  "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/jobs/$PREBUILT_KERNEL_ID/artifacts" && unzip bzImage.zip;
-+       fi;
-+  artifacts:
-+    when: always
-+    paths:
-+      - bzImage
-+
-+ 
-+image build:
-+  before_script:
-+    - apk add curl unzip 
-+  stage: build
-+  script:
-+     - if [ "$BUILD_IMAGE" == "1" ]; then
-+          docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/ci/gitlab/setup_image.sh;
-+       else
-+          curl  -o qemu-image.img.zip --location --header "JOB-TOKEN:$CI_JOB_TOKEN" "https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/jobs/$PREBUILT_IMAGE_ID/artifacts" && unzip qemu-image.img.zip;
-+       fi;
-+  artifacts:
-+    when: always
-+    paths:
-+      - qemu-image.img
-+
-+btrfs-progs build:
-+  stage: btrfs-progs build
-+  script:
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/ci/gitlab/run_tests.sh
-+  artifacts:
-+    expire_in: 1 week
-+    when: always
-+    paths:
-+      - qemu-image.img
-+
-+cli tests:
-+  stage: test
-+  script:
-+     - echo "./cli-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/ci/gitlab/run_tests.sh
-+     - test -e "result" || exit 1 # If result doesn't exists, job failed.
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-+convert tests:
-+  only: 
-+    - devel
-+  stage: test
-+  script:
-+     - echo "./convert-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/ci/gitlab/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-+fsck tests:
-+  stage: test
-+  script:
-+     - echo "./fsck-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/ci/gitlab/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+      - error.log
-+
-+fuzz tests:
-+  stage: test
-+  script:
-+     - echo "./fuzz-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/ci/gitlab/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-+misc tests:
-+  stage: test
-+  script:
-+     - echo "./misc-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/ci/gitlab/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-+mkfs tests:
-+  stage: test
-+  script:
-+     - echo "./mkfs-tests.sh" > $PWD/cmd
-+     - docker run --cap-add SYS_PTRACE --cap-add sys_admin --privileged --device=/dev/kvm -v $PWD:/repo $IMAGE_TAG /repo/ci/gitlab/run_tests.sh
-+     - test -e "result" || exit 1
-+  artifacts:
-+    when: always
-+    paths:
-+      - "*tests-results.txt"
-+
-diff --git a/ci/gitlab/Dockerfile b/ci/gitlab/Dockerfile
-new file mode 100644
-index 0000000..356a21f
---- /dev/null
-+++ b/ci/gitlab/Dockerfile
-@@ -0,0 +1,3 @@
-+FROM debian:stretch-slim
-+
-+RUN apt-get update && apt-get install -y --no-install-recommends ovmf qemu-system qemu-efi
-diff --git a/ci/gitlab/btrfs-progs-tests.service b/ci/gitlab/btrfs-progs-tests.service
-new file mode 100644
-index 0000000..d255d77
---- /dev/null
-+++ b/ci/gitlab/btrfs-progs-tests.service
-@@ -0,0 +1,13 @@
-+[Unit]
-+Description=Execute build_or_run_btrfs-progs.sh on console
-+
-+[Service]
-+ExecStart=/usr/bin/build_or_run_btrfs-progs.sh
-+StandardInput=tty
-+StandardOutput=tty
-+TTYPath=/dev/ttyS0
-+Type=idle
-+
-+[Install]
-+WantedBy=getty.target
-+After=multi-user.target
-diff --git a/ci/gitlab/build_or_run_btrfs-progs.sh b/ci/gitlab/build_or_run_btrfs-progs.sh
-new file mode 100755
-index 0000000..081e83c
---- /dev/null
-+++ b/ci/gitlab/build_or_run_btrfs-progs.sh
-@@ -0,0 +1,37 @@
-+#!/bin/bash
-+#
-+# Build or Run btrfs-progs tests.
-+#
-+set -x
-+
-+BTRFS_BIN="btrfs"
-+MNT_DIR="/mnt/"
-+BUILD_DIR="/btrfs/"
-+test_cmd=$(cat ${MNT_DIR}/cmd)
-+
-+rm -f ${MNT_DIR}/result
-+${BTRFS_BIN} --version
-+
-+if [ $? -ne 0 ]
-+then
-+    echo "=========================== Builb btrfs-progs ================"
-+    echo " Image doesn't have ${BTRFS_BIN} - start build process"
-+    cd ${MNT_DIR} && ./autogen.sh && ./configure --disable-documentation --disable-backtrace && make -j`nproc` && make install && make testsuite
-+    echo "================= Prepare Testsuite =========================="
-+    mkdir -p ${BUILD_DIR}
-+    cp tests/btrfs-progs-tests.tar.gz ${BUILD_DIR}
-+    poweroff
-+else
-+    echo "================= Run Tests  ================================="
-+    cd ${BUILD_DIR} && tar -xvf btrfs-progs-tests.tar.gz && ${test_cmd}
-+
-+    # check test result status
-+    if [ $? -ne 0 ]; then
-+       cd ${BUILD_DIR} && cp *tests-results.txt ${MNT_DIR}
-+       poweroff
-+    else
-+       cd ${BUILD_DIR} && cp *tests-results.txt ${MNT_DIR}
-+       touch ${MNT_DIR}/result
-+       poweroff
-+    fi
-+fi
-diff --git a/ci/gitlab/kernel_build.sh b/ci/gitlab/kernel_build.sh
-new file mode 100755
-index 0000000..189dec1
---- /dev/null
-+++ b/ci/gitlab/kernel_build.sh
-@@ -0,0 +1,30 @@
-+#!/usr/bin/env bash
-+#
-+# Setup BTRFS kernel options and build kernel 
-+set -x
-+
-+apt-get update
-+apt-get -y install build-essential libncurses-dev bison flex libssl-dev libelf-dev unzip wget bc 
-+
-+# Build kernel
-+wget https://github.com/kdave/btrfs-devel/archive/misc-next.zip
-+unzip -qq  misc-next.zip
-+cd btrfs-devel-misc-next/ && make x86_64_defconfig && make kvmconfig 
-+
-+# BTRFS specific entires
-+cat <<EOF >> .config
-+CONFIG_BTRFS_FS=y
-+CONFIG_BTRFS_FS_POSIX_ACL=y
-+CONFIG_BTRFS_FS_CHECK_INTEGRITY=n
-+CONFIG_BTRFS_FS_RUN_SANITY_TESTS=n
-+CONFIG_BTRFS_DEBUG=y
-+CONFIG_BTRFS_ASSERT=y
-+CONFIG_BTRFS_FS_REF_VERIFY=y
-+CONFIG_RAID6_PQ_BENCHMARK=y
-+CONFIG_LIBCRC32C=y
-+EOF
-+
-+make -j8
-+
-+# Store file to shared dir
-+cp -v arch/x86/boot/bzImage /repo
-diff --git a/ci/gitlab/run_tests.sh b/ci/gitlab/run_tests.sh
-new file mode 100755
-index 0000000..c53d09e
---- /dev/null
-+++ b/ci/gitlab/run_tests.sh
-@@ -0,0 +1,9 @@
-+#!/usr/bin/env bash
-+#
-+# Install and start qemu instance with custom kernel while exporting btrfs-progs src over 9p
-+#
-+set -x
-+
-+qemu-system-x86_64 -m 512 -nographic -kernel /repo/bzImage -drive file=/repo/qemu-image.img,index=0,media=disk,format=raw \
-+-fsdev local,id=btrfs-progs,path=/repo,security_model=mapped -device virtio-9p-pci,fsdev=btrfs-progs,mount_tag=btrfs-progs \
-+-append "console=tty1 root=/dev/sda rw" 
-diff --git a/ci/gitlab/setup_image.sh b/ci/gitlab/setup_image.sh
-new file mode 100755
-index 0000000..4048099
---- /dev/null
-+++ b/ci/gitlab/setup_image.sh
-@@ -0,0 +1,42 @@
-+#!/usr/bin/env bash
-+#
-+# Setup debian image via debootstrap and include systemd service file.
-+set -x
-+
-+apt-get update
-+apt-get -y install debootstrap wget unzip
-+
-+# Setup rootfs
-+IMG="/qemu-image.img"
-+DIR="/target"
-+truncate -s2G $IMG
-+mkfs.ext4 $IMG
-+mkdir -p $DIR
-+for i in {0..7};do
-+mknod -m 0660 "/dev/loop$i" b 7 "$i"
-+done
-+
-+# mount the image file
-+mount -o loop $IMG $DIR
-+
-+# Install required pacakges
-+debootstrap --arch=amd64  --include=git,autoconf,automake,gcc,make,pkg-config,e2fslibs-dev,libblkid-dev,zlib1g-dev,liblzo2-dev,asciidoc,xmlto,libzstd-dev,python3.5,python3.5-dev,python3-dev,python3-setuptools,python-setuptools,xz-utils,acl,attr stretch $DIR http://ftp.de.debian.org/debian/
-+
-+## Setup 9p mount
-+echo "btrfs-progs /mnt           9p             trans=virtio    0       0" > $DIR/etc/fstab
-+
-+#Setup autologin 
-+sed -i 's/9600/9600 --autologin root/g' $DIR/lib/systemd/system/serial-getty@.service
-+
-+# Setup systemd service
-+cp -v /repo/ci/gitlab/build_or_run_btrfs-progs.sh $DIR/usr/bin/
-+cp -v /repo/ci/gitlab/btrfs-progs-tests.service $DIR/etc/systemd/system/
-+
-+## Enable service
-+ln -s $DIR/etc/systemd/system/btrfs-progs-tests.service $DIR/etc/systemd/system/getty.target.wants/btrfs-progs-tests.service 
-+
-+cd /
-+umount $DIR
-+rmdir $DIR
-+
-+cp -v $IMG /repo
+
 -- 
-2.7.4
-
+Chris Murphy
