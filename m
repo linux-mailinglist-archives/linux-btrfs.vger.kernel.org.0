@@ -2,98 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F1ED5E4A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 11:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 897A1D61BD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 13:52:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730718AbfJNJJd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Oct 2019 05:09:33 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:35336 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730686AbfJNJJc (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Oct 2019 05:09:32 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9E99FXA154272;
-        Mon, 14 Oct 2019 09:09:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=emESOTBSvx/WYWjZnTk1gICqdjtegDyo9cLmF+mXFOQ=;
- b=RQaX/KgleAPVOREosnBY8ff0C9wkItFMBXEmElB3Sl4zd7bDwPuxAJfvW9cmnoaLewB7
- eJYLs0o7TDEvNm22LsgmCihu+S5oOunsr+jFrYDHynIKRD96kow89kXY3N5GoLB7yYLR
- 4HFe0nyVEtvlYBS08+Yv0ys39oUVyGh9fgm90Fm54acZuFVXxlk5CATTwoKA6YHS90kx
- ZWK1W++DnZC8sLhY9pfQUCwwgxryAm41FN/Mvf9ufJfscWcUmSf0+7lTfnMyQNC9B69p
- fC9u8SBwEPTJnklWBlGTdOvayCaPztT5gYXrKeqv7Ib9ofFBdYNwlzr3vGA61TBFXywj ng== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2vk68u7hh7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Oct 2019 09:09:29 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9E99Rd4167937;
-        Mon, 14 Oct 2019 09:09:28 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2vkr9wd2h2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 14 Oct 2019 09:09:27 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9E98GRp008611;
-        Mon, 14 Oct 2019 09:08:16 GMT
-Received: from [172.20.10.3] (/183.90.36.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 14 Oct 2019 09:08:16 +0000
-Subject: Re: [PATCH v3 3/3] btrfs: Introduce new incompat feature, BG_TREE, to
- speed up mount time
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191010023928.24586-1-wqu@suse.com>
- <20191010023928.24586-4-wqu@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <16b15fd5-cee8-784b-31e9-d5473cd72474@oracle.com>
-Date:   Mon, 14 Oct 2019 17:08:05 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1731633AbfJNLwT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Oct 2019 07:52:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41752 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731040AbfJNLwT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Oct 2019 07:52:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 3F09BAD73;
+        Mon, 14 Oct 2019 11:52:17 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 595ADDA7E3; Mon, 14 Oct 2019 13:52:29 +0200 (CEST)
+Date:   Mon, 14 Oct 2019 13:52:29 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: save i_size in compress_file_range
+Message-ID: <20191014115228.GN2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org
+References: <20191011130354.8232-1-josef@toxicpanda.com>
 MIME-Version: 1.0
-In-Reply-To: <20191010023928.24586-4-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9409 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=905
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910140090
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9409 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=992 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910140090
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191011130354.8232-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+On Fri, Oct 11, 2019 at 09:03:54AM -0400, Josef Bacik wrote:
+> this is happening because the page is not locked when doing
+> clear_page_dirty_for_io.  Looking at the core dump it was because our
+> async_extent had a ram_size of 24576 but our async_chunk range only
+> spanned 20480, so we had a whole extra page in our ram_size for our
+> async_extent.
+> 
+> This happened because we try not to compress pages outside of our
+> i_size, however a cleanup patch changed us to do
+> 
+> actual_end = min_t(u64, i_size_read(inode), end + 1);
+> 
+> which is problematic because i_size_read() can evaluate to different
+> values in between checking and assigning.
 
+The other patch adding READ_ONCE to i_size_read actually has the
+interesting bits why this happens, so this changelog should have them
+too.
 
+> So either a expanding
+> truncate or a fallocate could increase our i_size while we're doing
+> writeout and actual_end would end up being past the range we have
+> locked.
 
+Yeah, it's there, the problematic part is the double load of inode size
 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 044981cf6df9..1c5728e6a660 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -1570,6 +1570,8 @@ struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_info *fs_info,
->   	if (location->objectid == BTRFS_FREE_SPACE_TREE_OBJECTID)
->   		return fs_info->free_space_root ? fs_info->free_space_root :
->   						  ERR_PTR(-ENOENT);
-> +	if (location->objectid == BTRFS_BLOCK_GROUP_TREE_OBJECTID)
+  mov    0x20(%rsp),%rax
+  cmp    %rax,0x48(%r15)
+  movl   $0x0,0x18(%rsp)
+  mov    %rax,%r12
+  mov    %r14,%rax
+  cmovbe 0x48(%r15),%r12
 
+Where r15 is inode and 0x48 is offset of i_size.
 
-> +		return fs_info->bg_root ? fs_info->bg_root: ERR_PTR(-ENOENT);
+> I confirmed this was what was happening by installing a debug kernel
+> that had
+> 
+> actual_end = min_t(u64, i_size_read(inode), end + 1);
+> if (actual_end > end + 1) {
+> 	printk(KERN_ERR "WE GOT FUCKED\n");
+> 	actual_end = end + 1;
+> }
+> 
+> and installing it onto 500 boxes of the tier that had been seeing the
+> problem regularly.  Last night I got my debug message and no panic,
+> confirming what I expected.
+> 
+> Fixes: 62b37622718c ("btrfs: Remove isize local variable in compress_file_range")
+> cc: stable@vger.kernel.org
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/inode.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 2eb1d7249f83..9a483d1f61f8 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -474,6 +474,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+>  	u64 start = async_chunk->start;
+>  	u64 end = async_chunk->end;
+>  	u64 actual_end;
+> +	loff_t i_size = i_size_read(inode);
+>  	int ret = 0;
+>  	struct page **pages = NULL;
+>  	unsigned long nr_pages;
+> @@ -488,7 +489,13 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+>  	inode_should_defrag(BTRFS_I(inode), start, end, end - start + 1,
+>  			SZ_16K);
+>  
+> -	actual_end = min_t(u64, i_size_read(inode), end + 1);
+> +	/*
+> +	 * We need to save i_size before now because it could change in between
+> +	 * us evaluating the size and assigning it.  This is because we lock and
+> +	 * unlock the page in truncate and fallocate, and then modify the i_size
+> +	 * later on.
+> +	 */
+> +	actual_end = min_t(u64, i_size, end + 1);
 
-  An explicit check is better than implicit check for example:
-------------
-return btrfs_fs_incompat(fs_info, BG_TREE) ? \
-	fs_info->bg_root : ERR_PTR(-ENOENT);
-------------
+Unfortunatelly this is not sufficient and does not prevent the compiler
+to do the same optimization, though current compilers seem to do just
+one load it's not prevented in principle.  The only cure is READ_ONCE,
+either globally or locally done in compress_file_range.
 
+The other patch addding READ_ONCE to i_size_read would be IMHO ideal.
 
-Thanks, Anand
+I've experimented with various ways to do the 'once' semantics, the
+following worked:
+
+* force READ_ONCE on the isize varaible, as READ_ONCE requires lvalue,
+  we can't do READ_ONCE(i_size_read())
+
+  u64 isize;
+  ...
+  isize = i_read_size(inode);
+  isize = READ_ONCE(isize);
+
+* insert barrier
+
+  u64 isize;
+  ...
+  isize = i_size_read(inode);
+  barrier();
+
+* i_size_read returns READ_ONCE(inode->i_size)
+
+  same as current code, ie.
+  actual_end = min_t(..., i_size_read(inode), ...)
+
+All verified on the assembly level that this does not do the double
+load.
