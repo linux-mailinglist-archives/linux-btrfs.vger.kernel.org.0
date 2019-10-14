@@ -2,131 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 73C80D5DE2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 10:51:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F1ED5E4A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 11:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730522AbfJNIv2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Oct 2019 04:51:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47288 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729928AbfJNIv1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Oct 2019 04:51:27 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E39D7AF10;
-        Mon, 14 Oct 2019 08:51:25 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 768DB1E4A86; Mon, 14 Oct 2019 10:51:25 +0200 (CEST)
-Date:   Mon, 14 Oct 2019 10:51:25 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-fsdevel@vger.kernel.org, kernel-team@fb.com,
-        viro@zeniv.linux.org.uk, jack@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fs: use READ_ONCE/WRITE_ONCE with the i_size helpers
-Message-ID: <20191014085125.GB5939@quack2.suse.cz>
-References: <20191011202050.8656-1-josef@toxicpanda.com>
+        id S1730718AbfJNJJd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Oct 2019 05:09:33 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:35336 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730686AbfJNJJc (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Oct 2019 05:09:32 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9E99FXA154272;
+        Mon, 14 Oct 2019 09:09:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=emESOTBSvx/WYWjZnTk1gICqdjtegDyo9cLmF+mXFOQ=;
+ b=RQaX/KgleAPVOREosnBY8ff0C9wkItFMBXEmElB3Sl4zd7bDwPuxAJfvW9cmnoaLewB7
+ eJYLs0o7TDEvNm22LsgmCihu+S5oOunsr+jFrYDHynIKRD96kow89kXY3N5GoLB7yYLR
+ 4HFe0nyVEtvlYBS08+Yv0ys39oUVyGh9fgm90Fm54acZuFVXxlk5CATTwoKA6YHS90kx
+ ZWK1W++DnZC8sLhY9pfQUCwwgxryAm41FN/Mvf9ufJfscWcUmSf0+7lTfnMyQNC9B69p
+ fC9u8SBwEPTJnklWBlGTdOvayCaPztT5gYXrKeqv7Ib9ofFBdYNwlzr3vGA61TBFXywj ng== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2vk68u7hh7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Oct 2019 09:09:29 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9E99Rd4167937;
+        Mon, 14 Oct 2019 09:09:28 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2vkr9wd2h2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 14 Oct 2019 09:09:27 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9E98GRp008611;
+        Mon, 14 Oct 2019 09:08:16 GMT
+Received: from [172.20.10.3] (/183.90.36.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 14 Oct 2019 09:08:16 +0000
+Subject: Re: [PATCH v3 3/3] btrfs: Introduce new incompat feature, BG_TREE, to
+ speed up mount time
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20191010023928.24586-1-wqu@suse.com>
+ <20191010023928.24586-4-wqu@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <16b15fd5-cee8-784b-31e9-d5473cd72474@oracle.com>
+Date:   Mon, 14 Oct 2019 17:08:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191011202050.8656-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191010023928.24586-4-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9409 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=905
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910140090
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9409 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=992 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910140090
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri 11-10-19 16:20:50, Josef Bacik wrote:
-> I spent the last few weeks running down a weird regression in btrfs we
-> were seeing in production.  It turned out to be introduced by
-> 62b37622718c, which took the following
-> 
-> loff_t isize = i_size_read(inode);
-> 
-> actual_end = min_t(u64, isize, end + 1);
-> 
-> and turned it into
-> 
-> actual_end = min_t(u64, i_size_read(inode), end + 1);
-> 
-> The problem here is that the compiler is optimizing out the temporary
-> variables used in __cmp_once, so the resulting assembly looks like this
-> 
-> 498             actual_end = min_t(u64, i_size_read(inode), end + 1);
->    0xffffffff814b08c1 <+145>:   48 8b 44 24 28  mov    0x28(%rsp),%rax
->    0xffffffff814b08c6 <+150>:   48 39 45 50     cmp    %rax,0x50(%rbp)
->    0xffffffff814b08ca <+154>:   48 89 c6        mov    %rax,%rsi
->    0xffffffff814b08cd <+157>:   48 0f 46 75 50  cmovbe 0x50(%rbp),%rsi
-> 
-> as you can see we read the value of the inode to compare, and then we
-> read it a second time to assign it.
-> 
-> This code is simply an optimization, so there's no locking to keep
-> i_size from changing, however we really need min_t to actually return
-> the minimum value for these two values, which it is failing to do.
-> 
-> We've reverted that patch for now to fix the problem, but it's only a
-> matter of time before the compiler becomes smart enough to optimize out
-> the loff_t isize intermediate variable as well.
-> 
-> Instead we want to make it explicit that i_size_read() should only read
-> the value once.  This will keep this class of problem from happening in
-> the future, regardless of what the compiler chooses to do.  With this
-> change we get the following assembly generated for this code
-> 
-> 491             actual_end = min_t(u64, i_size_read(inode), end + 1);
->    0xffffffff8148f625 <+149>:   48 8b 44 24 20  mov    0x20(%rsp),%rax
-> 
-> ./include/linux/compiler.h:
-> 199             __READ_ONCE_SIZE;
->    0xffffffff8148f62a <+154>:   4c 8b 75 50     mov    0x50(%rbp),%r14
-> 
-> fs/btrfs/inode.c:
-> 491             actual_end = min_t(u64, i_size_read(inode), end + 1);
->    0xffffffff8148f62e <+158>:   49 39 c6        cmp    %rax,%r14
->    0xffffffff8148f631 <+161>:   4c 0f 47 f0     cmova  %rax,%r14
-> 
-> and this works out properly, we only read the value once and so we won't
-> trip over this problem again.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Yeah, given i_size_read() is specifically meant for unlocked access to
-i_size, it makes sense to hide the READ_ONCE() in that function (can
-corresponding WRITE_ONCE() in i_size_write()). So feel free to add:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
 
-								Honza
 
-> ---
->  include/linux/fs.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index e0d909d35763..0e3f887e2dc5 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -863,7 +863,7 @@ static inline loff_t i_size_read(const struct inode *inode)
->  	preempt_enable();
->  	return i_size;
->  #else
-> -	return inode->i_size;
-> +	return READ_ONCE(inode->i_size);
->  #endif
->  }
->  
-> @@ -885,7 +885,7 @@ static inline void i_size_write(struct inode *inode, loff_t i_size)
->  	inode->i_size = i_size;
->  	preempt_enable();
->  #else
-> -	inode->i_size = i_size;
-> +	WRITE_ONCE(inode->i_size, i_size);
->  #endif
->  }
->  
-> -- 
-> 2.21.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 044981cf6df9..1c5728e6a660 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -1570,6 +1570,8 @@ struct btrfs_root *btrfs_get_fs_root(struct btrfs_fs_info *fs_info,
+>   	if (location->objectid == BTRFS_FREE_SPACE_TREE_OBJECTID)
+>   		return fs_info->free_space_root ? fs_info->free_space_root :
+>   						  ERR_PTR(-ENOENT);
+> +	if (location->objectid == BTRFS_BLOCK_GROUP_TREE_OBJECTID)
+
+
+> +		return fs_info->bg_root ? fs_info->bg_root: ERR_PTR(-ENOENT);
+
+  An explicit check is better than implicit check for example:
+------------
+return btrfs_fs_incompat(fs_info, BG_TREE) ? \
+	fs_info->bg_root : ERR_PTR(-ENOENT);
+------------
+
+
+Thanks, Anand
