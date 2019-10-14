@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 043D3D6263
+	by mail.lfdr.de (Postfix) with ESMTP id 6D629D6264
 	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 14:22:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731924AbfJNMWS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Oct 2019 08:22:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37308 "EHLO mx1.suse.de"
+        id S1731944AbfJNMWU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Oct 2019 08:22:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37362 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727038AbfJNMWS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Oct 2019 08:22:18 -0400
+        id S1731938AbfJNMWU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Oct 2019 08:22:20 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6D4BABDA4;
-        Mon, 14 Oct 2019 12:22:16 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id A9F8EBE59;
+        Mon, 14 Oct 2019 12:22:18 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id F283FDA7E3; Mon, 14 Oct 2019 14:22:28 +0200 (CEST)
+        id 5183EDA7E3; Mon, 14 Oct 2019 14:22:31 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 03/15] btrfs: compression: attach workspace manager to the ops
-Date:   Mon, 14 Oct 2019 14:22:28 +0200
-Message-Id: <cf0b8745c5aada29f9431a66777f1af5bb4d382f.1571054758.git.dsterba@suse.com>
+Subject: [PATCH 04/15] btrfs: compression: let workspace manager init take only the type
+Date:   Mon, 14 Oct 2019 14:22:31 +0200
+Message-Id: <7096eaf28c495b2edbfc2cc4f57980ab7aee6643.1571054758.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1571054758.git.dsterba@suse.com>
 References: <cover.1571054758.git.dsterba@suse.com>
@@ -33,83 +33,83 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There's a lot of indirection when the generic code calls into
-algo-specific callbacks to reach the private workspace manager structure
-and back to the generic code.
-
-To simplify that, export the workspace manager for heuristic, LZO and
-ZLIB, while ZSTD is going to use it's own manager.
+With the access to the workspace structures, we can look it up together
+with the compression ops inside the workspace manager init helper.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/compression.c | 1 +
- fs/btrfs/compression.h | 1 +
- fs/btrfs/lzo.c         | 1 +
- fs/btrfs/zlib.c        | 1 +
- fs/btrfs/zstd.c        | 2 ++
- 5 files changed, 6 insertions(+)
+ fs/btrfs/compression.c | 7 ++++---
+ fs/btrfs/compression.h | 3 +--
+ fs/btrfs/lzo.c         | 2 +-
+ fs/btrfs/zlib.c        | 2 +-
+ 4 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 87bac8f73a99..e650125b1d2b 100644
+index e650125b1d2b..6adc7f6857d7 100644
 --- a/fs/btrfs/compression.c
 +++ b/fs/btrfs/compression.c
-@@ -920,6 +920,7 @@ static struct list_head *alloc_heuristic_ws(unsigned int level)
+@@ -862,7 +862,7 @@ static struct workspace_manager heuristic_wsm;
+ 
+ static void heuristic_init_workspace_manager(void)
+ {
+-	btrfs_init_workspace_manager(&heuristic_wsm, &btrfs_heuristic_compress);
++	btrfs_init_workspace_manager(BTRFS_COMPRESS_NONE);
  }
  
- const struct btrfs_compress_op btrfs_heuristic_compress = {
-+	.workspace_manager = &heuristic_wsm,
- 	.init_workspace_manager = heuristic_init_workspace_manager,
- 	.cleanup_workspace_manager = heuristic_cleanup_workspace_manager,
- 	.get_workspace = heuristic_get_workspace,
+ static void heuristic_cleanup_workspace_manager(void)
+@@ -937,9 +937,10 @@ static const struct btrfs_compress_op * const btrfs_compress_op[] = {
+ 	&btrfs_zstd_compress,
+ };
+ 
+-void btrfs_init_workspace_manager(struct workspace_manager *wsm,
+-				  const struct btrfs_compress_op *ops)
++void btrfs_init_workspace_manager(int type)
+ {
++	const struct btrfs_compress_op *ops = btrfs_compress_op[type];
++	struct workspace_manager *wsm = ops->workspace_manager;
+ 	struct list_head *workspace;
+ 
+ 	wsm->ops = ops;
 diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 7db14d3166b5..7091eae063e5 100644
+index 7091eae063e5..10f82e791769 100644
 --- a/fs/btrfs/compression.h
 +++ b/fs/btrfs/compression.h
-@@ -140,6 +140,7 @@ struct btrfs_compress_op {
+@@ -120,8 +120,7 @@ struct workspace_manager {
+ 	wait_queue_head_t ws_wait;
+ };
  
- 	void (*free_workspace)(struct list_head *workspace);
- 
-+	struct workspace_manager *workspace_manager;
- 	/* Maximum level supported by the compression algorithm */
- 	unsigned int max_level;
- 	unsigned int default_level;
+-void btrfs_init_workspace_manager(struct workspace_manager *wsm,
+-				  const struct btrfs_compress_op *ops);
++void btrfs_init_workspace_manager(int type);
+ struct list_head *btrfs_get_workspace(struct workspace_manager *wsm,
+ 				      unsigned int level);
+ void btrfs_put_workspace(struct workspace_manager *wsm, struct list_head *ws);
 diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-index 9417944ec829..aff105cc80e7 100644
+index aff105cc80e7..5b8470041bf6 100644
 --- a/fs/btrfs/lzo.c
 +++ b/fs/btrfs/lzo.c
-@@ -503,6 +503,7 @@ int lzo_decompress(struct list_head *ws, unsigned char *data_in,
+@@ -65,7 +65,7 @@ static struct workspace_manager wsm;
+ 
+ static void lzo_init_workspace_manager(void)
+ {
+-	btrfs_init_workspace_manager(&wsm, &btrfs_lzo_compress);
++	btrfs_init_workspace_manager(BTRFS_COMPRESS_LZO);
  }
  
- const struct btrfs_compress_op btrfs_lzo_compress = {
-+	.workspace_manager	= &wsm,
- 	.init_workspace_manager	= lzo_init_workspace_manager,
- 	.cleanup_workspace_manager = lzo_cleanup_workspace_manager,
- 	.get_workspace		= lzo_get_workspace,
+ static void lzo_cleanup_workspace_manager(void)
 diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-index 8bb6f19ab369..a5e8f0207473 100644
+index a5e8f0207473..be964128dba3 100644
 --- a/fs/btrfs/zlib.c
 +++ b/fs/btrfs/zlib.c
-@@ -414,6 +414,7 @@ int zlib_decompress(struct list_head *ws, unsigned char *data_in,
+@@ -31,7 +31,7 @@ static struct workspace_manager wsm;
+ 
+ static void zlib_init_workspace_manager(void)
+ {
+-	btrfs_init_workspace_manager(&wsm, &btrfs_zlib_compress);
++	btrfs_init_workspace_manager(BTRFS_COMPRESS_ZLIB);
  }
  
- const struct btrfs_compress_op btrfs_zlib_compress = {
-+	.workspace_manager	= &wsm,
- 	.init_workspace_manager	= zlib_init_workspace_manager,
- 	.cleanup_workspace_manager = zlib_cleanup_workspace_manager,
- 	.get_workspace		= zlib_get_workspace,
-diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-index 5f17c741d167..4791e89e43e3 100644
---- a/fs/btrfs/zstd.c
-+++ b/fs/btrfs/zstd.c
-@@ -707,6 +707,8 @@ int zstd_decompress(struct list_head *ws, unsigned char *data_in,
- }
- 
- const struct btrfs_compress_op btrfs_zstd_compress = {
-+	/* ZSTD uses own workspace manager */
-+	.workspace_manager = NULL,
- 	.init_workspace_manager = zstd_init_workspace_manager,
- 	.cleanup_workspace_manager = zstd_cleanup_workspace_manager,
- 	.get_workspace = zstd_get_workspace,
+ static void zlib_cleanup_workspace_manager(void)
 -- 
 2.23.0
 
