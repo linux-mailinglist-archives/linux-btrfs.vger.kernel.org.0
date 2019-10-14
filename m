@@ -2,91 +2,123 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42225D6AAC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 22:17:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56ADBD6B08
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 23:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732399AbfJNURu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Oct 2019 16:17:50 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:46818 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729864AbfJNURu (ORCPT
+        id S1732126AbfJNVFh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Oct 2019 17:05:37 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:33905 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726304AbfJNVFg (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Oct 2019 16:17:50 -0400
-Received: by mail-qt1-f196.google.com with SMTP id u22so27178644qtq.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2019 13:17:49 -0700 (PDT)
+        Mon, 14 Oct 2019 17:05:36 -0400
+Received: by mail-qt1-f195.google.com with SMTP id 3so27464191qta.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2019 14:05:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AFat7maPoeonpW29jRkqOmoMVg2arR3Dt4SaEQ4UCsY=;
-        b=YhjHNkR70xpI1wr14pzhB2rBoMWpT0B4owtLVEEVaraEQfTzLbKJrE2IgNRKYjx8mp
-         pz0momv6tASArjIurUgu2nb3gSOner+2jDYoIc9gIJSXF+ayRaPKiU3gj8dqjjbbh50X
-         dosmeWgG970l7c2fmESHhBNjhtCK+kgdyiIdp7axrgerNb1uWufEoAY6ENT+u4cyvJFJ
-         jDDLt2Udc05p5T5Hj2mY/jsxhvDutCf+rs8UFmntbPjF5EtwvtF5yp/bp5WWovUQXTz8
-         rs8aqwJb+wCVKMJm6zZ7ulYE0l5uM3qkCsmdCWY76UXY3+M8ke3V4tQStQ1GoAZgUchH
-         rSJA==
-X-Gm-Message-State: APjAAAU7EGxt7aL+qXiejd19Z20968uCj+7/Cmus9XF2zfh8jcXUXQhl
-        Tk8AbYeNItqseJDTDAVeZZOltFDf
-X-Google-Smtp-Source: APXvYqwemO5Wy9lB3qwn9dOHe08Pq+XoDKAk4IKW7HQ0IknukD07kvKSu4NWMGW6sUE0prHDRT7BcA==
-X-Received: by 2002:a0c:f8c1:: with SMTP id h1mr33526048qvo.194.1571084269444;
-        Mon, 14 Oct 2019 13:17:49 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=TSgdH0WkJgR0nEmbq5XtgxsUFLmTtoYLDrT26dZeYIs=;
+        b=fFjcDmVNzQU9F35+3P/8UrJVqRKhBBHByMmY5lqu2PqNKcPV1hvFTm/0wL8suZR85S
+         3AjJ/8qQdRNDkT6fNs0bskXy015dDRwhBVpE3D8XRo6PhcAbOUS8rJ+ff8hZIRDLJ3z4
+         pDqBOBqTXVbYlfmQ1hxYzc1e+NoTsCErr6w4KXxOSUbHTj8qphMOnLXlI/qaGp3E1raw
+         IMl32Gnygb2tZji4YVeaXPFFes1nVxFXkHTcDV3qZXUxpVN1WYXS0FzXrIzo5i3osyfP
+         gWD/12H1llZohMAvrfkQhNGNx5miWE2mnKd01o7JoUy9JBtDNdfxd4Lce91oC3P95xhq
+         XTgw==
+X-Gm-Message-State: APjAAAX4/NihySjLpA6+EEOwWbgGTqFKJ0vjzHUspsfzLrpPQ6coJn14
+        fTW4++RW+KV4gq3PPvKfZuU=
+X-Google-Smtp-Source: APXvYqxUxzsZluhrOJ9Oed7Xw3HoppqliOgXQUQyJhWyZEz6dOL/1AvksafnSe2ainPyd/APsV68kg==
+X-Received: by 2002:a05:6214:304:: with SMTP id i4mr15732278qvu.147.1571087135940;
+        Mon, 14 Oct 2019 14:05:35 -0700 (PDT)
 Received: from dennisz-mbp.dhcp.thefacebook.com ([2620:10d:c091:500::2:b1f8])
-        by smtp.gmail.com with ESMTPSA id e13sm8060896qkm.110.2019.10.14.13.17.48
+        by smtp.gmail.com with ESMTPSA id j2sm8405251qki.15.2019.10.14.14.05.34
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 14 Oct 2019 13:17:48 -0700 (PDT)
-Date:   Mon, 14 Oct 2019 16:17:46 -0400
+        Mon, 14 Oct 2019 14:05:35 -0700 (PDT)
+Date:   Mon, 14 Oct 2019 17:05:33 -0400
 From:   Dennis Zhou <dennis@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     Chris Mason <clm@fb.com>, Omar Sandoval <osandov@osandov.com>,
+        David Sterba <dsterba@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 15/19] btrfs: load block_groups into discard_list on mount
-Message-ID: <20191014201746.GF40077@dennisz-mbp.dhcp.thefacebook.com>
+Subject: Re: [RFC PATCH 00/19] btrfs: async discard support
+Message-ID: <20191014210533.GG40077@dennisz-mbp.dhcp.thefacebook.com>
 References: <cover.1570479299.git.dennis@kernel.org>
- <31ce602fac88f25567a0b3e89037693ec962c1c7.1570479299.git.dennis@kernel.org>
- <20191010171137.xxuhjvmqzgifuixd@macbook-pro-91.dhcp.thefacebook.com>
+ <a382d536-e836-dba5-a030-41504a2bd827@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20191010171137.xxuhjvmqzgifuixd@macbook-pro-91.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a382d536-e836-dba5-a030-41504a2bd827@suse.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 10, 2019 at 01:11:38PM -0400, Josef Bacik wrote:
-> On Mon, Oct 07, 2019 at 04:17:46PM -0400, Dennis Zhou wrote:
-> > Async discard doesn't remember the discard state of a block_group when
-> > unmounting or when we crash. So, any block_group that is not fully used
-> > may have undiscarded regions. However, free space caches are read in on
-> > demand. Let the discard worker read in the free space cache so we can
-> > proceed with discarding rather than wait for the block_group to be used.
-> > This prevents us from indefinitely deferring discards until that
-> > particular block_group is reused.
+On Fri, Oct 11, 2019 at 10:49:20AM +0300, Nikolay Borisov wrote:
+> 
+> 
+> On 7.10.19 г. 23:17 ч., Dennis Zhou wrote:
+> > Hello,
 > > 
-> > Signed-off-by: Dennis Zhou <dennis@kernel.org>
 > 
-> What if we did completely discard the last time, now we're going back and
-> discarding again?  I think by default we just assume we discarded everything.
-> If we didn't then the user can always initiate a fitrim later.  Drop this one.
-> Thanks,
+> <snip>
+> 
+> > 
+> > With async discard, we try to emphasize discarding larger regions
+> > and reusing the lba (implicit discard). The first is done by using the
+> > free space cache to maintain discard state and thus allows us to get
+> > coalescing for fairly cheap. A background workqueue is used to scan over
+> > an LRU kept list of the block groups. It then uses filters to determine
+> > what to discard next hence giving priority to larger discards. While
+> > reusing an lba isn't explicitly attempted, it happens implicitly via
+> > find_free_extent() which if it happens to find a dirty extent, will
+> > grant us reuse of the lba. Additionally, async discarding skips metadata
+> 
+> By 'dirty' I assume you mean not-discarded-yet-but-free extent?
 > 
 
-Yeah this is something I wasn't sure about.
+Yes.
 
-It makes me a little uncomfortable to make the lack of persistence a
-user problem. If in some extreme case where someone frees a large amount
-of space and then unmounts. We can either make them wait on unmount to
-discard everything or retrim the whole drive which in an ideal world
-should just be a noop on already free lba space. If others are in favor
-of just going the fitrim route for users, I'm happy to drop this patch,
-but I do like the fact that this makes the whole system consistent
-without user intervention. Does anyone else have an opinion?
+> > block groups as these should see a fairly high turnover as btrfs is a
+> > self-packing filesystem being stingy with allocating new block groups
+> > until necessary.
+> > 
+> > Preliminary results seem promising as when a lot of freeing is going on,
+> > the discarding is delayed allowing for reuse which translates to less
+> > discarding (in addition to the slower discarding). This has shown a
+> > reduction in p90 and p99 read latencies on a test on our webservers.
+> > 
+> > I am currently working on tuning the rate at which it discards in the
+> > background. I am doing this by evaluating other workloads and drives.
+> > The iops and bps rate limits are fairly aggressive right now as my
+> > basic survey of a few drives noted that the trim command itself is a
+> > significant part of the overhead. So optimizing for larger trims is the
+> > right thing to do.
+> 
+> Do you intend on sharing performance results alongside the workloads
+> used to obtain them? Since this is a performance improvement patch in
+> its core that is of prime importance!
+> 
 
-On a side note, the find_free_extent() allocator tries pretty hard
-before allocating subsequent block groups. So maybe it's right to just
-deprioritize these block groups instead of just not loading them.
+I'll try and find some stuff to share for v2. As I'm just running this
+on production machines, I don't intend to share any workloads. However,
+there is an iocost workload that demonstrates the problem nicely that
+might already be shared.
 
-Thanks, 
-Dennis
+The win really is moving the work from transaction commit to completely
+background work, effectively making discard a 2nd class citizen. On more
+loaded machines, it's not great that discards are blocking transaction
+commit. The other thing is it's very drive dependent. Some drives just
+have really bad discard implementations and there will be a bigger win
+than say on some high end nvme drive.
+
+> > 
+> 
+> <snip>
+> > 
+> > Thanks,
+> > Dennis
+> > 
