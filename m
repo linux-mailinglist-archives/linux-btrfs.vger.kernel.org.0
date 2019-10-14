@@ -2,339 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 992A3D5B69
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 08:35:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C80D5DE2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 10:51:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbfJNGfA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Oct 2019 02:35:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50620 "EHLO mx1.suse.de"
+        id S1730522AbfJNIv2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Oct 2019 04:51:28 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47288 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726406AbfJNGfA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Oct 2019 02:35:00 -0400
+        id S1729928AbfJNIv1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Oct 2019 04:51:27 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id ACD8CB0BD;
-        Mon, 14 Oct 2019 06:34:56 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: qgroup: Always free PREALLOC META reserve in btrfs_delalloc_release_extents()
-Date:   Mon, 14 Oct 2019 14:34:51 +0800
-Message-Id: <20191014063451.37343-1-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
+        by mx1.suse.de (Postfix) with ESMTP id E39D7AF10;
+        Mon, 14 Oct 2019 08:51:25 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 768DB1E4A86; Mon, 14 Oct 2019 10:51:25 +0200 (CEST)
+Date:   Mon, 14 Oct 2019 10:51:25 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     linux-fsdevel@vger.kernel.org, kernel-team@fb.com,
+        viro@zeniv.linux.org.uk, jack@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] fs: use READ_ONCE/WRITE_ONCE with the i_size helpers
+Message-ID: <20191014085125.GB5939@quack2.suse.cz>
+References: <20191011202050.8656-1-josef@toxicpanda.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191011202050.8656-1-josef@toxicpanda.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[Background]
-Btrfs qgroup uses two types of reserved space for METADATA space,
-PERTRANS and PREALLOC.
+On Fri 11-10-19 16:20:50, Josef Bacik wrote:
+> I spent the last few weeks running down a weird regression in btrfs we
+> were seeing in production.  It turned out to be introduced by
+> 62b37622718c, which took the following
+> 
+> loff_t isize = i_size_read(inode);
+> 
+> actual_end = min_t(u64, isize, end + 1);
+> 
+> and turned it into
+> 
+> actual_end = min_t(u64, i_size_read(inode), end + 1);
+> 
+> The problem here is that the compiler is optimizing out the temporary
+> variables used in __cmp_once, so the resulting assembly looks like this
+> 
+> 498             actual_end = min_t(u64, i_size_read(inode), end + 1);
+>    0xffffffff814b08c1 <+145>:   48 8b 44 24 28  mov    0x28(%rsp),%rax
+>    0xffffffff814b08c6 <+150>:   48 39 45 50     cmp    %rax,0x50(%rbp)
+>    0xffffffff814b08ca <+154>:   48 89 c6        mov    %rax,%rsi
+>    0xffffffff814b08cd <+157>:   48 0f 46 75 50  cmovbe 0x50(%rbp),%rsi
+> 
+> as you can see we read the value of the inode to compare, and then we
+> read it a second time to assign it.
+> 
+> This code is simply an optimization, so there's no locking to keep
+> i_size from changing, however we really need min_t to actually return
+> the minimum value for these two values, which it is failing to do.
+> 
+> We've reverted that patch for now to fix the problem, but it's only a
+> matter of time before the compiler becomes smart enough to optimize out
+> the loff_t isize intermediate variable as well.
+> 
+> Instead we want to make it explicit that i_size_read() should only read
+> the value once.  This will keep this class of problem from happening in
+> the future, regardless of what the compiler chooses to do.  With this
+> change we get the following assembly generated for this code
+> 
+> 491             actual_end = min_t(u64, i_size_read(inode), end + 1);
+>    0xffffffff8148f625 <+149>:   48 8b 44 24 20  mov    0x20(%rsp),%rax
+> 
+> ./include/linux/compiler.h:
+> 199             __READ_ONCE_SIZE;
+>    0xffffffff8148f62a <+154>:   4c 8b 75 50     mov    0x50(%rbp),%r14
+> 
+> fs/btrfs/inode.c:
+> 491             actual_end = min_t(u64, i_size_read(inode), end + 1);
+>    0xffffffff8148f62e <+158>:   49 39 c6        cmp    %rax,%r14
+>    0xffffffff8148f631 <+161>:   4c 0f 47 f0     cmova  %rax,%r14
+> 
+> and this works out properly, we only read the value once and so we won't
+> trip over this problem again.
+> 
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-PERTRANS is metadata space reserved for each transaction started by
-btrfs_start_transaction().
-While PREALLOC is for delalloc, where we reserve space before joining a
-transaction, and finally it will be converted to PERTRANS after the
-writeback is done.
+Yeah, given i_size_read() is specifically meant for unlocked access to
+i_size, it makes sense to hide the READ_ONCE() in that function (can
+corresponding WRITE_ONCE() in i_size_write()). So feel free to add:
 
-[Inconsistency]
-However there is inconsistency in how we handle PREALLOC metadata space.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-The most obvious one is:
-In btrfs_buffered_write():
-	btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes, true);
+								Honza
 
-We always free qgroup PREALLOC meta space.
-
-While in btrfs_truncate_block():
-	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize, (ret != 0));
-
-We only free qgroup PREALLOC meta space when something went wrong.
-
-[The Correct Behavior]
-The correct behavior should be the one in btrfs_buffered_write(), we
-should always free PREALLOC metadata space.
-
-The reason is, the btrfs_delalloc_* mechanism works by:
-- Reserve metadata first, even it's not necessary
-  In btrfs_delalloc_reserve_metadata()
-
-- Free the unused metadata space
-  Normally in:
-  btrfs_delalloc_release_extents()
-  |- btrfs_inode_rsv_release()
-     Here we do calculation on whether we should release or not.
-
-E.g. for 64K buffered write, the metadata rsv works like:
-
-/* The first page */
-reserve_meta:	num_bytes=calc_inode_reservations()
-free_meta:	num_bytes=0
-total:		num_bytes=calc_inode_reservations()
-/* The first page caused one outstanding extent, thus needs metadata
-   rsv */
-
-/* The 2nd page */
-reserve_meta:	num_bytes=calc_inode_reservations()
-free_meta:	num_bytes=calc_inode_reservations()
-total:		not changed
-/* The 2nd page doesn't cause new outstanding extent, needs no new meta
-   rsv, so we free what we have reserved */
-
-/* The 3rd~16th pages */
-reserve_meta:	num_bytes=calc_inode_reservations()
-free_meta:	num_bytes=calc_inode_reservations()
-total:		not changed (still space for one outstanding extent)
-
-This means, if btrfs_delalloc_release_extents() determines to free some
-space, then those space should be freed NOW.
-So for qgroup, we should call btrfs_qgroup_free_meta_prealloc() other
-than btrfs_qgroup_convert_reserved_meta().
-
-The good news is:
-- The callers are not that hot
-  The hottest caller is in btrfs_buffered_write(), which is already
-  fixed by commit 336a8bb8e36a ("btrfs: Fix wrong
-  btrfs_delalloc_release_extents parameter"). Thus it's not that
-  easy to cause false EDQUOT.
-
-- The trans commit in advance for qgroup would hide the bug
-  Since commit f5fef4593653 ("btrfs: qgroup: Make qgroup async transaction
-  commit more aggressive"), when btrfs qgroup metadata free space is slow,
-  it will try to commit transaction and free the wrongly converted
-  PERTRANS space, so it's not that easy to hit such bug.
-
-[FIX]
-So to fix the problem, remove the @qgroup_free parameter for
-btrfs_delalloc_release_extents(), and always pass true to
-btrfs_inode_rsv_release().
-
-Reported-by: Filipe Manana <fdmanana@suse.com>
-Fixes: 43b18595d660 ("btrfs: qgroup: Use separate meta reservation type for delalloc")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/ctree.h          |  3 +--
- fs/btrfs/delalloc-space.c |  6 ++----
- fs/btrfs/file.c           |  7 +++----
- fs/btrfs/inode-map.c      |  4 ++--
- fs/btrfs/inode.c          | 12 ++++++------
- fs/btrfs/ioctl.c          |  6 ++----
- fs/btrfs/relocation.c     |  7 +++----
- 7 files changed, 19 insertions(+), 26 deletions(-)
-
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 19d669d12ca1..6b50bafd6a64 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2489,8 +2489,7 @@ int btrfs_subvolume_reserve_metadata(struct btrfs_root *root,
- 				     int nitems, bool use_global_rsv);
- void btrfs_subvolume_release_metadata(struct btrfs_fs_info *fs_info,
- 				      struct btrfs_block_rsv *rsv);
--void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes,
--				    bool qgroup_free);
-+void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes);
- 
- int btrfs_delalloc_reserve_metadata(struct btrfs_inode *inode, u64 num_bytes);
- u64 btrfs_account_ro_block_groups_free_space(struct btrfs_space_info *sinfo);
-diff --git a/fs/btrfs/delalloc-space.c b/fs/btrfs/delalloc-space.c
-index d949d7d2abed..571e7b31ea2f 100644
---- a/fs/btrfs/delalloc-space.c
-+++ b/fs/btrfs/delalloc-space.c
-@@ -418,7 +418,6 @@ void btrfs_delalloc_release_metadata(struct btrfs_inode *inode, u64 num_bytes,
-  * btrfs_delalloc_release_extents - release our outstanding_extents
-  * @inode: the inode to balance the reservation for.
-  * @num_bytes: the number of bytes we originally reserved with
-- * @qgroup_free: do we need to free qgroup meta reservation or convert them.
-  *
-  * When we reserve space we increase outstanding_extents for the extents we may
-  * add.  Once we've set the range as delalloc or created our ordered extents we
-@@ -426,8 +425,7 @@ void btrfs_delalloc_release_metadata(struct btrfs_inode *inode, u64 num_bytes,
-  * temporarily tracked outstanding_extents.  This _must_ be used in conjunction
-  * with btrfs_delalloc_reserve_metadata.
-  */
--void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes,
--				    bool qgroup_free)
-+void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	unsigned num_extents;
-@@ -441,7 +439,7 @@ void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes,
- 	if (btrfs_is_testing(fs_info))
- 		return;
- 
--	btrfs_inode_rsv_release(inode, qgroup_free);
-+	btrfs_inode_rsv_release(inode, true);
- }
- 
- /**
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 8fe4eb7e5045..59b20fb89abe 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1692,7 +1692,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 				    force_page_uptodate);
- 		if (ret) {
- 			btrfs_delalloc_release_extents(BTRFS_I(inode),
--						       reserve_bytes, true);
-+						       reserve_bytes);
- 			break;
- 		}
- 
-@@ -1704,7 +1704,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 			if (extents_locked == -EAGAIN)
- 				goto again;
- 			btrfs_delalloc_release_extents(BTRFS_I(inode),
--						       reserve_bytes, true);
-+						       reserve_bytes);
- 			ret = extents_locked;
- 			break;
- 		}
-@@ -1761,8 +1761,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
- 		if (extents_locked)
- 			unlock_extent_cached(&BTRFS_I(inode)->io_tree,
- 					     lockstart, lockend, &cached_state);
--		btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes,
--					       true);
-+		btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
- 		if (ret) {
- 			btrfs_drop_pages(pages, num_pages);
- 			break;
-diff --git a/fs/btrfs/inode-map.c b/fs/btrfs/inode-map.c
-index 63cad7865d75..37345fb6191d 100644
---- a/fs/btrfs/inode-map.c
-+++ b/fs/btrfs/inode-map.c
-@@ -501,13 +501,13 @@ int btrfs_save_ino_cache(struct btrfs_root *root,
- 	ret = btrfs_prealloc_file_range_trans(inode, trans, 0, 0, prealloc,
- 					      prealloc, prealloc, &alloc_hint);
- 	if (ret) {
--		btrfs_delalloc_release_extents(BTRFS_I(inode), prealloc, true);
-+		btrfs_delalloc_release_extents(BTRFS_I(inode), prealloc);
- 		btrfs_delalloc_release_metadata(BTRFS_I(inode), prealloc, true);
- 		goto out_put;
- 	}
- 
- 	ret = btrfs_write_out_ino_cache(root, trans, path, inode);
--	btrfs_delalloc_release_extents(BTRFS_I(inode), prealloc, false);
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), prealloc);
- out_put:
- 	iput(inode);
- out_release:
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index a0546401bc0a..166b3acfbb1f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -2206,7 +2206,7 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
- 
- 	ClearPageChecked(page);
- 	set_page_dirty(page);
--	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, false);
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
- out:
- 	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
- 			     &cached_state);
-@@ -4951,7 +4951,7 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
- 	if (!page) {
- 		btrfs_delalloc_release_space(inode, data_reserved,
- 					     block_start, blocksize, true);
--		btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize, true);
-+		btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize);
- 		ret = -ENOMEM;
- 		goto out;
- 	}
-@@ -5018,7 +5018,7 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
- 	if (ret)
- 		btrfs_delalloc_release_space(inode, data_reserved, block_start,
- 					     blocksize, true);
--	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize, (ret != 0));
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize);
- 	unlock_page(page);
- 	put_page(page);
- out:
-@@ -8706,7 +8706,7 @@ static ssize_t btrfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
- 		} else if (ret >= 0 && (size_t)ret < count)
- 			btrfs_delalloc_release_space(inode, data_reserved,
- 					offset, count - (size_t)ret, true);
--		btrfs_delalloc_release_extents(BTRFS_I(inode), count, false);
-+		btrfs_delalloc_release_extents(BTRFS_I(inode), count);
- 	}
- out:
- 	if (wakeup)
-@@ -9056,7 +9056,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- 	unlock_extent_cached(io_tree, page_start, page_end, &cached_state);
- 
- 	if (!ret2) {
--		btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, true);
-+		btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
- 		sb_end_pagefault(inode->i_sb);
- 		extent_changeset_free(data_reserved);
- 		return VM_FAULT_LOCKED;
-@@ -9065,7 +9065,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
- out_unlock:
- 	unlock_page(page);
- out:
--	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, (ret != 0));
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
- 	btrfs_delalloc_release_space(inode, data_reserved, page_start,
- 				     reserved_space, (ret != 0));
- out_noreserve:
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index de730e56d3f5..7c145a41decd 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1360,8 +1360,7 @@ static int cluster_pages_for_defrag(struct inode *inode,
- 		unlock_page(pages[i]);
- 		put_page(pages[i]);
- 	}
--	btrfs_delalloc_release_extents(BTRFS_I(inode), page_cnt << PAGE_SHIFT,
--				       false);
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), page_cnt << PAGE_SHIFT);
- 	extent_changeset_free(data_reserved);
- 	return i_done;
- out:
-@@ -1372,8 +1371,7 @@ static int cluster_pages_for_defrag(struct inode *inode,
- 	btrfs_delalloc_release_space(inode, data_reserved,
- 			start_index << PAGE_SHIFT,
- 			page_cnt << PAGE_SHIFT, true);
--	btrfs_delalloc_release_extents(BTRFS_I(inode), page_cnt << PAGE_SHIFT,
--				       true);
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), page_cnt << PAGE_SHIFT);
- 	extent_changeset_free(data_reserved);
- 	return ret;
- 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 00504657b602..205b35ee2fb3 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -3297,7 +3297,7 @@ static int relocate_file_extent_cluster(struct inode *inode,
- 				btrfs_delalloc_release_metadata(BTRFS_I(inode),
- 							PAGE_SIZE, true);
- 				btrfs_delalloc_release_extents(BTRFS_I(inode),
--							       PAGE_SIZE, true);
-+							       PAGE_SIZE);
- 				ret = -EIO;
- 				goto out;
- 			}
-@@ -3326,7 +3326,7 @@ static int relocate_file_extent_cluster(struct inode *inode,
- 			btrfs_delalloc_release_metadata(BTRFS_I(inode),
- 							 PAGE_SIZE, true);
- 			btrfs_delalloc_release_extents(BTRFS_I(inode),
--			                               PAGE_SIZE, true);
-+			                               PAGE_SIZE);
- 
- 			clear_extent_bits(&BTRFS_I(inode)->io_tree,
- 					  page_start, page_end,
-@@ -3342,8 +3342,7 @@ static int relocate_file_extent_cluster(struct inode *inode,
- 		put_page(page);
- 
- 		index++;
--		btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE,
--					       false);
-+		btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
- 		balance_dirty_pages_ratelimited(inode->i_mapping);
- 		btrfs_throttle(fs_info);
- 	}
+> ---
+>  include/linux/fs.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index e0d909d35763..0e3f887e2dc5 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -863,7 +863,7 @@ static inline loff_t i_size_read(const struct inode *inode)
+>  	preempt_enable();
+>  	return i_size;
+>  #else
+> -	return inode->i_size;
+> +	return READ_ONCE(inode->i_size);
+>  #endif
+>  }
+>  
+> @@ -885,7 +885,7 @@ static inline void i_size_write(struct inode *inode, loff_t i_size)
+>  	inode->i_size = i_size;
+>  	preempt_enable();
+>  #else
+> -	inode->i_size = i_size;
+> +	WRITE_ONCE(inode->i_size, i_size);
+>  #endif
+>  }
+>  
+> -- 
+> 2.21.0
+> 
 -- 
-2.23.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
