@@ -2,79 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 803E3D68E4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 19:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B94D6910
+	for <lists+linux-btrfs@lfdr.de>; Mon, 14 Oct 2019 20:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730572AbfJNRyu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 14 Oct 2019 13:54:50 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:35383 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729752AbfJNRyu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 14 Oct 2019 13:54:50 -0400
-Received: by mail-wm1-f65.google.com with SMTP id y21so17627398wmi.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 14 Oct 2019 10:54:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mzcwLVmfV/FUmWW2Cu3SOniaKIGNTx91Rv30p0aDkRM=;
-        b=rjsj4eitsK3OxBzLYZoQQyMPvcvN4qe6q9cX9P5EtaPr4CS1Axpxc9AlZGh4voBvx5
-         ea4N4u7wmuxjee7IoGYFhCiIzhkfdM4jSep1yK+oQKDuOeSSqJ3HRqE01nHhV7hwpNKV
-         sgotATzi62nUA+V8JT4RGjEF/nZvbOvLVTuFpxi9Cw7TIFaKuxrrfoTaB3/uKwV71TW2
-         2SNSviygHZaicUq6oDrs4B/4tcCBoxQZ9+9dXEmxQPvNdeCDWb6OvdIHtreE7984YlR+
-         v6TdYYWIFIWPwDW8aMNXPpv77L030oZo6d6hRSCOfg1xtIUevGogGqcMfDADqzN8Mf4o
-         oQIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mzcwLVmfV/FUmWW2Cu3SOniaKIGNTx91Rv30p0aDkRM=;
-        b=sDdtKcxAwYyRAc12dZ6o9GOCu0hMw9MbBtoQBgQA8ss58TyPLH6WObkmSXzfbzCb5Y
-         WjXpRrLwzbOzc4tsPdBoqbMJ4WmG9aLwMUbHjNvHqzazxOeFHt5HTkkwqMtH9+w7aQcN
-         bUyYKFRezP128mPoNU+vEOSjqpx7gnxj0O89vnWlOVsuD7lKvCYK1h8mPvheK13L+Qie
-         SkH16ixnPTd1YZQakUeU5mKevxGBsdZ2rIcJuUeCuXl1V9XFplAJjEXBZtlN55+/Sc+F
-         0sMWzPCBe9N6sxrWwkndgQ28tciwkVhieNiT/I4Kf5+QstyDngOTPotZDddr3IUZ1bqt
-         WADw==
-X-Gm-Message-State: APjAAAWUrkcDhACxjkzWqT9AMfDBFpqkUIGCCJCrPQGN3l5LIT5Oml4d
-        BmK8fC2al51Lch7LUxG7sKiwIKOiRZOmHot7hnYiNPwzotQ=
-X-Google-Smtp-Source: APXvYqwpkJWCud2zvnByv1ZBpBXDsoTpAvN7kvswAhGcKL10/TNBq0YaWAQFhgAm6maYqD1kXWT8C+Ckq8SBAwBpBpw=
-X-Received: by 2002:a7b:c629:: with SMTP id p9mr16328580wmk.65.1571075688403;
- Mon, 14 Oct 2019 10:54:48 -0700 (PDT)
+        id S1732152AbfJNSD3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 14 Oct 2019 14:03:29 -0400
+Received: from p3nlsmtpcp01-02.prod.phx3.secureserver.net ([184.168.200.140]:47852
+        "EHLO p3nlsmtpcp01-02.prod.phx3.secureserver.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1730878AbfJNSD3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 14 Oct 2019 14:03:29 -0400
+Received: from p3plcpnl0639.prod.phx3.secureserver.net ([50.62.176.166])
+        by : HOSTING RELAY : with ESMTP
+        id K4fsiNY3L9G9cK4fsiCpa2; Mon, 14 Oct 2019 11:02:28 -0700
+Received: from [45.116.115.51] (port=33594 helo=giis.co.in)
+        by p3plcpnl0639.prod.phx3.secureserver.net with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
+        (Exim 4.92)
+        (envelope-from <lakshmipathi.g@giis.co.in>)
+        id 1iK4fr-006aUk-O6; Mon, 14 Oct 2019 11:02:28 -0700
+Date:   Mon, 14 Oct 2019 23:32:16 +0530
+From:   "Lakshmipathi.G" <lakshmipathi.g@giis.co.in>
+To:     dsterba@suse.cz,
+        "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.com>,
+        linux-btrfs@vger.kernel.org, dsterba@suse.com,
+        thecybershadow@gmail.com, wqu@suse.com
+Subject: Re: [PATCH] Setup GitLab-CI for btrfs-progs
+Message-ID: <20191014180215.GA13772@giis.co.in>
+References: <20190930165622.GA25114@giis.co.in>
+ <20191007175235.GL2751@twin.jikos.cz>
 MIME-Version: 1.0
-References: <11e4e889f903ddad682297c4420faeb0245414cf.camel@scientia.net>
- <CAL3q7H4peDv_bQa5vGJeOM=V--yq1a1=aHat5qcsXjbnDoSkDQ@mail.gmail.com>
- <ce6a9b8274f5af89d9378aa84e934ce3f3354acd.camel@scientia.net>
- <CAL3q7H5qNE4rizN14qmgrAwtju9KRHspKxo3S-PoTcSUvXYuew@mail.gmail.com>
- <8c0f8fff-5032-07b6-182c-1663d6f3f94e@petezilla.co.uk> <CACzgC9gvhGwyQAKm5J1smZZjim-ecEix62ZQCY-wwJYVzMmJ3Q@mail.gmail.com>
- <CACzgC9iSOraUua7YtPz-gsvNRF_6Fp3mvkBenETMsVNwnjvuuQ@mail.gmail.com>
-In-Reply-To: <CACzgC9iSOraUua7YtPz-gsvNRF_6Fp3mvkBenETMsVNwnjvuuQ@mail.gmail.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 14 Oct 2019 11:54:31 -0600
-Message-ID: <CAJCQCtTmtQQi1BRpzRgRezuFm6ps9S1+BBwNkB4+H5WhcyYyag@mail.gmail.com>
-Subject: Re: Massive filesystem corruption since kernel 5.2 (ARCH)
-To:     Adam Bahe <adambahe@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191007175235.GL2751@twin.jikos.cz>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - p3plcpnl0639.prod.phx3.secureserver.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - giis.co.in
+X-Get-Message-Sender-Via: p3plcpnl0639.prod.phx3.secureserver.net: authenticated_id: lakshmipathi.g@giis.co.in
+X-Authenticated-Sender: p3plcpnl0639.prod.phx3.secureserver.net: lakshmipathi.g@giis.co.in
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-CMAE-Envelope: MS4wfHnOvUmuU5Z2nwgqJ4ViqG+ZGu0LG8OgRRJPnDr6V4o8VOmNUy36hJIouTssdMNeU2vBmcTGCZbCk7pF1OUCbfZcZzMIK2cBEkI4QJh43AcFC+wE9SmE
+ Xbi2eh1ecjOm3eEZev3r33iiaRHy7cmwuzn3NTZZR6O8Koej4zZqOFvgknv6G8D8GuG6ktMsIMlxRsQvqe8TCNvWH4apEp99YHsWvcslrWs9p9WWBNLmpPbM
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sun, Oct 13, 2019 at 8:07 PM Adam Bahe <adambahe@gmail.com> wrote:
->
-> > Until the fix gets merged to 5.2 kernels (and 5.3), I don't really recommend running 5.2 or 5.3.
->
-> I know fixes went in to distro specific kernels. But wanted to verify
-> if the fix went into the vanilla kernel.org kernel? If so, what
-> version should be safe? ex:
-> https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.3.6
->
-> With 180 raw TB in raid1 I just want to be explicit. Thanks!
+On Mon, Oct 07, 2019 at 07:52:35PM +0200, David Sterba wrote:
+> 
+> Is it possible to move the files to ci/gitlab? .gitlab-ci.yml must be
+> probably in the top-level dir but that's acceptable.
+> 
+Ok added these changes to Patch V2.
 
-It's fixed upstream stable since 5.2.15, and includes all 5.3.x series.
+> 
+> The scripts look good to me but I have limited knowledge of the CI
+> environment so I don't have objections against merging the patch. I'll
+> spend some time experimenting but overall this seems in a good shape and
+> we'll get further coverage (due to the new kernel) than what travis
+> provides. Thanks.
 
+Yes, please experiment with it. There are some failures in tests
+https://gitlab.com/giis/btrfs-progs/pipelines/88716001 and I'm not sure 
+whether its due to environment or missing packages or something else. 
+Let me know, if something needs to be updated or fixed. thanks!
 
-
--- 
-Chris Murphy
+Cheers.
+Lakshmipathi.G
