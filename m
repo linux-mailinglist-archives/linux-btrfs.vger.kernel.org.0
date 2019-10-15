@@ -2,87 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 030BAD7633
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 14:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23C28D764C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 14:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727436AbfJOMOJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Oct 2019 08:14:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34692 "EHLO mx1.suse.de"
+        id S1727328AbfJOMRp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Oct 2019 08:17:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36142 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727339AbfJOMOJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Oct 2019 08:14:09 -0400
+        id S1725812AbfJOMRo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Oct 2019 08:17:44 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9F711AD46
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2019 12:14:07 +0000 (UTC)
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Cc:     Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [RFC PATCH 2/2] btrfs: rename btrfs_parse_device_options back to btrfs_parse_early_options
-Date:   Tue, 15 Oct 2019 14:14:05 +0200
-Message-Id: <20191015121405.19066-2-jthumshirn@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20191015121405.19066-1-jthumshirn@suse.de>
-References: <20191015121405.19066-1-jthumshirn@suse.de>
+        by mx1.suse.de (Postfix) with ESMTP id 43904B37A;
+        Tue, 15 Oct 2019 12:17:43 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 51F55DA7E3; Tue, 15 Oct 2019 14:17:55 +0200 (CEST)
+Date:   Tue, 15 Oct 2019 14:17:55 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 03/19] btrfs: keep track of which extents have been
+ discarded
+Message-ID: <20191015121755.GU2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+References: <cover.1570479299.git.dennis@kernel.org>
+ <5875088b5f4ada0ef73f097b238935dd583d5b3e.1570479299.git.dennis@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5875088b5f4ada0ef73f097b238935dd583d5b3e.1570479299.git.dennis@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-As btrfs_parse_device_options() now doesn't only parse the -o device mount
-option but -o auth_key as well, it makes sense to rename it back to
-btrfs_parse_early_options().
+On Mon, Oct 07, 2019 at 04:17:34PM -0400, Dennis Zhou wrote:
+> @@ -2165,6 +2173,7 @@ static bool try_merge_free_space(struct btrfs_free_space_ctl *ctl,
+>  	bool merged = false;
+>  	u64 offset = info->offset;
+>  	u64 bytes = info->bytes;
+> +	bool is_trimmed = btrfs_free_space_trimmed(info);
 
-This reverts commit fa59f27c8c35bbe00af8eff23de446a7f4b048b0.
+Please add a const in such cases. I've been doing that in other patches
+but as more iterations are expected, let's have it there from the
+beginning.
 
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
----
- fs/btrfs/super.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+> --- a/fs/btrfs/free-space-cache.h
+> +++ b/fs/btrfs/free-space-cache.h
+> @@ -6,6 +6,8 @@
+>  #ifndef BTRFS_FREE_SPACE_CACHE_H
+>  #define BTRFS_FREE_SPACE_CACHE_H
+>  
+> +#define BTRFS_FSC_TRIMMED		(1UL << 0)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 313ef7fc2bdf..3708264a7335 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -470,8 +470,9 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
- 		case Opt_subvolrootid:
- 		case Opt_device:
- 			/*
--			 * These are parsed by btrfs_parse_subvol_options or
--			 * btrfs_parse_device_options and can be ignored here.
-+			 * These are parsed by btrfs_parse_subvol_options
-+			 * and btrfs_parse_early_options
-+			 * and can be happily ignored here.
- 			 */
- 			break;
- 		case Opt_nodatasum:
-@@ -893,7 +894,7 @@ int btrfs_parse_options(struct btrfs_fs_info *info, char *options,
-  * All other options will be parsed on much later in the mount process and
-  * only when we need to allocate a new super block.
-  */
--static int btrfs_parse_device_options(struct btrfs_fs_info *info,
-+static int btrfs_parse_early_options(struct btrfs_fs_info *info,
- 				      const char *options, fmode_t flags,
- 				      void *holder)
- {
-@@ -975,7 +976,7 @@ static int btrfs_parse_subvol_options(const char *options, char **subvol_name,
- 
- 	/*
- 	 * strsep changes the string, duplicate it because
--	 * btrfs_parse_device_options gets called later
-+	 * btrfs_parse_early_options gets called later
- 	 */
- 	opts = kstrdup(options, GFP_KERNEL);
- 	if (!opts)
-@@ -1532,7 +1533,7 @@ static struct dentry *btrfs_mount_root(struct file_system_type *fs_type,
- 	}
- 
- 	mutex_lock(&uuid_mutex);
--	error = btrfs_parse_device_options(fs_info, data, mode, fs_type);
-+	error = btrfs_parse_early_options(fs_info, data, mode, fs_type);
- 	if (error) {
- 		mutex_unlock(&uuid_mutex);
- 		goto error_fs_info;
--- 
-2.16.4
-
+Please add a comment
