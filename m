@@ -2,457 +2,200 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3DF2D7F4C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 20:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9138AD7F84
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 21:03:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389246AbfJOSnL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Oct 2019 14:43:11 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:46193 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389250AbfJOSnK (ORCPT
+        id S1729700AbfJOTDM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Oct 2019 15:03:12 -0400
+Received: from mail-wm1-f42.google.com ([209.85.128.42]:39416 "EHLO
+        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729457AbfJOTDL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Oct 2019 14:43:10 -0400
-Received: by mail-pl1-f195.google.com with SMTP id q24so9983172plr.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2019 11:43:10 -0700 (PDT)
+        Tue, 15 Oct 2019 15:03:11 -0400
+Received: by mail-wm1-f42.google.com with SMTP id v17so195589wml.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2019 12:03:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=osandov-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2P4yK7ExLp5umtVjGj04165cdN5E9l7hwsUvPQgbWHc=;
-        b=zN2+N8js0beCW4Vj2hQN8LEC23pgf7H2OmdYrYNfaabjotPpQS0uSkT3EhzOfimCxg
-         pcerRmoRUadz2yhmCHU8mL6OKfD+Wm3mLLbskaIRQeoBGaj4r95kLd2t0FucJDuGgjan
-         Yxw2JuW5lU8yjnpEZ+3L5oURi6FIIxfqU8TAgtm8rVcL7TK3LR6G6gXztnWwoEUqPaF0
-         Zuz7/Ejld1cEvDWeFvWyI5wjlDSwJ+u7K/8qaWEN+zvSp5wXQrDjPK2Y5S0zjBsNvLZ/
-         0niSZ45eP4uIlEh996/ohtaj/zWNf7D74bMVU7LOAD/yI/acV8Wub5UPI/3vB2cP/+OG
-         Yh+w==
+        d=gmail.com; s=20161025;
+        h=to:from:subject:autocrypt:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=qmBp+m+aav6lcpigfv7QSHsXYy1n0VU6hax7KWePsSc=;
+        b=mvTlmY0GmQQtTSgJtGUYO6hls+Ax5a33Dj1KeNyiGUXyckhlftsUHRa8EK25YzpO7m
+         x/9RB/mn2G/CblWLOm7mIfwW0gEO945bEdNFjwcVxy/5ZAx1wfWR38dvIoTERlcgP/NP
+         mgkNsX3f8sw+a6rlNikisY3B9EJ1HgZg/mv+CKyh4SuWOCSkWR37AzahaMpVsLl1lUdI
+         rNwVZu8iC8VLnOMZSMN7bazyEg1DNX3LepdKKn9eMOVdrQLFidKePTH2qQiiUf7ePGKy
+         CKps+f440FwGS3N9wD3iFsP28+gPDtHCKSCd8C9VEPGnaptMPlbJNsqwvQn1c/ZLxTmt
+         PIyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2P4yK7ExLp5umtVjGj04165cdN5E9l7hwsUvPQgbWHc=;
-        b=dw6FYSN3csC55ZGP2eqP4wzvq9twVFPL4z9g6WACxNRRERwiTfpd0Z/EadFv6vjPEl
-         7OjxERo0DZaRFzCAnhLz3/EYiRgIAirVXC1Y6Gne6Qjc3tCTLjWrOF2ND9TWQnoLUWVr
-         eo9YIx6Bj+Ak3dd/qmXVLfCyQgbyxAmUC31Vg59hnzfstOh1NEaH3KoM53O85phkSaX1
-         4yLSVcSR4IgBQ2P6hA7qcTdLFR2wcdoT1OgfG1oR8KGb1mNhXI3/i7/e1vTB94u94lQH
-         kva7En3+Cy1cunvxG92wRGs9JeK4TccyluxD0wenIbOYG71ENJ7qm00Y1NSy4brZJY8A
-         ZqQA==
-X-Gm-Message-State: APjAAAXzW/qpYXIkjgeRRhYLYgOXErmhj5kPwyX7Wcclm1UapeGbtW7U
-        FDH8xB2b2/5LaUqPd7DhKhX8RA==
-X-Google-Smtp-Source: APXvYqxkHh8h3sSzm9pE95/SiBuhGn2lle0uaAmCiDVzwHIt/vUphw6mmRvl8dfu25K9gYBKhOb38Q==
-X-Received: by 2002:a17:902:8216:: with SMTP id x22mr37862515pln.232.1571164989392;
-        Tue, 15 Oct 2019 11:43:09 -0700 (PDT)
-Received: from vader.thefacebook.com ([2620:10d:c090:200::2:3e5e])
-        by smtp.gmail.com with ESMTPSA id z3sm40396pjd.25.2019.10.15.11.43.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 15 Oct 2019 11:43:08 -0700 (PDT)
-From:   Omar Sandoval <osandov@osandov.com>
-To:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org
-Cc:     Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
-        linux-api@vger.kernel.org, kernel-team@fb.com
-Subject: [RFC PATCH v2 5/5] btrfs: implement RWF_ENCODED writes
-Date:   Tue, 15 Oct 2019 11:42:43 -0700
-Message-Id: <904de93d9bbe630aff7f725fd587810c6eb48344.1571164762.git.osandov@fb.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <cover.1571164762.git.osandov@fb.com>
-References: <cover.1571164762.git.osandov@fb.com>
+        h=x-gm-message-state:to:from:subject:autocrypt:message-id:date
+         :user-agent:mime-version:content-language:content-transfer-encoding;
+        bh=qmBp+m+aav6lcpigfv7QSHsXYy1n0VU6hax7KWePsSc=;
+        b=R/stv/C128emCH+PqqZRrj5HkIOxQonsaKYbwonKX78goXfHjsYCGGwBtvVPkJ3MPY
+         LlsD+L8pS2a8+WXodOhcbiXQe6p4C+x4GUlILb6Ol6iB+tZz3zDjbA4sBf+OtTGFbEqF
+         ey7DTYubzlXmHlq8Fackz1VsiSzXdVibHvePbe9hp7PcDkFqC1V+DeVzSE2TFpEolLdO
+         NQZMjopYMqUj5oPvKNmaxQLYKVdVqEe29H8UD8hQGjIQ+LQtPTf5vnEOqzU+7Mn223TE
+         WInihIE4HhTUKy7OG2hw8RU9PygGBJ19Xqc6uzQL5olKFZSda+Z8WFdDOP1z39a1ALW+
+         sFbA==
+X-Gm-Message-State: APjAAAUoiAusLrnrBlkK0fa5GkJCcEEca/oHPTEQ/utXiddqQYj6zi4i
+        M1R5uq/14oAUJ9KduUYkPDOIH4L3L5s=
+X-Google-Smtp-Source: APXvYqwOHCBPuQNPEx98p/cxHR0OXbrd8Ydj7mHkYM6LCHDYOZvaA+b/YZKAen9cSB8GJUi895dfIw==
+X-Received: by 2002:a7b:cf30:: with SMTP id m16mr38759wmg.89.1571166187857;
+        Tue, 15 Oct 2019 12:03:07 -0700 (PDT)
+Received: from argo.dxprod.sympato.ch (bsse-bs-dock-128-90.ethz.ch. [129.132.128.90])
+        by smtp.googlemail.com with ESMTPSA id z189sm201514wmc.25.2019.10.15.12.03.05
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 15 Oct 2019 12:03:05 -0700 (PDT)
+To:     linux-btrfs@vger.kernel.org
+From:   DrYak <doktor.yak@gmail.com>
+Subject: bad tree block start, want #### have 0
+Autocrypt: addr=doktor.yak@gmail.com; prefer-encrypt=mutual; keydata=
+ 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 Nw==
+Message-ID: <3bd5b254-f3e4-1b81-da75-7a15cd49fc43@gmail.com>
+Date:   Tue, 15 Oct 2019 21:03:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Omar Sandoval <osandov@fb.com>
+Hello
 
-The implementation resembles direct I/O: we have to flush any ordered
-extents, invalidate the page cache, and do the io tree/delalloc/extent
-map/ordered extent dance. From there, we can reuse the compression code
-with a minor modification to distinguish the write from writeback.
+I'm having trouble on a BTRFS file system that I use on a Raspberry Pi.
+I can still mount and access (nearly all) my data.
 
-Now that read and write are implemented, this also sets the
-FMODE_ENCODED_IO flag in btrfs_file_open().
+The trouble origin itself is probably hardware (flacky USB3-to-mSATA
+adapter and/or power stability), not necessarily a bug in BTRFS.
 
-Signed-off-by: Omar Sandoval <osandov@fb.com>
----
- fs/btrfs/compression.c |   6 +-
- fs/btrfs/compression.h |   5 +-
- fs/btrfs/ctree.h       |   2 +
- fs/btrfs/file.c        |  40 +++++++--
- fs/btrfs/inode.c       | 197 ++++++++++++++++++++++++++++++++++++++++-
- 5 files changed, 237 insertions(+), 13 deletions(-)
+As I've said I can retreive nearly all the data I need, so I could
+surely just `btrfs restore` and then rebuild a new filesystem.
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index b05b361e2062..6632dd8d2e4d 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -276,7 +276,8 @@ static void end_compressed_bio_write(struct bio *bio)
- 			bio->bi_status == BLK_STS_OK);
- 	cb->compressed_pages[0]->mapping = NULL;
- 
--	end_compressed_writeback(inode, cb);
-+	if (cb->writeback)
-+		end_compressed_writeback(inode, cb);
- 	/* note, our inode could be gone now */
- 
- 	/*
-@@ -311,7 +312,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 				 unsigned long compressed_len,
- 				 struct page **compressed_pages,
- 				 unsigned long nr_pages,
--				 unsigned int write_flags)
-+				 unsigned int write_flags, bool writeback)
- {
- 	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
- 	struct bio *bio = NULL;
-@@ -336,6 +337,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 	cb->mirror_num = 0;
- 	cb->compressed_pages = compressed_pages;
- 	cb->compressed_len = compressed_len;
-+	cb->writeback = writeback;
- 	cb->orig_bio = NULL;
- 	cb->nr_pages = nr_pages;
- 
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 4cb8be9ff88b..d4176384ec15 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -47,6 +47,9 @@ struct compressed_bio {
- 	/* the compression algorithm for this bio */
- 	int compress_type;
- 
-+	/* Whether this is a write for writeback. */
-+	bool writeback;
-+
- 	/* number of compressed pages in the array */
- 	unsigned long nr_pages;
- 
-@@ -93,7 +96,7 @@ blk_status_t btrfs_submit_compressed_write(struct inode *inode, u64 start,
- 				  unsigned long compressed_len,
- 				  struct page **compressed_pages,
- 				  unsigned long nr_pages,
--				  unsigned int write_flags);
-+				  unsigned int write_flags, bool writeback);
- blk_status_t btrfs_submit_compressed_read(struct inode *inode, struct bio *bio,
- 				 int mirror_num, unsigned long bio_flags);
- 
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 3b2aa1c7218c..9e1719e82cc8 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -2907,6 +2907,8 @@ int btrfs_writepage_cow_fixup(struct page *page, u64 start, u64 end);
- void btrfs_writepage_endio_finish_ordered(struct page *page, u64 start,
- 					  u64 end, int uptodate);
- ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter);
-+ssize_t btrfs_encoded_write(struct kiocb *iocb, struct iov_iter *from,
-+			    struct encoded_iov *encoded);
- 
- extern const struct dentry_operations btrfs_dentry_operations;
- 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 51740cee39fc..8de6ac9b4b9c 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -1893,8 +1893,7 @@ static void update_time_for_write(struct inode *inode)
- 		inode_inc_iversion(inode);
- }
- 
--static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
--				    struct iov_iter *from)
-+static ssize_t btrfs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
- 	struct file *file = iocb->ki_filp;
- 	struct inode *inode = file_inode(file);
-@@ -1904,14 +1903,22 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 	u64 end_pos;
- 	ssize_t num_written = 0;
- 	const bool sync = iocb->ki_flags & IOCB_DSYNC;
-+	struct encoded_iov encoded;
- 	ssize_t err;
- 	loff_t pos;
- 	size_t count;
- 	loff_t oldsize;
- 	int clean_page = 0;
- 
--	if (!(iocb->ki_flags & IOCB_DIRECT) &&
--	    (iocb->ki_flags & IOCB_NOWAIT))
-+	if (iocb->ki_flags & IOCB_ENCODED) {
-+		err = import_encoded_write(iocb, &encoded, from);
-+		if (err)
-+			return err;
-+	}
-+
-+	if ((iocb->ki_flags & IOCB_NOWAIT) &&
-+	    (!(iocb->ki_flags & IOCB_DIRECT) ||
-+	     (iocb->ki_flags & IOCB_ENCODED)))
- 		return -EOPNOTSUPP;
- 
- 	if (!inode_trylock(inode)) {
-@@ -1920,14 +1927,27 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 		inode_lock(inode);
- 	}
- 
--	err = generic_write_checks(iocb, from);
--	if (err <= 0) {
-+	if (iocb->ki_flags & IOCB_ENCODED) {
-+		err = generic_encoded_write_checks(iocb, &encoded);
-+		if (err) {
-+			inode_unlock(inode);
-+			return err;
-+		}
-+		count = encoded.len;
-+	} else {
-+		err = generic_write_checks(iocb, from);
-+		if (err < 0) {
-+			inode_unlock(inode);
-+			return err;
-+		}
-+		count = iov_iter_count(from);
-+	}
-+	if (count == 0) {
- 		inode_unlock(inode);
- 		return err;
- 	}
- 
- 	pos = iocb->ki_pos;
--	count = iov_iter_count(from);
- 	if (iocb->ki_flags & IOCB_NOWAIT) {
- 		/*
- 		 * We will allocate space in case nodatacow is not set,
-@@ -1986,7 +2006,9 @@ static ssize_t btrfs_file_write_iter(struct kiocb *iocb,
- 	if (sync)
- 		atomic_inc(&BTRFS_I(inode)->sync_writers);
- 
--	if (iocb->ki_flags & IOCB_DIRECT) {
-+	if (iocb->ki_flags & IOCB_ENCODED) {
-+		num_written = btrfs_encoded_write(iocb, from, &encoded);
-+	} else if (iocb->ki_flags & IOCB_DIRECT) {
- 		num_written = __btrfs_direct_write(iocb, from);
- 	} else {
- 		num_written = btrfs_buffered_write(iocb, from);
-@@ -3461,7 +3483,7 @@ static loff_t btrfs_file_llseek(struct file *file, loff_t offset, int whence)
- 
- static int btrfs_file_open(struct inode *inode, struct file *filp)
- {
--	filp->f_mode |= FMODE_NOWAIT;
-+	filp->f_mode |= FMODE_NOWAIT | FMODE_ENCODED_IO;
- 	return generic_file_open(inode, filp);
- }
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 174d0738d2c9..bcc5a2bed22b 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -865,7 +865,7 @@ static noinline void submit_compressed_extents(struct async_chunk *async_chunk)
- 				    ins.objectid,
- 				    ins.offset, async_extent->pages,
- 				    async_extent->nr_pages,
--				    async_chunk->write_flags)) {
-+				    async_chunk->write_flags, true)) {
- 			struct page *p = async_extent->pages[0];
- 			const u64 start = async_extent->start;
- 			const u64 end = start + async_extent->ram_size - 1;
-@@ -11055,6 +11055,201 @@ ssize_t btrfs_encoded_read(struct kiocb *iocb, struct iov_iter *iter)
- 	return ret;
- }
- 
-+ssize_t btrfs_encoded_write(struct kiocb *iocb, struct iov_iter *from,
-+			    struct encoded_iov *encoded)
-+{
-+	struct inode *inode = file_inode(iocb->ki_filp);
-+	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
-+	struct btrfs_root *root = BTRFS_I(inode)->root;
-+	struct extent_io_tree *io_tree = &BTRFS_I(inode)->io_tree;
-+	struct extent_changeset *data_reserved = NULL;
-+	struct extent_state *cached_state = NULL;
-+	int compression;
-+	size_t orig_count;
-+	u64 disk_num_bytes, num_bytes;
-+	u64 start, end;
-+	unsigned long nr_pages, i;
-+	struct page **pages;
-+	struct btrfs_key ins;
-+	struct extent_map *em;
-+	ssize_t ret;
-+
-+	switch (encoded->compression) {
-+	case ENCODED_IOV_COMPRESSION_ZLIB:
-+		compression = BTRFS_COMPRESS_ZLIB;
-+		break;
-+	case ENCODED_IOV_COMPRESSION_LZO:
-+		compression = BTRFS_COMPRESS_LZO;
-+		break;
-+	case ENCODED_IOV_COMPRESSION_ZSTD:
-+		compression = BTRFS_COMPRESS_ZSTD;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	disk_num_bytes = orig_count = iov_iter_count(from);
-+
-+	/* For now, it's too hard to support bookend extents. */
-+	if (encoded->unencoded_len != encoded->len ||
-+	    encoded->unencoded_offset != 0)
-+		return -EINVAL;
-+
-+	/* The extent size must be sane. */
-+	if (encoded->unencoded_len > BTRFS_MAX_UNCOMPRESSED ||
-+	    disk_num_bytes > BTRFS_MAX_COMPRESSED || disk_num_bytes == 0)
-+		return -EINVAL;
-+
-+	/*
-+	 * The compressed data on disk must be sector-aligned. For convenience,
-+	 * we extend it with zeroes if it isn't.
-+	 */
-+	disk_num_bytes = ALIGN(disk_num_bytes, fs_info->sectorsize);
-+
-+	/*
-+	 * The extent in the file must also be sector-aligned. However, we allow
-+	 * a write which ends at or extends i_size to have an unaligned length;
-+	 * we round up the extent size and set i_size to the given length.
-+	 */
-+	start = iocb->ki_pos;
-+	if (!IS_ALIGNED(start, fs_info->sectorsize))
-+		return -EINVAL;
-+	if (start + encoded->len >= inode->i_size) {
-+		num_bytes = ALIGN(encoded->len, fs_info->sectorsize);
-+	} else {
-+		num_bytes = encoded->len;
-+		if (!IS_ALIGNED(num_bytes, fs_info->sectorsize))
-+			return -EINVAL;
-+	}
-+
-+	/*
-+	 * It's valid to have compressed data which is larger than or the same
-+	 * size as the decompressed data. However, for buffered I/O, we fall
-+	 * back to writing the decompressed data if compression didn't shrink
-+	 * it. So, for now, let's not allow creating such extents.
-+	 *
-+	 * Note that for now this also implicitly prevents writing data that
-+	 * would fit in an inline extent.
-+	 */
-+	if (disk_num_bytes >= num_bytes)
-+		return -EINVAL;
-+
-+	end = start + num_bytes - 1;
-+
-+	nr_pages = (disk_num_bytes + PAGE_SIZE - 1) >> PAGE_SHIFT;
-+	pages = kvcalloc(nr_pages, sizeof(struct page *), GFP_USER);
-+	if (!pages)
-+		return -ENOMEM;
-+	for (i = 0; i < nr_pages; i++) {
-+		size_t bytes = min_t(size_t, PAGE_SIZE, iov_iter_count(from));
-+		char *kaddr;
-+
-+		pages[i] = alloc_page(GFP_HIGHUSER);
-+		if (!pages[i]) {
-+			ret = -ENOMEM;
-+			goto out_pages;
-+		}
-+		kaddr = kmap(pages[i]);
-+		if (copy_from_iter(kaddr, bytes, from) != bytes) {
-+			kunmap(pages[i]);
-+			ret = -EFAULT;
-+			goto out_pages;
-+		}
-+		if (bytes < PAGE_SIZE)
-+			memset(kaddr + bytes, 0, PAGE_SIZE - bytes);
-+		kunmap(pages[i]);
-+	}
-+
-+	for (;;) {
-+		struct btrfs_ordered_extent *ordered;
-+
-+		ret = btrfs_wait_ordered_range(inode, start, end - start + 1);
-+		if (ret)
-+			goto out_pages;
-+		ret = invalidate_inode_pages2_range(inode->i_mapping,
-+						    start >> PAGE_SHIFT,
-+						    end >> PAGE_SHIFT);
-+		if (ret)
-+			goto out_pages;
-+		lock_extent_bits(io_tree, start, end, &cached_state);
-+		ordered = btrfs_lookup_ordered_range(BTRFS_I(inode), start,
-+						     end - start + 1);
-+		if (!ordered &&
-+		    !filemap_range_has_page(inode->i_mapping, start, end))
-+			break;
-+		if (ordered)
-+			btrfs_put_ordered_extent(ordered);
-+		unlock_extent_cached(io_tree, start, end, &cached_state);
-+		cond_resched();
-+	}
-+
-+	ret = btrfs_delalloc_reserve_space(inode, &data_reserved, start,
-+					   num_bytes);
-+	if (ret)
-+		goto out_unlock;
-+
-+	ret = btrfs_reserve_extent(root, num_bytes, disk_num_bytes,
-+				   disk_num_bytes, 0, 0, &ins, 1, 1);
-+	if (ret)
-+		goto out_delalloc_release;
-+
-+	em = create_io_em(inode, start, num_bytes, start, ins.objectid,
-+			  ins.offset, ins.offset, num_bytes, compression,
-+			  BTRFS_ORDERED_COMPRESSED);
-+	if (IS_ERR(em)) {
-+		ret = PTR_ERR(em);
-+		goto out_free_reserve;
-+	}
-+	free_extent_map(em);
-+
-+	ret = btrfs_add_ordered_extent_compress(inode, start, ins.objectid,
-+						num_bytes, ins.offset,
-+						BTRFS_ORDERED_COMPRESSED,
-+						compression);
-+	if (ret) {
-+		btrfs_drop_extent_cache(BTRFS_I(inode), start, end, 0);
-+		goto out_free_reserve;
-+	}
-+	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
-+
-+	if (start + encoded->len > inode->i_size)
-+		i_size_write(inode, start + encoded->len);
-+
-+	unlock_extent_cached(io_tree, start, end, &cached_state);
-+
-+	btrfs_delalloc_release_extents(BTRFS_I(inode), num_bytes, false);
-+
-+	if (btrfs_submit_compressed_write(inode, start, num_bytes, ins.objectid,
-+					  ins.offset, pages, nr_pages, 0,
-+					  false)) {
-+		struct page *page = pages[0];
-+
-+		page->mapping = inode->i_mapping;
-+		btrfs_writepage_endio_finish_ordered(page, start, end, 0);
-+		page->mapping = NULL;
-+		ret = -EIO;
-+		goto out_pages;
-+	}
-+	iocb->ki_pos += encoded->len;
-+	return orig_count;
-+
-+out_free_reserve:
-+	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
-+	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, 1);
-+out_delalloc_release:
-+	btrfs_delalloc_release_space(inode, data_reserved, start, num_bytes,
-+				     true);
-+out_unlock:
-+	unlock_extent_cached(io_tree, start, end, &cached_state);
-+out_pages:
-+	for (i = 0; i < nr_pages; i++) {
-+		if (pages[i])
-+			put_page(pages[i]);
-+	}
-+	kvfree(pages);
-+	return ret;
-+}
-+
- #ifdef CONFIG_SWAP
- /*
-  * Add an entry indicating a block group or device which is pinned by a
--- 
-2.23.0
+BUT...
+
+I wanted to know if it would possible to just repair the filesystem.
+(Basically kill the broken extent and/or excise the corresponding tree
+leaf).
+
+Are there any way ?
+
+(Again it's not critical, I could btrfs-restore, I just want to know if
+it would be possible to clean it instead).
+
+
+
+Here are `journalctl` message regarding the failure:
+
+Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): enabling
+auto defrag
+Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): enabling ssd
+optimizations
+Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): disk space
+caching is enabled
+Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): has skinny
+extents
+Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): bdev
+/dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 126, gen 0
+Oct 15 20:37:49 marsberry kernel: BTRFS error (device sdb1): bad tree
+block start, want 547248750592 have 0
+Oct 15 20:37:49 marsberry kernel: BTRFS error (device sdb1): bad tree
+block start, want 547248750592 have 0
+
+
+
+And here's the read-only check output:
+
+# btrfs check /dev/sdb1
+Opening filesystem to check...
+Checking filesystem on /dev/sdb1
+UUID: 5475b0ac-0010-4875-a0d6-e6641c951f5c
+[1/7] checking root items
+[2/7] checking extents
+checksum verify failed on 547248750592 found E4E3BDB6 wanted 00000000
+checksum verify failed on 547248750592 found E4E3BDB6 wanted 00000000
+bad tree block 547248750592, bytenr mismatch, want=547248750592, have=0
+checksum verify failed on 547248766976 found 8E4EC148 wanted 00000000
+checksum verify failed on 547248766976 found 8E4EC148 wanted 00000000
+bad tree block 547248766976, bytenr mismatch, want=547248766976, have=0
+owner ref check failed [547248750592 16384]
+owner ref check failed [547248766976 16384]
+ERROR: errors found in extent allocation tree or chunk allocation
+[3/7] checking free space cache
+[4/7] checking fs roots
+[5/7] checking only csums items (without verifying data)
+checksum verify failed on 547248766976 found 8E4EC148 wanted 00000000
+checksum verify failed on 547248766976 found 8E4EC148 wanted 00000000
+bad tree block 547248766976, bytenr mismatch, want=547248766976, have=0
+Error going to next leaf -5
+[6/7] checking root refs
+[7/7] checking quota groups skipped (not enabled on this FS)
+found 247339167744 bytes used, error(s) found
+total csum bytes: 241066812
+total tree bytes: 434569216
+total fs tree bytes: 169771008
+total extent tree bytes: 16039936
+btree space waste bytes: 42891494
+file data blocks allocated: 270783406080
+ referenced 268366499840
+
+
+
+So any way to remove the damnaged data instead of restore/re-mkfs the
+still non-damaged one ?
+
+Thanks you!
 
