@@ -2,74 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 19FD7D7DE6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 19:34:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0234D7F16
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 20:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730874AbfJOReq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Oct 2019 13:34:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37494 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728653AbfJOReq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Oct 2019 13:34:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 204E0AC71;
-        Tue, 15 Oct 2019 17:34:45 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 34315DA7E3; Tue, 15 Oct 2019 19:34:55 +0200 (CEST)
-Date:   Tue, 15 Oct 2019 19:34:54 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 1/2] btrfs: check page->mapping when loading free space
- cache
-Message-ID: <20191015173454.GZ2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, kernel-team@fb.com
-References: <20190924205044.31830-1-josef@toxicpanda.com>
+        id S1729305AbfJOSdZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Oct 2019 14:33:25 -0400
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:37703 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727200AbfJOSdZ (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Oct 2019 14:33:25 -0400
+Received: by mail-ed1-f46.google.com with SMTP id r4so18981229edy.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2019 11:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=sBiaXyxKlS5qXgzHazyCUolIGjCTSvTxtcFusRMBP8Q=;
+        b=kvFCmznX8JWodVbd8V7NmEfq3cpjy49wKklLsaxUnv8pC085W1Bxt75TI4e8UaN8k1
+         BzrSnv6/WiDpScNcqIT2p05gv7bp6VoBEHtuzAWmhBgQHevpnODVLGj3zQzv6CekxD9A
+         l86fbjioWRwZ0JfakwsVrtPWWtGN90TmSoyjmfCjadf9hQAfoBq1MjBcaJYWwieedeVV
+         gsvcrznLdQJdkTO8RgpKrTqt508QqJ0CjII7SetfqW0CWtXzY3efccuNz50f3vuvI1Yd
+         M7XOmKcNPSGPzoEFQxfHdmAJePmZFJiyOhqKo76oof57wySMM2FukGVe2TnGtb5PbG2k
+         0t9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=sBiaXyxKlS5qXgzHazyCUolIGjCTSvTxtcFusRMBP8Q=;
+        b=C5pzMYTw+7EpZsLo12Og5xDFxhPJjhZ7XOduTbtOr5+UANPn2gojN5Em1ZNqvokMUS
+         kNv1j73reC5aGQeCy8iRjiuwhClrNmhVm8gmXK/gT+ztx2iroRhCxONG5myfwjxxEAb4
+         fPCA+gTBstRVuv5AyDtMuaG+D7qIfRpdmPAGUTdNcHf9cRojjjvz/RO/NuQj/yS4j7hK
+         bXrCJC1eRUnHlSADOspxdv8hCLDR4KUjx42fyVrnznuGyijsvCEmFAY3wJQU9c7+JKst
+         LfjdZQI/klkrE9sqR6xIK3M6ca0o8ePcT1U/pB6gmmumuxMGjlr2jg7g2SwR83A5XKHf
+         bB4Q==
+X-Gm-Message-State: APjAAAWY77bmRk4j9ozCtrLHVZFexILvT0aW+xHBuAk/xGsFUHhIbHSP
+        ThcPh+GT7H6P700RKgr3S7cncvoaK5jqqj3kG6TdrHrb
+X-Google-Smtp-Source: APXvYqweKJroGeobvp1GxfK2JG9wRZsysoMEOlB030u6560kUsMi8IpdgM1Dp2PHlEe1Arxt4gH69T+cawN7X5Tj5q0=
+X-Received: by 2002:a17:906:7d10:: with SMTP id u16mr36471682ejo.329.1571164401976;
+ Tue, 15 Oct 2019 11:33:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190924205044.31830-1-josef@toxicpanda.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+From:   Meng Xu <mengxu.gatech@gmail.com>
+Date:   Tue, 15 Oct 2019 14:33:11 -0400
+Message-ID: <CAAwBoOJDjei5Hnem155N_cJwiEkVwJYvgN-tQrwWbZQGhFU=cA@mail.gmail.com>
+Subject: potential data race on `delayed_rsv->full`
+To:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Sep 24, 2019 at 04:50:43PM -0400, Josef Bacik wrote:
-> While testing 5.2 we ran into the following panic
-> 
-> [52238.017028] BUG: kernel NULL pointer dereference, address: 0000000000000001
-> [52238.105608] RIP: 0010:drop_buffers+0x3d/0x150
-> [52238.304051] Call Trace:
-> [52238.308958]  try_to_free_buffers+0x15b/0x1b0
-> [52238.317503]  shrink_page_list+0x1164/0x1780
-> [52238.325877]  shrink_inactive_list+0x18f/0x3b0
-> [52238.334596]  shrink_node_memcg+0x23e/0x7d0
-> [52238.342790]  ? do_shrink_slab+0x4f/0x290
-> [52238.350648]  shrink_node+0xce/0x4a0
-> [52238.357628]  balance_pgdat+0x2c7/0x510
-> [52238.365135]  kswapd+0x216/0x3e0
-> [52238.371425]  ? wait_woken+0x80/0x80
-> [52238.378412]  ? balance_pgdat+0x510/0x510
-> [52238.386265]  kthread+0x111/0x130
-> [52238.392727]  ? kthread_create_on_node+0x60/0x60
-> [52238.401782]  ret_from_fork+0x1f/0x30
-> 
-> The page we were trying to drop had a page->private, but had no
-> page->mapping and so called drop_buffers, assuming that we had a
-> buffer_head on the page, and then panic'ed trying to deref 1, which is
-> our page->private for data pages.
-> 
-> This is happening because we're truncating the free space cache while
-> we're trying to load the free space cache.  This isn't supposed to
-> happen, and I'll fix that in a followup patch.  However we still
-> shouldn't allow those sort of mistakes to result in messing with pages
-> that do not belong to us.  So add the page->mapping check to verify that
-> we still own this page after dropping and re-acquiring the page lock.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Hi Btrfs maintainers,
 
-Patches 1 and 2 moved to misc-next. Thanks.
+I am reporting a potential data race around the `delayed_rsv->full` field.
+
+[thread 1] mount a btrfs image, a kernel thread of uuid_rescan will be created
+
+btrfs_uuid_rescan_kthread
+  btrfs_end_transaction
+    __btrfs_end_transaction
+      btrfs_trans_release_metadata
+        btrfs_block_rsv_release
+          __btrfs_block_rsv_release
+            --> [READ] else if (block_rsv != global_rsv && !delayed_rsv->full)
+                                                            ^^^^^^^^^^^^^^^^^
+
+
+[thread 2] do a mkdir syscall on the mounted image
+
+__do_sys_mkdir
+  do_mkdirat
+    vfs_mkdir
+      btrfs_mkdir
+        btrfs_new_inode
+          btrfs_insert_empty_items
+            btrfs_cow_block
+              __btrfs_cow_block
+                alloc_tree_block_no_bg_flush
+                  btrfs_alloc_tree_block
+                    btrfs_add_delayed_tree_ref
+                      btrfs_update_delayed_refs_rsv
+                        --> [WRITE] delayed_rsv->full = 0;
+                                    ^^^^^^^^^^^^^^^^^^^^^
+
+
+I could confirm that this is a data race by manually adding and adjusting
+delays before the read and write statements although I am not very sure
+about the implication of such a data race (e.g., crashing btrfs or causing
+violations of assumptions). I would appreciate if you could help check on
+this potential bug and advise whether this is a harmful data race or it
+is intended.
+
+Best Regards,
+Meng
