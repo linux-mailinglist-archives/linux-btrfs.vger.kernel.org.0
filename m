@@ -2,128 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72452D77B5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 15:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819B2D79FE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 17:41:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732154AbfJONvv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Oct 2019 09:51:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59478 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728652AbfJONvu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Oct 2019 09:51:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 98972B437;
-        Tue, 15 Oct 2019 13:51:48 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A3291DA7E3; Tue, 15 Oct 2019 15:52:00 +0200 (CEST)
-Date:   Tue, 15 Oct 2019 15:52:00 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: qgroup: Always free PREALLOC META reserve in
- btrfs_delalloc_release_extents()
-Message-ID: <20191015135200.GY2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-References: <20191014063451.37343-1-wqu@suse.com>
+        id S1727366AbfJOPlk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Oct 2019 11:41:40 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:35536 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726231AbfJOPlk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Oct 2019 11:41:40 -0400
+Received: by mail-qt1-f196.google.com with SMTP id m15so31249842qtq.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2019 08:41:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i76+j+xrK/8CbH1fZSq+U92Mtj5xQ3L79TTUTA2fsgg=;
+        b=udl5f8ez8pMzi7OxlxHem9eJrjADYoRmiUa+5r5Y+zUmdlwH8YlqkWVpapxYM5XdBo
+         CIVDeTztFgEl9L7xAkGfR2tpY7eXsP8TM8CuP+UwkY9cZIvzBiGJAKggq7gZh8SOVsTp
+         +ObR1DBW3ZRbxi8L1+9OBSlvz68hc45GdoKfEGQLoI7TrUQo7sWK+GZPt6CaMthhEcu1
+         8mc68LgmRwogaE3xuvdAMZCjyuQc08cgYrycG6mJJ2KQzpWUQFQV0aG3exxwcahmw+L9
+         tqz/z8EPjg69ruSjhgUaG0JAtOeGyGQiPTGThbH4hTpTpIniKeZqKEwT/jR/5hPyV7D+
+         9O8A==
+X-Gm-Message-State: APjAAAWwH41LhugTjo4tAsZcTtJ0rcGIL+NbhUr8i81w8WZdfhaN3KQD
+        SMvnF4ZBsyfn6g5BjfqZafY=
+X-Google-Smtp-Source: APXvYqwjGtnCqd16ObkBmZOWMi0uWdmmqK+eie3Almy1UGqXrfWn49PHJRXxTO3yF/ebXgeMob9CzA==
+X-Received: by 2002:ac8:73cf:: with SMTP id v15mr37954217qtp.310.1571154097380;
+        Tue, 15 Oct 2019 08:41:37 -0700 (PDT)
+Received: from dennisz-mbp ([2620:10d:c091:500::c97c])
+        by smtp.gmail.com with ESMTPSA id n44sm14451147qtf.51.2019.10.15.08.41.36
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Oct 2019 08:41:36 -0700 (PDT)
+Date:   Tue, 15 Oct 2019 11:41:33 -0400
+From:   Dennis Zhou <dennis@kernel.org>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Dennis Zhou <dennis@kernel.org>, David Sterba <dsterba@suse.com>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [RFC PATCH 00/19] btrfs: async discard support
+Message-ID: <20191015154133.GA66037@dennisz-mbp>
+References: <cover.1570479299.git.dennis@kernel.org>
+ <20191015120831.GS2751@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191014063451.37343-1-wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20191015120831.GS2751@twin.jikos.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 14, 2019 at 02:34:51PM +0800, Qu Wenruo wrote:
-> [Background]
-> Btrfs qgroup uses two types of reserved space for METADATA space,
-> PERTRANS and PREALLOC.
+On Tue, Oct 15, 2019 at 02:08:31PM +0200, David Sterba wrote:
+> Hi,
 > 
-> PERTRANS is metadata space reserved for each transaction started by
-> btrfs_start_transaction().
-> While PREALLOC is for delalloc, where we reserve space before joining a
-> transaction, and finally it will be converted to PERTRANS after the
-> writeback is done.
+> thanks for working on this. The plain -odiscard hasn't been recommended
+> to users for a long time, even with the SATA 3.1 drives that allow
+> queueing the requests.
 > 
-> [Inconsistency]
-> However there is inconsistency in how we handle PREALLOC metadata space.
+> The overall approach to async discard sounds good, the hard part is not
+> shoot down the filesystem by trimming live data, and we had a bug like
+> that in the pastlive data, and we had a bug like that in the past. For
+> correctness reasons I understand the size of the patchset.
 > 
-> The most obvious one is:
-> In btrfs_buffered_write():
-> 	btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes, true);
+> On Mon, Oct 07, 2019 at 04:17:31PM -0400, Dennis Zhou wrote:
+> > I am currently working on tuning the rate at which it discards in the
+> > background. I am doing this by evaluating other workloads and drives.
+> > The iops and bps rate limits are fairly aggressive right now as my
+> > basic survey of a few drives noted that the trim command itself is a
+> > significant part of the overhead. So optimizing for larger trims is the
+> > right thing to do.
 > 
-> We always free qgroup PREALLOC meta space.
+> We need a sane default behaviour, without the need for knobs and
+> configuration, so it's great you can have a wide range of samples to
+> tune it.
 > 
-> While in btrfs_truncate_block():
-> 	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize, (ret != 0));
-> 
-> We only free qgroup PREALLOC meta space when something went wrong.
-> 
-> [The Correct Behavior]
-> The correct behavior should be the one in btrfs_buffered_write(), we
-> should always free PREALLOC metadata space.
-> 
-> The reason is, the btrfs_delalloc_* mechanism works by:
-> - Reserve metadata first, even it's not necessary
->   In btrfs_delalloc_reserve_metadata()
-> 
-> - Free the unused metadata space
->   Normally in:
->   btrfs_delalloc_release_extents()
->   |- btrfs_inode_rsv_release()
->      Here we do calculation on whether we should release or not.
-> 
-> E.g. for 64K buffered write, the metadata rsv works like:
-> 
-> /* The first page */
-> reserve_meta:	num_bytes=calc_inode_reservations()
-> free_meta:	num_bytes=0
-> total:		num_bytes=calc_inode_reservations()
-> /* The first page caused one outstanding extent, thus needs metadata
->    rsv */
-> 
-> /* The 2nd page */
-> reserve_meta:	num_bytes=calc_inode_reservations()
-> free_meta:	num_bytes=calc_inode_reservations()
-> total:		not changed
-> /* The 2nd page doesn't cause new outstanding extent, needs no new meta
->    rsv, so we free what we have reserved */
-> 
-> /* The 3rd~16th pages */
-> reserve_meta:	num_bytes=calc_inode_reservations()
-> free_meta:	num_bytes=calc_inode_reservations()
-> total:		not changed (still space for one outstanding extent)
-> 
-> This means, if btrfs_delalloc_release_extents() determines to free some
-> space, then those space should be freed NOW.
-> So for qgroup, we should call btrfs_qgroup_free_meta_prealloc() other
-> than btrfs_qgroup_convert_reserved_meta().
-> 
-> The good news is:
-> - The callers are not that hot
->   The hottest caller is in btrfs_buffered_write(), which is already
->   fixed by commit 336a8bb8e36a ("btrfs: Fix wrong
->   btrfs_delalloc_release_extents parameter"). Thus it's not that
->   easy to cause false EDQUOT.
-> 
-> - The trans commit in advance for qgroup would hide the bug
->   Since commit f5fef4593653 ("btrfs: qgroup: Make qgroup async transaction
->   commit more aggressive"), when btrfs qgroup metadata free space is slow,
->   it will try to commit transaction and free the wrongly converted
->   PERTRANS space, so it's not that easy to hit such bug.
-> 
-> [FIX]
-> So to fix the problem, remove the @qgroup_free parameter for
-> btrfs_delalloc_release_extents(), and always pass true to
-> btrfs_inode_rsv_release().
-> 
-> Reported-by: Filipe Manana <fdmanana@suse.com>
-> Fixes: 43b18595d660 ("btrfs: qgroup: Use separate meta reservation type for delalloc")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Added to 5.4 queue, thanks. I'll add tag for stable 4.19, though there
-are conflicts, not even it's applicable on top of 5.3.
+Yeah I'm just not quite sure what that is yet. The tricky part is that
+we don't really get burned by trims until well after we've issued the
+trims. The feedback loop is not really transparent with reads and
+writes.
+
+> As trim is only a hint, a short delay in processing the requests or
+> slight ineffectivity should be acceptable, to avoid complications in the
+> code or interfering with other IO.
+> 
+> > Persistence isn't supported, so when we mount a filesystem, the block
+> > groups are read in as dirty and background trim begins. This makes async
+> > discard more useful for longer running mount points.
+> 
+> I think this is acceptable.
+> 
+> Regarding the code, I leave comments to the block group and trim
+> structures to Josef and will focus more on the low-level and coding
+> style or changelogs.
+
+Sounds good. I'll hopefully post a v2 shortly so that we can get more of
+that out of the way. Then hopefully a smaller incremental later to
+figure out the configuration part.
+
+Thanks,
+Dennis
