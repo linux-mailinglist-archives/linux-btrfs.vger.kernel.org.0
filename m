@@ -2,200 +2,209 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7EEBD76D8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 14:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4DF1D7701
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 15:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726139AbfJOMtt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Oct 2019 08:49:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53486 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728607AbfJOMtK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Oct 2019 08:49:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F0D94B4B7;
-        Tue, 15 Oct 2019 12:49:07 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id F2081DA7E3; Tue, 15 Oct 2019 14:49:19 +0200 (CEST)
-Date:   Tue, 15 Oct 2019 14:49:19 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Dennis Zhou <dennis@kernel.org>
-Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 05/19] btrfs: add the beginning of async discard, discard
- workqueue
-Message-ID: <20191015124919.GW2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <cover.1570479299.git.dennis@kernel.org>
- <b2f59782f8a7b02fee6c3a2994154b01134b09dc.1570479299.git.dennis@kernel.org>
+        id S1729748AbfJONDy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Oct 2019 09:03:54 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:39708 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726236AbfJONDy (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Oct 2019 09:03:54 -0400
+Received: by mail-wm1-f66.google.com with SMTP id v17so20184464wml.4
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2019 06:03:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JC6Pf/Si6snhetj40zYR0lrUHNitGHAA4hJ6DbcchUQ=;
+        b=obVyQ7hlh4xTxXKnMzj4Q0QZCnx0xxv1xFfaJf1X1bSBFHh3ACSqjXX0AILOxgK5op
+         3iTjYZMyWJdpMe4eAWobk837TMwXHBZZLwO6bH3G2Zwl8cDaYO6YjPDQCnM98yct6X1/
+         4q9vpiXC+Dy0hp/OLKP1HuUcKs1kyl2YfmWUDWGcwJS9IT2XGdGVDEWdUDXjk2Fb4xGe
+         8sikcUpRcMumlFtCN85GoJI4ClN7fPVXtZFYrPUNtoVlSKgZ0ckH9/Uq/QjFuFWqPsmv
+         L44bdnSCx+sqDIBP3818Rli8Uap44w0PUPI9cD9DQnOgV3dfyUZekIltnen01WgQmjGk
+         EjyQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JC6Pf/Si6snhetj40zYR0lrUHNitGHAA4hJ6DbcchUQ=;
+        b=hEKnFPI6Pl6WlB54ca4B3V859wwKXA5h42e7fAbmTSUKHY5Jo5xX9os+hJfTFzEgSP
+         +u8TNcBR8UGOkKPv0yw9KeCUxAyoINrvS/nR0LfNjD/61oQoB6M8VHGA6oLC/SnFlCDf
+         seDRbEJmL9JTV5I40ObqiLBU5aK4fqRlN5tVNsSu4C1bCEPZUUer3kFUcfcRQbw26IIe
+         WhD0TiJNGdQQckutNDofAJ5xYlWIWNdjdAFYtiZSGDDqtXNnNWUBqfsHSEqmxN8nRRaI
+         L72CH9rvTZAEOVNZ2p2QyVFMfyiG1lPdq6oTpc0UfkSo7DwqGBnpwbyL+GiD89UmCewx
+         zVPg==
+X-Gm-Message-State: APjAAAVDvZll8M3pU1ZNME/6IO3DDfEHagIi1moFzRRp3gJnRRLJnYnm
+        AHSYqNlDyha7fHpfnMIpjjIlGZIV7mrgZOiVxGk=
+X-Google-Smtp-Source: APXvYqyYX/iOnKtuIqdzgIUQyBpn0T6Wm/qkbbconJwE0rE102HoNqTcBBq0ubJpPDZhuiNvlH4eFzD7rhy2R2UIirM=
+X-Received: by 2002:a05:600c:253:: with SMTP id 19mr18015791wmj.158.1571144631252;
+ Tue, 15 Oct 2019 06:03:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2f59782f8a7b02fee6c3a2994154b01134b09dc.1570479299.git.dennis@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <CADTa+SqDLtmmjnJ5gz-3jDxi1NGNAu=cyo0kFXSZfnu6QE_Fdw@mail.gmail.com>
+ <66e27fee-7f64-6466-866d-42464fca130f@gmx.com> <a6d7a4c6-4295-e081-1bfc-74e9d13fd22d@gmx.com>
+In-Reply-To: <a6d7a4c6-4295-e081-1bfc-74e9d13fd22d@gmx.com>
+From:   =?UTF-8?Q?Jos=C3=A9_Luis?= <parajoseluis@gmail.com>
+Date:   Tue, 15 Oct 2019 17:03:39 +0200
+Message-ID: <CADTa+SrurdZf5+T+QGNyLc7gKLuTFYsto+L4Q+30y-uQj+jutg@mail.gmail.com>
+Subject: Re: kernel 5.2 read time tree block corruption
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 07, 2019 at 04:17:36PM -0400, Dennis Zhou wrote:
-> --- a/fs/btrfs/block-group.h
-> +++ b/fs/btrfs/block-group.h
-> @@ -115,7 +115,11 @@ struct btrfs_block_group_cache {
->  	/* For read-only block groups */
->  	struct list_head ro_list;
->  
-> +	/* For discard operations */
->  	atomic_t trimming;
-> +	struct list_head discard_list;
-> +	int discard_index;
-> +	u64 discard_delay;
->  
->  	/* For dirty block groups */
->  	struct list_head dirty_list;
-> @@ -157,6 +161,12 @@ struct btrfs_block_group_cache {
->  	struct btrfs_full_stripe_locks_tree full_stripe_locks_root;
->  };
->  
-> +static inline
-> +u64 btrfs_block_group_end(struct btrfs_block_group_cache *cache)
-> +{
-> +	return (cache->key.objectid + cache->key.offset);
-> +}
-> +
->  #ifdef CONFIG_BTRFS_DEBUG
->  static inline int btrfs_should_fragment_free_space(
->  		struct btrfs_block_group_cache *block_group)
-> diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-> index 1877586576aa..419445868909 100644
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -438,6 +438,17 @@ struct btrfs_full_stripe_locks_tree {
->  	struct mutex lock;
->  };
->  
-> +/* discard control */
+Thanks for fast response Qu.
 
-This is going to be 'fix everywhere too' comment, please start comments
-with capital letter.
+I booted into a pendrive live system for the test cause I'm using the
+involving fylesystem with kernel 4.19. This time when I mount
+>[manjaro@manjaro ~]$ sudo mount /dev/sdb2 /mnt
+>mount: /mnt: no se puede leer el superbloque en /dev/sdb2.
+and in the dmesg:
+[ +30,866472] BTRFS info (device sdb2): disk space caching is enabled
+[  +0,017443] BTRFS info (device sdb2): enabling ssd optimizations
+[  +0,000637] BTRFS critical (device sdb2): corrupt leaf: root=3D5
+block=3D32145457152 slot=3D99, invalid key objectid: has
+18446744073709551605 expect 6 or [256, 18446744073709551360] or
+18446744073709551604
+[  +0,000002] BTRFS error (device sdb2): block=3D32145457152 read time
+tree block corruption detected
+[  +0,000012] BTRFS warning (device sdb2): failed to read fs tree: -5
+[  +0,061995] BTRFS error (device sdb2): open_ctree failed
 
-> +#define BTRFS_NR_DISCARD_LISTS		1
+So I suppose you need dump output from the block 32145457152 so I pastebin =
+that:
+sudo btrfs ins dump-tree -b 32145457152 /dev/sdb2
+output --> https://pastebin.com/ssB5HTn7
 
-Constants and defines should be documented
+Please provide the parameter to the grep redirection for: "btrfs ins
+dump-tree -t 5 /dev/sdb2 | grep -A 7"
 
-> --- /dev/null
-> +++ b/fs/btrfs/discard.c
-> @@ -0,0 +1,200 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2019 Facebook.  All rights reserved.
-> + */
-
-With the SPDX in place and immutable git history, the copyright notices
-are not necessary and we don't add them to new files anymore.
-
-> +void btrfs_add_to_discard_list(struct btrfs_discard_ctl *discard_ctl,
-> +			       struct btrfs_block_group_cache *cache)
-> +{
-> +	u64 now = ktime_get_ns();
-
-Variable used only once, can be removed and ktime_get_ns called
-directly.
-
-> +	spin_lock(&discard_ctl->lock);
-> +
-> +	if (list_empty(&cache->discard_list))
-> +		cache->discard_delay = now + BTRFS_DISCARD_DELAY;
-
-->discard_delay does not seem to be a delay but an expiration time, so
-this is a bit confusing. BTRFS_DISCARD_DELAY is the delay time, that's
-clear.
-
-> +	list_move_tail(&cache->discard_list,
-> +		       btrfs_get_discard_list(discard_ctl, cache));
-> +
-> +	spin_unlock(&discard_ctl->lock);
-> +}
-
-> --- /dev/null
-> +++ b/fs/btrfs/discard.h
-> @@ -0,0 +1,49 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Copyright (C) 2019 Facebook.  All rights reserved.
-> + */
-> +
-> +#ifndef BTRFS_DISCARD_H
-> +#define BTRFS_DISCARD_H
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/workqueue.h>
-> +
-> +#include "ctree.h"
-
-Is it possible to avoid including ctree.h here? Like adding forward
-declarations and defining the helpers in .c (that will have to include
-ctree.h anyway). The includes have become very cluttered and untangling
-the dependencies is ongoing work so it would be good to avoid adding
-extra work.
-
-> +void btrfs_add_to_discard_list(struct btrfs_discard_ctl *discard_ctl,
-> +			       struct btrfs_block_group_cache *cache);
-> +
-> +void btrfs_discard_cancel_work(struct btrfs_discard_ctl *discard_ctl,
-> +			       struct btrfs_block_group_cache *cache);
-> +void btrfs_discard_schedule_work(struct btrfs_discard_ctl *discard_ctl,
-> +				 bool override);
-> +void btrfs_discard_resume(struct btrfs_fs_info *fs_info);
-> +void btrfs_discard_stop(struct btrfs_fs_info *fs_info);
-> +void btrfs_discard_init(struct btrfs_fs_info *fs_info);
-> +void btrfs_discard_cleanup(struct btrfs_fs_info *fs_info);
-> +
-> +static inline
-> +bool btrfs_run_discard_work(struct btrfs_discard_ctl *discard_ctl)
-> +{
-> +	struct btrfs_fs_info *fs_info = container_of(discard_ctl,
-> +						     struct btrfs_fs_info,
-> +						     discard_ctl);
-> +
-> +	return (!(fs_info->sb->s_flags & SB_RDONLY) &&
-> +		test_bit(BTRFS_FS_DISCARD_RUNNING, &fs_info->flags));
-> +}
-> +
-> +static inline
-> +void btrfs_discard_queue_work(struct btrfs_discard_ctl *discard_ctl,
-> +			      struct btrfs_block_group_cache *cache)
-> +{
-> +	if (!cache || !btrfs_test_opt(cache->fs_info, DISCARD_ASYNC))
-> +		return;
-> +
-> +	btrfs_add_to_discard_list(discard_ctl, cache);
-> +	if (!delayed_work_pending(&discard_ctl->work))
-> +		btrfs_discard_schedule_work(discard_ctl, false);
-> +}
-
-These two would need full fs_info definition but they don't seem to be
-called in performance sensitive code so a full function call is ok here.
-
-> --- a/fs/btrfs/super.c
-> +++ b/fs/btrfs/super.c
-> @@ -313,6 +316,7 @@ enum {
->  	Opt_datasum, Opt_nodatasum,
->  	Opt_defrag, Opt_nodefrag,
->  	Opt_discard, Opt_nodiscard,
-> +	Opt_discard_version,
-
-This is probably copied from space_cache options, 'version' does not
-fit discard, it could be 'mode'
-
->  	Opt_nologreplay,
->  	Opt_norecovery,
->  	Opt_ratio,
->  		case Opt_space_cache_version:
+El mar., 15 oct. 2019 a las 14:38, Qu Wenruo
+(<quwenruo.btrfs@gmx.com>) escribi=C3=B3:
+>
+>
+>
+> On 2019/10/15 =E4=B8=8B=E5=8D=888:24, Qu Wenruo wrote:
+> >
+> >
+> > On 2019/10/15 =E4=B8=8B=E5=8D=886:15, Jos=C3=A9 Luis wrote:
+> >> Dear devs,
+> >>
+> >> I cannot use kernel >=3D 5.2, They cannot mount sdb2 nor sb3 both btrf=
+s
+> >> filesystems. I can work as intended on 4.19 which is an LTS version,
+> >> previously using 5.1 but Manjaro removed it from their repositories.
+> >>
+> >> More info:
+> >> =C2=B7 dmesg:
+> >>> [oct15 13:47] BTRFS info (device sdb2): disk space caching is enabled
+> >>> [  +0,009974] BTRFS info (device sdb2): enabling ssd optimizations
+> >>> [  +0,000481] BTRFS critical (device sdb2): corrupt leaf: root=3D5 bl=
+ock=3D30622793728 slot=3D115, invalid key objectid: has 1844674407370955160=
+5 expect 6 or [256, 18446744073709551360] or 18446744073709551604
+> >
+> > In fs tree, you are hitting a free space cache inode?
+> > That doesn't sound good.
+> >
+> > Please provide the following dump:
+> >
+> > # btrfs ins dump-tree -b 30622793728 /dev/sdb2
+> >
+> > The output may contain filename, feel free to remove filenames.
+> >
+> >>> [  +0,000002] BTRFS error (device sdb2): block=3D30622793728 read tim=
+e tree block corruption detected
+> >>> [  +0,000021] BTRFS warning (device sdb2): failed to read fs tree: -5
+> >>> [  +0,044643] BTRFS error (device sdb2): open_ctree failed
+> >>
+> >>
+> >>
+> >> =C2=B7 sudo mount  /dev/sdb2 /mnt/
+> >>> mount: /mnt: no se puede leer el superbloque en /dev/sdb2.
+> >>
+> >> (cannot read superblock on /dev...)
+> >>
+> >> =C2=B7 sudo btrfs rescue super-recover /dev/sdb2
+> >>> All supers are valid, no need to recover
+> >>
+> >>
+> >> =C2=B7 sudo btrfs check /dev/sdb2
+> >>> Opening filesystem to check...
+> >>> Checking filesystem on /dev/sdb2
+> >>> UUID: ff559c37-bc38-491c-9edc-fa6bb0874942
+> >>> [1/7] checking root items
+> >>> [2/7] checking extents
+> >>> [3/7] checking free space cache
+> >>> cache and super generation don't match, space cache will be invalidat=
+ed
+> >>> [4/7] checking fs roots
+> >>> root 5 inode 431 errors 1040, bad file extent, some csum missing
+> >>> root 5 inode 755 errors 1040, bad file extent, some csum missing
+> >>> root 5 inode 2379 errors 1040, bad file extent, some csum missing
+> >>> root 5 inode 11721 errors 1040, bad file extent, some csum missing
+> >>> root 5 inode 12211 errors 1040, bad file extent, some csum missing
+> >>> root 5 inode 15368 errors 1040, bad file extent, some csum missing
+> >>> root 5 inode 35329 errors 1040, bad file extent, some csum missing
+> >>> root 5 inode 960427 errors 1040, bad file extent, some csum missing
+> >>> root 5 inode 18446744073709551605 errors 2001, no inode item, link co=
+unt wrong
+> >>>         unresolved ref dir 256 index 0 namelen 12 name $RECYCLE.BIN f=
+iletype 2 errors 6, no dir index, no inode ref
+> >
+> > Check is reporting the same problem of the inode.
+> >
+> > We need to make sure what's going wrong on that leaf, based on the
+> > mentioned dump.
+> >
+> > For the csum missing error and bad file extent, it should be a big prob=
+lem.
+>
+> s/should/should not/
+>
+> > if you want to make sure what's going wrong, please provide the
+> > following dump:
+> >
+> > # btrfs ins dump-tree -t 5 /dev/sdb2 | grep -A 7
+> >
+> > Also feel free the censor the filenames.
+> >
+> > Thanks,
+> > Qu
+> >
+> >>> root 388 inode 1245 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 1288 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 1292 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 1313 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 11870 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 68126 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 88051 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 88255 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 88455 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 88588 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 88784 errors 1040, bad file extent, some csum missing
+> >>> root 388 inode 88916 errors 1040, bad file extent, some csum missing
+> >>> ERROR: errors found in fs roots
+> >>> found 37167415296 bytes used, error(s) found
+> >>> total csum bytes: 33793568
+> >>> total tree bytes: 1676722176
+> >>> total fs tree bytes: 1540243456
+> >>> total extent tree bytes: 81510400
+> >>> btree space waste bytes: 306327457
+> >>> file data blocks allocated: 42200928256
+> >>>  referenced 52868354048
+> >>
+> >>
+> >>
+> >>
+> >> ---
+> >>
+> >> Regards,
+> >> Jos=C3=A9 Luis.
+> >>
+> >
+>
