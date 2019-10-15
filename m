@@ -2,134 +2,80 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20030D72F4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 12:15:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6833ED75D4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 14:08:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727689AbfJOKPW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Oct 2019 06:15:22 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46418 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727307AbfJOKPV (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Oct 2019 06:15:21 -0400
-Received: by mail-wr1-f67.google.com with SMTP id o18so23064450wrv.13
-        for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2019 03:15:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=9W1pkpPm5ITIu6fhBOjaMIERYjnRak6dqB+w3Rf0Nu8=;
-        b=deaXjMZTJWvZp8jL4mz8lKx/RLyuqX6UwIiGqulbk4tc3ssaJydsGNEG9IdnTN1c2b
-         BJG4DC8m7Yz396/pNocFVMdBUmn3g4vt70cuH7AiJWgg2ECjBglthep73RKdVZcM5eMU
-         ymNeVr42TbsmVCH+w9FMODM0rYJtyrm4xqcB5V2TyyDWjHLVJRPcq3R6PDjU73mPA3Wy
-         YpLLXt5zKqzY3x1N/M5u8IBUJofE1AwqtukvfOaCw0/fWrgqRc837LFOoJQ+3OWw54FT
-         1gs7S7MaPzFSK1EMQJvxxTfmNaNQZs1SodOOOA/ohLWJIerpVeeEROVxDsBqiez5k18e
-         Ljig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=9W1pkpPm5ITIu6fhBOjaMIERYjnRak6dqB+w3Rf0Nu8=;
-        b=NZLoPmPeH6R/W+/CvyKAIfqlNjPiwjmM2MpWKmX8Z/HUwvjSQjleulePthbeQG74Tt
-         CfgnJM7EV1X9xLkZqzOHczjLAsL18oGTN0ujBT/CF05goVc/LO9tUIUyWdU4OYbopPq2
-         pX6lj9OpcrQHHejDGDgkd2FYuHtKKgSpxlbhm18DQoGJq8qT0gVTFKhw9joPydS1sgw8
-         6cBXrztMfybrlla33gBe51rLBtLfqDVHPgP/V8anoXwfuwUxtU0bmZdJgKQbIYYfd3sT
-         s1+qWGgzn7jvuSdROJ5buHFRrOCS6xKbtOqFIoy19wUs2vvtiQZBL7qef4T9aDi9zCvC
-         EeQA==
-X-Gm-Message-State: APjAAAVGvml0AppivWzkEefE546JVjPZ+eXxdhUV+noyX36f+5hMB+9A
-        E3Q5myIkynYhnAIq6VYDfQ5rSRAAD1XApuQZzUmeK4QDwH4=
-X-Google-Smtp-Source: APXvYqx5zflS2JEkoA0mPtqkt188YaK252BJ+FKi0FmNUzVKCJld4+XvdVJkDTZeQOznh74yofdf4adtfUOwMnOxmqs=
-X-Received: by 2002:a5d:5587:: with SMTP id i7mr29945429wrv.57.1571134519139;
- Tue, 15 Oct 2019 03:15:19 -0700 (PDT)
+        id S1730578AbfJOMIV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Oct 2019 08:08:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56244 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726540AbfJOMIV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Oct 2019 08:08:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 77A1EB2B4;
+        Tue, 15 Oct 2019 12:08:19 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 395D6DA7E3; Tue, 15 Oct 2019 14:08:31 +0200 (CEST)
+Date:   Tue, 15 Oct 2019 14:08:31 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Dennis Zhou <dennis@kernel.org>
+Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [RFC PATCH 00/19] btrfs: async discard support
+Message-ID: <20191015120831.GS2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Dennis Zhou <dennis@kernel.org>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+References: <cover.1570479299.git.dennis@kernel.org>
 MIME-Version: 1.0
-From:   =?UTF-8?Q?Jos=C3=A9_Luis?= <parajoseluis@gmail.com>
-Date:   Tue, 15 Oct 2019 12:15:08 +0200
-Message-ID: <CADTa+SqDLtmmjnJ5gz-3jDxi1NGNAu=cyo0kFXSZfnu6QE_Fdw@mail.gmail.com>
-Subject: kernel 5.2 read time tree block corruption
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1570479299.git.dennis@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Dear devs,
+Hi,
 
-I cannot use kernel >=3D 5.2, They cannot mount sdb2 nor sb3 both btrfs
-filesystems. I can work as intended on 4.19 which is an LTS version,
-previously using 5.1 but Manjaro removed it from their repositories.
+thanks for working on this. The plain -odiscard hasn't been recommended
+to users for a long time, even with the SATA 3.1 drives that allow
+queueing the requests.
 
-More info:
-=C2=B7 dmesg:
-> [oct15 13:47] BTRFS info (device sdb2): disk space caching is enabled
-> [  +0,009974] BTRFS info (device sdb2): enabling ssd optimizations
-> [  +0,000481] BTRFS critical (device sdb2): corrupt leaf: root=3D5 block=
-=3D30622793728 slot=3D115, invalid key objectid: has 18446744073709551605 e=
-xpect 6 or [256, 18446744073709551360] or 18446744073709551604
-> [  +0,000002] BTRFS error (device sdb2): block=3D30622793728 read time tr=
-ee block corruption detected
-> [  +0,000021] BTRFS warning (device sdb2): failed to read fs tree: -5
-> [  +0,044643] BTRFS error (device sdb2): open_ctree failed
+The overall approach to async discard sounds good, the hard part is not
+shoot down the filesystem by trimming live data, and we had a bug like
+that in the pastlive data, and we had a bug like that in the past. For
+correctness reasons I understand the size of the patchset.
 
+On Mon, Oct 07, 2019 at 04:17:31PM -0400, Dennis Zhou wrote:
+> I am currently working on tuning the rate at which it discards in the
+> background. I am doing this by evaluating other workloads and drives.
+> The iops and bps rate limits are fairly aggressive right now as my
+> basic survey of a few drives noted that the trim command itself is a
+> significant part of the overhead. So optimizing for larger trims is the
+> right thing to do.
 
+We need a sane default behaviour, without the need for knobs and
+configuration, so it's great you can have a wide range of samples to
+tune it.
 
-=C2=B7 sudo mount  /dev/sdb2 /mnt/
-> mount: /mnt: no se puede leer el superbloque en /dev/sdb2.
+As trim is only a hint, a short delay in processing the requests or
+slight ineffectivity should be acceptable, to avoid complications in the
+code or interfering with other IO.
 
-(cannot read superblock on /dev...)
+> Persistence isn't supported, so when we mount a filesystem, the block
+> groups are read in as dirty and background trim begins. This makes async
+> discard more useful for longer running mount points.
 
-=C2=B7 sudo btrfs rescue super-recover /dev/sdb2
-> All supers are valid, no need to recover
+I think this is acceptable.
 
-
-=C2=B7 sudo btrfs check /dev/sdb2
-> Opening filesystem to check...
-> Checking filesystem on /dev/sdb2
-> UUID: ff559c37-bc38-491c-9edc-fa6bb0874942
-> [1/7] checking root items
-> [2/7] checking extents
-> [3/7] checking free space cache
-> cache and super generation don't match, space cache will be invalidated
-> [4/7] checking fs roots
-> root 5 inode 431 errors 1040, bad file extent, some csum missing
-> root 5 inode 755 errors 1040, bad file extent, some csum missing
-> root 5 inode 2379 errors 1040, bad file extent, some csum missing
-> root 5 inode 11721 errors 1040, bad file extent, some csum missing
-> root 5 inode 12211 errors 1040, bad file extent, some csum missing
-> root 5 inode 15368 errors 1040, bad file extent, some csum missing
-> root 5 inode 35329 errors 1040, bad file extent, some csum missing
-> root 5 inode 960427 errors 1040, bad file extent, some csum missing
-> root 5 inode 18446744073709551605 errors 2001, no inode item, link count =
-wrong
->         unresolved ref dir 256 index 0 namelen 12 name $RECYCLE.BIN filet=
-ype 2 errors 6, no dir index, no inode ref
-> root 388 inode 1245 errors 1040, bad file extent, some csum missing
-> root 388 inode 1288 errors 1040, bad file extent, some csum missing
-> root 388 inode 1292 errors 1040, bad file extent, some csum missing
-> root 388 inode 1313 errors 1040, bad file extent, some csum missing
-> root 388 inode 11870 errors 1040, bad file extent, some csum missing
-> root 388 inode 68126 errors 1040, bad file extent, some csum missing
-> root 388 inode 88051 errors 1040, bad file extent, some csum missing
-> root 388 inode 88255 errors 1040, bad file extent, some csum missing
-> root 388 inode 88455 errors 1040, bad file extent, some csum missing
-> root 388 inode 88588 errors 1040, bad file extent, some csum missing
-> root 388 inode 88784 errors 1040, bad file extent, some csum missing
-> root 388 inode 88916 errors 1040, bad file extent, some csum missing
-> ERROR: errors found in fs roots
-> found 37167415296 bytes used, error(s) found
-> total csum bytes: 33793568
-> total tree bytes: 1676722176
-> total fs tree bytes: 1540243456
-> total extent tree bytes: 81510400
-> btree space waste bytes: 306327457
-> file data blocks allocated: 42200928256
->  referenced 52868354048
-
-
-
-
----
-
-Regards,
-Jos=C3=A9 Luis.
+Regarding the code, I leave comments to the block group and trim
+structures to Josef and will focus more on the low-level and coding
+style or changelogs.
