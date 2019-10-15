@@ -2,168 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E2F55D7A0B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 17:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1EC8D7A03
+	for <lists+linux-btrfs@lfdr.de>; Tue, 15 Oct 2019 17:42:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730624AbfJOPmg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Oct 2019 11:42:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44312 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729876AbfJOPme (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Oct 2019 11:42:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 47DFCB526;
-        Tue, 15 Oct 2019 15:42:31 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 8/8] btrfs: Streamline btrfs_fs_info::backup_root_index semantics
-Date:   Tue, 15 Oct 2019 18:42:24 +0300
-Message-Id: <20191015154224.21537-9-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191015154224.21537-1-nborisov@suse.com>
-References: <20191015154224.21537-1-nborisov@suse.com>
+        id S1728940AbfJOPm3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Oct 2019 11:42:29 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:39819 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726422AbfJOPm3 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Oct 2019 11:42:29 -0400
+Received: by mail-qt1-f194.google.com with SMTP id n7so31186632qtb.6
+        for <linux-btrfs@vger.kernel.org>; Tue, 15 Oct 2019 08:42:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vkjukRMYGkOvQPapFg2EWMbIaB4s2EdbEN222R7K6JE=;
+        b=cMDFvz4nZmCm+UTlKirACkHHv6MZmiQjJRC050mdyCnfwV5oTVLPccQy0WBDVNra9Y
+         D3P8R514iIl8f8v0EfqJwQYAv+VHgWYMnLrfz9FtNazYgo20Y+NoU7IbpV2lfTlq6Xa+
+         Ll5HA2FX+GnmHa0Yz5iE2rZnlgNmn6m2rzsNZUyFyVvZ2gQ3Qa5Uhj608iZh/klycWda
+         9FjZ9CAxTci5bfW8ndHwrEJaSTu5BEBQY/6B3ipRi9VUGKTH9xO1AZhJlxDUk2wM9+5W
+         w8wNtXDbWWFujlLnAQXpiTmIi9IkdBXEIIDuiXZDyrEQKNZLgXvuJIwg6zQQv8HSHuI2
+         hkhw==
+X-Gm-Message-State: APjAAAX1Ir6bOPdW0JII8CCfzIMh6jnrsI4ZM5XR8xzZfao3KPvsTLsD
+        e1Oz22Aj0INQ76kN9B7lmII=
+X-Google-Smtp-Source: APXvYqwQd7qaUpAnAf+YTcpKMjbhYxme3vpzoy1R95IyD6rX9I3Xqt9KyDW9Yp4bjzL4cl+GeJI7Jw==
+X-Received: by 2002:ac8:6c9:: with SMTP id j9mr38203846qth.81.1571154148727;
+        Tue, 15 Oct 2019 08:42:28 -0700 (PDT)
+Received: from dennisz-mbp ([2620:10d:c091:500::c97c])
+        by smtp.gmail.com with ESMTPSA id b130sm10172132qkc.100.2019.10.15.08.42.27
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Oct 2019 08:42:28 -0700 (PDT)
+Date:   Tue, 15 Oct 2019 11:42:25 -0400
+From:   Dennis Zhou <dennis@kernel.org>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 15/19] btrfs: load block_groups into discard_list on mount
+Message-ID: <20191015154225.GB66037@dennisz-mbp>
+References: <cover.1570479299.git.dennis@kernel.org>
+ <31ce602fac88f25567a0b3e89037693ec962c1c7.1570479299.git.dennis@kernel.org>
+ <20191010171137.xxuhjvmqzgifuixd@macbook-pro-91.dhcp.thefacebook.com>
+ <20191014201746.GF40077@dennisz-mbp.dhcp.thefacebook.com>
+ <20191014233825.GR2751@twin.jikos.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191014233825.GR2751@twin.jikos.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The backup_root_index member stores the index at which  the backup root
-should be saved upon next transaction commit. However, there is a
-small deviation from this behavior in the form of a check in
-backup_super_roots which checks if current root generation equals to the
-generation of the previous root. This can trigger in the following
-scenario:
+On Tue, Oct 15, 2019 at 01:38:25AM +0200, David Sterba wrote:
+> On Mon, Oct 14, 2019 at 04:17:46PM -0400, Dennis Zhou wrote:
+> > On Thu, Oct 10, 2019 at 01:11:38PM -0400, Josef Bacik wrote:
+> > > On Mon, Oct 07, 2019 at 04:17:46PM -0400, Dennis Zhou wrote:
+> > > > Async discard doesn't remember the discard state of a block_group when
+> > > > unmounting or when we crash. So, any block_group that is not fully used
+> > > > may have undiscarded regions. However, free space caches are read in on
+> > > > demand. Let the discard worker read in the free space cache so we can
+> > > > proceed with discarding rather than wait for the block_group to be used.
+> > > > This prevents us from indefinitely deferring discards until that
+> > > > particular block_group is reused.
+> > > > 
+> > > > Signed-off-by: Dennis Zhou <dennis@kernel.org>
+> > > 
+> > > What if we did completely discard the last time, now we're going back and
+> > > discarding again?  I think by default we just assume we discarded everything.
+> > > If we didn't then the user can always initiate a fitrim later.  Drop this one.
+> > > Thanks,
+> > > 
+> > 
+> > Yeah this is something I wasn't sure about.
+> > 
+> > It makes me a little uncomfortable to make the lack of persistence a
+> > user problem. If in some extreme case where someone frees a large amount
+> > of space and then unmounts.
+> 
+> Based on past experience, umount should not be slowed down unless really
+> necessary.
+> 
+> > We can either make them wait on unmount to
+> > discard everything or retrim the whole drive which in an ideal world
+> > should just be a noop on already free lba space.
+> 
+> Without persistence of the state, we can't make it perfect and I think,
+> without any hard evidence, that trimming already trimmed blocks is no-op
+> on the device. We all know that we don't know what SSDs actually do, so
+> it's best effort and making it "device problem" is a good solution from
+> filesystem POV.
 
-slot0: gen-2
-slot1: gen-1
-slot2: gen
-slot3: unused
+That makes sense and sounds good to me. I've dropped this patch.
 
-Now suppose slot3 (which is also the root specified in the super block)
-is corrupted hence init_tree_roots chooses to use the backup root at
-slot2, meaning read_backup_root will read slot2 and assign the
-superblock generation to gen-1. Despite this backup_root_index will
-point at slot3 because its init happens in init_backup_root_slot, long
-before any parsing of the backup roots occur. Then on next transaction
-start, gen-1 will be incremented by 1 making the root's generation
-equal gen. Subsequently, on transaction commit the following check
-triggers:
-
-  if (btrfs_backup_tree_root_gen(root_backup) ==
-           btrfs_header_generation(info->tree_root->node))
-
-This causes the 'next_backup', which is the index at which the backup is
-going to be written to, to set to last_backup, which will be slot2.
-
-All of this is a very confusing way of expressing the following
-invariant:
-
- Always write a backup root at the index following the last used backup
- root.
-
-This commit streamlines this logic by setting backup_root_index to the
-next index after the one used for mount.
----
- fs/btrfs/disk-io.c | 48 +++++++++-------------------------------------
- 1 file changed, 9 insertions(+), 39 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index ac899fdb1414..e266949529fb 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -1786,23 +1786,6 @@ static int find_newest_super_backup(struct btrfs_fs_info *info)
- 	return -EINVAL;
- }
- 
--/*
-- * Initialize backup_root_index with the next available slot, where subsequent
-- * transaction commit will store the back up root
-- */
--static void init_backup_root_slot(struct btrfs_fs_info *info)
--{
--	int newest_index;
--
--	newest_index = find_newest_super_backup(info);
--	/* if there was garbage in there, just move along */
--	if (newest_index == -EINVAL) {
--		info->backup_root_index = 0;
--	} else {
--		info->backup_root_index = (newest_index + 1) % BTRFS_NUM_BACKUP_ROOTS;
--	}
--}
--
- /*
-  * copy all the root pointers into the super backup array.
-  * this will bump the backup pointer by one when it is
-@@ -1810,22 +1793,8 @@ static void init_backup_root_slot(struct btrfs_fs_info *info)
-  */
- static void backup_super_roots(struct btrfs_fs_info *info)
- {
--	int next_backup;
-+	int next_backup = info->backup_root_index;
- 	struct btrfs_root_backup *root_backup;
--	int last_backup;
--
--	next_backup = info->backup_root_index;
--	last_backup = (next_backup + BTRFS_NUM_BACKUP_ROOTS - 1) %
--		BTRFS_NUM_BACKUP_ROOTS;
--
--	/*
--	 * just overwrite the last backup if we're at the same generation
--	 * this happens only at umount
--	 */
--	root_backup = info->super_for_commit->super_roots + last_backup;
--	if (btrfs_backup_tree_root_gen(root_backup) ==
--	    btrfs_header_generation(info->tree_root->node))
--		next_backup = last_backup;
- 
- 	root_backup = info->super_for_commit->super_roots + next_backup;
- 
-@@ -2531,6 +2500,7 @@ static int btrfs_validate_write_super(struct btrfs_fs_info *fs_info,
- 
- int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
- {
-+	int backup_index = find_newest_super_backup(fs_info);
- 	struct btrfs_super_block *sb = fs_info->super_copy;
- 	struct btrfs_root *tree_root = fs_info->tree_root;
- 	bool handle_error = false;
-@@ -2557,7 +2527,7 @@ int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
- 			/* we can't trust the free space cache either */
- 			btrfs_set_opt(fs_info->mount_opt, CLEAR_CACHE);
- 
--			ret = read_backup_root(fs_info, i);
-+			ret = backup_index = read_backup_root(fs_info, i);
- 			if (ret < 0)
- 				return ret;
- 		}
-@@ -2604,6 +2574,12 @@ int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
- 		/* All successful */
- 		fs_info->generation = generation;
- 		fs_info->last_trans_committed = generation;
-+
-+		/* Always begin writing backup roots after one being used */
-+		if (backup_index < 0)
-+			fs_info->backup_root_index = 0;
-+		else
-+			fs_info->backup_root_index = (backup_index + 1) % BTRFS_NUM_BACKUP_ROOTS;
- 		break;
- 
- 	}
-@@ -2898,12 +2874,6 @@ int __cold open_ctree(struct super_block *sb,
- 	if (btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_ERROR)
- 		set_bit(BTRFS_FS_STATE_ERROR, &fs_info->fs_state);
- 
--	/*
--	 * run through our array of backup supers and setup
--	 * our ring pointer to the oldest one
--	 */
--	init_backup_root_slot(fs_info);
--
- 	/*
- 	 * In the long term, we'll store the compression type in the super
- 	 * block, and it'll be used for per file compression control.
--- 
-2.17.1
-
+Thanks,
+Dennis
