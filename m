@@ -2,22 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E5582D89D9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 09:37:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79674D89F6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 09:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727314AbfJPHhL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Oct 2019 03:37:11 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37262 "EHLO mx1.suse.de"
+        id S2390206AbfJPHjp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Oct 2019 03:39:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38270 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725970AbfJPHhL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Oct 2019 03:37:11 -0400
+        id S1728020AbfJPHjo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Oct 2019 03:39:44 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D9BFFAEEC;
-        Wed, 16 Oct 2019 07:37:09 +0000 (UTC)
-Subject: Re: [PATCH] btrfs: qgroup: Fix wrong parameter order for trace events
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191016073149.23244-1-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id C62F8AF59;
+        Wed, 16 Oct 2019 07:39:41 +0000 (UTC)
+Subject: Re: [PATCH] tools/lib/traceevent, perf tools: Handle %pU format
+ correctly
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
+References: <20191016063920.20791-1-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -62,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <f1976eb6-73d6-623e-5c16-79b036eabcb6@suse.com>
-Date:   Wed, 16 Oct 2019 10:37:08 +0300
+Message-ID: <fb568719-d0da-fcad-0069-2717fc0ff376@suse.com>
+Date:   Wed, 16 Oct 2019 10:39:40 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191016073149.23244-1-wqu@suse.com>
+In-Reply-To: <20191016063920.20791-1-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -78,49 +80,99 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 16.10.19 г. 10:31 ч., Qu Wenruo wrote:
+On 16.10.19 г. 9:39 ч., Qu Wenruo wrote:
 > [BUG]
-> For btrfs:qgroup_meta_reserve event, the trace event can output garbage:
-> qgroup_meta_reserve: 9c7f6acc-b342-4037-bc47-7f6e4d2232d7: refroot=5(FS_TREE) type=DATA diff=2
-> qgroup_meta_reserve: 9c7f6acc-b342-4037-bc47-7f6e4d2232d7: refroot=5(FS_TREE) type=0x258792 diff=2
+> For btrfs related events, there is a field for fsid, but perf never
+> parse it correctly.
 > 
-> Since we're in qgroup_meta_reserve() trace event, the @type should never
-> be DATA, while diff must be aligned to sectorsize (4K in this case).
-> 
-> Only UUID and refroot is correct.
+>  # perf trace -e btrfS:qgroup_meta_convert xfs_io -f -c "pwrite 0 4k" \
+>    /mnt/btrfs/file1
+>      0.000 xfs_io/77915 btrfs:qgroup_meta_reserve:(nil)U: refroot=5(FS_TREE) type=0x0 diff=2
+>                                                   ^^^^^^ Not a correct UUID
+>      ...
 > 
 > [CAUSE]
-> There are two causes for this bug:
-> 
-> - Bad parameter order
->   For trace event btrfs:qgroup_meta_reserve, we're passing wrong
->   parameters.
-> 
->   The correct parameters are:
->   struct btrfs_root, s64 diff, int type.
-> 
->   However the used order is:
->   struct btrfs_root, int type, s64 diff.
-> 
-> - @type is not even assigned
->   What I was doing !? /facepalm
+> The pretty_print() function doesn't handle the %pU format correctly.
+> In fact it doesn't handle %pU as uuid at all.
 > 
 > [FIX]
-> Fix the super stupid bug.
+> Add a new functiono, print_uuid_arg(), to handle %pU correctly.
 > 
-> Now everything works fine:
-> qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PERTRANS diff=81920
-> qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=16384
-> qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=0
-> qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=16384
-> qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=-16384
-> qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=16384
-> qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=-16384
-> qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=16384
-> qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=-16384
+> Now perf trace can at least print fsid correctly:
+>      0.000 xfs_io/79619 btrfs:qgroup_meta_reserve:23ad1511-dd83-47d4-a79c-e96625a15a6e refroot=5(FS_TREE) type=0x0 diff=2
 > 
-> Fixes: 4ee0d8832c2e ("btrfs: qgroup: Update trace events for metadata reservation")
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Please note in above case, the @type and @diff are not properly showed.
+> That's another problem, will be addressed in later patches.
+> ---
+>  tools/lib/traceevent/event-parse.c | 38 ++++++++++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+> 
+> diff --git a/tools/lib/traceevent/event-parse.c b/tools/lib/traceevent/event-parse.c
+> index d948475585ce..4f730ed527b0 100644
+> --- a/tools/lib/traceevent/event-parse.c
+> +++ b/tools/lib/traceevent/event-parse.c
+> @@ -18,6 +18,7 @@
+>  #include <errno.h>
+>  #include <stdint.h>
+>  #include <limits.h>
+> +#include <linux/uuid.h>
+>  #include <linux/time64.h>
+>  
+>  #include <netinet/in.h>
+> @@ -4508,6 +4509,33 @@ get_bprint_format(void *data, int size __maybe_unused,
+>  	return format;
+>  }
+>  
+> +static void print_uuid_arg(struct trace_seq *s, void *data, int size,
+> +			   struct tep_event *event, struct tep_print_arg *arg)
+> +{
+> +	const char *fmt;
+> +	unsigned char *buf;
+> +
+> +	fmt = "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x";
+> +	if (arg->type != TEP_PRINT_FIELD) {
+> +		trace_seq_printf(s, "ARG TYPE NOT FIELID but %d", arg->type);
+> +		return;
+> +	}
+> +
+> +	if (!arg->field.field) {
+> +		arg->field.field = tep_find_any_field(event, arg->field.name);
+> +		if (!arg->field.field) {
+> +			do_warning("%s: field %s not found",
+> +				   __func__, arg->field.name);
+> +			return;
+> +		}
+> +	}
+> +	buf = data + arg->field.field->offset;
+> +
+> +	trace_seq_printf(s, fmt, buf[0], buf[1], buf[2], buf[3], buf[4], buf[5],
+> +		         buf[6], buf[7], buf[8], buf[9], buf[10], buf[11], buf[12],
+> +			 buf[13], buf[14], buf[15]);
+> +}
+> +
+>  static void print_mac_arg(struct trace_seq *s, int mac, void *data, int size,
+>  			  struct tep_event *event, struct tep_print_arg *arg)
+>  {
+> @@ -5074,6 +5102,16 @@ static void pretty_print(struct trace_seq *s, void *data, int size, struct tep_e
+>  						arg = arg->next;
+>  						break;
+>  					}
+> +				} else if (*ptr == 'U') {
+> +					/* Those finetunings are ignored for now */
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+I think this comment is cryptic. What do you mean by "finetunings"?
 
+> +					if (isalpha(ptr[1]))
+> +						ptr += 2;
+> +					else
+> +						ptr++;
+> +
+> +					print_uuid_arg(s, data, size, event, arg);
+> +					arg = arg->next;
+> +					break;
+>  				}
+>  
+>  				/* fall through */
+> 
