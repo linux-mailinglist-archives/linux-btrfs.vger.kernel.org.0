@@ -2,128 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F63BD9C64
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 23:20:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF28D9C67
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 23:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727733AbfJPVUs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Oct 2019 17:20:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43640 "EHLO mx1.suse.de"
+        id S2389324AbfJPVWD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Oct 2019 17:22:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44168 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726402AbfJPVUs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Oct 2019 17:20:48 -0400
+        id S1729231AbfJPVWD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Oct 2019 17:22:03 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1C1F9B353
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2019 21:20:46 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 85065B372;
+        Wed, 16 Oct 2019 21:22:01 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id DFF6BDA7E3; Wed, 16 Oct 2019 23:20:56 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: Btrfs progs pre-release 5.3-rc1
-Date:   Wed, 16 Oct 2019 23:20:56 +0200
-Message-Id: <20191016212056.18307-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.23.0
+        id DD328DA7E3; Wed, 16 Oct 2019 23:22:11 +0200 (CEST)
+Date:   Wed, 16 Oct 2019 23:22:11 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.com>
+Cc:     linux-btrfs@vger.kernel.org, pmhahn+btrfs@pmhahn.de,
+        dsterba@suse.com, lakshmipathi.g@giis.co.in
+Subject: Re: [PATCH v2] Setup GitLab-CI for btrfs-progs
+Message-ID: <20191016212211.GD2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        "Lakshmipathi.G" <lakshmipathi.ganapathi@collabora.com>,
+        linux-btrfs@vger.kernel.org, pmhahn+btrfs@pmhahn.de,
+        dsterba@suse.com, lakshmipathi.g@giis.co.in
+References: <20191014175159.GA13501@giis.co.in>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191014175159.GA13501@giis.co.in>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On Mon, Oct 14, 2019 at 11:21:59PM +0530, Lakshmipathi.G wrote:
+> Make use of GitLab-CI nested virutal environment to start QEMU instance inside containers 
+> and perform btrfs-progs build, execute unit test cases and save the logs.
+> 
+> More details can be found at https://github.com/kdave/btrfs-progs/issues/171
+> 
+> Signed-off-by: Lakshmipathi.G <lakshmipathi.ganapathi@collabora.com>
 
-this is a pre-release of btrfs-progs, 5.3-rc1.
-
-The proper release is scheduled to this Friday, +2 days (2019-10-18).
-
-There are some changes that fit the major release time, like changing default
-tree traversal for dump-tree, new CI integration and documentation generation.
-There's preparatory work for the checksums that will be in 5.5 and we decided
-to release kernel and progs support at the same time. So mkfs now understands
---checksum and --csum but will accept only crc32c.
-
-Changelog:
-
-  * mkfs:
-    * new option to specify checksum algorithm (only crc32c)
-    * fix xattr enumeration
-  * dump-tree: BFS (breadth-first) traversal now default
-  * libbtrfsutil: remove stale BTRFS_DEV_REPLACE_ITEM_STATE_x defines
-  * ci: add support for gitlab
-  * other:
-    * preparatory work for more checksum algorithms
-    * docs update
-    * switch to docbook5 backend for asciidoc
-    * fix build on uClibc due to missing backtrace()
-    * lots of printf format fixups
-
-Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
-Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
-
-Shortlog:
-
-Anand Jain (4):
-      libbtrfsutil: remove stale BTRFS_DEV_REPLACE_ITEM_STATE_x defines
-      btrfs-progs: print-tree: add BTRFS_DEV_ITEMS_OBJECTID in comment
-      btrfs-progs: tests: fix misc/021 when restoring overlapping stale data
-      btrfs-progs: mkfs: match devid order to the stripe index
-
-David Sterba (8):
-      btrfs-progs: dump-tree: update help and docs regarding DFS/BFS
-      btrfs-progs: move qgroup-verify.[ch] to check/
-      btrfs-progs: copy btrfsck.h to check/common.h
-      btrfs-progs: check: remove flat include switch from common.h
-      btrfs-progs: check: move device_record to main.c
-      btrfs-progs: build: add missing objects to libbtrfs
-      btrfs-progs: update CHANGES for 5.3
-      Btrfs progs v5.3-rc1
-
-Dennis Zhou (1):
-      btrfs-progs: docs: add compression level support for mount options
-
-Dimitri John Ledkov (1):
-      btrfs-progs: docs: use docbook5 backend for asciidoctor
-
-Fabrice Fontaine (1):
-      btrfs-progs: kerncompat: define BTRFS_DISABLE_BACKTRACE when building with uClibc
-
-Jeff Mahoney (2):
-      btrfs-progs: qgroups: use parse_size instead of open coding it
-      btrfs-progs: constify argument of parse_size
-
-Johannes Thumshirn (15):
-      btrfs-progs: use btrfs_csum_data() in __csum_tree_block_size()
-      btrfs-progs: pass in a btrfs_mkfs_config to write_temp_extent_buffer
-      btrfs-progs: make checksum type explicit in mkfs context structure
-      btrfs-progs: don't blindly assume crc32c in csum_tree_block_size()
-      btrfs-progs: cache csum_type in recover_control
-      btrfs-progs: add checksum type to checksumming functions
-      btrfs-progs: don't assume checksums are always 4 bytes
-      btrfs-progs: pass checksum type to btrfs_csum_data()/btrfs_csum_final()
-      btrfs-progs: sb-mod: simplify update_block_csum()
-      btrfs-progs: update checksumming api
-      btrfs-progs: mkfs: new option to specify checksum type
-      btrfs-progs: add is_valid_csum_type() helper
-      btrfs-progs: add table for checksum type and name
-      btrfs-progs: mkfs: print checksum type when running mkfs
-      btrfs-progs: unbreak btrfs-sb-mod compilation
-
-Lakshmipathi.G (1):
-      btrfs-progs: ci: setup GitLab-CI
-
-Long An (1):
-      btrfs-progs: testsadd clean-test.sh to testsuite-files
-
-Nikolay Borisov (1):
-      btrfs-progs: corrupt-block: Fix description of 'r' option
-
-Qu Wenruo (1):
-      btrfs-progs: print-tree: Use BFS as default traversal method
-
-Rosen Penev (1):
-      btrfs-progs: Fix printf formats
-
-Vladimir Panteleev (2):
-      btrfs-progs: docs: document btrfs-balance exit status in detail
-      btrfs-progs: mkfs: fix xattr enumeration
-
+Thank you, I've added it for 5.3 release so we have a base for further
+changes and fine tuning.
