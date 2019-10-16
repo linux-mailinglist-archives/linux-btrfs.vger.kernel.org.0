@@ -2,150 +2,128 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5AB6DD9A60
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 21:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F63BD9C64
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 23:20:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727487AbfJPTmi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Oct 2019 15:42:38 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:35822 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727148AbfJPTmi (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Oct 2019 15:42:38 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 4A0C14789BA; Wed, 16 Oct 2019 15:42:37 -0400 (EDT)
-Date:   Wed, 16 Oct 2019 15:42:37 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Edmund Urbani <edmund.urbani@liland.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: MD RAID 5/6 vs BTRFS RAID 5/6
-Message-ID: <20191016194237.GP22121@hungrycats.org>
-References: <b665710c-5171-487b-ce38-5ea7075492e4@liland.com>
+        id S1727733AbfJPVUs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Oct 2019 17:20:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43640 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726402AbfJPVUs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Oct 2019 17:20:48 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 1C1F9B353
+        for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2019 21:20:46 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id DFF6BDA7E3; Wed, 16 Oct 2019 23:20:56 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: Btrfs progs pre-release 5.3-rc1
+Date:   Wed, 16 Oct 2019 23:20:56 +0200
+Message-Id: <20191016212056.18307-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b665710c-5171-487b-ce38-5ea7075492e4@liland.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 05:40:10PM +0200, Edmund Urbani wrote:
-> Hello everyone,
-> 
-> having recovered most of my data from my btrfs RAID-6, I have by now migrated to
-> mdadm RAID (with btrfs on top). I am considering switching back to btrfs RAID
-> some day, when I feel more confident regarding its maturity.
-> 
-> I put some thought into the pros and cons of this choice that I would like to share:
-> 
-> btrfs RAID-5/6:
-> 
-> - RAID write hole issue still unsolved (assuming
-> https://btrfs.wiki.kernel.org/index.php/RAID56 is up-to-date)
-> + can detect and fix bit rot
-> + flexibility (resizing / reshaping)
-> - maturity ? (I had a hard time recovering my data after removal of a drive that
-> had developed some bad blocks. That's not what I would expect from a RAID-6
-> setup. To be fair I should point out that I was running kernel 4.14 at the time
-> and did not do regular scrubbing.)
+Hi,
 
-That only really started working (including data reconstruction after
-corruption events) around 4.15 or 4.16.  On later kernels, one can
-destroy one byte from every block on two disks in a raid6 array and
-still recover everything.  This is a somewhat stronger requirement than
-degraded mode with two disks missing, since a pass on this test requires
-btrfs to prove every individual block is bad using csums and correct the
-data without errors.  With degraded mode btrfs always knows two blocks
-are missing, so the pass requirement is weaker.
+this is a pre-release of btrfs-progs, 5.3-rc1.
 
-The one thing that doesn't work yet is turning the system off or reset
-while writing, then dropping two disks, then reading all the data without
-errors.  If a single write hole event occurs, some data may be lost,
-from a few blocks to the entire filesystem, depending on which blocks
-are affected.
+The proper release is scheduled to this Friday, +2 days (2019-10-18).
 
-> btrfs on MD RAID 5/6:
-> 
-> + options to mitigate RAID write hole
+There are some changes that fit the major release time, like changing default
+tree traversal for dump-tree, new CI integration and documentation generation.
+There's preparatory work for the checksums that will be in 5.5 and we decided
+to release kernel and progs support at the same time. So mkfs now understands
+--checksum and --csum but will accept only crc32c.
 
-Those options _must_ be used with btrfs, or the exact same write hole
-issue will occur.  They must be used with other filesystems too, but
-other filesystems will tolerate metadata corruption while btrfs will not.
+Changelog:
 
-The write hole issue is caused by the interaction between
-committed/uncommitted data boundaries and RAID stripe boundaries--the
-boundaries must be respected at every layer, or btrfs CoW data integrity
-doesn't work when there are disk failures.  The reason why btrfs
-currently fails is because the boundaries at the different layers are
-not respected--committed and uncommitted data are mixed up inside single
-RAID stripes.  mdadm and btrfs raid6 use _identical_ stripe boundaries
-(btrfs raid6 is a simplified copy of mdadm raid6) and write hole causes
-the same failures in both configurations if the mdadm mitigations are
-not enabled.
+  * mkfs:
+    * new option to specify checksum algorithm (only crc32c)
+    * fix xattr enumeration
+  * dump-tree: BFS (breadth-first) traversal now default
+  * libbtrfsutil: remove stale BTRFS_DEV_REPLACE_ITEM_STATE_x defines
+  * ci: add support for gitlab
+  * other:
+    * preparatory work for more checksum algorithms
+    * docs update
+    * switch to docbook5 backend for asciidoc
+    * fix build on uClibc due to missing backtrace()
+    * lots of printf format fixups
 
-> - bitrot can only be detected but not fixed
-> + mature and proven RAID implementation (based on personal experience of
-> replacing plenty of drives over the years without data loss)
+Tarballs: https://www.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/
+Git: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git
 
-I've replaced enough drives to lose data on everything, including mdadm.
-mdadm is more mature and proven than cheap hard disk firmware or
-bleeding-edge LVM/device-mapper, but that's a low bar.
+Shortlog:
 
-> I would be interested in getting your feedback on this comparison. Do you agree
-> with my observations? Did I miss anything you would consider important?
+Anand Jain (4):
+      libbtrfsutil: remove stale BTRFS_DEV_REPLACE_ITEM_STATE_x defines
+      btrfs-progs: print-tree: add BTRFS_DEV_ITEMS_OBJECTID in comment
+      btrfs-progs: tests: fix misc/021 when restoring overlapping stale data
+      btrfs-progs: mkfs: match devid order to the stripe index
 
-Single data dup metadata btrfs on mdadm raid6 + write hole mitigation.
-Nothing less for raid6.
+David Sterba (8):
+      btrfs-progs: dump-tree: update help and docs regarding DFS/BFS
+      btrfs-progs: move qgroup-verify.[ch] to check/
+      btrfs-progs: copy btrfsck.h to check/common.h
+      btrfs-progs: check: remove flat include switch from common.h
+      btrfs-progs: check: move device_record to main.c
+      btrfs-progs: build: add missing objects to libbtrfs
+      btrfs-progs: update CHANGES for 5.3
+      Btrfs progs v5.3-rc1
 
-If you use single metadata, you have no way to recover the filesystem if
-there is bitflip in a metadata block on one of the drives.  So always
-use -mdup on a btrfs filesystem on top of one mdadm device regardless
-of mdadm raid level.  Use -mraid1 if on two or more mdadm devices.
+Dennis Zhou (1):
+      btrfs-progs: docs: add compression level support for mount options
 
-For raid5 I'd choose btrfs -draid5 -mraid1 over mdadm raid5
-sometimes--even with the write hole, I'd expect smaller average data
-losses than mdadm raid5 + write hole mitigation due to the way disk
-failure modes are distributed.  Bit flips and silent corruption (that
-mdadm cannot repair) are much more common than bad sectors (that mdadm
-can repair) in some drive model families.
+Dimitri John Ledkov (1):
+      btrfs-progs: docs: use docbook5 backend for asciidoctor
 
-> Regards,
->  Edmund
-> 
-> 
-> 
-> 
-> 
-> -- 
-> *Liland IT GmbH*
-> 
-> 
-> Ferlach ● Wien ● München
-> Tel: +43 463 220111
-> Tel: +49 89 
-> 458 15 940
-> office@Liland.com
-> https://Liland.com <https://Liland.com> 
-> 
-> 
-> 
-> Copyright © 2019 Liland IT GmbH 
-> 
-> Diese Mail enthaelt vertrauliche und/oder 
-> rechtlich geschuetzte Informationen. 
-> Wenn Sie nicht der richtige Adressat 
-> sind oder diese Email irrtuemlich erhalten haben, informieren Sie bitte 
-> sofort den Absender und vernichten Sie diese Mail. Das unerlaubte Kopieren 
-> sowie die unbefugte Weitergabe dieser Mail ist nicht gestattet. 
-> 
-> This 
-> email may contain confidential and/or privileged information. 
-> If you are 
-> not the intended recipient (or have received this email in error) please 
-> notify the sender immediately and destroy this email. Any unauthorised 
-> copying, disclosure or distribution of the material in this email is 
-> strictly forbidden.
-> 
+Fabrice Fontaine (1):
+      btrfs-progs: kerncompat: define BTRFS_DISABLE_BACKTRACE when building with uClibc
+
+Jeff Mahoney (2):
+      btrfs-progs: qgroups: use parse_size instead of open coding it
+      btrfs-progs: constify argument of parse_size
+
+Johannes Thumshirn (15):
+      btrfs-progs: use btrfs_csum_data() in __csum_tree_block_size()
+      btrfs-progs: pass in a btrfs_mkfs_config to write_temp_extent_buffer
+      btrfs-progs: make checksum type explicit in mkfs context structure
+      btrfs-progs: don't blindly assume crc32c in csum_tree_block_size()
+      btrfs-progs: cache csum_type in recover_control
+      btrfs-progs: add checksum type to checksumming functions
+      btrfs-progs: don't assume checksums are always 4 bytes
+      btrfs-progs: pass checksum type to btrfs_csum_data()/btrfs_csum_final()
+      btrfs-progs: sb-mod: simplify update_block_csum()
+      btrfs-progs: update checksumming api
+      btrfs-progs: mkfs: new option to specify checksum type
+      btrfs-progs: add is_valid_csum_type() helper
+      btrfs-progs: add table for checksum type and name
+      btrfs-progs: mkfs: print checksum type when running mkfs
+      btrfs-progs: unbreak btrfs-sb-mod compilation
+
+Lakshmipathi.G (1):
+      btrfs-progs: ci: setup GitLab-CI
+
+Long An (1):
+      btrfs-progs: testsadd clean-test.sh to testsuite-files
+
+Nikolay Borisov (1):
+      btrfs-progs: corrupt-block: Fix description of 'r' option
+
+Qu Wenruo (1):
+      btrfs-progs: print-tree: Use BFS as default traversal method
+
+Rosen Penev (1):
+      btrfs-progs: Fix printf formats
+
+Vladimir Panteleev (2):
+      btrfs-progs: docs: document btrfs-balance exit status in detail
+      btrfs-progs: mkfs: fix xattr enumeration
+
