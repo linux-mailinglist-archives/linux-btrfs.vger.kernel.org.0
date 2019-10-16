@@ -2,35 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD79BD8503
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 02:43:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ACB6D859D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 03:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728240AbfJPAnk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 15 Oct 2019 20:43:40 -0400
-Received: from mout.gmx.net ([212.227.17.21]:57329 "EHLO mout.gmx.net"
+        id S1729970AbfJPBwK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 15 Oct 2019 21:52:10 -0400
+Received: from mout.gmx.net ([212.227.17.20]:48579 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbfJPAnk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 15 Oct 2019 20:43:40 -0400
+        id S1728338AbfJPBwJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 15 Oct 2019 21:52:09 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1571186615;
-        bh=1LmidhbngFvUA+E/KzEIgNCew6eGqGnf9eLytngkovM=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=jYWrIsBZFT3TRwBB73ppjjDT7ggnU8quaZN2QyfkybBxG8OA+zWlzZu+1PefZpjVK
-         y+4p9FoLeX3U7Adw+omx7+HKNc7G04/eCNw7aWr97pUkFTdk+X6mkIZ/TB+F/VZiOp
-         eqeJTu47fiR/WsMA2bhCWmUqImsNtPbr8mkFN4/o=
+        s=badeba3b8450; t=1571190726;
+        bh=zAkKmodHeUy8966JOwp8PwnP2z0fvMqaB/Ui3mH2iE8=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=W1GYCOotftl1FMymGG14zKjusPSLfzvQI7vNPs1IrIkfzsmoWc6YsZ8WplSTVvfb7
+         RQMlYjbM5IouuyORZVlqgq+306eQmj4cYP+5UHU5wcW2X9jChjJpEJ1gYyBYtU/fKl
+         yxRe+BL2CM9ggDfc4+csnZXgy4m3yp6RtBP/belI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MryTF-1hgEIl3ek9-00nwyu; Wed, 16
- Oct 2019 02:43:35 +0200
-Subject: Re: kernel 5.2 read time tree block corruption
-To:     =?UTF-8?Q?Jos=c3=a9_Luis?= <parajoseluis@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CADTa+SqDLtmmjnJ5gz-3jDxi1NGNAu=cyo0kFXSZfnu6QE_Fdw@mail.gmail.com>
- <66e27fee-7f64-6466-866d-42464fca130f@gmx.com>
- <a6d7a4c6-4295-e081-1bfc-74e9d13fd22d@gmx.com>
- <CADTa+SrurdZf5+T+QGNyLc7gKLuTFYsto+L4Q+30y-uQj+jutg@mail.gmail.com>
- <3e7acddf-6503-7746-db4b-a116b7f89c4d@gmx.com>
- <CADTa+SoDEcHvpJj6-QMHUubFcKACiKLQ6izr=uER-hYtqVg20g@mail.gmail.com>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MwQXN-1i2C5A2nbR-00sKT2; Wed, 16
+ Oct 2019 03:52:06 +0200
+Subject: Re: bad tree block start, want #### have 0
+To:     DrYak <doktor.yak@gmail.com>, linux-btrfs@vger.kernel.org
+References: <3bd5b254-f3e4-1b81-da75-7a15cd49fc43@gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -56,353 +50,185 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <0cae0d30-db18-37cc-562f-100c862099e3@gmx.com>
-Date:   Wed, 16 Oct 2019 08:43:31 +0800
+Message-ID: <64330b7d-d3eb-adbc-3b59-ff6dea8d1430@gmx.com>
+Date:   Wed, 16 Oct 2019 09:52:01 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <CADTa+SoDEcHvpJj6-QMHUubFcKACiKLQ6izr=uER-hYtqVg20g@mail.gmail.com>
+In-Reply-To: <3bd5b254-f3e4-1b81-da75-7a15cd49fc43@gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="ZGih63Cb5uBeTVzSQqK5X27B2Bg5jtaQV"
-X-Provags-ID: V03:K1:BXksAcSKBWkRka0blmqD45ozDne2oT778m2FIxOw2qZiHAmV1Fc
- euYfTP7bkeiPyFdQJKH59egc95Q/b7V+QbxHUdgRyEESjHCGVfeMxXY9K67uSXlgym5Rwqr
- VSAviwRnGGYLZ13YgFNF7hQdmJ2tPc8phcxKXTUFY1UztaUEal04DBxjYX8PMZ1I1oDVyBf
- bxRkfHkBN8iBt83QUp6bQ==
+ boundary="vg3dwxhdHslQOs9vw8yI9enaEdVixP5GX"
+X-Provags-ID: V03:K1:d0sQ++K1fZXQBoxsz8+nFtZ6K1Vztp7tyg0gpzMwAtFJ0pT7Xzc
+ pnVQFTakmtunJz1a+P950CNi8qYEZNSmS7iWkfA+CovfqDTr4ZqNsuoR1gs2L7p0dPmnZLg
+ 9YyB1I0ajo/r0KxPXv3cH6e3C5JKMzMLTC/HsKF7/A31OgXWD/6qN2ldlGxVD3LH5DgULrj
+ dq3E6t0mvBQYGcWqraj6A==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:7ZaXeFJST1s=:/hEmVNMYPLRhg3GjJvIaza
- 7bHWgl8501XOOJWU2Q4N6I3QZbvlpYhWv0dQ75Ev4yeTbyf/V2lXHAUiYc3c4d7l4txesxcet
- A4wkTTrXxgjmFrsHKnwww0oZWtCbGnhY0o7C95FzQ7VS5iBxbSnBjfBN6ahPccfUKQQAflj7f
- +UdOzeDipuenw+Daez08W4vWalws2/z6IIi+rBjV1AfeP6ctoq1tI2PRvp4d0DUUYoT52Rq8N
- nuc1/CWX2KZiThfo3r3Hvdzxrn0wS9pbZYo23HOQxhNtQqpccC3DFOAi3Z58Md4gg0zO0v+0n
- Q5fSUB4/RAcKsITdr0hBkaA7yMwR4BgNvtml4vsipcm1rewkUgH71SU8bwCJ78IyEfmVYwWw0
- K6w61hKx0pDzFh03zpAXsB6vj3JCWyke5pSDEN+cCyL8y1rkncnoVUgZo9F3+QC1yJoBj4on0
- t28IEgwoZLVwpdq5jAHDh5UMo4g/IpTrxPREUgrUKf07pns20ENwhHCoA6NRP495x+dMIJW9s
- P+3uZiMih1pSn/qLrpZNHQk9sHivxKIu0JTCA5DT8in8MWkjBpHpFRgOdcRwHlCU3OBjd/5sL
- UpFNYIycQJO7J3P2z90RCNN5Uq5EvT+TJWrZS8cQrf/IG0gNlP2efpN9oAhVpBez/PdvCioRp
- PGZEX/knS2tMH1yapIrn0ytgjkK6f48lS/RvAcoQ5k4qU4YmL+FD0FUMsHnkWZs0pv5JcDv3J
- kK9JemIeOdEYJuAofhq2dzsuOoZvY5vvjRIQHCrXw2ru92sb8Uvdfma7uAs8gfsNsgKMGedHC
- qUiF+xAu07WaGtK1KFU7TI72bzv7YQwczzY/Q4NERJFnHvmAlNMqXsurWbKboMBD2m2D7Xvul
- HhHEIB8UBIR4lFVx/DS34t+YGtVI8HSs17Xluedw6K9J063nqTyDwQjxzC2aSSgdJGOO2SV5h
- +/3kOZ11ZQSXyV29NxXA96TWSqmP7RD8+E491cmBkKSdKSqFN8C2XbUczx6MjvL0ZfmJkPerF
- cdFStJOo5Vec9B7gcQzO8lO74aS1EWyxdxSnHfIk4D/576ucLX7J9Wo93oJYsnfDL04/7DSTI
- Jrb/gWAybVuRxRfieUBx8xK0peUbKrhQWYDDsaXpPWse3KmydSa+XpWbE6njT1HUhaH2EZCXV
- 9nc3/AmD7mN/QDGA0edMXvKEClLTjMAnUzZ+6BI90zWQnuCZFoM3D6E8yZ89Imm/L7G5uRUPU
- wWyCrjCkcMv+hqquk5bhMqvA8HdBDs1uemJ60ZVPWkvVvRkDQKZsfpnuPII0=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:+Nn6DstAWWo=:O+MudGcjjQ/33H/qm1wFr2
+ qpkwjbv/VE00ltMowToT9WGzukh17w2k6Pzj952IHnJ9vhiGf1WaRCNL2h/p3pJ0tF8B+uKb9
+ IZO1q82E7yU+O7aLqtpQ87Yjk2/IXMCgSZJ/LP/9DnfsbuXD2tO919jOgFPwfLh/CLLM0l+JK
+ etQHa6FP164KqAkIh5XO7WRJCWq1bTGOEOR5FhPd0b/mLMoBN01iVWIlbFVPzTSaVvY0m9dL8
+ TGj/f5iZ8cBZqrtv34tKcnh9fcVmd+2ercB70GFP8i19eNB8Q5RGiw3Bfeb0EbR/4FoYExrrE
+ /ETspJP0057h2qlHY4iQTV7AzBNQgYeAiLhV0KiOfZlhgyfMwvOzSjzPtkGC+SLzNado8Bu6y
+ pWEvZGJWwhzbZcPTYhmUQuYpvkA3nFElhEYMiaH7kyEyy7gZLkYNUnYx7LyUbUncmOXVWvTds
+ 8U5LhsNNnRQ7b5+GFKVy9q4TVYfQiBroMa4MntNNsaIJslMu4jiIXIWY/ZikkvwcPU+Whr8cZ
+ WBHVMwPbTIDn7Z4zl+vzV0k7u07X4GKHwyAD70Kjo8de5ExdJ1eGsp+Zxf61WQqXp9oc1x1l1
+ MSlfd4+C2peJS3AuR2KU6nxcJuMGHBb0wgKXuzCIOPzEdKzdB7PQEVsFpCdcXjcrLiMK8cyXA
+ e67nFA/W/wD7q/KpbO1gUA309U48e4zkOtcSKdtt0lD5Es5m3iSuAecbUugXzJ/Yf2dseaH2i
+ 9WZQbjJLwiQdswHLw42K4HhcoIxp11cQg4xIWAgAFPnG0sI8d3nu8eCThji8IumAvsCvFGa0F
+ UYM/bdoGebZqa5k+J/3a32yDAj26EZOVLGpWyp6UgFWFoZvuM4uk9yG7yy/1FrCfNf1rddZ6a
+ 7+CCxDxNE7AYYB9oOUGl9Lu6xCz/f+Wb/c9RYCRY49U6ydz2mAYxnV13Rpy6hROlET0N7kawA
+ nx2zyCWyRQWJUjlQiiNStGOa2eTKzRJzcShVeDemZNVT5wAaN5ViU+H+Hnwhz0a1pkfpwuEep
+ dDRhn728sx329gtoEQ4zNLF69yKSQL5Jma03U5IgsS7m1/GSvq1eVpU+/JM2f4KY93BG3nXJH
+ 2HRbwC5rS9bsZZG9HegBJeLO8hdNe3ntvzr8LB3eUItSMByDJBMxYE/6QaRfmZ7YoA7xvcfa5
+ kn1RD0XxcGF43N/JOGPU+i3o72fItxPr0iF4+eqIrpYbX01ffaZt8O05P+JETue30TINp8oAB
+ ckDhtgPQXFDXSPY+3rCSiZddbXNClJlhTxsrg6naXwYSs3EqgeLo8w6/feyo=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ZGih63Cb5uBeTVzSQqK5X27B2Bg5jtaQV
-Content-Type: multipart/mixed; boundary="LJxPVva8FIddgCtHnTAtIjCZxQLVRvABC"
+--vg3dwxhdHslQOs9vw8yI9enaEdVixP5GX
+Content-Type: multipart/mixed; boundary="BNDRUpxe3aD0d8znFl8pDHU4Fphd2G9GU"
 
---LJxPVva8FIddgCtHnTAtIjCZxQLVRvABC
+--BNDRUpxe3aD0d8znFl8pDHU4Fphd2G9GU
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/10/16 =E4=B8=8A=E5=8D=881:55, Jos=C3=A9 Luis wrote:
-> I also noticed the craziness of the previous dump. I cannot remember
-> the kernel running by this date but I use to install the latest stable
-> kernel on the Manjaro repositories (I'm an early adopter :P).
-> According the Manjaro forum release news they roll up version 4.19 by
-> these days so probably I was using kernel 4.19 or 4.18. Diggin on my
-> memory, maybe I could access that filesystem from a Windows 10 running
-> on another disk using the windows btrfs driver that could be the
-> origin of the problem.
+On 2019/10/16 =E4=B8=8A=E5=8D=883:03, DrYak wrote:
+> Hello
+>=20
+> I'm having trouble on a BTRFS file system that I use on a Raspberry Pi.=
 
-That explains the problem why there are some strange windows related file=
-=2E
+> I can still mount and access (nearly all) my data.
+>=20
+> The trouble origin itself is probably hardware (flacky USB3-to-mSATA
+> adapter and/or power stability), not necessarily a bug in BTRFS.
+>=20
+> As I've said I can retreive nearly all the data I need, so I could
+> surely just `btrfs restore` and then rebuild a new filesystem.
+>=20
+> BUT...
+>=20
+> I wanted to know if it would possible to just repair the filesystem.
+> (Basically kill the broken extent and/or excise the corresponding tree
+> leaf).
 
-And that also explains why kernel tree-checker isn't happy about that at
-all.
-Maybe Windows btrfs driver is using some strange inode number to do its
-own work, but definitely not something friendly to upstream btrfs.
-
-You may want to report the bug to windows btrfs developers.
+It's not impossible, but not practical under most cases.
 
 >=20
-> I added a \s to the pattern you provided to avoid undesired inode infor=
-mation:
-> [manjaro@manjaro ~]$ sudo btrfs ins dump-tree -t 5 /dev/sdb2 | grep "(4=
-31 " -A 7
-> output --> https://pastebin.com/y3LzqNx6
+> Are there any way ?
+>=20
+> (Again it's not critical, I could btrfs-restore, I just want to know if=
 
-I see no obvious problem. Maybe some compressed data extent doesn't have
-csum, then btrfs check reports it as bad file extent.
+> it would be possible to clean it instead).
+>=20
+>=20
+>=20
+> Here are `journalctl` message regarding the failure:
+>=20
+> Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): enabling
+> auto defrag
+> Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): enabling ss=
+d
+> optimizations
+> Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): disk space
+> caching is enabled
+> Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): has skinny
+> extents
+> Oct 15 20:37:20 marsberry kernel: BTRFS info (device sdb1): bdev
+> /dev/sdb1 errs: wr 0, rd 0, flush 0, corrupt 126, gen 0
+> Oct 15 20:37:49 marsberry kernel: BTRFS error (device sdb1): bad tree
+> block start, want 547248750592 have 0
+> Oct 15 20:37:49 marsberry kernel: BTRFS error (device sdb1): bad tree
+> block start, want 547248750592 have 0
 
-Original mode doesn't report info as detailed as possible.
-But anyway, it shouldn't be a big problem.
-
-If you're not confident about it, you can try to defrag those inodes, it
-should rewrite them and populate the csum.
+For this block start 0, it means the header of the expected tree block
+is all zero.
+Normally, either it means the write doesn't reach disk, or a wrong
+discard is triggered.
 
 >=20
-> Is there any magic command to repair my sdb2 filesystem? Or I have to
-> backup data and rebuild those filesystems?
+>=20
+>=20
+> And here's the read-only check output:
+>=20
+> # btrfs check /dev/sdb1
+> Opening filesystem to check...
+> Checking filesystem on /dev/sdb1
+> UUID: 5475b0ac-0010-4875-a0d6-e6641c951f5c
+> [1/7] checking root items
+> [2/7] checking extents
+> checksum verify failed on 547248750592 found E4E3BDB6 wanted 00000000
+> checksum verify failed on 547248750592 found E4E3BDB6 wanted 00000000
+> bad tree block 547248750592, bytenr mismatch, want=3D547248750592, have=
+=3D0
+> checksum verify failed on 547248766976 found 8E4EC148 wanted 00000000
+> checksum verify failed on 547248766976 found 8E4EC148 wanted 00000000
+> bad tree block 547248766976, bytenr mismatch, want=3D547248766976, have=
+=3D0
+> owner ref check failed [547248750592 16384]
+> owner ref check failed [547248766976 16384]
+> ERROR: errors found in extent allocation tree or chunk allocation
 
-In fact it's not that hard to repair, just remove the offending craziness=
-=2E
+According to the owner ref check line, it's extent tree. So you have
+some chance repair it.
 
-btrfs-corrupt-block should provide the ability to delete items.
-It a tool included in btrfs-progs, but not provided in btrfs-progs
-packages. You may need to compile it from source code.
-
-In your case, you need quite some calls to delete all the bad inodes:
-
-/* FREE_INO INODE_ITEM 0 */
-# ./btrfs-corrupt-block -d 18446744073709551604,1,0 /dev/sdb2
-
-/* FREE_SPACE UNTYPED 0 */
-# ./btrfs-corrupt-block -d 18446744073709551605,0,0 /dev/sdb2
-
-=2E..
-
-And so on. You need to parse the key output to numeric value and pass it
-to btrfs-corrupt-block, until all finished.
-
-If it's too slow, I could add a new hack into btrfs-corrupt-block to
-delete them in a batch.
+Since it's non-critical, please try "btrfs check --init-extent-tree" to
+see if it's working.
 
 Thanks,
 Qu
+
+> [3/7] checking free space cache
+> [4/7] checking fs roots
+> [5/7] checking only csums items (without verifying data)
+> checksum verify failed on 547248766976 found 8E4EC148 wanted 00000000
+> checksum verify failed on 547248766976 found 8E4EC148 wanted 00000000
+> bad tree block 547248766976, bytenr mismatch, want=3D547248766976, have=
+=3D0
+> Error going to next leaf -5
+> [6/7] checking root refs
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 247339167744 bytes used, error(s) found
+> total csum bytes: 241066812
+> total tree bytes: 434569216
+> total fs tree bytes: 169771008
+> total extent tree bytes: 16039936
+> btree space waste bytes: 42891494
+> file data blocks allocated: 270783406080
+>  referenced 268366499840
 >=20
-> Thanks Qu,
-> Jos=C3=A9 Luis
 >=20
-> El mar., 15 oct. 2019 a las 15:25, Qu Wenruo
-> (<quwenruo.btrfs@gmx.com>) escribi=C3=B3:
->>
->>
->>
->> On 2019/10/15 =E4=B8=8B=E5=8D=8811:03, Jos=C3=A9 Luis wrote:
->>> Thanks for fast response Qu.
->>>
->>> I booted into a pendrive live system for the test cause I'm using the=
-
->>> involving fylesystem with kernel 4.19. This time when I mount
->>>> [manjaro@manjaro ~]$ sudo mount /dev/sdb2 /mnt
->>>> mount: /mnt: no se puede leer el superbloque en /dev/sdb2.
->>> and in the dmesg:
->>> [ +30,866472] BTRFS info (device sdb2): disk space caching is enabled=
-
->>> [  +0,017443] BTRFS info (device sdb2): enabling ssd optimizations
->>> [  +0,000637] BTRFS critical (device sdb2): corrupt leaf: root=3D5
->>> block=3D32145457152 slot=3D99, invalid key objectid: has
->>> 18446744073709551605 expect 6 or [256, 18446744073709551360] or
->>> 18446744073709551604
->>> [  +0,000002] BTRFS error (device sdb2): block=3D32145457152 read tim=
-e
->>> tree block corruption detected
->>> [  +0,000012] BTRFS warning (device sdb2): failed to read fs tree: -5=
-
->>> [  +0,061995] BTRFS error (device sdb2): open_ctree failed
->>>
->>> So I suppose you need dump output from the block 32145457152 so I pas=
-tebin that:
->>> sudo btrfs ins dump-tree -b 32145457152 /dev/sdb2
->>> output --> https://pastebin.com/ssB5HTn7
->>
->> The output is way crazier than I thought...
->>
->> I was only expecting some strange inode number, but what I got is
->> completely ridiculous.
->>
->> From item 96, we are having completely impossible inodes.
->> From FREE_INO to DATA_RELOC, even EXTENT_CSUM.
->>
->> All of these are impossible to exist in fs tree.
->> The most strange thing is, they are all last modified in 2019-2-15.
->>
->> Anyway, the tree-checker is doing completely valid behavior for this
->> case. The data is really ridiculous.
->>
->> Any history about the kernel used in that time?
->> I see something only possible in Windows, any clue?
->>
->>>
->>> Please provide the parameter to the grep redirection for: "btrfs ins
->>> dump-tree -t 5 /dev/sdb2 | grep -A 7"
->>
->> My bad, the parameter is "(431"
->>
->> It will output all info about inode 431, so we can make sure what's
->> going wrong.
->>
->> Thanks,
->> Qu
->>>
->>> El mar., 15 oct. 2019 a las 14:38, Qu Wenruo
->>> (<quwenruo.btrfs@gmx.com>) escribi=C3=B3:
->>>>
->>>>
->>>>
->>>> On 2019/10/15 =E4=B8=8B=E5=8D=888:24, Qu Wenruo wrote:
->>>>>
->>>>>
->>>>> On 2019/10/15 =E4=B8=8B=E5=8D=886:15, Jos=C3=A9 Luis wrote:
->>>>>> Dear devs,
->>>>>>
->>>>>> I cannot use kernel >=3D 5.2, They cannot mount sdb2 nor sb3 both =
-btrfs
->>>>>> filesystems. I can work as intended on 4.19 which is an LTS versio=
-n,
->>>>>> previously using 5.1 but Manjaro removed it from their repositorie=
-s.
->>>>>>
->>>>>> More info:
->>>>>> =C2=B7 dmesg:
->>>>>>> [oct15 13:47] BTRFS info (device sdb2): disk space caching is ena=
-bled
->>>>>>> [  +0,009974] BTRFS info (device sdb2): enabling ssd optimization=
-s
->>>>>>> [  +0,000481] BTRFS critical (device sdb2): corrupt leaf: root=3D=
-5 block=3D30622793728 slot=3D115, invalid key objectid: has 1844674407370=
-9551605 expect 6 or [256, 18446744073709551360] or 18446744073709551604
->>>>>
->>>>> In fs tree, you are hitting a free space cache inode?
->>>>> That doesn't sound good.
->>>>>
->>>>> Please provide the following dump:
->>>>>
->>>>> # btrfs ins dump-tree -b 30622793728 /dev/sdb2
->>>>>
->>>>> The output may contain filename, feel free to remove filenames.
->>>>>
->>>>>>> [  +0,000002] BTRFS error (device sdb2): block=3D30622793728 read=
- time tree block corruption detected
->>>>>>> [  +0,000021] BTRFS warning (device sdb2): failed to read fs tree=
-: -5
->>>>>>> [  +0,044643] BTRFS error (device sdb2): open_ctree failed
->>>>>>
->>>>>>
->>>>>>
->>>>>> =C2=B7 sudo mount  /dev/sdb2 /mnt/
->>>>>>> mount: /mnt: no se puede leer el superbloque en /dev/sdb2.
->>>>>>
->>>>>> (cannot read superblock on /dev...)
->>>>>>
->>>>>> =C2=B7 sudo btrfs rescue super-recover /dev/sdb2
->>>>>>> All supers are valid, no need to recover
->>>>>>
->>>>>>
->>>>>> =C2=B7 sudo btrfs check /dev/sdb2
->>>>>>> Opening filesystem to check...
->>>>>>> Checking filesystem on /dev/sdb2
->>>>>>> UUID: ff559c37-bc38-491c-9edc-fa6bb0874942
->>>>>>> [1/7] checking root items
->>>>>>> [2/7] checking extents
->>>>>>> [3/7] checking free space cache
->>>>>>> cache and super generation don't match, space cache will be inval=
-idated
->>>>>>> [4/7] checking fs roots
->>>>>>> root 5 inode 431 errors 1040, bad file extent, some csum missing
->>>>>>> root 5 inode 755 errors 1040, bad file extent, some csum missing
->>>>>>> root 5 inode 2379 errors 1040, bad file extent, some csum missing=
-
->>>>>>> root 5 inode 11721 errors 1040, bad file extent, some csum missin=
-g
->>>>>>> root 5 inode 12211 errors 1040, bad file extent, some csum missin=
-g
->>>>>>> root 5 inode 15368 errors 1040, bad file extent, some csum missin=
-g
->>>>>>> root 5 inode 35329 errors 1040, bad file extent, some csum missin=
-g
->>>>>>> root 5 inode 960427 errors 1040, bad file extent, some csum missi=
-ng
->>>>>>> root 5 inode 18446744073709551605 errors 2001, no inode item, lin=
-k count wrong
->>>>>>>         unresolved ref dir 256 index 0 namelen 12 name $RECYCLE.B=
-IN filetype 2 errors 6, no dir index, no inode ref
->>>>>
->>>>> Check is reporting the same problem of the inode.
->>>>>
->>>>> We need to make sure what's going wrong on that leaf, based on the
->>>>> mentioned dump.
->>>>>
->>>>> For the csum missing error and bad file extent, it should be a big =
-problem.
->>>>
->>>> s/should/should not/
->>>>
->>>>> if you want to make sure what's going wrong, please provide the
->>>>> following dump:
->>>>>
->>>>> # btrfs ins dump-tree -t 5 /dev/sdb2 | grep -A 7
->>>>>
->>>>> Also feel free the censor the filenames.
->>>>>
->>>>> Thanks,
->>>>> Qu
->>>>>
->>>>>>> root 388 inode 1245 errors 1040, bad file extent, some csum missi=
-ng
->>>>>>> root 388 inode 1288 errors 1040, bad file extent, some csum missi=
-ng
->>>>>>> root 388 inode 1292 errors 1040, bad file extent, some csum missi=
-ng
->>>>>>> root 388 inode 1313 errors 1040, bad file extent, some csum missi=
-ng
->>>>>>> root 388 inode 11870 errors 1040, bad file extent, some csum miss=
-ing
->>>>>>> root 388 inode 68126 errors 1040, bad file extent, some csum miss=
-ing
->>>>>>> root 388 inode 88051 errors 1040, bad file extent, some csum miss=
-ing
->>>>>>> root 388 inode 88255 errors 1040, bad file extent, some csum miss=
-ing
->>>>>>> root 388 inode 88455 errors 1040, bad file extent, some csum miss=
-ing
->>>>>>> root 388 inode 88588 errors 1040, bad file extent, some csum miss=
-ing
->>>>>>> root 388 inode 88784 errors 1040, bad file extent, some csum miss=
-ing
->>>>>>> root 388 inode 88916 errors 1040, bad file extent, some csum miss=
-ing
->>>>>>> ERROR: errors found in fs roots
->>>>>>> found 37167415296 bytes used, error(s) found
->>>>>>> total csum bytes: 33793568
->>>>>>> total tree bytes: 1676722176
->>>>>>> total fs tree bytes: 1540243456
->>>>>>> total extent tree bytes: 81510400
->>>>>>> btree space waste bytes: 306327457
->>>>>>> file data blocks allocated: 42200928256
->>>>>>>  referenced 52868354048
->>>>>>
->>>>>>
->>>>>>
->>>>>>
->>>>>> ---
->>>>>>
->>>>>> Regards,
->>>>>> Jos=C3=A9 Luis.
->>>>>>
->>>>>
->>>>
->>
+>=20
+> So any way to remove the damnaged data instead of restore/re-mkfs the
+> still non-damaged one ?
+>=20
+> Thanks you!
+>=20
 
 
---LJxPVva8FIddgCtHnTAtIjCZxQLVRvABC--
+--BNDRUpxe3aD0d8znFl8pDHU4Fphd2G9GU--
 
---ZGih63Cb5uBeTVzSQqK5X27B2Bg5jtaQV
+--vg3dwxhdHslQOs9vw8yI9enaEdVixP5GX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2mZ7MACgkQwj2R86El
-/qhDWwgApDf2sivdLNWW1KisOyzl1SeQWN2rE7J323ry9n+jNfDoBLaLKGbXmmuL
-b7obfEo/fc8UxoG9GTH4bhRcR28b2eXVnLxrlzMRwC5ymsqHKRJZoL2G3xdjqcCr
-AEPywQuDZXtPh1VEbMtx/6+Zzgf7E1+tiGt9WFeFZSXjFdvoiceP5ge5wa/rv3hG
-QzXxz2pCJeIQBKQWHcakxLYlDu16x5KyanSK0H1AuqEdAq+yP1IbmEuZggMIAoqs
-TA1i7wwZNzGQi8W/SbTQW7YqaSE0+yfgwo7fwiYHGzBgyZ/RHYBKmUm5yzr+bQa4
-VuoGO9KezQ+WSBaoafLmDQP521CR1w==
-=le6T
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2md8EACgkQwj2R86El
+/qjj1QgAp5k6xPui5uaxpz6gXDml53F3Acn5wzcvhHMcrBtTtyq8QWvNuzAakDmF
+I3JELhDhkx+yPoREpc84Lofm/IKJ644WHE4GRLPX+GODV6R5W95ueqSK6LqcPZAa
+uUDqoPNyLJwK3dmfVu7garq2DVBWRiXx8kVOEz3TCG92w9DFmqKe5+033XzmkhKT
+c5o8FOs9pT+Y9T7qpTbFWE4buxRg6XfBmf2erSVkrhlfk8EA1K3nJ75eadipi0SS
+afRT5a0lqYBFp6E6ECv0Ntp5e3Uq77ELcHjyJli87zl85SKOb0or7KA8v9mmYi78
+j69jICETIJbe9dOTiCuWeDtmqirc8Q==
+=nOq4
 -----END PGP SIGNATURE-----
 
---ZGih63Cb5uBeTVzSQqK5X27B2Bg5jtaQV--
+--vg3dwxhdHslQOs9vw8yI9enaEdVixP5GX--
