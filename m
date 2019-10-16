@@ -2,177 +2,98 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97D5BD8B81
-	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 10:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2748D8C6F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 16 Oct 2019 11:22:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390087AbfJPImE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Oct 2019 04:42:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48272 "EHLO mx1.suse.de"
+        id S2391929AbfJPJWi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Oct 2019 05:22:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49446 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404146AbfJPImD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Oct 2019 04:42:03 -0400
+        id S1726480AbfJPJWi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Oct 2019 05:22:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 569D1AD7F
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2019 08:42:01 +0000 (UTC)
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-To:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Cc:     Johannes Thumshirn <jthumshirn@suse.de>
-Subject: [RFC PATCH 4/4] btrfs-progs: add --auth-key to dump-super
-Date:   Wed, 16 Oct 2019 10:41:58 +0200
-Message-Id: <20191016084158.7573-4-jthumshirn@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20191016084158.7573-1-jthumshirn@suse.de>
-References: <20191016084158.7573-1-jthumshirn@suse.de>
+        by mx1.suse.de (Postfix) with ESMTP id 29D91B1D7;
+        Wed, 16 Oct 2019 09:22:36 +0000 (UTC)
+Subject: Re: [RFC PATCH v2 3/5] btrfs: generalize btrfs_lookup_bio_sums_dio()
+To:     Omar Sandoval <osandov@osandov.com>, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Cc:     kernel-team@fb.com, Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>, linux-api@vger.kernel.org
+References: <cover.1571164762.git.osandov@fb.com>
+ <01fdb646d7572f7d0d123937835db5c605e25a5e.1571164762.git.osandov@fb.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <aa49f032-f6be-8594-7c80-7101a0c6bcd0@suse.com>
+Date:   Wed, 16 Oct 2019 12:22:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <01fdb646d7572f7d0d123937835db5c605e25a5e.1571164762.git.osandov@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Add auth-key option for btrfs inspect-internal dump-super so we can dump an
-authenticated super-block and check for it's integrity.
 
-Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
----
- cmds/inspect-dump-super.c | 35 ++++++++++++++++++++++++-----------
- 1 file changed, 24 insertions(+), 11 deletions(-)
 
-diff --git a/cmds/inspect-dump-super.c b/cmds/inspect-dump-super.c
-index 5bf5a6bc6f27..ad81ba9f9ea2 100644
---- a/cmds/inspect-dump-super.c
-+++ b/cmds/inspect-dump-super.c
-@@ -35,11 +35,13 @@
- #include "crypto/crc32c.h"
- #include "common/help.h"
- 
--static int check_csum_sblock(void *sb, int csum_size, u16 csum_type)
-+static int check_csum_sblock(void *sb, int csum_size, u16 csum_type,
-+			     char *auth_key)
- {
-+	struct btrfs_fs_info dummy_fs_info = { .auth_key = auth_key };
- 	u8 result[BTRFS_CSUM_SIZE];
- 
--	btrfs_csum_data(NULL, csum_type, (u8 *)sb + BTRFS_CSUM_SIZE,
-+	btrfs_csum_data(&dummy_fs_info, csum_type, (u8 *)sb + BTRFS_CSUM_SIZE,
- 			result, BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
- 
- 	return !memcmp(sb, result, csum_size);
-@@ -325,7 +327,8 @@ static bool is_valid_csum_type(u16 csum_type)
- 	}
- }
- 
--static void dump_superblock(struct btrfs_super_block *sb, int full)
-+static void dump_superblock(struct btrfs_super_block *sb, int full,
-+			    char *auth_key)
- {
- 	int i;
- 	char *s, buf[BTRFS_UUID_UNPARSED_SIZE];
-@@ -352,11 +355,11 @@ static void dump_superblock(struct btrfs_super_block *sb, int full)
- 	printf("csum\t\t\t0x");
- 	for (i = 0, p = sb->csum; i < csum_size; i++)
- 		printf("%02x", p[i]);
--	if (csum_type == BTRFS_CSUM_TYPE_HMAC_SHA256)
-+	if (csum_type == BTRFS_CSUM_TYPE_HMAC_SHA256 && !auth_key)
- 		printf(" [NO KEY FOR HMAC]");
- 	else if (!is_valid_csum_type(csum_type))
- 		printf(" [UNKNOWN CSUM TYPE OR SIZE]");
--	else if (check_csum_sblock(sb, csum_size, csum_type))
-+	else if (check_csum_sblock(sb, csum_size, csum_type, auth_key))
- 		printf(" [match]");
- 	else
- 		printf(" [DON'T MATCH]");
-@@ -484,7 +487,7 @@ static void dump_superblock(struct btrfs_super_block *sb, int full)
- }
- 
- static int load_and_dump_sb(char *filename, int fd, u64 sb_bytenr, int full,
--		int force)
-+		int force, char *auth_key)
- {
- 	u8 super_block_data[BTRFS_SUPER_INFO_SIZE];
- 	struct btrfs_super_block *sb;
-@@ -509,7 +512,7 @@ static int load_and_dump_sb(char *filename, int fd, u64 sb_bytenr, int full,
- 		error("bad magic on superblock on %s at %llu",
- 				filename, (unsigned long long)sb_bytenr);
- 	} else {
--		dump_superblock(sb, full);
-+		dump_superblock(sb, full, auth_key);
- 	}
- 	return 0;
- }
-@@ -523,6 +526,7 @@ static const char * const cmd_inspect_dump_super_usage[] = {
- 	"-s|--super <super>    specify which copy to print out (values: 0, 1, 2)",
- 	"-F|--force            attempt to dump superblocks with bad magic",
- 	"--bytenr <offset>     specify alternate superblock offset",
-+	"--auth-key <key>      specify authentication key for authenticated file-system",
- 	"",
- 	"Deprecated syntax:",
- 	"-s <bytenr>           specify alternate superblock offset, values other than 0, 1, 2",
-@@ -545,16 +549,19 @@ static int cmd_inspect_dump_super(const struct cmd_struct *cmd,
- 	int ret = 0;
- 	u64 arg;
- 	u64 sb_bytenr = btrfs_sb_offset(0);
-+	char *auth_key = NULL;
- 
- 	while (1) {
- 		int c;
--		enum { GETOPT_VAL_BYTENR = 257 };
-+		enum { GETOPT_VAL_BYTENR = 257, GETOPT_VAL_AUTHKEY, };
- 		static const struct option long_options[] = {
- 			{"all", no_argument, NULL, 'a'},
- 			{"bytenr", required_argument, NULL, GETOPT_VAL_BYTENR },
- 			{"full", no_argument, NULL, 'f'},
- 			{"force", no_argument, NULL, 'F'},
- 			{"super", required_argument, NULL, 's' },
-+			{"auth-key", required_argument, NULL,
-+				GETOPT_VAL_AUTHKEY },
- 			{NULL, 0, NULL, 0}
- 		};
- 
-@@ -601,13 +608,16 @@ static int cmd_inspect_dump_super(const struct cmd_struct *cmd,
- 			sb_bytenr = arg;
- 			all = 0;
- 			break;
-+		case GETOPT_VAL_AUTHKEY:
-+			auth_key = strdup(optarg);
-+			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
- 		}
- 	}
- 
- 	if (check_argc_min(argc - optind, 1))
--		return 1;
-+		goto out;
- 
- 	for (i = optind; i < argc; i++) {
- 		filename = argv[i];
-@@ -624,7 +634,8 @@ static int cmd_inspect_dump_super(const struct cmd_struct *cmd,
- 			for (idx = 0; idx < BTRFS_SUPER_MIRROR_MAX; idx++) {
- 				sb_bytenr = btrfs_sb_offset(idx);
- 				if (load_and_dump_sb(filename, fd,
--						sb_bytenr, full, force)) {
-+						sb_bytenr, full, force,
-+						auth_key)) {
- 					close(fd);
- 					ret = 1;
- 					goto out;
-@@ -633,13 +644,15 @@ static int cmd_inspect_dump_super(const struct cmd_struct *cmd,
- 				putchar('\n');
- 			}
- 		} else {
--			load_and_dump_sb(filename, fd, sb_bytenr, full, force);
-+			load_and_dump_sb(filename, fd, sb_bytenr, full, force,
-+					 auth_key);
- 			putchar('\n');
- 		}
- 		close(fd);
- 	}
- 
- out:
-+	free(auth_key);
- 	return ret;
- }
- DEFINE_SIMPLE_COMMAND(inspect_dump_super, "dump-super");
--- 
-2.16.4
+On 15.10.19 г. 21:42 ч., Omar Sandoval wrote:
+> From: Omar Sandoval <osandov@fb.com>
+> 
+> This isn't actually dio-specific; it just looks up the csums starting at
+> the given offset instead of using the page index. Rename it to
+> btrfs_lookup_bio_sums_at_offset() and add the dst parameter. We might
+> even want to expose __btrfs_lookup_bio_sums() as the public API instead
+> of having two trivial wrappers, but I'll leave that for another day.
+
+IMO exposing btrfs_lookup_bio_sums and adding proper kernel doc for its
+parameters is the correct way forward. Consider doing this if the
+general direction of this patchset is accepted and before sending the
+final revision.
+
 
