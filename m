@@ -2,27 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B876ADAB2A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 13:28:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35301DAB2B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 13:28:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439678AbfJQL2q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 07:28:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52720 "EHLO mx1.suse.de"
+        id S2439694AbfJQL2t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 07:28:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52734 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2405872AbfJQL2q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 07:28:46 -0400
+        id S2439692AbfJQL2t (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 07:28:49 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 47F72B3C9;
-        Thu, 17 Oct 2019 11:28:44 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id A0880B372;
+        Thu, 17 Oct 2019 11:28:46 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9E75CDA808; Thu, 17 Oct 2019 13:28:55 +0200 (CEST)
+        id E7A89DA808; Thu, 17 Oct 2019 13:28:57 +0200 (CEST)
 From:   David Sterba <dsterba@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 1/2] btrfs: tracepoints: drop typecasts from printk
-Date:   Thu, 17 Oct 2019 13:28:55 +0200
-Message-Id: <2084ebaaff9a6a3058052da1eaef8a3036302744.1571311653.git.dsterba@suse.com>
+Subject: [PATCH 2/2] btrfs: tracepoints: constify all pointers
+Date:   Thu, 17 Oct 2019 13:28:57 +0200
+Message-Id: <04f6c0d03c2b398ffdca28690824e843f06e46f0.1571311653.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <cover.1571311653.git.dsterba@suse.com>
 References: <cover.1571311653.git.dsterba@suse.com>
@@ -33,124 +33,188 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Remove typecasts from trace printk, adjust types and move typecast to
-the assignment if necessary. When assigning, the types are more obvious
-compared to matching the variables to the format strings.
+We don't modify the data passed to tracepoints, some of the declarations
+are already const, add it to the rest.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- include/trace/events/btrfs.h | 28 +++++++++++++---------------
- 1 file changed, 13 insertions(+), 15 deletions(-)
+ include/trace/events/btrfs.h | 52 ++++++++++++++++++------------------
+ 1 file changed, 26 insertions(+), 26 deletions(-)
 
 diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index c60cf281cb86..11e9a6cc7f63 100644
+index 11e9a6cc7f63..92da846981ce 100644
 --- a/include/trace/events/btrfs.h
 +++ b/include/trace/events/btrfs.h
-@@ -170,7 +170,7 @@ DECLARE_EVENT_CLASS(btrfs__inode,
+@@ -292,7 +292,7 @@ TRACE_EVENT_CONDITION(btrfs_get_extent,
  
- 	TP_STRUCT__entry_btrfs(
- 		__field(	u64,  ino			)
--		__field(	blkcnt_t,  blocks		)
-+		__field(	u64,  blocks			)
- 		__field(	u64,  disk_i_size		)
- 		__field(	u64,  generation		)
- 		__field(	u64,  last_trans		)
-@@ -194,7 +194,7 @@ DECLARE_EVENT_CLASS(btrfs__inode,
- 		  show_root_type(__entry->root_objectid),
- 		  __entry->generation,
- 		  __entry->ino,
--		  (unsigned long long)__entry->blocks,
-+		  __entry->blocks,
- 		  __entry->disk_i_size,
- 		  __entry->last_trans,
- 		  __entry->logged_trans)
-@@ -574,7 +574,7 @@ DECLARE_EVENT_CLASS(btrfs__writepage,
- 		__field(	char,   for_kupdate		)
- 		__field(	char,   for_reclaim		)
- 		__field(	char,   range_cyclic		)
--		__field(	pgoff_t,  writeback_index	)
-+		__field(	unsigned long,  writeback_index	)
- 		__field(	u64,    root_objectid		)
- 	),
+ TRACE_EVENT(btrfs_handle_em_exist,
  
-@@ -603,7 +603,7 @@ DECLARE_EVENT_CLASS(btrfs__writepage,
- 		  __entry->range_start, __entry->range_end,
- 		  __entry->for_kupdate,
- 		  __entry->for_reclaim, __entry->range_cyclic,
--		  (unsigned long)__entry->writeback_index)
-+		  __entry->writeback_index)
+-	TP_PROTO(struct btrfs_fs_info *fs_info,
++	TP_PROTO(const struct btrfs_fs_info *fs_info,
+ 		const struct extent_map *existing, const struct extent_map *map,
+ 		u64 start, u64 len),
+ 
+@@ -330,8 +330,8 @@ TRACE_EVENT(btrfs_handle_em_exist,
+ /* file extent item */
+ DECLARE_EVENT_CLASS(btrfs__file_extent_item_regular,
+ 
+-	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
+-		 struct btrfs_file_extent_item *fi, u64 start),
++	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
++		 const struct btrfs_file_extent_item *fi, u64 start),
+ 
+ 	TP_ARGS(bi, l, fi, start),
+ 
+@@ -385,8 +385,8 @@ DECLARE_EVENT_CLASS(btrfs__file_extent_item_regular,
+ DECLARE_EVENT_CLASS(
+ 	btrfs__file_extent_item_inline,
+ 
+-	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
+-		 struct btrfs_file_extent_item *fi, int slot, u64 start),
++	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
++		 const struct btrfs_file_extent_item *fi, int slot, u64 start),
+ 
+ 	TP_ARGS(bi, l, fi, slot,  start),
+ 
+@@ -426,8 +426,8 @@ DECLARE_EVENT_CLASS(
+ DEFINE_EVENT(
+ 	btrfs__file_extent_item_regular, btrfs_get_extent_show_fi_regular,
+ 
+-	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
+-		 struct btrfs_file_extent_item *fi, u64 start),
++	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
++		 const struct btrfs_file_extent_item *fi, u64 start),
+ 
+ 	TP_ARGS(bi, l, fi, start)
+ );
+@@ -435,8 +435,8 @@ DEFINE_EVENT(
+ DEFINE_EVENT(
+ 	btrfs__file_extent_item_regular, btrfs_truncate_show_fi_regular,
+ 
+-	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
+-		 struct btrfs_file_extent_item *fi, u64 start),
++	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
++		 const struct btrfs_file_extent_item *fi, u64 start),
+ 
+ 	TP_ARGS(bi, l, fi, start)
+ );
+@@ -444,8 +444,8 @@ DEFINE_EVENT(
+ DEFINE_EVENT(
+ 	btrfs__file_extent_item_inline, btrfs_get_extent_show_fi_inline,
+ 
+-	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
+-		 struct btrfs_file_extent_item *fi, int slot, u64 start),
++	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
++		 const struct btrfs_file_extent_item *fi, int slot, u64 start),
+ 
+ 	TP_ARGS(bi, l, fi, slot, start)
+ );
+@@ -453,8 +453,8 @@ DEFINE_EVENT(
+ DEFINE_EVENT(
+ 	btrfs__file_extent_item_inline, btrfs_truncate_show_fi_inline,
+ 
+-	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
+-		 struct btrfs_file_extent_item *fi, int slot, u64 start),
++	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
++		 const struct btrfs_file_extent_item *fi, int slot, u64 start),
+ 
+ 	TP_ARGS(bi, l, fi, slot, start)
+ );
+@@ -1018,7 +1018,7 @@ TRACE_EVENT(btrfs_cow_block,
+ 
+ TRACE_EVENT(btrfs_space_reservation,
+ 
+-	TP_PROTO(const struct btrfs_fs_info *fs_info, char *type, u64 val,
++	TP_PROTO(const struct btrfs_fs_info *fs_info, const char *type, u64 val,
+ 		 u64 bytes, int reserve),
+ 
+ 	TP_ARGS(fs_info, type, val, bytes, reserve),
+@@ -1051,7 +1051,7 @@ TRACE_EVENT(btrfs_space_reservation,
+ TRACE_EVENT(btrfs_trigger_flush,
+ 
+ 	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 flags, u64 bytes,
+-		 int flush, char *reason),
++		 int flush, const char *reason),
+ 
+ 	TP_ARGS(fs_info, flags, bytes, flush, reason),
+ 
+@@ -1642,7 +1642,7 @@ TRACE_EVENT(btrfs_qgroup_account_extent,
+ TRACE_EVENT(qgroup_update_counters,
+ 
+ 	TP_PROTO(const struct btrfs_fs_info *fs_info,
+-		 struct btrfs_qgroup *qgroup,
++		 const struct btrfs_qgroup *qgroup,
+ 		 u64 cur_old_count, u64 cur_new_count),
+ 
+ 	TP_ARGS(fs_info, qgroup, cur_old_count, cur_new_count),
+@@ -1822,7 +1822,7 @@ DEFINE_EVENT(btrfs__prelim_ref, btrfs_prelim_ref_insert,
  );
  
- DEFINE_EVENT(btrfs__writepage, __extent_writepage,
-@@ -622,7 +622,7 @@ TRACE_EVENT(btrfs_writepage_end_io_hook,
+ TRACE_EVENT(btrfs_inode_mod_outstanding_extents,
+-	TP_PROTO(struct btrfs_root *root, u64 ino, int mod),
++	TP_PROTO(const struct btrfs_root *root, u64 ino, int mod),
  
- 	TP_STRUCT__entry_btrfs(
- 		__field(	u64,	 ino		)
--		__field(	pgoff_t, index		)
-+		__field(	unsigned long, index	)
- 		__field(	u64,	 start		)
- 		__field(	u64,	 end		)
- 		__field(	int,	 uptodate	)
-@@ -642,7 +642,7 @@ TRACE_EVENT(btrfs_writepage_end_io_hook,
- 	TP_printk_btrfs("root=%llu(%s) ino=%llu page_index=%lu start=%llu "
- 		  "end=%llu uptodate=%d",
- 		  show_root_type(__entry->root_objectid),
--		  __entry->ino, (unsigned long)__entry->index,
-+		  __entry->ino, __entry->index,
- 		  __entry->start,
- 		  __entry->end, __entry->uptodate)
- );
-@@ -1325,17 +1325,17 @@ TRACE_EVENT(alloc_extent_state,
- 	TP_STRUCT__entry(
- 		__field(const struct extent_state *, state)
- 		__field(gfp_t, mask)
--		__field(unsigned long, ip)
-+		__field(const void*, ip)
- 	),
+ 	TP_ARGS(root, ino, mod),
  
- 	TP_fast_assign(
- 		__entry->state	= state,
- 		__entry->mask	= mask,
--		__entry->ip	= IP
-+		__entry->ip	= (const void *)IP
- 	),
+@@ -1903,7 +1903,7 @@ TRACE_EVENT(btrfs_set_extent_bit,
+ 	TP_fast_assign_btrfs(tree->fs_info,
+ 		__entry->owner = tree->owner;
+ 		if (tree->private_data) {
+-			struct inode *inode = tree->private_data;
++			const struct inode *inode = tree->private_data;
  
- 	TP_printk("state=%p mask=%s caller=%pS", __entry->state,
--		  show_gfp_flags(__entry->mask), (const void *)__entry->ip)
-+		  show_gfp_flags(__entry->mask), __entry->ip)
- );
+ 			__entry->ino	= btrfs_ino(BTRFS_I(inode));
+ 			__entry->rootid	=
+@@ -1942,7 +1942,7 @@ TRACE_EVENT(btrfs_clear_extent_bit,
+ 	TP_fast_assign_btrfs(tree->fs_info,
+ 		__entry->owner = tree->owner;
+ 		if (tree->private_data) {
+-			struct inode *inode = tree->private_data;
++			const struct inode *inode = tree->private_data;
  
- TRACE_EVENT(free_extent_state,
-@@ -1346,16 +1346,15 @@ TRACE_EVENT(free_extent_state,
+ 			__entry->ino	= btrfs_ino(BTRFS_I(inode));
+ 			__entry->rootid	=
+@@ -1982,7 +1982,7 @@ TRACE_EVENT(btrfs_convert_extent_bit,
+ 	TP_fast_assign_btrfs(tree->fs_info,
+ 		__entry->owner = tree->owner;
+ 		if (tree->private_data) {
+-			struct inode *inode = tree->private_data;
++			const struct inode *inode = tree->private_data;
  
- 	TP_STRUCT__entry(
- 		__field(const struct extent_state *, state)
--		__field(unsigned long, ip)
-+		__field(const void*, ip)
- 	),
+ 			__entry->ino	= btrfs_ino(BTRFS_I(inode));
+ 			__entry->rootid	=
+@@ -2091,8 +2091,8 @@ DEFINE_BTRFS_LOCK_EVENT(btrfs_tree_read_lock_atomic);
  
- 	TP_fast_assign(
- 		__entry->state	= state,
--		__entry->ip = IP
-+		__entry->ip = (const void *)IP
- 	),
+ DECLARE_EVENT_CLASS(btrfs__space_info_update,
  
--	TP_printk("state=%p caller=%pS", __entry->state,
--		  (const void *)__entry->ip)
-+	TP_printk("state=%p caller=%pS", __entry->state, __entry->ip)
+-	TP_PROTO(struct btrfs_fs_info *fs_info,
+-		 struct btrfs_space_info *sinfo, u64 old, s64 diff),
++	TP_PROTO(const struct btrfs_fs_info *fs_info,
++		 const struct btrfs_space_info *sinfo, u64 old, s64 diff),
+ 
+ 	TP_ARGS(fs_info, sinfo, old, diff),
+ 
+@@ -2114,16 +2114,16 @@ DECLARE_EVENT_CLASS(btrfs__space_info_update,
+ 
+ DEFINE_EVENT(btrfs__space_info_update, update_bytes_may_use,
+ 
+-	TP_PROTO(struct btrfs_fs_info *fs_info,
+-		 struct btrfs_space_info *sinfo, u64 old, s64 diff),
++	TP_PROTO(const struct btrfs_fs_info *fs_info,
++		 const struct btrfs_space_info *sinfo, u64 old, s64 diff),
+ 
+ 	TP_ARGS(fs_info, sinfo, old, diff)
  );
  
- DECLARE_EVENT_CLASS(btrfs__work,
-@@ -1567,8 +1566,7 @@ DECLARE_EVENT_CLASS(btrfs_qgroup_extent,
- 	),
+ DEFINE_EVENT(btrfs__space_info_update, update_bytes_pinned,
  
- 	TP_printk_btrfs("bytenr=%llu num_bytes=%llu",
--		  (unsigned long long)__entry->bytenr,
--		  (unsigned long long)__entry->num_bytes)
-+		  __entry->bytenr, __entry->num_bytes)
+-	TP_PROTO(struct btrfs_fs_info *fs_info,
+-		 struct btrfs_space_info *sinfo, u64 old, s64 diff),
++	TP_PROTO(const struct btrfs_fs_info *fs_info,
++		 const struct btrfs_space_info *sinfo, u64 old, s64 diff),
+ 
+ 	TP_ARGS(fs_info, sinfo, old, diff)
  );
- 
- DEFINE_EVENT(btrfs_qgroup_extent, btrfs_qgroup_account_extents,
 -- 
 2.23.0
 
