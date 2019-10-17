@@ -2,60 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26FBCDAC49
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 14:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A24DAED8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 15:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405459AbfJQMbk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 08:31:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41102 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727054AbfJQMbk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 08:31:40 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0F44B2067B;
-        Thu, 17 Oct 2019 12:31:38 +0000 (UTC)
-Date:   Thu, 17 Oct 2019 08:31:37 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH v2] tools/lib/traceevent, perf tools: Handle %pU format
- correctly
-Message-ID: <20191017083137.1984af24@gandalf.local.home>
-In-Reply-To: <20191017115423.GH2751@twin.jikos.cz>
-References: <20191017022800.31866-1-wqu@suse.com>
-        <20191017115209.GG2751@twin.jikos.cz>
-        <20191017115423.GH2751@twin.jikos.cz>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2437274AbfJQN4l (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 09:56:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44008 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2437262AbfJQN4l (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 09:56:41 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 3D8D7B024;
+        Thu, 17 Oct 2019 13:56:40 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1F2E1DA808; Thu, 17 Oct 2019 15:56:49 +0200 (CEST)
+Date:   Thu, 17 Oct 2019 15:56:48 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Nikolay Borisov <nborisov@suse.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/8] btrfs: Cleanup and simplify find_newest_super_backup
+Message-ID: <20191017135648.GJ2751@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191015154224.21537-1-nborisov@suse.com>
+ <20191015154224.21537-2-nborisov@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191015154224.21537-2-nborisov@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, 17 Oct 2019 13:54:23 +0200
-David Sterba <dsterba@suse.cz> wrote:
-
-> > So if there's an interest for very compact printing loop, something like
-> > this produces the same output:
-> > 
-> > 	for (i = 0; i < 8; i++) {
-> > 		printf("%02X", buf[i]);
-> > 		printf("%02X", buf[i]);  
+On Tue, Oct 15, 2019 at 06:42:17PM +0300, Nikolay Borisov wrote:
+> Backup roots are always written in a circular manner. By definition we
+> can only ever have 1 backup root whose generation equals to that of the
+> superblock. Hence, the 'if' in the for loop will trigger at most once.
+> This is sufficient to return the newest backup root.
 > 
-> Ok, test-before-post failure, this should be
+> Furthermore thew newest_gen parameter is always set to the generation
+> of the superblock. This value can be obtained from the fs_info.
 > 
-> 		printf("%02X", buf[2 * i]);
-> 	        printf("%02X", buf[2 * i + 1]);
-> 
-> > 		if (1 <= i && i <= 4)
-> > 			putchar('-');
-> > 	}  
+> This patch removes the unnecessary code dealing with the wraparound
+> case and makes 'newest_gen' a local variable.
 
-I'm fine if you want to post a v3 with this update.
+"This patch cannot be applied without an SOB line." --n. borisov
 
--- Steve
+And the rest does not have it either, I'll add it to avoid pointless
+resends.
+
+Tip of the day: use 'git commit -save' for every commit, it adds SOB,
+opens editor for changelog and also shows the the diff
