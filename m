@@ -2,24 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3D7DAAC3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 13:03:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69164DAACA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 13:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389152AbfJQLDy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 07:03:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60824 "EHLO mx1.suse.de"
+        id S2393454AbfJQLGO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 07:06:14 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35218 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730498AbfJQLDy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 07:03:54 -0400
+        id S1728316AbfJQLGO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 07:06:14 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0EA19AC49;
-        Thu, 17 Oct 2019 11:03:52 +0000 (UTC)
-Subject: Re: [PATCH 04/15] btrfs: compression: let workspace manager init take
- only the type
+        by mx1.suse.de (Postfix) with ESMTP id 00D10B302;
+        Thu, 17 Oct 2019 11:06:12 +0000 (UTC)
+Subject: Re: [PATCH 05/15] btrfs: compression: inline init_workspace_manager
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1571054758.git.dsterba@suse.com>
- <7096eaf28c495b2edbfc2cc4f57980ab7aee6643.1571054758.git.dsterba@suse.com>
+ <c4ca57b3b973f647d9632a07f76f305b4e3733a3.1571054758.git.dsterba@suse.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -77,12 +76,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <d410fdb1-620d-46fe-d44d-0b0bc3e6bdfa@suse.de>
-Date:   Thu, 17 Oct 2019 13:03:51 +0200
+Message-ID: <cc1f5a9a-0091-d033-156d-a391b3b05ba5@suse.de>
+Date:   Thu, 17 Oct 2019 13:06:11 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <7096eaf28c495b2edbfc2cc4f57980ab7aee6643.1571054758.git.dsterba@suse.com>
+In-Reply-To: <c4ca57b3b973f647d9632a07f76f305b4e3733a3.1571054758.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -91,8 +90,8 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Looks good,
 Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
-
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
