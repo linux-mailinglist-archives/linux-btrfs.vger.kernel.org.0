@@ -2,23 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8996DA59C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 08:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77336DA5A9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 08:33:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392700AbfJQG3r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 02:29:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44288 "EHLO mx1.suse.de"
+        id S2407836AbfJQGdY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 02:33:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45442 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390993AbfJQG3r (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 02:29:47 -0400
+        id S2389397AbfJQGdY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 02:33:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 37D36B3BB;
-        Thu, 17 Oct 2019 06:29:45 +0000 (UTC)
-Subject: Re: [PATCH] btrfs-progs: small fixes/cleanup in Documentation
-To:     =?UTF-8?Q?Merlin_B=c3=bcge?= <merlin.buege@tuhh.de>,
-        linux-btrfs@vger.kernel.org
-References: <20191017045006.130378-1-merlin.buege@tuhh.de>
+        by mx1.suse.de (Postfix) with ESMTP id 110A1AE35;
+        Thu, 17 Oct 2019 06:33:22 +0000 (UTC)
+Subject: Re: [PATCH v2 2/2] btrfs: qgroup: Fix bad entry members of qgroup
+ trace events
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20191017023837.32264-1-wqu@suse.com>
+ <20191017023837.32264-3-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -63,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <1201273d-8051-b65a-51bc-6e4c12cff7f2@suse.com>
-Date:   Thu, 17 Oct 2019 09:29:43 +0300
+Message-ID: <97956f25-e38e-e72a-c02c-138df55231c9@suse.com>
+Date:   Thu, 17 Oct 2019 09:33:20 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191017045006.130378-1-merlin.buege@tuhh.de>
+In-Reply-To: <20191017023837.32264-3-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -79,60 +80,30 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 17.10.19 г. 7:50 ч., Merlin Büge  wrote:
-> The removed paragraph in btrfs-man5.asciidoc says the same as the
-> previous one.
-
-This patch cannot be applied without an SOB line. Otherwise the changes
-look good.
-
-> ---
->  Documentation/btrfs-man5.asciidoc |  6 ------
->  Documentation/mkfs.btrfs.asciidoc | 10 +++++-----
->  2 files changed, 5 insertions(+), 11 deletions(-)
+On 17.10.19 г. 5:38 ч., Qu Wenruo wrote:
+> [BUG]
+> For btrfs:qgroup_meta_reserve event, the trace event can output garbage:
+> qgroup_meta_reserve: 9c7f6acc-b342-4037-bc47-7f6e4d2232d7: refroot=5(FS_TREE) type=DATA diff=2
+> qgroup_meta_reserve: 9c7f6acc-b342-4037-bc47-7f6e4d2232d7: refroot=5(FS_TREE) type=0x258792 diff=2
 > 
-> diff --git a/Documentation/btrfs-man5.asciidoc b/Documentation/btrfs-man5.asciidoc
-> index 6a1a04b7..87ed5496 100644
-> --- a/Documentation/btrfs-man5.asciidoc
-> +++ b/Documentation/btrfs-man5.asciidoc
-> @@ -224,12 +224,6 @@ during a period of low system activity will prevent latent interference with
->  the performance of other operations. Also, a device may ignore the TRIM command
->  if the range is too small, so running a batch discard has a greater probability
->  of actually discarding the blocks.
-> -+
-> -If discarding is not necessary to be done at the block freeing time, there's
-> -`fstrim`(8) tool that lets the filesystem discard all free blocks in a batch,
-> -possibly not much interfering with other operations. Also, the device may
-> -ignore the TRIM command if the range is too small, so running the batch discard
-> -can actually discard the blocks.
->  
->  *enospc_debug*::
->  *noenospc_debug*::
-> diff --git a/Documentation/mkfs.btrfs.asciidoc b/Documentation/mkfs.btrfs.asciidoc
-> index 2a1c3592..ef3eb13f 100644
-> --- a/Documentation/mkfs.btrfs.asciidoc
-> +++ b/Documentation/mkfs.btrfs.asciidoc
-> @@ -27,17 +27,17 @@ mkfs.btrfs uses the entire device space for the filesystem.
->  
->  *-d|--data <profile>*::
->  Specify the profile for the data block groups.  Valid values are 'raid0',
-> -'raid1', 'raid5', 'raid6', 'raid10' or 'single' or dup (case does not matter).
-> +'raid1', 'raid5', 'raid6', 'raid10' or 'single' or 'dup' (case does not matter).
->  +
-> -See 'DUP PROFILES ON A SINGLE DEVICE' for more.
-> +See 'DUP PROFILES ON A SINGLE DEVICE' for more details.
->  
->  *-m|--metadata <profile>*::
->  Specify the profile for the metadata block groups.
->  Valid values are 'raid0', 'raid1', 'raid5', 'raid6', 'raid10', 'single' or
-> -'dup', (case does not matter).
-> +'dup' (case does not matter).
->  +
-> -A single device filesystem will default to 'DUP', unless a SSD is detected. Then
-> -it will default to 'single'. The detection is based on the value of
-> +A single device filesystem will default to 'DUP', unless an SSD is detected, in which
-> +case it will default to 'single'. The detection is based on the value of
->  `/sys/block/DEV/queue/rotational`, where 'DEV' is the short name of the device.
->  +
->  Note that the rotational status can be arbitrarily set by the underlying block
+> The @type can be completely garbage, as DATA type is not possible for
+> trace_qgroup_meta_reserve() trace event.
 > 
+> [CAUSE]
+> Ther are several problems related to qgroup trace events:
+> - Unassigned entry member
+>   Member entry::type of trace_qgroup_update_reserve() and
+>   trace_qgourp_meta_reserve() is not assigned
+> 
+> - Redundant entry member
+>   Member entry::type is completely useless in
+>   trace_qgroup_meta_convert()
+> 
+> [FIX]
+> Fix these stupid bugs.
+> 
+> Fixes: 4ee0d8832c2e ("btrfs: qgroup: Update trace events for metadata reservation")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
