@@ -2,63 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDF9DB670
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 20:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE69DB752
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 21:17:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731240AbfJQSka (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 14:40:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47628 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727766AbfJQSka (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 14:40:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1B432AE1A;
-        Thu, 17 Oct 2019 18:40:29 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2C375DA808; Thu, 17 Oct 2019 20:40:40 +0200 (CEST)
-Date:   Thu, 17 Oct 2019 20:40:39 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     fdmanana@kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Btrfs: check for the full sync flag while holding the
- inode lock during fsync
-Message-ID: <20191017184039.GP2751@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
-        linux-btrfs@vger.kernel.org
-References: <20191016152852.22180-1-fdmanana@kernel.org>
+        id S2441467AbfJQTR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 15:17:26 -0400
+Received: from mail.itouring.de ([188.40.134.68]:47954 "EHLO mail.itouring.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727397AbfJQTR0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 15:17:26 -0400
+Received: from tux.wizards.de (pD9EBF359.dip0.t-ipconnect.de [217.235.243.89])
+        by mail.itouring.de (Postfix) with ESMTPSA id 14667416F642
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2019 21:17:24 +0200 (CEST)
+Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
+        by tux.wizards.de (Postfix) with ESMTP id BB0D4F0160C
+        for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2019 21:17:23 +0200 (CEST)
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Subject: Evaluating File System Reliability on Solid State Drives
+Organization: Applied Asynchrony, Inc.
+Message-ID: <dcba97bb-3ee4-1bae-6bb4-22a114c8e7ee@applied-asynchrony.com>
+Date:   Thu, 17 Oct 2019 21:17:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191016152852.22180-1-fdmanana@kernel.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 16, 2019 at 04:28:52PM +0100, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> We were checking for the full fsync flag in the inode before locking the
-> inode, which is racy, since at that that time it might not be set but
-> after we acquire the inode lock some other task set it. One case where
-> this can happen is on a system low on memory and some concurrent task
-> failed to allocate an extent map and therefore set the full sync flag on
-> the inode, to force the next fsync to work in full mode.
-> 
-> A consequence of missing the full fsync flag set is hitting the problems
-> fixed by commit 0c713cbab620 ("Btrfs: fix race between ranged fsync and
-> writeback of adjacent ranges"), BUG_ON() when dropping extents from a log
-> tree, hitting assertion failures at tree-log.c:copy_items() or all sorts
-> of weird inconsistencies after replaying a log due to file extents items
-> representing ranges that overlap.
-> 
-> So just move the check such that it's done after locking the inode and
-> before starting writeback again.
-> 
-> Fixes: 0c713cbab620 ("Btrfs: fix race between ranged fsync and writeback of adjacent ranges")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Oh the joys of fsync and tree-log, thanks for the fix, queued for 5.4-rc.
+Since resiliency and recovery from corruption continues to be a
+hot topic, I figured I'd mention a paper/talk/slides from the
+recent Usenix ATC'19 conference:
+
+Evaluating File System Reliability on Solid State Drives
+https://www.usenix.org/conference/atc19/presentation/jaffer
+
+Maybe it provides some inspiration for future improvements.
+The used error injection software (dm-inject) is on Github.
+
+-h
