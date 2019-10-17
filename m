@@ -2,47 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE69DB752
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 21:17:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8FABDB7A2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 21:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441467AbfJQTR0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 15:17:26 -0400
-Received: from mail.itouring.de ([188.40.134.68]:47954 "EHLO mail.itouring.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727397AbfJQTR0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 15:17:26 -0400
-Received: from tux.wizards.de (pD9EBF359.dip0.t-ipconnect.de [217.235.243.89])
-        by mail.itouring.de (Postfix) with ESMTPSA id 14667416F642
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2019 21:17:24 +0200 (CEST)
-Received: from [192.168.100.223] (ragnarok.applied-asynchrony.com [192.168.100.223])
-        by tux.wizards.de (Postfix) with ESMTP id BB0D4F0160C
-        for <linux-btrfs@vger.kernel.org>; Thu, 17 Oct 2019 21:17:23 +0200 (CEST)
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-Subject: Evaluating File System Reliability on Solid State Drives
-Organization: Applied Asynchrony, Inc.
-Message-ID: <dcba97bb-3ee4-1bae-6bb4-22a114c8e7ee@applied-asynchrony.com>
-Date:   Thu, 17 Oct 2019 21:17:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2394215AbfJQTim (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 15:38:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41326 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727148AbfJQTim (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 15:38:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 35B41AF95;
+        Thu, 17 Oct 2019 19:38:41 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id E27F1DA808; Thu, 17 Oct 2019 21:38:51 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH 0/5] Extent buffer locking and documentation
+Date:   Thu, 17 Oct 2019 21:38:50 +0200
+Message-Id: <cover.1571340084.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+I've spent a lot of time staring at the locking code and speculating
+about all sorts of weird problems that could happen due to memory
+ordering or lost wakeups or if the custom locking is safe at all, also
+regarding the recent changes.
 
-Since resiliency and recovery from corruption continues to be a
-hot topic, I figured I'd mention a paper/talk/slides from the
-recent Usenix ATC'19 conference:
+Inevitably I found something but also wrote documentation. Please read
+it and if you see need for more clarifications, I'm happy to add it as
+I'm now in a state that things become temporarily obvious and trivial.
 
-Evaluating File System Reliability on Solid State Drives
-https://www.usenix.org/conference/atc19/presentation/jaffer
+I've tested it in fstests with KCSAN (the new concurrency sanitizer), no
+problems found but this is not considered sufficient, more tests will
+follow.
 
-Maybe it provides some inspiration for future improvements.
-The used error injection software (dm-inject) is on Github.
+David Sterba (5):
+  btrfs: merge blocking_writers branches in btrfs_tree_read_lock
+  btrfs: set blocking_writers directly, no increment or decrement
+  btrfs: access eb::blocking_writers according to ACCESS_ONCE policies
+  btrfs: serialize blocking_writers updates
+  btrfs: document extent buffer locking
 
--h
+ fs/btrfs/locking.c | 184 +++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 144 insertions(+), 40 deletions(-)
+
+-- 
+2.23.0
+
