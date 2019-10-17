@@ -2,219 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35301DAB2B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 13:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1894DAB40
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 13:31:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439694AbfJQL2t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 07:28:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52734 "EHLO mx1.suse.de"
+        id S2405971AbfJQLba (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 07:31:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53760 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2439692AbfJQL2t (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 07:28:49 -0400
+        id S2405941AbfJQLb3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 07:31:29 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A0880B372;
-        Thu, 17 Oct 2019 11:28:46 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E7A89DA808; Thu, 17 Oct 2019 13:28:57 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH 2/2] btrfs: tracepoints: constify all pointers
-Date:   Thu, 17 Oct 2019 13:28:57 +0200
-Message-Id: <04f6c0d03c2b398ffdca28690824e843f06e46f0.1571311653.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <cover.1571311653.git.dsterba@suse.com>
-References: <cover.1571311653.git.dsterba@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id A81C3B449;
+        Thu, 17 Oct 2019 11:31:27 +0000 (UTC)
+Subject: Re: [PATCH 07/15] btrfs: compression: inline
+ cleanup_workspace_manager
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1571054758.git.dsterba@suse.com>
+ <6bb1515ce5b9446a7fb6b8a818f49f1307dcbe3d.1571054758.git.dsterba@suse.com>
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <c40b7d5e-befa-80ae-239c-b4e502f27975@suse.de>
+Date:   Thu, 17 Oct 2019 13:31:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
+In-Reply-To: <6bb1515ce5b9446a7fb6b8a818f49f1307dcbe3d.1571054758.git.dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We don't modify the data passed to tracepoints, some of the declarations
-are already const, add it to the rest.
+Looks good,
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
 
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- include/trace/events/btrfs.h | 52 ++++++++++++++++++------------------
- 1 file changed, 26 insertions(+), 26 deletions(-)
-
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 11e9a6cc7f63..92da846981ce 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -292,7 +292,7 @@ TRACE_EVENT_CONDITION(btrfs_get_extent,
- 
- TRACE_EVENT(btrfs_handle_em_exist,
- 
--	TP_PROTO(struct btrfs_fs_info *fs_info,
-+	TP_PROTO(const struct btrfs_fs_info *fs_info,
- 		const struct extent_map *existing, const struct extent_map *map,
- 		u64 start, u64 len),
- 
-@@ -330,8 +330,8 @@ TRACE_EVENT(btrfs_handle_em_exist,
- /* file extent item */
- DECLARE_EVENT_CLASS(btrfs__file_extent_item_regular,
- 
--	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
--		 struct btrfs_file_extent_item *fi, u64 start),
-+	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
-+		 const struct btrfs_file_extent_item *fi, u64 start),
- 
- 	TP_ARGS(bi, l, fi, start),
- 
-@@ -385,8 +385,8 @@ DECLARE_EVENT_CLASS(btrfs__file_extent_item_regular,
- DECLARE_EVENT_CLASS(
- 	btrfs__file_extent_item_inline,
- 
--	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
--		 struct btrfs_file_extent_item *fi, int slot, u64 start),
-+	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
-+		 const struct btrfs_file_extent_item *fi, int slot, u64 start),
- 
- 	TP_ARGS(bi, l, fi, slot,  start),
- 
-@@ -426,8 +426,8 @@ DECLARE_EVENT_CLASS(
- DEFINE_EVENT(
- 	btrfs__file_extent_item_regular, btrfs_get_extent_show_fi_regular,
- 
--	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
--		 struct btrfs_file_extent_item *fi, u64 start),
-+	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
-+		 const struct btrfs_file_extent_item *fi, u64 start),
- 
- 	TP_ARGS(bi, l, fi, start)
- );
-@@ -435,8 +435,8 @@ DEFINE_EVENT(
- DEFINE_EVENT(
- 	btrfs__file_extent_item_regular, btrfs_truncate_show_fi_regular,
- 
--	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
--		 struct btrfs_file_extent_item *fi, u64 start),
-+	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
-+		 const struct btrfs_file_extent_item *fi, u64 start),
- 
- 	TP_ARGS(bi, l, fi, start)
- );
-@@ -444,8 +444,8 @@ DEFINE_EVENT(
- DEFINE_EVENT(
- 	btrfs__file_extent_item_inline, btrfs_get_extent_show_fi_inline,
- 
--	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
--		 struct btrfs_file_extent_item *fi, int slot, u64 start),
-+	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
-+		 const struct btrfs_file_extent_item *fi, int slot, u64 start),
- 
- 	TP_ARGS(bi, l, fi, slot, start)
- );
-@@ -453,8 +453,8 @@ DEFINE_EVENT(
- DEFINE_EVENT(
- 	btrfs__file_extent_item_inline, btrfs_truncate_show_fi_inline,
- 
--	TP_PROTO(struct btrfs_inode *bi, struct extent_buffer *l,
--		 struct btrfs_file_extent_item *fi, int slot, u64 start),
-+	TP_PROTO(const struct btrfs_inode *bi, const struct extent_buffer *l,
-+		 const struct btrfs_file_extent_item *fi, int slot, u64 start),
- 
- 	TP_ARGS(bi, l, fi, slot, start)
- );
-@@ -1018,7 +1018,7 @@ TRACE_EVENT(btrfs_cow_block,
- 
- TRACE_EVENT(btrfs_space_reservation,
- 
--	TP_PROTO(const struct btrfs_fs_info *fs_info, char *type, u64 val,
-+	TP_PROTO(const struct btrfs_fs_info *fs_info, const char *type, u64 val,
- 		 u64 bytes, int reserve),
- 
- 	TP_ARGS(fs_info, type, val, bytes, reserve),
-@@ -1051,7 +1051,7 @@ TRACE_EVENT(btrfs_space_reservation,
- TRACE_EVENT(btrfs_trigger_flush,
- 
- 	TP_PROTO(const struct btrfs_fs_info *fs_info, u64 flags, u64 bytes,
--		 int flush, char *reason),
-+		 int flush, const char *reason),
- 
- 	TP_ARGS(fs_info, flags, bytes, flush, reason),
- 
-@@ -1642,7 +1642,7 @@ TRACE_EVENT(btrfs_qgroup_account_extent,
- TRACE_EVENT(qgroup_update_counters,
- 
- 	TP_PROTO(const struct btrfs_fs_info *fs_info,
--		 struct btrfs_qgroup *qgroup,
-+		 const struct btrfs_qgroup *qgroup,
- 		 u64 cur_old_count, u64 cur_new_count),
- 
- 	TP_ARGS(fs_info, qgroup, cur_old_count, cur_new_count),
-@@ -1822,7 +1822,7 @@ DEFINE_EVENT(btrfs__prelim_ref, btrfs_prelim_ref_insert,
- );
- 
- TRACE_EVENT(btrfs_inode_mod_outstanding_extents,
--	TP_PROTO(struct btrfs_root *root, u64 ino, int mod),
-+	TP_PROTO(const struct btrfs_root *root, u64 ino, int mod),
- 
- 	TP_ARGS(root, ino, mod),
- 
-@@ -1903,7 +1903,7 @@ TRACE_EVENT(btrfs_set_extent_bit,
- 	TP_fast_assign_btrfs(tree->fs_info,
- 		__entry->owner = tree->owner;
- 		if (tree->private_data) {
--			struct inode *inode = tree->private_data;
-+			const struct inode *inode = tree->private_data;
- 
- 			__entry->ino	= btrfs_ino(BTRFS_I(inode));
- 			__entry->rootid	=
-@@ -1942,7 +1942,7 @@ TRACE_EVENT(btrfs_clear_extent_bit,
- 	TP_fast_assign_btrfs(tree->fs_info,
- 		__entry->owner = tree->owner;
- 		if (tree->private_data) {
--			struct inode *inode = tree->private_data;
-+			const struct inode *inode = tree->private_data;
- 
- 			__entry->ino	= btrfs_ino(BTRFS_I(inode));
- 			__entry->rootid	=
-@@ -1982,7 +1982,7 @@ TRACE_EVENT(btrfs_convert_extent_bit,
- 	TP_fast_assign_btrfs(tree->fs_info,
- 		__entry->owner = tree->owner;
- 		if (tree->private_data) {
--			struct inode *inode = tree->private_data;
-+			const struct inode *inode = tree->private_data;
- 
- 			__entry->ino	= btrfs_ino(BTRFS_I(inode));
- 			__entry->rootid	=
-@@ -2091,8 +2091,8 @@ DEFINE_BTRFS_LOCK_EVENT(btrfs_tree_read_lock_atomic);
- 
- DECLARE_EVENT_CLASS(btrfs__space_info_update,
- 
--	TP_PROTO(struct btrfs_fs_info *fs_info,
--		 struct btrfs_space_info *sinfo, u64 old, s64 diff),
-+	TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		 const struct btrfs_space_info *sinfo, u64 old, s64 diff),
- 
- 	TP_ARGS(fs_info, sinfo, old, diff),
- 
-@@ -2114,16 +2114,16 @@ DECLARE_EVENT_CLASS(btrfs__space_info_update,
- 
- DEFINE_EVENT(btrfs__space_info_update, update_bytes_may_use,
- 
--	TP_PROTO(struct btrfs_fs_info *fs_info,
--		 struct btrfs_space_info *sinfo, u64 old, s64 diff),
-+	TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		 const struct btrfs_space_info *sinfo, u64 old, s64 diff),
- 
- 	TP_ARGS(fs_info, sinfo, old, diff)
- );
- 
- DEFINE_EVENT(btrfs__space_info_update, update_bytes_pinned,
- 
--	TP_PROTO(struct btrfs_fs_info *fs_info,
--		 struct btrfs_space_info *sinfo, u64 old, s64 diff),
-+	TP_PROTO(const struct btrfs_fs_info *fs_info,
-+		 const struct btrfs_space_info *sinfo, u64 old, s64 diff),
- 
- 	TP_ARGS(fs_info, sinfo, old, diff)
- );
 -- 
-2.23.0
-
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 Nürnberg
+Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
