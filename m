@@ -2,84 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E4F16DA382
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 04:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EE1DA3A7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 04:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391419AbfJQCQT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 16 Oct 2019 22:16:19 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:47002 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729268AbfJQCQT (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 16 Oct 2019 22:16:19 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9H28vZA109150;
-        Thu, 17 Oct 2019 02:16:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=Z+ChNgFtZJ3P49UFHyFnQT1zXTVt+lG+C+msBI9TAXs=;
- b=MSRjicEOT3lDWr7LGGdNVvBq52+5vIHUMbebjJ0906RJbkb508pE7XHQbSasSmD5CfbW
- i4CcqlIIpauuzzh9Q6KEtnB1w/yTaH/0Ln6AeARrIN7ZBaXNxuUPIuAOa7RvzYmTAp0j
- W5lr4fizqWqmxYj1DjHUGdWS+TJ7nyXRrgskYC6ydn4TmthmamDGa75wy4FU+n37/zgg
- PU37iUYSYAfpLj5urijoNNHb1pNJ5iEuTBNNr+67ROT6ikojSgtX2e79g2RGQtV0RiUn
- JAX/nrZhg9RUd4zUwZuWFlrtDhHiL8GDv3YQJLz+Y8gXp7QWUfJLc20R6qys+7oOAhzQ Rw== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 2vk6squ1b1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Oct 2019 02:16:14 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9H2DFUl143049;
-        Thu, 17 Oct 2019 02:16:14 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2vpcm1y6f8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Oct 2019 02:16:13 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9H2GCEP031478;
-        Thu, 17 Oct 2019 02:16:12 GMT
-Received: from [10.190.155.136] (/192.188.170.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Oct 2019 02:16:12 +0000
-Subject: Re: [PATCH v2 1/7] btrfs-progs: Refactor excluded extent functions to
- use fs_info
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191008044936.157873-1-wqu@suse.com>
- <20191008044936.157873-2-wqu@suse.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <51af74bc-89b7-1cb2-c3eb-039f7174d744@oracle.com>
-Date:   Thu, 17 Oct 2019 10:16:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1733042AbfJQCXg (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 16 Oct 2019 22:23:36 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55420 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727328AbfJQCXg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 16 Oct 2019 22:23:36 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 87BE6B235;
+        Thu, 17 Oct 2019 02:23:33 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-trace-devel@vger.kernel.org
+Subject: [PATCH v2] btrfs: qgroup: Fix wrong parameter order for trace events
+Date:   Thu, 17 Oct 2019 10:23:29 +0800
+Message-Id: <20191017022329.31545-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20191008044936.157873-2-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9412 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=2 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=990
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910170014
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9412 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=2 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910170014
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 10/8/19 12:49 PM, Qu Wenruo wrote:
-> The following functions are just using @root to reach fs_info:
-> - exclude_super_stripes
-> - free_excluded_extents
-> - add_excluded_extent
-> 
-> Refactor them to use fs_info directly.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+[BUG]
+For btrfs:qgroup_meta_reserve event, the trace event can output garbage:
+qgroup_meta_reserve: 9c7f6acc-b342-4037-bc47-7f6e4d2232d7: refroot=5(FS_TREE) type=DATA diff=2
+qgroup_meta_reserve: 9c7f6acc-b342-4037-bc47-7f6e4d2232d7: refroot=5(FS_TREE) type=0x258792 diff=2
 
-Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Since we're in qgroup_meta_reserve() trace event, the @type should never
+be DATA, while diff must be aligned to sectorsize (4K in this case).
+
+Only UUID and refroot is correct.
+
+[CAUSE]
+There are two causes for this bug:
+
+- Bad parameter order
+  For trace event btrfs:qgroup_meta_reserve, we're passing wrong
+  parameters.
+
+  The correct parameters are:
+  struct btrfs_root, s64 diff, int type.
+
+  However the used order is:
+  struct btrfs_root, int type, s64 diff.
+
+- @type is not even assigned
+  What I was doing !? /facepalm
+
+[FIX]
+Fix the super stupid bug.
+
+Now everything works fine:
+qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PERTRANS diff=81920
+qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=16384
+qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=0
+qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=16384
+qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=-16384
+qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=16384
+qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=-16384
+qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=16384
+qgroup_meta_reserve: 0477ad60-9aeb-4040-8a03-1900844d46ba: refroot=5(FS_TREE) type=META_PREALLOC diff=-16384
+
+Fixes: 4ee0d8832c2e ("btrfs: qgroup: Update trace events for metadata reservation")
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Changelog:
+v2:
+- Use more accurate comment about the fintuning options
+- Use more elegant method to output uuid
+---
+ fs/btrfs/qgroup.c            | 4 ++--
+ include/trace/events/btrfs.h | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index c4bb69941c77..3ad151655eb8 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -3629,7 +3629,7 @@ int __btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes,
+ 		return 0;
+ 
+ 	BUG_ON(num_bytes != round_down(num_bytes, fs_info->nodesize));
+-	trace_qgroup_meta_reserve(root, type, (s64)num_bytes);
++	trace_qgroup_meta_reserve(root, (s64)num_bytes, type);
+ 	ret = qgroup_reserve(root, num_bytes, enforce, type);
+ 	if (ret < 0)
+ 		return ret;
+@@ -3676,7 +3676,7 @@ void __btrfs_qgroup_free_meta(struct btrfs_root *root, int num_bytes,
+ 	 */
+ 	num_bytes = sub_root_meta_rsv(root, num_bytes, type);
+ 	BUG_ON(num_bytes != round_down(num_bytes, fs_info->nodesize));
+-	trace_qgroup_meta_reserve(root, type, -(s64)num_bytes);
++	trace_qgroup_meta_reserve(root, -(s64)num_bytes, type);
+ 	btrfs_qgroup_free_refroot(fs_info, root->root_key.objectid,
+ 				  num_bytes, type);
+ }
+diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
+index 5df604de4f11..0ebcaa153f93 100644
+--- a/include/trace/events/btrfs.h
++++ b/include/trace/events/btrfs.h
+@@ -1710,6 +1710,7 @@ TRACE_EVENT(qgroup_meta_reserve,
+ 	TP_fast_assign_btrfs(root->fs_info,
+ 		__entry->refroot	= root->root_key.objectid;
+ 		__entry->diff		= diff;
++		__entry->type		= type;
+ 	),
+ 
+ 	TP_printk_btrfs("refroot=%llu(%s) type=%s diff=%lld",
+-- 
+2.23.0
+
