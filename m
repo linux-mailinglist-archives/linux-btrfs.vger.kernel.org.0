@@ -2,33 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E7A8DA4BE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 06:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D51E1DA4C1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 06:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407763AbfJQE2v (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 00:28:51 -0400
-Received: from mout.gmx.net ([212.227.17.20]:33727 "EHLO mout.gmx.net"
+        id S2407766AbfJQEeC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 00:34:02 -0400
+Received: from mout.gmx.net ([212.227.17.22]:43647 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407761AbfJQE2v (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 00:28:51 -0400
+        id S2404613AbfJQEeC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 00:34:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1571286519;
-        bh=iryGB8RP+6JXVAQA+u6Dmlg4eEyLHxWEukn6T+QRGOE=;
+        s=badeba3b8450; t=1571286821;
+        bh=x7UJHrUVGzds+DcBnLlo9oD6Ax70RpNY2Gqo6vaEaC0=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=FxISG7ai5F6m4toiG2naZqOnlPFsfp/GxqpdpMcXLwng29KMGre2nUSASnjHqEFEa
-         WyeEBpXPZk0Du92Uq/lgYUgAl+9vefT/W8mwwHX2DZ3gdETxPDSOVZouh7xakdppsd
-         NfJxbQMIj+WIePlK7r3lHO3kp93uqUbxKuM0pPkE=
+        b=K3YV/VGBz3IfKjaqW0FmqfenQWqAq1kOD7Rj4oRa5LHSnMeSzqlMO3E/eT8LlIign
+         seG2E3LZXlbX10sxb7IyUybegu/xMvECAsMKt7pE+62HdI8LgyBy5bRc3uIXUko3MX
+         3/ksxiGwq6JEjyFCqWokv5y2+uIiSxABAuAZu8kg=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MnakX-1hbPIh0Z4X-00jWEl; Thu, 17
- Oct 2019 06:28:38 +0200
-Subject: Re: [PATCH v2 7/7] btrfs-progs: btrfstune: Allow to enable bg-tree
- feature offline
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5wPb-1iQjqZ3Oqx-007WWJ; Thu, 17
+ Oct 2019 06:33:41 +0200
+Subject: Re: [PATCH v2 2/7] btrfs-progs: Refactor btrfs_read_block_groups()
 To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20191008044936.157873-1-wqu@suse.com>
- <20191008044936.157873-8-wqu@suse.com>
- <92f936ed-74eb-5c6e-2bf7-6226cdef14fd@oracle.com>
+ <20191008044936.157873-3-wqu@suse.com>
+ <fd4f3e1c-fd98-6550-6284-f1456e0332ba@oracle.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,276 +53,481 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <777f249e-7198-8ec3-875d-244253d2ae3d@gmx.com>
-Date:   Thu, 17 Oct 2019 12:28:34 +0800
+Message-ID: <566f2d81-8454-d4f5-6e73-adbd0ddedf28@gmx.com>
+Date:   Thu, 17 Oct 2019 12:33:36 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <92f936ed-74eb-5c6e-2bf7-6226cdef14fd@oracle.com>
+In-Reply-To: <fd4f3e1c-fd98-6550-6284-f1456e0332ba@oracle.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="8SPW7u60NS0g0yK1MIxrGI85lbKqHIlWQ"
-X-Provags-ID: V03:K1:j8emVOljDeObfspE25rDXAzV5sEImX0YS1xwRXOTNGxpS5qatVL
- PRn3X9LHu7yNoGlb62nEvqlOOLjeHZinENiQaUtMKBUWA5Mskb6LDR6xwn5BMEDU4ZwkPhj
- EWW9Oa5EHVuqxDRQrcasO6KPvETMsRoH80pSFoA2vlx0xxu1PLD8mID2K/luLVd22j5zmxp
- ewC0qgQ9O7zjyGzdMs1hQ==
+ boundary="DdnbfQVb281Q90zvA79JLfFRqPbOYbTVk"
+X-Provags-ID: V03:K1:isFcxjMdvO0B+KuupjwmgUrqPMLNvb2ZYr3x7DfUy8I8qVSzGwi
+ CtiLKrdPDdG9YlNAcYZ2PVFW80V7ODJcIndMFXbghUjgWJOM0dnNPS5GTNpBkER643vXQ63
+ 1EWuFrRyF83Hq2Dw+5oIWsLdtH4TpyvDsZV2anpBfIyU8bTmHtEghE5/jdpwCda5+eumeNe
+ dQjlQKn+Lvb02RJraw6kg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wM+NrgS1kOU=:XtRJlURAjrVAnu0XwxNOYn
- 2kRxTJXarslkBE1BWs3p2PdeXQjJmQ+kcs+MmQdWqsBMoEpmbPARUHpXIqoXVMBQySrhhAGkI
- TQ/0KdpX0Gw/CyDdavJX3gLQswkXtEbnE6GdtTzt7vz4kqbaWgzL8XVCeunSbQ5XVPbHK97Lp
- r0UX35wX3qvlo66t/6Hhj1TItwsBm+eAgaJT6GWxY+4O7TENbVp0l4LLWWcRy0C9I83mkoIoW
- IY7bJB+QYKRW4RJaiMewKM9xofoZOcwdiemGov1BVA+0avE2zW+nhnjcwqo6iqk0GxB99/o8G
- E07WaVH5MU3iH7+VwgiQ1UFJHULHDmvKMyk41SUiCm0ihAcpxGXMrHQyV0v2sEHAGQqvQ4oR3
- Ep3upcxTgh4KjSIHftsmpeZfuIkYSL6oVGgU1+UisULF7MR7DnhhvCmxSBJzYnhZJG2Nu73GH
- hjCHx/9YztmLsLxmKNAe56wTDfEUSVzBwrTOE1AkgNMbKS53hp9vzW4t25ynJJ2JyLAAmVUNa
- 9xFmFU2KY06eDpEvufivgdcLy8t0MJATDMMQJTXzYX6t742ZPS6ZDwIcvJyMry5GG0l4Sp2ZQ
- dKn6zWsoZjVBclUaFc3fBNYsmvYSPFKO55XJATsAw3uyl/FgmWinlxnOaMhJ4rOZwkFubBO2z
- 6d5y3YS3qLpBrcDGO9icsMKGxt1h9BFFtl7+AB36o55vfr42pxZZdfVkzFnW9s+7bt+GLmygj
- nWPj4CLNVxYcFz4NFfiZrxwqsplhVOXjj858TLj6C7kA1qWpLAakVhEiKj+/fphjQEfhJMlul
- T0mqrkoxwI4U8UimWacjYMZW0Ii0JqBSg0arKWtX1Lu9bbVpMEWE5MfYo+2qQpxzaQSTEv2k/
- vhp9wsV3Hg/h43i0kLWFjPWvhyGgzakEouUhF2EHY0vDWRkJljhh//nKJC9s4fDSkaFxtZ4f6
- 1Tz0uiu/V13zhkjI63hPFElYcDzVgEHjYUR1ELVwFh7W13CFvS1aMjH/fV81LYKTOSQWkxi8h
- dbcvCHZ2rgsssi3ipKasMo0BXUsdjAAFeXGFy35wBksMCdgiuumBXy5un8arbXD8y2xQSiaeE
- sz9gdaw9Bk9i5RNBL8YM6O4Hxk3H++KhdH8cFHJs81oaRl5sI6a/QjuLxASbONtGj+KGpmhER
- zxFtFiUUBCnntOv+7AGE+FrVsDx1tCmI+zqpllgOiGZzlN6XhxAL5hXqk6m/coIoveReYVMmg
- p3RPt8LaZAMdfnKjT+nvWJbbspShepJPVf/EgH6y9OEHekLIqDwGfQYE6Ejc=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:hXXlJH0X6dc=:zHBV93IkUD9JA4IK4PD1Kg
+ WytkBCfS3M3Mz4PZaD3rPjH+KljSgyY9ZD1T1RdSlgIn7mqWt03UycQTDFgF//Ww3rYlmPIK1
+ SbPDWKvfG+Mbfhat6llf2+PwVa6Tx1FIIB1ZwRsNglj6LDyDWYB8Rkv+GsoCqvRyoIas4KH7x
+ d9oIBuFREiG133MCypcKY2q2u4vNYcov1CeGrn8rUUzuz+pM60xZDg9AF9/V2lTrVs7NilmDq
+ q4aosKiNNW3HBlJIlb9BaqTNpPRXcXk6QTqFqVTh43jhbP9gY5TCz3ybRdNgDDVdUsKFZ6262
+ RtNn9mCnudJPMgN05d+8JAbR8p87umVDtvo27PP7qRTlyDljnMw4zloa6ehF0VVpTNlmzB1wv
+ +DaOoZVPm+AVGm9mB2lY36iDEAmFS6JABPDlBgmBH/BYDFy8pQjvvbkrflpHeDYJRtTM0te1k
+ eP4jSx6s9PkAC6MeoH1gtMLrdneF08sco76z1gDmG6W1Z99FZ6q9U5ma/L1TZN72utI7hrPNa
+ 5uvpB8jjwKiJq1yaQ6YCo+qnw+t7+KcSDVKFmDdWxL7xzaxG7O39//o465ePG6yAI7ncZB5wr
+ HrIHDd7DqUcZIgcJ9tYuqTTer2g9mOZgb6CIoJfWPRo89EKlP/5/XvbIZAx2bri6MVw1AKP6d
+ vFjGNoSeF7vDEVuANAxs0FqgCgTeWnQYk0sFTVvogkv/CbYpYyjdjYzxHejeg+R21zsxW12Gg
+ 1bWO+LpBf5+PzYrn7kFPEJBx4Wc6hVrFEv09wCAvob7wiPOyXZpQKFjefI3bFu/HeaGll/PvW
+ Xeko3MVpuDjei0qYluIqLhhoeDcl5kquVzkU+cLVmLX9YsJx+ex3z/QQVo1hZStSb7DYeYVJh
+ 1ajWecqmwdcHEK3lm9zpYNH+Z0PsjPhIKr4rdzIqrZWCDqYGyRH2FCRKVocoEGXATZyAgWQFN
+ S12vwy7JMnyCL7kcqiap8csbRp702cBEscnTwOIyAZCO9f/VLqMceGKDRthOIwQkamklPyP8/
+ ++NvXNh6ASEBWmTEgBhGCSj8AnS13FD+61bL5oeggfIA2LbP5biVMDJizhOsNHO1VVvfQ4c09
+ RQrqJgqj0Uw6nOB702lr9aGnj8bS6X3a7DgMoGQDsg3wUwlMJ/cY6C04pbvpYaeYvapJ70xbI
+ utU5d91EA3ZMqPytD3qlLYWJlhl/lcMz82YMB/HhSSfpv4xGzSd+BFBBqMLOIpn384shjraPH
+ T+08zzWJAc+OaoYX+G8tEWmOtNj3G7B1FokZ08D9xTtsF86aDJ4hx3XGJrhM=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---8SPW7u60NS0g0yK1MIxrGI85lbKqHIlWQ
-Content-Type: multipart/mixed; boundary="TXLHXV0YZFSziYBkYKawWg6qF2vFZPCD9"
+--DdnbfQVb281Q90zvA79JLfFRqPbOYbTVk
+Content-Type: multipart/mixed; boundary="ngSZ5YJXqaeyTy1oJ0Mr9QzTuXvknAUlh"
 
---TXLHXV0YZFSziYBkYKawWg6qF2vFZPCD9
+--ngSZ5YJXqaeyTy1oJ0Mr9QzTuXvknAUlh
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/10/17 =E4=B8=8B=E5=8D=8812:17, Anand Jain wrote:
->=20
-> =C2=A0Depending on the size of the FS the convert may take longer, furt=
-her
-> =C2=A0fatal error (power loss; pid kill) may leave the FS in a state wh=
-ere
-> =C2=A0the bg items are in both extent-tree and bg-tree.
-
-That's why I'm using one transaction to convert them all.
-
-So if the convert get interrutped, we're still safe.
-
-Thanks,
-Qu
->=20
-> =C2=A0The lessons which lead to the implementation of metadata_uuid fsi=
-d
-> =C2=A0suggests, for conversions its better to use the btrfstune to only=
-
-> =C2=A0flag the bg convert requirement and let the kernel handle of migr=
-ation
-> =C2=A0of the bg items from the extent-tree to the bg-tree as and when t=
-he
-> =C2=A0bg-items are written.
->=20
-> Thanks, Anand
->=20
->=20
+On 2019/10/17 =E4=B8=8A=E5=8D=8811:23, Anand Jain wrote:
 > On 10/8/19 12:49 PM, Qu Wenruo wrote:
->> Add a new option '-b' for btrfstune, to enable bg-tree feature for a
->> unmounted fs.
+>> This patch does the following refactor:
+>> - Refactor parameter from @root to @fs_info
 >>
->> This feature will convert all BLOCK_GROUP_ITEMs in extent tree to bg
->> tree, by reusing the existing btrfs_convert_to_bg_tree() function.
+>> - Refactor the large loop body into another function
+>> =C2=A0=C2=A0 Now we have a helper function, read_one_block_group(), to=
+ handle
+>> =C2=A0=C2=A0 block group cache and space info related routine.
+>>
+>> - Refactor the return value
+>> =C2=A0=C2=A0 Even we have the code handling ret > 0 from find_first_bl=
+ock_group(),
+>> =C2=A0=C2=A0 it never works, as when there is no more block group,
+>> =C2=A0=C2=A0 find_first_block_group() just return -ENOENT other than 1=
+=2E
+>=20
+>=20
+> =C2=A0Can it be separated into patches? My concern is as it alters the =
+return
+> =C2=A0value of the rescue command. So we shall have clarity of a discre=
+te
+> =C2=A0patch to blame. Otherwise I agree its a good change.
+
+No problem.
+
+What about 3 patches split by the mentioned 3 refactors?
+>=20
+>=20
+>> =C2=A0=C2=A0 This is super confusing, it's almost a mircle it even wor=
+ks.
 >>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >> ---
->> =C2=A0 Documentation/btrfstune.asciidoc |=C2=A0 6 +++++
->> =C2=A0 btrfstune.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 =
-| 44 ++++++++++++++++++++++++++++++--
->> =C2=A0 2 files changed, 48 insertions(+), 2 deletions(-)
+>> =C2=A0 ctree.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 2 +-
+>> =C2=A0 disk-io.c=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 9 ++-
+>> =C2=A0 extent-tree.c | 160 ++++++++++++++++++++++++++++---------------=
+-------
+>> =C2=A0 3 files changed, 97 insertions(+), 74 deletions(-)
 >>
->> diff --git a/Documentation/btrfstune.asciidoc
->> b/Documentation/btrfstune.asciidoc
->> index 1d6bc98deed8..ed54c2e1597f 100644
->> --- a/Documentation/btrfstune.asciidoc
->> +++ b/Documentation/btrfstune.asciidoc
->> @@ -26,6 +26,12 @@ means.=C2=A0 Please refer to the 'FILESYSTEM FEATUR=
-ES'
->> in `btrfs`(5).
->> =C2=A0 OPTIONS
->> =C2=A0 -------
->> =C2=A0 +-b::
->> +(since kernel: 5.x)
->> ++
->> +enable bg-tree feature (faster mount time for large fs), enabled by m=
-kfs
->> +feature 'bg-tree'.
->> +
->> =C2=A0 -f::
->> =C2=A0 Allow dangerous changes, e.g. clear the seeding flag or change =
-fsid.
->> Make sure
->> =C2=A0 that you are aware of the dangers.
->> diff --git a/btrfstune.c b/btrfstune.c
->> index afa3aae35412..aa1ac568aef0 100644
->> --- a/btrfstune.c
->> +++ b/btrfstune.c
->> @@ -476,11 +476,39 @@ static void print_usage(void)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printf("\t-m=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 change fsid in metadata_uuid to a random
->> UUID\n");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printf("\t=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (incompat change, more lightweight t=
-han
->> -u|-U)\n");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printf("\t-M UUID=C2=A0=C2=A0=C2=A0=C2=A0=
- change fsid in metadata_uuid to UUID\n");
->> +=C2=A0=C2=A0=C2=A0 printf("\t-b=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 enable bg-tree feature (mkfs: bg-tree, for
->> faster mount time)\n");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printf("=C2=A0 general:\n");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printf("\t-f=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0 allow dangerous operations, make sure that
->> you are aware of the dangers\n");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 printf("\t--help=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 print this help\n");
->> =C2=A0 }
->> =C2=A0 +static int convert_to_bg_tree(struct btrfs_fs_info *fs_info)
->> +{
->> +=C2=A0=C2=A0=C2=A0 struct btrfs_trans_handle *trans;
->> +=C2=A0=C2=A0=C2=A0 int ret;
->> +
->> +=C2=A0=C2=A0=C2=A0 trans =3D btrfs_start_transaction(fs_info->tree_ro=
-ot, 1);
->> +=C2=A0=C2=A0=C2=A0 if (IS_ERR(trans)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D PTR_ERR(trans);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 errno =3D -ret;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("failed to start tra=
-nsaction: %m");
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> +=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_convert_to_bg_tree(trans);
->> +=C2=A0=C2=A0=C2=A0 if (ret < 0) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 errno =3D -ret;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("failed to convert: =
-%m");
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_abort_transaction(tr=
-ans, ret);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
->> +=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 ret =3D btrfs_commit_transaction(trans, fs_info->t=
-ree_root);
->> +=C2=A0=C2=A0=C2=A0 if (ret < 0) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 errno =3D -ret;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("failed to commit tr=
-ansaction: %m");
->> +=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 return ret;
->> +}
->> +
->> =C2=A0 int BOX_MAIN(btrfstune)(int argc, char *argv[])
->> =C2=A0 {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_root *root;
->> @@ -491,6 +519,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 seeding_value =3D 0;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int random_fsid =3D 0;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int change_metadata_uuid =3D 0;
->> +=C2=A0=C2=A0=C2=A0 bool to_bg_tree =3D false;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 char *new_fsid_str =3D NULL;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 super_flags =3D 0;
->> @@ -501,7 +530,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+>> diff --git a/ctree.h b/ctree.h
+>> index 8c7b3cb40151..2899de358613 100644
+>> --- a/ctree.h
+>> +++ b/ctree.h
+>> @@ -2550,7 +2550,7 @@ int update_space_info(struct btrfs_fs_info
+>> *info, u64 flags,
 >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 { "help", no_argument, NULL, GETOPT_VAL_HELP},
+=C2=A0=C2=A0=C2=A0 u64 total_bytes, u64 bytes_used,
 >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 { NULL, 0, NULL, 0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 };
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int c =3D getopt_long(argc=
-, argv, "S:rxfuU:nmM:", long_options,
->> NULL);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int c =3D getopt_long(argc=
-, argv, "S:rxfuU:nmM:b",
->> long_options, NULL);
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (c < =
-0)
+=C2=A0=C2=A0=C2=A0 struct btrfs_space_info **space_info);
+>> =C2=A0 int btrfs_free_block_groups(struct btrfs_fs_info *info);
+>> -int btrfs_read_block_groups(struct btrfs_root *root);
+>> +int btrfs_read_block_groups(struct btrfs_fs_info *info);
+>> =C2=A0 struct btrfs_block_group_cache *
+>> =C2=A0 btrfs_add_block_group(struct btrfs_fs_info *fs_info, u64 bytes_=
+used,
+>> u64 type,
 >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 break;
->> @@ -539,6 +568,9 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 ctree_flags |=3D OPEN_CTREE_IGNORE_FSID_MISMATCH;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 change_metadata_uuid =3D 1;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 break;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case 'b':
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 to=
-_bg_tree =3D true;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 br=
-eak;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 case GETOPT_VAL=
-_HELP:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 default:
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 print_usage();
->> @@ -556,7 +588,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 1;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!super_flags && !seeding_flag && !(=
-random_fsid ||
->> new_fsid_str) &&
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !change_metadata_uuid) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !change_metadata_uuid && !=
-to_bg_tree) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 error("at least=
- one option should be specified");
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 print_usage();
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 1;
->> @@ -602,6 +634,14 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 1;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0 +=C2=A0=C2=A0=C2=A0 if (to_bg_tree) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D convert_to_bg_tree=
-(root->fs_info);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0) {
+=C2=A0=C2=A0=C2=A0 u64 chunk_offset, u64 size);
+>> diff --git a/disk-io.c b/disk-io.c
+>> index be44eead5cef..8978f0cb60c7 100644
+>> --- a/disk-io.c
+>> +++ b/disk-io.c
+>> @@ -983,14 +983,17 @@ int btrfs_setup_all_roots(struct btrfs_fs_info
+>> *fs_info, u64 root_tree_bytenr,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_info->last_trans_committed =3D gener=
+ation;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (extent_buffer_uptodate(fs_info->ext=
+ent_root->node) &&
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !(flags & OPEN_=
+CTREE_NO_BLOCK_GROUPS)) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_read_block_g=
+roups(fs_info->tree_root);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_read_block_g=
+roups(fs_info);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * If we d=
+on't find any blockgroups (ENOENT) we're either
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * restori=
+ng or creating the filesystem, where it's expected,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * anythin=
+g else is error
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret !=3D -ENOENT)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 re=
+turn -EIO;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0 && ret !=3D -E=
+NOENT) {
 >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 er=
 rno =3D -ret;
 >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 er=
-ror("failed to convert to bg-tree feature: %m");
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 go=
-to out;
+ror("failed to read block groups: %m");
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 re=
+turn ret;
 >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (seeding_flag) {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (btrfs_fs_in=
-compat(root->fs_info, METADATA_UUID)) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>=20
+>=20
+> As mentioned this alters the rescue command semantics as show below.
+> Earlier we had only -EIO as error now its much more and accurate
+> which is good. fstests is fine but anything else?
+>=20
+> cmd_rescue_chunk_recover()
+> =C2=A0 btrfs_recover_chunk_tree()
+> =C2=A0=C2=A0=C2=A0 open_ctree_with_broken_chunk()
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_setup_all_roots()
+
+I'm not sure if I got the point.
+
+Although btrfs_setup_all_roots() get called in above call chain, it
+doesn't have any special handling of -EIO or others.
+
+It just reads the extent tree root.
+
+Would you mind to explain a little more?
+
+Thanks,
+Qu
+
+
+>=20
+> Thanks, Anand
+>=20
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.objectid =3D BTRFS_FS_TREE_OBJECTID=
+;
+>> diff --git a/extent-tree.c b/extent-tree.c
+>> index 19d1ea0df570..9713d627764c 100644
+>> --- a/extent-tree.c
+>> +++ b/extent-tree.c
+>> @@ -2607,6 +2607,13 @@ int btrfs_free_block_groups(struct
+>> btrfs_fs_info *info)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>> =C2=A0 }
+>> =C2=A0 +/*
+>> + * Find a block group which starts >=3D @key->objectid in extent tree=
+=2E
+>> + *
+>> + * Return 0 for found
+>> + * Retrun >0 for not found
+>> + * Return <0 for error
+>> + */
+>> =C2=A0 static int find_first_block_group(struct btrfs_root *root,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_pa=
+th *path, struct btrfs_key *key)
+>> =C2=A0 {
+>> @@ -2636,36 +2643,95 @@ static int find_first_block_group(struct
+>> btrfs_root *root,
 >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 fprintf(stderr, "SEED flag cannot be changed on a
->> metadata-uuid changed fs\n");
->>
+=C2=A0 return 0;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 path->slots[0]+=
++;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0 ret =3D -ENOENT;
+>> +=C2=A0=C2=A0=C2=A0 ret =3D 1;
+>> =C2=A0 error:
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> =C2=A0 }
+>> =C2=A0 -int btrfs_read_block_groups(struct btrfs_root *root)
+>> +/*
+>> + * Helper function to read out one BLOCK_GROUP_ITEM and insert it int=
+o
+>> + * block group cache.
+>> + *
+>> + * Return 0 if nothing wrong (either insert the bg cache or skip 0
+>> sized bg)
+>> + * Return <0 for error.
+>> + */
+>> +static int read_one_block_group(struct btrfs_fs_info *fs_info,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_path *path)
+>> =C2=A0 {
+>> -=C2=A0=C2=A0=C2=A0 struct btrfs_path *path;
+>> -=C2=A0=C2=A0=C2=A0 int ret;
+>> -=C2=A0=C2=A0=C2=A0 int bit;
+>> -=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_cache *cache;
+>> -=C2=A0=C2=A0=C2=A0 struct btrfs_fs_info *info =3D root->fs_info;
+>> +=C2=A0=C2=A0=C2=A0 struct extent_io_tree *block_group_cache =3D
+>> &fs_info->block_group_cache;
+>> +=C2=A0=C2=A0=C2=A0 struct extent_buffer *leaf =3D path->nodes[0];
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_space_info *space_info;
+>> -=C2=A0=C2=A0=C2=A0 struct extent_io_tree *block_group_cache;
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_block_group_cache *cache;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_key key;
+>> -=C2=A0=C2=A0=C2=A0 struct btrfs_key found_key;
+>> -=C2=A0=C2=A0=C2=A0 struct extent_buffer *leaf;
+>> +=C2=A0=C2=A0=C2=A0 int slot =3D path->slots[0];
+>> +=C2=A0=C2=A0=C2=A0 int bit =3D 0;
+>> +=C2=A0=C2=A0=C2=A0 int ret;
+>> =C2=A0 -=C2=A0=C2=A0=C2=A0 block_group_cache =3D &info->block_group_ca=
+che;
+>> +=C2=A0=C2=A0=C2=A0 btrfs_item_key_to_cpu(leaf, &key, slot);
+>> +=C2=A0=C2=A0=C2=A0 ASSERT(key.type =3D=3D BTRFS_BLOCK_GROUP_ITEM_KEY)=
+;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Skip 0 sized block group, don't insert the=
+m into block
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * group cache tree, as its length is 0, it w=
+on't get
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * freed at close_ctree() time.
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> +=C2=A0=C2=A0=C2=A0 if (key.offset =3D=3D 0)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 cache =3D kzalloc(sizeof(*cache), GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 if (!cache)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;
+>> +=C2=A0=C2=A0=C2=A0 read_extent_buffer(leaf, &cache->item,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 btrfs_item_ptr_offset(leaf, slot),
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 sizeof(cache->item));
+>> +=C2=A0=C2=A0=C2=A0 memcpy(&cache->key, &key, sizeof(key));
+>> +=C2=A0=C2=A0=C2=A0 cache->cached =3D 0;
+>> +=C2=A0=C2=A0=C2=A0 cache->pinned =3D 0;
+>> +=C2=A0=C2=A0=C2=A0 cache->flags =3D btrfs_block_group_flags(&cache->i=
+tem);
+>> +=C2=A0=C2=A0=C2=A0 if (cache->flags & BTRFS_BLOCK_GROUP_DATA) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bit =3D BLOCK_GROUP_DATA;
+>> +=C2=A0=C2=A0=C2=A0 } else if (cache->flags & BTRFS_BLOCK_GROUP_SYSTEM=
+) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bit =3D BLOCK_GROUP_SYSTEM=
+;
+>> +=C2=A0=C2=A0=C2=A0 } else if (cache->flags & BTRFS_BLOCK_GROUP_METADA=
+TA) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bit =3D BLOCK_GROUP_METADA=
+TA;
+>> +=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 set_avail_alloc_bits(fs_info, cache->flags);
+>> +=C2=A0=C2=A0=C2=A0 if (btrfs_chunk_readonly(fs_info, cache->key.objec=
+tid))
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->ro =3D 1;
+>> +=C2=A0=C2=A0=C2=A0 exclude_super_stripes(fs_info, cache);
+>> +
+>> +=C2=A0=C2=A0=C2=A0 ret =3D update_space_info(fs_info, cache->flags, c=
+ache->key.offset,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 btrfs_block_group_used(&cache->item),
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 &space_info);
+>> +=C2=A0=C2=A0=C2=A0 if (ret < 0) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 free(cache);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> +=C2=A0=C2=A0=C2=A0 }
+>> +=C2=A0=C2=A0=C2=A0 cache->space_info =3D space_info;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 set_extent_bits(block_group_cache, cache->key.obje=
+ctid,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ca=
+che->key.objectid + cache->key.offset - 1,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bi=
+t | EXTENT_LOCKED);
+>> +=C2=A0=C2=A0=C2=A0 set_state_private(block_group_cache, cache->key.ob=
+jectid,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 (unsigned long)cache);
+>> +=C2=A0=C2=A0=C2=A0 return 0;
+>> +}
+>> =C2=A0 -=C2=A0=C2=A0=C2=A0 root =3D info->extent_root;
+>> +int btrfs_read_block_groups(struct btrfs_fs_info *fs_info)
+>> +{
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_path path;
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_root *root;
+>> +=C2=A0=C2=A0=C2=A0 int ret;
+>> +=C2=A0=C2=A0=C2=A0 struct btrfs_key key;
+>> +
+>> +=C2=A0=C2=A0=C2=A0 root =3D fs_info->extent_root;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.objectid =3D 0;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.offset =3D 0;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.type =3D BTRFS_BLOCK_GROUP_ITEM_KEY=
+;
+>> -=C2=A0=C2=A0=C2=A0 path =3D btrfs_alloc_path();
+>> -=C2=A0=C2=A0=C2=A0 if (!path)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;
+>> +=C2=A0=C2=A0=C2=A0 btrfs_init_path(&path);
+>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 while(1) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D find_first_block_g=
+roup(root, path, &key);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D find_first_block_g=
+roup(root, &path, &key);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret > 0) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 ret =3D 0;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 goto error;
+>> @@ -2673,67 +2739,21 @@ int btrfs_read_block_groups(struct btrfs_root
+>> *root)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret !=3D 0)=
+ {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 goto error;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 leaf =3D path->nodes[0];
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_item_key_to_cpu(leaf=
+, &found_key, path->slots[0]);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_item_key_to_cpu(path=
+=2Enodes[0], &key, path.slots[0]);
+>> =C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache =3D kzalloc(s=
+izeof(*cache), GFP_NOFS);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!cache) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 re=
+t =3D -ENOMEM;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D read_one_block_gro=
+up(fs_info, &path);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 goto error;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0 -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 read_extent_buffer(=
+leaf, &cache->item,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_item_ptr_offset(leaf, path-=
+>slots[0]),
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sizeof(cache->item));
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(&cache->key, &found=
+_key, sizeof(found_key));
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->cached =3D 0;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->pinned =3D 0;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 key.objectid =3D found_key=
+=2Eobjectid + found_key.offset;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (found_key.offset =3D=3D=
+ 0)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (key.offset =3D=3D 0)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 key.objectid++;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_release_path(path);
+>> -
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * Skip 0 sized block=
+ group, don't insert them into block
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * group cache tree, =
+as its length is 0, it won't get
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * freed at close_ctr=
+ee() time.
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (found_key.offset =3D=3D=
+ 0) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fr=
+ee(cache);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 co=
+ntinue;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->flags =3D btrfs_blo=
+ck_group_flags(&cache->item);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bit =3D 0;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cache->flags & BTRFS_B=
+LOCK_GROUP_DATA) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bi=
+t =3D BLOCK_GROUP_DATA;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (cache->flags & =
+BTRFS_BLOCK_GROUP_SYSTEM) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bi=
+t =3D BLOCK_GROUP_SYSTEM;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (cache->flags & =
+BTRFS_BLOCK_GROUP_METADATA) {
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bi=
+t =3D BLOCK_GROUP_METADATA;
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_avail_alloc_bits(info,=
+ cache->flags);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (btrfs_chunk_readonly(i=
+nfo, cache->key.objectid))
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ca=
+che->ro =3D 1;
+>> -
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 exclude_super_stripes(info=
+, cache);
+>> -
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D update_space_info(=
+info, cache->flags, found_key.offset,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_block_group_used(&cac=
+he->item),
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 &space_info);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BUG_ON(ret);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->space_info =3D spac=
+e_info;
+>> -
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* use EXTENT_LOCKED to pr=
+event merging */
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_extent_bits(block_grou=
+p_cache, found_key.objectid,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 found_key.objectid + found_key.offset - 1,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 bit | EXTENT_LOCKED);
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_state_private(block_gr=
+oup_cache, found_key.objectid,
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (unsigned long)cache);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 else
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ke=
+y.objectid =3D key.objectid + key.offset;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_release_path(&path);=
+
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D 0;
+>> =C2=A0 error:
+>> -=C2=A0=C2=A0=C2=A0 btrfs_free_path(path);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_release_path(&path);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>> =C2=A0 }
+>> =C2=A0
 >=20
 
 
---TXLHXV0YZFSziYBkYKawWg6qF2vFZPCD9--
+--ngSZ5YJXqaeyTy1oJ0Mr9QzTuXvknAUlh--
 
---8SPW7u60NS0g0yK1MIxrGI85lbKqHIlWQ
+--DdnbfQVb281Q90zvA79JLfFRqPbOYbTVk
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2n7fIACgkQwj2R86El
-/qisKAf+N30yXvNjdm1lO564AXDhtx/jcUeocMzwgZkJnMVY3rryRe3Yqee56nK7
-B11UrUt2vgrFGKrHjc+8oIOArAJBBlpsRdqQqSfNd+yKh8ENE/SDP03Odz+/Vn4C
-mDrU/HDjhDzoyeEvGCRdhskxC1+ubXx89NjmpZLPcM4hiiwCCwPhcuaJbm4UzVpm
-+AMF2om2YKJ7YLEqfdKHde9Oz2mu1EpUoFpm+2+QCrbPojBv/Z24Kh6MQdVjntRj
-oGl9ZGelpwEtkMG32ZUGeEz8PNx04cLZGm4V7klaeJVPMvk4BjzF3u02LOlxPggA
-vgkO7HAqwEHeJoLwL+ZxFul91uE+/w==
-=BC34
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2n7yAACgkQwj2R86El
+/qhHOwgAjFcNCYD43h8WVu5hAtGbQ1Q5gszLAanQTREUXxNHK1Sr5AZ3p6tkid6O
+RaBaxivKHvGsuEh5MSiX+LBpEYXAn9Z6fuOKGzyen0Dps/Nm9I3SU58CCzB5mtbY
+sf4bkJDWYDQ0mlHub/ZsYGmPfZvmbtEMNXkN8VFzMj/YSc2ay/cujFU3NrBDle1s
+S7I7Rlkbww5oTd0/y9kQFE/1L13ONnyM39FawR3Dk0tl5hscEIdvy/HAUkEaJVFP
+Jw9x7VMgSRijCw/0NVlBPru5rZf8EXi5nkC8vkCdsVv6mVY3EJk6u636vbOu3pmw
+OFOeUOY8llAVKCsgsp9k8Xr4y9dQVQ==
+=cuhP
 -----END PGP SIGNATURE-----
 
---8SPW7u60NS0g0yK1MIxrGI85lbKqHIlWQ--
+--DdnbfQVb281Q90zvA79JLfFRqPbOYbTVk--
