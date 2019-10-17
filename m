@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 77336DA5A9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 08:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F35D3DA5AB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 08:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407836AbfJQGdY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 02:33:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45442 "EHLO mx1.suse.de"
+        id S2389397AbfJQGh7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 02:37:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46874 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389397AbfJQGdY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 02:33:24 -0400
+        id S1726891AbfJQGh7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 02:37:59 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 110A1AE35;
-        Thu, 17 Oct 2019 06:33:22 +0000 (UTC)
-Subject: Re: [PATCH v2 2/2] btrfs: qgroup: Fix bad entry members of qgroup
- trace events
+        by mx1.suse.de (Postfix) with ESMTP id EEAEDAD31;
+        Thu, 17 Oct 2019 06:37:56 +0000 (UTC)
+Subject: Re: [PATCH v2 1/2] btrfs: qgroup: Fix wrong parameter order for trace
+ events
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20191017023837.32264-1-wqu@suse.com>
- <20191017023837.32264-3-wqu@suse.com>
+ <20191017023837.32264-2-wqu@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <97956f25-e38e-e72a-c02c-138df55231c9@suse.com>
-Date:   Thu, 17 Oct 2019 09:33:20 +0300
+Message-ID: <d436508c-08fc-5b61-fa41-72377e88f2c8@suse.com>
+Date:   Thu, 17 Oct 2019 09:37:55 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191017023837.32264-3-wqu@suse.com>
+In-Reply-To: <20191017023837.32264-2-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,26 +84,50 @@ On 17.10.19 г. 5:38 ч., Qu Wenruo wrote:
 > [BUG]
 > For btrfs:qgroup_meta_reserve event, the trace event can output garbage:
 > qgroup_meta_reserve: 9c7f6acc-b342-4037-bc47-7f6e4d2232d7: refroot=5(FS_TREE) type=DATA diff=2
-> qgroup_meta_reserve: 9c7f6acc-b342-4037-bc47-7f6e4d2232d7: refroot=5(FS_TREE) type=0x258792 diff=2
 > 
-> The @type can be completely garbage, as DATA type is not possible for
-> trace_qgroup_meta_reserve() trace event.
+> The diff should always be alinged to sector size (4k), so there is
+> definitely something wrong.
 > 
 > [CAUSE]
-> Ther are several problems related to qgroup trace events:
-> - Unassigned entry member
->   Member entry::type of trace_qgroup_update_reserve() and
->   trace_qgourp_meta_reserve() is not assigned
+> For the wrong @diff, it's caused by wrong parameter order.
+> The correct parameters are:
+>   struct btrfs_root, s64 diff, int type.
 > 
-> - Redundant entry member
->   Member entry::type is completely useless in
->   trace_qgroup_meta_convert()
+> However the parameters used are:
+>   struct btrfs_root, int type, s64 diff.
 > 
 > [FIX]
-> Fix these stupid bugs.
+> Fix the super stupid bug.
 > 
 > Fixes: 4ee0d8832c2e ("btrfs: qgroup: Update trace events for metadata reservation")
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-
 Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+
+> ---
+>  fs/btrfs/qgroup.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index c4bb69941c77..3ad151655eb8 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -3629,7 +3629,7 @@ int __btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes,
+>  		return 0;
+>  
+>  	BUG_ON(num_bytes != round_down(num_bytes, fs_info->nodesize));
+> -	trace_qgroup_meta_reserve(root, type, (s64)num_bytes);
+> +	trace_qgroup_meta_reserve(root, (s64)num_bytes, type);
+>  	ret = qgroup_reserve(root, num_bytes, enforce, type);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -3676,7 +3676,7 @@ void __btrfs_qgroup_free_meta(struct btrfs_root *root, int num_bytes,
+>  	 */
+>  	num_bytes = sub_root_meta_rsv(root, num_bytes, type);
+>  	BUG_ON(num_bytes != round_down(num_bytes, fs_info->nodesize));
+> -	trace_qgroup_meta_reserve(root, type, -(s64)num_bytes);
+> +	trace_qgroup_meta_reserve(root, -(s64)num_bytes, type);
+>  	btrfs_qgroup_free_refroot(fs_info, root->root_key.objectid,
+>  				  num_bytes, type);
+>  }
+> 
