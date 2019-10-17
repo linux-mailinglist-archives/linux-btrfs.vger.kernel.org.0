@@ -2,155 +2,214 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B956DA479
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 06:07:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5417DA48B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 06:17:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389040AbfJQEHL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 00:07:11 -0400
-Received: from mail-vk1-f170.google.com ([209.85.221.170]:39536 "EHLO
-        mail-vk1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726982AbfJQEHK (ORCPT
+        id S1727872AbfJQERh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 00:17:37 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38290 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726394AbfJQERh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 00:07:10 -0400
-Received: by mail-vk1-f170.google.com with SMTP id u4so201912vkl.6
-        for <linux-btrfs@vger.kernel.org>; Wed, 16 Oct 2019 21:07:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tmVHEVOGD/6K2JGysHHSw5AUc3WQFlNd4J4PgPfuZoo=;
-        b=AvkhdTpaSR4HhSJf17PabQ2pnmu7uGjVkN4QZ5wu47rFLxJZube2m76qNPHZH4r/d2
-         9kqdxOQX4VTBUY9iogGU578pNL9kTw6W30ykILDUOnkNbWVB9gnlPiThDPwu9OnYYUaZ
-         SXQTdnoq6huTqDW8loBlM9VRGpQIkxPuRVSnUN+Zd4oGaf0UskndY+LgOVeRWXYB3yyv
-         DsmpyBHw9LDYUTlS+vQuQAtrtsMQ7eACednWK/Hvx8S5It7uaX3zWUBr6sZc9fCiLJyk
-         uefyyPHxvs71EfKCsbhK3ixx6YSLhFAHAix7P75u5JmOH/sncN7vQlnpUr7OfekVoWfW
-         EHSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tmVHEVOGD/6K2JGysHHSw5AUc3WQFlNd4J4PgPfuZoo=;
-        b=smc1OcxLbw8R4UWjyCGi8dHczzDBVb1o7PKGzh2CJ3qfY4e1QHSWzY695wxtM774WV
-         ouFROJnOGg+6mDoA5/grlc4x0/L8OLQ/e9n/YLieJH5hkE4o1Lr2OPrLq2vcltiLhUyp
-         RCt2tg5eaZmUSC/gZLtAQfr/KzynfNEphidqJAi/y4e5G0c+MNXiKn5UHWr7fRzl8g0+
-         0UhZdL/YUIQ03hliPrgQqkL/273jcO2yyvjfEnT8okgr8Yp5CPWvoL+sr47e9it25YxT
-         1ze2b+UvDR76GaAGFdCNDaAyAorP5DH3jFKyrVyLcfdRV/A6/B6WDWrLIbdjAfoDftF/
-         PJtQ==
-X-Gm-Message-State: APjAAAWB6wOxUB+UByAsJXnQaME6tP7+R6SyVJJCHKFxBYAxlCAorfqg
-        4aY/FGy2NRzeS45tQIKgyTZ6gt689bC1AjYqh4FaA7CVcjc=
-X-Google-Smtp-Source: APXvYqyKgqIrApx3LjSwK/qeBLti/kiwOjvE5JVLVMu/bvb4JtXTMGUvbp8o63hZyAo7eSevPXZBjH+HHvN1fSlEG7E=
-X-Received: by 2002:a1f:a293:: with SMTP id l141mr869025vke.43.1571285229461;
- Wed, 16 Oct 2019 21:07:09 -0700 (PDT)
+        Thu, 17 Oct 2019 00:17:37 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9H4Dibx007904;
+        Thu, 17 Oct 2019 04:17:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=fiIg7uoGY5RnwzcXTCdPI2hxjvZm3NARLjoCsRx0Xh8=;
+ b=V+CGX67IVvE0+TG39PRal6EWLec/3e+Tyz0ZOH2D3qv6j7aiYPONCYYOYgaivpWdnYyh
+ oJ+0fO0LxQChs6AjcdgiLL9GVs+Y3f6RviMn0GuKP+8jBFllY2do1gE2D/8MJaupW5OK
+ cZNevkvPH0jAyfgsfAnaSONLaik3lN7i5D62bA8MZk7AK6L9ruzEE2qsoiyBMviMNLxi
+ 7C9zlChW9b+c5sWNz1f8ylNkE73VZHQlH3O3DgK+Pl5kCSV3sWZ6SoIaBMEzwQkmJL5W
+ BeUhJR+EZ3ZaC1PFNr86sxVtr17OK3CsbtUQrUe3eMq2TS7jazAQSJzoLcm9g79x7+dW pA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2vk7frk95g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Oct 2019 04:17:33 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9H4DGG1018291;
+        Thu, 17 Oct 2019 04:17:33 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2vp70p51ws-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 17 Oct 2019 04:17:33 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9H4HVDV029579;
+        Thu, 17 Oct 2019 04:17:31 GMT
+Received: from [10.190.155.136] (/192.188.170.104)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 17 Oct 2019 04:17:31 +0000
+Subject: Re: [PATCH v2 7/7] btrfs-progs: btrfstune: Allow to enable bg-tree
+ feature offline
+To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20191008044936.157873-1-wqu@suse.com>
+ <20191008044936.157873-8-wqu@suse.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <92f936ed-74eb-5c6e-2bf7-6226cdef14fd@oracle.com>
+Date:   Thu, 17 Oct 2019 12:17:27 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-References: <b665710c-5171-487b-ce38-5ea7075492e4@liland.com>
-In-Reply-To: <b665710c-5171-487b-ce38-5ea7075492e4@liland.com>
-From:   Jon Ander MB <jonandermonleon@gmail.com>
-Date:   Thu, 17 Oct 2019 06:07:01 +0200
-Message-ID: <CACa3q1wUmgY9uTygYFVBer=QgZjtwX2NOvVT68kAYKAgoLpXRg@mail.gmail.com>
-Subject: Re: MD RAID 5/6 vs BTRFS RAID 5/6
-To:     Edmund Urbani <edmund.urbani@liland.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20191008044936.157873-8-wqu@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9412 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910170029
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9412 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910170029
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-It would be interesting to know the pros and cons of this setup that
-you are suggesting vs zfs.
-+zfs detects and corrects bitrot (
-http://www.zfsnas.com/2015/05/24/testing-bit-rot/ )
-+zfs has working raid56
--modules out of kernel for license incompatibilities (a big minus)
 
-BTRFS can detect bitrot but... are we sure it can fix it? (can't seem
-to find any conclusive doc about it right now)
+  Depending on the size of the FS the convert may take longer, further
+  fatal error (power loss; pid kill) may leave the FS in a state where
+  the bg items are in both extent-tree and bg-tree.
 
-I'm one of those that is waiting for the write hole bug to be fixed in
-order to use raid5 on my home setup. It's a shame it's taking so long.
+  The lessons which lead to the implementation of metadata_uuid fsid
+  suggests, for conversions its better to use the btrfstune to only
+  flag the bg convert requirement and let the kernel handle of migration
+  of the bg items from the extent-tree to the bg-tree as and when the
+  bg-items are written.
 
-Regards
+Thanks, Anand
 
 
-On Thu, Oct 17, 2019 at 12:21 AM Edmund Urbani <edmund.urbani@liland.com> w=
-rote:
->
-> Hello everyone,
->
-> having recovered most of my data from my btrfs RAID-6, I have by now migr=
-ated to
-> mdadm RAID (with btrfs on top). I am considering switching back to btrfs =
-RAID
-> some day, when I feel more confident regarding its maturity.
->
-> I put some thought into the pros and cons of this choice that I would lik=
-e to share:
->
-> btrfs RAID-5/6:
->
-> - RAID write hole issue still unsolved (assuming
-> https://btrfs.wiki.kernel.org/index.php/RAID56 is up-to-date)
-> + can detect and fix bit rot
-> + flexibility (resizing / reshaping)
-> - maturity ? (I had a hard time recovering my data after removal of a dri=
-ve that
-> had developed some bad blocks. That's not what I would expect from a RAID=
--6
-> setup. To be fair I should point out that I was running kernel 4.14 at th=
-e time
-> and did not do regular scrubbing.)
->
-> btrfs on MD RAID 5/6:
->
-> + options to mitigate RAID write hole
-> - bitrot can only be detected but not fixed
-> + mature and proven RAID implementation (based on personal experience of
-> replacing plenty of drives over the years without data loss)
->
-> I would be interested in getting your feedback on this comparison. Do you=
- agree
-> with my observations? Did I miss anything you would consider important?
->
-> Regards,
->  Edmund
->
->
->
->
->
-> --
-> *Liland IT GmbH*
->
->
-> Ferlach =E2=97=8F Wien =E2=97=8F M=C3=BCnchen
-> Tel: +43 463 220111
-> Tel: +49 89
-> 458 15 940
-> office@Liland.com
-> https://Liland.com <https://Liland.com>
->
->
->
-> Copyright =C2=A9 2019 Liland IT GmbH
->
-> Diese Mail enthaelt vertrauliche und/oder
-> rechtlich geschuetzte Informationen.
-> Wenn Sie nicht der richtige Adressat
-> sind oder diese Email irrtuemlich erhalten haben, informieren Sie bitte
-> sofort den Absender und vernichten Sie diese Mail. Das unerlaubte Kopiere=
-n
-> sowie die unbefugte Weitergabe dieser Mail ist nicht gestattet.
->
-> This
-> email may contain confidential and/or privileged information.
-> If you are
-> not the intended recipient (or have received this email in error) please
-> notify the sender immediately and destroy this email. Any unauthorised
-> copying, disclosure or distribution of the material in this email is
-> strictly forbidden.
->
+On 10/8/19 12:49 PM, Qu Wenruo wrote:
+> Add a new option '-b' for btrfstune, to enable bg-tree feature for a
+> unmounted fs.
+> 
+> This feature will convert all BLOCK_GROUP_ITEMs in extent tree to bg
+> tree, by reusing the existing btrfs_convert_to_bg_tree() function.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>   Documentation/btrfstune.asciidoc |  6 +++++
+>   btrfstune.c                      | 44 ++++++++++++++++++++++++++++++--
+>   2 files changed, 48 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/btrfstune.asciidoc b/Documentation/btrfstune.asciidoc
+> index 1d6bc98deed8..ed54c2e1597f 100644
+> --- a/Documentation/btrfstune.asciidoc
+> +++ b/Documentation/btrfstune.asciidoc
+> @@ -26,6 +26,12 @@ means.  Please refer to the 'FILESYSTEM FEATURES' in `btrfs`(5).
+>   OPTIONS
+>   -------
+>   
+> +-b::
+> +(since kernel: 5.x)
+> ++
+> +enable bg-tree feature (faster mount time for large fs), enabled by mkfs
+> +feature 'bg-tree'.
+> +
+>   -f::
+>   Allow dangerous changes, e.g. clear the seeding flag or change fsid. Make sure
+>   that you are aware of the dangers.
+> diff --git a/btrfstune.c b/btrfstune.c
+> index afa3aae35412..aa1ac568aef0 100644
+> --- a/btrfstune.c
+> +++ b/btrfstune.c
+> @@ -476,11 +476,39 @@ static void print_usage(void)
+>   	printf("\t-m          change fsid in metadata_uuid to a random UUID\n");
+>   	printf("\t            (incompat change, more lightweight than -u|-U)\n");
+>   	printf("\t-M UUID     change fsid in metadata_uuid to UUID\n");
+> +	printf("\t-b          enable bg-tree feature (mkfs: bg-tree, for faster mount time)\n");
+>   	printf("  general:\n");
+>   	printf("\t-f          allow dangerous operations, make sure that you are aware of the dangers\n");
+>   	printf("\t--help      print this help\n");
+>   }
+>   
+> +static int convert_to_bg_tree(struct btrfs_fs_info *fs_info)
+> +{
+> +	struct btrfs_trans_handle *trans;
+> +	int ret;
+> +
+> +	trans = btrfs_start_transaction(fs_info->tree_root, 1);
+> +	if (IS_ERR(trans)) {
+> +		ret = PTR_ERR(trans);
+> +		errno = -ret;
+> +		error("failed to start transaction: %m");
+> +		return ret;
+> +	}
+> +	ret = btrfs_convert_to_bg_tree(trans);
+> +	if (ret < 0) {
+> +		errno = -ret;
+> +		error("failed to convert: %m");
+> +		btrfs_abort_transaction(trans, ret);
+> +		return ret;
+> +	}
+> +	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
+> +	if (ret < 0) {
+> +		errno = -ret;
+> +		error("failed to commit transaction: %m");
+> +	}
+> +	return ret;
+> +}
+> +
+>   int BOX_MAIN(btrfstune)(int argc, char *argv[])
+>   {
+>   	struct btrfs_root *root;
+> @@ -491,6 +519,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+>   	u64 seeding_value = 0;
+>   	int random_fsid = 0;
+>   	int change_metadata_uuid = 0;
+> +	bool to_bg_tree = false;
+>   	char *new_fsid_str = NULL;
+>   	int ret;
+>   	u64 super_flags = 0;
+> @@ -501,7 +530,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+>   			{ "help", no_argument, NULL, GETOPT_VAL_HELP},
+>   			{ NULL, 0, NULL, 0 }
+>   		};
+> -		int c = getopt_long(argc, argv, "S:rxfuU:nmM:", long_options, NULL);
+> +		int c = getopt_long(argc, argv, "S:rxfuU:nmM:b", long_options, NULL);
+>   
+>   		if (c < 0)
+>   			break;
+> @@ -539,6 +568,9 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+>   			ctree_flags |= OPEN_CTREE_IGNORE_FSID_MISMATCH;
+>   			change_metadata_uuid = 1;
+>   			break;
+> +		case 'b':
+> +			to_bg_tree = true;
+> +			break;
+>   		case GETOPT_VAL_HELP:
+>   		default:
+>   			print_usage();
+> @@ -556,7 +588,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+>   		return 1;
+>   	}
+>   	if (!super_flags && !seeding_flag && !(random_fsid || new_fsid_str) &&
+> -	    !change_metadata_uuid) {
+> +	    !change_metadata_uuid && !to_bg_tree) {
+>   		error("at least one option should be specified");
+>   		print_usage();
+>   		return 1;
+> @@ -602,6 +634,14 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+>   		return 1;
+>   	}
+>   
+> +	if (to_bg_tree) {
+> +		ret = convert_to_bg_tree(root->fs_info);
+> +		if (ret < 0) {
+> +			errno = -ret;
+> +			error("failed to convert to bg-tree feature: %m");
+> +			goto out;
+> +		}
+> +	}
+>   	if (seeding_flag) {
+>   		if (btrfs_fs_incompat(root->fs_info, METADATA_UUID)) {
+>   			fprintf(stderr, "SEED flag cannot be changed on a metadata-uuid changed fs\n");
+> 
 
-
---=20
---- Jon Ander Monle=C3=B3n Besteiro ---
