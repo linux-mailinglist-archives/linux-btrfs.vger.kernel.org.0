@@ -2,30 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1AADA5FD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 09:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FD5DA627
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 09:13:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407892AbfJQHKH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 03:10:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59652 "EHLO mx1.suse.de"
+        id S1726423AbfJQHNx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 03:13:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33026 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390955AbfJQHKH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 03:10:07 -0400
+        id S1726208AbfJQHNx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 03:13:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 64822B22D;
-        Thu, 17 Oct 2019 07:10:05 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 03089B3D8;
+        Thu, 17 Oct 2019 07:13:51 +0000 (UTC)
 Subject: Re: [PATCH] btrfs-progs: warn users about the possible dangers of
  check --repair
 To:     Nikolay Borisov <nborisov@suse.com>,
-        Anand Jain <anand.jain@oracle.com>,
         David Sterba <dsterba@suse.com>
 Cc:     rbrown@suse.de,
         Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20191016140533.10583-1-jthumshirn@suse.de>
  <0b32b2d3-e473-dcbd-57b9-036b9505d145@suse.com>
- <77db6cb7-b1e9-7834-a454-b01b4d4a1f59@oracle.com>
- <a727c9e1-1db7-de0f-15a4-83578e5cbf93@suse.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -83,12 +80,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <148880c2-5e9a-12bd-0c05-dd0e66dca147@suse.de>
-Date:   Thu, 17 Oct 2019 09:10:05 +0200
+Message-ID: <a964ba85-877a-8bd7-2740-604b5f938b32@suse.de>
+Date:   Thu, 17 Oct 2019 09:13:50 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <a727c9e1-1db7-de0f-15a4-83578e5cbf93@suse.com>
+In-Reply-To: <0b32b2d3-e473-dcbd-57b9-036b9505d145@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -97,17 +94,31 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 17/10/2019 08:40, Nikolay Borisov wrote:
+On 16/10/2019 16:31, Nikolay Borisov wrote:
 [...]
->>  Agreed. -f will suffice (at least make it non-default) is a good fix.
->>  But again as Qu pointed out our test cases will fail or old test case
->>  with new progs will fail.
+>> +		printf("\tfsck successfully repair all types of filesystem corruption. Eg.\n");
+>> +		printf("\tsome other software or hardware bugs can fatally damage a volume.\n");
 > 
-> They could be adjusted accordingly to always append the -f flag when
-> running --repair. After all when running tests we do expect to be able
-> to fix everything, no ?
+> nit: The word 'other' here is redundant, no ?
 
-Agreed
+Hmm really, maybe. But the sentence above lacks a 'can' (I'll fix it up
+in the manpage as well.
+
+> 
+>> +		printf("\tThe operation will start in %d seconds.\n", delay);
+>> +		printf("\tUse Ctrl-C to stop it.\n");
+>> +		while (delay) {
+>> +			printf("%2d", delay--);
+>> +			fflush(stdout);
+>> +			sleep(1);
+>> +		}
+> 
+> That's a long winded way to have a simple for  loop that prints 10 dots,
+> 1 second apart.  IMO a better use experience would be to ask the user to
+> confirm and if the '-f' options i passed don't bother printing the
+> warning at all.
+
+That's just copy & paste from cmds/balance.c
 
 
 -- 
