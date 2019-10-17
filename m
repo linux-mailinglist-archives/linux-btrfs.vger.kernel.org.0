@@ -2,23 +2,23 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA20DAB6C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 13:47:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8BD1DAB73
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 13:49:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502136AbfJQLrB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 07:47:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38546 "EHLO mx1.suse.de"
+        id S2405889AbfJQLtG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 07:49:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39634 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2502103AbfJQLrA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 07:47:00 -0400
+        id S1726707AbfJQLtG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 07:49:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 76A14B203;
-        Thu, 17 Oct 2019 11:46:58 +0000 (UTC)
-Subject: Re: [PATCH 09/15] btrfs: compression: inline get_workspace
+        by mx1.suse.de (Postfix) with ESMTP id 79A27B03A;
+        Thu, 17 Oct 2019 11:49:04 +0000 (UTC)
+Subject: Re: [PATCH 10/15] btrfs: compression: inline put_workspace
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1571054758.git.dsterba@suse.com>
- <ca037fd2c7f6c336e8fa0ca364faf17bf5b51a61.1571054758.git.dsterba@suse.com>
+ <243ec8e3ed32c12e7dca0bdafb9934f74ee1b5b6.1571054758.git.dsterba@suse.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -76,12 +76,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <6f4b6f31-0c43-2fa1-c1af-17eef1bccc04@suse.de>
-Date:   Thu, 17 Oct 2019 13:46:58 +0200
+Message-ID: <b92b1d31-3753-5205-b24d-de873f4b9f62@suse.de>
+Date:   Thu, 17 Oct 2019 13:49:04 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <ca037fd2c7f6c336e8fa0ca364faf17bf5b51a61.1571054758.git.dsterba@suse.com>
+In-Reply-To: <243ec8e3ed32c12e7dca0bdafb9934f74ee1b5b6.1571054758.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
