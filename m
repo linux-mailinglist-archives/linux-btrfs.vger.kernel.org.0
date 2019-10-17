@@ -2,144 +2,57 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44F2BDD9A2
-	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Oct 2019 18:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 426DCDDA86
+	for <lists+linux-btrfs@lfdr.de>; Sat, 19 Oct 2019 20:50:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726079AbfJSQZK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 19 Oct 2019 12:25:10 -0400
-Received: from mailfilter03-out31.webhostingserver.nl ([141.138.168.202]:12340
-        "EHLO mailfilter03-out31.webhostingserver.nl" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726008AbfJSQZK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 19 Oct 2019 12:25:10 -0400
-X-Halon-ID: ed15b436-f28c-11e9-ba6d-001a4a4cb9a5
-Received: from s198.webhostingserver.nl (unknown [195.211.72.171])
-        by mailfilter03.webhostingserver.nl (Halon) with ESMTPSA
-        id ed15b436-f28c-11e9-ba6d-001a4a4cb9a5;
-        Sat, 19 Oct 2019 16:24:29 +0000 (UTC)
-Received: from cust-178-250-146-69.breedbanddelft.nl ([178.250.146.69] helo=[10.8.0.6])
-        by s198.webhostingserver.nl with esmtpa (Exim 4.92.3)
-        (envelope-from <fntoth@gmail.com>)
-        id 1iLrXI-00EhyE-66; Sat, 19 Oct 2019 18:25:00 +0200
-Subject: Re: [PATCH 0/3] btrfs-progs: Add check and repair for invalid inode
- generation
-To:     Qu WenRuo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20190924081120.6283-1-wqu@suse.com>
- <36d45e31-f125-4b21-a68e-428f807180f7@gmail.com>
- <b1c32c4b-734f-0f4e-44d1-cb4ef69b7fe1@suse.com>
-From:   Ferry Toth <fntoth@gmail.com>
-Message-ID: <796be1b6-1f1d-7946-e53e-9b85610c7c65@gmail.com>
-Date:   Sat, 19 Oct 2019 18:24:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S1726112AbfJSSuR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 19 Oct 2019 14:50:17 -0400
+Received: from [221.146.236.9] ([221.146.236.9]:40322 "EHLO theworld.email"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726078AbfJSSuR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 19 Oct 2019 14:50:17 -0400
+Received: from (HELO 4rmxt) [74.210.167.33] by 127.0.0.1 id 9skyI101fKGQ; Thu, 17 Oct 2019 19:28:15 +0000
+Message-ID: <3647--2--$4um8l11-k--g-26@2pdt6sbw>
+From:   "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
+Reply-To: "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
+To:     JJilliandendritic@nccn.net
+Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA
+Date:   Thu, 17 Oct 19 19:28:15 GMT
 MIME-Version: 1.0
-In-Reply-To: <b1c32c4b-734f-0f4e-44d1-cb4ef69b7fe1@suse.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-SendingUser: hidden
-X-SendingServer: hidden
-X-Antivirus-Scanner: Clean mail though you should still use an Antivirus
-X-Authenticated-Id: hidden
-X-SendingUser: hidden
-X-SendingServer: hidden
+Content-Type: multipart/alternative;
+        boundary="FC8D3D2AF4._C.F3B1"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
 
-Op 19-10-2019 om 01:50 schreef Qu WenRuo:
-> 
-> 
-> On 2019/10/19 上午4:32, Ferry Toth wrote:
->> Op 24-09-2019 om 10:11 schreef Qu Wenruo:
->>> We have at least two user reports about bad inode generation makes
->>> kernel reject the fs.
->>
->> May I add my report? I just upgraded Ubuntu from 19.04 -> 19.10 so
->> kernel went from 5.0 -> 5.3 (but I was using 4.15 too).
->>
->> Booting 5.3 leaves me in initramfs as I have /boot on @boot and / on /@
->>
->> In initramfs I can try to mount but get something like
->> btrfs critical corrupt leaf invalid inode generation open_ctree failed
->>
->> Booting old kernel works just as before, no errors.
->>
->>> According to the creation time, the inode is created by some 2014
->>> kernel.
->>
->> How do I get the creation time?
-> 
-> # btrfs ins dump-tree -b <the bytenr reported by kernel> <your device>
+--FC8D3D2AF4._C.F3B1
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-I just went back to the office to reboot to 5.3 and check the creation 
-times and found they were 2013 - 2014.
+Greetings
 
->>
->>> And the generation member of INODE_ITEM is not updated (unlike the
->>> transid member) so the error persists until latest tree-checker detects.
->>>
->>> Even the situation can be fixed by reverting back to older kernel and
->>> copying the offending dir/file to another inode and delete the offending
->>> one, it still should be done by btrfs-progs.
->>>
->> How to find the offending dir/file from the command line manually?
-> 
-> # find <mount point> -inum <inode number>
+My name is Barrister Hans Erich.
 
-This works, thanks.
+I have a client who is interested to invest in your country, she is a well=
+ known politician in her country and deserve a lucrative investment partne=
+rship with you outside her country without any delay   Please can you mana=
+ge such investment please Kindly reply for further details.
 
-But appears unpractical. After fix 2 files and reboot, I found 4 more, 
-then 16, then I gave up.
+Your full names ---------
 
-> Thanks,
-> Qu
-> 
->>
->>> This patchset adds such check and repair ability to btrfs-check, with a
->>> simple test image.
->>>
->>> Qu Wenruo (3):
->>>     btrfs-progs: check/lowmem: Add check and repair for invalid inode
->>>       generation
->>>     btrfs-progs: check/original: Add check and repair for invalid inode
->>>       generation
->>>     btrfs-progs: fsck-tests: Add test image for invalid inode generation
->>>       repair
->>>
->>>    check/main.c                                  |  50 +++++++++++-
->>>    check/mode-lowmem.c                           |  76 ++++++++++++++++++
->>>    check/mode-original.h                         |   1 +
->>>    .../.lowmem_repairable                        |   0
->>>    .../bad_inode_geneartion.img.xz               | Bin 0 -> 2012 bytes
->>>    5 files changed, 126 insertions(+), 1 deletion(-)
->>>    create mode 100644
->>> tests/fsck-tests/043-bad-inode-generation/.lowmem_repairable
->>>    create mode 100644
->>> tests/fsck-tests/043-bad-inode-generation/bad_inode_geneartion.img.xz
->>>
->>
 
-I checked out and built v5.3-rc1 of btrfs-progs. Then ran it on my 
-mounted rootfs with linux 5.0 and captured the log (~1800 lines 209 
-errors).
+Your urgent response will be appreciated
 
-I'm not sure if using the v5.0 kernel and/or checking mounted distorts 
-the results? Else I'm going to need a live usb with a v5.3 kernel and 
-v5.3 btrfs-progs.
+Thank you and God bless you.
 
-If you like I can share the log. Let me know.
+Barrister Hans Erich
 
-This issue can potentially cause a lot of grief. Our company server runs 
-Ubuntu LTS (18.04.02) with a 4.15 kernel on a btrfs boot/rootfs with 
-~100 snapshots. I guess the problematic inodes need to be fixed on each 
-snapshot prior to upgrading to 20.04 LTS (which might be on kernel ~5.6)?
+Yours sincerely,
+Barrister Hans Erich
 
-Do I understand correctly that this FTB is caused by more strict 
-checking of the fs by the kernel, while the tools to fix the detected 
-corruptions are not yet released?
+--FC8D3D2AF4._C.F3B1--
 
