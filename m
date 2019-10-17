@@ -2,24 +2,29 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F35D3DA5AB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 08:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BE56DA5AF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 17 Oct 2019 08:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389397AbfJQGh7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 17 Oct 2019 02:37:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46874 "EHLO mx1.suse.de"
+        id S2390498AbfJQGki (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 17 Oct 2019 02:40:38 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47590 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726891AbfJQGh7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 17 Oct 2019 02:37:59 -0400
+        id S1726891AbfJQGki (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 17 Oct 2019 02:40:38 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EEAEDAD31;
-        Thu, 17 Oct 2019 06:37:56 +0000 (UTC)
-Subject: Re: [PATCH v2 1/2] btrfs: qgroup: Fix wrong parameter order for trace
- events
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191017023837.32264-1-wqu@suse.com>
- <20191017023837.32264-2-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 8CC91B539;
+        Thu, 17 Oct 2019 06:40:35 +0000 (UTC)
+Subject: Re: [PATCH] btrfs-progs: warn users about the possible dangers of
+ check --repair
+To:     Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Cc:     rbrown@suse.de,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <20191016140533.10583-1-jthumshirn@suse.de>
+ <0b32b2d3-e473-dcbd-57b9-036b9505d145@suse.com>
+ <77db6cb7-b1e9-7834-a454-b01b4d4a1f59@oracle.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +69,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <d436508c-08fc-5b61-fa41-72377e88f2c8@suse.com>
-Date:   Thu, 17 Oct 2019 09:37:55 +0300
+Message-ID: <a727c9e1-1db7-de0f-15a4-83578e5cbf93@suse.com>
+Date:   Thu, 17 Oct 2019 09:40:34 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191017023837.32264-2-wqu@suse.com>
+In-Reply-To: <77db6cb7-b1e9-7834-a454-b01b4d4a1f59@oracle.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,54 +85,84 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 17.10.19 г. 5:38 ч., Qu Wenruo wrote:
-> [BUG]
-> For btrfs:qgroup_meta_reserve event, the trace event can output garbage:
-> qgroup_meta_reserve: 9c7f6acc-b342-4037-bc47-7f6e4d2232d7: refroot=5(FS_TREE) type=DATA diff=2
+On 17.10.19 г. 4:25 ч., Anand Jain wrote:
+> On 10/16/19 10:31 PM, Nikolay Borisov wrote:
+>>
+>>
+>> On 16.10.19 г. 17:05 ч., Johannes Thumshirn wrote:
+>>> The manual page of btrfsck clearly states 'btrfs check --repair' is a
+>>> dangerous operation.
+>>>
+>>> Although this warning is in place users do not read the manual page
+>>> and/or
+>>> are used to the behaviour of fsck utilities which repair the filesystem,
+>>> and thus potentially cause harm.
+>>>
+>>> Similar to 'btrfs balance' without any filters, add a warning and a
+>>> countdown, so users can bail out before eventual corrupting the
+>>> filesystem
+>>> more than it already is.
+>>>
+>>> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+>>> ---
+>>>   check/main.c | 17 +++++++++++++++++
+>>>   1 file changed, 17 insertions(+)
+>>>
+>>> diff --git a/check/main.c b/check/main.c
+>>> index fd05430c1f51..acded927281a 100644
+>>> --- a/check/main.c
+>>> +++ b/check/main.c
+>>> @@ -9970,6 +9970,23 @@ static int cmd_check(const struct cmd_struct
+>>> *cmd, int argc, char **argv)
+>>>           exit(1);
+>>>       }
+>>>   +    if (repair) {
+>>> +        int delay = 10;
+>>> +        printf("WARNING:\n\n");
+>>> +        printf("\tDo not use --repair unless you are advised to do
+>>> so by a developer\n");
+>>> +        printf("\tor an experienced user, and then only after having
+>>> accepted that no\n");
+>>> +        printf("\tfsck successfully repair all types of filesystem
+>>> corruption. Eg.\n");
+>>> +        printf("\tsome other software or hardware bugs can fatally
+>>> damage a volume.\n");
+>>
+>> nit: The word 'other' here is redundant, no ?
+>>
+>>> +        printf("\tThe operation will start in %d seconds.\n", delay);
+>>> +        printf("\tUse Ctrl-C to stop it.\n");
+>>> +        while (delay) {
+>>> +            printf("%2d", delay--);
+>>> +            fflush(stdout);
+>>> +            sleep(1);
+>>> +        }
+>>
+>> That's a long winded way to have a simple for  loop that prints 10 dots,
+>> 1 second apart.
 > 
-> The diff should always be alinged to sector size (4k), so there is
-> definitely something wrong.
 > 
-> [CAUSE]
-> For the wrong @diff, it's caused by wrong parameter order.
-> The correct parameters are:
->   struct btrfs_root, s64 diff, int type.
+>>  IMO a better use experience would be to ask the user to
+>> confirm and if the '-f' options i passed don't bother printing the
+>> warning at all.
 > 
-> However the parameters used are:
->   struct btrfs_root, int type, s64 diff.
-> 
-> [FIX]
-> Fix the super stupid bug.
-> 
-> Fixes: 4ee0d8832c2e ("btrfs: qgroup: Update trace events for metadata reservation")
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>  Agreed. -f will suffice (at least make it non-default) is a good fix.
+>  But again as Qu pointed out our test cases will fail or old test case
+>  with new progs will fail.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+They could be adjusted accordingly to always append the -f flag when
+running --repair. After all when running tests we do expect to be able
+to fix everything, no ?
 
-> ---
->  fs/btrfs/qgroup.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index c4bb69941c77..3ad151655eb8 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -3629,7 +3629,7 @@ int __btrfs_qgroup_reserve_meta(struct btrfs_root *root, int num_bytes,
->  		return 0;
->  
->  	BUG_ON(num_bytes != round_down(num_bytes, fs_info->nodesize));
-> -	trace_qgroup_meta_reserve(root, type, (s64)num_bytes);
-> +	trace_qgroup_meta_reserve(root, (s64)num_bytes, type);
->  	ret = qgroup_reserve(root, num_bytes, enforce, type);
->  	if (ret < 0)
->  		return ret;
-> @@ -3676,7 +3676,7 @@ void __btrfs_qgroup_free_meta(struct btrfs_root *root, int num_bytes,
->  	 */
->  	num_bytes = sub_root_meta_rsv(root, num_bytes, type);
->  	BUG_ON(num_bytes != round_down(num_bytes, fs_info->nodesize));
-> -	trace_qgroup_meta_reserve(root, type, -(s64)num_bytes);
-> +	trace_qgroup_meta_reserve(root, -(s64)num_bytes, type);
->  	btrfs_qgroup_free_refroot(fs_info, root->root_key.objectid,
->  				  num_bytes, type);
->  }
+> Thanks, Anand
+> 
+>>> +        printf("\nStarting repair.\n");
+>>> +    }
+>>> +
+>>>       /*
+>>>        * experimental and dangerous
+>>>        */
+>>>
+> 
 > 
