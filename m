@@ -2,407 +2,162 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC70DCC78
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2019 19:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAF03DCCC8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2019 19:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409020AbfJRRTX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Oct 2019 13:19:23 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46782 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405470AbfJRRTX (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Oct 2019 13:19:23 -0400
-Received: by mail-wr1-f66.google.com with SMTP id o18so7039462wrv.13
-        for <linux-btrfs@vger.kernel.org>; Fri, 18 Oct 2019 10:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kota.moe; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=ygc7jYHG+ZbBsvi1GK8dI+6ivR2OMbCxOZejW+qTZDs=;
-        b=WEPGgeBIm8V+BpG0ZA5U5VtTAifFLfTqhnh+LpftkR4pfbeQyu3s6E7+71neXvHfq0
-         rse+e8752XFUf1LD+nB/lVI572rjPtqMbAnQcmG3yjUC9uFBcXRgn9YzmaOwG0771nkB
-         EDM2VwVtUTpJQtZGxihU6HZ5ZSOG4pBCsd578=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=ygc7jYHG+ZbBsvi1GK8dI+6ivR2OMbCxOZejW+qTZDs=;
-        b=t2Qm26BMs9Tmjpvzv0l1Fe4rw/qHFgiEuugFsT08RCE6NoDbVisBhdddMB3CQFgpEo
-         SvNw7juTHdA0AZ/uzmXpHXWgVbRIGlCkt8mf/EFi2MIWLFYFDKv3IX29Hs8q0apUW5H4
-         hKpPlOIGem9s3B4UCmu380jj50xvkdM8C4cCui5+GgdmWOxJkeCr5CoiHeWx96vT0f9h
-         auvL4RJwx1Dn+xJaRbs846Dqy4rmARDIpdeKwBQo3t0m63se2fcTqWQQK/wDqVJanwBA
-         Lf+XgAaD1b6rCQvzVhddJCb8DOO6He7baYh9CG7Xod0E7pAJG+Yy065YKO0j4aQw//8U
-         YQMg==
-X-Gm-Message-State: APjAAAX6itSAhiTrHdBkTQ0p9Z63/p//gg6kWD85bCw95SNR4t+HIl14
-        61tSRsD/sbKGZ7OrmMQbNxUJFbFO7dZiax5bxDnGz+hE
-X-Google-Smtp-Source: APXvYqwwr/2fcPgbri3XLdX+fwM7O4UNPtm7FMv5+FcPvhilmkik4My/MJo3Xz/eH56yymX24VQEwQqihtaMWyeDGfY=
-X-Received: by 2002:a05:6000:114e:: with SMTP id d14mr8383070wrx.47.1571419159401;
- Fri, 18 Oct 2019 10:19:19 -0700 (PDT)
+        id S2505509AbfJRR14 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Oct 2019 13:27:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41712 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2505495AbfJRR1d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Oct 2019 13:27:33 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 760C0AF57;
+        Fri, 18 Oct 2019 17:27:31 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C41BEDA785; Fri, 18 Oct 2019 19:27:45 +0200 (CEST)
+Date:   Fri, 18 Oct 2019 19:27:45 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu WenRuo <wqu@suse.com>
+Cc:     "dsterba@suse.cz" <dsterba@suse.cz>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH v2 0/7] btrfs-progs: Support for BG_TREE feature
+Message-ID: <20191018172745.GD3001@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu WenRuo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20191008044936.157873-1-wqu@suse.com>
+ <20191014151723.GP2751@twin.jikos.cz>
+ <1d23e48d-8908-5e1c-0c56-7b6ccaef5d27@gmx.com>
+ <20191016111605.GB2751@twin.jikos.cz>
+ <7c625485-1e2b-77f5-26ac-9386175e2621@suse.com>
 MIME-Version: 1.0
-References: <CACsxjPamjSOddJ9oOmkE-7bQVZCr+0UhL_hfG0zHqHrY+07opA@mail.gmail.com>
-In-Reply-To: <CACsxjPamjSOddJ9oOmkE-7bQVZCr+0UhL_hfG0zHqHrY+07opA@mail.gmail.com>
-From:   =?UTF-8?B?4oCN5bCP5aSq?= <nospam@kota.moe>
-Date:   Sat, 19 Oct 2019 04:18:43 +1100
-Message-ID: <CACsxjPa3gkUK5+J5aCqtkrjdu1kVE8GB=ErRPu-RCyALWwhU3A@mail.gmail.com>
-Subject: tree-checker: corrupt leaf: invalid mode: has 00 expect valid S_IF* bit(s)
-To:     linux-btrfs@vger.kernel.org
-Content-Type: multipart/mixed; boundary="000000000000cab3f1059532888d"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c625485-1e2b-77f5-26ac-9386175e2621@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
---000000000000cab3f1059532888d
-Content-Type: text/plain; charset="UTF-8"
+On Wed, Oct 16, 2019 at 11:19:54AM +0000, Qu WenRuo wrote:
+> >> The most important aspect to me is, to allow real world user of super
+> >> large fs to try this feature, to prove the usefulness of this design,
+> >> other than my on-paper analyse.
+> >>
+> >> That's why I'm pushing the patchset, even it may not pass any review.
+> >> I just want to hold a up-to-date branch so that when some one needs, it
+> >> can grab and try them themselves.
+> > 
+> > Ok that's fine and I can add the branch to for-next for ease of testing.
+> > I'm working on a prototype that does it the bg item key way, it compiles
+> > and creates almost correct filesystem, so I have to fix it before
+> > posting. The patches are on top of your bg-tree feature so we could have
+> > both in the same kernel for testing.
+> 
+> That's great!
+> 
+> As long as we're pushing a solution to the mount time problem, I can't
+> be more happier!
+> 
+> Then I guess no matter which version get merged to upstream, the
+> patchset is already meaningful.
 
-Hi, I recently got the following error in dmesg while taking an
-incremental backup of my data:
+We'll see what works in the end, I'm getting to the point where the
+prototype almost works and am debugging weird problems or making sure
+it's correct. So I'll dump the ideas here and link to the code so you
+can have a look.
 
-[26876.491167] BTRFS critical (device dm-0): corrupt leaf: root=258
-block=739531833344 slot=0 ino=19366566, invalid mode: has 00 expect
-valid S_IF* bit(s)
-[26876.491171] BTRFS error (device dm-0): block=739531833344 read time
-tree block corruption detected
+We agree on the point that the block group items must be packed. The key
+approach should move the new BGI to the beginning, ie. key type is
+smaller than anything that appears in the extent tree. I chose 100 for
+the prototype, it could change.
 
-It is triggered whenever stat() is called on one of these files:
-$ ls -lR >/dev/null
-ls: cannot access './<redacted a>/2018-05-31.220504+1000AEST.html':
-Input/output error
-ls: cannot access './<redacted b>/2018-05-31.200836+1000AEST.html':
-Input/output error
-ls: cannot access './<redacted c>/2018-05-31.201834+1000AEST.html':
-Input/output error
-ls: cannot access './<redacted d>/2018-05-31.222947+1000AEST.html':
-Input/output error
+To keep changes to minimum, the new BGI uses the same block group item,
+so the only difference then becomes how we search for the items.
 
-https://btrfs.wiki.kernel.org/index.php/Tree-checker#How_to_handle_such_error
-tells me to post on this mailing list upon getting such an error, so
-here I am.
+Packing of the items is done by swapping the key objectid and offset.
 
-What's happened? How can I fix this? Should I just restore from backup?
+Normal BGI has bg.start == key.objectid and bg.length == key.offset. As
+the objectid is the thing that scatters the items all over the tree.
 
-Various diagnostic command outputs:
+So the new BGI has bg.length == key.objectid and bg.start == key.offset.
+As most of block groups are of same size, or from a small set, they're
+packed.
 
-$ uname -a
-Linux home.kota.moe 5.2.0-3-rt-amd64 #1 SMP PREEMPT RT Debian 5.2.17-1
-(2019-09-26) x86_64 GNU/Linux
-$ btrfs --version
-btrfs-progs v5.2.1
-$ sudo btrfs filesystem show
-Label: none  uuid: 909c3fad-bc84-4b62-8090-ad1ae46f925e
-Total devices 2 FS bytes used 191.27GiB
-devid    1 size 200.00GiB used 197.03GiB path /dev/mapper/home-dom0
-devid    2 size 200.00GiB used 197.03GiB path /dev/mapper/home-dom0--mirror
-$ sudo btrfs filesystem df .
-Data, RAID1: total=193.00GiB, used=188.50GiB
-System, RAID1: total=32.00MiB, used=48.00KiB
-Metadata, RAID1: total=4.00GiB, used=2.77GiB
-GlobalReserve, single: total=385.31MiB, used=0.00B
-$ diff -u <(sudo btrfs ins dump-tree -b 739531833344 /dev/home/dom0)
-<(sudo btrfs ins dump-tree -b 739531833344 /dev/home/dom0-mirror)
-$ sudo btrfs ins dump-tree -b 739531833344 /dev/home/dom0
-(See attached file)
+The nice thing is that a lot of code can be shared between BGI and new
+BGI, just needs some care with searches, inserts and search key
+advances.
 
---000000000000cab3f1059532888d
-Content-Type: application/octet-stream; name=dump-tree-dom0
-Content-Disposition: attachment; filename=dump-tree-dom0
-Content-Transfer-Encoding: base64
-Content-ID: <f_k1we8rrb0>
-X-Attachment-Id: f_k1we8rrb0
+I'm now stuck a bit at mkfs, where the 8M block groups are separated by
+some METADATA_ITEMs
 
-YnRyZnMtcHJvZ3MgdjUuMi4xIApsZWFmIDczOTUzMTgzMzM0NCBpdGVtcyA3NCBmcmVlIHNwYWNl
-IDI1OTAgZ2VuZXJhdGlvbiAyMzUyNjk3IG93bmVyIDI1OApsZWFmIDczOTUzMTgzMzM0NCBmbGFn
-cyAweDMoV1JJVFRFTnxSRUxPQykgYmFja3JlZiByZXZpc2lvbiAxCmZzIHV1aWQgOTA5YzNmYWQt
-YmM4NC00YjYyLTgwOTAtYWQxYWU0NmY5MjVlCmNodW5rIHV1aWQgNDQ3YmJmYmEtODA5My00Y2Fk
-LTgyZDEtY2NhYjFmMmQ4YTE5CglpdGVtIDAga2V5ICgxOTM2NjU2NiBJTk9ERV9JVEVNIDApIGl0
-ZW1vZmYgMTYxMjMgaXRlbXNpemUgMTYwCgkJZ2VuZXJhdGlvbiAyMDU1ODA0IHRyYW5zaWQgMjA1
-NTgwNCBzaXplIDAgbmJ5dGVzIDAKCQlibG9jayBncm91cCAwIG1vZGUgMCBsaW5rcyAxIHVpZCAw
-IGdpZCAwIHJkZXYgMAoJCXNlcXVlbmNlIDIgZmxhZ3MgMHgwKG5vbmUpCgkJYXRpbWUgMC4wICgx
-OTcwLTAxLTAxIDEwOjAwOjAwKQoJCWN0aW1lIDE1Mjc3NjExNTEuNDM0NTE5MzQ1ICgyMDE4LTA1
-LTMxIDIwOjA1OjUxKQoJCW10aW1lIDAuMCAoMTk3MC0wMS0wMSAxMDowMDowMCkKCQlvdGltZSAw
-LjAgKDE5NzAtMDEtMDEgMTA6MDA6MDApCglpdGVtIDEga2V5ICgxOTM2NjU2NiBJTk9ERV9SRUYg
-MTkyMTkzMDYpIGl0ZW1vZmYgMTYxMDEgaXRlbXNpemUgMjIKCQlpbmRleCAxNzc3IG5hbWVsZW4g
-MTIgbmFtZTogc2FmZWJyb3dzaW5nCglpdGVtIDIga2V5ICgxOTM2NjU2NiBESVJfSVRFTSAzMjY2
-ODk5NjcpIGl0ZW1vZmYgMTYwMzUgaXRlbXNpemUgNjYKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjE0
-IElOT0RFX0lURU0gMCkgdHlwZSBGSUxFCgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFt
-ZV9sZW4gMzYKCQluYW1lOiB0ZXN0ZXhjZXB0LWZsYXNoYWxsb3ctc2ltcGxlLnNic3RvcmUKCWl0
-ZW0gMyBrZXkgKDE5MzY2NTY2IERJUl9JVEVNIDEwMjQ0MDI3NjEpIGl0ZW1vZmYgMTU5NzggaXRl
-bXNpemUgNTcKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjA1IElOT0RFX0lURU0gMCkgdHlwZSBGSUxF
-CgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFtZV9sZW4gMjcKCQluYW1lOiB0ZXN0LW1h
-bHdhcmUtc2ltcGxlLnNic3RvcmUKCWl0ZW0gNCBrZXkgKDE5MzY2NTY2IERJUl9JVEVNIDEzMjc0
-NDgzODMpIGl0ZW1vZmYgMTU5MTggaXRlbXNpemUgNjAKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjEz
-IElOT0RFX0lURU0gMCkgdHlwZSBGSUxFCgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFt
-ZV9sZW4gMzAKCQluYW1lOiB0ZXN0LWZsYXNoYWxsb3ctc2ltcGxlLnNic3RvcmUKCWl0ZW0gNSBr
-ZXkgKDE5MzY2NTY2IERJUl9JVEVNIDE5OTkyOTAyMzkpIGl0ZW1vZmYgMTU4NTcgaXRlbXNpemUg
-NjEKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjE1IElOT0RFX0lURU0gMCkgdHlwZSBGSUxFCgkJdHJh
-bnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFtZV9sZW4gMzEKCQluYW1lOiB0ZXN0LWZsYXNoc3Vi
-ZG9jLXNpbXBsZS5zYnN0b3JlCglpdGVtIDYga2V5ICgxOTM2NjU2NiBESVJfSVRFTSAyODA4Mjky
-NzAwKSBpdGVtb2ZmIDE1ODAyIGl0ZW1zaXplIDU1CgkJbG9jYXRpb24ga2V5ICgxOTM2NjYwOCBJ
-Tk9ERV9JVEVNIDApIHR5cGUgRklMRQoJCXRyYW5zaWQgMjA1NTgwMiBkYXRhX2xlbiAwIG5hbWVf
-bGVuIDI1CgkJbmFtZTogdGVzdC10cmFjay1zaW1wbGUuc2JzdG9yZQoJaXRlbSA3IGtleSAoMTkz
-NjY1NjYgRElSX0lURU0gMzE4NDI3ODM4OCkgaXRlbW9mZiAxNTc0NyBpdGVtc2l6ZSA1NQoJCWxv
-Y2F0aW9uIGtleSAoMTkzNjY2MTEgSU5PREVfSVRFTSAwKSB0eXBlIEZJTEUKCQl0cmFuc2lkIDIw
-NTU4MDIgZGF0YV9sZW4gMCBuYW1lX2xlbiAyNQoJCW5hbWU6IHRlc3QtZmxhc2gtc2ltcGxlLnNi
-c3RvcmUKCWl0ZW0gOCBrZXkgKDE5MzY2NTY2IERJUl9JVEVNIDMzNDAxMDM3MDApIGl0ZW1vZmYg
-MTU2OTIgaXRlbXNpemUgNTUKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjEwIElOT0RFX0lURU0gMCkg
-dHlwZSBGSUxFCgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFtZV9sZW4gMjUKCQluYW1l
-OiB0ZXN0LWJsb2NrLXNpbXBsZS5zYnN0b3JlCglpdGVtIDkga2V5ICgxOTM2NjU2NiBESVJfSVRF
-TSAzNzEyOTU4ODY5KSBpdGVtb2ZmIDE1NjM0IGl0ZW1zaXplIDU4CgkJbG9jYXRpb24ga2V5ICgx
-OTM2NjYwNyBJTk9ERV9JVEVNIDApIHR5cGUgRklMRQoJCXRyYW5zaWQgMjA1NTgwMiBkYXRhX2xl
-biAwIG5hbWVfbGVuIDI4CgkJbmFtZTogdGVzdC11bndhbnRlZC1zaW1wbGUuc2JzdG9yZQoJaXRl
-bSAxMCBrZXkgKDE5MzY2NTY2IERJUl9JVEVNIDM3NjEzODI2ODcpIGl0ZW1vZmYgMTU1NzkgaXRl
-bXNpemUgNTUKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjA2IElOT0RFX0lURU0gMCkgdHlwZSBGSUxF
-CgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFtZV9sZW4gMjUKCQluYW1lOiB0ZXN0LXBo
-aXNoLXNpbXBsZS5zYnN0b3JlCglpdGVtIDExIGtleSAoMTkzNjY1NjYgRElSX0lURU0gMzg1NjU0
-MDg3NykgaXRlbW9mZiAxNTUxMiBpdGVtc2l6ZSA2NwoJCWxvY2F0aW9uIGtleSAoMTkzNjY2MTYg
-SU5PREVfSVRFTSAwKSB0eXBlIEZJTEUKCQl0cmFuc2lkIDIwNTU4MDIgZGF0YV9sZW4gMCBuYW1l
-X2xlbiAzNwoJCW5hbWU6IHRlc3RleGNlcHQtZmxhc2hzdWJkb2Mtc2ltcGxlLnNic3RvcmUKCWl0
-ZW0gMTIga2V5ICgxOTM2NjU2NiBESVJfSVRFTSA0MDA4OTYxMzc3KSBpdGVtb2ZmIDE1NDUxIGl0
-ZW1zaXplIDYxCgkJbG9jYXRpb24ga2V5ICgxOTM2NjYxMiBJTk9ERV9JVEVNIDApIHR5cGUgRklM
-RQoJCXRyYW5zaWQgMjA1NTgwMiBkYXRhX2xlbiAwIG5hbWVfbGVuIDMxCgkJbmFtZTogdGVzdGV4
-Y2VwdC1mbGFzaC1zaW1wbGUuc2JzdG9yZQoJaXRlbSAxMyBrZXkgKDE5MzY2NTY2IERJUl9JVEVN
-IDQwNjkxMDc3ODApIGl0ZW1vZmYgMTUzOTEgaXRlbXNpemUgNjAKCQlsb2NhdGlvbiBrZXkgKDE5
-MzY2NjA5IElOT0RFX0lURU0gMCkgdHlwZSBGSUxFCgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVu
-IDAgbmFtZV9sZW4gMzAKCQluYW1lOiB0ZXN0LXRyYWNrd2hpdGUtc2ltcGxlLnNic3RvcmUKCWl0
-ZW0gMTQga2V5ICgxOTM2NjU2NiBESVJfSU5ERVggNDEpIGl0ZW1vZmYgMTUzMzQgaXRlbXNpemUg
-NTcKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjA1IElOT0RFX0lURU0gMCkgdHlwZSBGSUxFCgkJdHJh
-bnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFtZV9sZW4gMjcKCQluYW1lOiB0ZXN0LW1hbHdhcmUt
-c2ltcGxlLnNic3RvcmUKCWl0ZW0gMTUga2V5ICgxOTM2NjU2NiBESVJfSU5ERVggNDMpIGl0ZW1v
-ZmYgMTUyNzkgaXRlbXNpemUgNTUKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjA2IElOT0RFX0lURU0g
-MCkgdHlwZSBGSUxFCgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFtZV9sZW4gMjUKCQlu
-YW1lOiB0ZXN0LXBoaXNoLXNpbXBsZS5zYnN0b3JlCglpdGVtIDE2IGtleSAoMTkzNjY1NjYgRElS
-X0lOREVYIDQ1KSBpdGVtb2ZmIDE1MjIxIGl0ZW1zaXplIDU4CgkJbG9jYXRpb24ga2V5ICgxOTM2
-NjYwNyBJTk9ERV9JVEVNIDApIHR5cGUgRklMRQoJCXRyYW5zaWQgMjA1NTgwMiBkYXRhX2xlbiAw
-IG5hbWVfbGVuIDI4CgkJbmFtZTogdGVzdC11bndhbnRlZC1zaW1wbGUuc2JzdG9yZQoJaXRlbSAx
-NyBrZXkgKDE5MzY2NTY2IERJUl9JTkRFWCA0NykgaXRlbW9mZiAxNTE2NiBpdGVtc2l6ZSA1NQoJ
-CWxvY2F0aW9uIGtleSAoMTkzNjY2MDggSU5PREVfSVRFTSAwKSB0eXBlIEZJTEUKCQl0cmFuc2lk
-IDIwNTU4MDIgZGF0YV9sZW4gMCBuYW1lX2xlbiAyNQoJCW5hbWU6IHRlc3QtdHJhY2stc2ltcGxl
-LnNic3RvcmUKCWl0ZW0gMTgga2V5ICgxOTM2NjU2NiBESVJfSU5ERVggNDkpIGl0ZW1vZmYgMTUx
-MDYgaXRlbXNpemUgNjAKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjA5IElOT0RFX0lURU0gMCkgdHlw
-ZSBGSUxFCgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFtZV9sZW4gMzAKCQluYW1lOiB0
-ZXN0LXRyYWNrd2hpdGUtc2ltcGxlLnNic3RvcmUKCWl0ZW0gMTkga2V5ICgxOTM2NjU2NiBESVJf
-SU5ERVggNTEpIGl0ZW1vZmYgMTUwNTEgaXRlbXNpemUgNTUKCQlsb2NhdGlvbiBrZXkgKDE5MzY2
-NjEwIElOT0RFX0lURU0gMCkgdHlwZSBGSUxFCgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAg
-bmFtZV9sZW4gMjUKCQluYW1lOiB0ZXN0LWJsb2NrLXNpbXBsZS5zYnN0b3JlCglpdGVtIDIwIGtl
-eSAoMTkzNjY1NjYgRElSX0lOREVYIDUzKSBpdGVtb2ZmIDE0OTk2IGl0ZW1zaXplIDU1CgkJbG9j
-YXRpb24ga2V5ICgxOTM2NjYxMSBJTk9ERV9JVEVNIDApIHR5cGUgRklMRQoJCXRyYW5zaWQgMjA1
-NTgwMiBkYXRhX2xlbiAwIG5hbWVfbGVuIDI1CgkJbmFtZTogdGVzdC1mbGFzaC1zaW1wbGUuc2Jz
-dG9yZQoJaXRlbSAyMSBrZXkgKDE5MzY2NTY2IERJUl9JTkRFWCA1NSkgaXRlbW9mZiAxNDkzNSBp
-dGVtc2l6ZSA2MQoJCWxvY2F0aW9uIGtleSAoMTkzNjY2MTIgSU5PREVfSVRFTSAwKSB0eXBlIEZJ
-TEUKCQl0cmFuc2lkIDIwNTU4MDIgZGF0YV9sZW4gMCBuYW1lX2xlbiAzMQoJCW5hbWU6IHRlc3Rl
-eGNlcHQtZmxhc2gtc2ltcGxlLnNic3RvcmUKCWl0ZW0gMjIga2V5ICgxOTM2NjU2NiBESVJfSU5E
-RVggNTcpIGl0ZW1vZmYgMTQ4NzUgaXRlbXNpemUgNjAKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjEz
-IElOT0RFX0lURU0gMCkgdHlwZSBGSUxFCgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFt
-ZV9sZW4gMzAKCQluYW1lOiB0ZXN0LWZsYXNoYWxsb3ctc2ltcGxlLnNic3RvcmUKCWl0ZW0gMjMg
-a2V5ICgxOTM2NjU2NiBESVJfSU5ERVggNTkpIGl0ZW1vZmYgMTQ4MDkgaXRlbXNpemUgNjYKCQls
-b2NhdGlvbiBrZXkgKDE5MzY2NjE0IElOT0RFX0lURU0gMCkgdHlwZSBGSUxFCgkJdHJhbnNpZCAy
-MDU1ODAyIGRhdGFfbGVuIDAgbmFtZV9sZW4gMzYKCQluYW1lOiB0ZXN0ZXhjZXB0LWZsYXNoYWxs
-b3ctc2ltcGxlLnNic3RvcmUKCWl0ZW0gMjQga2V5ICgxOTM2NjU2NiBESVJfSU5ERVggNjEpIGl0
-ZW1vZmYgMTQ3NDggaXRlbXNpemUgNjEKCQlsb2NhdGlvbiBrZXkgKDE5MzY2NjE1IElOT0RFX0lU
-RU0gMCkgdHlwZSBGSUxFCgkJdHJhbnNpZCAyMDU1ODAyIGRhdGFfbGVuIDAgbmFtZV9sZW4gMzEK
-CQluYW1lOiB0ZXN0LWZsYXNoc3ViZG9jLXNpbXBsZS5zYnN0b3JlCglpdGVtIDI1IGtleSAoMTkz
-NjY1NjYgRElSX0lOREVYIDYzKSBpdGVtb2ZmIDE0NjgxIGl0ZW1zaXplIDY3CgkJbG9jYXRpb24g
-a2V5ICgxOTM2NjYxNiBJTk9ERV9JVEVNIDApIHR5cGUgRklMRQoJCXRyYW5zaWQgMjA1NTgwMiBk
-YXRhX2xlbiAwIG5hbWVfbGVuIDM3CgkJbmFtZTogdGVzdGV4Y2VwdC1mbGFzaHN1YmRvYy1zaW1w
-bGUuc2JzdG9yZQoJaXRlbSAyNiBrZXkgKDE5MzY2NjA1IElOT0RFX0lURU0gMCkgaXRlbW9mZiAx
-NDUyMSBpdGVtc2l6ZSAxNjAKCQlnZW5lcmF0aW9uIDIwNTU4MDIgdHJhbnNpZCAyMDU1ODA0IHNp
-emUgMjMyIG5ieXRlcyAyMzIKCQlibG9jayBncm91cCAwIG1vZGUgMTAwNjY0IGxpbmtzIDEgdWlk
-IDEwMDAgZ2lkIDEwMDAgcmRldiAwCgkJc2VxdWVuY2UgMyBmbGFncyAweDAobm9uZSkKCQlhdGlt
-ZSAxNTI3NzYxMDYyLjE4OTI3MDMzICgyMDE4LTA1LTMxIDIwOjA0OjIyKQoJCWN0aW1lIDE1Mjc3
-NjEwNjIuMjI5MjcwMzMgKDIwMTgtMDUtMzEgMjA6MDQ6MjIpCgkJbXRpbWUgMTUyNzc2MTA2Mi4x
-ODkyNzAzMyAoMjAxOC0wNS0zMSAyMDowNDoyMikKCQlvdGltZSAxMDk3ODI3NjU0Nzc5NTQwNzQ5
-NS4zNjE1MzkyMTQ5ICgtNDQzMTExMjI2LTA1LTMxIDA5OjA5OjMxKQoJaXRlbSAyNyBrZXkgKDE5
-MzY2NjA1IElOT0RFX1JFRiAxOTM2NjU2NikgaXRlbW9mZiAxNDQ4NCBpdGVtc2l6ZSAzNwoJCWlu
-ZGV4IDQxIG5hbWVsZW4gMjcgbmFtZTogdGVzdC1tYWx3YXJlLXNpbXBsZS5zYnN0b3JlCglpdGVt
-IDI4IGtleSAoMTkzNjY2MDUgRVhURU5UX0RBVEEgMCkgaXRlbW9mZiAxNDIzMSBpdGVtc2l6ZSAy
-NTMKCQlnZW5lcmF0aW9uIDIwNTU4MDIgdHlwZSAwIChpbmxpbmUpCgkJaW5saW5lIGV4dGVudCBk
-YXRhIHNpemUgMjMyIHJhbV9ieXRlcyAyMzIgY29tcHJlc3Npb24gMCAobm9uZSkKCWl0ZW0gMjkg
-a2V5ICgxOTM2NjYwNiBJTk9ERV9JVEVNIDApIGl0ZW1vZmYgMTQwNzEgaXRlbXNpemUgMTYwCgkJ
-Z2VuZXJhdGlvbiAyMDU1ODAyIHRyYW5zaWQgMjA1NTgwNCBzaXplIDIzMiBuYnl0ZXMgMjMyCgkJ
-YmxvY2sgZ3JvdXAgMCBtb2RlIDEwMDY2NCBsaW5rcyAxIHVpZCAxMDAwIGdpZCAxMDAwIHJkZXYg
-MAoJCXNlcXVlbmNlIDMgZmxhZ3MgMHgwKG5vbmUpCgkJYXRpbWUgMTUyNzc2MTA2Mi4yMzkyNzAz
-MyAoMjAxOC0wNS0zMSAyMDowNDoyMikKCQljdGltZSAxNTI3NzYxMDYyLjI3OTI3MDMzICgyMDE4
-LTA1LTMxIDIwOjA0OjIyKQoJCW10aW1lIDE1Mjc3NjEwNjIuMjM5MjcwMzMgKDIwMTgtMDUtMzEg
-MjA6MDQ6MjIpCgkJb3RpbWUgMTc4MjYzODQwMjQ2NzExMzQyMDguMjA2NDUwMzkzMiAoMTgxNjQx
-MTA3NS0wNS0zMSAxMzoxNDo0NCkKCWl0ZW0gMzAga2V5ICgxOTM2NjYwNiBJTk9ERV9SRUYgMTkz
-NjY1NjYpIGl0ZW1vZmYgMTQwMzYgaXRlbXNpemUgMzUKCQlpbmRleCA0MyBuYW1lbGVuIDI1IG5h
-bWU6IHRlc3QtcGhpc2gtc2ltcGxlLnNic3RvcmUKCWl0ZW0gMzEga2V5ICgxOTM2NjYwNiBFWFRF
-TlRfREFUQSAwKSBpdGVtb2ZmIDEzNzgzIGl0ZW1zaXplIDI1MwoJCWdlbmVyYXRpb24gMjA1NTgw
-MiB0eXBlIDAgKGlubGluZSkKCQlpbmxpbmUgZXh0ZW50IGRhdGEgc2l6ZSAyMzIgcmFtX2J5dGVz
-IDIzMiBjb21wcmVzc2lvbiAwIChub25lKQoJaXRlbSAzMiBrZXkgKDE5MzY2NjA3IElOT0RFX0lU
-RU0gMCkgaXRlbW9mZiAxMzYyMyBpdGVtc2l6ZSAxNjAKCQlnZW5lcmF0aW9uIDIwNTU4MDIgdHJh
-bnNpZCAyMDU1ODA0IHNpemUgMjMyIG5ieXRlcyAyMzIKCQlibG9jayBncm91cCAwIG1vZGUgMTAw
-NjY0IGxpbmtzIDEgdWlkIDEwMDAgZ2lkIDEwMDAgcmRldiAwCgkJc2VxdWVuY2UgMyBmbGFncyAw
-eDAobm9uZSkKCQlhdGltZSAxNTI3NzYxMDYyLjI4OTI3MDMzICgyMDE4LTA1LTMxIDIwOjA0OjIy
-KQoJCWN0aW1lIDE1Mjc3NjEwNjIuMzI5MjcwMzMgKDIwMTgtMDUtMzEgMjA6MDQ6MjIpCgkJbXRp
-bWUgMTUyNzc2MTA2Mi4yODkyNzAzMyAoMjAxOC0wNS0zMSAyMDowNDoyMikKCQlvdGltZSAzNTM4
-ODA2NDk5NjUxNzczNjYzLjE2NDYyOTgwOTAgKDQ3MTE2NjA2Ny0wNS0zMSAyMTowMTowMykKCWl0
-ZW0gMzMga2V5ICgxOTM2NjYwNyBJTk9ERV9SRUYgMTkzNjY1NjYpIGl0ZW1vZmYgMTM1ODUgaXRl
-bXNpemUgMzgKCQlpbmRleCA0NSBuYW1lbGVuIDI4IG5hbWU6IHRlc3QtdW53YW50ZWQtc2ltcGxl
-LnNic3RvcmUKCWl0ZW0gMzQga2V5ICgxOTM2NjYwNyBFWFRFTlRfREFUQSAwKSBpdGVtb2ZmIDEz
-MzMyIGl0ZW1zaXplIDI1MwoJCWdlbmVyYXRpb24gMjA1NTgwMiB0eXBlIDAgKGlubGluZSkKCQlp
-bmxpbmUgZXh0ZW50IGRhdGEgc2l6ZSAyMzIgcmFtX2J5dGVzIDIzMiBjb21wcmVzc2lvbiAwIChu
-b25lKQoJaXRlbSAzNSBrZXkgKDE5MzY2NjA4IElOT0RFX0lURU0gMCkgaXRlbW9mZiAxMzE3MiBp
-dGVtc2l6ZSAxNjAKCQlnZW5lcmF0aW9uIDIwNTU4MDIgdHJhbnNpZCAyMDU1ODA0IHNpemUgMjcy
-IG5ieXRlcyAyNzIKCQlibG9jayBncm91cCAwIG1vZGUgMTAwNjY0IGxpbmtzIDEgdWlkIDEwMDAg
-Z2lkIDEwMDAgcmRldiAwCgkJc2VxdWVuY2UgMyBmbGFncyAweDAobm9uZSkKCQlhdGltZSAxNTI3
-NzYxMDYyLjMyOTI3MDMzICgyMDE4LTA1LTMxIDIwOjA0OjIyKQoJCWN0aW1lIDE1Mjc3NjEwNjIu
-Mzc5MjcwMzMgKDIwMTgtMDUtMzEgMjA6MDQ6MjIpCgkJbXRpbWUgMTUyNzc2MTA2Mi4zMzkyNzAz
-MyAoMjAxOC0wNS0zMSAyMDowNDoyMikKCQlvdGltZSAyMjE3ODAxMjQ2MDQwNzMwMDIxLjM0OTIz
-MjMyMDMgKDE1NTk4NDg5NzktMDUtMzEgMTU6MzM6NDEpCglpdGVtIDM2IGtleSAoMTkzNjY2MDgg
-SU5PREVfUkVGIDE5MzY2NTY2KSBpdGVtb2ZmIDEzMTM3IGl0ZW1zaXplIDM1CgkJaW5kZXggNDcg
-bmFtZWxlbiAyNSBuYW1lOiB0ZXN0LXRyYWNrLXNpbXBsZS5zYnN0b3JlCglpdGVtIDM3IGtleSAo
-MTkzNjY2MDggRVhURU5UX0RBVEEgMCkgaXRlbW9mZiAxMjg0NCBpdGVtc2l6ZSAyOTMKCQlnZW5l
-cmF0aW9uIDIwNTU4MDIgdHlwZSAwIChpbmxpbmUpCgkJaW5saW5lIGV4dGVudCBkYXRhIHNpemUg
-MjcyIHJhbV9ieXRlcyAyNzIgY29tcHJlc3Npb24gMCAobm9uZSkKCWl0ZW0gMzgga2V5ICgxOTM2
-NjYwOSBJTk9ERV9JVEVNIDApIGl0ZW1vZmYgMTI2ODQgaXRlbXNpemUgMTYwCgkJZ2VuZXJhdGlv
-biAyMDU1ODAyIHRyYW5zaWQgMjA1NTgwNCBzaXplIDIzMiBuYnl0ZXMgMjMyCgkJYmxvY2sgZ3Jv
-dXAgMCBtb2RlIDEwMDY2NCBsaW5rcyAxIHVpZCAxMDAwIGdpZCAxMDAwIHJkZXYgMAoJCXNlcXVl
-bmNlIDMgZmxhZ3MgMHgwKG5vbmUpCgkJYXRpbWUgMTUyNzc2MTA2Mi4zODkyNzAzMyAoMjAxOC0w
-NS0zMSAyMDowNDoyMikKCQljdGltZSAxNTI3NzYxMDYyLjQzOTI3MDMzICgyMDE4LTA1LTMxIDIw
-OjA0OjIyKQoJCW10aW1lIDE1Mjc3NjEwNjIuMzg5MjcwMzMgKDIwMTgtMDUtMzEgMjA6MDQ6MjIp
-CgkJb3RpbWUgMTgzOTA0OTQ1Njk4MTA1MDQzMTQuMTUxNzE4NTA5MyAoLTE3ODI0NzM4NTEtMTAt
-MjEgMjI6MTY6MzApCglpdGVtIDM5IGtleSAoMTkzNjY2MDkgSU5PREVfUkVGIDE5MzY2NTY2KSBp
-dGVtb2ZmIDEyNjQ0IGl0ZW1zaXplIDQwCgkJaW5kZXggNDkgbmFtZWxlbiAzMCBuYW1lOiB0ZXN0
-LXRyYWNrd2hpdGUtc2ltcGxlLnNic3RvcmUKCWl0ZW0gNDAga2V5ICgxOTM2NjYwOSBFWFRFTlRf
-REFUQSAwKSBpdGVtb2ZmIDEyMzkxIGl0ZW1zaXplIDI1MwoJCWdlbmVyYXRpb24gMjA1NTgwMiB0
-eXBlIDAgKGlubGluZSkKCQlpbmxpbmUgZXh0ZW50IGRhdGEgc2l6ZSAyMzIgcmFtX2J5dGVzIDIz
-MiBjb21wcmVzc2lvbiAwIChub25lKQoJaXRlbSA0MSBrZXkgKDE5MzY2NjEwIElOT0RFX0lURU0g
-MCkgaXRlbW9mZiAxMjIzMSBpdGVtc2l6ZSAxNjAKCQlnZW5lcmF0aW9uIDIwNTU4MDIgdHJhbnNp
-ZCAyMDU1ODA0IHNpemUgMjMyIG5ieXRlcyAyMzIKCQlibG9jayBncm91cCAwIG1vZGUgMTAwNjY0
-IGxpbmtzIDEgdWlkIDEwMDAgZ2lkIDEwMDAgcmRldiAwCgkJc2VxdWVuY2UgMyBmbGFncyAweDAo
-bm9uZSkKCQlhdGltZSAxNTI3NzYxMDYyLjQzOTI3MDMzICgyMDE4LTA1LTMxIDIwOjA0OjIyKQoJ
-CWN0aW1lIDE1Mjc3NjEwNjIuNDg5MjcwMzMgKDIwMTgtMDUtMzEgMjA6MDQ6MjIpCgkJbXRpbWUg
-MTUyNzc2MTA2Mi40NDkyNzAzMyAoMjAxOC0wNS0zMSAyMDowNDoyMikKCQlvdGltZSAxNjYzNzc4
-NDg3NDM4NDAxMDM0Ni4zMzgxNjg3MDMyICgtMTQ4OTA1ODIxOS0wNS0zMSAyMTowMzo0MikKCWl0
-ZW0gNDIga2V5ICgxOTM2NjYxMCBJTk9ERV9SRUYgMTkzNjY1NjYpIGl0ZW1vZmYgMTIxOTYgaXRl
-bXNpemUgMzUKCQlpbmRleCA1MSBuYW1lbGVuIDI1IG5hbWU6IHRlc3QtYmxvY2stc2ltcGxlLnNi
-c3RvcmUKCWl0ZW0gNDMga2V5ICgxOTM2NjYxMCBFWFRFTlRfREFUQSAwKSBpdGVtb2ZmIDExOTQz
-IGl0ZW1zaXplIDI1MwoJCWdlbmVyYXRpb24gMjA1NTgwMiB0eXBlIDAgKGlubGluZSkKCQlpbmxp
-bmUgZXh0ZW50IGRhdGEgc2l6ZSAyMzIgcmFtX2J5dGVzIDIzMiBjb21wcmVzc2lvbiAwIChub25l
-KQoJaXRlbSA0NCBrZXkgKDE5MzY2NjExIElOT0RFX0lURU0gMCkgaXRlbW9mZiAxMTc4MyBpdGVt
-c2l6ZSAxNjAKCQlnZW5lcmF0aW9uIDIwNTU4MDIgdHJhbnNpZCAyMDU1ODA0IHNpemUgMjMyIG5i
-eXRlcyAyMzIKCQlibG9jayBncm91cCAwIG1vZGUgMTAwNjY0IGxpbmtzIDEgdWlkIDEwMDAgZ2lk
-IDEwMDAgcmRldiAwCgkJc2VxdWVuY2UgMyBmbGFncyAweDAobm9uZSkKCQlhdGltZSAxNTI3NzYx
-MDYyLjQ4OTI3MDMzICgyMDE4LTA1LTMxIDIwOjA0OjIyKQoJCWN0aW1lIDE1Mjc3NjEwNjIuNTM5
-MjcwMzMgKDIwMTgtMDUtMzEgMjA6MDQ6MjIpCgkJbXRpbWUgMTUyNzc2MTA2Mi40ODkyNzAzMyAo
-MjAxOC0wNS0zMSAyMDowNDoyMikKCQlvdGltZSA3MDU1MDI5MDk4NTMwMzgyNzExLjMyODIyMDIz
-NiAoMjI2Njc0ODM5LTA1LTMxIDAzOjMxOjUxKQoJaXRlbSA0NSBrZXkgKDE5MzY2NjExIElOT0RF
-X1JFRiAxOTM2NjU2NikgaXRlbW9mZiAxMTc0OCBpdGVtc2l6ZSAzNQoJCWluZGV4IDUzIG5hbWVs
-ZW4gMjUgbmFtZTogdGVzdC1mbGFzaC1zaW1wbGUuc2JzdG9yZQoJaXRlbSA0NiBrZXkgKDE5MzY2
-NjExIEVYVEVOVF9EQVRBIDApIGl0ZW1vZmYgMTE0OTUgaXRlbXNpemUgMjUzCgkJZ2VuZXJhdGlv
-biAyMDU1ODAyIHR5cGUgMCAoaW5saW5lKQoJCWlubGluZSBleHRlbnQgZGF0YSBzaXplIDIzMiBy
-YW1fYnl0ZXMgMjMyIGNvbXByZXNzaW9uIDAgKG5vbmUpCglpdGVtIDQ3IGtleSAoMTkzNjY2MTIg
-SU5PREVfSVRFTSAwKSBpdGVtb2ZmIDExMzM1IGl0ZW1zaXplIDE2MAoJCWdlbmVyYXRpb24gMjA1
-NTgwMiB0cmFuc2lkIDIwNTU4MDQgc2l6ZSAyMzIgbmJ5dGVzIDIzMgoJCWJsb2NrIGdyb3VwIDAg
-bW9kZSAxMDA2NjQgbGlua3MgMSB1aWQgMTAwMCBnaWQgMTAwMCByZGV2IDAKCQlzZXF1ZW5jZSAz
-IGZsYWdzIDB4MChub25lKQoJCWF0aW1lIDE1Mjc3NjEwNjIuNTM5MjcwMzMgKDIwMTgtMDUtMzEg
-MjA6MDQ6MjIpCgkJY3RpbWUgMTUyNzc2MTA2Mi41NzkyNzAzMyAoMjAxOC0wNS0zMSAyMDowNDoy
-MikKCQltdGltZSAxNTI3NzYxMDYyLjUzOTI3MDMzICgyMDE4LTA1LTMxIDIwOjA0OjIyKQoJCW90
-aW1lIDEyNjg1NjA5MTU3MzI5MjI4MzE3LjEzMTM1NTUyICgyMTIwNDk3ODMwLTA1LTMxIDAwOjE2
-OjMzKQoJaXRlbSA0OCBrZXkgKDE5MzY2NjEyIElOT0RFX1JFRiAxOTM2NjU2NikgaXRlbW9mZiAx
-MTI5NCBpdGVtc2l6ZSA0MQoJCWluZGV4IDU1IG5hbWVsZW4gMzEgbmFtZTogdGVzdGV4Y2VwdC1m
-bGFzaC1zaW1wbGUuc2JzdG9yZQoJaXRlbSA0OSBrZXkgKDE5MzY2NjEyIEVYVEVOVF9EQVRBIDAp
-IGl0ZW1vZmYgMTEwNDEgaXRlbXNpemUgMjUzCgkJZ2VuZXJhdGlvbiAyMDU1ODAyIHR5cGUgMCAo
-aW5saW5lKQoJCWlubGluZSBleHRlbnQgZGF0YSBzaXplIDIzMiByYW1fYnl0ZXMgMjMyIGNvbXBy
-ZXNzaW9uIDAgKG5vbmUpCglpdGVtIDUwIGtleSAoMTkzNjY2MTMgSU5PREVfSVRFTSAwKSBpdGVt
-b2ZmIDEwODgxIGl0ZW1zaXplIDE2MAoJCWdlbmVyYXRpb24gMjA1NTgwMiB0cmFuc2lkIDIwNTU4
-MDQgc2l6ZSAyMzIgbmJ5dGVzIDIzMgoJCWJsb2NrIGdyb3VwIDAgbW9kZSAxMDA2NjQgbGlua3Mg
-MSB1aWQgMTAwMCBnaWQgMTAwMCByZGV2IDAKCQlzZXF1ZW5jZSAzIGZsYWdzIDB4MChub25lKQoJ
-CWF0aW1lIDE1Mjc3NjEwNjIuNTc5MjcwMzMgKDIwMTgtMDUtMzEgMjA6MDQ6MjIpCgkJY3RpbWUg
-MTUyNzc2MTA2Mi42MjkyNzAzMyAoMjAxOC0wNS0zMSAyMDowNDoyMikKCQltdGltZSAxNTI3NzYx
-MDYyLjU4OTI3MDMzICgyMDE4LTA1LTMxIDIwOjA0OjIyKQoJCW90aW1lIDI1MjM0MzI1NzIzODAy
-OTYyMTcuMzQ5NTA0NjQxMSAoLTE2Mzk5ODE3MjktMDUtMzEgMDc6MDM6MzcpCglpdGVtIDUxIGtl
-eSAoMTkzNjY2MTMgSU5PREVfUkVGIDE5MzY2NTY2KSBpdGVtb2ZmIDEwODQxIGl0ZW1zaXplIDQw
-CgkJaW5kZXggNTcgbmFtZWxlbiAzMCBuYW1lOiB0ZXN0LWZsYXNoYWxsb3ctc2ltcGxlLnNic3Rv
-cmUKCWl0ZW0gNTIga2V5ICgxOTM2NjYxMyBFWFRFTlRfREFUQSAwKSBpdGVtb2ZmIDEwNTg4IGl0
-ZW1zaXplIDI1MwoJCWdlbmVyYXRpb24gMjA1NTgwMiB0eXBlIDAgKGlubGluZSkKCQlpbmxpbmUg
-ZXh0ZW50IGRhdGEgc2l6ZSAyMzIgcmFtX2J5dGVzIDIzMiBjb21wcmVzc2lvbiAwIChub25lKQoJ
-aXRlbSA1MyBrZXkgKDE5MzY2NjE0IElOT0RFX0lURU0gMCkgaXRlbW9mZiAxMDQyOCBpdGVtc2l6
-ZSAxNjAKCQlnZW5lcmF0aW9uIDIwNTU4MDIgdHJhbnNpZCAyMDU1ODA0IHNpemUgMjMyIG5ieXRl
-cyAyMzIKCQlibG9jayBncm91cCAwIG1vZGUgMTAwNjY0IGxpbmtzIDEgdWlkIDEwMDAgZ2lkIDEw
-MDAgcmRldiAwCgkJc2VxdWVuY2UgMyBmbGFncyAweDAobm9uZSkKCQlhdGltZSAxNTI3NzYxMDYy
-LjYyOTI3MDMzICgyMDE4LTA1LTMxIDIwOjA0OjIyKQoJCWN0aW1lIDE1Mjc3NjEwNjIuNjc5Mjcw
-MzMgKDIwMTgtMDUtMzEgMjA6MDQ6MjIpCgkJbXRpbWUgMTUyNzc2MTA2Mi42MjkyNzAzMyAoMjAx
-OC0wNS0zMSAyMDowNDoyMikKCQlvdGltZSAxMTA5OTc3OTcyMzEwMzYzNjA0My4zOTE2NDYyNDA2
-ICgtODg3Nzk2MTcyLTA1LTMxIDAwOjM4OjM5KQoJaXRlbSA1NCBrZXkgKDE5MzY2NjE0IElOT0RF
-X1JFRiAxOTM2NjU2NikgaXRlbW9mZiAxMDM4MiBpdGVtc2l6ZSA0NgoJCWluZGV4IDU5IG5hbWVs
-ZW4gMzYgbmFtZTogdGVzdGV4Y2VwdC1mbGFzaGFsbG93LXNpbXBsZS5zYnN0b3JlCglpdGVtIDU1
-IGtleSAoMTkzNjY2MTQgRVhURU5UX0RBVEEgMCkgaXRlbW9mZiAxMDEyOSBpdGVtc2l6ZSAyNTMK
-CQlnZW5lcmF0aW9uIDIwNTU4MDIgdHlwZSAwIChpbmxpbmUpCgkJaW5saW5lIGV4dGVudCBkYXRh
-IHNpemUgMjMyIHJhbV9ieXRlcyAyMzIgY29tcHJlc3Npb24gMCAobm9uZSkKCWl0ZW0gNTYga2V5
-ICgxOTM2NjYxNSBJTk9ERV9JVEVNIDApIGl0ZW1vZmYgOTk2OSBpdGVtc2l6ZSAxNjAKCQlnZW5l
-cmF0aW9uIDIwNTU4MDIgdHJhbnNpZCAyMDU1ODA0IHNpemUgMjMyIG5ieXRlcyAyMzIKCQlibG9j
-ayBncm91cCAwIG1vZGUgMTAwNjY0IGxpbmtzIDEgdWlkIDEwMDAgZ2lkIDEwMDAgcmRldiAwCgkJ
-c2VxdWVuY2UgMyBmbGFncyAweDAobm9uZSkKCQlhdGltZSAxNTI3NzYxMDYyLjY3OTI3MDMzICgy
-MDE4LTA1LTMxIDIwOjA0OjIyKQoJCWN0aW1lIDE1Mjc3NjEwNjIuNzc5MjcwMzMgKDIwMTgtMDUt
-MzEgMjA6MDQ6MjIpCgkJbXRpbWUgMTUyNzc2MTA2Mi42NzkyNzAzMyAoMjAxOC0wNS0zMSAyMDow
-NDoyMikKCQlvdGltZSAxMjk0MzY4MTY2MjE4OTcxMDAxMS4xNjk1OTQ1NTU4ICgxNzA4NTU1MzYw
-LTA1LTMxIDAxOjM4OjA3KQoJaXRlbSA1NyBrZXkgKDE5MzY2NjE1IElOT0RFX1JFRiAxOTM2NjU2
-NikgaXRlbW9mZiA5OTI4IGl0ZW1zaXplIDQxCgkJaW5kZXggNjEgbmFtZWxlbiAzMSBuYW1lOiB0
-ZXN0LWZsYXNoc3ViZG9jLXNpbXBsZS5zYnN0b3JlCglpdGVtIDU4IGtleSAoMTkzNjY2MTUgRVhU
-RU5UX0RBVEEgMCkgaXRlbW9mZiA5Njc1IGl0ZW1zaXplIDI1MwoJCWdlbmVyYXRpb24gMjA1NTgw
-MiB0eXBlIDAgKGlubGluZSkKCQlpbmxpbmUgZXh0ZW50IGRhdGEgc2l6ZSAyMzIgcmFtX2J5dGVz
-IDIzMiBjb21wcmVzc2lvbiAwIChub25lKQoJaXRlbSA1OSBrZXkgKDE5MzY2NjE2IElOT0RFX0lU
-RU0gMCkgaXRlbW9mZiA5NTE1IGl0ZW1zaXplIDE2MAoJCWdlbmVyYXRpb24gMjA1NTgwMiB0cmFu
-c2lkIDIwNTU4MDQgc2l6ZSAyMzIgbmJ5dGVzIDIzMgoJCWJsb2NrIGdyb3VwIDAgbW9kZSAxMDA2
-NjQgbGlua3MgMSB1aWQgMTAwMCBnaWQgMTAwMCByZGV2IDAKCQlzZXF1ZW5jZSAzIGZsYWdzIDB4
-MChub25lKQoJCWF0aW1lIDE1Mjc3NjEwNjIuNzc5MjcwMzMgKDIwMTgtMDUtMzEgMjA6MDQ6MjIp
-CgkJY3RpbWUgMTUyNzc2MTA2Mi44MjkyNzAzMyAoMjAxOC0wNS0zMSAyMDowNDoyMikKCQltdGlt
-ZSAxNTI3NzYxMDYyLjc3OTI3MDMzICgyMDE4LTA1LTMxIDIwOjA0OjIyKQoJCW90aW1lIDcxMzU2
-ODYyMzQ2ODY5MjQ0MDUuMjM1NTEzNjA2NiAoLTE1MTIzNjk1NjEtMDUtMzEgMTU6MjA6MDUpCglp
-dGVtIDYwIGtleSAoMTkzNjY2MTYgSU5PREVfUkVGIDE5MzY2NTY2KSBpdGVtb2ZmIDk0NjggaXRl
-bXNpemUgNDcKCQlpbmRleCA2MyBuYW1lbGVuIDM3IG5hbWU6IHRlc3RleGNlcHQtZmxhc2hzdWJk
-b2Mtc2ltcGxlLnNic3RvcmUKCWl0ZW0gNjEga2V5ICgxOTM2NjYxNiBFWFRFTlRfREFUQSAwKSBp
-dGVtb2ZmIDkyMTUgaXRlbXNpemUgMjUzCgkJZ2VuZXJhdGlvbiAyMDU1ODAyIHR5cGUgMCAoaW5s
-aW5lKQoJCWlubGluZSBleHRlbnQgZGF0YSBzaXplIDIzMiByYW1fYnl0ZXMgMjMyIGNvbXByZXNz
-aW9uIDAgKG5vbmUpCglpdGVtIDYyIGtleSAoMTkzNjY4NzkgSU5PREVfSVRFTSAwKSBpdGVtb2Zm
-IDkwNTUgaXRlbXNpemUgMTYwCgkJZ2VuZXJhdGlvbiAyMDU1ODExIHRyYW5zaWQgMjA3MDYwNyBz
-aXplIDkxMSBuYnl0ZXMgOTExCgkJYmxvY2sgZ3JvdXAgMCBtb2RlIDEwMDY2NCBsaW5rcyAxIHVp
-ZCAxMDAwIGdpZCAxMDAwIHJkZXYgMAoJCXNlcXVlbmNlIDAgZmxhZ3MgMHgwKG5vbmUpCgkJYXRp
-bWUgMTUyODYxNzYyNy45NTQ1MzUyMCAoMjAxOC0wNi0xMCAxODowMDoyNykKCQljdGltZSAxNTI3
-ODAxMTU4LjQ2NTE4ODU0MCAoMjAxOC0wNi0wMSAwNzoxMjozOCkKCQltdGltZSAxNTI3ODAxMTU4
-LjQ2NTE4ODU0MCAoMjAxOC0wNi0wMSAwNzoxMjozOCkKCQlvdGltZSAxNTI3NzYxMzY4LjMyMDA1
-NzUxMSAoMjAxOC0wNS0zMSAyMDowOToyOCkKCWl0ZW0gNjMga2V5ICgxOTM2Njg3OSBJTk9ERV9S
-RUYgMTkwNTg0MjUpIGl0ZW1vZmYgOTAxNCBpdGVtc2l6ZSA0MQoJCWluZGV4IDYgbmFtZWxlbiAz
-MSBuYW1lOiAyMDE4LTA1LTMxLjIwMDgzNisxMDAwQUVTVC5odG1sCglpdGVtIDY0IGtleSAoMTkz
-NjY4NzkgRVhURU5UX0RBVEEgMCkgaXRlbW9mZiA4MDgyIGl0ZW1zaXplIDkzMgoJCWdlbmVyYXRp
-b24gMjA1Njk0OCB0eXBlIDAgKGlubGluZSkKCQlpbmxpbmUgZXh0ZW50IGRhdGEgc2l6ZSA5MTEg
-cmFtX2J5dGVzIDkxMSBjb21wcmVzc2lvbiAwIChub25lKQoJaXRlbSA2NSBrZXkgKDE5MzY3MDA3
-IElOT0RFX0lURU0gMCkgaXRlbW9mZiA3OTIyIGl0ZW1zaXplIDE2MAoJCWdlbmVyYXRpb24gMjA1
-NTgyNyB0cmFuc2lkIDIwNTY5NTAgc2l6ZSAxNzgzIG5ieXRlcyAxNzgzCgkJYmxvY2sgZ3JvdXAg
-MCBtb2RlIDEwMDY2NCBsaW5rcyAxIHVpZCAxMDAwIGdpZCAxMDAwIHJkZXYgMAoJCXNlcXVlbmNl
-IDAgZmxhZ3MgMHgwKG5vbmUpCgkJYXRpbWUgMTUyNzgwMTIyOS44NTcxODM4NDcgKDIwMTgtMDYt
-MDEgMDc6MTM6NDkpCgkJY3RpbWUgMTUyNzgwMTE1OC40NzQxODkyOTYgKDIwMTgtMDYtMDEgMDc6
-MTI6MzgpCgkJbXRpbWUgMTUyNzgwMTE1OC40NzQxODkyOTYgKDIwMTgtMDYtMDEgMDc6MTI6Mzgp
-CgkJb3RpbWUgMTUyNzc2MTkxNC41MTI0Mzc3ODggKDIwMTgtMDUtMzEgMjA6MTg6MzQpCglpdGVt
-IDY2IGtleSAoMTkzNjcwMDcgSU5PREVfUkVGIDE4NzczNTgwKSBpdGVtb2ZmIDc4ODEgaXRlbXNp
-emUgNDEKCQlpbmRleCA0MiBuYW1lbGVuIDMxIG5hbWU6IDIwMTgtMDUtMzEuMjAxODM0KzEwMDBB
-RVNULmh0bWwKCWl0ZW0gNjcga2V5ICgxOTM2NzAwNyBFWFRFTlRfREFUQSAwKSBpdGVtb2ZmIDYw
-NzcgaXRlbXNpemUgMTgwNAoJCWdlbmVyYXRpb24gMjA1Njk0OCB0eXBlIDAgKGlubGluZSkKCQlp
-bmxpbmUgZXh0ZW50IGRhdGEgc2l6ZSAxNzgzIHJhbV9ieXRlcyAxNzgzIGNvbXByZXNzaW9uIDAg
-KG5vbmUpCglpdGVtIDY4IGtleSAoMTkzNjc1MTAgSU5PREVfSVRFTSAwKSBpdGVtb2ZmIDU5MTcg
-aXRlbXNpemUgMTYwCgkJZ2VuZXJhdGlvbiAyMDU2MDA1IHRyYW5zaWQgMjA1Njk0OCBzaXplIDYx
-MSBuYnl0ZXMgNjExCgkJYmxvY2sgZ3JvdXAgMCBtb2RlIDEwMDY2NCBsaW5rcyAxIHVpZCAxMDAw
-IGdpZCAxMDAwIHJkZXYgMAoJCXNlcXVlbmNlIDAgZmxhZ3MgMHgwKG5vbmUpCgkJYXRpbWUgMTUy
-Nzc2ODMwNC4yODgzNzI4ODUgKDIwMTgtMDUtMzEgMjI6MDU6MDQpCgkJY3RpbWUgMTUyNzgwMTE1
-OC40ODIxODk5NjggKDIwMTgtMDYtMDEgMDc6MTI6MzgpCgkJbXRpbWUgMTUyNzgwMTE1OC40ODIx
-ODk5NjggKDIwMTgtMDYtMDEgMDc6MTI6MzgpCgkJb3RpbWUgMTUyNzc2ODMwNC4yODgzNzI4ODUg
-KDIwMTgtMDUtMzEgMjI6MDU6MDQpCglpdGVtIDY5IGtleSAoMTkzNjc1MTAgSU5PREVfUkVGIDE5
-MzIwNDUwKSBpdGVtb2ZmIDU4NzYgaXRlbXNpemUgNDEKCQlpbmRleCAzIG5hbWVsZW4gMzEgbmFt
-ZTogMjAxOC0wNS0zMS4yMjA1MDQrMTAwMEFFU1QuaHRtbAoJaXRlbSA3MCBrZXkgKDE5MzY3NTEw
-IEVYVEVOVF9EQVRBIDApIGl0ZW1vZmYgNTI0NCBpdGVtc2l6ZSA2MzIKCQlnZW5lcmF0aW9uIDIw
-NTY5NDggdHlwZSAwIChpbmxpbmUpCgkJaW5saW5lIGV4dGVudCBkYXRhIHNpemUgNjExIHJhbV9i
-eXRlcyA2MTEgY29tcHJlc3Npb24gMCAobm9uZSkKCWl0ZW0gNzEga2V5ICgxOTM2NzYzMyBJTk9E
-RV9JVEVNIDApIGl0ZW1vZmYgNTA4NCBpdGVtc2l6ZSAxNjAKCQlnZW5lcmF0aW9uIDIwNTYwNDUg
-dHJhbnNpZCAyMDczNTY0IHNpemUgNTgyIG5ieXRlcyA1ODIKCQlibG9jayBncm91cCAwIG1vZGUg
-MTAwNjY0IGxpbmtzIDEgdWlkIDEwMDAgZ2lkIDEwMDAgcmRldiAwCgkJc2VxdWVuY2UgNSBmbGFn
-cyAweDAobm9uZSkKCQlhdGltZSAxNTI4NzkzOTYyLjc5NjI4NTMxMiAoMjAxOC0wNi0xMiAxODo1
-OToyMikKCQljdGltZSAxNTI3ODAxMTU4LjQ5MjE5MDgwOCAoMjAxOC0wNi0wMSAwNzoxMjozOCkK
-CQltdGltZSAxNTI3ODAxMTU4LjQ5MjE5MDgwOCAoMjAxOC0wNi0wMSAwNzoxMjozOCkKCQlvdGlt
-ZSAxNTI3NzY5Nzg3Ljk3MjQxOTkyMyAoMjAxOC0wNS0zMSAyMjoyOTo0NykKCWl0ZW0gNzIga2V5
-ICgxOTM2NzYzMyBJTk9ERV9SRUYgMTg3MzU1MDUpIGl0ZW1vZmYgNTA0MyBpdGVtc2l6ZSA0MQoJ
-CWluZGV4IDIyIG5hbWVsZW4gMzEgbmFtZTogMjAxOC0wNS0zMS4yMjI5NDcrMTAwMEFFU1QuaHRt
-bAoJaXRlbSA3MyBrZXkgKDE5MzY3NjMzIEVYVEVOVF9EQVRBIDApIGl0ZW1vZmYgNDQ0MCBpdGVt
-c2l6ZSA2MDMKCQlnZW5lcmF0aW9uIDIwNTY5NDggdHlwZSAwIChpbmxpbmUpCgkJaW5saW5lIGV4
-dGVudCBkYXRhIHNpemUgNTgyIHJhbV9ieXRlcyA1ODIgY29tcHJlc3Npb24gMCAobm9uZSkK
---000000000000cab3f1059532888d--
+ item 0 key (8388608 BLOCK_GROUP_ITEM_NEW 13631488) itemoff 16259 itemsize 24
+         block group NEW used 0 chunk_objectid 256 flags DATA
+ item 1 key (8388608 BLOCK_GROUP_ITEM_NEW 22020096) itemoff 16235 itemsize 24
+         block group NEW used 16384 chunk_objectid 256 flags SYSTEM|DUP
+ item 2 key (22036480 METADATA_ITEM 0) itemoff 16202 itemsize 33
+         refs 1 gen 5 flags TREE_BLOCK
+         tree block skinny level 0
+         tree block backref root CHUNK_TREE
+ item 3 key (30408704 METADATA_ITEM 0) itemoff 16169 itemsize 33
+         refs 1 gen 4 flags TREE_BLOCK
+         tree block skinny level 0
+         tree block backref root FS_TREE
+ item 4 key (30474240 METADATA_ITEM 0) itemoff 16136 itemsize 33
+         refs 1 gen 4 flags TREE_BLOCK
+         tree block skinny level 0
+         tree block backref root CSUM_TREE
+ item 5 key (30490624 METADATA_ITEM 0) itemoff 16103 itemsize 33
+         refs 1 gen 4 flags TREE_BLOCK
+         tree block skinny level 0
+         tree block backref root DATA_RELOC_TREE
+ item 6 key (30507008 METADATA_ITEM 0) itemoff 16070 itemsize 33
+         refs 1 gen 4 flags TREE_BLOCK
+         tree block skinny level 0
+         tree block backref root UUID_TREE
+ item 7 key (30523392 METADATA_ITEM 0) itemoff 16037 itemsize 33
+         refs 1 gen 5 flags TREE_BLOCK
+         tree block skinny level 0
+         tree block backref root EXTENT_TREE
+ item 8 key (30539776 METADATA_ITEM 0) itemoff 16004 itemsize 33
+         refs 1 gen 5 flags TREE_BLOCK
+         tree block skinny level 0
+         tree block backref root DEV_TREE
+ item 9 key (30556160 METADATA_ITEM 0) itemoff 15971 itemsize 33
+         refs 1 gen 5 flags TREE_BLOCK
+         tree block skinny level 0
+         tree block backref root ROOT_TREE
+ item 10 key (107347968 BLOCK_GROUP_ITEM_NEW 30408704) itemoff 15947 itemsize 24
+         block group NEW used 114688 chunk_objectid 256 flags METADATA|DUP
+
+After item 10, the rest of the block group would appear, and basically
+the rest of the extent tree, many other items.
+
+I don't want
+to make hardcoded assumptins, that maximum objecit is 1G, but so far was
+not able to come up with a generic and reliable formula how to set up
+key for next search to reach item (107347968 BLOCK_GROUP_ITEM_NEW
+30408704) once (8388608 BLOCK_GROUP_ITEM_NEW 22020096) has been
+processed.
+
+The swapped objectid and offset is the hard part for search because we
+lose the linearity of block group start.  Advance objectid by one and
+search again ie. (8388608+1 BGI_NEW 22020096) will land on the next
+metadata item. Iterating objectid by one would eventually reach the 1G
+block group item, but what to do after the last 1G item is found and we
+want do decide wheather to continue or not?
+
+This would be easy with the bg_tree, because we'd know that all items in
+the tree are just the block group items. Some sort of enumeration could
+work for bg_key too, but I don't have something solid.
+
+The WIP is in my github repository branch dev/bg-key. It's not on top of
+the bg_tree branch for now. The kernel part will be very similar once
+the progs side is done.
+
+Feedback welcome.
