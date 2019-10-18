@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00458DC468
-	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2019 14:08:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BA16DC472
+	for <lists+linux-btrfs@lfdr.de>; Fri, 18 Oct 2019 14:10:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407943AbfJRMIr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 18 Oct 2019 08:08:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42338 "EHLO mx1.suse.de"
+        id S2407993AbfJRMKD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 18 Oct 2019 08:10:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43260 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2404900AbfJRMIr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 18 Oct 2019 08:08:47 -0400
+        id S2403940AbfJRMKC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 18 Oct 2019 08:10:02 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 0FE39B471;
-        Fri, 18 Oct 2019 12:08:45 +0000 (UTC)
-Subject: Re: [PATCH 2/5] btrfs: set blocking_writers directly, no increment or
- decrement
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1571340084.git.dsterba@suse.com>
- <6c64bb27ef5e0150db63c2415bb31f98331d2d4c.1571340084.git.dsterba@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 139B5B4D1;
+        Fri, 18 Oct 2019 12:10:00 +0000 (UTC)
+Subject: Re: [PATCH -next] btrfs: Make init_tree_roots static
+To:     YueHaibing <yuehaibing@huawei.com>, clm@fb.com,
+        josef@toxicpanda.com, dsterba@suse.com
+Cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20191018120604.29508-1-yuehaibing@huawei.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +64,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <75bf572e-34ce-5f99-21b0-18359ce5581c@suse.com>
-Date:   Fri, 18 Oct 2019 15:08:43 +0300
+Message-ID: <bab47b8e-d35f-a769-a703-4dcfe1a17980@suse.com>
+Date:   Fri, 18 Oct 2019 15:09:58 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <6c64bb27ef5e0150db63c2415bb31f98331d2d4c.1571340084.git.dsterba@suse.com>
+In-Reply-To: <20191018120604.29508-1-yuehaibing@huawei.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -80,67 +80,33 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 17.10.19 г. 22:38 ч., David Sterba wrote:
-> The increment and decrement was inherited from previous version that
-> used atomics, switched in commit 06297d8cefca ("btrfs: switch
-> extent_buffer blocking_writers from atomic to int"). The only possible
-> values are 0 and 1 so we can set them directly.
+On 18.10.19 г. 15:06 ч., YueHaibing wrote:
+> Fix sparse warning:
 > 
-> The generated assembly (gcc 9.x) did the direct value assignment in
-> btrfs_set_lock_blocking_write:
+> fs/btrfs/disk-io.c:2534:12: warning:
+>  symbol 'init_tree_roots' was not declared. Should it be static?
 > 
->      5d:   test   %eax,%eax
->      5f:   je     62 <btrfs_set_lock_blocking_write+0x22>
->      61:   retq
-> 
->   -  62:   lock incl 0x44(%rdi)
->   -  66:   add    $0x50,%rdi
->   -  6a:   jmpq   6f <btrfs_set_lock_blocking_write+0x2f>
-> 
->   +  62:   movl   $0x1,0x44(%rdi)
->   +  69:   add    $0x50,%rdi
->   +  6d:   jmpq   72 <btrfs_set_lock_blocking_write+0x32>
-> 
-> The part in btrfs_tree_unlock did a decrement because
-> BUG_ON(blockers > 1) is probably not a strong hint for the compiler, but
-> otherwise the output looks safe:
-> 
->   - lock decl 0x44(%rdi)
-> 
->   + sub    $0x1,%eax
->   + mov    %eax,0x44(%rdi)
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 
-I find it strange that plain inc/decs had the lock prefix in the
-resulting assembly. The sub instruction can have the lock prefix but
-here the compiler chooses not to. While this doesn't mean it's buggy I'm
-just curious what's happening.
+Huhz, I thought I had added static... Anyway this could be folded in the
+original patch. Thanks for the report.
 
-> 
-> Signed-off-by: David Sterba <dsterba@suse.com>
 > ---
->  fs/btrfs/locking.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  fs/btrfs/disk-io.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-> index c84c650e56c7..00edf91c3d1c 100644
-> --- a/fs/btrfs/locking.c
-> +++ b/fs/btrfs/locking.c
-> @@ -109,7 +109,7 @@ void btrfs_set_lock_blocking_write(struct extent_buffer *eb)
->  	if (eb->blocking_writers == 0) {
->  		btrfs_assert_spinning_writers_put(eb);
->  		btrfs_assert_tree_locked(eb);
-> -		eb->blocking_writers++;
-> +		eb->blocking_writers = 1;
->  		write_unlock(&eb->lock);
->  	}
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index d078276..cb187f5 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2531,7 +2531,7 @@ static int btrfs_validate_write_super(struct btrfs_fs_info *fs_info,
+>  	return ret;
 >  }
-> @@ -305,7 +305,7 @@ void btrfs_tree_unlock(struct extent_buffer *eb)
 >  
->  	if (blockers) {
->  		btrfs_assert_no_spinning_writers(eb);
-> -		eb->blocking_writers--;
-> +		eb->blocking_writers = 0;
->  		/*
->  		 * We need to order modifying blocking_writers above with
->  		 * actually waking up the sleepers to ensure they see the
+> -int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
+> +static int __cold init_tree_roots(struct btrfs_fs_info *fs_info)
+>  {
+>  	int backup_index = find_newest_super_backup(fs_info);
+>  	struct btrfs_super_block *sb = fs_info->super_copy;
 > 
