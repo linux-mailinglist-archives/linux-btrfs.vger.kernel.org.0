@@ -2,34 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1E3DDBB8
-	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Oct 2019 02:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A70DDBC1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 20 Oct 2019 02:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726036AbfJTA0g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 19 Oct 2019 20:26:36 -0400
-Received: from mout.gmx.net ([212.227.17.20]:51521 "EHLO mout.gmx.net"
+        id S1726125AbfJTAi2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 19 Oct 2019 20:38:28 -0400
+Received: from mout.gmx.net ([212.227.15.15]:51947 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725710AbfJTA0g (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 19 Oct 2019 20:26:36 -0400
+        id S1725871AbfJTAi2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 19 Oct 2019 20:38:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1571531187;
-        bh=MaqnFYR/17SiUmq9BOMjDR3qFzPBMn/YD0LU1afVMtY=;
+        s=badeba3b8450; t=1571531904;
+        bh=eV72zwv536rlcgSwzjepd2qfq6dNnL6t4w8rxZR/NdA=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=bCLtA+WMUGYbBopCo56pyJA67bwbyGf3g33bNxHg7fNRh0wK8tWf4W7YZIhxuNPe6
-         +mRubXDg7ZNpWdcSlyJCk6A7ATlm+j9FMpYz0lW+nUubwJbh5rjW/tz8epkzNCjSdi
-         TBI3EBy8wbbRg6jf9Iw2sB2O668TKI79ToS9xIGc=
+        b=eb6UtovqTXkE4X5U0nzTjyldBO49p3yR1KjQBfqa7gIpUUBDCF1nWu6zFweBf6mbl
+         0S4Yv2QBuWE5nG9q0DzrQbekHjW7e+3G7sLMn7XzuFi9rnkEdDPx1fXS1AQ1+irbV+
+         mBUPvZuHzug37ZAVQyjnQ0Dozluqtg8FYpgouR5Y=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mjj87-1hamWf2031-00l9wY; Sun, 20
- Oct 2019 02:26:27 +0200
-Subject: Re: [PATCH 0/3] btrfs-progs: Add check and repair for invalid inode
- generation
-To:     Ferry Toth <fntoth@gmail.com>, Qu WenRuo <wqu@suse.com>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <20190924081120.6283-1-wqu@suse.com>
- <36d45e31-f125-4b21-a68e-428f807180f7@gmail.com>
- <b1c32c4b-734f-0f4e-44d1-cb4ef69b7fe1@suse.com>
- <796be1b6-1f1d-7946-e53e-9b85610c7c65@gmail.com>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MO9zH-1ifaY23HLN-00OWfJ; Sun, 20
+ Oct 2019 02:38:24 +0200
+Subject: Re: first it froze, now the (btrfs) root fs won't mount ...
+To:     Christian Pernegger <pernegger@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <CAKbQEqE7xN1q3byFL7-_pD=_pGJ0Vm9pj7d-g+rRgtONeH-GrA@mail.gmail.com>
+ <CAKbQEqG35D_=8raTFH75-yCYoqH2OvpPEmpj2dxgo+PTc=cfhA@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -55,208 +52,169 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <c56c880f-22c9-4200-87e5-81e61a1ada0b@gmx.com>
-Date:   Sun, 20 Oct 2019 08:26:22 +0800
+Message-ID: <4608b644-0fa3-7212-af45-0f4eebfb0be9@gmx.com>
+Date:   Sun, 20 Oct 2019 08:38:20 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <796be1b6-1f1d-7946-e53e-9b85610c7c65@gmail.com>
+In-Reply-To: <CAKbQEqG35D_=8raTFH75-yCYoqH2OvpPEmpj2dxgo+PTc=cfhA@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="r9mavPv4nClFlA4ubsdkMcBwD8v92yuPA"
-X-Provags-ID: V03:K1:Hig4pD3Bwjub4fR+NAlp6U9atubBOOj0ZonxPLjfcOQI1P59NPz
- 1EFto+/YsoOIljuXqagRymYj3iWD3KVtQI2BlM9j6Wk+ulOf1LADXtaXZ2qXLnMepe8etGb
- ZcSeNKqDAjRUdfFAuLgM4t3VJgXmzyHogmnkp36keG/jdY8xzIASFGNWtlKJ2vHOyDxV6k0
- JEY1jK2ptyqpKSL/a2Hig==
+ boundary="kdmeqfpgNvLulWfQ7BwCLJ2b3vQl0qvbX"
+X-Provags-ID: V03:K1:3LAj8kj9pEnMmKe0kphFq/9IkB6ar+2MEvxsqfTKEUoiYG0O5C9
+ PhEhQ8yvtybHa4IFNU8RZmbi3T0E5YjNj+qs6OVvwC5WpN6BTUZJCMJftpD6UUupeMQ+/1O
+ 0Lk6U/Xkt7GiCX5F2LB0EWigwHuePL9ve8ik3646mPiPPC3vOF65gjwrCWodXK7LoJej2LZ
+ Ajm5KdrrBFUx+pj5AbitA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:H0WIl8Y33bw=:MtrCAspOquwyJii/lrtEnV
- F370hX0HrMM1lRWCEbEeE9ESyAnQLJwOdNlA3UvCB5oTw8LoUbpnXYP5oziVDvry7zvesDZQm
- ixIXkRPJoAg8MaoRuen8eQHc9eaaVq3JnyLu9tBfnethpjDVyGZW3hJnGCat/iGyA4QtEjjqs
- ovdJu1Crec8L2fHVIG4ZKQLgdM2QlbA9CrgxsMw4LNWRNt0/ny0oUB4jlZccDz8VDoVeUOg/P
- oI+6Wu5W35J1YkJigLsi2GfqOualHsW0L7Z6RMa3MPZACIzwJJ7JUG/3MWHnSBnkNbP58XSrA
- 973v6TvGuN8SUCtGtupOGPZIOrLnCnq2aJWSa6I/isdaR4wVPFo6havVhcDn1G71Z9kmOVBMs
- 6cT2o12a6FFfpeX0X1AcquIfjee/SjJRfenEuGwwdPhoJNlFVafRsX/ak4vMdGgIxdg1H+Bz0
- Kx9g+EtdvsDBL8TL57/zaIvij/y9dTdLXjgNrjjKOCk7gAYzOUQV/o6DLeVD5gXTGHhTjm/Nu
- 68kX5gBSaTPIyu+WkE+1dbM/rfXh01ItqTC5UWfnUbOOviTxW2Hlnje92+1UzelPdw4l98NH6
- 0vVDj0RBKfwFedV7uegF0LJ44rshFO3G9KotIy6lgCsfHAAZZijFKe8qPM6ZNbO6Vho3XaFwd
- KM+2hg/pQ+zMSz9WqITxd8NpAhFAcMc9iUwxbEMEt2xPKUYRenyalB3ipcBT6gT7EEFIIRCSx
- RzVHAH1QApxaEzEAbFwO0YpZMA4i4EtppyMuOE0ldk8fufUf4y+y2h0yoDkJ49gD9IAofiV9Y
- VcwF5LVRM81dX9oKzYnFv2VvDSEAcYvHe2Q0uz+4G/ZULwIjCFyRGydf83vVyqUNxypXRJ5Y/
- ABBOtEj5hVGh1g7i1Hb7RaizQAeFNHlUIBwWzr5b1k7yH9y959u9GFnxgFuUSrprFBWXA2Rh4
- vWwbniVrijxWyO1HH9cb3J7yUOrVrZbmapL2t/gEdjF/NkYUGfvrb/Ep5If7pNOT4045mkO5G
- vx01H4esOjAfQlCIa81bVUreHRP6ioTS39j/jXmPkk2lLaqTBRbW1b1yonaaXYM5sJN9SZn2K
- kA8y4DncyzX+Sab2SPsb1dGZf67d7voS4pMLG4VqMna0QKKbZkPgC9JAnbS3BikeuDyGQvjPh
- F83Gvcln0jO0Vpe+f6WBE2t8FGbKKxtHzCQeygdNzlRnArGcm/5O1axwScxEMfVVDkdAuVo04
- YBsVbZoGHtwYBPwSLYwV1od+5tIjQe93Kg73hnuqYj4G6Rb9ialucTAClxCg=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:41JQguGCbrw=:9QnQf097VHMWs5l8jRTtRw
+ Vax7bqcnnmAV2HnxbIzWWHkMOI+dhUaaqOJgXCmUZpFm34qUB+CI+cBKG9OdVc0ldu9LCHJLb
+ dPdsLWDfDWBtN58B9eWvI0Jl5aCpj64FxFKshC6iu6lfskKdUwj3XnwHpqgNpbSAVnwKUa/nr
+ S7ldDDnx20HkbYV9ASYcQkOw7aKEMe4ASO8TaXwxE6FtyUUpZUHDQUy07T08+5ZYJ9WpxPMYk
+ lqUXVLZlF6ty271U8mN/jYlqVnt++EHdI4PKKQYidjFM1B5Uhy6OmwHohaz4Gesddk+DZ42Rm
+ kJin0tu4TtSd3tlPbCwY8Yja8JcM2qWzNViiY/OlGTWwL8AoBGfoa4lgGsHweGOH98DbXifqZ
+ mmpvUFlhKPI2gOAtB7YZ9eOS+MIZ605dJC06Pojyi79mdpLIXbimLZK+vc1xB8G/0VCn4lZsn
+ m708oPwy1/hqfuj0q30w1ylbCS83KJQ9wewdUaKIZ9j7h2/W1yzGbr2NR7JgAEGraIxuALcST
+ jTrz9NWoPTOHE6x1ksGxMomT5J8VhO5TLp5OktyYVlF9KL3YWkX4vdbcHVCvWtCropoQ3Ufsb
+ YRCMtpokZGheu7B8bvZ/U0PLc3EBU5RrEUgodes3mLL+hfxZorHcsYaZbBCFHLdavV/Rg6F9e
+ 54rJ5Zc5nLoxJR9GAB0fb4wQr45Lu6EpbJ9qzSNmONfniAAN4nwIzdCG+6aRqK1gL/IoQu12z
+ C0OV5dP9oXEoLAEfauu6SNNTW+eX0cOBMOxleOOtW5/RFRq06oTu0YZ8P2RlTtN3YqffbhGSt
+ 1puf5kFv34LRIYU98jSURZL4tfxnTFWtAAw96dJ+tGlK/C/oZNJCJJyml06Q9oZYT4ITTKZ0S
+ +K7rukPfyC0qLB5dKIbUZn2t+ntLYuIAc6IlP7ryEC48uTdPebVDdZth6OCmqDVI2g+8H/SmR
+ gWVkD/4haq43YCl/5AlkXmez0HjL/NeeDWt5QyVu6VIN9vx1QNiGkOcomU+MTwtIdLpu7gQmG
+ HKd1h4YOmoo/41LADx5tWiuRy3yMKW3oCGzUhayFs55IjZr6trzF9eoz6cM0fgLwlH5RipAZi
+ +zhAsaNzBwwffdfNgJNxxpjw/YuzBH1ZkzlAOmICJ9Ovz10+PnMqYPBpbzkCoBnDH29T4vQOz
+ cu5bXYdcnEP47hah7FsXXdS360PIY6JDuxolLUd5/0u8jpBhSrUppesTU7gxxyxsBYyq7sJTj
+ /bx9aY7vqiOn1xzCatqSfmh6BMoaEFFbjMiYfg2dXoDl1QoxiFxBWae3Y2UI=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---r9mavPv4nClFlA4ubsdkMcBwD8v92yuPA
-Content-Type: multipart/mixed; boundary="WXkf17NeRnHK8vneVJvXtWPTijGEdYzfR"
+--kdmeqfpgNvLulWfQ7BwCLJ2b3vQl0qvbX
+Content-Type: multipart/mixed; boundary="TOOXMhGwDYi3ZQVGmre5VpICh8bReOluZ"
 
---WXkf17NeRnHK8vneVJvXtWPTijGEdYzfR
+--TOOXMhGwDYi3ZQVGmre5VpICh8bReOluZ
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/10/20 =E4=B8=8A=E5=8D=8812:24, Ferry Toth wrote:
-> Hi,
+On 2019/10/20 =E4=B8=8A=E5=8D=886:34, Christian Pernegger wrote:
+> [Please CC me, I'm not on the list.]
 >=20
-> Op 19-10-2019 om 01:50 schreef Qu WenRuo:
->>
->>
->> On 2019/10/19 =E4=B8=8A=E5=8D=884:32, Ferry Toth wrote:
->>> Op 24-09-2019 om 10:11 schreef Qu Wenruo:
->>>> We have at least two user reports about bad inode generation makes
->>>> kernel reject the fs.
->>>
->>> May I add my report? I just upgraded Ubuntu from 19.04 -> 19.10 so
->>> kernel went from 5.0 -> 5.3 (but I was using 4.15 too).
->>>
->>> Booting 5.3 leaves me in initramfs as I have /boot on @boot and / on =
-/@
->>>
->>> In initramfs I can try to mount but get something like
->>> btrfs critical corrupt leaf invalid inode generation open_ctree faile=
-d
->>>
->>> Booting old kernel works just as before, no errors.
->>>
->>>> According to the creation time, the inode is created by some 2014
->>>> kernel.
->>>
->>> How do I get the creation time?
->>
->> # btrfs ins dump-tree -b <the bytenr reported by kernel> <your device>=
+> Hello,
+>=20
+> I'm afraid I could use some help.
+>=20
+> The affected machine froze during a game, was entirely unresponsive
+> locally, though ssh still worked. For completeness' sake, dmesg had:
+> [110592.128512] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring sdma0
+> timeout, signaled seq=3D3404070, emitted seq=3D3404071
+> [110592.128545] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* Process
+> information: process Xorg pid 1191 thread Xorg:cs0 pid 1204
+> [110592.128549] amdgpu 0000:0c:00.0: GPU reset begin!
+> [110592.138530] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* ring gfx
+> timeout, signaled seq=3D13149116, emitted seq=3D13149118
+> [110592.138577] [drm:amdgpu_job_timedout [amdgpu]] *ERROR* Process
+> information: process Overcooked.exe pid 4830 thread dxvk-submit pid
+> 4856
+> [110592.138579] amdgpu 0000:0c:00.0: GPU reset begin!
+
+It looks like you're using eGPU and the thunderbolt 3 connection disconne=
+ct?
+That would cause a kernel panic/hang or whatever.
 
 >=20
-> I just went back to the office to reboot to 5.3 and check the creation
-> times and found they were 2013 - 2014.
+> Oh well, I thought, and "shutdown -h now" it. That quit my ssh session
+> and locked me out, but otherwise didn't take, no reboot, still frozen.
+> Alt-SysRq-REISUB it was. That did it.
 >=20
->>>
->>>> And the generation member of INODE_ITEM is not updated (unlike the
->>>> transid member) so the error persists until latest tree-checker
->>>> detects.
->>>>
->>>> Even the situation can be fixed by reverting back to older kernel an=
-d
->>>> copying the offending dir/file to another inode and delete the
->>>> offending
->>>> one, it still should be done by btrfs-progs.
->>>>
->>> How to find the offending dir/file from the command line manually?
->>
->> # find <mount point> -inum <inode number>
->=20
-> This works, thanks.
->=20
-> But appears unpractical. After fix 2 files and reboot, I found 4 more,
-> then 16, then I gave up.
->=20
->> Thanks,
->> Qu
->>
->>>
->>>> This patchset adds such check and repair ability to btrfs-check, wit=
-h a
->>>> simple test image.
->>>>
->>>> Qu Wenruo (3):
->>>> =C2=A0=C2=A0=C2=A0 btrfs-progs: check/lowmem: Add check and repair f=
-or invalid inode
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 generation
->>>> =C2=A0=C2=A0=C2=A0 btrfs-progs: check/original: Add check and repair=
- for invalid inode
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 generation
->>>> =C2=A0=C2=A0=C2=A0 btrfs-progs: fsck-tests: Add test image for inval=
-id inode
->>>> generation
->>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 repair
->>>>
->>>> =C2=A0=C2=A0 check/main.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 |=C2=A0 50 +++++++++++-
->>>> =C2=A0=C2=A0 check/mode-lowmem.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 76
->>>> ++++++++++++++++++
->>>> =C2=A0=C2=A0 check/mode-original.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
->>>> =C2=A0=C2=A0 .../.lowmem_repairable=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 0
->>>> =C2=A0=C2=A0 .../bad_inode_geneartion.img.xz=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | Bin 0 -> 2=
-012 bytes
->>>> =C2=A0=C2=A0 5 files changed, 126 insertions(+), 1 deletion(-)
->>>> =C2=A0=C2=A0 create mode 100644
->>>> tests/fsck-tests/043-bad-inode-generation/.lowmem_repairable
->>>> =C2=A0=C2=A0 create mode 100644
->>>> tests/fsck-tests/043-bad-inode-generation/bad_inode_geneartion.img.x=
-z
->>>>
->>>
->=20
-> I checked out and built v5.3-rc1 of btrfs-progs. Then ran it on my
-> mounted rootfs with linux 5.0 and captured the log (~1800 lines 209
-> errors).
+> Only now all I get is a rescue shell, the pertinent messages look to
+> be [everything is copied off the screen by hand]:
+> [...]
+> BTRFS info [...]: disk space caching is enabled
+> BTRFS info [...]: has skinny extents
+> BTRFS error [...]: bad tree block start, want [big number] have 0
+> BTRFS error [...]: failed to read block groups: -5
+> BTRFS error [...]: open_ctree failed
 
-It's really not recommended to run btrfs check, especially repair on the
-mounted fs, unless it's RO.
+This means some tree blocks didn't reach disk or just got wiped out.
 
-A new transaction from kernel can easily screw up the repaired fs.
->=20
-> I'm not sure if using the v5.0 kernel and/or checking mounted distorts
-> the results? Else I'm going to need a live usb with a v5.3 kernel and
-> v5.3 btrfs-progs.
->=20
-> If you like I can share the log. Let me know.
->=20
-> This issue can potentially cause a lot of grief. Our company server run=
-s
-> Ubuntu LTS (18.04.02) with a 4.15 kernel on a btrfs boot/rootfs with
-> ~100 snapshots. I guess the problematic inodes need to be fixed on each=
-
-> snapshot prior to upgrading to 20.04 LTS (which might be on kernel ~5.6=
-)?
-
-Yes.
+Are you using discard mount option?
 
 >=20
-> Do I understand correctly that this FTB is caused by more strict
-> checking of the fs by the kernel, while the tools to fix the detected
-> corruptions are not yet released?
+> Mounting with -o ro,usebackuproot doesn't change anything.
+>=20
+> running btrfs check gives:
+> checksum verify failed on [same big number] found [8 digits hex] wanted=
+ 00000000
+> checksum verify failed on [same big number] found [8 digits hex] wanted=
+ 00000000
 
-Yes.
+Again, some old tree blocks got wiped out.
+
+BTW, you don't need to wipe the numbers, sometimes it help developer to
+find some corner problem.
+
+> bytenr mismatch, want=3D[same big number], have=3D0
+> ERROR: cannot open filesystem.
+>=20
+> That's all I've got, I'd really appreciate some help. There's hourly
+> snapshots courtesy of Timeshift, though I have a feeling those won't
+> help ...
+
+If it's the only problem, you can try this kernel branch to at least do
+a RO mount:
+https://github.com/adam900710/linux/tree/rescue_options
+
+Then mount the fs with "rescue=3Dskipbg,ro" option.
+If the bad tree block is the only problem, it should be able to mount it.=
+
+
+If that mount succeeded, and you can access all files, then it means
+only extent tree is corrupted, then you can try btrfs check
+--init-extent-tree, there are some reports of --init-extent-tree fixed
+the problem.
+
+>=20
+> Oh, it's a recent Linux Mint 19.2 install, default layout (@, @home),
+> Timeshift enabled; on a single device (NVMe). HWE kernel (Kernel
+> 5.0.0-31-generic), btrfs-progs 4.15.1.
+
+About the cause, either btrfs didn't write some tree blocks correctly or
+the NVMe doesn't implement FUA/FLUSH correctly (which I don't believe is
+the case).
+
+So it's recommended to update the kernel to 5.3 kernel.
 
 Thanks,
 Qu
 
+>=20
+> TIA,
+> Christian
+>=20
 
---WXkf17NeRnHK8vneVJvXtWPTijGEdYzfR--
 
---r9mavPv4nClFlA4ubsdkMcBwD8v92yuPA
+--TOOXMhGwDYi3ZQVGmre5VpICh8bReOluZ--
+
+--kdmeqfpgNvLulWfQ7BwCLJ2b3vQl0qvbX
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2rqa4ACgkQwj2R86El
-/qg1WQgAk0LtrtSF7csQ2JQ5Q3zhVqfn6OV3p3R2s7BDtSE0R0ByGinLWWY/JShW
-/UE1TvFuAAyBij2H5ovYLlrXcfOBUWoWFxGKTpKFvGKU0/nYDjFNsFOXONhgI7sc
-IFOQ9vG3OiAaAsLMSU1gfSZMYDqngvwpB7toNbu7Fq7+l3PYuB30La918gspEkfG
-z+VdTKJ9oR653fdmsf5wN5CfwceAjnmwwfk6A1tPLxVas4XWKzPjlNtpJEGz8pbh
-oDg9nedRLR5IsdaLEfZ3t7XpRRueIUShEjhroClC20JB6wG453wuEk3jWPErQGqz
-MgPQQFKafFT5LLh5URl0EBzCWGr71g==
-=m9kw
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2rrHwACgkQwj2R86El
+/qgtoAgAoXHVqYGVTeOqrghOYItpewQM1sadKMHYW7yH+gKjE2pbsj5HZqs/hsSk
+4jou7/18HxpNIvbIVEZizfaxdyzixoc0qH2HIzn6aLwgJvyK+4SdMhoI6bym2Zib
+Uo0UqFGmpectNVW2qqMlIPIEQRIdkv4/HvyXruNhUu5VDRpc4LMeDN1hao+bRygL
+XyFKRFR+Ko15Nbk/UUkMQ8buKucog94JjKLyI1aD2Sr4u5P/+BcTPubihY0lzQ4/
+11s+zw/64S0jeu2ZiK19wQLb5DSLRLzyuPaYdNnqXrXjI/1r/wDxAA59Pekd7zV8
+iXyrfiBe4knx1yZ1TLIWdET8rXXf4A==
+=HtNK
 -----END PGP SIGNATURE-----
 
---r9mavPv4nClFlA4ubsdkMcBwD8v92yuPA--
+--kdmeqfpgNvLulWfQ7BwCLJ2b3vQl0qvbX--
