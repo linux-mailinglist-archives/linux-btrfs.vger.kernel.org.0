@@ -2,104 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9926DF37A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 18:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F23A9DF45E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 19:37:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727700AbfJUQpy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Oct 2019 12:45:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53336 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726672AbfJUQpx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 12:45:53 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 61AF5AF9F;
-        Mon, 21 Oct 2019 16:45:52 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A5D5BDA733; Mon, 21 Oct 2019 18:46:05 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
+        id S1727403AbfJURg6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 13:36:58 -0400
+Received: from ufsin32.ru ([109.198.192.98]:51206 "EHLO mx.ufsin32.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726289AbfJURg6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Oct 2019 13:36:58 -0400
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        by mx.ufsin32.ru (Postfix) with SMTP id D5672428EA;
+        Mon, 21 Oct 2019 14:09:47 +0300 (GMT-3)
+Received: from [64.116.79.34] by 127.0.0.1 SMTP id 271FI31jHL1B5w for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 08:05:55 -0300
+Message-ID: <x4$h-ebd1-4h7$2t--5p1@0zl4f.8e>
+From:   "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
+Reply-To: "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: More checksumming algorithms for btrfs
-Date:   Mon, 21 Oct 2019 18:45:49 +0200
-Message-Id: <20191021164549.15404-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.23.0
+Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA
+Date:   Mon, 21 Oct 19 08:05:55 GMT
+X-Mailer: Microsoft Outlook IMO, Build 9.0.2416 (9.0.2910.0)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+        boundary="_.69A_.42DF1."
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The work to add more checksums is nearly finished, we're now in a good state to
-let interested users do some testing and benchmarking.
 
-New hashes: xxhash64, sha256, blake2b-256
+--_.69A_.42DF1.
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-Quick start:
+Greetings
 
-  git://github.com/kdave/btrfs-devel preview/checksums-5
-  (build with CRYPTO_BLAKE2B=m)
+My name is Barrister Hans Erich.
 
-  git://github.com/kdave/btrfs-progs devel
+I have a client who is interested to invest in your country, she is a well=
+ known politician in her country and deserve a lucrative investment partne=
+rship with you outside her country without any delay   Please can you mana=
+ge such investment please Kindly reply for further details.
 
-  $ mkfs.btrfs --csum blake2 /dev/sda
-  $ mount /dev/sda /mnt
-
-Warning: use only for testing!
-
-The increased size of checksums is allocating more memory when the data are
-being written so this can produce some warnings regarding size of the
-allocation. This will be addressed later.
+Your full names ---------
 
 
-Selection results
-~~~~~~~~~~~~~~~~~
+Your urgent response will be appreciated
 
-fast hash: xxhash
-- 64bit digest
-- optimized for 64bit platforms, leveraging CPU pipelining
+Thank you and God bless you.
 
-cryptographically strong hash 1: sha256
-- 256bit digest
-- FIPS certification
+Barrister Hans Erich
 
-cryptographically strong hash 2: blake2
-- blake2b with 256bit digest
-- '2b' as it targets 64bit platforms
+Yours sincerely,
+Barrister Hans Erich
 
+--_.69A_.42DF1.--
 
-Microbenchmark
-~~~~~~~~~~~~~~
-
-  $ cd btrfs-progs.git
-  $ make hash-speedtest
-  $ ./hash-speedtest [iterations]
-
-Block size: 4096
-Iterations: 100000
-
-    NULL-NOP: cycles:     53638797, c/i      536
- NULL-MEMCPY: cycles:     59547932, c/i      595
-      CRC32C: cycles:    179251924, c/i     1792
-      XXHASH: cycles:    137327470, c/i     1373
-      SHA256: cycles:  10719756126, c/i   107197
-     BLAKE2b: cycles:   2264316924, c/i    22643
-
-
-Compatibility
-~~~~~~~~~~~~~
-
-There's no new incompat bit, the checksum algorithm is detected at mount time
-and unknown type will fail to mount.
-
-The crypto modules implementing the digests must be either built-in or
-loadable, lack of thereof will fail mount. The actual digest implementation is
-up to the crypto API to choose. Check /sys/fs/UUID/features/checksum .
-
-
-Target release
-~~~~~~~~~~~~~~
-
-The plan is to queue the patches for 5.5, the blake2b patches seem to be on a
-good track so both shall be in the same release.
