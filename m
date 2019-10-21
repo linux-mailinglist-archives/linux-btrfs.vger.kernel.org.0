@@ -2,57 +2,93 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6A0DED18
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 15:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38E91DED1E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 15:07:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbfJUNGa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Oct 2019 09:06:30 -0400
-Received: from mail-vs1-f68.google.com ([209.85.217.68]:36438 "EHLO
-        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727322AbfJUNGa (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 09:06:30 -0400
-Received: by mail-vs1-f68.google.com with SMTP id v19so8799607vsv.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 06:06:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Qdmr+YsyNEzi6xlTRb1XkGQBKf4sbVAPmkHW8yrPpl4=;
-        b=RvdDwOLatK2tGtK/MQA2Yt/Susf9Vj+a4eBLOyMkWvNjII7Sk61RxORWL7j6ThoUJU
-         f+6LH7jN6fJAGD5wcd+H7UlI0RFkZmvTpoul7JZLmIgJ8jHfNO5VwEn1hMEkyKFM417v
-         iZ6eljJlH8Dl9vuMX6+pap5bjY5dIDwJcUYy/qQK+f0rp/wTUNZRVEbi7KIA4qrB001X
-         DGyNnxSxR6jP0AN32mU3bEQ/5e0ZT2aT9GdW3tiQEy0L6ZOoOiJzY4VhTsfs/DddSGN4
-         K3WWQge6nQmHaBjMKdUsUnasM6FZTYHs/EMekQKBv/VehgWWn9+cSsffRWttAWMzSMIO
-         VBxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Qdmr+YsyNEzi6xlTRb1XkGQBKf4sbVAPmkHW8yrPpl4=;
-        b=aQexU6qYzDc0r6otZmWUEu7HZDkX403dCNferqySB0lZ5QpkGsgpyfBdFyR+56Zxs5
-         lJ9JEusqfbpy10b5weavDIUh0glQKb9M4pNSC8vRPy8wSqB2mJYnDXutV9It0TgvJ1rM
-         M5AjikqYEJ+NvzwTvljJNZzTs7NJtEt8FTsD11US8GZnp9vAiXC/7m74OQ0n2Aj5sTJ1
-         SSI8xR5cmuwLQbmjZ3HKzFxbns0SDMbLOMaDDJfKDCT60gulNRDHG/rnoL17bnfnRQ/l
-         8FMoQOL1yLd07FDM2BspU0jaS0m4O4/kJ3qIcFAFlQLySRBLa+iaEgDXYdOOtREQzB7U
-         GRHg==
-X-Gm-Message-State: APjAAAU0RY6YSXcV3zx2jo2BFg3YZgg45rke8nLDqGOtTPkV0B0TI807
-        5x//+M24t0/zwzJdIeFQ+44hVCPXC23H3UVqgYo=
-X-Google-Smtp-Source: APXvYqzUW14K624AQWyK6Q4gxetu/JCRxyVVe3x+cVTYbjVvMm0Wj8ozGCrCAUEB6yL9yzteiiQPeKOz8WQ+gt8JwyM=
-X-Received: by 2002:a67:e34b:: with SMTP id s11mr6945756vsm.195.1571663189533;
- Mon, 21 Oct 2019 06:06:29 -0700 (PDT)
+        id S1728901AbfJUNHM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 09:07:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37730 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728897AbfJUNHL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Oct 2019 09:07:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 577A1B693;
+        Mon, 21 Oct 2019 13:07:10 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9633ADA8C5; Mon, 21 Oct 2019 15:07:23 +0200 (CEST)
+Date:   Mon, 21 Oct 2019 15:07:23 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     Patrik Lundquist <patrik.lundquist@gmail.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: Lots of btrfs_dump_space_info in kernel log
+Message-ID: <20191021130723.GG3001@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Patrik Lundquist <patrik.lundquist@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAA7pwKNn3BTb1Dxu9mOVoBvk0ftXfcEcFLwXEgiUEkwcwCWOcg@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:ab0:1e4c:0:0:0:0:0 with HTTP; Mon, 21 Oct 2019 06:06:29
- -0700 (PDT)
-Reply-To: nascointt@hotmail.com
-From:   Nayef Abu Sakran <barr.chrisdickson@gmail.com>
-Date:   Mon, 21 Oct 2019 13:06:29 +0000
-Message-ID: <CAKzjU5axabeT5Sj4M7HuSZ=g_JnpJEWtwQDN4HiNnc23VyW70g@mail.gmail.com>
-Subject: HOW ARE YOU
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA7pwKNn3BTb1Dxu9mOVoBvk0ftXfcEcFLwXEgiUEkwcwCWOcg@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Do you receive the mail i send to you?
+On Mon, Oct 21, 2019 at 12:58:12PM +0200, Patrik Lundquist wrote:
+> I'm running Debian Testing with kernel 5.2.17-1. Five disk raid1 with
+> at least 393.01GiB unallocated on each disk. No device errors. No
+> kernel WARNINGs or ERRORs.
+> 
+> BTRFS info (device dm-1): enabling auto defrag
+> BTRFS info (device dm-1): using free space tree
+> BTRFS info (device dm-1): has skinny extents
+> 
+> Mounted with noauto,noatime,autodefrag,skip_balance,space_cache=v2,enospc_debug.
+> 
+> First btrfs_dump_space_info() is
+> 
+> BTRFS info (device dm-1): space_info 4 has 18446744073353838592 free,
+> is not full
+> BTRFS info (device dm-1): space_info total=10737418240,
+> used=9636544512, pinned=0, reserved=27066368, may_use=1429454848,
+> readonly=65536
+> BTRFS info (device dm-1): global_block_rsv: size 536870912 reserved 536870912
+> BTRFS info (device dm-1): trans_block_rsv: size 0 reserved 0
+> BTRFS info (device dm-1): chunk_block_rsv: size 0 reserved 0
+> BTRFS info (device dm-1): delayed_block_rsv: size 20185088 reserved 20185088
+> BTRFS info (device dm-1): delayed_refs_rsv: size 868745216 reserved 868745216
+> 
+> and current last is
+> 
+> BTRFS info (device dm-1): space_info 4 has 0 free, is not full
+> BTRFS info (device dm-1): space_info total=10737418240,
+> used=9664561152, pinned=458752, reserved=2523136, may_use=1069809664,
+> readonly=65536
+> BTRFS info (device dm-1): global_block_rsv: size 536870912 reserved 536821760
+> BTRFS info (device dm-1): trans_block_rsv: size 0 reserved 0
+> BTRFS info (device dm-1): chunk_block_rsv: size 0 reserved 0
+> BTRFS info (device dm-1): delayed_block_rsv: size 0 reserved 0
+> BTRFS info (device dm-1): delayed_refs_rsv: size 556531712 reserved 498647040
+> 
+> with lots more in between and no other Btrfs kernel printing preceding
+> it since mounting.
+> 
+> It's the first time I'm seeing it but I have always mounted with
+> enospc_debug since it always seems too late to add the option when you
+> finally need it.
+> 
+> What does it mean? Should I be worried? What to do? No apparent problems yet.
+
+enospc_debug is known to be noisy, in many cases it prints the state of
+the space management structures at some interesting points. It's
+possible that the amount of the information dumped changes over time,
+there have been updates to the space reservations and related code.
+
+I've checked the message levels of the messages printed under the
+option, some of them are 'debug' some of them are 'info'. I would be
+possible to make them all 'debug' so they are in the log but you can
+filter them out on console.
