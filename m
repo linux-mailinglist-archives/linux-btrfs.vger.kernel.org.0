@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FACBDE8E5
+	by mail.lfdr.de (Postfix) with ESMTP id 98076DE8E6
 	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 12:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727211AbfJUKBn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Oct 2019 06:01:43 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:56130 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727953AbfJUKBn (ORCPT
+        id S1728008AbfJUKBp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 06:01:45 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:41940 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727767AbfJUKBp (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 06:01:43 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9L9xH3Z004698
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:41 GMT
+        Mon, 21 Oct 2019 06:01:45 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9L9xKkq023807
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:43 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=BA47W8UkSL0FQOb1RFbKH7NZw4VsbpXTRvfuybeD188=;
- b=Nm4GX2tW4qFkbwKJmuwyjj+If9DXG7HEurI0LlKwwbiWY62EWnJCxg9Gc6obm2F3wZ49
- 0lzdvv6Oh78/EWAAqUcpunC+z4jZ+li7N1WhFxA8ULt2qf9wW4Slu1yzpP5BkLMPXqfK
- QT3dssHzERaj27j/v45ryYQGWEvSMpAGxZYp2Rvu7mh4mwyxJ6N0i5Qa6pD3gD1WxgEE
- qtqQ/8wmyTQpa47mlyEBnJBMP9Aw5C6DbUtWbuBJ3zM2JbdHq4PFz81Lzu+RwWho6Gh6
- U95fwxGgR9RuqBFr9fzyai22JvVO39vK7z13Wf0LBjTMo7Eflsol5+kXPTo3jk/aJvCy zA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2vqu4qedx6-1
+ bh=QLM+hUyWnCVVldGwiic2TMuBrMO7w2GhjM7l/QLiKFs=;
+ b=pLFcRWOO6ocvZolKSnedpVxYJoB5PMZD1XMOmttqaDzbNbcblh8Y5iVlwALnPw8p8+Pr
+ iZoWOYJ7l1+PR+StHogva7U/CY7ntuMCZJtp3rEQI9qYnOGLNHoxgIrRMwm+gsWO0TQS
+ 2721fscRk2yAEtQI3KreGJtmsYgLeDoV2MnnpFpuH1w8KJQPPQye0voSkE/ulJg+nxlm
+ 5BnPbOdvblp0+TI74PJxz18WZywm4+YKF58dlgRaEfkS6hjUNoqBc/mEj4JqyXAdUj5S
+ WDa1oLXVTxOku4MTWMarKlXSV3lbCDpXeUUX9umlJxypEODbbVWaa7b3Q/n1GbMBa672 Sg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2vqswt6pks-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:41 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9L9wBDK055711
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:41 GMT
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:43 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9L9w95I006485
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:43 GMT
 Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 2vrcmmqfme-1
+        by userp3030.oracle.com with ESMTP id 2vrbxsvmhv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:41 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:43 +0000
 Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9LA1ea1023900
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:41 GMT
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9LA1gUx023906
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:42 GMT
 Received: from tp.wifi.oracle.com (/192.188.170.104)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 21 Oct 2019 03:01:40 -0700
+        with ESMTP ; Mon, 21 Oct 2019 03:01:41 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [RFC PATCH 05/14] btrfs-progs: migrate balance status to global verbose
-Date:   Mon, 21 Oct 2019 18:01:13 +0800
-Message-Id: <1571652082-25982-6-git-send-email-anand.jain@oracle.com>
+Subject: [RFC PATCH 06/14] btrfs-progs: fix help, show long option in balance start and status
+Date:   Mon, 21 Oct 2019 18:01:14 +0800
+Message-Id: <1571652082-25982-7-git-send-email-anand.jain@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1571652082-25982-1-git-send-email-anand.jain@oracle.com>
 References: <1571652082-25982-1-git-send-email-anand.jain@oracle.com>
@@ -64,54 +64,37 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Make sure top level verbose option can enable the blalance status
-subcommand's verbose option.
+btrfs balance start|status support both short and long option
+-v|--verbose however failed to show it in its --help. This patch fixes
+the --help.
 
-Suggested-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- cmds/balance.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ cmds/balance.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/cmds/balance.c b/cmds/balance.c
-index 7e84efd6a80d..d4916c5fb34e 100644
+index d4916c5fb34e..06bab9f7f96f 100644
 --- a/cmds/balance.c
 +++ b/cmds/balance.c
+@@ -492,7 +492,7 @@ static const char * const cmd_balance_start_usage[] = {
+ 	"-d[filters]        act on data chunks",
+ 	"-m[filters]        act on metadata chunks",
+ 	"-s[filters]        act on system chunks (only under -f)",
+-	HELPINFO_INSERT_VERBOSE_SHORT,
++	HELPINFO_INSERT_VERBOSE,
+ 	"-f                 force a reduction of metadata integrity",
+ 	"--full-balance     do not print warning and do not delay start",
+ 	"--background|--bg  run the balance as a background process",
 @@ -822,7 +822,7 @@ static const char * const cmd_balance_status_usage[] = {
  	"btrfs balance status [-v] <path>",
  	"Show status of running or paused balance",
  	"",
--	"-v     be verbose",
-+	HELPINFO_INSERT_VERBOSE_SHORT,
+-	HELPINFO_INSERT_VERBOSE_SHORT,
++	HELPINFO_INSERT_VERBOSE,
  	NULL
  };
  
-@@ -839,7 +839,6 @@ static int cmd_balance_status(const struct cmd_struct *cmd,
- 	const char *path;
- 	DIR *dirstream = NULL;
- 	int fd;
--	int verbose = 0;
- 	int ret;
- 
- 	optind = 0;
-@@ -856,7 +855,7 @@ static int cmd_balance_status(const struct cmd_struct *cmd,
- 
- 		switch (opt) {
- 		case 'v':
--			verbose = 1;
-+			global_verbose = true;
- 			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
-@@ -902,7 +901,7 @@ static int cmd_balance_status(const struct cmd_struct *cmd,
- 	       (unsigned long long)args.stat.considered,
- 	       100 * (1 - (float)args.stat.completed/args.stat.expected));
- 
--	if (verbose)
-+	if (global_verbose)
- 		dump_ioctl_balance_args(&args);
- 
- 	ret = 1;
 -- 
 1.8.3.1
 
