@@ -2,78 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C6FADECAD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 14:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20895DECF0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 14:59:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728672AbfJUMps (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Oct 2019 08:45:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52872 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727962AbfJUMps (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 08:45:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E0F29B387;
-        Mon, 21 Oct 2019 12:45:45 +0000 (UTC)
-Subject: Re: [PATCH 1/4] btrfs: reduce indentation in lock_stripe_add
-To:     Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20191018095823.15282-1-jthumshirn@suse.de>
- <20191018095823.15282-2-jthumshirn@suse.de>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <f018ecab-e06c-d312-bcae-c0ca811ac1af@suse.com>
-Date:   Mon, 21 Oct 2019 15:45:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1727685AbfJUM7m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 08:59:42 -0400
+Received: from smtp1.rz.tu-harburg.de ([134.28.205.38]:40644 "EHLO
+        smtp1.rz.tu-harburg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726767AbfJUM7m (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Oct 2019 08:59:42 -0400
+Received: from mail.tu-harburg.de (mail4.rz.tu-harburg.de [134.28.202.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "mail.tuhh.de", Issuer "DFN-Verein Global Issuing CA" (verified OK))
+        by smtp1.rz.tu-harburg.de (Postfix) with ESMTPS id 46xcDC3QL4zxSB;
+        Mon, 21 Oct 2019 14:59:39 +0200 (CEST)
+Received: from mailspring.rz.tuhh.de (mailspring.rz.tuhh.de [134.28.202.181])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cmz7792@KERBEROS.TU-HARBURG.DE)
+        by mail.tu-harburg.de (Postfix) with ESMTPSA id 46xcDC0lMszJrC4;
+        Mon, 21 Oct 2019 14:59:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuhh.de; s=x2019-43;
+        t=1571662779; bh=pPpki8yV3MUddp/25/qdWqaawME9g3HSUb40nCG62B0=;
+        h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+         MIME-Version:Content-Type:Content-Transfer-Encoding;
+        b=BjPDX5OGbIwfkIsqpeg6K7Lqj1spd3p6IWzV8IRYGaCQcpjbJjkIxc9Vw/H2gZZ1L
+         kLtTcxbRQwKLO7CTftg6WPVftntM0BJBz2oZHzOMYJWCFGnyTCACnHsSqpBmYNtSpH
+         bJ6WlnW/zjQFM7LqdTvpciTcGQ2fvxQfm/HxyCSw=
+Date:   Mon, 21 Oct 2019 14:59:37 +0200
+From:   Merlin =?UTF-8?B?QsO8Z2U=?= <merlin.buege@tuhh.de>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH v2] btrfs-progs: small fixes/cleanup in Documentation
+Message-ID: <20191021145937.4d56cd8d.merlin.buege@tuhh.de>
+In-Reply-To: <20191021123050.GF3001@twin.jikos.cz>
+References: <20191017045006.130378-1-merlin.buege@tuhh.de>
+        <20191018161433.148176-1-merlin.buege@tuhh.de>
+        <20191018182331.1786ee9f.merlin.buege@tuhh.de>
+        <20191021123050.GF3001@twin.jikos.cz>
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20191018095823.15282-2-jthumshirn@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -81,16 +52,14 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 18.10.19 г. 12:58 ч., Johannes Thumshirn wrote:
-> In lock_stripe_add() we're traversing the stripe hash list and check if
-> the current list element's raid_map equals is equal to the raid bio's
-> raid_map. If both are equal we continue processing.
-> 
-> If we'd check for inequality instead of equality we can reduce one level
-> of indentation.
-> 
-> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+On Mon, 21 Oct 2019 14:30:50 +0200
+David Sterba <dsterba@suse.cz> wrote:
+...
+> I've merged the patch as-is, thank. The 'ditto' spelling is probably
+> more widely used in english texts. 'dtto' is in sources and thus not
+> visible to wide audience so we can live with that.
 
-After comparing before/after applying the patch I can say:
+Thank you!
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+--=20
+Merlin B=C3=BCge
