@@ -2,62 +2,60 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3F22DF347
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 18:37:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E74DF371
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 18:45:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726847AbfJUQho (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Oct 2019 12:37:44 -0400
-Received: from ufsin32.ru ([109.198.192.98]:54370 "EHLO mx.ufsin32.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726289AbfJUQho (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 12:37:44 -0400
-X-Greylist: delayed 13339 seconds by postgrey-1.27 at vger.kernel.org; Mon, 21 Oct 2019 12:37:43 EDT
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        by mx.ufsin32.ru (Postfix) with SMTP id 95DEF425C6;
-        Mon, 21 Oct 2019 14:02:43 +0300 (GMT-3)
-Received: from [66.155.65.3] by 127.0.0.1; Mon, 21 Oct 2019 06:01:59 -0500
-Message-ID: <918$16q0z55u60k466$$4621e@c31ev>
-From:   "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
-Reply-To: "Mr Barrister Hans Erich" <Barrister_Hans@stationlibraryjhelum.com>
-To:     02@163.com
-Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA
-Date:   Mon, 21 Oct 19 06:01:59 GMT
-X-Mailer: Microsoft Outlook Express 5.50.4133.2400
+        id S1728543AbfJUQpC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 12:45:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52876 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726847AbfJUQpC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Oct 2019 12:45:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A1B4CABC7;
+        Mon, 21 Oct 2019 16:45:00 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id D918BDA733; Mon, 21 Oct 2019 18:45:13 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH 0/2 + 0/2] Add BLAKE2 checksumming support
+Date:   Mon, 21 Oct 2019 18:45:13 +0200
+Message-Id: <cover.1571674940.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="9_B.__FCB."
-X-Priority: 3
-X-MSMail-Priority: Normal
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+The two patches apply on top of Johaness' series adding SHA256. To
+make it actually work the patch adding BLAKE2 to kernel is needed. You
+can find it here (v5) https://patchwork.kernel.org/patch/11188109/ .
 
---9_B.__FCB.
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+WARNING: This is for testing only!
 
-Greetings
+All in one can be pulled from
 
-My name is Barrister Hans Erich.
+  git://github.com/kdave/btrfs-devel preview/checksums-5
 
-I have a client who is interested to invest in your country, she is a well=
- known politician in her country and deserve a lucrative investment partne=
-rship with you outside her country without any delay   Please can you mana=
-ge such investment please Kindly reply for further details.
+and the btrfs-progs patches are in the devel branch
 
-Your full names ---------
+  git://github.com/kdave/btrfs-progs devel
 
+David Sterba (2):
+  btrfs: add member for a specific checksum driver
+  btrfs: add blake2b to checksumming algorithms
 
-Your urgent response will be appreciated
+ fs/btrfs/ctree.c                | 14 ++++++++++++++
+ fs/btrfs/ctree.h                |  1 +
+ fs/btrfs/disk-io.c              |  7 ++++---
+ fs/btrfs/super.c                |  1 +
+ include/uapi/linux/btrfs_tree.h |  1 +
+ 5 files changed, 21 insertions(+), 3 deletions(-)
 
-Thank you and God bless you.
-
-Barrister Hans Erich
-
-Yours sincerely,
-Barrister Hans Erich
-
---9_B.__FCB.--
+-- 
+2.23.0
 
