@@ -2,110 +2,152 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 773A5DE881
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 11:52:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB868DE8E0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 12:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727469AbfJUJwT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Oct 2019 05:52:19 -0400
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:40800 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727194AbfJUJwT (ORCPT
+        id S1727674AbfJUKBf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 06:01:35 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:56012 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727328AbfJUKBe (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 05:52:19 -0400
-Received: by mail-vs1-f65.google.com with SMTP id v10so8433863vsc.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 02:52:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=J9fot9Wo9YLjX8mDoE06Yqlq9Gtl5xFcsdoynR6Rimc=;
-        b=sXllcTbkMrg/DUl5HHbN6HNoLcvcrZ8jogeaZYsE9NOVAMgKhdrRxNShGgp4T0dPLK
-         03VibvwagtpYYnsMrFsbFAz7MAMhRlcU42UFr2SCSf/140Hb6jhA7X0zYEFq12LK+Fkh
-         L8hxFVYBtD8J57Mig5o95mVVcSUIQ7ZHQF4TNGvxJwIUukE6HqRYT/UTgXT3Tq2DDMRY
-         n7zBOvhogJvm+HLnNrECOE5D5NUUtsw27XuhkpizIEK8j2/qz7ryuDOQ/NuJR47QuWwY
-         xVFq7DFIdjesSZsRLu1m/itp8HZQCmQq8U9IJlQHIMXCTCo1Ft2LlQ3iqUWPu18GC0lC
-         KqCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=J9fot9Wo9YLjX8mDoE06Yqlq9Gtl5xFcsdoynR6Rimc=;
-        b=GbbHjm4Qk5B6n9E1nYW0dq+BLEROf8LR3tSawI3lM6duesXLaIPpIRpKkwkiHb3+T8
-         WNfshLydxwwjsmgD8yWfdgvBHi+gCe1g6pEzMZvnh+YxYvCIQ1fKcnkcd/fkIRrCRWlB
-         Z/6FFE+YHUjM17rUwmmFb6fQnu+xHfphYfQpzLUldLRaUPM10knfoUwennD51SlXrns/
-         q0UOOXb6zY6GCrZU9ZUt5ik9bi2QrgTMGJuZH8AxvqNcQwT8aiSw38sIOUZv32q7Os5e
-         H93t5VRIiuxLeu8O1P4Q2QHo4KESYP2ZAAiNtlQT/6RzluNZ1J0xjVhGR9supOSB8SVI
-         hGJQ==
-X-Gm-Message-State: APjAAAX7S+4PSQc8GqmBl1FaO3aWh7nN+dGDEPxJCgW+UP7kaTY8P0WF
-        oDiHxJgK0Ksx3dAb4mj6mFGoqSv+HPEAFZzj5b0=
-X-Google-Smtp-Source: APXvYqwvhNzHZyW1TzQozygjaAB0raRvqjUWanRNscT3sa59xuzgo3Une9k6nRufotL6ivXO/1kD9M/FdH3pPvT65CU=
-X-Received: by 2002:a67:ba16:: with SMTP id l22mr12668900vsn.14.1571651537751;
- Mon, 21 Oct 2019 02:52:17 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191018181544.26515-1-rgoldwyn@suse.de>
-In-Reply-To: <20191018181544.26515-1-rgoldwyn@suse.de>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 21 Oct 2019 10:52:06 +0100
-Message-ID: <CAL3q7H7kvKGFmKgoMuQFv7Qx4PCV02gfX6yWMa-tL5RakU1h=Q@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: Do not check for PagePrivate twice
-To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Goldwyn Rodrigues <rgoldwyn@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Mon, 21 Oct 2019 06:01:34 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9L9xSio004816
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id; s=corp-2019-08-05;
+ bh=HWIWuXMKUxgs67rNvJLodsKxOlS2br/+X7ozUik0w2E=;
+ b=jSUyPwAOB3dBUtsU5efz39Mg5cEGM4iottALrVty40uIN4p+51SmKdp4YyOHtsxKAvlG
+ 9gWHFjNpJ/2habURkRyUf+EoQVITzTOgT8Sfza1LgImYiGptfgUikPO+vIuzgGEK0aH9
+ Vt2ecOeJhQ1x376sPAQZZabm3uKO7kpNwE34SrOQSvFHXUMfnZSk6YafZ3pbz+dO+DMo
+ kNzeXTMK4mLXYEjUPrQ+5Uoz6hNWc+pqpeW46OulzSQ0QBTQ2gB5SqnuzyYvCxoQXroP
+ W3HNQzCQog8LUfgIizm0LykEDJS5C038vSYPac0lIbMRLote8zoclL0GmTsm+QTAdRU/ EQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2vqu4qedw8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:33 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9L9wKxV088727
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:32 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 2vrbyycuhw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:32 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9LA1W7S028348
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:32 GMT
+Received: from tp.wifi.oracle.com (/192.188.170.104)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 21 Oct 2019 03:01:32 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [RFC PATCH 00/14] btrfs-progs: global-verbose option
+Date:   Mon, 21 Oct 2019 18:01:08 +0800
+Message-Id: <1571652082-25982-1-git-send-email-anand.jain@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9416 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910210096
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9416 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910210096
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Oct 19, 2019 at 10:05 AM Goldwyn Rodrigues <rgoldwyn@suse.de> wrote=
-:
->
-> From: Goldwyn Rodrigues <rgoldwyn@suse.com>
->
-> We are checking PagePrivate twice, once with lock and once without.
-> Perform the check only once.
+This patch set brings --verbose option to the top level btrfs command,
+such as 'btrfs --verbose'. With this we don't have to add or remember
+verbose option at the sub-commands level.
 
-Have you checked if there's some performance degradation after
-removing the check?
-My guess is it's there to avoid taking the lock, as the lock can be
-heavily used on a system under heavy load (maybe even if it's not too
-heavy, since we generate a lot of dirty metadata due to cow).
-The page may have been released after locking the mapping, that's why
-we check it twice, and after unlocking we are sure it can not be
-released due to taking a reference on the extent buffer.
+As there are already verbose options to 11 sub-commands as listed
+below [1][2]. So the top level --verbose option here takes care to transpire
+verbose request from the top level to the sub-command level for 9 (not 11)
+sub-commands as in [1] as of now.
 
-Thanks.
+This patch is RFC still for the following two reasons (comments appreciated).
 
->
-> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-> ---
->  fs/btrfs/extent_io.c | 3 ---
->  1 file changed, 3 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index cceaf05aada2..425ba359178c 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -3959,9 +3959,6 @@ int btree_write_cache_pages(struct address_space *m=
-apping,
->                 for (i =3D 0; i < nr_pages; i++) {
->                         struct page *page =3D pvec.pages[i];
->
-> -                       if (!PagePrivate(page))
-> -                               continue;
-> -
->                         spin_lock(&mapping->private_lock);
->                         if (!PagePrivate(page)) {
->                                 spin_unlock(&mapping->private_lock);
-> --
-> 2.16.4
->
+1.
+The sub-commands as in [2] uses multi-level compile time verbose option,
+such as %g_verbose = 0 (quite), %g_verbose = 1 (default), %g_verbose > 1
+(real-verbose). And verbose at default is also part the .out files in
+fstests. So it needs further discussions on how to handle the multi-
+level verbose option using the global verbose option, and so sub-
+commands in [2] are untouched.
 
+2.
+These patch has been unit-tested individually.
+These patches does not alter the verbose output.
+But it fixes the indentation in the command's help output, which may be
+used in fstests and btrfs-progs/tests and their verification is pending
+still, which I am planning to do it before v1.
 
---=20
-Filipe David Manana,
+[1]
+btrfs subvolume delete --help
+        -v|--verbose           verbose output of operations
+btrfs filesystem defragment --help
+        -v                  be verbose
+btrfs balance start --help
+        -v|--verbose        be verbose
+btrfs balance status --help
+        -v|--verbose        be verbose
+btrfs rescue chunk-recover --help
+        -v      Verbose mode
+btrfs rescue super-recover --help
+        -v      Verbose mode
+btrfs restore --help
+        -v|--verbose         verbose
+btrfs inspect-internal inode-resolve --help
+        -v   verbose mode
+btrfs inspect-internal logical-resolve --help
+        -v          verbose mode
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+[2]
+btrfs send --help
+        -v|--verbose     enable verbose output to stderr, each occurrence of
+btrfs receive --help
+        -v               increase verbosity about performed action
+
+Anand Jain (14):
+  btrfs-progs: add global verbose helper functions
+  btrfs-progs: migrate subvolume delete to global verbose
+  btrfs-progs: migrate filesystem defragment to global verbose
+  btrfs-progs: migrate btrfs balance start to global verbose
+  btrfs-progs: migrate balance status to global verbose
+  btrfs-progs: fix help, show long option in balance start and status
+  btrfs-progs: migrate rescue chunk-recover to global verbose
+  btrfs-progs: migrate rescue super-recover to global verbose
+  btrfs-progs: restore: delete unreachable code
+  btrfs-progs: migrate restore to global verbose
+  btrfs-progs: migrate inspect-internal inode-resolve to global verbose
+  btrfs-progs: migrate inspect-internal logical-resolve to global
+    verbose
+  btrfs-progs: refactor btrfs_scan_devices() to accept verbose argument
+  btrfs-progs: enable verbose for btrfs device scan
+
+ btrfs.c              | 12 ++++++--
+ cmds/balance.c       | 29 +++++++++---------
+ cmds/device.c        |  2 +-
+ cmds/filesystem.c    | 27 ++++++++---------
+ cmds/inspect.c       | 36 +++++++++++-----------
+ cmds/rescue.c        | 22 +++++++-------
+ cmds/restore.c       | 86 +++++++++++++++++++++-------------------------------
+ cmds/subvolume.c     | 35 +++++++++++----------
+ common/device-scan.c |  4 ++-
+ common/device-scan.h |  2 +-
+ common/help.h        |  8 +++++
+ common/messages.c    | 19 ++++++++++++
+ common/messages.h    |  5 +++
+ common/utils.c       |  2 +-
+ disk-io.c            |  2 +-
+ 15 files changed, 155 insertions(+), 136 deletions(-)
+
+-- 
+1.8.3.1
+
