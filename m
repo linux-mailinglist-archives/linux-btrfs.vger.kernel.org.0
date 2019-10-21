@@ -2,161 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 28EC1DF616
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 21:36:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C7BDF8CA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 01:50:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730137AbfJUTeb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Mon, 21 Oct 2019 15:34:31 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:37302 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727953AbfJUTeb (ORCPT
+        id S1730450AbfJUXtT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 19:49:19 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57196 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728819AbfJUXtT (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 15:34:31 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id B42C448432C; Mon, 21 Oct 2019 15:34:29 -0400 (EDT)
-Date:   Mon, 21 Oct 2019 15:34:26 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Edmund Urbani <edmund.urbani@liland.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: MD RAID 5/6 vs BTRFS RAID 5/6
-Message-ID: <20191021193417.GP24379@hungrycats.org>
-References: <b665710c-5171-487b-ce38-5ea7075492e4@liland.com>
- <20191016194237.GP22121@hungrycats.org>
- <067d06fc-4148-b56f-e6b4-238c6b805c11@liland.com>
+        Mon, 21 Oct 2019 19:49:19 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9LNnDWN123143;
+        Mon, 21 Oct 2019 23:49:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=4a11XYGIcnyJm4eh/d5oNpO0KGwG3bAvlYwfqokVjc0=;
+ b=FKAkqMydQa/BFiEWJ20d2vrNraUVr4CLff1AvZtu91CEpGd9M7aUlrZplpkUbx7PITIc
+ VrBz5D3KYK+3hq+FL2HGBqXaprez7pjf5c6d4BhaG4/5+QCtcNw5NmCgB7yzHAZTSH1v
+ CuUVF+/fw48NlfiY9FsCQlbW6h01TveR/yAw4dBsee73zXTE2AVNTZOVgEL4rBhLUK7i
+ 1DuIdCVQ7JI+VbkdgSlq5AA6Vrk7ECPkZIqEqZO0bs5RaFi1LFT5/ksogTQyPe6dsKAK
+ kTvEvbJUMJQ0X/jzShb18Ueo6fidNJEPOy71R6JG/GveMzZI5ObeXcBLKC6FD5vyiq4a Bg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2vqu4qjua0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Oct 2019 23:49:14 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9LNnBh5127914;
+        Mon, 21 Oct 2019 23:49:13 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2vrcnb6d6j-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 21 Oct 2019 23:49:12 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9LNmouL014615;
+        Mon, 21 Oct 2019 23:48:51 GMT
+Received: from [192.168.1.145] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 21 Oct 2019 16:48:50 -0700
+Subject: Re: [PATCH v3] btrfs-progs: add verbose option to btrfs device scan
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <1569989512-5594-1-git-send-email-anand.jain@oracle.com>
+ <20191007174129.GK2751@twin.jikos.cz>
+ <a9c0a957-e151-32e8-a42e-b5c6d817ed78@oracle.com>
+ <20191014152457.GQ2751@twin.jikos.cz>
+ <365faddf-cf4f-2a03-820d-d4f5071240e8@oracle.com>
+ <20191021134346.GL3001@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <17f53bd1-10bf-9415-10dd-2724c48f5bea@oracle.com>
+Date:   Tue, 22 Oct 2019 07:48:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <067d06fc-4148-b56f-e6b4-238c6b805c11@liland.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191021134346.GL3001@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9417 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910210226
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9417 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910210226
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 05:27:54PM +0200, Edmund Urbani wrote:
-> On 10/16/19 9:42 PM, Zygo Blaxell wrote:
-> >
-> > For raid5 I'd choose btrfs -draid5 -mraid1 over mdadm raid5
-> > sometimes--even with the write hole, I'd expect smaller average data
-> > losses than mdadm raid5 + write hole mitigation due to the way disk
-> > failure modes are distributed.  
+
+
+On 10/21/19 9:43 PM, David Sterba wrote:
+> On Tue, Oct 15, 2019 at 11:29:34AM +0800, Anand Jain wrote:
+>>    I was thinking there might be some common code between the
+>>    sub-commands in btrfs-progs now or in future, and if the printf()
+>>    due to verbose is required in one sub-command and the same printf()
+>>    due to verbose is not required in another sub-command (which I
+>>    called unwanted message) then we won't have any choice to not
+>>    to print those unwanted printf().
+>>    But as this is just an anticipatory only, so probably we could try
+>>    global verbose and see how it fares. I will try.
 > 
-> What about the write hole and RAID-1? I understand the write hole is most
-> commonly associated with RAID-5, but it is also a problem with other RAID levels.
-
-Filesystem tree updates are atomic on btrfs.  Everything persistent on
-btrfs is part of a committed tree.  The current writes in progress are
-initially stored in an uncommitted tree, which consists of blocks that
-are isolated from any committed tree block.  The algorithm relies on
-two things:
-
-	Isolation:  every write to any uncommitted data block must not
-	affect the correctness of any data in any committed data block.
-
-	Ordering:  a commit completes all uncommitted tree updates on
-	all disks in any order, then updates superblocks to point to the
-	updated tree roots.  A barrier is used to separate these phases
-	of updates across disks.
-
-Isolation and ordering make each transaction atomic.  If either
-requirement is not implemented correctly, data or metadata may be
-corrupted.  If metadata is corrupted, the filesystem can be destroyed.
-
-Transactions close write holes in all btrfs RAID profiles except 5
-and 6.  mdadm RAID levels 0, 1, 10, and linear have isolation properties
-sufficient for btrfs.  mdadm RAID 4/5/6 work only if the mdadm write hole
-mitigation feature is enabled to provide isolation.  All mdadm and btrfs
-RAID profiles provide sufficient ordering.
-
-The problem on mdadm/btrfs raid5/6 is that committed data blocks are not
-fully isolated from uncommitted data blocks when they share a parity block
-in the RAID5/6 layer (wherever that layer is).  This is why the problem
-only affects raid5/6 on btrfs (and why it also applies to mdadm raid5/6).
-In this case, writing to any single block within a stripe makes the parity
-block inconsistent with previously committed data blocks.  This violates
-the isolation requirement for CoW transactions: a committed data block
-is related to uncommitted data blocks in the same stripe through the
-parity block and the RAID5/6 data/parity equation.
-
-The isolation failure affects only parity blocks.  You could kill
-power all day long and not lose any committed data on any btrfs raid
-profile--as long as none of the disks fail and each disk's firmware
-implements write barriers correctly or write cache is disabled (sadly,
-even in 2019, a few drive models still don't have working barriers).
-btrfs on raid5/6 is as robust as raid0 if you ignore the parity blocks.
-
-> You would need to scrub after a power failure to be sure that no meta data gets
-> corrupted even with RAID-1. Otherwise you might still have inconsistent copies
-> and the problem may only become apparent when one drive fails. 
-
-There are no inconsistencies expected with RAID1 unless the hardware is
-already failing (or there's a software/firmware bug).
-
-Scrub after power failure is required only if raid5/6 is used.
-All committed data and metadata blocks will be consistent on all
-RAID profiles--even in raid5/6, only parity blocks are inconsistent.
-Uncommitted data returns to free space when the filesystem is mounted,
-so the the consistency of uncommitted data blocks doesn't matter.
-
-Parity block updates are not handled by the btrfs transaction update
-mechanism.  The scrub after power failure is required specifically
-to repair inconsistent parity blocks.  This should happen as soon as
-possible after a crash, while all the data blocks are still readable.
-
-> Can we be certain that scrubbing is always able to fix such
-> inconsistencies...
-
-Scrub can reliably repair raid5/6 parity blocks assuming all data blocks
-are still correct and readable.
-
-> ...with RAID-1?
-
-We cannot be certain that scrub fixes inconsistencies in the general case.
-If the hardware is failing, scrub relies on crc32c to detect missing
-writes.  Error detection and repair is highly likely, but not certain.
-
-Collisions between old/bad data crc32c and correct data crc32c are
-not detected.  nodatasum files (which have no csums) are corrupted.
-Metadata has a greater chance of successful error detection because more
-fields in metadata are checked than just CRC.
-
-If all the errors are confined to a single drive, device 'replace' is more
-appropriate than 'scrub'; however, it can be hard to determine if errors
-are confined to a single disk without running 'scrub' first to find out.
-
-> Regards,
->  Edmund
+> I see, but it would be better to have a concrete example where it's
+> problematic so we can figure out ways how to filter unwanted messages.
 > 
-> 
-> -- 
-> *Liland IT GmbH*
-> 
-> 
-> Ferlach ● Wien ● München
-> Tel: +43 463 220111
-> Tel: +49 89 
-> 458 15 940
-> office@Liland.com
-> https://Liland.com <https://Liland.com> 
-> 
-> 
-> 
-> Copyright © 2019 Liland IT GmbH 
-> 
-> Diese Mail enthaelt vertrauliche und/oder 
-> rechtlich geschuetzte Informationen. 
-> Wenn Sie nicht der richtige Adressat 
-> sind oder diese Email irrtuemlich erhalten haben, informieren Sie bitte 
-> sofort den Absender und vernichten Sie diese Mail. Das unerlaubte Kopieren 
-> sowie die unbefugte Weitergabe dieser Mail ist nicht gestattet. 
-> 
-> This 
-> email may contain confidential and/or privileged information. 
-> If you are 
-> not the intended recipient (or have received this email in error) please 
-> notify the sender immediately and destroy this email. Any unauthorised 
-> copying, disclosure or distribution of the material in this email is 
-> strictly forbidden.
-> 
-> 
+
+I solved with an argument to btrfs_scan_devcies() [1], by adding
+%verbose argument to btrfs_scan_devices() to make sure
+only btrfs dev scan would print the verbose and not the btrfs fi show.
+If btrfs fi show prints the verbose it shall break few test-cases
+in fstests.
+
+[1]
+https://patchwork.kernel.org/patch/11201791/
+https://patchwork.kernel.org/patch/11201793/
