@@ -2,93 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 38E91DED1E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 15:07:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39105DED3C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 15:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728901AbfJUNHM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Oct 2019 09:07:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37730 "EHLO mx1.suse.de"
+        id S1728901AbfJUNOl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 09:14:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43086 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728897AbfJUNHL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 09:07:11 -0400
+        id S1726767AbfJUNOl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Oct 2019 09:14:41 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 577A1B693;
-        Mon, 21 Oct 2019 13:07:10 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 7E462B6FA;
+        Mon, 21 Oct 2019 13:14:39 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9633ADA8C5; Mon, 21 Oct 2019 15:07:23 +0200 (CEST)
-Date:   Mon, 21 Oct 2019 15:07:23 +0200
+        id 9AE90DA8C5; Mon, 21 Oct 2019 15:14:52 +0200 (CEST)
+Date:   Mon, 21 Oct 2019 15:14:52 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Patrik Lundquist <patrik.lundquist@gmail.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: Lots of btrfs_dump_space_info in kernel log
-Message-ID: <20191021130723.GG3001@twin.jikos.cz>
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, kernel-team@fb.com,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>, linux-api@vger.kernel.org
+Subject: Re: [RFC PATCH v2 5/5] btrfs: implement RWF_ENCODED writes
+Message-ID: <20191021131452.GH3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Patrik Lundquist <patrik.lundquist@gmail.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAA7pwKNn3BTb1Dxu9mOVoBvk0ftXfcEcFLwXEgiUEkwcwCWOcg@mail.gmail.com>
+Mail-Followup-To: dsterba@suse.cz, Omar Sandoval <osandov@osandov.com>,
+        Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, kernel-team@fb.com,
+        Dave Chinner <david@fromorbit.com>, Jann Horn <jannh@google.com>,
+        linux-api@vger.kernel.org
+References: <cover.1571164762.git.osandov@fb.com>
+ <904de93d9bbe630aff7f725fd587810c6eb48344.1571164762.git.osandov@fb.com>
+ <0da91628-7f54-7d24-bf58-6807eb9535a5@suse.com>
+ <20191018225513.GD59713@vader>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA7pwKNn3BTb1Dxu9mOVoBvk0ftXfcEcFLwXEgiUEkwcwCWOcg@mail.gmail.com>
+In-Reply-To: <20191018225513.GD59713@vader>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 12:58:12PM +0200, Patrik Lundquist wrote:
-> I'm running Debian Testing with kernel 5.2.17-1. Five disk raid1 with
-> at least 393.01GiB unallocated on each disk. No device errors. No
-> kernel WARNINGs or ERRORs.
+On Fri, Oct 18, 2019 at 03:55:13PM -0700, Omar Sandoval wrote:
+> > > +	nr_pages = (disk_num_bytes + PAGE_SIZE - 1) >> PAGE_SHIFT;
+> > 
+> > nit: nr_pages = DIV_ROUND_UP(disk_num_bytes, PAGE_SIZE)
 > 
-> BTRFS info (device dm-1): enabling auto defrag
-> BTRFS info (device dm-1): using free space tree
-> BTRFS info (device dm-1): has skinny extents
-> 
-> Mounted with noauto,noatime,autodefrag,skip_balance,space_cache=v2,enospc_debug.
-> 
-> First btrfs_dump_space_info() is
-> 
-> BTRFS info (device dm-1): space_info 4 has 18446744073353838592 free,
-> is not full
-> BTRFS info (device dm-1): space_info total=10737418240,
-> used=9636544512, pinned=0, reserved=27066368, may_use=1429454848,
-> readonly=65536
-> BTRFS info (device dm-1): global_block_rsv: size 536870912 reserved 536870912
-> BTRFS info (device dm-1): trans_block_rsv: size 0 reserved 0
-> BTRFS info (device dm-1): chunk_block_rsv: size 0 reserved 0
-> BTRFS info (device dm-1): delayed_block_rsv: size 20185088 reserved 20185088
-> BTRFS info (device dm-1): delayed_refs_rsv: size 868745216 reserved 868745216
-> 
-> and current last is
-> 
-> BTRFS info (device dm-1): space_info 4 has 0 free, is not full
-> BTRFS info (device dm-1): space_info total=10737418240,
-> used=9664561152, pinned=458752, reserved=2523136, may_use=1069809664,
-> readonly=65536
-> BTRFS info (device dm-1): global_block_rsv: size 536870912 reserved 536821760
-> BTRFS info (device dm-1): trans_block_rsv: size 0 reserved 0
-> BTRFS info (device dm-1): chunk_block_rsv: size 0 reserved 0
-> BTRFS info (device dm-1): delayed_block_rsv: size 0 reserved 0
-> BTRFS info (device dm-1): delayed_refs_rsv: size 556531712 reserved 498647040
-> 
-> with lots more in between and no other Btrfs kernel printing preceding
-> it since mounting.
-> 
-> It's the first time I'm seeing it but I have always mounted with
-> enospc_debug since it always seems too late to add the option when you
-> finally need it.
-> 
-> What does it mean? Should I be worried? What to do? No apparent problems yet.
+> disk_num_bytes is a u64, so that would expand to a 64-bit division. The
+> compiler is probably smart enough to optimize it to a shift, but I
+> didn't want to rely on that, because that would cause build failures on
+> 32-bit.
 
-enospc_debug is known to be noisy, in many cases it prints the state of
-the space management structures at some interesting points. It's
-possible that the amount of the information dumped changes over time,
-there have been updates to the space reservations and related code.
-
-I've checked the message levels of the messages printed under the
-option, some of them are 'debug' some of them are 'info'. I would be
-possible to make them all 'debug' so they are in the log but you can
-filter them out on console.
+There are several DIV_ROUND_UP(u64, PAGE_SIZE) in btrfs code, no build
+brekages have been reported so far, you can use it.
