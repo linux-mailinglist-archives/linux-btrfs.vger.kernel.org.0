@@ -2,98 +2,150 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A0733DE8F0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 12:02:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76668DEA03
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 12:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728052AbfJUKB5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Oct 2019 06:01:57 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:42118 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbfJUKB4 (ORCPT
+        id S1727767AbfJUKrm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 06:47:42 -0400
+Received: from mail-ed1-f52.google.com ([209.85.208.52]:38171 "EHLO
+        mail-ed1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727433AbfJUKrm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 06:01:56 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9L9xN34023825
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=qASuGQU5lXv4NXPYcDaufu8UqbtFHox32ldx3wlxKv0=;
- b=LZcp6dwX7YpJV3RBrSO4OV66a2h6F+YOb2IMqKLOlVgevL0M9AGPScU7wIpZSMJ+iGbe
- 11ACM0pj7rD1nsC4zXJXtqLKlDxoRNUrbBT5SxfZf/zN//MWJWka28ltVfkPQ1/w2+Vf
- WZNqNoZkz5FRCVXgVuN5ZPWUqqJB48qCzzF5Hr8XKyqRStne8sR7/CyN8o2zXc/t7PSO
- Av23pS3bO4Z+VmE4CFvqASkivgOrndFrYjJF36nC2/zkzmhW/JFTgudxklQxrzC2YT/O
- 6XAW+1er1R/oWj1lVXQ1tsY+RfnDEdWhw0dYoqxsnxSQTczbb5Oj6F7ZBYBh7Cz0RBSU cQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 2vqswt6pms-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:55 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9L9wVrE089552
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:54 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 2vrbyycv4g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:54 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9LA1snl013556
-        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 10:01:54 GMT
-Received: from tp.wifi.oracle.com (/192.188.170.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 21 Oct 2019 03:01:54 -0700
-From:   Anand Jain <anand.jain@oracle.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [RFC PATCH 14/14] btrfs-progs: enable verbose for btrfs device scan
-Date:   Mon, 21 Oct 2019 18:01:22 +0800
-Message-Id: <1571652082-25982-15-git-send-email-anand.jain@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1571652082-25982-1-git-send-email-anand.jain@oracle.com>
-References: <1571652082-25982-1-git-send-email-anand.jain@oracle.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9416 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910210096
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9416 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910210096
+        Mon, 21 Oct 2019 06:47:42 -0400
+Received: by mail-ed1-f52.google.com with SMTP id l21so9635748edr.5
+        for <linux-btrfs@vger.kernel.org>; Mon, 21 Oct 2019 03:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9KoissbUg+G69tRkz/kr+7FVs6T5cnmWW9Qh6xDfMmg=;
+        b=QxIlu+LLsxttbPoVn82023uOzesYO6bW5xT6xxdeDnxbi+AI5ZGhlasJZ1vTGKu5hp
+         vE4inbcSLysWTgzb1gKgXJi2A9zQrClZaZT9IFJFoDyWSom/30eyHVoI56PsVOEPF0Yw
+         ZTvgraHZXSQJgg+fNomEi0WZTngoy6KO6IGE0r0JJSuiIDwLpSK8VstEFV+TU2G9JaSi
+         MvAI+zZY0xdNXXoAQfLWya+3lqnMVrpVxWNdkFnPl3cmxB/Pbn7VQwJ5J9Gj5khD6zzn
+         6jZZpXQuXsdXyK1uEBs+wwC0f9p+GE6QupGkGZ4lTJ3mOTNpBvco2boXrIPYK3v+H+7r
+         7wKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9KoissbUg+G69tRkz/kr+7FVs6T5cnmWW9Qh6xDfMmg=;
+        b=kEoSBCj5I4Bmm+PdhvjmWyXwl+wxhqNZOB3pnn94SNfX8vQ45In1ZfEsWMdinS7/d1
+         5wktUQK5Mn6nWw9yI6ZwEeiOfN/EErjWIgWDHBqVvB47q1EU4bjKdmyLcV0f8h9hS3di
+         MUmJQ2JJN+3/fK1XXReFXFgugq8WdjXCfsNn8mFb4d+e4iQj3B+k3Rj7ImLDq4Zo0SKG
+         LkSXVbakM7Pdo4kGvhkyxsIdje57+bmIBuDg3mCuMn7EsZuhddRvyOxMAnEsKU7Yn5Yc
+         EFNNCTE+D96qorO5NF4gfMlqAKS0+E6i8GN7Zzk+yrh5MsCKw8wb1YULiToIfs7bGa71
+         jhEQ==
+X-Gm-Message-State: APjAAAUFz414wRh2jvsqifDK8rIUaO6shiKOs59DkyRmg5/rv0BJUVJs
+        xcALW3qIsZcT4A0mLgv2aeiFFjgOw9wUJ4XmTbDt42k=
+X-Google-Smtp-Source: APXvYqycFqMynIAMji+8ozRA5qrHvpltUy0XMR2N/ZWYRNgen576HmVCkDZ8ka0JsYYFS9pUdM5AsHZ5VTui01bRmFM=
+X-Received: by 2002:a05:6402:3c5:: with SMTP id t5mr23612022edw.125.1571654859956;
+ Mon, 21 Oct 2019 03:47:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAKbQEqE7xN1q3byFL7-_pD=_pGJ0Vm9pj7d-g+rRgtONeH-GrA@mail.gmail.com>
+ <CAKbQEqG35D_=8raTFH75-yCYoqH2OvpPEmpj2dxgo+PTc=cfhA@mail.gmail.com>
+ <4608b644-0fa3-7212-af45-0f4eebfb0be9@gmx.com> <CAKbQEqG8Sb-5+wx4NMfjORc-XnCtytuoqRw4J9hk2Pj9BNY_9g@mail.gmail.com>
+ <CAKbQEqGwYCB1N+MQVYLNVm5o10acOFAa_JyO8NefGZfVtdyVBQ@mail.gmail.com> <fe882b36-0f7b-5ad5-e62e-06def50acd30@gmx.com>
+In-Reply-To: <fe882b36-0f7b-5ad5-e62e-06def50acd30@gmx.com>
+From:   Christian Pernegger <pernegger@gmail.com>
+Date:   Mon, 21 Oct 2019 12:47:03 +0200
+Message-ID: <CAKbQEqEuYqxO8pFk3sDQwEayTPiggLAFtCT8LmoNPF4Zc+-uzw@mail.gmail.com>
+Subject: Re: first it froze, now the (btrfs) root fs won't mount ...
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Enable verbose output for the device scan only through the global
-verbose option.
+[Please CC me, I'm not on the list.]
 
-For example:
-./btrfs --verbose device scan
-Scanning for Btrfs filesystems
-registered: /dev/sda1
-registered: /dev/sda2
-registered: /dev/sda3
-registered: /dev/sda5
-registered: /dev/sda6
+Am So., 20. Okt. 2019 um 12:28 Uhr schrieb Qu Wenruo <quwenruo.btrfs@gmx.com>:
+> > Question: Can I work with the mounted backup image on the machine that
+> > also contains the original disc? I vaguely recall something about
+> > btrfs really not liking clones.
+>
+> If your fs only contains one device (single fs on single device), then
+> you should be mostly fine. [...] mostly OK.
 
-Signed-off-by: Anand Jain <anand.jain@oracle.com>
----
- cmds/device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Should? Mostly? What a nightmare-inducing, yet pleasantly Adams-esqe
+way of putting things ... :-)
 
-diff --git a/cmds/device.c b/cmds/device.c
-index b429a169cd5d..b38bf78a798e 100644
---- a/cmds/device.c
-+++ b/cmds/device.c
-@@ -354,7 +354,7 @@ static int cmd_device_scan(const struct cmd_struct *cmd, int argc, char **argv)
- 			}
- 		} else {
- 			printf("Scanning for Btrfs filesystems\n");
--			ret = btrfs_scan_devices(false);
-+			ret = btrfs_scan_devices(true);
- 			error_on(ret, "error %d while scanning", ret);
- 			ret = btrfs_register_all_devices();
- 			error_on(ret,
--- 
-1.8.3.1
+Anyway, I have an image of the whole disk on a server now and am
+feeling all the more adventurous for it. (The first try failed a
+couple of MB from completion due to spurious network issues, which is
+why I've taken so long to reply.)
 
+> > You wouldn't happen to know of a [suitable] bootable rescue image [...]?
+>
+> Archlinux iso at least has the latest btrfs-progs.
+
+I'm on the Ubuntu 19.10 live CD (btrfs-progs 5.2.1, kernel 5.3.0)
+until further notice. Exploring other options (incl. running your
+rescue kernel on another machine and serving the disk via nbd) in
+parallel.
+
+> I'd recommend the following safer methods before trying --init-extent-tree:
+>
+> - Dump backup roots first:
+>   # btrfs ins dump-super -f <dev> | grep backup_treee_root
+>   Then grab all big numbers.
+
+# btrfs inspect-internal dump-super -f /dev/nvme0n1p2 | grep backup_tree_root
+backup_tree_root:    284041969664    gen: 58600    level: 1
+backup_tree_root:    284041953280    gen: 58601    level: 1
+backup_tree_root:    284042706944    gen: 58602    level: 1
+backup_tree_root:    284045410304    gen: 58603    level: 1
+
+> - Try backup_extent_root numbers in btrfs check first
+>   # btrfs check -r <above big number> <dev>
+>   Use the number with highest generation first.
+
+Assuming backup_extent_root == backup_tree_root ...
+
+# btrfs check --tree-root 284045410304 /dev/nvme0n1p2
+Opening filesystem to check...
+checksum verify failed on 284041084928 found E4E3BDB6 wanted 00000000
+checksum verify failed on 284041084928 found E4E3BDB6 wanted 00000000
+bad tree block 284041084928, bytenr mismatch, want=284041084928, have=0
+ERROR: cannot open file system
+
+# btrfs check --tree-root 284042706944 /dev/nvme0n1p2
+Opening filesystem to check...
+checksum verify failed on 284042706944 found E4E3BDB6 wanted 00000000
+checksum verify failed on 284042706944 found E4E3BDB6 wanted 00000000
+bad tree block 284042706944, bytenr mismatch, want=284042706944, have=0
+Couldn't read tree root
+ERROR: cannot open file system
+
+# btrfs check --tree-root 284041953280 /dev/nvme0n1p2
+Opening filesystem to check...
+checksum verify failed on 284041953280 found E4E3BDB6 wanted 00000000
+checksum verify failed on 284041953280 found E4E3BDB6 wanted 00000000
+bad tree block 284041953280, bytenr mismatch, want=284041953280, have=0
+Couldn't read tree root
+ERROR: cannot open file system
+
+# btrfs check --tree-root 284041969664 /dev/nvme0n1p2
+Opening filesystem to check...
+checksum verify failed on 284041969664 found E4E3BDB6 wanted 00000000
+checksum verify failed on 284041969664 found E4E3BDB6 wanted 00000000
+bad tree block 284041969664, bytenr mismatch, want=284041969664, have=0
+Couldn't read tree root
+ERROR: cannot open file system
+
+>   If all backup fails to pass basic btrfs check, and all happen to have
+>   the same "wanted 00000000" then it means a big range of tree blocks
+>   get wiped out, not really related to btrfs but some hardware wipe.
+
+Doesn't look good, does it? Any further ideas at all or is this the
+end of the line? TBH, at this point, I don't mind having to re-install
+the box so much as the idea that the same thing might happen again --
+either to this one, or to my work machine, which is very similar. If
+nothing else, I'd really appreciate knowing what exactly happened here
+and why -- a bug in the GPU and/or its driver shouldn't cause this --;
+and an avoidance strategy that goes beyond-upgrade-and-pray.
+
+Cheers,
+Christian
