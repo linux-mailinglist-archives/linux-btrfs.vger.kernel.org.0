@@ -2,61 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7E4DEDC5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 15:38:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3A1DEE2F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 21 Oct 2019 15:43:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728819AbfJUNiE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 21 Oct 2019 09:38:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54456 "EHLO mx1.suse.de"
+        id S1729012AbfJUNnf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 21 Oct 2019 09:43:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58228 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728083AbfJUNiE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 21 Oct 2019 09:38:04 -0400
+        id S1727322AbfJUNnf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 21 Oct 2019 09:43:35 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7E01EAF40;
-        Mon, 21 Oct 2019 13:38:02 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id C8517B155;
+        Mon, 21 Oct 2019 13:43:33 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BA104DA8C5; Mon, 21 Oct 2019 15:38:15 +0200 (CEST)
-Date:   Mon, 21 Oct 2019 15:38:15 +0200
+        id F3FC6DA8C5; Mon, 21 Oct 2019 15:43:46 +0200 (CEST)
+Date:   Mon, 21 Oct 2019 15:43:46 +0200
 From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 0/4] Small coding style cleanups
-Message-ID: <20191021133815.GK3001@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3] btrfs-progs: add verbose option to btrfs device scan
+Message-ID: <20191021134346.GL3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20191018095823.15282-1-jthumshirn@suse.de>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <1569989512-5594-1-git-send-email-anand.jain@oracle.com>
+ <20191007174129.GK2751@twin.jikos.cz>
+ <a9c0a957-e151-32e8-a42e-b5c6d817ed78@oracle.com>
+ <20191014152457.GQ2751@twin.jikos.cz>
+ <365faddf-cf4f-2a03-820d-d4f5071240e8@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191018095823.15282-1-jthumshirn@suse.de>
+In-Reply-To: <365faddf-cf4f-2a03-820d-d4f5071240e8@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 18, 2019 at 11:58:19AM +0200, Johannes Thumshirn wrote:
-> Here are some minor coding style cleanups which I think are neat as they make
-> some functions a bit easier to read.
-> 
-> None of these patches is really needed though.
-> 
-> The patches have no regressions with regrads to the basline
-> btrfs-devel/misc-next on an xfstests -g auto run.
-> 
-> A gitweb preview can be found at
-> https://git.kernel.org/pub/scm/linux/kernel/git/jth/linux.git/log/?h=btrfs-raid-cleanups
-> 
-> Note I did rebase the branch because one patch did not have a changelog.
-> 
-> Johannes Thumshirn (4):
->   btrfs: reduce indentation in lock_stripe_add
->   btrfs: remove pointless local variable in lock_stripe_add()
->   btrfs: reduce indentation in btrfs_may_alloc_data_chunk
->   btrfs: remove pointless indentation in btrfs_read_sys_array()
+On Tue, Oct 15, 2019 at 11:29:34AM +0800, Anand Jain wrote:
+>   I was thinking there might be some common code between the
+>   sub-commands in btrfs-progs now or in future, and if the printf()
+>   due to verbose is required in one sub-command and the same printf()
+>   due to verbose is not required in another sub-command (which I
+>   called unwanted message) then we won't have any choice to not
+>   to print those unwanted printf().
+>   But as this is just an anticipatory only, so probably we could try
+>   global verbose and see how it fares. I will try.
 
-Added to misc-next, thanks.
+I see, but it would be better to have a concrete example where it's
+problematic so we can figure out ways how to filter unwanted messages.
