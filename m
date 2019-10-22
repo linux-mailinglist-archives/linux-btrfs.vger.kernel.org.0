@@ -2,85 +2,127 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7040AE039C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 14:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AE6EE03B0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 14:16:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388970AbfJVMLr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Oct 2019 08:11:47 -0400
-Received: from mail-wr1-f53.google.com ([209.85.221.53]:35325 "EHLO
-        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388968AbfJVMLr (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Oct 2019 08:11:47 -0400
-Received: by mail-wr1-f53.google.com with SMTP id l10so17371295wrb.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Oct 2019 05:11:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7w+7mr+V8DaF5QjormjKnCAC4FGJMCTV3nvzhDCo9SM=;
-        b=nxM2sUv3oXFbjgMThPdIvLhl55AdxRwnkG4LYLoZ6SrwFfAVCdENFYAmRp3THdBQcj
-         y2GC10UBjy2YeX32KxvIq7QxJ/YoAqSsnpavsZvSzBJiZs+uQ3Lz+StA6xC/3Tv/gtr0
-         G9269ns6s4aA1d4oVLFDi6n/TKR8WVn0/kwkSNPyh8d9BcvQMnGjSXNGejkD4p40XCWJ
-         tWSnSfU8RZ8m27M9jGd0UTxfXR9c7Wz1vLiukTub4RKfdsSx4PTYqmFIKIfNmopofm4X
-         LYKnRGr9Kd4OgXnGsJRr2XptRuIBniUTygp0Fpp3hCGNBehM6a6PNFLQhyHLzkhBiSHn
-         hCOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7w+7mr+V8DaF5QjormjKnCAC4FGJMCTV3nvzhDCo9SM=;
-        b=lDsNWvqB2yT6UUhutd/7KkILjP+AjtbgyuKSDn80yr31jQnsMvf8M7ZThgo05btL9y
-         DbQBCgIPRwh4qaJvD1hqSgr1SSHEUflChS+Is5s20ixTLt+r0wNL4iMncNDKkauJCGgx
-         iZ0de4zeEsaYUaVXqCo5D6aFg/qhs1nUFd2W8ZK7jG1KYUHCL9wzmkvFTYwAjHe+tMPu
-         hNmGbqxQFPbO99ecbtEvHEIdDzTwV2HDCDKjVHX/S9YzfYNyBXXcoWK4PsdudSs6yiHJ
-         L0A6rKCmu+c8T/IzxpqRWx90bMN4xXeSc3F3nBMptViYTr3TPtAw/etBgzWUGNbHb0YG
-         aeCg==
-X-Gm-Message-State: APjAAAWw9XwzcyS3zSS4UJo8i00AYQ08BAI/RrlhEvyKP0jVIodDAGj9
-        uqXwu0B5fM197rAMVrd64WQ5a3TJagRLVaY20c6+20kklrs=
-X-Google-Smtp-Source: APXvYqyUMGUF85E13g0P6iRaz1Feu8q3Xq4vrRC4AGQs4MV0nOONtEK9b0ebMEYExuZHN0iw7JH7o/4D1viG9I6wQt0=
-X-Received: by 2002:a5d:4a8a:: with SMTP id o10mr3274561wrq.101.1571746305121;
- Tue, 22 Oct 2019 05:11:45 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAJCQCtTPAm6eGA80y9LYc+Jaeo1wB0+vOMvO6B02o5JJKRFrhw@mail.gmail.com>
- <20191022163344.19122329@natsu>
-In-Reply-To: <20191022163344.19122329@natsu>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 22 Oct 2019 14:11:26 +0200
-Message-ID: <CAJCQCtQpkDOsZsWqq4Gc7rXyDpTZSqFdBs6X6qzSpMcEtuCG2w@mail.gmail.com>
-Subject: Re: feature request, explicit mount and unmount kernel messages
-To:     Roman Mamedov <rm@romanrm.net>
-Cc:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+        id S2388960AbfJVMP4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Oct 2019 08:15:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40306 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388555AbfJVMP4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Oct 2019 08:15:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 886E7B29F;
+        Tue, 22 Oct 2019 12:15:54 +0000 (UTC)
+Message-ID: <885fd62f9fcf91fac6c37ac5d9d9ba2c7079f87b.camel@suse.de>
+Subject: Re: [PATCH 1/2] btrfs-progs: utils: Replace
+ __attribute__(fallthrough)
+From:   Marcos Paulo de Souza <mpdesouza@suse.de>
+To:     Nikolay Borisov <nborisov@suse.com>,
+        Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+Date:   Tue, 22 Oct 2019 09:18:02 -0300
+In-Reply-To: <b49378ba-486f-1354-ef9e-fa8151eeffe7@suse.com>
+References: <20191022020228.14117-1-marcos.souza.org@gmail.com>
+         <20191022020228.14117-2-marcos.souza.org@gmail.com>
+         <b06b57f8-09da-0f86-2957-4caf1ec13606@suse.com>
+         <b49378ba-486f-1354-ef9e-fa8151eeffe7@suse.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 1:33 PM Roman Mamedov <rm@romanrm.net> wrote:
->
-> On Tue, 22 Oct 2019 11:00:07 +0200
-> Chris Murphy <lists@colorremedies.com> wrote:
->
-> > Hi,
-> >
-> > So XFS has these
-> >
-> > [49621.415203] XFS (loop0): Mounting V5 Filesystem
-> > [49621.444458] XFS (loop0): Ending clean mount
-> > ...
-> > [49621.444458] XFS (loop0): Ending clean mount
-> > [49641.459463] XFS (loop0): Unmounting Filesystem
-> >
-> > It seems to me linguistically those last two should be reversed, but whatever.
->
-> Just a minor note, there is no "last two", but only one "Unmounting" message
-> on unmount: you copied the "Ending" mount-time message twice for the 2nd quote
-> (as shown by the timestamp).
+On Tue, 2019-10-22 at 10:01 +0300, Nikolay Borisov wrote:
+> 
+> On 22.10.19 г. 9:59 ч., Nikolay Borisov wrote:
+> > 
+> > 
+> > On 22.10.19 г. 5:02 ч., Marcos Paulo de Souza wrote:
+> >> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> >>
+> >> When compiling with clang, this warning is shown:
+> >>
+> >> common/utils.c:404:3: warning: declaration does not declare
+> anything [-Wmissing-declarations]
+> >>                 __attribute__ ((fallthrough));
+> >>
+> >> This attribute seems to silence the same warning in GCC. Changing
+> this
+> >> attribute with /* fallthrough */ fixes the warning for both gcc
+> and
+> >> clang.
+> >>
+> >> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > 
+> > Which clang version are you using? According to
+> > https://clang.llvm.org/docs/AttributeReference.html#fallthrough
+> this
+> > attribute is supported even with the GNU syntax.
+> 
+> Looking at the documentation the gnu syntax is supported in the
+> 'current' / 10, unreleased version. All others, up to version 9 does
+> not
+> support this syntax.
 
-That's funny, I duplicated that line by mistake. User error!
+I'm using the default clang in Tumbleweed (20191009):
+clang --version
+clang version 8.0.1 (tags/RELEASE_801/final 366581)
 
+> 
+> > 
+> >> ---
+> >>  common/utils.c | 12 ++++++------
+> >>  1 file changed, 6 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/common/utils.c b/common/utils.c
+> >> index 2cf15c33..a88336b3 100644
+> >> --- a/common/utils.c
+> >> +++ b/common/utils.c
+> >> @@ -401,15 +401,15 @@ int pretty_size_snprintf(u64 size, char
+> *str, size_t str_size, unsigned unit_mod
+> >>  	case UNITS_TBYTES:
+> >>  		base *= mult;
+> >>  		num_divs++;
+> >> -		__attribute__ ((fallthrough));
+> >> +		/* fallthrough */
+> >>  	case UNITS_GBYTES:
+> >>  		base *= mult;
+> >>  		num_divs++;
+> >> -		__attribute__ ((fallthrough));
+> >> +		/* fallthrough */
+> >>  	case UNITS_MBYTES:
+> >>  		base *= mult;
+> >>  		num_divs++;
+> >> -		__attribute__ ((fallthrough));
+> >> +		/* fallthrough */
+> >>  	case UNITS_KBYTES:
+> >>  		num_divs++;
+> >>  		break;
+> >> @@ -1135,14 +1135,14 @@ int test_num_disk_vs_raid(u64
+> metadata_profile, u64 data_profile,
+> >>  	default:
+> >>  	case 4:
+> >>  		allowed |= BTRFS_BLOCK_GROUP_RAID10;
+> >> -		__attribute__ ((fallthrough));
+> >> +		/* fallthrough */
+> >>  	case 3:
+> >>  		allowed |= BTRFS_BLOCK_GROUP_RAID6;
+> >> -		__attribute__ ((fallthrough));
+> >> +		/* fallthrough */
+> >>  	case 2:
+> >>  		allowed |= BTRFS_BLOCK_GROUP_RAID0 |
+> BTRFS_BLOCK_GROUP_RAID1 |
+> >>  			BTRFS_BLOCK_GROUP_RAID5;
+> >> -		__attribute__ ((fallthrough));
+> >> +		/* fallthrough */
+> >>  	case 1:
+> >>  		allowed |= BTRFS_BLOCK_GROUP_DUP;
+> >>  	}
+> >>
 
--- 
-Chris Murphy
