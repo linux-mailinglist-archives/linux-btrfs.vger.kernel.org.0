@@ -2,156 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D850E0347
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 13:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7040AE039C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 14:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388816AbfJVLo5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Oct 2019 07:44:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48708 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388689AbfJVLo5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Oct 2019 07:44:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B9A13ABD6;
-        Tue, 22 Oct 2019 11:44:54 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 91D69DA733; Tue, 22 Oct 2019 13:45:07 +0200 (CEST)
-Date:   Tue, 22 Oct 2019 13:45:07 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH 00/14] btrfs-progs: global-verbose option
-Message-ID: <20191022114507.GT3001@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <1571652082-25982-1-git-send-email-anand.jain@oracle.com>
- <20191021161256.GR3001@twin.jikos.cz>
- <daf2cb74-64bb-66bf-9b08-9f07076eacc8@oracle.com>
+        id S2388970AbfJVMLr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Oct 2019 08:11:47 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:35325 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388968AbfJVMLr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Oct 2019 08:11:47 -0400
+Received: by mail-wr1-f53.google.com with SMTP id l10so17371295wrb.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Oct 2019 05:11:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7w+7mr+V8DaF5QjormjKnCAC4FGJMCTV3nvzhDCo9SM=;
+        b=nxM2sUv3oXFbjgMThPdIvLhl55AdxRwnkG4LYLoZ6SrwFfAVCdENFYAmRp3THdBQcj
+         y2GC10UBjy2YeX32KxvIq7QxJ/YoAqSsnpavsZvSzBJiZs+uQ3Lz+StA6xC/3Tv/gtr0
+         G9269ns6s4aA1d4oVLFDi6n/TKR8WVn0/kwkSNPyh8d9BcvQMnGjSXNGejkD4p40XCWJ
+         tWSnSfU8RZ8m27M9jGd0UTxfXR9c7Wz1vLiukTub4RKfdsSx4PTYqmFIKIfNmopofm4X
+         LYKnRGr9Kd4OgXnGsJRr2XptRuIBniUTygp0Fpp3hCGNBehM6a6PNFLQhyHLzkhBiSHn
+         hCOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7w+7mr+V8DaF5QjormjKnCAC4FGJMCTV3nvzhDCo9SM=;
+        b=lDsNWvqB2yT6UUhutd/7KkILjP+AjtbgyuKSDn80yr31jQnsMvf8M7ZThgo05btL9y
+         DbQBCgIPRwh4qaJvD1hqSgr1SSHEUflChS+Is5s20ixTLt+r0wNL4iMncNDKkauJCGgx
+         iZ0de4zeEsaYUaVXqCo5D6aFg/qhs1nUFd2W8ZK7jG1KYUHCL9wzmkvFTYwAjHe+tMPu
+         hNmGbqxQFPbO99ecbtEvHEIdDzTwV2HDCDKjVHX/S9YzfYNyBXXcoWK4PsdudSs6yiHJ
+         L0A6rKCmu+c8T/IzxpqRWx90bMN4xXeSc3F3nBMptViYTr3TPtAw/etBgzWUGNbHb0YG
+         aeCg==
+X-Gm-Message-State: APjAAAWw9XwzcyS3zSS4UJo8i00AYQ08BAI/RrlhEvyKP0jVIodDAGj9
+        uqXwu0B5fM197rAMVrd64WQ5a3TJagRLVaY20c6+20kklrs=
+X-Google-Smtp-Source: APXvYqyUMGUF85E13g0P6iRaz1Feu8q3Xq4vrRC4AGQs4MV0nOONtEK9b0ebMEYExuZHN0iw7JH7o/4D1viG9I6wQt0=
+X-Received: by 2002:a5d:4a8a:: with SMTP id o10mr3274561wrq.101.1571746305121;
+ Tue, 22 Oct 2019 05:11:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <daf2cb74-64bb-66bf-9b08-9f07076eacc8@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+References: <CAJCQCtTPAm6eGA80y9LYc+Jaeo1wB0+vOMvO6B02o5JJKRFrhw@mail.gmail.com>
+ <20191022163344.19122329@natsu>
+In-Reply-To: <20191022163344.19122329@natsu>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 22 Oct 2019 14:11:26 +0200
+Message-ID: <CAJCQCtQpkDOsZsWqq4Gc7rXyDpTZSqFdBs6X6qzSpMcEtuCG2w@mail.gmail.com>
+Subject: Re: feature request, explicit mount and unmount kernel messages
+To:     Roman Mamedov <rm@romanrm.net>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 09:54:41AM +0800, Anand Jain wrote:
-> >> 1.
-> >> The sub-commands as in [2] uses multi-level compile time verbose option,
-> >> such as %g_verbose = 0 (quite), %g_verbose = 1 (default), %g_verbose > 1
-> >> (real-verbose). And verbose at default is also part the .out files in
-> >> fstests. So it needs further discussions on how to handle the multi-
-> >> level verbose option using the global verbose option, and so sub-
-> >> commands in [2] are untouched.
-> > 
-> > The idea is to unify all verbosity options. Default is 1, 0 is for quiet
-> > (only errors are printed), the rest is up to the commands what to print
-> > on the higher levels.
-> 
-> As of now verbosity level is a compile time option. [3]
-> 
-> [3]
-> -------
-> cmds/send.c
-> 
->   51 /*
->   52  * Default is 1 for historical reasons, changing may break scripts 
-> that expect
->   53  * the 'At subvol' message.
->   54  */
->   55 static int g_verbose = 1;
-> --------
+On Tue, Oct 22, 2019 at 1:33 PM Roman Mamedov <rm@romanrm.net> wrote:
+>
+> On Tue, 22 Oct 2019 11:00:07 +0200
+> Chris Murphy <lists@colorremedies.com> wrote:
+>
+> > Hi,
+> >
+> > So XFS has these
+> >
+> > [49621.415203] XFS (loop0): Mounting V5 Filesystem
+> > [49621.444458] XFS (loop0): Ending clean mount
+> > ...
+> > [49621.444458] XFS (loop0): Ending clean mount
+> > [49641.459463] XFS (loop0): Unmounting Filesystem
+> >
+> > It seems to me linguistically those last two should be reversed, but whatever.
+>
+> Just a minor note, there is no "last two", but only one "Unmounting" message
+> on unmount: you copied the "Ending" mount-time message twice for the 2nd quote
+> (as shown by the timestamp).
 
-All the specific options would need to be unified while also maintaining
-backward compatibility, like the above comment. Fortunatelly, if we set
-default verbosity to 1, the only thing to do here will be to convert it
-to the global config.
+That's funny, I duplicated that line by mistake. User error!
 
-> > Some commands can have long option names or the argument names make it
-> > long in some cases, the global options could stay indented. I think
-> > visually it'll be ok. We can introduce some way to automatically format
-> > the options and help texts so we don't have to adjust them manually each
-> > time, but this would be more intrusive and can be done later.
-> 
->   ok. But my pertaining question is if the sub-command verbose option
->   should still remain? if no I will be happy to take it out as the same
->   verbose will anyway be activated using the global verbose option.
 
-For backward compatibility, where the per-command verbosity option
-exists, it must continue, but will be an alias to the global option.
-This is the awkward part but that' the cost of compatibility.
-
-> > With the global verbose option there shouldbe also -q|--quiet. Both
-> > short and long versions should be available for all commands. So the
-> > help would look like:
-> > 
-> > ---
-> >      Global options:
-> >      -v|--verbose     verbose output, repeat for more verbosity
-> >      -q|--quiet       print only errors
-> > ---
-> > 
-> > In code this looks like:
-> > 
-> >            "",
-> >            "-c|--commit-after  wait for transaction commit at the end of the operation",
-> >            "-C|--commit-each   wait for transaction commit after deleting each subvolume",
-> >            HELPINFO_GLOBAL_OPTIONS_HEADER,
-> >            HELPINFO_INSERT_VERBOSE,
-> >            NULL
-> > 
-> > #define HELPINFO_GLOBAL_OPTIONS_HEADER					\
-> > 	"",								\
-> > 	"Global options:"
-> > 
-> > and HELPINFO_INSERT_VERBOSE also contains the quiet option.
-> > 
-> > The global option value is stored in 'btrfs_config_init bconf', so
-> > everything can access it directly.
-> 
->   Oh ok.
-> 
->   In the above code-snap [3].
-> 
->   g_verbose = 0 and g_verbose = 1 can be mapped to the global
->   -q|--quite and --verbose respectively.
-
-Yes, that's right
-
->   But any idea what to do with g_verbose > 1? which we support
->   in send.c and receive.c. And in defrag which the patch [4] removed it.
-
-The verbosity option can be usually repeated and increasing the level,
-so 
-
- $ btrfs -vvv send subvol
-
-would be the same as
-
- $ btrfs send -vvv subvol
-
->    [4]
->    [RFC PATCH 09/14] btrfs-progs: restore: delete unreachable code
-> 
->   Another way is
-> 
->    btrfs [--quite] [--verbose[=n]]
-> 
-> n=1 default
-> n=2 verbose
-
-I'm not sure I've seen the '-v=n' way of specifying verbosity and would
-rather avoid optional arugment.
-
-The code hadling -v would do
-
-	case OPT_VERBOSE:
-		bconf.verbose++;
-		break;
-	case OPT_QUIET:
-		bconf.verbose = 0;
-		break;
+-- 
+Chris Murphy
