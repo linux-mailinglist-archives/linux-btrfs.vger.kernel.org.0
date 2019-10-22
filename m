@@ -2,27 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3252CDFDEC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 08:59:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B6AADFDF3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 09:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387834AbfJVG71 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Oct 2019 02:59:27 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52030 "EHLO mx1.suse.de"
+        id S2387444AbfJVHBt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Oct 2019 03:01:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53166 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729458AbfJVG71 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Oct 2019 02:59:27 -0400
+        id S1726160AbfJVHBs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Oct 2019 03:01:48 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EEE40AF5D;
-        Tue, 22 Oct 2019 06:59:25 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id C0CC7AF38;
+        Tue, 22 Oct 2019 07:01:46 +0000 (UTC)
 Subject: Re: [PATCH 1/2] btrfs-progs: utils: Replace
  __attribute__(fallthrough)
+From:   Nikolay Borisov <nborisov@suse.com>
 To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
         dsterba@suse.com, linux-btrfs@vger.kernel.org
 Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
 References: <20191022020228.14117-1-marcos.souza.org@gmail.com>
  <20191022020228.14117-2-marcos.souza.org@gmail.com>
-From:   Nikolay Borisov <nborisov@suse.com>
+ <b06b57f8-09da-0f86-2957-4caf1ec13606@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  mQINBFiKBz4BEADNHZmqwhuN6EAzXj9SpPpH/nSSP8YgfwoOqwrP+JR4pIqRK0AWWeWCSwmZ
@@ -66,12 +67,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <b06b57f8-09da-0f86-2957-4caf1ec13606@suse.com>
-Date:   Tue, 22 Oct 2019 09:59:24 +0300
+Message-ID: <b49378ba-486f-1354-ef9e-fa8151eeffe7@suse.com>
+Date:   Tue, 22 Oct 2019 10:01:45 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191022020228.14117-2-marcos.souza.org@gmail.com>
+In-Reply-To: <b06b57f8-09da-0f86-2957-4caf1ec13606@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -82,67 +83,75 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-On 22.10.19 г. 5:02 ч., Marcos Paulo de Souza wrote:
-> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+On 22.10.19 г. 9:59 ч., Nikolay Borisov wrote:
 > 
-> When compiling with clang, this warning is shown:
 > 
-> common/utils.c:404:3: warning: declaration does not declare anything [-Wmissing-declarations]
->                 __attribute__ ((fallthrough));
+> On 22.10.19 г. 5:02 ч., Marcos Paulo de Souza wrote:
+>> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+>>
+>> When compiling with clang, this warning is shown:
+>>
+>> common/utils.c:404:3: warning: declaration does not declare anything [-Wmissing-declarations]
+>>                 __attribute__ ((fallthrough));
+>>
+>> This attribute seems to silence the same warning in GCC. Changing this
+>> attribute with /* fallthrough */ fixes the warning for both gcc and
+>> clang.
+>>
+>> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 > 
-> This attribute seems to silence the same warning in GCC. Changing this
-> attribute with /* fallthrough */ fixes the warning for both gcc and
-> clang.
-> 
-> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
+> Which clang version are you using? According to
+> https://clang.llvm.org/docs/AttributeReference.html#fallthrough this
+> attribute is supported even with the GNU syntax.
 
-Which clang version are you using? According to
-https://clang.llvm.org/docs/AttributeReference.html#fallthrough this
-attribute is supported even with the GNU syntax.
+Looking at the documentation the gnu syntax is supported in the
+'current' / 10, unreleased version. All others, up to version 9 does not
+support this syntax.
 
-> ---
->  common/utils.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
 > 
-> diff --git a/common/utils.c b/common/utils.c
-> index 2cf15c33..a88336b3 100644
-> --- a/common/utils.c
-> +++ b/common/utils.c
-> @@ -401,15 +401,15 @@ int pretty_size_snprintf(u64 size, char *str, size_t str_size, unsigned unit_mod
->  	case UNITS_TBYTES:
->  		base *= mult;
->  		num_divs++;
-> -		__attribute__ ((fallthrough));
-> +		/* fallthrough */
->  	case UNITS_GBYTES:
->  		base *= mult;
->  		num_divs++;
-> -		__attribute__ ((fallthrough));
-> +		/* fallthrough */
->  	case UNITS_MBYTES:
->  		base *= mult;
->  		num_divs++;
-> -		__attribute__ ((fallthrough));
-> +		/* fallthrough */
->  	case UNITS_KBYTES:
->  		num_divs++;
->  		break;
-> @@ -1135,14 +1135,14 @@ int test_num_disk_vs_raid(u64 metadata_profile, u64 data_profile,
->  	default:
->  	case 4:
->  		allowed |= BTRFS_BLOCK_GROUP_RAID10;
-> -		__attribute__ ((fallthrough));
-> +		/* fallthrough */
->  	case 3:
->  		allowed |= BTRFS_BLOCK_GROUP_RAID6;
-> -		__attribute__ ((fallthrough));
-> +		/* fallthrough */
->  	case 2:
->  		allowed |= BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID1 |
->  			BTRFS_BLOCK_GROUP_RAID5;
-> -		__attribute__ ((fallthrough));
-> +		/* fallthrough */
->  	case 1:
->  		allowed |= BTRFS_BLOCK_GROUP_DUP;
->  	}
-> 
+>> ---
+>>  common/utils.c | 12 ++++++------
+>>  1 file changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/common/utils.c b/common/utils.c
+>> index 2cf15c33..a88336b3 100644
+>> --- a/common/utils.c
+>> +++ b/common/utils.c
+>> @@ -401,15 +401,15 @@ int pretty_size_snprintf(u64 size, char *str, size_t str_size, unsigned unit_mod
+>>  	case UNITS_TBYTES:
+>>  		base *= mult;
+>>  		num_divs++;
+>> -		__attribute__ ((fallthrough));
+>> +		/* fallthrough */
+>>  	case UNITS_GBYTES:
+>>  		base *= mult;
+>>  		num_divs++;
+>> -		__attribute__ ((fallthrough));
+>> +		/* fallthrough */
+>>  	case UNITS_MBYTES:
+>>  		base *= mult;
+>>  		num_divs++;
+>> -		__attribute__ ((fallthrough));
+>> +		/* fallthrough */
+>>  	case UNITS_KBYTES:
+>>  		num_divs++;
+>>  		break;
+>> @@ -1135,14 +1135,14 @@ int test_num_disk_vs_raid(u64 metadata_profile, u64 data_profile,
+>>  	default:
+>>  	case 4:
+>>  		allowed |= BTRFS_BLOCK_GROUP_RAID10;
+>> -		__attribute__ ((fallthrough));
+>> +		/* fallthrough */
+>>  	case 3:
+>>  		allowed |= BTRFS_BLOCK_GROUP_RAID6;
+>> -		__attribute__ ((fallthrough));
+>> +		/* fallthrough */
+>>  	case 2:
+>>  		allowed |= BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID1 |
+>>  			BTRFS_BLOCK_GROUP_RAID5;
+>> -		__attribute__ ((fallthrough));
+>> +		/* fallthrough */
+>>  	case 1:
+>>  		allowed |= BTRFS_BLOCK_GROUP_DUP;
+>>  	}
+>>
