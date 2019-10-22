@@ -2,214 +2,102 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ECF62DFED7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 09:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 412E6E0031
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 11:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388040AbfJVH6S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Oct 2019 03:58:18 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48352 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388026AbfJVH6S (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Oct 2019 03:58:18 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B301BB86F;
-        Tue, 22 Oct 2019 07:58:15 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] fstests: btrfs: dm-logwrites test for fstrim and fsstress workload
-Date:   Tue, 22 Oct 2019 15:58:06 +0800
-Message-Id: <20191022075806.16616-3-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191022075806.16616-1-wqu@suse.com>
-References: <20191022075806.16616-1-wqu@suse.com>
+        id S2388170AbfJVJAb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Oct 2019 05:00:31 -0400
+Received: from mail-wr1-f46.google.com ([209.85.221.46]:35503 "EHLO
+        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388182AbfJVJAb (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Oct 2019 05:00:31 -0400
+Received: by mail-wr1-f46.google.com with SMTP id l10so16665281wrb.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 22 Oct 2019 02:00:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=jHHRF6bxKJ0vjoHyhXFTfWH+KjdLavHcfZIbKaMynZ0=;
+        b=EvIBHrPc9wgs5PGSbJdtv4IJGi00Lup6ToiAwtU5iNxRSHDAWasNhteazzX2/WVR0p
+         4WkRyKTBhWYMkDTshTqq9s/mjhzIG0/OcuYzWCY+2et0AJdS6kbo/9VES8MUDyPxXTFK
+         8VOz+gGvo5yGN8WdWlAkUIETJqGuEqiPluSxN5QvqhwAGDSrXZTI8mbn6a042d+W+694
+         zC9fHxoAgddZhwS46gwJVCKTUOGm7+0jBHcay/wDh+XDRLI5Jlyyut45XIfWBXLzQntZ
+         abyL31TjzXt6NJjk4WvDmgcnwMIo4kZ47+scU8NMbbmAk0OPcWcxt6lhWxS86ERnwd/V
+         YLpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=jHHRF6bxKJ0vjoHyhXFTfWH+KjdLavHcfZIbKaMynZ0=;
+        b=hR3w87g9Ha95aWOlpbtjuboXftAO+UbgWHtTTxXObW1Vkf6MdtodFECP1HaN0mwpmV
+         AiPgAq18KEknR0G7m2Bv1/241SE95RARdTJ6KPIHDVgweBCGUilBS/l1C6PrlOtEZTvD
+         ifU2m/hzsBMaklse1k23jI2ekn/Kh9f17up0MOd7860Mmq6WX2eaJBwtbnbbRYp24UGC
+         JN1p+iDu4pgkfO9VxzvgxOrTlwQb2vwjQ58PaqBXDt5y0t3UKu3//4ITfNDD1XaiJ4du
+         TyschD/CiSzorDW2cCWuNgpKNFsyD9Qy3kZW1hmUoJCUmn6Hhb5gtzBt8sqPhennRj0N
+         e4QQ==
+X-Gm-Message-State: APjAAAUs+yQ2xjHDcTKuuZkC2a4UPHbUxv80mw9Urrh5WdxusRuSDPnL
+        ENGWk18NWRQUGPCwCD7Gmf6OrmIR+O3Njv9X29ePS23UPuXzdA==
+X-Google-Smtp-Source: APXvYqzCIiHtU4LhiKgpjuGsB6+ja5W8b2A9XLF3bKLsCVKGKq73WEx06Jo0AZ8ep2DeejmPPVzOZC63HzeNCEEqKNs=
+X-Received: by 2002:a5d:69c8:: with SMTP id s8mr2430832wrw.167.1571734827054;
+ Tue, 22 Oct 2019 02:00:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Tue, 22 Oct 2019 11:00:07 +0200
+Message-ID: <CAJCQCtTPAm6eGA80y9LYc+Jaeo1wB0+vOMvO6B02o5JJKRFrhw@mail.gmail.com>
+Subject: feature request, explicit mount and unmount kernel messages
+To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-There is a fs corruption report of a tree block in use get trimmed, and
-cause fs corruption.
+Hi,
 
-Although I haven't found the cause from the source code, it won't hurt
-to add such test case.
+So XFS has these
 
-The test case is limited to btrfs due to the replay-log --check|--fsck
-hack to reduce runtime.
-Other fs can't go with the replay-log --check|--fsck hack as their fsck
-will report dirty journal as error.
+[49621.415203] XFS (loop0): Mounting V5 Filesystem
+[49621.444458] XFS (loop0): Ending clean mount
+...
+[49621.444458] XFS (loop0): Ending clean mount
+[49641.459463] XFS (loop0): Unmounting Filesystem
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Due to recent change in btrfs side, already trimmed tree blocks won't
-get trimmed again until new data is written.
+It seems to me linguistically those last two should be reversed, but whatever.
 
-This makes things safer, and I'm not sure if it's the reason why the
-test never fails on latest kernel.
----
- tests/btrfs/197     | 131 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/197.out |   2 +
- tests/btrfs/group   |   1 +
- 3 files changed, 134 insertions(+)
- create mode 100755 tests/btrfs/197
- create mode 100644 tests/btrfs/197.out
+The Btrfs mount equivalent messages are:
+[49896.176646] BTRFS: device fsid f7972e8c-b58a-4b95-9f03-1a08bbcb62a7
+devid 1 transid 5 /dev/loop0
+[49901.739591] BTRFS info (device loop0): disk space caching is enabled
+[49901.739595] BTRFS info (device loop0): has skinny extents
+[49901.767447] BTRFS info (device loop0): enabling ssd optimizations
+[49901.767851] BTRFS info (device loop0): checking UUID tree
 
-diff --git a/tests/btrfs/197 b/tests/btrfs/197
-new file mode 100755
-index 00000000..c86af7b6
---- /dev/null
-+++ b/tests/btrfs/197
-@@ -0,0 +1,131 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-+
-+# FS QA Test 197
-+#
-+# Test btrfs consistency after each DISCARD for a workload with fstrim and
-+# fsstress.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	kill -q $fstrim_pid &> /dev/null
-+	"$KILLALL_PROG" -q $FSSTRESS_PROG &> /dev/null
-+	wait
-+	_log_writes_cleanup &> /dev/null
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+. ./common/dmlogwrites
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_supported_os Linux
-+_require_command "$KILLALL_PROG" killall
-+_require_command "$BLKDISCARD_PROG" blkdiscard
-+_require_btrfs_fs_feature "no_holes"
-+_require_btrfs_mkfs_feature "no-holes"
-+_require_fstrim
-+_require_log_writes
-+_require_scratch
-+
-+runtime=30
-+nr_cpus=$("$here/src/feature" -o)
-+# cap nr_cpus to 8 to avoid spending too much time on hosts with many cpus
-+if [ $nr_cpus -gt 8 ]; then
-+	nr_cpus=8
-+fi
-+fsstress_args=$(_scale_fsstress_args -w -d $SCRATCH_MNT -n 99999 -p $nr_cpus \
-+		$FSSTRESS_AVOID)
-+
-+fstrim_workload()
-+{
-+	trap "wait; exit" SIGTERM
-+
-+	while  true; do
-+		$FSTRIM_PROG -v $SCRATCH_MNT >> $seqres.full
-+	done
-+}
-+
-+# Replay and check each fua/flush (specified by $2) point.
-+#
-+# Since dm-log-writes records bio sequentially, even just replaying a range
-+# still needs to iterate all records before the end point.
-+# When number of records grows, it will be unacceptably slow, thus we need
-+# to use relay-log itself to trigger fsck, avoid unnecessary seek.
-+log_writes_fast_replay_check()
-+{
-+	local check_point=$1
-+	local blkdev=$2
-+	local fsck_command="$BTRFS_UTIL_PROG check $blkdev"
-+	local ret
-+
-+	[ -z "$check_point" -o -z "$blkdev" ] && _fail \
-+	"check_point and blkdev must be specified for log_writes_fast_replay_check"
-+
-+	# Replay to first mark
-+	$here/src/log-writes/replay-log --log $LOGWRITES_DEV \
-+		--replay $blkdev --end-mark prepare
-+	$here/src/log-writes/replay-log --log $LOGWRITES_DEV \
-+		--replay $blkdev --start-mark prepare \
-+		--check $check_point --fsck "$fsck_command" \
-+		&> $tmp.full_fsck
-+	ret=$?
-+	tail -n 150 $tmp.full_fsck > $seqres.full
-+	[ $ret -ne 0 ] && _fail "fsck failed during replay"
-+}
-+
-+_log_writes_init $SCRATCH_DEV
-+
-+# Discard the whole devices so when some tree pointer is wrong, it won't point
-+# to some older valid tree blocks, so we can detect it.
-+$BLKDISCARD_PROG $LOGWRITES_DMDEV > /dev/null 2>&1
-+
-+# The regular workaround to avoid false alert on unexpected holes
-+_log_writes_mkfs -O no-holes >> $seqres.full
-+_log_writes_mount
-+
-+$FSTRIM_PROG -v $SCRATCH_MNT >> $seqres.full || _notrun "FSTRIM not supported"
-+
-+_log_writes_mark prepare
-+
-+fstrim_workload &
-+fstrim_pid=$!
-+
-+"$FSSTRESS_PROG" $fsstress_args > /dev/null &
-+sleep $runtime
-+
-+"$KILLALL_PROG" -q "$FSSTRESS_PROG" &> /dev/null
-+kill $fstrim_pid
-+wait
-+
-+_log_writes_unmount
-+_log_writes_remove
-+
-+# The best checkpoint is discard, however since there are a lot of
-+# discard, using discard check point is too time consuming.
-+# Here trade coverage for a much shorter runtime
-+log_writes_fast_replay_check flush "$SCRATCH_DEV"
-+
-+echo "Silence is golden"
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/197.out b/tests/btrfs/197.out
-new file mode 100644
-index 00000000..3bbd3143
---- /dev/null
-+++ b/tests/btrfs/197.out
-@@ -0,0 +1,2 @@
-+QA output created by 197
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index c2ab3e7d..ee35fa59 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -199,3 +199,4 @@
- 194 auto volume
- 195 auto volume
- 196 auto metadata log volume
-+197 auto replay trim
+So is it true that for sure there is nothing happening after the UUID
+tree is checked, that the file system is definitely mounted at this
+point? And always it's the UUID tree being checked that's the last
+thing that happens? Or is it actually already mounted just prior to
+disk space caching enabled message, and the subsequent messages are
+not at all related to the mount process? See? I can't tell.
+
+For umount, zero messages at all.
+
+The feature request is something like what XFS does, so that we know
+exactly when the file system is mounted and unmounted as far as Btrfs
+code is concerned.
+
+I don't know that it needs the start and end of the mount and
+unmounted (i.e. two messages). I'm mainly interested in having a
+notification for "mount completed successfully" and "unmount completed
+successfully". i.e. the end of each process, not the start of each.
+
+In particular the unmount notice is somewhat important because as far
+as I know there's no Btrfs dirty flag from which to infer whether it
+was really unmounted cleanly. But I'm also not sure what the insertion
+point for these messages would be. Looking at the mount code in
+particular, it's a little complicated. And maybe with some of the
+sanity checking and debug options it could get more complicated, and
+wouldn't want to conflict with that - or any multiple device use case
+either.
+
+
 -- 
-2.23.0
-
+Chris Murphy
