@@ -2,122 +2,99 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F9A6DFE57
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 09:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62B97DFE61
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 09:38:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730619AbfJVHdJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Oct 2019 03:33:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38164 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729909AbfJVHdJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Oct 2019 03:33:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5BF94B507;
-        Tue, 22 Oct 2019 07:33:07 +0000 (UTC)
+        id S2387929AbfJVHiH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Oct 2019 03:38:07 -0400
+Received: from mout.gmx.net ([212.227.17.22]:51315 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729458AbfJVHiH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Oct 2019 03:38:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1571729875;
+        bh=V5Vgr4ObIQjKL0ag415uFrm9bIFv3js9n98VEGFbZmg=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=ioKAbQ7vUYbh06T0tZaCG8oWfHPpeDIW6uLJbYk9d11veBko4m8HIyGIVzsA5619v
+         lvuJgZz6TTYb1abXjReop0l9UaOKA4GjUXqcV97DAV2ZWgxKT0RTv2H4s5cGmSabfX
+         R5LUi3HfNmP96a2CS6Av4q9r4NsZ7avH4dlxEgL8=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M89L1-1iQvT71hxb-005Jkh; Tue, 22
+ Oct 2019 09:37:55 +0200
 Subject: Re: [PATCH v2 1/2] btrfs-progs: warn users about the possible dangers
  of check --repair
-To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>, quwenruo.btrfs@gmx.com,
-        anand.jain@oracle.com, rbrown@suse.de,
+To:     Johannes Thumshirn <jthumshirn@suse.de>, dsterba@suse.cz,
+        David Sterba <dsterba@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>, anand.jain@oracle.com,
+        rbrown@suse.de,
         Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20191018111604.16463-1-jthumshirn@suse.de>
  <20191021152241.GN3001@twin.jikos.cz>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <45385205-4b42-b89b-4c6f-581064c5f08c@suse.de>
-Date:   Tue, 22 Oct 2019 09:33:06 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <45385205-4b42-b89b-4c6f-581064c5f08c@suse.de>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <baccc7ef-2058-d779-7ce2-b2c120abefe4@gmx.com>
+Date:   Tue, 22 Oct 2019 15:37:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <20191021152241.GN3001@twin.jikos.cz>
+In-Reply-To: <45385205-4b42-b89b-4c6f-581064c5f08c@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:4oA7KKFVBwQTf9P8RmG99tW8J1gnQooIFcDVufGyocgUe8woWyV
+ blDsnHN5Nie8XxGqFbZZUuPZKt4Wq/DNIA/9MdHXVf8BXsw3lqPBJ+28W767d+7fIiIzGUa
+ N+HMrEe9EYTNt2rE/wyDgglqg7hHEMriE5MD4+b4oZxCHIIoLiAYijLZ2a1PBgzCW7K2MaD
+ V1nszwkLNXZyJ+xyrPBAA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:F/ArB/0RkHA=:W/ReCY7zhXgA21KGq27Pxq
+ q45hhKwRHrZ6ZxMivD4rNZMzE/Y4S7Hhq/KqGTYRq4fAkJbQeMAkoqGC21bZurD+L5auty2Mn
+ gwVZIO6TjvirhPmcdQ4s1Eyz8f3kiO3zzCyXQWxQbn4j/a1jo3Pw/NoMObjDwq4mQP67TxInK
+ fiU2Uou7QOIRapLo0uKSci61TNAOWyNDBoCoNerjpOqPfxZFf6WK2qzy6y8Ph0Wg/SS0/PLf9
+ agxlT0D0bfCa1ycagJkLI3oOejB7qELywFXorikGlmpbeJEs3SQRO3Q0/QpLdKd0l6hKwAvG9
+ LLJZSNhdLafx7ZGgr+eAJtpN6hQqhUKTg21yNNJUVL2LasrdQvFMN9v+tvM/zZta8RcGH8DG5
+ MOtBOcukmKp+66Psc5F3vy1p2IDUfiPV/lVk9bh0XJYwC9bC8BmzAFU8um5F5dqobnwrbODhR
+ pj1davePx8cgtetUmnsBp69oiOgEQf14DJzU9Lb4kvmIrgugh44vXL77L+wQJdo0zm8KQT25L
+ 3f9TkqajoIb7T8cvMDL4uQFhl52/6QkqhzwpxgbsQBgO8j66IgYYBmhzCbHfMjDuPUEHBGIOd
+ TGPElnX04VsEB9IvGhFhgzjNE4MbC7KIuynTjRrgKbZYWlH1AmF/NPliSl+QxaMZvsyKAIst8
+ eyZSUfeiTCNfHViwMZiKb/OK2oGh5Qnr72uVSnQyfDdOYvWS7Sf1adlDhMvIFYVzuaf9z4mBB
+ hFM33tjqFs76Ha0/qx28iHNHYjNUBoV2Ucv7D2b5zFwpHcsu7rwQbxCRGpCewXOHAKf1Ber5g
+ y0cAnCk8hzs/0+ndv3BlzJekVzi7N3AgaAtH3CblHVUJaZ1EBLBA10Y2es1C9xfmTeAfS5aYd
+ dKkX45Ww/geK7FxhN34kOR5a7MHaib4obRy+MOYK1FYHV5viFY/MoVQG+dLgyk6TB0VeB3Do+
+ tS1pLk03BNE9Y3CB92hal04/pDCqQVRtE0UR0yPhBIKUd+howmi44/0+v8J+vgen1UK0a8QQt
+ sPt3k6MN0UdNfz3eWVkHm+aw1yfc2ORspIA4kwsktw3BbjaOmE+QMFXYVs2lU6JnqWHBwvZ1h
+ 5dZ56yRfNgx1/Ikb+6DDz7XGzw9DFLvq6QlnPT5zDrs9tOM/pKfuzfpBGPQruVGjxed0N7VdD
+ /MKKk0E1GSLnQGFyDE9Simcudxmf8oV7peOgD1Nt/ZeWy3mlTVOSwC+eibQPVB66GPMbHMHo8
+ Q1C6criW5apZcFWOyRXXxLtEUQzMU/VEKuxrSLGQIwbSST1lWQH8vQwoiTjc=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 21/10/2019 17:22, David Sterba wrote:
-> --force was added for a different reason, to allow check on a mounted
-> filesystem. I don't think that combining --repair and --force just to
-> allow repair is a good idea. There's a 'dangerous repair' mode for eg.
-> xfs that allows to do live surgery on a mounted filesytem (followed by
-> immediate reboot). We want to be able to do that eventually.
-> 
-> I understand where the motivation comes from, let me have a second
-> thought on that.
 
-So how about adding a '--yes' or '--accept', '--dangerous',
-'--allow-dangeruos' parameter instead of force to skip the warning?
 
-My vote would go for '--allow-dangerous'.
+On 2019/10/22 =E4=B8=8B=E5=8D=883:33, Johannes Thumshirn wrote:
+> On 21/10/2019 17:22, David Sterba wrote:
+>> --force was added for a different reason, to allow check on a mounted
+>> filesystem. I don't think that combining --repair and --force just to
+>> allow repair is a good idea. There's a 'dangerous repair' mode for eg.
+>> xfs that allows to do live surgery on a mounted filesytem (followed by
+>> immediate reboot). We want to be able to do that eventually.
+>>
+>> I understand where the motivation comes from, let me have a second
+>> thought on that.
+>
+> So how about adding a '--yes' or '--accept', '--dangerous',
+> '--allow-dangeruos' parameter instead of force to skip the warning?
+>
+> My vote would go for '--allow-dangerous'.
 
-Byte,
-	Johannes
--- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
++1 for '--yes', at least e2fsck has a similar '-y' option.
+
+Thanks,
+Qu
+
+>
+> Byte,
+> 	Johannes
+>
