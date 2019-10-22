@@ -2,217 +2,235 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 042BDE014F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 11:59:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08828E016E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 12:01:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731689AbfJVJ7A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Oct 2019 05:59:00 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45929 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731647AbfJVJ7A (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Oct 2019 05:59:00 -0400
-Received: by mail-wr1-f66.google.com with SMTP id q13so12325705wrs.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 22 Oct 2019 02:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=EGC6zM4+ZaOmgBq+ctMVPIcGkDMOPWa7mq6PGgeYYkA=;
-        b=cNnE4FHwP3H7o2xbeu2cVvyXCztsxBG9rWVFZFEm0Hm6DPNxP0ufoIErcjiG1pBtLq
-         AEqkbhoMS+M5N0N7bNfsw0RP7pS3MN69235q/9sauw0/i7R6GX9kBVftr70oGOaEsuDH
-         kj0jFX/iSsHqzlSbJN4Y/zum77LbK1n2NgXDZt13tCmZ5IrG3RsX8clZwK1KA2JnvBZo
-         eQii2Zi2dWb7bEqXcVOsHAY2xhxJeuUM1PHaj1WLyazbliMXCSAmA457F0SXSr8oWXPI
-         Y8sIiM7F8y8Bo84Auc50eY1HHuOrHQiUJmy5GDAXL8TsGygeEpCtsHrH9Pd0P4YslzHm
-         p0fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:content-transfer-encoding;
-        bh=EGC6zM4+ZaOmgBq+ctMVPIcGkDMOPWa7mq6PGgeYYkA=;
-        b=UsJ50vV6qPPrifN7uQi6lrIMvddG6tJkl+8R8b1XCFnE+NxUJXgoc2GkX6fLO4t2hN
-         oRdDq5ujOvFNqNj7NcCWwT22oCCRWbS9W/2hiZHWOdoHNf/p3NFIa/S2zxsyN5Tx0GFl
-         ErhVCdyu6D5oDlFPme8EEcfbaFopVwmfjGhNAsecBoapaJSjviG3tP0xE5x2vJSkolWv
-         DEsoVoluM9wWjmqNvAX4nJQyhGF/n3wz3R3EuEad+uP663hm7wfUpeodEIVtNUGCfjpD
-         25NB8yuz2q7G+uzZnDGQ4kGTroOKQ/n2AfJpRFDBgp3g2SB6MTes8r1u4N+KyEr1eFu7
-         rGKw==
-X-Gm-Message-State: APjAAAWS3QRRbGW2jeAU3q4bQrdeB7+ZzjX1YjUt3VjFX9NnTodszSbA
-        ybnjeyxGf2vcRD1PggoRF556VbV2lXk8dokVebv1lZceeabdnw==
-X-Google-Smtp-Source: APXvYqzTztN7GZ8zoXBPDLl9ZZ3yoXpw49AJjnAO+T87Pa6s6Qkb6J/L+Fxc6mOJBBEtrLC6kcs9LlWwqdUxnGANWVo=
-X-Received: by 2002:a5d:4a8a:: with SMTP id o10mr2719407wrq.101.1571738336793;
- Tue, 22 Oct 2019 02:58:56 -0700 (PDT)
+        id S1731439AbfJVKB1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Oct 2019 06:01:27 -0400
+Received: from mout.gmx.net ([212.227.15.15]:47225 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729838AbfJVKB1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Oct 2019 06:01:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1571738485;
+        bh=7wYDrrqrHAKX/7eCp0ZqxXUXJ5MZHa5z1zxcoH4APys=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=c4K48/bZQLILi7gbFagaTu+W/Bszt0yyMAFHXnZjh/d8DQ0WNkqUUl3Y+papCGeZ0
+         Be09j3QfWz1DNJyv+CB+/9bx50sOIi6fwjSEu0YmFvNgnKx8+j0RkoKBKMqkDr9xAh
+         cu1qvWbuyTiZVTlpMtGqTINDkjM7rRsFiUZv5P+4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Ml6mE-1hbSzw2csG-00lYzA; Tue, 22
+ Oct 2019 12:01:25 +0200
+Subject: Re: Effect of punching holes
+To:     Tobias Reinhard <trtracer@gmail.com>, linux-btrfs@vger.kernel.org
+References: <2b75abb1-4dd8-1da4-77be-7557ff53ec75@gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Message-ID: <67354156-286a-f80e-ebc3-99c32e356fac@gmx.com>
+Date:   Tue, 22 Oct 2019 18:01:20 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-References: <CAJCQCtTPAm6eGA80y9LYc+Jaeo1wB0+vOMvO6B02o5JJKRFrhw@mail.gmail.com>
- <0a5bc5dd-6077-a0de-8250-e7c1d0d37b51@suse.com>
-In-Reply-To: <0a5bc5dd-6077-a0de-8250-e7c1d0d37b51@suse.com>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Tue, 22 Oct 2019 11:58:37 +0200
-Message-ID: <CAJCQCtQYjzhc+F-SpNUo9MZvkXKNczAUK6s2kKHZgnpnSc90kg@mail.gmail.com>
-Subject: Re: feature request, explicit mount and unmount kernel messages
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <2b75abb1-4dd8-1da4-77be-7557ff53ec75@gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="FDJ3F3RwIA1IEDfFkuqEjX42YgbcCmKJ0"
+X-Provags-ID: V03:K1:EXnaq7KHnpSajf7gO+yA0DCkWr62Udv5HYP5H9/bufPP8R0wylo
+ /y335qKDfDF9HC3ulfPz90PxkDMOnKKr18kNqArcZmPv2aPW6ZPhMHIuwDeJjzTcR7GKTRc
+ HqqPdZ/NV82l8dRGg5UHsn0PIABp+gCGjUrBYIRbg2nOTswZbwc/ph5ocMnyBCwWBWMy/jc
+ r9gOhq5nRetLbs3h4ZT+g==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:B5LSOObxJnE=:dHxO/NyqczodNa3D17BCUA
+ esJnV++UbAvllaTThQWn6j8OQkntS+jHliJ8//6aAzrEuOYcJtxGIaD0bZVFBvpu/7QHSzZ2w
+ 2L+BlN9AY1Rvf0Rh1GvviiTyXoNPrfh95VgYIId9v6sEgAn1WyjZHpiDPj7bqGoKLU7FnZvQb
+ zIgtUb7FE7CcOCTg5l0TBTbVr8Rjk1PzVwiAVLkSq+E9iL4q42ReiVqF5wXtIZWu8+ER6LC1N
+ LfRqsOG/6FH8rtk/jhE3MHQWqmhOaOEUa418H/viT/4DzBqrKvSYV9GJRds32KJqhfHXujn+a
+ j1UPp5+iPxdJVLhI0HySm2sIhxViAcSc8sfxN+1SVIq8QOFR7sfv8RqEr4nV0yZebNcT5B7zQ
+ A5cKyZzwMb7OR4QdoQltFH/cT8dLfOC2usTLmiUNKRps/3XX7LLeXdR352de85lRJQA1WXBIC
+ ClXf+hMBx7Hr7AaFOAmohCdRHH25+eHNLO0u9Zfi4HhbF3vChniA6nycaAg8LTfTZ2QThciS7
+ mObyMSpZ9Yxb5tZg7XsX+xTPkIoeBMS1okvdC6OhvXfVT0npQBzRL4v870dqCFn/yxTOkJJVw
+ dSesDx92mxf59ubGCIYrxtKXOkJQ7NqpNhS9WiHLi7Xpz5xCUpl6+Fs/OzCMZI2MSbHv7uqBX
+ 3fo3BNdnN0di3XQjzqnQFwbwrDxUk2pswQ4FMgCP8U+xwSvzcd1WbO3YZ+Qn58jyawFcU/QxB
+ 6BDfID6J0oERWKyzx+xOp7vUaLLZCCwgPe1dbmzlJiDb03vyckGtIlaUnlNDzSzW9K8KnApq5
+ rSEXxpxQlcEm9H90hBs6vomeDI6rWa6E0VdyZ9i+MzKXtKLXnGnvSK7TyqnQ38eUu+qkfmt6G
+ 5YX7fRyCqR3I/0OB4XkeGzFNC2gH4IfFGN6CkRhCCJH486Xx5hBVmdXl7I6JudGkgBwiX4UVI
+ GrGNirbj4DcaeZWLU1irTZN0TTYXxeTWnsBg0RqJJwtPQxyEZpLdrlJzi/ZCDbKC7T05+CGEq
+ VSsVG5N/aTRML7KFvJ+8BGhnU7MjmVuAYhzBljX7npYHbIwWyVeP6FNuJ7WRXYJtmcZ9zkTAK
+ J6KwDDHB6azdrnEtpa00QmfFoiVWdOtnpX2sdwZR1e73ph0n0xn9NxlPC9SZnx8bkL7qTD+Oy
+ 3Zh5KulsDkrHOwHOE+QTKyqWIuTtKHsk7Z2qPtn2hDNeZ68nCFvk9I7A7D2cmW59wFqCEAVfS
+ 363+pTvwciPSDzoMt4jvx/I/7wt0NNvZhMrfc0fEh+LthvH6gMBY0EcsCsHQ=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-(resending to list, I don't know why but I messed up the reply
-directly to Nikolay)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--FDJ3F3RwIA1IEDfFkuqEjX42YgbcCmKJ0
+Content-Type: multipart/mixed; boundary="K5xLgBNr98cWjMqvPOGHN7CVqO81zla9n"
 
-On Tue, Oct 22, 2019 at 11:16 AM Nikolay Borisov <nborisov@suse.com> wrote:
->
-> On 22.10.19 =3DD0=3DB3. 12:00 =3DD1=3D87., Chris Murphy wrote:
-> > Hi,
-> >
-> > So XFS has these
-> >
-> > [49621.415203] XFS (loop0): Mounting V5 Filesystem
-> > [49621.444458] XFS (loop0): Ending clean mount
-> > ...
-> > [49621.444458] XFS (loop0): Ending clean mount
-> > [49641.459463] XFS (loop0): Unmounting Filesystem
-> >
-> > It seems to me linguistically those last two should be reversed, but wh=
-=3D
-atever.
-> >
-> > The Btrfs mount equivalent messages are:
-> > [49896.176646] BTRFS: device fsid f7972e8c-b58a-4b95-9f03-1a08bbcb62a7
-> > devid 1 transid 5 /dev/loop0
-> > [49901.739591] BTRFS info (device loop0): disk space caching is enabled
-> > [49901.739595] BTRFS info (device loop0): has skinny extents
-> > [49901.767447] BTRFS info (device loop0): enabling ssd optimizations
-> > [49901.767851] BTRFS info (device loop0): checking UUID tree
-> >
-> > So is it true that for sure there is nothing happening after the UUID
-> > tree is checked, that the file system is definitely mounted at this
-> > point? And always it's the UUID tree being checked that's the last
-> > thing that happens? Or is it actually already mounted just prior to
-> > disk space caching enabled message, and the subsequent messages are
-> > not at all related to the mount process? See? I can't tell.
-> >
-> > For umount, zero messages at all.
->
-> You are doing it wrong.
-
-I'm doing what wrong?
-
-> Those messages are sent from the given subsys to
-> the console and printed whenever. You can never rely on the fact that
-> those messages won't race with some code.
-
-That possibility is implicit in all of the questions I asked.
-
-
-> For example the checking UUID tree happens _before_
-> btrfs_check_uuid_tree is called and there is no guarantee when it's
-> finished.
-
-Are these messages useful for developers? I don't see them as being
-useful for users. They're kinda superfluous for them.
-
-
-> > The feature request is something like what XFS does, so that we know
-> > exactly when the file system is mounted and unmounted as far as Btrfs
-> > code is concerned.
-> >
-> > I don't know that it needs the start and end of the mount and
-> > unmounted (i.e. two messages). I'm mainly interested in having a
-> > notification for "mount completed successfully" and "unmount completed
-> > successfully". i.e. the end of each process, not the start of each.
->
-> mount is a blocking syscall, same goes for umount your notifications are
-> when the respective syscalls / system utilities return.
-
-Right. Here is the example bug from 2015, that I just became aware of
-as the impetus for posting the request; but I've wanted this explicit
-notification for a while.
-
-https://bugzilla.redhat.com/show_bug.cgi?id=3D3D1206874#c7
-
-In that example, there's one Btrfs info message at
-[    2.727784] localhost.localdomain kernel: BTRFS info (device sda3):
-disk space caching is enabled
-
-And yet systemd times out on the mount unit. If it's true that only
-mount blocking systemd could be the cause, then this is a Btrfs, VFS,
-or mount related bug (however old it is by now and doesn't really
-matter other than conceptually). But there isn't enough granularity in
-the kernel messages to understand why the mount is taking so long. If
-there were a Btrfs mount succeeded message, we'd know whether the
-Btrfs portion of the mount process successfully completed or not, and
-perhaps have a better idea where the hang is happening.
-
-On Tue, Oct 22, 2019 at 11:16 AM Nikolay Borisov <nborisov@suse.com> wrote:
->
->
->
-> On 22.10.19 =D0=B3. 12:00 =D1=87., Chris Murphy wrote:
-> > Hi,
-> >
-> > So XFS has these
-> >
-> > [49621.415203] XFS (loop0): Mounting V5 Filesystem
-> > [49621.444458] XFS (loop0): Ending clean mount
-> > ...
-> > [49621.444458] XFS (loop0): Ending clean mount
-> > [49641.459463] XFS (loop0): Unmounting Filesystem
-> >
-> > It seems to me linguistically those last two should be reversed, but wh=
-atever.
-> >
-> > The Btrfs mount equivalent messages are:
-> > [49896.176646] BTRFS: device fsid f7972e8c-b58a-4b95-9f03-1a08bbcb62a7
-> > devid 1 transid 5 /dev/loop0
-> > [49901.739591] BTRFS info (device loop0): disk space caching is enabled
-> > [49901.739595] BTRFS info (device loop0): has skinny extents
-> > [49901.767447] BTRFS info (device loop0): enabling ssd optimizations
-> > [49901.767851] BTRFS info (device loop0): checking UUID tree
-> >
-> > So is it true that for sure there is nothing happening after the UUID
-> > tree is checked, that the file system is definitely mounted at this
-> > point? And always it's the UUID tree being checked that's the last
-> > thing that happens? Or is it actually already mounted just prior to
-> > disk space caching enabled message, and the subsequent messages are
-> > not at all related to the mount process? See? I can't tell.
-> >
-> > For umount, zero messages at all.
->
-> You are doing it wrong. Those messages are sent from the given subsys to
-> the console and printed whenever. You can never rely on the fact that
-> those messages won't race with some code.
->
-> For example the checking UUID tree happens _before_
-> btrfs_check_uuid_tree is called and there is no guarantee when it's
-> finished.
->
-> >
-> > The feature request is something like what XFS does, so that we know
-> > exactly when the file system is mounted and unmounted as far as Btrfs
-> > code is concerned.
-> >
-> > I don't know that it needs the start and end of the mount and
-> > unmounted (i.e. two messages). I'm mainly interested in having a
-> > notification for "mount completed successfully" and "unmount completed
-> > successfully". i.e. the end of each process, not the start of each.
->
-> mount is a blocking syscall, same goes for umount your notifications are
-> when the respective syscalls / system utilities return.
->
-> >
-> > In particular the unmount notice is somewhat important because as far
-> > as I know there's no Btrfs dirty flag from which to infer whether it
-> > was really unmounted cleanly. But I'm also not sure what the insertion
-> > point for these messages would be. Looking at the mount code in
-> > particular, it's a little complicated. And maybe with some of the
-> > sanity checking and debug options it could get more complicated, and
-> > wouldn't want to conflict with that - or any multiple device use case
-> > either.
-> >
-> >
+--K5xLgBNr98cWjMqvPOGHN7CVqO81zla9n
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
 
---=20
-Chris Murphy
+On 2019/10/22 =E4=B8=8B=E5=8D=885:47, Tobias Reinhard wrote:
+> Hi,
+>=20
+>=20
+> I noticed that if you punch a hole in the middle of a file the availabl=
+e
+> filesystem space seems not to increase.
+>=20
+> Kernel is 5.2.11
+>=20
+> To reproduce:
+>=20
+> ->mkfs.btrfs /dev/loop1 -f
+>=20
+> btrfs-progs v4.15.1
+> See http://btrfs.wiki.kernel.org for more information.
+>=20
+> Detected a SSD, turning off metadata duplication.=C2=A0 Mkfs with -m du=
+p if
+> you want to force metadata duplication.
+> Label:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 (null)
+> UUID:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 415e925a-588a-4b8f-bdc7-c30a4a0f5587
+> Node size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 16384
+> Sector size:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 4096
+> Filesystem size:=C2=A0=C2=A0=C2=A0 1.00GiB
+> Block group profiles:
+> =C2=A0 Data:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 single=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0 8.00MiB
+> =C2=A0 Metadata:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 single=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 8.00Mi=
+B
+> =C2=A0 System:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 single=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 4.00MiB
+> SSD detected:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 yes
+> Incompat features:=C2=A0 extref, skinny-metadata
+> Number of devices:=C2=A0 1
+> Devices:
+> =C2=A0=C2=A0 ID=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 SIZE=C2=A0 PA=
+TH
+> =C2=A0=C2=A0=C2=A0 1=C2=A0=C2=A0=C2=A0=C2=A0 1.00GiB=C2=A0 /dev/loop1
+>=20
+> ->mount /dev/loop1 /srv/btrtest2
+>=20
+> ->for i in $(seq 1 20); do dd if=3D/dev/urandom of=3Dtest$i bs=3D16M co=
+unt=3D4 ;
+> sync ; fallocate -p -o 4096 -l 67100672 test$i && sync ; done
+>=20
+> this failed from the 16th file on because of no space left
+
+Btrfs doesn't free the space until all space of a data extent get freed.
+
+In your case, your hole punch is [4k, 64M-4K), thus the 64M extent still
+has 4K being used.
+So the data extent won't be freed until you free the last 4K.
+
+>=20
+> ->df -T .
+> Filesystem=C2=A0=C2=A0=C2=A0=C2=A0 Type=C2=A0 1K-blocks=C2=A0=C2=A0 Use=
+d Available Use% Mounted on
+> /dev/loop1=C2=A0=C2=A0=C2=A0=C2=A0 btrfs=C2=A0=C2=A0 1048576 935856=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 2272 100% /srv/btrtest2
+>=20
+> ->btrfs fi du .
+> =C2=A0=C2=A0=C2=A0=C2=A0 Total=C2=A0=C2=A0 Exclusive=C2=A0 Set shared=C2=
+=A0 Filename
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test1
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test2
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test3
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test4
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test5
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test6
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test7
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test8
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test9
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test10
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test11
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test12
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test13
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test14
+> =C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 8.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test15
+> =C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test16
+> =C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test17
+> =C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test18
+> =C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test19
+> =C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=A0 4.00KiB=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 -=C2=A0 ./test20
+> =C2=A0140.00KiB=C2=A0=C2=A0 140.00KiB=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ 0.00B=C2=A0 .
+>=20
+> When doing this on XFS or EXT4 it works as expected:
+>=20
+> Filesystem=C2=A0=C2=A0=C2=A0=C2=A0 Type 1K-blocks=C2=A0 Used Available =
+Use% Mounted on
+> /dev/loop1=C2=A0=C2=A0=C2=A0=C2=A0 ext4=C2=A0=C2=A0=C2=A0 999320=C2=A0 =
+2764=C2=A0=C2=A0=C2=A0 927744=C2=A0=C2=A0 1% /srv/btrtest
+> /dev/loop2=C2=A0=C2=A0=C2=A0=C2=A0 xfs=C2=A0=C2=A0=C2=A0 1038336 40456=C2=
+=A0=C2=A0=C2=A0 997880=C2=A0=C2=A0 4% /srv/xfstest
+>=20
+> How to i reclaim the space on BTRFS? Defrag does not seem to help.
+
+Rewrite the remaining 4K.
+
+Then the new write 4K will be cowed into a new 4K extent, the old large
+64M extent gets fully freed and free space.
+
+Thanks,
+Qu
+
+>=20
+> Best regards
+>=20
+>=20
+> Tobias
+>=20
+
+
+--K5xLgBNr98cWjMqvPOGHN7CVqO81zla9n--
+
+--FDJ3F3RwIA1IEDfFkuqEjX42YgbcCmKJ0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2u03EXHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qgZSQgAnFdGjDnsPd0xc+spiq3ThwnD
+4pcSPOOnXDl0pULAeMI/tsA1FvpiX96ou66waoz1hMKXkUmnV4G1VG4lBYKX8uT0
+a21XgzPOY98vJGxUUSE+186G4Vq4wxzz9bDAZvFKj2Chpq5OpvjlA8UAa3IvyMha
+r7MlW83+p2j+x3NnVQIgKWfMl44a/8ejPUHlWLx2XK0HME5CIyxJ7Y1eVEGUXp45
+9xdQRMVbUBLH/HPAJDvZ8POGllkqRKeamGpitpKre6/E3ggQ9NN0L4wjrBFgyoiX
+vCi2ug/ZY/s/g2S1Y6Sps7A8oOb6z+0SpiB2Va2qQzQ0KytQkxNt4IIVADAZ8Q==
+=h68L
+-----END PGP SIGNATURE-----
+
+--FDJ3F3RwIA1IEDfFkuqEjX42YgbcCmKJ0--
