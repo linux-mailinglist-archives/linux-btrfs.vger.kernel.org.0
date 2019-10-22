@@ -2,210 +2,147 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AE2DFDBF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 08:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3252CDFDEC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 08:59:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730863AbfJVGkZ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Oct 2019 02:40:25 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:40572 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727943AbfJVGkZ (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Oct 2019 02:40:25 -0400
-Received: by mail-yb1-f193.google.com with SMTP id s7so4812081ybq.7;
-        Mon, 21 Oct 2019 23:40:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=N6DBniHEARPZeGwGYnc355+KIj9ZRD5tMQT/2Xpydu0=;
-        b=aHgaLAf71slYYTx/hYGwS/WXowCRmtq5KqrInt9pJprA729NHL7hdaMjj2upKbcqXD
-         2tmIp02JKNgzUef0f+65fMZvh8LkTNv1Lcqsc/tihzeFfPEJA7CyysFbz9IdS8Y5N3QE
-         jfaQGVdJ+t5lbLdDRWDppQ6kdRJFl2zKaNL56EDSVNKiuaL4QSbAnz/CH1FVjYYSktX3
-         whWxbRZMKtBBOCQE6Q+83QCZ7MJZvaLU0Ya7HRR6P1Y58ejxL1zkykuNrJpD1RxKrJMy
-         OMN+ajpeZn/4fJP38HNOieIHDAggXU6qotp4fBEOjLYKHQ2aLpGB8xVc5N05/lAFmM9c
-         MjVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=N6DBniHEARPZeGwGYnc355+KIj9ZRD5tMQT/2Xpydu0=;
-        b=AbzfHTOfjpgszNMcydvGqEnGn+VU4XDCFzIz0yfiLkbhZMFDrI7X919CWF/9YVRh+q
-         X9jfK1eyQthLb2fWwme4lZtTD+Fq6nylM6bXEyHraxxD11BDWq2YAtFEUN/FrwAtNwCL
-         Dfhsrt7y3UZw0MMLodX74b00VVaMZ8Uwj/nSShE0zvt37UFfnLZ5dJg68iyHp/SUUDjS
-         xMYhJ4dz4xOTSO18Ngvi0nLh04+SUhh3a96lgcnD+7/Ljd6NQAPtExFcdwAldyTZ/Je6
-         tt7rjgah5Q5dae24h33NR2OmiJtocjbUZCFN1UZ+PTmJwY9HNbe3JRCJAQZXAj1xUmv3
-         dEFQ==
-X-Gm-Message-State: APjAAAWiXi0OT6pMQsQtDbEITaW4xTfYZlSIl6d8hlwQYJ9KSSYZOZmo
-        WuKHMx/edMrSOg5piX9wmwIfyVlWC7jAoMuDgHxcKd8q
-X-Google-Smtp-Source: APXvYqyxF3fk1aWupBySMytZi5EPMpogXQvn80/lZjXqy9f6uhfXXuxv9tRdVFN+om3FBVrvmluHcVP+PnotafsSNyk=
-X-Received: by 2002:a25:6607:: with SMTP id a7mr1313993ybc.144.1571726423693;
- Mon, 21 Oct 2019 23:40:23 -0700 (PDT)
+        id S2387834AbfJVG71 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Oct 2019 02:59:27 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52030 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729458AbfJVG71 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Oct 2019 02:59:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id EEE40AF5D;
+        Tue, 22 Oct 2019 06:59:25 +0000 (UTC)
+Subject: Re: [PATCH 1/2] btrfs-progs: utils: Replace
+ __attribute__(fallthrough)
+To:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org
+Cc:     Marcos Paulo de Souza <mpdesouza@suse.com>
+References: <20191022020228.14117-1-marcos.souza.org@gmail.com>
+ <20191022020228.14117-2-marcos.souza.org@gmail.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <b06b57f8-09da-0f86-2957-4caf1ec13606@suse.com>
+Date:   Tue, 22 Oct 2019 09:59:24 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <cover.1571164762.git.osandov@fb.com> <c7e8f93596fee7bb818dc0edf29f484036be1abb.1571164851.git.osandov@fb.com>
- <CAOQ4uxh_pZSiMmD=46Mc3o0GE+svXuoC155P_9FGJXdsE4cweg@mail.gmail.com> <20191021185356.GB81648@vader>
-In-Reply-To: <20191021185356.GB81648@vader>
-From:   Amir Goldstein <amir73il@gmail.com>
-Date:   Tue, 22 Oct 2019 09:40:12 +0300
-Message-ID: <CAOQ4uxgm6MWwCDO5stUwOKKSq7Ot4-Sc96F1Evc6ra5qBE+-wA@mail.gmail.com>
-Subject: Re: [PATCH man-pages] Document encoded I/O
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Btrfs <linux-btrfs@vger.kernel.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>,
-        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com,
-        Theodore Tso <tytso@mit.edu>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20191022020228.14117-2-marcos.souza.org@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 9:54 PM Omar Sandoval <osandov@osandov.com> wrote:
->
-> On Mon, Oct 21, 2019 at 09:18:13AM +0300, Amir Goldstein wrote:
-> > CC: Ted
-> >
-> > What ever happened to read/write ext4 encrypted data API?
-> > https://marc.info/?l=linux-ext4&m=145030599010416&w=2
-> >
-> > Can we learn anything from the ext4 experience to improve
-> > the new proposed API?
->
-> I wasn't aware of these patches, thanks for pointing them out. Ted, do
-> you have any thoughts about making this API work for fscrypt?
->
-> > On Wed, Oct 16, 2019 at 12:29 AM Omar Sandoval <osandov@osandov.com> wrote:
-> > >
-> > > From: Omar Sandoval <osandov@fb.com>
-> > >
-> > > This adds a new page, rwf_encoded(7), providing an overview of encoded
-> > > I/O and updates fcntl(2), open(2), and preadv2(2)/pwritev2(2) to
-> > > reference it.
-> > >
-> > > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > > ---
-> > >  man2/fcntl.2       |  10 +-
-> > >  man2/open.2        |  13 ++
-> > >  man2/readv.2       |  46 +++++++
-> > >  man7/rwf_encoded.7 | 297 +++++++++++++++++++++++++++++++++++++++++++++
-> > >  4 files changed, 365 insertions(+), 1 deletion(-)
-> > >  create mode 100644 man7/rwf_encoded.7
-> > >
-> > > diff --git a/man2/fcntl.2 b/man2/fcntl.2
-> > > index fce4f4c2b..76fe9cc6f 100644
-> > > --- a/man2/fcntl.2
-> > > +++ b/man2/fcntl.2
-> > > @@ -222,8 +222,9 @@ On Linux, this command can change only the
-> > >  .BR O_ASYNC ,
-> > >  .BR O_DIRECT ,
-> > >  .BR O_NOATIME ,
-> > > +.BR O_NONBLOCK ,
-> > >  and
-> > > -.B O_NONBLOCK
-> > > +.B O_ENCODED
-> > >  flags.
-> > >  It is not possible to change the
-> > >  .BR O_DSYNC
-> > > @@ -1803,6 +1804,13 @@ Attempted to clear the
-> > >  flag on a file that has the append-only attribute set.
-> > >  .TP
-> > >  .B EPERM
-> > > +Attempted to set the
-> > > +.B O_ENCODED
-> > > +flag and the calling process did not have the
-> > > +.B CAP_SYS_ADMIN
-> > > +capability.
-> > > +.TP
-> > > +.B EPERM
-> > >  .I cmd
-> > >  was
-> > >  .BR F_ADD_SEALS ,
-> > > diff --git a/man2/open.2 b/man2/open.2
-> > > index b0f485b41..cdd3c549c 100644
-> > > --- a/man2/open.2
-> > > +++ b/man2/open.2
-> > > @@ -421,6 +421,14 @@ was followed by a call to
-> > >  .BR fdatasync (2)).
-> > >  .IR "See NOTES below" .
-> > >  .TP
-> > > +.B O_ENCODED
-> > > +Open the file with encoded I/O permissions;
-> >
-> > 1. I find the name of the flag confusing.
-> > Yes, most people don't read documentation so carefully (or at all)
-> > so they will assume O_ENCODED will affect read/write or that it
-> > relates to RWF_ENCODED in a similar way that O_SYNC relates
-> > to RWF_SYNC (i.e. logical OR and not logical AND).
-> >
-> > I am not good at naming and to prove it I will propose:
-> > O_PROMISCUOUS, O_MAINTENANCE, O_ALLOW_ENCODED
->
-> Agreed, the name is misleading. I can't think of anything better than
-> O_ALLOW_ENCODED, so I'll go with that unless someone comes up with
-> something better :)
->
-> > 2. While I see no harm in adding O_ flag to open(2) for this
-> > use case, I also don't see a major benefit in adding it.
-> > What if we only allowed setting the flag via fcntl(2) which returns
-> > an error on old kernels?
-> > Since unlike most O_ flags, O_ENCODED does NOT affect file
-> > i/o without additional opt-in flags, it is not standard anyway and
-> > therefore I find that setting it only via fcntl(2) is less error prone.
->
-> If I make this fcntl-only, then it probably shouldn't be through
-> F_GETFL/F_SETFL (it'd be pretty awkward for an O_ flag to not be valid
-> for open(), and also awkward to mix some non-O_ flag with O_ flags for
-> F_GETFL/F_SETFL). So that leaves a couple of options:
->
-> 1. Get/set it with F_GETFD/F_SETFD, which is currently only used for
->    FD_CLOEXEC. That also silently ignores unknown flags, but as with the
->    O_ flag option, I don't think that's a big deal for FD_ALLOW_ENCODED.
-> 2. Add a new fcntl command (F_GETFD2/F_SETFD2?). This seems like
->    overkill to me.
->
-> However, both of these options are annoying to implement. Ideally, we
-> wouldn't have to add another flags field to struct file. But, to reuse
-> f_flags, we'd need to make sure that FD_ALLOW_ENCODED doesn't collide
-> with other O_ flags, and we'd probably want to hide it from F_GETFL. At
-> that point, it might as well be an O_ flag.
->
-> It seems to me that it's more trouble than it's worth to make this not
-> an O_ flag, but please let me know if you see a nice way to do so.
->
 
-No, I see why you choose to add the flag to open(2).
-I have no objection.
 
-I once had a crazy thought how to add new open flags
-in a non racy manner without adding a new syscall,
-but as you wrote, this is not relevant for O_ALLOW_ENCODED.
+On 22.10.19 г. 5:02 ч., Marcos Paulo de Souza wrote:
+> From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> 
+> When compiling with clang, this warning is shown:
+> 
+> common/utils.c:404:3: warning: declaration does not declare anything [-Wmissing-declarations]
+>                 __attribute__ ((fallthrough));
+> 
+> This attribute seems to silence the same warning in GCC. Changing this
+> attribute with /* fallthrough */ fixes the warning for both gcc and
+> clang.
+> 
+> Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
 
-Something like:
+Which clang version are you using? According to
+https://clang.llvm.org/docs/AttributeReference.html#fallthrough this
+attribute is supported even with the GNU syntax.
 
-/*
- * Old kernels silently ignore unsupported open flags.
- * New kernels that gets __O_CHECK_NEWFLAGS do
- * the proper checking for unsupported flags AND set the
- * flag __O_HAVE_NEWFLAGS.
- */
-#define O_FLAG1 __O_CHECK_NEWFLAGS|__O_FLAG1
-#define O_HAVE_FLAG1 __O_HAVE_NEWFLAGS|__O_FLAG1
-
-fd = open(path, O_FLAG1);
-if (fd < 0)
-    return -errno;
-flags = fcntl(fd, F_GETFL, 0);
-if (flags < 0)
-    return flags;
-if ((flags & O_HAVE_FLAG1) != O_HAVE_FLAG1) {
-    close(fd);
-    return -EINVAL;
-}
-
-Not pretty, but hidden inside libc, end-users won't need to
-be aware of this.
-
-Cheers,
-Amir.
+> ---
+>  common/utils.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/common/utils.c b/common/utils.c
+> index 2cf15c33..a88336b3 100644
+> --- a/common/utils.c
+> +++ b/common/utils.c
+> @@ -401,15 +401,15 @@ int pretty_size_snprintf(u64 size, char *str, size_t str_size, unsigned unit_mod
+>  	case UNITS_TBYTES:
+>  		base *= mult;
+>  		num_divs++;
+> -		__attribute__ ((fallthrough));
+> +		/* fallthrough */
+>  	case UNITS_GBYTES:
+>  		base *= mult;
+>  		num_divs++;
+> -		__attribute__ ((fallthrough));
+> +		/* fallthrough */
+>  	case UNITS_MBYTES:
+>  		base *= mult;
+>  		num_divs++;
+> -		__attribute__ ((fallthrough));
+> +		/* fallthrough */
+>  	case UNITS_KBYTES:
+>  		num_divs++;
+>  		break;
+> @@ -1135,14 +1135,14 @@ int test_num_disk_vs_raid(u64 metadata_profile, u64 data_profile,
+>  	default:
+>  	case 4:
+>  		allowed |= BTRFS_BLOCK_GROUP_RAID10;
+> -		__attribute__ ((fallthrough));
+> +		/* fallthrough */
+>  	case 3:
+>  		allowed |= BTRFS_BLOCK_GROUP_RAID6;
+> -		__attribute__ ((fallthrough));
+> +		/* fallthrough */
+>  	case 2:
+>  		allowed |= BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID1 |
+>  			BTRFS_BLOCK_GROUP_RAID5;
+> -		__attribute__ ((fallthrough));
+> +		/* fallthrough */
+>  	case 1:
+>  		allowed |= BTRFS_BLOCK_GROUP_DUP;
+>  	}
+> 
