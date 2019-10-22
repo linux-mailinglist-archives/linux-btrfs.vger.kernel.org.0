@@ -2,116 +2,53 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9332DE023F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 12:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21C8E02F5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 13:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388456AbfJVKlD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Oct 2019 06:41:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39652 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388032AbfJVKlD (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Oct 2019 06:41:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 708ABB3AA;
-        Tue, 22 Oct 2019 10:41:01 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 610C6DA733; Tue, 22 Oct 2019 12:41:14 +0200 (CEST)
-Date:   Tue, 22 Oct 2019 12:41:14 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 5/5] btrfs: document extent buffer locking
-Message-ID: <20191022104114.GS3001@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1571340084.git.dsterba@suse.com>
- <ed989ccddbc8822e61df533d861d907ce0a43040.1571340084.git.dsterba@suse.com>
- <42052ba1-8333-b15b-344f-3330041daf52@suse.com>
+        id S2388690AbfJVLdr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Oct 2019 07:33:47 -0400
+Received: from rin.romanrm.net ([91.121.75.85]:44350 "EHLO rin.romanrm.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387768AbfJVLdr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Oct 2019 07:33:47 -0400
+Received: from natsu (natsu.2.romanrm.net [IPv6:fd39:aa:7359:7f90:e99e:8f1b:cfc9:ccb8])
+        by rin.romanrm.net (Postfix) with SMTP id 2CA9C20276;
+        Tue, 22 Oct 2019 11:33:44 +0000 (UTC)
+Date:   Tue, 22 Oct 2019 16:33:44 +0500
+From:   Roman Mamedov <rm@romanrm.net>
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Subject: Re: feature request, explicit mount and unmount kernel messages
+Message-ID: <20191022163344.19122329@natsu>
+In-Reply-To: <CAJCQCtTPAm6eGA80y9LYc+Jaeo1wB0+vOMvO6B02o5JJKRFrhw@mail.gmail.com>
+References: <CAJCQCtTPAm6eGA80y9LYc+Jaeo1wB0+vOMvO6B02o5JJKRFrhw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <42052ba1-8333-b15b-344f-3330041daf52@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 12:53:29PM +0300, Nikolay Borisov wrote:
-> 
-> 
-> On 17.10.19 г. 22:39 ч., David Sterba wrote:
-> > Signed-off-by: David Sterba <dsterba@suse.com>
-> > ---
-> >  fs/btrfs/locking.c | 110 +++++++++++++++++++++++++++++++++++++++------
-> >  1 file changed, 96 insertions(+), 14 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
-> > index e0e0430577aa..2a0e828b4470 100644
-> > --- a/fs/btrfs/locking.c
-> > +++ b/fs/btrfs/locking.c
-> > @@ -13,6 +13,48 @@
-> >  #include "extent_io.h"
-> >  #include "locking.h"
-> >  
-> > +/*
-> > + * Extent buffer locking
-> > + * ~~~~~~~~~~~~~~~~~~~~~
-> > + *
-> > + * The locks use a custom scheme that allows to do more operations than are
-> > + * available fromt current locking primitives. The building blocks are still
-> > + * rwlock and wait queues.
-> > + *
-> > + * Required semantics:
-> 
-> Thinking out loud here..
-> 
-> > + *
-> > + * - reader/writer exclusion
-> 
-> RWSEM has that
-> 
-> > + * - writer/writer exclusion
-> 
-> RWSEM has that
-> 
-> > + * - reader/reader sharing
-> 
-> RWSEM has that
-> > + * - spinning lock semantics
-> 
-> RWSEM has that in the form of optimistic spinning which would be shorter
-> than what the custom implementation provides.
-> 
-> > + * - blocking lock semantics
-> 
-> RWSEM has that
+On Tue, 22 Oct 2019 11:00:07 +0200
+Chris Murphy <lists@colorremedies.com> wrote:
 
-'blocking' in btrfs lock does not hold the rwlock, does rwsem do it the
-same? The term might be confusing, a thread that tries to get a lock is
-also blocking (and spinning while trying), but the point here is that
-the lock is not held so any sleeping operation can happen. And with the
-locking status offloaded, we're not nesting the locking primitives, but
-only the big tree locks.
-
-> > + * - try-lock semantics for readers and writers
+> Hi,
 > 
-> down_write_trylock, down_read_trylock.
+> So XFS has these
 > 
-> > + * - one level nesting, allowing read lock to be taken by the same thread that
-> > + *   already has write lock
+> [49621.415203] XFS (loop0): Mounting V5 Filesystem
+> [49621.444458] XFS (loop0): Ending clean mount
+> ...
+> [49621.444458] XFS (loop0): Ending clean mount
+> [49641.459463] XFS (loop0): Unmounting Filesystem
 > 
-> this might be somewhat problematic but there is downgrade_write which
-> could be used, I'll have to check.
+> It seems to me linguistically those last two should be reversed, but whatever.
 
-The read lock happens transaprently from the POV of the thread that
-takes it. As there's only one known context where the write->read
-happens, it would be possible to do some magic to convert it, but it's
-still problematic.
+Just a minor note, there is no "last two", but only one "Unmounting" message
+on unmount: you copied the "Ending" mount-time message twice for the 2nd quote
+(as shown by the timestamp).
 
-The read-function is also called without the write lock. So it would
-have to atomically check if the lock is held for write AND by the same
-task. I don't know if this is feasible.
+-- 
+With respect,
+Roman
