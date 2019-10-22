@@ -2,78 +2,90 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B46E0499
-	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 15:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A9CE0583
+	for <lists+linux-btrfs@lfdr.de>; Tue, 22 Oct 2019 15:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388314AbfJVNK2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 22 Oct 2019 09:10:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51994 "EHLO mx1.suse.de"
+        id S2388275AbfJVNwB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 22 Oct 2019 09:52:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58518 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387624AbfJVNK2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 22 Oct 2019 09:10:28 -0400
+        id S2387831AbfJVNwB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 22 Oct 2019 09:52:01 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A55B1B2DE;
-        Tue, 22 Oct 2019 13:10:26 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 83F8CAFAF;
+        Tue, 22 Oct 2019 13:51:59 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 80D4ADA733; Tue, 22 Oct 2019 15:10:39 +0200 (CEST)
-Date:   Tue, 22 Oct 2019 15:10:39 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <n.borisov.lkml@gmail.com>
-Cc:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-Subject: Re: [PATCH 0/2] btrfs-progs: Setting implicit-fallthrough by default
-Message-ID: <20191022131039.GX3001@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Nikolay Borisov <n.borisov.lkml@gmail.com>,
-        Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
-        dsterba@suse.com, linux-btrfs@vger.kernel.org,
-        Marcos Paulo de Souza <mpdesouza@suse.com>
-References: <20191022020228.14117-1-marcos.souza.org@gmail.com>
- <028a15c3-2395-34c5-f761-5782e851d933@gmail.com>
+        id 509ECDA733; Tue, 22 Oct 2019 15:52:12 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.4-rc5
+Date:   Tue, 22 Oct 2019 15:52:07 +0200
+Message-Id: <cover.1571751313.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <028a15c3-2395-34c5-f761-5782e851d933@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 03:45:38PM +0300, Nikolay Borisov wrote:
-> 
-> 
-> On 22.10.19 г. 5:02 ч., Marcos Paulo de Souza wrote:
-> > From: Marcos Paulo de Souza <mpdesouza@suse.com>
-> > 
-> > While compiling btrfs-progs using clang I found an issue using
-> > __attribute__(fallthrough), which does not seems to work in clang.
-> > 
-> > To solve this issue, the code was changed to use /* fallthrough */, which is the
-> > same notation adopted by linux kernel.
-> > 
-> > Once these places were changed, -Wimplicit-fallthrough was set in Makefile, to
-> > avoid further implicit-fallthrough cases being added in the future.
-> > 
-> > Marcos Paulo de Souza (2):
-> >   btrfs-progs: utils: Replace __attribute__(fallthrough)
-> >   btrfs-progs: Makefile: Add -Wimplicit-fallthrough
-> > 
-> >  Makefile       |  1 +
-> >  common/utils.c | 12 ++++++------
-> >  2 files changed, 7 insertions(+), 6 deletions(-)
-> > 
-> 
-> Overall the patch looks good, it just changes the fallthrough to the
-> least common denominator which seems to be a simple comment. In clang 10
-> the currently used attribute method is also going to be supported.
-> 
-> But we'll get most value if we just enable it now, so
-> 
-> Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Hi,
 
-Agreed, I've added the note to the first patch. 1-2 in devel. Thanks.
+please pull the following updates, all stable material.
+Thanks.
+
+Changes:
+
+* fixes of error handling cleanup of metadata accounting with qgroups
+  enabled
+
+* fix swapped values for qgroup tracepoints
+
+* fix during file sync, the full-sync status might get dropped
+  externally, eg. by background witeback under some circumstances
+
+* don't start unused worker thread, functionality removed already
+
+----------------------------------------------------------------
+The following changes since commit 431d39887d6273d6d84edf3c2eab09f4200e788a:
+
+  btrfs: silence maybe-uninitialized warning in clone_range (2019-10-08 13:14:55 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc4-tag
+
+for you to fetch changes up to ba0b084ac309283db6e329785c1dc4f45fdbd379:
+
+  Btrfs: check for the full sync flag while holding the inode lock during fsync (2019-10-17 20:36:02 +0200)
+
+----------------------------------------------------------------
+David Sterba (1):
+      btrfs: don't needlessly create extent-refs kernel thread
+
+Filipe Manana (3):
+      Btrfs: add missing extents release on file extent cluster relocation error
+      Btrfs: fix qgroup double free after failure to reserve metadata for delalloc
+      Btrfs: check for the full sync flag while holding the inode lock during fsync
+
+Qu Wenruo (4):
+      btrfs: block-group: Fix a memory leak due to missing btrfs_put_block_group()
+      btrfs: qgroup: Always free PREALLOC META reserve in btrfs_delalloc_release_extents()
+      btrfs: tracepoints: Fix wrong parameter order for qgroup events
+      btrfs: tracepoints: Fix bad entry members of qgroup events
+
+ fs/btrfs/block-group.c       |  1 +
+ fs/btrfs/ctree.h             |  5 +----
+ fs/btrfs/delalloc-space.c    |  7 ++-----
+ fs/btrfs/disk-io.c           |  6 ------
+ fs/btrfs/file.c              | 43 ++++++++++++++++++++-----------------------
+ fs/btrfs/inode-map.c         |  4 ++--
+ fs/btrfs/inode.c             | 12 ++++++------
+ fs/btrfs/ioctl.c             |  6 ++----
+ fs/btrfs/qgroup.c            |  4 ++--
+ fs/btrfs/relocation.c        |  9 +++++----
+ include/trace/events/btrfs.h |  3 ++-
+ 11 files changed, 43 insertions(+), 57 deletions(-)
