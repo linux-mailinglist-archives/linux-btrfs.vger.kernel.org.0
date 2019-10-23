@@ -2,210 +2,132 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B62E1146
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 06:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E198E11ED
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 08:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387737AbfJWEzf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Oct 2019 00:55:35 -0400
-Received: from mout-p-202.mailbox.org ([80.241.56.172]:50926 "EHLO
-        mout-p-202.mailbox.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732261AbfJWEzf (ORCPT
+        id S1733278AbfJWGGh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Oct 2019 02:06:37 -0400
+Received: from mail-yw1-f67.google.com ([209.85.161.67]:40983 "EHLO
+        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725852AbfJWGGh (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Oct 2019 00:55:35 -0400
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [80.241.60.240])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 46ydBL2c3czQkK2;
-        Wed, 23 Oct 2019 06:46:34 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id xs7FNWH8bzD0; Wed, 23 Oct 2019 06:46:30 +0200 (CEST)
-Date:   Wed, 23 Oct 2019 15:46:21 +1100
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-        Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>, linux-api@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [RFC PATCH v2 1/5] fs: add O_ENCODED open flag
-Message-ID: <20191023044621.yka44ifzd77hrnqw@yavin.dot.cyphar.com>
-References: <cover.1571164762.git.osandov@fb.com>
- <c4d2e911b7b04df9aa8418c8b11bc4c194e3808c.1571164762.git.osandov@fb.com>
- <20191019045057.2fcrzuwc27eg5naf@yavin.dot.cyphar.com>
+        Wed, 23 Oct 2019 02:06:37 -0400
+Received: by mail-yw1-f67.google.com with SMTP id o195so2272218ywd.8;
+        Tue, 22 Oct 2019 23:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Kv+6IoQR6bEB2iX/xqg9xXvx4UX3aidmtCoBvt739tg=;
+        b=LwkqCuhwjrZ+s2dT41pwHds7Laitwn8zRsM4BRLBieEW3LRdNfgO0pyGQhChE/9XZo
+         FFzsPqUrJX93YsVOu89BexM0esXwfeCBR1SpacmgZDQq6Ev1tw3TGGsHr/qpeP6u3eYW
+         vKUmaXm53lCNy4hshKSkjN6VrKUQVlR6jVd9OUc5i4kAQLycuVUnwPpR5kufnzEBDgOf
+         p/+VRrQ8KSo9t8yZBZbNsTnzzbwZZks3xLIi+NWVJqELZqZDJ3ymOB917eWMbygb/lAE
+         T86SHOTYC0+GePfAegXYIfHILkN/5jF1qNwM1FEdHkwW4DR/RQpF0YZF0Jx/WvVNUl06
+         GR2g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Kv+6IoQR6bEB2iX/xqg9xXvx4UX3aidmtCoBvt739tg=;
+        b=QysdAxntw5Fn0qaVOzEy8oM3y2BkyFyrvlD30j/aaYA2HofH7q23aX3ZsVgOJrTu7B
+         Rpj2Pck9RqVWy3Q6y1uoWtBheJdqz6CMm/oJI6PVqlwfB+kJ8gjc3prpams7HtxDsd/f
+         2G2jUlgVUeDUHPSvYr1gX9kCD/lVrkK363sw+bYUxSouUF6hPRl7v5jm+0a/Hnt59RxD
+         zFkMPCh2MMhl9fzhGT7BZIQ/LJZwg1tnBGB/lhmnic39TMAJARyuETqrr8WHKUZH5vEu
+         jtEkPW6myZuqLp/4IA2iI+MORwgNfsw5uQgrlpCfH+kC1FQpOsbumfIDIPGUEoJ6QpdD
+         Scpw==
+X-Gm-Message-State: APjAAAV+Z8wVz71QE8yjC3Mh0m++8oWyLm4i580VLH/LPRaM5DyoYAVz
+        soPPPecuvkp450bpFEWSi8OjWCKX1W5kvqtaR8w=
+X-Google-Smtp-Source: APXvYqyO/UpMuAPduTSsdjCSuogzNS7cxq3uHwOvGAm5Zm4mlxa1F5AFrdhhyVClN9rWcZjE2ekn4dtvmNntGOUnLP0=
+X-Received: by 2002:a81:4a02:: with SMTP id x2mr1537190ywa.31.1571810796157;
+ Tue, 22 Oct 2019 23:06:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="e7mqtsfpwn75tzby"
-Content-Disposition: inline
-In-Reply-To: <20191019045057.2fcrzuwc27eg5naf@yavin.dot.cyphar.com>
+References: <cover.1571164762.git.osandov@fb.com> <c7e8f93596fee7bb818dc0edf29f484036be1abb.1571164851.git.osandov@fb.com>
+ <CAOQ4uxh_pZSiMmD=46Mc3o0GE+svXuoC155P_9FGJXdsE4cweg@mail.gmail.com>
+ <20191021185356.GB81648@vader> <CAOQ4uxgm6MWwCDO5stUwOKKSq7Ot4-Sc96F1Evc6ra5qBE+-wA@mail.gmail.com>
+ <20191023044430.alow65tnodgnu5um@yavin.dot.cyphar.com>
+In-Reply-To: <20191023044430.alow65tnodgnu5um@yavin.dot.cyphar.com>
+From:   Amir Goldstein <amir73il@gmail.com>
+Date:   Wed, 23 Oct 2019 09:06:24 +0300
+Message-ID: <CAOQ4uxjyNZhyU9yEYkuMnD0o=sU1vJMOYJAzjV7FDjG45gaevg@mail.gmail.com>
+Subject: Re: [PATCH man-pages] Document encoded I/O
+To:     Aleksa Sarai <cyphar@cyphar.com>
+Cc:     Omar Sandoval <osandov@osandov.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
+        Dave Chinner <david@fromorbit.com>,
+        Jann Horn <jannh@google.com>,
+        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com,
+        Theodore Tso <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+> >
+> > No, I see why you choose to add the flag to open(2).
+> > I have no objection.
+> >
+> > I once had a crazy thought how to add new open flags
+> > in a non racy manner without adding a new syscall,
+> > but as you wrote, this is not relevant for O_ALLOW_ENCODED.
+> >
+> > Something like:
+> >
+> > /*
+> >  * Old kernels silently ignore unsupported open flags.
+> >  * New kernels that gets __O_CHECK_NEWFLAGS do
+> >  * the proper checking for unsupported flags AND set the
+> >  * flag __O_HAVE_NEWFLAGS.
+> >  */
+> > #define O_FLAG1 __O_CHECK_NEWFLAGS|__O_FLAG1
+> > #define O_HAVE_FLAG1 __O_HAVE_NEWFLAGS|__O_FLAG1
+> >
+> > fd = open(path, O_FLAG1);
+> > if (fd < 0)
+> >     return -errno;
+> > flags = fcntl(fd, F_GETFL, 0);
+> > if (flags < 0)
+> >     return flags;
+> > if ((flags & O_HAVE_FLAG1) != O_HAVE_FLAG1) {
+> >     close(fd);
+> >     return -EINVAL;
+> > }
+>
+> You don't need to add __O_HAVE_NEWFLAGS to do this -- this already works
+> today for userspace to check whether a flag works properly
+> (specifically, __O_FLAG1 will only be set if __O_FLAG1 is supported --
+> otherwise it gets cleared during build_open_flags).
 
---e7mqtsfpwn75tzby
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That's a behavior of quite recent kernels since
+629e014bb834 fs: completely ignore unknown open flags
+and maybe some stable kernels. Real old kernels don't have that luxury.
 
-On 2019-10-19, Aleksa Sarai <cyphar@cyphar.com> wrote:
-> On 2019-10-15, Omar Sandoval <osandov@osandov.com> wrote:
-> > From: Omar Sandoval <osandov@fb.com>
-> >=20
-> > The upcoming RWF_ENCODED operation introduces some security concerns:
-> >=20
-> > 1. Compressed writes will pass arbitrary data to decompression
-> >    algorithms in the kernel.
-> > 2. Compressed reads can leak truncated/hole punched data.
-> >=20
-> > Therefore, we need to require privilege for RWF_ENCODED. It's not
-> > possible to do the permissions checks at the time of the read or write
-> > because, e.g., io_uring submits IO from a worker thread. So, add an open
-> > flag which requires CAP_SYS_ADMIN. It can also be set and cleared with
-> > fcntl(). The flag is not cleared in any way on fork or exec; it should
-> > probably be used with O_CLOEXEC in most cases.
-> >=20
-> > Note that the usual issue that unknown open flags are ignored doesn't
-> > really matter for O_ENCODED; if the kernel doesn't support O_ENCODED,
-> > then it doesn't support RWF_ENCODED, either.
+>
+> The problem with adding new flags is that an *old* program running on a
+> *new* kernel could pass a garbage flag (__O_CHECK_NEWFLAGS for instance)
+> that causes an error only on the new kernel.
+>
 
-I also disagree with this statement -- if an old userspace program sets
-O_ENCODED it will now get an -EPERM if it doesn't have CAP_SYS_ADMIN.
-That is a break in backwards compatibility.
+That's a theoretic problem. Same as O_PATH|O_TMPFILE.
+Show me a real life program that passes garbage files to open.
 
-> >=20
-> > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > ---
-> >  fs/fcntl.c                       | 10 ++++++++--
-> >  fs/namei.c                       |  4 ++++
-> >  include/linux/fcntl.h            |  2 +-
-> >  include/uapi/asm-generic/fcntl.h |  4 ++++
-> >  4 files changed, 17 insertions(+), 3 deletions(-)
-> >=20
-> > diff --git a/fs/fcntl.c b/fs/fcntl.c
-> > index 3d40771e8e7c..45ebc6df078e 100644
-> > --- a/fs/fcntl.c
-> > +++ b/fs/fcntl.c
-> > @@ -30,7 +30,8 @@
-> >  #include <asm/siginfo.h>
-> >  #include <linux/uaccess.h>
-> > =20
-> > -#define SETFL_MASK (O_APPEND | O_NONBLOCK | O_NDELAY | O_DIRECT | O_NO=
-ATIME)
-> > +#define SETFL_MASK (O_APPEND | O_NONBLOCK | O_NDELAY | O_DIRECT | O_NO=
-ATIME | \
-> > +		    O_ENCODED)
-> > =20
-> >  static int setfl(int fd, struct file * filp, unsigned long arg)
-> >  {
-> > @@ -49,6 +50,11 @@ static int setfl(int fd, struct file * filp, unsigne=
-d long arg)
-> >  		if (!inode_owner_or_capable(inode))
-> >  			return -EPERM;
-> > =20
-> > +	/* O_ENCODED can only be set by superuser */
-> > +	if ((arg & O_ENCODED) && !(filp->f_flags & O_ENCODED) &&
-> > +	    !capable(CAP_SYS_ADMIN))
-> > +		return -EPERM;
->=20
-> I have a feeling the error should probably be an EACCES and not EPERM.
->=20
-> > +
-> >  	/* required for strict SunOS emulation */
-> >  	if (O_NONBLOCK !=3D O_NDELAY)
-> >  	       if (arg & O_NDELAY)
-> > @@ -1031,7 +1037,7 @@ static int __init fcntl_init(void)
-> >  	 * Exceptions: O_NONBLOCK is a two bit define on parisc; O_NDELAY
-> >  	 * is defined as O_NONBLOCK on some platforms and not on others.
-> >  	 */
-> > -	BUILD_BUG_ON(21 - 1 /* for O_RDONLY being 0 */ !=3D
-> > +	BUILD_BUG_ON(22 - 1 /* for O_RDONLY being 0 */ !=3D
-> >  		HWEIGHT32(
-> >  			(VALID_OPEN_FLAGS & ~(O_NONBLOCK | O_NDELAY)) |
-> >  			__FMODE_EXEC | __FMODE_NONOTIFY));
-> > diff --git a/fs/namei.c b/fs/namei.c
-> > index 671c3c1a3425..ae86b125888a 100644
-> > --- a/fs/namei.c
-> > +++ b/fs/namei.c
-> > @@ -2978,6 +2978,10 @@ static int may_open(const struct path *path, int=
- acc_mode, int flag)
-> >  	if (flag & O_NOATIME && !inode_owner_or_capable(inode))
-> >  		return -EPERM;
-> > =20
-> > +	/* O_ENCODED can only be set by superuser */
-> > +	if ((flag & O_ENCODED) && !capable(CAP_SYS_ADMIN))
-> > +		return -EPERM;
->=20
-> I would suggest that this check be put into build_open_flags() rather
-> than putting it this late in open(). Also, same nit about the error
-> return as above.
->=20
-> > +
-> >  	return 0;
-> >  }
-> > =20
-> > diff --git a/include/linux/fcntl.h b/include/linux/fcntl.h
-> > index d019df946cb2..5fac02479639 100644
-> > --- a/include/linux/fcntl.h
-> > +++ b/include/linux/fcntl.h
-> > @@ -9,7 +9,7 @@
-> >  	(O_RDONLY | O_WRONLY | O_RDWR | O_CREAT | O_EXCL | O_NOCTTY | O_TRUNC=
- | \
-> >  	 O_APPEND | O_NDELAY | O_NONBLOCK | O_NDELAY | __O_SYNC | O_DSYNC | \
-> >  	 FASYNC	| O_DIRECT | O_LARGEFILE | O_DIRECTORY | O_NOFOLLOW | \
-> > -	 O_NOATIME | O_CLOEXEC | O_PATH | __O_TMPFILE)
-> > +	 O_NOATIME | O_CLOEXEC | O_PATH | __O_TMPFILE | O_ENCODED)
-> > =20
-> >  #ifndef force_o_largefile
-> >  #define force_o_largefile() (!IS_ENABLED(CONFIG_ARCH_32BIT_OFF_T))
-> > diff --git a/include/uapi/asm-generic/fcntl.h b/include/uapi/asm-generi=
-c/fcntl.h
-> > index 9dc0bf0c5a6e..8c5cbd5942e3 100644
-> > --- a/include/uapi/asm-generic/fcntl.h
-> > +++ b/include/uapi/asm-generic/fcntl.h
-> > @@ -97,6 +97,10 @@
-> >  #define O_NDELAY	O_NONBLOCK
-> >  #endif
-> > =20
-> > +#ifndef O_ENCODED
-> > +#define O_ENCODED	040000000
-> > +#endif
->=20
-> You should also define this for all of the architectures which don't use
-> the generic O_* flag values. On alpha, O_PATH is equal to the value you
-> picked (just be careful on sparc -- 0x4000000 is the next free bit, but
-> it's used by FMODE_NONOTIFY.)
->=20
-> > +
-> >  #define F_DUPFD		0	/* dup */
-> >  #define F_GETFD		1	/* get close_on_exec */
-> >  #define F_SETFD		2	/* set/clear close_on_exec */
->=20
-> --=20
-> Aleksa Sarai
-> Senior Software Engineer (Containers)
-> SUSE Linux GmbH
-> <https://www.cyphar.com/>
+> The only real solution to this (and several other problems) is
+> openat2().
 
+No argue about that. Come on, let's get it merged ;-)
 
+> As for O_ALLOW_ENCODED -- the current semantics (-EPERM if it
+> is set without CAP_SYS_ADMIN) *will* cause backwards compatibility
+> issues for programs that have garbage flags set...
+>
 
+Again, that's theoretical.
+In practice, O_ALLOW_ENCODED can work with open()/openat().
+In fact, even if O_ALLOW_ENCODED gets merged after openat2(),
+I don't think it should be forbidden by open()/openat(), right?
+Do in that sense, O_ALLOW_ENCODED does not depend on openat2().
 
---=20
-Aleksa Sarai
-Senior Software Engineer (Containers)
-SUSE Linux GmbH
-<https://www.cyphar.com/>
-
---e7mqtsfpwn75tzby
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQSxZm6dtfE8gxLLfYqdlLljIbnQEgUCXa/bGQAKCRCdlLljIbnQ
-El06AP0TrqVWYz4P9clP4ufpT24JZJrKG5GldPRQOLkvPA1AYQEA3tRF++LFPH+4
-LWAUjI7uIgTL7qVIgFmMJrAMM6LaHAo=
-=B0m6
------END PGP SIGNATURE-----
-
---e7mqtsfpwn75tzby--
+Thanks,
+Amir.
