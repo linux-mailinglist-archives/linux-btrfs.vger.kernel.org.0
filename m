@@ -2,225 +2,232 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BF239E16A3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 11:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858EAE16A4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 11:52:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403845AbfJWJvv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Oct 2019 05:51:51 -0400
-Received: from mail-vk1-f195.google.com ([209.85.221.195]:35277 "EHLO
-        mail-vk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732648AbfJWJvv (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Oct 2019 05:51:51 -0400
-Received: by mail-vk1-f195.google.com with SMTP id d66so4284595vka.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2019 02:51:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=pD7H+45x8osq5euf3c6+LlrNPlPMbrJmc6gRlAONuYk=;
-        b=Cz2dzMYNBaAizpl3NiaKOuoRRua6zuSojssCierD5H+OQ/jPh+juCNwfZ5QitRuLqH
-         4EPdkgjI6akhSG9cE+r4zKSDsMfTz+89YEWkapJ1BBCzG680xRaBpcKWy5SRwWw6GcEH
-         ZzAYH8kIp6JPqeHMM8q95UWl4E6zApRsPZdHTGoy5iKxH4+dl4rL5EAy+hp4R/Q4sCbL
-         QKKSfUjYF6BZbWzHoQMzYXwFIejHoMY9azml3dWIO1kFiRwNR7RCyVocJc0FzOU01zYG
-         8HscKJm3+CyxsGqSmbQydARd0gwDrskj99Ju1pw4Cfca+OdHqBGBnkXY8cqPE8XlBP12
-         Q76A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=pD7H+45x8osq5euf3c6+LlrNPlPMbrJmc6gRlAONuYk=;
-        b=Rckyqn44EfTqOm8gFDVwDYluOHBkwHm3DRNXPV/MQonTmxBXmS4UiHnEH2STg/X5eG
-         0F0M6Y00bC/HAgsjakv7zS8oK59oe8eQJ7lWbfX2aKjnNLItXXlKz+0j3SdlHvFhnKYC
-         l/6axE+50+eRbGRP9jWBfvaaMdhO6fshoaJrrY2PnoyPyOUrpcy2xs619Hu2i4h4Y8L2
-         H6BGYtorJFzBVCfYhXLD66OlwRSXX6hxOQuaLZonZih/Al7ZqmwV3g4HUd6RSjIdAtcV
-         OvPWr4wkv0HMKKHUoDCFf+5H6q4cIKsvos63f+4Wsl5u9OR4tQYg5v7M8oXVUzaE+eHK
-         g7fg==
-X-Gm-Message-State: APjAAAUUnMc2pf3/VlofGJ/WMZG/GJX6cARxd5GFbHheGYl+1I7Yy+vE
-        SzLuHKIo9Hf+23jTN3I/tKOuUuu4f0DM5kdJbH0=
-X-Google-Smtp-Source: APXvYqywn0v4bYWk0RngogGoMeLRuedU1GTNQkHGUqXOlmtvjdZWt/1ygoALTtt5p7xOwskly7SOBSzm8MSm4SYztR0=
-X-Received: by 2002:a1f:a001:: with SMTP id j1mr4723429vke.24.1571824308154;
- Wed, 23 Oct 2019 02:51:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20191023085037.14838-1-wqu@suse.com> <20191023085037.14838-3-wqu@suse.com>
-In-Reply-To: <20191023085037.14838-3-wqu@suse.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Wed, 23 Oct 2019 10:51:37 +0100
-Message-ID: <CAL3q7H7EA1+xGVLQgAH-YZMo-9jdNyhr9+hiCcJcXnocKb7F_A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] btrfs: extent-tree: Ensure we trim ranges across
- block group boundary
-To:     Qu Wenruo <wqu@suse.com>
+        id S2390321AbfJWJv5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Oct 2019 05:51:57 -0400
+Received: from mout.gmx.net ([212.227.17.22]:47291 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732648AbfJWJv5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Oct 2019 05:51:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1571824310;
+        bh=S0wC3PxvVqYRHzdjPDZ2LdQEP2iazFcHr9fuXuPJg3E=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=MZIWiXf+Sn2zRFZ/2iPDaF+GImSP6vvPPKKJrhMfUkhM1kdE1GsP91wguwTpb0j/N
+         F3dEL2BUQLNO9KMod0Uubf3oTX7E/2mui2UPBP5XrMSMD5fiGZFWjSfg4GRNbeRfAa
+         qikgJcXJKQDldwr2nbM457Whbp09sz7gT6d5d4KU=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mz9Z5-1i2GIw2p4V-00wCWB; Wed, 23
+ Oct 2019 11:51:50 +0200
+Subject: Re: [PATCH 1/2] btrfs: volumes: Return the mapped length for discard
+To:     fdmanana@gmail.com, Qu Wenruo <wqu@suse.com>
 Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <20191023085037.14838-1-wqu@suse.com>
+ <20191023085037.14838-2-wqu@suse.com>
+ <CAL3q7H5V0fapMLnznQhHuG8f1myhAdiy42WsUFr-6ryjV7orEQ@mail.gmail.com>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <f1c6306c-fc02-1713-589a-bba9a63c25d8@gmx.com>
+Date:   Wed, 23 Oct 2019 17:51:44 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
+MIME-Version: 1.0
+In-Reply-To: <CAL3q7H5V0fapMLnznQhHuG8f1myhAdiy42WsUFr-6ryjV7orEQ@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="m5jOsxp0XIVjHyEr3vi4US2Demf3lKneD"
+X-Provags-ID: V03:K1:gB9etTmR5Fbm4OrQZte0uqUwZFNhDUAgvRNUi7LeRbdoKqcu/X0
+ PXyNSCfNkECeSmPbTRHOaFMgeIinuf8NUqCymd1iwAJBQdEl64xN4RGmcagRAf+MeOUJkdX
+ DNe25idDwyvtjt4LIaiAa7UBV06ELp4yi1AmFodVB+JDc7AoMGwigryr8zdbEabGtgjzfPk
+ QCUPFYAgzFFFAtwMnhFGQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4RvL1e2EWGU=:lvJwK/1OR2rMfuycAbRzx+
+ Jf4tNquBQGTNGaVDW61iZbAp1j4JPszkj4GYJLvseIhsrA+1g/lFY8jrx72mcPb/eGzuCiqa/
+ hsxFWtbYQ6sL7oV1LgNgvE3gP5GYRWV4Ct+qBYJEoyWKGmba7VocY5za3bkErUM1SXW8l2yqF
+ DaSwWKhQFrfndk9r51MmkhxHbBQ75IXDGZdv27zRjuDqfCHgcWLbZXImgzUHmvSH0bZPcFKcm
+ LKp0KD6ygvZS2geKfaYEAyLECt7H51l+RlPp+qPHrW4cTRnSvIOyo6LzYPCiJQoEs0DLS4cZR
+ Z174TJVY7cS3xu7qjCdSReVT5M4dcW1n/O502zLPP1kzUXqdJ+9Tzxvr7Vi4Oihfmy4yBPq/4
+ B1uPGg3hUZ3EVLNiP28b1aXgbHmPYFpa1tC6JXn36QwJTQP0kREaBLs3yWyBXdcUiw9omG2ks
+ U9M7gWjuuYAAiKGPx9WQsBEQxt6qoHTrT0fUbjyKDay3bBu4nxDRz3lsOsv7GTrLi0wlYdGLn
+ NcpnNpKoYtT+7p6eSr5u35oyxyvumaIy5myG73tynA03l97FULbowZJDgchsP5Ia96jkgCP1s
+ mFZDvHyqYW6KUyTnGiZhzNpOXYFl1GqxEC/BtqkMIv/g9SCOpQb0iUrKcmpo5pBNlzwOSh+fD
+ +CzfgHkvDvc047oElIGNqgLjQNXNN9UfRukPwxyPs0tO/SZZ/CX9Pr1udodUITSVqAvEfih/V
+ S+sE8zxc15It/GFp9iXNGI33bcDgl1q6PqNj77nE4ZZJfAhHvMQ178YCVz22XLSdwCEdgpkT/
+ 8SdPi9gLT1ySK6RiWZCBQzHCQwFZgyBBkLaCcLNViAm+cqaltSk3xGhSdBS83fUkCrEY6GUhS
+ 7FROsyP+DxSmqn3UsN4foi2e8DpH+hVdvlu439OCUXrr+MmcP6vy8epl7hOgRzqTIGRyJXKgU
+ R3zwYlLaTOI8fiaUZwXirkTmkg9+nb7uxtYGSpsT+JR+Q5mko3PkxhyHAjvvqPwwO680U99z4
+ AzNyoBu+0gHv6c0FaHHH7GJ6ADytoF+tEEEld9n8iBzwQfTd67hzKTxXgrH+cb+8wPSNeCiWv
+ nA3g9TnKz4X0+ED/J+qshErcd85FecokLxjKhVftREKd6WCusKOPYgkxPrpRuTyP27LLASLpk
+ tg0c9fXTWuwjQPKeFvtgRCWtptjI9h/15FZdz4WevUXKcdgwLFA9kr3/ylyD1nu2ImbZzXNpQ
+ 4RfHCXVD2OubDfKNNKEWwHjjIP+WHXukF9w8BMCwtVsPI63pQIY//EENnJEc=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 9:52 AM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG]
-> When deleting large files (which cross block group boundary) with discard
-> mount option, we find some btrfs_discard_extent() calls only trimmed part
-> of its space, not the whole range:
->
->   btrfs_discard_extent: type=3D0x1 start=3D19626196992 len=3D2144530432 t=
-rimmed=3D1073741824 ratio=3D50%
->
-> type:           bbio->map_type, in above case, it's SINGLE DATA.
-> start:          Logical address of this trim
-> len:            Logical length of this trim
-> trimmed:        Physically trimmed bytes
-> ratio:          trimmed / len
->
-> Thus leading some unused space not discarded.
->
-> [CAUSE]
-> When discard mount option is specified, after a transaction is fully
-> committed (super block written to disk), we begin to cleanup pinned
-> extents in the following call chain:
-> btrfs_commit_transaction()
-> |- write_all_supers()
-> |- btrfs_finish_extent_commit()
->    |- find_first_extent_bit(unpin, 0, &start, &end, EXTENT_DIRTY);
->    |- btrfs_discard_extent()
->
-> However pinned extents are recorded in an extent_io_tree, which can
-> merge same extent states.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--m5jOsxp0XIVjHyEr3vi4US2Demf3lKneD
+Content-Type: multipart/mixed; boundary="LbvcHki49bDfjLB4qU8GuDhcvU9kZyubO"
 
-same -> adjacent
-'same' would imply duplicate entries (same start offset and lengths)
-
->
-> When a large file get deleted and it has adjacent file extents across
-> block group boundary, we will get a large merged range.
->
-> Then when we pass the large range into btrfs_discard_extent(),
-> btrfs_discard_extent() will just trim the first part, without trimming
-> the remaining part.
->
-> Furthermore, this bug is not that reliably observed, as if the whole
-> block group is empty, there will be another trim for that block group.
->
-> So the most obvious way to find this missing trim needs to delete large
-> extents at block group boundary without empting involved block groups.
->
-> [FIX]
-> Fix this bug by calling btrfs_map_block() in a loop, until we reach the
-> end location.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-
-With that small change:
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
-
-> ---
->  fs/btrfs/extent-tree.c | 40 ++++++++++++++++++++++++++++++----------
->  1 file changed, 30 insertions(+), 10 deletions(-)
->
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 49cb26fa7c63..45df45fa775b 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -1306,8 +1306,10 @@ static int btrfs_issue_discard(struct block_device=
- *bdev, u64 start, u64 len,
->  int btrfs_discard_extent(struct btrfs_fs_info *fs_info, u64 bytenr,
->                          u64 num_bytes, u64 *actual_bytes)
->  {
-> -       int ret;
-> +       int ret =3D 0;
->         u64 discarded_bytes =3D 0;
-> +       u64 end =3D bytenr + num_bytes;
-> +       u64 cur =3D bytenr;
->         struct btrfs_bio *bbio =3D NULL;
->
->
-> @@ -1316,15 +1318,22 @@ int btrfs_discard_extent(struct btrfs_fs_info *fs=
-_info, u64 bytenr,
->          * associated to its stripes that don't go away while we are disc=
-arding.
->          */
->         btrfs_bio_counter_inc_blocked(fs_info);
-> -       /* Tell the block device(s) that the sectors can be discarded */
-> -       ret =3D btrfs_map_block(fs_info, BTRFS_MAP_DISCARD, bytenr, &num_=
-bytes,
-> -                             &bbio, 0);
-> -       /* Error condition is -ENOMEM */
-> -       if (!ret) {
-> -               struct btrfs_bio_stripe *stripe =3D bbio->stripes;
-> +       while (cur < end) {
-> +               struct btrfs_bio_stripe *stripe;
->                 int i;
->
-> +               /* Tell the block device(s) that the sectors can be disca=
-rded */
-> +               ret =3D btrfs_map_block(fs_info, BTRFS_MAP_DISCARD, cur,
-> +                                     &num_bytes, &bbio, 0);
-> +               /*
-> +                * Error can be -ENOMEM, -ENOENT (no such chunk mapping) =
-or
-> +                * -EOPNOTSUPP. For any such error, @num_bytes is not upd=
-ated,
-> +                * thus we can't continue anyway.
-> +                */
-> +               if (ret < 0)
-> +                       goto out;
->
-> +               stripe =3D bbio->stripes;
->                 for (i =3D 0; i < bbio->num_stripes; i++, stripe++) {
->                         u64 bytes;
->                         struct request_queue *req_q;
-> @@ -1341,10 +1350,19 @@ int btrfs_discard_extent(struct btrfs_fs_info *fs=
-_info, u64 bytenr,
->                                                   stripe->physical,
->                                                   stripe->length,
->                                                   &bytes);
-> -                       if (!ret)
-> +                       if (!ret) {
->                                 discarded_bytes +=3D bytes;
-> -                       else if (ret !=3D -EOPNOTSUPP)
-> -                               break; /* Logic errors or -ENOMEM, or -EI=
-O but I don't know how that could happen JDM */
-> +                       } else if (ret !=3D -EOPNOTSUPP) {
-> +                               /*
-> +                                * Logic errors or -ENOMEM, or -EIO but I=
- don't
-> +                                * know how that could happen JDM
-> +                                *
-> +                                * Ans since there are two loops, explici=
-tly
-> +                                * goto out to avoid confusion.
-> +                                */
-> +                               btrfs_put_bbio(bbio);
-> +                               goto out;
-> +                       }
->
->                         /*
->                          * Just in case we get back EOPNOTSUPP for some r=
-eason,
-> @@ -1354,7 +1372,9 @@ int btrfs_discard_extent(struct btrfs_fs_info *fs_i=
-nfo, u64 bytenr,
->                         ret =3D 0;
->                 }
->                 btrfs_put_bbio(bbio);
-> +               cur +=3D num_bytes;
->         }
-> +out:
->         btrfs_bio_counter_dec(fs_info);
->
->         if (actual_bytes)
-> --
-> 2.23.0
->
+--LbvcHki49bDfjLB4qU8GuDhcvU9kZyubO
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
---=20
-Filipe David Manana,
 
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+On 2019/10/23 =E4=B8=8B=E5=8D=885:47, Filipe Manana wrote:
+> On Wed, Oct 23, 2019 at 9:53 AM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>=20
+> Hi Qu,
+>=20
+>> For btrfs_map_block(), if we pass @op =3D=3D BTRFS_MAP_DISCARD, the @l=
+ength
+>> parameter will not be updated to reflect the real mapped length.
+>>
+>> This means for discard operation, we won't know how many bytes are
+>> really mapped.
+>=20
+> Ok, and what's the consequence? The changelog should really say what
+> is the problem, what the bug is.
+> The cover letter and the second patch explain what problems are being
+> solved, but not this change.
+
+The problem is, no consequence at all, until the 2nd patch is taken in
+to consideration.
+
+This patch itself doesn't make any sense, just a plain dependency for
+the 2nd patch.
+
+I guess it's better to fold these two patches into one patch?
+
+>=20
+>>
+>> Fix this by changing assigning the mapped range length to @length
+>> pointer, so btrfs_map_block() for BTRFS_MAP_DISCARD also return mapped=
+
+>> length.
+>>
+>> During the change, also do a minor modification to make the length
+>> calculation a little more straightforward.
+>> Instead of previously calculated @offset, use "em->end - bytenr" to
+>> calculate the actually mapped length.
+>=20
+> I really don't like much mixing a cleanup with a fix. I would prefer
+> two separate patches, no matter how small or trivial it is.
+
+Sure.
+
+Thanks,
+Qu
+
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>=20
+> Other than that, it looks good to me.
+> Thanks.
+>=20
+>> ---
+>>  fs/btrfs/volumes.c | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index cdd7af424033..f66bd0d03f44 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -5578,12 +5578,13 @@ void btrfs_put_bbio(struct btrfs_bio *bbio)
+>>   * replace.
+>>   */
+>>  static int __btrfs_map_block_for_discard(struct btrfs_fs_info *fs_inf=
+o,
+>> -                                        u64 logical, u64 length,
+>> +                                        u64 logical, u64 *length_ret,=
+
+>>                                          struct btrfs_bio **bbio_ret)
+>>  {
+>>         struct extent_map *em;
+>>         struct map_lookup *map;
+>>         struct btrfs_bio *bbio;
+>> +       u64 length =3D *length_ret;
+>>         u64 offset;
+>>         u64 stripe_nr;
+>>         u64 stripe_nr_end;
+>> @@ -5616,7 +5617,8 @@ static int __btrfs_map_block_for_discard(struct =
+btrfs_fs_info *fs_info,
+>>         }
+>>
+>>         offset =3D logical - em->start;
+>> -       length =3D min_t(u64, em->len - offset, length);
+>> +       length =3D min_t(u64, em->start + em->len - logical, length);
+>> +       *length_ret =3D length;
+>>
+>>         stripe_len =3D map->stripe_len;
+>>         /*
+>> @@ -6031,7 +6033,7 @@ static int __btrfs_map_block(struct btrfs_fs_inf=
+o *fs_info,
+>>
+>>         if (op =3D=3D BTRFS_MAP_DISCARD)
+>>                 return __btrfs_map_block_for_discard(fs_info, logical,=
+
+>> -                                                    *length, bbio_ret=
+);
+>> +                                                    length, bbio_ret)=
+;
+>>
+>>         ret =3D btrfs_get_io_geometry(fs_info, op, logical, *length, &=
+geom);
+>>         if (ret < 0)
+>> --
+>> 2.23.0
+>>
+>=20
+>=20
+
+
+--LbvcHki49bDfjLB4qU8GuDhcvU9kZyubO--
+
+--m5jOsxp0XIVjHyEr3vi4US2Demf3lKneD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2wIrAACgkQwj2R86El
+/qiGSgf/bJxmv/q9NnjcdxY0tDlGqy4N7mhA1PkywEdLJUc/z2T+Xa+jSi2BTMG2
+IGWzS4lMBzSoKDhHgps39W4mK+M1sHIZ0SvZHADuG+xE+PXpxMr/duwkDG07tlGr
+Uj9Sssa6Snc2geNhgaSl2xKl6+qUrjERA5koXI+pK69SWwf0YIXcnKX2JLDTR3E4
+Ao+hg42a+ibCgW/Eim2ITew3TXuO0p7wBYSfYTg5l1GJtKGyi4VzDgJv4BXb7btb
+RupeiC7/9dAsoQRhyjeCIuTUlmr/qCv6Iip50ejDvACVuBrJDfft9urhl4iPvwl0
+j6xg/iy9pJx5h6d0JxTpDpXNMPaIgw==
+=9h/w
+-----END PGP SIGNATURE-----
+
+--m5jOsxp0XIVjHyEr3vi4US2Demf3lKneD--
