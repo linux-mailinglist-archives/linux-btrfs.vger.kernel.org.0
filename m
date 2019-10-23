@@ -2,201 +2,159 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94F47E1FAE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 17:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA97CE20A9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 18:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406902AbfJWPo2 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Oct 2019 11:44:28 -0400
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:57685 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2406900AbfJWPo2 (ORCPT
+        id S2404708AbfJWQcL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Oct 2019 12:32:11 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41856 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2403862AbfJWQcL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Oct 2019 11:44:28 -0400
-Received: from [192.168.1.13] ([86.201.28.196])
-        by mwinf5d42 with ME
-        id H3kR210024DsWEm033kRH4; Wed, 23 Oct 2019 17:44:25 +0200
-X-ME-Helo: [192.168.1.13]
-X-ME-Auth: bm9ibGV0X2p1bGllbkBvcmFuZ2UuZnI=
-X-ME-Date: Wed, 23 Oct 2019 17:44:25 +0200
-X-ME-IP: 86.201.28.196
-Subject: Re: [PATCH] btrfs-progs: build: add missing symbols to libbtrfs - new
- patch
-From:   Julien_N <noblet_julien@orange.fr>
-To:     linux-btrfs@vger.kernel.org
-References: <3c3f25e4-7f36-b1f3-0e82-9745e0eb84cb@orange.fr>
-Autocrypt: addr=noblet_julien@orange.fr; keydata=
- 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 vriT
-Message-ID: <41f818a8-a359-a21a-6490-94ce1cbfe16a@orange.fr>
-Date:   Wed, 23 Oct 2019 17:44:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Wed, 23 Oct 2019 12:32:11 -0400
+Received: by mail-wr1-f66.google.com with SMTP id p4so22828033wrm.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2019 09:32:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=liland-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=K2xvIgIomuhRkjMboE+rbpmRgaddDUn5FeGa6Iwlg58=;
+        b=GppzvdHDOk5LbTDSwLxtQpNQgKePRH2zzaoIEH8aeUumBSJT/SH7qNqSEfs0Ivk78E
+         Y0Wk3r8NCX5o0FAD9EdHZwy3jSNe6jg7cKQMxzA3m9UQZLQ+/zKU2FaHyd8h6DMtXGcO
+         A/p0Jb3ezJBw8ToHkOxDGAYVTWCqmzRg37HWpCkfmUZvRN1Xe9Uyg5pTK7rrFFQX+UQ3
+         jmUTWoAb8zeG4jbQ88VBL6oISHh5PJURG5wRD7vh0bYYdXvKhYpefT7Uz+JdeW5G0xb3
+         DEN61kGZbxqUEquwQeAJR+gyDG9kgYLozlvvxgw0dyAUUw1yw64Yn96v9FQNM4r0Nqm/
+         Yi8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=K2xvIgIomuhRkjMboE+rbpmRgaddDUn5FeGa6Iwlg58=;
+        b=YFCYbEDSjae8IFJfY9sCVoc4UhGhRH1dZ+4hOBa+GQMGE/Ayn0BC2OvJub9EkMUTNK
+         9ZtJktYnIxYJp4qaC9ocs7wYjx58LOSiAZMbU93lRnhoFMxudIIyCqNZ7zzViIhpEx/l
+         U8UkcLrMfUYtzppmDC9qCY3GH+Grz25k34Fbd4BId7BwkYoMbNhAtDgmy69khficNkcS
+         Q3wFJ+qKQRCkHWXUf02LtwIH7aWkQzvGm90br8lrBbar8SgDUKmn3aZg7sw6MCZHNrrm
+         SCMO96empSIf3pIsCzGJk5dC76o1fgTglIpusGYKX/oPdy0DzpueSkiPQJONDFHv+OOG
+         kztQ==
+X-Gm-Message-State: APjAAAWb4zV70By9bObi2tu9nTD7bKfIMwoeLYGmKeqVU297YBPsY62e
+        cFYSezQlAqs7DdQHN1tq3ISAkz5sjYC9IAhbNJ0fnZ+c2VVzQVW9D/4JJGj0WBxQVG102XFFHAT
+        eQ3FhDNAxvKhJRM1iKtj6XmKa
+X-Google-Smtp-Source: APXvYqwKWIfNUtGB8VUN8aOAAypiLbpNUGlywyPrUNago1vMOeVfgwMYHlBWUzWi8e8kdBv3NTKoZA==
+X-Received: by 2002:a5d:4a45:: with SMTP id v5mr9469503wrs.358.1571848327260;
+        Wed, 23 Oct 2019 09:32:07 -0700 (PDT)
+Received: from [192.168.0.121] ([62.218.42.35])
+        by smtp.gmail.com with ESMTPSA id r1sm16476051wrw.60.2019.10.23.09.32.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Oct 2019 09:32:06 -0700 (PDT)
+Subject: Re: MD RAID 5/6 vs BTRFS RAID 5/6
+To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <b665710c-5171-487b-ce38-5ea7075492e4@liland.com>
+ <20191016194237.GP22121@hungrycats.org>
+ <067d06fc-4148-b56f-e6b4-238c6b805c11@liland.com>
+ <20191021193417.GP24379@hungrycats.org>
+From:   Edmund Urbani <edmund.urbani@liland.com>
+Message-ID: <81f11e36-fd40-967c-74e8-f5c29803dacf@liland.com>
+Date:   Wed, 23 Oct 2019 18:32:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.4.0
 MIME-Version: 1.0
-In-Reply-To: <3c3f25e4-7f36-b1f3-0e82-9745e0eb84cb@orange.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+In-Reply-To: <20191021193417.GP24379@hungrycats.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-GB
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-After testing with ldd tool, there is some other stuff to add:
+On 10/21/19 9:34 PM, Zygo Blaxell wrote:
+> On Mon, Oct 21, 2019 at 05:27:54PM +0200, Edmund Urbani wrote:
+>> On 10/16/19 9:42 PM, Zygo Blaxell wrote:
+>>> For raid5 I'd choose btrfs -draid5 -mraid1 over mdadm raid5
+>>> sometimes--even with the write hole, I'd expect smaller average data
+>>> losses than mdadm raid5 + write hole mitigation due to the way disk
+>>> failure modes are distributed. =20
+>> What about the write hole and RAID-1? I understand the write hole is mos=
+t
+>> commonly associated with RAID-5, but it is also a problem with other RAI=
+D levels.
+> Filesystem tree updates are atomic on btrfs.  Everything persistent on
+> btrfs is part of a committed tree.  The current writes in progress are
+> initially stored in an uncommitted tree, which consists of blocks that
+> are isolated from any committed tree block.  The algorithm relies on
+> two things:
+>
+> 	Isolation:  every write to any uncommitted data block must not
+> 	affect the correctness of any data in any committed data block.
+>
+> 	Ordering:  a commit completes all uncommitted tree updates on
+> 	all disks in any order, then updates superblocks to point to the
+> 	updated tree roots.  A barrier is used to separate these phases
+> 	of updates across disks.
+>
+> Isolation and ordering make each transaction atomic.  If either
+> requirement is not implemented correctly, data or metadata may be
+> corrupted.  If metadata is corrupted, the filesystem can be destroyed.
 
-(please apply those 2 patchs)
+Ok, the ordering enforced with the barrier ensures that all uncommitted dat=
+a is
+persisted before the superblocks are updated. But eg. a power loss could st=
+ill
+cause the superblock to be updated on only 1 of 2 RAID-1 drives. But I assu=
+me
+that is not an issue because mismatching superblocks can be easily detected
+(automatically fixed?) on mount. Otherwise you could still end up with 2 RA=
+ID-1
+disks that seem consistent in and of themselves but that hold a different s=
+tate
+(until the superblocks are overwritten on both).=C2=A0
 
----
- Makefile | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index 616d469a..edab7fff 100644
---- a/Makefile
-+++ b/Makefile
-@@ -149,19 +149,17 @@ cmds_objects = cmds/subvolume.o cmds/filesystem.o
-cmds/device.o cmds/scrub.o \
-            cmds/property.o cmds/filesystem-usage.o
-cmds/inspect-dump-tree.o \
-            cmds/inspect-dump-super.o cmds/inspect-tree-stats.o
-cmds/filesystem-du.o \
-            mkfs/common.o check/mode-common.o check/mode-lowmem.o
--libbtrfs_objects = send-stream.o send-utils.o kernel-lib/rbtree.o
-btrfs-list.o \
--           kernel-lib/radix-tree.o extent-cache.o extent_io.o ctree.o
-volumes.o \
--             disk-io.o extent-tree.o delayed-ref.o print-tree.o
-common/device-scan.o \
--             common/utils.o free-space-cache.o common/path-utils.o
-root-tree.o \
--             transaction.o file-item.o kernel-lib/raid56.o
-kernel-lib/tables.o \
--           kernel-lib/crc32c.o common/messages.o \
--           uuid-tree.o utils-lib.o common/rbtree-utils.o
-+libbtrfs_objects = $(objects) send-stream.o send-utils.o
-kernel-lib/rbtree.o btrfs-list.o \
-+           kernel-lib/radix-tree.o extent-cache.o extent_io.o \
-+           kernel-lib/crc32c.o common/messages.o libbtrfsutil/errors.o \
-+           uuid-tree.o utils-lib.o common/rbtree-utils.o
-libbtrfsutil/subvolume.o
- libbtrfs_headers = send-stream.h send-utils.h send.h
-kernel-lib/rbtree.h btrfs-list.h \
-            kernel-lib/crc32c.h kernel-lib/list.h kerncompat.h \
-            kernel-lib/radix-tree.h kernel-lib/sizes.h kernel-lib/raid56.h \
-            extent-cache.h extent_io.h ioctl.h ctree.h btrfsck.h version.h \
-                  volumes.h disk-io.h delayed-ref.h print-tree.h
-free-space-cache.h \
--                 common/device-scan.h common/utils.h
-common/path-utils.h transaction.h
-+                 common/device-scan.h common/utils.h
-common/path-utils.h transaction.h \
-+                 libbtrfsutil/btrfsutil.h
- libbtrfsutil_major := $(shell sed -rn 's/^\#define
-BTRFS_UTIL_VERSION_MAJOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
- libbtrfsutil_minor := $(shell sed -rn 's/^\#define
-BTRFS_UTIL_VERSION_MINOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
- libbtrfsutil_patch := $(shell sed -rn 's/^\#define
-BTRFS_UTIL_VERSION_PATCH ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
--- 
-2.23.0
+> The isolation failure affects only parity blocks.  You could kill
+> power all day long and not lose any committed data on any btrfs raid
+> profile--as long as none of the disks fail and each disk's firmware
+> implements write barriers correctly or write cache is disabled (sadly,
+> even in 2019, a few drive models still don't have working barriers).
+> btrfs on raid5/6 is as robust as raid0 if you ignore the parity blocks.
+I hope my WD Reds implement write barriers correctly. Does anyone know for =
+certain?
 
 
-I think also libbtrfsutil/subvolume.o and libbtrfsutil/errors.o have to
-be moved to common/ ...
 
-Le 23/10/2019 à 16:47, Julien_N a écrit :
-> According to Johannes Thumshirn, there are missing some symbols in libbtrfs.
->
-> I've made that patch, it seem to work with snapper.
->
-> $ snapper --version
-> snapper 0.8.4
-> flags btrfs,lvm,ext4,xattrs,rollback,btrfs-quota,no-selinux
->
->
-> BR.
->
-> Julien
->
->
-> ---
->  Makefile | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
->
-> diff --git a/Makefile b/Makefile
-> index 21bf2717..616d469a 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -150,13 +150,18 @@ cmds_objects = cmds/subvolume.o cmds/filesystem.o
-> cmds/device.o cmds/scrub.o \
->             cmds/inspect-dump-super.o cmds/inspect-tree-stats.o
-> cmds/filesystem-du.o \
->             mkfs/common.o check/mode-common.o check/mode-lowmem.o
->  libbtrfs_objects = send-stream.o send-utils.o kernel-lib/rbtree.o
-> btrfs-list.o \
-> -           kernel-lib/radix-tree.o extent-cache.o extent_io.o \
-> +           kernel-lib/radix-tree.o extent-cache.o extent_io.o ctree.o
-> volumes.o \
-> +             disk-io.o extent-tree.o delayed-ref.o print-tree.o
-> common/device-scan.o \
-> +             common/utils.o free-space-cache.o common/path-utils.o
-> root-tree.o \
-> +             transaction.o file-item.o kernel-lib/raid56.o
-> kernel-lib/tables.o \
->             kernel-lib/crc32c.o common/messages.o \
->             uuid-tree.o utils-lib.o common/rbtree-utils.o
->  libbtrfs_headers = send-stream.h send-utils.h send.h
-> kernel-lib/rbtree.h btrfs-list.h \
->             kernel-lib/crc32c.h kernel-lib/list.h kerncompat.h \
->             kernel-lib/radix-tree.h kernel-lib/sizes.h kernel-lib/raid56.h \
-> -           extent-cache.h extent_io.h ioctl.h ctree.h btrfsck.h version.h
-> +           extent-cache.h extent_io.h ioctl.h ctree.h btrfsck.h version.h \
-> +                 volumes.h disk-io.h delayed-ref.h print-tree.h
-> free-space-cache.h \
-> +                 common/device-scan.h common/utils.h
-> common/path-utils.h transaction.h
->  libbtrfsutil_major := $(shell sed -rn 's/^\#define
-> BTRFS_UTIL_VERSION_MAJOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
->  libbtrfsutil_minor := $(shell sed -rn 's/^\#define
-> BTRFS_UTIL_VERSION_MINOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
->  libbtrfsutil_patch := $(shell sed -rn 's/^\#define
-> BTRFS_UTIL_VERSION_PATCH ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
+
+--=20
+*Liland IT GmbH*
+
+
+Ferlach =E2=97=8F Wien =E2=97=8F M=C3=BCnchen
+Tel: +43 463 220111
+Tel: +49 89=20
+458 15 940
+office@Liland.com
+https://Liland.com <https://Liland.com>=C2=A0
+
+
+
+Copyright =C2=A9 2019 Liland IT GmbH=C2=A0
+
+Diese Mail enthaelt vertrauliche und/oder=20
+rechtlich geschuetzte=C2=A0Informationen.=C2=A0
+Wenn Sie nicht der richtige Adressat=20
+sind oder diese Email irrtuemlich=C2=A0erhalten haben, informieren Sie bitt=
+e=20
+sofort den Absender und vernichten=C2=A0Sie diese Mail. Das unerlaubte Kopi=
+eren=20
+sowie die unbefugte Weitergabe=C2=A0dieser Mail ist nicht gestattet.=C2=A0
+
+This=20
+email may contain confidential and/or privileged information.=C2=A0
+If you are=20
+not the intended recipient (or have received this email in=C2=A0error) plea=
+se=20
+notify the sender immediately and destroy this email. Any=C2=A0unauthorised=
+=20
+copying, disclosure or distribution of the material in this=C2=A0email is=
+=20
+strictly forbidden.
+
