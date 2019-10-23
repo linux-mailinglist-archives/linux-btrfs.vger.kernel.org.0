@@ -2,56 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1236DE19E9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 14:22:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA8ADE1B77
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 14:57:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2405295AbfJWMWM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Oct 2019 08:22:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57030 "EHLO mx1.suse.de"
+        id S2390683AbfJWM44 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Oct 2019 08:56:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51078 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726636AbfJWMWL (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Oct 2019 08:22:11 -0400
+        id S2390600AbfJWM4z (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Oct 2019 08:56:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 43C58B3C1;
-        Wed, 23 Oct 2019 12:22:10 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 53C63DA734; Wed, 23 Oct 2019 14:22:22 +0200 (CEST)
-Date:   Wed, 23 Oct 2019 14:22:22 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        ashnell@suse.de
-Subject: Re: [PATCH] btrfs-progs: build: add missing symbols from volumes.o
- to libbtrfs
-Message-ID: <20191023122222.GB3001@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
-        ashnell@suse.de
-References: <20191023080226.10826-1-jthumshirn@suse.de>
+        by mx1.suse.de (Postfix) with ESMTP id 47ED7B753
+        for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2019 12:56:54 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/2] btrfs: trim: Fix a bug certain range may not be trimmed properly
+Date:   Wed, 23 Oct 2019 20:56:46 +0800
+Message-Id: <20191023125648.30840-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191023080226.10826-1-jthumshirn@suse.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 10:02:26AM +0200, Johannes Thumshirn wrote:
-> When using snapper a user reports that some symbols from volumes.[ch] are
-> missing from libbtrfs, eg. write_raid56_with_parity().
+There is a bug report about discard mount option not trimming some range
+properly, and causing unexpected space usage for thin device.
 
-With this patch on top of master:
+It turns out to be that, if there are pinned extents across block group
+boundary, we will only trim to the end of current block group, skipping
+the remaining.
 
-$ make library-test
-    [TEST PREP]  library-test
-/usr/lib64/gcc/x86_64-suse-linux/9/../../../../x86_64-suse-linux/bin/ld: /labs/dsterba/gits/btrfs-progs/libbtrfs.so: undefined reference to `write_raid56_with_parity'
-/usr/lib64/gcc/x86_64-suse-linux/9/../../../../x86_64-suse-linux/bin/ld: /labs/dsterba/gits/btrfs-progs/libbtrfs.so: undefined reference to `btrfs_map_block'
-/usr/lib64/gcc/x86_64-suse-linux/9/../../../../x86_64-suse-linux/bin/ld: /labs/dsterba/gits/btrfs-progs/libbtrfs.so: undefined reference to `total_memory'
-collect2: error: ld returned 1 exit status
-make: *** [Makefile:621: library-test] Error 1
+This patchset will fix it by ensuring btrfs_discard_extent() will
+iterate the full range before exiting.
+
+The first patch is just a tiny readability improvement found during the
+fix.
+The second patch is the main body of the fix.
+
+Meanwhile I'm still looking into how to craft such test case for btrfs,
+so the test case may be late for several days.
+
+Changelog:
+v2:
+- Fold the __btrfs_map_block_for_discard() @length change into the main
+  patch
+  Since the @length parameter change itself doesn't make much sense,
+  folding it into the fix looks more reasonable.
+
+- Split the tiny readability improvement patch into its own patch
+
+Qu Wenruo (2):
+  btrfs: volumes: Use more straightforward way to calculate map length
+  btrfs: extent-tree: Ensure we trim ranges across block group boundary
+
+ fs/btrfs/extent-tree.c | 40 ++++++++++++++++++++++++++++++----------
+ fs/btrfs/volumes.c     |  8 +++++---
+ 2 files changed, 35 insertions(+), 13 deletions(-)
+
+-- 
+2.23.0
+
