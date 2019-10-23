@@ -2,57 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E06E12A7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 09:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30243E138B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 23 Oct 2019 10:02:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389327AbfJWHE7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Oct 2019 03:04:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48032 "EHLO mx1.suse.de"
+        id S2390056AbfJWICa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Oct 2019 04:02:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46284 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1732481AbfJWHE7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Oct 2019 03:04:59 -0400
+        id S1727574AbfJWICa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Oct 2019 04:02:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 32FA8B435
-        for <linux-btrfs@vger.kernel.org>; Wed, 23 Oct 2019 07:04:58 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: Remove btrfs_bio::flags member
-Date:   Wed, 23 Oct 2019 15:04:47 +0800
-Message-Id: <20191023070447.6899-1-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        by mx1.suse.de (Postfix) with ESMTP id 290C9BA70;
+        Wed, 23 Oct 2019 08:02:28 +0000 (UTC)
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        ashnell@suse.de, Johannes Thumshirn <jthumshirn@suse.de>
+Subject: [PATCH] btrfs-progs: build: add missing symbols from volumes.o to libbtrfs
+Date:   Wed, 23 Oct 2019 10:02:26 +0200
+Message-Id: <20191023080226.10826-1-jthumshirn@suse.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This member is not used by any one, just remove it.
+When using snapper a user reports that some symbols from volumes.[ch] are
+missing from libbtrfs, eg. write_raid56_with_parity().
 
-And since it's between two pointers, such removal should save us a
-pointer size of the structure.
-
-Furthermore, if we just want to know the block group profile, we have
-btrfs_bio::map_type, which is much better than this ambiguous member.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Link: https://github.com/openSUSE/snapper/issues/500
+Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
 ---
- fs/btrfs/volumes.h | 1 -
- 1 file changed, 1 deletion(-)
+ Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 7f6aa1816409..5ab2920b0c1f 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -331,7 +331,6 @@ struct btrfs_bio {
- 	u64 map_type; /* get from map_lookup->type */
- 	bio_end_io_t *end_io;
- 	struct bio *orig_bio;
--	unsigned long flags;
- 	void *private;
- 	atomic_t error;
- 	int max_errors;
+diff --git a/Makefile b/Makefile
+index 21bf2717a9e7..37a681c23f4e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -152,11 +152,11 @@ cmds_objects = cmds/subvolume.o cmds/filesystem.o cmds/device.o cmds/scrub.o \
+ libbtrfs_objects = send-stream.o send-utils.o kernel-lib/rbtree.o btrfs-list.o \
+ 		   kernel-lib/radix-tree.o extent-cache.o extent_io.o \
+ 		   kernel-lib/crc32c.o common/messages.o \
+-		   uuid-tree.o utils-lib.o common/rbtree-utils.o
++		   uuid-tree.o utils-lib.o common/rbtree-utils.o volumes.o
+ libbtrfs_headers = send-stream.h send-utils.h send.h kernel-lib/rbtree.h btrfs-list.h \
+ 	       kernel-lib/crc32c.h kernel-lib/list.h kerncompat.h \
+ 	       kernel-lib/radix-tree.h kernel-lib/sizes.h kernel-lib/raid56.h \
+-	       extent-cache.h extent_io.h ioctl.h ctree.h btrfsck.h version.h
++	       extent-cache.h extent_io.h ioctl.h ctree.h btrfsck.h version.h volumes.h
+ libbtrfsutil_major := $(shell sed -rn 's/^\#define BTRFS_UTIL_VERSION_MAJOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
+ libbtrfsutil_minor := $(shell sed -rn 's/^\#define BTRFS_UTIL_VERSION_MINOR ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
+ libbtrfsutil_patch := $(shell sed -rn 's/^\#define BTRFS_UTIL_VERSION_PATCH ([0-9])+$$/\1/p' libbtrfsutil/btrfsutil.h)
 -- 
-2.23.0
+2.16.4
 
