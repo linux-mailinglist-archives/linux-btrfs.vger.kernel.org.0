@@ -2,124 +2,87 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD67E31D7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 14:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66182E31D9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 14:09:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439597AbfJXMIu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Oct 2019 08:08:50 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:42868 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439581AbfJXMIu (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Oct 2019 08:08:50 -0400
-Received: by mail-qt1-f195.google.com with SMTP id w14so37434646qto.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 05:08:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eC/w8mQK+hZrHsnMW7E4ac2ts2YTrwLSa7+MG4nYjwM=;
-        b=ck6+K4QJtLeZFS9RTm3mH2ov4n87jfZQKKpRuPqDzwfctAJRVs3Dv8URtm98OTaXpD
-         03ZUBaiYLRj3iNzInUNBDOiTZkvu/F6kYFjACSYLRA/er2HsqHo8tJQTBmAX4VBt2ggc
-         ZQOgKNfnP0EH9WH+LKp8w2Anfmq0WvXXNYafG96ihc5rjnSmVYgtOpLhWpQ3Tl94XwFJ
-         n+2xrTSib2pLqPowZCoc9PdYeMd3SX2NILMA/iosadDCAtFgEc8TgZkK7J9UvYg5EL3q
-         d6LL1yd8Z/IPzgCG3l6tt8k6/5YnDNEc+1Cv9huInQLV5xJmp++IETSLA9j9H03azAlc
-         yL6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eC/w8mQK+hZrHsnMW7E4ac2ts2YTrwLSa7+MG4nYjwM=;
-        b=RmCDplTBg9rosZE+NkII/3RnaRzwS6aZpvkVdjfrvBs/PKlUNutRGxOjQCUNLjagh/
-         LJO2mvo//IAOdIRI7IV6VY3YXf5dQjMEAyExeUyDL7NgTCxLUCAzKgd1APWO8zg/uMNx
-         yCvfsGgLkymC9RSh8/XpffUObKRukHm7MAg/Twq3J6zfU/hBfUwVWGESjBeomQa+fCaK
-         Jor/Q2q8Qfzyjfmpccv7IIJKvicjOK+bKdBJyjrMnZRNlRorXX4R/GPcVktgQZQMUuZg
-         c28V3NipU648MuYUQvFNxuzOHXNWJ32vggvUW+6aIRRGX/vxMXLSQce/dyxq67mrGAlc
-         3sxA==
-X-Gm-Message-State: APjAAAXFcIT3y4TtQE/cnbxoz868RGT54mtz+WrpJ3kYJNLS7T0VZnMu
-        BEz2ImBdAjl1aLctRaMCZlhmNA==
-X-Google-Smtp-Source: APXvYqx/scmYLPmcPxpQx06VEhfgZsONXdUJ/28ijwReIXoNNADGXFcKP6gObqWKRGe3TraNSLPZXg==
-X-Received: by 2002:a0c:814d:: with SMTP id 71mr2666443qvc.226.1571918927303;
-        Thu, 24 Oct 2019 05:08:47 -0700 (PDT)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id y28sm12905980qky.25.2019.10.24.05.08.45
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 24 Oct 2019 05:08:46 -0700 (PDT)
-Date:   Thu, 24 Oct 2019 08:08:44 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     viro@ZenIV.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, kernel-team@fb.com, jack@suse.cz,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] fs: use READ_ONCE/WRITE_ONCE with the i_size helpers
-Message-ID: <20191024120843.4n2eh47okn4c635f@MacBook-Pro-91.local>
-References: <20191011202050.8656-1-josef@toxicpanda.com>
+        id S2439593AbfJXMJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Oct 2019 08:09:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35790 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725887AbfJXMJQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 24 Oct 2019 08:09:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 7B687B69B;
+        Thu, 24 Oct 2019 12:09:12 +0000 (UTC)
+Subject: Re: [PATCH 6/6] btrfs: add dedicated members for start and length of
+ a block group
+To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1571848791.git.dsterba@suse.com>
+ <745a39a04234491ea7e77f2ff66221b3a462556f.1571848791.git.dsterba@suse.com>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <84178510-59a1-6448-c2a3-2b4a3e1e48c3@suse.com>
+Date:   Thu, 24 Oct 2019 15:09:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191011202050.8656-1-josef@toxicpanda.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <745a39a04234491ea7e77f2ff66221b3a462556f.1571848791.git.dsterba@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 11, 2019 at 04:20:50PM -0400, Josef Bacik wrote:
-> I spent the last few weeks running down a weird regression in btrfs we
-> were seeing in production.  It turned out to be introduced by
-> 62b37622718c, which took the following
-> 
-> loff_t isize = i_size_read(inode);
-> 
-> actual_end = min_t(u64, isize, end + 1);
-> 
-> and turned it into
-> 
-> actual_end = min_t(u64, i_size_read(inode), end + 1);
-> 
-> The problem here is that the compiler is optimizing out the temporary
-> variables used in __cmp_once, so the resulting assembly looks like this
-> 
-> 498             actual_end = min_t(u64, i_size_read(inode), end + 1);
->    0xffffffff814b08c1 <+145>:   48 8b 44 24 28  mov    0x28(%rsp),%rax
->    0xffffffff814b08c6 <+150>:   48 39 45 50     cmp    %rax,0x50(%rbp)
->    0xffffffff814b08ca <+154>:   48 89 c6        mov    %rax,%rsi
->    0xffffffff814b08cd <+157>:   48 0f 46 75 50  cmovbe 0x50(%rbp),%rsi
-> 
-> as you can see we read the value of the inode to compare, and then we
-> read it a second time to assign it.
-> 
-> This code is simply an optimization, so there's no locking to keep
-> i_size from changing, however we really need min_t to actually return
-> the minimum value for these two values, which it is failing to do.
-> 
-> We've reverted that patch for now to fix the problem, but it's only a
-> matter of time before the compiler becomes smart enough to optimize out
-> the loff_t isize intermediate variable as well.
-> 
-> Instead we want to make it explicit that i_size_read() should only read
-> the value once.  This will keep this class of problem from happening in
-> the future, regardless of what the compiler chooses to do.  With this
-> change we get the following assembly generated for this code
-> 
-> 491             actual_end = min_t(u64, i_size_read(inode), end + 1);
->    0xffffffff8148f625 <+149>:   48 8b 44 24 20  mov    0x20(%rsp),%rax
-> 
-> ./include/linux/compiler.h:
-> 199             __READ_ONCE_SIZE;
->    0xffffffff8148f62a <+154>:   4c 8b 75 50     mov    0x50(%rbp),%r14
-> 
-> fs/btrfs/inode.c:
-> 491             actual_end = min_t(u64, i_size_read(inode), end + 1);
->    0xffffffff8148f62e <+158>:   49 39 c6        cmp    %rax,%r14
->    0xffffffff8148f631 <+161>:   4c 0f 47 f0     cmova  %rax,%r14
-> 
-> and this works out properly, we only read the value once and so we won't
-> trip over this problem again.
-> 
-> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 
-Al,
 
-Will you pick this up, or do you want me to send it along?  Thanks,
+On 23.10.19 г. 19:48 ч., David Sterba wrote:
+> The on-disk format of block group item makes use of the key that stores
+> the offset and and length. This is further used in the code, although
+nit: extra "and"
 
-Josef
+<snip>
