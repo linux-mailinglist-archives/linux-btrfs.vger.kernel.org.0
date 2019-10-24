@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E31E2A69
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 08:28:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A38CE2A6A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 08:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437748AbfJXG2f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        id S2437750AbfJXG2f (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
         Thu, 24 Oct 2019 02:28:35 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:43198 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729789AbfJXG2e (ORCPT
+Received: from userp2130.oracle.com ([156.151.31.86]:55660 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437738AbfJXG2f (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Oct 2019 02:28:34 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9O6OGNR157671
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:32 GMT
+        Thu, 24 Oct 2019 02:28:35 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9O6O06b178711
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:33 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=42Km7nebQvOR6ZHpmk5vb5aFkUx9WlA3OQSlT3++GTc=;
- b=aWiJl+mkQf6+5+mQBBqSHKf3oIeEiTmG5gk0LftTJUuN/+bkh/xpN9OjkO6SzRB2m4Pz
- YONTb+7v9dHFX1UvbKC+995STi7wYJ1If5tnSgEyIzbIzQHwJer899ppZrnz/Hv68izl
- ZpueygwFlYw2Jjcgu7JPjPj0hjXSxc6SDjJP2aPiGMOhunnWpRrCSYl0nKgDoUDVk/TP
- vdcghddLNVOZcUrqjU2EhLFbqypo4DXSM0Vhu1pn0muaR6F0TFqWSqrmppribbVnKCMB
- pTC/XDPuEH/j2nqke9oGoQuCOjc4jyBTPVf4Zbc/+MfEcciHtBfekZxN6zBanFChcQOW uw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2vqu4r1ah5-1
+ bh=twyTl369/4m0t/hvykeBAX2VSxgO30UXQ0R/QJDZq6Y=;
+ b=ILm83+BV2PwxE9uZzZOXeE2wHa0tZ8pIrLaxiixs2HDfypQG3Sc31cJCjND79vY1Ibl5
+ a02DwqYP5cFqCavJ/SdqoHEHCPlvqpDM5zQ4vA1LCdaZ5IWlRN1runoXCAXz2FWRRzuz
+ +W/7DIy1SuCxDZYmXVW41+iIRPUCUG/RVR1umEf/zu2gpOgJznDAHBgELEsw+HOojuwc
+ tV5gFhOld4RYZjZWgw3lkWll0UfBy9DWmHd5CNrrstsXYXeG3V0lMy2468zUdcHv/MKJ
+ vZnS2jeUt+dlksraOoI4KTImUjJPJJVqLADV0eTZdSf3Jn7DzLeOI0Mg6W/j6S1aqdyC xw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 2vqswtsktr-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:32 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9O6MvcI150717
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:32 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2vtsk3vqrd-1
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:33 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9O6MuR4080216
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:33 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2vtm23unnf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
         for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:32 +0000
 Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9O6SVSb023373
-        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:31 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9O6SWI7013526
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:32 GMT
 Received: from localhost.localdomain (/39.109.145.141)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 23 Oct 2019 23:28:30 -0700
+        with ESMTP ; Wed, 23 Oct 2019 23:28:32 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [RFC PATCH 1/3] btrfs-progs: send: let option quiet overrule verbose
-Date:   Thu, 24 Oct 2019 14:28:23 +0800
-Message-Id: <20191024062825.13097-2-anand.jain@oracle.com>
+Subject: [RFC PATCH 2/3] btrfs-progs: receive: let option quiet overrule verbose
+Date:   Thu, 24 Oct 2019 14:28:24 +0800
+Message-Id: <20191024062825.13097-3-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191024062825.13097-1-anand.jain@oracle.com>
 References: <20191024062825.13097-1-anand.jain@oracle.com>
@@ -67,77 +67,79 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs send has both -q|--quiet and -v|--verbose options, now the test
-here is, which option shall take the precedence if in case both of them
-are specified.
+btrfs receive has both -q|--quiet and -v|--verbose options, if when both
+the options are specified, the order of the options makes difference in
+the output, which is at times causes confusion.
 
-Per current implementation it really depends on the order of the options
-as shown below
+Fix this by letting option --quite to overrule --verbose option.
 
 Without fix:
----- btrfs send -q /btrfs/ss2 -f /tmp/t -----
----- btrfs send -q -v /btrfs/ss2 -f /tmp/t -----
-At subvol /btrfs/ss2
----- btrfs send -q -vv /btrfs/ss2 -f /tmp/t -----
-At subvol /btrfs/ss2
-BTRFS_IOC_SEND returned 0
-joining genl thread
----- btrfs send -v -q /btrfs/ss2 -f /tmp/t -----
----- btrfs send -vv -q /btrfs/ss2 -f /tmp/t -----
----- btrfs send -v -q -v /btrfs/ss2 -f /tmp/t -----
-At subvol /btrfs/ss2
+---- btrfs receive -q -vv -f /tmp/t /btrfs1 -----
+At snapshot ss3
+receiving snapshot ss3 uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, ctransid=11 parent_uuid=a6b75134-8865-f045-89d2-c2afcf794475, parent_ctransid=11
+BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, stransid=11
+---- btrfs receive -v -q -f /tmp/t /btrfs1 -----
+At snapshot ss3
+---- btrfs receive -vv -q -f /tmp/t /btrfs1 -----
+At snapshot ss3
 
-If the effectiveness of the output depends on the chronological order
-of the options -q and -v specified in the command line, then its rather
-confusing at times.
+with fix:
+---- btrfs receive -q -vv -f /tmp/t /btrfs1 -----
+At snapshot ss3
+---- btrfs receive -v -q -f /tmp/t /btrfs1 -----
+At snapshot ss3
+---- btrfs receive -vv -q -f /tmp/t /btrfs1 -----
+At snapshot ss3
 
-So fix it by making the option -q|--quiet to overrule the -v|--verbose
-option if when both of them are specified.
-
-So with the fix:
----- btrfs send -q /btrfs/ss2 -f /tmp/t -----
----- btrfs send -q -v /btrfs/ss2 -f /tmp/t -----
----- btrfs send -q -vv /btrfs/ss2 -f /tmp/t -----
----- btrfs send -v -q /btrfs/ss2 -f /tmp/t -----
----- btrfs send -vv -q /btrfs/ss2 -f /tmp/t -----
----- btrfs send -v -q -v /btrfs/ss2 -f /tmp/t -----
+The output with either of them (-q or -v) remains unaffected
+by this patch, as shown below:
+---- btrfs receive -q -f /tmp/t /btrfs1 -----
+At snapshot ss3
+---- btrfs receive -v -f /tmp/t /btrfs1 -----
+At snapshot ss3
+receiving snapshot ss3 uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, ctransid=11 parent_uuid=a6b75134-8865-f045-89d2-c2afcf794475, parent_ctransid=11
+BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, stransid=11
+---- btrfs receive -vv -f /tmp/t /btrfs1 -----
+At snapshot ss3
+receiving snapshot ss3 uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, ctransid=11 parent_uuid=a6b75134-8865-f045-89d2-c2afcf794475, parent_ctransid=11
+BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, stransid=11
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- cmds/send.c | 6 +++++-
+ cmds/receive.c | 6 +++++-
  1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/cmds/send.c b/cmds/send.c
-index 7ce6c3273857..4bf2be7db4d0 100644
---- a/cmds/send.c
-+++ b/cmds/send.c
-@@ -477,6 +477,7 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
- 	int full_send = 1;
- 	int new_end_cmd_semantic = 0;
- 	u64 send_flags = 0;
+diff --git a/cmds/receive.c b/cmds/receive.c
+index 4b03938ea3eb..d8c934a7c57c 100644
+--- a/cmds/receive.c
++++ b/cmds/receive.c
+@@ -1291,6 +1291,7 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
+ 	u64 max_errors = 1;
+ 	int dump = 0;
+ 	int ret = 0;
 +	bool quiet = false;
  
- 	memset(&send, 0, sizeof(send));
- 	send.dump_fd = fileno(stdout);
-@@ -500,7 +501,7 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
+ 	memset(&rctx, 0, sizeof(rctx));
+ 	rctx.mnt_fd = -1;
+@@ -1321,7 +1322,7 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
  			g_verbose++;
  			break;
  		case 'q':
 -			g_verbose = 0;
 +			quiet = true;
  			break;
- 		case 'e':
- 			new_end_cmd_semantic = 1;
-@@ -584,6 +585,9 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
- 	if (check_argc_min(argc - optind, 1))
- 		return 1;
+ 		case 'f':
+ 			if (arg_copy_path(fromfile, optarg, sizeof(fromfile))) {
+@@ -1356,6 +1357,9 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
+ 		}
+ 	}
  
 +	if (quiet)
 +		g_verbose = 0;
 +
- 	if (outname[0]) {
- 		int tmpfd;
- 
+ 	if (dump && check_argc_exact(argc - optind, 0))
+ 		usage(cmd);
+ 	if (!dump && check_argc_exact(argc - optind, 1))
 -- 
 2.23.0
 
