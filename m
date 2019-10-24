@@ -2,236 +2,100 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 229BDE2E94
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 12:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598D1E2F42
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 12:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392127AbfJXKQj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Oct 2019 06:16:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33664 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388677AbfJXKQj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Oct 2019 06:16:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7ED22AC3F;
-        Thu, 24 Oct 2019 10:16:35 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: [PATCH] fstests: btrfs: Test if btrfs can trim adjacent extents across adjacent block groups boundary
-Date:   Thu, 24 Oct 2019 18:16:29 +0800
-Message-Id: <20191024101629.33807-1-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
+        id S2407948AbfJXKmR (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Oct 2019 06:42:17 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:42115 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2393146AbfJXKmR (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 24 Oct 2019 06:42:17 -0400
+Received: by mail-ed1-f68.google.com with SMTP id s20so12249518edq.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 03:42:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gO2VLBmmvvu9+CAuaDsVVCk9Mpn2vZu/y3Zcjvcedxg=;
+        b=ulL01thwXTIH5L5379Po2JxVBCKlCu+dzFyVjjY4v7PCW+Ch3TLGSgFs+tokoqBVls
+         hRxZrW8Rkl43sazI69WqdsNR7QFZuBBiNY28iXS2KPdRaQhbEJircTFiaDRWY6g+DTEf
+         Vlaz3LmeOgbcZgWqW8nL1H9UB2jTN6Src/E2IZLVemzIXgznx/7xBs1NrNBm9PV7NCOs
+         /7caHaXrcVqj4nsoQZRAcRI0nTNUWhHCTtlPxX9tGJxRDmqCvXF4OxS8FHG7WLb6WxKN
+         ZOPrWJ+1VJB69L3TMvxmp+uQyV3HMjkfKT9xPlHu/DXy72DZB7C+CjDyHzhyRPFWEOo4
+         N9CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gO2VLBmmvvu9+CAuaDsVVCk9Mpn2vZu/y3Zcjvcedxg=;
+        b=bU3NCx6UsJH0eZ92F2G/JHzw8yA2qdUF0Z6wEiODuBGAA2PMXFTL3WVFTLtu6vYQeR
+         7NLyo0wNcIz482GogOY2ZZ6equNXz4bvMSo0y68THhFklD3Xppu2qAzi3Ahnt59/qHvp
+         TpJ0lVilhijMba6Vjg7BcJs+IPAv9U19oTU2o2qQ5CZNy2cAbfByRXiC8YBhreSXbDkk
+         8hZvuEFvPGwVty+bfszrzJo7a9LeiqfXQlNMX/aYl0jRdRGpbS8PyGsn9FrjZf1JN/aM
+         tiEzD3fjYfKIzMa+3WX1c82RW+ezhmwT0QyfESLtpnCMvHcqoTL+N6uM1j5VVvYfB1j0
+         SJcA==
+X-Gm-Message-State: APjAAAWmxcodjcinQEWVa50EoNadqiX3zf+MLn5Bc7JRnOMQXcd1Hj+s
+        jIgsowAdpGTFnlkkZ9U3pQ3hXMhdC8IT3uNbwjDN
+X-Google-Smtp-Source: APXvYqxxH9SAcaK73+BdmFX8iWZCmvGDfTAtCsuicVBCM41q9IMIjPg3vnJrOEJhUK0JSaYQHj5zSknimW5hjCo3Euc=
+X-Received: by 2002:aa7:dcd4:: with SMTP id w20mr23134948edu.52.1571913733814;
+ Thu, 24 Oct 2019 03:42:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAKbQEqE7xN1q3byFL7-_pD=_pGJ0Vm9pj7d-g+rRgtONeH-GrA@mail.gmail.com>
+ <CAKbQEqG35D_=8raTFH75-yCYoqH2OvpPEmpj2dxgo+PTc=cfhA@mail.gmail.com>
+ <4608b644-0fa3-7212-af45-0f4eebfb0be9@gmx.com> <CAKbQEqG8Sb-5+wx4NMfjORc-XnCtytuoqRw4J9hk2Pj9BNY_9g@mail.gmail.com>
+ <CAKbQEqGwYCB1N+MQVYLNVm5o10acOFAa_JyO8NefGZfVtdyVBQ@mail.gmail.com>
+ <fe882b36-0f7b-5ad5-e62e-06def50acd30@gmx.com> <CAKbQEqEuYqxO8pFk3sDQwEayTPiggLAFtCT8LmoNPF4Zc+-uzw@mail.gmail.com>
+ <e0c57aba-9baf-b375-6ba3-1201131a2844@gmail.com> <CAKbQEqFdY8hSko2jW=3BzpiZ6H4EV9yhncozoy=Kzroh3KfD5g@mail.gmail.com>
+ <20f660ea-d659-7ad5-a84d-83d8bfa3d019@gmx.com> <CAKbQEqGPY0qwrSLMT03H=s5Tg=C-UCscyUMXK-oLrt5+YjFMqQ@mail.gmail.com>
+ <0d6683ee-4a2c-f2ab-857b-c7cd44442dce@gmail.com>
+In-Reply-To: <0d6683ee-4a2c-f2ab-857b-c7cd44442dce@gmail.com>
+From:   Christian Pernegger <pernegger@gmail.com>
+Date:   Thu, 24 Oct 2019 12:41:37 +0200
+Message-ID: <CAKbQEqGoiGbV+Q=LVfSbKLxYeQ5XmLFMMBdq_yxSR7XE3SwsmA@mail.gmail.com>
+Subject: Re: first it froze, now the (btrfs) root fs won't mount ...
+To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The test case checks if btrfs can trim adjacent extents across adjacent
-block groups boundary correctly.
+I must admit, this discussion is going (technical) places I don't know
+anything about, and much as I enjoy learning things, I'd rather not
+waste your time (go make btrfs better! :-p). When all is said and done
+I'm just a user. I still don't understand how (barring creatively
+defective hardware, which is of course always in the cards) a crash
+that looked comparatively benign could lead to an fs that's not only
+unmountable but unfixable; how metadata that's effectively a single
+point of failure could not have backup copies designed in that are
+neither stale nor left to the elements, seems awfully fragile -- but I
+can accept it. Repair is out.
 
-The test case craft the following extents layout:
+Recovery it is, then. I'd like to try and build this rescue branch of
+yours. Does it have to be the whole thing, or can btrfs alone be built
+against the headers of the distro kernel somehow, or can the distro
+kernel source be patched with the rescue stuff? Git wasn't a thing the
+last time I played with kernels, a shove in the right direction would
+be appreciated.
 
-         |  BG1 |      BG2        |       BG3            |
- Bytenr: X-8M   X      X+512M     X+1G  X+1G+128M
-         |//////|//////|          |     |//|
+Relapse prevention. "Update everything and pray it's either been fixed
+or at least isn't triggered any more" isn't all to
+confidence-inspiring. Desktop computers running remotely current
+software will crash from time to time, after all, if not amdgpu then
+something else. At which point we're back at "a crash shouldn't have
+caused this". If excerpts from the damaged image are any help in
+finding the actual issue, I can keep it around for a while.
 
-There is a long existing bug that, when btrfs is trying to trim the
-range at [X+512M, X+1G+128M), it will only trim [X+512M, X+1G).
+Disaster recovery. What do people use to quickly get back up and
+running from bare metal that integrates well with btrfs (and is
+suitable just for a handful of machines)?
 
-This test case is the regression test for this long existing bug.
+Cheers,
+C.
 
-It will verify the trimmed bytes by using loopback device backed up by a
-file, and checking the bytes used by the file to determine how many
-bytes are trimmed.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/btrfs/198     | 154 ++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/198.out |   2 +
- tests/btrfs/group   |   1 +
- 3 files changed, 157 insertions(+)
- create mode 100755 tests/btrfs/198
- create mode 100644 tests/btrfs/198.out
-
-diff --git a/tests/btrfs/198 b/tests/btrfs/198
-new file mode 100755
-index 00000000..851e44c1
---- /dev/null
-+++ b/tests/btrfs/198
-@@ -0,0 +1,154 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FS QA Test 198
-+#
-+# Test if btrfs discard mount option is trimming adjacent extents across
-+# block groups boundary.
-+# The test case uses loopback device and file used space to detect trimmed
-+# bytes.
-+#
-+# There is a long existing bug that btrfs doesn't discard all space for
-+# above mentioned case.
-+#
-+# The fix is: "btrfs: extent-tree: Ensure we trim ranges across block group
-+# boundary"
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+
-+here=`pwd`
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	cd /
-+	umount $loop_mnt &> /dev/null
-+	_destroy_loop_device $loop_dev &> /dev/null
-+	rm -rf $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/filter
-+
-+# remove previous $seqres.full before test
-+rm -f $seqres.full
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs btrfs
-+_supported_os Linux
-+_require_fstrim
-+_require_loop
-+_require_xfs_io_command "fiemap"
-+
-+# We need less than 2G data write, consider it 2G and double it just in case
-+_require_scratch_size	$((4 * 1024 * 1024))
-+
-+loop_file="$SCRATCH_MNT/image"
-+
-+# The margin when checking trimmed size.
-+#
-+# The margin is for tree blocks, calculated by
-+# 3 * max_tree_block_size
-+# |   |- 64K
-+# |- 3 trees get modified (root tree, extent tree, fs tree)
-+#
-+# In reality, there should be no margin at all due to the mount options.
-+# But who knows what will happen in later kernels.
-+margin_kb=$(( 3 * 64 ))
-+trimmed_kb=$(( 768 * 1024 )) # 768M
-+
-+_scratch_mkfs >> $seqres.full
-+_scratch_mount
-+
-+# Create a sparse file as the loopback target.
-+# 10G size makes sure we have 1G chunk size.
-+truncate -s 10G "$loop_file"
-+
-+_mkfs_dev -d SINGLE "$loop_file"
-+
-+loop_dev=$(_create_loop_device "$loop_file")
-+loop_mnt=$tmp/loop_mnt
-+
-+mkdir -p $loop_mnt
-+# - nospace_cache
-+#   Since v1 cache using DATA space, it can break data extent bytenr
-+#   continuousness.
-+# - nodatasum
-+#   As there will be 1.5G data write, generating 1.5M csum.
-+#   Disabling datasum could reduce the margin caused by metadata to minimal
-+# - discard
-+#   What we're testing
-+_mount -o nospace_cache,nodatasum,discard $loop_dev $loop_mnt
-+
-+# Craft the following extent layout:
-+#         |  BG1 |      BG2        |       BG3            |
-+# Bytenr: X-8M   X      X+512M     X+1G  X+1G+128M 
-+#         |//////|//////|                |//|
-+#            V      V           V          V
-+#            |      |           |          |- file 'tail_padding'
-+#            |      |           |- file 'cross_boundary'
-+#            |      |- file 'lead_padding2'
-+#            |- file 'lead_padding1'
-+# So that all extents of file 'cross_boundary' are all adjacent and crosses the
-+# boundary of BG1 and BG2
-+# File 'lead_padding1' and 'lead_padding2' are all paddings to fill the
-+# leading gap.
-+# File 'tail_padding' is to ensure after deleting file 'cross_boundary' we still
-+# have used extent in BG3, to prevent trimming the whole BG3.
-+# And since BG1 needs exactly 8M to fill, we need to sync write to ensure
-+# the write sequence.
-+_pwrite_byte 0xcd 0 8M $loop_mnt/lead_padding1 > /dev/null
-+sync
-+
-+_pwrite_byte 0xcd 0 512M $loop_mnt/lead_padding2 > /dev/null
-+sync
-+_pwrite_byte 0xcd 0 $(($trimmed_kb * 1024)) $loop_mnt/cross_boundary \
-+	> /dev/null
-+sync
-+
-+_pwrite_byte 0xcd 0 1M $loop_mnt/tail_padding > /dev/null
-+sync
-+
-+
-+$XFS_IO_PROG -c "fiemap" $loop_mnt/cross_boundary >> $seqres.full
-+# Ensure all extent are continuous
-+# Btrfs fiemap will merge continuous results, so the output should be only
-+# 2 lines, 1 line for filename, 1 line for a large merged fiemap result.
-+if [ $($XFS_IO_PROG -c "fiemap" $loop_mnt/cross_boundary | wc -l) -ne 2 ]; then
-+	_notrun "Non-continuous extent bytenr detected"
-+fi
-+
-+size1_kb=$(du $loop_file| cut -f1)
-+
-+# Delete the file 'cross_boundary'.
-+# This will delete $trimmed_kb data extents across the chunk boundary.
-+rm -f $loop_mnt/cross_boundary
-+
-+# sync so btrfs will commit transaction and trim the freed extents
-+sync
-+
-+size2_kb=$(du $loop_file | cut -f1)
-+
-+echo "loopback file size before discard: $size1_kb KiB" >> $seqres.full
-+echo "loopback file size after discard:  $size2_kb KiB" >> $seqres.full
-+echo "Expect trimmed size:               $trimmed_kb KiB" >> $seqres.full
-+echo "Have trimmed size:                 $(($size1_kb - $size2_kb)) KiB" >> $seqres.full
-+
-+if [ $(($size2_kb+ $trimmed_kb)) -gt $(($size1_kb + $margin_kb)) -o \
-+     $(($size2_kb+ $trimmed_kb)) -lt $(($size1_kb - $margin_kb)) ]; then
-+	_fail "Btrfs doesn't trim the range correctly"
-+fi
-+
-+echo "Silence is golden"
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/btrfs/198.out b/tests/btrfs/198.out
-new file mode 100644
-index 00000000..cb4c7854
---- /dev/null
-+++ b/tests/btrfs/198.out
-@@ -0,0 +1,2 @@
-+QA output created by 198
-+Silence is golden
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index ee35fa59..1b1cbbde 100644
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -200,3 +200,4 @@
- 195 auto volume
- 196 auto metadata log volume
- 197 auto replay trim
-+198 auto trim quick
--- 
-2.23.0
-
+P.S.: MemTest86 hasn't found anything in (as yet) 6 passes, nothing
+glaringly wrong with the RAM.
