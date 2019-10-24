@@ -2,109 +2,92 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEC0E283A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 04:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D2A7E2A68
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 08:28:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437083AbfJXCez (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Oct 2019 22:34:55 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:38468 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408246AbfJXCey (ORCPT
+        id S2406959AbfJXG2c (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Oct 2019 02:28:32 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:55614 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729789AbfJXG2c (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Oct 2019 22:34:54 -0400
-Received: by mail-qt1-f195.google.com with SMTP id o25so22104606qtr.5;
-        Wed, 23 Oct 2019 19:34:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Kpk3lLUqgGwLu+uXg2SWXaoH3Lz9YjBH7H2wUph1KgI=;
-        b=nWxtxJU3yLMrtDbaMEkPB29QLCMcQtyzX2+hbfzVWMRP3v+2pgmefyckvjP6h5n72d
-         I0PgUVUtiNoIpWg0rO8w8Vxtvwl4aTcTTGf9U7olB8sw05kA78KiHu+dJYCcrsn8kV5g
-         k2GoOT6orFcDnv38hj/dOQPkiS31f4qTF/d3b7RQM0XzIOvvzygynGDAJcQJPLyZMi57
-         vE0jheD1nyUxdYONNZc5/IZxFVud1ocKSoTZT+fUMu/QtYEAmwR7zkqY9cuR3ek2lQi+
-         biH1tqQ/UZjQZbuCoeJPj4LR4SSgYJtMXMAYjc5m+n7rREqCUlQmmat5aohDdJEWkq99
-         ZXzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Kpk3lLUqgGwLu+uXg2SWXaoH3Lz9YjBH7H2wUph1KgI=;
-        b=rZUEKQSnDYYIkL62nV3xltuEp3DdgOHuh2HSecpgf5b1yTwO0IJe8uKl16DHiOXdNz
-         36w3Ufy4wtXR+Qc2GkZzorrOgD7jNfAaCu36+kPI+QsfaV8gKLcOMCWhm8V57XMKwrB6
-         XUYnkTFc60l77f/FaRKoSpudUrx4mvaxRB9sjTBF+EbdUNY4ymlbY5u2+DbH2QlDbAQx
-         WN/+fSWe2XOfa4JJ7o3Y4gpbm/AKdw3higVE66iQT+OClq9UaHAIyBd6xuqWN/DNrM/t
-         o8bvuAkhMECwZR82M3rcHuvJa968v3vDSjDWi6nQ4875j99M5XBtqhIY/LDyCK9IF3hB
-         5qYQ==
-X-Gm-Message-State: APjAAAU6QEX08wUDFsJcuC+xewAr6Je1JMui/MASsU0dV20XPtu/LhBZ
-        K3sKFeHYXHdelWbtBux1SQKobvQH
-X-Google-Smtp-Source: APXvYqxAGw9VOw8bBlElMlkLouVTAjqYK4ikrAJTc3OBpJnPWW9l1JnFcB25s6S9Vnz0CKe01JbldA==
-X-Received: by 2002:a05:6214:803:: with SMTP id df3mr12589055qvb.215.1571884492658;
-        Wed, 23 Oct 2019 19:34:52 -0700 (PDT)
-Received: from localhost.localdomain ([186.212.94.31])
-        by smtp.gmail.com with ESMTPSA id q16sm10252495qke.22.2019.10.23.19.34.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 23 Oct 2019 19:34:52 -0700 (PDT)
-From:   Marcos Paulo de Souza <marcos.souza.org@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, mpdesouza@suse.com
-Subject: [PATCH 5/5] btrfs: ioctl: Call btrfs_vol_uevent on subvolume deletion
-Date:   Wed, 23 Oct 2019 23:36:36 -0300
-Message-Id: <20191024023636.21124-6-marcos.souza.org@gmail.com>
+        Thu, 24 Oct 2019 02:28:32 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9O6O0ue178705
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=1h00HK0R7zpIbgF9OMtfC5F2JPbYUcSKeTsBnC+Oj7s=;
+ b=b4u3arLqWLBQJKZkzR0bepcl2gDKSv5u2/6aO6pp1cpxyVlp+dB1GFVIJx/Dl6NUa/cd
+ pSCU4EN51vEVhMKitA2BwA3aIeUrK0vPQ5rqziV669va8NEzo9EBOMVD4DryTtaa/jA2
+ osz+it3xNB5D0DE/lHBjVbqTPZZLXtajORJ3+RhmmdOxjPojXDyJefK+BWqOOIqUluEp
+ +1QLngtlLgoO5Pe2Sp71HlF/LpWW4HQHUaN6nDt+E5GrE5xHU5pPCjxKQ/hJu9rLWIqe
+ NExm8fcdShUSGB3iAZ9vSJ37bJgTeA0B6OsHXPhj51svv66zfxTh1SJJRXYkX4vkC4OT 6Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2vqswtsktq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:30 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9O6Mxtl045207
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:30 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2vtjkhrqkc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:30 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9O6ST7o022213
+        for <linux-btrfs@vger.kernel.org>; Thu, 24 Oct 2019 06:28:29 GMT
+Received: from localhost.localdomain (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 23 Oct 2019 23:28:29 -0700
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [RFC PATCH 0/3] btrfs-progs: make quiet to overrule verbose
+Date:   Thu, 24 Oct 2019 14:28:22 +0800
+Message-Id: <20191024062825.13097-1-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191024023636.21124-1-marcos.souza.org@gmail.com>
-References: <20191024023636.21124-1-marcos.souza.org@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9419 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=736
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910240060
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9419 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=823 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910240060
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Marcos Paulo de Souza <mpdesouza@suse.com>
+When both the options (--quiet and --verbose) in btrfs send and receive
+is specified, we need at least one of it to overrule the other, irrespective
+of the chronological order of options.
 
-Since the function btrfs_ioctl_snap_destroy is used for deleting both
-subvolumes and snapshots it was needed call btrfs_is_snapshot,
-which checks a giver btrfs_root and returns true if it's a snapshot.
-The current code is interested in subvolumes only.
+This patch-set makes quiet overrule verbose.
 
-btrfs_vol_uevent will export two environment variables to udev:
-BTRFS_VOL_NAME: containing the name of the subvolume deleted
-BTRFS_VOL_DEL: will signalize that a volume is being deleted
+I don't think this shall break any script as such, because these two options are
+of kind of mutually exclusive. But just in case if I am missing something? So
+marked it as RFC.
 
-One can create a udev rule and check for BTRFS_VOL_DEL being set,
-these values one could detect whenever a subvolume is deleted, and
-take any action based on the subvolume name contained in BTRFS_VOL_NAME.
+And again patch 3/3 makes quiet option really quiet in receive and removes the
+output
+ At snapshot <>
+I don't expect scripts to specify quiet option and expect some logs.
 
-Signed-off-by: Marcos Paulo de Souza <mpdesouza@suse.com>
----
- fs/btrfs/ioctl.c | 5 +++++
- 1 file changed, 5 insertions(+)
+Anand Jain (3):
+  btrfs-progs: send: let option quiet overrule verbose
+  btrfs-progs: receive: let option quiet overrule verbose
+  btrfs-progs: receive: make quiet really quiet
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index c538d3648195..173f2a258508 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2869,6 +2869,7 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
- {
- 	struct dentry *parent = file->f_path.dentry;
- 	struct btrfs_fs_info *fs_info = btrfs_sb(parent->d_sb);
-+	struct block_device *bdev = fs_info->fs_devices->latest_bdev;
- 	struct dentry *dentry;
- 	struct inode *dir = d_inode(parent);
- 	struct inode *inode;
-@@ -2962,6 +2963,10 @@ static noinline int btrfs_ioctl_snap_destroy(struct file *file,
- 	err = btrfs_delete_subvolume(dir, dentry);
- 	inode_unlock(inode);
- 	if (!err) {
-+		/* send uevent only to subvolume deletion */
-+		if (!btrfs_is_snapshot(dest))
-+			btrfs_vol_uevent(bdev, false, vol_args->name);
-+
- 		fsnotify_rmdir(dir, dentry);
- 		d_delete(dentry);
- 	}
+ cmds/receive.c | 9 +++++++--
+ cmds/send.c    | 6 +++++-
+ 2 files changed, 12 insertions(+), 3 deletions(-)
+
 -- 
 2.23.0
 
