@@ -2,24 +2,22 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66182E31D9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 14:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E796E31DA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 14:09:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439593AbfJXMJQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Oct 2019 08:09:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35790 "EHLO mx1.suse.de"
+        id S2439600AbfJXMJv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Oct 2019 08:09:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36044 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725887AbfJXMJQ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Oct 2019 08:09:16 -0400
+        id S2439598AbfJXMJv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 24 Oct 2019 08:09:51 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7B687B69B;
-        Thu, 24 Oct 2019 12:09:12 +0000 (UTC)
-Subject: Re: [PATCH 6/6] btrfs: add dedicated members for start and length of
- a block group
+        by mx1.suse.de (Postfix) with ESMTP id 17FDEB6A1;
+        Thu, 24 Oct 2019 12:09:47 +0000 (UTC)
+Subject: Re: [PATCH 0/6] Block group structure cleanups
 To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 References: <cover.1571848791.git.dsterba@suse.com>
- <745a39a04234491ea7e77f2ff66221b3a462556f.1571848791.git.dsterba@suse.com>
 From:   Nikolay Borisov <nborisov@suse.com>
 Openpgp: preference=signencrypt
 Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
@@ -64,12 +62,12 @@ Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
  TCiLsRHFfMHFY6/lq/c0ZdOsGjgpIK0G0z6et9YU6MaPuKwNY4kBdjPNBwHreucrQVUdqRRm
  RcxmGC6ohvpqVGfhT48ZPZKZEWM+tZky0mO7bhZYxMXyVjBn4EoNTsXy1et9Y1dU3HVJ8fod
  5UqrNrzIQFbdeM0/JqSLrtlTcXKJ7cYFa9ZM2AP7UIN9n1UWxq+OPY9YMOewVfYtL8M=
-Message-ID: <84178510-59a1-6448-c2a3-2b4a3e1e48c3@suse.com>
-Date:   Thu, 24 Oct 2019 15:09:10 +0300
+Message-ID: <a67ae4cf-2cd8-7d5e-ad8f-d68c9b0f4ed1@suse.com>
+Date:   Thu, 24 Oct 2019 15:09:46 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <745a39a04234491ea7e77f2ff66221b3a462556f.1571848791.git.dsterba@suse.com>
+In-Reply-To: <cover.1571848791.git.dsterba@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -81,8 +79,45 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 23.10.19 г. 19:48 ч., David Sterba wrote:
-> The on-disk format of block group item makes use of the key that stores
-> the offset and and length. This is further used in the code, although
-nit: extra "and"
+> The block group cache structure has two embedded members that belong to
+> the on-disk format but were used for the in-memory structures. It's been
+> like that forever and I wonder why nobody was bothered by that. Switch
+> to normal members and rename a few things on along the way.
+> 
+> The size of block_group_cache is down from 528 to 504 so it should not
+> fit better to slab pages. Further shrinkage is possible.
+> 
+> David Sterba (6):
+>   btrfs: move block_group_item::used to block group
+>   btrfs: move block_group_item::flags to block group
+>   btrfs: remove embedded block_group_cache::item
+>   btrfs: rename block_group_item on-stack accessors to follow naming
+>   btrfs: rename extent buffer block group item accessors
+>   btrfs: add dedicated members for start and length of a block group
+> 
+>  fs/btrfs/block-group.c                 | 191 +++++++++++++------------
+>  fs/btrfs/block-group.h                 |   5 +-
+>  fs/btrfs/ctree.h                       |  12 +-
+>  fs/btrfs/extent-tree.c                 |  31 ++--
+>  fs/btrfs/free-space-cache.c            |  39 +++--
+>  fs/btrfs/free-space-tree.c             |  83 ++++++-----
+>  fs/btrfs/ioctl.c                       |   5 +-
+>  fs/btrfs/print-tree.c                  |   6 +-
+>  fs/btrfs/reada.c                       |   4 +-
+>  fs/btrfs/relocation.c                  |  18 +--
+>  fs/btrfs/scrub.c                       |  10 +-
+>  fs/btrfs/space-info.c                  |   3 +-
+>  fs/btrfs/sysfs.c                       |   4 +-
+>  fs/btrfs/tests/btrfs-tests.c           |   5 +-
+>  fs/btrfs/tests/free-space-tree-tests.c |  75 +++++-----
+>  fs/btrfs/tree-checker.c                |  10 +-
+>  fs/btrfs/volumes.c                     |  19 ++-
+>  include/trace/events/btrfs.h           |  21 ++-
+>  18 files changed, 264 insertions(+), 277 deletions(-)
+> 
 
-<snip>
+
+I quitte like the series, especially the last patch which puts sanity
+into how we refer to bg start/size.
+
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
