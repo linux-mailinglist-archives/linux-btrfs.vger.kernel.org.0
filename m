@@ -2,33 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 513B5E2764
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 02:40:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B26EE27C6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 03:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392839AbfJXAkr (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 23 Oct 2019 20:40:47 -0400
-Received: from mout.gmx.net ([212.227.17.22]:39261 "EHLO mout.gmx.net"
+        id S2404873AbfJXBhS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 23 Oct 2019 21:37:18 -0400
+Received: from mout.gmx.net ([212.227.15.15]:48319 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392817AbfJXAkr (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 23 Oct 2019 20:40:47 -0400
+        id S2404755AbfJXBhR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 23 Oct 2019 21:37:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1571877366;
-        bh=GoehOsarMWaNv04aeSnZyq7FykXjwScuaIg5Fu5ydjs=;
+        s=badeba3b8450; t=1571880804;
+        bh=+RiBRAKPVoPDLybJuci4jWskHhJv5kvH+CIu6Sei+0I=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ckf6NIawxsKGK1Uf9OP4x4N4zo3//DmeGB8+CGIPfDspJv8CtlV0REHfAKtmcbsAj
-         WtlcTjDjalHEAQstBHb/a4J9x+d64d7rTBMdqlf5YsiyK/2SI4aABo9JsbWAX+5n6R
-         u9ksPHT2Lovo9mUxltgK383bpD5GTmOmzIGkdHHk=
+        b=hqwE8n1tcGLM88MfDJoxcIgerw7PY0rO71u7Z5Qzn5xX2f0AmN6/MNb6B3rl+5ZhG
+         I4UVbqgU/pDtL35UliR9wicpPMGS5588OooWB7FFQTAoODnZQIFSV79X5FQdYTvyop
+         VfnKSv5LPqc60lpS/nE7ITkwML96Dn+vbQ2u2Y38=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MD9XF-1iEsNw36XZ-009AbH; Thu, 24
- Oct 2019 02:36:06 +0200
-Subject: Re: [PATCH v3 2/2] btrfs: extent-tree: Ensure we trim ranges across
- block group boundary
-To:     Nikolay Borisov <nborisov@suse.com>, Qu Wenruo <wqu@suse.com>,
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M3DJv-1iR0m61Ylh-003gLj; Thu, 24
+ Oct 2019 03:33:24 +0200
+Subject: Re: [PATCH] btrfs: Remove btrfs_bio::flags member
+To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
-References: <20191023135727.64358-1-wqu@suse.com>
- <20191023135727.64358-3-wqu@suse.com>
- <1322eb4c-5d7a-29c0-befc-952a012f1bcc@suse.com>
+References: <20191023070447.6899-1-wqu@suse.com>
+ <20191023171713.GE3001@twin.jikos.cz>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -54,240 +52,94 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <8340fb01-1a0b-2831-ba6e-ce4a04e842bf@gmx.com>
-Date:   Thu, 24 Oct 2019 08:35:59 +0800
+Message-ID: <6306e163-0761-acf7-904c-0c9908dac84d@gmx.com>
+Date:   Thu, 24 Oct 2019 09:33:18 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <1322eb4c-5d7a-29c0-befc-952a012f1bcc@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:6aWL+RIm+KKRlfEvBwHQKg+SMIFEbkm4chWaA9eqESsiFjg6j7n
- wHQfys7mAwEiI1+5C5vnkvYiCgbUGELAHf+Wsd66wd6Uq6OOcRUWwv+hDn5dMxWkRY/PMq7
- ceL2jWtVSMrLo+75DYa1xdjQa6SpNWpi2jF9GL+vmv1rJ0s4wCuU2gozKCPwK2dVJH1sYmo
- 1tXBV3eJRKKgtQraLO3/w==
+In-Reply-To: <20191023171713.GE3001@twin.jikos.cz>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="cCo5GtQnOJWzvB5s99SiDq3uz17O0gRRq"
+X-Provags-ID: V03:K1:RmNCpKkALibLXTIknLCqrF/l2XH3meJlbvdmyB9l70Lb7/wPCQa
+ dCluwfpLG5kaP9/YPy/jO32eIrRzAHzSCdStEcivU3865d1fnxCU45HEyVe1kgXW0NJoby0
+ Nz0fdCbhnQ0wJ0qHeiA9nR52fgJUIyPqpK11+RDHI6ZfO54rSogkSVhY1X7Apgkd1tKHkDm
+ 72R/m/7vpJOXHDVWYtOeQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Q7D7ip5PEfQ=:rvS3PsAkoKEK6n3IHipinD
- xuWg7/uKVajRSpyDdLGStVAorLs4LdL/ndyqqXF+Ntsigbcv5/fwY7INmgcY0qxfgUJbV1wMs
- V000RieJkr05qZn0qV6dm1LhwwT5AtihfUOuH6UrvhjOUcJDy+6XlekDyjoD4ve+U9af17fu7
- 2czmgFjSoHISWvtDTZrbokCFDMWkOl044FH0YPxJSUIzSBJAVAIw4uXs+IdA/0KO3y/OiGHXe
- yrrkxquwKZLcvf0IwjysCScSO+u9hP7SsB4/pX2+5zDetmk0WVRZpXjJpht0k5X5cxCIacPNz
- PTqfUP+Qvi/sXLUl5JqnvWlsc1o4R/k9Fvy3V7X1nleZtqam/ImahRiJds+NyLsnq15S9OPXY
- fotgmw8wTja+p8cXNzHf6BWmvj4rY0tfrowwRSj0Bae1ftzXTrVs6GfcukaoCsLZZY8m7pFHs
- 3zAkIpfqWbm+ifb9j8Zm+VN8HcxBn73vO+N+eW4kpRMfzdfnqyWBby2wuFG6gwZnjj6mNH3vN
- WEqOrEuYicKwSUNDKTMYrNYVMo5pzI2ovO/nmGiV64hvV8i2vzgHDCtkkteqRUZggBYt4zIyd
- sB0HowtKPGyOpn12UaqKhaDF5UzUXWInCqcGmH2ZR/v+oJlyHmF7TenKwtiqj3YI5FCYNnyW2
- bHS1A2MgtjNW16UB7R3BfrJSg8ZpVopiLQwSeNYMk9V+6M3TNbvvUuenKX2Uim/0nW2TrYjw1
- uA6PIDpmLJsCu6dsgJpwqHjI1OO6VN/azI4E6GHWFwSAg+DvnbVDGjjq2eyzXFk1yvful/HuC
- EuJmAksrp55r1rcHDi/BNb1mYC5TPlpENoY5Nz5sIqrQjQegt2K7iSQsr8ZKmszWqoQeCQRg/
- NYqf6vmdxtBlVBXKCt4JJtZjE9d5x0OT1gGF7T7YbSUFFsDamBz+Ly76LE1BXxmRtvhPoyGQ6
- tMlSxHld7VWPDWmiIw0efnhh+qRgbYYWF17WyUBw0tsv6ffYem1hFRC2NQbyZJ4QX333IQ5XW
- lxNUajhZUikYwDpid51YSnhaseuCzmp3oXr5EzHJAi8E+L3iKdeumpkPgcRk9gWlfA9lW9Z24
- qYOLeEAoJGWq73edH5n8r2C0a2vZjHGdRLvaPvCjNG31iGrp6+4L7oN5mB4c4+hxudbW55F1g
- xvE/5EQr3A5yFX9jAE7nEllzpsUXqKnpEe1ACc0EnW/lDvhAHOppJk+5xAX5WwzZp2TWCVCn6
- l/vlFVeOFiHrBMyd52fhGk1W3BXT5kXxk8d6NBoMdspYlMYv2juTOaN68nCM=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:RjbA+LaesD0=:Sfyy9cp/N46RvfIFaHr+tV
+ +A/4Y9Io+e+9HnKWSrPxHL62yq8SDqtByJX1T/b64joFqaDD8E9gwN1+JyjWHS+M0cCEgZIjB
+ 5ytJynRaW27P0uUNcEtXLqf8jE/AUnfdfq/sTAGzi1RGqnuFL6ISjRlP0on25y+e2ZXgg13Dg
+ ++Y7QC3eLS7qJ93rOcAhEoFEBBbnF0LqkU7egBxth1aQjAwsBarcB5YZBFo2AO4pvXZsAu7M5
+ aoxabPsD+tzFmsIbr1l8mtZw0C2BewfGWqoY1BO9jcJg5yLggL7ZiCkJKgwBSKUQWV+CPVtDS
+ fYQFo6ZS+vgV+0u2Xinajij6lhBMQvDsXvtncQ+mz7/ZXW75IBhw7OogkdSqb6c2OuktFzlsM
+ AY9+R0FlgJf6MYxWD7xH7MoEeSPsaYuLzaIr6YON0O2Au32uIe0lMP/cUF99JC55BBJIrIjZc
+ Hn7dv0VtLzSBhHgtOIoFIX3ZNwqgYkOxgAi1od5LlqY7XyEUU8i8XB8CmcwJpgCLtmhDapFiC
+ dNU0Uki1eqTVSUNDaCI/eq3Ht/jQR/PJ09fy/Za/10iYwUmW61yVb1Gd/fiYoVmTn1MswZgBq
+ RmK6z8z2YZRgDjM9y+yhjhjb/MW6ytGl+gZV6nGrTLn1xkSBQOhudXyn+q56UUXP/WvnbJmb/
+ L8WvI1Zh+wYmdBddNxXKIaujfHpEWS168wwmzh89pf9A+mP/fDWzHVEnrj4Tdh9INVYUIC3Sd
+ YwMX1uY3/P2hotPJ/nqtWO8/Tc9/8XvBUMaTJwGN0tCRmED+Af0cLnFfvk7eKPuIuSzwF7LNJ
+ 1bmUXXuBj0p/QxSQpwXPrqWAuMmFvxNfAK4uzSRNBbuYKQxAzTxHVV0cTYfXFN5vmYKdGPcZW
+ WB/qtbLUDmGkdL6/ZRdwlGxv7RoIseegBXhkBKdQGrPGCFwFEzf8bofp9nuQ/gekcZevAZAcP
+ DCKtN6QqDOPhnuigV7oWFUyfcYB0T5jOXaB/Pg6dZN82y5RyeooyFjfuwsLe5ioyeWxCptZ3h
+ M1GIJiU3oupEUkeWASRF0vmplDni5VBr/F+M9kkQZ8QC7lfMg9P4DWGASZLckmWJBFH0EveTK
+ FP1Eq1RmSIlhwLn/GkOTLP3djhTK1Vmu9ik3FWVi8o0RhzQamNkJMUVUav97ehmYN7LM387YG
+ a7oqKFw3kYIOfifgrtpXuHOph+QTlm8rd5Eu4yjn5eQpYyzLfp8sZjj2PMTMBHgH4/W4ae85V
+ QyElb60SqY3XhWI2jIAH92DfeSEGw8lpcTrbh7/fgZw45J/HSC6SsBf/PI1Y=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--cCo5GtQnOJWzvB5s99SiDq3uz17O0gRRq
+Content-Type: multipart/mixed; boundary="ZE3gDKnPpL6YJKdjzlrX90AhqgddS4jro"
+
+--ZE3gDKnPpL6YJKdjzlrX90AhqgddS4jro
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2019/10/23 =E4=B8=8B=E5=8D=8811:41, Nikolay Borisov wrote:
->
->
-> On 23.10.19 =D0=B3. 16:57 =D1=87., Qu Wenruo wrote:
->> [BUG]
->> When deleting large files (which cross block group boundary) with disca=
-rd
->> mount option, we find some btrfs_discard_extent() calls only trimmed pa=
-rt
->> of its space, not the whole range:
->>
->>   btrfs_discard_extent: type=3D0x1 start=3D19626196992 len=3D2144530432=
- trimmed=3D1073741824 ratio=3D50%
->>
->> type:		bbio->map_type, in above case, it's SINGLE DATA.
->> start:		Logical address of this trim
->> len:		Logical length of this trim
->> trimmed:	Physically trimmed bytes
->> ratio:		trimmed / len
->>
->> Thus leading some unused space not discarded.
->>
->> [CAUSE]
->> When discard mount option is specified, after a transaction is fully
->> committed (super block written to disk), we begin to cleanup pinned
->> extents in the following call chain:
->>
->> btrfs_commit_transaction()
->> |- write_all_supers()
->
-> You can remove write_all_supers
->
->> |- btrfs_finish_extent_commit()
->>    |- find_first_extent_bit(unpin, 0, &start, &end, EXTENT_DIRTY);
->>    |- btrfs_discard_extent()
->>
->> However pinned extents are recorded in an extent_io_tree, which can
->> merge adjacent extent states.
->>
->> When a large file get deleted and it has adjacent file extents across
->> block group boundary, we will get a large merged range.
->
-> This is wrong, it will only get merged if the extent spans contiguous bg=
- boundaries
-> (this is very important!)
 
-Yep, skipped some details as I thought it was too obvious, but indeed it
-needs extra wording.
+On 2019/10/24 =E4=B8=8A=E5=8D=881:17, David Sterba wrote:
+> On Wed, Oct 23, 2019 at 03:04:47PM +0800, Qu Wenruo wrote:
+>> This member is not used by any one, just remove it.
+>=20
+> What's the patch that removed the last use? This should be in patches
+> that remove struct members. Otherwise good, every byte removed counts.
 
->
->>
->> Then when we pass the large range into btrfs_discard_extent(),
->> btrfs_discard_extent() will just trim the first part, without trimming
->> the remaining part.
->
-> Here is what my testing shows:
->
-> mkfs.btrfs -f /dev/vdc
->
-> mount -onodatasum,nospace_cache /dev/vdc /media/scratch/
+Will update the patch with the mentioning of last user.
 
-nospace_cache is important as v1 space cache exists as regular file,
-which could take up data space and screw up extent layout.
-(And in original report, v1 cache is the cause of randomness in
-reproducibility)
+>=20
+> I've briefly checked 'void *private', but looks like it can be removed
+> as well, it's holds bi_private of the first_bio (btrfs_map_bio) and it'=
+s
+> read in btrfs_end_bbio, but bbio is accessible and so bbio->private is
+> bbio->orig_bio->bi_private.
 
-> xfs_io -f -c "pwrite 0 800m" /media/scratch/file1 && sync
-> xfs_io -f -c "pwrite 0 300m" /media/scratch/file2 && sync
-> umount /media/scratch
->
-> mount -odiscard /dev/vdc /media/scratch
-> rm -f /media/scratch/file2 && sync
-> trace-cmd show
->
-> umount /media/scratch
->
-> The output I get in trace-cmd is:
->
-> sync-1014  [001] ....   534.272310: btrfs_finish_extent_commit: Discardi=
-ng 1943011328-2077229055 (len: 134217728)
-> sync-1014  [001] ....   534.272315: btrfs_discard_extent: Requested to d=
-iscard: 134217728 but discarded: 134217728
->
-> sync-1014  [001] ....   534.272325: btrfs_finish_extent_commit: Discardi=
-ng 2177892352-2358247423 (len: 180355072)
-> sync-1014  [001] ....   534.272330: btrfs_discard_extent: Requested to d=
-iscard: 180355072 but discarded: 180355072
->
-> The extents of this file look like this in the extent tree prior to the =
-trim:
->
-> item 18 key (1943011328 EXTENT_ITEM 134217728) itemoff 15523 itemsize 53
-> 		refs 1 gen 7 flags DATA
-> 		extent data backref root FS_TREE objectid 258 offset 0 count 1
-> item 19 key (2177892352 EXTENT_ITEM 134217728) itemoff 15470 itemsize 53
-> 		refs 1 gen 7 flags DATA
-> 		extent data backref root FS_TREE objectid 258 offset 134217728 count 1
-> item 20 key (2177892352 BLOCK_GROUP_ITEM 1073741824) itemoff 15446 items=
-ize 24
-> 		block group used 180355072 chunk_objectid 256 flags DATA
-> item 21 key (2312110080 EXTENT_ITEM 46137344) itemoff 15393 itemsize 53
-> 		refs 1 gen 7 flags DATA
-> 		extent data backref root FS_TREE objectid 258 offset 268435456 count 1
->
-> So we have 3 extents 1 of which is in bg 1 and the other 2 in bg2. The 2=
- extents in bg2 are merged but
-> since the 2nd bg is not contiguous to the first hence no merging.
->
-> Here comes the requirement why the bg must be contiguous.
->
-> If I modify my test case with slightly different write offsets such that=
- bg1
-> is indeed filled and the next extent gets allocated to in bg2, which is =
-adjacent then
-> the bug is reproduced:
->
-> mkfs.btrfs -f /dev/vdc
->
-> mount -onodatasum,nospace_cache /dev/vdc /media/scratch/
-> xfs_io -f -c "pwrite 0 800m" /media/scratch/file1 && sync
-> xfs_io -f -c "pwrite 0 224m" /media/scratch/file2 && sync
-> xfs_io -f -c "pwrite 224m 76m" /media/scratch/file2 && sync
-> umount /media/scratch
->
-> mount -odiscard /dev/vdc /media/scratch
-> rm -f /media/scratch/file2 && sync
-> trace-cmd show
->
-> umount /media/scratch
->
-> The 3 extents being created and subsequently deleted are:
->
-> sync-799   [000] ....   313.938048: btrfs_update_block_group: Pinning 19=
-43011328-2077229055
-> sync-799   [000] ....   313.938073: btrfs_update_block_group: Pinning 20=
-77229056-2177892351 <- BG1 ends
-> sync-799   [000] ....   313.938116: btrfs_update_block_group: Pinning 21=
-77892352-2257584127 <- BG2 begins
->
-> But we only get 1 discard request:
->
-> sync-798   [003] ....   154.077897: btrfs_finish_extent_commit: Discardi=
-ng 1943011328-2257584127 (len: 314572800) <- this is the request passed to=
- btrfs_discard_extent
-> sync-798   [003] ....   154.077901: btrfs_discard_extent: Discarding 234=
-881024 length for bytenr: 1943011328 <- this is the actual range being dis=
-carded inside the for loop.
->
-> So the bug is genuine I will test whether your patch fixes it and report=
- back.
->
->> Furthermore, this bug is not that reliably observed, as if the whole
->> block group is empty, there will be another trim for that block group.
->
-> Not only because of this, mainly because of the contiguousness requireme=
-nt.
-
-Contiguousness requirement is in fact pretty easy to hit.
-
-Just do a 20G write, you will find most bg and file extents are Contiguous=
-.
-
-The problem is to craft a reliable way extent and bg layout in a
-reproducible way, and a good way to detect the missing trim.
-
-
-In my environment, I'm using 20G write so even space cache is screwing
-me up, I still have 20 chances to have contiguous bg and file extents.
-And for trim result, loopback device can be used to account how many
-bytes are really used.
-
-I just need to polish them into a good fstests case.
+Would double check that, anyway it will be another patch.
 
 Thanks,
 Qu
 
->
->>
->> So the most obvious way to find this missing trim needs to delete large
->> extents at block group boundary without empting involved block groups.
->>
->> [FIX]
->> - Allow __btrfs_map_block_for_discard() to modify @length parameter
->>   btrfs_map_block() uses its @length paramter to notify the caller how
->>   many bytes are mapped in current call.
->>   With __btrfs_map_block_for_discard() also modifing the @length,
->>   btrfs_discard_extent() now understands when to do extra trim.
->>
->> - Call btrfs_map_block() in a loop until we hit the range end
->>   Since we now know how many bytes are mapped each time, we can iterate
->>   through each block group boundary and issue correct trim for each
->>   range.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->
-> <snip>
->
+
+--ZE3gDKnPpL6YJKdjzlrX90AhqgddS4jro--
+
+--cCo5GtQnOJWzvB5s99SiDq3uz17O0gRRq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl2w/14ACgkQwj2R86El
+/qhyoAf+MQzPVtI50V/4xcyRNWxVIqX/gMlFiWhMmwWVeeE0Ot5KPoNXchPPwIn6
+XiLPvIwhn3Lp+5NsXbL0ymho+TuCD8TGboY7PooSVCLWtyzVruqCtE4yPlDbRlcI
+K4NBuYxKVkfXVPIHpm2GafsNkQTI2mN/gVsvcLRqejNpcOpGsBdtdLVHR/jbk44+
+kquxU/kGBtaXkmmLcv7L6q7yJx3pYL1nHdeCOEa80CtG8ogtlu8HuJHQAp1N1/Im
+VgWGF4sn99cJaiGbd8+dbmtfxgAAXGAIhc69wYsiio0p9HcW0VNANCH52c19loSo
+uFxtvQm8n2PFcfA3XJog5ezvJU4v8w==
+=l20F
+-----END PGP SIGNATURE-----
+
+--cCo5GtQnOJWzvB5s99SiDq3uz17O0gRRq--
