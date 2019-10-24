@@ -2,105 +2,236 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B85CAE2CF7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 11:15:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 229BDE2E94
+	for <lists+linux-btrfs@lfdr.de>; Thu, 24 Oct 2019 12:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393031AbfJXJPl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 24 Oct 2019 05:15:41 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37398 "EHLO mx1.suse.de"
+        id S2392127AbfJXKQj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 24 Oct 2019 06:16:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33664 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727446AbfJXJPl (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 24 Oct 2019 05:15:41 -0400
+        id S2388677AbfJXKQj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 24 Oct 2019 06:16:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 68B3FBF4B;
-        Thu, 24 Oct 2019 09:15:39 +0000 (UTC)
-Subject: Re: [PATCH 6/6] btrfs: add dedicated members for start and length of
- a block group
-To:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1571848791.git.dsterba@suse.com>
- <745a39a04234491ea7e77f2ff66221b3a462556f.1571848791.git.dsterba@suse.com>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <ef010a22-3fc2-78f2-325e-399d49f4abc3@suse.de>
-Date:   Thu, 24 Oct 2019 11:15:39 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        by mx1.suse.de (Postfix) with ESMTP id 7ED22AC3F;
+        Thu, 24 Oct 2019 10:16:35 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
+Subject: [PATCH] fstests: btrfs: Test if btrfs can trim adjacent extents across adjacent block groups boundary
+Date:   Thu, 24 Oct 2019 18:16:29 +0800
+Message-Id: <20191024101629.33807-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <745a39a04234491ea7e77f2ff66221b3a462556f.1571848791.git.dsterba@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Looks good,
-Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+The test case checks if btrfs can trim adjacent extents across adjacent
+block groups boundary correctly.
 
+The test case craft the following extents layout:
+
+         |  BG1 |      BG2        |       BG3            |
+ Bytenr: X-8M   X      X+512M     X+1G  X+1G+128M
+         |//////|//////|          |     |//|
+
+There is a long existing bug that, when btrfs is trying to trim the
+range at [X+512M, X+1G+128M), it will only trim [X+512M, X+1G).
+
+This test case is the regression test for this long existing bug.
+
+It will verify the trimmed bytes by using loopback device backed up by a
+file, and checking the bytes used by the file to determine how many
+bytes are trimmed.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/btrfs/198     | 154 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/198.out |   2 +
+ tests/btrfs/group   |   1 +
+ 3 files changed, 157 insertions(+)
+ create mode 100755 tests/btrfs/198
+ create mode 100644 tests/btrfs/198.out
+
+diff --git a/tests/btrfs/198 b/tests/btrfs/198
+new file mode 100755
+index 00000000..851e44c1
+--- /dev/null
++++ b/tests/btrfs/198
+@@ -0,0 +1,154 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
++#
++# FS QA Test 198
++#
++# Test if btrfs discard mount option is trimming adjacent extents across
++# block groups boundary.
++# The test case uses loopback device and file used space to detect trimmed
++# bytes.
++#
++# There is a long existing bug that btrfs doesn't discard all space for
++# above mentioned case.
++#
++# The fix is: "btrfs: extent-tree: Ensure we trim ranges across block group
++# boundary"
++#
++seq=`basename $0`
++seqres=$RESULT_DIR/$seq
++echo "QA output created by $seq"
++
++here=`pwd`
++tmp=/tmp/$$
++status=1	# failure is the default!
++trap "_cleanup; exit \$status" 0 1 2 3 15
++
++_cleanup()
++{
++	cd /
++	umount $loop_mnt &> /dev/null
++	_destroy_loop_device $loop_dev &> /dev/null
++	rm -rf $tmp.*
++}
++
++# get standard environment, filters and checks
++. ./common/rc
++. ./common/filter
++
++# remove previous $seqres.full before test
++rm -f $seqres.full
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs btrfs
++_supported_os Linux
++_require_fstrim
++_require_loop
++_require_xfs_io_command "fiemap"
++
++# We need less than 2G data write, consider it 2G and double it just in case
++_require_scratch_size	$((4 * 1024 * 1024))
++
++loop_file="$SCRATCH_MNT/image"
++
++# The margin when checking trimmed size.
++#
++# The margin is for tree blocks, calculated by
++# 3 * max_tree_block_size
++# |   |- 64K
++# |- 3 trees get modified (root tree, extent tree, fs tree)
++#
++# In reality, there should be no margin at all due to the mount options.
++# But who knows what will happen in later kernels.
++margin_kb=$(( 3 * 64 ))
++trimmed_kb=$(( 768 * 1024 )) # 768M
++
++_scratch_mkfs >> $seqres.full
++_scratch_mount
++
++# Create a sparse file as the loopback target.
++# 10G size makes sure we have 1G chunk size.
++truncate -s 10G "$loop_file"
++
++_mkfs_dev -d SINGLE "$loop_file"
++
++loop_dev=$(_create_loop_device "$loop_file")
++loop_mnt=$tmp/loop_mnt
++
++mkdir -p $loop_mnt
++# - nospace_cache
++#   Since v1 cache using DATA space, it can break data extent bytenr
++#   continuousness.
++# - nodatasum
++#   As there will be 1.5G data write, generating 1.5M csum.
++#   Disabling datasum could reduce the margin caused by metadata to minimal
++# - discard
++#   What we're testing
++_mount -o nospace_cache,nodatasum,discard $loop_dev $loop_mnt
++
++# Craft the following extent layout:
++#         |  BG1 |      BG2        |       BG3            |
++# Bytenr: X-8M   X      X+512M     X+1G  X+1G+128M 
++#         |//////|//////|                |//|
++#            V      V           V          V
++#            |      |           |          |- file 'tail_padding'
++#            |      |           |- file 'cross_boundary'
++#            |      |- file 'lead_padding2'
++#            |- file 'lead_padding1'
++# So that all extents of file 'cross_boundary' are all adjacent and crosses the
++# boundary of BG1 and BG2
++# File 'lead_padding1' and 'lead_padding2' are all paddings to fill the
++# leading gap.
++# File 'tail_padding' is to ensure after deleting file 'cross_boundary' we still
++# have used extent in BG3, to prevent trimming the whole BG3.
++# And since BG1 needs exactly 8M to fill, we need to sync write to ensure
++# the write sequence.
++_pwrite_byte 0xcd 0 8M $loop_mnt/lead_padding1 > /dev/null
++sync
++
++_pwrite_byte 0xcd 0 512M $loop_mnt/lead_padding2 > /dev/null
++sync
++_pwrite_byte 0xcd 0 $(($trimmed_kb * 1024)) $loop_mnt/cross_boundary \
++	> /dev/null
++sync
++
++_pwrite_byte 0xcd 0 1M $loop_mnt/tail_padding > /dev/null
++sync
++
++
++$XFS_IO_PROG -c "fiemap" $loop_mnt/cross_boundary >> $seqres.full
++# Ensure all extent are continuous
++# Btrfs fiemap will merge continuous results, so the output should be only
++# 2 lines, 1 line for filename, 1 line for a large merged fiemap result.
++if [ $($XFS_IO_PROG -c "fiemap" $loop_mnt/cross_boundary | wc -l) -ne 2 ]; then
++	_notrun "Non-continuous extent bytenr detected"
++fi
++
++size1_kb=$(du $loop_file| cut -f1)
++
++# Delete the file 'cross_boundary'.
++# This will delete $trimmed_kb data extents across the chunk boundary.
++rm -f $loop_mnt/cross_boundary
++
++# sync so btrfs will commit transaction and trim the freed extents
++sync
++
++size2_kb=$(du $loop_file | cut -f1)
++
++echo "loopback file size before discard: $size1_kb KiB" >> $seqres.full
++echo "loopback file size after discard:  $size2_kb KiB" >> $seqres.full
++echo "Expect trimmed size:               $trimmed_kb KiB" >> $seqres.full
++echo "Have trimmed size:                 $(($size1_kb - $size2_kb)) KiB" >> $seqres.full
++
++if [ $(($size2_kb+ $trimmed_kb)) -gt $(($size1_kb + $margin_kb)) -o \
++     $(($size2_kb+ $trimmed_kb)) -lt $(($size1_kb - $margin_kb)) ]; then
++	_fail "Btrfs doesn't trim the range correctly"
++fi
++
++echo "Silence is golden"
++
++# success, all done
++status=0
++exit
+diff --git a/tests/btrfs/198.out b/tests/btrfs/198.out
+new file mode 100644
+index 00000000..cb4c7854
+--- /dev/null
++++ b/tests/btrfs/198.out
+@@ -0,0 +1,2 @@
++QA output created by 198
++Silence is golden
+diff --git a/tests/btrfs/group b/tests/btrfs/group
+index ee35fa59..1b1cbbde 100644
+--- a/tests/btrfs/group
++++ b/tests/btrfs/group
+@@ -200,3 +200,4 @@
+ 195 auto volume
+ 196 auto metadata log volume
+ 197 auto replay trim
++198 auto trim quick
 -- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+2.23.0
+
