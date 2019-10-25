@@ -2,27 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF0FE4539
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 10:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F8BE4666
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 10:57:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437747AbfJYIHX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Oct 2019 04:07:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:52802 "EHLO mx1.suse.de"
+        id S2438173AbfJYI5R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Oct 2019 04:57:17 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53892 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2389796AbfJYIHX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Oct 2019 04:07:23 -0400
+        id S2437851AbfJYI5Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 25 Oct 2019 04:57:16 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 60E4AB999;
-        Fri, 25 Oct 2019 08:07:20 +0000 (UTC)
-Subject: Re: "BUG: kernel NULL pointer dereference," when unmounting
- filesystem hitted by enospc error
-To:     Peter Hjalmarsson <kanelxake@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CALpSwpjVz=F_hb9DbVanECsfWOYog2B7SLY=Dy0NvQx=w9voDA@mail.gmail.com>
- <f4037f43-97fb-5a25-52db-2d69ec69f6ee@suse.de>
- <3acc15f7-fe1e-6672-8a89-fba9a09561d4@suse.de>
- <CALpSwpgFiOo+KxZ13TD_YY0mx2vZ4BLMo=qBeaagHrA=UgW9Mw@mail.gmail.com>
+        by mx1.suse.de (Postfix) with ESMTP id A6FE7B3A1;
+        Fri, 25 Oct 2019 08:57:14 +0000 (UTC)
+Subject: Re: [PATCH 2/2] btrfs: provide an estimated number of inodes for
+ statfs
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>
+Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <20191024154455.19370-1-jthumshirn@suse.de>
+ <20191024154455.19370-3-jthumshirn@suse.de>
+ <f1ecf175-9b4f-36bb-add7-b95bc26bc5e5@gmx.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -80,12 +79,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <6d27bb89-d59b-3ca4-7587-2d0067c41ca1@suse.de>
-Date:   Fri, 25 Oct 2019 10:07:20 +0200
+Message-ID: <782f4439-1c74-86d5-afc3-cdac906e01d2@suse.de>
+Date:   Fri, 25 Oct 2019 10:55:32 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <CALpSwpgFiOo+KxZ13TD_YY0mx2vZ4BLMo=qBeaagHrA=UgW9Mw@mail.gmail.com>
+In-Reply-To: <f1ecf175-9b4f-36bb-add7-b95bc26bc5e5@gmx.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -94,69 +93,21 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 24/10/2019 22:23, Peter Hjalmarsson wrote:
-> Hi,
+On 25/10/2019 02:56, Qu Wenruo wrote:
+[...]
+> Personally speaking, reporting 0 used and 0 free should be the proper
+> way. User of the fs should be aware of dynamical fs which doesn't go
+> fixed inodes.
 > 
-> Sorry for late answer. Have been out of town for work.
-> Interesting that you could not reproduce. What kind of system do you run?
-
-I ran it up to 64 times but in a very minimal VM. Let me try to reprouce
-the issue on a bare metal system.
-
-> I have tried on a couple of system now, and they behave slightly
-> different, so maybe it has something to do with which arch it runs
-> what kind of crash it triggers if any?
-> Also make sure that the "dd"-line in the script is not wrapped like it
-> became in the mail.
-
-Yes I've fixed that up.
-
-> For me running trough the test in a couple of systems, I found the following:
+> I really think it's BeeFS' job to change their behavior.
 > 
-> The systems that always crashes did that during the first or the
-> second run of the script (so probably no need to run for longer than
-> maybe three to four times to verify).
->
-> Two systems passes 5 times (32 bit arm)
-> One system crashes during umount with a slightly different traceback
-> but essential the same as previously reported Pine64 Rock64 rk3328:
-> [503397.433500] Call trace:
-> [503397.436338]  __free_pages+0x1c/0x80
-> [503397.440506]  __free_raid_bio+0x84/0xf8 [btrfs]
-> [503397.445713]  __remove_rbio_from_cache+0x134/0x1b8 [btrfs]
-> [503397.451957]  btrfs_clear_rbio_cache.isra.0+0x5c/0x98 [btrfs]
-> [503397.458473]  btrfs_free_stripe_hash_table+0x24/0x40 [btrfs]
-> [503397.464891]  close_ctree+0x1b0/0x2c8 [btrfs]
-> [503397.469851]  btrfs_put_super+0x20/0x30 [btrfs]
-> 
-> Two system crashes (one x86_64 Atom, one RPI3 arch64) during balance
-> with a dmesg like:
-> [10282.926420] Call Trace:
-> [10282.926488]  lock_stripe_add+0x292/0x370 [btrfs]
-> [10282.926560]  __raid56_parity_write+0x20/0x40 [btrfs]
-> [10282.926633]  run_plug+0x131/0x150 [btrfs]
-> [10282.926671]  blk_flush_plug_list+0xc2/0x110
-> [10282.926708]  blk_finish_plug+0x21/0x2e
-> [10282.926769]  btrfs_write_and_wait_transaction.isra.0+0x57/0xa0 [btrfs]
-> [10282.926851]  btrfs_commit_transaction+0x72e/0x9a0 [btrfs]
-> 
-> Three system crashes (three x86_64, the one "tainted" has nvidia
-> binary blobs) during umount with a dmesg like:
-> [  658.646613] Call Trace:
-> [  658.646675]  __free_raid_bio+0x72/0xb0 [btrfs]
-> [  658.646728]  btrfs_free_stripe_hash_table+0x3d/0x70 [btrfs]
-> [  658.646766]  close_ctree+0x1ea/0x2f0 [btrfs]
-> [  658.646773]  generic_shutdown_super+0x6c/0x100
-> [  658.646778]  kill_anon_super+0x14/0x30
-> [  658.646808]  btrfs_kill_super+0x12/0xa0 [btrfs]
-> 
-> All full dmesg saved if you want to look at any of the other not posted below.
+> Since there are more thing to consider when faking the used/free inodes.
 
-this could be handy, but not sure yet.
+I'm with you on this. It is something BeeGFS has to fix, but judging
+from what other file-systems do, some do have a real fixed number of
+inodes, some assign 0 or -1, some do not touch the variable at all and
+some (i.e. xfs) fake a number. My role model was xfs here.
 
-
-Byte,
-	Johannes
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
