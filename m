@@ -2,201 +2,126 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F23B0E4AF6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 14:24:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 670F6E4D4F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 15:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393490AbfJYMYA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Oct 2019 08:24:00 -0400
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:43991 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391200AbfJYMX7 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Oct 2019 08:23:59 -0400
-Received: by mail-qk1-f195.google.com with SMTP id a194so1509725qkg.10
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Oct 2019 05:23:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=IeqG4Q35AsY5u3KJBX1y/MlCxEdTk0iBkibjhmNR4uI=;
-        b=U/TMWBSjH2uE3GoCeqZPLKewkAzrpdvcek/JBaE7u3JBJ+qTWX76qSztFpr4Y9DN/Y
-         QIHDtRH40czgu4eds/dstJUvGGNy2VVsx8xek4NtQF4bV+8JFKM4fZsIfyByp8j9BIl9
-         o3hHZ64GLcv/B4YELWzD00+3Bw7W4C4nGZHbZGRc4RCraM7bpE8sWp1OVrXSqKN9IJ96
-         yowuqRkwLY49fS4pdNW6z60IZ/F8CkfKUrwEZgpbG0p09snw1PB81XSfFeEICTX/tvRJ
-         SWaqu2Lt7bd9MsMeeTBYYItA7hlX+1KAYT77mC1HpcSQtbIT70CU3kJMajpkIK0vTqyq
-         R6OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=IeqG4Q35AsY5u3KJBX1y/MlCxEdTk0iBkibjhmNR4uI=;
-        b=N6nU9XfJdIaUJR9LJ28jyulHnBVOeWwTvxOcdn5h2PVeBT2vkXuzwj0WeCmx1jOxZ3
-         Q4+qRX0ZeVbQ73muDoVz24UfigPDxZr9cY1ahYycdUDq9EmT6Do9fTQfrZLb/2E9IlSJ
-         +9yE1GwBp6sIb+KDLfEpBBGyl0bpPkatE8pM2pNyN6FE8H044C5HqmW6OyhKvSXvdIkq
-         o0gqyd6Lmkc9vYOeAoydsMD70g7eat4qka5WWgAKnTKQc//S9XDNWb6wkqi/I3ixI4qy
-         ZxpKogWCTPWSi4Wv3P2ZAez1EQD8cHo0suV0dWC8yKeM4yzi7K/C9tXrayyvCBz4hj1B
-         TlVg==
-X-Gm-Message-State: APjAAAUu08unAddLolngq7pVAt8zgkt/tWxFJVyW97gdvwe73OIgTBAK
-        2Hv1BeBw2ll6/k2bj4IPH3bW0xrJhlneDA==
-X-Google-Smtp-Source: APXvYqxg8LI38CSE1BBl80S+Rpf4m5fPgumOdQQzhuH+hdRfNvN43LUsu2aIfXR9xCecy5NUw12xNA==
-X-Received: by 2002:ae9:ea05:: with SMTP id f5mr2709558qkg.370.1572006236658;
-        Fri, 25 Oct 2019 05:23:56 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::fad0])
-        by smtp.gmail.com with ESMTPSA id j28sm1220552qkl.1.2019.10.25.05.23.55
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 25 Oct 2019 05:23:55 -0700 (PDT)
-Date:   Fri, 25 Oct 2019 08:23:54 -0400
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] btrfs: extent-tree: Ensure we trim ranges across
- block group boundary
-Message-ID: <20191025122353.uh63eb7ub77dyhyp@MacBook-Pro-91.local>
-References: <20191025085956.48352-1-wqu@suse.com>
- <20191025085956.48352-3-wqu@suse.com>
+        id S2632990AbfJYN7g (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Oct 2019 09:59:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2632915AbfJYN7J (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 25 Oct 2019 09:59:09 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9FA402245D;
+        Fri, 25 Oct 2019 13:59:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572011948;
+        bh=Rra1HkeYZZAUy6HVOskcmRZCJVCSWBkK8qI8nsO/Jh0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Gh1fPIRCbonn6y/RlVu8pX47+v+n584h6WOYaqQjlH2zBNeL1Jgzm9yiIZuxivOp9
+         UojotZ83zRqphbFIwMXgeO+2fRfVZ2UPhhsnjZnaN7Mj4VR+i62ADoSDBOaEJ5FLDx
+         lmXb8DrZwtoFddnVRLAbVBtqcHnUUNPe5kyNCGp4=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Filipe Manana <fdmanana@suse.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.4 13/16] Btrfs: fix hang when loading existing inode cache off disk
+Date:   Fri, 25 Oct 2019 09:58:37 -0400
+Message-Id: <20191025135842.25977-13-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191025135842.25977-1-sashal@kernel.org>
+References: <20191025135842.25977-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191025085956.48352-3-wqu@suse.com>
-User-Agent: NeoMutt/20180716
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Oct 25, 2019 at 04:59:56PM +0800, Qu Wenruo wrote:
-> [BUG]
-> When deleting large files (which cross block group boundary) with discard
-> mount option, we find some btrfs_discard_extent() calls only trimmed part
-> of its space, not the whole range:
-> 
->   btrfs_discard_extent: type=0x1 start=19626196992 len=2144530432 trimmed=1073741824 ratio=50%
-> 
-> type:		bbio->map_type, in above case, it's SINGLE DATA.
-> start:		Logical address of this trim
-> len:		Logical length of this trim
-> trimmed:	Physically trimmed bytes
-> ratio:		trimmed / len
-> 
-> Thus leading some unused space not discarded.
-> 
-> [CAUSE]
-> When discard mount option is specified, after a transaction is fully
-> committed (super block written to disk), we begin to cleanup pinned
-> extents in the following call chain:
-> 
-> btrfs_commit_transaction()
-> |- btrfs_finish_extent_commit()
->    |- find_first_extent_bit(unpin, 0, &start, &end, EXTENT_DIRTY);
->    |- btrfs_discard_extent()
-> 
-> However pinned extents are recorded in an extent_io_tree, which can
-> merge adjacent extent states.
-> 
-> When a large file get deleted and it has adjacent file extents across
-> block group boundary, we will get a large merged range, like this:
-> 
->       |<---    BG1    --->|<---      BG2     --->|
->       |//////|<--   Range to discard   --->|/////|
-> 
-> To discard that range, we have the following calls:
-> btrfs_discard_extent()
-> |- btrfs_map_block()
-> |  Returned bbio will end at BG1's end. As btrfs_map_block()
-> |  never returns result across block group boundary.
-> |- btrfs_issuse_discard()
->    Issue discard for each stripe.
-> 
-> So we will only discard the range in BG1, not the remaining part in BG2.
-> 
-> Furthermore, this bug is not that reliably observed, for above case, if
-> there is no other extent in BG2, BG2 will be empty and btrfs will trim
-> all space of BG2, covering up the bug.
-> 
-> [FIX]
-> - Allow __btrfs_map_block_for_discard() to modify @length parameter
->   btrfs_map_block() uses its @length paramter to notify the caller how
->   many bytes are mapped in current call.
->   With __btrfs_map_block_for_discard() also modifing the @length,
->   btrfs_discard_extent() now understands when to do extra trim.
-> 
-> - Call btrfs_map_block() in a loop until we hit the range end
->   Since we now know how many bytes are mapped each time, we can iterate
->   through each block group boundary and issue correct trim for each
->   range.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent-tree.c | 41 +++++++++++++++++++++++++++++++----------
->  fs/btrfs/volumes.c     |  6 ++++--
->  2 files changed, 35 insertions(+), 12 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 49cb26fa7c63..ff2838bd677d 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -1306,8 +1306,10 @@ static int btrfs_issue_discard(struct block_device *bdev, u64 start, u64 len,
->  int btrfs_discard_extent(struct btrfs_fs_info *fs_info, u64 bytenr,
->  			 u64 num_bytes, u64 *actual_bytes)
->  {
-> -	int ret;
-> +	int ret = 0;
->  	u64 discarded_bytes = 0;
-> +	u64 end = bytenr + num_bytes;
-> +	u64 cur = bytenr;
->  	struct btrfs_bio *bbio = NULL;
->  
->  
-> @@ -1316,15 +1318,23 @@ int btrfs_discard_extent(struct btrfs_fs_info *fs_info, u64 bytenr,
->  	 * associated to its stripes that don't go away while we are discarding.
->  	 */
->  	btrfs_bio_counter_inc_blocked(fs_info);
-> -	/* Tell the block device(s) that the sectors can be discarded */
-> -	ret = btrfs_map_block(fs_info, BTRFS_MAP_DISCARD, bytenr, &num_bytes,
-> -			      &bbio, 0);
-> -	/* Error condition is -ENOMEM */
-> -	if (!ret) {
-> -		struct btrfs_bio_stripe *stripe = bbio->stripes;
-> +	while (cur < end) {
-> +		struct btrfs_bio_stripe *stripe;
->  		int i;
->  
-> +		num_bytes = end - cur;
-> +		/* Tell the block device(s) that the sectors can be discarded */
-> +		ret = btrfs_map_block(fs_info, BTRFS_MAP_DISCARD, cur,
-> +				      &num_bytes, &bbio, 0);
-> +		/*
-> +		 * Error can be -ENOMEM, -ENOENT (no such chunk mapping) or
-> +		 * -EOPNOTSUPP. For any such error, @num_bytes is not updated,
-> +		 * thus we can't continue anyway.
-> +		 */
-> +		if (ret < 0)
-> +			goto out;
->  
-> +		stripe = bbio->stripes;
->  		for (i = 0; i < bbio->num_stripes; i++, stripe++) {
->  			u64 bytes;
->  			struct request_queue *req_q;
-> @@ -1341,10 +1351,19 @@ int btrfs_discard_extent(struct btrfs_fs_info *fs_info, u64 bytenr,
->  						  stripe->physical,
->  						  stripe->length,
->  						  &bytes);
-> -			if (!ret)
-> +			if (!ret) {
->  				discarded_bytes += bytes;
-> -			else if (ret != -EOPNOTSUPP)
-> -				break; /* Logic errors or -ENOMEM, or -EIO but I don't know how that could happen JDM */
-> +			} else if (ret != -EOPNOTSUPP) {
-> +				/*
-> +				 * Logic errors or -ENOMEM, or -EIO but I don't
-> +				 * know how that could happen JDM
-> +				 *
-> +				 * Ans since there are two loops, explicitly
+From: Filipe Manana <fdmanana@suse.com>
 
-Hate for there to be a v5 at this point, but it should be "and".  Anyway
+[ Upstream commit 7764d56baa844d7f6206394f21a0e8c1f303c476 ]
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+If we are able to load an existing inode cache off disk, we set the state
+of the cache to BTRFS_CACHE_FINISHED, but we don't wake up any one waiting
+for the cache to be available. This means that anyone waiting for the
+cache to be available, waiting on the condition that either its state is
+BTRFS_CACHE_FINISHED or its available free space is greather than zero,
+can hang forever.
 
-Thanks,
+This could be observed running fstests with MOUNT_OPTIONS="-o inode_cache",
+in particular test case generic/161 triggered it very frequently for me,
+producing a trace like the following:
 
-Josef
+  [63795.739712] BTRFS info (device sdc): enabling inode map caching
+  [63795.739714] BTRFS info (device sdc): disk space caching is enabled
+  [63795.739716] BTRFS info (device sdc): has skinny extents
+  [64036.653886] INFO: task btrfs-transacti:3917 blocked for more than 120 seconds.
+  [64036.654079]       Not tainted 5.2.0-rc4-btrfs-next-50 #1
+  [64036.654143] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+  [64036.654232] btrfs-transacti D    0  3917      2 0x80004000
+  [64036.654239] Call Trace:
+  [64036.654258]  ? __schedule+0x3ae/0x7b0
+  [64036.654271]  schedule+0x3a/0xb0
+  [64036.654325]  btrfs_commit_transaction+0x978/0xae0 [btrfs]
+  [64036.654339]  ? remove_wait_queue+0x60/0x60
+  [64036.654395]  transaction_kthread+0x146/0x180 [btrfs]
+  [64036.654450]  ? btrfs_cleanup_transaction+0x620/0x620 [btrfs]
+  [64036.654456]  kthread+0x103/0x140
+  [64036.654464]  ? kthread_create_worker_on_cpu+0x70/0x70
+  [64036.654476]  ret_from_fork+0x3a/0x50
+  [64036.654504] INFO: task xfs_io:3919 blocked for more than 120 seconds.
+  [64036.654568]       Not tainted 5.2.0-rc4-btrfs-next-50 #1
+  [64036.654617] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+  [64036.654685] xfs_io          D    0  3919   3633 0x00000000
+  [64036.654691] Call Trace:
+  [64036.654703]  ? __schedule+0x3ae/0x7b0
+  [64036.654716]  schedule+0x3a/0xb0
+  [64036.654756]  btrfs_find_free_ino+0xa9/0x120 [btrfs]
+  [64036.654764]  ? remove_wait_queue+0x60/0x60
+  [64036.654809]  btrfs_create+0x72/0x1f0 [btrfs]
+  [64036.654822]  lookup_open+0x6bc/0x790
+  [64036.654849]  path_openat+0x3bc/0xc00
+  [64036.654854]  ? __lock_acquire+0x331/0x1cb0
+  [64036.654869]  do_filp_open+0x99/0x110
+  [64036.654884]  ? __alloc_fd+0xee/0x200
+  [64036.654895]  ? do_raw_spin_unlock+0x49/0xc0
+  [64036.654909]  ? do_sys_open+0x132/0x220
+  [64036.654913]  do_sys_open+0x132/0x220
+  [64036.654926]  do_syscall_64+0x60/0x1d0
+  [64036.654933]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Fix this by adding a wake_up() call right after setting the cache state to
+BTRFS_CACHE_FINISHED, at start_caching(), when we are able to load the
+cache from disk.
+
+Fixes: 82d5902d9c681b ("Btrfs: Support reading/writing on disk free ino cache")
+Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/inode-map.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/btrfs/inode-map.c b/fs/btrfs/inode-map.c
+index 07573dc1614ab..3469c7ce7cb6d 100644
+--- a/fs/btrfs/inode-map.c
++++ b/fs/btrfs/inode-map.c
+@@ -158,6 +158,7 @@ static void start_caching(struct btrfs_root *root)
+ 		spin_lock(&root->ino_cache_lock);
+ 		root->ino_cache_state = BTRFS_CACHE_FINISHED;
+ 		spin_unlock(&root->ino_cache_lock);
++		wake_up(&root->ino_cache_wait);
+ 		return;
+ 	}
+ 
+-- 
+2.20.1
+
