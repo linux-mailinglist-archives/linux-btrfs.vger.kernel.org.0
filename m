@@ -2,94 +2,61 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB246E5055
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 17:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BAC6E5145
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 18:32:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395477AbfJYPmN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Oct 2019 11:42:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46336 "EHLO mx1.suse.de"
+        id S2389812AbfJYQcf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Oct 2019 12:32:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38980 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730508AbfJYPmN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Oct 2019 11:42:13 -0400
+        id S1732240AbfJYQce (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 25 Oct 2019 12:32:34 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 995DFB291;
-        Fri, 25 Oct 2019 15:42:11 +0000 (UTC)
-Message-ID: <06601cbe64c98b2a9f0fa13a4e00401ae5d4387b.camel@suse.de>
-Subject: Re: [PATCH 5/5] btrfs: ioctl: Call btrfs_vol_uevent on subvolume
- deletion
-From:   Marcos Paulo de Souza <mpdesouza@suse.de>
-To:     Graham Cobb <g.btrfs@cobb.uk.net>,
-        Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        linux-btrfs@vger.kernel.org, mpdesouza@suse.com
-Date:   Fri, 25 Oct 2019 12:44:20 -0300
-In-Reply-To: <dcfbad52-6e5b-a9cc-e1a7-6b3db8e26e7c@cobb.uk.net>
-References: <20191024023636.21124-1-marcos.souza.org@gmail.com>
-         <20191024023636.21124-6-marcos.souza.org@gmail.com>
-         <dcfbad52-6e5b-a9cc-e1a7-6b3db8e26e7c@cobb.uk.net>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.32.4 
+        by mx1.suse.de (Postfix) with ESMTP id 692A6B1C2;
+        Fri, 25 Oct 2019 16:32:33 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id CC8F3DA785; Fri, 25 Oct 2019 18:32:44 +0200 (CEST)
+Date:   Fri, 25 Oct 2019 18:32:44 +0200
+From:   David Sterba <dsterba@suse.cz>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] Btrfs: remove unnecessary delalloc mutex for inodes
+Message-ID: <20191025163244.GO3001@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
+        linux-btrfs@vger.kernel.org
+References: <20191025095242.15996-1-fdmanana@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191025095242.15996-1-fdmanana@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, 2019-10-25 at 13:00 +0100, Graham Cobb wrote:
-> On 24/10/2019 03:36, Marcos Paulo de Souza wrote:
-> > From: Marcos Paulo de Souza <mpdesouza@suse.com>
-> > 
-> > Since the function btrfs_ioctl_snap_destroy is used for deleting
-> both
-> > subvolumes and snapshots it was needed call btrfs_is_snapshot,
-> > which checks a giver btrfs_root and returns true if it's a
-> snapshot.
-> > The current code is interested in subvolumes only.
+On Fri, Oct 25, 2019 at 10:52:42AM +0100, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> To me, as a user, a snapshot *is* a subvolume. I don't even know what
-> "is a snapshot" means. Does it mean "was created using the btrfs
-> subvolume snapshot command"? Does it matter whether the snapshot has
-> been modified? Whether the originally snapshot subvolume still
-> exists?
-> Or what?
+> The inode delalloc mutex was added a long time ago by commit f248679e86fea
+> ("Btrfs: add a delalloc mutex to inodes for delalloc reservations"), and
+> the reason for its introduction is not very clear from the change log. It
+> claims it solves bogus warnings from lockdep, however it lacks an example
+> report/warning from lockdep, or any explanation.
 > 
-> I note that the man page for "btrfs subvolume" says "A snapshot is a
-> subvolume like any other, with given initial content.". And I
-> certainly
-> have some subvolumes which are being used as normal parts of the
-> filesystem, which were originally created as snapshots (for various
-> reasons, including reverting changes and going back to an earlier
-> snapshot, or an easy way to make sure that large common files are
-> actually sharing blocks).
-
-Agreed.
-
+> Since we have enough concurrentcy protection from the locks of the space
+> info and block reserve objects, and such lockdep warnings don't seem to
+> exist anymore (at least on a 5.3 kernel I couldn't get them with fstests,
+> ltp, fs_mark, etc), remove it, simplifying things a bit and decreasing
+> the size of the btrfs_inode structure. With some quick fio tests doing
+> direct IO and mmap writes I couldn't observe any significant performance
+> increase either (direct IO writes that don't increase the file's size
+> don't hold the inode's lock for their entire duration and mmap writes
+> don't hold the inode's lock at all), which are the only type of writes
+> that could see any performance gain due to less serialization.
 > 
-> I would expect this event would be generated for any subvolume
-> deletion.
-> If it is useful to distinguish subvolumes originally created as
-> snapshots in some way then export another flag (named to make it
-> clear
-> what it really indicates, such as BTRFS_VOL_FROM_SNAPSHOT). I don't
-> know
-> your particular purpose, but my guess is that a more useful flag
-> might
-> actually be BTRFS_VOL_FROM_READONLY_SNAPSHOT.
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-As soon as these patches got merged I will send new ones to take care
-of snapshoting. Same things: when a snapsoht is created or removed,
-send a uevent.
-
-I liked this idea to separate both snapshots and volumes at first to
-make things simpler, and get reviews faster. Also, I think it's good to
-separate subvolumes and snapshot events, makes easier for one to filter
-such events.
-
-  Marcos
-
-> 
-> Graham
-
+Added to misc-next with Josef's comment. Thanks.
