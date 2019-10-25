@@ -2,95 +2,95 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5CDCE51EB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 19:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84960E5219
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 19:12:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409653AbfJYRGQ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Oct 2019 13:06:16 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:34238 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2409574AbfJYRGD (ORCPT
+        id S2505860AbfJYRMn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Oct 2019 13:12:43 -0400
+Received: from mail-yw1-f41.google.com ([209.85.161.41]:43664 "EHLO
+        mail-yw1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505797AbfJYRMm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Oct 2019 13:06:03 -0400
-Received: by mail-ed1-f66.google.com with SMTP id b72so2405411edf.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 25 Oct 2019 10:06:02 -0700 (PDT)
+        Fri, 25 Oct 2019 13:12:42 -0400
+Received: by mail-yw1-f41.google.com with SMTP id g77so1025043ywb.10
+        for <linux-btrfs@vger.kernel.org>; Fri, 25 Oct 2019 10:12:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GukBFXd5rvGKrELTDiYdUpvyxOzmmx7l7KSp6+SGxag=;
-        b=sol2m6j7F4pTJNDFmuQexIbsOw717fI+axHj7WnKTyyIrQ6UFqZGtyxQYsNPeA/RwR
-         b9uUv0uww00H/2EIn83AwDQzbmxmyrJpXD6Ogb+oNHIQqXZfiItZeNLgyJzsF15i/pxx
-         gjZj/Q/KumsnQmYehs/EpIFVnASYbrdWC5h2yr38jTyt4FQBLiCNJcNIU9e01O+uBzDB
-         FTgQlT2Fyff6LEuLeT7V1OOSwTgSm+/sCZ7aRNAWLCrbV3hxxp2uX1lXvlcroFCvtuGs
-         9BPscqUxA+T8qMUmB40ENYGD3Z0+LKhQQkoQtAcq4S5G7F9iOW/CGR1vQUsBmCm0xcP9
-         K8Og==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sUxwt0W5cq0UI2NW6gfkATXf4rkLxftk3dYGN3/tD88=;
+        b=Yoj2E2JRX/rIHUvGjWtBIYeGWd0ClWzr2FcrO/DS2nj8KcDfr2rbx5VifoqGF8udR5
+         ZUr6ksVT4vOBGkupLQHs1n/Bapwr+kPmrtEufGYhC53Fl3Y0hQpQi/v4oMaqIIfOVJOS
+         i9VllMkQZymzMB5C050S2MT1fxAfqB5MZhNNCnkZXeqoaEq8qLe1btle7cOgLIZXXasL
+         DD1lD9vig2tcgRRFRJ6ZldxVDGRpsTT1jCjWqSr6moxLVHMKJ5aIs14Rc30mMKL0Y8dc
+         0+GpwDG4rADGIWXVGlPlC3ILbfj/8Sah4375MH6owZVQQdZ3+0eWErJ25O8nxwJMDT+2
+         s1RQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GukBFXd5rvGKrELTDiYdUpvyxOzmmx7l7KSp6+SGxag=;
-        b=Qyc/G+oJmAleGPqKi3gFQKXdnJOVLIkT71NrpyhhDwwJcQYrrVlAtsfvRzDE/0mKgi
-         SML7Ke6BJuB1W12a01v6ouqAgB0i7a6d1ajWopIUvh0WPZG9BwTmiEPYVMfpjJZaKRi2
-         F/B2mpabnRJGl9t0b/jYbZZ+kC8L+zieFz/Xdgtq8FkY6M01XBUhqW/HJLZmZBuJ0J97
-         Q4yrsAMPoyZNOtoRCTAa3mJUliJWVaCdxhNZmR9Iqle9RuyQK3sNMIWtXT1rRuD+NLR4
-         igS79lYItISVkLZpsePx1M4o2swR3LQPYgqSVzTIZdTS3tKFLV7GpLXNgh9yD14FoBPW
-         VfKw==
-X-Gm-Message-State: APjAAAX2sgiwTuM+/5YHn/DEg4xtIosrLFKNoWuWe9dgDhFyxgl4Qavf
-        CINqrKsm+YcK9RL4eL2e2w+Odtf6G/+oDgdLwSJe
-X-Google-Smtp-Source: APXvYqyLqi36eOr8bd3gvIYWAn8D8F7/8NrfSodL7o/ZQAXciYQ4jTCVbUWxcl1m9scg7QahClCRiHjNOWcw8pd6rFw=
-X-Received: by 2002:aa7:d145:: with SMTP id r5mr5027411edo.275.1572023161143;
- Fri, 25 Oct 2019 10:06:01 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAKbQEqE7xN1q3byFL7-_pD=_pGJ0Vm9pj7d-g+rRgtONeH-GrA@mail.gmail.com>
- <CAKbQEqG35D_=8raTFH75-yCYoqH2OvpPEmpj2dxgo+PTc=cfhA@mail.gmail.com>
- <4608b644-0fa3-7212-af45-0f4eebfb0be9@gmx.com> <CAKbQEqG8Sb-5+wx4NMfjORc-XnCtytuoqRw4J9hk2Pj9BNY_9g@mail.gmail.com>
- <CAKbQEqGwYCB1N+MQVYLNVm5o10acOFAa_JyO8NefGZfVtdyVBQ@mail.gmail.com>
- <fe882b36-0f7b-5ad5-e62e-06def50acd30@gmx.com> <CAKbQEqEuYqxO8pFk3sDQwEayTPiggLAFtCT8LmoNPF4Zc+-uzw@mail.gmail.com>
- <e0c57aba-9baf-b375-6ba3-1201131a2844@gmail.com> <CAKbQEqFdY8hSko2jW=3BzpiZ6H4EV9yhncozoy=Kzroh3KfD5g@mail.gmail.com>
- <20f660ea-d659-7ad5-a84d-83d8bfa3d019@gmx.com> <CAKbQEqGPY0qwrSLMT03H=s5Tg=C-UCscyUMXK-oLrt5+YjFMqQ@mail.gmail.com>
- <0d6683ee-4a2c-f2ab-857b-c7cd44442dce@gmail.com> <CAKbQEqGoiGbV+Q=LVfSbKLxYeQ5XmLFMMBdq_yxSR7XE3SwsmA@mail.gmail.com>
- <043c2d26-a067-fd03-4c98-7ff76b081fed@gmail.com> <CAKbQEqHbh0pjT1+hPNuo_fKti0v9Mi-=gOUqm90v_tju1xSaxA@mail.gmail.com>
-In-Reply-To: <CAKbQEqHbh0pjT1+hPNuo_fKti0v9Mi-=gOUqm90v_tju1xSaxA@mail.gmail.com>
-From:   Christian Pernegger <pernegger@gmail.com>
-Date:   Fri, 25 Oct 2019 19:05:23 +0200
-Message-ID: <CAKbQEqGE6eBbqt7KZRtfmtpNL+YiaA6DF4t3NDm7_zfZtoYn_g@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sUxwt0W5cq0UI2NW6gfkATXf4rkLxftk3dYGN3/tD88=;
+        b=D6Aj2PIg04lFIY9OMIY6rIsA/L+vFHbW2ArIH2PLqmhNodLVyb5BWfNHYxPLo77M8+
+         VjqrkdYqP7K6seFc7Pve3h7HFEO544xezcteebN4DhqyXoDdrkNyQ8ilSqifrkj8f0bJ
+         +PdnBxOTDbsVn8JN9IIn4ETH2IgA/Du9W5VpzwCmp4KzkTCXIycZBYKYsm61vGb7a+a4
+         SdB2ECXn8weAR7OfQ+WxDOIGQ4+DiPSkItHTAyIHsui4VGCFlX9VomrUaa2b8brwY0Np
+         fXI0zqIXJlG7Q7/1ipJVu4DX5gJcXxXrcOVCPThhU4zknS9NZRSri6h057yOAzHZVP0W
+         hunw==
+X-Gm-Message-State: APjAAAXvvAAQEnQ9rs/sdXAdkjlJ/iGRguy0Ww0S0U0xUfQTGs087P21
+        zqpdmIjcxrsz/hhH3RkilI57xE5vfps=
+X-Google-Smtp-Source: APXvYqxnAHPOWNen7MeAOTsa+4YVrx/etR7SzEjJeLBIiE5z898q6nLVE6NHpUREQmqafeN3MSDA5w==
+X-Received: by 2002:a0d:d0c1:: with SMTP id s184mr2975479ywd.339.1572023558863;
+        Fri, 25 Oct 2019 10:12:38 -0700 (PDT)
+Received: from [191.9.209.46] (rrcs-70-62-41-24.central.biz.rr.com. [70.62.41.24])
+        by smtp.gmail.com with ESMTPSA id j3sm1946255ywb.10.2019.10.25.10.12.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Oct 2019 10:12:38 -0700 (PDT)
 Subject: Re: first it froze, now the (btrfs) root fs won't mount ...
-To:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+To:     Christian Pernegger <pernegger@gmail.com>
 Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+References: <CAKbQEqE7xN1q3byFL7-_pD=_pGJ0Vm9pj7d-g+rRgtONeH-GrA@mail.gmail.com>
+ <CAKbQEqG35D_=8raTFH75-yCYoqH2OvpPEmpj2dxgo+PTc=cfhA@mail.gmail.com>
+ <4608b644-0fa3-7212-af45-0f4eebfb0be9@gmx.com>
+ <CAKbQEqG8Sb-5+wx4NMfjORc-XnCtytuoqRw4J9hk2Pj9BNY_9g@mail.gmail.com>
+ <CAKbQEqGwYCB1N+MQVYLNVm5o10acOFAa_JyO8NefGZfVtdyVBQ@mail.gmail.com>
+ <fe882b36-0f7b-5ad5-e62e-06def50acd30@gmx.com>
+ <CAKbQEqEuYqxO8pFk3sDQwEayTPiggLAFtCT8LmoNPF4Zc+-uzw@mail.gmail.com>
+ <e0c57aba-9baf-b375-6ba3-1201131a2844@gmail.com>
+ <CAKbQEqFdY8hSko2jW=3BzpiZ6H4EV9yhncozoy=Kzroh3KfD5g@mail.gmail.com>
+ <20f660ea-d659-7ad5-a84d-83d8bfa3d019@gmx.com>
+ <CAKbQEqGPY0qwrSLMT03H=s5Tg=C-UCscyUMXK-oLrt5+YjFMqQ@mail.gmail.com>
+ <0d6683ee-4a2c-f2ab-857b-c7cd44442dce@gmail.com>
+ <CAKbQEqGoiGbV+Q=LVfSbKLxYeQ5XmLFMMBdq_yxSR7XE3SwsmA@mail.gmail.com>
+ <043c2d26-a067-fd03-4c98-7ff76b081fed@gmail.com>
+ <CAKbQEqHbh0pjT1+hPNuo_fKti0v9Mi-=gOUqm90v_tju1xSaxA@mail.gmail.com>
+From:   "Austin S. Hemmelgarn" <ahferroin7@gmail.com>
+Message-ID: <516c1f07-30ba-298d-975a-4acd33767261@gmail.com>
+Date:   Fri, 25 Oct 2019 13:12:34 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
+MIME-Version: 1.0
+In-Reply-To: <CAKbQEqHbh0pjT1+hPNuo_fKti0v9Mi-=gOUqm90v_tju1xSaxA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-P.P.S (sorry): Would using the DUP profile for metadata conceiveably
-be an extra line of defence in such cases (assuming the NVMe doesn't
-just eat the extra copies outright)? If so, is enabling it after fs
-creation safe and should system be DUP as well? Something like:
-# btrfs balance start -mconvert=dup [-sconvert=dup -f] $PATH
-
-Lastly ist $PATH just used to identify the fs, or does it act as a
-filter? IOW, can I use whatever or should it be run on the real root
-of the fs?
-
-Cheers,
-C.
-
-Am Fr., 25. Okt. 2019 um 18:43 Uhr schrieb Christian Pernegger
-<pernegger@gmail.com>:
->
+On 2019-10-25 12:43, Christian Pernegger wrote:
 > Am Do., 24. Okt. 2019 um 13:26 Uhr schrieb Qu Wenruo <quwenruo.btrfs@gmx.com>:
-> > Since you're using v5.0 kernel, it's pretty hard to just compile the btrfs module.
->
+>> Since you're using v5.0 kernel, it's pretty hard to just compile the btrfs module.
+> 
 > Oh, I'm not married to 5.0, it's just that I'd prefer building a
 > kernel package, so it integrates properly with the system. For
 > posterity, on Linux Mint 19.2:
->
+> 
 > # clone repo
 > $ git clone https://github.com/adam900710/linux.git
->
+> 
 > # check commit history
 > (https://github.com/adam900710/linux/commits/rescue_options) for the
 > release the rescue_options branch is based on =>  5.3-rc7
@@ -103,43 +103,43 @@ Am Fr., 25. Okt. 2019 um 18:43 Uhr schrieb Christian Pernegger
 > $ git checkout rescue_options
 > $ patch -p1 <../0001-*.patch
 > [... repeat for the rest ...]
->
+> 
 > # set number of threads to use for compilation, optional & to taste
 > export DEB_BUILD_OPTIONS='parallel=16'
->
+> 
 > # build; could probably trim these targets down more
 > $ fakeroot debian/rules clean
 > $ fakeroot debian/rules do_mainline_build=true binary-headers
 > binary-generic binary-perarch
 > cd ..
->
+> 
 > # install
 > dpkg -i linux-image-*_amd64.deb linux-modules-*_amd64.deb linux-headers-*.deb
->
->
+> 
+> 
 > Ok then, let's do this:
-> > Then you can boot into the new kernel, then try mount it with -o
-> > "resuce=skip_bg,ro".
->
+>> Then you can boot into the new kernel, then try mount it with -o
+>> "resuce=skip_bg,ro".
+> 
 > [  565.097058]  nbd0: p1 p2
 > [  565.192002] BTRFS: device fsid c2bd83d6-2261-47bb-8d18-5aba949651d7
 > devid 1 transid 58603 /dev/nbd0p2
 > [  568.490654]  nbd0: p1 p2
 > [  869.871598] BTRFS info (device dm-1): unrecognized rescue option 'skip_bg'
 > [  869.884644] BTRFS error (device dm-1): open_ctree failed
->
+> 
 > Hmm, glancing at the source I think it's "skipbg", no underscore(?)
->
+> 
 > [ 1350.402586] BTRFS info (device dm-1): skip mount time block group searching
 > [ 1350.402588] BTRFS info (device dm-1): disk space caching is enabled
 > [ 1350.402589] BTRFS info (device dm-1): has skinny extents
 > [ 1350.402590] BTRFS error (device dm-1): skip_bg must be used with
 > notreelog mount option for dirty log
 > [ 1350.419849] BTRFS error (device dm-1): open_ctree failed
->
+> 
 > Fine by me, let's add "notreelog" as well. Note that "skip_bg" is
 > actually written with an underscore above.
->
+> 
 > [ 1399.169484] BTRFS info (device dm-1): disabling tree log
 > [ 1399.169487] BTRFS info (device dm-1): skip mount time block group searching
 > [ 1399.169488] BTRFS info (device dm-1): disk space caching is enabled
@@ -261,15 +261,15 @@ Am Fr., 25. Okt. 2019 um 18:43 Uhr schrieb Christian Pernegger
 > knlGS:0000000000000000
 > [ 1399.376597] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
 > [ 1399.376598] CR2: 0000000000000000 CR3: 0000000494ea0000 CR4: 0000000000340ee0
->
+> 
 > Well, that didn't work ...
->
+> 
 > At least this unclean shutdown didn't eat the btrfs of the machine I
 > just spent two days installing from scratch, so, yay.
->
+> 
 > In other news. Both Linux Mint 19.2 and Ubuntu 18.04.3 do run "fstrim
 > -av" once a week via systemd.
->
+> 
 > In the meantime, I maybe got @home off via btrfs restore v5.3:
 > $ egrep -v '^(Restoring|Done searching|SYMLINK:|offset is) ' restore.typescript
 > Script started on 2019-10-25 10:20:43+0200
@@ -340,9 +340,9 @@ Am Fr., 25. Okt. 2019 um 18:43 Uhr schrieb Christian Pernegger
 > do you want to keep going on ? (y/N/a): a
 > chris@chibi:~/local/chibi-rescue$ exit
 > exit
->
+> 
 > Script done on 2019-10-25 14:25:08+0200
->
+> 
 > How does that look to you?
 > So "favicons.sqlite" is shot, don't care, but how about the other files?
 > Is the looping message harmless as long as it finishes eventually or
@@ -351,14 +351,23 @@ Am Fr., 25. Okt. 2019 um 18:43 Uhr schrieb Christian Pernegger
 > expect the files that were restored without comment to be ...
 > consistent? up-to-date? full of random data?
 > Would it silently drop damaged files/directories or would it at least complain?
->
+I think it will try to restore the data without looking at checksums, 
+but I'm not 100% certain.
+
+ON a side note, I've had some success on occasion getting data off of 
+damaged BTRFS volumes using GRUB's BTRFS driver (the package you want 
+for that is probably called 'grub-mount', it's essentially a FUSE module 
+that uses GRUB's filesystem drivers to provide read-only access to any 
+filesystem type supported by GRUB) in cases where `btrfs restore` 
+couldn't do it.
+> 
 > Am Do., 24. Okt. 2019 um 13:40 Uhr schrieb Austin S. Hemmelgarn
 > <ahferroin7@gmail.com>:
-> > Backups, flavor of your choice. [...] I store enough extra info in the backup to
-> > be able to rebuild the storage stack by hand from a rescue environment
-> > (I usually use SystemRescueCD, but any live environment where you can
-> > get your backup software working and rebuild your storage stack will work).
->
+>> Backups, flavor of your choice. [...] I store enough extra info in the backup to
+>> be able to rebuild the storage stack by hand from a rescue environment
+>> (I usually use SystemRescueCD, but any live environment where you can
+>> get your backup software working and rebuild your storage stack will work).
+> 
 > Oh, I have backups. Well, usually :-p. But files do not a running
 > system make. For my servers, rebuilding the "storage stack" isn't a
 > problem, since I built it manually in the first place and have notes.
@@ -370,7 +379,17 @@ Am Fr., 25. Okt. 2019 um 18:43 Uhr schrieb Christian Pernegger
 > alone survive the next system update, because distro-specific some
 > special sauce is missing. And even so, empasis is on I -- try telling
 > that to a non-technical person.
->
+Actually, it should boot and survive the next upgrade just fine.  Just 
+make sure that:
+
+* You used the correct version of GRUB.
+* The GRUB config is correct.
+* The storage configuration is the same.
+
+The last one is the tricky one, as most systems require even the UUID's 
+to be the same in a lot of cases (since most Linux distros mount by UUID 
+these days).
+> 
 > What I'm looking for is something you can boot off of and restore the
 > system automatically. ReaR has the right idea, but uses either tar
 > (really?) or Enterprise-scale backup backends. By the time I've all
@@ -378,10 +397,22 @@ Am Fr., 25. Okt. 2019 um 18:43 Uhr schrieb Christian Pernegger
 > too late. Timeshift covers the user error and userspace bug use-cases
 > brilliantly, something as idiot-proof for actual backups would be
 > nice.
->
+I have yet to see such a tool for Linux in general unfortunately.
+
+BTW, don't underestimate tar, it's rock-solid reliable if you use it 
+right, and works _everywhere_.  Yeah, it doesn't do deduplication or 
+encryption or checksumming or compression, but all of that is easy to 
+layer in.  The only major issue is that it requries the state of the 
+volume to not change while it's running (which can be mitigated by 
+splitting backups into logical subsets instead of running for the whole 
+system all at once).
+> 
 > Cheers,
 > C.
->
+> 
 > P.S.: Having to stay near the computer during a btrfs restore just to
 > enter "a" at the loop prompts isn't ideal. How about "A", always
 > continue looping, for all files?
+Or, alternatively:
+
+yes a | btrfs restore
