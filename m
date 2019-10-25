@@ -2,126 +2,94 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D449E4D87
-	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 16:01:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB246E5055
+	for <lists+linux-btrfs@lfdr.de>; Fri, 25 Oct 2019 17:42:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394881AbfJYOAs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 25 Oct 2019 10:00:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53964 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505607AbfJYN6d (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Oct 2019 09:58:33 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA202222D1;
-        Fri, 25 Oct 2019 13:58:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572011912;
-        bh=la3xfm77mTHrN9MjZAExRmGreRCnVATFwQRG5TLWQBw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mCbxsuwQn8nS1Bea2T4LpiiexmOI5stnsKUO9klI1FJZFG3hJNZKk+bTSGaDlP3Yh
-         LqZ/iMSe5fCAwgVVAzNmxCbmdufKucxP10LIis+XhbxitaT92j7BJtyHM+x7OcpKwr
-         tVHi9EbbAWxL3JpFz2Apys0BmjsL96tjPm3Q7668=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Filipe Manana <fdmanana@suse.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 16/20] Btrfs: fix hang when loading existing inode cache off disk
-Date:   Fri, 25 Oct 2019 09:57:56 -0400
-Message-Id: <20191025135801.25739-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191025135801.25739-1-sashal@kernel.org>
-References: <20191025135801.25739-1-sashal@kernel.org>
+        id S2395477AbfJYPmN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Oct 2019 11:42:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46336 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730508AbfJYPmN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 25 Oct 2019 11:42:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 995DFB291;
+        Fri, 25 Oct 2019 15:42:11 +0000 (UTC)
+Message-ID: <06601cbe64c98b2a9f0fa13a4e00401ae5d4387b.camel@suse.de>
+Subject: Re: [PATCH 5/5] btrfs: ioctl: Call btrfs_vol_uevent on subvolume
+ deletion
+From:   Marcos Paulo de Souza <mpdesouza@suse.de>
+To:     Graham Cobb <g.btrfs@cobb.uk.net>,
+        Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
+        linux-btrfs@vger.kernel.org, mpdesouza@suse.com
+Date:   Fri, 25 Oct 2019 12:44:20 -0300
+In-Reply-To: <dcfbad52-6e5b-a9cc-e1a7-6b3db8e26e7c@cobb.uk.net>
+References: <20191024023636.21124-1-marcos.souza.org@gmail.com>
+         <20191024023636.21124-6-marcos.souza.org@gmail.com>
+         <dcfbad52-6e5b-a9cc-e1a7-6b3db8e26e7c@cobb.uk.net>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.32.4 
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Fri, 2019-10-25 at 13:00 +0100, Graham Cobb wrote:
+> On 24/10/2019 03:36, Marcos Paulo de Souza wrote:
+> > From: Marcos Paulo de Souza <mpdesouza@suse.com>
+> > 
+> > Since the function btrfs_ioctl_snap_destroy is used for deleting
+> both
+> > subvolumes and snapshots it was needed call btrfs_is_snapshot,
+> > which checks a giver btrfs_root and returns true if it's a
+> snapshot.
+> > The current code is interested in subvolumes only.
+> 
+> To me, as a user, a snapshot *is* a subvolume. I don't even know what
+> "is a snapshot" means. Does it mean "was created using the btrfs
+> subvolume snapshot command"? Does it matter whether the snapshot has
+> been modified? Whether the originally snapshot subvolume still
+> exists?
+> Or what?
+> 
+> I note that the man page for "btrfs subvolume" says "A snapshot is a
+> subvolume like any other, with given initial content.". And I
+> certainly
+> have some subvolumes which are being used as normal parts of the
+> filesystem, which were originally created as snapshots (for various
+> reasons, including reverting changes and going back to an earlier
+> snapshot, or an easy way to make sure that large common files are
+> actually sharing blocks).
 
-[ Upstream commit 7764d56baa844d7f6206394f21a0e8c1f303c476 ]
+Agreed.
 
-If we are able to load an existing inode cache off disk, we set the state
-of the cache to BTRFS_CACHE_FINISHED, but we don't wake up any one waiting
-for the cache to be available. This means that anyone waiting for the
-cache to be available, waiting on the condition that either its state is
-BTRFS_CACHE_FINISHED or its available free space is greather than zero,
-can hang forever.
+> 
+> I would expect this event would be generated for any subvolume
+> deletion.
+> If it is useful to distinguish subvolumes originally created as
+> snapshots in some way then export another flag (named to make it
+> clear
+> what it really indicates, such as BTRFS_VOL_FROM_SNAPSHOT). I don't
+> know
+> your particular purpose, but my guess is that a more useful flag
+> might
+> actually be BTRFS_VOL_FROM_READONLY_SNAPSHOT.
 
-This could be observed running fstests with MOUNT_OPTIONS="-o inode_cache",
-in particular test case generic/161 triggered it very frequently for me,
-producing a trace like the following:
+As soon as these patches got merged I will send new ones to take care
+of snapshoting. Same things: when a snapsoht is created or removed,
+send a uevent.
 
-  [63795.739712] BTRFS info (device sdc): enabling inode map caching
-  [63795.739714] BTRFS info (device sdc): disk space caching is enabled
-  [63795.739716] BTRFS info (device sdc): has skinny extents
-  [64036.653886] INFO: task btrfs-transacti:3917 blocked for more than 120 seconds.
-  [64036.654079]       Not tainted 5.2.0-rc4-btrfs-next-50 #1
-  [64036.654143] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-  [64036.654232] btrfs-transacti D    0  3917      2 0x80004000
-  [64036.654239] Call Trace:
-  [64036.654258]  ? __schedule+0x3ae/0x7b0
-  [64036.654271]  schedule+0x3a/0xb0
-  [64036.654325]  btrfs_commit_transaction+0x978/0xae0 [btrfs]
-  [64036.654339]  ? remove_wait_queue+0x60/0x60
-  [64036.654395]  transaction_kthread+0x146/0x180 [btrfs]
-  [64036.654450]  ? btrfs_cleanup_transaction+0x620/0x620 [btrfs]
-  [64036.654456]  kthread+0x103/0x140
-  [64036.654464]  ? kthread_create_worker_on_cpu+0x70/0x70
-  [64036.654476]  ret_from_fork+0x3a/0x50
-  [64036.654504] INFO: task xfs_io:3919 blocked for more than 120 seconds.
-  [64036.654568]       Not tainted 5.2.0-rc4-btrfs-next-50 #1
-  [64036.654617] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-  [64036.654685] xfs_io          D    0  3919   3633 0x00000000
-  [64036.654691] Call Trace:
-  [64036.654703]  ? __schedule+0x3ae/0x7b0
-  [64036.654716]  schedule+0x3a/0xb0
-  [64036.654756]  btrfs_find_free_ino+0xa9/0x120 [btrfs]
-  [64036.654764]  ? remove_wait_queue+0x60/0x60
-  [64036.654809]  btrfs_create+0x72/0x1f0 [btrfs]
-  [64036.654822]  lookup_open+0x6bc/0x790
-  [64036.654849]  path_openat+0x3bc/0xc00
-  [64036.654854]  ? __lock_acquire+0x331/0x1cb0
-  [64036.654869]  do_filp_open+0x99/0x110
-  [64036.654884]  ? __alloc_fd+0xee/0x200
-  [64036.654895]  ? do_raw_spin_unlock+0x49/0xc0
-  [64036.654909]  ? do_sys_open+0x132/0x220
-  [64036.654913]  do_sys_open+0x132/0x220
-  [64036.654926]  do_syscall_64+0x60/0x1d0
-  [64036.654933]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+I liked this idea to separate both snapshots and volumes at first to
+make things simpler, and get reviews faster. Also, I think it's good to
+separate subvolumes and snapshot events, makes easier for one to filter
+such events.
 
-Fix this by adding a wake_up() call right after setting the cache state to
-BTRFS_CACHE_FINISHED, at start_caching(), when we are able to load the
-cache from disk.
+  Marcos
 
-Fixes: 82d5902d9c681b ("Btrfs: Support reading/writing on disk free ino cache")
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/inode-map.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/fs/btrfs/inode-map.c b/fs/btrfs/inode-map.c
-index d27014b8bf727..075b59516c8c0 100644
---- a/fs/btrfs/inode-map.c
-+++ b/fs/btrfs/inode-map.c
-@@ -159,6 +159,7 @@ static void start_caching(struct btrfs_root *root)
- 		spin_lock(&root->ino_cache_lock);
- 		root->ino_cache_state = BTRFS_CACHE_FINISHED;
- 		spin_unlock(&root->ino_cache_lock);
-+		wake_up(&root->ino_cache_wait);
- 		return;
- 	}
- 
--- 
-2.20.1
+> 
+> Graham
 
