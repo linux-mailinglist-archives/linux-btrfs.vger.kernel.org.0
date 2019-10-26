@@ -2,114 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81CA3E58F5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Oct 2019 09:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E2CE5971
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Oct 2019 11:29:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726086AbfJZHMH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 26 Oct 2019 03:12:07 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:46872 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbfJZHMH (ORCPT
+        id S1726086AbfJZJX7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 26 Oct 2019 05:23:59 -0400
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:33479 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726010AbfJZJX7 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 26 Oct 2019 03:12:07 -0400
-Received: by mail-lf1-f44.google.com with SMTP id t8so3751238lfc.13
-        for <linux-btrfs@vger.kernel.org>; Sat, 26 Oct 2019 00:12:05 -0700 (PDT)
+        Sat, 26 Oct 2019 05:23:59 -0400
+Received: by mail-ed1-f46.google.com with SMTP id c4so3850611edl.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 26 Oct 2019 02:23:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=gpcx5eaQeW9ahdCtlhv+54taVUnJ0VvvPpOdDJQ6s6s=;
-        b=KnB0+ybQjR1HAZD+KFylitwTjlf8vzHdSz7gf5SxrGt4QEnY3l/qyi6Z+3cO2inNez
-         ryWMjakcaZGYhUd/XCadgFEn4z51oG+QRryHzboAg6S+48gLSORtLoTqlUkF1Z4p3JKW
-         6MaJqrWqvjcUwyQH5Blag2SerizKi2n4iKeYyPy2IrZjwJRR08x+HM04WV94SPkAIwq1
-         Rpbj6f0KePBiNVHNnL0FE20P7YpVgIIM3mLc6yvKFWWYHTH6/F50hrA8z7AvwNf4vYkl
-         WjoQepAXBTlNemvmmqmQZ/j06+bAmMqeYEX9GjmgWEkPXExTO+34QiP+QjZpiq/yZanM
-         HEiQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xHfvhE6ACfDxt3rWPEhospfJ/F4pPZm2qnTeFA3YM0M=;
+        b=Qp5Bkv/hCUTp/9sSpIfRTx3Aw74EFRvLtMQJrnP8SpC5rNCcx6gcyAMp3PXU5LJcFw
+         E4zinADlLHYl9O5vRCJFsynWGgr5/Pex0086+19TSGXkWeqBIjgBzUMCoGY/8RzlVdhY
+         uyuYn1V8HV/T0XjOKb/1CNyrHUC4V8W0Fr0f+Y8wf2LnAoHU+G7SXLxZOpa8QLE1znEW
+         5Rh3DJmecBdqvS5wP1v428BVOvKpY54zBPaMs7c4T5/qlIWmG81iK3D+9Ui/223C9pGw
+         NLRZCpATNswFJy3zt9MmvFEmtUQRN6NkW8WYf/9XVDQtn1tw5Gea8FAlV9bo4Phq+3+P
+         seHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=gpcx5eaQeW9ahdCtlhv+54taVUnJ0VvvPpOdDJQ6s6s=;
-        b=Z5Rda9En3XaLXlkR4N8bEl3BTA2irw3YLJy+mbqnAW4fNEz3je4Q/78h9lUNGQtXea
-         jY5kw5FEyO7+HFwEs2KLtwKXrgyUV6qB3GG9LGWmu7pTf3duOe6uTTo9CJT4OSk4k/O6
-         ekwwiDc1tichzxXbylX1dLQ/qTTLMOiDNaLwAdupfEPCsssAfDwAPBclegUcmzytwOny
-         xUpBWzb4LxRn24v7MyhBI9A4JAOLj/M2uLXkMyHJ617+Sqqjj9Xc+SL0VzLtp9UDPL8+
-         zDzd9A0VkhragsRL1jlnlPegdFxwmeSKRqsjh2VIio7lIkNWl/hQ+fc+HoOuH4uzhuq3
-         jMnA==
-X-Gm-Message-State: APjAAAXxBAbku92J+wmqqruLnGcpx6U2g+AaYeTU4kV6oGw4FKXmsadX
-        mRq0kI6N8WCChz25NSRQQ2DA9roQB20=
-X-Google-Smtp-Source: APXvYqzg4NdE7K5T2W6/Y6I6bRq5NMiAnH/AeOBzaGqjs/zwkg3P/Gdrc0OXhZQk+IqQGeqNVJdgsw==
-X-Received: by 2002:a19:23d7:: with SMTP id j206mr5052799lfj.187.1572073924774;
-        Sat, 26 Oct 2019 00:12:04 -0700 (PDT)
-Received: from [192.168.1.6] (109-252-90-228.nat.spd-mgts.ru. [109.252.90.228])
-        by smtp.gmail.com with ESMTPSA id q14sm1976010ljc.7.2019.10.26.00.12.03
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 26 Oct 2019 00:12:03 -0700 (PDT)
-Subject: Re: Does GRUB btrfs support log tree?
-To:     Chris Murphy <lists@colorremedies.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <CAJCQCtS1v7waFA=ERafSCSCHmPJVytdFZkJLqNTC3U3Gw3Y7tA@mail.gmail.com>
-From:   Andrei Borzenkov <arvidjaar@gmail.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
- xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
- +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
- G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
- /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
- SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
- XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
- 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
- 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
- cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
- BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
- 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
- 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
- KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
- nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
- gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
- vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
- AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
-Message-ID: <d1874d17-700a-d78d-34be-eec0544c9de2@gmail.com>
-Date:   Sat, 26 Oct 2019 10:12:02 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xHfvhE6ACfDxt3rWPEhospfJ/F4pPZm2qnTeFA3YM0M=;
+        b=umLSyGwH0dSiL12njNALtBe/elm7Yyakd5VCu/L8tJ3qb8JrUNln4IqiTvYp2/TSPr
+         BLPQvrdgG7xagL133SR1zr374uKRLKP1CBjiqnHbm+tbIa5fCD5dV8lHfZVnoos7Ut1m
+         oOGuRGXfrcNmScEaxs0ljKAyuzTZkyRffseDpegxvtcmmDJA8gHek0jhC8gRi+1qkLNk
+         Ck9NBtEvbYS/N5Fte7Po0SsxegWpwZQ9nWJXx33pIJwg8pCvsQcI5jj0OWg2Hu7KWVOH
+         n/IZufTuL/vNP0NLIETRlrhsXyQro6KCbHiHLzPWUHsPehr3+4pJoiRZQbgamXgI7g6H
+         hnvQ==
+X-Gm-Message-State: APjAAAWJd5kyuz2R5eE70yrp3MDz5f5U7AARvi7JsPxV+w370i2h69Hu
+        pCGlPlaRuhhdJijflY281Di7FcmJ675w9NKayA==
+X-Google-Smtp-Source: APXvYqxHok7IqhMZ0bGyfZAjNYfS1rueVNvUr6Xgg/mQIEFrBxGbopc1CEE0UNb2tvJIFeV/Xrlk3q8koC9YQSQZhxs=
+X-Received: by 2002:aa7:dcd4:: with SMTP id w20mr8419745edu.52.1572081837413;
+ Sat, 26 Oct 2019 02:23:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAJCQCtS1v7waFA=ERafSCSCHmPJVytdFZkJLqNTC3U3Gw3Y7tA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAKbQEqE7xN1q3byFL7-_pD=_pGJ0Vm9pj7d-g+rRgtONeH-GrA@mail.gmail.com>
+ <CAKbQEqG35D_=8raTFH75-yCYoqH2OvpPEmpj2dxgo+PTc=cfhA@mail.gmail.com>
+ <4608b644-0fa3-7212-af45-0f4eebfb0be9@gmx.com> <CAKbQEqG8Sb-5+wx4NMfjORc-XnCtytuoqRw4J9hk2Pj9BNY_9g@mail.gmail.com>
+ <CAKbQEqGwYCB1N+MQVYLNVm5o10acOFAa_JyO8NefGZfVtdyVBQ@mail.gmail.com>
+ <fe882b36-0f7b-5ad5-e62e-06def50acd30@gmx.com> <CAKbQEqEuYqxO8pFk3sDQwEayTPiggLAFtCT8LmoNPF4Zc+-uzw@mail.gmail.com>
+ <e0c57aba-9baf-b375-6ba3-1201131a2844@gmail.com> <CAKbQEqFdY8hSko2jW=3BzpiZ6H4EV9yhncozoy=Kzroh3KfD5g@mail.gmail.com>
+ <20f660ea-d659-7ad5-a84d-83d8bfa3d019@gmx.com> <CAKbQEqGPY0qwrSLMT03H=s5Tg=C-UCscyUMXK-oLrt5+YjFMqQ@mail.gmail.com>
+ <0d6683ee-4a2c-f2ab-857b-c7cd44442dce@gmail.com> <CAKbQEqGoiGbV+Q=LVfSbKLxYeQ5XmLFMMBdq_yxSR7XE3SwsmA@mail.gmail.com>
+ <043c2d26-a067-fd03-4c98-7ff76b081fed@gmail.com> <CAKbQEqHbh0pjT1+hPNuo_fKti0v9Mi-=gOUqm90v_tju1xSaxA@mail.gmail.com>
+ <503118ac-877f-989c-50f2-5e2a3d0b58d8@gmx.com>
+In-Reply-To: <503118ac-877f-989c-50f2-5e2a3d0b58d8@gmx.com>
+From:   Christian Pernegger <pernegger@gmail.com>
+Date:   Sat, 26 Oct 2019 11:23:20 +0200
+Message-ID: <CAKbQEqFWiGdgJNSWOwvHkHGjrXu=2x0zAK-n9T-oza7qexwz7g@mail.gmail.com>
+Subject: Re: first it froze, now the (btrfs) root fs won't mount ...
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-25.10.2019 12:47, Chris Murphy пишет:
-> I see references to root and chunk trees, but not the log tree.
-> 
-> If boot related files: kernel, initramfs, bootloader configuration
-> files, are stored on Btrfs; and if they are changed in such a way as
-> to rely on the log tree; and then there's a crash; what's the worse
-> case scenario effect?
-> 
-> At first glance, if the bootloader doesn't support log tree, it would
-> have a stale view of the file system.
+Am Sa., 26. Okt. 2019 um 02:01 Uhr schrieb Qu Wenruo <quwenruo.btrfs@gmx.com>:
+> It's already working, the problem is, there is a dirty log while
+> nologreplay mount option doesn't really work.
 
-Yes, happened to me several times on ext4.
+For the record, I didn't try to mount using nologreplay, only
+notreelog. (Apologies if notreelog and/or skipbg imply nologreplay.)
 
-> Since log tree writes means a
-> full file system update hasn't happened, the old file system state
-> hasn't been dereferenced, so even in an SSD + discard case, the system
-> should still be bootable. And at that point Btrfs kernel code does log
-> replay, and catches the system up, and the next update will boot the
-> new state.
-> 
-> Correct?
-> 
+> You can btrfs-zero-log to clear the log, then try again using skipbg
+> mount option.
 
-Yes. If we speak about grub here, it actually tries very hard to ensure
-writes has hit disk (it fsyncs files as it writes them and it flushes
-raw devices). But I guess that fsync on btrfs just goes into log and
-does not force transaction. Is it possible to force transaction on btrfs
-from user space?
+I don't think I can, actually. At least, zeroing the log didn't work
+back when btrfs check --repair was still in the table. Admittedly,
+that was using Ubuntu eoan's 5.3 kernel, not yours, and with their
+btrfs-progs (5.2.1); I don't think I'd gotten around to compiling
+btrfs-progs 5.3, yet. So if you think trying again with the
+rescue_options kernel and/or latest btrfs-progs might allow me to zero
+the log, I'll try again.
+Alternatively, using backup super 1 or 2 got me past that hurdle with
+btrfs check --repair, so if there's an option to mount using one of
+these ...?
+(Output quoted below for reference.)
+
+> > $ btrfs check --init-extent-tree patient
+> > Opening filesystem to check...
+> > Checking filesystem on patient
+> > UUID: c2bd83d6-2261-47bb-8d18-5aba949651d7
+> > repair mode will force to clear out log tree, are you sure? [y/N]: y
+> > ERROR: Corrupted fs, no valid METADATA block group found
+> > ERROR: failed to zero log tree: -117
+> > ERROR: attempt to start transaction over already running one
+> > # rollback
+> >
+> > $ btrfs rescue zero-log patient
+> > checksum verify failed on 284041084928 found E4E3BDB6 wanted 00000000
+> > checksum verify failed on 284041084928 found E4E3BDB6 wanted 00000000
+> > bad tree block 284041084928, bytenr mismatch, want=284041084928, have=0
+> > ERROR: could not open ctree
+> > # rollback
+> >
+> > # hm, super 0 has log_root 284056535040, super 1 and 2 have log_root 0 ...
+> > [...]
+
+> And thanks for the report, I'll look into why nologreplay doesn't work.
+
+On the contrary, thank you! It's the least I can do. If there's
+anything else I can to help make it less likely (something like) this
+bites me or anyone else again, just say the word. Also, I'm curious as
+to the state of the data and btrfs restore doesn't care about
+checksums, so I'd love to be able to ro-mount the image sometime.
+
+Cheers,
+C.
