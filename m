@@ -2,157 +2,105 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B75E5757
-	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Oct 2019 02:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A5AAE57AE
+	for <lists+linux-btrfs@lfdr.de>; Sat, 26 Oct 2019 03:04:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbfJZACB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 25 Oct 2019 20:02:01 -0400
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:36904 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725847AbfJZACB (ORCPT
+        id S1725919AbfJZBCF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 25 Oct 2019 21:02:05 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:48988 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725887AbfJZBCE (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 25 Oct 2019 20:02:01 -0400
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id D365C48E443; Fri, 25 Oct 2019 20:01:57 -0400 (EDT)
-Date:   Fri, 25 Oct 2019 20:01:57 -0400
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Edmund Urbani <edmund.urbani@liland.com>
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: MD RAID 5/6 vs BTRFS RAID 5/6
-Message-ID: <20191026000157.GA1046@hungrycats.org>
-References: <b665710c-5171-487b-ce38-5ea7075492e4@liland.com>
- <20191016194237.GP22121@hungrycats.org>
- <067d06fc-4148-b56f-e6b4-238c6b805c11@liland.com>
- <20191021193417.GP24379@hungrycats.org>
- <81f11e36-fd40-967c-74e8-f5c29803dacf@liland.com>
+        Fri, 25 Oct 2019 21:02:04 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9Q0x6Jr143996;
+        Sat, 26 Oct 2019 01:02:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=aciyQ0vpZkDr4oH9JLyqnDa3YkhKfEnIj9GZWzc52yo=;
+ b=bAzE9q2NnTpU0/rXuTto9sIHqMr7EtKwG9wsKze8EHNX0Lez7fOl/HHZVsGxKYyCWNaS
+ VPov5wbalmLGTAbD+a9iCI0wYc8vo13UuLWIBbHA3G+rcAfdLMCE6lF0GMv9wP11nc4P
+ mS4ysBixM/S+3qkfm5xFVG9jjIVwpAzOdKq+y3zDV9fPmmKIHpk/oopC21tewZDIJLgs
+ bDiTVHoiaR4qyVa9mAF3tZl22sdK0IKSb3nmTQjJJN1gj5qr1xYY1uwylpFG2/nVUNSr
+ 7sEzVBod7vMfv6fr0DcHDTo7JZV7yF6zqhJvCWwVDVZVYZxSdvKqpY8Ss9rC2+rirotZ xw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 2vqswu6ewn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 26 Oct 2019 01:02:00 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9Q0w1BB013342;
+        Sat, 26 Oct 2019 01:01:59 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2vunbngke8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 26 Oct 2019 01:01:59 +0000
+Received: from abhmp0021.oracle.com (abhmp0021.oracle.com [141.146.116.27])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9Q11v3b022123;
+        Sat, 26 Oct 2019 01:01:58 GMT
+Received: from [192.168.1.119] (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 26 Oct 2019 01:01:57 +0000
+Subject: Re: [RFC PATCH 0/3] btrfs-progs: make quiet to overrule verbose
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <20191024062825.13097-1-anand.jain@oracle.com>
+ <20191024154151.GI3001@twin.jikos.cz>
+ <1166a5c7-8bc9-b93f-6f4c-8871b5fc394b@oracle.com>
+ <7b97f0ce-1f62-09fa-ad86-6a4d0af40e1d@oracle.com>
+ <20191025163555.GP3001@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <79a8fa97-6aff-3698-2263-548fbb68baf0@oracle.com>
+Date:   Sat, 26 Oct 2019 09:01:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <81f11e36-fd40-967c-74e8-f5c29803dacf@liland.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191025163555.GP3001@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9421 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910260009
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9421 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910260009
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 06:32:04PM +0200, Edmund Urbani wrote:
-> On 10/21/19 9:34 PM, Zygo Blaxell wrote:
-> > On Mon, Oct 21, 2019 at 05:27:54PM +0200, Edmund Urbani wrote:
-> >> On 10/16/19 9:42 PM, Zygo Blaxell wrote:
-> >>> For raid5 I'd choose btrfs -draid5 -mraid1 over mdadm raid5
-> >>> sometimes--even with the write hole, I'd expect smaller average data
-> >>> losses than mdadm raid5 + write hole mitigation due to the way disk
-> >>> failure modes are distributed.  
-> >> What about the write hole and RAID-1? I understand the write hole is most
-> >> commonly associated with RAID-5, but it is also a problem with other RAID levels.
-> > Filesystem tree updates are atomic on btrfs.  Everything persistent on
-> > btrfs is part of a committed tree.  The current writes in progress are
-> > initially stored in an uncommitted tree, which consists of blocks that
-> > are isolated from any committed tree block.  The algorithm relies on
-> > two things:
-> >
-> > 	Isolation:  every write to any uncommitted data block must not
-> > 	affect the correctness of any data in any committed data block.
-> >
-> > 	Ordering:  a commit completes all uncommitted tree updates on
-> > 	all disks in any order, then updates superblocks to point to the
-> > 	updated tree roots.  A barrier is used to separate these phases
-> > 	of updates across disks.
-> >
-> > Isolation and ordering make each transaction atomic.  If either
-> > requirement is not implemented correctly, data or metadata may be
-> > corrupted.  If metadata is corrupted, the filesystem can be destroyed.
+On 26/10/19 12:35 AM, David Sterba wrote:
+> On Fri, Oct 25, 2019 at 09:56:14AM +0800, Anand Jain wrote:
+>> On 25/10/19 7:51 AM, Anand Jain wrote:
+>>>
+>>>
+>>> On 24/10/19 11:41 PM, David Sterba wrote:
+>>>> On Thu, Oct 24, 2019 at 02:28:22PM +0800, Anand Jain wrote:
+>>>>> When both the options (--quiet and --verbose) in btrfs send and receive
+>>>>> is specified, we need at least one of it to overrule the other,
+>>>>> irrespective
+>>>>> of the chronological order of options.
+>>>>
+>>>> I think the common behaviour is to respect the order of appearance on
+>>>> the commandline.
+>>>
+>>>     I am fine with this. Will fix it as this.
+>>
+>>    Question: command -v -q -v should be equal to command -v, right?
 > 
-> Ok, the ordering enforced with the barrier ensures that all uncommitted data is
-> persisted before the superblocks are updated. But eg. a power loss could still
-> cause the superblock to be updated on only 1 of 2 RAID-1 drives. But I assume
-> that is not an issue because mismatching superblocks can be easily detected
-> (automatically fixed?) on mount. Otherwise you could still end up with 2 RAID-1
-> disks that seem consistent in and of themselves but that hold a different state
-> (until the superblocks are overwritten on both). 
+> No, that would be equivalent to the default level:
+> 
+> verbose starts with 1			()
+> verbose++				(-v)
+> verbose = 0				(-q)
+> verbose++ is now 1, which is not -v	()
+> 
 
-During the entire time interval between the first and last superblock
-update, both the old and new filesystem tree roots are already completely
-written to on all disks.  Either is the correct state of the filesystem.
-fsync() and similar functions only require that the function not return
-to userspace until after the new state is persisted--they don't specify
-what happens if the power fails before fsync() returns.  In btrfs,
-metadata trees will be fully updated or fully rolled back.
+Oh I was thinking its a bug, and no need to carry forward to the global
+verbose. Will make it look like this.
 
-If an array is fully online before and after a power failure, the worst
-possible superblock inconsistency is that some superblocks point to the
-tree root for commit N and the others point to N+1 (there's a very small
-window this, superblocks are almost always consistent).  If N is chosen
-during mount, transaction N+1 is overwritten by a new transaction N+1
-after the filesystem is mounted.  If N+1 is chosen during mount then
-the filesystem simply proceeds to transaction N+2.
-
-If you split a RAID1 pair after a power failure and mount each mirror
-drive on two separate machines, you could see different filesystem
-contents on the two machines.  One disk may present the contents
-for transid N, the other N+1.  It is not a good idea to recombine the
-disks if the separated mirrors are both mounted read-write.  Both disks
-will contain data that passes transid and csum consistency checks, but
-reflect the contents of different transaction histories.  Choose one
-disk to keep, and wipe the other before reinserting it into the array.
-mdadm does this better--there are event counts and timestamps that can
-more reliably reject inconsistent disks.
-
-> > The isolation failure affects only parity blocks.  You could kill
-> > power all day long and not lose any committed data on any btrfs raid
-> > profile--as long as none of the disks fail and each disk's firmware
-> > implements write barriers correctly or write cache is disabled (sadly,
-> > even in 2019, a few drive models still don't have working barriers).
-> > btrfs on raid5/6 is as robust as raid0 if you ignore the parity blocks.
-> I hope my WD Reds implement write barriers correctly. Does anyone know for certain?
-
-Some WD Red and Green models definitely do not have correct write barrier
-behavior.  Some WD Black models are OK until they have bad sectors,
-then during sector reallocation events they discard the contents of the
-write cache, corrupting the filesystem.
-
-This seems to affect older models more than newer ones, but drives with
-bad firmware can sit in sales channels for years before they reach end
-consumers.  Also when a drive is failing its write caching correctness may
-change, turning a trivially repairable bad sector event into irreparable
-filesystem loss for single-disk filesystems.
-
-When in doubt, disable write cache (hdparm -W0) at boot and after any
-SATA bus reset (bus resets revert to the default and re-enable the
-write cache).
-
-> 
-> 
-> 
-> -- 
-> *Liland IT GmbH*
-> 
-> 
-> Ferlach ● Wien ● München
-> Tel: +43 463 220111
-> Tel: +49 89 
-> 458 15 940
-> office@Liland.com
-> https://Liland.com <https://Liland.com> 
-> 
-> 
-> 
-> Copyright © 2019 Liland IT GmbH 
-> 
-> Diese Mail enthaelt vertrauliche und/oder 
-> rechtlich geschuetzte Informationen. 
-> Wenn Sie nicht der richtige Adressat 
-> sind oder diese Email irrtuemlich erhalten haben, informieren Sie bitte 
-> sofort den Absender und vernichten Sie diese Mail. Das unerlaubte Kopieren 
-> sowie die unbefugte Weitergabe dieser Mail ist nicht gestattet. 
-> 
-> This 
-> email may contain confidential and/or privileged information. 
-> If you are 
-> not the intended recipient (or have received this email in error) please 
-> notify the sender immediately and destroy this email. Any unauthorised 
-> copying, disclosure or distribution of the material in this email is 
-> strictly forbidden.
-> 
-> 
