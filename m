@@ -2,88 +2,113 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B70E63A6
-	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Oct 2019 16:19:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2891DE653B
+	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Oct 2019 21:06:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727096AbfJ0PTo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 27 Oct 2019 11:19:44 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:38075 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726814AbfJ0PTo (ORCPT
+        id S1727662AbfJ0UGU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 27 Oct 2019 16:06:20 -0400
+Received: from mail-wm1-f44.google.com ([209.85.128.44]:54501 "EHLO
+        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727235AbfJ0UGU (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 27 Oct 2019 11:19:44 -0400
-Received: by mail-wm1-f67.google.com with SMTP id 22so6476535wms.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 27 Oct 2019 08:19:42 -0700 (PDT)
+        Sun, 27 Oct 2019 16:06:20 -0400
+Received: by mail-wm1-f44.google.com with SMTP id g7so7297476wmk.4
+        for <linux-btrfs@vger.kernel.org>; Sun, 27 Oct 2019 13:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YJb+vmjy0wXs/Kws6kGlO2P4oTjtM6GMyzuyiFSYUAw=;
-        b=XC50yoViEgR0WRfNzML48D2gPidFTyG1XtoDnEkJbVmCMDviRzCAslgZpX+0TOlS0+
-         IpGFH6Uh/iseGG8GBLWlAgOfAntZhRlsfXP5bIGGqmlLkAy/2a6zTJ3Rs4SlYzOWgQD+
-         05QPNF3UQyQql5tmz8hGcFpAEg/YDXSgi7duW9OuIJs235LmbWkK6BSpHkmwML9twwfm
-         iL6uPTInoFJX97RBvWBEjAKxq6z0nHnaRkBlO2rrsRedpmqpVWCqdRNjMDoZL5eeR6oH
-         8yj3CAX5uo8gomb+wXToknmOkwAuTgZlVmdwFXYnZ7YjtaY9pUoxESbZbxftZBRSQD1o
-         XiJQ==
+         :cc:content-transfer-encoding;
+        bh=Zz+XktAnJyvmJOuRI6lX9YFHHVbMPDVDqP5RMgO9ADQ=;
+        b=TKcLESXeIIJDyAxSRmnUsNsPlTGfum3esvBQvocGK8tjrEL932g//u7Cv5GtxtXUx1
+         i/OEWah8i+/RdeZwwVr/tJEwwfWB9Eae8WghWqaVnybl1vS9tn5R3apSHd6EogMUNmp3
+         107GEYSXO8Le36zC8NJgRrbUcy6Gg4b6lh0X/nqdGM6iT35QC1lCXGaUqBws8bHvHtAw
+         HpdvESTyCsDa8YFAUzIHLxXMXPDBFbXP11oZL0PB3A73qwMT1+edSC0xd/td8m0B/Vw0
+         K3H0NeHSKowFGOi1/Hkmq/KZRjMaiMKVTRsYEdtFPTvF3GobAS49sA+rJvxM6SA/jgTF
+         RXIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YJb+vmjy0wXs/Kws6kGlO2P4oTjtM6GMyzuyiFSYUAw=;
-        b=dlynsQjqG7EyBau8BdokGV6Dthak/w8oi/74paHOWjc8GEeE23UpmkW+Z84twbYGEc
-         8hOttqWAGBURk1wyfABjvVpu7ecFBVsXTJvilpopWUZoIQmCTPtJb8Oo8xK2M5ejO96t
-         iaJF3vv/b6kRsTFg2mlGe8qq4ynSGnKmu/XtfYcBfHjFG79BX1Uvji4+YzrxSWaawgLg
-         y8oezjuVr3jHzpRvvayGxcxgWpe675d+DSlp0gezoix2Ch+ii8RrCnFT0GepsPQsUR3q
-         LXOEEirV4SMWAuYDH8rXvpXlUCwHer6nQAU/ssIQAgl4iNz1j6KomjTZlSO8FuigqCcR
-         61zQ==
-X-Gm-Message-State: APjAAAW//JyQdf75JI7s7uYJcbtLTnijdp+Krp7xCd9OvKI21yRg2wHN
-        EVeHDRa2P4JCKS8CoeICNhwskOKAHIgnRtYfiIPFp9F9704=
-X-Google-Smtp-Source: APXvYqzr9jwHprsLxL423U57iA3LUzWbjxci6LeJZDHrEV2mCBO4bJqjV39jHtq45ucmEkxqUrf4y8ww8FOWLrMMAiw=
-X-Received: by 2002:a7b:c049:: with SMTP id u9mr11674388wmc.12.1572189582197;
- Sun, 27 Oct 2019 08:19:42 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Zz+XktAnJyvmJOuRI6lX9YFHHVbMPDVDqP5RMgO9ADQ=;
+        b=G36vzkkuL0099/6QhiCl2/w0zEM+v99kWmdk4UkuPwV7J+Kjxq2XsCcEaWO3TjaZ+1
+         O4/faN7I72cjalLb4EgKOuQxSfQmFeZigeI949B0OAh6vi78I/qSQ4msC1WCsTDtKnLb
+         UqCIU0uKTmFOYSrvWj14MQoIccMTEbvhsjfCJf66MDYsLxgOdanq8HNoS3KbVjNrlQ1i
+         hRwr6mszu3qbga0QZ0snyXqReQZI0HtC0me0Eb1B9Ba4NFrhJHpkx/ElcMrPh+ynx3mA
+         yVkyf/CQ8tvcMJrA0k5gTIVVSVkjMIshpSz1uAQRFzPOQ213QZep693OiKvG7f0mzZmT
+         6zCw==
+X-Gm-Message-State: APjAAAVo3kLvCfj53Xq3YBGEPPFg9iwrytI37ENv+sJwwvy3Ag3lK7RB
+        EVjEaVkOmIF3eqv4R9blMnDCQl2jy4P9CZNrm+MBPA==
+X-Google-Smtp-Source: APXvYqxFpMIqML9KBPa1gHw6ODTWW47e8GMZGI1G/y1zmr/QMZwbFfRoNxJyg+t4NuiotFqupv7npP501dfsg9VLUV0=
+X-Received: by 2002:a1c:f401:: with SMTP id z1mr12249843wma.66.1572206778019;
+ Sun, 27 Oct 2019 13:06:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAE4GHg=W+a319=Ra_PNh3LV0hdD-Y12k-0N5ej72FSt=Fq520Q@mail.gmail.com>
- <cb5f9048-919f-0ff9-0765-d5a33e58afa7@gmx.com> <CAE4GHgmW2A-2SUUw8FzgafRhQ2BoViBx2DsLigwBrrbbp=oOsw@mail.gmail.com>
- <b4673e3b-b9b2-e8e5-2783-4b5eac7f656d@gmx.com>
-In-Reply-To: <b4673e3b-b9b2-e8e5-2783-4b5eac7f656d@gmx.com>
-From:   Atemu <atemu.main@gmail.com>
-Date:   Sun, 27 Oct 2019 16:19:31 +0100
-Message-ID: <CAE4GHg=4S4KqzBGHo-7T3cmmgECZxWZ-vXJMq8SYnnwy16h3xg@mail.gmail.com>
-Subject: Re: BUG: btrfs send: Kernel's memory usage rises until OOM kernel
- panic after sending ~37GiB
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
+References: <CAJCQCtS1v7waFA=ERafSCSCHmPJVytdFZkJLqNTC3U3Gw3Y7tA@mail.gmail.com>
+ <d1874d17-700a-d78d-34be-eec0544c9de2@gmail.com>
+In-Reply-To: <d1874d17-700a-d78d-34be-eec0544c9de2@gmail.com>
+From:   Chris Murphy <lists@colorremedies.com>
+Date:   Sun, 27 Oct 2019 21:05:54 +0100
+Message-ID: <CAJCQCtTpLTJdRjD7aNJEYXuMO+E65=GiYpKP3Wy5sgOWYs3Hsw@mail.gmail.com>
+Subject: Re: Does GRUB btrfs support log tree?
+To:     Andrei Borzenkov <arvidjaar@gmail.com>
+Cc:     Chris Murphy <lists@colorremedies.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> It's really hard to determine, you could try the following command to
-> determine:
-> # btrfs ins dump-tree -t extent --bfs /dev/nvme/btrfs |\
->   grep "(.*_ITEM.*)" | awk '{print $4" "$5" "$6" size "$10}'
+On Sat, Oct 26, 2019 at 9:12 AM Andrei Borzenkov <arvidjaar@gmail.com> wrot=
+e:
 >
-> Then which key is the most shown one and its size.
+> 25.10.2019 12:47, Chris Murphy =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > I see references to root and chunk trees, but not the log tree.
+> >
+> > If boot related files: kernel, initramfs, bootloader configuration
+> > files, are stored on Btrfs; and if they are changed in such a way as
+> > to rely on the log tree; and then there's a crash; what's the worse
+> > case scenario effect?
+> >
+> > At first glance, if the bootloader doesn't support log tree, it would
+> > have a stale view of the file system.
 >
-> If a key's objectid (the first value) shows up multiple times, it's a
-> kinda heavily shared extent.
+> Yes, happened to me several times on ext4.
+
+Yeah I have a reproducer on XFS, but was only able to get it to happen
+once on ext4 and not again after 1/2 dozen attempts.
+
 >
-> Then search that objectid in the full extent tree dump, to find out how
-> it's shared.
+> > Since log tree writes means a
+> > full file system update hasn't happened, the old file system state
+> > hasn't been dereferenced, so even in an SSD + discard case, the system
+> > should still be bootable. And at that point Btrfs kernel code does log
+> > replay, and catches the system up, and the next update will boot the
+> > new state.
+> >
+> > Correct?
+> >
+>
+> Yes. If we speak about grub here, it actually tries very hard to ensure
+> writes has hit disk (it fsyncs files as it writes them and it flushes
+> raw devices). But I guess that fsync on btrfs just goes into log and
+> does not force transaction. Is it possible to force transaction on btrfs
+> from user space?
 
-I analyzed it a bit differently but this should be the information we wanted:
+The only fsync I ever see Fedora's grub2-mkconfig do is for grubenv.
+The grub.cfg is not fsync'd. When I do a strace of grub2-mkconfig,
+it's so incredibly complicated. Using -ff -o options, I get over 1800
+separate PID files exported. From what I can tell, it creates a brand
+new file "grub.cfg.new" and writes to that. Then does a cat from
+"grub.cfg.new" into "grub.cfg" - maybe it's file system specific
+behavior, I'm not sure.
 
-https://gist.github.com/Atemu/206c44cd46474458c083721e49d84a42
+I'm pretty sure "sync" will do what you want, it calls syncfs() and
+best as I can tell it does a full file system sync, doesn't use the
+log tree. I'd argue grub-mkconfig should write all of its files, and
+then sync that file system, rather than doing any fsync at all.
 
-Yeah...
 
-Is there any way to "unshare" these worst cases without having to
-btrfs defragment everything?
 
-I also uploaded the (compressed) extent tree dump if you want to take
-a look yourself (205MB, expires in 7 days):
-
-https://send.firefox.com/download/a729c57a94fcd89e/#w51BjzRmGnCg2qKNs39UNw
-
--Atemu
+--=20
+Chris Murphy
