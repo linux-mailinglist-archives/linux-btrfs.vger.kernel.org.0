@@ -2,46 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 720EEE6020
-	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Oct 2019 02:50:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007C4E6023
+	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Oct 2019 02:50:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbfJ0Aqs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 26 Oct 2019 20:46:48 -0400
-Received: from mout.gmx.net ([212.227.17.21]:59853 "EHLO mout.gmx.net"
+        id S1726525AbfJ0AuT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 26 Oct 2019 20:50:19 -0400
+Received: from mout.gmx.net ([212.227.17.20]:42371 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726543AbfJ0Aqs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 26 Oct 2019 20:46:48 -0400
+        id S1726474AbfJ0AuT (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 26 Oct 2019 20:50:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1572137205;
-        bh=5r2vRHFrEvoblk/5ev1kaOazsVNdz12LxU3mAhFbJRY=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=dikNN+F0Vu7wzZndRIrkqkuI12FdQHNXIlQWA6oTuafQom+qC6576X9dl6OsDPbj6
-         GHIxZvRuoZPXY21U7Qm3enhS0+vtC7GUVZRrCuojLKOzJuMJHovFGmCSsxd72cHxM5
-         rtL0XXE2jxNZ6FFhLmheL028M9R8UOI72omc5oMk=
+        s=badeba3b8450; t=1572137416;
+        bh=9veghQlsPOMDt6ryMLQRlXpsxo1g8KZC7fbBc/OB4jE=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=DEHO2Tb66knaMfrtwh2d8if3rthLVSC5oaEetWyIlqhZRdheYNa8dukFYVUDoKXL1
+         DfurHEB49u1tIWxSURrMtYuwaRvkgnYF0UlD6cAU+9ZeZPEzJT3FLiyNpL6z8UxL2g
+         Dc/mGr2G5Avyw/RLD2io85R2+IvohVd2t5bPLIoc=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MbAci-1hrNkK2Gt6-00bexF; Sun, 27
- Oct 2019 02:46:45 +0200
-Subject: Re: first it froze, now the (btrfs) root fs won't mount ...
-To:     Christian Pernegger <pernegger@gmail.com>
-Cc:     "Austin S. Hemmelgarn" <ahferroin7@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <CAKbQEqE7xN1q3byFL7-_pD=_pGJ0Vm9pj7d-g+rRgtONeH-GrA@mail.gmail.com>
- <CAKbQEqEuYqxO8pFk3sDQwEayTPiggLAFtCT8LmoNPF4Zc+-uzw@mail.gmail.com>
- <e0c57aba-9baf-b375-6ba3-1201131a2844@gmail.com>
- <CAKbQEqFdY8hSko2jW=3BzpiZ6H4EV9yhncozoy=Kzroh3KfD5g@mail.gmail.com>
- <20f660ea-d659-7ad5-a84d-83d8bfa3d019@gmx.com>
- <CAKbQEqGPY0qwrSLMT03H=s5Tg=C-UCscyUMXK-oLrt5+YjFMqQ@mail.gmail.com>
- <0d6683ee-4a2c-f2ab-857b-c7cd44442dce@gmail.com>
- <CAKbQEqGoiGbV+Q=LVfSbKLxYeQ5XmLFMMBdq_yxSR7XE3SwsmA@mail.gmail.com>
- <043c2d26-a067-fd03-4c98-7ff76b081fed@gmail.com>
- <CAKbQEqHbh0pjT1+hPNuo_fKti0v9Mi-=gOUqm90v_tju1xSaxA@mail.gmail.com>
- <503118ac-877f-989c-50f2-5e2a3d0b58d8@gmx.com>
- <CAKbQEqFWiGdgJNSWOwvHkHGjrXu=2x0zAK-n9T-oza7qexwz7g@mail.gmail.com>
- <4a329da3-81ba-3240-8d76-6509dbe2983a@gmx.com>
- <CAKbQEqGOJjNAFMitAU=coVboaat9pi5b-6DxFg4SOON+6bfJ0g@mail.gmail.com>
- <0d48803b-b8f0-2ab7-dade-d92067b91202@gmx.com>
- <CAKbQEqFccH9=WsGy23CcCu-KSVWYrwffF6faRADH3oauJhgkdA@mail.gmail.com>
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MC34X-1iH3z0150X-00CSta; Sun, 27
+ Oct 2019 02:50:16 +0200
+Subject: Re: BUG: btrfs send: Kernel's memory usage rises until OOM kernel
+ panic after sending ~37GiB
+To:     Atemu <atemu.main@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAE4GHg=W+a319=Ra_PNh3LV0hdD-Y12k-0N5ej72FSt=Fq520Q@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -67,102 +51,131 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <baf8bd65-6dee-1d49-6a8c-4b4845fe56c7@gmx.com>
-Date:   Sun, 27 Oct 2019 08:46:40 +0800
+Message-ID: <cb5f9048-919f-0ff9-0765-d5a33e58afa7@gmx.com>
+Date:   Sun, 27 Oct 2019 08:50:08 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <CAKbQEqFccH9=WsGy23CcCu-KSVWYrwffF6faRADH3oauJhgkdA@mail.gmail.com>
+In-Reply-To: <CAE4GHg=W+a319=Ra_PNh3LV0hdD-Y12k-0N5ej72FSt=Fq520Q@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="JvrZIrrlaf08SmmTbRe1b8gXl16On8WGA"
-X-Provags-ID: V03:K1:Hm4PNwKT3pFwwpsp7nD5j//7u33AjXUq6zhCEJPCkDGxRBLsrGr
- eRjPZ2tGPVLzP2uu0TTCtbj2Q5UsewQ32S0AC9VbUmApCzFj4THokKskU0f8EF8zVGDDocl
- jO7etxXEvKhS5qTG+5WIihQRI/OlC5tdwR3eE0+S05p8XDGiaJ/ejrESJOWshdAkGrBYRZj
- aFyGJhd5uwqEgRyLJfQnA==
+ boundary="65Xq3GJwXV1Hm8S2NAwVp4DLOMjKIgYNQ"
+X-Provags-ID: V03:K1:elo1+2MBx6LK4lgHConkGoo5oGbYgmmKrm7ZwOumFqg7/s3vEw4
+ COlhIEtxYd/9RqJmqQvfVr1Bk7fPkqe4Jnp9A0cFYOP1tR3hM3PE/6YkBKUKjJfYawqpYBS
+ 3+xk9uiXMQAkKiDREL7fXFz8he8OnciQemwKlDzMOk4vT02o7a2DoQga27Vvw/upz1A2tAo
+ YVSPyv8q5hkHpUHbM/+8g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:DUMcFkaXhwk=:s4iHFO7WL1j6OLjfESvzRi
- lvwoWLon9/l/E+9YPfmWA6BrqaDYKBzV/FbAjtoZsRf0I1U4XYoD2lWaqi2PTHLGg22pItnf+
- snwnDenjIeNqNoB5V63vp3OFIbwz67F8F+aBWLY8hRPqNmB6oNJ8SqmTPP26GZyghrxXmUYB+
- 3hScohy3qyZxwT2O66loxShw+pUg9RTIUHouSPoy6pC2URubTAAe3F9oCn6rJnIa9q2bLPpLt
- p9SFGVp/zNpCibTtcTDrA4jwpIX++d4tf6OK2EMi1olNqDPwstnRb0nY/JpwMCp5HQY6XEtaH
- 6W7ENRjnGX5Vy/wZZIFgOZ5FLqommliutSeZDVsKyJg4mjtuH7GNaTLajIqPxMvy9dTdByOfk
- lj0NxAslVYyDLLnL7H4fX6T3aPc+hrPxf3O8k/4SEjSooIuHcqGxZig/wEmNe0dvEsTl28ztO
- DIdm2mYn/X5cmJuQPI8lmgKL88c93GaTDRXCoX76rQJ/MEgfynMfUIAoLqfdwIVtQ1W5bJnQl
- VNtfY68ydrSX9qClNwG9/0VBKBjU1hrkK7/JDhU27SGU8vj4O3wzGUIWA+RXSJFTqSSTzsPOd
- 95XPzZMs22qq4CPvmyil62Rnhl4m7DZMvgJp252UkbqR5J7IY74mWG25vtJEtR+pn6ujX+glw
- cpoYneAomHhUYwRGy5Cj2600s/WVY7jL2UEnkrFwWG/LNtcsfx+au3DLv9VPNpOD74D6ik/Yg
- 8UO7tGlhzPLP4j5r05w9RAB6lFEsFJ+0mAk0HZVo8EtK5v/gu0c13tcFwy3b5Iz0zkhuEzEfZ
- WCySevMXKdDSy+qFHFBQl2mdg/nFKI/ItXfN038KMm7Nfv+6RSaIcSX9l3nUoQwFcl7AmqifT
- BIaNbBAEPSOCC+FpvK+ub27oxP+UWcFGbxK4QH9IhDRrH7wPBAn1P721Pr2EfQZx+dj4oT9Bf
- lcgeApu+2O8qZ0E8iwoXdYWq+Xfr0LRAN1mlCPTkDR3RCzQMZr3ySmzMhaitxoTwsTdUps0ii
- z74SqqzpSLudwK++aCajI+2duTXPWNMSiI7l+elebaDhRdCOqrhp3tYmmbD6EMVBncZEx8aKi
- hPoF90vIof+Xb4h7C88evdNqDyCtHLpGOO5E4tOCI/TUOiq3fFVlJ2zcBAMSCjBbwRGlYpgEE
- 6R7yTvDHT6/h1idya66dOniOP8H2nsI3pLSLgsGgWyoSkjM+uWD96vAgiEXhDwCdKeGfn5yTn
- ewy3pGKfOwWI3I/X6MJJ195Dh+aAasMJ95HejLCoYtB1Oz9ACA2NVYhNNAfU=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:FNY+o22gDKw=:63kDhgCk6gHT5pucovq3+h
+ MMnK5n2yBbzJUUpb/DENIk6JzlhjOEQxUJxjFhwgXOtyavh2O5jFYAZ5Ndenv1KtKzziEIIX0
+ Ft/PuDsAlx9QQjzDKPBx6Mfxs6R2aPL4se5scsZ+2V5mbpJkdlIp2POhNw5Wd7RURqSYZ4y9c
+ NZym6fnL0Lqwn1u1Snu4VLimoePRd+nywhX5L8TGlIhFpm3hCYUTUVwR0r07d7PAHnZchYphb
+ iQ60uhR6Nt0veeeZSTnAs60Hxhuz3xUA/MRhC12NIwyjO8b1knxpn/dKm7UXzBbmxbIf4CMPi
+ T8NQvRsNS0qJjfKU7F2c2PpWSM1P1JQ1u8HGwbIDfcvuolung+zd175hPg7KOYZ9Kr3IWtoDc
+ 3nuONpldQiR0G2iMmiBzgd1IDiJ31QNvE9eXDy4Wjue0W31oZfRXXgNatZ+h+QXzjH6iaeWTh
+ sJRILXQ8bcUNyS04CBBaphZEZV7vLG7ez2ppIUcusrKJ112WFwq1NgVhHzsHYUNoMhzVK78Sg
+ w/EtRqhhOGJhO+1jfv5aE/EGh75KJk0IhU/NTSx0rrz8DLZsGyRiYCAyyqxOPxknDjtwX72Mc
+ Sm8Jb9KcCgvj6PbzqpC1y7wP01tam8LTfZkuJbdNjKGAzPIz+r4zA204OAevrGGl/rXBz32LA
+ PVtyAv/KmpknqR/SqPYEOaTtG7ygIDrOeTwX1FlD/KjtdSS/WRYRXTLp9iFeqk2rWVHUodNsG
+ o5hcxeWqS6q6lckpMGDnJcsmrPO2932RILCgKkQiAtBbLCI9FON8JuGOFYozQNwo3H0xd2+Zn
+ LeTNo1FM0RwAU2Gzb9eb5IRO0H4TNzdX+iunzSIJrfmLlU/JMaVJPzE7fz+f4M2CFaP5OE5sl
+ SHIP1pDZFemFvB4A/1DInbMBwv4wOsaAtmbPuGiVXFAq3L5qkR/QUy37zTzbzB7XSVjIqi11/
+ hlhzwsP8/VSoRjwqLHp67qSVaLXIDuD1eYcqZ08jNx8S98Vtmchuymt8wz+FE/+m9MGI/lC7n
+ +bhP/tDv8jLJ1DNd2z0r8leV4lRwjRck15sLKB6SPSNAFVTSjHe21mqcMF9vLF1BEfcb13kg5
+ MFGdVUCejwaRcqPm7O/9vX6DHxW8K+cBBK1beojgSFMdpFBB0TeGMZQOLGiCZr8wp7IqpLKdO
+ jw3ap436XiIfc1/o3QLG6xVvfkDtEPuQd7Dc8DaFqsI+xj1O0tol7QZJuW4jk2Lk76BwB4DtL
+ gGYuhsrurauy6HZkSaaodC+DI9dNsKYaxw7Pkh56C+ojIU0lpnGjyAKsGas0=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---JvrZIrrlaf08SmmTbRe1b8gXl16On8WGA
-Content-Type: multipart/mixed; boundary="5qu2Vs42euURnOV7RpNO1zuIo6C4MiW75"
+--65Xq3GJwXV1Hm8S2NAwVp4DLOMjKIgYNQ
+Content-Type: multipart/mixed; boundary="GB7fnFYUEqFCsTODKlIjmtxBLkf5ltI4j"
 
---5qu2Vs42euURnOV7RpNO1zuIo6C4MiW75
+--GB7fnFYUEqFCsTODKlIjmtxBLkf5ltI4j
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/10/27 =E4=B8=8A=E5=8D=8812:30, Christian Pernegger wrote:
-> Am Sa., 26. Okt. 2019 um 16:07 Uhr schrieb Qu Wenruo <quwenruo.btrfs@gm=
-x.com>:
->> Mind to share the csum error log?
+On 2019/10/27 =E4=B8=8A=E5=8D=881:46, Atemu wrote:
+> Hi linux-btrfs,
+> after btrfs sending ~37GiB of a snapshot of one of my subvolumes,
+> btrfs send stalls (`pv` (which I'm piping it through) does not report
+> any significant throughput anymore) and shortly after, the Kernel's
+> memory usage starts to rise until it runs OOM and panics.
 >=20
-> Certainly. That is, you're welcome to it, if you tell me how to
-> generate such a thing. Is there an elegant way to walk the entire
-> filesystem, trigger csum calculations for everything and generate a
-> log? Something like a poor man's read-only scrub?
+> Here's the tail of dmesg I saved before such a Kernel panic:
+>=20
+> https://gist.githubusercontent.com/Atemu/3af591b9fa02efee10303ccaac3b4a=
+85/raw/f27c0c911f4a9839a6e59ed494ff5066c7754e07/btrfs%2520send%2520OOM%25=
+20log
+>=20
+> (I cancelled the first btrfs send in this example FYI, that's not part
+> of nor required for this bug.)
+>=20
+> And here's a picture of the screen after the Kernel panic:
+>=20
+> https://photos.app.goo.gl/cEj5TA9B5V8eRXsy9
+>=20
+> (This was recorded a while back but I am able to repoduce the same bug
+> on archlinux-2019.10.01-x86_64.iso.)
+>=20
+> The snapshot holds ~3.8TiB of data that has been compressed (ZSTD:3)
+> and heavily deduplicated down to ~1.9TiB.
 
-The csum error can be seen in the kernel message.
-So "dmesg" is enough to output them.
+That's the problem.
 
-To find all csum error, there is the poor man's read-only scrub:
-# find <mnt> -type f -exec cat {} > /dev/null \;
+Deduped files caused heavy overload for backref walk.
+And send has to do backref walk, and you see the problem...
+
+I'm very interested how heavily deduped the file is.
+If it's just all 0 pages, hole punching is more effective than dedupe,
+and causes 0 backref overhead.
 
 Thanks,
 Qu
 
+> For deduplication I used `bedup dedup` and `duperemove -x -r -h -A -b
+> 32K ---skip-zeroes --dedupe-options=3Dsame,fiemap,noblock` and IIRC it
+> was mostly done around the time 4.19 and 4.20 were recent.
 >=20
->> I'll fix the bug and update the patchset.
->> (Maybe also make btrfs falls back to skipbg by default)
+> The Inode that btrfs reports as corrupt towards the end of the dmesg
+> is a 37GiB 7z archive (size correlates) and can be read without errors
+> on a live system where the bug hasn't been triggered yet. Since it
+> happens to be a 7z archive, I can even confirm its integrity with `7z
+> t`.
+> A scrub and `btrfs check --check-data-csum` don't detect any errors eit=
+her.
 >=20
-> I appreciate it.
+> Please tell me what other information I could provide that might be
+> useful/necessary for squashing this bug,
+> Atemu
 >=20
-> Cheers,
-> C.
+> PS: I could spin up a VM with device mapper snapshots of the drives,
+> destructive troubleshooting is possible if needed.
 >=20
 
 
---5qu2Vs42euURnOV7RpNO1zuIo6C4MiW75--
+--GB7fnFYUEqFCsTODKlIjmtxBLkf5ltI4j--
 
---JvrZIrrlaf08SmmTbRe1b8gXl16On8WGA
+--65Xq3GJwXV1Hm8S2NAwVp4DLOMjKIgYNQ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl206PAACgkQwj2R86El
-/qjfoQgAgK90FAHlUS4ukf4T7MU0NG98Bg4XFKJs9BMidzTj7LnnLUO7wgdeNsYV
-7W6tEtR2aw2uTJ7MVFrRGF6Y1mg5/oqxWdu5b9nQ4G5LI33Jq95SVHa67jgCOeQY
-eh7u9UbtfjuarLmMy5cxgz0aa3m8y3Ojvadg0znFStPgOiphDS94qeMG0C/XUEYp
-W6dioeoSDk78GdW/b3ZezcQTF61ct5g1VA/1Eq7UJODTPvbo9jdB+pukNwlSw0Re
-0olx75t4T0vPCqlwXdm2RcJKcBtpfu0dI6PwtiHTfEmss3iGf4A/oLHIygecZmKv
-/r5iU07Sehv10kpTUM6aUWotjnThbw==
-=HQsO
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl206cAACgkQwj2R86El
+/qgCvgf8Doi9vomv6lyNtGM21Vf7p73vlFWnOQge1tAGP0pNISSNdfoC5X258B1R
+nHBUiCLk4p7T29wzZv50DluucJmPfVWq4dhYe+fYRmkfcpUXiP44v4MuD/M/gHy7
+mpthDJ+X/XFfX+xkDTBfmstWurL/z8R4Kc50m6BOI3Cmgtxt9uy7g1tqF6VneOs4
+wNaPcxLrbOYk4VriHGR02rWD5pI9ZmC6MNEBrm9EpfgtogmjnTRsy2AR8e0U/JT/
+r+cUXd3g+d4fMOL1ox2lx0sz1yNt3kpRYract+Th0+MuQKO7RehUPG4UXqZA+U2F
+vVPlFhXtq9j/CWWj5nCT4Knxbmxaug==
+=YSq2
 -----END PGP SIGNATURE-----
 
---JvrZIrrlaf08SmmTbRe1b8gXl16On8WGA--
+--65Xq3GJwXV1Hm8S2NAwVp4DLOMjKIgYNQ--
