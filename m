@@ -2,114 +2,130 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDB7E6279
-	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Oct 2019 13:55:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F515E62A2
+	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Oct 2019 14:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726549AbfJ0Mzm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 27 Oct 2019 08:55:42 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:33889 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbfJ0Mzl (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 27 Oct 2019 08:55:41 -0400
-Received: by mail-wm1-f65.google.com with SMTP id v3so7590248wmh.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 27 Oct 2019 05:55:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=03wUzGKgMcyWw6xB/BkG6nJYAVc1XYZVeCEYQWdLcrc=;
-        b=U9ANr8jl2bIQ01MOfUgji/NwhddE25UBHF3mPnYgPFNSlBYLvrjyArOfjLtbwy+9yl
-         aeQJvKKPo4hrjdYtzQ8rZEB4lwboMIRymgU041cHbtqnfsSVsCJpMKYdrKEoti9md7VK
-         Am7EGrt6gg97pDz9bV5aoULer2DSaPoFV0Cp+mk9ohNKOUktZ7J5kjEHJ06FsahH3+Lo
-         ven1Dgl7869Dhr9U3QrA8T4QfejbTomwK/tiWibOcPkBY1xMbQ6SB+kQr7Ae3mk2jcGh
-         hzeH1wcvMjpKbe+S/2azhtJ0AWXGLe4msiWPgqa0E4Es7rntf/ZeELcFFn+1oVX5d6vp
-         NeNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=03wUzGKgMcyWw6xB/BkG6nJYAVc1XYZVeCEYQWdLcrc=;
-        b=gdnS9FCDgG92DLUFIOqSwJYMdh87ocQP21p8tFAEwM39dKoD9iiqgTXyvdv+ZnF3yc
-         7qJDWZp2/QjidIPHCNc0tUk40l0aZx9ZD3Bfuwfi6PnRO0zCnHJ9hV8y6gEyIiEu4d6T
-         y1D6RQEwnOCpZlRhGSQCCb2pfZT1uQWXDAWnlmX+CqfTvWI1spdxDePuCoMy/JljMk+L
-         HbS9CFA6k9DRZ4zNgyavHo776XC8M+GZLifcJqGiKFLiDyCtjHNtNsLTWiAzjWnsX1kR
-         53hSjdMurOmogiB6mEPTw78qOSZ6i64pOCYHTjqxobgC1x8CEs75p3/D20PgzK3oUYwp
-         ditA==
-X-Gm-Message-State: APjAAAWb6/KW4sM+6W46JGCYwD9jk00GtAL54EPbQK3fEWF08iAl0nWe
-        Mi/5Qps7WnM46VMRrgkn6NWgr02dNxiCjcTiDACyyp9BwC0=
-X-Google-Smtp-Source: APXvYqzxK8vJ379XGdkaJLA0iCIGPOxlOA9epYEwMlbQfymW/odbI34bs8sqbA8i5H0XFi+ovQxgLAEGnItuveGGIKA=
-X-Received: by 2002:a1c:9a4f:: with SMTP id c76mr10785947wme.103.1572180939432;
- Sun, 27 Oct 2019 05:55:39 -0700 (PDT)
+        id S1726706AbfJ0NZE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 27 Oct 2019 09:25:04 -0400
+Received: from mout.gmx.net ([212.227.17.22]:39685 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725807AbfJ0NZE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 27 Oct 2019 09:25:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1572182700;
+        bh=n6m2yg4hCM3CJPw4eL1di0WkwGSMRE3i5J1EOHKJl9Y=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=JT0RioA8gf5seVQ2tOjuU5gp9L/6INF6t6kAP7hJxoas5bq0PY0rk22iKYs/rPeCz
+         i6fzPdLtMEExSzICwVdFx/1BhSdEVbr/uGGo3dzMxbs4peVaRM5AFSd//Rdw+xot5T
+         n5TGT/VmHu2Xp+6Kw79/zHa1CKGcOVMzarWORTM4=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.2.161] ([34.92.93.240]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MkYXm-1hiGAf0yqc-00m4iR; Sun, 27
+ Oct 2019 14:25:00 +0100
+Subject: Re: "BUG: kernel NULL pointer dereference," when unmounting
+ filesystem hitted by enospc error
+To:     Johannes Thumshirn <jthumshirn@suse.de>,
+        Peter Hjalmarsson <kanelxake@gmail.com>,
+        linux-btrfs@vger.kernel.org
+References: <CALpSwpjVz=F_hb9DbVanECsfWOYog2B7SLY=Dy0NvQx=w9voDA@mail.gmail.com>
+ <f4037f43-97fb-5a25-52db-2d69ec69f6ee@suse.de>
+ <3acc15f7-fe1e-6672-8a89-fba9a09561d4@suse.de>
+From:   Su Yue <Damenly_Su@gmx.com>
+Message-ID: <29cae854-b5e2-73d6-fc83-51cf1f162e30@gmx.com>
+Date:   Sun, 27 Oct 2019 21:24:55 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:70.0)
+ Gecko/20100101 Thunderbird/70.0
 MIME-Version: 1.0
-References: <CAE4GHg=W+a319=Ra_PNh3LV0hdD-Y12k-0N5ej72FSt=Fq520Q@mail.gmail.com>
- <cb5f9048-919f-0ff9-0765-d5a33e58afa7@gmx.com> <CAE4GHgmW2A-2SUUw8FzgafRhQ2BoViBx2DsLigwBrrbbp=oOsw@mail.gmail.com>
- <b4673e3b-b9b2-e8e5-2783-4b5eac7f656d@gmx.com>
-In-Reply-To: <b4673e3b-b9b2-e8e5-2783-4b5eac7f656d@gmx.com>
-From:   Atemu <atemu.main@gmail.com>
-Date:   Sun, 27 Oct 2019 13:55:28 +0100
-Message-ID: <CAE4GHg=-K3JdhvQpTC8fPGBm1sVLDOUW+UkBCSZJwz27fkW90A@mail.gmail.com>
-Subject: Re: BUG: btrfs send: Kernel's memory usage rises until OOM kernel
- panic after sending ~37GiB
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <3acc15f7-fe1e-6672-8a89-fba9a09561d4@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:TKrs0GXQhtqwoikFcpHpUVQbU2vAiMCNXG2HOI/i4v+nAsIDqCk
+ Tc7owZkHO221zXxRPKx2XYBzFLPZEbVxzF3uJ34p/x0pTefQneaMnrJTYTYs0dZXNtMvV4u
+ ZIBb0MQcCVjNtjYI9dQz6BUD+zzyQlTelVrl0C11WUgBCDm9LDWSZz6vkQ6BuLfu4d/c8FV
+ GywcIC+rn8nzpTbOCvgDQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Ckj/CFFFyUg=:hvRuBMGkh3fZ585wmOniq7
+ Y7MSxBPmgys/k2k4RjmlxGj8QPyJx1JWXHWAD4FpfkHr1NQ38cnuc1FArndYj0XUjuDpdJjCi
+ 3BhSllyQHcjDdWSBvGIkRUjent+aMGgpCYu57o5YFFi6ifFpfvbtX0/AEbzvZYm8fd+cLDkBK
+ VbiRYI4ww6nOt32Z7LXOOQE3TFl34Q0iqvhCm+kmtiDTGtbV/JF+kfiEZx1lV8RcQdCWgaIQZ
+ SyWkSFwEeRsDCvJnwuvFwenDNmN8MLuSBdnQuotj+iOxOmaVOywa4kYsfo0BpZbzFaLK1S2JG
+ UGFNX97onOL5f2PA9yTozwr0AL2M5H/w4mC7iB/MT273KLXULiiiJZds2MZ2whBPtRL70KVvg
+ nUzFzLnZnRJWVS+6T5S4TPdt53l3fw73t75J9z5yGP6HTwbyIJqteKKOcygSDsO6/mh22q+gr
+ 14cSzgJ6etMUbSqx+ts0Wuq0yvEf+d8rsyL6q8NVGZy8/OeZFefi+Drq2Lkx/2La6ioepdQIb
+ YXfvG9q7+T5LXgYoIUiV/9xDNjtNhauf00k+W5SzynwU5lr4/U3ayfU3UwOuokSIp2S0h/+/Q
+ TM6YbTiZMzT1X6lkVvGye8E9B9mePQubqEHwsGiRrRlciUxbClFWso7U2/uujbki2m5hQCVOp
+ q40oV2opYF6So0SrKnWzkyaRKAPYLPd7D6sosIB/OFfgO26CPkGEeHc52lrxji4HBFWbJ3hIt
+ lLTzyd3a7rVl2HDmEFoesO0YPJJz/RAwFJgYl2oP0ChbwRhrHZlmP2VHy1WXDqXiaPFZib512
+ Ir3kvPtRWwgl6lgs5TifgZHXaeV8nhLKSVhIMCHo9Gol2oKGCEGSMYHboFrXD6JZE41F01Ho5
+ 4tEOFWqHuGt+EvDege+fwmnwSZjer9wpekQzBbo1MQ7x+E6o6uoA6tR8SBlNyvB9Q5YQB+KzT
+ 4bf9mjCPfv2r41cWRBf4jlCQJN60Ga3zXAlQ5RQgOhDIS7tzLlKyqXblvo6f+WLAoUG4YKMnQ
+ 7i9viH0M7Z7PMDfYPcEhnku2UojjUy2c9og7Pc31vHHmsTiJfQVYhalJeddUHM7+woW7Q54S5
+ n5tg0AM0QAW4RBtbmDtIzLm1odWW7LSGwEFWmjuex+RSLf1LVk2jAWVFeftgkmNpH+l0nLJki
+ BdDJIr8mO7SpdVHcZC41a2DhPCcf5phQPE8TGesJ18azQ/qsh0uaehd0DS0ZQ6l00AHLdX1yN
+ w9pUmt6mr6/jvLTzQnWSs8KmElOfMCDtTHHM7ulIR0wt9uxCON3Eu1gM06H4=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> This depends on how shared one file extent is.
 
-But shouldn't it catch that and cancel the btrfs send before it panics
-the kernel due to its memory usage?
 
-> If one file extent is shared 10,000 times for one subvolume, and you
-> have 1000 snapshots of that subvolume, it will really go crazy.
-
-> But as I mentioned, snapshot is another catalyst for such problem.
-
-I only have two snapshots of the subvolume but some the extents might
-very well be shared many many times.
-
-> I can't say for 100% sure. We need more info on that.
-
-Sure.
-
-> That's trim (or discard), not hole punching.
-
-I didn't mean discarding the btrfs to the underlying storage, I meant
-mounting the filesystems in the image files sitting inside the btrfs
-through a loop device and running fstrim on them.
-The loop device should punch holes into the underlying image files
-when it receives a discard, right?
-
-> Normally hole punching is done by ioctl fpunch(). Not sure if dupremove
-> does that too.
-
-Duperemove doesn't punch holes afaik it can only ignore the 0 pages
-and not dedup them.
-
-> Extent tree dump can provide per-subvolume level view of how shared one
-> extent is.
-
-> It's really hard to determine, you could try the following command to
-> determine:
-> # btrfs ins dump-tree -t extent --bfs /dev/nvme/btrfs |\
->   grep "(.*_ITEM.*)" | awk '{print $4" "$5" "$6" size "$10}'
+On 2019/10/21 10:32 PM, Johannes Thumshirn wrote:
+> On 21/10/2019 11:17, Johannes Thumshirn wrote:
+> [...]
+>>> -----
+>>> $ cat run-btrfs-test
+>>> modprobe -iv zram num_devices=3D8
+>>> udevadm trigger
+>>> sync
+>>> zramctl /dev/zram0 -s 8G && \
+>>> zramctl /dev/zram1 -s 8G && \
+>>> zramctl /dev/zram2 -s 4G && \
+>>> zramctl /dev/zram3 -s 4G && \
+>>> zramctl /dev/zram4 -s 4G && \
+>>> zramctl /dev/zram5 -s 2G && \
+>>> zramctl /dev/zram6 -s 2G && \
+>>> zramctl /dev/zram7 -s 4G && \
+>>> mkfs.btrfs /dev/zram0 && \
+>>> mkdir -p /mnt/btrfs-test && \
+>>> mount /dev/zram0 /mnt/btrfs-test && \
+>>> echo "FS Mounted" && \
+>>> btrfs dev add /dev/zram1 /mnt/btrfs-test && \
+>>> echo "Devices added" && \
+>>> for int in {1..500} ; do dd if=3D/dev/zero of=3D/mnt/btrfs-test/file${=
+int}
+>>> bs=3D32M count=3D1 && sync ; done
+>>> btrfs dev add /dev/zram[2-7] /mnt/btrfs-test && \
+>>> btrfs fi sh /mnt/btrfs-test && \
+>>> btrfs fi df /mnt/btrfs-test && \
+>>> btrfs bal star -mconvert=3Draid6 /mnt/btrfs-test && \
+>>> btrfs bal star -dconvert=3Draid6 /mnt/btrfs-test
+>>> btrfs fi sh /mnt/btrfs-test && \
+>>> btrfs fi df /mnt/btrfs-test
 >
-> Then which key is the most shown one and its size.
+> I'm sorry. I ran this script in a loop for 35 iterations on 5.3.6 and
+> couldn't reproduce a single crash.
 >
-> If a key's objectid (the first value) shows up multiple times, it's a
-> kinda heavily shared extent.
+
+Interesting thing I met too. That's not reproducible on my VM but
+host (Archlinux v5.3.6 same kernel config).
+
+What's more interesting is that v5.3.7 seems to have fixed the bug.
+After some bisect. The commit is
+
+commit 417d26300214f7b593a99c6bc8badb66492ae322
+Author: Qu Wenruo <wqu@suse.com>
+Date:   Mon Sep 23 14:56:14 2019 +0800
+
+     btrfs: relocation: fix use-after-free on dead relocation roots
+
+     commit 1fac4a54374f7ef385938f3c6cf7649c0fe4f6cd upstream.
+
+
+=2D-
+Su
+
 >
-> Then search that objectid in the full extent tree dump, to find out how
-> it's shared.
-
-Thanks, I'll try that out when I can unmount the btrfs.
-
-> You can see it's already complex...
-
-That's not an issue, I'm fluent in bash ;)
-
-- Atemu
+> Is there anything else needed?
+>
