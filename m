@@ -2,45 +2,35 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 903D7E62AF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Oct 2019 14:39:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E81C5E62B3
+	for <lists+linux-btrfs@lfdr.de>; Sun, 27 Oct 2019 14:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726674AbfJ0NiM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 27 Oct 2019 09:38:12 -0400
-Received: from mout.gmx.net ([212.227.17.20]:39809 "EHLO mout.gmx.net"
+        id S1726752AbfJ0NnK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 27 Oct 2019 09:43:10 -0400
+Received: from mout.gmx.net ([212.227.15.19]:44535 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725807AbfJ0NiM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 27 Oct 2019 09:38:12 -0400
+        id S1725807AbfJ0NnK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 27 Oct 2019 09:43:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1572183487;
-        bh=aOx9b2s952g8ScQ120CkEKZhM7XdpFRQ7OpwzFKUxZU=;
-        h=X-UI-Sender-Class:Subject:To:References:Cc:From:Date:In-Reply-To;
-        b=JeYsoLuEKpYFOcYBLR18yTsruTwyzJDBE5U8qrIesdh9mEyjv+pQBW/1GfEQHlTmS
-         qrGUvGUOKmU5OLoZJeuSesL5Fa9WfjuQyz2pVYneSMoNHGcoI4y41feekYEMOrcGGy
-         7IT/a/RK//8R33OgcAVBe1F85Bq4yvxC0vm0YhRs=
+        s=badeba3b8450; t=1572183787;
+        bh=Q+hhTq/2iI4JKgiVz03GAHhPZQRNenIBOn4mtA/++a4=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=VkrQs2K+yLDCgbakoEmu/ySM9Eu+IXvo06+e4b/SFOyiq1BJyUGuqRx118Qz55QUH
+         V2h9V+zi4/0QGh8kuxX6CwfyVt3kDY+yx6HhQX0AREzl0E1dVVcSYCiPyXRMIWugAE
+         1qMZ0vkV2RYnac0QjCopisQQ2fAz4hFBxUDhSZ20=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M3DNt-1iPX1P2Vm1-003hbz; Sun, 27
- Oct 2019 14:38:07 +0100
-Subject: Re: first it froze, now the (btrfs) root fs won't mount ...
-To:     Christian Pernegger <pernegger@gmail.com>
-References: <CAKbQEqE7xN1q3byFL7-_pD=_pGJ0Vm9pj7d-g+rRgtONeH-GrA@mail.gmail.com>
- <CAKbQEqFdY8hSko2jW=3BzpiZ6H4EV9yhncozoy=Kzroh3KfD5g@mail.gmail.com>
- <20f660ea-d659-7ad5-a84d-83d8bfa3d019@gmx.com>
- <CAKbQEqGPY0qwrSLMT03H=s5Tg=C-UCscyUMXK-oLrt5+YjFMqQ@mail.gmail.com>
- <0d6683ee-4a2c-f2ab-857b-c7cd44442dce@gmail.com>
- <CAKbQEqGoiGbV+Q=LVfSbKLxYeQ5XmLFMMBdq_yxSR7XE3SwsmA@mail.gmail.com>
- <043c2d26-a067-fd03-4c98-7ff76b081fed@gmail.com>
- <CAKbQEqHbh0pjT1+hPNuo_fKti0v9Mi-=gOUqm90v_tju1xSaxA@mail.gmail.com>
- <503118ac-877f-989c-50f2-5e2a3d0b58d8@gmx.com>
- <CAKbQEqFWiGdgJNSWOwvHkHGjrXu=2x0zAK-n9T-oza7qexwz7g@mail.gmail.com>
- <4a329da3-81ba-3240-8d76-6509dbe2983a@gmx.com>
- <CAKbQEqGOJjNAFMitAU=coVboaat9pi5b-6DxFg4SOON+6bfJ0g@mail.gmail.com>
- <0d48803b-b8f0-2ab7-dade-d92067b91202@gmx.com>
- <CAKbQEqFccH9=WsGy23CcCu-KSVWYrwffF6faRADH3oauJhgkdA@mail.gmail.com>
- <baf8bd65-6dee-1d49-6a8c-4b4845fe56c7@gmx.com>
- <CAKbQEqFne8eohE3gvCMm8LqA-KimFrwwvE5pUBTn-h-VBhJq1A@mail.gmail.com>
-Cc:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MWAOW-1iVwjQ1S8Y-00XaiG; Sun, 27
+ Oct 2019 14:43:07 +0100
+Subject: Re: BUG: btrfs send: Kernel's memory usage rises until OOM kernel
+ panic after sending ~37GiB
+To:     Atemu <atemu.main@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <CAE4GHg=W+a319=Ra_PNh3LV0hdD-Y12k-0N5ej72FSt=Fq520Q@mail.gmail.com>
+ <cb5f9048-919f-0ff9-0765-d5a33e58afa7@gmx.com>
+ <CAE4GHgmW2A-2SUUw8FzgafRhQ2BoViBx2DsLigwBrrbbp=oOsw@mail.gmail.com>
+ <b4673e3b-b9b2-e8e5-2783-4b5eac7f656d@gmx.com>
+ <CAE4GHg=-K3JdhvQpTC8fPGBm1sVLDOUW+UkBCSZJwz27fkW90A@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -66,119 +56,148 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <5c1bac32-8925-5925-5c86-8efa46d11738@gmx.com>
-Date:   Sun, 27 Oct 2019 21:38:00 +0800
+Message-ID: <944da320-f5ff-9290-27a1-e39aed7d6d21@gmx.com>
+Date:   Sun, 27 Oct 2019 21:43:00 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <CAKbQEqFne8eohE3gvCMm8LqA-KimFrwwvE5pUBTn-h-VBhJq1A@mail.gmail.com>
+In-Reply-To: <CAE4GHg=-K3JdhvQpTC8fPGBm1sVLDOUW+UkBCSZJwz27fkW90A@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="XLH5CttmgluAkWxE7xp0ejKVukmDzQaaw"
-X-Provags-ID: V03:K1:coFYizbR6lEpG9NkAc+5ThrlMm3QM2EXwjFTWo7l6ae3TXxpfQx
- 65Pg4zgjH/6ar/0gDQBOP4txnx7fbwkOJMhQDzqdOs0XBMc/4dQiA6Hrf7BGGAiRIAAP+R6
- jp2XFNQUq6lEJnLvxGF+1wBxREpjzTcbgMqmUFLIbtrCtL/mAgkRlZdxLEM6xiUlU0rqg+R
- 8G06w4uXdpup7YW/FWwAA==
+ boundary="dJ0piif2gUduuaD31VMMdySRmjQz3aRsZ"
+X-Provags-ID: V03:K1:QuKr5gjzaGKKehZBmrH91L1PTnjX5zTD+r96BPt51ryiTdDhnv8
+ ZAMiPPkKTM/MXEiWuyRQA2FnwXO8k5KAKY8a0Jw+y8AJUAlENiAU3eBxRMbBvQiPlAETovM
+ Xg4Krr3zY4ac9W8g6i/SUPNihLR3gm/+6Kg9Hr+Ykyh0EOPJE0bgL8R368R1sclGoGzx21B
+ qjMa5GQIzGDuqTqdgkIBQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:5QECnWqbfdY=:vKwbEgifljWlD1SUqFee6d
- H5faEXdsyJ6fWn1k7qPMtj7eStC7a1NJoueMGXnICWgzcJOYa0ekxbQVJ0fZqyKHXsoc5O+yn
- Vk4P6MQRBwjMVbgl+UgD1Tf5S0BsyuRQsiP8SPH8iQW7g6NOh/eF2Dvh5YWgVByev7lH1T5h7
- AFaCFxJ+8lYuZ5aXzjMkNhADKpC/V9nwe1B3vNXTNfqqADimjTw5Qer3HcKjDWp2KfR/IwuZa
- Biu2MiXyD2inbOr74OfwDyHB8+a3k20AQpMIxDTbm4AQun3wR/8A3EWf44uqiJCEeMVIrizTV
- VISR/gW0wlobJuO9v8Gy7yiVp0erN2cOX7kyhndaDipU2yZy3MuBfjj65NE1hlcLSM4LF2mB8
- HyDGXL+ISU7uKb0rcYdX+F05AEFNwutorOVmFndBjia/NSTxt4HqohXY6OUHcSrpeGDAwN0IR
- 66HEdgDrUTUW+UNq+nIt0CXDNNYlNO/JunTs83LEfD5be1HJNrH7ioo11ObckasBcjclaroLe
- on1EaRNbOSB5c8USIsbeEyW2JB6x4YjRmQyqWHB45UegJCMroCXgPZhHLRvy/VvABYLNnHrVx
- 9KRYnMW52CT7gTpayh0quftd/AEG7jS7RKl5f8pgcskewvIMR36L1FklCC1tzmzNEQPbnYE7/
- B+Be71vym1/YuZ80lUrIoAyovZMDb40hVAmyvFucTYE1LaPSQdizVRLDNTF/zoPIRDNtU+XHr
- SmDzE345k0/xxfjXUlidK/SLORyNNCk6jTpxKwr16+ndv+zIy5ko9FLgimh3tJLUDPqRDpG92
- OWw9vii1yLxwH1m3euR+frNd2EAVA8vJwhqwlGPSCDFyR8m0icPHi4oiiQcTefI5XL+sfBSK3
- xxnDTzZoof2aRZyRmtdhoCPGbX+SO3+RofOJXQWCiKtVWVLAi4iiqZ4EiUGiin43uXwYcEK2G
- 36PyvJ7X/1Xils/k6HAqnJNICsjNSujM4ApISNhtRta5WY976urKdyytx0v/eQpxgsGS9p+My
- UTV8nVwofM/LehOy7mYS6LfDdHoz6/pPCDSx5Ec+/GoSJMxgn5OCdpL5gFAoXHm9XJODgEkZj
- NA0Y6NHTJ5e79MLJpVeDwzEleZIXF6+WsIKJNy8umI8gb0Za8gTbwBRaXAErLLKm3a6gmhiVh
- iiNZZUv9glMtcyJ+lGV4tOopWzyfNS9if85lnc1hg+BauGoD9vRmuaZHmCBMHr+Y0VOpaL5RW
- +xJsGWc46z3TDpRF9048aGK5CCPSRxVO+CgFehSYoF7raVzC2mo9Ux+IIyrI=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:12ZixJIEkHI=:91iY5Be6OMzFGATA8XZ6ri
+ zGrAyYxP5Vo8iBxRpgG3l61OulCTsUeVx7ilD5bCFWgVqHB4XGHTrUMXgQ33sORj2x8O4BY1I
+ ceWoPD6xmudN3s66JpBcdjj3YiGkPWTJ8wtL7k6BLgxxlxL6x/IyK4eRSrpDPmxyAKeLTQcIs
+ xyesfsFqjgMks7IHPrKOxpsNQL7QbswX5fj7eY5gcpoEV3RxRBaJjR0EccEu9Pa7NOysMWmhU
+ sPGX5Yu7O1iIb2zq9Lwvi7PblZTJLM0QBLP/I4vZmqVfOvBKA5Pv6/zkTeYlkOqBEormusk6c
+ tDTinJSG8xUjwZO+xg2UrGkIJMejQx7WmiuaNxZgT9H8OBm3EOatD+5CD8h5bHkUefp696lQ8
+ atJSgyxTQ8UuXqCLJASEWXXB8jPnPRdhmIoIjCN8DqWnbQ6KVwKN0cz2uf7Xs6XieraZs/Y6/
+ 0RUh83qiUG+IAlwUQXBjG1eS9IvSJhjyY1qlRdMICeKIFY1SAqsCYVDWYgT/U1lTTx7R7/tUU
+ /A8rNJOxOwWEr2Dhw3OychzPE/tRlCBC1xvU1O01xAgn5aX0Rk9tJY/zN/Sf2g5xuRzi5d3P5
+ Hcbeerjv9aVB/AWJpDy4mCncKBpwkO/NRsB0iwSObxkCaVVAd95AgK8QWSlLaqvYFzE38YHdK
+ l5XtDWE6jjMjzndLK3EOsqLMFt1LJVxZNHLu8WB+/pkPcjkxnRJ2AVZRz3vWDOdSavF92FExU
+ 6WGnAqWCKalDTv+hexNZvHr2rJOLs+hZWF+f5/wi4ur9MZnfWgg0Qe1FTc9Jesl2dC7RFKkrD
+ DNYg6WsuZhcC/25/rOv999feSOfEMlF068ZnSnRd/NYHKQWVr4q/9EUrU50Y2ESfYR+WWvrOs
+ kPlxAqiTV5j2dHKfzWKh7vp11ALrEgSY4i3VR+FDmpHBbWXsR838LP0lE41uWlXxlvGuNAN0j
+ f7o7+zHG9CEuYwhoFEhZ42DJL1d8NYGf9BRaEg8K8gmpv4PwgBL7C663J74IrGq0Jlluff87A
+ 1NQEbuRSUN6K/f6KrR/gzbhv5CW7gA3tMeVl0LfVjT1fQLEjnZcviSOXa1fMD0UD+IMkeyWVJ
+ WYa0bAz11zHIyTmkqdmRuxrMURt7qMzO/uPd2LE8AS+cWvicY8OwacWmfH7Rvqiy9O+DqmZ24
+ Ylt+OPpLQuWy1upHo6ikZgWRDVo31/V4helZDQH/9HbxL1jRIHo2Git9YpjbhFuaqFX5TV07l
+ x8SZo88tLamdiETcxQSNPn1XC1x0vpEdJkEP1JczBZdA/7hr6JnBhPlI3AGg=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XLH5CttmgluAkWxE7xp0ejKVukmDzQaaw
-Content-Type: multipart/mixed; boundary="59b539NVb6OfQi5nN8H8w7k6Cub9xRpsl"
+--dJ0piif2gUduuaD31VMMdySRmjQz3aRsZ
+Content-Type: multipart/mixed; boundary="RWKPjPvutdDhF1vXqdUcgckDwRrw3nE7S"
 
---59b539NVb6OfQi5nN8H8w7k6Cub9xRpsl
+--RWKPjPvutdDhF1vXqdUcgckDwRrw3nE7S
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/10/27 =E4=B8=8B=E5=8D=888:41, Christian Pernegger wrote:
-> [Replying off-list. There shouldn't be anything private in there, but
-> you never know, and it does have filenames. I'd appreciate it if you
-> were to delete the data once you're sure you've gotten everything you
-> can from it.]
+On 2019/10/27 =E4=B8=8B=E5=8D=888:55, Atemu wrote:
+>> This depends on how shared one file extent is.
+>=20
+> But shouldn't it catch that and cancel the btrfs send before it panics
+> the kernel due to its memory usage?
 
-Sure.
+Backref walk is quite tricky in btrfs, we don't really have a good way
+to detect whether it's a good idea or not, until we crash...
 
-BTW, this use case reminds me to add an option to censor the filenames...=
-
+But at least, we have some plan to fix it, hopefully sooner than later.
 
 >=20
-> Am So., 27. Okt. 2019 um 02:46 Uhr schrieb Qu Wenruo <quwenruo.btrfs@gm=
-x.com>:
->> So "dmesg" is enough to output them.
->>
->> To find all csum error, there is the poor man's read-only scrub:
->> # find <mnt> -type f -exec cat {} > /dev/null \;
+>> If one file extent is shared 10,000 times for one subvolume, and you
+>> have 1000 snapshots of that subvolume, it will really go crazy.
 >=20
-> I ended up diffing the files that were either in the data restored by
-> btrfs restore or the ro-mount courtesy of rescue_branch, in order to
-> read all files, expose files that were restored differently [1] or
-> missing in one copy [just pipes & such]. Note that this is just for
-> @home.
+>> But as I mentioned, snapshot is another catalyst for such problem.
+>=20
+> I only have two snapshots of the subvolume but some the extents might
+> very well be shared many many times.
+>=20
+>> I can't say for 100% sure. We need more info on that.
+>=20
+> Sure.
+>=20
+>> That's trim (or discard), not hole punching.
+>=20
+> I didn't mean discarding the btrfs to the underlying storage, I meant
+> mounting the filesystems in the image files sitting inside the btrfs
+> through a loop device and running fstrim on them.
+> The loop device should punch holes into the underlying image files
+> when it receives a discard, right?
 
-Considering you have log tree populated, it may have something to do
-with log tree.
+That's correctly, that will punch holes for *unused* space.
+But still, all 0 extents are still considered used, thus won't really wor=
+k.
 
-If you want to be extra safe, notreelog (yes, this time I didn't screw
-up the mount option name) could make it a little safer, while make
-fsync() a little slower.
-
-Furthermore, according to your kernel log, it's not your data corrupted,
-but the csum tree corrupted, thus btrfs fails to read out the csum, then
-report -EIO.
-It's possible that your data is just fine.
-
-Maybe I can also enhance that part for btrfs...
+Since deduperemover has already skipped all 0 extents, it should be a
+big problem I guess?
 
 Thanks,
 Qu
 >=20
-> Cheers,
-> C.
+>> Normally hole punching is done by ioctl fpunch(). Not sure if dupremov=
+e
+>> does that too.
+>=20
+> Duperemove doesn't punch holes afaik it can only ignore the 0 pages
+> and not dedup them.>
+>> Extent tree dump can provide per-subvolume level view of how shared on=
+e
+>> extent is.
+>=20
+>> It's really hard to determine, you could try the following command to
+>> determine:
+>> # btrfs ins dump-tree -t extent --bfs /dev/nvme/btrfs |\
+>>   grep "(.*_ITEM.*)" | awk '{print $4" "$5" "$6" size "$10}'
+>>
+>> Then which key is the most shown one and its size.
+>>
+>> If a key's objectid (the first value) shows up multiple times, it's a
+>> kinda heavily shared extent.
+>>
+>> Then search that objectid in the full extent tree dump, to find out ho=
+w
+>> it's shared.
+>=20
+> Thanks, I'll try that out when I can unmount the btrfs.
+>=20
+>> You can see it's already complex...
+>=20
+> That's not an issue, I'm fluent in bash ;)
+>=20
+> - Atemu
 >=20
 
 
---59b539NVb6OfQi5nN8H8w7k6Cub9xRpsl--
+--RWKPjPvutdDhF1vXqdUcgckDwRrw3nE7S--
 
---XLH5CttmgluAkWxE7xp0ejKVukmDzQaaw
+--dJ0piif2gUduuaD31VMMdySRmjQz3aRsZ
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl21nbgACgkQwj2R86El
-/qil3gf+IJkatZ6gtf2kHUbNkdTfbklAfybswM9G17mV/vzmJwxNSJEROyWRtLOn
-8Dc35I/1DubG+0zisOFq2B3T0Cp1dB6Wv/E8HrwgbHmT0sMnS0uO/Ul9FLM0U9Ah
-q5cX7CLRlJyA0n15QiyBZBFZVac7DV7x7C2MflVjJzYd00SIyHsjHM/YQMqYP7tz
-pNI/xyIll4PBGzTlr8r/chdm5TBlOmGeupTQ3rHa/+0S4aPqDCkMA0XJJ8SdPsU1
-8BeCO0rjd6LxWxi4sxrIkJfct+kLpktQ98rlokt7KR8R+5ODtPa7RY9s5KgMDBXx
-f8D5UBxJB4EDaiWmM5HF9BmRFEsHCQ==
-=a/dS
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl21nuQACgkQwj2R86El
+/qh9Zgf/T1qRbyfc7CU5kn2CyZMcZ8sODBgCoUS/lEsM0lkXHspnZGz/yuaDlycS
+srN+cso0HajtMUTqA5jCefPMce/VsvnxkvTBqz1zvFukboyXAOOhB5JM6Ly9Y3Pp
+hZ2W+jYVkAQLF+n8AX1BdRzrkQ35rzhchFnOikbe84mY5s6BT7wy6ms5sqeFx17h
+4kuOAV22JBvPA2TeYlR5wJ7cXYwZje6ViJtzbCOhuASnBSykLUK6OBKvhNrjmAe/
+zYgn/gYQas44SrDzR8Tg/jEwBiHOg1MwXW44aH/pnvVvd1nBLwkeTmQs8zihTzKf
+FAgOt2YdbtUaKISC+BjmTVDAezSUfQ==
+=JGum
 -----END PGP SIGNATURE-----
 
---XLH5CttmgluAkWxE7xp0ejKVukmDzQaaw--
+--dJ0piif2gUduuaD31VMMdySRmjQz3aRsZ--
