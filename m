@@ -2,57 +2,59 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D978E6F9B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Oct 2019 11:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8652E7064
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Oct 2019 12:30:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388233AbfJ1KW4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Oct 2019 06:22:56 -0400
-Received: from mail-lf1-f66.google.com ([209.85.167.66]:37484 "EHLO
-        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732818AbfJ1KW4 (ORCPT
+        id S2388461AbfJ1LaN (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Oct 2019 07:30:13 -0400
+Received: from mail-vk1-f195.google.com ([209.85.221.195]:42807 "EHLO
+        mail-vk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730811AbfJ1LaN (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Oct 2019 06:22:56 -0400
-Received: by mail-lf1-f66.google.com with SMTP id b20so7363319lfp.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Oct 2019 03:22:53 -0700 (PDT)
+        Mon, 28 Oct 2019 07:30:13 -0400
+Received: by mail-vk1-f195.google.com with SMTP id r4so1921689vkf.9
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Oct 2019 04:30:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RjcdF2o+dnlHbSjozipmAlyiuOntUw4F9PaHstQ80N0=;
-        b=sCGkd/XWplQt3wj3eLp8s7VJy3uadqADNOWMHLRRfyR+E67sHXQfW7/lbVVWW9hCuk
-         RMxNkfYsFi7OYTviZGlx0jf6BkYY0YEHv3of7pPIdaVgS41/2Yxup32BAh1iudAjA+uy
-         mjNP5aKKvH4Tv91G5Zqavb7KZCNv+glldr3OWc3BGHTn6/K23POiGaP9IYKBLnq2zUFm
-         75yccdN7OFagboWVOE9I1nidaueJjLQy2FYIBnZE6Wg41nda248q79eq2du8RquPGfe4
-         5JGv8hjle/HNGQAmY9wGXFJAbbD8SYXLe4mPohq4O24EuUcT3fDfX/2fmvaAFsTI+e3D
-         i0/Q==
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=kBE+rffRjyE01fuPKJNIWsB2jSHyNRRzTtA/N3s98JY=;
+        b=N2+rAVBL5ieUWo9UVGhS4sktrAfRtlQ9OXgUOxncPgGzhcadT9l4ze2Vyg7SP/JzAy
+         iaoaGkTfNZs2BenSMoLshmEWKvUapGLfGO51LZ2mE28AcwF0/vZ66+Ob85rR5AMO+Tze
+         pzR41RzaED5uzoouS9zwWnqLTpppbr4+M24BacMm6vKf/kihsVhtTcs3Q87uugfg1xDe
+         2ik3wukJxLuzwrgbOS1M+he9RX7N29Kp6JztvortfzuK0JLkBSNY0hDSrks+cyStDh66
+         /yl5evyKsVVvF7MVopdZNEiPi3iJVThIynXv5W3hgc6IcaPBRIDhNncxWhVRF+MKMGl6
+         W9Dw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RjcdF2o+dnlHbSjozipmAlyiuOntUw4F9PaHstQ80N0=;
-        b=L4cVPkmkIYzzfgxhO/rtqxYNkJTpFy4L9DisW9HaR8K5K5dD1j1ro/XC4ddEZ4aYVH
-         q7XxbZEpJ13BMDCL6VBvKk/e11WQhVKpFqcl1gO/7ItGhdJIgL7TTHMeZULDYKx+q0fR
-         fQbjL+NYkebgYLHr03RSvwgygO4s01qmxTuU7x84HX7XfE4D/blSnLq0eRsw431RfKDF
-         k1GZISgIHZpo0WCDFGb45mK+Q63b7K4jFNqCGVGkB7xlsEVXrmuIzepgSAdE9XT/xGW0
-         M4gk/eK0PSXPoagTkgqcupT+/7tXEVHfVwG0pZTiukehPgjvWA88g5y4cK0EcrpJ6wCs
-         P4OA==
-X-Gm-Message-State: APjAAAXYx0J7a0Nlp2pxrB4JAjhyXEldWe9q/ZYt28kB+yyFzFYshltE
-        UqnuyMW5IM3fYM9gwLoAtvKn3wbQxhXQPmamqkU=
-X-Google-Smtp-Source: APXvYqzVL7mHXclala03Bs7VaqOCvpUtlOvgCpIoy1KM0gkwN8oZrWBLH2ZH9otD0onZISGj7dK4evYcYlhlYyWdrFw=
-X-Received: by 2002:a05:6512:40e:: with SMTP id u14mr11055409lfk.73.1572258172547;
- Mon, 28 Oct 2019 03:22:52 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=kBE+rffRjyE01fuPKJNIWsB2jSHyNRRzTtA/N3s98JY=;
+        b=D2AvH0I06LXce6atSdM+9nhKlIkaWzj1JTV/pdSz28KzuDCABSAX75v6GhwKEWa3zt
+         f35BO7j6oJX9Kw/L8W51u+8Hw2+DK7pQcnpM4XYGmLLY2rcRMUlhZH8biIIB2m8vMD6u
+         fOiDpNqyW5ttSkEUZNTWVKKYKiItAnKnqRdl3rCsK60ExFnMGkl7LI8dwMxk15IwL2aC
+         aJbVljC9Oo0cMPxpcvYj9hsN/MGFqfHAA2rVFZdHzR27xphwDmuzxheMC7w9LImNwPBA
+         6ukXOxO8lmh9RlXyCseouzw1F6z1UV7ZBd8rH/qYcVBm7GX/vBHqxrFlG0upO/aV87lG
+         0Plw==
+X-Gm-Message-State: APjAAAXQKhheQdAs3/9uum5pUWGoIy6kOsmRgFhUPUcyIv+Sa7F3v7B8
+        ggJjA6wI1YSMfsSDAtsVrnn3BZQBQypUU6Cpm3U=
+X-Google-Smtp-Source: APXvYqxpJT9VJAoBzTI6eJdRIWqrj3Fwj5dfRmhvkqFQVzMwEbm6rQcDtk7aZY24pdnwL6W2xCh20QJUH1tzXtj/BlU=
+X-Received: by 2002:a1f:5847:: with SMTP id m68mr8206593vkb.24.1572262212496;
+ Mon, 28 Oct 2019 04:30:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <CALpSwpjVz=F_hb9DbVanECsfWOYog2B7SLY=Dy0NvQx=w9voDA@mail.gmail.com>
- <f4037f43-97fb-5a25-52db-2d69ec69f6ee@suse.de> <3acc15f7-fe1e-6672-8a89-fba9a09561d4@suse.de>
- <29cae854-b5e2-73d6-fc83-51cf1f162e30@gmx.com> <d1816326-f7e7-3ab5-347d-bb84764e8efb@suse.de>
-In-Reply-To: <d1816326-f7e7-3ab5-347d-bb84764e8efb@suse.de>
-From:   Peter Hjalmarsson <kanelxake@gmail.com>
-Date:   Mon, 28 Oct 2019 11:22:41 +0100
-Message-ID: <CALpSwpheGWtjOL8631ne+5TXkPmoud6BrBLcsVRs7moydhbnkQ@mail.gmail.com>
-Subject: Re: "BUG: kernel NULL pointer dereference," when unmounting
- filesystem hitted by enospc error
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     Su Yue <Damenly_Su@gmx.com>, linux-btrfs@vger.kernel.org
+References: <CAE4GHg=W+a319=Ra_PNh3LV0hdD-Y12k-0N5ej72FSt=Fq520Q@mail.gmail.com>
+ <cb5f9048-919f-0ff9-0765-d5a33e58afa7@gmx.com> <CAE4GHgmW2A-2SUUw8FzgafRhQ2BoViBx2DsLigwBrrbbp=oOsw@mail.gmail.com>
+ <b4673e3b-b9b2-e8e5-2783-4b5eac7f656d@gmx.com> <CAE4GHg=4S4KqzBGHo-7T3cmmgECZxWZ-vXJMq8SYnnwy16h3xg@mail.gmail.com>
+In-Reply-To: <CAE4GHg=4S4KqzBGHo-7T3cmmgECZxWZ-vXJMq8SYnnwy16h3xg@mail.gmail.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Mon, 28 Oct 2019 11:30:01 +0000
+Message-ID: <CAL3q7H4Wc0GnKNORVvwCOEk1QhzUweJr1JnN=+Scx5-TpQ5+yA@mail.gmail.com>
+Subject: Re: BUG: btrfs send: Kernel's memory usage rises until OOM kernel
+ panic after sending ~37GiB
+To:     Atemu <atemu.main@gmail.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
@@ -60,48 +62,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Thanks!
-
-5.3.7 hit my system from the Fedora repos just a day or two after my
-last mail, and spent last evening trying to reproduce both the problem
-the scripts shows, but also the problem I tried to track down when
-making the script. Both seems to be gone after upgrading on the
-systems I have been able to run the test on so far.
-
-Best Regards,
-Peter hjalmarsson
-
-Den m=C3=A5n 28 okt. 2019 kl 08:50 skrev Johannes Thumshirn <jthumshirn@sus=
-e.de>:
+On Sun, Oct 27, 2019 at 4:51 PM Atemu <atemu.main@gmail.com> wrote:
 >
-> On 27/10/2019 14:24, Su Yue wrote:
-> [...]
+> > It's really hard to determine, you could try the following command to
+> > determine:
+> > # btrfs ins dump-tree -t extent --bfs /dev/nvme/btrfs |\
+> >   grep "(.*_ITEM.*)" | awk '{print $4" "$5" "$6" size "$10}'
 > >
-> > Interesting thing I met too. That's not reproducible on my VM but
-> > host (Archlinux v5.3.6 same kernel config).
+> > Then which key is the most shown one and its size.
 > >
-> > What's more interesting is that v5.3.7 seems to have fixed the bug.
-> > After some bisect. The commit is
+> > If a key's objectid (the first value) shows up multiple times, it's a
+> > kinda heavily shared extent.
 > >
-> > commit 417d26300214f7b593a99c6bc8badb66492ae322
-> > Author: Qu Wenruo <wqu@suse.com>
-> > Date:   Mon Sep 23 14:56:14 2019 +0800
-> >
-> >     btrfs: relocation: fix use-after-free on dead relocation roots
-> >
-> >     commit 1fac4a54374f7ef385938f3c6cf7649c0fe4f6cd upstream.
-> >
+> > Then search that objectid in the full extent tree dump, to find out how
+> > it's shared.
 >
-> Good catch, cherry-picking this commit on top of v5.3.5 resolves the
-> issue in my setup.
+> I analyzed it a bit differently but this should be the information we wan=
+ted:
 >
-> --
-> Johannes Thumshirn                            SUSE Labs Filesystems
-> jthumshirn@suse.de                                +49 911 74053 689
-> SUSE Software Solutions Germany GmbH
-> Maxfeldstr. 5
-> 90409 N=C3=BCrnberg
-> Germany
-> (HRB 36809, AG N=C3=BCrnberg)
-> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-> Key fingerprint =3D EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+> https://gist.github.com/Atemu/206c44cd46474458c083721e49d84a42
+
+That's quite a lot of extents shared many times.
+That indeed slows backreference walking and therefore send which uses it.
+While the slowdown is known, the memory consumption I wasn't aware of,
+but from your logs, it's not clear
+where it comes exactly from, something to be looked at. There's also a
+significant number of data checksum errors.
+
+I think in the meanwhile send can just skip backreference walking and
+attempt to clone whenever the number of
+backreferences for an inode exceeds some limit, in which case it would
+fallback to writes instead of cloning.
+
+I'll look into it, thanks for the report (and Qu for telling how to
+get the backreference counts).
+
+>
+> Yeah...
+>
+> Is there any way to "unshare" these worst cases without having to
+> btrfs defragment everything?
+>
+> I also uploaded the (compressed) extent tree dump if you want to take
+> a look yourself (205MB, expires in 7 days):
+>
+> https://send.firefox.com/download/a729c57a94fcd89e/#w51BjzRmGnCg2qKNs39UN=
+w
+>
+> -Atemu
+
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
