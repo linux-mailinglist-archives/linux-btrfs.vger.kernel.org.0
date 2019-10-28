@@ -2,180 +2,337 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 922D8E6A2E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Oct 2019 00:17:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D0CE6C8B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Oct 2019 07:51:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbfJ0XQ7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 27 Oct 2019 19:16:59 -0400
-Received: from mout.gmx.net ([212.227.15.18]:52127 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727148AbfJ0XQ7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 27 Oct 2019 19:16:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1572218216;
-        bh=Ng05fN6T7lZYA96+SJRwPrx5s8DTGWZgsCJD7MkDRMI=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=INw3z4k8UNqOMWoozn5vxMcsyduyQrZdP/LXxONlMZXH02Wc5h6D35B7TRdDrEemK
-         bAFFJ/NpEuYUy0wixeWuoIrIrIapO8m3ctGM47HC0qkMV2eof9aml2mitY8mmy6nlK
-         iAduAZtOASRX/6UPaZebiaT7sU5n8ZJu34AIV/BE=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MZTmO-1iRfJB3HLq-00WU2h; Mon, 28
- Oct 2019 00:16:56 +0100
-Subject: Re: BUG: btrfs send: Kernel's memory usage rises until OOM kernel
- panic after sending ~37GiB
-To:     Atemu <atemu.main@gmail.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <CAE4GHg=W+a319=Ra_PNh3LV0hdD-Y12k-0N5ej72FSt=Fq520Q@mail.gmail.com>
- <cb5f9048-919f-0ff9-0765-d5a33e58afa7@gmx.com>
- <CAE4GHgmW2A-2SUUw8FzgafRhQ2BoViBx2DsLigwBrrbbp=oOsw@mail.gmail.com>
- <b4673e3b-b9b2-e8e5-2783-4b5eac7f656d@gmx.com>
- <CAE4GHg=4S4KqzBGHo-7T3cmmgECZxWZ-vXJMq8SYnnwy16h3xg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <220ed79f-7028-497d-caf4-1841d5f6d970@gmx.com>
-Date:   Mon, 28 Oct 2019 07:16:52 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S1732025AbfJ1Gv7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Oct 2019 02:51:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47488 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1730497AbfJ1Gv6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 28 Oct 2019 02:51:58 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5E493AF7E;
+        Mon, 28 Oct 2019 06:51:55 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
+        David Sterba <dsterba@suse.com>
+Subject: [PATCH 1/2] btrfs: qgroup: Always free PREALLOC META reserve in btrfs_delalloc_release_extents()
+Date:   Mon, 28 Oct 2019 14:51:48 +0800
+Message-Id: <20191028065149.89155-1-wqu@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <CAE4GHg=4S4KqzBGHo-7T3cmmgECZxWZ-vXJMq8SYnnwy16h3xg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="xifN2FQa1E6j49rN6WCiueOsXqCRoKB6P"
-X-Provags-ID: V03:K1:xEDMNEpJUM7nPH3ElhL72DR2/w4zTPRvYrwrTXTiXw1iLh5X3LO
- dcFZJWJV1KAG3jb3D6osV6e8u+BCHhJxNuwc/H6HzAiOb7V7eMGUXuohg/UkHSmSYeGa7ah
- YjuT4ydNctq/Aca9mBHk4sdLFRGLyv8IAsOYQl/Q35ljzI+zpoE3gBKCB5RCpqvE8yREgfH
- 3QcBJlW3THETDkS4+oIig==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:P/7Ab3k4sAU=:0Ty6li+g8GKW+DYMn7zPzw
- ljbWT4ADiP4RE5wgEGLG7DLw/38AXF7iqlHe8m9TSw1WPFgv1jf6HfwCmYqZYJTonP8tUYR16
- oJJcgyRZKtb16uuFYIs8ZLTLZMEt0HVf85dSeaJXP/f/Y3Fb64oUj2UnaSNbXwdP/qKhtU4aN
- 2bgsQRvkEDFCVKnkDzAotHrEzL70wtUFTambyBu9XfHvQV3fmX7Mhk7KGSRl0C2ivRALcXhWF
- 520jU+je2xFgg1et3o+n46emnlZ/11kXb6vs7lSxyooWVjINmUEEZxYQbknvgxM0DMxGGKfYf
- xNgOCWkhGbkXV+AJHBS/k4I1xy2E+PX83ZfEVutZMDVEY5YQUmhe+qc3A66R2wusrfzjWZ61e
- EuA+vrS/RI4jbZVu+HWwXPeTSwnMRf7b4Q/Qos1CsuBHSUZABHDCIn2VDB4OknsiujzGbfzGW
- tRVOmm30u4I0zJUWMALxVF4oU6v3KzC/8otbqwGjfEPkFRbLpDD53aU4OR9JYtTIwS/C+butc
- t1upAwsNWodFnHqRZUVWMWnAzJBSXhU6iKKI5wJuKQrMeCU2WKOiDm6Qpp7mUyjAd3nuzMA9d
- 8T4XhISTXOul4mqFEISTfkRG0v03J3MDCF16w0xI8ntHl3N4ilrgBiGfoGgDcDS0sdP6Z4i3c
- J4ePxwrhlcUWne9aMs3cru+KTlC0u2zaMKjGT3/Y3r67iwHqoZAzZagR3mLeRX//C9u+IuUjU
- utnoDaW+CI+EVZoMsAOSJQIJ0JUDDDDzKMBP8QX8yvrUBiTESUrI1fVqVs7s5B+pKFofjl6Ng
- GtJPSaH+GeRCoQCRHeS9qDd70jNIQRSZm87oo3qzlz90OwYHxYjAfRnWqWyw2WZoWbb3AxWUl
- y+fh0z36XXtTbboAYwLJqZMHP1cxxs/ezn9DsGe+8Xfst+Js2n1Z/5s0Ge672t0A03OkwcU37
- MpROJ66Nw5XXd1PQPFMC1BdioqnAL0OyoWvsKsMJwPcbYRvrXQZbvXRLLuzNQCgsm6HMvyBKH
- ev7Op29sQ8ZVZ/QkNd+hZ5s3pLeTHnql9fSU1EJdwbTS8wqExrtlQukjZ3CvrVhzk3g+sXKXy
- 9sihphf3aSYru2pDUSRLZAPDfqtp3dSsxHK6IfUuBzIiAhw2fptuHAclIjd7VmG885Nb8dz/h
- 0G8OAUviBohS6LZZb+HRjZypoRL1dpD2SNKqLo98qGlY86YSXonoHAABY+WEZrdKLrdMR3X+Z
- QmJwbmvITtPUujLM/8GQ4UxXdPx07KsHL/Egt30mvHw3YiLuw9rzeyivncJA=
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---xifN2FQa1E6j49rN6WCiueOsXqCRoKB6P
-Content-Type: multipart/mixed; boundary="H26SvfsVDgQO6eHiJfRAbmwhW7YTsoW9E"
+commit 8702ba9396bf7bbae2ab93c94acd4bd37cfa4f09 upstream.
 
---H26SvfsVDgQO6eHiJfRAbmwhW7YTsoW9E
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+[Background]
+Btrfs qgroup uses two types of reserved space for METADATA space,
+PERTRANS and PREALLOC.
 
+PERTRANS is metadata space reserved for each transaction started by
+btrfs_start_transaction().
+While PREALLOC is for delalloc, where we reserve space before joining a
+transaction, and finally it will be converted to PERTRANS after the
+writeback is done.
 
+[Inconsistency]
+However there is inconsistency in how we handle PREALLOC metadata space.
 
-On 2019/10/27 =E4=B8=8B=E5=8D=8811:19, Atemu wrote:
->> It's really hard to determine, you could try the following command to
->> determine:
->> # btrfs ins dump-tree -t extent --bfs /dev/nvme/btrfs |\
->>   grep "(.*_ITEM.*)" | awk '{print $4" "$5" "$6" size "$10}'
->>
->> Then which key is the most shown one and its size.
->>
->> If a key's objectid (the first value) shows up multiple times, it's a
->> kinda heavily shared extent.
->>
->> Then search that objectid in the full extent tree dump, to find out ho=
-w
->> it's shared.
->=20
-> I analyzed it a bit differently but this should be the information we w=
-anted:
->=20
-> https://gist.github.com/Atemu/206c44cd46474458c083721e49d84a42
->=20
-> Yeah...
+The most obvious one is:
+In btrfs_buffered_write():
+	btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes, true);
 
-Holy s***...
+We always free qgroup PREALLOC meta space.
 
-Almost every line means 30~1000 refs, and there are over 2000 lines.
-No wonder it eats up all memory.
+While in btrfs_truncate_block():
+	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize, (ret != 0));
 
->=20
-> Is there any way to "unshare" these worst cases without having to
-> btrfs defragment everything?
+We only free qgroup PREALLOC meta space when something went wrong.
 
-Btrfs defrag should do that, but at the cost of hugely increased space
-usage.
+[The Correct Behavior]
+The correct behavior should be the one in btrfs_buffered_write(), we
+should always free PREALLOC metadata space.
 
-BTW, have you verified the content of that extent?
-Is that all zero? If so, just find a tool to punch all these files and
-you should be OK to go.
+The reason is, the btrfs_delalloc_* mechanism works by:
+- Reserve metadata first, even it's not necessary
+  In btrfs_delalloc_reserve_metadata()
 
-Or I can't see any reason why a data extent can be shared so many times.
+- Free the unused metadata space
+  Normally in:
+  btrfs_delalloc_release_extents()
+  |- btrfs_inode_rsv_release()
+     Here we do calculation on whether we should release or not.
 
-Thanks,
-Qu
+E.g. for 64K buffered write, the metadata rsv works like:
 
->=20
-> I also uploaded the (compressed) extent tree dump if you want to take
-> a look yourself (205MB, expires in 7 days):
->=20
-> https://send.firefox.com/download/a729c57a94fcd89e/#w51BjzRmGnCg2qKNs39=
-UNw
->=20
-> -Atemu
->=20
+/* The first page */
+reserve_meta:	num_bytes=calc_inode_reservations()
+free_meta:	num_bytes=0
+total:		num_bytes=calc_inode_reservations()
+/* The first page caused one outstanding extent, thus needs metadata
+   rsv */
 
+/* The 2nd page */
+reserve_meta:	num_bytes=calc_inode_reservations()
+free_meta:	num_bytes=calc_inode_reservations()
+total:		not changed
+/* The 2nd page doesn't cause new outstanding extent, needs no new meta
+   rsv, so we free what we have reserved */
 
---H26SvfsVDgQO6eHiJfRAbmwhW7YTsoW9E--
+/* The 3rd~16th pages */
+reserve_meta:	num_bytes=calc_inode_reservations()
+free_meta:	num_bytes=calc_inode_reservations()
+total:		not changed (still space for one outstanding extent)
 
---xifN2FQa1E6j49rN6WCiueOsXqCRoKB6P
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+This means, if btrfs_delalloc_release_extents() determines to free some
+space, then those space should be freed NOW.
+So for qgroup, we should call btrfs_qgroup_free_meta_prealloc() other
+than btrfs_qgroup_convert_reserved_meta().
 
------BEGIN PGP SIGNATURE-----
+The good news is:
+- The callers are not that hot
+  The hottest caller is in btrfs_buffered_write(), which is already
+  fixed by commit 336a8bb8e36a ("btrfs: Fix wrong
+  btrfs_delalloc_release_extents parameter"). Thus it's not that
+  easy to cause false EDQUOT.
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl22JWQACgkQwj2R86El
-/qj85Qf/SG2uMSqUZHDu+r86lrTiRy6NA01qaXNJOoZ6/XFwgWf3rp+4egW3vJKZ
-kdjTPKgO5kOdLo1JNbBHFHLrDtOy1/2XUzzJb7cXeWqO0UlD3PZW4J+9AEoS9YCj
-M8bSHvF6oyIxtEo71LBOjgFqOoAlyE4sm1GsR9j80D3aM53Cxu4eoTDeNph/DJZW
-bGDQhsioCPiXs4Gw/zn46gF1bBV2iaVVdkleI07Idl8/TU+WBzP8jwss7lCYX2PO
-b4Cv25xmpN+esefqqERotipN4N+2mCyLVhjlDQWAT70G7zQEZKwrYaaWqpq8oEDI
-sxgycEbfLtdgQaNH6tvLJTSO999ffA==
-=JxdD
------END PGP SIGNATURE-----
+- The trans commit in advance for qgroup would hide the bug
+  Since commit f5fef4593653 ("btrfs: qgroup: Make qgroup async transaction
+  commit more aggressive"), when btrfs qgroup metadata free space is slow,
+  it will try to commit transaction and free the wrongly converted
+  PERTRANS space, so it's not that easy to hit such bug.
 
---xifN2FQa1E6j49rN6WCiueOsXqCRoKB6P--
+[FIX]
+So to fix the problem, remove the @qgroup_free parameter for
+btrfs_delalloc_release_extents(), and always pass true to
+btrfs_inode_rsv_release().
+
+Reported-by: Filipe Manana <fdmanana@suse.com>
+Fixes: 43b18595d660 ("btrfs: qgroup: Use separate meta reservation type for delalloc")
+CC: stable@vger.kernel.org # 4.19
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+[Fix conflicts caused by delalloc-space.[ch] code move]
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/ctree.h       |  3 +--
+ fs/btrfs/extent-tree.c |  5 ++---
+ fs/btrfs/file.c        |  7 +++----
+ fs/btrfs/inode-map.c   |  4 ++--
+ fs/btrfs/inode.c       | 12 ++++++------
+ fs/btrfs/ioctl.c       |  6 ++----
+ fs/btrfs/relocation.c  |  7 +++----
+ 7 files changed, 19 insertions(+), 25 deletions(-)
+
+diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
+index faca485ccd8f..ef7a352d72ed 100644
+--- a/fs/btrfs/ctree.h
++++ b/fs/btrfs/ctree.h
+@@ -2747,8 +2747,7 @@ int btrfs_subvolume_reserve_metadata(struct btrfs_root *root,
+ 				     int nitems, bool use_global_rsv);
+ void btrfs_subvolume_release_metadata(struct btrfs_fs_info *fs_info,
+ 				      struct btrfs_block_rsv *rsv);
+-void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes,
+-				    bool qgroup_free);
++void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes);
+ 
+ int btrfs_delalloc_reserve_metadata(struct btrfs_inode *inode, u64 num_bytes);
+ void btrfs_delalloc_release_metadata(struct btrfs_inode *inode, u64 num_bytes,
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index e49e29288049..7d316a31874f 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -5980,8 +5980,7 @@ void btrfs_delalloc_release_metadata(struct btrfs_inode *inode, u64 num_bytes,
+  * temporarily tracked outstanding_extents.  This _must_ be used in conjunction
+  * with btrfs_delalloc_reserve_metadata.
+  */
+-void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes,
+-				    bool qgroup_free)
++void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+ 	unsigned num_extents;
+@@ -5995,7 +5994,7 @@ void btrfs_delalloc_release_extents(struct btrfs_inode *inode, u64 num_bytes,
+ 	if (btrfs_is_testing(fs_info))
+ 		return;
+ 
+-	btrfs_inode_rsv_release(inode, qgroup_free);
++	btrfs_inode_rsv_release(inode, true);
+ }
+ 
+ /**
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index c84186563c31..1b7b599f7caf 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1692,7 +1692,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 				    force_page_uptodate);
+ 		if (ret) {
+ 			btrfs_delalloc_release_extents(BTRFS_I(inode),
+-						       reserve_bytes, true);
++						       reserve_bytes);
+ 			break;
+ 		}
+ 
+@@ -1704,7 +1704,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 			if (extents_locked == -EAGAIN)
+ 				goto again;
+ 			btrfs_delalloc_release_extents(BTRFS_I(inode),
+-						       reserve_bytes, true);
++						       reserve_bytes);
+ 			ret = extents_locked;
+ 			break;
+ 		}
+@@ -1761,8 +1761,7 @@ static noinline ssize_t btrfs_buffered_write(struct kiocb *iocb,
+ 		if (extents_locked)
+ 			unlock_extent_cached(&BTRFS_I(inode)->io_tree,
+ 					     lockstart, lockend, &cached_state);
+-		btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes,
+-					       true);
++		btrfs_delalloc_release_extents(BTRFS_I(inode), reserve_bytes);
+ 		if (ret) {
+ 			btrfs_drop_pages(pages, num_pages);
+ 			break;
+diff --git a/fs/btrfs/inode-map.c b/fs/btrfs/inode-map.c
+index ffca2abf13d0..ba9566cabc94 100644
+--- a/fs/btrfs/inode-map.c
++++ b/fs/btrfs/inode-map.c
+@@ -483,12 +483,12 @@ int btrfs_save_ino_cache(struct btrfs_root *root,
+ 	ret = btrfs_prealloc_file_range_trans(inode, trans, 0, 0, prealloc,
+ 					      prealloc, prealloc, &alloc_hint);
+ 	if (ret) {
+-		btrfs_delalloc_release_extents(BTRFS_I(inode), prealloc, true);
++		btrfs_delalloc_release_extents(BTRFS_I(inode), prealloc);
+ 		goto out_put;
+ 	}
+ 
+ 	ret = btrfs_write_out_ino_cache(root, trans, path, inode);
+-	btrfs_delalloc_release_extents(BTRFS_I(inode), prealloc, false);
++	btrfs_delalloc_release_extents(BTRFS_I(inode), prealloc);
+ out_put:
+ 	iput(inode);
+ out_release:
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 37332f83a3a9..9aea9381ceeb 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -2166,7 +2166,7 @@ static void btrfs_writepage_fixup_worker(struct btrfs_work *work)
+ 
+ 	ClearPageChecked(page);
+ 	set_page_dirty(page);
+-	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, false);
++	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
+ out:
+ 	unlock_extent_cached(&BTRFS_I(inode)->io_tree, page_start, page_end,
+ 			     &cached_state);
+@@ -4918,7 +4918,7 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
+ 	if (!page) {
+ 		btrfs_delalloc_release_space(inode, data_reserved,
+ 					     block_start, blocksize, true);
+-		btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize, true);
++		btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize);
+ 		ret = -ENOMEM;
+ 		goto out;
+ 	}
+@@ -4986,7 +4986,7 @@ int btrfs_truncate_block(struct inode *inode, loff_t from, loff_t len,
+ 	if (ret)
+ 		btrfs_delalloc_release_space(inode, data_reserved, block_start,
+ 					     blocksize, true);
+-	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize, (ret != 0));
++	btrfs_delalloc_release_extents(BTRFS_I(inode), blocksize);
+ 	unlock_page(page);
+ 	put_page(page);
+ out:
+@@ -8660,7 +8660,7 @@ static ssize_t btrfs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+ 		} else if (ret >= 0 && (size_t)ret < count)
+ 			btrfs_delalloc_release_space(inode, data_reserved,
+ 					offset, count - (size_t)ret, true);
+-		btrfs_delalloc_release_extents(BTRFS_I(inode), count, false);
++		btrfs_delalloc_release_extents(BTRFS_I(inode), count);
+ 	}
+ out:
+ 	if (wakeup)
+@@ -9013,7 +9013,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ 	unlock_extent_cached(io_tree, page_start, page_end, &cached_state);
+ 
+ 	if (!ret2) {
+-		btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, true);
++		btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
+ 		sb_end_pagefault(inode->i_sb);
+ 		extent_changeset_free(data_reserved);
+ 		return VM_FAULT_LOCKED;
+@@ -9022,7 +9022,7 @@ vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
+ out_unlock:
+ 	unlock_page(page);
+ out:
+-	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE, (ret != 0));
++	btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
+ 	btrfs_delalloc_release_space(inode, data_reserved, page_start,
+ 				     reserved_space, (ret != 0));
+ out_noreserve:
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index 0eb333c62fe4..7592beb53fc4 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1359,8 +1359,7 @@ static int cluster_pages_for_defrag(struct inode *inode,
+ 		unlock_page(pages[i]);
+ 		put_page(pages[i]);
+ 	}
+-	btrfs_delalloc_release_extents(BTRFS_I(inode), page_cnt << PAGE_SHIFT,
+-				       false);
++	btrfs_delalloc_release_extents(BTRFS_I(inode), page_cnt << PAGE_SHIFT);
+ 	extent_changeset_free(data_reserved);
+ 	return i_done;
+ out:
+@@ -1371,8 +1370,7 @@ static int cluster_pages_for_defrag(struct inode *inode,
+ 	btrfs_delalloc_release_space(inode, data_reserved,
+ 			start_index << PAGE_SHIFT,
+ 			page_cnt << PAGE_SHIFT, true);
+-	btrfs_delalloc_release_extents(BTRFS_I(inode), page_cnt << PAGE_SHIFT,
+-				       true);
++	btrfs_delalloc_release_extents(BTRFS_I(inode), page_cnt << PAGE_SHIFT);
+ 	extent_changeset_free(data_reserved);
+ 	return ret;
+ 
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 5d57ed629345..725febe2b36e 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -3207,7 +3207,7 @@ static int relocate_file_extent_cluster(struct inode *inode,
+ 				btrfs_delalloc_release_metadata(BTRFS_I(inode),
+ 							PAGE_SIZE, true);
+ 				btrfs_delalloc_release_extents(BTRFS_I(inode),
+-							       PAGE_SIZE, true);
++							       PAGE_SIZE);
+ 				ret = -EIO;
+ 				goto out;
+ 			}
+@@ -3236,7 +3236,7 @@ static int relocate_file_extent_cluster(struct inode *inode,
+ 			btrfs_delalloc_release_metadata(BTRFS_I(inode),
+ 							 PAGE_SIZE, true);
+ 			btrfs_delalloc_release_extents(BTRFS_I(inode),
+-			                               PAGE_SIZE, true);
++			                               PAGE_SIZE);
+ 
+ 			clear_extent_bits(&BTRFS_I(inode)->io_tree,
+ 					  page_start, page_end,
+@@ -3252,8 +3252,7 @@ static int relocate_file_extent_cluster(struct inode *inode,
+ 		put_page(page);
+ 
+ 		index++;
+-		btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE,
+-					       false);
++		btrfs_delalloc_release_extents(BTRFS_I(inode), PAGE_SIZE);
+ 		balance_dirty_pages_ratelimited(inode->i_mapping);
+ 		btrfs_throttle(fs_info);
+ 	}
+-- 
+2.23.0
+
