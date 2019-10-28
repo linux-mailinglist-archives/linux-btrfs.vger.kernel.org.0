@@ -2,127 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C2AE6D8B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Oct 2019 08:50:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D978E6F9B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Oct 2019 11:22:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731200AbfJ1Huj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Oct 2019 03:50:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45342 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729695AbfJ1Huj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Oct 2019 03:50:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D45E4B012;
-        Mon, 28 Oct 2019 07:50:36 +0000 (UTC)
+        id S2388233AbfJ1KW4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Oct 2019 06:22:56 -0400
+Received: from mail-lf1-f66.google.com ([209.85.167.66]:37484 "EHLO
+        mail-lf1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732818AbfJ1KW4 (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 28 Oct 2019 06:22:56 -0400
+Received: by mail-lf1-f66.google.com with SMTP id b20so7363319lfp.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Oct 2019 03:22:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RjcdF2o+dnlHbSjozipmAlyiuOntUw4F9PaHstQ80N0=;
+        b=sCGkd/XWplQt3wj3eLp8s7VJy3uadqADNOWMHLRRfyR+E67sHXQfW7/lbVVWW9hCuk
+         RMxNkfYsFi7OYTviZGlx0jf6BkYY0YEHv3of7pPIdaVgS41/2Yxup32BAh1iudAjA+uy
+         mjNP5aKKvH4Tv91G5Zqavb7KZCNv+glldr3OWc3BGHTn6/K23POiGaP9IYKBLnq2zUFm
+         75yccdN7OFagboWVOE9I1nidaueJjLQy2FYIBnZE6Wg41nda248q79eq2du8RquPGfe4
+         5JGv8hjle/HNGQAmY9wGXFJAbbD8SYXLe4mPohq4O24EuUcT3fDfX/2fmvaAFsTI+e3D
+         i0/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RjcdF2o+dnlHbSjozipmAlyiuOntUw4F9PaHstQ80N0=;
+        b=L4cVPkmkIYzzfgxhO/rtqxYNkJTpFy4L9DisW9HaR8K5K5dD1j1ro/XC4ddEZ4aYVH
+         q7XxbZEpJ13BMDCL6VBvKk/e11WQhVKpFqcl1gO/7ItGhdJIgL7TTHMeZULDYKx+q0fR
+         fQbjL+NYkebgYLHr03RSvwgygO4s01qmxTuU7x84HX7XfE4D/blSnLq0eRsw431RfKDF
+         k1GZISgIHZpo0WCDFGb45mK+Q63b7K4jFNqCGVGkB7xlsEVXrmuIzepgSAdE9XT/xGW0
+         M4gk/eK0PSXPoagTkgqcupT+/7tXEVHfVwG0pZTiukehPgjvWA88g5y4cK0EcrpJ6wCs
+         P4OA==
+X-Gm-Message-State: APjAAAXYx0J7a0Nlp2pxrB4JAjhyXEldWe9q/ZYt28kB+yyFzFYshltE
+        UqnuyMW5IM3fYM9gwLoAtvKn3wbQxhXQPmamqkU=
+X-Google-Smtp-Source: APXvYqzVL7mHXclala03Bs7VaqOCvpUtlOvgCpIoy1KM0gkwN8oZrWBLH2ZH9otD0onZISGj7dK4evYcYlhlYyWdrFw=
+X-Received: by 2002:a05:6512:40e:: with SMTP id u14mr11055409lfk.73.1572258172547;
+ Mon, 28 Oct 2019 03:22:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <CALpSwpjVz=F_hb9DbVanECsfWOYog2B7SLY=Dy0NvQx=w9voDA@mail.gmail.com>
+ <f4037f43-97fb-5a25-52db-2d69ec69f6ee@suse.de> <3acc15f7-fe1e-6672-8a89-fba9a09561d4@suse.de>
+ <29cae854-b5e2-73d6-fc83-51cf1f162e30@gmx.com> <d1816326-f7e7-3ab5-347d-bb84764e8efb@suse.de>
+In-Reply-To: <d1816326-f7e7-3ab5-347d-bb84764e8efb@suse.de>
+From:   Peter Hjalmarsson <kanelxake@gmail.com>
+Date:   Mon, 28 Oct 2019 11:22:41 +0100
+Message-ID: <CALpSwpheGWtjOL8631ne+5TXkPmoud6BrBLcsVRs7moydhbnkQ@mail.gmail.com>
 Subject: Re: "BUG: kernel NULL pointer dereference," when unmounting
  filesystem hitted by enospc error
-To:     Su Yue <Damenly_Su@gmx.com>,
-        Peter Hjalmarsson <kanelxake@gmail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CALpSwpjVz=F_hb9DbVanECsfWOYog2B7SLY=Dy0NvQx=w9voDA@mail.gmail.com>
- <f4037f43-97fb-5a25-52db-2d69ec69f6ee@suse.de>
- <3acc15f7-fe1e-6672-8a89-fba9a09561d4@suse.de>
- <29cae854-b5e2-73d6-fc83-51cf1f162e30@gmx.com>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <d1816326-f7e7-3ab5-347d-bb84764e8efb@suse.de>
-Date:   Mon, 28 Oct 2019 08:50:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <29cae854-b5e2-73d6-fc83-51cf1f162e30@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+To:     Johannes Thumshirn <jthumshirn@suse.de>
+Cc:     Su Yue <Damenly_Su@gmx.com>, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 27/10/2019 14:24, Su Yue wrote:
-[...]
-> 
-> Interesting thing I met too. That's not reproducible on my VM but
-> host (Archlinux v5.3.6 same kernel config).
-> 
-> What's more interesting is that v5.3.7 seems to have fixed the bug.
-> After some bisect. The commit is
-> 
-> commit 417d26300214f7b593a99c6bc8badb66492ae322
-> Author: Qu Wenruo <wqu@suse.com>
-> Date:   Mon Sep 23 14:56:14 2019 +0800
-> 
->     btrfs: relocation: fix use-after-free on dead relocation roots
-> 
->     commit 1fac4a54374f7ef385938f3c6cf7649c0fe4f6cd upstream.
-> 
+Thanks!
 
-Good catch, cherry-picking this commit on top of v5.3.5 resolves the
-issue in my setup.
+5.3.7 hit my system from the Fedora repos just a day or two after my
+last mail, and spent last evening trying to reproduce both the problem
+the scripts shows, but also the problem I tried to track down when
+making the script. Both seems to be gone after upgrading on the
+systems I have been able to run the test on so far.
 
--- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+Best Regards,
+Peter hjalmarsson
+
+Den m=C3=A5n 28 okt. 2019 kl 08:50 skrev Johannes Thumshirn <jthumshirn@sus=
+e.de>:
+>
+> On 27/10/2019 14:24, Su Yue wrote:
+> [...]
+> >
+> > Interesting thing I met too. That's not reproducible on my VM but
+> > host (Archlinux v5.3.6 same kernel config).
+> >
+> > What's more interesting is that v5.3.7 seems to have fixed the bug.
+> > After some bisect. The commit is
+> >
+> > commit 417d26300214f7b593a99c6bc8badb66492ae322
+> > Author: Qu Wenruo <wqu@suse.com>
+> > Date:   Mon Sep 23 14:56:14 2019 +0800
+> >
+> >     btrfs: relocation: fix use-after-free on dead relocation roots
+> >
+> >     commit 1fac4a54374f7ef385938f3c6cf7649c0fe4f6cd upstream.
+> >
+>
+> Good catch, cherry-picking this commit on top of v5.3.5 resolves the
+> issue in my setup.
+>
+> --
+> Johannes Thumshirn                            SUSE Labs Filesystems
+> jthumshirn@suse.de                                +49 911 74053 689
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5
+> 90409 N=C3=BCrnberg
+> Germany
+> (HRB 36809, AG N=C3=BCrnberg)
+> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+> Key fingerprint =3D EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
