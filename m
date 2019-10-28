@@ -2,121 +2,89 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3173E7240
-	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Oct 2019 14:01:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B06E72D1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 28 Oct 2019 14:44:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728727AbfJ1NBW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 28 Oct 2019 09:01:22 -0400
-Received: from mail-ua1-f41.google.com ([209.85.222.41]:40235 "EHLO
-        mail-ua1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728242AbfJ1NBW (ORCPT
+        id S1729975AbfJ1Nod (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 28 Oct 2019 09:44:33 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:40180 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725829AbfJ1Nod (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 28 Oct 2019 09:01:22 -0400
-Received: by mail-ua1-f41.google.com with SMTP id i13so2647625uaq.7
-        for <linux-btrfs@vger.kernel.org>; Mon, 28 Oct 2019 06:01:22 -0700 (PDT)
+        Mon, 28 Oct 2019 09:44:33 -0400
+Received: by mail-wr1-f47.google.com with SMTP id o28so9946752wro.7
+        for <linux-btrfs@vger.kernel.org>; Mon, 28 Oct 2019 06:44:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=Cz/5mQSERO5+UkXwlx5jIUgsovYc7qRTMDJK88Vx/mI=;
-        b=FH+bpsnXmD4PsEC4SdcCO87fhVsKiTM2qgm1Lj/eQNXsUxKqgJHaSNFcsFaRSPeuG7
-         sEhtcDbvT96u7jIaKJu1bG719T6T2sKPlT4vQ/NreipGSsrvd9A4oiJg8iCMLUnsV8bM
-         TIt2qY+Q6vGRzyfYN5dXSmFBXtHgSRP7TZ0KowAwl30WLsE/M1p0kiyVBo0aCBlr4crH
-         NA2CYr5FkzZlKXey+jvrsZ4ThEgv2JR7RuYvLhchn5MoYLJ4YBDVKGHty0JHH9KeHvjt
-         6I6SzWpvA9AGBYvhoB7hyPyxml6Ei5hsO8TS6FOPESlqjfZhwFP4mhBbjIMt0h+R81yG
-         JbiA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DNiOV+6+GU/KYL9atfQs9NOj0c1poYrF1KJUfSYG+HY=;
+        b=D/PyAIoPi6WzND0pRBPIJOaCxIbNNSedGBxhSsIXr/qz8mpeQl1GgmayEl+ZUSCttt
+         6mt24oVC4Fnzj8JZi7k6AlThJ2ClHgzkMDAA/vqE3/HIGq7E1pPUJzZ1EYqWM16uf/IV
+         M1J0UIQQC3rcayQugi9ITAhVAXnEFBSgaHJedGkay+CtpM5atkQ9sc93BjU7OVrSXX9M
+         nu5flZjaJ1zJtsvqnmT7lkh66WddQs8x61s11LoJGf0DcOhJcU8ExX5aplSTU/G+XYcz
+         SPtmBlOochbPyKLcEyjyP3XKgqwQdNBi9nIl6pKtqwHTGr8o+9Lh/nBS7+/RIMf9YM0G
+         7hgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=Cz/5mQSERO5+UkXwlx5jIUgsovYc7qRTMDJK88Vx/mI=;
-        b=aq0ph3Y9o9AnY2l4Az40fSB41T138I3L167yUtnhMuzwoBEq/KmwRxg16HnfkUbbfY
-         8qWjldPULyljMFPhqu/NjpOAvSnBJ0su4uIHzSBMJVbQCwiWnQ3VB86BVP4HFFgcb1KV
-         1C5bCzUD+48YXZnLzPBbOQAqlZwwMzcn6v37U9/rbTHxUaWedgJY0yjKvm/cO2mIGfiF
-         BqcDhhu1TmDR/h+jsJcBy4CmYhGdk6yorjsalaCvS8dLiOsuW5tdc+YXkY42cHLstgd4
-         08fSDGmFXuqb8S1OU7gpW8V+HGwialDumCE8ADxJ9ZN9ZPYdMz8l//JZCn797f7HJ6Sh
-         qxwQ==
-X-Gm-Message-State: APjAAAVpvZlFMfyQEanbv2Zlv3Rx6EQzMjvYvgPcP4OD1ub+4/FbaZ6T
-        mHd2X/kqqdF/oZiCT1LtwdGLYQNVKf/gnsDw6+s=
-X-Google-Smtp-Source: APXvYqzlExfZ5njBP5FdY07PGbJyeMTreIfspzVfqviekQ66ni4FpMH3RgPirhCHmt/VKwyCdKPqimVK660EN1tpqFI=
-X-Received: by 2002:ab0:59ed:: with SMTP id k42mr7917855uad.27.1572267681428;
- Mon, 28 Oct 2019 06:01:21 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DNiOV+6+GU/KYL9atfQs9NOj0c1poYrF1KJUfSYG+HY=;
+        b=f9CtlgkMW4Emx2PU4bhm0unu5reJbpk2d+2JTvaZcuYAvTatgZuqzp4FsmIWMvsH3N
+         lRAf1rCTe894ndrN/0sFv1ouBX9/D4um5y30UVrjGzr9rLttEtaqRfFFXP9HB7FWVY5f
+         vfHJHGcaHC7ar5ys31941TE8CLNFgrCNQtyMGVHl2hbe/8VBx3cxBJgJzAQjVhRr3Ohm
+         sVtl6oR8eqpeAEHIzKjC5nmM57Hwi1PmSDPn6e70u9t3DkVWyqR0VDqwuYLEIzwrZTHD
+         Hr6dDoDpP0RO44eSgUrh9Z+KxFp9RkWWnbN0bJ/Jx7XOEzkgx4ia0qHyzZQztc0VqpUO
+         7Yyw==
+X-Gm-Message-State: APjAAAUGkoku1CkreOWqVNxTaW+Oav70QOn7AkFgRwXLwKjPpo1Cl2Kl
+        4cUfg4six6bz+qwSJqd59WEZ7jvfLPb1pwpspII=
+X-Google-Smtp-Source: APXvYqwlXrp3q/qbQ/uhuEqXb6SuGJ9ymGgcBCXaLEucFiADJoQQrp0ScnYPb80Oz1ZLisNkWuM/a35Ro8ciyQ62cyE=
+X-Received: by 2002:adf:e5cf:: with SMTP id a15mr15981099wrn.143.1572270271170;
+ Mon, 28 Oct 2019 06:44:31 -0700 (PDT)
 MIME-Version: 1.0
 References: <CAE4GHg=W+a319=Ra_PNh3LV0hdD-Y12k-0N5ej72FSt=Fq520Q@mail.gmail.com>
  <cb5f9048-919f-0ff9-0765-d5a33e58afa7@gmx.com> <CAE4GHgmW2A-2SUUw8FzgafRhQ2BoViBx2DsLigwBrrbbp=oOsw@mail.gmail.com>
  <b4673e3b-b9b2-e8e5-2783-4b5eac7f656d@gmx.com> <CAE4GHg=4S4KqzBGHo-7T3cmmgECZxWZ-vXJMq8SYnnwy16h3xg@mail.gmail.com>
- <CAL3q7H4Wc0GnKNORVvwCOEk1QhzUweJr1JnN=+Scx5-TpQ5+yA@mail.gmail.com> <CAE4GHgntuxsoqv5vGMRTy6QYOTpQOocHgA2RxxeN6YKLgr5rNA@mail.gmail.com>
-In-Reply-To: <CAE4GHgntuxsoqv5vGMRTy6QYOTpQOocHgA2RxxeN6YKLgr5rNA@mail.gmail.com>
-Reply-To: fdmanana@gmail.com
-From:   Filipe Manana <fdmanana@gmail.com>
-Date:   Mon, 28 Oct 2019 13:01:10 +0000
-Message-ID: <CAL3q7H5+xDr=0ZzW0+CnNqBh8ox9=rh8Vpp2aD4-jnXXnWCpgg@mail.gmail.com>
+ <CAL3q7H4Wc0GnKNORVvwCOEk1QhzUweJr1JnN=+Scx5-TpQ5+yA@mail.gmail.com>
+ <CAE4GHgntuxsoqv5vGMRTy6QYOTpQOocHgA2RxxeN6YKLgr5rNA@mail.gmail.com> <CAL3q7H5+xDr=0ZzW0+CnNqBh8ox9=rh8Vpp2aD4-jnXXnWCpgg@mail.gmail.com>
+In-Reply-To: <CAL3q7H5+xDr=0ZzW0+CnNqBh8ox9=rh8Vpp2aD4-jnXXnWCpgg@mail.gmail.com>
+From:   Atemu <atemu.main@gmail.com>
+Date:   Mon, 28 Oct 2019 14:44:19 +0100
+Message-ID: <CAE4GHgkvqVADtS4AzcQJxo0Q1jKQgKaW3JGp3SGdoinVo=C9eQ@mail.gmail.com>
 Subject: Re: BUG: btrfs send: Kernel's memory usage rises until OOM kernel
  panic after sending ~37GiB
-To:     Atemu <atemu.main@gmail.com>
+To:     fdmanana@gmail.com
 Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
         linux-btrfs <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 28, 2019 at 12:44 PM Atemu <atemu.main@gmail.com> wrote:
+> You can run 'slabtop' while doing the send operation.
+> That might be enough.
 >
-> > That's quite a lot of extents shared many times.
-> > That indeed slows backreference walking and therefore send which uses i=
-t.
-> > While the slowdown is known, the memory consumption I wasn't aware of,
-> > but from your logs, it's not clear
->
-> Is there anything else I could monitor to find out?
+> It's very likely the backreference walking code, due to huge ulists
+> (kmalloc-N slab), lots of btrfs_prelim_ref structures
+> (btrfs_prelim_ref slab), etc.
 
-You can run 'slabtop' while doing the send operation.
-That might be enough.
+I actually did run slabtop once but couldn't remember the exact name
+of the top entry, so I didn't mention it.
+Now that you mentioned the options though, I'm pretty sure it was
+kmalloc-N. N was probably 64 but that I'm not sure about.
 
-It's very likely the backreference walking code, due to huge ulists
-(kmalloc-N slab), lots of btrfs_prelim_ref structures
-(btrfs_prelim_ref slab), etc.
+> Yes, it's likely a different bug. I don't think it's related either.
 
->
-> > where it comes exactly from, something to be looked at. There's also a
-> > significant number of data checksum errors.
->
-> As I said, those seem to be false; the file is in-tact (it happens to
-> be a 7z archive) and scrubs before triggering the bug don't report
-> anything either.
->
-> Could be related to running OOM or its own bug.
+I have only seen these warnings after the bug triggered though,
+reading the file under normal conditions doesn't produce them.
 
-Yes, it's likely a different bug. I don't think it's related either.
+What would be the best way to get more information on how btrfs comes
+to the conclusion that this file is corrupt?
 
->
-> > I think in the meanwhile send can just skip backreference walking and
-> > attempt to clone whenever the number of
-> > backreferences for an inode exceeds some limit, in which case it would
-> > fallback to writes instead of cloning.
->
-> Wouldn't it be better to make it dynamic in case it's run under low
-> memory conditions?
+> Ideally yes. But that's a lot harder to do for several reasons and in
+> the end might not be worth it.
 
-Ideally yes. But that's a lot harder to do for several reasons and in
-the end might not be worth it.
+I see, thanks!
 
-Thanks.
-
->
-> > I'll look into it, thanks for the report (and Qu for telling how to
-> > get the backreference counts).
->
-> Thanks to you both!
-> -Atemu
-
-
-
---=20
-Filipe David Manana,
-
-=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
- right.=E2=80=9D
+-Atemu
