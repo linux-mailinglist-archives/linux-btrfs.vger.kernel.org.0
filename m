@@ -2,48 +2,63 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8932EE89E4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2019 14:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 190B3E89FF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 29 Oct 2019 14:51:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388665AbfJ2NsH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 29 Oct 2019 09:48:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56008 "EHLO mx1.suse.de"
+        id S2388871AbfJ2Nvt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 29 Oct 2019 09:51:49 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56786 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2388274AbfJ2NsH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 29 Oct 2019 09:48:07 -0400
+        id S2388453AbfJ2Nvt (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 29 Oct 2019 09:51:49 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B9148B139;
-        Tue, 29 Oct 2019 13:48:05 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 101FCB44B;
+        Tue, 29 Oct 2019 13:51:48 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id A810ADA734; Tue, 29 Oct 2019 14:48:15 +0100 (CET)
-Date:   Tue, 29 Oct 2019 14:48:15 +0100
+        id EFC00DA734; Tue, 29 Oct 2019 14:51:57 +0100 (CET)
+Date:   Tue, 29 Oct 2019 14:51:57 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: [PATCH 1/2] btrfs: qgroup: Always free PREALLOC META reserve in
- btrfs_delalloc_release_extents()
-Message-ID: <20191029134815.GT3001@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org, mpdesouza@suse.com
+Subject: Re: [PATCH devel] btrfs-progs: subvolume: Implement delete
+ --subvolid <path>
+Message-ID: <20191029135157.GU3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org, stable@vger.kernel.org,
-        Filipe Manana <fdmanana@suse.com>, David Sterba <dsterba@suse.com>
-References: <20191028065149.89155-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        Marcos Paulo de Souza <marcos.souza.org@gmail.com>,
+        dsterba@suse.com, linux-btrfs@vger.kernel.org, mpdesouza@suse.com
+References: <20191028160506.22245-1-marcos.souza.org@gmail.com>
+ <cb24c0bb-121e-08bc-9138-16abb1f2727a@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191028065149.89155-1-wqu@suse.com>
+In-Reply-To: <cb24c0bb-121e-08bc-9138-16abb1f2727a@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Oct 28, 2019 at 02:51:48PM +0800, Qu Wenruo wrote:
-> commit 8702ba9396bf7bbae2ab93c94acd4bd37cfa4f09 upstream.
+On Tue, Oct 29, 2019 at 10:05:25AM +0800, Anand Jain wrote:
+> > @@ -223,6 +223,7 @@ static int wait_for_commit(int fd)
+> >   
+> >   static const char * const cmd_subvol_delete_usage[] = {
+> >   	"btrfs subvolume delete [options] <subvolume> [<subvolume>...]",
+> > +	"btrfs subvolume delete [options] [--subvolid <subvolid> <path>]",
+> 
+> 
+> It should rather be..
+> 
+> + "btrfs subvolume delete [options] <[-s|--subvolid <subvolid> <path>] | 
+> [<subvolume>...]>"
 
-Please don't forget to note for which stable version the backport is,
-ideally in the subject in the [PATCH ...] section or at least somewhere
-in the tag section.
+This is hard to understand on the first read, so the preferred way is to
+split into more lines when an option changes the overall behaviour, eg.
+what plain receive and receive --dump does:
+
+
+$ ./btrfs receive --help
+usage: btrfs receive [options] <mount>
+       btrfs receive --dump [options]
