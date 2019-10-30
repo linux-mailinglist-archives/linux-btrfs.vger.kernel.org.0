@@ -2,31 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E14BE9BAD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E0ACE9BAF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:42:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbfJ3Mmf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Oct 2019 08:42:35 -0400
-Received: from mout.gmx.net ([212.227.17.22]:59821 "EHLO mout.gmx.net"
+        id S1726331AbfJ3Mmx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Oct 2019 08:42:53 -0400
+Received: from mout.gmx.net ([212.227.17.20]:56037 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbfJ3Mmf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Oct 2019 08:42:35 -0400
+        id S1726119AbfJ3Mmx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 30 Oct 2019 08:42:53 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1572439347;
-        bh=jxzWJEudPBSGyHGwyFjUvl9DZSrOjLe6+bCaWe23QEg=;
+        s=badeba3b8450; t=1572439365;
+        bh=zEqbnl6OpaDg8CXsY/TNeJlSRbazA+wja4nBBDTNgxk=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=QeG9gKEYf576lImieyWX2ec7s+wFMBz1rgfDthDq9xuQkfAnK47Juq+OBXxpffvty
-         bZPBbll4OStDwJGV3mErgR5ykci3wbLBWDzK+rU9+ERMq0fAoQqrV3ZuLstpmtHGzd
-         OTt4kNvxlCAta80t0iUWuKOr2tCPw9LZA5OS2sPo=
+        b=JXAo90rBTq0/UDb60j+qzdLjFmt3EjfatS9gmRPt8id4TJ8woQVFkAAh0hlcVMJZC
+         XRl/lgbZ2WCc8gMtBdQBHe298V5oZIbFIDGgCziPe1Qb5TAY4zTKCcGRbiWSzBUYXq
+         q6LRLv2QS5X3+rUNv8QijW1GLEQTadvQyWjJtylw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N1wll-1hwtY33Yd7-012HTO; Wed, 30
- Oct 2019 13:42:27 +0100
-Subject: Re: [PATCH 1/3] btrfs-progs: Initialize sub_stripes to 1 in
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLzBp-1ihBZN3wlF-00HzOT; Wed, 30
+ Oct 2019 13:42:45 +0100
+Subject: Re: [PATCH 2/3] btrfs-progs: Remove type argument from
  btrfs_alloc_data_chunk
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20191030122227.28496-1-nborisov@suse.com>
- <20191030122227.28496-2-nborisov@suse.com>
+ <20191030122227.28496-3-nborisov@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,39 +52,39 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <5c2ca10a-f59f-b660-b914-69f260e1e12d@gmx.com>
-Date:   Wed, 30 Oct 2019 20:42:20 +0800
+Message-ID: <3f7170f4-ee07-f77c-bc15-2c3f611fab65@gmx.com>
+Date:   Wed, 30 Oct 2019 20:42:40 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <20191030122227.28496-2-nborisov@suse.com>
+In-Reply-To: <20191030122227.28496-3-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:8mS2/BXwPZbh2sgN/5JfG4FTYMTRVh9XUVXXe1mpDYZVgOJjmeP
- Tu5Fqqgql89Fkv+3LQHLoKVqoei/+Hi+R79c5XqLf5IFL7/CQXs1EQdAzjAYblbt/sJkARn
- f4DfJ+VJWa7Qbyk5T2sx0wUB+rm9pcjhw+HQCW9S5wfeZYjt0aC4eMeHKSFp4YAQf8Y3Nrm
- +06zaMiu9pRVmU+6TI5aA==
+X-Provags-ID: V03:K1:wirR5sFFBufSEKgj/BxiB3RK9FYAKo3CWDkvaGcYSer8tqsuJrn
+ Z0YcruWB9L3/SBTAMG9/NEBC8w5uFiwZJiMDr7FGk5vMzJWpObAE0U5tiHeqQqbg3w8dJPh
+ NhlENe9gRAPh2QsgzD5Ug1qRy7055SxxbTZ34S/dPKKPakFeI/oJGeaDohSXZSu/rZM+aJB
+ 2/InWv+iwpjPkBj0u1x/w==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:KpFWd2jxdg4=:rZDRE+qzwimw1DcOBioypc
- ABkNyaVr8Bh7HBScu7hv/zB7nb86eS63g8Uoi3/uoywOKo58c7Fj3+UB7tn5bv9faOPYYs5dY
- 75wCd2C7bYXGq8GQxgxHFNlrT6lGlcz7YKhoJsAvTGSzmnQGwNH51JY7DeAiP6zQ0SgORYlAv
- xF8xcidEzNsJz4VPVrD3Zt2QxIh/n6CAfclIN4fsvVaZrN67sRdBzbQhUHtDzNJBqa36+CI09
- anv3dvIvGfY8mCiPcQjJMOC1MxTnXCRJrWCdpquCYbAe7d4MvTJ2sVNW2e4sceKV773F3+DBm
- CzU/vV3bKW0s6D4jJkojYGT+AWaiRNafi1Odu/zYN0ZigSOTJLdxVboH28/rOUHNLdtXY9IT3
- STZzK+lCAloExctQkWDJbsyiH/Bwocz8gFJvEolHgQvkSRlXK4PCVp9KfhmsolLVxFqGCkSyg
- NnewpmQjR6b1+FMY0ggdiDhA0LRFBLEqtzRHMmx+U/SEdGO50cw4D7myemQ9voaU0YpruagCh
- wr884r3We+a+eA6wX2BF8nw2z7IPY2ElGy/pQkQBscKDORc00rlHwfBosWsY39u+bciUJGQcr
- WtYyq5zHmSOZYsBgdV0d4MivIZco6Icb3FnVTQcaOxJamP8gV9+tU4VU6YEJJnpyY46e6gL8B
- H8hT9HtXUnashHc6fo2wOktvIbQQNMiZ8g4zrr6o6CtoSuhPBXQYEPHMbXDiLFuK0OhPstvn9
- ZLg/8w4lDCICptzwz+49v1enlqtk/Vqw77csmOaLYwxhNExTezILfIVMkge19StylMoCS+0fO
- QJRULuMppipgixIm0XqDPNJ7go1lBu2klOb0h6wMOCRmJ0yR+I6sOqbvSNPgDGyHICydtcIZL
- B9wPp2KnJnn3nRyJBz0UICNQPeR8JIV+TkS1/1ZJGqi0IECA0ws2d5JJFfOny4bKkB3AEzFo3
- khMIv7laXs1MXCZjugexnkjSQ0lQAXFX1NADQo+jOR69X40ThQaWebw8Sz5kQB/Eq7hXXmg0N
- dqo5WtGwMjTWma5CZdC9FEZZ/dYI9MWY2zqriwpd0SJEdVlcWYeRfYPwdXYpoysYGXpMlOelR
- opspASlk/1weZmmiVsQ82YHQ6zr2g6dPKFQTW83MGCHoF7jMvHta1m+1N470yEzW0SpFTtYcj
- j/ahn2nHwHMfTnUGha157sfY33+XZV6wSBZUYkE71+u17dWs0s50JNQc1tiCQKjhAgllDDHmB
- m/7oayBJvMP1xYmpnCl81cHUGY525jI9CH9+PJZN7GGNGebwITmHNrPUVunA=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8O1mSVXUWNY=:hezc0+RsgTm5/Mx640xame
+ Hk6D5kBDl7DeY4BkgIQM4ONBsY9brhNN7pznxa/62YNFw6CTkh6ak33b5FNezMFlusIygyegh
+ dOi9tA3fmCeGXos8/FbUj7ORFdKBmCUOBDRcUGVTnqQrhyztAAEZIO98BxmLsrTDo81gRWMAm
+ GXctOJFzq0g4D2l23qNSk5vwJvJFf29+8mP5l1n2J1McG9pF5Y+Kb8p7apBbEnnSxYekb5Qdr
+ 0EcWj1eAr+9yZN/Lw4oUfUb1Dd1sBIBGxYM5LopM+FfEwI9DkICuJurde4eCn1VTUO7P5sWWh
+ MBi4oRMF/CmKJTB/a5agJMuHNVYcg0kLd/IMZsQLQYy+J3Ax+o/GuxVF3L92C0sTlaRd3Dfxf
+ reAucI6X7S3zcD5TEoBm31VbzdNvQh1gG1iIkG3iA1JUSXdwhTUwHPN25nSlRaZGebpLQf75Y
+ On9KGz+j0yd1AQKlS6Gc4dKFN5fyBKb/MoG5aPCsYP9bthuMkt+jV39DUsqvM4uJa+0B87HhL
+ SYGn0JlYIGQFA8cC2nY/lfmNCBHfrDD7qtV8+ui1VyDoKEUkCZZBcWb8+AXimrtxW5FGPOWXw
+ z9CAYlCkiaZ8vUGWPV9VjUUC4Qt1r4yOI4nJ/fkEqoTgk7hsr66uDh0uFzQn4FHPnBeZavDzx
+ l0+U6uSCfIKr00mHQfQlJZnO+mCNeqdO1iQWjgwYp0kvc2Ti0FbHt83617WD0BX26f0ULECzh
+ bdnyhUuqyeJC8WJN2bj2dI5Dyj4xokfEWmY6fvlk3oN0+CbO4d/rMWTrWtzZS1lr0tqTxWM4a
+ ZU4yKrwcBfYalfrcPRpa/Z49RQ2qnjf2EKNF7v2qnzTGZVp5N9GYpymP2fn385EM2TWB7jlaq
+ lAvn8vJBrdbuL7421B5q0hdbcXnes2rYdlB02SPk+FFyDSNfCCTMenqqXGoXewBjCw6ptci4o
+ 4mNbc3Nb1J2u/23WfTrV7ypIs77sBQe5Uekx1P/eCqq/mZEuEh76GjIC3IWGy87fkx9N/g7Vp
+ BBT7tCeiZVqJgzrMm3MurZ+3P+TbQqauQmAjT+DEDq5qFmUDhHdRx3BxYvJML0dkP+W7DffRn
+ ogY6jhNLAF1tauUl7NdojHtUCipzeAMS46WqjwyNVoR4an0lG2vhiwmHMf7ewyWrbQgejsH9l
+ aUF9OMeR8r+qwAO1vl3KpB/DWZEJqV+sPbI/4HxoxU5eltQFCFSDHkh5Wdf/um4jKhbkmmcKd
+ LQWIlYF+Bs4sNMGolJ22UzVIobAdKvNHzWJqOgdSN1+ogc4r81xHmf5bn59Q=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -93,75 +93,82 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2019/10/30 =E4=B8=8B=E5=8D=888:22, Nikolay Borisov wrote:
-> sub_stripe variables is by default initialized to 0 and it's overriden
-> only in case we have RAID10 mode. This leads to the following (minor)
-> artifacts on a freshly created filesystem:
->
-> item 3 key (FIRST_CHUNK_TREE CHUNK_ITEM 30408704) itemoff 15863 itemsize=
- 112
-> 		length 1073741824 owner 2 stripe_len 65536 type METADATA|RAID1
-> 		io_align 65536 io_width 65536 sector_size 4096
-> 		num_stripes 2 sub_stripes 0
-> 			stripe 0 devid 2 offset 9437184
-> 			dev_uuid a020fc2f-b526-4800-9278-156f2f431fe9
-> 			stripe 1 devid 1 offset 30408704
-> 			dev_uuid 0f78aa72-4626-4057-a8f2-285f46b2c664
->
-> After balance resulting chunk item is:
->
-> item 3 key (FIRST_CHUNK_TREE CHUNK_ITEM 3251634176) itemoff 15863 itemsi=
-ze 112
-> 		length 268435456 owner 2 stripe_len 65536 type METADATA|RAID1
-> 		io_align 65536 io_width 65536 sector_size 4096
-> 		num_stripes 2 sub_stripes 1
-> 			stripe 0 devid 2 offset 3230662656
-> 			dev_uuid a020fc2f-b526-4800-9278-156f2f431fe9
-> 			stripe 1 devid 1 offset 3251634176
-> 			dev_uuid 0f78aa72-4626-4057-a8f2-285f46b2c664
->
-> Kernel code usually initializes it to 1, since it takes the value from
-> the raid description table which has it set to 1 for all but RAID10 type=
-s.
-> In userspace it has be statically initialized by 1 since we don't have
-> btrfs_bg_flags_to_raid_index. Eventually the kernel/userspace needs
-> to be merged but for now it wouldn't bring much value if this function
-> is copied.
+> It's always set to BTRFS_BLOCK_GROUP_DATA so sink it into the function.
 >
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-I guess the tree-checker skips this check except for RAID10 just to work
-around this problem.
-
 Thanks,
 Qu
+
 > ---
->  volumes.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  convert/main.c | 3 +--
+>  volumes.c      | 6 +++---
+>  volumes.h      | 2 +-
+>  3 files changed, 5 insertions(+), 6 deletions(-)
 >
+> diff --git a/convert/main.c b/convert/main.c
+> index bb689be9f3e4..9904deafba45 100644
+> --- a/convert/main.c
+> +++ b/convert/main.c
+> @@ -943,8 +943,7 @@ static int make_convert_data_block_groups(struct btr=
+fs_trans_handle *trans,
+>  			len =3D min(max_chunk_size,
+>  				  cache->start + cache->size - cur);
+>  			ret =3D btrfs_alloc_data_chunk(trans, fs_info,
+> -					&cur_backup, len,
+> -					BTRFS_BLOCK_GROUP_DATA, 1);
+> +					&cur_backup, len, 1);
+>  			if (ret < 0)
+>  				break;
+>  			ret =3D btrfs_make_block_group(trans, fs_info, 0,
 > diff --git a/volumes.c b/volumes.c
-> index fbbc22b5b1b3..1d088d93e788 100644
+> index 1d088d93e788..87315a884b49 100644
 > --- a/volumes.c
 > +++ b/volumes.c
-> @@ -993,7 +993,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *tra=
-ns,
->  	int num_stripes =3D 1;
->  	int max_stripes =3D 0;
->  	int min_stripes =3D 1;
-> -	int sub_stripes =3D 0;
-> +	int sub_stripes =3D 1;
->  	int looped =3D 0;
->  	int ret;
->  	int index;
-> @@ -1258,7 +1258,7 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_hand=
+> @@ -1245,7 +1245,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *t=
+rans,
+>   */
+>  int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
+>  			   struct btrfs_fs_info *info, u64 *start,
+> -			   u64 num_bytes, u64 type, int convert)
+> +			   u64 num_bytes, int convert)
+>  {
+>  	u64 dev_offset;
+>  	struct btrfs_root *extent_root =3D info->extent_root;
+> @@ -1328,7 +1328,7 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_hand=
 le *trans,
->  	struct map_lookup *map;
->  	u64 calc_size =3D SZ_8M;
->  	int num_stripes =3D 1;
-> -	int sub_stripes =3D 0;
-> +	int sub_stripes =3D 1;
->  	int ret;
->  	int index;
->  	int stripe_len =3D BTRFS_STRIPE_LEN;
+>  	btrfs_set_stack_chunk_length(chunk, num_bytes);
+>  	btrfs_set_stack_chunk_owner(chunk, extent_root->root_key.objectid);
+>  	btrfs_set_stack_chunk_stripe_len(chunk, stripe_len);
+> -	btrfs_set_stack_chunk_type(chunk, type);
+> +	btrfs_set_stack_chunk_type(chunk, BTRFS_BLOCK_GROUP_DATA);
+>  	btrfs_set_stack_chunk_num_stripes(chunk, num_stripes);
+>  	btrfs_set_stack_chunk_io_align(chunk, stripe_len);
+>  	btrfs_set_stack_chunk_io_width(chunk, stripe_len);
+> @@ -1338,7 +1338,7 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_hand=
+le *trans,
+>  	map->stripe_len =3D stripe_len;
+>  	map->io_align =3D stripe_len;
+>  	map->io_width =3D stripe_len;
+> -	map->type =3D type;
+> +	map->type =3D BTRFS_BLOCK_GROUP_DATA;
+>  	map->num_stripes =3D num_stripes;
+>  	map->sub_stripes =3D sub_stripes;
+>
+> diff --git a/volumes.h b/volumes.h
+> index 586588c871ab..83ba827e422b 100644
+> --- a/volumes.h
+> +++ b/volumes.h
+> @@ -272,7 +272,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *tra=
+ns,
+>  		      u64 *num_bytes, u64 type);
+>  int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
+>  			   struct btrfs_fs_info *fs_info, u64 *start,
+> -			   u64 num_bytes, u64 type, int convert);
+> +			   u64 num_bytes, int convert);
+>  int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
+>  		       int flags);
+>  int btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
 >
