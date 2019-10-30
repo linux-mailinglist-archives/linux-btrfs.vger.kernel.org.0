@@ -2,154 +2,116 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07CB3E9B69
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C7BAE9B6E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:23:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726664AbfJ3MWd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Oct 2019 08:22:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41586 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726584AbfJ3MWd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Oct 2019 08:22:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 05825B6CC;
-        Wed, 30 Oct 2019 12:22:31 +0000 (UTC)
-From:   Nikolay Borisov <nborisov@suse.com>
+        id S1726774AbfJ3MXF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Oct 2019 08:23:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726353AbfJ3MXF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 30 Oct 2019 08:23:05 -0400
+Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8E22E2083E
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2019 12:23:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1572438185;
+        bh=kUPaKRQxY3Nx8/RABtLw9ciOtF8VEVXcoDd3JG4tzKQ=;
+        h=From:To:Subject:Date:From;
+        b=X1L7mWIa9gRQvpTB6dRyKjpVqH56ipXn6nZtdyczzaC4vxpTW5jTN7owwrUbWgv3R
+         23bKAoG3F9YzAwt+xlsJXbYlCBQrDTdCR9eHJipZS8OpFCrogUJPOwgVQ/eE9e5ejB
+         98O4Wowco2ea1YDRN0vJdfjCJOi+kWNbwkMn9UYo=
+From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Cc:     Nikolay Borisov <nborisov@suse.com>
-Subject: [PATCH 3/3] btrfs-progs: Remove convert param from btrfs_alloc_data_chunk
-Date:   Wed, 30 Oct 2019 14:22:27 +0200
-Message-Id: <20191030122227.28496-4-nborisov@suse.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191030122227.28496-1-nborisov@suse.com>
-References: <20191030122227.28496-1-nborisov@suse.com>
+Subject: [PATCH] Btrfs: send, skip backreference walking for extents with many references
+Date:   Wed, 30 Oct 2019 12:23:01 +0000
+Message-Id: <20191030122301.25270-1-fdmanana@kernel.org>
+X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-convert is always set to true so there's no point in having it as a
-function parameter or using it as a predicate inside btrfs_alloc_data_chunk.
-Remove it and all relevant code which would have never been executed.
-No semantics changes.
+From: Filipe Manana <fdmanana@suse.com>
 
-Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Backreference walking, which is used by send to figure if it can issue
+clone operations instead of write operations, can be very slow and use too
+much memory when extents have many references. This change simply skips
+backreference walking when an extent has more than 64 references, in which
+case we fallback to a write operation instead of a clone operation. This
+limit is conservative and in practice I observed no signicant slowdown
+with up to 100 references and still low memory usage up to that limit.
+
+This is a temporary workaround until there are speedups in the backref
+walking code, and as such it does not attempt to add extra interfaces or
+knobs to tweak the threshold.
+
+Reported-by: Atemu <atemu.main@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/CAE4GHgkvqVADtS4AzcQJxo0Q1jKQgKaW3JGp3SGdoinVo=C9eQ@mail.gmail.com/T/#me55dc0987f9cc2acaa54372ce0492c65782be3fa
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- convert/main.c |  3 +--
- volumes.c      | 44 ++++++++++++++------------------------------
- volumes.h      |  3 +--
- 3 files changed, 16 insertions(+), 34 deletions(-)
+ fs/btrfs/send.c | 25 ++++++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
 
-diff --git a/convert/main.c b/convert/main.c
-index 9904deafba45..416ab5d264a3 100644
---- a/convert/main.c
-+++ b/convert/main.c
-@@ -942,8 +942,7 @@ static int make_convert_data_block_groups(struct btrfs_trans_handle *trans,
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 123ac54af071..518ec1265a0c 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -25,6 +25,14 @@
+ #include "compression.h"
  
- 			len = min(max_chunk_size,
- 				  cache->start + cache->size - cur);
--			ret = btrfs_alloc_data_chunk(trans, fs_info,
--					&cur_backup, len, 1);
-+			ret = btrfs_alloc_data_chunk(trans, fs_info, &cur_backup, len);
- 			if (ret < 0)
- 				break;
- 			ret = btrfs_make_block_group(trans, fs_info, 0,
-diff --git a/volumes.c b/volumes.c
-index 87315a884b49..39e824a43736 100644
---- a/volumes.c
-+++ b/volumes.c
-@@ -1238,14 +1238,11 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
  /*
-  * Alloc a DATA chunk with SINGLE profile.
-  *
-- * If 'convert' is set, it will alloc a chunk with 1:1 mapping
-- * (btrfs logical bytenr == on-disk bytenr)
-- * For that case, caller must make sure the chunk and dev_extent are not
-- * occupied.
-+ * It allocates a chunk with 1:1 mapping (btrfs logical bytenr == on-disk bytenr)
-+ * Caller must make sure the chunk and dev_extent are not occupied.
-  */
- int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
--			   struct btrfs_fs_info *info, u64 *start,
--			   u64 num_bytes, int convert)
-+			   struct btrfs_fs_info *info, u64 *start, u64 num_bytes)
- {
- 	u64 dev_offset;
- 	struct btrfs_root *extent_root = info->extent_root;
-@@ -1264,25 +1261,18 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
- 	int stripe_len = BTRFS_STRIPE_LEN;
- 	struct btrfs_key key;
++ * Maximum number of references an extent can have in order for us to attempt to
++ * issue clone operations instead of write operations. This currently exists to
++ * avoid hitting limitations of the backreference walking code (taking a lot of
++ * time and using too much memory for extents with large number of references).
++ */
++#define SEND_MAX_EXTENT_REFS	64
++
++/*
+  * A fs_path is a helper to dynamically build path names with unknown size.
+  * It reallocates the internal buffer on demand.
+  * It allows fast adding of path elements on the right side (normal path) and
+@@ -1302,6 +1310,7 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	struct clone_root *cur_clone_root;
+ 	struct btrfs_key found_key;
+ 	struct btrfs_path *tmp_path;
++	struct btrfs_extent_item *ei;
+ 	int compressed;
+ 	u32 i;
  
--	key.objectid = BTRFS_FIRST_CHUNK_TREE_OBJECTID;
--	key.type = BTRFS_CHUNK_ITEM_KEY;
--	if (convert) {
--		if (*start != round_down(*start, info->sectorsize)) {
--			error("DATA chunk start not sectorsize aligned: %llu",
--					(unsigned long long)*start);
--			return -EINVAL;
--		}
--		key.offset = *start;
--		dev_offset = *start;
--	} else {
--		u64 tmp;
+@@ -1349,7 +1358,6 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 	ret = extent_from_logical(fs_info, disk_byte, tmp_path,
+ 				  &found_key, &flags);
+ 	up_read(&fs_info->commit_root_sem);
+-	btrfs_release_path(tmp_path);
  
--		ret = find_next_chunk(info, &tmp);
--		key.offset = tmp;
--		if (ret)
--			return ret;
-+	if (*start != round_down(*start, info->sectorsize)) {
-+		error("DATA chunk start not sectorsize aligned: %llu",
-+				(unsigned long long)*start);
-+		return -EINVAL;
+ 	if (ret < 0)
+ 		goto out;
+@@ -1358,6 +1366,21 @@ static int find_extent_clone(struct send_ctx *sctx,
+ 		goto out;
  	}
  
-+	key.objectid = BTRFS_FIRST_CHUNK_TREE_OBJECTID;
-+	key.type = BTRFS_CHUNK_ITEM_KEY;
-+	key.offset = *start;
-+	dev_offset = *start;
++	ei = btrfs_item_ptr(tmp_path->nodes[0], tmp_path->slots[0],
++			    struct btrfs_extent_item);
++	/*
++	 * Backreference walking (iterate_extent_inodes() below) is currently
++	 * too expensive when an extent has a large number of references, both
++	 * in time spent and used memory. So for now just fallback to write
++	 * operations instead of clone operations when an extent has more than
++	 * a certain amount of references.
++	 */
++	if (btrfs_extent_refs(tmp_path->nodes[0], ei) > SEND_MAX_EXTENT_REFS) {
++		ret = -ENOENT;
++		goto out;
++	}
++	btrfs_release_path(tmp_path);
 +
- 	chunk = kmalloc(btrfs_chunk_item_size(num_stripes), GFP_NOFS);
- 	if (!chunk)
- 		return -ENOMEM;
-@@ -1303,12 +1293,8 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
- 	while (index < num_stripes) {
- 		struct btrfs_stripe *stripe;
- 
--		if (convert)
--			ret = btrfs_insert_dev_extent(trans, device, key.offset,
--					calc_size, dev_offset);
--		else
--			ret = btrfs_alloc_dev_extent(trans, device, key.offset,
--					calc_size, &dev_offset);
-+		ret = btrfs_insert_dev_extent(trans, device, key.offset, calc_size,
-+				dev_offset);
- 		BUG_ON(ret);
- 
- 		device->bytes_used += calc_size;
-@@ -1345,8 +1331,6 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
- 	ret = btrfs_insert_item(trans, chunk_root, &key, chunk,
- 				btrfs_chunk_item_size(num_stripes));
- 	BUG_ON(ret);
--	if (!convert)
--		*start = key.offset;
- 
- 	map->ce.start = key.offset;
- 	map->ce.size = num_bytes;
-diff --git a/volumes.h b/volumes.h
-index 83ba827e422b..f6f05054b5c4 100644
---- a/volumes.h
-+++ b/volumes.h
-@@ -271,8 +271,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
- 		      struct btrfs_fs_info *fs_info, u64 *start,
- 		      u64 *num_bytes, u64 type);
- int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
--			   struct btrfs_fs_info *fs_info, u64 *start,
--			   u64 num_bytes, int convert);
-+			   struct btrfs_fs_info *fs_info, u64 *start, u64 num_bytes);
- int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
- 		       int flags);
- int btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
+ 	/*
+ 	 * Setup the clone roots.
+ 	 */
 -- 
-2.7.4
+2.11.0
 
