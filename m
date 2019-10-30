@@ -2,32 +2,32 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C7BAE9B6E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:23:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10738E9B6F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:23:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbfJ3MXF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Oct 2019 08:23:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52424 "EHLO mail.kernel.org"
+        id S1726757AbfJ3MXO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Oct 2019 08:23:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbfJ3MXF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Oct 2019 08:23:05 -0400
+        id S1726353AbfJ3MXO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 30 Oct 2019 08:23:14 -0400
 Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8E22E2083E
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2019 12:23:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84DBD2083E
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2019 12:23:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1572438185;
-        bh=kUPaKRQxY3Nx8/RABtLw9ciOtF8VEVXcoDd3JG4tzKQ=;
+        s=default; t=1572438194;
+        bh=ndS4sLrq04szMQXeRVwlLElTzXM6XRPH1TzrkBYzFS4=;
         h=From:To:Subject:Date:From;
-        b=X1L7mWIa9gRQvpTB6dRyKjpVqH56ipXn6nZtdyczzaC4vxpTW5jTN7owwrUbWgv3R
-         23bKAoG3F9YzAwt+xlsJXbYlCBQrDTdCR9eHJipZS8OpFCrogUJPOwgVQ/eE9e5ejB
-         98O4Wowco2ea1YDRN0vJdfjCJOi+kWNbwkMn9UYo=
+        b=YAz/1sVoR9vNvSXljQZR+PGQWnLenWAjqz5Z32JBSOoEnyNwvNrri3sdx23DFGvNF
+         Ef+MEMXQE15gBlmure/JB9l4m8vh2xBKUAsaC6cqgkQirKycqGo7q0qVC0EhYu1Gpy
+         29bOo1X0l1iE1eSCO0iGBea7nat1yKmdQgtLtwb8=
 From:   fdmanana@kernel.org
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] Btrfs: send, skip backreference walking for extents with many references
-Date:   Wed, 30 Oct 2019 12:23:01 +0000
-Message-Id: <20191030122301.25270-1-fdmanana@kernel.org>
+Subject: [PATCH] Btrfs: send, allow clone operations within the same file
+Date:   Wed, 30 Oct 2019 12:23:11 +0000
+Message-Id: <20191030122311.31349-1-fdmanana@kernel.org>
 X-Mailer: git-send-email 2.11.0
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -36,82 +36,83 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Backreference walking, which is used by send to figure if it can issue
-clone operations instead of write operations, can be very slow and use too
-much memory when extents have many references. This change simply skips
-backreference walking when an extent has more than 64 references, in which
-case we fallback to a write operation instead of a clone operation. This
-limit is conservative and in practice I observed no signicant slowdown
-with up to 100 references and still low memory usage up to that limit.
+For send we currently skip clone operations when the source and destination
+files are the same. This is so because clone didn't support this case in
+its early days, but support for it was added back in May 2013 by commit
+a96fbc72884fcb ("Btrfs: allow file data clone within a file"). This change
+adds support for it.
 
-This is a temporary workaround until there are speedups in the backref
-walking code, and as such it does not attempt to add extra interfaces or
-knobs to tweak the threshold.
+Example:
 
-Reported-by: Atemu <atemu.main@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CAE4GHgkvqVADtS4AzcQJxo0Q1jKQgKaW3JGp3SGdoinVo=C9eQ@mail.gmail.com/T/#me55dc0987f9cc2acaa54372ce0492c65782be3fa
+  $ mkfs.btrfs -f /dev/sdd
+  $ mount /dev/sdd /mnt/sdd
+
+  $ xfs_io -f -c "pwrite -S 0xab -b 64K 0 64K" /mnt/sdd/foobar
+  $ xfs_io -c "reflink /mnt/sdd/foobar 0 64K 64K" /mnt/sdd/foobar
+
+  $ btrfs subvolume snapshot -r /mnt/sdd /mnt/sdd/snap
+
+  $ mkfs.btrfs -f /dev/sde
+  $ mount /dev/sde /mnt/sde
+
+  $ btrfs send /mnt/sdd/snap | btrfs receive /mnt/sde
+
+Without this change file foobar at the destination has a single 128Kb
+extent:
+
+  $ filefrag -v /mnt/sde/snap/foobar
+  Filesystem type is: 9123683e
+  File size of /mnt/sde/snap/foobar is 131072 (32 blocks of 4096 bytes)
+   ext:     logical_offset:        physical_offset: length:   expected: flags:
+     0:        0..      31:          0..        31:     32:             last,unknown_loc,delalloc,eof
+  /mnt/sde/snap/foobar: 1 extent found
+
+With this we get a single 64Kb extent that is shared at file offsets 0
+and 64K, just like in the source filesystem:
+
+  $ filefrag -v /mnt/sde/snap/foobar
+  Filesystem type is: 9123683e
+  File size of /mnt/sde/snap/foobar is 131072 (32 blocks of 4096 bytes)
+   ext:     logical_offset:        physical_offset: length:   expected: flags:
+     0:        0..      15:       3328..      3343:     16:             shared
+     1:       16..      31:       3328..      3343:     16:       3344: last,shared,eof
+  /mnt/sde/snap/foobar: 2 extents found
+
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ fs/btrfs/send.c | 18 +++++++++++++-----
+ 1 file changed, 13 insertions(+), 5 deletions(-)
 
 diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 123ac54af071..518ec1265a0c 100644
+index 518ec1265a0c..1624df5e6aa6 100644
 --- a/fs/btrfs/send.c
 +++ b/fs/btrfs/send.c
-@@ -25,6 +25,14 @@
- #include "compression.h"
- 
- /*
-+ * Maximum number of references an extent can have in order for us to attempt to
-+ * issue clone operations instead of write operations. This currently exists to
-+ * avoid hitting limitations of the backreference walking code (taking a lot of
-+ * time and using too much memory for extents with large number of references).
-+ */
-+#define SEND_MAX_EXTENT_REFS	64
-+
-+/*
-  * A fs_path is a helper to dynamically build path names with unknown size.
-  * It reallocates the internal buffer on demand.
-  * It allows fast adding of path elements on the right side (normal path) and
-@@ -1302,6 +1310,7 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	struct clone_root *cur_clone_root;
- 	struct btrfs_key found_key;
- 	struct btrfs_path *tmp_path;
-+	struct btrfs_extent_item *ei;
- 	int compressed;
- 	u32 i;
- 
-@@ -1349,7 +1358,6 @@ static int find_extent_clone(struct send_ctx *sctx,
- 	ret = extent_from_logical(fs_info, disk_byte, tmp_path,
- 				  &found_key, &flags);
- 	up_read(&fs_info->commit_root_sem);
--	btrfs_release_path(tmp_path);
- 
- 	if (ret < 0)
- 		goto out;
-@@ -1358,6 +1366,21 @@ static int find_extent_clone(struct send_ctx *sctx,
- 		goto out;
+@@ -1256,12 +1256,20 @@ static int __iterate_backrefs(u64 ino, u64 offset, u64 root, void *ctx_)
+ 	 */
+ 	if (found->root == bctx->sctx->send_root) {
+ 		/*
+-		 * TODO for the moment we don't accept clones from the inode
+-		 * that is currently send. We may change this when
+-		 * BTRFS_IOC_CLONE_RANGE supports cloning from and to the same
+-		 * file.
++		 * If the source inode was not yet processed we can't issue a
++		 * clone operation, as the source extent does not exist yet at
++		 * the destination of the stream.
+ 		 */
+-		if (ino >= bctx->cur_objectid)
++		if (ino > bctx->cur_objectid)
++			return 0;
++		/*
++		 * We clone from the inode currently being sent as long as the
++		 * source extent is already processed, otherwise we could try
++		 * to clone from an extent that does not exist yet at the
++		 * destination of the stream.
++		 */
++		if (ino == bctx->cur_objectid &&
++		    offset >= bctx->sctx->cur_inode_next_write_offset)
+ 			return 0;
  	}
  
-+	ei = btrfs_item_ptr(tmp_path->nodes[0], tmp_path->slots[0],
-+			    struct btrfs_extent_item);
-+	/*
-+	 * Backreference walking (iterate_extent_inodes() below) is currently
-+	 * too expensive when an extent has a large number of references, both
-+	 * in time spent and used memory. So for now just fallback to write
-+	 * operations instead of clone operations when an extent has more than
-+	 * a certain amount of references.
-+	 */
-+	if (btrfs_extent_refs(tmp_path->nodes[0], ei) > SEND_MAX_EXTENT_REFS) {
-+		ret = -ENOENT;
-+		goto out;
-+	}
-+	btrfs_release_path(tmp_path);
-+
- 	/*
- 	 * Setup the clone roots.
- 	 */
 -- 
 2.11.0
 
