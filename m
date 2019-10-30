@@ -2,153 +2,383 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 548CCE9850
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 09:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A393E9860
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 09:43:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726073AbfJ3Ili (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Oct 2019 04:41:38 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:33074 "EHLO
+        id S1726084AbfJ3Inn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Oct 2019 04:43:43 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36226 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726435AbfJ3Ilh (ORCPT
+        with ESMTP id S1726028AbfJ3Inm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Oct 2019 04:41:37 -0400
+        Wed, 30 Oct 2019 04:43:42 -0400
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9U8cbQ3036241;
-        Wed, 30 Oct 2019 08:41:36 GMT
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9U8hbDD042025;
+        Wed, 30 Oct 2019 08:43:38 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=59wiCdSNAI8tauoJPxgBntTLNSTatK/vlXeEjerxD9k=;
- b=nY6JF16haES99JOduhb5vPrr/XokAzUJ8knBBfZO9RQIQdej0MX9Cl21fFZdCW4w2Ej8
- nilAMPjGagrI/z1DC6todcBOwv5F5++JjspJNxEmZc7BqkpnNVQjaNf+uOroL/u2e0cl
- TBDm25A5G0f8bZewevwFvKC04NZvIraIrlV3+0NleouMPrl/Xt2cUHoKLaJXpK4sQc/N
- i4iuRr70rdt+/vevouKuj9y/ECF0B/kVbfHI/ZW+DjL2xGb+UuZdA6Jn4+jN78AtdoW0
- lbaDTuukP0ibGAE0Ffnl83v35Hw4qFUoKJiLJsmDdjzai4y8B1w2LTBfUqDfBqhpeWyd 4g== 
+ bh=xEABwWA2fdTlDvznrDPbIwHrsnfDRMv8cu5KxYWVncw=;
+ b=BSeKjD+B5bG/b+X4V8ZKCI5gMq0NQ3SptXUcUoejhXcXSLogvUod7CtxBRcB9uQ75DnX
+ LyV0GDKIJogp/8g9HLzijtpsUHaaR+Sc+3BfIrqMKsIYQiCsgxRyqJ/+8TNRCstg2cS3
+ RZwBO0UTiciH2WuDVdXaoajCz71gqe+FueLaBZTIbvvT2DgN2POsVVInYKzahB1NsiIR
+ FZvEMtj1GuWv1UfHVePcv6AyWZBweJy69MQG6halKJT8XT4BiDjwt7OjnN11ltavANBe
+ BGjq+Ry3ljmMoEp5/onzcmC2OoWTiWfKBjoRJbyaaaLiuf6Igtuy+MsZ6InA169xdAS0 Qg== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2vxwhfafeb-1
+        by aserp2120.oracle.com with ESMTP id 2vxwhfag7r-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Oct 2019 08:41:36 +0000
+        Wed, 30 Oct 2019 08:43:38 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9U8cYmd073769;
-        Wed, 30 Oct 2019 08:41:36 GMT
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9U8cX9T073747;
+        Wed, 30 Oct 2019 08:41:37 GMT
 Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2vxwj63n4a-1
+        by aserp3020.oracle.com with ESMTP id 2vxwj63n5v-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 30 Oct 2019 08:41:35 +0000
+        Wed, 30 Oct 2019 08:41:37 +0000
 Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9U8fZnZ001257;
-        Wed, 30 Oct 2019 08:41:35 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9U8fbBC001264;
+        Wed, 30 Oct 2019 08:41:37 GMT
 Received: from mb.wifi.oracle.com (/192.188.170.109)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 30 Oct 2019 01:41:35 -0700
+        with ESMTP ; Wed, 30 Oct 2019 01:41:36 -0700
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     dsterba@suse.com
-Subject: [PATCH v1 05/18] btrfs-progs: send: use global verbose and quiet options
-Date:   Wed, 30 Oct 2019 16:41:09 +0800
-Message-Id: <20191030084122.29745-6-anand.jain@oracle.com>
+Subject: [PATCH v1 06/18] btrfs-progs: receive: use global verbose and quiet options
+Date:   Wed, 30 Oct 2019 16:41:10 +0800
+Message-Id: <20191030084122.29745-7-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191030084122.29745-1-anand.jain@oracle.com>
 References: <20191030084122.29745-1-anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=4 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1908290000 definitions=main-1910300086
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=4 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910300086
+ definitions=main-1910300087
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Transpire global --verbose and --quiet options down to the btrfs send
+Transpire global --verbose and --quiet options down to the btrfs receive
 sub-command.
 
 Suggested-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-Global verbose-and-quiet option sequences behave differently from the
-same sequence used in the local command, as show below.
+Global verbose and quite option sequences behave differently from the
+same sequence in the local command, as show below.
 
 Before:
-btrfs.old send -q -v -f /tmp/f -p /btrfs/ss2 /btrfs/ss3
-At subvol /btrfs/ss3
+  btrfs receive -q -v -f /tmp/t /btrfs1
+  At snapshot ss3
 
-btrfs.old send -v -f /tmp/f -p /btrfs/ss2 /btrfs/ss3
-At subvol /btrfs/ss3
-BTRFS_IOC_SEND returned 0
-joining genl thread
+  btrfs receive -v -f /tmp/t /btrfs1
+  At snapshot ss3
+  receiving snapshot ss3 uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, ctransid=11 parent_uuid=a6b75134-8865-f045-89d2-c2afcf794475, parent_ctransid=11
+  BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, stransid=11
 
 After:
-btrfs.new send -q -v -f /tmp/f -p /btrfs/ss2 /btrfs/ss3
-At subvol /btrfs/ss3
+In the sub-command level the output remains same as before.
+  btrfs receive -q -v -f /tmp/t /btrfs1
+  At snapshot ss3
 
-btrfs.new -q -v send -f /tmp/f -p /btrfs/ss2 /btrfs/ss3
-At subvol /btrfs/ss3
-BTRFS_IOC_SEND returned 0
-joining genl thread
+In the global verbose level it does it correctly
+which is same as 'before: btrfs receive -v'
+  btrfs -q -v receive -f /tmp/t /btrfs1
+  At snapshot ss3
+  receiving snapshot ss3 uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, ctransid=11 parent_uuid=a6b75134-8865-f045-89d2-c2afcf794475, parent_ctransid=11
+  BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=9d0001ec-29e4-194a-a13e-42d9f428d745, stransid=11
 
-The (btrfs.new -q -v send) output is same as (btrfs.old send -v) which IMO
-is acceptable and not a regression.
+btrfs -q -v receive is same as btrfs -v receive, I belive this isn't regression.
 
- cmds/send.c | 33 +++++++++++++++++++++------------
- 1 file changed, 21 insertions(+), 12 deletions(-)
+ cmds/receive.c | 80 +++++++++++++++++++++++++++-----------------------
+ 1 file changed, 44 insertions(+), 36 deletions(-)
 
-diff --git a/cmds/send.c b/cmds/send.c
-index 7ce6c3273857..093f4e15c192 100644
---- a/cmds/send.c
-+++ b/cmds/send.c
-@@ -48,11 +48,6 @@
- 
- #define SEND_BUFFER_SIZE	SZ_64K
+diff --git a/cmds/receive.c b/cmds/receive.c
+index c4827c1dd999..d9f1928a28b9 100644
+--- a/cmds/receive.c
++++ b/cmds/receive.c
+@@ -53,12 +53,6 @@
+ #include "common/help.h"
+ #include "common/path-utils.h"
  
 -/*
 - * Default is 1 for historical reasons, changing may break scripts that expect
 - * the 'At subvol' message.
 - */
 -static int g_verbose = 1;
+-
+ struct btrfs_receive
+ {
+ 	int mnt_fd;
+@@ -116,7 +110,7 @@ static int finish_subvol(struct btrfs_receive *rctx)
+ 	memcpy(rs_args.uuid, rctx->cur_subvol.received_uuid, BTRFS_UUID_SIZE);
+ 	rs_args.stransid = rctx->cur_subvol.stransid;
  
- struct btrfs_send {
- 	int send_fd;
-@@ -292,10 +287,10 @@ static int do_send(struct btrfs_send *send, u64 parent_root_id,
- 				"Try upgrading your kernel or don't use -e.\n");
+-	if (g_verbose >= 2) {
++	if (bconf.verbose >= 2) {
+ 		uuid_unparse((u8*)rs_args.uuid, uuid_str);
+ 		fprintf(stderr, "BTRFS_IOC_SET_RECEIVED_SUBVOL uuid=%s, "
+ 				"stransid=%llu\n", uuid_str, rs_args.stransid);
+@@ -199,13 +193,13 @@ static int process_subvol(const char *path, const u8 *uuid, u64 ctransid,
  		goto out;
  	}
--	if (g_verbose > 1)
-+	if (bconf.verbose > 1)
- 		fprintf(stderr, "BTRFS_IOC_SEND returned %d\n", ret);
  
--	if (g_verbose > 1)
-+	if (bconf.verbose > 1)
- 		fprintf(stderr, "joining genl thread\n");
+-	if (g_verbose)
++	if (bconf.verbose >= 1)
+ 		fprintf(stderr, "At subvol %s\n", path);
  
- 	close(pipefd[1]);
-@@ -460,6 +455,9 @@ static const char * const cmd_send_usage[] = {
- 	"-v|--verbose     enable verbose output to stderr, each occurrence of",
- 	"                 this option increases verbosity",
- 	"-q|--quiet       suppress all messages, except errors",
+ 	memcpy(rctx->cur_subvol.received_uuid, uuid, BTRFS_UUID_SIZE);
+ 	rctx->cur_subvol.stransid = ctransid;
+ 
+-	if (g_verbose >= 2) {
++	if (bconf.verbose >= 2) {
+ 		uuid_unparse((u8*)rctx->cur_subvol.received_uuid, uuid_str);
+ 		fprintf(stderr, "receiving subvol %s uuid=%s, stransid=%llu\n",
+ 				path, uuid_str,
+@@ -269,13 +263,12 @@ static int process_snapshot(const char *path, const u8 *uuid, u64 ctransid,
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose)
+-		fprintf(stdout, "At snapshot %s\n", path);
++	pr_verbose(1, "At snapshot %s\n", path);
+ 
+ 	memcpy(rctx->cur_subvol.received_uuid, uuid, BTRFS_UUID_SIZE);
+ 	rctx->cur_subvol.stransid = ctransid;
+ 
+-	if (g_verbose >= 2) {
++	if (bconf.verbose >= 2) {
+ 		uuid_unparse((u8*)rctx->cur_subvol.received_uuid, uuid_str);
+ 		fprintf(stderr, "receiving snapshot %s uuid=%s, "
+ 				"ctransid=%llu ", path, uuid_str,
+@@ -402,7 +395,7 @@ static int process_mkfile(const char *path, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "mkfile %s\n", path);
+ 
+ 	ret = creat(full_path, 0600);
+@@ -430,7 +423,7 @@ static int process_mkdir(const char *path, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "mkdir %s\n", path);
+ 
+ 	ret = mkdir(full_path, 0700);
+@@ -455,7 +448,7 @@ static int process_mknod(const char *path, u64 mode, u64 dev, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "mknod %s mode=%llu, dev=%llu\n",
+ 				path, mode, dev);
+ 
+@@ -481,7 +474,7 @@ static int process_mkfifo(const char *path, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "mkfifo %s\n", path);
+ 
+ 	ret = mkfifo(full_path, 0600);
+@@ -506,7 +499,7 @@ static int process_mksock(const char *path, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "mksock %s\n", path);
+ 
+ 	ret = mknod(full_path, 0600 | S_IFSOCK, 0);
+@@ -531,7 +524,7 @@ static int process_symlink(const char *path, const char *lnk, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "symlink %s -> %s\n", path, lnk);
+ 
+ 	ret = symlink(lnk, full_path);
+@@ -563,7 +556,7 @@ static int process_rename(const char *from, const char *to, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "rename %s -> %s\n", from, to);
+ 
+ 	ret = rename(full_from, full_to);
+@@ -595,7 +588,7 @@ static int process_link(const char *path, const char *lnk, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "link %s -> %s\n", path, lnk);
+ 
+ 	ret = link(full_link_path, full_path);
+@@ -621,7 +614,7 @@ static int process_unlink(const char *path, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "unlink %s\n", path);
+ 
+ 	ret = unlink(full_path);
+@@ -646,7 +639,7 @@ static int process_rmdir(const char *path, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "rmdir %s\n", path);
+ 
+ 	ret = rmdir(full_path);
+@@ -711,7 +704,7 @@ static int process_write(const char *path, const void *data, u64 offset,
+ 	if (ret < 0)
+ 		goto out;
+ 
+-	if (g_verbose >= 2)
++	if (bconf.verbose >= 2)
+ 		fprintf(stderr, "write %s - offset=%llu length=%llu\n",
+ 			path, offset, len);
+ 
+@@ -819,7 +812,7 @@ static int process_clone(const char *path, u64 offset, u64 len,
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 2)
++	if (bconf.verbose >= 2)
+ 		fprintf(stderr,
+ 			"clone %s - source=%s source offset=%llu offset=%llu length=%llu\n",
+ 			path, clone_path, clone_offset, offset, len);
+@@ -860,7 +853,7 @@ static int process_set_xattr(const char *path, const char *name,
+ 	}
+ 
+ 	if (strcmp("security.capability", name) == 0) {
+-		if (g_verbose >= 4)
++		if (bconf.verbose >= 4)
+ 			fprintf(stderr, "set_xattr: cache capabilities\n");
+ 		if (rctx->cached_capabilities_len)
+ 			warning("capabilities set multiple times per file: %s",
+@@ -875,7 +868,7 @@ static int process_set_xattr(const char *path, const char *name,
+ 		memcpy(rctx->cached_capabilities, data, len);
+ 	}
+ 
+-	if (g_verbose >= 3) {
++	if (bconf.verbose >= 3) {
+ 		fprintf(stderr, "set_xattr %s - name=%s data_len=%d "
+ 				"data=%.*s\n", path, name, len,
+ 				len, (char*)data);
+@@ -905,7 +898,7 @@ static int process_remove_xattr(const char *path, const char *name, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3) {
++	if (bconf.verbose >= 3) {
+ 		fprintf(stderr, "remove_xattr %s - name=%s\n",
+ 				path, name);
+ 	}
+@@ -933,7 +926,7 @@ static int process_truncate(const char *path, u64 size, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "truncate %s size=%llu\n", path, size);
+ 
+ 	ret = truncate(full_path, size);
+@@ -959,7 +952,7 @@ static int process_chmod(const char *path, u64 mode, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "chmod %s - mode=0%o\n", path, (int)mode);
+ 
+ 	ret = chmod(full_path, mode);
+@@ -985,7 +978,7 @@ static int process_chown(const char *path, u64 uid, u64 gid, void *user)
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "chown %s - uid=%llu, gid=%llu\n", path,
+ 				uid, gid);
+ 
+@@ -997,7 +990,7 @@ static int process_chown(const char *path, u64 uid, u64 gid, void *user)
+ 	}
+ 
+ 	if (rctx->cached_capabilities_len) {
+-		if (g_verbose >= 3)
++		if (bconf.verbose >= 3)
+ 			fprintf(stderr, "chown: restore capabilities\n");
+ 		ret = lsetxattr(full_path, "security.capability",
+ 				rctx->cached_capabilities,
+@@ -1031,7 +1024,7 @@ static int process_utimes(const char *path, struct timespec *at,
+ 		goto out;
+ 	}
+ 
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "utimes %s\n", path);
+ 
+ 	tv[0] = *at;
+@@ -1050,7 +1043,7 @@ out:
+ static int process_update_extent(const char *path, u64 offset, u64 len,
+ 		void *user)
+ {
+-	if (g_verbose >= 3)
++	if (bconf.verbose >= 3)
+ 		fprintf(stderr, "update_extent %s: offset=%llu, len=%llu\n",
+ 				path, (unsigned long long)offset,
+ 				(unsigned long long)len);
+@@ -1190,7 +1183,7 @@ static int do_receive(struct btrfs_receive *rctx, const char *tomnt,
+ 
+ 	while (!end) {
+ 		if (rctx->cached_capabilities_len) {
+-			if (g_verbose >= 4)
++			if (bconf.verbose >= 4)
+ 				fprintf(stderr, "clear cached capabilities\n");
+ 			memset(rctx->cached_capabilities, 0,
+ 					sizeof(rctx->cached_capabilities));
+@@ -1279,6 +1272,9 @@ static const char * const cmd_receive_usage[] = {
+ 	"                 this file system is mounted.",
+ 	"--dump           dump stream metadata, one line per operation,",
+ 	"                 does not require the MOUNT parameter",
 +	HELPINFO_GLOBAL_OPTIONS_HEADER,
 +	HELPINFO_INSERT_VERBOSE,
 +	HELPINFO_INSERT_QUITE,
  	NULL
  };
  
-@@ -482,6 +480,17 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
- 	send.dump_fd = fileno(stdout);
- 	outname[0] = 0;
+@@ -1301,6 +1297,18 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
+ 	realmnt[0] = 0;
+ 	fromfile[0] = 0;
  
 +	/*
-+	 * For send, verbose default is 1 (insteasd of 0) for historical reasons,
-+	 * changing may break scripts that expect the 'At subvol' message. But do
-+	 * it only when bconf.verbose is unset (-1) and also adjust the value,
-+	 * if global verbose is already set.
++	 * Init global verbose to default, if it is unset.
++	 * Default is 1 for historical reasons, changing may break scripts that
++	 * expect the 'At subvol' message.
++	 * As default is 1, which means the effective verbose for receive is 2
++	 * which global verbose is unaware. So adjust global verbose value here.
 +	 */
 +	if (bconf.verbose < 0)
 +		bconf.verbose = 1;
@@ -157,8 +387,8 @@ index 7ce6c3273857..093f4e15c192 100644
 +
  	optind = 0;
  	while (1) {
- 		enum { GETOPT_VAL_SEND_NO_DATA = 256 };
-@@ -497,10 +506,10 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
+ 		int c;
+@@ -1319,10 +1327,10 @@ static int cmd_receive(const struct cmd_struct *cmd, int argc, char **argv)
  
  		switch (c) {
  		case 'v':
@@ -169,28 +399,8 @@ index 7ce6c3273857..093f4e15c192 100644
 -			g_verbose = 0;
 +			bconf.verbose = 0;
  			break;
- 		case 'e':
- 			new_end_cmd_semantic = 1;
-@@ -680,8 +689,8 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
- 		}
- 	}
- 
--	if ((send_flags & BTRFS_SEND_FLAG_NO_FILE_DATA) && g_verbose > 1)
--		if (g_verbose > 1)
-+	if ((send_flags & BTRFS_SEND_FLAG_NO_FILE_DATA) && bconf.verbose > 1)
-+		if (bconf.verbose > 1)
- 			fprintf(stderr, "Mode NO_FILE_DATA enabled\n");
- 
- 	for (i = optind; i < argc; i++) {
-@@ -691,7 +700,7 @@ static int cmd_send(const struct cmd_struct *cmd, int argc, char **argv)
- 		free(subvol);
- 		subvol = argv[i];
- 
--		if (g_verbose > 0)
-+		if (bconf.verbose > 0)
- 			fprintf(stderr, "At subvol %s\n", subvol);
- 
- 		subvol = realpath(subvol, NULL);
+ 		case 'f':
+ 			if (arg_copy_path(fromfile, optarg, sizeof(fromfile))) {
 -- 
 2.23.0
 
