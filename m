@@ -2,206 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A592EA620
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 23:26:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 277FCEA691
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 23:46:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726947AbfJ3W0G (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Oct 2019 18:26:06 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34540 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726538AbfJ3W0F (ORCPT
+        id S1727430AbfJ3WqL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Oct 2019 18:46:11 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:34123 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727294AbfJ3WqK (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Oct 2019 18:26:05 -0400
-Received: by mail-pl1-f194.google.com with SMTP id k7so1680038pll.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2019 15:26:04 -0700 (PDT)
+        Wed, 30 Oct 2019 18:46:10 -0400
+Received: by mail-pf1-f194.google.com with SMTP id b128so2725818pfa.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2019 15:46:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=osandov-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=MuWdvrG61bpleamztTX9vtJY9NcTosG0R/5t/+eTmpQ=;
-        b=PYwN0rFqu2G9xZR878qd5UH0McD7VzVXMBMxzwmM68p3d839ybiahHWq9Ztbrv4sRG
-         niHxqFtTMbaUanHTW8Ef4lQ6+SweIB/6GeewVkow5tWEwhteGANe2D6dDp5aq04+KE4q
-         8OK6qitKPmNhMAORK54N7kKodZwQU8i3QnjUFfadH7OaJslvIrTFcp55vPJrQg/qDIVA
-         SDIys3VpDINaKCQTMuXuiMiGEVD1uScQbM2CHJlG4RJm9OTvaLn0d3zZAJJctT0SszrT
-         oeBnMnkkF23o8duOQhDfhu1Gc7NO1sH/SbSbcVQBOGbkno7YL9Q1Fxrx86iP7C/fqRbS
-         TE5A==
+        bh=PnrfXeYVRnpGVPGiQDcbW5SLqkZubZ+o9/pPkDpKRLw=;
+        b=bkZBZ57meOngOGFWqgT5tJ/VVPrpfwkqsGbUVC907SVJYvcwR7C7b06NpUvxn9YGsB
+         g+BiTZl9eHlishVM5xWNwl8ci/CTMSziIL/JSijnZhCVj7MH59NANsRpnDuIN/nVz15s
+         k9Zb+Je5/nezygJuhSKvSjcW8+eGRONrr263WBn7hIB1K2BqH82J7Mxzik2VBVARSCcw
+         mU4NFZFindc3TWrhDteecyPufF9Fy8T0AK+s0kCV9a0nvkli3jAfk5WhomQGMU/kb9G4
+         +dDuFKJ3FNf0VOfgQcX+EDtMCWoCtNWyTh93zoeeMaf5OPHWjTekPJAgBEn5wA8VSiU0
+         YmIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MuWdvrG61bpleamztTX9vtJY9NcTosG0R/5t/+eTmpQ=;
-        b=REL2QvCfCl0H6+GMd3BEKHQWs7rOoS3P2XkGeoqQEyrzxvTt9uAquLovCo+2yxUCZw
-         mRgHrIWXoMpq/j/drB5dFaDyxE/D2YYtcJut6nFwPY15Y7HW1VeUE9OAj0DV+lqRYSt6
-         IlysLGKInx3qwUmpmFVctHZlrDk2Nr54nq15r/D/9PWo7il2i2dGiifK6RuCEYoUB7Lg
-         tZsjQwoHvpZXPLXQsFIymXUwYZvgeArH3/zSZTEivT00j89wkNYlNFja5A8l3pFm3N0/
-         QwtBAY6j6w0EiiLVrNjpykeJiJyr8DlMRGDH+eu4wdAiaNMUKrGsOnvmSax8bMsMXj1b
-         bzEg==
-X-Gm-Message-State: APjAAAWNGTvWoe9PGXVpyRWt3zuOXXyvfZv+/bYUAZTufWJvU+zwjyWB
-        bVHbICo8PL8f6jAzFprFDv9V7g==
-X-Google-Smtp-Source: APXvYqxlD3kJGcbkE7VYt/SnCUsDRqZAyowD2tkbfMEWRnHZKg/SsQHUI/JD0AwEO1zcUqyuICdOFQ==
-X-Received: by 2002:a17:902:7207:: with SMTP id ba7mr2443181plb.172.1572474363260;
-        Wed, 30 Oct 2019 15:26:03 -0700 (PDT)
+        bh=PnrfXeYVRnpGVPGiQDcbW5SLqkZubZ+o9/pPkDpKRLw=;
+        b=lHdqEbmaCeJUO+szg2zgv9u9xQI4dqLFqKtZYO1caTTh+YRuzelHXRbnhEdeFra3aQ
+         DJc5521H67JeSQ5cOAoGZ7rsIsWBcpXUwrxoTP1qZeNbEy8DdY7PGbRqCxoKEzg/BR5Z
+         x3S8OLMjdTf30hpm4x2dvzc70j31AvX7WkWmFtzTYHLzjg52tVhjnPTJLbCmRYJjM3zo
+         peC1kW11qSbNA5Y4+QTCJjjGrb/lSmvrWbjxHsEbr5qOZK11UtlOZwTcfnSIGXyOyGvJ
+         86vKoPqM/pAdEPot3OlcYvv4vfr1UAM4J+zq5MHUVNEGnEhv0J39oMP4H/LHGMFxfiTI
+         ebJg==
+X-Gm-Message-State: APjAAAX2vzPTUxpdxll8kGw4FejQxtuytQ8N/qI5XIimHSNO1NAQ0gSh
+        e2KBCfN8kphu7+TnrPN+RksGAg==
+X-Google-Smtp-Source: APXvYqzUxjMMwehyd2VV+tc2gBZO2f30q1yw7y78xZS39vYxlWAxedexkNC5tZJkUonFDc7ZstjC/A==
+X-Received: by 2002:a63:3e43:: with SMTP id l64mr2048023pga.51.1572475567838;
+        Wed, 30 Oct 2019 15:46:07 -0700 (PDT)
 Received: from vader ([2620:10d:c090:180::3912])
-        by smtp.gmail.com with ESMTPSA id y24sm1017621pfr.116.2019.10.30.15.26.02
+        by smtp.gmail.com with ESMTPSA id f17sm906751pgd.8.2019.10.30.15.46.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Oct 2019 15:26:02 -0700 (PDT)
-Date:   Wed, 30 Oct 2019 15:26:01 -0700
+        Wed, 30 Oct 2019 15:46:07 -0700 (PDT)
+Date:   Wed, 30 Oct 2019 15:46:06 -0700
 From:   Omar Sandoval <osandov@osandov.com>
 To:     Aleksa Sarai <cyphar@cyphar.com>
-Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+Cc:     Amir Goldstein <amir73il@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Btrfs <linux-btrfs@vger.kernel.org>,
         Dave Chinner <david@fromorbit.com>,
-        Jann Horn <jannh@google.com>, linux-api@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [RFC PATCH v2 2/5] fs: add RWF_ENCODED for reading/writing
- compressed data
-Message-ID: <20191030222601.GE326591@vader>
+        Jann Horn <jannh@google.com>,
+        Linux API <linux-api@vger.kernel.org>, kernel-team@fb.com,
+        Theodore Tso <tytso@mit.edu>
+Subject: Re: [PATCH man-pages] Document encoded I/O
+Message-ID: <20191030224606.GF326591@vader>
 References: <cover.1571164762.git.osandov@fb.com>
- <7f98cf5409cf2b583cd5b3451fc739fd3428873b.1571164762.git.osandov@fb.com>
- <20191021182806.GA6706@magnolia>
- <20191021183831.mbe4q2beqo76fqxm@yavin.dot.cyphar.com>
- <20191021190010.GC6726@magnolia>
- <20191022020215.csdwgi3ky27rfidf@yavin.dot.cyphar.com>
+ <c7e8f93596fee7bb818dc0edf29f484036be1abb.1571164851.git.osandov@fb.com>
+ <CAOQ4uxh_pZSiMmD=46Mc3o0GE+svXuoC155P_9FGJXdsE4cweg@mail.gmail.com>
+ <20191021185356.GB81648@vader>
+ <CAOQ4uxgm6MWwCDO5stUwOKKSq7Ot4-Sc96F1Evc6ra5qBE+-wA@mail.gmail.com>
+ <20191023044430.alow65tnodgnu5um@yavin.dot.cyphar.com>
+ <CAOQ4uxjyNZhyU9yEYkuMnD0o=sU1vJMOYJAzjV7FDjG45gaevg@mail.gmail.com>
+ <20191023121203.pozm2xzrbxmcqpbr@yavin.dot.cyphar.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191022020215.csdwgi3ky27rfidf@yavin.dot.cyphar.com>
+In-Reply-To: <20191023121203.pozm2xzrbxmcqpbr@yavin.dot.cyphar.com>
 User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 01:02:15PM +1100, Aleksa Sarai wrote:
-> On 2019-10-21, Darrick J. Wong <darrick.wong@oracle.com> wrote:
-> > On Tue, Oct 22, 2019 at 05:38:31AM +1100, Aleksa Sarai wrote:
-> > > On 2019-10-21, Darrick J. Wong <darrick.wong@oracle.com> wrote:
-> > > > On Tue, Oct 15, 2019 at 11:42:40AM -0700, Omar Sandoval wrote:
-> > > > > From: Omar Sandoval <osandov@fb.com>
-> > > > > 
-> > > > > Btrfs supports transparent compression: data written by the user can be
-> > > > > compressed when written to disk and decompressed when read back.
-> > > > > However, we'd like to add an interface to write pre-compressed data
-> > > > > directly to the filesystem, and the matching interface to read
-> > > > > compressed data without decompressing it. This adds support for
-> > > > > so-called "encoded I/O" via preadv2() and pwritev2().
-> > > > > 
-> > > > > A new RWF_ENCODED flags indicates that a read or write is "encoded". If
-> > > > > this flag is set, iov[0].iov_base points to a struct encoded_iov which
-> > > > > is used for metadata: namely, the compression algorithm, unencoded
-> > > > > (i.e., decompressed) length, and what subrange of the unencoded data
-> > > > > should be used (needed for truncated or hole-punched extents and when
-> > > > > reading in the middle of an extent). For reads, the filesystem returns
-> > > > > this information; for writes, the caller provides it to the filesystem.
-> > > > > iov[0].iov_len must be set to sizeof(struct encoded_iov), which can be
-> > > > > used to extend the interface in the future. The remaining iovecs contain
-> > > > > the encoded extent.
-> > > > > 
-> > > > > Filesystems must indicate that they support encoded writes by setting
-> > > > > FMODE_ENCODED_IO in ->file_open().
-> > > > > 
-> > > > > Signed-off-by: Omar Sandoval <osandov@fb.com>
-> > > > > ---
-> > > > >  include/linux/fs.h      | 14 +++++++
-> > > > >  include/uapi/linux/fs.h | 26 ++++++++++++-
-> > > > >  mm/filemap.c            | 82 ++++++++++++++++++++++++++++++++++-------
-> > > > >  3 files changed, 108 insertions(+), 14 deletions(-)
-> > > > > 
-> > > > > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > > > > index e0d909d35763..54681f21e05e 100644
-> > > > > --- a/include/linux/fs.h
-> > > > > +++ b/include/linux/fs.h
-> > > > > @@ -175,6 +175,9 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
-> > > > >  /* File does not contribute to nr_files count */
-> > > > >  #define FMODE_NOACCOUNT		((__force fmode_t)0x20000000)
-> > > > >  
-> > > > > +/* File supports encoded IO */
-> > > > > +#define FMODE_ENCODED_IO	((__force fmode_t)0x40000000)
-> > > > > +
-> > > > >  /*
-> > > > >   * Flag for rw_copy_check_uvector and compat_rw_copy_check_uvector
-> > > > >   * that indicates that they should check the contents of the iovec are
-> > > > > @@ -314,6 +317,7 @@ enum rw_hint {
-> > > > >  #define IOCB_SYNC		(1 << 5)
-> > > > >  #define IOCB_WRITE		(1 << 6)
-> > > > >  #define IOCB_NOWAIT		(1 << 7)
-> > > > > +#define IOCB_ENCODED		(1 << 8)
-> > > > >  
-> > > > >  struct kiocb {
-> > > > >  	struct file		*ki_filp;
-> > > > > @@ -3088,6 +3092,11 @@ extern int sb_min_blocksize(struct super_block *, int);
-> > > > >  extern int generic_file_mmap(struct file *, struct vm_area_struct *);
-> > > > >  extern int generic_file_readonly_mmap(struct file *, struct vm_area_struct *);
-> > > > >  extern ssize_t generic_write_checks(struct kiocb *, struct iov_iter *);
-> > > > > +struct encoded_iov;
-> > > > > +extern int generic_encoded_write_checks(struct kiocb *, struct encoded_iov *);
-> > > > > +extern ssize_t check_encoded_read(struct kiocb *, struct iov_iter *);
-> > > > > +extern int import_encoded_write(struct kiocb *, struct encoded_iov *,
-> > > > > +				struct iov_iter *);
-> > > > >  extern int generic_remap_checks(struct file *file_in, loff_t pos_in,
-> > > > >  				struct file *file_out, loff_t pos_out,
-> > > > >  				loff_t *count, unsigned int remap_flags);
-> > > > > @@ -3403,6 +3412,11 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags)
-> > > > >  			return -EOPNOTSUPP;
-> > > > >  		ki->ki_flags |= IOCB_NOWAIT;
-> > > > >  	}
-> > > > > +	if (flags & RWF_ENCODED) {
-> > > > > +		if (!(ki->ki_filp->f_mode & FMODE_ENCODED_IO))
-> > > > > +			return -EOPNOTSUPP;
-> > > > > +		ki->ki_flags |= IOCB_ENCODED;
-> > > > > +	}
-> > > > >  	if (flags & RWF_HIPRI)
-> > > > >  		ki->ki_flags |= IOCB_HIPRI;
-> > > > >  	if (flags & RWF_DSYNC)
-> > > > > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> > > > > index 379a612f8f1d..ed92a8a257cb 100644
-> > > > > --- a/include/uapi/linux/fs.h
-> > > > > +++ b/include/uapi/linux/fs.h
-> > > > > @@ -284,6 +284,27 @@ struct fsxattr {
-> > > > >  
-> > > > >  typedef int __bitwise __kernel_rwf_t;
-> > > > >  
-> > > > > +enum {
-> > > > > +	ENCODED_IOV_COMPRESSION_NONE,
-> > > > > +	ENCODED_IOV_COMPRESSION_ZLIB,
-> > > > > +	ENCODED_IOV_COMPRESSION_LZO,
-> > > > > +	ENCODED_IOV_COMPRESSION_ZSTD,
-> > > > > +	ENCODED_IOV_COMPRESSION_TYPES = ENCODED_IOV_COMPRESSION_ZSTD,
-> > > > > +};
-> > > > > +
-> > > > > +enum {
-> > > > > +	ENCODED_IOV_ENCRYPTION_NONE,
-> > > > > +	ENCODED_IOV_ENCRYPTION_TYPES = ENCODED_IOV_ENCRYPTION_NONE,
-> > > > > +};
-> > > > > +
-> > > > > +struct encoded_iov {
-> > > > > +	__u64 len;
-> > > > > +	__u64 unencoded_len;
-> > > > > +	__u64 unencoded_offset;
-> > > > > +	__u32 compression;
-> > > > > +	__u32 encryption;
-> > > > 
-> > > > Can we add some must-be-zero padding space at the end here for whomever
-> > > > comes along next wanting to add more encoding info?
-> > > 
-> > > I would suggest to copy the extension design of copy_struct_from_user().
-> > > Adding must-be-zero padding is a less-ideal solution to the extension
-> > > problem than length-based extension.
+On Wed, Oct 23, 2019 at 11:12:03PM +1100, Aleksa Sarai wrote:
+> On 2019-10-23, Amir Goldstein <amir73il@gmail.com> wrote:
+> > > >
+> > > > No, I see why you choose to add the flag to open(2).
+> > > > I have no objection.
+> > > >
+> > > > I once had a crazy thought how to add new open flags
+> > > > in a non racy manner without adding a new syscall,
+> > > > but as you wrote, this is not relevant for O_ALLOW_ENCODED.
+> > > >
+> > > > Something like:
+> > > >
+> > > > /*
+> > > >  * Old kernels silently ignore unsupported open flags.
+> > > >  * New kernels that gets __O_CHECK_NEWFLAGS do
+> > > >  * the proper checking for unsupported flags AND set the
+> > > >  * flag __O_HAVE_NEWFLAGS.
+> > > >  */
+> > > > #define O_FLAG1 __O_CHECK_NEWFLAGS|__O_FLAG1
+> > > > #define O_HAVE_FLAG1 __O_HAVE_NEWFLAGS|__O_FLAG1
+> > > >
+> > > > fd = open(path, O_FLAG1);
+> > > > if (fd < 0)
+> > > >     return -errno;
+> > > > flags = fcntl(fd, F_GETFL, 0);
+> > > > if (flags < 0)
+> > > >     return flags;
+> > > > if ((flags & O_HAVE_FLAG1) != O_HAVE_FLAG1) {
+> > > >     close(fd);
+> > > >     return -EINVAL;
+> > > > }
+> > >
+> > > You don't need to add __O_HAVE_NEWFLAGS to do this -- this already works
+> > > today for userspace to check whether a flag works properly
+> > > (specifically, __O_FLAG1 will only be set if __O_FLAG1 is supported --
+> > > otherwise it gets cleared during build_open_flags).
 > > 
-> > Come to think of it, you /do/ have to specify iov_len so... yeah, do
-> > that instead; we can always extend the structure later.
+> > That's a behavior of quite recent kernels since
+> > 629e014bb834 fs: completely ignore unknown open flags
+> > and maybe some stable kernels. Real old kernels don't have that luxury.
 > 
-> Just to clarify -- if we want to make the interface forward-compatible
-> from the outset (programs built 4 years from now running on 5.5), we
-> will need to implement this in the original merge. Otherwise userspace
-> will need to handle backwards-compatibility themselves once new features
-> are added.
+> Ah okay -- so the key feature is that __O_CHECK_NEWFLAGS gets
+> transformed into __O_HAVE_NEWFLAGS (making it so that both the older and
+> current behaviours are detected). Apologies, I missed that on my first
+> read-through.
 > 
-> @Omar: If it'd make your life easier, I can send some draft patches
-> 	   which port copy_struct_from_user() to iovec-land.
+> While it is a little bit ugly, it probably wouldn't be a bad idea to
+> have something like that.
+> 
+> > > The problem with adding new flags is that an *old* program running on a
+> > > *new* kernel could pass a garbage flag (__O_CHECK_NEWFLAGS for instance)
+> > > that causes an error only on the new kernel.
+> > 
+> > That's a theoretic problem. Same as O_PATH|O_TMPFILE.
+> > Show me a real life program that passes garbage files to open.
+> 
+> Has "that's a theoretical problem" helped when we faced this issue in
+> the past? I don't disagree that this is mostly theoretical, but I have a
+> feeling that this is an argument that won't hold water.
+> 
+> As for an example of semi-garbage flag passing -- systemd passes
+> O_PATH|O_NOCTTY in several places. Yes, they're known flags (so not
+> entirely applicable to this discussion) but it's also not a meaningful
+> combination of flags and yet is permitted.
+> 
+> > > The only real solution to this (and several other problems) is
+> > > openat2().
+> > 
+> > No argue about that. Come on, let's get it merged ;-)
+> 
+> Believe me, I'm trying. ;)
+> 
+> > > As for O_ALLOW_ENCODED -- the current semantics (-EPERM if it
+> > > is set without CAP_SYS_ADMIN) *will* cause backwards compatibility
+> > > issues for programs that have garbage flags set...
+> > >
+> > 
+> > Again, that's theoretical. In practice, O_ALLOW_ENCODED can work with
+> > open()/openat(). In fact, even if O_ALLOW_ENCODED gets merged after
+> > openat2(), I don't think it should be forbidden by open()/openat(),
+> > right? Do in that sense, O_ALLOW_ENCODED does not depend on openat2().
+> 
+> If it's a valid open() flag it'll also be a valid openat2(2) flag. The
+> only question is whether the garbage-flag problem justifies making it a
+> no-op for open(2).
 
-You're right, I didn't think about the case of newer programs on older
-kernels. I can do that for the next submission. RWF_ENCODED should
-probably translate the E2BIG from copy_struct_from_user() to EINVAL,
-though, to avoid ambiguity with the case that the buffer wasn't big
-enough to return the encoded data.
+Consider O_NOATIME: a (non-root) program passing this flag for files it
+didn't own would have been broken by kernel v2.6.8. Or, more recently, a
+program accidentally setting O_TMPFILE would suddenly get drastically
+different behavior on v3.11. These two flags technically broke backwards
+compatibility. I don't think it's worth the trouble to treat
+O_ALLOW_ENCODED any differently for open().
