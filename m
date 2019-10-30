@@ -2,330 +2,199 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDEC6E974B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 08:40:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5CBE986F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 09:47:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725942AbfJ3Hkq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Oct 2019 03:40:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51102 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725953AbfJ3Hkq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Oct 2019 03:40:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 94382B253
-        for <linux-btrfs@vger.kernel.org>; Wed, 30 Oct 2019 07:40:43 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
+        id S1726046AbfJ3Irz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Oct 2019 04:47:55 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:57870 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726028AbfJ3Iry (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 30 Oct 2019 04:47:54 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9U8ctkZ027547;
+        Wed, 30 Oct 2019 08:41:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=IyIy2KoFCWTvUXmffuYQqhhoaTpJTitdpkmTOQPeIx0=;
+ b=BvEKJLBIczBcXM6Te8nphyLwLaQFLfNnRSIPo1qxMpJXpEzHtQrVcUFpnJPN/W8drO7J
+ psn92FPKJ6Si8rUA8KFN/R9aHHLSIgJyMzAUFr4DdMTjpl+5FYNnt5L0P9nsWzBNfIFB
+ aFqK8c2eislvCjaTmeBHljpGTN3VZaCm7SNtsiPrCmbaplG4u19u5Bp6iA3wpqcbsNHO
+ ByfbLNgPSfbb5TsNOfi0Oz8s6i7+nmc7BAMUUyD1JrTu938BlVjgvbcmdWSZy02mhVtK
+ 82NYeL63t5/rYL3TOhhnuJ0bI2A2ZkGChxr3J/ayFul5efOsmK3pB4Y9gXMvskD7sckV Ug== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2vxwhfjeey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Oct 2019 08:41:27 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9U8bvZL113500;
+        Wed, 30 Oct 2019 08:41:27 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2vxwj9j9ye-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 30 Oct 2019 08:41:26 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x9U8fQlB008357;
+        Wed, 30 Oct 2019 08:41:26 GMT
+Received: from mb.wifi.oracle.com (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 30 Oct 2019 01:41:26 -0700
+From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: Replace btrfs_block_group_cache::item with dedicated members
-Date:   Wed, 30 Oct 2019 15:40:39 +0800
-Message-Id: <20191030074039.112707-1-wqu@suse.com>
+Cc:     dsterba@suse.com
+Subject: [PATCH v1 00/18] btrfs-progs: global verbose and quiet option
+Date:   Wed, 30 Oct 2019 16:41:04 +0800
+Message-Id: <20191030084122.29745-1-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1910300086
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9425 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1910300086
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We access btrfs_block_group_cache::item mostly for @used and @flags.
+RFC->v1:
+. Adds --quiet option to the global btrfs(8) command.
+. Used global struct bconf.
+. Refactored pr_verbose(), accepts level (int) as argument, so now the
+sub-command can specify the verbose level at which the particular
+verbose messages has to be printed.
+. Added global help defines.
 
-@flags is already a dedicated member in btrfs_block_group_cache, only
-@used doesn't have a dedicated member.
+Kindly note the following:-
 
-This patch will remove btrfs_block_group_cache::item and add
-btrfs_block_group_cache::used.
+1.
+ There are certain sub-commands which does not have any verbose output
+ or quiet output. However if the global options were used with those
+ sub-commands then the command shall not report any usage error. Or
+ my question is should it error out.? For example:
+  (with the patch) btrfs --verbose device ready /dev/sdb
+ actually there isn't any verbose output but we won't error out.
+ Similarly,
+  (without the patch) btrfs send -vvvvv will not show usage error
+  as well.
+  So I believe this is fine. IMO.
 
-It's the btrfs-progs equivalent of the following kernel patches:
-btrfs: move block_group_item::used to block group
-btrfs: move block_group_item::flags to block group
-btrfs: remove embedded block_group_cache::item
+2.
+  There is slight difference in output when global options are used
+  as compared to the output using the same sequence of options at the
+  sub-command level. For example:
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- check/main.c                |  8 +++--
- cmds/rescue-chunk-recover.c |  2 +-
- ctree.h                     |  2 +-
- extent-tree.c               | 63 ++++++++++++++++++++-----------------
- free-space-cache.c          |  2 +-
- image/main.c                |  1 -
- 6 files changed, 43 insertions(+), 35 deletions(-)
+   btrfs send -v -q -v  is-equal-to  btrfs send
+   But same sequence in the global option
+   btrfs -v -q -v send is-not-equal-to btrfs send
+   but is-equal-to btrfs -v send or btrfs send -v.
+   (similarly applies to receive as well).
 
-diff --git a/check/main.c b/check/main.c
-index 034b2bd7be89..a0e5ac47c152 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -9091,15 +9091,19 @@ again:
- 	 * pinned all of it above.
- 	 */
- 	while (1) {
-+		struct btrfs_block_group_item bgi;
- 		struct btrfs_block_group_cache *cache;
- 
- 		cache = btrfs_lookup_first_block_group(fs_info, start);
- 		if (!cache)
- 			break;
- 		start = cache->key.objectid + cache->key.offset;
-+		btrfs_set_block_group_used(&bgi, cache->used);
-+		btrfs_set_block_group_chunk_objectid(&bgi,
-+					BTRFS_FIRST_CHUNK_TREE_OBJECTID);
-+		btrfs_set_block_group_flags(&bgi, cache->flags);
- 		ret = btrfs_insert_item(trans, fs_info->extent_root,
--					&cache->key, &cache->item,
--					sizeof(cache->item));
-+					&cache->key, &bgi, sizeof(bgi));
- 		if (ret) {
- 			fprintf(stderr, "Error adding block group\n");
- 			return ret;
-diff --git a/cmds/rescue-chunk-recover.c b/cmds/rescue-chunk-recover.c
-index bf35693ddbfa..22d7a5959531 100644
---- a/cmds/rescue-chunk-recover.c
-+++ b/cmds/rescue-chunk-recover.c
-@@ -1104,7 +1104,7 @@ static int block_group_free_all_extent(struct btrfs_root *root,
- 			BLOCK_GROUP_DIRTY);
- 	set_extent_dirty(&info->free_space_cache, start, end);
- 
--	btrfs_set_block_group_used(&cache->item, 0);
-+	cache->used = 0;
- 
- 	return 0;
- }
-diff --git a/ctree.h b/ctree.h
-index 83e41fb885f7..ec57f113839f 100644
---- a/ctree.h
-+++ b/ctree.h
-@@ -1090,9 +1090,9 @@ struct btrfs_space_info {
- struct btrfs_block_group_cache {
- 	struct cache_extent cache;
- 	struct btrfs_key key;
--	struct btrfs_block_group_item item;
- 	struct btrfs_space_info *space_info;
- 	struct btrfs_free_space_ctl *free_space_ctl;
-+	u64 used;
- 	u64 bytes_super;
- 	u64 pinned;
- 	u64 flags;
-diff --git a/extent-tree.c b/extent-tree.c
-index 52b963265a07..d67e4098351f 100644
---- a/extent-tree.c
-+++ b/extent-tree.c
-@@ -338,7 +338,7 @@ btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group_cache
- 		struct btrfs_block_group_cache *shint;
- 		shint = btrfs_lookup_block_group(info, search_start);
- 		if (shint && !shint->ro && block_group_bits(shint, data)) {
--			used = btrfs_block_group_used(&shint->item);
-+			used = shint->used;
- 			if (used + shint->pinned <
- 			    div_factor(shint->key.offset, factor)) {
- 				return shint;
-@@ -346,7 +346,7 @@ btrfs_find_block_group(struct btrfs_root *root, struct btrfs_block_group_cache
- 		}
- 	}
- 	if (hint && !hint->ro && block_group_bits(hint, data)) {
--		used = btrfs_block_group_used(&hint->item);
-+		used = hint->used;
- 		if (used + hint->pinned <
- 		    div_factor(hint->key.offset, factor)) {
- 			return hint;
-@@ -374,7 +374,7 @@ again:
- 
- 		cache = (struct btrfs_block_group_cache *)(unsigned long)ptr;
- 		last = cache->key.objectid + cache->key.offset;
--		used = btrfs_block_group_used(&cache->item);
-+		used = cache->used;
- 
- 		if (!cache->ro && block_group_bits(cache, data)) {
- 			if (full_search)
-@@ -1531,6 +1531,7 @@ static int write_one_cache_group(struct btrfs_trans_handle *trans,
- 	int ret;
- 	struct btrfs_root *extent_root = trans->fs_info->extent_root;
- 	unsigned long bi;
-+	struct btrfs_block_group_item bgi;
- 	struct extent_buffer *leaf;
- 
- 	ret = btrfs_search_slot(trans, extent_root, &cache->key, path, 0, 1);
-@@ -1540,7 +1541,10 @@ static int write_one_cache_group(struct btrfs_trans_handle *trans,
- 
- 	leaf = path->nodes[0];
- 	bi = btrfs_item_ptr_offset(leaf, path->slots[0]);
--	write_extent_buffer(leaf, &cache->item, bi, sizeof(cache->item));
-+	btrfs_set_block_group_used(&bgi, cache->used);
-+	btrfs_set_block_group_flags(&bgi, cache->flags);
-+	btrfs_set_block_group_chunk_objectid(&bgi, BTRFS_FIRST_CHUNK_TREE_OBJECTID);
-+	write_extent_buffer(leaf, &bgi, bi, sizeof(bgi));
- 	btrfs_mark_buffer_dirty(leaf);
- 	btrfs_release_path(path);
- fail:
-@@ -1774,7 +1778,7 @@ static int update_block_group(struct btrfs_fs_info *info, u64 bytenr,
- 		set_extent_bits(&info->block_group_cache, start, end,
- 				BLOCK_GROUP_DIRTY);
- 
--		old_val = btrfs_block_group_used(&cache->item);
-+		old_val = cache->used;
- 		num_bytes = min(total, cache->key.offset - byte_in_group);
- 
- 		if (alloc) {
-@@ -1788,7 +1792,7 @@ static int update_block_group(struct btrfs_fs_info *info, u64 bytenr,
- 						bytenr, bytenr + num_bytes - 1);
- 			}
- 		}
--		btrfs_set_block_group_used(&cache->item, old_val);
-+		cache->used = old_val;
- 		total -= num_bytes;
- 		bytenr += num_bytes;
- 	}
-@@ -2661,6 +2665,7 @@ static int read_one_block_group(struct btrfs_fs_info *fs_info,
- 	struct extent_buffer *leaf = path->nodes[0];
- 	struct btrfs_space_info *space_info;
- 	struct btrfs_block_group_cache *cache;
-+	struct btrfs_block_group_item bgi;
- 	struct btrfs_key key;
- 	int slot = path->slots[0];
- 	int bit = 0;
-@@ -2679,13 +2684,13 @@ static int read_one_block_group(struct btrfs_fs_info *fs_info,
- 	cache = kzalloc(sizeof(*cache), GFP_NOFS);
- 	if (!cache)
- 		return -ENOMEM;
--	read_extent_buffer(leaf, &cache->item,
--			   btrfs_item_ptr_offset(leaf, slot),
--			   sizeof(cache->item));
-+	read_extent_buffer(leaf, &bgi, btrfs_item_ptr_offset(leaf, slot),
-+			   sizeof(bgi));
- 	memcpy(&cache->key, &key, sizeof(key));
- 	cache->cached = 0;
- 	cache->pinned = 0;
--	cache->flags = btrfs_block_group_flags(&cache->item);
-+	cache->flags = btrfs_block_group_flags(&bgi);
-+	cache->used = btrfs_block_group_used(&bgi);
- 	if (cache->flags & BTRFS_BLOCK_GROUP_DATA) {
- 		bit = BLOCK_GROUP_DATA;
- 	} else if (cache->flags & BTRFS_BLOCK_GROUP_SYSTEM) {
-@@ -2699,8 +2704,7 @@ static int read_one_block_group(struct btrfs_fs_info *fs_info,
- 	exclude_super_stripes(fs_info, cache);
- 
- 	ret = update_space_info(fs_info, cache->flags, cache->key.offset,
--				btrfs_block_group_used(&cache->item),
--				&space_info);
-+				cache->used, &space_info);
- 	if (ret < 0) {
- 		free(cache);
- 		return ret;
-@@ -2773,11 +2777,8 @@ btrfs_add_block_group(struct btrfs_fs_info *fs_info, u64 bytes_used, u64 type,
- 	cache->key.offset = size;
- 
- 	cache->key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
--	btrfs_set_block_group_used(&cache->item, bytes_used);
--	btrfs_set_block_group_chunk_objectid(&cache->item,
--					     BTRFS_FIRST_CHUNK_TREE_OBJECTID);
-+	cache->used = bytes_used;
- 	cache->flags = type;
--	btrfs_set_block_group_flags(&cache->item, type);
- 
- 	exclude_super_stripes(fs_info, cache);
- 	ret = update_space_info(fs_info, cache->flags, size, bytes_used,
-@@ -2805,11 +2806,16 @@ int btrfs_make_block_group(struct btrfs_trans_handle *trans,
- 	int ret;
- 	struct btrfs_root *extent_root = fs_info->extent_root;
- 	struct btrfs_block_group_cache *cache;
-+	struct btrfs_block_group_item bgi;
- 
- 	cache = btrfs_add_block_group(fs_info, bytes_used, type, chunk_offset,
- 				      size);
--	ret = btrfs_insert_item(trans, extent_root, &cache->key, &cache->item,
--				sizeof(cache->item));
-+	btrfs_set_block_group_used(&bgi, cache->used);
-+	btrfs_set_block_group_flags(&bgi, cache->flags);
-+	btrfs_set_block_group_chunk_objectid(&bgi,
-+			BTRFS_FIRST_CHUNK_TREE_OBJECTID);
-+	ret = btrfs_insert_item(trans, extent_root, &cache->key, &bgi,
-+				sizeof(bgi));
- 	BUG_ON(ret);
- 
- 	return 0;
-@@ -2832,7 +2838,6 @@ int btrfs_make_block_groups(struct btrfs_trans_handle *trans,
- 	u64 group_align;
- 	u64 total_data = 0;
- 	u64 total_metadata = 0;
--	u64 chunk_objectid;
- 	int ret;
- 	int bit;
- 	struct btrfs_root *extent_root = fs_info->extent_root;
-@@ -2840,7 +2845,6 @@ int btrfs_make_block_groups(struct btrfs_trans_handle *trans,
- 	struct extent_io_tree *block_group_cache;
- 
- 	block_group_cache = &fs_info->block_group_cache;
--	chunk_objectid = BTRFS_FIRST_CHUNK_TREE_OBJECTID;
- 	total_bytes = btrfs_super_total_bytes(fs_info->super_copy);
- 	group_align = 64 * fs_info->sectorsize;
- 
-@@ -2877,12 +2881,7 @@ int btrfs_make_block_groups(struct btrfs_trans_handle *trans,
- 		cache->key.objectid = cur_start;
- 		cache->key.offset = group_size;
- 		cache->key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
--
--		btrfs_set_block_group_used(&cache->item, 0);
--		btrfs_set_block_group_chunk_objectid(&cache->item,
--						     chunk_objectid);
--		btrfs_set_block_group_flags(&cache->item, group_type);
--
-+		cache->used = 0;
- 		cache->flags = group_type;
- 
- 		ret = update_space_info(fs_info, group_type, group_size,
-@@ -2900,11 +2899,17 @@ int btrfs_make_block_groups(struct btrfs_trans_handle *trans,
- 	/* then insert all the items */
- 	cur_start = 0;
- 	while(cur_start < total_bytes) {
-+		struct btrfs_block_group_item bgi;
-+
- 		cache = btrfs_lookup_block_group(fs_info, cur_start);
- 		BUG_ON(!cache);
- 
--		ret = btrfs_insert_item(trans, extent_root, &cache->key, &cache->item,
--					sizeof(cache->item));
-+		btrfs_set_block_group_used(&bgi, cache->used);
-+		btrfs_set_block_group_flags(&bgi, cache->flags);
-+		btrfs_set_block_group_chunk_objectid(&bgi,
-+				BTRFS_FIRST_CHUNK_TREE_OBJECTID);
-+		ret = btrfs_insert_item(trans, extent_root, &cache->key, &bgi,
-+					sizeof(bgi));
- 		BUG_ON(ret);
- 
- 		cur_start = cache->key.objectid + cache->key.offset;
-@@ -3297,7 +3302,7 @@ int btrfs_fix_block_accounting(struct btrfs_trans_handle *trans)
- 		if (!cache)
- 			break;
- 		start = cache->key.objectid + cache->key.offset;
--		btrfs_set_block_group_used(&cache->item, 0);
-+		cache->used = 0;
- 		cache->space_info->bytes_used = 0;
- 		set_extent_bits(&root->fs_info->block_group_cache,
- 				cache->key.objectid,
-diff --git a/free-space-cache.c b/free-space-cache.c
-index 6e7d7e1ef561..b95cabadcbd8 100644
---- a/free-space-cache.c
-+++ b/free-space-cache.c
-@@ -436,7 +436,7 @@ int load_free_space_cache(struct btrfs_fs_info *fs_info,
- {
- 	struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
- 	struct btrfs_path *path;
--	u64 used = btrfs_block_group_used(&block_group->item);
-+	u64 used = block_group->used;
- 	int ret = 0;
- 	u64 bg_free;
- 	s64 diff;
-diff --git a/image/main.c b/image/main.c
-index c72da1d36101..bddb49720f0a 100644
---- a/image/main.c
-+++ b/image/main.c
-@@ -2364,7 +2364,6 @@ static void fixup_block_groups(struct btrfs_fs_info *fs_info)
- 
- 		/* Update the block group item and mark the bg dirty */
- 		bg->flags = map->type;
--		btrfs_set_block_group_flags(&bg->item, bg->flags);
- 		set_extent_bits(&fs_info->block_group_cache, ce->start,
- 				ce->start + ce->size - 1, BLOCK_GROUP_DIRTY);
- 
+  which IMO is fair expectation as -v is ending last.
+
+
+RFC:
+This patch set brings --verbose option to the top level btrfs command,
+such as 'btrfs --verbose'. With this we don't have to add or remember
+verbose option at the sub-commands level.
+
+As there are already verbose options to 11 sub-commands as listed
+below [1][2]. So the top level --verbose option here takes care to transpire
+verbose request from the top level to the sub-command level for 9 (not 11)
+sub-commands as in [1] as of now.
+
+This patch is RFC still for the following two reasons (comments appreciated).
+
+1.
+The sub-commands as in [2] uses multi-level compile time verbose option,
+such as %g_verbose = 0 (quite), %g_verbose = 1 (default), %g_verbose > 1
+(real-verbose). And verbose at default is also part the .out files in
+fstests. So it needs further discussions on how to handle the multi-
+level verbose option using the global verbose option, and so sub-
+commands in [2] are untouched.
+
+2.
+These patch has been unit-tested individually.
+These patches does not alter the verbose output.
+But it fixes the indentation in the command's help output, which may be
+used in fstests and btrfs-progs/tests and their verification is pending
+still, which I am planning to do it before v1.
+
+[1]
+btrfs subvolume delete --help
+        -v|--verbose           verbose output of operations
+btrfs filesystem defragment --help
+        -v                  be verbose
+btrfs balance start --help
+        -v|--verbose        be verbose
+btrfs balance status --help
+        -v|--verbose        be verbose
+btrfs rescue chunk-recover --help
+        -v      Verbose mode
+btrfs rescue super-recover --help
+        -v      Verbose mode
+btrfs restore --help
+        -v|--verbose         verbose
+btrfs inspect-internal inode-resolve --help
+        -v   verbose mode
+btrfs inspect-internal logical-resolve --help
+        -v          verbose mode
+
+[2]
+btrfs send --help
+        -v|--verbose     enable verbose output to stderr, each occurrence of
+btrfs receive --help
+        -v               increase verbosity about performed action
+
+Anand Jain (18):
+  btrfs-progs: receive: fix option quiet
+  btrfs-progs: balance status: fix usage show long verbose
+  btrfs-progs: balance start: fix usage add long verbose
+  btrfs-progs: add global verbose and quiet options and helper functions
+  btrfs-progs: send: use global verbose and quiet options
+  btrfs-progs: receive: use global verbose and quiet options
+  btrfs-progs: subvolume delete: use global verbose option
+  btrfs-progs: filesystem defragment: use global verbose option
+  btrfs-progs: balance start: use global verbose option
+  btrfs-progs: balance status: use global verbose option
+  btrfs-progs: rescue chunk-recover: use global verbose option
+  btrfs-progs: rescue super-recover: use global verbose option
+  btrfs-progs: restore: use global verbose option
+  btrfs-progs: inspect-internal inode-resolve: use global verbose
+  btrfs-progs: inspect-internal logical-resolve: use global verbose
+    option
+  btrfs-progs: refactor btrfs_scan_devices() to accept verbose argument
+  btrfs-progs: device scan: add verbose option
+  btrfs-progs: device scan: add quiet option
+
+ btrfs.c              | 20 +++++++++--
+ cmds/balance.c       | 26 ++++++++++-----
+ cmds/device.c        |  7 ++--
+ cmds/filesystem.c    | 18 +++++-----
+ cmds/inspect.c       | 45 +++++++++++++------------
+ cmds/receive.c       | 79 ++++++++++++++++++++++++--------------------
+ cmds/rescue.c        | 22 ++++++++----
+ cmds/restore.c       | 55 +++++++++++++++---------------
+ cmds/send.c          | 33 +++++++++++-------
+ cmds/subvolume.c     | 32 +++++++++---------
+ common/device-scan.c |  4 ++-
+ common/device-scan.h |  2 +-
+ common/help.h        | 11 ++++++
+ common/messages.c    | 18 ++++++++++
+ common/messages.h    |  5 +++
+ common/utils.c       |  3 +-
+ common/utils.h       |  3 ++
+ disk-io.c            |  2 +-
+ 18 files changed, 242 insertions(+), 143 deletions(-)
+
 -- 
 2.23.0
 
