@@ -2,31 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0ACE9BAF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 941DDE9BB9
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:45:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726331AbfJ3Mmx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Oct 2019 08:42:53 -0400
-Received: from mout.gmx.net ([212.227.17.20]:56037 "EHLO mout.gmx.net"
+        id S1726261AbfJ3Mpb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Oct 2019 08:45:31 -0400
+Received: from mout.gmx.net ([212.227.17.22]:35477 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbfJ3Mmx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Oct 2019 08:42:53 -0400
+        id S1726175AbfJ3Mpb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 30 Oct 2019 08:45:31 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1572439365;
-        bh=zEqbnl6OpaDg8CXsY/TNeJlSRbazA+wja4nBBDTNgxk=;
+        s=badeba3b8450; t=1572439522;
+        bh=MASM7LGMCQRv/YgHjTkEsKwT3Rx0MjFv4qObN5vEMiA=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=JXAo90rBTq0/UDb60j+qzdLjFmt3EjfatS9gmRPt8id4TJ8woQVFkAAh0hlcVMJZC
-         XRl/lgbZ2WCc8gMtBdQBHe298V5oZIbFIDGgCziPe1Qb5TAY4zTKCcGRbiWSzBUYXq
-         q6LRLv2QS5X3+rUNv8QijW1GLEQTadvQyWjJtylw=
+        b=S5ujQC82ltQsL6B6Vdv3571ojznGMK8JdrqD1zwF54P8jycj/meYjtn82ROqr2hRu
+         R1BW24XOObZK36o11DcfoAHu22EK6aFSoJXi4cgU6HyttLGVZykMWaGslbzTaFfb2O
+         R+wS7rj4f1G7chGUhbw4UEZwttHj/tor32+2Z3aw=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLzBp-1ihBZN3wlF-00HzOT; Wed, 30
- Oct 2019 13:42:45 +0100
-Subject: Re: [PATCH 2/3] btrfs-progs: Remove type argument from
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4Qwg-1i10cx3bYk-011SiI; Wed, 30
+ Oct 2019 13:45:22 +0100
+Subject: Re: [PATCH 3/3] btrfs-progs: Remove convert param from
  btrfs_alloc_data_chunk
 To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
 References: <20191030122227.28496-1-nborisov@suse.com>
- <20191030122227.28496-3-nborisov@suse.com>
+ <20191030122227.28496-4-nborisov@suse.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,39 +52,39 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <3f7170f4-ee07-f77c-bc15-2c3f611fab65@gmx.com>
-Date:   Wed, 30 Oct 2019 20:42:40 +0800
+Message-ID: <d90e7757-f646-87f7-a729-8c3652154721@gmx.com>
+Date:   Wed, 30 Oct 2019 20:45:16 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <20191030122227.28496-3-nborisov@suse.com>
+In-Reply-To: <20191030122227.28496-4-nborisov@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wirR5sFFBufSEKgj/BxiB3RK9FYAKo3CWDkvaGcYSer8tqsuJrn
- Z0YcruWB9L3/SBTAMG9/NEBC8w5uFiwZJiMDr7FGk5vMzJWpObAE0U5tiHeqQqbg3w8dJPh
- NhlENe9gRAPh2QsgzD5Ug1qRy7055SxxbTZ34S/dPKKPakFeI/oJGeaDohSXZSu/rZM+aJB
- 2/InWv+iwpjPkBj0u1x/w==
+X-Provags-ID: V03:K1:+pl8/dH099oe3YnqoP56AcmOYxEkLy6K8rPbmJZxWssmI7Zc8GQ
+ T5dNCj2kM9Eb+0xPOQZ6Xn3cd0UvYakXgOFvhpsGHPDLaEQhgCdAgiG2tMBr2T1CHukM1R9
+ 8m9kEx5LjI8tLWYh5L6LtWdwhuJIR2HyQY9yXjjRjcZLUzqddp5a3laazsmjLi1aNMgadxY
+ S2AJRDQrkeLeTh3Vl+X2g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:8O1mSVXUWNY=:hezc0+RsgTm5/Mx640xame
- Hk6D5kBDl7DeY4BkgIQM4ONBsY9brhNN7pznxa/62YNFw6CTkh6ak33b5FNezMFlusIygyegh
- dOi9tA3fmCeGXos8/FbUj7ORFdKBmCUOBDRcUGVTnqQrhyztAAEZIO98BxmLsrTDo81gRWMAm
- GXctOJFzq0g4D2l23qNSk5vwJvJFf29+8mP5l1n2J1McG9pF5Y+Kb8p7apBbEnnSxYekb5Qdr
- 0EcWj1eAr+9yZN/Lw4oUfUb1Dd1sBIBGxYM5LopM+FfEwI9DkICuJurde4eCn1VTUO7P5sWWh
- MBi4oRMF/CmKJTB/a5agJMuHNVYcg0kLd/IMZsQLQYy+J3Ax+o/GuxVF3L92C0sTlaRd3Dfxf
- reAucI6X7S3zcD5TEoBm31VbzdNvQh1gG1iIkG3iA1JUSXdwhTUwHPN25nSlRaZGebpLQf75Y
- On9KGz+j0yd1AQKlS6Gc4dKFN5fyBKb/MoG5aPCsYP9bthuMkt+jV39DUsqvM4uJa+0B87HhL
- SYGn0JlYIGQFA8cC2nY/lfmNCBHfrDD7qtV8+ui1VyDoKEUkCZZBcWb8+AXimrtxW5FGPOWXw
- z9CAYlCkiaZ8vUGWPV9VjUUC4Qt1r4yOI4nJ/fkEqoTgk7hsr66uDh0uFzQn4FHPnBeZavDzx
- l0+U6uSCfIKr00mHQfQlJZnO+mCNeqdO1iQWjgwYp0kvc2Ti0FbHt83617WD0BX26f0ULECzh
- bdnyhUuqyeJC8WJN2bj2dI5Dyj4xokfEWmY6fvlk3oN0+CbO4d/rMWTrWtzZS1lr0tqTxWM4a
- ZU4yKrwcBfYalfrcPRpa/Z49RQ2qnjf2EKNF7v2qnzTGZVp5N9GYpymP2fn385EM2TWB7jlaq
- lAvn8vJBrdbuL7421B5q0hdbcXnes2rYdlB02SPk+FFyDSNfCCTMenqqXGoXewBjCw6ptci4o
- 4mNbc3Nb1J2u/23WfTrV7ypIs77sBQe5Uekx1P/eCqq/mZEuEh76GjIC3IWGy87fkx9N/g7Vp
- BBT7tCeiZVqJgzrMm3MurZ+3P+TbQqauQmAjT+DEDq5qFmUDhHdRx3BxYvJML0dkP+W7DffRn
- ogY6jhNLAF1tauUl7NdojHtUCipzeAMS46WqjwyNVoR4an0lG2vhiwmHMf7ewyWrbQgejsH9l
- aUF9OMeR8r+qwAO1vl3KpB/DWZEJqV+sPbI/4HxoxU5eltQFCFSDHkh5Wdf/um4jKhbkmmcKd
- LQWIlYF+Bs4sNMGolJ22UzVIobAdKvNHzWJqOgdSN1+ogc4r81xHmf5bn59Q=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XpjWzQ5q0Xc=:whJUOEBLDN4mSjg6KkzGxT
+ 2BpC8FSiK9qEMZZE0AhcAdlfpLlFkZyAlZFTdugw2ytkhNSigHo9HI5tG16E5RjZlGmJOc+BH
+ as8YATQ1vGP/z3W1RkbcvMda0hXQx7eJYRkgah+UrS16QkJabnfB+nW7qjAMN77WOUkeglSuS
+ 0C28pi8mdFXEacKLSWQYHyv6hpOYoYtLEyjz0vGx8GwsYyFAu4DrY9+usA6kjA4+OWLxwTiW6
+ FjJ7AVOf+9drVVDnvOyQelvjnVGkQwm4loysP5mTuL9KhwzwN3bSNP8wFxVoC2yau7vXbs/f5
+ R5Vq78iKYXt2HcVYi8j/sWXYqYedqfuLvwpbi7jYG6889ffrEiiC4CyQVOY+/u8bhi637i4nE
+ dkZyZFngk9qUzVGHn7Zy0qMfn6odMItDvpagLAi8//JT2w1kGLnIa5cdo5LOwuVubaNDEl6Y1
+ R1Entzsi2BMtzG4ohKxJtwiHEJwTTXf/LZJWzkn882rP/XVblxV7ALqmEEqjvrsChETegifFt
+ NcrUgCYu6r1yEkgzuEDH6YDw27OyZSzXFBT0D+1oPjQRc2I8AEbHbhLYXb/LbkEuUJmSvIeWo
+ oRd7+jq22aCuHwehSm2+McM/eL+E8ooLlXbOULgRYXM9/SJUQK2C9HT8SIR+XBZvu+xDVzvMV
+ nahBRkJeqeU/nsWAnWCkFrWRvX2IZSYtiIp6a22+SqrZs62aRhrMhJ5lU9VEc9MM9HWiJRs57
+ uxk/3Ir7hBTmzGuyAcbjOsSVavzv3Nexw+k5YgPA2oppferloHdSspVvLG3S0tMlZq684ylQS
+ wMhIrHm9Xbbu2kU9szpLsUrB5LVywGms1a60HS4B0GmarQ8xj87TljyNXA/Li6Op2RckCNJsH
+ IKaKOBCZBUMjy8S2ec3egwJ7KypNQLv2eDDu6Xb+Cb9w9Kax44u6gyxydTHF900/mCyRQ5Abo
+ 8SeGf9EROPTMsB6KZIi22AcwU15tSt+JtQpE69FOA17cZ1Shnb6CUGFYT4vJ1WUXPk9RxwIXa
+ yF026pGp8ngOIuEi1vkJLRiIyNi/bZuQ8oN7JCrC2IuXHd42iDB+fcul3iCNCEKB2P6jQ5RwY
+ 05uw7qEmbevc0AVSVQKl3a6Qo5Rp+1HZSDgKPxZS1mfpXhWXFrK+fkV9ALUAgLcCiqzTsjQz+
+ W/od5bsBowLN2iGNaBP+cgobuxWFE6AbCGVVbYGvyMRkXM9J2mJoTyuVLdrA1tIOKErJ76lT8
+ 2jPkQ/kwq33bFGg/mG99t29NviuZKbvZUb5oH3AcOyDZLosjVVAdMVVJMSvI=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -93,81 +93,146 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2019/10/30 =E4=B8=8B=E5=8D=888:22, Nikolay Borisov wrote:
-> It's always set to BTRFS_BLOCK_GROUP_DATA so sink it into the function.
+> convert is always set to true so there's no point in having it as a
+> function parameter or using it as a predicate inside btrfs_alloc_data_ch=
+unk.
+> Remove it and all relevant code which would have never been executed.
+> No semantics changes.
 >
 > Signed-off-by: Nikolay Borisov <nborisov@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
+Just one tip for further patches.
+
+The function btrfs_alloc_data_chunk() is purely used for convert to
+create a 1:1 mapped data chunk.
+
+It would be be even better to rename the function to indicate it better.
+
 Thanks,
 Qu
 
 > ---
->  convert/main.c | 3 +--
->  volumes.c      | 6 +++---
->  volumes.h      | 2 +-
->  3 files changed, 5 insertions(+), 6 deletions(-)
+>  convert/main.c |  3 +--
+>  volumes.c      | 44 ++++++++++++++------------------------------
+>  volumes.h      |  3 +--
+>  3 files changed, 16 insertions(+), 34 deletions(-)
 >
 > diff --git a/convert/main.c b/convert/main.c
-> index bb689be9f3e4..9904deafba45 100644
+> index 9904deafba45..416ab5d264a3 100644
 > --- a/convert/main.c
 > +++ b/convert/main.c
-> @@ -943,8 +943,7 @@ static int make_convert_data_block_groups(struct btr=
+> @@ -942,8 +942,7 @@ static int make_convert_data_block_groups(struct btr=
 fs_trans_handle *trans,
+>
 >  			len =3D min(max_chunk_size,
 >  				  cache->start + cache->size - cur);
->  			ret =3D btrfs_alloc_data_chunk(trans, fs_info,
-> -					&cur_backup, len,
-> -					BTRFS_BLOCK_GROUP_DATA, 1);
-> +					&cur_backup, len, 1);
+> -			ret =3D btrfs_alloc_data_chunk(trans, fs_info,
+> -					&cur_backup, len, 1);
+> +			ret =3D btrfs_alloc_data_chunk(trans, fs_info, &cur_backup, len);
 >  			if (ret < 0)
 >  				break;
 >  			ret =3D btrfs_make_block_group(trans, fs_info, 0,
 > diff --git a/volumes.c b/volumes.c
-> index 1d088d93e788..87315a884b49 100644
+> index 87315a884b49..39e824a43736 100644
 > --- a/volumes.c
 > +++ b/volumes.c
-> @@ -1245,7 +1245,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *t=
-rans,
+> @@ -1238,14 +1238,11 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle =
+*trans,
+>  /*
+>   * Alloc a DATA chunk with SINGLE profile.
+>   *
+> - * If 'convert' is set, it will alloc a chunk with 1:1 mapping
+> - * (btrfs logical bytenr =3D=3D on-disk bytenr)
+> - * For that case, caller must make sure the chunk and dev_extent are no=
+t
+> - * occupied.
+> + * It allocates a chunk with 1:1 mapping (btrfs logical bytenr =3D=3D o=
+n-disk bytenr)
+> + * Caller must make sure the chunk and dev_extent are not occupied.
 >   */
 >  int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
->  			   struct btrfs_fs_info *info, u64 *start,
-> -			   u64 num_bytes, u64 type, int convert)
-> +			   u64 num_bytes, int convert)
+> -			   struct btrfs_fs_info *info, u64 *start,
+> -			   u64 num_bytes, int convert)
+> +			   struct btrfs_fs_info *info, u64 *start, u64 num_bytes)
 >  {
 >  	u64 dev_offset;
 >  	struct btrfs_root *extent_root =3D info->extent_root;
-> @@ -1328,7 +1328,7 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_hand=
-le *trans,
->  	btrfs_set_stack_chunk_length(chunk, num_bytes);
->  	btrfs_set_stack_chunk_owner(chunk, extent_root->root_key.objectid);
->  	btrfs_set_stack_chunk_stripe_len(chunk, stripe_len);
-> -	btrfs_set_stack_chunk_type(chunk, type);
-> +	btrfs_set_stack_chunk_type(chunk, BTRFS_BLOCK_GROUP_DATA);
->  	btrfs_set_stack_chunk_num_stripes(chunk, num_stripes);
->  	btrfs_set_stack_chunk_io_align(chunk, stripe_len);
->  	btrfs_set_stack_chunk_io_width(chunk, stripe_len);
-> @@ -1338,7 +1338,7 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_hand=
-le *trans,
->  	map->stripe_len =3D stripe_len;
->  	map->io_align =3D stripe_len;
->  	map->io_width =3D stripe_len;
-> -	map->type =3D type;
-> +	map->type =3D BTRFS_BLOCK_GROUP_DATA;
->  	map->num_stripes =3D num_stripes;
->  	map->sub_stripes =3D sub_stripes;
+> @@ -1264,25 +1261,18 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_ha=
+ndle *trans,
+>  	int stripe_len =3D BTRFS_STRIPE_LEN;
+>  	struct btrfs_key key;
 >
+> -	key.objectid =3D BTRFS_FIRST_CHUNK_TREE_OBJECTID;
+> -	key.type =3D BTRFS_CHUNK_ITEM_KEY;
+> -	if (convert) {
+> -		if (*start !=3D round_down(*start, info->sectorsize)) {
+> -			error("DATA chunk start not sectorsize aligned: %llu",
+> -					(unsigned long long)*start);
+> -			return -EINVAL;
+> -		}
+> -		key.offset =3D *start;
+> -		dev_offset =3D *start;
+> -	} else {
+> -		u64 tmp;
+>
+> -		ret =3D find_next_chunk(info, &tmp);
+> -		key.offset =3D tmp;
+> -		if (ret)
+> -			return ret;
+> +	if (*start !=3D round_down(*start, info->sectorsize)) {
+> +		error("DATA chunk start not sectorsize aligned: %llu",
+> +				(unsigned long long)*start);
+> +		return -EINVAL;
+>  	}
+>
+> +	key.objectid =3D BTRFS_FIRST_CHUNK_TREE_OBJECTID;
+> +	key.type =3D BTRFS_CHUNK_ITEM_KEY;
+> +	key.offset =3D *start;
+> +	dev_offset =3D *start;
+> +
+>  	chunk =3D kmalloc(btrfs_chunk_item_size(num_stripes), GFP_NOFS);
+>  	if (!chunk)
+>  		return -ENOMEM;
+> @@ -1303,12 +1293,8 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_han=
+dle *trans,
+>  	while (index < num_stripes) {
+>  		struct btrfs_stripe *stripe;
+>
+> -		if (convert)
+> -			ret =3D btrfs_insert_dev_extent(trans, device, key.offset,
+> -					calc_size, dev_offset);
+> -		else
+> -			ret =3D btrfs_alloc_dev_extent(trans, device, key.offset,
+> -					calc_size, &dev_offset);
+> +		ret =3D btrfs_insert_dev_extent(trans, device, key.offset, calc_size,
+> +				dev_offset);
+>  		BUG_ON(ret);
+>
+>  		device->bytes_used +=3D calc_size;
+> @@ -1345,8 +1331,6 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_hand=
+le *trans,
+>  	ret =3D btrfs_insert_item(trans, chunk_root, &key, chunk,
+>  				btrfs_chunk_item_size(num_stripes));
+>  	BUG_ON(ret);
+> -	if (!convert)
+> -		*start =3D key.offset;
+>
+>  	map->ce.start =3D key.offset;
+>  	map->ce.size =3D num_bytes;
 > diff --git a/volumes.h b/volumes.h
-> index 586588c871ab..83ba827e422b 100644
+> index 83ba827e422b..f6f05054b5c4 100644
 > --- a/volumes.h
 > +++ b/volumes.h
-> @@ -272,7 +272,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *tra=
+> @@ -271,8 +271,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *tra=
 ns,
+>  		      struct btrfs_fs_info *fs_info, u64 *start,
 >  		      u64 *num_bytes, u64 type);
 >  int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
->  			   struct btrfs_fs_info *fs_info, u64 *start,
-> -			   u64 num_bytes, u64 type, int convert);
-> +			   u64 num_bytes, int convert);
+> -			   struct btrfs_fs_info *fs_info, u64 *start,
+> -			   u64 num_bytes, int convert);
+> +			   struct btrfs_fs_info *fs_info, u64 *start, u64 num_bytes);
 >  int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
 >  		       int flags);
 >  int btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
