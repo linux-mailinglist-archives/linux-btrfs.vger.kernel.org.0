@@ -2,31 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 941DDE9BB9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:45:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6299DE9BC2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 30 Oct 2019 13:47:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726261AbfJ3Mpb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 30 Oct 2019 08:45:31 -0400
-Received: from mout.gmx.net ([212.227.17.22]:35477 "EHLO mout.gmx.net"
+        id S1726316AbfJ3Mrq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 30 Oct 2019 08:47:46 -0400
+Received: from mout.gmx.net ([212.227.17.22]:47459 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726175AbfJ3Mpb (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 30 Oct 2019 08:45:31 -0400
+        id S1726088AbfJ3Mrq (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 30 Oct 2019 08:47:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1572439522;
-        bh=MASM7LGMCQRv/YgHjTkEsKwT3Rx0MjFv4qObN5vEMiA=;
+        s=badeba3b8450; t=1572439661;
+        bh=XDDV5lHuD8nEbSCwFSCGof+nvaCbVbljTqGbPLfU2eI=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=S5ujQC82ltQsL6B6Vdv3571ojznGMK8JdrqD1zwF54P8jycj/meYjtn82ROqr2hRu
-         R1BW24XOObZK36o11DcfoAHu22EK6aFSoJXi4cgU6HyttLGVZykMWaGslbzTaFfb2O
-         R+wS7rj4f1G7chGUhbw4UEZwttHj/tor32+2Z3aw=
+        b=FRJzwWPHrenKTV0qToCOxz9JemgKoxaj/Z4Ghg3FCHNNZKTQFJHrQkUQeY5+UCrr4
+         xUNrd+QRT5Lt5Au9g5eWR1L+USSB20vfWD5WTGgLVZnpflEXfM1RxPpI+ut1WnLMCd
+         Mh4sP8Nbptk6gA4HNvHXM1RteF+JyaLNPcS0NTSE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N4Qwg-1i10cx3bYk-011SiI; Wed, 30
- Oct 2019 13:45:22 +0100
-Subject: Re: [PATCH 3/3] btrfs-progs: Remove convert param from
- btrfs_alloc_data_chunk
-To:     Nikolay Borisov <nborisov@suse.com>, linux-btrfs@vger.kernel.org
-References: <20191030122227.28496-1-nborisov@suse.com>
- <20191030122227.28496-4-nborisov@suse.com>
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLi8m-1ihSlH3iZk-00Hf3t; Wed, 30
+ Oct 2019 13:47:40 +0100
+Subject: Re: [PATCH] Btrfs: send, skip backreference walking for extents with
+ many references
+To:     fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <20191030122301.25270-1-fdmanana@kernel.org>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -52,188 +51,183 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <d90e7757-f646-87f7-a729-8c3652154721@gmx.com>
-Date:   Wed, 30 Oct 2019 20:45:16 +0800
+Message-ID: <82eb1c76-9aa9-a666-f33c-b38763d82d23@gmx.com>
+Date:   Wed, 30 Oct 2019 20:47:35 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.0
 MIME-Version: 1.0
-In-Reply-To: <20191030122227.28496-4-nborisov@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+pl8/dH099oe3YnqoP56AcmOYxEkLy6K8rPbmJZxWssmI7Zc8GQ
- T5dNCj2kM9Eb+0xPOQZ6Xn3cd0UvYakXgOFvhpsGHPDLaEQhgCdAgiG2tMBr2T1CHukM1R9
- 8m9kEx5LjI8tLWYh5L6LtWdwhuJIR2HyQY9yXjjRjcZLUzqddp5a3laazsmjLi1aNMgadxY
- S2AJRDQrkeLeTh3Vl+X2g==
+In-Reply-To: <20191030122301.25270-1-fdmanana@kernel.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="NJREc1O8gNFLU5k9uwaut1iHTPHAtNmi0"
+X-Provags-ID: V03:K1:ZQdV3zJ6mJKG4gDkYYYhf+PbLFYqlAqrz6jUP/3dQUYmxbx5UdV
+ q1RSyRJHEAU1NxERGzFCD1rHH0soUbhZtUtLBr9B8rPwVNFAIi8sGNUz/Rhm/M2MWyzny9x
+ oOripDYXT8Vd76c+yXEr9qpwV/VQFpr1djGdQ9c6BNd1jO59gJnx5mvcWTkhvgrilIhEnKf
+ RcZVef0FNFxi1uBCMXfaQ==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:XpjWzQ5q0Xc=:whJUOEBLDN4mSjg6KkzGxT
- 2BpC8FSiK9qEMZZE0AhcAdlfpLlFkZyAlZFTdugw2ytkhNSigHo9HI5tG16E5RjZlGmJOc+BH
- as8YATQ1vGP/z3W1RkbcvMda0hXQx7eJYRkgah+UrS16QkJabnfB+nW7qjAMN77WOUkeglSuS
- 0C28pi8mdFXEacKLSWQYHyv6hpOYoYtLEyjz0vGx8GwsYyFAu4DrY9+usA6kjA4+OWLxwTiW6
- FjJ7AVOf+9drVVDnvOyQelvjnVGkQwm4loysP5mTuL9KhwzwN3bSNP8wFxVoC2yau7vXbs/f5
- R5Vq78iKYXt2HcVYi8j/sWXYqYedqfuLvwpbi7jYG6889ffrEiiC4CyQVOY+/u8bhi637i4nE
- dkZyZFngk9qUzVGHn7Zy0qMfn6odMItDvpagLAi8//JT2w1kGLnIa5cdo5LOwuVubaNDEl6Y1
- R1Entzsi2BMtzG4ohKxJtwiHEJwTTXf/LZJWzkn882rP/XVblxV7ALqmEEqjvrsChETegifFt
- NcrUgCYu6r1yEkgzuEDH6YDw27OyZSzXFBT0D+1oPjQRc2I8AEbHbhLYXb/LbkEuUJmSvIeWo
- oRd7+jq22aCuHwehSm2+McM/eL+E8ooLlXbOULgRYXM9/SJUQK2C9HT8SIR+XBZvu+xDVzvMV
- nahBRkJeqeU/nsWAnWCkFrWRvX2IZSYtiIp6a22+SqrZs62aRhrMhJ5lU9VEc9MM9HWiJRs57
- uxk/3Ir7hBTmzGuyAcbjOsSVavzv3Nexw+k5YgPA2oppferloHdSspVvLG3S0tMlZq684ylQS
- wMhIrHm9Xbbu2kU9szpLsUrB5LVywGms1a60HS4B0GmarQ8xj87TljyNXA/Li6Op2RckCNJsH
- IKaKOBCZBUMjy8S2ec3egwJ7KypNQLv2eDDu6Xb+Cb9w9Kax44u6gyxydTHF900/mCyRQ5Abo
- 8SeGf9EROPTMsB6KZIi22AcwU15tSt+JtQpE69FOA17cZ1Shnb6CUGFYT4vJ1WUXPk9RxwIXa
- yF026pGp8ngOIuEi1vkJLRiIyNi/bZuQ8oN7JCrC2IuXHd42iDB+fcul3iCNCEKB2P6jQ5RwY
- 05uw7qEmbevc0AVSVQKl3a6Qo5Rp+1HZSDgKPxZS1mfpXhWXFrK+fkV9ALUAgLcCiqzTsjQz+
- W/od5bsBowLN2iGNaBP+cgobuxWFE6AbCGVVbYGvyMRkXM9J2mJoTyuVLdrA1tIOKErJ76lT8
- 2jPkQ/kwq33bFGg/mG99t29NviuZKbvZUb5oH3AcOyDZLosjVVAdMVVJMSvI=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zaiRKg6OGaQ=:FJUd5GBaet2U+5tvY0wshJ
+ lKgzqqG54DYkxgsWUx/dqcGSCQv3H05WF7I9N2+l6DtVYdFzsaDp0SoPcEpN/W/havZZgsJWm
+ ItGZfqfyxjI60dO06BLB/7n5f78/SKcOpDw07W97mLNUHtOEbLPa9r//JyNblRv2H6rTFBZDV
+ AbgHww0lv/nbo5fHkf1JHlFeeafkvpjS1wV92l7VHY0PNwY8sTvRFhyeZeW8rVHWVr8YcKNFM
+ Loh94c5BR3wXqCH4UxOAQIS66yu057q5I+KHSdJVdRqSXjGGG7BaG4wO5bU+KjOmwXzRtDtqm
+ 4PYaeTf4ISGHntgSNxkM4+grdHaxPovksh2QzloIBY7jX2EfeC3/M55sxM3czqSSB99VfOTab
+ 8tQLhqzKUbYl3GWbw9teLguESBk2VXy52PqlZlkvawQFUWDM/fK7J9l3TMzAUkWdRqMFCqL91
+ XuxXxuZlrrO+MIRT1Cv4Ez54Nr9aUvAoUPAX3Fk7V5MJ3kWNuIuZerodo7HyUG4MLHk7a1wim
+ QaPShwkSphTtFQfDJR2c4vfbkYgDNbXmTzQZIk+O3u0HjPfoOpvmQEvAWQZqhSZ6CjqKu23Ao
+ 1OcfLYzkAHoX2tovzBD01g2R7cldGgq6Ce/dWGmpnFcppBaSxB2mOko4HslY7djaSYD7R2Glf
+ 1p/kLiJ5Zm4RC2oSQ85Vs6hkqrAgT9IUxQTMkXyLTTLST9e9n+D7MaUlY8+W8O997U4+IvL4e
+ n8rPorViGc5zyK0Iw9lgR1hg6IG93QeucE8tRt4ILZcQ2BLNT233In5G8Rp1gP9d1YmayfbCe
+ d3QPJQo9er/pbO6hBlh0aBiXv9Iwj3w6JjN90T+THOW5uvHQ4DDCvwwtTVXTqOOycmqCCZzbL
+ k1OqScBLnDcrliQCOvjFidwn0NXn2qN9hjElaE1YFAiF+dteiJ1HzQuDNTvH3CuQSATcE1k0z
+ O4/KlqhcxNCnRNlOwivfic/dm0cQEu75q2QlLZrN+pGkhdPM9LBsv/TO0mvOLcKcXyTqN2oji
+ CyXultsWvDZRFgpfWQW02toe1tqctqUcIyiM9jFjfm5faWB783vOas7JL92GmhhQzD80axtqe
+ iIuDhQoerlcTI3zrsHPrtHQgZUUZkHd4IOhtm1pRSD0LFdwMdDCIHk/QlssOEYY5YiBlJHvOJ
+ ruq1tLrhz6KFTowe9AULfYVQiB9EqNqBadZxVgxxnYd8XSqi5GRex1GBZnn+5wKJyQgOxzTJc
+ ndjrfSnyWyS27XUUuFUlsB8Yi2rBCx2dHeFWKBy7wpcVGI0q4Cynnjwvt4hc=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--NJREc1O8gNFLU5k9uwaut1iHTPHAtNmi0
+Content-Type: multipart/mixed; boundary="SxjPij1Qw3bvr4vbV0enyxU8I2opCizDY"
+
+--SxjPij1Qw3bvr4vbV0enyxU8I2opCizDY
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
 
-On 2019/10/30 =E4=B8=8B=E5=8D=888:22, Nikolay Borisov wrote:
-> convert is always set to true so there's no point in having it as a
-> function parameter or using it as a predicate inside btrfs_alloc_data_ch=
-unk.
-> Remove it and all relevant code which would have never been executed.
-> No semantics changes.
->
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+
+On 2019/10/30 =E4=B8=8B=E5=8D=888:23, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+>=20
+> Backreference walking, which is used by send to figure if it can issue
+> clone operations instead of write operations, can be very slow and use =
+too
+> much memory when extents have many references. This change simply skips=
+
+> backreference walking when an extent has more than 64 references, in wh=
+ich
+> case we fallback to a write operation instead of a clone operation. Thi=
+s
+> limit is conservative and in practice I observed no signicant slowdown
+> with up to 100 references and still low memory usage up to that limit.
+>=20
+> This is a temporary workaround until there are speedups in the backref
+> walking code, and as such it does not attempt to add extra interfaces o=
+r
+> knobs to tweak the threshold.
+>=20
+> Reported-by: Atemu <atemu.main@gmail.com>
+> Link: https://lore.kernel.org/linux-btrfs/CAE4GHgkvqVADtS4AzcQJxo0Q1jKQ=
+gKaW3JGp3SGdoinVo=3DC9eQ@mail.gmail.com/T/#me55dc0987f9cc2acaa54372ce0492=
+c65782be3fa
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Just one tip for further patches.
-
-The function btrfs_alloc_data_chunk() is purely used for convert to
-create a 1:1 mapped data chunk.
-
-It would be be even better to rename the function to indicate it better.
+The workaround is much better than the old
+completely-disable-reflink-detection one.
 
 Thanks,
 Qu
 
 > ---
->  convert/main.c |  3 +--
->  volumes.c      | 44 ++++++++++++++------------------------------
->  volumes.h      |  3 +--
->  3 files changed, 16 insertions(+), 34 deletions(-)
->
-> diff --git a/convert/main.c b/convert/main.c
-> index 9904deafba45..416ab5d264a3 100644
-> --- a/convert/main.c
-> +++ b/convert/main.c
-> @@ -942,8 +942,7 @@ static int make_convert_data_block_groups(struct btr=
-fs_trans_handle *trans,
->
->  			len =3D min(max_chunk_size,
->  				  cache->start + cache->size - cur);
-> -			ret =3D btrfs_alloc_data_chunk(trans, fs_info,
-> -					&cur_backup, len, 1);
-> +			ret =3D btrfs_alloc_data_chunk(trans, fs_info, &cur_backup, len);
->  			if (ret < 0)
->  				break;
->  			ret =3D btrfs_make_block_group(trans, fs_info, 0,
-> diff --git a/volumes.c b/volumes.c
-> index 87315a884b49..39e824a43736 100644
-> --- a/volumes.c
-> +++ b/volumes.c
-> @@ -1238,14 +1238,11 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle =
-*trans,
+>  fs/btrfs/send.c | 25 ++++++++++++++++++++++++-
+>  1 file changed, 24 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 123ac54af071..518ec1265a0c 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -25,6 +25,14 @@
+>  #include "compression.h"
+> =20
 >  /*
->   * Alloc a DATA chunk with SINGLE profile.
->   *
-> - * If 'convert' is set, it will alloc a chunk with 1:1 mapping
-> - * (btrfs logical bytenr =3D=3D on-disk bytenr)
-> - * For that case, caller must make sure the chunk and dev_extent are no=
-t
-> - * occupied.
-> + * It allocates a chunk with 1:1 mapping (btrfs logical bytenr =3D=3D o=
-n-disk bytenr)
-> + * Caller must make sure the chunk and dev_extent are not occupied.
->   */
->  int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
-> -			   struct btrfs_fs_info *info, u64 *start,
-> -			   u64 num_bytes, int convert)
-> +			   struct btrfs_fs_info *info, u64 *start, u64 num_bytes)
->  {
->  	u64 dev_offset;
->  	struct btrfs_root *extent_root =3D info->extent_root;
-> @@ -1264,25 +1261,18 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_ha=
-ndle *trans,
->  	int stripe_len =3D BTRFS_STRIPE_LEN;
->  	struct btrfs_key key;
->
-> -	key.objectid =3D BTRFS_FIRST_CHUNK_TREE_OBJECTID;
-> -	key.type =3D BTRFS_CHUNK_ITEM_KEY;
-> -	if (convert) {
-> -		if (*start !=3D round_down(*start, info->sectorsize)) {
-> -			error("DATA chunk start not sectorsize aligned: %llu",
-> -					(unsigned long long)*start);
-> -			return -EINVAL;
-> -		}
-> -		key.offset =3D *start;
-> -		dev_offset =3D *start;
-> -	} else {
-> -		u64 tmp;
->
-> -		ret =3D find_next_chunk(info, &tmp);
-> -		key.offset =3D tmp;
-> -		if (ret)
-> -			return ret;
-> +	if (*start !=3D round_down(*start, info->sectorsize)) {
-> +		error("DATA chunk start not sectorsize aligned: %llu",
-> +				(unsigned long long)*start);
-> +		return -EINVAL;
->  	}
->
-> +	key.objectid =3D BTRFS_FIRST_CHUNK_TREE_OBJECTID;
-> +	key.type =3D BTRFS_CHUNK_ITEM_KEY;
-> +	key.offset =3D *start;
-> +	dev_offset =3D *start;
+> + * Maximum number of references an extent can have in order for us to =
+attempt to
+> + * issue clone operations instead of write operations. This currently =
+exists to
+> + * avoid hitting limitations of the backreference walking code (taking=
+ a lot of
+> + * time and using too much memory for extents with large number of ref=
+erences).
+> + */
+> +#define SEND_MAX_EXTENT_REFS	64
 > +
->  	chunk =3D kmalloc(btrfs_chunk_item_size(num_stripes), GFP_NOFS);
->  	if (!chunk)
->  		return -ENOMEM;
-> @@ -1303,12 +1293,8 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_han=
-dle *trans,
->  	while (index < num_stripes) {
->  		struct btrfs_stripe *stripe;
->
-> -		if (convert)
-> -			ret =3D btrfs_insert_dev_extent(trans, device, key.offset,
-> -					calc_size, dev_offset);
-> -		else
-> -			ret =3D btrfs_alloc_dev_extent(trans, device, key.offset,
-> -					calc_size, &dev_offset);
-> +		ret =3D btrfs_insert_dev_extent(trans, device, key.offset, calc_size,
-> +				dev_offset);
->  		BUG_ON(ret);
->
->  		device->bytes_used +=3D calc_size;
-> @@ -1345,8 +1331,6 @@ int btrfs_alloc_data_chunk(struct btrfs_trans_hand=
-le *trans,
->  	ret =3D btrfs_insert_item(trans, chunk_root, &key, chunk,
->  				btrfs_chunk_item_size(num_stripes));
->  	BUG_ON(ret);
-> -	if (!convert)
-> -		*start =3D key.offset;
->
->  	map->ce.start =3D key.offset;
->  	map->ce.size =3D num_bytes;
-> diff --git a/volumes.h b/volumes.h
-> index 83ba827e422b..f6f05054b5c4 100644
-> --- a/volumes.h
-> +++ b/volumes.h
-> @@ -271,8 +271,7 @@ int btrfs_alloc_chunk(struct btrfs_trans_handle *tra=
-ns,
->  		      struct btrfs_fs_info *fs_info, u64 *start,
->  		      u64 *num_bytes, u64 type);
->  int btrfs_alloc_data_chunk(struct btrfs_trans_handle *trans,
-> -			   struct btrfs_fs_info *fs_info, u64 *start,
-> -			   u64 num_bytes, int convert);
-> +			   struct btrfs_fs_info *fs_info, u64 *start, u64 num_bytes);
->  int btrfs_open_devices(struct btrfs_fs_devices *fs_devices,
->  		       int flags);
->  int btrfs_close_devices(struct btrfs_fs_devices *fs_devices);
->
+> +/*
+>   * A fs_path is a helper to dynamically build path names with unknown =
+size.
+>   * It reallocates the internal buffer on demand.
+>   * It allows fast adding of path elements on the right side (normal pa=
+th) and
+> @@ -1302,6 +1310,7 @@ static int find_extent_clone(struct send_ctx *sct=
+x,
+>  	struct clone_root *cur_clone_root;
+>  	struct btrfs_key found_key;
+>  	struct btrfs_path *tmp_path;
+> +	struct btrfs_extent_item *ei;
+>  	int compressed;
+>  	u32 i;
+> =20
+> @@ -1349,7 +1358,6 @@ static int find_extent_clone(struct send_ctx *sct=
+x,
+>  	ret =3D extent_from_logical(fs_info, disk_byte, tmp_path,
+>  				  &found_key, &flags);
+>  	up_read(&fs_info->commit_root_sem);
+> -	btrfs_release_path(tmp_path);
+> =20
+>  	if (ret < 0)
+>  		goto out;
+> @@ -1358,6 +1366,21 @@ static int find_extent_clone(struct send_ctx *sc=
+tx,
+>  		goto out;
+>  	}
+> =20
+> +	ei =3D btrfs_item_ptr(tmp_path->nodes[0], tmp_path->slots[0],
+> +			    struct btrfs_extent_item);
+> +	/*
+> +	 * Backreference walking (iterate_extent_inodes() below) is currently=
+
+> +	 * too expensive when an extent has a large number of references, bot=
+h
+> +	 * in time spent and used memory. So for now just fallback to write
+> +	 * operations instead of clone operations when an extent has more tha=
+n
+> +	 * a certain amount of references.
+> +	 */
+> +	if (btrfs_extent_refs(tmp_path->nodes[0], ei) > SEND_MAX_EXTENT_REFS)=
+ {
+> +		ret =3D -ENOENT;
+> +		goto out;
+> +	}
+> +	btrfs_release_path(tmp_path);
+> +
+>  	/*
+>  	 * Setup the clone roots.
+>  	 */
+>=20
+
+
+--SxjPij1Qw3bvr4vbV0enyxU8I2opCizDY--
+
+--NJREc1O8gNFLU5k9uwaut1iHTPHAtNmi0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl25hmcACgkQwj2R86El
+/qgQ+Af/b7bFlj5sK9tSqjL9Hsi7bNsA7Q279PDSPR2jBprNlBAXL5aFkAw5EHhT
+7KIhx3VjqQy2sazUnfI8j69eIBnHz96rKOsivHsPM6HOL/EhzCHfJ6s/Wl63A8Sy
+Jlum1wI53Eq1cEW4Tva04yZ6WVXPP9wrXTrurvd7ZffsCiKRxUTDwAMq6tdex/Ia
+p5eHnWq6wh4+smLOfolhJtn5nX/adrvJtVeOc/8X9bcBE5EQXjLJIU+8fZRufIme
+e2WFL1lFePwcTS6cSTBtTEQ8B9c0N1pOEhqrPKdAhO/GeQzsHT3y0Szp8pCo5EZH
+eP1w8ZwxbFIbfXqRtYAZByBaeQkNHA==
+=ja5/
+-----END PGP SIGNATURE-----
+
+--NJREc1O8gNFLU5k9uwaut1iHTPHAtNmi0--
