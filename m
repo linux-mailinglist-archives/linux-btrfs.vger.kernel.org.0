@@ -2,69 +2,144 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2359EB1AF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2019 14:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88A28EB3A9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 31 Oct 2019 16:13:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727592AbfJaN4M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 31 Oct 2019 09:56:12 -0400
-Received: from mail-wr1-f45.google.com ([209.85.221.45]:42598 "EHLO
-        mail-wr1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727567AbfJaN4M (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 31 Oct 2019 09:56:12 -0400
-Received: by mail-wr1-f45.google.com with SMTP id a15so6341627wrf.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 31 Oct 2019 06:56:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jABzMUS1ximEwPXuff6fg/FSUSeykjfarKskNygbxq4=;
-        b=QN1rVkC23ZzhCPYvfAAKfGBKtMiSXuGcRfiym3X1wY9P3hsgLeuY5zuRW39t+O7ghD
-         9DZq7D+SoO6qPjpJJE64SAW1/ht/nqih2JUi/GxYhFF6DQp85PpwoQ9Kez+8s7+Miz+I
-         dipWqK5fYLuMOR91avOKAscQuQB/DS0SLRS0l5ATgUzK17Up2i/7y2EiqJPHKbBWEBge
-         gB1IEqC1SgGVlMiqj11xyXNme+O3l/+xFzOoDm7RyplyXC7ZnLYThdHSDbTVAaG1RiVk
-         /he2AyuJVR0krPL9tZEcicIAvADUZKME/OwOGj3ExTpthWHFiv4JHVLg0GeebpjVCliv
-         obug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jABzMUS1ximEwPXuff6fg/FSUSeykjfarKskNygbxq4=;
-        b=U2zpgyK1gPDnIWgH9VtNpSYIMKdznbj9ZRyI3XWHXWNq0ZNtAx/JoB9ByTRS4WzXZx
-         LlDGH/4O0NkaauvnH5u2ftzaK0sHGrK9A4uV2YJ4eyINsIMHc5ONC81nupZFCYyn5EGJ
-         aI8iKq8dkERylWtrC2R7we/M3fZHEZQxj4pZEy3JpF1HQ/Sp7+izy0dowvJ+RfJlyiu1
-         cYlSmUuRMHl4ymJ1vvyPihvo5X7bsB/z/aEhYAq+4BHMSxSMdV8/xRfmUBJMysO1v3ON
-         8ECz4OIr2hS+yoL7xd7NDKVJ1z2nXUrS4yFauZU204Z3cZWJEzT6Nm/KA+0T/RcuYAZl
-         cfzQ==
-X-Gm-Message-State: APjAAAXW9eV06WSrADNoH31IPDpy1IdNRsciT7USwE/mE69Fj+Kk6xTu
-        K8uDXB9gSuq3kWvYWb9E1v2i/3qmFbmlDCrRMhU=
-X-Google-Smtp-Source: APXvYqycQP8mzUwm8IKNBt+N5FEAJms27YT6DQuwwbNiPFQclikcHdiftLw/yYPp6JCNLXQ8XNFDX2a65Sxbd00CNtc=
-X-Received: by 2002:adf:e5cf:: with SMTP id a15mr6054154wrn.143.1572530169735;
- Thu, 31 Oct 2019 06:56:09 -0700 (PDT)
+        id S1728317AbfJaPNj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 31 Oct 2019 11:13:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50758 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728292AbfJaPNj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 31 Oct 2019 11:13:39 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 94DD8B6F3;
+        Thu, 31 Oct 2019 15:13:37 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 648B4DA783; Thu, 31 Oct 2019 16:13:42 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Cc:     David Sterba <dsterba@suse.com>
+Subject: [PATCH v3 0/4] RAID1 with 3- and 4- copies
+Date:   Thu, 31 Oct 2019 16:13:41 +0100
+Message-Id: <cover.1572534591.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-References: <CAE4GHg=W+a319=Ra_PNh3LV0hdD-Y12k-0N5ej72FSt=Fq520Q@mail.gmail.com>
- <cb5f9048-919f-0ff9-0765-d5a33e58afa7@gmx.com> <CAE4GHgmW2A-2SUUw8FzgafRhQ2BoViBx2DsLigwBrrbbp=oOsw@mail.gmail.com>
- <b4673e3b-b9b2-e8e5-2783-4b5eac7f656d@gmx.com> <CAE4GHg=4S4KqzBGHo-7T3cmmgECZxWZ-vXJMq8SYnnwy16h3xg@mail.gmail.com>
- <CAL3q7H4Wc0GnKNORVvwCOEk1QhzUweJr1JnN=+Scx5-TpQ5+yA@mail.gmail.com>
- <CAE4GHgntuxsoqv5vGMRTy6QYOTpQOocHgA2RxxeN6YKLgr5rNA@mail.gmail.com>
- <CAL3q7H5+xDr=0ZzW0+CnNqBh8ox9=rh8Vpp2aD4-jnXXnWCpgg@mail.gmail.com> <CAE4GHgkvqVADtS4AzcQJxo0Q1jKQgKaW3JGp3SGdoinVo=C9eQ@mail.gmail.com>
-In-Reply-To: <CAE4GHgkvqVADtS4AzcQJxo0Q1jKQgKaW3JGp3SGdoinVo=C9eQ@mail.gmail.com>
-From:   Atemu <atemu.main@gmail.com>
-Date:   Thu, 31 Oct 2019 14:55:58 +0100
-Message-ID: <CAE4GHgmQTadqg11b1r6GGo9tDFf6Y2UwE4=3PPUW5ToMYE_dJA@mail.gmail.com>
-Subject: Re: BUG: btrfs send: Kernel's memory usage rises until OOM kernel
- panic after sending ~37GiB
-To:     fdmanana@gmail.com
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> kmalloc-N. N was probably 64 but that I'm not sure about.
+Here it goes again, RAID1 with 3- and 4- copies. I found the bug that stopped
+it from inclusion last time, it was in the test itself, so the kernel code is
+effectively unchanged.
 
-Correction: It's kmalloc-32.
+So, with 1 or 2 missing devices, replace by device id works. There's one
+annoying thing but not new: regarding replace of a missing device, some
+extra single/dup block groups are created during the replace process.
+Example below. This can happen on plain raid1 with degraded read-write
+mount as well.
 
--Atemu
+Now what's the merge target.
+
+The patches almost made it to 5.3, the changes build on existing code so the
+actual addition of new profiles is namely in the definitions and additional
+cases. So it should be safe.
+
+I'm for adding it to 5.5 queue, though we're at rc5 and this can be seen as a
+late time for a feature. The user benefits are noticeable, raid1c3 can replace
+raid6 of metadata which is the most problematic part and much more complicated
+to fix (write ahead journal or something like that). The feedback regarding the
+plain 3-copy as a replacement was positive, on IRC and there are mails about
+that too.
+
+Further information can be found in the 5.3-time submission:
+https://lore.kernel.org/linux-btrfs/cover.1559917235.git.dsterba@suse.com/
+
+--
+
+Example of 2 devices gone missing and replaced
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+ - mkfs -d raid1c3 -m raidc3 /dev/sda10 /dev/sda11 /dev/sda12
+
+ - delete devices 2 and 3 from the system
+
+              Data      Metadata  System
+Id Path       RAID1C3   RAID1C3   RAID1C3  Unallocated
+-- ---------- --------- --------- -------- -----------
+ 1 /dev/sda10   1.00GiB 256.00MiB  8.00MiB     8.74GiB
+ 2 missing      1.00GiB 256.00MiB  8.00MiB    -1.26GiB
+ 3 missing      1.00GiB 256.00MiB  8.00MiB    -1.26GiB
+-- ---------- --------- --------- -------- -----------
+   Total        1.00GiB 256.00MiB  8.00MiB     6.23GiB
+   Used       200.31MiB 320.00KiB 16.00KiB
+
+- mount -o degraded
+
+- btrfs replace 2 /dev/sda13
+
+              Data      Metadata  Metadata  System   System
+Id Path       RAID1C3   single    RAID1C3   single   RAID1C3 Unallocated
+-- ---------- --------- --------- --------- -------- ------- -----------
+ 1 /dev/sda10   1.00GiB 256.00MiB 256.00MiB 32.00MiB 8.00MiB     8.46GiB
+ 2 /dev/sda13   1.00GiB         - 256.00MiB        - 8.00MiB     8.74GiB
+ 3 missing      1.00GiB         - 256.00MiB        - 8.00MiB    -1.26GiB
+-- ---------- --------- --------- --------- -------- ------- -----------
+   Total        1.00GiB 256.00MiB 256.00MiB 32.00MiB 8.00MiB    15.95GiB
+   Used       200.31MiB     0.00B 320.00KiB 16.00KiB   0.00B
+
+
+- btrfs replace 3 /dev/sda14
+
+              Data      Metadata  Metadata  System   System
+Id Path       RAID1C3   single    RAID1C3   single   RAID1C3 Unallocated
+-- ---------- --------- --------- --------- -------- ------- -----------
+ 1 /dev/sda10   1.00GiB 256.00MiB 256.00MiB 32.00MiB 8.00MiB     8.46GiB
+ 2 /dev/sda13   1.00GiB         - 256.00MiB        - 8.00MiB     8.74GiB
+ 3 /dev/sda14   1.00GiB         - 256.00MiB        - 8.00MiB     8.74GiB
+-- ---------- --------- --------- --------- -------- ------- -----------
+   Total        1.00GiB 256.00MiB 256.00MiB 32.00MiB 8.00MiB    25.95GiB
+   Used       200.31MiB     0.00B 320.00KiB 16.00KiB   0.00B
+
+There you can see the metadata/single and system/single chunks, that are
+otherwise unused if there are no other writes happening during replace.
+Running 'balance start -mconvert=raid1c3,profiles=single' should get rid of
+them.
+
+This is an annoyance, we have a plan to avoid that but it needs to change
+behaviour with degraded mount and enabled writes.
+
+Implementation details: The new profiles are reduced from the expected ones
+  (raid1 -> single or dup) to allow writes without breaking the raid
+  constraints.  To relax that condition, allow writing to "half" of the raid
+  with a missing device will skip creating the block groups.
+
+  This is similar to MD-RAID that allows writing to just one of the RAID1
+  devices, and then sync to the other when it's available again.
+
+  With the btrfs style raid1 we can do better in case there are enough other
+  devices that would satify the raid1 constraint (yet with a missing device).
+
+--
+
+David Sterba (4):
+  btrfs: add support for 3-copy replication (raid1c3)
+  btrfs: add support for 4-copy replication (raid1c4)
+  btrfs: add incompat for raid1 with 3, 4 copies
+  btrfs: drop incompat bit for raid1c34 after last block group is gone
+
+ fs/btrfs/block-group.c          | 27 ++++++++++++++--------
+ fs/btrfs/ctree.h                |  7 +++---
+ fs/btrfs/super.c                |  4 ++++
+ fs/btrfs/sysfs.c                |  2 ++
+ fs/btrfs/volumes.c              | 40 +++++++++++++++++++++++++++++++--
+ fs/btrfs/volumes.h              |  4 ++++
+ include/uapi/linux/btrfs.h      |  5 ++++-
+ include/uapi/linux/btrfs_tree.h | 10 ++++++++-
+ 8 files changed, 83 insertions(+), 16 deletions(-)
+
+-- 
+2.23.0
+
