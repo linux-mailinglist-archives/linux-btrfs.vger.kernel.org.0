@@ -2,59 +2,83 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 430D5EC558
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 16:09:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8515EC580
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 16:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728158AbfKAPJC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Nov 2019 11:09:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:50094 "EHLO mx1.suse.de"
+        id S1727944AbfKAPSI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Nov 2019 11:18:08 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51778 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727893AbfKAPJC (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 1 Nov 2019 11:09:02 -0400
+        id S1727810AbfKAPSI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 1 Nov 2019 11:18:08 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 87590B43A;
-        Fri,  1 Nov 2019 15:09:00 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 03CAFB4F0;
+        Fri,  1 Nov 2019 15:18:06 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 51991DA7AF; Fri,  1 Nov 2019 16:09:08 +0100 (CET)
-Date:   Fri, 1 Nov 2019 16:09:08 +0100
+        id 789FBDA7AF; Fri,  1 Nov 2019 16:18:15 +0100 (CET)
+Date:   Fri, 1 Nov 2019 16:18:15 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Neal Gompa <ngompa13@gmail.com>
-Cc:     David Sterba <dsterba@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v3 0/4] RAID1 with 3- and 4- copies
-Message-ID: <20191101150908.GU3001@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] btrfs-progs: make quiet to overrule verbose
+Message-ID: <20191101151815.GV3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
-        David Sterba <dsterba@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <cover.1572534591.git.dsterba@suse.com>
- <CAEg-Je_oNz5BtpRAF3fzfX1G-Dhh7yjpshyy47NwLaREWv0wBQ@mail.gmail.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191024062825.13097-1-anand.jain@oracle.com>
+ <20191024154151.GI3001@twin.jikos.cz>
+ <1166a5c7-8bc9-b93f-6f4c-8871b5fc394b@oracle.com>
+ <7b97f0ce-1f62-09fa-ad86-6a4d0af40e1d@oracle.com>
+ <20191025163555.GP3001@twin.jikos.cz>
+ <79a8fa97-6aff-3698-2263-548fbb68baf0@oracle.com>
+ <0bf84f2d-d125-8c06-cb1a-e5498d84d196@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAEg-Je_oNz5BtpRAF3fzfX1G-Dhh7yjpshyy47NwLaREWv0wBQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0bf84f2d-d125-8c06-cb1a-e5498d84d196@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 01, 2019 at 10:54:45AM -0400, Neal Gompa wrote:
-> What's the reasoning for not submitting this for 5.4? I think the
-> improvements here are definitely worth pulling into the 5.4 kernel
-> release...
+On Wed, Oct 30, 2019 at 03:42:56AM +0800, Anand Jain wrote:
+> >>>    Question: command -v -q -v should be equal to command -v, right?
+> >>
+> >> No, that would be equivalent to the default level:
+> >>
+> >> verbose starts with 1            ()
+> >> verbose++                (-v)
+> >> verbose = 0                (-q)
+> >> verbose++ is now 1, which is not -v    ()
+> >>
+> > 
+> > Oh I was thinking its a bug, and no need to carry forward to the global
+> > verbose. Will make it look like this.
+> 
+> What do you think should be the final %verbose value when both
+> local and global verbose and or quiet options are specified?
+> 
+> For example:
+>   btrfs -v -q sub-command -v
+>   btrfs -q sub-command -v
+>   btrfs -vv sub-command -q
+>   etc..
 
-Because 5.4 is at rc5, new features are allowed to be merged only during
-the merge window, ie. before 5.4-rc1. Thats more than a month ago.  From
-rc1-rcX only regressions or fixes can be applied, so you can see pull
-requests but the subject lines almost always contain 'fix'.
+Ah that's the conflicting part. I'd say treat all -v and -q equal, so
+modify the bconf.verbose variable, and it's straightforward to document.
+Some time in the future we should also issue a warning for 'sub-command
+-v'.
 
-A new feature has to be in the develoment branch at least 2 weeks before
-the merge window opens (for testing), so right now it's the last
-opportunity to get it to 5.5, 5.4 is out of question. No matter how much
-I or users want to get it merged. This is how the linux development
-process works.
+The order makes it unintuitive so
 
-The raid1c34 patches are not intrusive and could be backported on top of
-5.3 because all the preparatory work has been merged already.
+  btrfs -q command -v
+
+is going to be the default verbosity. We can't ignore the sub-command
+part, and making it conditionally work in case there's no global
+verbosity setting is kind of complicating it.
+
+So let's take the simple approach, maybe we'll have second thought on
+that before release.
