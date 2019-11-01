@@ -2,75 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 43D90EC163
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 11:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 261D7EC16A
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 11:55:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729854AbfKAKwJ (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Nov 2019 06:52:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56522 "EHLO mx1.suse.de"
+        id S1727207AbfKAKzT (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Nov 2019 06:55:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57198 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729792AbfKAKwJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 1 Nov 2019 06:52:09 -0400
+        id S1726622AbfKAKzS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 1 Nov 2019 06:55:18 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 72F24B28B;
-        Fri,  1 Nov 2019 10:52:07 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 6FD1AB2BA;
+        Fri,  1 Nov 2019 10:55:17 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 4A064DA783; Fri,  1 Nov 2019 11:52:16 +0100 (CET)
-Date:   Fri, 1 Nov 2019 11:52:16 +0100
+        id D933EDA783; Fri,  1 Nov 2019 11:55:25 +0100 (CET)
+Date:   Fri, 1 Nov 2019 11:55:25 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Christian Pernegger <pernegger@gmail.com>
-Subject: Re: [PATCH] btrfs-progs: rescue-zero-log: Modify super block directly
-Message-ID: <20191101105216.GJ3001@twin.jikos.cz>
+To:     Anand Jain <anand.jain@oracle.com>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs-progs: receive: make option quiet work
+Message-ID: <20191101105525.GK3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        Christian Pernegger <pernegger@gmail.com>
-References: <20191026101127.36851-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191025102520.41170-1-anand.jain@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191026101127.36851-1-wqu@suse.com>
+In-Reply-To: <20191025102520.41170-1-anand.jain@oracle.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Oct 26, 2019 at 06:11:27PM +0800, Qu Wenruo wrote:
-> +	/*
-> +	 * Log tree only exists in the primary super block, so SBREAD_DEFAULT
-> +	 * is enough.
-
-For read it should be enough to read the default one, but do you mean
-that 1st and 2nd copy don't have the log_root values set? They're
-written from the same buffer so I'd expect the contents to be the same.
-
-> +	ret = btrfs_read_dev_super(fd, sb, BTRFS_SUPER_INFO_OFFSET,
-> +				   SBREAD_DEFAULT);
-> +	if (ret < 0) {
-> +		errno = -ret;
-> +		error("failed to read super block on '%s': %m", devname);
-> +		goto close_fd;
+On Fri, Oct 25, 2019 at 06:25:20PM +0800, Anand Jain wrote:
+> Even when -q option specified, the receive sub-command is not quiet as
+> show below.
+> 
+>  btrfs receive -q -f /tmp/t /btrfs1
+>  At snapshot ss3
+> 
+> It must be quiet atlest when its been asked to be quiet.
+> 
+> Signed-off-by: Anand Jain <anand.jain@oracle.com>
+> ---
+> This is how I checked if fstests/btrfs-progs-tests is using receive -q option.
+>    find  ./xfstests-devel -type f -exec grep --color -i -I "receive" {} \; \
+> 	-print | grep "\-q"
+>    find  ./btrfs-progs/tests -type f -exec grep --color -i -I "receive" {} \; \
+> 	-print | grep "\-q"
+> 
+>  they aren't using it. So its fine.
+> 
+>  cmds/receive.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/cmds/receive.c b/cmds/receive.c
+> index 4b03938ea3eb..c4827c1dd999 100644
+> --- a/cmds/receive.c
+> +++ b/cmds/receive.c
+> @@ -269,7 +269,8 @@ static int process_snapshot(const char *path, const u8 *uuid, u64 ctransid,
+>  		goto out;
 >  	}
 >  
-> -	sb = root->fs_info->super_copy;
->  	printf("Clearing log on %s, previous log_root %llu, level %u\n",
->  			devname,
->  			(unsigned long long)btrfs_super_log_root(sb),
->  			(unsigned)btrfs_super_log_root_level(sb));
-> -	trans = btrfs_start_transaction(root, 1);
-> -	BUG_ON(IS_ERR(trans));
->  	btrfs_set_super_log_root(sb, 0);
->  	btrfs_set_super_log_root_level(sb, 0);
-> -	btrfs_commit_transaction(trans, root);
-> -	close_ctree(root);
-> +	btrfs_csum_data(btrfs_super_csum_type(sb), (u8 *)sb + BTRFS_CSUM_SIZE,
-> +			result, BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE);
-> +	memcpy(&sb->csum[0], result, BTRFS_CSUM_SIZE);
-> +	ret = pwrite64(fd, sb, BTRFS_SUPER_INFO_SIZE, BTRFS_SUPER_INFO_OFFSET);
+> -	fprintf(stdout, "At snapshot %s\n", path);
+> +	if (g_verbose)
+> +		fprintf(stdout, "At snapshot %s\n", path);
 
-So this only writes on the one device that's passed to the command.
-Previously it would update superblocks on all devices.
+Right, this seems to be forgotten in commit 33b4acc7df00bf "btrfs-progs:
+receive: add option for quiet mode" that updated the verbosity.
+Added to devel, thanks.
