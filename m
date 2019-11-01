@@ -2,83 +2,97 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8515EC580
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 16:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 955B6EC5CD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 16:45:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbfKAPSI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Nov 2019 11:18:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51778 "EHLO mx1.suse.de"
+        id S1728968AbfKAPpa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Nov 2019 11:45:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59786 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727810AbfKAPSI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 1 Nov 2019 11:18:08 -0400
+        id S1726951AbfKAPpa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 1 Nov 2019 11:45:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 03CAFB4F0;
-        Fri,  1 Nov 2019 15:18:06 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 72AE2AE48;
+        Fri,  1 Nov 2019 15:45:28 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 789FBDA7AF; Fri,  1 Nov 2019 16:18:15 +0100 (CET)
-Date:   Fri, 1 Nov 2019 16:18:15 +0100
+        id D49ADDA7AF; Fri,  1 Nov 2019 16:45:36 +0100 (CET)
+Date:   Fri, 1 Nov 2019 16:45:36 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] btrfs-progs: make quiet to overrule verbose
-Message-ID: <20191101151815.GV3001@twin.jikos.cz>
+To:     Meng Xu <mengxu.gatech@gmail.com>
+Cc:     linux-btrfs@vger.kernel.org, josef@toxicpanda.com
+Subject: Re: potential data race on `delayed_rsv->full`
+Message-ID: <20191101154536.GW3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191024062825.13097-1-anand.jain@oracle.com>
- <20191024154151.GI3001@twin.jikos.cz>
- <1166a5c7-8bc9-b93f-6f4c-8871b5fc394b@oracle.com>
- <7b97f0ce-1f62-09fa-ad86-6a4d0af40e1d@oracle.com>
- <20191025163555.GP3001@twin.jikos.cz>
- <79a8fa97-6aff-3698-2263-548fbb68baf0@oracle.com>
- <0bf84f2d-d125-8c06-cb1a-e5498d84d196@oracle.com>
+Mail-Followup-To: dsterba@suse.cz, Meng Xu <mengxu.gatech@gmail.com>,
+        linux-btrfs@vger.kernel.org, josef@toxicpanda.com
+References: <CAAwBoOJDjei5Hnem155N_cJwiEkVwJYvgN-tQrwWbZQGhFU=cA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0bf84f2d-d125-8c06-cb1a-e5498d84d196@oracle.com>
+In-Reply-To: <CAAwBoOJDjei5Hnem155N_cJwiEkVwJYvgN-tQrwWbZQGhFU=cA@mail.gmail.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 03:42:56AM +0800, Anand Jain wrote:
-> >>>    Question: command -v -q -v should be equal to command -v, right?
-> >>
-> >> No, that would be equivalent to the default level:
-> >>
-> >> verbose starts with 1            ()
-> >> verbose++                (-v)
-> >> verbose = 0                (-q)
-> >> verbose++ is now 1, which is not -v    ()
-> >>
-> > 
-> > Oh I was thinking its a bug, and no need to carry forward to the global
-> > verbose. Will make it look like this.
+On Tue, Oct 15, 2019 at 02:33:11PM -0400, Meng Xu wrote:
+> I am reporting a potential data race around the `delayed_rsv->full` field.
+
+Thanks for the report.
+
+> [thread 1] mount a btrfs image, a kernel thread of uuid_rescan will be created
 > 
-> What do you think should be the final %verbose value when both
-> local and global verbose and or quiet options are specified?
+> btrfs_uuid_rescan_kthread
+>   btrfs_end_transaction
+>     __btrfs_end_transaction
+>       btrfs_trans_release_metadata
+>         btrfs_block_rsv_release
+>           __btrfs_block_rsv_release
+>             --> [READ] else if (block_rsv != global_rsv && !delayed_rsv->full)
+>                                                             ^^^^^^^^^^^^^^^^^
 > 
-> For example:
->   btrfs -v -q sub-command -v
->   btrfs -q sub-command -v
->   btrfs -vv sub-command -q
->   etc..
+> 
+> [thread 2] do a mkdir syscall on the mounted image
+> 
+> __do_sys_mkdir
+>   do_mkdirat
+>     vfs_mkdir
+>       btrfs_mkdir
+>         btrfs_new_inode
+>           btrfs_insert_empty_items
+>             btrfs_cow_block
+>               __btrfs_cow_block
+>                 alloc_tree_block_no_bg_flush
+>                   btrfs_alloc_tree_block
+>                     btrfs_add_delayed_tree_ref
+>                       btrfs_update_delayed_refs_rsv
+>                         --> [WRITE] delayed_rsv->full = 0;
+>                                     ^^^^^^^^^^^^^^^^^^^^^
+> 
+> 
+> I could confirm that this is a data race by manually adding and adjusting
+> delays before the read and write statements although I am not very sure
+> about the implication of such a data race (e.g., crashing btrfs or causing
+> violations of assumptions). I would appreciate if you could help check on
+> this potential bug and advise whether this is a harmful data race or it
+> is intended.
 
-Ah that's the conflicting part. I'd say treat all -v and -q equal, so
-modify the bconf.verbose variable, and it's straightforward to document.
-Some time in the future we should also issue a warning for 'sub-command
--v'.
+The race is there, as the access is unprotected, but it does not seem to
+have serious implications. The race is for space, which happens all the
+time, and if the reservations cannot be satisfied there goes ENOSPC.
 
-The order makes it unintuitive so
+In this particular case I wonder if the uuid thread is important or if
+this would happen with anything that calls btrfs_end_transaction.
 
-  btrfs -q command -v
+Depending on the value of ->full, __btrfs_block_rsv_release decides
+where to return the reservation, and block_rsv_release_bytes handles a
+NULL pointer for block_rsv and if it's not NULL then it double checks
+the full status under a lock.
 
-is going to be the default verbosity. We can't ignore the sub-command
-part, and making it conditionally work in case there's no global
-verbosity setting is kind of complicating it.
+So the unlocked and racy access is only advisory and in the worst case
+the block reserve is found !full and becomes full in the meantime,
+but properly handled.
 
-So let's take the simple approach, maybe we'll have second thought on
-that before release.
+I've CCed Josef to review the analysis.
