@@ -2,102 +2,86 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14703EC2A7
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 13:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0897EC4B2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 15:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbfKAMVK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Nov 2019 08:21:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55152 "EHLO mx1.suse.de"
+        id S1727221AbfKAO1x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Nov 2019 10:27:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:37642 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726663AbfKAMVK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 1 Nov 2019 08:21:10 -0400
+        id S1727031AbfKAO1x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 1 Nov 2019 10:27:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EC9CBB308;
-        Fri,  1 Nov 2019 12:21:08 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id EF6FAB1D0;
+        Fri,  1 Nov 2019 14:27:51 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id BE8D5DA7AF; Fri,  1 Nov 2019 13:21:17 +0100 (CET)
-Date:   Fri, 1 Nov 2019 13:21:17 +0100
+        id 8DB45DA7AF; Fri,  1 Nov 2019 15:28:00 +0100 (CET)
+Date:   Fri, 1 Nov 2019 15:28:00 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Nikolay Borisov <nborisov@suse.com>
+To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs-progs: tests: Test backup root retention logic
-Message-ID: <20191101122117.GP3001@twin.jikos.cz>
+Subject: Re: [PATCH] Btrfs: send, allow clone operations within the same file
+Message-ID: <20191101142759.GR3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Nikolay Borisov <nborisov@suse.com>,
+Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
         linux-btrfs@vger.kernel.org
-References: <20191015154249.21615-1-nborisov@suse.com>
- <20191015154249.21615-3-nborisov@suse.com>
+References: <20191030122311.31349-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191015154249.21615-3-nborisov@suse.com>
+In-Reply-To: <20191030122311.31349-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Oct 15, 2019 at 06:42:49PM +0300, Nikolay Borisov wrote:
-> This tests ensures that the kernel correctly persists backup roots in
-> case the filesystem has been mounted from a backup root.
+On Wed, Oct 30, 2019 at 12:23:11PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> Signed-off-by: Nikolay Borisov <nborisov@suse.com>
-> ---
->  .../misc-tests/038-backup-root-corruption/test.sh  | 50 ++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
->  create mode 100755 tests/misc-tests/038-backup-root-corruption/test.sh
+> For send we currently skip clone operations when the source and destination
+> files are the same. This is so because clone didn't support this case in
+> its early days, but support for it was added back in May 2013 by commit
+> a96fbc72884fcb ("Btrfs: allow file data clone within a file"). This change
+> adds support for it.
 > 
-> diff --git a/tests/misc-tests/038-backup-root-corruption/test.sh b/tests/misc-tests/038-backup-root-corruption/test.sh
-> new file mode 100755
-> index 000000000000..2fb117b3a928
-> --- /dev/null
-> +++ b/tests/misc-tests/038-backup-root-corruption/test.sh
-> @@ -0,0 +1,50 @@
-> +#!/bin/bash
-> +# Test that a corrupted filesystem will correctly handle writing of 
-> +# backup root
-> +
-> +source "$TEST_TOP/common"
-> +
-> +check_prereq mkfs.btrfs
-> +check_prereq btrfs
-> +check_prereq btrfs-corrupt-block
-> +
-> +setup_loopdevs 1
-> +prepare_loopdevs
-> +dev=${loopdevs[1]}
+> Example:
+> 
+>   $ mkfs.btrfs -f /dev/sdd
+>   $ mount /dev/sdd /mnt/sdd
+> 
+>   $ xfs_io -f -c "pwrite -S 0xab -b 64K 0 64K" /mnt/sdd/foobar
+>   $ xfs_io -c "reflink /mnt/sdd/foobar 0 64K 64K" /mnt/sdd/foobar
+> 
+>   $ btrfs subvolume snapshot -r /mnt/sdd /mnt/sdd/snap
+> 
+>   $ mkfs.btrfs -f /dev/sde
+>   $ mount /dev/sde /mnt/sde
+> 
+>   $ btrfs send /mnt/sdd/snap | btrfs receive /mnt/sde
+> 
+> Without this change file foobar at the destination has a single 128Kb
+> extent:
+> 
+>   $ filefrag -v /mnt/sde/snap/foobar
+>   Filesystem type is: 9123683e
+>   File size of /mnt/sde/snap/foobar is 131072 (32 blocks of 4096 bytes)
+>    ext:     logical_offset:        physical_offset: length:   expected: flags:
+>      0:        0..      31:          0..        31:     32:             last,unknown_loc,delalloc,eof
+>   /mnt/sde/snap/foobar: 1 extent found
+> 
+> With this we get a single 64Kb extent that is shared at file offsets 0
+> and 64K, just like in the source filesystem:
+> 
+>   $ filefrag -v /mnt/sde/snap/foobar
+>   Filesystem type is: 9123683e
+>   File size of /mnt/sde/snap/foobar is 131072 (32 blocks of 4096 bytes)
+>    ext:     logical_offset:        physical_offset: length:   expected: flags:
+>      0:        0..      15:       3328..      3343:     16:             shared
+>      1:       16..      31:       3328..      3343:     16:       3344: last,shared,eof
+>   /mnt/sde/snap/foobar: 2 extents found
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-And the loop devices are not necessary at all
-
-prepare_device
-
-and be done.
-> +
-> +run_check $SUDO_HELPER "$TOP/mkfs.btrfs" -f "$dev"
-> +
-> +# Create a file and unmount to commit some backup roots
-> +run_check $SUDO_HELPER mount "$dev" "$TEST_MNT"
-> +run_check touch "$TEST_MNT/file" && sync
-
-sync is not necessary when it's followed by umount, besides that it
-syncs all fileystems so it's an unnecessary slowdown
-
-> +run_check $SUDO_HELPER umount "$TEST_MNT"
-> +
-> +# Ensure currently active backup slot is the expected one (slot 3)
-> +backup2_root_ptr=$($SUDO_HELPER "$TOP/btrfs" inspect-internal dump-super -f "$dev" \
-
-this should use run_check_stdout so we have the full output logged, as
-the inspect-part is called several times I added a helper for that.
-
-> +	| grep -A1 "backup 2" | grep backup_tree_root | awk '{print $2}')
-> +
-> +main_root_ptr=$($SUDO_HELPER "$TOP/btrfs" inspect-internal dump-super -f "$dev" \
-> +	| grep root | head -n1 | awk '{print $2}')
-> +
-> +[[ "$backup2_root_ptr" -eq "$main_root_ptr" ]] || _fail "Backup slot 2 is not in use"
-
-[[ ]] is not necessary when it's a simple check that [ ] can do
-
-All fixed and pushed.
+Added to misc-next, thanks.
