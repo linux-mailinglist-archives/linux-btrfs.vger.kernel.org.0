@@ -2,86 +2,69 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E0897EC4B2
-	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 15:27:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D98EC50B
+	for <lists+linux-btrfs@lfdr.de>; Fri,  1 Nov 2019 15:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727221AbfKAO1x (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 1 Nov 2019 10:27:53 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37642 "EHLO mx1.suse.de"
+        id S1727653AbfKAOuG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 1 Nov 2019 10:50:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43998 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727031AbfKAO1x (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 1 Nov 2019 10:27:53 -0400
+        id S1727644AbfKAOuG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 1 Nov 2019 10:50:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EF6FAB1D0;
-        Fri,  1 Nov 2019 14:27:51 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id E5A58AF81;
+        Fri,  1 Nov 2019 14:50:04 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 8DB45DA7AF; Fri,  1 Nov 2019 15:28:00 +0100 (CET)
-Date:   Fri, 1 Nov 2019 15:28:00 +0100
+        id 8EEBDDA7AF; Fri,  1 Nov 2019 15:50:13 +0100 (CET)
+Date:   Fri, 1 Nov 2019 15:50:13 +0100
 From:   David Sterba <dsterba@suse.cz>
 To:     fdmanana@kernel.org
 Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] Btrfs: send, allow clone operations within the same file
-Message-ID: <20191101142759.GR3001@twin.jikos.cz>
+Subject: Re: [PATCH] Btrfs: send, skip backreference walking for extents with
+ many references
+Message-ID: <20191101145012.GS3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
 Mail-Followup-To: dsterba@suse.cz, fdmanana@kernel.org,
         linux-btrfs@vger.kernel.org
-References: <20191030122311.31349-1-fdmanana@kernel.org>
+References: <20191030122301.25270-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191030122311.31349-1-fdmanana@kernel.org>
+In-Reply-To: <20191030122301.25270-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 12:23:11PM +0000, fdmanana@kernel.org wrote:
+On Wed, Oct 30, 2019 at 12:23:01PM +0000, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> For send we currently skip clone operations when the source and destination
-> files are the same. This is so because clone didn't support this case in
-> its early days, but support for it was added back in May 2013 by commit
-> a96fbc72884fcb ("Btrfs: allow file data clone within a file"). This change
-> adds support for it.
+> Backreference walking, which is used by send to figure if it can issue
+> clone operations instead of write operations, can be very slow and use too
+> much memory when extents have many references. This change simply skips
+> backreference walking when an extent has more than 64 references, in which
+> case we fallback to a write operation instead of a clone operation. This
+> limit is conservative and in practice I observed no signicant slowdown
+> with up to 100 references and still low memory usage up to that limit.
+
+So this could lead to larger stream due to writes instead of clones, and
+thus fewer cloned ranges on the receive side. This is observable and
+could potentially raise questions why is this happening. Limiting the
+nmuber makes sense, based on the report, though I'm curious if we can
+make it higher, eg. 128, or 100 that you have measured.
+
+I'll tag the patch for stable as it can be considered usability bug fix,
+so I'm interested in the possible fallouts.
+
+> This is a temporary workaround until there are speedups in the backref
+> walking code, and as such it does not attempt to add extra interfaces or
+> knobs to tweak the threshold.
 > 
-> Example:
-> 
->   $ mkfs.btrfs -f /dev/sdd
->   $ mount /dev/sdd /mnt/sdd
-> 
->   $ xfs_io -f -c "pwrite -S 0xab -b 64K 0 64K" /mnt/sdd/foobar
->   $ xfs_io -c "reflink /mnt/sdd/foobar 0 64K 64K" /mnt/sdd/foobar
-> 
->   $ btrfs subvolume snapshot -r /mnt/sdd /mnt/sdd/snap
-> 
->   $ mkfs.btrfs -f /dev/sde
->   $ mount /dev/sde /mnt/sde
-> 
->   $ btrfs send /mnt/sdd/snap | btrfs receive /mnt/sde
-> 
-> Without this change file foobar at the destination has a single 128Kb
-> extent:
-> 
->   $ filefrag -v /mnt/sde/snap/foobar
->   Filesystem type is: 9123683e
->   File size of /mnt/sde/snap/foobar is 131072 (32 blocks of 4096 bytes)
->    ext:     logical_offset:        physical_offset: length:   expected: flags:
->      0:        0..      31:          0..        31:     32:             last,unknown_loc,delalloc,eof
->   /mnt/sde/snap/foobar: 1 extent found
-> 
-> With this we get a single 64Kb extent that is shared at file offsets 0
-> and 64K, just like in the source filesystem:
-> 
->   $ filefrag -v /mnt/sde/snap/foobar
->   Filesystem type is: 9123683e
->   File size of /mnt/sde/snap/foobar is 131072 (32 blocks of 4096 bytes)
->    ext:     logical_offset:        physical_offset: length:   expected: flags:
->      0:        0..      15:       3328..      3343:     16:             shared
->      1:       16..      31:       3328..      3343:     16:       3344: last,shared,eof
->   /mnt/sde/snap/foobar: 2 extents found
-> 
+> Reported-by: Atemu <atemu.main@gmail.com>
+> Link: https://lore.kernel.org/linux-btrfs/CAE4GHgkvqVADtS4AzcQJxo0Q1jKQgKaW3JGp3SGdoinVo=C9eQ@mail.gmail.com/T/#me55dc0987f9cc2acaa54372ce0492c65782be3fa
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-Added to misc-next, thanks.
+Added to misc-next, thanks. The above is up to discussion and the number
+can be tuned later.
