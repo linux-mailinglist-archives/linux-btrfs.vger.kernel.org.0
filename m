@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 76989EDFA4
+	by mail.lfdr.de (Postfix) with ESMTP id 8101DEDFA5
 	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2019 13:04:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728828AbfKDME0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Nov 2019 07:04:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44112 "EHLO mx1.suse.de"
+        id S1728838AbfKDME1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Nov 2019 07:04:27 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44048 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728812AbfKDME0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        id S1728592AbfKDME0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
         Mon, 4 Nov 2019 07:04:26 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 811D1AF7E
-        for <linux-btrfs@vger.kernel.org>; Mon,  4 Nov 2019 12:04:23 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B19A8AF21
+        for <linux-btrfs@vger.kernel.org>; Mon,  4 Nov 2019 12:04:24 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH RFC 6/7] btrfs-progs: check: Introduce support for bg-tree feature
-Date:   Mon,  4 Nov 2019 20:04:00 +0800
-Message-Id: <20191104120401.56408-7-wqu@suse.com>
+Subject: [PATCH RFC 7/7] btrfs-progs: btrfstune: Allow to enable bg-tree feature offline
+Date:   Mon,  4 Nov 2019 20:04:01 +0800
+Message-Id: <20191104120401.56408-8-wqu@suse.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191104120401.56408-1-wqu@suse.com>
 References: <20191104120401.56408-1-wqu@suse.com>
@@ -30,203 +30,131 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Just some minor modification.
+Add a new option '-b' for btrfstune, to enable bg-tree feature for a
+unmounted fs.
 
-- original mode:
-  * skinny block group item can only occur in bg tree
-  * check skinny block group item
-    Introduce a new function, process_skinny_bgi(), for this check.
-- lowmem mode:
-  * search skinny block group items in bg tree if SKINNY_BG_TREE feature is set.
-  * check skinny block group item
-    This is done by reusing check_block_group_item().
+This feature will convert all BLOCK_GROUP_ITEMs in extent tree to bg
+tree, by reusing the existing btrfs_convert_to_bg_tree() function.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- check/main.c        | 38 +++++++++++++++++++++++++++
- check/mode-lowmem.c | 63 +++++++++++++++++++++++++++++++++++++++------
- 2 files changed, 93 insertions(+), 8 deletions(-)
+ Documentation/btrfstune.asciidoc |  6 +++++
+ btrfstune.c                      | 45 ++++++++++++++++++++++++++++++--
+ 2 files changed, 49 insertions(+), 2 deletions(-)
 
-diff --git a/check/main.c b/check/main.c
-index a1261ce0ebe7..066d9574a556 100644
---- a/check/main.c
-+++ b/check/main.c
-@@ -5241,6 +5241,32 @@ static int process_block_group_item(struct block_group_tree *block_group_cache,
- 	return ret;
+diff --git a/Documentation/btrfstune.asciidoc b/Documentation/btrfstune.asciidoc
+index 1d6bc98deed8..ccb89b44a701 100644
+--- a/Documentation/btrfstune.asciidoc
++++ b/Documentation/btrfstune.asciidoc
+@@ -26,6 +26,12 @@ means.  Please refer to the 'FILESYSTEM FEATURES' in `btrfs`(5).
+ OPTIONS
+ -------
+ 
++-b::
++(since kernel: 5.x)
+++
++enable skinny-bg-tree feature (faster mount time for large fs), enabled by mkfs
++feature 'skinny-bg-tree'.
++
+ -f::
+ Allow dangerous changes, e.g. clear the seeding flag or change fsid. Make sure
+ that you are aware of the dangers.
+diff --git a/btrfstune.c b/btrfstune.c
+index afa3aae35412..ba8b628a2f71 100644
+--- a/btrfstune.c
++++ b/btrfstune.c
+@@ -476,11 +476,40 @@ static void print_usage(void)
+ 	printf("\t-m          change fsid in metadata_uuid to a random UUID\n");
+ 	printf("\t            (incompat change, more lightweight than -u|-U)\n");
+ 	printf("\t-M UUID     change fsid in metadata_uuid to UUID\n");
++	printf("\t-b          enable skinny-bg-tree feature (mkfs: skinny-bg-tree)");
++	printf("\t            for faster mount time\n");
+ 	printf("  general:\n");
+ 	printf("\t-f          allow dangerous operations, make sure that you are aware of the dangers\n");
+ 	printf("\t--help      print this help\n");
  }
  
-+static int process_skinny_bgi(struct block_group_tree *block_group_cache,
-+			      struct btrfs_key *key, struct extent_buffer *eb)
++static int convert_to_skinny_bg_tree(struct btrfs_fs_info *fs_info)
 +{
-+	struct btrfs_mapping_tree *map_tree = &global_info->mapping_tree;
-+	struct block_group_record *rec;
-+	struct cache_extent *ce;
-+	struct map_lookup *map;
++	struct btrfs_trans_handle *trans;
 +	int ret;
 +
-+	ce = search_cache_extent(&map_tree->cache_tree, key->objectid);
-+	/* For mismatch case, we just skip this bgi */
-+	if (ce->start != key->objectid)
-+		return 0;
-+
-+	map = container_of(ce, struct map_lookup, ce);
-+	rec = btrfs_new_block_group_record(eb, key->objectid, ce->size,
-+					   map->type);
-+	ret = insert_block_group_record(block_group_cache, rec);
-+	if (ret) {
-+		error("block group [%llu, %llu) existed.",
-+			ce->start, ce->start + ce->size);
-+		free(rec);
++	trans = btrfs_start_transaction(fs_info->tree_root, 1);
++	if (IS_ERR(trans)) {
++		ret = PTR_ERR(trans);
++		errno = -ret;
++		error("failed to start transaction: %m");
++		return ret;
++	}
++	ret = btrfs_convert_to_skinny_bg_tree(trans);
++	if (ret < 0) {
++		errno = -ret;
++		error("failed to convert: %m");
++		btrfs_abort_transaction(trans, ret);
++		return ret;
++	}
++	ret = btrfs_commit_transaction(trans, fs_info->tree_root);
++	if (ret < 0) {
++		errno = -ret;
++		error("failed to commit transaction: %m");
 +	}
 +	return ret;
 +}
 +
- struct device_extent_record *
- btrfs_new_device_extent_record(struct extent_buffer *leaf,
- 			       struct btrfs_key *key, int slot)
-@@ -6106,6 +6132,10 @@ static int check_type_with_root(u64 rootid, u8 key_type)
- 		if (rootid != BTRFS_EXTENT_TREE_OBJECTID)
- 			goto err;
- 		break;
-+	case BTRFS_SKINNY_BLOCK_GROUP_ITEM_KEY:
-+		if (rootid != BTRFS_BLOCK_GROUP_TREE_OBJECTID)
-+			goto err;
-+		break;
- 	case BTRFS_ROOT_ITEM_KEY:
- 		if (rootid != BTRFS_ROOT_TREE_OBJECTID)
- 			goto err;
-@@ -6309,6 +6339,14 @@ static int run_next_block(struct btrfs_root *root,
- 					&key, buf, i);
- 				continue;
- 			}
-+			if (key.type == BTRFS_SKINNY_BLOCK_GROUP_ITEM_KEY) {
-+				ret = process_skinny_bgi(block_group_cache,
-+							 &key, buf);
-+				/* -ENOMEM */
-+				if (ret < 0)
-+					goto out;
-+				continue;
-+			}
- 			if (key.type == BTRFS_DEV_EXTENT_KEY) {
- 				process_device_extent_item(dev_extent_cache,
- 					&key, buf, i);
-diff --git a/check/mode-lowmem.c b/check/mode-lowmem.c
-index 7ecf95ed0170..26ae07ccb007 100644
---- a/check/mode-lowmem.c
-+++ b/check/mode-lowmem.c
-@@ -3536,16 +3536,39 @@ static int check_block_group_item(struct btrfs_fs_info *fs_info,
- 	u32 nodesize = btrfs_super_nodesize(fs_info->super_copy);
- 	u64 flags;
- 	u64 bg_flags;
-+	u64 bg_len;
- 	u64 used;
- 	u64 total = 0;
+ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ {
+ 	struct btrfs_root *root;
+@@ -491,6 +520,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 	u64 seeding_value = 0;
+ 	int random_fsid = 0;
+ 	int change_metadata_uuid = 0;
++	bool to_skinny_bg_tree = false;
+ 	char *new_fsid_str = NULL;
  	int ret;
- 	int err = 0;
+ 	u64 super_flags = 0;
+@@ -501,7 +531,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 			{ "help", no_argument, NULL, GETOPT_VAL_HELP},
+ 			{ NULL, 0, NULL, 0 }
+ 		};
+-		int c = getopt_long(argc, argv, "S:rxfuU:nmM:", long_options, NULL);
++		int c = getopt_long(argc, argv, "S:rxfuU:nmM:b", long_options, NULL);
  
- 	btrfs_item_key_to_cpu(eb, &bg_key, slot);
--	bi = btrfs_item_ptr(eb, slot, struct btrfs_block_group_item);
--	read_extent_buffer(eb, &bg_item, (unsigned long)bi, sizeof(bg_item));
--	used = btrfs_block_group_used(&bg_item);
--	bg_flags = btrfs_block_group_flags(&bg_item);
-+	if (bg_key.type == BTRFS_BLOCK_GROUP_ITEM_KEY) {
-+		bi = btrfs_item_ptr(eb, slot, struct btrfs_block_group_item);
-+		read_extent_buffer(eb, &bg_item, (unsigned long)bi, sizeof(bg_item));
-+		used = btrfs_block_group_used(&bg_item);
-+		bg_flags = btrfs_block_group_flags(&bg_item);
-+		bg_len = bg_key.offset;
-+	} else {
-+		struct btrfs_mapping_tree *map_tree = &fs_info->mapping_tree;
-+		struct cache_extent *ce;
-+		struct map_lookup *map;
-+
-+		ce = search_cache_extent(&map_tree->cache_tree,
-+					 bg_key.objectid);
-+		if (!ce || ce->start != bg_key.objectid) {
-+			error(
-+		"block group[%llu %llu] did not find the related chunk item",
-+				bg_key.objectid, bg_key.offset);
-+			err |= REFERENCER_MISSING;
-+			return err;
-+		} else {
-+			map = container_of(ce, struct map_lookup, ce);
-+			bg_flags = map->type;
-+		}
-+		used = bg_key.offset;
-+		bg_len = ce->size;
-+	}
- 
- 	chunk_key.objectid = BTRFS_FIRST_CHUNK_TREE_OBJECTID;
- 	chunk_key.type = BTRFS_CHUNK_ITEM_KEY;
-@@ -3563,10 +3586,10 @@ static int check_block_group_item(struct btrfs_fs_info *fs_info,
- 		chunk = btrfs_item_ptr(path.nodes[0], path.slots[0],
- 					struct btrfs_chunk);
- 		if (btrfs_chunk_length(path.nodes[0], chunk) !=
--						bg_key.offset) {
-+						bg_len) {
- 			error(
- 	"block group[%llu %llu] related chunk item length does not match",
--				bg_key.objectid, bg_key.offset);
-+				bg_key.objectid, bg_len);
- 			err |= REFERENCER_MISMATCH;
- 		}
- 	}
-@@ -3591,7 +3614,7 @@ static int check_block_group_item(struct btrfs_fs_info *fs_info,
- 			goto next;
- 
- 		btrfs_item_key_to_cpu(leaf, &extent_key, path.slots[0]);
--		if (extent_key.objectid >= bg_key.objectid + bg_key.offset)
-+		if (extent_key.objectid >= bg_key.objectid + bg_len)
+ 		if (c < 0)
  			break;
- 
- 		if (extent_key.type != BTRFS_METADATA_ITEM_KEY &&
-@@ -3638,7 +3661,7 @@ out:
- 	if (total != used) {
- 		error(
- 		"block group[%llu %llu] used %llu but extent items used %llu",
--			bg_key.objectid, bg_key.offset, used, total);
-+			bg_key.objectid, bg_len, used, total);
- 		err |= BG_ACCOUNTING_ERROR;
+@@ -539,6 +569,9 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 			ctree_flags |= OPEN_CTREE_IGNORE_FSID_MISMATCH;
+ 			change_metadata_uuid = 1;
+ 			break;
++		case 'b':
++			to_skinny_bg_tree = true;
++			break;
+ 		case GETOPT_VAL_HELP:
+ 		default:
+ 			print_usage();
+@@ -556,7 +589,7 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 		return 1;
  	}
- 	return err;
-@@ -4487,6 +4510,29 @@ static int find_block_group_item(struct btrfs_fs_info *fs_info,
- 	struct btrfs_key key;
- 	int ret;
+ 	if (!super_flags && !seeding_flag && !(random_fsid || new_fsid_str) &&
+-	    !change_metadata_uuid) {
++	    !change_metadata_uuid && !to_skinny_bg_tree) {
+ 		error("at least one option should be specified");
+ 		print_usage();
+ 		return 1;
+@@ -602,6 +635,14 @@ int BOX_MAIN(btrfstune)(int argc, char *argv[])
+ 		return 1;
+ 	}
  
-+	if (btrfs_fs_incompat(fs_info, SKINNY_BG_TREE)) {
-+		key.objectid = bytenr;
-+		key.type = BTRFS_SKINNY_BLOCK_GROUP_ITEM_KEY;
-+		key.offset = (u64)-1;
-+
-+		ret = btrfs_search_slot(NULL, fs_info->bg_root, &key, path, 0, 0);
-+		if (ret < 0)
-+			return ret;
-+		if (ret == 0) {
-+			ret = -EUCLEAN;
-+			error("invalid skinny bg item found for chunk [%llu, %llu)",
-+				bytenr, bytenr + len);
++	if (to_skinny_bg_tree) {
++		ret = convert_to_skinny_bg_tree(root->fs_info);
++		if (ret < 0) {
++			errno = -ret;
++			error("failed to convert to bg-tree feature: %m");
 +			goto out;
 +		}
-+		ret = btrfs_previous_item(fs_info->bg_root, path, bytenr,
-+					  BTRFS_SKINNY_BLOCK_GROUP_ITEM_KEY);
-+		if (ret > 0) {
-+			ret = -ENOENT;
-+			error("can't find skinny bg item for chunk [%llu, %llu)",
-+				bytenr, bytenr + len);
-+		}
-+		goto out;
 +	}
- 	key.objectid = bytenr;
- 	key.type = BTRFS_BLOCK_GROUP_ITEM_KEY;
- 	key.offset = len;
-@@ -4694,6 +4740,7 @@ again:
- 			ret = repair_extent_data_item(root, path, nrefs, ret);
- 		err |= ret;
- 		break;
-+	case BTRFS_SKINNY_BLOCK_GROUP_ITEM_KEY:
- 	case BTRFS_BLOCK_GROUP_ITEM_KEY:
- 		ret = check_block_group_item(fs_info, eb, slot);
- 		if (repair &&
+ 	if (seeding_flag) {
+ 		if (btrfs_fs_incompat(root->fs_info, METADATA_UUID)) {
+ 			fprintf(stderr, "SEED flag cannot be changed on a metadata-uuid changed fs\n");
 -- 
 2.23.0
 
