@@ -2,66 +2,74 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBDA8EE903
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2019 20:55:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17EF2EE917
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2019 20:59:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728766AbfKDTzV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Nov 2019 14:55:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47706 "EHLO mx1.suse.de"
+        id S1729482AbfKDT72 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Nov 2019 14:59:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48400 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728346AbfKDTzV (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 4 Nov 2019 14:55:21 -0500
+        id S1728556AbfKDT71 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 4 Nov 2019 14:59:27 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 46B0EAE5E;
-        Mon,  4 Nov 2019 19:55:20 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 329B6AFE3;
+        Mon,  4 Nov 2019 19:59:26 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CA5A1DB6FC; Mon,  4 Nov 2019 20:55:27 +0100 (CET)
-Date:   Mon, 4 Nov 2019 20:55:27 +0100
+        id 28F86DB6FC; Mon,  4 Nov 2019 20:59:33 +0100 (CET)
+Date:   Mon, 4 Nov 2019 20:59:33 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Anand Jain <anand.jain@oracle.com>
-Subject: Re: [PATCH v3 2/3] btrfs: block-group: Refactor
- btrfs_read_block_groups()
-Message-ID: <20191104195527.GF3001@twin.jikos.cz>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com, stable@vger.kernel.org
+Subject: Re: [PATCH] btrfs: save i_size in compress_file_range
+Message-ID: <20191104195933.GG3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org,
-        Johannes Thumshirn <jthumshirn@suse.de>,
-        Anand Jain <anand.jain@oracle.com>
-References: <20191010023928.24586-1-wqu@suse.com>
- <20191010023928.24586-3-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        linux-btrfs@vger.kernel.org, kernel-team@fb.com,
+        stable@vger.kernel.org
+References: <20191011130354.8232-1-josef@toxicpanda.com>
+ <20191023165102.GC3001@twin.jikos.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191010023928.24586-3-wqu@suse.com>
+In-Reply-To: <20191023165102.GC3001@twin.jikos.cz>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Oct 10, 2019 at 10:39:27AM +0800, Qu Wenruo wrote:
-> +static int read_one_block_group(struct btrfs_fs_info *info,
-> +				struct btrfs_path *path,
-> +				int need_clear)
-> +{
-> +	struct extent_buffer *leaf = path->nodes[0];
-> +	struct btrfs_block_group_cache *cache;
-> +	struct btrfs_space_info *space_info;
-> +	struct btrfs_key key;
-> +	int mixed = btrfs_fs_incompat(info, MIXED_GROUPS);
-> +	int slot = path->slots[0];
-> +	int ret;
-> +
-> +	btrfs_item_key_to_cpu(leaf, &key, slot);
+On Wed, Oct 23, 2019 at 06:51:02PM +0200, David Sterba wrote:
+> On Fri, Oct 11, 2019 at 09:03:54AM -0400, Josef Bacik wrote:
+> > --- a/fs/btrfs/inode.c
+> > +++ b/fs/btrfs/inode.c
+> > @@ -474,6 +474,7 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+> >  	u64 start = async_chunk->start;
+> >  	u64 end = async_chunk->end;
+> >  	u64 actual_end;
+> > +	loff_t i_size = i_size_read(inode);
+> >  	int ret = 0;
+> >  	struct page **pages = NULL;
+> >  	unsigned long nr_pages;
+> > @@ -488,7 +489,13 @@ static noinline int compress_file_range(struct async_chunk *async_chunk)
+> >  	inode_should_defrag(BTRFS_I(inode), start, end, end - start + 1,
+> >  			SZ_16K);
+> >  
+> > -	actual_end = min_t(u64, i_size_read(inode), end + 1);
+> > +	/*
+> > +	 * We need to save i_size before now because it could change in between
+> > +	 * us evaluating the size and assigning it.  This is because we lock and
+> > +	 * unlock the page in truncate and fallocate, and then modify the i_size
+> > +	 * later on.
+> > +	 */
+> > +	actual_end = min_t(u64, i_size, end + 1);
+> 
+> Ping. This is not a future proof fix, please update the changelog and
+> code according to the reply I sent.
 
-The first thing done here is the same as in the caller:
-
-> +		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
-> +		ret = read_one_block_group(info, path, need_clear);
-
-The key can be passed by pointer so it's not on stack and the conversion
-can be removed. I left it in the patch, please send a followup. Thanks.
+The vfs i_size_read patch is being ignored so I guess we're on our own.
+I have postponed last weeks pull request so I'll add this patch on top
+and send in a day or two. The READ_ONCE will be simulated by barrier()s,
+I've verified the assembly and actually that's alwo what read once does
+among other things.
