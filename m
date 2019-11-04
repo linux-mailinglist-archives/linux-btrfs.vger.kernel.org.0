@@ -2,73 +2,85 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F3DEE9E6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2019 21:40:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB046EEB53
+	for <lists+linux-btrfs@lfdr.de>; Mon,  4 Nov 2019 22:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729707AbfKDUjK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Nov 2019 15:39:10 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57776 "EHLO mx1.suse.de"
+        id S1729486AbfKDVoS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 4 Nov 2019 16:44:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:45474 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729194AbfKDUjJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 4 Nov 2019 15:39:09 -0500
+        id S1728409AbfKDVoS (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 4 Nov 2019 16:44:18 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 51A18AE99;
-        Mon,  4 Nov 2019 20:39:08 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id EDFDDB3EA;
+        Mon,  4 Nov 2019 21:44:16 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B8C91DB6FC; Mon,  4 Nov 2019 21:39:15 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     David Sterba <dsterba@suse.com>
-Subject: [PATCH] btrfs: un-deprecate ioctls START_SYNC and WAIT_SYNC
-Date:   Mon,  4 Nov 2019 21:39:14 +0100
-Message-Id: <20191104203914.15535-1-dsterba@suse.com>
-X-Mailer: git-send-email 2.23.0
+        id 4C4CBDB6FC; Mon,  4 Nov 2019 22:44:24 +0100 (CET)
+Date:   Mon, 4 Nov 2019 22:44:24 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     dsterba@suse.cz, Qu WenRuo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Anand Jain <anand.jain@oracle.com>
+Subject: Re: [PATCH v3 2/3] btrfs: block-group: Refactor
+ btrfs_read_block_groups()
+Message-ID: <20191104214424.GH3001@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu WenRuo <wqu@suse.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Anand Jain <anand.jain@oracle.com>
+References: <20191010023928.24586-1-wqu@suse.com>
+ <20191010023928.24586-3-wqu@suse.com>
+ <c1f08098-5f90-70c5-6554-9a9cf33e87be@suse.com>
+ <20191104195352.GE3001@twin.jikos.cz>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191104195352.GE3001@twin.jikos.cz>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The two ioctls START_SYNC and WAIT_SYNC were mistakenly marked as
-deprecated and scheduled for removal but we actualy do use them for
-'btrfs subvolume delete -C/-c'. The deprecated thing in ebc87351e5fc
-should have been just the async flag for subvolume creation.
+On Mon, Nov 04, 2019 at 08:53:52PM +0100, David Sterba wrote:
+> On Wed, Oct 30, 2019 at 04:59:17AM +0000, Qu WenRuo wrote:
+> > 
+> > 
+> > On 2019/10/10 上午10:39, Qu Wenruo wrote:
+> > > Refactor the work inside the loop of btrfs_read_block_groups() into one
+> > > separate function, read_one_block_group().
+> > > 
+> > > This allows read_one_block_group to be reused for later BG_TREE feature.
+> > > 
+> > > The refactor does the following extra fix:
+> > > - Use btrfs_fs_incompat() to replace open-coded feature check
+> > > 
+> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > > Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+> > > Reviewed-by: Anand Jain <anand.jain@oracle.com>
+> > 
+> > Hi David,
+> > 
+> > Mind to add this patch to for-next branch?
+> > 
+> > Considering the recent changes to struct btrfs_block_group_cache, there
+> > is some considerable conflicts.
+> 
+> I see, as the patch is idependent I'll add it.
+> 
+> > It would be much easier to solve them sooner than later.
+> > If needed I could send a newer version based on latest for-next branch.
+> 
+> I've fixed the conflicts, but please have a look anyway. The change was
+> cache->item to local block group item and rename of found_key to key in
+> read_one_block_group.
 
-The deprecation has been added in this development cycle, remove it
-until it's time.
-
-Fixes: ebc87351e5fc ("btrfs: Deprecate BTRFS_SUBVOL_CREATE_ASYNC flag")
-Signed-off-by: David Sterba <dsterba@suse.com>
----
- fs/btrfs/ioctl.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index b4ffa232479a..4cf255830bc5 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -4193,9 +4193,6 @@ static noinline long btrfs_ioctl_start_sync(struct btrfs_root *root,
- 	u64 transid;
- 	int ret;
- 
--	btrfs_warn(root->fs_info,
--	"START_SYNC ioctl is deprecated and will be removed in kernel 5.7");
--
- 	trans = btrfs_attach_transaction_barrier(root);
- 	if (IS_ERR(trans)) {
- 		if (PTR_ERR(trans) != -ENOENT)
-@@ -4223,9 +4220,6 @@ static noinline long btrfs_ioctl_wait_sync(struct btrfs_fs_info *fs_info,
- {
- 	u64 transid;
- 
--	btrfs_warn(fs_info,
--		"WAIT_SYNC ioctl is deprecated and will be removed in kernel 5.7");
--
- 	if (argp) {
- 		if (copy_from_user(&transid, argp, sizeof(transid)))
- 			return -EFAULT;
--- 
-2.23.0
-
+And it crashes during the self-tests, the patch is in branch
+misc-next-with-bg-refactoring in my github tree, please have a look.
+I've removed it from misc-next for now as I need to test for-next, but
+it's probably going to be some trivial typo so the patch will be added
+once it's found. Thanks.
