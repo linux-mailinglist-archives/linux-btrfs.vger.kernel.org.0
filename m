@@ -2,54 +2,51 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 181A7F035D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2019 17:47:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 913A3F0382
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2019 17:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390194AbfKEQrz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Nov 2019 11:47:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42536 "EHLO mx1.suse.de"
+        id S1728756AbfKEQ5A (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Nov 2019 11:57:00 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44980 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390060AbfKEQrz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 5 Nov 2019 11:47:55 -0500
+        id S1727830AbfKEQzv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 Nov 2019 11:55:51 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id C2D1EABA0;
-        Tue,  5 Nov 2019 16:47:53 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 75662AC7B;
+        Tue,  5 Nov 2019 16:55:49 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 35F59DA796; Tue,  5 Nov 2019 17:47:59 +0100 (CET)
-Date:   Tue, 5 Nov 2019 17:47:59 +0100
+        id 7080DDA796; Tue,  5 Nov 2019 17:55:56 +0100 (CET)
+Date:   Tue, 5 Nov 2019 17:55:56 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Qu Wenruo <wqu@suse.com>
-Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
-Subject: Re: [PATCH 0/2] btrfs: block-group: Bug fixes for "btrfs:
- block-group: Refactor btrfs_read_block_groups()"
-Message-ID: <20191105164759.GL3001@twin.jikos.cz>
+To:     David Sterba <dsterba@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+Subject: Re: [PATCH] btrfs: rename btrfs_block_group_cache
+Message-ID: <20191105165556.GM3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191105013535.14239-1-wqu@suse.com>
+Mail-Followup-To: dsterba@suse.cz, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, Nikolay Borisov <nborisov@suse.com>
+References: <07674c79220c9f8fdb4588ad339a0af9515640cd.1572373079.git.dsterba@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191105013535.14239-1-wqu@suse.com>
+In-Reply-To: <07674c79220c9f8fdb4588ad339a0af9515640cd.1572373079.git.dsterba@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 05, 2019 at 09:35:33AM +0800, Qu Wenruo wrote:
-> David reported some strange error in that patch.
+On Tue, Oct 29, 2019 at 07:20:18PM +0100, David Sterba wrote:
+> The type name is misleading, a single entry is named 'cache' while this
+> normally means a collection of objects. Rename that everywhere. Also the
+> identifier was quite long, making function prototypes harder to format.
 > 
-> One bug is from rebasing, and another one is from me. The first patch
-> will fix the bug.
+> Suggested-by: Nikolay Borisov <nborisov@suse.com>
+> Signed-off-by: David Sterba <dsterba@suse.com>
+> ---
 > 
-> The second patch will reduce stack usage for read_one_block_group().
-> 
-> Qu Wenruo (2):
->   btrfs: block-group: Fix two rebase errors where assignment for cache
->     is missing
->   btrfs: block-group: Reuse the item key from caller of
->     read_one_block_group()
+> To avoid conflicts with patches pending for the upcoming merge window,
+> I'm going to apply it among the last ones.
 
-Folded and merged, thanks.
+No pending patches for 5.5 so I'm adding this one to misc-next.
