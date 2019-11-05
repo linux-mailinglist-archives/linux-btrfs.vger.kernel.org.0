@@ -2,62 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B848FF00B1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2019 16:05:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181A7F035D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2019 17:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731105AbfKEPFG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 5 Nov 2019 10:05:06 -0500
-Received: from mail-pl1-f169.google.com ([209.85.214.169]:45924 "EHLO
-        mail-pl1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731090AbfKEPFF (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Tue, 5 Nov 2019 10:05:05 -0500
-Received: by mail-pl1-f169.google.com with SMTP id y24so9558795plr.12
-        for <linux-btrfs@vger.kernel.org>; Tue, 05 Nov 2019 07:05:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=TO94ReUB2LKMFziJRhpU5UgTS/asrjj1UXl1wuAEKU4=;
-        b=pI8RymBJz9jzpLpMFcB403IrHRpcmoYH/e6DIlHSwk1wf7GU//tvdOfurl8GkGrf58
-         2ur9M37NSRZxOciy1tmzGs1LlyBBbATLCZLcHZy5mi6ZdausU706cTJ7GmpisFedi+Kd
-         iBvjZdWSK7KPcmK/DCyL5McKo6U1WxJsowE1ixOZ97urxRn2NzpD4UMPU9Xi0VheuWNX
-         pVs31HsvbVtu3LkepL2oMgyHjQFuuowIPRK1HCaAuPr0LU0WmdKCiurr5O6i8O/psZqa
-         SkVclAfUitqr0QYAji9o1XBvxpxT5ctNLZGWRqrmuCSmy6aWIebMeEyi0wXqZ8x7RMR6
-         l8lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=TO94ReUB2LKMFziJRhpU5UgTS/asrjj1UXl1wuAEKU4=;
-        b=d6jlZGI0CAkwexvzZhS09zDEdvKXoe/aA9PblaAn7k90LSYPSfnt07p1i5flyFiWzV
-         vugVGCX0h+bRvbkbkn4dKb/kqbVZr7Dy4oJp2W3NsCQEkAtUJ8KcBeweqpLw/MLv0Ilk
-         mWa2PLi8jXelq69hB0egfvCbTgrZHmfa8j0S0SDb3TqBAqxgGbwC19OUbeCUQ6EdeQQl
-         9U1TOJOQWjHS55ubZvt1QAAIGHZ3HfxjtpJdNHX5ZUASOLF/nnxqqRQzyHliEeMHd9mf
-         pI5hwhfIT3BkQykflc/C94ibq3yK1tK55Veaf4TPMxFDBU7f3xDRfvnREwrNJFUF96Ii
-         K8BA==
-X-Gm-Message-State: APjAAAXvtYP6ZLTdxqS3NEHf0EYEdBMACgniChsQE9mNSmRCPfAXTh1k
-        wQNzILh1uoQMzlUpa9w48Pesv5M9YlXeHQ3hVnrJ+RE1SJqeSQ==
-X-Google-Smtp-Source: APXvYqxa6yvjEuJEFOq+MPeDWlLZHBUPquDi8KKjRirPXyXuJUAS6/PhSkNs1idscgN+ryEK55ZuUjf9HcCC7hMWcqo=
-X-Received: by 2002:a17:902:8346:: with SMTP id z6mr33103pln.280.1572966304558;
- Tue, 05 Nov 2019 07:05:04 -0800 (PST)
+        id S2390194AbfKEQrz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Nov 2019 11:47:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42536 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390060AbfKEQrz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 Nov 2019 11:47:55 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id C2D1EABA0;
+        Tue,  5 Nov 2019 16:47:53 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 35F59DA796; Tue,  5 Nov 2019 17:47:59 +0100 (CET)
+Date:   Tue, 5 Nov 2019 17:47:59 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org, dsterba@suse.cz
+Subject: Re: [PATCH 0/2] btrfs: block-group: Bug fixes for "btrfs:
+ block-group: Refactor btrfs_read_block_groups()"
+Message-ID: <20191105164759.GL3001@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191105013535.14239-1-wqu@suse.com>
 MIME-Version: 1.0
-From:   Sergiu Cozma <lssjbrolli@gmail.com>
-Date:   Tue, 5 Nov 2019 17:04:28 +0200
-Message-ID: <CAJjG=74frVNMRaUabyBckJcJwHYk33EQnFRZRa+dE3g-Wqp5Bg@mail.gmail.com>
-Subject: fix for ERROR: cannot read chunk root
-To:     linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191105013535.14239-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-hi, i need some help to recover a btrfs partition
-i use btrfs-progs v5.3.1
+On Tue, Nov 05, 2019 at 09:35:33AM +0800, Qu Wenruo wrote:
+> David reported some strange error in that patch.
+> 
+> One bug is from rebasing, and another one is from me. The first patch
+> will fix the bug.
+> 
+> The second patch will reduce stack usage for read_one_block_group().
+> 
+> Qu Wenruo (2):
+>   btrfs: block-group: Fix two rebase errors where assignment for cache
+>     is missing
+>   btrfs: block-group: Reuse the item key from caller of
+>     read_one_block_group()
 
-btrfs rescue super-recover https://pastebin.com/mGEp6vjV
-btrfs inspect-internal dump-super -a https://pastebin.com/S4WrPQm1
-btrfs inspect-internal dump-tree https://pastebin.com/yX1zUDxa
-
-can't mount the partition with
-BTRFS error (device sdb4): bad tree block start, want 856119312384 have 0
-[ 2295.237145] BTRFS error (device sdb4): failed to read chunk root
-[ 2295.301067] BTRFS error (device sdb4): open_ctree failed
+Folded and merged, thanks.
