@@ -2,116 +2,67 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CF9EF2DE
-	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2019 02:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83FD3EFA56
+	for <lists+linux-btrfs@lfdr.de>; Tue,  5 Nov 2019 11:01:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387409AbfKEBfo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 4 Nov 2019 20:35:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48532 "EHLO mx1.suse.de"
+        id S2388175AbfKEKBU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 5 Nov 2019 05:01:20 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52452 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728602AbfKEBfn (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 4 Nov 2019 20:35:43 -0500
+        id S2388167AbfKEKBU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 5 Nov 2019 05:01:20 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 587F5B24A
-        for <linux-btrfs@vger.kernel.org>; Tue,  5 Nov 2019 01:35:42 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Cc:     dsterba@suse.cz
-Subject: [PATCH 2/2] btrfs: block-group: Reuse the item key from caller of read_one_block_group()
-Date:   Tue,  5 Nov 2019 09:35:35 +0800
-Message-Id: <20191105013535.14239-3-wqu@suse.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20191105013535.14239-1-wqu@suse.com>
-References: <20191105013535.14239-1-wqu@suse.com>
+        by mx1.suse.de (Postfix) with ESMTP id 33EA1B473;
+        Tue,  5 Nov 2019 10:01:19 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 25ED2DA796; Tue,  5 Nov 2019 11:01:26 +0100 (CET)
+Date:   Tue, 5 Nov 2019 11:01:25 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Josef Bacik <josef@toxicpanda.com>
+Cc:     Meng Xu <mengxu.gatech@gmail.com>, linux-btrfs@vger.kernel.org
+Subject: Re: potential data race on `delayed_rsv->full`
+Message-ID: <20191105100125.GI3001@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Josef Bacik <josef@toxicpanda.com>,
+        Meng Xu <mengxu.gatech@gmail.com>, linux-btrfs@vger.kernel.org
+References: <CAAwBoOJDjei5Hnem155N_cJwiEkVwJYvgN-tQrwWbZQGhFU=cA@mail.gmail.com>
+ <20191101154536.GW3001@twin.jikos.cz>
+ <c8aaa244-f0f3-0611-0b2d-13a78a57f9bd@gmail.com>
+ <20191101181606.7dlamcd3x3vf4x2q@macbook-pro-91.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191101181606.7dlamcd3x3vf4x2q@macbook-pro-91.dhcp.thefacebook.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-For read_one_block_group(), its only caller has already got the item key
-to search next block group item.
+On Fri, Nov 01, 2019 at 02:16:07PM -0400, Josef Bacik wrote:
+> On Fri, Nov 01, 2019 at 01:09:30PM -0400, Meng Xu wrote:
+> > Hi David,
+> > 
+> > Thank you for the confirmation and the additional information.
+> > 
+> > I feel the same that this race may not lead to serious issues, but would
+> > rather prefer a confirmation from the developers. Thank you again for your
+> > time!
+> > 
+> 
+> Sorry I saw this while I was on vacation, I read through and determined that
+> there were no cases where this would bite us.  This is just used as a lock free
+> way to see if we should refill the delayed refs rsv.  Worst case we don't and
+> the next guy does it, it doesn't affect us in an practical way.
+> 
+> However given our recent fun with inode->i_size it may be worth it to wrap
+> access to ->full with WRITE_ONCE/READ_ONCE to make sure nothing squirrely
+> happens in the future.  Thanks,
 
-So we can use that key directly without doing our own convertion on
-stack.
-
-Also, since that key used in btrfs_read_block_groups() is vital for
-block group item search, add 'const' keyword for that parameter to
-prevent read_one_block_group() to modify it.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/block-group.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index c2bd85d29070..a2970de7833e 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1679,21 +1679,20 @@ static int check_chunk_block_group_mappings(struct btrfs_fs_info *fs_info)
- 
- static int read_one_block_group(struct btrfs_fs_info *info,
- 				struct btrfs_path *path,
-+				const struct btrfs_key *key,
- 				int need_clear)
- {
- 	struct extent_buffer *leaf = path->nodes[0];
- 	struct btrfs_block_group_cache *cache;
- 	struct btrfs_space_info *space_info;
--	struct btrfs_key key;
- 	struct btrfs_block_group_item bgi;
- 	const bool mixed = btrfs_fs_incompat(info, MIXED_GROUPS);
- 	int slot = path->slots[0];
- 	int ret;
- 
--	btrfs_item_key_to_cpu(leaf, &key, slot);
--	ASSERT(key.type == BTRFS_BLOCK_GROUP_ITEM_KEY);
-+	ASSERT(key->type == BTRFS_BLOCK_GROUP_ITEM_KEY);
- 
--	cache = btrfs_create_block_group_cache(info, key.objectid, key.offset);
-+	cache = btrfs_create_block_group_cache(info, key->objectid, key->offset);
- 	if (!cache)
- 		return -ENOMEM;
- 
-@@ -1742,15 +1741,15 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 	 * are empty, and we can just add all the space in and be done with it.
- 	 * This saves us _a_lot_ of time, particularly in the full case.
- 	 */
--	if (key.offset == cache->used) {
-+	if (key->offset == cache->used) {
- 		cache->last_byte_to_unpin = (u64)-1;
- 		cache->cached = BTRFS_CACHE_FINISHED;
- 		btrfs_free_excluded_extents(cache);
- 	} else if (cache->used == 0) {
- 		cache->last_byte_to_unpin = (u64)-1;
- 		cache->cached = BTRFS_CACHE_FINISHED;
--		add_new_free_space(cache, key.objectid,
--				   key.objectid + key.offset);
-+		add_new_free_space(cache, key->objectid,
-+				   key->objectid + key->offset);
- 		btrfs_free_excluded_extents(cache);
- 	}
- 
-@@ -1760,7 +1759,7 @@ static int read_one_block_group(struct btrfs_fs_info *info,
- 		goto error;
- 	}
- 	trace_btrfs_add_block_group(info, cache, 0);
--	btrfs_update_space_info(info, cache->flags, key.offset,
-+	btrfs_update_space_info(info, cache->flags, key->offset,
- 				cache->used, cache->bytes_super, &space_info);
- 
- 	cache->space_info = space_info;
-@@ -1813,7 +1812,7 @@ int btrfs_read_block_groups(struct btrfs_fs_info *info)
- 			goto error;
- 
- 		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
--		ret = read_one_block_group(info, path, need_clear);
-+		ret = read_one_block_group(info, path, &key, need_clear);
- 		if (ret < 0)
- 			goto error;
- 		key.objectid += key.offset;
--- 
-2.23.0
-
+->full is used unlocked only in this one place, everywhere else it's
+insde spinlock. With exception of
+btrfs_clear_space_info_full/__find_space_info where it's only RCU
+protection. Add in ONCE everywhere would be pointless, the one call can
+be commented but adding READ_ONCE would not change anything as it's the
+only access that must be loaded anyway.
