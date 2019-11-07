@@ -2,79 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B8881F3009
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Nov 2019 14:42:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71600F30E1
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Nov 2019 15:09:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389230AbfKGNmL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Nov 2019 08:42:11 -0500
-Received: from mail-il1-f197.google.com ([209.85.166.197]:38116 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389211AbfKGNmK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Nov 2019 08:42:10 -0500
-Received: by mail-il1-f197.google.com with SMTP id f6so2669892ilg.5
-        for <linux-btrfs@vger.kernel.org>; Thu, 07 Nov 2019 05:42:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=ZHlAkJvC4AzLYOgESJJjCrLwj1SC/DFrfw0gQTfFdTQ=;
-        b=JW1ufKHnTzSETD7J1OzOm5cxckKhovpv9vn9KpjeeEEJ0EsGyyRee0HonPVYFdtov3
-         Mjxh85K1gqy1yHeUOyo/9mRC5C99bon3SjuxDM1R0OlpoUq1hMjlxFALUr4NbEwQBErn
-         mk+yml1+uZoP2RnA9oMqoahAiC53dD1Al+MIgCjeusEmMHu0atd4wg6hsnTp8sx531UR
-         2owJnFbdvN+uQ13Z7qOEd/bFcU0TTSYTqdFKtD8dpB+1PvkQ8Wr0SQao0UGwy2MiB4eo
-         W0shaD1aCyPS0tHuZeOk/juL1Zvbi6lSpjoO1p8MzNRcHiPDdYp/rHKzZxQOX32g/9Tq
-         oRGw==
-X-Gm-Message-State: APjAAAVB3CzkvrOdQbGt9ngwqoY0oEVG4MYhGExGmBBIrHixQaGq6CNi
-        qGiUnkXZ3ex4yuGDy8+yhI/5zu61EHrW31aA2ghseLBuM/b6
-X-Google-Smtp-Source: APXvYqy98iNl1kKSai2jcmgSIkxjPCuJlUrj+Tm8vB/VRQBb354vs8ydYDcKDIM+Vg31Z/X164elRv8qzu3LjKXgEKIcBqJW11oo
+        id S1729047AbfKGOJs (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Nov 2019 09:09:48 -0500
+Received: from aurora.thatsmathematics.com ([162.209.10.89]:53024 "EHLO
+        aurora.thatsmathematics.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726810AbfKGOJs (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 7 Nov 2019 09:09:48 -0500
+X-Greylist: delayed 388 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 Nov 2019 09:09:47 EST
+Received: from moneta.lan (68-118-231-109.dhcp.oxfr.ma.charter.com [68.118.231.109])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by aurora.thatsmathematics.com (Postfix) with ESMTPSA id 549027E200
+        for <linux-btrfs@vger.kernel.org>; Thu,  7 Nov 2019 14:03:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=thatsmathematics.com;
+        s=swordfish; t=1573135399;
+        bh=jtfWvqqZly7M6QMWpIZTvG2sDwsPl4dEAdb0P7+q5hc=;
+        h=Date:From:To:Subject:From;
+        b=m/TWmmxDp14QEwmZWb7fMbL+1ybsPA0vQBsaI5N3hD6ijkFf2Dgh8WAH5K97CrBUy
+         xnEtRynIHNH5xlJybyA/E39Dfc9DHrjGEROOZFWDKgB08O5If9fJ184JPDtmhbSsTg
+         O+bUDu3gACWQ3cylTNzzpo+Psg8OZ0xnDy9mOqDE=
+Date:   Thu, 7 Nov 2019 09:03:18 -0500 (EST)
+From:   Nate Eldredge <nate@thatsmathematics.com>
+X-X-Sender: nate@moneta
+To:     linux-btrfs@vger.kernel.org
+Subject: Defragmenting to recover wasted space
+Message-ID: <alpine.DEB.2.21.1911070814430.3492@moneta>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-X-Received: by 2002:a92:8681:: with SMTP id l1mr4407473ilh.94.1573134129675;
- Thu, 07 Nov 2019 05:42:09 -0800 (PST)
-Date:   Thu, 07 Nov 2019 05:42:09 -0800
-In-Reply-To: <00000000000051ee78057cc4d98f@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fbc9650596c1d456@google.com>
-Subject: Re: general protection fault in put_pid
-From:   syzbot <syzbot+1145ec2e23165570c3ac@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, aryabinin@virtuozzo.com, bp@alien8.de,
-        cai@lca.pw, clm@fb.com, dan.carpenter@oracle.com,
-        dave@stgolabs.net, dhowells@redhat.com, dsterba@suse.com,
-        dsterba@suse.cz, dvyukov@google.com, ebiederm@xmission.com,
-        glider@google.com, hpa@zytor.com, jbacik@fb.com,
-        ktkhai@virtuozzo.com, ktsanaktsidis@zendesk.com,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, manfred@colorfullife.com, mhocko@suse.com,
-        mingo@redhat.com, nborisov@suse.com,
-        penguin-kernel@I-love.SAKURA.ne.jp,
-        penguin-kernel@i-love.sakura.ne.jp, rppt@linux.vnet.ibm.com,
-        sfr@canb.auug.org.au, shakeelb@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        torvalds@linux-foundation.org, vdavydov.dev@gmail.com,
-        willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; format=flowed; charset=US-ASCII
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-syzbot suspects this bug was fixed by commit:
+I had a confusing issue on a btrfs filesystem, where the amount of space 
+used according to `df', `btrfs fi usage', etc, was about 50% higher than 
+the total reported by `du' or `btrfs fi du', about 185 GB vs 125 GB, 
+meaning that about 60 GB was somehow wasted.  I ruled out all the usual 
+suspects (deleted files still open, files under mount points, etc) and 
+eventually fixed the issue by doing `btrfs fi defrag` on a directory 
+containing a few big files (Virtualbox disk images).
 
-commit a8e911d13540487942d53137c156bd7707f66e5d
-Author: Qian Cai <cai@lca.pw>
-Date:   Fri Feb 1 22:20:20 2019 +0000
+This is on Ubuntu 19.04, currently using kernel 5.0.0-32.
 
-     x86_64: increase stack size for KASAN_EXTRA
+So everything is good now, but I have questions:
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10364f3c600000
-start commit:   f5d58277 Merge branch 'for-linus' of git://git.kernel.org/..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=c8970c89a0efbb23
-dashboard link: https://syzkaller.appspot.com/bug?extid=1145ec2e23165570c3ac
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16803afb400000
+1. What causes this?  I saw some references to "unused extents" but it 
+wasn't clear how that happens, or why they wouldn't be freed through 
+normal operation.  Are there certain usage patterns that exacerbate it?
 
-If the result looks correct, please mark the bug fixed by replying with:
+2. Is this documented?  I didn't see it mentioned anywhere in the 
+documentation, and defragmenting was just a random thing to try, based on 
+a few hints in various blogs and mailing lists.  Luckily it worked, but 
+otherwise I'm not sure how I could have known that defragmenting was the 
+solution.
 
-#syz fix: x86_64: increase stack size for KASAN_EXTRA
+3. Is this reasonable?  With all the other filesystems I've used, space 
+that isn't occupied by your files is available for use, minus a reasonable 
+amount of overhead for metadata etc, without needing any special 
+administrative chores.  Should I take it that I can't expect this from 
+btrfs, and I have to plan to defragment occasionally to keep the disk from 
+filling up?
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+4. If this is not normal, and if I'm able to reproduce it, what 
+information should I gather for a bug report?
+
+5. Is there a better way to detect this kind of wastage, to distinguish it 
+from more mundane causes (deleted files still open, etc) and see how much 
+space could be recovered? In particular, is there a way to tell which 
+files are most affected, so that I can just defragment those?
+
+Thanks very much for any information or pointers.
+
+Here is info about the filesystem, if it matters.  This is from after the 
+defrag.  It has two subvolumes and no snapshots.
+
+# uname -a
+Linux moneta 5.0.0-32-generic #34-Ubuntu SMP Wed Oct 2 02:06:48 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+# btrfs --version
+btrfs-progs v4.20.2 
+# btrfs fi show /
+Label: none  uuid: [xxx]
+ 	Total devices 1 FS bytes used 127.83GiB
+ 	devid    1 size 227.29GiB used 197.02GiB path /dev/mapper/nvme0n1p3_crypt
+
+# btrfs fi df /
+Data, single: total=194.01GiB, used=127.03GiB
+System, single: total=4.00MiB, used=48.00KiB
+Metadata, single: total=3.01GiB, used=817.80MiB
+GlobalReserve, single: total=182.75MiB, used=0.00B
+
+Prior to the defrag, the `used=` number in `btrfs fi df` was about 185 
+GiB.
+
+-- 
+Nate Eldredge
+nate@thatsmathematics.com
+
