@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67691F2A6F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Nov 2019 10:20:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBAF7F2AB5
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Nov 2019 10:31:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387705AbfKGJUp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Nov 2019 04:20:45 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58156 "EHLO mx1.suse.de"
+        id S1727732AbfKGJbd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Nov 2019 04:31:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33046 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727562AbfKGJUp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 7 Nov 2019 04:20:45 -0500
+        id S1727415AbfKGJbc (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 7 Nov 2019 04:31:32 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F1960AC90;
-        Thu,  7 Nov 2019 09:20:42 +0000 (UTC)
-Subject: Re: [PATCH 1/3] btrfs: volumes: Refactor device holes gathering into
- a separate function
+        by mx1.suse.de (Postfix) with ESMTP id 8AB19B35B;
+        Thu,  7 Nov 2019 09:31:30 +0000 (UTC)
+Subject: Re: [PATCH 2/3] btrfs: volumes: Add btrfs_fs_devices::missing_list to
+ collect missing devices
 To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 References: <20191107062710.67964-1-wqu@suse.com>
- <20191107062710.67964-2-wqu@suse.com>
+ <20191107062710.67964-3-wqu@suse.com>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -77,12 +77,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <77bcec95-5e72-092c-66f5-a0b3b6e08049@suse.de>
-Date:   Thu, 7 Nov 2019 10:20:42 +0100
+Message-ID: <4d0e543d-b7e8-b51b-9885-3629e1f0c6c1@suse.de>
+Date:   Thu, 7 Nov 2019 10:31:30 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191107062710.67964-2-wqu@suse.com>
+In-Reply-To: <20191107062710.67964-3-wqu@suse.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -92,41 +92,14 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 07/11/2019 07:27, Qu Wenruo wrote:
-> +static int gather_dev_holes(struct btrfs_fs_info *info,
-> +			    struct btrfs_device_info *devices_info,
-> +			    int *index, struct list_head *list,
-> +			    int max_nr_devs, u64 stripe_size, int dev_stripes)
-> +{
+> +	/*
+> +	 * Devices which can't be found. Projected by chunk_mutex.
+> +	 * This acts as a fallback allocation list for certain degraded mount.
+> +	 */
+> +	struct list_head missing_list;
 
-Hi Qu,
+From a quick glance, s/Projected/Protected/
 
-What do you think of
-
-static int gather_dev_holes(struct btrfs_fs_info *info,
-			    int *index,	u64 stripe_size,
-                            int dev_stripes)
-{
-	struct btrfs_fs_devices *fs_devices = info->fs_devices;
-	struct btrfs_device *device;
-	int ret;
-	int ndevs = 0;
-
-	list_for_each_entry(device, &fs_devices->alloc_list,
-			    dev_alloc_list) {
-
-[...]
-
-
-btrfs_device_info can be derived from btrfs_fs_info, and *list and
-max_nr_devs can be derived from btrfs_device_info.
-
-This reduces the number of arguments by 3 and we don't need to pass that
-odd 'struct list_head *list' which isn't really clear from the type what
-it is referring to.
-
-
-Byte,
-	Johannes
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
