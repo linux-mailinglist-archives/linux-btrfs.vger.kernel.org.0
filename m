@@ -2,153 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D30F7F279F
-	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Nov 2019 07:27:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A2AF27FA
+	for <lists+linux-btrfs@lfdr.de>; Thu,  7 Nov 2019 08:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbfKGG1V (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 7 Nov 2019 01:27:21 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37600 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725938AbfKGG1U (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 7 Nov 2019 01:27:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 29C09B300
-        for <linux-btrfs@vger.kernel.org>; Thu,  7 Nov 2019 06:27:18 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: volumes: Allocate degraded chunks if rw devices can't fullfil a chunk
-Date:   Thu,  7 Nov 2019 14:27:10 +0800
-Message-Id: <20191107062710.67964-4-wqu@suse.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191107062710.67964-1-wqu@suse.com>
-References: <20191107062710.67964-1-wqu@suse.com>
+        id S1726925AbfKGHRU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 7 Nov 2019 02:17:20 -0500
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:35834 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726498AbfKGHRT (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Thu, 7 Nov 2019 02:17:19 -0500
+Received: by mail-pf1-f196.google.com with SMTP id d13so1881915pfq.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 06 Nov 2019 23:17:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=LzUdAAM8a5dOR7yqqZfNOhtvgGaXLAK/BAuvg5tjD44=;
+        b=IXgQPHmUXXqRyfO5EGG3cpYkQw3GCJNhEAM6wM+fZwsi+DyA8r/Dd8ReVgrNPo+W8v
+         A6DbQhoiJX52NActQ0S0o+4G8NNs8/JZmAvbHlFkT/Ur5K55xMC/aszhKGkOr7hS7hbl
+         XBR3/CuJom6pvdG40cx35fUg1zMKzTYoxMqjaS0PoACZhZQ9bMqU2jS4Mbrcxk4fAKgZ
+         Ty/Lt/5s6bS7mCtxZAXD9IDXvi4OXQHW03rW2Tbu2pLT/DBlL5vdnd/J5/mdKRjQeqXj
+         LPJKzCE0YkLULblqZPOqXaPTBBGeYrmBG3/A+MPIrjBxHTDUxso8NZFgUvEWYHtHsNaX
+         UBTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=LzUdAAM8a5dOR7yqqZfNOhtvgGaXLAK/BAuvg5tjD44=;
+        b=nU82c3PYg360a0UltonQDbVNNDBeyAuMrl8t6dWM11yedV1SphgCoCjmpornzhs/1Y
+         l2fFlRaWzhOtMjFY8inL1CsbsbjdS7j4k5KKOxr4XMHIDTLuYxKdv2bjvqUdSxv1A0Ya
+         Pl9Q3nue/L2WdLedVLciPFf0CUZPoA+ca2dk9zKT5OMhPfN850fRR4kkuTBhvXGujFtz
+         wYkCsmrtHZwWA/zreceDqqM7KG3ITeeS5pZRjghHjTjxmMKk6nkqt5FLgmGPjExs5Gg0
+         G46s7LgKtY6XHWzXrCS3vju5fsji2lfgKE61bkd3IzWKG1g/ho+nNY2t29jQAo9qxxVS
+         NMTg==
+X-Gm-Message-State: APjAAAVNik5+HG+L/WubQWVipRCgy9kbQRmLkLWL9XkIWBsFsmNl+mx0
+        r6Tgu1VZvJoRfxGflA/T/zlk5rq8jwBQXAJszLo=
+X-Google-Smtp-Source: APXvYqye4hruOoUiWEjgy3emBSwok9l1/GKGr3nJINshwxnf6hh+phCK5fTGfbd0Kk294Gz992MlokyVWEgF+ofvS7Y=
+X-Received: by 2002:a17:90a:c082:: with SMTP id o2mr3072106pjs.94.1573111038373;
+ Wed, 06 Nov 2019 23:17:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAJjG=74frVNMRaUabyBckJcJwHYk33EQnFRZRa+dE3g-Wqp5Bg@mail.gmail.com>
+ <187ab271-f2be-9e96-e73a-0f6f3e97655a@gmx.com> <CAJjG=77Csw5P4q1sPeinoT=y=9Gy=FUr88NK2mJH72OBExnHgQ@mail.gmail.com>
+ <1e600b1e-f61b-ab7a-85bc-8bd1710c2ea9@gmx.com>
+In-Reply-To: <1e600b1e-f61b-ab7a-85bc-8bd1710c2ea9@gmx.com>
+From:   Sergiu Cozma <lssjbrolli@gmail.com>
+Date:   Thu, 7 Nov 2019 09:16:42 +0200
+Message-ID: <CAJjG=74LUiRLbJiJ_BwgirqkA=i72t0GfJB0Masgkg0NHY0ozA@mail.gmail.com>
+Subject: Re: fix for ERROR: cannot read chunk root
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[PROBLEM]
-Btrfs degraded mount will fallback to SINGLE profile if there are not
-enough devices:
+Well nothing to lose now so if you come up with any exotic ideas you
+wanna try please let me know, I will keep the partition for the next
+couple of days.
 
- # mkfs.btrfs -f /dev/test/scratch[12] -m raid1 -d raid1
- # wipefs -fa /dev/test/scratch2
- # mount -o degraded /dev/test/scratch1 /mnt/btrfs
- # fallocate -l 1G /mnt/btrfs/foobar
- # btrfs ins dump-tree -t chunk /dev/test/scratch1
-        item 7 key (FIRST_CHUNK_TREE CHUNK_ITEM 1674575872) itemoff 15511 itemsize 80
-                length 536870912 owner 2 stripe_len 65536 type DATA
- New data chunk will fallback to SINGLE.
+Thank you for your time.
 
-If user doesn't balance those SINGLE chunks, even with missing devices
-replaced, the fs is no longer full RAID1, and a missing device can break
-the tolerance.
-
-[CAUSE]
-The cause is pretty simple, when mounted degraded, missing devices can't
-be used for chunk allocation.
-Thus btrfs has to fall back to SINGLE profile.
-
-[ENHANCEMENT]
-To avoid such problem, this patch will:
-- Make all profiler reducer/updater to consider missing devices as part
-  of num_devices
-- Make chunk allocator to fallback to missing_list as last resort
-
-If we have enough rw_devices, then go regular chunk allocation code.
-This can avoid allocating degraded chunks.
-E.g. for 3 devices RAID1 degraded mount, we will use the 2 existing
-devices to allocate chunk, avoid degraded chunk.
-
-But if we don't have enough rw_devices, then we check missing devices to
-allocate degraded chunks.
-E.g. for 2 devices RAID1 degraded mount, we have to allocate degraded
-chunks to keep the RAID1 profile.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/block-group.c | 10 +++++++---
- fs/btrfs/volumes.c     | 18 +++++++++++++++---
- 2 files changed, 22 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index bf7e3f23bba7..1686fd31679b 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -52,11 +52,13 @@ static u64 get_restripe_target(struct btrfs_fs_info *fs_info, u64 flags)
-  */
- static u64 btrfs_reduce_alloc_profile(struct btrfs_fs_info *fs_info, u64 flags)
- {
--	u64 num_devices = fs_info->fs_devices->rw_devices;
-+	u64 num_devices;
- 	u64 target;
- 	u64 raid_type;
- 	u64 allowed = 0;
- 
-+	num_devices = fs_info->fs_devices->rw_devices +
-+		      fs_info->fs_devices->missing_devices;
- 	/*
- 	 * See if restripe for this chunk_type is in progress, if so try to
- 	 * reduce to the target profile
-@@ -1986,7 +1988,8 @@ static u64 update_block_group_flags(struct btrfs_fs_info *fs_info, u64 flags)
- 	if (stripped)
- 		return extended_to_chunk(stripped);
- 
--	num_devices = fs_info->fs_devices->rw_devices;
-+	num_devices = fs_info->fs_devices->rw_devices +
-+		      fs_info->fs_devices->missing_devices;
- 
- 	stripped = BTRFS_BLOCK_GROUP_RAID0 | BTRFS_BLOCK_GROUP_RAID56_MASK |
- 		BTRFS_BLOCK_GROUP_RAID1_MASK | BTRFS_BLOCK_GROUP_RAID10;
-@@ -2981,7 +2984,8 @@ static u64 get_profile_num_devs(struct btrfs_fs_info *fs_info, u64 type)
- 
- 	num_dev = btrfs_raid_array[btrfs_bg_flags_to_raid_index(type)].devs_max;
- 	if (!num_dev)
--		num_dev = fs_info->fs_devices->rw_devices;
-+		num_dev = fs_info->fs_devices->rw_devices +
-+			  fs_info->fs_devices->missing_devices;
- 
- 	return num_dev;
- }
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index a462d8de5d2a..4dee1974ceb7 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -5052,8 +5052,9 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
- 	max_chunk_size = min(div_factor(fs_devices->total_rw_bytes, 1),
- 			     max_chunk_size);
- 
--	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
--			       GFP_NOFS);
-+	devices_info = kcalloc(fs_devices->rw_devices +
-+			       fs_devices->missing_devices,
-+			       sizeof(*devices_info), GFP_NOFS);
- 	if (!devices_info)
- 		return -ENOMEM;
- 
-@@ -5067,7 +5068,18 @@ static int __btrfs_alloc_chunk(struct btrfs_trans_handle *trans,
- 			max_stripe_size, dev_stripes);
- 	if (ret < 0)
- 		goto error;
--
-+	/*
-+	 * If rw devices can't fullfil the request, fallback to missing devices
-+	 * as last resort.
-+	 */
-+	if (ndevs < devs_min) {
-+		ret = gather_dev_holes(info, devices_info + ndevs, &ndevs,
-+				&fs_devices->missing_list,
-+				fs_devices->missing_devices,
-+				max_stripe_size, dev_stripes);
-+		if (ret < 0)
-+			goto error;
-+	}
- 	/*
- 	 * now sort the devices by hole size / available space
- 	 */
--- 
-2.24.0
-
+On Thu, Nov 7, 2019 at 2:44 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>
+>
+>
+> On 2019/11/6 =E4=B8=8B=E5=8D=8811:52, Sergiu Cozma wrote:
+> > Hi, thanks for taking the time to help me out with this.
+> >
+> > The history is kinda bad, I tried to resize the partition but gparted
+> > failed saying that the the fs has errors and after throwing some
+> > commands found on the internet at it now I'm here :(
+>
+> Not sure how gparted handle resize, but I guess it should use
+> btrfs-progs to do the resize?
+>
+> >
+> > Any chance to recover or rebuild the chunk tree?
+>
+> I don't think so. Since it's wiped, there is no guarantee that only
+> chunk tree is wiped.
+>
+> THanks,
+> Qu
+>
+>
+> >
+> >
+> > On Wed, Nov 6, 2019, 13:34 Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> >>
+> >>
+> >>
+> >> On 2019/11/5 =E4=B8=8B=E5=8D=8811:04, Sergiu Cozma wrote:
+> >>> hi, i need some help to recover a btrfs partition
+> >>> i use btrfs-progs v5.3.1
+> >>>
+> >>> btrfs rescue super-recover https://pastebin.com/mGEp6vjV
+> >>> btrfs inspect-internal dump-super -a https://pastebin.com/S4WrPQm1
+> >>> btrfs inspect-internal dump-tree https://pastebin.com/yX1zUDxa
+> >>>
+> >>> can't mount the partition with
+> >>> BTRFS error (device sdb4): bad tree block start, want 856119312384 ha=
+ve 0
+> >>
+> >> Something wiped your fs on-disk data.
+> >> And the wiped one belongs to one of the most essential tree, chunk tre=
+e.
+> >>
+> >> What's the history of the fs?
+> >> It doesn't look like a bug in btrfs, but some external thing wiped it.
+> >>
+> >> Thanks,
+> >> Qu
+> >>
+> >>> [ 2295.237145] BTRFS error (device sdb4): failed to read chunk root
+> >>> [ 2295.301067] BTRFS error (device sdb4): open_ctree failed
+> >>>
+> >>
+>
