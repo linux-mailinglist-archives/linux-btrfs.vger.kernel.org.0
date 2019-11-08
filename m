@@ -2,123 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60084F44E9
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 11:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F20C5F4F67
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 16:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730005AbfKHKrL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Nov 2019 05:47:11 -0500
-Received: from mx2.suse.de ([195.135.220.15]:58828 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729873AbfKHKrK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 Nov 2019 05:47:10 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EAD8FB257;
-        Fri,  8 Nov 2019 10:47:08 +0000 (UTC)
-Subject: Re: [BUG report] KASAN: null-ptr-deref in btrfs_sync_log
-To:     Su Yue <Damenly_Su@gmx.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <dd9f22ee-e73c-7476-82d1-45a10d1f16f9@gmx.com>
- <cbd13dd4-a844-5a4f-59b0-ec672280e0b3@suse.de>
- <8b8594e9-3523-9a83-3900-001f95a0850d@gmx.com>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <dfe4e36b-f35c-f897-3679-e7e8ba375c1d@suse.de>
-Date:   Fri, 8 Nov 2019 11:46:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726121AbfKHPYU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Nov 2019 10:24:20 -0500
+Received: from aurora.thatsmathematics.com ([162.209.10.89]:53650 "EHLO
+        aurora.thatsmathematics.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726036AbfKHPYU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 Nov 2019 10:24:20 -0500
+Received: from moneta (unknown [67.221.64.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by aurora.thatsmathematics.com (Postfix) with ESMTPSA id 04A967E200;
+        Fri,  8 Nov 2019 15:24:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=thatsmathematics.com;
+        s=swordfish; t=1573226659;
+        bh=npSmE0Upm3YGVeXTm7hB4KJ60icu0reBSHzlUxvhHMY=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=il3PsjoVCh6Tt8XaKgA+CHeAWKDvuvDEtdT6FpHQrcWz1JKTJ2QuBuRc4qfegxj9V
+         Mk4kCZJmT39MUlukkHYg9eQFrUyoB0JBnxuKAc5I5j+Zp2Go97JYxiy/UzNM2Awqcp
+         ErtcqzdDysQXvDKTvbzVwHkcriO24l4MIOXTvWzs=
+Date:   Fri, 8 Nov 2019 10:24:18 -0500 (EST)
+From:   Nate Eldredge <nate@thatsmathematics.com>
+X-X-Sender: nate@moneta
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+cc:     Remi Gauvin <remi@georgianit.com>, linux-btrfs@vger.kernel.org
+Subject: Re: Defragmenting to recover wasted space
+In-Reply-To: <c5458fb8-7df9-9e27-4208-fdbb3b4d731f@gmx.com>
+Message-ID: <alpine.DEB.2.21.1911081021520.3492@moneta>
+References: <alpine.DEB.2.21.1911070814430.3492@moneta> <cc5fba8b-baf3-f984-c99d-c5be9ce3a2d9@georgianit.com> <alpine.DEB.2.21.1911071419570.3492@moneta> <c5458fb8-7df9-9e27-4208-fdbb3b4d731f@gmx.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <8b8594e9-3523-9a83-3900-001f95a0850d@gmx.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 08/11/2019 11:45, Su Yue wrote:
-> 
-> 
-> On 2019/11/8 6:37 PM, Johannes Thumshirn wrote:
->> On 08/11/2019 06:21, Su Yue wrote:
->>> Hi,
->>>
->>> While running xfstests/btrfs/004 and btrfs/067 whith KASAN enabled
->>> on v5.4-rc6, KASAN reports following BUG(btrfs/004):
->>
->> Hi Su,
->>
->> Is this on Linus' v5.4-rc6 or David's misc-next branch based on Linus'
->> rc6?
->>
-> It's v5.4-rc6 on Linus's tree.
+On Fri, 8 Nov 2019, Qu Wenruo wrote:
 
-Thanks I'll try there.
+> In fact, you can just go nodatacow.
+> Furthermore, nodatacow attr can be applied to a directory so that any
+> newer file will just inherit the nodatacow attr.
+>
+> In that case, any overwrite will not be COWed (as long as there is no
+> snapshot for it), thus no space wasted.
 
+Aha, I didn't know about that feature.  Thanks, that is exactly what I 
+want.
 
 -- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+Nate Eldredge
+nate@thatsmathematics.com
+
