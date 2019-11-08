@@ -2,83 +2,71 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 531E1F5794
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 21:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11BC9F5798
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 21:06:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731180AbfKHT1d (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Nov 2019 14:27:33 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:35392 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730416AbfKHT1d (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Nov 2019 14:27:33 -0500
-Received: by mail-qk1-f193.google.com with SMTP id i19so6312253qki.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Nov 2019 11:27:32 -0800 (PST)
+        id S1730810AbfKHT2S (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Nov 2019 14:28:18 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:39076 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730379AbfKHT2R (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Nov 2019 14:28:17 -0500
+Received: by mail-qt1-f193.google.com with SMTP id t8so7738238qtc.6
+        for <linux-btrfs@vger.kernel.org>; Fri, 08 Nov 2019 11:28:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=WPrn9ml/Szlvzob7+OuxyY73XsE4fVV4wBUnaFrYRF4=;
-        b=XWPrA7jTqTmlKHAI1GDcevm9a8xkPBQdtgVoQSUZoTaky87QjDQeg+1sFMXvnkgWuH
-         0izkerxNYsRzZsV8EuInT2OejQqADOC6cEwZCCxFlHoNfLageFvgiveO/FNALZ4EyPXc
-         RvD2c73S/1/Y7I03L5jYDIIdnjOVrjKJMrfcjl7Z+8zjvWrJJDGXaPW/9Q5JXgDr+85O
-         9pJnCr7OeaS4xPm46BRsDTzqzcrfTxEGRmKuSiwoDQnuUUNTNpr4VNbNeB4pC2HP6kO6
-         S0HJZn4svMBjuh6xwCzZQDrppVUx7GKMrol0TKQNeY17uGsMaFvicxbVSnCzA2BQHec0
-         bPoA==
+        bh=Sr1HKdCi1ViJS86soYCLUYfdZdhiuE47mnJtkc5LP7M=;
+        b=aZA/Q9IK1b4tOw4xxZR6vVwoMmEr570Wgv/mBKcHT/wxArZCxpbOuaGcWrNuLbZwwI
+         uVLGO5mAkEAwIPzkbIBiZlwN3xswiNajTXyCiL0ANyEsJvkE/J5b7PmjAiSSdUmaU/DT
+         x6cdXPtYex/wzvD2s1a+VdvlB/lIjONBRkg/gMffL++CcV8+UgZdo/2ehZLIziYODmhw
+         +DKAZWW0DxFajXfHlEEa91mNaLhs19y7GJp+mPri28I7iPjQ0g+6gx5b+9TXHQZ1IIO6
+         FvIAj6Wfi3cDQaq+E3i6q52D8wTqV50umIQA1e7fe9FMa1OoALx4MwY0ZrEFy2Sw6iOp
+         Tl1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WPrn9ml/Szlvzob7+OuxyY73XsE4fVV4wBUnaFrYRF4=;
-        b=Pg9iJfbi0xUxOq3uzPqNQ4+db6ihSURAxXLqtiujlTB1T9a3cquFOdtbZP2AHLilfv
-         r4ilFqne/VzLOCuTrKCecAoSdyHrSzGXmaE+qp0sy7VERetkz8emwRVLR2VEzLDmCQgZ
-         ouAmcJjSWhJLnW0MbTBL7ncPUZ4SUdmT2dSKN554SQOgoZv9xA0YuhywjQ5D9+Q+UjzB
-         OwCf1h1mezPjBSFnCBH3DNatUP9NOxhMaYLmiSJ3NanULPpYS7YRF8z5NbdX6yYfmORm
-         rgJf2kV+Wlfd0Dfc6+oeWXdsrEKBAejosWW7zPyaOG6l6A5kKSRWKiIDjOQveYC1lrpV
-         PISw==
-X-Gm-Message-State: APjAAAUFOhvxzMFIB2Cp/0PTVKUSt/AvdExP7jx626m/5cAXL80SqJn9
-        t1R9fusWDAA5vICW+AHqSVqY1A==
-X-Google-Smtp-Source: APXvYqz9rLXPzh3Z8ctMDoaL017KsCbHZApTQ0ESwiqQT2g9KnXNgqhm1BJD6MtWwwQRdV84iXzRhA==
-X-Received: by 2002:a05:620a:2115:: with SMTP id l21mr3817742qkl.105.1573241252427;
-        Fri, 08 Nov 2019 11:27:32 -0800 (PST)
+        bh=Sr1HKdCi1ViJS86soYCLUYfdZdhiuE47mnJtkc5LP7M=;
+        b=qD0fnQFjOhcxiWvrDOTAbSvsXHAd5IfhvFlEdmOlEYFzndc8CqzZaO5CK7MS7kfOfz
+         rFVszs+sRaAUu4QBSGVG89HLq4hcRu4G1Yr7IN+Mj9A1z7/3uMjB59ubTqkivn508SLU
+         E/HmNe6K750w8OLE8PTKNSgUe1MJg9hPEDkm3NhVtkc1Ti/Umn3yqbvvEmlEcq4M8bBk
+         g97TGMX+LEuLuvHs8H0wOmFbIE+sGX9CP7Cpe+yPoAmnOCNN6IJzF3/BynqC/mmY0d46
+         tQMc4lFRlgHwy0/XB678Oawr5MP92zErx78tRR2ZG8w8zQIuHHDWzUeQ86RIhU5tz/kx
+         rjfw==
+X-Gm-Message-State: APjAAAV0xRj2SIXnYRIyczRzNHtZoY6Ue7YYLR7JMsVCW6+7s7rEkIum
+        7+m8yrbNjqorDTAQYWu9LVQfeQ==
+X-Google-Smtp-Source: APXvYqyiTQxLDHqwLxEY6n/aXSU+Kazp2RpfrvYy3vDr36pyloZJ/VJ/ILRqq85Vd5ypg3dk4X2hxQ==
+X-Received: by 2002:ac8:ecc:: with SMTP id w12mr12542998qti.134.1573241295474;
+        Fri, 08 Nov 2019 11:28:15 -0800 (PST)
 Received: from localhost ([2620:10d:c091:480::1852])
-        by smtp.gmail.com with ESMTPSA id k3sm2891004qkj.119.2019.11.08.11.27.31
+        by smtp.gmail.com with ESMTPSA id l124sm3524299qkf.122.2019.11.08.11.28.14
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Nov 2019 11:27:32 -0800 (PST)
-Date:   Fri, 8 Nov 2019 14:27:30 -0500
+        Fri, 08 Nov 2019 11:28:14 -0800 (PST)
+Date:   Fri, 8 Nov 2019 14:28:13 -0500
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     Dennis Zhou <dennis@kernel.org>
 Cc:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 07/22] btrfs: discard one region at a time in async
- discard
-Message-ID: <20191108192730.ttmojxmybgrcazxz@macbook-pro-91.dhcp.thefacebook.com>
+Subject: Re: [PATCH 08/22] btrfs: add removal calls for sysfs debug/
+Message-ID: <20191108192812.watrenb4aolykr6a@macbook-pro-91.dhcp.thefacebook.com>
 References: <cover.1571865774.git.dennis@kernel.org>
- <6ab77d726e93f19b26858ca8c2248ae249701e71.1571865774.git.dennis@kernel.org>
+ <a30746a1a3db0798aec558d9badbaf4f19320869.1571865774.git.dennis@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6ab77d726e93f19b26858ca8c2248ae249701e71.1571865774.git.dennis@kernel.org>
+In-Reply-To: <a30746a1a3db0798aec558d9badbaf4f19320869.1571865774.git.dennis@kernel.org>
 User-Agent: NeoMutt/20180716
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 06:53:01PM -0400, Dennis Zhou wrote:
-> The prior two patches added discarding via a background workqueue. This
-> just piggybacked off of the fstrim code to trim the whole block at once.
-> Well inevitably this is worse performance wise and will aggressively
-> overtrim. But it was nice to plumb the other infrastructure to keep the
-> patches easier to review.
-> 
-> This adds the real goal of this series which is discarding slowly (ie a
-> slow long running fstrim). The discarding is split into two phases,
-> extents and then bitmaps. The reason for this is two fold. First, the
-> bitmap regions overlap the extent regions. Second, discarding the
-> extents first will let the newly trimmed bitmaps have the highest chance
-> of coalescing when being readded to the free space cache.
+On Wed, Oct 23, 2019 at 06:53:02PM -0400, Dennis Zhou wrote:
+> We probably should call sysfs_remove_group() on debug/.
 > 
 > Signed-off-by: Dennis Zhou <dennis@kernel.org>
 
