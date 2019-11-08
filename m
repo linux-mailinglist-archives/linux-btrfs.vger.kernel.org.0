@@ -2,79 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBEEF584C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 21:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3D5F59CD
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 22:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbfKHUPE (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Nov 2019 15:15:04 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:42965 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726294AbfKHUPE (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Nov 2019 15:15:04 -0500
-Received: by mail-qt1-f196.google.com with SMTP id t20so7851219qtn.9
-        for <linux-btrfs@vger.kernel.org>; Fri, 08 Nov 2019 12:15:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ahKEYAmk3MOxCrKBQIHmaUXyvSLHCoSr+L2KQf1u5C8=;
-        b=Nbbg7IrL3PfzhyCGr0THB8yOIH5+j5ErbRYut9lt+xM29BvznklYOrU1wR++lTvfH2
-         UI65Q0lQP4EHNAKJZ/ZkL6cz8E2vvHVPDDAkxV6h0X4kHtOnvVHHJnt275TrmAhqJII4
-         k/rs1Id3ALxllkmdMbaQZfXh4owo2QwMZfZkiWg8F7ZqOIoN4Wvwivz+Rm1qcsuAhKhF
-         geCUrfRSm/RfLz9y3aMUnicQPymoHmjSEjRCXSMnk7fr0/O1z5wzVRLSxSrNQk25VM8Y
-         Hgecoyameec3tsBNkdjk++YKnVMiZiyAqXMXUBPmK2mbgLit/uGe9sSoyH4iHelU8lp6
-         vieA==
-X-Gm-Message-State: APjAAAXVs/12p2eSJaVAflDdRuwR8JKAPI68ZjgzsiDYwoFHO9n/2Thh
-        ndO96C744hto2hz0PxP+eX8=
-X-Google-Smtp-Source: APXvYqzXpUZicXBbL+sOnB7vk4A4a3tH6LQr/3hcNnhoq/ZevdXdxMyWwZCkeFIO/3BAH2+sCrQybg==
-X-Received: by 2002:ac8:3168:: with SMTP id h37mr12390599qtb.311.1573244103426;
-        Fri, 08 Nov 2019 12:15:03 -0800 (PST)
-Received: from dennisz-mbp ([2620:10d:c091:500::1:ac97])
-        by smtp.gmail.com with ESMTPSA id l62sm3508899qkc.9.2019.11.08.12.15.00
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Nov 2019 12:15:01 -0800 (PST)
-Date:   Fri, 8 Nov 2019 15:14:58 -0500
-From:   Dennis Zhou <dennis@kernel.org>
-To:     Josef Bacik <josef@toxicpanda.com>
-Cc:     Dennis Zhou <dennis@kernel.org>, David Sterba <dsterba@suse.com>,
-        Chris Mason <clm@fb.com>, Omar Sandoval <osandov@osandov.com>,
-        kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 18/22] btrfs: only keep track of data extents for async
- discard
-Message-ID: <20191108201458.GA51086@dennisz-mbp>
-References: <cover.1571865774.git.dennis@kernel.org>
- <28b5064229e24388600f6f776621c6443c3e92b7.1571865775.git.dennis@kernel.org>
- <20191108194650.tcr5gsfl6vrh7riu@macbook-pro-91.dhcp.thefacebook.com>
+        id S1731286AbfKHVYU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Nov 2019 16:24:20 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:42866 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726819AbfKHVYU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Nov 2019 16:24:20 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 0CB4E4C101C; Fri,  8 Nov 2019 16:23:44 -0500 (EST)
+Date:   Fri, 8 Nov 2019 16:23:44 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Odin Hultgren van der Horst <odin@digitalgarden.no>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Extent to files
+Message-ID: <20191108212343.GQ22121@hungrycats.org>
+References: <20191104113519.htdigcg6lzbes6v7@T580.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="0/kgSOzhNoDC5T3a"
 Content-Disposition: inline
-In-Reply-To: <20191108194650.tcr5gsfl6vrh7riu@macbook-pro-91.dhcp.thefacebook.com>
+In-Reply-To: <20191104113519.htdigcg6lzbes6v7@T580.localdomain>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Fri, Nov 08, 2019 at 02:46:51PM -0500, Josef Bacik wrote:
-> On Wed, Oct 23, 2019 at 06:53:12PM -0400, Dennis Zhou wrote:
-> > As mentioned earlier, discarding data can be done either by issuing an
-> > explicit discard or implicitly by reusing the LBA. Metadata chunks see
-> > much more frequent reuse due to well it being metadata. So instead of
-> > explicitly discarding metadata blocks, just leave them be and let the
-> > latter implicit discarding be done for them.
-> > 
-> 
-> Hmm now that I look at this, it seems like we won't even discard empty metadata
-> block groups now, right?  Or am I missing something?  Thanks,
-> 
 
-Empty block groups go through btrfs_add_to_discard_unused_list() which
-skips that check. So metadata blocks will be discarded here from
-btrfs_discard_queue_work() which should be called from
-__btrfs_add_free_space().
+--0/kgSOzhNoDC5T3a
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-We should just skip discarding metadata blocks while they are being
-used.
+On Mon, Nov 04, 2019 at 12:35:19PM +0100, Odin Hultgren van der Horst wrote:
+> I did a ioctl(FICLONE) IOCTL-FICLONERANGE(2) at some point later I want t=
+o be
+> able to check if the new file still shares all its physical storage with =
+just
+> knowing the name of the new file.
 
-Thanks,
-Dennis
+"Shares all its physical storage" is not very specific.  You could run
+'filefrag -v' and count extents with and without the "shared" flag.
+If either number is 0, the file is all-unique or all-shared.
+
+If the extents are marked shared, filefrag doesn't tell you what is doing
+the sharing.  A file can, and often does, share extents with itself.
+e.g. you write a 1MB extent, then write 4K in the middle, now you have
+two smaller references to the 1MB extent separated by the 4K in the
+middle.  Having two references will set the "shared" bit in FIEMAP
+even though all references are in the same file.
+
+> I found some people suggesting to compare the files extents.
+>=20
+> But the implementation I looked at knew both files used in the comparison,
+> so I was wondering if there a way to get all files that references a exte=
+nt
+> in user space?
+
+Use TREE_SEARCH_V2 and the subvol and inode numbers of the target file
+to read the file's EXTENT_ITEM metadata to get all the extent bytenrs
+in a file.  You need the raw extent bytenr ("physical") field from each
+extent metadata item in the file.
+
+You can use 'btrfs ins dump-tree' to see the metadata in the filesystem,
+and as an example of how to decode the various metadata objects.  I used
+'btrfs sub find-new' as an example for walking the metadata trees with
+TREE_SEARCH_V2.
+
+Use the LOGICAL_INO_V2 ioctl with the extent bytenrs obtained from
+TREE_SEARCH_V2 to discover the (subvol, ino, offset) tuples referencing
+each extent.  'btrfs ins logical' does this with LOGICAL_INO v1.  You want
+to use the V2 BTRFS_LOGICAL_INO_ARGS_IGNORE_OFFSET flag so you get all
+the referencing extent items (V1 requires repeating the call for every
+block in the extent, V2 gets all references at once).
+
+Use 'btrfs ins subvolid-resolve' to map subvol IDs to paths in the
+filesystem.  You will need to open these paths to use INO_TO_PATHS.
+
+Use INO_TO_PATHS ioctl to convert (subvol_fd, inode) numbers
+into filenames.  For the FD argument, use the paths obtained from
+'subvolid-resolve'.  This tells you the filename relative to the subvol.
+Combine with the subvol's name for the full path of the file.
+
+All of the above require root or CAP_SYS_ADMIN privileges to work.
+
+> In reality I want a count off clones/(identical files) to a given file
+> in user space.
+
+Repeat the above for each extent in the target file to build a list of
+all extents and what files reference them.
+
+Partial matches between files and extents are possible, so you will
+need to decide what to do about them (include in result set, exclude
+=66rom result set, diffstat-style output, percentage overlap, make a Venn
+diagram, etc).
+
+It's also possible to have two files referring to the same extents in
+different orders or at different offsets within the extents, so two
+files could share 100% of their space but not be identical.
+
+If you only care about the number of files that have one or more blocks
+shared, you can skip some of the steps, i.e. you only need the total
+number of unique (subvol, inode) pairs and you can skip the path lookups,
+but if you do this, you can't tell if the files are identical, only that
+they are at least partly shared.
+
+--0/kgSOzhNoDC5T3a
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXcXc2gAKCRCB+YsaVrMb
+nJi/AJ9inlydZDbPtyrj/NCvpUyGLkjvZQCfdR5QY9tLC4kGc/vRSHik+mAC9EI=
+=KDXj
+-----END PGP SIGNATURE-----
+
+--0/kgSOzhNoDC5T3a--
