@@ -2,96 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E50A8F5A3C
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 22:46:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A84F5A8E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 23:07:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388586AbfKHVi6 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Nov 2019 16:38:58 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45870 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731097AbfKHVi6 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 Nov 2019 16:38:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 735B3B19A;
-        Fri,  8 Nov 2019 21:38:56 +0000 (UTC)
-From:   =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>
-To:     Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-Cc:     Johannes Thumshirn <jthumshirn@suse.de>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        linux-btrfs@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH next 2/2] btrfs: extent-tree: Fix error format string
-Date:   Fri,  8 Nov 2019 22:38:53 +0100
-Message-Id: <20191108213853.16635-3-afaerber@suse.de>
-X-Mailer: git-send-email 2.16.4
-In-Reply-To: <20191108213853.16635-1-afaerber@suse.de>
-References: <20191108213853.16635-1-afaerber@suse.de>
+        id S1729986AbfKHWGz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Nov 2019 17:06:55 -0500
+Received: from lithops.sigma-star.at ([195.201.40.130]:49006 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727001AbfKHWGz (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Nov 2019 17:06:55 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 4E4C6608325B
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Nov 2019 23:06:52 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id 6sZJrtmQMZsL for <linux-btrfs@vger.kernel.org>;
+        Fri,  8 Nov 2019 23:06:51 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id C02726083279
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Nov 2019 23:06:51 +0100 (CET)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id QrXieDp6QhNY for <linux-btrfs@vger.kernel.org>;
+        Fri,  8 Nov 2019 23:06:51 +0100 (CET)
+Received: from blindfold.localnet (213-47-184-186.cable.dynamic.surfer.at [213.47.184.186])
+        by lithops.sigma-star.at (Postfix) with ESMTPSA id 7EBF2608325B
+        for <linux-btrfs@vger.kernel.org>; Fri,  8 Nov 2019 23:06:51 +0100 (CET)
+From:   Richard Weinberger <richard@nod.at>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: Decoding "unable to fixup (regular)" errors
+Date:   Fri, 08 Nov 2019 23:06:50 +0100
+Message-ID: <2590197.gOHgNE8CYM@blindfold>
+In-Reply-To: <1591390.YpsIS3gr9g@blindfold>
+References: <1591390.YpsIS3gr9g@blindfold>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Andreas Färber <afaerber@suse.com>
+Am Dienstag, 5. November 2019, 23:03:01 CET schrieb Richard Weinberger:
+> [10860370.764595] BTRFS error (device md1): unable to fixup (regular) error at logical 593483341824 on dev /dev/md1
+> [10860395.236787] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2292, gen 0
+> [10860395.237267] BTRFS error (device md1): unable to fixup (regular) error at logical 595304841216 on dev /dev/md1
+> [10860395.506085] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2293, gen 0
+> [10860395.506560] BTRFS error (device md1): unable to fixup (regular) error at logical 595326820352 on dev /dev/md1
+> [10860395.511546] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2294, gen 0
+> [10860395.512061] BTRFS error (device md1): unable to fixup (regular) error at logical 595327647744 on dev /dev/md1
+> [10860395.664956] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2295, gen 0
+> [10860395.664959] BTRFS error (device md1): unable to fixup (regular) error at logical 595344850944 on dev /dev/md1
+> [10860395.677733] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2296, gen 0
+> [10860395.677736] BTRFS error (device md1): unable to fixup (regular) error at logical 595346452480 on dev /dev/md1
+> [10860395.770918] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2297, gen 0
+> [10860395.771523] BTRFS error (device md1): unable to fixup (regular) error at logical 595357601792 on dev /dev/md1
+> [10860395.789808] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2298, gen 0
+> [10860395.790455] BTRFS error (device md1): unable to fixup (regular) error at logical 595359870976 on dev /dev/md1
+> [10860395.806699] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2299, gen 0
+> [10860395.807381] BTRFS error (device md1): unable to fixup (regular) error at logical 595361865728 on dev /dev/md1
+> [10860395.918793] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2300, gen 0
+> [10860395.919513] BTRFS error (device md1): unable to fixup (regular) error at logical 595372343296 on dev /dev/md1
+> [10860395.993817] BTRFS error (device md1): bdev /dev/md1 errs: wr 0, rd 0, flush 0, corrupt 2301, gen 0
+> [10860395.994574] BTRFS error (device md1): unable to fixup (regular) error at logical 595384438784 on dev /dev/md1
 
-sizeof() returns type size_t, thus we need %zu instead of %lu.
+> For obvious reasons the "BTRFS error (device md1): unable to fixup (regular) error" lines made me nervous
+> and I would like to understand better what is going on.
+> The system has ECC memory with md1 being a RAID1 which passes all health checks.
+> 
+> I tried to find the inodes behind the erroneous addresses without success.
+> e.g.
+> $ btrfs inspect-internal logical-resolve -v -P 593483341824 /
+> ioctl ret=0, total_size=4096, bytes_left=4080, bytes_missing=0, cnt=0, missed=0
+> $ echo $?
+> 1
+> 
+> My kernel is 4.12.14-lp150.12.64-default (OpenSUSE 15.0), so not super recent but AFAICT btrfs should be sane
+> there. :-)
+> 
+> What could cause the errors and how to dig further?
 
-This fixes the following build warning on 32-bit arm:
+I was able to reproduce this on vanilla v5.4-rc6.
 
-  In file included from ../include/linux/printk.h:7,
-                   from ../include/linux/kernel.h:15,
-                   from ../include/asm-generic/bug.h:19,
-                   from ../arch/arm/include/asm/bug.h:60,
-                   from ../include/linux/bug.h:5,
-                   from ../include/linux/thread_info.h:12,
-                   from ../include/asm-generic/current.h:5,
-                   from ./arch/arm/include/generated/asm/current.h:1,
-                   from ../include/linux/sched.h:12,
-                   from ../fs/btrfs/extent-tree.c:6:
-  ../fs/btrfs/extent-tree.c: In function '__btrfs_free_extent':
-  ../include/linux/kern_levels.h:5:18: warning: format '%lu' expects argument of type 'long unsigned int', but argument 8 has type 'unsigned int' [-Wformat=]
-      5 | #define KERN_SOH "\001"  /* ASCII Start Of Header */
-        |                  ^~~~~~
-  ../include/linux/kern_levels.h:10:19: note: in expansion of macro 'KERN_SOH'
-     10 | #define KERN_CRIT KERN_SOH "2" /* critical conditions */
-        |                   ^~~~~~~~
-  ../fs/btrfs/ctree.h:2986:24: note: in expansion of macro 'KERN_CRIT'
-   2986 |  btrfs_printk(fs_info, KERN_CRIT fmt, ##args)
-        |                        ^~~~~~~~~
-  ../fs/btrfs/extent-tree.c:3207:4: note: in expansion of macro 'btrfs_crit'
-   3207 |    btrfs_crit(info,
-        |    ^~~~~~~~~~
-  ../fs/btrfs/extent-tree.c:3208:83: note: format string is defined here
-   3208 | "invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %lu",
-        |                                                                                 ~~^
-        |                                                                                   |
-        |                                                                                   long unsigned int
-        |                                                                                 %u
+Instrumenting btrfs revealed that all erroneous blocks are data blocks (BTRFS_EXTENT_FLAG_DATA)
+and only have ->checksum_error set.
+Both expected and computed checksums are non-zero.
 
-Fixes: 0c171e9095e4 ("btrfs: extent-tree: Kill BUG_ON() in __btrfs_free_extent() and do better comment")
-Cc: Qu Wenruo <wqu@suse.com>
-Cc: David Sterba <dsterba@suse.com>
-Signed-off-by: Andreas Färber <afaerber@suse.com>
----
- fs/btrfs/extent-tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+To me it seems like all these blocks are orphaned data, while extent_from_logical() finds and extent
+for the affected logical addresses, none of the extents belong to an inode.
+This explains also why "btrfs inspect-internal logical-resolve" is unable to point me to an
+inode. And why scrub_print_warning("checksum error", sblock_to_check) does not log anything.
+The function returns early if no inode can be found for a data block...
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 7c7a3e30e917..631c9743ddc7 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3205,7 +3205,7 @@ static int __btrfs_free_extent(struct btrfs_trans_handle *trans,
- 		struct btrfs_tree_block_info *bi;
- 		if (unlikely(item_size < sizeof(*ei) + sizeof(*bi))) {
- 			btrfs_crit(info,
--"invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %lu",
-+"invalid extent item size for key (%llu, %u, %llu) owner %llu, has %u expect >= %zu",
- 				   key.objectid, key.type, key.offset,
- 				   owner_objectid, item_size,
- 				   sizeof(*ei) + sizeof(*bi));
--- 
-2.16.4
+This is something to worry about?
+
+Why does the scrubbing mechanism check orphaned blocks?
+
+Thanks,
+//richard
+
 
