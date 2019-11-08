@@ -2,238 +2,217 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 27128F3FB6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 06:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB52F4194
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 09:01:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730212AbfKHFVK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Nov 2019 00:21:10 -0500
-Received: from mout.gmx.net ([212.227.17.21]:34245 "EHLO mout.gmx.net"
+        id S1726072AbfKHIBb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Nov 2019 03:01:31 -0500
+Received: from mout.gmx.net ([212.227.15.19]:42319 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726180AbfKHFVJ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 Nov 2019 00:21:09 -0500
+        id S1725975AbfKHIBa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 Nov 2019 03:01:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1573190466;
-        bh=MtXAft+ved5zLoaw8tDqGLeJGzM1fIFSPEzqK5CBpbM=;
-        h=X-UI-Sender-Class:From:Subject:To:Cc:Date;
-        b=DdjLY7zodjqKnjXSidzGY99j90PZQwcaKCk+qsnD7/cJg8diNB/r0t9+tuyF9Qpvx
-         QRbV3hHDVMdPE/l1PrBCXBHgJNW8JbrdRhr0h+8TBofaNR/8zqKeT8WyJT8/rdsjF2
-         O3wupX+ghxV8NffU7LX6meoUJ8ouiNjnRLs3QZYo=
+        s=badeba3b8450; t=1573200081;
+        bh=6TLqb6BoNobX3n8k/YIrBN6FWJvRwODiLXKxCL5Ezz8=;
+        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=ZC36LA+aWyG0nAUzYZWuUz0USXaMZdaPdLAqqXOcbxlC3P2TRkwTEwSDEwVHDTUbA
+         2rIbjgFn2fC0lnCJ6l1T6uWGPWTo4CbPns73O45z9XWxMvYEqMdKfU1xGj4wwvaQpr
+         TZSbujis0A63kNK0+TAA4mpDssNA8Cq9R87wTNnY=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [192.168.2.164] ([129.146.172.218]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MulmF-1hclUY1hCt-00ro7L; Fri, 08
- Nov 2019 06:21:06 +0100
-From:   Su Yue <Damenly_Su@gmx.com>
-Subject: [BUG report] KASAN: null-ptr-deref in btrfs_sync_log
-To:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Cc:     Su Yue <Damenly_Su@gmx.com>
-Message-ID: <dd9f22ee-e73c-7476-82d1-45a10d1f16f9@gmx.com>
-Date:   Fri, 8 Nov 2019 13:21:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:71.0)
- Gecko/20100101 Thunderbird/71.0
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5mKP-1hs4163KBP-017CbM; Fri, 08
+ Nov 2019 09:01:21 +0100
+Subject: Re: Defragmenting to recover wasted space
+To:     Nate Eldredge <nate@thatsmathematics.com>,
+        Remi Gauvin <remi@georgianit.com>
+Cc:     linux-btrfs@vger.kernel.org
+References: <alpine.DEB.2.21.1911070814430.3492@moneta>
+ <cc5fba8b-baf3-f984-c99d-c5be9ce3a2d9@georgianit.com>
+ <alpine.DEB.2.21.1911071419570.3492@moneta>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <c5458fb8-7df9-9e27-4208-fdbb3b4d731f@gmx.com>
+Date:   Fri, 8 Nov 2019 16:01:14 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:K+eDWQIx7x2bzuJmZHqMPSaFBytMmD8nYJK4cpbxLt4+1Sb7mV4
- jflmvkZly5lsZolTtwA/2N8voBX9DuiOqpsUu6KKqHguH3RluO60x5hSif7+FYM5Z8gbtSP
- +Jz3bUBR0LBCd9R0pYea1AQot+INryb2zflqxufYNy7BIOl/iK3SFYU1oZCpSIghgA0OW7F
- Cj17+6mW3n55AEufqb8mQ==
+In-Reply-To: <alpine.DEB.2.21.1911071419570.3492@moneta>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="y4J24WjV6zzNhsNKglIU7BGUrtPSJRBe6"
+X-Provags-ID: V03:K1:4UFdbpQ/vOY6AmHpipjINbF5JJ3NVkzzoTLUFD7vqMo3f/PrEm3
+ Zh+Fc2ylceHpPdI5Ro0TojpfaU5nEEt+8Dwey7JwQH6djsJvGLB3LPgm7IOx69KRcdARJT2
+ kk+Ip8XhQGapD0rXPG1YQshCG3RqXJ4JqNmaClKawLWkATPCdjjE5NZhqw7hUlzpz+C1Fnn
+ jAsAixt/AfFSKNajISOlg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SFUJs/fS1bM=:qS85otUdh3jeRiV7N2wEub
- NV6pnpsQPIaNHtud0jxAunQ7qjokvOcf/LHFLDV8uZoH3hqGVU1iDljnhcWwLHOgmj1gLBwbP
- o0joKDA4r/WTfsjqX+8XSbX9z2ojFQG8gH0lbLOf9pM6XsndT8C54XKQBiZMRDDnRtdFi/xdR
- elBv7dGhMmpnAJICWnwSFY2e0YrH5DQbLKOAC5v1nRIP3BAHFE8GHZiU4dGcObyQ48hfqIkcQ
- gYQ+LA59ag6DzSfGNYXVpMG/L7l/6zeL6iPLLSRMC8lQkJUgaVeWlPfMuMKepN8tkav52sElQ
- CuB/4G0y1J2GL6z1kvpQOv4cy9S51US75bWOuRpcycpgmPbnqK8RhMEdeh1JaFcPlod+9Kkhf
- fQeus/4l64hwMwbblBhk8YLax4G4bVginw8ud9pDSNfuArj2UePodZQ9NriKgUKQvPRJhOmcz
- Y3funPQmOeKQyXnZU16zP9KuNLFB1aA8PZ2QxNQDsp+N+Fy7ypppnZdRPCxU13FPuLp6odkMo
- 8ug1gnwUkCpCNDIgVLzSE2umMhgW8z3t1Tr+qAfcjEzlS8fL9blYHq3quIi6EQ0kReTaCPRKl
- roDPQIuQ9MSnWAbqYbONVtcHPGNSq69QmWUgF4fK07QBCYotqSH+wMOyD2loAdb2T9jGKa5KS
- oCug2HjRShQ1KF94LkaJ/5nuT0oOwP9QlMdYUYLivAe92KyuNZeLZpHM2tMTz+09lJlWI20MU
- u9Xw/zniIf7oaIIyuIsqvwN3KE0da83TjDX/RRtl4pn9/JOJjVS4613bmX/ylBQPB25v94Jb1
- gaPfOCtNbILhplRSLAIreiyhL1gcyY6sapZqf7qPXFSsfVXtalS+yzEdX9T9i6myKi3N7Ed+v
- exW045dTfowN7J5ZdBJ1Wq9fX/OqW7OeMjpyPBoe+7UONH9LOXLYlsvugGMhU3MIR/o72SoSC
- bhZuofOTotqNT2mJOzTs+BCkejtKjvvoT0ejL68wsyHYoHaciti5/Tu990ox5sRLbXGFjoyU/
- jWj/QsSfu1Nc617bJQ4jq1YOIYpTJQ/v9ro8E+HgIIiZhjA/dBGmEDbcDwUyqgOtPyfLGlQv3
- IIlIZM9FCgAuxb23Z1CLUR6VSbjXpmZ6dvdOYWuKsSco43M1vf2y542ppDDY8YnqlMK/eFuXn
- ir38cEOOpMyXDC6crHTHM0o7vX7yzz6Xn2plX4uKjw0iz0m1NKPr0szipRSt0ka0ojfP3172H
- TQVOqabhDXQRnUKRR1/CDe8lnmCsSXE+8qovn5uVL0z2tcQIp6m7O1Eec9u8=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:r1vqYjVGUd8=:uYXheDacTrkUKPH9t1FMVK
+ EFjM/0hbQ000Xp8+VP5GEO8297DnII1zopKi/kcuqoopB5txDFSjaZ4/E9lOlaleZTCMBiMEu
+ yCdsV4QSFMj5WiroJ4oZS8FiUJSotmV5Aw3kklUlTtYhgAbv5To33BDvcZSvwlDyo70ljEbnE
+ sNa2STiwARh7ZsB3VQvPdrE3jXFbF9PZ1q7vqB43baT90LZffoH/mX8uGv3rYHVUUp4PevCtb
+ bnUKiKRlKj8bpt7g8OyX04I2W4MwQ2uQwfdZj701m4Er7XIJ8wEUkXGXex7Fh+IFSn9qPXryr
+ brQ90R4fX+duZhKo+lPNnVipRyUvSpod3+llPdo27hZJCg+2oazTtEATvsi/Ni2URHhd9/jDF
+ SAc3O/sArji4CE0itfH6zTpzkzNrV/TLA7Yjoc8CR+xlOhveYH4WsGz8VLzONJvTomJ9/HFd7
+ Miq/zpujW0whU384epPaauNw64qINvsLj57T/fhHHPRio+F6uzVbmp1DV+kW29FQgCVJ+rBQN
+ 5ADI21ypc3X10iioQeYBHh6QHoknF19MPmWCiPP8UOhahfw4p+zUTlcE+dspaUV4non/02DRJ
+ HERpAm2JKXQAjckXME3oE2znnhP8ItlkodwIC02DsLpxnG0VanrmwUZc0cEyWqQuUABt79gb8
+ FNzKDj42BeaUmsOk2dyFq/R9fqVsvoUFHzggxsNlLfpRRWUiD8MPJa2w2wQaX/91HF27YRfKY
+ rMG2i6UPQRwMi0HIqKXmRfxkDDUIMyE9Ynzsz14MN0jzuwuJkkjHyIRzYXmG5Geqt208G0aoi
+ K832zQQW7fPnw65p6f4knNh2g8b3Oe3F4cowOHupB18QT6j3sCdQn6zG1pD6hW7jGcthx91qu
+ BckC0buDOKVOuVZxAWaWO5BABr0xY4fxIYl5QuwMv+Le/13PVEDZgX+KJVXYq7/WV2VFsyBhX
+ 4Ez8asIZkCwcNSyF55pZaUAUtk4sSEUoz0/TBb5zDYz0H40NePGLbLiMcwVv+B/B+j2UPJJJH
+ GGwUAZp4f3h92Ow+1RFayoQYHDzDp+qvDbaa96rK9jVkiKre7MEvo7Eau98SdT3n8iHq17Ce3
+ mnFn3OEJDBx6SVLKCogygNus2m/lwJioMcJ2R03xvBa9zstYjioFj++pMA4M3qhhRBYo981SU
+ IXPy8SJ/uAt3Gn6he1Ph2MFIQHq2UA0E5ZJ7vJxah4vzdWUffaFLmLr13sbgeWEOnuXm4dBnP
+ PselYZizz9caXr3S6Ul1I1dqfpwOTpMumBkrvI6q+Pes3a2u4vlzIssmbuRA=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--y4J24WjV6zzNhsNKglIU7BGUrtPSJRBe6
+Content-Type: multipart/mixed; boundary="e31ENkLgIgXmUmAgYjNaFNsWTfHspELPN"
 
-While running xfstests/btrfs/004 and btrfs/067 whith KASAN enabled
-on v5.4-rc6, KASAN reports following BUG(btrfs/004):
+--e31ENkLgIgXmUmAgYjNaFNsWTfHspELPN
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-==================================================================
-[  681.583782] BUG: KASAN: null-ptr-deref in btrfs_sync_log+0x77c/0x1200
-[btrfs]
-[  681.585752] Write of size 8 at addr 0000000000000008 by task
-fsstress/44351
 
-[  681.588201] CPU: 6 PID: 44351 Comm: fsstress Kdump: loaded Not
-tainted 5.4.0-rc6-custom #18
-[  681.589903] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-?-20191013_105130-anatol 04/01/2014
-[  681.592284] Call Trace:
-[  681.592904]  dump_stack+0xa4/0xfa
-[  681.593825]  ? btrfs_sync_log+0x77c/0x1200 [btrfs]
-[  681.595048]  __kasan_report.cold+0x5/0x41
-[  681.596135]  ? btrfs_sync_log+0x77c/0x1200 [btrfs]
-[  681.597139]  kasan_report+0x12/0x20
-[  681.598054]  __asan_store8+0x57/0x90
-[  681.599028]  btrfs_sync_log+0x77c/0x1200 [btrfs]
-[  681.600291]  ? btrfs_log_inode_parent+0x1440/0x1440 [btrfs]
-[  681.601662]  ? 0xffffffffa0000000
-[  681.602561]  ? mark_lock+0xaf/0xab0
-[  681.603687]  ? dput+0xdd/0x600
-[  681.604595]  ? __kasan_check_write+0x14/0x20
-[  681.605732]  ? up_write+0xe5/0x290
-[  681.606752]  btrfs_sync_file+0x56e/0x7c0 [btrfs]
-[  681.608084]  ? btrfs_file_write_iter+0x920/0x920 [btrfs]
-[  681.609482]  ? __do_sys_newstat+0xad/0x100
-[  681.610559]  ? cp_new_stat+0x310/0x310
-[  681.611614]  vfs_fsync_range+0x6d/0x110
-[  681.612714]  ? btrfs_file_write_iter+0x920/0x920 [btrfs]
-[  681.613732]  do_fsync+0x3d/0x70
-[  681.614281]  __x64_sys_fsync+0x21/0x30
-[  681.614934]  do_syscall_64+0x79/0xe0
-[  681.615554]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[  681.616405] RIP: 0033:0x7fe6d8d33bd7
-[  681.617011] Code: ff ff eb bb 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44
-00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 4a 00 00 00 0f
-05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 03 f7 ff ff
-[  681.620086] RSP: 002b:00007ffe4f9a8ff8 EFLAGS: 00000246 ORIG_RAX:
-000000000000004a
-[  681.621350] RAX: ffffffffffffffda RBX: 000055b5c5a15520 RCX:
-00007fe6d8d33bd7
-[  681.622533] RDX: 00007ffe4f9a8f50 RSI: 00007ffe4f9a8f50 RDI:
-0000000000000003
-[  681.623711] RBP: 0000000000000003 R08: 0000000000000001 R09:
-00007ffe4f9a900c
-[  681.624901] R10: 0000000000000000 R11: 0000000000000246 R12:
-0000000000000243
-[  681.626079] R13: 00007ffe4f9a9050 R14: 00007ffe4f9a90e6 R15:
-000055b5c5a06760
-[  681.627289]
-==================================================================
-[  681.628487] Disabling lock debugging due to kernel taint
-[  681.629463] BUG: kernel NULL pointer dereference, address:
-0000000000000008
-[  681.630933] #PF: supervisor write access in kernel mode
-[  681.632013] #PF: error_code(0x0002) - not-present page
-[  681.632856] PGD 0 P4D 0
-[  681.633247] Oops: 0002 [#1] PREEMPT SMP KASAN NOPTI
-[  681.633963] CPU: 6 PID: 44351 Comm: fsstress Kdump: loaded Tainted: G
-    B             5.4.0-rc6-custom #18
-[  681.635365] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
-?-20191013_105130-anatol 04/01/2014
-[  681.636538] RIP: 0010:btrfs_sync_log+0x77c/0x1200 [btrfs]
-[  681.637182] Code: 89 fc 4d 8d 44 24 20 4c 89 4c 24 78 4c 89 c7 4c 89
-84 24 80 00 00 00 e8 72 fa da df 4d 8b 7c 24 20 48 8d 7b 08 e8 f4 fa da
-df <4c> 89 7b 08 4c 89 ff e8 e8 fa da df 49 89 1f 4c 8b 4c 24 78 4c 89
-[  681.639367] RSP: 0018:ffff8884245ef970 EFLAGS: 00010217
-[  681.639987] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
-0000000000000000
-[  681.640910] RDX: 0000000000000001 RSI: 0000000000000004 RDI:
-ffffffffa3240820
-[  681.641993] RBP: ffff8884245efd10 R08: ffffffffa012b3c8 R09:
-fffffbfff437c161
-[  681.643054] R10: fffffbfff437c160 R11: ffffffffa1be0b03 R12:
-ffff8884245efae0
-[  681.644014] R13: ffffffffffffffe8 R14: ffff8884245efaf8 R15:
-0000000000000000
-[  681.644953] FS:  00007fe6d8b57b80(0000) GS:ffff88843f800000(0000)
-knlGS:0000000000000000
-[  681.645998] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  681.646756] CR2: 0000000000000008 CR3: 00000004341fc000 CR4:
-00000000003406e0
-[  681.647681] Call Trace:
-[  681.648083]  ? btrfs_log_inode_parent+0x1440/0x1440 [btrfs]
-[  681.648805]  ? 0xffffffffa0000000
-[  681.649235]  ? mark_lock+0xaf/0xab0
-[  681.649725]  ? dput+0xdd/0x600
-[  681.650125]  ? __kasan_check_write+0x14/0x20
-[  681.650671]  ? up_write+0xe5/0x290
-[  681.651170]  btrfs_sync_file+0x56e/0x7c0 [btrfs]
-[  681.651820]  ? btrfs_file_write_iter+0x920/0x920 [btrfs]
-[  681.652544]  ? __do_sys_newstat+0xad/0x100
-[  681.653111]  ? cp_new_stat+0x310/0x310
-[  681.653638]  vfs_fsync_range+0x6d/0x110
-[  681.654178]  ? btrfs_file_write_iter+0x920/0x920 [btrfs]
-[  681.654896]  do_fsync+0x3d/0x70
-[  681.655337]  __x64_sys_fsync+0x21/0x30
-[  681.655867]  do_syscall_64+0x79/0xe0
-[  681.656361]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-[  681.657025] RIP: 0033:0x7fe6d8d33bd7
-[  681.657511] Code: ff ff eb bb 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44
-00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 4a 00 00 00 0f
-05 <48> 3d 00 f0 ff ff 77 41 c3 48 83 ec 18 89 7c 24 0c e8 03 f7 ff ff
-[  681.660006] RSP: 002b:00007ffe4f9a8ff8 EFLAGS: 00000246 ORIG_RAX:
-000000000000004a
-[  681.661052] RAX: ffffffffffffffda RBX: 000055b5c5a15520 RCX:
-00007fe6d8d33bd7
-[  681.662009] RDX: 00007ffe4f9a8f50 RSI: 00007ffe4f9a8f50 RDI:
-0000000000000003
-[  681.662962] RBP: 0000000000000003 R08: 0000000000000001 R09:
-00007ffe4f9a900c
-[  681.663920] R10: 0000000000000000 R11: 0000000000000246 R12:
-0000000000000243
-[  681.664888] R13: 00007ffe4f9a9050 R14: 00007ffe4f9a90e6 R15:
-000055b5c5a06760
-[  681.665841] Modules linked in: mousedev nls_iso8859_1 nls_cp437 vfat
-fat snd_hda_codec_generic crct10dif_pclmul input_leds led_class
-crc32_pclmul ghash_clmulni_intel psmouse snd_hda_intel snd_intel_nhlt
-snd_hda_codec snd_hwdep snd_hda_core iTCO_wdt iTCO_vendor_support
-snd_pcm snd_timer snd aesni_intel glue_helper soundcore crypto_simd
-lpc_ich i2c_i801 cryptd pcspkr intel_agp intel_gtt evdev agpgart mac_hid
-rtc_cmos qemu_fw_cfg ip_tables x_tables xfs btrfs xor zstd_decompress
-zstd_compress raid6_pq sr_mod cdrom sd_mod dm_mod virtio_rng
-virtio_balloon virtio_blk virtio_console virtio_scsi rng_core virtio_net
-net_failover failover ahci libahci libata crc32c_intel scsi_mod
-serio_raw atkbd virtio_pci virtio_ring libps2 virtio i8042 serio
-[  681.674563] CR2: 0000000000000008
-[  681.675034] ---[ end trace b973ab2013a7b9e2 ]---
-[  681.675699] RIP: 0010:btrfs_sync_log+0x77c/0x1200 [btrfs]
-[  681.676438] Code: 89 fc 4d 8d 44 24 20 4c 89 4c 24 78 4c 89 c7 4c 89
-84 24 80 00 00 00 e8 72 fa da df 4d 8b 7c 24 20 48 8d 7b 08 e8 f4 fa da
-df <4c> 89 7b 08 4c 89 ff e8 e8 fa da df 49 89 1f 4c 8b 4c 24 78 4c 89
-[  681.678931] RSP: 0018:ffff8884245ef970 EFLAGS: 00010217
-[  681.679645] RAX: 0000000000000000 RBX: 0000000000000000 RCX:
-0000000000000000
-[  681.680622] RDX: 0000000000000001 RSI: 0000000000000004 RDI:
-ffffffffa3240820
-[  681.681588] RBP: ffff8884245efd10 R08: ffffffffa012b3c8 R09:
-fffffbfff437c161
-[  681.682554] R10: fffffbfff437c160 R11: ffffffffa1be0b03 R12:
-ffff8884245efae0
-[  681.683522] R13: ffffffffffffffe8 R14: ffff8884245efaf8 R15:
-0000000000000000
-[  681.684475] FS:  00007fe6d8b57b80(0000) GS:ffff88843f800000(0000)
-knlGS:0000000000000000
-[  681.685583] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  681.686353] CR2: 0000000000000008 CR3: 00000004341fc000 CR4:
-00000000003406e0
-====================================================================
 
-The local.config is nothing special only with default mount option.
+On 2019/11/8 =E4=B8=8A=E5=8D=883:41, Nate Eldredge wrote:
+> On Thu, 7 Nov 2019, Remi Gauvin wrote:
+>=20
+>> On 2019-11-07 9:03 a.m., Nate Eldredge wrote:
+>>
+>>> 1. What causes this?=C2=A0 I saw some references to "unused extents" =
+but it
+>>> wasn't clear how that happens, or why they wouldn't be freed through
+>>> normal operation.=C2=A0 Are there certain usage patterns that exacerb=
+ate it?
+>>
+>> Virtual Box Image files are subject to many, many small writes... (jus=
+t
+>> booting windows, for example, can create well over 5000 file fragments=
+=2E)
+>> When the image file is new, the extents will be very large.=C2=A0 In B=
+TRFS,
+>> the extents are immutable. When a small write creates a new 4K COW
+>> extent, the old 4k remains as part of the old extent as well.=C2=A0 Th=
+is
+>> situation will remain until all the data in the old extent is
+>> re-written.. when none of that data is referenced anymore, the extent
+>> will be freed.
+>=20
+> Thanks, Remi.=C2=A0 This is very helpful in understanding what is going=
+ on.=C2=A0
+> In particular, I didn't realize that extents are immutable even when
+> there is only one reference to them (I have no snapshots or reflinks to=
 
-The above BUG is easy to reproduce but not in 100%. 10 rounds is enough
-to hit this.
+> these files).
+>=20
+> I guess this also means that in the worst case, if I want to overwrite
+> the entire file "in place" in a random order, I actually need additiona=
+l
+> free space equal to the file's size, until I get around to defragging.=C2=
+=A0
+> That's rather counterintuitive for somebody used to traditional
+> filesystems.
+>=20
+>>> 5. Is there a better way to detect this kind of wastage, to distingui=
+sh
+>>> it from more mundane causes (deleted files still open, etc) and see h=
+ow
+>>> much space could be recovered? In particular, is there a way to tell
+>>> which files are most affected, so that I can just defragment those?
+>>
+>> Generally speaking, files that are subject to many random writes are
+>> few, and you should be well aware of the larger ones where this might =
+be
+>> an issues,, (virtual image files, large databases, etc.)=C2=A0 These f=
+iles
+>> should be defragmented frequently.=C2=A0 I don't see any reason not ru=
+n
+>> defrag over the whole subvolume, but if you want to search for files
+>> with absurd fragments, you can always use the find command to search f=
+or
+>> files, run the filefrag command on them, then use whatever tools you
+>> like to search the output for files with thousands of fragments.
+>=20
+> Okay.=C2=A0 Defragmenting is kind of inconvenient, though, and I suppos=
+e it
+> involves some extra wear on the SSD since data is really being moved.
+> There's also the issue, as I understand it, that defragmenting will
+> break up existing reflinks, which in some other situations I may really=
 
-linux 21:13#  ~/linux/scripts/faddr2line ~/linux/fs/btrfs/btrfs.ko
-btrfs_sync_log+0x77c
-btrfs_sync_log+0x77c/0x1200:
-__list_del at /root/linux/./include/linux/list.h:105
-(inlined by) __list_del_entry at /root/linux/./include/linux/list.h:134
-(inlined by) list_del_init at /root/linux/./include/linux/list.h:190
-(inlined by) btrfs_remove_all_log_ctxs at
-/root/linux/fs/btrfs/tree-log.c:3016
-(inlined by) btrfs_sync_log at /root/linux/fs/btrfs/tree-log.c:3283
+> want to keep.
+>=20
+> In fact, it seems that somehow what I really want is for the file to be=
 
-Here are my .config and the whole dmesg:
-https://drive.google.com/open?id=1DcaYg820sxWweNj7zG42_AM6ZjusPePG
-https://drive.google.com/open?id=1Ris7pzDsAkl6CuluZqbMwZzxgPfNOkSw
+> *completely* fragmented, so that every write replaces an extent and
+> frees the old one.=C2=A0 On an SSD I don't really care if the data bloc=
+ks are
+> actually contiguous.=C2=A0 It seems perverse, but even if there is more=
+
+> overhead, it might be worth it when I don't have a lot of free space to=
+
+> spare.=C2=A0 I don't suppose there is any way to arrange that?
+
+In fact, you can just go nodatacow.
+Furthermore, nodatacow attr can be applied to a directory so that any
+newer file will just inherit the nodatacow attr.
+
+In that case, any overwrite will not be COWed (as long as there is no
+snapshot for it), thus no space wasted.
+
+Thanks,
+Qu
+
+>=20
+> Thanks again!
+>=20
+
+
+--e31ENkLgIgXmUmAgYjNaFNsWTfHspELPN--
+
+--y4J24WjV6zzNhsNKglIU7BGUrtPSJRBe6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3FIMoACgkQwj2R86El
+/qjijAf/cxBiFmh7l3N8eYILEUhP7SCpGVeJmMTpEwVqv++D7R+gQG2zLSF2anP6
+fozTJPKu9qTVgw5W/Y6ltqTIUUqrZ5wdVTQDRE3ckmeg7p/XBbN5vxx0cXJ4G/B4
+bnq4jQUh7oYOA0825H79IyBoWNTmKwo2MwfJN8KGnALzI2H5O3Zz5xLrOANqGNZr
+FuS9joj+aue8fK3sSVddKqe/ZBldsRDNxytFGAXM+CEC3r8knhRBB7o3VRD9JEjM
+HLLRQJ5lxf+d56Iq8zK3aC/ovvSxyHROsG4oUUX0S4LfajUqvJ7y92mS7qZWqMBB
+mUotxNzXh3yBOm3kYfKSjD/Vw93TuQ==
+=cu7C
+-----END PGP SIGNATURE-----
+
+--y4J24WjV6zzNhsNKglIU7BGUrtPSJRBe6--
