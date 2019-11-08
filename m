@@ -2,217 +2,115 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB52F4194
-	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 09:01:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C519F44B1
+	for <lists+linux-btrfs@lfdr.de>; Fri,  8 Nov 2019 11:37:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbfKHIBb (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Nov 2019 03:01:31 -0500
-Received: from mout.gmx.net ([212.227.15.19]:42319 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725975AbfKHIBa (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 8 Nov 2019 03:01:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1573200081;
-        bh=6TLqb6BoNobX3n8k/YIrBN6FWJvRwODiLXKxCL5Ezz8=;
-        h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ZC36LA+aWyG0nAUzYZWuUz0USXaMZdaPdLAqqXOcbxlC3P2TRkwTEwSDEwVHDTUbA
-         2rIbjgFn2fC0lnCJ6l1T6uWGPWTo4CbPns73O45z9XWxMvYEqMdKfU1xGj4wwvaQpr
-         TZSbujis0A63kNK0+TAA4mpDssNA8Cq9R87wTNnY=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N5mKP-1hs4163KBP-017CbM; Fri, 08
- Nov 2019 09:01:21 +0100
-Subject: Re: Defragmenting to recover wasted space
-To:     Nate Eldredge <nate@thatsmathematics.com>,
-        Remi Gauvin <remi@georgianit.com>
-Cc:     linux-btrfs@vger.kernel.org
-References: <alpine.DEB.2.21.1911070814430.3492@moneta>
- <cc5fba8b-baf3-f984-c99d-c5be9ce3a2d9@georgianit.com>
- <alpine.DEB.2.21.1911071419570.3492@moneta>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <c5458fb8-7df9-9e27-4208-fdbb3b4d731f@gmx.com>
-Date:   Fri, 8 Nov 2019 16:01:14 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.0
+        id S1731569AbfKHKhX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Nov 2019 05:37:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54696 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726149AbfKHKhX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 Nov 2019 05:37:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id EF056B1B7;
+        Fri,  8 Nov 2019 10:37:20 +0000 (UTC)
+Subject: Re: [BUG report] KASAN: null-ptr-deref in btrfs_sync_log
+To:     Su Yue <Damenly_Su@gmx.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <dd9f22ee-e73c-7476-82d1-45a10d1f16f9@gmx.com>
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
+ xsFNBFTTwPEBEADOadCyru0ZmVLaBn620Lq6WhXUlVhtvZF5r1JrbYaBROp8ZpiaOc9YpkN3
+ rXTgBx+UoDGtnz9DZnIa9fwxkcby63igMPFJEYpwt9adN6bA1DiKKBqbaV5ZbDXR1tRrSvCl
+ 2V4IgvgVuO0ZJEt7gakOQlqjQaOvIzDnMIi/abKLSSzYAThsOUf6qBEn2G46r886Mk8MwkJN
+ hilcQ7F5UsKfcVVGrTBoim6j69Ve6EztSXOXjFgsoBw4pEhWuBQCkDWPzxkkQof1WfkLAVJ2
+ X9McVokrRXeuu3mmB+ltamYcZ/DtvBRy8K6ViAgGyNRWmLTNWdJj19Qgw9Ef+Q9O5rwfbPZy
+ SHS2PVE9dEaciS+EJkFQ3/TBRMP1bGeNbZUgrMwWOvt37yguvrCOglbHW+a8/G+L7vz0hasm
+ OpvD9+kyTOHjqkknVJL69BOJeCIVUtSjT9EXaAOkqw3EyNJzzhdaMXcOPwvTXNkd8rQZIHft
+ SPg47zMp2SJtVdYrA6YgLv7OMMhXhNkUsvhU0HZWUhcXZnj+F9NmDnuccarez9FmLijRUNgL
+ 6iU+oypB/jaBkO6XLLwo2tf7CYmBYMmvXpygyL8/wt+SIciNiM34Yc+WIx4xv5nDVzG1n09b
+ +iXDTYoWH82Dq1xBSVm0gxlNQRUGMmsX1dCbCS2wmWbEJJDEeQARAQABzSdKb2hhbm5lcyBU
+ aHVtc2hpcm4gPGp0aHVtc2hpcm5Ac3VzZS5kZT7CwYAEEwEIACoCGwMFCwkIBwIGFQgJCgsC
+ BBYCAwECHgECF4AFCQo9ta8FAlohZmoCGQEACgkQA5OWnS12CFATLQ//ajhNDVJLK9bjjiOH
+ 53B0+hCrRBj5jQiT8I60+4w+hssvRHWkgsujF+V51jcmX3NOXeSyLC1Gk43A9vCz5gXnqyqG
+ tOlYm26bihzG02eAoWr/glHBQyy7RYcd97SuRSv77WzuXT3mCnM15TKiqXYNzRCK7u5nx4eu
+ szAU+AoXAC/y1gtuDMvANBEuHWE4LNQLkTwJshU1vwoNcTSl+JuQWe89GB8eeeMnHuY92T6A
+ ActzHN14R1SRD/51N9sebAxGVZntXzSVKyMID6eGdNegWrz4q55H56ZrOMQ6IIaa7KSz3QSj
+ 3E8VIY4FawfjCSOuA2joemnXH1a1cJtuqbDPZrO2TUZlNGrO2TRi9e2nIzouShc5EdwmL6qt
+ WG5nbGajkm1wCNb6t4v9ueYMPkHsr6xJorFZHlu7PKqB6YY3hRC8dMcCDSLkOPWf+iZrqtpE
+ odFBlnYNfmAXp+1ynhUvaeH6eSOqCN3jvQbITUo8mMQsdVgVeJwRdeAOFhP7fsxNugii721U
+ acNVDPpEz4QyxfZtfu9QGI405j9MXF/CPrHlNLD5ZM5k9NxnmIdCM9i1ii4nmWvmz9JdVJ+8
+ 6LkxauROr2apgTXxMnJ3Desp+IRWaFvTVhbwfxmwC5F3Kr0ouhr5Kt8jkQeD/vuqYuxOAyDI
+ egjo3Y7OGqct+5nybmbOwU0EVNPA8QEQAN/79cFVNpC+8rmudnXGbob9sk0J99qnwM2tw33v
+ uvQjEGAJTVCOHrewDbHmqZ5V1X1LI9cMlLUNMR3W0+L04+MH8s/JxshFST+hOaijGc81AN2P
+ NrAQD7IKpA78Q2F3I6gpbMzyMy0DxmoKF73IAMQIknrhzn37DgM+x4jQgkvhFMqnnZ/xIQ9d
+ QEBKDtfxH78QPosDqCzsN9HRArC75TiKTKOxC12ZRNFZfEPnmqJ260oImtmoD/L8QiBsdA4m
+ Mdkmo6Pq6iAhbGQ5phmhUVuj+7O8rTpGRXySMLZ44BimM8yHWTaiLWxCehHgfUWRNLwFbrd+
+ nYJYHoqyFGueZFBNxY4bS2rIEDg+nSKiAwJv3DUJDDd/QJpikB5HIjg/5kcSm7laqfbr1pmC
+ ZbR2JCTp4FTABVLxt7pJP40SuLx5He63aA/VyxoInLcZPBNvVfq/3v3fkoILphi77ZfTvKrl
+ RkDdH6PkFOFpnrctdTWbIFAYfU96VvySFAOOg5fsCeLv9/zD4dQEGsvva/qKZXkH/l2LeVp3
+ xEXoFsUZtajPZgyRBxer0nVWRyeVwUQnLG8kjEOcZzX27GUpughi8w42p4oMD+96tr3BKTAr
+ guRHJnU1M1xwRPbw5UsNXEOgYsFc8cdto0X7hQ2Ugc07CRSDvyH50IKXf2++znOTXFDhABEB
+ AAHCwV8EGAECAAkFAlTTwPECGwwACgkQA5OWnS12CFAdRg//ZGV0voLRjjgX9ODzaz6LP+IP
+ /ebGLXe3I+QXz8DaTkG45evOu6B2J53IM8t1xEug0OnfnTo1z0AFg5vU53L24LAdpi12CarV
+ Da53WvHzG4BzCVGOGrAvJnMvUXf0/aEm0Sen2Mvf5kvOwsr9UTHJ8N/ucEKSXAXf+KZLYJbL
+ NL4LbOFP+ywxtjV+SgLpDgRotM43yCRbONUXEML64SJ2ST+uNzvilhEQT/mlDP7cY259QDk7
+ 1K6B+/ACE3Dn7X0/kp8a+ZoNjUJZkQQY4JyMOkITD6+CJ1YsxhX+/few9k5uVrwK/Cw+Vmae
+ A85gYfFn+OlLFO/6RGjMAKOsdtPFMltNOZoT+YjgAcW6Q9qGgtVYKcVOxusL8C3v8PAYf7Ul
+ Su7c+/Ayr3YV9Sp8PH4X4jK/zk3+DDY1/ASE94c95DW1lpOcyx3n1TwQbwp6TzPMRe1IkkYe
+ 0lYj9ZgKaZ8hEmzuhg6FKXk9Dah+H73LdV57M4OFN8Xwb7v+oEG23vdsb2KBVG5K6Tv7Hb2N
+ sfHWRdU3quYIistrNWWeGmfTlhVLgDhEmAsKZFH05QsAv3pQv7dH/JD+Tbn6sSnNAVrATff1
+ AD3dXmt+5d3qYuUxam1UFGufGzV7jqG5QNStp0yvLP0xroB8y0CnnX2FY6bAVCU+CqKu+n1B
+ LGlgwABHRtLCwe0EGAEIACAWIQTsOJyrwsTyXYYA0NADk5adLXYIUAUCWsTXAwIbAgCBCRAD
+ k5adLXYIUHYgBBkWCAAdFiEEx1U9vxg1xAeUwus20p7yIq+KHe4FAlrE1wMACgkQ0p7yIq+K
+ He6RfAEA+frSSvrHiuatNqvgYAJcraYhp1GQJrWSWMmi2eFcGskBAJyLp47etEn3xhJBLVVh
+ 2y2K4Nobb6ZgxA4Svfnkf7AAdicQALiaOKDwKD3tgf90ypEoummYzAxv8MxyPXZ7ylRnkheA
+ eQDxuoc/YwMA4qyxhzf6K4tD/aT12XJd95gk+YAL6flGkJD8rA3jsEucPmo5eko4Ms2rOEdG
+ jKsZetkdPKGBd2qVxxyZgzUkgRXduvyux04b9erEpJmoIXs/lE0IRbL9A9rJ6ASjFPGpXYrb
+ 73pb6Dtkdpvv+hoe4cKeae4dS0AnDc7LWSW3Ub0n61uk/rqpTmKuesmTZeB2GHzLN5GAXfNj
+ ELHAeSVfFLPRFrjF5jjKJkpiyq98+oUnvTtDIPMTg05wSN2JtwKnoQ0TAIHWhiF6coGeEfY8
+ ikdVLSZDEjW54Td5aIXWCRTBWa6Zqz/G6oESF+Lchu/lDv5+nuN04KZRAwCpXLS++/givJWo
+ M9FMnQSvt4N95dVQE3kDsasl960ct8OzxaxuevW0OV/jQEd9gH50RaFif412DTrsuaPsBz6O
+ l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
+ W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
+ yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
+Message-ID: <cbd13dd4-a844-5a4f-59b0-ec672280e0b3@suse.de>
+Date:   Fri, 8 Nov 2019 11:37:20 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.1911071419570.3492@moneta>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="y4J24WjV6zzNhsNKglIU7BGUrtPSJRBe6"
-X-Provags-ID: V03:K1:4UFdbpQ/vOY6AmHpipjINbF5JJ3NVkzzoTLUFD7vqMo3f/PrEm3
- Zh+Fc2ylceHpPdI5Ro0TojpfaU5nEEt+8Dwey7JwQH6djsJvGLB3LPgm7IOx69KRcdARJT2
- kk+Ip8XhQGapD0rXPG1YQshCG3RqXJ4JqNmaClKawLWkATPCdjjE5NZhqw7hUlzpz+C1Fnn
- jAsAixt/AfFSKNajISOlg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:r1vqYjVGUd8=:uYXheDacTrkUKPH9t1FMVK
- EFjM/0hbQ000Xp8+VP5GEO8297DnII1zopKi/kcuqoopB5txDFSjaZ4/E9lOlaleZTCMBiMEu
- yCdsV4QSFMj5WiroJ4oZS8FiUJSotmV5Aw3kklUlTtYhgAbv5To33BDvcZSvwlDyo70ljEbnE
- sNa2STiwARh7ZsB3VQvPdrE3jXFbF9PZ1q7vqB43baT90LZffoH/mX8uGv3rYHVUUp4PevCtb
- bnUKiKRlKj8bpt7g8OyX04I2W4MwQ2uQwfdZj701m4Er7XIJ8wEUkXGXex7Fh+IFSn9qPXryr
- brQ90R4fX+duZhKo+lPNnVipRyUvSpod3+llPdo27hZJCg+2oazTtEATvsi/Ni2URHhd9/jDF
- SAc3O/sArji4CE0itfH6zTpzkzNrV/TLA7Yjoc8CR+xlOhveYH4WsGz8VLzONJvTomJ9/HFd7
- Miq/zpujW0whU384epPaauNw64qINvsLj57T/fhHHPRio+F6uzVbmp1DV+kW29FQgCVJ+rBQN
- 5ADI21ypc3X10iioQeYBHh6QHoknF19MPmWCiPP8UOhahfw4p+zUTlcE+dspaUV4non/02DRJ
- HERpAm2JKXQAjckXME3oE2znnhP8ItlkodwIC02DsLpxnG0VanrmwUZc0cEyWqQuUABt79gb8
- FNzKDj42BeaUmsOk2dyFq/R9fqVsvoUFHzggxsNlLfpRRWUiD8MPJa2w2wQaX/91HF27YRfKY
- rMG2i6UPQRwMi0HIqKXmRfxkDDUIMyE9Ynzsz14MN0jzuwuJkkjHyIRzYXmG5Geqt208G0aoi
- K832zQQW7fPnw65p6f4knNh2g8b3Oe3F4cowOHupB18QT6j3sCdQn6zG1pD6hW7jGcthx91qu
- BckC0buDOKVOuVZxAWaWO5BABr0xY4fxIYl5QuwMv+Le/13PVEDZgX+KJVXYq7/WV2VFsyBhX
- 4Ez8asIZkCwcNSyF55pZaUAUtk4sSEUoz0/TBb5zDYz0H40NePGLbLiMcwVv+B/B+j2UPJJJH
- GGwUAZp4f3h92Ow+1RFayoQYHDzDp+qvDbaa96rK9jVkiKre7MEvo7Eau98SdT3n8iHq17Ce3
- mnFn3OEJDBx6SVLKCogygNus2m/lwJioMcJ2R03xvBa9zstYjioFj++pMA4M3qhhRBYo981SU
- IXPy8SJ/uAt3Gn6he1Ph2MFIQHq2UA0E5ZJ7vJxah4vzdWUffaFLmLr13sbgeWEOnuXm4dBnP
- PselYZizz9caXr3S6Ul1I1dqfpwOTpMumBkrvI6q+Pes3a2u4vlzIssmbuRA=
+In-Reply-To: <dd9f22ee-e73c-7476-82d1-45a10d1f16f9@gmx.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---y4J24WjV6zzNhsNKglIU7BGUrtPSJRBe6
-Content-Type: multipart/mixed; boundary="e31ENkLgIgXmUmAgYjNaFNsWTfHspELPN"
+On 08/11/2019 06:21, Su Yue wrote:
+> Hi,
+> 
+> While running xfstests/btrfs/004 and btrfs/067 whith KASAN enabled
+> on v5.4-rc6, KASAN reports following BUG(btrfs/004):
 
---e31ENkLgIgXmUmAgYjNaFNsWTfHspELPN
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Hi Su,
 
+Is this on Linus' v5.4-rc6 or David's misc-next branch based on Linus' rc6?
 
-
-On 2019/11/8 =E4=B8=8A=E5=8D=883:41, Nate Eldredge wrote:
-> On Thu, 7 Nov 2019, Remi Gauvin wrote:
->=20
->> On 2019-11-07 9:03 a.m., Nate Eldredge wrote:
->>
->>> 1. What causes this?=C2=A0 I saw some references to "unused extents" =
-but it
->>> wasn't clear how that happens, or why they wouldn't be freed through
->>> normal operation.=C2=A0 Are there certain usage patterns that exacerb=
-ate it?
->>
->> Virtual Box Image files are subject to many, many small writes... (jus=
-t
->> booting windows, for example, can create well over 5000 file fragments=
-=2E)
->> When the image file is new, the extents will be very large.=C2=A0 In B=
-TRFS,
->> the extents are immutable. When a small write creates a new 4K COW
->> extent, the old 4k remains as part of the old extent as well.=C2=A0 Th=
-is
->> situation will remain until all the data in the old extent is
->> re-written.. when none of that data is referenced anymore, the extent
->> will be freed.
->=20
-> Thanks, Remi.=C2=A0 This is very helpful in understanding what is going=
- on.=C2=A0
-> In particular, I didn't realize that extents are immutable even when
-> there is only one reference to them (I have no snapshots or reflinks to=
-
-> these files).
->=20
-> I guess this also means that in the worst case, if I want to overwrite
-> the entire file "in place" in a random order, I actually need additiona=
-l
-> free space equal to the file's size, until I get around to defragging.=C2=
-=A0
-> That's rather counterintuitive for somebody used to traditional
-> filesystems.
->=20
->>> 5. Is there a better way to detect this kind of wastage, to distingui=
-sh
->>> it from more mundane causes (deleted files still open, etc) and see h=
-ow
->>> much space could be recovered? In particular, is there a way to tell
->>> which files are most affected, so that I can just defragment those?
->>
->> Generally speaking, files that are subject to many random writes are
->> few, and you should be well aware of the larger ones where this might =
-be
->> an issues,, (virtual image files, large databases, etc.)=C2=A0 These f=
-iles
->> should be defragmented frequently.=C2=A0 I don't see any reason not ru=
-n
->> defrag over the whole subvolume, but if you want to search for files
->> with absurd fragments, you can always use the find command to search f=
-or
->> files, run the filefrag command on them, then use whatever tools you
->> like to search the output for files with thousands of fragments.
->=20
-> Okay.=C2=A0 Defragmenting is kind of inconvenient, though, and I suppos=
-e it
-> involves some extra wear on the SSD since data is really being moved.
-> There's also the issue, as I understand it, that defragmenting will
-> break up existing reflinks, which in some other situations I may really=
-
-> want to keep.
->=20
-> In fact, it seems that somehow what I really want is for the file to be=
-
-> *completely* fragmented, so that every write replaces an extent and
-> frees the old one.=C2=A0 On an SSD I don't really care if the data bloc=
-ks are
-> actually contiguous.=C2=A0 It seems perverse, but even if there is more=
-
-> overhead, it might be worth it when I don't have a lot of free space to=
-
-> spare.=C2=A0 I don't suppose there is any way to arrange that?
-
-In fact, you can just go nodatacow.
-Furthermore, nodatacow attr can be applied to a directory so that any
-newer file will just inherit the nodatacow attr.
-
-In that case, any overwrite will not be COWed (as long as there is no
-snapshot for it), thus no space wasted.
+I cannot reproduce it on the latter (tried a loop of 50 btrfs/004 runs).
 
 Thanks,
-Qu
-
->=20
-> Thanks again!
->=20
-
-
---e31ENkLgIgXmUmAgYjNaFNsWTfHspELPN--
-
---y4J24WjV6zzNhsNKglIU7BGUrtPSJRBe6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3FIMoACgkQwj2R86El
-/qjijAf/cxBiFmh7l3N8eYILEUhP7SCpGVeJmMTpEwVqv++D7R+gQG2zLSF2anP6
-fozTJPKu9qTVgw5W/Y6ltqTIUUqrZ5wdVTQDRE3ckmeg7p/XBbN5vxx0cXJ4G/B4
-bnq4jQUh7oYOA0825H79IyBoWNTmKwo2MwfJN8KGnALzI2H5O3Zz5xLrOANqGNZr
-FuS9joj+aue8fK3sSVddKqe/ZBldsRDNxytFGAXM+CEC3r8knhRBB7o3VRD9JEjM
-HLLRQJ5lxf+d56Iq8zK3aC/ovvSxyHROsG4oUUX0S4LfajUqvJ7y92mS7qZWqMBB
-mUotxNzXh3yBOm3kYfKSjD/Vw93TuQ==
-=cu7C
------END PGP SIGNATURE-----
-
---y4J24WjV6zzNhsNKglIU7BGUrtPSJRBe6--
+	Johannes
+-- 
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 Nürnberg
+Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
