@@ -2,85 +2,52 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5379F5FA1
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2019 16:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9146EF608D
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2019 18:15:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726383AbfKIPHS (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Nov 2019 10:07:18 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40648 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726282AbfKIPHR (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 9 Nov 2019 10:07:17 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 431F7AC37;
-        Sat,  9 Nov 2019 15:07:16 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9B555DA7E8; Sat,  9 Nov 2019 16:07:21 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 5.4-rc7
-Date:   Sat,  9 Nov 2019 16:07:16 +0100
-Message-Id: <cover.1573307154.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.23.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726650AbfKIRPH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 Nov 2019 12:15:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726537AbfKIRPG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 9 Nov 2019 12:15:06 -0500
+Subject: Re: [GIT PULL] Btrfs fixes for 5.4-rc7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1573319706;
+        bh=CHAMDvomMycCVovfDjJci7gQrU4YFUKl1RQe9jX8loM=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=KPvWL385y1KbO1SEcfduauVvPRq/58FlAzG1Hk0uxqytNDmpspJBsq1RELiP+3hNS
+         oneoMKq/YMZNucJ4E6EgjYO48zhqXUDIxX/Bc2WlMBT6xaXbGLe2Zu61f54rmbEdoS
+         /4pjr019c+E1IdssfG6O1vjEn5oZYwUCs0+T0gIA=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1573307154.git.dsterba@suse.com>
+References: <cover.1573307154.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1573307154.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc6-tag
+X-PR-Tracked-Commit-Id: a5009d3a318e9f02ddc9aa3d55e2c64d6285c4b9
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 00aff6836241ae5654895dcea10e6d4fc5878ca6
+Message-Id: <157331970634.2485.6390832820143405110.pr-tracker-bot@kernel.org>
+Date:   Sat, 09 Nov 2019 17:15:06 +0000
+To:     David Sterba <dsterba@suse.com>
+Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+The pull request you sent on Sat,  9 Nov 2019 16:07:16 +0100:
 
-there are a few regressions and fixes for stable. Please pull, thanks.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc6-tag
 
-Regressions:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/00aff6836241ae5654895dcea10e6d4fc5878ca6
 
-- fix a race leading to metadata space leak after task received a signal
+Thank you!
 
-- un-deprecate 2 ioctls, marked as deprecated by mistake
-
-Fixes:
-
-- fix limit check for number of devices during chunk allocation
-
-- fix a race due to double evaluation of i_size_read inside max() macro,
-  can cause a crash
-
-- remove wrong device id check in tree-checker
-
-----------------------------------------------------------------
-The following changes since commit ba0b084ac309283db6e329785c1dc4f45fdbd379:
-
-  Btrfs: check for the full sync flag while holding the inode lock during fsync (2019-10-17 20:36:02 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc6-tag
-
-for you to fetch changes up to a5009d3a318e9f02ddc9aa3d55e2c64d6285c4b9:
-
-  btrfs: un-deprecate ioctls START_SYNC and WAIT_SYNC (2019-11-04 21:42:01 +0100)
-
-----------------------------------------------------------------
-David Sterba (1):
-      btrfs: un-deprecate ioctls START_SYNC and WAIT_SYNC
-
-Filipe Manana (1):
-      Btrfs: fix race leading to metadata space leak after task received signal
-
-Josef Bacik (1):
-      btrfs: save i_size to avoid double evaluation of i_size_read in compress_file_range
-
-Qu Wenruo (2):
-      btrfs: Consider system chunk array size for new SYSTEM chunks
-      btrfs: tree-checker: Fix wrong check on max devid
-
- fs/btrfs/inode.c        | 15 ++++++++++++++-
- fs/btrfs/ioctl.c        |  6 ------
- fs/btrfs/space-info.c   | 21 +++++++++++++++++++++
- fs/btrfs/tree-checker.c |  8 --------
- fs/btrfs/volumes.c      |  1 +
- 5 files changed, 36 insertions(+), 15 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
