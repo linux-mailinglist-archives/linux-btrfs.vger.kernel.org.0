@@ -2,52 +2,62 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9146EF608D
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2019 18:15:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B1A5F61C4
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2019 23:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbfKIRPH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Nov 2019 12:15:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43284 "EHLO mail.kernel.org"
+        id S1726586AbfKIWlL (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 Nov 2019 17:41:11 -0500
+Received: from mail.rptsys.com ([23.155.224.45]:40404 "EHLO mail.rptsys.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726537AbfKIRPG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 9 Nov 2019 12:15:06 -0500
-Subject: Re: [GIT PULL] Btrfs fixes for 5.4-rc7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573319706;
-        bh=CHAMDvomMycCVovfDjJci7gQrU4YFUKl1RQe9jX8loM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=KPvWL385y1KbO1SEcfduauVvPRq/58FlAzG1Hk0uxqytNDmpspJBsq1RELiP+3hNS
-         oneoMKq/YMZNucJ4E6EgjYO48zhqXUDIxX/Bc2WlMBT6xaXbGLe2Zu61f54rmbEdoS
-         /4pjr019c+E1IdssfG6O1vjEn5oZYwUCs0+T0gIA=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1573307154.git.dsterba@suse.com>
-References: <cover.1573307154.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1573307154.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc6-tag
-X-PR-Tracked-Commit-Id: a5009d3a318e9f02ddc9aa3d55e2c64d6285c4b9
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 00aff6836241ae5654895dcea10e6d4fc5878ca6
-Message-Id: <157331970634.2485.6390832820143405110.pr-tracker-bot@kernel.org>
-Date:   Sat, 09 Nov 2019 17:15:06 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1726135AbfKIWlK (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 9 Nov 2019 17:41:10 -0500
+X-Greylist: delayed 459 seconds by postgrey-1.27 at vger.kernel.org; Sat, 09 Nov 2019 17:41:10 EST
+Received: from localhost (localhost [127.0.0.1])
+        by mail.rptsys.com (Postfix) with ESMTP id D069CBE3E2BB4
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 Nov 2019 16:33:30 -0600 (CST)
+Received: from mail.rptsys.com ([127.0.0.1])
+        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id FlTVjvg9m3If for <linux-btrfs@vger.kernel.org>;
+        Sat,  9 Nov 2019 16:33:30 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.rptsys.com (Postfix) with ESMTP id 4E6A9BE3E2AB8
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 Nov 2019 16:33:30 -0600 (CST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 4E6A9BE3E2AB8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
+        t=1573338810; bh=V5oCJ2TAnxokhB8fNbL6dDkRb40TRCBgZ1ahGTxwWmo=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=M1C5tf88Gjy+V7zkDM/Hrq90GE1ZJwOOLnQJNOtAG+ntJxpHvsaVoTv5roesD9Ngi
+         YifMAAE3qhgBnBiInD8nzMZU+Yabgx7ptaQ1BEy5G/JRUXzkeIHEp1NLx5T2QzJf6+
+         NdUDQgGrKVomEsw5jQLTMd+dBEHOHmrUwFk0T5tA=
+X-Virus-Scanned: amavisd-new at rptsys.com
+Received: from mail.rptsys.com ([127.0.0.1])
+        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id PH2SslMnrJLK for <linux-btrfs@vger.kernel.org>;
+        Sat,  9 Nov 2019 16:33:30 -0600 (CST)
+Received: from vali.starlink.edu (vali.starlink.edu [192.168.3.21])
+        by mail.rptsys.com (Postfix) with ESMTP id 277F0BE3E2A63
+        for <linux-btrfs@vger.kernel.org>; Sat,  9 Nov 2019 16:33:30 -0600 (CST)
+Date:   Sat, 9 Nov 2019 16:33:29 -0600 (CST)
+From:   Timothy Pearson <tpearson@raptorengineering.com>
+To:     linux-btrfs@vger.kernel.org
+Message-ID: <344827358.67114.1573338809278.JavaMail.zimbra@raptorengineeringinc.com>
+Subject: Unusual crash -- data rolled back ~2 weeks?
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Mailer: Zimbra 8.5.0_GA_3042 (ZimbraWebClient - GC65 (Linux)/8.5.0_GA_3042)
+Thread-Index: RXOsokHARtBw/xwBvljfwkDz5Lz3MA==
+Thread-Topic: Unusual crash -- data rolled back ~2 weeks?
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-The pull request you sent on Sat,  9 Nov 2019 16:07:16 +0100:
+We just experienced a very unusual crash on a Linux 5.3 file server using NFS to serve a BTRFS filesystem.  NFS went into deadlock (D wait) with no apparent underlying disk subsystem problems, and when the server was hard rebooted to clear the D wait the BTRFS filesystem remounted itself in the state that it was in approximately two weeks earlier (!).  There was also significant corruption of certain files (e.g. LDAP MDB and MySQL InnoDB) noted -- we restored from backup for those files, but are concerned about the status of the entire filesystem at this point.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc6-tag
+We do not use subvolumes, snapshots, or any of the advanced features of BTRFS beyond the data checksumming.  I am at a loss as to how BTRFS could suddenly just "forget" about the past two weeks of written data and (mostly) cleanly roll back on the next mount without even throwing any warnings in dmesg.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/00aff6836241ae5654895dcea10e6d4fc5878ca6
+Any thoughts on how this is possible, and if there is any chance of getting the lost couple weeks of data back, would be appreciated.
 
 Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
