@@ -2,131 +2,120 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB3CF5BE8
-	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2019 00:39:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2968F5D43
+	for <lists+linux-btrfs@lfdr.de>; Sat,  9 Nov 2019 04:45:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbfKHXjt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 8 Nov 2019 18:39:49 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:47130 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726843AbfKHXjt (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Fri, 8 Nov 2019 18:39:49 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 8F02D4C143B; Fri,  8 Nov 2019 18:39:43 -0500 (EST)
-Date:   Fri, 8 Nov 2019 18:39:33 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Richard Weinberger <richard@nod.at>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: Decoding "unable to fixup (regular)" errors
-Message-ID: <20191108233933.GU22121@hungrycats.org>
-References: <1591390.YpsIS3gr9g@blindfold>
- <20191108220927.GR22121@hungrycats.org>
- <1374130535.78772.1573251716407.JavaMail.zimbra@nod.at>
- <20191108222557.GT22121@hungrycats.org>
- <1063943113.78786.1573252282368.JavaMail.zimbra@nod.at>
+        id S1726050AbfKIDpW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 8 Nov 2019 22:45:22 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42978 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725895AbfKIDpW (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 8 Nov 2019 22:45:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 47D22B250;
+        Sat,  9 Nov 2019 03:45:20 +0000 (UTC)
+From:   =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>
+Subject: [next-20191108] Assertion failure in
+ space-info.c:btrfs_update_space_info()
+Organization: SUSE Software Solutions Germany GmbH
+To:     linux-btrfs@vger.kernel.org, David Sterba <dsterba@suse.com>
+Message-ID: <ebde863f-51f2-d761-4bae-1722ea256e08@suse.de>
+Date:   Sat, 9 Nov 2019 04:45:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="poemUeGtc2GQvHuH"
-Content-Disposition: inline
-In-Reply-To: <1063943113.78786.1573252282368.JavaMail.zimbra@nod.at>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
---poemUeGtc2GQvHuH
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On arm64 I'm seeing a regression between next-20191031 and next-20191105
+that breaks boot from my btrfs rootfs: next-20191105 and later oopses on
+found->lock, or with CONFIG_BTRFS_ASSERT asserts on a NULL "found"
+variable in btrfs_update_space_info().
 
-On Fri, Nov 08, 2019 at 11:31:22PM +0100, Richard Weinberger wrote:
-> ----- Urspr=FCngliche Mail -----
-> > Von: "Zygo Blaxell" <ce3g8jdj@umail.furryterror.org>
-> > An: "richard" <richard@nod.at>
-> > CC: "linux-btrfs" <linux-btrfs@vger.kernel.org>
-> > Gesendet: Freitag, 8. November 2019 23:25:57
-> > Betreff: Re: Decoding "unable to fixup (regular)" errors
->=20
-> > On Fri, Nov 08, 2019 at 11:21:56PM +0100, Richard Weinberger wrote:
-> >> ----- Urspr=FCngliche Mail -----
-> >> > btrfs found corrupted data on md1.  You appear to be using btrfs
-> >> > -dsingle on a single mdadm raid1 device, so no recovery is possible
-> >> > ("unable to fixup").
-> >> >=20
-> >> >> The system has ECC memory with md1 being a RAID1 which passes all h=
-ealth checks.
-> >> >=20
-> >> > mdadm doesn't have any way to repair data corruption--it can find
-> >> > differences, but it cannot identify which version of the data is cor=
-rect.
-> >> > If one of your drives is corrupting data without reporting IO errors,
-> >> > mdadm will simply copy the corruption to the other drive.  If one
-> >> > drive is failing by intermittently injecting corrupted bits into rea=
-ds
-> >> > (e.g. because of a failure in the RAM on the drive control board),
-> >> > this behavior may not show up in mdadm health checks.
-> >>=20
-> >> Well, this is not cheap hardware...
-> >> Possible, but not very likely IMHO
-> >=20
-> > Even the disks?  We see RAM failures in disk drive embedded boards from
-> > time to time.
->=20
-> Yes. Enterprise-Storage RAID-Edition disks (sorry for the marketing buzzw=
-ords).
+According to git-blame that code hasn't changed in months, and I didn't
+spot an obvious cause among the fs/btrfs/ commis between those two tags.
 
-Can you share the model numbers and firmware revisions?  There are a
-lot of enterprise RE disks.  Not all of them work.
+[    3.512280] sd 0:0:0:0: [sda] Attached SCSI disk
+[    3.520043] BTRFS: device label rootfs devid 1 transid 490 /dev/root
+scanned by swapper/0 (1)
+[    3.529701] BTRFS info (device sda3): disk space caching is enabled
+[    3.536182] BTRFS info (device sda3): has skinny extents
+[    3.547836] assertion failed: found, in fs/btrfs/space-info.c:124
+[    3.554171] ------------[ cut here ]------------
+[    3.558923] kernel BUG at fs/btrfs/ctree.h:3118!
+[    3.563673] Internal error: Oops - BUG: 0 [#1] PREEMPT SMP
+[    3.569312] Modules linked in:
+[    3.572465] CPU: 0 PID: 1 Comm: swapper/0 Not tainted
+5.4.0-rc6-next-20191105+ #110
+[    3.580335] Hardware name: Zidoo X9S (DT)
+[    3.584463] pstate: 40000005 (nZcv daif -PAN -UAO)
+[    3.589401] pc : assfail.constprop.0+0x24/0x28
+[    3.593975] lr : assfail.constprop.0+0x24/0x28
+[    3.598543] sp : ffff80001002b7d0
+[    3.601954] x29: ffff80001002b7d0 x28: 0000000000000000
+[    3.607420] x27: 0000000000000001 x26: 0000000000000001
+[    3.612885] x25: 0000000000000000 x24: ffff80001002b890
+[    3.618350] x23: 0000000000000000 x22: ffff00007c7d0000
+[    3.623815] x21: 0000000000800000 x20: 0000000000000001
+[    3.629281] x19: 0000000000000000 x18: 0000000000000000
+[    3.634746] x17: 000000009b04d1f2 x16: 0000000000000014
+[    3.640211] x15: 000000000000000a x14: 0720072007200720
+[    3.645676] x13: 0720072007200720 x12: 0720072007200720
+[    3.651141] x11: 073407320731073a x10: 0763072e076f0766
+[    3.656606] x9 : 076e0769072d0765 x8 : 0000000000000000
+[    3.662071] x7 : 0000000000000007 x6 : 0000000000000000
+[    3.667536] x5 : 0000000000000000 x4 : 0000000000000000
+[    3.673000] x3 : 0000000000000000 x2 : 00e5bec8376cfb00
+[    3.678465] x1 : 0000000000000000 x0 : 0000000000000035
+[    3.683930] Call trace:
+[    3.686455]  assfail.constprop.0+0x24/0x28
+[    3.690672]  btrfs_update_space_info+0x5c/0xe4
+[    3.695248]  btrfs_read_block_groups+0x470/0x620
+[    3.700001]  open_ctree+0x1500/0x1ae8
+[    3.703775]  btrfs_mount_root+0x38c/0x450
+[    3.707904]  legacy_get_tree+0x2c/0x54
+[    3.711766]  vfs_get_tree+0x28/0xd4
+[    3.715361]  fc_mount+0x14/0x44
+[    3.718599]  vfs_kern_mount.part.0+0x74/0x98
+[    3.722994]  vfs_kern_mount+0x10/0x20
+[    3.726767]  btrfs_mount+0x624/0x6cc
+[    3.730450]  legacy_get_tree+0x2c/0x54
+[    3.734312]  vfs_get_tree+0x28/0xd4
+[    3.737904]  do_mount+0x52c/0x728
+[    3.741318]  ksys_mount+0xb4/0xc4
+[    3.744734]  mount_block_root+0x12c/0x2d8
+[    3.748861]  mount_root+0x7c/0x88
+[    3.752275]  prepare_namespace+0x15c/0x16c
+[    3.756491]  kernel_init_freeable+0x1e0/0x224
+[    3.760977]  kernel_init+0x10/0xf8
+[    3.764483]  ret_from_fork+0x10/0x18
+[    3.768171] Code: 913f6842 b0003260 91337800 97f6e0d0 (d4210000)
+[    3.774446] ---[ end trace 21d95ef2db268f8d ]---
+[    3.779221] note: swapper/0[1] exited with preempt_count 1
+[    3.784910] Kernel panic - not syncing: Attempted to kill init!
+exitcode=0x0000000b
+[    3.792786] SMP: stopping secondary CPUs
+[    3.796824] Kernel Offset: disabled
+[    3.800415] CPU features: 0x00002,20002004
+[    3.804626] Memory Limit: none
+[    3.807780] ---[ end Kernel panic - not syncing: Attempted to kill
+init! exitcode=0x0000000b ]---
 
-At least one vendor has the same firmware in their enterprise RE disks
-as in their consumer drives, and it's unusually bad.  Apart from the
-identical firmware revision string, the consumer and RE disks have
-indistinguishable behavior in our failure mode testing, e.g.  they both
-have write caching bugs on power failures, they both silently corrupt
-a few blocks of data once or twice a drive-year...
+Kindly revert the tree to some working state again.
 
-> Even if one disk is silently corrupting data, having the bad block copied=
- to
-> the second disk is even more less likely to happen.
-> And I run the RAID-Health check often.
+Thanks,
+Andreas
 
-Your setup is not able to detect this kind of failure very well.
-We've had problems with mdadm health-check failing to report errors
-even in deliberate data corruption tests.  If a resync is triggered,
-all data on one drive is blindly copied to the other.  You also have
-nothing checking for integrity failures between mdadm health checks
-(other than btrfs csum failures when the corruption propagates to the
-filesystem layer, as shown above in your log).
-
-We do a regression test where we corrupt every block on one disk in
-a btrfs raid1 (even the superblocks) and check to ensure they are all
-correctly reported and repaired without interrupting applications running
-on the filesystem.  btrfs has a separate csum so it knows which version
-of the block is wrong, and it checks on every read so it will detect
-and report errors that occur between scrubs.
-
-The most striking thing about the description of your setup is that you
-have ECC RAM and you have a scrub regime to detect errors...but you have
-both a huge gap in error detection coverage and a mechanism to propagate
-errors across what is supposed to be a fault isolation boundary because
-you're using mdadm raid1 instead of btrfs raid1.  If one of your disks
-goes bad, not only will it break your filesystem, but you won't know
-which disk you need to replace.
-
->=20
-> Thanks,
-> //richard
-
---poemUeGtc2GQvHuH
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXcX8rwAKCRCB+YsaVrMb
-nGKKAJ0QGZnOXXSpV7I6T701pGv+BKUFugCbBrm4s06b7LMamO99eY5yLvBg0pQ=
-=lHV+
------END PGP SIGNATURE-----
-
---poemUeGtc2GQvHuH--
+-- 
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+GF: Felix Imendörffer
+HRB 36809 (AG Nürnberg)
