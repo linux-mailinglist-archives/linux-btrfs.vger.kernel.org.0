@@ -2,30 +2,30 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58378F6718
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Nov 2019 04:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEF7F671C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Nov 2019 04:42:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbfKJDii (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Nov 2019 22:38:38 -0500
-Received: from mout.gmx.net ([212.227.17.20]:48293 "EHLO mout.gmx.net"
+        id S1726670AbfKJDmG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 9 Nov 2019 22:42:06 -0500
+Received: from mout.gmx.net ([212.227.15.19]:38769 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726648AbfKJDii (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sat, 9 Nov 2019 22:38:38 -0500
+        id S1726560AbfKJDmG (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sat, 9 Nov 2019 22:42:06 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1573357106;
-        bh=ZnduHHXyIj3oubQx/gYuhgaHBshwpAhhxewD0xWXask=;
+        s=badeba3b8450; t=1573357324;
+        bh=o5KsY8cVj7HcCTl2+PkeLBqJ0i93wkyk0b3C3qbSuwk=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=QaBIp5wZUlh5cWIlNXEn/7RKCO4wGA0zB3w1UQXiOkGvz/BmzQnWaLyATVME34vye
-         b4BpMgFwaI+brCklqDTwYGOZxzpsE/6s9iKzMNjSjU9LzcFcjt5ZenSFsUA8FTfjAA
-         IXpEfGvWxbeBrtmzOXZ2kgpeh3DTEOB9GjOw8Wdg=
+        b=KBFLh1cmDU8yg2LhGUjBAf6P+cuv5vD0EdnFfhHwjUqtgSfcQSefViP0c7xaGdUOA
+         Bt4C/ozT2gdvAeyRPPpY2E+PpTRl+nVpPpBBvrXAdN815uBq6UZqdPTFdojQSvusZL
+         NQFnwR9gj21FGNb+cSfV7YjknR4mw4Perx15KXSI=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MBDj4-1id1yh0xHa-00CjwO; Sun, 10
- Nov 2019 04:38:25 +0100
-Subject: Re: Unusual crash -- data rolled back ~2 weeks?
-To:     Timothy Pearson <tpearson@raptorengineering.com>,
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MbzuH-1huaTU1p7P-00dY3c; Sun, 10
+ Nov 2019 04:42:04 +0100
+Subject: Re: Unable to delete device
+To:     Alex Powell <alexj.powellalt@googlemail.com>,
         linux-btrfs@vger.kernel.org
-References: <344827358.67114.1573338809278.JavaMail.zimbra@raptorengineeringinc.com>
+References: <CAKGv6CrZ6bpMFtWJ5grJ8tsuV1GehEP07QaAmyZWkhj-ixTchw@mail.gmail.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
@@ -51,107 +51,108 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
  72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
  ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
  oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <5d2a48c3-b0ea-1da8-bf53-fb27de45b3c6@gmx.com>
-Date:   Sun, 10 Nov 2019 11:38:21 +0800
+Message-ID: <d6037684-d478-493a-d428-83458dc52be6@gmx.com>
+Date:   Sun, 10 Nov 2019 11:41:59 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <344827358.67114.1573338809278.JavaMail.zimbra@raptorengineeringinc.com>
+In-Reply-To: <CAKGv6CrZ6bpMFtWJ5grJ8tsuV1GehEP07QaAmyZWkhj-ixTchw@mail.gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="XmyUA7GO9B55YbzlRybVgTQ7zoJ1gSwVO"
-X-Provags-ID: V03:K1:+/h/puFjAnerevoZVsaZs/rnX5v6MWR/YYMyFCg/PT6g8tpJZ4T
- ccKWYxxZ97Hs3LIAs5I160ngt88shYZI9vglQgZ2TQFOQnMVysBzuTIMQf+vZ5kf/2J/CB5
- DgokSsU0LZiXxDxZXaap472ywwKrbsRj+UveO53icZEkuf98+gKTBRc5JtelmvQVCWFkIz7
- wReyPkmUnGkqTpLXZ4Gdg==
+ boundary="6jAqpsWgiwUnFnVszeRQIveNkrDFzW8O9"
+X-Provags-ID: V03:K1:pCLz6CPWd0zB4pWQHJgOY4+gSHRjrTWoqYITIn4rszdarOWWwMK
+ jj50G7W3UfbJxL8naItRyZWhA2W3L3fCXj5s9IKcf9ST0l8v2bmWj1n/JfH1yDeSKcAAtNK
+ uPzvznNuZF7hvbSZrmxcao5+N7eWAw4xwbUAnQM5UTUh42RaC0n6s95V4zmf9xPRe8N7KlF
+ YNutWq0GtjkZhj9STXKmg==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:C4W+YB8TAi4=:LzLiufx6ihSFuiEoZRTMIz
- FwUn47c0EslfXJZ3c6Leso6dBQ3HGlEnLnfBC6dLadv7T2egPob5CCZX2yKjrikg57t3UWrO7
- jugRj4PIf1YCE+fQ+/FcNjTqdT0S0aSzICWv57w4kL4U1tTaXZKF1P6FQldea7EDTL3phTxqo
- g1YFZ8bSMIdF0yw/CbniABkRwI4nXG7M03DZQr3aKUbPnwhfbPC6S1OQTyN6VqYq8YkMEgHA1
- OHTgOvfEEn4XOBvPypwcED7g5l734lzK0wmZQqKf+2nwgypsW9x0ElNeYbz20RUMVT4vOf7wU
- 39MO6uILsWA7aROSIZgQysnmpWs0Xt4bBibwaHLkjUt7gz5UxLPgKsMqiN/2XbNn8vXFeLMRy
- r93BYmXOt+N4IANuH154ER6l7sus29CJeWX2IGTFtldjqFzu+Vbq1coC70rNTrbIo8MY7CKuc
- DEtMv/1vpje65yEghpDFkmGYXJ9qDp1FrMFauC0fu07s6HG1+1U3p7kBybIIJJk6legN0Xu9S
- JtadK9eTxwsxcmdidDU/wRy4BrOTkxWMti7FDZI0Q7eqpHUHplXRcY+xwZ6UQnV96KrAjtx++
- pDh6a4Tf4zg1RBEYG/oHnlYwEKExjSqBnOUxdIvfSkCeICNybSoQofl5ck1F7X8uetdb+w7rj
- Lb0WWYL0VuQF3yIdagBAb110DV9pKXAGz8JKJn6XTcjUSr9Mp9hGNwabQeOwRklkckOwksVTI
- r3xJBszwlfvMw2WfLrhVRJBj4Ckj+ACco4d2QCC3DKmVd0IWPxBQttaJfsPk5Oe6Waojm83Xr
- iQyD7mDTVE6I6F2HkzsQu2a8cAzaRU5B4y7M2rAY1uemVwca/6nIqCGeZAFfeyqw6egbmFzu/
- 6pN4ILccxzQsTA+fW1UpBuJE7YTdEKl2fuNGG0z17oZBKr4Sk/gFVrInENdKCD7S3Vx8/kocp
- /Ao/2/bbdyUpMui7NA4nR5fmlkIYCq/FXyvzjzu+jEijdBJciFg6GvypDsCUF2niOvS7bqNwT
- ZCZmebVwt6LBddDfeOOfSxN6tZbfL/R3KakY5KqU5X/ZDk2L6+QhXHL5/30LgIcOTbp9prITg
- aGMqIB3hZBztuuKCTGeFRn7ksdto+V0PvcErgSUaqMvKF+eSBY1AWP2o0DjCWlCuP89JZt/WU
- McZpwseT23JpvwlhWHkHoy7znNVBlwX+R7SZexO49HH5rUek981pV1JDIDrsYXaDU4NYpyKrM
- yFTtPRETIx+PJL+I5yFPTyqTWkUZgRfsg7nv6aH8KTXr09jF0eFpb7CMRK9M=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jPjswNl1Mdk=:AT/58v2hhwZkJwSiuoaA3A
+ qXeaMYhoGichBTy048xFrSdNtGLcoWllou1fY2QndCRZPet01fZvQ6rrmD93ytfTKE6G7hYLw
+ fV4Gxc/tSRcxXIgyBxWy07Cq4AOzT6kyCLttpVa2xRJ+DbVUlzIRyRYMc8sKy5eX5UtWmXUUh
+ KxqNE7M62bhL7tEt0pprHdTnby1udffjqNrp3PHe709lyRAQznZMFu1jxmsJDzk2/A1ONIk5e
+ rP1+nBRtEGv9WgC8c5oKyxGMfL3g1sKPge3/Cmj3W+O8KvkNn8JyC7XQCul80YQr4dYPAP2Nn
+ lE164KYheYMYFv4EVYJxz2hDII+9zBz6lnSjU/1CCEdhBlZjTVC0wZ8Pil9OXJOaUqohKjccq
+ EIMrgYR21WrjUEdm0nSfVzab0DvqXixKu5hJV5vd13jGQc15OXI0YupB1Pcv1eV7ehlWZxpAG
+ 7hruw2U1VkFnSajm6SbB7o/j01KmgSnTCqp4ss6Or5KhS31XQ+ImneepwyqbVyCpID5olemgD
+ 0v4LBAuE5RvBlRgiOB/bVdlcj236AMfO8FFMHFmacPNzURxnf+cvhDIUTPm0TklTC/Xak/uhC
+ pECsPxa7CYkc2zcotaIqqV1Ofe9xVOfYOKAQpAc/ezMbSXhcVzAFYXUYfsyIUxN2MLYfaNrQI
+ ZR2lAveasBno1i1gkkK2mNI90AesWdcghaPjUSPuH/ca26UEiBge2zpoNHSGf/bp+lGlUFXOb
+ LITGGralC3026eUXF5voJnksVMiFM/CL/InIyi5YlXN/YgVhlPJWsgeueV3OzInZfreumid62
+ 8KmQwVqAJBQt0JQLin3G8MwBPCVEc1Pa18fDD8HjN6b7Qxx8ZKMmNThowmk7MLu3AimfMb6oy
+ I9HOFM+TM0mQ2KPgPJmeeaajUZRH1nNwCORmp6qb7HjSsZhr7437MiXZdkfh+3gogZXoRMJBD
+ pRPDnITHmWts4eMXc1sFeehfnqtdtIqHlXgnWSKlvawJvCIUbjvu+xQnJETSzSamfdNNsQGfd
+ on65UzvFPYMgZ+RigcZiU+qB7+rj8ZErUmdJ6PGxJ6dFZxmEcRUzq7ldKESs/B7JRY0QQ5s4h
+ Ge3pk89C5VaZowCjr7WO3aIf3pmJn5qKYu4b/YqYgYMjDA31paZJI5Ut/8EKXSrjoj2H/B5IU
+ Qp5VDHYP/qTZrozBm8DT9Z06AR4lEOuOaXXoRBGEnY+0EIiEzrDBbHhHHEWvzo3opz3no5XcF
+ wNM3BuOH6Q0Ew0TVI/S8l9hmFLVmENBPKbH0Vk62hmu0NmuuMP5QkO8941AY=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---XmyUA7GO9B55YbzlRybVgTQ7zoJ1gSwVO
-Content-Type: multipart/mixed; boundary="jCkAixAYdsDjOPWxJSJuzofy1YwhFF422"
+--6jAqpsWgiwUnFnVszeRQIveNkrDFzW8O9
+Content-Type: multipart/mixed; boundary="u1jDF4SFaEa5G2bzE9OS7AKOSPwXCc5F3"
 
---jCkAixAYdsDjOPWxJSJuzofy1YwhFF422
+--u1jDF4SFaEa5G2bzE9OS7AKOSPwXCc5F3
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/11/10 =E4=B8=8A=E5=8D=886:33, Timothy Pearson wrote:
-> We just experienced a very unusual crash on a Linux 5.3 file server usi=
-ng NFS to serve a BTRFS filesystem.  NFS went into deadlock (D wait) with=
- no apparent underlying disk subsystem problems, and when the server was =
-hard rebooted to clear the D wait the BTRFS filesystem remounted itself i=
-n the state that it was in approximately two weeks earlier (!).
+On 2019/11/10 =E4=B8=8A=E5=8D=889:14, Alex Powell wrote:
+> Hi all,
+> I had a disk fail on my BTRFS RAID5 array. It is still mounting but
+> there are bad sectors which will switch the array to read only mode
+> when used.
 
-This means during two weeks, the btrfs is not committed.
+Nope, regular sector shouldn't cause RO mount.
 
->  There was also significant corruption of certain files (e.g. LDAP MDB =
-and MySQL InnoDB) noted -- we restored from backup for those files, but a=
-re concerned about the status of the entire filesystem at this point.
+Dmesg please for the RO (transaction abort).
 
-Btrfs check is needed to ensure no metadata corruption.
+>=20
+> I used "btrfs device delete /dev/sdd /mnt/data" to remove it from the
+> array. However it seems that it is only partially removing it from the
+> array and when it gets to the bad sectors it fails.
+>=20
+> localhost ~ # btrfs device delete /dev/sdd /mnt/data
+> ERROR: error removing device '/dev/sdd': Input/output error
 
-Also, we need sysrq+w output to determine where we are deadlocking.
-Otherwise, it's really hard to find any clue from the report.
+This is another different problem.
+Dmesg please.
+
+This can be caused by bad sector + failed to rebuild data.
+Please keep in mind RAID5 of btrfs can't handle write hole yet, thus
+it's not ensured to tolerant one corrupted disk.
 
 Thanks,
 Qu
-
 >=20
-> We do not use subvolumes, snapshots, or any of the advanced features of=
- BTRFS beyond the data checksumming.  I am at a loss as to how BTRFS coul=
-d suddenly just "forget" about the past two weeks of written data and (mo=
-stly) cleanly roll back on the next mount without even throwing any warni=
-ngs in dmesg.
+> What is best practice for removing the drive from the array in this sit=
+uation?
 >=20
-> Any thoughts on how this is possible, and if there is any chance of get=
-ting the lost couple weeks of data back, would be appreciated.
->=20
-> Thank you!
+> Kind Regards,
+> Alex Powell
 >=20
 
 
---jCkAixAYdsDjOPWxJSJuzofy1YwhFF422--
+--u1jDF4SFaEa5G2bzE9OS7AKOSPwXCc5F3--
 
---XmyUA7GO9B55YbzlRybVgTQ7zoJ1gSwVO
+--6jAqpsWgiwUnFnVszeRQIveNkrDFzW8O9
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3Hhi0ACgkQwj2R86El
-/qii7gf/WEPaUGu942WV2ZQDOf97N//gGdWVidmVKfatD8MwYuBppPaAFo8BGOwo
-OepxMWVYaZ7ldtDG3g78hQf8N5rTlKninQaFtppfUwCJpvdJk5VlGOFmdrYbLXwm
-kE/QgEZebqwQshl9Zbs0a8meaFMloXSCvxClGKq3DSfgTb+Y8iYz3qz3ce/0BHPW
-ngEkb9eHJJnMazsNxdU0y7uRbCD8yW9QjXlyeuHOwjgvmSyzovFyO13Ewzm9pLfo
-5o4zQRO75YRrMReEVWbZGgBJn1/2Cr6k2eodJ05MVnTvr7vEgtZTj0ClxAIiZ8RW
-t3AqvUrqTiFmWOOhRtaX6q7AjIM6Vw==
-=xyi/
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3HhwcACgkQwj2R86El
+/qgYxAgAmzUOzdVtFvHp4Kro/uEFOGGDqdsksITFIYG4KanXG7be+k3q5gOlUZ5f
+HpoWlf6hOdWfu93qa0O5EK4zCEQYoEJWgz89SNmjpp3y4ISV14Cpqp0ynqCGNaWf
+Z/pku4tAS3u7JMC+r3apDh716cqueMdn0U5eXejPkEbV9BFXMwCI91v8C5bsgJaA
+3eIhZ6Y/yKVfG8rNEKy70S34hnZ6Rl8R50FPJ3ZUVxtMwkWuHjzXutfgJ0VMw3rT
+saCMN3jD8yx/utsXcOO79dyDZI/+TSNkKJFip3R/UAbtx4H+Pgh4xAcHLc0NmEa6
+4HlstTYgCZMpJ6kZyI84Vs+UA8EL5Q==
+=gDn2
 -----END PGP SIGNATURE-----
 
---XmyUA7GO9B55YbzlRybVgTQ7zoJ1gSwVO--
+--6jAqpsWgiwUnFnVszeRQIveNkrDFzW8O9--
