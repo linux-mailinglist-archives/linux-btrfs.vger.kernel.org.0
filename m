@@ -2,111 +2,111 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 14D5EF6724
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Nov 2019 04:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50741F67D1
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Nov 2019 07:48:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726604AbfKJDth (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sat, 9 Nov 2019 22:49:37 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:32808 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726559AbfKJDth (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>); Sat, 9 Nov 2019 22:49:37 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAA3mx0B109082;
-        Sun, 10 Nov 2019 03:49:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=7JX2DnFJxlq8yukxGCTS1cU7tVbRbsAYyX6IdHjTXhc=;
- b=nJb37wbeiw6X+d/SkasdLnaDiLLoklifgtNhuhEXMumenZBq1raYUPLvkgT6ib1bpBmU
- wuEHTh4IwWXTrEaK+FO1r2Pp4R7jCosqXgRcsVU7sCUTgwXUai9jbyyoT047DBrtuSJL
- k9zXW3MpGroU43qHwSw5ZYFhePQtf5NrS4SDyBA4fGatuXyojWy9F/YNbphwaiYdtK4i
- v0OpyxQAGhhUHypfrvy/JUIlv5UlgzQ20FahumLdAMaDppCh6mssv8ZBD0yqFNS+khZ7
- 2rzbGDEmWQLP3LoqL9jKIjxln2rS2z5UQroFUsDs2Y7apuZstv730+dopkEOHEHUGIlM xg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 2w5p3qa95x-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 10 Nov 2019 03:49:34 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAA3nX3s009840;
-        Sun, 10 Nov 2019 03:49:33 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 2w67kxprv8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 10 Nov 2019 03:49:32 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAA3mhsT017845;
-        Sun, 10 Nov 2019 03:48:43 GMT
-Received: from [192.168.1.145] (/39.109.145.141)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 09 Nov 2019 19:48:43 -0800
-Subject: Re: Unable to delete device
-To:     Alex Powell <alexj.powellalt@googlemail.com>,
-        linux-btrfs@vger.kernel.org
-References: <CAKGv6CrZ6bpMFtWJ5grJ8tsuV1GehEP07QaAmyZWkhj-ixTchw@mail.gmail.com>
-From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <c0479d4c-5163-8a5c-3a0a-58a4f5f0f75f@oracle.com>
-Date:   Sun, 10 Nov 2019 11:48:36 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726582AbfKJGsB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Nov 2019 01:48:01 -0500
+Received: from mail.rptsys.com ([23.155.224.45]:47316 "EHLO mail.rptsys.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725789AbfKJGsA (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 Nov 2019 01:48:00 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.rptsys.com (Postfix) with ESMTP id EF3ECBED3FDDD;
+        Sun, 10 Nov 2019 00:47:59 -0600 (CST)
+Received: from mail.rptsys.com ([127.0.0.1])
+        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id KqOOm46VmNin; Sun, 10 Nov 2019 00:47:59 -0600 (CST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.rptsys.com (Postfix) with ESMTP id 1F991BED3FDDA;
+        Sun, 10 Nov 2019 00:47:59 -0600 (CST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 1F991BED3FDDA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
+        t=1573368479; bh=C9oMVeinQ94ERDK3p3WUWz3nURCPSxmARR0qbNqhUqE=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=D4J/AOSfaQfIrxEfw7SQv5FmG8NjDK/rFYT6vsgJ6fXtnxsCR1K958b/40NZWQWao
+         8MZ3VgLIYb1rw2zsOIXVXz4nVXIScQP0HEvq7M/zB4qvlmj/whNW9IlzF35IMOFGwl
+         cZM/P5Eic1947QHDThCi6YtRhrzvuB1FcUkv0MDk=
+X-Virus-Scanned: amavisd-new at rptsys.com
+Received: from mail.rptsys.com ([127.0.0.1])
+        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 8_xKpmzsmFTt; Sun, 10 Nov 2019 00:47:58 -0600 (CST)
+Received: from vali.starlink.edu (unknown [192.168.3.2])
+        by mail.rptsys.com (Postfix) with ESMTP id E9871BED3FDD7;
+        Sun, 10 Nov 2019 00:47:58 -0600 (CST)
+Date:   Sun, 10 Nov 2019 00:47:57 -0600 (CST)
+From:   Timothy Pearson <tpearson@raptorengineering.com>
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Message-ID: <1848426246.125326.1573368477888.JavaMail.zimbra@raptorengineeringinc.com>
+In-Reply-To: <5d2a48c3-b0ea-1da8-bf53-fb27de45b3c6@gmx.com>
+References: <344827358.67114.1573338809278.JavaMail.zimbra@raptorengineeringinc.com> <5d2a48c3-b0ea-1da8-bf53-fb27de45b3c6@gmx.com>
+Subject: Re: Unusual crash -- data rolled back ~2 weeks?
 MIME-Version: 1.0
-In-Reply-To: <CAKGv6CrZ6bpMFtWJ5grJ8tsuV1GehEP07QaAmyZWkhj-ixTchw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9436 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1910280000 definitions=main-1911100036
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9436 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1910280000
- definitions=main-1911100036
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 8.5.0_GA_3042 (ZimbraWebClient - GC65 (Linux)/8.5.0_GA_3042)
+Thread-Topic: Unusual crash -- data rolled back ~2 weeks?
+Thread-Index: jGqq1Ls5pP2X9LEczNgWUutybaGmrA==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 11/10/19 9:14 AM, Alex Powell wrote:
-> Hi all,
-> I had a disk fail on my BTRFS RAID5 array. It is still mounting but
-> there are bad sectors which will switch the array to read only mode
-> when used.
-> 
-> I used "btrfs device delete /dev/sdd /mnt/data" to remove it from the
-> array. However it seems that it is only partially removing it from the
-> array and when it gets to the bad sectors it fails.
-> 
-> localhost ~ # btrfs device delete /dev/sdd /mnt/data
-> ERROR: error removing device '/dev/sdd': Input/output error
-
-  Could you please provide 'btrfs dev df <mnt>' we need to know the
-  allocated chunk profiles.
-
-  If its only RAID5, we continue to reconstruct the RAID5 for failed IO
-  during the delete. But here its may be that there are IO errors from
-  more than one device in the RAID5, which unfortunately is a fatal
-  error.
-
-  You could confirm the devices involved in the errors from the syslog
-  and 'btrfs device stats <mnt>'.
-
-> What is best practice for removing the drive from the array in this situation?
-
-  Device replace is better as it will continue to fulfill the raid5
-  redundancy promises. Yeah but you need the spare device, which is
-  a good practice in the data centers.
-
-HTH.
-
-Thanks, Anand
-
-> Kind Regards,
-> Alex Powell
-> 
 
 
+----- Original Message -----
+> From: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
+> To: "Timothy Pearson" <tpearson@raptorengineering.com>, "linux-btrfs" <li=
+nux-btrfs@vger.kernel.org>
+> Sent: Saturday, November 9, 2019 9:38:21 PM
+> Subject: Re: Unusual crash -- data rolled back ~2 weeks?
 
+> On 2019/11/10 =E4=B8=8A=E5=8D=886:33, Timothy Pearson wrote:
+>> We just experienced a very unusual crash on a Linux 5.3 file server usin=
+g NFS to
+>> serve a BTRFS filesystem.  NFS went into deadlock (D wait) with no appar=
+ent
+>> underlying disk subsystem problems, and when the server was hard reboote=
+d to
+>> clear the D wait the BTRFS filesystem remounted itself in the state that=
+ it was
+>> in approximately two weeks earlier (!).
+>=20
+> This means during two weeks, the btrfs is not committed.
+
+Is there any hope of getting the data from that interval back via btrfs-rec=
+over or a similar tool, or does the lack of commit mean the data was stored=
+ in RAM only and is therefore gone after the server reboot?
+
+If the latter, I'm somewhat surprised given the I/O load on the disk array =
+in question, but it would also offer a clue as to why it hard locked the fi=
+lesystem eventually (presumably on memory exhaustion -- the server has some=
+thing like 128GB of RAM, so it could go quite a while before hitting the ph=
+ysical RAM limits).
+
+>=20
+>>  There was also significant corruption of certain files (e.g. LDAP MDB a=
+nd MySQL
+>>  InnoDB) noted -- we restored from backup for those files, but are conce=
+rned
+>>  about the status of the entire filesystem at this point.
+>=20
+> Btrfs check is needed to ensure no metadata corruption.
+>=20
+> Also, we need sysrq+w output to determine where we are deadlocking.
+> Otherwise, it's really hard to find any clue from the report.
+
+It would have been gathered if we'd known the filesystem was in this bad st=
+ate.  At the time, the priority was on restoring service and we had assumed=
+ NFS had just wedged itself (again).  It was only after reboot and remount =
+that the damage slowly came to light.
+
+Do the described symptoms (what little we know of them at this point) line =
+up with the issues fixed by https://patchwork.kernel.org/patch/11141559/ ? =
+ Right now we're hoping that this particular issue was fixed by that series=
+, but if not we might consider increasing backup frequency to nightly for t=
+his particular array and seeing if it happens again.
+
+Thanks!
