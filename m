@@ -2,196 +2,107 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DB69BF67EF
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Nov 2019 08:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 782F4F67F2
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Nov 2019 09:04:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726594AbfKJHs4 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 Nov 2019 02:48:56 -0500
-Received: from mail.rptsys.com ([23.155.224.45]:40670 "EHLO mail.rptsys.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726582AbfKJHs4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Nov 2019 02:48:56 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id 47B04BEE66876;
-        Sun, 10 Nov 2019 01:48:55 -0600 (CST)
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id gPOmUHKjgkyk; Sun, 10 Nov 2019 01:48:54 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id 4B9BDBEE666A6;
-        Sun, 10 Nov 2019 01:48:54 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 4B9BDBEE666A6
+        id S1726641AbfKJIEF (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Nov 2019 03:04:05 -0500
+Received: from mail-lf1-f50.google.com ([209.85.167.50]:45070 "EHLO
+        mail-lf1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726582AbfKJIEF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 Nov 2019 03:04:05 -0500
+Received: by mail-lf1-f50.google.com with SMTP id v8so7507247lfa.12
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Nov 2019 00:04:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
-        t=1573372134; bh=969y4amN4AnLVSWLArGCaoxfy9QHehgEbC5bfAQaBk8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=ausnfbhYZvf5M1X+Ha1nkqClbEoWGIC7DmfaDqC34f4dnXaLUeevc8OKBrFvCeDnE
-         1bkcxzRtotj9/1GAcpZ7yR5ABgMLTYICmvB1gVw9qDlGW4eKSBqAKU4GkvMQH72HIk
-         jGHhlpMvkhuBnpwagy2f+uUY9KimkMNILfXOngYo=
-X-Virus-Scanned: amavisd-new at rptsys.com
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id dZnCTzLlBhWS; Sun, 10 Nov 2019 01:48:54 -0600 (CST)
-Received: from vali.starlink.edu (unknown [192.168.3.2])
-        by mail.rptsys.com (Postfix) with ESMTP id 21B9CBEE66653;
-        Sun, 10 Nov 2019 01:48:54 -0600 (CST)
-Date:   Sun, 10 Nov 2019 01:48:53 -0600 (CST)
-From:   Timothy Pearson <tpearson@raptorengineering.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <1414992181.132590.1573372133022.JavaMail.zimbra@raptorengineeringinc.com>
-In-Reply-To: <4c5b062b-30c7-2707-2bef-0ea5f18265c5@gmx.com>
-References: <344827358.67114.1573338809278.JavaMail.zimbra@raptorengineeringinc.com> <5d2a48c3-b0ea-1da8-bf53-fb27de45b3c6@gmx.com> <1848426246.125326.1573368477888.JavaMail.zimbra@raptorengineeringinc.com> <64be1293-5845-4054-8d5f-b9ff79168a17@gmx.com> <1503948411.128656.1573370293214.JavaMail.zimbra@raptorengineeringinc.com> <4c5b062b-30c7-2707-2bef-0ea5f18265c5@gmx.com>
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MJiQw7rQ14jnBMJz0bj8OsKRVp63ZjHuh9bH0GhZ0RU=;
+        b=U4qq0ZZMvs5Afzd82i19Dlut+9ETFzWHQpIV5GbjvYrT/ud3MYcZTgaUpqPZhlMRFJ
+         9XV1X6sx3rb0zeyTK0qUuLJDmkvuEDrfvygUYIeFknreLq9Igrhp9IP69RacTKykRgxW
+         oft0tzYa0ZVPq3MBa8Ix0Z+FNXby3M5zxTqp4ZuDuLlMJsu+nObUowA9m5Cw3M4Qz3p1
+         fUUplENLKgIL4y93H2mCWe1gAJDF6Z7otlJnDTJSvEt6/OSt4eeuLVnuol11xn9air0o
+         IfCqILV4Jedy/VVm97dqUtZ5/lT33KJGkvM9qMbWGYahb6LCPxREIp4EgsNor0cG0BMo
+         vLUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=MJiQw7rQ14jnBMJz0bj8OsKRVp63ZjHuh9bH0GhZ0RU=;
+        b=jfKtqtHPHIGFIOQM6e3QP2Upeb6uB5TQuMazer5yUdIsGVDXrZ27ZcswRQuGBdS1Bq
+         Ncf1BbgNdpW4K5fVQouXSUMOYS6PxMFzB1HCAEfDL2+WrtEk0MZNFPxolCWTFFQNrX/F
+         XNGw0gI4bCN3PnvVOQ5BEgd2Ajr0z7c3QUM3xSj5bKRbaBZtFBfYAw0Gn9I94zpWcZG2
+         GDygTuO7m1BNiVmyTQjKm79S+my1lR3QIe1lhjZhTL1VDWLsaycxvIMXtjA86Ex5EvXq
+         1UAYCZ/m/PBHVKPt2+zpOzU7Ssg7X0Qrk/AR5ItOQk/VRIOT97GXZYI2kvkbEyDSu24y
+         X8Lg==
+X-Gm-Message-State: APjAAAWEuxE9otTAHtGlon0Ruiab7DUJ6pU4vV1s7FqkxnExZ+QBm+yu
+        usdn3u6pXJ3E6gEuipZgtN4GyVzk
+X-Google-Smtp-Source: APXvYqxVUu9kvD2ka0hJKVacY5u97AET2FVFDwIF203ZKUmz51Y5fAAOgmwbKZBkd5XfBE4K2wR8tA==
+X-Received: by 2002:a19:c50f:: with SMTP id w15mr12361506lfe.14.1573373042880;
+        Sun, 10 Nov 2019 00:04:02 -0800 (PST)
+Received: from [192.168.1.6] ([109.252.90.228])
+        by smtp.gmail.com with ESMTPSA id y18sm6275395lja.12.2019.11.10.00.04.01
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 10 Nov 2019 00:04:02 -0800 (PST)
 Subject: Re: Unusual crash -- data rolled back ~2 weeks?
+To:     Timothy Pearson <tpearson@raptorengineering.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <344827358.67114.1573338809278.JavaMail.zimbra@raptorengineeringinc.com>
+ <5d2a48c3-b0ea-1da8-bf53-fb27de45b3c6@gmx.com>
+ <1848426246.125326.1573368477888.JavaMail.zimbra@raptorengineeringinc.com>
+ <64be1293-5845-4054-8d5f-b9ff79168a17@gmx.com>
+ <1503948411.128656.1573370293214.JavaMail.zimbra@raptorengineeringinc.com>
+From:   Andrei Borzenkov <arvidjaar@gmail.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=arvidjaar@gmail.com; prefer-encrypt=mutual; keydata=
+ xsDiBDxiRwwRBAC3CN9wdwpVEqUGmSoqF8tWVIT4P/bLCSZLkinSZ2drsblKpdG7x+guxwts
+ +LgI8qjf/q5Lah1TwOqzDvjHYJ1wbBauxZ03nDzSLUhD4Ms1IsqlIwyTLumQs4vcQdvLxjFs
+ G70aDglgUSBogtaIEsiYZXl4X0j3L9fVstuz4/wXtwCg1cN/yv/eBC0tkcM1nsJXQrC5Ay8D
+ /1aA5qPticLBpmEBxqkf0EMHuzyrFlqVw1tUjZ+Ep2LMlem8malPvfdZKEZ71W1a/XbRn8FE
+ SOp0tUa5GwdoDXgEp1CJUn+WLurR0KPDf01E4j/PHHAoABgrqcOTcIVoNpv2gNiBySVsNGzF
+ XTeY/Yd6vQclkqjBYONGN3r9R8bWA/0Y1j4XK61qjowRk3Iy8sBggM3PmmNRUJYgroerpcAr
+ 2byz6wTsb3U7OzUZ1Llgisk5Qum0RN77m3I37FXlIhCmSEY7KZVzGNW3blugLHcfw/HuCB7R
+ 1w5qiLWKK6eCQHL+BZwiU8hX3dtTq9d7WhRW5nsVPEaPqudQfMSi/Ux1kc0mQW5kcmVpIEJv
+ cnplbmtvdiA8YXJ2aWRqYWFyQGdtYWlsLmNvbT7CZQQTEQIAJQIbAwYLCQgHAwIGFQgCCQoL
+ BBYCAwECHgECF4AFAliWAiQCGQEACgkQR6LMutpd94wFGwCeNuQnMDxve/Fo3EvYIkAOn+zE
+ 21cAnRCQTXd1hTgcRHfpArEd/Rcb5+SczsBNBDxiRyQQBACQtME33UHfFOCApLki4kLFrIw1
+ 5A5asua10jm5It+hxzI9jDR9/bNEKDTKSciHnM7aRUggLwTt+6CXkMy8an+tVqGL/MvDc4/R
+ KKlZxj39xP7wVXdt8y1ciY4ZqqZf3tmmSN9DlLcZJIOT82DaJZuvr7UJ7rLzBFbAUh4yRKaN
+ nwADBwQAjNvMr/KBcGsV/UvxZSm/mdpvUPtcw9qmbxCrqFQoB6TmoZ7F6wp/rL3TkQ5UElPR
+ gsG12+Dk9GgRhnnxTHCFgN1qTiZNX4YIFpNrd0au3W/Xko79L0c4/49ten5OrFI/psx53fhY
+ vLYfkJnc62h8hiNeM6kqYa/x0BEddu92ZG7CRgQYEQIABgUCPGJHJAAKCRBHosy62l33jMhd
+ AJ48P7WDvKLQQ5MKnn2D/TI337uA/gCgn5mnvm4SBctbhaSBgckRmgSxfwQ=
+Message-ID: <08aced90-6dac-646a-a3c3-445eaf1e9fbb@gmail.com>
+Date:   Sun, 10 Nov 2019 11:04:00 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <1503948411.128656.1573370293214.JavaMail.zimbra@raptorengineeringinc.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 8.5.0_GA_3042 (ZimbraWebClient - GC73 (Linux)/8.5.0_GA_3042)
-Thread-Topic: Unusual crash -- data rolled back ~2 weeks?
-Thread-Index: KtRoJGjHbdtjK48XvGdD7m6d3D8RoA==
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-
-
------ Original Message -----
-> From: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
-> To: "Timothy Pearson" <tpearson@raptorengineering.com>
-> Cc: "linux-btrfs" <linux-btrfs@vger.kernel.org>
-> Sent: Sunday, November 10, 2019 7:45:14 AM
-> Subject: Re: Unusual crash -- data rolled back ~2 weeks?
-
-> On 2019/11/10 =E4=B8=8B=E5=8D=883:18, Timothy Pearson wrote:
->>=20
->>=20
->> ----- Original Message -----
->>> From: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
->>> To: "Timothy Pearson" <tpearson@raptorengineering.com>
->>> Cc: "linux-btrfs" <linux-btrfs@vger.kernel.org>
->>> Sent: Sunday, November 10, 2019 6:54:55 AM
->>> Subject: Re: Unusual crash -- data rolled back ~2 weeks?
->>=20
->>> On 2019/11/10 =E4=B8=8B=E5=8D=882:47, Timothy Pearson wrote:
->>>>
->>>>
->>>> ----- Original Message -----
->>>>> From: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
->>>>> To: "Timothy Pearson" <tpearson@raptorengineering.com>, "linux-btrfs"
->>>>> <linux-btrfs@vger.kernel.org>
->>>>> Sent: Saturday, November 9, 2019 9:38:21 PM
->>>>> Subject: Re: Unusual crash -- data rolled back ~2 weeks?
->>>>
->>>>> On 2019/11/10 =E4=B8=8A=E5=8D=886:33, Timothy Pearson wrote:
->>>>>> We just experienced a very unusual crash on a Linux 5.3 file server =
-using NFS to
->>>>>> serve a BTRFS filesystem.  NFS went into deadlock (D wait) with no a=
-pparent
->>>>>> underlying disk subsystem problems, and when the server was hard reb=
-ooted to
->>>>>> clear the D wait the BTRFS filesystem remounted itself in the state =
-that it was
->>>>>> in approximately two weeks earlier (!).
->>>>>
->>>>> This means during two weeks, the btrfs is not committed.
->>>>
->>>> Is there any hope of getting the data from that interval back via btrf=
-s-recover
->>>> or a similar tool, or does the lack of commit mean the data was stored=
- in RAM
->>>> only and is therefore gone after the server reboot?
+10.11.2019 10:18, Timothy Pearson пишет:
 >>>
->>> If it's deadlock preventing new transaction to be committed, then no
->>> metadata is even written back to disk, so no way to recover metadata.
->>> Maybe you can find some data written, but without metadata it makes no
->>> sense.
->>=20
->> OK, I'll just assume the data written in that window is unrecoverable at=
- this
->> point then.
->>=20
->> Would the commit deadlock affect only one btrfs filesystem or all of the=
-m on the
->> machine?  I take it there is no automatic dmesg spew on extended deadloc=
-k?
->> dmesg was completely clean at the time of the fault / reboot.
->=20
-> It should have some kernel message for things like process hang for over
-> 120s.
-> If you could recover that, it would help us to locate the cause.
->=20
-> Normally such deadlock should only affect the unlucky fs which meets the
-> condition, not all filesystems.
-> But if you're unlucky enough, it may happen to other filesystems.
->=20
-> Anyway, without enough info, it's really hard to say.
+>>> Do the described symptoms (what little we know of them at this point) line up
+>>> with the issues fixed by https://patchwork.kernel.org/patch/11141559/ ?  Right
+>>> now we're hoping that this particular issue was fixed by that series, but if
+>>> not we might consider increasing backup frequency to nightly for this
+>>> particular array and seeing if it happens again.
+>>
+>> That fix is already in v5.3, thus I don't think that's the case.
+>>
+>> Thanks,
+>> Qu
+> 
+> Looking more carefully, the server in question had been booted on 5.3-rc3 somehow.  It's possible that this was because earlier versions were showing driver problems with the other hardware, but somehow this machine was running 5.3-rc3 and the patch was created *after* rc3 release.
 
-Agreed.  I'll check to see if there's some chance of a dmesg rotated file s=
-till hanging around from ~2 weeks prior when I get back tomorrow.
-
->>=20
->>>>
->>>> If the latter, I'm somewhat surprised given the I/O load on the disk a=
-rray in
->>>> question, but it would also offer a clue as to why it hard locked the
->>>> filesystem eventually (presumably on memory exhaustion -- the server h=
-as
->>>> something like 128GB of RAM, so it could go quite a while before hitti=
-ng the
->>>> physical RAM limits).
->>>>
->>>>>
->>>>>>  There was also significant corruption of certain files (e.g. LDAP M=
-DB and MySQL
->>>>>>  InnoDB) noted -- we restored from backup for those files, but are c=
-oncerned
->>>>>>  about the status of the entire filesystem at this point.
->>>>>
->>>>> Btrfs check is needed to ensure no metadata corruption.
->>>>>
->>>>> Also, we need sysrq+w output to determine where we are deadlocking.
->>>>> Otherwise, it's really hard to find any clue from the report.
->>>>
->>>> It would have been gathered if we'd known the filesystem was in this b=
-ad state.
->>>> At the time, the priority was on restoring service and we had assumed =
-NFS had
->>>> just wedged itself (again).  It was only after reboot and remount that=
- the
->>>> damage slowly came to light.
->>>>
->>>> Do the described symptoms (what little we know of them at this point) =
-line up
->>>> with the issues fixed by https://patchwork.kernel.org/patch/11141559/ =
-?  Right
->>>> now we're hoping that this particular issue was fixed by that series, =
-but if
->>>> not we might consider increasing backup frequency to nightly for this
->>>> particular array and seeing if it happens again.
->>>
->>> That fix is already in v5.3, thus I don't think that's the case.
->>>
->>> Thanks,
->>> Qu
->>=20
->> Looking more carefully, the server in question had been booted on 5.3-rc=
-3
->> somehow.  It's possible that this was because earlier versions were show=
-ing
->> driver problems with the other hardware, but somehow this machine was ru=
-nning
->> 5.3-rc3 and the patch was created *after* rc3 release.
->=20
-> If that's the case, just upgrade the kernel should prevent such problem
-> from happening.
-> And it's a relief that we don't need to face another deadly deadlock.
-
-Yes, absolutely, the kernel was updated immediately once this was discovere=
-d, but it was too late for the unfortunate filesystem in question.  At leas=
-t we had a good DR test and backup check. :)
-
-I'll keep an eye on this over the coming months to make sure it doesn't rec=
-ur.
-
-Thanks!
+The patch apparently was added in 5.3 final so way after rc3.
