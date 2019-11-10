@@ -2,144 +2,131 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32A31F6846
-	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Nov 2019 11:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC7FF69CD
+	for <lists+linux-btrfs@lfdr.de>; Sun, 10 Nov 2019 16:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726700AbfKJKCO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Sun, 10 Nov 2019 05:02:14 -0500
-Received: from mail.rptsys.com ([23.155.224.45]:28065 "EHLO mail.rptsys.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726054AbfKJKCN (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Sun, 10 Nov 2019 05:02:13 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id 15E75BF0EA6B8;
-        Sun, 10 Nov 2019 04:02:13 -0600 (CST)
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id cg-OY2B14vuq; Sun, 10 Nov 2019 04:02:12 -0600 (CST)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.rptsys.com (Postfix) with ESMTP id 27607BF0EA4F6;
-        Sun, 10 Nov 2019 04:02:12 -0600 (CST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.rptsys.com 27607BF0EA4F6
+        id S1726778AbfKJPkk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sun, 10 Nov 2019 10:40:40 -0500
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:36090 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726653AbfKJPkk (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Sun, 10 Nov 2019 10:40:40 -0500
+Received: by mail-pf1-f195.google.com with SMTP id v19so8689038pfm.3
+        for <linux-btrfs@vger.kernel.org>; Sun, 10 Nov 2019 07:40:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raptorengineering.com; s=B8E824E6-0BE2-11E6-931D-288C65937AAD;
-        t=1573380132; bh=px/l9J+zEnkc4deTVIjj13Bwo8uLpk7313jSjYZDtfo=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=hWSXLmyGm6d2eKfgTQaHClRnkzFmpJFPPmGMTcFFHX9La7iahzu+zeeXa24AFEKIf
-         8v82oKqGwmrJJOYJgho770FzOQ7NhKNeoLJUYGjKJBwrYqbo3EHDSq+uQ+wPR5Lktp
-         eMTmreGb3ErF2dg3vQ/bRVOm1pmO0sYFuS/q4b2U=
-X-Virus-Scanned: amavisd-new at rptsys.com
-Received: from mail.rptsys.com ([127.0.0.1])
-        by localhost (vali.starlink.edu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id BskIn9iqgjs0; Sun, 10 Nov 2019 04:02:12 -0600 (CST)
-Received: from vali.starlink.edu (unknown [192.168.3.2])
-        by mail.rptsys.com (Postfix) with ESMTP id 02659BF0EA4B6;
-        Sun, 10 Nov 2019 04:02:12 -0600 (CST)
-Date:   Sun, 10 Nov 2019 04:02:11 -0600 (CST)
-From:   Timothy Pearson <tpearson@raptorengineering.com>
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Message-ID: <825354711.177110.1573380131178.JavaMail.zimbra@raptorengineeringinc.com>
-In-Reply-To: <4c5b062b-30c7-2707-2bef-0ea5f18265c5@gmx.com>
-References: <344827358.67114.1573338809278.JavaMail.zimbra@raptorengineeringinc.com> <5d2a48c3-b0ea-1da8-bf53-fb27de45b3c6@gmx.com> <1848426246.125326.1573368477888.JavaMail.zimbra@raptorengineeringinc.com> <64be1293-5845-4054-8d5f-b9ff79168a17@gmx.com> <1503948411.128656.1573370293214.JavaMail.zimbra@raptorengineeringinc.com> <4c5b062b-30c7-2707-2bef-0ea5f18265c5@gmx.com>
-Subject: Re: Unusual crash -- data rolled back ~2 weeks?
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=/hgfKmETBK5TlVyXtIDxSNJ9lvAPFHdmJzH67tZWqnw=;
+        b=dquQLwWZS6QARZJp7tYJ5LaagI9ftYt4jIImPHwbXP2Lld9yy9qkSHDziT+9H5Da0r
+         QbSSualctyPA+GdQVoyXFEIc0/Y2BSdHVYCZj6bFatdXwOsUzTCnnMzfjneyMcyz4CzH
+         xzdi4vp1kSCjtSyzk6PPR7ff+uRjccP5sMGr3BftP1KN0w5FnV1n2XCqmHKoTcJgAdYL
+         yO7YkQ9FYAnlVAn9ufgJYugu+6bNQJ/3ODMiabOt2NXLL2Ym/VawTyMysP+e8/3DFPyy
+         +QPkZr7wkM8fismX4cuTjNYp5wyjt+87p6sgoVPMYFutUZps8OicP/cHdYP2AU+02mk5
+         EeoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=/hgfKmETBK5TlVyXtIDxSNJ9lvAPFHdmJzH67tZWqnw=;
+        b=JqIKie2Yc49lQowTfTQUGL52kjRsR3FLCJH2L259C9UaGaTLuhO2gCIR6ZOE3sRoPA
+         ueTqqLi2Lg8sHag9wefTNSaEohtZfuUR6mkjkQDgF2vyHEr1UNGCCs2MJLy6dnDKRBMG
+         EAo7zGFL6QBO5afTByhqgAMgLMXLkaOKKBLBYBku1tlINI5XR1ChENU7flouiFj4f9C0
+         43UNLOnxumwxU/MoFf5LWY/aZobLXSXfZKFhcCIP116CkqJbL16P8hrzxUp/owx8IatO
+         Q+EoDnmTO9VgEkL/zoYDrh8FXMfLhSwkVbGU6XzDXUjZ+BuM+qwQfl2JfudY6HxcaaN2
+         DChg==
+X-Gm-Message-State: APjAAAVPxBCGMRsRjpDli0k7NVsdZs7Gerv2MP1hV8Uf8QJRd4lx7crD
+        qwVi4vCQjWrjgsIpXJcnUcZ9ZjPA+VhEuGN9ADg=
+X-Google-Smtp-Source: APXvYqzwrjt1JvsFWF6b4JjStRGO+OR6u4i9i557x53gjkzyuI/zPocG9IL+WEiTq9UZ2jh6XLm9ZfeuUdmPqYj5dVc=
+X-Received: by 2002:a62:170b:: with SMTP id 11mr24518064pfx.85.1573400439040;
+ Sun, 10 Nov 2019 07:40:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+References: <CAJjG=74frVNMRaUabyBckJcJwHYk33EQnFRZRa+dE3g-Wqp5Bg@mail.gmail.com>
+ <187ab271-f2be-9e96-e73a-0f6f3e97655a@gmx.com> <CAJjG=77Csw5P4q1sPeinoT=y=9Gy=FUr88NK2mJH72OBExnHgQ@mail.gmail.com>
+ <1e600b1e-f61b-ab7a-85bc-8bd1710c2ea9@gmx.com> <CAJjG=74LUiRLbJiJ_BwgirqkA=i72t0GfJB0Masgkg0NHY0ozA@mail.gmail.com>
+In-Reply-To: <CAJjG=74LUiRLbJiJ_BwgirqkA=i72t0GfJB0Masgkg0NHY0ozA@mail.gmail.com>
+From:   Sergiu Cozma <lssjbrolli@gmail.com>
+Date:   Sun, 10 Nov 2019 17:40:02 +0200
+Message-ID: <CAJjG=74O4oMPpDkj2Ue2b+scnb6AM8Bvh_e3ZGQr2_gTEVSUuQ@mail.gmail.com>
+Subject: Re: fix for ERROR: cannot read chunk root
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc:     linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 8.5.0_GA_3042 (ZimbraWebClient - GC65 (Linux)/8.5.0_GA_3042)
-Thread-Topic: Unusual crash -- data rolled back ~2 weeks?
-Thread-Index: ICKfvidhTKGbM9xhqIQ90jN6cOMzIw==
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+root   856153161728
+chunk_root     856119312384
 
+Aren't those nr too high for a 416GB partition?
 
------ Original Message -----
-> From: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
-> To: "Timothy Pearson" <tpearson@raptorengineering.com>
-> Cc: "linux-btrfs" <linux-btrfs@vger.kernel.org>
-> Sent: Sunday, November 10, 2019 1:45:14 AM
-> Subject: Re: Unusual crash -- data rolled back ~2 weeks?
-
-> On 2019/11/10 =E4=B8=8B=E5=8D=883:18, Timothy Pearson wrote:
->>=20
->>=20
->> ----- Original Message -----
->>> From: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
->>> To: "Timothy Pearson" <tpearson@raptorengineering.com>
->>> Cc: "linux-btrfs" <linux-btrfs@vger.kernel.org>
->>> Sent: Sunday, November 10, 2019 6:54:55 AM
->>> Subject: Re: Unusual crash -- data rolled back ~2 weeks?
->>=20
->>> On 2019/11/10 =E4=B8=8B=E5=8D=882:47, Timothy Pearson wrote:
->>>>
->>>>
->>>> ----- Original Message -----
->>>>> From: "Qu Wenruo" <quwenruo.btrfs@gmx.com>
->>>>> To: "Timothy Pearson" <tpearson@raptorengineering.com>, "linux-btrfs"
->>>>> <linux-btrfs@vger.kernel.org>
->>>>> Sent: Saturday, November 9, 2019 9:38:21 PM
->>>>> Subject: Re: Unusual crash -- data rolled back ~2 weeks?
->>>>
->>>>> On 2019/11/10 =E4=B8=8A=E5=8D=886:33, Timothy Pearson wrote:
->>>>>> We just experienced a very unusual crash on a Linux 5.3 file server =
-using NFS to
->>>>>> serve a BTRFS filesystem.  NFS went into deadlock (D wait) with no a=
-pparent
->>>>>> underlying disk subsystem problems, and when the server was hard reb=
-ooted to
->>>>>> clear the D wait the BTRFS filesystem remounted itself in the state =
-that it was
->>>>>> in approximately two weeks earlier (!).
->>>>>
->>>>> This means during two weeks, the btrfs is not committed.
->>>>
->>>> Is there any hope of getting the data from that interval back via btrf=
-s-recover
->>>> or a similar tool, or does the lack of commit mean the data was stored=
- in RAM
->>>> only and is therefore gone after the server reboot?
->>>
->>> If it's deadlock preventing new transaction to be committed, then no
->>> metadata is even written back to disk, so no way to recover metadata.
->>> Maybe you can find some data written, but without metadata it makes no
->>> sense.
->>=20
->> OK, I'll just assume the data written in that window is unrecoverable at=
- this
->> point then.
->>=20
->> Would the commit deadlock affect only one btrfs filesystem or all of the=
-m on the
->> machine?  I take it there is no automatic dmesg spew on extended deadloc=
-k?
->> dmesg was completely clean at the time of the fault / reboot.
->=20
-> It should have some kernel message for things like process hang for over
-> 120s.
-> If you could recover that, it would help us to locate the cause.
->=20
-> Normally such deadlock should only affect the unlucky fs which meets the
-> condition, not all filesystems.
-> But if you're unlucky enough, it may happen to other filesystems.
->=20
-> Anyway, without enough info, it's really hard to say.
-
-I was able to retrieve complete logs from the kernel for the entire time pe=
-riod.  The BTRFS filesystem was online resized five days before the last ap=
-parent filesystem commit.  Immediately after resize, a couple of csum error=
-s were thrown for a single inode on the resized filesystem, though this was=
- not detected at the time.  The underlying hardware did not experience a fa=
-ult at any point and is passing all diagnostics at this time.  Intriguingly=
-, there are a handful of files accessible from after the last known good fi=
-lesystem commit (Oct. 29), but the vast majority are simply absent.
-
-At this point I'm more interested in making sure this type of event does no=
-t happen in the future than anything else.  At no point did the kernel prin=
-t any type of stack trace or deadlock warning.  I'm starting to wonder if w=
-e hit a bug in the online resize path, but am just guessing at this point. =
- The timing is certainly very close / coincidental.
-
-Thanks!
+On Thu, Nov 7, 2019 at 9:16 AM Sergiu Cozma <lssjbrolli@gmail.com> wrote:
+>
+> Well nothing to lose now so if you come up with any exotic ideas you
+> wanna try please let me know, I will keep the partition for the next
+> couple of days.
+>
+> Thank you for your time.
+>
+> On Thu, Nov 7, 2019 at 2:44 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> >
+> >
+> >
+> > On 2019/11/6 =E4=B8=8B=E5=8D=8811:52, Sergiu Cozma wrote:
+> > > Hi, thanks for taking the time to help me out with this.
+> > >
+> > > The history is kinda bad, I tried to resize the partition but gparted
+> > > failed saying that the the fs has errors and after throwing some
+> > > commands found on the internet at it now I'm here :(
+> >
+> > Not sure how gparted handle resize, but I guess it should use
+> > btrfs-progs to do the resize?
+> >
+> > >
+> > > Any chance to recover or rebuild the chunk tree?
+> >
+> > I don't think so. Since it's wiped, there is no guarantee that only
+> > chunk tree is wiped.
+> >
+> > THanks,
+> > Qu
+> >
+> >
+> > >
+> > >
+> > > On Wed, Nov 6, 2019, 13:34 Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> > >>
+> > >>
+> > >>
+> > >> On 2019/11/5 =E4=B8=8B=E5=8D=8811:04, Sergiu Cozma wrote:
+> > >>> hi, i need some help to recover a btrfs partition
+> > >>> i use btrfs-progs v5.3.1
+> > >>>
+> > >>> btrfs rescue super-recover https://pastebin.com/mGEp6vjV
+> > >>> btrfs inspect-internal dump-super -a https://pastebin.com/S4WrPQm1
+> > >>> btrfs inspect-internal dump-tree https://pastebin.com/yX1zUDxa
+> > >>>
+> > >>> can't mount the partition with
+> > >>> BTRFS error (device sdb4): bad tree block start, want 856119312384 =
+have 0
+> > >>
+> > >> Something wiped your fs on-disk data.
+> > >> And the wiped one belongs to one of the most essential tree, chunk t=
+ree.
+> > >>
+> > >> What's the history of the fs?
+> > >> It doesn't look like a bug in btrfs, but some external thing wiped i=
+t.
+> > >>
+> > >> Thanks,
+> > >> Qu
+> > >>
+> > >>> [ 2295.237145] BTRFS error (device sdb4): failed to read chunk root
+> > >>> [ 2295.301067] BTRFS error (device sdb4): open_ctree failed
+> > >>>
+> > >>
+> >
