@@ -2,114 +2,148 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CAFF7FAD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2019 20:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 308EBF8043
+	for <lists+linux-btrfs@lfdr.de>; Mon, 11 Nov 2019 20:37:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbfKKTTq (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Nov 2019 14:19:46 -0500
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:54579 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726927AbfKKTTq (ORCPT
+        id S1727049AbfKKThp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Nov 2019 14:37:45 -0500
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:39878 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726927AbfKKTho (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Nov 2019 14:19:46 -0500
-Received: by mail-wm1-f42.google.com with SMTP id z26so498611wmi.4
-        for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2019 11:19:44 -0800 (PST)
+        Mon, 11 Nov 2019 14:37:44 -0500
+Received: by mail-wm1-f66.google.com with SMTP id t26so502772wmi.4
+        for <linux-btrfs@vger.kernel.org>; Mon, 11 Nov 2019 11:37:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mcDlNHadEEtoWQVNqJB53gyk0Nf1IwiAS/+pS7cblY4=;
-        b=gbDV+6UNdfq6CysxTxl0bTMAK03M5D5N4mse+XE5vR6XmUtR1QuHX8bHc4WUaIFgGt
-         07sLgrTSBsWzyQN7YRPvq6SW+Jys5hJABnJTorhf+GyruRV75rEW74fWYiqygaL2Snaz
-         nm4/eDRB0cknrMpaBmeIFXtasBVtBLGp4sRQ5saorp5DfV0UeDLVE6tCMhUBXWhA29FA
-         KpAF6Z60DPd7D1R22112SOkhCCviLn3CWwIY3TfqJmgAaEd0OZOus8aEAUkLFYU4wyOh
-         5vei8TAw1mHk3cSFU3aQqHRMEGguoFdkFqg5CWIHZBox58iiHtqQrhYMnAGf0SL1nWdJ
-         yMYQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=QIW8r97PydM3zg+QulJcmULK8g50XEHJEstlE2D7FGI=;
+        b=mOIStuihsgMysXJsCsu6tCmmKuQLSAnMLU+GTsHagRdxDD5fXNWVOscO3WU08kv8tm
+         swubhl23FWQwhoR7XqxzrftxOUd6lEQ6NJzkpBlL9+xfK4+yczMmCRl3JAxNktTfDi0Y
+         MstxkfOSks6nhKPAm7vF02teMjNblb0Vu2LAVRJPHlMGXyHQfrYIau12b7wCw2yV4znT
+         oQyQ6XKMhAHuzejf54mlvtMusAozhxJbDGACtGDd6K9MrwKpcmB6emXZUTCuPTxoxpfy
+         8I5C+8ZXEgWMFkDqaVcpCCsIthZ4SYNJpbWa9rMvPXbRejj+U7UXuYlWYFUXoqoQLoGW
+         P8kw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mcDlNHadEEtoWQVNqJB53gyk0Nf1IwiAS/+pS7cblY4=;
-        b=ccTr4qv08obD4AHBzyvGkQkAep+nL0Xolrls/4kcv3XfccWrhuxE71cR3w/c7JPAL3
-         jk8H6NF4OoEN9nVYir0/cKg4sFgquTYaQi6T9gBXhlEzlhUY9E6xZzct2Sh20oDil6j5
-         MurB5KnqCBKeldnwiiwBUgi/ziPMQ8qxz6UnZHBxFU71jMa+R849qFaxPkdLM4anKQzx
-         HiljTsgiVwnD6wyBuATePbYW1XVI3mHw5nOETBoJC2gPUVuQvchUB4aFP3XJvgi0Y0Vm
-         fK0aJp3HGocSsKCD7qnlsSclZscTD0L6gcgOH4w+EEX0xMlNCT34hSG80O/2YSo5QGRy
-         6LLg==
-X-Gm-Message-State: APjAAAUADnnADAHQz+mWArgL+X9VtR55+8cQrDktshbWCk/kaLBVCrjK
-        QFekRcCYer3i4VRaHduNdPwWfiKMpqHRyouczO+FXg==
-X-Google-Smtp-Source: APXvYqwFQq/p+1g6y/sL2U31oi9BfpTjSsbyVniBUGHWXXVK3qxT67y5u0X/V8UUnW0BGTN+FpBKcuLweXWCyMKdQJ0=
-X-Received: by 2002:a1c:3b05:: with SMTP id i5mr548279wma.8.1573499984196;
- Mon, 11 Nov 2019 11:19:44 -0800 (PST)
+         :message-id:subject:to;
+        bh=QIW8r97PydM3zg+QulJcmULK8g50XEHJEstlE2D7FGI=;
+        b=ZEpVtdIsejJEW8oA2cDMpa/DDsy3AkJ7tYvWwPTdviesT6dTePdzdyIGHhLuvcdVUE
+         1SA6vBFqcSf7h9gtKA+nLODzCJ/mYBvcFbXNfrqWxuva6d86KcEQLbTGyQrQAPtUp89M
+         R5qNx/y4sHpLUWh/uJ9E2Qn9G879OJE59wrwafFtYy9wLtbZEwLdPiwrwfYH3M3br9dS
+         o8M7lMxPyjYjCDhAtrUnAF2c8e/hinb2cllTcS39w+VyYNBx0RpjDmbZoKzkYh9lZWEz
+         iuP+RQjot9TnYbncqVBqs/K4MV6WRshlY+wg5yX+HMXrQGCKSIEIsl/KTaVGbhLO7ntG
+         Lytg==
+X-Gm-Message-State: APjAAAXGRxPuZdT0nvTwISSrdwlpVkYuCw9rE7+09USvNBC7UBHNO6g6
+        On6cYAReiCtuK62a9XjAPjqUlh9sbF5FyF7TV/7AHIOQoO9Jaw==
+X-Google-Smtp-Source: APXvYqyWa8r8nfpxNNXReSiL5jEV62qnJZd9DlRiH/lpFaHw/ZaJUKaEMvaPsRKdWilM7QNjt8FmZz0XkRuE5gueNhg=
+X-Received: by 2002:a05:600c:2389:: with SMTP id m9mr550103wma.65.1573501062585;
+ Mon, 11 Nov 2019 11:37:42 -0800 (PST)
 MIME-Version: 1.0
-References: <trinity-9b5e3549-dd52-48e7-98f1-9f8bfd1a358a-1573440280042@3c-app-mailcom-bs04>
-In-Reply-To: <trinity-9b5e3549-dd52-48e7-98f1-9f8bfd1a358a-1573440280042@3c-app-mailcom-bs04>
+References: <CAJCQCtS1v7waFA=ERafSCSCHmPJVytdFZkJLqNTC3U3Gw3Y7tA@mail.gmail.com>
+ <d1874d17-700a-d78d-34be-eec0544c9de2@gmail.com> <CAJCQCtTpLTJdRjD7aNJEYXuMO+E65=GiYpKP3Wy5sgOWYs3Hsw@mail.gmail.com>
+ <20191104193454.GD3001@twin.jikos.cz>
+In-Reply-To: <20191104193454.GD3001@twin.jikos.cz>
 From:   Chris Murphy <lists@colorremedies.com>
-Date:   Mon, 11 Nov 2019 19:19:10 +0000
-Message-ID: <CAJCQCtToDnDCpTrERudijavs2Vho2-hgeipHEJG90=D_53DXvQ@mail.gmail.com>
-Subject: Re: dd does it again!
-To:     Paul Monsour <boulos@gmx.com>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Date:   Mon, 11 Nov 2019 19:37:08 +0000
+Message-ID: <CAJCQCtSiDQA4919YDTyQkW7jPkxMds1K32ym=HgO6KHQLzHw+w@mail.gmail.com>
+Subject: Re: Does GRUB btrfs support log tree?
+To:     David Sterba <dsterba@suse.cz>,
+        Chris Murphy <lists@colorremedies.com>,
+        Andrei Borzenkov <arvidjaar@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 11, 2019 at 2:44 AM Paul Monsour <boulos@gmx.com> wrote:
+On Mon, Nov 4, 2019 at 7:34 PM David Sterba <dsterba@suse.cz> wrote:
 >
-> parted -l produced:
+> On Sun, Oct 27, 2019 at 09:05:54PM +0100, Chris Murphy wrote:
+> > > > Since log tree writes means a
+> > > > full file system update hasn't happened, the old file system state
+> > > > hasn't been dereferenced, so even in an SSD + discard case, the system
+> > > > should still be bootable. And at that point Btrfs kernel code does log
+> > > > replay, and catches the system up, and the next update will boot the
+> > > > new state.
+> > > >
+> > > > Correct?
+> > > >
+> > >
+> > > Yes. If we speak about grub here, it actually tries very hard to ensure
+> > > writes has hit disk (it fsyncs files as it writes them and it flushes
+> > > raw devices). But I guess that fsync on btrfs just goes into log and
+> > > does not force transaction. Is it possible to force transaction on btrfs
+> > > from user space?
 >
-> Model: ATA ST3000DM008-2DM1 (scsi)
-> Disk /dev/sdc: 3001GB
-> Sector size (logical/physical): 512B/4096B
-> Partition Table: gpt
-> Disk Flags:
-> Number  Start   End     Size    File system  Name  Flags
->  1      1049kB  3001GB  3001GB  btrfs        Home
+> * sync/syncfs
+> * the ioctl BTRFS_IOC_SYNC (calls syncfs)
+> * ioctls BTRFS_IOC_START_SYNC + BTRFS_IOC_WAIT_SYNC
 >
-> Model: ATA ST3000DM008-2DM1 (scsi)
-> Disk /dev/sdd: 3001GB
-> Sector size (logical/physical): 512B/4096B
-> Partition Table: msdos
-> Disk Flags:
-> Number  Start  End     Size    Type     File system  Flags
->  2      119kB  1593kB  1475kB  primary               esp
+> > The only fsync I ever see Fedora's grub2-mkconfig do is for grubenv.
+> > The grub.cfg is not fsync'd. When I do a strace of grub2-mkconfig,
+> > it's so incredibly complicated. Using -ff -o options, I get over 1800
+> > separate PID files exported. From what I can tell, it creates a brand
+> > new file "grub.cfg.new" and writes to that. Then does a cat from
+> > "grub.cfg.new" into "grub.cfg" - maybe it's file system specific
+> > behavior, I'm not sure.
+> >
+> > I'm pretty sure "sync" will do what you want, it calls syncfs() and
+> > best as I can tell it does a full file system sync, doesn't use the
+> > log tree. I'd argue grub-mkconfig should write all of its files, and
+> > then sync that file system, rather than doing any fsync at all.
 >
-> The portion of the dd command that wrecked the files was "of=/dev/sdd1"
+> This would work in most cases. I'm not sure, but the update does not
+> seem to be atomic. Ie. all old kernels match the old grub.cfg, or there
+> are new kernels that match the new cfg.
+>
+> Even if there's not fsyncs and just the final sync, some other activity
+> in the filesystem can do the sync before between updates of kernels and
+> grub.cfg. Like this
+>
+> start:
+>
+> - kernel1
+> - grub.cfg (v1)
+>
+> update:
+>
+> - add kernel2
+> - remove kernel1
+> - <something calls sync>
+> - update grub.cfg (v2)
+> - grub calls sync
+>
+> If the crash happens after sync and before update, kernel1 won't be
+> reachable and kernel2 won't be in the grub.cfg.
 
-OK? According to the parted output, there is a single partition number
-2, therefore only /dev/sdd2 should exist and the dd command should
-have failed. So... something is missing in the information provided,
-or maybe a typo somewhere.
+Right. It's probably a bad practice to remove the fallback kernel,
+which would be variably defined depending on the distribution, unless
+the method of updating the kernel is atomic by design, proven by
+testing.
 
+In the single kernel case it could be done atomically with generic
+filenaming, i.e. vmlinuz and initramfs, no versioning in the filename,
+and a static bootloader configuration that's never updated, only ever
+looks for vmlinuz and initramfs. The update would write out
+vmlinuz.new and initramfs.new, and then sync. And then rename()
+vmlinuz.new vmlinuz, and initramfs.new initramfs. Since it's two
+files, it's not strictly atomic, likely more than one sector changes.
+But it might be good enough?
 
+I'm not really sure what the best practice is though. I asked about
+this in a UEFI, EFI System partitioning (and thus FAT) context and it
+seems like there really aren't any atomicity guarantees possible at
+all which is a bit troubling. About the only way to do it is like on
+Android with an A and B partition for the kernel and initramfs as
+blobs, rather than being stored on file systems, and then indicate A
+vs B by setting a partition attribute to indicate to the bootloader A
+vs B priority with the other being fallback.
 
->
-> btrfs restore produced just:
->
-> drwxr-xr-x 1 root root   0 Nov 10 12:43 ftp
-> drwxr-xr-x 1 root root 362 Nov 10 12:51 palsor
->
-> However, I was (perhaps optimistically) heartened by what "btrfs-find-root /dev/sdc1" produced:
->
-> # btrfs-find-root /dev/sdc1
-> warning, device 2 is missing
-> Superblock thinks the generation is 322292
-> Superblock thinks the level is 1
-> Found tree root at 649710272512 gen 322292 level 1
->
-> How do I use this information? Is there reason to be optimistic?
-
-No. The best possible case is data raid0, and metadata raid1, in which
-case the file system will mount with "degraded" option and you'll be
-able to recover any files that are completely on the intact device,
-and not subject to any striping. Otherwise they will be considered by
-Btrfs to be corrupt/missing, although I'm not sure if it results in
-EIO or something else. If metadata is also raid0, then the file system
-won't mount. You probably also won't have much success with btrfs
-restore either.
-
+Anyway, the lack of a generic (file system independent) way to handle
+this use case is actually a bit concerning.
 
 -- 
 Chris Murphy
