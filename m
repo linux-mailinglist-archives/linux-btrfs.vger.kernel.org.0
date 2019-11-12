@@ -2,24 +2,27 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D34D8F900A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 13:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 255BFF9013
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 13:59:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726497AbfKLM5t (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Nov 2019 07:57:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52892 "EHLO mx1.suse.de"
+        id S1726912AbfKLM7M (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Nov 2019 07:59:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53482 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725954AbfKLM5t (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Nov 2019 07:57:49 -0500
+        id S1725881AbfKLM7L (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Nov 2019 07:59:11 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 75952ABC4;
-        Tue, 12 Nov 2019 12:57:47 +0000 (UTC)
-Subject: Re: [PATCH 0/5] remove BUG_ON()s in btrfs_close_one_device()
-To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>
-Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+        by mx1.suse.de (Postfix) with ESMTP id 3D297ABC4;
+        Tue, 12 Nov 2019 12:59:09 +0000 (UTC)
+Subject: Re: [PATCH 5/5] btrfs: remove final BUG_ON() in close_fs_devices()
+To:     dsterba@suse.cz, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        David Sterba <dsterba@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20191112122416.30672-1-jthumshirn@suse.de>
- <aa11c13a-1714-308e-9d79-ba8db3182439@gmx.com>
+ <20191112122416.30672-6-jthumshirn@suse.de>
+ <f474ee05-5343-3a52-5e79-d4199828a8ee@gmx.com>
+ <20191112125524.GX3001@twin.jikos.cz>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -77,12 +80,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <8b8ccd76-63f5-2265-0b90-dc6b9264f36b@suse.de>
-Date:   Tue, 12 Nov 2019 13:57:47 +0100
+Message-ID: <4dcc0533-b06b-1cdd-a917-a25bfd6f1250@suse.de>
+Date:   Tue, 12 Nov 2019 13:59:09 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <aa11c13a-1714-308e-9d79-ba8db3182439@gmx.com>
+In-Reply-To: <20191112125524.GX3001@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -91,27 +94,43 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/11/2019 13:40, Qu Wenruo wrote:
-[...]
-> Good patchset, but for error injection we have more formal way to do that.
+On 12/11/2019 13:55, David Sterba wrote:
+> On Tue, Nov 12, 2019 at 08:41:50PM +0800, Qu Wenruo wrote:
+>>
+>>
+>> On 2019/11/12 下午8:24, Johannes Thumshirn wrote:
+>>> Now that the preparation work is done, remove the temporary BUG_ON() in
+>>> close_fs_devices() and return an error instead.
+>>>
+>>> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+>>> ---
+>>>  fs/btrfs/volumes.c | 7 ++++++-
+>>>  1 file changed, 6 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>>> index be1fd935edf7..844333b96075 100644
+>>> --- a/fs/btrfs/volumes.c
+>>> +++ b/fs/btrfs/volumes.c
+>>> @@ -1128,7 +1128,12 @@ static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
+>>>  	mutex_lock(&fs_devices->device_list_mutex);
+>>>  	list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_list) {
+>>>  		ret = btrfs_close_one_device(device);
+>>> -		BUG_ON(ret); /* -ENOMEM */
+>>> +		if (ret) {
+>>> +			mutex_unlock(&fs_devices->device_list_mutex);
+>>> +			return ret;
+>>> +		}
+>>> +		fs_devices->opened--;
+>>> +		fs_devices->seeding--;
+>>
+>> This seeding-- doesn't look safe to me.
 > 
-> ALLOW_ERROR_INJECTION() macro along with BPF to override function return
-> value.
-> 
-> There is even a more generic script to do that:
-> https://github.com/adam900710/btrfs-profiler/blob/master/inject.py
-> 
-> Such tool allow us to only inject error when certain call sites are met,
-> so it can be pretty handful.
+> Yeah, same here, it could be correct in the sense that it's 1 -> 0
+> exactly once, but otherwise its a bool, and handled in a special way.
 
-Yes I know, but my current test environment is not yet able to handle
-this. So I resorted to just throw in some hand crafted error injection here.
+Yeah it looks like an overlook on my side, I'll correct it in the next
+revision.
 
-If we find injecting errors in the alloc_device() code path is
-worthwhile I'll add an ALLOW_ERROR_INJECTION() there.
-
-Thanks,
-	Johannes
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
