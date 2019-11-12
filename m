@@ -2,131 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E9D77F85FE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 02:22:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E5EF870D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 04:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbfKLBW1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Nov 2019 20:22:27 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:57026 "EHLO
+        id S1727021AbfKLDOj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Nov 2019 22:14:39 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40096 "EHLO
         aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbfKLBW1 (ORCPT
+        with ESMTP id S1726924AbfKLDOi (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Nov 2019 20:22:27 -0500
+        Mon, 11 Nov 2019 22:14:38 -0500
 Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAC1JTn4192249;
-        Tue, 12 Nov 2019 01:20:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2019-08-05;
- bh=lt7kkzcvr2Zm1WF2FX3Ksi0MjcHQEjcfJJDJewsWcYI=;
- b=lfF3K+xvXBRLhyzLBdNEzLgWiDXdCo5FUt/15WHATTk/4qf5I+/lhhYXKuGLEkm9B1PN
- 3pZvv5XkvrJ5z0yII2YehD4yLk0tXPyazpdHM4+j61lIlFKLp8v7x+mbpFxpIr5viMkQ
- B2l/HId1bpd27on/Eo643KO3VuuW2JP2kaA9OuvvaXgBCkJYQIjwD/+wFAOgaSxbLzQy
- lVgd5ejB+QAgki41orPc8rKFs9FcFHmylS/jI44E1P95vRpGDFWmSTfPZIzBXn8S7ovZ
- vNTi8KShws8rLkwXpFU/AvWqJRkU6b7kbQOmZ1Q+6zIy0xospzde6AalavXAP0YjvDzE yA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2w5ndq1jmh-1
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAC39LSq078094;
+        Tue, 12 Nov 2019 03:13:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=UTbj9nCnbDQ9XFfUZf0QpPzkozHDVf7BjKA4nNAEIGU=;
+ b=LJCo3cfITk98gcxbL21cCKAZxH9b14BA/z3xYXVlBgoKPpkbVsBl2D0LJtGDWqJmbRJ4
+ P+Dvs1217q+w0rc4nQECT2BQNW1uF4X6gwcSu9cmYC0lKUUUEjZvFYHhzUT276wE9Uma
+ PdWpAc3niLapq8DYUrNu0X9z9OA66ThyFRMaFwDGP6qjon2IoRYztYxolmhHyPuKpkW/
+ 7UeKYvGWWkMcSGDu63DAytBT3RvOWU5dZfgweRyQRS/F26ZgDAkaAA6Esog6w189G6qP
+ KLwWQuuxq6Mhv95MqGA+Pd+2zmZAOB2J/klRh7/qWZqql+bC/T1anpgHIDQQyNrjr8kB ng== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2w5ndq20gn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Nov 2019 01:20:43 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAC1JTJM180457;
-        Tue, 12 Nov 2019 01:20:43 GMT
+        Tue, 12 Nov 2019 03:13:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAC39btj195425;
+        Tue, 12 Nov 2019 03:11:09 GMT
 Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2w67kmu553-1
+        by aserp3030.oracle.com with ESMTP id 2w6r8kfjkp-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 12 Nov 2019 01:20:42 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAC1KdN4027423;
-        Tue, 12 Nov 2019 01:20:39 GMT
-Received: from localhost (/67.169.218.210)
+        Tue, 12 Nov 2019 03:11:09 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAC3B6rX013345;
+        Tue, 12 Nov 2019 03:11:07 GMT
+Received: from [10.190.130.61] (/192.188.170.109)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 11 Nov 2019 17:20:39 -0800
-Date:   Mon, 11 Nov 2019 17:20:37 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     ira.weiny@intel.com
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
-        David Sterba <dsterba@suse.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] fs: Clean up mapping variable
-Message-ID: <20191112012037.GU6219@magnolia>
-References: <20191112003452.4756-1-ira.weiny@intel.com>
- <20191112003452.4756-2-ira.weiny@intel.com>
+        with ESMTP ; Mon, 11 Nov 2019 19:11:06 -0800
+Subject: Re: [PATCH] btrfs: mkfs: Make no-holes as default mkfs incompat
+ features
+To:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <20191111065004.24705-1-wqu@suse.com>
+ <20191111180256.GR3001@twin.jikos.cz>
+ <aa6d036e-bac9-1756-51b7-12167bd949ac@gmx.com>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <d0ea9e14-cd33-9da3-9a6c-d625c13b7e2b@oracle.com>
+Date:   Tue, 12 Nov 2019 11:10:57 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:52.0)
+ Gecko/20100101 Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191112003452.4756-2-ira.weiny@intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <aa6d036e-bac9-1756-51b7-12167bd949ac@gmx.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9438 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1910280000 definitions=main-1911120009
+ engine=8.0.1-1910280000 definitions=main-1911120025
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9438 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1910280000
- definitions=main-1911120009
+ definitions=main-1911120025
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 11, 2019 at 04:34:51PM -0800, ira.weiny@intel.com wrote:
-> From: Ira Weiny <ira.weiny@intel.com>
+On 12/11/19 9:01 AM, Qu Wenruo wrote:
 > 
-> The mapping variable is not directly used in these functions.  Just
-> remove the additional variable.
 > 
-> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
-> ---
->  fs/f2fs/data.c      | 3 +--
->  fs/iomap/swapfile.c | 3 +--
->  2 files changed, 2 insertions(+), 4 deletions(-)
+> On 2019/11/12 上午2:02, David Sterba wrote:
+>> On Mon, Nov 11, 2019 at 02:50:04PM +0800, Qu Wenruo wrote:
+>>> No-holes feature could save 53 bytes for each hole we have, and it
+>>> provides a pretty good workaround to prevent btrfs check from reporting
+>>> non-contiguous file extent holes for mixed direct/buffered IO.
+>>>
+>>> The latter feature is more helpful for developers for handle log-writes
+>>> based test cases.
+>>
+>> Thanks. The plan to make no-holes default has been there for some time
+>> already. What it needs is a full round of testing and validation before
+>> making it default. And as defaults change rarely, I'd like to add
+>> free-space-tree as mkfs default as well, there's enough demand for that
+>> and we want to start deprecating v1 in the future.
+>>
+>> I have in my near-top todo list to do that, with the following
+>> checklist:
+>>
+>> - run fstests with various features together + the new default
+>>    - release build
+>>    - debugging build with UBSAN, KASAN and additional useful debugging
+>>      tools
+> Already running with no_holes for several previous releases.
 > 
-> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-> index ba3bcf4c7889..3c7777bfae17 100644
-> --- a/fs/f2fs/data.c
-> +++ b/fs/f2fs/data.c
-> @@ -3146,8 +3146,7 @@ int f2fs_migrate_page(struct address_space *mapping,
->  /* Copied from generic_swapfile_activate() to check any holes */
->  static int check_swap_activate(struct file *swap_file, unsigned int max)
->  {
-> -	struct address_space *mapping = swap_file->f_mapping;
-> -	struct inode *inode = mapping->host;
-> +	struct inode *inode = swap_file->f_mapping->host;
->  	unsigned blocks_per_page;
->  	unsigned long page_no;
->  	unsigned blkbits;
-> diff --git a/fs/iomap/swapfile.c b/fs/iomap/swapfile.c
-> index a648dbf6991e..80571add0180 100644
-> --- a/fs/iomap/swapfile.c
-> +++ b/fs/iomap/swapfile.c
-> @@ -140,8 +140,7 @@ int iomap_swapfile_activate(struct swap_info_struct *sis,
->  		.sis = sis,
->  		.lowest_ppage = (sector_t)-1ULL,
->  	};
-> -	struct address_space *mapping = swap_file->f_mapping;
-> -	struct inode *inode = mapping->host;
-> +	struct inode *inode = swap_file->f_mapping->host;
-
-For the iomap part,
-
-Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
-
---D
-
->  	loff_t pos = 0;
->  	loff_t len = ALIGN_DOWN(i_size_read(inode), PAGE_SIZE);
->  	loff_t ret;
-> -- 
-> 2.20.1
+> Not to mention new btrfs specific log-writes test cases are all already
+> using this feature  to avoid btrfs check failure.
 > 
+> So I think this part should be OK.
+> 
+>> - run stress tests + the new feature
+> 
+> Any extra suggestions for the stress test tool?
+> 
+> Despite that, extra 24x7 host may be needed for this test.
+> 
+
+   To keep the ball rolling I can run stress tests part here,
+   yep need extra suggestions on the stress test tools.
+
+Thanks, Anand
+
+>> - check that the documentation covers the change
+>>    - mkfs.btrfs help string
+>>    - manual page of mkfs.btrfs: benefits, pros/cons, conversion to/from
+>>      the feature (if applicable), with example commands (if applicable)
+>>    - wiki documentation update
+> 
+> Forgot this part.
+> I'll add this info in next update.
+> 
+> Thanks,
+> Qu
+>> - verify that all commonly used tools work with it (image, check, tune)
+>>
+>> For free-space-tree specifically, there's
+>> https://github.com/kdave/drafts/blob/master/btrfs/progs-fst-default.txt
+>>
+>> I don't have objections to the patch, that's the easy part. The above is
+>> non-coding work and is namely making sure that the usecase and usability
+>> is good, or with known documented quirks.
+>>
+>> Making it default in progs release 5.4 is IMO doable, there are probably
+>> 2-3 weeks before the release, but this task needs one or more persons
+>> willing to do the above.
+>>
+> 
+
