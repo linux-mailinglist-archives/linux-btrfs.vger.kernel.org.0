@@ -2,65 +2,66 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62787F8FCB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 13:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17983F8FD0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 13:43:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725955AbfKLMmG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Nov 2019 07:42:06 -0500
-Received: from mout.gmx.net ([212.227.15.19]:32925 "EHLO mout.gmx.net"
+        id S1727065AbfKLMnO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Nov 2019 07:43:14 -0500
+Received: from mout.gmx.net ([212.227.15.15]:59357 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725919AbfKLMmF (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Nov 2019 07:42:05 -0500
+        id S1725919AbfKLMnO (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Nov 2019 07:43:14 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1573562440;
-        bh=ZwokcC3A+N0MXi0JdC3FLEKiOdRbdXFD4fcjt6OBq0g=;
+        s=badeba3b8450; t=1573562515;
+        bh=8gSq4Hf0Q2BntII+T3h2Rbbbcq2YVYB6HDMCTRS6CcM=;
         h=X-UI-Sender-Class:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=ceAN9nrg0pGjSqqamXqOb0EvVZzuhLu7yshAJaIxC1qJpoe8eppHWOjtprL30bqdq
-         E424cOliQGPr7LvKSikk6okEhTgawko4RO2fk1xnRHskbktxTvUTmpva3yhS2Ev9cB
-         SbOzrEP7s+o0CkA/3sGWFAMsxLFYRNticv1+KbAU=
+        b=kWXU6OKgEjDYVRO12AVWfPiVdMmV6nroIQJOFUPHa6CL67Vkgt1xi32aILb+0bRQ1
+         T7Rpxaxx79x+XuAz+nElRl99HL3AFIHC4dk46D6hRmEYF9LIrCdPLoa4Qh2LDHbOkR
+         CkUABkL7jUjk7oVKPEMhZihGHcqcuQXMXCQ7SVjM=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1M8QWA-1iYvKB1osy-004Tre; Tue, 12
- Nov 2019 13:40:40 +0100
-Subject: Re: [PATCH 0/5] remove BUG_ON()s in btrfs_close_one_device()
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mdeb5-1hvRn13P97-00ZiHg; Tue, 12
+ Nov 2019 13:41:55 +0100
+Subject: Re: [PATCH 5/5] btrfs: remove final BUG_ON() in close_fs_devices()
 To:     Johannes Thumshirn <jthumshirn@suse.de>,
         David Sterba <dsterba@suse.com>
 Cc:     Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20191112122416.30672-1-jthumshirn@suse.de>
+ <20191112122416.30672-6-jthumshirn@suse.de>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <aa11c13a-1714-308e-9d79-ba8db3182439@gmx.com>
-Date:   Tue, 12 Nov 2019 20:40:33 +0800
+Message-ID: <f474ee05-5343-3a52-5e79-d4199828a8ee@gmx.com>
+Date:   Tue, 12 Nov 2019 20:41:50 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20191112122416.30672-1-jthumshirn@suse.de>
+In-Reply-To: <20191112122416.30672-6-jthumshirn@suse.de>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IS9niETzmjIEKupgqwpIsr6wNYKiQkpE/Vm1YRx5OxYKM2sDmII
- wGnojG3yg7EhTKJxzj5gEXgCweKyCttAKRMoLFm+BARGd0Jm0OzSIQFBALuCGsrHKu8WGju
- CXd94tgACGB4zunix9YI8mpEgkZR13PrY8p6TE5X/TEk9S8BS0frwP5T8h98CP//8OEadhr
- AQDSOoGXpKBa3gyTEIY3w==
+X-Provags-ID: V03:K1:4ePeim3t0mO00F67LM4KrGrnJAloz+CN09CoFE2ix6sH8WLyL6P
+ LwCqUt+4TJLVi/5I8EYLO3623lqV0PNUm1L6fwulndHXWT5+ShO7RZFOswn+WsjbWykFfMZ
+ DwoHK9RwV8WGEsB5l8bwnPhbC9nkdzgH0DoHhLqbLwWWbVSX21yEJlhiR9tq41NgkMMH+l3
+ SFsRMWGHh7/jtpcm1+gWA==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:O6O4ycE1b5w=:oysZaC54URKh8ee+EddXnZ
- s1TGNFP27guyjIj3hChx/XO4aMISXrHmnDMv+xJrxRSDCZ4uEpIha8fvvmUTGDvPTQZII2CAD
- zdUL/+35wJWlVvccgo0PH7tghGIOS3ObpQ/c4bOHollcuquYKD0SwKuVfY9LELh1nv6KMsN8A
- eBoJiUMIEEYKXjLaklNEoMdq+KETJx8cWgst42spPSuzA/bKMHTgWbsaArA1w2yXN1DddU3nI
- 0nVLgyIEzh0bPTvDTRmPhcUwVG9lRtyU5jacHVUFNB3duoPK/+R84KmTnN3HAHDs0zZ6q2Tba
- EsEpwZExVQ/dTFlirDqbkbWhOFYkZPTMrZ7Y/IcwXborQ12gsdBPDvqjgss7Gj481X46J4knr
- ZIvwQbxUj4ZJnztsEqFDd8cgTEsTbK6agHNyShmK06qaBJzoIukMbUrr6BmB3Lt2OI0jnS/6D
- SgDcEorHaCRFwAK+KbxA0OD9/RTRkItgXCAmHrWB782vCTOW1GLLD4zZcTihLo2Wf1eDOv2Oz
- Tahd+2KlQHtoRYAAr2p8sl8P1Zln/NuBI0ZQBdgRKCDDXp5D5zpilNJZzduMEJrMMhlXI8S6p
- SFL7XKA/i2P0PLvd5GkifYl6T3xbvyQsIOykLFXZjkPYA75p5bg/+yGUc8nWzzl+6Q54V/HdC
- bAisTA6QYu/todS9k2NbB9m2e6e8vHTn5DuaDzb5z3V/DwJOCzL+A5mPtdIJUt0emzuKUkWeS
- wkfd9V6tMeOKnCOq9y01A2l2sRqfTSt30y5SQBouNGXeh76DKgpAqRvMZaOxsNAIth8B55n8e
- hkgnWPmXgFpBEA5ELblVkuQDA97phqfQAmyKv99Lb3kAoe77rNqVFP2eSOR/lM1waXuxbBV2q
- yF16I6uaDb041TJLYCX8aQ+N+8jU/tepE4Dk1y7Prfacs4ZIFHUGFoBh7bGuZldGAh+zrIjSV
- uOOLm6xbE01fPVoax455Ai3vF29/ARH1plNVZqISvNU1zwjFmT+8x/70red5JH/yQasApCozB
- zZHg6Nl6uPIB5Ls/mZy+wHL00X+yfJjrJFqHTmRY7dOyHjYkdX/Ri5g1gOHn7Oh2qRwIU09SO
- Kn/1FojpEWkVyTF5DR6jiAwgRWqN/cOd/1/GxV0MjUZXYd+eHgIyOSrGZnGYoG1YneUKB6sJ4
- wImyZrsG16arhEiMtRSQsfEEwyCO4Tj/xCRH7+na7hTIkrRISRQCprvyCOU4YvUlYeU3oGeLx
- 0gOBp4ZqNdNJh2ZrtipwCQUfKdJJeni1OvcrOvriYlM7UCu3KJ74p2f9ENrk=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:jAaZ99ruRKg=:JOygaF+KHsKxkPd0odFmqJ
+ bLCP135bhSJj4iL79QUGFlZtm3WUYMVXXRGVk32lTC84/OCHKxoKq53IlKw9UwVUlpE1PxKQk
+ PdXZU8TGbP41FwGm7Btz7O+axOO/26D/wV28Zyx1GjL33DoVMOgrC03vVYpU/GKD0IrqT5WhP
+ chcg7OAJz5L7cCED9FGoEW/s/PngNVrwZPAuxgH1GUmkCuZqu7YF0jiR1s1kOJIIElkbt//vF
+ rM/2IHyxJAHd0XnbImmQxnTrwlXOMBFfq8dLVqZ7dVyWLPrqzyWLgTojPL7zDWirxGHW3/WuR
+ K+H+oKkXxhw3mhxfj4bLAYzVSlbbFVpeTenDJWCBX85+EfNECNGF8zg/0C2XbfXqklCRHZzjE
+ x5jq3zfIJhjaCLJxlzCtB6abMGOdKkQT9AaKD8W//yWbTQM49ofyYXY50vODYv9wIq/ikawOl
+ drBrLSod+sP6KplHG14TYtRIe9Zmp2I4Lf+ZMtR92N+XG5qn2dbECC29sJ2by5bhIWZwEHYiy
+ MRoTWpIOwsEZsqyVyecpxqIYJkpCt4yo4+6f1Z9H9qHY267Io6Eg+OaflZ7mxhm4eSb3FyoSL
+ tJYaWOFKw8742WVQK0b/QGB3uml4kTy/XXEAxyhvvPZVZfHcRBaxYL57Wgu7Daha9ZxJv/zOw
+ 9U1lLzfP4pxGkSUBuTDFHcw6jN+zcm1W5WZbXyYRsTsUHXsNfNqasoBDFOQI7BkFcm1CDNlkd
+ MJmedGc6J/9GhB3A/6AOC3i7h+yl2q8oijbiEuV5aWPCzHu3mVA7K6Xm/9B10VG5DgL5QeMDp
+ RQt3scJjIYJ0IJIOJfS+Ysszmm9R//h02P6RXbMxgwzezymP7t/C45ZVSYk2dF8pE4px87Pxo
+ 8pf2IGPzogXDIYnEikoHipeaiIPOB8/zKVKoCG4H9jlerHwXVkPTNHnlmbX6i1fjiios/kHfb
+ bt52VItK/QHSEKKWPLdVigwlIqSkvx0rSKqhCD1lg6NdP5Hbr7SuA+8lGUi3Oadtf/cZ8hSd4
+ ddBkysWTkrYLGVW0Dg68970G5qNMw9EnRGP5izzrAMH4jIkFSU0VM+oTD9vRLXwv7cOuuvMel
+ GY3IJnZxADe6M3vIY0uy2SWjdU2cX2eRpX1WkkxM6QYPOwujeGdFXtI1zecBMChnIplhSjPZ3
+ o4K11yBugxrJOfH03aL3ELdZb4EWbor7zJUXvX8zt9382EzwsZc3UIsSP5YNTAKrPbDFTOdEF
+ G8yMkgyyxEP+Jj3yESwuks51e/9TmJEn8hmmby6p9fSdAbBsTHEimQHqxHyk=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -69,65 +70,42 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 On 2019/11/12 =E4=B8=8B=E5=8D=888:24, Johannes Thumshirn wrote:
-> This series attempts to remove the BUG_ON()s in btrfs_close_one_device()=
-.
-> Therefore some reorganization of btrfs_close_one_device() and
-> close_fs_devices() was needed.
+> Now that the preparation work is done, remove the temporary BUG_ON() in
+> close_fs_devices() and return an error instead.
 >
-> Forthermore a new BUG_ON() had to be temporarily introduced but is remov=
-ed
-> again in the last patch of theis series.
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> ---
+>  fs/btrfs/volumes.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 >
-> Although it is generally legal to return -ENOMEM on umount(2), the error
-> handling up until close_ctree() as neither close_ctree() nor btrfs_put_s=
-uper()
-> would be able to handle the error.
->
-> This series has passed fstests without any deviation from the baseline a=
-nd
-> also the new error handling was tested via error injection using this sn=
-ippet:
->
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index be1fd935edf7..844333b96075 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1128,7 +1128,12 @@ static int close_fs_devices(struct btrfs_fs_devic=
+es *fs_devices)
+>  	mutex_lock(&fs_devices->device_list_mutex);
+>  	list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_list) =
+{
+>  		ret =3D btrfs_close_one_device(device);
+> -		BUG_ON(ret); /* -ENOMEM */
+> +		if (ret) {
+> +			mutex_unlock(&fs_devices->device_list_mutex);
+> +			return ret;
+> +		}
+> +		fs_devices->opened--;
+> +		fs_devices->seeding--;
 
-Good patchset, but for error injection we have more formal way to do that.
+This seeding-- doesn't look safe to me.
 
-ALLOW_ERROR_INJECTION() macro along with BPF to override function return
-value.
+=46rom what I see, fs_devices->seeding seems to be bool value (0 or 1).
 
-There is even a more generic script to do that:
-https://github.com/adam900710/btrfs-profiler/blob/master/inject.py
-
-Such tool allow us to only inject error when certain call sites are met,
-so it can be pretty handful.
+Wouldn't this seeding-- underflow?
 
 Thanks,
 Qu
 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 7c55169c0613..c58802c9c39c 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1069,6 +1069,9 @@ static int btrfs_close_one_device(struct btrfs_dev=
-ice *device)
+>  	}
+>  	mutex_unlock(&fs_devices->device_list_mutex);
 >
->  	new_device =3D btrfs_alloc_device(NULL, &device->devid,
->  					device->uuid);
-> +	btrfs_free_device(new_device);
-> +	pr_err("%s() INJECTING -ENOMEM\n", __func__);
-> +	new_device =3D ERR_PTR(-ENOMEM);
->  	if (IS_ERR(new_device))
->  		return PTR_ERR(new_device);
->
->
-> Johannes Thumshirn (5):
->   btrfs: decrement number of open devices after closing the device not
->     before
->   btrfs: handle device allocation failure in btrfs_close_one_device()
->   btrfs: handle allocation failure in strdup
->   btrfs: handle error return of close_fs_devices()
->   btrfs: remove final BUG_ON() in close_fs_devices()
->
->  fs/btrfs/volumes.c | 68 ++++++++++++++++++++++++++++++++++++++---------=
--------
->  1 file changed, 48 insertions(+), 20 deletions(-)
 >
