@@ -2,193 +2,591 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1813F85D7
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 02:02:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D67FDF85F9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 02:22:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726927AbfKLBCu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 11 Nov 2019 20:02:50 -0500
-Received: from mout.gmx.net ([212.227.15.19]:42075 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726877AbfKLBCu (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 11 Nov 2019 20:02:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1573520483;
-        bh=C8O2s6Pg9DeIECtbMxhVUG4s7zeGxSs5e1ITqZ6XaLY=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=A+2pRRME4iEEv9RL+IKRTg+2+I5Yhsq3bR+D2v+ZXuzsFzoj/8pqdxoTajoP2xTmd
-         Ud4Csa7XacWL+GmSM6a7X3Asq07IfMR4uoKwiDtwx8BnNeDZuBZebU6Hpak9tY0grd
-         TapbW1PcpkIRU6wExjdVRr0ONTE1Zzqe1n6D+oyQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N9dsV-1hsMYZ1fM5-015YKb; Tue, 12
- Nov 2019 02:01:23 +0100
-Subject: Re: [PATCH] btrfs: mkfs: Make no-holes as default mkfs incompat
- features
-To:     dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191111065004.24705-1-wqu@suse.com>
- <20191111180256.GR3001@twin.jikos.cz>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <aa6d036e-bac9-1756-51b7-12167bd949ac@gmx.com>
-Date:   Tue, 12 Nov 2019 09:01:16 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726991AbfKLBWV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 11 Nov 2019 20:22:21 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:44044 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726906AbfKLBWU (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 11 Nov 2019 20:22:20 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAC1KThx174264;
+        Tue, 12 Nov 2019 01:20:29 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2019-08-05;
+ bh=jrGapPxkFZOm7NHEqYQyYFfOwGBCUEAJLi6ulXrYylQ=;
+ b=aYBHiZm3Fn/92fCzu9sJ2g/rkZvcLW3COWyeSL16EGLc0qF7XG6rFXQG1p27n2A5tP+M
+ 0aEYmM7GsinKfkNtyZNMteoPXG8bL5jftfPapoc1EC4Gcg6qG2/9gM9x+lCErm73QLJ9
+ d0p7HsuKmyruf52rPcEteW9nRQEPVepv3omr3qQgQvr4FRptzoRqgjSy7gjObSYElGbb
+ G3bguz6temJQ5xyoFJRI9na6xa9QhAFDOa4ygyrfagp796b64nivtDch1e8I2DAoACq0
+ eZY6cGXQ/8KW6pGj3Ljoo+7sZs77f6eoh/GTcHcvbCjEwgNGcKjLF9WQC1zYY4r8jMTj /g== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2w5p3qhfs8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Nov 2019 01:20:26 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAC1JGdD172345;
+        Tue, 12 Nov 2019 01:20:26 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2w6r8kbu1c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 12 Nov 2019 01:20:25 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAC1KJFX030412;
+        Tue, 12 Nov 2019 01:20:20 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 11 Nov 2019 17:20:19 -0800
+Date:   Mon, 11 Nov 2019 17:20:17 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     ira.weiny@intel.com
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 2/2] fs: Move swap_[de]activate to file_operations
+Message-ID: <20191112012017.GT6219@magnolia>
+References: <20191112003452.4756-1-ira.weiny@intel.com>
+ <20191112003452.4756-3-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20191111180256.GR3001@twin.jikos.cz>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="zZYimA061lfdEJZZIUfuA8hjGyhhKhTsI"
-X-Provags-ID: V03:K1:n6bSDFV8UbcIA9xb6mzpWdhgkLsa7nEILSM+RRfK1EvmAQqd6d5
- snk+UNQC+ghhT2XgJgjkUp9UbnpUk3m21f3wvTqQN0cdAC9h7K4EBJwld2l4IJOpBol5bLM
- Kw0lY4K4oVmCd9uCesXMJ2NpphZMhpD3+C5u4QfxSKIIkTXKiQesehkfxg8ODHAr84Jv1z9
- CCoLXlnwH45J0icT0601Q==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:LDz/PtYAx2w=:hcj0LxdR8aRpsSh4b/UEEO
- M0CzgojWUbzy3Ocyu1PTFRWhRtudX/KBWcPilzryoN/TPy2BLavnlzJjMgJRyqNKhxnFRNT74
- 15h+WW3YKnPg3XYsW/cfdg5FLb09rsKxx6sie7YUPSsEa40W1wRVE0aEeCUQZke3HvQMwTtOv
- nUA8mTDbyzFTbofeb4mr3o0eo8dlF6BQX4uYVGi2J97Ue6DT7CchLaWy56CogyobIW3jfFfqZ
- rglmgrA+jA2iUlWLj0QIGcW68GmodJs2KiglZh0o8gBgsZp6UrOknqT0CuqMZkcQ8V5Ehl4D7
- mEfQDHuVrS6UDsp6CuEATHzjo0jFcMh8lVDGeLYA7A5irBVX/9rpOsSogbKRf0ao4OEoiDClr
- g9BmDrDN0dVe3eysBfix1vZklpsK+MrTaRsdfD+kLRgwMga6vUlL/kQ+QdnWzP6ZcZVVw2uNQ
- zfFISq/eMwwfX17NK4f74KwlnM08+DT7w1mWKHGB0Dy3Of77UjDeQI7t5Lcjq/S9LM3Bjo777
- wh3IvOngpvP3A3y8Wn1fHmNx2m/cDtQLsxFqx6fQcDu/U6DnTnQhSJVQ6wmGUGOdeykfsosrF
- A5gWK/1oATMX6C7Gk88AjpX4TAk+igbD0OCITqlsbFE9otwSEc0oqoDGYXGmCWzlqbiZUD0R1
- FDwzo/AnK2LZjGTTxI+tStnzontqIZUhq8OC891+fvqPm1ugPmo8Qfig3tOAQIEuDGVwi0DlN
- 8NI/vedDU0k1XoBQKPMNzS5dQRTQFeYxEMRQF3LBAeMgNfcTAv7MbytChGy/gEaLva9N1hjfu
- ODxSMuxqMsKJ3XFs1oEG8tnNJ9ENj9Hfcb8Ww3isABep6qOUO6Tku0BSaqiJQncR1DCFtvflr
- fjn+6q+X8XtA4HGmu+C+heYp39erVX9FgPmwDQwjF6eM7dsRE7ilLgsiNwX2oMUMcHvCSum7P
- NaQZSeW3I3paVKG574SKCAoOfYonvgJ4ltkcrzMT8xRKb6ApVW1hZq2rnNmeFaG1Dhsx7RhnS
- 2UPcRzicM6q8DXZa5HYhAV/BQsc6QsmlGtmRUzhP8CAhbRm9nW7e7spENxEEAh018cUoOaY9x
- O6Hct+71QBk5Vy+LRPThCISRXMEGQ158x8kWBPPpVsiZZfYo3n7Yb0ZqMQausSCWB/aDScFHH
- ctHb0mem3JBNeqGm5o/taQZmKvMfkin5zq2CnhQnXNe0IlHcfreb820shm5w/hXXyKYDe2WZE
- NQh/Z/CrS7YqzQWM7Iu5S7vDrlYnwddKoLvjs/3fTFgu3JUPOjesq0n6dEFY=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191112003452.4756-3-ira.weiny@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9438 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1910280000 definitions=main-1911120009
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9438 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1910280000
+ definitions=main-1911120009
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---zZYimA061lfdEJZZIUfuA8hjGyhhKhTsI
-Content-Type: multipart/mixed; boundary="WRJLP6Gvvo6lfZJRhwRlgGukrcTQBy3bg"
+On Mon, Nov 11, 2019 at 04:34:52PM -0800, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> swap_activate() and swap_deactivate() have nothing to do with
+> address spaces.  We want to eventually make the address space operations
+> dynamic to switch inode flags on the fly.  So to simplify this code as
+> well as properly track these operations we move these functions to the
+> file_operations vector.
+> 
+> This has been tested with XFS but not NFS, f2fs, or btrfs.
+> 
+> Also note f2fs and xfs have simple moves of their functions to
+> facilitate compilation.  No functional changes are contained within
+> those functions.
+> 
+> Cc: Dave Chinner <david@fromorbit.com>
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+>  fs/btrfs/inode.c   |   4 +-
+>  fs/f2fs/data.c     | 122 ---------------------------------------------
+>  fs/f2fs/file.c     | 122 +++++++++++++++++++++++++++++++++++++++++++++
+>  fs/nfs/file.c      |   4 +-
+>  fs/xfs/xfs_aops.c  |  13 -----
+>  fs/xfs/xfs_file.c  |  12 +++++
+>  include/linux/fs.h |  10 ++--
+>  mm/swapfile.c      |  12 ++---
+>  8 files changed, 148 insertions(+), 151 deletions(-)
+> 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 6d159df7b536..4521f7dc0e8c 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -11002,6 +11002,8 @@ static const struct file_operations btrfs_dir_file_operations = {
+>  #endif
+>  	.release        = btrfs_release_file,
+>  	.fsync		= btrfs_sync_file,
+> +	.swap_activate	= btrfs_swap_activate,
+> +	.swap_deactivate = btrfs_swap_deactivate,
+>  };
+>  
+>  static const struct extent_io_ops btrfs_extent_io_ops = {
+> @@ -11032,8 +11034,6 @@ static const struct address_space_operations btrfs_aops = {
+>  	.releasepage	= btrfs_releasepage,
+>  	.set_page_dirty	= btrfs_set_page_dirty,
+>  	.error_remove_page = generic_error_remove_page,
+> -	.swap_activate	= btrfs_swap_activate,
+> -	.swap_deactivate = btrfs_swap_deactivate,
+>  };
+>  
+>  static const struct inode_operations btrfs_file_inode_operations = {
+> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+> index 3c7777bfae17..04b2a8f44fa9 100644
+> --- a/fs/f2fs/data.c
+> +++ b/fs/f2fs/data.c
+> @@ -14,7 +14,6 @@
+>  #include <linux/pagevec.h>
+>  #include <linux/blkdev.h>
+>  #include <linux/bio.h>
+> -#include <linux/swap.h>
+>  #include <linux/prefetch.h>
+>  #include <linux/uio.h>
+>  #include <linux/cleancache.h>
+> @@ -3142,125 +3141,6 @@ int f2fs_migrate_page(struct address_space *mapping,
+>  }
+>  #endif
+>  
+> -#ifdef CONFIG_SWAP
+> -/* Copied from generic_swapfile_activate() to check any holes */
+> -static int check_swap_activate(struct file *swap_file, unsigned int max)
+> -{
+> -	struct inode *inode = swap_file->f_mapping->host;
+> -	unsigned blocks_per_page;
+> -	unsigned long page_no;
+> -	unsigned blkbits;
+> -	sector_t probe_block;
+> -	sector_t last_block;
+> -	sector_t lowest_block = -1;
+> -	sector_t highest_block = 0;
+> -
+> -	blkbits = inode->i_blkbits;
+> -	blocks_per_page = PAGE_SIZE >> blkbits;
+> -
+> -	/*
+> -	 * Map all the blocks into the extent list.  This code doesn't try
+> -	 * to be very smart.
+> -	 */
+> -	probe_block = 0;
+> -	page_no = 0;
+> -	last_block = i_size_read(inode) >> blkbits;
+> -	while ((probe_block + blocks_per_page) <= last_block && page_no < max) {
+> -		unsigned block_in_page;
+> -		sector_t first_block;
+> -
+> -		cond_resched();
+> -
+> -		first_block = bmap(inode, probe_block);
+> -		if (first_block == 0)
+> -			goto bad_bmap;
+> -
+> -		/*
+> -		 * It must be PAGE_SIZE aligned on-disk
+> -		 */
+> -		if (first_block & (blocks_per_page - 1)) {
+> -			probe_block++;
+> -			goto reprobe;
+> -		}
+> -
+> -		for (block_in_page = 1; block_in_page < blocks_per_page;
+> -					block_in_page++) {
+> -			sector_t block;
+> -
+> -			block = bmap(inode, probe_block + block_in_page);
+> -			if (block == 0)
+> -				goto bad_bmap;
+> -			if (block != first_block + block_in_page) {
+> -				/* Discontiguity */
+> -				probe_block++;
+> -				goto reprobe;
+> -			}
+> -		}
+> -
+> -		first_block >>= (PAGE_SHIFT - blkbits);
+> -		if (page_no) {	/* exclude the header page */
+> -			if (first_block < lowest_block)
+> -				lowest_block = first_block;
+> -			if (first_block > highest_block)
+> -				highest_block = first_block;
+> -		}
+> -
+> -		page_no++;
+> -		probe_block += blocks_per_page;
+> -reprobe:
+> -		continue;
+> -	}
+> -	return 0;
+> -
+> -bad_bmap:
+> -	pr_err("swapon: swapfile has holes\n");
+> -	return -EINVAL;
+> -}
+> -
+> -static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
+> -				sector_t *span)
+> -{
+> -	struct inode *inode = file_inode(file);
+> -	int ret;
+> -
+> -	if (!S_ISREG(inode->i_mode))
+> -		return -EINVAL;
+> -
+> -	if (f2fs_readonly(F2FS_I_SB(inode)->sb))
+> -		return -EROFS;
+> -
+> -	ret = f2fs_convert_inline_inode(inode);
+> -	if (ret)
+> -		return ret;
+> -
+> -	ret = check_swap_activate(file, sis->max);
+> -	if (ret)
+> -		return ret;
+> -
+> -	set_inode_flag(inode, FI_PIN_FILE);
+> -	f2fs_precache_extents(inode);
+> -	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+> -	return 0;
+> -}
+> -
+> -static void f2fs_swap_deactivate(struct file *file)
+> -{
+> -	struct inode *inode = file_inode(file);
+> -
+> -	clear_inode_flag(inode, FI_PIN_FILE);
+> -}
+> -#else
+> -static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
+> -				sector_t *span)
+> -{
+> -	return -EOPNOTSUPP;
+> -}
+> -
+> -static void f2fs_swap_deactivate(struct file *file)
+> -{
+> -}
+> -#endif
+> -
+>  const struct address_space_operations f2fs_dblock_aops = {
+>  	.readpage	= f2fs_read_data_page,
+>  	.readpages	= f2fs_read_data_pages,
+> @@ -3273,8 +3153,6 @@ const struct address_space_operations f2fs_dblock_aops = {
+>  	.releasepage	= f2fs_release_page,
+>  	.direct_IO	= f2fs_direct_IO,
+>  	.bmap		= f2fs_bmap,
+> -	.swap_activate  = f2fs_swap_activate,
+> -	.swap_deactivate = f2fs_swap_deactivate,
+>  #ifdef CONFIG_MIGRATION
+>  	.migratepage    = f2fs_migrate_page,
+>  #endif
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index 483ad22a0946..de7f9cf36689 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -21,6 +21,7 @@
+>  #include <linux/uuid.h>
+>  #include <linux/file.h>
+>  #include <linux/nls.h>
+> +#include <linux/swap.h>
+>  
+>  #include "f2fs.h"
+>  #include "node.h"
+> @@ -3466,6 +3467,125 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>  }
+>  #endif
+>  
+> +#ifdef CONFIG_SWAP
+> +/* Copied from generic_swapfile_activate() to check any holes */
+> +static int check_swap_activate(struct file *swap_file, unsigned int max)
+> +{
+> +	struct inode *inode = swap_file->f_mapping->host;
+> +	unsigned blocks_per_page;
+> +	unsigned long page_no;
+> +	unsigned blkbits;
+> +	sector_t probe_block;
+> +	sector_t last_block;
+> +	sector_t lowest_block = -1;
+> +	sector_t highest_block = 0;
+> +
+> +	blkbits = inode->i_blkbits;
+> +	blocks_per_page = PAGE_SIZE >> blkbits;
+> +
+> +	/*
+> +	 * Map all the blocks into the extent list.  This code doesn't try
+> +	 * to be very smart.
+> +	 */
+> +	probe_block = 0;
+> +	page_no = 0;
+> +	last_block = i_size_read(inode) >> blkbits;
+> +	while ((probe_block + blocks_per_page) <= last_block && page_no < max) {
+> +		unsigned block_in_page;
+> +		sector_t first_block;
+> +
+> +		cond_resched();
+> +
+> +		first_block = bmap(inode, probe_block);
+> +		if (first_block == 0)
+> +			goto bad_bmap;
+> +
+> +		/*
+> +		 * It must be PAGE_SIZE aligned on-disk
+> +		 */
+> +		if (first_block & (blocks_per_page - 1)) {
+> +			probe_block++;
+> +			goto reprobe;
+> +		}
+> +
+> +		for (block_in_page = 1; block_in_page < blocks_per_page;
+> +					block_in_page++) {
+> +			sector_t block;
+> +
+> +			block = bmap(inode, probe_block + block_in_page);
+> +			if (block == 0)
+> +				goto bad_bmap;
+> +			if (block != first_block + block_in_page) {
+> +				/* Discontiguity */
+> +				probe_block++;
+> +				goto reprobe;
+> +			}
+> +		}
+> +
+> +		first_block >>= (PAGE_SHIFT - blkbits);
+> +		if (page_no) {	/* exclude the header page */
+> +			if (first_block < lowest_block)
+> +				lowest_block = first_block;
+> +			if (first_block > highest_block)
+> +				highest_block = first_block;
+> +		}
+> +
+> +		page_no++;
+> +		probe_block += blocks_per_page;
+> +reprobe:
+> +		continue;
+> +	}
+> +	return 0;
+> +
+> +bad_bmap:
+> +	pr_err("swapon: swapfile has holes\n");
+> +	return -EINVAL;
+> +}
+> +
+> +static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
+> +				sector_t *span)
+> +{
+> +	struct inode *inode = file_inode(file);
+> +	int ret;
+> +
+> +	if (!S_ISREG(inode->i_mode))
+> +		return -EINVAL;
+> +
+> +	if (f2fs_readonly(F2FS_I_SB(inode)->sb))
+> +		return -EROFS;
+> +
+> +	ret = f2fs_convert_inline_inode(inode);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = check_swap_activate(file, sis->max);
+> +	if (ret)
+> +		return ret;
+> +
+> +	set_inode_flag(inode, FI_PIN_FILE);
+> +	f2fs_precache_extents(inode);
+> +	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
+> +	return 0;
+> +}
+> +
+> +static void f2fs_swap_deactivate(struct file *file)
+> +{
+> +	struct inode *inode = file_inode(file);
+> +
+> +	clear_inode_flag(inode, FI_PIN_FILE);
+> +}
+> +#else
+> +static int f2fs_swap_activate(struct swap_info_struct *sis, struct file *file,
+> +				sector_t *span)
+> +{
+> +	return -EOPNOTSUPP;
+> +}
+> +
+> +static void f2fs_swap_deactivate(struct file *file)
+> +{
+> +}
+> +#endif
+> +
+>  const struct file_operations f2fs_file_operations = {
+>  	.llseek		= f2fs_llseek,
+>  	.read_iter	= generic_file_read_iter,
+> @@ -3482,4 +3602,6 @@ const struct file_operations f2fs_file_operations = {
+>  #endif
+>  	.splice_read	= generic_file_splice_read,
+>  	.splice_write	= iter_file_splice_write,
+> +	.swap_activate  = f2fs_swap_activate,
+> +	.swap_deactivate = f2fs_swap_deactivate,
+>  };
+> diff --git a/fs/nfs/file.c b/fs/nfs/file.c
+> index 95dc90570786..1f82f92185d6 100644
+> --- a/fs/nfs/file.c
+> +++ b/fs/nfs/file.c
+> @@ -520,8 +520,6 @@ const struct address_space_operations nfs_file_aops = {
+>  	.launder_page = nfs_launder_page,
+>  	.is_dirty_writeback = nfs_check_dirty_writeback,
+>  	.error_remove_page = generic_error_remove_page,
+> -	.swap_activate = nfs_swap_activate,
+> -	.swap_deactivate = nfs_swap_deactivate,
+>  };
+>  
+>  /*
+> @@ -847,5 +845,7 @@ const struct file_operations nfs_file_operations = {
+>  	.splice_write	= iter_file_splice_write,
+>  	.check_flags	= nfs_check_flags,
+>  	.setlease	= simple_nosetlease,
+> +	.swap_activate = nfs_swap_activate,
+> +	.swap_deactivate = nfs_swap_deactivate,
+>  };
+>  EXPORT_SYMBOL_GPL(nfs_file_operations);
+> diff --git a/fs/xfs/xfs_aops.c b/fs/xfs/xfs_aops.c
+> index 3a688eb5c5ae..99f578a9ed90 100644
+> --- a/fs/xfs/xfs_aops.c
+> +++ b/fs/xfs/xfs_aops.c
+> @@ -631,17 +631,6 @@ xfs_vm_readpages(
+>  	return iomap_readpages(mapping, pages, nr_pages, &xfs_read_iomap_ops);
+>  }
+>  
+> -static int
+> -xfs_iomap_swapfile_activate(
+> -	struct swap_info_struct		*sis,
+> -	struct file			*swap_file,
+> -	sector_t			*span)
+> -{
+> -	sis->bdev = xfs_inode_buftarg(XFS_I(file_inode(swap_file)))->bt_bdev;
+> -	return iomap_swapfile_activate(sis, swap_file, span,
+> -			&xfs_read_iomap_ops);
+> -}
+> -
+>  const struct address_space_operations xfs_address_space_operations = {
+>  	.readpage		= xfs_vm_readpage,
+>  	.readpages		= xfs_vm_readpages,
+> @@ -655,7 +644,6 @@ const struct address_space_operations xfs_address_space_operations = {
+>  	.migratepage		= iomap_migrate_page,
+>  	.is_partially_uptodate  = iomap_is_partially_uptodate,
+>  	.error_remove_page	= generic_error_remove_page,
+> -	.swap_activate		= xfs_iomap_swapfile_activate,
+>  };
+>  
+>  const struct address_space_operations xfs_dax_aops = {
+> @@ -663,5 +651,4 @@ const struct address_space_operations xfs_dax_aops = {
+>  	.direct_IO		= noop_direct_IO,
+>  	.set_page_dirty		= noop_set_page_dirty,
+>  	.invalidatepage		= noop_invalidatepage,
+> -	.swap_activate		= xfs_iomap_swapfile_activate,
+>  };
+> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
+> index 865543e41fb4..3d2e89ac72ed 100644
+> --- a/fs/xfs/xfs_file.c
+> +++ b/fs/xfs/xfs_file.c
+> @@ -1294,6 +1294,17 @@ xfs_file_mmap(
+>  	return 0;
+>  }
+>  
+> +static int
+> +xfs_iomap_swapfile_activate(
 
---WRJLP6Gvvo6lfZJRhwRlgGukrcTQBy3bg
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Might as well rename this xfs_file_swap_activate().
 
+Looks reasonable enough to me otherwise.
 
+--D
 
-On 2019/11/12 =E4=B8=8A=E5=8D=882:02, David Sterba wrote:
-> On Mon, Nov 11, 2019 at 02:50:04PM +0800, Qu Wenruo wrote:
->> No-holes feature could save 53 bytes for each hole we have, and it
->> provides a pretty good workaround to prevent btrfs check from reportin=
-g
->> non-contiguous file extent holes for mixed direct/buffered IO.
->>
->> The latter feature is more helpful for developers for handle log-write=
-s
->> based test cases.
->=20
-> Thanks. The plan to make no-holes default has been there for some time
-> already. What it needs is a full round of testing and validation before=
-
-> making it default. And as defaults change rarely, I'd like to add
-> free-space-tree as mkfs default as well, there's enough demand for that=
-
-> and we want to start deprecating v1 in the future.
->=20
-> I have in my near-top todo list to do that, with the following
-> checklist:
->=20
-> - run fstests with various features together + the new default
->   - release build
->   - debugging build with UBSAN, KASAN and additional useful debugging
->     tools
-Already running with no_holes for several previous releases.
-
-Not to mention new btrfs specific log-writes test cases are all already
-using this feature  to avoid btrfs check failure.
-
-So I think this part should be OK.
-
-> - run stress tests + the new feature
-
-Any extra suggestions for the stress test tool?
-
-Despite that, extra 24x7 host may be needed for this test.
-
-> - check that the documentation covers the change
->   - mkfs.btrfs help string
->   - manual page of mkfs.btrfs: benefits, pros/cons, conversion to/from
->     the feature (if applicable), with example commands (if applicable)
->   - wiki documentation update
-
-Forgot this part.
-I'll add this info in next update.
-
-Thanks,
-Qu
-> - verify that all commonly used tools work with it (image, check, tune)=
-
->=20
-> For free-space-tree specifically, there's
-> https://github.com/kdave/drafts/blob/master/btrfs/progs-fst-default.txt=
-
->=20
-> I don't have objections to the patch, that's the easy part. The above i=
-s
-> non-coding work and is namely making sure that the usecase and usabilit=
-y
-> is good, or with known documented quirks.
->=20
-> Making it default in progs release 5.4 is IMO doable, there are probabl=
-y
-> 2-3 weeks before the release, but this task needs one or more persons
-> willing to do the above.
->=20
-
-
---WRJLP6Gvvo6lfZJRhwRlgGukrcTQBy3bg--
-
---zZYimA061lfdEJZZIUfuA8hjGyhhKhTsI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3KBFwACgkQwj2R86El
-/qjTBgf+MIU62lyh/bUPRb782oPBaY9Ml2EGRpFdBt6Z6D99/K4xml0Rr6I9hCMS
-qekWjXSStW/sRef4H3O/wwQmW0xSgLfAA05HyXbi9vpdw9hbP8N8BPrT/8eMsZcW
-ldUa3sd1IXKMCSrPeoF8b5IQAvXO9MclYinGQP979o73L25UBPtK1Yjg3iGjbxuB
-JJQxlGvv/qrZhvlw5G9R7zcsDIO+f8WYntA1T3CxXQ8YC5TXbPqe8CHG5iRbC+ka
-ge83PITitw/v+nt2DdEnguQLuBJFGIxhxnD0JaYzczL4D1GM0JBQVHMytfylkjvg
-0aKRPRqKyavnYBLo3gTof2CgSjTy9w==
-=xMMu
------END PGP SIGNATURE-----
-
---zZYimA061lfdEJZZIUfuA8hjGyhhKhTsI--
+> +	struct swap_info_struct		*sis,
+> +	struct file			*swap_file,
+> +	sector_t			*span)
+> +{
+> +	sis->bdev = xfs_inode_buftarg(XFS_I(file_inode(swap_file)))->bt_bdev;
+> +	return iomap_swapfile_activate(sis, swap_file, span,
+> +			&xfs_read_iomap_ops);
+> +}
+> +
+>  const struct file_operations xfs_file_operations = {
+>  	.llseek		= xfs_file_llseek,
+>  	.read_iter	= xfs_file_read_iter,
+> @@ -1314,6 +1325,7 @@ const struct file_operations xfs_file_operations = {
+>  	.fallocate	= xfs_file_fallocate,
+>  	.fadvise	= xfs_file_fadvise,
+>  	.remap_file_range = xfs_file_remap_range,
+> +	.swap_activate	= xfs_iomap_swapfile_activate,
+>  };
+>  
+>  const struct file_operations xfs_dir_file_operations = {
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 83e011e0df7f..1175815da3df 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -402,11 +402,6 @@ struct address_space_operations {
+>  					unsigned long);
+>  	void (*is_dirty_writeback) (struct page *, bool *, bool *);
+>  	int (*error_remove_page)(struct address_space *, struct page *);
+> -
+> -	/* swapfile support */
+> -	int (*swap_activate)(struct swap_info_struct *sis, struct file *file,
+> -				sector_t *span);
+> -	void (*swap_deactivate)(struct file *file);
+>  };
+>  
+>  extern const struct address_space_operations empty_aops;
+> @@ -1858,6 +1853,11 @@ struct file_operations {
+>  				   struct file *file_out, loff_t pos_out,
+>  				   loff_t len, unsigned int remap_flags);
+>  	int (*fadvise)(struct file *, loff_t, loff_t, int);
+> +
+> +	/* swapfile support */
+> +	int (*swap_activate)(struct swap_info_struct *sis, struct file *file,
+> +				sector_t *span);
+> +	void (*swap_deactivate)(struct file *file);
+>  } __randomize_layout;
+>  
+>  struct inode_operations {
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index bb3261d45b6a..d2de8d668708 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -2293,11 +2293,10 @@ static void destroy_swap_extents(struct swap_info_struct *sis)
+>  
+>  	if (sis->flags & SWP_ACTIVATED) {
+>  		struct file *swap_file = sis->swap_file;
+> -		struct address_space *mapping = swap_file->f_mapping;
+>  
+>  		sis->flags &= ~SWP_ACTIVATED;
+> -		if (mapping->a_ops->swap_deactivate)
+> -			mapping->a_ops->swap_deactivate(swap_file);
+> +		if (swap_file->f_op->swap_deactivate)
+> +			swap_file->f_op->swap_deactivate(swap_file);
+>  	}
+>  }
+>  
+> @@ -2381,8 +2380,7 @@ EXPORT_SYMBOL_GPL(add_swap_extent);
+>  static int setup_swap_extents(struct swap_info_struct *sis, sector_t *span)
+>  {
+>  	struct file *swap_file = sis->swap_file;
+> -	struct address_space *mapping = swap_file->f_mapping;
+> -	struct inode *inode = mapping->host;
+> +	struct inode *inode = swap_file->f_mapping->host;
+>  	int ret;
+>  
+>  	if (S_ISBLK(inode->i_mode)) {
+> @@ -2391,8 +2389,8 @@ static int setup_swap_extents(struct swap_info_struct *sis, sector_t *span)
+>  		return ret;
+>  	}
+>  
+> -	if (mapping->a_ops->swap_activate) {
+> -		ret = mapping->a_ops->swap_activate(sis, swap_file, span);
+> +	if (swap_file->f_op->swap_activate) {
+> +		ret = swap_file->f_op->swap_activate(sis, swap_file, span);
+>  		if (ret >= 0)
+>  			sis->flags |= SWP_ACTIVATED;
+>  		if (!ret) {
+> -- 
+> 2.20.1
+> 
