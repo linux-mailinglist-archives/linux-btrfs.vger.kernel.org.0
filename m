@@ -2,74 +2,36 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72D49F9B33
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 21:48:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE824F9C42
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 22:27:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbfKLUst (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Nov 2019 15:48:49 -0500
-Received: from server.roznica.com.ua ([80.90.224.56]:39308 "EHLO
-        server.roznica.com.ua" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726718AbfKLUst (ORCPT
+        id S1727161AbfKLV1E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Nov 2019 16:27:04 -0500
+Received: from briare1.fullpliant.org ([78.227.24.35]:34002 "HELO
+        briare1.fullpliant.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1727151AbfKLV1D (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Nov 2019 15:48:49 -0500
-Received: from work.roznica.com.ua (h244.onetel95.onetelecom.od.ua [91.196.95.244])
-        by server.roznica.com.ua (Postfix) with ESMTP id 852BA7271CC
-        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2019 22:48:47 +0200 (EET)
-Subject: Re: btrfs based backup?
-To:     linux-btrfs@vger.kernel.org
-References: <20191112183425.GA1257@tik.uni-stuttgart.de>
-From:   Michael <mclaud@roznica.com.ua>
-Message-ID: <ccd91228-b51f-f0ac-5deb-72c261679dd7@roznica.com.ua>
-Date:   Tue, 12 Nov 2019 22:48:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
-MIME-Version: 1.0
-In-Reply-To: <20191112183425.GA1257@tik.uni-stuttgart.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        Tue, 12 Nov 2019 16:27:03 -0500
+From:   Hubert Tonneau <hubert.tonneau@fullpliant.org>
+To:     Goffredo Baroncelli <kreijack@libero.it>
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: Avoiding BRTFS RAID5 write hole
+Date:   Tue, 12 Nov 2019 22:27:04 GMT
+Message-ID: <0JG92D511@briare1.fullpliant.org>
+X-Mailer: Pliant 114
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-12.11.2019 20:34, Ulli Horlacher пишет:
-> I need a new backup system for some servers. Destination is a RAID, not
-> tapes.
+Goffredo Baroncelli wrote:
 >
-> So far I have used a self written shell script. 25 years old, over 1000
-> lines of (HORRIBLE) code, no longer maintenable :-}
->
-> All backup software I know is either too primitive (e.g. no versioning) or
-> very complex and needs a long time to master it.
->
-> My new idea is:
->
-> Set up a backup server with btrfs storage (with compress mount option),
-> the clients do their backup with rsync over nfs.
->
-> For versioning I make btrfs snapshots.
->
->
-> To have a secondary backup I will use btrfs send / receive,
+> Instead I would like to investigate the idea of COW-ing the stripe: instead of updating the stripe on place, why not write the new stripe in another place and then update the data extent to point to the new data ? Of course would work only for the data and not for the metadata.
 
-Check my message with subject *"**Read-only snapshot send speed very 
-slow after modify original data. Need help 
-<https://www.spinics.net/lists/linux-btrfs/msg94128.html>*/"./
+We are saying the same.
+What I am suggesting is to write it as RAID1 instead of RAID5, so that if it's changed a lot of times, you pay only once.
 
-/Very-very slow send read-only snapshot after modify original rw subvol 
-if compress. In some cases ~8-15 hour per snapshot./
-
-/100cpu load and send only 5-100mb diff./
-/There is no reaction
-/
-
->
-> Any comments on this? Or better suggestions?
->
-> The backup software must be open source!
->
-
--- 
-С уважением, Михаил
-067-786-11-75
+The background process would then turn it back to RAID5 at a later point.
+Adjusting how aggressively this background process works enables to adjust the extra write cost versus saved disk space compromise.
