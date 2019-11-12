@@ -2,185 +2,168 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44A29F93CA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 16:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB441F93F8
+	for <lists+linux-btrfs@lfdr.de>; Tue, 12 Nov 2019 16:19:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbfKLPNp (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 12 Nov 2019 10:13:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34632 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726896AbfKLPNp (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 12 Nov 2019 10:13:45 -0500
-Received: from localhost.localdomain (bl8-197-74.dsl.telepac.pt [85.241.197.74])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CB0A92067B;
-        Tue, 12 Nov 2019 15:13:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573571624;
-        bh=kKklsAScypZ0Cmqv8ZxvfGiMcXlsxZsytkVhcht98Hg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FN4orMJKDBkN5DUCFdpLyeCluIXM4WV4IOv5GlDk5fphwpyzV0BPVKvSUIW6iO5VA
-         K1tgzjXnb72z3R2b40fOkEBYEVRZVvDvwDn+0oSDT1Ci6HDO/n4ORHDJ13vLYDjzw+
-         0OTkAVoPiKd0rJepKzrdvaGsUaVPAge7F2g/SMRo=
-From:   fdmanana@kernel.org
-To:     fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: test fsync after hole punching when using the no-holes feature
-Date:   Tue, 12 Nov 2019 15:13:40 +0000
-Message-Id: <20191112151340.3688-1-fdmanana@kernel.org>
-X-Mailer: git-send-email 2.11.0
+        id S1727500AbfKLPTP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 12 Nov 2019 10:19:15 -0500
+Received: from mail-vs1-f67.google.com ([209.85.217.67]:42628 "EHLO
+        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727493AbfKLPTO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 12 Nov 2019 10:19:14 -0500
+Received: by mail-vs1-f67.google.com with SMTP id a143so11000622vsd.9
+        for <linux-btrfs@vger.kernel.org>; Tue, 12 Nov 2019 07:19:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=eO0j9JRjYelXm10rGnFR3JrxhulTJ/8wa25ZUP1PYKk=;
+        b=MeUPx327TJ3bJ215RtXQDL6hS8Rk08HBBnBlOHEiSvjcYn1wwieHp0/zynHAiphuzk
+         1OnRUzHI5XWcZ6tbw7J7FQM6kg4zpH0Ae1D2cL46AqDyHzy1UOtlaeUlcHCKPnwx0jbY
+         uU61XgbqeO+sJA3WGsYTLRQa1FASf7HtkiAQybl19FQYzKBo/5K2ld4DWkZQ9OeTWrsN
+         WvtqS2aJeXf6whpGmMfAUbIvtaEjRyFZBLq/iSpfbd8ADB7pLqmoez+ixX0d1Va1scSt
+         dr1DDPPKDX79HEa8haWAQIWBuYXbupClBbVNgeY4pBgqeqXxoFxiNS2VyPrXyfUagdQo
+         whnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=eO0j9JRjYelXm10rGnFR3JrxhulTJ/8wa25ZUP1PYKk=;
+        b=rxOj12CcHiEeEOsjhLHLrd7av2V3OX8jYIf++ekLmlA3RakSvwrvaFjnKvOFENa+ha
+         3hlDgOmVQItNTNdRo7GC+FeMGOcZYw6Tmp//vcVHk62Ll1iNSpq13TYK3rd6DbWKEN6v
+         k0BM4Ior3i4A8FqpQaLiY4TVbSC+LVFSGl7Cuwk9h3dDHpz84iSIRxxZn5veWr45mqSZ
+         EdxwhhMpF6cYL/TSN0yOUVlWyT546HaLLZoUzVFXxu4IEmOOq5vzqetcKF7eSpHZiXcv
+         kw4ZgOKgr214SV4Em0le3+072zZjInJRzcJXzFMYJZCwXD/fcziz1DnQL68min3g32zz
+         8ZQA==
+X-Gm-Message-State: APjAAAUUnXaUmIzHVYhUu/9noHUKnfAmad7L9gYlg/1DyCDRpE+yKPdZ
+        bC3wAX1MLkO9El0KZbn4S8juuL5H8FHv0YYBVE203W38
+X-Google-Smtp-Source: APXvYqwU1fFlBAgU2MWbCAZ00bdPv2z7ahUJOTENwZiza8U68xClGmMc/u63amxEVgLxnJCq9JGAeFVyL4OEeRJ47UE=
+X-Received: by 2002:a05:6102:2375:: with SMTP id o21mr23371061vsa.90.1573571952379;
+ Tue, 12 Nov 2019 07:19:12 -0800 (PST)
+MIME-Version: 1.0
+References: <20191111065004.24705-1-wqu@suse.com>
+In-Reply-To: <20191111065004.24705-1-wqu@suse.com>
+Reply-To: fdmanana@gmail.com
+From:   Filipe Manana <fdmanana@gmail.com>
+Date:   Tue, 12 Nov 2019 15:19:01 +0000
+Message-ID: <CAL3q7H5nA4JqKSj90pYjB2_1trRtWva_oCYst62zMGc_cLzTFQ@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: mkfs: Make no-holes as default mkfs incompat features
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Filipe Manana <fdmanana@suse.com>
+On Mon, Nov 11, 2019 at 6:51 AM Qu Wenruo <wqu@suse.com> wrote:
+>
+> No-holes feature could save 53 bytes for each hole we have, and it
+> provides a pretty good workaround to prevent btrfs check from reporting
+> non-contiguous file extent holes for mixed direct/buffered IO.
+>
+> The latter feature is more helpful for developers for handle log-writes
+> based test cases.
 
-Test that when we have the no-holes feature enabled and a specific metadata
-layout, if we punch a hole that starts at file offset 0 and fsync the file,
-after replaying the log the hole exists.
+So it seems your motivation is to get rid of the false fsck alerts.
 
-This currently fails on btrfs but is fixed by a patch for the linux kernel
-with the following subject:
+The good part of no-holes is that it stops using 53 bytes of metadata
+(file extent items) to mark holes. That's great.
 
- "Btrfs: fix missing hole after hole punching and fsync when using NO_HOLES"
+The not so good, but necessary, part is that fsck (btrfs check) stops
+checking for missing extent items, assuming that any
+missing extent item is because a hole was punched or as consequence of
+writing beyond eof.
+So any bug that causes a file extent item to be dropped and not
+replaced will not be so easy to detect anymore. That can make
+bugs much harder to detect, such as [1] for example, which is the most
+recent I remember.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/201     | 100 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/201.out |   5 +++
- tests/btrfs/group   |   1 +
- 3 files changed, 106 insertions(+)
- create mode 100755 tests/btrfs/201
- create mode 100644 tests/btrfs/201.out
+I have been testing this feature regularly since it was introduced way
+back in 2013.
+Since then I've fixed many bugs with it, mostly corruptions happening
+with send/receive and fsync. Last one fixed was for send/receive
+earlier this year in May.
+And I have yet another one for hole punch + fsync that I found last
+week and I've just sent a fix for it [2].
+As I don't recall anyone else consistently submitting fixes or bug
+reports for this feature, I don't know if I should assume people
+(users and developers) are testing it and not finding issues or simply
+not testing it enough (or at all).
 
-diff --git a/tests/btrfs/201 b/tests/btrfs/201
-new file mode 100755
-index 00000000..592ae23d
---- /dev/null
-+++ b/tests/btrfs/201
-@@ -0,0 +1,100 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (C) 2019 SUSE Linux Products GmbH. All Rights Reserved.
-+#
-+# FSQA Test No. 201
-+#
-+# Test that when we have the no-holes feature enabled and a specific metadata
-+# layout, if we punch a hole that starts at file offset 0 and fsync the file,
-+# after replaying the log the hole exists.
-+#
-+seq=`basename $0`
-+seqres=$RESULT_DIR/$seq
-+echo "QA output created by $seq"
-+tmp=/tmp/$$
-+status=1	# failure is the default!
-+trap "_cleanup; exit \$status" 0 1 2 3 15
-+
-+_cleanup()
-+{
-+	_cleanup_flakey
-+	cd /
-+	rm -f $tmp.*
-+}
-+
-+# get standard environment, filters and checks
-+. ./common/rc
-+. ./common/attr
-+. ./common/filter
-+. ./common/dmflakey
-+
-+# real QA test starts here
-+_supported_fs btrfs
-+_supported_os Linux
-+_require_scratch
-+_require_dm_target flakey
-+_require_attrs
-+_require_xfs_io_command "fpunch"
-+_require_btrfs_fs_feature "no_holes"
-+_require_btrfs_mkfs_feature "no-holes"
-+_require_odirect
-+
-+rm -f $seqres.full
-+
-+# We create the filesystem with a node size of 64Kb because we need to create a
-+# specific metadata layout in order to trigger the bug we are testing. At the
-+# moment the node size can not be smaller then the system's page size, so given
-+# that the largest possible page size is 64Kb and by default the node size is
-+# set to the system's page size value, we explicitly create a filesystem with a
-+# 64Kb node size, so that the test can run reliably independently of the system's
-+# page size.
-+_scratch_mkfs -O no-holes -n $((64 * 1024)) >>$seqres.full 2>&1
-+_require_metadata_journaling $SCRATCH_DEV
-+_init_flakey
-+_mount_flakey
-+
-+# Create our first file, which is used just to fill space in a leaf. Its items
-+# ocuppy most of the first leaf. We use a large xattr since it's an easy and
-+# fast way to fill a lot of leaf space.
-+touch $SCRATCH_MNT/foo
-+$SETFATTR_PROG -n 'user.x1' -v $(printf '%0.sX' $(seq 1 63617)) $SCRATCH_MNT/foo
-+
-+# Create our second file, which we will use to test if fsync persists a hole
-+# punch operation against it. Create several extent items for the file, all with
-+# a size of 64Kb. The first extent item of this file is located within the first
-+# leaf of the fs tree, as its last item, and all the remaining extent items in
-+# another leaf.
-+offset=0
-+for ((i = 0; i <= 10; i++)); do
-+	$XFS_IO_PROG -f -d -c "pwrite -S 0xab -b 64K $offset 64K" \
-+		$SCRATCH_MNT/bar >/dev/null
-+	offset=$(($offset + 64 * 1024))
-+done
-+
-+# Make sure everything done so far is durably persisted. We also want to start a
-+# new transaction and bump the filesystem generation. We don't fsync because we
-+# want to keep the 'full sync' flag in the inode of file 'bar', so that the
-+# fsync after the hole punch operation uses the slow path, which is necessary to
-+# trigger the bug we are testing.
-+sync
-+
-+# Now punch a hole that covers only the first extent item of file bar. That is
-+# the only extent item in the first leaf of the first tree, so the hole punch
-+# operation will drop it and will not touch the second leaf which contains the
-+# remaining extent items. These conditions are necessary to trigger the bug we
-+# are testing.
-+$XFS_IO_PROG -c "fpunch 0 64K" -c "fsync" $SCRATCH_MNT/bar
-+
-+echo "File digest before power failure:"
-+md5sum $SCRATCH_MNT/bar | _filter_scratch
-+# Simulate a power failure and mount the filesystem to check that replaying the
-+# log tree succeeds and our file bar has the expected content.
-+_flakey_drop_and_remount
-+echo "File digest after power failure and log replay:"
-+md5sum $SCRATCH_MNT/bar | _filter_scratch
-+
-+_unmount_flakey
-+_cleanup_flakey
-+
-+status=0
-+exit
-diff --git a/tests/btrfs/201.out b/tests/btrfs/201.out
-new file mode 100644
-index 00000000..66631658
---- /dev/null
-+++ b/tests/btrfs/201.out
-@@ -0,0 +1,5 @@
-+QA output created by 201
-+File digest before power failure:
-+e1e40ea5ab31cc36fb74830a6293eb2b  SCRATCH_MNT/bar
-+File digest after power failure and log replay:
-+e1e40ea5ab31cc36fb74830a6293eb2b  SCRATCH_MNT/bar
-diff --git a/tests/btrfs/group b/tests/btrfs/group
-index d56dcafa..d7eeb45d 100755
---- a/tests/btrfs/group
-+++ b/tests/btrfs/group
-@@ -203,3 +203,4 @@
- 198 auto quick volume
- 199 auto quick trim
- 200 auto quick send clone
-+201 auto quick punch log
--- 
-2.11.0
+We started having a lot of false positives (fsck complaining about
+missing extent items) from fstests test cases that use fsstress since
+fsstress was fixed to
+use direct IO when the test filesystem is not xfs [3]. In an old
+thread with you [4], I remember pointing out that most of such fsck
+reports were due to mixing buffered and direct IO writes.
+So using the no-holes feature is a way to silence the tests. However,
+are we sure that at this point all such fsck alerts are because of
+that?
+When I looked at it after the fsstress change, I couldn't find any
+case that wasn't because of that, but since then I stopped looking
+into it, both due to other priorities and because it's very time
+consuming to check that.
 
+While I'm not against making it a default, I would like to know if
+someone has been doing that type of verification recently. I think
+that's the most important point.
+Just running fstests with MKFS_OPTIONS=3D"-O no-holes" is not enough IMHO.
+
+Thanks.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/comm=
+it/?id=3D609e804d771f59dc5d45a93e5ee0053c74bbe2bf
+[2] https://patchwork.kernel.org/patch/11239653/
+[3] https://git.kernel.org/pub/scm/fs/xfs/xfstests-dev.git/commit/?id=3Db66=
+9b303d02e39a62a212b87f4bd1ce259f73d10
+[4] https://www.spinics.net/lists/linux-btrfs/msg75350.html
+
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  common/fsfeatures.c | 2 +-
+>  common/fsfeatures.h | 5 +++--
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+>
+> diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+> index 50934bd161b0..2028be9ad312 100644
+> --- a/common/fsfeatures.c
+> +++ b/common/fsfeatures.c
+> @@ -84,7 +84,7 @@ static const struct btrfs_fs_feature {
+>                 "no_holes",
+>                 VERSION_TO_STRING2(3,14),
+>                 VERSION_TO_STRING2(4,0),
+> -               NULL, 0,
+> +               VERSION_TO_STRING2(5,4),
+>                 "no explicit hole extents for files" },
+>         /* Keep this one last */
+>         { "list-all", BTRFS_FEATURE_LIST_ALL, NULL }
+> diff --git a/common/fsfeatures.h b/common/fsfeatures.h
+> index 3cc9452a3327..544daeeedf30 100644
+> --- a/common/fsfeatures.h
+> +++ b/common/fsfeatures.h
+> @@ -21,8 +21,9 @@
+>
+>  #define BTRFS_MKFS_DEFAULT_NODE_SIZE SZ_16K
+>  #define BTRFS_MKFS_DEFAULT_FEATURES                            \
+> -               (BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF           \
+> -               | BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA)
+> +               (BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |         \
+> +                BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA |       \
+> +                BTRFS_FEATURE_INCOMPAT_NO_HOLES)
+>
+>  /*
+>   * Avoid multi-device features (RAID56) and mixed block groups
+> --
+> 2.24.0
+>
+
+
+--=20
+Filipe David Manana,
+
+=E2=80=9CWhether you think you can, or you think you can't =E2=80=94 you're=
+ right.=E2=80=9D
