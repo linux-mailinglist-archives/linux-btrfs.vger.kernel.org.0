@@ -2,73 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CBACFB8EB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 20:34:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FABBFBA2A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 21:46:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726165AbfKMTeY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Nov 2019 14:34:24 -0500
-Received: from smtp-32.italiaonline.it ([213.209.10.32]:35638 "EHLO libero.it"
+        id S1726410AbfKMUq3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Nov 2019 15:46:29 -0500
+Received: from wiit.ltd ([167.71.175.18]:40284 "EHLO panel.wiit.ltd"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726115AbfKMTeY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Nov 2019 14:34:24 -0500
-Received: from venice.bhome ([94.38.75.109])
-        by smtp-32.iol.local with ESMTPA
-        id UyPGiaEOMhCYOUyPGiFgyl; Wed, 13 Nov 2019 20:34:22 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1573673662; bh=XH1txK1wkE5PA30Y5OvD2TCaVLJo0lU+bs2j/dNeVHI=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=uH/3C5Db0HpcL0F0bnaPXRb2KG/HUq+p3EjRhE6fJHg14hr9PyRhpuGw3KESeP+tF
-         J3YCD7nFJNZ1Q39/voeBJum8nQ36QDruKWN1jibO9+ccrcQlilCM4QYs6Pp8T+mSpv
-         UaM9RZGRXRcE9BYUis8Z0x6PyeDzSNfO5TbLxse9SkXLk08Dwo6s+tSzvv/SpnUdnt
-         75SAzrl6c/MZ2Igo/7EXnsJM/92iNoT+eVR9oMnnLbUN7edVOeTlR/AcwDrPf0Efvb
-         CKBdVyZv4jSswsAHs0H+ym+QvJuZ5yK4jS+LZLcwrbLt8e5Tx8HWkQ2+2FvT0Sh6ky
-         yd+dWII4SSRdg==
-X-CNFS-Analysis: v=2.3 cv=D9k51cZj c=1 sm=1 tr=0
- a=KzXHLLuG32F0DtnFfJanyA==:117 a=KzXHLLuG32F0DtnFfJanyA==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=na11VygWdLpjmZSrsLQA:9
- a=QEXdDO2ut3YA:10
-Reply-To: kreijack@inwind.it
-Subject: Re: Avoiding BRTFS RAID5 write hole
-To:     Hubert Tonneau <hubert.tonneau@fullpliant.org>
-Cc:     linux-btrfs@vger.kernel.org
-References: <0JG92D511@briare1.fullpliant.org>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <793917db-5efa-b385-d9e8-ecdcb5e93919@libero.it>
-Date:   Wed, 13 Nov 2019 20:34:22 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
-MIME-Version: 1.0
-In-Reply-To: <0JG92D511@briare1.fullpliant.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfKywYspF/+8gtgyUpFeIpMrWYt50IH03+Qjcy/Od5qd7kh7H7fSu3DiHuP18DdVOe3LiGRtCznUYx47PmQCvCgbXN8VLaSlbxmEbukY0vJ/fBhR+3q1m
- AVPlk3OJXwXjSAW+DjYZCXMTzP8lxLY7FiTnHEFrjYVkdXBoLLG2N48MkA6DYpsVgY3iEr3kj4ILr/kAY+DrKrA4+BNenhL5pvKEnBubfbBS3Et5gZ2yfDEg
+        id S1726185AbfKMUq2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Nov 2019 15:46:28 -0500
+X-Greylist: delayed 484 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Nov 2019 15:46:28 EST
+Received: from [193.56.28.173] (unknown [193.56.28.173])
+        by panel.wiit.ltd (Postfix) with ESMTPA id 6F68183A9
+        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2019 20:38:21 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 panel.wiit.ltd 6F68183A9
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiit.ltd; s=default;
+        t=1573677502; bh=m/WMRehOoqzbAlorg0fj533SQcYnt1bSRJI/V4Gg+t0=;
+        h=From:To:Reply-To:Subject:Date:From;
+        b=cWbpkhDvXj+YY6pBvD2F5Ts1wMZrZrcpM1mlua4b0OG3taBo1vvHRIDZGAhSBwA58
+         jim6ZmGsD4gXo6y8TSjQ1lqubyGVepRbdSu7EVXKyaWCnz+viGkxBAvhlB1tKjDwJ9
+         MxNnZiSpVAMVa5qvOB+XMO+rvlgbzSvzXyiIyyvD4eA589xMdhJpyVIBFt5NJgZ66g
+         xU/ZsNgj0hbGv3ZWdIQ5/FOkm1l16M3QwRALRMzOhlHaeVfqF3zDwirrzeE8/srLYE
+         ifi2OJmK7gVOSd0Cx7/l/9SCOQHgKkGflF3aplIUv5am7HVIQ1htHtaq+xTR3tcU+D
+         wu6OdXh2a9FMA==
+Message-Id: <ZN6KZGIN-2RPB-8K76-DWBC-RYAMV6IHEH@wiit.ltd>
+Mime-Version: 1.0
+From:   stefan persson <info@wiit.ltd>
+To:     "linux-btrfs" <linux-btrfs@vger.kernel.org>
+Reply-To: stefan-persson@familerlingpersson.com
+Subject: Hello
+Date:   Wed, 13 Nov 2019 12:38:21 -0800
+X-Bounce-Tracking-Info: <bGludXgtYnRyZnMJCQlsaW51eC1idHJmc0B2Z2VyLmtlcm5lbC5vcmcJSGVsbG8JMwkJMzIzNzkJYm91bmNlCW5vCW5v>
+Content-type: text/plain; charset=iso-8859-1; format=flowed
+Content-transfer-encoding: quoted-printable
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 12/11/2019 23.27, Hubert Tonneau wrote:
-> Goffredo Baroncelli wrote:
->>
->> Instead I would like to investigate the idea of COW-ing the stripe: instead of updating the stripe on place, why not write the new stripe in another place and then update the data extent to point to the new data ? Of course would work only for the data and not for the metadata.
-> 
-> We are saying the same.
+The Erling-Persson Family Foundation have voluntarily donated part of their=
+ foundation funds to you as a charitable project to improve the lives of di=
+fferent individuals all over the world=2E
+If you have received this  message, then you are among the lucky recipients=
+ to be considered
+Reply to this email with (stefan-persson@familerlingpersson=2Ecom)  your be=
+neficiary code X87CVEFFP6G56
 
-The main difference is that my solution is permanent. The new data in new place is valid as the old one. In your idea, you talk about a secondary step of updating the stripe.
-
-> What I am suggesting is to write it as RAID1 instead of RAID5, so that if it's changed a lot of times, you pay only once.
-I am not sure to understand what are you saying. Could you elaborate ?
-
-
-> 
-> The background process would then turn it back to RAID5 at a later point.
-> Adjusting how aggressively this background process works enables to adjust the extra write cost versus saved disk space compromise.
-> 
-
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
