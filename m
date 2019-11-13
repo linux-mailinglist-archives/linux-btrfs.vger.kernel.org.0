@@ -2,24 +2,24 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D90DBFAA81
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 07:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB124FAA88
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 07:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726318AbfKMG5X (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Nov 2019 01:57:23 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47758 "EHLO mx1.suse.de"
+        id S1726087AbfKMG7s (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Nov 2019 01:59:48 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48084 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726186AbfKMG5X (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Nov 2019 01:57:23 -0500
+        id S1725858AbfKMG7r (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Nov 2019 01:59:47 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9B0AEAFA1
-        for <linux-btrfs@vger.kernel.org>; Wed, 13 Nov 2019 06:57:21 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 5491CADEF;
+        Wed, 13 Nov 2019 06:59:46 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
-To:     linux-btrfs@vger.kernel.org
+To:     fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
 Subject: [PATCH] fstests: common: Keep $seqres.dmesg in $RESULT_DIR
-Date:   Wed, 13 Nov 2019 14:57:16 +0800
-Message-Id: <20191113065716.33948-1-wqu@suse.com>
+Date:   Wed, 13 Nov 2019 14:59:38 +0800
+Message-Id: <20191113065938.34720-1-wqu@suse.com>
 X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
