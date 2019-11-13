@@ -2,61 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F498FB86F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 20:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CBACFB8EB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 20:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728750AbfKMTG1 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Nov 2019 14:06:27 -0500
-Received: from mx2.suse.de ([195.135.220.15]:33112 "EHLO mx1.suse.de"
+        id S1726165AbfKMTeY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Nov 2019 14:34:24 -0500
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:35638 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726311AbfKMTG1 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Nov 2019 14:06:27 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 550E6B02C;
-        Wed, 13 Nov 2019 19:06:25 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E7C15DA7AF; Wed, 13 Nov 2019 20:06:28 +0100 (CET)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fix for 5.4-rc8
-Date:   Wed, 13 Nov 2019 20:06:25 +0100
-Message-Id: <cover.1573671550.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.24.0
+        id S1726115AbfKMTeY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Nov 2019 14:34:24 -0500
+Received: from venice.bhome ([94.38.75.109])
+        by smtp-32.iol.local with ESMTPA
+        id UyPGiaEOMhCYOUyPGiFgyl; Wed, 13 Nov 2019 20:34:22 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
+        t=1573673662; bh=XH1txK1wkE5PA30Y5OvD2TCaVLJo0lU+bs2j/dNeVHI=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=uH/3C5Db0HpcL0F0bnaPXRb2KG/HUq+p3EjRhE6fJHg14hr9PyRhpuGw3KESeP+tF
+         J3YCD7nFJNZ1Q39/voeBJum8nQ36QDruKWN1jibO9+ccrcQlilCM4QYs6Pp8T+mSpv
+         UaM9RZGRXRcE9BYUis8Z0x6PyeDzSNfO5TbLxse9SkXLk08Dwo6s+tSzvv/SpnUdnt
+         75SAzrl6c/MZ2Igo/7EXnsJM/92iNoT+eVR9oMnnLbUN7edVOeTlR/AcwDrPf0Efvb
+         CKBdVyZv4jSswsAHs0H+ym+QvJuZ5yK4jS+LZLcwrbLt8e5Tx8HWkQ2+2FvT0Sh6ky
+         yd+dWII4SSRdg==
+X-CNFS-Analysis: v=2.3 cv=D9k51cZj c=1 sm=1 tr=0
+ a=KzXHLLuG32F0DtnFfJanyA==:117 a=KzXHLLuG32F0DtnFfJanyA==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=na11VygWdLpjmZSrsLQA:9
+ a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: Avoiding BRTFS RAID5 write hole
+To:     Hubert Tonneau <hubert.tonneau@fullpliant.org>
+Cc:     linux-btrfs@vger.kernel.org
+References: <0JG92D511@briare1.fullpliant.org>
+From:   Goffredo Baroncelli <kreijack@libero.it>
+Message-ID: <793917db-5efa-b385-d9e8-ecdcb5e93919@libero.it>
+Date:   Wed, 13 Nov 2019 20:34:22 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0JG92D511@briare1.fullpliant.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfKywYspF/+8gtgyUpFeIpMrWYt50IH03+Qjcy/Od5qd7kh7H7fSu3DiHuP18DdVOe3LiGRtCznUYx47PmQCvCgbXN8VLaSlbxmEbukY0vJ/fBhR+3q1m
+ AVPlk3OJXwXjSAW+DjYZCXMTzP8lxLY7FiTnHEFrjYVkdXBoLLG2N48MkA6DYpsVgY3iEr3kj4ILr/kAY+DrKrA4+BNenhL5pvKEnBubfbBS3Et5gZ2yfDEg
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi,
+On 12/11/2019 23.27, Hubert Tonneau wrote:
+> Goffredo Baroncelli wrote:
+>>
+>> Instead I would like to investigate the idea of COW-ing the stripe: instead of updating the stripe on place, why not write the new stripe in another place and then update the data extent to point to the new data ? Of course would work only for the data and not for the metadata.
+> 
+> We are saying the same.
 
-please pull the following fix for an older bug that has started to show
-up during testing (because of an updated test for rename exchange). It's
-an in-memory corruption caused by local variable leaking out of the
-function scope.
+The main difference is that my solution is permanent. The new data in new place is valid as the old one. In your idea, you talk about a secondary step of updating the stripe.
 
-Thanks.
+> What I am suggesting is to write it as RAID1 instead of RAID5, so that if it's changed a lot of times, you pay only once.
+I am not sure to understand what are you saying. Could you elaborate ?
 
-----------------------------------------------------------------
-The following changes since commit a5009d3a318e9f02ddc9aa3d55e2c64d6285c4b9:
 
-  btrfs: un-deprecate ioctls START_SYNC and WAIT_SYNC (2019-11-04 21:42:01 +0100)
+> 
+> The background process would then turn it back to RAID5 at a later point.
+> Adjusting how aggressively this background process works enables to adjust the extra write cost versus saved disk space compromise.
+> 
 
-are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.4-rc7-tag
-
-for you to fetch changes up to e6c617102c7e4ac1398cb0b98ff1f0727755b520:
-
-  Btrfs: fix log context list corruption after rename exchange operation (2019-11-11 19:46:02 +0100)
-
-----------------------------------------------------------------
-Filipe Manana (1):
-      Btrfs: fix log context list corruption after rename exchange operation
-
- fs/btrfs/inode.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
