@@ -2,97 +2,79 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 40644FB7B9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 19:37:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ABAAFB84A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 20:02:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727361AbfKMShx (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Nov 2019 13:37:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53296 "EHLO mx1.suse.de"
+        id S1727812AbfKMTCi (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Nov 2019 14:02:38 -0500
+Received: from smtp-32.italiaonline.it ([213.209.10.32]:57206 "EHLO libero.it"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727074AbfKMShw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Nov 2019 13:37:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 296CAAEF3;
-        Wed, 13 Nov 2019 18:37:51 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id CDF62DABED; Wed, 13 Nov 2019 19:37:54 +0100 (CET)
-Date:   Wed, 13 Nov 2019 19:37:54 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Anand Jain <anand.jain@oracle.com>
-Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
-        Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: mkfs: Make no-holes as default mkfs incompat
- features
-Message-ID: <20191113183754.GH3001@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Anand Jain <anand.jain@oracle.com>,
-        Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
-        linux-btrfs@vger.kernel.org
-References: <20191111065004.24705-1-wqu@suse.com>
- <20191111180256.GR3001@twin.jikos.cz>
- <aa6d036e-bac9-1756-51b7-12167bd949ac@gmx.com>
- <d0ea9e14-cd33-9da3-9a6c-d625c13b7e2b@oracle.com>
+        id S1726326AbfKMTCi (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Nov 2019 14:02:38 -0500
+X-Greylist: delayed 488 seconds by postgrey-1.27 at vger.kernel.org; Wed, 13 Nov 2019 14:02:37 EST
+Received: from venice.bhome ([94.38.75.109])
+        by smtp-32.iol.local with ESMTPA
+        id UxmdiZy9jhCYOUxmdiFXSc; Wed, 13 Nov 2019 19:54:27 +0100
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inwind.it; s=s2014;
+        t=1573671267; bh=tbXrutJujp0JW4rM1v2lF1MLzB/oD8Nf5aN32kGxgMQ=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To;
+        b=U8taimtCwt4AukwHM7yAD6W9uiqjY9Q967wdwx6R987GsQcnEMu/5kmARKFchGn/Q
+         /OuGiLzS18enRMkX/0wVVFIYvdf46oia4+1meezizYk5cDbYQ9cduqLrCGO/zV2Kkp
+         TiPyrZDQVBzY0QF5snY1w1bjptKOUVmHIX1KKCcHliaVn2hebP/v9oCBqYcHQEuOmt
+         4XBgzsrTsfyebtoC0kMHCnZH5MLRYSzzCYfsxriFfWMI2GGLgM7gmoCDSO6yAEs27o
+         H3ahGZmeA8rN6zPuSXZAWkGeK1sRjMq656if4ikccrxBnQBGSxcJkRNfmxEinAtG+N
+         w/kgFFnF9W6Lg==
+X-CNFS-Analysis: v=2.3 cv=D9k51cZj c=1 sm=1 tr=0
+ a=KzXHLLuG32F0DtnFfJanyA==:117 a=KzXHLLuG32F0DtnFfJanyA==:17
+ a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=mzeZn2TJlUqas4qKeq0A:9
+ a=QEXdDO2ut3YA:10
+Reply-To: kreijack@inwind.it
+Subject: Re: Does GRUB btrfs support log tree?
+To:     Chris Murphy <lists@colorremedies.com>
+Cc:     David Sterba <dsterba@suse.cz>,
+        Andrei Borzenkov <arvidjaar@gmail.com>,
+        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <CAJCQCtS1v7waFA=ERafSCSCHmPJVytdFZkJLqNTC3U3Gw3Y7tA@mail.gmail.com>
+ <d1874d17-700a-d78d-34be-eec0544c9de2@gmail.com>
+ <CAJCQCtTpLTJdRjD7aNJEYXuMO+E65=GiYpKP3Wy5sgOWYs3Hsw@mail.gmail.com>
+ <20191104193454.GD3001@twin.jikos.cz>
+ <CAJCQCtSiDQA4919YDTyQkW7jPkxMds1K32ym=HgO6KHQLzHw+w@mail.gmail.com>
+ <d2301902-bd5b-7c5a-0354-a5df21ca8eb3@libero.it>
+ <CAJCQCtQm_5L9uvH53O3Qby3Ktwpvsc2_6rUhkBLGeD07RP5a7Q@mail.gmail.com>
+From:   Goffredo Baroncelli <kreijack@inwind.it>
+Message-ID: <4480d47f-1b1e-d99d-e480-b31220433340@inwind.it>
+Date:   Wed, 13 Nov 2019 19:54:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d0ea9e14-cd33-9da3-9a6c-d625c13b7e2b@oracle.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <CAJCQCtQm_5L9uvH53O3Qby3Ktwpvsc2_6rUhkBLGeD07RP5a7Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfH4nAi0EOAIHjMxdfKoxfLWJCp/Jt9cL04czvy+w6F+w7trDcIWxnlEr0uiorFKRBKqDCIuPwCgUDeaM78N8W/G85KXBPuJXqlxQnZxM+3pNTlCX3h9k
+ sGewSQxUAM1+u/LCsi2i0nTw22yqQjBUbG2weyrrFbYsT0zdilCpez773BCHiga1qV4ITI+MoNEgG2Mtx3+dfZS0jIrU213d92EuN8ymwRpZt45lzxZ4CjQT
+ tZBmoDw+KGi5pv0XwVvQYIOHJ3N5qUM193Q9rT9g9hY=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Tue, Nov 12, 2019 at 11:10:57AM +0800, Anand Jain wrote:
-> On 12/11/19 9:01 AM, Qu Wenruo wrote:
-> > On 2019/11/12 上午2:02, David Sterba wrote:
-> >> On Mon, Nov 11, 2019 at 02:50:04PM +0800, Qu Wenruo wrote:
-> >>> No-holes feature could save 53 bytes for each hole we have, and it
-> >>> provides a pretty good workaround to prevent btrfs check from reporting
-> >>> non-contiguous file extent holes for mixed direct/buffered IO.
-> >>>
-> >>> The latter feature is more helpful for developers for handle log-writes
-> >>> based test cases.
-> >>
-> >> Thanks. The plan to make no-holes default has been there for some time
-> >> already. What it needs is a full round of testing and validation before
-> >> making it default. And as defaults change rarely, I'd like to add
-> >> free-space-tree as mkfs default as well, there's enough demand for that
-> >> and we want to start deprecating v1 in the future.
-> >>
-> >> I have in my near-top todo list to do that, with the following
-> >> checklist:
-> >>
-> >> - run fstests with various features together + the new default
-> >>    - release build
-> >>    - debugging build with UBSAN, KASAN and additional useful debugging
-> >>      tools
-> > Already running with no_holes for several previous releases.
-> > 
-> > Not to mention new btrfs specific log-writes test cases are all already
-> > using this feature  to avoid btrfs check failure.
-> > 
-> > So I think this part should be OK.
-> > 
-> >> - run stress tests + the new feature
-> > 
-> > Any extra suggestions for the stress test tool?
-> > 
-> > Despite that, extra 24x7 host may be needed for this test.
-> > 
+On 13/11/2019 18.00, Chris Murphy wrote:
+>> The GRUB-fs should have the following main requirements:
+>> - allow the atomicity guarantee
+>> - allow molti-disk setup
+>> - allow grub to update some file (grubenv come me as first)
+>> - it should require a simple implementation (easy to porting to multiple system, which basically means linux, *bsd and solaris ?)
+>> - the speed should be not important
+> Plausibly we're most of the way there already, adapting the existing
+> "BIOS Boot" partition.
 > 
->    To keep the ball rolling I can run stress tests part here,
->    yep need extra suggestions on the stress test tools.
+Unfortunately the BIOS Boot partition (which means basically FAT), doesn't have support for "atomicity" nor multidisk..
 
-There are synthetic workload generators like fio, fs-mark, etc. so you
-can try random options and do unplug tests, or
-sync/umount/fsck/mount/continue a few times.
+BR
+G.Baroncelli
 
-Otherwise you can simulate workloads that users do, like databases, VMs,
-copying large files around, git is a good stressing tool as well.
-
-The point here is to get a group focus on the newly enabled features, on
-various hardware (cpus, memory, disks). As has been mentioned, no-holes
-is part of testing environments of developers so this is not completely
-new thing.
+-- 
+gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
+Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
