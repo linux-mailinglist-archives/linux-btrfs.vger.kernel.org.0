@@ -2,88 +2,106 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F1EFFB329
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 16:05:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E714FB3A7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 16:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbfKMPFU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Nov 2019 10:05:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40264 "EHLO mx1.suse.de"
+        id S1728040AbfKMPZY (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Nov 2019 10:25:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53214 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727820AbfKMPFU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Nov 2019 10:05:20 -0500
+        id S1727721AbfKMPZY (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Nov 2019 10:25:24 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9142FB2DB;
-        Wed, 13 Nov 2019 15:05:18 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 8A799B483;
+        Wed, 13 Nov 2019 15:25:21 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 2A566DA7E8; Wed, 13 Nov 2019 16:05:22 +0100 (CET)
-Date:   Wed, 13 Nov 2019 16:05:22 +0100
+        id 966E7DA7E8; Wed, 13 Nov 2019 16:25:22 +0100 (CET)
+Date:   Wed, 13 Nov 2019 16:25:22 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Johannes Thumshirn <jthumshirn@suse.de>
-Cc:     David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v2 0/7] remove BUG_ON()s in btrfs_close_one_device()
-Message-ID: <20191113150522.GE3001@twin.jikos.cz>
+To:     ira.weiny@intel.com
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
+        Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH V2 2/2] fs: Move swap_[de]activate to file_operations
+Message-ID: <20191113152522.GF3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Johannes Thumshirn <jthumshirn@suse.de>,
-        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20191113102728.8835-1-jthumshirn@suse.de>
+Mail-Followup-To: dsterba@suse.cz, ira.weiny@intel.com,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org, Dave Chinner <david@fromorbit.com>,
+        Jan Kara <jack@suse.cz>
+References: <20191113004244.9981-1-ira.weiny@intel.com>
+ <20191113004244.9981-3-ira.weiny@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191113102728.8835-1-jthumshirn@suse.de>
+In-Reply-To: <20191113004244.9981-3-ira.weiny@intel.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Wed, Nov 13, 2019 at 11:27:21AM +0100, Johannes Thumshirn wrote:
-> This series attempts to remove the BUG_ON()s in btrfs_close_one_device().
-> Therefore some reorganization of btrfs_close_one_device() and
-> close_fs_devices() was needed.
+On Tue, Nov 12, 2019 at 04:42:44PM -0800, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> Forthermore a new BUG_ON() had to be temporarily introduced but is removed
-> again in the last patch of theis series.
+> swap_activate() and swap_deactivate() have nothing to do with address
+> spaces.  We want to be able to change the address space operations on
+> the fly to allow changing inode flags dynamically.
 > 
-> Although it is generally legal to return -ENOMEM on umount(2), the error
-> handling up until close_ctree() as neither close_ctree() nor btrfs_put_super()
-> would be able to handle the error.
+> Switching address space operations can be difficult to do reliably.[1]
+> Therefore, to simplify switching address space operations we reduce the
+> number of functions in those operations by moving swap_activate() and
+> swap_deactivate() out of the address space operations.
 > 
-> This series has passed fstests without any deviation from the baseline and
-> also the new error handling was tested via error injection using this snippet:
+> No functionality is changed with this patch.
 > 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 7c55169c0613..c58802c9c39c 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1069,6 +1069,9 @@ static int btrfs_close_one_device(struct btrfs_device *device)
->  
->  	new_device = btrfs_alloc_device(NULL, &device->devid,
->  					device->uuid);
-> +	btrfs_free_device(new_device);
-> +	pr_err("%s() INJECTING -ENOMEM\n", __func__);
-> +	new_device = ERR_PTR(-ENOMEM);
->  	if (IS_ERR(new_device))
->  		return PTR_ERR(new_device);
+> This has been tested with XFS but not NFS, f2fs, or btrfs.
 > 
-> Changes to v1:
+> Also note we move some functions to facilitate compilation.  But there
+> are no functional changes are contained within those diffs.
 > 
-> Fixed the decremt of btrfs_fs_devices::seeding.
+> [1] https://lkml.org/lkml/2019/11/11/572
 > 
-> In addition to this, I've added two patches changing btrfs_fs_devices::seeding
-> and btrfs_fs_devices::rotating to bool, as they are in fact used as booleans.
+> Cc: Dave Chinner <david@fromorbit.com>
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 > 
-> Johannes Thumshirn (7):
->   btrfs: decrement number of open devices after closing the device not
->     before
->   btrfs: handle device allocation failure in btrfs_close_one_device()
->   btrfs: handle allocation failure in strdup
->   btrfs: handle error return of close_fs_devices()
->   btrfs: remove final BUG_ON() in close_fs_devices()
->   btrfs: change btrfs_fs_devices::seeing to bool
->   btrfs: change btrfs_fs_devices::rotating to bool
+> ---
+> Changes from V0:
+> 	Update cover letter.
+> 	fix btrfs as per Andrew's comments
+> 	change xfs_iomap_swapfile_activate() to xfs_file_swap_activate()
+> 
+> Changes from V1:
+> 	Update recipients list
+> 
+> 
+>  fs/btrfs/file.c    | 341 +++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/inode.c   | 340 --------------------------------------------
 
-I'll add the last 2 for now as they're obviously correct, the rest has
-some questions that I'd like to clarify before merging.
+For the btrfs part
+
+Acked-by: David Sterba <dsterba@suse.com>
+
+There's going to be a minor conflict with current 5.5 queue, the
+resolution is simple rename of btrfs_block_group_cache to btrfs_block_group.
