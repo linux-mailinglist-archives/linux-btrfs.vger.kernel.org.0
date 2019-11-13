@@ -2,71 +2,82 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C71E0FACEF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 10:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79A9CFAE73
+	for <lists+linux-btrfs@lfdr.de>; Wed, 13 Nov 2019 11:27:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727074AbfKMJ2n (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 13 Nov 2019 04:28:43 -0500
-Received: from mail-40132.protonmail.ch ([185.70.40.132]:40390 "EHLO
-        mail-40132.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726155AbfKMJ2n (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 13 Nov 2019 04:28:43 -0500
-Date:   Wed, 13 Nov 2019 09:28:39 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fomin.one;
-        s=protonmail; t=1573637320;
-        bh=caZztISJc5fh7ieokzFP9qo1B1CbqmENz8b/jEvP5ZE=;
-        h=Date:To:From:Reply-To:Subject:In-Reply-To:References:Feedback-ID:
-         From;
-        b=HPH+g7ruwW+aEah4Kybp5ztAiOIhwF34I64oDUiBMmpr1QhfaGtYbX7SPpaSwFl5e
-         GELrVut54jvXDPsu9dIdZCnGzw9CVNgS+uloicx9dsBAlcVSEdsw2t6Z8UkqCHqhuW
-         uGFAl4sFfwW+5I1D7T6ddYKOow4f064kktHqFAcc=
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   Maksim Fomin <maxim@fomin.one>
-Reply-To: Maksim Fomin <maxim@fomin.one>
-Subject: Potential CVE due to malicious UUID conflict?
-Message-ID: <qs_-w114I5p8c1eRnhwyZXxnP_XFxfWGIFw1rTBNwxQOzjq7d0EiJoEgHX8jVDDLtze2SNcRe55qT6mxV6ZVYvNNsm2ZyHkopl20UX9VY-0=@fomin.one>
-In-Reply-To: <1204250219.669.1573609035591.JavaMail.zimbra@raptorengineeringinc.com>
-References: <1204250219.669.1573609035591.JavaMail.zimbra@raptorengineeringinc.com>
-Feedback-ID: KdoJEVg5m21Zx-ZSt0YICttvNlCPIx4ISbXx_ujMcsAL9BeL-sYmJMAlEoWM-R55KO6tZ96oLFF00uPgMM7IOA==:Ext:ProtonMail
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=7.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF autolearn=ham
-        autolearn_force=no version=3.4.2
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.protonmail.ch
+        id S1727069AbfKMK1i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 13 Nov 2019 05:27:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48156 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726165AbfKMK1i (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 13 Nov 2019 05:27:38 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id D6C55B2DC;
+        Wed, 13 Nov 2019 10:27:36 +0000 (UTC)
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+To:     David Sterba <dsterba@suse.com>
+Cc:     Qu Wenru <wqu@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>,
+        Johannes Thumshirn <jthumshirn@suse.de>
+Subject: [PATCH v2 0/7] remove BUG_ON()s in btrfs_close_one_device()
+Date:   Wed, 13 Nov 2019 11:27:21 +0100
+Message-Id: <20191113102728.8835-1-jthumshirn@suse.de>
+X-Mailer: git-send-email 2.16.4
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90 Original Me=
-ssage =E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90=E2=80=90
-On Wednesday, 13 November 2019 =D0=B3., 4:37, Timothy Pearson <tpearson@rap=
-torengineering.com> wrote:
+This series attempts to remove the BUG_ON()s in btrfs_close_one_device().
+Therefore some reorganization of btrfs_close_one_device() and
+close_fs_devices() was needed.
 
-> I was recently informed on #btrfs that simply attaching a device with the=
- same UUID as an active BTRFS filesystem to a system would cause silent cor=
-ruption of the active disk.
+Forthermore a new BUG_ON() had to be temporarily introduced but is removed
+again in the last patch of theis series.
 
-BTRFS has two UUIDs: the "UUID" and "UUID_SUB".
+Although it is generally legal to return -ENOMEM on umount(2), the error
+handling up until close_ctree() as neither close_ctree() nor btrfs_put_super()
+would be able to handle the error.
 
-> Two questions, since this seems like a fairly serious and potentially CVE=
--worthy bug (trivial case would seem to be a USB thumbdrive with a purposef=
-ul UUID collision used to quietly corrupt data on a system that is otherwis=
-e secured):
+This series has passed fstests without any deviation from the baseline and
+also the new error handling was tested via error injection using this snippet:
 
-Are you from security area? These people seem to be desperate in finding re=
-al security holes so they try to present any software error as a CVE. For e=
-xample, they tried to present initrd pass through to root console [1] or sy=
-stemd lauching a service with root permissions as a CVE [2]. Regarding this=
- btrfs uuid issue - the data will be silently corrupted, but this "CVE" wou=
-ld require physical access to machine (like in initrd case). Besides, this =
-issue is known for a long time. Bad news, no one will earn a CVE badge for =
-reporting this issue. Security trolls should find hope somewhere else.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 7c55169c0613..c58802c9c39c 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1069,6 +1069,9 @@ static int btrfs_close_one_device(struct btrfs_device *device)
+ 
+ 	new_device = btrfs_alloc_device(NULL, &device->devid,
+ 					device->uuid);
++	btrfs_free_device(new_device);
++	pr_err("%s() INJECTING -ENOMEM\n", __func__);
++	new_device = ERR_PTR(-ENOMEM);
+ 	if (IS_ERR(new_device))
+ 		return PTR_ERR(new_device);
 
-[1] https://www.cvedetails.com/cve/CVE-2016-4484/
+Changes to v1:
 
-[2] https://www.securityweek.com/linux-systemd-gives-root-privileges-invali=
-d-usernames
+Fixed the decremt of btrfs_fs_devices::seeding.
+
+In addition to this, I've added two patches changing btrfs_fs_devices::seeding
+and btrfs_fs_devices::rotating to bool, as they are in fact used as booleans.
+
+Johannes Thumshirn (7):
+  btrfs: decrement number of open devices after closing the device not
+    before
+  btrfs: handle device allocation failure in btrfs_close_one_device()
+  btrfs: handle allocation failure in strdup
+  btrfs: handle error return of close_fs_devices()
+  btrfs: remove final BUG_ON() in close_fs_devices()
+  btrfs: change btrfs_fs_devices::seeing to bool
+  btrfs: change btrfs_fs_devices::rotating to bool
+
+ fs/btrfs/volumes.c | 81 ++++++++++++++++++++++++++++++++++++------------------
+ fs/btrfs/volumes.h |  4 +--
+ 2 files changed, 56 insertions(+), 29 deletions(-)
+
+-- 
+2.16.4
+
