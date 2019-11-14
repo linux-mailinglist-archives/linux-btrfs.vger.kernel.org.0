@@ -2,27 +2,26 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E01DFC1D1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 09:48:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B98FC206
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 10:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726263AbfKNIsH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Nov 2019 03:48:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:60472 "EHLO mx1.suse.de"
+        id S1726002AbfKNJBz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Nov 2019 04:01:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39898 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725977AbfKNIsH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Nov 2019 03:48:07 -0500
+        id S1725920AbfKNJBz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 Nov 2019 04:01:55 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 7DE58AC52;
-        Thu, 14 Nov 2019 08:48:04 +0000 (UTC)
-Subject: Re: [PATCH v2 2/7] btrfs: handle device allocation failure in
- btrfs_close_one_device()
+        by mx1.suse.de (Postfix) with ESMTP id 946ACB167;
+        Thu, 14 Nov 2019 09:01:52 +0000 (UTC)
+Subject: Re: [PATCH v2 5/7] btrfs: remove final BUG_ON() in close_fs_devices()
 To:     dsterba@suse.cz, David Sterba <dsterba@suse.com>,
         Qu Wenru <wqu@suse.com>,
         Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
 References: <20191113102728.8835-1-jthumshirn@suse.de>
- <20191113102728.8835-3-jthumshirn@suse.de>
- <20191113145859.GB3001@twin.jikos.cz>
+ <20191113102728.8835-6-jthumshirn@suse.de>
+ <20191113150246.GD3001@twin.jikos.cz>
 From:   Johannes Thumshirn <jthumshirn@suse.de>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
@@ -80,12 +79,12 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <4a86d0f6-94cb-24a7-05d1-5297673ac248@suse.de>
-Date:   Thu, 14 Nov 2019 09:48:04 +0100
+Message-ID: <91cdf0e1-006b-7568-f6ce-f9611bf9de0f@suse.de>
+Date:   Thu, 14 Nov 2019 10:01:52 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20191113145859.GB3001@twin.jikos.cz>
+In-Reply-To: <20191113150246.GD3001@twin.jikos.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -94,103 +93,44 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 13/11/2019 15:58, David Sterba wrote:
-> On Wed, Nov 13, 2019 at 11:27:23AM +0100, Johannes Thumshirn wrote:
->> In btrfs_close_one_device() we're allocating a new device and if this
->> fails we BUG().
->>
->> Move the allocation to the top of the function and return an error in case
->> it failed.
->>
->> The BUG_ON() is temporarily moved to close_fs_devices(), the caller of
->> btrfs_close_one_device() as further work is pending to untangle this.
+On 13/11/2019 16:02, David Sterba wrote:
+> On Wed, Nov 13, 2019 at 11:27:26AM +0100, Johannes Thumshirn wrote:
+>> Now that the preparation work is done, remove the temporary BUG_ON() in
+>> close_fs_devices() and return an error instead.
 >>
 >> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+>>
 >> ---
->>  fs/btrfs/volumes.c | 27 +++++++++++++++++++++------
->>  1 file changed, 21 insertions(+), 6 deletions(-)
+>> Changes to v1:
+>> - btrfs_fs_devices::seeding is a 'boolean' flags and no counter, don't
+>>   decrement it (Qu)
+>> ---
+>>  fs/btrfs/volumes.c | 6 +++++-
+>>  1 file changed, 5 insertions(+), 1 deletion(-)
 >>
 >> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 5ee26e7fca32..0a2a73907563 100644
+>> index be1fd935edf7..25e4608e20f1 100644
 >> --- a/fs/btrfs/volumes.c
 >> +++ b/fs/btrfs/volumes.c
->> @@ -1061,12 +1061,17 @@ static void btrfs_close_bdev(struct btrfs_device *device)
->>  	blkdev_put(device->bdev, device->mode);
->>  }
->>  
->> -static void btrfs_close_one_device(struct btrfs_device *device)
->> +static int btrfs_close_one_device(struct btrfs_device *device)
->>  {
->>  	struct btrfs_fs_devices *fs_devices = device->fs_devices;
->>  	struct btrfs_device *new_device;
->>  	struct rcu_string *name;
->>  
->> +	new_device = btrfs_alloc_device(NULL, &device->devid,
->> +					device->uuid);
->> +	if (IS_ERR(new_device))
->> +		goto err_close_device;
->> +
->>  	if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
->>  	    device->devid != BTRFS_DEV_REPLACE_DEVID) {
->>  		list_del_init(&device->dev_alloc_list);
->> @@ -1080,10 +1085,6 @@ static void btrfs_close_one_device(struct btrfs_device *device)
->>  	if (device->bdev)
->>  		fs_devices->open_devices--;
->>  
->> -	new_device = btrfs_alloc_device(NULL, &device->devid,
->> -					device->uuid);
->> -	BUG_ON(IS_ERR(new_device)); /* -ENOMEM */
->> -
->>  	/* Safe because we are under uuid_mutex */
->>  	if (device->name) {
->>  		name = rcu_string_strdup(device->name->str, GFP_NOFS);
->> @@ -1096,18 +1097,32 @@ static void btrfs_close_one_device(struct btrfs_device *device)
->>  
->>  	synchronize_rcu();
->>  	btrfs_free_device(device);
->> +
->> +	return 0;
->> +
->> +err_close_device:
->> +	btrfs_close_bdev(device);
->> +	if (device->bdev) {
->> +		fs_devices->open_devices--;
->> +		btrfs_sysfs_rm_device_link(fs_devices, device);
->> +		device->bdev = NULL;
->> +	}
+>> @@ -1128,7 +1128,11 @@ static int close_fs_devices(struct btrfs_fs_devices *fs_devices)
+>>  	mutex_lock(&fs_devices->device_list_mutex);
+>>  	list_for_each_entry_safe(device, tmp, &fs_devices->devices, dev_list) {
+>>  		ret = btrfs_close_one_device(device);
+>> -		BUG_ON(ret); /* -ENOMEM */
+>> +		if (ret) {
+>> +			mutex_unlock(&fs_devices->device_list_mutex);
+>> +			return ret;
 > 
-> I don't understand this part: the 'device' pointer is from the argument,
-> so the device we want to delete from the list and for that all the state
-> bit tests, bdev close, list replace rcu and synchronize_rcu should
-> happen -- in case we have a newly allocated new_device.
+> This can fail in the middle of the loop thus leaving some devices in the
+> list and keeping open_devices half-changed.
 > 
-> What I don't understand how the short version after label
-> err_close_device: is correct. The device is still left in the list but
-> with NULL bdev but rw_devices, missing_devices is untouched.
-> 
-> That a device closing needs to allocate memory for a new device instead
-> of reinitializing it again is stupid but with the simplified device
-> closing I'm not sure the state is well defined.
+> Not all callers of close_fs_devices handle the errors so this can break
+> invariants, where eg. fs_devices->opened is expected to be 0 after the
+> function call, similar for ->seeding or ->rw_devices.
 
-As we couldn't allocate memory to remove the device from the list, we
-have to keep it in the list (technically even leaking some memory here).
+Please see my answer to "btrfs: handle device allocation failure in
+btrfs_close_one_device()" on this topic.
 
-What we definitively need to do is clear the ->bdev pointer, otherwise
-we'll trip over a NULL-pointer in open_fs_devices().
-
-open_fs_devices() will traverse the list and call
-btrfs_open_one_device() this will fail as device->bdev is (still) set
-thus latest_dev is NULL and then this 'fs_devices->latest_bdev =
-latest_dev->bdev;' will blow up.
-
-If you have a better solution I'm all ears. This is what I came up with
-to tackle the problem of half initialized devices.
-
-One thing we could do though is call btrfs_free_stale_devices() in the
-error case.
-
-Byte,
-	Johannes
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
