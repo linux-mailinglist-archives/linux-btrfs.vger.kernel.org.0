@@ -2,115 +2,73 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59F1FFCA2B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 16:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 256E1FCA63
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 16:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbfKNPpv (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Nov 2019 10:45:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57776 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726339AbfKNPpv (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Nov 2019 10:45:51 -0500
-Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com [209.85.217.49])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F26D2070E
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2019 15:45:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573746350;
-        bh=D8gZIO1ndCKllmVvnhtXs2q8PjKsYZ0nO13OxAY0vuI=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=w+QTEFJIO2/n725zp+GlfmCqzbL3mgsy0uvYl06KQQHUuLCYzQy7QKTjsA5O11jQW
-         PuTi6YNwC/oYMZraBXGpnmVzRwxTxpga65HV5N296z8CyBbNgzDRdxh6qtP4fqs4AT
-         rnUT2IbrvFOfUGnUoo6eCvoV9CTekk94IIY3rSg4=
-Received: by mail-vs1-f49.google.com with SMTP id c25so4178706vsp.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2019 07:45:50 -0800 (PST)
-X-Gm-Message-State: APjAAAUGytRZ7EodbvWHVIdb793AEU5Y89Vbum0w4LoUkDqthYoNP3Js
-        46t9VlRZzl3ppjXPt+1kzvhSt1j37LrcXg6VqME=
-X-Google-Smtp-Source: APXvYqyr/JTHHoW0tY5oxTDVp+ZOp2gHlXb9FfGk5LwMRiCA5O16efDX8ylfa4aeIX2gWV0Cn5hLUvbcShYjKn57Wx8=
-X-Received: by 2002:a05:6102:2375:: with SMTP id o21mr6235677vsa.90.1573746349318;
- Thu, 14 Nov 2019 07:45:49 -0800 (PST)
+        id S1726444AbfKNP6m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Nov 2019 10:58:42 -0500
+Received: from mail-qk1-f180.google.com ([209.85.222.180]:37634 "EHLO
+        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbfKNP6l (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 Nov 2019 10:58:41 -0500
+Received: by mail-qk1-f180.google.com with SMTP id e187so5410878qkf.4
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2019 07:58:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=szHo+P2PSiz+xMNI9xO5k2lAHGTQwAPwywh7skxacKs=;
+        b=pqLM/VG4r0hbIb49jc0yxf+9VLq2ZGr0dC1byrmvmNIlB1JfJL4+luHiH0qI6lQTlY
+         Aa0+4TWbUO10LOltRbPvZI/aqdfHfxbgrHrrEIAta+CV/PVJpllmkwQoXpX+6F+dCM4E
+         rs4H6NqziKxPL75PCQHx2DsI1e9r3OvlazPv7HtsELoNMdKCVdUrIIFSYzBa3GA038yC
+         9YYgy8kJUkcyEd1RsegRGb2WuNS4B5Dg+Nv2uTu+5HXi8eZnUnOjN+c1Nq7s3gBSStGw
+         2/56sgMnEpAwJulumEsmr4OwUsZa+UiUJdVQHzQGCofChOt9X5HQtU4JVIY+GMsGOQcg
+         e2Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=szHo+P2PSiz+xMNI9xO5k2lAHGTQwAPwywh7skxacKs=;
+        b=ql/3iqkndR72Xo3/BfEnfnoaERRfO/udlL6xWJoATXD8UnByyy/5n+1tfJ7oP2TJBZ
+         UEsfoH1hv6fPJlwURYQ15M8eNcdT8JnvZ1G4wUG6KJbhiFW1aIJ3rMRaidXzLbsMSrgD
+         4LXoeVohFlXWxxmtb3xuUD5Z6aZ2jThK8NkOIK3MWZ/A3GSpmHL8my/GJmZpqUhOlZnf
+         mMwao4BCGX6vuZB1tR3DPnutx0jnvv4ZaPEfwiMD1yGeywutcB5oJGb8uXEahid9fp47
+         aP/+NG8Ul6emcxFDazT+cjed4PU31rnIu1/vD/2C40AykbYyQEzIh1NVTCvN5mgIntvh
+         jcFw==
+X-Gm-Message-State: APjAAAVbl9oiiWyl4Q9KIYSMdTSMtgbPI7vR8BeSSn7NQ3n6JTzpDfFH
+        7E4bNE8RvVOfJBpeAmJ1MWs1JA==
+X-Google-Smtp-Source: APXvYqyKnFRan4srSlpE1AZ7le1Vd9FwkPf6fXLl0tHlNV5ilewXQ6gtDC0tCzMmf090rro4v06Apw==
+X-Received: by 2002:a37:9e05:: with SMTP id h5mr7656911qke.76.1573747119185;
+        Thu, 14 Nov 2019 07:58:39 -0800 (PST)
+Received: from localhost ([107.15.81.208])
+        by smtp.gmail.com with ESMTPSA id 7sm2888051qkf.67.2019.11.14.07.58.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Nov 2019 07:58:38 -0800 (PST)
+From:   Josef Bacik <josef@toxicpanda.com>
+To:     fstests@vger.kernel.org, kernel-team@fb.com,
+        linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/3] fsstress: add support for btrfs subvol and snapshot ops
+Date:   Thu, 14 Nov 2019 10:58:33 -0500
+Message-Id: <20191114155836.3528-1-josef@toxicpanda.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20191112151331.3641-1-fdmanana@kernel.org> <20191114151817.GJ3001@twin.jikos.cz>
-In-Reply-To: <20191114151817.GJ3001@twin.jikos.cz>
-From:   Filipe Manana <fdmanana@kernel.org>
-Date:   Thu, 14 Nov 2019 15:45:38 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7SwZD0mzv2Aqpo58a47e=iGxp4kqmadVQ=+AzfEco_uA@mail.gmail.com>
-Message-ID: <CAL3q7H7SwZD0mzv2Aqpo58a47e=iGxp4kqmadVQ=+AzfEco_uA@mail.gmail.com>
-Subject: Re: [PATCH] Btrfs: fix missing hole after hole punching and fsync
- when using NO_HOLES
-To:     dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 3:18 PM David Sterba <dsterba@suse.cz> wrote:
->
-> On Tue, Nov 12, 2019 at 03:13:31PM +0000, fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > When using the NO_HOLES feature, if we punch a hole into a file and then
-> > fsync it, there is a case where a subsequent fsync will miss the fact that
-> > a hole was punched:
-> >
-> > 1) The extent items of the inode span multiple leafs;
-> >
-> > 2) The hole covers a range that affects only the extent items of the first
-> >    leaf;
-> >
-> > 3) The fsync operation is done in full mode (BTRFS_INODE_NEEDS_FULL_SYNC
-> >    is set in the inode's runtime flags).
-> >
-> > That results in the hole not existing after replaying the log tree.
-> >
-> > For example, if the fs/subvolume tree has the following layout for a
-> > particular inode:
-> >
-> >   Leaf N, generation 10:
-> >
-> >   [ ... INODE_ITEM INODE_REF EXTENT_ITEM (0 64K) EXTENT_ITEM (64K 128K) ]
-> >
-> >   Leaf N + 1, generation 10:
-> >
-> >   [ EXTENT_ITEM (128K 64K) ... ]
-> >
-> > If at transaction 11 we punch a hole coverting the range [0, 128K[, we end
-> > up dropping the two extent items from leaf N, but we don't touch the other
-> > leaf, so we end up in the following state:
-> >
-> >   Leaf N, generation 11:
-> >
-> >   [ ... INODE_ITEM INODE_REF ]
-> >
-> >   Leaf N + 1, generation 10:
-> >
-> >   [ EXTENT_ITEM (128K 64K) ... ]
-> >
-> > A full fsync after punching the hole will only process leaf N because it
-> > was modified in the current transaction, but not leaf N + 1, since it was
-> > not modified in the current transaction (generation 10 and not 11). As
-> > a result the fsync will not log any holes, because it didn't process any
-> > leaf with extent items.
-> >
-> > So fix this by detecting any leading hole in the file for a full fsync
-> > when using the NO_HOLES feature if we didn't process any extent items for
-> > the file.
-> >
-> > A test case for fstests follows soon.
-> >
-> > Fixes: 16e7549f045d33 ("Btrfs: incompatible format change to remove hole extents")
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
->
-> Added to misc-next, thanks.
+For btrfs it would be nice to exercise our subvol and snapshot operations with
+fsstress as well.  The set of patches adds this ability.  I've added a new file
+type for subvolumes, and they behave just like directories for all intents and
+purposes.  The bulk of the supporting code needed for this went into the first
+patch, as well as the code to add the ability to link in libbtrfsutil.  The
+second patch is more straightforward as it just adds the snapshot operation, and
+the final patch goes through and makes everybody pick either a directory or
+subvolume for their target file.  I've done a bunch of testing with this on
+btrfs to make sure everything works as expected.  I then did a follow up run on
+xfs to verify I didn't break the non-btrfs case.  Thanks,
 
-Actually, could you hold on a bit for this one?
-There's nothing wrong with it, I'm simply fixing other cases and
-realized I can fix them all in a single patch.
-If I take too long or end up not being able to fix all as I'm
-expecting, I'll let you know, otherwise I'll send a very different v2
-tomorrow.
+Josef
 
-Thanks.
