@@ -2,125 +2,84 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D51EDFD047
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 22:25:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85F5EFD172
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2019 00:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726869AbfKNVZU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Nov 2019 16:25:20 -0500
-Received: from smtp-32.italiaonline.it ([213.209.10.32]:57640 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726592AbfKNVZU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Nov 2019 16:25:20 -0500
-Received: from venice.bhome ([94.38.75.109])
-        by smtp-32.iol.local with ESMTPA
-        id VMc8imWskhCYOVMc8iLTvo; Thu, 14 Nov 2019 22:25:16 +0100
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2014;
-        t=1573766716; bh=v+Dnhwv584IVyb+8KDZ7HFgfCGq7I7MX8Wmn23+FMgA=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=fO0pdpo/KpMwO4uUKgy5CK60seaHYo2aPwI7zZRkJWkaVpTBazSP+O8vZBeS5a0Nh
-         eeLZbg/Qlx2jlp14aaUIoOtO+8lnXqsf2tCOOLx1xlZegmJQ2LAP+5fP5Mi549CCLz
-         SSLJyk499GwuPb1cHcCzICWPjLCte55vSs5hgvELCOw4VWLFRMN/CK/vzwFsUGX5FI
-         RGxyCrMWtibtCyVMSQI45ABds8iYY4fTnrKhiS82ncGcwvKRhlBEhEdhROAMzmTcfu
-         qlDrIf+PB1TGr1IU2+e2xZ9hyMuDqoNNpE9uDgF4KNpa3iJtDJzEuuZGnGBg7ltBQg
-         OZbTW5MOt09UQ==
-X-CNFS-Analysis: v=2.3 cv=D9k51cZj c=1 sm=1 tr=0
- a=KzXHLLuG32F0DtnFfJanyA==:117 a=KzXHLLuG32F0DtnFfJanyA==:17
- a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=IkcTkHD0fZMA:10 a=tmJeersEAAAA:8
- a=eCm-_6X5T2AWVwlZWdsA:9 a=J7rCvmjSHPd1gTYB:21 a=EwN_fFeeWJBL_lVw:21
- a=QEXdDO2ut3YA:10 a=6_NLHW3UfdglaTMwbppD:22
-Reply-To: kreijack@inwind.it
-Subject: Re: Avoiding BRTFS RAID5 write hole
-To:     Hubert Tonneau <hubert.tonneau@fullpliant.org>
-Cc:     linux-btrfs@vger.kernel.org
-References: <0JGAX5Q12@briare1.fullpliant.org>
-From:   Goffredo Baroncelli <kreijack@libero.it>
-Message-ID: <7723feea-c3cd-b1eb-b882-aa782bbc6e2a@libero.it>
-Date:   Thu, 14 Nov 2019 22:25:16 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+        id S1726962AbfKNXT0 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Nov 2019 18:19:26 -0500
+Received: from mga18.intel.com ([134.134.136.126]:23450 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726767AbfKNXT0 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 Nov 2019 18:19:26 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 14 Nov 2019 15:19:25 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,306,1569308400"; 
+   d="scan'208";a="207950534"
+Received: from iweiny-desk2.sc.intel.com ([10.3.52.157])
+  by orsmga003.jf.intel.com with ESMTP; 14 Nov 2019 15:19:24 -0800
+Date:   Thu, 14 Nov 2019 15:19:24 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH V2 0/2] Move swap functions out of address space
+ operations
+Message-ID: <20191114231924.GA4370@iweiny-DESK2.sc.intel.com>
+References: <20191113004244.9981-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <0JGAX5Q12@briare1.fullpliant.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4wfPr9S6OE4LIDx4fKZIl0gxBVYiMGo3ZmDFcQoNpXQyI8TmmOLI2JY0DCY/an5hZQ1oUWxyShbYJkU90wMrfVdLhevdYAP5kvXsAZd7FcSLSRFb7yKiUC
- 7bqMuhiJu25UpmC8/CF3KieYZ9Q6U0bQ7BQfAQNt9jgWGCWtKvb8SYLqrxQIXH0E2QtrjkEHAOI4wAkmI8SLE6QLp1+AeVG51i1k3TmEsRIA/SKHkmIib2Nk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191113004244.9981-1-ira.weiny@intel.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 13/11/2019 23.29, Hubert Tonneau wrote:
-> Goffredo Baroncelli wrote:
->>
->>> What I am suggesting is to write it as RAID1 instead of RAID5, so that if it's changed a lot of times, you pay only once.
->> I am not sure to understand what are you saying. Could you elaborate ?
+On Tue, Nov 12, 2019 at 04:42:42PM -0800, 'Ira Weiny' wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
 > 
-> The safety problem with RAID5 is that between the time you start to overwrite a stripe and the time you finish, disk safety is disabled because parity is broken.
-> On the other hand, with RAID1, disk safety more or less remains all the time, so overwriting is no issue.
+> As suggested by Jan Kara, move swap_[de]activate to file_operations to simplify
+> address space operations for coming changes.
 > 
-> There are several possible strategies to keep RAID5 disk safety all the time:
+> I'm not sure if this should go through Al Viro or Andrew Morton so I'm sending
+> it to both of you.  Sorry if this is a problem.  Let me know if there is
+> something else I should do.
 > 
-> 1) Use a journal
-> This is the MDADM solution because it's the only resonable one if the RAID layer is separated from the filesystem (because you don't whan to add another sectors mapping layer).
-> The problem is that it's IO expensive.
-> This is the solution implemented in Liu Bo 2017 patch, as far as I can understand it.
-> 
-> 2) Never overwrite the RAID5 stripe
-> This is stripe COW. The new stripe is stored at different disks positions.
-> The problem is that it's even more IO expensive.
+> Ira Weiny (2):
+>   fs: Clean up mapping variable
+>   fs: Move swap_[de]activate to file_operations
 
-Why do you think that this approach is more IO expensive ?
+There should have been an update to the documentation with this.
 
-Supposing to have n+1 disks, configured as raid5 Raid5
+I have a 3rd patch which I'm sending separately.
 
-The problem is only when you have to update a portion of stripe. So I consider of an amount of data in the range 0..n -> n/2 in average (I omit the size of the disk-stripe which is constant)
-
-1) stripe update in place (current BTRFS behavior)
-The data to write is  ~ n/2 +1 (in average half of the stripe size + parity)
-
-2) COW stripe (my idea)
-The data to write is ~ n + 1 (the full stripe size + parity)
-
-3) Your solution (cache in RAID1)
-The data to write is
-	a) write data to raid1: ~ n/2 * 2 = n (data written on two disks)
-	b) update the RAID5 stripe: ~ n/2 + 1
-
-Total:	~ 3 * n/2 + 1
-
-(for the case 2 and 3 I don't consider the metadata update because it is several order of magnitude lower)
-
-
-
-
-> This is the solution you are suggesting, as far as I can understand it.
-> 
-> What I'm suggesting is to use your COW solution, but also write the new (set of) stripe(s) as RAID1.
-> Let me call this operation stripe COW RAID5 to RAID1.
-> The key advantage is that if you have to overwrite it again a few seconds (or hours) later, then it can be fast, because it's already RAID1.
-
-On the basis of my simulation, I can't agree: COW-ing a stripe requires to write the full stripe; instead if you want to write the data in a RAID1 before updating the stripe, in average first you have to write an amount of data equal to 'n', then you have to update the raid5....
-
-You can see this in another way: raid5 is more space friendly than raid1, this means that in raid5 you have to write less data....
-
+Ira
 
 > 
-> Morever, new stripes resulting from writing a new file, or appending, would be created as RAID1, even if the filesystem DATA is configured as RAID5, each time the stripe is not full or is likely to be modified soon.
-> This will reduce the number of stripe COW RAID5 to RAID1 operations.
+>  fs/btrfs/file.c     | 341 ++++++++++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/inode.c    | 340 -------------------------------------------
+>  fs/f2fs/data.c      | 123 ----------------
+>  fs/f2fs/file.c      | 122 ++++++++++++++++
+>  fs/iomap/swapfile.c |   3 +-
+>  fs/nfs/file.c       |   4 +-
+>  fs/xfs/xfs_aops.c   |  13 --
+>  fs/xfs/xfs_file.c   |  12 ++
+>  include/linux/fs.h  |  10 +-
+>  mm/swapfile.c       |  12 +-
+>  10 files changed, 488 insertions(+), 492 deletions(-)
 > 
-> The final objective is to have few stripe COW operations, because they are IO expensive, and many RAID1 stripe overwrite operations.
-> The price to pay for the reduced number of stripe COW operations is consuming more disk space, because RAID1 stripes consumes more disk space than RAID5 ones, and that is why we would have a background process that does stripe COW from RAID1 to RAID5 in order to reclaim disk space, and we could make it more aggressive when we lack disk space.
+> -- 
+> 2.21.0
 > 
-> What I'm trying to provide is the idea that seeing the DATA as RAID1 or RAID5 is not a good idea when we have BTRFS flexibility. We should rather see it as RAID1 and RAID5, RAID5 beeing just a way to reclaim disk space (same for RAID1C3 and RAID6).
-> Having METADATA as RAID1 and DATA as RAID5 was a first step, but BTRFS flexibility probably allows to do more.
-> 
-> Please notice that I understand the BTRFS and RAID principles, but on the other hand, I have not read the code, so can hardly say what is easy to implement.
-> Sorry about that. I've written a full new operating system (see www.fullpliant.org) but the kernel :-)
-> 
-
-
--- 
-gpg @keyserver.linux.it: Goffredo Baroncelli <kreijackATinwind.it>
-Key fingerprint BBF5 1610 0B64 DAC6 5F7D  17B2 0EDA 9B37 8B82 E0B5
