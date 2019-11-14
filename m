@@ -2,19 +2,19 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7675EFC5E3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 13:03:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1241FC6E3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 14:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726386AbfKNMDz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Nov 2019 07:03:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38024 "EHLO mx1.suse.de"
+        id S1726516AbfKNNCt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Nov 2019 08:02:49 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36828 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726251AbfKNMDz (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Nov 2019 07:03:55 -0500
+        id S1726139AbfKNNCs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 Nov 2019 08:02:48 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 910C5B0A5;
-        Thu, 14 Nov 2019 12:03:52 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 223B0B03B;
+        Thu, 14 Nov 2019 13:02:47 +0000 (UTC)
 Subject: Re: [PATCH v2 2/7] btrfs: handle device allocation failure in
  btrfs_close_one_device()
 To:     Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz,
@@ -82,8 +82,8 @@ Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
  l2t2TyTuHm7wVUY2J3gJYgG723/PUGW4LaoqNrYQUr/rqo6NXw6c+EglRpm1BdpkwPwAng63
  W5VOQMdnozD2RsDM5GfA4aEFi5m00tE+8XPICCtkduyWw+Z+zIqYk2v+zraPLs9Gs0X2C7X0
  yvqY9voUoJjG6skkOToGZbqtMX9K4GOv9JAxVs075QRXL3brHtHONDt6udYobzz+
-Message-ID: <c6a752fb-af25-7a24-c90b-1dcf4fe479ee@suse.de>
-Date:   Thu, 14 Nov 2019 13:03:51 +0100
+Message-ID: <3237fa0f-dcba-06c1-efe4-7af172563abe@suse.de>
+Date:   Thu, 14 Nov 2019 14:02:46 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
@@ -97,131 +97,23 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 On 14/11/2019 11:56, Anand Jain wrote:
-> On 14/11/19 4:48 PM, Johannes Thumshirn wrote:
->> On 13/11/2019 15:58, David Sterba wrote:
->>> On Wed, Nov 13, 2019 at 11:27:23AM +0100, Johannes Thumshirn wrote:
->>>> In btrfs_close_one_device() we're allocating a new device and if this
->>>> fails we BUG().
->>>>
->>>> Move the allocation to the top of the function and return an error
->>>> in case
->>>> it failed.
->>>>
->>>> The BUG_ON() is temporarily moved to close_fs_devices(), the caller of
->>>> btrfs_close_one_device() as further work is pending to untangle this.
->>>>
->>>> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
->>>> ---
->>>>   fs/btrfs/volumes.c | 27 +++++++++++++++++++++------
->>>>   1 file changed, 21 insertions(+), 6 deletions(-)
->>>>
->>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>> index 5ee26e7fca32..0a2a73907563 100644
->>>> --- a/fs/btrfs/volumes.c
->>>> +++ b/fs/btrfs/volumes.c
->>>> @@ -1061,12 +1061,17 @@ static void btrfs_close_bdev(struct
->>>> btrfs_device *device)
->>>>       blkdev_put(device->bdev, device->mode);
->>>>   }
->>>>   -static void btrfs_close_one_device(struct btrfs_device *device)
->>>> +static int btrfs_close_one_device(struct btrfs_device *device)
->>>>   {
->>>>       struct btrfs_fs_devices *fs_devices = device->fs_devices;
->>>>       struct btrfs_device *new_device;
->>>>       struct rcu_string *name;
->>>>   +    new_device = btrfs_alloc_device(NULL, &device->devid,
->>>> +                    device->uuid);
->>>> +    if (IS_ERR(new_device))
->>>> +        goto err_close_device;
->>>> +
->>>>       if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
->>>>           device->devid != BTRFS_DEV_REPLACE_DEVID) {
->>>>           list_del_init(&device->dev_alloc_list);
->>>> @@ -1080,10 +1085,6 @@ static void btrfs_close_one_device(struct
->>>> btrfs_device *device)
->>>>       if (device->bdev)
->>>>           fs_devices->open_devices--;
->>>>   -    new_device = btrfs_alloc_device(NULL, &device->devid,
->>>> -                    device->uuid);
->>>> -    BUG_ON(IS_ERR(new_device)); /* -ENOMEM */
->>>> -
->>>>       /* Safe because we are under uuid_mutex */
->>>>       if (device->name) {
->>>>           name = rcu_string_strdup(device->name->str, GFP_NOFS);
->>>> @@ -1096,18 +1097,32 @@ static void btrfs_close_one_device(struct
->>>> btrfs_device *device)
->>>>         synchronize_rcu();
->>>>       btrfs_free_device(device);
->>>> +
->>>> +    return 0;
->>>> +
->>>> +err_close_device:
->>>> +    btrfs_close_bdev(device);
->>>> +    if (device->bdev) {
->>>> +        fs_devices->open_devices--;
->>>> +        btrfs_sysfs_rm_device_link(fs_devices, device);
->>>> +        device->bdev = NULL;
->>>> +    }
->>>
->>> I don't understand this part: the 'device' pointer is from the argument,
->>> so the device we want to delete from the list and for that all the state
->>> bit tests, bdev close, list replace rcu and synchronize_rcu should
->>> happen -- in case we have a newly allocated new_device.
->>>
->>> What I don't understand how the short version after label
->>> err_close_device: is correct. The device is still left in the list but
->>> with NULL bdev but rw_devices, missing_devices is untouched.
->>>
->>> That a device closing needs to allocate memory for a new device instead
->>> of reinitializing it again is stupid but with the simplified device
->>> closing I'm not sure the state is well defined.
->>
->> As we couldn't allocate memory to remove the device from the list, we
->> have to keep it in the list (technically even leaking some memory here).
->>
->> What we definitively need to do is clear the ->bdev pointer, otherwise
->> we'll trip over a NULL-pointer in open_fs_devices().
->>
->> open_fs_devices() will traverse the list and call
->> btrfs_open_one_device() this will fail as device->bdev is (still) set
->> thus latest_dev is NULL and then this 'fs_devices->latest_bdev =
->> latest_dev->bdev;' will blow up.
->>
->> If you have a better solution I'm all ears. This is what I came up with
->> to tackle the problem of half initialized devices.
->>
->> One thing we could do though is call btrfs_free_stale_devices() in the
->> error case.
->>
->> Byte,
->>     Johannes
->>
-> 
-> Johannes,
-> 
->   Thanks for attempting to fix this.
-> 
->   I wrote comments about this unoptimized code here [1]
-> 
->   [1]
->    ML email therad
->     'invalid opcode in close_fs_devices'
-> 
-> 
-> https://groups.google.com/forum/#!msg/syzkaller-bugs/eSgcqygYaXE/6wuz-0jMCwAJ
-> 
-> 
->   You may want to review.
-> 
->   Yes David is correct why a closed device will still remain in the
+> Yes David is correct why a closed device will still remain in the
 >   dev_alloc_list even after the close here in this patch.
 
-Yes I know, this is why I did this dance. One thing I thought of is,
-having a temporary list of the devices to delete and then do the
-list_for_each_entry_safe() btrfs_close_one_device() loop on this list.
+OK, re-visited the Code again. And I think you're right I've moved this
+hunk quite a bit:
 
-But this will only work if we really want to remove all devices.
+        if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
+            device->devid != BTRFS_DEV_REPLACE_DEVID) {
+                list_del_init(&device->dev_alloc_list);
+                fs_devices->rw_devices--;
+        }
 
+
+My initial intention was to first have the allocations done so I don't
+have to undo anything in case of a failure.
+
+I'm back to the drawing board here.
 -- 
 Johannes Thumshirn                            SUSE Labs Filesystems
 jthumshirn@suse.de                                +49 911 74053 689
