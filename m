@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FB0FCA65
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 16:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D25BFCA66
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 16:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726707AbfKNP6o (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Nov 2019 10:58:44 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:47053 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726214AbfKNP6o (ORCPT
+        id S1726605AbfKNP6q (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Nov 2019 10:58:46 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:45085 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726214AbfKNP6q (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Nov 2019 10:58:44 -0500
-Received: by mail-qv1-f66.google.com with SMTP id w11so2529149qvu.13
-        for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2019 07:58:44 -0800 (PST)
+        Thu, 14 Nov 2019 10:58:46 -0500
+Received: by mail-qv1-f67.google.com with SMTP id g12so2520434qvy.12
+        for <linux-btrfs@vger.kernel.org>; Thu, 14 Nov 2019 07:58:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=g4Cq4oSZATopiVHWVuyHeblX9FKGAXQkB3bQW5IcCaE=;
-        b=FkA1RHwSsEVhm+x5dz/3kKs3ygEJMicBgQ53LO5NW7BDgQufdH9otjwIZOIjahcqjc
-         XoFAd+fT3dxigzSF6gthEyB1RN8B8VIIlO2G8Kd3vaYvH7XqBj2YcyZn4JNtcc2aE2Q2
-         vLyZ7abpBFGnLbMBXCzAjNu3h756/Vca3+qUl5LCQqszLQVt9GF1BgADFg3XbSsypM/i
-         p26fmcfThPHnhViUFYg7oETRsbIYm38X8tq61TyxbZwegpXM8KtdhBaPrptm+r04zZcI
-         lF/lntT3R0Zkji1dDcuNYFGWkJ7d4BF4M5JATJHKVufb9kR8rT4FOXJB+puMgLCvWLil
-         DNhw==
+        bh=dxZVx/PJnza0xI4Zz8kIOALa/tO+ai8x1D+pTbwqyNo=;
+        b=1sF4UxoXzVmoXhcN9dSJdZLEAYuGRdAXAX0B/X3n3+msajXvRZDNrnFtYh9Ya1QSu5
+         M48WZuKr/6jh+0/VDkSYig4fHS9QZgONYW+TkYkLe0XaUANkLeDv/urpuRPSy7QiSC1R
+         h6xjOUFl9D7nXF79Vr91P6lCdMk8ybHqH0QbUUaQFVoWVG8ik2mFDs33eK9AR8fotWY8
+         nZ1jnSGs2HljpapMsm2DjcLAy0koruGtrwrxwR6g7FEf91j3/MMHjncuupqbhfXAQoLq
+         cN+uZVjFEwF4GKAcvYJ1cNEKgdk0Aougz4EbYsAkFTFA7XaGe7Sa/yhyb+uN+Ox7Ukop
+         MxIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=g4Cq4oSZATopiVHWVuyHeblX9FKGAXQkB3bQW5IcCaE=;
-        b=MaFzpTRdgTenO0tqYVAZDSw25mLUfXL41WyUQtm/lFCI5uaiHlB1JYBpAqb4P5nrM1
-         kkyaFc2BsGnrggXJwbfoo+iBZWLt4Hp8xMsgKDAh/iBsHwRSYIdtfsfRW2Q48s4p6sJ2
-         eL2DcrIfszxN28yruOPJvP2HmgZjiAP14yDwi4MAKsMBOw/k7ltjfn9VuA7Z+fs/kkb+
-         ciTXKoOkNhiUQZ1DM+j03ivMfvlTRqbQX8w0q72eiHdKgIdR9F5GYHH7ttdDyuLBynJI
-         1Xoufd6NzXYNV9G+DMZfz4xNzxltTvAL+BlhFwtzPY1WhooA0V+HymryotUl/x5jx+ML
-         SFUw==
-X-Gm-Message-State: APjAAAUZg73I5Vmv1Fjf6GXpZaVc4UfpMGnuIbVpNC1DBwS6FREG+3hY
-        4+o/xF9FNW8f7hhEuQUGgli9Jg==
-X-Google-Smtp-Source: APXvYqyALWLG2uRrukq54qZP0rq83mmA1JIq8/TCLDu3wP16nA01HCyou7KMGeca/Sdy6lYSRty8Ww==
-X-Received: by 2002:ad4:55cc:: with SMTP id bt12mr8385893qvb.58.1573747123415;
-        Thu, 14 Nov 2019 07:58:43 -0800 (PST)
+        bh=dxZVx/PJnza0xI4Zz8kIOALa/tO+ai8x1D+pTbwqyNo=;
+        b=faJdRRX84LyfUtmNp0Em6Dv58A8FIDZ3cScihzA1QH20KRPsmx0OXpDIfUMjDa0eop
+         NbaHNq+y53W2lDX3dGMIbOM5W0jQ9i9h5V6tGj1+rYmrK2JwfBPh243cAIat0Q6mj2s3
+         /CalroGQa3m4DUZMg3jYuF1GpReokGgT3fln8d566hptmVH/JnLdl3IPneYE2nmkWKY2
+         3pDBQNxz9q7MNoup043b1keELu9igO+G165+Vea9Zij8/k6Y184kb6Ef/bzgcNvL6FXj
+         bwB2RCkejuEFrgNPmZoR12VWp0GQ8R3xVNGWq+XEt3xDDmQS7O1CfvjrEE9x8H625PRL
+         RiwQ==
+X-Gm-Message-State: APjAAAXpnq2cLZfn/yzUdKkzs9S3Kp3rTHkD2f/WdU8tBrf4AYsGPceF
+        cbYhvJbDOtXxMOenKBwa2UtU4Q==
+X-Google-Smtp-Source: APXvYqz/z/FgxDwJYI+62+a36LnfWXbQpUEZBeelbEV8EKgW2xMpambUM3u4ugadbl2Zr7P1GS1ZNg==
+X-Received: by 2002:a05:6214:8ee:: with SMTP id dr14mr8883132qvb.122.1573747125306;
+        Thu, 14 Nov 2019 07:58:45 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id u7sm2787280qkm.127.2019.11.14.07.58.42
+        by smtp.gmail.com with ESMTPSA id z5sm3414433qtm.9.2019.11.14.07.58.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Nov 2019 07:58:42 -0800 (PST)
+        Thu, 14 Nov 2019 07:58:44 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     fstests@vger.kernel.org, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] fsstress: add the ability to create snapshots
-Date:   Thu, 14 Nov 2019 10:58:35 -0500
-Message-Id: <20191114155836.3528-3-josef@toxicpanda.com>
+Subject: [PATCH 3/3] fsstress: allow operations to use either a directory or subvol
+Date:   Thu, 14 Nov 2019 10:58:36 -0500
+Message-Id: <20191114155836.3528-4-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191114155836.3528-1-josef@toxicpanda.com>
 References: <20191114155836.3528-1-josef@toxicpanda.com>
@@ -61,106 +61,118 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Snapshots are just fancy subvolumes, add this ability so we can stress
-snapshot creation.  We get the deletion with SUBVOL_DELETE.
+Most operations are just looking for a base directory to generate a file
+in, they don't actually need a directory specifically.  Add FT_ANYDIR to
+cover both directories and subvolumes, and then use this in all the
+places where it makes sense.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- ltp/fsstress.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ ltp/fsstress.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/ltp/fsstress.c b/ltp/fsstress.c
-index e0636a12..f7f5f1dc 100644
+index f7f5f1dc..30b2bd94 100644
 --- a/ltp/fsstress.c
 +++ b/ltp/fsstress.c
-@@ -129,6 +129,7 @@ typedef enum {
- 	OP_SETATTR,
- 	OP_SETFATTR,
- 	OP_SETXATTR,
-+	OP_SNAPSHOT,
- 	OP_SPLICE,
- 	OP_STAT,
- 	OP_SUBVOL_CREATE,
-@@ -255,6 +256,7 @@ void	rmdir_f(int, long);
- void	setattr_f(int, long);
- void	setfattr_f(int, long);
- void	setxattr_f(int, long);
-+void	snapshot_f(int, long);
- void	splice_f(int, long);
- void	stat_f(int, long);
- void	subvol_create_f(int, long);
-@@ -322,6 +324,7 @@ opdesc_t	ops[] = {
- 	{ OP_SETFATTR, "setfattr", setfattr_f, 2, 1 },
- 	/* set project id (XFS_IOC_FSSETXATTR ioctl) */
- 	{ OP_SETXATTR, "setxattr", setxattr_f, 1, 1 },
-+	{ OP_SNAPSHOT, "snapshot", snapshot_f, 1, 1 },
- 	{ OP_SPLICE, "splice", splice_f, 1, 1 },
- 	{ OP_STAT, "stat", stat_f, 1, 0 },
- 	{ OP_SUBVOL_CREATE, "subvol_create", subvol_create_f, 1, 1},
-@@ -1903,6 +1906,7 @@ zero_freq(void)
- #define ARRAY_SIZE(a) (sizeof(a) / sizeof(a[0]))
+@@ -200,6 +200,7 @@ struct print_string {
+ #define	FT_ANYm		((1 << FT_nft) - 1)
+ #define	FT_REGFILE	(FT_REGm | FT_RTFm)
+ #define	FT_NOTDIR	(FT_ANYm & (~FT_DIRm & ~FT_SUBVOLm))
++#define FT_ANYDIR	(FT_DIRm | FT_SUBVOLm)
  
- opty_t btrfs_ops[] = {
-+	OP_SNAPSHOT,
- 	OP_SUBVOL_CREATE,
- 	OP_SUBVOL_DELETE,
- };
-@@ -4703,6 +4707,55 @@ out:
- 	free_pathname(&f);
- }
+ #define	FLIST_SLOT_INCR	16
+ #define	NDCACHE	64
+@@ -3165,7 +3166,7 @@ creat_f(int opno, long r)
+ 	int		v;
+ 	int		v1;
  
-+void
-+snapshot_f(int opno, long r)
-+{
-+#ifdef HAVE_BTRFSUTIL_H
-+	enum btrfs_util_error	e;
-+	pathname_t		f;
-+	pathname_t		newf;
-+	fent_t			*fep;
-+	int			id;
-+	int			parid;
-+	int			v;
-+	int			v1;
-+	int			err;
-+
-+	init_pathname(&f);
-+	if (!get_fname(FT_SUBVOLm, r, &f, NULL, &fep, &v)) {
-+		if (v)
-+			printf("%d/%d: snapshot - no subvolume\n", procid,
-+			       opno);
-+		free_pathname(&f);
-+		return;
-+	}
-+	init_pathname(&newf);
-+	parid = fep->id;
-+	err = generate_fname(fep, FT_SUBVOL, &newf, &id, &v1);
-+	v |= v1;
-+	if (!err) {
-+		if (v) {
-+			(void)fent_to_name(&f, fep);
-+			printf("%d/%d: snapshot - no filename from %s\n",
-+			       procid, opno, f.path);
-+		}
-+		free_pathname(&f);
-+		return;
-+	}
-+	e = btrfs_util_create_snapshot(f.path, newf.path, 0, NULL, NULL);
-+	if (e == BTRFS_UTIL_OK)
-+		add_to_flist(FT_SUBVOL, id, parid, 0);
-+	if (v) {
-+		printf("%d/%d: snapshot %s->%s %d(%s)\n", procid, opno,
-+		       f.path, newf.path, e, btrfs_util_strerror(e));
-+		printf("%d/%d: snapshot add id=%d,parent=%d\n", procid, opno,
-+		       id, parid);
-+	}
-+	free_pathname(&newf);
-+	free_pathname(&f);
-+#endif
-+}
-+
- void
- stat_f(int opno, long r)
- {
+-	if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v1))
++	if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v1))
+ 		parid = -1;
+ 	else
+ 		parid = fep->id;
+@@ -3729,7 +3730,7 @@ getdents_f(int opno, long r)
+ 	int		v;
+ 
+ 	init_pathname(&f);
+-	if (!get_fname(FT_DIRm, r, &f, NULL, NULL, &v))
++	if (!get_fname(FT_ANYDIR, r, &f, NULL, NULL, &v))
+ 		append_pathname(&f, ".");
+ 	dir = opendir_path(&f);
+ 	check_cwd();
+@@ -3761,7 +3762,7 @@ getfattr_f(int opno, long r)
+ 	int             xattr_num;
+ 
+ 	init_pathname(&f);
+-	if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
++	if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
+ 		if (v)
+ 			printf("%d/%d: getfattr - no filename\n", procid, opno);
+ 		goto out;
+@@ -3880,7 +3881,7 @@ listfattr_f(int opno, long r)
+ 	int             buffer_len;
+ 
+ 	init_pathname(&f);
+-	if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
++	if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
+ 		if (v)
+ 			printf("%d/%d: listfattr - no filename\n", procid, opno);
+ 		goto out;
+@@ -3930,7 +3931,7 @@ mkdir_f(int opno, long r)
+ 	int		v;
+ 	int		v1;
+ 
+-	if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v))
++	if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
+ 		parid = -1;
+ 	else
+ 		parid = fep->id;
+@@ -3968,7 +3969,7 @@ mknod_f(int opno, long r)
+ 	int		v;
+ 	int		v1;
+ 
+-	if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v))
++	if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
+ 		parid = -1;
+ 	else
+ 		parid = fep->id;
+@@ -4326,7 +4327,7 @@ removefattr_f(int opno, long r)
+ 	int             xattr_num;
+ 
+ 	init_pathname(&f);
+-	if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
++	if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
+ 		if (v)
+ 			printf("%d/%d: removefattr - no filename\n", procid, opno);
+ 		goto out;
+@@ -4646,7 +4647,7 @@ setfattr_f(int opno, long r)
+ 	int             xattr_num;
+ 
+ 	init_pathname(&f);
+-	if (!get_fname(FT_REGFILE | FT_DIRm, r, &f, NULL, &fep, &v)) {
++	if (!get_fname(FT_REGFILE | FT_ANYDIR, r, &f, NULL, &fep, &v)) {
+ 		if (v)
+ 			printf("%d/%d: setfattr - no filename\n", procid, opno);
+ 		goto out;
+@@ -4792,7 +4793,7 @@ subvol_create_f(int opno, long r)
+ 	int			err;
+ 
+ 	init_pathname(&f);
+-	if (!get_fname(FT_DIRm | FT_SUBVOLm, r, NULL, NULL, &fep, &v))
++	if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
+ 		parid = -1;
+ 	else
+ 		parid = fep->id;
+@@ -4872,7 +4873,7 @@ symlink_f(int opno, long r)
+ 	int		v1;
+ 	char		*val;
+ 
+-	if (!get_fname(FT_DIRm, r, NULL, NULL, &fep, &v))
++	if (!get_fname(FT_ANYDIR, r, NULL, NULL, &fep, &v))
+ 		parid = -1;
+ 	else
+ 		parid = fep->id;
 -- 
 2.21.0
 
