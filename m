@@ -2,125 +2,133 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1241FC6E3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 14:02:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 83B31FC70A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 14 Nov 2019 14:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbfKNNCt (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 14 Nov 2019 08:02:49 -0500
-Received: from mx2.suse.de ([195.135.220.15]:36828 "EHLO mx1.suse.de"
+        id S1726598AbfKNNLh (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 14 Nov 2019 08:11:37 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42196 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726139AbfKNNCs (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 14 Nov 2019 08:02:48 -0500
+        id S1726202AbfKNNLg (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 14 Nov 2019 08:11:36 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 223B0B03B;
-        Thu, 14 Nov 2019 13:02:47 +0000 (UTC)
-Subject: Re: [PATCH v2 2/7] btrfs: handle device allocation failure in
- btrfs_close_one_device()
-To:     Anand Jain <anand.jain@oracle.com>, dsterba@suse.cz,
-        David Sterba <dsterba@suse.com>, Qu Wenru <wqu@suse.com>,
-        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
-References: <20191113102728.8835-1-jthumshirn@suse.de>
- <20191113102728.8835-3-jthumshirn@suse.de>
- <20191113145859.GB3001@twin.jikos.cz>
- <4a86d0f6-94cb-24a7-05d1-5297673ac248@suse.de>
- <9fb09a95-ec34-0a45-8f4b-97a6467a2c81@oracle.com>
-From:   Johannes Thumshirn <jthumshirn@suse.de>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <3237fa0f-dcba-06c1-efe4-7af172563abe@suse.de>
-Date:   Thu, 14 Nov 2019 14:02:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        by mx1.suse.de (Postfix) with ESMTP id A71DBACA0;
+        Thu, 14 Nov 2019 13:11:34 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id C6364DABD9; Thu, 14 Nov 2019 14:11:37 +0100 (CET)
+Date:   Thu, 14 Nov 2019 14:11:37 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Qu WenRuo <wqu@suse.com>
+Cc:     Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "dsterba@suse.cz" <dsterba@suse.cz>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 1/2] btrfs: block-group: Fix two rebase errors where
+ assignment for cache is missing
+Message-ID: <20191114131137.GI3001@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Qu WenRuo <wqu@suse.com>,
+        Qu Wenruo <quwenruo.btrfs@gmx.com>,
+        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <20191105013535.14239-1-wqu@suse.com>
+ <20191105013535.14239-2-wqu@suse.com>
+ <20191113143143.GA3001@twin.jikos.cz>
+ <5804867d-d3dc-3fb5-f152-10b9e35b8278@gmx.com>
+ <224a194f-0f6f-d768-03cd-c31e70fdeb14@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <9fb09a95-ec34-0a45-8f4b-97a6467a2c81@oracle.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <224a194f-0f6f-d768-03cd-c31e70fdeb14@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 14/11/2019 11:56, Anand Jain wrote:
-> Yes David is correct why a closed device will still remain in the
->   dev_alloc_list even after the close here in this patch.
+On Thu, Nov 14, 2019 at 01:37:31AM +0000, Qu WenRuo wrote:
+> > On 2019/11/13 下午10:31, David Sterba wrote:
+> >> On Tue, Nov 05, 2019 at 09:35:34AM +0800, Qu Wenruo wrote:
+> >>> Without proper cache->flags, btrfs space info will be screwed up and
+> >>> report error at mount time.
+> >>>
+> >>> And without proper cache->used, commit transaction will report -EEXIST
+> >>> when running delayed refs.
+> >>>
+> >>> Please fold this into the original patch "btrfs: block-group: Refactor btrfs_read_block_groups()".
+> >>>
+> >>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> >>> ---
+> >>>  fs/btrfs/block-group.c | 2 ++
+> >>>  1 file changed, 2 insertions(+)
+> >>>
+> >>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> >>> index b5eededaa750..c2bd85d29070 100644
+> >>> --- a/fs/btrfs/block-group.c
+> >>> +++ b/fs/btrfs/block-group.c
+> >>> @@ -1713,6 +1713,8 @@ static int read_one_block_group(struct btrfs_fs_info *info,
+> >>>  	}
+> >>>  	read_extent_buffer(leaf, &bgi, btrfs_item_ptr_offset(leaf, slot),
+> >>>  			   sizeof(bgi));
+> >>> +	cache->used = btrfs_stack_block_group_used(&bgi);
+> >>> +	cache->flags = btrfs_stack_block_group_flags(&bgi);
+> >>>  	if (!mixed && ((cache->flags & BTRFS_BLOCK_GROUP_METADATA) &&
+> >>>  	    (cache->flags & BTRFS_BLOCK_GROUP_DATA))) {
+> >>>  			btrfs_err(info,
+> >>
+> >> Is it possible that there's another missing bit that got lost during my
+> >> rebase? VM testing is fine but I get a reproducible crash on a physical
+> >> machine with the following stacktrace:
+> >>
+> >>  113 void btrfs_update_space_info(struct btrfs_fs_info *info, u64 flags,
+> >>  114                              u64 total_bytes, u64 bytes_used,
+> >>  115                              u64 bytes_readonly,
+> >>  116                              struct btrfs_space_info **space_info)
+> >>  117 {
+> >>  118         struct btrfs_space_info *found;
+> >>  119         int factor;
+> >>  120
+> >>  121         factor = btrfs_bg_type_to_factor(flags);
+> >>  122
+> >>  123         found = btrfs_find_space_info(info, flags);
+> >>  124         ASSERT(found);
+> > 
+> > It looks like space info is not properly initialized, I'll double check
+> > to ensure no other location lacks the flags/used assignment.
+> 
+> After looking into the latest misc-next branch, I still can't find the
+> reason why it doesn't work.
+> 
+> We have several layers of verification:
+> - Tree checker
+>   This has ensured all BGI on-disk has correct type (DATA, SYS, META
+>   or DATA|META for mixed bg)
+> 
+> - DATA, META, SYS space info created in btrfs_init_space_info()
+>   3 or 2 (for mixed bg) space infos are created according to incompat
+>   flags.
+> 
+> - btrfs_update_space_info() in read_one_block_group()
+>   In it we call btrfs_find_space_info() to find the desired space info.
+>   btrfs_find_space_info() will return a space info as long as *ONE* type
+>   bit matches.
+>   That's to say, even for MIXED_BG case, it would still return the
+>   DATA|META space info if we pass DATA flag.
+> 
+> In theory, it's impossible to hit that ASSERT().
+> If it's a bgi without a valid type profile, it should be rejected by
+> tree-checker.
+> 
+> Even for MIXED_BG feature but without any mixed bgs, we should still
+> find a hit in btrfs_find_space_info().
+> If it's mixed bg without MIXED_BG feature, we should detect it early in
+> read_one_block_group().
+> 
+> So my current guess is, that physical machine is not using the correctly
+> rebased code?
 
-OK, re-visited the Code again. And I think you're right I've moved this
-hunk quite a bit:
-
-        if (test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
-            device->devid != BTRFS_DEV_REPLACE_DEVID) {
-                list_del_init(&device->dev_alloc_list);
-                fs_devices->rw_devices--;
-        }
-
-
-My initial intention was to first have the allocations done so I don't
-have to undo anything in case of a failure.
-
-I'm back to the drawing board here.
--- 
-Johannes Thumshirn                            SUSE Labs Filesystems
-jthumshirn@suse.de                                +49 911 74053 689
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5
-90409 Nürnberg
-Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
-Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
+Thanks for double checking, the assertion failure has disappeared. The
+tested branch was exactly the same so the suspicion goes to the machine.
+I wiped out all testing kernels, recreated the testing branch by hand
+(master+misc-next) and restarted the tests. Strange that this did not
+work the first time I rebuilt from the correct misc-next using scripts.
