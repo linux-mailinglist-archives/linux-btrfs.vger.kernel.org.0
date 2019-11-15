@@ -2,93 +2,145 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF77BFE682
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2019 21:43:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 563CBFE6DE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2019 22:11:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbfKOUnK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Nov 2019 15:43:10 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:37801 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726920AbfKOUnK (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Nov 2019 15:43:10 -0500
-Received: by mail-qk1-f196.google.com with SMTP id e187so9199970qkf.4
-        for <linux-btrfs@vger.kernel.org>; Fri, 15 Nov 2019 12:43:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/KFNvH+dltAQTL/L+E2mXLT34MyE7eVOCmpIyLuaZgs=;
-        b=kzBuUAt49HVgQN82WYuFOWgLlLaB5A3WpmWGQcOqfA8nzfUBtNt4a3CO7IyMMM+Kl9
-         VBTW0TRLP+lECcoiQkWaeyZlL1BHa5C9ZfusxnEsUBPI8f88YoHLyjwFZN2luKcwIBfc
-         BMFaXio0YGJgzeDPibXzEAAxiXCD8KyYpAnOXlSk7KIEhp5wDF8SW+5DA78f/tE4Bv5L
-         kkvycLP4SUW6OaOeB7Yn87j1TIjhR1YdX0gdL+FGdJeEYZXhYy6btxB8ksEUm4Ib8cqq
-         y2SUHdl/qAvXm5lbWJULT+QM7gIaRTWNPWJHJPY4JYEBCE677CLIwLF2eS2llay9AKyl
-         QsNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/KFNvH+dltAQTL/L+E2mXLT34MyE7eVOCmpIyLuaZgs=;
-        b=nNd/hrOAOBeZ5TMJKwI4TrWPPYu1zkjcfhZ2aRN05BOyYN/L9oEs88UtEAMW+BO1bK
-         OxsDQbnN4XI6FmohcZ2g9F+kDTZfqewQgYtZAr3KNksLBSG2nQLpLP1Ssjk9ecoWT+M5
-         h/nJ3+wp9rMA8Z2j0S+khh3WagK7j6WOZMK4KLl/YaoMcWWYZ2a6ASDwJsh0dS7YkVYQ
-         ldP8K1pjij/02cNlOkvWU9EEjPCLfKJaMF1k4v8naRKxsNHjlNjGsjhx/+slardULCBL
-         +S+uAzeW1IVgXxfW3f/YKd5M6FIStzqmt9qC2cYdLf43CaeQ1xAgqGyS/nzL4rvXOHJ8
-         4O0A==
-X-Gm-Message-State: APjAAAWX+M8bZER7XVtIeB4gVmBQHVr+1Ffan4G0hEc7Eprq6tjoABx1
-        R6cGTTc2iUWHri4RE1MfYB2GBTrtF5stwQ==
-X-Google-Smtp-Source: APXvYqwHnDNgYC0OUpmcMWGFk7ZNk+KCcu4U1tCI3bIphZ66LG8N/CZUyE9y6MY67771/ibW22RxVA==
-X-Received: by 2002:a05:620a:3cb:: with SMTP id r11mr14479646qkm.320.1573850588817;
-        Fri, 15 Nov 2019 12:43:08 -0800 (PST)
-Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id o17sm4359342qkg.4.2019.11.15.12.43.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2019 12:43:07 -0800 (PST)
-From:   Josef Bacik <josef@toxicpanda.com>
-To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] btrfs: do not corrupt the fs with rename exchange on a subvol
-Date:   Fri, 15 Nov 2019 15:43:06 -0500
-Message-Id: <20191115204306.3446-1-josef@toxicpanda.com>
-X-Mailer: git-send-email 2.23.0
+        id S1726632AbfKOVLw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Nov 2019 16:11:52 -0500
+Received: from mx2.suse.de ([195.135.220.15]:33342 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726598AbfKOVLw (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 15 Nov 2019 16:11:52 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 282B4B28C;
+        Fri, 15 Nov 2019 21:11:50 +0000 (UTC)
+Subject: Re: [PATCH v2 3/7] btrfs: handle allocation failure in strdup
+To:     Johannes Thumshirn <jthumshirn@suse.de>,
+        David Sterba <dsterba@suse.com>
+Cc:     Qu Wenru <wqu@suse.com>,
+        Linux BTRFS Mailinglist <linux-btrfs@vger.kernel.org>
+References: <20191113102728.8835-1-jthumshirn@suse.de>
+ <20191113102728.8835-4-jthumshirn@suse.de>
+From:   Nikolay Borisov <nborisov@suse.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <e5e3cf46-79c6-e5c8-8229-99cabb932d8c@suse.com>
+Date:   Fri, 15 Nov 2019 23:11:48 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <20191113102728.8835-4-jthumshirn@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Testing with the new fsstress support for subvolumes uncovered a pretty
-bad problem with rename exchange on subvolumes.  We're modifying two
-different subvolumes, but we only start the transaction on one of them,
-so the other one is not added to the dirty root list.  This is caught by
-btrfs_cow_block() with a warning because the root has not been updated,
-however if we do not modify this root again we'll end up pointing at an
-invalid root because the root item is never updated.
 
-Fix this by making sure we add the destination root to the trans list,
-the same as we do with normal renames.  This fixes the corruption.
 
-Fixes: cdd1fedf8261 ("btrfs: add support for RENAME_EXCHANGE and RENAME_WHITEOUT")
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/inode.c | 3 +++
- 1 file changed, 3 insertions(+)
+On 13.11.19 г. 12:27 ч., Johannes Thumshirn wrote:
+> Gracefully handle allocation failures in btrfs_close_one_device()'s
+> rcu_string_strdup() instead of crashing the machine.
+> 
+> Signed-off-by: Johannes Thumshirn <jthumshirn@suse.de>
+> ---
+>  fs/btrfs/volumes.c | 22 ++++++++++++++--------
+>  1 file changed, 14 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 0a2a73907563..e5864ca3bb3b 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -1064,7 +1064,7 @@ static void btrfs_close_bdev(struct btrfs_device *device)
+>  static int btrfs_close_one_device(struct btrfs_device *device)
+>  {
+>  	struct btrfs_fs_devices *fs_devices = device->fs_devices;
+> -	struct btrfs_device *new_device;
+> +	struct btrfs_device *new_device = NULL;
+>  	struct rcu_string *name;
+>  
+>  	new_device = btrfs_alloc_device(NULL, &device->devid,
+> @@ -1072,6 +1072,15 @@ static int btrfs_close_one_device(struct btrfs_device *device)
+>  	if (IS_ERR(new_device))
+>  		goto err_close_device;
+>  
+> +	/* Safe because we are under uuid_mutex */
+> +	if (device->name) {
+> +		name = rcu_string_strdup(device->name->str, GFP_NOFS);
+> +		if (!name)
+> +			goto err_free_device;
+> +
+> +		rcu_assign_pointer(new_device->name, name);
+> +	}
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index f6fc47525a52..56032c518b26 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -9575,6 +9575,9 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 		goto out_notrans;
- 	}
- 
-+	if (dest != root)
-+		btrfs_record_root_in_trans(trans, dest);
-+
- 	/*
- 	 * We need to find a free sequence number both in the source and
- 	 * in the destination directory for the exchange.
--- 
-2.23.0
+This could really be:
 
+
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index e148b13905c5..7bb3cd8afa7a 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1086,11 +1086,8 @@ static void btrfs_close_one_device(struct
+btrfs_device *device)
+        BUG_ON(IS_ERR(new_device)); /* -ENOMEM */
+
+        /* Safe because we are under uuid_mutex */
+-       if (device->name) {
+-               name = rcu_string_strdup(device->name->str, GFP_NOFS);
+-               BUG_ON(!name); /* -ENOMEM */
+-               rcu_assign_pointer(new_device->name, name);
+-       }
++       new_device->name = device->name;
++       device->name = NULL;
+
+        list_replace_rcu(&device->dev_list, &new_device->dev_list);
+        new_device->fs_devices = device->fs_devices;
+
+rcu_string_free already checks if device->name is non-NULL.
+
+
+<snip>
