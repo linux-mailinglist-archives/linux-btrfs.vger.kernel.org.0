@@ -2,94 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F307FD6AF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2019 08:01:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F455FD813
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2019 09:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbfKOHBE convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-btrfs@lfdr.de>); Fri, 15 Nov 2019 02:01:04 -0500
-Received: from azteca-comunicaciones.com ([191.102.66.70]:52358 "EHLO semo.net"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726308AbfKOHBE (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Nov 2019 02:01:04 -0500
-X-Greylist: delayed 21382 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Nov 2019 02:01:04 EST
-Reply-To: yuval@free2312.com
-From:   "Yuval" <tstewart@semo.net>
-To:     linux-btrfs@vger.kernel.org
-Subject: Business Proposal - Please Reply
-Date:   15 Nov 2019 02:01:03 -0500
-Message-ID: <20191115020103.E76926A5AAA4B966@semo.net>
+        id S1726920AbfKOIo5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Nov 2019 03:44:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56496 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725829AbfKOIo5 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 15 Nov 2019 03:44:57 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id F2FDBAC6F;
+        Fri, 15 Nov 2019 08:44:54 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 54295DA783; Fri, 15 Nov 2019 09:44:57 +0100 (CET)
+Date:   Fri, 15 Nov 2019 09:44:57 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     ira.weiny@intel.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] Documentation/fs: Move swap_[de]activate() to
+ file_operations
+Message-ID: <20191115084457.GM3001@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, ira.weiny@intel.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20191114231943.11220-1-ira.weiny@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191114231943.11220-1-ira.weiny@intel.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hello
+On Thu, Nov 14, 2019 at 03:19:43PM -0800, ira.weiny@intel.com wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+> 
+> Update the documentation for the move of the swap_* functions out of
+> address_space_operations and into file_operations.
+> 
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> ---
+> Follow on to the V2 series sent earlier.  If I need to spin a V3 I will squash
+> this into patch 2/2 "fs: Move swap_[de]activate to file_operations"
 
-My name is Yuval Rose, a Client Relations officer at CoinMatic, A 
-crypto currency exchange company based in Canada and one of 
-Canada’s foremost Crypto-currency exchange platforms. I have an 
-urgent lucrative business opportunity for you. I got your details 
-on the internet when I was searching for a reliable person that 
-can handle this deal and I believe you can handle it because you 
-bears the same Last-Name with the dead investor of the business 
-am about to introduce to you. This is a private and confidential 
-message from me to you and I request that it be treated as such.
-
-I am contacting you with respect to an urgent issue regarding a 
-Bitcoin account belonging to a deceased account holder, I got 
-your contact in my quest for a Partner to stand in as a Next of 
-Kin to the deceased account holder, this was from the last 
-details she sent in to the company regarding liquidation of her 
-BTC account, since you might be aware that BTC transactions are 
-mostly anonymous. I contacted you so that you can apply to my 
-company as a relative of the deceased in order to claim the fund. 
-This is as easy as ABC since my company already took a decision 
-that the entire fund would be credited to any relative that comes 
-up for claim before the end of December this year.
-
-The Bitcoin was sold and converted to cash at the request of the 
-late account holder for onward deposit to an account to be 
-advised by her. Upon liquidation, we waited for months for info 
-on the bank account for the deposit but never got a feedback. 
-Upon inquiry, it was confirmed that she passed away (died) after 
-a cancer related ailment.
-
-At a meeting held 2 weeks ago by my Company’s Management on the 
-matter, it was resolved that unless a Next of Kin or any relative 
-of the late account Holder comes forward for claim of the funds 
-on or before 30th of December 2019 (which is practically 
-impossible) the whole funds would be converted back to Bitcoin 
-and becomes part of the Company's portfolio.
-
-With the above in mind, I decided to quickly reach out to you so 
-that you can apply to my company for claim of this fund in the 
-capacity of a Next-of-Kin/Relative. Rest assured that this is a 
-straight forward process with no risks involved whatsoever. Start 
-to finish of the process with fund deposited in your nominated 
-bank account can be achieved within a space of 10 banking days or 
-less. All that I require from you is full cooperation and 
-sincerity.
-
-I am suggestion a sharing ratio of 50/50 split after fund is 
-credited to your account. We shall have to draft up an agreement 
-to that effect if agreed. If this is OK with you and wish to 
-continue with the claim process, I will draft a letter which you 
-would email to my Company as a formal request for claim of this 
-funds.
-
-I await your reply, please provide your private phone number in 
-your reply.
-
-
-Send reply to: yuval@free2312.com
-
-
-Best Regards
-Yuval
-
-
-Toronto-Canada
+Reviewed-by: David Sterba <dsterba@suse.com>
