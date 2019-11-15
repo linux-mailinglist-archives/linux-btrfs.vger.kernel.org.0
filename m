@@ -2,53 +2,75 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00100FE299
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2019 17:20:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1AA4FE30C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2019 17:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727556AbfKOQUk (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Nov 2019 11:20:40 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38216 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727423AbfKOQUk (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Nov 2019 11:20:40 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id ED724AEEE;
-        Fri, 15 Nov 2019 16:20:38 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id E3BBFDA7D3; Fri, 15 Nov 2019 17:20:41 +0100 (CET)
-Date:   Fri, 15 Nov 2019 17:20:41 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     damenly.su@gmail.com
-Cc:     linux-btrfs@vger.kernel.org, Damenly_Su@gmx.com
-Subject: Re: [PATCH 1/2] btrfs-progs: add comments of block group lookup
- functions
-Message-ID: <20191115162041.GA3001@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, damenly.su@gmail.com,
-        linux-btrfs@vger.kernel.org, Damenly_Su@gmx.com
-References: <20191111084226.475957-1-Damenly_Su@gmx.com>
+        id S1727577AbfKOQpO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Nov 2019 11:45:14 -0500
+Received: from bombadil.infradead.org ([198.137.202.133]:56606 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727543AbfKOQpO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 15 Nov 2019 11:45:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=fgQvum3QLVrdMFGmAv4Ff4UwCxQGnqqjYsqE9IiuPhA=; b=ZyOFhs34r9pHccgAmsHeIpJ+M
+        CS5hmHfbxoA2N9qul5IbKplnFDaP7NoGn/7tI/66OaokTW6lBMYWzBFrc8PU25S0a0b+GOQvHcQDo
+        U7QhFgv0JLxn3IHNokjhE1YAHsTp7zJq+xa915sdHEtNI5Q7rzfEVa70EJ/xvALMSHiThrvFNzdcB
+        1yzeFeXIr2gfZWKtXdFLmorRARkoPhYmrVzWvIn9BODS5lOCJhNCs+mlGeflsZL6J9Yq7mSgGie8B
+        Q5TXN+uQI6znsZ+tLMU8cI9gKwloBOuKkNpxp0urpgwrSnVTEXSdI4uWJcODzMIzw08rZVApP16si
+        W9kGfYv3g==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iVeif-0008IN-DO; Fri, 15 Nov 2019 16:45:13 +0000
+Date:   Fri, 15 Nov 2019 08:45:13 -0800
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc:     linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        hch@infradead.org, darrick.wong@oracle.com,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>
+Subject: Re: [PATCH 2/7] btrfs: basic direct I/O read operation
+Message-ID: <20191115164513.GA26016@infradead.org>
+References: <20191115161700.12305-1-rgoldwyn@suse.de>
+ <20191115161700.12305-3-rgoldwyn@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191111084226.475957-1-Damenly_Su@gmx.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20191115161700.12305-3-rgoldwyn@suse.de>
+User-Agent: Mutt/1.12.1 (2019-06-15)
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 11, 2019 at 04:42:25PM +0800, damenly.su@gmail.com wrote:
-> From: Su Yue <Damenly_Su@gmx.com>
-> 
-> The progs side function btrfs_lookup_first_block_group() calls
-> find_first_extent_bit() to find block group which contains bytenr
-> or after the bytenr. This behavior differs from kernel code, so
-> add the comments.
-> 
-> Add the coments of btrfs_lookup_block_group() too, this one works
-> like kernel side.
-> 
-> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
+On Fri, Nov 15, 2019 at 10:16:55AM -0600, Goldwyn Rodrigues wrote:
+> +/*
+> + * get_iomap: Get the block map and fill the iomap structure
+> + * @pos: file position
+> + * @length: I/O length
+> + * @iomap: The iomap structure to fill
+> + */
+> +
+> +static int get_iomap(struct inode *inode, loff_t pos, loff_t length,
+> +		struct iomap *iomap)
 
-1 and 2 added to devel, thanks.
+The function name probably wants a btrfs_ prefix.
+
+> +{
+> +	struct extent_map *em;
+> +	iomap->addr = IOMAP_NULL_ADDR;
+
+Please add an empty line after the variable declaration.
+
+> +static int btrfs_dio_iomap_begin(struct inode *inode, loff_t pos,
+> +		loff_t length, unsigned flags, struct iomap *iomap,
+> +		struct iomap *srcmap)
+> +{
+> +	return get_iomap(inode, pos, length, iomap);
+> +}
+
+Or do we even need the separate helper for now?
