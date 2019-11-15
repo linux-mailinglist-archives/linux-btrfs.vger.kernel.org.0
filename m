@@ -2,90 +2,76 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC17FDB5B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2019 11:28:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69AAFDC68
+	for <lists+linux-btrfs@lfdr.de>; Fri, 15 Nov 2019 12:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727208AbfKOK22 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 15 Nov 2019 05:28:28 -0500
-Received: from mx2.suse.de ([195.135.220.15]:37998 "EHLO mx1.suse.de"
+        id S1727492AbfKOLkI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 15 Nov 2019 06:40:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52832 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727122AbfKOK22 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 15 Nov 2019 05:28:28 -0500
+        id S1727412AbfKOLkI (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 15 Nov 2019 06:40:08 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id B723AB271;
-        Fri, 15 Nov 2019 10:28:26 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id E7626ACB4;
+        Fri, 15 Nov 2019 11:40:06 +0000 (UTC)
 Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 91B7FDA783; Fri, 15 Nov 2019 11:28:29 +0100 (CET)
-Date:   Fri, 15 Nov 2019 11:28:29 +0100
+        id E4616DA783; Fri, 15 Nov 2019 12:40:09 +0100 (CET)
+Date:   Fri, 15 Nov 2019 12:40:09 +0100
 From:   David Sterba <dsterba@suse.cz>
-To:     Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-Cc:     dsterba@suse.cz, Neal Gompa <ngompa13@gmail.com>,
-        David Sterba <dsterba@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH v3 0/4] RAID1 with 3- and 4- copies
-Message-ID: <20191115102829.GP3001@twin.jikos.cz>
+To:     Qu Wenruo <wqu@suse.com>
+Cc:     linux-btrfs@vger.kernel.org,
+        Christian Pernegger <pernegger@gmail.com>
+Subject: Re: [PATCH 2/2] btrfs: rescue/zero-log: Manually write all supers to
+ handle extent tree error more gracefully
+Message-ID: <20191115114009.GQ3001@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Zygo Blaxell <ce3g8jdj@umail.furryterror.org>,
-        Neal Gompa <ngompa13@gmail.com>, David Sterba <dsterba@suse.com>,
-        Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <cover.1572534591.git.dsterba@suse.com>
- <CAEg-Je_oNz5BtpRAF3fzfX1G-Dhh7yjpshyy47NwLaREWv0wBQ@mail.gmail.com>
- <20191101150908.GU3001@twin.jikos.cz>
- <20191114051324.GZ22121@hungrycats.org>
+Mail-Followup-To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>,
+        linux-btrfs@vger.kernel.org,
+        Christian Pernegger <pernegger@gmail.com>
+References: <20191111075059.30352-1-wqu@suse.com>
+ <20191111075059.30352-2-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191114051324.GZ22121@hungrycats.org>
+In-Reply-To: <20191111075059.30352-2-wqu@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 12:13:24AM -0500, Zygo Blaxell wrote:
-> On Fri, Nov 01, 2019 at 04:09:08PM +0100, David Sterba wrote:
-> > The raid1c34 patches are not intrusive and could be backported on top of
-> > 5.3 because all the preparatory work has been merged already.
+On Mon, Nov 11, 2019 at 03:50:59PM +0800, Qu Wenruo wrote:
+> [BUG]
+> Even "btrfs rescue zero-log" only reset btrfs_super_block::log_root and
+> btrfs_super_block::log_root_level, we still use trasction to write all
+> super blocks for all devices.
 > 
-> Indeed, that's how I ended up testing them.  I couldn't get the 5.4-rc
-> kernels to run long enough to do meaningful testing before they locked
-> up.  I tested with 5.3.8 + patches.
+> This means we can't handle things like corrupted extent tree:
 > 
-> I left out the last patch that removes the raid1c3 incompat flag because
-> 5.3 didn't have the block group tree code to apply it to.
+>   checksum verify failed on 2172747776 found 000000B6 wanted 00000000
+>   checksum verify failed on 2172747776 found 000000B6 wanted 00000000
+>   bad tree block 2172747776, bytenr mismatch, want=2172747776, have=0
+>   WARNING: could not setup extent tree, skipping it
+>   Clearing log on /dev/nvme/btrfs, previous log_root 0, level 0
+>   ERROR: Corrupted fs, no valid METADATA block group found
+>   ERROR: attempt to start transaction over already running one
 > 
-> I ran my raid1 and raid56 corruption recovery tests modified for raid1c3.
-> The first test is roughly:
+> [CAUSE]
+> Because we have extra check in transaction code to ensure we have valid
+> METADATA block groups.
 > 
-> 	mkfs.btrfs -draid1c3 -mraid1c3 /dev/vd[bcdef]
-> 	mount /dev/vdb /test
-> 	cp -a 9GB_data /test
-> 	sync
-> 	sysctl vm.drop_caches=3
-> 	diff -r 9GB_data /test
-> 	head -c 9g /dev/urandom > /dev/vdb
-> 	head -c 9g /dev/urandom > /dev/vdc
-> 	sync
-> 	sysctl vm.drop_caches=3
-> 	diff -r 9GB_data /test
-> 	btrfs scrub start -Bd /test
-> 	sysctl vm.drop_caches=3
-> 	diff -r 9GB_data /test
-> 	btrfs scrub start -Bd /test
-> 	sysctl vm.drop_caches=3
-> 	diff -r 9GB_data /test
+> In fact we don't really need transaction at all.
 > 
-> First scrub reported a lot of corruption on /dev/vdb and /dev/vdc.  Second
-> scrub reported no errors.  diff (all instances) reported no differences.
+> [FIX]
+> Instead of commit transaction, we can just call write_all_supers()
+> manually, so we can still handle multi-device fs while avoid above
+> error.
 > 
-> Second test is:
+> Also, add OPEN_CTREE_NO_BLOCK_GROUPS open ctree flag to make it more
+> robust.
 > 
-> 	mkfs.btrfs -draid6 -mraid1c3 /dev/vd[bcdef]
-> 	# rest as above...
-> 
-> Similar results:  first scrub reported many errors as expected.
-> Second scrub reported no errors.  No diffs.
+> Reported-by: Christian Pernegger <pernegger@gmail.com>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Thanks for the tests.
+Thanks, v1 has been replaced.
