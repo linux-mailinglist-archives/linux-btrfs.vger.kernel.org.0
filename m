@@ -2,108 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F316100043
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2019 09:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAC41000A1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2019 09:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbfKRIXa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Nov 2019 03:23:30 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47828 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726415AbfKRIX3 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Nov 2019 03:23:29 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 79FB7B31B;
-        Mon, 18 Nov 2019 08:23:27 +0000 (UTC)
-Subject: Re: [PATCH 0/4] btrfs-progs: Compiling warning fixes for devel branch
-To:     Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-Cc:     osandov@osandov.com
-References: <20191118063052.56970-1-wqu@suse.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <0a1a7155-0bf3-b6fd-d750-4e1caa000f9e@suse.com>
-Date:   Mon, 18 Nov 2019 10:23:25 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1726420AbfKRIrG (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Nov 2019 03:47:06 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:52546 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726371AbfKRIrF (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 18 Nov 2019 03:47:05 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAI8i4Tr076478
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:04 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2019-08-05; bh=V2eszgGBUw3zxjtw1YwPnNqDitsEOtijy+PxQpw+YYQ=;
+ b=PNL5xrBNDM1YyNN6nml4ueEiqhHkQMaoKXEmMiHCFISPrFNdR1iXtBkxXtfGi9K2FylU
+ xZKqTXuXRMfOAt3Ok8T9JsoapT9ouw7JRCcYkqZ4BJo1LHa0T+vW/Gi2NekbZQpoOf36
+ QiYklxf8z9YkFRU9YdjutZqdsIFKAvRlSQ3qXdcWsLe41c14nld0Jb8bILrMtNP7r5P7
+ pwfwGenD1LnOQUNU0aE2adSwi+8V3n0tGBEnYaYrrLA1o2uLj27QvgqXex4NH9X+GBGY
+ sZ2hDmuxFLjq/bIL4PRR6YSlMWXeWmWvYrR+aFBeGAg1LZStz6359+P6wnpB+IhptwIB xg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2wa9rq6gh0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:04 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAI8i3mZ156221
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:03 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2wau946cvu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:03 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAI8l18J005405
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:02 GMT
+Received: from mb.wifi.oracle.com (/192.188.170.109)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 18 Nov 2019 00:47:01 -0800
+From:   Anand Jain <anand.jain@oracle.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH 00/15] btrfs: sysfs, cleanups
+Date:   Mon, 18 Nov 2019 16:46:41 +0800
+Message-Id: <20191118084656.3089-1-anand.jain@oracle.com>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-In-Reply-To: <20191118063052.56970-1-wqu@suse.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9444 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=3 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=680
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911180079
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9444 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=3 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=740 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911180079
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Mostly cleanups patches.
 
+Patches 1-7 are renames, code moves patches and there are no
+functional changes.
 
-On 18.11.19 г. 8:30 ч., Qu Wenruo wrote:
-> We have several compiling errors, in devel branch.
-> One looks like a false alert from compiler, the first patch will
-> workaround it.
-> 
-> 3 warning from libbtrfsutils are due to python3.8 changes.
-> Handle it properly by using designated initialization, which also saves
-> us quite some lines.
-> 
-> Qu Wenruo (4):
->   btrfs-progs: check/lowmem: Fix a false alert on uninitialized value
->   btrfs-progs: libbtrfsutil: Convert to designated initialization for
->     BtrfsUtilError_type
->   btrfs-progs: libbtrfsutil: Convert to designated initialization for
->     QgroupInherit_type
->   btrfs-progs: libbtrfsutil: Convert to designated initialization for
->     SubvolumeIterator_type
-> 
->  check/mode-common.c             |  2 +-
->  libbtrfsutil/python/error.c     | 49 ++++++++-------------------------
->  libbtrfsutil/python/qgroup.c    | 43 ++++++-----------------------
->  libbtrfsutil/python/subvolume.c | 44 ++++++-----------------------
->  4 files changed, 30 insertions(+), 108 deletions(-)
-> 
+Patch 8 drops unused argument in the function btrfs_sysfs_add_fsid().
+Patch 9 merges two small functions which is an extension of the other.
 
-For the whole series:
+Patches 10,11 and 13 removes unnecessary features in the functions, 
+originally it was planned to provide sysfs attributes for the scanned
+and unmounted devices, as in the un-merged patch in the mailing list [1]
+   [1] [PATCH] btrfs: Introduce device pool sysfs attributes
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+Patch 12 merges functions.
+
+Patches 14,15 are code optimize patches.
+
+Anand Jain (15):
+  btrfs: sysfs, rename device_link add,remove functions
+  btrfs: sysfs, rename btrfs_sysfs_add_device()
+  btrfs: sysfs, rename btrfs_device member device_dir_kobj
+  btrfs: sysfs, move declared struct near its use
+  btrfs: sysfs, move /sys/fs/btrfs/UUID related functions together
+  btrfs: sysfs, move add remove _mounted function together
+  btrfs: sysfs, delete code in a comment
+  btrfs: sysfs, btrfs_sysfs_add_fsid() drop unused argument parent
+  btrfs: sysfs, merge btrfs_sysfs_add devices_dir and fsid
+  btrfs: volume, btrfs_free_stale_devices() cleanup unreachable code
+  btrfs: sysfs, migrate fs_decvices::fsid_kobject to struct
+    btrfs_fs_info
+  btrfs: sysfs, unexport btrfs_sysfs_add_mounted()
+  btrfs: sysfs, cleanup btrfs_sysfs_remove_fsid()
+  btrfs: sysfs, merge btrfs_sysfs_remove_fsid() helper function
+  btrfs: sysfs, unexport btrfs_sysfs_remove_mounted()
+
+ fs/btrfs/ctree.h       |   2 +
+ fs/btrfs/dev-replace.c |   4 +-
+ fs/btrfs/disk-io.c     |  25 +---
+ fs/btrfs/sysfs.c       | 258 ++++++++++++++++++-----------------------
+ fs/btrfs/sysfs.h       |  12 +-
+ fs/btrfs/volumes.c     |  10 +-
+ fs/btrfs/volumes.h     |   3 +-
+ 7 files changed, 134 insertions(+), 180 deletions(-)
+
+-- 
+2.23.0
+
