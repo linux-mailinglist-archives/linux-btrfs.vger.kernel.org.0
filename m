@@ -2,117 +2,122 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C23B0FFE88
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2019 07:31:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA45FFF48
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2019 08:05:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726619AbfKRGbH (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Nov 2019 01:31:07 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38366 "EHLO mx1.suse.de"
+        id S1726708AbfKRHFf (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Nov 2019 02:05:35 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48002 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726595AbfKRGbH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Nov 2019 01:31:07 -0500
+        id S1726483AbfKRHFf (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 18 Nov 2019 02:05:35 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id AB614B256;
-        Mon, 18 Nov 2019 06:31:05 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 681B1AFBF;
+        Mon, 18 Nov 2019 07:05:33 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
-Cc:     osandov@osandov.com
-Subject: [PATCH 4/4] btrfs-progs: libbtrfsutil: Convert to designated initialization for SubvolumeIterator_type
-Date:   Mon, 18 Nov 2019 14:30:52 +0800
-Message-Id: <20191118063052.56970-5-wqu@suse.com>
+Cc:     Nathan Dehnel <ncdehnel@gmail.com>
+Subject: [PATCH] btrfs: resize: Allow user to shrink missing device
+Date:   Mon, 18 Nov 2019 15:05:25 +0800
+Message-Id: <20191118070525.62844-1-wqu@suse.com>
 X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20191118063052.56970-1-wqu@suse.com>
-References: <20191118063052.56970-1-wqu@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When compiling btrfs-progs with libbtrfsutil on a python3.8 system, we
-got the following warning:
+One user reported an use case where one device can't be replaced due to
+tiny device size difference.
 
-  subvolume.c:636:2: warning: initialization of ‘long int’ from ‘void *’ makes integer from pointer without a cast [-Wint-conversion]
-    636 |  NULL,     /* tp_print */
-        |  ^~~~
-  subvolume.c:636:2: note: (near initialization for ‘SubvolumeIterator_type.tp_vectorcall_offset’)
+Since it's a RAID10 fs, if we go regular "remove missing" it can take a
+long time and even not be possible due to lack of space.
 
-[CAUSE]
-C definition of PyTypeObject changed in python 3.8.
-Now at the old tp_print, we have tp_vectorcall_offset.
+So here we work around this situation by allowing user to shrink missing
+device.
+Then user can go shrink the device first, then replace it.
 
-So we got above warning.
-
-[FIX]
-C has designated initialization, which can assign values to each named
-member, without hard coding to match the offset.
-And all the other uninitialized values will be set to 0, so we can save
-a lot of unneeded "= 0" or "= NULL" lines.
-
-Just use that awesome feature to avoid any future breakage.
-
+Reported-by: Nathan Dehnel <ncdehnel@gmail.com>
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- libbtrfsutil/python/subvolume.c | 44 +++++++--------------------------
- 1 file changed, 9 insertions(+), 35 deletions(-)
+ fs/btrfs/ioctl.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
-diff --git a/libbtrfsutil/python/subvolume.c b/libbtrfsutil/python/subvolume.c
-index 0f893b9171fa..a837d2e32f36 100644
---- a/libbtrfsutil/python/subvolume.c
-+++ b/libbtrfsutil/python/subvolume.c
-@@ -629,39 +629,13 @@ static PyMethodDef SubvolumeIterator_methods[] = {
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index de730e56d3f5..ebd2f40aca6f 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -1604,6 +1604,7 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+ 	char *sizestr;
+ 	char *retptr;
+ 	char *devstr = NULL;
++	bool missing;
+ 	int ret = 0;
+ 	int mod = 0;
  
- PyTypeObject SubvolumeIterator_type = {
- 	PyVarObject_HEAD_INIT(NULL, 0)
--	"btrfsutil.SubvolumeIterator",		/* tp_name */
--	sizeof(SubvolumeIterator),		/* tp_basicsize */
--	0,					/* tp_itemsize */
--	(destructor)SubvolumeIterator_dealloc,	/* tp_dealloc */
--	NULL,					/* tp_print */
--	NULL,					/* tp_getattr */
--	NULL,					/* tp_setattr */
--	NULL,					/* tp_as_async */
--	NULL,					/* tp_repr */
--	NULL,					/* tp_as_number */
--	NULL,					/* tp_as_sequence */
--	NULL,					/* tp_as_mapping */
--	NULL,					/* tp_hash  */
--	NULL,					/* tp_call */
--	NULL,					/* tp_str */
--	NULL,					/* tp_getattro */
--	NULL,					/* tp_setattro */
--	NULL,					/* tp_as_buffer */
--	Py_TPFLAGS_DEFAULT,			/* tp_flags */
--	SubvolumeIterator_DOC,			/* tp_doc */
--	NULL,					/* tp_traverse */
--	NULL,					/* tp_clear */
--	NULL,					/* tp_richcompare */
--	0,					/* tp_weaklistoffset */
--	PyObject_SelfIter,			/* tp_iter */
--	(iternextfunc)SubvolumeIterator_next,	/* tp_iternext */
--	SubvolumeIterator_methods,		/* tp_methods */
--	NULL,					/* tp_members */
--	NULL,					/* tp_getset */
--	NULL,					/* tp_base */
--	NULL,					/* tp_dict */
--	NULL,					/* tp_descr_get */
--	NULL,					/* tp_descr_set */
--	0,					/* tp_dictoffset */
--	(initproc)SubvolumeIterator_init,	/* tp_init */
-+	.tp_name		= "btrfsutil.SubvolumeIterator",
-+	.tp_basicsize		= sizeof(SubvolumeIterator),
-+	.tp_dealloc		= (destructor)SubvolumeIterator_dealloc,
-+	.tp_flags		= Py_TPFLAGS_DEFAULT,
-+	.tp_doc			= SubvolumeIterator_DOC,
-+	.tp_iter		= PyObject_SelfIter,
-+	.tp_iternext		= (iternextfunc)SubvolumeIterator_next,
-+	.tp_methods		= SubvolumeIterator_methods,
-+	.tp_init		= (initproc)SubvolumeIterator_init,
- };
+@@ -1651,7 +1652,10 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+ 		goto out_free;
+ 	}
+ 
+-	if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state)) {
++
++	missing = test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
++	if (!test_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state) &&
++	    !missing) {
+ 		btrfs_info(fs_info,
+ 			   "resizer unable to apply on readonly device %llu",
+ 		       devid);
+@@ -1659,13 +1663,24 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+ 		goto out_free;
+ 	}
+ 
+-	if (!strcmp(sizestr, "max"))
++	if (!strcmp(sizestr, "max")) {
++		if (missing) {
++			btrfs_info(fs_info,
++				"'max' can't be used for missing device %llu",
++				   devid);
++			ret = -EPERM;
++			goto out_free;
++		}
+ 		new_size = device->bdev->bd_inode->i_size;
+-	else {
++	} else {
+ 		if (sizestr[0] == '-') {
+ 			mod = -1;
+ 			sizestr++;
+ 		} else if (sizestr[0] == '+') {
++			if (missing)
++				btrfs_info(fs_info,
++				"'+size' can't be used for missing device %llu",
++					   devid);
+ 			mod = 1;
+ 			sizestr++;
+ 		}
+@@ -1694,6 +1709,12 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+ 			ret = -ERANGE;
+ 			goto out_free;
+ 		}
++		if (missing) {
++			ret = -EINVAL;
++			btrfs_info(fs_info,
++			"can not increase device size for missing device %llu",
++				   devid);
++		}
+ 		new_size = old_size + new_size;
+ 	}
+ 
+@@ -1701,7 +1722,7 @@ static noinline int btrfs_ioctl_resize(struct file *file,
+ 		ret = -EINVAL;
+ 		goto out_free;
+ 	}
+-	if (new_size > device->bdev->bd_inode->i_size) {
++	if (!missing && new_size > device->bdev->bd_inode->i_size) {
+ 		ret = -EFBIG;
+ 		goto out_free;
+ 	}
 -- 
 2.24.0
 
