@@ -2,26 +2,28 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 08329FFE84
-	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2019 07:31:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61DB8FFE85
+	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2019 07:31:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726551AbfKRGa7 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Nov 2019 01:30:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:38334 "EHLO mx1.suse.de"
+        id S1726579AbfKRGbB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Nov 2019 01:31:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38342 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726538AbfKRGa7 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Nov 2019 01:30:59 -0500
+        id S1726538AbfKRGbB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 18 Nov 2019 01:31:01 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 3C17AB246;
-        Mon, 18 Nov 2019 06:30:58 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 89B5EB256;
+        Mon, 18 Nov 2019 06:30:59 +0000 (UTC)
 From:   Qu Wenruo <wqu@suse.com>
 To:     linux-btrfs@vger.kernel.org
 Cc:     osandov@osandov.com
-Subject: [PATCH 0/4] btrfs-progs: Compiling warning fixes for devel branch
-Date:   Mon, 18 Nov 2019 14:30:48 +0800
-Message-Id: <20191118063052.56970-1-wqu@suse.com>
+Subject: [PATCH 1/4] btrfs-progs: check/lowmem: Fix a false alert on uninitialized value
+Date:   Mon, 18 Nov 2019 14:30:49 +0800
+Message-Id: <20191118063052.56970-2-wqu@suse.com>
 X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191118063052.56970-1-wqu@suse.com>
+References: <20191118063052.56970-1-wqu@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -30,29 +32,50 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-We have several compiling errors, in devel branch.
-One looks like a false alert from compiler, the first patch will
-workaround it.
+[BUG]
+When compiling the devel branch with commit fb8f05e40b458
+("btrfs-progs: check: Make repair_imode_common() handle inodes in
+subvolume trees"), the following warning will be reported:
 
-3 warning from libbtrfsutils are due to python3.8 changes.
-Handle it properly by using designated initialization, which also saves
-us quite some lines.
+  check/mode-common.c: In function ‘detect_imode’:
+  check/mode-common.c|1071 col 23| warning: ‘imode’ may be used uninitialized in this function [-Wmaybe-uninitialized]
+  1071 |   *imode_ret = (imode | 0700);
+       |                ~~~~~~~^~~~~~~
 
-Qu Wenruo (4):
-  btrfs-progs: check/lowmem: Fix a false alert on uninitialized value
-  btrfs-progs: libbtrfsutil: Convert to designated initialization for
-    BtrfsUtilError_type
-  btrfs-progs: libbtrfsutil: Convert to designated initialization for
-    QgroupInherit_type
-  btrfs-progs: libbtrfsutil: Convert to designated initialization for
-    SubvolumeIterator_type
+This only occurs for regular build. If compiled with D=1, the warning
+just disappears.
 
- check/mode-common.c             |  2 +-
- libbtrfsutil/python/error.c     | 49 ++++++++-------------------------
- libbtrfsutil/python/qgroup.c    | 43 ++++++-----------------------
- libbtrfsutil/python/subvolume.c | 44 ++++++-----------------------
- 4 files changed, 30 insertions(+), 108 deletions(-)
+[CAUSE]
+Looks like a bug in gcc optimization.
+The code will only set @imode_ret when @found is true.
+And for every "found = true" assignment we have assigned @imode.
+So this is just a false alert.
 
+[FIX]
+I hope I can fix the problem of GCC, but obviously I can't (at least for
+now).
+
+So let's assign an initial value 0 to @imode to suppress the false
+alert.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ check/mode-common.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/check/mode-common.c b/check/mode-common.c
+index 10ad6d228a03..9e81082b10aa 100644
+--- a/check/mode-common.c
++++ b/check/mode-common.c
+@@ -972,7 +972,7 @@ int detect_imode(struct btrfs_root *root, struct btrfs_path *path,
+ 	struct btrfs_inode_item iitem;
+ 	bool found = false;
+ 	u64 ino;
+-	u32 imode;
++	u32 imode = 0;
+ 	int ret = 0;
+ 
+ 	btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
 -- 
 2.24.0
 
