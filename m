@@ -2,50 +2,50 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B57E1000A3
+	by mail.lfdr.de (Postfix) with ESMTP id 8458D1000A4
 	for <lists+linux-btrfs@lfdr.de>; Mon, 18 Nov 2019 09:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbfKRIrK (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Nov 2019 03:47:10 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:47558 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726371AbfKRIrK (ORCPT
+        id S1726472AbfKRIrM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 18 Nov 2019 03:47:12 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:48028 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726464AbfKRIrL (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Nov 2019 03:47:10 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAI8iOZQ094169
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:08 GMT
+        Mon, 18 Nov 2019 03:47:11 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAI8i5qR105268
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:09 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=corp-2019-08-05;
- bh=CGnq32Ivd/twgu8kzg/T9TaNUxZaHhwDceD2Wm4eE28=;
- b=OmiQVHPfPaZRwNuePa5pUT62NJOSj5GiigYmrc+rHF0KDdnCml8USETlG6hnnye8A1Xw
- pPz7TUOMbrftLtqPSVxgGttmQtJ3Ye/64q0Kf+lHCR3Mf4wfrx5eE0bgeDmuaaWjc8lS
- V1vVcZSE6T4GJ+odOwWgY6CBKYX0cGqSBUxMz7cKVENnOgbadS6eU3MlmYSEEN2jT/g/
- u+9JUDKz2CdCg2oOGlpTXESiP3h2Z+xrjftnEZnZmOyBT4XOCqfNWrwFjZF2gZNiKjod
- y8wArC2C5Vw4lgFgX9eAQqBVlHOynpBLxrDZuYq5/hYPzOyRVYoFXCJzycqF3K62Abyu Tg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 2wa92pek8m-1
+ bh=sV0W/6Zpjeyn8J6xzbbJL1by47YfLsxaZwHUPBIPmNU=;
+ b=CdOLikqC/+53TsoHSKlc9IhIcZQ15GMGX/Waj6SC2ADTzH0J9dtS6py7DYm7EYTR2MAl
+ dCMFBL3i00cp1mOS4hScKfBHVwe9X6FtjXdC8eZ+d2mzUHVu5cJPLP4J331MJ+UoXpw1
+ BezNy3UB6wyWBgM6N8G+jzWILRaPVtH0DB5XUWblRIUFeJzKWvKE9a+wLh9GIP4a7Pwf
+ ErZgq5aNQC9rBuVvAI80KjuDk6Mpr/DCuzkO8vCvtWmbZQWMUJw4mTBIcMBgrLoIzyrC
+ wirGgCG/NkPtT1zP9luK9XlANM7fKQHUGhh4Dc1+qZuLTOwKUBoQPSbc840oVrSd1hrE BA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2wa8htenpv-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:08 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAI8hwIU021170
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:07 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3020.oracle.com with ESMTP id 2wau8mtacj-1
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:09 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAI8iNr8091218
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:09 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 2watjx33jn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:07 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:09 +0000
 Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAI8l69K018801
-        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:06 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAI8l87N010655
+        for <linux-btrfs@vger.kernel.org>; Mon, 18 Nov 2019 08:47:08 GMT
 Received: from mb.wifi.oracle.com (/192.188.170.109)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 18 Nov 2019 00:47:05 -0800
+        with ESMTP ; Mon, 18 Nov 2019 00:47:08 -0800
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH 02/15] btrfs: sysfs, rename btrfs_sysfs_add_device()
-Date:   Mon, 18 Nov 2019 16:46:43 +0800
-Message-Id: <20191118084656.3089-3-anand.jain@oracle.com>
+Subject: [PATCH 03/15] btrfs: sysfs, rename btrfs_device member device_dir_kobj
+Date:   Mon, 18 Nov 2019 16:46:44 +0800
+Message-Id: <20191118084656.3089-4-anand.jain@oracle.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191118084656.3089-1-anand.jain@oracle.com>
 References: <20191118084656.3089-1-anand.jain@oracle.com>
@@ -67,56 +67,103 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-btrfs_sysfs_add_device() creates the directory /sys/fs/btrfs/UUID/devices
-but its function name is misleading. Rename it to
-btrfs_sysfs_add_devices_dir() instead. No functional changes.
+The struct member btrfs_device::device_dir_kobj holds the kobj of the
+sysfs directory /sys/fs/btrfs/UUID/devices, so rename its holder from
+device_dir_kobj to devices_dir_kobj. No functional changes.
 
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
- fs/btrfs/disk-io.c | 2 +-
- fs/btrfs/sysfs.c   | 2 +-
- fs/btrfs/sysfs.h   | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ fs/btrfs/sysfs.c   | 28 ++++++++++++++--------------
+ fs/btrfs/volumes.h |  2 +-
+ 2 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index e0edfdc9c82b..72191c213ac4 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3089,7 +3089,7 @@ int __cold open_ctree(struct super_block *sb,
- 		goto fail_block_groups;
- 	}
- 
--	ret = btrfs_sysfs_add_device(fs_devices);
-+	ret = btrfs_sysfs_add_devices_dir(fs_devices);
- 	if (ret) {
- 		btrfs_err(fs_info, "failed to init sysfs device interface: %d",
- 				ret);
 diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index 76ee266f0b8d..399b9c46790c 100644
+index 399b9c46790c..1d58187a6b33 100644
 --- a/fs/btrfs/sysfs.c
 +++ b/fs/btrfs/sysfs.c
-@@ -1007,7 +1007,7 @@ int btrfs_sysfs_remove_device_info(struct btrfs_fs_devices *fs_devices,
- 	return 0;
- }
+@@ -744,10 +744,10 @@ static int addrm_unknown_feature_attrs(struct btrfs_fs_info *fs_info, bool add)
  
--int btrfs_sysfs_add_device(struct btrfs_fs_devices *fs_devs)
-+int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devs)
+ static void __btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs)
  {
- 	if (!fs_devs->device_dir_kobj)
- 		fs_devs->device_dir_kobj = kobject_create_and_add("devices",
-diff --git a/fs/btrfs/sysfs.h b/fs/btrfs/sysfs.h
-index 4b624e7d97c1..3dac8e163056 100644
---- a/fs/btrfs/sysfs.h
-+++ b/fs/btrfs/sysfs.h
-@@ -20,7 +20,7 @@ int btrfs_sysfs_remove_device_info(struct btrfs_fs_devices *fs_devices,
-                 struct btrfs_device *one_device);
- int btrfs_sysfs_add_fsid(struct btrfs_fs_devices *fs_devs,
- 				struct kobject *parent);
--int btrfs_sysfs_add_device(struct btrfs_fs_devices *fs_devs);
-+int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devs);
- void btrfs_sysfs_remove_fsid(struct btrfs_fs_devices *fs_devs);
- void btrfs_sysfs_update_sprout_fsid(struct btrfs_fs_devices *fs_devices,
- 				    const u8 *fsid);
+-	if (fs_devs->device_dir_kobj) {
+-		kobject_del(fs_devs->device_dir_kobj);
+-		kobject_put(fs_devs->device_dir_kobj);
+-		fs_devs->device_dir_kobj = NULL;
++	if (fs_devs->devices_dir_kobj) {
++		kobject_del(fs_devs->devices_dir_kobj);
++		kobject_put(fs_devs->devices_dir_kobj);
++		fs_devs->devices_dir_kobj = NULL;
+ 	}
+ 
+ 	if (fs_devs->fsid_kobj.state_initialized) {
+@@ -979,15 +979,15 @@ int btrfs_sysfs_remove_device_info(struct btrfs_fs_devices *fs_devices,
+ 	struct hd_struct *disk;
+ 	struct kobject *disk_kobj;
+ 
+-	if (!fs_devices->device_dir_kobj)
++	if (!fs_devices->devices_dir_kobj)
+ 		return -EINVAL;
+ 
+ 	if (one_device && one_device->bdev) {
+ 		disk = one_device->bdev->bd_part;
+ 		disk_kobj = &part_to_dev(disk)->kobj;
+ 
+-		sysfs_remove_link(fs_devices->device_dir_kobj,
+-						disk_kobj->name);
++		sysfs_remove_link(fs_devices->devices_dir_kobj,
++				  disk_kobj->name);
+ 	}
+ 
+ 	if (one_device)
+@@ -1000,8 +1000,8 @@ int btrfs_sysfs_remove_device_info(struct btrfs_fs_devices *fs_devices,
+ 		disk = one_device->bdev->bd_part;
+ 		disk_kobj = &part_to_dev(disk)->kobj;
+ 
+-		sysfs_remove_link(fs_devices->device_dir_kobj,
+-						disk_kobj->name);
++		sysfs_remove_link(fs_devices->devices_dir_kobj,
++				  disk_kobj->name);
+ 	}
+ 
+ 	return 0;
+@@ -1009,11 +1009,11 @@ int btrfs_sysfs_remove_device_info(struct btrfs_fs_devices *fs_devices,
+ 
+ int btrfs_sysfs_add_devices_dir(struct btrfs_fs_devices *fs_devs)
+ {
+-	if (!fs_devs->device_dir_kobj)
+-		fs_devs->device_dir_kobj = kobject_create_and_add("devices",
+-						&fs_devs->fsid_kobj);
++	if (!fs_devs->devices_dir_kobj)
++		fs_devs->devices_dir_kobj = kobject_create_and_add("devices",
++							&fs_devs->fsid_kobj);
+ 
+-	if (!fs_devs->device_dir_kobj)
++	if (!fs_devs->devices_dir_kobj)
+ 		return -ENOMEM;
+ 
+ 	return 0;
+@@ -1038,7 +1038,7 @@ int btrfs_sysfs_add_device_info(struct btrfs_fs_devices *fs_devices,
+ 		disk = dev->bdev->bd_part;
+ 		disk_kobj = &part_to_dev(disk)->kobj;
+ 
+-		error = sysfs_create_link(fs_devices->device_dir_kobj,
++		error = sysfs_create_link(fs_devices->devices_dir_kobj,
+ 					  disk_kobj, disk_kobj->name);
+ 		if (error)
+ 			break;
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index fc1b564b9cfe..012e75f29fe0 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -255,7 +255,7 @@ struct btrfs_fs_devices {
+ 	struct btrfs_fs_info *fs_info;
+ 	/* sysfs kobjects */
+ 	struct kobject fsid_kobj;
+-	struct kobject *device_dir_kobj;
++	struct kobject *devices_dir_kobj;
+ 	struct completion kobj_unregister;
+ };
+ 
 -- 
 2.23.0
 
