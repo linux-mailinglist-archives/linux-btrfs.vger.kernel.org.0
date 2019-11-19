@@ -2,59 +2,72 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEBCE101260
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2019 05:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0218D1012C7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2019 06:07:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbfKSELo (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 18 Nov 2019 23:11:44 -0500
-Received: from mout.gmx.net ([212.227.15.18]:38259 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727018AbfKSELo (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 18 Nov 2019 23:11:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1574136703;
-        bh=9op1BVj5seNhEt1WkPP8WywwWyRNdoHSWqI9q6U8yEM=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=AQQfBXQPFx/kzSI/GqaZ+CLvanmzewjmwWCMAkD58p+9W4lE7yDRvt22psyTDWg4Q
-         8d9JYI/jrHSH9oZrV44jn3Jo99Z+sL67SwkeqYedblaeqrPPMNZvlRMpYXZvQMS+xT
-         a48oyhh16tV3bOzP8s1RJxo/RbEnQUyjhQaaRroQ=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from selesil ([84.177.157.134]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MhD2O-1hsvD30iag-00eM2p for
- <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2019 05:11:43 +0100
-Date:   Tue, 19 Nov 2019 05:11:50 +0100
-From:   Raffael Rudig <leaffar@gmx.at>
-To:     linux-btrfs@vger.kernel.org
-Subject: unsubcribe
-Message-Id: <20191119051150.aa01088b1295c3fd033f98f2@gmx.at>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-unknown-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:66W2eF6PXDEXaLe68x4JkMlzmw68QkdP5jfbcP8y9PJjQJMrJQr
- kz5H5Gvrq4BMULej36CqWwKn1cLztKTr96Sx2G8Ifa1bc83W6NIfs/2ZaazjIMlodtd923J
- udijwkPYi+Yn7ilRPPBqB1m63e8CRqCVyOuHecyno8N9jBoM7eV6GgXBIfsTiTXNdzgSPTn
- +N3dctHGTvsD6wYdAbCRw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:j600PLEuJj4=:vHzzG9fFpwQ1FEVjfWqxoi
- hsuZE2Url0eD1MVauMzV54C4FlACSfQlLEVZ1Tm03jz8CJPwHO2ZqANH0MqZo+4gTnhL3dYU3
- FxXyXe2lFD3qXD9zooUVlJXhLg/6stUuT12KbebScg3XtOsvEdVVGpdTVRuk0R2j78O1iZREq
- 9+CUg6DPiHXrfp0LFNDotYXOJo1kULS5fDv+oWqxcDbaTrLeywEGseX7s/I2yZ0JGm9aZMkfi
- p6SeRSkJeGB2Wx30PokQsxe6ZGo9ENcFX8SDI0Yd4P1JUdygYu2yyDynBC/Fn/TUZydF2Lf4i
- aDTQIiYkE5Psy1ihYN0xSpPIIKNsGm+k2lou0153OQ6OAoXrCv95r5ZV02/S18Uua5eC+6VOt
- 12Hjs+CtAkJEK3/F6gD5VQq43egt/56jzhT9AES+PLbZS643Swdof637ne7wdxFVoHWT1AVnb
- XlSyEn8eK94YjADf8ld1zU8rcaLzOM7ES+FAhKCbat3o5EtEVF/LIh7pOHjU3eZ3zOp1wExJ/
- LO8gLyBc1PO5qYSfjIJe0niix+NodhqPcPiDPhI+UQrA7b5IGc/P5ZU5eE8giKkmoFJJhQyUY
- YeFpq7gmfVDiRpNejneDj0RUweCpN3N1TOtrbEL+wSZWCyLS/Qs40mRW2zJb1X5QMYze4QFrq
- OcNQMG6S0PD251JYfMdfo2i4YvOFIoRcUJbgLVwBpfIp5mwXbvIL1lirJWddLk/7/9+E2NXRY
- BFcRsyr9pxNzZzazzBa+dRzB6CQaPyjcfx9yjyb/JoAYWnqVNIZEMAT1q2VslF3RIHZaeM/8x
- av1Df+Yuempl6hXvlHiMbvzwtHaXUfmIYX5Thvmck7ZnbYXXMIULrcKuHG2KNIiJrZvgt/elJ
- U78SYbmVLrDhOHaKNGTtuWJCbwZ9+Rfd2UZPMRkiEvQFSIYzzl2hWi9K/hHXTlp0NIVHuayEy
- HBxTJtW37js67ij2ucZVT6VIDjbJBfIkK7eji5cZL/6mpseUinKU5RaB+Tu6dwFsqzZqNnVOZ
- OCMTdk6WMEbBco1aNSOtFWMZkj8mTZcvH7dxXXRW2BdInskP5PGYA/Tuii4+fAkG3BBAHZ/s7
- FqsiEShBY9yFmIXkucR0BoZOtT/whvUBL1vJl03CgUK3+BY+zBOpnKtVUcfJskubRraGTy5rL
- hDil/GXcuqwynRYS/Xpr4pwk1iwcJhpOLVIhmLywzZe1DBIGoyOM/SssszkWbtyg+zsACjSpZ
- mIo7CFE16pNMbUG+6eKBFnkMt9tbcDqsvy3Q9bw==
+        id S1725815AbfKSFHO (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Nov 2019 00:07:14 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:33012 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725536AbfKSFHO (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Nov 2019 00:07:14 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJ54GON092549;
+        Tue, 19 Nov 2019 05:07:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=OSdJnrXiJFJUzbT3dnW28p4RocW7NV0x81Q+2mH5baw=;
+ b=Hz5M/DKoEtEGh1xMs172mcaXpJ6vgwwu2Cekybb+ZGFwB9Q1gImk7yof511AUVQSqZzv
+ GgLqW2cYx1BbwlLcuKin1CUh8Z40F6jtgSg5o25bZIjf3+rkGE96pbQdNji6StUI8KAZ
+ 66OSFq09sxAwX3KkifmI+aUkfSaQT8qWxrcYO1fS6qo+10qIXJi/zHYQ85ORU+T2p5do
+ H03k6FLd671I7gAUjTGz508ArA/qlVNKVtCz1B7VQSBvYWn17xp/RPb+zLBX1ppeXd26
+ 1T1oSmY6leu09yWHlDeD8fxxF/vqSBkAMUOxQ27cZMJ6GWrOZMffoz9wqkT3MqWMJAKU 4A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2wa9rqccw9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Nov 2019 05:07:10 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAJ4xUBF159688;
+        Tue, 19 Nov 2019 05:07:09 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2wbxm3n3da-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 19 Nov 2019 05:07:09 +0000
+Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAJ578AL016903;
+        Tue, 19 Nov 2019 05:07:08 GMT
+Received: from [10.190.155.136] (/192.188.170.104)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 18 Nov 2019 21:07:08 -0800
+Subject: Re: [PATCH v1.1 04/18] btrfs-progs: add global verbose and quiet
+ options and helper functions
+To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
+References: <1572849196-21775-1-git-send-email-anand.jain@oracle.com>
+ <1572849196-21775-5-git-send-email-anand.jain@oracle.com>
+ <20191115155816.GX3001@twin.jikos.cz>
+From:   Anand Jain <anand.jain@oracle.com>
+Message-ID: <dc018b50-def0-1a21-695b-e8ed068ee82a@oracle.com>
+Date:   Tue, 19 Nov 2019 13:07:05 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+MIME-Version: 1.0
+In-Reply-To: <20191115155816.GX3001@twin.jikos.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9445 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911190045
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9445 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911190046
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
@@ -62,5 +75,91 @@ X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
 
-=2D-
-Raffael Rudig <leaffar@gmx.at>
+On 11/15/19 11:58 PM, David Sterba wrote:
+> On Mon, Nov 04, 2019 at 02:33:02PM +0800, Anand Jain wrote:
+>> +		case 'v':
+>> +			bconf.verbose < 0 ? bconf.verbose = 1 : bconf.verbose++;
+> 
+> This code gets repeated and it's not IMO simple enough to be copy-pasted
+> around. Eg. bconf_be_verbose() and eventually bconf_be_quiet().
+
+  I was just concerned- it will make life of other developers difficult,
+  IMO too much abstraction in the code is almost like learning a new
+  programming language for the new person looking at the code.
+  For example fstests. To write patch for fstests you need to
+  learn about a lot of helpers, defines and functions and filters
+  specific to fstests but you wouldn't have had this problem if the
+  fstests abstractions were limited and if it embraced open-code style.
+  Just my 1c.
+
+  For now I have added bconf_be_verbose() and bconf_be_quiet() it looks
+  neat as below,
+
++               case 'v':
++                       bconf_be_verbose();
++                       break;
++               case 'q':
++                       bconf_be_quiet();
++                       break;
+
+
+>> +			break;
+>> +		case 'q':
+>> +			bconf.verbose = 0;
+>> +			break;
+>>   		default:
+>>   			fprintf(stderr, "Unknown global option: %s\n",
+>>   					argv[optind - 1]);
+>> --- a/common/help.h
+>> +++ b/common/help.h
+>> @@ -53,6 +53,17 @@
+>>   	"-t|--tbytes        show sizes in TiB, or TB with --si"
+>>   
+>>   /*
+>> + * Global verbose option for the sub-commands
+>> + */
+>> +#define HELPINFO_GLOBAL_OPTIONS_HEADER						\
+>> +	"",									\
+>> +	"Global options:"
+>> +#define HELPINFO_INSERT_VERBOSE							\
+>> +	"-v|--verbose       show verbose output"
+> 
+>                              increase output verbosity
+
+fixed.
+
+>> +#define HELPINFO_INSERT_QUIET							\
+>> +	"-q|--quiet         run the command quietly"
+>   			    print only errors
+fixed.
+
+>> +
+>> +/*
+>>    * Special marker in the help strings that will preemptively insert the global
+>>    * options and then continue with the following text that possibly follows
+>>    * after the regular options
+>> --- a/common/utils.h
+>> +++ b/common/utils.h
+>> @@ -122,6 +122,9 @@ void print_all_devices(struct list_head *devices);
+>>    */
+>>   struct btrfs_config {
+>>   	unsigned int output_format;
+>> +
+>> +	/* -1:unset 0:quiet >0:verbose */
+> 
+> Instead of the constants, please add some defines for the unset and
+> default states. Maybe also for quiet.
+
+Fixed.
+
++#define BTRFS_BCONF_QUIET       0
++#define BTRFS_BCONF_UNSET      -1
+
+
+Thanks for the valuable comments.
+Anand
+
+
+>> +	int verbose;
+>>   };
+>>   extern struct btrfs_config bconf;
