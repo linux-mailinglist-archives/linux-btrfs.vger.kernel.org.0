@@ -2,337 +2,346 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 851D310221E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2019 11:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B88102230
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2019 11:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726000AbfKSKbM (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Nov 2019 05:31:12 -0500
-Received: from mout.gmx.net ([212.227.17.21]:37895 "EHLO mout.gmx.net"
+        id S1727316AbfKSKn3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Nov 2019 05:43:29 -0500
+Received: from mout.gmx.net ([212.227.17.22]:60611 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725798AbfKSKbM (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Nov 2019 05:31:12 -0500
+        id S1726265AbfKSKn2 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Tue, 19 Nov 2019 05:43:28 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1574159394;
-        bh=Hl4Sv2QPPasWuAIJYFYqtfvQYXee53Wm4L9hnVOiu/I=;
+        s=badeba3b8450; t=1574160120;
+        bh=SmvcyIi84w4hBPU/M9upHUxJuqHIUm9TJDnxrSB4zow=;
         h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=ijfzPWIK3d3aNEocQGhkGNDaqYdHtXNa+rNFQjg4GGz/q1knyGiERJE8OsCy+8Kfi
-         l4JIof7B4Qa1RPnEVbZukoqw3peONmiV80HJUs14d9AO0oMAnkITibiHiTETCij4rx
-         JXgiB5Mf890VeLszmihgOLOZ7MrOG7PfI7hswhmw=
+        b=WlBb9C3JfDtmfmR1FOn6ZPLc7E4Q1fRyZlaU5M96U3pwNO+yOTOgbvyAJw2Y4Agj2
+         FG+yN5FYe6lHhNpVygXn5XItEkI+1AoxfQszOC2GawMl4Pljy7DiUxkNTnY69MODR7
+         Yn/F8N4FWA23c9E6Cif5Eaekyy7y1/myGENIP1IE=
 X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
 Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MtOGU-1hilX40V1K-00upzY; Tue, 19
- Nov 2019 11:29:54 +0100
-Subject: Re: [PATCH 2/3] btrfs: volumes: Add btrfs_fs_devices::missing_list to
- collect missing devices
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N9MpY-1hlYci2uH6-015FQ7; Tue, 19
+ Nov 2019 11:42:00 +0100
+Subject: Re: [PATCH 3/3] btrfs: volumes: Allocate degraded chunks if rw
+ devices can't fullfil a chunk
 To:     Anand Jain <anand.jain@oracle.com>, Qu Wenruo <wqu@suse.com>,
         linux-btrfs@vger.kernel.org
 References: <20191107062710.67964-1-wqu@suse.com>
- <20191107062710.67964-3-wqu@suse.com>
- <cf9c85fd-4d9f-43be-049c-a5694c0a25e1@oracle.com>
+ <20191107062710.67964-4-wqu@suse.com>
+ <6cc25dbd-55e4-43bb-7b95-86c62bee27c7@oracle.com>
 From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Message-ID: <0d4d78eb-eede-98c0-109a-c731ddffb5d7@gmx.com>
-Date:   Tue, 19 Nov 2019 18:29:46 +0800
+Message-ID: <f928122d-4e77-e83b-9a53-d2eea7ee16d3@gmx.com>
+Date:   Tue, 19 Nov 2019 18:41:49 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <cf9c85fd-4d9f-43be-049c-a5694c0a25e1@oracle.com>
+In-Reply-To: <6cc25dbd-55e4-43bb-7b95-86c62bee27c7@oracle.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="yzR53Z2cUYEFD8KVIyZZeGKYmghYwL1Ft"
-X-Provags-ID: V03:K1:kCoSQmYM9WNRq40vTSibz1STnR6/nwgl44yHx3L6FzOr6EmL08N
- M3Fv0E01YeqhthT2F7AwiBEa6BqEKcdQpzGLfxHcheUfE3vNZ91aZUMZh6mCB1/DS93SXfV
- yZVZ33fKrF3e0P96U1ptGilp605TObUA6QDmq5gxa+m5lpz0n3qJlYpRNSs5/+gSdU0BXGT
- r4zDdN7fr5CUrIH6Oboew==
+ boundary="tx1X4Q2zvk5qoeNqMpb7Ztbnoaztewa8Q"
+X-Provags-ID: V03:K1:28GmCqdDg5qVrnaKuiy/R4iKmsU5zd1HYIHAkz7vWZtoRRM5+Xi
+ aDyMqNI/D9HQzB20RDsbkJuQAL6RDtz4L+c8c6NmITk6AD9GD4WlcGahrTQinl6cLB7SOYs
+ Zq9ZZGbQceO/gs3Km/oLUvEWPPXokC7iDt1Au5iZ9azWh7Ce4kxcvChCxpMFm+7WPPNO+JH
+ yQREb1j/w9RrW8dtEc6+g==
 X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1tgLoTPES3s=:+ZozRw8ehrtGM2r38JuuHU
- qlr2SRGvkiqblDjKyTX6nVX1zgK9VuW0YwzpibSwk0xE0irBbq5VGNFFEmE+SE8ua5mFpN++2
- 1GOG+ZD6MhcrDhz/KsjAFyHqDX4SvmlDyctI0Zo4NC8AmTKnKRwqdFOhz9++//kdWrtjicGZT
- duY4GAW2NnlKKyDsnVEX5neBtk6Q58gTOJCgfhqnDXdjF5ke94TLvZ5gQ1OKZAkkss+LMAylk
- yWuZv6pu8++6pIhsrSCmaE+i/vn7OZFyurnQdtZZ+Q2mBgb/XN7T7v/j56Zhc4s08sVHjsdnq
- pqHSOg12/rfZQ9SCCX/yXqB2vwHmLdUTQws+I5HaTSaOnbEe+28yfHNF+JE6TAXC1EPKVcQJr
- eoiSN7oV76OHamtJgAZ48NaaLUSRabnikqdVVhroyRDWAwWMcLvP9H6UEUmhofdh9b0Iu3RAm
- ly7xOF+1uOKZUSFnMcJpTb9NuRvm+BzK3EbWd36orpL1Uq31JDFyfPKI3rjgzJUV4ii6qw/Kj
- 0JdZQrTqx6yiIwdscR4lmmAzeEt4XReLdHXxPIagt/Nknys3gGv3mVLmLnmQO9dE0/Sns/Daj
- emDp8qby/sicM7h5hfeypb7bTms6PWALlORpRnuyzQEm2b3WdMxP1fTZPE7Nxhk4riN7mTYAd
- zsU1ZilOCiubZOpOnJYVPsF6CcV+Pb6/vegPFxHEu5UjjF7GYC4PQVksNE3RRdnPd0WH6wOfH
- pbncku9lURJhRP45+OLsl8jDsIRQc9u14iOpWdNRaM1XglhD2vF69DcJfRYMdRQGF0r2HKVbo
- pReOYRjtYV628Sr4jKSS5IYQSGR/uti4z/U9WTMfiIgRf04b5p0gU+qiWZpnv9KnGCb/LQxOS
- iWrBJ+Fb7TBeFQh2zG0Zo4g7LxJhmbPv3eNChqyMhYXS/ECBQAfyEUkTrzaU9S6fPIB6KAIPV
- Eu/DMFr9/+S5NJve64Vir53C5mbU+M+0bNGwQfr6IJV4ye2v/ZnxbMdAo9ui4KGAsKVCj/SFq
- Pz+utm+uc1sPa6n+uqR+Fce8Ck9F3HbGlHMbLCCJYy/soOo7ijc0C2qc+6TvQ3mzZNaxKXph4
- ouQxrzfbFzjFC5P5i9/e5LHxDcJDYN5Tlo/ZmNdPfvO/PiDk9l6pXfJpt5lr/x+EeDUCl7rxc
- 7DLvyNr7dvrKImoqxwsmVMQJNy37fiINgAp8zyWY1f0CFD3LUnieIS7zcdkYo96dj7/E7xiKY
- AAfEuFgw48KZG6naQ5XBFiJ42BlWodQZwR1KPd0bKdJH7R2pXiSNZI4kHlZ0=
+X-UI-Out-Filterresults: notjunk:1;V03:K0:G4PSErL4YVE=:sM0m2QyBUgaV20U5nYAni7
+ a2GAoJtvtkjyBzwEvZTtr7Jwl6Gf914evR1v/0HIQV5DDLEG9N2m2zo5Ky2U6U4uVllYZszsT
+ +QqV6GgXhWSi/OeP00j4jGy8zzaXfGMqjYGYf/PSODlM4uNEFYaaQWt7EYVY9KZsqThpWnu7I
+ 8bSSMV9u4tzEBE7W7ah5iEDnBApjVnfrwhBpZdCSvJ2Zocn95dz4z6ymE9pkm724R22PN80ea
+ S5PGpUJX1OBNBtmEz7soq/IMrq8plpoeSgmr5uJDd9+NC6bzyDe3lI1HgxrwuvAuW5KW+MLAJ
+ DvHH4gsQ/MP5wGuPzeAntwdHkOnEezl6mDlaebaIdT/rVg7zlesVXHKNnDl944emsJfRgaSkD
+ Idqe6q6SphR2GlsDdNHRTB9HSQntXEHbQ0twdZsXVX8A9NPD6ZQMrk/ni724DoldJupPakKww
+ a2wlKSNQUnrp1rkq3bJGZ0EQBB9Y3f1CsWNKocJI5VxM6r7S3YIKIEcnuLSxbrGkNC90kwLPP
+ WND9ts9Dzig70uxcN0p8AvnUgJE0YrVZkKaQ09zxuN//5HLQD2shx9JWVGVH2eejofDDdfCCD
+ F78qWOhGDoj/c3BjpIrLv0CPyd4dgsS52qRzR6ry14z41Lx8PzQMJNV/Zka3ntQ3bY/JTzTZr
+ /4/lrh7Q+3coQPmNHto16Uc/+9PZfUc9igEf1I6RmoybqxvqffT821gtD1wLwdVuMdHrlIM4U
+ kwH+sxIXI8+RsyJOhxpMjEHKwSQMlcyzq3MoZsJLZLyGQM5U/zBWz2WiQzIlSDExn/D7BM28U
+ sbEQo/8Gg7FjAok8gBip1L1RXvmXeuRcjDcP62a4/sm7TqfbFnpAwFckExXdk2UM/V3S/edUD
+ 6HdRw7UAPM6dklcHjW+q2XJmm+0ioH/pQeUWIsrlhmQbco0xc7L5yjCwyPGXOwZ6lDLmILZ1Z
+ nXZwEngszdaox9tkdH25rWMDfEg/LhIwK1g3aeSSYGWvJ4EO82vE29abyTRTnbAfzpS2BKMIR
+ QfYeXyWvSIKEbIPOEWJ9BJH4tZVRCdDIrNQHJQmO5rZodkY+ly4JuOUE4yAW5xyVIy5TLoDX6
+ geLsKa3afsLwDnDzM2trKO7Xhgmbv/jvIFzAOj9uo/tD1q0ZR/1NklhBDoYZuDyJUZsToCufm
+ 17idWRh1HYB4OoA8ve48MecPi3KzxI/J05D4VnIHCK/FSFZ/zBc7suWhLAKbExozdqpRvcYDk
+ YN1rlsl4oiOP+88v4Ud2UYrWVFvctPFxagjqZ8UhWCrw+JsBjbVTS/Qs4ruI=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---yzR53Z2cUYEFD8KVIyZZeGKYmghYwL1Ft
-Content-Type: multipart/mixed; boundary="9uKzkWvVZO6wJLL1v9Q8FQ2fFg5e849Tp"
+--tx1X4Q2zvk5qoeNqMpb7Ztbnoaztewa8Q
+Content-Type: multipart/mixed; boundary="b95URRRrCdL8YlA7Hk3R2qdQuSXNnrCPD"
 
---9uKzkWvVZO6wJLL1v9Q8FQ2fFg5e849Tp
+--b95URRRrCdL8YlA7Hk3R2qdQuSXNnrCPD
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
 
 
-On 2019/11/19 =E4=B8=8B=E5=8D=886:03, Anand Jain wrote:
+On 2019/11/19 =E4=B8=8B=E5=8D=886:05, Anand Jain wrote:
 > On 11/7/19 2:27 PM, Qu Wenruo wrote:
->> This enables btrfs to iterate missing devices separately, without
->> iterating all fs_devices.
+>> [PROBLEM]
+>> Btrfs degraded mount will fallback to SINGLE profile if there are not
+>> enough devices:
 >=20
-> =C2=A0IMO.
-> =C2=A0We don't need another list to maintain the missing device. We alr=
-eady
-> =C2=A0have good enough device lists.
-> =C2=A0The way its been implemented is
-> =C2=A0Allo_list is the only list from which we shall alloc the chunks.
-> =C2=A0Missing is a state of the device.
-> =C2=A0A device in the alloc list can be in the Missing state.
+> =C2=A0Its better to keep it like this for now until there is a fix for =
+the
+> =C2=A0write hole. Otherwise hitting the write hole bug in case of degra=
+ded
+> =C2=A0raid1 will be more prevalent.
 
-That would cause problem, especially when you only want to use missing
-device as last resort method.
+Write hole should be a problem for RAID5/6, not the degraded chunk
+feature itself.
 
-IIRC it's you mentioned this is a problem in my original design (which
-put all missing deviecs into alloc_list). Or it's David?
+Furthermore, this design will try to avoid allocating chunks using
+missing devices.
+So even for 3 devices RAID5, new chunks will be allocated by using
+existing devices (2 devices RAID5), so no new write hole is introduced.
 
 >=20
-> =C2=A0If there is missing_list that means the device in the missing lis=
-t
-> =C2=A0is also possible candidate for the alloc that's messy.
+> =C2=A0I proposed a RFC a long time before [1] (also in there, there
+> =C2=A0is a commit id which turned the degraded raid1 profile into singl=
+e
+> =C2=A0profile (without much write-up on it)).
+>=20
+> =C2=A0=C2=A0 [1] [PATCH 0/2] [RFC] btrfs: create degraded-RAID1 chunks
 
-But when you want to avoid missing device, alloc_list and missing_list
-makes sense.
+My point for this patchset is:
+- Create regular chunk if we have enough devices
+- Create degraded chunk only when we have not enough devices
 
-E.g. 6 devices RAID5, with one missing device, we should *avoid* using
-missing devices as we have enough (5) devices to allocate from.
+I guess since you didn't get the point of my preparation patches, your
+patches aren't that good to avoid missing devices.
 
-> =C2=A0Also its not typical to have a larger number of missing devices
-> =C2=A0to constitute its own list.
+>=20
+> =C2=A0Similarly the patch related to the reappearing missing device [2]=
 
-That's just for now.
+> =C2=A0falls under the same category. Will push for the integration afte=
+r
+> =C2=A0the write hole fix.
+>=20
+> =C2=A0=C2=A0 [2] [PATCH] btrfs: handle dynamically reappearing missing =
+device
+> =C2=A0=C2=A0 (test case 154).
 
-If we're going to allow RAID10 to lost half of its devices, then it
-would be a problem.
+That's another case, and I didn't see how it affects this feature.
 
-Thanks,
-Qu
+>=20
+> =C2=A0If you look close enough the original author has quite nicely mad=
+e
+> =C2=A0sure write hole bug will be very difficultly to hit. These fixes
+> =C2=A0shall make it easy to hit. So its better to work on the write hol=
+e
+> =C2=A0first.
+
+If you're talking about RAID5/6, you are talking at the wrong thread.
+Go implement some write-a-head log for RAID5/6, or mark all degraded
+RAID5/6 chunks read-only at mount time.
+
+>=20
+> =C2=A0I am trying to fix write hole. First attempt has limited success
+> =C2=A0(works fine in two disk raid1 only). Now trying other ways to fix=
+=2E
+>=20
+>> =C2=A0 # mkfs.btrfs -f /dev/test/scratch[12] -m raid1 -d raid1
+>> =C2=A0 # wipefs -fa /dev/test/scratch2
+>> =C2=A0 # mount -o degraded /dev/test/scratch1 /mnt/btrfs
+>> =C2=A0 # fallocate -l 1G /mnt/btrfs/foobar
+>> =C2=A0 # btrfs ins dump-tree -t chunk /dev/test/scratch1
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 item 7 key (FIRST_CHU=
+NK_TREE CHUNK_ITEM 1674575872) itemoff
+>> 15511 itemsize 80
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 length 536870912 owner 2 stripe_len 65536 type D=
+ATA
+>> =C2=A0 New data chunk will fallback to SINGLE.
+>>
+>> If user doesn't balance those SINGLE chunks, even with missing devices=
+
+>> replaced, the fs is no longer full RAID1, and a missing device can bre=
+ak
+>> the tolerance.
+>=20
+> =C2=A0As its been discussed quite a lot of time before, the current
+> =C2=A0re-silver/recovery approach for degraded-raid1 (with offload to S=
+ingle)
+> =C2=A0requires balance. Its kind of known.
+
+I'd call such "well-known" behavior BS.
+
+All other raid1 implementation can accept single device RAID1 and
+resilver itself with more device into a full RAID1 setup.
+
+But for BTRFS you're calling SINGLE profile "well-known"?
+It's "well-known" because it's not working properly, that's why I'm
+trying to fix it.
+
 
 >=20
 > Thanks, Anand
 >=20
 >=20
->> This provides the basis for later degraded chunk enhancement.
+>> [CAUSE]
+>> The cause is pretty simple, when mounted degraded, missing devices can=
+'t
+>> be used for chunk allocation.
+>> Thus btrfs has to fall back to SINGLE profile.
 >>
->> The change includes:
->> - Add missing devices to btrfs_fs_devices::missing_list
->> =C2=A0=C2=A0 This happens at add_missing_dev() and other locations whe=
-re
->> =C2=A0=C2=A0 missing_devices get increased.
+>> [ENHANCEMENT]
+>> To avoid such problem, this patch will:
+>> - Make all profiler reducer/updater to consider missing devices as par=
+t
+>> =C2=A0=C2=A0 of num_devices
+>> - Make chunk allocator to fallback to missing_list as last resort
 >>
->> - Remove missing devices from btrfs_fs_devices::missing_list
->> =C2=A0=C2=A0 This needs to cover all locations where missing_devices g=
-et decreased.
+>> If we have enough rw_devices, then go regular chunk allocation code.
+>=20
+>> This can avoid allocating degraded chunks.
+>> E.g. for 3 devices RAID1 degraded mount, we will use the 2 existing
+>> devices to allocate chunk, avoid degraded chunk.
+>=20
+>> But if we don't have enough rw_devices, then we check missing devices =
+to
+>> allocate degraded chunks.
+>> E.g. for 2 devices RAID1 degraded mount, we have to allocate degraded
+>> chunks to keep the RAID1 profile.
 >>
 >> Signed-off-by: Qu Wenruo <wqu@suse.com>
 >> ---
->> =C2=A0 fs/btrfs/volumes.c | 27 +++++++++++++++++++++------
->> =C2=A0 fs/btrfs/volumes.h |=C2=A0 6 ++++++
->> =C2=A0 2 files changed, 27 insertions(+), 6 deletions(-)
+>> =C2=A0 fs/btrfs/block-group.c | 10 +++++++---
+>> =C2=A0 fs/btrfs/volumes.c=C2=A0=C2=A0=C2=A0=C2=A0 | 18 +++++++++++++++=
+---
+>> =C2=A0 2 files changed, 22 insertions(+), 6 deletions(-)
 >>
+>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>> index bf7e3f23bba7..1686fd31679b 100644
+>> --- a/fs/btrfs/block-group.c
+>> +++ b/fs/btrfs/block-group.c
+>> @@ -52,11 +52,13 @@ static u64 get_restripe_target(struct
+>> btrfs_fs_info *fs_info, u64 flags)
+>> =C2=A0=C2=A0 */
+>> =C2=A0 static u64 btrfs_reduce_alloc_profile(struct btrfs_fs_info *fs_=
+info,
+>> u64 flags)
+>> =C2=A0 {
+>> -=C2=A0=C2=A0=C2=A0 u64 num_devices =3D fs_info->fs_devices->rw_device=
+s;
+>> +=C2=A0=C2=A0=C2=A0 u64 num_devices;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 target;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 raid_type;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 allowed =3D 0;
+>> =C2=A0 +=C2=A0=C2=A0=C2=A0 num_devices =3D fs_info->fs_devices->rw_dev=
+ices +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 fs_info->fs_devices->missing_devices;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * See if restripe for this chunk_=
+type is in progress, if so try to
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * reduce to the target profile
+>> @@ -1986,7 +1988,8 @@ static u64 update_block_group_flags(struct
+>> btrfs_fs_info *fs_info, u64 flags)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (stripped)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return extended=
+_to_chunk(stripped);
+>> =C2=A0 -=C2=A0=C2=A0=C2=A0 num_devices =3D fs_info->fs_devices->rw_dev=
+ices;
+>> +=C2=A0=C2=A0=C2=A0 num_devices =3D fs_info->fs_devices->rw_devices +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 fs_info->fs_devices->missing_devices;
+>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 stripped =3D BTRFS_BLOCK_GROUP_R=
+AID0 |
+>> BTRFS_BLOCK_GROUP_RAID56_MASK |
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 BTRFS_BLOCK_GRO=
+UP_RAID1_MASK | BTRFS_BLOCK_GROUP_RAID10;
+>> @@ -2981,7 +2984,8 @@ static u64 get_profile_num_devs(struct
+>> btrfs_fs_info *fs_info, u64 type)
+>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_dev =3D
+>> btrfs_raid_array[btrfs_bg_flags_to_raid_index(type)].devs_max;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!num_dev)
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_dev =3D fs_info->fs_de=
+vices->rw_devices;
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 num_dev =3D fs_info->fs_de=
+vices->rw_devices +
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 fs_info->fs_devices->missing_devices;
+>> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return num_dev;
+>> =C2=A0 }
 >> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index eee5fc1d11f0..a462d8de5d2a 100644
+>> index a462d8de5d2a..4dee1974ceb7 100644
 >> --- a/fs/btrfs/volumes.c
 >> +++ b/fs/btrfs/volumes.c
->> @@ -324,6 +324,7 @@ static struct btrfs_fs_devices
->> *alloc_fs_devices(const u8 *fsid,
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INIT_LIST_HEAD(&fs_devs->devices=
-);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INIT_LIST_HEAD(&fs_devs->alloc_list);
->> +=C2=A0=C2=A0=C2=A0 INIT_LIST_HEAD(&fs_devs->missing_list);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INIT_LIST_HEAD(&fs_devs->fs_list);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (fsid)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memcpy(fs_devs-=
->fsid, fsid, BTRFS_FSID_SIZE);
->> @@ -1089,6 +1090,7 @@ static noinline struct btrfs_device
->> *device_list_add(const char *path,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (test_bit(BT=
-RFS_DEV_STATE_MISSING, &device->dev_state)) {
+>> @@ -5052,8 +5052,9 @@ static int __btrfs_alloc_chunk(struct
+>> btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 max_chunk_size =3D min(div_factor(fs_de=
+vices->total_rw_bytes, 1),
 >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 fs_devices->missing_devices--;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 clear_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 li=
-st_del_init(&device->dev_alloc_list);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0 @@ -1250,11 +1252,10 @@ static void btrfs_close_one_device(stru=
-ct
->> btrfs_device *device)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (device->bdev)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_devices->ope=
-n_devices--;
->> =C2=A0 +=C2=A0=C2=A0=C2=A0 list_del_init(&device->dev_alloc_list);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (test_bit(BTRFS_DEV_STATE_WRITEABLE,=
- &device->dev_state) &&
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device->devid !=3D BTRFS_D=
-EV_REPLACE_DEVID) {
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_del_init(&device->dev=
-_alloc_list);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device->devid !=3D BTRFS_D=
-EV_REPLACE_DEVID)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_devices->rw_=
-devices--;
->> -=C2=A0=C2=A0=C2=A0 }
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (test_bit(BTRFS_DEV_STATE_MIS=
-SING, &device->dev_state))
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_devices->mis=
-sing_devices--;
->> @@ -2140,6 +2141,12 @@ int btrfs_rm_device(struct btrfs_fs_info
->> *fs_info, const char *device_path,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device->fs_devi=
-ces->rw_devices--;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&f=
-s_info->chunk_mutex);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev=
-_state)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&fs_info->chunk=
-_mutex);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_del_init(&device->dev=
-_alloc_list);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device->fs_devices->missin=
-g_devices--;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&fs_info->chu=
-nk_mutex);
->> +=C2=A0=C2=A0=C2=A0 }
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&uuid_mutex);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_shrink_device(device, 0);=
-
->> @@ -2184,9 +2191,6 @@ int btrfs_rm_device(struct btrfs_fs_info
->> *fs_info, const char *device_path,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (cur_devices !=3D fs_devices)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_devices->tot=
-al_devices--;
->> =C2=A0 -=C2=A0=C2=A0=C2=A0 if (test_bit(BTRFS_DEV_STATE_MISSING, &devi=
-ce->dev_state))
->> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cur_devices->missing_devic=
-es--;
->> -
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 btrfs_assign_next_active_device(device,=
- NULL);
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (device->bdev) {
->> @@ -2236,6 +2240,13 @@ int btrfs_rm_device(struct btrfs_fs_info
->> *fs_info, const char *device_path,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device->fs_devi=
-ces->rw_devices++;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&f=
-s_info->chunk_mutex);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> +=C2=A0=C2=A0=C2=A0 if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev=
-_state)) {
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&fs_info->chunk=
-_mutex);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 list_add(&device->dev_allo=
-c_list,
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 max_chunk_size);
+>> =C2=A0 -=C2=A0=C2=A0=C2=A0 devices_info =3D kcalloc(fs_devices->rw_dev=
+ices,
+>> sizeof(*devices_info),
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 devices_info =3D kcalloc(fs_devices->rw_devices +
 >> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 &fs_devices->missing_list);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 device->fs_devices->missin=
-g_devices++;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_unlock(&fs_info->chu=
-nk_mutex);
->> +=C2=A0=C2=A0=C2=A0 }
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
->> =C2=A0 }
->> =C2=A0 @@ -2438,6 +2449,7 @@ static int btrfs_prepare_sprout(struct
->> btrfs_fs_info *fs_info)
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 seed_devices->opened =3D 1;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INIT_LIST_HEAD(&seed_devices->devices);=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_devices->missing_devices,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sizeof(*devices_info), GFP_NOFS);=
 
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 INIT_LIST_HEAD(&seed_devices->alloc_lis=
-t);
->> +=C2=A0=C2=A0=C2=A0 INIT_LIST_HEAD(&seed_devices->missing_list);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_init(&seed_devices->device_list_m=
-utex);
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 mutex_lock(&fs_devices->device_l=
-ist_mutex);
->> @@ -6640,6 +6652,7 @@ static struct btrfs_device
->> *add_missing_dev(struct btrfs_fs_devices *fs_devices,
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_devices->num_devices++;
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 set_bit(BTRFS_DEV_STATE_MISSING,=
- &device->dev_state);
->> +=C2=A0=C2=A0=C2=A0 list_add(&device->dev_alloc_list, &fs_devices->mis=
-sing_list);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fs_devices->missing_devices++;
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return device;
->> @@ -6979,6 +6992,7 @@ static int read_one_dev(struct extent_buffer *le=
-af,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!devices_info)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;=
+
+>> =C2=A0 @@ -5067,7 +5068,18 @@ static int __btrfs_alloc_chunk(struct
+>> btrfs_trans_handle *trans,
 >> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0 */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 device->fs_devices->missing_devices++;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 set_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state);
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 li=
-st_add(&device->dev_alloc_list,
->> &fs_devices->missing_list);
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Move =
-the device to its own fs_devices */
->> @@ -6992,6 +7006,7 @@ static int read_one_dev(struct extent_buffer *le=
-af,
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 device->fs_devices->missing_devices--;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 fs_devices->missing_devices++;
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 li=
-st_move(&device->dev_alloc_list,
->> &fs_devices->missing_list);
->> =C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 device->fs_devices =3D fs_devices;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
->> index a7da1f3e3627..9cef4dc4b5be 100644
->> --- a/fs/btrfs/volumes.h
->> +++ b/fs/btrfs/volumes.h
->> @@ -253,6 +253,12 @@ struct btrfs_fs_devices {
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct list_head alloc_list;
->> =C2=A0 +=C2=A0=C2=A0=C2=A0 /*
->> +=C2=A0=C2=A0=C2=A0=C2=A0 * Devices which can't be found. Projected by=
- chunk_mutex.
->> +=C2=A0=C2=A0=C2=A0=C2=A0 * This acts as a fallback allocation list fo=
-r certain degraded
->> mount.
+=C2=A0 max_stripe_size, dev_stripes);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto error;
+>> -
+>> +=C2=A0=C2=A0=C2=A0 /*
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * If rw devices can't fullfil the request, f=
+allback to missing
+>> devices
+>> +=C2=A0=C2=A0=C2=A0=C2=A0 * as last resort.
 >> +=C2=A0=C2=A0=C2=A0=C2=A0 */
->> +=C2=A0=C2=A0=C2=A0 struct list_head missing_list;
->> +
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct btrfs_fs_devices *seed;
->> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int seeding;
->> =C2=A0
+>> +=C2=A0=C2=A0=C2=A0 if (ndevs < devs_min) {
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D gather_dev_holes(i=
+nfo, devices_info + ndevs, &ndevs,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 &fs_devices->missing_list,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 fs_devices->missing_devices,
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 max_stripe_size, dev_stripes);
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret < 0)
+>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 go=
+to error;
+>> +=C2=A0=C2=A0=C2=A0 }
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * now sort the devices by hole si=
+ze / available space
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>
 >=20
 
 
---9uKzkWvVZO6wJLL1v9Q8FQ2fFg5e849Tp--
+--b95URRRrCdL8YlA7Hk3R2qdQuSXNnrCPD--
 
---yzR53Z2cUYEFD8KVIyZZeGKYmghYwL1Ft
+--tx1X4Q2zvk5qoeNqMpb7Ztbnoaztewa8Q
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3TxBsXHHF1d2VucnVv
-LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qgJIAgAg2uqN6ykW9a1b21vOOHasHGi
-dpFrV5yQJlpAWIcw4RzZunl4vtt2MfKtOL6xkRasBjnTruQjjpkafstsvq0EUq2J
-bG1r+Ulbq7pH2ZSsT1RzpsDEgXTOS6Ec1JNKdSyMdbuErX+fa/GLnydpR16aCqcc
-3Ov5nxywB2rmxaRmCscopvyo0nALEwmVk1WubGlaEvRNs1EzOxoJzXWuwARCc95N
-IoEl2ngoy5bu0jplqmXyniyGdJvfeL/le4d11E8Ur2Ap38mMVyHWwUAmQ4ABl0Wt
-uGKaiceyTTajPn/EclLxfUnmueAUH5w17JgzdolZusflM45SDeJk3wGX8wHeWg==
-=xWr0
+iQFLBAEBCAA1FiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3Txu0XHHF1d2VucnVv
+LmJ0cmZzQGdteC5jb20ACgkQwj2R86El/qjD9Qf+PRPRkkP4O8ZVp5YxG3/X0sn8
+jZPq3+XboqMIGMQQ7YgpKJ2iC0xtv+uX1fuNujt7oQA/RVxWOc6JiQ1YaimQvaCj
+ROVFB0LJBnEA07OcBWY4OGr7RP61Tyw7kdZjeygHtFMMaJtWSThp3xv4j4uz0oEL
+g1gfugYHkO8Md5JKxNta9++5g6VNpDkEAOsMlJ+BCgm0nsFbyGl3A8ukwaCuZq3/
+zNhPKJQ7i/Sr12dxelSSi3JPFj4/93OfRkSJVA7FI5HD0hixn4nwxi1lVd8r28jg
+ZvRKECudOMyU2nbuHk2Syzm9oN6+A6+HzRT5U8YBzz6ciap5ejxrilghIIJs9Q==
+=t0lI
 -----END PGP SIGNATURE-----
 
---yzR53Z2cUYEFD8KVIyZZeGKYmghYwL1Ft--
+--tx1X4Q2zvk5qoeNqMpb7Ztbnoaztewa8Q--
