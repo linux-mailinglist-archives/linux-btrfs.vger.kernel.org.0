@@ -2,55 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 00275102C35
-	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2019 19:59:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E36AE102C36
+	for <lists+linux-btrfs@lfdr.de>; Tue, 19 Nov 2019 19:59:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727509AbfKSS7Y (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Tue, 19 Nov 2019 13:59:24 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:44191 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727234AbfKSS7Y (ORCPT
+        id S1727522AbfKSS7i (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Tue, 19 Nov 2019 13:59:38 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44214 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726985AbfKSS7i (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Tue, 19 Nov 2019 13:59:24 -0500
-Received: by mail-qk1-f194.google.com with SMTP id m16so18819805qki.11
-        for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2019 10:59:22 -0800 (PST)
+        Tue, 19 Nov 2019 13:59:38 -0500
+Received: by mail-qk1-f193.google.com with SMTP id m16so18820553qki.11
+        for <linux-btrfs@vger.kernel.org>; Tue, 19 Nov 2019 10:59:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=G7CufLKA54CvFLnN5jiioKOMQ3lkfBKVmYkvR0Nk3Rw=;
-        b=0ulC5rDlurEGb4/G1SZEMhC/5ASVEOCYZnmXF9ECqjGGgROD6cJ7DQs2ZlxfKTqCam
-         T/TV2I/lAF9cqw/WB5JDakYRRHQVG1MsMD0V/d/5wodO3Cp72FeRNUq2j/JlvMHFSxjV
-         /srexWmB3Xme8SUhqePsBjqo75Gt0+fEq8CoTFJTMtgPHvHxWoI5zhxsAsfx/GIdVRyt
-         Bcoy3z0LS2c/QAEjMGHG+qEBeRsQ8vCPI5OzSRRSJdoialIwgpDKUzcVBjTjIDZ31eXD
-         Bfm7Y2SG31PkkKMt/Fjx9hjv0p+RrG1LJ7s87xRd1oujro37iSM9aWARbc8cmU+3DTBi
-         Vfpw==
+        bh=lUAv+1JZVWCnK47S5RY03BIVAUv7V2/G3MnCEai+BZs=;
+        b=TuZa/bOfpktHjbntYx+LAmmH6vWwV2ZH6hOgHAnM3Rvq9iZ7pyzgdCoUTGGFTtwQdY
+         SGPBMmV4vnnTD+cZ8UXAkHcnkC+MAX0ayJm6WuQtHadqe2nQWCCLZ4x4E7M/P/za5mbP
+         Ja3JaEbDWbx0MkSFn7HD0TRzWgbGayoEpUF5VfP5tedcdaBE+nNgGLO7IXA2vRzjYM5J
+         7pJv6g+Df6WcDPLPWZYs729jhqHe+04fa+EuIDl+V0rHxypgvNbrSZJeCAuMZWWnHkcz
+         kTGdf0M0R5ZZJ0K80Pqz+mnbnR7sCRhOKkCdg38hZwYUtO+tpHUHWO/M2Bh6KLN/q8o5
+         A6bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=G7CufLKA54CvFLnN5jiioKOMQ3lkfBKVmYkvR0Nk3Rw=;
-        b=aXo6f6n/q6w64OMPj5kDGHICWk3CGNEp938lgp7tzFFErWRte3kONi7P8tlnsg5snM
-         93K60cxHFVDsPvt9zco95SS/yU3urnC6YK6Ewd0xFjBgTbX2MJgXGmznrJFX+6BNoGc3
-         CYO+LNMms18W8idQ/j5Xt2WOskUB7Ba4Mx7d7PntZhZEL47KeMgzphPbfgWM44Whww6o
-         RFkH1zk/hgHFXaj9ter+F/hkz/Qs27pcO4GmUUcht0+a4M+jWAzeN3TuKkDuT4sD+O/s
-         Ifd9D4wWfBqEo7JCGcpE2rEJC9EMxSNouQ1/tLKg6iQ1DqZkHiBTwJ3bVkmxXjmaU9u8
-         l0WA==
-X-Gm-Message-State: APjAAAVn8BASyc3kQx90G9/NfoqhJ5JHXqkf3lGrNtS9zbdBsYRSqdsr
-        4mEPGGyi9FPRH2vzil+W/MaxqpQSViXNew==
-X-Google-Smtp-Source: APXvYqymaoGpRFmKz6gyFc2+GuVriOPIi6FYfNxUWQqxZDHclr1BlMoGQi8F0RVStT+9eOaRRjY7Kg==
-X-Received: by 2002:ae9:e404:: with SMTP id q4mr18825507qkc.365.1574189962071;
-        Tue, 19 Nov 2019 10:59:22 -0800 (PST)
+        bh=lUAv+1JZVWCnK47S5RY03BIVAUv7V2/G3MnCEai+BZs=;
+        b=ttCHgtRslbTFRJUk6puLYFJS3uhq+Lu4hRS014ZCoUq2cpqNvt3wpC2jX13rd15XQw
+         lPTmGLWf+hgwyIJ5xLZT/sgWCHLhGuu/KkiapdUeve5ZwmupKTiqgz7WH98opsRZi3oS
+         mpZkPC/8+I9+nvgnq4zc2Ujq1pB/757vQ4+NqMBbPuCN78E1DDMtAUMT0ydVrg2tM9xT
+         rAWvLnBtvI29nEmBOJCbYWGZhXXlkQJfPD2N392exj0+YIqr2dXlE38fgZWgoF7cnryk
+         dYwnsLpXfdtfrMkorOeR52VQf5YDxhs3eWo4RkbujvYWGbYkxIOS87LQBc4KWQbhef37
+         nOJA==
+X-Gm-Message-State: APjAAAXodUlJCKEjvo4l0mMKDKOzJ4RBLtA+clyoZcBgir928/4NOkZS
+        Y2g4NntCuBXNlkM3av4otI1/a2WOvoVmKQ==
+X-Google-Smtp-Source: APXvYqzkY40iUtA+ZuoBkTxAuQbLJn649rg2Mt0Z6WrC9WxTvyOvqtkeOPLX/vR+OmnBWOdXLbRSiQ==
+X-Received: by 2002:a37:a54c:: with SMTP id o73mr31914954qke.164.1574189977308;
+        Tue, 19 Nov 2019 10:59:37 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id h12sm9399614qtj.37.2019.11.19.10.59.21
+        by smtp.gmail.com with ESMTPSA id o1sm3498074qkm.5.2019.11.19.10.59.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Nov 2019 10:59:21 -0800 (PST)
+        Tue, 19 Nov 2019 10:59:36 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Cc:     stable@vger.kernel.org
-Subject: [PATCH] btrfs: don't double lock the subvol_sem
-Date:   Tue, 19 Nov 2019 13:59:20 -0500
-Message-Id: <20191119185920.3031-1-josef@toxicpanda.com>
+Subject: [PATCH] btrfs: do not call synchronize_srcu() in inode_tree_del
+Date:   Tue, 19 Nov 2019 13:59:35 -0500
+Message-Id: <20191119185935.3079-1-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -59,44 +58,59 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-If we're rename exchanging two subvols we'll try to lock this lock
-twice, which is bad.  Just lock once if either of the ino's are subvols.
+Testing with the new fsstress uncovered a pretty nasty deadlock with
+lookup and snapshot deletion.
 
-cc: stable@vger.kernel.org
-Fixes: cdd1fedf8261 ("btrfs: add support for RENAME_EXCHANGE and RENAME_WHITEOUT")
+Process A
+unlink
+ -> final iput
+   -> inode_tree_del
+     -> synchronize_srcu(subvol_srcu)
+
+Process B
+btrfs_lookup  <- srcu_read_lock() acquired here
+  -> btrfs_iget
+    -> find inode that has I_FREEING set
+      -> __wait_on_freeing_inode()
+
+We're holding the srcu_read_lock() while doing the iget in order to make
+sure our fs root doesn't go away, and then we are waiting for the inode
+to finish freeing.  However because the free'ing process is doing a
+synchronize_srcu() we deadlock.
+
+Fix this by dropping the synchronize_srcu() in inode_tree_del().  We
+don't need people to stop accessing the fs root at this point, we're
+only adding our empty root to the dead roots list.
+
+A larger much more invasive fix is forthcoming to address how we deal
+with fs roots, but this fixes the immediate problem.
+
+Fixes: 76dda93c6ae2 ("Btrfs: add snapshot/subvolume destroy ioctl")
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/inode.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ fs/btrfs/inode.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index b13c212b1bed..8db7455fee38 100644
+index 8db7455fee38..fc0624fbe387 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -9563,9 +9563,8 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 	btrfs_init_log_ctx(&ctx_dest, new_inode);
+@@ -5729,7 +5729,6 @@ static void inode_tree_add(struct inode *inode)
  
- 	/* close the race window with snapshot create/destroy ioctl */
--	if (old_ino == BTRFS_FIRST_FREE_OBJECTID)
--		down_read(&fs_info->subvol_sem);
--	if (new_ino == BTRFS_FIRST_FREE_OBJECTID)
-+	if (old_ino == BTRFS_FIRST_FREE_OBJECTID ||
-+	    new_ino == BTRFS_FIRST_FREE_OBJECTID)
- 		down_read(&fs_info->subvol_sem);
+ static void inode_tree_del(struct inode *inode)
+ {
+-	struct btrfs_fs_info *fs_info = btrfs_sb(inode->i_sb);
+ 	struct btrfs_root *root = BTRFS_I(inode)->root;
+ 	int empty = 0;
  
- 	/*
-@@ -9799,9 +9798,8 @@ static int btrfs_rename_exchange(struct inode *old_dir,
- 		ret = ret ? ret : ret2;
- 	}
- out_notrans:
--	if (new_ino == BTRFS_FIRST_FREE_OBJECTID)
--		up_read(&fs_info->subvol_sem);
--	if (old_ino == BTRFS_FIRST_FREE_OBJECTID)
-+	if (new_ino == BTRFS_FIRST_FREE_OBJECTID ||
-+	    old_ino == BTRFS_FIRST_FREE_OBJECTID)
- 		up_read(&fs_info->subvol_sem);
+@@ -5742,7 +5741,6 @@ static void inode_tree_del(struct inode *inode)
+ 	spin_unlock(&root->inode_lock);
  
- 	ASSERT(list_empty(&ctx_root.list));
+ 	if (empty && btrfs_root_refs(&root->root_item) == 0) {
+-		synchronize_srcu(&fs_info->subvol_srcu);
+ 		spin_lock(&root->inode_lock);
+ 		empty = RB_EMPTY_ROOT(&root->inode_tree);
+ 		spin_unlock(&root->inode_lock);
 -- 
 2.23.0
 
