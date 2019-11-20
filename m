@@ -2,91 +2,77 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 11969103ACD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2019 14:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CFF71040E5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2019 17:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729092AbfKTNPI (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Nov 2019 08:15:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53356 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727958AbfKTNPH (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Nov 2019 08:15:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2EC326A504;
-        Wed, 20 Nov 2019 13:15:05 +0000 (UTC)
-Subject: Re: [PATCH] fstests, btrfs: check flakey device instead of backend
- device
-To:     Naohiro Aota <naohiro.aota@wdc.com>, fstests@vger.kernel.org
-Cc:     linux-btrfs@vger.kernel.org
-References: <20191120064406.3467779-1-naohiro.aota@wdc.com>
-From:   Nikolay Borisov <nborisov@suse.com>
-Openpgp: preference=signencrypt
-Autocrypt: addr=nborisov@suse.com; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <feaf6d1d-d56f-6643-f2da-7e6435384580@suse.com>
-Date:   Wed, 20 Nov 2019 15:15:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729443AbfKTQgn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Nov 2019 11:36:43 -0500
+Received: from mail-ed1-f46.google.com ([209.85.208.46]:41159 "EHLO
+        mail-ed1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729384AbfKTQgm (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Nov 2019 11:36:42 -0500
+Received: by mail-ed1-f46.google.com with SMTP id a21so46922edj.8
+        for <linux-btrfs@vger.kernel.org>; Wed, 20 Nov 2019 08:36:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=RfO/Gk35SHDBkC7zH0U3/rzlw47EuAFzmguOEhaXBGY=;
+        b=mQgkFbkINkJKOivdpAqXFVRijXitU/JBmsphdC4p5iwoLfP02Oe20PNeHShbmDKFHf
+         yd4soytCJq+eXckp5rJ7L05nMGbMlgEOxscmix1mR0V1uy6S2Lr1mV6bSOR6tW6iqbwy
+         SEJuccalrksgBLUwaqVlP08MV1gzexSsNg3EzcOk6ihYx56Y8W3ttzLfWv48m+6xPzNS
+         95s/fuOHX8yNcY0n3a5liHqCpJN0yubQAHaa/gWPZYjg84yRlCB5+D7Ns9PRqG+nmka9
+         9KShhjkMqOqV6VeVhNDWbIRVwewL2TrIzXlS1OomBLORApJtBWK6UOtzSjeXgtjO+QkG
+         +S4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=RfO/Gk35SHDBkC7zH0U3/rzlw47EuAFzmguOEhaXBGY=;
+        b=IkcSvmepz9dEWMUc1Q+xR8djcNjNkCZO2AFc7dwT0el/KLqTEZO+p8hkufhrbq8C7T
+         edPdkGkTgkp4ieaq1qECkSZg2FlmOTu63EMP0VvH1KUPdYUQUMKbGyHlZmaAYItcDf6/
+         eUkUTc8gyJdMuZ8jWdU4g+6X03ztPGD4fKKT2ArWrit29QG/Rm+XIAkpnrd26aAycuO2
+         35q8W6m/yY5R72ym8kUOJRaD916oAToQCIa8Rk2LH3HRbvrRr+QsuJxb4M+T2nPCM53X
+         mLYKhXuX9Wtb0rppLkUZQGQLKeJZgF9zQ5VlF2twt1+RLpLizV2BMK/D+1m/gEsFCD8H
+         UAeQ==
+X-Gm-Message-State: APjAAAURxksC63lfvLLdNoEddBOIcexmWsFB+2Pzfaf4WVJNXtrxlKNM
+        5hyq8RuxgHMct8S3oMknCrExbXQjsHTauRbdJHt6
+X-Google-Smtp-Source: APXvYqzrVI3Mry/QxdZ0EAbqIDf6ASJZ52JE2DMO1/37YPHwxGn/5dbSAN2FYNuJSB/ITrvYOIX863dlvpRubfKW3jo=
+X-Received: by 2002:a17:906:b6c3:: with SMTP id ec3mr6587932ejb.27.1574267800680;
+ Wed, 20 Nov 2019 08:36:40 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20191120064406.3467779-1-naohiro.aota@wdc.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20191112183425.GA1257@tik.uni-stuttgart.de> <7f628741-b32e-24dc-629f-97338fde3d16@googlemail.com>
+In-Reply-To: <7f628741-b32e-24dc-629f-97338fde3d16@googlemail.com>
+From:   Christian Pernegger <pernegger@gmail.com>
+Date:   Wed, 20 Nov 2019 17:36:04 +0100
+Message-ID: <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
+Subject: freezes during snapshot creation/deletion -- to be expected? (Was:
+ Re: btrfs based backup?)
+To:     linux-btrfs <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+Hello,
 
+I've decided to go with a snapshot-based backup solution for our new
+Linux desktops -- thank you for the timely thread --, namely btrbk.
+A couple of subvolumes for different stuff, with hourly snapshots that
+regularly go to another machine. Brilliant in theory, less so in
+practice, because every time btrbk runs, the box'll freeze for a few
+seconds, as in, Firefox and LibreOffice, for instance, become entirely
+unresponsive, games hang and so on. (AFAICT, all it does is snapshot
+each subvolume and delete ones that are out of the retention period.)
 
-On 20.11.19 г. 8:44 ч., Naohiro Aota wrote:
-> btrfs/085 mount and works on $FLAKEY_DEV, but it's inspecting the
-> underlying $SCRATCH_DEV. Since writing to dm-flakey does not invalidate
-> page cache of $SCRATCH_DEV, the btrfs command can read a stalled data
-> from page cache. We should check the flakey device to avoid such cache
-> inconsistency.
-> 
-> Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+I'm aware that having many snapshots can impact performance of some
+operations, but I didn't think that "many" <= 200, "impact" = stop
+dead and "some operations" = light desktop use. These are decently
+specced, after all (Zen 2 8/12 core, 32 GB RAM, Samsung 970 Evo Plus).
+What I'm asking is, is this to be expected, does it just need tuning,
+is the hardware buggy, the kernel version (Ubuntu 18.04.3 HWE, their
+5.0 series) a stinker, something else awry ...?
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com
+Cheers,
+C.
