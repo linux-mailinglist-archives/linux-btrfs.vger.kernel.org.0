@@ -2,124 +2,103 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE69010349A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2019 07:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B092103690
+	for <lists+linux-btrfs@lfdr.de>; Wed, 20 Nov 2019 10:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbfKTGvm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Nov 2019 01:51:42 -0500
-Received: from mout.gmx.net ([212.227.15.18]:42961 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725268AbfKTGvm (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Nov 2019 01:51:42 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1574232700;
-        bh=7hCSWd2HqDVguKnjK+nDn0BfRAIBwJTNsAmJxkW0zGY=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Sl4AVTU5OKoi4JN4HoWzJX0uIolctqXpjhrF//8OwiSFnbY1gfawWOetzZXdcBHjP
-         vXOjF+r6O4SMvsDu92Le5a7yar8YCmhaz9YO7kHMI3D07Z5C/B0gG/ml6dvmYUgaig
-         OAkkViOlqASSPyBK6qR+5tUrrfj8Mg2KEIVKXE18=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [34.92.246.95] ([34.92.246.95]) by
- msvc-mesg-gmx021.server.lan (via HTTP); Wed, 20 Nov 2019 07:51:40 +0100
+        id S1728228AbfKTJYP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Wed, 20 Nov 2019 04:24:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41340 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726762AbfKTJYP (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Wed, 20 Nov 2019 04:24:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 3E7B5AF87;
+        Wed, 20 Nov 2019 09:24:13 +0000 (UTC)
+Subject: Re: [PATCH] btrfs: handle error in btrfs_cache_block_group
+To:     Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org,
+        kernel-team@fb.com
+References: <20191119185900.2985-1-josef@toxicpanda.com>
+From:   Johannes Thumshirn <jthumshirn@suse.de>
+Openpgp: preference=signencrypt
+Autocrypt: addr=jthumshirn@suse.de; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <b115c18c-a115-db6d-5efa-29c60f392e7f@suse.de>
+Date:   Wed, 20 Nov 2019 10:24:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Message-ID: <trinity-422d40c2-b371-492d-bfe9-e55f3ea3a7db-1574232700743@msvc-mesg-gmx021>
-From:   "Su Yue" <Damenly_Su@gmx.com>
-To:     damenly.su@gmail.com
-Cc:     linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs-progs: block group: do not exclude bytenr
- adjacent to block group
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 20 Nov 2019 07:51:40 +0100
-In-Reply-To: <20191118055335.9927-1-Damenly_Su@gmx.com>
-References: <20191118055335.9927-1-Damenly_Su@gmx.com>
-X-Provags-ID: V03:K1:k+vdI1OQQCm5LevkK8QvrtgLWHeatDsuSksUOaSmCblHLUN1NraGL65w+HsStNtnKnEZ4
- rBVU5PcmP/mH5LLfLxU13RKAabUXvMspYmHXHd8lcIMa+pPb51krheo+rOy/mnxqnSpNvrq5hVYn
- AlGByCGLVQa+feZVJ0PaIE+9EXBdK7CT1JI5yeTxFLubOXNAe7Ex/qWuP3EbofwJcr6iVf6aAyTu
- 9kg6afdBoQGd87armdBj19uTvW4xdgpfkzhGanSkttCN+wRrAKCuUuQEau444tdn7GmhRuWZz5co
- BmvxgkhZwDM2ryXPaXnxnzi
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:R6bS/aVxYD0=:sjW2wCR7wgtX4jkRhFBq00
- 3e5/nA8heTgB1gZvT7lOExvy3Kbr9UR4UU8Gz0m6Q5KMd7G4PdoW37SKs23WET3AX7e4SzddD
- 2UseaDkno9Ro2uzpxwfiKnYP308D3mf27MqswOmLwr7h+4g1eQJMmZpVmNPM6DQRsQzaevAfM
- GiRChZvR4K4AKGcXpK51zDE2ppxBueqipBJrbmokL9RBPKXYqARilIlIO5NmB1VWZWBY0N11x
- FDnCgy48liZqsw4dK2c72WNF4bzmcHxByReHPb4XKacima/BjISWzl7OUO1jZl8esw0n4re1a
- UTpJaQyRtQv0Gje5ce2l8HdK8is/d2RdNAHv3gREtokVSdFo/gHhfDuo/C8IJn45+SKbZJ/hc
- v279j+3wm4UVcP2MzSv00B217cceNpd8rXpFCxuBozPwGKV8pHxq2B3APXEP7UHnSLFFawODL
- HCAvup/EOq34NbuyUDlrSP1nrmRx3iyVzU3BXO3nQBl1WbOIbT90MDE6MItO4a6AYXOCwds/7
- TLgKnrjjQOMWAXoGy4VSwNauYMIcjcJGnq/q30jiNYEDpClWcMPIdI+IxStIRP669TA8sKjHx
- cs6UOOjShp2yZmQy0TFdPoK1Tce48BEYwjgOPWqj5Nff7J7TdnUVVXhFoJgsNaEoZx3/OyVzf
- ceYjmx9sR5UrnUtvh7S4YLkSTm581ai5PYILnrqbUlrssouwYiJNXifGxuyhgzI6FSCYel/jn
- t4Alz+ou760YLf2YtsVYL37G5TbA+pfpkcSwe1dy4YY2pqfzgOO21y97mCwnw+Z5kVgEPE2kN
- ZUDQUJV
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20191119185900.2985-1-josef@toxicpanda.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Drop those too, will send new version fixed by another method.
-
-
-
-On 2019/11/18 at 13:53, damenly.su@gmail.com wrote:
-
-> From: Su Yue <Damenly_Su@gmx.com>
->
-> While checking the image provided by the reporter, the btrfsck aborts:
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Opening filesystem to check...
-> extent_io.c:158: insert_state: BUG_ON `end < start` triggered, value 1
-> btrfs check(+0xa3fa8)[0x5614c14c7fa8]
-> btrfs check(+0xa4046)[0x5614c14c8046]
-> btrfs check(+0xa45f1)[0x5614c14c85f1]
-> btrfs check(set_extent_bits+0x83)[0x5614c14c8c63]
-> btrfs check(+0xbfb90)[0x5614c14e3b90]
-> btrfs check(exclude_super_stripes+0x1fc)[0x5614c14e3de9]
-> btrfs check(+0xbd85d)[0x5614c14e185d]
-> btrfs check(btrfs_read_block_groups+0xd3)[0x5614c14e19f5]
-> btrfs check(btrfs_setup_all_roots+0x454)[0x5614c14d7740]
-> btrfs check(+0xb4219)[0x5614c14d8219]
-> btrfs check(open_ctree_fs_info+0x177)[0x5614c14d8415]
-> btrfs check(+0x693dd)[0x5614c148d3dd]
-> btrfs check(+0x14dc7)[0x5614c1438dc7]
-> btrfs check(main+0x126)[0x5614c1439713]
-> /usr/lib/libc.so.6(__libc_start_main+0xf3)[0x7fe3f1ecf153]
-> btrfs check(_start+0x2e)[0x5614c1438cce]
-> [1]    6196 abort (core dumped)
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> It's excluding super stripes from one block group, the bytenr equals
-> block group's start + len, so the @num_bytes is 0. Then
-> add_exclude_extent() calculates the @end is less than the @start
-> which trigers the abort.
->
-> Anyway, the logical bytenr should not be excluded if the block group's
-> start + len equals it, because it's not belong to the block group.
->
-> Link: https://github.com/kdave/btrfs-progs/issues/210
-> Signed-off-by: Su Yue <Damenly_Su@gmx.com>
-> ---
->  extent-tree.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/extent-tree.c b/extent-tree.c
-> index f690ae999f37..848fb72f90a4 100644
-> --- a/extent-tree.c
-> +++ b/extent-tree.c
-> @@ -3630,7 +3630,7 @@ int exclude_super_stripes(struct btrfs_fs_info *fs=
-_info,
->  		while (nr--) {
->  			u64 start, len;
->
-> -			if (logical[nr] > cache->key.objectid +
-> +			if (logical[nr] >=3D cache->key.objectid +
->  			    cache->key.offset)
->  				continue;
->
-> --
-> 2.23.0
-
+Looks good,
+Reviewed-by: Johannes Thumshirn <jthumshirn@suse.de>
+-- 
+Johannes Thumshirn                            SUSE Labs Filesystems
+jthumshirn@suse.de                                +49 911 74053 689
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5
+90409 Nürnberg
+Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
+Key fingerprint = EC38 9CAB C2C4 F25D 8600 D0D0 0393 969D 2D76 0850
