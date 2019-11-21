@@ -2,159 +2,137 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA0D110483B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2019 02:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 737AE104CEE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2019 08:55:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726014AbfKUBve (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Wed, 20 Nov 2019 20:51:34 -0500
-Received: from mout.gmx.net ([212.227.17.20]:33477 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725854AbfKUBvd (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Wed, 20 Nov 2019 20:51:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1574301091;
-        bh=HvgsuwLGKrhkFDxpHIy8SpBrR1IySnIjne/2GUX4gs8=;
-        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
-        b=f4zWxhkcCBArBDGQREJ34JeeTa9duC17vwfOj34cca3l9whleZfUW/v6R+2G4zcMB
-         b7ejZCp/SHTfCYYyuhIxcKmk1H7R7A3bndTaXDW86BWSiZflnr6AdmcYMhbHbnsx4B
-         uRInOnmHi6LWDPezi2UlaZZyoTaxt/wOmsTBzGvU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MpDJX-1i412T327T-00qmzZ; Thu, 21
- Nov 2019 02:51:31 +0100
-Subject: Re: freezes during snapshot creation/deletion -- to be expected?
- (Was: Re: btrfs based backup?)
-To:     Christian Pernegger <pernegger@gmail.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <20191112183425.GA1257@tik.uni-stuttgart.de>
- <7f628741-b32e-24dc-629f-97338fde3d16@googlemail.com>
- <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
-From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
- mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
- PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
- 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
- D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
- efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
- ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
- BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
- 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
- 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
- EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
- 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
- ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
- oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
- fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
- 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
- ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
- oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
-Message-ID: <3e5cd446-3527-17ef-9ab8-d6ad01d740d0@gmx.com>
-Date:   Thu, 21 Nov 2019 09:51:26 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726170AbfKUHzB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Nov 2019 02:55:01 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44374 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725842AbfKUHzB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 Nov 2019 02:55:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id F0C87ADBF
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 07:54:58 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [RFC PATCH] btrfs: Commit transaction to workaround ENOSPC during relocation
+Date:   Thu, 21 Nov 2019 15:54:55 +0800
+Message-Id: <20191121075455.31383-1-wqu@suse.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="z17Ov8C1sqjzhPJ9kFI9oGxMRJOTO8ZgQ"
-X-Provags-ID: V03:K1:n0tw9N2SticFHbjUEiwyemVvaVK3c03MGEgm9EfMt1uZedgsjOn
- 5930r+oFpSiWjKCUMb7iNBSShMSkcZntbkPyDaemffkA85+Z/UKAGmhTCgL2wBlG4CdJfDu
- yU0ivtrFhZv6+P+uLhzWP1hQPK8vDAKu28hgENhx49AcIo1zac8GozpxHlzxrbbipLxQKRz
- a6L3i0XJ6cG/Ggww3GOTA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ABUhbPb3JpU=:8KPdrTKfTYQNrX/KChKYHe
- RhSWfc9X2TXqxr6FK1zKmyE3xgFIJ1VxAYE89GyILh1r2UI8UL9K8eDyak4CIR3MzErAZuG8x
- bQmlcyIW+YlQNKznao2wdBgCMC9znnmv/YzqKhg4dDjfR9PXu2JC5fzP0QEdq3cl3aE4w2/bJ
- 4SCV0C6lU5/l2+Cda4GLNJL7y9lbba3kiIU4GBkA42t7tPHUdmJgXxz3U6yW+dzDeIuFAqv8Z
- wlj0fHxWt2eGT0zaperHZEtkzDg0ek8SJnqll7T97h9hDDmHqvM/rChPEin/IJHeyW04fuG0u
- dZgqIIiIYfgzl4uMSshs6LMTGtANvQ3nxc+8fdxu3qwUferx77kK13wKb6Wn+RUz4GrVEFfFZ
- ccdb8w3n3NhK8q2z+H6rxGbYMxiC1XnuBHxyyi+wdtFuRb7RHpVvv80I5SjFLXShLRcF/eNVV
- zwFJcq3cPrxR02gg1MGpDQWO1w4OJH09DhGh0acSwDfNkFeZ5iMFPnEsGmUUe8npN7qKEKP0T
- JLmINkrDEzjVTQTibCr3j0iElKvkSS+XTbxAsDLQ4GQyDZWbTRxNh/z/lCfuH0HKo/corhOTH
- 6W5jas0m3oUB7PH1YcO4hCbtD6G1dChzJa9sL8xUPu1eRAkiT0BkSsHGPex1cRgFQsiRdSd8L
- hgG73IaGMj5gCVJb+q1DPL2igxPBRMGsGpbF67HpCdhlHTmhblOIpFSxDEPGocY+1kqOxxGZ/
- X5dwBZtHgDM7vZQLzrk3pM3R3JTAS9tc3PyehnsyKoNvLmlu7rkKgkHEw/zLudPBVszDma1Uj
- 7JSUqd3szNEC+wqPXodv6vRsBG/6bDwEY8oewXzNWsh6FR6e1HpmwddeS961xPXSVb59ijImd
- b17L+29pe6fPz7vlWw0Jshw4Pw0bbtOKq7xeE5kTUi7fvu0BDZ8q+FxVa+ILPOO6zoU9XBKoH
- eDnjM02YbAg+/LMIzS80wSHVY+2km/59ulwAyLCLp1Jw4uTd6DQGWElTPk3MmL1CnxtgtxQnk
- 0IXvRr1Z/1mknqqHoT2JSpJBJXqt7OdpFjNp11+utgEsAXyqS0UDxrzYNh9ZL4pKdMKelv7Ci
- lcz4aXceM3tTXT4lNu/i+EpXQWH9PHEE73tdzT+36LZLKjY1GfByoPe0C/jY0F0QbpeKR5JuU
- ajTkPsl5CybcPvjExrI+73bQAMDRCIcJYUb02d5pKoLLcHYAWDTe3HwkrNTuxNqADuEjzgmiP
- PfG+yBiS7v4E+sAD7LXHmY0xZqxksq9bHCLP8dF8eigHreybn1zyPjIhSGRU=
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---z17Ov8C1sqjzhPJ9kFI9oGxMRJOTO8ZgQ
-Content-Type: multipart/mixed; boundary="1zS7lcwe1UTBMmy64vzvIan2e0uoASz7D"
+[BUG]
+When doing full balance for certain fs, it can cause unexpected ENOSPC:
+  BTRFS info (device loop0p3): balance: start -d -m -s
+  BTRFS info (device loop0p3): relocating block group 1104150528 flags data
+  BTRFS info (device loop0p3): found 14659 extents
+  BTRFS info (device loop0p3): found 14659 extents
+  BTRFS info (device loop0p3): unable to make block group 30408704 ro
+  BTRFS info (device loop0p3): sinfo_used=2298347520 bg_num_bytes=1046872064 min_allocable=1048576
+  BTRFS info (device loop0p3): space_info 4 has 18446744072492285952 free, is not full
+  BTRFS info (device loop0p3): space_info total=1073741824, used=24281088, pinned=1277952, reserved=1245184, may_use=2264137728, readonly=65536
+  BTRFS info (device loop0p3): global_block_rsv: size 3407872 reserved 3407872
+  BTRFS info (device loop0p3): trans_block_rsv: size 0 reserved 0
+  BTRFS info (device loop0p3): chunk_block_rsv: size 0 reserved 0
+  BTRFS info (device loop0p3): delayed_block_rsv: size 0 reserved 0
+  BTRFS info (device loop0p3): delayed_refs_rsv: size 2260205568 reserved 2260205568
+  BTRFS info (device loop0p3): unable to make block group 30408704 ro
+  BTRFS info (device loop0p3): sinfo_used=2289958912 bg_num_bytes=1046872064 min_allocable=1048576
+  BTRFS info (device loop0p3): space_info 4 has 18446744072792424448 free, is not full
+  BTRFS info (device loop0p3): space_info total=1342177280, used=24281088, pinned=1277952, reserved=1261568, may_use=2232418304, readonly=65536
+  BTRFS info (device loop0p3): global_block_rsv: size 3407872 reserved 3407872
+  BTRFS info (device loop0p3): trans_block_rsv: size 0 reserved 0
+  BTRFS info (device loop0p3): chunk_block_rsv: size 393216 reserved 393216
+  BTRFS info (device loop0p3): delayed_block_rsv: size 0 reserved 0
+  BTRFS info (device loop0p3): delayed_refs_rsv: size 2228486144 reserved 2228486144
+  BTRFS info (device loop0p3): unable to make block group 22020096 ro
+  BTRFS info (device loop0p3): sinfo_used=32768 bg_num_bytes=8355840 min_allocable=1048576
+  BTRFS info (device loop0p3): space_info 2 has 8355840 free, is not full
+  BTRFS info (device loop0p3): space_info total=8388608, used=16384, pinned=0, reserved=16384, may_use=0, readonly=0
+  BTRFS info (device loop0p3): global_block_rsv: size 3407872 reserved 3407872
+  BTRFS info (device loop0p3): trans_block_rsv: size 0 reserved 0
+  BTRFS info (device loop0p3): chunk_block_rsv: size 0 reserved 0
+  BTRFS info (device loop0p3): delayed_block_rsv: size 0 reserved 0
+  BTRFS info (device loop0p3): delayed_refs_rsv: size 2093481984 reserved 2093481984
 
---1zS7lcwe1UTBMmy64vzvIan2e0uoASz7D
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+[CAUSE]
+For data block group 1104150528, it has 14659 extents got relocated,
+thus its data inode (inode for relocation, records all newerly relocated
+data) can be pretty big, with exactly 14659 non-hole data extents.
 
+That would cause a lot of space being reserved for delayed_refs, that's
+more or less acceptable for regular inodes.
 
+And unfortunately, currently we are already over-esitmating to ensure we
+will have enough space for delayed refs updates, so we reserved around
+2.2G space just to delete that data inode.
 
-On 2019/11/21 =E4=B8=8A=E5=8D=8812:36, Christian Pernegger wrote:
-> Hello,
->=20
-> I've decided to go with a snapshot-based backup solution for our new
-> Linux desktops -- thank you for the timely thread --, namely btrbk.
-> A couple of subvolumes for different stuff, with hourly snapshots that
-> regularly go to another machine. Brilliant in theory, less so in
-> practice, because every time btrbk runs, the box'll freeze for a few
-> seconds, as in, Firefox and LibreOffice, for instance, become entirely
-> unresponsive, games hang and so on. (AFAICT, all it does is snapshot
-> each subvolume and delete ones that are out of the retention period.)
->=20
-> I'm aware that having many snapshots can impact performance of some
-> operations, but I didn't think that "many" <=3D 200, "impact" =3D stop
-> dead and "some operations" =3D light desktop use. These are decently
-> specced, after all (Zen 2 8/12 core, 32 GB RAM, Samsung 970 Evo Plus).
-> What I'm asking is, is this to be expected, does it just need tuning,
-> is the hardware buggy, the kernel version (Ubuntu 18.04.3 HWE, their
-> 5.0 series) a stinker, something else awry ...?
+Then we are going to relocate the next block group, our metadata block
+group is only 1G, but has already reserved 2.2G, there is no wonder we
+will fail with ENOSPC.
 
-Are you using qgroup?
+[WORKAROUND]
+The real fix needs to rework how we calculate reserved space for
+delayed_refs_rsv.
 
-With qgroup, snapshot deleting is still a problem though.
-(But not for snapshot creation, that shouldn't cause any slow down,
-unless you're using multi-level qgroups)
+But at least, we can work around this false ENOSPC, by commit
+transaction immediately after putting that data inode.
 
-Thanks,
-Qu
+There will be still a window where our metadata space is exhausted, but
+that would still be better than returning ENOSPC.
 
->=20
-> Cheers,
-> C.
->=20
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Reason for RFC:
+Obviously, this is a pretty bad workaround, just trying to make it work
+for balance.
 
+In fact, if we're just deleting a super fragemented file, it could cause
+the problem, and this patch can't address it.
 
---1zS7lcwe1UTBMmy64vzvIan2e0uoASz7D--
+I'm still looking into the delayed_refs_rsv part for
+btrfs_evict_inode(), so this patch is definitely not a good solution.
 
---z17Ov8C1sqjzhPJ9kFI9oGxMRJOTO8ZgQ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+But this RFC itself may inspire us to get better solution.
+---
+ fs/btrfs/volumes.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index e04409f85063..f23590f71135 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -3091,7 +3091,22 @@ static int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
+ 	 * chunk tree entries
+ 	 */
+ 	ret = btrfs_remove_chunk(trans, chunk_offset);
+-	btrfs_end_transaction(trans);
++	if (ret < 0) {
++		btrfs_abort_transaction(trans, ret);
++		btrfs_end_transaction(trans);
++		return ret;
++	}
++
++	/*
++	 * If the block group has a lot of extents (common for data block
++	 * groups) we may have too many block rsv for delayed_refs, which
++	 * may cause ENOSPC for the next balance.
++	 *
++	 * The root fix is to make delayed_refs estimation more accurate,
++	 * but here we can commit transaction to run delayed refs so that
++	 * delayed_refs_rsv will be reset to regular level.
++	 */
++	ret = btrfs_commit_transaction(trans);
+ 	return ret;
+ }
+ 
+-- 
+2.24.0
 
-iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3V7Z4ACgkQwj2R86El
-/qgunwf+JzpL19RmwVHCBLoCMUXRux3tg8GkL1SPB1ejb0mgpNoRTS/kpgmVi0Dm
-nHU2CjgNgU7PfIKD7KBymBvLKkAcU15aDPe6QzjbwBTXgHYc1TFRMF5jKEl+tLsp
-JktFX7Eh3M4mUYI+WLUqd3k/VDuZ8RZl1AnH5TTQSWvwO0KB/OKhm6ct9S9ppbX5
-kdgkCE8ALR9Dz9US7r3l2dMaqYj/SGszVdIMqKuzRa+rX9AoOZf2sBbf5SjrsASR
-evLUgybjvY4h1NPQHlDzCiDULkRLxlk/QGugrMFpWdP57uhLyz60QXbDP1zP5Hjv
-TWxiJSr+Ytcs2MLkC4e2E4oEFEfrsg==
-=ty7f
------END PGP SIGNATURE-----
-
---z17Ov8C1sqjzhPJ9kFI9oGxMRJOTO8ZgQ--
