@@ -2,137 +2,184 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 737AE104CEE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2019 08:55:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F75D104F51
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2019 10:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726170AbfKUHzB (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Nov 2019 02:55:01 -0500
-Received: from mx2.suse.de ([195.135.220.15]:44374 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725842AbfKUHzB (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Nov 2019 02:55:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id F0C87ADBF
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 07:54:58 +0000 (UTC)
-From:   Qu Wenruo <wqu@suse.com>
+        id S1726563AbfKUJds (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Nov 2019 04:33:48 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:45804 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726165AbfKUJdr (ORCPT
+        <rfc822;linux-btrfs@vger.kernel.org>);
+        Thu, 21 Nov 2019 04:33:47 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAL9SwJw079119
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 09:33:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id; s=corp-2019-08-05;
+ bh=QJc4YmRNspsMCmbEX8qH44riexMlK9AmMbjLGbNsBZs=;
+ b=WFD0/qKrUabsMc7LtQEet+WNwkTWCq5ufp4SjUR9hZaSlGIlRA4uC7cLHqD71w2BGSub
+ yfHtqsmH8OQBb6/CWmn/lbN0PTWQae8wKLazXN2rAoBlWx3czlP6CjHpvnUimUP+x4NS
+ d6Zk3rNSOzY4wVBvkVq2EnuEPNcrVJf1kUTUy31coDqQnOGxn59PnBAL4f5Wloo9rwbO
+ LC3+4qr1TUH81Q/H6aeQ8cXJq6KPTvDBfNRwG94DS4gUh8UU5EDfjzPcWPhaxaNqEKNz
+ Fv7OoGPqBK4RU+lAyIvHP3383vYGFlbZfprmb+/xBWi/pfrNzG0Wi6FvP+QLre3sleVZ hw== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2wa92q2u55-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 09:33:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAL9Wxru067329
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 09:33:45 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3030.oracle.com with ESMTP id 2wd47wn9av-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 09:33:45 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAL9XiCC027479
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 09:33:44 GMT
+Received: from tp.localdomain (/39.109.145.141)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 21 Nov 2019 01:33:43 -0800
+From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [RFC PATCH] btrfs: Commit transaction to workaround ENOSPC during relocation
-Date:   Thu, 21 Nov 2019 15:54:55 +0800
-Message-Id: <20191121075455.31383-1-wqu@suse.com>
-X-Mailer: git-send-email 2.24.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v2 0/5] btrfs: sysfs, cleanups
+Date:   Thu, 21 Nov 2019 17:33:29 +0800
+Message-Id: <1574328814-12263-1-git-send-email-anand.jain@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9447 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-1911210087
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9447 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-1911210086
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-[BUG]
-When doing full balance for certain fs, it can cause unexpected ENOSPC:
-  BTRFS info (device loop0p3): balance: start -d -m -s
-  BTRFS info (device loop0p3): relocating block group 1104150528 flags data
-  BTRFS info (device loop0p3): found 14659 extents
-  BTRFS info (device loop0p3): found 14659 extents
-  BTRFS info (device loop0p3): unable to make block group 30408704 ro
-  BTRFS info (device loop0p3): sinfo_used=2298347520 bg_num_bytes=1046872064 min_allocable=1048576
-  BTRFS info (device loop0p3): space_info 4 has 18446744072492285952 free, is not full
-  BTRFS info (device loop0p3): space_info total=1073741824, used=24281088, pinned=1277952, reserved=1245184, may_use=2264137728, readonly=65536
-  BTRFS info (device loop0p3): global_block_rsv: size 3407872 reserved 3407872
-  BTRFS info (device loop0p3): trans_block_rsv: size 0 reserved 0
-  BTRFS info (device loop0p3): chunk_block_rsv: size 0 reserved 0
-  BTRFS info (device loop0p3): delayed_block_rsv: size 0 reserved 0
-  BTRFS info (device loop0p3): delayed_refs_rsv: size 2260205568 reserved 2260205568
-  BTRFS info (device loop0p3): unable to make block group 30408704 ro
-  BTRFS info (device loop0p3): sinfo_used=2289958912 bg_num_bytes=1046872064 min_allocable=1048576
-  BTRFS info (device loop0p3): space_info 4 has 18446744072792424448 free, is not full
-  BTRFS info (device loop0p3): space_info total=1342177280, used=24281088, pinned=1277952, reserved=1261568, may_use=2232418304, readonly=65536
-  BTRFS info (device loop0p3): global_block_rsv: size 3407872 reserved 3407872
-  BTRFS info (device loop0p3): trans_block_rsv: size 0 reserved 0
-  BTRFS info (device loop0p3): chunk_block_rsv: size 393216 reserved 393216
-  BTRFS info (device loop0p3): delayed_block_rsv: size 0 reserved 0
-  BTRFS info (device loop0p3): delayed_refs_rsv: size 2228486144 reserved 2228486144
-  BTRFS info (device loop0p3): unable to make block group 22020096 ro
-  BTRFS info (device loop0p3): sinfo_used=32768 bg_num_bytes=8355840 min_allocable=1048576
-  BTRFS info (device loop0p3): space_info 2 has 8355840 free, is not full
-  BTRFS info (device loop0p3): space_info total=8388608, used=16384, pinned=0, reserved=16384, may_use=0, readonly=0
-  BTRFS info (device loop0p3): global_block_rsv: size 3407872 reserved 3407872
-  BTRFS info (device loop0p3): trans_block_rsv: size 0 reserved 0
-  BTRFS info (device loop0p3): chunk_block_rsv: size 0 reserved 0
-  BTRFS info (device loop0p3): delayed_block_rsv: size 0 reserved 0
-  BTRFS info (device loop0p3): delayed_refs_rsv: size 2093481984 reserved 2093481984
+v2:
+  As it is learnt that we might add sysfs attributes for the
+  scanned devices at some point, V2 does not cleanup those which
+  might be required to implement it. Last attempt to add is here
+  [1] in the mailing list.
+   [1] [PATCH] btrfs: Introduce device pool sysfs attributes
 
-[CAUSE]
-For data block group 1104150528, it has 14659 extents got relocated,
-thus its data inode (inode for relocation, records all newerly relocated
-data) can be pretty big, with exactly 14659 non-hole data extents.
+  This set also drops the patches which moved the local struct declare
+  to the place where it was actually used. Agreed top of the file is
+  better.
 
-That would cause a lot of space being reserved for delayed_refs, that's
-more or less acceptable for regular inodes.
+  Drops the patches which was trying to bring the related functions
+  together in sysfs.c. I am not sure why this isn't a nice cleanup,
+  as in super.c we don't place exit_btrfs_fs() and init_btrfs_fs()
+  apart we place them together the idea was similar in sysfs.c.
+  Anyway as there is disagreement I have dropped them from the list.
 
-And unfortunately, currently we are already over-esitmating to ensure we
-will have enough space for delayed refs updates, so we reserved around
-2.2G space just to delete that data inode.
+  Dropped the patch '[PATCH 07/15] btrfs: sysfs, delete code in a
+  comment' as its already integrated in misc-next.
 
-Then we are going to relocate the next block group, our metadata block
-group is only 1G, but has already reserved 2.2G, there is no wonder we
-will fail with ENOSPC.
+  In v2 I have used better naming compared to v1. For example
+  btrfs_fs_devices::devices_dir_kobj vs btrfs_fs_devices::devices_kobj
+  and btrfs_sysfs_add_device_info() vs btrfs_sysfs_add_devices_attr,
+  as I am following a pattern that sysfs directories are inherently
+  kobjects, which holds files as attributes. We could drop sysfs prefix
+  also because kobj and attr already indicate that they are part of
+  sysfs. But people not familiar with sysfs terminology might have to
+  wonder a little bit, so didn't make that bold changes.
 
-[WORKAROUND]
-The real fix needs to rework how we calculate reserved space for
-delayed_refs_rsv.
+  And I hope I didn't miss any other changes in v2.
 
-But at least, we can work around this false ENOSPC, by commit
-transaction immediately after putting that data inode.
+Testing:
 
-There will be still a window where our metadata space is exhausted, but
-that would still be better than returning ENOSPC.
+ As this is a cleanup patches, it should be made sure not to introduce any
+ regression in the sysfs layout. So here is a script which compares with
+ the golden md5sum of the sysfs layout. There are two golden md5sum
+ because as I am using find command which looks like due to some
+ optimization the list of file was in the same order all the time, it was
+ in two different orders. If there is any better ways to do this, or tell
+ find to not to optimize I will be happy to know and use it.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Reason for RFC:
-Obviously, this is a pretty bad workaround, just trying to make it work
-for balance.
+ (sorry for the hard-coded device paths).
+-----------8<----------------
+#!/bin/bash
 
-In fact, if we're just deleting a super fragemented file, it could cause
-the problem, and this patch can't address it.
+known_uuid="12345678-1234-1234-1234-123456789012"
+golden_sum1="7ae7b72ee3e5efc32f2fab152dd0fcd5"
+golden_sum2="6cefff853e55a31047c57f5a14ffb636"
 
-I'm still looking into the delayed_refs_rsv part for
-btrfs_evict_inode(), so this patch is definitely not a good solution.
+cleanup()
+{
+	umount /btrfs > /dev/null 2>&1
+	modprobe -r btrfs
+}
 
-But this RFC itself may inspire us to get better solution.
----
- fs/btrfs/volumes.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+test()
+{
+	cleanup
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index e04409f85063..f23590f71135 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -3091,7 +3091,22 @@ static int btrfs_relocate_chunk(struct btrfs_fs_info *fs_info, u64 chunk_offset)
- 	 * chunk tree entries
- 	 */
- 	ret = btrfs_remove_chunk(trans, chunk_offset);
--	btrfs_end_transaction(trans);
-+	if (ret < 0) {
-+		btrfs_abort_transaction(trans, ret);
-+		btrfs_end_transaction(trans);
-+		return ret;
-+	}
-+
-+	/*
-+	 * If the block group has a lot of extents (common for data block
-+	 * groups) we may have too many block rsv for delayed_refs, which
-+	 * may cause ENOSPC for the next balance.
-+	 *
-+	 * The root fix is to make delayed_refs estimation more accurate,
-+	 * but here we can commit transaction to run delayed refs so that
-+	 * delayed_refs_rsv will be reset to regular level.
-+	 */
-+	ret = btrfs_commit_transaction(trans);
- 	return ret;
- }
- 
+	mkfs.btrfs -fq -draid1 -mraid1 /dev/sdb /dev/sdc
+	uuid=$(btrfs fi show /dev/sdb | grep uuid | awk '{print $4}')
+
+	mount -o compress=lzo,device=/dev/sdc /dev/sdb /btrfs
+	xfs_io -f -c "pwrite -S 0xab 0 500M" /btrfs/foo  > /dev/null
+
+	find -O0 /sys/fs/btrfs -type f | sed s/$uuid/$known_uuid/g > /tmp/golden.output
+	test_sum=$(md5sum /tmp/golden.output|awk '{print $1}')
+
+	umount /btrfs
+	modprobe -r btrfs
+
+	[ "$golden_sum1" == "$test_sum" ] && return
+	[ "$golden_sum2" == "$test_sum" ] && return
+
+	echo "Failed: test_sum $test_sum"
+	echo "Golden:        1 $golden_sum1"
+	echo "Golden:        2 $golden_sum2"
+}
+
+test
+-----------8<----------------
+
+
+
+v1: cover-letter
+
+Mostly cleanups patches.
+
+Patches 1-7 are renames, code moves patches and there are no
+functional changes.
+
+Patch 8 drops unused argument in the function btrfs_sysfs_add_fsid().
+Patch 9 merges two small functions which is an extension of the other.
+
+Patches 10,11 and 13 removes unnecessary features in the functions, 
+originally it was planned to provide sysfs attributes for the scanned
+and unmounted devices, as in the un-merged patch in the mailing list [1]
+   [1] [PATCH] btrfs: Introduce device pool sysfs attributes
+
+Patch 12 merges functions.
+
+Patches 14,15 are code optimize patches.
+
+Anand Jain (5):
+  btrfs: sysfs, rename devices kobject holder to devices_kobj
+  btrfs: sysfs, rename device_link add,remove functions
+  btrfs: sysfs, btrfs_sysfs_add_fsid() drop unused argument parent
+  btrfs: sysfs, rename btrfs_sysfs_add_device()
+  btrfs: sysfs, merge btrfs_sysfs_add devices_kobj and fsid
+
+ fs/btrfs/dev-replace.c |  4 ++--
+ fs/btrfs/disk-io.c     |  9 +-------
+ fs/btrfs/sysfs.c       | 62 ++++++++++++++++++++++++--------------------------
+ fs/btrfs/sysfs.h       |  8 +++----
+ fs/btrfs/volumes.c     |  8 +++----
+ fs/btrfs/volumes.h     |  2 +-
+ 6 files changed, 41 insertions(+), 52 deletions(-)
+
 -- 
-2.24.0
+1.8.3.1
 
