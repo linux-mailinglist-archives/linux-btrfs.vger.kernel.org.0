@@ -2,78 +2,112 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01304105C0B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2019 22:35:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95CF8105C96
+	for <lists+linux-btrfs@lfdr.de>; Thu, 21 Nov 2019 23:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbfKUVfU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Nov 2019 16:35:20 -0500
-Received: from mail-ed1-f42.google.com ([209.85.208.42]:40108 "EHLO
-        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbfKUVfU (ORCPT
+        id S1726942AbfKUWW3 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Nov 2019 17:22:29 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:44840 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726329AbfKUWW3 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Nov 2019 16:35:20 -0500
-Received: by mail-ed1-f42.google.com with SMTP id p59so4143703edp.7
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 13:35:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=dw0fy99yCuayDeDSjRfWDE9xzdzThNtcRm3L78QqAvo=;
-        b=T5P2Xr+VuHqFI2A40FyxSx/te8uIWloRA2L6JvfVwU5Zpi0s+STKzwNi0JH3ufUaaT
-         4F2Gd8THNOGQMlNyr4SQg6UHmWBtHwWQcgvd/GjpNJoWyECu3+0m9U5LseOTnZnswuyp
-         SNcqEWdaplWQ14vI71DEW3exPg1M2ruSP17Pp9Mpgb6qdKPxqzeXkteyp50SaRUEsXIO
-         +pMDBHnDtI1rRT+bREnKIEHOeFMsShq/lFiJWS0dgCUPx/W+rrHcwGqDtv/hxCaG+K3W
-         3Rk6vCMMKkV8xr0WlD3opwzbkSZp5qDvN8SGgdYoikrGKDemAjh6tmjSsmSP5tk+l0sO
-         jJjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=dw0fy99yCuayDeDSjRfWDE9xzdzThNtcRm3L78QqAvo=;
-        b=m8qet3W8Y0ea2F/YbBVEQLdptVKGbhHUKkxQV/OWT/z68Mzw61aW3xo+N6EkGDLL31
-         hJ9B8qK3QpZ19OvBaJWu8bCQvFz8I38vVuy5itx7DtwT27ti65NWvWw7UpPwsgmsVQzs
-         Y54XkKyvXiK/DoX1qODbXi6FeHEKKHlFT84H8WCX1cR5RImIWlMJxmHDLbSe2fyozQNT
-         QxtpGk1okNVWFLB9K5wTO8azxfuaEyjlWLzor+pg3Sb9eYaaVL8En2H1Dc48WVcDMgBb
-         virrST7hOwJEocflGPKhjL7oXDzY5uREE2rshbO6/AnOxzBIehaMZSoscbTEtFU+ivRj
-         FdoA==
-X-Gm-Message-State: APjAAAXpfuRh4nxGxUY4qvGovLS7zVePud3PDKWcM3OS0OXJD6bCt4y6
-        dmmQhb382kaZQxGFtD9aItI7iOTLDADcf9ZZpplzuR8=
-X-Google-Smtp-Source: APXvYqwxxIqKaCFA0uGWyxxBA/VgaTZbwFKCc7xYYKg6sKl3Nabc/kzNlePGa2cdyyHlhQvR8A7DBZQ15JVzMQea5us=
-X-Received: by 2002:a17:906:b6c3:: with SMTP id ec3mr17062379ejb.27.1574372117234;
- Thu, 21 Nov 2019 13:35:17 -0800 (PST)
-MIME-Version: 1.0
-References: <20191112183425.GA1257@tik.uni-stuttgart.de> <7f628741-b32e-24dc-629f-97338fde3d16@googlemail.com>
- <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
- <3e5cd446-3527-17ef-9ab8-d6ad01d740d0@gmx.com> <CAKbQEqFCAYq7Cy6D-x3C8qWvf6SusjkTbLi531AMY3QAakrn6w@mail.gmail.com>
- <4544ecff-b70e-09fb-6fd3-e2c03d848c1c@googlemail.com> <CAKbQEqFELp0TWzM+K9TqAwywYBxX_3jXy0rz6tx9mNXyKEF02A@mail.gmail.com>
-In-Reply-To: <CAKbQEqFELp0TWzM+K9TqAwywYBxX_3jXy0rz6tx9mNXyKEF02A@mail.gmail.com>
-From:   Christian Pernegger <pernegger@gmail.com>
-Date:   Thu, 21 Nov 2019 22:34:41 +0100
-Message-ID: <CAKbQEqFX8_oU=+KtDsXz-WeEUytgcXr-J-pw+jEmC3dwDAfJMQ@mail.gmail.com>
+        Thu, 21 Nov 2019 17:22:29 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id 7BE014E76BF; Thu, 21 Nov 2019 17:22:28 -0500 (EST)
+Date:   Thu, 21 Nov 2019 17:22:28 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     Christian Pernegger <pernegger@gmail.com>
+Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
 Subject: Re: freezes during snapshot creation/deletion -- to be expected?
  (Was: Re: btrfs based backup?)
-To:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Message-ID: <20191121222228.GG22121@hungrycats.org>
+References: <20191112183425.GA1257@tik.uni-stuttgart.de>
+ <7f628741-b32e-24dc-629f-97338fde3d16@googlemail.com>
+ <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="RlgFhasKO3bfRJ5j"
+Content-Disposition: inline
+In-Reply-To: <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-> > Another interesting test could be to adjust btrbk configuration to:
-> > btrfs_commit_delete = each
->
-> Will do.
 
-Hm. No freeze, this time (with btrbk set to commit after each delete).
+--RlgFhasKO3bfRJ5j
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-In other news,
-- I seem to be leaking cgroups. There are currently 191 subvolumes
-(most of which are ro snapshots), but 547 "0/*" qgroups. Should
-deleting a subvolume take care of removing its (auto-created) cgroup,
-or does that always have to be done manually (or by setting the
-experimental *_qgroup_destroy options in btrbk.conf)? Any elegant ways
-to remove orphaned cqroups?
-- Timeshift, at :00, triggers this as well, it's just less severe
-(maybe because that's 1 subvolume instead of 3).
+On Wed, Nov 20, 2019 at 05:36:04PM +0100, Christian Pernegger wrote:
+> Hello,
+>=20
+> I've decided to go with a snapshot-based backup solution for our new
+> Linux desktops -- thank you for the timely thread --, namely btrbk.
+> A couple of subvolumes for different stuff, with hourly snapshots that
+> regularly go to another machine. Brilliant in theory, less so in
+> practice, because every time btrbk runs, the box'll freeze for a few
+> seconds, as in, Firefox and LibreOffice, for instance, become entirely
+> unresponsive, games hang and so on. (AFAICT, all it does is snapshot
+> each subvolume and delete ones that are out of the retention period.)
 
-Cheers,
-C.
+Snapshot delete is pretty aggressive with IO and can force a lot of
+commits if you are modifying a lot of metadata pages between snapshots.
+Generally I get a coffee when my 1TB NVME systems decide it's time to
+drop a snapshot, as the system can effectively hang for a few minutes
+while btrfs-cleaner runs.  On performance-critical systems we only ever
+have one snapshot active on the filesystem at a time, and we only create
+it once a day for backups.  I'd love a way to throttle btrfs-cleaner so
+it's not so aggressive with IO and CPU.
+
+Snapshot create has unbounded running time on 5.0 kernels.  The creation
+process has to flush dirty buffers to the filesystem to get a clean
+snapshot state.  Any process that is writing data while the flush is
+running gets its data included in the snapshot flush, so in the worst
+possible case, the snapshot flush never ends (unless you run out of disk
+space, or whatever was writing new data stops, whichever comes first).
+
+Anything that needs to take a sb_writer lock (which is almost everything
+that modifies the filesystem) will hang until the snapshot create is done;
+however, processes that are reading the filesystem will not be obstructed.
+This can lead to starvation of the writing processes.  cgroups and ionice
+won't help here--the block layer doesn't detect waits for sb_writers
+(there is no associated block device for those, so they're invisible to
+the block layer), so it doesn't know that writer processes are waiting
+for IO, and all the writers' IO bandwidth gets reallocated to the reader
+processes, making for long-lasting priority inversions.  The IO pressure
+stall subsystem reads _zero_ IO pressure even though writing processes
+are continuously blocked for hours.
+
+On small systems, this is all over in a second or less.  On bigger
+fileservers, I've had single snapshot creates run for many hours.  As a
+workaround, I have some scripts that freeze processes that write to the
+disk while 'btrfs sub create' runs, to force the snapshot create to finish
+in a timely manner.  I think I saw some patches going into later 5.x
+kernels that solve the problem in the kernel, too (writes that occur after
+the snapshot creation starts are not included in the snapshot any more).
+
+> I'm aware that having many snapshots can impact performance of some
+> operations, but I didn't think that "many" <=3D 200, "impact" =3D stop
+> dead and "some operations" =3D light desktop use. These are decently
+> specced, after all (Zen 2 8/12 core, 32 GB RAM, Samsung 970 Evo Plus).
+> What I'm asking is, is this to be expected, does it just need tuning,
+> is the hardware buggy, the kernel version (Ubuntu 18.04.3 HWE, their
+> 5.0 series) a stinker, something else awry ...?
+>=20
+> Cheers,
+> C.
+
+--RlgFhasKO3bfRJ5j
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXdcOIQAKCRCB+YsaVrMb
+nMOqAJ4rXmnTRKGwiW7F4PcMR/3RyfR/egCeOV0F3x8vgju23gTezkOKqkoUmos=
+=/q2b
+-----END PGP SIGNATURE-----
+
+--RlgFhasKO3bfRJ5j--
