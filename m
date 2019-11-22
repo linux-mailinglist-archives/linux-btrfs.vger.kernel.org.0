@@ -2,265 +2,339 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 126CD107544
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 16:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 279191075B4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 17:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727123AbfKVP4E (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Nov 2019 10:56:04 -0500
-Received: from gproxy8-pub.mail.unifiedlayer.com ([67.222.33.93]:36222 "EHLO
-        gproxy8-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726546AbfKVP4D (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Nov 2019 10:56:03 -0500
-X-Greylist: delayed 1395 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Nov 2019 10:56:02 EST
-Received: from cmgw12.unifiedlayer.com (unknown [10.9.0.12])
-        by gproxy8.mail.unifiedlayer.com (Postfix) with ESMTP id 77E7A1AB1E4
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Nov 2019 08:32:45 -0700 (MST)
-Received: from box790.bluehost.com ([66.147.244.90])
-        by cmsmtp with ESMTP
-        id YAvNipmb594wVYAvNi39Z5; Fri, 22 Nov 2019 08:32:45 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=Robr0huK c=1 sm=1 tr=0
- a=9zS9oP4XFFrDhkEDEs+BAQ==:117 a=9zS9oP4XFFrDhkEDEs+BAQ==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19
- a=IkcTkHD0fZMA:10:nop_charset_1 a=MeAgGD-zjQ4A:10:nop_rcvd_month_year
- a=2ITzLR9P390A:10:endurance_base64_authed_username_1 a=CngwRIvfAAAA:8
- a=Fr_rqEyezIdoxtcEZpgA:9 a=92PYCceKuWJL47sP:21 a=0_MilMlVnsjJEBqp:21
- a=QEXdDO2ut3YA:10:nop_charset_2 a=4_miDDMz0JLoEzr4jVLQ:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=casa-di-locascio.net; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:To:References:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JblAjNzBUFpkgi1UMgh1L2HMFRSJpPdeXP4dn5mugcY=; b=NiYUMuAQQJE0ztyQsgqY3uiWtl
-        uDU6nw0no9v4EQUu0u3sCqUskQSZtNQhwdkttAp5dFyLragutxTbVMvzVTHeAtTmxxLYfRTgOfPGH
-        XfSiU8DfYSUyyaY8cwEwtNEP9;
-Received: from host86-165-35-216.range86-165.btcentralplus.com ([86.165.35.216]:50524 helo=[192.168.1.148])
-        by box790.bluehost.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <devel@roosoft.ltd.uk>)
-        id 1iYAvN-001t4p-4b
-        for linux-btrfs@vger.kernel.org; Fri, 22 Nov 2019 08:32:45 -0700
-Subject: Re: Problems balancing BTRFS
-References: <65447748-9033-f105-8628-40a13c36f8ce@casa-di-locascio.net>
- <1de2144f-361a-4657-662f-ac1f17c84b51@gmx.com>
- <e382e662-b09f-c9f3-e589-44560a7b9b97@casa-di-locascio.net>
- <b1df6eec-4e23-33df-214c-6d49fb5fc085@gmx.com>
- <3f62a074-7712-b72c-fbe1-b63c5ca97271@roosoft.ltd.uk>
-To:     "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From:   devel@roosoft.ltd.uk
-Openpgp: preference=signencrypt
-Autocrypt: addr=devel@roosoft.ltd.uk; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <4edfc730-27c7-4c16-02f8-ccbb58cb5cdb@casa-di-locascio.net>
-Date:   Fri, 22 Nov 2019 15:32:43 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S1727489AbfKVQXy (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Nov 2019 11:23:54 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50040 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726666AbfKVQXx (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 Nov 2019 11:23:53 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 33B80ACB7;
+        Fri, 22 Nov 2019 16:23:50 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1F4AADA898; Fri, 22 Nov 2019 17:23:50 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs updates for 5.5
+Date:   Fri, 22 Nov 2019 17:23:44 +0100
+Message-Id: <cover.1574439340.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <3f62a074-7712-b72c-fbe1-b63c5ca97271@roosoft.ltd.uk>
-Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-GB
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box790.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roosoft.ltd.uk
-X-BWhitelist: no
-X-Source-IP: 86.165.35.216
-X-Source-L: No
-X-Exim-ID: 1iYAvN-001t4p-4b
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host86-165-35-216.range86-165.btcentralplus.com ([192.168.1.148]) [86.165.35.216]:50524
-X-Source-Auth: dlocasci+casa-di-locascio.net
-X-Email-Count: 1
-X-Source-Cap: Y2FzYWRpbG87Y2FzYWRpbG87Ym94NzkwLmJsdWVob3N0LmNvbQ==
-X-Local-Domain: yes
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On 22/11/2019 14:07, devel@roosoft.ltd.uk wrote:
-> On 22/11/2019 13:56, Qu Wenruo wrote:
->> On 2019/11/22 下午9:20, devel@roosoft.ltd.uk wrote:
->>> On 22/11/2019 13:10, Qu Wenruo wrote:
->>>> On 2019/11/22 下午8:37, devel@roosoft.ltd.uk wrote:
->>>>> So been discussing this on IRC but looks like more sage advice is needed.
->>>> You're not the only one hitting the bug. (Not sure if that makes you
->>>> feel a little better)
->>>
->>> Hehe.. well always help to know you are not slowly going crazy by oneself.
->>>
->>>>> The csum error is from data reloc tree, which is a tree to record the
->>>>> new (relocated) data.
->>>>> So the good news is, your old data is not corrupted, and since we hit
->>>>> EIO before switching tree blocks, the corrupted data is just deleted.
->>>>>
->>>>> And I have also seen the bug just using single device, with DUP meta and
->>>>> SINGLE data, so I believe there is something wrong with the data reloc tree.
->>>>> The problem here is, I can't find a way to reproduce it, so it will take
->>>>> us a longer time to debug.
->>>>>
->>>>>
->>>>> Despite that, have you seen any other problem? Especially ENOSPC (needs
->>>>> enospc_debug mount option).
->>>>> The only time I hit it, I was debugging ENOSPC bug of relocation.
->>>>>
->>> As far as I can tell the rest of the filesystem works normally. Like I
->>> show scrubs clean etc.. I have not actively added much new data since
->>> the whole point is to balance the fs so a scrub does not take 18 hours.
->> Sorry my point here is, would you like to try balance again with
->> "enospc_debug" mount option?
->>
->> As for balance, we can hit ENOSPC without showing it as long as we have
->> a more serious problem, like the EIO you hit.
->
-> Oh I see .. Sure I can start the balance again.
->
->
->>> So really I am not sure what to do. It only seems to appear during a
->>> balance, which as far as I know is a much needed regular maintenance
->>> tool to keep a fs healthy, which is why it is part of the
->>> btrfsmaintenance tools 
->> You don't need to be that nervous just for not being able to balance.
->>
->> Nowadays, balance is no longer that much necessary.
->> In the old days, balance is the only way to delete empty block groups,
->> but now empty block groups will be removed automatically, so balance is
->> only here to address unbalanced disk usage or convert.
->>
->> For your case, although it's not comfortable to have imbalanced disk
->> usages, but that won't hurt too much.
->
-> Well going from 1Tb to 6Tb devices means there is a lot of weighting
-> going the wrong way. Initially there was only ~ 200Gb on each of the new
-> disks and so that was just unacceptable it was getting better until I
-> hit this balance issue. But I am wary of putting too much new data
-> unless it is symptomatic of something else.
->
->
->
->> So for now, you can just disable balance and call it a day.
->> As long as you're still writing into that fs, the fs should become more
->> and more balanced.
->>
->>> Are there some other tests to try and isolate what the problem appears
->>> to be?
->> Forgot to mention, is that always reproducible? And always one the same
->> block group?
->>
->> Thanks,
->> Qu
->
-> So far yes. The balance will always fall at the same ino and offset
-> making it impossible to continue.
->
->
-> Let me run it with debug on and get back to you.
->
->
-> Thanks.
->
->
->
->
+Hi,
 
+there are some new features, followed by cleanups. Please pull, thanks.
 
+User visible changes:
 
+- new block group profiles: RAID1 with 3- and 4- copies
+  - RAID1 in btrfs has always 2 copies, now add support for 3 and 4
+  - this is an incompat feature (named RAID1C34)
+  - recommended use of RAID1C3 is replacement of RAID6 profile on metadata,
+    this brings a more reliable resiliency against 2 device loss/damage
 
-OK so I mounted the fs with enospc_debug
+- support for new checksums
+  - per-filesystem, set at mkfs time
+  - fast hash (crc32c successor): xxhash, 64bit digest
+  - strong hashes (both 256bit): sha256 (slower, FIPS), blake2b (faster)
+  - the blake2b module goes via the crypto tree, btrfs.ko has a soft
+    dependency
 
+- speed up lseek, don't take inode locks unnecessarily, this can speed up
+  parallel SEEK_CUR/SEEK_SET/SEEK_END by 80%
 
-> /dev/sdb on /mnt/media type btrfs
-(rw,relatime,space_cache,enospc_debug,subvolid=1001,subvol=/media)
+- send:
+  - allow clone operations within the same file
+  - limit maximum number of sent clone references to avoid slow backref walking
 
+- error message improvements: device scan prints process name and PID
 
-Re- ran a balance and it did a little more. but then errored out again..
+Core changes:
 
+- cleanups
+  - remove unique workqueue helpers, used to provide a way to avoid deadlocks
+    in the workqueue code, now done in a simpler way
+  - remove lots of indirect function calls in compression code
+  - extent IO tree code moved out of extent_io.c
+  - cleanup backup superblock handling at mount time
+  - transaction life cycle documentation and cleanups
+  - locking code cleanups, annotations and documentation
+  - add more cold, const, pure function attributes
+  - removal of unused or redundant struct members or variables
 
-However I don't see any more info in dmesg..
+- new tree-checker sanity tests
+  - try to detect missing INODE_ITEM, cross-reference checks of DIR_ITEM,
+    DIR_INDEX, INODE_REF, and XATTR_* items
 
-[Fri Nov 22 15:13:40 2019] BTRFS info (device sdb): relocating block
-group 8963019112448 flags data|raid5
-[Fri Nov 22 15:14:22 2019] BTRFS info (device sdb): found 61 extents
-[Fri Nov 22 15:14:41 2019] BTRFS info (device sdb): found 61 extents
-[Fri Nov 22 15:14:59 2019] BTRFS info (device sdb): relocating block
-group 8801957838848 flags data|raid5
-[Fri Nov 22 15:15:05 2019] BTRFS warning (device sdb): csum failed root
--9 ino 305 off 131760128 csum 0x07436c62 expected csum 0x0001cbde mirror 1
-[Fri Nov 22 15:15:05 2019] BTRFS warning (device sdb): csum failed root
--9 ino 305 off 131764224 csum 0xd009e874 expected csum 0x00000000 mirror 1
-[Fri Nov 22 15:15:05 2019] BTRFS warning (device sdb): csum failed root
--9 ino 305 off 131760128 csum 0x07436c62 expected csum 0x0001cbde mirror 2
-[Fri Nov 22 15:15:05 2019] BTRFS warning (device sdb): csum failed root
--9 ino 305 off 131764224 csum 0xd009e874 expected csum 0x00000000 mirror 2
-[Fri Nov 22 15:15:05 2019] BTRFS warning (device sdb): csum failed root
--9 ino 305 off 131760128 csum 0x07436c62 expected csum 0x0001cbde mirror 1
-[Fri Nov 22 15:15:05 2019] BTRFS warning (device sdb): csum failed root
--9 ino 305 off 131760128 csum 0x07436c62 expected csum 0x0001cbde mirror 2
-[Fri Nov 22 15:15:13 2019] BTRFS info (device sdb): balance: ended with
-status: -5
+- remove own bio scheduling code (used to avoid checksum submissions being
+  stuck behind other IO), replaced by cgroup controller-based code to allow
+  better control and avoid priority inversions in cases where the custom and
+  cgroup scheduling disagreed
 
+Fixes:
 
-What should I do now to get more information on the issue ?
+- avoid getting stuck during cyclic writebacks
 
+- fix trimming of ranges crossing block group boundaries
 
-Thank.
+- fix rename exchange on subvolumes, all involved subvolumes need to be
+  recorded in the transaction
 
+----------------------------------------------------------------
+The following changes since commit af42d3466bdc8f39806b26f593604fdc54140bcb:
 
+  Linux 5.4-rc8 (2019-11-17 14:47:30 -0800)
 
--- 
-==
+are available in the Git repository at:
 
-D LoCascio
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.5-tag
 
-Director
+for you to fetch changes up to fa17ed069c61286b26382e23b57a62930657b9c1:
 
-RooSoft Ltd
+  btrfs: drop bdev argument from submit_extent_page (2019-11-18 23:43:58 +0100)
 
+----------------------------------------------------------------
+Anand Jain (3):
+      btrfs: balance: use term redundancy instead of integrity in message
+      btrfs: print process name and pid that calls device scanning
+      btrfs: use bool argument in free_root_pointers()
+
+Chengguang Xu (3):
+      btrfs: props: remove unnecessary hash_init()
+      btrfs: use enum for extent type defines
+      btrfs: use better definition of number of compression type
+
+Chris Mason (5):
+      Btrfs: stop using btrfs_schedule_bio()
+      Btrfs: delete the entire async bio submission framework
+      Btrfs: only associate the locked page with one async_chunk struct
+      Btrfs: use REQ_CGROUP_PUNT for worker thread submitted bios
+      Btrfs: extent_write_locked_range() should attach inode->i_wb
+
+Dan Carpenter (1):
+      btrfs: clean up locking name in scrub_enumerate_chunks()
+
+David Sterba (54):
+      btrfs: make locking assertion helpers static inline
+      btrfs: make btrfs_assert_tree_locked static inline
+      btrfs: move btrfs_set_path_blocking to other locking functions
+      btrfs: move btrfs_unlock_up_safe to other locking functions
+      btrfs: add 64bit safe helper for power of two checks
+      btrfs: use has_single_bit_set for clarity
+      btrfs: drop unused parameter is_new from btrfs_iget
+      btrfs: add __cold attribute to more functions
+      btrfs: add const function attribute
+      btrfs: add __pure attribute to functions
+      btrfs: opencode extent_buffer_get
+      btrfs: export compression and decompression callbacks
+      btrfs: switch compression callbacks to direct calls
+      btrfs: compression: attach workspace manager to the ops
+      btrfs: compression: let workspace manager init take only the type
+      btrfs: compression: inline init_workspace_manager
+      btrfs: compression: let workspace manager cleanup take only the type
+      btrfs: compression: inline cleanup_workspace_manager
+      btrfs: compression: export alloc/free/get/put callbacks of all algos
+      btrfs: compression: inline get_workspace
+      btrfs: compression: inline put_workspace
+      btrfs: compression: pass type to btrfs_get_workspace
+      btrfs: compression: inline alloc_workspace
+      btrfs: compression: pass type to btrfs_put_workspace
+      btrfs: compression: inline free_workspace
+      btrfs: compression: remove ops pointer from workspace_manager
+      btrfs: tracepoints: drop typecasts from printk
+      btrfs: tracepoints: constify all pointers
+      btrfs: assert extent_map bdevs and lookup_map and split
+      btrfs: get bdev from latest_dev for dio bh_result
+      btrfs: sysfs: export supported checksums
+      btrfs: add member for a specific checksum driver
+      btrfs: add blake2b to checksumming algorithms
+      btrfs: move block_group_item::used to block group
+      btrfs: move block_group_item::flags to block group
+      btrfs: remove embedded block_group_cache::item
+      btrfs: rename block_group_item on-stack accessors to follow naming
+      btrfs: rename extent buffer block group item accessors
+      btrfs: add dedicated members for start and length of a block group
+      btrfs: sink write_flags to __extent_writepage_io
+      btrfs: sink write flags to cow_file_range_async
+      btrfs: add support for 3-copy replication (raid1c3)
+      btrfs: add support for 4-copy replication (raid1c4)
+      btrfs: add incompat for raid1 with 3, 4 copies
+      btrfs: drop incompat bit for raid1c34 after last block group is gone
+      btrfs: merge blocking_writers branches in btrfs_tree_read_lock
+      btrfs: set blocking_writers directly, no increment or decrement
+      btrfs: access eb::blocking_writers according to ACCESS_ONCE policies
+      btrfs: document extent buffer locking
+      btrfs: rename btrfs_block_group_cache
+      btrfs: get bdev directly from fs_devices in submit_extent_page
+      btrfs: drop bio_set_dev where not needed
+      btrfs: remove extent_map::bdev
+      btrfs: drop bdev argument from submit_extent_page
+
+Filipe Manana (8):
+      Btrfs: make btrfs_wait_extents() static
+      Btrfs: fix negative subv_writers counter and data space leak after buffered write
+      Btrfs: fix metadata space leak on fixup worker failure to set range as delalloc
+      Btrfs: remove wait queue from space_info structure
+      Btrfs: remove unnecessary delalloc mutex for inodes
+      Btrfs: send, allow clone operations within the same file
+      Btrfs: send, skip backreference walking for extents with many references
+      Btrfs: fix block group remaining RO forever after error during device replace
+
+Goldwyn Rodrigues (1):
+      btrfs: simplify inode locking for RWF_NOWAIT
+
+Johannes Thumshirn (10):
+      btrfs: raid56: reduce indentation in lock_stripe_add
+      btrfs: remove pointless local variable in lock_stripe_add()
+      btrfs: reduce indentation in btrfs_may_alloc_data_chunk
+      btrfs: remove pointless indentation in btrfs_read_sys_array()
+      btrfs: add xxhash64 to checksumming algorithms
+      btrfs: add sha256 to checksumming algorithm
+      btrfs: sysfs: show used checksum driver per filesystem
+      btrfs: remove cached space_info in btrfs_statfs()
+      btrfs: change btrfs_fs_devices::seeding to bool
+      btrfs: change btrfs_fs_devices::rotating to bool
+
+Josef Bacik (9):
+      btrfs: separate out the extent leak code
+      btrfs: separate out the extent io init function
+      btrfs: move extent_io_tree defs to their own header
+      btrfs: export find_delalloc_range
+      btrfs: move the failrec tree stuff into extent-io-tree.h
+      btrfs: use refcount_inc_not_zero in kill_all_nodes
+      btrfs: check page->mapping when loading free space cache
+      btrfs: use btrfs_block_group_cache_done in update_block_group
+      btrfs: record all roots for rename exchange on a subvol
+
+Marcos Paulo de Souza (2):
+      btrfs: block-group: Rework documentation of check_system_chunk function
+      btrfs: ioctl: Try to use btrfs_fs_info instead of *file
+
+Nikolay Borisov (17):
+      btrfs: Add assert to catch nested transaction commit
+      btrfs: Don't opencode btrfs_find_name_in_backref in backref_in_log
+      btrfs: Properly handle backref_in_log retval
+      btrfs: Open-code name_in_log_ref in replay_one_name
+      btrfs: User assert to document transaction requirement
+      btrfs: Rename btrfs_join_transaction_nolock
+      btrfs: Speed up btrfs_file_llseek
+      btrfs: Simplify btrfs_file_llseek
+      btrfs: Return offset from find_desired_extent
+      btrfs: Cleanup and simplify find_newest_super_backup
+      btrfs: Remove newest_gen argument from find_oldest_super_backup
+      btrfs: Add read_backup_root
+      btrfs: Factor out tree roots initialization during mount
+      btrfs: Don't use objectid_mutex during mount
+      btrfs: Remove unused next_root_backup function
+      btrfs: Rename find_oldest_super_backup to init_backup_root_slot
+      btrfs: Streamline btrfs_fs_info::backup_root_index semantics
+
+Omar Sandoval (7):
+      btrfs: get rid of unnecessary memset() of work item
+      btrfs: don't prematurely free work in run_ordered_work()
+      btrfs: don't prematurely free work in end_workqueue_fn()
+      btrfs: don't prematurely free work in reada_start_machine_worker()
+      btrfs: don't prematurely free work in scrub_missing_raid56_worker()
+      btrfs: get rid of unique workqueue helper functions
+      btrfs: get rid of pointless wtag variable in async-thread.c
+
+Qu Wenruo (16):
+      btrfs: tree-checker: Try to detect missing INODE_ITEM
+      btrfs: tree-checker: Add check for INODE_REF
+      btrfs: ctree: Reduce one indent level for btrfs_search_slot()
+      btrfs: ctree: Reduce one indent level for btrfs_search_old_slot()
+      btrfs: ctree: Remove stray comment of setting up path lock
+      btrfs: transaction: describe transaction states and transitions
+      btrfs: transaction: Cleanup unused TRANS_STATE_BLOCKED
+      btrfs: tree-checker: Refactor prev_key check for ino into a function
+      btrfs: Enhance error output for write time tree checker
+      btrfs: Remove btrfs_bio::flags member
+      btrfs: tree-checker: Check item size before reading file extent type
+      btrfs: volumes: Use more straightforward way to calculate map length
+      btrfs: Ensure we trim ranges across block group boundary
+      btrfs: block-group: Refactor btrfs_read_block_groups()
+      btrfs: block-group: Reuse the item key from caller of read_one_block_group()
+      btrfs: scrub: Don't check free space before marking a block group RO
+
+Tejun Heo (1):
+      btrfs: Avoid getting stuck during cyclic writebacks
+
+ fs/btrfs/Kconfig                       |   2 +
+ fs/btrfs/async-thread.c                | 113 +++----
+ fs/btrfs/async-thread.h                |  37 +--
+ fs/btrfs/block-group.c                 | 589 +++++++++++++++++----------------
+ fs/btrfs/block-group.h                 |  51 +--
+ fs/btrfs/btrfs_inode.h                 |   3 -
+ fs/btrfs/compression.c                 | 269 +++++++++++----
+ fs/btrfs/compression.h                 |  46 +--
+ fs/btrfs/ctree.c                       | 287 +++++++---------
+ fs/btrfs/ctree.h                       |  51 +--
+ fs/btrfs/delalloc-space.c              |  21 +-
+ fs/btrfs/delayed-inode.c               |  18 +-
+ fs/btrfs/dev-replace.c                 |   2 +-
+ fs/btrfs/dev-replace.h                 |   2 +-
+ fs/btrfs/disk-io.c                     | 365 ++++++++++----------
+ fs/btrfs/disk-io.h                     |   4 +-
+ fs/btrfs/export.c                      |   4 +-
+ fs/btrfs/extent-io-tree.h              | 248 ++++++++++++++
+ fs/btrfs/extent-tree.c                 | 146 ++++----
+ fs/btrfs/extent_io.c                   | 120 ++++---
+ fs/btrfs/extent_io.h                   | 231 +------------
+ fs/btrfs/extent_map.c                  |   6 +-
+ fs/btrfs/extent_map.h                  |  11 +-
+ fs/btrfs/file-item.c                   |   1 -
+ fs/btrfs/file.c                        |  74 ++---
+ fs/btrfs/free-space-cache.c            | 118 +++----
+ fs/btrfs/free-space-cache.h            |  39 +--
+ fs/btrfs/free-space-tree.c             | 133 ++++----
+ fs/btrfs/free-space-tree.h             |  18 +-
+ fs/btrfs/inode.c                       | 170 ++++++----
+ fs/btrfs/ioctl.c                       |  49 ++-
+ fs/btrfs/locking.c                     | 309 ++++++++++++++---
+ fs/btrfs/locking.h                     |  13 +-
+ fs/btrfs/lzo.c                         |  53 +--
+ fs/btrfs/misc.h                        |  11 +
+ fs/btrfs/ordered-data.c                |   7 +-
+ fs/btrfs/ordered-data.h                |   2 +-
+ fs/btrfs/print-tree.c                  |   6 +-
+ fs/btrfs/props.c                       |   6 +-
+ fs/btrfs/qgroup.c                      |  11 +-
+ fs/btrfs/qgroup.h                      |   2 +-
+ fs/btrfs/raid56.c                      | 101 +++---
+ fs/btrfs/reada.c                       |  19 +-
+ fs/btrfs/relocation.c                  |  43 ++-
+ fs/btrfs/scrub.c                       | 100 +++---
+ fs/btrfs/send.c                        |  45 ++-
+ fs/btrfs/space-info.c                  |   8 +-
+ fs/btrfs/space-info.h                  |   3 +-
+ fs/btrfs/super.c                       |  26 +-
+ fs/btrfs/sysfs.c                       |  47 ++-
+ fs/btrfs/sysfs.h                       |   2 +-
+ fs/btrfs/tests/btrfs-tests.c           |  11 +-
+ fs/btrfs/tests/btrfs-tests.h           |   4 +-
+ fs/btrfs/tests/free-space-tests.c      |  15 +-
+ fs/btrfs/tests/free-space-tree-tests.c | 101 +++---
+ fs/btrfs/transaction.c                 |  98 +++++-
+ fs/btrfs/transaction.h                 |   5 +-
+ fs/btrfs/tree-checker.c                | 211 +++++++++---
+ fs/btrfs/tree-log.c                    | 136 ++++----
+ fs/btrfs/volumes.c                     | 494 ++++++++-------------------
+ fs/btrfs/volumes.h                     |  24 +-
+ fs/btrfs/zlib.c                        |  52 +--
+ fs/btrfs/zstd.c                        |  47 +--
+ include/trace/events/btrfs.h           | 131 ++++----
+ include/uapi/linux/btrfs.h             |   5 +-
+ include/uapi/linux/btrfs_tree.h        |  23 +-
+ 66 files changed, 2780 insertions(+), 2619 deletions(-)
+ create mode 100644 fs/btrfs/extent-io-tree.h
