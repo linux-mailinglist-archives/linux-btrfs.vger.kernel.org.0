@@ -2,189 +2,119 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 389B2105F37
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 05:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D71BE105F5C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 05:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726540AbfKVE16 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Nov 2019 23:27:58 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:42401 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726500AbfKVE15 (ORCPT
+        id S1726705AbfKVE7r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Nov 2019 23:59:47 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:37604 "EHLO
+        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbfKVE7p (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Nov 2019 23:27:57 -0500
-Received: by mail-pl1-f195.google.com with SMTP id j12so2559126plt.9
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 20:27:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FMVG6+Kx1xhwjBWiCA3I3pAlD6vo349K1VEd3grV/SA=;
-        b=iiAAKav/zFBWk2bWkyI+jpwsSZx7YQ+pL6pveRk/bTsfrXLwToOL8PIoy8uOuLSpaH
-         Dyjb6EZOiCyQZ5LicenIhwqrfEqHne4Ms6de0P+m+ptPLGIYW0nDcW6L+d7hEdLHHMGC
-         T9c8VcRf7uagHA0MkMonkIaMrcUT5DqTLo35zjw+d8X4xtQ8F4T/HWvLvhtmwyfHRUHP
-         AiLeltEpvOVvOO0ojASWnbRzl7OFv+yQ3fSh55IZ7Vns3I2xaWDqtvg4z1h4hWywkX03
-         gvOwY9mxfhdEdWNaXR1/MN2yqd34Vbsqcgro34VjTZKrdTpT8vIgVawn+F7AIFiBJAfH
-         SWgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FMVG6+Kx1xhwjBWiCA3I3pAlD6vo349K1VEd3grV/SA=;
-        b=RwNb42IDYWV0PirAnfWQ9TRw5zdpXDUGt3cUA8GtHR3hM9Y6tAVZepeQcSovti61IT
-         BYy+bDpH56FFCWhpf712KyrVRj9gokARdVPQZ20AW9hnFiJoXM/2KJVIYpb4ULAbpaJP
-         aluAMU8ylP7mYpAPp6yCngHCXO/boML073bDOkyuoi3K1OKHu5T8hHIjD8J3chXLxLfP
-         +8QzEkrlQvljsXjYZLLmmFXRerZTqrLERynVJRcEozgc5Mp9fKgYqf7b3PSOCmIrNpya
-         NfsR24L2jIRrezd5r1rBUppOYbiere7++uJ53l2PbA8X1lVQq2vyIq/P6j7kRX7Twdh+
-         4OCQ==
-X-Gm-Message-State: APjAAAUF8K+FTaznRtH0WGZ9ulXy2kdpDqafdIKA0Ai+R0PCBuk0FfVg
-        9KLPXnDbYOwplFwz6BbWtr1ptgMJ8mGcowHW0RlVgw==
-X-Google-Smtp-Source: APXvYqwKPdD8Om7y8KR1Pys2eGj5h7bV1NruwKpmk9y9Um1R3x3XxAJJWi/in81KPsNXlYMSSP8DAr1ZyzHIyTtDidw=
-X-Received: by 2002:a17:902:8f94:: with SMTP id z20mr11787383plo.119.1574396875002;
- Thu, 21 Nov 2019 20:27:55 -0800 (PST)
+        Thu, 21 Nov 2019 23:59:45 -0500
+Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
+        id C535D4E7F13; Thu, 21 Nov 2019 23:59:43 -0500 (EST)
+Date:   Thu, 21 Nov 2019 23:59:43 -0500
+From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
+To:     linux-btrfs@vger.kernel.org
+Subject: Re: freezes during snapshot creation/deletion -- to be expected?
+ (Was: Re: btrfs based backup?)
+Message-ID: <20191122045943.GH22121@hungrycats.org>
+References: <20191112183425.GA1257@tik.uni-stuttgart.de>
+ <7f628741-b32e-24dc-629f-97338fde3d16@googlemail.com>
+ <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
+ <20191121222228.GG22121@hungrycats.org>
 MIME-Version: 1.0
-References: <201911220351.HPI9gxNo%lkp@intel.com>
-In-Reply-To: <201911220351.HPI9gxNo%lkp@intel.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 21 Nov 2019 20:27:43 -0800
-Message-ID: <CAKwvOdn5j37AYzmoOsaSqyYdBkjqevbTrSyGQypB+G_NgxX0fQ@mail.gmail.com>
-Subject: Re: [PATCH 05/22] btrfs: add the beginning of async discard, discard workqueue
-To:     dennis@kernel.org
-Cc:     kbuild@lists.01.org,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>, osandov@osandov.com,
-        kernel-team@fb.com, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="B0+HW0pjZ+2jqF7e"
+Content-Disposition: inline
+In-Reply-To: <20191121222228.GG22121@hungrycats.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Hi Dennis,
-Below is a 0day bot report from a build w/ Clang. Warning looks legit,
-can you please take a look?
 
-On Thu, Nov 21, 2019 at 11:27 AM kbuild test robot <lkp@intel.com> wrote:
->
-> CC: kbuild-all@lists.01.org
-> In-Reply-To: <63d3257efe1158a6fbbd7abe865cd9250b494438.1574282259.git.dennis@kernel.org>
-> References: <63d3257efe1158a6fbbd7abe865cd9250b494438.1574282259.git.dennis@kernel.org>
-> TO: Dennis Zhou <dennis@kernel.org>
-> CC: David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Omar Sandoval <osandov@osandov.com>
-> CC: kernel-team@fb.com, linux-btrfs@vger.kernel.org, Dennis Zhou <dennis@kernel.org>
->
-> Hi Dennis,
->
-> I love your patch! Perhaps something to improve:
->
-> [auto build test WARNING on kdave/for-next]
-> [also build test WARNING on next-20191121]
-> [cannot apply to v5.4-rc8]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
->
-> url:    https://github.com/0day-ci/linux/commits/Dennis-Zhou/btrfs-async-discard-support/20191121-230429
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-> config: arm64-defconfig (attached as .config)
-> compiler: clang version 10.0.0 (git://gitmirror/llvm_project cf823ce4ad9d04c69b7c29d236f7b14c875111c2)
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         make.cross ARCH=arm64
->
-> If you fix the issue, kindly add following tag
-> Reported-by: kbuild test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> fs/btrfs/free-space-cache.c:3238:6: warning: variable 'trim_state' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
->            if (!ret) {
->                ^~~~
->    fs/btrfs/free-space-cache.c:3251:53: note: uninitialized use occurs here
->            __btrfs_add_free_space(fs_info, ctl, start, bytes, trim_state);
->                                                               ^~~~~~~~~~
->    fs/btrfs/free-space-cache.c:3238:2: note: remove the 'if' if its condition is always true
->            if (!ret) {
->            ^~~~~~~~~~
->    fs/btrfs/free-space-cache.c:3224:2: note: variable 'trim_state' is declared here
->            enum btrfs_trim_state trim_state;
->            ^
->    1 warning generated.
->
-> vim +3238 fs/btrfs/free-space-cache.c
->
->   3210
->   3211  static int do_trimming(struct btrfs_block_group *block_group,
->   3212                         u64 *total_trimmed, u64 start, u64 bytes,
->   3213                         u64 reserved_start, u64 reserved_bytes,
->   3214                         enum btrfs_trim_state reserved_trim_state,
->   3215                         struct btrfs_trim_range *trim_entry)
->   3216  {
->   3217          struct btrfs_space_info *space_info = block_group->space_info;
->   3218          struct btrfs_fs_info *fs_info = block_group->fs_info;
->   3219          struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
->   3220          int ret;
->   3221          int update = 0;
->   3222          u64 end = start + bytes;
->   3223          u64 reserved_end = reserved_start + reserved_bytes;
->   3224          enum btrfs_trim_state trim_state;
->   3225          u64 trimmed = 0;
->   3226
->   3227          spin_lock(&space_info->lock);
->   3228          spin_lock(&block_group->lock);
->   3229          if (!block_group->ro) {
->   3230                  block_group->reserved += reserved_bytes;
->   3231                  space_info->bytes_reserved += reserved_bytes;
->   3232                  update = 1;
->   3233          }
->   3234          spin_unlock(&block_group->lock);
->   3235          spin_unlock(&space_info->lock);
->   3236
->   3237          ret = btrfs_discard_extent(fs_info, start, bytes, &trimmed);
-> > 3238          if (!ret) {
->   3239                  *total_trimmed += trimmed;
->   3240                  trim_state = BTRFS_TRIM_STATE_TRIMMED;
->   3241          }
->   3242
->   3243          mutex_lock(&ctl->cache_writeout_mutex);
->   3244          if (reserved_start < start)
->   3245                  __btrfs_add_free_space(fs_info, ctl, reserved_start,
->   3246                                         start - reserved_start,
->   3247                                         reserved_trim_state);
->   3248          if (start + bytes < reserved_start + reserved_bytes)
->   3249                  __btrfs_add_free_space(fs_info, ctl, end, reserved_end - end,
->   3250                                         reserved_trim_state);
->   3251          __btrfs_add_free_space(fs_info, ctl, start, bytes, trim_state);
+--B0+HW0pjZ+2jqF7e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-^ oops
+On Thu, Nov 21, 2019 at 05:22:28PM -0500, Zygo Blaxell wrote:
+> On Wed, Nov 20, 2019 at 05:36:04PM +0100, Christian Pernegger wrote:
+> > Hello,
+> >=20
+> > I've decided to go with a snapshot-based backup solution for our new
+> > Linux desktops -- thank you for the timely thread --, namely btrbk.
+> > A couple of subvolumes for different stuff, with hourly snapshots that
+> > regularly go to another machine. Brilliant in theory, less so in
+> > practice, because every time btrbk runs, the box'll freeze for a few
+> > seconds, as in, Firefox and LibreOffice, for instance, become entirely
+> > unresponsive, games hang and so on. (AFAICT, all it does is snapshot
+> > each subvolume and delete ones that are out of the retention period.)
+>=20
+> Snapshot delete is pretty aggressive with IO and can force a lot of
+> commits if you are modifying a lot of metadata pages between snapshots.
+> Generally I get a coffee when my 1TB NVME systems decide it's time to
+> drop a snapshot, as the system can effectively hang for a few minutes
+> while btrfs-cleaner runs.  On performance-critical systems we only ever
+> have one snapshot active on the filesystem at a time, and we only create
+> it once a day for backups.  I'd love a way to throttle btrfs-cleaner so
+> it's not so aggressive with IO and CPU.
+>=20
+> Snapshot create has unbounded running time on 5.0 kernels.  The creation
+> process has to flush dirty buffers to the filesystem to get a clean
+> snapshot state.  Any process that is writing data while the flush is
+> running gets its data included in the snapshot flush, so in the worst
+> possible case, the snapshot flush never ends (unless you run out of disk
+> space, or whatever was writing new data stops, whichever comes first).
+>=20
+> Anything that needs to take a sb_writer lock (which is almost everything
+> that modifies the filesystem) will hang until the snapshot create is done;
+> however, processes that are reading the filesystem will not be obstructed.
+> This can lead to starvation of the writing processes.  cgroups and ionice
+> won't help here--the block layer doesn't detect waits for sb_writers
+> (there is no associated block device for those, so they're invisible to
+> the block layer), so it doesn't know that writer processes are waiting
+> for IO, and all the writers' IO bandwidth gets reallocated to the reader
+> processes, making for long-lasting priority inversions.  The IO pressure
+> stall subsystem reads _zero_ IO pressure even though writing processes
+> are continuously blocked for hours.
+>=20
+> On small systems, this is all over in a second or less.  On bigger
+> fileservers, I've had single snapshot creates run for many hours.  As a
+> workaround, I have some scripts that freeze processes that write to the
+> disk while 'btrfs sub create' runs, to force the snapshot create to finish
+> in a timely manner.  I think I saw some patches going into later 5.x
+> kernels that solve the problem in the kernel, too (writes that occur after
+> the snapshot creation starts are not included in the snapshot any more).
 
->   3252          list_del(&trim_entry->list);
->   3253          mutex_unlock(&ctl->cache_writeout_mutex);
->   3254
->   3255          if (update) {
->   3256                  spin_lock(&space_info->lock);
->   3257                  spin_lock(&block_group->lock);
->   3258                  if (block_group->ro)
->   3259                          space_info->bytes_readonly += reserved_bytes;
->   3260                  block_group->reserved -= reserved_bytes;
->   3261                  space_info->bytes_reserved -= reserved_bytes;
->   3262                  spin_unlock(&block_group->lock);
->   3263                  spin_unlock(&space_info->lock);
->   3264          }
->   3265
->   3266          return ret;
->   3267  }
->   3268
->
-> ---
-> 0-DAY kernel test infrastructure                 Open Source Technology Center
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+Nope, the patch I'm thinking of is dated Nov 1 *2018* and is already in
+5.0.  So either that fix is ineffective, or the slow snapshots are caused
+by something else.
+
+> > I'm aware that having many snapshots can impact performance of some
+> > operations, but I didn't think that "many" <=3D 200, "impact" =3D stop
+> > dead and "some operations" =3D light desktop use. These are decently
+> > specced, after all (Zen 2 8/12 core, 32 GB RAM, Samsung 970 Evo Plus).
+> > What I'm asking is, is this to be expected, does it just need tuning,
+> > is the hardware buggy, the kernel version (Ubuntu 18.04.3 HWE, their
+> > 5.0 series) a stinker, something else awry ...?
+> >=20
+> > Cheers,
+> > C.
 
 
 
--- 
-Thanks,
-~Nick Desaulniers
+--B0+HW0pjZ+2jqF7e
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXddrOwAKCRCB+YsaVrMb
+nC9/AKCggIn5Tnq7xfhm8HCj8QFi3d3NNACg5dzWLWk9jWU2t4Bji1hSnmWt7uw=
+=sRmZ
+-----END PGP SIGNATURE-----
+
+--B0+HW0pjZ+2jqF7e--
