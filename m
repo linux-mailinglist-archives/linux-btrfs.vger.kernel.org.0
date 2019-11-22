@@ -2,119 +2,104 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D71BE105F5C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 05:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEFED1065F4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 07:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726705AbfKVE7r (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Nov 2019 23:59:47 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:37604 "EHLO
-        james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbfKVE7p (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Nov 2019 23:59:45 -0500
-Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id C535D4E7F13; Thu, 21 Nov 2019 23:59:43 -0500 (EST)
-Date:   Thu, 21 Nov 2019 23:59:43 -0500
-From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     linux-btrfs@vger.kernel.org
-Subject: Re: freezes during snapshot creation/deletion -- to be expected?
- (Was: Re: btrfs based backup?)
-Message-ID: <20191122045943.GH22121@hungrycats.org>
-References: <20191112183425.GA1257@tik.uni-stuttgart.de>
- <7f628741-b32e-24dc-629f-97338fde3d16@googlemail.com>
- <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
- <20191121222228.GG22121@hungrycats.org>
+        id S1727746AbfKVFub (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Nov 2019 00:50:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55034 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727740AbfKVFua (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 Nov 2019 00:50:30 -0500
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D39282070A;
+        Fri, 22 Nov 2019 05:50:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574401829;
+        bh=Ig6GLgtVxG8RAfqsFCQe+ELgsgqLjsT/38hfFIajrIY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=w2u/orVw4eWwRUsL15jfmo11VQwPJtk181UfXq939KtYBpC28Y8ru84TUIBIwb720
+         N2MUSOcnQRz831BItJIrg67Ccjtjel9/nq9TTNIoOEofWjfeQ1i5bvOLqPMJSpVNUJ
+         VW6ZwKbA8twmq8L2uw1hIgEwjXLj/N+eejxHX0YQ=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>,
+        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.19 071/219] btrfs: Check for missing device before bio submission in btrfs_map_bio
+Date:   Fri, 22 Nov 2019 00:46:43 -0500
+Message-Id: <20191122054911.1750-64-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20191122054911.1750-1-sashal@kernel.org>
+References: <20191122054911.1750-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="B0+HW0pjZ+2jqF7e"
-Content-Disposition: inline
-In-Reply-To: <20191121222228.GG22121@hungrycats.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+From: Nikolay Borisov <nborisov@suse.com>
 
---B0+HW0pjZ+2jqF7e
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[ Upstream commit fc8a168aa9ab1680c2bd52bf9db7c994e0f2524f ]
 
-On Thu, Nov 21, 2019 at 05:22:28PM -0500, Zygo Blaxell wrote:
-> On Wed, Nov 20, 2019 at 05:36:04PM +0100, Christian Pernegger wrote:
-> > Hello,
-> >=20
-> > I've decided to go with a snapshot-based backup solution for our new
-> > Linux desktops -- thank you for the timely thread --, namely btrbk.
-> > A couple of subvolumes for different stuff, with hourly snapshots that
-> > regularly go to another machine. Brilliant in theory, less so in
-> > practice, because every time btrbk runs, the box'll freeze for a few
-> > seconds, as in, Firefox and LibreOffice, for instance, become entirely
-> > unresponsive, games hang and so on. (AFAICT, all it does is snapshot
-> > each subvolume and delete ones that are out of the retention period.)
->=20
-> Snapshot delete is pretty aggressive with IO and can force a lot of
-> commits if you are modifying a lot of metadata pages between snapshots.
-> Generally I get a coffee when my 1TB NVME systems decide it's time to
-> drop a snapshot, as the system can effectively hang for a few minutes
-> while btrfs-cleaner runs.  On performance-critical systems we only ever
-> have one snapshot active on the filesystem at a time, and we only create
-> it once a day for backups.  I'd love a way to throttle btrfs-cleaner so
-> it's not so aggressive with IO and CPU.
->=20
-> Snapshot create has unbounded running time on 5.0 kernels.  The creation
-> process has to flush dirty buffers to the filesystem to get a clean
-> snapshot state.  Any process that is writing data while the flush is
-> running gets its data included in the snapshot flush, so in the worst
-> possible case, the snapshot flush never ends (unless you run out of disk
-> space, or whatever was writing new data stops, whichever comes first).
->=20
-> Anything that needs to take a sb_writer lock (which is almost everything
-> that modifies the filesystem) will hang until the snapshot create is done;
-> however, processes that are reading the filesystem will not be obstructed.
-> This can lead to starvation of the writing processes.  cgroups and ionice
-> won't help here--the block layer doesn't detect waits for sb_writers
-> (there is no associated block device for those, so they're invisible to
-> the block layer), so it doesn't know that writer processes are waiting
-> for IO, and all the writers' IO bandwidth gets reallocated to the reader
-> processes, making for long-lasting priority inversions.  The IO pressure
-> stall subsystem reads _zero_ IO pressure even though writing processes
-> are continuously blocked for hours.
->=20
-> On small systems, this is all over in a second or less.  On bigger
-> fileservers, I've had single snapshot creates run for many hours.  As a
-> workaround, I have some scripts that freeze processes that write to the
-> disk while 'btrfs sub create' runs, to force the snapshot create to finish
-> in a timely manner.  I think I saw some patches going into later 5.x
-> kernels that solve the problem in the kernel, too (writes that occur after
-> the snapshot creation starts are not included in the snapshot any more).
+Before btrfs_map_bio submits all stripe bios it does a number of checks
+to ensure the device for every stripe is present. However, it doesn't do
+a DEV_STATE_MISSING check, instead this is relegated to the lower level
+btrfs_schedule_bio (in the async submission case, sync submission
+doesn't check DEV_STATE_MISSING at all). Additionally
+btrfs_schedule_bios does the duplicate device->bdev check which has
+already been performed in btrfs_map_bio.
 
-Nope, the patch I'm thinking of is dated Nov 1 *2018* and is already in
-5.0.  So either that fix is ineffective, or the slow snapshots are caused
-by something else.
+This patch moves the DEV_STATE_MISSING check in btrfs_map_bio and
+removes the duplicate device->bdev check. Doing so ensures that no bio
+cloning/submission happens for both async/sync requests in the face of
+missing device. This makes the async io submission path slightly shorter
+in terms of instruction count. No functional changes.
 
-> > I'm aware that having many snapshots can impact performance of some
-> > operations, but I didn't think that "many" <=3D 200, "impact" =3D stop
-> > dead and "some operations" =3D light desktop use. These are decently
-> > specced, after all (Zen 2 8/12 core, 32 GB RAM, Samsung 970 Evo Plus).
-> > What I'm asking is, is this to be expected, does it just need tuning,
-> > is the hardware buggy, the kernel version (Ubuntu 18.04.3 HWE, their
-> > 5.0 series) a stinker, something else awry ...?
-> >=20
-> > Cheers,
-> > C.
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: Anand Jain <anand.jain@oracle.com>
+Signed-off-by: Nikolay Borisov <nborisov@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/btrfs/volumes.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index a8297e7489d98..f84c18e86c816 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -6106,12 +6106,6 @@ static noinline void btrfs_schedule_bio(struct btrfs_device *device,
+ 	int should_queue = 1;
+ 	struct btrfs_pending_bios *pending_bios;
+ 
+-	if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state) ||
+-	    !device->bdev) {
+-		bio_io_error(bio);
+-		return;
+-	}
+-
+ 	/* don't bother with additional async steps for reads, right now */
+ 	if (bio_op(bio) == REQ_OP_READ) {
+ 		btrfsic_submit_bio(bio);
+@@ -6240,7 +6234,8 @@ blk_status_t btrfs_map_bio(struct btrfs_fs_info *fs_info, struct bio *bio,
+ 
+ 	for (dev_nr = 0; dev_nr < total_devs; dev_nr++) {
+ 		dev = bbio->stripes[dev_nr].dev;
+-		if (!dev || !dev->bdev ||
++		if (!dev || !dev->bdev || test_bit(BTRFS_DEV_STATE_MISSING,
++						   &dev->dev_state) ||
+ 		    (bio_op(first_bio) == REQ_OP_WRITE &&
+ 		    !test_bit(BTRFS_DEV_STATE_WRITEABLE, &dev->dev_state))) {
+ 			bbio_error(bbio, first_bio, logical);
+-- 
+2.20.1
 
-
---B0+HW0pjZ+2jqF7e
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXddrOwAKCRCB+YsaVrMb
-nC9/AKCggIn5Tnq7xfhm8HCj8QFi3d3NNACg5dzWLWk9jWU2t4Bji1hSnmWt7uw=
-=sRmZ
------END PGP SIGNATURE-----
-
---B0+HW0pjZ+2jqF7e--
