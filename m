@@ -2,90 +2,70 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D6034106470
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 07:17:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E021C107171
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 12:33:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729398AbfKVGRd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Nov 2019 01:17:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729305AbfKVGNZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Nov 2019 01:13:25 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8F85820714;
-        Fri, 22 Nov 2019 06:13:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574403205;
-        bh=D7hjSmdXK7WHeWT3wuT6ycmjaZRsL2baVYrJHqcHwl4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EtlT0FKILjt0Jc7+ZHpHDD4sYAgFJCF5tf5Mr6wFzgxcjhIemf0A8Vymbt3rwIjun
-         3iJMMbl9ZJ+y4Q8X3Hpf5xb3ic8nFb6ZMQeA1ThsltdLmvHIFkamJUiL4miHCHkPwd
-         sQfUgWk270wuJFL65gJqucf3yzfEeDSNohfeNunQ=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Josef Bacik <jbacik@fb.com>, Nikolay Borisov <nborisov@suse.com>,
-        David Sterba <dsterba@suse.com>,
-        Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.4 21/68] btrfs: only track ref_heads in delayed_ref_updates
-Date:   Fri, 22 Nov 2019 01:12:14 -0500
-Message-Id: <20191122061301.4947-20-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191122061301.4947-1-sashal@kernel.org>
-References: <20191122061301.4947-1-sashal@kernel.org>
+        id S1727130AbfKVLdj (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Nov 2019 06:33:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46284 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726563AbfKVLdj (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 Nov 2019 06:33:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 36C23AF19;
+        Fri, 22 Nov 2019 11:33:37 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 38C16DA898; Fri, 22 Nov 2019 12:33:37 +0100 (CET)
+Date:   Fri, 22 Nov 2019 12:33:37 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Anand Jain <anand.jain@oracle.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.19 071/219] btrfs: Check for missing device
+ before bio submission in btrfs_map_bio
+Message-ID: <20191122113337.GB3001@suse.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Sasha Levin <sashal@kernel.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Nikolay Borisov <nborisov@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>,
+        linux-btrfs@vger.kernel.org
+References: <20191122054911.1750-1-sashal@kernel.org>
+ <20191122054911.1750-64-sashal@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191122054911.1750-64-sashal@kernel.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-From: Josef Bacik <jbacik@fb.com>
+On Fri, Nov 22, 2019 at 12:46:43AM -0500, Sasha Levin wrote:
+> From: Nikolay Borisov <nborisov@suse.com>
+> 
+> [ Upstream commit fc8a168aa9ab1680c2bd52bf9db7c994e0f2524f ]
+> 
+> Before btrfs_map_bio submits all stripe bios it does a number of checks
+> to ensure the device for every stripe is present. However, it doesn't do
+> a DEV_STATE_MISSING check, instead this is relegated to the lower level
+> btrfs_schedule_bio (in the async submission case, sync submission
+> doesn't check DEV_STATE_MISSING at all). Additionally
+> btrfs_schedule_bios does the duplicate device->bdev check which has
+> already been performed in btrfs_map_bio.
+> 
+> This patch moves the DEV_STATE_MISSING check in btrfs_map_bio and
+> removes the duplicate device->bdev check. Doing so ensures that no bio
+> cloning/submission happens for both async/sync requests in the face of
+> missing device. This makes the async io submission path slightly shorter
+> in terms of instruction count. No functional changes.
+                                 ^^^^^^^^^^^^^^^^^^^^^
 
-[ Upstream commit 158ffa364bf723fa1ef128060646d23dc3942994 ]
-
-We use this number to figure out how many delayed refs to run, but
-__btrfs_run_delayed_refs really only checks every time we need a new
-delayed ref head, so we always run at least one ref head completely no
-matter what the number of items on it.  Fix the accounting to only be
-adjusted when we add/remove a ref head.
-
-In addition to using this number to limit the number of delayed refs
-run, a future patch is also going to use it to calculate the amount of
-space required for delayed refs space reservation.
-
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
-Signed-off-by: Josef Bacik <jbacik@fb.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/btrfs/delayed-ref.c | 3 ---
- 1 file changed, 3 deletions(-)
-
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index e06dd75ad13f9..a2f165029ee62 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -193,8 +193,6 @@ static inline void drop_delayed_ref(struct btrfs_trans_handle *trans,
- 	ref->in_tree = 0;
- 	btrfs_put_delayed_ref(ref);
- 	atomic_dec(&delayed_refs->num_entries);
--	if (trans->delayed_ref_updates)
--		trans->delayed_ref_updates--;
- }
- 
- static bool merge_ref(struct btrfs_trans_handle *trans,
-@@ -444,7 +442,6 @@ add_delayed_ref_tail_merge(struct btrfs_trans_handle *trans,
- add_tail:
- 	list_add_tail(&ref->list, &href->ref_list);
- 	atomic_inc(&root->num_entries);
--	trans->delayed_ref_updates++;
- 	spin_unlock(&href->lock);
- 	return ret;
- }
--- 
-2.20.1
-
+This should be a strong indication that the patch is not suitable for
+autosel/stable, please remove it. Thanks.
