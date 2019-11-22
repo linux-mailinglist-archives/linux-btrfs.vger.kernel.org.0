@@ -2,86 +2,189 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A780105E50
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 02:37:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389B2105F37
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 05:27:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbfKVBhP (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Thu, 21 Nov 2019 20:37:15 -0500
-Received: from mail-wm1-f49.google.com ([209.85.128.49]:38690 "EHLO
-        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726510AbfKVBhP (ORCPT
+        id S1726540AbfKVE16 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Thu, 21 Nov 2019 23:27:58 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:42401 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726500AbfKVE15 (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Thu, 21 Nov 2019 20:37:15 -0500
-Received: by mail-wm1-f49.google.com with SMTP id z19so5837643wmk.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 17:37:13 -0800 (PST)
+        Thu, 21 Nov 2019 23:27:57 -0500
+Received: by mail-pl1-f195.google.com with SMTP id j12so2559126plt.9
+        for <linux-btrfs@vger.kernel.org>; Thu, 21 Nov 2019 20:27:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=colorremedies-com.20150623.gappssmtp.com; s=20150623;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WLoQKgwWNSn6Dn89aZe27ljnFA0hFV7RCQpkONY8jMU=;
-        b=LQNi1AJoOY0T/X3Mwj/DiVMcq402bnDfSiB6gQVd4XsAjvaCd8RLgRn9Kjh4d3yi6n
-         qVMKUsoPgMaq1Cf+j/3XtaD+ng54PaXaVfTwbDh5+X+sYF21PeswqTFVVsfQG27KoNRU
-         sR7K0PpbcMBtsI1+JPyF6qqhEpwHiqBgM8hN1t7Sojw3EdLZAGO60tZsSkTWwxbm0fPi
-         xtBcWcXhhPEIpg8rIEmefIIwmnA5XBCfKaRBGuUbBDJIJ8EUxi2HGHfoJ1Vpdp9NkvhT
-         KO7vwDZHwtztJc9hn03G+fVA3IatevAow+asoI8JfyNl8d8hkVcppMsv8IZmzA5E7KFX
-         6mBg==
+        bh=FMVG6+Kx1xhwjBWiCA3I3pAlD6vo349K1VEd3grV/SA=;
+        b=iiAAKav/zFBWk2bWkyI+jpwsSZx7YQ+pL6pveRk/bTsfrXLwToOL8PIoy8uOuLSpaH
+         Dyjb6EZOiCyQZ5LicenIhwqrfEqHne4Ms6de0P+m+ptPLGIYW0nDcW6L+d7hEdLHHMGC
+         T9c8VcRf7uagHA0MkMonkIaMrcUT5DqTLo35zjw+d8X4xtQ8F4T/HWvLvhtmwyfHRUHP
+         AiLeltEpvOVvOO0ojASWnbRzl7OFv+yQ3fSh55IZ7Vns3I2xaWDqtvg4z1h4hWywkX03
+         gvOwY9mxfhdEdWNaXR1/MN2yqd34Vbsqcgro34VjTZKrdTpT8vIgVawn+F7AIFiBJAfH
+         SWgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WLoQKgwWNSn6Dn89aZe27ljnFA0hFV7RCQpkONY8jMU=;
-        b=lEtyQq242g+lpyBaDG6fcQQ1mzvuWRyBqFB9Ufc81FQ8F9aJjuNrNlpTjy2c2hnTcZ
-         SyPKysb938zsiKTKWlhztvpw6cKfanB8kbAmTjMOi3MEkuMXIPlInSW9nRXgDg89VtKy
-         bEnBWv6aF3h7lHBP9wmHyvQpMahwc5a+QYm5PJJkIo62lrQzCL063lBBzNuw2xD8ia5L
-         pFAlzhNuIZWlBC3K0hu8XTI4biLi3U74a13LigUlBrHZ2XsO/b7M+gSa6wFf9uZupzot
-         YBpeSa5QdHDFq2Fl33tTd5TGi0PPrMGGYBjqwF503Jc9pQo9yoasxMnEygVZaa4sQxkQ
-         EW7g==
-X-Gm-Message-State: APjAAAV25nERwodnYL+U18j2sycAstndtcnC7DhhZX/+r/uLwzVdAqSO
-        E77RQVBoK8dx+BIiw2O38V84D7v6I3ALgy6F7W3pwjnmgcE=
-X-Google-Smtp-Source: APXvYqwwbv2SuxdAdtTDJMhVCo/2biV/f/JZlH686gFFVZs6J/2bIJ12RCUXuCF6dDBUm73qqaX87nmUcQYNn365BxY=
-X-Received: by 2002:a05:600c:23ce:: with SMTP id p14mr13697865wmb.176.1574386632838;
- Thu, 21 Nov 2019 17:37:12 -0800 (PST)
+        bh=FMVG6+Kx1xhwjBWiCA3I3pAlD6vo349K1VEd3grV/SA=;
+        b=RwNb42IDYWV0PirAnfWQ9TRw5zdpXDUGt3cUA8GtHR3hM9Y6tAVZepeQcSovti61IT
+         BYy+bDpH56FFCWhpf712KyrVRj9gokARdVPQZ20AW9hnFiJoXM/2KJVIYpb4ULAbpaJP
+         aluAMU8ylP7mYpAPp6yCngHCXO/boML073bDOkyuoi3K1OKHu5T8hHIjD8J3chXLxLfP
+         +8QzEkrlQvljsXjYZLLmmFXRerZTqrLERynVJRcEozgc5Mp9fKgYqf7b3PSOCmIrNpya
+         NfsR24L2jIRrezd5r1rBUppOYbiere7++uJ53l2PbA8X1lVQq2vyIq/P6j7kRX7Twdh+
+         4OCQ==
+X-Gm-Message-State: APjAAAUF8K+FTaznRtH0WGZ9ulXy2kdpDqafdIKA0Ai+R0PCBuk0FfVg
+        9KLPXnDbYOwplFwz6BbWtr1ptgMJ8mGcowHW0RlVgw==
+X-Google-Smtp-Source: APXvYqwKPdD8Om7y8KR1Pys2eGj5h7bV1NruwKpmk9y9Um1R3x3XxAJJWi/in81KPsNXlYMSSP8DAr1ZyzHIyTtDidw=
+X-Received: by 2002:a17:902:8f94:: with SMTP id z20mr11787383plo.119.1574396875002;
+ Thu, 21 Nov 2019 20:27:55 -0800 (PST)
 MIME-Version: 1.0
-References: <20191112183425.GA1257@tik.uni-stuttgart.de> <CAKbQEqFELp0TWzM+K9TqAwywYBxX_3jXy0rz6tx9mNXyKEF02A@mail.gmail.com>
- <CAKbQEqFX8_oU=+KtDsXz-WeEUytgcXr-J-pw+jEmC3dwDAfJMQ@mail.gmail.com> <6893661.AATI4FVq6M@thetick>
-In-Reply-To: <6893661.AATI4FVq6M@thetick>
-From:   Chris Murphy <lists@colorremedies.com>
-Date:   Thu, 21 Nov 2019 18:36:56 -0700
-Message-ID: <CAJCQCtQFw=ThyCQGdG4nXX2r9--Jv3W9KWdFKLv3Gy-sYw=Xrg@mail.gmail.com>
-Subject: Re: freezes during snapshot creation/deletion -- to be expected?
- (Was: Re: btrfs based backup?)
-To:     Marc Joliet <marcec@gmx.de>
-Cc:     Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <201911220351.HPI9gxNo%lkp@intel.com>
+In-Reply-To: <201911220351.HPI9gxNo%lkp@intel.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 21 Nov 2019 20:27:43 -0800
+Message-ID: <CAKwvOdn5j37AYzmoOsaSqyYdBkjqevbTrSyGQypB+G_NgxX0fQ@mail.gmail.com>
+Subject: Re: [PATCH 05/22] btrfs: add the beginning of async discard, discard workqueue
+To:     dennis@kernel.org
+Cc:     kbuild@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+        Josef Bacik <josef@toxicpanda.com>, osandov@osandov.com,
+        kernel-team@fb.com, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Thu, Nov 21, 2019 at 3:39 PM Marc Joliet <marcec@gmx.de> wrote:
+Hi Dennis,
+Below is a 0day bot report from a build w/ Clang. Warning looks legit,
+can you please take a look?
 
-> On a side note, I am also really annoyed by the lockups caused by qgroups.  On
-> my Gentoo systems (which use btrbk) I have it disabled for that reason, but I
-> left it on on my openSUSE laptop (a Dell XPS 13 9360), which locks up for
-> about 15-30 minutes while cleaning up snapshots a few times a week (usually
-> after reboots or after "zypper dup").
+On Thu, Nov 21, 2019 at 11:27 AM kbuild test robot <lkp@intel.com> wrote:
+>
+> CC: kbuild-all@lists.01.org
+> In-Reply-To: <63d3257efe1158a6fbbd7abe865cd9250b494438.1574282259.git.dennis@kernel.org>
+> References: <63d3257efe1158a6fbbd7abe865cd9250b494438.1574282259.git.dennis@kernel.org>
+> TO: Dennis Zhou <dennis@kernel.org>
+> CC: David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Omar Sandoval <osandov@osandov.com>
+> CC: kernel-team@fb.com, linux-btrfs@vger.kernel.org, Dennis Zhou <dennis@kernel.org>
+>
+> Hi Dennis,
+>
+> I love your patch! Perhaps something to improve:
+>
+> [auto build test WARNING on kdave/for-next]
+> [also build test WARNING on next-20191121]
+> [cannot apply to v5.4-rc8]
+> [if your patch is applied to the wrong git tree, please drop us a note to help
+> improve the system. BTW, we also suggest to use '--base' option to specify the
+> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
+>
+> url:    https://github.com/0day-ci/linux/commits/Dennis-Zhou/btrfs-async-discard-support/20191121-230429
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+> config: arm64-defconfig (attached as .config)
+> compiler: clang version 10.0.0 (git://gitmirror/llvm_project cf823ce4ad9d04c69b7c29d236f7b14c875111c2)
+> reproduce:
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # save the attached .config to linux build tree
+>         make.cross ARCH=arm64
+>
+> If you fix the issue, kindly add following tag
+> Reported-by: kbuild test robot <lkp@intel.com>
+>
+> All warnings (new ones prefixed by >>):
+>
+> >> fs/btrfs/free-space-cache.c:3238:6: warning: variable 'trim_state' is used uninitialized whenever 'if' condition is false [-Wsometimes-uninitialized]
+>            if (!ret) {
+>                ^~~~
+>    fs/btrfs/free-space-cache.c:3251:53: note: uninitialized use occurs here
+>            __btrfs_add_free_space(fs_info, ctl, start, bytes, trim_state);
+>                                                               ^~~~~~~~~~
+>    fs/btrfs/free-space-cache.c:3238:2: note: remove the 'if' if its condition is always true
+>            if (!ret) {
+>            ^~~~~~~~~~
+>    fs/btrfs/free-space-cache.c:3224:2: note: variable 'trim_state' is declared here
+>            enum btrfs_trim_state trim_state;
+>            ^
+>    1 warning generated.
+>
+> vim +3238 fs/btrfs/free-space-cache.c
+>
+>   3210
+>   3211  static int do_trimming(struct btrfs_block_group *block_group,
+>   3212                         u64 *total_trimmed, u64 start, u64 bytes,
+>   3213                         u64 reserved_start, u64 reserved_bytes,
+>   3214                         enum btrfs_trim_state reserved_trim_state,
+>   3215                         struct btrfs_trim_range *trim_entry)
+>   3216  {
+>   3217          struct btrfs_space_info *space_info = block_group->space_info;
+>   3218          struct btrfs_fs_info *fs_info = block_group->fs_info;
+>   3219          struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
+>   3220          int ret;
+>   3221          int update = 0;
+>   3222          u64 end = start + bytes;
+>   3223          u64 reserved_end = reserved_start + reserved_bytes;
+>   3224          enum btrfs_trim_state trim_state;
+>   3225          u64 trimmed = 0;
+>   3226
+>   3227          spin_lock(&space_info->lock);
+>   3228          spin_lock(&block_group->lock);
+>   3229          if (!block_group->ro) {
+>   3230                  block_group->reserved += reserved_bytes;
+>   3231                  space_info->bytes_reserved += reserved_bytes;
+>   3232                  update = 1;
+>   3233          }
+>   3234          spin_unlock(&block_group->lock);
+>   3235          spin_unlock(&space_info->lock);
+>   3236
+>   3237          ret = btrfs_discard_extent(fs_info, start, bytes, &trimmed);
+> > 3238          if (!ret) {
+>   3239                  *total_trimmed += trimmed;
+>   3240                  trim_state = BTRFS_TRIM_STATE_TRIMMED;
+>   3241          }
+>   3242
+>   3243          mutex_lock(&ctl->cache_writeout_mutex);
+>   3244          if (reserved_start < start)
+>   3245                  __btrfs_add_free_space(fs_info, ctl, reserved_start,
+>   3246                                         start - reserved_start,
+>   3247                                         reserved_trim_state);
+>   3248          if (start + bytes < reserved_start + reserved_bytes)
+>   3249                  __btrfs_add_free_space(fs_info, ctl, end, reserved_end - end,
+>   3250                                         reserved_trim_state);
+>   3251          __btrfs_add_free_space(fs_info, ctl, start, bytes, trim_state);
 
-15 seconds is not at all acceptable on a desktop system, 15 minutes is
-atrocious. A computer that appears to hang for 15 seconds, it is
-completely reasonable for ordinary users to consider has totally
-faceplanted, will not recover, and to force power off. The
-distribution really needs to do something about that kind of negative
-user experience.
+^ oops
 
-And by the way, I've recently done some unprivileged compilations of
-webkitgtk, with default options that cause n cores +2 to be used,
-eating all available RAM and swap, and quickly totally hanging the
-system while swap thrashing and basically acting like a fork bomb. I'm
-using Btrfs for the rootfs as well as user home for this compile, and
-have done hundreds of forced power offs during these events and have
-seen exactly zero corruptions or Btrfs complaints. So at least there's
-that, however unscientific a sample that is.
+>   3252          list_del(&trim_entry->list);
+>   3253          mutex_unlock(&ctl->cache_writeout_mutex);
+>   3254
+>   3255          if (update) {
+>   3256                  spin_lock(&space_info->lock);
+>   3257                  spin_lock(&block_group->lock);
+>   3258                  if (block_group->ro)
+>   3259                          space_info->bytes_readonly += reserved_bytes;
+>   3260                  block_group->reserved -= reserved_bytes;
+>   3261                  space_info->bytes_reserved -= reserved_bytes;
+>   3262                  spin_unlock(&block_group->lock);
+>   3263                  spin_unlock(&space_info->lock);
+>   3264          }
+>   3265
+>   3266          return ret;
+>   3267  }
+>   3268
+>
+> ---
+> 0-DAY kernel test infrastructure                 Open Source Technology Center
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
+
 
 
 -- 
-Chris Murphy
+Thanks,
+~Nick Desaulniers
