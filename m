@@ -2,220 +2,334 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D83721072A4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 14:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A281072CD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 14:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbfKVNBC (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Nov 2019 08:01:02 -0500
-Received: from outbound-ss-348.hostmonster.com ([74.220.202.212]:52602 "EHLO
-        gproxy6-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727809AbfKVNBC (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Nov 2019 08:01:02 -0500
-X-Greylist: delayed 1432 seconds by postgrey-1.27 at vger.kernel.org; Fri, 22 Nov 2019 08:01:02 EST
-Received: from cmgw11.unifiedlayer.com (unknown [10.9.0.11])
-        by gproxy6.mail.unifiedlayer.com (Postfix) with ESMTP id 6C2371E066B
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Nov 2019 05:37:07 -0700 (MST)
-Received: from box790.bluehost.com ([66.147.244.90])
-        by cmsmtp with ESMTP
-        id Y8BPiP9prlpxgY8BPiuOMc; Fri, 22 Nov 2019 05:37:07 -0700
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.3 cv=EvH8UxUA c=1 sm=1 tr=0
- a=9zS9oP4XFFrDhkEDEs+BAQ==:117 a=9zS9oP4XFFrDhkEDEs+BAQ==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=IkcTkHD0fZMA:10:nop_charset_1
- a=MeAgGD-zjQ4A:10:nop_rcvd_month_year
- a=2ITzLR9P390A:10:endurance_base64_authed_username_1 a=WMq63_qZ22jLpu8KUwgA:9
- a=QEXdDO2ut3YA:10:nop_charset_2
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=casa-di-locascio.net; s=default; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Date:Message-ID:Subject:From:To:Sender:Reply-To:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=JuzCQ86ih4eOVfn++eYg3Tc2pqa18vn2N9Lc2PbfbLI=; b=leZJUpT8xUG1+SpJNpr1X0yhCh
-        pTjokIPnJ6vBwBY5WvFHRd6P8P7MO+0F6kiE1zIwIVycaTnPFBeQS8s9myEVggWrK7/8SWxsmg/ne
-        ai9QE0D0idcf+eNz62NZ8AAKb;
-Received: from host86-165-35-216.range86-165.btcentralplus.com ([86.165.35.216]:49665 helo=[192.168.1.148])
-        by box790.bluehost.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES128-GCM-SHA256:128)
-        (Exim 4.92)
-        (envelope-from <devel@roosoft.ltd.uk>)
-        id 1iY8BP-004LpY-3l
-        for linux-btrfs@vger.kernel.org; Fri, 22 Nov 2019 05:37:07 -0700
-To:     linux-btrfs@vger.kernel.org
-From:   devel@roosoft.ltd.uk
-Openpgp: preference=signencrypt
-Autocrypt: addr=devel@roosoft.ltd.uk; prefer-encrypt=mutual; keydata=
- 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
-Subject: RE: Problems balancing BTRFS
-Message-ID: <65447748-9033-f105-8628-40a13c36f8ce@casa-di-locascio.net>
-Date:   Fri, 22 Nov 2019 12:37:05 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.1
+        id S1726719AbfKVNKU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Nov 2019 08:10:20 -0500
+Received: from mout.gmx.net ([212.227.15.19]:53421 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726568AbfKVNKU (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 Nov 2019 08:10:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1574428217;
+        bh=1IzvqO3zWuE/fEd173Q7hC+pieDEyY1iBpCJ9U5gtJQ=;
+        h=X-UI-Sender-Class:Subject:To:References:From:Date:In-Reply-To;
+        b=BIPVUs2WIGu0Agz2E3kDd17yZsgOw7SY3rjJx8hB6MhxhSdJPVmdK64nfxQ/LIlOr
+         oS/TIDPAbZM0chtv9R6p2du2hTDopviq/xjZcxQzEZ4EUUw/M4CPFv9/Qk7XdbSOnH
+         dnhco7Y1kHZezL/OFo+nWPgLdOnStbiN1OZv6Feg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [0.0.0.0] ([13.231.109.76]) by mail.gmx.com (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1M59GA-1iX2El1MRg-001BEZ; Fri, 22
+ Nov 2019 14:10:16 +0100
+Subject: Re: Problems balancing BTRFS
+To:     devel@roosoft.ltd.uk, linux-btrfs@vger.kernel.org
+References: <65447748-9033-f105-8628-40a13c36f8ce@casa-di-locascio.net>
+From:   Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; prefer-encrypt=mutual; keydata=
+ mQENBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAG0IlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT6JAU4EEwEIADgCGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1oQAKCRDC
+ PZHzoSX+qCY6CACd+mWu3okGwRKXju6bou+7VkqCaHTdyXwWFTsr+/0ly5nUdDtT3yEVggPJ
+ 3VP70wjlrxUjNjFb6iIvGYxiPOrop1NGwGYvQktgRhaIhALG6rPoSSAhGNjwGVRw0km0PlIN
+ D29BTj/lYEk+jVM1YL0QLgAE1AI3krihg/lp/fQT53wLhR8YZIF8ETXbClQG1vJ0cllPuEEv
+ efKxRyiTSjB+PsozSvYWhXsPeJ+KKjFen7ebE5reQTPFzSHctCdPnoR/4jSPlnTlnEvLeqcD
+ ZTuKfQe1gWrPeevQzgCtgBF/WjIOeJs41klnYzC3DymuQlmFubss0jShLOW8eSOOWhLRuQEN
+ BFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcgaCbPEwhLj
+ 1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj/IrRUUka
+ 68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fNGSsRb+pK
+ EKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0q1eW4Jrv
+ 0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEvABEBAAGJ
+ ATwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCXZw1rgUJCWpOfwAKCRDCPZHz
+ oSX+qFcEB/95cs8cM1OQdE/GgOfCGxwgckMeWyzOR7bkAWW0lDVp2hpgJuxBW/gyfmtBnUai
+ fnggx3EE3ev8HTysZU9q0h+TJwwJKGv6sUc8qcTGFDtavnnl+r6xDUY7A6GvXEsSoCEEynby
+ 72byGeSovfq/4AWGNPBG1L61Exl+gbqfvbECP3ziXnob009+z9I4qXodHSYINfAkZkA523JG
+ ap12LndJeLk3gfWNZfXEWyGnuciRGbqESkhIRav8ootsCIops/SqXm0/k+Kcl4gGUO/iD/T5
+ oagaDh0QtOd8RWSMwLxwn8uIhpH84Q4X1LadJ5NCgGa6xPP5qqRuiC+9gZqbq4Nj
+Message-ID: <1de2144f-361a-4657-662f-ac1f17c84b51@gmx.com>
+Date:   Fri, 22 Nov 2019 21:10:10 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: base64
-Content-Language: en-GB
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box790.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - roosoft.ltd.uk
-X-BWhitelist: no
-X-Source-IP: 86.165.35.216
-X-Source-L: No
-X-Exim-ID: 1iY8BP-004LpY-3l
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: host86-165-35-216.range86-165.btcentralplus.com ([192.168.1.148]) [86.165.35.216]:49665
-X-Source-Auth: dlocasci+casa-di-locascio.net
-X-Email-Count: 1
-X-Source-Cap: Y2FzYWRpbG87Y2FzYWRpbG87Ym94NzkwLmJsdWVob3N0LmNvbQ==
-X-Local-Domain: yes
+In-Reply-To: <65447748-9033-f105-8628-40a13c36f8ce@casa-di-locascio.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="uxIKnbKPZIfNkCvCNMLoI6YnWGjaKHv99"
+X-Provags-ID: V03:K1:7+kDsxD8w2bmdYlooSVypwFUTMO9AKHmBVbjELCZZ7tCu+4POjk
+ EoTxdNyTLNTblsGRiRVIf/lP4S36OIUoXwlDMJVINOEiV6HDJFTQMSLZ8eAvjlznk0Lt7uF
+ JEt5FLM/XcQJtOgBYuDzaaO7lR8r/ERS3Av1JcOLqvJItObNTv6zS6WJh6WBZmuy0/+IVjX
+ W6mOyL6p+nk2gNETTp0hg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:D+ja61+slPA=:QDK4hsQzR7n8WK/qVNumDt
+ o+6RFRTIeGOgWsaxrUE+AFEAUvghqJyFrEWpKzwAqQORMS468x4eFZXjOr+Mihg9v2p2Mux6n
+ MPOdGhRWuK310UIGfWv798OaFusC53zDbwX81cxm+bSuQLlVwJAEthTael6OO33H7N5Kt8scm
+ TlACxR96u+nsReDubW0Ra0cAu4GLU8TicxRZaW8AdOR0aK5GmrW1lwtM7mYcHKEhB9EdvLNbV
+ r2QJQXCWBMfzszVHFkaT4L1ARftooZesnIcJ9e/oOwXe7SjsIQ0UcFzso0WkVDnPYJmYYWh5x
+ tfDuMHOFDdD1yGyIXM0jM0McGHloLcmbVsKE3b4AMg5J5TNv2wXeNfxPzVB9kqGNSKWs30Q2I
+ YgKOa9IkR8jnHPgrFtIL148Tb0CDyON7QvWtF36n5pmyzTxe+evqEMChohRS9vikbR06jMXKv
+ 09/+NrG4tnTtzNLnoTllSiqnyLwwhGGifAUUpBcCA+t4qdGbKctUH5DFKaQH0Qo+Htg0E2R+F
+ lp2IFoAqSF6+//6lTw6w3I/K0JqlLocrIyi5i1MvckcO7b6iODcxf0byy4YZg5U2hRIi7zYnX
+ Jk77pPxn2yUoEHeoDpRmkb7EUPmh8vFu8wIO1HGZVcwyYV7brlpvvAWQ/ZYqkwbFZJ261R2H+
+ i5klxj+CwwRc1UcYOczM4SG8ottyth+YWpRHDS3D8aCbtUkV0dwfpnXR0V8WibYQcDp+P1Z2H
+ RUaqSzy4iYUKtthEluhE6k3oIzGCLv/CS1OBlTmqzmWb/8kSC0s+8B6Xan5HALWyfWq0/MoLT
+ 3eChwkWtI8RzvyVXSAalqQ0lhPZlwYjMlESdlgKPTS6c8f5d6BX5/bgd2/XZ6wWQKl6CnU4TL
+ CNITyc7cZbipmJJfM2tKyBzt4hWQ3bOB1GZJPZvOZGRZB9c9CW0oKdtf+ZVPH9ajtNcjGeyXR
+ r7nwlxf1CzaDRPn+5/yM96f2jwesY6Unpt1kk2Sqcj6runTK5JC7Iahk5yay+1r5uVxWChjOD
+ KwfwyNn6pnBKGStAR2gEE6khT2btz7v2alBAmC9T0aGMjA54mdQ9Fav919VKNoh8C4vDmhAiO
+ 3y9PwggJz97g5Io277unuZi7m5xmGHvuFXj3zwa+IEGRiIwZq/72vD2a56Prxw7TxyiQfWLTM
+ sCHpFN20TyLBu4mJzHnGX6ONZ/LDJKeI/Ypis1uc1/KE45l34XrNlLZYrrLTUKH/TefMMZWir
+ VUhvbQjdC/OtH23ckp2iRFru8NYeV8ZV8GmEmds5yoeTboSoi9jNWj4/vqlE=
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-U28gYmVlbiBkaXNjdXNzaW5nIHRoaXMgb24gSVJDIGJ1dCBsb29rcyBsaWtlIG1vcmUgc2Fn
-ZSBhZHZpY2UgaXMgbmVlZGVkLgoKClNvIHF1aWNrIGhpc3RvcnkuIEEgQlRSRlMgZmlsZXN5
-c3RlbSB3YXMgaW5pdGlhbGx5IGNyZWF0ZWQgd2l0aCAyeCA2VGIKYW5kIDJ4MVRiIGRyaXZl
-cy4gVGhpcyB3YXMgY29uZmlndXJlIGluIGEgUkFJRCAxIE1ldGEvc3lzdGVtwqDCoCBhbmQg
-UkFJRAo1IGRhdGEgY29uZmlndXJhdGlvbgoKUmVjZW50bHkgMiBtb3JlIDZUYiBkcml2ZXMg
-d2VyZSB1c2VkIHRvIHJlcGxhY2UgdGhlIDIgMVRiIG9uZXMuIE9uZSB3YXMKQWRkZWQgdG8g
-dGhlIGZpbGVzeXN0ZW0gYW5kIHRoZW4gdGhlIG9yaWdpbmFsIDFUYiB3YXMgZGVsZXRlZCwg
-dGhlIG90aGVyCndhcyBqdXN0IGEgZGlyZWN0IHJlcGxhY2UuCgoKVGhlIGZpbGVzeXN0ZW0g
-d2FzIHRoZW4gZXhwYW5kZWQgdG8gZmlsbCB0aGUgbmV3IHNwYWNlIHdpdGgKCgo+IMKgwqAg
-YnRyZnMgZmkgcmVzaXplIDQ6bWF4IC9tbnQvbWVkaWEvCgoKVGhlIGZpbGVzeXN0ZW0gd2Fz
-IHZlcnkgdW5iYWxhbmNlZCBhbmQgY3VycmVudGx5IGxvb2tzIGxpa2UgdGhpcyBhZnRlcgph
-biBhdHRlbXB0IHRvIHJlYmFsYW5jZSBpdCBmYWlsZWQuCgoKYnRyZnMgZmkgc2hvdwpMYWJl
-bDogbm9uZcKgIHV1aWQ6IDZhYmFhNjhhLTI2NzAtNGQ4Yi04ZDJhLWZkNzMyMWRmOTI0MgrC
-oMKgwqAgVG90YWwgZGV2aWNlcyA0IEZTIGJ5dGVzIHVzZWQgMi44MFRpQgrCoMKgwqAgZGV2
-aWTCoMKgwqAgMSBzaXplIDUuNDZUaUIgdXNlZCAxLjIwVGlCIHBhdGggL2Rldi9zZGIKwqDC
-oMKgIGRldmlkwqDCoMKgIDIgc2l6ZSA1LjQ2VGlCIHVzZWQgMS4yMFRpQiBwYXRoIC9kZXYv
-c2RjCsKgwqDCoCBkZXZpZMKgwqDCoCA0IHNpemUgNS40NlRpQiB1c2VkIDgyNi4wM0dpQiBw
-YXRoIC9kZXYvc2RlCsKgwqDCoCBkZXZpZMKgwqDCoCA1IHNpemUgNS40NlRpQiB1c2VkIDgy
-Ni4wM0dpQiBwYXRoIC9kZXYvc2RkCgoKYnRyZnMgZmkgdXNhZ2XCoCAvbW50L21lZGlhLwpX
-QVJOSU5HOiBSQUlENTYgZGV0ZWN0ZWQsIG5vdCBpbXBsZW1lbnRlZApPdmVyYWxsOgrCoMKg
-wqAgRGV2aWNlIHNpemU6wqDCoMKgIMKgwqDCoCDCoCAyMS44M1RpQgrCoMKgwqAgRGV2aWNl
-IGFsbG9jYXRlZDrCoMKgwqAgwqDCoMKgIMKgwqAgOC4wNkdpQgrCoMKgwqAgRGV2aWNlIHVu
-YWxsb2NhdGVkOsKgwqDCoCDCoMKgwqAgwqAgMjEuODJUaUIKwqDCoMKgIERldmljZSBtaXNz
-aW5nOsKgwqDCoCDCoMKgwqAgwqDCoMKgwqAgMC4wMEIKwqDCoMKgIFVzZWQ6wqDCoMKgIMKg
-wqDCoCDCoMKgwqAgwqDCoCA2LjI2R2lCCsKgwqDCoCBGcmVlIChlc3RpbWF0ZWQpOsKgwqDC
-oCDCoMKgwqAgwqDCoMKgwqAgMC4wMELCoMKgwqAgKG1pbjogOC4wMEVpQikKwqDCoMKgIERh
-dGEgcmF0aW86wqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgwqDCoCAwLjAwCsKgwqDCoCBN
-ZXRhZGF0YSByYXRpbzrCoMKgwqAgwqDCoMKgIMKgwqDCoMKgwqAgMi4wMArCoMKgwqAgR2xv
-YmFsIHJlc2VydmU6wqDCoMKgIMKgwqDCoCDCoDUxMi4wME1pQsKgwqDCoCAodXNlZDogMC4w
-MEIpCgpEYXRhLFJBSUQ1OiBTaXplOjIuODBUaUIsIFVzZWQ6Mi44MFRpQgrCoMKgIC9kZXYv
-c2RiwqDCoMKgIMKgwqAgMS4yMFRpQgrCoMKgIC9kZXYvc2RjwqDCoMKgIMKgwqAgMS4yMFRp
-QgrCoMKgIC9kZXYvc2RkwqDCoMKgIMKgODIyLjAwR2lCCsKgwqAgL2Rldi9zZGXCoMKgwqAg
-wqA4MjIuMDBHaUIKCk1ldGFkYXRhLFJBSUQxOiBTaXplOjQuMDBHaUIsIFVzZWQ6My4xM0dp
-QgrCoMKgIC9kZXYvc2RkwqDCoMKgIMKgwqAgNC4wMEdpQgrCoMKgIC9kZXYvc2RlwqDCoMKg
-IMKgwqAgNC4wMEdpQgoKU3lzdGVtLFJBSUQxOiBTaXplOjMyLjAwTWlCLCBVc2VkOjI1Ni4w
-MEtpQgrCoMKgIC9kZXYvc2RkwqDCoMKgIMKgIDMyLjAwTWlCCsKgwqAgL2Rldi9zZGXCoMKg
-wqAgwqAgMzIuMDBNaUIKClVuYWxsb2NhdGVkOgrCoMKgIC9kZXYvc2RiwqDCoMKgIMKgwqAg
-NC4yNlRpQgrCoMKgIC9kZXYvc2RjwqDCoMKgIMKgwqAgNC4yNlRpQgrCoMKgIC9kZXYvc2Rk
-wqDCoMKgIMKgwqAgNC42NVRpQgrCoMKgIC9kZXYvc2RlwqDCoMKgIMKgwqAgNC42NVRpQgoK
-CkEgc2NydWIgaXMgY2xlYW4KCmJ0cmZzIHNjcnViIHN0YXR1cyAvbW50L21lZGlhLwpVVUlE
-OsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA2YWJhYTY4YS0yNjcwLTRkOGItOGQyYS1mZDcz
-MjFkZjkyNDIKU2NydWIgc3RhcnRlZDrCoMKgwqAgVGh1IE5vdiAyMSAxMTozMDo0OSAyMDE5
-ClN0YXR1czrCoMKgwqDCoMKgwqDCoMKgwqDCoCBmaW5pc2hlZApEdXJhdGlvbjrCoMKgwqDC
-oMKgwqDCoMKgIDE3OjIwOjExClRvdGFsIHRvIHNjcnViOsKgwqAgMi44MFRpQgpSYXRlOsKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCA0Ny4xME1pQi9zCkVycm9yIHN1bW1hcnk6wqDCoMKg
-IG5vIGVycm9ycyBmb3VuZAoKCkEgcmVhZG9ubHkgZnMgY2hlY2sgaXMgY2xlYW4KCgpPcGVu
-aW5nIGZpbGVzeXN0ZW0gdG8gY2hlY2suLi4KV0FSTklORzogZmlsZXN5c3RlbSBtb3VudGVk
-LCBjb250aW51aW5nIGJlY2F1c2Ugb2YgLS1mb3JjZQpDaGVja2luZyBmaWxlc3lzdGVtIG9u
-IC9kZXYvc2RiClVVSUQ6IDZhYmFhNjhhLTI2NzAtNGQ4Yi04ZDJhLWZkNzMyMWRmOTI0Mgpb
-MS83XSBjaGVja2luZyByb290IGl0ZW1zwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgICgwOjAwOjEzIGVsYXBzZWQsIDM3MzExMQppdGVtcyBjaGVja2VkKQpb
-Mi83XSBjaGVja2luZyBleHRlbnRzwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgICgwOjA0OjE4IGVsYXBzZWQsIDIwNTMzNAppdGVtcyBjaGVja2Vk
-KQpbMy83XSBjaGVja2luZyBmcmVlIHNwYWNlIGNhY2hlwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgICgwOjAwOjM3IGVsYXBzZWQsIDEyMzMKaXRlbXMgY2hlY2tlZCkKWzQvN10g
-Y2hlY2tpbmcgZnMgcm9vdHPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgICgwOjAwOjEwIGVsYXBzZWQsIDEwNzE0Cml0ZW1zIGNoZWNrZWQpCls1Lzdd
-IGNoZWNraW5nIGNzdW1zICh3aXRob3V0IHZlcmlmeWluZyBkYXRhKcKgICgwOjAwOjAyIGVs
-YXBzZWQsIDQxNDEzOAppdGVtcyBjaGVja2VkKQpbNi83XSBjaGVja2luZyByb290IHJlZnPC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAoMDowMDowMCBl
-bGFwc2VkLCA5MAppdGVtcyBjaGVja2VkKQpbNy83XSBjaGVja2luZyBxdW90YSBncm91cHMg
-c2tpcHBlZCAobm90IGVuYWJsZWQgb24gdGhpcyBGUykKZm91bmQgMzA3OTM0MzUyOTk4NCBi
-eXRlcyB1c2VkLCBubyBlcnJvciBmb3VuZAp0b3RhbCBjc3VtIGJ5dGVzOiAzMDAzMzQwNzc2
-CnRvdGFsIHRyZWUgYnl0ZXM6IDMzNjI2MzU3NzYKdG90YWwgZnMgdHJlZSBieXRlczogMTc3
-NzE3MjQ4CnRvdGFsIGV4dGVudCB0cmVlIGJ5dGVzOiAzNTYzNTIwMApidHJlZSBzcGFjZSB3
-YXN0ZSBieXRlczogMTUzNzgwODMwCmZpbGUgZGF0YSBibG9ja3MgYWxsb2NhdGVkOiAzMDc3
-NzA5MzQ0NzY4CsKgcmVmZXJlbmNlZCAzMDc3MzQ5Mjc3Njk2CgoKCkEgZnVsbCBiYWxhbmNl
-IGlzIG5vdyBmYWlsaW5nCgoKCltGcmkgTm92IDIyIDExOjMxOjI3IDIwMTldIEJUUkZTIGlu
-Zm8gKGRldmljZSBzZGIpOiByZWxvY2F0aW5nIGJsb2NrCmdyb3VwIDg4MDg0MDAyODk3OTIg
-ZmxhZ3MgZGF0YXxyYWlkNQpbRnJpIE5vdiAyMiAxMTozMjowNyAyMDE5XSBCVFJGUyBpbmZv
-IChkZXZpY2Ugc2RiKTogZm91bmQgNzQgZXh0ZW50cwpbRnJpIE5vdiAyMiAxMTozMjoyNCAy
-MDE5XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiKTogZm91bmQgNzQgZXh0ZW50cwpbRnJpIE5v
-diAyMiAxMTozMjo0MyAyMDE5XSBCVFJGUyBpbmZvIChkZXZpY2Ugc2RiKTogcmVsb2NhdGlu
-ZyBibG9jawpncm91cCA4ODA1MTc5MDY0MzIwIGZsYWdzIGRhdGF8cmFpZDUKW0ZyaSBOb3Yg
-MjIgMTE6MzM6MjQgMjAxOV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNkYik6IGZvdW5kIDYxIGV4
-dGVudHMKW0ZyaSBOb3YgMjIgMTE6MzM6NDQgMjAxOV0gQlRSRlMgaW5mbyAoZGV2aWNlIHNk
-Yik6IGZvdW5kIDYxIGV4dGVudHMKW0ZyaSBOb3YgMjIgMTE6MzM6NTIgMjAxOV0gQlRSRlMg
-aW5mbyAoZGV2aWNlIHNkYik6IHJlbG9jYXRpbmcgYmxvY2sKZ3JvdXAgODgwMTk1NzgzODg0
-OCBmbGFncyBkYXRhfHJhaWQ1CltGcmkgTm92IDIyIDExOjMzOjU0IDIwMTldIEJUUkZTIHdh
-cm5pbmcgKGRldmljZSBzZGIpOiBjc3VtIGZhaWxlZCByb290Ci05IGlubyAzMDcgb2ZmIDEz
-MTc2MDEyOCBjc3VtIDB4MDc0MzZjNjIgZXhwZWN0ZWQgY3N1bSAweDAwMDFjYmRlIG1pcnJv
-ciAxCltGcmkgTm92IDIyIDExOjMzOjU0IDIwMTldIEJUUkZTIHdhcm5pbmcgKGRldmljZSBz
-ZGIpOiBjc3VtIGZhaWxlZCByb290Ci05IGlubyAzMDcgb2ZmIDEzMTc2NDIyNCBjc3VtIDB4
-ZDAwOWU4NzQgZXhwZWN0ZWQgY3N1bSAweDAwMDAwMDAwIG1pcnJvciAxCltGcmkgTm92IDIy
-IDExOjMzOjU0IDIwMTldIEJUUkZTIHdhcm5pbmcgKGRldmljZSBzZGIpOiBjc3VtIGZhaWxl
-ZCByb290Ci05IGlubyAzMDcgb2ZmIDEzMTc2MDEyOCBjc3VtIDB4MDc0MzZjNjIgZXhwZWN0
-ZWQgY3N1bSAweDAwMDFjYmRlIG1pcnJvciAyCltGcmkgTm92IDIyIDExOjMzOjU0IDIwMTld
-IEJUUkZTIHdhcm5pbmcgKGRldmljZSBzZGIpOiBjc3VtIGZhaWxlZCByb290Ci05IGlubyAz
-MDcgb2ZmIDEzMTc2NDIyNCBjc3VtIDB4ZDAwOWU4NzQgZXhwZWN0ZWQgY3N1bSAweDAwMDAw
-MDAwIG1pcnJvciAyCltGcmkgTm92IDIyIDExOjMzOjU0IDIwMTldIEJUUkZTIHdhcm5pbmcg
-KGRldmljZSBzZGIpOiBjc3VtIGZhaWxlZCByb290Ci05IGlubyAzMDcgb2ZmIDEzMTc2MDEy
-OCBjc3VtIDB4MDc0MzZjNjIgZXhwZWN0ZWQgY3N1bSAweDAwMDFjYmRlIG1pcnJvciAxCltG
-cmkgTm92IDIyIDExOjMzOjU0IDIwMTldIEJUUkZTIHdhcm5pbmcgKGRldmljZSBzZGIpOiBj
-c3VtIGZhaWxlZCByb290Ci05IGlubyAzMDcgb2ZmIDEzMTc2MDEyOCBjc3VtIDB4MDc0MzZj
-NjIgZXhwZWN0ZWQgY3N1bSAweDAwMDFjYmRlIG1pcnJvciAyCltGcmkgTm92IDIyIDExOjM0
-OjAyIDIwMTldIEJUUkZTIGluZm8gKGRldmljZSBzZGIpOiBiYWxhbmNlOiBlbmRlZCB3aXRo
-CnN0YXR1czogLTUKCgpBbnkgaWRlYSBob3cgdG8gcHJvY2VlZCBmcm9tIGhlcmU/IFRoZSBk
-cml2ZXMgYXJlIHJlbGF0aXZlbHkgbmV3IGFuZAp0aGVyZSB3ZXJlIG5vIGlzc3VlcyBpbiB0
-aGUgMng2VGIrIDJ4MVRiCgoKVGhhbmtzIGluIGFkdmFuY2UuCgoKLS0gCj09CgpEb24gQWxl
-eC4gCgo=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--uxIKnbKPZIfNkCvCNMLoI6YnWGjaKHv99
+Content-Type: multipart/mixed; boundary="znDZv24fo3kj3W0dIDmuAaaXgpfu0Xt52"
+
+--znDZv24fo3kj3W0dIDmuAaaXgpfu0Xt52
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+
+
+On 2019/11/22 =E4=B8=8B=E5=8D=888:37, devel@roosoft.ltd.uk wrote:
+> So been discussing this on IRC but looks like more sage advice is neede=
+d.
+
+You're not the only one hitting the bug. (Not sure if that makes you
+feel a little better)
+>=20
+>=20
+> So quick history. A BTRFS filesystem was initially created with 2x 6Tb
+> and 2x1Tb drives. This was configure in a RAID 1 Meta/system=C2=A0=C2=A0=
+ and RAID
+> 5 data configuration
+>=20
+> Recently 2 more 6Tb drives were used to replace the 2 1Tb ones. One was=
+
+> Added to the filesystem and then the original 1Tb was deleted, the othe=
+r
+> was just a direct replace.
+>=20
+>=20
+> The filesystem was then expanded to fill the new space with
+>=20
+>=20
+>> =C2=A0=C2=A0 btrfs fi resize 4:max /mnt/media/
+>=20
+>=20
+> The filesystem was very unbalanced and currently looks like this after
+> an attempt to rebalance it failed.
+>=20
+>=20
+> btrfs fi show
+> Label: none=C2=A0 uuid: 6abaa68a-2670-4d8b-8d2a-fd7321df9242
+> =C2=A0=C2=A0=C2=A0 Total devices 4 FS bytes used 2.80TiB
+> =C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 1 size 5.46TiB used 1.20TiB =
+path /dev/sdb
+> =C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 2 size 5.46TiB used 1.20TiB =
+path /dev/sdc
+> =C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 4 size 5.46TiB used 826.03Gi=
+B path /dev/sde
+> =C2=A0=C2=A0=C2=A0 devid=C2=A0=C2=A0=C2=A0 5 size 5.46TiB used 826.03Gi=
+B path /dev/sdd
+>=20
+>=20
+> btrfs fi usage=C2=A0 /mnt/media/
+> WARNING: RAID56 detected, not implemented
+> Overall:
+> =C2=A0=C2=A0=C2=A0 Device size:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=
+=A0 21.83TiB
+> =C2=A0=C2=A0=C2=A0 Device allocated:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
+ =C2=A0=C2=A0 8.06GiB
+> =C2=A0=C2=A0=C2=A0 Device unallocated:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=
+=A0 =C2=A0 21.82TiB
+> =C2=A0=C2=A0=C2=A0 Device missing:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
+ =C2=A0=C2=A0=C2=A0=C2=A0 0.00B
+> =C2=A0=C2=A0=C2=A0 Used:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=
+=A0=C2=A0 =C2=A0=C2=A0 6.26GiB
+> =C2=A0=C2=A0=C2=A0 Free (estimated):=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
+ =C2=A0=C2=A0=C2=A0=C2=A0 0.00B=C2=A0=C2=A0=C2=A0 (min: 8.00EiB)
+> =C2=A0=C2=A0=C2=A0 Data ratio:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=
+=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 0.00
+> =C2=A0=C2=A0=C2=A0 Metadata ratio:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
+ =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 2.00
+> =C2=A0=C2=A0=C2=A0 Global reserve:=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0=
+ =C2=A0512.00MiB=C2=A0=C2=A0=C2=A0 (used: 0.00B)
+>=20
+> Data,RAID5: Size:2.80TiB, Used:2.80TiB
+> =C2=A0=C2=A0 /dev/sdb=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 1.20TiB
+> =C2=A0=C2=A0 /dev/sdc=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 1.20TiB
+> =C2=A0=C2=A0 /dev/sdd=C2=A0=C2=A0=C2=A0 =C2=A0822.00GiB
+> =C2=A0=C2=A0 /dev/sde=C2=A0=C2=A0=C2=A0 =C2=A0822.00GiB
+>=20
+> Metadata,RAID1: Size:4.00GiB, Used:3.13GiB
+> =C2=A0=C2=A0 /dev/sdd=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 4.00GiB
+> =C2=A0=C2=A0 /dev/sde=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 4.00GiB
+>=20
+> System,RAID1: Size:32.00MiB, Used:256.00KiB
+> =C2=A0=C2=A0 /dev/sdd=C2=A0=C2=A0=C2=A0 =C2=A0 32.00MiB
+> =C2=A0=C2=A0 /dev/sde=C2=A0=C2=A0=C2=A0 =C2=A0 32.00MiB
+>=20
+> Unallocated:
+> =C2=A0=C2=A0 /dev/sdb=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 4.26TiB
+> =C2=A0=C2=A0 /dev/sdc=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 4.26TiB
+> =C2=A0=C2=A0 /dev/sdd=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 4.65TiB
+> =C2=A0=C2=A0 /dev/sde=C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0 4.65TiB
+>=20
+>=20
+> A scrub is clean
+>=20
+> btrfs scrub status /mnt/media/
+> UUID:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 6abaa68a-2670-4d8b-8d2a-fd7321df9242
+> Scrub started:=C2=A0=C2=A0=C2=A0 Thu Nov 21 11:30:49 2019
+> Status:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 fin=
+ished
+> Duration:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 17:20:11
+> Total to scrub:=C2=A0=C2=A0 2.80TiB
+> Rate:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 47.10MiB/s
+> Error summary:=C2=A0=C2=A0=C2=A0 no errors found
+>=20
+>=20
+> A readonly fs check is clean
+>=20
+>=20
+> Opening filesystem to check...
+> WARNING: filesystem mounted, continuing because of --force
+> Checking filesystem on /dev/sdb
+> UUID: 6abaa68a-2670-4d8b-8d2a-fd7321df9242
+> [1/7] checking root items=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 (0:00:13 elapsed, 373111
+> items checked)
+> [2/7] checking extents=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 (0:04:18 elapsed, 205334
+> items checked)
+> [3/7] checking free space cache=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (0:00:37 elapsed, 1233
+> items checked)
+> [4/7] checking fs roots=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 (0:00:10 elapsed, 10714
+> items checked)
+> [5/7] checking csums (without verifying data)=C2=A0 (0:00:02 elapsed, 4=
+14138
+> items checked)
+> [6/7] checking root refs=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 (0:00:00 elapsed, 90
+> items checked)
+> [7/7] checking quota groups skipped (not enabled on this FS)
+> found 3079343529984 bytes used, no error found
+> total csum bytes: 3003340776
+> total tree bytes: 3362635776
+> total fs tree bytes: 177717248
+> total extent tree bytes: 35635200
+> btree space waste bytes: 153780830
+> file data blocks allocated: 3077709344768
+> =C2=A0referenced 3077349277696
+>=20
+>=20
+>=20
+> A full balance is now failing
+>=20
+>=20
+>=20
+> [Fri Nov 22 11:31:27 2019] BTRFS info (device sdb): relocating block
+> group 8808400289792 flags data|raid5
+> [Fri Nov 22 11:32:07 2019] BTRFS info (device sdb): found 74 extents
+> [Fri Nov 22 11:32:24 2019] BTRFS info (device sdb): found 74 extents
+> [Fri Nov 22 11:32:43 2019] BTRFS info (device sdb): relocating block
+> group 8805179064320 flags data|raid5
+> [Fri Nov 22 11:33:24 2019] BTRFS info (device sdb): found 61 extents
+> [Fri Nov 22 11:33:44 2019] BTRFS info (device sdb): found 61 extents
+> [Fri Nov 22 11:33:52 2019] BTRFS info (device sdb): relocating block
+> group 8801957838848 flags data|raid5
+> [Fri Nov 22 11:33:54 2019] BTRFS warning (device sdb): csum failed root=
+
+> -9 ino 307 off 131760128 csum 0x07436c62 expected csum 0x0001cbde mirro=
+r 1
+> [Fri Nov 22 11:33:54 2019] BTRFS warning (device sdb): csum failed root=
+
+> -9 ino 307 off 131764224 csum 0xd009e874 expected csum 0x00000000 mirro=
+r 1
+> [Fri Nov 22 11:33:54 2019] BTRFS warning (device sdb): csum failed root=
+
+> -9 ino 307 off 131760128 csum 0x07436c62 expected csum 0x0001cbde mirro=
+r 2
+> [Fri Nov 22 11:33:54 2019] BTRFS warning (device sdb): csum failed root=
+
+> -9 ino 307 off 131764224 csum 0xd009e874 expected csum 0x00000000 mirro=
+r 2
+> [Fri Nov 22 11:33:54 2019] BTRFS warning (device sdb): csum failed root=
+
+> -9 ino 307 off 131760128 csum 0x07436c62 expected csum 0x0001cbde mirro=
+r 1
+> [Fri Nov 22 11:33:54 2019] BTRFS warning (device sdb): csum failed root=
+
+> -9 ino 307 off 131760128 csum 0x07436c62 expected csum 0x0001cbde mirro=
+r 2
+> [Fri Nov 22 11:34:02 2019] BTRFS info (device sdb): balance: ended with=
+
+> status: -5
+
+The csum error is from data reloc tree, which is a tree to record the
+new (relocated) data.
+So the good news is, your old data is not corrupted, and since we hit
+EIO before switching tree blocks, the corrupted data is just deleted.
+
+And I have also seen the bug just using single device, with DUP meta and
+SINGLE data, so I believe there is something wrong with the data reloc tr=
+ee.
+The problem here is, I can't find a way to reproduce it, so it will take
+us a longer time to debug.
+
+
+Despite that, have you seen any other problem? Especially ENOSPC (needs
+enospc_debug mount option).
+The only time I hit it, I was debugging ENOSPC bug of relocation.
+
+Thanks,
+Qu
+
+>=20
+>=20
+> Any idea how to proceed from here? The drives are relatively new and
+> there were no issues in the 2x6Tb+ 2x1Tb
+>=20
+>=20
+> Thanks in advance.
+>=20
+>=20
+
+
+--znDZv24fo3kj3W0dIDmuAaaXgpfu0Xt52--
+
+--uxIKnbKPZIfNkCvCNMLoI6YnWGjaKHv99
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEELd9y5aWlW6idqkLhwj2R86El/qgFAl3X3jIACgkQwj2R86El
+/qgNjAf7BfWg1GCMJGyUXUjf0ChLr7CM7Hrvw1WZGVUgYbcx52aeOhvCADbiAtfb
+8YfpJlaiiK5R1eUwlmOIMTCkMK9HQxWhq5qYDHKlBYV9i4CzkGk1MFgpAoRj6zxv
+wiACAfCkUcJDJcEsIZjF64FuwRPkqlKeNO73YzoiUkjjcMv5lDaRPUZYIuR421G1
+m5zm4EsqlGttQCVh2WXvmv7nx416iDmnFbYwTHizr9orRrVf7wR9YIkeNQKJuoe7
+5RlZrWPfPOIl343y6hkaVE5N/JjU7a0qid01eq0U2JHmtMfE6s2O2kP/5yhoGj/v
+KtyhLLSKY9W7YdeE8Fv/wDZHzsdXIQ==
+=yKUY
+-----END PGP SIGNATURE-----
+
+--uxIKnbKPZIfNkCvCNMLoI6YnWGjaKHv99--
