@@ -2,38 +2,38 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 329E21062FF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 07:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6034106470
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 07:17:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727737AbfKVGHm (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Nov 2019 01:07:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40252 "EHLO mail.kernel.org"
+        id S1729398AbfKVGRd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Nov 2019 01:17:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50656 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729369AbfKVGBy (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Nov 2019 01:01:54 -0500
+        id S1729305AbfKVGNZ (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Fri, 22 Nov 2019 01:13:25 -0500
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 628992070A;
-        Fri, 22 Nov 2019 06:01:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8F85820714;
+        Fri, 22 Nov 2019 06:13:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1574402514;
-        bh=wkEHc2vi4TFrHFuiD99EPJJTFGKpOOfZk8ZzaLYIR4g=;
+        s=default; t=1574403205;
+        bh=D7hjSmdXK7WHeWT3wuT6ycmjaZRsL2baVYrJHqcHwl4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bHjmVnC7seBq5W53yQpSEZkpMhhS34nE2PAy9X8TuuD6TQhQZyLj7im8I0y8d0zpb
-         rcnSSre8onogbn8rcs59ShSVGBdUkbqoWkDTz68a8BLf+hLt1te9m9OVdTD+jtF4Zy
-         yM/SeDgZxtjxtaJvrevI1OxGTG9FttCrBEiDrJbE=
+        b=EtlT0FKILjt0Jc7+ZHpHDD4sYAgFJCF5tf5Mr6wFzgxcjhIemf0A8Vymbt3rwIjun
+         3iJMMbl9ZJ+y4Q8X3Hpf5xb3ic8nFb6ZMQeA1ThsltdLmvHIFkamJUiL4miHCHkPwd
+         sQfUgWk270wuJFL65gJqucf3yzfEeDSNohfeNunQ=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Josef Bacik <jbacik@fb.com>, Nikolay Borisov <nborisov@suse.com>,
         David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>, linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 23/91] btrfs: only track ref_heads in delayed_ref_updates
-Date:   Fri, 22 Nov 2019 01:00:21 -0500
-Message-Id: <20191122060129.4239-22-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.4 21/68] btrfs: only track ref_heads in delayed_ref_updates
+Date:   Fri, 22 Nov 2019 01:12:14 -0500
+Message-Id: <20191122061301.4947-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191122060129.4239-1-sashal@kernel.org>
-References: <20191122060129.4239-1-sashal@kernel.org>
+In-Reply-To: <20191122061301.4947-1-sashal@kernel.org>
+References: <20191122061301.4947-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -66,7 +66,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 deletions(-)
 
 diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index 8d93854a4b4f3..74c17db752014 100644
+index e06dd75ad13f9..a2f165029ee62 100644
 --- a/fs/btrfs/delayed-ref.c
 +++ b/fs/btrfs/delayed-ref.c
 @@ -193,8 +193,6 @@ static inline void drop_delayed_ref(struct btrfs_trans_handle *trans,
@@ -78,7 +78,7 @@ index 8d93854a4b4f3..74c17db752014 100644
  }
  
  static bool merge_ref(struct btrfs_trans_handle *trans,
-@@ -445,7 +443,6 @@ add_delayed_ref_tail_merge(struct btrfs_trans_handle *trans,
+@@ -444,7 +442,6 @@ add_delayed_ref_tail_merge(struct btrfs_trans_handle *trans,
  add_tail:
  	list_add_tail(&ref->list, &href->ref_list);
  	atomic_inc(&root->num_entries);
