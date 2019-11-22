@@ -2,51 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65269107422
-	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 15:37:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BD5E10742D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 22 Nov 2019 15:44:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbfKVOhW (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Nov 2019 09:37:22 -0500
-Received: from mail-ed1-f51.google.com ([209.85.208.51]:38636 "EHLO
-        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726813AbfKVOhV (ORCPT
+        id S1726666AbfKVOoA (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Fri, 22 Nov 2019 09:44:00 -0500
+Received: from mail-ed1-f41.google.com ([209.85.208.41]:40915 "EHLO
+        mail-ed1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726526AbfKVOoA (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Nov 2019 09:37:21 -0500
-Received: by mail-ed1-f51.google.com with SMTP id s10so6224237edi.5
-        for <linux-btrfs@vger.kernel.org>; Fri, 22 Nov 2019 06:37:20 -0800 (PST)
+        Fri, 22 Nov 2019 09:44:00 -0500
+Received: by mail-ed1-f41.google.com with SMTP id p59so6238891edp.7
+        for <linux-btrfs@vger.kernel.org>; Fri, 22 Nov 2019 06:43:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=wj7MhRKYNn4w+pi0iYk3oIUmBvepA4GUHiCNXrjX7M8=;
-        b=XG4VGhFChvGOT9BKOjmciQ+aJ265XVhVwgnB4e9sRykAChDzorHurBfbL9RS6c0xRI
-         1L1YCV1mejXzXgw9Eb2hPgqzCG6enEJXhkquzHBbd61mATnAoiMU9Eyn6qD/9qjJuUp9
-         d/a/ECan93zW8/XMn+N7GQ7h6aiCUn+McT1dmud6LN/qcbJC8OwXkSUlfJyCu7x1YxQC
-         f3MnRTVJfV2UOxpFKuBpguJRh+pvj0suJK4XpzPT/IrMJcmKb4rLT7ooKSy/knyfa0vr
-         iH67HFo0eQmE83M2LeEYLbIBJDamj3HYgtr+pMYKub6ebUNU+drZwAT3YJCw1wHNWnlt
-         5SAg==
+        bh=MFUry/79CLSxAwaJHLtMD8jgUHc2YMLyPX+cvpRGafs=;
+        b=ggNBy5o0pXJ5VHlxNUakZOJxKNiqvmM7rWZGE+2SuIkg1G+OIwsrDT/2nMlgO/hjZm
+         Ro507GYtt0Z8ORrQbTvBxkfZSvTsK3g9pqRNdsVJqazTJJdOAsLAyzoFuqbD+teubzlZ
+         k9yHRjMnDf8i9e2PENlRc8/07XBHZnQA1cC/0zMJPLEqZkeYTj6kgZYwxJQw5B8/xJy4
+         qUEY+JMsvzJkjK43MshOSJK3Dl/FyO9NPKk2SONQkjuqHb17ZfKTGQ+r1iDRE/tgi16v
+         1I/XFFfiuXtvig/i4PPMgE9dwFkTaqsoIfvXq72yMn8weXw6CgoW/3aNN5cn4ZKmRJXX
+         2Yhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to;
-        bh=wj7MhRKYNn4w+pi0iYk3oIUmBvepA4GUHiCNXrjX7M8=;
-        b=GWnetaHntnJoJYLXhQf5bnac5+mUZf/xeu/W5U49c+46TR5JlNJvvvxeshwuYg6yVs
-         N6hjcKDzzR50SNdK1wZFGI3D5VWNFT48xmyNy/t1oxVaBu6w35duuqvb2fzN3hJH3fOq
-         zGo+KrxcGuvj2Lwc+zOQ+Fmg1gx3J0uqscgf0EAHhZZ5mVCDvKYspS6kOiHx6TV57iA3
-         kq41DkmXkvJYJdtVLMuaRppqi9Lw/aUfWdSz71vtzVxRz29PN/l/GL/0W4GT5g8KBgC9
-         nOh2zhaDSIJNyfRom6+dQYKEW/Ugu+Rb6e73RbP1dEKWt0tLvJCZ83vcUTE0inGHo7QQ
-         d84g==
-X-Gm-Message-State: APjAAAVi4Aqn/wj7ln4FGhatWwDxIBa46J4Ae1x98uGGunf9mEK1nt6H
-        Nb8kQJUe68S+gDka7cafwmLqCXjCXJmG7CxuAqnm
-X-Google-Smtp-Source: APXvYqyq0SQgoRwaEkM2MNvx70i2KJBqf4q0uh948W9k0aVbx4mQ8fANcCpdg9zto6xf9Ck6agJ2VEDIa4vtQzJuhN4=
-X-Received: by 2002:a17:906:411:: with SMTP id d17mr22253984eja.299.1574433439498;
- Fri, 22 Nov 2019 06:37:19 -0800 (PST)
+        bh=MFUry/79CLSxAwaJHLtMD8jgUHc2YMLyPX+cvpRGafs=;
+        b=sK4RYFFRH/gE2EssTkoMZEbE3GbedhG+8af7RClGgQXxktOh2PROVW9UDQmwd+qLlf
+         H3Az1k6iIEtTHvcP38z1imtUTKdavDrZhLJetZaju9BiQb4FKFVnJ7o8CIgfJYCt5rEx
+         upGu2VOaYCtqjZd+j/0AaeYxe7ljXh3AYkNVqOHSenj6m7rWNVEZf4BqrS2M4w33oaXo
+         WMf/9Zugzg4qMW2IphUH3SH4UuTjbLNDVAMcBzL4nLI298Vxd54xTB9sebRjPCUmucO+
+         RcYLhdtBAwtkGDn2AItQ849O9wgXsxb3xQZ+rurvwq2/NBTZoJUzr8+FyNwHkxsM4gId
+         O4rg==
+X-Gm-Message-State: APjAAAW/Iq+LN/cOZoYd+k7smeBo5yFncEOajBCQozUU4UyR6pRV9S/L
+        bLgloc8wx/bfBr4dX1mTQ6laWE7kj1Ne99LNlOUn
+X-Google-Smtp-Source: APXvYqyg33Un0xyPms9Ox+jYJ8DOov00gvWH9S/ZVNZ75BAaAz8eK1j/3B7ADg+QNGM7bwT/7npRQT/TrJ/juOoLktU=
+X-Received: by 2002:a05:6402:547:: with SMTP id i7mr1558585edx.55.1574433837812;
+ Fri, 22 Nov 2019 06:43:57 -0800 (PST)
 MIME-Version: 1.0
 References: <20191112183425.GA1257@tik.uni-stuttgart.de> <7f628741-b32e-24dc-629f-97338fde3d16@googlemail.com>
- <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com> <20191121222228.GG22121@hungrycats.org>
-In-Reply-To: <20191121222228.GG22121@hungrycats.org>
+ <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
+ <3e5cd446-3527-17ef-9ab8-d6ad01d740d0@gmx.com> <CAKbQEqFCAYq7Cy6D-x3C8qWvf6SusjkTbLi531AMY3QAakrn6w@mail.gmail.com>
+ <4544ecff-b70e-09fb-6fd3-e2c03d848c1c@googlemail.com> <CAKbQEqFELp0TWzM+K9TqAwywYBxX_3jXy0rz6tx9mNXyKEF02A@mail.gmail.com>
+ <2b0f68d6-6d27-2f14-0b44-8a40abad6542@googlemail.com> <CAKbQEqFYhQBLK83uxp1gS9WNbTVkr535LvKyBbc=6ZCstmGP3Q@mail.gmail.com>
+ <d362cbc6-2138-2efc-00d2-729549a03886@gmx.com>
+In-Reply-To: <d362cbc6-2138-2efc-00d2-729549a03886@gmx.com>
 From:   Christian Pernegger <pernegger@gmail.com>
-Date:   Fri, 22 Nov 2019 15:36:43 +0100
-Message-ID: <CAKbQEqFBYdi59QFPLXiiPvpFEzRnM-wG2Yz=2mdkeLOiOAAwmA@mail.gmail.com>
+Date:   Fri, 22 Nov 2019 15:43:21 +0100
+Message-ID: <CAKbQEqG362x12PyDUjiz96kGn15xZY_PRdAknS60kKvDDkKktw@mail.gmail.com>
 Subject: Re: freezes during snapshot creation/deletion -- to be expected?
  (Was: Re: btrfs based backup?)
 To:     linux-btrfs <linux-btrfs@vger.kernel.org>
@@ -56,24 +60,13 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Am Do., 21. Nov. 2019 um 23:22 Uhr schrieb Zygo Blaxell
-<ce3g8jdj@umail.furryterror.org>:
-> Snapshot delete is pretty aggressive with IO [...]  can effectively hang for a few minutes
-> while btrfs-cleaner runs.
+Am Fr., 22. Nov. 2019 um 13:34 Uhr schrieb Qu Wenruo <quwenruo.btrfs@gmx.com>:
+> But still, for snapshot deletion part, there is still a performance impact.
 
-It's doesn't look like it's btrfs-cleaner that blocks here, though,
-more like it's btrfs-transacti.
-
-> Snapshot create has unbounded running time on 5.0 kernels.
-
-It looks to me like delete, not create, is the culprit here.
-
-> Anything that needs to take a sb_writer lock (which is almost everything
-> that modifies the filesystem) will hang until the snapshot create is done;
-
-It's not just fs activity, either. Even if I'm just typing in
-LibreOffice or at a bash prompt, the input isn't registered during the
-freeze (it's buffered, so it comes out all at once in the end).
+Ok. It's just that I'd have expected *slower* write and read
+performance until everything's settled, maybe sync writes taking
+noticeably longer than usual, not that all user input blocks across
+the whole system regardless of fs activity.
 
 Cheers,
 C.
