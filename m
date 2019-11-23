@@ -2,35 +2,31 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 54909107CAA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Nov 2019 04:57:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9BA0107D2B
+	for <lists+linux-btrfs@lfdr.de>; Sat, 23 Nov 2019 06:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726304AbfKWDtw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Fri, 22 Nov 2019 22:49:52 -0500
-Received: from james.kirk.hungrycats.org ([174.142.39.145]:40934 "EHLO
+        id S1726141AbfKWF1m (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Sat, 23 Nov 2019 00:27:42 -0500
+Received: from james.kirk.hungrycats.org ([174.142.39.145]:48160 "EHLO
         james.kirk.hungrycats.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726085AbfKWDtw (ORCPT
+        with ESMTP id S1725800AbfKWF1m (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Fri, 22 Nov 2019 22:49:52 -0500
+        Sat, 23 Nov 2019 00:27:42 -0500
 Received: by james.kirk.hungrycats.org (Postfix, from userid 1002)
-        id 2A77A4EAE15; Fri, 22 Nov 2019 22:49:51 -0500 (EST)
-Date:   Fri, 22 Nov 2019 22:49:51 -0500
+        id C73284EAFB9; Sat, 23 Nov 2019 00:27:41 -0500 (EST)
+Date:   Sat, 23 Nov 2019 00:27:41 -0500
 From:   Zygo Blaxell <ce3g8jdj@umail.furryterror.org>
-To:     Christian Pernegger <pernegger@gmail.com>
-Cc:     linux-btrfs <linux-btrfs@vger.kernel.org>
-Subject: Re: freezes during snapshot creation/deletion -- to be expected?
- (Was: Re: btrfs based backup?)
-Message-ID: <20191123034950.GI22121@hungrycats.org>
-References: <20191112183425.GA1257@tik.uni-stuttgart.de>
- <7f628741-b32e-24dc-629f-97338fde3d16@googlemail.com>
- <CAKbQEqGOXNhHUSdHQyjQDijh3ezVK-QZgg7dK5LJJNUNqRiHpg@mail.gmail.com>
- <20191121222228.GG22121@hungrycats.org>
- <CAKbQEqFBYdi59QFPLXiiPvpFEzRnM-wG2Yz=2mdkeLOiOAAwmA@mail.gmail.com>
+To:     fdmanana@kernel.org
+Cc:     linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] Btrfs: send, skip backreference walking for extents with
+ many references
+Message-ID: <20191123052741.GJ22121@hungrycats.org>
+References: <20191030122301.25270-1-fdmanana@kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="tYlHSoJ8Aop8eNG2"
+        protocol="application/pgp-signature"; boundary="+1d8mk/W7pQzMfc7"
 Content-Disposition: inline
-In-Reply-To: <CAKbQEqFBYdi59QFPLXiiPvpFEzRnM-wG2Yz=2mdkeLOiOAAwmA@mail.gmail.com>
+In-Reply-To: <20191030122301.25270-1-fdmanana@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
@@ -38,63 +34,138 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 
---tYlHSoJ8Aop8eNG2
+--+1d8mk/W7pQzMfc7
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Nov 22, 2019 at 03:36:43PM +0100, Christian Pernegger wrote:
-> Am Do., 21. Nov. 2019 um 23:22 Uhr schrieb Zygo Blaxell
-> <ce3g8jdj@umail.furryterror.org>:
-> > Snapshot delete is pretty aggressive with IO [...]  can effectively han=
-g for a few minutes
-> > while btrfs-cleaner runs.
+On Wed, Oct 30, 2019 at 12:23:01PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 >=20
-> It's doesn't look like it's btrfs-cleaner that blocks here, though,
-> more like it's btrfs-transacti.
-
-It's hard to tell.  btrfs-transaction does a lot of work for other threads.
-If you have kernel stacks enabled,
-
-	watch -n.1 cat /proc/<pid of btrfs-cleaner>/stack
-
-will show you what btrfs-cleaner is up to.  If it's something like
-'wait_for_commit' then btrfs-cleaner dumped a bunch of work on
-btrfs-transaction, and now btrfs-transaction is trying to catch up.
-
-> > Snapshot create has unbounded running time on 5.0 kernels.
+> Backreference walking, which is used by send to figure if it can issue
+> clone operations instead of write operations, can be very slow and use too
+> much memory when extents have many references. This change simply skips
+> backreference walking when an extent has more than 64 references, in which
+> case we fallback to a write operation instead of a clone operation. This
+> limit is conservative and in practice I observed no signicant slowdown
+> with up to 100 references and still low memory usage up to that limit.
 >=20
-> It looks to me like delete, not create, is the culprit here.
+> This is a temporary workaround until there are speedups in the backref
+> walking code, and as such it does not attempt to add extra interfaces or
+> knobs to tweak the threshold.
 >=20
-> > Anything that needs to take a sb_writer lock (which is almost everything
-> > that modifies the filesystem) will hang until the snapshot create is do=
-ne;
+> Reported-by: Atemu <atemu.main@gmail.com>
+> Link: https://lore.kernel.org/linux-btrfs/CAE4GHgkvqVADtS4AzcQJxo0Q1jKQgK=
+aW3JGp3SGdoinVo=3DC9eQ@mail.gmail.com/T/#me55dc0987f9cc2acaa54372ce0492c657=
+82be3fa
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/send.c | 25 ++++++++++++++++++++++++-
+>  1 file changed, 24 insertions(+), 1 deletion(-)
 >=20
-> It's not just fs activity, either. Even if I'm just typing in
-> LibreOffice or at a bash prompt, the input isn't registered during the
-> freeze (it's buffered, so it comes out all at once in the end).
+> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+> index 123ac54af071..518ec1265a0c 100644
+> --- a/fs/btrfs/send.c
+> +++ b/fs/btrfs/send.c
+> @@ -25,6 +25,14 @@
+>  #include "compression.h"
+> =20
+>  /*
+> + * Maximum number of references an extent can have in order for us to at=
+tempt to
+> + * issue clone operations instead of write operations. This currently ex=
+ists to
+> + * avoid hitting limitations of the backreference walking code (taking a=
+ lot of
+> + * time and using too much memory for extents with large number of refer=
+ences).
+> + */
+> +#define SEND_MAX_EXTENT_REFS	64
+> +
+> +/*
+>   * A fs_path is a helper to dynamically build path names with unknown si=
+ze.
+>   * It reallocates the internal buffer on demand.
+>   * It allows fast adding of path elements on the right side (normal path=
+) and
+> @@ -1302,6 +1310,7 @@ static int find_extent_clone(struct send_ctx *sctx,
+>  	struct clone_root *cur_clone_root;
+>  	struct btrfs_key found_key;
+>  	struct btrfs_path *tmp_path;
+> +	struct btrfs_extent_item *ei;
+>  	int compressed;
+>  	u32 i;
+> =20
+> @@ -1349,7 +1358,6 @@ static int find_extent_clone(struct send_ctx *sctx,
+>  	ret =3D extent_from_logical(fs_info, disk_byte, tmp_path,
+>  				  &found_key, &flags);
+>  	up_read(&fs_info->commit_root_sem);
+> -	btrfs_release_path(tmp_path);
+> =20
+>  	if (ret < 0)
+>  		goto out;
+> @@ -1358,6 +1366,21 @@ static int find_extent_clone(struct send_ctx *sctx,
+>  		goto out;
+>  	}
+> =20
+> +	ei =3D btrfs_item_ptr(tmp_path->nodes[0], tmp_path->slots[0],
+> +			    struct btrfs_extent_item);
+> +	/*
+> +	 * Backreference walking (iterate_extent_inodes() below) is currently
+> +	 * too expensive when an extent has a large number of references, both
+> +	 * in time spent and used memory. So for now just fallback to write
+> +	 * operations instead of clone operations when an extent has more than
+> +	 * a certain amount of references.
+> +	 */
+> +	if (btrfs_extent_refs(tmp_path->nodes[0], ei) > SEND_MAX_EXTENT_REFS) {
 
-IO pressure, especially blocked writes, can delay memory allocations
-on Linux.  That stops almost everything dead in a modern GUI.
+So...does this...work?
 
-If you can log into the box from another machine you might be able to
-watch what it's doing with 'top' etc.
+I ask because I looked at this a few years ago as a way to spend less
+time doing LOGICAL_INO calls during dedupe (and especially avoid the
+8-orders-of-magnitude performance degradation in the bad cases), but
+I found that it was useless: it wasn't proportional to the number of
+extents, nor was it an upper or lower bound, nor could extents be sorted
+by number of references using extent.refs as a key, nor could it predict
+the amount of time it would take for iterate_extent_inodes() to run.
+I guess I'm surprised you got a different result.
 
-On the other hand, from the other messages in this thread, it sounds like
-you're using qgroups, which multiplies everything I said above by 1000.
-qgroups is all in-kernel CPU, too, so userspace can't preempt it.
+If the 'refs' field is 1, the extent might have somewhere between 1
+and 3500 root/inode/offset references.  But it's not a lower bound,
+e.g. here is an extent on a random filesystem where extent_refs is a
+big number:
 
-> Cheers,
-> C.
+        item 87 key (1344172032 EXTENT_ITEM 4096) itemoff 11671 itemsize 24
+                refs 897 gen 2668358 flags DATA
 
---tYlHSoJ8Aop8eNG2
+LOGICAL_INO_V2 only finds 170 extent references:
+
+        # btrfs ins log 1344172032 -P . | wc -l
+        170
+
+Is there a good primer somewhere on how the reference counting works in
+btrfs?
+
+> +		ret =3D -ENOENT;
+> +		goto out;
+> +	}
+> +	btrfs_release_path(tmp_path);
+> +
+>  	/*
+>  	 * Setup the clone roots.
+>  	 */
+> --=20
+> 2.11.0
+>=20
+
+--+1d8mk/W7pQzMfc7
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXdisXAAKCRCB+YsaVrMb
-nA7UAKCsb1IO8bCwdcyernbrDyjQ157MmwCg3vDYPYntB5QTj7LpCmMZaZR8Cf0=
-=95HB
+iF0EABECAB0WIQSnOVjcfGcC/+em7H2B+YsaVrMbnAUCXdjDSgAKCRCB+YsaVrMb
+nB4sAKDYYX3LNfeq1Gx1jisgypsOvvfCWgCgk8nDFvbwDbcdz6PY7Jx8shqRYW4=
+=mVoi
 -----END PGP SIGNATURE-----
 
---tYlHSoJ8Aop8eNG2--
+--+1d8mk/W7pQzMfc7--
