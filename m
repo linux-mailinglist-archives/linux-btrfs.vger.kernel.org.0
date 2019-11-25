@@ -2,54 +2,54 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1665B109037
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 15:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD021109038
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 15:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728250AbfKYOkU (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 09:40:20 -0500
-Received: from mail-qv1-f67.google.com ([209.85.219.67]:42563 "EHLO
-        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728071AbfKYOkT (ORCPT
+        id S1728253AbfKYOkV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 09:40:21 -0500
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:39527 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728071AbfKYOkV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 09:40:19 -0500
-Received: by mail-qv1-f67.google.com with SMTP id n4so5770734qvq.9
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 06:40:19 -0800 (PST)
+        Mon, 25 Nov 2019 09:40:21 -0500
+Received: by mail-qt1-f196.google.com with SMTP id g1so8032993qtj.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 06:40:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=toxicpanda-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=5lRDWEt6RstVRpGoq3X83Gj9t9eqsjUNE3kAbj6Umeg=;
-        b=aoiAI4suIbESgn+w8ewjAqEP3Dcw359ZlIw3h0TuOkF0WGtjqg5WXQaXWyd+UjvNus
-         LVAc6wOq9YIFOeT4ONk8SiMdk1EYrWjCkT/q/aEGVPNck+w6TVUFb1veho//yCeBwEWQ
-         /Jz1ON6lCSliPBurDJgvlay0afK5b7ke6w0V3+SU4zoSPRo2jEgwq9DWW4FkXBVkTfpB
-         pqppWgPigrxPHsw85WdonNE/nNCD1U+2hsbxXAZSSCUE5cFwQAYJOwrZg4Ji8t3bqbmk
-         lrCEwAy9YEXNUM2dVBa1YOwW3ZhXcLQ+XqckNMVwbNU9KyyTI8nR0BwTxPXLA2etAmuH
-         lwOQ==
+        bh=KkWiOv6Ez2X48idC8HSRbI2sow1xz7eA9KxdDPJgIf0=;
+        b=g+bR4rnGzmlcxS3uIYOnzcoYAP57fkxqDKcRmhL8ynjX+gJbK2s6gMnIbMI3v/Zxl0
+         gpABam91ncsxIi/ZNEoW29QhNKaCAVKJeq15rVkxQ8rp9U+Y7mUiIviz7AwwTvug6Lbm
+         ZTxyPEcm286yeDNQCpU/byUlUwrk13LSL3LYO9UwawSc+tiw2wjnZX9HWC478vEF0oqZ
+         h97eEoAnfGNvyf51a8cXGdYKonBzGILaeUDhi/SqUuqDQOvxd8V/HooIDDTbCPDC1JuX
+         OTSdknW+kuKJBvZ2nQbOr+XpvA08bQ2m1S8PYl7cqMoLWg1n7I0t3DAtWz37m/oXW+dr
+         lo2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5lRDWEt6RstVRpGoq3X83Gj9t9eqsjUNE3kAbj6Umeg=;
-        b=NHWNGcysSbXKE5k38DHyfX/r1ZyH47oEbQzPaRayt0osuQgTKLSg1eJvkq7SEp7X8G
-         blLh3X2IVQWvgSEBRc25bAM8Iq5u7R9ruOMAbVyUMJIOdXHJQnP3yB+0RtcJ/REP8mf3
-         idYlV16irGzeJJxRNNwO1p0+o2kN+wgHLKPf/+wUm1qyq6tlo0QRmwUcNyP3JRMHBlNI
-         jrbb6SO3bg1f+DQ729ZUeabY/4IAbeHV33A9tanywxsyPWkM2K1u9T8T0i+BO5fXwPEU
-         DgGIwiCKRKXuDwf3+xVDl9m99s5eTGMWPFMCF0MRBrw9lTNkCPLRtChqBTBr46yJv3Tq
-         zRDQ==
-X-Gm-Message-State: APjAAAVwsAXJ6c1IyZ7MVXzyn0NBWz0xrMPkGyiEuGeH1qT5MHvv41i5
-        UldWkLja5KtMJiHhHfxhZrvmd2HF41Atmw==
-X-Google-Smtp-Source: APXvYqwVjlo+MWzNz0OEoL2dtQTGfS8UI7Xmt7j58li++rFMI+B5q8mOfwX7QQpgPM2twp3DZ520jg==
-X-Received: by 2002:a05:6214:6e3:: with SMTP id bk3mr13113292qvb.20.1574692818236;
-        Mon, 25 Nov 2019 06:40:18 -0800 (PST)
+        bh=KkWiOv6Ez2X48idC8HSRbI2sow1xz7eA9KxdDPJgIf0=;
+        b=p7ucR+nfiapG+JvzW0RkilQT377uO2b/E7Ct4bfuVuL17yUL9Fd0nJWMXegd4zBSu0
+         J1Yf50fvYDvKEYTvxPYu85dVf6sU7SxhsmuZo3a8oMWk7js9K/EJzohGPRKZakcRNc0k
+         OBLBF70LeYdkFsdmQXoe5w1dIeSDeWtxbZhWqj1XF7j3v+Xnxf9GuH7yZ/oJfG3EM07W
+         R7Hx22VX/vBcLxeQRVGH1awU9vGXMK80/H1RLjGUFPSMBJF7c+ls8wr/yzyfEEcNEEaf
+         wbHGP5XVrQoP5nRDZ4TK1bgBHepFkDFur+8zWlrmfgCwxXTfFxD4g1jS20AKzB3t/eGQ
+         JhNQ==
+X-Gm-Message-State: APjAAAV4i0II+zbYXV6e6G6uIwwq8L+IeUVBvshQHyrZOX0VelwJ4P30
+        ATCGYxUZjaBZu08bFuXdSjt70ciE287I2g==
+X-Google-Smtp-Source: APXvYqwnJAKJ/AvkNJY3t1chvrvJOv0Fd1twbRkdvTqTrH+TBwuEIPzJ1sIyfzArgpwu/Lk+wK/Chg==
+X-Received: by 2002:ac8:67d9:: with SMTP id r25mr13480690qtp.7.1574692820083;
+        Mon, 25 Nov 2019 06:40:20 -0800 (PST)
 Received: from localhost ([107.15.81.208])
-        by smtp.gmail.com with ESMTPSA id s34sm4028944qtb.73.2019.11.25.06.40.17
+        by smtp.gmail.com with ESMTPSA id o124sm3421392qkf.66.2019.11.25.06.40.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Nov 2019 06:40:17 -0800 (PST)
+        Mon, 25 Nov 2019 06:40:19 -0800 (PST)
 From:   Josef Bacik <josef@toxicpanda.com>
 To:     linux-btrfs@vger.kernel.org, kernel-team@fb.com, wqu@suse.com
-Subject: [PATCH 2/4] btrfs: kill min_allocable_bytes in inc_block_group_ro
-Date:   Mon, 25 Nov 2019 09:40:09 -0500
-Message-Id: <20191125144011.146722-3-josef@toxicpanda.com>
+Subject: [PATCH 3/4] btrfs: fix force usage in inc_block_group_ro
+Date:   Mon, 25 Nov 2019 09:40:10 -0500
+Message-Id: <20191125144011.146722-4-josef@toxicpanda.com>
 X-Mailer: git-send-email 2.23.0
 In-Reply-To: <20191125144011.146722-1-josef@toxicpanda.com>
 References: <20191125144011.146722-1-josef@toxicpanda.com>
@@ -60,65 +60,54 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-This is a relic from a time before we had a proper reservation mechanism
-and you could end up with really full chunks at chunk allocation time.
-This doesn't make sense anymore, so just kill it.
+For some reason we've translated the do_chunk_alloc that goes into
+btrfs_inc_block_group_ro to force in inc_block_group_ro, but these are
+two different things.
+
+force for inc_block_group_ro is used when we are forcing the block group
+read only no matter what, for example when the underlying chunk is
+marked read only.  We need to not do the space check here as this block
+group needs to be read only.
+
+btrfs_inc_block_group_ro() has a do_chunk_alloc flag that indicates that
+we need to pre-allocate a chunk before marking the block group read
+only.  This has nothing to do with forcing, and in fact we _always_ want
+to do the space check in this case, so unconditionally pass false for
+force in this case.
+
+Then fixup inc_block_group_ro to honor force as it's expected and
+documented to do.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/block-group.c | 22 ++++------------------
- 1 file changed, 4 insertions(+), 18 deletions(-)
+ fs/btrfs/block-group.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 6934a5b8708f..db539bfc5a52 100644
+index db539bfc5a52..3ffbc2e0af21 100644
 --- a/fs/btrfs/block-group.c
 +++ b/fs/btrfs/block-group.c
-@@ -1185,21 +1185,8 @@ static int inc_block_group_ro(struct btrfs_block_group *cache, int force)
- 	struct btrfs_space_info *sinfo = cache->space_info;
- 	u64 num_bytes;
- 	u64 sinfo_used;
--	u64 min_allocable_bytes;
- 	int ret = -ENOSPC;
- 
--	/*
--	 * We need some metadata space and system metadata space for
--	 * allocating chunks in some corner cases until we force to set
--	 * it to be readonly.
--	 */
--	if ((sinfo->flags &
--	     (BTRFS_BLOCK_GROUP_SYSTEM | BTRFS_BLOCK_GROUP_METADATA)) &&
--	    !force)
--		min_allocable_bytes = SZ_1M;
--	else
--		min_allocable_bytes = 0;
--
+@@ -1190,8 +1190,10 @@ static int inc_block_group_ro(struct btrfs_block_group *cache, int force)
  	spin_lock(&sinfo->lock);
  	spin_lock(&cache->lock);
  
-@@ -1217,10 +1204,9 @@ static int inc_block_group_ro(struct btrfs_block_group *cache, int force)
- 	 * sinfo_used + num_bytes should always <= sinfo->total_bytes.
- 	 *
- 	 * Here we make sure if we mark this bg RO, we still have enough
--	 * free space as buffer (if min_allocable_bytes is not 0).
-+	 * free space as buffer.
- 	 */
--	if (sinfo_used + num_bytes + min_allocable_bytes <=
--	    sinfo->total_bytes) {
-+	if (sinfo_used + num_bytes + sinfo->total_bytes) {
- 		sinfo->bytes_readonly += num_bytes;
+-	if (cache->ro) {
++	if (cache->ro || force) {
  		cache->ro++;
- 		list_add_tail(&cache->ro_list, &sinfo->ro_bgs);
-@@ -1233,8 +1219,8 @@ static int inc_block_group_ro(struct btrfs_block_group *cache, int force)
- 		btrfs_info(cache->fs_info,
- 			"unable to make block group %llu ro", cache->start);
- 		btrfs_info(cache->fs_info,
--			"sinfo_used=%llu bg_num_bytes=%llu min_allocable=%llu",
--			sinfo_used, num_bytes, min_allocable_bytes);
-+			"sinfo_used=%llu bg_num_bytes=%llu",
-+			sinfo_used, num_bytes);
- 		btrfs_dump_space_info(cache->fs_info, cache->space_info, 0, 0);
++		if (list_empty(&cache->ro_list))
++			list_add_tail(&cache->ro_list, &sinfo->ro_bgs);
+ 		ret = 0;
+ 		goto out;
  	}
- 	return ret;
+@@ -2063,7 +2065,7 @@ int btrfs_inc_block_group_ro(struct btrfs_block_group *cache,
+ 		}
+ 	}
+ 
+-	ret = inc_block_group_ro(cache, !do_chunk_alloc);
++	ret = inc_block_group_ro(cache, false);
+ 	if (!do_chunk_alloc)
+ 		goto unlock_out;
+ 	if (!ret)
 -- 
 2.23.0
 
