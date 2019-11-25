@@ -2,49 +2,49 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C970E108BDD
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 11:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAE2108BDE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 11:39:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727516AbfKYKjl (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 05:39:41 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:48118 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727495AbfKYKjl (ORCPT
+        id S1727522AbfKYKjn (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 05:39:43 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:37662 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727510AbfKYKjm (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 05:39:41 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAYhgF007493
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:40 GMT
+        Mon, 25 Nov 2019 05:39:42 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAY6b2021407
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:41 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=bc9YECdOavijLkiyOVpkhQFUHwU3QhCAfLx1aUZWRFc=;
- b=PE3Mvtt4jAm/eRlYMtQth6s5znG0/ovdtb549VbLdtb+sCJSVgbIdNLHRa27PTD9uEmC
- /cbaWUXbIQO4Wu4k0+Q8ACrz9TMwam3XUhDlir51/+q8rAFX/dccFU47B9k2HcO0X9wY
- uz78rMCInDhp7UsJBPC9TLmFApF2uuXsUQMpwVKl7AwSMPzeiEA5ebolR5KXqA7yZ5AI
- 4ZxhZWY5gRc9ykp1GOL9E37jzkVswtVuRW2SYKvmsDpOvrjEGY3qEPTeOVjZyoEcSOSU
- Dq8pr7oipgOypi0Nmpbr8x/33SEzjuJKR+3/Ugfk7+/lvvabZeMS9KWrToKSIgSM7F4s xw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 2wewdqxnnk-1
+ bh=s9T4tsWbCzq3wueo/6QaQoWWTLLCxiHukl3t6dzAvWQ=;
+ b=bmIuP1GHaNB/wGSi8IouZ7slGcNmw1wjWmBwNWmG/8CW8X7eBZWPzSGJTbz+MCYw3EFw
+ 6lYA0DfPbIr1OKt3xvxehtI0Ayz8Il2u5NFlQA5UaK3lm7UBKyofHRzaJv2+1XPJHkE+
+ 7mPIqWslCJk/snUlOfh066YqXvOsX2PF/iTtrURJR7McqSt0xoMrWJa9Ur0p4iCIdtWn
+ tqtqDfVJC9zZmQ6bIPQjQ6/yIvhz09/zepScsd174kolg8RPKzvIkVI00aupos43mehf
+ M5Z9WYWN9QllG/yF2t6pOPxDGaLKZxSya8bu90UDR+RF7oBrkWRdmmRDKfXYgAXn4zev VQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2wevqpxrx0-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:39 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAX3MZ169637
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:39 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 2wfewa7a7q-1
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:41 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAXIB0191751
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:40 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2wfex64qvu-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:39 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:40 +0000
 Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAPAdcHc016879
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:38 GMT
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAPAdejw017356
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:40 GMT
 Received: from tp.wifi.oracle.com (/192.188.170.104)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 25 Nov 2019 02:39:38 -0800
+        with ESMTP ; Mon, 25 Nov 2019 02:39:39 -0800
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 06/16] btrfs-progs: filesystem defragment: use global verbose option
-Date:   Mon, 25 Nov 2019 18:39:07 +0800
-Message-Id: <1574678357-22222-7-git-send-email-anand.jain@oracle.com>
+Subject: [PATCH v2 07/16] btrfs-progs: balance start: use global verbose option
+Date:   Mon, 25 Nov 2019 18:39:08 +0800
+Message-Id: <1574678357-22222-8-git-send-email-anand.jain@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1574678357-22222-1-git-send-email-anand.jain@oracle.com>
 References: <1574678357-22222-1-git-send-email-anand.jain@oracle.com>
@@ -64,81 +64,60 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Transpire global --verbose option down to the btrfs receive sub-command.
+Transpire global --verbose option down to the btrfs balance start
+sub-command.
 
 Suggested-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
 v2: Use new helper functions and defines
     HELPINFO_INSERT_GLOBALS, BTRFS_BCONF_UNSET, BTRFS_BCONF_QUIET
-    bconf_be_verbose()
+    bconf_be_verbose(), bconf_be_quiet()
 
     No need to init bconf.verbose in the sub command.
 
-    Move the HELPINFO_INSERT_GLOBALS, and HELPINFO_INSERT_VERBOSE, right
-    after the command options.
+ cmds/balance.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
- cmds/filesystem.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/cmds/filesystem.c b/cmds/filesystem.c
-index 4f22089abeaa..fc1736d9fe66 100644
---- a/cmds/filesystem.c
-+++ b/cmds/filesystem.c
-@@ -840,6 +840,8 @@ static const char * const cmd_filesystem_defrag_usage[] = {
- 	"-l len              defragment only up to len bytes",
- 	"-t size             target extent size hint (default: 32M)",
- 	"",
+diff --git a/cmds/balance.c b/cmds/balance.c
+index 5392a6040a02..9c2cdacdb288 100644
+--- a/cmds/balance.c
++++ b/cmds/balance.c
+@@ -499,6 +499,8 @@ static const char * const cmd_balance_start_usage[] = {
+ 	"--full-balance do not print warning and do not delay start",
+ 	"--background|--bg",
+ 	"               run the balance as a background process",
 +	HELPINFO_INSERT_GLOBALS,
 +	HELPINFO_INSERT_VERBOSE,
- 	"Warning: most Linux kernels will break up the ref-links of COW data",
- 	"(e.g., files copied with 'cp --reflink', snapshots) which may cause",
- 	"considerable increase of space usage. See btrfs-filesystem(8) for",
-@@ -848,7 +850,6 @@ static const char * const cmd_filesystem_defrag_usage[] = {
+ 	NULL
  };
  
- static struct btrfs_ioctl_defrag_range_args defrag_global_range;
--static int defrag_global_verbose;
- static int defrag_global_errors;
- static int defrag_callback(const char *fpath, const struct stat *sb,
- 		int typeflag, struct FTW *ftwbuf)
-@@ -857,8 +858,7 @@ static int defrag_callback(const char *fpath, const struct stat *sb,
- 	int fd = 0;
- 
- 	if ((typeflag == FTW_F) && S_ISREG(sb->st_mode)) {
--		if (defrag_global_verbose)
--			printf("%s\n", fpath);
-+		pr_verbose(1, "%s\n", fpath);
- 		fd = open(fpath, defrag_open_mode);
- 		if (fd < 0) {
- 			goto error;
-@@ -913,7 +913,6 @@ static int cmd_filesystem_defrag(const struct cmd_struct *cmd,
- 	thresh = SZ_32M;
- 
- 	defrag_global_errors = 0;
--	defrag_global_verbose = 0;
- 	defrag_global_errors = 0;
- 	optind = 0;
- 	while(1) {
-@@ -931,7 +930,7 @@ static int cmd_filesystem_defrag(const struct cmd_struct *cmd,
- 			flush = 1;
+@@ -509,7 +511,6 @@ static int cmd_balance_start(const struct cmd_struct *cmd,
+ 	struct btrfs_balance_args *ptrs[] = { &args.data, &args.sys,
+ 						&args.meta, NULL };
+ 	int force = 0;
+-	int verbose = 0;
+ 	int background = 0;
+ 	unsigned start_flags = 0;
+ 	int i;
+@@ -564,7 +565,7 @@ static int cmd_balance_start(const struct cmd_struct *cmd,
+ 			force = 1;
  			break;
  		case 'v':
--			defrag_global_verbose = 1;
+-			verbose = 1;
 +			bconf_be_verbose();
  			break;
- 		case 's':
- 			start = parse_size(optarg);
-@@ -1031,8 +1030,7 @@ static int cmd_filesystem_defrag(const struct cmd_struct *cmd,
- 			/* errors are handled in the callback */
- 			ret = 0;
- 		} else {
--			if (defrag_global_verbose)
--				printf("%s\n", argv[i]);
-+			pr_verbose(1, "%s\n", argv[i]);
- 			ret = ioctl(fd, BTRFS_IOC_DEFRAG_RANGE,
- 					&defrag_global_range);
- 			defrag_err = errno;
+ 		case GETOPT_VAL_FULL_BALANCE:
+ 			start_flags |= BALANCE_START_NOWARN;
+@@ -640,7 +641,7 @@ static int cmd_balance_start(const struct cmd_struct *cmd,
+ 
+ 	if (force)
+ 		args.flags |= BTRFS_BALANCE_FORCE;
+-	if (verbose)
++	if (bconf.verbose > BTRFS_BCONF_QUIET)
+ 		dump_ioctl_balance_args(&args);
+ 	if (background) {
+ 		switch (fork()) {
 -- 
 1.8.3.1
 
