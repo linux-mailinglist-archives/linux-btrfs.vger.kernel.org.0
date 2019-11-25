@@ -2,71 +2,58 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8B0F108BD4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 11:37:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FB5108BD7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 11:39:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727316AbfKYKhD (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 05:37:03 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:34728 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727266AbfKYKhD (ORCPT
+        id S1727437AbfKYKjd (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 05:39:33 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:50196 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727386AbfKYKjd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 05:37:03 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAY7l6021487;
-        Mon, 25 Nov 2019 10:36:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=5k7gDTWCXnVdWZS3OA8yACh5YrMmj0TdHrPN1yixMsg=;
- b=Bd/0TUXVcC/YBm8zhK5J4oEi0t3TA51nCKsYsQH5v3USNDhBZhU3sPX5yaEVMsZN3IoM
- SXN3Z8NmwCDlskM/DU11WtkI6uUR8iCWr+1jbl2uaP3jWAUjJLuyEyDse669OzZKlbsH
- 61flvs+4muksE4AuitWl2MQIM/dvABq4dDlcvHNX+ZYDoWis3IBJpdJFzE7mY8zwVpzV
- 3YmjVN3LIQwQu606IyGr3CSqJRZLw7G99wAcZqCQzcaie/IzqQ00gHQo6kKEDpYzyvQ3
- WYBjOqOo2BdqRhf/f3j2LYDJ6hQWENB0z+6+AwXYteF76vI3mxQtv1VxjWWwKG9fChna Bw== 
+        Mon, 25 Nov 2019 05:39:33 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAY6ZC026797
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
+ date : message-id; s=corp-2019-08-05;
+ bh=CcsKW2LjwEgty7+L1xtiuh6LtZrp2KzkBobjVstGkdk=;
+ b=pZzWdUwIP8w8VKOuhRDXTlYO8OofEnIM1Hi8iiR+cfa8QBNSs84YjCuFszmGUpNx+GNp
+ FvLqJ0s36mYTrpaRqV79Fd3O7mzaH+9AWPr0aQYIJM1anpC2TdQ+3Dpzd3DmpIyI6+NO
+ 3fwszxuNTcC13zNEJUmai1DNSJ5Z6MhMOOsUz3ylh7+r9SDv5Bj+2p1Ie446VX6dQi2U
+ 1RSyN0FzrUMsR0iY1UrAkDPFtg35zLoF58nxJU3r+Li44dggP6m3bpLzqs6P9QCADLC5
+ a+2o2v22R2rYWpxbgSEg3Eyuvx8BVeMP4+jknABFfLHvCBCZEyL4CAZr0921aexr3Tz7 vA== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2wevqpxrf3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Nov 2019 10:36:58 +0000
+        by userp2130.oracle.com with ESMTP id 2wev6txrsf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:31 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAXtgv173219;
-        Mon, 25 Nov 2019 10:36:58 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 2wfe9erea1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 25 Nov 2019 10:36:57 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id xAPAav1s015928;
-        Mon, 25 Nov 2019 10:36:57 GMT
-Received: from [10.190.155.136] (/192.188.170.104)
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAXt6Q173195
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:30 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 2wfe9erxnb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:30 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAPAdTEs010792
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:29 GMT
+Received: from tp.wifi.oracle.com (/192.188.170.104)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 25 Nov 2019 02:36:57 -0800
-Subject: Re: [PATCH v1.1 04/18] btrfs-progs: add global verbose and quiet
- options and helper functions
-To:     dsterba@suse.cz, linux-btrfs@vger.kernel.org
-References: <1572849196-21775-1-git-send-email-anand.jain@oracle.com>
- <1572849196-21775-5-git-send-email-anand.jain@oracle.com>
- <20191114160813.GK3001@twin.jikos.cz>
- <6852d675-0244-388e-899f-008dc53b6ad9@oracle.com>
- <20191119165147.GW3001@twin.jikos.cz>
+        with ESMTP ; Mon, 25 Nov 2019 02:39:29 -0800
 From:   Anand Jain <anand.jain@oracle.com>
-Message-ID: <8e4e8164-ac80-bc2f-0196-1f86570c2e47@oracle.com>
-Date:   Mon, 25 Nov 2019 18:36:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
-MIME-Version: 1.0
-In-Reply-To: <20191119165147.GW3001@twin.jikos.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 00/16] btrfs-progs: global verbose and quiet option
+Date:   Mon, 25 Nov 2019 18:39:01 +0800
+Message-Id: <1574678357-22222-1-git-send-email-anand.jain@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9451 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
  phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1911140001 definitions=main-1911250098
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9451 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
  lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
  definitions=main-1911250098
@@ -75,64 +62,218 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
+v1.1->v2:
+Mainly:
+ . Splits define HELPINFO_INSERT_GLOBALS from --format option and
+ . Rename HELPINFO_GLOBAL_OPTIONS_HEADER to HELPINFO_INSERT_GLOBALS
+ . Create and use helper bconf_be_verbose() and bconf_be_quiet().
+ . Use gobal bconf.verbose where possible and drop local verbose argument passing.
+ . In some patches the bconf.verbose initialization wasn't necessary so drop it.
+Some small fixes as mentioned in the individual patch.
+
+v1->v1.1:
+ . Fix typo in HELPINFO_INSERT_QUIET.
+ . Remove #include <stdbool.h> where its no more required.
+   (was needed when %bconf.verbose was declared as bool).
+ . Use pr_verbose(-1,..) instead of all conditions printf()
+ . Use pr_verbose(1,..) instead of pr_verbose(true,..)
+
+verbosity sample code as in v1.1
+
+global init
+-----------
+        bconf.verbose = -1; //-1:default, 0:quiet, >1:verbose
+
+at global options
+-----------------
+	case 'v':
+		bconf.verbose < 0 ? bconf.verbose = 1 : bconf.verbose++;
+		break;
+	case 'q':
+		bconf.verbose = 0;
+		break;
+
+sub-command init
+----------------
+For send/receive only (special cases, default verbosity is 1):
+
+	if (bconf.verbose < 0)
+		bconf.verbose = 1;
+	else if (bconf.verbose > 0)
+		bconf.verbose++;
+
+Non-send/receive:
+default verbosity is 0 (ref: cmds/rescue.c)
+	if (bconf.verbose < 0)
+		bconf.verbose = 0;
+
+at sub-command options
+----------------------
+	case 'v':
+		bconf.verbose++;
+		break;
+	case 'q':
+		bconf.verbose = 0;
+		break;
 
 
-On 11/20/19 12:51 AM, David Sterba wrote:
-> On Tue, Nov 19, 2019 at 11:36:59AM +0800, Anand Jain wrote:
->>> As this is a simple fixup
->>> s/HELPINFO_GLOBAL_OPTIONS_HEADER/HELPINFO_INSERT_GLOBALS/, hold on with
->>> resending I might find more things or fix it myself.
->>>
->>
->> But there is one problem,  HELPINFO_INSERT_GLOBALS is already defined
->> as..
->>        Global options:
->>       --format TYPE      where TYPE is: text
->>
->> (ref: common/help.c   do_usage_one_command())
->>
->> Albeit all commands support --format text by default.
->>
->> But no sub-command is using the HELPINFO_INSERT_GLOBALS in its usage.
->>
->> Looks like its a good idea to separate title and the options, like
->> #define HELPINFO_INSERT_GLOBALS		"Global options:"
->> #define HELPINGO_INSERT_FORMAT		"--format TYPE"
-> 
-> Yeah, makes sense to split it, right now the format does not bring
-> anything so that will be better done in a major release some time in the
-> future when more commands have json output.
+pr_verbose()
+------------
+/*
+ * level -1: prints message unless bconf.verbose == 0;
+ * level  0: quiet
+ * level >0: prints message only if <= bconf.verbose
+ */
+void pr_verbose(int level, const char *fmt, ...)
+{
+        va_list args;
 
-  Ok. In v2 I have split
-   HELPINFO_GLOBAL_OPTIONS_HEADER into HELPINFO_INSERT_GLOBALS and
-   HELPINGO_INSERT_FORMAT as above.
+        if (level == 0 || bconf.verbose == 0)
+                return;
 
-Thanks, Anand
+        if (level > bconf.verbose)
+                return;
+
+        va_start(args, fmt);
+        vfprintf(stdout, fmt, args);
+        va_end(args);
+}
 
 
->> As at the moment I am not sure if its safe to declare that all
->> sub-commands will support --format json (whenever we do that).
-> 
-> No, right now json output should not be declared anywhere.
-> 
->> So with the defines split as above, in each sub-command-usage
->> we shall do..
->> 
->> -----------------------------------------
->> diff --git a/cmds/filesystem.c b/cmds/filesystem.c
->> index 4f22089abeaa..f4dba38b4c17 100644
->> --- a/cmds/filesystem.c
->> +++ b/cmds/filesystem.c
->> @@ -631,6 +631,10 @@ static const char * const
->> cmd_filesystem_show_usage[] = {
->>           "-m|--mounted       show only mounted btrfs",
->>           HELPINFO_UNITS_LONG,
->>           "If no argument is given, structure of all present filesystems
->> is shown.",
->> +       HELPINFO_INSERT_GLOBALS,
->> +       HELPINFO_INSERT_FORMAT,
->> +       HELPINFO_INSERT_VERBOSE,
->> +       HELPINFO_INSERT_QUIET,
-> 
-> Sounds ok.
-> 
+RFC->v1:
+. Adds --quiet option to the global btrfs(8) command.
+. Used global struct bconf.
+. Refactored pr_verbose(), accepts level (int) as argument, so now the
+sub-command can specify the verbose level at which the particular
+verbose messages has to be printed.
+. Added global help defines.
+
+Kindly note the following:-
+
+1.
+ There are certain sub-commands which does not have any verbose output
+ or quiet output. However if the global options were used with those
+ sub-commands then the command shall not report any usage error. Or
+ my question is should it error out.? For example:
+  (with the patch) btrfs --verbose device ready /dev/sdb
+ actually there isn't any verbose output but we won't error out.
+ Similarly,
+  (without the patch) btrfs send -vvvvv will not show usage error
+  as well.
+  So I believe this is fine. IMO.
+
+2.
+  There is slight difference in output when global options are used
+  as compared to the output using the same sequence of options at the
+  sub-command level. For example:
+
+   btrfs send -v -q -v  is-equal-to  btrfs send
+   But same sequence in the global option
+   btrfs -v -q -v send is-not-equal-to btrfs send
+   but is-equal-to btrfs -v send or btrfs send -v.
+   (similarly applies to receive as well).
+
+  which IMO is fair expectation as -v is ending last.
+
+
+RFC:
+This patch set brings --verbose option to the top level btrfs command,
+such as 'btrfs --verbose'. With this we don't have to add or remember
+verbose option at the sub-commands level.
+
+As there are already verbose options to 11 sub-commands as listed
+below [1][2]. So the top level --verbose option here takes care to transpire
+verbose request from the top level to the sub-command level for 9 (not 11)
+sub-commands as in [1] as of now.
+
+This patch is RFC still for the following two reasons (comments appreciated).
+
+1.
+The sub-commands as in [2] uses multi-level compile time verbose option,
+such as %g_verbose = 0 (quite), %g_verbose = 1 (default), %g_verbose > 1
+(real-verbose). And verbose at default is also part the .out files in
+fstests. So it needs further discussions on how to handle the multi-
+level verbose option using the global verbose option, and so sub-
+commands in [2] are untouched.
+
+2.
+These patch has been unit-tested individually.
+These patches does not alter the verbose output.
+But it fixes the indentation in the command's help output, which may be
+used in fstests and btrfs-progs/tests and their verification is pending
+still, which I am planning to do it before v1.
+
+[1]
+btrfs subvolume delete --help
+        -v|--verbose           verbose output of operations
+btrfs filesystem defragment --help
+        -v                  be verbose
+btrfs balance start --help
+        -v|--verbose        be verbose
+btrfs balance status --help
+        -v|--verbose        be verbose
+btrfs rescue chunk-recover --help
+        -v      Verbose mode
+btrfs rescue super-recover --help
+        -v      Verbose mode
+btrfs restore --help
+        -v|--verbose         verbose
+btrfs inspect-internal inode-resolve --help
+        -v   verbose mode
+btrfs inspect-internal logical-resolve --help
+        -v          verbose mode
+
+[2]
+btrfs send --help
+        -v|--verbose     enable verbose output to stderr, each occurrence of
+btrfs receive --help
+        -v               increase verbosity about performed action
+
+
+
+Anand Jain (16):
+  btrfs-progs: split global help HELPINFO_INSERT_GLOBALS
+  btrfs-progs: add global verbose and quiet options and helper functions
+  btrfs-progs: send: use global verbose and quiet options
+  btrfs-progs: receive: use global verbose and quiet options
+  btrfs-progs: subvolume delete: use global verbose option
+  btrfs-progs: filesystem defragment: use global verbose option
+  btrfs-progs: balance start: use global verbose option
+  btrfs-progs: balance status: use global verbose option
+  btrfs-progs: rescue chunk-recover: use global verbose option
+  btrfs-progs: rescue super-recover: use global verbose option
+  btrfs-progs: restore: use global verbose option
+  btrfs-progs: inspect-internal inode-resolve: use global verbose
+  btrfs-progs: inspect-internal logical-resolve: use global verbose
+    option
+  btrfs-progs: refactor btrfs_scan_devices() to accept verbose argument
+  btrfs-progs: device scan: add verbose option
+  btrfs-progs: device scan: add quiet option
+
+ btrfs.c                     | 20 ++++++++++--
+ cmds/balance.c              | 14 ++++----
+ cmds/device.c               |  7 ++--
+ cmds/filesystem.c           | 14 ++++----
+ cmds/inspect.c              | 41 +++++++++++------------
+ cmds/receive.c              | 80 +++++++++++++++++++++++++--------------------
+ cmds/rescue-chunk-recover.c |  9 +++--
+ cmds/rescue-super-recover.c |  7 ++--
+ cmds/rescue.c               | 18 ++++++----
+ cmds/rescue.h               |  4 +--
+ cmds/restore.c              | 53 +++++++++++++-----------------
+ cmds/send.c                 | 33 ++++++++++++-------
+ cmds/subvolume.c            | 28 ++++++++--------
+ common/device-scan.c        |  3 +-
+ common/device-scan.h        |  2 +-
+ common/help.c               |  4 +--
+ common/help.h               |  9 ++++-
+ common/messages.c           | 25 ++++++++++++++
+ common/messages.h           |  3 ++
+ common/utils.c              | 16 ++++++++-
+ common/utils.h              | 11 +++++++
+ disk-io.c                   |  2 +-
+ 22 files changed, 245 insertions(+), 158 deletions(-)
+
+-- 
+1.8.3.1
+
