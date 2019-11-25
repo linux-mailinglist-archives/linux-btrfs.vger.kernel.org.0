@@ -2,82 +2,65 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D8DE7108F5F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 14:59:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 166BC108F7A
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 15:01:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727766AbfKYN7R (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 08:59:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45140 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727655AbfKYN7Q (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 08:59:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BA532AEA7;
-        Mon, 25 Nov 2019 13:59:14 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 67CB2DA898; Mon, 25 Nov 2019 14:59:10 +0100 (CET)
-Date:   Mon, 25 Nov 2019 14:59:10 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     kbuild test robot <lkp@intel.com>
-Cc:     Dennis Zhou <dennis@kernel.org>, kbuild-all@lists.01.org,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 04/22] btrfs: keep track of cleanliness of the bitmap
-Message-ID: <20191125135910.GD2734@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, kbuild test robot <lkp@intel.com>,
-        Dennis Zhou <dennis@kernel.org>, kbuild-all@lists.01.org,
-        David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-        Josef Bacik <josef@toxicpanda.com>,
-        Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
-        linux-btrfs@vger.kernel.org
-References: <06410c758182c36e3af04249721ded50d8f2c62f.1574282259.git.dennis@kernel.org>
- <201911230623.j5g9qeNZ%lkp@intel.com>
+        id S1727855AbfKYOBX (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 09:01:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32872 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727695AbfKYOBX (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Nov 2019 09:01:23 -0500
+Received: from localhost (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9082D20679;
+        Mon, 25 Nov 2019 14:01:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1574690482;
+        bh=RKHkvJasBb9XZlFJJM88//Z1Z+h2at816g2Wx2thnNU=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=MWOotXo1F/R2WSj5r8nX+ONxRG0aEigugR2ZzYON2qBwjIPkPxiquPymK1FDusmay
+         xH5zPQBFjnqU7M+6zOLlCMZy7Pwb33qQ9YjPfaDI3fytPtzo/ipcGjTjIC9llPwo4L
+         0eJc0Y/Oxt49SV4C4jvX4P4VUisv6EXWFaj7G+FY=
+Date:   Mon, 25 Nov 2019 09:01:21 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     dsterba@suse.cz, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, Liu Bo <bo.liu@linux.alibaba.com>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 4.19 028/237] Btrfs: fix alignment in declaration
+ and prototype of btrfs_get_extent
+Message-ID: <20191125140121.GD5861@sasha-vm>
+References: <20191116154113.7417-1-sashal@kernel.org>
+ <20191116154113.7417-28-sashal@kernel.org>
+ <20191118111143.GE3001@twin.jikos.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <201911230623.j5g9qeNZ%lkp@intel.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20191118111143.GE3001@twin.jikos.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Sat, Nov 23, 2019 at 08:17:13AM +0800, kbuild test robot wrote:
-> Hi Dennis,
-> 
-> I love your patch! Yet something to improve:
-> 
-> [auto build test ERROR on kdave/for-next]
-> [cannot apply to v5.4-rc8 next-20191122]
-> [if your patch is applied to the wrong git tree, please drop us a note to help
-> improve the system. BTW, we also suggest to use '--base' option to specify the
-> base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Dennis-Zhou/btrfs-async-discard-support/20191121-230429
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-> config: arm-allmodconfig (attached as .config)
-> compiler: arm-linux-gnueabi-gcc (GCC) 7.4.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # save the attached .config to linux build tree
->         GCC_VERSION=7.4.0 make.cross ARCH=arm 
-> 
-> If you fix the issue, kindly add following tag
-> Reported-by: kbuild test robot <lkp@intel.com>
-> 
-> All errors (new ones prefixed by >>):
-> 
-> >> ERROR: "__aeabi_uldivmod" [fs/btrfs/btrfs.ko] undefined!
+On Mon, Nov 18, 2019 at 12:11:43PM +0100, David Sterba wrote:
+>On Sat, Nov 16, 2019 at 10:37:43AM -0500, Sasha Levin wrote:
+>> From: Liu Bo <bo.liu@linux.alibaba.com>
+>>
+>> [ Upstream commit de2c6615dcddf2af868c5cbd1db2e9e73b4beb58 ]
+>>
+>> This fixes btrfs_get_extent to be consistent with our existing
+>> declaration style.
+>
+>The patch is pure white space fix with no effects. I don't see that it
+>would be needed for a followup patch. What was the reason to add it to
+>autosel/stable ?
 
-That does not point to a particular line, but there's
+Oh I grabbed it as a dependency for a follow up patch which I ended up
+dropping, and forgot this one in. I'll drop it as well, sorry for the
+noise.
 
-+	/* If we ended in the middle of a bitmap, reset the trimming flag. */
-+	if (end % (BITS_PER_BITMAP * ctl->unit))
-+		reset_trimming_bitmap(ctl, offset_to_bitmap(ctl, end));
-
-added and its "u64 % (unsigned long * int)" that could be the cause.
+-- 
+Thanks,
+Sasha
