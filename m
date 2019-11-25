@@ -2,119 +2,205 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B519B108812
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 06:00:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85964108B55
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 11:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725535AbfKYFAa (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 00:00:30 -0500
-Received: from m4a0040g.houston.softwaregrp.com ([15.124.2.86]:56565 "EHLO
-        m4a0040g.houston.softwaregrp.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725385AbfKYFA3 (ORCPT
-        <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 00:00:29 -0500
-Received: FROM m4a0040g.houston.softwaregrp.com (15.120.17.147) BY m4a0040g.houston.softwaregrp.com WITH ESMTP;
- Mon, 25 Nov 2019 04:58:34 +0000
-Received: from M4W0335.microfocus.com (2002:f78:1193::f78:1193) by
- M4W0335.microfocus.com (2002:f78:1193::f78:1193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10; Mon, 25 Nov 2019 04:59:59 +0000
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com (15.124.8.11) by
- M4W0335.microfocus.com (15.120.17.147) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1591.10 via Frontend Transport; Mon, 25 Nov 2019 04:59:59 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=d7NrhYXCcyEsK0fg6fXRSolaEiImaFzRe5kRQNQ9s9OfIbROz/6l+Zyy8wab7O7vnwXnA3sQ5R2206jggHO3SjGwsb4H7EuwFGYslUG1ehUEVgeMbr5FSTcIUh9g7BwLsEmqUilsKqNN0aYsfRCRGZJ1QIbZb2RvbQJuocT47PVtuzdTzDql5o1qSBJH4wLywrYafUhLAWv2dgMJ6njO3tx5Q/df2d9zTLiKQ+JdmKA94Yl94nrz9GA0Nh2Yn7CopwQ17NbBOlARxd6ti+1qhgcFuH9fey3RiDGuWFRKuArm86d9WGz0hQdu3UYmro3B1Q1ml+pD7zWGG1famtQgdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pF9EBx/+7nSRRidiHxuH6L9g9gT0YsSA1uLm0+i/USI=;
- b=b5+8ZZUMl13kwaaAkzHVemLTRLOy+esaP3+bnM6x5Zwsf/7HrP8DPs0JlQBo+Z/9QwuGIJYf3vIaPJqpJQCjLXG1xZrkUBV3FPJAXoobsEnX+eQt2RBxnrh9e2ra0tMGlxBhnSNhhPQpZw611zT8lbRvyf/Q1Dmq5pD1csBjyHJ+qE2DM7JnO41A4ZXcZ1wMA6VNv9wG0ZRDtT7l05gFRZpwB64bmfqLMLekFV3qmlvkw5/e2BgygpX33dQnsFS0vLTWRs2PevZNfb2Vpmi9Wqxrn+y+h03CoO0tleb2o1yRlZK26O1YOMYhm7fXZky5nZLdvESmcGaCzoJa8MAOhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com (10.255.163.207) by
- BY5PR18MB3409.namprd18.prod.outlook.com (10.255.139.29) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2474.17; Mon, 25 Nov 2019 04:59:58 +0000
-Received: from BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::1842:7869:d7de:a07b]) by BY5PR18MB3266.namprd18.prod.outlook.com
- ([fe80::1842:7869:d7de:a07b%3]) with mapi id 15.20.2474.023; Mon, 25 Nov 2019
- 04:59:58 +0000
-From:   Qu WenRuo <wqu@suse.com>
-To:     Eryu Guan <guaneryu@gmail.com>
-CC:     "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH] fstests: common: Keep $seqres.dmesg in $RESULT_DIR
-Thread-Topic: [PATCH] fstests: common: Keep $seqres.dmesg in $RESULT_DIR
-Thread-Index: AQHVouKhQTA9YnQYlkiwVHpFnR38LqebVJQA
-Date:   Mon, 25 Nov 2019 04:59:58 +0000
-Message-ID: <b9a5bca6-5aaa-81c7-1e87-91646c55f955@suse.com>
-References: <20191113065938.34720-1-wqu@suse.com>
- <20191124161538.GG8664@desktop>
-In-Reply-To: <20191124161538.GG8664@desktop>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: BYAPR01CA0041.prod.exchangelabs.com (2603:10b6:a03:94::18)
- To BY5PR18MB3266.namprd18.prod.outlook.com (2603:10b6:a03:1a1::15)
-authentication-results: spf=none (sender IP is ) smtp.mailfrom=wqu@suse.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [149.28.201.231]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 5daa42f3-6b07-44b6-b666-08d7716451c4
-x-ms-traffictypediagnostic: BY5PR18MB3409:
-x-microsoft-antispam-prvs: <BY5PR18MB34094A972A6561C9FD7D7421D64A0@BY5PR18MB3409.namprd18.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-forefront-prvs: 0232B30BBC
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(4636009)(39860400002)(136003)(396003)(376002)(366004)(346002)(199004)(189003)(81166006)(8676002)(81156014)(8936002)(5660300002)(2906002)(66446008)(64756008)(66556008)(66476007)(66946007)(7736002)(305945005)(99286004)(1411001)(66066001)(316002)(6116002)(3846002)(446003)(256004)(14444005)(102836004)(76176011)(386003)(52116002)(6246003)(71190400001)(71200400001)(6512007)(11346002)(54906003)(6916009)(6436002)(229853002)(2616005)(6486002)(31686004)(31696002)(86362001)(14454004)(186003)(26005)(6506007)(4326008)(478600001)(36756003)(25786009);DIR:OUT;SFP:1102;SCL:1;SRVR:BY5PR18MB3409;H:BY5PR18MB3266.namprd18.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: suse.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: B1LnGRiomlHNoOxvC4wyEQhz4MqhuFs5EQk5zReXMNP0QEolwNaxOxkTnBw/i9tw5blL3627HtSOwXcDR+0OfpE9hE87y3mOMpHuA75Y30R4JtHBOtjMbehbBDsrS8/yON7rCWwdh+pRGlfMZSfXrGuQLRkSXXMKtLUpIXSoiYIeoks503HRA+BqKNLwFjnhkNqWkWREJOe91lFVz5mcUhvaaForLtjod0dAPBywkbOBcbUAd0D+TkWe9SL1/0Mya1s/kr26S2eOT8GDRhgFHmISCFv2CLtSN06bPk+HHyWoRSZgW6OwydlbXUvQX+FcKoV5FzYDqPfMFE7o2U40vmAFbe8SNMpYY/ZfV0yg534nAFZd1ZIWEX4ymEmo2z50iXzzyczJplGCgiqzToFF9O4xKGxT+g5lGcXq5CSqD9QMY2zXv6jkb7mwZhtU+XtI
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4C9F59AB25AABC48BA58F2E22AF533E6@namprd18.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727445AbfKYKE5 (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 05:04:57 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34368 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727316AbfKYKE4 (ORCPT <rfc822;linux-btrfs@vger.kernel.org>);
+        Mon, 25 Nov 2019 05:04:56 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 03829AE47
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:04:54 +0000 (UTC)
+From:   Qu Wenruo <wqu@suse.com>
+To:     linux-btrfs@vger.kernel.org
+Subject: [PATCH RFC] btrfs: space-info: Make over-commit threshold to 87.5% of a new chunk
+Date:   Mon, 25 Nov 2019 18:04:50 +0800
+Message-Id: <20191125100450.43599-1-wqu@suse.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5daa42f3-6b07-44b6-b666-08d7716451c4
-X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2019 04:59:58.2926
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 856b813c-16e5-49a5-85ec-6f081e13b527
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: d27W5WzcpeEjOEZVOoaJMamEF4NIuEue+G6cCpE4ehYsxthpWGVF0FPhuH0KrHVt
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR18MB3409
-X-OriginatorOrg: suse.com
+Content-Transfer-Encoding: 8bit
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-DQoNCk9uIDIwMTkvMTEvMjUg5LiK5Y2IMTI6MTUsIEVyeXUgR3VhbiB3cm90ZToNCj4gT24gV2Vk
-LCBOb3YgMTMsIDIwMTkgYXQgMDI6NTk6MzhQTSArMDgwMCwgUXUgV2VucnVvIHdyb3RlOg0KPj4g
-Q3VycmVudGx5IGZzdGVzdHMgd2lsbCByZW1vdmUgJHNlcXJlcy5kbWVzZyBpZiBub3RoaW5nIHdy
-b25nIGhhcHBlbmVkLg0KPj4gSXQgc2F2ZXMgc29tZSBzcGFjZSwgYnV0IHNvbWV0aW1lcyBpdCBt
-YXkgbm90IHByb3ZpZGUgZ29vZCBlbm91Z2gNCj4+IGhpc3RvcnkgZm9yIGRldmVsb3BlcnMgdG8g
-Y2hlY2suDQo+PiBFLmcuIHNvbWUgdW5leHBlY3RlZCBkbWVzZyBmcm9tIGZzLCBidXQgbm90IHNl
-cmlvdXMgZW5vdWdoIHRvIGJlIGNhdWdodA0KPj4gYnkgY3VycmVudCBmaWx0ZXIuDQo+Pg0KPj4g
-U28gaW5zdGVhZCBvZiBkZWxldGluZyB0aGUgb3JkaW5hcnkgJHNlcXJlcy5kbWVzZywganVzdCBr
-ZWVwIHRoZW0sIHNvDQo+PiB3ZSBjYW4gYXJjaGl2ZSB0aGVtIGZvciBsYXRlciByZXZpZXcuDQo+
-Pg0KPj4gU2lnbmVkLW9mZi1ieTogUXUgV2VucnVvIDx3cXVAc3VzZS5jb20+DQo+IA0KPiBUaGlz
-IGxvb2tzIGZpbmUgdG8gbWUsIGJ1dCBpdCBjYXVzZXMgbW9yZSBkaXNrIHNwYWNlIGNvbnN1bXB0
-aW9uIGFuZCBtYXkNCj4gZWF0IGFsbCByb290ZnMgc3BhY2UgcXVpY2tseSBhbmQgdW5leHBlY3Rl
-ZGx5Lg0KPiANCj4gSSBzdWdnZXN0IHdlIGFkZCBhbiBvcHRpb24gdG8gY29udHJvbCB0aGUgYmVo
-YXZpb3IsIGFuZCBkZWZhdWx0IGJlaGF2aW9yDQo+IGlzIHRvIGRlbGV0ZSB0aGUgZG1lc2cgZmls
-ZS4NCg0KU3VyZSwgSSdsbCBhZGQgYW4gb3B0aW9uIHRvIGNoYW5nZSB0aGUgYmVoYXZpb3IgaW4g
-bmV4dCB2ZXJzaW9uLg0KDQpUaGFua3MsDQpRdQ0KDQo+IA0KPiBUaGFua3MsDQo+IEVyeXUNCj4g
-DQo+PiAtLS0NCj4+ICBjb21tb24vcmMgfCA0ICstLS0NCj4+ICAxIGZpbGUgY2hhbmdlZCwgMSBp
-bnNlcnRpb24oKyksIDMgZGVsZXRpb25zKC0pDQo+Pg0KPj4gZGlmZiAtLWdpdCBhL2NvbW1vbi9y
-YyBiL2NvbW1vbi9yYw0KPj4gaW5kZXggYjk4OGU5MTIuLjU5YTMzOWE2IDEwMDY0NA0KPj4gLS0t
-IGEvY29tbW9uL3JjDQo+PiArKysgYi9jb21tb24vcmMNCj4+IEBAIC0zNjI1LDEwICszNjI1LDgg
-QEAgX2NoZWNrX2RtZXNnKCkNCj4+ICAJaWYgWyAkPyAtZXEgMCBdOyB0aGVuDQo+PiAgCQlfZHVt
-cF9lcnIgIl9jaGVja19kbWVzZzogc29tZXRoaW5nIGZvdW5kIGluIGRtZXNnIChzZWUgJHNlcXJl
-cy5kbWVzZykiDQo+PiAgCQlyZXR1cm4gMQ0KPj4gLQllbHNlDQo+PiAtCQlybSAtZiAkc2VxcmVz
-LmRtZXNnDQo+PiAtCQlyZXR1cm4gMA0KPj4gIAlmaQ0KPj4gKwlyZXR1cm4gMA0KPj4gIH0NCj4+
-ICANCj4+ICAjIGNhcHR1cmUgdGhlIGttZW1sZWFrIHJlcG9ydA0KPj4gLS0gDQo+PiAyLjIzLjAN
-Cj4+DQo=
+[BUG]
+For certain fs layout, a full balance can cause reproducible ENOSPC.
+With enospc_debug, we got the following dmesg (BTRFS info and device
+info ommitted to save some space):
+
+ disk space caching is enabled
+ has skinny extents
+ balance: start -d -m -s
+ relocating block group 1104150528 flags data
+ found 14659 extents
+ found 14659 extents
+ unable to make block group 30408704 ro  <<< from inc_block_group_ro()
+ sinfo_used=2386411520 bg_num_bytes=1046888448 min_allocable=1048576
+ space_info 4 has 18446744072434089984 free, is not full
+ space_info total=1073741824, used=24281088, pinned=1277952, reserved=1245184, may_use=2322333696, readonly=65536
+ global_block_rsv: size 3407872 reserved 3407872
+ trans_block_rsv: size 0 reserved 0
+ chunk_block_rsv: size 0 reserved 0
+ delayed_block_rsv: size 0 reserved 0
+ delayed_refs_rsv: size 2318401536 reserved 2318401536
+ unable to make block group 30408704 ro <<< double inc_block_group_ro()
+                                            failure, means
+                                            btrfs_inc_block_group_ro() failed
+ sinfo_used=2342912000 bg_num_bytes=1046872064 min_allocable=1048576
+ space_info 4 has 18446744072726380544 free, is not full
+ space_info total=1342177280, used=24281088, pinned=1277952, reserved=1245184, may_use=2298478592, readonly=65536
+ global_block_rsv: size 3407872 reserved 3407872
+ trans_block_rsv: size 0 reserved 0
+ chunk_block_rsv: size 393216 reserved 393216
+ delayed_block_rsv: size 0 reserved 0
+ delayed_refs_rsv: size 2294546432 reserved 2294546432
+ ...
+ 1 enospc errors during balance
+ balance: ended with status: -28
+
+[CAUSE]
+When allocating block group 1104150528, since that block group has a lot
+of extents, it has a data reloc inode with a lot of extents (14659
+non-hole data extents).
+
+After relocating that block group, btrfs needs to cleanup the data reloc
+inode.
+
+During that inode eviction, we have call evict_refill_and_join() to get
+metadata space reserved, which will cause a lot of metadata
+bytes_may_use:
+  evict_refill_and_join()
+  |- btrfs_block_rsv_refill()
+     |- btrfs_reserve_metadata_bytes()
+        |- __reserve_metadata_bytes()
+           |- if (can_overcommit() || ...) {
+           |     btrfs_space_info_update_bytes_may_use();
+           |     ret = 0;
+           |  }
+           |  if (!ret || flush == BTRFS_RESERVE_NO_FLUSH)
+           |     return ret;
+           |  return handle_reserve_ticket();
+
+That means, if we can can_overcommit(), we will increase bytes_may_use()
+anyway.
+And only when we failed to over-commit, handle_reserve_ticket() get
+triggered to reclaim some space.
+
+On the other hand, at btrfs_inc_block_group_ro(), we will check if we
+have enough space, and if not, allocate a chunk and retry:
+  btrfs_inc_block_group_ro()
+  |- ret = inc_block_group_ro(cache, 0);
+  |        |- if (sinfo_used + num_bytes + min_allocable_bytes <=
+  |        |      sinfo->total_bytes)
+  |        |      ret = 0; # Only success if we have enough space.
+  |- ret = btrfs_alloc_chunk(); # Trigger a chunk allocation
+  |- ret = inc_block_group_ro(cache, 0);
+           |- Do the same check again.
+
+That means, if above over-commit threshold is larger than current space
++ 1 more chunk, btrfs will continue over-commit, causing very large
+bytes_may_use just like the enospc debug output:
+ space_info total=1073741824, used=24281088, ..., may_use=2322333696
+                                                          ^^^^^^^^^^
+The fs is 25G, DUP metadata, so the over-commit threshold can be as
+large as 6G.
+In our case may_use is over 2.3G, while our metadata space info is only 1G.
+Definitely will not pass the check in btrfs_inc_block_group_ro().
+
+Such over-commit behavior works fine for most use cases, but when
+btrfs_inc_block_group_ro() is involved, we will get ENOSPC.
+
+[FIX]
+Change can_overcommit() threshold, to follow the
+btrfs_inc_block_group_ro() behavior.
+
+Adds a new threshold check based on chunk size, so if our used bytes
+(including bytes_may_use) exceeds current space info + 87.5% one chunk size,
+we stop over-commit.
+
+The 87.5% is used as extra headroom for min_allocable_bytes (SZ_1M).
+
+This makes over-commit work along with btrfs_inc_block_group_ro().
+
+The downside is, we will have much smaller over-commit threshold.
+This means, when fs is mostly empty, performance may drop compared to
+the old behavior.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+Reason for RFC:
+This is another extreme, compared to "[RFC PATCH] btrfs: Commit
+transaction to workaround ENOSPC during relocation".
+
+This patch will reduce commit threshold for all cases, just to address
+one case in relocation.
+
+While the other RFC just address one problem, and one problem only,
+but in a whac-a-hole fashion.
+
+I don't know which is better, personally speaking, that whac-a-hole
+patch may be a little better.
+
+So both patches are with RFC tag.
+---
+ fs/btrfs/space-info.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index e8a4b0ebe97f..ea46d549ee2d 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -168,16 +168,23 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
+ 	u64 profile;
+ 	u64 avail;
+ 	u64 used;
++	u64 chunk_size;
+ 	int factor;
+ 
+ 	/* Don't overcommit when in mixed mode. */
+ 	if (space_info->flags & BTRFS_BLOCK_GROUP_DATA)
+ 		return 0;
+ 
+-	if (system_chunk)
++	if (system_chunk) {
+ 		profile = btrfs_system_alloc_profile(fs_info);
+-	else
++		chunk_size = SZ_32M;
++	} else {
+ 		profile = btrfs_metadata_alloc_profile(fs_info);
++		if (fs_info->fs_devices->total_rw_bytes > 50ULL * SZ_1G)
++			chunk_size = SZ_1G;
++		else
++			chunk_size = SZ_256M;
++	}
+ 
+ 	used = btrfs_space_info_used(space_info, true);
+ 	avail = atomic64_read(&fs_info->free_chunk_space);
+@@ -201,7 +208,18 @@ static int can_overcommit(struct btrfs_fs_info *fs_info,
+ 	else
+ 		avail >>= 1;
+ 
+-	if (used + bytes < space_info->total_bytes + avail)
++	/*
++	 * The over commit threshold is the lower value of:
++	 * - 1/2 or 1/8 of unallocated space as meta/sys chunk
++	 *   This works well if there isn't much unallocated space left.
++	 *
++	 * - 7/8 of a new chunk
++	 *   This works well if there is a lot of unallocated space left.
++	 *   And it co-operates with inc_block_group_ro() used in relocation to
++	 *   avoid false ENOSPC.
++	 */
++	if (used + bytes < space_info->total_bytes + avail &&
++	    used + bytes < space_info->total_bytes + chunk_size * 7 / 8)
+ 		return 1;
+ 	return 0;
+ }
+-- 
+2.24.0
+
