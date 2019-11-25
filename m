@@ -2,55 +2,55 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B78EB108BE3
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 11:39:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D7BE108BE5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 11:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727278AbfKYKjw (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 05:39:52 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:37782 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727532AbfKYKjv (ORCPT
+        id S1727547AbfKYKjz (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 05:39:55 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:48362 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727545AbfKYKjy (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 05:39:51 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAY7wO021526
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:49 GMT
+        Mon, 25 Nov 2019 05:39:54 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAY98P006501
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
  date : message-id : in-reply-to : references; s=corp-2019-08-05;
- bh=lFAH1D5/PXA1MW6TWclnTjPr7PQq4Wos6Fiiawmurlw=;
- b=UCU5jyjnuATv02a2pMFu0Zk/JjrxJtepKcmwkJZyDcpwJjeS7TIteuEOyOB0w2b2Bm0y
- 3xd+gPAzG85OjKlxfkcCre//nEJx78T7PjKkcXRobVnIx0xB9UpyZx07FMQauO7IWyyc
- YSgOJbl5i0fXju94Tt638YtfIp/KcDXUk/RrnVmBFEsVNySKoBphNT5vP/G7aP0Pj4gA
- tA8UvDA6PcZRMrdEVqfW+pkLSWh7QJywvzoVWs6AjInJeAJcyjJrfrI2DEb24qhJL3KM
- AZ3yxuWMcbqlIj3uBGu2UuHdkQbUDvN5t7ex4yZXgeIg2uKZynHFwzBaE8xbXZ1y0PKB pQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2wevqpxrxn-1
+ bh=rlOenJOgolsqiDQP4s0131sVFBxxllbW+cuhHHmQHAk=;
+ b=S5XCzjjX+9Eo9NbYHkzmCud5WOWQ/zbt03+xBf1N/7o1ab2kYVmY+YoKqEFRXUdtgT9Z
+ XXmrDElcoMQG5kl24VOW9TXuG/Y6nE9s08ebSjdJqvpopNmmqSSQ+W5ZsfbX/l0RipZP
+ rPRbutUJhWyI8nM0Oeh0q5NltozAeNPm31Amoq5Dr5SywWqboG0/v0wFz/eYoJUtj708
+ x3DJf1M8fvMdEoUkDL7bBV592ErWAG4wnTVNAcGSadWBblaRdYRyzSb4nMhaYg3d7ed7
+ wWtA/cpdzSfbdPk8uyLF66VjcOEVvc52TYaGkSM/47pMr+3DZclo7DvC5UtG9E9jDxbu Yg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 2wewdqxnpe-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:49 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAXtRJ173114
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:49 GMT
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:52 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id xAPAY3M8090734
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:52 GMT
 Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2wfe9ery2n-1
+        by userp3030.oracle.com with ESMTP id 2wfe7yr6c7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:49 +0000
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:52 +0000
 Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAPAdmXc001770
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:48 GMT
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id xAPAdp8u001786
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 10:39:51 GMT
 Received: from tp.wifi.oracle.com (/192.188.170.104)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 25 Nov 2019 02:39:47 -0800
+        with ESMTP ; Mon, 25 Nov 2019 02:39:49 -0800
 From:   Anand Jain <anand.jain@oracle.com>
 To:     linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 12/16] btrfs-progs: inspect-internal inode-resolve: use global verbose
-Date:   Mon, 25 Nov 2019 18:39:13 +0800
-Message-Id: <1574678357-22222-13-git-send-email-anand.jain@oracle.com>
+Subject: [PATCH v2 13/16] btrfs-progs: inspect-internal logical-resolve: use global verbose option
+Date:   Mon, 25 Nov 2019 18:39:14 +0800
+Message-Id: <1574678357-22222-14-git-send-email-anand.jain@oracle.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1574678357-22222-1-git-send-email-anand.jain@oracle.com>
 References: <1574678357-22222-1-git-send-email-anand.jain@oracle.com>
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9451 signatures=668685
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=956
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
  adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.0.1-1911140001 definitions=main-1911250098
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9451 signatures=668685
@@ -65,77 +65,98 @@ List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
 Transpire global --verbose option down to the
-btrfs inspect-internal inode-resolve sub-command.
+btrfs inspect-internal logical-resolve sub-command.
+
+Command btrfs inspect-internal logical-resolve provides local verbose
+option this patch makes it enable-able by using the global --verbose
+option.
 
 Suggested-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Anand Jain <anand.jain@oracle.com>
 ---
-v2: Use new helper functions and defines
-     HELPINFO_INSERT_GLOBALS, BTRFS_BCONF_UNSET, BTRFS_BCONF_QUIET
-     bconf_be_verbose(), bconf_be_quiet()
+v2: Use new helper function bconf_be_verbose()
 
- cmds/inspect.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ cmds/inspect.c | 25 +++++++++++--------------
+ 1 file changed, 11 insertions(+), 14 deletions(-)
 
 diff --git a/cmds/inspect.c b/cmds/inspect.c
-index 758b6e60c591..de4d163991a5 100644
+index de4d163991a5..8baa7aa4604a 100644
 --- a/cmds/inspect.c
 +++ b/cmds/inspect.c
-@@ -56,12 +56,11 @@ static int __ino_to_path_fd(u64 inum, int fd, int verbose, const char *prepend)
- 		goto out;
- 	}
+@@ -38,7 +38,7 @@ static const char * const inspect_cmd_group_usage[] = {
+ 	NULL
+ };
  
--	if (verbose)
--		printf("ioctl ret=%d, bytes_left=%lu, bytes_missing=%lu, "
--			"cnt=%d, missed=%d\n", ret,
--			(unsigned long)fspath->bytes_left,
--			(unsigned long)fspath->bytes_missing,
--			fspath->elem_cnt, fspath->elem_missed);
-+	pr_verbose(1,
-+	"ioctl ret=%d, bytes_left=%lu, bytes_missing=%lu cnt=%d, missed=%d\n",
-+		   ret, (unsigned long)fspath->bytes_left,
-+		   (unsigned long)fspath->bytes_missing, fspath->elem_cnt,
-+		   fspath->elem_missed);
+-static int __ino_to_path_fd(u64 inum, int fd, int verbose, const char *prepend)
++static int __ino_to_path_fd(u64 inum, int fd, const char *prepend)
+ {
+ 	int ret;
+ 	int i;
+@@ -117,8 +117,7 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
+ 	if (fd < 0)
+ 		return 1;
  
- 	for (i = 0; i < fspath->elem_cnt; ++i) {
- 		u64 ptr;
-@@ -84,6 +83,8 @@ static const char * const cmd_inspect_inode_resolve_usage[] = {
- 	"Get file system paths for the given inode",
- 	"",
- 	"-v   verbose mode",
+-	ret = __ino_to_path_fd(arg_strtou64(argv[optind]), fd,
+-			       bconf.verbose, argv[optind+1]);
++	ret = __ino_to_path_fd(arg_strtou64(argv[optind]), fd, argv[optind+1]);
+ 	close_file_or_dir(fd, dirstream);
+ 	return !!ret;
+ 
+@@ -134,6 +133,8 @@ static const char * const cmd_inspect_logical_resolve_usage[] = {
+ 	"-s bufsize  set inode container's size. This is used to increase inode",
+ 	"            container's size in case it is not enough to read all the ",
+ 	"            resolved results. The max value one can set is 64k",
 +	HELPINFO_INSERT_GLOBALS,
 +	HELPINFO_INSERT_VERBOSE,
  	NULL
  };
  
-@@ -91,7 +92,6 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
- 				     int argc, char **argv)
- {
- 	int fd;
--	int verbose = 0;
+@@ -143,7 +144,6 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
  	int ret;
- 	DIR *dirstream = NULL;
- 
-@@ -103,7 +103,7 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
- 
- 		switch (c) {
+ 	int fd;
+ 	int i;
+-	int verbose = 0;
+ 	int getpath = 1;
+ 	int bytes_left;
+ 	struct btrfs_ioctl_logical_ino_args loi;
+@@ -164,7 +164,7 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
+ 			getpath = 0;
+ 			break;
  		case 'v':
 -			verbose = 1;
 +			bconf_be_verbose();
  			break;
- 		default:
- 			usage_unknown_option(cmd, argv);
-@@ -117,8 +117,8 @@ static int cmd_inspect_inode_resolve(const struct cmd_struct *cmd,
- 	if (fd < 0)
- 		return 1;
+ 		case 's':
+ 			size = arg_strtou64(optarg);
+@@ -199,13 +199,11 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
+ 		goto out;
+ 	}
  
--	ret = __ino_to_path_fd(arg_strtou64(argv[optind]), fd, verbose,
--			       argv[optind+1]);
-+	ret = __ino_to_path_fd(arg_strtou64(argv[optind]), fd,
-+			       bconf.verbose, argv[optind+1]);
- 	close_file_or_dir(fd, dirstream);
- 	return !!ret;
+-	if (verbose)
+-		printf("ioctl ret=%d, total_size=%llu, bytes_left=%lu, "
+-			"bytes_missing=%lu, cnt=%d, missed=%d\n",
+-			ret, size,
+-			(unsigned long)inodes->bytes_left,
+-			(unsigned long)inodes->bytes_missing,
+-			inodes->elem_cnt, inodes->elem_missed);
++	pr_verbose(1,
++"ioctl ret=%d, total_size=%llu, bytes_left=%lu, bytes_missing=%lu, cnt=%d, missed=%d\n",
++		   ret, size, (unsigned long)inodes->bytes_left,
++		   (unsigned long)inodes->bytes_missing, inodes->elem_cnt,
++		   inodes->elem_missed);
  
+ 	bytes_left = sizeof(full_path);
+ 	ret = snprintf(full_path, bytes_left, "%s/", argv[optind+1]);
+@@ -250,8 +248,7 @@ static int cmd_inspect_logical_resolve(const struct cmd_struct *cmd,
+ 					goto out;
+ 				}
+ 			}
+-			ret = __ino_to_path_fd(inum, path_fd, verbose,
+-						full_path);
++			ret = __ino_to_path_fd(inum, path_fd, full_path);
+ 			if (path_fd != fd)
+ 				close_file_or_dir(path_fd, dirs);
+ 		} else {
 -- 
 1.8.3.1
 
