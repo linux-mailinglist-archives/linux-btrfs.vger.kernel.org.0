@@ -2,47 +2,47 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AAE58109472
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 20:48:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 203B0109473
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 20:48:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727196AbfKYTrc (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 14:47:32 -0500
-Received: from mail-qv1-f65.google.com ([209.85.219.65]:46109 "EHLO
-        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727187AbfKYTrb (ORCPT
+        id S1727200AbfKYTre (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 14:47:34 -0500
+Received: from mail-qv1-f67.google.com ([209.85.219.67]:39883 "EHLO
+        mail-qv1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727197AbfKYTrd (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 14:47:31 -0500
-Received: by mail-qv1-f65.google.com with SMTP id w11so6253229qvu.13
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 11:47:31 -0800 (PST)
+        Mon, 25 Nov 2019 14:47:33 -0500
+Received: by mail-qv1-f67.google.com with SMTP id v16so6272345qvq.6
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 11:47:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:in-reply-to:references;
-        bh=/55shlXn5U81maiE2JbP9Y20nOk8gQoXsZiv9oaLK/M=;
-        b=SVwFlHB8vKFBu3FetWD3yOgU1IwQKnAKr5+t439B7hV5X4PVvwfWSAonNb/D5BkqK6
-         G2GgDiMcRNp4Il78PItU4dwc+NJQBqNAb26cSIKGVu0FwB3JGSIfI5DvJ5pY146VescF
-         u9Nd8mGAmcmXwoJUJkXEJKP3V7STie+MYJizdyH1G1Zwx9MPRJaKC00S2bsgyEDvtUse
-         8zwKqMTmuOo95pAfBEkeT0l6iyR3iXE67Vaw7oSz4iA8wmRgz21dMDGMRl/AmmeW2SuC
-         YEWdAlkwOrsAPk1lkHP7YhkUsfiaiwyZ/Yojnk6oF2X1EtAXXRvwo/mnRsF2to6//xjh
-         Soow==
-X-Gm-Message-State: APjAAAWoDQSJewAuWa85YoYR9yvCa0Ws1xkaI3O6Xz6KRH6jQMoPX92k
-        2SkD/dh2B+wVwsv6xrJZ2mw=
-X-Google-Smtp-Source: APXvYqyMfWFn6uhxCuDQYS07cgLAKOYyCc74u2UDZak2XYN4dMPzI9ghW02vy+mfk/MPz6BF73pLgg==
-X-Received: by 2002:ad4:462d:: with SMTP id x13mr29356075qvv.105.1574711250651;
-        Mon, 25 Nov 2019 11:47:30 -0800 (PST)
+        bh=bWkEItJsrciCUsqYOdkuyqGCVe7sz9XQCB/6ACz1IpE=;
+        b=PEJiShX9CiHL8LcMjKdX8ICWwBV5K3UqumL22B4FibO04/DBbFi+IJGLGaLuWyeATv
+         P6ftZYR5JUkDP6BQtqg2WRrq2T3Xoe7jliNsHD859/ZCXh2cGVi6dsMHlxSUXVg+FscO
+         lBd/og4Mcs5NV3xGNPNDp9FZjD035TfPEm1Egxzl4nREpvZPrzq4vTPH1O61CJ05dhnC
+         bEJFlnF2Pr3FLqOZ8xyM4isaDxGWk7nFkKUXo49QfV405dlO2UOYmIddn68Cgpjtq9RU
+         g2n/VHo6a6weQdwlEPz47KpSNl8YReGJSI3RTfAXQmAuMk18/+Y6Z0ZGYokc06DvBoL4
+         NYog==
+X-Gm-Message-State: APjAAAWzvZPCahLQLJQpKwrvONCRDW/q2MelnyxIXtuVbkKMvFRcW1ej
+        pQZqTqm5ihmxnQ20MyVhyiA=
+X-Google-Smtp-Source: APXvYqw7Lygdp+cR3wdX1ku3Yjk85gBii3Ov/hPddgXuVUty47Z/ntOod3Pb5Xajht5cGcCP2edn+A==
+X-Received: by 2002:ad4:4391:: with SMTP id s17mr14806489qvr.232.1574711251669;
+        Mon, 25 Nov 2019 11:47:31 -0800 (PST)
 Received: from dennisz-mbp.thefacebook.com ([163.114.130.128])
-        by smtp.gmail.com with ESMTPSA id o13sm4481033qto.96.2019.11.25.11.47.29
+        by smtp.gmail.com with ESMTPSA id o13sm4481033qto.96.2019.11.25.11.47.30
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Mon, 25 Nov 2019 11:47:29 -0800 (PST)
+        Mon, 25 Nov 2019 11:47:31 -0800 (PST)
 From:   Dennis Zhou <dennis@kernel.org>
 To:     David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         Omar Sandoval <osandov@osandov.com>
 Cc:     kernel-team@fb.com, linux-btrfs@vger.kernel.org,
         Dennis Zhou <dennis@kernel.org>
-Subject: [PATCH 21/22] btrfs: increase the metadata allowance for the free_space_cache
-Date:   Mon, 25 Nov 2019 14:47:01 -0500
-Message-Id: <894355ca977324aec8587d16625ed5ce10b23e55.1574709825.git.dennis@kernel.org>
+Subject: [PATCH 22/22] btrfs: make smaller extents more likely to go into bitmaps
+Date:   Mon, 25 Nov 2019 14:47:02 -0500
+Message-Id: <048ac58fcc4d6147a0025b4a6021f773d736adb5.1574709825.git.dennis@kernel.org>
 X-Mailer: git-send-email 2.13.5
 In-Reply-To: <cover.1574709825.git.dennis@kernel.org>
 References: <cover.1574709825.git.dennis@kernel.org>
@@ -53,79 +53,30 @@ Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-Currently, there is no way for the free space cache to recover from
-being serviced by purely bitmaps because the extent threshold is set to
-0 in recalculate_thresholds() when we surpass the metadata allowance.
-
-This adds a recovery mechanism by keeping large extents out of the
-bitmaps and increases the metadata upper bound to 64KB. The recovery
-mechanism bypasses this upper bound, thus making it a soft upper bound.
-But, with the bypass being 1MB or greater, it shouldn't add unbounded
-overhead.
+It's less than ideal for small extents to eat into our extent budget, so
+force extents <= 32KB into the bitmaps save for the first handful.
 
 Signed-off-by: Dennis Zhou <dennis@kernel.org>
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/free-space-cache.c | 26 +++++++++++---------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+ fs/btrfs/free-space-cache.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index 1b887c0d7508..15667095c50d 100644
+index 15667095c50d..9167be1e27bf 100644
 --- a/fs/btrfs/free-space-cache.c
 +++ b/fs/btrfs/free-space-cache.c
-@@ -24,7 +24,8 @@
- #include "discard.h"
- 
- #define BITS_PER_BITMAP		(PAGE_SIZE * 8UL)
--#define MAX_CACHE_BYTES_PER_GIG	SZ_32K
-+#define MAX_CACHE_BYTES_PER_GIG	SZ_64K
-+#define FORCE_EXTENT_THRESHOLD	SZ_1M
- 
- struct btrfs_trim_range {
- 	u64 start;
-@@ -1695,26 +1696,17 @@ static void recalculate_thresholds(struct btrfs_free_space_ctl *ctl)
- 	ASSERT(ctl->total_bitmaps <= max_bitmaps);
- 
- 	/*
--	 * The goal is to keep the total amount of memory used per 1gb of space
--	 * at or below 32k, so we need to adjust how much memory we allow to be
--	 * used by extent based free space tracking
-+	 * We are trying to keep the total amount of memory used per 1gb of
-+	 * space to be MAX_CACHE_BYTES_PER_GIG.  However, with a reclamation
-+	 * mechanism of pulling extents >= FORCE_EXTENT_THRESHOLD out of
-+	 * bitmaps, we may end up using more memory than this.
- 	 */
- 	if (size < SZ_1G)
- 		max_bytes = MAX_CACHE_BYTES_PER_GIG;
- 	else
- 		max_bytes = MAX_CACHE_BYTES_PER_GIG * div_u64(size, SZ_1G);
- 
--	/*
--	 * we want to account for 1 more bitmap than what we have so we can make
--	 * sure we don't go over our overall goal of MAX_CACHE_BYTES_PER_GIG as
--	 * we add more bitmaps.
--	 */
--	bitmap_bytes = (ctl->total_bitmaps + 1) * ctl->unit;
--
--	if (bitmap_bytes >= max_bytes) {
--		ctl->extents_thresh = 0;
--		return;
--	}
-+	bitmap_bytes = ctl->total_bitmaps * ctl->unit;
- 
- 	/*
- 	 * we want the extent entry threshold to always be at most 1/2 the max
-@@ -2100,6 +2092,10 @@ static bool use_bitmap(struct btrfs_free_space_ctl *ctl,
- 		forced = true;
- #endif
- 
-+	/* This is a way to reclaim large regions from the bitmaps. */
-+	if (!forced && info->bytes >= FORCE_EXTENT_THRESHOLD)
-+		return false;
-+
- 	/*
- 	 * If we are below the extents threshold then we can add this as an
- 	 * extent, and don't have to deal with the bitmap
+@@ -2108,8 +2108,8 @@ static bool use_bitmap(struct btrfs_free_space_ctl *ctl,
+ 		 * of cache left then go ahead an dadd them, no sense in adding
+ 		 * the overhead of a bitmap if we don't have to.
+ 		 */
+-		if (info->bytes <= fs_info->sectorsize * 4) {
+-			if (ctl->free_extents * 2 <= ctl->extents_thresh)
++		if (info->bytes <= fs_info->sectorsize * 8) {
++			if (ctl->free_extents * 3 <= ctl->extents_thresh)
+ 				return false;
+ 		} else {
+ 			return false;
 -- 
 2.17.1
 
