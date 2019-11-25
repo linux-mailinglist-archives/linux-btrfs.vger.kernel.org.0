@@ -2,101 +2,101 @@ Return-Path: <linux-btrfs-owner@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BE910944A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 20:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F59B10944F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 25 Nov 2019 20:39:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbfKYThu (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
-        Mon, 25 Nov 2019 14:37:50 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:43895 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725823AbfKYThu (ORCPT
+        id S1726118AbfKYTjV (ORCPT <rfc822;lists+linux-btrfs@lfdr.de>);
+        Mon, 25 Nov 2019 14:39:21 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:34365 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbfKYTjV (ORCPT
         <rfc822;linux-btrfs@vger.kernel.org>);
-        Mon, 25 Nov 2019 14:37:50 -0500
-Received: by mail-qt1-f196.google.com with SMTP id q8so15886480qtr.10
-        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 11:37:49 -0800 (PST)
+        Mon, 25 Nov 2019 14:39:21 -0500
+Received: by mail-pj1-f65.google.com with SMTP id bo14so7056730pjb.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 25 Nov 2019 11:39:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7MBxWDkXpERqkSDmMhodvqUg0A3hHgxZWxKtcdO3owk=;
+        b=G/S6X4qW+KCWwWsTZ30hKhGDTXPozUY6KO/wTOF/NqESVUfZHxKMK73KWqEolwpFfX
+         lKSB+c+FzIJBcLbOSNo46LFaDsPdEoEciWzAftJwOAEQ2ulyPRkuaeezuodFmgV1t6Yx
+         n9PI8sBPYl9WSdpuCSMFL4nosfJNY5xmX8OI840P6tOaKB4R2yzAWwT1ja1uNK/nLJ88
+         tlE47Lw9vZXQehP24l+aL1+TrKflLmdA8qtiMp18GH3qj1FI37PSo8ki07agaWKcQOWF
+         QA3O/YYkgC5Dse0/r0itGSnTzPZDCESmxCIVh3jBGU00aJleVObXdq9iMF8juutD+Wtv
+         Fq4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Z25xawtN9EUSB11ugnyS1CzBl5RXQyJZGVT3nErHeHI=;
-        b=KJa+kB/yTTfHqmdiKjRACz4f2xR23AN+m007TZDFhYSHvcDiLd6V2V8Gq6pwkJ2vNu
-         GEIlRJ59BshiM9Iyn6RsB69oTRIPUEIjrkX5FdK22zRGVOdq0tiB5HGvb4m2KS2EmaIM
-         Kypr5eN/0KAonvZnHxldmiCtbeFXtW+iCFKPdTe5Z44MEv5AReN7iuHQBJF7xq8/eVPm
-         K4bpwLSXTjbLqSDluyO+TKpRHW2RW7jlcts4HaUAFz+ERJsSR6546WsxoG7bBIwyLjs2
-         Lg9NEuEe+JZnSP3/F5Gfm7nnczehz+b1MyESikE4DwiuIWityi+TYQ8ogFLAQU4jyE9u
-         fIog==
-X-Gm-Message-State: APjAAAWNQrgK+Ch1SkPMz4hR26hgJfvGfPkfmLHbYupGjV7Wp23vuE8B
-        Vuib1ie9DtDI71LKcLUx5YY=
-X-Google-Smtp-Source: APXvYqzMcUsAJ3qvsAHSvXqzB38MuDsjh/8ZX67lZniZAHtUxitDor7MC84kRXTK5rpUyz15h5F/Uw==
-X-Received: by 2002:ac8:5053:: with SMTP id h19mr30933113qtm.38.1574710669100;
-        Mon, 25 Nov 2019 11:37:49 -0800 (PST)
-Received: from dennisz-mbp.dhcp.thefacebook.com ([2620:10d:c091:500::2:6080])
-        by smtp.gmail.com with ESMTPSA id b13sm4343128qtj.64.2019.11.25.11.37.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 25 Nov 2019 11:37:48 -0800 (PST)
-Date:   Mon, 25 Nov 2019 14:37:46 -0500
-From:   Dennis Zhou <dennis@kernel.org>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7MBxWDkXpERqkSDmMhodvqUg0A3hHgxZWxKtcdO3owk=;
+        b=RozPS2IixK95SFjlzWtcj2+/MXO/PfZs5OrWeVaftt5iALT4yOk3JKsJ50tivOqdcI
+         LPtEnwNntwzXZy3agqv69hPbKgxCpGWQVvOT6IZJ6JThPEFOkpLDbOFjqgfumR7iImUs
+         3D4JYxySwqAZG5kx3cXR9sH5Tb217fCdHx0UDG9LNhiNpjUvnYNGJZptv0D9d0XFTLzy
+         rp/u41g1BUDkodrzmU6uEhoSuK8hwspUn0Vbyzk2nvXW8GJLBXJsw3RpW7XwaYE+rpJA
+         7b4zU8sw3bZgcndhoCPiuviAoCIXML5vky0MswLQpHvFF1bFbEWXDnLcEzCtWxAwdJfe
+         +CtA==
+X-Gm-Message-State: APjAAAWZoKZni6kuwKo6ahQAC+4nRvZWwNCD/5hTFtlDPtpNaWL95oIj
+        l4YaCU3ZqejcWsQRrNLLxcSlOZE/Ymyg7qlS3w7Grw==
+X-Google-Smtp-Source: APXvYqx0q4HEgjD9JrP4AWKwnmjTpmQfvZt9298pmTr4dcYXx0tuesGY7w6SO8LAaYOR3ISzbub2FdLnmwHNpUQZsz0=
+X-Received: by 2002:a17:902:8498:: with SMTP id c24mr29731936plo.223.1574710759582;
+ Mon, 25 Nov 2019 11:39:19 -0800 (PST)
+MIME-Version: 1.0
+References: <201911220351.HPI9gxNo%lkp@intel.com> <CAKwvOdn5j37AYzmoOsaSqyYdBkjqevbTrSyGQypB+G_NgxX0fQ@mail.gmail.com>
+ <20191125185931.GA30548@dennisz-mbp.dhcp.thefacebook.com>
+In-Reply-To: <20191125185931.GA30548@dennisz-mbp.dhcp.thefacebook.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 25 Nov 2019 11:39:08 -0800
+Message-ID: <CAKwvOdnaiXo8qqK_tyiYvw5Fo4HvdFzrMxLU7k62qEWucC-58Q@mail.gmail.com>
+Subject: Re: [PATCH 05/22] btrfs: add the beginning of async discard, discard workqueue
+To:     Dennis Zhou <dennis@kernel.org>, Chen Rong <rong.a.chen@intel.com>,
+        Philip Li <philip.li@intel.com>
+Cc:     kbuild@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        kbuild test robot <lkp@intel.com>, kbuild-all@lists.01.org,
         David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
         Josef Bacik <josef@toxicpanda.com>,
         Omar Sandoval <osandov@osandov.com>, kernel-team@fb.com,
         linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 04/22] btrfs: keep track of cleanliness of the bitmap
-Message-ID: <20191125193746.GB30548@dennisz-mbp.dhcp.thefacebook.com>
-References: <06410c758182c36e3af04249721ded50d8f2c62f.1574282259.git.dennis@kernel.org>
- <201911230623.j5g9qeNZ%lkp@intel.com>
- <20191125135910.GD2734@twin.jikos.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191125135910.GD2734@twin.jikos.cz>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Type: text/plain; charset="UTF-8"
 Sender: linux-btrfs-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-btrfs.vger.kernel.org>
 X-Mailing-List: linux-btrfs@vger.kernel.org
 
-On Mon, Nov 25, 2019 at 02:59:10PM +0100, David Sterba wrote:
-> On Sat, Nov 23, 2019 at 08:17:13AM +0800, kbuild test robot wrote:
+On Mon, Nov 25, 2019 at 10:59 AM Dennis Zhou <dennis@kernel.org> wrote:
+>
+> On Thu, Nov 21, 2019 at 08:27:43PM -0800, Nick Desaulniers wrote:
 > > Hi Dennis,
-> > 
-> > I love your patch! Yet something to improve:
-> > 
-> > [auto build test ERROR on kdave/for-next]
-> > [cannot apply to v5.4-rc8 next-20191122]
-> > [if your patch is applied to the wrong git tree, please drop us a note to help
-> > improve the system. BTW, we also suggest to use '--base' option to specify the
-> > base tree in git format-patch, please see https://stackoverflow.com/a/37406982]
-> > 
-> > url:    https://github.com/0day-ci/linux/commits/Dennis-Zhou/btrfs-async-discard-support/20191121-230429
-> > base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
-> > config: arm-allmodconfig (attached as .config)
-> > compiler: arm-linux-gnueabi-gcc (GCC) 7.4.0
-> > reproduce:
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         # save the attached .config to linux build tree
-> >         GCC_VERSION=7.4.0 make.cross ARCH=arm 
-> > 
-> > If you fix the issue, kindly add following tag
-> > Reported-by: kbuild test robot <lkp@intel.com>
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> > >> ERROR: "__aeabi_uldivmod" [fs/btrfs/btrfs.ko] undefined!
-> 
-> That does not point to a particular line, but there's
-> 
-> +	/* If we ended in the middle of a bitmap, reset the trimming flag. */
-> +	if (end % (BITS_PER_BITMAP * ctl->unit))
-> +		reset_trimming_bitmap(ctl, offset_to_bitmap(ctl, end));
-> 
-> added and its "u64 % (unsigned long * int)" that could be the cause.
+> > Below is a 0day bot report from a build w/ Clang. Warning looks legit,
+> > can you please take a look?
+> >
+>
+> Ah thanks for this! Yeah that was a miss when I switched from flags ->
+> an enum and didn't update the declaration properly. I'll be sending out
+> a v4 as another fix for arm has some rebase conflicts.
+>
+> Is there a way to enable so I get these emails directly?
 
-Yeah that seems to be it. I wasn't careful enough with my u64s. I'm
-going to send out v4 which should fix this issue and the uninitialized
-variable use in patch 4.
++ Rong, Philip
 
+The reports have only been sent to our mailing list where we've been
+manually triaging them.  The issue with enabling them globally was
+that the script to reproduce the warning still doesn't mention how to
+build w/ Clang.
+
+In general the reports have been high value (I ignore most reports
+with -Wimplicit-function-declaration, which is the most frequent as it
+shows the patch was not compile tested at all).
+
+Rong, Philip, it's been a while since we talked about this last. Is
+there a general timeline of when these reports will be turned on
+globally?  Even if the directions to reproduce aren't quite right,
+generally there's enough info in the existing bugs where authors can
+rewrite their patch without even needing to rebuild with Clang (though
+having correct directions to reproduce would be nice, we could wait
+until someone asked for them explicitly).
+
+-- 
 Thanks,
-Dennis
+~Nick Desaulniers
